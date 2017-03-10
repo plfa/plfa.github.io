@@ -1,1 +1,3 @@
-*.agdai
+_site/
+.sass-cache/
+out/

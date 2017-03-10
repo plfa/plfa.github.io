@@ -1,0 +1,46 @@
+/* Agda. */
+.Agda {
+    padding: .4em .4em;
+    background: #e8f2fb;
+    border: 1px solid #c9e1f6;
+    border-radius: 3px;
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+    font-size: .85em; }
+
+.Spec {
+    border: 1px dashed hsl(208,71%,71%) !important;
+  }
+
+/* Aspects. */
+.Comment       { color: #B22222 }
+.Keyword       { color: #CD6600 }
+.String        { color: #B22222 }
+.Number        { color: #A020F0 }
+.Symbol        { color: #404040 }
+.PrimitiveType { color: #0000CD }
+.Operator      {}
+
+/* NameKinds. */
+.Bound                  { color: black   }
+.InductiveConstructor   { color: #008B00 }
+.CoinductiveConstructor { color: #8B7500 }
+.Datatype               { color: #0000CD }
+.Field                  { color: #EE1289 }
+.Function               { color: #0000CD }
+.Module                 { color: #A020F0 }
+.Postulate              { color: #0000CD }
+.Primitive              { color: #0000CD }
+.Record                 { color: #0000CD }
+
+/* OtherAspects. */
+.DottedPattern      {}
+.UnsolvedMeta       { color: black; background: yellow         }
+.UnsolvedConstraint { color: black; background: yellow         }
+.TerminationProblem { color: black; background: #FFA07A        }
+.IncompletePattern  { color: black; background: #F5DEB3        }
+.Error              { color: red;   text-decoration: underline }
+.TypeChecks         { color: black; background: #ADD8E6        }
+
+/* Standard attributes. */
+.Agda a { text-decoration: none }
+.Agda a[href]:hover { background-color: #B4EEB4 }

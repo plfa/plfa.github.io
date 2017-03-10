@@ -1,10 +1,5 @@
 ---
-title         : "StlcProp: Properties of STLC"
-layout        : default
-hide-implicit : false
-extra-script : [agda-extra-script.html]
-extra-style  : [agda-extra-style.html]
-permalink     : "sf/StlcProp.html"
+title : "StlcProp: Properties of STLC"
 ---
 
 \begin{code}

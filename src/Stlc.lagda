@@ -1,10 +1,5 @@
 ---
-title         : "Stlc: The Simply Typed Lambda-Calculus"
-layout        : default
-hide-implicit : false
-extra-script : [agda-extra-script.html]
-extra-style  : [agda-extra-style.html]
-permalink     : "sf/Stlc.html"
+title : "Stlc: The Simply Typed Lambda-Calculus"
 ---
 
 \begin{code}
@@ -444,7 +439,6 @@ postulate
                 → [ x := s ] t ≡ t'
                 → [ x := s ] t ==> t'
 \end{code}
-
 
 ### Reduction
 
