@@ -8,7 +8,6 @@ permalink : /Stlc
 module Stlc where
 \end{code}
 
-<div class="hidden">
 \begin{code}
 open import Maps using (Id; id; _≟_; PartialMap; module PartialMap)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -19,7 +18,6 @@ open import Function using (_∘_; _$_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 \end{code}
-</div>
 
 # The Simply Typed Lambda-Calculus
 
@@ -161,13 +159,9 @@ so we will STLC's function type as `_⇒_`.
 data Type : Set where
   bool : Type
   _⇒_  : Type → Type → Type
-\end{code}
 
-<div class="hidden">
-\begin{code}
 infixr 5 _⇒_
 \end{code}
-</div>
 
 
 ### Terms
@@ -194,21 +188,20 @@ to Agda (and other functional languages like ML, Haskell, etc.),
 which use _type inference_ to fill in missing annotations.  We're
 not considering type inference here.
 
-Some examples...
+We introduce $$x, y, z$$ as names for variables.  The pragmas ensure
+that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
 
 \begin{code}
 x = id 0
 y = id 1
 z = id 2
-\end{code}
 
-<div class="hidden">
-\begin{code}
 {-# DISPLAY id zero = x #-}
 {-# DISPLAY id (suc zero) = y #-}
 {-# DISPLAY id (suc (suc zero)) = z #-}
 \end{code}
-</div>
+
+Some examples...
 
 $$\text{idB} = \lambda x:bool. x$$.
 
