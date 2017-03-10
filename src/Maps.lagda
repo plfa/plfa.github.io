@@ -1,5 +1,7 @@
 ---
-title : "Maps: Total and Partial Maps"
+title     : "Maps: Total and Partial Maps"
+layout    : page
+permalink : /Maps
 ---
 
 # Maps: Total and Partial Maps

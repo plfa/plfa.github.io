@@ -1,5 +1,7 @@
 ---
-title : "Basics: Functional Programming in Agda"
+title     : "Basics: Functional Programming in Agda"
+layout    : page
+permalink : /Basics
 ---
 
 <div class="hidden">

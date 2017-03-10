@@ -1,5 +1,7 @@
 ---
-title : "Stlc: The Simply Typed Lambda-Calculus"
+title     : "Stlc: The Simply Typed Lambda-Calculus"
+layout    : page
+permalink : /Stlc
 ---
 
 \begin{code}

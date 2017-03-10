@@ -1,5 +1,7 @@
 ---
-title : "StlcProp: Properties of STLC"
+title     : "StlcProp: Properties of STLC"
+layout    : page
+permalink : /StlcProp
 ---
 
 \begin{code}
