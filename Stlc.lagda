@@ -199,9 +199,9 @@ x = id 0
 y = id 1
 z = id 2
 
-{-# DISPLAY zero = x #-}
-{-# DISPLAY suc zero = y #-}
-{-# DISPLAY suc (suc zero) = z #-}
+{-# DISPLAY id zero = x #-}
+{-# DISPLAY id (suc zero) = y #-}
+{-# DISPLAY id (suc (suc zero)) = z #-}
 \end{code}
 
 Some examples...
@@ -245,6 +245,7 @@ notB = (abs x bool (if (var x) then false else true))
 {-# DISPLAY abs 0 bool (if (var 0) then false else true) = notB #-}
 \end{code}
 </div>
+
 
 ## Operational Semantics
 
