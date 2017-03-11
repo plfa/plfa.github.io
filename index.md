@@ -1,6 +1,9 @@
 ---
-# You don't need to edit this file, it's empty on purpose.
-# Edit theme's home layout instead if you wanna make some changes
-# See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-layout: home
+title  : Table of Contents
+layout : page
 ---
+ 
+  - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
+  - [Maps: Total and Partial Maps]({{ "/Maps" | relative_url }})
+  - [Stlc: The Simply Typed Lambda-Calculus]({{ "/Stlc" | relative_url }})
+  - [StlcProp: Properties of STLC]({{ "/StlcProp" | relative_url }})

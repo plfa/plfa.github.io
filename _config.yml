@@ -1,4 +1,5 @@
 title: Agda Software Foundations
+author: Pepijn Kokke
 email: pepijn.kokke@gmail.com
 description: > 
   Write an awesome description for your new site here. You can edit this
@@ -7,6 +8,8 @@ description: >
 baseurl: "/sf"
 url: "https://pepijnkokke.github.io"
 github_username: pepijnkokke 
+disqus:
+  shortname: pepijnkokke
 
 # Build settings
 markdown: kramdown
