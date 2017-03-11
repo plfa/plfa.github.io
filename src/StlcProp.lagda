@@ -19,17 +19,17 @@ open import Stlc
 </div>
 
 In this chapter, we develop the fundamental theory of the Simply
-Typed Lambda Calculus -- in particular, the type safety
+Typed Lambda Calculus---in particular, the type safety
 theorem.
+
 
 ## Canonical Forms
 
-As we saw for the simple calculus in the [Stlc](Stlc.html) chapter, the
-first step in establishing basic properties of reduction and types
-is to identify the possible _canonical forms_ (i.e., well-typed
-closed values) belonging to each type.  For $$bool$$, these are the boolean
-values $$true$$ and $$false$$.  For arrow types, the canonical forms
-are lambda-abstractions.
+As we saw for the simple calculus in the [Stlc]({{ "Stlc" | relative_url }})
+chapter, the first step in establishing basic properties of reduction and types
+is to identify the possible _canonical forms_ (i.e., well-typed closed values)
+belonging to each type.  For $$bool$$, these are the boolean values $$true$$ and
+$$false$$.  For arrow types, the canonical forms are lambda-abstractions. 
 
 \begin{code}
 CanonicalForms : Term → Type → Set
@@ -48,8 +48,8 @@ As before, the _progress_ theorem tells us that closed, well-typed
 terms are not stuck: either a well-typed term is a value, or it
 can take a reduction step.  The proof is a relatively
 straightforward extension of the progress proof we saw in the
-[Stlc](Stlc.html) chapter.  We'll give the proof in English first,
-then the formal version.
+[Stlc]({{ "Stlc" | relative_url }}) chapter.  We'll give the proof in English
+first, then the formal version.
 
 \begin{code}
 progress : ∀ {t A} → ∅ ⊢ t ∶ A → Value t ⊎ ∃ λ t′ → t ==> t′
@@ -136,11 +136,11 @@ technical lemmas that are needed by various cases of the more
 interesting proofs), the story goes like this:
 
   - The _preservation theorem_ is proved by induction on a typing
-    derivation, pretty much as we did in the [Stlc](Stlc.html)
-    chapter.  The one case that is significantly different is the
-    one for the $$red$$ rule, whose definition uses the substitution
-    operation.  To see that this step preserves typing, we need to
-    know that the substitution itself does.  So we prove a...
+    derivation, pretty much as we did in the [Stlc]({{ "Stlc" | relative_url }})
+    chapter.  The one case that is significantly different is the one for the
+    $$red$$ rule, whose definition uses the substitution operation.  To see that
+    this step preserves typing, we need to know that the substitution itself
+    does.  So we prove a... 
 
   - _substitution lemma_, stating that substituting a (closed)
     term $$s$$ for a variable $$x$$ in a term $$t$$ preserves the type
@@ -154,12 +154,12 @@ interesting proofs), the story goes like this:
     we prove a...
 
   - _context invariance_ lemma, showing that typing is preserved
-    under "inessential changes" to the context $$\Gamma$$ -- in
+    under "inessential changes" to the context $$\Gamma$$---in
     particular, changes that do not affect any of the free
     variables of the term.  And finally, for this, we need a
     careful definition of...
 
-  - the _free variables_ of a term -- i.e., those variables
+  - the _free variables_ of a term---i.e., those variables
     mentioned in a term and not in the scope of an enclosing
     function abstraction binding a variable of the same name.
 
@@ -332,7 +332,7 @@ $$\Gamma \vdash t \in T$$.
     $$\Gamma', y:A$$.
 
   - If the last rule was `app`, then $$t = t_1\;t_2$$, with
-    $$\Gamma \vdash t_1 : A\to T$$ and $$\Gamma \vdash t_2 : A$$.
+    $$\Gamma \vdash t_1:A\to T$$ and $$\Gamma \vdash t_2:A$$.
     One induction hypothesis states that for all contexts $$\Gamma'$$,
     if $$\Gamma'$$ agrees with $$\Gamma$$ on the free variables in $$t_1$$,
     then $$t_1$$ has type $$A\to T$$ under $$\Gamma'$$; there is a similar IH
@@ -364,7 +364,7 @@ replaceCtxt f (if t₁∶bool then t₂∶A else t₃∶A)
 \end{code}
 
 Now we come to the conceptual heart of the proof that reduction
-preserves types -- namely, the observation that _substitution_
+preserves types---namely, the observation that _substitution_
 preserves types.
 
 Formally, the so-called _Substitution Lemma_ says this: Suppose we
@@ -387,12 +387,12 @@ $$\Gamma \vdash [x:=v]t : T$$.
 \end{code}
 
 One technical subtlety in the statement of the lemma is that
-we assign $$v$$ the type $$U$$ in the _empty_ context -- in other
+we assign $$v$$ the type $$U$$ in the _empty_ context---in other
 words, we assume $$v$$ is closed.  This assumption considerably
 simplifies the $$abs$$ case of the proof (compared to assuming
 $$\Gamma \vdash v : U$$, which would be the other reasonable assumption
 at this point) because the context invariance lemma then tells us
-that $$v$$ has type $$U$$ in any context at all -- we don't have to
+that $$v$$ has type $$U$$ in any context at all---we don't have to
 worry about free variables in $$v$$ clashing with the variable being
 introduced into the context by $$abs$$.
 
@@ -401,7 +401,7 @@ property.  Intuitively, it says that substitution and typing can
 be done in either order: we can either assign types to the terms
 $$t$$ and $$v$$ separately (under suitable contexts) and then combine
 them using substitution, or we can substitute first and then
-assign a type to $$ $$x:=v$$ t $$ -- the result is the same either
+assign a type to $$ $$x:=v$$ t $$---the result is the same either
 way.
 
 _Proof_: We show, by induction on $$t$$, that for all $$T$$ and
@@ -412,7 +412,7 @@ $$\Gamma$$, if $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then $$\Gamma
     depending on whether $$t$$ is $$x$$ or some other variable.
 
       - If $$t = x$$, then from the fact that $$\Gamma, x:U \vdash x :
-        T$$ we conclude that $$U = T$$.  We must show that $$$$x:=v$$x =
+        T$$ we conclude that $$U = T$$.  We must show that $$[x:=v]x =
         v$$ has type $$T$$ under $$\Gamma$$, given the assumption that
         $$v$$ has type $$U = T$$ under the empty context.  This
         follows from context invariance: if a closed term has type
@@ -422,9 +422,9 @@ $$\Gamma$$, if $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then $$\Gamma
         we need only note that $$y$$ has the same type under $$\Gamma,
         x:U$$ as under $$\Gamma$$.
 
-  - If $$t$$ is an abstraction $$\lambda y:T_11. t_12$$, then the IH tells us,
-    for all $$\Gamma'$$ and $$T'$$, that if $$\Gamma',x:U \vdash t_12 : T'$$
-    and $$\vdash v : U$$, then $$\Gamma' \vdash $$x:=v$$t_12 : T'$$.
+  - If $$t$$ is an abstraction $$\lambda y:t_{11}. t_{12}$$, then the IH tells us,
+    for all $$\Gamma'$$ and $$T'$$, that if $$\Gamma',x:U \vdash t_{12}:T'$$
+    and $$\vdash v:U$$, then $$\Gamma' \vdash [x:=v]t_{12}:T'$$.
 
     The substitution in the conclusion behaves differently
     depending on whether $$x$$ and $$y$$ are the same variable.
@@ -432,17 +432,17 @@ $$\Gamma$$, if $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then $$\Gamma
     First, suppose $$x = y$$.  Then, by the definition of
     substitution, $$[x:=v]t = t$$, so we just need to show $$\Gamma \vdash
     t : T$$.  But we know $$\Gamma,x:U \vdash t : T$$, and, since $$y$$
-    does not appear free in $$\lambda y:T_11. t_12$$, the context invariance
+    does not appear free in $$\lambda y:t_{11}. t_{12}$$, the context invariance
     lemma yields $$\Gamma \vdash t : T$$.
 
-    Second, suppose $$x <> y$$.  We know $$\Gamma,x:U,y:T_11 \vdash t_12 :
-    T_12$$ by inversion of the typing relation, from which
-    $$\Gamma,y:T_11,x:U \vdash t_12 : T_12$$ follows by the context
-    invariance lemma, so the IH applies, giving us $$\Gamma,y:T_11 \vdash
-    $$x:=v$$t_12 : T_12$$.  By $$abs$$, $$\Gamma \vdash \lambda y:T_11. $$x:=v$$t_12
-    : T_11→T_12$$, and by the definition of substitution (noting
-    that $$x <> y$$), $$\Gamma \vdash \lambda y:T_11. $$x:=v$$t_12 : T_11→T_12$$ as
-    required.
+    Second, suppose $$x \neq y$$.  We know $$\Gamma,x:U,y:t_{11} \vdash
+    t_{12}:t_{12}$$ by inversion of the typing relation, from which
+    $$\Gamma,y:t_{11},x:U \vdash t_{12}:t_{12}$$ follows by the context invariance
+    lemma, so the IH applies, giving us $$\Gamma,y:t_{11} \vdash
+    [x:=v]t_{12}:t_{12}$$.  By $$abs$$, $$\Gamma \vdash \lambda y:t_{11}.
+    [x:=v]t_{12}:t_{11}\to t_{12}$$, and by the definition of substitution (noting
+    that $$x \neq y$$), $$\Gamma \vdash \lambda y:t_{11}. [x:=v]t_{12}:t_{11}\to
+    t_{12}$$ as required. 
 
   - If $$t$$ is an application $$t_1 t_2$$, the result follows
     straightforwardly from the definition of substitution and the
@@ -454,8 +454,8 @@ One more technical note: This proof is a rare case where an
 induction on terms, rather than typing derivations, yields a
 simpler argument.  The reason for this is that the assumption
 $$update Gamma x U \vdash t : T$$ is not completely generic, in the
-sense that one of the "slots" in the typing relation -- namely the
-context -- is not just a variable, and this means that Agda's
+sense that one of the "slots" in the typing relation---namely the
+context---is not just a variable, and this means that Agda's
 native induction tactic does not give us the induction hypothesis
 that we want.  It is possible to work around this, but the needed
 generalization is a little tricky.  The term $$t$$, on the other
@@ -506,7 +506,7 @@ _Proof_: By induction on the derivation of $$\vdash t : T$$.
     - The $$Sapp2$$ case is similar.
 
     - If $$t_1 t_2$$ takes a step by $$Sred$$, then $$t_1 =
-      \lambda x:T_11.t_12$$ and $$t_1 t_2$$ steps to $$$$x:=t_2$$t_12$$; the
+      \lambda x:t_{11}.t_{12}$$ and $$t_1 t_2$$ steps to $$$$x:=t_2$$t_{12}$$; the
       desired result now follows from the fact that substitution
       preserves types.
 
@@ -531,17 +531,16 @@ Proof with eauto.
     (* Most of the cases are immediate by induction,
        and $$eauto$$ takes care of them
     + (* Sred
-      apply substitution_preserves_typing with T_11...
+      apply substitution_preserves_typing with t_{11}...
       inversion HT_1...
 Qed.
 
 #### Exercise: 2 stars, recommended (subject_expansion_stlc)
-An exercise in the $$Stlc$$$$sf/Stlc.html$$ chapter asked about the subject
-expansion property for the simple language of arithmetic and
-boolean expressions.  Does this property hold for STLC?  That is,
-is it always the case that, if $$t ==> t'$$ and $$has_type t' T$$,
-then $$empty \vdash t : T$$?  If so, prove it.  If not, give a
-counter-example not involving conditionals.
+An exercise in the [Stlc]({{ "Stlc" | relative_url }}) chapter asked about the
+subject expansion property for the simple language of arithmetic and boolean
+expressions.  Does this property hold for STLC?  That is, is it always the case
+that, if $$t ==> t'$$ and $$has_type t' T$$, then $$empty \vdash t : T$$?  If
+so, prove it.  If not, give a counter-example not involving conditionals. 
 
 (* FILL IN HERE
 

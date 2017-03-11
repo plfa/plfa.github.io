@@ -76,19 +76,19 @@ standard library, wherever they overlap.
       > </a
       ><a name="1526" class="Symbol"
       >(</a
-      ><a name="1527" href="Agda.Builtin.Bool.html#67" class="Datatype"
+      ><a name="1527" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#67" class="Datatype"
       >Bool</a
       ><a name="1531" class="Symbol"
       >;</a
       ><a name="1532"
       > </a
-      ><a name="1533" href="Agda.Builtin.Bool.html#92" class="InductiveConstructor"
+      ><a name="1533" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#92" class="InductiveConstructor"
       >true</a
       ><a name="1537" class="Symbol"
       >;</a
       ><a name="1538"
       > </a
-      ><a name="1539" href="Agda.Builtin.Bool.html#86" class="InductiveConstructor"
+      ><a name="1539" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor"
       >false</a
       ><a name="1544" class="Symbol"
       >)</a
@@ -181,7 +181,7 @@ standard library, wherever they overlap.
       > </a
       ><a name="1686" class="Symbol"
       >(</a
-      ><a name="1687" href="Agda.Builtin.Nat.html#97" class="Datatype"
+      ><a name="1687" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype"
       >&#8469;</a
       ><a name="1688" class="Symbol"
       >)</a
@@ -279,7 +279,7 @@ function for ids and its fundamental property.
       >:</a
       ><a name="2264"
       > </a
-      ><a name="2265" href="Agda.Builtin.Nat.html#97" class="Datatype"
+      ><a name="2265" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype"
       >&#8469;</a
       ><a name="2266"
       > </a
@@ -335,7 +335,7 @@ function for ids and its fundamental property.
       >x</a
       ><a name="2322"
       > </a
-      ><a name="2323" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="2323" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="2324"
       > </a
@@ -431,7 +431,7 @@ function for ids and its fundamental property.
       >yes</a
       ><a name="2399"
       > </a
-      ><a name="2400" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="2400" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="2404"
       >
@@ -522,7 +522,7 @@ function for ids and its fundamental property.
       >x</a
       ><a name="2482"
       > </a
-      ><a name="2483" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="2483" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="2484"
       > </a
@@ -542,7 +542,7 @@ function for ids and its fundamental property.
       >x</a
       ><a name="2493"
       > </a
-      ><a name="2494" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="2494" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="2495"
       > </a
@@ -555,7 +555,7 @@ function for ids and its fundamental property.
       >id-inj</a
       ><a name="2508"
       > </a
-      ><a name="2509" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="2509" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="2513"
       > </a
@@ -563,7 +563,7 @@ function for ids and its fundamental property.
       >=</a
       ><a name="2515"
       > </a
-      ><a name="2516" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="2516" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 {% endraw %}</pre>
@@ -888,7 +888,7 @@ like this:
       >TotalMap</a
       ><a name="4527"
       > </a
-      ><a name="4528" href="Agda.Builtin.Bool.html#67" class="Datatype"
+      ><a name="4528" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#67" class="Datatype"
       >Bool</a
       ><a name="4532"
       >
@@ -917,7 +917,7 @@ like this:
       >empty</a
       ><a name="4569"
       > </a
-      ><a name="4570" href="Agda.Builtin.Bool.html#86" class="InductiveConstructor"
+      ><a name="4570" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor"
       >false</a
       ><a name="4575" class="Symbol"
       >)</a
@@ -935,7 +935,7 @@ like this:
       >)</a
       ><a name="4583"
       > </a
-      ><a name="4584" href="Agda.Builtin.Bool.html#86" class="InductiveConstructor"
+      ><a name="4584" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor"
       >false</a
       ><a name="4589" class="Symbol"
       >)</a
@@ -953,7 +953,7 @@ like this:
       >)</a
       ><a name="4597"
       > </a
-      ><a name="4598" href="Agda.Builtin.Bool.html#92" class="InductiveConstructor"
+      ><a name="4598" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#92" class="InductiveConstructor"
       >true</a
       >
 {% endraw %}</pre>
@@ -987,11 +987,11 @@ application!
       >)</a
       ><a name="4807"
       > </a
-      ><a name="4808" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="4808" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="4809"
       > </a
-      ><a name="4810" href="Agda.Builtin.Bool.html#86" class="InductiveConstructor"
+      ><a name="4810" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor"
       >false</a
       ><a name="4815"
       >
@@ -1004,7 +1004,7 @@ application!
       >=</a
       ><a name="4836"
       > </a
-      ><a name="4837" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="4837" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="4841"
       >
@@ -1034,11 +1034,11 @@ application!
       >)</a
       ><a name="4881"
       > </a
-      ><a name="4882" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="4882" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="4883"
       > </a
-      ><a name="4884" href="Agda.Builtin.Bool.html#86" class="InductiveConstructor"
+      ><a name="4884" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor"
       >false</a
       ><a name="4889"
       >
@@ -1051,7 +1051,7 @@ application!
       >=</a
       ><a name="4910"
       > </a
-      ><a name="4911" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="4911" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="4915"
       >
@@ -1081,11 +1081,11 @@ application!
       >)</a
       ><a name="4955"
       > </a
-      ><a name="4956" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="4956" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="4957"
       > </a
-      ><a name="4958" href="Agda.Builtin.Bool.html#86" class="InductiveConstructor"
+      ><a name="4958" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor"
       >false</a
       ><a name="4963"
       >
@@ -1098,7 +1098,7 @@ application!
       >=</a
       ><a name="4984"
       > </a
-      ><a name="4985" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="4985" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="4989"
       >
@@ -1128,11 +1128,11 @@ application!
       >)</a
       ><a name="5029"
       > </a
-      ><a name="5030" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5030" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="5031"
       > </a
-      ><a name="5032" href="Agda.Builtin.Bool.html#92" class="InductiveConstructor"
+      ><a name="5032" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#92" class="InductiveConstructor"
       >true</a
       ><a name="5036"
       >
@@ -1145,7 +1145,7 @@ application!
       >=</a
       ><a name="5057"
       > </a
-      ><a name="5058" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="5058" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 {% endraw %}</pre>
@@ -1194,7 +1194,7 @@ First, the empty map returns its default element for all keys:
       >x</a
       ><a name="5612"
       > </a
-      ><a name="5613" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5613" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="5614"
       > </a
@@ -1233,7 +1233,7 @@ First, the empty map returns its default element for all keys:
       >x</a
       ><a name="5705"
       > </a
-      ><a name="5706" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5706" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="5707"
       > </a
@@ -1250,7 +1250,7 @@ First, the empty map returns its default element for all keys:
       >=</a
       ><a name="5726"
       > </a
-      ><a name="5727" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="5727" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 {% endraw %}</pre>
@@ -1344,7 +1344,7 @@ back $$v$$:
       >x</a
       ><a name="6055"
       > </a
-      ><a name="6056" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6056" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="6057"
       > </a
@@ -1432,7 +1432,7 @@ back $$v$$:
       >x</a
       ><a name="6186"
       > </a
-      ><a name="6187" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6187" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="6188"
       > </a
@@ -1490,7 +1490,7 @@ back $$v$$:
       >=</a
       ><a name="6236"
       > </a
-      ><a name="6237" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6237" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="6241"
       >
@@ -1525,7 +1525,7 @@ back $$v$$:
       >x&#8800;x</a
       ><a name="6271"
       > </a
-      ><a name="6272" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6272" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="6276" class="Symbol"
       >)</a
@@ -1636,7 +1636,7 @@ the same result that $$m$$ would have given:
       >y</a
       ><a name="6621"
       > </a
-      ><a name="6622" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6622" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="6623"
       > </a
@@ -1743,7 +1743,7 @@ the same result that $$m$$ would have given:
       >=</a
       ><a name="6714"
       > </a
-      ><a name="6715" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6715" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 {% endraw %}</pre>
@@ -1858,7 +1858,7 @@ the second `update` on $$m$$:
       >y</a
       ><a name="7212"
       > </a
-      ><a name="7213" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7213" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="7214"
       > </a
@@ -1986,7 +1986,7 @@ the second `update` on $$m$$:
       >y</a
       ><a name="7388"
       > </a
-      ><a name="7389" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7389" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="7390"
       > </a
@@ -2069,7 +2069,7 @@ the second `update` on $$m$$:
       >=</a
       ><a name="7466"
       > </a
-      ><a name="7467" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="7467" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="7471"
       >
@@ -2214,7 +2214,7 @@ result is equal to $$m$$:
       >y</a
       ><a name="7847"
       > </a
-      ><a name="7848" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7848" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="7849"
       > </a
@@ -2316,7 +2316,7 @@ result is equal to $$m$$:
       >y</a
       ><a name="7988"
       > </a
-      ><a name="7989" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7989" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="7990"
       > </a
@@ -2391,7 +2391,7 @@ result is equal to $$m$$:
       >=</a
       ><a name="8060"
       > </a
-      ><a name="8061" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="8061" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="8065"
       >
@@ -2416,7 +2416,7 @@ result is equal to $$m$$:
       >=</a
       ><a name="8083"
       > </a
-      ><a name="8084" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="8084" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 {% endraw %}</pre>
@@ -2551,7 +2551,7 @@ updates.
       ><a name="8466"
       >
                              </a
-      ><a name="8496" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8496" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="8497"
       > </a
@@ -2716,7 +2716,7 @@ updates.
       ><a name="8705"
       >
                             </a
-      ><a name="8734" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8734" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="8735"
       > </a
@@ -3409,7 +3409,7 @@ partial maps.
       >x</a
       ><a name="9876"
       > </a
-      ><a name="9877" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="9877" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="9878"
       > </a
@@ -3549,7 +3549,7 @@ partial maps.
       >y</a
       ><a name="10044"
       > </a
-      ><a name="10045" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10045" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="10046"
       > </a
@@ -3705,7 +3705,7 @@ partial maps.
       >y</a
       ><a name="10240"
       > </a
-      ><a name="10241" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10241" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="10242"
       > </a
@@ -3837,7 +3837,7 @@ partial maps.
       >x</a
       ><a name="10412"
       > </a
-      ><a name="10413" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10413" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="10414"
       > </a
@@ -3878,7 +3878,7 @@ partial maps.
       >y</a
       ><a name="10454"
       > </a
-      ><a name="10455" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10455" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="10456"
       > </a
@@ -4063,7 +4063,7 @@ partial maps.
       ><a name="10684"
       >
                            </a
-      ><a name="10712" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10712" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="10713"
       > </a

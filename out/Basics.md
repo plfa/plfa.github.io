@@ -23,13 +23,13 @@ permalink : /Basics
       > </a
       ><a name="169" class="Symbol"
       >(</a
-      ><a name="170" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="170" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >_&#8801;_</a
       ><a name="173" class="Symbol"
       >;</a
       ><a name="174"
       > </a
-      ><a name="175" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="175" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       ><a name="179" class="Symbol"
       >)</a
@@ -394,7 +394,7 @@ form of an Agda type:
       >)</a
       ><a name="4150"
       > </a
-      ><a name="4151" href="Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="4151" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
       ><a name="4152"
       > </a
@@ -419,7 +419,7 @@ a term of the above type:
       >=</a
       ><a name="4490"
       > </a
-      ><a name="4491" href="Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="4491" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 {% endraw %}</pre>
