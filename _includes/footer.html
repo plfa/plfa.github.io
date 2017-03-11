@@ -7,31 +7,35 @@
         <div class="footer-col-wrapper">
             <div class="footer-col footer-col-1">
                 <ul class="contact-list">
+                    {% if site.contributors %}
+                    {% for contributor in site.contributors %}
                     <li>
-                        {% if site.author %}
-                        {{ site.author | escape }}
-                        {% else %}
-                        {{ site.title | escape }}
+                        {% if contributor.email %}
+                        <a href="mailto:{{ contributor.email }}">
+                        {% endif %}
+                        {{ contributor.name | escape }}
+                        {% if contributor.email %}
+                        </a>
                         {% endif %}
                     </li>
-                    {% if site.email %}
-                    <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+                    {% endfor %}
                     {% endif %}
                 </ul>
             </div>
 
             <div class="footer-col footer-col-2">
                 <ul class="social-media-list">
-                    {% if site.github_username %}
+                    {% if site.contributors %}
+                    {% for contributor in site.contributors %}
                     <li>
-                        {% include icon-github.html username=site.github_username %}
+                        {% if contributor.github_username %}
+                        <li>{% include icon-github.html username=contributor.github_username %}</li>
+                        {% endif %}
+                        {% if contributor.twitter_username %}
+                        <li>{% include icon-twitter.html username=contributor.twitter_username %}</li>
+                        {% endif %}
                     </li>
-                    {% endif %}
-
-                    {% if site.twitter_username %}
-                    <li>
-                        {% include icon-twitter.html username=site.twitter_username %}
-                    </li>
+                    {% endfor %}
                     {% endif %}
                 </ul>
             </div>

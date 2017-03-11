@@ -1,17 +1,25 @@
 title: Agda Software Foundations
+
+# the author field should not be used in the template
 author: Pepijn Kokke
-email: pepijn.kokke@gmail.com
+
+# to include a new contributor, add:
+# name, email, (github_username or twitter_username)
+contributors:
+  - name: Pepijn Kokke
+    email: pepijn.kokke@ed.ac.uk
+    github_username: pepijnkokke
+
 description: > 
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: "/sf"
-url: "https://pepijnkokke.github.io"
-github_username: pepijnkokke 
+  There should be a description here.
+
+# include disqus to allow comments e.d.
 disqus:
   shortname: pepijnkokke
 
-# Build settings
+# technical details below --- do not modify (ง'-')ง 
+baseurl: "/sf"
+url: "https://pepijnkokke.github.io"  
 markdown: kramdown
 theme: minima
 gems:
