@@ -17,7 +17,6 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 \end{code}
 </div>
 
-# Stlc: The Simply Typed Lambda-Calculus
 
 The simply typed lambda-calculus (STLC) is a tiny core
 calculus embodying the key concept of _functional abstraction_,

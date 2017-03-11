@@ -4,8 +4,6 @@ layout    : page
 permalink : /Maps
 ---
 
-# Maps: Total and Partial Maps
-
 Maps (or dictionaries) are ubiquitous data structures, both in
 software construction generally and in the theory of programming
 languages in particular; we're going to need them in many places in

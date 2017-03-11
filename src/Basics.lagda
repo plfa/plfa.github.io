@@ -4,13 +4,9 @@ layout    : page
 permalink : /Basics
 ---
 
-<div class="foldable">
 \begin{code}
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
-</div>
-
-# Basics: Functional Programming in Agda
 
 The functional programming style brings programming closer to
 simple, everyday mathematics: If a procedure or method has no side
