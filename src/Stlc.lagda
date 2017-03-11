@@ -4,10 +4,7 @@ layout    : page
 permalink : /Stlc
 ---
 
-\begin{code}
-module Stlc where
-\end{code}
-
+<div class="foldable">
 \begin{code}
 open import Maps using (Id; id; _≟_; PartialMap; module PartialMap)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -18,6 +15,7 @@ open import Function using (_∘_; _$_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 \end{code}
+</div>
 
 # Stlc: The Simply Typed Lambda-Calculus
 

@@ -4,11 +4,13 @@ layout    : page
 permalink : /StlcProp
 ---
 
-\begin{code}
-module StlcProp where
-\end{code}
+#  Properties of STLC
 
-<div class="hidden">
+In this chapter, we develop the fundamental theory of the Simply
+Typed Lambda Calculus -- in particular, the type safety
+theorem.
+
+<div class="foldable">
 \begin{code}
 open import Function using (_∘_)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -21,13 +23,6 @@ open import Maps
 open import Stlc
 \end{code}
 </div>
-
-#  Properties of STLC
-
-In this chapter, we develop the fundamental theory of the Simply
-Typed Lambda Calculus -- in particular, the type safety
-theorem.
-
 
 ## Canonical Forms
 

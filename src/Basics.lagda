@@ -4,11 +4,9 @@ layout    : page
 permalink : /Basics
 ---
 
-<div class="hidden">
+<div class="foldable">
 \begin{code}
-module Basics where
-
-  open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 </div>
 
@@ -66,14 +64,14 @@ The following declaration tells Agda that we are defining
 a new set of data values -- a *type*.
 
 \begin{code}
-  data Day : Set where
-    monday    : Day
-    tuesday   : Day
-    wednesday : Day
-    thursday  : Day
-    friday    : Day
-    saturday  : Day
-    sunday    : Day
+data Day : Set where
+  monday    : Day
+  tuesday   : Day
+  wednesday : Day
+  thursday  : Day
+  friday    : Day
+  saturday  : Day
+  sunday    : Day
 \end{code}
 
 The type is called `day`, and its members are `monday`,
@@ -84,14 +82,14 @@ Having defined `day`, we can write functions that operate on
 days.
 
 \begin{code}
-  nextWeekday : Day -> Day
-  nextWeekday monday    = tuesday
-  nextWeekday tuesday   = wednesday
-  nextWeekday wednesday = thursday
-  nextWeekday thursday  = friday
-  nextWeekday friday    = monday
-  nextWeekday saturday  = monday
-  nextWeekday sunday    = monday
+nextWeekday : Day -> Day
+nextWeekday monday    = tuesday
+nextWeekday tuesday   = wednesday
+nextWeekday wednesday = thursday
+nextWeekday thursday  = friday
+nextWeekday friday    = monday
+nextWeekday saturday  = monday
+nextWeekday sunday    = monday
 \end{code}
 
 One thing to note is that the argument and return types of
@@ -116,7 +114,7 @@ Second, we can record what we *expect* the result to be in the
 form of an Agda type:
 
 \begin{code}
-  test_nextWeekday : nextWeekday (nextWeekday saturday) ≡ tuesday
+test_nextWeekday : nextWeekday (nextWeekday saturday) ≡ tuesday
 \end{code}
 
 This declaration does two things: it makes an assertion (that the second
@@ -127,7 +125,7 @@ Having made the assertion, we must also verify it. We do this by giving
 a term of the above type:
 
 \begin{code}
-  test_nextWeekday = refl
+test_nextWeekday = refl
 \end{code}
 
 There is no essential difference between the definition for
