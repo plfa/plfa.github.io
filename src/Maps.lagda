@@ -4,14 +4,14 @@ layout    : page
 permalink : /Maps
 ---
 
-Maps (or dictionaries) are ubiquitous data structures, both in
-software construction generally and in the theory of programming
-languages in particular; we're going to need them in many places in
-the coming chapters.  They also make a nice case study using ideas
-we've seen in previous chapters, including building data structures
-out of higher-order functions (from [Basics](sf/Basics.html)
-and [Poly](sf/Poly.html) and the use of reflection to streamline
-proofs (from [IndProp](sf/IndProp.html).
+Maps (or dictionaries) are ubiquitous data structures, both in software
+construction generally and in the theory of programming languages in particular;
+we're going to need them in many places in the coming chapters.  They also make
+a nice case study using ideas we've seen in previous chapters, including
+building data structures out of higher-order functions (from [Basics]({{
+"Basics" | relative_url }}) and [Poly]({{ "Poly" | relative_url }}) and the use
+of reflection to streamline proofs (from [IndProp]({{ "IndProp" | relative_url
+}})). 
 
 We'll define two flavors of maps: _total_ maps, which include a
 "default" element to be returned when a key being looked up
