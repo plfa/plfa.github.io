@@ -55,7 +55,7 @@ permalink : /StlcProp
       >;</a
       ><a name="193"
       > </a
-      ><a name="194" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="194" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
       >&#8869;-elim</a
       ><a name="200" class="Symbol"
       >)</a
@@ -460,6 +460,18 @@ $$false$$.  For arrow types, the canonical forms are lambda-abstractions.
       >&#8704;</a
       ><a name="1240"
       > </a
+      ><a name="1241" class="Symbol"
+      >{</a
+      ><a name="1242" href="StlcProp.html#1242" class="Bound"
+      >t</a
+      ><a name="1243"
+      > </a
+      ><a name="1244" href="StlcProp.html#1244" class="Bound"
+      >A</a
+      ><a name="1245" class="Symbol"
+      >}</a
+      ><a name="1246"
+      > </a
       ><a name="1247" class="Symbol"
       >&#8594;</a
       ><a name="1248"
@@ -629,6 +641,18 @@ first, then the formal version.
       ><a name="1826" class="Symbol"
       >&#8704;</a
       ><a name="1827"
+      > </a
+      ><a name="1828" class="Symbol"
+      >{</a
+      ><a name="1829" href="StlcProp.html#1829" class="Bound"
+      >t</a
+      ><a name="1830"
+      > </a
+      ><a name="1831" href="StlcProp.html#1831" class="Bound"
+      >A</a
+      ><a name="1832" class="Symbol"
+      >}</a
+      ><a name="1833"
       > </a
       ><a name="1834" class="Symbol"
       >&#8594;</a
@@ -1326,6 +1350,18 @@ instead of induction on typing derivations.
       >&#8704;</a
       ><a name="4416"
       > </a
+      ><a name="4417" class="Symbol"
+      >{</a
+      ><a name="4418" href="StlcProp.html#4418" class="Bound"
+      >t</a
+      ><a name="4419"
+      > </a
+      ><a name="4420" href="StlcProp.html#4420" class="Bound"
+      >A</a
+      ><a name="4421" class="Symbol"
+      >}</a
+      ><a name="4422"
+      > </a
       ><a name="4423" class="Symbol"
       >&#8594;</a
       ><a name="4424"
@@ -1468,7 +1504,7 @@ Formally:
       >:</a
       ><a name="6920"
       > </a
-      ><a name="6921" href="Maps.html#2243" class="Datatype"
+      ><a name="6921" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="6923" class="Symbol"
       >)</a
@@ -1531,6 +1567,22 @@ Formally:
       ><a name="6977" class="Symbol"
       >&#8704;</a
       ><a name="6978"
+      > </a
+      ><a name="6979" class="Symbol"
+      >{</a
+      ><a name="6980" href="StlcProp.html#6980" class="Bound"
+      >y</a
+      ><a name="6981"
+      > </a
+      ><a name="6982" href="StlcProp.html#6982" class="Bound"
+      >A</a
+      ><a name="6983"
+      > </a
+      ><a name="6984" href="StlcProp.html#6984" class="Bound"
+      >t</a
+      ><a name="6985" class="Symbol"
+      >}</a
+      ><a name="6986"
       > </a
       ><a name="6987" class="Symbol"
       >&#8594;</a
@@ -1605,6 +1657,18 @@ Formally:
       >&#8704;</a
       ><a name="7039"
       > </a
+      ><a name="7040" class="Symbol"
+      >{</a
+      ><a name="7041" href="StlcProp.html#7041" class="Bound"
+      >t&#8321;</a
+      ><a name="7043"
+      > </a
+      ><a name="7044" href="StlcProp.html#7044" class="Bound"
+      >t&#8322;</a
+      ><a name="7046" class="Symbol"
+      >}</a
+      ><a name="7047"
+      > </a
       ><a name="7048" class="Symbol"
       >&#8594;</a
       ><a name="7049"
@@ -1658,6 +1722,18 @@ Formally:
       >&#8704;</a
       ><a name="7093"
       > </a
+      ><a name="7094" class="Symbol"
+      >{</a
+      ><a name="7095" href="StlcProp.html#7095" class="Bound"
+      >t&#8321;</a
+      ><a name="7097"
+      > </a
+      ><a name="7098" href="StlcProp.html#7098" class="Bound"
+      >t&#8322;</a
+      ><a name="7100" class="Symbol"
+      >}</a
+      ><a name="7101"
+      > </a
       ><a name="7102" class="Symbol"
       >&#8594;</a
       ><a name="7103"
@@ -1710,6 +1786,22 @@ Formally:
       ><a name="7146" class="Symbol"
       >&#8704;</a
       ><a name="7147"
+      > </a
+      ><a name="7148" class="Symbol"
+      >{</a
+      ><a name="7149" href="StlcProp.html#7149" class="Bound"
+      >t&#8321;</a
+      ><a name="7151"
+      > </a
+      ><a name="7152" href="StlcProp.html#7152" class="Bound"
+      >t&#8322;</a
+      ><a name="7154"
+      > </a
+      ><a name="7155" href="StlcProp.html#7155" class="Bound"
+      >t&#8323;</a
+      ><a name="7157" class="Symbol"
+      >}</a
+      ><a name="7158"
       > </a
       ><a name="7159" class="Symbol"
       >&#8594;</a
@@ -1780,6 +1872,22 @@ Formally:
       >&#8704;</a
       ><a name="7218"
       > </a
+      ><a name="7219" class="Symbol"
+      >{</a
+      ><a name="7220" href="StlcProp.html#7220" class="Bound"
+      >t&#8321;</a
+      ><a name="7222"
+      > </a
+      ><a name="7223" href="StlcProp.html#7223" class="Bound"
+      >t&#8322;</a
+      ><a name="7225"
+      > </a
+      ><a name="7226" href="StlcProp.html#7226" class="Bound"
+      >t&#8323;</a
+      ><a name="7228" class="Symbol"
+      >}</a
+      ><a name="7229"
+      > </a
       ><a name="7230" class="Symbol"
       >&#8594;</a
       ><a name="7231"
@@ -1848,6 +1956,22 @@ Formally:
       ><a name="7288" class="Symbol"
       >&#8704;</a
       ><a name="7289"
+      > </a
+      ><a name="7290" class="Symbol"
+      >{</a
+      ><a name="7291" href="StlcProp.html#7291" class="Bound"
+      >t&#8321;</a
+      ><a name="7293"
+      > </a
+      ><a name="7294" href="StlcProp.html#7294" class="Bound"
+      >t&#8322;</a
+      ><a name="7296"
+      > </a
+      ><a name="7297" href="StlcProp.html#7297" class="Bound"
+      >t&#8323;</a
+      ><a name="7299" class="Symbol"
+      >}</a
+      ><a name="7300"
       > </a
       ><a name="7301" class="Symbol"
       >&#8594;</a
@@ -1946,6 +2070,14 @@ A term in which no variables appear free is said to be _closed_.
       >&#8704;</a
       ><a name="7473"
       > </a
+      ><a name="7474" class="Symbol"
+      >{</a
+      ><a name="7475" href="StlcProp.html#7475" class="Bound"
+      >x</a
+      ><a name="7476" class="Symbol"
+      >}</a
+      ><a name="7477"
+      > </a
       ><a name="7478" class="Symbol"
       >&#8594;</a
       ><a name="7479"
@@ -1998,6 +2130,26 @@ $$\Gamma$$ assigns a type to $$x$$.
       ><a name="8235" class="Symbol"
       >&#8704;</a
       ><a name="8236"
+      > </a
+      ><a name="8237" class="Symbol"
+      >{</a
+      ><a name="8238" href="StlcProp.html#8238" class="Bound"
+      >x</a
+      ><a name="8239"
+      > </a
+      ><a name="8240" href="StlcProp.html#8240" class="Bound"
+      >t</a
+      ><a name="8241"
+      > </a
+      ><a name="8242" href="StlcProp.html#8242" class="Bound"
+      >A</a
+      ><a name="8243"
+      > </a
+      ><a name="8244" href="StlcProp.html#8244" class="Bound"
+      >&#915;</a
+      ><a name="8245" class="Symbol"
+      >}</a
+      ><a name="8246"
       > </a
       ><a name="8247" class="Symbol"
       >&#8594;</a
@@ -2444,11 +2596,27 @@ _Proof_: We show, by induction on the proof that $$x$$ appears
       >freeInCtxt</a
       ><a name="10290"
       > </a
+      ><a name="10291" class="Symbol"
+      >{</a
+      ><a name="10292" href="StlcProp.html#10292" class="Bound"
+      >x</a
+      ><a name="10293" class="Symbol"
+      >}</a
+      ><a name="10294"
+      > </a
       ><a name="10295" class="Symbol"
       >(</a
       ><a name="10296" href="StlcProp.html#6970" class="InductiveConstructor"
       >abs</a
       ><a name="10299"
+      > </a
+      ><a name="10300" class="Symbol"
+      >{</a
+      ><a name="10301" href="StlcProp.html#10301" class="Bound"
+      >y</a
+      ><a name="10302" class="Symbol"
+      >}</a
+      ><a name="10303"
       > </a
       ><a name="10304" href="StlcProp.html#10304" class="Bound"
       >y&#8800;x</a
@@ -2511,7 +2679,7 @@ _Proof_: We show, by induction on the proof that $$x$$ appears
       >y</a
       ><a name="10371"
       > </a
-      ><a name="10372" href="Maps.html#2297" class="Function Operator"
+      ><a name="10372" href="Maps.html#2344" class="Function Operator"
       >&#8799;</a
       ><a name="10373"
       > </a
@@ -2540,7 +2708,7 @@ _Proof_: We show, by induction on the proof that $$x$$ appears
       >=</a
       ><a name="10391"
       > </a
-      ><a name="10392" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="10392" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
       >&#8869;-elim</a
       ><a name="10398"
       > </a
@@ -2605,6 +2773,18 @@ the empty context is closed (it has no free variables).
       >&#8704;</a
       ><a name="10651"
       > </a
+      ><a name="10652" class="Symbol"
+      >{</a
+      ><a name="10653" href="StlcProp.html#10653" class="Bound"
+      >t</a
+      ><a name="10654"
+      > </a
+      ><a name="10655" href="StlcProp.html#10655" class="Bound"
+      >A</a
+      ><a name="10656" class="Symbol"
+      >}</a
+      ><a name="10657"
+      > </a
       ><a name="10658" class="Symbol"
       >&#8594;</a
       ><a name="10659"
@@ -2655,6 +2835,18 @@ the empty context is closed (it has no free variables).
       ><a name="10740" class="Symbol"
       >&#8704;</a
       ><a name="10741"
+      > </a
+      ><a name="10742" class="Symbol"
+      >{</a
+      ><a name="10743" href="StlcProp.html#10743" class="Bound"
+      >t</a
+      ><a name="10744"
+      > </a
+      ><a name="10745" href="StlcProp.html#10745" class="Bound"
+      >A</a
+      ><a name="10746" class="Symbol"
+      >}</a
+      ><a name="10747"
       > </a
       ><a name="10748" class="Symbol"
       >&#8594;</a
@@ -3051,6 +3243,14 @@ the empty context is closed (it has no free variables).
       >)</a
       ><a name="11229"
       > </a
+      ><a name="11230" class="Symbol"
+      >{</a
+      ><a name="11231" href="StlcProp.html#11231" class="Bound"
+      >y</a
+      ><a name="11232" class="Symbol"
+      >}</a
+      ><a name="11233"
+      > </a
       ><a name="11234" class="Symbol"
       >(</a
       ><a name="11235" href="StlcProp.html#6970" class="InductiveConstructor"
@@ -3116,6 +3316,14 @@ the empty context is closed (it has no free variables).
       >)</a
       ><a name="11304"
       > </a
+      ><a name="11305" class="Symbol"
+      >{</a
+      ><a name="11306" href="StlcProp.html#11306" class="Bound"
+      >y</a
+      ><a name="11307" class="Symbol"
+      >}</a
+      ><a name="11308"
+      > </a
       ><a name="11309" class="Symbol"
       >(</a
       ><a name="11310" class="InductiveConstructor"
@@ -3156,7 +3364,7 @@ the empty context is closed (it has no free variables).
       >x</a
       ><a name="11340"
       > </a
-      ><a name="11341" href="Maps.html#2297" class="Function Operator"
+      ><a name="11341" href="Maps.html#2344" class="Function Operator"
       >&#8799;</a
       ><a name="11342"
       > </a
@@ -3196,6 +3404,14 @@ the empty context is closed (it has no free variables).
       ><a name="11373" class="Symbol"
       >)</a
       ><a name="11374"
+      > </a
+      ><a name="11375" class="Symbol"
+      >{</a
+      ><a name="11376" href="StlcProp.html#11376" class="Bound"
+      >y</a
+      ><a name="11377" class="Symbol"
+      >}</a
+      ><a name="11378"
       > </a
       ><a name="11379" class="Symbol"
       >(</a
@@ -3286,6 +3502,14 @@ the empty context is closed (it has no free variables).
       >)</a
       ><a name="11453"
       > </a
+      ><a name="11454" class="Symbol"
+      >{</a
+      ><a name="11455" href="StlcProp.html#11455" class="Bound"
+      >y</a
+      ><a name="11456" class="Symbol"
+      >}</a
+      ><a name="11457"
+      > </a
       ><a name="11458" class="Symbol"
       >(</a
       ><a name="11459" class="InductiveConstructor"
@@ -3352,6 +3576,27 @@ is needed.
       >&#8704;</a
       ><a name="11892"
       > </a
+      ><a name="11893" class="Symbol"
+      >{</a
+      ><a name="11894" href="StlcProp.html#11894" class="Bound"
+      >&#915;</a
+      ><a name="11895"
+      > </a
+      ><a name="11896" href="StlcProp.html#11896" class="Bound"
+      >&#915;&#8242;</a
+      ><a name="11898"
+      > </a
+      ><a name="11899" href="StlcProp.html#11899" class="Bound"
+      >t</a
+      ><a name="11900"
+      > </a
+      ><a name="11901" href="StlcProp.html#11901" class="Bound"
+      >A</a
+      ><a name="11902" class="Symbol"
+      >}</a
+      ><a name="11903"
+      >
+            </a
       ><a name="11916" class="Symbol"
       >&#8594;</a
       ><a name="11917"
@@ -3359,6 +3604,14 @@ is needed.
       ><a name="11918" class="Symbol"
       >(&#8704;</a
       ><a name="11920"
+      > </a
+      ><a name="11921" class="Symbol"
+      >{</a
+      ><a name="11922" href="StlcProp.html#11922" class="Bound"
+      >x</a
+      ><a name="11923" class="Symbol"
+      >}</a
+      ><a name="11924"
       > </a
       ><a name="11925" class="Symbol"
       >&#8594;</a
@@ -3643,6 +3896,22 @@ $$\Gamma \vdash t \in T$$.
       >replaceCtxt</a
       ><a name="14466"
       > </a
+      ><a name="14467" class="Symbol"
+      >{</a
+      ><a name="14468" href="StlcProp.html#14468" class="Bound"
+      >&#915;</a
+      ><a name="14469" class="Symbol"
+      >}</a
+      ><a name="14470"
+      > </a
+      ><a name="14471" class="Symbol"
+      >{</a
+      ><a name="14472" href="StlcProp.html#14472" class="Bound"
+      >&#915;&#8242;</a
+      ><a name="14474" class="Symbol"
+      >}</a
+      ><a name="14475"
+      > </a
       ><a name="14476" href="StlcProp.html#14476" class="Bound"
       >f</a
       ><a name="14477"
@@ -3652,6 +3921,48 @@ $$\Gamma \vdash t \in T$$.
       ><a name="14479" href="Stlc.html#19196" class="InductiveConstructor"
       >abs</a
       ><a name="14482"
+      > </a
+      ><a name="14483" class="Symbol"
+      >{</a
+      ><a name="14484" class="DottedPattern Symbol"
+      >.</a
+      ><a name="14485" href="StlcProp.html#14468" class="DottedPattern Bound"
+      >&#915;</a
+      ><a name="14486" class="Symbol"
+      >}</a
+      ><a name="14487"
+      > </a
+      ><a name="14488" class="Symbol"
+      >{</a
+      ><a name="14489" href="StlcProp.html#14489" class="Bound"
+      >x</a
+      ><a name="14490" class="Symbol"
+      >}</a
+      ><a name="14491"
+      > </a
+      ><a name="14492" class="Symbol"
+      >{</a
+      ><a name="14493" href="StlcProp.html#14493" class="Bound"
+      >A</a
+      ><a name="14494" class="Symbol"
+      >}</a
+      ><a name="14495"
+      > </a
+      ><a name="14496" class="Symbol"
+      >{</a
+      ><a name="14497" href="StlcProp.html#14497" class="Bound"
+      >B</a
+      ><a name="14498" class="Symbol"
+      >}</a
+      ><a name="14499"
+      > </a
+      ><a name="14500" class="Symbol"
+      >{</a
+      ><a name="14501" href="StlcProp.html#14501" class="Bound"
+      >t&#8242;</a
+      ><a name="14503" class="Symbol"
+      >}</a
+      ><a name="14504"
       > </a
       ><a name="14505" href="StlcProp.html#14505" class="Bound"
       >t&#8242;&#8758;B</a
@@ -3701,6 +4012,14 @@ $$\Gamma \vdash t \in T$$.
       ><a name="14558" class="Symbol"
       >&#8704;</a
       ><a name="14559"
+      > </a
+      ><a name="14560" class="Symbol"
+      >{</a
+      ><a name="14561" href="StlcProp.html#14561" class="Bound"
+      >y</a
+      ><a name="14562" class="Symbol"
+      >}</a
+      ><a name="14563"
       > </a
       ><a name="14564" class="Symbol"
       >&#8594;</a
@@ -3787,6 +4106,14 @@ $$\Gamma \vdash t \in T$$.
       >f&#8242;</a
       ><a name="14617"
       > </a
+      ><a name="14618" class="Symbol"
+      >{</a
+      ><a name="14619" href="StlcProp.html#14619" class="Bound"
+      >y</a
+      ><a name="14620" class="Symbol"
+      >}</a
+      ><a name="14621"
+      > </a
       ><a name="14622" href="StlcProp.html#14622" class="Bound"
       >y&#8712;t&#8242;</a
       ><a name="14626"
@@ -3799,7 +4126,7 @@ $$\Gamma \vdash t \in T$$.
       >x</a
       ><a name="14633"
       > </a
-      ><a name="14634" href="Maps.html#2297" class="Function Operator"
+      ><a name="14634" href="Maps.html#2344" class="Function Operator"
       >&#8799;</a
       ><a name="14635"
       > </a
@@ -4073,6 +4400,35 @@ $$\Gamma \vdash [x:=v]t : T$$.
       >&#8704;</a
       ><a name="15742"
       > </a
+      ><a name="15743" class="Symbol"
+      >{</a
+      ><a name="15744" href="StlcProp.html#15744" class="Bound"
+      >&#915;</a
+      ><a name="15745"
+      > </a
+      ><a name="15746" href="StlcProp.html#15746" class="Bound"
+      >x</a
+      ><a name="15747"
+      > </a
+      ><a name="15748" href="StlcProp.html#15748" class="Bound"
+      >A</a
+      ><a name="15749"
+      > </a
+      ><a name="15750" href="StlcProp.html#15750" class="Bound"
+      >t</a
+      ><a name="15751"
+      > </a
+      ><a name="15752" href="StlcProp.html#15752" class="Bound"
+      >v</a
+      ><a name="15753"
+      > </a
+      ><a name="15754" href="StlcProp.html#15754" class="Bound"
+      >B</a
+      ><a name="15755" class="Symbol"
+      >}</a
+      ><a name="15756"
+      >
+                 </a
       ><a name="15774" class="Symbol"
       >&#8594;</a
       ><a name="15775"
@@ -4280,6 +4636,22 @@ hand, _is_ completely generic.
       >[:=]-preserves-&#8866;</a
       ><a name="19822"
       > </a
+      ><a name="19823" class="Symbol"
+      >{</a
+      ><a name="19824" href="StlcProp.html#19824" class="Bound"
+      >&#915;</a
+      ><a name="19825" class="Symbol"
+      >}</a
+      ><a name="19826"
+      > </a
+      ><a name="19827" class="Symbol"
+      >{</a
+      ><a name="19828" href="StlcProp.html#19828" class="Bound"
+      >x</a
+      ><a name="19829" class="Symbol"
+      >}</a
+      ><a name="19830"
+      > </a
       ><a name="19831" href="StlcProp.html#19831" class="Bound"
       >v&#8758;A</a
       ><a name="19834"
@@ -4308,7 +4680,7 @@ hand, _is_ completely generic.
       >x</a
       ><a name="19853"
       > </a
-      ><a name="19854" href="Maps.html#2297" class="Function Operator"
+      ><a name="19854" href="Maps.html#2344" class="Function Operator"
       >&#8799;</a
       ><a name="19855"
       > </a

@@ -24,25 +24,25 @@ permalink : /Stlc
       > </a
       ><a name="157" class="Symbol"
       >(</a
-      ><a name="158" href="Maps.html#2243" class="Datatype"
+      ><a name="158" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="160" class="Symbol"
       >;</a
       ><a name="161"
       > </a
-      ><a name="162" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="162" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="164" class="Symbol"
       >;</a
       ><a name="165"
       > </a
-      ><a name="166" href="Maps.html#2297" class="Function Operator"
+      ><a name="166" href="Maps.html#2344" class="Function Operator"
       >_&#8799;_</a
       ><a name="169" class="Symbol"
       >;</a
       ><a name="170"
       > </a
-      ><a name="171" href="Maps.html#9362" class="Function"
+      ><a name="171" href="Maps.html#9409" class="Function"
       >PartialMap</a
       ><a name="181" class="Symbol"
       >;</a
@@ -52,7 +52,7 @@ permalink : /Stlc
       >module</a
       ><a name="189"
       > </a
-      ><a name="190" href="Maps.html#9451" class="Module"
+      ><a name="190" href="Maps.html#9498" class="Module"
       >PartialMap</a
       ><a name="200" class="Symbol"
       >)</a
@@ -83,7 +83,7 @@ permalink : /Stlc
       >;</a
       ><a name="234"
       > </a
-      ><a name="235" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="235" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
       >&#8869;-elim</a
       ><a name="241" class="Symbol"
       >)</a
@@ -559,7 +559,7 @@ so we will STLC's function type as `_⇒_`.
       >:</a
       ><a name="5528"
       > </a
-      ><a name="5529" href="Maps.html#2243" class="Datatype"
+      ><a name="5529" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="5531"
       > </a
@@ -609,7 +609,7 @@ so we will STLC's function type as `_⇒_`.
       >:</a
       ><a name="5577"
       > </a
-      ><a name="5578" href="Maps.html#2243" class="Datatype"
+      ><a name="5578" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="5580"
       > </a
@@ -735,7 +735,7 @@ that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
       >=</a
       ><a name="6206"
       > </a
-      ><a name="6207" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="6207" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="6209"
       > </a
@@ -752,7 +752,7 @@ that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
       >=</a
       ><a name="6215"
       > </a
-      ><a name="6216" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="6216" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="6218"
       > </a
@@ -769,7 +769,7 @@ that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
       >=</a
       ><a name="6224"
       > </a
-      ><a name="6225" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="6225" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="6227"
       > </a
@@ -787,7 +787,7 @@ that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
       >DISPLAY</a
       ><a name="6242"
       > </a
-      ><a name="6243" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="6243" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="6245"
       > </a
@@ -812,7 +812,7 @@ that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
       >DISPLAY</a
       ><a name="6270"
       > </a
-      ><a name="6271" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="6271" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="6273"
       > (</a
@@ -841,7 +841,7 @@ that $$id 0, id 1, id 2$$ display as $$x, y, z$$.
       >DISPLAY</a
       ><a name="6304"
       > </a
-      ><a name="6305" href="Maps.html#2260" class="InductiveConstructor"
+      ><a name="6305" href="Maps.html#2307" class="InductiveConstructor"
       >id</a
       ><a name="6307"
       > (</a
@@ -1528,6 +1528,23 @@ second choice here.
       >&#8704;</a
       ><a name="8945"
       > </a
+      ><a name="8946" class="Symbol"
+      >{</a
+      ><a name="8947" href="Stlc.html#8947" class="Bound"
+      >x</a
+      ><a name="8948"
+      > </a
+      ><a name="8949" href="Stlc.html#8949" class="Bound"
+      >A</a
+      ><a name="8950"
+      > </a
+      ><a name="8951" href="Stlc.html#8951" class="Bound"
+      >t</a
+      ><a name="8952" class="Symbol"
+      >}</a
+      ><a name="8953"
+      >
+        </a
       ><a name="8962" class="Symbol"
       >&#8594;</a
       ><a name="8963"
@@ -1689,7 +1706,7 @@ $$
       >:</a
       ><a name="12138"
       > </a
-      ><a name="12139" href="Maps.html#2243" class="Datatype"
+      ><a name="12139" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="12141"
       > </a
@@ -1758,7 +1775,7 @@ $$
       >x</a
       ><a name="12191"
       > </a
-      ><a name="12192" href="Maps.html#2297" class="Function Operator"
+      ><a name="12192" href="Maps.html#2344" class="Function Operator"
       >&#8799;</a
       ><a name="12193"
       > </a
@@ -1970,7 +1987,7 @@ $$
       >x</a
       ><a name="12322"
       > </a
-      ><a name="12323" href="Maps.html#2297" class="Function Operator"
+      ><a name="12323" href="Maps.html#2344" class="Function Operator"
       >&#8799;</a
       ><a name="12324"
       > </a
@@ -2333,7 +2350,7 @@ above.
       >:</a
       ><a name="13541"
       > </a
-      ><a name="13542" href="Maps.html#2243" class="Datatype"
+      ><a name="13542" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="13544" class="Symbol"
       >)</a
@@ -2635,6 +2652,27 @@ Formally:
       >&#8704;</a
       ><a name="15090"
       > </a
+      ><a name="15091" class="Symbol"
+      >{</a
+      ><a name="15092" href="Stlc.html#15092" class="Bound"
+      >x</a
+      ><a name="15093"
+      > </a
+      ><a name="15094" href="Stlc.html#15094" class="Bound"
+      >A</a
+      ><a name="15095"
+      > </a
+      ><a name="15096" href="Stlc.html#15096" class="Bound"
+      >s</a
+      ><a name="15097"
+      > </a
+      ><a name="15098" href="Stlc.html#15098" class="Bound"
+      >t</a
+      ><a name="15099" class="Symbol"
+      >}</a
+      ><a name="15100"
+      >
+          </a
       ><a name="15111" class="Symbol"
       >&#8594;</a
       ><a name="15112"
@@ -2721,6 +2759,23 @@ Formally:
       >&#8704;</a
       ><a name="15181"
       > </a
+      ><a name="15182" class="Symbol"
+      >{</a
+      ><a name="15183" href="Stlc.html#15183" class="Bound"
+      >s</a
+      ><a name="15184"
+      > </a
+      ><a name="15185" href="Stlc.html#15185" class="Bound"
+      >s'</a
+      ><a name="15187"
+      > </a
+      ><a name="15188" href="Stlc.html#15188" class="Bound"
+      >t</a
+      ><a name="15189" class="Symbol"
+      >}</a
+      ><a name="15190"
+      >
+          </a
       ><a name="15201" class="Symbol"
       >&#8594;</a
       ><a name="15202"
@@ -2783,6 +2838,23 @@ Formally:
       >&#8704;</a
       ><a name="15258"
       > </a
+      ><a name="15259" class="Symbol"
+      >{</a
+      ><a name="15260" href="Stlc.html#15260" class="Bound"
+      >s</a
+      ><a name="15261"
+      > </a
+      ><a name="15262" href="Stlc.html#15262" class="Bound"
+      >t</a
+      ><a name="15263"
+      > </a
+      ><a name="15264" href="Stlc.html#15264" class="Bound"
+      >t'</a
+      ><a name="15266" class="Symbol"
+      >}</a
+      ><a name="15267"
+      >
+          </a
       ><a name="15278" class="Symbol"
       >&#8594;</a
       ><a name="15279"
@@ -2858,6 +2930,27 @@ Formally:
       >&#8704;</a
       ><a name="15355"
       > </a
+      ><a name="15356" class="Symbol"
+      >{</a
+      ><a name="15357" href="Stlc.html#15357" class="Bound"
+      >s</a
+      ><a name="15358"
+      > </a
+      ><a name="15359" href="Stlc.html#15359" class="Bound"
+      >s'</a
+      ><a name="15361"
+      > </a
+      ><a name="15362" href="Stlc.html#15362" class="Bound"
+      >t</a
+      ><a name="15363"
+      > </a
+      ><a name="15364" href="Stlc.html#15364" class="Bound"
+      >u</a
+      ><a name="15365" class="Symbol"
+      >}</a
+      ><a name="15366"
+      >
+          </a
       ><a name="15377" class="Symbol"
       >&#8594;</a
       ><a name="15378"
@@ -2944,6 +3037,19 @@ Formally:
       >&#8704;</a
       ><a name="15456"
       > </a
+      ><a name="15457" class="Symbol"
+      >{</a
+      ><a name="15458" href="Stlc.html#15458" class="Bound"
+      >s</a
+      ><a name="15459"
+      > </a
+      ><a name="15460" href="Stlc.html#15460" class="Bound"
+      >t</a
+      ><a name="15461" class="Symbol"
+      >}</a
+      ><a name="15462"
+      >
+          </a
       ><a name="15473" class="Symbol"
       >&#8594;</a
       ><a name="15474"
@@ -2993,6 +3099,19 @@ Formally:
       >&#8704;</a
       ><a name="15516"
       > </a
+      ><a name="15517" class="Symbol"
+      >{</a
+      ><a name="15518" href="Stlc.html#15518" class="Bound"
+      >s</a
+      ><a name="15519"
+      > </a
+      ><a name="15520" href="Stlc.html#15520" class="Bound"
+      >t</a
+      ><a name="15521" class="Symbol"
+      >}</a
+      ><a name="15522"
+      >
+          </a
       ><a name="15533" class="Symbol"
       >&#8594;</a
       ><a name="15534"
@@ -3128,6 +3247,14 @@ Formally:
       >&#8704;</a
       ><a name="15727"
       > </a
+      ><a name="15728" class="Symbol"
+      >{</a
+      ><a name="15729" href="Stlc.html#15729" class="Bound"
+      >x</a
+      ><a name="15730" class="Symbol"
+      >}</a
+      ><a name="15731"
+      > </a
       ><a name="15732" class="Symbol"
       >-&gt;</a
       ><a name="15734"
@@ -3160,6 +3287,22 @@ Formally:
       ><a name="15756" class="Symbol"
       >&#8704;</a
       ><a name="15757"
+      > </a
+      ><a name="15758" class="Symbol"
+      >{</a
+      ><a name="15759" href="Stlc.html#15759" class="Bound"
+      >x</a
+      ><a name="15760"
+      > </a
+      ><a name="15761" href="Stlc.html#15761" class="Bound"
+      >y</a
+      ><a name="15762"
+      > </a
+      ><a name="15763" href="Stlc.html#15763" class="Bound"
+      >z</a
+      ><a name="15764" class="Symbol"
+      >}</a
+      ><a name="15765"
       > </a
       ><a name="15766" class="Symbol"
       >-&gt;</a
@@ -3839,7 +3982,7 @@ $$\Gamma$$ to also map $$x$$ to $$A$$."  Formally, we use the function `_,_∶_`
       >=</a
       ><a name="18109"
       > </a
-      ><a name="18110" href="Maps.html#9362" class="Function"
+      ><a name="18110" href="Maps.html#9409" class="Function"
       >PartialMap</a
       ><a name="18120"
       > </a
@@ -3870,7 +4013,7 @@ $$\Gamma$$ to also map $$x$$ to $$A$$."  Formally, we use the function `_,_∶_`
       >=</a
       ><a name="18139"
       > </a
-      ><a name="18140" href="Maps.html#9495" class="Function"
+      ><a name="18140" href="Maps.html#9542" class="Function"
       >PartialMap.empty</a
       ><a name="18156"
       >
@@ -3892,7 +4035,7 @@ $$\Gamma$$ to also map $$x$$ to $$A$$."  Formally, we use the function `_,_∶_`
       >-&gt;</a
       ><a name="18173"
       > </a
-      ><a name="18174" href="Maps.html#2243" class="Datatype"
+      ><a name="18174" href="Maps.html#2290" class="Datatype"
       >Id</a
       ><a name="18176"
       > </a
@@ -3921,7 +4064,7 @@ $$\Gamma$$ to also map $$x$$ to $$A$$."  Formally, we use the function `_,_∶_`
       >=</a
       ><a name="18200"
       > </a
-      ><a name="18201" href="Maps.html#9584" class="Function"
+      ><a name="18201" href="Maps.html#9631" class="Function"
       >PartialMap.update</a
       >
 {% endraw %}</pre>
@@ -4019,10 +4162,27 @@ $$\Gamma$$."
       >&#8704;</a
       ><a name="19120"
       > </a
+      ><a name="19121" class="Symbol"
+      >{</a
+      ><a name="19122" href="Stlc.html#19122" class="Bound"
+      >&#915;</a
+      ><a name="19123" class="Symbol"
+      >}</a
+      ><a name="19124"
+      > </a
       ><a name="19125" href="Stlc.html#19125" class="Bound"
       >x</a
       ><a name="19126"
       > </a
+      ><a name="19127" class="Symbol"
+      >{</a
+      ><a name="19128" href="Stlc.html#19128" class="Bound"
+      >A</a
+      ><a name="19129" class="Symbol"
+      >}</a
+      ><a name="19130"
+      >
+                </a
       ><a name="19147" class="Symbol"
       >&#8594;</a
       ><a name="19148"
@@ -4089,6 +4249,47 @@ $$\Gamma$$."
       >&#8704;</a
       ><a name="19213"
       > </a
+      ><a name="19214" class="Symbol"
+      >{</a
+      ><a name="19215" href="Stlc.html#19215" class="Bound"
+      >&#915;</a
+      ><a name="19216" class="Symbol"
+      >}</a
+      ><a name="19217"
+      > </a
+      ><a name="19218" class="Symbol"
+      >{</a
+      ><a name="19219" href="Stlc.html#19219" class="Bound"
+      >x</a
+      ><a name="19220" class="Symbol"
+      >}</a
+      ><a name="19221"
+      > </a
+      ><a name="19222" class="Symbol"
+      >{</a
+      ><a name="19223" href="Stlc.html#19223" class="Bound"
+      >A</a
+      ><a name="19224" class="Symbol"
+      >}</a
+      ><a name="19225"
+      > </a
+      ><a name="19226" class="Symbol"
+      >{</a
+      ><a name="19227" href="Stlc.html#19227" class="Bound"
+      >B</a
+      ><a name="19228" class="Symbol"
+      >}</a
+      ><a name="19229"
+      > </a
+      ><a name="19230" class="Symbol"
+      >{</a
+      ><a name="19231" href="Stlc.html#19231" class="Bound"
+      >s</a
+      ><a name="19232" class="Symbol"
+      >}</a
+      ><a name="19233"
+      >
+                </a
       ><a name="19250" class="Symbol"
       >&#8594;</a
       ><a name="19251"
@@ -4187,6 +4388,47 @@ $$\Gamma$$."
       >&#8704;</a
       ><a name="19329"
       > </a
+      ><a name="19330" class="Symbol"
+      >{</a
+      ><a name="19331" href="Stlc.html#19331" class="Bound"
+      >&#915;</a
+      ><a name="19332" class="Symbol"
+      >}</a
+      ><a name="19333"
+      > </a
+      ><a name="19334" class="Symbol"
+      >{</a
+      ><a name="19335" href="Stlc.html#19335" class="Bound"
+      >A</a
+      ><a name="19336" class="Symbol"
+      >}</a
+      ><a name="19337"
+      > </a
+      ><a name="19338" class="Symbol"
+      >{</a
+      ><a name="19339" href="Stlc.html#19339" class="Bound"
+      >B</a
+      ><a name="19340" class="Symbol"
+      >}</a
+      ><a name="19341"
+      > </a
+      ><a name="19342" class="Symbol"
+      >{</a
+      ><a name="19343" href="Stlc.html#19343" class="Bound"
+      >s</a
+      ><a name="19344" class="Symbol"
+      >}</a
+      ><a name="19345"
+      > </a
+      ><a name="19346" class="Symbol"
+      >{</a
+      ><a name="19347" href="Stlc.html#19347" class="Bound"
+      >t</a
+      ><a name="19348" class="Symbol"
+      >}</a
+      ><a name="19349"
+      >
+                </a
       ><a name="19366" class="Symbol"
       >&#8594;</a
       ><a name="19367"
@@ -4290,6 +4532,15 @@ $$\Gamma$$."
       >&#8704;</a
       ><a name="19463"
       > </a
+      ><a name="19464" class="Symbol"
+      >{</a
+      ><a name="19465" href="Stlc.html#19465" class="Bound"
+      >&#915;</a
+      ><a name="19466" class="Symbol"
+      >}</a
+      ><a name="19467"
+      >
+                </a
       ><a name="19484" class="Symbol"
       >&#8594;</a
       ><a name="19485"
@@ -4327,6 +4578,15 @@ $$\Gamma$$."
       >&#8704;</a
       ><a name="19522"
       > </a
+      ><a name="19523" class="Symbol"
+      >{</a
+      ><a name="19524" href="Stlc.html#19524" class="Bound"
+      >&#915;</a
+      ><a name="19525" class="Symbol"
+      >}</a
+      ><a name="19526"
+      >
+                </a
       ><a name="19543" class="Symbol"
       >&#8594;</a
       ><a name="19544"
@@ -4364,6 +4624,47 @@ $$\Gamma$$."
       >&#8704;</a
       ><a name="19581"
       > </a
+      ><a name="19582" class="Symbol"
+      >{</a
+      ><a name="19583" href="Stlc.html#19583" class="Bound"
+      >&#915;</a
+      ><a name="19584" class="Symbol"
+      >}</a
+      ><a name="19585"
+      > </a
+      ><a name="19586" class="Symbol"
+      >{</a
+      ><a name="19587" href="Stlc.html#19587" class="Bound"
+      >s</a
+      ><a name="19588" class="Symbol"
+      >}</a
+      ><a name="19589"
+      > </a
+      ><a name="19590" class="Symbol"
+      >{</a
+      ><a name="19591" href="Stlc.html#19591" class="Bound"
+      >t</a
+      ><a name="19592" class="Symbol"
+      >}</a
+      ><a name="19593"
+      > </a
+      ><a name="19594" class="Symbol"
+      >{</a
+      ><a name="19595" href="Stlc.html#19595" class="Bound"
+      >u</a
+      ><a name="19596" class="Symbol"
+      >}</a
+      ><a name="19597"
+      > </a
+      ><a name="19598" class="Symbol"
+      >{</a
+      ><a name="19599" href="Stlc.html#19599" class="Bound"
+      >A</a
+      ><a name="19600" class="Symbol"
+      >}</a
+      ><a name="19601"
+      >
+                </a
       ><a name="19618" class="Symbol"
       >&#8594;</a
       ><a name="19619"
