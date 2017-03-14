@@ -8,7 +8,7 @@ out/:
 	mkdir out
 
 out/%.md: src/%.lagda out/
-	agda2html --strip-implicit-args --link-to-agda-stdlib --link-local -i $< -o $@
+	agda2html --link-to-agda-stdlib --link-local -i $< -o $@
 
 .phony: clean
 
