@@ -1,4 +1,4 @@
-title: Agda Software Foundations
+title: Software Foundations in Agda
 
 # the author field should not be used in the template
 author: Pepijn Kokke
@@ -9,9 +9,12 @@ contributors:
   - name: Pepijn Kokke
     email: pepijn.kokke@ed.ac.uk
     github_username: pepijnkokke
+  - name: Philip Wadler
+    email: wadler@inf.ed.ac.uk
+    github_username: wadler
 
 description: > 
-  There should be a description here.
+  Software Foundations in Agda.
 
 # include disqus to allow comments e.d.
 disqus:
