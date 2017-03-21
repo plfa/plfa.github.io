@@ -119,7 +119,7 @@ standard library, wherever they overlap.
       >;</a
       ><a name="1631"
       > </a
-      ><a name="1632" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="1632" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="1638" class="Symbol"
       >)</a
@@ -1615,7 +1615,7 @@ back $$v$$:
       >=</a
       ><a name="6306"
       > </a
-      ><a name="6307" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="6307" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="6313"
       > </a
@@ -1818,7 +1818,7 @@ the same result that $$m$$ would have given:
       >=</a
       ><a name="6726"
       > </a
-      ><a name="6727" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="6727" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="6733"
       > </a
@@ -3067,7 +3067,7 @@ updates.
       >=</a
       ><a name="8919"
       > </a
-      ><a name="8920" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="8920" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="8926"
       > </a

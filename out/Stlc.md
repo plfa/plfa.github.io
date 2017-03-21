@@ -83,7 +83,7 @@ permalink : /Stlc
       >;</a
       ><a name="234"
       > </a
-      ><a name="235" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="235" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="241" class="Symbol"
       >)</a

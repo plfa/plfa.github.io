@@ -55,7 +55,7 @@ permalink : /StlcProp
       >;</a
       ><a name="193"
       > </a
-      ><a name="194" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="194" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="200" class="Symbol"
       >)</a
@@ -2708,7 +2708,7 @@ _Proof_: We show, by induction on the proof that $$x$$ appears
       >=</a
       ><a name="10391"
       > </a
-      ><a name="10392" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function"
+      ><a name="10392" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
       ><a name="10398"
       > </a
