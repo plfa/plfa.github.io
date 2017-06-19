@@ -76,12 +76,12 @@ data value : Term → Set where
 ## Substitution
 
 \begin{code}
-_[_≔_] : Term → Id → Term → Term
-(varᵀ x) [ y ≔ P ] = if x === y then P else (varᵀ x)
-(λᵀ x ∷ A ⟶ N) [ y ≔ P ] =  λᵀ x ∷ A ⟶ (if x === y then N else (N [ y ≔ P ])) 
-(L ·ᵀ M) [ y ≔ P ] =  (L [ y ≔ P ]) ·ᵀ (M [ y ≔ P ])
-(trueᵀ) [ y ≔ P ] = trueᵀ
-(falseᵀ) [ y ≔ P ] = falseᵀ
-(ifᵀ L then M else N) [ y ≔ P ] = ifᵀ (L [ y ≔ P ]) then (M [ y ≔ P ]) else (N [ y ≔ P ])
+_[_:=_] : Term → Id → Term → Term
+(varᵀ x) [ y := P ] = if x === y then P else (varᵀ x)
+(λᵀ x ∷ A ⟶ N) [ y := P ] =  λᵀ x ∷ A ⟶ (if x === y then N else (N [ y := P ])) 
+(L ·ᵀ M) [ y := P ] =  (L [ y := P ]) ·ᵀ (M [ y := P ])
+(trueᵀ) [ y := P ] = trueᵀ
+(falseᵀ) [ y := P ] = falseᵀ
+(ifᵀ L then M else N) [ y := P ] = ifᵀ (L [ y := P ]) then (M [ y := P ]) else (N [ y := P ])
 \end{code}
 
