@@ -1,14 +1,14 @@
 title: Software Foundations in Agda
 
 # the author field should not be used in the template
-author: Pepijn Kokke
+author: Wen Kokke
 
 # to include a new contributor, add:
 # name, email, (github_username or twitter_username)
 contributors:
-  - name: Pepijn Kokke
-    email: pepijn.kokke@ed.ac.uk
-    github_username: pepijnkokke
+  - name: Wen Kokke
+    email: wen.kokke@ed.ac.uk
+    github_username: wenkokke
   - name: Philip Wadler
     email: wadler@inf.ed.ac.uk
     github_username: wadler
@@ -18,11 +18,11 @@ description: >
 
 # include disqus to allow comments e.d.
 disqus:
-  shortname: pepijnkokke
+  shortname: wenkokke
 
 # technical details below --- do not modify (ง'-')ง 
 baseurl: "/sf"
-url: "https://pepijnkokke.github.io"  
+url: "https://wenkokke.github.io"  
 markdown: kramdown
 theme: minima
 gems:
