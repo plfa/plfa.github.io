@@ -7,4 +7,3 @@ layout : page
   - [Maps: Total and Partial Maps]({{ "/Maps" | relative_url }})
   - [Stlc: The Simply Typed Lambda-Calculus]({{ "/Stlc" | relative_url }})
   - [StlcProp: Properties of STLC]({{ "/StlcProp" | relative_url }})
-  - [StlcPhil: The Simply Typed Lambda Calculus (Phil's version)]({{ "/StlcPhil | relative_url }})
