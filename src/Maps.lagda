@@ -36,7 +36,7 @@ standard library, wherever they overlap.
 open import Data.Nat         using (ℕ)
 open import Data.Empty       using (⊥; ⊥-elim)
 open import Data.Maybe       using (Maybe; just; nothing)
-open import Data.String      using (String)
+-- open import Data.String      using (String)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
                              using (_≡_; refl; _≢_; trans; sym)
@@ -54,7 +54,8 @@ we repeat its definition here.
 
 \begin{code}
 data Id : Set where
-  id : String → Id
+  -- id : String → Id
+  id : ℕ → Id
 \end{code}
 
 We recall a standard fact of logic.
@@ -69,7 +70,7 @@ by deciding equality on the underlying strings.
 
 \begin{code}
 _≟_ : (x y : Id) → Dec (x ≡ y)
-id x ≟ id y with x Data.String.≟ y
+id x ≟ id y with x Data.Nat.≟ y -- x Data.String.≟ y
 id x ≟ id y | yes refl  =  yes refl
 id x ≟ id y | no  x≢y   =  no (contrapositive id-inj x≢y)
   where
@@ -81,9 +82,9 @@ We define some identifiers for future use.
 
 \begin{code}
 x y z : Id
-x = id "x"
-y = id "y"
-z = id "z"
+x = id 0 -- "x"
+y = id 1 -- "y"
+z = id 2 -- "z"
 \end{code}
 
 ## Total Maps
@@ -288,7 +289,6 @@ updates.
 
 <div class="hidden">
 \begin{code}
-{-
   update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
                    → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
   update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
@@ -296,7 +296,6 @@ updates.
   ... | no  x≢z | yes y≡z rewrite y≡z = {! sym (update-eq′ ρ z w)!}  
   ... | yes x≡z | no  y≢z rewrite x≡z = {! update-eq′ ρ z v!}  
   ... | no  x≢z | no  y≢z = {! trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))!}
--}
 
 {-
 Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal with them?

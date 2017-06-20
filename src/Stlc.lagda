@@ -45,9 +45,9 @@ data Term : Set where
 Some examples.
 \begin{code}
 f x y : Id
-f  =  id "f"
-x  =  id "x"
-y  =  id "y"
+f  =  id 0 -- "f"
+x  =  id 1 -- "x"
+y  =  id 2 -- "y"
 
 I[𝔹] I[𝔹⇒𝔹] K[𝔹][𝔹] not[𝔹] : Term 
 I[𝔹]  =  (λᵀ x ∈ 𝔹 ⇒ (varᵀ x))
