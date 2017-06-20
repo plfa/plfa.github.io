@@ -10,14 +10,14 @@ This chapter defines the simply-typed lambda calculus.
 
 \begin{code}
 -- open import Data.Sum renaming (_⊎_ to _+_)
-open import Data.Sum
-open import Data.Product
-open import Data.Nat
-open import Data.List
+-- open import Data.Sum
+-- open import Data.Product
+-- open import Data.Nat
+-- open import Data.List
 open import Data.String
-open import Data.Bool
-open import Relation.Binary.PropositionalEquality
-open import Relation.Nullary.Decidable
+-- open import Data.Bool
+-- open import Relation.Binary.PropositionalEquality
+-- open import Relation.Nullary.Decidable
 \end{code}
 
 ## Identifiers
@@ -85,3 +85,33 @@ _[_:=_] : Term → Id → Term → Term
 (ifᵀ L then M else N) [ y := P ] = ifᵀ (L [ y := P ]) then (M [ y := P ]) else (N [ y := P ])
 \end{code}
 
+## Reduction rules
+
+\begin{code}
+data _⟹_ : Term → Term → Set where
+  β⟶ᵀ : ∀ {x A N V} → value V →
+    ((λᵀ x ∷ A ⟶ N) ·ᵀ V) ⟹ (N [ x := V ])
+  κ·ᵀ₁ : ∀ {L L' M} →
+    L ⟹ L' →
+    (L ·ᵀ M) ⟹ (L' ·ᵀ M)
+  κ·ᵀ₂ : ∀ {V M M'} → value V →
+    M ⟹ M' →
+    (V ·ᵀ M) ⟹ (V ·ᵀ M)
+  βifᵀ₁ : ∀ {M N} →
+    (ifᵀ trueᵀ then M else N) ⟹ M
+  βifᵀ₂ : ∀ {M N} →
+    (ifᵀ falseᵀ then M else N) ⟹ N
+  κifᵀ : ∀ {L L' M N} →
+    L ⟹ L' →    
+    (ifᵀ L then M else N) ⟹ (ifᵀ L' then M else N)
+\end{code}
+
+## Type rules
+
+Environment : Set
+Environment = Map Type
+
+\begin{code}
+data _⊢_∈_ : Environment → Term → Set where
+
+\end{code}

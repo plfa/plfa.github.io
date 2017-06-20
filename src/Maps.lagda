@@ -35,10 +35,11 @@ standard library, wherever they overlap.
 \begin{code}
 open import Function         using (_∘_)
 open import Data.Bool        using (Bool; true; false)
+open import Data.Nat         using (ℕ)
 open import Data.Empty       using (⊥; ⊥-elim)
 open import Data.Maybe       using (Maybe; just; nothing)
-open import Data.Nat         using (ℕ)
-open import Relation.Nullary using (Dec; yes; no)
+open import Data.String      using (String)
+open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
 \end{code}
 
@@ -55,17 +56,29 @@ function for ids and its fundamental property.
 
 \begin{code}
 data Id : Set where
-  id : ℕ → Id
+  id : String → Id
 \end{code}
 
 \begin{code}
 _≟_ : (x y : Id) → Dec (x ≡ y)
-id x ≟ id y with x Data.Nat.≟ y
-id x ≟ id y | yes x=y rewrite x=y = yes refl
-id x ≟ id y | no  x≠y = no (x≠y ∘ id-inj)
+id x ≟ id y with x Data.String.≟ y
+id x ≟ id y | yes refl  =  yes refl
+id x ≟ id y | no x≠y    =  no (x≠y ∘ id-inj)
   where
     id-inj : ∀ {x y} → id x ≡ id y → x ≡ y
-    id-inj refl = refl
+    id-inj refl  =  refl
+
+--  contrapositive : ∀ {P Q} → (P → Q) → (¬ Q → ¬ P)
+--  contrapositive p→q ¬q p = ¬q (p→q p)
+\end{code}
+
+We define some identifiers for future use.
+
+\begin{code}
+x y z : Id
+x = id "x"
+y = id "y"
+z = id "z"
 \end{code}
 
 ## Total Maps
@@ -105,31 +118,43 @@ applied to any id.
 
 \begin{code}
   empty : ∀ {A} → A → TotalMap A
-  empty x = λ _ → x
+  empty v x = v
 \end{code}
 
-More interesting is the `update` function, which (as before) takes
-a map $$m$$, a key $$x$$, and a value $$v$$ and returns a new map that
-takes $$x$$ to $$v$$ and takes every other key to whatever $$m$$ does.
+More interesting is the update function, which (as before) takes
+a map $$ρ$$, a key $$x$$, and a value $$v$$ and returns a new map that
+takes $$x$$ to $$v$$ and takes every other key to whatever $$ρ$$ does.
 
 \begin{code}
-  update : ∀ {A} → TotalMap A -> Id -> A -> TotalMap A
-  update m x v y with x ≟ y
+  _,_↦_ : ∀ {A} → TotalMap A → Id → A → TotalMap A
+  (ρ , x ↦ v) y with x ≟ y
   ... | yes x=y = v
-  ... | no  x≠y = m y
+  ... | no  x≠y = ρ y
 \end{code}
 
 This definition is a nice example of higher-order programming.
-The `update` function takes a _function_ $$m$$ and yields a new
-function $$\lambda x'.\vdots$$ that behaves like the desired map.
+The update function takes a _function_ $$ρ$$ and yields a new
+function that behaves like the desired map.
 
-For example, we can build a map taking ids to bools, where `id
-3` is mapped to `true` and every other key is mapped to `false`,
-like this:
+We define handy abbreviations for updating a map two, three, or four times.
 
 \begin{code}
-  examplemap : TotalMap Bool
-  examplemap = update (update (empty false) (id 1) false) (id 3) true
+  _,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → TotalMap A
+  ρ , x₁ ↦ v₁ , x₂ ↦ v₂  =  (ρ , x₁ ↦ v₁), x₂ ↦ v₂
+
+  _,_↦_,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → Id → A → TotalMap A
+  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃  =  ((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃
+
+  _,_↦_,_↦_,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → Id → A → Id → A → TotalMap A
+  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃ , x₄ ↦ v₄ =  (((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃), x₄ ↦ v₄
+\end{code}
+
+For example, we can build a map taking ids to naturals, where $$x$$
+maps to 42, $$y$$ maps to 69, and every other key maps to 0, as follows:
+
+\begin{code}
+  ρ₀ : TotalMap ℕ
+  ρ₀ = empty 0 , x ↦ 42 , y ↦ 69
 \end{code}
 
 This completes the definition of total maps.  Note that we don't
@@ -137,57 +162,52 @@ need to define a `find` operation because it is just function
 application!
 
 \begin{code}
-  test_examplemap0 : examplemap (id 0) ≡ false
-  test_examplemap0 = refl
+  test₁ : ρ₀ x ≡ 42
+  test₁ = refl
 
-  test_examplemap1 : examplemap (id 1) ≡ false
-  test_examplemap1 = refl
+  test₂ : ρ₀ y ≡ 69
+  test₂ = refl
 
-  test_examplemap2 : examplemap (id 2) ≡ false
-  test_examplemap2 = refl
-
-  test_examplemap3 : examplemap (id 3) ≡ true
-  test_examplemap3 = refl
+  test₃ : ρ₀ z ≡ 0
+  test₃ = refl
 \end{code}
 
 To use maps in later chapters, we'll need several fundamental
 facts about how they behave.  Even if you don't work the following
-exercises, make sure you thoroughly understand the statements of
-the lemmas!  (Some of the proofs require the functional
-extensionality axiom, which is discussed in the [Logic]
-chapter and included in the Agda standard library.)
+exercises, make sure you understand the statements of
+the lemmas! 
 
 #### Exercise: 1 star, optional (apply-empty)
 First, the empty map returns its default element for all keys:
 
 \begin{code}
   postulate
-    apply-empty : ∀ {A x v} → empty {A} v x ≡ v
+    apply-empty : ∀ {A} (v : A) (x : Id) → empty v x ≡ v
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  apply-empty′ : ∀ {A x v} → empty {A} v x ≡ v
-  apply-empty′ = refl
+  apply-empty′ : ∀ {A} (v : A) (x : Id) → empty v x ≡ v
+  apply-empty′ v x = refl
 \end{code}
 </div>
 
 #### Exercise: 2 stars, optional (update-eq)
-Next, if we update a map $$m$$ at a key $$x$$ with a new value $$v$$
-and then look up $$x$$ in the map resulting from the `update`, we get
+Next, if we update a map $$ρ$$ at a key $$x$$ with a new value $$v$$
+and then look up $$x$$ in the map resulting from the update, we get
 back $$v$$:
 
 \begin{code}
   postulate
-    update-eq : ∀ {A v} (m : TotalMap A) (x : Id)
-              → (update m x v) x ≡ v
+    update-eq : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A)
+              → (ρ , x ↦ v) x ≡ v
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-eq′ : ∀ {A v} (m : TotalMap A) (x : Id)
-             → (update m x v) x ≡ v
-  update-eq′ m x with x ≟ x
+  update-eq′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A)
+             → (ρ , x ↦ v) x ≡ v
+  update-eq′ ρ x v with x ≟ x
   ... | yes x=x = refl
   ... | no  x≠x = ⊥-elim (x≠x refl)
 \end{code}
@@ -199,56 +219,54 @@ then look up a _different_ key $$y$$ in the resulting map, we get
 the same result that $$m$$ would have given:
 
 \begin{code}
-  update-neq : ∀ {A v} (m : TotalMap A) (x y : Id)
-             → x ≢ y → (update m x v) y ≡ m y
-  update-neq m x y x≠y with x ≟ y
-  ... | yes x=y = ⊥-elim (x≠y x=y)
+  update-neq : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id)
+             → x ≢ y → (ρ , x ↦ v) y ≡ ρ y
+  update-neq ρ x v y x≢y with x ≟ y
+  ... | yes x≡y = ⊥-elim (x≢y x≡y)
   ... | no  _   = refl
 \end{code}
 
 #### Exercise: 2 stars, optional (update-shadow)
-If we update a map $$m$$ at a key $$x$$ with a value $$v_1$$ and then
-update again with the same key $$x$$ and another value $$v_2$$, the
+If we update a map $$ρ$$ at a key $$x$$ with a value $$v$$ and then
+update again with the same key $$x$$ and another value $$w$$, the
 resulting map behaves the same (gives the same result when applied
 to any key) as the simpler map obtained by performing just
-the second `update` on $$m$$:
+the second update on $$ρ$$:
 
 \begin{code}
   postulate
-    update-shadow : ∀ {A v1 v2} (m : TotalMap A) (x y : Id)
-                  → (update (update m x v1) x v2) y ≡ (update m x v2) y
+    update-shadow : ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) (y : Id)
+                  → (ρ , x ↦ v , x ↦ w) y ≡ (ρ , x ↦ w) y
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-shadow′ : ∀ {A v1 v2} (m : TotalMap A) (x y : Id)
-                 → (update (update m x v1) x v2) y ≡ (update m x v2) y
-  update-shadow′ m x y
+  update-shadow′ :  ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) (y : Id)
+                  → ((ρ , x ↦ v) , x ↦ w) y ≡ (ρ , x ↦ w) y
+  update-shadow′ ρ x v w y
       with x ≟ y
-  ... | yes x=y = refl
-  ... | no  x≠y = update-neq m x y x≠y
+  ... | yes x≡y = refl
+  ... | no  x≢y = update-neq ρ x v y x≢y
 \end{code}
 </div>
 
 #### Exercise: 2 stars (update-same)
-Prove the following theorem, which states that if we update a map to
-assign key $$x$$ the same value as it already has in $$m$$, then the
-result is equal to $$m$$:
+Prove the following theorem, which states that if we update a map $$ρ$$ to
+assign key $$x$$ the same value as it already has in $$ρ$$, then the
+result is equal to $$ρ$$:
 
 \begin{code}
   postulate
-    update-same : ∀ {A} (m : TotalMap A) (x y : Id)
-                → (update m x (m x)) y ≡ m y
+    update-same : ∀ {A} (ρ : TotalMap A) (x y : Id) → (ρ , x ↦ ρ x) y ≡ ρ y
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-same′ : ∀ {A} (m : TotalMap A) (x y : Id)
-               → (update m x (m x)) y ≡ m y
-  update-same′ m x y
+  update-same′ : ∀ {A} (ρ : TotalMap A) (x y : Id) → (ρ , x ↦ ρ x) y ≡ ρ y
+  update-same′ ρ x y
     with x ≟ y
-  ... | yes x=y rewrite x=y = refl
-  ... | no  x≠y = refl
+  ... | yes refl = refl
+  ... | no  x≢y  = refl
 \end{code}
 </div>
 
@@ -259,23 +277,20 @@ updates.
 
 \begin{code}
   postulate
-    update-permute : ∀ {A v1 v2} (m : TotalMap A) (x1 x2 y : Id)
-                   → x1 ≢ x2 → (update (update m x2 v2) x1 v1) y
-                             ≡ (update (update m x1 v1) x2 v2) y
+    update-permute : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
+                   → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-permute′ : ∀ {A v1 v2} (m : TotalMap A) (x1 x2 y : Id)
-                  → x1 ≢ x2 → (update (update m x2 v2) x1 v1) y
-                            ≡ (update (update m x1 v1) x2 v2) y
-  update-permute′ {A} {v1} {v2} m x1 x2 y x1≠x2
-    with x1 ≟ y | x2 ≟ y
-  ... | yes x1=y | yes x2=y = ⊥-elim (x1≠x2 (trans x1=y (sym x2=y)))
-  ... | no  x1≠y | yes x2=y rewrite x2=y = update-eq′ m y
-  ... | yes x1=y | no  x2≠y rewrite x1=y = sym (update-eq′ m y)
-  ... | no  x1≠y | no  x2≠y =
-    trans (update-neq m x2 y x2≠y) (sym (update-neq m x1 y x1≠y))
+  update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
+                   → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
+  update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
+  ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
+  ... | no  x≢z | yes y≡z rewrite y≡z = {!!}  -- sym (update-eq′ ρ z w)
+  ... | yes x≡z | no  y≢z rewrite x≡z = {!!}  -- update-eq′ ρ z v
+  ... | no  x≢z | no  y≢z = {!!}
+    -- trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))
 \end{code}
 </div>
 
@@ -300,41 +315,52 @@ module PartialMap where
 \end{code}
 
 \begin{code}
-  update : ∀ {A} (m : PartialMap A) (x : Id) (v : A) → PartialMap A
-  update m x v = TotalMap.update m x (just v)
+  _,_↦_ : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) → PartialMap A
+  ρ , x ↦ v = TotalMap._,_↦_ ρ x (just v)
 \end{code}
 
-We can now lift all of the basic lemmas about total maps to
-partial maps.
+As before, we define handy abbreviations for updating a map two, three, or four times.
 
 \begin{code}
-  update-eq : ∀ {A v} (m : PartialMap A) (x : Id)
-            → (update m x v) x ≡ just v
-  update-eq m x = TotalMap.update-eq m x
+  _,_↦_,_↦_ : ∀ {A} → PartialMap A → Id → A → Id → A → PartialMap A
+  ρ , x₁ ↦ v₁ , x₂ ↦ v₂  =  (ρ , x₁ ↦ v₁), x₂ ↦ v₂
+
+  _,_↦_,_↦_,_↦_ : ∀ {A} → PartialMap A → Id → A → Id → A → Id → A → PartialMap A
+  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃  =  ((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃
+
+  _,_↦_,_↦_,_↦_,_↦_ : ∀ {A} → PartialMap A → Id → A → Id → A → Id → A → Id → A → PartialMap A
+  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃ , x₄ ↦ v₄ =  (((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃), x₄ ↦ v₄
 \end{code}
 
-\begin{code}
-  update-neq : ∀ {A v} (m : PartialMap A) (x y : Id)
-             → x ≢ y → (update m x v) y ≡ m y
-  update-neq m x y x≠y = TotalMap.update-neq m x y x≠y
-\end{code}
+We now lift all of the basic lemmas about total maps to partial maps.
 
 \begin{code}
-  update-shadow : ∀ {A v1 v2} (m : PartialMap A) (x y : Id)
-                → (update (update m x v1) x v2) y ≡ (update m x v2) y
-  update-shadow m x y = TotalMap.update-shadow m x y
-\end{code}
-
-\begin{code}
-  update-same : ∀ {A v} (m : PartialMap A) (x y : Id)
-              → m x ≡ just v
-              → (update m x v) y ≡ m y
-  update-same m x y mx=v rewrite sym mx=v = TotalMap.update-same m x y
+  update-eq : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A)
+            → (ρ , x ↦ v) x ≡ just v
+  update-eq ρ x v = TotalMap.update-eq ρ x (just v)
 \end{code}
 
 \begin{code}
-  update-permute : ∀ {A v1 v2} (m : PartialMap A) (x1 x2 y : Id)
-                 → x1 ≢ x2 → (update (update m x2 v2) x1 v1) y
-                           ≡ (update (update m x1 v1) x2 v2) y
-  update-permute m x1 x2 y x1≠x2 = TotalMap.update-permute m x1 x2 y x1≠x2
+  update-neq : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id)
+             → x ≢ y → (ρ , x ↦ v) y ≡ ρ y
+  update-neq ρ x v y x≢y = TotalMap.update-neq ρ x (just v) y x≢y
+\end{code}
+
+\begin{code}
+  update-shadow : ∀ {A} (ρ : PartialMap A) (x : Id) (v w : A) (y : Id)
+                → (ρ , x ↦ v , x ↦ w) y ≡ (ρ , x ↦ w) y
+  update-shadow ρ x v w y = TotalMap.update-shadow ρ x (just v) (just w) y
+\end{code}
+
+\begin{code}
+  update-same : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id)
+              → ρ x ≡ just v
+              → (ρ , x ↦ v) y ≡ ρ y
+  update-same ρ x v y ρx≡v rewrite sym ρx≡v = TotalMap.update-same ρ x y
+\end{code}
+
+\begin{code}
+  update-permute : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
+                 → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
+  update-permute ρ x v y w z x≢y = TotalMap.update-permute ρ x (just v) y (just w) z x≢y
 \end{code}
