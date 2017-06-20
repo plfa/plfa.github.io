@@ -295,8 +295,18 @@ updates.
   ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
   ... | no  x≢z | yes y≡z rewrite y≡z = {!!}  -- sym (update-eq′ ρ z w)
   ... | yes x≡z | no  y≢z rewrite x≡z = {!!}  -- update-eq′ ρ z v
-  ... | no  x≢z | no  y≢z = {!!}
-    -- trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))
+  ... | no  x≢z | no  y≢z = {!!}  -- trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))
+
+{-
+Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal with them?
+Why does "λ y₁" appear in the final hole?
+
+?0 : w ≡ ((ρ , z ↦ w) z | z ≟ z)
+?1 : ((ρ , z ↦ v) z | z ≟ z) ≡ v
+?2 : (((λ y₁ → (ρ , x ↦ v) y₁ | x ≟ y₁) , y ↦ w) z | no y≢z) ≡
+(((λ y₁ → (ρ , y ↦ w) y₁ | y ≟ y₁) , x ↦ v) z | no x≢z)
+
+-}
 \end{code}
 </div>
 
