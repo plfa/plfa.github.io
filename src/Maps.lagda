@@ -27,20 +27,19 @@ Unlike the chapters we have seen so far, this one does not
 import the chapter before it (and, transitively, all the
 earlier chapters).  Instead, in this chapter and from now, on
 we're going to import the definitions and theorems we need
-directly from Agda's standard library stuff.  You should not notice
+directly from Agda's standard library.  You should not notice
 much difference, though, because we've been careful to name our
 own definitions and theorems the same as their counterparts in the
 standard library, wherever they overlap.
 
 \begin{code}
-open import Function         using (_∘_)
-open import Data.Bool        using (Bool; true; false)
 open import Data.Nat         using (ℕ)
 open import Data.Empty       using (⊥; ⊥-elim)
 open import Data.Maybe       using (Maybe; just; nothing)
 open import Data.String      using (String)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
+                             using (_≡_; refl; _≢_; trans; sym)
 \end{code}
 
 Documentation for the standard library can be found at
@@ -293,9 +292,9 @@ updates.
                    → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
   update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
   ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
-  ... | no  x≢z | yes y≡z rewrite y≡z = {!!}  -- sym (update-eq′ ρ z w)
-  ... | yes x≡z | no  y≢z rewrite x≡z = {!!}  -- update-eq′ ρ z v
-  ... | no  x≢z | no  y≢z = {!!}  -- trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))
+  ... | no  x≢z | yes y≡z rewrite y≡z = {! sym (update-eq′ ρ z w)!}  
+  ... | yes x≡z | no  y≢z rewrite x≡z = {! update-eq′ ρ z v!}  
+  ... | no  x≢z | no  y≢z = {! trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))!}
 
 {-
 Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal with them?
