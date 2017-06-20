@@ -117,13 +117,13 @@ function that can be used to look up ids, yielding $$A$$s.
 module TotalMap where
 \end{code}
 
-The function `empty` yields an empty total map, given a
+The function `always` yields a total map given a
 default element; this map always returns the default element when
 applied to any id.
 
 \begin{code}
-  empty : ∀ {A} → A → TotalMap A
-  empty v x = v
+  always : ∀ {A} → A → TotalMap A
+  always v x = v
 \end{code}
 
 More interesting is the update function, which (as before) takes
@@ -159,7 +159,7 @@ maps to 42, $$y$$ maps to 69, and every other key maps to 0, as follows:
 
 \begin{code}
   ρ₀ : TotalMap ℕ
-  ρ₀ = empty 0 , x ↦ 42 , y ↦ 69
+  ρ₀ = always 0 , x ↦ 42 , y ↦ 69
 \end{code}
 
 This completes the definition of total maps.  Note that we don't
@@ -182,18 +182,18 @@ facts about how they behave.  Even if you don't work the following
 exercises, make sure you understand the statements of
 the lemmas! 
 
-#### Exercise: 1 star, optional (apply-empty)
-First, the empty map returns its default element for all keys:
+#### Exercise: 1 star, optional (apply-always)
+The `always` map returns its default element for all keys:
 
 \begin{code}
   postulate
-    apply-empty : ∀ {A} (v : A) (x : Id) → empty v x ≡ v
+    apply-always : ∀ {A} (v : A) (x : Id) → always v x ≡ v
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  apply-empty′ : ∀ {A} (v : A) (x : Id) → empty v x ≡ v
-  apply-empty′ v x = refl
+  apply-always′ : ∀ {A} (v : A) (x : Id) → always v x ≡ v
+  apply-always′ v x = refl
 \end{code}
 </div>
 
@@ -288,6 +288,7 @@ updates.
 
 <div class="hidden">
 \begin{code}
+{-
   update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
                    → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
   update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
@@ -295,6 +296,7 @@ updates.
   ... | no  x≢z | yes y≡z rewrite y≡z = {! sym (update-eq′ ρ z w)!}  
   ... | yes x≡z | no  y≢z rewrite x≡z = {! update-eq′ ρ z v!}  
   ... | no  x≢z | no  y≢z = {! trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))!}
+-}
 
 {-
 Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal with them?
@@ -325,15 +327,14 @@ module PartialMap where
 \end{code}
 
 \begin{code}
-  empty : ∀ {A} → PartialMap A
-  empty = TotalMap.empty nothing
+  ∅ : ∀ {A} → PartialMap A
+  ∅ = TotalMap.always nothing
 \end{code}
 
 \begin{code}
   _,_↦_ : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) → PartialMap A
   ρ , x ↦ v = TotalMap._,_↦_ ρ x (just v)
 \end{code}
-
 As before, we define handy abbreviations for updating a map two, three, or four times.
 
 \begin{code}
