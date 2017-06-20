@@ -49,27 +49,33 @@ Documentation for the standard library can be found at
 ## Identifiers
 
 First, we need a type for the keys that we use to index into our
-maps.  For this purpose, we again use the type Id` from the
+maps.  For this purpose, we again use the type `Id` from the
 [Lists](sf/Lists.html) chapter.  To make this chapter self contained,
-we repeat its definition here, together with the equality comparison
-function for ids and its fundamental property.
+we repeat its definition here.
 
 \begin{code}
 data Id : Set where
   id : String → Id
 \end{code}
 
+We recall a standard fact of logic.
+
+\begin{code}
+contrapositive : ∀ {ℓ₁ ℓ₂} {P : Set ℓ₁} {Q : Set ℓ₂} → (P → Q) → (¬ Q → ¬ P)
+contrapositive p→q ¬q p = ¬q (p→q p)
+\end{code}
+
+Using the above, we can decide equality of two identifiers 
+by deciding equality on the underlying strings.
+
 \begin{code}
 _≟_ : (x y : Id) → Dec (x ≡ y)
 id x ≟ id y with x Data.String.≟ y
 id x ≟ id y | yes refl  =  yes refl
-id x ≟ id y | no x≠y    =  no (x≠y ∘ id-inj)
+id x ≟ id y | no  x≢y   =  no (contrapositive id-inj x≢y)
   where
     id-inj : ∀ {x y} → id x ≡ id y → x ≡ y
     id-inj refl  =  refl
-
---  contrapositive : ∀ {P Q} → (P → Q) → (¬ Q → ¬ P)
---  contrapositive p→q ¬q p = ¬q (p→q p)
 \end{code}
 
 We define some identifiers for future use.
