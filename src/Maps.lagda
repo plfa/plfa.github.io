@@ -117,13 +117,13 @@ function that can be used to look up ids, yielding $$A$$s.
 module TotalMap where
 \end{code}
 
-The function `empty` yields an empty total map, given a
+The function `always` yields a total map given a
 default element; this map always returns the default element when
 applied to any id.
 
 \begin{code}
-  empty : ∀ {A} → A → TotalMap A
-  empty v x = v
+  always : ∀ {A} → A → TotalMap A
+  always v x = v
 \end{code}
 
 More interesting is the update function, which (as before) takes
@@ -165,7 +165,7 @@ maps to 42, $$y$$ maps to 69, and every other key maps to 0, as follows:
 
 \begin{code}
   ρ₀ : TotalMap ℕ
-  ρ₀ = empty 0 , x ↦ 42 , y ↦ 69
+  ρ₀ = always 0 , x ↦ 42 , y ↦ 69
 \end{code}
 
 This completes the definition of total maps.  Note that we don't
@@ -188,18 +188,18 @@ facts about how they behave.  Even if you don't work the following
 exercises, make sure you understand the statements of
 the lemmas!
 
-#### Exercise: 1 star, optional (apply-empty)
-First, the empty map returns its default element for all keys:
+#### Exercise: 1 star, optional (apply-always)
+The `always` map returns its default element for all keys:
 
 \begin{code}
   postulate
-    apply-empty : ∀ {A} (v : A) (x : Id) → empty v x ≡ v
+    apply-always : ∀ {A} (v : A) (x : Id) → always v x ≡ v
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  apply-empty′ : ∀ {A} (v : A) (x : Id) → empty v x ≡ v
-  apply-empty′ v x = refl
+  apply-always′ : ∀ {A} (v : A) (x : Id) → always v x ≡ v
+  apply-always′ v x = refl
 \end{code}
 </div>
 
@@ -296,64 +296,25 @@ updates.
 \begin{code}
   update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
                    → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
-  update-permute′ {A} ρ x v y w z x≢y
-    with x ≟ z | y ≟ z
-  update-permute′ {A} ρ x v y w z x≢y
-    | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  x≢z | yes y≡z rewrite y≡z
-    with z ≟ z
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  x≢z | yes y≡z | yes z≡z  = refl
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  x≢z | yes y≡z | no  z≢z  = ⊥-elim (z≢z refl)
-  update-permute′ {A} ρ x v y w z x≢y
-    | yes x≡z | no  y≢z rewrite x≡z
-    with z ≟ z
-  update-permute′ {A} ρ x v y w z x≢y
-    | yes x≡z | no  y≢z | yes z≡z = refl
-  update-permute′ {A} ρ x v y w z x≢y
-    | yes x≡z | no  y≢z | no  z≢z = ⊥-elim (z≢z refl)
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  x≢z | no  y≢z
-    with x ≟ z | y ≟ z
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  _   | no  _   | no  x≢z | no  y≢z
-    = refl
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  x≢z | no  y≢z | yes x≡z | _
-    = ⊥-elim (x≢z x≡z)
-  update-permute′ {A} ρ x v y w z x≢y
-    | no  x≢z | no  y≢z | _       | yes y≡z
-    = ⊥-elim (y≢z y≡z)
+  update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
+  ... | yes refl | yes refl  =  ⊥-elim (x≢y refl)
+  ... | no  x≢z  | yes refl  =  sym (update-eq′ ρ z w)
+  ... | yes refl | no  y≢z   =  update-eq′ ρ z v
+  ... | no  x≢z  | no  y≢z   =  trans (update-neq ρ x v z x≢z) (sym (update-neq ρ y w z y≢z))  
+\end{code}
+
+And a slightly different version of the same proof.
+
+\begin{code}  
+  update-permute′′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
+                   → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
+  update-permute′′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
+  ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
+  ... | no  x≢z | yes y≡z rewrite y≡z  =  sym (update-eq′ ρ z w)  
+  ... | yes x≡z | no  y≢z rewrite x≡z  =  update-eq′ ρ z v
+  ... | no  x≢z | no  y≢z  =  trans (update-neq ρ x v z x≢z) (sym (update-neq ρ y w z y≢z))  
 \end{code}
 </div>
-
-<div class="note hidden">
-Phil:
-  Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal
-  with them? Why does "λ y₁" appear in the final hole?
-
-    ?0 : w ≡ ((ρ , z ↦ w) z | z ≟ z)
-    ?1 : ((ρ , z ↦ v) z | z ≟ z) ≡ v
-    ?2 : (((λ y₁ → (ρ , x ↦ v) y₁ | x ≟ y₁) , y ↦ w) z | no y≢z) ≡
-    (((λ y₁ → (ρ , y ↦ w) y₁ | y ≟ y₁) , x ↦ v) z | no x≢z)
-
-Wen:
-  The "| z ≟ z" term appears because there is a comparison on the two strings z
-  and z somewhere in the code. Because the decidable equality (and in fact all
-  functions on strings) are postulate, they do not reduce during type checking.
-  In order to stop this, you would have to insert a with clause at the location
-  where you want the term to reduce, i.e. "with z ≟ z", so that you can cover
-  both possible outputs, even if you already know that "z ≡ z", e.g. due to
-  reflexivity. You can cover the other case with a ⊥-elim fairly easily, but
-  it's not pretty. This is why I used naturals, because their equality test is
-  implemented in Agda and therefore can reduce. However, I'm not sure if
-  switching would in fact solve this problem, due to the fact that we're dealing
-  with variables, but I think so. See the completed code above for the
-  not-so-pretty way of actually implementing update-permute'.
-</div>
-
 
 ## Partial maps
 
@@ -371,15 +332,14 @@ module PartialMap where
 \end{code}
 
 \begin{code}
-  empty : ∀ {A} → PartialMap A
-  empty = TotalMap.empty nothing
+  ∅ : ∀ {A} → PartialMap A
+  ∅ = TotalMap.always nothing
 \end{code}
 
 \begin{code}
   _,_↦_ : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) → PartialMap A
   ρ , x ↦ v = TotalMap._,_↦_ ρ x (just v)
 \end{code}
-
 As before, we define handy abbreviations for updating a map two, three, or four times.
 
 \begin{code}
