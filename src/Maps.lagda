@@ -11,7 +11,7 @@ a nice case study using ideas we've seen in previous chapters, including
 building data structures out of higher-order functions (from [Basics]({{
 "Basics" | relative_url }}) and [Poly]({{ "Poly" | relative_url }}) and the use
 of reflection to streamline proofs (from [IndProp]({{ "IndProp" | relative_url
-}})). 
+}})).
 
 We'll define two flavors of maps: _total_ maps, which include a
 "default" element to be returned when a key being looked up
@@ -64,7 +64,7 @@ contrapositive : ∀ {ℓ₁ ℓ₂} {P : Set ℓ₁} {Q : Set ℓ₂} → (P �
 contrapositive p→q ¬q p = ¬q (p→q p)
 \end{code}
 
-Using the above, we can decide equality of two identifiers 
+Using the above, we can decide equality of two identifiers
 by deciding equality on the underlying strings.
 
 \begin{code}
@@ -143,6 +143,12 @@ function that behaves like the desired map.
 
 We define handy abbreviations for updating a map two, three, or four times.
 
+<div class="note hidden">
+Wen: you don't actually need to define these, you can simply declare `_,_↦_` to
+be a left-associative infix operator with an `infixl` statement, and then you'll
+be able to just evaluate `M , x ↦ y , z ↦ w` as `(M , x ↦ y) , z ↦ w`.
+</div>
+
 \begin{code}
   _,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → TotalMap A
   ρ , x₁ ↦ v₁ , x₂ ↦ v₂  =  (ρ , x₁ ↦ v₁), x₂ ↦ v₂
@@ -180,7 +186,7 @@ application!
 To use maps in later chapters, we'll need several fundamental
 facts about how they behave.  Even if you don't work the following
 exercises, make sure you understand the statements of
-the lemmas! 
+the lemmas!
 
 #### Exercise: 1 star, optional (apply-empty)
 First, the empty map returns its default element for all keys:
@@ -290,24 +296,64 @@ updates.
 \begin{code}
   update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
                    → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
-  update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
-  ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
-  ... | no  x≢z | yes y≡z rewrite y≡z = {! sym (update-eq′ ρ z w)!}  
-  ... | yes x≡z | no  y≢z rewrite x≡z = {! update-eq′ ρ z v!}  
-  ... | no  x≢z | no  y≢z = {! trans (update-neq ρ y w z y≢z) (sym (update-neq ρ x v z x≢z))!}
-
-{-
-Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal with them?
-Why does "λ y₁" appear in the final hole?
-
-?0 : w ≡ ((ρ , z ↦ w) z | z ≟ z)
-?1 : ((ρ , z ↦ v) z | z ≟ z) ≡ v
-?2 : (((λ y₁ → (ρ , x ↦ v) y₁ | x ≟ y₁) , y ↦ w) z | no y≢z) ≡
-(((λ y₁ → (ρ , y ↦ w) y₁ | y ≟ y₁) , x ↦ v) z | no x≢z)
-
--}
+  update-permute′ {A} ρ x v y w z x≢y
+    with x ≟ z | y ≟ z
+  update-permute′ {A} ρ x v y w z x≢y
+    | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  x≢z | yes y≡z rewrite y≡z
+    with z ≟ z
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  x≢z | yes y≡z | yes z≡z  = refl
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  x≢z | yes y≡z | no  z≢z  = ⊥-elim (z≢z refl)
+  update-permute′ {A} ρ x v y w z x≢y
+    | yes x≡z | no  y≢z rewrite x≡z
+    with z ≟ z
+  update-permute′ {A} ρ x v y w z x≢y
+    | yes x≡z | no  y≢z | yes z≡z = refl
+  update-permute′ {A} ρ x v y w z x≢y
+    | yes x≡z | no  y≢z | no  z≢z = ⊥-elim (z≢z refl)
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  x≢z | no  y≢z
+    with x ≟ z | y ≟ z
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  _   | no  _   | no  x≢z | no  y≢z
+    = refl
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  x≢z | no  y≢z | yes x≡z | _
+    = ⊥-elim (x≢z x≡z)
+  update-permute′ {A} ρ x v y w z x≢y
+    | no  x≢z | no  y≢z | _       | yes y≡z
+    = ⊥-elim (y≢z y≡z)
 \end{code}
 </div>
+
+<div class="note hidden">
+Phil:
+  Holes are typed as follows. What do the "| z ≟ z" mean, and how can I deal
+  with them? Why does "λ y₁" appear in the final hole?
+
+    ?0 : w ≡ ((ρ , z ↦ w) z | z ≟ z)
+    ?1 : ((ρ , z ↦ v) z | z ≟ z) ≡ v
+    ?2 : (((λ y₁ → (ρ , x ↦ v) y₁ | x ≟ y₁) , y ↦ w) z | no y≢z) ≡
+    (((λ y₁ → (ρ , y ↦ w) y₁ | y ≟ y₁) , x ↦ v) z | no x≢z)
+
+Wen:
+  The "| z ≟ z" term appears because there is a comparison on the two strings z
+  and z somewhere in the code. Because the decidable equality (and in fact all
+  functions on strings) are postulate, they do not reduce during type checking.
+  In order to stop this, you would have to insert a with clause at the location
+  where you want the term to reduce, i.e. "with z ≟ z", so that you can cover
+  both possible outputs, even if you already know that "z ≡ z", e.g. due to
+  reflexivity. You can cover the other case with a ⊥-elim fairly easily, but
+  it's not pretty. This is why I used naturals, because their equality test is
+  implemented in Agda and therefore can reduce. However, I'm not sure if
+  switching would in fact solve this problem, due to the fact that we're dealing
+  with variables, but I think so. See the completed code above for the
+  not-so-pretty way of actually implementing update-permute'.
+</div>
+
 
 ## Partial maps
 
