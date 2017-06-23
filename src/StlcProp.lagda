@@ -280,9 +280,9 @@ postulate
 contradiction : ∀ {A : Set} → ∀ {v : A} → ¬ (_≡_ {A = Maybe A} (just v) nothing)
 contradiction ()
 
-∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
-∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
-... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) apply-∅)
+-- ∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
+-- ∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
+-- ... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) apply-∅)
 
 {-
 ∅⊢-closed′ : ∀ {t A} → ∅ ⊢ t ∶ A → Closed t
@@ -302,24 +302,22 @@ contradiction ()
 \end{code}
 </div>
 
-Sometimes, when we have a proof $$\Gamma\vdash t : A$$, we will need to
-replace $$\Gamma$$ by a different context $$\Gamma'$$.  When is it safe
+Sometimes, when we have a proof $$Γ ⊢ M ∈ A$$, we will need to
+replace $$Γ$$ by a different context $$Γ′$$.  When is it safe
 to do this?  Intuitively, it must at least be the case that
-$$\Gamma'$$ assigns the same types as $$\Gamma$$ to all the variables
-that appear free in $$t$$. In fact, this is the only condition that
+$$Γ′$$ assigns the same types as $$Γ$$ to all the variables
+that appear free in $$M$$. In fact, this is the only condition that
 is needed.
 
 \begin{code}
-{-
-replaceCtxt : ∀ {Γ Γ′ t A}
-            → (∀ {x} → x FreeIn t → Γ x ≡ Γ′ x)
-            → Γ  ⊢ t ∶ A
-            → Γ′ ⊢ t ∶ A
--}
+weaken : ∀ {Γ Γ′ M A}
+        → (∀ {x} → x FreeIn M → Γ x ≡ Γ′ x)
+        → Γ  ⊢ M ∈ A
+        → Γ′ ⊢ M ∈ A
 \end{code}
 
 _Proof_: By induction on the derivation of
-$$\Gamma \vdash t \in T$$.
+$$Γ ⊢ M ∈ A$$.
 
   - If the last rule in the derivation was `var`, then $$t = x$$
     and $$\Gamma x = T$$.  By assumption, $$\Gamma' x = T$$ as well, and
@@ -360,9 +358,29 @@ $$\Gamma \vdash t \in T$$.
     $$t_1$$ are also free in $$t_1\;t_2$$, and similarly for $$t_2$$;
     hence the desired result follows from the induction hypotheses.
 
+-- weaken : ∀ {Γ Γ′ M A}
+--            → (∀ {x} → x FreeIn M → Γ x ≡ Γ′ x)
+--            → Γ  ⊢ M ∈ A
+--            → Γ′ ⊢ M ∈ A
+
+
 \begin{code}
+weaken Γ⊆Γ′ (Ax Γx≡justA) rewrite (Γ⊆Γ′ free-varᵀ) = Ax Γx≡justA
+weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ⊆Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx⊆Γ′x ⊢N)
+  where
+  Γx⊆Γ′x : ∀ {y} → y FreeIn N → (Γ , x ↦ A) y ≡ (Γ′ , x ↦ A) y
+  Γx⊆Γ′x {y} y∈N with x ≟ y
+  ... | yes refl = refl
+  ... | no  x≢y  = Γ⊆Γ′ (free-λᵀ x≢y y∈N)
+weaken Γ⊆Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (weaken (Γ⊆Γ′ ∘ free-·ᵀ₁)  ⊢L) (weaken (Γ⊆Γ′ ∘ free-·ᵀ₂) ⊢M) 
+weaken Γ⊆Γ′ 𝔹-I₁ = 𝔹-I₁
+weaken Γ⊆Γ′ 𝔹-I₂ = 𝔹-I₂
+weaken Γ⊆Γ′ (𝔹-E ⊢L ⊢M ⊢N)
+  = 𝔹-E (weaken (Γ⊆Γ′ ∘ free-ifᵀ₁) ⊢L) (weaken (Γ⊆Γ′ ∘ free-ifᵀ₂) ⊢M) (weaken (Γ⊆Γ′ ∘ free-ifᵀ₃) ⊢N)
+
 {-
-replaceCtxt f (var x x∶A) rewrite f var = var x x∶A
+replaceCtxt f (var x x∶A
+) rewrite f var = var x x∶A
 replaceCtxt f (app t₁∶A⇒B t₂∶A)
   = app (replaceCtxt (f ∘ app1) t₁∶A⇒B) (replaceCtxt (f ∘ app2) t₂∶A)
 replaceCtxt {Γ} {Γ′} f (abs {.Γ} {x} {A} {B} {t′} t′∶B)
