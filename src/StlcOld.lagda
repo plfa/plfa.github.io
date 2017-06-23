@@ -6,7 +6,7 @@ permalink : /StlcOld
 
 <div class="foldable">
 \begin{code}
-open import Maps using (Id; id; _≟_; PartialMap; module PartialMap)
+open import MapsOld using (Id; id; _≟_; PartialMap; module PartialMap)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Nat using (ℕ; suc; zero; _+_)
