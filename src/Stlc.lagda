@@ -60,7 +60,7 @@ not[𝔹]  =  (λᵀ x ∈ 𝔹 ⇒ (ifᵀ (varᵀ x) then falseᵀ else trueᵀ
 
 \begin{code}
 data value : Term → Set where
-  value-λᵀ : ∀ x A N → value (λᵀ x ∈ A ⇒ N)
+  value-λᵀ : ∀ {x A N} → value (λᵀ x ∈ A ⇒ N)
   value-trueᵀ : value (trueᵀ)
   value-falseᵀ : value (falseᵀ)
 \end{code}
@@ -83,17 +83,18 @@ _[_:=_] : Term → Id → Term → Term
 data _⟹_ : Term → Term → Set where
   β⇒ : ∀ {x A N V} → value V →
     ((λᵀ x ∈ A ⇒ N) ·ᵀ V) ⟹ (N [ x := V ])
-  γ·₁ : ∀ {L L' M} →
+  γ⇒₁ : ∀ {L L' M} →
     L ⟹ L' →
     (L ·ᵀ M) ⟹ (L' ·ᵀ M)
-  γ·₂ : ∀ {V M M'} → value V →
+  γ⇒₂ : ∀ {V M M'} →
+    value V →
     M ⟹ M' →
     (V ·ᵀ M) ⟹ (V ·ᵀ M)
-  βif₁ : ∀ {M N} →
+  β𝔹₁ : ∀ {M N} →
     (ifᵀ trueᵀ then M else N) ⟹ M
-  βif₂ : ∀ {M N} →
+  β𝔹₂ : ∀ {M N} →
     (ifᵀ falseᵀ then M else N) ⟹ N
-  γif : ∀ {L L' M N} →
+  γ𝔹 : ∀ {L L' M N} →
     L ⟹ L' →    
     (ifᵀ L then M else N) ⟹ (ifᵀ L' then M else N)
 \end{code}

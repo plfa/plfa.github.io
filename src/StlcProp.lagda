@@ -4,7 +4,6 @@ layout    : page
 permalink : /StlcProp
 ---
 
-<div class="foldable">
 \begin{code}
 open import Function using (_∘_)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -13,10 +12,10 @@ open import Data.Product using (∃; ∃₂; _,_; ,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
-open import MapsOld
-open import StlcOld
+open import Maps
+open Maps.PartialMap
+open import Stlc
 \end{code}
-</div>
 
 In this chapter, we develop the fundamental theory of the Simply
 Typed Lambda Calculus---in particular, the type safety
@@ -32,14 +31,22 @@ belonging to each type.  For $$bool$$, these are the boolean values $$true$$ and
 $$false$$.  For arrow types, the canonical forms are lambda-abstractions. 
 
 \begin{code}
-CanonicalForms : Term → Type → Set
-CanonicalForms t bool    = t ≡ true ⊎ t ≡ false
-CanonicalForms t (A ⇒ B) = ∃₂ λ x t′ → t ≡ abs x A t′
+data canonical_for_ : Term → Type → Set where
+  canonical-λᵀ : ∀ {x A N B} → canonical (λᵀ x ∈ A ⇒ N) for (A ⇒ B)
+  canonical-trueᵀ : canonical trueᵀ for 𝔹
+  canonical-falseᵀ : canonical falseᵀ for 𝔹
+  
+-- canonical_for_ : Term → Type → Set
+-- canonical L for 𝔹       = L ≡ trueᵀ ⊎ L ≡ falseᵀ
+-- canonical L for (A ⇒ B) = ∃₂ λ x N → L ≡ λᵀ x ∈ A ⇒ N
 
-canonicalForms : ∀ {t A} → ∅ ⊢ t ∶ A → Value t → CanonicalForms t A
-canonicalForms (abs t′) abs   = _ , _ , refl
-canonicalForms true     true  = inj₁ refl
-canonicalForms false    false = inj₂ refl
+canonicalFormsLemma : ∀ {L A} → ∅ ⊢ L ∈ A → value L → canonical L for A
+canonicalFormsLemma (Ax ⊢x) ()
+canonicalFormsLemma (⇒-I ⊢N) value-λᵀ = canonical-λᵀ      -- _ , _ , refl
+canonicalFormsLemma (⇒-E ⊢L ⊢M) ()
+canonicalFormsLemma 𝔹-I₁ value-trueᵀ = canonical-trueᵀ    -- inj₁ refl
+canonicalFormsLemma 𝔹-I₂ value-falseᵀ = canonical-falseᵀ  -- inj₂ refl
+canonicalFormsLemma (𝔹-E ⊢L ⊢M ⊢N) ()
 \end{code}
 
 ## Progress
@@ -52,7 +59,7 @@ straightforward extension of the progress proof we saw in the
 first, then the formal version.
 
 \begin{code}
-progress : ∀ {t A} → ∅ ⊢ t ∶ A → Value t ⊎ ∃ λ t′ → t ==> t′
+progress : ∀ {M A} → ∅ ⊢ M ∈ A → value M ⊎ ∃ λ N → M ⟹ N
 \end{code}
 
 _Proof_: By induction on the derivation of $$\vdash t : A$$.
@@ -94,26 +101,21 @@ _Proof_: By induction on the derivation of $$\vdash t : A$$.
   - Otherwise, $$t_1$$ takes a step, and therefore so does $$t$$ (by `if`).
 
 \begin{code}
-progress (var x ())
-progress true      = inj₁ true
-progress false     = inj₁ false
-progress (abs t∶A) = inj₁ abs
-progress (app t₁∶A⇒B t₂∶B)
-    with progress t₁∶A⇒B
-... | inj₂ (_ , t₁⇒t₁′) = inj₂ (_ , app1 t₁⇒t₁′)
-... | inj₁ v₁
-    with progress t₂∶B
-... | inj₂ (_ , t₂⇒t₂′) = inj₂ (_ , app2 v₁ t₂⇒t₂′)
-... | inj₁ v₂
-    with canonicalForms t₁∶A⇒B v₁
-... | (_ , _ , refl) = inj₂ (_ , red v₂)
-progress (if t₁∶bool then t₂∶A else t₃∶A)
-    with progress t₁∶bool
-... | inj₂ (_ , t₁⇒t₁′) = inj₂ (_ , if t₁⇒t₁′)
-... | inj₁ v₁
-    with canonicalForms t₁∶bool v₁
-... | inj₁ refl = inj₂ (_ , iftrue)
-... | inj₂ refl = inj₂ (_ , iffalse)
+progress (Ax ())
+progress (⇒-I ⊢N) = inj₁ value-λᵀ
+progress (⇒-E ⊢L ⊢M) with progress ⊢L
+... | inj₂ (_ , L⟹L′) = inj₂ (_ , γ⇒₁ L⟹L′)
+... | inj₁ valueL with progress ⊢M
+... | inj₂ (_ , M⟹M′) = inj₂ (_ , γ⇒₂ valueL M⟹M′)
+... | inj₁ valueM with canonicalFormsLemma ⊢L valueL
+... | canonical-λᵀ = inj₂ (_ , β⇒ valueM)
+progress 𝔹-I₁ = inj₁ value-trueᵀ
+progress 𝔹-I₂ = inj₁ value-falseᵀ
+progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
+... | inj₂ (_ , L⟹L′) = inj₂ (_ , γ𝔹 L⟹L′)
+... | inj₁ valueL with canonicalFormsLemma ⊢L valueL
+... | canonical-trueᵀ = inj₂ (_ , β𝔹₁)
+... | canonical-falseᵀ = inj₂ (_ , β𝔹₂)
 \end{code}
 
 #### Exercise: 3 stars, optional (progress_from_term_ind)
@@ -121,8 +123,10 @@ Show that progress can also be proved by induction on terms
 instead of induction on typing derivations.
 
 \begin{code}
+{-
 postulate
   progress′ : ∀ {t A} → ∅ ⊢ t ∶ A → Value t ⊎ ∃ λ t′ → t ==> t′
+-}
 \end{code}
 
 ## Preservation
@@ -180,6 +184,7 @@ For example:
 Formally:
 
 \begin{code}
+{-
 data _FreeIn_ (x : Id) : Term → Set where
   var  : x FreeIn var x
   abs  : ∀ {y A t} → y ≢ x → x FreeIn t → x FreeIn abs y A t
@@ -188,13 +193,16 @@ data _FreeIn_ (x : Id) : Term → Set where
   if1  : ∀ {t₁ t₂ t₃} → x FreeIn t₁ → x FreeIn (if t₁ then t₂ else t₃)
   if2  : ∀ {t₁ t₂ t₃} → x FreeIn t₂ → x FreeIn (if t₁ then t₂ else t₃)
   if3  : ∀ {t₁ t₂ t₃} → x FreeIn t₃ → x FreeIn (if t₁ then t₂ else t₃)
+-}
 \end{code}
 
 A term in which no variables appear free is said to be _closed_.
 
 \begin{code}
+{-
 Closed : Term → Set
 Closed t = ∀ {x} → ¬ (x FreeIn t)
+-}
 \end{code}
 
 #### Exercise: 1 star (free-in)
@@ -213,7 +221,9 @@ well typed in context $$\Gamma$$, then it must be the case that
 $$\Gamma$$ assigns a type to $$x$$.
 
 \begin{code}
+{-
 freeInCtxt : ∀ {x t A Γ} → x FreeIn t → Γ ⊢ t ∶ A → ∃ λ B → Γ x ≡ just B
+-}
 \end{code}
 
 _Proof_: We show, by induction on the proof that $$x$$ appears
@@ -246,6 +256,7 @@ _Proof_: We show, by induction on the proof that $$x$$ appears
     `_≟_`, noting that $$x$$ and $$y$$ are different variables.
 
 \begin{code}
+{-
 freeInCtxt var (var _ x∶A) = (_ , x∶A)
 freeInCtxt (app1 x∈t₁) (app t₁∶A _   ) = freeInCtxt x∈t₁ t₁∶A
 freeInCtxt (app2 x∈t₂) (app _    t₂∶A) = freeInCtxt x∈t₂ t₂∶A
@@ -258,6 +269,7 @@ freeInCtxt {x} (abs {y} y≠x x∈t) (abs t∶B)
     with y ≟ x
 ... | yes y=x = ⊥-elim (y≠x y=x)
 ... | no  _   = x∶A
+-}
 \end{code}
 
 Next, we'll need the fact that any term $$t$$ which is well typed in
@@ -266,12 +278,15 @@ the empty context is closed (it has no free variables).
 #### Exercise: 2 stars, optional (∅⊢-closed)
 
 \begin{code}
+{-
 postulate
   ∅⊢-closed : ∀ {t A} → ∅ ⊢ t ∶ A → Closed t
+-}
 \end{code}
 
 <div class="hidden">
 \begin{code}
+{-
 ∅⊢-closed′ : ∀ {t A} → ∅ ⊢ t ∶ A → Closed t
 ∅⊢-closed′ (var x ())
 ∅⊢-closed′ (app t₁∶A⇒B t₂∶A) (app1 x∈t₁) = ∅⊢-closed′ t₁∶A⇒B x∈t₁
@@ -285,6 +300,7 @@ postulate
 ∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) | A , y∶A with x ≟ y
 ∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) | A , y∶A | yes x=y = x≠y x=y
 ∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) | A , ()  | no  _
+-}
 \end{code}
 </div>
 
@@ -296,10 +312,12 @@ that appear free in $$t$$. In fact, this is the only condition that
 is needed.
 
 \begin{code}
+{-
 replaceCtxt : ∀ {Γ Γ′ t A}
             → (∀ {x} → x FreeIn t → Γ x ≡ Γ′ x)
             → Γ  ⊢ t ∶ A
             → Γ′ ⊢ t ∶ A
+-}
 \end{code}
 
 _Proof_: By induction on the derivation of
@@ -345,6 +363,7 @@ $$\Gamma \vdash t \in T$$.
     hence the desired result follows from the induction hypotheses.
 
 \begin{code}
+{-
 replaceCtxt f (var x x∶A) rewrite f var = var x x∶A
 replaceCtxt f (app t₁∶A⇒B t₂∶A)
   = app (replaceCtxt (f ∘ app1) t₁∶A⇒B) (replaceCtxt (f ∘ app2) t₂∶A)
@@ -361,7 +380,9 @@ replaceCtxt f (if t₁∶bool then t₂∶A else t₃∶A)
   = if   replaceCtxt (f ∘ if1) t₁∶bool
     then replaceCtxt (f ∘ if2) t₂∶A
     else replaceCtxt (f ∘ if3) t₃∶A
+-}
 \end{code}
+
 
 Now we come to the conceptual heart of the proof that reduction
 preserves types---namely, the observation that _substitution_
@@ -380,10 +401,12 @@ _Lemma_: If $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then
 $$\Gamma \vdash [x:=v]t : T$$.
 
 \begin{code}
+{-
 [:=]-preserves-⊢ : ∀ {Γ x A t v B}
                  → ∅ ⊢ v ∶ A
                  → Γ , x ∶ A ⊢ t ∶ B
                  → Γ , x ∶ A ⊢ [ x := v ] t ∶ B
+-}
 \end{code}
 
 One technical subtlety in the statement of the lemma is that
@@ -462,6 +485,7 @@ generalization is a little tricky.  The term $$t$$, on the other
 hand, _is_ completely generic.
 
 \begin{code}
+{-
 [:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
 ... | yes x=y = {!!}
 ... | no  x≠y = {!!}
@@ -474,6 +498,7 @@ hand, _is_ completely generic.
   if   [:=]-preserves-⊢ v∶A t₁∶bool
   then [:=]-preserves-⊢ v∶A t₂∶B
   else [:=]-preserves-⊢ v∶A t₃∶B
+-}
 \end{code}
 
 
@@ -764,3 +789,5 @@ with arithmetic.  Specifically:
   - Extend the proofs of all the properties (up to $$soundness$$) of
     the original STLC to deal with the new syntactic forms.  Make
     sure Agda accepts the whole file.
+
+-}
