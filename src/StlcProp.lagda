@@ -7,11 +7,12 @@ permalink : /StlcProp
 \begin{code}
 open import Function using (_∘_)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Bool using (Bool; true; false)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Product using (∃; ∃₂; _,_; ,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; trans; sym)
 open import Maps
 open Maps.PartialMap
 open import Stlc
@@ -123,10 +124,8 @@ Show that progress can also be proved by induction on terms
 instead of induction on typing derivations.
 
 \begin{code}
-{-
 postulate
-  progress′ : ∀ {t A} → ∅ ⊢ t ∶ A → Value t ⊎ ∃ λ t′ → t ==> t′
--}
+  progress′ : ∀ {M A} → ∅ ⊢ M ∈ A → value M ⊎ ∃ λ N → M ⟹ N
 \end{code}
 
 ## Preservation
@@ -173,36 +172,32 @@ order...
 
 ### Free Occurrences
 
-A variable $$x$$ _appears free in_ a term _t_ if $$t$$ contains some
-occurrence of $$x$$ that is not under an abstraction labeled $$x$$.
+A variable $$x$$ _appears free in_ a term $$M$$ if $$M$$ contains some
+occurrence of $$x$$ that is not under an abstraction over $$x$$.
 For example:
 
-  - $$y$$ appears free, but $$x$$ does not, in $$\lambda x : A\to B. x\;y$$
-  - both $$x$$ and $$y$$ appear free in $$(\lambda x:A\to B. x\;y) x$$
-  - no variables appear free in $$\lambda x:A\to B. \lambda y:A. x\;y$$
+  - $$y$$ appears free, but $$x$$ does not, in $$λᵀ x ∈ (A ⇒ B) ⇒ x ·ᵀ y$$
+  - both $$x$$ and $$y$$ appear free in $$(λᵀ x ∈ (A ⇒ B) ⇒ x ·ᵀ y) ·ᵀ x$$
+  - no variables appear free in $$λᵀ x ∈ (A ⇒ B) ⇒ (λᵀ y ∈ A ⇒ x ·ᵀ y)$$
 
 Formally:
 
 \begin{code}
-{-
-data _FreeIn_ (x : Id) : Term → Set where
-  var  : x FreeIn var x
-  abs  : ∀ {y A t} → y ≢ x → x FreeIn t → x FreeIn abs y A t
-  app1 : ∀ {t₁ t₂} → x FreeIn t₁ → x FreeIn app t₁ t₂
-  app2 : ∀ {t₁ t₂} → x FreeIn t₂ → x FreeIn app t₁ t₂
-  if1  : ∀ {t₁ t₂ t₃} → x FreeIn t₁ → x FreeIn (if t₁ then t₂ else t₃)
-  if2  : ∀ {t₁ t₂ t₃} → x FreeIn t₂ → x FreeIn (if t₁ then t₂ else t₃)
-  if3  : ∀ {t₁ t₂ t₃} → x FreeIn t₃ → x FreeIn (if t₁ then t₂ else t₃)
--}
+data _FreeIn_ : Id → Term → Set where
+  free-varᵀ  : ∀ {x} → x FreeIn (varᵀ x)
+  free-λᵀ  : ∀ {x y A N} → y ≢ x → x FreeIn N → x FreeIn (λᵀ y ∈ A ⇒ N)
+  free-·ᵀ₁ : ∀ {x L M} → x FreeIn L → x FreeIn (L ·ᵀ M)
+  free-·ᵀ₂ : ∀ {x L M} → x FreeIn M → x FreeIn (L ·ᵀ M)
+  free-ifᵀ₁ : ∀ {x L M N} → x FreeIn L → x FreeIn (ifᵀ L then M else N)
+  free-ifᵀ₂ : ∀ {x L M N} → x FreeIn M → x FreeIn (ifᵀ L then M else N)
+  free-ifᵀ₃ : ∀ {x L M N} → x FreeIn N → x FreeIn (ifᵀ L then M else N)
 \end{code}
 
 A term in which no variables appear free is said to be _closed_.
 
 \begin{code}
-{-
-Closed : Term → Set
-Closed t = ∀ {x} → ¬ (x FreeIn t)
--}
+closed : Term → Set
+closed M = ∀ {x} → ¬ (x FreeIn M)
 \end{code}
 
 #### Exercise: 1 star (free-in)
@@ -216,76 +211,79 @@ are really the crux of the lambda-calculus.)
 ### Substitution
 To prove that substitution preserves typing, we first need a
 technical lemma connecting free variables and typing contexts: If
-a variable $$x$$ appears free in a term $$t$$, and if we know $$t$$ is
-well typed in context $$\Gamma$$, then it must be the case that
-$$\Gamma$$ assigns a type to $$x$$.
+a variable $$x$$ appears free in a term $$M$$, and if we know $$M$$ is
+well typed in context $$Γ$$, then it must be the case that
+$$Γ$$ assigns a type to $$x$$.
 
 \begin{code}
-{-
-freeInCtxt : ∀ {x t A Γ} → x FreeIn t → Γ ⊢ t ∶ A → ∃ λ B → Γ x ≡ just B
--}
+freeLemma : ∀ {x M A Γ} → x FreeIn M → Γ ⊢ M ∈ A → ∃ λ B → Γ x ≡ just B
 \end{code}
 
 _Proof_: We show, by induction on the proof that $$x$$ appears
-  free in $$t$$, that, for all contexts $$\Gamma$$, if $$t$$ is well
-  typed under $$\Gamma$$, then $$\Gamma$$ assigns some type to $$x$$.
+  free in $$P$$, that, for all contexts $$Γ$$, if $$P$$ is well
+  typed under $$Γ$$, then $$Γ$$ assigns some type to $$x$$.
 
-  - If the last rule used was `var`, then $$t = x$$, and from
-    the assumption that $$t$$ is well typed under $$\Gamma$$ we have
-    immediately that $$\Gamma$$ assigns a type to $$x$$.
+  - If the last rule used was `free-varᵀ`, then $$P = x$$, and from
+    the assumption that $$M$$ is well typed under $$Γ$$ we have
+    immediately that $$Γ$$ assigns a type to $$x$$.
 
-  - If the last rule used was `app1`, then $$t = t_1\;t_2$$ and $$x$$
-    appears free in $$t_1$$.  Since $$t$$ is well typed under $$\Gamma$$,
-    we can see from the typing rules that $$t_1$$ must also be, and
-    the IH then tells us that $$\Gamma$$ assigns $$x$$ a type.
+  - If the last rule used was `free-·₁`, then $$P = L ·ᵀ M$$ and $$x$$
+    appears free in $$L$$.  Since $$L$$ is well typed under $$\Gamma$$,
+    we can see from the typing rules that $$L$$ must also be, and
+    the IH then tells us that $$Γ$$ assigns $$x$$ a type.
 
   - Almost all the other cases are similar: $$x$$ appears free in a
-    subterm of $$t$$, and since $$t$$ is well typed under $$\Gamma$$, we
-    know the subterm of $$t$$ in which $$x$$ appears is well typed
-    under $$\Gamma$$ as well, and the IH gives us exactly the
+    subterm of $$P$$, and since $$P$$ is well typed under $$Γ$$, we
+    know the subterm of $$M$$ in which $$x$$ appears is well typed
+    under $$Γ$$ as well, and the IH gives us exactly the
     conclusion we want.
 
-  - The only remaining case is `abs`.  In this case $$t =
-    \lambda y:A.t'$$, and $$x$$ appears free in $$t'$$; we also know that
+  - The only remaining case is `free-λᵀ`.  In this case $$P =
+    λᵀ y ∈ A ⇒ N$$, and $$x$$ appears free in $$N$$; we also know that
     $$x$$ is different from $$y$$.  The difference from the previous
-    cases is that whereas $$t$$ is well typed under $$\Gamma$$, its
-    body $$t'$$ is well typed under $$(\Gamma, y:A)$$, so the IH
+    cases is that whereas $$P$$ is well typed under $$\Gamma$$, its
+    body $$N$$ is well typed under $$(Γ , y ↦ A)$$, so the IH
     allows us to conclude that $$x$$ is assigned some type by the
-    extended context $$(\Gamma, y:A)$$.  To conclude that $$\Gamma$$
+    extended context $$(Γ , y ↦ A)$$.  To conclude that $$Γ$$
     assigns a type to $$x$$, we appeal the decidable equality for names
     `_≟_`, noting that $$x$$ and $$y$$ are different variables.
 
 \begin{code}
-{-
-freeInCtxt var (var _ x∶A) = (_ , x∶A)
-freeInCtxt (app1 x∈t₁) (app t₁∶A _   ) = freeInCtxt x∈t₁ t₁∶A
-freeInCtxt (app2 x∈t₂) (app _    t₂∶A) = freeInCtxt x∈t₂ t₂∶A
-freeInCtxt (if1  x∈t₁) (if t₁∶A then _    else _   ) = freeInCtxt x∈t₁ t₁∶A
-freeInCtxt (if2  x∈t₂) (if _    then t₂∶A else _   ) = freeInCtxt x∈t₂ t₂∶A
-freeInCtxt (if3  x∈t₃) (if _    then _    else t₃∶A) = freeInCtxt x∈t₃ t₃∶A
-freeInCtxt {x} (abs {y} y≠x x∈t) (abs t∶B)
-    with freeInCtxt x∈t t∶B
-... | x∶A
-    with y ≟ x
-... | yes y=x = ⊥-elim (y≠x y=x)
-... | no  _   = x∶A
--}
+freeLemma free-varᵀ (Ax Γx≡justA) = (_ , Γx≡justA)
+freeLemma (free-·ᵀ₁ x∈L) (⇒-E ⊢L ⊢M) = freeLemma x∈L ⊢L
+freeLemma (free-·ᵀ₂ x∈M) (⇒-E ⊢L ⊢M) = freeLemma x∈M ⊢M
+freeLemma (free-ifᵀ₁ x∈L) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈L ⊢L
+freeLemma (free-ifᵀ₂ x∈M) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈M ⊢M
+freeLemma (free-ifᵀ₃ x∈N) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈N ⊢N
+freeLemma (free-λᵀ {x} {y} y≢x x∈N) (⇒-I ⊢N) with freeLemma x∈N ⊢N
+... | Γx=justC with y ≟ x
+... | yes y≡x = ⊥-elim (y≢x y≡x)
+... | no  _   = Γx=justC
 \end{code}
 
-Next, we'll need the fact that any term $$t$$ which is well typed in
+[A subtle point: if the first argument of $$free-λᵀ$$ was of type
+$$x ≢ y$$ rather than of type $$y ≢ x$$, then the type of the
+term $$Γx=justC$$ would not simplify properly.]
+
+Next, we'll need the fact that any term $$M$$ which is well typed in
 the empty context is closed (it has no free variables).
 
 #### Exercise: 2 stars, optional (∅⊢-closed)
 
 \begin{code}
-{-
 postulate
-  ∅⊢-closed : ∀ {t A} → ∅ ⊢ t ∶ A → Closed t
--}
+  ∅⊢-closed : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
 \end{code}
 
 <div class="hidden">
 \begin{code}
+contradiction : ∀ {A : Set} → ∀ {v : A} → ¬ (_≡_ {A = Maybe A} (just v) nothing)
+contradiction ()
+
+∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
+∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
+... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) apply-∅)
+
 {-
 ∅⊢-closed′ : ∀ {t A} → ∅ ⊢ t ∶ A → Closed t
 ∅⊢-closed′ (var x ())
@@ -567,7 +565,6 @@ expressions.  Does this property hold for STLC?  That is, is it always the case
 that, if $$t ==> t'$$ and $$has_type t' T$$, then $$empty \vdash t : T$$?  If
 so, prove it.  If not, give a counter-example not involving conditionals. 
 
-(* FILL IN HERE
 
 ## Type Soundness
 
@@ -586,8 +583,6 @@ Proof.
   intros t t' T Hhas_type Hmulti. unfold stuck.
   intros $$Hnf Hnot_val$$. unfold normal_form in Hnf.
   induction Hmulti.
-  (* FILL IN HERE  Admitted.
-(** $$$$
 
 
 ## Uniqueness of Types
@@ -596,9 +591,6 @@ Proof.
 Another nice property of the STLC is that types are unique: a
 given term (in a given context) has at most one type.
 Formalize this statement and prove it.
-
-(* FILL IN HERE
-(** $$$$
 
 
 ## Additional Exercises
@@ -790,4 +782,3 @@ with arithmetic.  Specifically:
     the original STLC to deal with the new syntactic forms.  Make
     sure Agda accepts the whole file.
 
--}

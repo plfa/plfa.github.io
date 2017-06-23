@@ -356,6 +356,11 @@ As before, we define handy abbreviations for updating a map two, three, or four 
 We now lift all of the basic lemmas about total maps to partial maps.
 
 \begin{code}
+  apply-∅ : ∀ {A} → (x : Id) → (∅ {A} x) ≡ nothing
+  apply-∅ x  = TotalMap.apply-always nothing x
+\end{code}
+
+\begin{code}
   update-eq : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A)
             → (ρ , x ↦ v) x ≡ just v
   update-eq ρ x v = TotalMap.update-eq ρ x (just v)
