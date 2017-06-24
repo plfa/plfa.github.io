@@ -29,6 +29,9 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 Syntax of types and terms. All source terms are labeled with $ᵀ$.
 
 \begin{code}
+infixr 100 _⇒_
+infixl 100 _·ᵀ_
+
 data Type : Set where
   𝔹 : Type
   _⇒_ : Type → Type → Type
@@ -69,8 +72,12 @@ data value : Term → Set where
 
 \begin{code}
 _[_:=_] : Term → Id → Term → Term
-(varᵀ x) [ y := P ] = if ⌊ x ≟ y ⌋ then P else (varᵀ x)
-(λᵀ x ∈ A ⇒ N) [ y := P ] =  λᵀ x ∈ A ⇒ (if ⌊ x ≟ y ⌋ then N else (N [ y := P ])) 
+(varᵀ x) [ y := P ] with x ≟ y
+... | yes _ = P
+... | no  _ = varᵀ x
+(λᵀ x ∈ A ⇒ N) [ y := P ] with x ≟ y
+... | yes _ = λᵀ x ∈ A ⇒ N
+... | no  _ = λᵀ x ∈ A ⇒ (N [ y := P ])
 (L ·ᵀ M) [ y := P ] =  (L [ y := P ]) ·ᵀ (M [ y := P ])
 (trueᵀ) [ y := P ] = trueᵀ
 (falseᵀ) [ y := P ] = falseᵀ
@@ -89,7 +96,7 @@ data _⟹_ : Term → Term → Set where
   γ⇒₂ : ∀ {V M M'} →
     value V →
     M ⟹ M' →
-    (V ·ᵀ M) ⟹ (V ·ᵀ M)
+    (V ·ᵀ M) ⟹ (V ·ᵀ M')
   β𝔹₁ : ∀ {M N} →
     (ifᵀ trueᵀ then M else N) ⟹ M
   β𝔹₂ : ∀ {M N} →
@@ -105,10 +112,12 @@ data _⟹_ : Term → Term → Set where
 Rel : Set → Set₁
 Rel A = A → A → Set
 
+infixl 100 _>>_
+
 data _* {A : Set} (R : Rel A) : Rel A where
-  refl* : ∀ {x : A} → (R *) x x
-  step* : ∀ {x y : A} → R x y → (R *) x y
-  tran* : ∀ {x y z : A} → (R *) x y → (R *) y z → (R *) x z
+  ⟨⟩ : ∀ {x : A} → (R *) x x
+  ⟨_⟩ : ∀ {x y : A} → R x y → (R *) x y
+  _>>_ : ∀ {x y z : A} → (R *) x y → (R *) y z → (R *) x z
 \end{code}
 
 \begin{code}
@@ -116,13 +125,50 @@ _⟹*_ : Term → Term → Set
 _⟹*_ = (_⟹_) *
 \end{code}
 
+Example evaluation.
+
+\begin{code}
+example₀ : (not[𝔹] ·ᵀ trueᵀ) ⟹* falseᵀ
+example₀ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩
+  where
+  M₀ M₁ M₂ : Term
+  M₀ = (not[𝔹] ·ᵀ trueᵀ)
+  M₁ = (ifᵀ trueᵀ then falseᵀ else trueᵀ)
+  M₂ = falseᵀ
+  step₀ : M₀ ⟹ M₁
+  step₀ = β⇒ value-trueᵀ
+  step₁ : M₁ ⟹ M₂
+  step₁ = β𝔹₁
+
+example₁ : (I[𝔹⇒𝔹] ·ᵀ I[𝔹] ·ᵀ (not[𝔹] ·ᵀ falseᵀ)) ⟹* trueᵀ
+example₁ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩ >> ⟨ step₂ ⟩ >> ⟨ step₃ ⟩ >> ⟨ step₄ ⟩
+  where
+  M₀ M₁ M₂ M₃ M₄ M₅ : Term
+  M₀ = (I[𝔹⇒𝔹] ·ᵀ I[𝔹] ·ᵀ (not[𝔹] ·ᵀ falseᵀ))
+  M₁ = ((λᵀ x ∈ 𝔹 ⇒ (I[𝔹] ·ᵀ varᵀ x)) ·ᵀ (not[𝔹] ·ᵀ falseᵀ))
+  M₂ = ((λᵀ x ∈ 𝔹 ⇒ (I[𝔹] ·ᵀ varᵀ x)) ·ᵀ (ifᵀ falseᵀ then falseᵀ else trueᵀ))
+  M₃ = ((λᵀ x ∈ 𝔹 ⇒ (I[𝔹] ·ᵀ varᵀ x)) ·ᵀ trueᵀ)
+  M₄ = I[𝔹] ·ᵀ trueᵀ
+  M₅ = trueᵀ
+  step₀ : M₀ ⟹ M₁
+  step₀ = γ⇒₁ (β⇒ value-λᵀ)
+  step₁ : M₁ ⟹ M₂
+  step₁ = γ⇒₂ value-λᵀ (β⇒ value-falseᵀ)
+  step₂ : M₂ ⟹ M₃
+  step₂ = γ⇒₂ value-λᵀ β𝔹₂
+  step₃ : M₃ ⟹ M₄
+  step₃ = β⇒ value-trueᵀ         
+  step₄ : M₄ ⟹ M₅
+  step₄ = β⇒ value-trueᵀ         
+\end{code}
+
 ## Type rules
 
 \begin{code}
-Env : Set
-Env = PartialMap Type
+Context : Set
+Context = PartialMap Type
 
-data _⊢_∈_ : Env → Term → Type → Set where
+data _⊢_∈_ : Context → Term → Type → Set where
   Ax : ∀ {Γ x A} →
     Γ x ≡ just A →
     Γ ⊢ varᵀ x ∈ A
