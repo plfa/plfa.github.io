@@ -490,12 +490,6 @@ weaken-closed {P} {A} {Γ} ⊢P = weaken g ⊢P
 
 
 {-
-[:=]-preserves-⊢ {x} ⊢P (Ax {_} {y} Γy≡justB) with x ≟ y
-... | yes x=y = ?
-... | no  x≠y = ?
-
-
-
 [:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
 ... | yes x=y = {!!}
 ... | no  x≠y = {!!}
