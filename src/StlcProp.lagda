@@ -280,25 +280,9 @@ postulate
 contradiction : ∀ {A : Set} → ∀ {v : A} → ¬ (_≡_ {A = Maybe A} (just v) nothing)
 contradiction ()
 
--- ∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
--- ∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
--- ... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) apply-∅)
-
-{-
-∅⊢-closed′ : ∀ {t A} → ∅ ⊢ t ∶ A → Closed t
-∅⊢-closed′ (var x ())
-∅⊢-closed′ (app t₁∶A⇒B t₂∶A) (app1 x∈t₁) = ∅⊢-closed′ t₁∶A⇒B x∈t₁
-∅⊢-closed′ (app t₁∶A⇒B t₂∶A) (app2 x∈t₂) = ∅⊢-closed′ t₂∶A x∈t₂
-∅⊢-closed′ true  ()
-∅⊢-closed′ false ()
-∅⊢-closed′ (if t₁∶bool then t₂∶A else t₃∶A) (if1 x∈t₁) = ∅⊢-closed′ t₁∶bool x∈t₁
-∅⊢-closed′ (if t₁∶bool then t₂∶A else t₃∶A) (if2 x∈t₂) = ∅⊢-closed′ t₂∶A x∈t₂
-∅⊢-closed′ (if t₁∶bool then t₂∶A else t₃∶A) (if3 x∈t₃) = ∅⊢-closed′ t₃∶A x∈t₃
-∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) with freeInCtxt y∈t′ t′∶A
-∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) | A , y∶A with x ≟ y
-∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) | A , y∶A | yes x=y = x≠y x=y
-∅⊢-closed′ (abs {x = x} t′∶A) {y} (abs x≠y y∈t′) | A , ()  | no  _
--}
+∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
+∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
+... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) (apply-∅ x))
 \end{code}
 </div>
 
@@ -358,12 +342,6 @@ $$Γ ⊢ M ∈ A$$.
     $$t_1$$ are also free in $$t_1\;t_2$$, and similarly for $$t_2$$;
     hence the desired result follows from the induction hypotheses.
 
--- weaken : ∀ {Γ Γ′ M A}
---            → (∀ {x} → x FreeIn M → Γ x ≡ Γ′ x)
---            → Γ  ⊢ M ∈ A
---            → Γ′ ⊢ M ∈ A
-
-
 \begin{code}
 weaken Γ⊆Γ′ (Ax Γx≡justA) rewrite (Γ⊆Γ′ free-varᵀ) = Ax Γx≡justA
 weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ⊆Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx⊆Γ′x ⊢N)
@@ -417,10 +395,10 @@ _Lemma_: If $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then
 $$\Gamma \vdash [x:=v]t : T$$.
 
 \begin{code}
-[:=]-preserves-⊢ : ∀ {Γ x A N P B}
+[:=]-preserves-⊢ : ∀ {Γ y A P N B}
                  → ∅ ⊢ P ∈ A
-                 → Γ , x ↦ A ⊢ N ∈ B
-                 → Γ , x ↦ A ⊢ N [ x := P ] ∈ B
+                 → (Γ , y ↦ A) ⊢ N ∈ B
+                 → (Γ , y ↦ A) ⊢ N [ y := P ] ∈ B
 \end{code}
 
 One technical subtlety in the statement of the lemma is that
@@ -438,47 +416,47 @@ property.  Intuitively, it says that substitution and typing can
 be done in either order: we can either assign types to the terms
 $$N$$ and $$P$$ separately (under suitable contexts) and then combine
 them using substitution, or we can substitute first and then
-assign a type to $$N [ x := P ]$$---the result is the same either
+assign a type to $$N [ y := P ]$$---the result is the same either
 way.
 
 _Proof_: We show, by induction on $$N$$, that for all $$A$$ and
-$$Γ$$, if $$Γ , x ↦ A \vdash N ∈ B$$ and $$∅ ⊢ P ∈ B$$, then
-$$Γ \vdash N [ x := P ] ∈ B$$.
+$$Γ$$, if $$Γ , y ↦ A \vdash N ∈ B$$ and $$∅ ⊢ P ∈ B$$, then
+$$Γ \vdash N [ y := P ] ∈ B$$.
 
   - If $$N$$ is a variable there are two cases to consider,
-    depending on whether $$N$$ is $$x$$ or some other variable.
+    depending on whether $$N$$ is $$y$$ or some other variable.
 
-      - If $$N = x$$, then from the fact that $$Γ , x ↦ A ⊢ N ∈ B$$
-        we conclude that $$A = B$$.  We must show that $$x [ x := P] =
+      - If $$N = varᵀ y$$, then from the fact that $$Γ , y ↦ A ⊢ N ∈ B$$
+        we conclude that $$A = B$$.  We must show that $$y [ y := P] =
         P$$ has type $$A$$ under $$Γ$$, given the assumption that
         $$P$$ has type $$A$$ under the empty context.  This
         follows from context invariance: if a closed term has type
         $$A$$ in the empty context, it has that type in any context.
 
-      - If $$N$$ is some variable $$y$$ that is not equal to $$x$$, then
-        we need only note that $$y$$ has the same type under $$Γ , x ↦ A$$
+      - If $$N$$ is some variable $$x$$ that is not equal to $$y$$, then
+        we need only note that $$x$$ has the same type under $$Γ , y ↦ A$$
         as under $$Γ$$.
 
-  - If $$N$$ is an abstraction $$λᵀ y ∈ A′ ⇒ N′$$, then the IH tells us,
-    for all $$Γ′$$́ and $$A′$$, that if $$Γ′ , x ↦ A ⊢ N′ ∈ B′$$
-    and $$∅ ⊢ P ∈ A$$, then $$Γ′ ⊢ N′ [ x := P ] ∈ B′$$.
+  - If $$N$$ is an abstraction $$λᵀ x ∈ A′ ⇒ N′$$, then the IH tells us,
+    for all $$Γ′$$́ and $$A′$$, that if $$Γ′ , y ↦ A ⊢ N′ ∈ B′$$
+    and $$∅ ⊢ P ∈ A$$, then $$Γ′ ⊢ N′ [ y := P ] ∈ B′$$.
 
     The substitution in the conclusion behaves differently
     depending on whether $$x$$ and $$y$$ are the same variable.
 
     First, suppose $$x ≡ y$$.  Then, by the definition of
-    substitution, $$N [ x := P] = N$$, so we just need to show $$Γ ⊢ N ∈ B$$.
-    But we know $$Γ , x ↦ A ⊢ N ∈ B$$ and, since $$x ≡ y$$
-    does not appear free in $$λᵀ y ∈ A′ ⇒ N′$$, the context invariance
+    substitution, $$N [ y := P] = N$$, so we just need to show $$Γ ⊢ N ∈ B$$.
+    But we know $$Γ , y ↦ A ⊢ N ∈ B$$ and, since $$x ≡ y$$
+    does not appear free in $$λᵀ x ∈ A′ ⇒ N′$$, the context invariance
     lemma yields $$Γ ⊢ N ∈ B$$.
 
-    Second, suppose $$x ≢ y$$.  We know $$Γ , x ↦ A , y ↦ A′ ⊢ N' ∈ B′$$
+    Second, suppose $$x ≢ y$$.  We know $$Γ , y ↦ A , x ↦ A′ ⊢ N' ∈ B′$$
     by inversion of the typing relation, from which
-    $$Γ , y ↦ A′ , x ↦ A ⊢ N′ ∈ B′$$ follows by update permute,
-    so the IH applies, giving us $$Γ , y ↦ A′ ⊢ N′ [ x := P ] ∈ B′$$
-    By $$⇒-I$$, we have $$Γ ⊢ λᵀ y ∈ A′ ⇒ (N′ [ x := P ]) ∈ A′ ⇒ B′$$
+    $$Γ , x ↦ A′ , y ↦ A ⊢ N′ ∈ B′$$ follows by update permute,
+    so the IH applies, giving us $$Γ , x ↦ A′ ⊢ N′ [ y := P ] ∈ B′$$
+    By $$⇒-I$$, we have $$Γ ⊢ λᵀ x ∈ A′ ⇒ (N′ [ y := P ]) ∈ A′ ⇒ B′$$
     and the definition of substitution (noting $$x ≢ y$$) gives
-    $$Γ ⊢ (λᵀ y ∈ A′ ⇒ N′) [ x := P ] ∈ A′ ⇒ B′$$ as required.
+    $$Γ ⊢ (λᵀ x ∈ A′ ⇒ N′) [ y := P ] ∈ A′ ⇒ B′$$ as required.
 
   - If $$N$$ is an application $$L ·ᵀ M$$, the result follows
     straightforwardly from the definition of substitution and the
@@ -486,24 +464,38 @@ $$Γ \vdash N [ x := P ] ∈ B$$.
 
   - The remaining cases are similar to the application case.
 
-One more technical note: This proof is a rare case where an
-induction on terms, rather than typing derivations, yields a
-simpler argument.  The reason for this is that the assumption
-$$Γ , x ↦ A ⊢ N ∈ B$$ is not completely generic, in the
-sense that one of the "slots" in the typing relation---namely the
-context---is not just a variable, and this means that Agda's
-native induction tactic does not give us the induction hypothesis
-that we want.  It is possible to work around this, but the needed
-generalization is a little tricky.  The term $$t$$, on the other
-hand, _is_ completely generic.
+For one case, we need to know that weakening applies to any closed term.
+\begin{code}
+weaken-closed : ∀ {P A Γ} → ∅ ⊢ P ∈ A → Γ ⊢ P ∈ A
+weaken-closed {P} {A} {Γ} ⊢P = weaken g ⊢P
+  where
+  g : ∀ {x} → x FreeIn P → ∅ x ≡ Γ x
+  g {x} x∈P = ⊥-elim (x∉P x∈P)
+    where
+    x∉P : ¬ (x FreeIn P)
+    x∉P = ∅⊢-closed ⊢P {x}
+\end{code}
 
 \begin{code}
-[:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
-... | yes x=y = {!!}
-... | no  x≠y = {!!}
+[:=]-preserves-⊢ {Γ} {y} {A} ⊢P (Ax {_} {x} {B} Γx≡justB) with x ≟ y
+...| yes x≡y  =  {!!}  -- weaken-closed ⊢P
+...| no  x≢y  =  Ax {_} {x} Γx≡justB
+[:=]-preserves-⊢ {Γ} {y} {A} ⊢P (⇒-I {_} {x} ⊢N) with x ≟ y
+...| yes x≡y  = ⇒-I {_} {x} ⊢N
+...| no  x≢y  = {!!} -- ⇒-I {_} {x} ([:=]-preserves-⊢ {_} {y} {A} ⊢P ⊢N)
+[:=]-preserves-⊢ ⊢P (⇒-E ⊢L ⊢M) = ⇒-E ([:=]-preserves-⊢ ⊢P ⊢L) ([:=]-preserves-⊢ ⊢P ⊢M)
+[:=]-preserves-⊢ ⊢P 𝔹-I₁ = 𝔹-I₁
+[:=]-preserves-⊢ ⊢P 𝔹-I₂ = 𝔹-I₂
+[:=]-preserves-⊢ ⊢P (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E ([:=]-preserves-⊢ ⊢P ⊢L) ([:=]-preserves-⊢ ⊢P ⊢M) ([:=]-preserves-⊢ ⊢P ⊢N)
 
 
 {-
+[:=]-preserves-⊢ {x} ⊢P (Ax {_} {y} Γy≡justB) with x ≟ y
+... | yes x=y = ?
+... | no  x≠y = ?
+
+
+
 [:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
 ... | yes x=y = {!!}
 ... | no  x≠y = {!!}
