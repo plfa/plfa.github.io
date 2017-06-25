@@ -104,19 +104,19 @@ _Proof_: By induction on the derivation of $$\vdash t : A$$.
 \begin{code}
 progress (Ax ())
 progress (⇒-I ⊢N) = inj₁ value-λᵀ
-progress (⇒-E ⊢L ⊢M) with progress ⊢L
-... | inj₂ (_ , L⟹L′) = inj₂ (_ , γ⇒₁ L⟹L′)
+progress (⇒-E {Γ} {L} {M} {A} {B} ⊢L ⊢M) with progress ⊢L
+... | inj₂ (L′ , L⟹L′) = inj₂ (L′ ·ᵀ M , γ⇒₁ L⟹L′)
 ... | inj₁ valueL with progress ⊢M
-... | inj₂ (_ , M⟹M′) = inj₂ (_ , γ⇒₂ valueL M⟹M′)
+... | inj₂ (M′ , M⟹M′) = inj₂ (L ·ᵀ M′ , γ⇒₂ valueL M⟹M′)
 ... | inj₁ valueM with canonicalFormsLemma ⊢L valueL
-... | canonical-λᵀ = inj₂ (_ , β⇒ valueM)
+... | canonical-λᵀ {x} {.A} {N} {.B} = inj₂ ((N [ x := M ]) , β⇒ valueM)
 progress 𝔹-I₁ = inj₁ value-trueᵀ
 progress 𝔹-I₂ = inj₁ value-falseᵀ
-progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
-... | inj₂ (_ , L⟹L′) = inj₂ (_ , γ𝔹 L⟹L′)
+progress (𝔹-E {Γ} {L} {M} {N} {A} ⊢L ⊢M ⊢N) with progress ⊢L
+... | inj₂ (L′ , L⟹L′) = inj₂ ((ifᵀ L′ then M else N) , γ𝔹 L⟹L′)
 ... | inj₁ valueL with canonicalFormsLemma ⊢L valueL
-... | canonical-trueᵀ = inj₂ (_ , β𝔹₁)
-... | canonical-falseᵀ = inj₂ (_ , β𝔹₂)
+... | canonical-trueᵀ = inj₂ (M , β𝔹₁)
+... | canonical-falseᵀ = inj₂ (N , β𝔹₂)
 \end{code}
 
 #### Exercise: 3 stars, optional (progress_from_term_ind)
@@ -417,73 +417,70 @@ _Lemma_: If $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then
 $$\Gamma \vdash [x:=v]t : T$$.
 
 \begin{code}
-{-
-[:=]-preserves-⊢ : ∀ {Γ x A t v B}
-                 → ∅ ⊢ v ∶ A
-                 → Γ , x ∶ A ⊢ t ∶ B
-                 → Γ , x ∶ A ⊢ [ x := v ] t ∶ B
--}
+[:=]-preserves-⊢ : ∀ {Γ x A N P B}
+                 → ∅ ⊢ P ∈ A
+                 → Γ , x ↦ A ⊢ N ∈ B
+                 → Γ , x ↦ A ⊢ N [ x := P ] ∈ B
 \end{code}
 
 One technical subtlety in the statement of the lemma is that
-we assign $$v$$ the type $$U$$ in the _empty_ context---in other
-words, we assume $$v$$ is closed.  This assumption considerably
-simplifies the $$abs$$ case of the proof (compared to assuming
-$$\Gamma \vdash v : U$$, which would be the other reasonable assumption
+we assign $$P$$ the type $$A$$ in the _empty_ context---in other
+words, we assume $$P$$ is closed.  This assumption considerably
+simplifies the $$λᵀ$$ case of the proof (compared to assuming
+$$Γ ⊢ P ∈ A$$, which would be the other reasonable assumption
 at this point) because the context invariance lemma then tells us
-that $$v$$ has type $$U$$ in any context at all---we don't have to
-worry about free variables in $$v$$ clashing with the variable being
-introduced into the context by $$abs$$.
+that $$P$$ has type $$A$$ in any context at all---we don't have to
+worry about free variables in $$P$$ clashing with the variable being
+introduced into the context by $$λᵀ$$.
 
 The substitution lemma can be viewed as a kind of "commutation"
 property.  Intuitively, it says that substitution and typing can
 be done in either order: we can either assign types to the terms
-$$t$$ and $$v$$ separately (under suitable contexts) and then combine
+$$N$$ and $$P$$ separately (under suitable contexts) and then combine
 them using substitution, or we can substitute first and then
-assign a type to $$ $$x:=v$$ t $$---the result is the same either
+assign a type to $$N [ x := P ]$$---the result is the same either
 way.
 
-_Proof_: We show, by induction on $$t$$, that for all $$T$$ and
-$$\Gamma$$, if $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then $$\Gamma
-\vdash $$x:=v$$t : T$$.
+_Proof_: We show, by induction on $$N$$, that for all $$A$$ and
+$$Γ$$, if $$Γ , x ↦ A \vdash N ∈ B$$ and $$∅ ⊢ P ∈ B$$, then
+$$Γ \vdash N [ x := P ] ∈ B$$.
 
-  - If $$t$$ is a variable there are two cases to consider,
-    depending on whether $$t$$ is $$x$$ or some other variable.
+  - If $$N$$ is a variable there are two cases to consider,
+    depending on whether $$N$$ is $$x$$ or some other variable.
 
-      - If $$t = x$$, then from the fact that $$\Gamma, x:U \vdash x :
-        T$$ we conclude that $$U = T$$.  We must show that $$[x:=v]x =
-        v$$ has type $$T$$ under $$\Gamma$$, given the assumption that
-        $$v$$ has type $$U = T$$ under the empty context.  This
+      - If $$N = x$$, then from the fact that $$Γ , x ↦ A ⊢ N ∈ B$$
+        we conclude that $$A = B$$.  We must show that $$x [ x := P] =
+        P$$ has type $$A$$ under $$Γ$$, given the assumption that
+        $$P$$ has type $$A$$ under the empty context.  This
         follows from context invariance: if a closed term has type
-        $$T$$ in the empty context, it has that type in any context.
+        $$A$$ in the empty context, it has that type in any context.
 
-      - If $$t$$ is some variable $$y$$ that is not equal to $$x$$, then
-        we need only note that $$y$$ has the same type under $$\Gamma,
-        x:U$$ as under $$\Gamma$$.
+      - If $$N$$ is some variable $$y$$ that is not equal to $$x$$, then
+        we need only note that $$y$$ has the same type under $$Γ , x ↦ A$$
+        as under $$Γ$$.
 
-  - If $$t$$ is an abstraction $$\lambda y:t_{11}. t_{12}$$, then the IH tells us,
-    for all $$\Gamma'$$ and $$T'$$, that if $$\Gamma',x:U \vdash t_{12}:T'$$
-    and $$\vdash v:U$$, then $$\Gamma' \vdash [x:=v]t_{12}:T'$$.
+  - If $$N$$ is an abstraction $$λᵀ y ∈ A′ ⇒ N′$$, then the IH tells us,
+    for all $$Γ′$$́ and $$A′$$, that if $$Γ′ , x ↦ A ⊢ N′ ∈ B′$$
+    and $$∅ ⊢ P ∈ A$$, then $$Γ′ ⊢ N′ [ x := P ] ∈ B′$$.
 
     The substitution in the conclusion behaves differently
     depending on whether $$x$$ and $$y$$ are the same variable.
 
-    First, suppose $$x = y$$.  Then, by the definition of
-    substitution, $$[x:=v]t = t$$, so we just need to show $$\Gamma \vdash
-    t : T$$.  But we know $$\Gamma,x:U \vdash t : T$$, and, since $$y$$
-    does not appear free in $$\lambda y:t_{11}. t_{12}$$, the context invariance
-    lemma yields $$\Gamma \vdash t : T$$.
+    First, suppose $$x ≡ y$$.  Then, by the definition of
+    substitution, $$N [ x := P] = N$$, so we just need to show $$Γ ⊢ N ∈ B$$.
+    But we know $$Γ , x ↦ A ⊢ N ∈ B$$ and, since $$x ≡ y$$
+    does not appear free in $$λᵀ y ∈ A′ ⇒ N′$$, the context invariance
+    lemma yields $$Γ ⊢ N ∈ B$$.
 
-    Second, suppose $$x \neq y$$.  We know $$\Gamma,x:U,y:t_{11} \vdash
-    t_{12}:t_{12}$$ by inversion of the typing relation, from which
-    $$\Gamma,y:t_{11},x:U \vdash t_{12}:t_{12}$$ follows by the context invariance
-    lemma, so the IH applies, giving us $$\Gamma,y:t_{11} \vdash
-    [x:=v]t_{12}:t_{12}$$.  By $$abs$$, $$\Gamma \vdash \lambda y:t_{11}.
-    [x:=v]t_{12}:t_{11}\to t_{12}$$, and by the definition of substitution (noting
-    that $$x \neq y$$), $$\Gamma \vdash \lambda y:t_{11}. [x:=v]t_{12}:t_{11}\to
-    t_{12}$$ as required. 
+    Second, suppose $$x ≢ y$$.  We know $$Γ , x ↦ A , y ↦ A′ ⊢ N' ∈ B′$$
+    by inversion of the typing relation, from which
+    $$Γ , y ↦ A′ , x ↦ A ⊢ N′ ∈ B′$$ follows by update permute,
+    so the IH applies, giving us $$Γ , y ↦ A′ ⊢ N′ [ x := P ] ∈ B′$$
+    By $$⇒-I$$, we have $$Γ ⊢ λᵀ y ∈ A′ ⇒ (N′ [ x := P ]) ∈ A′ ⇒ B′$$
+    and the definition of substitution (noting $$x ≢ y$$) gives
+    $$Γ ⊢ (λᵀ y ∈ A′ ⇒ N′) [ x := P ] ∈ A′ ⇒ B′$$ as required.
 
-  - If $$t$$ is an application $$t_1 t_2$$, the result follows
+  - If $$N$$ is an application $$L ·ᵀ M$$, the result follows
     straightforwardly from the definition of substitution and the
     induction hypotheses.
 
@@ -492,7 +489,7 @@ $$\Gamma$$, if $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then $$\Gamma
 One more technical note: This proof is a rare case where an
 induction on terms, rather than typing derivations, yields a
 simpler argument.  The reason for this is that the assumption
-$$update Gamma x U \vdash t : T$$ is not completely generic, in the
+$$Γ , x ↦ A ⊢ N ∈ B$$ is not completely generic, in the
 sense that one of the "slots" in the typing relation---namely the
 context---is not just a variable, and this means that Agda's
 native induction tactic does not give us the induction hypothesis
@@ -501,6 +498,11 @@ generalization is a little tricky.  The term $$t$$, on the other
 hand, _is_ completely generic.
 
 \begin{code}
+[:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
+... | yes x=y = {!!}
+... | no  x≠y = {!!}
+
+
 {-
 [:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
 ... | yes x=y = {!!}
