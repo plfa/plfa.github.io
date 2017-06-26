@@ -72,16 +72,16 @@ data value : Term → Set where
 
 \begin{code}
 _[_:=_] : Term → Id → Term → Term
-(varᵀ x) [ y := P ] with x ≟ y
-... | yes _ = P
-... | no  _ = varᵀ x
-(λᵀ x ∈ A ⇒ N) [ y := P ] with x ≟ y
-... | yes _ = λᵀ x ∈ A ⇒ N
-... | no  _ = λᵀ x ∈ A ⇒ (N [ y := P ])
-(L ·ᵀ M) [ y := P ] =  (L [ y := P ]) ·ᵀ (M [ y := P ])
-(trueᵀ) [ y := P ] = trueᵀ
-(falseᵀ) [ y := P ] = falseᵀ
-(ifᵀ L then M else N) [ y := P ] = ifᵀ (L [ y := P ]) then (M [ y := P ]) else (N [ y := P ])
+(varᵀ x′) [ x := V ] with x ≟ x′
+... | yes _ = V
+... | no  _ = varᵀ x′
+(λᵀ x′ ∈ A′ ⇒ N′) [ x := V ] with x ≟ x′
+... | yes _ = λᵀ x′ ∈ A′ ⇒ N′
+... | no  _ = λᵀ x′ ∈ A′ ⇒ (N′ [ x := V ])
+(L′ ·ᵀ M′) [ x := V ] =  (L′ [ x := V ]) ·ᵀ (M′ [ x := V ])
+(trueᵀ) [ x := V ] = trueᵀ
+(falseᵀ) [ x := V ] = falseᵀ
+(ifᵀ L′ then M′ else N′) [ x := V ] = ifᵀ (L′ [ x := V ]) then (M′ [ x := V ]) else (N′ [ x := V ])
 \end{code}
 
 ## Reduction rules

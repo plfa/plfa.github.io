@@ -343,18 +343,18 @@ $$Γ ⊢ M ∈ A$$.
     hence the desired result follows from the induction hypotheses.
 
 \begin{code}
-weaken Γ⊆Γ′ (Ax Γx≡justA) rewrite (Γ⊆Γ′ free-varᵀ) = Ax Γx≡justA
-weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ⊆Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx⊆Γ′x ⊢N)
+weaken Γ~Γ′ (Ax Γx≡justA) rewrite (Γ~Γ′ free-varᵀ) = Ax Γx≡justA
+weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx⊆Γ′x ⊢N)
   where
   Γx⊆Γ′x : ∀ {y} → y FreeIn N → (Γ , x ↦ A) y ≡ (Γ′ , x ↦ A) y
   Γx⊆Γ′x {y} y∈N with x ≟ y
   ... | yes refl = refl
-  ... | no  x≢y  = Γ⊆Γ′ (free-λᵀ x≢y y∈N)
-weaken Γ⊆Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (weaken (Γ⊆Γ′ ∘ free-·ᵀ₁)  ⊢L) (weaken (Γ⊆Γ′ ∘ free-·ᵀ₂) ⊢M) 
-weaken Γ⊆Γ′ 𝔹-I₁ = 𝔹-I₁
-weaken Γ⊆Γ′ 𝔹-I₂ = 𝔹-I₂
-weaken Γ⊆Γ′ (𝔹-E ⊢L ⊢M ⊢N)
-  = 𝔹-E (weaken (Γ⊆Γ′ ∘ free-ifᵀ₁) ⊢L) (weaken (Γ⊆Γ′ ∘ free-ifᵀ₂) ⊢M) (weaken (Γ⊆Γ′ ∘ free-ifᵀ₃) ⊢N)
+  ... | no  x≢y  = Γ~Γ′ (free-λᵀ x≢y y∈N)
+weaken Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (weaken (Γ~Γ′ ∘ free-·ᵀ₁)  ⊢L) (weaken (Γ~Γ′ ∘ free-·ᵀ₂) ⊢M) 
+weaken Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
+weaken Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
+weaken Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
+  = 𝔹-E (weaken (Γ~Γ′ ∘ free-ifᵀ₁) ⊢L) (weaken (Γ~Γ′ ∘ free-ifᵀ₂) ⊢M) (weaken (Γ~Γ′ ∘ free-ifᵀ₃) ⊢N)
 
 {-
 replaceCtxt f (var x x∶A
@@ -383,82 +383,82 @@ preserves types---namely, the observation that _substitution_
 preserves types.
 
 Formally, the so-called _Substitution Lemma_ says this: Suppose we
-have a term $$t$$ with a free variable $$x$$, and suppose we've been
-able to assign a type $$T$$ to $$t$$ under the assumption that $$x$$ has
-some type $$U$$.  Also, suppose that we have some other term $$v$$ and
-that we've shown that $$v$$ has type $$U$$.  Then, since $$v$$ satisfies
-the assumption we made about $$x$$ when typing $$t$$, we should be
-able to substitute $$v$$ for each of the occurrences of $$x$$ in $$t$$
-and obtain a new term that still has type $$T$$.
+have a term $$N$$ with a free variable $$x$$, and suppose we've been
+able to assign a type $$B$$ to $$N$$ under the assumption that $$x$$ has
+some type $$A$$.  Also, suppose that we have some other term $$V$$ and
+that we've shown that $$V$$ has type $$A$$.  Then, since $$V$$ satisfies
+the assumption we made about $$x$$ when typing $$N$$, we should be
+able to substitute $$V$$ for each of the occurrences of $$x$$ in $$N$$
+and obtain a new term that still has type $$B$$.
 
-_Lemma_: If $$\Gamma,x:U \vdash t : T$$ and $$\vdash v : U$$, then
-$$\Gamma \vdash [x:=v]t : T$$.
+_Lemma_: If $$Γ , x ↦ A ⊢ N ∈ B$$ and $$∅ ⊢ V ∈ A$$, then
+$$Γ ⊢ (N [ x := V ]) ∈ B$$.
 
 \begin{code}
-[:=]-preserves-⊢ : ∀ {Γ y A P N B}
-                 → ∅ ⊢ P ∈ A
-                 → (Γ , y ↦ A) ⊢ N ∈ B
-                 → (Γ , y ↦ A) ⊢ N [ y := P ] ∈ B
+preservation-[:=] : ∀ {Γ x A N B V}
+                 → ∅ ⊢ V ∈ A
+                 → (Γ , x ↦ A) ⊢ N ∈ B
+                 → Γ ⊢ (N [ x := V ]) ∈ B
 \end{code}
 
 One technical subtlety in the statement of the lemma is that
-we assign $$P$$ the type $$A$$ in the _empty_ context---in other
-words, we assume $$P$$ is closed.  This assumption considerably
+we assign $$V$$ the type $$A$$ in the _empty_ context---in other
+words, we assume $$V$$ is closed.  This assumption considerably
 simplifies the $$λᵀ$$ case of the proof (compared to assuming
-$$Γ ⊢ P ∈ A$$, which would be the other reasonable assumption
+$$Γ ⊢ V ∈ A$$, which would be the other reasonable assumption
 at this point) because the context invariance lemma then tells us
-that $$P$$ has type $$A$$ in any context at all---we don't have to
-worry about free variables in $$P$$ clashing with the variable being
+that $$V$$ has type $$A$$ in any context at all---we don't have to
+worry about free variables in $$V$$ clashing with the variable being
 introduced into the context by $$λᵀ$$.
 
 The substitution lemma can be viewed as a kind of "commutation"
 property.  Intuitively, it says that substitution and typing can
 be done in either order: we can either assign types to the terms
-$$N$$ and $$P$$ separately (under suitable contexts) and then combine
+$$N$$ and $$V$$ separately (under suitable contexts) and then combine
 them using substitution, or we can substitute first and then
-assign a type to $$N [ y := P ]$$---the result is the same either
+assign a type to $$N [ x := V ]$$---the result is the same either
 way.
 
 _Proof_: We show, by induction on $$N$$, that for all $$A$$ and
-$$Γ$$, if $$Γ , y ↦ A \vdash N ∈ B$$ and $$∅ ⊢ P ∈ B$$, then
-$$Γ \vdash N [ y := P ] ∈ B$$.
+$$Γ$$, if $$Γ , x ↦ A \vdash N ∈ B$$ and $$∅ ⊢ V ∈ A$$, then
+$$Γ \vdash N [ x := V ] ∈ B$$.
 
   - If $$N$$ is a variable there are two cases to consider,
-    depending on whether $$N$$ is $$y$$ or some other variable.
+    depending on whether $$N$$ is $$x$$ or some other variable.
 
-      - If $$N = varᵀ y$$, then from the fact that $$Γ , y ↦ A ⊢ N ∈ B$$
-        we conclude that $$A = B$$.  We must show that $$y [ y := P] =
-        P$$ has type $$A$$ under $$Γ$$, given the assumption that
-        $$P$$ has type $$A$$ under the empty context.  This
+      - If $$N = varᵀ x$$, then from the fact that $$Γ , x ↦ A ⊢ N ∈ B$$
+        we conclude that $$A = B$$.  We must show that $$x [ x := V] =
+        V$$ has type $$A$$ under $$Γ$$, given the assumption that
+        $$V$$ has type $$A$$ under the empty context.  This
         follows from context invariance: if a closed term has type
         $$A$$ in the empty context, it has that type in any context.
 
-      - If $$N$$ is some variable $$x$$ that is not equal to $$y$$, then
-        we need only note that $$x$$ has the same type under $$Γ , y ↦ A$$
+      - If $$N$$ is some variable $$x′$$ different from $$x$$, then
+        we need only note that $$x′$$ has the same type under $$Γ , x ↦ A$$
         as under $$Γ$$.
 
-  - If $$N$$ is an abstraction $$λᵀ x ∈ A′ ⇒ N′$$, then the IH tells us,
-    for all $$Γ′$$́ and $$A′$$, that if $$Γ′ , y ↦ A ⊢ N′ ∈ B′$$
-    and $$∅ ⊢ P ∈ A$$, then $$Γ′ ⊢ N′ [ y := P ] ∈ B′$$.
+  - If $$N$$ is an abstraction $$λᵀ x′ ∈ A′ ⇒ N′$$, then the IH tells us,
+    for all $$Γ′$$́ and $$B′$$, that if $$Γ′ , x ↦ A ⊢ N′ ∈ B′$$
+    and $$∅ ⊢ V ∈ A$$, then $$Γ′ ⊢ N′ [ x := V ] ∈ B′$$.
 
     The substitution in the conclusion behaves differently
-    depending on whether $$x$$ and $$y$$ are the same variable.
+    depending on whether $$x$$ and $$x′$$ are the same variable.
 
-    First, suppose $$x ≡ y$$.  Then, by the definition of
-    substitution, $$N [ y := P] = N$$, so we just need to show $$Γ ⊢ N ∈ B$$.
-    But we know $$Γ , y ↦ A ⊢ N ∈ B$$ and, since $$x ≡ y$$
-    does not appear free in $$λᵀ x ∈ A′ ⇒ N′$$, the context invariance
+    First, suppose $$x ≡ x′$$.  Then, by the definition of
+    substitution, $$N [ x := V] = N$$, so we just need to show $$Γ ⊢ N ∈ B$$.
+    But we know $$Γ , x ↦ A ⊢ N ∈ B$$ and, since $$x ≡ x′$$
+    does not appear free in $$λᵀ x′ ∈ A′ ⇒ N′$$, the context invariance
     lemma yields $$Γ ⊢ N ∈ B$$.
 
-    Second, suppose $$x ≢ y$$.  We know $$Γ , y ↦ A , x ↦ A′ ⊢ N' ∈ B′$$
+    Second, suppose $$x ≢ x′$$.  We know $$Γ , x ↦ A , x′ ↦ A′ ⊢ N′ ∈ B′$$
     by inversion of the typing relation, from which
-    $$Γ , x ↦ A′ , y ↦ A ⊢ N′ ∈ B′$$ follows by update permute,
-    so the IH applies, giving us $$Γ , x ↦ A′ ⊢ N′ [ y := P ] ∈ B′$$
-    By $$⇒-I$$, we have $$Γ ⊢ λᵀ x ∈ A′ ⇒ (N′ [ y := P ]) ∈ A′ ⇒ B′$$
-    and the definition of substitution (noting $$x ≢ y$$) gives
-    $$Γ ⊢ (λᵀ x ∈ A′ ⇒ N′) [ y := P ] ∈ A′ ⇒ B′$$ as required.
+    $$Γ , x′ ↦ A′ , x ↦ A ⊢ N′ ∈ B′$$ follows by update permute,
+    so the IH applies, giving us $$Γ , x′ ↦ A′ ⊢ N′ [ x := V ] ∈ B′$$
+    By $$⇒-I$$, we have $$Γ ⊢ λᵀ x′ ∈ A′ ⇒ (N′ [ x := V ]) ∈ A′ ⇒ B′$$
+    and the definition of substitution (noting $$x ≢ x′$$) gives
+    $$Γ ⊢ (λᵀ x′ ∈ A′ ⇒ N′) [ x := V ] ∈ A′ ⇒ B′$$ as required.
 
-  - If $$N$$ is an application $$L ·ᵀ M$$, the result follows
+  - If $$N$$ is an application $$L′ ·ᵀ M′$$, the result follows
     straightforwardly from the definition of substitution and the
     induction hypotheses.
 
@@ -467,26 +467,26 @@ $$Γ \vdash N [ y := P ] ∈ B$$.
 For one case, we need to know that weakening applies to any closed term.
 \begin{code}
 weaken-closed : ∀ {P A Γ} → ∅ ⊢ P ∈ A → Γ ⊢ P ∈ A
-weaken-closed {P} {A} {Γ} ⊢P = weaken g ⊢P
+weaken-closed {P} {A} {Γ} ⊢P = weaken Γ~Γ′ ⊢P
   where
-  g : ∀ {x} → x FreeIn P → ∅ x ≡ Γ x
-  g {x} x∈P = ⊥-elim (x∉P x∈P)
+  Γ~Γ′ : ∀ {x} → x FreeIn P → ∅ x ≡ Γ x
+  Γ~Γ′ {x} x∈P = ⊥-elim (x∉P x∈P)
     where
     x∉P : ¬ (x FreeIn P)
     x∉P = ∅⊢-closed ⊢P {x}
 \end{code}
 
 \begin{code}
-[:=]-preserves-⊢ {Γ} {y} {A} ⊢P (Ax {_} {x} {B} Γx≡justB) with x ≟ y
+preservation-[:=] {Γ} {y} {A} ⊢P (Ax {_} {x} {B} Γx≡justB) with x ≟ y
 ...| yes x≡y  =  {!!}  -- weaken-closed ⊢P
-...| no  x≢y  =  Ax {_} {x} Γx≡justB
-[:=]-preserves-⊢ {Γ} {y} {A} ⊢P (⇒-I {_} {x} ⊢N) with x ≟ y
-...| yes x≡y  = ⇒-I {_} {x} ⊢N
-...| no  x≢y  = {!!} -- ⇒-I {_} {x} ([:=]-preserves-⊢ {_} {y} {A} ⊢P ⊢N)
-[:=]-preserves-⊢ ⊢P (⇒-E ⊢L ⊢M) = ⇒-E ([:=]-preserves-⊢ ⊢P ⊢L) ([:=]-preserves-⊢ ⊢P ⊢M)
-[:=]-preserves-⊢ ⊢P 𝔹-I₁ = 𝔹-I₁
-[:=]-preserves-⊢ ⊢P 𝔹-I₂ = 𝔹-I₂
-[:=]-preserves-⊢ ⊢P (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E ([:=]-preserves-⊢ ⊢P ⊢L) ([:=]-preserves-⊢ ⊢P ⊢M) ([:=]-preserves-⊢ ⊢P ⊢N)
+...| no  x≢y  =  {!!} -- Ax {_} {x} Γx≡justB
+preservation-[:=] {Γ} {y} {A} ⊢P (⇒-I {_} {x} ⊢N) with x ≟ y
+...| yes x≡y  =  {!!} -- ⇒-I {_} {x} ⊢N
+...| no  x≢y  =  {!!}  -- ⇒-I {_} {x} (preservation-[:=] {_} {y} {A} ⊢P ⊢N)
+preservation-[:=] ⊢P (⇒-E ⊢L ⊢M) = ⇒-E (preservation-[:=] ⊢P ⊢L) (preservation-[:=] ⊢P ⊢M)
+preservation-[:=] ⊢P 𝔹-I₁ = 𝔹-I₁
+preservation-[:=] ⊢P 𝔹-I₂ = 𝔹-I₂
+preservation-[:=] ⊢P (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (preservation-[:=] ⊢P ⊢L) (preservation-[:=] ⊢P ⊢M) (preservation-[:=] ⊢P ⊢N)
 
 
 {-
@@ -509,14 +509,13 @@ weaken-closed {P} {A} {Γ} ⊢P = weaken g ⊢P
 ### Main Theorem
 
 We now have the tools we need to prove preservation: if a closed
-term $$t$$ has type $$T$$ and takes a step to $$t'$$, then $$t'$$
-is also a closed term with type $$T$$.  In other words, the small-step
-reduction relation preserves types.
+term $$M$$ has type $$A$$ and takes a step to $$N$$, then $$N$$
+is also a closed term with type $$A$$.  In other words, small-step
+reduction preserves types.
 
-Theorem preservation : forall t t' T,
-     empty \vdash t : T  →
-     t ==> t'  →
-     empty \vdash t' : T.
+\begin{code}
+preservation : ∀ {M N A} → ∅ ⊢ M ∈ A → M ⟹ N → ∅ ⊢ N ∈ A
+\end{code}
 
 _Proof_: By induction on the derivation of $$\vdash t : T$$.
 
@@ -548,6 +547,26 @@ _Proof_: By induction on the derivation of $$\vdash t : T$$.
 
     - Otherwise, $$t$$ steps by $$Sif$$, and the desired conclusion
       follows directly from the induction hypothesis.
+
+\begin{code}
+preservation (Ax x₁) ()
+preservation (⇒-I ⊢N) ()
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (β⇒ valueV) = preservation-[:=] ⊢V ⊢N
+preservation (⇒-E ⊢L ⊢M) (γ⇒₁ L⟹L′) with preservation ⊢L L⟹L′
+...| ⊢L′ = ⇒-E ⊢L′ ⊢M
+preservation (⇒-E ⊢L ⊢M) (γ⇒₂ valueL M⟹M′) with preservation ⊢M M⟹M′
+...| ⊢M′ = ⇒-E ⊢L ⊢M′
+preservation 𝔹-I₁ ()
+preservation 𝔹-I₂ ()
+preservation (𝔹-E 𝔹-I₁ ⊢M ⊢N) β𝔹₁ = ⊢M
+preservation (𝔹-E 𝔹-I₂ ⊢M ⊢N) β𝔹₂ = ⊢N
+preservation (𝔹-E ⊢L ⊢M ⊢N) (γ𝔹 L⟹L′) with preservation ⊢L L⟹L′
+...| ⊢L′ = 𝔹-E ⊢L′ ⊢M ⊢N
+
+-- Writing out implicit parameters in full
+-- preservation (⇒-E {Γ} {λᵀ x ∈ A ⇒ N} {M} {.A} {B} (⇒-I {.Γ} {.x} {.N} {.A} {.B} ⊢N) ⊢M) (β⇒ {.x} {.A} {.N} {.M} valueM)
+--  =  preservation-[:=] {Γ} {x} {A} {M} {N} {B} ⊢M ⊢N
+\end{code}
 
 Proof with eauto.
   remember (@empty ty) as Gamma.
