@@ -480,17 +480,23 @@ just-injective refl = refl
 \end{code}
 
 \begin{code}
+preservation-[:=] {_} {x} (Ax {_} {x′} Γx′≡B) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite just-injective Γx′≡B  =  weaken-closed ⊢V
+...| no  x≢x′  =  Ax Γx′≡B
+{-
 preservation-[:=] {Γ} {x} {A} {varᵀ x′} {B} {V} (Ax {.(Γ , x ↦ A)} {.x′} {.B} Γx′≡B) ⊢V with x ≟ x′
 ...| yes x≡x′ rewrite just-injective Γx′≡B  =  weaken-closed ⊢V
 ...| no  x≢x′  =  Ax {Γ} {x′} {B} Γx′≡B
-preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I {.(Γ , x ↦ A)} {.x′} {.N′} {.A′} {.B′} ⊢N′) ⊢V with x ≟ x′
-...| yes x≡x′  =  {!!}  -- rewrite x≡x′ | update-shadow Γ x A A′  =  ⇒-I ⊢N′
-...| no  x≢x′ rewrite update-permute Γ x A x′ A′ x≢x′ =  ⇒-I {Γ} {x′} {N′} {A′} {B′} (preservation-[:=] {(Γ , x′ ↦ A′)} {x} {A} ⊢N′ ⊢V)
+-}
+preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I {.(Γ , x ↦ A)} {.x′} {.N′} {.A′} {.B′} ⊢N′) ⊢V with x′ ≟ x
+...| yes x′≡x rewrite x′≡x | update-shadow Γ x A A′  =  {!!}
+  -- ⇒-I ⊢N′
+...| no  x′≢x rewrite update-permute Γ x′ A′ x A x′≢x  =  {!!}
+  --  ⇒-I {Γ} {x′} {N′} {A′} {B′} (preservation-[:=] {(Γ , x′ ↦ A′)} {x} {A} ⊢N′ ⊢V)
 preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
 preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
 preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
 preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V = 𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
-
 
 {-
 [:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
