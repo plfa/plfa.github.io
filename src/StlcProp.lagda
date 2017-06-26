@@ -277,7 +277,7 @@ postulate
 
 <div class="hidden">
 \begin{code}
-contradiction : ∀ {A : Set} → ∀ {v : A} → ¬ (_≡_ {A = Maybe A} (just v) nothing)
+contradiction : ∀ {X : Set} → ∀ {x : X} → ¬ (_≡_ {A = Maybe X} (just x) nothing)
 contradiction ()
 
 ∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
@@ -396,8 +396,8 @@ $$Γ ⊢ (N [ x := V ]) ∈ B$$.
 
 \begin{code}
 preservation-[:=] : ∀ {Γ x A N B V}
-                 → ∅ ⊢ V ∈ A
                  → (Γ , x ↦ A) ⊢ N ∈ B
+                 → ∅ ⊢ V ∈ A
                  → Γ ⊢ (N [ x := V ]) ∈ B
 \end{code}
 
@@ -464,29 +464,32 @@ $$Γ \vdash N [ x := V ] ∈ B$$.
 
   - The remaining cases are similar to the application case.
 
-For one case, we need to know that weakening applies to any closed term.
+We need a couple of lemmas. A closed term can be weakened to any context, and just is injective.
 \begin{code}
-weaken-closed : ∀ {P A Γ} → ∅ ⊢ P ∈ A → Γ ⊢ P ∈ A
-weaken-closed {P} {A} {Γ} ⊢P = weaken Γ~Γ′ ⊢P
+weaken-closed : ∀ {V A Γ} → ∅ ⊢ V ∈ A → Γ ⊢ V ∈ A
+weaken-closed {V} {A} {Γ} ⊢V = weaken Γ~Γ′ ⊢V
   where
-  Γ~Γ′ : ∀ {x} → x FreeIn P → ∅ x ≡ Γ x
-  Γ~Γ′ {x} x∈P = ⊥-elim (x∉P x∈P)
+  Γ~Γ′ : ∀ {x} → x FreeIn V → ∅ x ≡ Γ x
+  Γ~Γ′ {x} x∈V = ⊥-elim (x∉V x∈V)
     where
-    x∉P : ¬ (x FreeIn P)
-    x∉P = ∅⊢-closed ⊢P {x}
+    x∉V : ¬ (x FreeIn V)
+    x∉V = ∅⊢-closed ⊢V {x}
+
+just-injective : ∀ {X : Set} {x y : X} → _≡_ {A = Maybe X} (just x) (just y) → x ≡ y
+just-injective refl = refl
 \end{code}
 
 \begin{code}
-preservation-[:=] {Γ} {y} {A} ⊢P (Ax {_} {x} {B} Γx≡justB) with x ≟ y
-...| yes x≡y  =  {!!}  -- weaken-closed ⊢P
-...| no  x≢y  =  {!!} -- Ax {_} {x} Γx≡justB
-preservation-[:=] {Γ} {y} {A} ⊢P (⇒-I {_} {x} ⊢N) with x ≟ y
-...| yes x≡y  =  {!!} -- ⇒-I {_} {x} ⊢N
-...| no  x≢y  =  {!!}  -- ⇒-I {_} {x} (preservation-[:=] {_} {y} {A} ⊢P ⊢N)
-preservation-[:=] ⊢P (⇒-E ⊢L ⊢M) = ⇒-E (preservation-[:=] ⊢P ⊢L) (preservation-[:=] ⊢P ⊢M)
-preservation-[:=] ⊢P 𝔹-I₁ = 𝔹-I₁
-preservation-[:=] ⊢P 𝔹-I₂ = 𝔹-I₂
-preservation-[:=] ⊢P (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (preservation-[:=] ⊢P ⊢L) (preservation-[:=] ⊢P ⊢M) (preservation-[:=] ⊢P ⊢N)
+preservation-[:=] {Γ} {x} {A} {varᵀ x′} {B} {V} (Ax {.(Γ , x ↦ A)} {.x′} {.B} Γx′≡B) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite just-injective Γx′≡B  =  weaken-closed ⊢V
+...| no  x≢x′  =  Ax {Γ} {x′} {B} Γx′≡B
+preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I {.(Γ , x ↦ A)} {.x′} {.N′} {.A′} {.B′} ⊢N′) ⊢V with x ≟ x′
+...| yes x≡x′  =  {!!}  -- rewrite x≡x′ | update-shadow Γ x A A′  =  ⇒-I ⊢N′
+...| no  x≢x′ rewrite update-permute Γ x A x′ A′ x≢x′ =  ⇒-I {Γ} {x′} {N′} {A′} {B′} (preservation-[:=] {(Γ , x′ ↦ A′)} {x} {A} ⊢N′ ⊢V)
+preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
+preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
+preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
+preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V = 𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
 
 
 {-
@@ -551,7 +554,7 @@ _Proof_: By induction on the derivation of $$\vdash t : T$$.
 \begin{code}
 preservation (Ax x₁) ()
 preservation (⇒-I ⊢N) ()
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (β⇒ valueV) = preservation-[:=] ⊢V ⊢N
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (β⇒ valueV) = preservation-[:=] ⊢N ⊢V
 preservation (⇒-E ⊢L ⊢M) (γ⇒₁ L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = ⇒-E ⊢L′ ⊢M
 preservation (⇒-E ⊢L ⊢M) (γ⇒₂ valueL M⟹M′) with preservation ⊢M M⟹M′

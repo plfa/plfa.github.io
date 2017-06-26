@@ -86,6 +86,8 @@ y = id "y"
 z = id "z"
 \end{code}
 
+## Extensionality
+
 ## Total Maps
 
 Our main job in this chapter will be to build a definition of
@@ -219,8 +221,8 @@ back $$v$$:
   update-eq′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A)
              → (ρ , x ↦ v) x ≡ v
   update-eq′ ρ x v with x ≟ x
-  ... | yes x=x = refl
-  ... | no  x≠x = ⊥-elim (x≠x refl)
+  ... | yes x≡x = refl
+  ... | no  x≢x = ⊥-elim (x≢x refl)
 \end{code}
 </div>
 
@@ -237,6 +239,14 @@ the same result that $$m$$ would have given:
   ... | no  _   = refl
 \end{code}
 
+For the following lemmas, since maps are represented by functions, to
+show two maps equal we will need to postulate extensionality.
+
+\begin{code}
+  postulate
+    extensionality : ∀ {A : Set} {ρ ρ′ : TotalMap A} → (∀ x → ρ x ≡ ρ′ x) → ρ ≡ ρ′
+\end{code}
+
 #### Exercise: 2 stars, optional (update-shadow)
 If we update a map $$ρ$$ at a key $$x$$ with a value $$v$$ and then
 update again with the same key $$x$$ and another value $$w$$, the
@@ -246,18 +256,20 @@ the second update on $$ρ$$:
 
 \begin{code}
   postulate
-    update-shadow : ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) (y : Id)
-                  → (ρ , x ↦ v , x ↦ w) y ≡ (ρ , x ↦ w) y
+    update-shadow : ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) 
+                  → (ρ , x ↦ v , x ↦ w) ≡ (ρ , x ↦ w)
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-shadow′ :  ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) (y : Id)
-                  → ((ρ , x ↦ v) , x ↦ w) y ≡ (ρ , x ↦ w) y
-  update-shadow′ ρ x v w y
-      with x ≟ y
-  ... | yes x≡y = refl
-  ... | no  x≢y = update-neq ρ x v y x≢y
+  update-shadow′ :  ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) 
+                  → ((ρ , x ↦ v) , x ↦ w) ≡ (ρ , x ↦ w)
+  update-shadow′ ρ x v w = extensionality lemma
+    where
+    lemma : ∀ y → ((ρ , x ↦ v) , x ↦ w) y ≡ (ρ , x ↦ w) y
+    lemma y with x ≟ y
+    ... | yes refl = refl
+    ... | no  x≢y  = update-neq ρ x v y x≢y
 \end{code}
 </div>
 
@@ -268,16 +280,18 @@ result is equal to $$ρ$$:
 
 \begin{code}
   postulate
-    update-same : ∀ {A} (ρ : TotalMap A) (x y : Id) → (ρ , x ↦ ρ x) y ≡ ρ y
+    update-same : ∀ {A} (ρ : TotalMap A) (x : Id) → (ρ , x ↦ ρ x) ≡ ρ
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-same′ : ∀ {A} (ρ : TotalMap A) (x y : Id) → (ρ , x ↦ ρ x) y ≡ ρ y
-  update-same′ ρ x y
-    with x ≟ y
-  ... | yes refl = refl
-  ... | no  x≢y  = refl
+  update-same′ : ∀ {A} (ρ : TotalMap A) (x : Id) → (ρ , x ↦ ρ x) ≡ ρ
+  update-same′ ρ x  =  extensionality lemma
+    where
+    lemma : ∀ y → (ρ , x ↦ ρ x) y ≡ ρ y
+    lemma y with x ≟ y
+    ... | yes refl = refl
+    ... | no  x≢y  = refl
 \end{code}
 </div>
 
@@ -288,19 +302,22 @@ updates.
 
 \begin{code}
   postulate
-    update-permute : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
-                   → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
+    update-permute : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A)
+                   → x ≢ y → (ρ , x ↦ v , y ↦ w) ≡ (ρ , y ↦ w , x ↦ v)
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
-                   → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
-  update-permute′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
-  ... | yes refl | yes refl  =  ⊥-elim (x≢y refl)
-  ... | no  x≢z  | yes refl  =  sym (update-eq′ ρ z w)
-  ... | yes refl | no  y≢z   =  update-eq′ ρ z v
-  ... | no  x≢z  | no  y≢z   =  trans (update-neq ρ x v z x≢z) (sym (update-neq ρ y w z y≢z))  
+  update-permute′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A)
+                   → x ≢ y → (ρ , x ↦ v , y ↦ w) ≡ (ρ , y ↦ w , x ↦ v)
+  update-permute′ {A} ρ x v y w x≢y  =  extensionality lemma
+    where
+    lemma : ∀ z → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
+    lemma z with x ≟ z | y ≟ z
+    ... | yes refl | yes refl  =  ⊥-elim (x≢y refl)
+    ... | no  x≢z  | yes refl  =  sym (update-eq′ ρ z w)
+    ... | yes refl | no  y≢z   =  update-eq′ ρ z v
+    ... | no  x≢z  | no  y≢z   =  trans (update-neq ρ x v z x≢z) (sym (update-neq ρ y w z y≢z))  
 \end{code}
 
 And a slightly different version of the same proof.
@@ -373,20 +390,20 @@ We now lift all of the basic lemmas about total maps to partial maps.
 \end{code}
 
 \begin{code}
-  update-shadow : ∀ {A} (ρ : PartialMap A) (x : Id) (v w : A) (y : Id)
-                → (ρ , x ↦ v , x ↦ w) y ≡ (ρ , x ↦ w) y
-  update-shadow ρ x v w y = TotalMap.update-shadow ρ x (just v) (just w) y
+  update-shadow : ∀ {A} (ρ : PartialMap A) (x : Id) (v w : A) 
+                → (ρ , x ↦ v , x ↦ w) ≡ (ρ , x ↦ w)
+  update-shadow ρ x v w = TotalMap.update-shadow ρ x (just v) (just w)
 \end{code}
 
 \begin{code}
-  update-same : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id)
+  update-same : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) 
               → ρ x ≡ just v
-              → (ρ , x ↦ v) y ≡ ρ y
-  update-same ρ x v y ρx≡v rewrite sym ρx≡v = TotalMap.update-same ρ x y
+              → (ρ , x ↦ v) ≡ ρ
+  update-same ρ x v ρx≡v rewrite sym ρx≡v = TotalMap.update-same ρ x
 \end{code}
 
 \begin{code}
-  update-permute : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
-                 → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
-  update-permute ρ x v y w z x≢y = TotalMap.update-permute ρ x (just v) y (just w) z x≢y
+  update-permute : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id) (w : A) 
+                 → x ≢ y → (ρ , x ↦ v , y ↦ w) ≡ (ρ , y ↦ w , x ↦ v)
+  update-permute ρ x v y w x≢y = TotalMap.update-permute ρ x (just v) y (just w) x≢y
 \end{code}
