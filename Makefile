@@ -13,7 +13,7 @@ out/%.md: src/%.lagda out/
 .phony: serve
 
 serve:
-	ruby -S gem install bundler
+	ruby -S gem install bundler --no-ri --no-rdoc
 	ruby -S bundle install
 	ruby -S bundle exec jekyll serve
 
@@ -27,6 +27,9 @@ endif
 .phony: clobber
 
 clobber: clean
+	ruby -S gem install bundler --no-ri --no-rdoc
+	ruby -S bundle install
+	ruby -S bundle exec jekyll clean
 ifneq ($(strip $(markdown)),)
 	rm $(markdown)
 endif
