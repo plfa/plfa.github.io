@@ -86,8 +86,6 @@ y = id "y"
 z = id "z"
 \end{code}
 
-## Extensionality
-
 ## Total Maps
 
 Our main job in this chapter will be to build a definition of
@@ -112,8 +110,8 @@ TotalMap : Set → Set
 TotalMap A = Id → A
 \end{code}
 
-Intuitively, a total map over anﬁ element type $$A$$ _is_ just a
-function that can be used to look up ids, yielding $$A$$s.
+Intuitively, a total map over anﬁ element type `A` _is_ just a
+function that can be used to look up ids, yielding `A`s.
 
 \begin{code}
 module TotalMap where
@@ -129,10 +127,12 @@ applied to any id.
 \end{code}
 
 More interesting is the update function, which (as before) takes
-a map $$ρ$$, a key $$x$$, and a value $$v$$ and returns a new map that
-takes $$x$$ to $$v$$ and takes every other key to whatever $$ρ$$ does.
+a map `ρ`, a key `x`, and a value `v` and returns a new map that
+takes `x` to `v` and takes every other key to whatever `ρ` does.
 
 \begin{code}
+  infixl 100 _,_↦_  
+
   _,_↦_ : ∀ {A} → TotalMap A → Id → A → TotalMap A
   (ρ , x ↦ v) y with x ≟ y
   ... | yes x=y = v
@@ -140,30 +140,11 @@ takes $$x$$ to $$v$$ and takes every other key to whatever $$ρ$$ does.
 \end{code}
 
 This definition is a nice example of higher-order programming.
-The update function takes a _function_ $$ρ$$ and yields a new
+The update function takes a _function_ `ρ` and yields a new
 function that behaves like the desired map.
 
-We define handy abbreviations for updating a map two, three, or four times.
-
-<div class="note hidden">
-Wen: you don't actually need to define these, you can simply declare `_,_↦_` to
-be a left-associative infix operator with an `infixl` statement, and then you'll
-be able to just evaluate `M , x ↦ y , z ↦ w` as `(M , x ↦ y) , z ↦ w`.
-</div>
-
-\begin{code}
-  _,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → TotalMap A
-  ρ , x₁ ↦ v₁ , x₂ ↦ v₂  =  (ρ , x₁ ↦ v₁), x₂ ↦ v₂
-
-  _,_↦_,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → Id → A → TotalMap A
-  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃  =  ((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃
-
-  _,_↦_,_↦_,_↦_,_↦_ : ∀ {A} → TotalMap A → Id → A → Id → A → Id → A → Id → A → TotalMap A
-  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃ , x₄ ↦ v₄ =  (((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃), x₄ ↦ v₄
-\end{code}
-
-For example, we can build a map taking ids to naturals, where $$x$$
-maps to 42, $$y$$ maps to 69, and every other key maps to 0, as follows:
+For example, we can build a map taking ids to naturals, where `x`
+maps to 42, `y` maps to 69, and every other key maps to 0, as follows:
 
 \begin{code}
   ρ₀ : TotalMap ℕ
@@ -206,9 +187,9 @@ The `always` map returns its default element for all keys:
 </div>
 
 #### Exercise: 2 stars, optional (update-eq)
-Next, if we update a map $$ρ$$ at a key $$x$$ with a new value $$v$$
-and then look up $$x$$ in the map resulting from the update, we get
-back $$v$$:
+Next, if we update a map `ρ` at a key `x` with a new value `v`
+and then look up `x` in the map resulting from the update, we get
+back `v`:
 
 \begin{code}
   postulate
@@ -227,9 +208,9 @@ back $$v$$:
 </div>
 
 #### Exercise: 2 stars, optional (update-neq)
-On the other hand, if we update a map $$m$$ at a key $$x$$ and
-then look up a _different_ key $$y$$ in the resulting map, we get
-the same result that $$m$$ would have given:
+On the other hand, if we update a map `m` at a key `x` and
+then look up a _different_ key `y` in the resulting map, we get
+the same result that `m` would have given:
 
 \begin{code}
   update-neq : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id)
@@ -248,11 +229,11 @@ show two maps equal we will need to postulate extensionality.
 \end{code}
 
 #### Exercise: 2 stars, optional (update-shadow)
-If we update a map $$ρ$$ at a key $$x$$ with a value $$v$$ and then
-update again with the same key $$x$$ and another value $$w$$, the
+If we update a map `ρ` at a key `x` with a value `v` and then
+update again with the same key `x` and another value `w`, the
 resulting map behaves the same (gives the same result when applied
 to any key) as the simpler map obtained by performing just
-the second update on $$ρ$$:
+the second update on `ρ`:
 
 \begin{code}
   postulate
@@ -274,9 +255,9 @@ the second update on $$ρ$$:
 </div>
 
 #### Exercise: 2 stars (update-same)
-Prove the following theorem, which states that if we update a map $$ρ$$ to
-assign key $$x$$ the same value as it already has in $$ρ$$, then the
-result is equal to $$ρ$$:
+Prove the following theorem, which states that if we update a map `ρ` to
+assign key `x` the same value as it already has in `ρ`, then the
+result is equal to `ρ`:
 
 \begin{code}
   postulate
@@ -297,7 +278,7 @@ result is equal to $$ρ$$:
 
 #### Exercise: 3 stars, recommended (update-permute)
 Prove one final property of the `update` function: If we update a map
-$$m$$ at two distinct keys, it doesn't matter in which order we do the
+`m` at two distinct keys, it doesn't matter in which order we do the
 updates.
 
 \begin{code}
@@ -354,20 +335,10 @@ module PartialMap where
 \end{code}
 
 \begin{code}
+  infixl 100 _,_↦_  
+
   _,_↦_ : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) → PartialMap A
   ρ , x ↦ v = TotalMap._,_↦_ ρ x (just v)
-\end{code}
-As before, we define handy abbreviations for updating a map two, three, or four times.
-
-\begin{code}
-  _,_↦_,_↦_ : ∀ {A} → PartialMap A → Id → A → Id → A → PartialMap A
-  ρ , x₁ ↦ v₁ , x₂ ↦ v₂  =  (ρ , x₁ ↦ v₁), x₂ ↦ v₂
-
-  _,_↦_,_↦_,_↦_ : ∀ {A} → PartialMap A → Id → A → Id → A → Id → A → PartialMap A
-  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃  =  ((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃
-
-  _,_↦_,_↦_,_↦_,_↦_ : ∀ {A} → PartialMap A → Id → A → Id → A → Id → A → Id → A → PartialMap A
-  ρ , x₁ ↦ v₁ , x₂ ↦ v₂ , x₃ ↦ v₃ , x₄ ↦ v₄ =  (((ρ , x₁ ↦ v₁), x₂ ↦ v₂), x₃ ↦ v₃), x₄ ↦ v₄
 \end{code}
 
 We now lift all of the basic lemmas about total maps to partial maps.

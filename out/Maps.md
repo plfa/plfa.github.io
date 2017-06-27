@@ -818,8 +818,6 @@ We define some identifiers for future use.
 
 </pre>
 
-## Extensionality
-
 ## Total Maps
 
 Our main job in this chapter will be to build a definition of
@@ -841,67 +839,67 @@ that is not present in the map.
 
 <pre class="Agda">
 
-<a name="3757" href="Maps.html#3757" class="Function"
+<a name="3738" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="3765"
+      ><a name="3746"
       > </a
-      ><a name="3766" class="Symbol"
+      ><a name="3747" class="Symbol"
       >:</a
-      ><a name="3767"
+      ><a name="3748"
       > </a
-      ><a name="3768" class="PrimitiveType"
+      ><a name="3749" class="PrimitiveType"
       >Set</a
-      ><a name="3771"
+      ><a name="3752"
       > </a
-      ><a name="3772" class="Symbol"
+      ><a name="3753" class="Symbol"
       >&#8594;</a
-      ><a name="3773"
+      ><a name="3754"
       > </a
-      ><a name="3774" class="PrimitiveType"
+      ><a name="3755" class="PrimitiveType"
       >Set</a
-      ><a name="3777"
+      ><a name="3758"
       >
 </a
-      ><a name="3778" href="Maps.html#3757" class="Function"
+      ><a name="3759" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="3786"
+      ><a name="3767"
       > </a
-      ><a name="3787" href="Maps.html#3787" class="Bound"
+      ><a name="3768" href="Maps.html#3768" class="Bound"
       >A</a
-      ><a name="3788"
+      ><a name="3769"
       > </a
-      ><a name="3789" class="Symbol"
+      ><a name="3770" class="Symbol"
       >=</a
-      ><a name="3790"
+      ><a name="3771"
       > </a
-      ><a name="3791" href="Maps.html#2215" class="Datatype"
+      ><a name="3772" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="3793"
+      ><a name="3774"
       > </a
-      ><a name="3794" class="Symbol"
+      ><a name="3775" class="Symbol"
       >&#8594;</a
-      ><a name="3795"
+      ><a name="3776"
       > </a
-      ><a name="3796" href="Maps.html#3787" class="Bound"
+      ><a name="3777" href="Maps.html#3768" class="Bound"
       >A</a
       >
 
 </pre>
 
-Intuitively, a total map over anﬁ element type $$A$$ _is_ just a
-function that can be used to look up ids, yielding $$A$$s.
+Intuitively, a total map over anﬁ element type `A` _is_ just a
+function that can be used to look up ids, yielding `A`s.
 
 <pre class="Agda">
 
-<a name="3948" class="Keyword"
+<a name="3925" class="Keyword"
       >module</a
-      ><a name="3954"
+      ><a name="3931"
       > </a
-      ><a name="3955" href="Maps.html#3955" class="Module"
+      ><a name="3932" href="Maps.html#3932" class="Module"
       >TotalMap</a
-      ><a name="3963"
+      ><a name="3940"
       > </a
-      ><a name="3964" class="Keyword"
+      ><a name="3941" class="Keyword"
       >where</a
       >
 
@@ -913,932 +911,321 @@ applied to any id.
 
 <pre class="Agda">
 
-  <a name="4132" href="Maps.html#4132" class="Function"
+  <a name="4109" href="Maps.html#4109" class="Function"
       >always</a
+      ><a name="4115"
+      > </a
+      ><a name="4116" class="Symbol"
+      >:</a
+      ><a name="4117"
+      > </a
+      ><a name="4118" class="Symbol"
+      >&#8704;</a
+      ><a name="4119"
+      > </a
+      ><a name="4120" class="Symbol"
+      >{</a
+      ><a name="4121" href="Maps.html#4121" class="Bound"
+      >A</a
+      ><a name="4122" class="Symbol"
+      >}</a
+      ><a name="4123"
+      > </a
+      ><a name="4124" class="Symbol"
+      >&#8594;</a
+      ><a name="4125"
+      > </a
+      ><a name="4126" href="Maps.html#4121" class="Bound"
+      >A</a
+      ><a name="4127"
+      > </a
+      ><a name="4128" class="Symbol"
+      >&#8594;</a
+      ><a name="4129"
+      > </a
+      ><a name="4130" href="Maps.html#3738" class="Function"
+      >TotalMap</a
       ><a name="4138"
       > </a
-      ><a name="4139" class="Symbol"
-      >:</a
+      ><a name="4139" href="Maps.html#4121" class="Bound"
+      >A</a
       ><a name="4140"
-      > </a
-      ><a name="4141" class="Symbol"
-      >&#8704;</a
-      ><a name="4142"
-      > </a
-      ><a name="4143" class="Symbol"
-      >{</a
-      ><a name="4144" href="Maps.html#4144" class="Bound"
-      >A</a
-      ><a name="4145" class="Symbol"
-      >}</a
-      ><a name="4146"
-      > </a
-      ><a name="4147" class="Symbol"
-      >&#8594;</a
-      ><a name="4148"
-      > </a
-      ><a name="4149" href="Maps.html#4144" class="Bound"
-      >A</a
-      ><a name="4150"
-      > </a
-      ><a name="4151" class="Symbol"
-      >&#8594;</a
-      ><a name="4152"
-      > </a
-      ><a name="4153" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="4161"
-      > </a
-      ><a name="4162" href="Maps.html#4144" class="Bound"
-      >A</a
-      ><a name="4163"
       >
   </a
-      ><a name="4166" href="Maps.html#4132" class="Function"
+      ><a name="4143" href="Maps.html#4109" class="Function"
       >always</a
-      ><a name="4172"
+      ><a name="4149"
       > </a
-      ><a name="4173" href="Maps.html#4173" class="Bound"
+      ><a name="4150" href="Maps.html#4150" class="Bound"
       >v</a
-      ><a name="4174"
+      ><a name="4151"
       > </a
-      ><a name="4175" href="Maps.html#4175" class="Bound"
+      ><a name="4152" href="Maps.html#4152" class="Bound"
       >x</a
-      ><a name="4176"
+      ><a name="4153"
       > </a
-      ><a name="4177" class="Symbol"
+      ><a name="4154" class="Symbol"
       >=</a
-      ><a name="4178"
+      ><a name="4155"
       > </a
-      ><a name="4179" href="Maps.html#4173" class="Bound"
+      ><a name="4156" href="Maps.html#4150" class="Bound"
       >v</a
       >
 
 </pre>
 
 More interesting is the update function, which (as before) takes
-a map $$ρ$$, a key $$x$$, and a value $$v$$ and returns a new map that
-takes $$x$$ to $$v$$ and takes every other key to whatever $$ρ$$ does.
+a map `ρ`, a key `x`, and a value `v` and returns a new map that
+takes `x` to `v` and takes every other key to whatever `ρ` does.
 
 <pre class="Agda">
 
-  <a name="4416" href="Maps.html#4416" class="Function Operator"
+  <a name="4381" class="Keyword"
+      >infixl</a
+      ><a name="4387"
+      > </a
+      ><a name="4388" class="Number"
+      >100</a
+      ><a name="4391"
+      > </a
+      ><a name="4392" href="Maps.html#4403" class="Function Operator"
       >_,_&#8614;_</a
-      ><a name="4421"
+      ><a name="4397"
+      >  
+
+  </a
+      ><a name="4403" href="Maps.html#4403" class="Function Operator"
+      >_,_&#8614;_</a
+      ><a name="4408"
       > </a
-      ><a name="4422" class="Symbol"
+      ><a name="4409" class="Symbol"
       >:</a
-      ><a name="4423"
+      ><a name="4410"
       > </a
-      ><a name="4424" class="Symbol"
+      ><a name="4411" class="Symbol"
       >&#8704;</a
-      ><a name="4425"
+      ><a name="4412"
       > </a
-      ><a name="4426" class="Symbol"
+      ><a name="4413" class="Symbol"
       >{</a
-      ><a name="4427" href="Maps.html#4427" class="Bound"
+      ><a name="4414" href="Maps.html#4414" class="Bound"
       >A</a
-      ><a name="4428" class="Symbol"
+      ><a name="4415" class="Symbol"
       >}</a
+      ><a name="4416"
+      > </a
+      ><a name="4417" class="Symbol"
+      >&#8594;</a
+      ><a name="4418"
+      > </a
+      ><a name="4419" href="Maps.html#3738" class="Function"
+      >TotalMap</a
+      ><a name="4427"
+      > </a
+      ><a name="4428" href="Maps.html#4414" class="Bound"
+      >A</a
       ><a name="4429"
       > </a
       ><a name="4430" class="Symbol"
       >&#8594;</a
       ><a name="4431"
       > </a
-      ><a name="4432" href="Maps.html#3757" class="Function"
-      >TotalMap</a
+      ><a name="4432" href="Maps.html#2215" class="Datatype"
+      >Id</a
+      ><a name="4434"
+      > </a
+      ><a name="4435" class="Symbol"
+      >&#8594;</a
+      ><a name="4436"
+      > </a
+      ><a name="4437" href="Maps.html#4414" class="Bound"
+      >A</a
+      ><a name="4438"
+      > </a
+      ><a name="4439" class="Symbol"
+      >&#8594;</a
       ><a name="4440"
       > </a
-      ><a name="4441" href="Maps.html#4427" class="Bound"
-      >A</a
-      ><a name="4442"
-      > </a
-      ><a name="4443" class="Symbol"
-      >&#8594;</a
-      ><a name="4444"
-      > </a
-      ><a name="4445" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="4447"
-      > </a
-      ><a name="4448" class="Symbol"
-      >&#8594;</a
+      ><a name="4441" href="Maps.html#3738" class="Function"
+      >TotalMap</a
       ><a name="4449"
       > </a
-      ><a name="4450" href="Maps.html#4427" class="Bound"
+      ><a name="4450" href="Maps.html#4414" class="Bound"
       >A</a
       ><a name="4451"
+      >
+  </a
+      ><a name="4454" class="Symbol"
+      >(</a
+      ><a name="4455" href="Maps.html#4455" class="Bound"
+      >&#961;</a
+      ><a name="4456"
       > </a
-      ><a name="4452" class="Symbol"
-      >&#8594;</a
-      ><a name="4453"
+      ><a name="4457" href="Maps.html#4403" class="Function Operator"
+      >,</a
+      ><a name="4458"
       > </a
-      ><a name="4454" href="Maps.html#3757" class="Function"
-      >TotalMap</a
+      ><a name="4459" href="Maps.html#4459" class="Bound"
+      >x</a
+      ><a name="4460"
+      > </a
+      ><a name="4461" href="Maps.html#4403" class="Function Operator"
+      >&#8614;</a
       ><a name="4462"
       > </a
-      ><a name="4463" href="Maps.html#4427" class="Bound"
-      >A</a
-      ><a name="4464"
-      >
-  </a
-      ><a name="4467" class="Symbol"
-      >(</a
-      ><a name="4468" href="Maps.html#4468" class="Bound"
-      >&#961;</a
-      ><a name="4469"
-      > </a
-      ><a name="4470" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="4471"
-      > </a
-      ><a name="4472" href="Maps.html#4472" class="Bound"
-      >x</a
-      ><a name="4473"
-      > </a
-      ><a name="4474" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="4475"
-      > </a
-      ><a name="4476" href="Maps.html#4476" class="Bound"
+      ><a name="4463" href="Maps.html#4463" class="Bound"
       >v</a
-      ><a name="4477" class="Symbol"
+      ><a name="4464" class="Symbol"
       >)</a
-      ><a name="4478"
+      ><a name="4465"
       > </a
-      ><a name="4479" href="Maps.html#4479" class="Bound"
+      ><a name="4466" href="Maps.html#4466" class="Bound"
       >y</a
-      ><a name="4480"
+      ><a name="4467"
       > </a
-      ><a name="4481" class="Keyword"
+      ><a name="4468" class="Keyword"
       >with</a
-      ><a name="4485"
+      ><a name="4472"
       > </a
-      ><a name="4486" href="Maps.html#4472" class="Bound"
+      ><a name="4473" href="Maps.html#4459" class="Bound"
       >x</a
-      ><a name="4487"
+      ><a name="4474"
       > </a
-      ><a name="4488" href="Maps.html#2558" class="Function Operator"
+      ><a name="4475" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="4489"
+      ><a name="4476"
       > </a
-      ><a name="4490" href="Maps.html#4479" class="Bound"
+      ><a name="4477" href="Maps.html#4466" class="Bound"
       >y</a
-      ><a name="4491"
+      ><a name="4478"
       >
   </a
-      ><a name="4494" class="Symbol"
+      ><a name="4481" class="Symbol"
       >...</a
-      ><a name="4497"
+      ><a name="4484"
       > </a
-      ><a name="4498" class="Symbol"
+      ><a name="4485" class="Symbol"
       >|</a
-      ><a name="4499"
+      ><a name="4486"
       > </a
-      ><a name="4500" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="4487" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="4503"
+      ><a name="4490"
       > </a
-      ><a name="4504" href="Maps.html#4504" class="Bound"
+      ><a name="4491" href="Maps.html#4491" class="Bound"
       >x=y</a
-      ><a name="4507"
+      ><a name="4494"
       > </a
-      ><a name="4508" class="Symbol"
+      ><a name="4495" class="Symbol"
       >=</a
-      ><a name="4509"
+      ><a name="4496"
       > </a
-      ><a name="4510" href="Maps.html#4476" class="Bound"
+      ><a name="4497" href="Maps.html#4463" class="Bound"
       >v</a
-      ><a name="4511"
+      ><a name="4498"
       >
   </a
-      ><a name="4514" class="Symbol"
+      ><a name="4501" class="Symbol"
       >...</a
-      ><a name="4517"
+      ><a name="4504"
       > </a
-      ><a name="4518" class="Symbol"
+      ><a name="4505" class="Symbol"
       >|</a
-      ><a name="4519"
+      ><a name="4506"
       > </a
-      ><a name="4520" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="4507" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="4522"
+      ><a name="4509"
       >  </a
-      ><a name="4524" href="Maps.html#4524" class="Bound"
+      ><a name="4511" href="Maps.html#4511" class="Bound"
       >x&#8800;y</a
-      ><a name="4527"
+      ><a name="4514"
       > </a
-      ><a name="4528" class="Symbol"
+      ><a name="4515" class="Symbol"
       >=</a
-      ><a name="4529"
+      ><a name="4516"
       > </a
-      ><a name="4530" href="Maps.html#4468" class="Bound"
+      ><a name="4517" href="Maps.html#4455" class="Bound"
       >&#961;</a
-      ><a name="4531"
+      ><a name="4518"
       > </a
-      ><a name="4532" href="Maps.html#4479" class="Bound"
+      ><a name="4519" href="Maps.html#4466" class="Bound"
       >y</a
       >
 
 </pre>
 
 This definition is a nice example of higher-order programming.
-The update function takes a _function_ $$ρ$$ and yields a new
+The update function takes a _function_ `ρ` and yields a new
 function that behaves like the desired map.
 
-We define handy abbreviations for updating a map two, three, or four times.
-
-<div class="note hidden">
-Wen: you don't actually need to define these, you can simply declare `_,_↦_` to
-be a left-associative infix operator with an `infixl` statement, and then you'll
-be able to just evaluate `M , x ↦ y , z ↦ w` as `(M , x ↦ y) , z ↦ w`.
-</div>
+For example, we can build a map taking ids to naturals, where `x`
+maps to 42, `y` maps to 69, and every other key maps to 0, as follows:
 
 <pre class="Agda">
 
-  <a name="5074" href="Maps.html#5074" class="Function Operator"
-      >_,_&#8614;_,_&#8614;_</a
-      ><a name="5083"
-      > </a
-      ><a name="5084" class="Symbol"
-      >:</a
-      ><a name="5085"
-      > </a
-      ><a name="5086" class="Symbol"
-      >&#8704;</a
-      ><a name="5087"
-      > </a
-      ><a name="5088" class="Symbol"
-      >{</a
-      ><a name="5089" href="Maps.html#5089" class="Bound"
-      >A</a
-      ><a name="5090" class="Symbol"
-      >}</a
-      ><a name="5091"
-      > </a
-      ><a name="5092" class="Symbol"
-      >&#8594;</a
-      ><a name="5093"
-      > </a
-      ><a name="5094" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="5102"
-      > </a
-      ><a name="5103" href="Maps.html#5089" class="Bound"
-      >A</a
-      ><a name="5104"
-      > </a
-      ><a name="5105" class="Symbol"
-      >&#8594;</a
-      ><a name="5106"
-      > </a
-      ><a name="5107" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5109"
-      > </a
-      ><a name="5110" class="Symbol"
-      >&#8594;</a
-      ><a name="5111"
-      > </a
-      ><a name="5112" href="Maps.html#5089" class="Bound"
-      >A</a
-      ><a name="5113"
-      > </a
-      ><a name="5114" class="Symbol"
-      >&#8594;</a
-      ><a name="5115"
-      > </a
-      ><a name="5116" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5118"
-      > </a
-      ><a name="5119" class="Symbol"
-      >&#8594;</a
-      ><a name="5120"
-      > </a
-      ><a name="5121" href="Maps.html#5089" class="Bound"
-      >A</a
-      ><a name="5122"
-      > </a
-      ><a name="5123" class="Symbol"
-      >&#8594;</a
-      ><a name="5124"
-      > </a
-      ><a name="5125" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="5133"
-      > </a
-      ><a name="5134" href="Maps.html#5089" class="Bound"
-      >A</a
-      ><a name="5135"
-      >
-  </a
-      ><a name="5138" href="Maps.html#5138" class="Bound"
-      >&#961;</a
-      ><a name="5139"
-      > </a
-      ><a name="5140" href="Maps.html#5074" class="Function Operator"
-      >,</a
-      ><a name="5141"
-      > </a
-      ><a name="5142" href="Maps.html#5142" class="Bound"
-      >x&#8321;</a
-      ><a name="5144"
-      > </a
-      ><a name="5145" href="Maps.html#5074" class="Function Operator"
-      >&#8614;</a
-      ><a name="5146"
-      > </a
-      ><a name="5147" href="Maps.html#5147" class="Bound"
-      >v&#8321;</a
-      ><a name="5149"
-      > </a
-      ><a name="5150" href="Maps.html#5074" class="Function Operator"
-      >,</a
-      ><a name="5151"
-      > </a
-      ><a name="5152" href="Maps.html#5152" class="Bound"
-      >x&#8322;</a
-      ><a name="5154"
-      > </a
-      ><a name="5155" href="Maps.html#5074" class="Function Operator"
-      >&#8614;</a
-      ><a name="5156"
-      > </a
-      ><a name="5157" href="Maps.html#5157" class="Bound"
-      >v&#8322;</a
-      ><a name="5159"
-      >  </a
-      ><a name="5161" class="Symbol"
-      >=</a
-      ><a name="5162"
-      >  </a
-      ><a name="5164" class="Symbol"
-      >(</a
-      ><a name="5165" href="Maps.html#5138" class="Bound"
-      >&#961;</a
-      ><a name="5166"
-      > </a
-      ><a name="5167" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5168"
-      > </a
-      ><a name="5169" href="Maps.html#5142" class="Bound"
-      >x&#8321;</a
-      ><a name="5171"
-      > </a
-      ><a name="5172" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5173"
-      > </a
-      ><a name="5174" href="Maps.html#5147" class="Bound"
-      >v&#8321;</a
-      ><a name="5176" class="Symbol"
-      >)</a
-      ><a name="5177" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5178"
-      > </a
-      ><a name="5179" href="Maps.html#5152" class="Bound"
-      >x&#8322;</a
-      ><a name="5181"
-      > </a
-      ><a name="5182" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5183"
-      > </a
-      ><a name="5184" href="Maps.html#5157" class="Bound"
-      >v&#8322;</a
-      ><a name="5186"
-      >
-
-  </a
-      ><a name="5190" href="Maps.html#5190" class="Function Operator"
-      >_,_&#8614;_,_&#8614;_,_&#8614;_</a
-      ><a name="5203"
-      > </a
-      ><a name="5204" class="Symbol"
-      >:</a
-      ><a name="5205"
-      > </a
-      ><a name="5206" class="Symbol"
-      >&#8704;</a
-      ><a name="5207"
-      > </a
-      ><a name="5208" class="Symbol"
-      >{</a
-      ><a name="5209" href="Maps.html#5209" class="Bound"
-      >A</a
-      ><a name="5210" class="Symbol"
-      >}</a
-      ><a name="5211"
-      > </a
-      ><a name="5212" class="Symbol"
-      >&#8594;</a
-      ><a name="5213"
-      > </a
-      ><a name="5214" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="5222"
-      > </a
-      ><a name="5223" href="Maps.html#5209" class="Bound"
-      >A</a
-      ><a name="5224"
-      > </a
-      ><a name="5225" class="Symbol"
-      >&#8594;</a
-      ><a name="5226"
-      > </a
-      ><a name="5227" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5229"
-      > </a
-      ><a name="5230" class="Symbol"
-      >&#8594;</a
-      ><a name="5231"
-      > </a
-      ><a name="5232" href="Maps.html#5209" class="Bound"
-      >A</a
-      ><a name="5233"
-      > </a
-      ><a name="5234" class="Symbol"
-      >&#8594;</a
-      ><a name="5235"
-      > </a
-      ><a name="5236" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5238"
-      > </a
-      ><a name="5239" class="Symbol"
-      >&#8594;</a
-      ><a name="5240"
-      > </a
-      ><a name="5241" href="Maps.html#5209" class="Bound"
-      >A</a
-      ><a name="5242"
-      > </a
-      ><a name="5243" class="Symbol"
-      >&#8594;</a
-      ><a name="5244"
-      > </a
-      ><a name="5245" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5247"
-      > </a
-      ><a name="5248" class="Symbol"
-      >&#8594;</a
-      ><a name="5249"
-      > </a
-      ><a name="5250" href="Maps.html#5209" class="Bound"
-      >A</a
-      ><a name="5251"
-      > </a
-      ><a name="5252" class="Symbol"
-      >&#8594;</a
-      ><a name="5253"
-      > </a
-      ><a name="5254" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="5262"
-      > </a
-      ><a name="5263" href="Maps.html#5209" class="Bound"
-      >A</a
-      ><a name="5264"
-      >
-  </a
-      ><a name="5267" href="Maps.html#5267" class="Bound"
-      >&#961;</a
-      ><a name="5268"
-      > </a
-      ><a name="5269" href="Maps.html#5190" class="Function Operator"
-      >,</a
-      ><a name="5270"
-      > </a
-      ><a name="5271" href="Maps.html#5271" class="Bound"
-      >x&#8321;</a
-      ><a name="5273"
-      > </a
-      ><a name="5274" href="Maps.html#5190" class="Function Operator"
-      >&#8614;</a
-      ><a name="5275"
-      > </a
-      ><a name="5276" href="Maps.html#5276" class="Bound"
-      >v&#8321;</a
-      ><a name="5278"
-      > </a
-      ><a name="5279" href="Maps.html#5190" class="Function Operator"
-      >,</a
-      ><a name="5280"
-      > </a
-      ><a name="5281" href="Maps.html#5281" class="Bound"
-      >x&#8322;</a
-      ><a name="5283"
-      > </a
-      ><a name="5284" href="Maps.html#5190" class="Function Operator"
-      >&#8614;</a
-      ><a name="5285"
-      > </a
-      ><a name="5286" href="Maps.html#5286" class="Bound"
-      >v&#8322;</a
-      ><a name="5288"
-      > </a
-      ><a name="5289" href="Maps.html#5190" class="Function Operator"
-      >,</a
-      ><a name="5290"
-      > </a
-      ><a name="5291" href="Maps.html#5291" class="Bound"
-      >x&#8323;</a
-      ><a name="5293"
-      > </a
-      ><a name="5294" href="Maps.html#5190" class="Function Operator"
-      >&#8614;</a
-      ><a name="5295"
-      > </a
-      ><a name="5296" href="Maps.html#5296" class="Bound"
-      >v&#8323;</a
-      ><a name="5298"
-      >  </a
-      ><a name="5300" class="Symbol"
-      >=</a
-      ><a name="5301"
-      >  </a
-      ><a name="5303" class="Symbol"
-      >((</a
-      ><a name="5305" href="Maps.html#5267" class="Bound"
-      >&#961;</a
-      ><a name="5306"
-      > </a
-      ><a name="5307" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5308"
-      > </a
-      ><a name="5309" href="Maps.html#5271" class="Bound"
-      >x&#8321;</a
-      ><a name="5311"
-      > </a
-      ><a name="5312" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5313"
-      > </a
-      ><a name="5314" href="Maps.html#5276" class="Bound"
-      >v&#8321;</a
-      ><a name="5316" class="Symbol"
-      >)</a
-      ><a name="5317" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5318"
-      > </a
-      ><a name="5319" href="Maps.html#5281" class="Bound"
-      >x&#8322;</a
-      ><a name="5321"
-      > </a
-      ><a name="5322" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5323"
-      > </a
-      ><a name="5324" href="Maps.html#5286" class="Bound"
-      >v&#8322;</a
-      ><a name="5326" class="Symbol"
-      >)</a
-      ><a name="5327" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5328"
-      > </a
-      ><a name="5329" href="Maps.html#5291" class="Bound"
-      >x&#8323;</a
-      ><a name="5331"
-      > </a
-      ><a name="5332" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5333"
-      > </a
-      ><a name="5334" href="Maps.html#5296" class="Bound"
-      >v&#8323;</a
-      ><a name="5336"
-      >
-
-  </a
-      ><a name="5340" href="Maps.html#5340" class="Function Operator"
-      >_,_&#8614;_,_&#8614;_,_&#8614;_,_&#8614;_</a
-      ><a name="5357"
-      > </a
-      ><a name="5358" class="Symbol"
-      >:</a
-      ><a name="5359"
-      > </a
-      ><a name="5360" class="Symbol"
-      >&#8704;</a
-      ><a name="5361"
-      > </a
-      ><a name="5362" class="Symbol"
-      >{</a
-      ><a name="5363" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5364" class="Symbol"
-      >}</a
-      ><a name="5365"
-      > </a
-      ><a name="5366" class="Symbol"
-      >&#8594;</a
-      ><a name="5367"
-      > </a
-      ><a name="5368" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="5376"
-      > </a
-      ><a name="5377" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5378"
-      > </a
-      ><a name="5379" class="Symbol"
-      >&#8594;</a
-      ><a name="5380"
-      > </a
-      ><a name="5381" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5383"
-      > </a
-      ><a name="5384" class="Symbol"
-      >&#8594;</a
-      ><a name="5385"
-      > </a
-      ><a name="5386" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5387"
-      > </a
-      ><a name="5388" class="Symbol"
-      >&#8594;</a
-      ><a name="5389"
-      > </a
-      ><a name="5390" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5392"
-      > </a
-      ><a name="5393" class="Symbol"
-      >&#8594;</a
-      ><a name="5394"
-      > </a
-      ><a name="5395" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5396"
-      > </a
-      ><a name="5397" class="Symbol"
-      >&#8594;</a
-      ><a name="5398"
-      > </a
-      ><a name="5399" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5401"
-      > </a
-      ><a name="5402" class="Symbol"
-      >&#8594;</a
-      ><a name="5403"
-      > </a
-      ><a name="5404" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5405"
-      > </a
-      ><a name="5406" class="Symbol"
-      >&#8594;</a
-      ><a name="5407"
-      > </a
-      ><a name="5408" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="5410"
-      > </a
-      ><a name="5411" class="Symbol"
-      >&#8594;</a
-      ><a name="5412"
-      > </a
-      ><a name="5413" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5414"
-      > </a
-      ><a name="5415" class="Symbol"
-      >&#8594;</a
-      ><a name="5416"
-      > </a
-      ><a name="5417" href="Maps.html#3757" class="Function"
-      >TotalMap</a
-      ><a name="5425"
-      > </a
-      ><a name="5426" href="Maps.html#5363" class="Bound"
-      >A</a
-      ><a name="5427"
-      >
-  </a
-      ><a name="5430" href="Maps.html#5430" class="Bound"
-      >&#961;</a
-      ><a name="5431"
-      > </a
-      ><a name="5432" href="Maps.html#5340" class="Function Operator"
-      >,</a
-      ><a name="5433"
-      > </a
-      ><a name="5434" href="Maps.html#5434" class="Bound"
-      >x&#8321;</a
-      ><a name="5436"
-      > </a
-      ><a name="5437" href="Maps.html#5340" class="Function Operator"
-      >&#8614;</a
-      ><a name="5438"
-      > </a
-      ><a name="5439" href="Maps.html#5439" class="Bound"
-      >v&#8321;</a
-      ><a name="5441"
-      > </a
-      ><a name="5442" href="Maps.html#5340" class="Function Operator"
-      >,</a
-      ><a name="5443"
-      > </a
-      ><a name="5444" href="Maps.html#5444" class="Bound"
-      >x&#8322;</a
-      ><a name="5446"
-      > </a
-      ><a name="5447" href="Maps.html#5340" class="Function Operator"
-      >&#8614;</a
-      ><a name="5448"
-      > </a
-      ><a name="5449" href="Maps.html#5449" class="Bound"
-      >v&#8322;</a
-      ><a name="5451"
-      > </a
-      ><a name="5452" href="Maps.html#5340" class="Function Operator"
-      >,</a
-      ><a name="5453"
-      > </a
-      ><a name="5454" href="Maps.html#5454" class="Bound"
-      >x&#8323;</a
-      ><a name="5456"
-      > </a
-      ><a name="5457" href="Maps.html#5340" class="Function Operator"
-      >&#8614;</a
-      ><a name="5458"
-      > </a
-      ><a name="5459" href="Maps.html#5459" class="Bound"
-      >v&#8323;</a
-      ><a name="5461"
-      > </a
-      ><a name="5462" href="Maps.html#5340" class="Function Operator"
-      >,</a
-      ><a name="5463"
-      > </a
-      ><a name="5464" href="Maps.html#5464" class="Bound"
-      >x&#8324;</a
-      ><a name="5466"
-      > </a
-      ><a name="5467" href="Maps.html#5340" class="Function Operator"
-      >&#8614;</a
-      ><a name="5468"
-      > </a
-      ><a name="5469" href="Maps.html#5469" class="Bound"
-      >v&#8324;</a
-      ><a name="5471"
-      > </a
-      ><a name="5472" class="Symbol"
-      >=</a
-      ><a name="5473"
-      >  </a
-      ><a name="5475" class="Symbol"
-      >(((</a
-      ><a name="5478" href="Maps.html#5430" class="Bound"
-      >&#961;</a
-      ><a name="5479"
-      > </a
-      ><a name="5480" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5481"
-      > </a
-      ><a name="5482" href="Maps.html#5434" class="Bound"
-      >x&#8321;</a
-      ><a name="5484"
-      > </a
-      ><a name="5485" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5486"
-      > </a
-      ><a name="5487" href="Maps.html#5439" class="Bound"
-      >v&#8321;</a
-      ><a name="5489" class="Symbol"
-      >)</a
-      ><a name="5490" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5491"
-      > </a
-      ><a name="5492" href="Maps.html#5444" class="Bound"
-      >x&#8322;</a
-      ><a name="5494"
-      > </a
-      ><a name="5495" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5496"
-      > </a
-      ><a name="5497" href="Maps.html#5449" class="Bound"
-      >v&#8322;</a
-      ><a name="5499" class="Symbol"
-      >)</a
-      ><a name="5500" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5501"
-      > </a
-      ><a name="5502" href="Maps.html#5454" class="Bound"
-      >x&#8323;</a
-      ><a name="5504"
-      > </a
-      ><a name="5505" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5506"
-      > </a
-      ><a name="5507" href="Maps.html#5459" class="Bound"
-      >v&#8323;</a
-      ><a name="5509" class="Symbol"
-      >)</a
-      ><a name="5510" href="Maps.html#4416" class="Function Operator"
-      >,</a
-      ><a name="5511"
-      > </a
-      ><a name="5512" href="Maps.html#5464" class="Bound"
-      >x&#8324;</a
-      ><a name="5514"
-      > </a
-      ><a name="5515" href="Maps.html#4416" class="Function Operator"
-      >&#8614;</a
-      ><a name="5516"
-      > </a
-      ><a name="5517" href="Maps.html#5469" class="Bound"
-      >v&#8324;</a
-      >
-
-</pre>
-
-For example, we can build a map taking ids to naturals, where $$x$$
-maps to 42, $$y$$ maps to 69, and every other key maps to 0, as follows:
-
-<pre class="Agda">
-
-  <a name="5689" href="Maps.html#5689" class="Function"
+  <a name="4854" href="Maps.html#4854" class="Function"
       >&#961;&#8320;</a
-      ><a name="5691"
+      ><a name="4856"
       > </a
-      ><a name="5692" class="Symbol"
+      ><a name="4857" class="Symbol"
       >:</a
-      ><a name="5693"
+      ><a name="4858"
       > </a
-      ><a name="5694" href="Maps.html#3757" class="Function"
+      ><a name="4859" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="5702"
+      ><a name="4867"
       > </a
-      ><a name="5703" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype"
+      ><a name="4868" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype"
       >&#8469;</a
-      ><a name="5704"
+      ><a name="4869"
       >
   </a
-      ><a name="5707" href="Maps.html#5689" class="Function"
+      ><a name="4872" href="Maps.html#4854" class="Function"
       >&#961;&#8320;</a
-      ><a name="5709"
+      ><a name="4874"
       > </a
-      ><a name="5710" class="Symbol"
+      ><a name="4875" class="Symbol"
       >=</a
-      ><a name="5711"
+      ><a name="4876"
       > </a
-      ><a name="5712" href="Maps.html#4132" class="Function"
+      ><a name="4877" href="Maps.html#4109" class="Function"
       >always</a
-      ><a name="5718"
+      ><a name="4883"
       > </a
-      ><a name="5719" class="Number"
+      ><a name="4884" class="Number"
       >0</a
-      ><a name="5720"
+      ><a name="4885"
       > </a
-      ><a name="5721" href="Maps.html#5074" class="Function Operator"
+      ><a name="4886" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="5722"
+      ><a name="4887"
       > </a
-      ><a name="5723" href="Maps.html#2863" class="Function"
+      ><a name="4888" href="Maps.html#2863" class="Function"
       >x</a
-      ><a name="5724"
+      ><a name="4889"
       > </a
-      ><a name="5725" href="Maps.html#5074" class="Function Operator"
+      ><a name="4890" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="5726"
+      ><a name="4891"
       > </a
-      ><a name="5727" class="Number"
+      ><a name="4892" class="Number"
       >42</a
-      ><a name="5729"
+      ><a name="4894"
       > </a
-      ><a name="5730" href="Maps.html#5074" class="Function Operator"
+      ><a name="4895" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="5731"
+      ><a name="4896"
       > </a
-      ><a name="5732" href="Maps.html#2865" class="Function"
+      ><a name="4897" href="Maps.html#2865" class="Function"
       >y</a
-      ><a name="5733"
+      ><a name="4898"
       > </a
-      ><a name="5734" href="Maps.html#5074" class="Function Operator"
+      ><a name="4899" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="5735"
+      ><a name="4900"
       > </a
-      ><a name="5736" class="Number"
+      ><a name="4901" class="Number"
       >69</a
       >
 
@@ -1850,118 +1237,118 @@ application!
 
 <pre class="Agda">
 
-  <a name="5907" href="Maps.html#5907" class="Function"
+  <a name="5072" href="Maps.html#5072" class="Function"
       >test&#8321;</a
-      ><a name="5912"
+      ><a name="5077"
       > </a
-      ><a name="5913" class="Symbol"
+      ><a name="5078" class="Symbol"
       >:</a
-      ><a name="5914"
+      ><a name="5079"
       > </a
-      ><a name="5915" href="Maps.html#5689" class="Function"
+      ><a name="5080" href="Maps.html#4854" class="Function"
       >&#961;&#8320;</a
-      ><a name="5917"
+      ><a name="5082"
       > </a
-      ><a name="5918" href="Maps.html#2863" class="Function"
+      ><a name="5083" href="Maps.html#2863" class="Function"
       >x</a
-      ><a name="5919"
+      ><a name="5084"
       > </a
-      ><a name="5920" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5085" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="5921"
+      ><a name="5086"
       > </a
-      ><a name="5922" class="Number"
+      ><a name="5087" class="Number"
       >42</a
-      ><a name="5924"
+      ><a name="5089"
       >
   </a
-      ><a name="5927" href="Maps.html#5907" class="Function"
+      ><a name="5092" href="Maps.html#5072" class="Function"
       >test&#8321;</a
-      ><a name="5932"
+      ><a name="5097"
       > </a
-      ><a name="5933" class="Symbol"
+      ><a name="5098" class="Symbol"
       >=</a
-      ><a name="5934"
+      ><a name="5099"
       > </a
-      ><a name="5935" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="5100" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="5939"
+      ><a name="5104"
       >
 
   </a
-      ><a name="5943" href="Maps.html#5943" class="Function"
+      ><a name="5108" href="Maps.html#5108" class="Function"
       >test&#8322;</a
-      ><a name="5948"
+      ><a name="5113"
       > </a
-      ><a name="5949" class="Symbol"
+      ><a name="5114" class="Symbol"
       >:</a
-      ><a name="5950"
+      ><a name="5115"
       > </a
-      ><a name="5951" href="Maps.html#5689" class="Function"
+      ><a name="5116" href="Maps.html#4854" class="Function"
       >&#961;&#8320;</a
-      ><a name="5953"
+      ><a name="5118"
       > </a
-      ><a name="5954" href="Maps.html#2865" class="Function"
+      ><a name="5119" href="Maps.html#2865" class="Function"
       >y</a
-      ><a name="5955"
+      ><a name="5120"
       > </a
-      ><a name="5956" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5121" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="5957"
+      ><a name="5122"
       > </a
-      ><a name="5958" class="Number"
+      ><a name="5123" class="Number"
       >69</a
-      ><a name="5960"
+      ><a name="5125"
       >
   </a
-      ><a name="5963" href="Maps.html#5943" class="Function"
+      ><a name="5128" href="Maps.html#5108" class="Function"
       >test&#8322;</a
-      ><a name="5968"
+      ><a name="5133"
       > </a
-      ><a name="5969" class="Symbol"
+      ><a name="5134" class="Symbol"
       >=</a
-      ><a name="5970"
+      ><a name="5135"
       > </a
-      ><a name="5971" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="5136" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="5975"
+      ><a name="5140"
       >
 
   </a
-      ><a name="5979" href="Maps.html#5979" class="Function"
+      ><a name="5144" href="Maps.html#5144" class="Function"
       >test&#8323;</a
-      ><a name="5984"
+      ><a name="5149"
       > </a
-      ><a name="5985" class="Symbol"
+      ><a name="5150" class="Symbol"
       >:</a
-      ><a name="5986"
+      ><a name="5151"
       > </a
-      ><a name="5987" href="Maps.html#5689" class="Function"
+      ><a name="5152" href="Maps.html#4854" class="Function"
       >&#961;&#8320;</a
-      ><a name="5989"
+      ><a name="5154"
       > </a
-      ><a name="5990" href="Maps.html#2867" class="Function"
+      ><a name="5155" href="Maps.html#2867" class="Function"
       >z</a
-      ><a name="5991"
+      ><a name="5156"
       > </a
-      ><a name="5992" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5157" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="5993"
+      ><a name="5158"
       > </a
-      ><a name="5994" class="Number"
+      ><a name="5159" class="Number"
       >0</a
-      ><a name="5995"
+      ><a name="5160"
       >
   </a
-      ><a name="5998" href="Maps.html#5979" class="Function"
+      ><a name="5163" href="Maps.html#5144" class="Function"
       >test&#8323;</a
-      ><a name="6003"
+      ><a name="5168"
       > </a
-      ><a name="6004" class="Symbol"
+      ><a name="5169" class="Symbol"
       >=</a
-      ><a name="6005"
+      ><a name="5170"
       > </a
-      ><a name="6006" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="5171" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 
@@ -1977,84 +1364,84 @@ The `always` map returns its default element for all keys:
 
 <pre class="Agda">
 
-  <a name="6341" class="Keyword"
+  <a name="5506" class="Keyword"
       >postulate</a
-      ><a name="6350"
+      ><a name="5515"
       >
     </a
-      ><a name="6355" href="Maps.html#6355" class="Postulate"
+      ><a name="5520" href="Maps.html#5520" class="Postulate"
       >apply-always</a
-      ><a name="6367"
+      ><a name="5532"
       > </a
-      ><a name="6368" class="Symbol"
+      ><a name="5533" class="Symbol"
       >:</a
-      ><a name="6369"
+      ><a name="5534"
       > </a
-      ><a name="6370" class="Symbol"
+      ><a name="5535" class="Symbol"
       >&#8704;</a
-      ><a name="6371"
+      ><a name="5536"
       > </a
-      ><a name="6372" class="Symbol"
+      ><a name="5537" class="Symbol"
       >{</a
-      ><a name="6373" href="Maps.html#6373" class="Bound"
+      ><a name="5538" href="Maps.html#5538" class="Bound"
       >A</a
-      ><a name="6374" class="Symbol"
+      ><a name="5539" class="Symbol"
       >}</a
-      ><a name="6375"
+      ><a name="5540"
       > </a
-      ><a name="6376" class="Symbol"
+      ><a name="5541" class="Symbol"
       >(</a
-      ><a name="6377" href="Maps.html#6377" class="Bound"
+      ><a name="5542" href="Maps.html#5542" class="Bound"
       >v</a
-      ><a name="6378"
+      ><a name="5543"
       > </a
-      ><a name="6379" class="Symbol"
+      ><a name="5544" class="Symbol"
       >:</a
-      ><a name="6380"
+      ><a name="5545"
       > </a
-      ><a name="6381" href="Maps.html#6373" class="Bound"
+      ><a name="5546" href="Maps.html#5538" class="Bound"
       >A</a
-      ><a name="6382" class="Symbol"
+      ><a name="5547" class="Symbol"
       >)</a
-      ><a name="6383"
+      ><a name="5548"
       > </a
-      ><a name="6384" class="Symbol"
+      ><a name="5549" class="Symbol"
       >(</a
-      ><a name="6385" href="Maps.html#6385" class="Bound"
+      ><a name="5550" href="Maps.html#5550" class="Bound"
       >x</a
-      ><a name="6386"
+      ><a name="5551"
       > </a
-      ><a name="6387" class="Symbol"
+      ><a name="5552" class="Symbol"
       >:</a
-      ><a name="6388"
+      ><a name="5553"
       > </a
-      ><a name="6389" href="Maps.html#2215" class="Datatype"
+      ><a name="5554" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="6391" class="Symbol"
+      ><a name="5556" class="Symbol"
       >)</a
-      ><a name="6392"
+      ><a name="5557"
       > </a
-      ><a name="6393" class="Symbol"
+      ><a name="5558" class="Symbol"
       >&#8594;</a
-      ><a name="6394"
+      ><a name="5559"
       > </a
-      ><a name="6395" href="Maps.html#4132" class="Function"
+      ><a name="5560" href="Maps.html#4109" class="Function"
       >always</a
-      ><a name="6401"
+      ><a name="5566"
       > </a
-      ><a name="6402" href="Maps.html#6377" class="Bound"
+      ><a name="5567" href="Maps.html#5542" class="Bound"
       >v</a
-      ><a name="6403"
+      ><a name="5568"
       > </a
-      ><a name="6404" href="Maps.html#6385" class="Bound"
+      ><a name="5569" href="Maps.html#5550" class="Bound"
       >x</a
-      ><a name="6405"
+      ><a name="5570"
       > </a
-      ><a name="6406" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5571" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="6407"
+      ><a name="5572"
       > </a
-      ><a name="6408" href="Maps.html#6377" class="Bound"
+      ><a name="5573" href="Maps.html#5542" class="Bound"
       >v</a
       >
 
@@ -2063,100 +1450,100 @@ The `always` map returns its default element for all keys:
 <div class="hidden">
 <pre class="Agda">
 
-  <a name="6458" href="Maps.html#6458" class="Function"
+  <a name="5623" href="Maps.html#5623" class="Function"
       >apply-always&#8242;</a
-      ><a name="6471"
+      ><a name="5636"
       > </a
-      ><a name="6472" class="Symbol"
+      ><a name="5637" class="Symbol"
       >:</a
-      ><a name="6473"
+      ><a name="5638"
       > </a
-      ><a name="6474" class="Symbol"
+      ><a name="5639" class="Symbol"
       >&#8704;</a
-      ><a name="6475"
+      ><a name="5640"
       > </a
-      ><a name="6476" class="Symbol"
+      ><a name="5641" class="Symbol"
       >{</a
-      ><a name="6477" href="Maps.html#6477" class="Bound"
+      ><a name="5642" href="Maps.html#5642" class="Bound"
       >A</a
-      ><a name="6478" class="Symbol"
+      ><a name="5643" class="Symbol"
       >}</a
-      ><a name="6479"
+      ><a name="5644"
       > </a
-      ><a name="6480" class="Symbol"
+      ><a name="5645" class="Symbol"
       >(</a
-      ><a name="6481" href="Maps.html#6481" class="Bound"
+      ><a name="5646" href="Maps.html#5646" class="Bound"
       >v</a
-      ><a name="6482"
+      ><a name="5647"
       > </a
-      ><a name="6483" class="Symbol"
+      ><a name="5648" class="Symbol"
       >:</a
-      ><a name="6484"
+      ><a name="5649"
       > </a
-      ><a name="6485" href="Maps.html#6477" class="Bound"
+      ><a name="5650" href="Maps.html#5642" class="Bound"
       >A</a
-      ><a name="6486" class="Symbol"
+      ><a name="5651" class="Symbol"
       >)</a
-      ><a name="6487"
+      ><a name="5652"
       > </a
-      ><a name="6488" class="Symbol"
+      ><a name="5653" class="Symbol"
       >(</a
-      ><a name="6489" href="Maps.html#6489" class="Bound"
+      ><a name="5654" href="Maps.html#5654" class="Bound"
       >x</a
-      ><a name="6490"
+      ><a name="5655"
       > </a
-      ><a name="6491" class="Symbol"
+      ><a name="5656" class="Symbol"
       >:</a
-      ><a name="6492"
+      ><a name="5657"
       > </a
-      ><a name="6493" href="Maps.html#2215" class="Datatype"
+      ><a name="5658" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="6495" class="Symbol"
+      ><a name="5660" class="Symbol"
       >)</a
-      ><a name="6496"
+      ><a name="5661"
       > </a
-      ><a name="6497" class="Symbol"
+      ><a name="5662" class="Symbol"
       >&#8594;</a
-      ><a name="6498"
+      ><a name="5663"
       > </a
-      ><a name="6499" href="Maps.html#4132" class="Function"
+      ><a name="5664" href="Maps.html#4109" class="Function"
       >always</a
-      ><a name="6505"
+      ><a name="5670"
       > </a
-      ><a name="6506" href="Maps.html#6481" class="Bound"
+      ><a name="5671" href="Maps.html#5646" class="Bound"
       >v</a
-      ><a name="6507"
+      ><a name="5672"
       > </a
-      ><a name="6508" href="Maps.html#6489" class="Bound"
+      ><a name="5673" href="Maps.html#5654" class="Bound"
       >x</a
-      ><a name="6509"
+      ><a name="5674"
       > </a
-      ><a name="6510" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="5675" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="6511"
+      ><a name="5676"
       > </a
-      ><a name="6512" href="Maps.html#6481" class="Bound"
+      ><a name="5677" href="Maps.html#5646" class="Bound"
       >v</a
-      ><a name="6513"
+      ><a name="5678"
       >
   </a
-      ><a name="6516" href="Maps.html#6458" class="Function"
+      ><a name="5681" href="Maps.html#5623" class="Function"
       >apply-always&#8242;</a
-      ><a name="6529"
+      ><a name="5694"
       > </a
-      ><a name="6530" href="Maps.html#6530" class="Bound"
+      ><a name="5695" href="Maps.html#5695" class="Bound"
       >v</a
-      ><a name="6531"
+      ><a name="5696"
       > </a
-      ><a name="6532" href="Maps.html#6532" class="Bound"
+      ><a name="5697" href="Maps.html#5697" class="Bound"
       >x</a
-      ><a name="6533"
+      ><a name="5698"
       > </a
-      ><a name="6534" class="Symbol"
+      ><a name="5699" class="Symbol"
       >=</a
-      ><a name="6535"
+      ><a name="5700"
       > </a
-      ><a name="6536" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="5701" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 
@@ -2164,127 +1551,127 @@ The `always` map returns its default element for all keys:
 </div>
 
 #### Exercise: 2 stars, optional (update-eq)
-Next, if we update a map $$ρ$$ at a key $$x$$ with a new value $$v$$
-and then look up $$x$$ in the map resulting from the update, we get
-back $$v$$:
+Next, if we update a map `ρ` at a key `x` with a new value `v`
+and then look up `x` in the map resulting from the update, we get
+back `v`:
 
 <pre class="Agda">
 
-  <a name="6770" class="Keyword"
+  <a name="5925" class="Keyword"
       >postulate</a
-      ><a name="6779"
+      ><a name="5934"
       >
     </a
-      ><a name="6784" href="Maps.html#6784" class="Postulate"
+      ><a name="5939" href="Maps.html#5939" class="Postulate"
       >update-eq</a
-      ><a name="6793"
+      ><a name="5948"
       > </a
-      ><a name="6794" class="Symbol"
+      ><a name="5949" class="Symbol"
       >:</a
-      ><a name="6795"
+      ><a name="5950"
       > </a
-      ><a name="6796" class="Symbol"
+      ><a name="5951" class="Symbol"
       >&#8704;</a
-      ><a name="6797"
+      ><a name="5952"
       > </a
-      ><a name="6798" class="Symbol"
+      ><a name="5953" class="Symbol"
       >{</a
-      ><a name="6799" href="Maps.html#6799" class="Bound"
+      ><a name="5954" href="Maps.html#5954" class="Bound"
       >A</a
-      ><a name="6800" class="Symbol"
+      ><a name="5955" class="Symbol"
       >}</a
-      ><a name="6801"
+      ><a name="5956"
       > </a
-      ><a name="6802" class="Symbol"
+      ><a name="5957" class="Symbol"
       >(</a
-      ><a name="6803" href="Maps.html#6803" class="Bound"
+      ><a name="5958" href="Maps.html#5958" class="Bound"
       >&#961;</a
-      ><a name="6804"
+      ><a name="5959"
       > </a
-      ><a name="6805" class="Symbol"
+      ><a name="5960" class="Symbol"
       >:</a
-      ><a name="6806"
+      ><a name="5961"
       > </a
-      ><a name="6807" href="Maps.html#3757" class="Function"
+      ><a name="5962" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="6815"
+      ><a name="5970"
       > </a
-      ><a name="6816" href="Maps.html#6799" class="Bound"
+      ><a name="5971" href="Maps.html#5954" class="Bound"
       >A</a
-      ><a name="6817" class="Symbol"
+      ><a name="5972" class="Symbol"
       >)</a
-      ><a name="6818"
+      ><a name="5973"
       > </a
-      ><a name="6819" class="Symbol"
+      ><a name="5974" class="Symbol"
       >(</a
-      ><a name="6820" href="Maps.html#6820" class="Bound"
+      ><a name="5975" href="Maps.html#5975" class="Bound"
       >x</a
-      ><a name="6821"
+      ><a name="5976"
       > </a
-      ><a name="6822" class="Symbol"
+      ><a name="5977" class="Symbol"
       >:</a
-      ><a name="6823"
+      ><a name="5978"
       > </a
-      ><a name="6824" href="Maps.html#2215" class="Datatype"
+      ><a name="5979" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="6826" class="Symbol"
+      ><a name="5981" class="Symbol"
       >)</a
-      ><a name="6827"
+      ><a name="5982"
       > </a
-      ><a name="6828" class="Symbol"
+      ><a name="5983" class="Symbol"
       >(</a
-      ><a name="6829" href="Maps.html#6829" class="Bound"
+      ><a name="5984" href="Maps.html#5984" class="Bound"
       >v</a
-      ><a name="6830"
+      ><a name="5985"
       > </a
-      ><a name="6831" class="Symbol"
+      ><a name="5986" class="Symbol"
       >:</a
-      ><a name="6832"
+      ><a name="5987"
       > </a
-      ><a name="6833" href="Maps.html#6799" class="Bound"
+      ><a name="5988" href="Maps.html#5954" class="Bound"
       >A</a
-      ><a name="6834" class="Symbol"
+      ><a name="5989" class="Symbol"
       >)</a
-      ><a name="6835"
+      ><a name="5990"
       >
               </a
-      ><a name="6850" class="Symbol"
+      ><a name="6005" class="Symbol"
       >&#8594;</a
-      ><a name="6851"
+      ><a name="6006"
       > </a
-      ><a name="6852" class="Symbol"
+      ><a name="6007" class="Symbol"
       >(</a
-      ><a name="6853" href="Maps.html#6803" class="Bound"
+      ><a name="6008" href="Maps.html#5958" class="Bound"
       >&#961;</a
-      ><a name="6854"
+      ><a name="6009"
       > </a
-      ><a name="6855" href="Maps.html#4416" class="Function Operator"
+      ><a name="6010" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="6856"
+      ><a name="6011"
       > </a
-      ><a name="6857" href="Maps.html#6820" class="Bound"
+      ><a name="6012" href="Maps.html#5975" class="Bound"
       >x</a
-      ><a name="6858"
+      ><a name="6013"
       > </a
-      ><a name="6859" href="Maps.html#4416" class="Function Operator"
+      ><a name="6014" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="6860"
+      ><a name="6015"
       > </a
-      ><a name="6861" href="Maps.html#6829" class="Bound"
+      ><a name="6016" href="Maps.html#5984" class="Bound"
       >v</a
-      ><a name="6862" class="Symbol"
+      ><a name="6017" class="Symbol"
       >)</a
-      ><a name="6863"
+      ><a name="6018"
       > </a
-      ><a name="6864" href="Maps.html#6820" class="Bound"
+      ><a name="6019" href="Maps.html#5975" class="Bound"
       >x</a
-      ><a name="6865"
+      ><a name="6020"
       > </a
-      ><a name="6866" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6021" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="6867"
+      ><a name="6022"
       > </a
-      ><a name="6868" href="Maps.html#6829" class="Bound"
+      ><a name="6023" href="Maps.html#5984" class="Bound"
       >v</a
       >
 
@@ -2293,211 +1680,211 @@ back $$v$$:
 <div class="hidden">
 <pre class="Agda">
 
-  <a name="6918" href="Maps.html#6918" class="Function"
+  <a name="6073" href="Maps.html#6073" class="Function"
       >update-eq&#8242;</a
-      ><a name="6928"
+      ><a name="6083"
       > </a
-      ><a name="6929" class="Symbol"
+      ><a name="6084" class="Symbol"
       >:</a
-      ><a name="6930"
+      ><a name="6085"
       > </a
-      ><a name="6931" class="Symbol"
+      ><a name="6086" class="Symbol"
       >&#8704;</a
-      ><a name="6932"
+      ><a name="6087"
       > </a
-      ><a name="6933" class="Symbol"
+      ><a name="6088" class="Symbol"
       >{</a
-      ><a name="6934" href="Maps.html#6934" class="Bound"
+      ><a name="6089" href="Maps.html#6089" class="Bound"
       >A</a
-      ><a name="6935" class="Symbol"
+      ><a name="6090" class="Symbol"
       >}</a
-      ><a name="6936"
+      ><a name="6091"
       > </a
-      ><a name="6937" class="Symbol"
+      ><a name="6092" class="Symbol"
       >(</a
-      ><a name="6938" href="Maps.html#6938" class="Bound"
+      ><a name="6093" href="Maps.html#6093" class="Bound"
       >&#961;</a
-      ><a name="6939"
+      ><a name="6094"
       > </a
-      ><a name="6940" class="Symbol"
+      ><a name="6095" class="Symbol"
       >:</a
-      ><a name="6941"
+      ><a name="6096"
       > </a
-      ><a name="6942" href="Maps.html#3757" class="Function"
+      ><a name="6097" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="6950"
+      ><a name="6105"
       > </a
-      ><a name="6951" href="Maps.html#6934" class="Bound"
+      ><a name="6106" href="Maps.html#6089" class="Bound"
       >A</a
-      ><a name="6952" class="Symbol"
+      ><a name="6107" class="Symbol"
       >)</a
-      ><a name="6953"
+      ><a name="6108"
       > </a
-      ><a name="6954" class="Symbol"
+      ><a name="6109" class="Symbol"
       >(</a
-      ><a name="6955" href="Maps.html#6955" class="Bound"
+      ><a name="6110" href="Maps.html#6110" class="Bound"
       >x</a
-      ><a name="6956"
+      ><a name="6111"
       > </a
-      ><a name="6957" class="Symbol"
+      ><a name="6112" class="Symbol"
       >:</a
-      ><a name="6958"
+      ><a name="6113"
       > </a
-      ><a name="6959" href="Maps.html#2215" class="Datatype"
+      ><a name="6114" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="6961" class="Symbol"
+      ><a name="6116" class="Symbol"
       >)</a
-      ><a name="6962"
+      ><a name="6117"
       > </a
-      ><a name="6963" class="Symbol"
+      ><a name="6118" class="Symbol"
       >(</a
-      ><a name="6964" href="Maps.html#6964" class="Bound"
+      ><a name="6119" href="Maps.html#6119" class="Bound"
       >v</a
-      ><a name="6965"
+      ><a name="6120"
       > </a
-      ><a name="6966" class="Symbol"
+      ><a name="6121" class="Symbol"
       >:</a
-      ><a name="6967"
+      ><a name="6122"
       > </a
-      ><a name="6968" href="Maps.html#6934" class="Bound"
+      ><a name="6123" href="Maps.html#6089" class="Bound"
       >A</a
-      ><a name="6969" class="Symbol"
+      ><a name="6124" class="Symbol"
       >)</a
-      ><a name="6970"
+      ><a name="6125"
       >
              </a
-      ><a name="6984" class="Symbol"
+      ><a name="6139" class="Symbol"
       >&#8594;</a
-      ><a name="6985"
+      ><a name="6140"
       > </a
-      ><a name="6986" class="Symbol"
+      ><a name="6141" class="Symbol"
       >(</a
-      ><a name="6987" href="Maps.html#6938" class="Bound"
+      ><a name="6142" href="Maps.html#6093" class="Bound"
       >&#961;</a
-      ><a name="6988"
+      ><a name="6143"
       > </a
-      ><a name="6989" href="Maps.html#4416" class="Function Operator"
+      ><a name="6144" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="6990"
+      ><a name="6145"
       > </a
-      ><a name="6991" href="Maps.html#6955" class="Bound"
+      ><a name="6146" href="Maps.html#6110" class="Bound"
       >x</a
-      ><a name="6992"
+      ><a name="6147"
       > </a
-      ><a name="6993" href="Maps.html#4416" class="Function Operator"
+      ><a name="6148" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="6994"
+      ><a name="6149"
       > </a
-      ><a name="6995" href="Maps.html#6964" class="Bound"
+      ><a name="6150" href="Maps.html#6119" class="Bound"
       >v</a
-      ><a name="6996" class="Symbol"
+      ><a name="6151" class="Symbol"
       >)</a
-      ><a name="6997"
+      ><a name="6152"
       > </a
-      ><a name="6998" href="Maps.html#6955" class="Bound"
+      ><a name="6153" href="Maps.html#6110" class="Bound"
       >x</a
-      ><a name="6999"
+      ><a name="6154"
       > </a
-      ><a name="7000" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6155" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="7001"
+      ><a name="6156"
       > </a
-      ><a name="7002" href="Maps.html#6964" class="Bound"
+      ><a name="6157" href="Maps.html#6119" class="Bound"
       >v</a
-      ><a name="7003"
+      ><a name="6158"
       >
   </a
-      ><a name="7006" href="Maps.html#6918" class="Function"
+      ><a name="6161" href="Maps.html#6073" class="Function"
       >update-eq&#8242;</a
-      ><a name="7016"
+      ><a name="6171"
       > </a
-      ><a name="7017" href="Maps.html#7017" class="Bound"
+      ><a name="6172" href="Maps.html#6172" class="Bound"
       >&#961;</a
-      ><a name="7018"
+      ><a name="6173"
       > </a
-      ><a name="7019" href="Maps.html#7019" class="Bound"
+      ><a name="6174" href="Maps.html#6174" class="Bound"
       >x</a
-      ><a name="7020"
+      ><a name="6175"
       > </a
-      ><a name="7021" href="Maps.html#7021" class="Bound"
+      ><a name="6176" href="Maps.html#6176" class="Bound"
       >v</a
-      ><a name="7022"
+      ><a name="6177"
       > </a
-      ><a name="7023" class="Keyword"
+      ><a name="6178" class="Keyword"
       >with</a
-      ><a name="7027"
+      ><a name="6182"
       > </a
-      ><a name="7028" href="Maps.html#7019" class="Bound"
+      ><a name="6183" href="Maps.html#6174" class="Bound"
       >x</a
-      ><a name="7029"
+      ><a name="6184"
       > </a
-      ><a name="7030" href="Maps.html#2558" class="Function Operator"
+      ><a name="6185" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="7031"
+      ><a name="6186"
       > </a
-      ><a name="7032" href="Maps.html#7019" class="Bound"
+      ><a name="6187" href="Maps.html#6174" class="Bound"
       >x</a
-      ><a name="7033"
+      ><a name="6188"
       >
   </a
-      ><a name="7036" class="Symbol"
+      ><a name="6191" class="Symbol"
       >...</a
-      ><a name="7039"
+      ><a name="6194"
       > </a
-      ><a name="7040" class="Symbol"
+      ><a name="6195" class="Symbol"
       >|</a
-      ><a name="7041"
+      ><a name="6196"
       > </a
-      ><a name="7042" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="6197" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="7045"
+      ><a name="6200"
       > </a
-      ><a name="7046" href="Maps.html#7046" class="Bound"
+      ><a name="6201" href="Maps.html#6201" class="Bound"
       >x&#8801;x</a
-      ><a name="7049"
+      ><a name="6204"
       > </a
-      ><a name="7050" class="Symbol"
+      ><a name="6205" class="Symbol"
       >=</a
-      ><a name="7051"
+      ><a name="6206"
       > </a
-      ><a name="7052" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6207" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="7056"
+      ><a name="6211"
       >
   </a
-      ><a name="7059" class="Symbol"
+      ><a name="6214" class="Symbol"
       >...</a
-      ><a name="7062"
+      ><a name="6217"
       > </a
-      ><a name="7063" class="Symbol"
+      ><a name="6218" class="Symbol"
       >|</a
-      ><a name="7064"
+      ><a name="6219"
       > </a
-      ><a name="7065" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="6220" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="7067"
+      ><a name="6222"
       >  </a
-      ><a name="7069" href="Maps.html#7069" class="Bound"
+      ><a name="6224" href="Maps.html#6224" class="Bound"
       >x&#8802;x</a
-      ><a name="7072"
+      ><a name="6227"
       > </a
-      ><a name="7073" class="Symbol"
+      ><a name="6228" class="Symbol"
       >=</a
-      ><a name="7074"
+      ><a name="6229"
       > </a
-      ><a name="7075" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="6230" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
-      ><a name="7081"
+      ><a name="6236"
       > </a
-      ><a name="7082" class="Symbol"
+      ><a name="6237" class="Symbol"
       >(</a
-      ><a name="7083" href="Maps.html#7069" class="Bound"
+      ><a name="6238" href="Maps.html#6224" class="Bound"
       >x&#8802;x</a
-      ><a name="7086"
+      ><a name="6241"
       > </a
-      ><a name="7087" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6242" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="7091" class="Symbol"
+      ><a name="6246" class="Symbol"
       >)</a
       >
 
@@ -2505,261 +1892,261 @@ back $$v$$:
 </div>
 
 #### Exercise: 2 stars, optional (update-neq)
-On the other hand, if we update a map $$m$$ at a key $$x$$ and
-then look up a _different_ key $$y$$ in the resulting map, we get
-the same result that $$m$$ would have given:
+On the other hand, if we update a map `m` at a key `x` and
+then look up a _different_ key `y` in the resulting map, we get
+the same result that `m` would have given:
 
 <pre class="Agda">
 
-  <a name="7348" href="Maps.html#7348" class="Function"
+  <a name="6495" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="7358"
+      ><a name="6505"
       > </a
-      ><a name="7359" class="Symbol"
+      ><a name="6506" class="Symbol"
       >:</a
-      ><a name="7360"
+      ><a name="6507"
       > </a
-      ><a name="7361" class="Symbol"
+      ><a name="6508" class="Symbol"
       >&#8704;</a
-      ><a name="7362"
+      ><a name="6509"
       > </a
-      ><a name="7363" class="Symbol"
+      ><a name="6510" class="Symbol"
       >{</a
-      ><a name="7364" href="Maps.html#7364" class="Bound"
+      ><a name="6511" href="Maps.html#6511" class="Bound"
       >A</a
-      ><a name="7365" class="Symbol"
+      ><a name="6512" class="Symbol"
       >}</a
-      ><a name="7366"
+      ><a name="6513"
       > </a
-      ><a name="7367" class="Symbol"
+      ><a name="6514" class="Symbol"
       >(</a
-      ><a name="7368" href="Maps.html#7368" class="Bound"
+      ><a name="6515" href="Maps.html#6515" class="Bound"
       >&#961;</a
-      ><a name="7369"
+      ><a name="6516"
       > </a
-      ><a name="7370" class="Symbol"
+      ><a name="6517" class="Symbol"
       >:</a
-      ><a name="7371"
+      ><a name="6518"
       > </a
-      ><a name="7372" href="Maps.html#3757" class="Function"
+      ><a name="6519" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="7380"
+      ><a name="6527"
       > </a
-      ><a name="7381" href="Maps.html#7364" class="Bound"
+      ><a name="6528" href="Maps.html#6511" class="Bound"
       >A</a
-      ><a name="7382" class="Symbol"
+      ><a name="6529" class="Symbol"
       >)</a
-      ><a name="7383"
+      ><a name="6530"
       > </a
-      ><a name="7384" class="Symbol"
+      ><a name="6531" class="Symbol"
       >(</a
-      ><a name="7385" href="Maps.html#7385" class="Bound"
+      ><a name="6532" href="Maps.html#6532" class="Bound"
       >x</a
-      ><a name="7386"
+      ><a name="6533"
       > </a
-      ><a name="7387" class="Symbol"
+      ><a name="6534" class="Symbol"
       >:</a
-      ><a name="7388"
+      ><a name="6535"
       > </a
-      ><a name="7389" href="Maps.html#2215" class="Datatype"
+      ><a name="6536" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="7391" class="Symbol"
+      ><a name="6538" class="Symbol"
       >)</a
-      ><a name="7392"
+      ><a name="6539"
       > </a
-      ><a name="7393" class="Symbol"
+      ><a name="6540" class="Symbol"
       >(</a
-      ><a name="7394" href="Maps.html#7394" class="Bound"
+      ><a name="6541" href="Maps.html#6541" class="Bound"
       >v</a
-      ><a name="7395"
+      ><a name="6542"
       > </a
-      ><a name="7396" class="Symbol"
+      ><a name="6543" class="Symbol"
       >:</a
-      ><a name="7397"
+      ><a name="6544"
       > </a
-      ><a name="7398" href="Maps.html#7364" class="Bound"
+      ><a name="6545" href="Maps.html#6511" class="Bound"
       >A</a
-      ><a name="7399" class="Symbol"
+      ><a name="6546" class="Symbol"
       >)</a
-      ><a name="7400"
+      ><a name="6547"
       > </a
-      ><a name="7401" class="Symbol"
+      ><a name="6548" class="Symbol"
       >(</a
-      ><a name="7402" href="Maps.html#7402" class="Bound"
+      ><a name="6549" href="Maps.html#6549" class="Bound"
       >y</a
-      ><a name="7403"
+      ><a name="6550"
       > </a
-      ><a name="7404" class="Symbol"
+      ><a name="6551" class="Symbol"
       >:</a
-      ><a name="7405"
+      ><a name="6552"
       > </a
-      ><a name="7406" href="Maps.html#2215" class="Datatype"
+      ><a name="6553" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="7408" class="Symbol"
+      ><a name="6555" class="Symbol"
       >)</a
-      ><a name="7409"
+      ><a name="6556"
       >
              </a
-      ><a name="7423" class="Symbol"
+      ><a name="6570" class="Symbol"
       >&#8594;</a
-      ><a name="7424"
+      ><a name="6571"
       > </a
-      ><a name="7425" href="Maps.html#7385" class="Bound"
+      ><a name="6572" href="Maps.html#6532" class="Bound"
       >x</a
-      ><a name="7426"
+      ><a name="6573"
       > </a
-      ><a name="7427" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
+      ><a name="6574" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
       >&#8802;</a
-      ><a name="7428"
+      ><a name="6575"
       > </a
-      ><a name="7429" href="Maps.html#7402" class="Bound"
+      ><a name="6576" href="Maps.html#6549" class="Bound"
       >y</a
-      ><a name="7430"
+      ><a name="6577"
       > </a
-      ><a name="7431" class="Symbol"
+      ><a name="6578" class="Symbol"
       >&#8594;</a
-      ><a name="7432"
+      ><a name="6579"
       > </a
-      ><a name="7433" class="Symbol"
+      ><a name="6580" class="Symbol"
       >(</a
-      ><a name="7434" href="Maps.html#7368" class="Bound"
+      ><a name="6581" href="Maps.html#6515" class="Bound"
       >&#961;</a
-      ><a name="7435"
+      ><a name="6582"
       > </a
-      ><a name="7436" href="Maps.html#4416" class="Function Operator"
+      ><a name="6583" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="7437"
+      ><a name="6584"
       > </a
-      ><a name="7438" href="Maps.html#7385" class="Bound"
+      ><a name="6585" href="Maps.html#6532" class="Bound"
       >x</a
-      ><a name="7439"
+      ><a name="6586"
       > </a
-      ><a name="7440" href="Maps.html#4416" class="Function Operator"
+      ><a name="6587" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="7441"
+      ><a name="6588"
       > </a
-      ><a name="7442" href="Maps.html#7394" class="Bound"
+      ><a name="6589" href="Maps.html#6541" class="Bound"
       >v</a
-      ><a name="7443" class="Symbol"
+      ><a name="6590" class="Symbol"
       >)</a
-      ><a name="7444"
+      ><a name="6591"
       > </a
-      ><a name="7445" href="Maps.html#7402" class="Bound"
+      ><a name="6592" href="Maps.html#6549" class="Bound"
       >y</a
-      ><a name="7446"
+      ><a name="6593"
       > </a
-      ><a name="7447" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6594" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="7448"
+      ><a name="6595"
       > </a
-      ><a name="7449" href="Maps.html#7368" class="Bound"
+      ><a name="6596" href="Maps.html#6515" class="Bound"
       >&#961;</a
-      ><a name="7450"
+      ><a name="6597"
       > </a
-      ><a name="7451" href="Maps.html#7402" class="Bound"
+      ><a name="6598" href="Maps.html#6549" class="Bound"
       >y</a
-      ><a name="7452"
+      ><a name="6599"
       >
   </a
-      ><a name="7455" href="Maps.html#7348" class="Function"
+      ><a name="6602" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="7465"
+      ><a name="6612"
       > </a
-      ><a name="7466" href="Maps.html#7466" class="Bound"
+      ><a name="6613" href="Maps.html#6613" class="Bound"
       >&#961;</a
-      ><a name="7467"
+      ><a name="6614"
       > </a
-      ><a name="7468" href="Maps.html#7468" class="Bound"
+      ><a name="6615" href="Maps.html#6615" class="Bound"
       >x</a
-      ><a name="7469"
+      ><a name="6616"
       > </a
-      ><a name="7470" href="Maps.html#7470" class="Bound"
+      ><a name="6617" href="Maps.html#6617" class="Bound"
       >v</a
-      ><a name="7471"
+      ><a name="6618"
       > </a
-      ><a name="7472" href="Maps.html#7472" class="Bound"
+      ><a name="6619" href="Maps.html#6619" class="Bound"
       >y</a
-      ><a name="7473"
+      ><a name="6620"
       > </a
-      ><a name="7474" href="Maps.html#7474" class="Bound"
+      ><a name="6621" href="Maps.html#6621" class="Bound"
       >x&#8802;y</a
-      ><a name="7477"
+      ><a name="6624"
       > </a
-      ><a name="7478" class="Keyword"
+      ><a name="6625" class="Keyword"
       >with</a
-      ><a name="7482"
+      ><a name="6629"
       > </a
-      ><a name="7483" href="Maps.html#7468" class="Bound"
+      ><a name="6630" href="Maps.html#6615" class="Bound"
       >x</a
-      ><a name="7484"
+      ><a name="6631"
       > </a
-      ><a name="7485" href="Maps.html#2558" class="Function Operator"
+      ><a name="6632" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="7486"
+      ><a name="6633"
       > </a
-      ><a name="7487" href="Maps.html#7472" class="Bound"
+      ><a name="6634" href="Maps.html#6619" class="Bound"
       >y</a
-      ><a name="7488"
+      ><a name="6635"
       >
   </a
-      ><a name="7491" class="Symbol"
+      ><a name="6638" class="Symbol"
       >...</a
-      ><a name="7494"
+      ><a name="6641"
       > </a
-      ><a name="7495" class="Symbol"
+      ><a name="6642" class="Symbol"
       >|</a
-      ><a name="7496"
+      ><a name="6643"
       > </a
-      ><a name="7497" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="6644" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="7500"
+      ><a name="6647"
       > </a
-      ><a name="7501" href="Maps.html#7501" class="Bound"
+      ><a name="6648" href="Maps.html#6648" class="Bound"
       >x&#8801;y</a
-      ><a name="7504"
+      ><a name="6651"
       > </a
-      ><a name="7505" class="Symbol"
+      ><a name="6652" class="Symbol"
       >=</a
-      ><a name="7506"
+      ><a name="6653"
       > </a
-      ><a name="7507" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="6654" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
-      ><a name="7513"
+      ><a name="6660"
       > </a
-      ><a name="7514" class="Symbol"
+      ><a name="6661" class="Symbol"
       >(</a
-      ><a name="7515" href="Maps.html#7474" class="Bound"
+      ><a name="6662" href="Maps.html#6621" class="Bound"
       >x&#8802;y</a
-      ><a name="7518"
+      ><a name="6665"
       > </a
-      ><a name="7519" href="Maps.html#7501" class="Bound"
+      ><a name="6666" href="Maps.html#6648" class="Bound"
       >x&#8801;y</a
-      ><a name="7522" class="Symbol"
+      ><a name="6669" class="Symbol"
       >)</a
-      ><a name="7523"
+      ><a name="6670"
       >
   </a
-      ><a name="7526" class="Symbol"
+      ><a name="6673" class="Symbol"
       >...</a
-      ><a name="7529"
+      ><a name="6676"
       > </a
-      ><a name="7530" class="Symbol"
+      ><a name="6677" class="Symbol"
       >|</a
-      ><a name="7531"
+      ><a name="6678"
       > </a
-      ><a name="7532" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="6679" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="7534"
+      ><a name="6681"
       >  </a
-      ><a name="7536" class="Symbol"
+      ><a name="6683" class="Symbol"
       >_</a
-      ><a name="7537"
+      ><a name="6684"
       >   </a
-      ><a name="7540" class="Symbol"
+      ><a name="6687" class="Symbol"
       >=</a
-      ><a name="7541"
+      ><a name="6688"
       > </a
-      ><a name="7542" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6689" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 
@@ -2770,279 +2157,279 @@ show two maps equal we will need to postulate extensionality.
 
 <pre class="Agda">
 
-  <a name="7707" class="Keyword"
+  <a name="6854" class="Keyword"
       >postulate</a
-      ><a name="7716"
+      ><a name="6863"
       >
     </a
-      ><a name="7721" href="Maps.html#7721" class="Postulate"
+      ><a name="6868" href="Maps.html#6868" class="Postulate"
       >extensionality</a
-      ><a name="7735"
+      ><a name="6882"
       > </a
-      ><a name="7736" class="Symbol"
+      ><a name="6883" class="Symbol"
       >:</a
-      ><a name="7737"
+      ><a name="6884"
       > </a
-      ><a name="7738" class="Symbol"
+      ><a name="6885" class="Symbol"
       >&#8704;</a
-      ><a name="7739"
+      ><a name="6886"
       > </a
-      ><a name="7740" class="Symbol"
+      ><a name="6887" class="Symbol"
       >{</a
-      ><a name="7741" href="Maps.html#7741" class="Bound"
+      ><a name="6888" href="Maps.html#6888" class="Bound"
       >A</a
-      ><a name="7742"
+      ><a name="6889"
       > </a
-      ><a name="7743" class="Symbol"
+      ><a name="6890" class="Symbol"
       >:</a
-      ><a name="7744"
+      ><a name="6891"
       > </a
-      ><a name="7745" class="PrimitiveType"
+      ><a name="6892" class="PrimitiveType"
       >Set</a
-      ><a name="7748" class="Symbol"
+      ><a name="6895" class="Symbol"
       >}</a
-      ><a name="7749"
+      ><a name="6896"
       > </a
-      ><a name="7750" class="Symbol"
+      ><a name="6897" class="Symbol"
       >{</a
-      ><a name="7751" href="Maps.html#7751" class="Bound"
+      ><a name="6898" href="Maps.html#6898" class="Bound"
       >&#961;</a
-      ><a name="7752"
+      ><a name="6899"
       > </a
-      ><a name="7753" href="Maps.html#7753" class="Bound"
+      ><a name="6900" href="Maps.html#6900" class="Bound"
       >&#961;&#8242;</a
-      ><a name="7755"
+      ><a name="6902"
       > </a
-      ><a name="7756" class="Symbol"
+      ><a name="6903" class="Symbol"
       >:</a
-      ><a name="7757"
+      ><a name="6904"
       > </a
-      ><a name="7758" href="Maps.html#3757" class="Function"
+      ><a name="6905" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="7766"
+      ><a name="6913"
       > </a
-      ><a name="7767" href="Maps.html#7741" class="Bound"
+      ><a name="6914" href="Maps.html#6888" class="Bound"
       >A</a
-      ><a name="7768" class="Symbol"
+      ><a name="6915" class="Symbol"
       >}</a
-      ><a name="7769"
+      ><a name="6916"
       > </a
-      ><a name="7770" class="Symbol"
+      ><a name="6917" class="Symbol"
       >&#8594;</a
-      ><a name="7771"
+      ><a name="6918"
       > </a
-      ><a name="7772" class="Symbol"
+      ><a name="6919" class="Symbol"
       >(&#8704;</a
-      ><a name="7774"
+      ><a name="6921"
       > </a
-      ><a name="7775" href="Maps.html#7775" class="Bound"
+      ><a name="6922" href="Maps.html#6922" class="Bound"
       >x</a
-      ><a name="7776"
+      ><a name="6923"
       > </a
-      ><a name="7777" class="Symbol"
+      ><a name="6924" class="Symbol"
       >&#8594;</a
-      ><a name="7778"
+      ><a name="6925"
       > </a
-      ><a name="7779" href="Maps.html#7751" class="Bound"
+      ><a name="6926" href="Maps.html#6898" class="Bound"
       >&#961;</a
-      ><a name="7780"
+      ><a name="6927"
       > </a
-      ><a name="7781" href="Maps.html#7775" class="Bound"
+      ><a name="6928" href="Maps.html#6922" class="Bound"
       >x</a
-      ><a name="7782"
+      ><a name="6929"
       > </a
-      ><a name="7783" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6930" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="7784"
+      ><a name="6931"
       > </a
-      ><a name="7785" href="Maps.html#7753" class="Bound"
+      ><a name="6932" href="Maps.html#6900" class="Bound"
       >&#961;&#8242;</a
-      ><a name="7787"
+      ><a name="6934"
       > </a
-      ><a name="7788" href="Maps.html#7775" class="Bound"
+      ><a name="6935" href="Maps.html#6922" class="Bound"
       >x</a
-      ><a name="7789" class="Symbol"
+      ><a name="6936" class="Symbol"
       >)</a
-      ><a name="7790"
+      ><a name="6937"
       > </a
-      ><a name="7791" class="Symbol"
+      ><a name="6938" class="Symbol"
       >&#8594;</a
-      ><a name="7792"
+      ><a name="6939"
       > </a
-      ><a name="7793" href="Maps.html#7751" class="Bound"
+      ><a name="6940" href="Maps.html#6898" class="Bound"
       >&#961;</a
-      ><a name="7794"
+      ><a name="6941"
       > </a
-      ><a name="7795" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6942" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="7796"
+      ><a name="6943"
       > </a
-      ><a name="7797" href="Maps.html#7753" class="Bound"
+      ><a name="6944" href="Maps.html#6900" class="Bound"
       >&#961;&#8242;</a
       >
 
 </pre>
 
 #### Exercise: 2 stars, optional (update-shadow)
-If we update a map $$ρ$$ at a key $$x$$ with a value $$v$$ and then
-update again with the same key $$x$$ and another value $$w$$, the
+If we update a map `ρ` at a key `x` with a value `v` and then
+update again with the same key `x` and another value `w`, the
 resulting map behaves the same (gives the same result when applied
 to any key) as the simpler map obtained by performing just
-the second update on $$ρ$$:
+the second update on `ρ`:
 
 <pre class="Agda">
 
-  <a name="8165" class="Keyword"
+  <a name="7300" class="Keyword"
       >postulate</a
-      ><a name="8174"
+      ><a name="7309"
       >
     </a
-      ><a name="8179" href="Maps.html#8179" class="Postulate"
+      ><a name="7314" href="Maps.html#7314" class="Postulate"
       >update-shadow</a
-      ><a name="8192"
+      ><a name="7327"
       > </a
-      ><a name="8193" class="Symbol"
+      ><a name="7328" class="Symbol"
       >:</a
-      ><a name="8194"
+      ><a name="7329"
       > </a
-      ><a name="8195" class="Symbol"
+      ><a name="7330" class="Symbol"
       >&#8704;</a
-      ><a name="8196"
+      ><a name="7331"
       > </a
-      ><a name="8197" class="Symbol"
+      ><a name="7332" class="Symbol"
       >{</a
-      ><a name="8198" href="Maps.html#8198" class="Bound"
+      ><a name="7333" href="Maps.html#7333" class="Bound"
       >A</a
-      ><a name="8199" class="Symbol"
+      ><a name="7334" class="Symbol"
       >}</a
-      ><a name="8200"
+      ><a name="7335"
       > </a
-      ><a name="8201" class="Symbol"
+      ><a name="7336" class="Symbol"
       >(</a
-      ><a name="8202" href="Maps.html#8202" class="Bound"
+      ><a name="7337" href="Maps.html#7337" class="Bound"
       >&#961;</a
-      ><a name="8203"
+      ><a name="7338"
       > </a
-      ><a name="8204" class="Symbol"
+      ><a name="7339" class="Symbol"
       >:</a
-      ><a name="8205"
+      ><a name="7340"
       > </a
-      ><a name="8206" href="Maps.html#3757" class="Function"
+      ><a name="7341" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="8214"
+      ><a name="7349"
       > </a
-      ><a name="8215" href="Maps.html#8198" class="Bound"
+      ><a name="7350" href="Maps.html#7333" class="Bound"
       >A</a
-      ><a name="8216" class="Symbol"
+      ><a name="7351" class="Symbol"
       >)</a
-      ><a name="8217"
+      ><a name="7352"
       > </a
-      ><a name="8218" class="Symbol"
+      ><a name="7353" class="Symbol"
       >(</a
-      ><a name="8219" href="Maps.html#8219" class="Bound"
+      ><a name="7354" href="Maps.html#7354" class="Bound"
       >x</a
-      ><a name="8220"
+      ><a name="7355"
       > </a
-      ><a name="8221" class="Symbol"
+      ><a name="7356" class="Symbol"
       >:</a
-      ><a name="8222"
+      ><a name="7357"
       > </a
-      ><a name="8223" href="Maps.html#2215" class="Datatype"
+      ><a name="7358" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="8225" class="Symbol"
+      ><a name="7360" class="Symbol"
       >)</a
-      ><a name="8226"
+      ><a name="7361"
       > </a
-      ><a name="8227" class="Symbol"
+      ><a name="7362" class="Symbol"
       >(</a
-      ><a name="8228" href="Maps.html#8228" class="Bound"
+      ><a name="7363" href="Maps.html#7363" class="Bound"
       >v</a
-      ><a name="8229"
+      ><a name="7364"
       > </a
-      ><a name="8230" href="Maps.html#8230" class="Bound"
+      ><a name="7365" href="Maps.html#7365" class="Bound"
       >w</a
-      ><a name="8231"
+      ><a name="7366"
       > </a
-      ><a name="8232" class="Symbol"
+      ><a name="7367" class="Symbol"
       >:</a
-      ><a name="8233"
+      ><a name="7368"
       > </a
-      ><a name="8234" href="Maps.html#8198" class="Bound"
+      ><a name="7369" href="Maps.html#7333" class="Bound"
       >A</a
-      ><a name="8235" class="Symbol"
+      ><a name="7370" class="Symbol"
       >)</a
-      ><a name="8236"
+      ><a name="7371"
       > 
                   </a
-      ><a name="8256" class="Symbol"
+      ><a name="7391" class="Symbol"
       >&#8594;</a
-      ><a name="8257"
+      ><a name="7392"
       > </a
-      ><a name="8258" class="Symbol"
+      ><a name="7393" class="Symbol"
       >(</a
-      ><a name="8259" href="Maps.html#8202" class="Bound"
+      ><a name="7394" href="Maps.html#7337" class="Bound"
       >&#961;</a
-      ><a name="8260"
+      ><a name="7395"
       > </a
-      ><a name="8261" href="Maps.html#5074" class="Function Operator"
+      ><a name="7396" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8262"
+      ><a name="7397"
       > </a
-      ><a name="8263" href="Maps.html#8219" class="Bound"
+      ><a name="7398" href="Maps.html#7354" class="Bound"
       >x</a
-      ><a name="8264"
+      ><a name="7399"
       > </a
-      ><a name="8265" href="Maps.html#5074" class="Function Operator"
+      ><a name="7400" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8266"
+      ><a name="7401"
       > </a
-      ><a name="8267" href="Maps.html#8228" class="Bound"
+      ><a name="7402" href="Maps.html#7363" class="Bound"
       >v</a
-      ><a name="8268"
+      ><a name="7403"
       > </a
-      ><a name="8269" href="Maps.html#5074" class="Function Operator"
+      ><a name="7404" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8270"
+      ><a name="7405"
       > </a
-      ><a name="8271" href="Maps.html#8219" class="Bound"
+      ><a name="7406" href="Maps.html#7354" class="Bound"
       >x</a
-      ><a name="8272"
+      ><a name="7407"
       > </a
-      ><a name="8273" href="Maps.html#5074" class="Function Operator"
+      ><a name="7408" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8274"
+      ><a name="7409"
       > </a
-      ><a name="8275" href="Maps.html#8230" class="Bound"
+      ><a name="7410" href="Maps.html#7365" class="Bound"
       >w</a
-      ><a name="8276" class="Symbol"
+      ><a name="7411" class="Symbol"
       >)</a
-      ><a name="8277"
+      ><a name="7412"
       > </a
-      ><a name="8278" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7413" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="8279"
+      ><a name="7414"
       > </a
-      ><a name="8280" class="Symbol"
+      ><a name="7415" class="Symbol"
       >(</a
-      ><a name="8281" href="Maps.html#8202" class="Bound"
+      ><a name="7416" href="Maps.html#7337" class="Bound"
       >&#961;</a
-      ><a name="8282"
+      ><a name="7417"
       > </a
-      ><a name="8283" href="Maps.html#4416" class="Function Operator"
+      ><a name="7418" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8284"
+      ><a name="7419"
       > </a
-      ><a name="8285" href="Maps.html#8219" class="Bound"
+      ><a name="7420" href="Maps.html#7354" class="Bound"
       >x</a
-      ><a name="8286"
+      ><a name="7421"
       > </a
-      ><a name="8287" href="Maps.html#4416" class="Function Operator"
+      ><a name="7422" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8288"
+      ><a name="7423"
       > </a
-      ><a name="8289" href="Maps.html#8230" class="Bound"
+      ><a name="7424" href="Maps.html#7365" class="Bound"
       >w</a
-      ><a name="8290" class="Symbol"
+      ><a name="7425" class="Symbol"
       >)</a
       >
 
@@ -3051,386 +2438,386 @@ the second update on $$ρ$$:
 <div class="hidden">
 <pre class="Agda">
 
-  <a name="8340" href="Maps.html#8340" class="Function"
+  <a name="7475" href="Maps.html#7475" class="Function"
       >update-shadow&#8242;</a
-      ><a name="8354"
+      ><a name="7489"
       > </a
-      ><a name="8355" class="Symbol"
+      ><a name="7490" class="Symbol"
       >:</a
-      ><a name="8356"
+      ><a name="7491"
       >  </a
-      ><a name="8358" class="Symbol"
+      ><a name="7493" class="Symbol"
       >&#8704;</a
-      ><a name="8359"
+      ><a name="7494"
       > </a
-      ><a name="8360" class="Symbol"
+      ><a name="7495" class="Symbol"
       >{</a
-      ><a name="8361" href="Maps.html#8361" class="Bound"
+      ><a name="7496" href="Maps.html#7496" class="Bound"
       >A</a
-      ><a name="8362" class="Symbol"
+      ><a name="7497" class="Symbol"
       >}</a
-      ><a name="8363"
+      ><a name="7498"
       > </a
-      ><a name="8364" class="Symbol"
+      ><a name="7499" class="Symbol"
       >(</a
-      ><a name="8365" href="Maps.html#8365" class="Bound"
+      ><a name="7500" href="Maps.html#7500" class="Bound"
       >&#961;</a
-      ><a name="8366"
+      ><a name="7501"
       > </a
-      ><a name="8367" class="Symbol"
+      ><a name="7502" class="Symbol"
       >:</a
-      ><a name="8368"
+      ><a name="7503"
       > </a
-      ><a name="8369" href="Maps.html#3757" class="Function"
+      ><a name="7504" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="8377"
+      ><a name="7512"
       > </a
-      ><a name="8378" href="Maps.html#8361" class="Bound"
+      ><a name="7513" href="Maps.html#7496" class="Bound"
       >A</a
-      ><a name="8379" class="Symbol"
+      ><a name="7514" class="Symbol"
       >)</a
-      ><a name="8380"
+      ><a name="7515"
       > </a
-      ><a name="8381" class="Symbol"
+      ><a name="7516" class="Symbol"
       >(</a
-      ><a name="8382" href="Maps.html#8382" class="Bound"
+      ><a name="7517" href="Maps.html#7517" class="Bound"
       >x</a
-      ><a name="8383"
+      ><a name="7518"
       > </a
-      ><a name="8384" class="Symbol"
+      ><a name="7519" class="Symbol"
       >:</a
-      ><a name="8385"
+      ><a name="7520"
       > </a
-      ><a name="8386" href="Maps.html#2215" class="Datatype"
+      ><a name="7521" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="8388" class="Symbol"
+      ><a name="7523" class="Symbol"
       >)</a
-      ><a name="8389"
+      ><a name="7524"
       > </a
-      ><a name="8390" class="Symbol"
+      ><a name="7525" class="Symbol"
       >(</a
-      ><a name="8391" href="Maps.html#8391" class="Bound"
+      ><a name="7526" href="Maps.html#7526" class="Bound"
       >v</a
-      ><a name="8392"
+      ><a name="7527"
       > </a
-      ><a name="8393" href="Maps.html#8393" class="Bound"
+      ><a name="7528" href="Maps.html#7528" class="Bound"
       >w</a
-      ><a name="8394"
+      ><a name="7529"
       > </a
-      ><a name="8395" class="Symbol"
+      ><a name="7530" class="Symbol"
       >:</a
-      ><a name="8396"
+      ><a name="7531"
       > </a
-      ><a name="8397" href="Maps.html#8361" class="Bound"
+      ><a name="7532" href="Maps.html#7496" class="Bound"
       >A</a
-      ><a name="8398" class="Symbol"
+      ><a name="7533" class="Symbol"
       >)</a
-      ><a name="8399"
+      ><a name="7534"
       > 
                   </a
-      ><a name="8419" class="Symbol"
+      ><a name="7554" class="Symbol"
       >&#8594;</a
-      ><a name="8420"
+      ><a name="7555"
       > </a
-      ><a name="8421" class="Symbol"
+      ><a name="7556" class="Symbol"
       >((</a
-      ><a name="8423" href="Maps.html#8365" class="Bound"
+      ><a name="7558" href="Maps.html#7500" class="Bound"
       >&#961;</a
-      ><a name="8424"
+      ><a name="7559"
       > </a
-      ><a name="8425" href="Maps.html#4416" class="Function Operator"
+      ><a name="7560" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8426"
+      ><a name="7561"
       > </a
-      ><a name="8427" href="Maps.html#8382" class="Bound"
+      ><a name="7562" href="Maps.html#7517" class="Bound"
       >x</a
-      ><a name="8428"
+      ><a name="7563"
       > </a
-      ><a name="8429" href="Maps.html#4416" class="Function Operator"
+      ><a name="7564" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8430"
+      ><a name="7565"
       > </a
-      ><a name="8431" href="Maps.html#8391" class="Bound"
+      ><a name="7566" href="Maps.html#7526" class="Bound"
       >v</a
-      ><a name="8432" class="Symbol"
+      ><a name="7567" class="Symbol"
       >)</a
-      ><a name="8433"
+      ><a name="7568"
       > </a
-      ><a name="8434" href="Maps.html#4416" class="Function Operator"
+      ><a name="7569" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8435"
+      ><a name="7570"
       > </a
-      ><a name="8436" href="Maps.html#8382" class="Bound"
+      ><a name="7571" href="Maps.html#7517" class="Bound"
       >x</a
-      ><a name="8437"
+      ><a name="7572"
       > </a
-      ><a name="8438" href="Maps.html#4416" class="Function Operator"
+      ><a name="7573" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8439"
+      ><a name="7574"
       > </a
-      ><a name="8440" href="Maps.html#8393" class="Bound"
+      ><a name="7575" href="Maps.html#7528" class="Bound"
       >w</a
-      ><a name="8441" class="Symbol"
+      ><a name="7576" class="Symbol"
       >)</a
-      ><a name="8442"
+      ><a name="7577"
       > </a
-      ><a name="8443" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7578" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="8444"
+      ><a name="7579"
       > </a
-      ><a name="8445" class="Symbol"
+      ><a name="7580" class="Symbol"
       >(</a
-      ><a name="8446" href="Maps.html#8365" class="Bound"
+      ><a name="7581" href="Maps.html#7500" class="Bound"
       >&#961;</a
-      ><a name="8447"
+      ><a name="7582"
       > </a
-      ><a name="8448" href="Maps.html#4416" class="Function Operator"
+      ><a name="7583" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8449"
+      ><a name="7584"
       > </a
-      ><a name="8450" href="Maps.html#8382" class="Bound"
+      ><a name="7585" href="Maps.html#7517" class="Bound"
       >x</a
-      ><a name="8451"
+      ><a name="7586"
       > </a
-      ><a name="8452" href="Maps.html#4416" class="Function Operator"
+      ><a name="7587" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8453"
+      ><a name="7588"
       > </a
-      ><a name="8454" href="Maps.html#8393" class="Bound"
+      ><a name="7589" href="Maps.html#7528" class="Bound"
       >w</a
-      ><a name="8455" class="Symbol"
+      ><a name="7590" class="Symbol"
       >)</a
-      ><a name="8456"
+      ><a name="7591"
       >
   </a
-      ><a name="8459" href="Maps.html#8340" class="Function"
+      ><a name="7594" href="Maps.html#7475" class="Function"
       >update-shadow&#8242;</a
-      ><a name="8473"
+      ><a name="7608"
       > </a
-      ><a name="8474" href="Maps.html#8474" class="Bound"
+      ><a name="7609" href="Maps.html#7609" class="Bound"
       >&#961;</a
-      ><a name="8475"
+      ><a name="7610"
       > </a
-      ><a name="8476" href="Maps.html#8476" class="Bound"
+      ><a name="7611" href="Maps.html#7611" class="Bound"
       >x</a
-      ><a name="8477"
+      ><a name="7612"
       > </a
-      ><a name="8478" href="Maps.html#8478" class="Bound"
+      ><a name="7613" href="Maps.html#7613" class="Bound"
       >v</a
-      ><a name="8479"
+      ><a name="7614"
       > </a
-      ><a name="8480" href="Maps.html#8480" class="Bound"
+      ><a name="7615" href="Maps.html#7615" class="Bound"
       >w</a
-      ><a name="8481"
+      ><a name="7616"
       > </a
-      ><a name="8482" class="Symbol"
+      ><a name="7617" class="Symbol"
       >=</a
-      ><a name="8483"
+      ><a name="7618"
       > </a
-      ><a name="8484" href="Maps.html#7721" class="Postulate"
+      ><a name="7619" href="Maps.html#6868" class="Postulate"
       >extensionality</a
-      ><a name="8498"
+      ><a name="7633"
       > </a
-      ><a name="8499" href="Maps.html#8519" class="Function"
+      ><a name="7634" href="Maps.html#7654" class="Function"
       >lemma</a
-      ><a name="8504"
+      ><a name="7639"
       >
     </a
-      ><a name="8509" class="Keyword"
+      ><a name="7644" class="Keyword"
       >where</a
-      ><a name="8514"
+      ><a name="7649"
       >
     </a
-      ><a name="8519" href="Maps.html#8519" class="Function"
+      ><a name="7654" href="Maps.html#7654" class="Function"
       >lemma</a
-      ><a name="8524"
+      ><a name="7659"
       > </a
-      ><a name="8525" class="Symbol"
+      ><a name="7660" class="Symbol"
       >:</a
-      ><a name="8526"
+      ><a name="7661"
       > </a
-      ><a name="8527" class="Symbol"
+      ><a name="7662" class="Symbol"
       >&#8704;</a
-      ><a name="8528"
+      ><a name="7663"
       > </a
-      ><a name="8529" href="Maps.html#8529" class="Bound"
+      ><a name="7664" href="Maps.html#7664" class="Bound"
       >y</a
-      ><a name="8530"
+      ><a name="7665"
       > </a
-      ><a name="8531" class="Symbol"
+      ><a name="7666" class="Symbol"
       >&#8594;</a
-      ><a name="8532"
+      ><a name="7667"
       > </a
-      ><a name="8533" class="Symbol"
+      ><a name="7668" class="Symbol"
       >((</a
-      ><a name="8535" href="Maps.html#8474" class="Bound"
+      ><a name="7670" href="Maps.html#7609" class="Bound"
       >&#961;</a
-      ><a name="8536"
+      ><a name="7671"
       > </a
-      ><a name="8537" href="Maps.html#4416" class="Function Operator"
+      ><a name="7672" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8538"
+      ><a name="7673"
       > </a
-      ><a name="8539" href="Maps.html#8476" class="Bound"
+      ><a name="7674" href="Maps.html#7611" class="Bound"
       >x</a
-      ><a name="8540"
+      ><a name="7675"
       > </a
-      ><a name="8541" href="Maps.html#4416" class="Function Operator"
+      ><a name="7676" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8542"
+      ><a name="7677"
       > </a
-      ><a name="8543" href="Maps.html#8478" class="Bound"
+      ><a name="7678" href="Maps.html#7613" class="Bound"
       >v</a
-      ><a name="8544" class="Symbol"
+      ><a name="7679" class="Symbol"
       >)</a
-      ><a name="8545"
+      ><a name="7680"
       > </a
-      ><a name="8546" href="Maps.html#4416" class="Function Operator"
+      ><a name="7681" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8547"
+      ><a name="7682"
       > </a
-      ><a name="8548" href="Maps.html#8476" class="Bound"
+      ><a name="7683" href="Maps.html#7611" class="Bound"
       >x</a
-      ><a name="8549"
+      ><a name="7684"
       > </a
-      ><a name="8550" href="Maps.html#4416" class="Function Operator"
+      ><a name="7685" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8551"
+      ><a name="7686"
       > </a
-      ><a name="8552" href="Maps.html#8480" class="Bound"
+      ><a name="7687" href="Maps.html#7615" class="Bound"
       >w</a
-      ><a name="8553" class="Symbol"
+      ><a name="7688" class="Symbol"
       >)</a
-      ><a name="8554"
+      ><a name="7689"
       > </a
-      ><a name="8555" href="Maps.html#8529" class="Bound"
+      ><a name="7690" href="Maps.html#7664" class="Bound"
       >y</a
-      ><a name="8556"
+      ><a name="7691"
       > </a
-      ><a name="8557" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="7692" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="8558"
+      ><a name="7693"
       > </a
-      ><a name="8559" class="Symbol"
+      ><a name="7694" class="Symbol"
       >(</a
-      ><a name="8560" href="Maps.html#8474" class="Bound"
+      ><a name="7695" href="Maps.html#7609" class="Bound"
       >&#961;</a
-      ><a name="8561"
+      ><a name="7696"
       > </a
-      ><a name="8562" href="Maps.html#4416" class="Function Operator"
+      ><a name="7697" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8563"
+      ><a name="7698"
       > </a
-      ><a name="8564" href="Maps.html#8476" class="Bound"
+      ><a name="7699" href="Maps.html#7611" class="Bound"
       >x</a
-      ><a name="8565"
+      ><a name="7700"
       > </a
-      ><a name="8566" href="Maps.html#4416" class="Function Operator"
+      ><a name="7701" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8567"
+      ><a name="7702"
       > </a
-      ><a name="8568" href="Maps.html#8480" class="Bound"
+      ><a name="7703" href="Maps.html#7615" class="Bound"
       >w</a
-      ><a name="8569" class="Symbol"
+      ><a name="7704" class="Symbol"
       >)</a
-      ><a name="8570"
+      ><a name="7705"
       > </a
-      ><a name="8571" href="Maps.html#8529" class="Bound"
+      ><a name="7706" href="Maps.html#7664" class="Bound"
       >y</a
-      ><a name="8572"
+      ><a name="7707"
       >
     </a
-      ><a name="8577" href="Maps.html#8519" class="Function"
+      ><a name="7712" href="Maps.html#7654" class="Function"
       >lemma</a
-      ><a name="8582"
+      ><a name="7717"
       > </a
-      ><a name="8583" href="Maps.html#8583" class="Bound"
+      ><a name="7718" href="Maps.html#7718" class="Bound"
       >y</a
-      ><a name="8584"
+      ><a name="7719"
       > </a
-      ><a name="8585" class="Keyword"
+      ><a name="7720" class="Keyword"
       >with</a
-      ><a name="8589"
+      ><a name="7724"
       > </a
-      ><a name="8590" href="Maps.html#8476" class="Bound"
+      ><a name="7725" href="Maps.html#7611" class="Bound"
       >x</a
-      ><a name="8591"
+      ><a name="7726"
       > </a
-      ><a name="8592" href="Maps.html#2558" class="Function Operator"
+      ><a name="7727" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="8593"
+      ><a name="7728"
       > </a
-      ><a name="8594" href="Maps.html#8583" class="Bound"
+      ><a name="7729" href="Maps.html#7718" class="Bound"
       >y</a
-      ><a name="8595"
+      ><a name="7730"
       >
     </a
-      ><a name="8600" class="Symbol"
+      ><a name="7735" class="Symbol"
       >...</a
-      ><a name="8603"
+      ><a name="7738"
       > </a
-      ><a name="8604" class="Symbol"
+      ><a name="7739" class="Symbol"
       >|</a
-      ><a name="8605"
+      ><a name="7740"
       > </a
-      ><a name="8606" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="7741" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="8609"
+      ><a name="7744"
       > </a
-      ><a name="8610" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="7745" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="8614"
+      ><a name="7749"
       > </a
-      ><a name="8615" class="Symbol"
+      ><a name="7750" class="Symbol"
       >=</a
-      ><a name="8616"
+      ><a name="7751"
       > </a
-      ><a name="8617" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="7752" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="8621"
+      ><a name="7756"
       >
     </a
-      ><a name="8626" class="Symbol"
+      ><a name="7761" class="Symbol"
       >...</a
-      ><a name="8629"
+      ><a name="7764"
       > </a
-      ><a name="8630" class="Symbol"
+      ><a name="7765" class="Symbol"
       >|</a
-      ><a name="8631"
+      ><a name="7766"
       > </a
-      ><a name="8632" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="7767" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="8634"
+      ><a name="7769"
       >  </a
-      ><a name="8636" href="Maps.html#8636" class="Bound"
+      ><a name="7771" href="Maps.html#7771" class="Bound"
       >x&#8802;y</a
-      ><a name="8639"
+      ><a name="7774"
       >  </a
-      ><a name="8641" class="Symbol"
+      ><a name="7776" class="Symbol"
       >=</a
-      ><a name="8642"
+      ><a name="7777"
       > </a
-      ><a name="8643" href="Maps.html#7348" class="Function"
+      ><a name="7778" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="8653"
+      ><a name="7788"
       > </a
-      ><a name="8654" href="Maps.html#8474" class="Bound"
+      ><a name="7789" href="Maps.html#7609" class="Bound"
       >&#961;</a
-      ><a name="8655"
+      ><a name="7790"
       > </a
-      ><a name="8656" href="Maps.html#8476" class="Bound"
+      ><a name="7791" href="Maps.html#7611" class="Bound"
       >x</a
-      ><a name="8657"
+      ><a name="7792"
       > </a
-      ><a name="8658" href="Maps.html#8478" class="Bound"
+      ><a name="7793" href="Maps.html#7613" class="Bound"
       >v</a
-      ><a name="8659"
+      ><a name="7794"
       > </a
-      ><a name="8660" href="Maps.html#8583" class="Bound"
+      ><a name="7795" href="Maps.html#7718" class="Bound"
       >y</a
-      ><a name="8661"
+      ><a name="7796"
       > </a
-      ><a name="8662" href="Maps.html#8636" class="Bound"
+      ><a name="7797" href="Maps.html#7771" class="Bound"
       >x&#8802;y</a
       >
 
@@ -3438,110 +2825,110 @@ the second update on $$ρ$$:
 </div>
 
 #### Exercise: 2 stars (update-same)
-Prove the following theorem, which states that if we update a map $$ρ$$ to
-assign key $$x$$ the same value as it already has in $$ρ$$, then the
-result is equal to $$ρ$$:
+Prove the following theorem, which states that if we update a map `ρ` to
+assign key `x` the same value as it already has in `ρ`, then the
+result is equal to `ρ`:
 
 <pre class="Agda">
 
-  <a name="8908" class="Keyword"
+  <a name="8035" class="Keyword"
       >postulate</a
-      ><a name="8917"
+      ><a name="8044"
       >
     </a
-      ><a name="8922" href="Maps.html#8922" class="Postulate"
+      ><a name="8049" href="Maps.html#8049" class="Postulate"
       >update-same</a
-      ><a name="8933"
+      ><a name="8060"
       > </a
-      ><a name="8934" class="Symbol"
+      ><a name="8061" class="Symbol"
       >:</a
-      ><a name="8935"
+      ><a name="8062"
       > </a
-      ><a name="8936" class="Symbol"
+      ><a name="8063" class="Symbol"
       >&#8704;</a
-      ><a name="8937"
+      ><a name="8064"
       > </a
-      ><a name="8938" class="Symbol"
+      ><a name="8065" class="Symbol"
       >{</a
-      ><a name="8939" href="Maps.html#8939" class="Bound"
+      ><a name="8066" href="Maps.html#8066" class="Bound"
       >A</a
-      ><a name="8940" class="Symbol"
+      ><a name="8067" class="Symbol"
       >}</a
-      ><a name="8941"
+      ><a name="8068"
       > </a
-      ><a name="8942" class="Symbol"
+      ><a name="8069" class="Symbol"
       >(</a
-      ><a name="8943" href="Maps.html#8943" class="Bound"
+      ><a name="8070" href="Maps.html#8070" class="Bound"
       >&#961;</a
-      ><a name="8944"
+      ><a name="8071"
       > </a
-      ><a name="8945" class="Symbol"
+      ><a name="8072" class="Symbol"
       >:</a
-      ><a name="8946"
+      ><a name="8073"
       > </a
-      ><a name="8947" href="Maps.html#3757" class="Function"
+      ><a name="8074" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="8955"
+      ><a name="8082"
       > </a
-      ><a name="8956" href="Maps.html#8939" class="Bound"
+      ><a name="8083" href="Maps.html#8066" class="Bound"
       >A</a
-      ><a name="8957" class="Symbol"
+      ><a name="8084" class="Symbol"
       >)</a
-      ><a name="8958"
+      ><a name="8085"
       > </a
-      ><a name="8959" class="Symbol"
+      ><a name="8086" class="Symbol"
       >(</a
-      ><a name="8960" href="Maps.html#8960" class="Bound"
+      ><a name="8087" href="Maps.html#8087" class="Bound"
       >x</a
-      ><a name="8961"
+      ><a name="8088"
       > </a
-      ><a name="8962" class="Symbol"
+      ><a name="8089" class="Symbol"
       >:</a
-      ><a name="8963"
+      ><a name="8090"
       > </a
-      ><a name="8964" href="Maps.html#2215" class="Datatype"
+      ><a name="8091" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="8966" class="Symbol"
+      ><a name="8093" class="Symbol"
       >)</a
-      ><a name="8967"
+      ><a name="8094"
       > </a
-      ><a name="8968" class="Symbol"
+      ><a name="8095" class="Symbol"
       >&#8594;</a
-      ><a name="8969"
+      ><a name="8096"
       > </a
-      ><a name="8970" class="Symbol"
+      ><a name="8097" class="Symbol"
       >(</a
-      ><a name="8971" href="Maps.html#8943" class="Bound"
+      ><a name="8098" href="Maps.html#8070" class="Bound"
       >&#961;</a
-      ><a name="8972"
+      ><a name="8099"
       > </a
-      ><a name="8973" href="Maps.html#4416" class="Function Operator"
+      ><a name="8100" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="8974"
+      ><a name="8101"
       > </a
-      ><a name="8975" href="Maps.html#8960" class="Bound"
+      ><a name="8102" href="Maps.html#8087" class="Bound"
       >x</a
-      ><a name="8976"
+      ><a name="8103"
       > </a
-      ><a name="8977" href="Maps.html#4416" class="Function Operator"
+      ><a name="8104" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="8978"
+      ><a name="8105"
       > </a
-      ><a name="8979" href="Maps.html#8943" class="Bound"
+      ><a name="8106" href="Maps.html#8070" class="Bound"
       >&#961;</a
-      ><a name="8980"
+      ><a name="8107"
       > </a
-      ><a name="8981" href="Maps.html#8960" class="Bound"
+      ><a name="8108" href="Maps.html#8087" class="Bound"
       >x</a
-      ><a name="8982" class="Symbol"
+      ><a name="8109" class="Symbol"
       >)</a
-      ><a name="8983"
+      ><a name="8110"
       > </a
-      ><a name="8984" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8111" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="8985"
+      ><a name="8112"
       > </a
-      ><a name="8986" href="Maps.html#8943" class="Bound"
+      ><a name="8113" href="Maps.html#8070" class="Bound"
       >&#961;</a
       >
 
@@ -3550,269 +2937,269 @@ result is equal to $$ρ$$:
 <div class="hidden">
 <pre class="Agda">
 
-  <a name="9036" href="Maps.html#9036" class="Function"
+  <a name="8163" href="Maps.html#8163" class="Function"
       >update-same&#8242;</a
-      ><a name="9048"
+      ><a name="8175"
       > </a
-      ><a name="9049" class="Symbol"
+      ><a name="8176" class="Symbol"
       >:</a
-      ><a name="9050"
+      ><a name="8177"
       > </a
-      ><a name="9051" class="Symbol"
+      ><a name="8178" class="Symbol"
       >&#8704;</a
-      ><a name="9052"
+      ><a name="8179"
       > </a
-      ><a name="9053" class="Symbol"
+      ><a name="8180" class="Symbol"
       >{</a
-      ><a name="9054" href="Maps.html#9054" class="Bound"
+      ><a name="8181" href="Maps.html#8181" class="Bound"
       >A</a
-      ><a name="9055" class="Symbol"
+      ><a name="8182" class="Symbol"
       >}</a
-      ><a name="9056"
+      ><a name="8183"
       > </a
-      ><a name="9057" class="Symbol"
+      ><a name="8184" class="Symbol"
       >(</a
-      ><a name="9058" href="Maps.html#9058" class="Bound"
+      ><a name="8185" href="Maps.html#8185" class="Bound"
       >&#961;</a
-      ><a name="9059"
+      ><a name="8186"
       > </a
-      ><a name="9060" class="Symbol"
+      ><a name="8187" class="Symbol"
       >:</a
-      ><a name="9061"
+      ><a name="8188"
       > </a
-      ><a name="9062" href="Maps.html#3757" class="Function"
+      ><a name="8189" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="9070"
+      ><a name="8197"
       > </a
-      ><a name="9071" href="Maps.html#9054" class="Bound"
+      ><a name="8198" href="Maps.html#8181" class="Bound"
       >A</a
-      ><a name="9072" class="Symbol"
+      ><a name="8199" class="Symbol"
       >)</a
-      ><a name="9073"
+      ><a name="8200"
       > </a
-      ><a name="9074" class="Symbol"
+      ><a name="8201" class="Symbol"
       >(</a
-      ><a name="9075" href="Maps.html#9075" class="Bound"
+      ><a name="8202" href="Maps.html#8202" class="Bound"
       >x</a
-      ><a name="9076"
+      ><a name="8203"
       > </a
-      ><a name="9077" class="Symbol"
+      ><a name="8204" class="Symbol"
       >:</a
-      ><a name="9078"
+      ><a name="8205"
       > </a
-      ><a name="9079" href="Maps.html#2215" class="Datatype"
+      ><a name="8206" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="9081" class="Symbol"
+      ><a name="8208" class="Symbol"
       >)</a
-      ><a name="9082"
+      ><a name="8209"
       > </a
-      ><a name="9083" class="Symbol"
+      ><a name="8210" class="Symbol"
       >&#8594;</a
-      ><a name="9084"
+      ><a name="8211"
       > </a
-      ><a name="9085" class="Symbol"
+      ><a name="8212" class="Symbol"
       >(</a
-      ><a name="9086" href="Maps.html#9058" class="Bound"
+      ><a name="8213" href="Maps.html#8185" class="Bound"
       >&#961;</a
-      ><a name="9087"
+      ><a name="8214"
       > </a
-      ><a name="9088" href="Maps.html#4416" class="Function Operator"
+      ><a name="8215" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9089"
+      ><a name="8216"
       > </a
-      ><a name="9090" href="Maps.html#9075" class="Bound"
+      ><a name="8217" href="Maps.html#8202" class="Bound"
       >x</a
-      ><a name="9091"
+      ><a name="8218"
       > </a
-      ><a name="9092" href="Maps.html#4416" class="Function Operator"
+      ><a name="8219" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9093"
+      ><a name="8220"
       > </a
-      ><a name="9094" href="Maps.html#9058" class="Bound"
+      ><a name="8221" href="Maps.html#8185" class="Bound"
       >&#961;</a
-      ><a name="9095"
+      ><a name="8222"
       > </a
-      ><a name="9096" href="Maps.html#9075" class="Bound"
+      ><a name="8223" href="Maps.html#8202" class="Bound"
       >x</a
-      ><a name="9097" class="Symbol"
+      ><a name="8224" class="Symbol"
       >)</a
-      ><a name="9098"
+      ><a name="8225"
       > </a
-      ><a name="9099" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8226" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="9100"
+      ><a name="8227"
       > </a
-      ><a name="9101" href="Maps.html#9058" class="Bound"
+      ><a name="8228" href="Maps.html#8185" class="Bound"
       >&#961;</a
-      ><a name="9102"
+      ><a name="8229"
       >
   </a
-      ><a name="9105" href="Maps.html#9036" class="Function"
+      ><a name="8232" href="Maps.html#8163" class="Function"
       >update-same&#8242;</a
-      ><a name="9117"
+      ><a name="8244"
       > </a
-      ><a name="9118" href="Maps.html#9118" class="Bound"
+      ><a name="8245" href="Maps.html#8245" class="Bound"
       >&#961;</a
-      ><a name="9119"
+      ><a name="8246"
       > </a
-      ><a name="9120" href="Maps.html#9120" class="Bound"
+      ><a name="8247" href="Maps.html#8247" class="Bound"
       >x</a
-      ><a name="9121"
+      ><a name="8248"
       >  </a
-      ><a name="9123" class="Symbol"
+      ><a name="8250" class="Symbol"
       >=</a
-      ><a name="9124"
+      ><a name="8251"
       >  </a
-      ><a name="9126" href="Maps.html#7721" class="Postulate"
+      ><a name="8253" href="Maps.html#6868" class="Postulate"
       >extensionality</a
-      ><a name="9140"
+      ><a name="8267"
       > </a
-      ><a name="9141" href="Maps.html#9161" class="Function"
+      ><a name="8268" href="Maps.html#8288" class="Function"
       >lemma</a
-      ><a name="9146"
+      ><a name="8273"
       >
     </a
-      ><a name="9151" class="Keyword"
+      ><a name="8278" class="Keyword"
       >where</a
-      ><a name="9156"
+      ><a name="8283"
       >
     </a
-      ><a name="9161" href="Maps.html#9161" class="Function"
+      ><a name="8288" href="Maps.html#8288" class="Function"
       >lemma</a
-      ><a name="9166"
+      ><a name="8293"
       > </a
-      ><a name="9167" class="Symbol"
+      ><a name="8294" class="Symbol"
       >:</a
-      ><a name="9168"
+      ><a name="8295"
       > </a
-      ><a name="9169" class="Symbol"
+      ><a name="8296" class="Symbol"
       >&#8704;</a
-      ><a name="9170"
+      ><a name="8297"
       > </a
-      ><a name="9171" href="Maps.html#9171" class="Bound"
+      ><a name="8298" href="Maps.html#8298" class="Bound"
       >y</a
-      ><a name="9172"
+      ><a name="8299"
       > </a
-      ><a name="9173" class="Symbol"
+      ><a name="8300" class="Symbol"
       >&#8594;</a
-      ><a name="9174"
+      ><a name="8301"
       > </a
-      ><a name="9175" class="Symbol"
+      ><a name="8302" class="Symbol"
       >(</a
-      ><a name="9176" href="Maps.html#9118" class="Bound"
+      ><a name="8303" href="Maps.html#8245" class="Bound"
       >&#961;</a
-      ><a name="9177"
+      ><a name="8304"
       > </a
-      ><a name="9178" href="Maps.html#4416" class="Function Operator"
+      ><a name="8305" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9179"
+      ><a name="8306"
       > </a
-      ><a name="9180" href="Maps.html#9120" class="Bound"
+      ><a name="8307" href="Maps.html#8247" class="Bound"
       >x</a
-      ><a name="9181"
+      ><a name="8308"
       > </a
-      ><a name="9182" href="Maps.html#4416" class="Function Operator"
+      ><a name="8309" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9183"
+      ><a name="8310"
       > </a
-      ><a name="9184" href="Maps.html#9118" class="Bound"
+      ><a name="8311" href="Maps.html#8245" class="Bound"
       >&#961;</a
-      ><a name="9185"
+      ><a name="8312"
       > </a
-      ><a name="9186" href="Maps.html#9120" class="Bound"
+      ><a name="8313" href="Maps.html#8247" class="Bound"
       >x</a
-      ><a name="9187" class="Symbol"
+      ><a name="8314" class="Symbol"
       >)</a
-      ><a name="9188"
+      ><a name="8315"
       > </a
-      ><a name="9189" href="Maps.html#9171" class="Bound"
+      ><a name="8316" href="Maps.html#8298" class="Bound"
       >y</a
-      ><a name="9190"
+      ><a name="8317"
       > </a
-      ><a name="9191" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8318" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="9192"
+      ><a name="8319"
       > </a
-      ><a name="9193" href="Maps.html#9118" class="Bound"
+      ><a name="8320" href="Maps.html#8245" class="Bound"
       >&#961;</a
-      ><a name="9194"
+      ><a name="8321"
       > </a
-      ><a name="9195" href="Maps.html#9171" class="Bound"
+      ><a name="8322" href="Maps.html#8298" class="Bound"
       >y</a
-      ><a name="9196"
+      ><a name="8323"
       >
     </a
-      ><a name="9201" href="Maps.html#9161" class="Function"
+      ><a name="8328" href="Maps.html#8288" class="Function"
       >lemma</a
-      ><a name="9206"
+      ><a name="8333"
       > </a
-      ><a name="9207" href="Maps.html#9207" class="Bound"
+      ><a name="8334" href="Maps.html#8334" class="Bound"
       >y</a
-      ><a name="9208"
+      ><a name="8335"
       > </a
-      ><a name="9209" class="Keyword"
+      ><a name="8336" class="Keyword"
       >with</a
-      ><a name="9213"
+      ><a name="8340"
       > </a
-      ><a name="9214" href="Maps.html#9120" class="Bound"
+      ><a name="8341" href="Maps.html#8247" class="Bound"
       >x</a
-      ><a name="9215"
+      ><a name="8342"
       > </a
-      ><a name="9216" href="Maps.html#2558" class="Function Operator"
+      ><a name="8343" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="9217"
+      ><a name="8344"
       > </a
-      ><a name="9218" href="Maps.html#9207" class="Bound"
+      ><a name="8345" href="Maps.html#8334" class="Bound"
       >y</a
-      ><a name="9219"
+      ><a name="8346"
       >
     </a
-      ><a name="9224" class="Symbol"
+      ><a name="8351" class="Symbol"
       >...</a
-      ><a name="9227"
+      ><a name="8354"
       > </a
-      ><a name="9228" class="Symbol"
+      ><a name="8355" class="Symbol"
       >|</a
-      ><a name="9229"
+      ><a name="8356"
       > </a
-      ><a name="9230" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="8357" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="9233"
+      ><a name="8360"
       > </a
-      ><a name="9234" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="8361" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="9238"
+      ><a name="8365"
       > </a
-      ><a name="9239" class="Symbol"
+      ><a name="8366" class="Symbol"
       >=</a
-      ><a name="9240"
+      ><a name="8367"
       > </a
-      ><a name="9241" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="8368" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="9245"
+      ><a name="8372"
       >
     </a
-      ><a name="9250" class="Symbol"
+      ><a name="8377" class="Symbol"
       >...</a
-      ><a name="9253"
+      ><a name="8380"
       > </a
-      ><a name="9254" class="Symbol"
+      ><a name="8381" class="Symbol"
       >|</a
-      ><a name="9255"
+      ><a name="8382"
       > </a
-      ><a name="9256" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="8383" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="9258"
+      ><a name="8385"
       >  </a
-      ><a name="9260" href="Maps.html#9260" class="Bound"
+      ><a name="8387" href="Maps.html#8387" class="Bound"
       >x&#8802;y</a
-      ><a name="9263"
+      ><a name="8390"
       >  </a
-      ><a name="9265" class="Symbol"
+      ><a name="8392" class="Symbol"
       >=</a
-      ><a name="9266"
+      ><a name="8393"
       > </a
-      ><a name="9267" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="8394" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
 
@@ -3821,222 +3208,222 @@ result is equal to $$ρ$$:
 
 #### Exercise: 3 stars, recommended (update-permute)
 Prove one final property of the `update` function: If we update a map
-$$m$$ at two distinct keys, it doesn't matter in which order we do the
+`m` at two distinct keys, it doesn't matter in which order we do the
 updates.
 
 <pre class="Agda">
 
-  <a name="9510" class="Keyword"
+  <a name="8635" class="Keyword"
       >postulate</a
-      ><a name="9519"
+      ><a name="8644"
       >
     </a
-      ><a name="9524" href="Maps.html#9524" class="Postulate"
+      ><a name="8649" href="Maps.html#8649" class="Postulate"
       >update-permute</a
-      ><a name="9538"
+      ><a name="8663"
       > </a
-      ><a name="9539" class="Symbol"
+      ><a name="8664" class="Symbol"
       >:</a
-      ><a name="9540"
+      ><a name="8665"
       > </a
-      ><a name="9541" class="Symbol"
+      ><a name="8666" class="Symbol"
       >&#8704;</a
-      ><a name="9542"
+      ><a name="8667"
       > </a
-      ><a name="9543" class="Symbol"
+      ><a name="8668" class="Symbol"
       >{</a
-      ><a name="9544" href="Maps.html#9544" class="Bound"
+      ><a name="8669" href="Maps.html#8669" class="Bound"
       >A</a
-      ><a name="9545" class="Symbol"
+      ><a name="8670" class="Symbol"
       >}</a
-      ><a name="9546"
+      ><a name="8671"
       > </a
-      ><a name="9547" class="Symbol"
+      ><a name="8672" class="Symbol"
       >(</a
-      ><a name="9548" href="Maps.html#9548" class="Bound"
+      ><a name="8673" href="Maps.html#8673" class="Bound"
       >&#961;</a
-      ><a name="9549"
+      ><a name="8674"
       > </a
-      ><a name="9550" class="Symbol"
+      ><a name="8675" class="Symbol"
       >:</a
-      ><a name="9551"
+      ><a name="8676"
       > </a
-      ><a name="9552" href="Maps.html#3757" class="Function"
+      ><a name="8677" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="9560"
+      ><a name="8685"
       > </a
-      ><a name="9561" href="Maps.html#9544" class="Bound"
+      ><a name="8686" href="Maps.html#8669" class="Bound"
       >A</a
-      ><a name="9562" class="Symbol"
+      ><a name="8687" class="Symbol"
       >)</a
-      ><a name="9563"
+      ><a name="8688"
       > </a
-      ><a name="9564" class="Symbol"
+      ><a name="8689" class="Symbol"
       >(</a
-      ><a name="9565" href="Maps.html#9565" class="Bound"
+      ><a name="8690" href="Maps.html#8690" class="Bound"
       >x</a
-      ><a name="9566"
+      ><a name="8691"
       > </a
-      ><a name="9567" class="Symbol"
+      ><a name="8692" class="Symbol"
       >:</a
-      ><a name="9568"
+      ><a name="8693"
       > </a
-      ><a name="9569" href="Maps.html#2215" class="Datatype"
+      ><a name="8694" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="9571" class="Symbol"
+      ><a name="8696" class="Symbol"
       >)</a
-      ><a name="9572"
+      ><a name="8697"
       > </a
-      ><a name="9573" class="Symbol"
+      ><a name="8698" class="Symbol"
       >(</a
-      ><a name="9574" href="Maps.html#9574" class="Bound"
+      ><a name="8699" href="Maps.html#8699" class="Bound"
       >v</a
-      ><a name="9575"
+      ><a name="8700"
       > </a
-      ><a name="9576" class="Symbol"
+      ><a name="8701" class="Symbol"
       >:</a
-      ><a name="9577"
+      ><a name="8702"
       > </a
-      ><a name="9578" href="Maps.html#9544" class="Bound"
+      ><a name="8703" href="Maps.html#8669" class="Bound"
       >A</a
-      ><a name="9579" class="Symbol"
+      ><a name="8704" class="Symbol"
       >)</a
-      ><a name="9580"
+      ><a name="8705"
       > </a
-      ><a name="9581" class="Symbol"
+      ><a name="8706" class="Symbol"
       >(</a
-      ><a name="9582" href="Maps.html#9582" class="Bound"
+      ><a name="8707" href="Maps.html#8707" class="Bound"
       >y</a
-      ><a name="9583"
+      ><a name="8708"
       > </a
-      ><a name="9584" class="Symbol"
+      ><a name="8709" class="Symbol"
       >:</a
-      ><a name="9585"
+      ><a name="8710"
       > </a
-      ><a name="9586" href="Maps.html#2215" class="Datatype"
+      ><a name="8711" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="9588" class="Symbol"
+      ><a name="8713" class="Symbol"
       >)</a
-      ><a name="9589"
+      ><a name="8714"
       > </a
-      ><a name="9590" class="Symbol"
+      ><a name="8715" class="Symbol"
       >(</a
-      ><a name="9591" href="Maps.html#9591" class="Bound"
+      ><a name="8716" href="Maps.html#8716" class="Bound"
       >w</a
-      ><a name="9592"
+      ><a name="8717"
       > </a
-      ><a name="9593" class="Symbol"
+      ><a name="8718" class="Symbol"
       >:</a
-      ><a name="9594"
+      ><a name="8719"
       > </a
-      ><a name="9595" href="Maps.html#9544" class="Bound"
+      ><a name="8720" href="Maps.html#8669" class="Bound"
       >A</a
-      ><a name="9596" class="Symbol"
+      ><a name="8721" class="Symbol"
       >)</a
-      ><a name="9597"
+      ><a name="8722"
       >
                    </a
-      ><a name="9617" class="Symbol"
+      ><a name="8742" class="Symbol"
       >&#8594;</a
-      ><a name="9618"
+      ><a name="8743"
       > </a
-      ><a name="9619" href="Maps.html#9565" class="Bound"
+      ><a name="8744" href="Maps.html#8690" class="Bound"
       >x</a
-      ><a name="9620"
+      ><a name="8745"
       > </a
-      ><a name="9621" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
+      ><a name="8746" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
       >&#8802;</a
-      ><a name="9622"
+      ><a name="8747"
       > </a
-      ><a name="9623" href="Maps.html#9582" class="Bound"
+      ><a name="8748" href="Maps.html#8707" class="Bound"
       >y</a
-      ><a name="9624"
+      ><a name="8749"
       > </a
-      ><a name="9625" class="Symbol"
+      ><a name="8750" class="Symbol"
       >&#8594;</a
-      ><a name="9626"
+      ><a name="8751"
       > </a
-      ><a name="9627" class="Symbol"
+      ><a name="8752" class="Symbol"
       >(</a
-      ><a name="9628" href="Maps.html#9548" class="Bound"
+      ><a name="8753" href="Maps.html#8673" class="Bound"
       >&#961;</a
-      ><a name="9629"
+      ><a name="8754"
       > </a
-      ><a name="9630" href="Maps.html#5074" class="Function Operator"
+      ><a name="8755" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9631"
+      ><a name="8756"
       > </a
-      ><a name="9632" href="Maps.html#9565" class="Bound"
+      ><a name="8757" href="Maps.html#8690" class="Bound"
       >x</a
-      ><a name="9633"
+      ><a name="8758"
       > </a
-      ><a name="9634" href="Maps.html#5074" class="Function Operator"
+      ><a name="8759" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9635"
+      ><a name="8760"
       > </a
-      ><a name="9636" href="Maps.html#9574" class="Bound"
+      ><a name="8761" href="Maps.html#8699" class="Bound"
       >v</a
-      ><a name="9637"
+      ><a name="8762"
       > </a
-      ><a name="9638" href="Maps.html#5074" class="Function Operator"
+      ><a name="8763" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9639"
+      ><a name="8764"
       > </a
-      ><a name="9640" href="Maps.html#9582" class="Bound"
+      ><a name="8765" href="Maps.html#8707" class="Bound"
       >y</a
-      ><a name="9641"
+      ><a name="8766"
       > </a
-      ><a name="9642" href="Maps.html#5074" class="Function Operator"
+      ><a name="8767" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9643"
+      ><a name="8768"
       > </a
-      ><a name="9644" href="Maps.html#9591" class="Bound"
+      ><a name="8769" href="Maps.html#8716" class="Bound"
       >w</a
-      ><a name="9645" class="Symbol"
+      ><a name="8770" class="Symbol"
       >)</a
-      ><a name="9646"
+      ><a name="8771"
       > </a
-      ><a name="9647" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8772" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="9648"
+      ><a name="8773"
       > </a
-      ><a name="9649" class="Symbol"
+      ><a name="8774" class="Symbol"
       >(</a
-      ><a name="9650" href="Maps.html#9548" class="Bound"
+      ><a name="8775" href="Maps.html#8673" class="Bound"
       >&#961;</a
-      ><a name="9651"
+      ><a name="8776"
       > </a
-      ><a name="9652" href="Maps.html#5074" class="Function Operator"
+      ><a name="8777" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9653"
+      ><a name="8778"
       > </a
-      ><a name="9654" href="Maps.html#9582" class="Bound"
+      ><a name="8779" href="Maps.html#8707" class="Bound"
       >y</a
-      ><a name="9655"
+      ><a name="8780"
       > </a
-      ><a name="9656" href="Maps.html#5074" class="Function Operator"
+      ><a name="8781" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9657"
+      ><a name="8782"
       > </a
-      ><a name="9658" href="Maps.html#9591" class="Bound"
+      ><a name="8783" href="Maps.html#8716" class="Bound"
       >w</a
-      ><a name="9659"
+      ><a name="8784"
       > </a
-      ><a name="9660" href="Maps.html#5074" class="Function Operator"
+      ><a name="8785" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9661"
+      ><a name="8786"
       > </a
-      ><a name="9662" href="Maps.html#9565" class="Bound"
+      ><a name="8787" href="Maps.html#8690" class="Bound"
       >x</a
-      ><a name="9663"
+      ><a name="8788"
       > </a
-      ><a name="9664" href="Maps.html#5074" class="Function Operator"
+      ><a name="8789" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9665"
+      ><a name="8790"
       > </a
-      ><a name="9666" href="Maps.html#9574" class="Bound"
+      ><a name="8791" href="Maps.html#8699" class="Bound"
       >v</a
-      ><a name="9667" class="Symbol"
+      ><a name="8792" class="Symbol"
       >)</a
       >
 
@@ -4045,674 +3432,674 @@ updates.
 <div class="hidden">
 <pre class="Agda">
 
-  <a name="9717" href="Maps.html#9717" class="Function"
+  <a name="8842" href="Maps.html#8842" class="Function"
       >update-permute&#8242;</a
-      ><a name="9732"
+      ><a name="8857"
       > </a
-      ><a name="9733" class="Symbol"
+      ><a name="8858" class="Symbol"
       >:</a
-      ><a name="9734"
+      ><a name="8859"
       > </a
-      ><a name="9735" class="Symbol"
+      ><a name="8860" class="Symbol"
       >&#8704;</a
-      ><a name="9736"
+      ><a name="8861"
       > </a
-      ><a name="9737" class="Symbol"
+      ><a name="8862" class="Symbol"
       >{</a
-      ><a name="9738" href="Maps.html#9738" class="Bound"
+      ><a name="8863" href="Maps.html#8863" class="Bound"
       >A</a
-      ><a name="9739" class="Symbol"
+      ><a name="8864" class="Symbol"
       >}</a
-      ><a name="9740"
+      ><a name="8865"
       > </a
-      ><a name="9741" class="Symbol"
+      ><a name="8866" class="Symbol"
       >(</a
-      ><a name="9742" href="Maps.html#9742" class="Bound"
+      ><a name="8867" href="Maps.html#8867" class="Bound"
       >&#961;</a
-      ><a name="9743"
+      ><a name="8868"
       > </a
-      ><a name="9744" class="Symbol"
+      ><a name="8869" class="Symbol"
       >:</a
-      ><a name="9745"
+      ><a name="8870"
       > </a
-      ><a name="9746" href="Maps.html#3757" class="Function"
+      ><a name="8871" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="9754"
+      ><a name="8879"
       > </a
-      ><a name="9755" href="Maps.html#9738" class="Bound"
+      ><a name="8880" href="Maps.html#8863" class="Bound"
       >A</a
-      ><a name="9756" class="Symbol"
+      ><a name="8881" class="Symbol"
       >)</a
-      ><a name="9757"
+      ><a name="8882"
       > </a
-      ><a name="9758" class="Symbol"
+      ><a name="8883" class="Symbol"
       >(</a
-      ><a name="9759" href="Maps.html#9759" class="Bound"
+      ><a name="8884" href="Maps.html#8884" class="Bound"
       >x</a
-      ><a name="9760"
+      ><a name="8885"
       > </a
-      ><a name="9761" class="Symbol"
+      ><a name="8886" class="Symbol"
       >:</a
-      ><a name="9762"
+      ><a name="8887"
       > </a
-      ><a name="9763" href="Maps.html#2215" class="Datatype"
+      ><a name="8888" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="9765" class="Symbol"
+      ><a name="8890" class="Symbol"
       >)</a
-      ><a name="9766"
+      ><a name="8891"
       > </a
-      ><a name="9767" class="Symbol"
+      ><a name="8892" class="Symbol"
       >(</a
-      ><a name="9768" href="Maps.html#9768" class="Bound"
+      ><a name="8893" href="Maps.html#8893" class="Bound"
       >v</a
-      ><a name="9769"
+      ><a name="8894"
       > </a
-      ><a name="9770" class="Symbol"
+      ><a name="8895" class="Symbol"
       >:</a
-      ><a name="9771"
+      ><a name="8896"
       > </a
-      ><a name="9772" href="Maps.html#9738" class="Bound"
+      ><a name="8897" href="Maps.html#8863" class="Bound"
       >A</a
-      ><a name="9773" class="Symbol"
+      ><a name="8898" class="Symbol"
       >)</a
-      ><a name="9774"
+      ><a name="8899"
       > </a
-      ><a name="9775" class="Symbol"
+      ><a name="8900" class="Symbol"
       >(</a
-      ><a name="9776" href="Maps.html#9776" class="Bound"
+      ><a name="8901" href="Maps.html#8901" class="Bound"
       >y</a
-      ><a name="9777"
+      ><a name="8902"
       > </a
-      ><a name="9778" class="Symbol"
+      ><a name="8903" class="Symbol"
       >:</a
-      ><a name="9779"
+      ><a name="8904"
       > </a
-      ><a name="9780" href="Maps.html#2215" class="Datatype"
+      ><a name="8905" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="9782" class="Symbol"
+      ><a name="8907" class="Symbol"
       >)</a
-      ><a name="9783"
+      ><a name="8908"
       > </a
-      ><a name="9784" class="Symbol"
+      ><a name="8909" class="Symbol"
       >(</a
-      ><a name="9785" href="Maps.html#9785" class="Bound"
+      ><a name="8910" href="Maps.html#8910" class="Bound"
       >w</a
-      ><a name="9786"
+      ><a name="8911"
       > </a
-      ><a name="9787" class="Symbol"
+      ><a name="8912" class="Symbol"
       >:</a
-      ><a name="9788"
+      ><a name="8913"
       > </a
-      ><a name="9789" href="Maps.html#9738" class="Bound"
+      ><a name="8914" href="Maps.html#8863" class="Bound"
       >A</a
-      ><a name="9790" class="Symbol"
+      ><a name="8915" class="Symbol"
       >)</a
-      ><a name="9791"
+      ><a name="8916"
       >
                    </a
-      ><a name="9811" class="Symbol"
+      ><a name="8936" class="Symbol"
       >&#8594;</a
-      ><a name="9812"
+      ><a name="8937"
       > </a
-      ><a name="9813" href="Maps.html#9759" class="Bound"
+      ><a name="8938" href="Maps.html#8884" class="Bound"
       >x</a
-      ><a name="9814"
+      ><a name="8939"
       > </a
-      ><a name="9815" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
+      ><a name="8940" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
       >&#8802;</a
-      ><a name="9816"
+      ><a name="8941"
       > </a
-      ><a name="9817" href="Maps.html#9776" class="Bound"
+      ><a name="8942" href="Maps.html#8901" class="Bound"
       >y</a
-      ><a name="9818"
+      ><a name="8943"
       > </a
-      ><a name="9819" class="Symbol"
+      ><a name="8944" class="Symbol"
       >&#8594;</a
-      ><a name="9820"
+      ><a name="8945"
       > </a
-      ><a name="9821" class="Symbol"
+      ><a name="8946" class="Symbol"
       >(</a
-      ><a name="9822" href="Maps.html#9742" class="Bound"
+      ><a name="8947" href="Maps.html#8867" class="Bound"
       >&#961;</a
-      ><a name="9823"
+      ><a name="8948"
       > </a
-      ><a name="9824" href="Maps.html#5074" class="Function Operator"
+      ><a name="8949" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9825"
+      ><a name="8950"
       > </a
-      ><a name="9826" href="Maps.html#9759" class="Bound"
+      ><a name="8951" href="Maps.html#8884" class="Bound"
       >x</a
-      ><a name="9827"
+      ><a name="8952"
       > </a
-      ><a name="9828" href="Maps.html#5074" class="Function Operator"
+      ><a name="8953" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9829"
+      ><a name="8954"
       > </a
-      ><a name="9830" href="Maps.html#9768" class="Bound"
+      ><a name="8955" href="Maps.html#8893" class="Bound"
       >v</a
-      ><a name="9831"
+      ><a name="8956"
       > </a
-      ><a name="9832" href="Maps.html#5074" class="Function Operator"
+      ><a name="8957" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9833"
+      ><a name="8958"
       > </a
-      ><a name="9834" href="Maps.html#9776" class="Bound"
+      ><a name="8959" href="Maps.html#8901" class="Bound"
       >y</a
-      ><a name="9835"
+      ><a name="8960"
       > </a
-      ><a name="9836" href="Maps.html#5074" class="Function Operator"
+      ><a name="8961" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9837"
+      ><a name="8962"
       > </a
-      ><a name="9838" href="Maps.html#9785" class="Bound"
+      ><a name="8963" href="Maps.html#8910" class="Bound"
       >w</a
-      ><a name="9839" class="Symbol"
+      ><a name="8964" class="Symbol"
       >)</a
-      ><a name="9840"
+      ><a name="8965"
       > </a
-      ><a name="9841" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="8966" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="9842"
+      ><a name="8967"
       > </a
-      ><a name="9843" class="Symbol"
+      ><a name="8968" class="Symbol"
       >(</a
-      ><a name="9844" href="Maps.html#9742" class="Bound"
+      ><a name="8969" href="Maps.html#8867" class="Bound"
       >&#961;</a
-      ><a name="9845"
+      ><a name="8970"
       > </a
-      ><a name="9846" href="Maps.html#5074" class="Function Operator"
+      ><a name="8971" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9847"
+      ><a name="8972"
       > </a
-      ><a name="9848" href="Maps.html#9776" class="Bound"
+      ><a name="8973" href="Maps.html#8901" class="Bound"
       >y</a
-      ><a name="9849"
+      ><a name="8974"
       > </a
-      ><a name="9850" href="Maps.html#5074" class="Function Operator"
+      ><a name="8975" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9851"
+      ><a name="8976"
       > </a
-      ><a name="9852" href="Maps.html#9785" class="Bound"
+      ><a name="8977" href="Maps.html#8910" class="Bound"
       >w</a
-      ><a name="9853"
+      ><a name="8978"
       > </a
-      ><a name="9854" href="Maps.html#5074" class="Function Operator"
+      ><a name="8979" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9855"
+      ><a name="8980"
       > </a
-      ><a name="9856" href="Maps.html#9759" class="Bound"
+      ><a name="8981" href="Maps.html#8884" class="Bound"
       >x</a
-      ><a name="9857"
+      ><a name="8982"
       > </a
-      ><a name="9858" href="Maps.html#5074" class="Function Operator"
+      ><a name="8983" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9859"
+      ><a name="8984"
       > </a
-      ><a name="9860" href="Maps.html#9768" class="Bound"
+      ><a name="8985" href="Maps.html#8893" class="Bound"
       >v</a
-      ><a name="9861" class="Symbol"
+      ><a name="8986" class="Symbol"
       >)</a
-      ><a name="9862"
+      ><a name="8987"
       >
   </a
-      ><a name="9865" href="Maps.html#9717" class="Function"
+      ><a name="8990" href="Maps.html#8842" class="Function"
       >update-permute&#8242;</a
-      ><a name="9880"
+      ><a name="9005"
       > </a
-      ><a name="9881" class="Symbol"
+      ><a name="9006" class="Symbol"
       >{</a
-      ><a name="9882" href="Maps.html#9882" class="Bound"
+      ><a name="9007" href="Maps.html#9007" class="Bound"
       >A</a
-      ><a name="9883" class="Symbol"
+      ><a name="9008" class="Symbol"
       >}</a
-      ><a name="9884"
+      ><a name="9009"
       > </a
-      ><a name="9885" href="Maps.html#9885" class="Bound"
+      ><a name="9010" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="9886"
+      ><a name="9011"
       > </a
-      ><a name="9887" href="Maps.html#9887" class="Bound"
+      ><a name="9012" href="Maps.html#9012" class="Bound"
       >x</a
-      ><a name="9888"
+      ><a name="9013"
       > </a
-      ><a name="9889" href="Maps.html#9889" class="Bound"
+      ><a name="9014" href="Maps.html#9014" class="Bound"
       >v</a
-      ><a name="9890"
+      ><a name="9015"
       > </a
-      ><a name="9891" href="Maps.html#9891" class="Bound"
+      ><a name="9016" href="Maps.html#9016" class="Bound"
       >y</a
-      ><a name="9892"
+      ><a name="9017"
       > </a
-      ><a name="9893" href="Maps.html#9893" class="Bound"
+      ><a name="9018" href="Maps.html#9018" class="Bound"
       >w</a
-      ><a name="9894"
+      ><a name="9019"
       > </a
-      ><a name="9895" href="Maps.html#9895" class="Bound"
+      ><a name="9020" href="Maps.html#9020" class="Bound"
       >x&#8802;y</a
-      ><a name="9898"
+      ><a name="9023"
       >  </a
-      ><a name="9900" class="Symbol"
+      ><a name="9025" class="Symbol"
       >=</a
-      ><a name="9901"
+      ><a name="9026"
       >  </a
-      ><a name="9903" href="Maps.html#7721" class="Postulate"
+      ><a name="9028" href="Maps.html#6868" class="Postulate"
       >extensionality</a
-      ><a name="9917"
+      ><a name="9042"
       > </a
-      ><a name="9918" href="Maps.html#9938" class="Function"
+      ><a name="9043" href="Maps.html#9063" class="Function"
       >lemma</a
-      ><a name="9923"
+      ><a name="9048"
       >
     </a
-      ><a name="9928" class="Keyword"
+      ><a name="9053" class="Keyword"
       >where</a
-      ><a name="9933"
+      ><a name="9058"
       >
     </a
-      ><a name="9938" href="Maps.html#9938" class="Function"
+      ><a name="9063" href="Maps.html#9063" class="Function"
       >lemma</a
-      ><a name="9943"
+      ><a name="9068"
       > </a
-      ><a name="9944" class="Symbol"
+      ><a name="9069" class="Symbol"
       >:</a
-      ><a name="9945"
+      ><a name="9070"
       > </a
-      ><a name="9946" class="Symbol"
+      ><a name="9071" class="Symbol"
       >&#8704;</a
-      ><a name="9947"
+      ><a name="9072"
       > </a
-      ><a name="9948" href="Maps.html#9948" class="Bound"
+      ><a name="9073" href="Maps.html#9073" class="Bound"
       >z</a
-      ><a name="9949"
+      ><a name="9074"
       > </a
-      ><a name="9950" class="Symbol"
+      ><a name="9075" class="Symbol"
       >&#8594;</a
-      ><a name="9951"
+      ><a name="9076"
       > </a
-      ><a name="9952" class="Symbol"
+      ><a name="9077" class="Symbol"
       >(</a
-      ><a name="9953" href="Maps.html#9885" class="Bound"
+      ><a name="9078" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="9954"
+      ><a name="9079"
       > </a
-      ><a name="9955" href="Maps.html#5074" class="Function Operator"
+      ><a name="9080" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9956"
+      ><a name="9081"
       > </a
-      ><a name="9957" href="Maps.html#9887" class="Bound"
+      ><a name="9082" href="Maps.html#9012" class="Bound"
       >x</a
-      ><a name="9958"
+      ><a name="9083"
       > </a
-      ><a name="9959" href="Maps.html#5074" class="Function Operator"
+      ><a name="9084" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9960"
+      ><a name="9085"
       > </a
-      ><a name="9961" href="Maps.html#9889" class="Bound"
+      ><a name="9086" href="Maps.html#9014" class="Bound"
       >v</a
-      ><a name="9962"
+      ><a name="9087"
       > </a
-      ><a name="9963" href="Maps.html#5074" class="Function Operator"
+      ><a name="9088" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9964"
+      ><a name="9089"
       > </a
-      ><a name="9965" href="Maps.html#9891" class="Bound"
+      ><a name="9090" href="Maps.html#9016" class="Bound"
       >y</a
-      ><a name="9966"
+      ><a name="9091"
       > </a
-      ><a name="9967" href="Maps.html#5074" class="Function Operator"
+      ><a name="9092" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9968"
+      ><a name="9093"
       > </a
-      ><a name="9969" href="Maps.html#9893" class="Bound"
+      ><a name="9094" href="Maps.html#9018" class="Bound"
       >w</a
-      ><a name="9970" class="Symbol"
+      ><a name="9095" class="Symbol"
       >)</a
-      ><a name="9971"
+      ><a name="9096"
       > </a
-      ><a name="9972" href="Maps.html#9948" class="Bound"
+      ><a name="9097" href="Maps.html#9073" class="Bound"
       >z</a
-      ><a name="9973"
+      ><a name="9098"
       > </a
-      ><a name="9974" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="9099" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="9975"
+      ><a name="9100"
       > </a
-      ><a name="9976" class="Symbol"
+      ><a name="9101" class="Symbol"
       >(</a
-      ><a name="9977" href="Maps.html#9885" class="Bound"
+      ><a name="9102" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="9978"
+      ><a name="9103"
       > </a
-      ><a name="9979" href="Maps.html#5074" class="Function Operator"
+      ><a name="9104" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9980"
+      ><a name="9105"
       > </a
-      ><a name="9981" href="Maps.html#9891" class="Bound"
+      ><a name="9106" href="Maps.html#9016" class="Bound"
       >y</a
-      ><a name="9982"
+      ><a name="9107"
       > </a
-      ><a name="9983" href="Maps.html#5074" class="Function Operator"
+      ><a name="9108" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9984"
+      ><a name="9109"
       > </a
-      ><a name="9985" href="Maps.html#9893" class="Bound"
+      ><a name="9110" href="Maps.html#9018" class="Bound"
       >w</a
-      ><a name="9986"
+      ><a name="9111"
       > </a
-      ><a name="9987" href="Maps.html#5074" class="Function Operator"
+      ><a name="9112" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="9988"
+      ><a name="9113"
       > </a
-      ><a name="9989" href="Maps.html#9887" class="Bound"
+      ><a name="9114" href="Maps.html#9012" class="Bound"
       >x</a
-      ><a name="9990"
+      ><a name="9115"
       > </a
-      ><a name="9991" href="Maps.html#5074" class="Function Operator"
+      ><a name="9116" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="9992"
+      ><a name="9117"
       > </a
-      ><a name="9993" href="Maps.html#9889" class="Bound"
+      ><a name="9118" href="Maps.html#9014" class="Bound"
       >v</a
-      ><a name="9994" class="Symbol"
+      ><a name="9119" class="Symbol"
       >)</a
-      ><a name="9995"
+      ><a name="9120"
       > </a
-      ><a name="9996" href="Maps.html#9948" class="Bound"
+      ><a name="9121" href="Maps.html#9073" class="Bound"
       >z</a
-      ><a name="9997"
+      ><a name="9122"
       >
     </a
-      ><a name="10002" href="Maps.html#9938" class="Function"
+      ><a name="9127" href="Maps.html#9063" class="Function"
       >lemma</a
-      ><a name="10007"
+      ><a name="9132"
       > </a
-      ><a name="10008" href="Maps.html#10008" class="Bound"
+      ><a name="9133" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10009"
+      ><a name="9134"
       > </a
-      ><a name="10010" class="Keyword"
+      ><a name="9135" class="Keyword"
       >with</a
-      ><a name="10014"
+      ><a name="9139"
       > </a
-      ><a name="10015" href="Maps.html#9887" class="Bound"
+      ><a name="9140" href="Maps.html#9012" class="Bound"
       >x</a
-      ><a name="10016"
+      ><a name="9141"
       > </a
-      ><a name="10017" href="Maps.html#2558" class="Function Operator"
+      ><a name="9142" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="10018"
+      ><a name="9143"
       > </a
-      ><a name="10019" href="Maps.html#10008" class="Bound"
+      ><a name="9144" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10020"
+      ><a name="9145"
       > </a
-      ><a name="10021" class="Symbol"
+      ><a name="9146" class="Symbol"
       >|</a
-      ><a name="10022"
+      ><a name="9147"
       > </a
-      ><a name="10023" href="Maps.html#9891" class="Bound"
+      ><a name="9148" href="Maps.html#9016" class="Bound"
       >y</a
-      ><a name="10024"
+      ><a name="9149"
       > </a
-      ><a name="10025" href="Maps.html#2558" class="Function Operator"
+      ><a name="9150" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="10026"
+      ><a name="9151"
       > </a
-      ><a name="10027" href="Maps.html#10008" class="Bound"
+      ><a name="9152" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10028"
+      ><a name="9153"
       >
     </a
-      ><a name="10033" class="Symbol"
+      ><a name="9158" class="Symbol"
       >...</a
-      ><a name="10036"
+      ><a name="9161"
       > </a
-      ><a name="10037" class="Symbol"
+      ><a name="9162" class="Symbol"
       >|</a
-      ><a name="10038"
+      ><a name="9163"
       > </a
-      ><a name="10039" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9164" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10042"
+      ><a name="9167"
       > </a
-      ><a name="10043" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="9168" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="10047"
+      ><a name="9172"
       > </a
-      ><a name="10048" class="Symbol"
+      ><a name="9173" class="Symbol"
       >|</a
-      ><a name="10049"
+      ><a name="9174"
       > </a
-      ><a name="10050" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9175" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10053"
+      ><a name="9178"
       > </a
-      ><a name="10054" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="9179" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="10058"
+      ><a name="9183"
       >  </a
-      ><a name="10060" class="Symbol"
+      ><a name="9185" class="Symbol"
       >=</a
-      ><a name="10061"
+      ><a name="9186"
       >  </a
-      ><a name="10063" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="9188" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
-      ><a name="10069"
+      ><a name="9194"
       > </a
-      ><a name="10070" class="Symbol"
+      ><a name="9195" class="Symbol"
       >(</a
-      ><a name="10071" href="Maps.html#9895" class="Bound"
+      ><a name="9196" href="Maps.html#9020" class="Bound"
       >x&#8802;y</a
-      ><a name="10074"
+      ><a name="9199"
       > </a
-      ><a name="10075" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="9200" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="10079" class="Symbol"
+      ><a name="9204" class="Symbol"
       >)</a
-      ><a name="10080"
+      ><a name="9205"
       >
     </a
-      ><a name="10085" class="Symbol"
+      ><a name="9210" class="Symbol"
       >...</a
-      ><a name="10088"
+      ><a name="9213"
       > </a
-      ><a name="10089" class="Symbol"
+      ><a name="9214" class="Symbol"
       >|</a
-      ><a name="10090"
+      ><a name="9215"
       > </a
-      ><a name="10091" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9216" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10093"
+      ><a name="9218"
       >  </a
-      ><a name="10095" href="Maps.html#10095" class="Bound"
+      ><a name="9220" href="Maps.html#9220" class="Bound"
       >x&#8802;z</a
-      ><a name="10098"
+      ><a name="9223"
       >  </a
-      ><a name="10100" class="Symbol"
+      ><a name="9225" class="Symbol"
       >|</a
-      ><a name="10101"
+      ><a name="9226"
       > </a
-      ><a name="10102" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9227" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10105"
+      ><a name="9230"
       > </a
-      ><a name="10106" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="9231" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="10110"
+      ><a name="9235"
       >  </a
-      ><a name="10112" class="Symbol"
+      ><a name="9237" class="Symbol"
       >=</a
-      ><a name="10113"
+      ><a name="9238"
       >  </a
-      ><a name="10115" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
+      ><a name="9240" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
       >sym</a
-      ><a name="10118"
+      ><a name="9243"
       > </a
-      ><a name="10119" class="Symbol"
+      ><a name="9244" class="Symbol"
       >(</a
-      ><a name="10120" href="Maps.html#6918" class="Function"
+      ><a name="9245" href="Maps.html#6073" class="Function"
       >update-eq&#8242;</a
-      ><a name="10130"
+      ><a name="9255"
       > </a
-      ><a name="10131" href="Maps.html#9885" class="Bound"
+      ><a name="9256" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="10132"
+      ><a name="9257"
       > </a
-      ><a name="10133" href="Maps.html#10008" class="Bound"
+      ><a name="9258" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10134"
+      ><a name="9259"
       > </a
-      ><a name="10135" href="Maps.html#9893" class="Bound"
+      ><a name="9260" href="Maps.html#9018" class="Bound"
       >w</a
-      ><a name="10136" class="Symbol"
+      ><a name="9261" class="Symbol"
       >)</a
-      ><a name="10137"
+      ><a name="9262"
       >
     </a
-      ><a name="10142" class="Symbol"
+      ><a name="9267" class="Symbol"
       >...</a
-      ><a name="10145"
+      ><a name="9270"
       > </a
-      ><a name="10146" class="Symbol"
+      ><a name="9271" class="Symbol"
       >|</a
-      ><a name="10147"
+      ><a name="9272"
       > </a
-      ><a name="10148" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9273" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10151"
+      ><a name="9276"
       > </a
-      ><a name="10152" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="9277" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="10156"
+      ><a name="9281"
       > </a
-      ><a name="10157" class="Symbol"
+      ><a name="9282" class="Symbol"
       >|</a
-      ><a name="10158"
+      ><a name="9283"
       > </a
-      ><a name="10159" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9284" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10161"
+      ><a name="9286"
       >  </a
-      ><a name="10163" href="Maps.html#10163" class="Bound"
+      ><a name="9288" href="Maps.html#9288" class="Bound"
       >y&#8802;z</a
-      ><a name="10166"
+      ><a name="9291"
       >   </a
-      ><a name="10169" class="Symbol"
+      ><a name="9294" class="Symbol"
       >=</a
-      ><a name="10170"
+      ><a name="9295"
       >  </a
-      ><a name="10172" href="Maps.html#6918" class="Function"
+      ><a name="9297" href="Maps.html#6073" class="Function"
       >update-eq&#8242;</a
-      ><a name="10182"
+      ><a name="9307"
       > </a
-      ><a name="10183" href="Maps.html#9885" class="Bound"
+      ><a name="9308" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="10184"
+      ><a name="9309"
       > </a
-      ><a name="10185" href="Maps.html#10008" class="Bound"
+      ><a name="9310" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10186"
+      ><a name="9311"
       > </a
-      ><a name="10187" href="Maps.html#9889" class="Bound"
+      ><a name="9312" href="Maps.html#9014" class="Bound"
       >v</a
-      ><a name="10188"
+      ><a name="9313"
       >
     </a
-      ><a name="10193" class="Symbol"
+      ><a name="9318" class="Symbol"
       >...</a
-      ><a name="10196"
+      ><a name="9321"
       > </a
-      ><a name="10197" class="Symbol"
+      ><a name="9322" class="Symbol"
       >|</a
-      ><a name="10198"
+      ><a name="9323"
       > </a
-      ><a name="10199" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9324" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10201"
+      ><a name="9326"
       >  </a
-      ><a name="10203" href="Maps.html#10203" class="Bound"
+      ><a name="9328" href="Maps.html#9328" class="Bound"
       >x&#8802;z</a
-      ><a name="10206"
+      ><a name="9331"
       >  </a
-      ><a name="10208" class="Symbol"
+      ><a name="9333" class="Symbol"
       >|</a
-      ><a name="10209"
+      ><a name="9334"
       > </a
-      ><a name="10210" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9335" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10212"
+      ><a name="9337"
       >  </a
-      ><a name="10214" href="Maps.html#10214" class="Bound"
+      ><a name="9339" href="Maps.html#9339" class="Bound"
       >y&#8802;z</a
-      ><a name="10217"
+      ><a name="9342"
       >   </a
-      ><a name="10220" class="Symbol"
+      ><a name="9345" class="Symbol"
       >=</a
-      ><a name="10221"
+      ><a name="9346"
       >  </a
-      ><a name="10223" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#632" class="Function"
+      ><a name="9348" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#632" class="Function"
       >trans</a
-      ><a name="10228"
+      ><a name="9353"
       > </a
-      ><a name="10229" class="Symbol"
+      ><a name="9354" class="Symbol"
       >(</a
-      ><a name="10230" href="Maps.html#7348" class="Function"
+      ><a name="9355" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="10240"
+      ><a name="9365"
       > </a
-      ><a name="10241" href="Maps.html#9885" class="Bound"
+      ><a name="9366" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="10242"
+      ><a name="9367"
       > </a
-      ><a name="10243" href="Maps.html#9887" class="Bound"
+      ><a name="9368" href="Maps.html#9012" class="Bound"
       >x</a
-      ><a name="10244"
+      ><a name="9369"
       > </a
-      ><a name="10245" href="Maps.html#9889" class="Bound"
+      ><a name="9370" href="Maps.html#9014" class="Bound"
       >v</a
-      ><a name="10246"
+      ><a name="9371"
       > </a
-      ><a name="10247" href="Maps.html#10008" class="Bound"
+      ><a name="9372" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10248"
+      ><a name="9373"
       > </a
-      ><a name="10249" href="Maps.html#10203" class="Bound"
+      ><a name="9374" href="Maps.html#9328" class="Bound"
       >x&#8802;z</a
-      ><a name="10252" class="Symbol"
+      ><a name="9377" class="Symbol"
       >)</a
-      ><a name="10253"
+      ><a name="9378"
       > </a
-      ><a name="10254" class="Symbol"
+      ><a name="9379" class="Symbol"
       >(</a
-      ><a name="10255" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
+      ><a name="9380" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
       >sym</a
-      ><a name="10258"
+      ><a name="9383"
       > </a
-      ><a name="10259" class="Symbol"
+      ><a name="9384" class="Symbol"
       >(</a
-      ><a name="10260" href="Maps.html#7348" class="Function"
+      ><a name="9385" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="10270"
+      ><a name="9395"
       > </a
-      ><a name="10271" href="Maps.html#9885" class="Bound"
+      ><a name="9396" href="Maps.html#9010" class="Bound"
       >&#961;</a
-      ><a name="10272"
+      ><a name="9397"
       > </a
-      ><a name="10273" href="Maps.html#9891" class="Bound"
+      ><a name="9398" href="Maps.html#9016" class="Bound"
       >y</a
-      ><a name="10274"
+      ><a name="9399"
       > </a
-      ><a name="10275" href="Maps.html#9893" class="Bound"
+      ><a name="9400" href="Maps.html#9018" class="Bound"
       >w</a
-      ><a name="10276"
+      ><a name="9401"
       > </a
-      ><a name="10277" href="Maps.html#10008" class="Bound"
+      ><a name="9402" href="Maps.html#9133" class="Bound"
       >z</a
-      ><a name="10278"
+      ><a name="9403"
       > </a
-      ><a name="10279" href="Maps.html#10214" class="Bound"
+      ><a name="9404" href="Maps.html#9339" class="Bound"
       >y&#8802;z</a
-      ><a name="10282" class="Symbol"
+      ><a name="9407" class="Symbol"
       >))</a
       >
 
@@ -4722,595 +4109,595 @@ And a slightly different version of the same proof.
 
 <pre class="Agda">
 
-  <a name="10369" href="Maps.html#10369" class="Function"
+  <a name="9494" href="Maps.html#9494" class="Function"
       >update-permute&#8242;&#8242;</a
-      ><a name="10385"
+      ><a name="9510"
       > </a
-      ><a name="10386" class="Symbol"
+      ><a name="9511" class="Symbol"
       >:</a
-      ><a name="10387"
+      ><a name="9512"
       > </a
-      ><a name="10388" class="Symbol"
+      ><a name="9513" class="Symbol"
       >&#8704;</a
-      ><a name="10389"
+      ><a name="9514"
       > </a
-      ><a name="10390" class="Symbol"
+      ><a name="9515" class="Symbol"
       >{</a
-      ><a name="10391" href="Maps.html#10391" class="Bound"
+      ><a name="9516" href="Maps.html#9516" class="Bound"
       >A</a
-      ><a name="10392" class="Symbol"
+      ><a name="9517" class="Symbol"
       >}</a
-      ><a name="10393"
+      ><a name="9518"
       > </a
-      ><a name="10394" class="Symbol"
+      ><a name="9519" class="Symbol"
       >(</a
-      ><a name="10395" href="Maps.html#10395" class="Bound"
+      ><a name="9520" href="Maps.html#9520" class="Bound"
       >&#961;</a
-      ><a name="10396"
+      ><a name="9521"
       > </a
-      ><a name="10397" class="Symbol"
+      ><a name="9522" class="Symbol"
       >:</a
-      ><a name="10398"
+      ><a name="9523"
       > </a
-      ><a name="10399" href="Maps.html#3757" class="Function"
+      ><a name="9524" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="10407"
+      ><a name="9532"
       > </a
-      ><a name="10408" href="Maps.html#10391" class="Bound"
+      ><a name="9533" href="Maps.html#9516" class="Bound"
       >A</a
-      ><a name="10409" class="Symbol"
+      ><a name="9534" class="Symbol"
       >)</a
-      ><a name="10410"
+      ><a name="9535"
       > </a
-      ><a name="10411" class="Symbol"
+      ><a name="9536" class="Symbol"
       >(</a
-      ><a name="10412" href="Maps.html#10412" class="Bound"
+      ><a name="9537" href="Maps.html#9537" class="Bound"
       >x</a
-      ><a name="10413"
+      ><a name="9538"
       > </a
-      ><a name="10414" class="Symbol"
+      ><a name="9539" class="Symbol"
       >:</a
-      ><a name="10415"
+      ><a name="9540"
       > </a
-      ><a name="10416" href="Maps.html#2215" class="Datatype"
+      ><a name="9541" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="10418" class="Symbol"
+      ><a name="9543" class="Symbol"
       >)</a
-      ><a name="10419"
+      ><a name="9544"
       > </a
-      ><a name="10420" class="Symbol"
+      ><a name="9545" class="Symbol"
       >(</a
-      ><a name="10421" href="Maps.html#10421" class="Bound"
+      ><a name="9546" href="Maps.html#9546" class="Bound"
       >v</a
-      ><a name="10422"
+      ><a name="9547"
       > </a
-      ><a name="10423" class="Symbol"
+      ><a name="9548" class="Symbol"
       >:</a
-      ><a name="10424"
+      ><a name="9549"
       > </a
-      ><a name="10425" href="Maps.html#10391" class="Bound"
+      ><a name="9550" href="Maps.html#9516" class="Bound"
       >A</a
-      ><a name="10426" class="Symbol"
+      ><a name="9551" class="Symbol"
       >)</a
-      ><a name="10427"
+      ><a name="9552"
       > </a
-      ><a name="10428" class="Symbol"
+      ><a name="9553" class="Symbol"
       >(</a
-      ><a name="10429" href="Maps.html#10429" class="Bound"
+      ><a name="9554" href="Maps.html#9554" class="Bound"
       >y</a
-      ><a name="10430"
+      ><a name="9555"
       > </a
-      ><a name="10431" class="Symbol"
+      ><a name="9556" class="Symbol"
       >:</a
-      ><a name="10432"
+      ><a name="9557"
       > </a
-      ><a name="10433" href="Maps.html#2215" class="Datatype"
+      ><a name="9558" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="10435" class="Symbol"
+      ><a name="9560" class="Symbol"
       >)</a
-      ><a name="10436"
+      ><a name="9561"
       > </a
-      ><a name="10437" class="Symbol"
+      ><a name="9562" class="Symbol"
       >(</a
-      ><a name="10438" href="Maps.html#10438" class="Bound"
+      ><a name="9563" href="Maps.html#9563" class="Bound"
       >w</a
-      ><a name="10439"
+      ><a name="9564"
       > </a
-      ><a name="10440" class="Symbol"
+      ><a name="9565" class="Symbol"
       >:</a
-      ><a name="10441"
+      ><a name="9566"
       > </a
-      ><a name="10442" href="Maps.html#10391" class="Bound"
+      ><a name="9567" href="Maps.html#9516" class="Bound"
       >A</a
-      ><a name="10443" class="Symbol"
+      ><a name="9568" class="Symbol"
       >)</a
-      ><a name="10444"
+      ><a name="9569"
       > </a
-      ><a name="10445" class="Symbol"
+      ><a name="9570" class="Symbol"
       >(</a
-      ><a name="10446" href="Maps.html#10446" class="Bound"
+      ><a name="9571" href="Maps.html#9571" class="Bound"
       >z</a
-      ><a name="10447"
+      ><a name="9572"
       > </a
-      ><a name="10448" class="Symbol"
+      ><a name="9573" class="Symbol"
       >:</a
-      ><a name="10449"
+      ><a name="9574"
       > </a
-      ><a name="10450" href="Maps.html#2215" class="Datatype"
+      ><a name="9575" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="10452" class="Symbol"
+      ><a name="9577" class="Symbol"
       >)</a
-      ><a name="10453"
+      ><a name="9578"
       >
                    </a
-      ><a name="10473" class="Symbol"
+      ><a name="9598" class="Symbol"
       >&#8594;</a
-      ><a name="10474"
+      ><a name="9599"
       > </a
-      ><a name="10475" href="Maps.html#10412" class="Bound"
+      ><a name="9600" href="Maps.html#9537" class="Bound"
       >x</a
-      ><a name="10476"
+      ><a name="9601"
       > </a
-      ><a name="10477" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
+      ><a name="9602" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
       >&#8802;</a
-      ><a name="10478"
+      ><a name="9603"
       > </a
-      ><a name="10479" href="Maps.html#10429" class="Bound"
+      ><a name="9604" href="Maps.html#9554" class="Bound"
       >y</a
-      ><a name="10480"
+      ><a name="9605"
       > </a
-      ><a name="10481" class="Symbol"
+      ><a name="9606" class="Symbol"
       >&#8594;</a
-      ><a name="10482"
+      ><a name="9607"
       > </a
-      ><a name="10483" class="Symbol"
+      ><a name="9608" class="Symbol"
       >(</a
-      ><a name="10484" href="Maps.html#10395" class="Bound"
+      ><a name="9609" href="Maps.html#9520" class="Bound"
       >&#961;</a
-      ><a name="10485"
+      ><a name="9610"
       > </a
-      ><a name="10486" href="Maps.html#5074" class="Function Operator"
+      ><a name="9611" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="10487"
+      ><a name="9612"
       > </a
-      ><a name="10488" href="Maps.html#10412" class="Bound"
+      ><a name="9613" href="Maps.html#9537" class="Bound"
       >x</a
-      ><a name="10489"
+      ><a name="9614"
       > </a
-      ><a name="10490" href="Maps.html#5074" class="Function Operator"
+      ><a name="9615" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="10491"
+      ><a name="9616"
       > </a
-      ><a name="10492" href="Maps.html#10421" class="Bound"
+      ><a name="9617" href="Maps.html#9546" class="Bound"
       >v</a
-      ><a name="10493"
+      ><a name="9618"
       > </a
-      ><a name="10494" href="Maps.html#5074" class="Function Operator"
+      ><a name="9619" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="10495"
+      ><a name="9620"
       > </a
-      ><a name="10496" href="Maps.html#10429" class="Bound"
+      ><a name="9621" href="Maps.html#9554" class="Bound"
       >y</a
-      ><a name="10497"
+      ><a name="9622"
       > </a
-      ><a name="10498" href="Maps.html#5074" class="Function Operator"
+      ><a name="9623" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="10499"
+      ><a name="9624"
       > </a
-      ><a name="10500" href="Maps.html#10438" class="Bound"
+      ><a name="9625" href="Maps.html#9563" class="Bound"
       >w</a
-      ><a name="10501" class="Symbol"
+      ><a name="9626" class="Symbol"
       >)</a
-      ><a name="10502"
+      ><a name="9627"
       > </a
-      ><a name="10503" href="Maps.html#10446" class="Bound"
+      ><a name="9628" href="Maps.html#9571" class="Bound"
       >z</a
-      ><a name="10504"
+      ><a name="9629"
       > </a
-      ><a name="10505" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="9630" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="10506"
+      ><a name="9631"
       > </a
-      ><a name="10507" class="Symbol"
+      ><a name="9632" class="Symbol"
       >(</a
-      ><a name="10508" href="Maps.html#10395" class="Bound"
+      ><a name="9633" href="Maps.html#9520" class="Bound"
       >&#961;</a
-      ><a name="10509"
+      ><a name="9634"
       > </a
-      ><a name="10510" href="Maps.html#5074" class="Function Operator"
+      ><a name="9635" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="10511"
+      ><a name="9636"
       > </a
-      ><a name="10512" href="Maps.html#10429" class="Bound"
+      ><a name="9637" href="Maps.html#9554" class="Bound"
       >y</a
-      ><a name="10513"
+      ><a name="9638"
       > </a
-      ><a name="10514" href="Maps.html#5074" class="Function Operator"
+      ><a name="9639" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="10515"
+      ><a name="9640"
       > </a
-      ><a name="10516" href="Maps.html#10438" class="Bound"
+      ><a name="9641" href="Maps.html#9563" class="Bound"
       >w</a
-      ><a name="10517"
+      ><a name="9642"
       > </a
-      ><a name="10518" href="Maps.html#5074" class="Function Operator"
+      ><a name="9643" href="Maps.html#4403" class="Function Operator"
       >,</a
-      ><a name="10519"
+      ><a name="9644"
       > </a
-      ><a name="10520" href="Maps.html#10412" class="Bound"
+      ><a name="9645" href="Maps.html#9537" class="Bound"
       >x</a
-      ><a name="10521"
+      ><a name="9646"
       > </a
-      ><a name="10522" href="Maps.html#5074" class="Function Operator"
+      ><a name="9647" href="Maps.html#4403" class="Function Operator"
       >&#8614;</a
-      ><a name="10523"
+      ><a name="9648"
       > </a
-      ><a name="10524" href="Maps.html#10421" class="Bound"
+      ><a name="9649" href="Maps.html#9546" class="Bound"
       >v</a
-      ><a name="10525" class="Symbol"
+      ><a name="9650" class="Symbol"
       >)</a
-      ><a name="10526"
+      ><a name="9651"
       > </a
-      ><a name="10527" href="Maps.html#10446" class="Bound"
+      ><a name="9652" href="Maps.html#9571" class="Bound"
       >z</a
-      ><a name="10528"
+      ><a name="9653"
       >
   </a
-      ><a name="10531" href="Maps.html#10369" class="Function"
+      ><a name="9656" href="Maps.html#9494" class="Function"
       >update-permute&#8242;&#8242;</a
-      ><a name="10547"
+      ><a name="9672"
       > </a
-      ><a name="10548" class="Symbol"
+      ><a name="9673" class="Symbol"
       >{</a
-      ><a name="10549" href="Maps.html#10549" class="Bound"
+      ><a name="9674" href="Maps.html#9674" class="Bound"
       >A</a
-      ><a name="10550" class="Symbol"
+      ><a name="9675" class="Symbol"
       >}</a
-      ><a name="10551"
+      ><a name="9676"
       > </a
-      ><a name="10552" href="Maps.html#10552" class="Bound"
+      ><a name="9677" href="Maps.html#9677" class="Bound"
       >&#961;</a
-      ><a name="10553"
+      ><a name="9678"
       > </a
-      ><a name="10554" href="Maps.html#10554" class="Bound"
+      ><a name="9679" href="Maps.html#9679" class="Bound"
       >x</a
-      ><a name="10555"
+      ><a name="9680"
       > </a
-      ><a name="10556" href="Maps.html#10556" class="Bound"
+      ><a name="9681" href="Maps.html#9681" class="Bound"
       >v</a
-      ><a name="10557"
+      ><a name="9682"
       > </a
-      ><a name="10558" href="Maps.html#10558" class="Bound"
+      ><a name="9683" href="Maps.html#9683" class="Bound"
       >y</a
-      ><a name="10559"
+      ><a name="9684"
       > </a
-      ><a name="10560" href="Maps.html#10560" class="Bound"
+      ><a name="9685" href="Maps.html#9685" class="Bound"
       >w</a
-      ><a name="10561"
+      ><a name="9686"
       > </a
-      ><a name="10562" href="Maps.html#10562" class="Bound"
+      ><a name="9687" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10563"
+      ><a name="9688"
       > </a
-      ><a name="10564" href="Maps.html#10564" class="Bound"
+      ><a name="9689" href="Maps.html#9689" class="Bound"
       >x&#8802;y</a
-      ><a name="10567"
+      ><a name="9692"
       > </a
-      ><a name="10568" class="Keyword"
+      ><a name="9693" class="Keyword"
       >with</a
-      ><a name="10572"
+      ><a name="9697"
       > </a
-      ><a name="10573" href="Maps.html#10554" class="Bound"
+      ><a name="9698" href="Maps.html#9679" class="Bound"
       >x</a
-      ><a name="10574"
+      ><a name="9699"
       > </a
-      ><a name="10575" href="Maps.html#2558" class="Function Operator"
+      ><a name="9700" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="10576"
+      ><a name="9701"
       > </a
-      ><a name="10577" href="Maps.html#10562" class="Bound"
+      ><a name="9702" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10578"
+      ><a name="9703"
       > </a
-      ><a name="10579" class="Symbol"
+      ><a name="9704" class="Symbol"
       >|</a
-      ><a name="10580"
+      ><a name="9705"
       > </a
-      ><a name="10581" href="Maps.html#10558" class="Bound"
+      ><a name="9706" href="Maps.html#9683" class="Bound"
       >y</a
-      ><a name="10582"
+      ><a name="9707"
       > </a
-      ><a name="10583" href="Maps.html#2558" class="Function Operator"
+      ><a name="9708" href="Maps.html#2558" class="Function Operator"
       >&#8799;</a
-      ><a name="10584"
+      ><a name="9709"
       > </a
-      ><a name="10585" href="Maps.html#10562" class="Bound"
+      ><a name="9710" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10586"
+      ><a name="9711"
       >
   </a
-      ><a name="10589" class="Symbol"
+      ><a name="9714" class="Symbol"
       >...</a
-      ><a name="10592"
+      ><a name="9717"
       > </a
-      ><a name="10593" class="Symbol"
+      ><a name="9718" class="Symbol"
       >|</a
-      ><a name="10594"
+      ><a name="9719"
       > </a
-      ><a name="10595" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9720" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10598"
+      ><a name="9723"
       > </a
-      ><a name="10599" href="Maps.html#10599" class="Bound"
+      ><a name="9724" href="Maps.html#9724" class="Bound"
       >x&#8801;z</a
-      ><a name="10602"
+      ><a name="9727"
       > </a
-      ><a name="10603" class="Symbol"
+      ><a name="9728" class="Symbol"
       >|</a
-      ><a name="10604"
+      ><a name="9729"
       > </a
-      ><a name="10605" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9730" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10608"
+      ><a name="9733"
       > </a
-      ><a name="10609" href="Maps.html#10609" class="Bound"
+      ><a name="9734" href="Maps.html#9734" class="Bound"
       >y&#8801;z</a
-      ><a name="10612"
+      ><a name="9737"
       > </a
-      ><a name="10613" class="Symbol"
+      ><a name="9738" class="Symbol"
       >=</a
-      ><a name="10614"
+      ><a name="9739"
       > </a
-      ><a name="10615" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
+      ><a name="9740" href="https://agda.github.io/agda-stdlib/Data.Empty.html#348" class="Function"
       >&#8869;-elim</a
-      ><a name="10621"
+      ><a name="9746"
       > </a
-      ><a name="10622" class="Symbol"
+      ><a name="9747" class="Symbol"
       >(</a
-      ><a name="10623" href="Maps.html#10564" class="Bound"
+      ><a name="9748" href="Maps.html#9689" class="Bound"
       >x&#8802;y</a
-      ><a name="10626"
+      ><a name="9751"
       > </a
-      ><a name="10627" class="Symbol"
+      ><a name="9752" class="Symbol"
       >(</a
-      ><a name="10628" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#632" class="Function"
+      ><a name="9753" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#632" class="Function"
       >trans</a
-      ><a name="10633"
+      ><a name="9758"
       > </a
-      ><a name="10634" href="Maps.html#10599" class="Bound"
+      ><a name="9759" href="Maps.html#9724" class="Bound"
       >x&#8801;z</a
-      ><a name="10637"
+      ><a name="9762"
       > </a
-      ><a name="10638" class="Symbol"
+      ><a name="9763" class="Symbol"
       >(</a
-      ><a name="10639" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
+      ><a name="9764" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
       >sym</a
-      ><a name="10642"
+      ><a name="9767"
       > </a
-      ><a name="10643" href="Maps.html#10609" class="Bound"
+      ><a name="9768" href="Maps.html#9734" class="Bound"
       >y&#8801;z</a
-      ><a name="10646" class="Symbol"
+      ><a name="9771" class="Symbol"
       >)))</a
-      ><a name="10649"
+      ><a name="9774"
       >
   </a
-      ><a name="10652" class="Symbol"
+      ><a name="9777" class="Symbol"
       >...</a
-      ><a name="10655"
+      ><a name="9780"
       > </a
-      ><a name="10656" class="Symbol"
+      ><a name="9781" class="Symbol"
       >|</a
-      ><a name="10657"
+      ><a name="9782"
       > </a
-      ><a name="10658" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9783" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10660"
+      ><a name="9785"
       >  </a
-      ><a name="10662" href="Maps.html#10662" class="Bound"
+      ><a name="9787" href="Maps.html#9787" class="Bound"
       >x&#8802;z</a
-      ><a name="10665"
+      ><a name="9790"
       > </a
-      ><a name="10666" class="Symbol"
+      ><a name="9791" class="Symbol"
       >|</a
-      ><a name="10667"
+      ><a name="9792"
       > </a
-      ><a name="10668" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9793" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10671"
+      ><a name="9796"
       > </a
-      ><a name="10672" href="Maps.html#10672" class="Bound"
+      ><a name="9797" href="Maps.html#9797" class="Bound"
       >y&#8801;z</a
-      ><a name="10675"
+      ><a name="9800"
       > </a
-      ><a name="10676" class="Keyword"
+      ><a name="9801" class="Keyword"
       >rewrite</a
-      ><a name="10683"
+      ><a name="9808"
       > </a
-      ><a name="10684" href="Maps.html#10672" class="Bound"
+      ><a name="9809" href="Maps.html#9797" class="Bound"
       >y&#8801;z</a
-      ><a name="10687"
+      ><a name="9812"
       >  </a
-      ><a name="10689" class="Symbol"
+      ><a name="9814" class="Symbol"
       >=</a
-      ><a name="10690"
+      ><a name="9815"
       >  </a
-      ><a name="10692" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
+      ><a name="9817" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
       >sym</a
-      ><a name="10695"
+      ><a name="9820"
       > </a
-      ><a name="10696" class="Symbol"
+      ><a name="9821" class="Symbol"
       >(</a
-      ><a name="10697" href="Maps.html#6918" class="Function"
+      ><a name="9822" href="Maps.html#6073" class="Function"
       >update-eq&#8242;</a
-      ><a name="10707"
+      ><a name="9832"
       > </a
-      ><a name="10708" href="Maps.html#10552" class="Bound"
+      ><a name="9833" href="Maps.html#9677" class="Bound"
       >&#961;</a
-      ><a name="10709"
+      ><a name="9834"
       > </a
-      ><a name="10710" href="Maps.html#10562" class="Bound"
+      ><a name="9835" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10711"
+      ><a name="9836"
       > </a
-      ><a name="10712" href="Maps.html#10560" class="Bound"
+      ><a name="9837" href="Maps.html#9685" class="Bound"
       >w</a
-      ><a name="10713" class="Symbol"
+      ><a name="9838" class="Symbol"
       >)</a
-      ><a name="10714"
+      ><a name="9839"
       >  
   </a
-      ><a name="10719" class="Symbol"
+      ><a name="9844" class="Symbol"
       >...</a
-      ><a name="10722"
+      ><a name="9847"
       > </a
-      ><a name="10723" class="Symbol"
+      ><a name="9848" class="Symbol"
       >|</a
-      ><a name="10724"
+      ><a name="9849"
       > </a
-      ><a name="10725" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="9850" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="10728"
+      ><a name="9853"
       > </a
-      ><a name="10729" href="Maps.html#10729" class="Bound"
+      ><a name="9854" href="Maps.html#9854" class="Bound"
       >x&#8801;z</a
-      ><a name="10732"
+      ><a name="9857"
       > </a
-      ><a name="10733" class="Symbol"
+      ><a name="9858" class="Symbol"
       >|</a
-      ><a name="10734"
+      ><a name="9859"
       > </a
-      ><a name="10735" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9860" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10737"
+      ><a name="9862"
       >  </a
-      ><a name="10739" href="Maps.html#10739" class="Bound"
+      ><a name="9864" href="Maps.html#9864" class="Bound"
       >y&#8802;z</a
-      ><a name="10742"
+      ><a name="9867"
       > </a
-      ><a name="10743" class="Keyword"
+      ><a name="9868" class="Keyword"
       >rewrite</a
-      ><a name="10750"
+      ><a name="9875"
       > </a
-      ><a name="10751" href="Maps.html#10729" class="Bound"
+      ><a name="9876" href="Maps.html#9854" class="Bound"
       >x&#8801;z</a
-      ><a name="10754"
+      ><a name="9879"
       >  </a
-      ><a name="10756" class="Symbol"
+      ><a name="9881" class="Symbol"
       >=</a
-      ><a name="10757"
+      ><a name="9882"
       >  </a
-      ><a name="10759" href="Maps.html#6918" class="Function"
+      ><a name="9884" href="Maps.html#6073" class="Function"
       >update-eq&#8242;</a
-      ><a name="10769"
+      ><a name="9894"
       > </a
-      ><a name="10770" href="Maps.html#10552" class="Bound"
+      ><a name="9895" href="Maps.html#9677" class="Bound"
       >&#961;</a
-      ><a name="10771"
+      ><a name="9896"
       > </a
-      ><a name="10772" href="Maps.html#10562" class="Bound"
+      ><a name="9897" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10773"
+      ><a name="9898"
       > </a
-      ><a name="10774" href="Maps.html#10556" class="Bound"
+      ><a name="9899" href="Maps.html#9681" class="Bound"
       >v</a
-      ><a name="10775"
+      ><a name="9900"
       >
   </a
-      ><a name="10778" class="Symbol"
+      ><a name="9903" class="Symbol"
       >...</a
-      ><a name="10781"
+      ><a name="9906"
       > </a
-      ><a name="10782" class="Symbol"
+      ><a name="9907" class="Symbol"
       >|</a
-      ><a name="10783"
+      ><a name="9908"
       > </a
-      ><a name="10784" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9909" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10786"
+      ><a name="9911"
       >  </a
-      ><a name="10788" href="Maps.html#10788" class="Bound"
+      ><a name="9913" href="Maps.html#9913" class="Bound"
       >x&#8802;z</a
-      ><a name="10791"
+      ><a name="9916"
       > </a
-      ><a name="10792" class="Symbol"
+      ><a name="9917" class="Symbol"
       >|</a
-      ><a name="10793"
+      ><a name="9918"
       > </a
-      ><a name="10794" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      ><a name="9919" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
       >no</a
-      ><a name="10796"
+      ><a name="9921"
       >  </a
-      ><a name="10798" href="Maps.html#10798" class="Bound"
+      ><a name="9923" href="Maps.html#9923" class="Bound"
       >y&#8802;z</a
-      ><a name="10801"
+      ><a name="9926"
       >  </a
-      ><a name="10803" class="Symbol"
+      ><a name="9928" class="Symbol"
       >=</a
-      ><a name="10804"
+      ><a name="9929"
       >  </a
-      ><a name="10806" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#632" class="Function"
+      ><a name="9931" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#632" class="Function"
       >trans</a
-      ><a name="10811"
+      ><a name="9936"
       > </a
-      ><a name="10812" class="Symbol"
+      ><a name="9937" class="Symbol"
       >(</a
-      ><a name="10813" href="Maps.html#7348" class="Function"
+      ><a name="9938" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="10823"
+      ><a name="9948"
       > </a
-      ><a name="10824" href="Maps.html#10552" class="Bound"
+      ><a name="9949" href="Maps.html#9677" class="Bound"
       >&#961;</a
-      ><a name="10825"
+      ><a name="9950"
       > </a
-      ><a name="10826" href="Maps.html#10554" class="Bound"
+      ><a name="9951" href="Maps.html#9679" class="Bound"
       >x</a
-      ><a name="10827"
+      ><a name="9952"
       > </a
-      ><a name="10828" href="Maps.html#10556" class="Bound"
+      ><a name="9953" href="Maps.html#9681" class="Bound"
       >v</a
-      ><a name="10829"
+      ><a name="9954"
       > </a
-      ><a name="10830" href="Maps.html#10562" class="Bound"
+      ><a name="9955" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10831"
+      ><a name="9956"
       > </a
-      ><a name="10832" href="Maps.html#10788" class="Bound"
+      ><a name="9957" href="Maps.html#9913" class="Bound"
       >x&#8802;z</a
-      ><a name="10835" class="Symbol"
+      ><a name="9960" class="Symbol"
       >)</a
-      ><a name="10836"
+      ><a name="9961"
       > </a
-      ><a name="10837" class="Symbol"
+      ><a name="9962" class="Symbol"
       >(</a
-      ><a name="10838" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
+      ><a name="9963" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
       >sym</a
-      ><a name="10841"
+      ><a name="9966"
       > </a
-      ><a name="10842" class="Symbol"
+      ><a name="9967" class="Symbol"
       >(</a
-      ><a name="10843" href="Maps.html#7348" class="Function"
+      ><a name="9968" href="Maps.html#6495" class="Function"
       >update-neq</a
-      ><a name="10853"
+      ><a name="9978"
       > </a
-      ><a name="10854" href="Maps.html#10552" class="Bound"
+      ><a name="9979" href="Maps.html#9677" class="Bound"
       >&#961;</a
-      ><a name="10855"
+      ><a name="9980"
       > </a
-      ><a name="10856" href="Maps.html#10558" class="Bound"
+      ><a name="9981" href="Maps.html#9683" class="Bound"
       >y</a
-      ><a name="10857"
+      ><a name="9982"
       > </a
-      ><a name="10858" href="Maps.html#10560" class="Bound"
+      ><a name="9983" href="Maps.html#9685" class="Bound"
       >w</a
-      ><a name="10859"
+      ><a name="9984"
       > </a
-      ><a name="10860" href="Maps.html#10562" class="Bound"
+      ><a name="9985" href="Maps.html#9687" class="Bound"
       >z</a
-      ><a name="10861"
+      ><a name="9986"
       > </a
-      ><a name="10862" href="Maps.html#10798" class="Bound"
+      ><a name="9987" href="Maps.html#9923" class="Bound"
       >y&#8802;z</a
-      ><a name="10865" class="Symbol"
+      ><a name="9990" class="Symbol"
       >))</a
       >
 
@@ -5325,52 +4712,52 @@ of type `Maybe A` and default element `nothing`.
 
 <pre class="Agda">
 
-<a name="11102" href="Maps.html#11102" class="Function"
+<a name="10227" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="11112"
+      ><a name="10237"
       > </a
-      ><a name="11113" class="Symbol"
+      ><a name="10238" class="Symbol"
       >:</a
-      ><a name="11114"
+      ><a name="10239"
       > </a
-      ><a name="11115" class="PrimitiveType"
+      ><a name="10240" class="PrimitiveType"
       >Set</a
-      ><a name="11118"
+      ><a name="10243"
       > </a
-      ><a name="11119" class="Symbol"
+      ><a name="10244" class="Symbol"
       >&#8594;</a
-      ><a name="11120"
+      ><a name="10245"
       > </a
-      ><a name="11121" class="PrimitiveType"
+      ><a name="10246" class="PrimitiveType"
       >Set</a
-      ><a name="11124"
+      ><a name="10249"
       >
 </a
-      ><a name="11125" href="Maps.html#11102" class="Function"
+      ><a name="10250" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="11135"
+      ><a name="10260"
       > </a
-      ><a name="11136" href="Maps.html#11136" class="Bound"
+      ><a name="10261" href="Maps.html#10261" class="Bound"
       >A</a
-      ><a name="11137"
+      ><a name="10262"
       > </a
-      ><a name="11138" class="Symbol"
+      ><a name="10263" class="Symbol"
       >=</a
-      ><a name="11139"
+      ><a name="10264"
       > </a
-      ><a name="11140" href="Maps.html#3757" class="Function"
+      ><a name="10265" href="Maps.html#3738" class="Function"
       >TotalMap</a
-      ><a name="11148"
+      ><a name="10273"
       > </a
-      ><a name="11149" class="Symbol"
+      ><a name="10274" class="Symbol"
       >(</a
-      ><a name="11150" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#335" class="Datatype"
+      ><a name="10275" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#335" class="Datatype"
       >Maybe</a
-      ><a name="11155"
+      ><a name="10280"
       > </a
-      ><a name="11156" href="Maps.html#11136" class="Bound"
+      ><a name="10281" href="Maps.html#10261" class="Bound"
       >A</a
-      ><a name="11157" class="Symbol"
+      ><a name="10282" class="Symbol"
       >)</a
       >
 
@@ -5378,15 +4765,15 @@ of type `Maybe A` and default element `nothing`.
 
 <pre class="Agda">
 
-<a name="11184" class="Keyword"
+<a name="10309" class="Keyword"
       >module</a
-      ><a name="11190"
+      ><a name="10315"
       > </a
-      ><a name="11191" href="Maps.html#11191" class="Module"
+      ><a name="10316" href="Maps.html#10316" class="Module"
       >PartialMap</a
-      ><a name="11201"
+      ><a name="10326"
       > </a
-      ><a name="11202" class="Keyword"
+      ><a name="10327" class="Keyword"
       >where</a
       >
 
@@ -5394,52 +4781,52 @@ of type `Maybe A` and default element `nothing`.
 
 <pre class="Agda">
 
-  <a name="11235" href="Maps.html#11235" class="Function"
+  <a name="10360" href="Maps.html#10360" class="Function"
       >&#8709;</a
-      ><a name="11236"
+      ><a name="10361"
       > </a
-      ><a name="11237" class="Symbol"
+      ><a name="10362" class="Symbol"
       >:</a
-      ><a name="11238"
+      ><a name="10363"
       > </a
-      ><a name="11239" class="Symbol"
+      ><a name="10364" class="Symbol"
       >&#8704;</a
-      ><a name="11240"
+      ><a name="10365"
       > </a
-      ><a name="11241" class="Symbol"
+      ><a name="10366" class="Symbol"
       >{</a
-      ><a name="11242" href="Maps.html#11242" class="Bound"
+      ><a name="10367" href="Maps.html#10367" class="Bound"
       >A</a
-      ><a name="11243" class="Symbol"
+      ><a name="10368" class="Symbol"
       >}</a
-      ><a name="11244"
+      ><a name="10369"
       > </a
-      ><a name="11245" class="Symbol"
+      ><a name="10370" class="Symbol"
       >&#8594;</a
-      ><a name="11246"
+      ><a name="10371"
       > </a
-      ><a name="11247" href="Maps.html#11102" class="Function"
+      ><a name="10372" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="11257"
+      ><a name="10382"
       > </a
-      ><a name="11258" href="Maps.html#11242" class="Bound"
+      ><a name="10383" href="Maps.html#10367" class="Bound"
       >A</a
-      ><a name="11259"
+      ><a name="10384"
       >
   </a
-      ><a name="11262" href="Maps.html#11235" class="Function"
+      ><a name="10387" href="Maps.html#10360" class="Function"
       >&#8709;</a
-      ><a name="11263"
+      ><a name="10388"
       > </a
-      ><a name="11264" class="Symbol"
+      ><a name="10389" class="Symbol"
       >=</a
-      ><a name="11265"
+      ><a name="10390"
       > </a
-      ><a name="11266" href="Maps.html#4132" class="Function"
+      ><a name="10391" href="Maps.html#4109" class="Function"
       >TotalMap.always</a
-      ><a name="11281"
+      ><a name="10406"
       > </a
-      ><a name="11282" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
+      ><a name="10407" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
       >nothing</a
       >
 
@@ -5447,755 +4834,151 @@ of type `Maybe A` and default element `nothing`.
 
 <pre class="Agda">
 
-  <a name="11317" href="Maps.html#11317" class="Function Operator"
+  <a name="10442" class="Keyword"
+      >infixl</a
+      ><a name="10448"
+      > </a
+      ><a name="10449" class="Number"
+      >100</a
+      ><a name="10452"
+      > </a
+      ><a name="10453" href="Maps.html#10464" class="Function Operator"
       >_,_&#8614;_</a
-      ><a name="11322"
+      ><a name="10458"
+      >  
+
+  </a
+      ><a name="10464" href="Maps.html#10464" class="Function Operator"
+      >_,_&#8614;_</a
+      ><a name="10469"
       > </a
-      ><a name="11323" class="Symbol"
+      ><a name="10470" class="Symbol"
       >:</a
-      ><a name="11324"
+      ><a name="10471"
       > </a
-      ><a name="11325" class="Symbol"
+      ><a name="10472" class="Symbol"
       >&#8704;</a
-      ><a name="11326"
+      ><a name="10473"
       > </a
-      ><a name="11327" class="Symbol"
+      ><a name="10474" class="Symbol"
       >{</a
-      ><a name="11328" href="Maps.html#11328" class="Bound"
+      ><a name="10475" href="Maps.html#10475" class="Bound"
       >A</a
-      ><a name="11329" class="Symbol"
+      ><a name="10476" class="Symbol"
       >}</a
-      ><a name="11330"
+      ><a name="10477"
       > </a
-      ><a name="11331" class="Symbol"
+      ><a name="10478" class="Symbol"
       >(</a
-      ><a name="11332" href="Maps.html#11332" class="Bound"
+      ><a name="10479" href="Maps.html#10479" class="Bound"
       >&#961;</a
-      ><a name="11333"
+      ><a name="10480"
       > </a
-      ><a name="11334" class="Symbol"
+      ><a name="10481" class="Symbol"
       >:</a
-      ><a name="11335"
+      ><a name="10482"
       > </a
-      ><a name="11336" href="Maps.html#11102" class="Function"
+      ><a name="10483" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="11346"
+      ><a name="10493"
       > </a
-      ><a name="11347" href="Maps.html#11328" class="Bound"
+      ><a name="10494" href="Maps.html#10475" class="Bound"
       >A</a
-      ><a name="11348" class="Symbol"
+      ><a name="10495" class="Symbol"
       >)</a
-      ><a name="11349"
+      ><a name="10496"
       > </a
-      ><a name="11350" class="Symbol"
+      ><a name="10497" class="Symbol"
       >(</a
-      ><a name="11351" href="Maps.html#11351" class="Bound"
+      ><a name="10498" href="Maps.html#10498" class="Bound"
       >x</a
-      ><a name="11352"
+      ><a name="10499"
       > </a
-      ><a name="11353" class="Symbol"
+      ><a name="10500" class="Symbol"
       >:</a
-      ><a name="11354"
+      ><a name="10501"
       > </a
-      ><a name="11355" href="Maps.html#2215" class="Datatype"
+      ><a name="10502" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="11357" class="Symbol"
+      ><a name="10504" class="Symbol"
       >)</a
-      ><a name="11358"
+      ><a name="10505"
       > </a
-      ><a name="11359" class="Symbol"
+      ><a name="10506" class="Symbol"
       >(</a
-      ><a name="11360" href="Maps.html#11360" class="Bound"
+      ><a name="10507" href="Maps.html#10507" class="Bound"
       >v</a
-      ><a name="11361"
+      ><a name="10508"
       > </a
-      ><a name="11362" class="Symbol"
+      ><a name="10509" class="Symbol"
       >:</a
-      ><a name="11363"
+      ><a name="10510"
       > </a
-      ><a name="11364" href="Maps.html#11328" class="Bound"
+      ><a name="10511" href="Maps.html#10475" class="Bound"
       >A</a
-      ><a name="11365" class="Symbol"
+      ><a name="10512" class="Symbol"
       >)</a
-      ><a name="11366"
+      ><a name="10513"
       > </a
-      ><a name="11367" class="Symbol"
+      ><a name="10514" class="Symbol"
       >&#8594;</a
-      ><a name="11368"
+      ><a name="10515"
       > </a
-      ><a name="11369" href="Maps.html#11102" class="Function"
+      ><a name="10516" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="11379"
+      ><a name="10526"
       > </a
-      ><a name="11380" href="Maps.html#11328" class="Bound"
+      ><a name="10527" href="Maps.html#10475" class="Bound"
       >A</a
-      ><a name="11381"
+      ><a name="10528"
       >
   </a
-      ><a name="11384" href="Maps.html#11384" class="Bound"
+      ><a name="10531" href="Maps.html#10531" class="Bound"
       >&#961;</a
-      ><a name="11385"
+      ><a name="10532"
       > </a
-      ><a name="11386" href="Maps.html#11317" class="Function Operator"
+      ><a name="10533" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="11387"
+      ><a name="10534"
       > </a
-      ><a name="11388" href="Maps.html#11388" class="Bound"
+      ><a name="10535" href="Maps.html#10535" class="Bound"
       >x</a
-      ><a name="11389"
+      ><a name="10536"
       > </a
-      ><a name="11390" href="Maps.html#11317" class="Function Operator"
+      ><a name="10537" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="11391"
+      ><a name="10538"
       > </a
-      ><a name="11392" href="Maps.html#11392" class="Bound"
+      ><a name="10539" href="Maps.html#10539" class="Bound"
       >v</a
-      ><a name="11393"
+      ><a name="10540"
       > </a
-      ><a name="11394" class="Symbol"
+      ><a name="10541" class="Symbol"
       >=</a
-      ><a name="11395"
+      ><a name="10542"
       > </a
-      ><a name="11396" href="Maps.html#4416" class="Function Operator"
+      ><a name="10543" href="Maps.html#4403" class="Function Operator"
       >TotalMap._,_&#8614;_</a
-      ><a name="11410"
+      ><a name="10557"
       > </a
-      ><a name="11411" href="Maps.html#11384" class="Bound"
+      ><a name="10558" href="Maps.html#10531" class="Bound"
       >&#961;</a
-      ><a name="11412"
+      ><a name="10559"
       > </a
-      ><a name="11413" href="Maps.html#11388" class="Bound"
+      ><a name="10560" href="Maps.html#10535" class="Bound"
       >x</a
-      ><a name="11414"
+      ><a name="10561"
       > </a
-      ><a name="11415" class="Symbol"
+      ><a name="10562" class="Symbol"
       >(</a
-      ><a name="11416" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="10563" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="11420"
+      ><a name="10567"
       > </a
-      ><a name="11421" href="Maps.html#11392" class="Bound"
+      ><a name="10568" href="Maps.html#10539" class="Bound"
       >v</a
-      ><a name="11422" class="Symbol"
+      ><a name="10569" class="Symbol"
       >)</a
-      >
-
-</pre>
-As before, we define handy abbreviations for updating a map two, three, or four times.
-
-<pre class="Agda">
-
-  <a name="11538" href="Maps.html#11538" class="Function Operator"
-      >_,_&#8614;_,_&#8614;_</a
-      ><a name="11547"
-      > </a
-      ><a name="11548" class="Symbol"
-      >:</a
-      ><a name="11549"
-      > </a
-      ><a name="11550" class="Symbol"
-      >&#8704;</a
-      ><a name="11551"
-      > </a
-      ><a name="11552" class="Symbol"
-      >{</a
-      ><a name="11553" href="Maps.html#11553" class="Bound"
-      >A</a
-      ><a name="11554" class="Symbol"
-      >}</a
-      ><a name="11555"
-      > </a
-      ><a name="11556" class="Symbol"
-      >&#8594;</a
-      ><a name="11557"
-      > </a
-      ><a name="11558" href="Maps.html#11102" class="Function"
-      >PartialMap</a
-      ><a name="11568"
-      > </a
-      ><a name="11569" href="Maps.html#11553" class="Bound"
-      >A</a
-      ><a name="11570"
-      > </a
-      ><a name="11571" class="Symbol"
-      >&#8594;</a
-      ><a name="11572"
-      > </a
-      ><a name="11573" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11575"
-      > </a
-      ><a name="11576" class="Symbol"
-      >&#8594;</a
-      ><a name="11577"
-      > </a
-      ><a name="11578" href="Maps.html#11553" class="Bound"
-      >A</a
-      ><a name="11579"
-      > </a
-      ><a name="11580" class="Symbol"
-      >&#8594;</a
-      ><a name="11581"
-      > </a
-      ><a name="11582" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11584"
-      > </a
-      ><a name="11585" class="Symbol"
-      >&#8594;</a
-      ><a name="11586"
-      > </a
-      ><a name="11587" href="Maps.html#11553" class="Bound"
-      >A</a
-      ><a name="11588"
-      > </a
-      ><a name="11589" class="Symbol"
-      >&#8594;</a
-      ><a name="11590"
-      > </a
-      ><a name="11591" href="Maps.html#11102" class="Function"
-      >PartialMap</a
-      ><a name="11601"
-      > </a
-      ><a name="11602" href="Maps.html#11553" class="Bound"
-      >A</a
-      ><a name="11603"
-      >
-  </a
-      ><a name="11606" href="Maps.html#11606" class="Bound"
-      >&#961;</a
-      ><a name="11607"
-      > </a
-      ><a name="11608" href="Maps.html#11538" class="Function Operator"
-      >,</a
-      ><a name="11609"
-      > </a
-      ><a name="11610" href="Maps.html#11610" class="Bound"
-      >x&#8321;</a
-      ><a name="11612"
-      > </a
-      ><a name="11613" href="Maps.html#11538" class="Function Operator"
-      >&#8614;</a
-      ><a name="11614"
-      > </a
-      ><a name="11615" href="Maps.html#11615" class="Bound"
-      >v&#8321;</a
-      ><a name="11617"
-      > </a
-      ><a name="11618" href="Maps.html#11538" class="Function Operator"
-      >,</a
-      ><a name="11619"
-      > </a
-      ><a name="11620" href="Maps.html#11620" class="Bound"
-      >x&#8322;</a
-      ><a name="11622"
-      > </a
-      ><a name="11623" href="Maps.html#11538" class="Function Operator"
-      >&#8614;</a
-      ><a name="11624"
-      > </a
-      ><a name="11625" href="Maps.html#11625" class="Bound"
-      >v&#8322;</a
-      ><a name="11627"
-      >  </a
-      ><a name="11629" class="Symbol"
-      >=</a
-      ><a name="11630"
-      >  </a
-      ><a name="11632" class="Symbol"
-      >(</a
-      ><a name="11633" href="Maps.html#11606" class="Bound"
-      >&#961;</a
-      ><a name="11634"
-      > </a
-      ><a name="11635" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11636"
-      > </a
-      ><a name="11637" href="Maps.html#11610" class="Bound"
-      >x&#8321;</a
-      ><a name="11639"
-      > </a
-      ><a name="11640" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11641"
-      > </a
-      ><a name="11642" href="Maps.html#11615" class="Bound"
-      >v&#8321;</a
-      ><a name="11644" class="Symbol"
-      >)</a
-      ><a name="11645" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11646"
-      > </a
-      ><a name="11647" href="Maps.html#11620" class="Bound"
-      >x&#8322;</a
-      ><a name="11649"
-      > </a
-      ><a name="11650" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11651"
-      > </a
-      ><a name="11652" href="Maps.html#11625" class="Bound"
-      >v&#8322;</a
-      ><a name="11654"
-      >
-
-  </a
-      ><a name="11658" href="Maps.html#11658" class="Function Operator"
-      >_,_&#8614;_,_&#8614;_,_&#8614;_</a
-      ><a name="11671"
-      > </a
-      ><a name="11672" class="Symbol"
-      >:</a
-      ><a name="11673"
-      > </a
-      ><a name="11674" class="Symbol"
-      >&#8704;</a
-      ><a name="11675"
-      > </a
-      ><a name="11676" class="Symbol"
-      >{</a
-      ><a name="11677" href="Maps.html#11677" class="Bound"
-      >A</a
-      ><a name="11678" class="Symbol"
-      >}</a
-      ><a name="11679"
-      > </a
-      ><a name="11680" class="Symbol"
-      >&#8594;</a
-      ><a name="11681"
-      > </a
-      ><a name="11682" href="Maps.html#11102" class="Function"
-      >PartialMap</a
-      ><a name="11692"
-      > </a
-      ><a name="11693" href="Maps.html#11677" class="Bound"
-      >A</a
-      ><a name="11694"
-      > </a
-      ><a name="11695" class="Symbol"
-      >&#8594;</a
-      ><a name="11696"
-      > </a
-      ><a name="11697" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11699"
-      > </a
-      ><a name="11700" class="Symbol"
-      >&#8594;</a
-      ><a name="11701"
-      > </a
-      ><a name="11702" href="Maps.html#11677" class="Bound"
-      >A</a
-      ><a name="11703"
-      > </a
-      ><a name="11704" class="Symbol"
-      >&#8594;</a
-      ><a name="11705"
-      > </a
-      ><a name="11706" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11708"
-      > </a
-      ><a name="11709" class="Symbol"
-      >&#8594;</a
-      ><a name="11710"
-      > </a
-      ><a name="11711" href="Maps.html#11677" class="Bound"
-      >A</a
-      ><a name="11712"
-      > </a
-      ><a name="11713" class="Symbol"
-      >&#8594;</a
-      ><a name="11714"
-      > </a
-      ><a name="11715" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11717"
-      > </a
-      ><a name="11718" class="Symbol"
-      >&#8594;</a
-      ><a name="11719"
-      > </a
-      ><a name="11720" href="Maps.html#11677" class="Bound"
-      >A</a
-      ><a name="11721"
-      > </a
-      ><a name="11722" class="Symbol"
-      >&#8594;</a
-      ><a name="11723"
-      > </a
-      ><a name="11724" href="Maps.html#11102" class="Function"
-      >PartialMap</a
-      ><a name="11734"
-      > </a
-      ><a name="11735" href="Maps.html#11677" class="Bound"
-      >A</a
-      ><a name="11736"
-      >
-  </a
-      ><a name="11739" href="Maps.html#11739" class="Bound"
-      >&#961;</a
-      ><a name="11740"
-      > </a
-      ><a name="11741" href="Maps.html#11658" class="Function Operator"
-      >,</a
-      ><a name="11742"
-      > </a
-      ><a name="11743" href="Maps.html#11743" class="Bound"
-      >x&#8321;</a
-      ><a name="11745"
-      > </a
-      ><a name="11746" href="Maps.html#11658" class="Function Operator"
-      >&#8614;</a
-      ><a name="11747"
-      > </a
-      ><a name="11748" href="Maps.html#11748" class="Bound"
-      >v&#8321;</a
-      ><a name="11750"
-      > </a
-      ><a name="11751" href="Maps.html#11658" class="Function Operator"
-      >,</a
-      ><a name="11752"
-      > </a
-      ><a name="11753" href="Maps.html#11753" class="Bound"
-      >x&#8322;</a
-      ><a name="11755"
-      > </a
-      ><a name="11756" href="Maps.html#11658" class="Function Operator"
-      >&#8614;</a
-      ><a name="11757"
-      > </a
-      ><a name="11758" href="Maps.html#11758" class="Bound"
-      >v&#8322;</a
-      ><a name="11760"
-      > </a
-      ><a name="11761" href="Maps.html#11658" class="Function Operator"
-      >,</a
-      ><a name="11762"
-      > </a
-      ><a name="11763" href="Maps.html#11763" class="Bound"
-      >x&#8323;</a
-      ><a name="11765"
-      > </a
-      ><a name="11766" href="Maps.html#11658" class="Function Operator"
-      >&#8614;</a
-      ><a name="11767"
-      > </a
-      ><a name="11768" href="Maps.html#11768" class="Bound"
-      >v&#8323;</a
-      ><a name="11770"
-      >  </a
-      ><a name="11772" class="Symbol"
-      >=</a
-      ><a name="11773"
-      >  </a
-      ><a name="11775" class="Symbol"
-      >((</a
-      ><a name="11777" href="Maps.html#11739" class="Bound"
-      >&#961;</a
-      ><a name="11778"
-      > </a
-      ><a name="11779" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11780"
-      > </a
-      ><a name="11781" href="Maps.html#11743" class="Bound"
-      >x&#8321;</a
-      ><a name="11783"
-      > </a
-      ><a name="11784" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11785"
-      > </a
-      ><a name="11786" href="Maps.html#11748" class="Bound"
-      >v&#8321;</a
-      ><a name="11788" class="Symbol"
-      >)</a
-      ><a name="11789" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11790"
-      > </a
-      ><a name="11791" href="Maps.html#11753" class="Bound"
-      >x&#8322;</a
-      ><a name="11793"
-      > </a
-      ><a name="11794" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11795"
-      > </a
-      ><a name="11796" href="Maps.html#11758" class="Bound"
-      >v&#8322;</a
-      ><a name="11798" class="Symbol"
-      >)</a
-      ><a name="11799" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11800"
-      > </a
-      ><a name="11801" href="Maps.html#11763" class="Bound"
-      >x&#8323;</a
-      ><a name="11803"
-      > </a
-      ><a name="11804" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11805"
-      > </a
-      ><a name="11806" href="Maps.html#11768" class="Bound"
-      >v&#8323;</a
-      ><a name="11808"
-      >
-
-  </a
-      ><a name="11812" href="Maps.html#11812" class="Function Operator"
-      >_,_&#8614;_,_&#8614;_,_&#8614;_,_&#8614;_</a
-      ><a name="11829"
-      > </a
-      ><a name="11830" class="Symbol"
-      >:</a
-      ><a name="11831"
-      > </a
-      ><a name="11832" class="Symbol"
-      >&#8704;</a
-      ><a name="11833"
-      > </a
-      ><a name="11834" class="Symbol"
-      >{</a
-      ><a name="11835" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11836" class="Symbol"
-      >}</a
-      ><a name="11837"
-      > </a
-      ><a name="11838" class="Symbol"
-      >&#8594;</a
-      ><a name="11839"
-      > </a
-      ><a name="11840" href="Maps.html#11102" class="Function"
-      >PartialMap</a
-      ><a name="11850"
-      > </a
-      ><a name="11851" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11852"
-      > </a
-      ><a name="11853" class="Symbol"
-      >&#8594;</a
-      ><a name="11854"
-      > </a
-      ><a name="11855" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11857"
-      > </a
-      ><a name="11858" class="Symbol"
-      >&#8594;</a
-      ><a name="11859"
-      > </a
-      ><a name="11860" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11861"
-      > </a
-      ><a name="11862" class="Symbol"
-      >&#8594;</a
-      ><a name="11863"
-      > </a
-      ><a name="11864" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11866"
-      > </a
-      ><a name="11867" class="Symbol"
-      >&#8594;</a
-      ><a name="11868"
-      > </a
-      ><a name="11869" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11870"
-      > </a
-      ><a name="11871" class="Symbol"
-      >&#8594;</a
-      ><a name="11872"
-      > </a
-      ><a name="11873" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11875"
-      > </a
-      ><a name="11876" class="Symbol"
-      >&#8594;</a
-      ><a name="11877"
-      > </a
-      ><a name="11878" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11879"
-      > </a
-      ><a name="11880" class="Symbol"
-      >&#8594;</a
-      ><a name="11881"
-      > </a
-      ><a name="11882" href="Maps.html#2215" class="Datatype"
-      >Id</a
-      ><a name="11884"
-      > </a
-      ><a name="11885" class="Symbol"
-      >&#8594;</a
-      ><a name="11886"
-      > </a
-      ><a name="11887" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11888"
-      > </a
-      ><a name="11889" class="Symbol"
-      >&#8594;</a
-      ><a name="11890"
-      > </a
-      ><a name="11891" href="Maps.html#11102" class="Function"
-      >PartialMap</a
-      ><a name="11901"
-      > </a
-      ><a name="11902" href="Maps.html#11835" class="Bound"
-      >A</a
-      ><a name="11903"
-      >
-  </a
-      ><a name="11906" href="Maps.html#11906" class="Bound"
-      >&#961;</a
-      ><a name="11907"
-      > </a
-      ><a name="11908" href="Maps.html#11812" class="Function Operator"
-      >,</a
-      ><a name="11909"
-      > </a
-      ><a name="11910" href="Maps.html#11910" class="Bound"
-      >x&#8321;</a
-      ><a name="11912"
-      > </a
-      ><a name="11913" href="Maps.html#11812" class="Function Operator"
-      >&#8614;</a
-      ><a name="11914"
-      > </a
-      ><a name="11915" href="Maps.html#11915" class="Bound"
-      >v&#8321;</a
-      ><a name="11917"
-      > </a
-      ><a name="11918" href="Maps.html#11812" class="Function Operator"
-      >,</a
-      ><a name="11919"
-      > </a
-      ><a name="11920" href="Maps.html#11920" class="Bound"
-      >x&#8322;</a
-      ><a name="11922"
-      > </a
-      ><a name="11923" href="Maps.html#11812" class="Function Operator"
-      >&#8614;</a
-      ><a name="11924"
-      > </a
-      ><a name="11925" href="Maps.html#11925" class="Bound"
-      >v&#8322;</a
-      ><a name="11927"
-      > </a
-      ><a name="11928" href="Maps.html#11812" class="Function Operator"
-      >,</a
-      ><a name="11929"
-      > </a
-      ><a name="11930" href="Maps.html#11930" class="Bound"
-      >x&#8323;</a
-      ><a name="11932"
-      > </a
-      ><a name="11933" href="Maps.html#11812" class="Function Operator"
-      >&#8614;</a
-      ><a name="11934"
-      > </a
-      ><a name="11935" href="Maps.html#11935" class="Bound"
-      >v&#8323;</a
-      ><a name="11937"
-      > </a
-      ><a name="11938" href="Maps.html#11812" class="Function Operator"
-      >,</a
-      ><a name="11939"
-      > </a
-      ><a name="11940" href="Maps.html#11940" class="Bound"
-      >x&#8324;</a
-      ><a name="11942"
-      > </a
-      ><a name="11943" href="Maps.html#11812" class="Function Operator"
-      >&#8614;</a
-      ><a name="11944"
-      > </a
-      ><a name="11945" href="Maps.html#11945" class="Bound"
-      >v&#8324;</a
-      ><a name="11947"
-      > </a
-      ><a name="11948" class="Symbol"
-      >=</a
-      ><a name="11949"
-      >  </a
-      ><a name="11951" class="Symbol"
-      >(((</a
-      ><a name="11954" href="Maps.html#11906" class="Bound"
-      >&#961;</a
-      ><a name="11955"
-      > </a
-      ><a name="11956" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11957"
-      > </a
-      ><a name="11958" href="Maps.html#11910" class="Bound"
-      >x&#8321;</a
-      ><a name="11960"
-      > </a
-      ><a name="11961" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11962"
-      > </a
-      ><a name="11963" href="Maps.html#11915" class="Bound"
-      >v&#8321;</a
-      ><a name="11965" class="Symbol"
-      >)</a
-      ><a name="11966" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11967"
-      > </a
-      ><a name="11968" href="Maps.html#11920" class="Bound"
-      >x&#8322;</a
-      ><a name="11970"
-      > </a
-      ><a name="11971" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11972"
-      > </a
-      ><a name="11973" href="Maps.html#11925" class="Bound"
-      >v&#8322;</a
-      ><a name="11975" class="Symbol"
-      >)</a
-      ><a name="11976" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11977"
-      > </a
-      ><a name="11978" href="Maps.html#11930" class="Bound"
-      >x&#8323;</a
-      ><a name="11980"
-      > </a
-      ><a name="11981" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11982"
-      > </a
-      ><a name="11983" href="Maps.html#11935" class="Bound"
-      >v&#8323;</a
-      ><a name="11985" class="Symbol"
-      >)</a
-      ><a name="11986" href="Maps.html#11317" class="Function Operator"
-      >,</a
-      ><a name="11987"
-      > </a
-      ><a name="11988" href="Maps.html#11940" class="Bound"
-      >x&#8324;</a
-      ><a name="11990"
-      > </a
-      ><a name="11991" href="Maps.html#11317" class="Function Operator"
-      >&#8614;</a
-      ><a name="11992"
-      > </a
-      ><a name="11993" href="Maps.html#11945" class="Bound"
-      >v&#8324;</a
       >
 
 </pre>
@@ -6204,100 +4987,100 @@ We now lift all of the basic lemmas about total maps to partial maps.
 
 <pre class="Agda">
 
-  <a name="12094" href="Maps.html#12094" class="Function"
+  <a name="10669" href="Maps.html#10669" class="Function"
       >apply-&#8709;</a
-      ><a name="12101"
+      ><a name="10676"
       > </a
-      ><a name="12102" class="Symbol"
+      ><a name="10677" class="Symbol"
       >:</a
-      ><a name="12103"
+      ><a name="10678"
       > </a
-      ><a name="12104" class="Symbol"
+      ><a name="10679" class="Symbol"
       >&#8704;</a
-      ><a name="12105"
+      ><a name="10680"
       > </a
-      ><a name="12106" class="Symbol"
+      ><a name="10681" class="Symbol"
       >{</a
-      ><a name="12107" href="Maps.html#12107" class="Bound"
+      ><a name="10682" href="Maps.html#10682" class="Bound"
       >A</a
-      ><a name="12108" class="Symbol"
+      ><a name="10683" class="Symbol"
       >}</a
-      ><a name="12109"
+      ><a name="10684"
       > </a
-      ><a name="12110" class="Symbol"
+      ><a name="10685" class="Symbol"
       >&#8594;</a
-      ><a name="12111"
+      ><a name="10686"
       > </a
-      ><a name="12112" class="Symbol"
+      ><a name="10687" class="Symbol"
       >(</a
-      ><a name="12113" href="Maps.html#12113" class="Bound"
+      ><a name="10688" href="Maps.html#10688" class="Bound"
       >x</a
-      ><a name="12114"
+      ><a name="10689"
       > </a
-      ><a name="12115" class="Symbol"
+      ><a name="10690" class="Symbol"
       >:</a
-      ><a name="12116"
+      ><a name="10691"
       > </a
-      ><a name="12117" href="Maps.html#2215" class="Datatype"
+      ><a name="10692" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="12119" class="Symbol"
+      ><a name="10694" class="Symbol"
       >)</a
-      ><a name="12120"
+      ><a name="10695"
       > </a
-      ><a name="12121" class="Symbol"
+      ><a name="10696" class="Symbol"
       >&#8594;</a
-      ><a name="12122"
+      ><a name="10697"
       > </a
-      ><a name="12123" class="Symbol"
+      ><a name="10698" class="Symbol"
       >(</a
-      ><a name="12124" href="Maps.html#11235" class="Function"
+      ><a name="10699" href="Maps.html#10360" class="Function"
       >&#8709;</a
-      ><a name="12125"
+      ><a name="10700"
       > </a
-      ><a name="12126" class="Symbol"
+      ><a name="10701" class="Symbol"
       >{</a
-      ><a name="12127" href="Maps.html#12107" class="Bound"
+      ><a name="10702" href="Maps.html#10682" class="Bound"
       >A</a
-      ><a name="12128" class="Symbol"
+      ><a name="10703" class="Symbol"
       >}</a
-      ><a name="12129"
+      ><a name="10704"
       > </a
-      ><a name="12130" href="Maps.html#12113" class="Bound"
+      ><a name="10705" href="Maps.html#10688" class="Bound"
       >x</a
-      ><a name="12131" class="Symbol"
+      ><a name="10706" class="Symbol"
       >)</a
-      ><a name="12132"
+      ><a name="10707"
       > </a
-      ><a name="12133" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10708" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="12134"
+      ><a name="10709"
       > </a
-      ><a name="12135" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
+      ><a name="10710" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
       >nothing</a
-      ><a name="12142"
+      ><a name="10717"
       >
   </a
-      ><a name="12145" href="Maps.html#12094" class="Function"
+      ><a name="10720" href="Maps.html#10669" class="Function"
       >apply-&#8709;</a
-      ><a name="12152"
+      ><a name="10727"
       > </a
-      ><a name="12153" href="Maps.html#12153" class="Bound"
+      ><a name="10728" href="Maps.html#10728" class="Bound"
       >x</a
-      ><a name="12154"
+      ><a name="10729"
       >  </a
-      ><a name="12156" class="Symbol"
+      ><a name="10731" class="Symbol"
       >=</a
-      ><a name="12157"
+      ><a name="10732"
       > </a
-      ><a name="12158" href="Maps.html#6355" class="Postulate"
+      ><a name="10733" href="Maps.html#5520" class="Postulate"
       >TotalMap.apply-always</a
-      ><a name="12179"
+      ><a name="10754"
       > </a
-      ><a name="12180" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
+      ><a name="10755" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
       >nothing</a
-      ><a name="12187"
+      ><a name="10762"
       > </a
-      ><a name="12188" href="Maps.html#12153" class="Bound"
+      ><a name="10763" href="Maps.html#10728" class="Bound"
       >x</a
       >
 
@@ -6305,165 +5088,165 @@ We now lift all of the basic lemmas about total maps to partial maps.
 
 <pre class="Agda">
 
-  <a name="12217" href="Maps.html#12217" class="Function"
+  <a name="10792" href="Maps.html#10792" class="Function"
       >update-eq</a
-      ><a name="12226"
+      ><a name="10801"
       > </a
-      ><a name="12227" class="Symbol"
+      ><a name="10802" class="Symbol"
       >:</a
-      ><a name="12228"
+      ><a name="10803"
       > </a
-      ><a name="12229" class="Symbol"
+      ><a name="10804" class="Symbol"
       >&#8704;</a
-      ><a name="12230"
+      ><a name="10805"
       > </a
-      ><a name="12231" class="Symbol"
+      ><a name="10806" class="Symbol"
       >{</a
-      ><a name="12232" href="Maps.html#12232" class="Bound"
+      ><a name="10807" href="Maps.html#10807" class="Bound"
       >A</a
-      ><a name="12233" class="Symbol"
+      ><a name="10808" class="Symbol"
       >}</a
-      ><a name="12234"
+      ><a name="10809"
       > </a
-      ><a name="12235" class="Symbol"
+      ><a name="10810" class="Symbol"
       >(</a
-      ><a name="12236" href="Maps.html#12236" class="Bound"
+      ><a name="10811" href="Maps.html#10811" class="Bound"
       >&#961;</a
-      ><a name="12237"
+      ><a name="10812"
       > </a
-      ><a name="12238" class="Symbol"
+      ><a name="10813" class="Symbol"
       >:</a
-      ><a name="12239"
+      ><a name="10814"
       > </a
-      ><a name="12240" href="Maps.html#11102" class="Function"
+      ><a name="10815" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="12250"
+      ><a name="10825"
       > </a
-      ><a name="12251" href="Maps.html#12232" class="Bound"
+      ><a name="10826" href="Maps.html#10807" class="Bound"
       >A</a
-      ><a name="12252" class="Symbol"
+      ><a name="10827" class="Symbol"
       >)</a
-      ><a name="12253"
+      ><a name="10828"
       > </a
-      ><a name="12254" class="Symbol"
+      ><a name="10829" class="Symbol"
       >(</a
-      ><a name="12255" href="Maps.html#12255" class="Bound"
+      ><a name="10830" href="Maps.html#10830" class="Bound"
       >x</a
-      ><a name="12256"
+      ><a name="10831"
       > </a
-      ><a name="12257" class="Symbol"
+      ><a name="10832" class="Symbol"
       >:</a
-      ><a name="12258"
+      ><a name="10833"
       > </a
-      ><a name="12259" href="Maps.html#2215" class="Datatype"
+      ><a name="10834" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="12261" class="Symbol"
+      ><a name="10836" class="Symbol"
       >)</a
-      ><a name="12262"
+      ><a name="10837"
       > </a
-      ><a name="12263" class="Symbol"
+      ><a name="10838" class="Symbol"
       >(</a
-      ><a name="12264" href="Maps.html#12264" class="Bound"
+      ><a name="10839" href="Maps.html#10839" class="Bound"
       >v</a
-      ><a name="12265"
+      ><a name="10840"
       > </a
-      ><a name="12266" class="Symbol"
+      ><a name="10841" class="Symbol"
       >:</a
-      ><a name="12267"
+      ><a name="10842"
       > </a
-      ><a name="12268" href="Maps.html#12232" class="Bound"
+      ><a name="10843" href="Maps.html#10807" class="Bound"
       >A</a
-      ><a name="12269" class="Symbol"
+      ><a name="10844" class="Symbol"
       >)</a
-      ><a name="12270"
+      ><a name="10845"
       >
             </a
-      ><a name="12283" class="Symbol"
+      ><a name="10858" class="Symbol"
       >&#8594;</a
-      ><a name="12284"
+      ><a name="10859"
       > </a
-      ><a name="12285" class="Symbol"
+      ><a name="10860" class="Symbol"
       >(</a
-      ><a name="12286" href="Maps.html#12236" class="Bound"
+      ><a name="10861" href="Maps.html#10811" class="Bound"
       >&#961;</a
-      ><a name="12287"
+      ><a name="10862"
       > </a
-      ><a name="12288" href="Maps.html#11317" class="Function Operator"
+      ><a name="10863" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="12289"
+      ><a name="10864"
       > </a
-      ><a name="12290" href="Maps.html#12255" class="Bound"
+      ><a name="10865" href="Maps.html#10830" class="Bound"
       >x</a
-      ><a name="12291"
+      ><a name="10866"
       > </a
-      ><a name="12292" href="Maps.html#11317" class="Function Operator"
+      ><a name="10867" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="12293"
+      ><a name="10868"
       > </a
-      ><a name="12294" href="Maps.html#12264" class="Bound"
+      ><a name="10869" href="Maps.html#10839" class="Bound"
       >v</a
-      ><a name="12295" class="Symbol"
+      ><a name="10870" class="Symbol"
       >)</a
-      ><a name="12296"
+      ><a name="10871"
       > </a
-      ><a name="12297" href="Maps.html#12255" class="Bound"
+      ><a name="10872" href="Maps.html#10830" class="Bound"
       >x</a
-      ><a name="12298"
+      ><a name="10873"
       > </a
-      ><a name="12299" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="10874" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="12300"
+      ><a name="10875"
       > </a
-      ><a name="12301" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="10876" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="12305"
+      ><a name="10880"
       > </a
-      ><a name="12306" href="Maps.html#12264" class="Bound"
+      ><a name="10881" href="Maps.html#10839" class="Bound"
       >v</a
-      ><a name="12307"
+      ><a name="10882"
       >
   </a
-      ><a name="12310" href="Maps.html#12217" class="Function"
+      ><a name="10885" href="Maps.html#10792" class="Function"
       >update-eq</a
-      ><a name="12319"
+      ><a name="10894"
       > </a
-      ><a name="12320" href="Maps.html#12320" class="Bound"
+      ><a name="10895" href="Maps.html#10895" class="Bound"
       >&#961;</a
-      ><a name="12321"
+      ><a name="10896"
       > </a
-      ><a name="12322" href="Maps.html#12322" class="Bound"
+      ><a name="10897" href="Maps.html#10897" class="Bound"
       >x</a
-      ><a name="12323"
+      ><a name="10898"
       > </a
-      ><a name="12324" href="Maps.html#12324" class="Bound"
+      ><a name="10899" href="Maps.html#10899" class="Bound"
       >v</a
-      ><a name="12325"
+      ><a name="10900"
       > </a
-      ><a name="12326" class="Symbol"
+      ><a name="10901" class="Symbol"
       >=</a
-      ><a name="12327"
+      ><a name="10902"
       > </a
-      ><a name="12328" href="Maps.html#6784" class="Postulate"
+      ><a name="10903" href="Maps.html#5939" class="Postulate"
       >TotalMap.update-eq</a
-      ><a name="12346"
+      ><a name="10921"
       > </a
-      ><a name="12347" href="Maps.html#12320" class="Bound"
+      ><a name="10922" href="Maps.html#10895" class="Bound"
       >&#961;</a
-      ><a name="12348"
+      ><a name="10923"
       > </a
-      ><a name="12349" href="Maps.html#12322" class="Bound"
+      ><a name="10924" href="Maps.html#10897" class="Bound"
       >x</a
-      ><a name="12350"
+      ><a name="10925"
       > </a
-      ><a name="12351" class="Symbol"
+      ><a name="10926" class="Symbol"
       >(</a
-      ><a name="12352" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="10927" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="12356"
+      ><a name="10931"
       > </a
-      ><a name="12357" href="Maps.html#12324" class="Bound"
+      ><a name="10932" href="Maps.html#10899" class="Bound"
       >v</a
-      ><a name="12358" class="Symbol"
+      ><a name="10933" class="Symbol"
       >)</a
       >
 
@@ -6471,213 +5254,213 @@ We now lift all of the basic lemmas about total maps to partial maps.
 
 <pre class="Agda">
 
-  <a name="12387" href="Maps.html#12387" class="Function"
+  <a name="10962" href="Maps.html#10962" class="Function"
       >update-neq</a
-      ><a name="12397"
+      ><a name="10972"
       > </a
-      ><a name="12398" class="Symbol"
+      ><a name="10973" class="Symbol"
       >:</a
-      ><a name="12399"
+      ><a name="10974"
       > </a
-      ><a name="12400" class="Symbol"
+      ><a name="10975" class="Symbol"
       >&#8704;</a
-      ><a name="12401"
+      ><a name="10976"
       > </a
-      ><a name="12402" class="Symbol"
+      ><a name="10977" class="Symbol"
       >{</a
-      ><a name="12403" href="Maps.html#12403" class="Bound"
+      ><a name="10978" href="Maps.html#10978" class="Bound"
       >A</a
-      ><a name="12404" class="Symbol"
+      ><a name="10979" class="Symbol"
       >}</a
-      ><a name="12405"
+      ><a name="10980"
       > </a
-      ><a name="12406" class="Symbol"
+      ><a name="10981" class="Symbol"
       >(</a
-      ><a name="12407" href="Maps.html#12407" class="Bound"
+      ><a name="10982" href="Maps.html#10982" class="Bound"
       >&#961;</a
-      ><a name="12408"
+      ><a name="10983"
       > </a
-      ><a name="12409" class="Symbol"
+      ><a name="10984" class="Symbol"
       >:</a
-      ><a name="12410"
+      ><a name="10985"
       > </a
-      ><a name="12411" href="Maps.html#11102" class="Function"
+      ><a name="10986" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="12421"
+      ><a name="10996"
       > </a
-      ><a name="12422" href="Maps.html#12403" class="Bound"
+      ><a name="10997" href="Maps.html#10978" class="Bound"
       >A</a
-      ><a name="12423" class="Symbol"
+      ><a name="10998" class="Symbol"
       >)</a
-      ><a name="12424"
+      ><a name="10999"
       > </a
-      ><a name="12425" class="Symbol"
+      ><a name="11000" class="Symbol"
       >(</a
-      ><a name="12426" href="Maps.html#12426" class="Bound"
+      ><a name="11001" href="Maps.html#11001" class="Bound"
       >x</a
-      ><a name="12427"
+      ><a name="11002"
       > </a
-      ><a name="12428" class="Symbol"
+      ><a name="11003" class="Symbol"
       >:</a
-      ><a name="12429"
+      ><a name="11004"
       > </a
-      ><a name="12430" href="Maps.html#2215" class="Datatype"
+      ><a name="11005" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="12432" class="Symbol"
+      ><a name="11007" class="Symbol"
       >)</a
-      ><a name="12433"
+      ><a name="11008"
       > </a
-      ><a name="12434" class="Symbol"
+      ><a name="11009" class="Symbol"
       >(</a
-      ><a name="12435" href="Maps.html#12435" class="Bound"
+      ><a name="11010" href="Maps.html#11010" class="Bound"
       >v</a
-      ><a name="12436"
+      ><a name="11011"
       > </a
-      ><a name="12437" class="Symbol"
+      ><a name="11012" class="Symbol"
       >:</a
-      ><a name="12438"
+      ><a name="11013"
       > </a
-      ><a name="12439" href="Maps.html#12403" class="Bound"
+      ><a name="11014" href="Maps.html#10978" class="Bound"
       >A</a
-      ><a name="12440" class="Symbol"
+      ><a name="11015" class="Symbol"
       >)</a
-      ><a name="12441"
+      ><a name="11016"
       > </a
-      ><a name="12442" class="Symbol"
+      ><a name="11017" class="Symbol"
       >(</a
-      ><a name="12443" href="Maps.html#12443" class="Bound"
+      ><a name="11018" href="Maps.html#11018" class="Bound"
       >y</a
-      ><a name="12444"
+      ><a name="11019"
       > </a
-      ><a name="12445" class="Symbol"
+      ><a name="11020" class="Symbol"
       >:</a
-      ><a name="12446"
+      ><a name="11021"
       > </a
-      ><a name="12447" href="Maps.html#2215" class="Datatype"
+      ><a name="11022" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="12449" class="Symbol"
+      ><a name="11024" class="Symbol"
       >)</a
-      ><a name="12450"
+      ><a name="11025"
       >
              </a
-      ><a name="12464" class="Symbol"
+      ><a name="11039" class="Symbol"
       >&#8594;</a
-      ><a name="12465"
+      ><a name="11040"
       > </a
-      ><a name="12466" href="Maps.html#12426" class="Bound"
+      ><a name="11041" href="Maps.html#11001" class="Bound"
       >x</a
-      ><a name="12467"
+      ><a name="11042"
       > </a
-      ><a name="12468" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
+      ><a name="11043" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
       >&#8802;</a
-      ><a name="12469"
+      ><a name="11044"
       > </a
-      ><a name="12470" href="Maps.html#12443" class="Bound"
+      ><a name="11045" href="Maps.html#11018" class="Bound"
       >y</a
-      ><a name="12471"
+      ><a name="11046"
       > </a
-      ><a name="12472" class="Symbol"
+      ><a name="11047" class="Symbol"
       >&#8594;</a
-      ><a name="12473"
+      ><a name="11048"
       > </a
-      ><a name="12474" class="Symbol"
+      ><a name="11049" class="Symbol"
       >(</a
-      ><a name="12475" href="Maps.html#12407" class="Bound"
+      ><a name="11050" href="Maps.html#10982" class="Bound"
       >&#961;</a
-      ><a name="12476"
+      ><a name="11051"
       > </a
-      ><a name="12477" href="Maps.html#11317" class="Function Operator"
+      ><a name="11052" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="12478"
+      ><a name="11053"
       > </a
-      ><a name="12479" href="Maps.html#12426" class="Bound"
+      ><a name="11054" href="Maps.html#11001" class="Bound"
       >x</a
-      ><a name="12480"
+      ><a name="11055"
       > </a
-      ><a name="12481" href="Maps.html#11317" class="Function Operator"
+      ><a name="11056" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="12482"
+      ><a name="11057"
       > </a
-      ><a name="12483" href="Maps.html#12435" class="Bound"
+      ><a name="11058" href="Maps.html#11010" class="Bound"
       >v</a
-      ><a name="12484" class="Symbol"
+      ><a name="11059" class="Symbol"
       >)</a
-      ><a name="12485"
+      ><a name="11060"
       > </a
-      ><a name="12486" href="Maps.html#12443" class="Bound"
+      ><a name="11061" href="Maps.html#11018" class="Bound"
       >y</a
-      ><a name="12487"
+      ><a name="11062"
       > </a
-      ><a name="12488" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="11063" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="12489"
+      ><a name="11064"
       > </a
-      ><a name="12490" href="Maps.html#12407" class="Bound"
+      ><a name="11065" href="Maps.html#10982" class="Bound"
       >&#961;</a
-      ><a name="12491"
+      ><a name="11066"
       > </a
-      ><a name="12492" href="Maps.html#12443" class="Bound"
+      ><a name="11067" href="Maps.html#11018" class="Bound"
       >y</a
-      ><a name="12493"
+      ><a name="11068"
       >
   </a
-      ><a name="12496" href="Maps.html#12387" class="Function"
+      ><a name="11071" href="Maps.html#10962" class="Function"
       >update-neq</a
-      ><a name="12506"
+      ><a name="11081"
       > </a
-      ><a name="12507" href="Maps.html#12507" class="Bound"
+      ><a name="11082" href="Maps.html#11082" class="Bound"
       >&#961;</a
-      ><a name="12508"
+      ><a name="11083"
       > </a
-      ><a name="12509" href="Maps.html#12509" class="Bound"
+      ><a name="11084" href="Maps.html#11084" class="Bound"
       >x</a
-      ><a name="12510"
+      ><a name="11085"
       > </a
-      ><a name="12511" href="Maps.html#12511" class="Bound"
+      ><a name="11086" href="Maps.html#11086" class="Bound"
       >v</a
-      ><a name="12512"
+      ><a name="11087"
       > </a
-      ><a name="12513" href="Maps.html#12513" class="Bound"
+      ><a name="11088" href="Maps.html#11088" class="Bound"
       >y</a
-      ><a name="12514"
+      ><a name="11089"
       > </a
-      ><a name="12515" href="Maps.html#12515" class="Bound"
+      ><a name="11090" href="Maps.html#11090" class="Bound"
       >x&#8802;y</a
-      ><a name="12518"
+      ><a name="11093"
       > </a
-      ><a name="12519" class="Symbol"
+      ><a name="11094" class="Symbol"
       >=</a
-      ><a name="12520"
+      ><a name="11095"
       > </a
-      ><a name="12521" href="Maps.html#7348" class="Function"
+      ><a name="11096" href="Maps.html#6495" class="Function"
       >TotalMap.update-neq</a
-      ><a name="12540"
+      ><a name="11115"
       > </a
-      ><a name="12541" href="Maps.html#12507" class="Bound"
+      ><a name="11116" href="Maps.html#11082" class="Bound"
       >&#961;</a
-      ><a name="12542"
+      ><a name="11117"
       > </a
-      ><a name="12543" href="Maps.html#12509" class="Bound"
+      ><a name="11118" href="Maps.html#11084" class="Bound"
       >x</a
-      ><a name="12544"
+      ><a name="11119"
       > </a
-      ><a name="12545" class="Symbol"
+      ><a name="11120" class="Symbol"
       >(</a
-      ><a name="12546" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="11121" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="12550"
+      ><a name="11125"
       > </a
-      ><a name="12551" href="Maps.html#12511" class="Bound"
+      ><a name="11126" href="Maps.html#11086" class="Bound"
       >v</a
-      ><a name="12552" class="Symbol"
+      ><a name="11127" class="Symbol"
       >)</a
-      ><a name="12553"
+      ><a name="11128"
       > </a
-      ><a name="12554" href="Maps.html#12513" class="Bound"
+      ><a name="11129" href="Maps.html#11088" class="Bound"
       >y</a
-      ><a name="12555"
+      ><a name="11130"
       > </a
-      ><a name="12556" href="Maps.html#12515" class="Bound"
+      ><a name="11131" href="Maps.html#11090" class="Bound"
       >x&#8802;y</a
       >
 
@@ -6685,213 +5468,213 @@ We now lift all of the basic lemmas about total maps to partial maps.
 
 <pre class="Agda">
 
-  <a name="12587" href="Maps.html#12587" class="Function"
+  <a name="11162" href="Maps.html#11162" class="Function"
       >update-shadow</a
-      ><a name="12600"
+      ><a name="11175"
       > </a
-      ><a name="12601" class="Symbol"
+      ><a name="11176" class="Symbol"
       >:</a
-      ><a name="12602"
+      ><a name="11177"
       > </a
-      ><a name="12603" class="Symbol"
+      ><a name="11178" class="Symbol"
       >&#8704;</a
-      ><a name="12604"
+      ><a name="11179"
       > </a
-      ><a name="12605" class="Symbol"
+      ><a name="11180" class="Symbol"
       >{</a
-      ><a name="12606" href="Maps.html#12606" class="Bound"
+      ><a name="11181" href="Maps.html#11181" class="Bound"
       >A</a
-      ><a name="12607" class="Symbol"
+      ><a name="11182" class="Symbol"
       >}</a
-      ><a name="12608"
+      ><a name="11183"
       > </a
-      ><a name="12609" class="Symbol"
+      ><a name="11184" class="Symbol"
       >(</a
-      ><a name="12610" href="Maps.html#12610" class="Bound"
+      ><a name="11185" href="Maps.html#11185" class="Bound"
       >&#961;</a
-      ><a name="12611"
+      ><a name="11186"
       > </a
-      ><a name="12612" class="Symbol"
+      ><a name="11187" class="Symbol"
       >:</a
-      ><a name="12613"
+      ><a name="11188"
       > </a
-      ><a name="12614" href="Maps.html#11102" class="Function"
+      ><a name="11189" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="12624"
+      ><a name="11199"
       > </a
-      ><a name="12625" href="Maps.html#12606" class="Bound"
+      ><a name="11200" href="Maps.html#11181" class="Bound"
       >A</a
-      ><a name="12626" class="Symbol"
+      ><a name="11201" class="Symbol"
       >)</a
-      ><a name="12627"
+      ><a name="11202"
       > </a
-      ><a name="12628" class="Symbol"
+      ><a name="11203" class="Symbol"
       >(</a
-      ><a name="12629" href="Maps.html#12629" class="Bound"
+      ><a name="11204" href="Maps.html#11204" class="Bound"
       >x</a
-      ><a name="12630"
+      ><a name="11205"
       > </a
-      ><a name="12631" class="Symbol"
+      ><a name="11206" class="Symbol"
       >:</a
-      ><a name="12632"
+      ><a name="11207"
       > </a
-      ><a name="12633" href="Maps.html#2215" class="Datatype"
+      ><a name="11208" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="12635" class="Symbol"
+      ><a name="11210" class="Symbol"
       >)</a
-      ><a name="12636"
+      ><a name="11211"
       > </a
-      ><a name="12637" class="Symbol"
+      ><a name="11212" class="Symbol"
       >(</a
-      ><a name="12638" href="Maps.html#12638" class="Bound"
+      ><a name="11213" href="Maps.html#11213" class="Bound"
       >v</a
-      ><a name="12639"
+      ><a name="11214"
       > </a
-      ><a name="12640" href="Maps.html#12640" class="Bound"
+      ><a name="11215" href="Maps.html#11215" class="Bound"
       >w</a
-      ><a name="12641"
+      ><a name="11216"
       > </a
-      ><a name="12642" class="Symbol"
+      ><a name="11217" class="Symbol"
       >:</a
-      ><a name="12643"
+      ><a name="11218"
       > </a
-      ><a name="12644" href="Maps.html#12606" class="Bound"
+      ><a name="11219" href="Maps.html#11181" class="Bound"
       >A</a
-      ><a name="12645" class="Symbol"
+      ><a name="11220" class="Symbol"
       >)</a
-      ><a name="12646"
+      ><a name="11221"
       > 
                 </a
-      ><a name="12664" class="Symbol"
+      ><a name="11239" class="Symbol"
       >&#8594;</a
-      ><a name="12665"
+      ><a name="11240"
       > </a
-      ><a name="12666" class="Symbol"
+      ><a name="11241" class="Symbol"
       >(</a
-      ><a name="12667" href="Maps.html#12610" class="Bound"
+      ><a name="11242" href="Maps.html#11185" class="Bound"
       >&#961;</a
-      ><a name="12668"
+      ><a name="11243"
       > </a
-      ><a name="12669" href="Maps.html#11538" class="Function Operator"
+      ><a name="11244" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="12670"
+      ><a name="11245"
       > </a
-      ><a name="12671" href="Maps.html#12629" class="Bound"
+      ><a name="11246" href="Maps.html#11204" class="Bound"
       >x</a
-      ><a name="12672"
+      ><a name="11247"
       > </a
-      ><a name="12673" href="Maps.html#11538" class="Function Operator"
+      ><a name="11248" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="12674"
+      ><a name="11249"
       > </a
-      ><a name="12675" href="Maps.html#12638" class="Bound"
+      ><a name="11250" href="Maps.html#11213" class="Bound"
       >v</a
-      ><a name="12676"
+      ><a name="11251"
       > </a
-      ><a name="12677" href="Maps.html#11538" class="Function Operator"
+      ><a name="11252" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="12678"
+      ><a name="11253"
       > </a
-      ><a name="12679" href="Maps.html#12629" class="Bound"
+      ><a name="11254" href="Maps.html#11204" class="Bound"
       >x</a
-      ><a name="12680"
+      ><a name="11255"
       > </a
-      ><a name="12681" href="Maps.html#11538" class="Function Operator"
+      ><a name="11256" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="12682"
+      ><a name="11257"
       > </a
-      ><a name="12683" href="Maps.html#12640" class="Bound"
+      ><a name="11258" href="Maps.html#11215" class="Bound"
       >w</a
-      ><a name="12684" class="Symbol"
+      ><a name="11259" class="Symbol"
       >)</a
-      ><a name="12685"
+      ><a name="11260"
       > </a
-      ><a name="12686" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="11261" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="12687"
+      ><a name="11262"
       > </a
-      ><a name="12688" class="Symbol"
+      ><a name="11263" class="Symbol"
       >(</a
-      ><a name="12689" href="Maps.html#12610" class="Bound"
+      ><a name="11264" href="Maps.html#11185" class="Bound"
       >&#961;</a
-      ><a name="12690"
+      ><a name="11265"
       > </a
-      ><a name="12691" href="Maps.html#11317" class="Function Operator"
+      ><a name="11266" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="12692"
+      ><a name="11267"
       > </a
-      ><a name="12693" href="Maps.html#12629" class="Bound"
+      ><a name="11268" href="Maps.html#11204" class="Bound"
       >x</a
-      ><a name="12694"
+      ><a name="11269"
       > </a
-      ><a name="12695" href="Maps.html#11317" class="Function Operator"
+      ><a name="11270" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="12696"
+      ><a name="11271"
       > </a
-      ><a name="12697" href="Maps.html#12640" class="Bound"
+      ><a name="11272" href="Maps.html#11215" class="Bound"
       >w</a
-      ><a name="12698" class="Symbol"
+      ><a name="11273" class="Symbol"
       >)</a
-      ><a name="12699"
+      ><a name="11274"
       >
   </a
-      ><a name="12702" href="Maps.html#12587" class="Function"
+      ><a name="11277" href="Maps.html#11162" class="Function"
       >update-shadow</a
-      ><a name="12715"
+      ><a name="11290"
       > </a
-      ><a name="12716" href="Maps.html#12716" class="Bound"
+      ><a name="11291" href="Maps.html#11291" class="Bound"
       >&#961;</a
-      ><a name="12717"
+      ><a name="11292"
       > </a
-      ><a name="12718" href="Maps.html#12718" class="Bound"
+      ><a name="11293" href="Maps.html#11293" class="Bound"
       >x</a
-      ><a name="12719"
+      ><a name="11294"
       > </a
-      ><a name="12720" href="Maps.html#12720" class="Bound"
+      ><a name="11295" href="Maps.html#11295" class="Bound"
       >v</a
-      ><a name="12721"
+      ><a name="11296"
       > </a
-      ><a name="12722" href="Maps.html#12722" class="Bound"
+      ><a name="11297" href="Maps.html#11297" class="Bound"
       >w</a
-      ><a name="12723"
+      ><a name="11298"
       > </a
-      ><a name="12724" class="Symbol"
+      ><a name="11299" class="Symbol"
       >=</a
-      ><a name="12725"
+      ><a name="11300"
       > </a
-      ><a name="12726" href="Maps.html#8179" class="Postulate"
+      ><a name="11301" href="Maps.html#7314" class="Postulate"
       >TotalMap.update-shadow</a
-      ><a name="12748"
+      ><a name="11323"
       > </a
-      ><a name="12749" href="Maps.html#12716" class="Bound"
+      ><a name="11324" href="Maps.html#11291" class="Bound"
       >&#961;</a
-      ><a name="12750"
+      ><a name="11325"
       > </a
-      ><a name="12751" href="Maps.html#12718" class="Bound"
+      ><a name="11326" href="Maps.html#11293" class="Bound"
       >x</a
-      ><a name="12752"
+      ><a name="11327"
       > </a
-      ><a name="12753" class="Symbol"
+      ><a name="11328" class="Symbol"
       >(</a
-      ><a name="12754" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="11329" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="12758"
+      ><a name="11333"
       > </a
-      ><a name="12759" href="Maps.html#12720" class="Bound"
+      ><a name="11334" href="Maps.html#11295" class="Bound"
       >v</a
-      ><a name="12760" class="Symbol"
+      ><a name="11335" class="Symbol"
       >)</a
-      ><a name="12761"
+      ><a name="11336"
       > </a
-      ><a name="12762" class="Symbol"
+      ><a name="11337" class="Symbol"
       >(</a
-      ><a name="12763" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="11338" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="12767"
+      ><a name="11342"
       > </a
-      ><a name="12768" href="Maps.html#12722" class="Bound"
+      ><a name="11343" href="Maps.html#11297" class="Bound"
       >w</a
-      ><a name="12769" class="Symbol"
+      ><a name="11344" class="Symbol"
       >)</a
       >
 
@@ -6899,186 +5682,186 @@ We now lift all of the basic lemmas about total maps to partial maps.
 
 <pre class="Agda">
 
-  <a name="12798" href="Maps.html#12798" class="Function"
+  <a name="11373" href="Maps.html#11373" class="Function"
       >update-same</a
-      ><a name="12809"
+      ><a name="11384"
       > </a
-      ><a name="12810" class="Symbol"
+      ><a name="11385" class="Symbol"
       >:</a
-      ><a name="12811"
+      ><a name="11386"
       > </a
-      ><a name="12812" class="Symbol"
+      ><a name="11387" class="Symbol"
       >&#8704;</a
-      ><a name="12813"
+      ><a name="11388"
       > </a
-      ><a name="12814" class="Symbol"
+      ><a name="11389" class="Symbol"
       >{</a
-      ><a name="12815" href="Maps.html#12815" class="Bound"
+      ><a name="11390" href="Maps.html#11390" class="Bound"
       >A</a
-      ><a name="12816" class="Symbol"
+      ><a name="11391" class="Symbol"
       >}</a
-      ><a name="12817"
+      ><a name="11392"
       > </a
-      ><a name="12818" class="Symbol"
+      ><a name="11393" class="Symbol"
       >(</a
-      ><a name="12819" href="Maps.html#12819" class="Bound"
+      ><a name="11394" href="Maps.html#11394" class="Bound"
       >&#961;</a
-      ><a name="12820"
+      ><a name="11395"
       > </a
-      ><a name="12821" class="Symbol"
+      ><a name="11396" class="Symbol"
       >:</a
-      ><a name="12822"
+      ><a name="11397"
       > </a
-      ><a name="12823" href="Maps.html#11102" class="Function"
+      ><a name="11398" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="12833"
+      ><a name="11408"
       > </a
-      ><a name="12834" href="Maps.html#12815" class="Bound"
+      ><a name="11409" href="Maps.html#11390" class="Bound"
       >A</a
-      ><a name="12835" class="Symbol"
+      ><a name="11410" class="Symbol"
       >)</a
-      ><a name="12836"
+      ><a name="11411"
       > </a
-      ><a name="12837" class="Symbol"
+      ><a name="11412" class="Symbol"
       >(</a
-      ><a name="12838" href="Maps.html#12838" class="Bound"
+      ><a name="11413" href="Maps.html#11413" class="Bound"
       >x</a
-      ><a name="12839"
+      ><a name="11414"
       > </a
-      ><a name="12840" class="Symbol"
+      ><a name="11415" class="Symbol"
       >:</a
-      ><a name="12841"
+      ><a name="11416"
       > </a
-      ><a name="12842" href="Maps.html#2215" class="Datatype"
+      ><a name="11417" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="12844" class="Symbol"
+      ><a name="11419" class="Symbol"
       >)</a
-      ><a name="12845"
+      ><a name="11420"
       > </a
-      ><a name="12846" class="Symbol"
+      ><a name="11421" class="Symbol"
       >(</a
-      ><a name="12847" href="Maps.html#12847" class="Bound"
+      ><a name="11422" href="Maps.html#11422" class="Bound"
       >v</a
-      ><a name="12848"
+      ><a name="11423"
       > </a
-      ><a name="12849" class="Symbol"
+      ><a name="11424" class="Symbol"
       >:</a
-      ><a name="12850"
+      ><a name="11425"
       > </a
-      ><a name="12851" href="Maps.html#12815" class="Bound"
+      ><a name="11426" href="Maps.html#11390" class="Bound"
       >A</a
-      ><a name="12852" class="Symbol"
+      ><a name="11427" class="Symbol"
       >)</a
-      ><a name="12853"
+      ><a name="11428"
       > 
               </a
-      ><a name="12869" class="Symbol"
+      ><a name="11444" class="Symbol"
       >&#8594;</a
-      ><a name="12870"
+      ><a name="11445"
       > </a
-      ><a name="12871" href="Maps.html#12819" class="Bound"
+      ><a name="11446" href="Maps.html#11394" class="Bound"
       >&#961;</a
-      ><a name="12872"
+      ><a name="11447"
       > </a
-      ><a name="12873" href="Maps.html#12838" class="Bound"
+      ><a name="11448" href="Maps.html#11413" class="Bound"
       >x</a
-      ><a name="12874"
+      ><a name="11449"
       > </a
-      ><a name="12875" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="11450" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="12876"
+      ><a name="11451"
       > </a
-      ><a name="12877" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="11452" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="12881"
+      ><a name="11456"
       > </a
-      ><a name="12882" href="Maps.html#12847" class="Bound"
+      ><a name="11457" href="Maps.html#11422" class="Bound"
       >v</a
-      ><a name="12883"
+      ><a name="11458"
       >
               </a
-      ><a name="12898" class="Symbol"
+      ><a name="11473" class="Symbol"
       >&#8594;</a
-      ><a name="12899"
+      ><a name="11474"
       > </a
-      ><a name="12900" class="Symbol"
+      ><a name="11475" class="Symbol"
       >(</a
-      ><a name="12901" href="Maps.html#12819" class="Bound"
+      ><a name="11476" href="Maps.html#11394" class="Bound"
       >&#961;</a
-      ><a name="12902"
+      ><a name="11477"
       > </a
-      ><a name="12903" href="Maps.html#11317" class="Function Operator"
+      ><a name="11478" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="12904"
+      ><a name="11479"
       > </a
-      ><a name="12905" href="Maps.html#12838" class="Bound"
+      ><a name="11480" href="Maps.html#11413" class="Bound"
       >x</a
-      ><a name="12906"
+      ><a name="11481"
       > </a
-      ><a name="12907" href="Maps.html#11317" class="Function Operator"
+      ><a name="11482" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="12908"
+      ><a name="11483"
       > </a
-      ><a name="12909" href="Maps.html#12847" class="Bound"
+      ><a name="11484" href="Maps.html#11422" class="Bound"
       >v</a
-      ><a name="12910" class="Symbol"
+      ><a name="11485" class="Symbol"
       >)</a
-      ><a name="12911"
+      ><a name="11486"
       > </a
-      ><a name="12912" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="11487" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="12913"
+      ><a name="11488"
       > </a
-      ><a name="12914" href="Maps.html#12819" class="Bound"
+      ><a name="11489" href="Maps.html#11394" class="Bound"
       >&#961;</a
-      ><a name="12915"
+      ><a name="11490"
       >
   </a
-      ><a name="12918" href="Maps.html#12798" class="Function"
+      ><a name="11493" href="Maps.html#11373" class="Function"
       >update-same</a
-      ><a name="12929"
+      ><a name="11504"
       > </a
-      ><a name="12930" href="Maps.html#12930" class="Bound"
+      ><a name="11505" href="Maps.html#11505" class="Bound"
       >&#961;</a
-      ><a name="12931"
+      ><a name="11506"
       > </a
-      ><a name="12932" href="Maps.html#12932" class="Bound"
+      ><a name="11507" href="Maps.html#11507" class="Bound"
       >x</a
-      ><a name="12933"
+      ><a name="11508"
       > </a
-      ><a name="12934" href="Maps.html#12934" class="Bound"
+      ><a name="11509" href="Maps.html#11509" class="Bound"
       >v</a
-      ><a name="12935"
+      ><a name="11510"
       > </a
-      ><a name="12936" href="Maps.html#12936" class="Bound"
+      ><a name="11511" href="Maps.html#11511" class="Bound"
       >&#961;x&#8801;v</a
-      ><a name="12940"
+      ><a name="11515"
       > </a
-      ><a name="12941" class="Keyword"
+      ><a name="11516" class="Keyword"
       >rewrite</a
-      ><a name="12948"
+      ><a name="11523"
       > </a
-      ><a name="12949" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
+      ><a name="11524" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#565" class="Function"
       >sym</a
-      ><a name="12952"
+      ><a name="11527"
       > </a
-      ><a name="12953" href="Maps.html#12936" class="Bound"
+      ><a name="11528" href="Maps.html#11511" class="Bound"
       >&#961;x&#8801;v</a
-      ><a name="12957"
+      ><a name="11532"
       > </a
-      ><a name="12958" class="Symbol"
+      ><a name="11533" class="Symbol"
       >=</a
-      ><a name="12959"
+      ><a name="11534"
       > </a
-      ><a name="12960" href="Maps.html#8922" class="Postulate"
+      ><a name="11535" href="Maps.html#8049" class="Postulate"
       >TotalMap.update-same</a
-      ><a name="12980"
+      ><a name="11555"
       > </a
-      ><a name="12981" href="Maps.html#12930" class="Bound"
+      ><a name="11556" href="Maps.html#11505" class="Bound"
       >&#961;</a
-      ><a name="12982"
+      ><a name="11557"
       > </a
-      ><a name="12983" href="Maps.html#12932" class="Bound"
+      ><a name="11558" href="Maps.html#11507" class="Bound"
       >x</a
       >
 
@@ -7086,289 +5869,289 @@ We now lift all of the basic lemmas about total maps to partial maps.
 
 <pre class="Agda">
 
-  <a name="13012" href="Maps.html#13012" class="Function"
+  <a name="11587" href="Maps.html#11587" class="Function"
       >update-permute</a
-      ><a name="13026"
+      ><a name="11601"
       > </a
-      ><a name="13027" class="Symbol"
+      ><a name="11602" class="Symbol"
       >:</a
-      ><a name="13028"
+      ><a name="11603"
       > </a
-      ><a name="13029" class="Symbol"
+      ><a name="11604" class="Symbol"
       >&#8704;</a
-      ><a name="13030"
+      ><a name="11605"
       > </a
-      ><a name="13031" class="Symbol"
+      ><a name="11606" class="Symbol"
       >{</a
-      ><a name="13032" href="Maps.html#13032" class="Bound"
+      ><a name="11607" href="Maps.html#11607" class="Bound"
       >A</a
-      ><a name="13033" class="Symbol"
+      ><a name="11608" class="Symbol"
       >}</a
-      ><a name="13034"
+      ><a name="11609"
       > </a
-      ><a name="13035" class="Symbol"
+      ><a name="11610" class="Symbol"
       >(</a
-      ><a name="13036" href="Maps.html#13036" class="Bound"
+      ><a name="11611" href="Maps.html#11611" class="Bound"
       >&#961;</a
-      ><a name="13037"
+      ><a name="11612"
       > </a
-      ><a name="13038" class="Symbol"
+      ><a name="11613" class="Symbol"
       >:</a
-      ><a name="13039"
+      ><a name="11614"
       > </a
-      ><a name="13040" href="Maps.html#11102" class="Function"
+      ><a name="11615" href="Maps.html#10227" class="Function"
       >PartialMap</a
-      ><a name="13050"
+      ><a name="11625"
       > </a
-      ><a name="13051" href="Maps.html#13032" class="Bound"
+      ><a name="11626" href="Maps.html#11607" class="Bound"
       >A</a
-      ><a name="13052" class="Symbol"
+      ><a name="11627" class="Symbol"
       >)</a
-      ><a name="13053"
+      ><a name="11628"
       > </a
-      ><a name="13054" class="Symbol"
+      ><a name="11629" class="Symbol"
       >(</a
-      ><a name="13055" href="Maps.html#13055" class="Bound"
+      ><a name="11630" href="Maps.html#11630" class="Bound"
       >x</a
-      ><a name="13056"
+      ><a name="11631"
       > </a
-      ><a name="13057" class="Symbol"
+      ><a name="11632" class="Symbol"
       >:</a
-      ><a name="13058"
+      ><a name="11633"
       > </a
-      ><a name="13059" href="Maps.html#2215" class="Datatype"
+      ><a name="11634" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="13061" class="Symbol"
+      ><a name="11636" class="Symbol"
       >)</a
-      ><a name="13062"
+      ><a name="11637"
       > </a
-      ><a name="13063" class="Symbol"
+      ><a name="11638" class="Symbol"
       >(</a
-      ><a name="13064" href="Maps.html#13064" class="Bound"
+      ><a name="11639" href="Maps.html#11639" class="Bound"
       >v</a
-      ><a name="13065"
+      ><a name="11640"
       > </a
-      ><a name="13066" class="Symbol"
+      ><a name="11641" class="Symbol"
       >:</a
-      ><a name="13067"
+      ><a name="11642"
       > </a
-      ><a name="13068" href="Maps.html#13032" class="Bound"
+      ><a name="11643" href="Maps.html#11607" class="Bound"
       >A</a
-      ><a name="13069" class="Symbol"
+      ><a name="11644" class="Symbol"
       >)</a
-      ><a name="13070"
+      ><a name="11645"
       > </a
-      ><a name="13071" class="Symbol"
+      ><a name="11646" class="Symbol"
       >(</a
-      ><a name="13072" href="Maps.html#13072" class="Bound"
+      ><a name="11647" href="Maps.html#11647" class="Bound"
       >y</a
-      ><a name="13073"
+      ><a name="11648"
       > </a
-      ><a name="13074" class="Symbol"
+      ><a name="11649" class="Symbol"
       >:</a
-      ><a name="13075"
+      ><a name="11650"
       > </a
-      ><a name="13076" href="Maps.html#2215" class="Datatype"
+      ><a name="11651" href="Maps.html#2215" class="Datatype"
       >Id</a
-      ><a name="13078" class="Symbol"
+      ><a name="11653" class="Symbol"
       >)</a
-      ><a name="13079"
+      ><a name="11654"
       > </a
-      ><a name="13080" class="Symbol"
+      ><a name="11655" class="Symbol"
       >(</a
-      ><a name="13081" href="Maps.html#13081" class="Bound"
+      ><a name="11656" href="Maps.html#11656" class="Bound"
       >w</a
-      ><a name="13082"
+      ><a name="11657"
       > </a
-      ><a name="13083" class="Symbol"
+      ><a name="11658" class="Symbol"
       >:</a
-      ><a name="13084"
+      ><a name="11659"
       > </a
-      ><a name="13085" href="Maps.html#13032" class="Bound"
+      ><a name="11660" href="Maps.html#11607" class="Bound"
       >A</a
-      ><a name="13086" class="Symbol"
+      ><a name="11661" class="Symbol"
       >)</a
-      ><a name="13087"
+      ><a name="11662"
       > 
                  </a
-      ><a name="13106" class="Symbol"
+      ><a name="11681" class="Symbol"
       >&#8594;</a
-      ><a name="13107"
+      ><a name="11682"
       > </a
-      ><a name="13108" href="Maps.html#13055" class="Bound"
+      ><a name="11683" href="Maps.html#11630" class="Bound"
       >x</a
-      ><a name="13109"
+      ><a name="11684"
       > </a
-      ><a name="13110" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
+      ><a name="11685" href="https://agda.github.io/agda-stdlib/Relation.Binary.Core.html#4493" class="Function Operator"
       >&#8802;</a
-      ><a name="13111"
+      ><a name="11686"
       > </a
-      ><a name="13112" href="Maps.html#13072" class="Bound"
+      ><a name="11687" href="Maps.html#11647" class="Bound"
       >y</a
-      ><a name="13113"
+      ><a name="11688"
       > </a
-      ><a name="13114" class="Symbol"
+      ><a name="11689" class="Symbol"
       >&#8594;</a
-      ><a name="13115"
+      ><a name="11690"
       > </a
-      ><a name="13116" class="Symbol"
+      ><a name="11691" class="Symbol"
       >(</a
-      ><a name="13117" href="Maps.html#13036" class="Bound"
+      ><a name="11692" href="Maps.html#11611" class="Bound"
       >&#961;</a
-      ><a name="13118"
+      ><a name="11693"
       > </a
-      ><a name="13119" href="Maps.html#11538" class="Function Operator"
+      ><a name="11694" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="13120"
+      ><a name="11695"
       > </a
-      ><a name="13121" href="Maps.html#13055" class="Bound"
+      ><a name="11696" href="Maps.html#11630" class="Bound"
       >x</a
-      ><a name="13122"
+      ><a name="11697"
       > </a
-      ><a name="13123" href="Maps.html#11538" class="Function Operator"
+      ><a name="11698" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="13124"
+      ><a name="11699"
       > </a
-      ><a name="13125" href="Maps.html#13064" class="Bound"
+      ><a name="11700" href="Maps.html#11639" class="Bound"
       >v</a
-      ><a name="13126"
+      ><a name="11701"
       > </a
-      ><a name="13127" href="Maps.html#11538" class="Function Operator"
+      ><a name="11702" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="13128"
+      ><a name="11703"
       > </a
-      ><a name="13129" href="Maps.html#13072" class="Bound"
+      ><a name="11704" href="Maps.html#11647" class="Bound"
       >y</a
-      ><a name="13130"
+      ><a name="11705"
       > </a
-      ><a name="13131" href="Maps.html#11538" class="Function Operator"
+      ><a name="11706" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="13132"
+      ><a name="11707"
       > </a
-      ><a name="13133" href="Maps.html#13081" class="Bound"
+      ><a name="11708" href="Maps.html#11656" class="Bound"
       >w</a
-      ><a name="13134" class="Symbol"
+      ><a name="11709" class="Symbol"
       >)</a
-      ><a name="13135"
+      ><a name="11710"
       > </a
-      ><a name="13136" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="11711" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="13137"
+      ><a name="11712"
       > </a
-      ><a name="13138" class="Symbol"
+      ><a name="11713" class="Symbol"
       >(</a
-      ><a name="13139" href="Maps.html#13036" class="Bound"
+      ><a name="11714" href="Maps.html#11611" class="Bound"
       >&#961;</a
-      ><a name="13140"
+      ><a name="11715"
       > </a
-      ><a name="13141" href="Maps.html#11538" class="Function Operator"
+      ><a name="11716" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="13142"
+      ><a name="11717"
       > </a
-      ><a name="13143" href="Maps.html#13072" class="Bound"
+      ><a name="11718" href="Maps.html#11647" class="Bound"
       >y</a
-      ><a name="13144"
+      ><a name="11719"
       > </a
-      ><a name="13145" href="Maps.html#11538" class="Function Operator"
+      ><a name="11720" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="13146"
+      ><a name="11721"
       > </a
-      ><a name="13147" href="Maps.html#13081" class="Bound"
+      ><a name="11722" href="Maps.html#11656" class="Bound"
       >w</a
-      ><a name="13148"
+      ><a name="11723"
       > </a
-      ><a name="13149" href="Maps.html#11538" class="Function Operator"
+      ><a name="11724" href="Maps.html#10464" class="Function Operator"
       >,</a
-      ><a name="13150"
+      ><a name="11725"
       > </a
-      ><a name="13151" href="Maps.html#13055" class="Bound"
+      ><a name="11726" href="Maps.html#11630" class="Bound"
       >x</a
-      ><a name="13152"
+      ><a name="11727"
       > </a
-      ><a name="13153" href="Maps.html#11538" class="Function Operator"
+      ><a name="11728" href="Maps.html#10464" class="Function Operator"
       >&#8614;</a
-      ><a name="13154"
+      ><a name="11729"
       > </a
-      ><a name="13155" href="Maps.html#13064" class="Bound"
+      ><a name="11730" href="Maps.html#11639" class="Bound"
       >v</a
-      ><a name="13156" class="Symbol"
+      ><a name="11731" class="Symbol"
       >)</a
-      ><a name="13157"
+      ><a name="11732"
       >
   </a
-      ><a name="13160" href="Maps.html#13012" class="Function"
+      ><a name="11735" href="Maps.html#11587" class="Function"
       >update-permute</a
-      ><a name="13174"
+      ><a name="11749"
       > </a
-      ><a name="13175" href="Maps.html#13175" class="Bound"
+      ><a name="11750" href="Maps.html#11750" class="Bound"
       >&#961;</a
-      ><a name="13176"
+      ><a name="11751"
       > </a
-      ><a name="13177" href="Maps.html#13177" class="Bound"
+      ><a name="11752" href="Maps.html#11752" class="Bound"
       >x</a
-      ><a name="13178"
+      ><a name="11753"
       > </a
-      ><a name="13179" href="Maps.html#13179" class="Bound"
+      ><a name="11754" href="Maps.html#11754" class="Bound"
       >v</a
-      ><a name="13180"
+      ><a name="11755"
       > </a
-      ><a name="13181" href="Maps.html#13181" class="Bound"
+      ><a name="11756" href="Maps.html#11756" class="Bound"
       >y</a
-      ><a name="13182"
+      ><a name="11757"
       > </a
-      ><a name="13183" href="Maps.html#13183" class="Bound"
+      ><a name="11758" href="Maps.html#11758" class="Bound"
       >w</a
-      ><a name="13184"
+      ><a name="11759"
       > </a
-      ><a name="13185" href="Maps.html#13185" class="Bound"
+      ><a name="11760" href="Maps.html#11760" class="Bound"
       >x&#8802;y</a
-      ><a name="13188"
+      ><a name="11763"
       > </a
-      ><a name="13189" class="Symbol"
+      ><a name="11764" class="Symbol"
       >=</a
-      ><a name="13190"
+      ><a name="11765"
       > </a
-      ><a name="13191" href="Maps.html#9524" class="Postulate"
+      ><a name="11766" href="Maps.html#8649" class="Postulate"
       >TotalMap.update-permute</a
-      ><a name="13214"
+      ><a name="11789"
       > </a
-      ><a name="13215" href="Maps.html#13175" class="Bound"
+      ><a name="11790" href="Maps.html#11750" class="Bound"
       >&#961;</a
-      ><a name="13216"
+      ><a name="11791"
       > </a
-      ><a name="13217" href="Maps.html#13177" class="Bound"
+      ><a name="11792" href="Maps.html#11752" class="Bound"
       >x</a
-      ><a name="13218"
+      ><a name="11793"
       > </a
-      ><a name="13219" class="Symbol"
+      ><a name="11794" class="Symbol"
       >(</a
-      ><a name="13220" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="11795" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="13224"
+      ><a name="11799"
       > </a
-      ><a name="13225" href="Maps.html#13179" class="Bound"
+      ><a name="11800" href="Maps.html#11754" class="Bound"
       >v</a
-      ><a name="13226" class="Symbol"
+      ><a name="11801" class="Symbol"
       >)</a
-      ><a name="13227"
+      ><a name="11802"
       > </a
-      ><a name="13228" href="Maps.html#13181" class="Bound"
+      ><a name="11803" href="Maps.html#11756" class="Bound"
       >y</a
-      ><a name="13229"
+      ><a name="11804"
       > </a
-      ><a name="13230" class="Symbol"
+      ><a name="11805" class="Symbol"
       >(</a
-      ><a name="13231" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="11806" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="13235"
+      ><a name="11810"
       > </a
-      ><a name="13236" href="Maps.html#13183" class="Bound"
+      ><a name="11811" href="Maps.html#11758" class="Bound"
       >w</a
-      ><a name="13237" class="Symbol"
+      ><a name="11812" class="Symbol"
       >)</a
-      ><a name="13238"
+      ><a name="11813"
       > </a
-      ><a name="13239" href="Maps.html#13185" class="Bound"
+      ><a name="11814" href="Maps.html#11760" class="Bound"
       >x&#8802;y</a
       >
 

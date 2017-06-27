@@ -168,6 +168,8 @@ example₁ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩ >> ⟨ step₂ ⟩ >> ⟨ step�
 Context : Set
 Context = PartialMap Type
 
+infix 50 _⊢_∈_
+
 data _⊢_∈_ : Context → Term → Type → Set where
   Ax : ∀ {Γ x A} →
     Γ x ≡ just A →
