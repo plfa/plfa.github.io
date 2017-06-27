@@ -18,6 +18,8 @@ open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 open import Relation.Binary.PropositionalEquality as P using (_≡_; _≢_; refl)
+open import Relation.Binary using (Preorder)
+import Relation.Binary.PreorderReasoning as PreorderReasoning
 -- open import Relation.Binary.Core using (Rel)
 -- open import Data.Product using (∃; ∄; _,_)
 -- open import Function using (_∘_; _$_)
@@ -128,8 +130,6 @@ _⟹*_ = (_⟹_) *
 \end{code}
 
 \begin{code}
-open import Relation.Binary using (Preorder)
-
 ⟹*-Preorder : Preorder _ _ _
 ⟹*-Preorder = record
   { Carrier    = Term
@@ -142,7 +142,7 @@ open import Relation.Binary using (Preorder)
     }
   }
 
-open import Relation.Binary.PreorderReasoning ⟹*-Preorder
+open PreorderReasoning ⟹*-Preorder
      using (begin_; _∎) renaming (_≈⟨_⟩_ to _≡⟨_⟩_; _∼⟨_⟩_ to _⟹*⟨_⟩_)
 \end{code}
 
