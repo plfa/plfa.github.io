@@ -10,6 +10,13 @@ out/:
 out/%.md: src/%.lagda out/
 	agda2html --link-to-agda-stdlib --link-local -i $< -o $@
 
+.phony: serve
+
+serve:
+	ruby -S gem install bundler
+	ruby -S bundle install
+	ruby -S bundle exec jekyll serve
+
 .phony: clean
 
 clean:
