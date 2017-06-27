@@ -483,12 +483,7 @@ just-injective refl = refl
 preservation-[:=] {_} {x} (Ax {_} {x′} [Γ,x↦A]x′≡B) ⊢V with x ≟ x′
 ...| yes x≡x′ rewrite just-injective [Γ,x↦A]x′≡B  =  weaken-closed ⊢V
 ...| no  x≢x′  =  Ax [Γ,x↦A]x′≡B
-{-
-preservation-[:=] {Γ} {x} {A} {varᵀ x′} {B} {V} (Ax {.(Γ , x ↦ A)} {.x′} {.B} Γx′≡B) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite just-injective Γx′≡B  =  weaken-closed ⊢V
-...| no  x≢x′  =  Ax {Γ} {x′} {B} Γx′≡B
--}
-preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I {.(Γ , x ↦ A)} {.x′} {.N′} {.A′} {.B′} ⊢N′) ⊢V with x ≟ x′
+preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
 ...| yes x≡x′ rewrite x≡x′ = weaken Γ′~Γ (⇒-I ⊢N′)
   where
   Γ′~Γ : ∀ {y} → y FreeIn (λᵀ x′ ∈ A′ ⇒ N′) → (Γ , x′ ↦ A) y ≡ Γ y
@@ -498,35 +493,14 @@ preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {
 ...| no  x≢x′ = ⇒-I ⊢N′V
   where
   x′x⊢N′ : (Γ , x′ ↦ A′ , x ↦ A) ⊢ N′ ∈ B′
-  x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = {!⊢N′!}
+  x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = ⊢N′
   ⊢N′V : (Γ , x′ ↦ A′) ⊢ N′ [ x := V ] ∈ B′
   ⊢N′V = preservation-[:=] x′x⊢N′ ⊢V
-{-
-...| yes x′≡x rewrite x′≡x | update-shadow Γ x A A′  =  {!!}
-  -- ⇒-I ⊢N′
-...| no  x′≢x rewrite update-permute Γ x′ A′ x A x′≢x  =  {!!}
-  --  ⇒-I {Γ} {x′} {N′} {A′} {B′} (preservation-[:=] {(Γ , x′ ↦ A′)} {x} {A} ⊢N′ ⊢V)
--}
 preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
 preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
 preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
 preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
   𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
-
-{-
-[:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
-... | yes x=y = {!!}
-... | no  x≠y = {!!}
-[:=]-preserves-⊢ v∶A (abs t′∶B) = {!!}
-[:=]-preserves-⊢ v∶A (app t₁∶A⇒B t₂∶A) =
-  app ([:=]-preserves-⊢ v∶A t₁∶A⇒B) ([:=]-preserves-⊢ v∶A t₂∶A)
-[:=]-preserves-⊢ v∶A true  = true
-[:=]-preserves-⊢ v∶A false = false
-[:=]-preserves-⊢ v∶A (if t₁∶bool then t₂∶B else t₃∶B) =
-  if   [:=]-preserves-⊢ v∶A t₁∶bool
-  then [:=]-preserves-⊢ v∶A t₂∶B
-  else [:=]-preserves-⊢ v∶A t₃∶B
--}
 \end{code}
 
 
