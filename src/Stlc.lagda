@@ -17,7 +17,7 @@ open import Data.Nat using (ℕ; suc; zero; _+_)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Decidable using (⌊_⌋)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality as P using (_≡_; _≢_; refl)
 -- open import Relation.Binary.Core using (Rel)
 -- open import Data.Product using (∃; ∄; _,_)
 -- open import Function using (_∘_; _$_)
@@ -121,13 +121,44 @@ data _* {A : Set} (R : Rel A) : Rel A where
 \end{code}
 
 \begin{code}
+infix 80 _⟹*_
+
 _⟹*_ : Term → Term → Set
 _⟹*_ = (_⟹_) *
+\end{code}
+
+\begin{code}
+open import Relation.Binary using (Preorder)
+
+⟹*-Preorder : Preorder _ _ _
+⟹*-Preorder = record
+  { Carrier    = Term
+  ; _≈_        = _≡_
+  ; _∼_        = _⟹*_
+  ; isPreorder = record
+    { isEquivalence = P.isEquivalence
+    ; reflexive     = λ {refl → ⟨⟩}
+    ; trans         = _>>_
+    }
+  }
+
+open import Relation.Binary.PreorderReasoning ⟹*-Preorder
+     using (begin_; _∎) renaming (_≈⟨_⟩_ to _≡⟨_⟩_; _∼⟨_⟩_ to _⟹*⟨_⟩_)
 \end{code}
 
 Example evaluation.
 
 \begin{code}
+example₀′ : not[𝔹] ·ᵀ trueᵀ ⟹* falseᵀ
+example₀′ =
+  begin
+    not[𝔹] ·ᵀ trueᵀ
+  ⟹*⟨ ⟨ β⇒ value-trueᵀ ⟩ ⟩
+    ifᵀ trueᵀ then falseᵀ else trueᵀ
+  ⟹*⟨ ⟨ β𝔹₁ ⟩ ⟩
+    falseᵀ
+  ∎
+
 example₀ : (not[𝔹] ·ᵀ trueᵀ) ⟹* falseᵀ
 example₀ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩
   where
