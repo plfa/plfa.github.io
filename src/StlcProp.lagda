@@ -344,10 +344,10 @@ $$Γ ⊢ M ∈ A$$.
 
 \begin{code}
 weaken Γ~Γ′ (Ax Γx≡justA) rewrite (Γ~Γ′ free-varᵀ) = Ax Γx≡justA
-weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx⊆Γ′x ⊢N)
+weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx~Γ′x ⊢N)
   where
-  Γx⊆Γ′x : ∀ {y} → y FreeIn N → (Γ , x ↦ A) y ≡ (Γ′ , x ↦ A) y
-  Γx⊆Γ′x {y} y∈N with x ≟ y
+  Γx~Γ′x : ∀ {y} → y FreeIn N → (Γ , x ↦ A) y ≡ (Γ′ , x ↦ A) y
+  Γx~Γ′x {y} y∈N with x ≟ y
   ... | yes refl = refl
   ... | no  x≢y  = Γ~Γ′ (free-λᵀ x≢y y∈N)
 weaken Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (weaken (Γ~Γ′ ∘ free-·ᵀ₁)  ⊢L) (weaken (Γ~Γ′ ∘ free-·ᵀ₂) ⊢M) 
@@ -480,23 +480,38 @@ just-injective refl = refl
 \end{code}
 
 \begin{code}
-preservation-[:=] {_} {x} (Ax {_} {x′} Γx′≡B) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite just-injective Γx′≡B  =  weaken-closed ⊢V
-...| no  x≢x′  =  Ax Γx′≡B
+preservation-[:=] {_} {x} (Ax {_} {x′} [Γ,x↦A]x′≡B) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite just-injective [Γ,x↦A]x′≡B  =  weaken-closed ⊢V
+...| no  x≢x′  =  Ax [Γ,x↦A]x′≡B
 {-
 preservation-[:=] {Γ} {x} {A} {varᵀ x′} {B} {V} (Ax {.(Γ , x ↦ A)} {.x′} {.B} Γx′≡B) ⊢V with x ≟ x′
 ...| yes x≡x′ rewrite just-injective Γx′≡B  =  weaken-closed ⊢V
 ...| no  x≢x′  =  Ax {Γ} {x′} {B} Γx′≡B
 -}
-preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I {.(Γ , x ↦ A)} {.x′} {.N′} {.A′} {.B′} ⊢N′) ⊢V with x′ ≟ x
+preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I {.(Γ , x ↦ A)} {.x′} {.N′} {.A′} {.B′} ⊢N′) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite x≡x′ = weaken Γ′~Γ (⇒-I ⊢N′)
+  where
+  Γ′~Γ : ∀ {y} → y FreeIn (λᵀ x′ ∈ A′ ⇒ N′) → (Γ , x′ ↦ A) y ≡ Γ y
+  Γ′~Γ {y} (free-λᵀ x′≢y y∈N′) with x′ ≟ y
+  ...| yes x′≡y  = ⊥-elim (x′≢y x′≡y)
+  ...| no  _     = refl
+...| no  x≢x′ = ⇒-I ⊢N′V
+  where
+  x′x⊢N′ : (Γ , x′ ↦ A′ , x ↦ A) ⊢ N′ ∈ B′
+  x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = {!⊢N′!}
+  ⊢N′V : (Γ , x′ ↦ A′) ⊢ N′ [ x := V ] ∈ B′
+  ⊢N′V = preservation-[:=] x′x⊢N′ ⊢V
+{-
 ...| yes x′≡x rewrite x′≡x | update-shadow Γ x A A′  =  {!!}
   -- ⇒-I ⊢N′
 ...| no  x′≢x rewrite update-permute Γ x′ A′ x A x′≢x  =  {!!}
   --  ⇒-I {Γ} {x′} {N′} {A′} {B′} (preservation-[:=] {(Γ , x′ ↦ A′)} {x} {A} ⊢N′ ⊢V)
+-}
 preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
 preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
 preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
-preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V = 𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
+preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
+  𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
 
 {-
 [:=]-preserves-⊢ {Γ} {x} v∶A (var y y∈Γ) with x ≟ y
