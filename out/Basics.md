@@ -4,8 +4,7 @@ layout    : page
 permalink : /Basics
 ---
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="113" class="Keyword"
       >open</a
       ><a name="117"
@@ -35,8 +34,7 @@ permalink : /Basics
       ><a name="179" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 The functional programming style brings programming closer to
 simple, everyday mathematics: If a procedure or method has no side
@@ -89,8 +87,7 @@ very simple example.
 The following declaration tells Agda that we are defining
 a new set of data values -- a *type*.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="2469" class="Keyword"
       >data</a
       ><a name="2473"
@@ -201,8 +198,7 @@ a new set of data values -- a *type*.
       ><a name="2612" href="Basics.html#2474" class="Datatype"
       >Day</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 The type is called `day`, and its members are `monday`,
 `tuesday`, etc.  The second and following lines of the definition
@@ -211,8 +207,7 @@ can be read "`monday` is a `day`, `tuesday` is a `day`, etc."
 Having defined `day`, we can write functions that operate on
 days.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="2894" href="Basics.html#2894" class="Function"
       >nextWeekday</a
       ><a name="2905"
@@ -351,8 +346,7 @@ days.
       ><a name="3135" href="Basics.html#2492" class="InductiveConstructor"
       >monday</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 One thing to note is that the argument and return types of
 this function are explicitly declared.  Like most functional
@@ -375,8 +369,7 @@ above example to Agda, and observe the result.
 Second, we can record what we *expect* the result to be in the
 form of an Agda type:
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="4097" href="Basics.html#4097" class="Function Operator"
       >test_nextWeekday</a
       ><a name="4113"
@@ -408,8 +401,7 @@ form of an Agda type:
       ><a name="4153" href="Basics.html#2510" class="InductiveConstructor"
       >tuesday</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 This declaration does two things: it makes an assertion (that the second
 weekday after `saturday` is `tuesday`), and it gives the assertion a name
@@ -418,8 +410,7 @@ that can be used to refer to it later.
 Having made the assertion, we must also verify it. We do this by giving
 a term of the above type:
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="4472" href="Basics.html#4097" class="Function Operator"
       >test_nextWeekday</a
       ><a name="4488"
@@ -431,8 +422,7 @@ a term of the above type:
       ><a name="4491" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 There is no essential difference between the definition for
 `test_nextWeekday` here and the definition for `nextWeekday` above,
