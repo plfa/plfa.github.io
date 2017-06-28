@@ -14,7 +14,6 @@ open import Data.String using (String)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Nat using (ℕ; suc; zero; _+_)
-open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 open import Relation.Binary.PropositionalEquality as P using (_≡_; _≢_; refl)
@@ -28,23 +27,26 @@ import Relation.Binary.PreorderReasoning as PreorderReasoning
 
 ## Syntax
 
-Syntax of types and terms. All source terms are labeled with $ᵀ$.
+Syntax of types and terms.
 
 \begin{code}
-infixr 100 _⇒_
-infixl 100 _·ᵀ_
+infixr 20 _⇒_
 
 data Type : Set where
   𝔹 : Type
   _⇒_ : Type → Type → Type
 
+infixl 20 _·_
+infix  15 λ[_∶_]_
+infix  15 if_then_else_
+
 data Term : Set where
-  varᵀ : Id → Term
-  λᵀ_∈_⇒_ : Id → Type → Term → Term
-  _·ᵀ_ : Term → Term → Term
-  trueᵀ : Term
-  falseᵀ : Term
-  ifᵀ_then_else_ : Term → Term → Term → Term
+  var : Id → Term
+  λ[_∶_]_ : Id → Type → Term → Term
+  _·_ : Term → Term → Term
+  true : Term
+  false : Term
+  if_then_else_ : Term → Term → Term → Term
 \end{code}
 
 Some examples.
@@ -54,58 +56,63 @@ f  =  id "f"
 x  =  id "x"
 y  =  id "y"
 
-I[𝔹] I[𝔹⇒𝔹] K[𝔹][𝔹] not[𝔹] : Term 
-I[𝔹]  =  (λᵀ x ∈ 𝔹 ⇒ (varᵀ x))
-I[𝔹⇒𝔹]  =  (λᵀ f ∈ (𝔹 ⇒ 𝔹) ⇒ (λᵀ x ∈ 𝔹 ⇒ ((varᵀ f) ·ᵀ (varᵀ x))))
-K[𝔹][𝔹]  =  (λᵀ x ∈ 𝔹 ⇒ (λᵀ y ∈ 𝔹 ⇒ (varᵀ x)))
-not[𝔹]  =  (λᵀ x ∈ 𝔹 ⇒ (ifᵀ (varᵀ x) then falseᵀ else trueᵀ))
+I I² K not : Term 
+I   =  λ[ x ∶ 𝔹 ] var x
+I²  =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] var f · var x
+K   =  λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] var x
+not =  λ[ x ∶ 𝔹 ] (if var x then false else true)
+
+check : not ≡ λ[ x ∶ 𝔹 ] (if var x then false else true)
+check = refl
 \end{code}
 
 ## Values
 
 \begin{code}
-data value : Term → Set where
-  value-λᵀ : ∀ {x A N} → value (λᵀ x ∈ A ⇒ N)
-  value-trueᵀ : value (trueᵀ)
-  value-falseᵀ : value (falseᵀ)
+data Value : Term → Set where
+  value-λ     : ∀ {x A N} → Value (λ[ x ∶ A ] N)
+  value-true  : Value true
+  value-false : Value false
 \end{code}
 
 ## Substitution
 
 \begin{code}
-_[_:=_] : Term → Id → Term → Term
-(varᵀ x′) [ x := V ] with x ≟ x′
+_[_∶=_] : Term → Id → Term → Term
+(var x′) [ x ∶= V ] with x ≟ x′
 ... | yes _ = V
-... | no  _ = varᵀ x′
-(λᵀ x′ ∈ A′ ⇒ N′) [ x := V ] with x ≟ x′
-... | yes _ = λᵀ x′ ∈ A′ ⇒ N′
-... | no  _ = λᵀ x′ ∈ A′ ⇒ (N′ [ x := V ])
-(L′ ·ᵀ M′) [ x := V ] =  (L′ [ x := V ]) ·ᵀ (M′ [ x := V ])
-(trueᵀ) [ x := V ] = trueᵀ
-(falseᵀ) [ x := V ] = falseᵀ
-(ifᵀ L′ then M′ else N′) [ x := V ] = ifᵀ (L′ [ x := V ]) then (M′ [ x := V ]) else (N′ [ x := V ])
+... | no  _ = var x′
+(λ[ x′ ∶ A′ ] N′) [ x ∶= V ] with x ≟ x′
+... | yes _ = λ[ x′ ∶ A′ ] N′
+... | no  _ = λ[ x′ ∶ A′ ] (N′ [ x ∶= V ])
+(L′ · M′) [ x ∶= V ] =  (L′ [ x ∶= V ]) · (M′ [ x ∶= V ])
+(true) [ x ∶= V ] = true
+(false) [ x ∶= V ] = false
+(if L′ then M′ else N′) [ x ∶= V ] = if (L′ [ x ∶= V ]) then (M′ [ x ∶= V ]) else (N′ [ x ∶= V ])
 \end{code}
 
 ## Reduction rules
 
 \begin{code}
+infix 10 _⟹_ 
+
 data _⟹_ : Term → Term → Set where
-  β⇒ : ∀ {x A N V} → value V →
-    ((λᵀ x ∈ A ⇒ N) ·ᵀ V) ⟹ (N [ x := V ])
+  β⇒ : ∀ {x A N V} → Value V →
+    (λ[ x ∶ A ] N) · V ⟹ N [ x ∶= V ]
   γ⇒₁ : ∀ {L L' M} →
     L ⟹ L' →
-    (L ·ᵀ M) ⟹ (L' ·ᵀ M)
+    L · M ⟹ L' · M
   γ⇒₂ : ∀ {V M M'} →
-    value V →
+    Value V →
     M ⟹ M' →
-    (V ·ᵀ M) ⟹ (V ·ᵀ M')
+    V · M ⟹ V · M'
   β𝔹₁ : ∀ {M N} →
-    (ifᵀ trueᵀ then M else N) ⟹ M
+    if true then M else N ⟹ M
   β𝔹₂ : ∀ {M N} →
-    (ifᵀ falseᵀ then M else N) ⟹ N
+    if false then M else N ⟹ N
   γ𝔹 : ∀ {L L' M N} →
     L ⟹ L' →    
-    (ifᵀ L then M else N) ⟹ (ifᵀ L' then M else N)
+    if L then M else N ⟹ if L' then M else N
 \end{code}
 
 ## Reflexive and transitive closure of a relation
@@ -114,7 +121,7 @@ data _⟹_ : Term → Term → Set where
 Rel : Set → Set₁
 Rel A = A → A → Set
 
-infixl 100 _>>_
+infixl 10 _>>_
 
 data _* {A : Set} (R : Rel A) : Rel A where
   ⟨⟩ : ∀ {x : A} → (R *) x x
@@ -123,9 +130,9 @@ data _* {A : Set} (R : Rel A) : Rel A where
 \end{code}
 
 \begin{code}
-infix 80 _⟹*_
+infix 10 _⟹*_
 
-_⟹*_ : Term → Term → Set
+_⟹*_ : Rel Term
 _⟹*_ = (_⟹_) *
 \end{code}
 
@@ -143,54 +150,42 @@ _⟹*_ = (_⟹_) *
   }
 
 open PreorderReasoning ⟹*-Preorder
-     using (begin_; _∎) renaming (_≈⟨_⟩_ to _≡⟨_⟩_; _∼⟨_⟩_ to _⟹*⟨_⟩_)
+     using (_IsRelatedTo_; begin_; _∎) renaming (_≈⟨_⟩_ to _≡⟨_⟩_; _∼⟨_⟩_ to _⟹*⟨_⟩_)
+
+infixr 2 _⟹*⟪_⟫_
+
+_⟹*⟪_⟫_ : ∀ x {y z} → x ⟹ y → y IsRelatedTo z → x IsRelatedTo z
+x ⟹*⟪ x⟹y ⟫ yz  =  x ⟹*⟨ ⟨ x⟹y ⟩ ⟩ yz
 \end{code}
 
 Example evaluation.
 
 \begin{code}
-example₀′ : not[𝔹] ·ᵀ trueᵀ ⟹* falseᵀ
-example₀′ =
+example₀ : not · true ⟹* false
+example₀ =
   begin
-    not[𝔹] ·ᵀ trueᵀ
-  ⟹*⟨ ⟨ β⇒ value-trueᵀ ⟩ ⟩
-    ifᵀ trueᵀ then falseᵀ else trueᵀ
-  ⟹*⟨ ⟨ β𝔹₁ ⟩ ⟩
-    falseᵀ
+    not · true
+  ⟹*⟪ β⇒ value-true ⟫
+    if true then false else true
+  ⟹*⟪ β𝔹₁ ⟫
+    false
   ∎
 
-example₀ : (not[𝔹] ·ᵀ trueᵀ) ⟹* falseᵀ
-example₀ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩
-  where
-  M₀ M₁ M₂ : Term
-  M₀ = (not[𝔹] ·ᵀ trueᵀ)
-  M₁ = (ifᵀ trueᵀ then falseᵀ else trueᵀ)
-  M₂ = falseᵀ
-  step₀ : M₀ ⟹ M₁
-  step₀ = β⇒ value-trueᵀ
-  step₁ : M₁ ⟹ M₂
-  step₁ = β𝔹₁
-
-example₁ : (I[𝔹⇒𝔹] ·ᵀ I[𝔹] ·ᵀ (not[𝔹] ·ᵀ falseᵀ)) ⟹* trueᵀ
-example₁ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩ >> ⟨ step₂ ⟩ >> ⟨ step₃ ⟩ >> ⟨ step₄ ⟩
-  where
-  M₀ M₁ M₂ M₃ M₄ M₅ : Term
-  M₀ = (I[𝔹⇒𝔹] ·ᵀ I[𝔹] ·ᵀ (not[𝔹] ·ᵀ falseᵀ))
-  M₁ = ((λᵀ x ∈ 𝔹 ⇒ (I[𝔹] ·ᵀ varᵀ x)) ·ᵀ (not[𝔹] ·ᵀ falseᵀ))
-  M₂ = ((λᵀ x ∈ 𝔹 ⇒ (I[𝔹] ·ᵀ varᵀ x)) ·ᵀ (ifᵀ falseᵀ then falseᵀ else trueᵀ))
-  M₃ = ((λᵀ x ∈ 𝔹 ⇒ (I[𝔹] ·ᵀ varᵀ x)) ·ᵀ trueᵀ)
-  M₄ = I[𝔹] ·ᵀ trueᵀ
-  M₅ = trueᵀ
-  step₀ : M₀ ⟹ M₁
-  step₀ = γ⇒₁ (β⇒ value-λᵀ)
-  step₁ : M₁ ⟹ M₂
-  step₁ = γ⇒₂ value-λᵀ (β⇒ value-falseᵀ)
-  step₂ : M₂ ⟹ M₃
-  step₂ = γ⇒₂ value-λᵀ β𝔹₂
-  step₃ : M₃ ⟹ M₄
-  step₃ = β⇒ value-trueᵀ         
-  step₄ : M₄ ⟹ M₅
-  step₄ = β⇒ value-trueᵀ         
+example₁ : I² · I · (not · false) ⟹* true
+example₁ =
+  begin
+    I² · I · (not · false)
+  ⟹*⟪ γ⇒₁ (β⇒ value-λ) ⟫
+    (λ[ x ∶ 𝔹 ] I · var x) · (not · false)                  
+  ⟹*⟪ γ⇒₂ value-λ (β⇒ value-false) ⟫
+    (λ[ x ∶ 𝔹 ] I · var x) · (if false then false else true)
+  ⟹*⟪ γ⇒₂ value-λ β𝔹₂ ⟫
+    (λ[ x ∶ 𝔹 ] I · var x) · true
+  ⟹*⟪ β⇒ value-true ⟫
+    I · true
+  ⟹*⟪ β⇒ value-true ⟫
+    true
+  ∎  
 \end{code}
 
 ## Type rules
@@ -199,26 +194,26 @@ example₁ = ⟨ step₀ ⟩ >> ⟨ step₁ ⟩ >> ⟨ step₂ ⟩ >> ⟨ step�
 Context : Set
 Context = PartialMap Type
 
-infix 50 _⊢_∈_
+infix 10 _⊢_∶_
 
-data _⊢_∈_ : Context → Term → Type → Set where
+data _⊢_∶_ : Context → Term → Type → Set where
   Ax : ∀ {Γ x A} →
     Γ x ≡ just A →
-    Γ ⊢ varᵀ x ∈ A
+    Γ ⊢ var x ∶ A
   ⇒-I : ∀ {Γ x N A B} →
-    (Γ , x ↦ A) ⊢ N ∈ B →
-    Γ ⊢ (λᵀ x ∈ A ⇒ N) ∈ (A ⇒ B)
+    Γ , x ↦ A ⊢ N ∶ B →
+    Γ ⊢ λ[ x ∶ A ] N ∶ A ⇒ B
   ⇒-E : ∀ {Γ L M A B} →
-    Γ ⊢ L ∈ (A ⇒ B) →
-    Γ ⊢ M ∈ A →
-    Γ ⊢ L ·ᵀ M ∈ B
+    Γ ⊢ L ∶ A ⇒ B →
+    Γ ⊢ M ∶ A →
+    Γ ⊢ L · M ∶ B
   𝔹-I₁ : ∀ {Γ} →
-    Γ ⊢ trueᵀ ∈ 𝔹
+    Γ ⊢ true ∶ 𝔹
   𝔹-I₂ : ∀ {Γ} →
-    Γ ⊢ falseᵀ ∈ 𝔹
+    Γ ⊢ false ∶ 𝔹
   𝔹-E : ∀ {Γ L M N A} →
-    Γ ⊢ L ∈ 𝔹 →
-    Γ ⊢ M ∈ A →
-    Γ ⊢ N ∈ A →
-    Γ ⊢ (ifᵀ L then M else N) ∈ A    
+    Γ ⊢ L ∶ 𝔹 →
+    Γ ⊢ M ∶ A →
+    Γ ⊢ N ∶ A →
+    Γ ⊢ if L then M else N ∶ A    
 \end{code}

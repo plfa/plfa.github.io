@@ -131,7 +131,7 @@ a map `ρ`, a key `x`, and a value `v` and returns a new map that
 takes `x` to `v` and takes every other key to whatever `ρ` does.
 
 \begin{code}
-  infixl 100 _,_↦_  
+  infixl 15 _,_↦_  
 
   _,_↦_ : ∀ {A} → TotalMap A → Id → A → TotalMap A
   (ρ , x ↦ v) y with x ≟ y
@@ -335,7 +335,7 @@ module PartialMap where
 \end{code}
 
 \begin{code}
-  infixl 100 _,_↦_  
+  infixl 15 _,_↦_  
 
   _,_↦_ : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) → PartialMap A
   ρ , x ↦ v = TotalMap._,_↦_ ρ x (just v)

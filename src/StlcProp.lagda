@@ -4,6 +4,12 @@ layout    : page
 permalink : /StlcProp
 ---
 
+In this chapter, we develop the fundamental theory of the Simply
+Typed Lambda Calculus---in particular, the type safety
+theorem.
+
+## Imports
+
 \begin{code}
 open import Function using (_∘_)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -17,10 +23,6 @@ open import Maps
 open Maps.PartialMap
 open import Stlc
 \end{code}
-
-In this chapter, we develop the fundamental theory of the Simply
-Typed Lambda Calculus---in particular, the type safety
-theorem.
 
 
 ## Canonical Forms
@@ -54,16 +56,19 @@ canonicalFormsLemma (𝔹-E ⊢L ⊢M ⊢N) ()
 
 As before, the _progress_ theorem tells us that closed, well-typed
 terms are not stuck: either a well-typed term is a value, or it
-can take a reduction step.  The proof is a relatively
-straightforward extension of the progress proof we saw in the
-[Stlc]({{ "Stlc" | relative_url }}) chapter.  We'll give the proof in English
-first, then the formal version.
+can take a reduction step.  
 
 \begin{code}
 progress : ∀ {M A} → ∅ ⊢ M ∈ A → value M ⊎ ∃ λ N → M ⟹ N
 \end{code}
 
-_Proof_: By induction on the derivation of `\vdash t : A`.
+The proof is a relatively
+straightforward extension of the progress proof we saw in the
+[Types]({{ "Types" | relative_url }}) chapter.
+We'll give the proof in English
+first, then the formal version.
+
+_Proof_: By induction on the derivation of `∅ ⊢ M ∈ A`.
 
   - The last rule of the derivation cannot be `var`,
     since a variable is never well typed in an empty context.
