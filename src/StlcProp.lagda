@@ -13,14 +13,13 @@ theorem.
 \begin{code}
 open import Function using (_∘_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Bool using (Bool; true; false)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.Product using (∃; ∃₂; _,_; ,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; trans; sym)
 open import Maps
-open Maps.PartialMap
+open Maps.PartialMap using (∅; apply-∅; update-permute) renaming (_,_↦_ to _,_∶_)
 open import Stlc
 \end{code}
 
@@ -35,20 +34,20 @@ belonging to each type.  For `bool`, these are the boolean values `true` and
 
 \begin{code}
 data canonical_for_ : Term → Type → Set where
-  canonical-λᵀ : ∀ {x A N B} → canonical (λᵀ x ∈ A ⇒ N) for (A ⇒ B)
-  canonical-trueᵀ : canonical trueᵀ for 𝔹
-  canonical-falseᵀ : canonical falseᵀ for 𝔹
+  canonical-λ : ∀ {x A N B} → canonical (λ[ x ∶ A ] N) for (A ⇒ B)
+  canonical-true : canonical true for 𝔹
+  canonical-false : canonical false for 𝔹
   
 -- canonical_for_ : Term → Type → Set
--- canonical L for 𝔹       = L ≡ trueᵀ ⊎ L ≡ falseᵀ
--- canonical L for (A ⇒ B) = ∃₂ λ x N → L ≡ λᵀ x ∈ A ⇒ N
+-- canonical L for 𝔹       = L ≡ true ⊎ L ≡ false
+-- canonical L for (A ⇒ B) = ∃₂ λ x N → L ≡ λ[ x ∶ A ] N
 
-canonicalFormsLemma : ∀ {L A} → ∅ ⊢ L ∈ A → value L → canonical L for A
+canonicalFormsLemma : ∀ {L A} → ∅ ⊢ L ∶ A → Value L → canonical L for A
 canonicalFormsLemma (Ax ⊢x) ()
-canonicalFormsLemma (⇒-I ⊢N) value-λᵀ = canonical-λᵀ      -- _ , _ , refl
+canonicalFormsLemma (⇒-I ⊢N) value-λ = canonical-λ      -- _ , _ , refl
 canonicalFormsLemma (⇒-E ⊢L ⊢M) ()
-canonicalFormsLemma 𝔹-I₁ value-trueᵀ = canonical-trueᵀ    -- inj₁ refl
-canonicalFormsLemma 𝔹-I₂ value-falseᵀ = canonical-falseᵀ  -- inj₂ refl
+canonicalFormsLemma 𝔹-I₁ value-true = canonical-true    -- inj₁ refl
+canonicalFormsLemma 𝔹-I₂ value-false = canonical-false  -- inj₂ refl
 canonicalFormsLemma (𝔹-E ⊢L ⊢M ⊢N) ()
 \end{code}
 
@@ -59,7 +58,7 @@ terms are not stuck: either a well-typed term is a value, or it
 can take a reduction step.  
 
 \begin{code}
-progress : ∀ {M A} → ∅ ⊢ M ∈ A → value M ⊎ ∃ λ N → M ⟹ N
+progress : ∀ {M A} → ∅ ⊢ M ∶ A → Value M ⊎ ∃ λ N → M ⟹ N
 \end{code}
 
 The proof is a relatively
@@ -68,7 +67,7 @@ straightforward extension of the progress proof we saw in the
 We'll give the proof in English
 first, then the formal version.
 
-_Proof_: By induction on the derivation of `∅ ⊢ M ∈ A`.
+_Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
 
   - The last rule of the derivation cannot be `var`,
     since a variable is never well typed in an empty context.
@@ -108,20 +107,20 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∈ A`.
 
 \begin{code}
 progress (Ax ())
-progress (⇒-I ⊢N) = inj₁ value-λᵀ
+progress (⇒-I ⊢N) = inj₁ value-λ
 progress (⇒-E {Γ} {L} {M} {A} {B} ⊢L ⊢M) with progress ⊢L
-... | inj₂ (L′ , L⟹L′) = inj₂ (L′ ·ᵀ M , γ⇒₁ L⟹L′)
+... | inj₂ (L′ , L⟹L′) = inj₂ (L′ · M , γ⇒₁ L⟹L′)
 ... | inj₁ valueL with progress ⊢M
-... | inj₂ (M′ , M⟹M′) = inj₂ (L ·ᵀ M′ , γ⇒₂ valueL M⟹M′)
+... | inj₂ (M′ , M⟹M′) = inj₂ (L · M′ , γ⇒₂ valueL M⟹M′)
 ... | inj₁ valueM with canonicalFormsLemma ⊢L valueL
-... | canonical-λᵀ {x} {.A} {N} {.B} = inj₂ ((N [ x := M ]) , β⇒ valueM)
-progress 𝔹-I₁ = inj₁ value-trueᵀ
-progress 𝔹-I₂ = inj₁ value-falseᵀ
+... | canonical-λ {x} {.A} {N} {.B} = inj₂ ((N [ x ∶= M ]) , β⇒ valueM)
+progress 𝔹-I₁ = inj₁ value-true
+progress 𝔹-I₂ = inj₁ value-false
 progress (𝔹-E {Γ} {L} {M} {N} {A} ⊢L ⊢M ⊢N) with progress ⊢L
-... | inj₂ (L′ , L⟹L′) = inj₂ ((ifᵀ L′ then M else N) , γ𝔹 L⟹L′)
+... | inj₂ (L′ , L⟹L′) = inj₂ ((if L′ then M else N) , γ𝔹 L⟹L′)
 ... | inj₁ valueL with canonicalFormsLemma ⊢L valueL
-... | canonical-trueᵀ = inj₂ (M , β𝔹₁)
-... | canonical-falseᵀ = inj₂ (N , β𝔹₂)
+... | canonical-true = inj₂ (M , β𝔹₁)
+... | canonical-false = inj₂ (N , β𝔹₂)
 \end{code}
 
 #### Exercise: 3 stars, optional (progress_from_term_ind)
@@ -130,7 +129,7 @@ instead of induction on typing derivations.
 
 \begin{code}
 postulate
-  progress′ : ∀ {M A} → ∅ ⊢ M ∈ A → value M ⊎ ∃ λ N → M ⟹ N
+  progress′ : ∀ {M A} → ∅ ⊢ M ∶ A → Value M ⊎ ∃ λ N → M ⟹ N
 \end{code}
 
 ## Preservation
@@ -181,32 +180,32 @@ A variable `x` _appears free in_ a term `M` if `M` contains some
 occurrence of `x` that is not under an abstraction over `x`.
 For example:
 
-  - `y` appears free, but `x` does not, in `λᵀ x ∈ (A ⇒ B) ⇒ x ·ᵀ y`
-  - both `x` and `y` appear free in `(λᵀ x ∈ (A ⇒ B) ⇒ x ·ᵀ y) ·ᵀ x`
-  - no variables appear free in `λᵀ x ∈ (A ⇒ B) ⇒ (λᵀ y ∈ A ⇒ x ·ᵀ y)`
+  - `y` appears free, but `x` does not, in `λ[ x ∶ (A ⇒ B) ] x · y`
+  - both `x` and `y` appear free in `(λ[ x ∶ (A ⇒ B) ] x · y) · x`
+  - no variables appear free in `λ[ x ∶ (A ⇒ B) ] (λ[ y ∶ A ] x · y)`
 
 Formally:
 
 \begin{code}
-data _FreeIn_ : Id → Term → Set where
-  free-varᵀ  : ∀ {x} → x FreeIn (varᵀ x)
-  free-λᵀ  : ∀ {x y A N} → y ≢ x → x FreeIn N → x FreeIn (λᵀ y ∈ A ⇒ N)
-  free-·ᵀ₁ : ∀ {x L M} → x FreeIn L → x FreeIn (L ·ᵀ M)
-  free-·ᵀ₂ : ∀ {x L M} → x FreeIn M → x FreeIn (L ·ᵀ M)
-  free-ifᵀ₁ : ∀ {x L M N} → x FreeIn L → x FreeIn (ifᵀ L then M else N)
-  free-ifᵀ₂ : ∀ {x L M N} → x FreeIn M → x FreeIn (ifᵀ L then M else N)
-  free-ifᵀ₃ : ∀ {x L M N} → x FreeIn N → x FreeIn (ifᵀ L then M else N)
+data _∈_ : Id → Term → Set where
+  free-var  : ∀ {x} → x ∈ (var x)
+  free-λ  : ∀ {x y A N} → y ≢ x → x ∈ N → x ∈ (λ[ y ∶ A ] N)
+  free-·₁ : ∀ {x L M} → x ∈ L → x ∈ (L · M)
+  free-·₂ : ∀ {x L M} → x ∈ M → x ∈ (L · M)
+  free-if₁ : ∀ {x L M N} → x ∈ L → x ∈ (if L then M else N)
+  free-if₂ : ∀ {x L M N} → x ∈ M → x ∈ (if L then M else N)
+  free-if₃ : ∀ {x L M N} → x ∈ N → x ∈ (if L then M else N)
 \end{code}
 
 A term in which no variables appear free is said to be _closed_.
 
 \begin{code}
 closed : Term → Set
-closed M = ∀ {x} → ¬ (x FreeIn M)
+closed M = ∀ {x} → ¬ (x ∈ M)
 \end{code}
 
 #### Exercise: 1 star (free-in)
-If the definition of `_FreeIn_` is not crystal clear to
+If the definition of `_∈_` is not crystal clear to
 you, it is a good idea to take a piece of paper and write out the
 rules in informal inference-rule notation.  (Although it is a
 rather low-level, technical definition, understanding it is
@@ -221,18 +220,18 @@ well typed in context `Γ`, then it must be the case that
 `Γ` assigns a type to `x`.
 
 \begin{code}
-freeLemma : ∀ {x M A Γ} → x FreeIn M → Γ ⊢ M ∈ A → ∃ λ B → Γ x ≡ just B
+freeLemma : ∀ {x M A Γ} → x ∈ M → Γ ⊢ M ∶ A → ∃ λ B → Γ x ≡ just B
 \end{code}
 
 _Proof_: We show, by induction on the proof that `x` appears
   free in `P`, that, for all contexts `Γ`, if `P` is well
   typed under `Γ`, then `Γ` assigns some type to `x`.
 
-  - If the last rule used was `free-varᵀ`, then `P = x`, and from
+  - If the last rule used was `free-var`, then `P = x`, and from
     the assumption that `M` is well typed under `Γ` we have
     immediately that `Γ` assigns a type to `x`.
 
-  - If the last rule used was `free-·₁`, then `P = L ·ᵀ M` and `x`
+  - If the last rule used was `free-·₁`, then `P = L · M` and `x`
     appears free in `L`.  Since `L` is well typed under `\Gamma`,
     we can see from the typing rules that `L` must also be, and
     the IH then tells us that `Γ` assigns `x` a type.
@@ -243,30 +242,30 @@ _Proof_: We show, by induction on the proof that `x` appears
     under `Γ` as well, and the IH gives us exactly the
     conclusion we want.
 
-  - The only remaining case is `free-λᵀ`.  In this case `P =
-    λᵀ y ∈ A ⇒ N`, and `x` appears free in `N`; we also know that
+  - The only remaining case is `free-λ`.  In this case `P =
+    λ[ y ∶ A ] N`, and `x` appears free in `N`; we also know that
     `x` is different from `y`.  The difference from the previous
     cases is that whereas `P` is well typed under `\Gamma`, its
-    body `N` is well typed under `(Γ , y ↦ A)`, so the IH
+    body `N` is well typed under `(Γ , y ∶ A)`, so the IH
     allows us to conclude that `x` is assigned some type by the
-    extended context `(Γ , y ↦ A)`.  To conclude that `Γ`
+    extended context `(Γ , y ∶ A)`.  To conclude that `Γ`
     assigns a type to `x`, we appeal the decidable equality for names
     `_≟_`, noting that `x` and `y` are different variables.
 
 \begin{code}
-freeLemma free-varᵀ (Ax Γx≡justA) = (_ , Γx≡justA)
-freeLemma (free-·ᵀ₁ x∈L) (⇒-E ⊢L ⊢M) = freeLemma x∈L ⊢L
-freeLemma (free-·ᵀ₂ x∈M) (⇒-E ⊢L ⊢M) = freeLemma x∈M ⊢M
-freeLemma (free-ifᵀ₁ x∈L) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈L ⊢L
-freeLemma (free-ifᵀ₂ x∈M) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈M ⊢M
-freeLemma (free-ifᵀ₃ x∈N) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈N ⊢N
-freeLemma (free-λᵀ {x} {y} y≢x x∈N) (⇒-I ⊢N) with freeLemma x∈N ⊢N
+freeLemma free-var (Ax Γx≡justA) = (_ , Γx≡justA)
+freeLemma (free-·₁ x∈L) (⇒-E ⊢L ⊢M) = freeLemma x∈L ⊢L
+freeLemma (free-·₂ x∈M) (⇒-E ⊢L ⊢M) = freeLemma x∈M ⊢M
+freeLemma (free-if₁ x∈L) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈L ⊢L
+freeLemma (free-if₂ x∈M) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈M ⊢M
+freeLemma (free-if₃ x∈N) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈N ⊢N
+freeLemma (free-λ {x} {y} y≢x x∈N) (⇒-I ⊢N) with freeLemma x∈N ⊢N
 ... | Γx=justC with y ≟ x
 ... | yes y≡x = ⊥-elim (y≢x y≡x)
 ... | no  _   = Γx=justC
 \end{code}
 
-[A subtle point: if the first argument of `free-λᵀ` was of type
+[A subtle point: if the first argument of `free-λ` was of type
 `x ≢ y` rather than of type `y ≢ x`, then the type of the
 term `Γx=justC` would not simplify properly.]
 
@@ -277,7 +276,7 @@ the empty context is closed (it has no free variables).
 
 \begin{code}
 postulate
-  ∅⊢-closed : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
+  ∅⊢-closed : ∀ {M A} → ∅ ⊢ M ∶ A → closed M
 \end{code}
 
 <div class="hidden">
@@ -285,13 +284,13 @@ postulate
 contradiction : ∀ {X : Set} → ∀ {x : X} → ¬ (_≡_ {A = Maybe X} (just x) nothing)
 contradiction ()
 
-∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∈ A → closed M
+∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∶ A → closed M
 ∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
 ... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) (apply-∅ x))
 \end{code}
 </div>
 
-Sometimes, when we have a proof `Γ ⊢ M ∈ A`, we will need to
+Sometimes, when we have a proof `Γ ⊢ M ∶ A`, we will need to
 replace `Γ` by a different context `Γ′`.  When is it safe
 to do this?  Intuitively, it must at least be the case that
 `Γ′` assigns the same types as `Γ` to all the variables
@@ -299,14 +298,14 @@ that appear free in `M`. In fact, this is the only condition that
 is needed.
 
 \begin{code}
-weaken : ∀ {Γ Γ′ M A}
-        → (∀ {x} → x FreeIn M → Γ x ≡ Γ′ x)
-        → Γ  ⊢ M ∈ A
-        → Γ′ ⊢ M ∈ A
+contextLemma : ∀ {Γ Γ′ M A}
+        → (∀ {x} → x ∈ M → Γ x ≡ Γ′ x)
+        → Γ  ⊢ M ∶ A
+        → Γ′ ⊢ M ∶ A
 \end{code}
 
 _Proof_: By induction on the derivation of
-`Γ ⊢ M ∈ A`.
+`Γ ⊢ M ∶ A`.
 
   - If the last rule in the derivation was `var`, then `t = x`
     and `\Gamma x = T`.  By assumption, `\Gamma' x = T` as well, and
@@ -348,18 +347,18 @@ _Proof_: By induction on the derivation of
     hence the desired result follows from the induction hypotheses.
 
 \begin{code}
-weaken Γ~Γ′ (Ax Γx≡justA) rewrite (Γ~Γ′ free-varᵀ) = Ax Γx≡justA
-weaken {Γ} {Γ′} {λᵀ x ∈ A ⇒ N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (weaken Γx~Γ′x ⊢N)
+contextLemma Γ~Γ′ (Ax Γx≡justA) rewrite (Γ~Γ′ free-var) = Ax Γx≡justA
+contextLemma {Γ} {Γ′} {λ[ x ∶ A ] N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (contextLemma Γx~Γ′x ⊢N)
   where
-  Γx~Γ′x : ∀ {y} → y FreeIn N → (Γ , x ↦ A) y ≡ (Γ′ , x ↦ A) y
+  Γx~Γ′x : ∀ {y} → y ∈ N → (Γ , x ∶ A) y ≡ (Γ′ , x ∶ A) y
   Γx~Γ′x {y} y∈N with x ≟ y
   ... | yes refl = refl
-  ... | no  x≢y  = Γ~Γ′ (free-λᵀ x≢y y∈N)
-weaken Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (weaken (Γ~Γ′ ∘ free-·ᵀ₁)  ⊢L) (weaken (Γ~Γ′ ∘ free-·ᵀ₂) ⊢M) 
-weaken Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
-weaken Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
-weaken Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
-  = 𝔹-E (weaken (Γ~Γ′ ∘ free-ifᵀ₁) ⊢L) (weaken (Γ~Γ′ ∘ free-ifᵀ₂) ⊢M) (weaken (Γ~Γ′ ∘ free-ifᵀ₃) ⊢N)
+  ... | no  x≢y  = Γ~Γ′ (free-λ x≢y y∈N)
+contextLemma Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (contextLemma (Γ~Γ′ ∘ free-·₁)  ⊢L) (contextLemma (Γ~Γ′ ∘ free-·₂) ⊢M) 
+contextLemma Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
+contextLemma Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
+contextLemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
+  = 𝔹-E (contextLemma (Γ~Γ′ ∘ free-if₁) ⊢L) (contextLemma (Γ~Γ′ ∘ free-if₂) ⊢M) (contextLemma (Γ~Γ′ ∘ free-if₃) ⊢N)
 
 {-
 replaceCtxt f (var x x∶A
@@ -369,7 +368,7 @@ replaceCtxt f (app t₁∶A⇒B t₂∶A)
 replaceCtxt {Γ} {Γ′} f (abs {.Γ} {x} {A} {B} {t′} t′∶B)
   = abs (replaceCtxt f′ t′∶B)
   where
-    f′ : ∀ {y} → y FreeIn t′ → (Γ , x ∶ A) y ≡ (Γ′ , x ∶ A) y
+    f′ : ∀ {y} → y ∈ t′ → (Γ , x ∶ A) y ≡ (Γ′ , x ∶ A) y
     f′ {y} y∈t′ with x ≟ y
     ... | yes _   = refl
     ... | no  x≠y = f (abs x≠y y∈t′)
@@ -396,74 +395,74 @@ the assumption we made about `x` when typing `N`, we should be
 able to substitute `V` for each of the occurrences of `x` in `N`
 and obtain a new term that still has type `B`.
 
-_Lemma_: If `Γ , x ↦ A ⊢ N ∈ B` and `∅ ⊢ V ∈ A`, then
-`Γ ⊢ (N [ x := V ]) ∈ B`.
+_Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
+`Γ ⊢ (N [ x ∶= V ]) ∶ B`.
 
 \begin{code}
-preservation-[:=] : ∀ {Γ x A N B V}
-                 → (Γ , x ↦ A) ⊢ N ∈ B
-                 → ∅ ⊢ V ∈ A
-                 → Γ ⊢ (N [ x := V ]) ∈ B
+preservation-[∶=] : ∀ {Γ x A N B V}
+                 → (Γ , x ∶ A) ⊢ N ∶ B
+                 → ∅ ⊢ V ∶ A
+                 → Γ ⊢ (N [ x ∶= V ]) ∶ B
 \end{code}
 
 One technical subtlety in the statement of the lemma is that
 we assign `V` the type `A` in the _empty_ context---in other
 words, we assume `V` is closed.  This assumption considerably
-simplifies the `λᵀ` case of the proof (compared to assuming
-`Γ ⊢ V ∈ A`, which would be the other reasonable assumption
+simplifies the `λ` case of the proof (compared to assuming
+`Γ ⊢ V ∶ A`, which would be the other reasonable assumption
 at this point) because the context invariance lemma then tells us
 that `V` has type `A` in any context at all---we don't have to
 worry about free variables in `V` clashing with the variable being
-introduced into the context by `λᵀ`.
+introduced into the context by `λ`.
 
 The substitution lemma can be viewed as a kind of "commutation"
 property.  Intuitively, it says that substitution and typing can
 be done in either order: we can either assign types to the terms
 `N` and `V` separately (under suitable contexts) and then combine
 them using substitution, or we can substitute first and then
-assign a type to `N [ x := V ]`---the result is the same either
+assign a type to `N [ x ∶= V ]`---the result is the same either
 way.
 
 _Proof_: We show, by induction on `N`, that for all `A` and
-`Γ`, if `Γ , x ↦ A \vdash N ∈ B` and `∅ ⊢ V ∈ A`, then
-`Γ \vdash N [ x := V ] ∈ B`.
+`Γ`, if `Γ , x ∶ A \vdash N ∶ B` and `∅ ⊢ V ∶ A`, then
+`Γ \vdash N [ x ∶= V ] ∶ B`.
 
   - If `N` is a variable there are two cases to consider,
     depending on whether `N` is `x` or some other variable.
 
-      - If `N = varᵀ x`, then from the fact that `Γ , x ↦ A ⊢ N ∈ B`
-        we conclude that `A = B`.  We must show that `x [ x := V] =
+      - If `N = var x`, then from the fact that `Γ , x ∶ A ⊢ N ∶ B`
+        we conclude that `A = B`.  We must show that `x [ x ∶= V] =
         V` has type `A` under `Γ`, given the assumption that
         `V` has type `A` under the empty context.  This
         follows from context invariance: if a closed term has type
         `A` in the empty context, it has that type in any context.
 
       - If `N` is some variable `x′` different from `x`, then
-        we need only note that `x′` has the same type under `Γ , x ↦ A`
+        we need only note that `x′` has the same type under `Γ , x ∶ A`
         as under `Γ`.
 
-  - If `N` is an abstraction `λᵀ x′ ∈ A′ ⇒ N′`, then the IH tells us,
-    for all `Γ′`́ and `B′`, that if `Γ′ , x ↦ A ⊢ N′ ∈ B′`
-    and `∅ ⊢ V ∈ A`, then `Γ′ ⊢ N′ [ x := V ] ∈ B′`.
+  - If `N` is an abstraction `λ[ x′ ∶ A′ ] N′`, then the IH tells us,
+    for all `Γ′`́ and `B′`, that if `Γ′ , x ∶ A ⊢ N′ ∶ B′`
+    and `∅ ⊢ V ∶ A`, then `Γ′ ⊢ N′ [ x ∶= V ] ∶ B′`.
 
     The substitution in the conclusion behaves differently
     depending on whether `x` and `x′` are the same variable.
 
     First, suppose `x ≡ x′`.  Then, by the definition of
-    substitution, `N [ x := V] = N`, so we just need to show `Γ ⊢ N ∈ B`.
-    But we know `Γ , x ↦ A ⊢ N ∈ B` and, since `x ≡ x′`
-    does not appear free in `λᵀ x′ ∈ A′ ⇒ N′`, the context invariance
-    lemma yields `Γ ⊢ N ∈ B`.
+    substitution, `N [ x ∶= V] = N`, so we just need to show `Γ ⊢ N ∶ B`.
+    But we know `Γ , x ∶ A ⊢ N ∶ B` and, since `x ≡ x′`
+    does not appear free in `λ[ x′ ∶ A′ ] N′`, the context invariance
+    lemma yields `Γ ⊢ N ∶ B`.
 
-    Second, suppose `x ≢ x′`.  We know `Γ , x ↦ A , x′ ↦ A′ ⊢ N′ ∈ B′`
+    Second, suppose `x ≢ x′`.  We know `Γ , x ∶ A , x′ ∶ A′ ⊢ N′ ∶ B′`
     by inversion of the typing relation, from which
-    `Γ , x′ ↦ A′ , x ↦ A ⊢ N′ ∈ B′` follows by update permute,
-    so the IH applies, giving us `Γ , x′ ↦ A′ ⊢ N′ [ x := V ] ∈ B′`
-    By `⇒-I`, we have `Γ ⊢ λᵀ x′ ∈ A′ ⇒ (N′ [ x := V ]) ∈ A′ ⇒ B′`
+    `Γ , x′ ∶ A′ , x ∶ A ⊢ N′ ∶ B′` follows by update permute,
+    so the IH applies, giving us `Γ , x′ ∶ A′ ⊢ N′ [ x ∶= V ] ∶ B′`
+    By `⇒-I`, we have `Γ ⊢ λ[ x′ ∶ A′ ] (N′ [ x ∶= V ]) ∶ A′ ⇒ B′`
     and the definition of substitution (noting `x ≢ x′`) gives
-    `Γ ⊢ (λᵀ x′ ∈ A′ ⇒ N′) [ x := V ] ∈ A′ ⇒ B′` as required.
+    `Γ ⊢ (λ[ x′ ∶ A′ ] N′) [ x ∶= V ] ∶ A′ ⇒ B′` as required.
 
-  - If `N` is an application `L′ ·ᵀ M′`, the result follows
+  - If `N` is an application `L′ · M′`, the result follows
     straightforwardly from the definition of substitution and the
     induction hypotheses.
 
@@ -471,13 +470,13 @@ _Proof_: We show, by induction on `N`, that for all `A` and
 
 We need a couple of lemmas. A closed term can be weakened to any context, and just is injective.
 \begin{code}
-weaken-closed : ∀ {V A Γ} → ∅ ⊢ V ∈ A → Γ ⊢ V ∈ A
-weaken-closed {V} {A} {Γ} ⊢V = weaken Γ~Γ′ ⊢V
+weaken-closed : ∀ {V A Γ} → ∅ ⊢ V ∶ A → Γ ⊢ V ∶ A
+weaken-closed {V} {A} {Γ} ⊢V = contextLemma Γ~Γ′ ⊢V
   where
-  Γ~Γ′ : ∀ {x} → x FreeIn V → ∅ x ≡ Γ x
+  Γ~Γ′ : ∀ {x} → x ∈ V → ∅ x ≡ Γ x
   Γ~Γ′ {x} x∈V = ⊥-elim (x∉V x∈V)
     where
-    x∉V : ¬ (x FreeIn V)
+    x∉V : ¬ (x ∈ V)
     x∉V = ∅⊢-closed ⊢V {x}
 
 just-injective : ∀ {X : Set} {x y : X} → _≡_ {A = Maybe X} (just x) (just y) → x ≡ y
@@ -485,27 +484,27 @@ just-injective refl = refl
 \end{code}
 
 \begin{code}
-preservation-[:=] {_} {x} (Ax {_} {x′} [Γ,x↦A]x′≡B) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite just-injective [Γ,x↦A]x′≡B  =  weaken-closed ⊢V
-...| no  x≢x′  =  Ax [Γ,x↦A]x′≡B
-preservation-[:=] {Γ} {x} {A} {λᵀ x′ ∈ A′ ⇒ N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite x≡x′ = weaken Γ′~Γ (⇒-I ⊢N′)
+preservation-[∶=] {_} {x} (Ax {_} {x′} [Γ,x∶A]x′≡B) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite just-injective [Γ,x∶A]x′≡B  =  weaken-closed ⊢V
+...| no  x≢x′  =  Ax [Γ,x∶A]x′≡B
+preservation-[∶=] {Γ} {x} {A} {λ[ x′ ∶ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite x≡x′ = contextLemma Γ′~Γ (⇒-I ⊢N′)
   where
-  Γ′~Γ : ∀ {y} → y FreeIn (λᵀ x′ ∈ A′ ⇒ N′) → (Γ , x′ ↦ A) y ≡ Γ y
-  Γ′~Γ {y} (free-λᵀ x′≢y y∈N′) with x′ ≟ y
+  Γ′~Γ : ∀ {y} → y ∈ (λ[ x′ ∶ A′ ] N′) → (Γ , x′ ∶ A) y ≡ Γ y
+  Γ′~Γ {y} (free-λ x′≢y y∈N′) with x′ ≟ y
   ...| yes x′≡y  = ⊥-elim (x′≢y x′≡y)
   ...| no  _     = refl
 ...| no  x≢x′ = ⇒-I ⊢N′V
   where
-  x′x⊢N′ : Γ , x′ ↦ A′ , x ↦ A ⊢ N′ ∈ B′
+  x′x⊢N′ : Γ , x′ ∶ A′ , x ∶ A ⊢ N′ ∶ B′
   x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = ⊢N′
-  ⊢N′V : (Γ , x′ ↦ A′) ⊢ N′ [ x := V ] ∈ B′
-  ⊢N′V = preservation-[:=] x′x⊢N′ ⊢V
-preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
-preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
-preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
-preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
-  𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
+  ⊢N′V : (Γ , x′ ∶ A′) ⊢ N′ [ x ∶= V ] ∶ B′
+  ⊢N′V = preservation-[∶=] x′x⊢N′ ⊢V
+preservation-[∶=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[∶=] ⊢L ⊢V) (preservation-[∶=] ⊢M ⊢V)
+preservation-[∶=] 𝔹-I₁ ⊢V = 𝔹-I₁
+preservation-[∶=] 𝔹-I₂ ⊢V = 𝔹-I₂
+preservation-[∶=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
+  𝔹-E (preservation-[∶=] ⊢L ⊢V) (preservation-[∶=] ⊢M ⊢V) (preservation-[∶=] ⊢N ⊢V)
 \end{code}
 
 
@@ -517,7 +516,7 @@ is also a closed term with type `A`.  In other words, small-step
 reduction preserves types.
 
 \begin{code}
-preservation : ∀ {M N A} → ∅ ⊢ M ∈ A → M ⟹ N → ∅ ⊢ N ∈ A
+preservation : ∀ {M N A} → ∅ ⊢ M ∶ A → M ⟹ N → ∅ ⊢ N ∶ A
 \end{code}
 
 _Proof_: By induction on the derivation of `\vdash t : T`.
@@ -537,7 +536,7 @@ _Proof_: By induction on the derivation of `\vdash t : T`.
     - The `Sapp2` case is similar.
 
     - If `t_1 t_2` takes a step by `Sred`, then `t_1 =
-      \lambda x:t_{11}.t_{12}` and `t_1 t_2` steps to ``x:=t_2`t_{12}`; the
+      \lambda x:t_{11}.t_{12}` and `t_1 t_2` steps to ``x∶=t_2`t_{12}`; the
       desired result now follows from the fact that substitution
       preserves types.
 
@@ -554,7 +553,7 @@ _Proof_: By induction on the derivation of `\vdash t : T`.
 \begin{code}
 preservation (Ax x₁) ()
 preservation (⇒-I ⊢N) ()
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (β⇒ valueV) = preservation-[:=] ⊢N ⊢V
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (β⇒ valueV) = preservation-[∶=] ⊢N ⊢V
 preservation (⇒-E ⊢L ⊢M) (γ⇒₁ L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = ⇒-E ⊢L′ ⊢M
 preservation (⇒-E ⊢L ⊢M) (γ⇒₂ valueL M⟹M′) with preservation ⊢M M⟹M′
@@ -565,10 +564,6 @@ preservation (𝔹-E 𝔹-I₁ ⊢M ⊢N) β𝔹₁ = ⊢M
 preservation (𝔹-E 𝔹-I₂ ⊢M ⊢N) β𝔹₂ = ⊢N
 preservation (𝔹-E ⊢L ⊢M ⊢N) (γ𝔹 L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = 𝔹-E ⊢L′ ⊢M ⊢N
-
--- Writing out implicit parameters in full
--- preservation (⇒-E {Γ} {λᵀ x ∈ A ⇒ N} {M} {.A} {B} (⇒-I {.Γ} {.x} {.N} {.A} {.B} ⊢N) ⊢M) (β⇒ {.x} {.A} {.N} {.M} valueM)
---  =  preservation-[:=] {Γ} {x} {A} {M} {N} {B} ⊢M ⊢N
 \end{code}
 
 Proof with eauto.
@@ -601,7 +596,7 @@ Put progress and preservation together and show that a well-typed
 term can _never_ reach a stuck state.
 
 Definition stuck (t:tm) : Prop :=
-  (normal_form step) t /\ ~ value t.
+  (normal_form step) t /\ ~ Value t.
 
 Corollary soundness : forall t t' T,
   empty \vdash t : T →

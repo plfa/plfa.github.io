@@ -9,7 +9,7 @@ This chapter defines the simply-typed lambda calculus.
 ## Imports
 \begin{code}
 open import Maps using (Id; id; _≟_; PartialMap; module PartialMap)
-open PartialMap using (∅; _,_↦_)
+open PartialMap using (∅) renaming (_,_↦_ to _,_∶_)
 open import Data.String using (String)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Maybe using (Maybe; just; nothing)
@@ -201,7 +201,7 @@ data _⊢_∶_ : Context → Term → Type → Set where
     Γ x ≡ just A →
     Γ ⊢ var x ∶ A
   ⇒-I : ∀ {Γ x N A B} →
-    Γ , x ↦ A ⊢ N ∶ B →
+    Γ , x ∶ A ⊢ N ∶ B →
     Γ ⊢ λ[ x ∶ A ] N ∶ A ⇒ B
   ⇒-E : ∀ {Γ L M A B} →
     Γ ⊢ L ∶ A ⇒ B →
