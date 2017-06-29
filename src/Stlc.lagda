@@ -206,36 +206,35 @@ typing₂ = ⇒-I (⇒-I (⇒-E (Ax refl) (⇒-E (Ax refl) (Ax refl))))
 Construction of a type derivation is best done interactively.
 We start with the declaration:
 
-  `typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹`
-  `typing₁ = ?`
+    typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
+    typing₁ = ?
 
-Typing control-L causes Agda to create a hole and tell us its expected type.
+Typing C-L (control L) causes Agda to create a hole and tell us its
+expected type.
 
-  `typing₁ = { }0`
-  `?0 : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹`
+    typing₁ = { }0
+    ?0 : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
 
-Now we fill in the hole, observing that the outermost term in `not` in a `λ`,
-which is typed using `⇒-I`. The `⇒-I` rule in turn takes one argument, which
-we again specify with a hole.
+Now we fill in the hole by typing C-R (control R). Agda observes that
+the outermost term in `not` in a `λ`, which is typed using `⇒-I`. The
+`⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
-  `typing₁ = ⇒-I { }0`
-  `?0 : ∅ , x ∶ 𝔹 ⊢ if var x then false else true ∶ 𝔹`
+    typing₁ = ⇒-I { }0
+    ?0 : ∅ , x ∶ 𝔹 ⊢ if var x then false else true ∶ 𝔹
 
-Again we fill in the hole, observing that the outermost term is now
-`if_then_else_`, which is typed using `𝔹-E`. The `𝔹-E` rule in turn takes
-three arguments, which we again specify with holes.
+Again we fill in the hole by typing C-R. Agda observes that the
+outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
+`𝔹-E` rule in turn takes three arguments, which Agda leaves as holes.
 
-  `typing₁ = ⇒-I (𝔹-E { }0 { }1 { }2)`
-  `?0 : ∅ , x ∶ 𝔹 ⊢ var x ∶ 𝔹`
-  `?1 : ∅ , x ∶ 𝔹 ⊢ false ∶ 𝔹`
-  `?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹`
+    typing₁ = ⇒-I (𝔹-E { }0 { }1 { }2)
+    ?0 : ∅ , x ∶ 𝔹 ⊢ var x ∶
+    ?1 : ∅ , x ∶ 𝔹 ⊢ false ∶ 𝔹
+    ?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹
 
-Again we fill in the three holes, observing that `var x`, `false`, and `true`
-are typed using `Ax`, `𝔹-I₂`, and `𝔹-I₁` respectively. The `Ax` rule in turn
-takes an argument, to show that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn
-be computed with a hole.
-
-Filling in the three holes gives the derivation above.
-
+Again we fill in the three holes by typing C-R in each. Agda observes
+that `var x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
+`𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
+that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
+hole. After filling in all holes, the term is as above.
 
 

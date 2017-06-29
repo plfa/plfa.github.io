@@ -39,7 +39,7 @@ data canonical_for_ : Term → Type → Set where
   canonical-false : canonical false for 𝔹
 
 canonicalFormsLemma : ∀ {L A} → ∅ ⊢ L ∶ A → Value L → canonical L for A
-canonicalFormsLemma (Ax ⊢x) ()
+canonicalFormsLemma (Ax ()) ()
 canonicalFormsLemma (⇒-I ⊢N) value-λ = canonical-λ
 canonicalFormsLemma (⇒-E ⊢L ⊢M) ()
 canonicalFormsLemma 𝔹-I₁ value-true = canonical-true
@@ -50,11 +50,15 @@ canonicalFormsLemma (𝔹-E ⊢L ⊢M ⊢N) ()
 ## Progress
 
 As before, the _progress_ theorem tells us that closed, well-typed
-terms are not stuck: either a well-typed term is a value, or it
-can take a reduction step.  
+terms are not stuck: either a well-typed term can take a reduction
+step or it is a value.
 
 \begin{code}
-progress : ∀ {M A} → ∅ ⊢ M ∶ A → Value M ⊎ ∃ λ N → M ⟹ N
+data Progress : Term → Set where
+  steps : ∀ {M N} → M ⟹ N → Progress M
+  done  : ∀ {M} → Value M → Progress M
+
+progress : ∀ {M A} → ∅ ⊢ M ∶ A → Progress M
 \end{code}
 
 The proof is a relatively
@@ -74,52 +78,54 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
   - If the last rule of the derivation is `⇒-E`, then the term has the
     form `L · M` for some `L` and `M`, where we know that `L` and `M`
     are also well typed in the empty context, giving us two induction
-    hypotheses.  By the first induction hypothesis, either `L` is a
-    value or it can take a step.
-
-    - If `L` is a value then consider `M`. By the second induction
-      hypothesis, either `M` is a value or it can take a step.
-
-      - If `M` is a value, then since `L` is a value with a
-        function type we know it must be a lambda abstraction,
-        and hence `L · M` can take a step by `β⇒`.
-
-      - If `M` can take a step, then so can `L · M` by `γ⇒₂`.
+    hypotheses.  By the first induction hypothesis, either `L`
+    can take a step or is a value.
 
     - If `L` can take a step, then so can `L · M` by `γ⇒₁`.
 
+    - If `L` is a value then consider `M`. By the second induction
+      hypothesis, either `M` can take a step or is a value.
+
+      - If `M` can take a step, then so can `L · M` by `γ⇒₂`.
+
+      - If `M` is a value, then since `L` is a value with a
+        function type we know from the canonical forms lemma
+        that it must be a lambda abstraction,
+        and hence `L · M` can take a step by `β⇒`.
+
   - If the last rule of the derivation is `𝔹-E`, then the term has
     the form `if L then M else N` where `L` has type `𝔹`.
-    By the induction hypothesis, either `L` is a value or it can
-    take a step.
-
-    - If `L` is a value, then since it has type boolean it must be
-      either `true` or `false`.
-
-      - If `L` is `true`, then then term steps by `β𝔹₁`
-
-      - If `L` is `false`, then then term steps by `β𝔹₂`
+    By the induction hypothesis, either `L` can take a step or is
+    a value.
 
     - If `L` can take a step, then so can `if L then M else N` by `γ𝔹`.
+
+    - If `L` is a value, then since it has type boolean we know from
+      the canonical forms lemma that it must be either `true` or
+      `false`.
+
+      - If `L` is `true`, then `if L then M else N` steps by `β𝔹₁`
+
+      - If `L` is `false`, then `if L then M else N` steps by `β𝔹₂`
 
 This completes the proof.
 
 \begin{code}
 progress (Ax ())
-progress (⇒-I ⊢N) = inj₁ value-λ
-progress (⇒-E {Γ} {L} {M} {A} {B} ⊢L ⊢M) with progress ⊢L
-... | inj₂ (L′ , L⟹L′) = inj₂ (L′ · M , γ⇒₁ L⟹L′)
-... | inj₁ valueL with progress ⊢M
-... | inj₂ (M′ , M⟹M′) = inj₂ (L · M′ , γ⇒₂ valueL M⟹M′)
-... | inj₁ valueM with canonicalFormsLemma ⊢L valueL
-... | canonical-λ {x} {.A} {N} {.B} = inj₂ ((N [ x ∶= M ]) , β⇒ valueM)
-progress 𝔹-I₁ = inj₁ value-true
-progress 𝔹-I₂ = inj₁ value-false
-progress (𝔹-E {Γ} {L} {M} {N} {A} ⊢L ⊢M ⊢N) with progress ⊢L
-... | inj₂ (L′ , L⟹L′) = inj₂ ((if L′ then M else N) , γ𝔹 L⟹L′)
-... | inj₁ valueL with canonicalFormsLemma ⊢L valueL
-... | canonical-true = inj₂ (M , β𝔹₁)
-... | canonical-false = inj₂ (N , β𝔹₂)
+progress (⇒-I ⊢N) = done value-λ
+progress (⇒-E ⊢L ⊢M) with progress ⊢L
+... | steps L⟹L′ = steps (γ⇒₁ L⟹L′)
+... | done valueL with progress ⊢M
+... | steps M⟹M′ = steps (γ⇒₂ valueL M⟹M′)
+... | done valueM with canonicalFormsLemma ⊢L valueL
+... | canonical-λ = steps (β⇒ valueM)
+progress 𝔹-I₁ = done value-true
+progress 𝔹-I₂ = done value-false
+progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
+... | steps L⟹L′ = steps (γ𝔹 L⟹L′)
+... | done valueL with canonicalFormsLemma ⊢L valueL
+... | canonical-true = steps β𝔹₁
+... | canonical-false = steps β𝔹₂
 \end{code}
 
 #### Exercise: 3 stars, optional (progress_from_term_ind)
@@ -128,7 +134,7 @@ instead of induction on typing derivations.
 
 \begin{code}
 postulate
-  progress′ : ∀ {M A} → ∅ ⊢ M ∶ A → Value M ⊎ ∃ λ N → M ⟹ N
+  progress′ : ∀ M {A} → ∅ ⊢ M ∶ A → Progress M
 \end{code}
 
 ## Preservation
