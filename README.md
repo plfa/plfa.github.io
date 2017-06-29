@@ -6,10 +6,11 @@ permalink: /about/
 
 How to host literal code.
 
-In directory `sf/` run both the following in background:
+In directory `sf/` the following:
 
-    $ jekyll serve &
-    $ watch make &
+	$ make clobber
+    $ make
+    $ make serve &
 
 The visible page appears at
 
