@@ -65,41 +65,44 @@ first, then the formal version.
 
 _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
 
-  - The last rule of the derivation cannot be `var`,
+  - The last rule of the derivation cannot be `Ax`,
     since a variable is never well typed in an empty context.
 
-  - The `λ`, `true`, and `false` cases are trivial, since in
-    each of these cases we can see by inspecting the rule that
-    the term is a value.
+  - If the last rule of the derivation is `⇒-I`, `𝔹-I₁`, or `𝔹-I₂`
+    then, trivially, the term is a value.
 
   - If the last rule of the derivation is `⇒-E`, then the term has the
-    form `L · M` for some `L` and `M`, where we know that
-    `L` and `M` are also well typed in the empty context; in particular,
-    there exists types `A` and `B` such that `∅ ⊢ L ∶ A ⇒ B` and
-    `∅ ⊢ M ∶ A`.  By the induction hypothesis, either `L` is a
-    value or it can take a reduction step.
+    form `L · M` for some `L` and `M`, where we know that `L` and `M`
+    are also well typed in the empty context, giving us two induction
+    hypotheses.  By the first induction hypothesis, either `L` is a
+    value or it can take a step.
 
-    - If `L` is a value, then consider `M`, which by the other
-      induction hypothesis must also either be a value or take a step.
+    - If `L` is a value then consider `M`. By the second induction
+      hypothesis, either `M` is a value or it can take a step.
 
-      - Suppose `M` is a value.  Since `L` is a value with a
-        function type, it must be a lambda abstraction;
-        hence `L · M` can take a step by `β⇒`.
+      - If `M` is a value, then since `L` is a value with a
+        function type we know it must be a lambda abstraction,
+        and hence `L · M` can take a step by `β⇒`.
 
-      - Otherwise, `M` can take a step to `M′`, and hence so
-        can `L · M` by `γ⇒₂`.
+      - If `M` can take a step, then so can `L · M` by `γ⇒₂`.
 
-  - If `t_1` can take a step, then so can `t_1 t_2` by `app1`.
+    - If `L` can take a step, then so can `L · M` by `γ⇒₁`.
 
-  - If the last rule of the derivation is `if`, then `t = \text{if }t_1
-    \text{ then }t_2\text{ else }t_3`, where `t_1` has type `bool`.  By
-    the IH, `t_1` either is a value or takes a step.
+  - If the last rule of the derivation is `𝔹-E`, then the term has
+    the form `if L then M else N` where `L` has type `𝔹`.
+    By the induction hypothesis, either `L` is a value or it can
+    take a step.
 
-  - If `t_1` is a value, then since it has type `bool` it must be
-    either `true` or `false`.  If it is `true`, then `t` steps
-    to `t_2`; otherwise it steps to `t_3`.
+    - If `L` is a value, then since it has type boolean it must be
+      either `true` or `false`.
 
-  - Otherwise, `t_1` takes a step, and therefore so does `t` (by `if`).
+      - If `L` is `true`, then then term steps by `β𝔹₁`
+
+      - If `L` is `false`, then then term steps by `β𝔹₂`
+
+    - If `L` can take a step, then so can `if L then M else N` by `γ𝔹`.
+
+This completes the proof.
 
 \begin{code}
 progress (Ax ())
