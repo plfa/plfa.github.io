@@ -85,16 +85,16 @@ infix 10 _⟹_
 data _⟹_ : Term → Term → Set where
   β⇒ : ∀ {x A N V} → Value V →
     (λ[ x ∶ A ] N) · V ⟹ N [ x ∶= V ]
-  γ⇒₀ : ∀ {L L' M} →
+  γ⇒₁ : ∀ {L L' M} →
     L ⟹ L' →
     L · M ⟹ L' · M
-  γ⇒₁ : ∀ {V M M'} →
+  γ⇒₂ : ∀ {V M M'} →
     Value V →
     M ⟹ M' →
     V · M ⟹ V · M'
-  β𝔹₀ : ∀ {M N} →
-    if true then M else N ⟹ M
   β𝔹₁ : ∀ {M N} →
+    if true then M else N ⟹ M
+  β𝔹₂ : ∀ {M N} →
     if false then M else N ⟹ N
   γ𝔹 : ∀ {L L' M N} →
     L ⟹ L' →    
@@ -133,32 +133,32 @@ _∎ : ∀ M → M ⟹* M
 M ∎  =  ⟨⟩
 \end{code}
 
-## Example reductions
+## Example reduction derivations
 
 \begin{code}
-example₀ : not · true ⟹* false
-example₀ =
+reduction₁ : not · true ⟹* false
+reduction₁ =
     not · true
   ⟹⟨ β⇒ value-true ⟩
     if true then false else true
-  ⟹⟨ β𝔹₀ ⟩
+  ⟹⟨ β𝔹₁ ⟩
     false
   ∎
 
-example₁ : two · not · true ⟹* true
-example₁ =
+reduction₂ : two · not · true ⟹* true
+reduction₂ =
     two · not · true
-  ⟹⟨ γ⇒₀ (β⇒ value-λ) ⟩
+  ⟹⟨ γ⇒₁ (β⇒ value-λ) ⟩
     (λ[ x ∶ 𝔹 ] not · (not · var x)) · true
   ⟹⟨ β⇒ value-true ⟩
     not · (not · true)
-  ⟹⟨ γ⇒₁ value-λ (β⇒ value-true) ⟩
+  ⟹⟨ γ⇒₂ value-λ (β⇒ value-true) ⟩
     not · (if true then false else true)
-  ⟹⟨ γ⇒₁ value-λ β𝔹₀ ⟩
+  ⟹⟨ γ⇒₂ value-λ β𝔹₁ ⟩
     not · false
   ⟹⟨ β⇒ value-false ⟩
     if false then false else true
-  ⟹⟨ β𝔹₁ ⟩
+  ⟹⟨ β𝔹₂ ⟩
     true
   ∎
 \end{code}
@@ -182,9 +182,9 @@ data _⊢_∶_ : Context → Term → Type → Set where
     Γ ⊢ L ∶ A ⇒ B →
     Γ ⊢ M ∶ A →
     Γ ⊢ L · M ∶ B
-  𝔹-I₀ : ∀ {Γ} →
-    Γ ⊢ true ∶ 𝔹
   𝔹-I₁ : ∀ {Γ} →
+    Γ ⊢ true ∶ 𝔹
+  𝔹-I₂ : ∀ {Γ} →
     Γ ⊢ false ∶ 𝔹
   𝔹-E : ∀ {Γ L M N A} →
     Γ ⊢ L ∶ 𝔹 →
@@ -196,39 +196,44 @@ data _⊢_∶_ : Context → Term → Type → Set where
 ## Example type derivations
 
 \begin{code}
-example₂ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
-example₂ = ⇒-I (𝔹-E (Ax refl) 𝔹-I₁ 𝔹-I₀)
+typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
+typing₁ = ⇒-I (𝔹-E (Ax refl) 𝔹-I₂ 𝔹-I₁)
 
-example₃ : ∅ ⊢ two ∶ (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹
-example₃ = ⇒-I (⇒-I (⇒-E (Ax refl) (⇒-E (Ax refl) (Ax refl))))
+typing₂ : ∅ ⊢ two ∶ (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹
+typing₂ = ⇒-I (⇒-I (⇒-E (Ax refl) (⇒-E (Ax refl) (Ax refl))))
 \end{code}
 
 Construction of a type derivation is best done interactively.
 We start with the declaration:
 
-  `example₂ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹`
-  `example₂ = ?`
+  `typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹`
+  `typing₁ = ?`
 
 Typing control-L causes Agda to create a hole and tell us its expected type.
 
-  `example₂ = { }0`
+  `typing₁ = { }0`
   `?0 : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹`
 
 Now we fill in the hole, observing that the outermost term in `not` in a `λ`,
 which is typed using `⇒-I`. The `⇒-I` rule in turn takes one argument, which
 we again specify with a hole.
 
-  `example₂ = ⇒-I { }0`
+  `typing₁ = ⇒-I { }0`
   `?0 : ∅ , x ∶ 𝔹 ⊢ if var x then false else true ∶ 𝔹`
 
 Again we fill in the hole, observing that the outermost term is now
 `if_then_else_`, which is typed using `𝔹-E`. The `𝔹-E` rule in turn takes
 three arguments, which we again specify with holes.
 
-  `example₂ = ⇒-I (𝔹-E { }0 { }1 { }2)`
+  `typing₁ = ⇒-I (𝔹-E { }0 { }1 { }2)`
   `?0 : ∅ , x ∶ 𝔹 ⊢ var x ∶ 𝔹`
   `?1 : ∅ , x ∶ 𝔹 ⊢ false ∶ 𝔹`
   `?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹`
+
+Again we fill in the three holes, observing that `var x`, `false`, and `true`
+are typed using `Ax`, `𝔹-I₂`, and `𝔹-I₁` respectively. The `Ax` rule in turn
+takes an argument, to show that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn
+be computed with a hole.
 
 Filling in the three holes gives the derivation above.
 

@@ -26,28 +26,24 @@ open import Stlc
 
 ## Canonical Forms
 
-As we saw for the simple calculus in the [Stlc]({{ "Stlc" | relative_url }})
-chapter, the first step in establishing basic properties of reduction and types
+As we saw for the simple calculus in Chapter [Types]({{ "Types" | relative_url }}),
+the first step in establishing basic properties of reduction and typing
 is to identify the possible _canonical forms_ (i.e., well-typed closed values)
-belonging to each type.  For `bool`, these are the boolean values `true` and
-`false`.  For arrow types, the canonical forms are lambda-abstractions. 
+belonging to each type.  For function types the canonical forms are lambda-abstractions,
+while for boolean types they are values `true` and `false`.  
 
 \begin{code}
 data canonical_for_ : Term → Type → Set where
   canonical-λ : ∀ {x A N B} → canonical (λ[ x ∶ A ] N) for (A ⇒ B)
   canonical-true : canonical true for 𝔹
   canonical-false : canonical false for 𝔹
-  
--- canonical_for_ : Term → Type → Set
--- canonical L for 𝔹       = L ≡ true ⊎ L ≡ false
--- canonical L for (A ⇒ B) = ∃₂ λ x N → L ≡ λ[ x ∶ A ] N
 
 canonicalFormsLemma : ∀ {L A} → ∅ ⊢ L ∶ A → Value L → canonical L for A
 canonicalFormsLemma (Ax ⊢x) ()
-canonicalFormsLemma (⇒-I ⊢N) value-λ = canonical-λ      -- _ , _ , refl
+canonicalFormsLemma (⇒-I ⊢N) value-λ = canonical-λ
 canonicalFormsLemma (⇒-E ⊢L ⊢M) ()
-canonicalFormsLemma 𝔹-I₁ value-true = canonical-true    -- inj₁ refl
-canonicalFormsLemma 𝔹-I₂ value-false = canonical-false  -- inj₂ refl
+canonicalFormsLemma 𝔹-I₁ value-true = canonical-true
+canonicalFormsLemma 𝔹-I₂ value-false = canonical-false
 canonicalFormsLemma (𝔹-E ⊢L ⊢M ⊢N) ()
 \end{code}
 
@@ -62,9 +58,9 @@ progress : ∀ {M A} → ∅ ⊢ M ∶ A → Value M ⊎ ∃ λ N → M ⟹ N
 \end{code}
 
 The proof is a relatively
-straightforward extension of the progress proof we saw in the
-[Types]({{ "Types" | relative_url }}) chapter.
-We'll give the proof in English
+straightforward extension of the progress proof we saw in
+[Types]({{ "Types" | relative_url }}).
+We give the proof in English
 first, then the formal version.
 
 _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
@@ -72,26 +68,26 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
   - The last rule of the derivation cannot be `var`,
     since a variable is never well typed in an empty context.
 
-  - The `true`, `false`, and `abs` cases are trivial, since in
-    each of these cases we can see by inspecting the rule that `t`
-    is a value.
+  - The `λ`, `true`, and `false` cases are trivial, since in
+    each of these cases we can see by inspecting the rule that
+    the term is a value.
 
-  - If the last rule of the derivation is `app`, then `t` has the
-    form `t_1\;t_2` for som e`t_1` and `t_2`, where we know that
-    `t_1` and `t_2` are also well typed in the empty context; in particular,
-    there exists a type `B` such that `\vdash t_1 : A\to T` and
-    `\vdash t_2 : B`.  By the induction hypothesis, either `t_1` is a
+  - If the last rule of the derivation is `⇒-E`, then the term has the
+    form `L · M` for some `L` and `M`, where we know that
+    `L` and `M` are also well typed in the empty context; in particular,
+    there exists types `A` and `B` such that `∅ ⊢ L ∶ A ⇒ B` and
+    `∅ ⊢ M ∶ A`.  By the induction hypothesis, either `L` is a
     value or it can take a reduction step.
 
-  - If `t_1` is a value, then consider `t_2`, which by the other
-    induction hypothesis must also either be a value or take a step.
+    - If `L` is a value, then consider `M`, which by the other
+      induction hypothesis must also either be a value or take a step.
 
-    - Suppose `t_2` is a value.  Since `t_1` is a value with an
-      arrow type, it must be a lambda abstraction; hence `t_1\;t_2`
-      can take a step by `red`.
+      - Suppose `M` is a value.  Since `L` is a value with a
+        function type, it must be a lambda abstraction;
+        hence `L · M` can take a step by `β⇒`.
 
-    - Otherwise, `t_2` can take a step, and hence so can `t_1\;t_2`
-      by `app2`.
+      - Otherwise, `M` can take a step to `M′`, and hence so
+        can `L · M` by `γ⇒₂`.
 
   - If `t_1` can take a step, then so can `t_1 t_2` by `app1`.
 
