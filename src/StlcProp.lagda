@@ -231,8 +231,7 @@ example-free₁ : x ∈ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x)
 example-free₁ = free-λ f≢x (free-·₂ free-var)
 
 example-free₂ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x)
-example-free₂ (free-λ f≢x (free-·₁ free-var)) = f≢x refl
-example-free₂ (free-λ f≢x (free-·₂ ()))
+example-free₂ (free-λ f≢f _) = f≢f refl
 \end{code}
 
 
@@ -244,7 +243,7 @@ postulate
   example-free₃ : x ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f)
   example-free₄ : f ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f)
   example-free₅ : x ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
-  example-free₆ : x ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
+  example-free₆ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
 \end{code}
 
 Although `_∈_` may apperar to be a low-level technical definition,
