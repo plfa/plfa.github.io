@@ -128,6 +128,15 @@ progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
 ... | canonical-false = steps β𝔹₂
 \end{code}
 
+This code reads neatly in part because we look at the
+`steps` option before the `done` option. We could, of course,
+look at it the other way around, but then the `...` abbreviation
+no longer works, and we will need to write out all the arguments
+in full. In general, the rule of thumb is to look at the easy case
+(here `steps`) before the hard case (her `done`).
+If you have two hard cases, you will have to expand out `...`
+or introduce subsidiary functions.
+
 #### Exercise: 3 stars, optional (progress_from_term_ind)
 Show that progress can also be proved by induction on terms
 instead of induction on typing derivations.
@@ -140,54 +149,54 @@ postulate
 ## Preservation
 
 The other half of the type soundness property is the preservation
-of types during reduction.  For this, we need to develop some
+of types during reduction.  For this, we need to develop
 technical machinery for reasoning about variables and
 substitution.  Working from top to bottom (from the high-level
 property we are actually interested in to the lowest-level
-technical lemmas that are needed by various cases of the more
-interesting proofs), the story goes like this:
+technical lemmas), the story goes like this:
 
   - The _preservation theorem_ is proved by induction on a typing
-    derivation, pretty much as we did in the [Stlc]({{ "Stlc" | relative_url }})
+    derivation, pretty much as we did in the [Types]({{ "Types" | relative_url }})
     chapter.  The one case that is significantly different is the one for the
-    `red` rule, whose definition uses the substitution operation.  To see that
+    `β⇒` rule, whose definition uses the substitution operation.  To see that
     this step preserves typing, we need to know that the substitution itself
-    does.  So we prove a... 
+    does.  So we prove a ... 
 
   - _substitution lemma_, stating that substituting a (closed)
-    term `s` for a variable `x` in a term `t` preserves the type
-    of `t`.  The proof goes by induction on the form of `t` and
+    term `V` for a variable `x` in a term `N` preserves the type
+    of `N`.  The proof goes by induction on the form of `N` and
     requires looking at all the different cases in the definition
-    of substitition.  This time, the tricky cases are the ones for
+    of substitition.  The tricky cases are the ones for
     variables and for function abstractions.  In both cases, we
-    discover that we need to take a term `s` that has been shown
-    to be well-typed in some context `\Gamma` and consider the same
-    term `s` in a slightly different context `\Gamma'`.  For this
+    discover that we need to take a term `V` that has been shown
+    to be well-typed in some context `Γ` and consider the same
+    term in a different context `Γ′`.  For this
     we prove a...
 
   - _context invariance_ lemma, showing that typing is preserved
-    under "inessential changes" to the context `\Gamma`---in
-    particular, changes that do not affect any of the free
-    variables of the term.  And finally, for this, we need a
-    careful definition of...
+    under "inessential changes" to the context---a term `M`
+    well typed in `Γ` is also well typed in `Γ′`, so long as
+    all the free variables of `M` appear in both contexts.
+    And finally, for this, we need a careful definition of ...
 
-  - the _free variables_ of a term---i.e., those variables
+  - _free variables_ of a term---i.e., those variables
     mentioned in a term and not in the scope of an enclosing
     function abstraction binding a variable of the same name.
 
 To make Agda happy, we need to formalize the story in the opposite
-order...
+order.
 
 
 ### Free Occurrences
 
-A variable `x` _appears free in_ a term `M` if `M` contains some
-occurrence of `x` that is not under an abstraction over `x`.
+A variable `x` appears _free_ in a term `M` if `M` contains an
+occurrence of `x` that is not bound in an outer lambda abstraction.
 For example:
 
-  - `y` appears free, but `x` does not, in `λ[ x ∶ (A ⇒ B) ] x · y`
-  - both `x` and `y` appear free in `(λ[ x ∶ (A ⇒ B) ] x · y) · x`
-  - no variables appear free in `λ[ x ∶ (A ⇒ B) ] (λ[ y ∶ A ] x · y)`
+  - `x` appears free, but `f` does not, in `λ[ f ∶ (A ⇒ B) ] f · x`
+  - both `f` and `x` appear free in `(λ[ f ∶ (A ⇒ B) ] f · x) · f`;
+    note that `f` appears both bound and free in this term
+  - no variables appear free in `λ[ f ∶ (A ⇒ B) ] (λ[ x ∶ A ] f · x)`
 
 Formally:
 
@@ -205,11 +214,30 @@ data _∈_ : Id → Term → Set where
 A term in which no variables appear free is said to be _closed_.
 
 \begin{code}
+_∉_ : Id → Term → Set
+x ∉ M = x ∈ M → ⊥
+
 closed : Term → Set
-closed M = ∀ {x} → ¬ (x ∈ M)
+closed M = ∀ {x} → x ∉ M
 \end{code}
 
 #### Exercise: 1 star (free-in)
+Prove formally the properties listed above.
+
+\begin{code}
+{-
+example-free₁ : x ∈ (λ[ f ∶ (A ⇒ B) ] f · x)
+example-free₁ = ?
+example-free₂ : f ∉ (λ[ f ∶ (A ⇒ B) ] f · x)
+example-free₂ = ?
+example-free₃ : x ∈ (λ[ f ∶ (A ⇒ B) ] f · x)
+example-free₃ = ?
+example-free₄ : f ∈ (λ[ f ∶ (A ⇒ B) ] f · x)
+example-free₄ = ?
+-}
+\end{code}
+
+
 If the definition of `_∈_` is not crystal clear to
 you, it is a good idea to take a piece of paper and write out the
 rules in informal inference-rule notation.  (Although it is a

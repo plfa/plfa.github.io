@@ -36,7 +36,7 @@ standard library, wherever they overlap.
 open import Data.Nat         using (ℕ)
 open import Data.Empty       using (⊥; ⊥-elim)
 open import Data.Maybe       using (Maybe; just; nothing)
-open import Data.String      using (String)
+-- open import Data.String      using (String)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
                              using (_≡_; refl; _≢_; trans; sym)
@@ -54,7 +54,7 @@ we repeat its definition here.
 
 \begin{code}
 data Id : Set where
-  id : String → Id
+  id : ℕ → Id   {- String → Id -}
 \end{code}
 
 We recall a standard fact of logic.
@@ -69,7 +69,7 @@ by deciding equality on the underlying strings.
 
 \begin{code}
 _≟_ : (x y : Id) → Dec (x ≡ y)
-id x ≟ id y with x Data.String.≟ y
+id x ≟ id y with x Data.Nat.≟ y {- x Data.String.≟ y -}
 id x ≟ id y | yes refl  =  yes refl
 id x ≟ id y | no  x≢y   =  no (contrapositive id-inj x≢y)
   where
@@ -81,9 +81,9 @@ We define some identifiers for future use.
 
 \begin{code}
 x y z : Id
-x = id "x"
-y = id "y"
-z = id "z"
+x = id 0  -- id "x"
+y = id 1  -- id "y"
+z = id 2  -- id "z"
 \end{code}
 
 ## Total Maps
