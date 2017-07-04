@@ -36,7 +36,6 @@ standard library, wherever they overlap.
 open import Data.Nat         using (ℕ)
 open import Data.Empty       using (⊥; ⊥-elim)
 open import Data.Maybe       using (Maybe; just; nothing)
--- open import Data.String      using (String)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
                              using (_≡_; refl; _≢_; trans; sym)
@@ -54,7 +53,7 @@ we repeat its definition here.
 
 \begin{code}
 data Id : Set where
-  id : ℕ → Id   {- String → Id -}
+  id : ℕ → Id
 \end{code}
 
 We recall a standard fact of logic.
@@ -69,21 +68,12 @@ by deciding equality on the underlying strings.
 
 \begin{code}
 _≟_ : (x y : Id) → Dec (x ≡ y)
-id x ≟ id y with x Data.Nat.≟ y {- x Data.String.≟ y -}
+id x ≟ id y with x Data.Nat.≟ y
 id x ≟ id y | yes refl  =  yes refl
 id x ≟ id y | no  x≢y   =  no (contrapositive id-inj x≢y)
   where
     id-inj : ∀ {x y} → id x ≡ id y → x ≡ y
     id-inj refl  =  refl
-\end{code}
-
-We define some identifiers for future use.
-
-\begin{code}
-x y z : Id
-x = id 0  -- id "x"
-y = id 1  -- id "y"
-z = id 2  -- id "z"
 \end{code}
 
 ## Total Maps
@@ -135,8 +125,8 @@ takes `x` to `v` and takes every other key to whatever `ρ` does.
 
   _,_↦_ : ∀ {A} → TotalMap A → Id → A → TotalMap A
   (ρ , x ↦ v) y with x ≟ y
-  ... | yes x=y = v
-  ... | no  x≠y = ρ y
+  ... | yes x≡y = v
+  ... | no  x≢y = ρ y
 \end{code}
 
 This definition is a nice example of higher-order programming.
@@ -147,24 +137,29 @@ For example, we can build a map taking ids to naturals, where `x`
 maps to 42, `y` maps to 69, and every other key maps to 0, as follows:
 
 \begin{code}
-  ρ₀ : TotalMap ℕ
-  ρ₀ = always 0 , x ↦ 42 , y ↦ 69
+  module example where
+
+    x y z : Id
+    x = id 0
+    y = id 1
+    z = id 2
+
+    ρ₀ : TotalMap ℕ
+    ρ₀ = always 0 , x ↦ 42 , y ↦ 69
+
+    test₁ : ρ₀ x ≡ 42
+    test₁ = refl
+
+    test₂ : ρ₀ y ≡ 69
+    test₂ = refl
+
+    test₃ : ρ₀ z ≡ 0
+    test₃ = refl
 \end{code}
 
 This completes the definition of total maps.  Note that we don't
 need to define a `find` operation because it is just function
 application!
-
-\begin{code}
-  test₁ : ρ₀ x ≡ 42
-  test₁ = refl
-
-  test₂ : ρ₀ y ≡ 69
-  test₂ = refl
-
-  test₃ : ρ₀ z ≡ 0
-  test₃ = refl
-\end{code}
 
 To use maps in later chapters, we'll need several fundamental
 facts about how they behave.  Even if you don't work the following

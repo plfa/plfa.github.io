@@ -193,16 +193,16 @@ A variable `x` appears _free_ in a term `M` if `M` contains an
 occurrence of `x` that is not bound in an outer lambda abstraction.
 For example:
 
-  - `x` appears free, but `f` does not, in `λ[ f ∶ (A ⇒ B) ] f · x`
-  - both `f` and `x` appear free in `(λ[ f ∶ (A ⇒ B) ] f · x) · f`;
+  - `x` appears free, but `f` does not, in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x`
+  - both `f` and `x` appear free in `(λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f`;
     note that `f` appears both bound and free in this term
-  - no variables appear free in `λ[ f ∶ (A ⇒ B) ] (λ[ x ∶ A ] f · x)`
+  - no variables appear free in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x`
 
 Formally:
 
 \begin{code}
 data _∈_ : Id → Term → Set where
-  free-var  : ∀ {x} → x ∈ (var x)
+  free-var  : ∀ {x} → x ∈ var x
   free-λ  : ∀ {x y A N} → y ≢ x → x ∈ N → x ∈ (λ[ y ∶ A ] N)
   free-·₁ : ∀ {x L M} → x ∈ L → x ∈ (L · M)
   free-·₂ : ∀ {x L M} → x ∈ M → x ∈ (L · M)
@@ -215,37 +215,44 @@ A term in which no variables appear free is said to be _closed_.
 
 \begin{code}
 _∉_ : Id → Term → Set
-x ∉ M = x ∈ M → ⊥
+x ∉ M = ¬ (x ∈ M)
 
 closed : Term → Set
 closed M = ∀ {x} → x ∉ M
 \end{code}
 
-#### Exercise: 1 star (free-in)
-Prove formally the properties listed above.
+Here are proofs corresponding to the first two examples above.
 
 \begin{code}
-{-
-example-free₁ : x ∈ (λ[ f ∶ (A ⇒ B) ] f · x)
-example-free₁ = ?
-example-free₂ : f ∉ (λ[ f ∶ (A ⇒ B) ] f · x)
-example-free₂ = ?
-example-free₃ : x ∈ (λ[ f ∶ (A ⇒ B) ] f · x)
-example-free₃ = ?
-example-free₄ : f ∈ (λ[ f ∶ (A ⇒ B) ] f · x)
-example-free₄ = ?
--}
+f≢x : f ≢ x
+f≢x ()
+
+example-free₁ : x ∈ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x)
+example-free₁ = free-λ f≢x (free-·₂ free-var)
+
+example-free₂ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x)
+example-free₂ (free-λ f≢x (free-·₁ free-var)) = f≢x refl
+example-free₂ (free-λ f≢x (free-·₂ ()))
 \end{code}
 
 
-If the definition of `_∈_` is not crystal clear to
-you, it is a good idea to take a piece of paper and write out the
-rules in informal inference-rule notation.  (Although it is a
-rather low-level, technical definition, understanding it is
-crucial to understanding substitution and its properties, which
-are really the crux of the lambda-calculus.)
+#### Exercise: 1 star (free-in)
+Prove formally the remaining examples given above.
+
+\begin{code}
+postulate
+  example-free₃ : x ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f)
+  example-free₄ : f ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f)
+  example-free₅ : x ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
+  example-free₆ : x ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
+\end{code}
+
+Although `_∈_` may apperar to be a low-level technical definition,
+understanding it is crucial to understanding the properties of
+substitution, which are really the crux of the lambda calculus.
 
 ### Substitution
+
 To prove that substitution preserves typing, we first need a
 technical lemma connecting free variables and typing contexts: If
 a variable `x` appears free in a term `M`, and if we know `M` is

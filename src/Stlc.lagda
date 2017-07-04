@@ -7,10 +7,10 @@ permalink : /Stlc
 This chapter defines the simply-typed lambda calculus.
 
 ## Imports
+
 \begin{code}
 open import Maps using (Id; id; _≟_; PartialMap; module PartialMap)
 open PartialMap using (∅) renaming (_,_↦_ to _,_∶_)
--- open import Data.String using (String)
 open import Data.Nat using (ℕ)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Relation.Nullary using (Dec; yes; no)
@@ -45,8 +45,8 @@ data Term : Set where
 Example terms.
 \begin{code}
 f x : Id
-f  =  id 0 -- id "f"
-x  =  id 1 -- id "x"
+f  =  id 0
+x  =  id 1
 
 not two : Term 
 not =  λ[ x ∶ 𝔹 ] (if var x then false else true)
@@ -104,26 +104,6 @@ data _⟹_ : Term → Term → Set where
 
 ## Reflexive and transitive closure
 
-\begin{code}
-{-
-Rel : Set → Set₁
-Rel A = A → A → Set
-
-infixl 10 _>>_
-
-data _* {A : Set} (R : Rel A) : Rel A where
-  ⟨⟩ : ∀ {x : A} → (R *) x x
-  ⟨_⟩ : ∀ {x y : A} → R x y → (R *) x y
-  _>>_ : ∀ {x y z : A} → (R *) x y → (R *) y z → (R *) x z
-
-infix 10 _⟹*_
-
-_⟹*_ : Rel Term
-_⟹*_ = (_⟹_) *
--}
-\end{code}
-
-## Notation for setting out reductions
 
 \begin{code}
 infix 10 _⟹*_ 
@@ -164,50 +144,6 @@ reduction₂ =
 Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
 
 
-\begin{code}
-{-
-infixr 2 _⟹⟨_⟩_
-infix  3 _∎
-
-_⟹⟨_⟩_ : ∀ L {M N} → L ⟹ M → M ⟹* N → L ⟹* N
-L ⟹⟨ L⟹M ⟩ M⟹*N  =  ⟨ L⟹M ⟩ >> M⟹*N
-
-_∎ : ∀ M → M ⟹* M
-M ∎  =  ⟨⟩
--}
-\end{code}
-
-## Example reduction derivations
-
-\begin{code}
-{-
-reduction₁ : not · true ⟹* false
-reduction₁ =
-    not · true
-  ⟹⟨ β⇒ value-true ⟩
-    if true then false else true
-  ⟹⟨ β𝔹₁  ⟩
-    false
-  ∎
-
-reduction₂ : two · not · true ⟹* true
-reduction₂ =
-    two · not · true
-  ⟹⟨ γ⇒₁ (β⇒ value-λ) ⟩
-    (λ[ x ∶ 𝔹 ] not · (not · var x)) · true
-  ⟹⟨ β⇒ value-true ⟩
-    not · (not · true)
-  ⟹⟨ γ⇒₂ value-λ (β⇒ value-true) ⟩
-    not · (if true then false else true)
-  ⟹⟨ γ⇒₂ value-λ β𝔹₁ ⟩
-    not · false
-  ⟹⟨ β⇒ value-false ⟩
-    if false then false else true
-  ⟹⟨ β𝔹₂ ⟩
-    true
-  ∎
--}
-\end{code}
 
 ## Type rules
 
@@ -255,20 +191,19 @@ We start with the declaration:
     typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
     typing₁ = ?
 
-Typing C-L (control L) causes Agda to create a hole and tell us its
-expected type.
+Typing C-l causes Agda to create a hole and tell us its expected type.
 
     typing₁ = { }0
     ?0 : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
 
-Now we fill in the hole by typing C-R (control R). Agda observes that
+Now we fill in the hole by typing C-c C-r. Agda observes that
 the outermost term in `not` in a `λ`, which is typed using `⇒-I`. The
 `⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
     typing₁ = ⇒-I { }0
     ?0 : ∅ , x ∶ 𝔹 ⊢ if var x then false else true ∶ 𝔹
 
-Again we fill in the hole by typing C-R. Agda observes that the
+Again we fill in the hole by typing C-c C-r. Agda observes that the
 outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
 `𝔹-E` rule in turn takes three arguments, which Agda leaves as holes.
 
@@ -277,7 +212,7 @@ outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
     ?1 : ∅ , x ∶ 𝔹 ⊢ false ∶ 𝔹
     ?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹
 
-Again we fill in the three holes by typing C-R in each. Agda observes
+Again we fill in the three holes by typing C-c C-r in each. Agda observes
 that `var x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
 `𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
 that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
