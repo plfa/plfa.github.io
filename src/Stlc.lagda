@@ -117,7 +117,7 @@ data _⟹*_ : Term → Term → Set where
 reduction₁ : not · true ⟹* false
 reduction₁ =
     not · true
-  ⟹⟨ (β⇒ value-true) ⟩
+  ⟹⟨ β⇒ value-true ⟩
     if true then false else true
   ⟹⟨ β𝔹₁ ⟩
     false
@@ -217,5 +217,7 @@ that `var x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
 `𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
 that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
 hole. After filling in all holes, the term is as above.
+
+The entire process can be automated using Agsy, invoked with C-c C-a.
 
 
