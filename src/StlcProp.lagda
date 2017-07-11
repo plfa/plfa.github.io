@@ -81,32 +81,32 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
     hypotheses.  By the first induction hypothesis, either `L`
     can take a step or is a value.
 
-    - If `L` can take a step, then so can `L · M` by `γ⇒₁`.
+    - If `L` can take a step, then so can `L · M` by `ξ·₁`.
 
     - If `L` is a value then consider `M`. By the second induction
       hypothesis, either `M` can take a step or is a value.
 
-      - If `M` can take a step, then so can `L · M` by `γ⇒₂`.
+      - If `M` can take a step, then so can `L · M` by `ξ·₂`.
 
       - If `M` is a value, then since `L` is a value with a
         function type we know from the canonical forms lemma
         that it must be a lambda abstraction,
-        and hence `L · M` can take a step by `β⇒`.
+        and hence `L · M` can take a step by `βλ·`.
 
   - If the last rule of the derivation is `𝔹-E`, then the term has
     the form `if L then M else N` where `L` has type `𝔹`.
     By the induction hypothesis, either `L` can take a step or is
     a value.
 
-    - If `L` can take a step, then so can `if L then M else N` by `γ𝔹`.
+    - If `L` can take a step, then so can `if L then M else N` by `ξif`.
 
     - If `L` is a value, then since it has type boolean we know from
       the canonical forms lemma that it must be either `true` or
       `false`.
 
-      - If `L` is `true`, then `if L then M else N` steps by `β𝔹₁`
+      - If `L` is `true`, then `if L then M else N` steps by `βif-true`
 
-      - If `L` is `false`, then `if L then M else N` steps by `β𝔹₂`
+      - If `L` is `false`, then `if L then M else N` steps by `βif-false`
 
 This completes the proof.
 
@@ -114,26 +114,26 @@ This completes the proof.
 progress (Ax ())
 progress (⇒-I ⊢N) = done value-λ
 progress (⇒-E ⊢L ⊢M) with progress ⊢L
-... | steps L⟹L′ = steps (γ⇒₁ L⟹L′)
+... | steps L⟹L′ = steps (ξ·₁ L⟹L′)
 ... | done valueL with progress ⊢M
-... | steps M⟹M′ = steps (γ⇒₂ valueL M⟹M′)
+... | steps M⟹M′ = steps (ξ·₂ valueL M⟹M′)
 ... | done valueM with canonicalFormsLemma ⊢L valueL
-... | canonical-λ = steps (β⇒ valueM)
+... | canonical-λ = steps (βλ· valueM)
 progress 𝔹-I₁ = done value-true
 progress 𝔹-I₂ = done value-false
 progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
-... | steps L⟹L′ = steps (γ𝔹 L⟹L′)
+... | steps L⟹L′ = steps (ξif L⟹L′)
 ... | done valueL with canonicalFormsLemma ⊢L valueL
-... | canonical-true = steps β𝔹₁
-... | canonical-false = steps β𝔹₂
+... | canonical-true = steps βif-true
+... | canonical-false = steps βif-false
 \end{code}
 
-This code reads neatly in part because we look at the
+This code reads neatly in part because we consider the
 `steps` option before the `done` option. We could, of course,
-look at it the other way around, but then the `...` abbreviation
+do it the other way around, but then the `...` abbreviation
 no longer works, and we will need to write out all the arguments
-in full. In general, the rule of thumb is to look at the easy case
-(here `steps`) before the hard case (her `done`).
+in full. In general, the rule of thumb is to consider the easy case
+(here `steps`) before the hard case (here `done`).
 If you have two hard cases, you will have to expand out `...`
 or introduce subsidiary functions.
 
@@ -158,20 +158,20 @@ technical lemmas), the story goes like this:
   - The _preservation theorem_ is proved by induction on a typing
     derivation, pretty much as we did in the [Types]({{ "Types" | relative_url }})
     chapter.  The one case that is significantly different is the one for the
-    `β⇒` rule, whose definition uses the substitution operation.  To see that
+    `βλ·` rule, whose definition uses the substitution operation.  To see that
     this step preserves typing, we need to know that the substitution itself
     does.  So we prove a ... 
 
-  - _substitution lemma_, stating that substituting a (closed)
-    term `V` for a variable `x` in a term `N` preserves the type
-    of `N`.  The proof goes by induction on the form of `N` and
-    requires looking at all the different cases in the definition
-    of substitition.  The tricky cases are the ones for
-    variables and for function abstractions.  In both cases, we
-    discover that we need to take a term `V` that has been shown
-    to be well-typed in some context `Γ` and consider the same
-    term in a different context `Γ′`.  For this
-    we prove a...
+  - _substitution lemma_, stating that substituting a (closed) term
+    `V` for a variable `x` in a term `N` preserves the type of `N`.
+    The proof goes by induction on the form of `N` and requires
+    looking at all the different cases in the definition of
+    substitition. The lemma does not require that `V` be a value,
+    though in practice we only substitute values.  The tricky cases
+    are the ones for variables and for function abstractions.  In both
+    cases, we discover that we need to take a term `V` that has been
+    shown to be well-typed in some context `Γ` and consider the same
+    term in a different context `Γ′`.  For this we prove a ...
 
   - _context invariance_ lemma, showing that typing is preserved
     under "inessential changes" to the context---a term `M`
@@ -180,8 +180,8 @@ technical lemmas), the story goes like this:
     And finally, for this, we need a careful definition of ...
 
   - _free variables_ of a term---i.e., those variables
-    mentioned in a term and not in the scope of an enclosing
-    function abstraction binding a variable of the same name.
+    mentioned in a term and not bound in an enclosing
+    lambda abstraction.
 
 To make Agda happy, we need to formalize the story in the opposite
 order.
@@ -190,19 +190,19 @@ order.
 ### Free Occurrences
 
 A variable `x` appears _free_ in a term `M` if `M` contains an
-occurrence of `x` that is not bound in an outer lambda abstraction.
+occurrence of `x` that is not bound in an enclosing lambda abstraction.
 For example:
 
-  - `x` appears free, but `f` does not, in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x`
-  - both `f` and `x` appear free in `(λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f`;
-    note that `f` appears both bound and free in this term
-  - no variables appear free in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x`
+  - `x` appears free, but `f` does not, in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x`
+  - both `f` and `x` appear free in `(λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x) · ` f`;
+    indeed, `f` appears both bound and free in this term
+  - no variables appear free in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] ` f · ` x`
 
 Formally:
 
 \begin{code}
 data _∈_ : Id → Term → Set where
-  free-var  : ∀ {x} → x ∈ var x
+  free-`  : ∀ {x} → x ∈ ` x
   free-λ  : ∀ {x y A N} → y ≢ x → x ∈ N → x ∈ (λ[ y ∶ A ] N)
   free-·₁ : ∀ {x L M} → x ∈ L → x ∈ (L · M)
   free-·₂ : ∀ {x L M} → x ∈ M → x ∈ (L · M)
@@ -227,10 +227,10 @@ Here are proofs corresponding to the first two examples above.
 f≢x : f ≢ x
 f≢x ()
 
-example-free₁ : x ∈ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x)
-example-free₁ = free-λ f≢x (free-·₂ free-var)
+example-free₁ : x ∈ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x)
+example-free₁ = free-λ f≢x (free-·₂ free-`)
 
-example-free₂ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x)
+example-free₂ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x)
 example-free₂ (free-λ f≢f _) = f≢f refl
 \end{code}
 
@@ -240,76 +240,75 @@ Prove formally the remaining examples given above.
 
 \begin{code}
 postulate
-  example-free₃ : x ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f)
-  example-free₄ : f ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] var f · var x) · var f)
-  example-free₅ : x ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
-  example-free₆ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] var f · var x)
+  example-free₃ : x ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x) · ` f)
+  example-free₄ : f ∈ ((λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x) · ` f)
+  example-free₅ : x ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] ` f · ` x)
+  example-free₆ : f ∉ (λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] ` f · ` x)
 \end{code}
 
-Although `_∈_` may apperar to be a low-level technical definition,
+Although `_∈_` may appear to be a low-level technical definition,
 understanding it is crucial to understanding the properties of
 substitution, which are really the crux of the lambda calculus.
 
 ### Substitution
 
-To prove that substitution preserves typing, we first need a
-technical lemma connecting free variables and typing contexts: If
-a variable `x` appears free in a term `M`, and if we know `M` is
-well typed in context `Γ`, then it must be the case that
-`Γ` assigns a type to `x`.
+To prove that substitution preserves typing, we first need a technical
+lemma connecting free variables and typing contexts. If variable `x`
+appears free in term `M`, and if `M` is well typed in context `Γ`,
+then `Γ` must assign a type to `x`.
 
 \begin{code}
 freeLemma : ∀ {x M A Γ} → x ∈ M → Γ ⊢ M ∶ A → ∃ λ B → Γ x ≡ just B
 \end{code}
 
 _Proof_: We show, by induction on the proof that `x` appears
-  free in `P`, that, for all contexts `Γ`, if `P` is well
+  free in `M`, that, for all contexts `Γ`, if `M` is well
   typed under `Γ`, then `Γ` assigns some type to `x`.
 
-  - If the last rule used was `free-var`, then `P = x`, and from
+  - If the last rule used was `free-\``, then `M = \` x`, and from
     the assumption that `M` is well typed under `Γ` we have
     immediately that `Γ` assigns a type to `x`.
 
-  - If the last rule used was `free-·₁`, then `P = L · M` and `x`
-    appears free in `L`.  Since `L` is well typed under `\Gamma`,
+  - If the last rule used was `free-·₁`, then `M = L · M` and `x`
+    appears free in `L`.  Since `L` is well typed under `Γ`,
     we can see from the typing rules that `L` must also be, and
     the IH then tells us that `Γ` assigns `x` a type.
 
   - Almost all the other cases are similar: `x` appears free in a
-    subterm of `P`, and since `P` is well typed under `Γ`, we
+    subterm of `M`, and since `M` is well typed under `Γ`, we
     know the subterm of `M` in which `x` appears is well typed
-    under `Γ` as well, and the IH gives us exactly the
-    conclusion we want.
+    under `Γ` as well, and the IH yields the desired conclusion.
 
-  - The only remaining case is `free-λ`.  In this case `P =
+  - The only remaining case is `free-λ`.  In this case `M =
     λ[ y ∶ A ] N`, and `x` appears free in `N`; we also know that
     `x` is different from `y`.  The difference from the previous
-    cases is that whereas `P` is well typed under `\Gamma`, its
+    cases is that whereas `M` is well typed under `Γ`, its
     body `N` is well typed under `(Γ , y ∶ A)`, so the IH
     allows us to conclude that `x` is assigned some type by the
     extended context `(Γ , y ∶ A)`.  To conclude that `Γ`
     assigns a type to `x`, we appeal the decidable equality for names
-    `_≟_`, noting that `x` and `y` are different variables.
+    `_≟_`, and note that `x` and `y` are different variables.
 
 \begin{code}
-freeLemma free-var (Ax Γx≡justA) = (_ , Γx≡justA)
+freeLemma free-` (Ax Γx≡A) = (_ , Γx≡A)
 freeLemma (free-·₁ x∈L) (⇒-E ⊢L ⊢M) = freeLemma x∈L ⊢L
 freeLemma (free-·₂ x∈M) (⇒-E ⊢L ⊢M) = freeLemma x∈M ⊢M
 freeLemma (free-if₁ x∈L) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈L ⊢L
 freeLemma (free-if₂ x∈M) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈M ⊢M
 freeLemma (free-if₃ x∈N) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈N ⊢N
 freeLemma (free-λ {x} {y} y≢x x∈N) (⇒-I ⊢N) with freeLemma x∈N ⊢N
-... | Γx=justC with y ≟ x
+... | Γx≡C with y ≟ x
 ... | yes y≡x = ⊥-elim (y≢x y≡x)
-... | no  _   = Γx=justC
+... | no  _   = Γx≡C
 \end{code}
 
-[A subtle point: if the first argument of `free-λ` was of type
+A subtle point: if the first argument of `free-λ` was of type
 `x ≢ y` rather than of type `y ≢ x`, then the type of the
-term `Γx=justC` would not simplify properly.]
+term `Γx≡C` would not simplify properly; instead, one would need
+to rewrite with the symmetric equivalence.
 
-Next, we'll need the fact that any term `M` which is well typed in
-the empty context is closed (it has no free variables).
+As a second technical lemma, we need that any term `M` which is well
+typed in the empty context is closed (has no free variables).
 
 #### Exercise: 2 stars, optional (∅⊢-closed)
 
@@ -325,16 +324,16 @@ contradiction ()
 
 ∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∶ A → closed M
 ∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
-... | (B , ∅x≡justB) = contradiction (trans (sym ∅x≡justB) (apply-∅ x))
+... | (B , ∅x≡B) = contradiction (trans (sym ∅x≡B) (apply-∅ x))
 \end{code}
 </div>
 
 Sometimes, when we have a proof `Γ ⊢ M ∶ A`, we will need to
 replace `Γ` by a different context `Γ′`.  When is it safe
-to do this?  Intuitively, it must at least be the case that
-`Γ′` assigns the same types as `Γ` to all the variables
-that appear free in `M`. In fact, this is the only condition that
-is needed.
+to do this?  Intuitively, the only variables we care about
+in the context are those that appear free in `M`. So long
+as the two contexts agree on those variables, one can be
+exchanged for the other.
 
 \begin{code}
 contextLemma : ∀ {Γ Γ′ M A}
@@ -343,50 +342,52 @@ contextLemma : ∀ {Γ Γ′ M A}
         → Γ′ ⊢ M ∶ A
 \end{code}
 
-_Proof_: By induction on the derivation of
-`Γ ⊢ M ∶ A`.
+_Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
 
-  - If the last rule in the derivation was `var`, then `t = x`
-    and `\Gamma x = T`.  By assumption, `\Gamma' x = T` as well, and
-    hence `\Gamma' \vdash t : T` by `var`.
+  - If the last rule in the derivation was `Ax`, then `M = x`
+    and `Γ x ≡ just A`.  By assumption, `Γ′ x = just A` as well, and
+    hence `Γ′ ⊢ M : A` by `Ax`.
 
-  - If the last rule was `abs`, then `t = \lambda y:A. t'`, with
-    `T = A\to B` and `\Gamma, y : A \vdash t' : B`.  The
-    induction hypothesis is that, for any context `\Gamma''`, if
-    `\Gamma, y:A` and `\Gamma''` assign the same types to all the
-    free variables in `t'`, then `t'` has type `B` under
-    `\Gamma''`.  Let `\Gamma'` be a context which agrees with
-    `\Gamma` on the free variables in `t`; we must show
-    `\Gamma' \vdash \lambda y:A. t' : A\to B`.
+  - If the last rule was `⇒-I`, then `M = λ[ y : A] N`, with
+    `A = A ⇒ B` and `Γ , y ∶ A ⊢ N ∶ B`.  The
+    induction hypothesis is that, for any context `Γ″`, if
+    `Γ , y : A` and `Γ″` assign the same types to all the
+    free variables in `N`, then `N` has type `B` under
+    `Γ″`.  Let `Γ′` be a context which agrees with
+    `Γ` on the free variables in `N`; we must show
+    `Γ′ ⊢ λ[ y ∶ A] N ∶ A ⇒ B`.
 
-    By `abs`, it suffices to show that `\Gamma', y:A \vdash t' : t'`.
-    By the IH (setting `\Gamma'' = \Gamma', y:A`), it suffices to show
-    that `\Gamma, y:A` and `\Gamma', y:A` agree on all the variables
-    that appear free in `t'`.
+    By `⇒-I`, it suffices to show that `Γ′ , y:A ⊢ N ∶ B`.
+    By the IH (setting `Γ″ = Γ′ , y : A`), it suffices to show
+    that `Γ , y : A` and `Γ′ , y : A` agree on all the variables
+    that appear free in `N`.
 
-    Any variable occurring free in `t'` must be either `y` or
-    some other variable.  `\Gamma, y:A` and `\Gamma', y:A`
-    clearly agree on `y`.  Otherwise, note that any variable other
-    than `y` that occurs free in `t'` also occurs free in
-    `t = \lambda y:A. t'`, and by assumption `\Gamma` and
-    `\Gamma'` agree on all such variables; hence so do `\Gamma, y:A` and
-    `\Gamma', y:A`.
+    Any variable occurring free in `N` must be either `y` or
+    some other variable.  Clearly, `Γ , y : A` and `Γ′ , y : A`
+    agree on `y`.  Otherwise, any variable other
+    than `y` that occurs free in `N` also occurs free in
+    `λ[ y : A] N`, and by assumption `Γ` and
+    `Γ′` agree on all such variables; hence so do
+    `Γ , y : A` and `Γ′ , y : A`.
 
-  - If the last rule was `app`, then `t = t_1\;t_2`, with
-    `\Gamma \vdash t_1:A\to T` and `\Gamma \vdash t_2:A`.
-    One induction hypothesis states that for all contexts `\Gamma'`,
-    if `\Gamma'` agrees with `\Gamma` on the free variables in `t_1`,
-    then `t_1` has type `A\to T` under `\Gamma'`; there is a similar IH
-    for `t_2`.  We must show that `t_1\;t_2` also has type `T` under
-    `\Gamma'`, given the assumption that `\Gamma'` agrees with
-    `\Gamma` on all the free variables in `t_1\;t_2`.  By `app`, it
-    suffices to show that `t_1` and `t_2` each have the same type
-    under `\Gamma'` as under `\Gamma`.  But all free variables in
-    `t_1` are also free in `t_1\;t_2`, and similarly for `t_2`;
-    hence the desired result follows from the induction hypotheses.
+  - If the last rule was `⇒-E`, then `M = L · M`, with `Γ ⊢ L ∶ A ⇒ B`
+    and `Γ ⊢ M ∶ B`.  One induction hypothesis states that for all
+    contexts `Γ′`, if `Γ′` agrees with `Γ` on the free variables in
+    `L` then `L` has type `A ⇒ B` under `Γ′`; there is a similar IH
+    for `M`.  We must show that `L · M` also has type `B` under `Γ′`,
+    given the assumption that `Γ′` agrees with `Γ` on all the free
+    variables in `L · M`.  By `⇒-E`, it suffices to show that `L` and
+    `M` each have the same type under `Γ′` as under `Γ`.  But all free
+    variables in `L` are also free in `L · M`; in the proof, this is
+    expressed by composing `free-·₁ : ∀ {x} → x ∈ L → x ∈ L · M` with
+    `Γ~Γ′ : (∀ {x} → x ∈ L · M → Γ x ≡ Γ′ x)` to yield `Γ~Γ′ ∘ free-·₁
+    : ∀ {x} → x ∈ L → Γ x ≡ Γ′ x`.  Similarly for `M`; hence the
+    desired result follows from the induction hypotheses.
+
+  - The remaining cases are similar to `⇒-E`.
 
 \begin{code}
-contextLemma Γ~Γ′ (Ax Γx≡justA) rewrite (Γ~Γ′ free-var) = Ax Γx≡justA
+contextLemma Γ~Γ′ (Ax Γx≡A) rewrite (Γ~Γ′ free-`) = Ax Γx≡A
 contextLemma {Γ} {Γ′} {λ[ x ∶ A ] N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (contextLemma Γx~Γ′x ⊢N)
   where
   Γx~Γ′x : ∀ {y} → y ∈ N → (Γ , x ∶ A) y ≡ (Γ′ , x ∶ A) y
@@ -398,26 +399,6 @@ contextLemma Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
 contextLemma Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
 contextLemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
   = 𝔹-E (contextLemma (Γ~Γ′ ∘ free-if₁) ⊢L) (contextLemma (Γ~Γ′ ∘ free-if₂) ⊢M) (contextLemma (Γ~Γ′ ∘ free-if₃) ⊢N)
-
-{-
-replaceCtxt f (var x x∶A
-) rewrite f var = var x x∶A
-replaceCtxt f (app t₁∶A⇒B t₂∶A)
-  = app (replaceCtxt (f ∘ app1) t₁∶A⇒B) (replaceCtxt (f ∘ app2) t₂∶A)
-replaceCtxt {Γ} {Γ′} f (abs {.Γ} {x} {A} {B} {t′} t′∶B)
-  = abs (replaceCtxt f′ t′∶B)
-  where
-    f′ : ∀ {y} → y ∈ t′ → (Γ , x ∶ A) y ≡ (Γ′ , x ∶ A) y
-    f′ {y} y∈t′ with x ≟ y
-    ... | yes _   = refl
-    ... | no  x≠y = f (abs x≠y y∈t′)
-replaceCtxt _ true  = true
-replaceCtxt _ false = false
-replaceCtxt f (if t₁∶bool then t₂∶A else t₃∶A)
-  = if   replaceCtxt (f ∘ if1) t₁∶bool
-    then replaceCtxt (f ∘ if2) t₂∶A
-    else replaceCtxt (f ∘ if3) t₃∶A
--}
 \end{code}
 
 
@@ -590,18 +571,18 @@ _Proof_: By induction on the derivation of `\vdash t : T`.
       follows directly from the induction hypothesis.
 
 \begin{code}
-preservation (Ax x₁) ()
+preservation (Ax Γx≡A) ()
 preservation (⇒-I ⊢N) ()
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (β⇒ valueV) = preservation-[∶=] ⊢N ⊢V
-preservation (⇒-E ⊢L ⊢M) (γ⇒₁ L⟹L′) with preservation ⊢L L⟹L′
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV) = preservation-[∶=] ⊢N ⊢V
+preservation (⇒-E ⊢L ⊢M) (ξ·₁ L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = ⇒-E ⊢L′ ⊢M
-preservation (⇒-E ⊢L ⊢M) (γ⇒₂ valueL M⟹M′) with preservation ⊢M M⟹M′
+preservation (⇒-E ⊢L ⊢M) (ξ·₂ valueL M⟹M′) with preservation ⊢M M⟹M′
 ...| ⊢M′ = ⇒-E ⊢L ⊢M′
 preservation 𝔹-I₁ ()
 preservation 𝔹-I₂ ()
-preservation (𝔹-E 𝔹-I₁ ⊢M ⊢N) β𝔹₁ = ⊢M
-preservation (𝔹-E 𝔹-I₂ ⊢M ⊢N) β𝔹₂ = ⊢N
-preservation (𝔹-E ⊢L ⊢M ⊢N) (γ𝔹 L⟹L′) with preservation ⊢L L⟹L′
+preservation (𝔹-E 𝔹-I₁ ⊢M ⊢N) βif-true = ⊢M
+preservation (𝔹-E 𝔹-I₂ ⊢M ⊢N) βif-false = ⊢N
+preservation (𝔹-E ⊢L ⊢M ⊢N) (ξif L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = 𝔹-E ⊢L′ ⊢M ⊢N
 \end{code}
 

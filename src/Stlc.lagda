@@ -34,7 +34,7 @@ infix  15 λ[_∶_]_
 infix  15 if_then_else_
 
 data Term : Set where
-  var : Id → Term
+  ` : Id → Term
   λ[_∶_]_ : Id → Type → Term → Term
   _·_ : Term → Term → Term
   true : Term
@@ -49,8 +49,8 @@ f  =  id 0
 x  =  id 1
 
 not two : Term 
-not =  λ[ x ∶ 𝔹 ] (if var x then false else true)
-two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] var f · (var f · var x)
+not =  λ[ x ∶ 𝔹 ] (if ` x then false else true)
+two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 \end{code}
 
 ## Values
@@ -66,9 +66,9 @@ data Value : Term → Set where
 
 \begin{code}
 _[_∶=_] : Term → Id → Term → Term
-(var x′) [ x ∶= V ] with x ≟ x′
+(` x′) [ x ∶= V ] with x ≟ x′
 ... | yes _ = V
-... | no  _ = var x′
+... | no  _ = ` x′
 (λ[ x′ ∶ A′ ] N′) [ x ∶= V ] with x ≟ x′
 ... | yes _ = λ[ x′ ∶ A′ ] N′
 ... | no  _ = λ[ x′ ∶ A′ ] (N′ [ x ∶= V ])
@@ -84,22 +84,22 @@ _[_∶=_] : Term → Id → Term → Term
 infix 10 _⟹_ 
 
 data _⟹_ : Term → Term → Set where
-  β⇒ : ∀ {x A N V} → Value V →
+  βλ· : ∀ {x A N V} → Value V →
     (λ[ x ∶ A ] N) · V ⟹ N [ x ∶= V ]
-  γ⇒₁ : ∀ {L L' M} →
-    L ⟹ L' →
-    L · M ⟹ L' · M
-  γ⇒₂ : ∀ {V M M'} →
+  ξ·₁ : ∀ {L L′ M} →
+    L ⟹ L′ →
+    L · M ⟹ L′ · M
+  ξ·₂ : ∀ {V M M′} →
     Value V →
-    M ⟹ M' →
-    V · M ⟹ V · M'
-  β𝔹₁ : ∀ {M N} →
+    M ⟹ M′ →
+    V · M ⟹ V · M′
+  βif-true : ∀ {M N} →
     if true then M else N ⟹ M
-  β𝔹₂ : ∀ {M N} →
+  βif-false : ∀ {M N} →
     if false then M else N ⟹ N
-  γ𝔹 : ∀ {L L' M N} →
-    L ⟹ L' →    
-    if L then M else N ⟹ if L' then M else N
+  ξif : ∀ {L L′ M N} →
+    L ⟹ L′ →    
+    if L then M else N ⟹ if L′ then M else N
 \end{code}
 
 ## Reflexive and transitive closure
@@ -117,26 +117,26 @@ data _⟹*_ : Term → Term → Set where
 reduction₁ : not · true ⟹* false
 reduction₁ =
     not · true
-  ⟹⟨ β⇒ value-true ⟩
+  ⟹⟨ βλ· value-true ⟩
     if true then false else true
-  ⟹⟨ β𝔹₁ ⟩
+  ⟹⟨ βif-true ⟩
     false
   ∎
 
 reduction₂ : two · not · true ⟹* true
 reduction₂ =
     two · not · true
-  ⟹⟨ γ⇒₁ (β⇒ value-λ) ⟩
-    (λ[ x ∶ 𝔹 ] not · (not · var x)) · true
-  ⟹⟨ β⇒ value-true ⟩
+  ⟹⟨ ξ·₁ (βλ· value-λ) ⟩
+    (λ[ x ∶ 𝔹 ] not · (not · ` x)) · true
+  ⟹⟨ βλ· value-true ⟩
     not · (not · true)
-  ⟹⟨ γ⇒₂ value-λ (β⇒ value-true) ⟩
+  ⟹⟨ ξ·₂ value-λ (βλ· value-true) ⟩
     not · (if true then false else true)
-  ⟹⟨ γ⇒₂ value-λ β𝔹₁  ⟩
+  ⟹⟨ ξ·₂ value-λ βif-true  ⟩
     not · false
-  ⟹⟨ β⇒ value-false ⟩
+  ⟹⟨ βλ· value-false ⟩
     if false then false else true
-  ⟹⟨ β𝔹₂ ⟩
+  ⟹⟨ βif-false ⟩
     true
   ∎
 \end{code}
@@ -156,7 +156,7 @@ infix 10 _⊢_∶_
 data _⊢_∶_ : Context → Term → Type → Set where
   Ax : ∀ {Γ x A} →
     Γ x ≡ just A →
-    Γ ⊢ var x ∶ A
+    Γ ⊢ ` x ∶ A
   ⇒-I : ∀ {Γ x N A B} →
     Γ , x ∶ A ⊢ N ∶ B →
     Γ ⊢ λ[ x ∶ A ] N ∶ A ⇒ B
@@ -201,19 +201,19 @@ the outermost term in `not` in a `λ`, which is typed using `⇒-I`. The
 `⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
     typing₁ = ⇒-I { }0
-    ?0 : ∅ , x ∶ 𝔹 ⊢ if var x then false else true ∶ 𝔹
+    ?0 : ∅ , x ∶ 𝔹 ⊢ if ` x then false else true ∶ 𝔹
 
 Again we fill in the hole by typing C-c C-r. Agda observes that the
 outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
 `𝔹-E` rule in turn takes three arguments, which Agda leaves as holes.
 
     typing₁ = ⇒-I (𝔹-E { }0 { }1 { }2)
-    ?0 : ∅ , x ∶ 𝔹 ⊢ var x ∶
+    ?0 : ∅ , x ∶ 𝔹 ⊢ ` x ∶
     ?1 : ∅ , x ∶ 𝔹 ⊢ false ∶ 𝔹
     ?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹
 
 Again we fill in the three holes by typing C-c C-r in each. Agda observes
-that `var x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
+that `\` x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
 `𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
 that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
 hole. After filling in all holes, the term is as above.
