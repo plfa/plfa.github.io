@@ -620,25 +620,12 @@ Soundness′ : ∀ {M N A} → ∅ ⊢ M ∶ A → M ⟹* N → ¬ (Stuck N)
 Soundness′ ⊢M (M ∎) (¬M⟹N , ¬ValueM) with progress ⊢M
 ... | steps M⟹N  = ¬M⟹N M⟹N
 ... | done ValueM  = ¬ValueM ValueM
-Soundness′ {L} {N} {A} ⊢L (_⟹⟨_⟩_ .L {M} {.N} L⟹M M⟹*N) = {!Soundness′!}
+Soundness′ {L} {N} {A} ⊢L (_⟹⟨_⟩_ .L {M} {.N} L⟹M M⟹*N) = Soundness′ ⊢M M⟹*N
   where
   ⊢M : ∅ ⊢ M ∶ A
   ⊢M = preservation ⊢L L⟹M
 \end{code}
 </div>
-
-
-Definition stuck (t:tm) : Prop :=
-  (normal_form step) t /\ ~ Value t.
-
-Corollary soundness : forall t t' T,
-  empty \vdash t : T →
-  t ==>* t' →
-  ~(stuck t').
-Proof.
-  intros t t' T Hhas_type Hmulti. unfold stuck.
-  intros `Hnf Hnot_val`. unfold normal_form in Hnf.
-  induction Hmulti.
 
 
 ## Uniqueness of Types
