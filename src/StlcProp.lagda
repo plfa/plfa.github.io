@@ -406,53 +406,55 @@ Now we come to the conceptual heart of the proof that reduction
 preserves types---namely, the observation that _substitution_
 preserves types.
 
-Formally, the so-called _Substitution Lemma_ says this: Suppose we
-have a term `N` with a free variable `x`, and suppose we've been
-able to assign a type `B` to `N` under the assumption that `x` has
-some type `A`.  Also, suppose that we have some other term `V` and
-that we've shown that `V` has type `A`.  Then, since `V` satisfies
+Formally, the _Substitution Lemma_ says this: Suppose we
+have a term `N` with a free variable `x`, where `N` has
+type `B` under the assumption that `x` has some type `A`.
+Also, suppose that we have some other term `V`,
+where `V` has type `A`.  Then, since `V` satisfies
 the assumption we made about `x` when typing `N`, we should be
 able to substitute `V` for each of the occurrences of `x` in `N`
 and obtain a new term that still has type `B`.
 
 _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
-`Γ ⊢ (N [ x ∶= V ]) ∶ B`.
+`Γ ⊢ (N [ x := V ]) ∶ B`.
 
 \begin{code}
-preservation-[∶=] : ∀ {Γ x A N B V}
+preservation-[:=] : ∀ {Γ x A N B V}
                  → (Γ , x ∶ A) ⊢ N ∶ B
                  → ∅ ⊢ V ∶ A
-                 → Γ ⊢ (N [ x ∶= V ]) ∶ B
+                 → Γ ⊢ (N [ x := V ]) ∶ B
 \end{code}
 
-One technical subtlety in the statement of the lemma is that
-we assign `V` the type `A` in the _empty_ context---in other
-words, we assume `V` is closed.  This assumption considerably
-simplifies the `λ` case of the proof (compared to assuming
-`Γ ⊢ V ∶ A`, which would be the other reasonable assumption
-at this point) because the context invariance lemma then tells us
-that `V` has type `A` in any context at all---we don't have to
-worry about free variables in `V` clashing with the variable being
-introduced into the context by `λ`.
+One technical subtlety in the statement of the lemma is that we assume
+`V` is closed; it has type `A` in the _empty_ context.  This
+assumption simplifies the `λ` case of the proof because the context
+invariance lemma then tells us that `V` has type `A` in any context at
+all---we don't have to worry about free variables in `V` clashing with
+the variable being introduced into the context by `λ`. It is possible
+to prove the theorem under the more general assumption `Γ ⊢ V ∶ A`,
+but the proof is more difficult.
 
-The substitution lemma can be viewed as a kind of "commutation"
-property.  Intuitively, it says that substitution and typing can
+<!--
+Intuitively, the substitution lemma says that substitution and typing can
 be done in either order: we can either assign types to the terms
 `N` and `V` separately (under suitable contexts) and then combine
 them using substitution, or we can substitute first and then
-assign a type to `N [ x ∶= V ]`---the result is the same either
+assign a type to `N [ x := V ]`---the result is the same either
 way.
+-->
 
-_Proof_: We show, by induction on `N`, that for all `A` and
-`Γ`, if `Γ , x ∶ A \vdash N ∶ B` and `∅ ⊢ V ∶ A`, then
-`Γ \vdash N [ x ∶= V ] ∶ B`.
+_Proof_:  By induction on the derivation of `Γ , x ∶ A ⊢ N ∶ B`,
+we show that if `∅ ⊢ V ∶ A` then `Γ ⊢ N [ x := V ] ∶ B`.
 
   - If `N` is a variable there are two cases to consider,
     depending on whether `N` is `x` or some other variable.
 
-      - If `N = var x`, then from the fact that `Γ , x ∶ A ⊢ N ∶ B`
-        we conclude that `A = B`.  We must show that `x [ x ∶= V] =
-        V` has type `A` under `Γ`, given the assumption that
+      - If `N = \` x`, then from `Γ , x ∶ A ⊢ x ∶ B`
+        we know that looking up `x` in `Γ , x : A` gives
+        `just B`, but we already know it gives `just A`;
+        applying injectivity for `just` we conclude that `A ≡ B`.
+        We must show that `x [ x := V] = V`
+        has type `A` under `Γ`, given the assumption that
         `V` has type `A` under the empty context.  This
         follows from context invariance: if a closed term has type
         `A` in the empty context, it has that type in any context.
@@ -463,13 +465,13 @@ _Proof_: We show, by induction on `N`, that for all `A` and
 
   - If `N` is an abstraction `λ[ x′ ∶ A′ ] N′`, then the IH tells us,
     for all `Γ′`́ and `B′`, that if `Γ′ , x ∶ A ⊢ N′ ∶ B′`
-    and `∅ ⊢ V ∶ A`, then `Γ′ ⊢ N′ [ x ∶= V ] ∶ B′`.
+    and `∅ ⊢ V ∶ A`, then `Γ′ ⊢ N′ [ x := V ] ∶ B′`.
 
     The substitution in the conclusion behaves differently
     depending on whether `x` and `x′` are the same variable.
 
     First, suppose `x ≡ x′`.  Then, by the definition of
-    substitution, `N [ x ∶= V] = N`, so we just need to show `Γ ⊢ N ∶ B`.
+    substitution, `N [ x := V] = N`, so we just need to show `Γ ⊢ N ∶ B`.
     But we know `Γ , x ∶ A ⊢ N ∶ B` and, since `x ≡ x′`
     does not appear free in `λ[ x′ ∶ A′ ] N′`, the context invariance
     lemma yields `Γ ⊢ N ∶ B`.
@@ -477,18 +479,18 @@ _Proof_: We show, by induction on `N`, that for all `A` and
     Second, suppose `x ≢ x′`.  We know `Γ , x ∶ A , x′ ∶ A′ ⊢ N′ ∶ B′`
     by inversion of the typing relation, from which
     `Γ , x′ ∶ A′ , x ∶ A ⊢ N′ ∶ B′` follows by update permute,
-    so the IH applies, giving us `Γ , x′ ∶ A′ ⊢ N′ [ x ∶= V ] ∶ B′`
-    By `⇒-I`, we have `Γ ⊢ λ[ x′ ∶ A′ ] (N′ [ x ∶= V ]) ∶ A′ ⇒ B′`
+    so the IH applies, giving us `Γ , x′ ∶ A′ ⊢ N′ [ x := V ] ∶ B′`
+    By `⇒-I`, we have `Γ ⊢ λ[ x′ ∶ A′ ] (N′ [ x := V ]) ∶ A′ ⇒ B′`
     and the definition of substitution (noting `x ≢ x′`) gives
-    `Γ ⊢ (λ[ x′ ∶ A′ ] N′) [ x ∶= V ] ∶ A′ ⇒ B′` as required.
+    `Γ ⊢ (λ[ x′ ∶ A′ ] N′) [ x := V ] ∶ A′ ⇒ B′` as required.
 
   - If `N` is an application `L′ · M′`, the result follows
     straightforwardly from the definition of substitution and the
     induction hypotheses.
 
-  - The remaining cases are similar to the application case.
+  - The remaining cases are similar to application.
 
-We need a couple of lemmas. A closed term can be weakened to any context, and just is injective.
+We need a couple of lemmas. A closed term can be weakened to any context, and `just` is injective.
 \begin{code}
 weaken-closed : ∀ {V A Γ} → ∅ ⊢ V ∶ A → Γ ⊢ V ∶ A
 weaken-closed {V} {A} {Γ} ⊢V = contextLemma Γ~Γ′ ⊢V
@@ -504,10 +506,10 @@ just-injective refl = refl
 \end{code}
 
 \begin{code}
-preservation-[∶=] {_} {x} (Ax {_} {x′} [Γ,x∶A]x′≡B) ⊢V with x ≟ x′
+preservation-[:=] {Γ} {x} {A} (Ax {Γ,x∶A} {x′} {B} [Γ,x∶A]x′≡B) ⊢V with x ≟ x′
 ...| yes x≡x′ rewrite just-injective [Γ,x∶A]x′≡B  =  weaken-closed ⊢V
 ...| no  x≢x′  =  Ax [Γ,x∶A]x′≡B
-preservation-[∶=] {Γ} {x} {A} {λ[ x′ ∶ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
+preservation-[:=] {Γ} {x} {A} {λ[ x′ ∶ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
 ...| yes x≡x′ rewrite x≡x′ = contextLemma Γ′~Γ (⇒-I ⊢N′)
   where
   Γ′~Γ : ∀ {y} → y ∈ (λ[ x′ ∶ A′ ] N′) → (Γ , x′ ∶ A) y ≡ Γ y
@@ -518,13 +520,13 @@ preservation-[∶=] {Γ} {x} {A} {λ[ x′ ∶ A′ ] N′} {.A′ ⇒ B′} {V}
   where
   x′x⊢N′ : Γ , x′ ∶ A′ , x ∶ A ⊢ N′ ∶ B′
   x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = ⊢N′
-  ⊢N′V : (Γ , x′ ∶ A′) ⊢ N′ [ x ∶= V ] ∶ B′
-  ⊢N′V = preservation-[∶=] x′x⊢N′ ⊢V
-preservation-[∶=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[∶=] ⊢L ⊢V) (preservation-[∶=] ⊢M ⊢V)
-preservation-[∶=] 𝔹-I₁ ⊢V = 𝔹-I₁
-preservation-[∶=] 𝔹-I₂ ⊢V = 𝔹-I₂
-preservation-[∶=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
-  𝔹-E (preservation-[∶=] ⊢L ⊢V) (preservation-[∶=] ⊢M ⊢V) (preservation-[∶=] ⊢N ⊢V)
+  ⊢N′V : (Γ , x′ ∶ A′) ⊢ N′ [ x := V ] ∶ B′
+  ⊢N′V = preservation-[:=] x′x⊢N′ ⊢V
+preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
+preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
+preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
+preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
+  𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
 \end{code}
 
 
@@ -539,41 +541,40 @@ reduction preserves types.
 preservation : ∀ {M N A} → ∅ ⊢ M ∶ A → M ⟹ N → ∅ ⊢ N ∶ A
 \end{code}
 
-_Proof_: By induction on the derivation of `\vdash t : T`.
+_Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
 
-- We can immediately rule out `var`, `abs`, `T_True`, and
-  `T_False` as the final rules in the derivation, since in each of
-  these cases `t` cannot take a step.
+- We can immediately rule out `Ax`, `⇒-I`, `𝔹-I₁`, and
+  `𝔹-I₂` as the final rules in the derivation, since in each of
+  these cases `M` cannot take a step.
 
-- If the last rule in the derivation was `app`, then `t = t_1
-  t_2`.  There are three cases to consider, one for each rule that
-  could have been used to show that `t_1 t_2` takes a step to `t'`.
+- If the last rule in the derivation was `⇒-E`, then `M = L · M`.
+  There are three cases to consider, one for each rule that
+  could have been used to show that `L · M` takes a step to `N`.
 
-    - If `t_1 t_2` takes a step by `Sapp1`, with `t_1` stepping to
-      `t_1'`, then by the IH `t_1'` has the same type as `t_1`, and
-      hence `t_1' t_2` has the same type as `t_1 t_2`.
+    - If `L · M` takes a step by `ξ·₁`, with `L` stepping to
+      `L′`, then by the IH `L′` has the same type as `L`, and
+      hence `L′ · M` has the same type as `L · M`.
 
-    - The `Sapp2` case is similar.
+    - The `ξ·₂` case is similar.
 
-    - If `t_1 t_2` takes a step by `Sred`, then `t_1 =
-      \lambda x:t_{11}.t_{12}` and `t_1 t_2` steps to ``x∶=t_2`t_{12}`; the
-      desired result now follows from the fact that substitution
-      preserves types.
+    - If `L · M` takes a step by `β⇒`, then `L = λ[ x ∶ A ] N` and `M
+      = V` and `L · M` steps to `N [ x := V]`; the desired result now
+      follows from the fact that substitution preserves types.
 
-    - If the last rule in the derivation was `if`, then `t = if t_1
-      then t_2 else t_3`, and there are again three cases depending on
-      how `t` steps.
+- If the last rule in the derivation was `if`, then `M = if L
+  then M else N`, and there are again three cases depending on
+  how `if L then M else N` steps.
 
-    - If `t` steps to `t_2` or `t_3`, the result is immediate, since
-      `t_2` and `t_3` have the same type as `t`.
+    - If it steps via `β𝔹₁` or `βB₂`, the result is immediate, since
+      `M` and `N` have the same type as `if L then M else N`.
 
-    - Otherwise, `t` steps by `Sif`, and the desired conclusion
+    - Otherwise, `L` steps by `ξif`, and the desired conclusion
       follows directly from the induction hypothesis.
 
 \begin{code}
 preservation (Ax Γx≡A) ()
 preservation (⇒-I ⊢N) ()
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV) = preservation-[∶=] ⊢N ⊢V
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV) = preservation-[:=] ⊢N ⊢V
 preservation (⇒-E ⊢L ⊢M) (ξ·₁ L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = ⇒-E ⊢L′ ⊢M
 preservation (⇒-E ⊢L ⊢M) (ξ·₂ valueL M⟹M′) with preservation ⊢M M⟹M′
@@ -586,20 +587,6 @@ preservation (𝔹-E ⊢L ⊢M ⊢N) (ξif L⟹L′) with preservation ⊢L L⟹
 ...| ⊢L′ = 𝔹-E ⊢L′ ⊢M ⊢N
 \end{code}
 
-Proof with eauto.
-  remember (@empty ty) as Gamma.
-  intros t t' T HT. generalize dependent t'.
-  induction HT;
-       intros t' HE; subst Gamma; subst;
-       try solve `inversion HE; subst; auto`.
-  - (* app
-    inversion HE; subst...
-    (* Most of the cases are immediate by induction,
-       and `eauto` takes care of them
-    + (* Sred
-      apply substitution_preserves_typing with t_{11}...
-      inversion HT_1...
-Qed.
 
 #### Exercise: 2 stars, recommended (subject_expansion_stlc)
 An exercise in the [Stlc]({{ "Stlc" | relative_url }}) chapter asked about the

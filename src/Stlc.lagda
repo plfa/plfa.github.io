@@ -65,17 +65,17 @@ data Value : Term → Set where
 ## Substitution
 
 \begin{code}
-_[_∶=_] : Term → Id → Term → Term
-(` x′) [ x ∶= V ] with x ≟ x′
+_[_:=_] : Term → Id → Term → Term
+(` x′) [ x := V ] with x ≟ x′
 ... | yes _ = V
 ... | no  _ = ` x′
-(λ[ x′ ∶ A′ ] N′) [ x ∶= V ] with x ≟ x′
+(λ[ x′ ∶ A′ ] N′) [ x := V ] with x ≟ x′
 ... | yes _ = λ[ x′ ∶ A′ ] N′
-... | no  _ = λ[ x′ ∶ A′ ] (N′ [ x ∶= V ])
-(L′ · M′) [ x ∶= V ] =  (L′ [ x ∶= V ]) · (M′ [ x ∶= V ])
-(true) [ x ∶= V ] = true
-(false) [ x ∶= V ] = false
-(if L′ then M′ else N′) [ x ∶= V ] = if (L′ [ x ∶= V ]) then (M′ [ x ∶= V ]) else (N′ [ x ∶= V ])
+... | no  _ = λ[ x′ ∶ A′ ] (N′ [ x := V ])
+(L′ · M′) [ x := V ] =  (L′ [ x := V ]) · (M′ [ x := V ])
+(true) [ x := V ] = true
+(false) [ x := V ] = false
+(if L′ then M′ else N′) [ x := V ] = if (L′ [ x := V ]) then (M′ [ x := V ]) else (N′ [ x := V ])
 \end{code}
 
 ## Reduction rules
@@ -85,7 +85,7 @@ infix 10 _⟹_
 
 data _⟹_ : Term → Term → Set where
   βλ· : ∀ {x A N V} → Value V →
-    (λ[ x ∶ A ] N) · V ⟹ N [ x ∶= V ]
+    (λ[ x ∶ A ] N) · V ⟹ N [ x := V ]
   ξ·₁ : ∀ {L L′ M} →
     L ⟹ L′ →
     L · M ⟹ L′ · M
