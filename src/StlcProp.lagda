@@ -14,7 +14,7 @@ theorem.
 open import Function using (_∘_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Maybe using (Maybe; just; nothing)
-open import Data.Product using (∃; ∃₂; _,_; ,_)
+open import Data.Product using (_×_; ∃; ∃₂; _,_; ,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; trans; sym)
@@ -589,18 +589,44 @@ preservation (𝔹-E ⊢L ⊢M ⊢N) (ξif L⟹L′) with preservation ⊢L L⟹
 
 
 #### Exercise: 2 stars, recommended (subject_expansion_stlc)
-An exercise in the [Stlc]({{ "Stlc" | relative_url }}) chapter asked about the
+
+An exercise in the [Types]({{ "Types" | relative_url }}) chapter asked about the
 subject expansion property for the simple language of arithmetic and boolean
 expressions.  Does this property hold for STLC?  That is, is it always the case
-that, if `t ==> t'` and `has_type t' T`, then `empty \vdash t : T`?  If
-so, prove it.  If not, give a counter-example not involving conditionals. 
-
+that, if `M ==> N` and `∅ ⊢ N ∶ A`, then `∅ ⊢ M ∶ A`?  It is easy to find a
+counter-example with conditionals, find one not involving conditionals.
 
 ## Type Soundness
 
 #### Exercise: 2 stars, optional (type_soundness)
+
 Put progress and preservation together and show that a well-typed
 term can _never_ reach a stuck state.
+
+\begin{code}
+Normal : Term → Set
+Normal M = ∀ {N} → ¬ (M ⟹ N)
+
+Stuck : Term → Set
+Stuck M = Normal M × ¬ Value M
+
+postulate
+  Soundness : ∀ {M N A} → ∅ ⊢ M ∶ A → M ⟹* N → ¬ (Stuck N)
+\end{code}
+
+<div class="hidden">
+\begin{code}
+Soundness′ : ∀ {M N A} → ∅ ⊢ M ∶ A → M ⟹* N → ¬ (Stuck N)
+Soundness′ ⊢M (M ∎) (¬M⟹N , ¬ValueM) with progress ⊢M
+... | steps M⟹N  = ¬M⟹N M⟹N
+... | done ValueM  = ¬ValueM ValueM
+Soundness′ {L} {N} {A} ⊢L (_⟹⟨_⟩_ .L {M} {.N} L⟹M M⟹*N) = {!Soundness′!}
+  where
+  ⊢M : ∅ ⊢ M ∶ A
+  ⊢M = preservation ⊢L L⟹M
+\end{code}
+</div>
+
 
 Definition stuck (t:tm) : Prop :=
   (normal_form step) t /\ ~ Value t.
