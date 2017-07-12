@@ -394,11 +394,13 @@ context-lemma {Γ} {Γ′} {λ[ x ∶ A ] N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (cont
   Γx~Γ′x {y} y∈N with x ≟ y
   ... | yes refl = refl
   ... | no  x≢y  = Γ~Γ′ (free-λ x≢y y∈N)
-context-lemma Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (context-lemma (Γ~Γ′ ∘ free-·₁)  ⊢L) (context-lemma (Γ~Γ′ ∘ free-·₂) ⊢M) 
+context-lemma Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (context-lemma (Γ~Γ′ ∘ free-·₁)  ⊢L)
+                                       (context-lemma (Γ~Γ′ ∘ free-·₂) ⊢M) 
 context-lemma Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
 context-lemma Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
-context-lemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
-  = 𝔹-E (context-lemma (Γ~Γ′ ∘ free-if₁) ⊢L) (context-lemma (Γ~Γ′ ∘ free-if₂) ⊢M) (context-lemma (Γ~Γ′ ∘ free-if₃) ⊢N)
+context-lemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (context-lemma (Γ~Γ′ ∘ free-if₁) ⊢L)
+                                         (context-lemma (Γ~Γ′ ∘ free-if₂) ⊢M)
+                                         (context-lemma (Γ~Γ′ ∘ free-if₃) ⊢N)
 \end{code}
 
 
