@@ -26,8 +26,8 @@ Syntax of types and terms.
 infixr 20 _⇒_
 
 data Type : Set where
-  𝔹 : Type
   _⇒_ : Type → Type → Type
+  𝔹 : Type
 
 infixl 20 _·_
 infix  15 λ[_∶_]_

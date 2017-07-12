@@ -18,9 +18,10 @@ open import Data.Product using (_×_; ∃; ∃₂; _,_; ,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; trans; sym)
-open import Maps
+open import Maps using (Id; _≟_; PartialMap)
 open Maps.PartialMap using (∅; apply-∅; update-permute) renaming (_,_↦_ to _,_∶_)
 open import Stlc
+import Data.Nat using (ℕ)
 \end{code}
 
 
@@ -633,6 +634,7 @@ Soundness′ {L} {N} {A} ⊢L (_⟹⟨_⟩_ .L {M} {.N} L⟹M M⟹*N) = Soundnes
 ## Uniqueness of Types
 
 #### Exercise: 3 stars (types_unique)
+
 Another nice property of the STLC is that types are unique: a
 given term (in a given context) has at most one type.
 Formalize this statement and prove it.
@@ -641,20 +643,21 @@ Formalize this statement and prove it.
 ## Additional Exercises
 
 #### Exercise: 1 star (progress_preservation_statement)
+
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
-``
 
 #### Exercise: 2 stars (stlc_variation1)
+
 Suppose we add a new term `zap` with the following reduction rule
 
                      ---------                  (ST_Zap)
-                     t ==> zap
+                     M ⟹ zap
 
 and the following typing rule:
 
-                  ----------------               (T_Zap)
-                  Gamma \vdash zap : T
+                    -----------                 (T_Zap)
+                    Γ ⊢ zap : A
 
 Which of the following properties of the STLC remain true in
 the presence of these rules?  For each property, write either
@@ -669,14 +672,15 @@ false, give a counterexample.
 
 
 #### Exercise: 2 stars (stlc_variation2)
+
 Suppose instead that we add a new term `foo` with the following
 reduction rules:
 
-                   -----------------                (ST_Foo1)
-                   (\lambda x:A. x) ==> foo
+                 ----------------------             (ST_Foo1)
+                 (λ[ x ∶ A ] ` x) ⟹ foo
 
-                     ------------                   (ST_Foo2)
-                     foo ==> true
+                     -----------                    (ST_Foo2)
+                     foo ⟹ true
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -690,9 +694,10 @@ false, give a counterexample.
   - Preservation
 
 #### Exercise: 2 stars (stlc_variation3)
-Suppose instead that we remove the rule `Sapp1` from the `step`
+
+Suppose instead that we remove the rule `ξ·₁` from the `⟹`
 relation. Which of the following properties of the STLC remain
-true in the presence of this rule?  For each one, write either
+true in the absence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
 false, give a counterexample.
 
@@ -707,7 +712,7 @@ Suppose instead that we add the following new rule to the
 reduction relation:
 
         ----------------------------------        (ST_FunnyIfTrue)
-        (if true then t_1 else t_2) ==> true
+        (if true then t_1 else t_2) ⟹ true
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -721,15 +726,15 @@ false, give a counterexample.
   - Preservation
 
 
-
 #### Exercise: 2 stars, optional (stlc_variation5)
+
 Suppose instead that we add the following new rule to the typing
 relation:
 
-             Gamma \vdash t_1 : bool→bool→bool
-                 Gamma \vdash t_2 : bool
+             Γ ⊢ L ∶ 𝔹 ⇒ 𝔹 ⇒ 𝔹
+             Γ ⊢ M ∶ 𝔹
              ------------------------------          (T_FunnyApp)
-                Gamma \vdash t_1 t_2 : bool
+             Γ ⊢ L · M ∶ 𝔹
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -748,10 +753,10 @@ false, give a counterexample.
 Suppose instead that we add the following new rule to the typing
 relation:
 
-                 Gamma \vdash t_1 : bool
-                 Gamma \vdash t_2 : bool
+                Γ ⊢ L ∶ 𝔹
+                Γ ⊢ M ∶ 𝔹
                 ---------------------               (T_FunnyApp')
-                Gamma \vdash t_1 t_2 : bool
+                Γ ⊢ L · M ∶ 𝔹
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -767,11 +772,12 @@ false, give a counterexample.
 
 
 #### Exercise: 2 stars, optional (stlc_variation7)
+
 Suppose we add the following new rule to the typing relation
 of the STLC:
 
-                     ------------------- (T_FunnyAbs)
-                     \vdash \lambda x:bool.t : bool
+                --------------------              (T_FunnyAbs)
+                ∅ ⊢ λ[ x ∶ 𝔹 ] N ∶ 𝔹
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -792,27 +798,33 @@ programming language, let's extend it with a concrete base
 type of numbers and some constants and primitive
 operators.
 
-To types, we add a base type of natural numbers (and remove
+To types, we add a base type of numbers (and remove
 booleans, for brevity).
 
-Inductive ty : Type :=
-  | TArrow : ty → ty → ty
-  | TNat   : ty.
+\begin{code}
+data Type′ : Set where
+  _⇒_ : Type′ → Type′ → Type′
+  ℕ : Type′
+\end{code}
 
 To terms, we add natural number constants, along with
-successor, predecessor, multiplication, and zero-testing.
+plus, minus, and testing for zero.
 
-Inductive tm : Type :=
-  | tvar : id → tm
-  | tapp : tm → tm → tm
-  | tabs : id → ty → tm → tm
-  | tnat  : nat → tm
-  | tsucc : tm → tm
-  | tpred : tm → tm
-  | tmult : tm → tm → tm
-  | tif0  : tm → tm → tm → tm.
+\begin{code}
+data Term′ : Set where
+  `_ : Id → Term′
+  λ[_∶_]_ : Id → Type′ → Term′ → Term′
+  _·_ : Term′ → Term′ → Term′
+  ‶_ : Data.Nat.ℕ → Term′
+  _+_ : Term′ → Term′ → Term′
+  _-_ : Term′ → Term′ → Term′
+  if0_then_else_ : Term′ → Term′ → Term′ → Term′
+\end{code}
+
+(Assume that `m - n` returns `0` if `m` is less than `n`.)
 
 #### Exercise: 4 stars (stlc_arith)
+
 Finish formalizing the definition and properties of the STLC extended
 with arithmetic.  Specifically:
 
