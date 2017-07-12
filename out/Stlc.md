@@ -256,7 +256,7 @@ Syntax of types and terms.
       >20</a
       ><a name="579"
       > </a
-      ><a name="580" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="580" href="Stlc.html#609" class="InductiveConstructor Operator"
       >_&#8658;_</a
       ><a name="583"
       >
@@ -283,41 +283,41 @@ Syntax of types and terms.
       ><a name="606"
       >
   </a
-      ><a name="609" href="Stlc.html#609" class="InductiveConstructor"
-      >&#120121;</a
-      ><a name="610"
-      > </a
-      ><a name="611" class="Symbol"
-      >:</a
+      ><a name="609" href="Stlc.html#609" class="InductiveConstructor Operator"
+      >_&#8658;_</a
       ><a name="612"
       > </a
-      ><a name="613" href="Stlc.html#590" class="Datatype"
+      ><a name="613" class="Symbol"
+      >:</a
+      ><a name="614"
+      > </a
+      ><a name="615" href="Stlc.html#590" class="Datatype"
       >Type</a
-      ><a name="617"
+      ><a name="619"
+      > </a
+      ><a name="620" class="Symbol"
+      >&#8594;</a
+      ><a name="621"
+      > </a
+      ><a name="622" href="Stlc.html#590" class="Datatype"
+      >Type</a
+      ><a name="626"
+      > </a
+      ><a name="627" class="Symbol"
+      >&#8594;</a
+      ><a name="628"
+      > </a
+      ><a name="629" href="Stlc.html#590" class="Datatype"
+      >Type</a
+      ><a name="633"
       >
   </a
-      ><a name="620" href="Stlc.html#620" class="InductiveConstructor Operator"
-      >_&#8658;_</a
-      ><a name="623"
-      > </a
-      ><a name="624" class="Symbol"
-      >:</a
-      ><a name="625"
-      > </a
-      ><a name="626" href="Stlc.html#590" class="Datatype"
-      >Type</a
-      ><a name="630"
-      > </a
-      ><a name="631" class="Symbol"
-      >&#8594;</a
-      ><a name="632"
-      > </a
-      ><a name="633" href="Stlc.html#590" class="Datatype"
-      >Type</a
+      ><a name="636" href="Stlc.html#636" class="InductiveConstructor"
+      >&#120121;</a
       ><a name="637"
       > </a
       ><a name="638" class="Symbol"
-      >&#8594;</a
+      >:</a
       ><a name="639"
       > </a
       ><a name="640" href="Stlc.html#590" class="Datatype"
@@ -630,7 +630,7 @@ Example terms.
       >&#8758;</a
       ><a name="978"
       > </a
-      ><a name="979" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="979" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="980"
       > </a
@@ -691,15 +691,15 @@ Example terms.
       >&#8758;</a
       ><a name="1026"
       > </a
-      ><a name="1027" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="1027" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="1028"
       > </a
-      ><a name="1029" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="1029" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="1030"
       > </a
-      ><a name="1031" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="1031" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="1032"
       > </a
@@ -719,7 +719,7 @@ Example terms.
       >&#8758;</a
       ><a name="1041"
       > </a
-      ><a name="1042" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="1042" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="1043"
       > </a
@@ -2534,7 +2534,7 @@ Example terms.
       >&#8758;</a
       ><a name="2643"
       > </a
-      ><a name="2644" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="2644" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="2645"
       > </a
@@ -3090,7 +3090,7 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       >A</a
       ><a name="3280"
       > </a
-      ><a name="3281" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="3281" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="3282"
       > </a
@@ -3160,7 +3160,7 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       >A</a
       ><a name="3322"
       > </a
-      ><a name="3323" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="3323" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="3324"
       > </a
@@ -3268,7 +3268,7 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       >&#8758;</a
       ><a name="3394"
       > </a
-      ><a name="3395" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3395" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3396"
       >
@@ -3314,7 +3314,7 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       >&#8758;</a
       ><a name="3429"
       > </a
-      ><a name="3430" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3430" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3431"
       >
@@ -3376,7 +3376,7 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       >&#8758;</a
       ><a name="3467"
       > </a
-      ><a name="3468" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3468" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3469"
       > </a
@@ -3505,15 +3505,15 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       >&#8758;</a
       ><a name="3612"
       > </a
-      ><a name="3613" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3613" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3614"
       > </a
-      ><a name="3615" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="3615" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="3616"
       > </a
-      ><a name="3617" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3617" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3618"
       >
@@ -3586,33 +3586,33 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
       > </a
       ><a name="3680" class="Symbol"
       >(</a
-      ><a name="3681" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3681" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3682"
       > </a
-      ><a name="3683" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="3683" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="3684"
       > </a
-      ><a name="3685" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3685" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3686" class="Symbol"
       >)</a
       ><a name="3687"
       > </a
-      ><a name="3688" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="3688" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="3689"
       > </a
-      ><a name="3690" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3690" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3691"
       > </a
-      ><a name="3692" href="Stlc.html#620" class="InductiveConstructor Operator"
+      ><a name="3692" href="Stlc.html#609" class="InductiveConstructor Operator"
       >&#8658;</a
       ><a name="3693"
       > </a
-      ><a name="3694" href="Stlc.html#609" class="InductiveConstructor"
+      ><a name="3694" href="Stlc.html#636" class="InductiveConstructor"
       >&#120121;</a
       ><a name="3695"
       >

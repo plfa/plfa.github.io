@@ -4,7 +4,35 @@ layout    : page
 permalink : /Stlc
 ---
 
-This chapter defines the simply-typed lambda calculus.
+The _lambda-calculus_, first published by the logician Alonzo Church in
+1932, is a core calculus with only three syntactic constructs:
+variables, abstraction, and application.  It embodies the concept of
+_functional abstraction_, which shows up in almsot every programming
+language in some form (as functions, procedures, or methods).
+The _simply-typed lambda calculus_ (or STLC) is a variant of the
+lambda calculus published by Church in 1940.  It has just the three
+constructs above for function types, plus whatever else is required
+for base types. Church had a minimal base type with no operations;
+we will be slightly more pragmatic and choose booleans as our base type.
+
+This chapter formalises the STLC (syntax, small-step semantics, and typing rules),
+and the next chapter reviews its main properties (progress and preservation).
+The new technical challenges arise from the mechanisms of
+_variable binding_ and _substitution_.
+
+We've already seen how to formalize a language with
+variables ([Imp]({{ "Imp" | relative_url }})).
+There, however, the variables were all global.
+In the STLC, we need to handle the variables that name the
+parameters to functions, and these are _bound_ variables.
+Moreover, instead of just looking up variables in a global store,
+we'll need to reduce function applications by _substituting_
+arguments for parameters in function bodies.
+
+We choose booleans as our base type for simplicity.  At the end of the
+chapter we'll see how to add naturals as a base type, and in later
+chapters we'll enrich STLC with useful constructs like pairs, sums,
+lists, records, subtyping, and mutable state.
 
 ## Imports
 
@@ -17,10 +45,9 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 \end{code}
 
-
 ## Syntax
 
-Syntax of types and terms.
+We have just two types, function types and booleans.
 
 \begin{code}
 infixr 20 _⇒_
@@ -28,7 +55,15 @@ infixr 20 _⇒_
 data Type : Set where
   _⇒_ : Type → Type → Type
   𝔹 : Type
+\end{code}
 
+Each type introduces its own constructs, which come in pairs,
+one to introduce (or construct) values of the type, and one to eliminate
+(or deconstruct) them.
+
+CONTINUE FROM HERE
+
+\begin{code}
 infixl 20 _·_
 infix  15 λ[_∶_]_
 infix  15 if_then_else_
