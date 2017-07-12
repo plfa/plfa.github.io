@@ -38,13 +38,13 @@ data canonical_for_ : Term → Type → Set where
   canonical-true : canonical true for 𝔹
   canonical-false : canonical false for 𝔹
 
-canonicalFormsLemma : ∀ {L A} → ∅ ⊢ L ∶ A → Value L → canonical L for A
-canonicalFormsLemma (Ax ()) ()
-canonicalFormsLemma (⇒-I ⊢N) value-λ = canonical-λ
-canonicalFormsLemma (⇒-E ⊢L ⊢M) ()
-canonicalFormsLemma 𝔹-I₁ value-true = canonical-true
-canonicalFormsLemma 𝔹-I₂ value-false = canonical-false
-canonicalFormsLemma (𝔹-E ⊢L ⊢M ⊢N) ()
+canonical-forms : ∀ {L A} → ∅ ⊢ L ∶ A → Value L → canonical L for A
+canonical-forms (Ax ()) ()
+canonical-forms (⇒-I ⊢N) value-λ = canonical-λ
+canonical-forms (⇒-E ⊢L ⊢M) ()
+canonical-forms 𝔹-I₁ value-true = canonical-true
+canonical-forms 𝔹-I₂ value-false = canonical-false
+canonical-forms (𝔹-E ⊢L ⊢M ⊢N) ()
 \end{code}
 
 ## Progress
@@ -117,13 +117,13 @@ progress (⇒-E ⊢L ⊢M) with progress ⊢L
 ... | steps L⟹L′ = steps (ξ·₁ L⟹L′)
 ... | done valueL with progress ⊢M
 ... | steps M⟹M′ = steps (ξ·₂ valueL M⟹M′)
-... | done valueM with canonicalFormsLemma ⊢L valueL
+... | done valueM with canonical-forms ⊢L valueL
 ... | canonical-λ = steps (βλ· valueM)
 progress 𝔹-I₁ = done value-true
 progress 𝔹-I₂ = done value-false
 progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
 ... | steps L⟹L′ = steps (ξif L⟹L′)
-... | done valueL with canonicalFormsLemma ⊢L valueL
+... | done valueL with canonical-forms ⊢L valueL
 ... | canonical-true = steps βif-true
 ... | canonical-false = steps βif-false
 \end{code}
@@ -258,7 +258,7 @@ appears free in term `M`, and if `M` is well typed in context `Γ`,
 then `Γ` must assign a type to `x`.
 
 \begin{code}
-freeLemma : ∀ {x M A Γ} → x ∈ M → Γ ⊢ M ∶ A → ∃ λ B → Γ x ≡ just B
+free-lemma : ∀ {x M A Γ} → x ∈ M → Γ ⊢ M ∶ A → ∃ λ B → Γ x ≡ just B
 \end{code}
 
 _Proof_: We show, by induction on the proof that `x` appears
@@ -290,13 +290,13 @@ _Proof_: We show, by induction on the proof that `x` appears
     `_≟_`, and note that `x` and `y` are different variables.
 
 \begin{code}
-freeLemma free-` (Ax Γx≡A) = (_ , Γx≡A)
-freeLemma (free-·₁ x∈L) (⇒-E ⊢L ⊢M) = freeLemma x∈L ⊢L
-freeLemma (free-·₂ x∈M) (⇒-E ⊢L ⊢M) = freeLemma x∈M ⊢M
-freeLemma (free-if₁ x∈L) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈L ⊢L
-freeLemma (free-if₂ x∈M) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈M ⊢M
-freeLemma (free-if₃ x∈N) (𝔹-E ⊢L ⊢M ⊢N) = freeLemma x∈N ⊢N
-freeLemma (free-λ {x} {y} y≢x x∈N) (⇒-I ⊢N) with freeLemma x∈N ⊢N
+free-lemma free-` (Ax Γx≡A) = (_ , Γx≡A)
+free-lemma (free-·₁ x∈L) (⇒-E ⊢L ⊢M) = free-lemma x∈L ⊢L
+free-lemma (free-·₂ x∈M) (⇒-E ⊢L ⊢M) = free-lemma x∈M ⊢M
+free-lemma (free-if₁ x∈L) (𝔹-E ⊢L ⊢M ⊢N) = free-lemma x∈L ⊢L
+free-lemma (free-if₂ x∈M) (𝔹-E ⊢L ⊢M ⊢N) = free-lemma x∈M ⊢M
+free-lemma (free-if₃ x∈N) (𝔹-E ⊢L ⊢M ⊢N) = free-lemma x∈N ⊢N
+free-lemma (free-λ {x} {y} y≢x x∈N) (⇒-I ⊢N) with free-lemma x∈N ⊢N
 ... | Γx≡C with y ≟ x
 ... | yes y≡x = ⊥-elim (y≢x y≡x)
 ... | no  _   = Γx≡C
@@ -323,7 +323,7 @@ contradiction : ∀ {X : Set} → ∀ {x : X} → ¬ (_≡_ {A = Maybe X} (just 
 contradiction ()
 
 ∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∶ A → closed M
-∅⊢-closed′ {M} {A} ⊢M {x} x∈M with freeLemma x∈M ⊢M
+∅⊢-closed′ {M} {A} ⊢M {x} x∈M with free-lemma x∈M ⊢M
 ... | (B , ∅x≡B) = contradiction (trans (sym ∅x≡B) (apply-∅ x))
 \end{code}
 </div>
@@ -336,7 +336,7 @@ as the two contexts agree on those variables, one can be
 exchanged for the other.
 
 \begin{code}
-contextLemma : ∀ {Γ Γ′ M A}
+context-lemma : ∀ {Γ Γ′ M A}
         → (∀ {x} → x ∈ M → Γ x ≡ Γ′ x)
         → Γ  ⊢ M ∶ A
         → Γ′ ⊢ M ∶ A
@@ -387,18 +387,18 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
   - The remaining cases are similar to `⇒-E`.
 
 \begin{code}
-contextLemma Γ~Γ′ (Ax Γx≡A) rewrite (Γ~Γ′ free-`) = Ax Γx≡A
-contextLemma {Γ} {Γ′} {λ[ x ∶ A ] N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (contextLemma Γx~Γ′x ⊢N)
+context-lemma Γ~Γ′ (Ax Γx≡A) rewrite (Γ~Γ′ free-`) = Ax Γx≡A
+context-lemma {Γ} {Γ′} {λ[ x ∶ A ] N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (context-lemma Γx~Γ′x ⊢N)
   where
   Γx~Γ′x : ∀ {y} → y ∈ N → (Γ , x ∶ A) y ≡ (Γ′ , x ∶ A) y
   Γx~Γ′x {y} y∈N with x ≟ y
   ... | yes refl = refl
   ... | no  x≢y  = Γ~Γ′ (free-λ x≢y y∈N)
-contextLemma Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (contextLemma (Γ~Γ′ ∘ free-·₁)  ⊢L) (contextLemma (Γ~Γ′ ∘ free-·₂) ⊢M) 
-contextLemma Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
-contextLemma Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
-contextLemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
-  = 𝔹-E (contextLemma (Γ~Γ′ ∘ free-if₁) ⊢L) (contextLemma (Γ~Γ′ ∘ free-if₂) ⊢M) (contextLemma (Γ~Γ′ ∘ free-if₃) ⊢N)
+context-lemma Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (context-lemma (Γ~Γ′ ∘ free-·₁)  ⊢L) (context-lemma (Γ~Γ′ ∘ free-·₂) ⊢M) 
+context-lemma Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
+context-lemma Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
+context-lemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N)
+  = 𝔹-E (context-lemma (Γ~Γ′ ∘ free-if₁) ⊢L) (context-lemma (Γ~Γ′ ∘ free-if₂) ⊢M) (context-lemma (Γ~Γ′ ∘ free-if₃) ⊢N)
 \end{code}
 
 
@@ -493,7 +493,7 @@ we show that if `∅ ⊢ V ∶ A` then `Γ ⊢ N [ x := V ] ∶ B`.
 We need a couple of lemmas. A closed term can be weakened to any context, and `just` is injective.
 \begin{code}
 weaken-closed : ∀ {V A Γ} → ∅ ⊢ V ∶ A → Γ ⊢ V ∶ A
-weaken-closed {V} {A} {Γ} ⊢V = contextLemma Γ~Γ′ ⊢V
+weaken-closed {V} {A} {Γ} ⊢V = context-lemma Γ~Γ′ ⊢V
   where
   Γ~Γ′ : ∀ {x} → x ∈ V → ∅ x ≡ Γ x
   Γ~Γ′ {x} x∈V = ⊥-elim (x∉V x∈V)
@@ -510,7 +510,7 @@ preservation-[:=] {Γ} {x} {A} (Ax {Γ,x∶A} {x′} {B} [Γ,x∶A]x′≡B) ⊢
 ...| yes x≡x′ rewrite just-injective [Γ,x∶A]x′≡B  =  weaken-closed ⊢V
 ...| no  x≢x′  =  Ax [Γ,x∶A]x′≡B
 preservation-[:=] {Γ} {x} {A} {λ[ x′ ∶ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite x≡x′ = contextLemma Γ′~Γ (⇒-I ⊢N′)
+...| yes x≡x′ rewrite x≡x′ = context-lemma Γ′~Γ (⇒-I ⊢N′)
   where
   Γ′~Γ : ∀ {y} → y ∈ (λ[ x′ ∶ A′ ] N′) → (Γ , x′ ∶ A) y ≡ Γ y
   Γ′~Γ {y} (free-λ x′≢y y∈N′) with x′ ≟ y
