@@ -30,7 +30,7 @@ we'll need to reduce function applications by _substituting_
 arguments for parameters in function bodies.
 
 We choose booleans as our base type for simplicity.  At the end of the
-chapter we'll see how to add naturals as a base type, and in later
+chapter we'll see how to add numbers as a base type, and in later
 chapters we'll enrich STLC with useful constructs like pairs, sums,
 lists, records, subtyping, and mutable state.
 
@@ -47,7 +47,19 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 
 ## Syntax
 
-We have just two types, function types and booleans.
+We have just two types.
+  * Functions, `A ⇒ B`
+  * Booleans, `𝔹`
+We require some form of base type, because otherwise the set of types
+would be empty. Church used a trivial base type `o` with no operations.
+For us, it is more convenient to use booleans. Later we will consider
+numbers as a base type.
+
+Here is the syntax of types in BNF.
+
+    A, B, C ::= A ⇒ B | 𝔹
+
+And here it is formalised in Agda.
 
 \begin{code}
 infixr 20 _⇒_
@@ -57,11 +69,28 @@ data Type : Set where
   𝔹 : Type
 \end{code}
 
-Each type introduces its own constructs, which come in pairs,
-one to introduce (or construct) values of the type, and one to eliminate
-(or deconstruct) them.
+Terms have six constructs. Three are for the core lambda calculus:
+  * Variables, `\` x`
+  * Abstractions, `λ[ x ∶ A ] N`
+  * Applications, `L · M`
+and three are for the base type, booleans:
+  * True, `true`
+  * False, `false`
+  * Conditions, `if L then M else N`
+Abstraction is also called lambda abstraction, and is the construct
+from which the calculus takes its name. 
 
-CONTINUE FROM HERE
+With the exception of variables, each construct either constructs
+a value of a given type (abstractions yield functions, true and
+false yield booleans) or deconstructs it (applications use functions,
+conditionals use booleans). We will see this again when we come
+to the rules for assigning types to terms, where constructors
+correspond to introduction rules and deconstructors to eliminators.
+
+Here is the syntax of terms in BNF.
+
+
+
 
 \begin{code}
 infixl 20 _·_
@@ -76,6 +105,14 @@ data Term : Set where
   false : Term
   if_then_else_ : Term → Term → Term → Term
 \end{code}
+
+Each type introduces its own constructs, which come in pairs,
+one to introduce (or construct) values of the type, and one to eliminate
+(or deconstruct) them.
+
+CONTINUE FROM HERE
+
+
 
 Example terms.
 \begin{code}
