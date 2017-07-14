@@ -48,8 +48,10 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ## Syntax
 
 We have just two types.
+
   * Functions, `A ⇒ B`
   * Booleans, `𝔹`
+
 We require some form of base type, because otherwise the set of types
 would be empty. Church used a trivial base type `o` with no operations.
 For us, it is more convenient to use booleans. Later we will consider
@@ -57,9 +59,7 @@ numbers as a base type.
 
 Here is the syntax of types in BNF.
 
-    A, B, C ::=
-      A ⇒ B   -- functions
-      𝔹        -- booleans
+    A, B, C  ::=  A ⇒ B | 𝔹
 
 And here it is formalised in Agda.
 
@@ -72,13 +72,17 @@ data Type : Set where
 \end{code}
 
 Terms have six constructs. Three are for the core lambda calculus:
+
   * Variables, `` ` x ``
   * Abstractions, `λ[ x ∶ A ] N`
   * Applications, `L · M`
+
 and three are for the base type, booleans:
+
   * True, `true`
   * False, `false`
   * Conditions, `if L then M else N`
+
 Abstraction is also called lambda abstraction, and is the construct
 from which the calculus takes its name. 
 
@@ -91,10 +95,9 @@ correspond to introduction rules and deconstructors to eliminators.
 
 Here is the syntax of terms in BNF.
 
-    L, M, N ::= ` x | λ[ x ∶ A ] N 
+    L, M, N  ::=  ` x | λ[ x ∶ A ] N | L · M | true | false | if L then M else N
 
-
-
+And here it is formalised in Agda.
 
 \begin{code}
 infixl 20 _·_
@@ -109,10 +112,6 @@ data Term : Set where
   false : Term
   if_then_else_ : Term → Term → Term → Term
 \end{code}
-
-Each type introduces its own constructs, which come in pairs,
-one to introduce (or construct) values of the type, and one to eliminate
-(or deconstruct) them.
 
 CONTINUE FROM HERE
 
