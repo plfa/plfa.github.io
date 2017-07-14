@@ -113,11 +113,18 @@ data Term : Set where
   if_then_else_ : Term → Term → Term → Term
 \end{code}
 
-CONTINUE FROM HERE
+A NOTE ON : AND ∶
+
+USE OF ` FOR var
 
 
 
-Example terms.
+
+Here are a couple of example terms, `not` of type
+`𝔹 ⇒ 𝔹`, which complements its argument, and `two` of type
+`(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` which takes a function and a boolean
+and applies the function to the boolean twice.
+
 \begin{code}
 f x : Id
 f  =  id 0
@@ -127,6 +134,31 @@ not two : Term
 not =  λ[ x ∶ 𝔹 ] (if ` x then false else true)
 two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 \end{code}
+
+As in Agda, functions of two or more arguments are represented via
+currying. This is made more convenient by declaring `_⇒_` to
+associate to the right and `_·_` to associate to the left.
+Thus,
+
+  `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` abbreviates `(𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)`,
+
+and similarly,
+
+  `two · not · true` abbreviates `(two · not) · true`.
+
+SCOPE OF λ OR if
+
+\begin{code}
+example₁ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)
+example₁ = refl
+
+example₂ : two · not · true ≡ (two · not) · true
+example₂ = refl
+
+example₃ : λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ≡ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x))))
+example₃ = refl
+\end{code}
+
 
 ## Values
 
