@@ -815,7 +815,7 @@ data Term′ : Set where
   `_ : Id → Term′
   λ[_∶_]_ : Id → Type′ → Term′ → Term′
   _·_ : Term′ → Term′ → Term′
-  ‶_ : Data.Nat.ℕ → Term′
+  #_ : Data.Nat.ℕ → Term′
   _+_ : Term′ → Term′ → Term′
   _-_ : Term′ → Term′ → Term′
   if0_then_else_ : Term′ → Term′ → Term′ → Term′
