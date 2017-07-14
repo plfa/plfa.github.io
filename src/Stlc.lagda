@@ -57,7 +57,9 @@ numbers as a base type.
 
 Here is the syntax of types in BNF.
 
-    A, B, C ::= A ⇒ B | 𝔹
+    A, B, C ::=
+      A ⇒ B   -- functions
+      𝔹        -- booleans
 
 And here it is formalised in Agda.
 
@@ -88,6 +90,8 @@ to the rules for assigning types to terms, where constructors
 correspond to introduction rules and deconstructors to eliminators.
 
 Here is the syntax of terms in BNF.
+
+    L, M, N ::= ` x | λ[ x ∶ A ] N 
 
 
 
