@@ -113,22 +113,20 @@ data Term : Set where
   if_then_else_ : Term → Term → Term → Term
 \end{code}
 
-#### Unicode
+#### Special characters
 
-We use the following unicode characters
+We use the following special characters
 
-  `  U+0060: GRAVE ACCENT
-  λ  U+03BB  GREEK SMALL LETTER LAMBDA
-  ∶  U+2236  RATIO
-  ·  U+00B7: MIDDLE DOT
+  ⇒  U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
+  `  U+0060: GRAVE ACCENT 
+  λ  U+03BB:  GREEK SMALL LETTER LAMBDA (\Gl or \lambda)
+  ∶  U+2236:  RATIO (\:)
+  ·  U+00B7: MIDDLE DOT (\cdot)
 
-In particular, ∶ (U+2236 RATIO) is not the same as : (U+003A COLON).
+Note that ∶ (U+2236 RATIO) is not the same as : (U+003A COLON).
 Colon is reserved in Agda for declaring types. Everywhere that we
-declare a type in the object language rather than Agda we will use
-ratio in place of colon, otherwise our code will not parse.  Recall
-that in Agda one may treat square brackets `[]` as ordinary symbols,
-while round parentheses `()` and curly braces `{}` have special
-meaning.
+declare a type in the object language rather than Agda we use
+ratio in place of colon.
 
 Using ratio for this purpose is arguably a bad idea, because one must use context
 rather than appearance to distinguish it from colon. Arguably, it might be
@@ -136,7 +134,9 @@ better to use a different symbol, such as `∈` or `::`.  We reserve `∈`
 for use later to indicate that a variable appears free in a term, and
 eschew `::` because we consider it too ugly.
 
-#### Formal vs Informal
+
+
+#### Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
 variable name to disambiguate and writes `x` rather than `` ` x ``
@@ -144,11 +144,13 @@ for a term that is a variable. Agda requires we distinguish.
 Often researchers use `var x` rather than `` ` x ``, but we chose
 the latter since it is closer to the informal notation `x`.
 
-Similarly, informal presentation often use the notations
-`A → B` for functions, `λ x . N` for abstractions, and `L M` for applications.
-We cannot use these, because they overlap with the notation used by Agda.
-Some researchers use `L @ M` in place of `L · M`, but we cannot
-because `@` has a reserved meaning in Agda.
+Similarly, informal presentation often use the notations `A → B` for
+functions, `λ x . N` for abstractions, and `L M` for applications.  We
+cannot use these, because they overlap with the notation used by Agda.
+In `λ[ x ∶ A ] N`, recall that Agda treats square brackets `[]` as
+ordinary symbols, while round parentheses `()` and curly braces `{}`
+have special meaning.  We would use `L @ M` for application, but
+`@` has a reserved meaning in Agda.
 
 
 #### Examples
@@ -159,9 +161,10 @@ Here are a couple of example terms, `not` of type
 and applies the function to the boolean twice.
 
 \begin{code}
-f x : Id
+f x y : Id
 f  =  id 0
 x  =  id 1
+y  =  id 2
 
 not two : Term 
 not =  λ[ x ∶ 𝔹 ] (if ` x then false else true)
@@ -189,15 +192,15 @@ to be weaker than application. For instance,
 > `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
 
 \begin{code}
-example₁ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)
-example₁ = refl
+ex₁ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)
+ex₁ = refl
 
-example₂ : two · not · true ≡ (two · not) · true
-example₂ = refl
+ex₂ : two · not · true ≡ (two · not) · true
+ex₂ = refl
 
-example₃ : λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
-        ≡ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x))))
-example₃ = refl
+ex₃ : λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
+      ≡ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x))))
+ex₃ = refl
 \end{code}
 
 #### Quiz
@@ -228,16 +231,22 @@ example₃ = refl
 
 ## Values
 
+We only consider reduction of _closed_ terms,
+those that contain no free variables.  We consider
+a precise definition of free variables in
+[StlcProp]({{ "StlcProp" | relative_url }}).
+
 A term is a value if it is fully reduced.
-
-For booleans, the situtation is clear, `true` and
+For booleans, the situation is clear, `true` and
 `false` are values, while conditionals are not.
-
 For functions, applications are not values, because
 we expect them to further reduce, and variables are
 not values, because we focus on closed terms
 (which never contain unbound variables).
+Following convention, we treat all abstractions
+as values.
 
+The predicate `Value M` holds if term `M` is a value.
 
 \begin{code}
 data Value : Term → Set where
@@ -246,7 +255,70 @@ data Value : Term → Set where
   value-false : Value false
 \end{code}
 
+We let `V` and `W` range over values.
+
+
+#### Formal vs informal
+
+In informal presentations of formal semantics, using
+`V` as the name of a metavariable is sufficient to
+indicate that it is a value. In Agda, we must explicitly
+invoke the `Value` predicate.
+
+#### Other approaches
+
+An alternative is not to focus on closed terms,
+to treat variables as values, and to treat
+`λ[ x ∶ A ] N` as a value only if `N` is a value.
+Indeed, this is how Agda normalises terms.
+Formalising this approach requires a more sophisticated
+definition of substitution, which permits substituting
+closed terms for values.
+
 ## Substitution
+
+The heart of lambda calculus is the operation of
+substituting one term for a variable in another term.
+Substitution plays a key role in defining the
+operational semantics of function application.
+For instance, we have
+
+      (λ[ f ∶ 𝔹 ⇒ 𝔹 ] `f · (`f · true)) · not
+    ⟹
+      not · (not · true)
+
+where we substitute `false` for `` `x `` in the body
+of the function abstraction.
+
+We write substitution as `N [ x := V ]`, meaning
+substitute term `V` for free occurrences of variable `x` in term `V`,
+or, more compactly, substitute `V` for `x` in `N`.
+Substitution works if `V` is any closed term;
+it need not be a value, but we use `V` since we
+always substitute values.
+
+Here are some examples.
+
+* `` ` f [ f := not ] `` yields `` not ``
+* `` true [ f := not ] `` yields `` true ``
+* `` (` f · true) [ f := not ] `` yields `` not · true ``
+* `` (` f · (` f · true)) [ f := not ] `` yields `` not · (not · true) ``
+* `` (λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) [ f := not ] `` yields `` λ[ x ∶ 𝔹 ] not · (not · ` x) ``
+* `` (λ[ y ∶ 𝔹 ] ` y) [ x := true ] `` yields `` λ[ y ∶ 𝔹 ] ` y ``
+* `` (λ[ x ∶ 𝔹 ] ` x) [ x := true ] `` yields `` λ[ x ∶ 𝔹 ] ` x ``
+
+The last example is important: substituting `true` for `x` in
+`` (λ[ x ∶ 𝔹 ] ` x) `` does _not_ yield `` (λ[ x ∶ 𝔹 ] true) ``.
+The reason for this is that `x` in the body of `` (λ[ x ∶ 𝔹 ] ` x) ``
+is _bound_ by the abstraction.  An important feature of abstraction
+is that the choice of bound names is irrelevant: both
+`` (λ[ x ∶ 𝔹 ] ` x) `` and `` (λ[ y ∶ 𝔹 ] ` y) `` stand for the
+identity function.  The way to think of this is that `x` within
+the body of the abstraction stands for a _different_ variable than
+`x` outside the abstraction, they both just happen to have the same
+name.
+
+Here is the formal definition in Agda.
 
 \begin{code}
 _[_:=_] : Term → Id → Term → Term
@@ -263,14 +335,121 @@ _[_:=_] : Term → Id → Term → Term
   if (L′ [ x := V ]) then (M′ [ x := V ]) else (N′ [ x := V ])
 \end{code}
 
-## Reduction rules
+The two key cases are variables and abstraction.
+
+* For variables, we compare `x`, the variable we are substituting for,
+with `x′`, the variable in the term. If they are the same,
+we yield `V`, otherwise we yield `x′` unchanged.
+
+* For abstractions, we compare `x`, the variable we are substituting for,
+with `x′`, the variable bound in the abstraction. If they are the same,
+we yield abstraction unchanged, otherwise we subsititute inside the body.
+
+In all other cases, we push substitution recursively into
+the subterms.
+
+#### Special characters
+
+    ′  U+2032: PRIME (\')
+
+Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).
+
+
+#### Examples
+
+Here is confirmation that the examples above are correct.
+
+\begin{code}
+ex₁₁ : ` f [ f := not ] ≡  not
+ex₁₁ = refl
+
+ex₁₂ : true [ f := not ] ≡ true
+ex₁₂ = refl
+
+ex₁₃ : (` f · true) [ f := not ] ≡ not · true
+ex₁₃ = refl
+
+ex₁₄ : (` f · (` f · true)) [ f := not ] ≡ not · (not · true)
+ex₁₄ = refl
+
+ex₁₅ : (λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) [ f := not ] ≡ λ[ x ∶ 𝔹 ] not · (not · ` x)
+ex₁₅ = refl
+
+ex₁₆ : (λ[ y ∶ 𝔹 ] ` y) [ x := true ] ≡ λ[ y ∶ 𝔹 ] ` y
+ex₁₆ = refl
+
+ex₁₇ : (λ[ x ∶ 𝔹 ] ` x) [ x := true ] ≡ λ[ x ∶ 𝔹 ] ` x
+ex₁₇ = refl
+\end{code}
+
+#### Quiz
+
+What is the result of the following substitution?
+
+    (λ[ y ∶ 𝔹 ] ` x · (λ[ x ∶ 𝔹 ] ` x)) [ x := true ]
+
+1. `` (λ[ y ∶ 𝔹 ] ` x · (λ[ x ∶ 𝔹 ] ` x)) ``
+2. `` (λ[ y ∶ 𝔹 ] ` x · (λ[ x ∶ 𝔹 ] true)) ``
+3. `` (λ[ y ∶ 𝔹 ] true · (λ[ x ∶ 𝔹 ] ` x)) ``
+4. `` (λ[ y ∶ 𝔹 ] true · (λ[ x ∶ 𝔹 ] ` true)) ``
+
+
+## Reduction
+
+We give the reduction rules for call-by-value lambda calculus.  To
+reduce an application, first we reduce the left-hand side until it
+becomes a value (which must be an abstraction); then we reduce the
+right-hand side until it becomes a value; and finally we substitute
+the argument for the variable in the abstraction.  To reduce a
+conditional, we first reduce the condition until it becomes a value;
+if the condition is true the conditional reduces to the first
+branch and if false it reduces to the second branch.a
+
+In an informal presentation of the formal semantics, the rules
+are written as follows.
+
+    L ⟹ L′
+    --------------- ξ·₁
+    L · M ⟹ L′ · M
+
+    Value V
+    M ⟹ M′
+    --------------- ξ·₂
+    V · M ⟹ V · M′
+
+    Value V
+    --------------------------------- βλ·
+    (λ[ x ∶ A ] N) · V ⟹ N [ x := V ]
+
+    L ⟹ L′
+    ----------------------------------------- ξif
+    if L then M else N ⟹ if L′ then M else N
+
+    -------------------------- βif-true
+    if true then M else N ⟹ M
+
+    --------------------------- βif-false
+    if false then M else N ⟹ N
+
+As we will show later, the rules are deterministic, in that
+at most one rule applies to every term.  As we will also show
+later, for every well-typed term either a reduction applies
+or it is a value.
+
+The rules break into two sorts. Compatibility rules
+direct us to reduce some part of a term.
+We give them names starting with the Greek letter xi, `ξ`.
+Once a term is sufficiently
+reduced, it will consist of a constructor and
+a deconstructor, in our case `λ` and `·`, or
+`if` and `true`, or `if` and `false`.
+We give them names starting with the Greek letter beta, `β`,
+and indeed such rules are traditionally called beta rules.
 
 \begin{code}
 infix 10 _⟹_ 
 
 data _⟹_ : Term → Term → Set where
-  βλ· : ∀ {x A N V} → Value V →
-    (λ[ x ∶ A ] N) · V ⟹ N [ x := V ]
   ξ·₁ : ∀ {L L′ M} →
     L ⟹ L′ →
     L · M ⟹ L′ · M
@@ -278,17 +457,78 @@ data _⟹_ : Term → Term → Set where
     Value V →
     M ⟹ M′ →
     V · M ⟹ V · M′
+  βλ· : ∀ {x A N V} → Value V →
+    (λ[ x ∶ A ] N) · V ⟹ N [ x := V ]
+  ξif : ∀ {L L′ M N} →
+    L ⟹ L′ →    
+    if L then M else N ⟹ if L′ then M else N
   βif-true : ∀ {M N} →
     if true then M else N ⟹ M
   βif-false : ∀ {M N} →
     if false then M else N ⟹ N
-  ξif : ∀ {L L′ M N} →
-    L ⟹ L′ →    
-    if L then M else N ⟹ if L′ then M else N
 \end{code}
+
+#### Special characters
+
+We use the following special characters
+
+  ⟹  U+27F9: LONG RIGHTWARDS DOUBLE ARROW (\r6)
+  ξ  U+03BE: GREEK SMALL LETTER XI (\Gx or \xi)
+  β  U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
+
+#### Quiz
+
+What does the following term step to?
+
+    (λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) · (λ [ x ∶ 𝔹 ] ` x)  ⟹  ???
+
+1.  `` (λ [ x ∶ 𝔹 ] ` x) ``
+2.  `` (λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) ``
+3.  `` (λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) · (λ [ x ∶ 𝔹 ] ` x) ``
+
+What does the following term step to?
+
+    (λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) · ((λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) (λ [ x ∶ 𝔹 ] ` x))  ⟹  ???
+
+1.  `` (λ [ x ∶ 𝔹 ] ` x) ``
+2.  `` (λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) ``
+3.  `` (λ[ x ∶ 𝔹 ⇒ 𝔹 ] ` x) · (λ [ x ∶ 𝔹 ] ` x) ``
+
+What does the following term step to?  (Where `not` is as defined above.)
+
+    not · true  ⟹  ???
+
+1.  `` if ` x then false else true ``
+2.  `` if true then false else true ``
+3.  `` true ``
+4.  `` false ``
+
+What does the following term step to?  (Where `two` and `not` are as defined above.)
+
+    two · not · true  ⟹  ???
+
+1.  `` not · (not · true) ``
+2.  `` (λ[ x ∶ 𝔹 ] not · (not · ` x)) · true ``
+4.  `` true ``
+5.  `` false ``
 
 ## Reflexive and transitive closure
 
+A single step is only part of the story. In general, we wish to repeatedly
+step a closed term until it reduces to a value.  We do this by defining
+the reflexive and transitive closure `⟹*` of the step function `⟹`.
+In an informal presentation of the formal semantics, the rules
+are written as follows.
+
+    ------- done
+    M ⟹* M
+
+    L ⟹ M
+    M ⟹* N
+    ------- step
+    L ⟹* N
+
+Here it is formalised in Agda.
 
 \begin{code}
 infix 10 _⟹*_ 
@@ -298,7 +538,21 @@ infix  3 _∎
 data _⟹*_ : Term → Term → Set where
   _∎ : ∀ M → M ⟹* M
   _⟹⟨_⟩_ : ∀ L {M N} → L ⟹ M → M ⟹* N → L ⟹* N  
+\end{code}
 
+We can read this as follows.
+
+* From term `M`, we can take no steps, giving `M ∎` of type `M ⟹* M`.
+
+* From term `L` we can take a single step `L⟹M` of type `L ⟹ M`
+  followed by zero or more steps `M⟹*N` of type `M ⟹* N`,
+  giving `L ⟨ L⟹M ⟩ M⟹*N` of type `L ⟹* N`.
+
+The names of the two clauses in the definition of reflexive
+and transitive closure have been chosen to allow us to lay
+out example reductions in an appealing way.
+
+\begin{code}
 reduction₁ : not · true ⟹* false
 reduction₁ =
     not · true
@@ -326,9 +580,17 @@ reduction₂ =
   ∎
 \end{code}
 
+<!--
 Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
+-->
 
+#### Special characters
 
+We use the following special characters
+
+    ∎  U+220E: END OF PROOF (\qed)
+    ⟨  U+27E8: MATHEMATICAL LEFT ANGLE BRACKET (\<)
+    ⟩  U+27E9: MATHEMATICAL RIGHT ANGLE BRACKET (\>)
 
 ## Type rules
 
