@@ -130,11 +130,26 @@ that in Agda one may treat square brackets `[]` as ordinary symbols,
 while round parentheses `()` and curly braces `{}` have special
 meaning.
 
-Using ratio is arguably a bad idea, because one must use context
-rather than sight to distinguish it from colon. Arguably, it might be
+Using ratio for this purpose is arguably a bad idea, because one must use context
+rather than appearance to distinguish it from colon. Arguably, it might be
 better to use a different symbol, such as `∈` or `::`.  We reserve `∈`
 for use later to indicate that a variable appears free in a term, and
-don't use `::` because we consider it too ugly.
+eschew `::` because we consider it too ugly.
+
+#### Formal vs Informal
+
+In informal presentation of formal semantics, one uses choice of
+variable name to disambiguate and writes `x` rather than `` ` x ``
+for a term that is a variable. Agda requires we distinguish.
+Often researchers use `var x` rather than `` ` x ``, but we chose
+the latter since it is closer to the informal notation `x`.
+
+Similarly, informal presentation often use the notations
+`A → B` for functions, `λ x . N` for abstractions, and `L M` for applications.
+We cannot use these, because they overlap with the notation used by Agda.
+Some researchers use `L @ M` in place of `L · M`, but we cannot
+because `@` has a reserved meaning in Agda.
+
 
 #### Examples
 
@@ -152,6 +167,8 @@ not two : Term
 not =  λ[ x ∶ 𝔹 ] (if ` x then false else true)
 two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 \end{code}
+
+#### Precedence
 
 As in Agda, functions of two or more arguments are represented via
 currying. This is made more convenient by declaring `_⇒_` to
@@ -183,8 +200,44 @@ example₃ : λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 example₃ = refl
 \end{code}
 
+#### Quiz
+
+* What is the type of the following term?
+
+    λ[ f ∶ 𝔹 ⇒ 𝔹 ] ` f · (` f  · true)
+
+  1. `𝔹 ⇒ (𝔹 ⇒ 𝔹)`
+  2. `(𝔹 ⇒ 𝔹) ⇒ 𝔹`
+  3. `𝔹 ⇒ 𝔹 ⇒ 𝔹`
+  4. `𝔹 ⇒ 𝔹`
+  5. `𝔹`
+
+  Give more than one answer if appropriate.
+
+* What is the type of the following term?
+
+    (λ[ f ∶ 𝔹 ⇒ 𝔹 ] ` f · (` f  · true)) · not
+
+  1. `𝔹 ⇒ (𝔹 ⇒ 𝔹)`
+  2. `(𝔹 ⇒ 𝔹) ⇒ 𝔹`
+  3. `𝔹 ⇒ 𝔹 ⇒ 𝔹`
+  4. `𝔹 ⇒ 𝔹`
+  5. `𝔹`
+
+  Give more than one answer if appropriate.
 
 ## Values
+
+A term is a value if it is fully reduced.
+
+For booleans, the situtation is clear, `true` and
+`false` are values, while conditionals are not.
+
+For functions, applications are not values, because
+we expect them to further reduce, and variables are
+not values, because we focus on closed terms
+(which never contain unbound variables).
+
 
 \begin{code}
 data Value : Term → Set where
@@ -206,7 +259,8 @@ _[_:=_] : Term → Id → Term → Term
 (L′ · M′) [ x := V ] =  (L′ [ x := V ]) · (M′ [ x := V ])
 (true) [ x := V ] = true
 (false) [ x := V ] = false
-(if L′ then M′ else N′) [ x := V ] = if (L′ [ x := V ]) then (M′ [ x := V ]) else (N′ [ x := V ])
+(if L′ then M′ else N′) [ x := V ] =
+  if (L′ [ x := V ]) then (M′ [ x := V ]) else (N′ [ x := V ])
 \end{code}
 
 ## Reduction rules
