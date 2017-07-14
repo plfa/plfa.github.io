@@ -113,12 +113,30 @@ data Term : Set where
   if_then_else_ : Term → Term → Term → Term
 \end{code}
 
-A NOTE ON : AND ∶
+#### Unicode
 
-USE OF ` FOR var
+We use the following unicode characters
 
+  `  U+0060: GRAVE ACCENT
+  λ  U+03BB  GREEK SMALL LETTER LAMBDA
+  ∶  U+2236  RATIO
+  ·  U+00B7: MIDDLE DOT
 
+In particular, ∶ (U+2236 RATIO) is not the same as : (U+003A COLON).
+Colon is reserved in Agda for declaring types. Everywhere that we
+declare a type in the object language rather than Agda we will use
+ratio in place of colon, otherwise our code will not parse.  Recall
+that in Agda one may treat square brackets `[]` as ordinary symbols,
+while round parentheses `()` and curly braces `{}` have special
+meaning.
 
+Using ratio is arguably a bad idea, because one must use context
+rather than sight to distinguish it from colon. Arguably, it might be
+better to use a different symbol, such as `∈` or `::`.  We reserve `∈`
+for use later to indicate that a variable appears free in a term, and
+don't use `::` because we consider it too ugly.
+
+#### Examples
 
 Here are a couple of example terms, `not` of type
 `𝔹 ⇒ 𝔹`, which complements its argument, and `two` of type
@@ -140,13 +158,18 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus,
 
-  `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` abbreviates `(𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)`,
+> `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` abbreviates `(𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)`,
 
 and similarly,
 
-  `two · not · true` abbreviates `(two · not) · true`.
+> `two · not · true` abbreviates `(two · not) · true`.
 
-SCOPE OF λ OR if
+We choose the binding strength for abstractions and conditionals
+to be weaker than application. For instance,
+
+> `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) `` abbreviates
+> `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x)))) `` and not
+> `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
 
 \begin{code}
 example₁ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)
@@ -155,7 +178,8 @@ example₁ = refl
 example₂ : two · not · true ≡ (two · not) · true
 example₂ = refl
 
-example₃ : λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ≡ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x))))
+example₃ : λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
+        ≡ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x))))
 example₃ = refl
 \end{code}
 
