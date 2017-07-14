@@ -171,6 +171,65 @@ not =  λ[ x ∶ 𝔹 ] (if ` x then false else true)
 two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 \end{code}
 
+
+#### Bound and free variables
+
+In an abstraction `λ[ x ∶ A ] N` we call `x` the _bound_ variable
+and `N` the _body_ of the abstraction.  One of the most important
+aspects of lambda calculus is that names of bound variables are
+irrelevant.  Thus the two terms
+
+    λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
+
+and
+
+    λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y)
+
+and 
+
+    λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander)
+
+and even
+
+    λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f)
+
+are all considered equivalent.  This equivalence relation
+is sometimes called _alpha renaming_.
+
+As we descend from a term into its subterms, variables
+that are bound may become free.  Consider the following terms.
+
+* `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
+  Both variable `f` and `x` are bound.
+
+* `` λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
+  has `x` as a bound variable but `f` as a free variable.  
+
+* `` ` f · (` f · ` x) ``
+  has both `f` and `x` as free variables.
+
+We say that a term with no free variables is _closed_; otherwise it is
+_open_.  Of the three terms above, the first is closed and the other
+two are open.  A formal definition of bound and free variables will be
+given in the next chapter.
+
+Different occurrences of a variable may be bound and free.
+In the term 
+
+    (λ[ x ∶ 𝔹 ] ` x) · ` x
+
+the inner occurrence of `x` is bound while the outer occurrence is free.
+Note that by alpha renaming, the term above is equivalent to
+
+    (λ[ y ∶ 𝔹 ] ` y) · ` x
+
+in which `y` is bound and `x` is free.  A common convention, called the
+Barendregt convention, is to use alpha renaming to ensure that the bound
+variables in a term are distinct from the free variables, which can
+avoid confusions that may arise if bound and free variables have the
+same names.
+
+
 #### Precedence
 
 As in Agda, functions of two or more arguments are represented via
@@ -241,8 +300,7 @@ For booleans, the situation is clear, `true` and
 `false` are values, while conditionals are not.
 For functions, applications are not values, because
 we expect them to further reduce, and variables are
-not values, because we focus on closed terms
-(which never contain unbound variables).
+not values, because we focus on closed terms.
 Following convention, we treat all abstractions
 as values.
 
@@ -592,7 +650,32 @@ We use the following special characters
     ⟨  U+27E8: MATHEMATICAL LEFT ANGLE BRACKET (\<)
     ⟩  U+27E9: MATHEMATICAL RIGHT ANGLE BRACKET (\>)
 
-## Type rules
+## Typing
+
+While reduction considers only closed terms, typing must
+consider terms with free variables.  To type a term,
+we must first type its subterms, and in particular in the
+body of an abstraction its bound variable may appear free.
+
+In general, we use typing _judgements_ of the form
+
+    Γ ⊢ M ∶ A
+
+which asserts in type environment `Γ` that term `M` has type `A`.
+Here `Γ` provides types for all the free variables in `M`.
+
+Here are three examples. 
+
+* `` ∅ ⊢ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) ∶  (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ``
+
+* `` ∅ , f ∶ 𝔹 ⇒ 𝔹 ⊢ (λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) ∶  𝔹 ⇒ 𝔹 ``
+
+* `` ∅ , f ∶ 𝔹 ⇒ 𝔹 , x ∶ 𝔹 ⊢ ` f · (` f · ` x) ∶  𝔹 ``
+
+Environments are maps from free variables to types, built using `∅`
+for the empty map, and `Γ , x ∶ A` for the map that extends
+environment `Γ` by mapping variable `x` to type `A`.
+
 
 \begin{code}
 Context : Set
