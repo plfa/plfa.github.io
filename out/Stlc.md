@@ -366,7 +366,7 @@ And here it is formalised in Agda.
 </pre>
 
 Terms have six constructs. Three are for the core lambda calculus:
-  * Variables, `\` x`
+  * Variables, `` ` x ``
   * Abstractions, `λ[ x ∶ A ] N`
   * Applications, `L · M`
 and three are for the base type, booleans:
@@ -390,213 +390,213 @@ Here is the syntax of terms in BNF.
 
 <pre class="Agda">
 
-<a name="3420" class="Keyword"
+<a name="3423" class="Keyword"
       >infixl</a
-      ><a name="3426"
-      > </a
-      ><a name="3427" class="Number"
-      >20</a
       ><a name="3429"
       > </a
-      ><a name="3430" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="3430" class="Number"
+      >20</a
+      ><a name="3432"
+      > </a
+      ><a name="3433" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >_&#183;_</a
-      ><a name="3433"
+      ><a name="3436"
       >
 </a
-      ><a name="3434" class="Keyword"
+      ><a name="3437" class="Keyword"
       >infix</a
-      ><a name="3439"
+      ><a name="3442"
       >  </a
-      ><a name="3441" class="Number"
+      ><a name="3444" class="Number"
       >15</a
-      ><a name="3443"
+      ><a name="3446"
       > </a
-      ><a name="3444" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3447" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[_&#8758;_]_</a
-      ><a name="3451"
+      ><a name="3454"
       >
 </a
-      ><a name="3452" class="Keyword"
+      ><a name="3455" class="Keyword"
       >infix</a
-      ><a name="3457"
+      ><a name="3460"
       >  </a
-      ><a name="3459" class="Number"
+      ><a name="3462" class="Number"
       >15</a
-      ><a name="3461"
+      ><a name="3464"
       > </a
-      ><a name="3462" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="3465" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if_then_else_</a
-      ><a name="3475"
+      ><a name="3478"
       >
 
 </a
-      ><a name="3477" class="Keyword"
+      ><a name="3480" class="Keyword"
       >data</a
-      ><a name="3481"
+      ><a name="3484"
       > </a
-      ><a name="3482" href="Stlc.html#3482" class="Datatype"
+      ><a name="3485" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3486"
+      ><a name="3489"
       > </a
-      ><a name="3487" class="Symbol"
+      ><a name="3490" class="Symbol"
       >:</a
-      ><a name="3488"
+      ><a name="3491"
       > </a
-      ><a name="3489" class="PrimitiveType"
+      ><a name="3492" class="PrimitiveType"
       >Set</a
-      ><a name="3492"
+      ><a name="3495"
       > </a
-      ><a name="3493" class="Keyword"
+      ><a name="3496" class="Keyword"
       >where</a
-      ><a name="3498"
+      ><a name="3501"
       >
   </a
-      ><a name="3501" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="3504" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="3502"
+      ><a name="3505"
       > </a
-      ><a name="3503" class="Symbol"
+      ><a name="3506" class="Symbol"
       >:</a
-      ><a name="3504"
-      > </a
-      ><a name="3505" href="Maps.html#2171" class="Datatype"
-      >Id</a
       ><a name="3507"
       > </a
-      ><a name="3508" class="Symbol"
-      >&#8594;</a
-      ><a name="3509"
+      ><a name="3508" href="Maps.html#2171" class="Datatype"
+      >Id</a
+      ><a name="3510"
       > </a
-      ><a name="3510" href="Stlc.html#3482" class="Datatype"
+      ><a name="3511" class="Symbol"
+      >&#8594;</a
+      ><a name="3512"
+      > </a
+      ><a name="3513" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3514"
+      ><a name="3517"
       >
   </a
-      ><a name="3517" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3520" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[_&#8758;_]_</a
-      ><a name="3524"
+      ><a name="3527"
       > </a
-      ><a name="3525" class="Symbol"
+      ><a name="3528" class="Symbol"
       >:</a
-      ><a name="3526"
-      > </a
-      ><a name="3527" href="Maps.html#2171" class="Datatype"
-      >Id</a
       ><a name="3529"
       > </a
-      ><a name="3530" class="Symbol"
-      >&#8594;</a
-      ><a name="3531"
+      ><a name="3530" href="Maps.html#2171" class="Datatype"
+      >Id</a
+      ><a name="3532"
       > </a
-      ><a name="3532" href="Stlc.html#2531" class="Datatype"
+      ><a name="3533" class="Symbol"
+      >&#8594;</a
+      ><a name="3534"
+      > </a
+      ><a name="3535" href="Stlc.html#2531" class="Datatype"
       >Type</a
-      ><a name="3536"
+      ><a name="3539"
       > </a
-      ><a name="3537" class="Symbol"
+      ><a name="3540" class="Symbol"
       >&#8594;</a
-      ><a name="3538"
+      ><a name="3541"
       > </a
-      ><a name="3539" href="Stlc.html#3482" class="Datatype"
+      ><a name="3542" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3543"
+      ><a name="3546"
       > </a
-      ><a name="3544" class="Symbol"
+      ><a name="3547" class="Symbol"
       >&#8594;</a
-      ><a name="3545"
+      ><a name="3548"
       > </a
-      ><a name="3546" href="Stlc.html#3482" class="Datatype"
+      ><a name="3549" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3550"
+      ><a name="3553"
       >
   </a
-      ><a name="3553" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="3556" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >_&#183;_</a
-      ><a name="3556"
+      ><a name="3559"
       > </a
-      ><a name="3557" class="Symbol"
+      ><a name="3560" class="Symbol"
       >:</a
-      ><a name="3558"
+      ><a name="3561"
       > </a
-      ><a name="3559" href="Stlc.html#3482" class="Datatype"
+      ><a name="3562" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3563"
+      ><a name="3566"
       > </a
-      ><a name="3564" class="Symbol"
+      ><a name="3567" class="Symbol"
       >&#8594;</a
-      ><a name="3565"
+      ><a name="3568"
       > </a
-      ><a name="3566" href="Stlc.html#3482" class="Datatype"
+      ><a name="3569" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3570"
+      ><a name="3573"
       > </a
-      ><a name="3571" class="Symbol"
+      ><a name="3574" class="Symbol"
       >&#8594;</a
-      ><a name="3572"
+      ><a name="3575"
       > </a
-      ><a name="3573" href="Stlc.html#3482" class="Datatype"
+      ><a name="3576" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3577"
+      ><a name="3580"
       >
   </a
-      ><a name="3580" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="3583" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="3584"
+      ><a name="3587"
       > </a
-      ><a name="3585" class="Symbol"
+      ><a name="3588" class="Symbol"
       >:</a
-      ><a name="3586"
+      ><a name="3589"
       > </a
-      ><a name="3587" href="Stlc.html#3482" class="Datatype"
+      ><a name="3590" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3591"
+      ><a name="3594"
       >
   </a
-      ><a name="3594" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="3597" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="3599"
+      ><a name="3602"
       > </a
-      ><a name="3600" class="Symbol"
+      ><a name="3603" class="Symbol"
       >:</a
-      ><a name="3601"
+      ><a name="3604"
       > </a
-      ><a name="3602" href="Stlc.html#3482" class="Datatype"
+      ><a name="3605" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3606"
+      ><a name="3609"
       >
   </a
-      ><a name="3609" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="3612" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if_then_else_</a
-      ><a name="3622"
+      ><a name="3625"
       > </a
-      ><a name="3623" class="Symbol"
+      ><a name="3626" class="Symbol"
       >:</a
-      ><a name="3624"
+      ><a name="3627"
       > </a
-      ><a name="3625" href="Stlc.html#3482" class="Datatype"
+      ><a name="3628" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3629"
+      ><a name="3632"
       > </a
-      ><a name="3630" class="Symbol"
+      ><a name="3633" class="Symbol"
       >&#8594;</a
-      ><a name="3631"
+      ><a name="3634"
       > </a
-      ><a name="3632" href="Stlc.html#3482" class="Datatype"
+      ><a name="3635" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3636"
+      ><a name="3639"
       > </a
-      ><a name="3637" class="Symbol"
+      ><a name="3640" class="Symbol"
       >&#8594;</a
-      ><a name="3638"
+      ><a name="3641"
       > </a
-      ><a name="3639" href="Stlc.html#3482" class="Datatype"
+      ><a name="3642" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3643"
+      ><a name="3646"
       > </a
-      ><a name="3644" class="Symbol"
+      ><a name="3647" class="Symbol"
       >&#8594;</a
-      ><a name="3645"
+      ><a name="3648"
       > </a
-      ><a name="3646" href="Stlc.html#3482" class="Datatype"
+      ><a name="3649" href="Stlc.html#3485" class="Datatype"
       >Term</a
       >
 
@@ -613,225 +613,225 @@ CONTINUE FROM HERE
 Example terms.
 <pre class="Agda">
 
-<a name="3872" href="Stlc.html#3872" class="Function"
+<a name="3875" href="Stlc.html#3875" class="Function"
       >f</a
-      ><a name="3873"
+      ><a name="3876"
       > </a
-      ><a name="3874" href="Stlc.html#3874" class="Function"
+      ><a name="3877" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="3875"
+      ><a name="3878"
       > </a
-      ><a name="3876" class="Symbol"
+      ><a name="3879" class="Symbol"
       >:</a
-      ><a name="3877"
-      > </a
-      ><a name="3878" href="Maps.html#2171" class="Datatype"
-      >Id</a
       ><a name="3880"
+      > </a
+      ><a name="3881" href="Maps.html#2171" class="Datatype"
+      >Id</a
+      ><a name="3883"
       >
 </a
-      ><a name="3881" href="Stlc.html#3872" class="Function"
+      ><a name="3884" href="Stlc.html#3875" class="Function"
       >f</a
-      ><a name="3882"
-      >  </a
-      ><a name="3884" class="Symbol"
-      >=</a
       ><a name="3885"
       >  </a
-      ><a name="3887" href="Maps.html#2188" class="InductiveConstructor"
+      ><a name="3887" class="Symbol"
+      >=</a
+      ><a name="3888"
+      >  </a
+      ><a name="3890" href="Maps.html#2188" class="InductiveConstructor"
       >id</a
-      ><a name="3889"
+      ><a name="3892"
       > </a
-      ><a name="3890" class="Number"
+      ><a name="3893" class="Number"
       >0</a
-      ><a name="3891"
+      ><a name="3894"
       >
 </a
-      ><a name="3892" href="Stlc.html#3874" class="Function"
+      ><a name="3895" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="3893"
-      >  </a
-      ><a name="3895" class="Symbol"
-      >=</a
       ><a name="3896"
       >  </a
-      ><a name="3898" href="Maps.html#2188" class="InductiveConstructor"
+      ><a name="3898" class="Symbol"
+      >=</a
+      ><a name="3899"
+      >  </a
+      ><a name="3901" href="Maps.html#2188" class="InductiveConstructor"
       >id</a
-      ><a name="3900"
+      ><a name="3903"
       > </a
-      ><a name="3901" class="Number"
+      ><a name="3904" class="Number"
       >1</a
-      ><a name="3902"
+      ><a name="3905"
       >
 
 </a
-      ><a name="3904" href="Stlc.html#3904" class="Function"
+      ><a name="3907" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="3907"
+      ><a name="3910"
       > </a
-      ><a name="3908" href="Stlc.html#3908" class="Function"
+      ><a name="3911" href="Stlc.html#3911" class="Function"
       >two</a
-      ><a name="3911"
+      ><a name="3914"
       > </a
-      ><a name="3912" class="Symbol"
+      ><a name="3915" class="Symbol"
       >:</a
-      ><a name="3913"
+      ><a name="3916"
       > </a
-      ><a name="3914" href="Stlc.html#3482" class="Datatype"
+      ><a name="3917" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="3918"
+      ><a name="3921"
       > 
 </a
-      ><a name="3920" href="Stlc.html#3904" class="Function"
+      ><a name="3923" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="3923"
+      ><a name="3926"
       > </a
-      ><a name="3924" class="Symbol"
+      ><a name="3927" class="Symbol"
       >=</a
-      ><a name="3925"
+      ><a name="3928"
       >  </a
-      ><a name="3927" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3930" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[</a
-      ><a name="3929"
+      ><a name="3932"
       > </a
-      ><a name="3930" href="Stlc.html#3874" class="Function"
+      ><a name="3933" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="3931"
+      ><a name="3934"
       > </a
-      ><a name="3932" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3935" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#8758;</a
-      ><a name="3933"
+      ><a name="3936"
       > </a
-      ><a name="3934" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="3937" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="3935"
+      ><a name="3938"
       > </a
-      ><a name="3936" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3939" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="3937"
+      ><a name="3940"
       > </a
-      ><a name="3938" class="Symbol"
+      ><a name="3941" class="Symbol"
       >(</a
-      ><a name="3939" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="3942" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="3941"
+      ><a name="3944"
       > </a
-      ><a name="3942" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="3945" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="3943"
+      ><a name="3946"
       > </a
-      ><a name="3944" href="Stlc.html#3874" class="Function"
+      ><a name="3947" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="3945"
+      ><a name="3948"
       > </a
-      ><a name="3946" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="3949" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="3950"
+      ><a name="3953"
       > </a
-      ><a name="3951" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="3954" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="3956"
+      ><a name="3959"
       > </a
-      ><a name="3957" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="3960" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="3961"
+      ><a name="3964"
       > </a
-      ><a name="3962" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="3965" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="3966" class="Symbol"
+      ><a name="3969" class="Symbol"
       >)</a
-      ><a name="3967"
+      ><a name="3970"
       >
 </a
-      ><a name="3968" href="Stlc.html#3908" class="Function"
+      ><a name="3971" href="Stlc.html#3911" class="Function"
       >two</a
-      ><a name="3971"
+      ><a name="3974"
       > </a
-      ><a name="3972" class="Symbol"
+      ><a name="3975" class="Symbol"
       >=</a
-      ><a name="3973"
+      ><a name="3976"
       >  </a
-      ><a name="3975" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3978" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[</a
-      ><a name="3977"
+      ><a name="3980"
       > </a
-      ><a name="3978" href="Stlc.html#3872" class="Function"
+      ><a name="3981" href="Stlc.html#3875" class="Function"
       >f</a
-      ><a name="3979"
+      ><a name="3982"
       > </a
-      ><a name="3980" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3983" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#8758;</a
-      ><a name="3981"
+      ><a name="3984"
       > </a
-      ><a name="3982" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="3985" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="3983"
+      ><a name="3986"
       > </a
-      ><a name="3984" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      ><a name="3987" href="Stlc.html#2550" class="InductiveConstructor Operator"
       >&#8658;</a
-      ><a name="3985"
+      ><a name="3988"
       > </a
-      ><a name="3986" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="3989" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="3987"
+      ><a name="3990"
       > </a
-      ><a name="3988" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3991" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="3989"
-      > </a
-      ><a name="3990" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#955;[</a
       ><a name="3992"
       > </a
-      ><a name="3993" href="Stlc.html#3874" class="Function"
+      ><a name="3993" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#955;[</a
+      ><a name="3995"
+      > </a
+      ><a name="3996" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="3994"
+      ><a name="3997"
       > </a
-      ><a name="3995" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="3998" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#8758;</a
-      ><a name="3996"
+      ><a name="3999"
       > </a
-      ><a name="3997" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="4000" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="3998"
+      ><a name="4001"
       > </a
-      ><a name="3999" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4002" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="4000"
+      ><a name="4003"
       > </a
-      ><a name="4001" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="4004" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="4002"
+      ><a name="4005"
       > </a
-      ><a name="4003" href="Stlc.html#3872" class="Function"
+      ><a name="4006" href="Stlc.html#3875" class="Function"
       >f</a
-      ><a name="4004"
+      ><a name="4007"
       > </a
-      ><a name="4005" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="4008" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="4006"
-      > </a
-      ><a name="4007" class="Symbol"
-      >(</a
-      ><a name="4008" href="Stlc.html#3501" class="InductiveConstructor"
-      >`</a
       ><a name="4009"
       > </a
-      ><a name="4010" href="Stlc.html#3872" class="Function"
-      >f</a
-      ><a name="4011"
-      > </a
-      ><a name="4012" href="Stlc.html#3553" class="InductiveConstructor Operator"
-      >&#183;</a
-      ><a name="4013"
-      > </a
-      ><a name="4014" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="4010" class="Symbol"
+      >(</a
+      ><a name="4011" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="4015"
+      ><a name="4012"
       > </a
-      ><a name="4016" href="Stlc.html#3874" class="Function"
+      ><a name="4013" href="Stlc.html#3875" class="Function"
+      >f</a
+      ><a name="4014"
+      > </a
+      ><a name="4015" href="Stlc.html#3556" class="InductiveConstructor Operator"
+      >&#183;</a
+      ><a name="4016"
+      > </a
+      ><a name="4017" href="Stlc.html#3504" class="InductiveConstructor"
+      >`</a
+      ><a name="4018"
+      > </a
+      ><a name="4019" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="4017" class="Symbol"
+      ><a name="4020" class="Symbol"
       >)</a
       >
 
@@ -841,130 +841,130 @@ Example terms.
 
 <pre class="Agda">
 
-<a name="4055" class="Keyword"
+<a name="4058" class="Keyword"
       >data</a
-      ><a name="4059"
+      ><a name="4062"
       > </a
-      ><a name="4060" href="Stlc.html#4060" class="Datatype"
+      ><a name="4063" href="Stlc.html#4063" class="Datatype"
       >Value</a
-      ><a name="4065"
+      ><a name="4068"
       > </a
-      ><a name="4066" class="Symbol"
+      ><a name="4069" class="Symbol"
       >:</a
-      ><a name="4067"
+      ><a name="4070"
       > </a
-      ><a name="4068" href="Stlc.html#3482" class="Datatype"
+      ><a name="4071" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="4072"
+      ><a name="4075"
       > </a
-      ><a name="4073" class="Symbol"
+      ><a name="4076" class="Symbol"
       >&#8594;</a
-      ><a name="4074"
+      ><a name="4077"
       > </a
-      ><a name="4075" class="PrimitiveType"
+      ><a name="4078" class="PrimitiveType"
       >Set</a
-      ><a name="4078"
+      ><a name="4081"
       > </a
-      ><a name="4079" class="Keyword"
+      ><a name="4082" class="Keyword"
       >where</a
-      ><a name="4084"
+      ><a name="4087"
       >
   </a
-      ><a name="4087" href="Stlc.html#4087" class="InductiveConstructor"
+      ><a name="4090" href="Stlc.html#4090" class="InductiveConstructor"
       >value-&#955;</a
-      ><a name="4094"
+      ><a name="4097"
       >     </a
-      ><a name="4099" class="Symbol"
+      ><a name="4102" class="Symbol"
       >:</a
-      ><a name="4100"
+      ><a name="4103"
       > </a
-      ><a name="4101" class="Symbol"
+      ><a name="4104" class="Symbol"
       >&#8704;</a
-      ><a name="4102"
-      > </a
-      ><a name="4103" class="Symbol"
-      >{</a
-      ><a name="4104" href="Stlc.html#4104" class="Bound"
-      >x</a
       ><a name="4105"
       > </a
-      ><a name="4106" href="Stlc.html#4106" class="Bound"
-      >A</a
-      ><a name="4107"
+      ><a name="4106" class="Symbol"
+      >{</a
+      ><a name="4107" href="Stlc.html#4107" class="Bound"
+      >x</a
+      ><a name="4108"
       > </a
-      ><a name="4108" href="Stlc.html#4108" class="Bound"
-      >N</a
-      ><a name="4109" class="Symbol"
-      >}</a
+      ><a name="4109" href="Stlc.html#4109" class="Bound"
+      >A</a
       ><a name="4110"
       > </a
-      ><a name="4111" class="Symbol"
-      >&#8594;</a
-      ><a name="4112"
-      > </a
-      ><a name="4113" href="Stlc.html#4060" class="Datatype"
-      >Value</a
-      ><a name="4118"
-      > </a
-      ><a name="4119" class="Symbol"
-      >(</a
-      ><a name="4120" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#955;[</a
-      ><a name="4122"
-      > </a
-      ><a name="4123" href="Stlc.html#4104" class="Bound"
-      >x</a
-      ><a name="4124"
-      > </a
-      ><a name="4125" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#8758;</a
-      ><a name="4126"
-      > </a
-      ><a name="4127" href="Stlc.html#4106" class="Bound"
-      >A</a
-      ><a name="4128"
-      > </a
-      ><a name="4129" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >]</a
-      ><a name="4130"
-      > </a
-      ><a name="4131" href="Stlc.html#4108" class="Bound"
+      ><a name="4111" href="Stlc.html#4111" class="Bound"
       >N</a
-      ><a name="4132" class="Symbol"
-      >)</a
+      ><a name="4112" class="Symbol"
+      >}</a
+      ><a name="4113"
+      > </a
+      ><a name="4114" class="Symbol"
+      >&#8594;</a
+      ><a name="4115"
+      > </a
+      ><a name="4116" href="Stlc.html#4063" class="Datatype"
+      >Value</a
+      ><a name="4121"
+      > </a
+      ><a name="4122" class="Symbol"
+      >(</a
+      ><a name="4123" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#955;[</a
+      ><a name="4125"
+      > </a
+      ><a name="4126" href="Stlc.html#4107" class="Bound"
+      >x</a
+      ><a name="4127"
+      > </a
+      ><a name="4128" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#8758;</a
+      ><a name="4129"
+      > </a
+      ><a name="4130" href="Stlc.html#4109" class="Bound"
+      >A</a
+      ><a name="4131"
+      > </a
+      ><a name="4132" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >]</a
       ><a name="4133"
+      > </a
+      ><a name="4134" href="Stlc.html#4111" class="Bound"
+      >N</a
+      ><a name="4135" class="Symbol"
+      >)</a
+      ><a name="4136"
       >
   </a
-      ><a name="4136" href="Stlc.html#4136" class="InductiveConstructor"
+      ><a name="4139" href="Stlc.html#4139" class="InductiveConstructor"
       >value-true</a
-      ><a name="4146"
-      >  </a
-      ><a name="4148" class="Symbol"
-      >:</a
       ><a name="4149"
+      >  </a
+      ><a name="4151" class="Symbol"
+      >:</a
+      ><a name="4152"
       > </a
-      ><a name="4150" href="Stlc.html#4060" class="Datatype"
+      ><a name="4153" href="Stlc.html#4063" class="Datatype"
       >Value</a
-      ><a name="4155"
+      ><a name="4158"
       > </a
-      ><a name="4156" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="4159" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="4160"
+      ><a name="4163"
       >
   </a
-      ><a name="4163" href="Stlc.html#4163" class="InductiveConstructor"
+      ><a name="4166" href="Stlc.html#4166" class="InductiveConstructor"
       >value-false</a
-      ><a name="4174"
+      ><a name="4177"
       > </a
-      ><a name="4175" class="Symbol"
+      ><a name="4178" class="Symbol"
       >:</a
-      ><a name="4176"
+      ><a name="4179"
       > </a
-      ><a name="4177" href="Stlc.html#4060" class="Datatype"
+      ><a name="4180" href="Stlc.html#4063" class="Datatype"
       >Value</a
-      ><a name="4182"
+      ><a name="4185"
       > </a
-      ><a name="4183" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="4186" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
       >
 
@@ -974,645 +974,645 @@ Example terms.
 
 <pre class="Agda">
 
-<a name="4231" href="Stlc.html#4231" class="Function Operator"
+<a name="4234" href="Stlc.html#4234" class="Function Operator"
       >_[_:=_]</a
-      ><a name="4238"
+      ><a name="4241"
       > </a
-      ><a name="4239" class="Symbol"
+      ><a name="4242" class="Symbol"
       >:</a
-      ><a name="4240"
+      ><a name="4243"
       > </a
-      ><a name="4241" href="Stlc.html#3482" class="Datatype"
+      ><a name="4244" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="4245"
+      ><a name="4248"
       > </a
-      ><a name="4246" class="Symbol"
+      ><a name="4249" class="Symbol"
       >&#8594;</a
-      ><a name="4247"
-      > </a
-      ><a name="4248" href="Maps.html#2171" class="Datatype"
-      >Id</a
       ><a name="4250"
       > </a
-      ><a name="4251" class="Symbol"
+      ><a name="4251" href="Maps.html#2171" class="Datatype"
+      >Id</a
+      ><a name="4253"
+      > </a
+      ><a name="4254" class="Symbol"
       >&#8594;</a
-      ><a name="4252"
+      ><a name="4255"
       > </a
-      ><a name="4253" href="Stlc.html#3482" class="Datatype"
+      ><a name="4256" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="4257"
+      ><a name="4260"
       > </a
-      ><a name="4258" class="Symbol"
+      ><a name="4261" class="Symbol"
       >&#8594;</a
-      ><a name="4259"
+      ><a name="4262"
       > </a
-      ><a name="4260" href="Stlc.html#3482" class="Datatype"
+      ><a name="4263" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="4264"
+      ><a name="4267"
       >
 </a
-      ><a name="4265" class="Symbol"
+      ><a name="4268" class="Symbol"
       >(</a
-      ><a name="4266" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="4269" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="4267"
+      ><a name="4270"
       > </a
-      ><a name="4268" href="Stlc.html#4268" class="Bound"
+      ><a name="4271" href="Stlc.html#4271" class="Bound"
       >x&#8242;</a
-      ><a name="4270" class="Symbol"
+      ><a name="4273" class="Symbol"
       >)</a
-      ><a name="4271"
+      ><a name="4274"
       > </a
-      ><a name="4272" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4275" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4273"
+      ><a name="4276"
       > </a
-      ><a name="4274" href="Stlc.html#4274" class="Bound"
+      ><a name="4277" href="Stlc.html#4277" class="Bound"
       >x</a
-      ><a name="4275"
-      > </a
-      ><a name="4276" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4278"
       > </a
-      ><a name="4279" href="Stlc.html#4279" class="Bound"
-      >V</a
-      ><a name="4280"
+      ><a name="4279" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4281"
       > </a
-      ><a name="4281" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4282" href="Stlc.html#4282" class="Bound"
+      >V</a
+      ><a name="4283"
+      > </a
+      ><a name="4284" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4282"
+      ><a name="4285"
       > </a
-      ><a name="4283" class="Keyword"
+      ><a name="4286" class="Keyword"
       >with</a
-      ><a name="4287"
+      ><a name="4290"
       > </a
-      ><a name="4288" href="Stlc.html#4274" class="Bound"
+      ><a name="4291" href="Stlc.html#4277" class="Bound"
       >x</a
-      ><a name="4289"
+      ><a name="4292"
       > </a
-      ><a name="4290" href="Maps.html#2509" class="Function Operator"
+      ><a name="4293" href="Maps.html#2509" class="Function Operator"
       >&#8799;</a
-      ><a name="4291"
-      > </a
-      ><a name="4292" href="Stlc.html#4268" class="Bound"
-      >x&#8242;</a
       ><a name="4294"
+      > </a
+      ><a name="4295" href="Stlc.html#4271" class="Bound"
+      >x&#8242;</a
+      ><a name="4297"
       >
 </a
-      ><a name="4295" class="Symbol"
+      ><a name="4298" class="Symbol"
       >...</a
-      ><a name="4298"
+      ><a name="4301"
       > </a
-      ><a name="4299" class="Symbol"
+      ><a name="4302" class="Symbol"
       >|</a
-      ><a name="4300"
+      ><a name="4303"
       > </a
-      ><a name="4301" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="4304" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="4304"
+      ><a name="4307"
       > </a
-      ><a name="4305" class="Symbol"
+      ><a name="4308" class="Symbol"
       >_</a
-      ><a name="4306"
+      ><a name="4309"
       > </a
-      ><a name="4307" class="Symbol"
+      ><a name="4310" class="Symbol"
       >=</a
-      ><a name="4308"
+      ><a name="4311"
       > </a
-      ><a name="4309" href="Stlc.html#4279" class="Bound"
+      ><a name="4312" href="Stlc.html#4282" class="Bound"
       >V</a
-      ><a name="4310"
+      ><a name="4313"
       >
 </a
-      ><a name="4311" class="Symbol"
+      ><a name="4314" class="Symbol"
       >...</a
-      ><a name="4314"
+      ><a name="4317"
       > </a
-      ><a name="4315" class="Symbol"
+      ><a name="4318" class="Symbol"
       >|</a
-      ><a name="4316"
-      > </a
-      ><a name="4317" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
-      >no</a
       ><a name="4319"
-      >  </a
-      ><a name="4321" class="Symbol"
-      >_</a
+      > </a
+      ><a name="4320" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      >no</a
       ><a name="4322"
+      >  </a
+      ><a name="4324" class="Symbol"
+      >_</a
+      ><a name="4325"
       > </a
-      ><a name="4323" class="Symbol"
+      ><a name="4326" class="Symbol"
       >=</a
-      ><a name="4324"
+      ><a name="4327"
       > </a
-      ><a name="4325" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="4328" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="4326"
-      > </a
-      ><a name="4327" href="Stlc.html#4268" class="Bound"
-      >x&#8242;</a
       ><a name="4329"
+      > </a
+      ><a name="4330" href="Stlc.html#4271" class="Bound"
+      >x&#8242;</a
+      ><a name="4332"
       >
 </a
-      ><a name="4330" class="Symbol"
+      ><a name="4333" class="Symbol"
       >(</a
-      ><a name="4331" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4334" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[</a
-      ><a name="4333"
-      > </a
-      ><a name="4334" href="Stlc.html#4334" class="Bound"
-      >x&#8242;</a
       ><a name="4336"
       > </a
-      ><a name="4337" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#8758;</a
-      ><a name="4338"
+      ><a name="4337" href="Stlc.html#4337" class="Bound"
+      >x&#8242;</a
+      ><a name="4339"
       > </a
-      ><a name="4339" href="Stlc.html#4339" class="Bound"
-      >A&#8242;</a
+      ><a name="4340" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#8758;</a
       ><a name="4341"
       > </a
-      ><a name="4342" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4342" href="Stlc.html#4342" class="Bound"
+      >A&#8242;</a
+      ><a name="4344"
+      > </a
+      ><a name="4345" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="4343"
+      ><a name="4346"
       > </a
-      ><a name="4344" href="Stlc.html#4344" class="Bound"
+      ><a name="4347" href="Stlc.html#4347" class="Bound"
       >N&#8242;</a
-      ><a name="4346" class="Symbol"
+      ><a name="4349" class="Symbol"
       >)</a
-      ><a name="4347"
+      ><a name="4350"
       > </a
-      ><a name="4348" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4351" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4349"
+      ><a name="4352"
       > </a
-      ><a name="4350" href="Stlc.html#4350" class="Bound"
+      ><a name="4353" href="Stlc.html#4353" class="Bound"
       >x</a
-      ><a name="4351"
-      > </a
-      ><a name="4352" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4354"
       > </a
-      ><a name="4355" href="Stlc.html#4355" class="Bound"
+      ><a name="4355" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4357"
+      > </a
+      ><a name="4358" href="Stlc.html#4358" class="Bound"
       >V</a
-      ><a name="4356"
+      ><a name="4359"
       > </a
-      ><a name="4357" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4360" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4358"
+      ><a name="4361"
       > </a
-      ><a name="4359" class="Keyword"
+      ><a name="4362" class="Keyword"
       >with</a
-      ><a name="4363"
+      ><a name="4366"
       > </a
-      ><a name="4364" href="Stlc.html#4350" class="Bound"
+      ><a name="4367" href="Stlc.html#4353" class="Bound"
       >x</a
-      ><a name="4365"
+      ><a name="4368"
       > </a
-      ><a name="4366" href="Maps.html#2509" class="Function Operator"
+      ><a name="4369" href="Maps.html#2509" class="Function Operator"
       >&#8799;</a
-      ><a name="4367"
-      > </a
-      ><a name="4368" href="Stlc.html#4334" class="Bound"
-      >x&#8242;</a
       ><a name="4370"
+      > </a
+      ><a name="4371" href="Stlc.html#4337" class="Bound"
+      >x&#8242;</a
+      ><a name="4373"
       >
 </a
-      ><a name="4371" class="Symbol"
+      ><a name="4374" class="Symbol"
       >...</a
-      ><a name="4374"
+      ><a name="4377"
       > </a
-      ><a name="4375" class="Symbol"
+      ><a name="4378" class="Symbol"
       >|</a
-      ><a name="4376"
+      ><a name="4379"
       > </a
-      ><a name="4377" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
+      ><a name="4380" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#520" class="InductiveConstructor"
       >yes</a
-      ><a name="4380"
+      ><a name="4383"
       > </a
-      ><a name="4381" class="Symbol"
+      ><a name="4384" class="Symbol"
       >_</a
-      ><a name="4382"
+      ><a name="4385"
       > </a
-      ><a name="4383" class="Symbol"
+      ><a name="4386" class="Symbol"
       >=</a
-      ><a name="4384"
-      > </a
-      ><a name="4385" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#955;[</a
       ><a name="4387"
       > </a
-      ><a name="4388" href="Stlc.html#4334" class="Bound"
-      >x&#8242;</a
+      ><a name="4388" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#955;[</a
       ><a name="4390"
       > </a
-      ><a name="4391" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#8758;</a
-      ><a name="4392"
+      ><a name="4391" href="Stlc.html#4337" class="Bound"
+      >x&#8242;</a
+      ><a name="4393"
       > </a
-      ><a name="4393" href="Stlc.html#4339" class="Bound"
-      >A&#8242;</a
+      ><a name="4394" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#8758;</a
       ><a name="4395"
       > </a
-      ><a name="4396" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >]</a
-      ><a name="4397"
+      ><a name="4396" href="Stlc.html#4342" class="Bound"
+      >A&#8242;</a
+      ><a name="4398"
       > </a
-      ><a name="4398" href="Stlc.html#4344" class="Bound"
-      >N&#8242;</a
+      ><a name="4399" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >]</a
       ><a name="4400"
+      > </a
+      ><a name="4401" href="Stlc.html#4347" class="Bound"
+      >N&#8242;</a
+      ><a name="4403"
       >
 </a
-      ><a name="4401" class="Symbol"
+      ><a name="4404" class="Symbol"
       >...</a
-      ><a name="4404"
+      ><a name="4407"
       > </a
-      ><a name="4405" class="Symbol"
+      ><a name="4408" class="Symbol"
       >|</a
-      ><a name="4406"
-      > </a
-      ><a name="4407" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
-      >no</a
       ><a name="4409"
-      >  </a
-      ><a name="4411" class="Symbol"
-      >_</a
+      > </a
+      ><a name="4410" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#547" class="InductiveConstructor"
+      >no</a
       ><a name="4412"
+      >  </a
+      ><a name="4414" class="Symbol"
+      >_</a
+      ><a name="4415"
       > </a
-      ><a name="4413" class="Symbol"
+      ><a name="4416" class="Symbol"
       >=</a
-      ><a name="4414"
-      > </a
-      ><a name="4415" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#955;[</a
       ><a name="4417"
       > </a
-      ><a name="4418" href="Stlc.html#4334" class="Bound"
-      >x&#8242;</a
+      ><a name="4418" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#955;[</a
       ><a name="4420"
       > </a
-      ><a name="4421" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#8758;</a
-      ><a name="4422"
+      ><a name="4421" href="Stlc.html#4337" class="Bound"
+      >x&#8242;</a
+      ><a name="4423"
       > </a
-      ><a name="4423" href="Stlc.html#4339" class="Bound"
-      >A&#8242;</a
+      ><a name="4424" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#8758;</a
       ><a name="4425"
       > </a
-      ><a name="4426" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4426" href="Stlc.html#4342" class="Bound"
+      >A&#8242;</a
+      ><a name="4428"
+      > </a
+      ><a name="4429" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="4427"
+      ><a name="4430"
       > </a
-      ><a name="4428" class="Symbol"
+      ><a name="4431" class="Symbol"
       >(</a
-      ><a name="4429" href="Stlc.html#4344" class="Bound"
+      ><a name="4432" href="Stlc.html#4347" class="Bound"
       >N&#8242;</a
-      ><a name="4431"
+      ><a name="4434"
       > </a
-      ><a name="4432" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4435" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4433"
+      ><a name="4436"
       > </a
-      ><a name="4434" href="Stlc.html#4350" class="Bound"
+      ><a name="4437" href="Stlc.html#4353" class="Bound"
       >x</a
-      ><a name="4435"
-      > </a
-      ><a name="4436" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4438"
       > </a
-      ><a name="4439" href="Stlc.html#4355" class="Bound"
-      >V</a
-      ><a name="4440"
+      ><a name="4439" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4441"
       > </a
-      ><a name="4441" href="Stlc.html#4231" class="Function Operator"
-      >]</a
-      ><a name="4442" class="Symbol"
-      >)</a
+      ><a name="4442" href="Stlc.html#4358" class="Bound"
+      >V</a
       ><a name="4443"
+      > </a
+      ><a name="4444" href="Stlc.html#4234" class="Function Operator"
+      >]</a
+      ><a name="4445" class="Symbol"
+      >)</a
+      ><a name="4446"
       >
 </a
-      ><a name="4444" class="Symbol"
+      ><a name="4447" class="Symbol"
       >(</a
-      ><a name="4445" href="Stlc.html#4445" class="Bound"
+      ><a name="4448" href="Stlc.html#4448" class="Bound"
       >L&#8242;</a
-      ><a name="4447"
+      ><a name="4450"
       > </a
-      ><a name="4448" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="4451" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="4449"
+      ><a name="4452"
       > </a
-      ><a name="4450" href="Stlc.html#4450" class="Bound"
+      ><a name="4453" href="Stlc.html#4453" class="Bound"
       >M&#8242;</a
-      ><a name="4452" class="Symbol"
+      ><a name="4455" class="Symbol"
       >)</a
-      ><a name="4453"
+      ><a name="4456"
       > </a
-      ><a name="4454" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4457" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4455"
+      ><a name="4458"
       > </a
-      ><a name="4456" href="Stlc.html#4456" class="Bound"
+      ><a name="4459" href="Stlc.html#4459" class="Bound"
       >x</a
-      ><a name="4457"
-      > </a
-      ><a name="4458" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4460"
       > </a
-      ><a name="4461" href="Stlc.html#4461" class="Bound"
-      >V</a
-      ><a name="4462"
-      > </a
-      ><a name="4463" href="Stlc.html#4231" class="Function Operator"
-      >]</a
-      ><a name="4464"
-      > </a
-      ><a name="4465" class="Symbol"
-      >=</a
-      ><a name="4466"
-      >  </a
-      ><a name="4468" class="Symbol"
-      >(</a
-      ><a name="4469" href="Stlc.html#4445" class="Bound"
-      >L&#8242;</a
-      ><a name="4471"
-      > </a
-      ><a name="4472" href="Stlc.html#4231" class="Function Operator"
-      >[</a
-      ><a name="4473"
-      > </a
-      ><a name="4474" href="Stlc.html#4456" class="Bound"
-      >x</a
-      ><a name="4475"
-      > </a
-      ><a name="4476" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4461" href="Stlc.html#4234" class="Function Operator"
       >:=</a
+      ><a name="4463"
+      > </a
+      ><a name="4464" href="Stlc.html#4464" class="Bound"
+      >V</a
+      ><a name="4465"
+      > </a
+      ><a name="4466" href="Stlc.html#4234" class="Function Operator"
+      >]</a
+      ><a name="4467"
+      > </a
+      ><a name="4468" class="Symbol"
+      >=</a
+      ><a name="4469"
+      >  </a
+      ><a name="4471" class="Symbol"
+      >(</a
+      ><a name="4472" href="Stlc.html#4448" class="Bound"
+      >L&#8242;</a
+      ><a name="4474"
+      > </a
+      ><a name="4475" href="Stlc.html#4234" class="Function Operator"
+      >[</a
+      ><a name="4476"
+      > </a
+      ><a name="4477" href="Stlc.html#4459" class="Bound"
+      >x</a
       ><a name="4478"
       > </a
-      ><a name="4479" href="Stlc.html#4461" class="Bound"
-      >V</a
-      ><a name="4480"
+      ><a name="4479" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4481"
       > </a
-      ><a name="4481" href="Stlc.html#4231" class="Function Operator"
-      >]</a
-      ><a name="4482" class="Symbol"
-      >)</a
+      ><a name="4482" href="Stlc.html#4464" class="Bound"
+      >V</a
       ><a name="4483"
       > </a
-      ><a name="4484" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="4484" href="Stlc.html#4234" class="Function Operator"
+      >]</a
+      ><a name="4485" class="Symbol"
+      >)</a
+      ><a name="4486"
+      > </a
+      ><a name="4487" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="4485"
+      ><a name="4488"
       > </a
-      ><a name="4486" class="Symbol"
+      ><a name="4489" class="Symbol"
       >(</a
-      ><a name="4487" href="Stlc.html#4450" class="Bound"
+      ><a name="4490" href="Stlc.html#4453" class="Bound"
       >M&#8242;</a
-      ><a name="4489"
+      ><a name="4492"
       > </a
-      ><a name="4490" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4493" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4491"
+      ><a name="4494"
       > </a
-      ><a name="4492" href="Stlc.html#4456" class="Bound"
+      ><a name="4495" href="Stlc.html#4459" class="Bound"
       >x</a
-      ><a name="4493"
-      > </a
-      ><a name="4494" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4496"
       > </a
-      ><a name="4497" href="Stlc.html#4461" class="Bound"
-      >V</a
-      ><a name="4498"
+      ><a name="4497" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4499"
       > </a
-      ><a name="4499" href="Stlc.html#4231" class="Function Operator"
-      >]</a
-      ><a name="4500" class="Symbol"
-      >)</a
+      ><a name="4500" href="Stlc.html#4464" class="Bound"
+      >V</a
       ><a name="4501"
+      > </a
+      ><a name="4502" href="Stlc.html#4234" class="Function Operator"
+      >]</a
+      ><a name="4503" class="Symbol"
+      >)</a
+      ><a name="4504"
       >
 </a
-      ><a name="4502" class="Symbol"
+      ><a name="4505" class="Symbol"
       >(</a
-      ><a name="4503" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="4506" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="4507" class="Symbol"
+      ><a name="4510" class="Symbol"
       >)</a
-      ><a name="4508"
+      ><a name="4511"
       > </a
-      ><a name="4509" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4512" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4510"
+      ><a name="4513"
       > </a
-      ><a name="4511" href="Stlc.html#4511" class="Bound"
+      ><a name="4514" href="Stlc.html#4514" class="Bound"
       >x</a
-      ><a name="4512"
-      > </a
-      ><a name="4513" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4515"
       > </a
-      ><a name="4516" href="Stlc.html#4516" class="Bound"
+      ><a name="4516" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4518"
+      > </a
+      ><a name="4519" href="Stlc.html#4519" class="Bound"
       >V</a
-      ><a name="4517"
+      ><a name="4520"
       > </a
-      ><a name="4518" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4521" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4519"
+      ><a name="4522"
       > </a
-      ><a name="4520" class="Symbol"
+      ><a name="4523" class="Symbol"
       >=</a
-      ><a name="4521"
+      ><a name="4524"
       > </a
-      ><a name="4522" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="4525" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="4526"
+      ><a name="4529"
       >
 </a
-      ><a name="4527" class="Symbol"
+      ><a name="4530" class="Symbol"
       >(</a
-      ><a name="4528" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="4531" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="4533" class="Symbol"
+      ><a name="4536" class="Symbol"
       >)</a
-      ><a name="4534"
+      ><a name="4537"
       > </a
-      ><a name="4535" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4538" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4536"
+      ><a name="4539"
       > </a
-      ><a name="4537" href="Stlc.html#4537" class="Bound"
+      ><a name="4540" href="Stlc.html#4540" class="Bound"
       >x</a
-      ><a name="4538"
-      > </a
-      ><a name="4539" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4541"
       > </a
-      ><a name="4542" href="Stlc.html#4542" class="Bound"
+      ><a name="4542" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4544"
+      > </a
+      ><a name="4545" href="Stlc.html#4545" class="Bound"
       >V</a
-      ><a name="4543"
+      ><a name="4546"
       > </a
-      ><a name="4544" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4547" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4545"
+      ><a name="4548"
       > </a
-      ><a name="4546" class="Symbol"
+      ><a name="4549" class="Symbol"
       >=</a
-      ><a name="4547"
+      ><a name="4550"
       > </a
-      ><a name="4548" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="4551" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="4553"
+      ><a name="4556"
       >
 </a
-      ><a name="4554" class="Symbol"
+      ><a name="4557" class="Symbol"
       >(</a
-      ><a name="4555" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4558" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="4557"
-      > </a
-      ><a name="4558" href="Stlc.html#4558" class="Bound"
-      >L&#8242;</a
       ><a name="4560"
       > </a
-      ><a name="4561" href="Stlc.html#3609" class="InductiveConstructor Operator"
-      >then</a
-      ><a name="4565"
+      ><a name="4561" href="Stlc.html#4561" class="Bound"
+      >L&#8242;</a
+      ><a name="4563"
       > </a
-      ><a name="4566" href="Stlc.html#4566" class="Bound"
-      >M&#8242;</a
+      ><a name="4564" href="Stlc.html#3612" class="InductiveConstructor Operator"
+      >then</a
       ><a name="4568"
       > </a
-      ><a name="4569" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4569" href="Stlc.html#4569" class="Bound"
+      >M&#8242;</a
+      ><a name="4571"
+      > </a
+      ><a name="4572" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="4573"
+      ><a name="4576"
       > </a
-      ><a name="4574" href="Stlc.html#4574" class="Bound"
+      ><a name="4577" href="Stlc.html#4577" class="Bound"
       >N&#8242;</a
-      ><a name="4576" class="Symbol"
+      ><a name="4579" class="Symbol"
       >)</a
-      ><a name="4577"
+      ><a name="4580"
       > </a
-      ><a name="4578" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4581" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4579"
+      ><a name="4582"
       > </a
-      ><a name="4580" href="Stlc.html#4580" class="Bound"
+      ><a name="4583" href="Stlc.html#4583" class="Bound"
       >x</a
-      ><a name="4581"
-      > </a
-      ><a name="4582" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4584"
       > </a
-      ><a name="4585" href="Stlc.html#4585" class="Bound"
+      ><a name="4585" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4587"
+      > </a
+      ><a name="4588" href="Stlc.html#4588" class="Bound"
       >V</a
-      ><a name="4586"
+      ><a name="4589"
       > </a
-      ><a name="4587" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4590" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4588"
+      ><a name="4591"
       > </a
-      ><a name="4589" class="Symbol"
+      ><a name="4592" class="Symbol"
       >=</a
-      ><a name="4590"
-      > </a
-      ><a name="4591" href="Stlc.html#3609" class="InductiveConstructor Operator"
-      >if</a
       ><a name="4593"
       > </a
-      ><a name="4594" class="Symbol"
+      ><a name="4594" href="Stlc.html#3612" class="InductiveConstructor Operator"
+      >if</a
+      ><a name="4596"
+      > </a
+      ><a name="4597" class="Symbol"
       >(</a
-      ><a name="4595" href="Stlc.html#4558" class="Bound"
+      ><a name="4598" href="Stlc.html#4561" class="Bound"
       >L&#8242;</a
-      ><a name="4597"
+      ><a name="4600"
       > </a
-      ><a name="4598" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4601" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4599"
+      ><a name="4602"
       > </a
-      ><a name="4600" href="Stlc.html#4580" class="Bound"
+      ><a name="4603" href="Stlc.html#4583" class="Bound"
       >x</a
-      ><a name="4601"
-      > </a
-      ><a name="4602" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4604"
       > </a
-      ><a name="4605" href="Stlc.html#4585" class="Bound"
-      >V</a
-      ><a name="4606"
+      ><a name="4605" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4607"
       > </a
-      ><a name="4607" href="Stlc.html#4231" class="Function Operator"
-      >]</a
-      ><a name="4608" class="Symbol"
-      >)</a
+      ><a name="4608" href="Stlc.html#4588" class="Bound"
+      >V</a
       ><a name="4609"
       > </a
-      ><a name="4610" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4610" href="Stlc.html#4234" class="Function Operator"
+      >]</a
+      ><a name="4611" class="Symbol"
+      >)</a
+      ><a name="4612"
+      > </a
+      ><a name="4613" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="4614"
+      ><a name="4617"
       > </a
-      ><a name="4615" class="Symbol"
+      ><a name="4618" class="Symbol"
       >(</a
-      ><a name="4616" href="Stlc.html#4566" class="Bound"
+      ><a name="4619" href="Stlc.html#4569" class="Bound"
       >M&#8242;</a
-      ><a name="4618"
+      ><a name="4621"
       > </a
-      ><a name="4619" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4622" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4620"
+      ><a name="4623"
       > </a
-      ><a name="4621" href="Stlc.html#4580" class="Bound"
+      ><a name="4624" href="Stlc.html#4583" class="Bound"
       >x</a
-      ><a name="4622"
-      > </a
-      ><a name="4623" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4625"
       > </a
-      ><a name="4626" href="Stlc.html#4585" class="Bound"
-      >V</a
-      ><a name="4627"
+      ><a name="4626" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4628"
       > </a
-      ><a name="4628" href="Stlc.html#4231" class="Function Operator"
-      >]</a
-      ><a name="4629" class="Symbol"
-      >)</a
+      ><a name="4629" href="Stlc.html#4588" class="Bound"
+      >V</a
       ><a name="4630"
       > </a
-      ><a name="4631" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4631" href="Stlc.html#4234" class="Function Operator"
+      >]</a
+      ><a name="4632" class="Symbol"
+      >)</a
+      ><a name="4633"
+      > </a
+      ><a name="4634" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="4635"
+      ><a name="4638"
       > </a
-      ><a name="4636" class="Symbol"
+      ><a name="4639" class="Symbol"
       >(</a
-      ><a name="4637" href="Stlc.html#4574" class="Bound"
+      ><a name="4640" href="Stlc.html#4577" class="Bound"
       >N&#8242;</a
-      ><a name="4639"
+      ><a name="4642"
       > </a
-      ><a name="4640" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4643" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4641"
+      ><a name="4644"
       > </a
-      ><a name="4642" href="Stlc.html#4580" class="Bound"
+      ><a name="4645" href="Stlc.html#4583" class="Bound"
       >x</a
-      ><a name="4643"
-      > </a
-      ><a name="4644" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4646"
       > </a
-      ><a name="4647" href="Stlc.html#4585" class="Bound"
-      >V</a
-      ><a name="4648"
+      ><a name="4647" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4649"
       > </a
-      ><a name="4649" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4650" href="Stlc.html#4588" class="Bound"
+      >V</a
+      ><a name="4651"
+      > </a
+      ><a name="4652" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4650" class="Symbol"
+      ><a name="4653" class="Symbol"
       >)</a
       >
 
@@ -1622,569 +1622,569 @@ Example terms.
 
 <pre class="Agda">
 
-<a name="4697" class="Keyword"
+<a name="4700" class="Keyword"
       >infix</a
-      ><a name="4702"
-      > </a
-      ><a name="4703" class="Number"
-      >10</a
       ><a name="4705"
       > </a
-      ><a name="4706" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4706" class="Number"
+      >10</a
+      ><a name="4708"
+      > </a
+      ><a name="4709" href="Stlc.html#4720" class="Datatype Operator"
       >_&#10233;_</a
-      ><a name="4709"
+      ><a name="4712"
       > 
 
 </a
-      ><a name="4712" class="Keyword"
+      ><a name="4715" class="Keyword"
       >data</a
-      ><a name="4716"
+      ><a name="4719"
       > </a
-      ><a name="4717" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4720" href="Stlc.html#4720" class="Datatype Operator"
       >_&#10233;_</a
-      ><a name="4720"
+      ><a name="4723"
       > </a
-      ><a name="4721" class="Symbol"
+      ><a name="4724" class="Symbol"
       >:</a
-      ><a name="4722"
+      ><a name="4725"
       > </a
-      ><a name="4723" href="Stlc.html#3482" class="Datatype"
+      ><a name="4726" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="4727"
+      ><a name="4730"
       > </a
-      ><a name="4728" class="Symbol"
+      ><a name="4731" class="Symbol"
       >&#8594;</a
-      ><a name="4729"
+      ><a name="4732"
       > </a
-      ><a name="4730" href="Stlc.html#3482" class="Datatype"
+      ><a name="4733" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="4734"
+      ><a name="4737"
       > </a
-      ><a name="4735" class="Symbol"
+      ><a name="4738" class="Symbol"
       >&#8594;</a
-      ><a name="4736"
+      ><a name="4739"
       > </a
-      ><a name="4737" class="PrimitiveType"
+      ><a name="4740" class="PrimitiveType"
       >Set</a
-      ><a name="4740"
+      ><a name="4743"
       > </a
-      ><a name="4741" class="Keyword"
+      ><a name="4744" class="Keyword"
       >where</a
-      ><a name="4746"
+      ><a name="4749"
       >
   </a
-      ><a name="4749" href="Stlc.html#4749" class="InductiveConstructor"
+      ><a name="4752" href="Stlc.html#4752" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
-      ><a name="4752"
+      ><a name="4755"
       > </a
-      ><a name="4753" class="Symbol"
+      ><a name="4756" class="Symbol"
       >:</a
-      ><a name="4754"
+      ><a name="4757"
       > </a
-      ><a name="4755" class="Symbol"
+      ><a name="4758" class="Symbol"
       >&#8704;</a
-      ><a name="4756"
-      > </a
-      ><a name="4757" class="Symbol"
-      >{</a
-      ><a name="4758" href="Stlc.html#4758" class="Bound"
-      >x</a
       ><a name="4759"
       > </a
-      ><a name="4760" href="Stlc.html#4760" class="Bound"
+      ><a name="4760" class="Symbol"
+      >{</a
+      ><a name="4761" href="Stlc.html#4761" class="Bound"
+      >x</a
+      ><a name="4762"
+      > </a
+      ><a name="4763" href="Stlc.html#4763" class="Bound"
       >A</a
-      ><a name="4761"
+      ><a name="4764"
       > </a
-      ><a name="4762" href="Stlc.html#4762" class="Bound"
+      ><a name="4765" href="Stlc.html#4765" class="Bound"
       >N</a
-      ><a name="4763"
-      > </a
-      ><a name="4764" href="Stlc.html#4764" class="Bound"
-      >V</a
-      ><a name="4765" class="Symbol"
-      >}</a
       ><a name="4766"
       > </a
-      ><a name="4767" class="Symbol"
-      >&#8594;</a
-      ><a name="4768"
-      > </a
-      ><a name="4769" href="Stlc.html#4060" class="Datatype"
-      >Value</a
-      ><a name="4774"
-      > </a
-      ><a name="4775" href="Stlc.html#4764" class="Bound"
+      ><a name="4767" href="Stlc.html#4767" class="Bound"
       >V</a
-      ><a name="4776"
+      ><a name="4768" class="Symbol"
+      >}</a
+      ><a name="4769"
       > </a
-      ><a name="4777" class="Symbol"
+      ><a name="4770" class="Symbol"
       >&#8594;</a
-      ><a name="4778"
+      ><a name="4771"
+      > </a
+      ><a name="4772" href="Stlc.html#4063" class="Datatype"
+      >Value</a
+      ><a name="4777"
+      > </a
+      ><a name="4778" href="Stlc.html#4767" class="Bound"
+      >V</a
+      ><a name="4779"
+      > </a
+      ><a name="4780" class="Symbol"
+      >&#8594;</a
+      ><a name="4781"
       >
     </a
-      ><a name="4783" class="Symbol"
+      ><a name="4786" class="Symbol"
       >(</a
-      ><a name="4784" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4787" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[</a
-      ><a name="4786"
+      ><a name="4789"
       > </a
-      ><a name="4787" href="Stlc.html#4758" class="Bound"
+      ><a name="4790" href="Stlc.html#4761" class="Bound"
       >x</a
-      ><a name="4788"
+      ><a name="4791"
       > </a
-      ><a name="4789" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4792" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#8758;</a
-      ><a name="4790"
+      ><a name="4793"
       > </a
-      ><a name="4791" href="Stlc.html#4760" class="Bound"
+      ><a name="4794" href="Stlc.html#4763" class="Bound"
       >A</a
-      ><a name="4792"
+      ><a name="4795"
       > </a
-      ><a name="4793" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="4796" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="4794"
-      > </a
-      ><a name="4795" href="Stlc.html#4762" class="Bound"
-      >N</a
-      ><a name="4796" class="Symbol"
-      >)</a
       ><a name="4797"
       > </a
-      ><a name="4798" href="Stlc.html#3553" class="InductiveConstructor Operator"
-      >&#183;</a
-      ><a name="4799"
-      > </a
-      ><a name="4800" href="Stlc.html#4764" class="Bound"
-      >V</a
-      ><a name="4801"
-      > </a
-      ><a name="4802" href="Stlc.html#4717" class="Datatype Operator"
-      >&#10233;</a
-      ><a name="4803"
-      > </a
-      ><a name="4804" href="Stlc.html#4762" class="Bound"
+      ><a name="4798" href="Stlc.html#4765" class="Bound"
       >N</a
-      ><a name="4805"
+      ><a name="4799" class="Symbol"
+      >)</a
+      ><a name="4800"
       > </a
-      ><a name="4806" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4801" href="Stlc.html#3556" class="InductiveConstructor Operator"
+      >&#183;</a
+      ><a name="4802"
+      > </a
+      ><a name="4803" href="Stlc.html#4767" class="Bound"
+      >V</a
+      ><a name="4804"
+      > </a
+      ><a name="4805" href="Stlc.html#4720" class="Datatype Operator"
+      >&#10233;</a
+      ><a name="4806"
+      > </a
+      ><a name="4807" href="Stlc.html#4765" class="Bound"
+      >N</a
+      ><a name="4808"
+      > </a
+      ><a name="4809" href="Stlc.html#4234" class="Function Operator"
       >[</a
-      ><a name="4807"
+      ><a name="4810"
       > </a
-      ><a name="4808" href="Stlc.html#4758" class="Bound"
+      ><a name="4811" href="Stlc.html#4761" class="Bound"
       >x</a
-      ><a name="4809"
-      > </a
-      ><a name="4810" href="Stlc.html#4231" class="Function Operator"
-      >:=</a
       ><a name="4812"
       > </a
-      ><a name="4813" href="Stlc.html#4764" class="Bound"
-      >V</a
-      ><a name="4814"
+      ><a name="4813" href="Stlc.html#4234" class="Function Operator"
+      >:=</a
+      ><a name="4815"
       > </a
-      ><a name="4815" href="Stlc.html#4231" class="Function Operator"
+      ><a name="4816" href="Stlc.html#4767" class="Bound"
+      >V</a
+      ><a name="4817"
+      > </a
+      ><a name="4818" href="Stlc.html#4234" class="Function Operator"
       >]</a
-      ><a name="4816"
+      ><a name="4819"
       >
   </a
-      ><a name="4819" href="Stlc.html#4819" class="InductiveConstructor"
+      ><a name="4822" href="Stlc.html#4822" class="InductiveConstructor"
       >&#958;&#183;&#8321;</a
-      ><a name="4822"
+      ><a name="4825"
       > </a
-      ><a name="4823" class="Symbol"
+      ><a name="4826" class="Symbol"
       >:</a
-      ><a name="4824"
+      ><a name="4827"
       > </a
-      ><a name="4825" class="Symbol"
+      ><a name="4828" class="Symbol"
       >&#8704;</a
-      ><a name="4826"
-      > </a
-      ><a name="4827" class="Symbol"
-      >{</a
-      ><a name="4828" href="Stlc.html#4828" class="Bound"
-      >L</a
       ><a name="4829"
       > </a
-      ><a name="4830" href="Stlc.html#4830" class="Bound"
-      >L&#8242;</a
+      ><a name="4830" class="Symbol"
+      >{</a
+      ><a name="4831" href="Stlc.html#4831" class="Bound"
+      >L</a
       ><a name="4832"
       > </a
       ><a name="4833" href="Stlc.html#4833" class="Bound"
-      >M</a
-      ><a name="4834" class="Symbol"
-      >}</a
+      >L&#8242;</a
       ><a name="4835"
       > </a
-      ><a name="4836" class="Symbol"
+      ><a name="4836" href="Stlc.html#4836" class="Bound"
+      >M</a
+      ><a name="4837" class="Symbol"
+      >}</a
+      ><a name="4838"
+      > </a
+      ><a name="4839" class="Symbol"
       >&#8594;</a
-      ><a name="4837"
+      ><a name="4840"
       >
     </a
-      ><a name="4842" href="Stlc.html#4828" class="Bound"
+      ><a name="4845" href="Stlc.html#4831" class="Bound"
       >L</a
-      ><a name="4843"
+      ><a name="4846"
       > </a
-      ><a name="4844" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4847" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="4845"
-      > </a
-      ><a name="4846" href="Stlc.html#4830" class="Bound"
-      >L&#8242;</a
       ><a name="4848"
       > </a
-      ><a name="4849" class="Symbol"
+      ><a name="4849" href="Stlc.html#4833" class="Bound"
+      >L&#8242;</a
+      ><a name="4851"
+      > </a
+      ><a name="4852" class="Symbol"
       >&#8594;</a
-      ><a name="4850"
+      ><a name="4853"
       >
     </a
-      ><a name="4855" href="Stlc.html#4828" class="Bound"
+      ><a name="4858" href="Stlc.html#4831" class="Bound"
       >L</a
-      ><a name="4856"
+      ><a name="4859"
       > </a
-      ><a name="4857" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="4860" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="4858"
+      ><a name="4861"
       > </a
-      ><a name="4859" href="Stlc.html#4833" class="Bound"
+      ><a name="4862" href="Stlc.html#4836" class="Bound"
       >M</a
-      ><a name="4860"
+      ><a name="4863"
       > </a
-      ><a name="4861" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4864" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="4862"
-      > </a
-      ><a name="4863" href="Stlc.html#4830" class="Bound"
-      >L&#8242;</a
       ><a name="4865"
       > </a
-      ><a name="4866" href="Stlc.html#3553" class="InductiveConstructor Operator"
-      >&#183;</a
-      ><a name="4867"
+      ><a name="4866" href="Stlc.html#4833" class="Bound"
+      >L&#8242;</a
+      ><a name="4868"
       > </a
-      ><a name="4868" href="Stlc.html#4833" class="Bound"
+      ><a name="4869" href="Stlc.html#3556" class="InductiveConstructor Operator"
+      >&#183;</a
+      ><a name="4870"
+      > </a
+      ><a name="4871" href="Stlc.html#4836" class="Bound"
       >M</a
-      ><a name="4869"
+      ><a name="4872"
       >
   </a
-      ><a name="4872" href="Stlc.html#4872" class="InductiveConstructor"
+      ><a name="4875" href="Stlc.html#4875" class="InductiveConstructor"
       >&#958;&#183;&#8322;</a
-      ><a name="4875"
+      ><a name="4878"
       > </a
-      ><a name="4876" class="Symbol"
+      ><a name="4879" class="Symbol"
       >:</a
-      ><a name="4877"
+      ><a name="4880"
       > </a
-      ><a name="4878" class="Symbol"
+      ><a name="4881" class="Symbol"
       >&#8704;</a
-      ><a name="4879"
-      > </a
-      ><a name="4880" class="Symbol"
-      >{</a
-      ><a name="4881" href="Stlc.html#4881" class="Bound"
-      >V</a
       ><a name="4882"
       > </a
-      ><a name="4883" href="Stlc.html#4883" class="Bound"
-      >M</a
-      ><a name="4884"
-      > </a
-      ><a name="4885" href="Stlc.html#4885" class="Bound"
-      >M&#8242;</a
-      ><a name="4887" class="Symbol"
-      >}</a
-      ><a name="4888"
-      > </a
-      ><a name="4889" class="Symbol"
-      >&#8594;</a
-      ><a name="4890"
-      >
-    </a
-      ><a name="4895" href="Stlc.html#4060" class="Datatype"
-      >Value</a
-      ><a name="4900"
-      > </a
-      ><a name="4901" href="Stlc.html#4881" class="Bound"
+      ><a name="4883" class="Symbol"
+      >{</a
+      ><a name="4884" href="Stlc.html#4884" class="Bound"
       >V</a
-      ><a name="4902"
+      ><a name="4885"
       > </a
-      ><a name="4903" class="Symbol"
+      ><a name="4886" href="Stlc.html#4886" class="Bound"
+      >M</a
+      ><a name="4887"
+      > </a
+      ><a name="4888" href="Stlc.html#4888" class="Bound"
+      >M&#8242;</a
+      ><a name="4890" class="Symbol"
+      >}</a
+      ><a name="4891"
+      > </a
+      ><a name="4892" class="Symbol"
       >&#8594;</a
-      ><a name="4904"
+      ><a name="4893"
       >
     </a
-      ><a name="4909" href="Stlc.html#4883" class="Bound"
+      ><a name="4898" href="Stlc.html#4063" class="Datatype"
+      >Value</a
+      ><a name="4903"
+      > </a
+      ><a name="4904" href="Stlc.html#4884" class="Bound"
+      >V</a
+      ><a name="4905"
+      > </a
+      ><a name="4906" class="Symbol"
+      >&#8594;</a
+      ><a name="4907"
+      >
+    </a
+      ><a name="4912" href="Stlc.html#4886" class="Bound"
       >M</a
-      ><a name="4910"
+      ><a name="4913"
       > </a
-      ><a name="4911" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4914" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="4912"
-      > </a
-      ><a name="4913" href="Stlc.html#4885" class="Bound"
-      >M&#8242;</a
       ><a name="4915"
       > </a
-      ><a name="4916" class="Symbol"
+      ><a name="4916" href="Stlc.html#4888" class="Bound"
+      >M&#8242;</a
+      ><a name="4918"
+      > </a
+      ><a name="4919" class="Symbol"
       >&#8594;</a
-      ><a name="4917"
+      ><a name="4920"
       >
     </a
-      ><a name="4922" href="Stlc.html#4881" class="Bound"
+      ><a name="4925" href="Stlc.html#4884" class="Bound"
       >V</a
-      ><a name="4923"
+      ><a name="4926"
       > </a
-      ><a name="4924" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="4927" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="4925"
+      ><a name="4928"
       > </a
-      ><a name="4926" href="Stlc.html#4883" class="Bound"
+      ><a name="4929" href="Stlc.html#4886" class="Bound"
       >M</a
-      ><a name="4927"
+      ><a name="4930"
       > </a
-      ><a name="4928" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4931" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="4929"
+      ><a name="4932"
       > </a
-      ><a name="4930" href="Stlc.html#4881" class="Bound"
+      ><a name="4933" href="Stlc.html#4884" class="Bound"
       >V</a
-      ><a name="4931"
+      ><a name="4934"
       > </a
-      ><a name="4932" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="4935" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="4933"
-      > </a
-      ><a name="4934" href="Stlc.html#4885" class="Bound"
-      >M&#8242;</a
       ><a name="4936"
+      > </a
+      ><a name="4937" href="Stlc.html#4888" class="Bound"
+      >M&#8242;</a
+      ><a name="4939"
       >
   </a
-      ><a name="4939" href="Stlc.html#4939" class="InductiveConstructor"
+      ><a name="4942" href="Stlc.html#4942" class="InductiveConstructor"
       >&#946;if-true</a
-      ><a name="4947"
+      ><a name="4950"
       > </a
-      ><a name="4948" class="Symbol"
+      ><a name="4951" class="Symbol"
       >:</a
-      ><a name="4949"
+      ><a name="4952"
       > </a
-      ><a name="4950" class="Symbol"
+      ><a name="4953" class="Symbol"
       >&#8704;</a
-      ><a name="4951"
-      > </a
-      ><a name="4952" class="Symbol"
-      >{</a
-      ><a name="4953" href="Stlc.html#4953" class="Bound"
-      >M</a
       ><a name="4954"
       > </a
-      ><a name="4955" href="Stlc.html#4955" class="Bound"
-      >N</a
-      ><a name="4956" class="Symbol"
-      >}</a
+      ><a name="4955" class="Symbol"
+      >{</a
+      ><a name="4956" href="Stlc.html#4956" class="Bound"
+      >M</a
       ><a name="4957"
       > </a
-      ><a name="4958" class="Symbol"
+      ><a name="4958" href="Stlc.html#4958" class="Bound"
+      >N</a
+      ><a name="4959" class="Symbol"
+      >}</a
+      ><a name="4960"
+      > </a
+      ><a name="4961" class="Symbol"
       >&#8594;</a
-      ><a name="4959"
+      ><a name="4962"
       >
     </a
-      ><a name="4964" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4967" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="4966"
+      ><a name="4969"
       > </a
-      ><a name="4967" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="4970" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="4971"
+      ><a name="4974"
       > </a
-      ><a name="4972" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4975" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="4976"
+      ><a name="4979"
       > </a
-      ><a name="4977" href="Stlc.html#4953" class="Bound"
+      ><a name="4980" href="Stlc.html#4956" class="Bound"
       >M</a
-      ><a name="4978"
+      ><a name="4981"
       > </a
-      ><a name="4979" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="4982" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="4983"
+      ><a name="4986"
       > </a
-      ><a name="4984" href="Stlc.html#4955" class="Bound"
+      ><a name="4987" href="Stlc.html#4958" class="Bound"
       >N</a
-      ><a name="4985"
+      ><a name="4988"
       > </a
-      ><a name="4986" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="4989" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="4987"
+      ><a name="4990"
       > </a
-      ><a name="4988" href="Stlc.html#4953" class="Bound"
+      ><a name="4991" href="Stlc.html#4956" class="Bound"
       >M</a
-      ><a name="4989"
+      ><a name="4992"
       >
   </a
-      ><a name="4992" href="Stlc.html#4992" class="InductiveConstructor"
+      ><a name="4995" href="Stlc.html#4995" class="InductiveConstructor"
       >&#946;if-false</a
-      ><a name="5001"
+      ><a name="5004"
       > </a
-      ><a name="5002" class="Symbol"
+      ><a name="5005" class="Symbol"
       >:</a
-      ><a name="5003"
+      ><a name="5006"
       > </a
-      ><a name="5004" class="Symbol"
+      ><a name="5007" class="Symbol"
       >&#8704;</a
-      ><a name="5005"
-      > </a
-      ><a name="5006" class="Symbol"
-      >{</a
-      ><a name="5007" href="Stlc.html#5007" class="Bound"
-      >M</a
       ><a name="5008"
       > </a
-      ><a name="5009" href="Stlc.html#5009" class="Bound"
-      >N</a
-      ><a name="5010" class="Symbol"
-      >}</a
+      ><a name="5009" class="Symbol"
+      >{</a
+      ><a name="5010" href="Stlc.html#5010" class="Bound"
+      >M</a
       ><a name="5011"
       > </a
-      ><a name="5012" class="Symbol"
+      ><a name="5012" href="Stlc.html#5012" class="Bound"
+      >N</a
+      ><a name="5013" class="Symbol"
+      >}</a
+      ><a name="5014"
+      > </a
+      ><a name="5015" class="Symbol"
       >&#8594;</a
-      ><a name="5013"
+      ><a name="5016"
       >
     </a
-      ><a name="5018" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5021" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="5020"
+      ><a name="5023"
       > </a
-      ><a name="5021" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5024" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5026"
+      ><a name="5029"
       > </a
-      ><a name="5027" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5030" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="5031"
+      ><a name="5034"
       > </a
-      ><a name="5032" href="Stlc.html#5007" class="Bound"
+      ><a name="5035" href="Stlc.html#5010" class="Bound"
       >M</a
-      ><a name="5033"
+      ><a name="5036"
       > </a
-      ><a name="5034" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5037" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="5038"
+      ><a name="5041"
       > </a
-      ><a name="5039" href="Stlc.html#5009" class="Bound"
+      ><a name="5042" href="Stlc.html#5012" class="Bound"
       >N</a
-      ><a name="5040"
+      ><a name="5043"
       > </a
-      ><a name="5041" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="5044" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="5042"
+      ><a name="5045"
       > </a
-      ><a name="5043" href="Stlc.html#5009" class="Bound"
+      ><a name="5046" href="Stlc.html#5012" class="Bound"
       >N</a
-      ><a name="5044"
+      ><a name="5047"
       >
   </a
-      ><a name="5047" href="Stlc.html#5047" class="InductiveConstructor"
+      ><a name="5050" href="Stlc.html#5050" class="InductiveConstructor"
       >&#958;if</a
-      ><a name="5050"
+      ><a name="5053"
       > </a
-      ><a name="5051" class="Symbol"
+      ><a name="5054" class="Symbol"
       >:</a
-      ><a name="5052"
+      ><a name="5055"
       > </a
-      ><a name="5053" class="Symbol"
+      ><a name="5056" class="Symbol"
       >&#8704;</a
-      ><a name="5054"
-      > </a
-      ><a name="5055" class="Symbol"
-      >{</a
-      ><a name="5056" href="Stlc.html#5056" class="Bound"
-      >L</a
       ><a name="5057"
       > </a
-      ><a name="5058" href="Stlc.html#5058" class="Bound"
-      >L&#8242;</a
+      ><a name="5058" class="Symbol"
+      >{</a
+      ><a name="5059" href="Stlc.html#5059" class="Bound"
+      >L</a
       ><a name="5060"
       > </a
       ><a name="5061" href="Stlc.html#5061" class="Bound"
-      >M</a
-      ><a name="5062"
+      >L&#8242;</a
+      ><a name="5063"
       > </a
-      ><a name="5063" href="Stlc.html#5063" class="Bound"
-      >N</a
-      ><a name="5064" class="Symbol"
-      >}</a
+      ><a name="5064" href="Stlc.html#5064" class="Bound"
+      >M</a
       ><a name="5065"
       > </a
-      ><a name="5066" class="Symbol"
+      ><a name="5066" href="Stlc.html#5066" class="Bound"
+      >N</a
+      ><a name="5067" class="Symbol"
+      >}</a
+      ><a name="5068"
+      > </a
+      ><a name="5069" class="Symbol"
       >&#8594;</a
-      ><a name="5067"
+      ><a name="5070"
       >
     </a
-      ><a name="5072" href="Stlc.html#5056" class="Bound"
+      ><a name="5075" href="Stlc.html#5059" class="Bound"
       >L</a
-      ><a name="5073"
+      ><a name="5076"
       > </a
-      ><a name="5074" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="5077" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="5075"
-      > </a
-      ><a name="5076" href="Stlc.html#5058" class="Bound"
-      >L&#8242;</a
       ><a name="5078"
       > </a
-      ><a name="5079" class="Symbol"
+      ><a name="5079" href="Stlc.html#5061" class="Bound"
+      >L&#8242;</a
+      ><a name="5081"
+      > </a
+      ><a name="5082" class="Symbol"
       >&#8594;</a
-      ><a name="5080"
+      ><a name="5083"
       >    
     </a
-      ><a name="5089" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5092" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="5091"
+      ><a name="5094"
       > </a
-      ><a name="5092" href="Stlc.html#5056" class="Bound"
+      ><a name="5095" href="Stlc.html#5059" class="Bound"
       >L</a
-      ><a name="5093"
+      ><a name="5096"
       > </a
-      ><a name="5094" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5097" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="5098"
+      ><a name="5101"
       > </a
-      ><a name="5099" href="Stlc.html#5061" class="Bound"
+      ><a name="5102" href="Stlc.html#5064" class="Bound"
       >M</a
-      ><a name="5100"
+      ><a name="5103"
       > </a
-      ><a name="5101" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5104" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="5105"
+      ><a name="5108"
       > </a
-      ><a name="5106" href="Stlc.html#5063" class="Bound"
+      ><a name="5109" href="Stlc.html#5066" class="Bound"
       >N</a
-      ><a name="5107"
+      ><a name="5110"
       > </a
-      ><a name="5108" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="5111" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="5109"
-      > </a
-      ><a name="5110" href="Stlc.html#3609" class="InductiveConstructor Operator"
-      >if</a
       ><a name="5112"
       > </a
-      ><a name="5113" href="Stlc.html#5058" class="Bound"
-      >L&#8242;</a
+      ><a name="5113" href="Stlc.html#3612" class="InductiveConstructor Operator"
+      >if</a
       ><a name="5115"
       > </a
-      ><a name="5116" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5116" href="Stlc.html#5061" class="Bound"
+      >L&#8242;</a
+      ><a name="5118"
+      > </a
+      ><a name="5119" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="5120"
+      ><a name="5123"
       > </a
-      ><a name="5121" href="Stlc.html#5061" class="Bound"
+      ><a name="5124" href="Stlc.html#5064" class="Bound"
       >M</a
-      ><a name="5122"
+      ><a name="5125"
       > </a
-      ><a name="5123" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5126" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="5127"
+      ><a name="5130"
       > </a
-      ><a name="5128" href="Stlc.html#5063" class="Bound"
+      ><a name="5131" href="Stlc.html#5066" class="Bound"
       >N</a
       >
 
@@ -2195,665 +2195,665 @@ Example terms.
 
 <pre class="Agda">
 
-<a name="5193" class="Keyword"
+<a name="5196" class="Keyword"
       >infix</a
-      ><a name="5198"
-      > </a
-      ><a name="5199" class="Number"
-      >10</a
       ><a name="5201"
       > </a
-      ><a name="5202" href="Stlc.html#5242" class="Datatype Operator"
+      ><a name="5202" class="Number"
+      >10</a
+      ><a name="5204"
+      > </a
+      ><a name="5205" href="Stlc.html#5245" class="Datatype Operator"
       >_&#10233;*_</a
-      ><a name="5206"
+      ><a name="5209"
       > 
 </a
-      ><a name="5208" class="Keyword"
+      ><a name="5211" class="Keyword"
       >infixr</a
-      ><a name="5214"
+      ><a name="5217"
       > </a
-      ><a name="5215" class="Number"
+      ><a name="5218" class="Number"
       >2</a
-      ><a name="5216"
+      ><a name="5219"
       > </a
-      ><a name="5217" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5220" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >_&#10233;&#10216;_&#10217;_</a
-      ><a name="5223"
+      ><a name="5226"
       >
 </a
-      ><a name="5224" class="Keyword"
+      ><a name="5227" class="Keyword"
       >infix</a
-      ><a name="5229"
-      >  </a
-      ><a name="5231" class="Number"
-      >3</a
       ><a name="5232"
-      > </a
-      ><a name="5233" href="Stlc.html#5275" class="InductiveConstructor Operator"
-      >_&#8718;</a
+      >  </a
+      ><a name="5234" class="Number"
+      >3</a
       ><a name="5235"
+      > </a
+      ><a name="5236" href="Stlc.html#5278" class="InductiveConstructor Operator"
+      >_&#8718;</a
+      ><a name="5238"
       >
 
 </a
-      ><a name="5237" class="Keyword"
+      ><a name="5240" class="Keyword"
       >data</a
-      ><a name="5241"
+      ><a name="5244"
       > </a
-      ><a name="5242" href="Stlc.html#5242" class="Datatype Operator"
+      ><a name="5245" href="Stlc.html#5245" class="Datatype Operator"
       >_&#10233;*_</a
-      ><a name="5246"
+      ><a name="5249"
       > </a
-      ><a name="5247" class="Symbol"
+      ><a name="5250" class="Symbol"
       >:</a
-      ><a name="5248"
+      ><a name="5251"
       > </a
-      ><a name="5249" href="Stlc.html#3482" class="Datatype"
+      ><a name="5252" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="5253"
+      ><a name="5256"
       > </a
-      ><a name="5254" class="Symbol"
+      ><a name="5257" class="Symbol"
       >&#8594;</a
-      ><a name="5255"
+      ><a name="5258"
       > </a
-      ><a name="5256" href="Stlc.html#3482" class="Datatype"
+      ><a name="5259" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="5260"
+      ><a name="5263"
       > </a
-      ><a name="5261" class="Symbol"
+      ><a name="5264" class="Symbol"
       >&#8594;</a
-      ><a name="5262"
+      ><a name="5265"
       > </a
-      ><a name="5263" class="PrimitiveType"
+      ><a name="5266" class="PrimitiveType"
       >Set</a
-      ><a name="5266"
+      ><a name="5269"
       > </a
-      ><a name="5267" class="Keyword"
+      ><a name="5270" class="Keyword"
       >where</a
-      ><a name="5272"
+      ><a name="5275"
       >
   </a
-      ><a name="5275" href="Stlc.html#5275" class="InductiveConstructor Operator"
+      ><a name="5278" href="Stlc.html#5278" class="InductiveConstructor Operator"
       >_&#8718;</a
-      ><a name="5277"
+      ><a name="5280"
       > </a
-      ><a name="5278" class="Symbol"
+      ><a name="5281" class="Symbol"
       >:</a
-      ><a name="5279"
+      ><a name="5282"
       > </a
-      ><a name="5280" class="Symbol"
+      ><a name="5283" class="Symbol"
       >&#8704;</a
-      ><a name="5281"
+      ><a name="5284"
       > </a
-      ><a name="5282" href="Stlc.html#5282" class="Bound"
+      ><a name="5285" href="Stlc.html#5285" class="Bound"
       >M</a
-      ><a name="5283"
+      ><a name="5286"
       > </a
-      ><a name="5284" class="Symbol"
+      ><a name="5287" class="Symbol"
       >&#8594;</a
-      ><a name="5285"
+      ><a name="5288"
       > </a
-      ><a name="5286" href="Stlc.html#5282" class="Bound"
+      ><a name="5289" href="Stlc.html#5285" class="Bound"
       >M</a
-      ><a name="5287"
-      > </a
-      ><a name="5288" href="Stlc.html#5242" class="Datatype Operator"
-      >&#10233;*</a
       ><a name="5290"
       > </a
-      ><a name="5291" href="Stlc.html#5282" class="Bound"
+      ><a name="5291" href="Stlc.html#5245" class="Datatype Operator"
+      >&#10233;*</a
+      ><a name="5293"
+      > </a
+      ><a name="5294" href="Stlc.html#5285" class="Bound"
       >M</a
-      ><a name="5292"
+      ><a name="5295"
       >
   </a
-      ><a name="5295" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5298" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >_&#10233;&#10216;_&#10217;_</a
-      ><a name="5301"
+      ><a name="5304"
       > </a
-      ><a name="5302" class="Symbol"
+      ><a name="5305" class="Symbol"
       >:</a
-      ><a name="5303"
+      ><a name="5306"
       > </a
-      ><a name="5304" class="Symbol"
+      ><a name="5307" class="Symbol"
       >&#8704;</a
-      ><a name="5305"
+      ><a name="5308"
       > </a
-      ><a name="5306" href="Stlc.html#5306" class="Bound"
-      >L</a
-      ><a name="5307"
-      > </a
-      ><a name="5308" class="Symbol"
-      >{</a
       ><a name="5309" href="Stlc.html#5309" class="Bound"
-      >M</a
+      >L</a
       ><a name="5310"
       > </a
-      ><a name="5311" href="Stlc.html#5311" class="Bound"
-      >N</a
-      ><a name="5312" class="Symbol"
-      >}</a
+      ><a name="5311" class="Symbol"
+      >{</a
+      ><a name="5312" href="Stlc.html#5312" class="Bound"
+      >M</a
       ><a name="5313"
       > </a
-      ><a name="5314" class="Symbol"
-      >&#8594;</a
-      ><a name="5315"
+      ><a name="5314" href="Stlc.html#5314" class="Bound"
+      >N</a
+      ><a name="5315" class="Symbol"
+      >}</a
+      ><a name="5316"
       > </a
-      ><a name="5316" href="Stlc.html#5306" class="Bound"
+      ><a name="5317" class="Symbol"
+      >&#8594;</a
+      ><a name="5318"
+      > </a
+      ><a name="5319" href="Stlc.html#5309" class="Bound"
       >L</a
-      ><a name="5317"
+      ><a name="5320"
       > </a
-      ><a name="5318" href="Stlc.html#4717" class="Datatype Operator"
+      ><a name="5321" href="Stlc.html#4720" class="Datatype Operator"
       >&#10233;</a
-      ><a name="5319"
+      ><a name="5322"
       > </a
-      ><a name="5320" href="Stlc.html#5309" class="Bound"
+      ><a name="5323" href="Stlc.html#5312" class="Bound"
       >M</a
-      ><a name="5321"
+      ><a name="5324"
       > </a
-      ><a name="5322" class="Symbol"
+      ><a name="5325" class="Symbol"
       >&#8594;</a
-      ><a name="5323"
+      ><a name="5326"
       > </a
-      ><a name="5324" href="Stlc.html#5309" class="Bound"
+      ><a name="5327" href="Stlc.html#5312" class="Bound"
       >M</a
-      ><a name="5325"
-      > </a
-      ><a name="5326" href="Stlc.html#5242" class="Datatype Operator"
-      >&#10233;*</a
       ><a name="5328"
       > </a
-      ><a name="5329" href="Stlc.html#5311" class="Bound"
-      >N</a
-      ><a name="5330"
-      > </a
-      ><a name="5331" class="Symbol"
-      >&#8594;</a
-      ><a name="5332"
-      > </a
-      ><a name="5333" href="Stlc.html#5306" class="Bound"
-      >L</a
-      ><a name="5334"
-      > </a
-      ><a name="5335" href="Stlc.html#5242" class="Datatype Operator"
+      ><a name="5329" href="Stlc.html#5245" class="Datatype Operator"
       >&#10233;*</a
+      ><a name="5331"
+      > </a
+      ><a name="5332" href="Stlc.html#5314" class="Bound"
+      >N</a
+      ><a name="5333"
+      > </a
+      ><a name="5334" class="Symbol"
+      >&#8594;</a
+      ><a name="5335"
+      > </a
+      ><a name="5336" href="Stlc.html#5309" class="Bound"
+      >L</a
       ><a name="5337"
       > </a
-      ><a name="5338" href="Stlc.html#5311" class="Bound"
+      ><a name="5338" href="Stlc.html#5245" class="Datatype Operator"
+      >&#10233;*</a
+      ><a name="5340"
+      > </a
+      ><a name="5341" href="Stlc.html#5314" class="Bound"
       >N</a
-      ><a name="5339"
+      ><a name="5342"
       >  
 
 </a
-      ><a name="5343" href="Stlc.html#5343" class="Function"
+      ><a name="5346" href="Stlc.html#5346" class="Function"
       >reduction&#8321;</a
-      ><a name="5353"
+      ><a name="5356"
       > </a
-      ><a name="5354" class="Symbol"
+      ><a name="5357" class="Symbol"
       >:</a
-      ><a name="5355"
+      ><a name="5358"
       > </a
-      ><a name="5356" href="Stlc.html#3904" class="Function"
+      ><a name="5359" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5359"
+      ><a name="5362"
       > </a
-      ><a name="5360" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5363" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5361"
+      ><a name="5364"
       > </a
-      ><a name="5362" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5365" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5366"
-      > </a
-      ><a name="5367" href="Stlc.html#5242" class="Datatype Operator"
-      >&#10233;*</a
       ><a name="5369"
       > </a
-      ><a name="5370" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5370" href="Stlc.html#5245" class="Datatype Operator"
+      >&#10233;*</a
+      ><a name="5372"
+      > </a
+      ><a name="5373" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5375"
+      ><a name="5378"
       >
 </a
-      ><a name="5376" href="Stlc.html#5343" class="Function"
+      ><a name="5379" href="Stlc.html#5346" class="Function"
       >reduction&#8321;</a
-      ><a name="5386"
+      ><a name="5389"
       > </a
-      ><a name="5387" class="Symbol"
+      ><a name="5390" class="Symbol"
       >=</a
-      ><a name="5388"
+      ><a name="5391"
       >
     </a
-      ><a name="5393" href="Stlc.html#3904" class="Function"
+      ><a name="5396" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5396"
+      ><a name="5399"
       > </a
-      ><a name="5397" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5400" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5398"
+      ><a name="5401"
       > </a
-      ><a name="5399" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5402" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5403"
+      ><a name="5406"
       >
   </a
-      ><a name="5406" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5409" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5408"
+      ><a name="5411"
       > </a
-      ><a name="5409" href="Stlc.html#4749" class="InductiveConstructor"
+      ><a name="5412" href="Stlc.html#4752" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
-      ><a name="5412"
+      ><a name="5415"
       > </a
-      ><a name="5413" href="Stlc.html#4136" class="InductiveConstructor"
+      ><a name="5416" href="Stlc.html#4139" class="InductiveConstructor"
       >value-true</a
-      ><a name="5423"
+      ><a name="5426"
       > </a
-      ><a name="5424" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5427" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5425"
+      ><a name="5428"
       >
     </a
-      ><a name="5430" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5433" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="5432"
+      ><a name="5435"
       > </a
-      ><a name="5433" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5436" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5437"
+      ><a name="5440"
       > </a
-      ><a name="5438" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5441" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="5442"
+      ><a name="5445"
       > </a
-      ><a name="5443" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5446" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5448"
+      ><a name="5451"
       > </a
-      ><a name="5449" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5452" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="5453"
+      ><a name="5456"
       > </a
-      ><a name="5454" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5457" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5458"
+      ><a name="5461"
       >
   </a
-      ><a name="5461" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5464" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5463"
+      ><a name="5466"
       > </a
-      ><a name="5464" href="Stlc.html#4939" class="InductiveConstructor"
+      ><a name="5467" href="Stlc.html#4942" class="InductiveConstructor"
       >&#946;if-true</a
-      ><a name="5472"
+      ><a name="5475"
       > </a
-      ><a name="5473" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5476" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5474"
+      ><a name="5477"
       >
     </a
-      ><a name="5479" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5482" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5484"
+      ><a name="5487"
       >
   </a
-      ><a name="5487" href="Stlc.html#5275" class="InductiveConstructor Operator"
+      ><a name="5490" href="Stlc.html#5278" class="InductiveConstructor Operator"
       >&#8718;</a
-      ><a name="5488"
+      ><a name="5491"
       >
 
 </a
-      ><a name="5490" href="Stlc.html#5490" class="Function"
+      ><a name="5493" href="Stlc.html#5493" class="Function"
       >reduction&#8322;</a
-      ><a name="5500"
+      ><a name="5503"
       > </a
-      ><a name="5501" class="Symbol"
+      ><a name="5504" class="Symbol"
       >:</a
-      ><a name="5502"
+      ><a name="5505"
       > </a
-      ><a name="5503" href="Stlc.html#3908" class="Function"
+      ><a name="5506" href="Stlc.html#3911" class="Function"
       >two</a
-      ><a name="5506"
+      ><a name="5509"
       > </a
-      ><a name="5507" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5510" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5508"
+      ><a name="5511"
       > </a
-      ><a name="5509" href="Stlc.html#3904" class="Function"
+      ><a name="5512" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5512"
+      ><a name="5515"
       > </a
-      ><a name="5513" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5516" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5514"
+      ><a name="5517"
       > </a
-      ><a name="5515" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5518" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5519"
-      > </a
-      ><a name="5520" href="Stlc.html#5242" class="Datatype Operator"
-      >&#10233;*</a
       ><a name="5522"
       > </a
-      ><a name="5523" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5523" href="Stlc.html#5245" class="Datatype Operator"
+      >&#10233;*</a
+      ><a name="5525"
+      > </a
+      ><a name="5526" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5527"
+      ><a name="5530"
       >
 </a
-      ><a name="5528" href="Stlc.html#5490" class="Function"
+      ><a name="5531" href="Stlc.html#5493" class="Function"
       >reduction&#8322;</a
-      ><a name="5538"
+      ><a name="5541"
       > </a
-      ><a name="5539" class="Symbol"
+      ><a name="5542" class="Symbol"
       >=</a
-      ><a name="5540"
+      ><a name="5543"
       >
     </a
-      ><a name="5545" href="Stlc.html#3908" class="Function"
+      ><a name="5548" href="Stlc.html#3911" class="Function"
       >two</a
-      ><a name="5548"
+      ><a name="5551"
       > </a
-      ><a name="5549" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5552" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5550"
+      ><a name="5553"
       > </a
-      ><a name="5551" href="Stlc.html#3904" class="Function"
+      ><a name="5554" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5554"
+      ><a name="5557"
       > </a
-      ><a name="5555" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5558" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5556"
+      ><a name="5559"
       > </a
-      ><a name="5557" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5560" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5561"
+      ><a name="5564"
       >
   </a
-      ><a name="5564" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5567" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5566"
+      ><a name="5569"
       > </a
-      ><a name="5567" href="Stlc.html#4819" class="InductiveConstructor"
+      ><a name="5570" href="Stlc.html#4822" class="InductiveConstructor"
       >&#958;&#183;&#8321;</a
-      ><a name="5570"
+      ><a name="5573"
       > </a
-      ><a name="5571" class="Symbol"
+      ><a name="5574" class="Symbol"
       >(</a
-      ><a name="5572" href="Stlc.html#4749" class="InductiveConstructor"
+      ><a name="5575" href="Stlc.html#4752" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
-      ><a name="5575"
+      ><a name="5578"
       > </a
-      ><a name="5576" href="Stlc.html#4087" class="InductiveConstructor"
+      ><a name="5579" href="Stlc.html#4090" class="InductiveConstructor"
       >value-&#955;</a
-      ><a name="5583" class="Symbol"
+      ><a name="5586" class="Symbol"
       >)</a
-      ><a name="5584"
+      ><a name="5587"
       > </a
-      ><a name="5585" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5588" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5586"
+      ><a name="5589"
       >
     </a
-      ><a name="5591" class="Symbol"
+      ><a name="5594" class="Symbol"
       >(</a
-      ><a name="5592" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="5595" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#955;[</a
-      ><a name="5594"
+      ><a name="5597"
       > </a
-      ><a name="5595" href="Stlc.html#3874" class="Function"
+      ><a name="5598" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="5596"
+      ><a name="5599"
       > </a
-      ><a name="5597" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="5600" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#8758;</a
-      ><a name="5598"
+      ><a name="5601"
       > </a
-      ><a name="5599" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="5602" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="5600"
+      ><a name="5603"
       > </a
-      ><a name="5601" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="5604" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="5602"
+      ><a name="5605"
       > </a
-      ><a name="5603" href="Stlc.html#3904" class="Function"
+      ><a name="5606" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5606"
+      ><a name="5609"
       > </a
-      ><a name="5607" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5610" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5608"
+      ><a name="5611"
       > </a
-      ><a name="5609" class="Symbol"
+      ><a name="5612" class="Symbol"
       >(</a
-      ><a name="5610" href="Stlc.html#3904" class="Function"
+      ><a name="5613" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5613"
+      ><a name="5616"
       > </a
-      ><a name="5614" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5617" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5615"
+      ><a name="5618"
       > </a
-      ><a name="5616" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="5619" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="5617"
+      ><a name="5620"
       > </a
-      ><a name="5618" href="Stlc.html#3874" class="Function"
+      ><a name="5621" href="Stlc.html#3877" class="Function"
       >x</a
-      ><a name="5619" class="Symbol"
+      ><a name="5622" class="Symbol"
       >))</a
-      ><a name="5621"
+      ><a name="5624"
       > </a
-      ><a name="5622" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5625" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5623"
+      ><a name="5626"
       > </a
-      ><a name="5624" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5627" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5628"
+      ><a name="5631"
       >
   </a
-      ><a name="5631" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5634" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5633"
+      ><a name="5636"
       > </a
-      ><a name="5634" href="Stlc.html#4749" class="InductiveConstructor"
+      ><a name="5637" href="Stlc.html#4752" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
-      ><a name="5637"
+      ><a name="5640"
       > </a
-      ><a name="5638" href="Stlc.html#4136" class="InductiveConstructor"
+      ><a name="5641" href="Stlc.html#4139" class="InductiveConstructor"
       >value-true</a
-      ><a name="5648"
+      ><a name="5651"
       > </a
-      ><a name="5649" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5652" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5650"
+      ><a name="5653"
       >
     </a
-      ><a name="5655" href="Stlc.html#3904" class="Function"
+      ><a name="5658" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5658"
+      ><a name="5661"
       > </a
-      ><a name="5659" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5662" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5660"
+      ><a name="5663"
       > </a
-      ><a name="5661" class="Symbol"
+      ><a name="5664" class="Symbol"
       >(</a
-      ><a name="5662" href="Stlc.html#3904" class="Function"
+      ><a name="5665" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5665"
+      ><a name="5668"
       > </a
-      ><a name="5666" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5669" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5667"
+      ><a name="5670"
       > </a
-      ><a name="5668" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5671" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5672" class="Symbol"
+      ><a name="5675" class="Symbol"
       >)</a
-      ><a name="5673"
+      ><a name="5676"
       >
   </a
-      ><a name="5676" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5679" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5678"
+      ><a name="5681"
       > </a
-      ><a name="5679" href="Stlc.html#4872" class="InductiveConstructor"
+      ><a name="5682" href="Stlc.html#4875" class="InductiveConstructor"
       >&#958;&#183;&#8322;</a
-      ><a name="5682"
+      ><a name="5685"
       > </a
-      ><a name="5683" href="Stlc.html#4087" class="InductiveConstructor"
+      ><a name="5686" href="Stlc.html#4090" class="InductiveConstructor"
       >value-&#955;</a
-      ><a name="5690"
+      ><a name="5693"
       > </a
-      ><a name="5691" class="Symbol"
+      ><a name="5694" class="Symbol"
       >(</a
-      ><a name="5692" href="Stlc.html#4749" class="InductiveConstructor"
+      ><a name="5695" href="Stlc.html#4752" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
-      ><a name="5695"
+      ><a name="5698"
       > </a
-      ><a name="5696" href="Stlc.html#4136" class="InductiveConstructor"
+      ><a name="5699" href="Stlc.html#4139" class="InductiveConstructor"
       >value-true</a
-      ><a name="5706" class="Symbol"
+      ><a name="5709" class="Symbol"
       >)</a
-      ><a name="5707"
+      ><a name="5710"
       > </a
-      ><a name="5708" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5711" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5709"
+      ><a name="5712"
       >
     </a
-      ><a name="5714" href="Stlc.html#3904" class="Function"
+      ><a name="5717" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5717"
+      ><a name="5720"
       > </a
-      ><a name="5718" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5721" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5719"
+      ><a name="5722"
       > </a
-      ><a name="5720" class="Symbol"
+      ><a name="5723" class="Symbol"
       >(</a
-      ><a name="5721" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5724" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="5723"
+      ><a name="5726"
       > </a
-      ><a name="5724" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5727" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5728"
+      ><a name="5731"
       > </a
-      ><a name="5729" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5732" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="5733"
+      ><a name="5736"
       > </a
-      ><a name="5734" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5737" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5739"
+      ><a name="5742"
       > </a
-      ><a name="5740" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5743" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="5744"
+      ><a name="5747"
       > </a
-      ><a name="5745" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5748" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5749" class="Symbol"
+      ><a name="5752" class="Symbol"
       >)</a
-      ><a name="5750"
+      ><a name="5753"
       >
   </a
-      ><a name="5753" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5756" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5755"
+      ><a name="5758"
       > </a
-      ><a name="5756" href="Stlc.html#4872" class="InductiveConstructor"
+      ><a name="5759" href="Stlc.html#4875" class="InductiveConstructor"
       >&#958;&#183;&#8322;</a
-      ><a name="5759"
+      ><a name="5762"
       > </a
-      ><a name="5760" href="Stlc.html#4087" class="InductiveConstructor"
+      ><a name="5763" href="Stlc.html#4090" class="InductiveConstructor"
       >value-&#955;</a
-      ><a name="5767"
+      ><a name="5770"
       > </a
-      ><a name="5768" href="Stlc.html#4939" class="InductiveConstructor"
+      ><a name="5771" href="Stlc.html#4942" class="InductiveConstructor"
       >&#946;if-true</a
-      ><a name="5776"
-      >  </a
-      ><a name="5778" href="Stlc.html#5295" class="InductiveConstructor Operator"
-      >&#10217;</a
       ><a name="5779"
+      >  </a
+      ><a name="5781" href="Stlc.html#5298" class="InductiveConstructor Operator"
+      >&#10217;</a
+      ><a name="5782"
       >
     </a
-      ><a name="5784" href="Stlc.html#3904" class="Function"
+      ><a name="5787" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="5787"
+      ><a name="5790"
       > </a
-      ><a name="5788" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="5791" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="5789"
+      ><a name="5792"
       > </a
-      ><a name="5790" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5793" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5795"
+      ><a name="5798"
       >
   </a
-      ><a name="5798" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5801" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5800"
+      ><a name="5803"
       > </a
-      ><a name="5801" href="Stlc.html#4749" class="InductiveConstructor"
+      ><a name="5804" href="Stlc.html#4752" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
-      ><a name="5804"
+      ><a name="5807"
       > </a
-      ><a name="5805" href="Stlc.html#4163" class="InductiveConstructor"
+      ><a name="5808" href="Stlc.html#4166" class="InductiveConstructor"
       >value-false</a
-      ><a name="5816"
+      ><a name="5819"
       > </a
-      ><a name="5817" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5820" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5818"
+      ><a name="5821"
       >
     </a
-      ><a name="5823" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5826" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >if</a
-      ><a name="5825"
+      ><a name="5828"
       > </a
-      ><a name="5826" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5829" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5831"
+      ><a name="5834"
       > </a
-      ><a name="5832" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5835" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="5836"
+      ><a name="5839"
       > </a
-      ><a name="5837" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="5840" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="5842"
+      ><a name="5845"
       > </a
-      ><a name="5843" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="5846" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="5847"
+      ><a name="5850"
       > </a
-      ><a name="5848" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5851" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5852"
+      ><a name="5855"
       >
   </a
-      ><a name="5855" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5858" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10233;&#10216;</a
-      ><a name="5857"
+      ><a name="5860"
       > </a
-      ><a name="5858" href="Stlc.html#4992" class="InductiveConstructor"
+      ><a name="5861" href="Stlc.html#4995" class="InductiveConstructor"
       >&#946;if-false</a
-      ><a name="5867"
+      ><a name="5870"
       > </a
-      ><a name="5868" href="Stlc.html#5295" class="InductiveConstructor Operator"
+      ><a name="5871" href="Stlc.html#5298" class="InductiveConstructor Operator"
       >&#10217;</a
-      ><a name="5869"
+      ><a name="5872"
       >
     </a
-      ><a name="5874" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="5877" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="5878"
+      ><a name="5881"
       >
   </a
-      ><a name="5881" href="Stlc.html#5275" class="InductiveConstructor Operator"
+      ><a name="5884" href="Stlc.html#5278" class="InductiveConstructor Operator"
       >&#8718;</a
       >
 
@@ -2867,683 +2867,683 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
 
 <pre class="Agda">
 
-<a name="6005" href="Stlc.html#6005" class="Function"
+<a name="6008" href="Stlc.html#6008" class="Function"
       >Context</a
-      ><a name="6012"
+      ><a name="6015"
       > </a
-      ><a name="6013" class="Symbol"
+      ><a name="6016" class="Symbol"
       >:</a
-      ><a name="6014"
+      ><a name="6017"
       > </a
-      ><a name="6015" class="PrimitiveType"
+      ><a name="6018" class="PrimitiveType"
       >Set</a
-      ><a name="6018"
+      ><a name="6021"
       >
 </a
-      ><a name="6019" href="Stlc.html#6005" class="Function"
+      ><a name="6022" href="Stlc.html#6008" class="Function"
       >Context</a
-      ><a name="6026"
+      ><a name="6029"
       > </a
-      ><a name="6027" class="Symbol"
+      ><a name="6030" class="Symbol"
       >=</a
-      ><a name="6028"
+      ><a name="6031"
       > </a
-      ><a name="6029" href="Maps.html#10132" class="Function"
+      ><a name="6032" href="Maps.html#10132" class="Function"
       >PartialMap</a
-      ><a name="6039"
+      ><a name="6042"
       > </a
-      ><a name="6040" href="Stlc.html#2531" class="Datatype"
+      ><a name="6043" href="Stlc.html#2531" class="Datatype"
       >Type</a
-      ><a name="6044"
+      ><a name="6047"
       >
 
 </a
-      ><a name="6046" class="Keyword"
+      ><a name="6049" class="Keyword"
       >infix</a
-      ><a name="6051"
-      > </a
-      ><a name="6052" class="Number"
-      >10</a
       ><a name="6054"
       > </a
-      ><a name="6055" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6055" class="Number"
+      >10</a
+      ><a name="6057"
+      > </a
+      ><a name="6058" href="Stlc.html#6070" class="Datatype Operator"
       >_&#8866;_&#8758;_</a
-      ><a name="6060"
+      ><a name="6063"
       >
 
 </a
-      ><a name="6062" class="Keyword"
+      ><a name="6065" class="Keyword"
       >data</a
-      ><a name="6066"
+      ><a name="6069"
       > </a
-      ><a name="6067" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6070" href="Stlc.html#6070" class="Datatype Operator"
       >_&#8866;_&#8758;_</a
-      ><a name="6072"
+      ><a name="6075"
       > </a
-      ><a name="6073" class="Symbol"
+      ><a name="6076" class="Symbol"
       >:</a
-      ><a name="6074"
+      ><a name="6077"
       > </a
-      ><a name="6075" href="Stlc.html#6005" class="Function"
+      ><a name="6078" href="Stlc.html#6008" class="Function"
       >Context</a
-      ><a name="6082"
+      ><a name="6085"
       > </a
-      ><a name="6083" class="Symbol"
+      ><a name="6086" class="Symbol"
       >&#8594;</a
-      ><a name="6084"
+      ><a name="6087"
       > </a
-      ><a name="6085" href="Stlc.html#3482" class="Datatype"
+      ><a name="6088" href="Stlc.html#3485" class="Datatype"
       >Term</a
-      ><a name="6089"
+      ><a name="6092"
       > </a
-      ><a name="6090" class="Symbol"
+      ><a name="6093" class="Symbol"
       >&#8594;</a
-      ><a name="6091"
+      ><a name="6094"
       > </a
-      ><a name="6092" href="Stlc.html#2531" class="Datatype"
+      ><a name="6095" href="Stlc.html#2531" class="Datatype"
       >Type</a
-      ><a name="6096"
+      ><a name="6099"
       > </a
-      ><a name="6097" class="Symbol"
+      ><a name="6100" class="Symbol"
       >&#8594;</a
-      ><a name="6098"
+      ><a name="6101"
       > </a
-      ><a name="6099" class="PrimitiveType"
+      ><a name="6102" class="PrimitiveType"
       >Set</a
-      ><a name="6102"
+      ><a name="6105"
       > </a
-      ><a name="6103" class="Keyword"
+      ><a name="6106" class="Keyword"
       >where</a
-      ><a name="6108"
+      ><a name="6111"
       >
   </a
-      ><a name="6111" href="Stlc.html#6111" class="InductiveConstructor"
+      ><a name="6114" href="Stlc.html#6114" class="InductiveConstructor"
       >Ax</a
-      ><a name="6113"
+      ><a name="6116"
       > </a
-      ><a name="6114" class="Symbol"
+      ><a name="6117" class="Symbol"
       >:</a
-      ><a name="6115"
+      ><a name="6118"
       > </a
-      ><a name="6116" class="Symbol"
+      ><a name="6119" class="Symbol"
       >&#8704;</a
-      ><a name="6117"
-      > </a
-      ><a name="6118" class="Symbol"
-      >{</a
-      ><a name="6119" href="Stlc.html#6119" class="Bound"
-      >&#915;</a
       ><a name="6120"
       > </a
-      ><a name="6121" href="Stlc.html#6121" class="Bound"
-      >x</a
-      ><a name="6122"
+      ><a name="6121" class="Symbol"
+      >{</a
+      ><a name="6122" href="Stlc.html#6122" class="Bound"
+      >&#915;</a
+      ><a name="6123"
       > </a
-      ><a name="6123" href="Stlc.html#6123" class="Bound"
-      >A</a
-      ><a name="6124" class="Symbol"
-      >}</a
+      ><a name="6124" href="Stlc.html#6124" class="Bound"
+      >x</a
       ><a name="6125"
       > </a
-      ><a name="6126" class="Symbol"
+      ><a name="6126" href="Stlc.html#6126" class="Bound"
+      >A</a
+      ><a name="6127" class="Symbol"
+      >}</a
+      ><a name="6128"
+      > </a
+      ><a name="6129" class="Symbol"
       >&#8594;</a
-      ><a name="6127"
+      ><a name="6130"
       >
     </a
-      ><a name="6132" href="Stlc.html#6119" class="Bound"
+      ><a name="6135" href="Stlc.html#6122" class="Bound"
       >&#915;</a
-      ><a name="6133"
+      ><a name="6136"
       > </a
-      ><a name="6134" href="Stlc.html#6121" class="Bound"
+      ><a name="6137" href="Stlc.html#6124" class="Bound"
       >x</a
-      ><a name="6135"
+      ><a name="6138"
       > </a
-      ><a name="6136" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="6139" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="6137"
+      ><a name="6140"
       > </a
-      ><a name="6138" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      ><a name="6141" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
       >just</a
-      ><a name="6142"
+      ><a name="6145"
       > </a
-      ><a name="6143" href="Stlc.html#6123" class="Bound"
+      ><a name="6146" href="Stlc.html#6126" class="Bound"
       >A</a
-      ><a name="6144"
+      ><a name="6147"
       > </a
-      ><a name="6145" class="Symbol"
+      ><a name="6148" class="Symbol"
       >&#8594;</a
-      ><a name="6146"
+      ><a name="6149"
       >
     </a
-      ><a name="6151" href="Stlc.html#6119" class="Bound"
+      ><a name="6154" href="Stlc.html#6122" class="Bound"
       >&#915;</a
-      ><a name="6152"
+      ><a name="6155"
       > </a
-      ><a name="6153" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6156" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6154"
+      ><a name="6157"
       > </a
-      ><a name="6155" href="Stlc.html#3501" class="InductiveConstructor"
+      ><a name="6158" href="Stlc.html#3504" class="InductiveConstructor"
       >`</a
-      ><a name="6156"
+      ><a name="6159"
       > </a
-      ><a name="6157" href="Stlc.html#6121" class="Bound"
+      ><a name="6160" href="Stlc.html#6124" class="Bound"
       >x</a
-      ><a name="6158"
+      ><a name="6161"
       > </a
-      ><a name="6159" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6162" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6160"
+      ><a name="6163"
       > </a
-      ><a name="6161" href="Stlc.html#6123" class="Bound"
+      ><a name="6164" href="Stlc.html#6126" class="Bound"
       >A</a
-      ><a name="6162"
+      ><a name="6165"
       >
   </a
-      ><a name="6165" href="Stlc.html#6165" class="InductiveConstructor"
+      ><a name="6168" href="Stlc.html#6168" class="InductiveConstructor"
       >&#8658;-I</a
-      ><a name="6168"
+      ><a name="6171"
       > </a
-      ><a name="6169" class="Symbol"
+      ><a name="6172" class="Symbol"
       >:</a
-      ><a name="6170"
+      ><a name="6173"
       > </a
-      ><a name="6171" class="Symbol"
+      ><a name="6174" class="Symbol"
       >&#8704;</a
-      ><a name="6172"
-      > </a
-      ><a name="6173" class="Symbol"
-      >{</a
-      ><a name="6174" href="Stlc.html#6174" class="Bound"
-      >&#915;</a
       ><a name="6175"
       > </a
-      ><a name="6176" href="Stlc.html#6176" class="Bound"
+      ><a name="6176" class="Symbol"
+      >{</a
+      ><a name="6177" href="Stlc.html#6177" class="Bound"
+      >&#915;</a
+      ><a name="6178"
+      > </a
+      ><a name="6179" href="Stlc.html#6179" class="Bound"
       >x</a
-      ><a name="6177"
+      ><a name="6180"
       > </a
-      ><a name="6178" href="Stlc.html#6178" class="Bound"
+      ><a name="6181" href="Stlc.html#6181" class="Bound"
       >N</a
-      ><a name="6179"
+      ><a name="6182"
       > </a
-      ><a name="6180" href="Stlc.html#6180" class="Bound"
+      ><a name="6183" href="Stlc.html#6183" class="Bound"
       >A</a
-      ><a name="6181"
-      > </a
-      ><a name="6182" href="Stlc.html#6182" class="Bound"
-      >B</a
-      ><a name="6183" class="Symbol"
-      >}</a
       ><a name="6184"
       > </a
-      ><a name="6185" class="Symbol"
-      >&#8594;</a
-      ><a name="6186"
-      >
-    </a
-      ><a name="6191" href="Stlc.html#6174" class="Bound"
-      >&#915;</a
-      ><a name="6192"
-      > </a
-      ><a name="6193" href="Maps.html#10368" class="Function Operator"
-      >,</a
-      ><a name="6194"
-      > </a
-      ><a name="6195" href="Stlc.html#6176" class="Bound"
-      >x</a
-      ><a name="6196"
-      > </a
-      ><a name="6197" href="Maps.html#10368" class="Function Operator"
-      >&#8758;</a
-      ><a name="6198"
-      > </a
-      ><a name="6199" href="Stlc.html#6180" class="Bound"
-      >A</a
-      ><a name="6200"
-      > </a
-      ><a name="6201" href="Stlc.html#6067" class="Datatype Operator"
-      >&#8866;</a
-      ><a name="6202"
-      > </a
-      ><a name="6203" href="Stlc.html#6178" class="Bound"
-      >N</a
-      ><a name="6204"
-      > </a
-      ><a name="6205" href="Stlc.html#6067" class="Datatype Operator"
-      >&#8758;</a
-      ><a name="6206"
-      > </a
-      ><a name="6207" href="Stlc.html#6182" class="Bound"
+      ><a name="6185" href="Stlc.html#6185" class="Bound"
       >B</a
-      ><a name="6208"
+      ><a name="6186" class="Symbol"
+      >}</a
+      ><a name="6187"
       > </a
-      ><a name="6209" class="Symbol"
+      ><a name="6188" class="Symbol"
       >&#8594;</a
-      ><a name="6210"
+      ><a name="6189"
       >
     </a
-      ><a name="6215" href="Stlc.html#6174" class="Bound"
+      ><a name="6194" href="Stlc.html#6177" class="Bound"
       >&#915;</a
-      ><a name="6216"
+      ><a name="6195"
       > </a
-      ><a name="6217" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6196" href="Maps.html#10368" class="Function Operator"
+      >,</a
+      ><a name="6197"
+      > </a
+      ><a name="6198" href="Stlc.html#6179" class="Bound"
+      >x</a
+      ><a name="6199"
+      > </a
+      ><a name="6200" href="Maps.html#10368" class="Function Operator"
+      >&#8758;</a
+      ><a name="6201"
+      > </a
+      ><a name="6202" href="Stlc.html#6183" class="Bound"
+      >A</a
+      ><a name="6203"
+      > </a
+      ><a name="6204" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6218"
+      ><a name="6205"
       > </a
-      ><a name="6219" href="Stlc.html#3517" class="InductiveConstructor Operator"
-      >&#955;[</a
+      ><a name="6206" href="Stlc.html#6181" class="Bound"
+      >N</a
+      ><a name="6207"
+      > </a
+      ><a name="6208" href="Stlc.html#6070" class="Datatype Operator"
+      >&#8758;</a
+      ><a name="6209"
+      > </a
+      ><a name="6210" href="Stlc.html#6185" class="Bound"
+      >B</a
+      ><a name="6211"
+      > </a
+      ><a name="6212" class="Symbol"
+      >&#8594;</a
+      ><a name="6213"
+      >
+    </a
+      ><a name="6218" href="Stlc.html#6177" class="Bound"
+      >&#915;</a
+      ><a name="6219"
+      > </a
+      ><a name="6220" href="Stlc.html#6070" class="Datatype Operator"
+      >&#8866;</a
       ><a name="6221"
       > </a
-      ><a name="6222" href="Stlc.html#6176" class="Bound"
+      ><a name="6222" href="Stlc.html#3520" class="InductiveConstructor Operator"
+      >&#955;[</a
+      ><a name="6224"
+      > </a
+      ><a name="6225" href="Stlc.html#6179" class="Bound"
       >x</a
-      ><a name="6223"
+      ><a name="6226"
       > </a
-      ><a name="6224" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="6227" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >&#8758;</a
-      ><a name="6225"
+      ><a name="6228"
       > </a
-      ><a name="6226" href="Stlc.html#6180" class="Bound"
+      ><a name="6229" href="Stlc.html#6183" class="Bound"
       >A</a
-      ><a name="6227"
+      ><a name="6230"
       > </a
-      ><a name="6228" href="Stlc.html#3517" class="InductiveConstructor Operator"
+      ><a name="6231" href="Stlc.html#3520" class="InductiveConstructor Operator"
       >]</a
-      ><a name="6229"
+      ><a name="6232"
       > </a
-      ><a name="6230" href="Stlc.html#6178" class="Bound"
+      ><a name="6233" href="Stlc.html#6181" class="Bound"
       >N</a
-      ><a name="6231"
+      ><a name="6234"
       > </a
-      ><a name="6232" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6235" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6233"
+      ><a name="6236"
       > </a
-      ><a name="6234" href="Stlc.html#6180" class="Bound"
+      ><a name="6237" href="Stlc.html#6183" class="Bound"
       >A</a
-      ><a name="6235"
+      ><a name="6238"
       > </a
-      ><a name="6236" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      ><a name="6239" href="Stlc.html#2550" class="InductiveConstructor Operator"
       >&#8658;</a
-      ><a name="6237"
+      ><a name="6240"
       > </a
-      ><a name="6238" href="Stlc.html#6182" class="Bound"
+      ><a name="6241" href="Stlc.html#6185" class="Bound"
       >B</a
-      ><a name="6239"
+      ><a name="6242"
       >
   </a
-      ><a name="6242" href="Stlc.html#6242" class="InductiveConstructor"
+      ><a name="6245" href="Stlc.html#6245" class="InductiveConstructor"
       >&#8658;-E</a
-      ><a name="6245"
+      ><a name="6248"
       > </a
-      ><a name="6246" class="Symbol"
+      ><a name="6249" class="Symbol"
       >:</a
-      ><a name="6247"
+      ><a name="6250"
       > </a
-      ><a name="6248" class="Symbol"
+      ><a name="6251" class="Symbol"
       >&#8704;</a
-      ><a name="6249"
-      > </a
-      ><a name="6250" class="Symbol"
-      >{</a
-      ><a name="6251" href="Stlc.html#6251" class="Bound"
-      >&#915;</a
       ><a name="6252"
       > </a
-      ><a name="6253" href="Stlc.html#6253" class="Bound"
+      ><a name="6253" class="Symbol"
+      >{</a
+      ><a name="6254" href="Stlc.html#6254" class="Bound"
+      >&#915;</a
+      ><a name="6255"
+      > </a
+      ><a name="6256" href="Stlc.html#6256" class="Bound"
       >L</a
-      ><a name="6254"
+      ><a name="6257"
       > </a
-      ><a name="6255" href="Stlc.html#6255" class="Bound"
+      ><a name="6258" href="Stlc.html#6258" class="Bound"
       >M</a
-      ><a name="6256"
+      ><a name="6259"
       > </a
-      ><a name="6257" href="Stlc.html#6257" class="Bound"
+      ><a name="6260" href="Stlc.html#6260" class="Bound"
       >A</a
-      ><a name="6258"
-      > </a
-      ><a name="6259" href="Stlc.html#6259" class="Bound"
-      >B</a
-      ><a name="6260" class="Symbol"
-      >}</a
       ><a name="6261"
       > </a
-      ><a name="6262" class="Symbol"
+      ><a name="6262" href="Stlc.html#6262" class="Bound"
+      >B</a
+      ><a name="6263" class="Symbol"
+      >}</a
+      ><a name="6264"
+      > </a
+      ><a name="6265" class="Symbol"
       >&#8594;</a
-      ><a name="6263"
+      ><a name="6266"
       >
     </a
-      ><a name="6268" href="Stlc.html#6251" class="Bound"
+      ><a name="6271" href="Stlc.html#6254" class="Bound"
       >&#915;</a
-      ><a name="6269"
+      ><a name="6272"
       > </a
-      ><a name="6270" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6273" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6271"
+      ><a name="6274"
       > </a
-      ><a name="6272" href="Stlc.html#6253" class="Bound"
+      ><a name="6275" href="Stlc.html#6256" class="Bound"
       >L</a
-      ><a name="6273"
+      ><a name="6276"
       > </a
-      ><a name="6274" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6277" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6275"
+      ><a name="6278"
       > </a
-      ><a name="6276" href="Stlc.html#6257" class="Bound"
+      ><a name="6279" href="Stlc.html#6260" class="Bound"
       >A</a
-      ><a name="6277"
+      ><a name="6280"
       > </a
-      ><a name="6278" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      ><a name="6281" href="Stlc.html#2550" class="InductiveConstructor Operator"
       >&#8658;</a
-      ><a name="6279"
+      ><a name="6282"
       > </a
-      ><a name="6280" href="Stlc.html#6259" class="Bound"
+      ><a name="6283" href="Stlc.html#6262" class="Bound"
       >B</a
-      ><a name="6281"
+      ><a name="6284"
       > </a
-      ><a name="6282" class="Symbol"
+      ><a name="6285" class="Symbol"
       >&#8594;</a
-      ><a name="6283"
+      ><a name="6286"
       >
     </a
-      ><a name="6288" href="Stlc.html#6251" class="Bound"
+      ><a name="6291" href="Stlc.html#6254" class="Bound"
       >&#915;</a
-      ><a name="6289"
+      ><a name="6292"
       > </a
-      ><a name="6290" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6293" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6291"
+      ><a name="6294"
       > </a
-      ><a name="6292" href="Stlc.html#6255" class="Bound"
+      ><a name="6295" href="Stlc.html#6258" class="Bound"
       >M</a
-      ><a name="6293"
+      ><a name="6296"
       > </a
-      ><a name="6294" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6297" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6295"
+      ><a name="6298"
       > </a
-      ><a name="6296" href="Stlc.html#6257" class="Bound"
+      ><a name="6299" href="Stlc.html#6260" class="Bound"
       >A</a
-      ><a name="6297"
+      ><a name="6300"
       > </a
-      ><a name="6298" class="Symbol"
+      ><a name="6301" class="Symbol"
       >&#8594;</a
-      ><a name="6299"
+      ><a name="6302"
       >
     </a
-      ><a name="6304" href="Stlc.html#6251" class="Bound"
+      ><a name="6307" href="Stlc.html#6254" class="Bound"
       >&#915;</a
-      ><a name="6305"
+      ><a name="6308"
       > </a
-      ><a name="6306" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6309" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6307"
+      ><a name="6310"
       > </a
-      ><a name="6308" href="Stlc.html#6253" class="Bound"
+      ><a name="6311" href="Stlc.html#6256" class="Bound"
       >L</a
-      ><a name="6309"
+      ><a name="6312"
       > </a
-      ><a name="6310" href="Stlc.html#3553" class="InductiveConstructor Operator"
+      ><a name="6313" href="Stlc.html#3556" class="InductiveConstructor Operator"
       >&#183;</a
-      ><a name="6311"
+      ><a name="6314"
       > </a
-      ><a name="6312" href="Stlc.html#6255" class="Bound"
+      ><a name="6315" href="Stlc.html#6258" class="Bound"
       >M</a
-      ><a name="6313"
+      ><a name="6316"
       > </a
-      ><a name="6314" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6317" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6315"
+      ><a name="6318"
       > </a
-      ><a name="6316" href="Stlc.html#6259" class="Bound"
+      ><a name="6319" href="Stlc.html#6262" class="Bound"
       >B</a
-      ><a name="6317"
+      ><a name="6320"
       >
   </a
-      ><a name="6320" href="Stlc.html#6320" class="InductiveConstructor"
+      ><a name="6323" href="Stlc.html#6323" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
-      ><a name="6324"
+      ><a name="6327"
       > </a
-      ><a name="6325" class="Symbol"
+      ><a name="6328" class="Symbol"
       >:</a
-      ><a name="6326"
+      ><a name="6329"
       > </a
-      ><a name="6327" class="Symbol"
+      ><a name="6330" class="Symbol"
       >&#8704;</a
-      ><a name="6328"
+      ><a name="6331"
       > </a
-      ><a name="6329" class="Symbol"
+      ><a name="6332" class="Symbol"
       >{</a
-      ><a name="6330" href="Stlc.html#6330" class="Bound"
+      ><a name="6333" href="Stlc.html#6333" class="Bound"
       >&#915;</a
-      ><a name="6331" class="Symbol"
+      ><a name="6334" class="Symbol"
       >}</a
-      ><a name="6332"
+      ><a name="6335"
       > </a
-      ><a name="6333" class="Symbol"
+      ><a name="6336" class="Symbol"
       >&#8594;</a
-      ><a name="6334"
+      ><a name="6337"
       >
     </a
-      ><a name="6339" href="Stlc.html#6330" class="Bound"
+      ><a name="6342" href="Stlc.html#6333" class="Bound"
       >&#915;</a
-      ><a name="6340"
+      ><a name="6343"
       > </a
-      ><a name="6341" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6344" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6342"
+      ><a name="6345"
       > </a
-      ><a name="6343" href="Stlc.html#3580" class="InductiveConstructor"
+      ><a name="6346" href="Stlc.html#3583" class="InductiveConstructor"
       >true</a
-      ><a name="6347"
+      ><a name="6350"
       > </a
-      ><a name="6348" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6351" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6349"
+      ><a name="6352"
       > </a
-      ><a name="6350" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6353" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6351"
+      ><a name="6354"
       >
   </a
-      ><a name="6354" href="Stlc.html#6354" class="InductiveConstructor"
+      ><a name="6357" href="Stlc.html#6357" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
-      ><a name="6358"
+      ><a name="6361"
       > </a
-      ><a name="6359" class="Symbol"
+      ><a name="6362" class="Symbol"
       >:</a
-      ><a name="6360"
+      ><a name="6363"
       > </a
-      ><a name="6361" class="Symbol"
+      ><a name="6364" class="Symbol"
       >&#8704;</a
-      ><a name="6362"
+      ><a name="6365"
       > </a
-      ><a name="6363" class="Symbol"
+      ><a name="6366" class="Symbol"
       >{</a
-      ><a name="6364" href="Stlc.html#6364" class="Bound"
+      ><a name="6367" href="Stlc.html#6367" class="Bound"
       >&#915;</a
-      ><a name="6365" class="Symbol"
+      ><a name="6368" class="Symbol"
       >}</a
-      ><a name="6366"
+      ><a name="6369"
       > </a
-      ><a name="6367" class="Symbol"
+      ><a name="6370" class="Symbol"
       >&#8594;</a
-      ><a name="6368"
+      ><a name="6371"
       >
     </a
-      ><a name="6373" href="Stlc.html#6364" class="Bound"
+      ><a name="6376" href="Stlc.html#6367" class="Bound"
       >&#915;</a
-      ><a name="6374"
+      ><a name="6377"
       > </a
-      ><a name="6375" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6378" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6376"
+      ><a name="6379"
       > </a
-      ><a name="6377" href="Stlc.html#3594" class="InductiveConstructor"
+      ><a name="6380" href="Stlc.html#3597" class="InductiveConstructor"
       >false</a
-      ><a name="6382"
+      ><a name="6385"
       > </a
-      ><a name="6383" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6386" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6384"
+      ><a name="6387"
       > </a
-      ><a name="6385" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6388" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6386"
+      ><a name="6389"
       >
   </a
-      ><a name="6389" href="Stlc.html#6389" class="InductiveConstructor"
+      ><a name="6392" href="Stlc.html#6392" class="InductiveConstructor"
       >&#120121;-E</a
-      ><a name="6392"
+      ><a name="6395"
       > </a
-      ><a name="6393" class="Symbol"
+      ><a name="6396" class="Symbol"
       >:</a
-      ><a name="6394"
+      ><a name="6397"
       > </a
-      ><a name="6395" class="Symbol"
+      ><a name="6398" class="Symbol"
       >&#8704;</a
-      ><a name="6396"
-      > </a
-      ><a name="6397" class="Symbol"
-      >{</a
-      ><a name="6398" href="Stlc.html#6398" class="Bound"
-      >&#915;</a
       ><a name="6399"
       > </a
-      ><a name="6400" href="Stlc.html#6400" class="Bound"
+      ><a name="6400" class="Symbol"
+      >{</a
+      ><a name="6401" href="Stlc.html#6401" class="Bound"
+      >&#915;</a
+      ><a name="6402"
+      > </a
+      ><a name="6403" href="Stlc.html#6403" class="Bound"
       >L</a
-      ><a name="6401"
+      ><a name="6404"
       > </a
-      ><a name="6402" href="Stlc.html#6402" class="Bound"
+      ><a name="6405" href="Stlc.html#6405" class="Bound"
       >M</a
-      ><a name="6403"
+      ><a name="6406"
       > </a
-      ><a name="6404" href="Stlc.html#6404" class="Bound"
+      ><a name="6407" href="Stlc.html#6407" class="Bound"
       >N</a
-      ><a name="6405"
-      > </a
-      ><a name="6406" href="Stlc.html#6406" class="Bound"
-      >A</a
-      ><a name="6407" class="Symbol"
-      >}</a
       ><a name="6408"
       > </a
-      ><a name="6409" class="Symbol"
+      ><a name="6409" href="Stlc.html#6409" class="Bound"
+      >A</a
+      ><a name="6410" class="Symbol"
+      >}</a
+      ><a name="6411"
+      > </a
+      ><a name="6412" class="Symbol"
       >&#8594;</a
-      ><a name="6410"
+      ><a name="6413"
       >
     </a
-      ><a name="6415" href="Stlc.html#6398" class="Bound"
+      ><a name="6418" href="Stlc.html#6401" class="Bound"
       >&#915;</a
-      ><a name="6416"
+      ><a name="6419"
       > </a
-      ><a name="6417" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6420" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6418"
+      ><a name="6421"
       > </a
-      ><a name="6419" href="Stlc.html#6400" class="Bound"
+      ><a name="6422" href="Stlc.html#6403" class="Bound"
       >L</a
-      ><a name="6420"
+      ><a name="6423"
       > </a
-      ><a name="6421" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6424" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6422"
+      ><a name="6425"
       > </a
-      ><a name="6423" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6426" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6424"
+      ><a name="6427"
       > </a
-      ><a name="6425" class="Symbol"
+      ><a name="6428" class="Symbol"
       >&#8594;</a
-      ><a name="6426"
+      ><a name="6429"
       >
     </a
-      ><a name="6431" href="Stlc.html#6398" class="Bound"
+      ><a name="6434" href="Stlc.html#6401" class="Bound"
       >&#915;</a
-      ><a name="6432"
+      ><a name="6435"
       > </a
-      ><a name="6433" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6436" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6434"
+      ><a name="6437"
       > </a
-      ><a name="6435" href="Stlc.html#6402" class="Bound"
+      ><a name="6438" href="Stlc.html#6405" class="Bound"
       >M</a
-      ><a name="6436"
+      ><a name="6439"
       > </a
-      ><a name="6437" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6440" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6438"
+      ><a name="6441"
       > </a
-      ><a name="6439" href="Stlc.html#6406" class="Bound"
+      ><a name="6442" href="Stlc.html#6409" class="Bound"
       >A</a
-      ><a name="6440"
+      ><a name="6443"
       > </a
-      ><a name="6441" class="Symbol"
+      ><a name="6444" class="Symbol"
       >&#8594;</a
-      ><a name="6442"
+      ><a name="6445"
       >
     </a
-      ><a name="6447" href="Stlc.html#6398" class="Bound"
+      ><a name="6450" href="Stlc.html#6401" class="Bound"
       >&#915;</a
-      ><a name="6448"
+      ><a name="6451"
       > </a
-      ><a name="6449" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6452" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6450"
+      ><a name="6453"
       > </a
-      ><a name="6451" href="Stlc.html#6404" class="Bound"
+      ><a name="6454" href="Stlc.html#6407" class="Bound"
       >N</a
-      ><a name="6452"
+      ><a name="6455"
       > </a
-      ><a name="6453" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6456" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6454"
+      ><a name="6457"
       > </a
-      ><a name="6455" href="Stlc.html#6406" class="Bound"
+      ><a name="6458" href="Stlc.html#6409" class="Bound"
       >A</a
-      ><a name="6456"
+      ><a name="6459"
       > </a
-      ><a name="6457" class="Symbol"
+      ><a name="6460" class="Symbol"
       >&#8594;</a
-      ><a name="6458"
+      ><a name="6461"
       >
     </a
-      ><a name="6463" href="Stlc.html#6398" class="Bound"
+      ><a name="6466" href="Stlc.html#6401" class="Bound"
       >&#915;</a
-      ><a name="6464"
+      ><a name="6467"
       > </a
-      ><a name="6465" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6468" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6466"
-      > </a
-      ><a name="6467" href="Stlc.html#3609" class="InductiveConstructor Operator"
-      >if</a
       ><a name="6469"
       > </a
-      ><a name="6470" href="Stlc.html#6400" class="Bound"
+      ><a name="6470" href="Stlc.html#3612" class="InductiveConstructor Operator"
+      >if</a
+      ><a name="6472"
+      > </a
+      ><a name="6473" href="Stlc.html#6403" class="Bound"
       >L</a
-      ><a name="6471"
+      ><a name="6474"
       > </a
-      ><a name="6472" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="6475" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >then</a
-      ><a name="6476"
+      ><a name="6479"
       > </a
-      ><a name="6477" href="Stlc.html#6402" class="Bound"
+      ><a name="6480" href="Stlc.html#6405" class="Bound"
       >M</a
-      ><a name="6478"
+      ><a name="6481"
       > </a
-      ><a name="6479" href="Stlc.html#3609" class="InductiveConstructor Operator"
+      ><a name="6482" href="Stlc.html#3612" class="InductiveConstructor Operator"
       >else</a
-      ><a name="6483"
+      ><a name="6486"
       > </a
-      ><a name="6484" href="Stlc.html#6404" class="Bound"
+      ><a name="6487" href="Stlc.html#6407" class="Bound"
       >N</a
-      ><a name="6485"
+      ><a name="6488"
       > </a
-      ><a name="6486" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6489" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6487"
+      ><a name="6490"
       > </a
-      ><a name="6488" href="Stlc.html#6406" class="Bound"
+      ><a name="6491" href="Stlc.html#6409" class="Bound"
       >A</a
       >
 
@@ -3553,205 +3553,205 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
 
 <pre class="Agda">
 
-<a name="6548" href="Stlc.html#6548" class="Function"
+<a name="6551" href="Stlc.html#6551" class="Function"
       >typing&#8321;</a
-      ><a name="6555"
+      ><a name="6558"
       > </a
-      ><a name="6556" class="Symbol"
+      ><a name="6559" class="Symbol"
       >:</a
-      ><a name="6557"
+      ><a name="6560"
       > </a
-      ><a name="6558" href="Maps.html#10265" class="Function"
+      ><a name="6561" href="Maps.html#10265" class="Function"
       >&#8709;</a
-      ><a name="6559"
+      ><a name="6562"
       > </a
-      ><a name="6560" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6563" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6561"
+      ><a name="6564"
       > </a
-      ><a name="6562" href="Stlc.html#3904" class="Function"
+      ><a name="6565" href="Stlc.html#3907" class="Function"
       >not</a
-      ><a name="6565"
+      ><a name="6568"
       > </a
-      ><a name="6566" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6569" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6567"
+      ><a name="6570"
       > </a
-      ><a name="6568" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6571" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6569"
+      ><a name="6572"
       > </a
-      ><a name="6570" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      ><a name="6573" href="Stlc.html#2550" class="InductiveConstructor Operator"
       >&#8658;</a
-      ><a name="6571"
+      ><a name="6574"
       > </a
-      ><a name="6572" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6575" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6573"
+      ><a name="6576"
       >
 </a
-      ><a name="6574" href="Stlc.html#6548" class="Function"
+      ><a name="6577" href="Stlc.html#6551" class="Function"
       >typing&#8321;</a
-      ><a name="6581"
+      ><a name="6584"
       > </a
-      ><a name="6582" class="Symbol"
+      ><a name="6585" class="Symbol"
       >=</a
-      ><a name="6583"
+      ><a name="6586"
       > </a
-      ><a name="6584" href="Stlc.html#6165" class="InductiveConstructor"
+      ><a name="6587" href="Stlc.html#6168" class="InductiveConstructor"
       >&#8658;-I</a
-      ><a name="6587"
+      ><a name="6590"
       > </a
-      ><a name="6588" class="Symbol"
+      ><a name="6591" class="Symbol"
       >(</a
-      ><a name="6589" href="Stlc.html#6389" class="InductiveConstructor"
+      ><a name="6592" href="Stlc.html#6392" class="InductiveConstructor"
       >&#120121;-E</a
-      ><a name="6592"
+      ><a name="6595"
       > </a
-      ><a name="6593" class="Symbol"
+      ><a name="6596" class="Symbol"
       >(</a
-      ><a name="6594" href="Stlc.html#6111" class="InductiveConstructor"
+      ><a name="6597" href="Stlc.html#6114" class="InductiveConstructor"
       >Ax</a
-      ><a name="6596"
+      ><a name="6599"
       > </a
-      ><a name="6597" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6600" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="6601" class="Symbol"
+      ><a name="6604" class="Symbol"
       >)</a
-      ><a name="6602"
+      ><a name="6605"
       > </a
-      ><a name="6603" href="Stlc.html#6354" class="InductiveConstructor"
+      ><a name="6606" href="Stlc.html#6357" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
-      ><a name="6607"
+      ><a name="6610"
       > </a
-      ><a name="6608" href="Stlc.html#6320" class="InductiveConstructor"
+      ><a name="6611" href="Stlc.html#6323" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
-      ><a name="6612" class="Symbol"
+      ><a name="6615" class="Symbol"
       >)</a
-      ><a name="6613"
+      ><a name="6616"
       >
 
 </a
-      ><a name="6615" href="Stlc.html#6615" class="Function"
+      ><a name="6618" href="Stlc.html#6618" class="Function"
       >typing&#8322;</a
-      ><a name="6622"
+      ><a name="6625"
       > </a
-      ><a name="6623" class="Symbol"
+      ><a name="6626" class="Symbol"
       >:</a
-      ><a name="6624"
+      ><a name="6627"
       > </a
-      ><a name="6625" href="Maps.html#10265" class="Function"
+      ><a name="6628" href="Maps.html#10265" class="Function"
       >&#8709;</a
-      ><a name="6626"
+      ><a name="6629"
       > </a
-      ><a name="6627" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6630" href="Stlc.html#6070" class="Datatype Operator"
       >&#8866;</a
-      ><a name="6628"
+      ><a name="6631"
       > </a
-      ><a name="6629" href="Stlc.html#3908" class="Function"
+      ><a name="6632" href="Stlc.html#3911" class="Function"
       >two</a
-      ><a name="6632"
+      ><a name="6635"
       > </a
-      ><a name="6633" href="Stlc.html#6067" class="Datatype Operator"
+      ><a name="6636" href="Stlc.html#6070" class="Datatype Operator"
       >&#8758;</a
-      ><a name="6634"
-      > </a
-      ><a name="6635" class="Symbol"
-      >(</a
-      ><a name="6636" href="Stlc.html#2577" class="InductiveConstructor"
-      >&#120121;</a
       ><a name="6637"
       > </a
-      ><a name="6638" href="Stlc.html#2550" class="InductiveConstructor Operator"
-      >&#8658;</a
-      ><a name="6639"
-      > </a
-      ><a name="6640" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6638" class="Symbol"
+      >(</a
+      ><a name="6639" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6641" class="Symbol"
-      >)</a
+      ><a name="6640"
+      > </a
+      ><a name="6641" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      >&#8658;</a
       ><a name="6642"
       > </a
-      ><a name="6643" href="Stlc.html#2550" class="InductiveConstructor Operator"
-      >&#8658;</a
-      ><a name="6644"
-      > </a
-      ><a name="6645" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6643" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6646"
+      ><a name="6644" class="Symbol"
+      >)</a
+      ><a name="6645"
       > </a
-      ><a name="6647" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      ><a name="6646" href="Stlc.html#2550" class="InductiveConstructor Operator"
       >&#8658;</a
-      ><a name="6648"
+      ><a name="6647"
       > </a
-      ><a name="6649" href="Stlc.html#2577" class="InductiveConstructor"
+      ><a name="6648" href="Stlc.html#2577" class="InductiveConstructor"
       >&#120121;</a
-      ><a name="6650"
+      ><a name="6649"
+      > </a
+      ><a name="6650" href="Stlc.html#2550" class="InductiveConstructor Operator"
+      >&#8658;</a
+      ><a name="6651"
+      > </a
+      ><a name="6652" href="Stlc.html#2577" class="InductiveConstructor"
+      >&#120121;</a
+      ><a name="6653"
       >
 </a
-      ><a name="6651" href="Stlc.html#6615" class="Function"
+      ><a name="6654" href="Stlc.html#6618" class="Function"
       >typing&#8322;</a
-      ><a name="6658"
+      ><a name="6661"
       > </a
-      ><a name="6659" class="Symbol"
+      ><a name="6662" class="Symbol"
       >=</a
-      ><a name="6660"
+      ><a name="6663"
       > </a
-      ><a name="6661" href="Stlc.html#6165" class="InductiveConstructor"
+      ><a name="6664" href="Stlc.html#6168" class="InductiveConstructor"
       >&#8658;-I</a
-      ><a name="6664"
+      ><a name="6667"
       > </a
-      ><a name="6665" class="Symbol"
+      ><a name="6668" class="Symbol"
       >(</a
-      ><a name="6666" href="Stlc.html#6165" class="InductiveConstructor"
+      ><a name="6669" href="Stlc.html#6168" class="InductiveConstructor"
       >&#8658;-I</a
-      ><a name="6669"
+      ><a name="6672"
       > </a
-      ><a name="6670" class="Symbol"
+      ><a name="6673" class="Symbol"
       >(</a
-      ><a name="6671" href="Stlc.html#6242" class="InductiveConstructor"
+      ><a name="6674" href="Stlc.html#6245" class="InductiveConstructor"
       >&#8658;-E</a
-      ><a name="6674"
+      ><a name="6677"
       > </a
-      ><a name="6675" class="Symbol"
+      ><a name="6678" class="Symbol"
       >(</a
-      ><a name="6676" href="Stlc.html#6111" class="InductiveConstructor"
+      ><a name="6679" href="Stlc.html#6114" class="InductiveConstructor"
       >Ax</a
-      ><a name="6678"
+      ><a name="6681"
       > </a
-      ><a name="6679" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6682" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="6683" class="Symbol"
+      ><a name="6686" class="Symbol"
       >)</a
-      ><a name="6684"
+      ><a name="6687"
       > </a
-      ><a name="6685" class="Symbol"
+      ><a name="6688" class="Symbol"
       >(</a
-      ><a name="6686" href="Stlc.html#6242" class="InductiveConstructor"
+      ><a name="6689" href="Stlc.html#6245" class="InductiveConstructor"
       >&#8658;-E</a
-      ><a name="6689"
+      ><a name="6692"
       > </a
-      ><a name="6690" class="Symbol"
+      ><a name="6693" class="Symbol"
       >(</a
-      ><a name="6691" href="Stlc.html#6111" class="InductiveConstructor"
+      ><a name="6694" href="Stlc.html#6114" class="InductiveConstructor"
       >Ax</a
-      ><a name="6693"
+      ><a name="6696"
       > </a
-      ><a name="6694" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6697" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="6698" class="Symbol"
+      ><a name="6701" class="Symbol"
       >)</a
-      ><a name="6699"
+      ><a name="6702"
       > </a
-      ><a name="6700" class="Symbol"
+      ><a name="6703" class="Symbol"
       >(</a
-      ><a name="6701" href="Stlc.html#6111" class="InductiveConstructor"
+      ><a name="6704" href="Stlc.html#6114" class="InductiveConstructor"
       >Ax</a
-      ><a name="6703"
+      ><a name="6706"
       > </a
-      ><a name="6704" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="6707" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="6708" class="Symbol"
+      ><a name="6711" class="Symbol"
       >))))</a
       >
 
@@ -3785,7 +3785,7 @@ outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
     ?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹
 
 Again we fill in the three holes by typing C-c C-r in each. Agda observes
-that `\` x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
+that `` ` x ``, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
 `𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
 that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
 hole. After filling in all holes, the term is as above.

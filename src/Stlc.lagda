@@ -70,7 +70,7 @@ data Type : Set where
 \end{code}
 
 Terms have six constructs. Three are for the core lambda calculus:
-  * Variables, `\` x`
+  * Variables, `` ` x ``
   * Abstractions, `λ[ x ∶ A ] N`
   * Applications, `L · M`
 and three are for the base type, booleans:
@@ -285,7 +285,7 @@ outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
     ?2 : ∅ , x ∶ 𝔹 ⊢ true ∶ 𝔹
 
 Again we fill in the three holes by typing C-c C-r in each. Agda observes
-that `\` x`, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
+that `` ` x ``, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
 `𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
 that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
 hole. After filling in all holes, the term is as above.

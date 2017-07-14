@@ -266,7 +266,7 @@ _Proof_: We show, by induction on the proof that `x` appears
   free in `M`, that, for all contexts `Γ`, if `M` is well
   typed under `Γ`, then `Γ` assigns some type to `x`.
 
-  - If the last rule used was `free-\``, then `M = \` x`, and from
+  - If the last rule used was `` free-` ``, then `M = `` `x ``, and from
     the assumption that `M` is well typed under `Γ` we have
     immediately that `Γ` assigns a type to `x`.
 
@@ -452,7 +452,7 @@ we show that if `∅ ⊢ V ∶ A` then `Γ ⊢ N [ x := V ] ∶ B`.
   - If `N` is a variable there are two cases to consider,
     depending on whether `N` is `x` or some other variable.
 
-      - If `N = \` x`, then from `Γ , x ∶ A ⊢ x ∶ B`
+      - If `N = `` `x ``, then from `Γ , x ∶ A ⊢ x ∶ B`
         we know that looking up `x` in `Γ , x : A` gives
         `just B`, but we already know it gives `just A`;
         applying injectivity for `just` we conclude that `A ≡ B`.
