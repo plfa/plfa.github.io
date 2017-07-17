@@ -779,7 +779,7 @@ typing₂ : ∅ ⊢ two ∶ (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹
 typing₂ = ⇒-I (⇒-I (⇒-E (Ax refl) (⇒-E (Ax refl) (Ax refl))))
 \end{code}
 
-## Interaction with Agda
+#### Interaction with Agda
 
 Construction of a type derivation is best done interactively.
 Start with the declaration:
