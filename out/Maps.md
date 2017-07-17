@@ -32,7 +32,8 @@ much difference, though, because we've been careful to name our
 own definitions and theorems the same as their counterparts in the
 standard library, wherever they overlap.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="1490" class="Keyword"
       >open</a
       ><a name="1494"
@@ -217,7 +218,8 @@ standard library, wherever they overlap.
       ><a name="1800" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 Documentation for the standard library can be found at
 <https://agda.github.io/agda-stdlib/>.
@@ -229,7 +231,8 @@ maps.  For this purpose, we again use the type `Id` from the
 [Lists](sf/Lists.html) chapter.  To make this chapter self contained,
 we repeat its definition here.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="2166" class="Keyword"
       >data</a
       ><a name="2170"
@@ -270,11 +273,13 @@ we repeat its definition here.
       ><a name="2197" href="Maps.html#2171" class="Datatype"
       >Id</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 We recall a standard fact of logic.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="2262" href="Maps.html#2262" class="Function"
       >contrapositive</a
       ><a name="2276"
@@ -423,12 +428,14 @@ We recall a standard fact of logic.
       ><a name="2374" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 Using the above, we can decide equality of two identifiers
 by deciding equality on the underlying strings.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="2509" href="Maps.html#2509" class="Function Operator"
       >_&#8799;_</a
       ><a name="2512"
@@ -706,7 +713,8 @@ by deciding equality on the underlying strings.
       ><a name="2737" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 ## Total Maps
 
@@ -727,7 +735,8 @@ We build partial maps in two steps.  First, we define a type of
 _total maps_ that return a default value when we look up a key
 that is not present in the map.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="3573" href="Maps.html#3573" class="Function"
       >TotalMap</a
       ><a name="3581"
@@ -772,12 +781,14 @@ that is not present in the map.
       ><a name="3612" href="Maps.html#3603" class="Bound"
       >A</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 Intuitively, a total map over anﬁ element type `A` _is_ just a
 function that can be used to look up ids, yielding `A`s.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="3760" class="Keyword"
       >module</a
       ><a name="3766"
@@ -789,13 +800,15 @@ function that can be used to look up ids, yielding `A`s.
       ><a name="3776" class="Keyword"
       >where</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 The function `always` yields a total map given a
 default element; this map always returns the default element when
 applied to any id.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="3944" href="Maps.html#3944" class="Function"
       >always</a
       ><a name="3950"
@@ -856,13 +869,15 @@ applied to any id.
       ><a name="3991" href="Maps.html#3985" class="Bound"
       >v</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 More interesting is the update function, which (as before) takes
 a map `ρ`, a key `x`, and a value `v` and returns a new map that
 takes `x` to `v` and takes every other key to whatever `ρ` does.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="4216" class="Keyword"
       >infixl</a
       ><a name="4222"
@@ -1035,7 +1050,8 @@ takes `x` to `v` and takes every other key to whatever `ρ` does.
       ><a name="4353" href="Maps.html#4300" class="Bound"
       >y</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 This definition is a nice example of higher-order programming.
 The update function takes a _function_ `ρ` and yields a new
@@ -1044,7 +1060,8 @@ function that behaves like the desired map.
 For example, we can build a map taking ids to naturals, where `x`
 maps to 42, `y` maps to 69, and every other key maps to 0, as follows:
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="4688" class="Keyword"
       >module</a
       ><a name="4694"
@@ -1313,7 +1330,8 @@ maps to 42, `y` maps to 69, and every other key maps to 0, as follows:
       ><a name="4935" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 This completes the definition of total maps.  Note that we don't
 need to define a `find` operation because it is just function
@@ -1327,7 +1345,8 @@ the lemmas!
 #### Exercise: 1 star, optional (apply-always)
 The `always` map returns its default element for all keys:
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="5411" class="Keyword"
       >postulate</a
       ><a name="5420"
@@ -1408,10 +1427,12 @@ The `always` map returns its default element for all keys:
       ><a name="5478" href="Maps.html#5447" class="Bound"
       >v</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 <div class="hidden">
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="5528" href="Maps.html#5528" class="Function"
       >apply-always&#8242;</a
       ><a name="5541"
@@ -1508,7 +1529,8 @@ The `always` map returns its default element for all keys:
       ><a name="5606" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-{% endraw %}</pre>
+
+</pre>
 </div>
 
 #### Exercise: 2 stars, optional (update-eq)
@@ -1516,7 +1538,8 @@ Next, if we update a map `ρ` at a key `x` with a new value `v`
 and then look up `x` in the map resulting from the update, we get
 back `v`:
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="5830" class="Keyword"
       >postulate</a
       ><a name="5839"
@@ -1634,10 +1657,12 @@ back `v`:
       ><a name="5928" href="Maps.html#5889" class="Bound"
       >v</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 <div class="hidden">
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="5978" href="Maps.html#5978" class="Function"
       >update-eq&#8242;</a
       ><a name="5988"
@@ -1845,7 +1870,8 @@ back `v`:
       ><a name="6151" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
+
+</pre>
 </div>
 
 #### Exercise: 2 stars, optional (update-neq)
@@ -1853,7 +1879,8 @@ On the other hand, if we update a map `m` at a key `x` and
 then look up a _different_ key `y` in the resulting map, we get
 the same result that `m` would have given:
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="6400" href="Maps.html#6400" class="Function"
       >update-neq</a
       ><a name="6410"
@@ -2105,12 +2132,14 @@ the same result that `m` would have given:
       ><a name="6594" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 For the following lemmas, since maps are represented by functions, to
 show two maps equal we will need to postulate extensionality.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="6759" class="Keyword"
       >postulate</a
       ><a name="6768"
@@ -2221,7 +2250,8 @@ show two maps equal we will need to postulate extensionality.
       ><a name="6849" href="Maps.html#6805" class="Bound"
       >&#961;&#8242;</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 #### Exercise: 2 stars, optional (update-shadow)
 If we update a map `ρ` at a key `x` with a value `v` and then
@@ -2230,7 +2260,8 @@ resulting map behaves the same (gives the same result when applied
 to any key) as the simpler map obtained by performing just
 the second update on `ρ`:
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="7205" class="Keyword"
       >postulate</a
       ><a name="7214"
@@ -2384,10 +2415,12 @@ the second update on `ρ`:
       ><a name="7330" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 <div class="hidden">
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="7380" href="Maps.html#7380" class="Function"
       >update-shadow&#8242;</a
       ><a name="7394"
@@ -2770,7 +2803,8 @@ the second update on `ρ`:
       ><a name="7702" href="Maps.html#7676" class="Bound"
       >x&#8802;y</a
       >
-{% endraw %}</pre>
+
+</pre>
 </div>
 
 #### Exercise: 2 stars (update-same)
@@ -2778,7 +2812,8 @@ Prove the following theorem, which states that if we update a map `ρ` to
 assign key `x` the same value as it already has in `ρ`, then the
 result is equal to `ρ`:
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="7940" class="Keyword"
       >postulate</a
       ><a name="7949"
@@ -2879,10 +2914,12 @@ result is equal to `ρ`:
       ><a name="8018" href="Maps.html#7975" class="Bound"
       >&#961;</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 <div class="hidden">
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="8068" href="Maps.html#8068" class="Function"
       >update-same&#8242;</a
       ><a name="8080"
@@ -3148,7 +3185,8 @@ result is equal to `ρ`:
       ><a name="8299" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-{% endraw %}</pre>
+
+</pre>
 </div>
 
 #### Exercise: 3 stars, recommended (update-permute)
@@ -3156,7 +3194,8 @@ Prove one final property of the `update` function: If we update a map
 `m` at two distinct keys, it doesn't matter in which order we do the
 updates.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="8540" class="Keyword"
       >postulate</a
       ><a name="8549"
@@ -3370,10 +3409,12 @@ updates.
       ><a name="8697" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 <div class="hidden">
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="8747" href="Maps.html#8747" class="Function"
       >update-permute&#8242;</a
       ><a name="8762"
@@ -4044,11 +4085,13 @@ updates.
       ><a name="9312" class="Symbol"
       >))</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 And a slightly different version of the same proof.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="9399" href="Maps.html#9399" class="Function"
       >update-permute&#8242;&#8242;</a
       ><a name="9415"
@@ -4640,7 +4683,8 @@ And a slightly different version of the same proof.
       ><a name="9895" class="Symbol"
       >))</a
       >
-{% endraw %}</pre>
+
+</pre>
 </div>
 
 ## Partial maps
@@ -4649,7 +4693,8 @@ Finally, we define _partial maps_ on top of total maps.  A partial
 map with elements of type `A` is simply a total map with elements
 of type `Maybe A` and default element `nothing`.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
 <a name="10132" href="Maps.html#10132" class="Function"
       >PartialMap</a
       ><a name="10142"
@@ -4698,9 +4743,11 @@ of type `Maybe A` and default element `nothing`.
       ><a name="10187" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
 <a name="10214" class="Keyword"
       >module</a
       ><a name="10220"
@@ -4712,9 +4759,11 @@ of type `Maybe A` and default element `nothing`.
       ><a name="10232" class="Keyword"
       >where</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="10265" href="Maps.html#10265" class="Function"
       >&#8709;</a
       ><a name="10266"
@@ -4763,9 +4812,11 @@ of type `Maybe A` and default element `nothing`.
       ><a name="10312" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
       >nothing</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="10347" class="Keyword"
       >infixl</a
       ><a name="10353"
@@ -4912,11 +4963,13 @@ of type `Maybe A` and default element `nothing`.
       ><a name="10473" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
+
+</pre>
 
 We now lift all of the basic lemmas about total maps to partial maps.
 
-<pre class="Agda">{% raw %}
+<pre class="Agda">
+
   <a name="10573" href="Maps.html#10573" class="Function"
       >apply-&#8709;</a
       ><a name="10580"
@@ -5013,9 +5066,11 @@ We now lift all of the basic lemmas about total maps to partial maps.
       ><a name="10667" href="Maps.html#10632" class="Bound"
       >x</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="10696" href="Maps.html#10696" class="Function"
       >update-eq</a
       ><a name="10705"
@@ -5177,9 +5232,11 @@ We now lift all of the basic lemmas about total maps to partial maps.
       ><a name="10837" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="10866" href="Maps.html#10866" class="Function"
       >update-neq</a
       ><a name="10876"
@@ -5389,9 +5446,11 @@ We now lift all of the basic lemmas about total maps to partial maps.
       ><a name="11035" href="Maps.html#10994" class="Bound"
       >x&#8802;y</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="11066" href="Maps.html#11066" class="Function"
       >update-shadow</a
       ><a name="11079"
@@ -5601,9 +5660,11 @@ We now lift all of the basic lemmas about total maps to partial maps.
       ><a name="11248" class="Symbol"
       >)</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="11277" href="Maps.html#11277" class="Function"
       >update-same</a
       ><a name="11288"
@@ -5786,9 +5847,11 @@ We now lift all of the basic lemmas about total maps to partial maps.
       ><a name="11462" href="Maps.html#11411" class="Bound"
       >x</a
       >
-{% endraw %}</pre>
 
-<pre class="Agda">{% raw %}
+</pre>
+
+<pre class="Agda">
+
   <a name="11491" href="Maps.html#11491" class="Function"
       >update-permute</a
       ><a name="11505"
@@ -6074,4 +6137,259 @@ We now lift all of the basic lemmas about total maps to partial maps.
       ><a name="11718" href="Maps.html#11664" class="Bound"
       >x&#8802;y</a
       >
-{% endraw %}</pre>
+
+</pre>
+
+We will also need the following basic facts about the `Maybe` type.
+
+<pre class="Agda">
+
+  <a name="11818" href="Maps.html#11818" class="Function"
+      >just&#8802;nothing</a
+      ><a name="11830"
+      > </a
+      ><a name="11831" class="Symbol"
+      >:</a
+      ><a name="11832"
+      > </a
+      ><a name="11833" class="Symbol"
+      >&#8704;</a
+      ><a name="11834"
+      > </a
+      ><a name="11835" class="Symbol"
+      >{</a
+      ><a name="11836" href="Maps.html#11836" class="Bound"
+      >X</a
+      ><a name="11837"
+      > </a
+      ><a name="11838" class="Symbol"
+      >:</a
+      ><a name="11839"
+      > </a
+      ><a name="11840" class="PrimitiveType"
+      >Set</a
+      ><a name="11843" class="Symbol"
+      >}</a
+      ><a name="11844"
+      > </a
+      ><a name="11845" class="Symbol"
+      >&#8594;</a
+      ><a name="11846"
+      > </a
+      ><a name="11847" class="Symbol"
+      >&#8704;</a
+      ><a name="11848"
+      > </a
+      ><a name="11849" class="Symbol"
+      >{</a
+      ><a name="11850" href="Maps.html#11850" class="Bound"
+      >x</a
+      ><a name="11851"
+      > </a
+      ><a name="11852" class="Symbol"
+      >:</a
+      ><a name="11853"
+      > </a
+      ><a name="11854" href="Maps.html#11836" class="Bound"
+      >X</a
+      ><a name="11855" class="Symbol"
+      >}</a
+      ><a name="11856"
+      > </a
+      ><a name="11857" class="Symbol"
+      >&#8594;</a
+      ><a name="11858"
+      > </a
+      ><a name="11859" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#414" class="Function Operator"
+      >&#172;</a
+      ><a name="11860"
+      > </a
+      ><a name="11861" class="Symbol"
+      >(</a
+      ><a name="11862" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      >_&#8801;_</a
+      ><a name="11865"
+      > </a
+      ><a name="11866" class="Symbol"
+      >{</a
+      ><a name="11867" class="Argument"
+      >A</a
+      ><a name="11868"
+      > </a
+      ><a name="11869" class="Symbol"
+      >=</a
+      ><a name="11870"
+      > </a
+      ><a name="11871" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#335" class="Datatype"
+      >Maybe</a
+      ><a name="11876"
+      > </a
+      ><a name="11877" href="Maps.html#11836" class="Bound"
+      >X</a
+      ><a name="11878" class="Symbol"
+      >}</a
+      ><a name="11879"
+      > </a
+      ><a name="11880" class="Symbol"
+      >(</a
+      ><a name="11881" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      >just</a
+      ><a name="11885"
+      > </a
+      ><a name="11886" href="Maps.html#11850" class="Bound"
+      >x</a
+      ><a name="11887" class="Symbol"
+      >)</a
+      ><a name="11888"
+      > </a
+      ><a name="11889" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor"
+      >nothing</a
+      ><a name="11896" class="Symbol"
+      >)</a
+      ><a name="11897"
+      >
+  </a
+      ><a name="11900" href="Maps.html#11818" class="Function"
+      >just&#8802;nothing</a
+      ><a name="11912"
+      > </a
+      ><a name="11913" class="Symbol"
+      >()</a
+      ><a name="11915"
+      >
+
+  </a
+      ><a name="11919" href="Maps.html#11919" class="Function"
+      >just-injective</a
+      ><a name="11933"
+      > </a
+      ><a name="11934" class="Symbol"
+      >:</a
+      ><a name="11935"
+      > </a
+      ><a name="11936" class="Symbol"
+      >&#8704;</a
+      ><a name="11937"
+      > </a
+      ><a name="11938" class="Symbol"
+      >{</a
+      ><a name="11939" href="Maps.html#11939" class="Bound"
+      >X</a
+      ><a name="11940"
+      > </a
+      ><a name="11941" class="Symbol"
+      >:</a
+      ><a name="11942"
+      > </a
+      ><a name="11943" class="PrimitiveType"
+      >Set</a
+      ><a name="11946" class="Symbol"
+      >}</a
+      ><a name="11947"
+      > </a
+      ><a name="11948" class="Symbol"
+      >{</a
+      ><a name="11949" href="Maps.html#11949" class="Bound"
+      >x</a
+      ><a name="11950"
+      > </a
+      ><a name="11951" href="Maps.html#11951" class="Bound"
+      >y</a
+      ><a name="11952"
+      > </a
+      ><a name="11953" class="Symbol"
+      >:</a
+      ><a name="11954"
+      > </a
+      ><a name="11955" href="Maps.html#11939" class="Bound"
+      >X</a
+      ><a name="11956" class="Symbol"
+      >}</a
+      ><a name="11957"
+      > </a
+      ><a name="11958" class="Symbol"
+      >&#8594;</a
+      ><a name="11959"
+      > </a
+      ><a name="11960" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      >_&#8801;_</a
+      ><a name="11963"
+      > </a
+      ><a name="11964" class="Symbol"
+      >{</a
+      ><a name="11965" class="Argument"
+      >A</a
+      ><a name="11966"
+      > </a
+      ><a name="11967" class="Symbol"
+      >=</a
+      ><a name="11968"
+      > </a
+      ><a name="11969" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#335" class="Datatype"
+      >Maybe</a
+      ><a name="11974"
+      > </a
+      ><a name="11975" href="Maps.html#11939" class="Bound"
+      >X</a
+      ><a name="11976" class="Symbol"
+      >}</a
+      ><a name="11977"
+      > </a
+      ><a name="11978" class="Symbol"
+      >(</a
+      ><a name="11979" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      >just</a
+      ><a name="11983"
+      > </a
+      ><a name="11984" href="Maps.html#11949" class="Bound"
+      >x</a
+      ><a name="11985" class="Symbol"
+      >)</a
+      ><a name="11986"
+      > </a
+      ><a name="11987" class="Symbol"
+      >(</a
+      ><a name="11988" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor"
+      >just</a
+      ><a name="11992"
+      > </a
+      ><a name="11993" href="Maps.html#11951" class="Bound"
+      >y</a
+      ><a name="11994" class="Symbol"
+      >)</a
+      ><a name="11995"
+      > </a
+      ><a name="11996" class="Symbol"
+      >&#8594;</a
+      ><a name="11997"
+      > </a
+      ><a name="11998" href="Maps.html#11949" class="Bound"
+      >x</a
+      ><a name="11999"
+      > </a
+      ><a name="12000" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      >&#8801;</a
+      ><a name="12001"
+      > </a
+      ><a name="12002" href="Maps.html#11951" class="Bound"
+      >y</a
+      ><a name="12003"
+      >
+  </a
+      ><a name="12006" href="Maps.html#11919" class="Function"
+      >just-injective</a
+      ><a name="12020"
+      > </a
+      ><a name="12021" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      >refl</a
+      ><a name="12025"
+      > </a
+      ><a name="12026" class="Symbol"
+      >=</a
+      ><a name="12027"
+      > </a
+      ><a name="12028" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      >refl</a
+      >
+
+</pre>

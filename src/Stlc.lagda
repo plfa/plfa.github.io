@@ -7,7 +7,7 @@ permalink : /Stlc
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
 variables, abstraction, and application.  It embodies the concept of
-_functional abstraction_, which shows up in almsot every programming
+_functional abstraction_, which shows up in almost every programming
 language in some form (as functions, procedures, or methods).
 The _simply-typed lambda calculus_ (or STLC) is a variant of the
 lambda calculus published by Church in 1940.  It has just the three
@@ -38,10 +38,10 @@ lists, records, subtyping, and mutable state.
 
 \begin{code}
 open import Maps using (Id; id; _≟_; PartialMap; module PartialMap)
-open PartialMap using (∅) renaming (_,_↦_ to _,_∶_)
+open PartialMap using (∅; just-injective) renaming (_,_↦_ to _,_∶_)
 open import Data.Nat using (ℕ)
 open import Data.Maybe using (Maybe; just; nothing)
-open import Relation.Nullary using (Dec; yes; no)
+open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 \end{code}
 
@@ -86,7 +86,7 @@ and three are for the base type, booleans:
 Abstraction is also called lambda abstraction, and is the construct
 from which the calculus takes its name. 
 
-With the exception of variables, each construct either constructs
+With the exception of variables, each term form either constructs
 a value of a given type (abstractions yield functions, true and
 false yield booleans) or deconstructs it (applications use functions,
 conditionals use booleans). We will see this again when we come
@@ -177,21 +177,12 @@ two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 In an abstraction `λ[ x ∶ A ] N` we call `x` the _bound_ variable
 and `N` the _body_ of the abstraction.  One of the most important
 aspects of lambda calculus is that names of bound variables are
-irrelevant.  Thus the two terms
+irrelevant.  Thus the four terms
 
-    λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
-
-and
-
-    λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y)
-
-and 
-
-    λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander)
-
-and even
-
-    λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f)
+* `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
+* `` λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y) ``
+* `` λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander) ``
+* `` λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f) ``
 
 are all considered equivalent.  This equivalence relation
 is sometimes called _alpha renaming_.
@@ -460,8 +451,8 @@ conditional, we first reduce the condition until it becomes a value;
 if the condition is true the conditional reduces to the first
 branch and if false it reduces to the second branch.a
 
-In an informal presentation of the formal semantics, the rules
-are written as follows.
+In an informal presentation of the formal semantics, 
+the rules for reduction are written as follows.
 
     L ⟹ L′
     --------------- ξ·₁
@@ -500,6 +491,8 @@ a deconstructor, in our case `λ` and `·`, or
 `if` and `true`, or `if` and `false`.
 We give them names starting with the Greek letter beta, `β`,
 and indeed such rules are traditionally called beta rules.
+
+Here are the above rules formalised in Agda.
 
 \begin{code}
 infix 10 _⟹_ 
@@ -659,20 +652,62 @@ In general, we use typing _judgements_ of the form
     Γ ⊢ M ∶ A
 
 which asserts in type environment `Γ` that term `M` has type `A`.
-Here `Γ` provides types for all the free variables in `M`.
+Environment `Γ` provides types for all the free variables in `M`.
 
 Here are three examples. 
 
+* `` ∅ , f ∶ 𝔹 ⇒ 𝔹 , x ∶ 𝔹 ⊢ ` f · (` f · ` x) ∶  𝔹 ``
+* `` ∅ , f ∶ 𝔹 ⇒ 𝔹 ⊢ (λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) ∶  𝔹 ⇒ 𝔹 ``
 * `` ∅ ⊢ (λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) ∶  (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ``
 
-* `` ∅ , f ∶ 𝔹 ⇒ 𝔹 ⊢ (λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) ∶  𝔹 ⇒ 𝔹 ``
-
-* `` ∅ , f ∶ 𝔹 ⇒ 𝔹 , x ∶ 𝔹 ⊢ ` f · (` f · ` x) ∶  𝔹 ``
-
-Environments are maps from free variables to types, built using `∅`
+Environments are partial maps from identifiers to types, built using `∅`
 for the empty map, and `Γ , x ∶ A` for the map that extends
 environment `Γ` by mapping variable `x` to type `A`.
 
+In an informal presentation of the formal semantics, 
+the rules for typing are written as follows.
+
+    Γ x ≡ A
+    ----------- Ax
+    Γ ⊢ ` x ∶ A
+
+    Γ , x ∶ A ⊢ N ∶ B
+    ------------------------ ⇒-I
+    Γ ⊢ λ[ x ∶ A ] N ∶ A ⇒ B
+
+    Γ ⊢ L ∶ A ⇒ B
+    Γ ⊢ M ∶ A
+    -------------- ⇒-E
+    Γ ⊢ L · M ∶ B
+
+    ------------- 𝔹-I₁
+    Γ ⊢ true ∶ 𝔹
+
+    -------------- 𝔹-I₂
+    Γ ⊢ false ∶ 𝔹
+
+    Γ ⊢ L : 𝔹
+    Γ ⊢ M ∶ A
+    Γ ⊢ N ∶ A
+    -------------------------- 𝔹-E
+    Γ ⊢ if L then M else N ∶ A
+
+As we will show later, the rules are deterministic, in that
+at most one rule applies to every term. 
+
+The proof rules come in pairs, with rules to introduce and to
+eliminate each connective, labeled `-I` and `-E`, respectively. As we
+read the rules from top to bottom, introduction and elimination rules
+do what they say on the tin: the first _introduces_ a formula for the
+connective, which appears in the conclusion but not in the premises;
+while the second _eliminates_ a formula for the connective, which appears in
+a premise but not in the conclusion. An introduction rule describes
+how to construct a value of the type (abstractions yield functions,
+true and false yield booleans), while an elimination rule describes
+how to deconstruct a value of the given type (applications use
+functions, conditionals use booleans).
+
+Here are the above rules formalised in Agda.
 
 \begin{code}
 Context : Set
@@ -702,7 +737,38 @@ data _⊢_∶_ : Context → Term → Type → Set where
     Γ ⊢ if L then M else N ∶ A    
 \end{code}
 
-## Example type derivations
+#### Example type derivations
+
+Here are a couple of typing examples.  First, here is how
+they would be written in an informal description of the
+formal semantics.
+
+Derivation of `not`:
+
+    ------------ Ax    ------------- 𝔹-I₂    ------------- 𝔹-I₁
+    Γ₀ ⊢ ` x ∶ 𝔹       Γ₀ ⊢ false ∶ 𝔹         Γ₀ ⊢ true ∶ 𝔹
+    ------------------------------------------------------ 𝔹-E
+    Γ₀ ⊢ if ` x then false else true ∶ 𝔹
+    --------------------------------------------------- ⇒-I
+    ∅ ⊢ λ[ x ∶ 𝔹 ] if ` x then false else true ∶ 𝔹 ⇒ 𝔹
+
+where `Γ₀ = ∅ , x ∶ 𝔹`.
+
+Derivation of `two`:
+                            ----------------- Ax     ------------ Ax
+                            Γ₂ ⊢ ` f ∶ 𝔹 ⇒ 𝔹         Γ₂ ⊢ ` x ∶ 𝔹
+    ----------------- Ax    ------------------------------------- ⇒-E
+    Γ₂ ⊢ ` f ∶ 𝔹 ⇒ 𝔹        Γ₂ ⊢ ` f · ` x ∶ 𝔹
+    -------------------------------------------  ⇒-E
+    Γ₂ ⊢ ` f · (` f · ` x) ∶ 𝔹
+    ------------------------------------------ ⇒-I
+    Γ₁ ⊢ λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ∶ 𝔹 ⇒ 𝔹
+    ---------------------------------------------------------- ⇒-I
+    ∅ ⊢ λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ∶ 𝔹 ⇒ 𝔹
+
+where `Γ₁ = ∅ , f ∶ 𝔹 ⇒ 𝔹` and `Γ₂ = ∅ , f ∶ 𝔹 ⇒ 𝔹 , x ∶ 𝔹`.
+
+Here are the above derivations formalised in Agda.
 
 \begin{code}
 typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
@@ -712,8 +778,10 @@ typing₂ : ∅ ⊢ two ∶ (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹
 typing₂ = ⇒-I (⇒-I (⇒-E (Ax refl) (⇒-E (Ax refl) (Ax refl))))
 \end{code}
 
+## Interaction with Agda
+
 Construction of a type derivation is best done interactively.
-We start with the declaration:
+Start with the declaration:
 
     typing₁ : ∅ ⊢ not ∶ 𝔹 ⇒ 𝔹
     typing₁ = ?
@@ -746,5 +814,38 @@ that `(∅ , x ∶ 𝔹) x = just 𝔹`, which can in turn be specified with a
 hole. After filling in all holes, the term is as above.
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
+
+#### Non-examples
+
+We can also show that terms are _not_ typeable.
+For example, here is a formal proof that it is not possible
+to type the term `` λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y ``.
+In other words, no type `A` is the type of this term.
+
+\begin{code}
+contradiction : ∀ {A B} → ¬ (𝔹 ≡ A ⇒ B)
+contradiction ()
+
+notyping : ∀ {A} → ¬ (∅ ⊢ λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y ∶ A)
+notyping (⇒-I (⇒-I (⇒-E (Ax Γx) (Ax Γy)))) =  contradiction (just-injective Γx)
+\end{code}
+
+#### Quiz
+
+For each of the following, given a type `A` for which it is derivable,
+or explain why there is no such `A`.
+
+1. `` ∅ , y ∶ A ⊢ λ[ x ∶ 𝔹 ] ` x ∶ 𝔹 ⇒ 𝔹 ``
+2. `` ∅ ⊢ λ[ y ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` y · ` x ∶ A ``
+3. `` ∅ ⊢ λ[ y ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` x · ` y ∶ A ``
+4. `` ∅ , x ∶ A ⊢ λ[ y : 𝔹 ⇒ 𝔹 ] `y · `x : A ``
+
+For each of the following, give type `A`, `B`, and `C` for which it is derivable,
+or explain why there are no such types.
+
+1. `` ∅ ⊢ λ[ y ∶ 𝔹 ⇒ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` y · ` x ∶ A ``
+2. `` ∅ , x ∶ A ⊢ x · x ∶ B ``
+3. `` ∅ , x ∶ A , y ∶ B ⊢ λ[ z ∶ C ] ` x · (` y · ` z) ∶ D ``
+
 
 

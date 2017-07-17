@@ -373,3 +373,13 @@ We now lift all of the basic lemmas about total maps to partial maps.
                  → x ≢ y → (ρ , x ↦ v , y ↦ w) ≡ (ρ , y ↦ w , x ↦ v)
   update-permute ρ x v y w x≢y = TotalMap.update-permute ρ x (just v) y (just w) x≢y
 \end{code}
+
+We will also need the following basic facts about the `Maybe` type.
+
+\begin{code}
+  just≢nothing : ∀ {X : Set} → ∀ {x : X} → ¬ (_≡_ {A = Maybe X} (just x) nothing)
+  just≢nothing ()
+
+  just-injective : ∀ {X : Set} {x y : X} → _≡_ {A = Maybe X} (just x) (just y) → x ≡ y
+  just-injective refl = refl
+\end{code}

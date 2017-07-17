@@ -19,7 +19,8 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; trans; sym)
 open import Maps using (Id; _≟_; PartialMap)
-open Maps.PartialMap using (∅; apply-∅; update-permute) renaming (_,_↦_ to _,_∶_)
+open Maps.PartialMap using (∅; apply-∅; update-permute; just≢nothing; just-injective)
+                     renaming (_,_↦_ to _,_∶_)
 open import Stlc
 import Data.Nat using (ℕ)
 \end{code}
@@ -320,12 +321,9 @@ postulate
 
 <div class="hidden">
 \begin{code}
-contradiction : ∀ {X : Set} → ∀ {x : X} → ¬ (_≡_ {A = Maybe X} (just x) nothing)
-contradiction ()
-
 ∅⊢-closed′ : ∀ {M A} → ∅ ⊢ M ∶ A → closed M
 ∅⊢-closed′ {M} {A} ⊢M {x} x∈M with free-lemma x∈M ⊢M
-... | (B , ∅x≡B) = contradiction (trans (sym ∅x≡B) (apply-∅ x))
+... | (B , ∅x≡B) = just≢nothing (trans (sym ∅x≡B) (apply-∅ x))
 \end{code}
 </div>
 
@@ -504,8 +502,6 @@ weaken-closed {V} {A} {Γ} ⊢V = context-lemma Γ~Γ′ ⊢V
     x∉V : ¬ (x ∈ V)
     x∉V = ∅⊢-closed ⊢V {x}
 
-just-injective : ∀ {X : Set} {x y : X} → _≡_ {A = Maybe X} (just x) (just y) → x ≡ y
-just-injective refl = refl
 \end{code}
 
 \begin{code}
