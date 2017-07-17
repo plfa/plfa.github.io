@@ -117,11 +117,11 @@ data Term : Set where
 
 We use the following special characters
 
-  ⇒  U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
-  `  U+0060: GRAVE ACCENT 
-  λ  U+03BB:  GREEK SMALL LETTER LAMBDA (\Gl or \lambda)
-  ∶  U+2236:  RATIO (\:)
-  ·  U+00B7: MIDDLE DOT (\cdot)
+    ⇒  U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
+    `  U+0060: GRAVE ACCENT 
+    λ  U+03BB:  GREEK SMALL LETTER LAMBDA (\Gl or \lambda)
+    ∶  U+2236:  RATIO (\:)
+    ·  U+00B7: MIDDLE DOT (\cdot)
 
 Note that ∶ (U+2236 RATIO) is not the same as : (U+003A COLON).
 Colon is reserved in Agda for declaring types. Everywhere that we
@@ -237,18 +237,15 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus,
 
-> `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` abbreviates `(𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)`,
-
-and similarly,
-
-> `two · not · true` abbreviates `(two · not) · true`.
+* `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` abbreviates `(𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)`
+* `two · not · true` abbreviates `(two · not) · true`.
 
 We choose the binding strength for abstractions and conditionals
 to be weaker than application. For instance,
 
-> `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) `` abbreviates
-> `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x)))) `` and not
-> `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
+* `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) `` abbreviates
+  `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x)))) `` and not
+  `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
 
 \begin{code}
 ex₁ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)
@@ -530,9 +527,9 @@ data _⟹_ : Term → Term → Set where
 
 We use the following special characters
 
-  ⟹  U+27F9: LONG RIGHTWARDS DOUBLE ARROW (\r6)
-  ξ  U+03BE: GREEK SMALL LETTER XI (\Gx or \xi)
-  β  U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
+    ⟹  U+27F9: LONG RIGHTWARDS DOUBLE ARROW (\r6)
+    ξ  U+03BE: GREEK SMALL LETTER XI (\Gx or \xi)
+    β  U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
 
 #### Quiz
 
