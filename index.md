@@ -18,6 +18,8 @@ from Coq to Agda. The authors are
   http://homepages.inf.ed.ac.uk/wadler/
   )
 
+## Contents
+
 <!--
   - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
 -->
