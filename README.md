@@ -4,7 +4,22 @@ title: About
 permalink: /about/
 ---
 
-How to host literal code.
+This is a rewrite of the text
+
+* [Software Foundations](
+  https://softwarefoundations.cis.upenn.edu/current/index.html
+  )
+
+from Coq to Agda. The authors are
+
+* [Wen Kokke](
+  https://github.com/wenkokke
+  )
+* [Philip Wadler](
+  http://homepages.inf.ed.ac.uk/wadler/
+  )
+
+== How to host literal code
 
 In directory `sf/` the following:
 
@@ -20,13 +35,13 @@ For markdown commands see [Daring Fireball](
 https://daringfireball.net/projects/markdown/syntax
 ).
 
-Important git commands:
+== Important git commands:
 
     git pull
     git commit -am "message"
     git push
 
-[Unicode abbreviations](
+== [Unicode abbreviations](
 https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
 ).
 
@@ -37,7 +52,7 @@ https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
 	x\_1   x₁
 	x\_i   xᵢ
 
-Bindings for [Agda mode](
+== Bindings for [Agda mode](
 http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
 )
 

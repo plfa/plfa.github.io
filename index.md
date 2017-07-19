@@ -3,6 +3,21 @@ title  : Table of Contents
 layout : page
 ---
  
+This is a rewrite of the text
+
+* [Software Foundations](
+  https://softwarefoundations.cis.upenn.edu/current/index.html
+  )
+
+from Coq to Agda. The authors are
+
+* [Wen Kokke](
+  https://github.com/wenkokke
+  )
+* [Philip Wadler](
+  http://homepages.inf.ed.ac.uk/wadler/
+  )
+
 <!--
   - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
 -->
