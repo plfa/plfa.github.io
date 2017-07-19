@@ -50,16 +50,16 @@ proofs and sound informal reasoning about program behavior.
 
 The other sense in which functional programming is "functional" is
 that it emphasizes the use of functions (or methods) as
-*first-class* values -- i.e., values that can be passed as
+_first-class_ values -- i.e., values that can be passed as
 arguments to other functions, returned as results, included in
 data structures, etc.  The recognition that functions can be
 treated as data in this way enables a host of useful and powerful
 idioms.
 
-Other common features of functional languages include *algebraic
-data types* and *pattern matching*, which make it easy to
+Other common features of functional languages include _algebraic
+data types_ and _pattern matching_, which make it easy to
 construct and manipulate rich data structures, and sophisticated
-*polymorphic type systems* supporting abstraction and code reuse.
+_polymorphic type systems_ supporting abstraction and code reuse.
 Agda shares all of these features.
 
 This chapter introduces the most essential elements of Agda.
@@ -67,7 +67,7 @@ This chapter introduces the most essential elements of Agda.
 ## Enumerated Types
 
 One unusual aspect of Agda is that its set of built-in
-features is *extremely* small. For example, instead of providing
+features is _extremely_ small. For example, instead of providing
 the usual palette of atomic data types (booleans, integers,
 strings, etc.), Agda offers a powerful mechanism for defining new
 data types from scratch, from which all these familiar types arise
@@ -87,7 +87,7 @@ very simple example.
 ### Days of the Week
 
 The following declaration tells Agda that we are defining
-a new set of data values -- a *type*.
+a new set of data values -- a _type_.
 
 <pre class="Agda">
 
@@ -358,7 +358,7 @@ One thing to note is that the argument and return types of
 this function are explicitly declared.  Like most functional
 programming languages, Agda can often figure out these types for
 itself when they are not given explicitly -- i.e., it performs
-*type inference* -- but we'll include them to make reading
+_type inference_ -- but we'll include them to make reading
 easier.
 
 Having defined a function, we should check that it works on
@@ -372,13 +372,13 @@ would be an excellent moment to fire up Agda and try this for yourself.
 Load this file, `Basics.lagda`, load it using `C-c C-l`, submit the
 above example to Agda, and observe the result.
 
-Second, we can record what we *expect* the result to be in the
+Second, we can record what we _expect_ the result to be in the
 form of an Agda type:
 
 <pre class="Agda">
 
-<a name="4097" href="Basics.html#4097" class="Function Operator"
-      >test_nextWeekday</a
+<a name="4097" href="Basics.html#4097" class="Function"
+      >test-nextWeekday</a
       ><a name="4113"
       > </a
       ><a name="4114" class="Symbol"
@@ -420,8 +420,8 @@ a term of the above type:
 
 <pre class="Agda">
 
-<a name="4472" href="Basics.html#4097" class="Function Operator"
-      >test_nextWeekday</a
+<a name="4472" href="Basics.html#4097" class="Function"
+      >test-nextWeekday</a
       ><a name="4488"
       > </a
       ><a name="4489" class="Symbol"
@@ -435,13 +435,13 @@ a term of the above type:
 </pre>
 
 There is no essential difference between the definition for
-`test_nextWeekday` here and the definition for `nextWeekday` above,
+`test-nextWeekday` here and the definition for `nextWeekday` above,
 except for the new symbol for equality `≡` and the constructor `refl`.
 The details of these are not important for now (we'll come back to them in
 a bit), but essentially `refl` can be read as "The assertion we've made
 can be proved by observing that both sides of the equality evaluate to the
 same thing, after some simplification."
 
-Third, we can ask Agda to *compile* some program involving our definition,
+Third, we can ask Agda to _compile_ some program involving our definition,
 This facility is very interesting, since it gives us a way to construct
-*fully certified* programs. We'll come back to this topic in later chapters.
+_fully certified_ programs. We'll come back to this topic in later chapters.

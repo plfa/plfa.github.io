@@ -20,6 +20,7 @@ and the next chapter reviews its main properties (progress and preservation).
 The new technical challenges arise from the mechanisms of
 _variable binding_ and _substitution_.
 
+<!--
 We've already seen how to formalize a language with
 variables ([Imp]({{ "Imp" | relative_url }})).
 There, however, the variables were all global.
@@ -28,6 +29,7 @@ parameters to functions, and these are _bound_ variables.
 Moreover, instead of just looking up variables in a global store,
 we'll need to reduce function applications by _substituting_
 arguments for parameters in function bodies.
+-->
 
 We choose booleans as our base type for simplicity.  At the end of the
 chapter we'll see how to add numbers as a base type, and in later
@@ -818,18 +820,29 @@ The entire process can be automated using Agsy, invoked with C-c C-a.
 
 #### Non-examples
 
-We can also show that terms are _not_ typeable.
-For example, here is a formal proof that it is not possible
-to type the term `` λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y ``.
-In other words, no type `A` is the type of this term.
+We can also show that terms are _not_ typeable.  For example, here is
+a formal proof that it is not possible to type the term `` true ·
+false ``.  In other words, no type `A` is the type of this term.  It
+cannot be typed, because doing so requires that the first term in the
+application is both a boolean and a function.
+
+\begin{code}
+notyping₂ : ∀ {A} → ¬ (∅ ⊢ true · false ∶ A)
+notyping₂ (⇒-E () _)
+\end{code}
+
+As a second example, here is a formal proof that it is not possible to
+type `` λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y `` It cannot be typed, because
+doing so requires `x` to be both boolean and a function.
 
 \begin{code}
 contradiction : ∀ {A B} → ¬ (𝔹 ≡ A ⇒ B)
 contradiction ()
 
-notyping : ∀ {A} → ¬ (∅ ⊢ λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y ∶ A)
-notyping (⇒-I (⇒-I (⇒-E (Ax Γx) (Ax Γy)))) =  contradiction (just-injective Γx)
+notyping₁ : ∀ {A} → ¬ (∅ ⊢ λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y ∶ A)
+notyping₁ (⇒-I (⇒-I (⇒-E (Ax Γx) _))) =  contradiction (just-injective Γx)
 \end{code}
+
 
 #### Quiz
 

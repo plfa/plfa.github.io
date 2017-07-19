@@ -28,8 +28,11 @@ import Data.Nat using (ℕ)
 
 ## Canonical Forms
 
+<!--
 As we saw for the simple calculus in Chapter [Types]({{ "Types" | relative_url }}),
-the first step in establishing basic properties of reduction and typing
+-->
+
+The first step in establishing basic properties of reduction and typing
 is to identify the possible _canonical forms_ (i.e., well-typed closed values)
 belonging to each type.  For function types the canonical forms are lambda-abstractions,
 while for boolean types they are values `true` and `false`.  
@@ -63,11 +66,12 @@ data Progress : Term → Set where
 progress : ∀ {M A} → ∅ ⊢ M ∶ A → Progress M
 \end{code}
 
-The proof is a relatively
-straightforward extension of the progress proof we saw in
+<!--
+The proof is a relatively straightforward extension of the progress proof we saw in
 [Types]({{ "Types" | relative_url }}).
-We give the proof in English
-first, then the formal version.
+-->
+
+We give the proof in English first, then the formal version.
 
 _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
 
@@ -157,9 +161,12 @@ substitution.  Working from top to bottom (from the high-level
 property we are actually interested in to the lowest-level
 technical lemmas), the story goes like this:
 
-  - The _preservation theorem_ is proved by induction on a typing
-    derivation, pretty much as we did in the [Types]({{ "Types" | relative_url }})
-    chapter.  The one case that is significantly different is the one for the
+  <!--
+  - The _preservation theorem_ is proved by induction on a typing derivation.
+    derivation, pretty much as we did in chapter [Types]({{ "Types" | relative_url }})
+  -->
+
+  - The one case that is significantly different is the one for the
     `βλ·` rule, whose definition uses the substitution operation.  To see that
     this step preserves typing, we need to know that the substitution itself
     does.  So we prove a ... 
@@ -589,11 +596,21 @@ preservation (𝔹-E ⊢L ⊢M ⊢N) (ξif L⟹L′) with preservation ⊢L L⟹
 
 #### Exercise: 2 stars, recommended (subject_expansion_stlc)
 
+<!--
 An exercise in the [Types]({{ "Types" | relative_url }}) chapter asked about the
 subject expansion property for the simple language of arithmetic and boolean
 expressions.  Does this property hold for STLC?  That is, is it always the case
 that, if `M ==> N` and `∅ ⊢ N ∶ A`, then `∅ ⊢ M ∶ A`?  It is easy to find a
 counter-example with conditionals, find one not involving conditionals.
+-->
+
+We say that `M` _reduces_ to `N` if `M ⟹ N`,
+and that `M` _expands_ to `N` if `N ⟹ M`.
+The preservation property is sometimes called _subject reduction_.
+Its opposite is _subject expansion_, which holds if
+`M ==> N` and `∅ ⊢ N ∶ A`, then `∅ ⊢ M ∶ A`.
+Find two counter-examples to subject expansion, one
+with conditionals and one not involving conditionals.
 
 ## Type Soundness
 
