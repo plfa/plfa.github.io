@@ -19,7 +19,9 @@ from Coq to Agda. The authors are
   http://homepages.inf.ed.ac.uk/wadler/
   )
 
-## How to host literal code
+## Instructions
+
+_How to host literate code_
 
 In directory `sf/` the following:
 
@@ -35,15 +37,15 @@ For markdown commands see [Daring Fireball](
 https://daringfireball.net/projects/markdown/syntax
 ).
 
-## Important git commands:
+_Important git commands_
 
     git pull
     git commit -am "message"
     git push
 
-## [Unicode abbreviations](
+_[Unicode abbreviations](
 https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
-).
+)_
 
     \to    →
     \u+    ⊎
@@ -52,9 +54,9 @@ https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
 	x\_1   x₁
 	x\_i   xᵢ
 
-## Bindings for [Agda mode](
+_Bindings for [Agda mode](
 http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
-)
+)_
 
     ?            create hole
     {!...!}      create holde
