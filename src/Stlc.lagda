@@ -137,7 +137,6 @@ for use later to indicate that a variable appears free in a term, and
 eschew `::` because we consider it too ugly.
 
 
-
 #### Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
@@ -179,11 +178,12 @@ two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 In an abstraction `λ[ x ∶ A ] N` we call `x` the _bound_ variable
 and `N` the _body_ of the abstraction.  One of the most important
 aspects of lambda calculus is that names of bound variables are
-irrelevant.  Thus the four terms
+irrelevant.  Thus the five terms
 
 * `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
 * `` λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y) ``
 * `` λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander) ``
+* `` λ[ 👿 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😄 ∶ 𝔹 ] ` 👿 · (` 👿 · ` 😄) ``  
 * `` λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f) ``
 
 are all considered equivalent.  This equivalence relation
@@ -236,9 +236,9 @@ Thus,
 We choose the binding strength for abstractions and conditionals
 to be weaker than application. For instance,
 
-* `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) `` abbreviates
-  `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x)))) `` and not
-  `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
+* `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
+  - abbreviates `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x)))) ``
+  - and not `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
 
 \begin{code}
 ex₁ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)

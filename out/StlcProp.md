@@ -10,8 +10,7 @@ theorem.
 
 ## Imports
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="247" class="Keyword"
       >open</a
       ><a name="251"
@@ -420,8 +419,7 @@ theorem.
       ><a name="829" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 ## Canonical Forms
@@ -435,8 +433,7 @@ is to identify the possible _canonical forms_ (i.e., well-typed closed values)
 belonging to each type.  For function types the canonical forms are lambda-abstractions,
 while for boolean types they are values `true` and `false`.  
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="1274" class="Keyword"
       >data</a
       ><a name="1278"
@@ -646,7 +643,7 @@ while for boolean types they are values `true` and `false`.
       >&#8709;</a
       ><a name="1499"
       > </a
-      ><a name="1500" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="1500" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="1501"
       > </a
@@ -654,7 +651,7 @@ while for boolean types they are values `true` and `false`.
       >L</a
       ><a name="1503"
       > </a
-      ><a name="1504" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="1504" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="1505"
       > </a
@@ -666,7 +663,7 @@ while for boolean types they are values `true` and `false`.
       >&#8594;</a
       ><a name="1509"
       > </a
-      ><a name="1510" href="Stlc.html#9535" class="Datatype"
+      ><a name="1510" href="Stlc.html#9615" class="Datatype"
       >Value</a
       ><a name="1515"
       > </a
@@ -701,7 +698,7 @@ while for boolean types they are values `true` and `false`.
       > </a
       ><a name="1554" class="Symbol"
       >(</a
-      ><a name="1555" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="1555" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="1557"
       > </a
@@ -720,7 +717,7 @@ while for boolean types they are values `true` and `false`.
       > </a
       ><a name="1581" class="Symbol"
       >(</a
-      ><a name="1582" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="1582" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="1585"
       > </a
@@ -730,7 +727,7 @@ while for boolean types they are values `true` and `false`.
       >)</a
       ><a name="1589"
       > </a
-      ><a name="1590" href="Stlc.html#9562" class="InductiveConstructor"
+      ><a name="1590" href="Stlc.html#9642" class="InductiveConstructor"
       >value-&#955;</a
       ><a name="1597"
       > </a
@@ -749,7 +746,7 @@ while for boolean types they are values `true` and `false`.
       > </a
       ><a name="1628" class="Symbol"
       >(</a
-      ><a name="1629" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="1629" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="1632"
       > </a
@@ -772,11 +769,11 @@ while for boolean types they are values `true` and `false`.
       >canonical-forms</a
       ><a name="1658"
       > </a
-      ><a name="1659" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="1659" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="1663"
       > </a
-      ><a name="1664" href="Stlc.html#9611" class="InductiveConstructor"
+      ><a name="1664" href="Stlc.html#9691" class="InductiveConstructor"
       >value-true</a
       ><a name="1674"
       > </a
@@ -793,11 +790,11 @@ while for boolean types they are values `true` and `false`.
       >canonical-forms</a
       ><a name="1707"
       > </a
-      ><a name="1708" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="1708" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="1712"
       > </a
-      ><a name="1713" href="Stlc.html#9638" class="InductiveConstructor"
+      ><a name="1713" href="Stlc.html#9718" class="InductiveConstructor"
       >value-false</a
       ><a name="1724"
       > </a
@@ -816,7 +813,7 @@ while for boolean types they are values `true` and `false`.
       > </a
       ><a name="1759" class="Symbol"
       >(</a
-      ><a name="1760" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="1760" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="1763"
       > </a
@@ -837,8 +834,7 @@ while for boolean types they are values `true` and `false`.
       ><a name="1774" class="Symbol"
       >()</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 ## Progress
 
@@ -846,8 +842,7 @@ As before, the _progress_ theorem tells us that closed, well-typed
 terms are not stuck: either a well-typed term can take a reduction
 step or it is a value.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="1973" class="Keyword"
       >data</a
       ><a name="1977"
@@ -909,7 +904,7 @@ step or it is a value.
       >M</a
       ><a name="2027"
       > </a
-      ><a name="2028" href="Stlc.html#15832" class="Datatype Operator"
+      ><a name="2028" href="Stlc.html#15912" class="Datatype Operator"
       >&#10233;</a
       ><a name="2029"
       > </a
@@ -954,7 +949,7 @@ step or it is a value.
       >&#8594;</a
       ><a name="2062"
       > </a
-      ><a name="2063" href="Stlc.html#9535" class="Datatype"
+      ><a name="2063" href="Stlc.html#9615" class="Datatype"
       >Value</a
       ><a name="2068"
       > </a
@@ -1008,7 +1003,7 @@ step or it is a value.
       >&#8709;</a
       ><a name="2107"
       > </a
-      ><a name="2108" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="2108" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="2109"
       > </a
@@ -1016,7 +1011,7 @@ step or it is a value.
       >M</a
       ><a name="2111"
       > </a
-      ><a name="2112" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="2112" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="2113"
       > </a
@@ -1035,8 +1030,7 @@ step or it is a value.
       ><a name="2127" href="StlcProp.html#2099" class="Bound"
       >M</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 <!--
 The proof is a relatively straightforward extension of the progress proof we saw in
@@ -1088,15 +1082,14 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
 
 This completes the proof.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="4017" href="StlcProp.html#2085" class="Function"
       >progress</a
       ><a name="4025"
       > </a
       ><a name="4026" class="Symbol"
       >(</a
-      ><a name="4027" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="4027" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="4029"
       > </a
@@ -1111,7 +1104,7 @@ This completes the proof.
       > </a
       ><a name="4043" class="Symbol"
       >(</a
-      ><a name="4044" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="4044" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="4047"
       > </a
@@ -1129,7 +1122,7 @@ This completes the proof.
       >done</a
       ><a name="4058"
       > </a
-      ><a name="4059" href="Stlc.html#9562" class="InductiveConstructor"
+      ><a name="4059" href="Stlc.html#9642" class="InductiveConstructor"
       >value-&#955;</a
       ><a name="4066"
       >
@@ -1140,7 +1133,7 @@ This completes the proof.
       > </a
       ><a name="4076" class="Symbol"
       >(</a
-      ><a name="4077" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="4077" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="4080"
       > </a
@@ -1193,7 +1186,7 @@ This completes the proof.
       > </a
       ><a name="4130" class="Symbol"
       >(</a
-      ><a name="4131" href="Stlc.html#15864" class="InductiveConstructor"
+      ><a name="4131" href="Stlc.html#15944" class="InductiveConstructor"
       >&#958;&#183;&#8321;</a
       ><a name="4134"
       > </a
@@ -1259,7 +1252,7 @@ This completes the proof.
       > </a
       ><a name="4201" class="Symbol"
       >(</a
-      ><a name="4202" href="Stlc.html#15917" class="InductiveConstructor"
+      ><a name="4202" href="Stlc.html#15997" class="InductiveConstructor"
       >&#958;&#183;&#8322;</a
       ><a name="4205"
       > </a
@@ -1329,7 +1322,7 @@ This completes the proof.
       > </a
       ><a name="4294" class="Symbol"
       >(</a
-      ><a name="4295" href="Stlc.html#15984" class="InductiveConstructor"
+      ><a name="4295" href="Stlc.html#16064" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
       ><a name="4298"
       > </a
@@ -1344,7 +1337,7 @@ This completes the proof.
       >progress</a
       ><a name="4315"
       > </a
-      ><a name="4316" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="4316" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="4320"
       > </a
@@ -1356,7 +1349,7 @@ This completes the proof.
       >done</a
       ><a name="4327"
       > </a
-      ><a name="4328" href="Stlc.html#9611" class="InductiveConstructor"
+      ><a name="4328" href="Stlc.html#9691" class="InductiveConstructor"
       >value-true</a
       ><a name="4338"
       >
@@ -1365,7 +1358,7 @@ This completes the proof.
       >progress</a
       ><a name="4347"
       > </a
-      ><a name="4348" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="4348" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="4352"
       > </a
@@ -1377,7 +1370,7 @@ This completes the proof.
       >done</a
       ><a name="4359"
       > </a
-      ><a name="4360" href="Stlc.html#9638" class="InductiveConstructor"
+      ><a name="4360" href="Stlc.html#9718" class="InductiveConstructor"
       >value-false</a
       ><a name="4371"
       >
@@ -1388,7 +1381,7 @@ This completes the proof.
       > </a
       ><a name="4381" class="Symbol"
       >(</a
-      ><a name="4382" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="4382" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="4385"
       > </a
@@ -1445,7 +1438,7 @@ This completes the proof.
       > </a
       ><a name="4438" class="Symbol"
       >(</a
-      ><a name="4439" href="Stlc.html#16054" class="InductiveConstructor"
+      ><a name="4439" href="Stlc.html#16134" class="InductiveConstructor"
       >&#958;if</a
       ><a name="4442"
       > </a
@@ -1509,7 +1502,7 @@ This completes the proof.
       >steps</a
       ><a name="4526"
       > </a
-      ><a name="4527" href="Stlc.html#16139" class="InductiveConstructor"
+      ><a name="4527" href="Stlc.html#16219" class="InductiveConstructor"
       >&#946;if-true</a
       ><a name="4535"
       >
@@ -1534,11 +1527,10 @@ This completes the proof.
       >steps</a
       ><a name="4565"
       > </a
-      ><a name="4566" href="Stlc.html#16192" class="InductiveConstructor"
+      ><a name="4566" href="Stlc.html#16272" class="InductiveConstructor"
       >&#946;if-false</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 This code reads neatly in part because we consider the
 `steps` option before the `done` option. We could, of course,
@@ -1553,8 +1545,7 @@ or introduce subsidiary functions.
 Show that progress can also be proved by induction on terms
 instead of induction on typing derivations.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="5223" class="Keyword"
       >postulate</a
       ><a name="5232"
@@ -1592,7 +1583,7 @@ instead of induction on typing derivations.
       >&#8709;</a
       ><a name="5258"
       > </a
-      ><a name="5259" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="5259" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="5260"
       > </a
@@ -1600,7 +1591,7 @@ instead of induction on typing derivations.
       >M</a
       ><a name="5262"
       > </a
-      ><a name="5263" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="5263" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="5264"
       > </a
@@ -1619,8 +1610,7 @@ instead of induction on typing derivations.
       ><a name="5278" href="StlcProp.html#5249" class="Bound"
       >M</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 ## Preservation
 
@@ -1679,8 +1669,7 @@ For example:
 
 Formally:
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="7745" class="Keyword"
       >data</a
       ><a name="7749"
@@ -2275,13 +2264,11 @@ Formally:
       ><a name="8133" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 A term in which no variables appear free is said to be _closed_.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="8226" href="StlcProp.html#8226" class="Function Operator"
       >_&#8713;_</a
       ><a name="8229"
@@ -2409,13 +2396,11 @@ A term in which no variables appear free is said to be _closed_.
       ><a name="8310" href="StlcProp.html#8294" class="Bound"
       >M</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 Here are proofs corresponding to the first two examples above.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="8401" href="StlcProp.html#8401" class="Function"
       >f&#8802;x</a
       ><a name="8404"
@@ -2424,7 +2409,7 @@ Here are proofs corresponding to the first two examples above.
       >:</a
       ><a name="8406"
       > </a
-      ><a name="8407" href="Stlc.html#5678" class="Function"
+      ><a name="8407" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8408"
       > </a
@@ -2432,7 +2417,7 @@ Here are proofs corresponding to the first two examples above.
       >&#8802;</a
       ><a name="8410"
       > </a
-      ><a name="8411" href="Stlc.html#5680" class="Function"
+      ><a name="8411" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8412"
       >
@@ -2455,7 +2440,7 @@ Here are proofs corresponding to the first two examples above.
       >:</a
       ><a name="8436"
       > </a
-      ><a name="8437" href="Stlc.html#5680" class="Function"
+      ><a name="8437" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8438"
       > </a
@@ -2469,7 +2454,7 @@ Here are proofs corresponding to the first two examples above.
       >&#955;[</a
       ><a name="8444"
       > </a
-      ><a name="8445" href="Stlc.html#5678" class="Function"
+      ><a name="8445" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8446"
       > </a
@@ -2501,7 +2486,7 @@ Here are proofs corresponding to the first two examples above.
       >`</a
       ><a name="8460"
       > </a
-      ><a name="8461" href="Stlc.html#5678" class="Function"
+      ><a name="8461" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8462"
       > </a
@@ -2513,7 +2498,7 @@ Here are proofs corresponding to the first two examples above.
       >`</a
       ><a name="8466"
       > </a
-      ><a name="8467" href="Stlc.html#5680" class="Function"
+      ><a name="8467" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8468" class="Symbol"
       >)</a
@@ -2558,7 +2543,7 @@ Here are proofs corresponding to the first two examples above.
       >:</a
       ><a name="8530"
       > </a
-      ><a name="8531" href="Stlc.html#5678" class="Function"
+      ><a name="8531" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8532"
       > </a
@@ -2572,7 +2557,7 @@ Here are proofs corresponding to the first two examples above.
       >&#955;[</a
       ><a name="8538"
       > </a
-      ><a name="8539" href="Stlc.html#5678" class="Function"
+      ><a name="8539" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8540"
       > </a
@@ -2604,7 +2589,7 @@ Here are proofs corresponding to the first two examples above.
       >`</a
       ><a name="8554"
       > </a
-      ><a name="8555" href="Stlc.html#5678" class="Function"
+      ><a name="8555" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8556"
       > </a
@@ -2616,7 +2601,7 @@ Here are proofs corresponding to the first two examples above.
       >`</a
       ><a name="8560"
       > </a
-      ><a name="8561" href="Stlc.html#5680" class="Function"
+      ><a name="8561" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8562" class="Symbol"
       >)</a
@@ -2652,15 +2637,13 @@ Here are proofs corresponding to the first two examples above.
       ><a name="8599" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 #### Exercise: 1 star (free-in)
 Prove formally the remaining examples given above.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="8714" class="Keyword"
       >postulate</a
       ><a name="8723"
@@ -2674,7 +2657,7 @@ Prove formally the remaining examples given above.
       >:</a
       ><a name="8741"
       > </a
-      ><a name="8742" href="Stlc.html#5680" class="Function"
+      ><a name="8742" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8743"
       > </a
@@ -2688,7 +2671,7 @@ Prove formally the remaining examples given above.
       >&#955;[</a
       ><a name="8750"
       > </a
-      ><a name="8751" href="Stlc.html#5678" class="Function"
+      ><a name="8751" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8752"
       > </a
@@ -2720,7 +2703,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8766"
       > </a
-      ><a name="8767" href="Stlc.html#5678" class="Function"
+      ><a name="8767" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8768"
       > </a
@@ -2732,7 +2715,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8772"
       > </a
-      ><a name="8773" href="Stlc.html#5680" class="Function"
+      ><a name="8773" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8774" class="Symbol"
       >)</a
@@ -2746,7 +2729,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8779"
       > </a
-      ><a name="8780" href="Stlc.html#5678" class="Function"
+      ><a name="8780" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8781" class="Symbol"
       >)</a
@@ -2761,7 +2744,7 @@ Prove formally the remaining examples given above.
       >:</a
       ><a name="8800"
       > </a
-      ><a name="8801" href="Stlc.html#5678" class="Function"
+      ><a name="8801" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8802"
       > </a
@@ -2775,7 +2758,7 @@ Prove formally the remaining examples given above.
       >&#955;[</a
       ><a name="8809"
       > </a
-      ><a name="8810" href="Stlc.html#5678" class="Function"
+      ><a name="8810" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8811"
       > </a
@@ -2807,7 +2790,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8825"
       > </a
-      ><a name="8826" href="Stlc.html#5678" class="Function"
+      ><a name="8826" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8827"
       > </a
@@ -2819,7 +2802,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8831"
       > </a
-      ><a name="8832" href="Stlc.html#5680" class="Function"
+      ><a name="8832" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8833" class="Symbol"
       >)</a
@@ -2833,7 +2816,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8838"
       > </a
-      ><a name="8839" href="Stlc.html#5678" class="Function"
+      ><a name="8839" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8840" class="Symbol"
       >)</a
@@ -2848,7 +2831,7 @@ Prove formally the remaining examples given above.
       >:</a
       ><a name="8859"
       > </a
-      ><a name="8860" href="Stlc.html#5680" class="Function"
+      ><a name="8860" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8861"
       > </a
@@ -2862,7 +2845,7 @@ Prove formally the remaining examples given above.
       >&#955;[</a
       ><a name="8867"
       > </a
-      ><a name="8868" href="Stlc.html#5678" class="Function"
+      ><a name="8868" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8869"
       > </a
@@ -2894,7 +2877,7 @@ Prove formally the remaining examples given above.
       >&#955;[</a
       ><a name="8884"
       > </a
-      ><a name="8885" href="Stlc.html#5680" class="Function"
+      ><a name="8885" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8886"
       > </a
@@ -2914,7 +2897,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8894"
       > </a
-      ><a name="8895" href="Stlc.html#5678" class="Function"
+      ><a name="8895" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8896"
       > </a
@@ -2926,7 +2909,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8900"
       > </a
-      ><a name="8901" href="Stlc.html#5680" class="Function"
+      ><a name="8901" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8902" class="Symbol"
       >)</a
@@ -2941,7 +2924,7 @@ Prove formally the remaining examples given above.
       >:</a
       ><a name="8921"
       > </a
-      ><a name="8922" href="Stlc.html#5678" class="Function"
+      ><a name="8922" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8923"
       > </a
@@ -2955,7 +2938,7 @@ Prove formally the remaining examples given above.
       >&#955;[</a
       ><a name="8929"
       > </a
-      ><a name="8930" href="Stlc.html#5678" class="Function"
+      ><a name="8930" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8931"
       > </a
@@ -2987,7 +2970,7 @@ Prove formally the remaining examples given above.
       >&#955;[</a
       ><a name="8946"
       > </a
-      ><a name="8947" href="Stlc.html#5680" class="Function"
+      ><a name="8947" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8948"
       > </a
@@ -3007,7 +2990,7 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8956"
       > </a
-      ><a name="8957" href="Stlc.html#5678" class="Function"
+      ><a name="8957" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="8958"
       > </a
@@ -3019,13 +3002,12 @@ Prove formally the remaining examples given above.
       >`</a
       ><a name="8962"
       > </a
-      ><a name="8963" href="Stlc.html#5680" class="Function"
+      ><a name="8963" href="Stlc.html#5679" class="Function"
       >x</a
       ><a name="8964" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 Although `_∈_` may appear to be a low-level technical definition,
 understanding it is crucial to understanding the properties of
@@ -3038,8 +3020,7 @@ lemma connecting free variables and typing contexts. If variable `x`
 appears free in term `M`, and if `M` is well typed in context `Γ`,
 then `Γ` must assign a type to `x`.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="9447" href="StlcProp.html#9447" class="Function"
       >free-lemma</a
       ><a name="9457"
@@ -3096,7 +3077,7 @@ then `Γ` must assign a type to `x`.
       >&#915;</a
       ><a name="9483"
       > </a
-      ><a name="9484" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="9484" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="9485"
       > </a
@@ -3104,7 +3085,7 @@ then `Γ` must assign a type to `x`.
       >M</a
       ><a name="9487"
       > </a
-      ><a name="9488" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="9488" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="9489"
       > </a
@@ -3151,8 +3132,7 @@ then `Γ` must assign a type to `x`.
       ><a name="9513" href="StlcProp.html#9498" class="Bound"
       >B</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 _Proof_: We show, by induction on the proof that `x` appears
   free in `M`, that, for all contexts `Γ`, if `M` is well
@@ -3182,8 +3162,7 @@ _Proof_: We show, by induction on the proof that `x` appears
     assigns a type to `x`, we appeal the decidable equality for names
     `_≟_`, and note that `x` and `y` are different variables.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="10962" href="StlcProp.html#9447" class="Function"
       >free-lemma</a
       ><a name="10972"
@@ -3194,7 +3173,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="10980" class="Symbol"
       >(</a
-      ><a name="10981" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="10981" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="10983"
       > </a
@@ -3241,7 +3220,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="11028" class="Symbol"
       >(</a
-      ><a name="11029" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="11029" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="11032"
       > </a
@@ -3290,7 +3269,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="11085" class="Symbol"
       >(</a
-      ><a name="11086" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="11086" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="11089"
       > </a
@@ -3339,7 +3318,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="11143" class="Symbol"
       >(</a
-      ><a name="11144" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="11144" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="11147"
       > </a
@@ -3392,7 +3371,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="11204" class="Symbol"
       >(</a
-      ><a name="11205" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="11205" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="11208"
       > </a
@@ -3445,7 +3424,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="11265" class="Symbol"
       >(</a
-      ><a name="11266" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="11266" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="11269"
       > </a
@@ -3518,7 +3497,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       > </a
       ><a name="11336" class="Symbol"
       >(</a
-      ><a name="11337" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="11337" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="11340"
       > </a
@@ -3634,8 +3613,7 @@ _Proof_: We show, by induction on the proof that `x` appears
       ><a name="11439" href="StlcProp.html#11374" class="Bound"
       >&#915;x&#8801;C</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 A subtle point: if the first argument of `free-λ` was of type
 `x ≢ y` rather than of type `y ≢ x`, then the type of the
@@ -3647,8 +3625,7 @@ typed in the empty context is closed (has no free variables).
 
 #### Exercise: 2 stars, optional (∅⊢-closed)
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="11876" class="Keyword"
       >postulate</a
       ><a name="11885"
@@ -3686,7 +3663,7 @@ typed in the empty context is closed (has no free variables).
       >&#8709;</a
       ><a name="11911"
       > </a
-      ><a name="11912" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="11912" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="11913"
       > </a
@@ -3694,7 +3671,7 @@ typed in the empty context is closed (has no free variables).
       >M</a
       ><a name="11915"
       > </a
-      ><a name="11916" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="11916" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="11917"
       > </a
@@ -3713,12 +3690,10 @@ typed in the empty context is closed (has no free variables).
       ><a name="11929" href="StlcProp.html#11903" class="Bound"
       >M</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 <div class="hidden">
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="11977" href="StlcProp.html#11977" class="Function"
       >&#8709;&#8866;-closed&#8242;</a
       ><a name="11987"
@@ -3751,7 +3726,7 @@ typed in the empty context is closed (has no free variables).
       >&#8709;</a
       ><a name="12001"
       > </a
-      ><a name="12002" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="12002" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="12003"
       > </a
@@ -3759,7 +3734,7 @@ typed in the empty context is closed (has no free variables).
       >M</a
       ><a name="12005"
       > </a
-      ><a name="12006" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="12006" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="12007"
       > </a
@@ -3894,8 +3869,7 @@ typed in the empty context is closed (has no free variables).
       ><a name="12134" class="Symbol"
       >))</a
       >
-
-</pre>
+{% endraw %}</pre>
 </div>
 
 Sometimes, when we have a proof `Γ ⊢ M ∶ A`, we will need to
@@ -3905,8 +3879,7 @@ in the context are those that appear free in `M`. So long
 as the two contexts agree on those variables, one can be
 exchanged for the other.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="12488" href="StlcProp.html#12488" class="Function"
       >context-lemma</a
       ><a name="12501"
@@ -4007,7 +3980,7 @@ exchanged for the other.
       >&#915;</a
       ><a name="12567"
       >  </a
-      ><a name="12569" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="12569" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="12570"
       > </a
@@ -4015,7 +3988,7 @@ exchanged for the other.
       >M</a
       ><a name="12572"
       > </a
-      ><a name="12573" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="12573" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="12574"
       > </a
@@ -4032,7 +4005,7 @@ exchanged for the other.
       >&#915;&#8242;</a
       ><a name="12589"
       > </a
-      ><a name="12590" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="12590" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="12591"
       > </a
@@ -4040,15 +4013,14 @@ exchanged for the other.
       >M</a
       ><a name="12593"
       > </a
-      ><a name="12594" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="12594" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="12595"
       > </a
       ><a name="12596" href="StlcProp.html#12514" class="Bound"
       >A</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
 
@@ -4094,8 +4066,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
 
   - The remaining cases are similar to `⇒-E`.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="14769" href="StlcProp.html#12488" class="Function"
       >context-lemma</a
       ><a name="14782"
@@ -4106,7 +4077,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       > </a
       ><a name="14788" class="Symbol"
       >(</a
-      ><a name="14789" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="14789" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="14791"
       > </a
@@ -4136,7 +4107,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >=</a
       ><a name="14821"
       > </a
-      ><a name="14822" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="14822" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="14824"
       > </a
@@ -4199,7 +4170,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       > </a
       ><a name="14873" class="Symbol"
       >(</a
-      ><a name="14874" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="14874" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="14877"
       > </a
@@ -4213,7 +4184,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >=</a
       ><a name="14883"
       > </a
-      ><a name="14884" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="14884" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="14887"
       > </a
@@ -4449,7 +4420,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       > </a
       ><a name="15092" class="Symbol"
       >(</a
-      ><a name="15093" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="15093" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="15096"
       > </a
@@ -4467,7 +4438,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >=</a
       ><a name="15105"
       > </a
-      ><a name="15106" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="15106" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="15109"
       > </a
@@ -4537,7 +4508,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >&#915;~&#915;&#8242;</a
       ><a name="15241"
       > </a
-      ><a name="15242" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="15242" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="15246"
       > </a
@@ -4545,7 +4516,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >=</a
       ><a name="15248"
       > </a
-      ><a name="15249" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="15249" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="15253"
       >
@@ -4558,7 +4529,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >&#915;~&#915;&#8242;</a
       ><a name="15272"
       > </a
-      ><a name="15273" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="15273" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="15277"
       > </a
@@ -4566,7 +4537,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >=</a
       ><a name="15279"
       > </a
-      ><a name="15280" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="15280" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="15284"
       >
@@ -4581,7 +4552,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       > </a
       ><a name="15304" class="Symbol"
       >(</a
-      ><a name="15305" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="15305" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="15308"
       > </a
@@ -4603,7 +4574,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       >=</a
       ><a name="15320"
       > </a
-      ><a name="15321" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="15321" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="15324"
       > </a
@@ -4692,8 +4663,7 @@ _Proof_: By induction on the derivation of `Γ ⊢ M ∶ A`.
       ><a name="15516" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 Now we come to the conceptual heart of the proof that reduction
@@ -4712,8 +4682,7 @@ and obtain a new term that still has type `B`.
 _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
 `Γ ⊢ (N [ x := V ]) ∶ B`.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="16215" href="StlcProp.html#16215" class="Function"
       >preservation-[:=]</a
       ><a name="16232"
@@ -4783,7 +4752,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >)</a
       ><a name="16281"
       > </a
-      ><a name="16282" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="16282" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="16283"
       > </a
@@ -4791,7 +4760,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >N</a
       ><a name="16285"
       > </a
-      ><a name="16286" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="16286" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="16287"
       > </a
@@ -4808,7 +4777,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >&#8709;</a
       ><a name="16310"
       > </a
-      ><a name="16311" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="16311" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="16312"
       > </a
@@ -4816,7 +4785,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >V</a
       ><a name="16314"
       > </a
-      ><a name="16315" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="16315" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="16316"
       > </a
@@ -4833,7 +4802,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >&#915;</a
       ><a name="16339"
       > </a
-      ><a name="16340" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="16340" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="16341"
       > </a
@@ -4843,7 +4812,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >N</a
       ><a name="16344"
       > </a
-      ><a name="16345" href="Stlc.html#12079" class="Function Operator"
+      ><a name="16345" href="Stlc.html#12159" class="Function Operator"
       >[</a
       ><a name="16346"
       > </a
@@ -4851,7 +4820,7 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >x</a
       ><a name="16348"
       > </a
-      ><a name="16349" href="Stlc.html#12079" class="Function Operator"
+      ><a name="16349" href="Stlc.html#12159" class="Function Operator"
       >:=</a
       ><a name="16351"
       > </a
@@ -4859,21 +4828,20 @@ _Lemma_: If `Γ , x ∶ A ⊢ N ∶ B` and `∅ ⊢ V ∶ A`, then
       >V</a
       ><a name="16353"
       > </a
-      ><a name="16354" href="Stlc.html#12079" class="Function Operator"
+      ><a name="16354" href="Stlc.html#12159" class="Function Operator"
       >]</a
       ><a name="16355" class="Symbol"
       >)</a
       ><a name="16356"
       > </a
-      ><a name="16357" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="16357" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="16358"
       > </a
       ><a name="16359" href="StlcProp.html#16246" class="Bound"
       >B</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 One technical subtlety in the statement of the lemma is that we assume
 `V` is closed; it has type `A` in the _empty_ context.  This
@@ -4941,8 +4909,7 @@ we show that if `∅ ⊢ V ∶ A` then `Γ ⊢ N [ x := V ] ∶ B`.
   - The remaining cases are similar to application.
 
 We need a couple of lemmas. A closed term can be weakened to any context, and `just` is injective.
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="19516" href="StlcProp.html#19516" class="Function"
       >weaken-closed</a
       ><a name="19529"
@@ -4979,7 +4946,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >&#8709;</a
       ><a name="19545"
       > </a
-      ><a name="19546" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="19546" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="19547"
       > </a
@@ -4987,7 +4954,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >V</a
       ><a name="19549"
       > </a
-      ><a name="19550" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="19550" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="19551"
       > </a
@@ -5003,7 +4970,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >&#915;</a
       ><a name="19557"
       > </a
-      ><a name="19558" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="19558" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="19559"
       > </a
@@ -5011,7 +4978,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >V</a
       ><a name="19561"
       > </a
-      ><a name="19562" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="19562" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="19563"
       > </a
@@ -5229,11 +5196,9 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       ><a name="19751" class="Symbol"
       >}</a
       >
+{% endraw %}</pre>
 
-</pre>
-
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="19779" href="StlcProp.html#16215" class="Function"
       >preservation-[:=]</a
       ><a name="19796"
@@ -5264,7 +5229,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       > </a
       ><a name="19809" class="Symbol"
       >(</a
-      ><a name="19810" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="19810" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="19812"
       > </a
@@ -5372,7 +5337,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >=</a
       ><a name="19944"
       >  </a
-      ><a name="19946" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="19946" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="19948"
       > </a
@@ -5465,7 +5430,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       > </a
       ><a name="20024" class="Symbol"
       >(</a
-      ><a name="20025" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="20025" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="20028"
       > </a
@@ -5530,7 +5495,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       > </a
       ><a name="20097" class="Symbol"
       >(</a
-      ><a name="20098" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="20098" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="20101"
       > </a
@@ -5766,7 +5731,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >=</a
       ><a name="20296"
       > </a
-      ><a name="20297" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="20297" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="20300"
       > </a
@@ -5824,7 +5789,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >A</a
       ><a name="20344"
       > </a
-      ><a name="20345" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="20345" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="20346"
       > </a
@@ -5832,7 +5797,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >N&#8242;</a
       ><a name="20349"
       > </a
-      ><a name="20350" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="20350" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="20351"
       > </a
@@ -5918,7 +5883,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >)</a
       ><a name="20432"
       > </a
-      ><a name="20433" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="20433" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="20434"
       > </a
@@ -5926,7 +5891,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >N&#8242;</a
       ><a name="20437"
       > </a
-      ><a name="20438" href="Stlc.html#12079" class="Function Operator"
+      ><a name="20438" href="Stlc.html#12159" class="Function Operator"
       >[</a
       ><a name="20439"
       > </a
@@ -5934,7 +5899,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >x</a
       ><a name="20441"
       > </a
-      ><a name="20442" href="Stlc.html#12079" class="Function Operator"
+      ><a name="20442" href="Stlc.html#12159" class="Function Operator"
       >:=</a
       ><a name="20444"
       > </a
@@ -5942,11 +5907,11 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >V</a
       ><a name="20446"
       > </a
-      ><a name="20447" href="Stlc.html#12079" class="Function Operator"
+      ><a name="20447" href="Stlc.html#12159" class="Function Operator"
       >]</a
       ><a name="20448"
       > </a
-      ><a name="20449" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="20449" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="20450"
       > </a
@@ -5982,7 +5947,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       > </a
       ><a name="20509" class="Symbol"
       >(</a
-      ><a name="20510" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="20510" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="20513"
       > </a
@@ -6004,7 +5969,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >=</a
       ><a name="20525"
       > </a
-      ><a name="20526" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="20526" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="20529"
       > </a
@@ -6045,7 +6010,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >preservation-[:=]</a
       ><a name="20599"
       > </a
-      ><a name="20600" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="20600" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="20604"
       > </a
@@ -6057,7 +6022,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >=</a
       ><a name="20609"
       > </a
-      ><a name="20610" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="20610" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="20614"
       >
@@ -6066,7 +6031,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >preservation-[:=]</a
       ><a name="20632"
       > </a
-      ><a name="20633" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="20633" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="20637"
       > </a
@@ -6078,7 +6043,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       >=</a
       ><a name="20642"
       > </a
-      ><a name="20643" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="20643" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="20647"
       >
@@ -6089,7 +6054,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       > </a
       ><a name="20666" class="Symbol"
       >(</a
-      ><a name="20667" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="20667" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="20670"
       > </a
@@ -6116,7 +6081,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       ><a name="20685"
       >
   </a
-      ><a name="20688" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="20688" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="20691"
       > </a
@@ -6167,8 +6132,7 @@ We need a couple of lemmas. A closed term can be weakened to any context, and `j
       ><a name="20768" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 ### Main Theorem
@@ -6178,8 +6142,7 @@ term `M` has type `A` and takes a step to `N`, then `N`
 is also a closed term with type `A`.  In other words, small-step
 reduction preserves types.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="21028" href="StlcProp.html#21028" class="Function"
       >preservation</a
       ><a name="21040"
@@ -6216,7 +6179,7 @@ reduction preserves types.
       >&#8709;</a
       ><a name="21056"
       > </a
-      ><a name="21057" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="21057" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="21058"
       > </a
@@ -6224,7 +6187,7 @@ reduction preserves types.
       >M</a
       ><a name="21060"
       > </a
-      ><a name="21061" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="21061" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="21062"
       > </a
@@ -6240,7 +6203,7 @@ reduction preserves types.
       >M</a
       ><a name="21068"
       > </a
-      ><a name="21069" href="Stlc.html#15832" class="Datatype Operator"
+      ><a name="21069" href="Stlc.html#15912" class="Datatype Operator"
       >&#10233;</a
       ><a name="21070"
       > </a
@@ -6256,7 +6219,7 @@ reduction preserves types.
       >&#8709;</a
       ><a name="21076"
       > </a
-      ><a name="21077" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="21077" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="21078"
       > </a
@@ -6264,15 +6227,14 @@ reduction preserves types.
       >N</a
       ><a name="21080"
       > </a
-      ><a name="21081" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="21081" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="21082"
       > </a
       ><a name="21083" href="StlcProp.html#21050" class="Bound"
       >A</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
 
@@ -6304,15 +6266,14 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
     - Otherwise, `L` steps by `ξif`, and the desired conclusion
       follows directly from the induction hypothesis.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="22341" href="StlcProp.html#21028" class="Function"
       >preservation</a
       ><a name="22353"
       > </a
       ><a name="22354" class="Symbol"
       >(</a
-      ><a name="22355" href="Stlc.html#21613" class="InductiveConstructor"
+      ><a name="22355" href="Stlc.html#21693" class="InductiveConstructor"
       >Ax</a
       ><a name="22357"
       > </a
@@ -6333,7 +6294,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22380" class="Symbol"
       >(</a
-      ><a name="22381" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="22381" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="22384"
       > </a
@@ -6354,13 +6315,13 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22405" class="Symbol"
       >(</a
-      ><a name="22406" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="22406" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="22409"
       > </a
       ><a name="22410" class="Symbol"
       >(</a
-      ><a name="22411" href="Stlc.html#21667" class="InductiveConstructor"
+      ><a name="22411" href="Stlc.html#21747" class="InductiveConstructor"
       >&#8658;-I</a
       ><a name="22414"
       > </a
@@ -6378,7 +6339,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22423" class="Symbol"
       >(</a
-      ><a name="22424" href="Stlc.html#15984" class="InductiveConstructor"
+      ><a name="22424" href="Stlc.html#16064" class="InductiveConstructor"
       >&#946;&#955;&#183;</a
       ><a name="22427"
       > </a
@@ -6411,7 +6372,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22475" class="Symbol"
       >(</a
-      ><a name="22476" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="22476" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="22479"
       > </a
@@ -6427,7 +6388,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22487" class="Symbol"
       >(</a
-      ><a name="22488" href="Stlc.html#15864" class="InductiveConstructor"
+      ><a name="22488" href="Stlc.html#15944" class="InductiveConstructor"
       >&#958;&#183;&#8321;</a
       ><a name="22491"
       > </a
@@ -6466,7 +6427,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >=</a
       ><a name="22534"
       > </a
-      ><a name="22535" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="22535" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="22538"
       > </a
@@ -6485,7 +6446,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22559" class="Symbol"
       >(</a
-      ><a name="22560" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="22560" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="22563"
       > </a
@@ -6501,7 +6462,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22571" class="Symbol"
       >(</a
-      ><a name="22572" href="Stlc.html#15917" class="InductiveConstructor"
+      ><a name="22572" href="Stlc.html#15997" class="InductiveConstructor"
       >&#958;&#183;&#8322;</a
       ><a name="22575"
       > </a
@@ -6544,7 +6505,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >=</a
       ><a name="22625"
       > </a
-      ><a name="22626" href="Stlc.html#21744" class="InductiveConstructor"
+      ><a name="22626" href="Stlc.html#21824" class="InductiveConstructor"
       >&#8658;-E</a
       ><a name="22629"
       > </a
@@ -6561,7 +6522,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >preservation</a
       ><a name="22649"
       > </a
-      ><a name="22650" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="22650" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="22654"
       > </a
@@ -6574,7 +6535,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >preservation</a
       ><a name="22670"
       > </a
-      ><a name="22671" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="22671" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="22675"
       > </a
@@ -6589,11 +6550,11 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22692" class="Symbol"
       >(</a
-      ><a name="22693" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="22693" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="22696"
       > </a
-      ><a name="22697" href="Stlc.html#21822" class="InductiveConstructor"
+      ><a name="22697" href="Stlc.html#21902" class="InductiveConstructor"
       >&#120121;-I&#8321;</a
       ><a name="22701"
       > </a
@@ -6607,7 +6568,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >)</a
       ><a name="22708"
       > </a
-      ><a name="22709" href="Stlc.html#16139" class="InductiveConstructor"
+      ><a name="22709" href="Stlc.html#16219" class="InductiveConstructor"
       >&#946;if-true</a
       ><a name="22717"
       > </a
@@ -6626,11 +6587,11 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22736" class="Symbol"
       >(</a
-      ><a name="22737" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="22737" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="22740"
       > </a
-      ><a name="22741" href="Stlc.html#21856" class="InductiveConstructor"
+      ><a name="22741" href="Stlc.html#21936" class="InductiveConstructor"
       >&#120121;-I&#8322;</a
       ><a name="22745"
       > </a
@@ -6644,7 +6605,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >)</a
       ><a name="22752"
       > </a
-      ><a name="22753" href="Stlc.html#16192" class="InductiveConstructor"
+      ><a name="22753" href="Stlc.html#16272" class="InductiveConstructor"
       >&#946;if-false</a
       ><a name="22762"
       > </a
@@ -6663,7 +6624,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22781" class="Symbol"
       >(</a
-      ><a name="22782" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="22782" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="22785"
       > </a
@@ -6683,7 +6644,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       > </a
       ><a name="22796" class="Symbol"
       >(</a
-      ><a name="22797" href="Stlc.html#16054" class="InductiveConstructor"
+      ><a name="22797" href="Stlc.html#16134" class="InductiveConstructor"
       >&#958;if</a
       ><a name="22800"
       > </a
@@ -6722,7 +6683,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       >=</a
       ><a name="22843"
       > </a
-      ><a name="22844" href="Stlc.html#21891" class="InductiveConstructor"
+      ><a name="22844" href="Stlc.html#21971" class="InductiveConstructor"
       >&#120121;-E</a
       ><a name="22847"
       > </a
@@ -6737,8 +6698,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ∶ A`.
       ><a name="22855" href="StlcProp.html#22792" class="Bound"
       >&#8866;N</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 #### Exercise: 2 stars, recommended (subject_expansion_stlc)
@@ -6766,8 +6726,7 @@ with conditionals and one not involving conditionals.
 Put progress and preservation together and show that a well-typed
 term can _never_ reach a stuck state.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="23875" href="StlcProp.html#23875" class="Function"
       >Normal</a
       ><a name="23881"
@@ -6827,7 +6786,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="23918"
       > </a
-      ><a name="23919" href="Stlc.html#15832" class="Datatype Operator"
+      ><a name="23919" href="Stlc.html#15912" class="Datatype Operator"
       >&#10233;</a
       ><a name="23920"
       > </a
@@ -6888,7 +6847,7 @@ term can _never_ reach a stuck state.
       >&#172;</a
       ><a name="23966"
       > </a
-      ><a name="23967" href="Stlc.html#9535" class="Datatype"
+      ><a name="23967" href="Stlc.html#9615" class="Datatype"
       >Value</a
       ><a name="23972"
       > </a
@@ -6939,7 +6898,7 @@ term can _never_ reach a stuck state.
       >&#8709;</a
       ><a name="24013"
       > </a
-      ><a name="24014" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="24014" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="24015"
       > </a
@@ -6947,7 +6906,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="24017"
       > </a
-      ><a name="24018" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="24018" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="24019"
       > </a
@@ -6963,7 +6922,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="24025"
       > </a
-      ><a name="24026" href="Stlc.html#17866" class="Datatype Operator"
+      ><a name="24026" href="Stlc.html#17946" class="Datatype Operator"
       >&#10233;*</a
       ><a name="24028"
       > </a
@@ -6990,12 +6949,10 @@ term can _never_ reach a stuck state.
       ><a name="24043" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 <div class="hidden">
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="24091" href="StlcProp.html#24091" class="Function"
       >Soundness&#8242;</a
       ><a name="24101"
@@ -7032,7 +6989,7 @@ term can _never_ reach a stuck state.
       >&#8709;</a
       ><a name="24117"
       > </a
-      ><a name="24118" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="24118" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="24119"
       > </a
@@ -7040,7 +6997,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="24121"
       > </a
-      ><a name="24122" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="24122" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="24123"
       > </a
@@ -7056,7 +7013,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="24129"
       > </a
-      ><a name="24130" href="Stlc.html#17866" class="Datatype Operator"
+      ><a name="24130" href="Stlc.html#17946" class="Datatype Operator"
       >&#10233;*</a
       ><a name="24132"
       > </a
@@ -7099,7 +7056,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="24165"
       > </a
-      ><a name="24166" href="Stlc.html#17899" class="InductiveConstructor Operator"
+      ><a name="24166" href="Stlc.html#17979" class="InductiveConstructor Operator"
       >&#8718;</a
       ><a name="24167" class="Symbol"
       >)</a
@@ -7226,7 +7183,7 @@ term can _never_ reach a stuck state.
       > </a
       ><a name="24293" class="Symbol"
       >(</a
-      ><a name="24294" href="Stlc.html#17919" class="InductiveConstructor Operator"
+      ><a name="24294" href="Stlc.html#17999" class="InductiveConstructor Operator"
       >_&#10233;&#10216;_&#10217;_</a
       ><a name="24300"
       > </a
@@ -7298,7 +7255,7 @@ term can _never_ reach a stuck state.
       >&#8709;</a
       ><a name="24360"
       > </a
-      ><a name="24361" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="24361" href="Stlc.html#21649" class="Datatype Operator"
       >&#8866;</a
       ><a name="24362"
       > </a
@@ -7306,7 +7263,7 @@ term can _never_ reach a stuck state.
       >M</a
       ><a name="24364"
       > </a
-      ><a name="24365" href="Stlc.html#21569" class="Datatype Operator"
+      ><a name="24365" href="Stlc.html#21649" class="Datatype Operator"
       >&#8758;</a
       ><a name="24366"
       > </a
@@ -7334,8 +7291,7 @@ term can _never_ reach a stuck state.
       ><a name="24392" href="StlcProp.html#24313" class="Bound"
       >L&#10233;M</a
       >
-
-</pre>
+{% endraw %}</pre>
 </div>
 
 
@@ -7509,8 +7465,7 @@ operators.
 To types, we add a base type of numbers (and remove
 booleans, for brevity).
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="28808" class="Keyword"
       >data</a
       ><a name="28812"
@@ -7572,14 +7527,12 @@ booleans, for brevity).
       ><a name="28867" href="StlcProp.html#28813" class="Datatype"
       >Type&#8242;</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 To terms, we add natural number constants, along with
 plus, minus, and testing for zero.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="28988" class="Keyword"
       >data</a
       ><a name="28992"
@@ -7802,8 +7755,7 @@ plus, minus, and testing for zero.
       ><a name="29227" href="StlcProp.html#28993" class="Datatype"
       >Term&#8242;</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 (Assume that `m - n` returns `0` if `m` is less than `n`.)
 
