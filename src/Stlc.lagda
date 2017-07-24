@@ -183,7 +183,7 @@ irrelevant.  Thus the five terms
 * `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
 * `` λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y) ``
 * `` λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander) ``
-* `` λ[ 👿 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😄 ∶ 𝔹 ] ` 👿 · (` 👿 · ` 😄) ``  
+* `` λ[ 😈 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😄 ∶ 𝔹 ] ` 😈 · (` 😈 · ` 😄) ``  
 * `` λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f) ``
 
 are all considered equivalent.  This equivalence relation
@@ -222,6 +222,10 @@ variables in a term are distinct from the free variables, which can
 avoid confusions that may arise if bound and free variables have the
 same names.
 
+#### Special characters
+
+    😈  U+1F608: SMILING FACE WITH HORNS
+    😄  U+1F604: SMILING FACE WITH OPEN MOUTH AND SMILING EYES
 
 #### Precedence
 
