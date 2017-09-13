@@ -15,31 +15,20 @@ and
 [Philip Wadler](
 http://homepages.inf.ed.ac.uk/wadler/
 ).
+Please send us comments! Contact details below.
 
 
 ## How to host literate code
 
 In directory `sf/` run the following:
 
-	$ make clobber
+    $ make clobber
     $ make
     $ make serve &
 
 The visible page appears at
 
     localhost:4000/sf/<permalink>
-
-## Markdown
-
-For markdown commands see [Daring Fireball](
-https://daringfireball.net/projects/markdown/syntax
-).
-
-## Important git commands
-
-    git pull
-    git commit -am "message"
-    git push
 
 ## Unicode abbreviations
 
@@ -66,5 +55,11 @@ https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
 
 Also see [here](
 http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
+).
+
+## Markdown
+
+For markdown commands see [Daring Fireball](
+https://daringfireball.net/projects/markdown/syntax
 ).
 
