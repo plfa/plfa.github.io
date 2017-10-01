@@ -6,14 +6,19 @@ permalink : /Basics
 ---
 
 \begin{code}
-open import Data.Nat         using (ℕ; zero; suc)
 open import Data.Empty       using (⊥; ⊥-elim)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Binary.PropositionalEquality
                              using (_≡_; refl; _≢_; trans; sym)
 \end{code}
 
-# Addition and its properties
+# Natural numbers
+
+\begin{code}
+data ℕ : Set where
+  zero : ℕ
+  suc : ℕ → ℕ
+\end{code}
 
 \begin{code}
 congruent : ∀ {m n} → m ≡ n → suc m ≡ suc n
@@ -21,7 +26,12 @@ congruent refl = refl
 
 injective : ∀ {m n} → suc m ≡ suc n → m ≡ n
 injective refl = refl
+
+distinct : ∀ {m} → zero ≢ suc m
+distinct ()
 \end{code}
+
+# Addition and its properties
 
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
@@ -32,7 +42,7 @@ suc m + n = suc (m + n)
 \begin{code}
 +-assoc : ∀ m n p → (m + n) + p ≡ m + (n + p)
 +-assoc zero n p = refl
-+-assoc (suc m) n p rewrite +-assoc m n p =  refl
++-assoc (suc m) n p rewrite +-assoc m n p = refl
 
 +-zero : ∀ m → m + zero ≡ m
 +-zero zero = refl
