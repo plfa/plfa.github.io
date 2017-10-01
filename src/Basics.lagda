@@ -18,6 +18,7 @@ open import Relation.Binary.PropositionalEquality
 data ℕ : Set where
   zero : ℕ
   suc : ℕ → ℕ
+{-# BUILTIN NATURAL ℕ #-}
 \end{code}
 
 \begin{code}
@@ -29,6 +30,16 @@ injective refl = refl
 
 distinct : ∀ {m} → zero ≢ suc m
 distinct ()
+\end{code}
+
+\begin{code}
+_≟_ : ∀ (m n : ℕ) → Dec (m ≡ n)
+zero ≟ zero =  yes refl
+zero ≟ suc n =  no (λ()) 
+suc m ≟ zero =  no (λ())
+suc m ≟ suc n with m ≟ n
+... | yes refl =  yes refl
+... | no p =  no (λ r → p (injective r))
 \end{code}
 
 # Addition and its properties
