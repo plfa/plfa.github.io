@@ -83,9 +83,9 @@ rule tells us that `zero` is a natural number, but we already knew
 that. But now the other rule tells us that since `zero` was a natural
 number yesterday, `suc zero` is a natural number today.
 
-   -- on the second day, there are two natural numbers
-   zero
-   suc zero
+    -- on the second day, there are two natural numbers
+    zero
+    suc zero
 
 And we repeat the process again. Once more, one rule tells us what
 we already knew, that `zero` is a natural number.  And now the other rule
@@ -93,10 +93,10 @@ tells us that since `zero` and `suc zero` are both natural numbers, then
 `suc zero` and `suc (suc zero)` are natural numbers. We already knew about
 the first of these, but the second is new.
 
-  -- on the third day, there are three natural numbers
-  zero
-  suc zero
-  suc (suc zero)
+    -- on the third day, there are three natural numbers
+    zero
+    suc zero
+    suc (suc zero)
 
 The process continues. On the *n*th day there will be *n* distinct
 natural numbers. Note that in this way, we only talk about finite sets
