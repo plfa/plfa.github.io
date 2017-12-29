@@ -8,10 +8,10 @@ author: Wen Kokke
 contributors:
   - name: Wen Kokke
     email: wen.kokke@ed.ac.uk
-    github_username: wenkokke
+    twitter_username: wenkokke
   - name: Philip Wadler
     email: wadler@inf.ed.ac.uk
-    github_username: wadler
+    twitter_username: philipwadler
 
 description: > 
   Software Foundations in Agda.

@@ -192,6 +192,9 @@ is sometimes called _alpha renaming_.
 As we descend from a term into its subterms, variables
 that are bound may become free.  Consider the following terms.
 
+
+
+
 * `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
   Both variable `f` and `x` are bound.
 
