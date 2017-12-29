@@ -38,8 +38,7 @@ lists, records, subtyping, and mutable state.
 
 ## Imports
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="1756" class="Keyword"
       >open</a
       ><a name="1760"
@@ -280,8 +279,7 @@ lists, records, subtyping, and mutable state.
       ><a name="2100" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 ## Syntax
 
@@ -301,8 +299,7 @@ Here is the syntax of types in BNF.
 
 And here it is formalised in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="2544" class="Keyword"
       >infixr</a
       ><a name="2550"
@@ -378,8 +375,7 @@ And here it is formalised in Agda.
       ><a name="2614" href="Stlc.html#2564" class="Datatype"
       >Type</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 Terms have six constructs. Three are for the core lambda calculus:
 
@@ -409,8 +405,7 @@ Here is the syntax of terms in BNF.
 
 And here it is formalised in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="3575" class="Keyword"
       >infixl</a
       ><a name="3581"
@@ -620,8 +615,7 @@ And here it is formalised in Agda.
       ><a name="3801" href="Stlc.html#3637" class="Datatype"
       >Term</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 #### Special characters
 
@@ -669,8 +663,7 @@ Here are a couple of example terms, `not` of type
 `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` which takes a function and a boolean
 and applies the function to the boolean twice.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="5677" href="Stlc.html#5677" class="Function"
       >f</a
       ><a name="5678"
@@ -913,8 +906,7 @@ and applies the function to the boolean twice.
       ><a name="5835" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 #### Bound and free variables
@@ -991,8 +983,7 @@ to be weaker than application. For instance,
   - abbreviates `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] (` f · (` f · ` x)))) ``
   - and not `` (λ[ f ∶ 𝔹 ⇒ 𝔹 ] (λ[ x ∶ 𝔹 ] ` f)) · (` f · ` x) ``.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="8432" href="Stlc.html#8432" class="Function"
       >ex&#8321;</a
       ><a name="8435"
@@ -1358,8 +1349,7 @@ to be weaker than application. For instance,
       ><a name="8656" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 #### Quiz
 
@@ -1405,8 +1395,7 @@ as values.
 
 The predicate `Value M` holds if term `M` is a value.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="9717" class="Keyword"
       >data</a
       ><a name="9721"
@@ -1533,8 +1522,7 @@ The predicate `Value M` holds if term `M` is a value.
       ><a name="9845" href="Stlc.html#3749" class="InductiveConstructor"
       >false</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 We let `V` and `W` range over values.
 
@@ -1601,8 +1589,7 @@ name.
 
 Here is the formal definition in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="12266" href="Stlc.html#12266" class="Function Operator"
       >_[_:=_]</a
       ><a name="12273"
@@ -2245,8 +2232,7 @@ Here is the formal definition in Agda.
       ><a name="12687" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 The two key cases are variables and abstraction.
 
@@ -2272,8 +2258,7 @@ Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).
 
 Here is confirmation that the examples above are correct.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="13437" href="Stlc.html#13437" class="Function"
       >ex&#8321;&#8321;</a
       ><a name="13441"
@@ -2936,8 +2921,7 @@ Here is confirmation that the examples above are correct.
       ><a name="13885" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 #### Quiz
 
@@ -3005,8 +2989,7 @@ and indeed such rules are traditionally called beta rules.
 
 Here are the above rules formalised in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="15999" class="Keyword"
       >infix</a
       ><a name="16004"
@@ -3572,8 +3555,7 @@ Here are the above rules formalised in Agda.
       ><a name="16430" href="Stlc.html#16396" class="Bound"
       >N</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 #### Special characters
 
@@ -3637,8 +3619,7 @@ are written as follows.
 
 Here it is formalised in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="18004" class="Keyword"
       >infix</a
       ><a name="18009"
@@ -3824,8 +3805,7 @@ Here it is formalised in Agda.
       ><a name="18149" href="Stlc.html#18122" class="Bound"
       >N</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 We can read this as follows.
 
@@ -3839,8 +3819,7 @@ The names of the two clauses in the definition of reflexive
 and transitive closure have been chosen to allow us to lay
 out example reductions in an appealing way.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="18610" href="Stlc.html#18610" class="Function"
       >reduction&#8321;</a
       ><a name="18620"
@@ -4314,8 +4293,7 @@ out example reductions in an appealing way.
       ><a name="19148" href="Stlc.html#18086" class="InductiveConstructor Operator"
       >&#8718;</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 <!--
 Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
@@ -4398,8 +4376,7 @@ functions, conditionals use booleans).
 
 Here are the above rules formalised in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="21694" href="Stlc.html#21694" class="Function"
       >Context</a
       ><a name="21701"
@@ -5079,8 +5056,7 @@ Here are the above rules formalised in Agda.
       ><a name="22177" href="Stlc.html#22095" class="Bound"
       >A</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 #### Example type derivations
 
@@ -5116,8 +5092,7 @@ where `Γ₁ = ∅ , f ∶ 𝔹 ⇒ 𝔹` and `Γ₂ = ∅ , f ∶ 𝔹 ⇒ 𝔹
 
 Here are the above derivations formalised in Agda.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="23460" href="Stlc.html#23460" class="Function"
       >typing&#8321;</a
       ><a name="23467"
@@ -5319,8 +5294,7 @@ Here are the above derivations formalised in Agda.
       ><a name="23620" class="Symbol"
       >))))</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 #### Interaction with Agda
 
@@ -5367,8 +5341,7 @@ false ``.  In other words, no type `A` is the type of this term.  It
 cannot be typed, because doing so requires that the first term in the
 application is both a boolean and a function.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="25301" href="Stlc.html#25301" class="Function"
       >notyping&#8322;</a
       ><a name="25310"
@@ -5447,15 +5420,13 @@ application is both a boolean and a function.
       ><a name="25364" class="Symbol"
       >_)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 As a second example, here is a formal proof that it is not possible to
 type `` λ[ x ∶ 𝔹 ] λ[ y ∶ 𝔹 ] ` x · ` y `` It cannot be typed, because
 doing so requires `x` to be both boolean and a function.
 
-<pre class="Agda">
-
+<pre class="Agda">{% raw %}
 <a name="25592" href="Stlc.html#25592" class="Function"
       >contradiction</a
       ><a name="25605"
@@ -5689,8 +5660,7 @@ doing so requires `x` to be both boolean and a function.
       ><a name="25787" class="Symbol"
       >)</a
       >
-
-</pre>
+{% endraw %}</pre>
 
 
 #### Quiz
