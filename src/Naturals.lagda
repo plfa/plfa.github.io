@@ -214,7 +214,7 @@ principia, nova methodo exposita*" (The principles of arithmetic
 presented by a new method), published the following year.
 
 
-### The `NATURAL` pragma
+### A useful pragma
 
 In Agda, any line beginning `--`, or any code enclosed between `{-`
 and `-}` is considered a *comment*.  Comments have no effect on the
@@ -227,13 +227,17 @@ Including the line
 \end{code}
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
-`suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.
+`suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.  The
+declaration is not permitted unless the type given has two constructors,
+one corresponding to zero and one to successor.
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals as the Haskell type
-`Integer`.  Whereas representing the natural *n* with `suc` and `zero`
-require space proportional to *n*, represeting it as an integer in
-Haskell only requires space proportional to the logarithm of *n*.
+integer.  Whereas representing the natural *n* with `zero` and `suc`
+requires space proportional to *n*, representing it as an integer in
+Haskell only requires space proportional to the logarithm of *n*.  In
+particular, if `n` is less than 2⁶⁴, it will require just one word on
+a machine with 64-bit words.
 
 
 ## Operations on naturals are recursive functions
@@ -260,17 +264,36 @@ written with underbars where the arguement go, hence its name is
 `_+_`.  It's type, `ℕ → ℕ → ℕ`, indicates that it accepts two naturals
 and returns a natural.  There are two ways to construct a natural,
 with `zero` or with `suc`, so there are two lines defining addition,
-labeled with comments as `(i)` and `(ii)`.  Line `(i)` says that
+labeled with comments as (i) and (ii).  Line (i) says that
 adding zero to a number (`zero + n`) returns that number (`n`). Line
-`(ii)` says that adding the successor of a number to another number
-(`(suc m) + n`) returns the successor of adding the two numbers
-(`suc (m+n)`).
+(ii) says that adding the successor of a number to another number
+(`(suc m) + n`) returns the successor of adding the two numbers (`suc
+(m+n)`).  We say we are using *pattern matching* when we use a
+constructor applied to a term as an argument, such as `zero` in (i)
+or `(suc m)` in (ii).
 
-This definition is *recursive*, in that the last line defines addition
+If we write `zero` as `0` and `suc m` as `1 + m`, we get two familiar equations.
+
+   0       + n  =  n
+   (1 + m) + n  =  1 + (m + n)
+
+The first follows because zero is a left identity for addition,
+and the second because addition is associative.  In its most general
+form, associativity is written
+
+   (m + n) + p  =  m + (n + p)
+
+meaning that the order of parentheses is irrelevant.  We get the
+second equation from this one by taking `m` to be `1`, `n` to be `m`,
+and `p` to be `n`.
+
+The definition is *recursive*, in that the last line defines addition
 in terms of addition.  As with the inductive definition of the
 naturals, the apparent circularity is not a problem.  It works because
 addition of larger numbers is defined in terms of addition of smaller
-numbers.  For example, let's add two and three.
+numbers.  Such a definition is called *well founded*.
+
+For example, let's add two and three.
 
        2 + 3
     =    { expand shorthand }
@@ -296,12 +319,124 @@ We can write this more compactly by only expanding shorthand as needed.
     =    
        5
 
-The first use of `(ii)` matches by taking `m = 1` and `n = 3`,
-The second use of `(ii)` matches by taking `m = 0` and `n = 3`,
-and the use of `(i)` matches by taking `n = 3`.
+The first use of (ii) matches by taking `m = 1` and `n = 3`,
+The second use of (ii) matches by taking `m = 0` and `n = 3`,
+and the use of (i) matches by taking `n = 3`.
 
 **Exercise** Compute `3 + 4` by the same technique.
 
+
+### Multiplication
+
+Once we have defined addition, we can define multiplication
+as repeated addition.
+\begin{code}
+_*_ : ℕ → ℕ → ℕ
+zero * n     =  zero           -- (iii)
+(suc m) * n  =  n + (m * n)    -- (iv)
+\end{code}
+
+Again, rewriting gives us two familiar equations.
+
+  0       * n  =  0
+  (1 + m) * n  =  n + (m * n)
+
+The first follows because zero times anything is zero,
+and the second follow because multiplication distributes
+over addition.  In its most general form, distribution of
+multiplication over addition is written
+
+  (m + n) * p  =  (m * p) + (n * p)
+
+We get the second equation from this one by taking `m` to be `1`, `n`
+to be `m`, and `p` to be `n`, and then using the fact that one is a
+left identity for multiplication, so `1 * n = n`.
+
+Again, the definition is well-founded in that multiplication of
+larger numbers is defined in terms of multiplication of smaller numbers.
+ 
+For example, let's multiply two and three.
+
+       2 * 3
+    =    {by (iv)}
+       3 + (1 * 3)
+    =    {by (iv)}
+       3 + (3 + (0 * 3))
+    =    {by (iii)}
+       3 + (3 + 0)
+    =
+       6
+
+The first use of (iv) matches by taking `m = 1` and `n = 3`,
+The second use of (iv) matches by taking `m = 0` and `n = 3`,
+and the use of (iii) matches by taking `n = 3`.
+
+**Exercise** Compute `3 * 4` by the same technique.
+
+
+### Exponentiation
+
+Similarly, once we have defined multiplication, we can define
+exponentiation as repeated multiplication.
+\begin{code}
+_^_ : ℕ → ℕ → ℕ
+n ^ zero     =  suc zero       -- (v)
+n ^ (suc m)  =  n * (n ^ m)    -- (vi)
+\end{code}
+
+**Exercise** Compute `4 ^ 3`.
+
+
+### Monus
+
+We can also define subtraction.  Since there are no negative
+natural numbers, if we subtract a larger number from a smaller
+number we will take the result to be zero.  This adaption of
+subtraction to naturals is called *monus* (as compared to *minus*).
+
+Monus is our first example of a definition that uses pattern
+matching against both arguments.
+\begin{code}
+_∸_ : ℕ → ℕ → ℕ
+m       ∸ zero     =  m         -- (vii)
+zero    ∸ (suc n)  =  zero      -- (viii)
+(suc m) ∸ (suc n)  =  m ∸ n     -- (ix)
+\end{code}
+We can do a simple analysis to show that all the cases are covered.
+
+  * The second argument is either `zero` or `suc n` for some `n`.
+    + If it is `zero`, then equation (vii) applies.
+    + If it is `suc n`, then the first argument is either `zero`
+      or `suc m` for some `m`.
+      - If it is `zero`, then equation (viii) applies.
+      - If it is `suc m`, then equation (ix) applies.
+
+Again, the recursive definition is well-founded because
+monus on bigger numbers is defined in terms of monus on
+small numbers.
+
+For example, let's subtract two from three.
+
+       3 ∸ 2
+    =    {by (ix)}
+       2 ∸ 1
+    =    {by (ix)}
+       1 ∸ 0
+    =    {by (vii)}
+       1
+
+We did not use equation (viii) at all, but it will be required
+if we try to subtract a smaller number from a larger one.
+
+       2 ∸ 3
+    =    {by (ix)}
+       1 ∸ 2
+    =    {by (ix)}
+       0 ∸ 1
+    =    {by (viii)}
+       0
+
+**Exercise** Compute `5 ∸ 3` and `3 ∸ 5` by the same technique.
 
 ### The story of creation, revisited
 
@@ -351,22 +486,66 @@ that we knew yesterday, we know `suc m + n = suc p` today.
   0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
   1 + 0 = 1     1 + 1 = 2    1 + 2 = 3     ...
 
-And we repeat the process again.  You've probably got the hang of it by now.
+And we repeat the process again.  
 
   -- on the third day, we know about addition of 0, 1, and 2
   0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
   1 + 0 = 1     1 + 1 = 2    1 + 2 = 3     ...
   2 + 0 = 2     2 + 1 = 3    2 + 2 = 4     ...
 
-The process continues. On the *m*th day we will know all the equations
-where the first number is less than *m*. 
+You've probably got the hang of it by now.
 
-As before, there is both a base case (line `(i)` of the definition)
-and an inductive case (line `(ii)` of the definition).
+The process continues. On the *m*th day we will know all the equations
+where the first number is less than *m*.  As before, there is both a
+base case (line (i) of the definition) and an inductive case (line
+(ii)).
 
 As we can see, the reasoning that justifies inductive and
 recursive definitions is quite similar, and they might be considered
 as two sides of the same coin.
+
+
+### Precedence
+
+We often use *precedence* to avoid writing too many parentheses.
+Application *binds more tightly than* (or *has precedence over*) any
+operator, and so we may write `suc m + n` to mean `(suc m) + n`.
+As another example, we say that multiplication binds more tightly than
+addition, and so write `n + m * n` to mean `n + (m * n)`.
+We also sometimes say that addition is *associates to the left*, and
+so write `m + n + p` to mean `(m + n) + p`.
+
+In Agda, it is built-in that application binds more tightly than any
+operator, but the precedence and associativity of infix operators
+needs to be declared.
+\begin{code}
+infixl 7  _*_
+infixl 6  _+_  _∸_
+\end{code}
+This states that infix operators `_*_`, `_+_`, and `_∸_` all associate
+to the left, and that `_*_` has precedence level 7 and `_+_` and `_∸_`
+have precedence level 6, and so multiplication binds more tightly than
+both addition and subtraction.  One can also write `infixr` to
+indicate that an operator associates to the right, or just `infix`
+to indicate that it has no associativity and parentheses are always
+required to disambiguate.
+
+### More pragmas
+
+Inluding the lines
+\begin{code}
+{-# BUILTIN NATPLUS _+_ #-}
+{-# BUILTIN NATTIMES _*_ #-}
+{-# BUILTIN NATMINUS _∸_ #-}
+\end{code}
+tells Agda that these three operators correspond to the usual ones,
+and enables it to perform these computations using the corresponing
+Haskell operators on the integer type.  Whereas representing naturals
+with `zero` and `suc` requires time proportional to *m* to add *m* and *n*,
+representing naturals as integers in Haskell requires time proportional to
+the larger of the logarithms of *m* and *n*.  In particular, if *m* and *n*
+are both less than 2⁶⁴, it will require constant time on a machine with
+64-bit words.  Similarly for multiplication and subtraction.
 
 
 ## Equality is also an inductive datatype
@@ -374,12 +553,13 @@ as two sides of the same coin.
 ## Proofs over naturals are also recursive functions
 
 
-## Special characters
+## Unicode
 
-In each chapter, we will list all special characters used at the end.
-In this chapter we use the following special characters.
+In each chapter, we will list all unicode characters used at the end.
+In this chapter we use the following.
 
     ℕ  U+2115:  DOUBLE-STRUCK CAPITAL N (\bN)  
-    →  U+2192:  RIGHTWARDS ARROW (\to, \r) 
+    →  U+2192:  RIGHTWARDS ARROW (\to, \r)
+    ∸  U+2238:  DOT MINUS (\.-)
     ∀  U+2200:  FOR ALL (\forall)
     λ  U+03BB:  GREEK SMALL LETTER LAMBDA (\Gl, \lambda)
