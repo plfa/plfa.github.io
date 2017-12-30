@@ -76,6 +76,8 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
+**Exercise 1** Write out `7` in longhand.
+
 
 ### Unpacking the inference rules
 
@@ -123,17 +125,19 @@ Let's look again at the definition of natural numbers:
 1. The term `zero` is a natural number.
 2. If `n` is a natural number, then the term `suc n` is also a natural number.
 
-Wait a minute! The second line appears to be defining natural numbers
+Wait a minute! The second line defines natural numbers
 in terms of natural numbers. How can that posssibly be allowed?
+Isn't this as useless as claiming `Brexit means Brexit`?
 
-In fact, it is possible to assign this a non-circular meaning.
-Furthermore, we can do so while only working with *finite* sets and never
-referring to the entire *infinite* set of natural numbers.
+In fact, it is possible to assign our definition a meaning without
+resorting to any unpermitted circularities.  Furthermore, we can do so
+while only working with *finite* sets and never referring to the
+entire *infinite* set of natural numbers.
 
 We will think of it as a creation story.  To start with, we know about
 no natural numbers at all.
 
-    -- in the beginning there are no natural numbers
+    -- in the beginning, there are no natural numbers
 
 Now, we apply the rules to all the natural numbers we know about.  One
 rule tells us that `zero` is a natural number, so we add it to the set
@@ -247,54 +251,125 @@ multiplication.
 Here is the definition of addition in Agda:
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
-zero    + n  =  n
-(suc m) + n  =  suc (m + n)
+zero    + n  =  n                -- (i)
+(suc m) + n  =  suc (m + n)      -- (ii)
 \end{code}
-This definition is *recursive*, in that the last line defines addition
-(of `suc m` and `n`) in terms of addition (of `m` and `n`).
 
-As with the inductive definition of the naturals, the apparent
-circularity is not a problem.  It works because addition of larger
-numbers is defined in terms of addition of smaller numbers.  For
-example, let's add two and three.
+Let's unpack this definition.  Addition is an infix operator.  It is
+written with underbars where the arguement go, hence its name is
+`_+_`.  It's type, `ℕ → ℕ → ℕ`, indicates that it accepts two naturals
+and returns a natural.  There are two ways to construct a natural,
+with `zero` or with `suc`, so there are two lines defining addition,
+labeled with comments as `(i)` and `(ii)`.  Line `(i)` says that
+adding zero to a number (`zero + n`) returns that number (`n`). Line
+`(ii)` says that adding the successor of a number to another number
+(`(suc m) + n`) returns the successor of adding the two numbers
+(`suc (m+n)`).
+
+This definition is *recursive*, in that the last line defines addition
+in terms of addition.  As with the inductive definition of the
+naturals, the apparent circularity is not a problem.  It works because
+addition of larger numbers is defined in terms of addition of smaller
+numbers.  For example, let's add two and three.
 
        2 + 3
     =    { expand shorthand }
        (suc (suc zero)) + (suc (suc (suc zero)))
-    =    { by the second equation, with m = suc zero and n = suc (suc (suc zero)) }
+    =    { by (ii) }
        suc ((suc zero) + (suc (suc (suc zero))))
-    =    { by the second equation, with m = zero and n = suc (suc (suc zero)) }
+    =    { by (ii) }
        suc (suc (zero + (suc (suc (suc zero)))))
-    =    { by the first equation, with n = suc (suc (suc zero)) }
+    =    { by (i) }
        suc (suc (suc (suc (suc zero))))
-    =    { compress shorthand }
+    =    { compress longhand }
        5
 
-Or, more succintly,
+We can write this more compactly by only expanding shorthand as needed.
 
        2 + 3
-    =
+    =    { by (ii) }
        suc (1 + 3)
-    =
+    =    { by (ii) }
        suc (suc (0 + 3))
-    =
+    =    { by (i) }
        suc (suc 3)
-    =
+    =    
        5
 
+The first use of `(ii)` matches by taking `m = 1` and `n = 3`,
+The second use of `(ii)` matches by taking `m = 0` and `n = 3`,
+and the use of `(i)` matches by taking `n = 3`.
+
+**Exercise** Compute `3 + 4` by the same technique.
 
 
-Indeed, the reasoning that justifies inductive and
+### The story of creation, revisited
+
+As with the definition of the naturals by induction, in the definition
+of addition by recursion we have defined addition in terms of addition.
+
+Again, it is possible to assign our definition a meaning without
+resorting to unpermitted circularities.  We do so by reducing our
+definition to equivalent inference rules for judgements about equality.
+
+    n : ℕ
+    ------------
+    zero + n = n
+
+    m + n = p
+    -------------------
+    (suc m) + n = suc p
+
+Here we assume we have already defined the infinite set of natural
+numbers, specifying the meaning of the judgment `n : ℕ`.  The first
+inference rule asserts that if `n` is a natural number then adding
+zero to it gives `n`, and the second rule asserts that if adding `m`
+and `n` gives `p`, then adding `suc m` and `n` gives `suc p`.
+
+Now we can resort to a similar creation story, where now we are
+concerned with judgements about addition.
+
+  -- in the beginning, we know nothing about addition
+
+Now, we apply the rules to all the judgment we know about.
+One rule tells us that `zero + n = n` for every natural `n`,
+so we add all those equations.  The other rule tells us that if
+`m + n = p` (on the day before today) then `suc m + n = suc p`
+(today).  We didn't know any equations about addition before today,
+so that rule doesn't give us any equations.
+
+  -- on the first day, we know about addition of 0
+  0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
+
+Then we repeat the process, so on the next day we know about all the
+equations from the day before, plus any equations added by the rules.  One
+rule tells us that `zero + n = n` for every natural `n`, but we already knew
+that. But now the other rule tells us that for every equation `m + n = p`
+that we knew yesterday, we know `suc m + n = suc p` today.
+
+  -- on the second day, we know about addition of 0 and 1
+  0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
+  1 + 0 = 1     1 + 1 = 2    1 + 2 = 3     ...
+
+And we repeat the process again.  You've probably got the hang of it by now.
+
+  -- on the third day, we know about addition of 0, 1, and 2
+  0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
+  1 + 0 = 1     1 + 1 = 2    1 + 2 = 3     ...
+  2 + 0 = 2     2 + 1 = 3    2 + 2 = 4     ...
+
+The process continues. On the *m*th day we will know all the equations
+where the first number is less than *m*. 
+
+As before, there is both a base case (line `(i)` of the definition)
+and an inductive case (line `(ii)` of the definition).
+
+As we can see, the reasoning that justifies inductive and
 recursive definitions is quite similar, and they might be considered
 as two sides of the same coin.
 
 
-
-
-
-
-
-## Equality on naturals is also an inductive datatype
+## Equality is also an inductive datatype
 
 ## Proofs over naturals are also recursive functions
 
