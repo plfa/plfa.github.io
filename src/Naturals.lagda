@@ -4,7 +4,6 @@ layout    : page
 permalink : /Naturals
 ---
 
-
 The night sky holds more stars than I can count, though less than five
 thousand are visible to the naked sky.  The observable universe
 contains about seventy sextillion stars.
@@ -233,10 +232,10 @@ one corresponding to zero and one to successor.
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals as the Haskell type
-integer.  Whereas representing the natural *n* with `zero` and `suc`
-requires space proportional to *n*, representing it as an integer in
+integer.  Representing the natural *n* with `zero` and `suc`
+requires space proportional to *n*, whereas representing it as an integer in
 Haskell only requires space proportional to the logarithm of *n*.  In
-particular, if `n` is less than 2⁶⁴, it will require just one word on
+particular, if *n* is less than 2⁶⁴, it will require just one word on
 a machine with 64-bit words.
 
 
@@ -540,12 +539,16 @@ Inluding the lines
 \end{code}
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponing
-Haskell operators on the integer type.  Whereas representing naturals
-with `zero` and `suc` requires time proportional to *m* to add *m* and *n*,
-representing naturals as integers in Haskell requires time proportional to
-the larger of the logarithms of *m* and *n*.  In particular, if *m* and *n*
-are both less than 2⁶⁴, it will require constant time on a machine with
-64-bit words.  Similarly for multiplication and subtraction.
+Haskell operators on the integer type.  Representing naturals with
+`zero` and `suc` requires time proportional to *m* to add *m* and *n*,
+whereas representing naturals as integers in Haskell requires time
+proportional to the larger of the logarithms of *m* and *n*.  In
+particular, if *m* and *n* are both less than 2⁶⁴, it will require
+constant time on a machine with 64-bit words.  Similarly, representing
+naturals with `zero` and `suc` requires time proportional to the
+product of *m* and *n* to multiply *m* and *n*, whereas representing
+naturals as integers in Haskell requires time proportional to the sum
+of the logarithms of *m* and *n*.
 
 
 ## Equality is also an inductive datatype
