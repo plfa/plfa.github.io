@@ -79,7 +79,7 @@ successor of two; and so on.
 **Exercise 1** Write out `7` in longhand.
 
 
-### Unpacking the inference rules
+## Unpacking the inference rules
 
 Let's unpack the inference rules.  Each inference rule consists of zero
 or more *judgments* written above a horizontal line, called the *hypotheses*,
@@ -91,7 +91,7 @@ is a natural.  The second rule has one hypothesis, which assumes that
 natural number.
 
 
-### Unpacking the Agda definition
+## Unpacking the Agda definition
 
 Let's unpack the Agda definition. The keyword `data` tells us this is an
 inductive definition, that is, that we are defining a new datatype
@@ -118,7 +118,7 @@ in the chapter, including instructions on how to type them in the
 Emacs text editor.
 
 
-### The story of creation
+## The story of creation
 
 Let's look again at the definition of natural numbers:
 
@@ -214,7 +214,7 @@ principia, nova methodo exposita*" (The principles of arithmetic
 presented by a new method), published the following year.
 
 
-### A useful pragma
+## A useful pragma
 
 In Agda, any line beginning `--`, or any code enclosed between `{-`
 and `-}` is considered a *comment*.  Comments have no effect on the
@@ -326,7 +326,7 @@ and the use of (i) matches by taking `n = 3`.
 **Exercise** Compute `3 + 4` by the same technique.
 
 
-### Multiplication
+## Multiplication
 
 Once we have defined addition, we can define multiplication
 as repeated addition.
@@ -374,7 +374,7 @@ and the use of (iii) matches by taking `n = 3`.
 **Exercise** Compute `3 * 4` by the same technique.
 
 
-### Exponentiation
+## Exponentiation
 
 Similarly, once we have defined multiplication, we can define
 exponentiation as repeated multiplication.
@@ -387,7 +387,7 @@ n ^ (suc m)  =  n * (n ^ m)    -- (vi)
 **Exercise** Compute `4 ^ 3`.
 
 
-### Monus
+## Monus
 
 We can also define subtraction.  Since there are no negative
 natural numbers, if we subtract a larger number from a smaller
@@ -438,7 +438,7 @@ if we try to subtract a smaller number from a larger one.
 
 **Exercise** Compute `5 ∸ 3` and `3 ∸ 5` by the same technique.
 
-### The story of creation, revisited
+## The story of creation, revisited
 
 As with the definition of the naturals by induction, in the definition
 of addition by recursion we have defined addition in terms of addition.
@@ -505,7 +505,7 @@ recursive definitions is quite similar, and they might be considered
 as two sides of the same coin.
 
 
-### Precedence
+## Precedence
 
 We often use *precedence* to avoid writing too many parentheses.
 Application *binds more tightly than* (or *has precedence over*) any
@@ -530,7 +530,7 @@ indicate that an operator associates to the right, or just `infix`
 to indicate that it has no associativity and parentheses are always
 required to disambiguate.
 
-### More pragmas
+## More pragmas
 
 Inluding the lines
 \begin{code}
@@ -551,19 +551,15 @@ product of *m* and *n* to multiply *m* and *n*, whereas representing
 naturals as integers in Haskell requires time proportional to the sum
 of the logarithms of *m* and *n*.
 
-
-## Equality is also an inductive datatype
-
-## Proofs over naturals are also recursive functions
-
-
 ## Unicode
 
-In each chapter, we will list all unicode characters used at the end.
+In each chapter, we will list at the end all unicode characters.
 In this chapter we use the following.
 
-    ℕ  U+2115:  DOUBLE-STRUCK CAPITAL N (\bN)  
-    →  U+2192:  RIGHTWARDS ARROW (\to, \r)
-    ∸  U+2238:  DOT MINUS (\.-)
-    ∀  U+2200:  FOR ALL (\forall)
-    λ  U+03BB:  GREEK SMALL LETTER LAMBDA (\Gl, \lambda)
+    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
+    →  U+2192  RIGHTWARDS ARROW (\to, \r)
+    ∸  U+2238  DOT MINUS (\.-)
+
+Each line consists of the unicode character (ℕ), the corresponding
+code point (U+2115), the name of the character (DOUBLE-STRUCK CAPITAL N),
+and the sequence to type into Emacs to generate the character (\bN).
