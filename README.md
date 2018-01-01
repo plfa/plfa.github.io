@@ -47,7 +47,7 @@ https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
 ## Bindings for Agda mode
 
     ?            create hole
-    {!...!}      create holde
+    {!...!}      create hole
     C-c C-l      reload
     C-c C-c x    split on variable x 
     C-c C-space  fill in hole

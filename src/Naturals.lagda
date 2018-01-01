@@ -42,9 +42,9 @@ as a pair of inference rules:
     --------
     zero : ℕ
 
-    n : ℕ
+    m : ℕ
     ---------
-    suc n : ℕ
+    suc m : ℕ
 
 And here is the definition in Agda:
 \begin{code}
@@ -58,8 +58,9 @@ and `zero` and `suc` (short for *successor*) are the
 
 Both definitions above tell us the same two things:
 
-1. The term `zero` is a natural number.
-2. If `n` is a natural number, then the term `suc n` is also a natural number.
++ *Base case*: `zero` is a natural number.
++ *Inductive case*: if `m` is a natural number, then `suc m` is also a
+  natural number.
 
 Further, these two rules give the *only* ways of creating natural numbers.
 Hence, the possible natural numbers are
@@ -81,14 +82,14 @@ successor of two; and so on.
 
 ## Unpacking the inference rules
 
-Let's unpack the inference rules.  Each inference rule consists of zero
-or more *judgments* written above a horizontal line, called the *hypotheses*,
-and a single judgment written below, called the *conclusion*.  
-
-The first rule has no hypotheses, and the conclusion asserts that zero
-is a natural.  The second rule has one hypothesis, which assumes that
-`n` is a natural number, and the conclusion asserts that `suc n` is a
-natural number.
+Let's unpack the inference rules.  Each inference rule consists of
+zero or more *judgments* written above a horizontal line, called the
+*hypotheses*, and a single judgment written below, called the
+*conclusion*.  The first rule is the base case. It has no hypotheses,
+and the conclusion asserts that `zero` is a natural.  The second rule
+is the inductive case. It has one hypothesis, which assumes that `m`
+is a natural, and the conclusion asserts that `suc n` is a also a
+natural.
 
 
 ## Unpacking the Agda definition
@@ -112,18 +113,20 @@ corresponding `data` declaration.  The lines
 tell us that `zero` is a natural number and that `suc` takes a natural
 number as argument and returns a natural number.
 
-Here `ℕ` and `→` are unicode symbols that you won't find on your
-keyboard. At the end of each chapter is a list of all the unicode used
-in the chapter, including instructions on how to type them in the
-Emacs text editor.
+You may have notices that `ℕ` and `→` are don't appear on your
+keyboard.  They are symbols in *unicode*.  At the end of each chapter
+is a list of all the unicode used in the chapter, including
+instructions on how to type them in the Emacs text editor using keys
+that are on your keyboard.
 
 
 ## The story of creation
 
 Let's look again at the definition of natural numbers:
 
-1. The term `zero` is a natural number.
-2. If `n` is a natural number, then the term `suc n` is also a natural number.
++ *Base case*: `zero` is a natural number.
++ *Inductive case*: if `m` is a natural number, then `suc m` is also a
+  natural number.
 
 Wait a minute! The second line defines natural numbers
 in terms of natural numbers. How can that posssibly be allowed?
@@ -139,28 +142,27 @@ no natural numbers at all.
 
     -- in the beginning, there are no natural numbers
 
-Now, we apply the rules to all the natural numbers we know about.  One
-rule tells us that `zero` is a natural number, so we add it to the set
-of known natural numbers.  The other rule tells us that if `n` is a
-natural number (on the day before today) then `suc n` is also a
+Now, we apply the two cases to all the natural numbers we know about.  The
+base case tells us that `zero` is a natural number, so we add it to the set
+of known natural numbers.  The inductive case tells us that if `m` is a
+natural number (on the day before today) then `suc m` is also a
 natural number (today).  We didn't know about any natural numbers
-before today, so we don't add any natural numbers of the form `suc n`.
+before today, so the inductive case doesn't apply.
 
     -- on the first day, there is one natural number   
     zero
 
 Then we repeat the process, so on the next day we know about all the
-numbers from the day before, plus any numbers added by the rules.  One
-rule tells us that `zero` is a natural number, but we already knew
-that. But now the other rule tells us that since `zero` was a natural
-number yesterday, `suc zero` is a natural number today.
+numbers from the day before, plus any numbers added by the two cases.  The
+base case tells us that `zero` is a natural number, but we already knew
+that. But now the inductive case tells us that since `zero` was a natural
+number yesterday, then `suc zero` is a natural number today.
 
     -- on the second day, there are two natural numbers
     zero
     suc zero
 
-And we repeat the process again. Once more, one rule tells us what
-we already knew, that `zero` is a natural number.  And now the other rule
+And we repeat the process again. Now the inductive case
 tells us that since `zero` and `suc zero` are both natural numbers, then
 `suc zero` and `suc (suc zero)` are natural numbers. We already knew about
 the first of these, but the second is new.
@@ -179,9 +181,8 @@ You've probably got the hang of it by now.
     suc (suc (suc zero))
 
 The process continues.  On the *n*th day there will be *n* distinct
-natural numbers. Note that in this way, we only talk about finite sets
-of numbers. Every natural number will appear on some given finite
-day. In particular, the number *n* first appears on day *n+1*. And we
+natural numbers. Every natural number will appear on some given day.
+In particular, the number *n* first appears on day *n+1*. And we
 never actually define the set of numbers in terms of itself. Instead,
 we define the set of numbers on day *n+1* in terms of the set of
 numbers on day *n*.
@@ -203,10 +204,10 @@ A philosopher might note that our reference to the first day, second
 day, and so on, implicitly involves an understanding of natural
 numbers.  In this sense, our definition might indeed be regarded as in
 some sense circular.  We won't worry about the philosophy, but are ok
-with taking some intuitive notions---such as counting---as given.
+with taking some intuitive notions--such as counting--as given.
 
 While the natural numbers have been understood for as long as people
-could count, this way of viewing the natural numbers is relatively
+could count, the inductive definition of the natural numbers is relatively
 recent.  It can be traced back to Richard Dedekind's paper "*Was sind
 und was sollen die Zahlen?*" (What are and what should be the
 numbers?), published in 1888, and Giuseppe Peano's book "*Arithmetices
@@ -243,14 +244,13 @@ a machine with 64-bit words.
 ## Operations on naturals are recursive functions
 
 Now that we have the natural numbers, what can we do with them?
-An obvious first step is to define basic operations such as
-addition and multiplication.
+For instance, can we define arithmetic operations such as
+addition and multiplication?
 
 As a child I spent much time memorising tables of addition and
 multiplication.  At first the rules seemed tricky and I would often
-make mistakes.  So it came as a shock to realise that all of addition
-can be precisely defined in just a couple of lines, and the same is true of
-multiplication.
+make mistakes.  So it came as a shock to me to realise that all of addition
+and multiplication can be precisely defined in just a couple of lines.
 
 Here is the definition of addition in Agda:
 \begin{code}
