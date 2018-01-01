@@ -204,7 +204,7 @@ A philosopher might note that our reference to the first day, second
 day, and so on, implicitly involves an understanding of natural
 numbers.  In this sense, our definition might indeed be regarded as in
 some sense circular.  We won't worry about the philosophy, but are ok
-with taking some intuitive notions--such as counting--as given.
+with taking some intuitive notions---such as counting---as given.
 
 While the natural numbers have been understood for as long as people
 could count, the inductive definition of the natural numbers is relatively
@@ -217,7 +217,7 @@ presented by a new method), published the following year.
 
 ## A useful pragma
 
-In Agda, any line beginning `--`, or any code enclosed between `{-`
+In Agda, any text following `--` or enclosed between `{-`
 and `-}` is considered a *comment*.  Comments have no effect on the
 code, with the exception of one special kind of comment, called a
 *pragma*, which is enclosed between `{-#` and `#-}`.

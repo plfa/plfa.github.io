@@ -78,7 +78,7 @@ data ℕ : Set where
   zero : ℕ
   suc : ℕ → ℕ
 \end{code}
-This tells us that `zero` is a natural--the *base case*--and that if
+This tells us that `zero` is a natural---the *base case*---and that if
 `m` is a natural then `suc m` is also a natural---the *inductive
 case*.
 
