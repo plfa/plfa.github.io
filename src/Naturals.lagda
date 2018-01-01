@@ -127,7 +127,7 @@ Let's look again at the definition of natural numbers:
 
 Wait a minute! The second line defines natural numbers
 in terms of natural numbers. How can that posssibly be allowed?
-Isn't this as useless as claiming `Brexit means Brexit`?
+Isn't this as useless as claiming "Brexit means Brexit"?
 
 In fact, it is possible to assign our definition a meaning without
 resorting to any unpermitted circularities.  Furthermore, we can do so
@@ -296,25 +296,25 @@ numbers.  Such a definition is called *well founded*.
 For example, let's add two and three.
 
        2 + 3
-    =    { expand shorthand }
+    =    (is shorthand for)
        (suc (suc zero)) + (suc (suc (suc zero)))
-    =    { by (ii) }
+    =    (ii)
        suc ((suc zero) + (suc (suc (suc zero))))
-    =    { by (ii) }
+    =    (ii)
        suc (suc (zero + (suc (suc (suc zero)))))
-    =    { by (i) }
+    =    (i)
        suc (suc (suc (suc (suc zero))))
-    =    { compress longhand }
+    =    (is longhand for)
        5
 
 We can write this more compactly by only expanding shorthand as needed.
 
        2 + 3
-    =    { by (ii) }
+    =    (ii)
        suc (1 + 3)
-    =    { by (ii) }
+    =    (ii)
        suc (suc (0 + 3))
-    =    { by (i) }
+    =    (i)
        suc (suc 3)
     =    
        5
@@ -358,11 +358,11 @@ larger numbers is defined in terms of multiplication of smaller numbers.
 For example, let's multiply two and three.
 
        2 * 3
-    =    {by (iv)}
+    =    (iv)
        3 + (1 * 3)
-    =    {by (iv)}
+    =    (iv)
        3 + (3 + (0 * 3))
-    =    {by (iii)}
+    =    (iii)
        3 + (3 + 0)
     =
        6
@@ -418,22 +418,22 @@ small numbers.
 For example, let's subtract two from three.
 
        3 ∸ 2
-    =    {by (ix)}
+    =    (ix)
        2 ∸ 1
-    =    {by (ix)}
+    =    (ix)
        1 ∸ 0
-    =    {by (vii)}
+    =    (vii)
        1
 
 We did not use equation (viii) at all, but it will be required
 if we try to subtract a smaller number from a larger one.
 
        2 ∸ 3
-    =    {by (ix)}
+    =    (ix)
        1 ∸ 2
-    =    {by (ix)}
+    =    (ix)
        0 ∸ 1
-    =    {by (viii)}
+    =    (viii)
        0
 
 **Exercise** Compute `5 ∸ 3` and `3 ∸ 5` by the same technique.
