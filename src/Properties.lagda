@@ -229,9 +229,9 @@ induction hypothesis.
 
 We encode this proof in Agda as follows.
 \begin{code}
--- assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
--- assoc+ zero n p = refl
--- assoc+ (suc m) n p rewrite assoc+ m n p = refl
+assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+assoc+ zero n p = refl
+assoc+ (suc m) n p rewrite assoc+ m n p = refl
 \end{code}
 Here we have named the proof `assoc+`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
@@ -564,12 +564,16 @@ com+suc m (suc n) rewrite com+suc m n = refl
 com : ∀ (m n : ℕ) → m + n ≡ n + m
 com zero n rewrite com+zero n = refl
 com (suc m) n rewrite com+suc m n | com m n = refl
+
 \end{code}
 Here we have renamed Lemma (x) and (xi) to `com+zero` and `com+suc`,
 respectively.  In the final line, rewriting with two equations
 (lemma (xi) and the inductive hypothesis) is indicated by
 separating the two proofs of the relevant equations by a vertical bar;
 the rewrites on the left is performed before that on the right.
+
+## Exercises
+
 
 
 
