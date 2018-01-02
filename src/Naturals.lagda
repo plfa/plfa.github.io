@@ -122,7 +122,7 @@ that are on your keyboard.
 
 ## The story of creation
 
-Let's look again at the definition of natural numbers:
+Let's look again at the rules that define the natural numbers:
 
 + *Base case*: `zero` is a natural number.
 + *Inductive case*: if `m` is a natural number, then `suc m` is also a
@@ -130,7 +130,7 @@ Let's look again at the definition of natural numbers:
 
 Wait a minute! The second line defines natural numbers
 in terms of natural numbers. How can that posssibly be allowed?
-Isn't this as useless as claiming "Brexit means Brexit"?
+Isn't this as meaningless as claiming "Brexit means Brexit"?
 
 In fact, it is possible to assign our definition a meaning without
 resorting to any unpermitted circularities.  Furthermore, we can do so
@@ -142,7 +142,7 @@ no natural numbers at all.
 
     -- in the beginning, there are no natural numbers
 
-Now, we apply the two cases to all the natural numbers we know about.  The
+Now, we apply the rules to all the natural numbers we know about.  The
 base case tells us that `zero` is a natural number, so we add it to the set
 of known natural numbers.  The inductive case tells us that if `m` is a
 natural number (on the day before today) then `suc m` is also a
@@ -150,17 +150,17 @@ natural number (today).  We didn't know about any natural numbers
 before today, so the inductive case doesn't apply.
 
     -- on the first day, there is one natural number   
-    zero
+    zero : ℕ
 
 Then we repeat the process, so on the next day we know about all the
-numbers from the day before, plus any numbers added by the two cases.  The
+numbers from the day before, plus any numbers added by the rules.  The
 base case tells us that `zero` is a natural number, but we already knew
 that. But now the inductive case tells us that since `zero` was a natural
 number yesterday, then `suc zero` is a natural number today.
 
     -- on the second day, there are two natural numbers
-    zero
-    suc zero
+    zero : ℕ
+    suc zero : ℕ
 
 And we repeat the process again. Now the inductive case
 tells us that since `zero` and `suc zero` are both natural numbers, then
@@ -168,17 +168,17 @@ tells us that since `zero` and `suc zero` are both natural numbers, then
 the first of these, but the second is new.
 
     -- on the third day, there are three natural numbers
-    zero
-    suc zero
-    suc (suc zero)
+    zero : ℕ
+    suc zero : ℕ
+    suc (suc zero) : ℕ
 
 You've probably got the hang of it by now.
 
     -- on the fourth day, there are four natural numbers
-    zero
-    suc zero
-    suc (suc zero)
-    suc (suc (suc zero))
+    zero : ℕ
+    suc zero : ℕ
+    suc (suc zero) : ℕ
+    suc (suc (suc zero)) : ℕ
 
 The process continues.  On the *n*th day there will be *n* distinct
 natural numbers. Every natural number will appear on some given day.
@@ -200,14 +200,19 @@ we would have no numbers in the beginning, and still no numbers on the
 second day, and on the third, and so on.  An inductive definition lacking
 a base case is useless, as in the phrase "Brexit means Brexit".
 
-A philosopher might note that our reference to the first day, second
-day, and so on, implicitly involves an understanding of natural
+
+## Philosophy and history
+
+A philosopher might observe that our reference to the first day,
+second day, and so on, implicitly involves an understanding of natural
 numbers.  In this sense, our definition might indeed be regarded as in
-some sense circular.  We won't worry about the philosophy, but are ok
-with taking some intuitive notions---such as counting---as given.
+some sense circular.  We need not let this circularity disturb us.
+Everyone possesses a good informal understanding of the natural
+numbers, which we may take as a foundation for their formal
+description.
 
 While the natural numbers have been understood for as long as people
-could count, the inductive definition of the natural numbers is relatively
+can count, the inductive definition of the natural numbers is relatively
 recent.  It can be traced back to Richard Dedekind's paper "*Was sind
 und was sollen die Zahlen?*" (What are and what should be the
 numbers?), published in 1888, and Giuseppe Peano's book "*Arithmetices
@@ -457,52 +462,58 @@ definition to equivalent inference rules for judgements about equality.
 
 Here we assume we have already defined the infinite set of natural
 numbers, specifying the meaning of the judgment `n : ℕ`.  The first
-inference rule asserts that if `n` is a natural number then adding
-zero to it gives `n`, and the second rule asserts that if adding `m`
-and `n` gives `p`, then adding `suc m` and `n` gives `suc p`.
+inference rule is the base case, and corresponds to line (i) of the
+definition.  It asserts that if `n` is a natural number then adding
+zero to it gives `n`.  The second inference rule is the inductive
+case, and corresponds to line (ii) of the definition. It asserts that
+if adding `m` and `n` gives `p`, then adding `suc m` and `n` gives
+`suc p`.
 
-Now we can resort to a similar creation story, where now we are
+Again we resort to a creation story, where this time we are
 concerned with judgements about addition.
 
-  -- in the beginning, we know nothing about addition
+    -- in the beginning, we know nothing about addition
 
 Now, we apply the rules to all the judgment we know about.
-One rule tells us that `zero + n = n` for every natural `n`,
-so we add all those equations.  The other rule tells us that if
+The base case tells us that `zero + n = n` for every natural `n`,
+so we add all those equations.  The inductive case tells us that if
 `m + n = p` (on the day before today) then `suc m + n = suc p`
 (today).  We didn't know any equations about addition before today,
-so that rule doesn't give us any equations.
+so that rule doesn't give us any new equations.
 
-  -- on the first day, we know about addition of 0
-  0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
+    -- on the first day, we know about addition of 0
+    0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
 
 Then we repeat the process, so on the next day we know about all the
-equations from the day before, plus any equations added by the rules.  One
-rule tells us that `zero + n = n` for every natural `n`, but we already knew
-that. But now the other rule tells us that for every equation `m + n = p`
-that we knew yesterday, we know `suc m + n = suc p` today.
+equations from the day before, plus any equations added by the rules.
+The base case tells us nothing new, but now the inductive case adds
+more equations.
 
-  -- on the second day, we know about addition of 0 and 1
-  0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
-  1 + 0 = 1     1 + 1 = 2    1 + 2 = 3     ...
+    -- on the second day, we know about addition of 0 and 1
+    0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
+    1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
 
 And we repeat the process again.  
 
-  -- on the third day, we know about addition of 0, 1, and 2
-  0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
-  1 + 0 = 1     1 + 1 = 2    1 + 2 = 3     ...
-  2 + 0 = 2     2 + 1 = 3    2 + 2 = 4     ...
+    -- on the third day, we know about addition of 0, 1, and 2
+    0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
+    1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
+    2 + 0 = 2     2 + 1 = 3     2 + 2 = 4     2 + 3 = 5     ...
 
 You've probably got the hang of it by now.
 
-The process continues. On the *m*th day we will know all the equations
-where the first number is less than *m*.  As before, there is both a
-base case (line (i) of the definition) and an inductive case (line
-(ii)).
+    -- on the fourth day, we know about addition of 0, 1, 2, and 3
+    0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
+    1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
+    2 + 0 = 2     2 + 1 = 3     2 + 2 = 4     2 + 3 = 5     ...
+    3 + 0 = 3     3 + 1 = 4     3 + 2 = 5     3 + 3 = 6     ...
 
-As we can see, the reasoning that justifies inductive and
-recursive definitions is quite similar, and they might be considered
-as two sides of the same coin.
+The process continues.  On the *m*th day we will know all the
+equations where the first number is less than *m*.
+
+As we can see, the reasoning that justifies inductive and recursive
+definitions is quite similar.  They might be considered two sides of
+the same coin.
 
 
 ## Precedence
@@ -560,6 +571,11 @@ In this chapter we use the following.
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
 
-Each line consists of the unicode character (ℕ), the corresponding
+Each line consists of the Unicode character (ℕ), the corresponding
 code point (U+2115), the name of the character (DOUBLE-STRUCK CAPITAL N),
 and the sequence to type into Emacs to generate the character (\bN).
+
+The command \r is a little different to the others, because it gives
+access to a wide variety of Unicode arrows.  After typing \r, one can access
+the many available arrows by using the left, right, up, and down
+keys on the keyboard to navigate.
