@@ -456,6 +456,9 @@ definition to equivalent inference rules for judgements about equality.
     ------------
     zero + n = n
 
+    m : ℕ
+    n : ℕ
+    p : ℕ
     m + n = p
     -------------------
     (suc m) + n = suc p

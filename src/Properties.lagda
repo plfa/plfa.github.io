@@ -21,6 +21,7 @@ everything in the previous chapter is also found in the library module
 We also require propositional equality. -->
 
 \begin{code}
+open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
@@ -72,15 +73,9 @@ The answer is yes! We can prove a property holds for all naturals using
 
 ## Proof by induction
 
-Recall the definition of natural numbers.
-\begin{code}
-data ℕ : Set where
-  zero : ℕ
-  suc : ℕ → ℕ
-\end{code}
-This tells us that `zero` is a natural---the *base case*---and that if
-`m` is a natural then `suc m` is also a natural---the *inductive
-case*.
+Recall the definition of natural numbers consists of a *base case*
+which tells us that `zero` is a natural, and an *inductive case*
+which tells us that if `m` is a natural then `suc m` is also a natural.
 
 Proofs by induction follow the structure of this definition.  To prove
 a property of natural numbers by induction, we need prove two cases.
@@ -173,12 +168,10 @@ we must show to hold, become:
 In the inference rules, `n` and `p` are any arbitary natural numbers, so when we
 are done with the proof we know it holds for any `n` and `p` as well as any `m`.
 
-Recall the definition of addition.
-\begin{code}
-_+_ : ℕ → ℕ → ℕ
-zero    + n  =  n                -- (i)
-(suc m) + n  =  suc (m + n)      -- (ii)
-\end{code}
+Recall the definition of addition has two clauses. 
+
+    zero    + n  =  n                -- (i)
+    (suc m) + n  =  suc (m + n)      -- (ii)
 
 For the base case, we must show:
 
@@ -561,10 +554,9 @@ com+suc : ∀ (m n : ℕ) → n + suc m ≡ suc (n + m)
 com+suc m zero = refl
 com+suc m (suc n) rewrite com+suc m n = refl
 
-com : ∀ (m n : ℕ) → m + n ≡ n + m
-com zero n rewrite com+zero n = refl
-com (suc m) n rewrite com+suc m n | com m n = refl
-
+com+ : ∀ (m n : ℕ) → m + n ≡ n + m
+com+ zero n rewrite com+zero n = refl
+com+ (suc m) n rewrite com+suc m n | com+ m n = refl
 \end{code}
 Here we have renamed Lemma (x) and (xi) to `com+zero` and `com+suc`,
 respectively.  In the final line, rewriting with two equations
