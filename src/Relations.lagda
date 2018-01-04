@@ -107,14 +107,16 @@ ex₂ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
 
 ## Precedence
 
-We write `infix` to indicate that it is a parse error to write two
-adjacent comparisons, as it makes no sense to give `2 ≤ 4 ≤ 6` either
-the meaning `(2 ≤ 4) ≤ 6` or `(2 ≤ 4) ≤ 6`.The Agda standard library
-sets the precedence of `_≤_` at level 4, which means it binds less
-tightly that `_+_` at level 6, or `_*_` at level 7.
+We declare the precedence for comparison as follows.
 \begin{code}
 infix 4 _≤_
 \end{code}
+We set the precedence of `_≤_` at level 4, which means it binds less
+tightly that `_+_` at level 6 or `_*_` at level 7, meaning that `1 + 2
+≤ 3` parses as `(1 + 2) ≤ 3`.  We write `infix` to indicate that the
+operator does not associate to either the left or right, as it makes
+no sense to give `1 ≤ 2 ≤ 3` either the meaning `(1 ≤ 2) ≤ 3` or `1 ≤
+(2 ≤ 3)`.
 
 ## Properties of ordering relations
 
@@ -190,9 +192,9 @@ could instead have written `n≤p` but not used that variable on the
 right-hand side of the equation.
 
 In the inductive case, `m ≤ n` holds by `s≤s m≤n`, so it must be that `m`
-is of the form `suc m′` and `n` is of the form `suc n′` and `m≤n` is
+is `suc m′` and `n` is `suc n′` for some `m′` and `n′`, and `m≤n` is
 evidence that `m′ ≤ n′`.  In this case, the only way that `p ≤ n` can
-hold is by `s≤s n≤p`, where `p` is of the form `suc p′` and `n≤p` is
+hold is by `s≤s n≤p`, where `p` is `suc p′` for some `p′` and `n≤p` is
 evidence that `n′ ≤ p′`.  The inductive hypothesis `trans≤ m≤n n≤p`
 provides evidence that `m′ ≤ p′`, and applying `s≤s` to that gives
 evidence of the desired conclusion, `suc m′ ≤ suc p′`.
@@ -220,9 +222,9 @@ out to be immensely valuable, and one that we use often.
 Again, it is a good exercise to prove transitivity interactively in Emacs,
 using holes and the `^C ^C`, `^C ^,`, and `^C ^R` commands.
 
-## Antisymmetry
+## Anti-symmetry
 
-The third thing to prove about comparison is that it is antisymmetric:
+The third property to prove about comparison is that it is antisymmetric:
 for all naturals `m` and `n`, if both `m ≤ n` and `n ≤ m` hold, then
 `m ≡ n` holds.
 \begin{code}
@@ -234,18 +236,113 @@ Again, the proof is by induction over the evidence that `m ≤ n`
 and `n ≤ m` hold, and so we have left `m` and `n` implicit.
 
 In the base case, both relations hold by `z≤n`,
-so it must be the case that both `m` and `n` are `zero`,
+so it must be the case that `m` and `n` are both `zero`,
 in which case `m ≡ n` holds by reflexivity. (The reflexivity
-of equivlance, that is, not the reflexivity of comparison.)
+of equivalance, that is, not the reflexivity of comparison.)
 
-In the inductive case, `m ≤ n` holds by `s≤s m≤n` and `n ≤ m`
-holds by `s≤s n≤m`, 
+In the inductive case, `m ≤ n` holds by `s≤s m≤n` and `n ≤ m` holds by
+`s≤s n≤m`, so it must be that `m` is `suc m′` and `n` is `suc n′`, for
+some `m′` and `n′`, where `m≤n` is evidence that `m′ ≤ n′` and `n≤m`
+is evidence that `n′ ≤ m′`.  The inductive hypothesis `antisym≤ m≤n n≤m`
+establishes that `m′ ≡ n′`, and rewriting by this equation establishes
+that `m ≡ n` holds by reflexivity.
 
+## Disjunction
 
-Any ordering relation that is both reflexive and transitive is called
-a *preorder*, and any preorder that is also antisymmetric is a *partial order*.
-Hence, we have shown that "less than or equal" is a partial order.  We will
-later show that it satisfies the strong property of being a *total order*.
+In order to state totality, we need a way to formalise disjunction,
+the notion that given two propositions either one or the other holds.
+In Agda, we do so by declaring a suitable inductive type.
+\begin{code}
+data _⊎_ : Set → Set → Set where
+  left  : ∀ {A B : Set} → A → A ⊎ B
+  right : ∀ {A B : Set} → B → A ⊎ B
+\end{code}
+This tells us that if `A` and `B` are propositions then `A ⊎ B` is
+also a proposition.  Evidence that `A ⊎ B` holds is either of the form
+`left a`, where `a` is evidence that `A` holds, or `right b`, where
+`b` is evidence that `B` holds.
+
+We set the precedence of disjunction so that it binds less tightly
+than comparison.
+\begin{code}
+infix 1 _⊎_
+\end{code}
+
+## Total
+
+The fourth property to prove about comparison is that it is total:
+for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
+`m` and `n` are equal.
+\begin{code}
+total≤ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
+total≤ zero n =  left z≤n
+total≤ (suc m) zero =  right z≤n
+total≤ (suc m) (suc n) with total≤ m n
+... | left m≤n = left (s≤s m≤n)
+... | right n≤m = right (s≤s n≤m)
+\end{code}
+In this case the proof is by induction over both the first
+and second arguments.  We perform a case analysis:
+
++ *First base case*: If the first argument is `zero` and the
+  second argument is `n` then
+  the left disjunct holds, with `z≤n` as evidence that `zero ≤ n`.
+
++ *Second base case*: If the first argument is `suc m` and the
+  second argument is `n` then the right disjunct holds, with
+  `z≤n` as evidence that `n ≤ m`.
+
++ *Inductive case*: If the first argument is `suc m` and the
+  second argument is `suc n`, then the inductive hypothesis
+  `total≤ m n` establishes one of the following:
+
+  - The left disjunct of the inductive hypothesis holds with `m≤n` as
+    evidence that `m ≤ n`, in which case the left disjunct of the
+    proposition holds with `s≤s m≤n` as evidence that `suc m ≤ suc n`.
+
+  - The right disjunct of the inductive hypothesis holds with `n≤m` as
+    evidence that `n ≤ m`, in which case the right disjunct of the
+    proposition holds with `s≤s n≤m` as evidence that `suc n ≤ suc m`.
+
+This is our first use of the `with` clause in Agda.  The keyword
+`with` is followed by an expression, and one or more subsequent lines.
+Each line begins with an ellipsis (`...`) and a vertical bar (`|`),
+followed by a pattern to be matched against the expression, an equal
+sign, and the right-hand side of the equation.
+
+Every use of `with` is equivalent to defining a helper function.  For
+example, the definition above is equivalent to the following.
+\begin{code}
+total≤′ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
+total≤′ zero n = left z≤n
+total≤′ (suc m) zero = right z≤n
+total≤′ (suc m) (suc n) = helper (total≤′ m n)
+  where
+  helper : m ≤ n ⊎ n ≤ m → suc m ≤ suc n ⊎ suc n ≤ suc m
+  helper (left m≤n) = left (s≤s m≤n)
+  helper (right n≤m) = right (s≤s n≤m)
+\end{code}
+This is also our first use of a `where` clause in Agda.  The keyword
+`where` is followed by one or more definitions, which must be
+indented.  Any identifiers bound in the nested definition are in scope
+in the right-hand side of the preceding equation (in this case,
+`helper`), and any variables bound of the left-hand side of the
+preceding equation are in scope within the nested definition (in this
+case, `m` and `n`).
+
+If both arguments are equal, then both the left and right disjuncts
+hold and we could return evidence of either.  In the code above we
+always return the left disjunct, but there is a minor variant that
+always returns the right disjunct.
+\begin{code}
+total≤″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
+total≤″ m zero =  right z≤n
+total≤″ zero (suc n) =  left z≤n
+total≤″ (suc m) (suc n) with total≤″ m n
+... | left m≤n = left (s≤s m≤n)
+... | right n≤m = right (s≤s n≤m)
+\end{code}
+
 
 ## Monotonicity
 
@@ -264,7 +361,7 @@ mono+≤′ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
 mono+≤′ m n p m≤n rewrite com+ m p | com+ n p = mono+≤ p m n m≤n
 
 mono+≤″ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-mono+≤″ m n p q m≤n p≤q = trans≤′ (mono+≤′ m n p m≤n) (mono+≤ n p q p≤q)
+mono+≤″ m n p q m≤n p≤q = trans≤ (mono+≤′ m n p m≤n) (mono+≤ n p q p≤q)
 
 inverse+∸≤ : ∀ (m n : ℕ) → m ≤ n → (n ∸ m) + m ≡ n
 inverse+∸≤ zero n z≤n rewrite com+zero n  = refl

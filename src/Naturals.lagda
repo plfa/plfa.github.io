@@ -529,19 +529,19 @@ addition, and so write `n + m * n` to mean `n + (m * n)`.
 We also sometimes say that addition is *associates to the left*, and
 so write `m + n + p` to mean `(m + n) + p`.
 
-In Agda, it is built-in that application binds more tightly than any
-operator, but the precedence and associativity of infix operators
+In Agda the precedence and associativity of infix operators
 needs to be declared.
 \begin{code}
 infixl 7  _*_
 infixl 6  _+_  _∸_
 \end{code}
-This states that infix operators `_*_`, `_+_`, and `_∸_` all associate
-to the left, and that `_*_` has precedence level 7 and `_+_` and `_∸_`
-have precedence level 6, and so multiplication binds more tightly than
-both addition and subtraction.  One can also write `infixr` to
-indicate that an operator associates to the right, or just `infix`
-to indicate that it has no associativity and parentheses are always
+This states that operator `_*_` has precedence level 7, and that
+operators `_+_` and `_∸_` have precedence level 6.  Multiplication
+binds more tightly that addition or subtraction because it has a
+higher precedence.  Writing `infixl` indicates that all three
+operators associate to the left.  One can also write `infixr` to
+indicate that an operator associates to the right, or just `infix` to
+indicate that it has no associativity and parentheses are always
 required to disambiguate.
 
 ## More pragmas
