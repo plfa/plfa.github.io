@@ -267,6 +267,7 @@ than comparison.
 \begin{code}
 infix 1 _⊎_
 \end{code}
+Thus, `m ≤ n ⊎ n ≤ m` parses as `(m ≤ n) ⊎ (n ≤ m)`.
 
 ## Total
 
@@ -346,27 +347,63 @@ total≤″ (suc m) (suc n) with total≤″ m n
 
 ## Monotonicity
 
+If one bumps into both an operator and an order relation at
+a party, one may ask if the operator is *monotonic* with regard
+to the order relation.  For example, addition is monotonic
+with regard to comparison, meaning
+
+  ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
+
+Addition (precedence level 6) binds more tightly than comparison
+(precedence level 4), so `m + n ≤ p + q` parses as
+`(m + n) ≤ (p + q)`.
+
+The proof is straightforward using the techniques we have learned,
+and is best broken into three parts. First, we deal with the special
+case where the left arguments of addition are identical.
+\begin{code}
+mono+≤l : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
+mono+≤l zero p q p≤q =  p≤q
+mono+≤l (suc m) p q p≤q =  s≤s (mono+≤l m p q p≤q) 
+\end{code}
+The proof is by induction on the first argument.
+
++ *Base case*: The first argument is `zero` in which case
+  `zero + p ≤ zero + q` simplifies to `p ≤ q`, the evidence
+  for which is given by the explicit argument `p≤q`.
+
++ *Inductive case*: The first argument is `suc m`, in which case
+  `suc m + p ≤ suc m + q` simplifies to `suc (m + p) ≤ suc (m + q)`.
+  The inductive hypothesis `mono+≤₁ {m} p≤q` establishes that
+  `m + p ≤ m + q`, from which the desired conclusion follows
+  by an application of `s≤s`.
+
+Second, we deal with the special case where the right arguments
+of the addition are identical. This follows from the previous
+result and the commutativity of addition.
+\begin{code}
+mono+≤r : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
+mono+≤r m n p m≤n rewrite com+ m p | com+ n p = mono+≤l p m n m≤n
+\end{code}
+Rewriting by `com+ m p` and `com+ n p` converts `m + p ≤ n + p` into
+`p + m ≤ p + n`, which is proved by invoking `mono+≤left p m n m≤n`.
+
+Third, we combine the two previous results.
+\begin{code}
+mono+≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
+mono+≤ m n p q m≤n p≤q = trans≤ (mono+≤r m n p m≤n) (mono+≤l n p q p≤q)
+\end{code}
+Invoking `mono+≤r m n p m≤n` proves `m + p ≤ n + p` and invoking
+`mono+≤l n p q p≤q` proves `n + p ≤ n + q`, and combining these with
+transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 
-
-
-
+## Other results --- use these as exercises
 
 \begin{code}
-mono+≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
-mono+≤ zero p q p≤q =  p≤q
-mono+≤ (suc m) p q p≤q =  s≤s (mono+≤ m p q p≤q)
-
-mono+≤′ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
-mono+≤′ m n p m≤n rewrite com+ m p | com+ n p = mono+≤ p m n m≤n
-
-mono+≤″ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-mono+≤″ m n p q m≤n p≤q = trans≤ (mono+≤′ m n p m≤n) (mono+≤ n p q p≤q)
-
-inverse+∸≤ : ∀ (m n : ℕ) → m ≤ n → (n ∸ m) + m ≡ n
-inverse+∸≤ zero n z≤n rewrite com+zero n  = refl
-inverse+∸≤ (suc m) (suc n) (s≤s m≤n)
-  rewrite com+suc m (n ∸ m) | inverse+∸≤ m n m≤n = refl
+assoc+∸ : ∀ (m n : ℕ) → m ≤ n → m + (n ∸ m) ≡ n
+assoc+∸ zero n z≤n = refl
+assoc+∸ (suc m) (suc n) (s≤s m≤n) rewrite assoc+∸ m n m≤n = refl
 
 data _<_ : ℕ → ℕ → Set where
   z<s : ∀ {n : ℕ} → zero < suc n
