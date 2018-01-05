@@ -11,7 +11,7 @@ the next step is to define relations, such as *less than or equal*.
 
 \begin{code}
 open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Properties using (+-comm)
+open import Properties using (+-comm; +-identity; +-suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
@@ -383,7 +383,7 @@ monotonic on the left. This follows from the previous
 result and the commutativity of addition.
 \begin{code}
 +-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
-+-monoˡ-≤ m n p m≤n rewrite +-comm m p | +-comm n p = +-monoˡ-≤ p m n m≤n
++-monoˡ-≤ m n p m≤n rewrite +-comm m p | +-comm n p = +-monoʳ-≤ p m n m≤n
 \end{code}
 Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 `p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
@@ -398,30 +398,34 @@ Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 
-## Other results --- use these as exercises
+## Exercises
 
+We can define strict comparison similarly to comparison.
 \begin{code}
-assoc+∸ : ∀ (m n : ℕ) → m ≤ n → m + (n ∸ m) ≡ n
-assoc+∸ zero n z≤n = refl
-assoc+∸ (suc m) (suc n) (s≤s m≤n) rewrite assoc+∸ m n m≤n = refl
-
 data _<_ : ℕ → ℕ → Set where
   z<s : ∀ {n : ℕ} → zero < suc n
   s<s : ∀ {m n : ℕ} → m < n → suc m < suc n
 
 infix 4 _<_
-
-<implies≤ : ∀ {m n : ℕ} → m < n → suc m ≤ n
-<implies≤ z<s = s≤s z≤n
-<implies≤ (s<s m<n) = s≤s (<implies≤ m<n)
-
-≤implies< : ∀ {m n : ℕ} → suc m ≤ n → m < n
-≤implies< (s≤s z≤n) = z<s
-≤implies< (s≤s (s≤s m≤n)) = s<s (≤implies< (s≤s m≤n))
 \end{code}
 
-## Trichotomy
++ *Irreflexivity* Show that `n < n` never holds
+  for any natural `n`. (This requires negation,
+  introduced in the chapter on Logic.)
+  Name your proof `<-irrefl`.
 
++ *Transitivity* Show that
+
+  > if `m < n` and `n < p` then `m < p`
+
+  for all naturals `m`, `n`, and `p`. Name your proof `<-trans`.
+
++ *Trichotomy* Corresponding to anti-symmetry and totality
+  of comparison, we have trichotomy for strict comparison.
+  Show that for any given any naturals `m` and `n` that
+  `Trichotomy m n` holds, using the defintions below.
+  Name your proof `trichotomy`.
+  
 \begin{code}
 _>_ : ℕ → ℕ → Set
 n > m = m < n
@@ -432,22 +436,56 @@ data Trichotomy : ℕ → ℕ → Set where
   less : ∀ {m n : ℕ} → m < n → Trichotomy m n
   same : ∀ {m n : ℕ} → m ≡ n → Trichotomy m n
   more : ∀ {m n : ℕ} → m > n → Trichotomy m n
-
-trichotomy : ∀ (m n : ℕ) → Trichotomy m n
-trichotomy zero zero = same refl
-trichotomy zero (suc n) = less z<s
-trichotomy (suc m) zero = more z<s
-trichotomy (suc m) (suc n) with trichotomy m n
-... | less m<n = less (s<s m<n)
-... | same refl = same refl
-... | more n<m = more (s<s n<m)
-
 \end{code}
+
++ *Monotonicity* Show that
+
+  > if `m < n` and `p < q` then `m + n < p + q`.
+
+  Name your proof `+-mono-<`.
+
++ *Relate strict comparison to comparison*
+  Show that `m < n` if and only if `suc m ≤ n`.
+  Name the two parts of your proof
+  `<-implies-≤` and `≤-implies-<`
+
+  To confirm your understanding, you should prove transitivity, trichotomy,
+  and monotonicity for `<` directly by modifying
+  the original proofs for `≤`.  Once you've done so, you may then wish to redo
+  the proofs exploiting the last exercise, so each property of `<` becomes
+  an easy consequence of the corresponding property for `≤`.
+
++ *Even and odd* Another example of a useful relation is to define
+  even and odd numbers, as done below.  Using these definitions, show
+  that if `n` is even then there exists an `m` such that `n ≡ 2 * m`,
+  and if `n` is odd then there exists an `m` such that `n ≡ 2 * m + 1`.
+  (This exercise requires existentials from the chapter on Logic.)
+
+\begin{code}
+mutual
+  data even : ℕ → Set where
+    zero : even zero
+    suc : ∀ {n : ℕ} → odd n → even (suc n)
+  data odd : ℕ → Set where
+    suc : ∀ {n : ℕ} → even n → odd (suc n)
+\end{code}
+The keyword `mutual` indicates that the nested definitions
+are mutually recursive.
+
+<!-- Newer version of Agda?
+Because the two defintions are mutually recursive, the type
+`Even` and `Odd` must be declared before they are defined.  The
+declaration just repeats the first line of the definition, but without
+the keyword `where`. -->
+
 
 ## Unicode
 
 In this chapter we use the following unicode.
 
-    ≡  U+2261  IDENTICAL TO (\==)
-    ∀  U+2200  FOR ALL (\forall)
-    λ  U+03BB  GREEK SMALL LETTER LAMBDA (\Gl, \lambda)
+    ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
+    ˡ  U+02E1  MODIFIER LETTER SMALL L (\^l)
+    ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
+    ₁  U+2081  SUBSCRIPT ONE (\_1)
+    ₂  U+2082  SUBSCRIPT TWO (\_2)
+    

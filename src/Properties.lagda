@@ -582,7 +582,7 @@ right.
 
 + *Multiplication distributes over addition*. Show
 
-    (m + n) * p = m * p + n * p
+    (m + n) * p ≡ m * p + n * p
 
   for all naturals `m`, `n`, and `p`. Name your proof `*-distrib-+`.
 
@@ -594,7 +594,7 @@ right.
 
 + *Multiplication is commutative*. Show
 
-    m * n = n * m
+    m * n ≡ n * m
 
   for all naturals `m` and `n`.  As with commutativity of addition,
   you will need to formulate and prove suitable lemmas.
@@ -602,21 +602,21 @@ right.
 
 + *Monus from zero* Show
 
-    zero ∸ n = zero
+    zero ∸ n ≡ zero
 
   for all naturals `n`. Did your proof require induction?
   Name your proof `0∸n≡0`.
 
 + *Associativity of monus with addition* Show
 
-    m ∸ n ∸ p = m ∸ (n + p)
+    m ∸ n ∸ p ≡ m ∸ (n + p)
 
   for all naturals `m`, `n`, and `p`.
   Name your proof `∸-+-assoc`.
 
 ## Unicode
 
-In this chapter we use the following unicode.
+In this chapter we introduced the following unicode.
 
     ≡  U+2261  IDENTICAL TO (\==)
     ∀  U+2200  FOR ALL (\forall)
