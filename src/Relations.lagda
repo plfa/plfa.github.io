@@ -11,7 +11,7 @@ the next step is to define relations, such as *less than or equal*.
 
 \begin{code}
 open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Properties using (+-comm; +-identity; +-suc)
+open import Properties using (+-comm)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
