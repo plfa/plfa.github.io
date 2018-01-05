@@ -15,20 +15,22 @@ by their name, properties of *inductive datatypes* are proved by
 Each chapter will begin with a list of the imports we require from the
 Agda standard library.
 
-<!-- We will, of course, require the naturals;
-everything in the previous chapter is also found in the library module
-`Data.Nat`, so we import the required definitions from there.
-We also require propositional equality. -->
+<!-- We will, of course, require the naturals; everything in the
+previous chapter is also found in the library module `Data.Nat`, so we
+import the required definitions from there.  We also require
+propositional equality. -->
 
 \begin{code}
 open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
 \end{code}
 
 Each import consists of the keywords `open` and `import`, followed by
 the module name, followed by the keyword `using`, followed by the
 names of each identifier imported from the module, surrounded by
-parentheses and separated by semicolons.
+parentheses and separated by semicolons. Parentheses and semicolons
+are among the few characters that cannot appear in names, so we do not
+need extra spaces in the import list.
 
 
 ## Associativity
@@ -157,7 +159,6 @@ In order to prove associativity, we take `P m` to be the property
 Then the appropriate instances of the inference rules, which
 we must show to hold, become:
 
-    n : ℕ     p : ℕ
     -------------------------------
     (zero + n) + p ≡ zero + (n + p)
 
@@ -222,9 +223,9 @@ induction hypothesis.
 
 We encode this proof in Agda as follows.
 \begin{code}
-assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-assoc+ zero n p = refl
-assoc+ (suc m) n p rewrite assoc+ m n p = refl
++-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc zero n p = refl
++-assoc (suc m) n p rewrite +-assoc m n p = refl
 \end{code}
 Here we have named the proof `assoc+`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
@@ -290,15 +291,15 @@ in combination provide features that help to create proofs interactively.
 
 Begin by typing
 
-    assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-    assoc+ m n p = ?
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc m n p = ?
 
 The question mark indicates that you would like Agda to help with
 filling in that part of the code.  If you type `^C ^L` (control-C
 followed by control-L), the question mark will be replaced.
 
-    assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-    assoc+ m n p = { }0
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc m n p = { }0
 
 The empty braces are called a *hole*, and 0 is a number used for
 referring to the hole.  The hole may display highlighted in green.
@@ -319,9 +320,9 @@ the prompt:
 Typing `m` will cause a split on that variable, resulting
 in an update to the code.
 
-    assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-    assoc+ zero n p = { }0
-    assoc+ (suc m) n p = { }1
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc zero n p = { }0
+    +-assoc (suc m) n p = { }1
 
 There are now two holes, and the window at the bottom tells you what
 each is required to prove:
@@ -342,9 +343,9 @@ available to use in the proof.  The proof of the given goal is
 trivial, and going into the goal and typing `^C ^R` will fill it in,
 renumbering the remaining hole to 0:
 
-    assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-    assoc+ zero n p = refl
-    assoc+ (suc m) n p = { }0
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc zero n p = refl
+    +-assoc (suc m) n p = { }0
 
 Going into the new hold 0 and typing `^C ^,` will display the text:
 
@@ -358,9 +359,9 @@ Again, this gives the simplified goal and the available variables.
 In this case, we need to rewrite by the induction
 hypothesis, so let's edit the text accordingly:
 
-    assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-    assoc+ zero n p = refl
-    assoc+ (suc m) n p rewrite assoc+ m n p = { }0
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc zero n p = refl
+    +-assoc (suc m) n p rewrite +-assoc m n p = { }0
 
 Going into the remaining hole and typing `^C ^,` will show the
 goal is now trivial:
@@ -374,9 +375,9 @@ goal is now trivial:
 The proof of the given goal is trivial, and going into the goal and
 typing `^C ^R` will fill it in, completing the proof:
 
-    assoc+ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-    assoc+ zero n p = refl
-    assoc+ (suc m) n p rewrite assoc+ m n p = refl
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc zero n p = refl
+    +-assoc (suc m) n p rewrite +-assoc m n p = refl
 
 
 ## Creation, one last time
@@ -434,7 +435,6 @@ this by induction, we take `P m` to be the property
 Then the appropriate instances of the inference rules, which
 we must show to hold, become:
 
-    n : ℕ
     -------------------
     zero + n ≡ n + zero
 
@@ -546,29 +546,73 @@ QED.
 
 These proofs can be encoded concisely in Agda.
 \begin{code}
-com+zero : ∀ (n : ℕ) → n + zero ≡ n
-com+zero zero = refl
-com+zero (suc n) rewrite com+zero n = refl
++-identity : ∀ (n : ℕ) → n + zero ≡ n
++-identity zero = refl
++-identity (suc n) rewrite +-identity n = refl
 
-com+suc : ∀ (m n : ℕ) → n + suc m ≡ suc (n + m)
-com+suc m zero = refl
-com+suc m (suc n) rewrite com+suc m n = refl
++-suc : ∀ (m n : ℕ) → n + suc m ≡ suc (n + m)
++-suc m zero = refl
++-suc m (suc n) rewrite +-suc m n = refl
 
-com+ : ∀ (m n : ℕ) → m + n ≡ n + m
-com+ zero n rewrite com+zero n = refl
-com+ (suc m) n rewrite com+suc m n | com+ m n = refl
++-comm : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm zero n rewrite +-identity n = refl
++-comm (suc m) n rewrite +-suc m n | +-comm m n = refl
 \end{code}
-Here we have renamed Lemma (x) and (xi) to `com+zero` and `com+suc`,
-respectively.  In the final line, rewriting with two equations
-(lemma (xi) and the inductive hypothesis) is indicated by
-separating the two proofs of the relevant equations by a vertical bar;
-the rewrites on the left is performed before that on the right.
+Here we have renamed Lemma (x) and (xi) to `+-identity` and `+-suc`,
+respectively.  In the final line, rewriting with two equations is
+indicated by separating the two proofs of the relevant equations by a
+vertical bar; the rewrite on the left is performed before that on the
+right.
 
 ## Exercises
 
++ *Swapping terms*. Show
 
+    m + (n + p) ≡ n + (m + p)
 
+  for all naturals `m`, `n`, and `p`. No induction is needed,
+  just apply the previous results which show addition
+  is associative and commutative.  You may need to use
+  one or more of the following functions from the standard library:
 
+     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
+     trans : ∀ {m n p : ℕ} → m ≡ n → n ≡ p → m ≡ p
+
+  Name your proof `+-swap`.  
+
++ *Multiplication distributes over addition*. Show
+
+    (m + n) * p = m * p + n * p
+
+  for all naturals `m`, `n`, and `p`. Name your proof `*-distrib-+`.
+
++ *Multiplication is associative*. Show
+
+    (m * n) * p ≡ m * (n * p)
+
+  for all naturals `m`, `n`, and `p`. Name your proof `*-assoc`.
+
++ *Multiplication is commutative*. Show
+
+    m * n = n * m
+
+  for all naturals `m` and `n`.  As with commutativity of addition,
+  you will need to formulate and prove suitable lemmas.
+  Name your proof `*-comm`.
+
++ *Monus from zero* Show
+
+    zero ∸ n = zero
+
+  for all naturals `n`. Did your proof require induction?
+  Name your proof `0∸n≡0`.
+
++ *Associativity of monus with addition* Show
+
+    m ∸ n ∸ p = m ∸ (n + p)
+
+  for all naturals `m`, `n`, and `p`.
+  Name your proof `∸-+-assoc`.
 
 ## Unicode
 
@@ -576,4 +620,3 @@ In this chapter we use the following unicode.
 
     ≡  U+2261  IDENTICAL TO (\==)
     ∀  U+2200  FOR ALL (\forall)
-    λ  U+03BB  GREEK SMALL LETTER LAMBDA (\Gl, \lambda)

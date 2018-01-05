@@ -11,7 +11,7 @@ the next step is to define relations, such as *less than or equal*.
 
 \begin{code}
 open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Properties using (com+; com+zero; com+suc)
+open import Properties using (+-comm)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
@@ -158,13 +158,13 @@ such relations?)
 The first property to prove about comparison is that it is reflexive:
 for any natural `n`, the relation `n ≤ n` holds.
 \begin{code}
-refl≤ : ∀ (n : ℕ) → n ≤ n
-refl≤ zero = z≤n
-refl≤ (suc n) = s≤s (refl≤ n)
+≤-refl : ∀ (n : ℕ) → n ≤ n
+≤-refl zero = z≤n
+≤-refl (suc n) = s≤s (≤-refl n)
 \end{code}
 The proof is a straightforward induction on `n`.  In the base case,
 `zero ≤ zero` holds by `z≤n`.  In the inductive case, the inductive
-hypothesis `refl≤ n` gives us a proof of `n ≤ n`, and applying `s≤s`
+hypothesis `≤-refl n` gives us a proof of `n ≤ n`, and applying `s≤s`
 to that yields a proof of `suc n ≤ suc n`.
 
 It is a good exercise to prove reflexivity interactively in Emacs,
@@ -177,9 +177,9 @@ The second property to prove about comparison is that it is
 transitive: for any naturals `m`, `n`, andl `p`, if `m ≤ n` and `n ≤
 p` hold, then `m ≤ p` holds.
 \begin{code}
-trans≤ : ∀ {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p
-trans≤ z≤n _ = z≤n
-trans≤ (s≤s m≤n) (s≤s n≤p) = s≤s (trans≤ m≤n n≤p)
+≤-trans : ∀ {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p
+≤-trans z≤n _ = z≤n
+≤-trans (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans m≤n n≤p)
 \end{code}
 Here the proof is most easily thought of as by induction on the
 *evidence* that `m ≤ n`, so we have left `m`, `n`, and `p` implicit.
@@ -195,20 +195,20 @@ In the inductive case, `m ≤ n` holds by `s≤s m≤n`, so it must be that `m`
 is `suc m′` and `n` is `suc n′` for some `m′` and `n′`, and `m≤n` is
 evidence that `m′ ≤ n′`.  In this case, the only way that `p ≤ n` can
 hold is by `s≤s n≤p`, where `p` is `suc p′` for some `p′` and `n≤p` is
-evidence that `n′ ≤ p′`.  The inductive hypothesis `trans≤ m≤n n≤p`
+evidence that `n′ ≤ p′`.  The inductive hypothesis `≤-trans m≤n n≤p`
 provides evidence that `m′ ≤ p′`, and applying `s≤s` to that gives
 evidence of the desired conclusion, `suc m′ ≤ suc p′`.
 
-The case `trans≤ (s≤s m≤n) z≤n` cannot arise, since the first piece of
+The case `≤-trans (s≤s m≤n) z≤n` cannot arise, since the first piece of
 evidence implies `n` must be `suc n′` for some `n′` while the second
 implies `n` must be `zero`.  Agda can determine that such a case cannot
 arise, and does not require it to be listed.
 
 Alternatively, we could make the implicit parameters explicit.
 \begin{code}
-trans≤′ : ∀ (m n p : ℕ) → m ≤ n → n ≤ p → m ≤ p
-trans≤′ zero n p z≤n _ = z≤n
-trans≤′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (trans≤′ m n p m≤n n≤p)
+≤-trans′ : ∀ (m n p : ℕ) → m ≤ n → n ≤ p → m ≤ p
+≤-trans′ zero n p z≤n _ = z≤n
+≤-trans′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans′ m n p m≤n n≤p)
 \end{code}
 One might argue that this is clearer, since it shows us the forms of `m`, `n`,
 and `p`, or one might argue that the extra length obscures the essence of the
@@ -228,9 +228,9 @@ The third property to prove about comparison is that it is antisymmetric:
 for all naturals `m` and `n`, if both `m ≤ n` and `n ≤ m` hold, then
 `m ≡ n` holds.
 \begin{code}
-antisym≤ : ∀ {m n : ℕ} → m ≤ n → n ≤ m → m ≡ n
-antisym≤ z≤n z≤n = refl
-antisym≤ (s≤s m≤n) (s≤s n≤m) rewrite antisym≤ m≤n n≤m = refl
+≤-antisym : ∀ {m n : ℕ} → m ≤ n → n ≤ m → m ≡ n
+≤-antisym z≤n z≤n = refl
+≤-antisym (s≤s m≤n) (s≤s n≤m) rewrite ≤-antisym m≤n n≤m = refl
 \end{code}
 Again, the proof is by induction over the evidence that `m ≤ n`
 and `n ≤ m` hold, and so we have left `m` and `n` implicit.
@@ -243,7 +243,7 @@ of equivalance, that is, not the reflexivity of comparison.)
 In the inductive case, `m ≤ n` holds by `s≤s m≤n` and `n ≤ m` holds by
 `s≤s n≤m`, so it must be that `m` is `suc m′` and `n` is `suc n′`, for
 some `m′` and `n′`, where `m≤n` is evidence that `m′ ≤ n′` and `n≤m`
-is evidence that `n′ ≤ m′`.  The inductive hypothesis `antisym≤ m≤n n≤m`
+is evidence that `n′ ≤ m′`.  The inductive hypothesis `≤-antisym m≤n n≤m`
 establishes that `m′ ≡ n′`, and rewriting by this equation establishes
 that `m ≡ n` holds by reflexivity.
 
@@ -254,12 +254,12 @@ the notion that given two propositions either one or the other holds.
 In Agda, we do so by declaring a suitable inductive type.
 \begin{code}
 data _⊎_ : Set → Set → Set where
-  left  : ∀ {A B : Set} → A → A ⊎ B
-  right : ∀ {A B : Set} → B → A ⊎ B
+  inj₁  : ∀ {A B : Set} → A → A ⊎ B
+  inj₂ : ∀ {A B : Set} → B → A ⊎ B
 \end{code}
 This tells us that if `A` and `B` are propositions then `A ⊎ B` is
 also a proposition.  Evidence that `A ⊎ B` holds is either of the form
-`left a`, where `a` is evidence that `A` holds, or `right b`, where
+`inj₁ a`, where `a` is evidence that `A` holds, or `inj₂ b`, where
 `b` is evidence that `B` holds.
 
 We set the precedence of disjunction so that it binds less tightly
@@ -275,19 +275,19 @@ The fourth property to prove about comparison is that it is total:
 for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 `m` and `n` are equal.
 \begin{code}
-total≤ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-total≤ zero n =  left z≤n
-total≤ (suc m) zero =  right z≤n
-total≤ (suc m) (suc n) with total≤ m n
-... | left m≤n = left (s≤s m≤n)
-... | right n≤m = right (s≤s n≤m)
+≤-total : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
+≤-total zero n =  inj₁ z≤n
+≤-total (suc m) zero =  inj₂ z≤n
+≤-total (suc m) (suc n) with ≤-total m n
+... | inj₁ m≤n = inj₁ (s≤s m≤n)
+... | inj₂ n≤m = inj₂ (s≤s n≤m)
 \end{code}
 In this case the proof is by induction over both the first
 and second arguments.  We perform a case analysis:
 
 + *First base case*: If the first argument is `zero` and the
   second argument is `n` then
-  the left disjunct holds, with `z≤n` as evidence that `zero ≤ n`.
+  the first disjunct holds, with `z≤n` as evidence that `zero ≤ n`.
 
 + *Second base case*: If the first argument is `suc m` and the
   second argument is `n` then the right disjunct holds, with
@@ -295,14 +295,14 @@ and second arguments.  We perform a case analysis:
 
 + *Inductive case*: If the first argument is `suc m` and the
   second argument is `suc n`, then the inductive hypothesis
-  `total≤ m n` establishes one of the following:
+  `≤-total m n` establishes one of the following:
 
-  - The left disjunct of the inductive hypothesis holds with `m≤n` as
-    evidence that `m ≤ n`, in which case the left disjunct of the
+  - The first disjunct of the inductive hypothesis holds with `m≤n` as
+    evidence that `m ≤ n`, in which case the first disjunct of the
     proposition holds with `s≤s m≤n` as evidence that `suc m ≤ suc n`.
 
-  - The right disjunct of the inductive hypothesis holds with `n≤m` as
-    evidence that `n ≤ m`, in which case the right disjunct of the
+  - The second disjunct of the inductive hypothesis holds with `n≤m` as
+    evidence that `n ≤ m`, in which case the second disjunct of the
     proposition holds with `s≤s n≤m` as evidence that `suc n ≤ suc m`.
 
 This is our first use of the `with` clause in Agda.  The keyword
@@ -314,14 +314,14 @@ sign, and the right-hand side of the equation.
 Every use of `with` is equivalent to defining a helper function.  For
 example, the definition above is equivalent to the following.
 \begin{code}
-total≤′ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-total≤′ zero n = left z≤n
-total≤′ (suc m) zero = right z≤n
-total≤′ (suc m) (suc n) = helper (total≤′ m n)
+≤-total′ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
+≤-total′ zero n = inj₁ z≤n
+≤-total′ (suc m) zero = inj₂ z≤n
+≤-total′ (suc m) (suc n) = helper (≤-total′ m n)
   where
   helper : m ≤ n ⊎ n ≤ m → suc m ≤ suc n ⊎ suc n ≤ suc m
-  helper (left m≤n) = left (s≤s m≤n)
-  helper (right n≤m) = right (s≤s n≤m)
+  helper (inj₁ m≤n) = inj₁ (s≤s m≤n)
+  helper (inj₂ n≤m) = inj₂ (s≤s n≤m)
 \end{code}
 This is also our first use of a `where` clause in Agda.  The keyword
 `where` is followed by one or more definitions, which must be
@@ -331,17 +331,17 @@ in the right-hand side of the preceding equation (in this case,
 preceding equation are in scope within the nested definition (in this
 case, `m` and `n`).
 
-If both arguments are equal, then both the left and right disjuncts
+If both arguments are equal, then both the first and second disjuncts
 hold and we could return evidence of either.  In the code above we
-always return the left disjunct, but there is a minor variant that
-always returns the right disjunct.
+always return the first disjunct, but there is a minor variant that
+always returns the second disjunct.
 \begin{code}
-total≤″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-total≤″ m zero =  right z≤n
-total≤″ zero (suc n) =  left z≤n
-total≤″ (suc m) (suc n) with total≤″ m n
-... | left m≤n = left (s≤s m≤n)
-... | right n≤m = right (s≤s n≤m)
+≤-total″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
+≤-total″ m zero =  inj₂ z≤n
+≤-total″ zero (suc n) =  inj₁ z≤n
+≤-total″ (suc m) (suc n) with ≤-total″ m n
+... | inj₁ m≤n = inj₁ (s≤s m≤n)
+... | inj₂ n≤m = inj₂ (s≤s n≤m)
 \end{code}
 
 
@@ -360,11 +360,11 @@ Addition (precedence level 6) binds more tightly than comparison
 
 The proof is straightforward using the techniques we have learned,
 and is best broken into three parts. First, we deal with the special
-case where the left arguments of addition are identical.
+case of showing addition is monotonic on the right.
 \begin{code}
-mono+≤l : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
-mono+≤l zero p q p≤q =  p≤q
-mono+≤l (suc m) p q p≤q =  s≤s (mono+≤l m p q p≤q) 
++-monoʳ-≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
++-monoʳ-≤ zero p q p≤q =  p≤q
++-monoʳ-≤ (suc m) p q p≤q =  s≤s (+-monoʳ-≤ m p q p≤q) 
 \end{code}
 The proof is by induction on the first argument.
 
@@ -374,27 +374,27 @@ The proof is by induction on the first argument.
 
 + *Inductive case*: The first argument is `suc m`, in which case
   `suc m + p ≤ suc m + q` simplifies to `suc (m + p) ≤ suc (m + q)`.
-  The inductive hypothesis `mono+≤₁ {m} p≤q` establishes that
+  The inductive hypothesis `+-monoʳ-≤ m p q p≤q` establishes that
   `m + p ≤ m + q`, from which the desired conclusion follows
   by an application of `s≤s`.
 
-Second, we deal with the special case where the right arguments
-of the addition are identical. This follows from the previous
+Second, we deal with the special case of showing addition is
+monotonic on the left. This follows from the previous
 result and the commutativity of addition.
 \begin{code}
-mono+≤r : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
-mono+≤r m n p m≤n rewrite com+ m p | com+ n p = mono+≤l p m n m≤n
++-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
++-monoˡ-≤ m n p m≤n rewrite +-comm m p | +-comm n p = +-monoˡ-≤ p m n m≤n
 \end{code}
-Rewriting by `com+ m p` and `com+ n p` converts `m + p ≤ n + p` into
-`p + m ≤ p + n`, which is proved by invoking `mono+≤left p m n m≤n`.
+Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
+`p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
 
 Third, we combine the two previous results.
 \begin{code}
 mono+≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-mono+≤ m n p q m≤n p≤q = trans≤ (mono+≤r m n p m≤n) (mono+≤l n p q p≤q)
+mono+≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
 \end{code}
-Invoking `mono+≤r m n p m≤n` proves `m + p ≤ n + p` and invoking
-`mono+≤l n p q p≤q` proves `n + p ≤ n + q`, and combining these with
+Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
+`+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 

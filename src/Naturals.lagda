@@ -452,13 +452,9 @@ Again, it is possible to assign our definition a meaning without
 resorting to unpermitted circularities.  We do so by reducing our
 definition to equivalent inference rules for judgements about equality.
 
-    n : ℕ
     ------------
     zero + n = n
 
-    m : ℕ
-    n : ℕ
-    p : ℕ
     m + n = p
     -------------------
     (suc m) + n = suc p
