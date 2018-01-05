@@ -21,11 +21,8 @@ mutual
   data odd : ℕ → Set where
     suc : ∀ {n : ℕ} → even n → odd (suc n)
 
-+-lemma : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
++-lemma : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + suc (m + 0)
 +-lemma m rewrite +-identity m | +-suc m m = refl
-
-+-lemma′ : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
-+-lemma′ m rewrite +-suc m (m + 0) = {!!}
 
 mutual
   is-even : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
@@ -36,3 +33,12 @@ mutual
   is-odd : ∀ (n : ℕ) → odd n → ∃(λ (m : ℕ) → n ≡ 1 + 2 * m)
   is-odd (suc n) (suc evenn) with is-even n evenn
   ... | m , n≡2*m rewrite n≡2*m = m , refl
+
++-lemma′ : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + suc (m + 0)
++-lemma′ m rewrite +-suc m (m + 0) = {!!}
+
+is-even′ : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
+is-even′ zero zero =  zero , refl
+is-even′ (suc n) (suc oddn) with is-odd n oddn
+... | m , n≡1+2*m rewrite n≡1+2*m | +-identity m | +-suc m m = suc m , {!!}
+

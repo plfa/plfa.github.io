@@ -481,7 +481,7 @@ the keyword `where`. -->
 
 ## Unicode
 
-In this chapter we use the following unicode.
+This chapter introduces the following unicode.
 
     ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
     ˡ  U+02E1  MODIFIER LETTER SMALL L (\^l)

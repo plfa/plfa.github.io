@@ -563,8 +563,9 @@ of the logarithms of *m* and *n*.
 
 ## Unicode
 
-In each chapter, we will list at the end all unicode characters.
-In this chapter we use the following.
+In each chapter, we will list at the end all unicode characters that
+first appear in that chapter.  This chapter introduces the following
+unicode.
 
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
     →  U+2192  RIGHTWARDS ARROW (\to, \r)

@@ -616,7 +616,7 @@ right.
 
 ## Unicode
 
-In this chapter we introduced the following unicode.
+This chapter introduces the following unicode.
 
     ≡  U+2261  IDENTICAL TO (\==)
     ∀  U+2200  FOR ALL (\forall)
