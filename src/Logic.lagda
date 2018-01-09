@@ -163,31 +163,18 @@ and `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
 
 Distribution of `×` over `⊎` is an isomorphism.
 \begin{code}
-{-
-data _≃_ : Set → Set → Set where
-  mk-≃ : ∀ {A B : Set} → (f : A → B) → (g : B → A) →
-          (∀ (x : A) → g (f x) ≡ x) → (∀ (y : B) → f (g y) ≡ y) → A ≃ B
-
 ×-distributes-+ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
-×-distributes-+ = mk-≃ f g gf fg
-  where
-
-  f : ∀ {A B C : Set} → (A ⊎ B) × C → (A × C) ⊎ (B × C)
-  f (inj₁ a , c) = inj₁ (a , c)
-  f (inj₂ b , c) = inj₂ (b , c)
-
-  g : ∀ {A B C : Set} → (A × C) ⊎ (B × C) → (A ⊎ B) × C
-  g (inj₁ (a , c)) = (inj₁ a , c)
-  g (inj₂ (b , c)) = (inj₂ b , c)
-
-  gf : ∀ {A B C : Set} → (x : (A ⊎ B) × C) → g (f x) ≡ x
-  gf (inj₁ a , c) = refl
-  gf (inj₂ b , c) = refl
-
-  fg : ∀ {A B C : Set} → (y : (A × C) ⊎ (B × C)) → f (g y) ≡ y
-  fg (inj₁ (a , c)) = refl
-  fg (inj₂ (b , c)) = refl
--}
+×-distributes-+ =
+  record {
+    to   = λ { (inj₁ a , c) → inj₁ (a , c) ;
+               (inj₂ b , c) → inj₂ (b , c) } ;
+    fro  = {!!} ; -- λ { inj₁ (a , c) → (inj₁ a , c) ;
+                  --     inj₂ (b , c) → (inj₂ b , c) } ;
+    invˡ = {!!} ; -- λ { (inj₁ a , c) → refl ;
+                  --     (inj₂ b , c) → refl } ;
+    invʳ = {!!}   -- λ { inj₁ (a , c) → refl ;
+                  --     inj₂ (b , c) → refl }               
+  }
 \end{code}
 
 Distribution of `⊎` over `×` is half an isomorphism.
