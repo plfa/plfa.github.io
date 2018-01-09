@@ -166,14 +166,14 @@ Distribution of `×` over `⊎` is an isomorphism.
 ×-distributes-+ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
 ×-distributes-+ =
   record {
-    to   = λ { (inj₁ a , c) → inj₁ (a , c) ;
-               (inj₂ b , c) → inj₂ (b , c) } ;
-    fro  = {!!} ; -- λ { inj₁ (a , c) → (inj₁ a , c) ;
-                  --     inj₂ (b , c) → (inj₂ b , c) } ;
-    invˡ = {!!} ; -- λ { (inj₁ a , c) → refl ;
-                  --     (inj₂ b , c) → refl } ;
-    invʳ = {!!}   -- λ { inj₁ (a , c) → refl ;
-                  --     inj₂ (b , c) → refl }               
+    to   = λ { (inj₁ a , c) → (inj₁ (a , c)) ;
+               (inj₂ b , c) → (inj₂ (b , c)) } ;
+    fro  = λ { (inj₁ (a , c)) → (inj₁ a , c) ;
+               (inj₂ (b , c)) → (inj₂ b , c) } ;
+    invˡ = λ { (inj₁ a , c) → refl ;
+               (inj₂ b , c) → refl } ;
+    invʳ = λ { (inj₁ (a , c)) → refl ;
+               (inj₂ (b , c)) → refl }               
   }
 \end{code}
 
