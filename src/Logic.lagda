@@ -68,11 +68,11 @@ and `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
 Distribution of `×` over `⊎` is an isomorphism.
 \begin{code}
 data _≃_ : Set → Set → Set where
-  iso : ∀ {A B : Set} → (f : A → B) → (g : B → A) →
+  mk-≃ : ∀ {A B : Set} → (f : A → B) → (g : B → A) →
           (∀ (x : A) → g (f x) ≡ x) → (∀ (y : B) → f (g y) ≡ y) → A ≃ B
 
 ×-distributes-+ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
-×-distributes-+ = iso f g gf fg
+×-distributes-+ = mk-≃ f g gf fg
   where
 
   f : ∀ {A B C : Set} → (A ⊎ B) × C → (A × C) ⊎ (B × C)
@@ -94,12 +94,12 @@ data _≃_ : Set → Set → Set where
 
 Distribution of `⊎` over `×` is half an isomorphism.
 \begin{code}
-data _≃ʳ_ : Set → Set → Set where
-  isoʳ : ∀ {A B : Set} → (f : A → B) → (g : B → A) →
-          (∀ (x : A) → g (f x) ≡ x) → A ≃ʳ B
+data _≲_ : Set → Set → Set where
+  mk-≲ : ∀ {A B : Set} → (f : A → B) → (g : B → A) →
+          (∀ (x : A) → g (f x) ≡ x) → A ≲ B
 
-+-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≃ʳ ((A ⊎ C) × (B ⊎ C))
-+-distributes-× =  isoʳ f g gf
++-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
++-distributes-× =  mk-≲ f g gf
   where
 
   f : ∀ {A B C : Set} → (A × B) ⊎ C → (A ⊎ C) × (B ⊎ C)

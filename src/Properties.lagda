@@ -518,27 +518,27 @@ QED.
 
 Lemma (xi).
 
-    n + suc m ≡ suc (n + m)
+    m + suc n ≡ suc (m + n)
 
-Proof. By induction on `n`.
+Proof. By induction on `m`.
 
 Base case.
 
-       zero + suc m
+       zero + suc n
     ≡    (i)
-       suc m
+       suc n
     ≡    (i)
-       suc (zero + m)
+       suc (zero + n)
 
 Inductive case.
 
-       suc n + suc m
+       suc m + suc n
     ≡    (ii)
-       suc (n + suc m)
+       suc (m + suc n)
     ≡    (inductive hypothesis)
-       suc (suc (n + m))
+       suc (suc (m + n))
     ≡    (ii)
-       suc (suc n + m)
+       suc (suc m + n)
 
 QED.
 
@@ -550,13 +550,13 @@ These proofs can be encoded concisely in Agda.
 +-identity zero = refl
 +-identity (suc n) rewrite +-identity n = refl
 
-+-suc : ∀ (m n : ℕ) → n + suc m ≡ suc (n + m)
-+-suc m zero = refl
-+-suc m (suc n) rewrite +-suc m n = refl
++-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
++-suc zero n = refl
++-suc (suc m) n rewrite +-suc m n = refl
 
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm zero n rewrite +-identity n = refl
-+-comm (suc m) n rewrite +-suc m n | +-comm m n = refl
++-comm (suc m) n rewrite +-suc n m | +-comm m n = refl
 \end{code}
 Here we have renamed Lemma (x) and (xi) to `+-identity` and `+-suc`,
 respectively.  In the final line, rewriting with two equations is

@@ -457,17 +457,17 @@ data Trichotomy : ℕ → ℕ → Set where
 
 + *Even and odd* Another example of a useful relation is to define
   even and odd numbers, as done below.  Using these definitions, show
-  that if `n` is even then there exists an `m` such that `n ≡ 2 * m`,
-  and if `n` is odd then there exists an `m` such that `n ≡ 2 * m + 1`.
-  (This exercise requires existentials from the chapter on Logic.)
+  - the sum of two even numbers is even
+  - the sum of an even and an odd number is odd
+  - the sum of two odd numbers is even
 
 \begin{code}
 mutual
   data even : ℕ → Set where
-    zero : even zero
-    suc : ∀ {n : ℕ} → odd n → even (suc n)
+    ev-zero : even zero
+    ev-suc : ∀ {n : ℕ} → odd n → even (suc n)
   data odd : ℕ → Set where
-    suc : ∀ {n : ℕ} → even n → odd (suc n)
+    od-suc : ∀ {n : ℕ} → even n → odd (suc n)
 \end{code}
 The keyword `mutual` indicates that the nested definitions
 are mutually recursive.

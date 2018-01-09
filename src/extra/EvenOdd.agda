@@ -2,9 +2,9 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (∃; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 
-+-identity : ∀ (n : ℕ) → n + zero ≡ n
++-identity : ∀ (m : ℕ) → m + zero ≡ m
 +-identity zero = refl
-+-identity (suc n) rewrite +-identity n = refl
++-identity (suc m) rewrite +-identity m = refl
 
 +-suc : ∀ (m n : ℕ) → n + suc m ≡ suc (n + m)
 +-suc m zero = refl
@@ -35,7 +35,7 @@ mutual
   ... | m , n≡2*m rewrite n≡2*m = m , refl
 
 +-lemma′ : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + suc (m + 0)
-+-lemma′ m rewrite +-suc m (m + 0) = {!!}
++-lemma′ m rewrite +-suc (m + 0) m = refl
 
 is-even′ : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
 is-even′ zero zero =  zero , refl

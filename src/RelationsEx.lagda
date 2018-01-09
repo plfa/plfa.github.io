@@ -47,6 +47,22 @@ trichotomy (suc m) (suc n) with trichotomy m n
 *Even and odd*
 
 \begin{code}
++-evev : ∀ {m n : ℕ} → even m → even n → even (m + n)
++-evev ev-zero evn = evn
++-evev (ev-suc (od-suc evm)) evn = ev-suc (od-suc (+-evev evm evn))
+
++-evod : ∀ {m n : ℕ} → even m → odd n → odd (m + n)
++-evod ev-zero odn = odn
++-evod (ev-suc (od-suc evm)) odn = od-suc (ev-suc (+-evod evm odn))
+
++-odev : ∀ {m n : ℕ} → odd m → even n → odd (m + n)
++-odev (od-suc evm) evn = od-suc (+-evev evm evn)
+
++-odod : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
++-odod (od-suc evm) odn = ev-suc (+-evod evm odn)
+\end{code}
+
+\begin{code}
 +-lemma : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
 +-lemma m rewrite +-identity m | +-suc m m = refl
 
@@ -55,12 +71,12 @@ trichotomy (suc m) (suc n) with trichotomy m n
 
 mutual
   is-even : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
-  is-even zero zero =  zero , refl
-  is-even (suc n) (suc oddn) with is-odd n oddn
+  is-even zero ev-zero =  zero , refl
+  is-even (suc n) (ev-suc odn) with is-odd n odn
   ... | m , n≡1+2*m rewrite n≡1+2*m | +-lemma m = suc m , refl
 
   is-odd : ∀ (n : ℕ) → odd n → ∃(λ (m : ℕ) → n ≡ 1 + 2 * m)
-  is-odd (suc n) (suc evenn) with is-even n evenn
+  is-odd (suc n) (od-suc evn) with is-even n evn
   ... | m , n≡2*m rewrite n≡2*m = m , refl
 \end{code}
 
