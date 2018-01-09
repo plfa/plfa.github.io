@@ -4,8 +4,9 @@ import Relation.Binary.PropositionalEquality as Eq
 import Relation.Binary.PreorderReasoning as Re
 
 module ReEq = Re (Eq.preorder ℕ)
-open ReEq using (begin_; _∎) renaming (_≈⟨⟩_ to _≡⟨⟩_; _∼⟨_⟩_ to _≡⟨_⟩_)
+open ReEq using (begin_; _∎; _IsRelatedTo_) renaming (_≈⟨⟩_ to _≡⟨⟩_; _∼⟨_⟩_ to _≡⟨_⟩_)
 open Eq using (_≡_; refl; sym; trans)
+
 
 lift : ∀ {m n : ℕ} → m ≡ n → suc m ≡ suc n
 lift refl = refl
