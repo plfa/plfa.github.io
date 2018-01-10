@@ -15,6 +15,7 @@ function, dependent product, Martin Löf equivalence).
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
+open import Data.Nat using (ℕ)
 \end{code}
 
 This chapter introduces the basic concepts of logic, including
@@ -48,7 +49,6 @@ record _≃_ (A B : Set) : Set where
     fro : B → A
     invˡ : ∀ (x : A) → fro (to x) ≡ x
     invʳ : ∀ (y : B) → to (fro y) ≡ y
-
 open _≃_
 \end{code}
 Let's unpack the definition. An isomorphism between sets `A` and `B` consists
@@ -57,53 +57,112 @@ of four things:
 + A function `fro` from `B` back to `A`,
 + Evidence `invˡ` asserting that `to` followed by `from` is the identity,
 + Evidence `invʳ` asserting that `from` followed by `to` is the identity.
+The declaration `open _≃_` makes avaialable the names `to`, `fro`,
+`invˡ`, and `invʳ`, otherwise we would need to write `_≃_.to` and so on.
 
+The above is our first example of a record declaration. It is equivalent
+to a corresponding inductive data declaration.
+\begin{code}
+data _≃′_ : Set → Set → Set where
+  mk-≃′ : ∀ {A B : Set} →
+         ∀ (to : A → B) →
+         ∀ (fro : B → A) → 
+         ∀ (invˡ : (∀ (x : A) → fro (to x) ≡ x)) →
+         ∀ (invʳ : (∀ (y : B) → to (fro y) ≡ y)) →
+         A ≃′ B
+
+to′ : ∀ {A B : Set} → (A ≃′ B) → (A → B)
+to′ (mk-≃′ f g gfx≡x fgy≡y) = f
+
+fro′ : ∀ {A B : Set} → (A ≃′ B) → (B → A)
+fro′ (mk-≃′ f g gfx≡x fgy≡y) = g
+
+invˡ′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (x : A) → fro′ A≃B (to′ A≃B x) ≡ x)
+invˡ′ (mk-≃′ f g gfx≡x fgy≡y) = gfx≡x
+
+invʳ′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (y : B) → to′ A≃B (fro′ A≃B y) ≡ y)
+invʳ′ (mk-≃′ f g gfx≡x fgy≡y) = fgy≡y
+\end{code}
+We construct values of the record type with the syntax:
+
+    record
+      { to = f
+      ; fro = g
+      ; invˡ = gfx≡x
+      ; invʳ = fgy≡y
+      }
+
+which corresponds to using the constructor of the corresponding
+inductive type:
+
+    mk-≃′ f g gfx≡x fgy≡y
+
+where `f`, `g`, `gfx≡x`, and `fgy≡y` are values of suitable types.
+      
 Isomorphism is an equivalence, meaning that it is reflexive, symmetric,
 and transitive.  To show isomorphism is reflexive, we take both `to`
 and `fro` to be the identity function.
 \begin{code}
 ≃-refl : ∀ {A : Set} → A ≃ A
 ≃-refl =
-  record { to = λ x → x ; fro = λ y → y ; invˡ = λ x → refl ; invʳ = λ y → refl }
+  record
+    { to = λ x → x
+    ; fro = λ y → y
+    ; invˡ = λ x → refl
+    ; invʳ = λ y → refl
+    } 
 \end{code}
 To show isomorphism is symmetric, we simply swap the roles of `to`
 and `fro`, and `invˡ` and `invʳ`.
 \begin{code}
 ≃-sym : ∀ {A B : Set} → A ≃ B → B ≃ A
 ≃-sym A≃B =
-  record { to = fro A≃B ; fro = to A≃B ; invˡ = invʳ A≃B ; invʳ = invˡ A≃B }
+  record
+    { to = fro A≃B
+    ; fro = to A≃B
+    ; invˡ = invʳ A≃B
+    ; invʳ = invˡ A≃B
+    }
 \end{code}
-To show isomorphism is symmetric, we compose the `to` and `fro` functions, and use
+To show isomorphism is transitive, we compose the `to` and `fro` functions, and use
 equational reasoning to combine the inverses.
 \begin{code}
 ≃-tran : ∀ {A B C : Set} → A ≃ B → B ≃ C → A ≃ C
 ≃-tran A≃B B≃C =
-  record {
-    to = λ x → to B≃C (to A≃B x);
-    fro = λ y → fro A≃B (fro B≃C y);
-    invˡ = λ x →
-      begin
-        fro A≃B (fro B≃C (to B≃C (to A≃B x)))
-      ≡⟨ cong (fro A≃B) (invˡ B≃C (to A≃B x)) ⟩
-        fro A≃B (to A≃B x)
-      ≡⟨ invˡ A≃B x ⟩
-        x
-      ∎ ;
-    invʳ = λ y →
-      begin
-        to B≃C (to A≃B (fro A≃B (fro B≃C y)))
-      ≡⟨ cong (to B≃C) (invʳ A≃B (fro B≃C y)) ⟩
-        to B≃C (fro B≃C y)
-      ≡⟨ invʳ B≃C y ⟩
-        y
-      ∎
-  }
+  record
+    { to = λ x → to B≃C (to A≃B x)
+    ; fro = λ y → fro A≃B (fro B≃C y)
+    ; invˡ = λ x →
+        begin
+          fro A≃B (fro B≃C (to B≃C (to A≃B x)))
+        ≡⟨ cong (fro A≃B) (invˡ B≃C (to A≃B x)) ⟩
+          fro A≃B (to A≃B x)
+        ≡⟨ invˡ A≃B x ⟩
+          x
+        ∎ 
+    ; invʳ = λ y →
+        begin
+          to B≃C (to A≃B (fro A≃B (fro B≃C y)))
+        ≡⟨ cong (to B≃C) (invʳ A≃B (fro B≃C y)) ⟩
+          to B≃C (fro B≃C y)
+        ≡⟨ invʳ B≃C y ⟩
+          y
+        ∎
+     }
 \end{code}
 
-## Conjunction
+We will make good use of isomorphisms in what follows to demonstrate
+that operations on types such as product and sum satisfy properties
+akin to associativity, commutativity, and distributivity.
+
+
+
+
+## Conjunction is product
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
-if both `A` holds and `B` holds.  We formalise this idea by
+if both `A` holds and `B` holds.
+We formalise this idea by
 declaring a suitable inductive type.
 \begin{code}
 data _×_ : Set → Set → Set where
@@ -111,8 +170,42 @@ data _×_ : Set → Set → Set where
 \end{code}
 If `A` and `B` are propositions then `A × B` is
 also a proposition.  Evidence that `A × B` holds is of the form
-`a , b`, where `a` is evidence that `A` holds and
-`b` is evidence that `B` holds.
+`(x , y)`, where `x` is evidence that `A` holds and
+`y` is evidence that `B` holds.
+
+Given evidence that `A × B` holds, we can conclude that either
+`A` holds or `B` holds.
+\begin{code}
+fst : ∀ {A B : Set} → A × B → A
+fst (x , y) = x
+
+snd : ∀ {A B : Set} → A × B → B
+snd (x , y) = y
+\end{code}
+If `w` is evidence that `A × B` holds, then `fst w` is evidence
+that `A` holds, and `snd w` is evidence that `B` holds.
+
+Equivalently, we could also declare products as a record type.
+\begin{code}
+record _×′_ (A B : Set) : Set where
+  field
+    fst′ : A
+    snd′ : B
+open _×′_
+\end{code}
+We construct values of the record type with the syntax:
+
+    record
+      { fst′ = x
+      ; snd′ = y
+      }
+
+which corresponds to using the constructor of the corresponding
+inductive type:
+
+    ( x , y)
+
+where `x` is a value of type `A` and `y` is a value of type `B`.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction, and of the pairing
@@ -122,21 +215,115 @@ operator.
 infixr 2 _×_
 infixr 4 _,_
 \end{code}
+Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)` and
+`(m * n , p)` parses as `((m * n) , p)`.
 
-Product is associative and commutative up to isomorphism.
+Given two types `A` and `B`, we refer to `A x B` as the
+*product* of `A` and `B`.  In set theory, it is also sometimes
+called the *cartesian product*.  Among other reasons for
+calling it the product, note that if type `A` has `m`
+distinct members, and type `B` has `n` distinct members,
+then the type `A × B` has `m * n` distinct members.
+For instance, consider a type `Bool` with three members, and
+a type `Tri` with three members.
+\begin{code}
+data Bool : Set where
+  true : Bool
+  false : Bool
+
+data Tri : Set where
+  aa : Tri
+  bb : Tri
+  cc : Tri
+\end{code}
+Then the type `Bool × Tri` has six members:
+
+    (true  , aa)    (true  , bb)    (true ,  cc)
+    (false , aa)    (false , bb)    (false , cc)
+
+For example, the following function enumerates all
+possible arguments of type `Bool × Tri`:
+\begin{code}
+×-count : Bool × Tri → ℕ
+×-count (true , aa) = 1
+×-count (true , bb) = 2
+×-count (true , cc) = 3
+×-count (false , aa) = 4
+×-count (false , bb) = 5
+×-count (false , cc) = 6
+\end{code}
+
+Product on types also shares a property with product on numbers in
+that there is a sense in which it is commutative and associative.  In
+particular, product is commutative and associative *up to
+isomorphism*.
+
+For commutativity, the `to` function swaps a pair,
+taking `(x , y)` to `(y , x)`, and
+the `fro` function does the inverse
+(which also swaps a pair).  Replacing `invˡ`
+or `invʳ` by `λ w → refl` will not work.
+\begin{code}
+×-comm : ∀ {A B : Set} → (A × B) ≃ (B × A)
+×-comm = record
+  { to = λ { (x , y) → (y , x)}
+  ; fro = λ { (y , x) → (x , y)}
+  ; invˡ = λ { (x , y) → refl }
+  ; invʳ = λ { (y , x) → refl }
+  }
+\end{code}
+Being *commutative* is different from being *commutative up to
+isomorphism*.  Compare the two statements:
+
+    m * n ≡ n * m
+    A × B ≃ B × A
+
+In the first case, we might have that `m` is `2` and `n` is `3`, and
+both `m * n` and `n * m` are equal to `6`.  In the second case, we
+might have that `A` is `Bool` and `B` is `Tri`, and `Bool × Tri` is
+*not* the same as `Tri × Bool`.  But there is an isomorphism---a
+one-to-one correspondence---between the two types.  For
+instance, `(true , aa)`, which is a member of the former, corresponds
+to `(aa , true)`, which is a member of the latter.
+
+For associativity, the `to` function reassociates a pair of pairs,
+taking `((x , y) , z)` to `(x , (y , z))`, and the `fro` function does
+the inverse.  Again, the evidence of left and right inverse requires
+matching against a suitable pattern to enable simplificition.
 \begin{code}
 ×-assoc : ∀ {A B C : Set} → ((A × B) × C) ≃ (A × (B × C))
-×-assoc =
-  record {
-    to = λ { ((x , y) , z) → (x , (y , z)) };
-    fro = λ { (x , (y , z)) → ((x , y) , z) };
-    invˡ = λ { ((x , y) , z) → refl } ;
-    invʳ = λ { (x , (y , z)) → refl }
+×-assoc = record
+  { to = λ { ((x , y) , z) → (x , (y , z)) }
+  ; fro = λ { (x , (y , z)) → ((x , y) , z) }
+  ; invˡ = λ { ((x , y) , z) → refl }
+  ; invʳ = λ { (x , (y , z)) → refl }
   }
 \end{code}
 
+Again, being *associative* is not the same as being *associative
+up to isomorphism*.  For example, the type `(ℕ × Bool) × Tri`
+is *not* the same as `ℕ × (Bool × Tri)`. But there is an
+isomorphism between the two types. For instance `((1 , true) , aa)`,
+which is a member of the former, corresponds to `(1 , (true , aa)`,
+which is a member of the latter.
 
-## Disjunction
+Here we have used lambda-expressions with pattern matching.
+For instance, the term
+
+    λ { (x , y) → (y , x) }
+
+corresponds to the function `h`, where `h` is defined by
+\begin{code}
+h : ∀ {A B : Set} → A × B → B × A
+h (x , y) = (y , x)
+\end{code}
+Often using an anonymous lambda expression is more convenient than
+using a named function: it avoids a lengthy type declaration; and the
+definition appears exactly where the function is used, so there is no
+need for the writer to remember to declare it in advance, or the reader
+to search for the definition elsewhere in the code.
+
+## Disjunction is sum
 
 Given two propositions `A` and `B`, the disjunction `A ⊎ B` holds
 if either `A` holds or `B` holds.  We formalise this idea by
@@ -148,21 +335,134 @@ data _⊎_ : Set → Set → Set where
 \end{code}
 If `A` and `B` are propositions then `A ⊎ B` is
 also a proposition.  Evidence that `A ⊎ B` holds is either of the form
-`inj₁ a`, where `a` is evidence that `A` holds, or `inj₂ b`, where
-`b` is evidence that `B` holds.
+`inj₁ x`, where `x` is evidence that `A` holds, or `inj₂ y`, where
+`y` is evidence that `B` holds.
+
+Given evidence that `A → C` and `B → C` both hold, then given
+evidence that `A ⊎ B` holds we can conlude that `C` holds.
+\begin{code}
+⊎-elim : ∀ {A B C : Set} → (A → C) → (B → C) → (A ⊎ B → C)
+⊎-elim f g (inj₁ x) = f x
+⊎-elim f g (inj₂ y) = g y
+\end{code}
+Pattern matching against `inj₁` and `inj₂` is typical of how we exploit
+evidence that a disjunction holds.
 
 We set the precedence of disjunction so that it binds less tightly
 than any other operator.
 \begin{code}
 infix 1 _⊎_
 \end{code}
-Thus, `m ≤ n ⊎ n ≤ m` parses as `(m ≤ n) ⊎ (n ≤ m)`,
-and `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
+Thus, `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
+
+Given two types `A` and `B`, we refer to `A ⊎ B` as the
+*sum* of `A` and `B`.  In set theory, it is also sometimes
+called the *disjoint union*.  Among other reasons for
+calling it the sum, note that if type `A` has `m`
+distinct members, and type `B` has `n` distinct members,
+then the type `A ⊎ B` has `m + n` distinct members.
+For instance, consider a type `Bool` with three members, and
+a type `Tri` with three members, as defined earlier.
+Then the type `Bool ⊎ Tri` has five members:
+
+    (inj₁ true)     (inj₂ aa)
+    (inj₁ false)    (inj₂ bb)
+                    (inj₂ cc)
+
+For example, the following function enumerates all
+possible arguments of type `Bool ⊎ Tri`:
+\begin{code}
+⊎-count : Bool ⊎ Tri → ℕ
+⊎-count (inj₁ true)  = 1
+⊎-count (inj₁ false) = 2
+⊎-count (inj₂ aa)    = 3
+⊎-count (inj₂ bb)    = 4
+⊎-count (inj₂ cc)    = 5
+\end{code}
+
+Sum on types also shares a property with sum on numbers in
+that there is a sense in which it is commutative and associative.  In
+particular, product is commutative and associative *up to
+isomorphism*.
+
+For commutativity, the `to` function swaps a pair,
+taking `(x , y)` to `(y , x)`, and
+the `fro` function does the inverse
+(which also swaps a pair).  Replacing `invˡ`
+or `invʳ` by `λ w → refl` will not work.
+\begin{code}
+{-
+×-comm : ∀ {A B : Set} → (A × B) ≃ (B × A)
+×-comm = record
+  { to = λ { (x , y) → (y , x)}
+  ; fro = λ { (y , x) → (x , y)}
+  ; invˡ = λ { (x , y) → refl }
+  ; invʳ = λ { (y , x) → refl }
+  }
+-}
+\end{code}
+Being *commutative* is different from being *commutative up to
+isomorphism*.  Compare the two statements:
+
+    m * n ≡ n * m
+    A × B ≃ B × A
+
+In the first case, we might have that `m` is `2` and `n` is `3`, and
+both `m * n` and `n * m` are equal to `6`.  In the second case, we
+might have that `A` is `Bool` and `B` is `Tri`, and `Bool × Tri` is
+*not* the same as `Tri × Bool`.  But there is an isomorphism---a
+one-to-one correspondence---between the two types.  For
+instance, `(true , aa)`, which is a member of the former, corresponds
+to `(aa , true)`, which is a member of the latter.
+
+For associativity, the `to` function reassociates a pair of pairs,
+taking `((x , y) , z)` to `(x , (y , z))`, and the `fro` function does
+the inverse.  Again, the evidence of left and right inverse requires
+matching against a suitable pattern to enable simplificition.
+\begin{code}
+{-
+×-assoc : ∀ {A B C : Set} → ((A × B) × C) ≃ (A × (B × C))
+×-assoc = record
+  { to = λ { ((x , y) , z) → (x , (y , z)) }
+  ; fro = λ { (x , (y , z)) → ((x , y) , z) }
+  ; invˡ = λ { ((x , y) , z) → refl }
+  ; invʳ = λ { (x , (y , z)) → refl }
+  }
+-}
+\end{code}
+
+Again, being *associative* is not the same as being *associative
+up to isomorphism*.  For example, the type `(ℕ × Bool) × Tri`
+is *not* the same as `ℕ × (Bool × Tri)`. But there is an
+isomorphism between the two types. For instance `((1 , true) , aa)`,
+which is a member of the former, corresponds to `(1 , (true , aa)`,
+which is a member of the latter.
+
+Here we have used lambda-expressions with pattern matching.
+For instance, the term
+
+    λ { (x , y) → (y , x) }
+
+corresponds to the function `h`, where `h` is defined by
+\begin{code}
+{-
+h : ∀ {A B : Set} → A × B → B × A
+h (x , y) = (y , x)
+-}
+\end{code}
+Often using an anonymous lambda expression is more convenient than
+using a named function: it avoids a lengthy type declaration; and the
+definition appears exactly where the function is used, so there is no
+need for the writer to remember to declare it in advance, or the reader
+to search for the definition elsewhere in the code.
+
+
 
 ## Distribution
 
 Distribution of `×` over `⊎` is an isomorphism.
 \begin{code}
+{-
 ×-distributes-+ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
 ×-distributes-+ =
   record {
@@ -175,6 +475,7 @@ Distribution of `×` over `⊎` is an isomorphism.
     invʳ = λ { (inj₁ (a , c)) → refl ;
                (inj₂ (b , c)) → refl }               
   }
+-}
 \end{code}
 
 Distribution of `⊎` over `×` is half an isomorphism.
