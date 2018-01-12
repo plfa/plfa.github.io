@@ -647,13 +647,19 @@ we have that the types `A → B × C` and `(A → B) × (A → C)` are isomorphi
 That is, the assertion that if either `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.
+\begin{code}
+postulate
+  pair-eta : ∀ {A B : Set} → ∀ (w : A × B) → (fst w , snd w) ≡ w
 
-
-
-
-
-
-
+→-distributes-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
+→-distributes-× =
+  record
+    { to   = λ f → ( (λ x → fst (f x)) , (λ y → snd (f y)) ) 
+    ; fro  = λ {(g , h) → (λ x → (g x , h x))}
+    ; invˡ = λ f → extensionality (λ x → pair-eta (f x))
+    ; invʳ = λ {(g , h) → refl}
+    }
+\end{code}
 
 ## Distribution
 
@@ -700,8 +706,8 @@ easy to write a variant that instead returns `(inj₂ z′)`.  We have
 an embedding rather than an isomorphism because the
 `fro` function must discard either `z` or `z′` in this case.
 
-In the usual approach to logic, both of de Morgan's laws
-are given equal weight:
+In the usual approach to logic, both of the distribution laws
+are given as equivalences, where each side implies the other:
 
     A & (B ∨ C) ⇔ (A & B) ∨ (A & C)
     A ∨ (B & C) ⇔ (A ∨ B) & (A ∨ C)
@@ -709,7 +715,7 @@ are given equal weight:
 But when we consider the two laws in terms of evidence, where `_&_`
 corresponds to `_×_` and `_∨_` corresponds to `_⊎_`, then the first
 gives rise to an isomorphism, while the second only gives rise to an
-embedding, revealing a sense in which one of de Morgan's laws is "more
+embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
