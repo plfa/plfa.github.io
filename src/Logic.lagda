@@ -233,9 +233,6 @@ the `to` and `fro` components from the two embeddings to obtain
 the right inverse of the isomorphism.
 
 
-
-
-
 ## Conjunction is product
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
@@ -245,10 +242,9 @@ declaring a suitable inductive type.
 data _×_ : Set → Set → Set where
   _,_ : ∀ {A B : Set} → A → B → A × B
 \end{code}
-If `A` and `B` are propositions then `A × B` is
-also a proposition.  Evidence that `A × B` holds is of the form
-`(x , y)`, where `x` is evidence that `A` holds and
-`y` is evidence that `B` holds.
+Evidence that `A × B` holds is of the form
+`(M , N)`, where `M` is evidence that `A` holds and
+`N` is evidence that `B` holds.
 
 Given evidence that `A × B` holds, we can conclude that either
 `A` holds or `B` holds.
@@ -259,8 +255,8 @@ fst (x , y) = x
 snd : ∀ {A B : Set} → A × B → B
 snd (x , y) = y
 \end{code}
-If `w` is evidence that `A × B` holds, then `fst w` is evidence
-that `A` holds, and `snd w` is evidence that `B` holds.
+If `L` is evidence that `A × B` holds, then `fst L` is evidence
+that `A` holds, and `snd L` is evidence that `B` holds.
 
 Equivalently, we could also declare product as a record type.
 \begin{code}
@@ -273,16 +269,16 @@ open _×′_
 We construct values of the record type with the syntax:
 
     record
-      { fst′ = x
-      ; snd′ = y
+      { fst′ = M
+      ; snd′ = N
       }
 
 which corresponds to using the constructor of the corresponding
 inductive type:
 
-    ( x , y)
+    ( M , N )
 
-where `x` is a value of type `A` and `y` is a value of type `B`.
+where `M` is a term of type `A` and `N` is a term of type `B`.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction, and of the pairing
@@ -411,10 +407,9 @@ data _⊎_ : Set → Set → Set where
   inj₁  : ∀ {A B : Set} → A → A ⊎ B
   inj₂ : ∀ {A B : Set} → B → A ⊎ B
 \end{code}
-If `A` and `B` are propositions then `A ⊎ B` is
-also a proposition.  Evidence that `A ⊎ B` holds is either of the form
-`inj₁ x`, where `x` is evidence that `A` holds, or `inj₂ y`, where
-`y` is evidence that `B` holds.
+Evidence that `A ⊎ B` holds is either of the form
+`inj₁ M`, where `M` is evidence that `A` holds, or `inj₂ N`, where
+`N` is evidence that `B` holds.
 
 Given evidence that `A → C` and `B → C` both hold, then given
 evidence that `A ⊎ B` holds we can conlude that `C` holds.
@@ -427,7 +422,7 @@ Pattern matching against `inj₁` and `inj₂` is typical of how we exploit
 evidence that a disjunction holds.
 
 We set the precedence of disjunction so that it binds less tightly
-than any other operator.
+than any other declared operator.
 \begin{code}
 infix 1 _⊎_
 \end{code}
@@ -440,9 +435,10 @@ to a *variant record* type. Among other reasons for
 calling it the sum, note that if type `A` has `m`
 distinct members, and type `B` has `n` distinct members,
 then the type `A ⊎ B` has `m + n` distinct members.
-For instance, consider a type `Bool` with three members, and
+For instance, consider a type `Bool` with two members, and
 a type `Tri` with three members, as defined earlier.
-Then the type `Bool ⊎ Tri` has five members:
+Then the type `Bool ⊎ Tri` has five
+members:
 
     (inj₁ true)     (inj₂ aa)
     (inj₁ false)    (inj₂ bb)
@@ -544,50 +540,178 @@ k (inj₂ y) = inj₁ y
 \end{code}
 
 
+## Implication is function
+
+Given two propositions `A` and `B`, the implication `A → B` holds if
+whenever `A` holds then `B` must also hold.  We formalise this idea in
+terms of the function type.  Evidence that `A → B` holds is of the form
+
+    λ (x : A) → N
+
+where `N` is a term of type `B` containing as a free variable `x` of type `A`.
+In other words, evidence that `A → B` holds is a function that converts
+evidence that `A` holds into evidence that `B` holds.
+
+Given evidence that `A → B` holds and that `A` holds, we can conclude that
+`B` holds.
+\begin{code}
+modus-ponens : ∀ {A B : Set} → (A → B) → A → B
+modus-ponens f x = f x
+\end{code}
+This rule is known by its latin name, *modus ponens*.
+
+Implication binds less tightly than any other operator. Thus, `A ⊎ B →
+B ⊎ A` parses as `(A ⊎ B) → (B ⊎ A)`.
+
+Given two types `A` and `B`, we refer to `A → B` as the *function*
+from `A` to `B`.  It is also sometimes called the *exponential*,
+with `B` raised to the `A` power.  Among other reasons for calling
+it the exponential, note that if type `A` has `m` distinct
+memebers, and type `B` has `n` distinct members, then the type
+`A → B` has `n ^ m` distinct members.  For instance, consider a
+type `Bool` with two members and a type `Tri` with three members,
+as defined earlier. The the type `Bool → Tri` has nine (that is,
+three squared) members:
+
+    { true → aa ; false → aa }    { true → aa ; false → bb }    { true → aa ; false → cc }
+    { true → bb ; false → aa }    { true → bb ; false → bb }    { true → bb ; false → cc }    
+    { true → cc ; false → aa }    { true → cc ; false → bb }    { true → cc ; false → cc }
+
+For example, the following function enumerates all possible
+arguments of the type `Bool → Tri`:
+\begin{code}
+→-count : (Bool → Tri) → ℕ
+→-count f with f true | f false
+...            | aa    | aa      = 1
+...            | aa    | bb      = 2  
+...            | aa    | cc      = 3
+...            | bb    | aa      = 4
+...            | bb    | bb      = 5
+...            | bb    | cc      = 6
+...            | cc    | aa      = 7
+...            | cc    | bb      = 8
+...            | cc    | cc      = 9  
+\end{code}
+
+Exponential on types also share a property with exponential on
+numbers in that many of the standard identities for numbers carry
+over to the types.
+
+Corresponding to the law
+
+    (p ^ n) ^ m  =  p ^ (n * m)
+
+we have that the types `A → B → C` and `A × B → C` are isomorphic.
+Both types can be viewed as functions that given evidence that `A` holds
+and evidence that `B` holds can return evidence that `C` holds.
+This isomorphism sometimes goes by the name *currying*.
+The proof of the right inverse requires extensionality.
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} → {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
+  
+currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
+currying =
+  record
+    { to   =  λ f → λ { (x , y) → f x y }
+    ; fro  =  λ g → λ x → λ y → g (x , y)
+    ; invˡ =  λ f → refl
+    ; invʳ =  λ g → extensionality (λ { (x , y) → refl })
+    }
+\end{code}
+
+Corresponding to the law
+
+    p ^ (n + m) = (p ^ n) * (p ^ m)
+
+we have that the types `A ⊎ B → C` and `(A → C) × (B → C)` are isomorphic.
+That is, the assertion that if either `A` holds or `B` holds then `C` holds
+is the same as the assertion that if `A` holds then `C` holds and if
+`B` holds then `C` holds.
+\begin{code}
+→-distributes-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
+→-distributes-⊎ =
+  record
+    { to   = λ f → ( (λ x → f (inj₁ x)) , (λ y → f (inj₂ y)) ) 
+    ; fro  = λ {(g , h) → λ { (inj₁ x) → g x ; (inj₂ y) → h y } }
+    ; invˡ = λ f → extensionality (λ { (inj₁ x) → refl ; (inj₂ y) → refl })
+    ; invʳ = λ {(g , h) → refl}
+    }
+\end{code}
+
+Corresponding to the law
+
+    (p * n) ^ m = (p ^ m) * (n ^ m)
+
+we have that the types `A → B × C` and `(A → B) × (A → C)` are isomorphic.
+That is, the assertion that if either `A` holds then `B` holds and `C` holds
+is the same as the assertion that if `A` holds then `B` holds and if
+`A` holds then `C` holds.
+
+
+
+
+
+
+
+
 ## Distribution
 
 Distribution of `×` over `⊎` is an isomorphism.
 \begin{code}
 ×-distributes-⊎ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
 ×-distributes-⊎ =
-  record {
-    to   = λ { ((inj₁ x) , z) → (inj₁ (x , z)) ;
-               ((inj₂ y) , z) → (inj₂ (y , z)) } ;
-    fro  = λ { (inj₁ (x , z)) → ((inj₁ x) , z) ;
-               (inj₂ (y , z)) → ((inj₂ y) , z) } ;
-    invˡ = λ { ((inj₁ x) , z) → refl ;
-               ((inj₂ y) , z) → refl } ;
-    invʳ = λ { (inj₁ (x , z)) → refl ;
-               (inj₂ (y , z)) → refl }               
-  }
+  record
+    { to   = λ { ((inj₁ x) , z) → (inj₁ (x , z)) 
+               ; ((inj₂ y) , z) → (inj₂ (y , z))
+               }
+    ; fro  = λ { (inj₁ (x , z)) → ((inj₁ x) , z)
+               ; (inj₂ (y , z)) → ((inj₂ y) , z)
+               }
+    ; invˡ = λ { ((inj₁ x) , z) → refl
+               ; ((inj₂ y) , z) → refl
+               }
+    ; invʳ = λ { (inj₁ (x , z)) → refl
+               ; (inj₂ (y , z)) → refl
+               }               
+    }
 \end{code}
 
-Distribution of `⊎` over `×` is half an isomorphism.
+Distribution of `⊎` over `×` is not an isomorphism, but is an embedding.
 \begin{code}
-{-
-data _≲_ : Set → Set → Set where
-  mk-≲ : ∀ {A B : Set} → (f : A → B) → (g : B → A) →
-          (∀ (x : A) → g (f x) ≡ x) → A ≲ B
-
-+-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
-+-distributes-× =  mk-≲ f g gf
-  where
-
-  f : ∀ {A B C : Set} → (A × B) ⊎ C → (A ⊎ C) × (B ⊎ C)
-  f (inj₁ (a , b)) = (inj₁ a , inj₁ b)
-  f (inj₂ c) = (inj₂ c , inj₂ c)
-
-  g : ∀ {A B C : Set} → (A ⊎ C) × (B ⊎ C) → (A × B) ⊎ C
-  g (inj₁ a , inj₁ b) = inj₁ (a , b)
-  g (inj₁ a , inj₂ c) = inj₂ c
-  g (inj₂ c , inj₁ b) = inj₂ c
-  g (inj₂ c , inj₂ c′) = inj₂ c  -- or inj₂ c′
-
-  gf : ∀ {A B C : Set} → (x : (A × B) ⊎ C) → g (f x) ≡ x
-  gf (inj₁ (a , b)) = refl
-  gf (inj₂ c) = refl
--}
+⊎-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
+⊎-distributes-× =
+  record
+    { to   = λ { (inj₁ (x , y)) → (inj₁ x , inj₁ y)
+               ; (inj₂ z)       → (inj₂ z , inj₂ z)
+               }
+    ; fro  = λ { (inj₁ x , inj₁ y) → (inj₁ (x , y))
+               ; (inj₁ x , inj₂ z) → (inj₂ z)
+               ; (inj₂ z , _ )     → (inj₂ z)
+               }
+    ; invˡ = λ { (inj₁ (x , y)) → refl
+               ; (inj₂ z)       → refl
+               }
+    }
 \end{code}
+Note that there is a choice in how we write the `fro` function.
+As given, it takes `(inj₂ z , inj₂ z′)` to `(inj₂ z)`, but it is
+easy to write a variant that instead returns `(inj₂ z′)`.  We have
+an embedding rather than an isomorphism because the
+`fro` function must discard either `z` or `z′` in this case.
+
+In the usual approach to logic, both of de Morgan's laws
+are given equal weight:
+
+    A & (B ∨ C) ⇔ (A & B) ∨ (A & C)
+    A ∨ (B & C) ⇔ (A ∨ B) & (A ∨ C)
+
+But when we consider the two laws in terms of evidence, where `_&_`
+corresponds to `_×_` and `_∨_` corresponds to `_⊎_`, then the first
+gives rise to an isomorphism, while the second only gives rise to an
+embedding, revealing a sense in which one of de Morgan's laws is "more
+true" than the other.
+
 
 ## True
 
@@ -605,8 +729,6 @@ data ⊥ : Set where
 ⊥-elim : {A : Set} → ⊥ → A
 ⊥-elim ()
 \end{code}
-
-## Implication
 
 ## Negation
 
