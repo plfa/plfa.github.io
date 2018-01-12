@@ -21,7 +21,8 @@ about to write your doctoral dissertation!
 ## Natural Deduction
 
 Here are the inference rules for Natural Deduction annotated with Agda terms.
-    
+
+
     M : A    N : B
     ---------------- ×-I
     (M , N) : A × B

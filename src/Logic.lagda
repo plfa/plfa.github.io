@@ -161,8 +161,7 @@ akin to associativity, commutativity, and distributivity.
 ## Conjunction is product
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
-if both `A` holds and `B` holds.
-We formalise this idea by
+if both `A` holds and `B` holds.  We formalise this idea by
 declaring a suitable inductive type.
 \begin{code}
 data _×_ : Set → Set → Set where
