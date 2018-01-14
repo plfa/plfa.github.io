@@ -127,8 +127,8 @@ and `fro`, and `invˡ` and `invʳ`.
 To show isomorphism is transitive, we compose the `to` and `fro` functions, and use
 equational reasoning to combine the inverses.
 \begin{code}
-≃-tran : ∀ {A B C : Set} → A ≃ B → B ≃ C → A ≃ C
-≃-tran A≃B B≃C =
+≃-trans : ∀ {A B C : Set} → A ≃ B → B ≃ C → A ≃ C
+≃-trans A≃B B≃C =
   record
     { to = λ x → to B≃C (to A≃B x)
     ; fro = λ y → fro A≃B (fro B≃C y)
@@ -339,13 +339,15 @@ Replacing the definition of `invˡ` by `λ w → refl` will not work;
 and similarly for `invʳ`, which does the same (up to renaming).
 \begin{code}
 ×-comm : ∀ {A B : Set} → (A × B) ≃ (B × A)
-×-comm = record
-  { to = λ { (x , y) → (y , x)}
-  ; fro = λ { (y , x) → (x , y)}
-  ; invˡ = λ { (x , y) → refl }
-  ; invʳ = λ { (y , x) → refl }
-  }
+×-comm =
+  record
+    { to = λ { (x , y) → (y , x)}
+    ; fro = λ { (y , x) → (x , y)}
+    ; invˡ = λ { (x , y) → refl }
+    ; invʳ = λ { (y , x) → refl }
+    } 
 \end{code}
+
 Being *commutative* is different from being *commutative up to
 isomorphism*.  Compare the two statements:
 
@@ -366,12 +368,13 @@ the inverse.  Again, the evidence of left and right inverse requires
 matching against a suitable pattern to enable simplificition.
 \begin{code}
 ×-assoc : ∀ {A B C : Set} → ((A × B) × C) ≃ (A × (B × C))
-×-assoc = record
-  { to = λ { ((x , y) , z) → (x , (y , z)) }
-  ; fro = λ { (x , (y , z)) → ((x , y) , z) }
-  ; invˡ = λ { ((x , y) , z) → refl }
-  ; invʳ = λ { (x , (y , z)) → refl }
-  }
+×-assoc =
+  record
+    { to = λ { ((x , y) , z) → (x , (y , z)) }
+    ; fro = λ { (x , (y , z)) → ((x , y) , z) }
+    ; invˡ = λ { ((x , y) , z) → refl }
+    ; invʳ = λ { (x , (y , z)) → refl }
+    } 
 \end{code}
 
 Again, being *associative* is not the same as being *associative
@@ -396,6 +399,69 @@ using a named function: it avoids a lengthy type declaration; and the
 definition appears exactly where the function is used, so there is no
 need for the writer to remember to declare it in advance, or for the
 reader to search for the definition elsewhere in the code.
+
+## Truth is unit
+
+Truth `⊤` always holds. We formalise this idea by
+declaring a suitable inductive type.
+\begin{code}
+data ⊤ : Set where
+  tt : ⊤
+\end{code}
+Evidence that `⊤` holds is of the form `tt`.
+
+Given evidence that `⊤` holds, there is nothing more of interest we
+can conclude.  Since truth always holds, knowing that it holds tells
+us nothing additional.
+
+We refer to `⊤` as *the unit type* or just *unit*. And, indeed,
+type `⊤` has exactly once member, `tt`.  For example, the following
+function enumerates all possible arguments of type `⊤`:
+\begin{code}
+⊤-count : ⊤ → ℕ
+⊤-count tt = 1
+\end{code}
+
+For numbers, one is the identity of multiplication. Correspondingly,
+unit is the identity of product *up to isomorphism*.
+
+For left identity, the `to` function takes `(tt , x)` to `x`, and the `fro` function
+does the inverse.  The evidence of left inverse requires matching against
+a suitable pattern to enable simplification.
+\begin{code}
+⊤-identityˡ : ∀ {A : Set} → (⊤ × A) ≃ A
+⊤-identityˡ =
+  record
+    { to   = λ { (tt , x) → x }
+    ; fro  = λ { x → (tt , x) }
+    ; invˡ = λ { (tt , x) → refl }
+    ; invʳ = λ { x → refl}
+    }
+\end{code}
+
+Having an *identity* is different from having an identity
+*up to isomorphism*.  Compare the two statements:
+
+    1 * m ≡ m
+    ⊤ × A ≃ A
+
+In the first case, we might have that `m` is `2`, and both
+`1 * m` and `m` are equal to `2`.  In the second
+case, we might have that `A` is `Bool`, and `⊤ × Bool` is *not* the
+same as `Bool`.  But there is an isomorphism betwee the two types.
+For instance, `(tt, true)`, which is a member of the former,
+corresponds to `true`, which is a member of the latter.
+
+That unit is also a right identity follows immediately from left
+identity, commutativity of product, and symmetry and transitivity of
+isomorphism.
+\begin{code}
+⊤-identityʳ : ∀ {A : Set} → A ≃ (A × ⊤)
+⊤-identityʳ = ≃-trans (≃-sym ⊤-identityˡ) ×-comm
+\end{code}
+
+[Note: We could introduce a notation similar to that for reasoning on ≡.]
+
 
 ## Disjunction is sum
 
@@ -464,8 +530,8 @@ function does the same (up to renaming). Replacing the definition of
 `invˡ` by `λ w → refl` will not work; and similarly for `invʳ`, which
 does the same (up to renaming).
 \begin{code}
-+-comm : ∀ {A B : Set} → (A ⊎ B) ≃ (B ⊎ A)
-+-comm = record
+⊎-comm : ∀ {A B : Set} → (A ⊎ B) ≃ (B ⊎ A)
+⊎-comm = record
   { to   = λ { (inj₁ x) → (inj₂ x)
              ; (inj₂ y) → (inj₁ y)
              }
@@ -484,12 +550,12 @@ Being *commutative* is different from being *commutative up to
 isomorphism*.  Compare the two statements:
 
     m + n ≡ n + m
-    A + B ≃ B + A
+    A ⊎ B ≃ B ⊎ A
 
 In the first case, we might have that `m` is `2` and `n` is `3`, and
 both `m + n` and `n + m` are equal to `5`.  In the second case, we
-might have that `A` is `Bool` and `B` is `Tri`, and `Bool + Tri` is
-*not* the same as `Tri + Bool`.  But there is an isomorphism between
+might have that `A` is `Bool` and `B` is `Tri`, and `Bool ⊎ Tri` is
+*not* the same as `Tri ⊎ Bool`.  But there is an isomorphism between
 the two types.  For instance, `inj₁ true`, which is a member of the
 former, corresponds to `inj₂ true`, which is a member of the latter.
 
@@ -497,8 +563,8 @@ For associativity, the `to` function reassociates, and the `fro` function does
 the inverse.  Again, the evidence of left and right inverse requires
 matching against a suitable pattern to enable simplificition.
 \begin{code}
-+-assoc : ∀ {A B C : Set} → ((A ⊎ B) ⊎ C) ≃ (A ⊎ (B ⊎ C))
-+-assoc = record
+⊎-assoc : ∀ {A B C : Set} → ((A ⊎ B) ⊎ C) ≃ (A ⊎ (B ⊎ C))
+⊎-assoc = record
   { to   = λ { (inj₁ (inj₁ x)) → (inj₁ x)
              ; (inj₁ (inj₂ y)) → (inj₂ (inj₁ y))
              ; (inj₂ z)        → (inj₂ (inj₂ z))
@@ -540,6 +606,87 @@ k (inj₂ y) = inj₁ y
 \end{code}
 
 
+## False is empty
+
+False `⊥` never holds.  We formalise this idea by declaring
+a suitable inductive type.
+\begin{code}
+data ⊥ : Set where
+  -- no clauses!
+\end{code}
+There is no possible evidence that `⊥` holds.
+
+Given evidence that `⊥` holds, we might conclude anything!  Since
+false never holds, knowing that it holds tells us we are in a
+paradoxical situation.
+
+is a basic principle of logic, known in medieval times by the
+latin phrase *ex falso*, and known to children through phrases
+such as "if pigs had wings, then I'd be the Queen of Sheba".
+\begin{code}
+⊥-elim : ∀ {A : Set} → ⊥ → A
+⊥-elim ()
+\end{code}
+Here since `⊥` is a type with no members, we indicate that it is
+*never* possible to match against a value of this type by using
+the pattern `()`.  In medieval times, this rule was know by the
+latin name *ex falso*.  It is also known to children by phrases
+such as "If pigs had wings then I'd be the Queen of Sheba".
+
+We refer to `⊥` as *the empty type* or just *empty*. And, indeed,
+type `⊥` has no members. For example, the following function
+enumerates all possible arguments of type `⊥`:
+\begin{code}
+⊥-count : ⊥ → ℕ
+⊥-count ()
+\end{code}
+Here, again, pattern `()` indicates that no value can match
+type `⊥`.
+
+For numbers, zero is the identity of additition. Correspondingly,
+empty is the identity of sums *up to isomorphism*.
+
+For left identity, the `to` function observes that `inj₁ ()` can never arise,
+and takes `inj₂ x` to `x`, and the `fro` function
+does the inverse.  The evidence of left inverse requires matching against
+a suitable pattern to enable simplification.
+\begin{code}
+⊥-identityˡ : ∀ {A : Set} → (⊥ ⊎ A) ≃ A
+⊥-identityˡ =
+  record
+    { to   = λ { (inj₁ ())
+               ; (inj₂ x) → x
+               }
+    ; fro  = λ { x → inj₂ x }
+    ; invˡ = λ { (inj₁ ())
+               ; (inj₂ x) → refl
+               }
+    ; invʳ = λ { x → refl }
+    }
+\end{code}
+
+Having an *identity* is different from having an identity
+*up to isomorphism*.  Compare the two statements:
+
+    0 + m ≡ m
+    ⊥ ⊎ A ≃ A
+
+In the first case, we might have that `m` is `2`, and both `0 + m` and
+`m` are equal to `2`.  In the second case, we might have that `A` is
+`Bool`, and `⊥ ⊎ Bool` is *not* the same as `Bool`.  But there is an
+isomorphism betwee the two types.  For instance, `inj₂ true`, which is
+a member of the former, corresponds to `true`, which is a member of
+the latter.
+
+That empty is also a right identity follows immediately from left
+identity, commutativity of sum, and symmetry and transitivity of
+isomorphism.
+\begin{code}
+⊥-identityʳ : ∀ {A : Set} → A ≃ (A ⊎ ⊥)
+⊥-identityʳ = ≃-trans (≃-sym ⊥-identityˡ) ⊎-comm
+\end{code}
+
+
 ## Implication is function
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
@@ -555,9 +702,11 @@ evidence that `A` holds into evidence that `B` holds.
 Given evidence that `A → B` holds and that `A` holds, we can conclude that
 `B` holds.
 \begin{code}
-modus-ponens : ∀ {A B : Set} → (A → B) → A → B
-modus-ponens f x = f x
+→-elim : ∀ {A B : Set} → (A → B) → A → B
+→-elim f x = f x
 \end{code}
+In medieval times, this rule was known by the latin name *modus ponens*.
+
 This rule is known by its latin name, *modus ponens*.
 
 Implication binds less tightly than any other operator. Thus, `A ⊎ B →
@@ -646,24 +795,27 @@ Corresponding to the law
 we have that the types `A → B × C` and `(A → B) × (A → C)` are isomorphic.
 That is, the assertion that if either `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
-`A` holds then `C` holds.
+`A` holds then `C` holds.  The proof requires that we recognise the eta
+rule for products, which states that `(fst w , snd w) ≡ w` for any product `w`.
 \begin{code}
 postulate
-  pair-eta : ∀ {A B : Set} → ∀ (w : A × B) → (fst w , snd w) ≡ w
+  η-× : ∀ {A B : Set} → ∀ (w : A × B) → (fst w , snd w) ≡ w
 
 →-distributes-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
 →-distributes-× =
   record
     { to   = λ f → ( (λ x → fst (f x)) , (λ y → snd (f y)) ) 
     ; fro  = λ {(g , h) → (λ x → (g x , h x))}
-    ; invˡ = λ f → extensionality (λ x → pair-eta (f x))
+    ; invˡ = λ f → extensionality (λ x → η-× (f x))
     ; invʳ = λ {(g , h) → refl}
     }
 \end{code}
 
+
 ## Distribution
 
-Distribution of `×` over `⊎` is an isomorphism.
+Products distributes over sum, up to isomorphism.  The code to validate
+this fact is similar in structure to our previous results.
 \begin{code}
 ×-distributes-⊎ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
 ×-distributes-⊎ =
@@ -683,7 +835,7 @@ Distribution of `×` over `⊎` is an isomorphism.
     }
 \end{code}
 
-Distribution of `⊎` over `×` is not an isomorphism, but is an embedding.
+Sums to not distribute over products up to isomorphism, but it is an embedding.
 \begin{code}
 ⊎-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
 ⊎-distributes-× =
@@ -719,37 +871,109 @@ embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
-## True
-
-\begin{code}
-data ⊤ : Set where
-  tt : ⊤
-\end{code}
-
-## False
-
-\begin{code}
-data ⊥ : Set where
-  -- no clauses!  
-
-⊥-elim : {A : Set} → ⊥ → A
-⊥-elim ()
-\end{code}
-
 ## Negation
 
+Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
+We formalise this idea by declaring negation to be the same
+as implication of false. 
 \begin{code}
 ¬_ : Set → Set
 ¬ A = A → ⊥
+\end{code}
+This is a form of *proof by contradiction*: if assuming `A` leads
+to the conclusion `⊥` (a contradiction), then we must have `¬ A`.
 
+Evidence that `¬ A` holds is of the form
+
+    λ (x : A) → N
+
+where `N` is a term of type `⊥` containing as a free variable `x` of type `A`.
+In other words, evidence that `¬ A` holds is a function that converts evidence
+that `A` holds into evidence that `⊥` holds.
+
+Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
+In other words, if both `¬ A` and `A` hold, then we have a contradiction.
+\begin{code}
+¬-elim : ∀ {A : Set} → ¬ A → A → ⊥
+¬-elim ¬a a = ¬a a
+\end{code}
+Here we write `¬a` for evidence of `¬ A` and `a` for evidence of `A`.  This
+means that `¬a` must be a function of type `A → ⊥`, and hence the application
+`¬a a` must be of type `⊥`.  Note that this rule is just a special case of `→-elim`.
+
+We set the precedence of negation so that it binds more tightly
+than disjunction and conjunction, but more tightly than anything else.
+\begin{code}
 infix 3 ¬_
+\end{code}
+Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)`.
 
+In *classical* logic, we have that `A` is equivalent to `¬ ¬ A`.
+As we discuss below, in Agda we use *intuitionistic* logic, wher
+we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
+\begin{code}
+¬¬-intro : ∀ {A : Set} → A → ¬ ¬ A
+¬¬-intro a ¬a = ¬a a
+\end{code}
+Let `a` be evidence of `A`. We will show that assuming
+`¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
+Let `¬a` be evidence of `¬ A`.  Then from `A` and `¬ A`
+we have a contradiction (evidenced by `¬a a`).  Hence, we have
+shown `¬ ¬ A`.
+
+We cannot show that `¬ ¬ A` implies `A`, but we can show that
+`¬ ¬ ¬ A` implies `¬ A`.
+\begin{code}
+¬¬¬-elim : ∀ {A : Set} → ¬ ¬ ¬ A → ¬ A
+¬¬¬-elim ¬¬¬a a = ¬¬¬a (¬¬-intro a)
+\end{code}
+Let `¬¬¬a` be evidence of `¬ ¬ ¬ A`. We will show that assuming
+`A` leads to a contradiction, and hence `¬ A` must hold.
+Let `a` be evidence of `A`. Then by the previous result, we
+can conclude `¬ ¬ A` (evidenced by `¬¬-intro a`).  Then from
+`¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction (evidenced by
+`¬¬¬a (¬¬-intra a)`.  Hence we have shown `¬ A`.
+
+Another law of logic is the *contrapositive*,
+stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
+\begin{code}
+contraposition : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
+contraposition a→b ¬b a = ¬b (a→b a)
+\end{code}
+Let `a→b` be evidence of `A → B` and let `¬b` be evidence of `¬ B`.  We
+will show that assuming `A` leads to a contradiction, and hence
+`¬ A` must hold. Let `a` be evidence of `A`.  Then from `A → B` and
+`A` we may conclude `B` (evidenced by `a→b a`), and from `B` and `¬ B`
+we may conclude `⊥` (evidenced by `¬b (a→b a)`).  Hence, we have shown
+`¬ A`.
+
+Given the correspondence of implication to exponentiation and
+false to the type with no members, we can view negation as
+raising to the zero power.  This indeed corresponds to what
+we know for arithmetic, where
+
+    0 ^ n  =  1,  if n = 0
+           =  0,  if n ≠ 0
+
+Indeed, there is exactly one proof of `⊥ → ⊥`.
+\begin{code}
+id : ⊥ → ⊥
+id x = x
+\end{code}
+However, there are no possible values of type `Bool → ⊥`,
+or of any type `A → ⊥` where `A` is not the empty type.
+
+
+
+
+
+
+## Decidability
+
+\begin{code}
 data Dec : Set → Set where
   yes : ∀ {A : Set} → A → Dec A
   no  : ∀ {A : Set} → (¬ A) → Dec A
-
-contraposition : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
-contraposition f ¬b a = ¬b (f a)
 \end{code}
 
 
