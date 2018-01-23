@@ -16,6 +16,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong-app)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ)
+open import Agda.Primitive using (Level; lzero; lsuc)
 \end{code}
 
 This chapter introduces the basic concepts of logic, including
@@ -377,12 +378,16 @@ matching against a suitable pattern to enable simplificition.
     } 
 \end{code}
 
-Again, being *associative* is not the same as being *associative
-up to isomorphism*.  For example, the type `(ℕ × Bool) × Tri`
-is *not* the same as `ℕ × (Bool × Tri)`. But there is an
-isomorphism between the two types. For instance `((1 , true) , aa)`,
-which is a member of the former, corresponds to `(1 , (true , aa))`,
-which is a member of the latter.
+Being *associative* is not the same as being *associative
+up to isomorphism*.  Compare the two statements:
+
+  (m * n) * p ≡ m * (n * p)
+  (A × B) × C ≃ A × (B × C)
+
+For example, the type `(ℕ × Bool) × Tri` is *not* the same as `ℕ ×
+(Bool × Tri)`. But there is an isomorphism between the two types. For
+instance `((1 , true) , aa)`, which is a member of the former,
+corresponds to `(1 , (true , aa))`, which is a member of the latter.
 
 Here we have used lambda-expressions with pattern matching.
 For instance, the term
@@ -412,7 +417,7 @@ Evidence that `⊤` holds is of the form `tt`.
 
 Given evidence that `⊤` holds, there is nothing more of interest we
 can conclude.  Since truth always holds, knowing that it holds tells
-us nothing additional.
+us nothing new.
 
 We refer to `⊤` as *the unit type* or just *unit*. And, indeed,
 type `⊤` has exactly once member, `tt`.  For example, the following
@@ -460,7 +465,7 @@ isomorphism.
 ⊤-identityʳ = ≃-trans (≃-sym ⊤-identityˡ) ×-comm
 \end{code}
 
-[Note: We could introduce a notation similar to that for reasoning on ≡.]
+[TODO: We could introduce a notation similar to that for reasoning on ≡.]
 
 
 ## Disjunction is sum
@@ -769,6 +774,32 @@ currying =
     }
 \end{code}
 
+Currying tells us that instead of a function that takes a pair of arguments,
+we can have a function that takes the first argument and returns a function that
+expects the second argument.  Thus, for instance, instead of
+
+    _+′_ : (ℕ × ℕ) → ℕ
+
+we have
+
+    _+_ : ℕ → ℕ → ℕ
+
+The syntax of Agda, like that of other functional languages such as ML and
+Haskell, is designed to make currying easy to use.  Function arrows associate
+to the left and application associates to the right.  Thus
+
+    A → B → C    *stands for*    A → (B → C)
+
+and
+
+   f x y    *stands for*   (f x) y
+
+Currying is named for Haskell Curry, after whom the programming language Haskell
+is also named.  However, Currying was introduced earlier by both Gotlob Frege
+and Moses Schönfinkel.  When I first learned about currying, I was told a joke:
+"It should be called schönfinkeling, but currying is tastier". Only later did I
+learn that the idea actually goes all the way back to Frege!
+
 Corresponding to the law
 
     p ^ (n + m) = (p ^ n) * (p ^ m)
@@ -835,7 +866,7 @@ this fact is similar in structure to our previous results.
     }
 \end{code}
 
-Sums to not distribute over products up to isomorphism, but it is an embedding.
+Sums do not distribute over products up to isomorphism, but it is an embedding.
 \begin{code}
 ⊎-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
 ⊎-distributes-× =
@@ -960,13 +991,74 @@ Indeed, there is exactly one proof of `⊥ → ⊥`.
 id : ⊥ → ⊥
 id x = x
 \end{code}
-However, there are no possible values of type `Bool → ⊥`,
-or of any type `A → ⊥` where `A` is not the empty type.
+However, there are no possible values of type `Bool → ⊥`
+or `ℕ → bot`.
+
+[TODO?: Give the proof that one cannot falsify law of the excluded middle,
+including a variant of the story from Call-by-Value is Dual to Call-by-Name.]
 
 
+## Intuitive and Classical logic
 
+In Gilbert and Sullivan's *The Gondoliers*, Casilda is told that
+as an infant she was married to the heir of the King of Batavia, but
+that due to a mix-up no one knows which of two individuals, Marco or
+Giuseppe, is the heir.  Alarmed, she wails ``Then do you mean to say
+that I am married to one of two gondoliers, but it is impossible to
+say which?''  To which the response is ``Without any doubt of any kind
+whatever.''
 
+Logic comes in many varieties, and one distinction is between
+*classical* and *intuitionistic*. Intuitionists, concerned
+by cavalier assumptions made by some logicians about the nature of
+infinity, insist upon a constructionist notion of truth.  In
+particular, they insist that a proof of `A ⊎ B` must show
+*which* of `A` or `B` holds, and hence they would reject the
+claim that Casilda is married to Marco or Giuseppe until one of the
+two was identified as her husband.  Perhaps Gilbert and Sullivan
+anticipated intuitionism, for their story's outcome is that the heir
+turns out to be a third individual, Luiz, with whom Casilda is,
+conveniently, already in love.
 
+Intuitionists also reject the law of the excluded
+middle, which asserts `A ⊎ ¬ A` for every `A`, since the law
+gives no clue as to *which* of `A` or `¬ A` holds. Heyting
+formalised a variant of Hilbert's classical logic that captures the
+intuitionistic notion of provability. In particular, the law of the
+excluded middle is provable in Hilbert's logic, but not in Heyting's.
+Further, if the law of the excluded middle is added as an axiom to
+Heyting's logic, then it becomes equivalent to Hilbert's.
+Kolmogorov
+showed the two logics were closely related: he gave a double-negation
+translation, such that a formula is provable in classical logic if and
+only if its translation is provable in intuitionistic logic.
+
+Propositions as Types was first formulated for intuitionistic logic.
+It is a perfect fit, because in the intuitionist interpretation the
+formula `A ⊎ B` is provable exactly when one exhibits either a proof
+of `A` or a proof of `B`, so the type corresponding to disjunction is
+a disjoint sum.
+
+(The passage above is taken from "Propositions as Types", Philip Wadler,
+*Communications of the ACM*, December 2015.)
+
+**Exercise** Prove the following five formulas are equivalent.
+
+\begin{code}
+lone : Level
+lone = lsuc lzero
+
+double-negation excluded-middle peirce implication-as-disjunction de-morgan : Set lone
+double-negation = ∀ (A : Set) → ¬ ¬ A → A
+excluded-middle = ∀ (A : Set) → A ⊎ ¬ A
+peirce = ∀ (A B : Set) → (((A → B) → A) → A)
+implication-as-disjunction = ∀ (A B : Set) → (A → B) → ¬ A ⊎ B
+de-morgan = ∀ (A B : Set) → ¬ (¬ A × ¬ B) → A ⊎ B
+\end{code}
+
+## Universals
+
+## Existentials
 
 ## Decidability
 
@@ -976,15 +1068,8 @@ data Dec : Set → Set where
   no  : ∀ {A : Set} → (¬ A) → Dec A
 \end{code}
 
-
-
-## Intuitive and Classical logic
-
-## Universals
-
-## Existentials
-
 ## Equivalence
+
 
 ## Unicode
 
