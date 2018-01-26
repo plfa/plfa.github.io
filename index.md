@@ -15,7 +15,7 @@ and
 http://homepages.inf.ed.ac.uk/wadler/
 ).
 
-## Contents
+## Part 1: Logical Foundations
 
 <!--
   - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
@@ -23,9 +23,14 @@ http://homepages.inf.ed.ac.uk/wadler/
 
   - [Naturals: Natural numbers]({{ "/Naturals" | relative_url }})
   - [Properties: Proof by induction]({{ "/Properties" | relative_url }})
-  - [PropertiesEx: Solutions to exercises]({{ "/PropertiesEx" | relative_url }})
+  - [PropertiesAns: Solutions to exercises]({{ "/PropertiesAns" | relative_url }})
   - [Relations: Inductive Definition of Relations]({{ "/Relations" | relative_url }})
-  - [RelationsEx: Solutions to exercises]({{ "/RelationsEx" | relative_url }})
+  - [RelationsAns: Solutions to exercises]({{ "/RelationsAns" | relative_url }})
+  - [Logic: Logic]({{ "/Logic" | relative_url }})
+  - [LogicAns: Solutions to exercises]({{ "/LogicAns" | relative_url }})
+
+## Part 2: Programming Language Foundations
+
   - [Maps: Total and Partial Maps]({{ "/Maps" | relative_url }})
   - [Stlc: The Simply Typed Lambda-Calculus]({{ "/Stlc" | relative_url }})
   - [StlcProp: Properties of STLC]({{ "/StlcProp" | relative_url }})

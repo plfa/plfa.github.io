@@ -727,9 +727,9 @@ type `Bool` with two members and a type `Tri` with three members,
 as defined earlier. The the type `Bool → Tri` has nine (that is,
 three squared) members:
 
-    { true → aa ; false → aa }    { true → aa ; false → bb }    { true → aa ; false → cc }
-    { true → bb ; false → aa }    { true → bb ; false → bb }    { true → bb ; false → cc }    
-    { true → cc ; false → aa }    { true → cc ; false → bb }    { true → cc ; false → cc }
+    {true→aa;false→aa}  {true→aa;false→bb}  {true→aa;false→cc}
+    {true→bb;false→aa}  {true→bb;false→bb}  {true→bb;false→cc}
+    {true→cc;false→aa}  {true→cc;false→bb}  {true→cc;false→cc}
 
 For example, the following function enumerates all possible
 arguments of the type `Bool → Tri`:
