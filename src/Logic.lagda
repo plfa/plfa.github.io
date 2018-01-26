@@ -1171,6 +1171,23 @@ instantiate that proof that `∀ (x : A) → B[x] → C` to any `x`, and we
 may choose the particular `x` provided by the evidence that `∃ (λ (x :
 A) → B[x])`.
 
+The types `¬ (∃ (λ (x : A) → B[x]))` and `∀ (x : A) → ¬ B[x]` are isomorphic.
+\begin{code}
+extensionality2 : ∀ {A B C : Set} → {f g : A → B → C} → (∀ (x : A) (y : B) → f x y ≡ g x y) → f ≡ g
+extensionality2 fxy≡gxy = extensionality (λ x → extensionality (λ y → fxy≡gxy x y))
+
+¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃ (λ (x : A) → B x)) ≃ ∀ (x : A) → ¬ B x
+¬∃∀ =
+  record
+    { to   =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
+    ; fro  =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
+    ; invˡ =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) } 
+    ; invʳ =  λ { ∀¬bx → refl } 
+    }
+\end{code}
+
+
+
 [It would be better to have even and odd as an exercise.  Is there
 a simpler example that I could start with?]
 
@@ -1188,10 +1205,6 @@ We show that a number `n` is even if and only if there exists
 another number `m` such that `n ≡ 2 * m`, and is odd if and only
 if there is another number `m` such that `n ≡ 1 + 2 * m`.
 
-Here is the proof in the forward direction.
-\begin{code}
-
-\end{code}
 
 ## Decidability
 
