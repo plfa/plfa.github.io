@@ -3825,7 +3825,7 @@ operator.
       >4</a
       ><a name="8394"
       > </a
-      ><a name="8395" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="8395" href="Logic.html#39745" class="InductiveConstructor Operator"
       >_,_</a
       >
 {% endraw %}</pre>
@@ -7727,114 +7727,130 @@ isomorphism.
 ## Implication is function
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
-whenever `A` holds then `B` must also hold.  We formalise this idea in
-terms of the function type.  Evidence that `A → B` holds is of the form
+whenever `A` holds then `B` must also hold.  We formalise implication using
+the function type, which has appeared throughout this book.
 
-    λ (x : A) → N
+Evidence that `A → B` holds is of the form
 
-where `N` is a term of type `B` containing as a free variable `x` of type `A`.
-In other words, evidence that `A → B` holds is a function that converts
-evidence that `A` holds into evidence that `B` holds.
+    λ (x : A) → N[x]
 
+where `N[x]` is a term of type `B` containing as a free variable `x` of type `A`.
+Given a term `L` providing evidence that `A → B` holds, and a term `M`
+providing evidence that `A` holds, the term `L M` provides evidence that
+`B` holds.  In other words, evidence that `A → B` holds is a function that
+converts evidence that `A` holds into evidence that `B` holds.
+
+Put another way, if we know that `A → B` and `A` both hold,
+then we may conclude that `B` holds. In medieval times, this rule was
+known by the name *modus ponens*.
+
+If we introduce an implication and then immediately eliminate it, we can
+always simplify the resulting term.  Thus
+
+    (λ (x : A) → N[x]) M
+
+simplifies to `N[M]` of type `B`, where `N[M]` stands for the term `N[x]` with each
+free occurrence of `x` replaced by `M` of type `A`.
+
+<!--
 Given evidence that `A → B` holds and that `A` holds, we can conclude that
 `B` holds.
 <pre class="Agda">{% raw %}
-<a name="22545" href="Logic.html#22545" class="Function"
+<a name="23193" href="Logic.html#23193" class="Function"
       >&#8594;-elim</a
-      ><a name="22551"
+      ><a name="23199"
       > </a
-      ><a name="22552" class="Symbol"
+      ><a name="23200" class="Symbol"
       >:</a
-      ><a name="22553"
+      ><a name="23201"
       > </a
-      ><a name="22554" class="Symbol"
+      ><a name="23202" class="Symbol"
       >&#8704;</a
-      ><a name="22555"
+      ><a name="23203"
       > </a
-      ><a name="22556" class="Symbol"
+      ><a name="23204" class="Symbol"
       >{</a
-      ><a name="22557" href="Logic.html#22557" class="Bound"
+      ><a name="23205" href="Logic.html#23205" class="Bound"
       >A</a
-      ><a name="22558"
+      ><a name="23206"
       > </a
-      ><a name="22559" href="Logic.html#22559" class="Bound"
+      ><a name="23207" href="Logic.html#23207" class="Bound"
       >B</a
-      ><a name="22560"
+      ><a name="23208"
       > </a
-      ><a name="22561" class="Symbol"
+      ><a name="23209" class="Symbol"
       >:</a
-      ><a name="22562"
+      ><a name="23210"
       > </a
-      ><a name="22563" class="PrimitiveType"
+      ><a name="23211" class="PrimitiveType"
       >Set</a
-      ><a name="22566" class="Symbol"
+      ><a name="23214" class="Symbol"
       >}</a
-      ><a name="22567"
+      ><a name="23215"
       > </a
-      ><a name="22568" class="Symbol"
+      ><a name="23216" class="Symbol"
       >&#8594;</a
-      ><a name="22569"
+      ><a name="23217"
       > </a
-      ><a name="22570" class="Symbol"
+      ><a name="23218" class="Symbol"
       >(</a
-      ><a name="22571" href="Logic.html#22557" class="Bound"
+      ><a name="23219" href="Logic.html#23205" class="Bound"
       >A</a
-      ><a name="22572"
+      ><a name="23220"
       > </a
-      ><a name="22573" class="Symbol"
+      ><a name="23221" class="Symbol"
       >&#8594;</a
-      ><a name="22574"
+      ><a name="23222"
       > </a
-      ><a name="22575" href="Logic.html#22559" class="Bound"
+      ><a name="23223" href="Logic.html#23207" class="Bound"
       >B</a
-      ><a name="22576" class="Symbol"
+      ><a name="23224" class="Symbol"
       >)</a
-      ><a name="22577"
+      ><a name="23225"
       > </a
-      ><a name="22578" class="Symbol"
+      ><a name="23226" class="Symbol"
       >&#8594;</a
-      ><a name="22579"
+      ><a name="23227"
       > </a
-      ><a name="22580" href="Logic.html#22557" class="Bound"
+      ><a name="23228" href="Logic.html#23205" class="Bound"
       >A</a
-      ><a name="22581"
+      ><a name="23229"
       > </a
-      ><a name="22582" class="Symbol"
+      ><a name="23230" class="Symbol"
       >&#8594;</a
-      ><a name="22583"
+      ><a name="23231"
       > </a
-      ><a name="22584" href="Logic.html#22559" class="Bound"
+      ><a name="23232" href="Logic.html#23207" class="Bound"
       >B</a
-      ><a name="22585"
+      ><a name="23233"
       >
 </a
-      ><a name="22586" href="Logic.html#22545" class="Function"
+      ><a name="23234" href="Logic.html#23193" class="Function"
       >&#8594;-elim</a
-      ><a name="22592"
+      ><a name="23240"
       > </a
-      ><a name="22593" href="Logic.html#22593" class="Bound"
+      ><a name="23241" href="Logic.html#23241" class="Bound"
       >f</a
-      ><a name="22594"
+      ><a name="23242"
       > </a
-      ><a name="22595" href="Logic.html#22595" class="Bound"
+      ><a name="23243" href="Logic.html#23243" class="Bound"
       >x</a
-      ><a name="22596"
+      ><a name="23244"
       > </a
-      ><a name="22597" class="Symbol"
+      ><a name="23245" class="Symbol"
       >=</a
-      ><a name="22598"
+      ><a name="23246"
       > </a
-      ><a name="22599" href="Logic.html#22593" class="Bound"
+      ><a name="23247" href="Logic.html#23241" class="Bound"
       >f</a
-      ><a name="22600"
+      ><a name="23248"
       > </a
-      ><a name="22601" href="Logic.html#22595" class="Bound"
+      ><a name="23249" href="Logic.html#23243" class="Bound"
       >x</a
       >
 {% endraw %}</pre>
 In medieval times, this rule was known by the latin name *modus ponens*.
-
-This rule is known by its latin name, *modus ponens*.
+-->
 
 Implication binds less tightly than any other operator. Thus, `A ⊎ B →
 B ⊎ A` parses as `(A ⊎ B) → (B ⊎ A)`.
@@ -7849,336 +7865,336 @@ type `Bool` with two members and a type `Tri` with three members,
 as defined earlier. The the type `Bool → Tri` has nine (that is,
 three squared) members:
 
-    {true→aa;false→aa}  {true→aa;false→bb}  {true→aa;false→cc}
-    {true→bb;false→aa}  {true→bb;false→bb}  {true→bb;false→cc}
-    {true→cc;false→aa}  {true→cc;false→bb}  {true→cc;false→cc}
+    {true → aa; false → aa}  {true → aa; false → bb}  {true → aa; false → cc}
+    {true → bb; false → aa}  {true → bb; false → bb}  {true → bb; false → cc}
+    {true → cc; false → aa}  {true → cc; false → bb}  {true → cc; false → cc}
 
 For example, the following function enumerates all possible
 arguments of the type `Bool → Tri`:
 <pre class="Agda">{% raw %}
-<a name="23693" href="Logic.html#23693" class="Function"
+<a name="24335" href="Logic.html#24335" class="Function"
       >&#8594;-count</a
-      ><a name="23700"
+      ><a name="24342"
       > </a
-      ><a name="23701" class="Symbol"
+      ><a name="24343" class="Symbol"
       >:</a
-      ><a name="23702"
+      ><a name="24344"
       > </a
-      ><a name="23703" class="Symbol"
+      ><a name="24345" class="Symbol"
       >(</a
-      ><a name="23704" href="Logic.html#9008" class="Datatype"
+      ><a name="24346" href="Logic.html#9008" class="Datatype"
       >Bool</a
-      ><a name="23708"
+      ><a name="24350"
       > </a
-      ><a name="23709" class="Symbol"
+      ><a name="24351" class="Symbol"
       >&#8594;</a
-      ><a name="23710"
+      ><a name="24352"
       > </a
-      ><a name="23711" href="Logic.html#9060" class="Datatype"
+      ><a name="24353" href="Logic.html#9060" class="Datatype"
       >Tri</a
-      ><a name="23714" class="Symbol"
+      ><a name="24356" class="Symbol"
       >)</a
-      ><a name="23715"
+      ><a name="24357"
       > </a
-      ><a name="23716" class="Symbol"
+      ><a name="24358" class="Symbol"
       >&#8594;</a
-      ><a name="23717"
+      ><a name="24359"
       > </a
-      ><a name="23718" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype"
+      ><a name="24360" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype"
       >&#8469;</a
-      ><a name="23719"
+      ><a name="24361"
       >
 </a
-      ><a name="23720" href="Logic.html#23693" class="Function"
+      ><a name="24362" href="Logic.html#24335" class="Function"
       >&#8594;-count</a
-      ><a name="23727"
+      ><a name="24369"
       > </a
-      ><a name="23728" href="Logic.html#23728" class="Bound"
+      ><a name="24370" href="Logic.html#24370" class="Bound"
       >f</a
-      ><a name="23729"
+      ><a name="24371"
       > </a
-      ><a name="23730" class="Keyword"
+      ><a name="24372" class="Keyword"
       >with</a
-      ><a name="23734"
+      ><a name="24376"
       > </a
-      ><a name="23735" href="Logic.html#23728" class="Bound"
+      ><a name="24377" href="Logic.html#24370" class="Bound"
       >f</a
-      ><a name="23736"
+      ><a name="24378"
       > </a
-      ><a name="23737" href="Logic.html#9027" class="InductiveConstructor"
+      ><a name="24379" href="Logic.html#9027" class="InductiveConstructor"
       >true</a
-      ><a name="23741"
+      ><a name="24383"
       > </a
-      ><a name="23742" class="Symbol"
+      ><a name="24384" class="Symbol"
       >|</a
-      ><a name="23743"
+      ><a name="24385"
       > </a
-      ><a name="23744" href="Logic.html#23728" class="Bound"
+      ><a name="24386" href="Logic.html#24370" class="Bound"
       >f</a
-      ><a name="23745"
+      ><a name="24387"
       > </a
-      ><a name="23746" href="Logic.html#9041" class="InductiveConstructor"
+      ><a name="24388" href="Logic.html#9041" class="InductiveConstructor"
       >false</a
-      ><a name="23751"
+      ><a name="24393"
       >
 </a
-      ><a name="23752" class="Symbol"
+      ><a name="24394" class="Symbol"
       >...</a
-      ><a name="23755"
-      >            </a
-      ><a name="23767" class="Symbol"
+      ><a name="24397"
+      >           </a
+      ><a name="24408" class="Symbol"
       >|</a
-      ><a name="23768"
+      ><a name="24409"
       > </a
-      ><a name="23769" href="Logic.html#9078" class="InductiveConstructor"
+      ><a name="24410" href="Logic.html#9078" class="InductiveConstructor"
       >aa</a
-      ><a name="23771"
+      ><a name="24412"
       >    </a
-      ><a name="23775" class="Symbol"
+      ><a name="24416" class="Symbol"
       >|</a
-      ><a name="23776"
+      ><a name="24417"
       > </a
-      ><a name="23777" href="Logic.html#9078" class="InductiveConstructor"
+      ><a name="24418" href="Logic.html#9078" class="InductiveConstructor"
       >aa</a
-      ><a name="23779"
+      ><a name="24420"
       >      </a
-      ><a name="23785" class="Symbol"
+      ><a name="24426" class="Symbol"
       >=</a
-      ><a name="23786"
+      ><a name="24427"
       > </a
-      ><a name="23787" class="Number"
+      ><a name="24428" class="Number"
       >1</a
-      ><a name="23788"
+      ><a name="24429"
       >
 </a
-      ><a name="23789" class="Symbol"
+      ><a name="24430" class="Symbol"
       >...</a
-      ><a name="23792"
-      >            </a
-      ><a name="23804" class="Symbol"
+      ><a name="24433"
+      >           </a
+      ><a name="24444" class="Symbol"
       >|</a
-      ><a name="23805"
+      ><a name="24445"
       > </a
-      ><a name="23806" href="Logic.html#9078" class="InductiveConstructor"
+      ><a name="24446" href="Logic.html#9078" class="InductiveConstructor"
       >aa</a
-      ><a name="23808"
+      ><a name="24448"
       >    </a
-      ><a name="23812" class="Symbol"
+      ><a name="24452" class="Symbol"
       >|</a
-      ><a name="23813"
+      ><a name="24453"
       > </a
-      ><a name="23814" href="Logic.html#9089" class="InductiveConstructor"
+      ><a name="24454" href="Logic.html#9089" class="InductiveConstructor"
       >bb</a
-      ><a name="23816"
+      ><a name="24456"
       >      </a
-      ><a name="23822" class="Symbol"
+      ><a name="24462" class="Symbol"
       >=</a
-      ><a name="23823"
+      ><a name="24463"
       > </a
-      ><a name="23824" class="Number"
+      ><a name="24464" class="Number"
       >2</a
-      ><a name="23825"
+      ><a name="24465"
       >  
 </a
-      ><a name="23828" class="Symbol"
+      ><a name="24468" class="Symbol"
       >...</a
-      ><a name="23831"
-      >            </a
-      ><a name="23843" class="Symbol"
+      ><a name="24471"
+      >           </a
+      ><a name="24482" class="Symbol"
       >|</a
-      ><a name="23844"
+      ><a name="24483"
       > </a
-      ><a name="23845" href="Logic.html#9078" class="InductiveConstructor"
+      ><a name="24484" href="Logic.html#9078" class="InductiveConstructor"
       >aa</a
-      ><a name="23847"
+      ><a name="24486"
       >    </a
-      ><a name="23851" class="Symbol"
+      ><a name="24490" class="Symbol"
       >|</a
-      ><a name="23852"
+      ><a name="24491"
       > </a
-      ><a name="23853" href="Logic.html#9100" class="InductiveConstructor"
+      ><a name="24492" href="Logic.html#9100" class="InductiveConstructor"
       >cc</a
-      ><a name="23855"
+      ><a name="24494"
       >      </a
-      ><a name="23861" class="Symbol"
+      ><a name="24500" class="Symbol"
       >=</a
-      ><a name="23862"
+      ><a name="24501"
       > </a
-      ><a name="23863" class="Number"
+      ><a name="24502" class="Number"
       >3</a
-      ><a name="23864"
+      ><a name="24503"
       >
 </a
-      ><a name="23865" class="Symbol"
+      ><a name="24504" class="Symbol"
       >...</a
-      ><a name="23868"
-      >            </a
-      ><a name="23880" class="Symbol"
+      ><a name="24507"
+      >           </a
+      ><a name="24518" class="Symbol"
       >|</a
-      ><a name="23881"
+      ><a name="24519"
       > </a
-      ><a name="23882" href="Logic.html#9089" class="InductiveConstructor"
+      ><a name="24520" href="Logic.html#9089" class="InductiveConstructor"
       >bb</a
-      ><a name="23884"
+      ><a name="24522"
       >    </a
-      ><a name="23888" class="Symbol"
+      ><a name="24526" class="Symbol"
       >|</a
-      ><a name="23889"
+      ><a name="24527"
       > </a
-      ><a name="23890" href="Logic.html#9078" class="InductiveConstructor"
+      ><a name="24528" href="Logic.html#9078" class="InductiveConstructor"
       >aa</a
-      ><a name="23892"
+      ><a name="24530"
       >      </a
-      ><a name="23898" class="Symbol"
+      ><a name="24536" class="Symbol"
       >=</a
-      ><a name="23899"
+      ><a name="24537"
       > </a
-      ><a name="23900" class="Number"
+      ><a name="24538" class="Number"
       >4</a
-      ><a name="23901"
+      ><a name="24539"
       >
 </a
-      ><a name="23902" class="Symbol"
+      ><a name="24540" class="Symbol"
       >...</a
-      ><a name="23905"
-      >            </a
-      ><a name="23917" class="Symbol"
+      ><a name="24543"
+      >           </a
+      ><a name="24554" class="Symbol"
       >|</a
-      ><a name="23918"
+      ><a name="24555"
       > </a
-      ><a name="23919" href="Logic.html#9089" class="InductiveConstructor"
+      ><a name="24556" href="Logic.html#9089" class="InductiveConstructor"
       >bb</a
-      ><a name="23921"
+      ><a name="24558"
       >    </a
-      ><a name="23925" class="Symbol"
+      ><a name="24562" class="Symbol"
       >|</a
-      ><a name="23926"
+      ><a name="24563"
       > </a
-      ><a name="23927" href="Logic.html#9089" class="InductiveConstructor"
+      ><a name="24564" href="Logic.html#9089" class="InductiveConstructor"
       >bb</a
-      ><a name="23929"
+      ><a name="24566"
       >      </a
-      ><a name="23935" class="Symbol"
+      ><a name="24572" class="Symbol"
       >=</a
-      ><a name="23936"
+      ><a name="24573"
       > </a
-      ><a name="23937" class="Number"
+      ><a name="24574" class="Number"
       >5</a
-      ><a name="23938"
+      ><a name="24575"
       >
 </a
-      ><a name="23939" class="Symbol"
+      ><a name="24576" class="Symbol"
       >...</a
-      ><a name="23942"
-      >            </a
-      ><a name="23954" class="Symbol"
+      ><a name="24579"
+      >           </a
+      ><a name="24590" class="Symbol"
       >|</a
-      ><a name="23955"
+      ><a name="24591"
       > </a
-      ><a name="23956" href="Logic.html#9089" class="InductiveConstructor"
+      ><a name="24592" href="Logic.html#9089" class="InductiveConstructor"
       >bb</a
-      ><a name="23958"
+      ><a name="24594"
       >    </a
-      ><a name="23962" class="Symbol"
+      ><a name="24598" class="Symbol"
       >|</a
-      ><a name="23963"
+      ><a name="24599"
       > </a
-      ><a name="23964" href="Logic.html#9100" class="InductiveConstructor"
+      ><a name="24600" href="Logic.html#9100" class="InductiveConstructor"
       >cc</a
-      ><a name="23966"
+      ><a name="24602"
       >      </a
-      ><a name="23972" class="Symbol"
+      ><a name="24608" class="Symbol"
       >=</a
-      ><a name="23973"
+      ><a name="24609"
       > </a
-      ><a name="23974" class="Number"
+      ><a name="24610" class="Number"
       >6</a
-      ><a name="23975"
+      ><a name="24611"
       >
 </a
-      ><a name="23976" class="Symbol"
+      ><a name="24612" class="Symbol"
       >...</a
-      ><a name="23979"
-      >            </a
-      ><a name="23991" class="Symbol"
+      ><a name="24615"
+      >           </a
+      ><a name="24626" class="Symbol"
       >|</a
-      ><a name="23992"
+      ><a name="24627"
       > </a
-      ><a name="23993" href="Logic.html#9100" class="InductiveConstructor"
+      ><a name="24628" href="Logic.html#9100" class="InductiveConstructor"
       >cc</a
-      ><a name="23995"
+      ><a name="24630"
       >    </a
-      ><a name="23999" class="Symbol"
+      ><a name="24634" class="Symbol"
       >|</a
-      ><a name="24000"
+      ><a name="24635"
       > </a
-      ><a name="24001" href="Logic.html#9078" class="InductiveConstructor"
+      ><a name="24636" href="Logic.html#9078" class="InductiveConstructor"
       >aa</a
-      ><a name="24003"
+      ><a name="24638"
       >      </a
-      ><a name="24009" class="Symbol"
+      ><a name="24644" class="Symbol"
       >=</a
-      ><a name="24010"
+      ><a name="24645"
       > </a
-      ><a name="24011" class="Number"
+      ><a name="24646" class="Number"
       >7</a
-      ><a name="24012"
+      ><a name="24647"
       >
 </a
-      ><a name="24013" class="Symbol"
+      ><a name="24648" class="Symbol"
       >...</a
-      ><a name="24016"
-      >            </a
-      ><a name="24028" class="Symbol"
+      ><a name="24651"
+      >           </a
+      ><a name="24662" class="Symbol"
       >|</a
-      ><a name="24029"
+      ><a name="24663"
       > </a
-      ><a name="24030" href="Logic.html#9100" class="InductiveConstructor"
+      ><a name="24664" href="Logic.html#9100" class="InductiveConstructor"
       >cc</a
-      ><a name="24032"
+      ><a name="24666"
       >    </a
-      ><a name="24036" class="Symbol"
+      ><a name="24670" class="Symbol"
       >|</a
-      ><a name="24037"
+      ><a name="24671"
       > </a
-      ><a name="24038" href="Logic.html#9089" class="InductiveConstructor"
+      ><a name="24672" href="Logic.html#9089" class="InductiveConstructor"
       >bb</a
-      ><a name="24040"
+      ><a name="24674"
       >      </a
-      ><a name="24046" class="Symbol"
+      ><a name="24680" class="Symbol"
       >=</a
-      ><a name="24047"
+      ><a name="24681"
       > </a
-      ><a name="24048" class="Number"
+      ><a name="24682" class="Number"
       >8</a
-      ><a name="24049"
+      ><a name="24683"
       >
 </a
-      ><a name="24050" class="Symbol"
+      ><a name="24684" class="Symbol"
       >...</a
-      ><a name="24053"
-      >            </a
-      ><a name="24065" class="Symbol"
+      ><a name="24687"
+      >           </a
+      ><a name="24698" class="Symbol"
       >|</a
-      ><a name="24066"
+      ><a name="24699"
       > </a
-      ><a name="24067" href="Logic.html#9100" class="InductiveConstructor"
+      ><a name="24700" href="Logic.html#9100" class="InductiveConstructor"
       >cc</a
-      ><a name="24069"
+      ><a name="24702"
       >    </a
-      ><a name="24073" class="Symbol"
+      ><a name="24706" class="Symbol"
       >|</a
-      ><a name="24074"
+      ><a name="24707"
       > </a
-      ><a name="24075" href="Logic.html#9100" class="InductiveConstructor"
+      ><a name="24708" href="Logic.html#9100" class="InductiveConstructor"
       >cc</a
-      ><a name="24077"
+      ><a name="24710"
       >      </a
-      ><a name="24083" class="Symbol"
+      ><a name="24716" class="Symbol"
       >=</a
-      ><a name="24084"
+      ><a name="24717"
       > </a
-      ><a name="24085" class="Number"
+      ><a name="24718" class="Number"
       >9</a
       >
 {% endraw %}</pre>
@@ -8197,483 +8213,483 @@ and evidence that `B` holds can return evidence that `C` holds.
 This isomorphism sometimes goes by the name *currying*.
 The proof of the right inverse requires extensionality.
 <pre class="Agda">{% raw %}
-<a name="24638" class="Keyword"
+<a name="25271" class="Keyword"
       >postulate</a
-      ><a name="24647"
+      ><a name="25280"
       >
   </a
-      ><a name="24650" href="Logic.html#24650" class="Postulate"
+      ><a name="25283" href="Logic.html#25283" class="Postulate"
       >extensionality</a
-      ><a name="24664"
+      ><a name="25297"
       > </a
-      ><a name="24665" class="Symbol"
+      ><a name="25298" class="Symbol"
       >:</a
-      ><a name="24666"
+      ><a name="25299"
       > </a
-      ><a name="24667" class="Symbol"
+      ><a name="25300" class="Symbol"
       >&#8704;</a
-      ><a name="24668"
+      ><a name="25301"
       > </a
-      ><a name="24669" class="Symbol"
+      ><a name="25302" class="Symbol"
       >{</a
-      ><a name="24670" href="Logic.html#24670" class="Bound"
+      ><a name="25303" href="Logic.html#25303" class="Bound"
       >A</a
-      ><a name="24671"
+      ><a name="25304"
       > </a
-      ><a name="24672" href="Logic.html#24672" class="Bound"
+      ><a name="25305" href="Logic.html#25305" class="Bound"
       >B</a
-      ><a name="24673"
+      ><a name="25306"
       > </a
-      ><a name="24674" class="Symbol"
+      ><a name="25307" class="Symbol"
       >:</a
-      ><a name="24675"
+      ><a name="25308"
       > </a
-      ><a name="24676" class="PrimitiveType"
+      ><a name="25309" class="PrimitiveType"
       >Set</a
-      ><a name="24679" class="Symbol"
+      ><a name="25312" class="Symbol"
       >}</a
-      ><a name="24680"
+      ><a name="25313"
       > </a
-      ><a name="24681" class="Symbol"
+      ><a name="25314" class="Symbol"
       >&#8594;</a
-      ><a name="24682"
+      ><a name="25315"
       > </a
-      ><a name="24683" class="Symbol"
+      ><a name="25316" class="Symbol"
       >{</a
-      ><a name="24684" href="Logic.html#24684" class="Bound"
+      ><a name="25317" href="Logic.html#25317" class="Bound"
       >f</a
-      ><a name="24685"
+      ><a name="25318"
       > </a
-      ><a name="24686" href="Logic.html#24686" class="Bound"
+      ><a name="25319" href="Logic.html#25319" class="Bound"
       >g</a
-      ><a name="24687"
+      ><a name="25320"
       > </a
-      ><a name="24688" class="Symbol"
+      ><a name="25321" class="Symbol"
       >:</a
-      ><a name="24689"
+      ><a name="25322"
       > </a
-      ><a name="24690" href="Logic.html#24670" class="Bound"
+      ><a name="25323" href="Logic.html#25303" class="Bound"
       >A</a
-      ><a name="24691"
+      ><a name="25324"
       > </a
-      ><a name="24692" class="Symbol"
+      ><a name="25325" class="Symbol"
       >&#8594;</a
-      ><a name="24693"
+      ><a name="25326"
       > </a
-      ><a name="24694" href="Logic.html#24672" class="Bound"
+      ><a name="25327" href="Logic.html#25305" class="Bound"
       >B</a
-      ><a name="24695" class="Symbol"
+      ><a name="25328" class="Symbol"
       >}</a
-      ><a name="24696"
+      ><a name="25329"
       > </a
-      ><a name="24697" class="Symbol"
+      ><a name="25330" class="Symbol"
       >&#8594;</a
-      ><a name="24698"
+      ><a name="25331"
       > </a
-      ><a name="24699" class="Symbol"
+      ><a name="25332" class="Symbol"
       >(&#8704;</a
-      ><a name="24701"
+      ><a name="25334"
       > </a
-      ><a name="24702" class="Symbol"
+      ><a name="25335" class="Symbol"
       >(</a
-      ><a name="24703" href="Logic.html#24703" class="Bound"
+      ><a name="25336" href="Logic.html#25336" class="Bound"
       >x</a
-      ><a name="24704"
+      ><a name="25337"
       > </a
-      ><a name="24705" class="Symbol"
+      ><a name="25338" class="Symbol"
       >:</a
-      ><a name="24706"
+      ><a name="25339"
       > </a
-      ><a name="24707" href="Logic.html#24670" class="Bound"
+      ><a name="25340" href="Logic.html#25303" class="Bound"
       >A</a
-      ><a name="24708" class="Symbol"
+      ><a name="25341" class="Symbol"
       >)</a
-      ><a name="24709"
+      ><a name="25342"
       > </a
-      ><a name="24710" class="Symbol"
+      ><a name="25343" class="Symbol"
       >&#8594;</a
-      ><a name="24711"
+      ><a name="25344"
       > </a
-      ><a name="24712" href="Logic.html#24684" class="Bound"
+      ><a name="25345" href="Logic.html#25317" class="Bound"
       >f</a
-      ><a name="24713"
+      ><a name="25346"
       > </a
-      ><a name="24714" href="Logic.html#24703" class="Bound"
+      ><a name="25347" href="Logic.html#25336" class="Bound"
       >x</a
-      ><a name="24715"
+      ><a name="25348"
       > </a
-      ><a name="24716" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="25349" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="24717"
+      ><a name="25350"
       > </a
-      ><a name="24718" href="Logic.html#24686" class="Bound"
+      ><a name="25351" href="Logic.html#25319" class="Bound"
       >g</a
-      ><a name="24719"
+      ><a name="25352"
       > </a
-      ><a name="24720" href="Logic.html#24703" class="Bound"
+      ><a name="25353" href="Logic.html#25336" class="Bound"
       >x</a
-      ><a name="24721" class="Symbol"
+      ><a name="25354" class="Symbol"
       >)</a
-      ><a name="24722"
+      ><a name="25355"
       > </a
-      ><a name="24723" class="Symbol"
+      ><a name="25356" class="Symbol"
       >&#8594;</a
-      ><a name="24724"
+      ><a name="25357"
       > </a
-      ><a name="24725" href="Logic.html#24684" class="Bound"
+      ><a name="25358" href="Logic.html#25317" class="Bound"
       >f</a
-      ><a name="24726"
+      ><a name="25359"
       > </a
-      ><a name="24727" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="25360" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="24728"
+      ><a name="25361"
       > </a
-      ><a name="24729" href="Logic.html#24686" class="Bound"
+      ><a name="25362" href="Logic.html#25319" class="Bound"
       >g</a
-      ><a name="24730"
+      ><a name="25363"
       >
   
 </a
-      ><a name="24734" href="Logic.html#24734" class="Function"
+      ><a name="25367" href="Logic.html#25367" class="Function"
       >currying</a
-      ><a name="24742"
+      ><a name="25375"
       > </a
-      ><a name="24743" class="Symbol"
+      ><a name="25376" class="Symbol"
       >:</a
-      ><a name="24744"
+      ><a name="25377"
       > </a
-      ><a name="24745" class="Symbol"
+      ><a name="25378" class="Symbol"
       >&#8704;</a
-      ><a name="24746"
+      ><a name="25379"
       > </a
-      ><a name="24747" class="Symbol"
+      ><a name="25380" class="Symbol"
       >{</a
-      ><a name="24748" href="Logic.html#24748" class="Bound"
+      ><a name="25381" href="Logic.html#25381" class="Bound"
       >A</a
-      ><a name="24749"
+      ><a name="25382"
       > </a
-      ><a name="24750" href="Logic.html#24750" class="Bound"
+      ><a name="25383" href="Logic.html#25383" class="Bound"
       >B</a
-      ><a name="24751"
+      ><a name="25384"
       > </a
-      ><a name="24752" href="Logic.html#24752" class="Bound"
+      ><a name="25385" href="Logic.html#25385" class="Bound"
       >C</a
-      ><a name="24753"
+      ><a name="25386"
       > </a
-      ><a name="24754" class="Symbol"
+      ><a name="25387" class="Symbol"
       >:</a
-      ><a name="24755"
+      ><a name="25388"
       > </a
-      ><a name="24756" class="PrimitiveType"
+      ><a name="25389" class="PrimitiveType"
       >Set</a
-      ><a name="24759" class="Symbol"
+      ><a name="25392" class="Symbol"
       >}</a
-      ><a name="24760"
+      ><a name="25393"
       > </a
-      ><a name="24761" class="Symbol"
+      ><a name="25394" class="Symbol"
       >&#8594;</a
-      ><a name="24762"
+      ><a name="25395"
       > </a
-      ><a name="24763" class="Symbol"
+      ><a name="25396" class="Symbol"
       >(</a
-      ><a name="24764" href="Logic.html#24748" class="Bound"
+      ><a name="25397" href="Logic.html#25381" class="Bound"
       >A</a
-      ><a name="24765"
+      ><a name="25398"
       > </a
-      ><a name="24766" class="Symbol"
+      ><a name="25399" class="Symbol"
       >&#8594;</a
-      ><a name="24767"
+      ><a name="25400"
       > </a
-      ><a name="24768" href="Logic.html#24750" class="Bound"
+      ><a name="25401" href="Logic.html#25383" class="Bound"
       >B</a
-      ><a name="24769"
+      ><a name="25402"
       > </a
-      ><a name="24770" class="Symbol"
+      ><a name="25403" class="Symbol"
       >&#8594;</a
-      ><a name="24771"
+      ><a name="25404"
       > </a
-      ><a name="24772" href="Logic.html#24752" class="Bound"
+      ><a name="25405" href="Logic.html#25385" class="Bound"
       >C</a
-      ><a name="24773" class="Symbol"
+      ><a name="25406" class="Symbol"
       >)</a
-      ><a name="24774"
+      ><a name="25407"
       > </a
-      ><a name="24775" href="Logic.html#1478" class="Record Operator"
+      ><a name="25408" href="Logic.html#1478" class="Record Operator"
       >&#8771;</a
-      ><a name="24776"
+      ><a name="25409"
       > </a
-      ><a name="24777" class="Symbol"
+      ><a name="25410" class="Symbol"
       >(</a
-      ><a name="24778" href="Logic.html#24748" class="Bound"
+      ><a name="25411" href="Logic.html#25381" class="Bound"
       >A</a
-      ><a name="24779"
+      ><a name="25412"
       > </a
-      ><a name="24780" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="25413" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="24781"
+      ><a name="25414"
       > </a
-      ><a name="24782" href="Logic.html#24750" class="Bound"
+      ><a name="25415" href="Logic.html#25383" class="Bound"
       >B</a
-      ><a name="24783"
+      ><a name="25416"
       > </a
-      ><a name="24784" class="Symbol"
+      ><a name="25417" class="Symbol"
       >&#8594;</a
-      ><a name="24785"
+      ><a name="25418"
       > </a
-      ><a name="24786" href="Logic.html#24752" class="Bound"
+      ><a name="25419" href="Logic.html#25385" class="Bound"
       >C</a
-      ><a name="24787" class="Symbol"
+      ><a name="25420" class="Symbol"
       >)</a
-      ><a name="24788"
+      ><a name="25421"
       >
 </a
-      ><a name="24789" href="Logic.html#24734" class="Function"
+      ><a name="25422" href="Logic.html#25367" class="Function"
       >currying</a
-      ><a name="24797"
+      ><a name="25430"
       > </a
-      ><a name="24798" class="Symbol"
+      ><a name="25431" class="Symbol"
       >=</a
-      ><a name="24799"
+      ><a name="25432"
       >
   </a
-      ><a name="24802" class="Keyword"
+      ><a name="25435" class="Keyword"
       >record</a
-      ><a name="24808"
+      ><a name="25441"
       >
     </a
-      ><a name="24813" class="Symbol"
+      ><a name="25446" class="Symbol"
       >{</a
-      ><a name="24814"
+      ><a name="25447"
       > </a
-      ><a name="24815" class="Field"
+      ><a name="25448" class="Field"
       >to</a
-      ><a name="24817"
+      ><a name="25450"
       >   </a
-      ><a name="24820" class="Symbol"
+      ><a name="25453" class="Symbol"
       >=</a
-      ><a name="24821"
+      ><a name="25454"
       >  </a
-      ><a name="24823" class="Symbol"
+      ><a name="25456" class="Symbol"
       >&#955;</a
-      ><a name="24824"
+      ><a name="25457"
       > </a
-      ><a name="24825" href="Logic.html#24825" class="Bound"
+      ><a name="25458" href="Logic.html#25458" class="Bound"
       >f</a
-      ><a name="24826"
+      ><a name="25459"
       > </a
-      ><a name="24827" class="Symbol"
+      ><a name="25460" class="Symbol"
       >&#8594;</a
-      ><a name="24828"
+      ><a name="25461"
       > </a
-      ><a name="24829" class="Symbol"
+      ><a name="25462" class="Symbol"
       >&#955;</a
-      ><a name="24830"
+      ><a name="25463"
       > </a
-      ><a name="24831" class="Symbol"
+      ><a name="25464" class="Symbol"
       >{</a
-      ><a name="24832"
+      ><a name="25465"
       > </a
-      ><a name="24833" class="Symbol"
+      ><a name="25466" class="Symbol"
       >(</a
-      ><a name="24834" href="Logic.html#24834" class="Bound"
+      ><a name="25467" href="Logic.html#25467" class="Bound"
       >x</a
-      ><a name="24835"
+      ><a name="25468"
       > </a
-      ><a name="24836" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="25469" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="24837"
+      ><a name="25470"
       > </a
-      ><a name="24838" href="Logic.html#24838" class="Bound"
+      ><a name="25471" href="Logic.html#25471" class="Bound"
       >y</a
-      ><a name="24839" class="Symbol"
+      ><a name="25472" class="Symbol"
       >)</a
-      ><a name="24840"
+      ><a name="25473"
       > </a
-      ><a name="24841" class="Symbol"
+      ><a name="25474" class="Symbol"
       >&#8594;</a
-      ><a name="24842"
+      ><a name="25475"
       > </a
-      ><a name="24843" href="Logic.html#24825" class="Bound"
+      ><a name="25476" href="Logic.html#25458" class="Bound"
       >f</a
-      ><a name="24844"
+      ><a name="25477"
       > </a
-      ><a name="24845" href="Logic.html#24834" class="Bound"
+      ><a name="25478" href="Logic.html#25467" class="Bound"
       >x</a
-      ><a name="24846"
+      ><a name="25479"
       > </a
-      ><a name="24847" href="Logic.html#24838" class="Bound"
+      ><a name="25480" href="Logic.html#25471" class="Bound"
       >y</a
-      ><a name="24848"
+      ><a name="25481"
       > </a
-      ><a name="24849" class="Symbol"
+      ><a name="25482" class="Symbol"
       >}</a
-      ><a name="24850"
+      ><a name="25483"
       >
     </a
-      ><a name="24855" class="Symbol"
+      ><a name="25488" class="Symbol"
       >;</a
-      ><a name="24856"
+      ><a name="25489"
       > </a
-      ><a name="24857" class="Field"
+      ><a name="25490" class="Field"
       >fro</a
-      ><a name="24860"
+      ><a name="25493"
       >  </a
-      ><a name="24862" class="Symbol"
+      ><a name="25495" class="Symbol"
       >=</a
-      ><a name="24863"
+      ><a name="25496"
       >  </a
-      ><a name="24865" class="Symbol"
+      ><a name="25498" class="Symbol"
       >&#955;</a
-      ><a name="24866"
+      ><a name="25499"
       > </a
-      ><a name="24867" href="Logic.html#24867" class="Bound"
+      ><a name="25500" href="Logic.html#25500" class="Bound"
       >g</a
-      ><a name="24868"
+      ><a name="25501"
       > </a
-      ><a name="24869" class="Symbol"
+      ><a name="25502" class="Symbol"
       >&#8594;</a
-      ><a name="24870"
+      ><a name="25503"
       > </a
-      ><a name="24871" class="Symbol"
+      ><a name="25504" class="Symbol"
       >&#955;</a
-      ><a name="24872"
+      ><a name="25505"
       > </a
-      ><a name="24873" href="Logic.html#24873" class="Bound"
+      ><a name="25506" href="Logic.html#25506" class="Bound"
       >x</a
-      ><a name="24874"
+      ><a name="25507"
       > </a
-      ><a name="24875" class="Symbol"
+      ><a name="25508" class="Symbol"
       >&#8594;</a
-      ><a name="24876"
+      ><a name="25509"
       > </a
-      ><a name="24877" class="Symbol"
+      ><a name="25510" class="Symbol"
       >&#955;</a
-      ><a name="24878"
+      ><a name="25511"
       > </a
-      ><a name="24879" href="Logic.html#24879" class="Bound"
+      ><a name="25512" href="Logic.html#25512" class="Bound"
       >y</a
-      ><a name="24880"
+      ><a name="25513"
       > </a
-      ><a name="24881" class="Symbol"
+      ><a name="25514" class="Symbol"
       >&#8594;</a
-      ><a name="24882"
+      ><a name="25515"
       > </a
-      ><a name="24883" href="Logic.html#24867" class="Bound"
+      ><a name="25516" href="Logic.html#25500" class="Bound"
       >g</a
-      ><a name="24884"
+      ><a name="25517"
       > </a
-      ><a name="24885" class="Symbol"
+      ><a name="25518" class="Symbol"
       >(</a
-      ><a name="24886" href="Logic.html#24873" class="Bound"
+      ><a name="25519" href="Logic.html#25506" class="Bound"
       >x</a
-      ><a name="24887"
+      ><a name="25520"
       > </a
-      ><a name="24888" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="25521" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="24889"
+      ><a name="25522"
       > </a
-      ><a name="24890" href="Logic.html#24879" class="Bound"
+      ><a name="25523" href="Logic.html#25512" class="Bound"
       >y</a
-      ><a name="24891" class="Symbol"
+      ><a name="25524" class="Symbol"
       >)</a
-      ><a name="24892"
+      ><a name="25525"
       >
     </a
-      ><a name="24897" class="Symbol"
+      ><a name="25530" class="Symbol"
       >;</a
-      ><a name="24898"
+      ><a name="25531"
       > </a
-      ><a name="24899" class="Field"
+      ><a name="25532" class="Field"
       >inv&#737;</a
-      ><a name="24903"
+      ><a name="25536"
       > </a
-      ><a name="24904" class="Symbol"
+      ><a name="25537" class="Symbol"
       >=</a
-      ><a name="24905"
+      ><a name="25538"
       >  </a
-      ><a name="24907" class="Symbol"
+      ><a name="25540" class="Symbol"
       >&#955;</a
-      ><a name="24908"
+      ><a name="25541"
       > </a
-      ><a name="24909" href="Logic.html#24909" class="Bound"
+      ><a name="25542" href="Logic.html#25542" class="Bound"
       >f</a
-      ><a name="24910"
+      ><a name="25543"
       > </a
-      ><a name="24911" class="Symbol"
+      ><a name="25544" class="Symbol"
       >&#8594;</a
-      ><a name="24912"
+      ><a name="25545"
       > </a
-      ><a name="24913" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="25546" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="24917"
+      ><a name="25550"
       >
     </a
-      ><a name="24922" class="Symbol"
+      ><a name="25555" class="Symbol"
       >;</a
-      ><a name="24923"
+      ><a name="25556"
       > </a
-      ><a name="24924" class="Field"
+      ><a name="25557" class="Field"
       >inv&#691;</a
-      ><a name="24928"
+      ><a name="25561"
       > </a
-      ><a name="24929" class="Symbol"
+      ><a name="25562" class="Symbol"
       >=</a
-      ><a name="24930"
+      ><a name="25563"
       >  </a
-      ><a name="24932" class="Symbol"
+      ><a name="25565" class="Symbol"
       >&#955;</a
-      ><a name="24933"
+      ><a name="25566"
       > </a
-      ><a name="24934" href="Logic.html#24934" class="Bound"
+      ><a name="25567" href="Logic.html#25567" class="Bound"
       >g</a
-      ><a name="24935"
+      ><a name="25568"
       > </a
-      ><a name="24936" class="Symbol"
+      ><a name="25569" class="Symbol"
       >&#8594;</a
-      ><a name="24937"
+      ><a name="25570"
       > </a
-      ><a name="24938" href="Logic.html#24650" class="Postulate"
+      ><a name="25571" href="Logic.html#25283" class="Postulate"
       >extensionality</a
-      ><a name="24952"
+      ><a name="25585"
       > </a
-      ><a name="24953" class="Symbol"
+      ><a name="25586" class="Symbol"
       >(&#955;</a
-      ><a name="24955"
+      ><a name="25588"
       > </a
-      ><a name="24956" class="Symbol"
+      ><a name="25589" class="Symbol"
       >{</a
-      ><a name="24957"
+      ><a name="25590"
       > </a
-      ><a name="24958" class="Symbol"
+      ><a name="25591" class="Symbol"
       >(</a
-      ><a name="24959" href="Logic.html#24959" class="Bound"
+      ><a name="25592" href="Logic.html#25592" class="Bound"
       >x</a
-      ><a name="24960"
+      ><a name="25593"
       > </a
-      ><a name="24961" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="25594" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="24962"
+      ><a name="25595"
       > </a
-      ><a name="24963" href="Logic.html#24963" class="Bound"
+      ><a name="25596" href="Logic.html#25596" class="Bound"
       >y</a
-      ><a name="24964" class="Symbol"
+      ><a name="25597" class="Symbol"
       >)</a
-      ><a name="24965"
+      ><a name="25598"
       > </a
-      ><a name="24966" class="Symbol"
+      ><a name="25599" class="Symbol"
       >&#8594;</a
-      ><a name="24967"
+      ><a name="25600"
       > </a
-      ><a name="24968" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="25601" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="24972"
+      ><a name="25605"
       > </a
-      ><a name="24973" class="Symbol"
+      ><a name="25606" class="Symbol"
       >})</a
-      ><a name="24975"
+      ><a name="25608"
       >
     </a
-      ><a name="24980" class="Symbol"
+      ><a name="25613" class="Symbol"
       >}</a
       >
 {% endraw %}</pre>
@@ -8713,452 +8729,452 @@ That is, the assertion that if either `A` holds or `B` holds then `C` holds
 is the same as the assertion that if `A` holds then `C` holds and if
 `B` holds then `C` holds.
 <pre class="Agda">{% raw %}
-<a name="26271" href="Logic.html#26271" class="Function"
+<a name="26904" href="Logic.html#26904" class="Function"
       >&#8594;-distributes-&#8846;</a
-      ><a name="26286"
+      ><a name="26919"
       > </a
-      ><a name="26287" class="Symbol"
+      ><a name="26920" class="Symbol"
       >:</a
-      ><a name="26288"
+      ><a name="26921"
       > </a
-      ><a name="26289" class="Symbol"
+      ><a name="26922" class="Symbol"
       >&#8704;</a
-      ><a name="26290"
+      ><a name="26923"
       > </a
-      ><a name="26291" class="Symbol"
+      ><a name="26924" class="Symbol"
       >{</a
-      ><a name="26292" href="Logic.html#26292" class="Bound"
+      ><a name="26925" href="Logic.html#26925" class="Bound"
       >A</a
-      ><a name="26293"
+      ><a name="26926"
       > </a
-      ><a name="26294" href="Logic.html#26294" class="Bound"
+      ><a name="26927" href="Logic.html#26927" class="Bound"
       >B</a
-      ><a name="26295"
+      ><a name="26928"
       > </a
-      ><a name="26296" href="Logic.html#26296" class="Bound"
+      ><a name="26929" href="Logic.html#26929" class="Bound"
       >C</a
-      ><a name="26297"
+      ><a name="26930"
       > </a
-      ><a name="26298" class="Symbol"
+      ><a name="26931" class="Symbol"
       >:</a
-      ><a name="26299"
+      ><a name="26932"
       > </a
-      ><a name="26300" class="PrimitiveType"
+      ><a name="26933" class="PrimitiveType"
       >Set</a
-      ><a name="26303" class="Symbol"
+      ><a name="26936" class="Symbol"
       >}</a
-      ><a name="26304"
+      ><a name="26937"
       > </a
-      ><a name="26305" class="Symbol"
+      ><a name="26938" class="Symbol"
       >&#8594;</a
-      ><a name="26306"
+      ><a name="26939"
       > </a
-      ><a name="26307" class="Symbol"
+      ><a name="26940" class="Symbol"
       >(</a
-      ><a name="26308" href="Logic.html#26292" class="Bound"
+      ><a name="26941" href="Logic.html#26925" class="Bound"
       >A</a
-      ><a name="26309"
+      ><a name="26942"
       > </a
-      ><a name="26310" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="26943" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="26311"
+      ><a name="26944"
       > </a
-      ><a name="26312" href="Logic.html#26294" class="Bound"
+      ><a name="26945" href="Logic.html#26927" class="Bound"
       >B</a
-      ><a name="26313"
+      ><a name="26946"
       > </a
-      ><a name="26314" class="Symbol"
+      ><a name="26947" class="Symbol"
       >&#8594;</a
-      ><a name="26315"
+      ><a name="26948"
       > </a
-      ><a name="26316" href="Logic.html#26296" class="Bound"
+      ><a name="26949" href="Logic.html#26929" class="Bound"
       >C</a
-      ><a name="26317" class="Symbol"
+      ><a name="26950" class="Symbol"
       >)</a
-      ><a name="26318"
+      ><a name="26951"
       > </a
-      ><a name="26319" href="Logic.html#1478" class="Record Operator"
+      ><a name="26952" href="Logic.html#1478" class="Record Operator"
       >&#8771;</a
-      ><a name="26320"
+      ><a name="26953"
       > </a
-      ><a name="26321" class="Symbol"
+      ><a name="26954" class="Symbol"
       >((</a
-      ><a name="26323" href="Logic.html#26292" class="Bound"
+      ><a name="26956" href="Logic.html#26925" class="Bound"
       >A</a
-      ><a name="26324"
+      ><a name="26957"
       > </a
-      ><a name="26325" class="Symbol"
+      ><a name="26958" class="Symbol"
       >&#8594;</a
-      ><a name="26326"
+      ><a name="26959"
       > </a
-      ><a name="26327" href="Logic.html#26296" class="Bound"
+      ><a name="26960" href="Logic.html#26929" class="Bound"
       >C</a
-      ><a name="26328" class="Symbol"
+      ><a name="26961" class="Symbol"
       >)</a
-      ><a name="26329"
+      ><a name="26962"
       > </a
-      ><a name="26330" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="26963" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="26331"
+      ><a name="26964"
       > </a
-      ><a name="26332" class="Symbol"
+      ><a name="26965" class="Symbol"
       >(</a
-      ><a name="26333" href="Logic.html#26294" class="Bound"
+      ><a name="26966" href="Logic.html#26927" class="Bound"
       >B</a
-      ><a name="26334"
+      ><a name="26967"
       > </a
-      ><a name="26335" class="Symbol"
+      ><a name="26968" class="Symbol"
       >&#8594;</a
-      ><a name="26336"
+      ><a name="26969"
       > </a
-      ><a name="26337" href="Logic.html#26296" class="Bound"
+      ><a name="26970" href="Logic.html#26929" class="Bound"
       >C</a
-      ><a name="26338" class="Symbol"
+      ><a name="26971" class="Symbol"
       >))</a
-      ><a name="26340"
+      ><a name="26973"
       >
 </a
-      ><a name="26341" href="Logic.html#26271" class="Function"
+      ><a name="26974" href="Logic.html#26904" class="Function"
       >&#8594;-distributes-&#8846;</a
-      ><a name="26356"
+      ><a name="26989"
       > </a
-      ><a name="26357" class="Symbol"
+      ><a name="26990" class="Symbol"
       >=</a
-      ><a name="26358"
+      ><a name="26991"
       >
   </a
-      ><a name="26361" class="Keyword"
+      ><a name="26994" class="Keyword"
       >record</a
-      ><a name="26367"
+      ><a name="27000"
       >
     </a
-      ><a name="26372" class="Symbol"
+      ><a name="27005" class="Symbol"
       >{</a
-      ><a name="26373"
+      ><a name="27006"
       > </a
-      ><a name="26374" class="Field"
+      ><a name="27007" class="Field"
       >to</a
-      ><a name="26376"
+      ><a name="27009"
       >   </a
-      ><a name="26379" class="Symbol"
+      ><a name="27012" class="Symbol"
       >=</a
-      ><a name="26380"
+      ><a name="27013"
       > </a
-      ><a name="26381" class="Symbol"
+      ><a name="27014" class="Symbol"
       >&#955;</a
-      ><a name="26382"
+      ><a name="27015"
       > </a
-      ><a name="26383" href="Logic.html#26383" class="Bound"
+      ><a name="27016" href="Logic.html#27016" class="Bound"
       >f</a
-      ><a name="26384"
+      ><a name="27017"
       > </a
-      ><a name="26385" class="Symbol"
+      ><a name="27018" class="Symbol"
       >&#8594;</a
-      ><a name="26386"
+      ><a name="27019"
       > </a
-      ><a name="26387" class="Symbol"
+      ><a name="27020" class="Symbol"
       >(</a
-      ><a name="26388"
+      ><a name="27021"
       > </a
-      ><a name="26389" class="Symbol"
+      ><a name="27022" class="Symbol"
       >(&#955;</a
-      ><a name="26391"
+      ><a name="27024"
       > </a
-      ><a name="26392" href="Logic.html#26392" class="Bound"
+      ><a name="27025" href="Logic.html#27025" class="Bound"
       >x</a
-      ><a name="26393"
+      ><a name="27026"
       > </a
-      ><a name="26394" class="Symbol"
+      ><a name="27027" class="Symbol"
       >&#8594;</a
-      ><a name="26395"
+      ><a name="27028"
       > </a
-      ><a name="26396" href="Logic.html#26383" class="Bound"
+      ><a name="27029" href="Logic.html#27016" class="Bound"
       >f</a
-      ><a name="26397"
+      ><a name="27030"
       > </a
-      ><a name="26398" class="Symbol"
+      ><a name="27031" class="Symbol"
       >(</a
-      ><a name="26399" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="27032" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="26403"
+      ><a name="27036"
       > </a
-      ><a name="26404" href="Logic.html#26392" class="Bound"
+      ><a name="27037" href="Logic.html#27025" class="Bound"
       >x</a
-      ><a name="26405" class="Symbol"
+      ><a name="27038" class="Symbol"
       >))</a
-      ><a name="26407"
+      ><a name="27040"
       > </a
-      ><a name="26408" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27041" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="26409"
+      ><a name="27042"
       > </a
-      ><a name="26410" class="Symbol"
+      ><a name="27043" class="Symbol"
       >(&#955;</a
-      ><a name="26412"
+      ><a name="27045"
       > </a
-      ><a name="26413" href="Logic.html#26413" class="Bound"
+      ><a name="27046" href="Logic.html#27046" class="Bound"
       >y</a
-      ><a name="26414"
+      ><a name="27047"
       > </a
-      ><a name="26415" class="Symbol"
+      ><a name="27048" class="Symbol"
       >&#8594;</a
-      ><a name="26416"
+      ><a name="27049"
       > </a
-      ><a name="26417" href="Logic.html#26383" class="Bound"
+      ><a name="27050" href="Logic.html#27016" class="Bound"
       >f</a
-      ><a name="26418"
+      ><a name="27051"
       > </a
-      ><a name="26419" class="Symbol"
+      ><a name="27052" class="Symbol"
       >(</a
-      ><a name="26420" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="27053" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="26424"
+      ><a name="27057"
       > </a
-      ><a name="26425" href="Logic.html#26413" class="Bound"
+      ><a name="27058" href="Logic.html#27046" class="Bound"
       >y</a
-      ><a name="26426" class="Symbol"
+      ><a name="27059" class="Symbol"
       >))</a
-      ><a name="26428"
+      ><a name="27061"
       > </a
-      ><a name="26429" class="Symbol"
+      ><a name="27062" class="Symbol"
       >)</a
-      ><a name="26430"
+      ><a name="27063"
       > 
     </a
-      ><a name="26436" class="Symbol"
+      ><a name="27069" class="Symbol"
       >;</a
-      ><a name="26437"
+      ><a name="27070"
       > </a
-      ><a name="26438" class="Field"
+      ><a name="27071" class="Field"
       >fro</a
-      ><a name="26441"
+      ><a name="27074"
       >  </a
-      ><a name="26443" class="Symbol"
+      ><a name="27076" class="Symbol"
       >=</a
-      ><a name="26444"
+      ><a name="27077"
       > </a
-      ><a name="26445" class="Symbol"
+      ><a name="27078" class="Symbol"
       >&#955;</a
-      ><a name="26446"
+      ><a name="27079"
       > </a
-      ><a name="26447" class="Symbol"
+      ><a name="27080" class="Symbol"
       >{(</a
-      ><a name="26449" href="Logic.html#26449" class="Bound"
+      ><a name="27082" href="Logic.html#27082" class="Bound"
       >g</a
-      ><a name="26450"
+      ><a name="27083"
       > </a
-      ><a name="26451" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27084" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="26452"
+      ><a name="27085"
       > </a
-      ><a name="26453" href="Logic.html#26453" class="Bound"
+      ><a name="27086" href="Logic.html#27086" class="Bound"
       >h</a
-      ><a name="26454" class="Symbol"
+      ><a name="27087" class="Symbol"
       >)</a
-      ><a name="26455"
+      ><a name="27088"
       > </a
-      ><a name="26456" class="Symbol"
+      ><a name="27089" class="Symbol"
       >&#8594;</a
-      ><a name="26457"
+      ><a name="27090"
       > </a
-      ><a name="26458" class="Symbol"
+      ><a name="27091" class="Symbol"
       >&#955;</a
-      ><a name="26459"
+      ><a name="27092"
       > </a
-      ><a name="26460" class="Symbol"
+      ><a name="27093" class="Symbol"
       >{</a
-      ><a name="26461"
+      ><a name="27094"
       > </a
-      ><a name="26462" class="Symbol"
+      ><a name="27095" class="Symbol"
       >(</a
-      ><a name="26463" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="27096" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="26467"
+      ><a name="27100"
       > </a
-      ><a name="26468" href="Logic.html#26468" class="Bound"
+      ><a name="27101" href="Logic.html#27101" class="Bound"
       >x</a
-      ><a name="26469" class="Symbol"
+      ><a name="27102" class="Symbol"
       >)</a
-      ><a name="26470"
+      ><a name="27103"
       > </a
-      ><a name="26471" class="Symbol"
+      ><a name="27104" class="Symbol"
       >&#8594;</a
-      ><a name="26472"
+      ><a name="27105"
       > </a
-      ><a name="26473" href="Logic.html#26449" class="Bound"
+      ><a name="27106" href="Logic.html#27082" class="Bound"
       >g</a
-      ><a name="26474"
+      ><a name="27107"
       > </a
-      ><a name="26475" href="Logic.html#26468" class="Bound"
+      ><a name="27108" href="Logic.html#27101" class="Bound"
       >x</a
-      ><a name="26476"
+      ><a name="27109"
       > </a
-      ><a name="26477" class="Symbol"
+      ><a name="27110" class="Symbol"
       >;</a
-      ><a name="26478"
+      ><a name="27111"
       > </a
-      ><a name="26479" class="Symbol"
+      ><a name="27112" class="Symbol"
       >(</a
-      ><a name="26480" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="27113" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="26484"
+      ><a name="27117"
       > </a
-      ><a name="26485" href="Logic.html#26485" class="Bound"
+      ><a name="27118" href="Logic.html#27118" class="Bound"
       >y</a
-      ><a name="26486" class="Symbol"
+      ><a name="27119" class="Symbol"
       >)</a
-      ><a name="26487"
+      ><a name="27120"
       > </a
-      ><a name="26488" class="Symbol"
+      ><a name="27121" class="Symbol"
       >&#8594;</a
-      ><a name="26489"
+      ><a name="27122"
       > </a
-      ><a name="26490" href="Logic.html#26453" class="Bound"
+      ><a name="27123" href="Logic.html#27086" class="Bound"
       >h</a
-      ><a name="26491"
+      ><a name="27124"
       > </a
-      ><a name="26492" href="Logic.html#26485" class="Bound"
+      ><a name="27125" href="Logic.html#27118" class="Bound"
       >y</a
-      ><a name="26493"
+      ><a name="27126"
       > </a
-      ><a name="26494" class="Symbol"
+      ><a name="27127" class="Symbol"
       >}</a
-      ><a name="26495"
+      ><a name="27128"
       > </a
-      ><a name="26496" class="Symbol"
+      ><a name="27129" class="Symbol"
       >}</a
-      ><a name="26497"
+      ><a name="27130"
       >
     </a
-      ><a name="26502" class="Symbol"
+      ><a name="27135" class="Symbol"
       >;</a
-      ><a name="26503"
+      ><a name="27136"
       > </a
-      ><a name="26504" class="Field"
+      ><a name="27137" class="Field"
       >inv&#737;</a
-      ><a name="26508"
+      ><a name="27141"
       > </a
-      ><a name="26509" class="Symbol"
+      ><a name="27142" class="Symbol"
       >=</a
-      ><a name="26510"
+      ><a name="27143"
       > </a
-      ><a name="26511" class="Symbol"
+      ><a name="27144" class="Symbol"
       >&#955;</a
-      ><a name="26512"
+      ><a name="27145"
       > </a
-      ><a name="26513" href="Logic.html#26513" class="Bound"
+      ><a name="27146" href="Logic.html#27146" class="Bound"
       >f</a
-      ><a name="26514"
+      ><a name="27147"
       > </a
-      ><a name="26515" class="Symbol"
+      ><a name="27148" class="Symbol"
       >&#8594;</a
-      ><a name="26516"
+      ><a name="27149"
       > </a
-      ><a name="26517" href="Logic.html#24650" class="Postulate"
+      ><a name="27150" href="Logic.html#25283" class="Postulate"
       >extensionality</a
-      ><a name="26531"
+      ><a name="27164"
       > </a
-      ><a name="26532" class="Symbol"
+      ><a name="27165" class="Symbol"
       >(&#955;</a
-      ><a name="26534"
+      ><a name="27167"
       > </a
-      ><a name="26535" class="Symbol"
+      ><a name="27168" class="Symbol"
       >{</a
-      ><a name="26536"
+      ><a name="27169"
       > </a
-      ><a name="26537" class="Symbol"
+      ><a name="27170" class="Symbol"
       >(</a
-      ><a name="26538" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="27171" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="26542"
+      ><a name="27175"
       > </a
-      ><a name="26543" href="Logic.html#26543" class="Bound"
+      ><a name="27176" href="Logic.html#27176" class="Bound"
       >x</a
-      ><a name="26544" class="Symbol"
+      ><a name="27177" class="Symbol"
       >)</a
-      ><a name="26545"
+      ><a name="27178"
       > </a
-      ><a name="26546" class="Symbol"
+      ><a name="27179" class="Symbol"
       >&#8594;</a
-      ><a name="26547"
+      ><a name="27180"
       > </a
-      ><a name="26548" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="27181" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="26552"
+      ><a name="27185"
       > </a
-      ><a name="26553" class="Symbol"
+      ><a name="27186" class="Symbol"
       >;</a
-      ><a name="26554"
+      ><a name="27187"
       > </a
-      ><a name="26555" class="Symbol"
+      ><a name="27188" class="Symbol"
       >(</a
-      ><a name="26556" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="27189" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="26560"
+      ><a name="27193"
       > </a
-      ><a name="26561" href="Logic.html#26561" class="Bound"
+      ><a name="27194" href="Logic.html#27194" class="Bound"
       >y</a
-      ><a name="26562" class="Symbol"
+      ><a name="27195" class="Symbol"
       >)</a
-      ><a name="26563"
+      ><a name="27196"
       > </a
-      ><a name="26564" class="Symbol"
+      ><a name="27197" class="Symbol"
       >&#8594;</a
-      ><a name="26565"
+      ><a name="27198"
       > </a
-      ><a name="26566" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="27199" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="26570"
+      ><a name="27203"
       > </a
-      ><a name="26571" class="Symbol"
+      ><a name="27204" class="Symbol"
       >})</a
-      ><a name="26573"
+      ><a name="27206"
       >
     </a
-      ><a name="26578" class="Symbol"
+      ><a name="27211" class="Symbol"
       >;</a
-      ><a name="26579"
+      ><a name="27212"
       > </a
-      ><a name="26580" class="Field"
+      ><a name="27213" class="Field"
       >inv&#691;</a
-      ><a name="26584"
+      ><a name="27217"
       > </a
-      ><a name="26585" class="Symbol"
+      ><a name="27218" class="Symbol"
       >=</a
-      ><a name="26586"
+      ><a name="27219"
       > </a
-      ><a name="26587" class="Symbol"
+      ><a name="27220" class="Symbol"
       >&#955;</a
-      ><a name="26588"
+      ><a name="27221"
       > </a
-      ><a name="26589" class="Symbol"
+      ><a name="27222" class="Symbol"
       >{(</a
-      ><a name="26591" href="Logic.html#26591" class="Bound"
+      ><a name="27224" href="Logic.html#27224" class="Bound"
       >g</a
-      ><a name="26592"
+      ><a name="27225"
       > </a
-      ><a name="26593" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27226" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="26594"
+      ><a name="27227"
       > </a
-      ><a name="26595" href="Logic.html#26595" class="Bound"
+      ><a name="27228" href="Logic.html#27228" class="Bound"
       >h</a
-      ><a name="26596" class="Symbol"
+      ><a name="27229" class="Symbol"
       >)</a
-      ><a name="26597"
+      ><a name="27230"
       > </a
-      ><a name="26598" class="Symbol"
+      ><a name="27231" class="Symbol"
       >&#8594;</a
-      ><a name="26599"
+      ><a name="27232"
       > </a
-      ><a name="26600" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="27233" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="26604" class="Symbol"
+      ><a name="27237" class="Symbol"
       >}</a
-      ><a name="26605"
+      ><a name="27238"
       >
     </a
-      ><a name="26610" class="Symbol"
+      ><a name="27243" class="Symbol"
       >}</a
       >
 {% endraw %}</pre>
@@ -9173,499 +9189,499 @@ is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.  The proof requires that we recognise the eta
 rule for products, which states that `(fst w , snd w) ≡ w` for any product `w`.
 <pre class="Agda">{% raw %}
-<a name="27073" class="Keyword"
+<a name="27706" class="Keyword"
       >postulate</a
-      ><a name="27082"
+      ><a name="27715"
       >
   </a
-      ><a name="27085" href="Logic.html#27085" class="Postulate"
+      ><a name="27718" href="Logic.html#27718" class="Postulate"
       >&#951;-&#215;</a
-      ><a name="27088"
+      ><a name="27721"
       > </a
-      ><a name="27089" class="Symbol"
+      ><a name="27722" class="Symbol"
       >:</a
-      ><a name="27090"
+      ><a name="27723"
       > </a
-      ><a name="27091" class="Symbol"
+      ><a name="27724" class="Symbol"
       >&#8704;</a
-      ><a name="27092"
+      ><a name="27725"
       > </a
-      ><a name="27093" class="Symbol"
+      ><a name="27726" class="Symbol"
       >{</a
-      ><a name="27094" href="Logic.html#27094" class="Bound"
+      ><a name="27727" href="Logic.html#27727" class="Bound"
       >A</a
-      ><a name="27095"
+      ><a name="27728"
       > </a
-      ><a name="27096" href="Logic.html#27096" class="Bound"
+      ><a name="27729" href="Logic.html#27729" class="Bound"
       >B</a
-      ><a name="27097"
+      ><a name="27730"
       > </a
-      ><a name="27098" class="Symbol"
+      ><a name="27731" class="Symbol"
       >:</a
-      ><a name="27099"
+      ><a name="27732"
       > </a
-      ><a name="27100" class="PrimitiveType"
+      ><a name="27733" class="PrimitiveType"
       >Set</a
-      ><a name="27103" class="Symbol"
+      ><a name="27736" class="Symbol"
       >}</a
-      ><a name="27104"
+      ><a name="27737"
       > </a
-      ><a name="27105" class="Symbol"
+      ><a name="27738" class="Symbol"
       >&#8594;</a
-      ><a name="27106"
+      ><a name="27739"
       > </a
-      ><a name="27107" class="Symbol"
+      ><a name="27740" class="Symbol"
       >&#8704;</a
-      ><a name="27108"
+      ><a name="27741"
       > </a
-      ><a name="27109" class="Symbol"
+      ><a name="27742" class="Symbol"
       >(</a
-      ><a name="27110" href="Logic.html#27110" class="Bound"
+      ><a name="27743" href="Logic.html#27743" class="Bound"
       >w</a
-      ><a name="27111"
+      ><a name="27744"
       > </a
-      ><a name="27112" class="Symbol"
+      ><a name="27745" class="Symbol"
       >:</a
-      ><a name="27113"
+      ><a name="27746"
       > </a
-      ><a name="27114" href="Logic.html#27094" class="Bound"
+      ><a name="27747" href="Logic.html#27727" class="Bound"
       >A</a
-      ><a name="27115"
+      ><a name="27748"
       > </a
-      ><a name="27116" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="27749" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="27117"
+      ><a name="27750"
       > </a
-      ><a name="27118" href="Logic.html#27096" class="Bound"
+      ><a name="27751" href="Logic.html#27729" class="Bound"
       >B</a
-      ><a name="27119" class="Symbol"
+      ><a name="27752" class="Symbol"
       >)</a
-      ><a name="27120"
+      ><a name="27753"
       > </a
-      ><a name="27121" class="Symbol"
+      ><a name="27754" class="Symbol"
       >&#8594;</a
-      ><a name="27122"
+      ><a name="27755"
       > </a
-      ><a name="27123" class="Symbol"
+      ><a name="27756" class="Symbol"
       >(</a
-      ><a name="27124" href="Logic.html#7507" class="Function"
+      ><a name="27757" href="Logic.html#7507" class="Function"
       >fst</a
-      ><a name="27127"
+      ><a name="27760"
       > </a
-      ><a name="27128" href="Logic.html#27110" class="Bound"
+      ><a name="27761" href="Logic.html#27743" class="Bound"
       >w</a
-      ><a name="27129"
+      ><a name="27762"
       > </a
-      ><a name="27130" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27763" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27131"
+      ><a name="27764"
       > </a
-      ><a name="27132" href="Logic.html#7556" class="Function"
+      ><a name="27765" href="Logic.html#7556" class="Function"
       >snd</a
-      ><a name="27135"
+      ><a name="27768"
       > </a
-      ><a name="27136" href="Logic.html#27110" class="Bound"
+      ><a name="27769" href="Logic.html#27743" class="Bound"
       >w</a
-      ><a name="27137" class="Symbol"
+      ><a name="27770" class="Symbol"
       >)</a
-      ><a name="27138"
+      ><a name="27771"
       > </a
-      ><a name="27139" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
+      ><a name="27772" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator"
       >&#8801;</a
-      ><a name="27140"
+      ><a name="27773"
       > </a
-      ><a name="27141" href="Logic.html#27110" class="Bound"
+      ><a name="27774" href="Logic.html#27743" class="Bound"
       >w</a
-      ><a name="27142"
+      ><a name="27775"
       >
 
 </a
-      ><a name="27144" href="Logic.html#27144" class="Function"
+      ><a name="27777" href="Logic.html#27777" class="Function"
       >&#8594;-distributes-&#215;</a
-      ><a name="27159"
+      ><a name="27792"
       > </a
-      ><a name="27160" class="Symbol"
+      ><a name="27793" class="Symbol"
       >:</a
-      ><a name="27161"
+      ><a name="27794"
       > </a
-      ><a name="27162" class="Symbol"
+      ><a name="27795" class="Symbol"
       >&#8704;</a
-      ><a name="27163"
+      ><a name="27796"
       > </a
-      ><a name="27164" class="Symbol"
+      ><a name="27797" class="Symbol"
       >{</a
-      ><a name="27165" href="Logic.html#27165" class="Bound"
+      ><a name="27798" href="Logic.html#27798" class="Bound"
       >A</a
-      ><a name="27166"
+      ><a name="27799"
       > </a
-      ><a name="27167" href="Logic.html#27167" class="Bound"
+      ><a name="27800" href="Logic.html#27800" class="Bound"
       >B</a
-      ><a name="27168"
+      ><a name="27801"
       > </a
-      ><a name="27169" href="Logic.html#27169" class="Bound"
+      ><a name="27802" href="Logic.html#27802" class="Bound"
       >C</a
-      ><a name="27170"
+      ><a name="27803"
       > </a
-      ><a name="27171" class="Symbol"
+      ><a name="27804" class="Symbol"
       >:</a
-      ><a name="27172"
+      ><a name="27805"
       > </a
-      ><a name="27173" class="PrimitiveType"
+      ><a name="27806" class="PrimitiveType"
       >Set</a
-      ><a name="27176" class="Symbol"
+      ><a name="27809" class="Symbol"
       >}</a
-      ><a name="27177"
+      ><a name="27810"
       > </a
-      ><a name="27178" class="Symbol"
+      ><a name="27811" class="Symbol"
       >&#8594;</a
-      ><a name="27179"
+      ><a name="27812"
       > </a
-      ><a name="27180" class="Symbol"
+      ><a name="27813" class="Symbol"
       >(</a
-      ><a name="27181" href="Logic.html#27165" class="Bound"
+      ><a name="27814" href="Logic.html#27798" class="Bound"
       >A</a
-      ><a name="27182"
+      ><a name="27815"
       > </a
-      ><a name="27183" class="Symbol"
+      ><a name="27816" class="Symbol"
       >&#8594;</a
-      ><a name="27184"
+      ><a name="27817"
       > </a
-      ><a name="27185" href="Logic.html#27167" class="Bound"
+      ><a name="27818" href="Logic.html#27800" class="Bound"
       >B</a
-      ><a name="27186"
+      ><a name="27819"
       > </a
-      ><a name="27187" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="27820" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="27188"
+      ><a name="27821"
       > </a
-      ><a name="27189" href="Logic.html#27169" class="Bound"
+      ><a name="27822" href="Logic.html#27802" class="Bound"
       >C</a
-      ><a name="27190" class="Symbol"
+      ><a name="27823" class="Symbol"
       >)</a
-      ><a name="27191"
+      ><a name="27824"
       > </a
-      ><a name="27192" href="Logic.html#1478" class="Record Operator"
+      ><a name="27825" href="Logic.html#1478" class="Record Operator"
       >&#8771;</a
-      ><a name="27193"
+      ><a name="27826"
       > </a
-      ><a name="27194" class="Symbol"
+      ><a name="27827" class="Symbol"
       >((</a
-      ><a name="27196" href="Logic.html#27165" class="Bound"
+      ><a name="27829" href="Logic.html#27798" class="Bound"
       >A</a
-      ><a name="27197"
+      ><a name="27830"
       > </a
-      ><a name="27198" class="Symbol"
+      ><a name="27831" class="Symbol"
       >&#8594;</a
-      ><a name="27199"
+      ><a name="27832"
       > </a
-      ><a name="27200" href="Logic.html#27167" class="Bound"
+      ><a name="27833" href="Logic.html#27800" class="Bound"
       >B</a
-      ><a name="27201" class="Symbol"
+      ><a name="27834" class="Symbol"
       >)</a
-      ><a name="27202"
+      ><a name="27835"
       > </a
-      ><a name="27203" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="27836" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="27204"
+      ><a name="27837"
       > </a
-      ><a name="27205" class="Symbol"
+      ><a name="27838" class="Symbol"
       >(</a
-      ><a name="27206" href="Logic.html#27165" class="Bound"
+      ><a name="27839" href="Logic.html#27798" class="Bound"
       >A</a
-      ><a name="27207"
+      ><a name="27840"
       > </a
-      ><a name="27208" class="Symbol"
+      ><a name="27841" class="Symbol"
       >&#8594;</a
-      ><a name="27209"
+      ><a name="27842"
       > </a
-      ><a name="27210" href="Logic.html#27169" class="Bound"
+      ><a name="27843" href="Logic.html#27802" class="Bound"
       >C</a
-      ><a name="27211" class="Symbol"
+      ><a name="27844" class="Symbol"
       >))</a
-      ><a name="27213"
+      ><a name="27846"
       >
 </a
-      ><a name="27214" href="Logic.html#27144" class="Function"
+      ><a name="27847" href="Logic.html#27777" class="Function"
       >&#8594;-distributes-&#215;</a
-      ><a name="27229"
+      ><a name="27862"
       > </a
-      ><a name="27230" class="Symbol"
+      ><a name="27863" class="Symbol"
       >=</a
-      ><a name="27231"
+      ><a name="27864"
       >
   </a
-      ><a name="27234" class="Keyword"
+      ><a name="27867" class="Keyword"
       >record</a
-      ><a name="27240"
+      ><a name="27873"
       >
     </a
-      ><a name="27245" class="Symbol"
+      ><a name="27878" class="Symbol"
       >{</a
-      ><a name="27246"
+      ><a name="27879"
       > </a
-      ><a name="27247" class="Field"
+      ><a name="27880" class="Field"
       >to</a
-      ><a name="27249"
+      ><a name="27882"
       >   </a
-      ><a name="27252" class="Symbol"
+      ><a name="27885" class="Symbol"
       >=</a
-      ><a name="27253"
+      ><a name="27886"
       > </a
-      ><a name="27254" class="Symbol"
+      ><a name="27887" class="Symbol"
       >&#955;</a
-      ><a name="27255"
+      ><a name="27888"
       > </a
-      ><a name="27256" href="Logic.html#27256" class="Bound"
+      ><a name="27889" href="Logic.html#27889" class="Bound"
       >f</a
-      ><a name="27257"
+      ><a name="27890"
       > </a
-      ><a name="27258" class="Symbol"
+      ><a name="27891" class="Symbol"
       >&#8594;</a
-      ><a name="27259"
+      ><a name="27892"
       > </a
-      ><a name="27260" class="Symbol"
+      ><a name="27893" class="Symbol"
       >(</a
-      ><a name="27261"
+      ><a name="27894"
       > </a
-      ><a name="27262" class="Symbol"
+      ><a name="27895" class="Symbol"
       >(&#955;</a
-      ><a name="27264"
+      ><a name="27897"
       > </a
-      ><a name="27265" href="Logic.html#27265" class="Bound"
+      ><a name="27898" href="Logic.html#27898" class="Bound"
       >x</a
-      ><a name="27266"
+      ><a name="27899"
       > </a
-      ><a name="27267" class="Symbol"
+      ><a name="27900" class="Symbol"
       >&#8594;</a
-      ><a name="27268"
+      ><a name="27901"
       > </a
-      ><a name="27269" href="Logic.html#7507" class="Function"
+      ><a name="27902" href="Logic.html#7507" class="Function"
       >fst</a
-      ><a name="27272"
+      ><a name="27905"
       > </a
-      ><a name="27273" class="Symbol"
+      ><a name="27906" class="Symbol"
       >(</a
-      ><a name="27274" href="Logic.html#27256" class="Bound"
+      ><a name="27907" href="Logic.html#27889" class="Bound"
       >f</a
-      ><a name="27275"
+      ><a name="27908"
       > </a
-      ><a name="27276" href="Logic.html#27265" class="Bound"
+      ><a name="27909" href="Logic.html#27898" class="Bound"
       >x</a
-      ><a name="27277" class="Symbol"
+      ><a name="27910" class="Symbol"
       >))</a
-      ><a name="27279"
+      ><a name="27912"
       > </a
-      ><a name="27280" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27913" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27281"
+      ><a name="27914"
       > </a
-      ><a name="27282" class="Symbol"
+      ><a name="27915" class="Symbol"
       >(&#955;</a
-      ><a name="27284"
+      ><a name="27917"
       > </a
-      ><a name="27285" href="Logic.html#27285" class="Bound"
+      ><a name="27918" href="Logic.html#27918" class="Bound"
       >y</a
-      ><a name="27286"
+      ><a name="27919"
       > </a
-      ><a name="27287" class="Symbol"
+      ><a name="27920" class="Symbol"
       >&#8594;</a
-      ><a name="27288"
+      ><a name="27921"
       > </a
-      ><a name="27289" href="Logic.html#7556" class="Function"
+      ><a name="27922" href="Logic.html#7556" class="Function"
       >snd</a
-      ><a name="27292"
+      ><a name="27925"
       > </a
-      ><a name="27293" class="Symbol"
+      ><a name="27926" class="Symbol"
       >(</a
-      ><a name="27294" href="Logic.html#27256" class="Bound"
+      ><a name="27927" href="Logic.html#27889" class="Bound"
       >f</a
-      ><a name="27295"
+      ><a name="27928"
       > </a
-      ><a name="27296" href="Logic.html#27285" class="Bound"
+      ><a name="27929" href="Logic.html#27918" class="Bound"
       >y</a
-      ><a name="27297" class="Symbol"
+      ><a name="27930" class="Symbol"
       >))</a
-      ><a name="27299"
+      ><a name="27932"
       > </a
-      ><a name="27300" class="Symbol"
+      ><a name="27933" class="Symbol"
       >)</a
-      ><a name="27301"
+      ><a name="27934"
       > 
     </a
-      ><a name="27307" class="Symbol"
+      ><a name="27940" class="Symbol"
       >;</a
-      ><a name="27308"
+      ><a name="27941"
       > </a
-      ><a name="27309" class="Field"
+      ><a name="27942" class="Field"
       >fro</a
-      ><a name="27312"
+      ><a name="27945"
       >  </a
-      ><a name="27314" class="Symbol"
+      ><a name="27947" class="Symbol"
       >=</a
-      ><a name="27315"
+      ><a name="27948"
       > </a
-      ><a name="27316" class="Symbol"
+      ><a name="27949" class="Symbol"
       >&#955;</a
-      ><a name="27317"
+      ><a name="27950"
       > </a
-      ><a name="27318" class="Symbol"
+      ><a name="27951" class="Symbol"
       >{(</a
-      ><a name="27320" href="Logic.html#27320" class="Bound"
+      ><a name="27953" href="Logic.html#27953" class="Bound"
       >g</a
-      ><a name="27321"
+      ><a name="27954"
       > </a
-      ><a name="27322" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27955" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27323"
+      ><a name="27956"
       > </a
-      ><a name="27324" href="Logic.html#27324" class="Bound"
+      ><a name="27957" href="Logic.html#27957" class="Bound"
       >h</a
-      ><a name="27325" class="Symbol"
+      ><a name="27958" class="Symbol"
       >)</a
-      ><a name="27326"
+      ><a name="27959"
       > </a
-      ><a name="27327" class="Symbol"
+      ><a name="27960" class="Symbol"
       >&#8594;</a
-      ><a name="27328"
+      ><a name="27961"
       > </a
-      ><a name="27329" class="Symbol"
+      ><a name="27962" class="Symbol"
       >(&#955;</a
-      ><a name="27331"
+      ><a name="27964"
       > </a
-      ><a name="27332" href="Logic.html#27332" class="Bound"
+      ><a name="27965" href="Logic.html#27965" class="Bound"
       >x</a
-      ><a name="27333"
+      ><a name="27966"
       > </a
-      ><a name="27334" class="Symbol"
+      ><a name="27967" class="Symbol"
       >&#8594;</a
-      ><a name="27335"
+      ><a name="27968"
       > </a
-      ><a name="27336" class="Symbol"
+      ><a name="27969" class="Symbol"
       >(</a
-      ><a name="27337" href="Logic.html#27320" class="Bound"
+      ><a name="27970" href="Logic.html#27953" class="Bound"
       >g</a
-      ><a name="27338"
+      ><a name="27971"
       > </a
-      ><a name="27339" href="Logic.html#27332" class="Bound"
+      ><a name="27972" href="Logic.html#27965" class="Bound"
       >x</a
-      ><a name="27340"
+      ><a name="27973"
       > </a
-      ><a name="27341" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="27974" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27342"
+      ><a name="27975"
       > </a
-      ><a name="27343" href="Logic.html#27324" class="Bound"
+      ><a name="27976" href="Logic.html#27957" class="Bound"
       >h</a
-      ><a name="27344"
+      ><a name="27977"
       > </a
-      ><a name="27345" href="Logic.html#27332" class="Bound"
+      ><a name="27978" href="Logic.html#27965" class="Bound"
       >x</a
-      ><a name="27346" class="Symbol"
+      ><a name="27979" class="Symbol"
       >))}</a
-      ><a name="27349"
+      ><a name="27982"
       >
     </a
-      ><a name="27354" class="Symbol"
+      ><a name="27987" class="Symbol"
       >;</a
-      ><a name="27355"
+      ><a name="27988"
       > </a
-      ><a name="27356" class="Field"
+      ><a name="27989" class="Field"
       >inv&#737;</a
-      ><a name="27360"
+      ><a name="27993"
       > </a
-      ><a name="27361" class="Symbol"
+      ><a name="27994" class="Symbol"
       >=</a
-      ><a name="27362"
+      ><a name="27995"
       > </a
-      ><a name="27363" class="Symbol"
+      ><a name="27996" class="Symbol"
       >&#955;</a
-      ><a name="27364"
+      ><a name="27997"
       > </a
-      ><a name="27365" href="Logic.html#27365" class="Bound"
+      ><a name="27998" href="Logic.html#27998" class="Bound"
       >f</a
-      ><a name="27366"
+      ><a name="27999"
       > </a
-      ><a name="27367" class="Symbol"
+      ><a name="28000" class="Symbol"
       >&#8594;</a
-      ><a name="27368"
+      ><a name="28001"
       > </a
-      ><a name="27369" href="Logic.html#24650" class="Postulate"
+      ><a name="28002" href="Logic.html#25283" class="Postulate"
       >extensionality</a
-      ><a name="27383"
+      ><a name="28016"
       > </a
-      ><a name="27384" class="Symbol"
+      ><a name="28017" class="Symbol"
       >(&#955;</a
-      ><a name="27386"
+      ><a name="28019"
       > </a
-      ><a name="27387" href="Logic.html#27387" class="Bound"
+      ><a name="28020" href="Logic.html#28020" class="Bound"
       >x</a
-      ><a name="27388"
+      ><a name="28021"
       > </a
-      ><a name="27389" class="Symbol"
+      ><a name="28022" class="Symbol"
       >&#8594;</a
-      ><a name="27390"
+      ><a name="28023"
       > </a
-      ><a name="27391" href="Logic.html#27085" class="Postulate"
+      ><a name="28024" href="Logic.html#27718" class="Postulate"
       >&#951;-&#215;</a
-      ><a name="27394"
+      ><a name="28027"
       > </a
-      ><a name="27395" class="Symbol"
+      ><a name="28028" class="Symbol"
       >(</a
-      ><a name="27396" href="Logic.html#27365" class="Bound"
+      ><a name="28029" href="Logic.html#27998" class="Bound"
       >f</a
-      ><a name="27397"
+      ><a name="28030"
       > </a
-      ><a name="27398" href="Logic.html#27387" class="Bound"
+      ><a name="28031" href="Logic.html#28020" class="Bound"
       >x</a
-      ><a name="27399" class="Symbol"
+      ><a name="28032" class="Symbol"
       >))</a
-      ><a name="27401"
+      ><a name="28034"
       >
     </a
-      ><a name="27406" class="Symbol"
+      ><a name="28039" class="Symbol"
       >;</a
-      ><a name="27407"
+      ><a name="28040"
       > </a
-      ><a name="27408" class="Field"
+      ><a name="28041" class="Field"
       >inv&#691;</a
-      ><a name="27412"
+      ><a name="28045"
       > </a
-      ><a name="27413" class="Symbol"
+      ><a name="28046" class="Symbol"
       >=</a
-      ><a name="27414"
+      ><a name="28047"
       > </a
-      ><a name="27415" class="Symbol"
+      ><a name="28048" class="Symbol"
       >&#955;</a
-      ><a name="27416"
+      ><a name="28049"
       > </a
-      ><a name="27417" class="Symbol"
+      ><a name="28050" class="Symbol"
       >{(</a
-      ><a name="27419" href="Logic.html#27419" class="Bound"
+      ><a name="28052" href="Logic.html#28052" class="Bound"
       >g</a
-      ><a name="27420"
+      ><a name="28053"
       > </a
-      ><a name="27421" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28054" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27422"
+      ><a name="28055"
       > </a
-      ><a name="27423" href="Logic.html#27423" class="Bound"
+      ><a name="28056" href="Logic.html#28056" class="Bound"
       >h</a
-      ><a name="27424" class="Symbol"
+      ><a name="28057" class="Symbol"
       >)</a
-      ><a name="27425"
+      ><a name="28058"
       > </a
-      ><a name="27426" class="Symbol"
+      ><a name="28059" class="Symbol"
       >&#8594;</a
-      ><a name="27427"
+      ><a name="28060"
       > </a
-      ><a name="27428" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="28061" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="27432" class="Symbol"
+      ><a name="28065" class="Symbol"
       >}</a
-      ><a name="27433"
+      ><a name="28066"
       >
     </a
-      ><a name="27438" class="Symbol"
+      ><a name="28071" class="Symbol"
       >}</a
       >
 {% endraw %}</pre>
@@ -9676,1058 +9692,1058 @@ rule for products, which states that `(fst w , snd w) ≡ w` for any product `w`
 Products distributes over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results.
 <pre class="Agda">{% raw %}
-<a name="27614" href="Logic.html#27614" class="Function"
+<a name="28247" href="Logic.html#28247" class="Function"
       >&#215;-distributes-&#8846;</a
-      ><a name="27629"
+      ><a name="28262"
       > </a
-      ><a name="27630" class="Symbol"
+      ><a name="28263" class="Symbol"
       >:</a
-      ><a name="27631"
+      ><a name="28264"
       > </a
-      ><a name="27632" class="Symbol"
+      ><a name="28265" class="Symbol"
       >&#8704;</a
-      ><a name="27633"
+      ><a name="28266"
       > </a
-      ><a name="27634" class="Symbol"
+      ><a name="28267" class="Symbol"
       >{</a
-      ><a name="27635" href="Logic.html#27635" class="Bound"
+      ><a name="28268" href="Logic.html#28268" class="Bound"
       >A</a
-      ><a name="27636"
+      ><a name="28269"
       > </a
-      ><a name="27637" href="Logic.html#27637" class="Bound"
+      ><a name="28270" href="Logic.html#28270" class="Bound"
       >B</a
-      ><a name="27638"
+      ><a name="28271"
       > </a
-      ><a name="27639" href="Logic.html#27639" class="Bound"
+      ><a name="28272" href="Logic.html#28272" class="Bound"
       >C</a
-      ><a name="27640"
+      ><a name="28273"
       > </a
-      ><a name="27641" class="Symbol"
+      ><a name="28274" class="Symbol"
       >:</a
-      ><a name="27642"
+      ><a name="28275"
       > </a
-      ><a name="27643" class="PrimitiveType"
+      ><a name="28276" class="PrimitiveType"
       >Set</a
-      ><a name="27646" class="Symbol"
+      ><a name="28279" class="Symbol"
       >}</a
-      ><a name="27647"
+      ><a name="28280"
       > </a
-      ><a name="27648" class="Symbol"
+      ><a name="28281" class="Symbol"
       >&#8594;</a
-      ><a name="27649"
+      ><a name="28282"
       > </a
-      ><a name="27650" class="Symbol"
+      ><a name="28283" class="Symbol"
       >((</a
-      ><a name="27652" href="Logic.html#27635" class="Bound"
+      ><a name="28285" href="Logic.html#28268" class="Bound"
       >A</a
-      ><a name="27653"
+      ><a name="28286"
       > </a
-      ><a name="27654" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="28287" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="27655"
+      ><a name="28288"
       > </a
-      ><a name="27656" href="Logic.html#27637" class="Bound"
+      ><a name="28289" href="Logic.html#28270" class="Bound"
       >B</a
-      ><a name="27657" class="Symbol"
+      ><a name="28290" class="Symbol"
       >)</a
-      ><a name="27658"
+      ><a name="28291"
       > </a
-      ><a name="27659" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="28292" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="27660"
+      ><a name="28293"
       > </a
-      ><a name="27661" href="Logic.html#27639" class="Bound"
+      ><a name="28294" href="Logic.html#28272" class="Bound"
       >C</a
-      ><a name="27662" class="Symbol"
+      ><a name="28295" class="Symbol"
       >)</a
-      ><a name="27663"
+      ><a name="28296"
       > </a
-      ><a name="27664" href="Logic.html#1478" class="Record Operator"
+      ><a name="28297" href="Logic.html#1478" class="Record Operator"
       >&#8771;</a
-      ><a name="27665"
+      ><a name="28298"
       > </a
-      ><a name="27666" class="Symbol"
+      ><a name="28299" class="Symbol"
       >((</a
-      ><a name="27668" href="Logic.html#27635" class="Bound"
+      ><a name="28301" href="Logic.html#28268" class="Bound"
       >A</a
-      ><a name="27669"
+      ><a name="28302"
       > </a
-      ><a name="27670" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="28303" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="27671"
+      ><a name="28304"
       > </a
-      ><a name="27672" href="Logic.html#27639" class="Bound"
+      ><a name="28305" href="Logic.html#28272" class="Bound"
       >C</a
-      ><a name="27673" class="Symbol"
+      ><a name="28306" class="Symbol"
       >)</a
-      ><a name="27674"
+      ><a name="28307"
       > </a
-      ><a name="27675" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="28308" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="27676"
+      ><a name="28309"
       > </a
-      ><a name="27677" class="Symbol"
+      ><a name="28310" class="Symbol"
       >(</a
-      ><a name="27678" href="Logic.html#27637" class="Bound"
+      ><a name="28311" href="Logic.html#28270" class="Bound"
       >B</a
-      ><a name="27679"
+      ><a name="28312"
       > </a
-      ><a name="27680" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="28313" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="27681"
+      ><a name="28314"
       > </a
-      ><a name="27682" href="Logic.html#27639" class="Bound"
+      ><a name="28315" href="Logic.html#28272" class="Bound"
       >C</a
-      ><a name="27683" class="Symbol"
+      ><a name="28316" class="Symbol"
       >))</a
-      ><a name="27685"
+      ><a name="28318"
       >
 </a
-      ><a name="27686" href="Logic.html#27614" class="Function"
+      ><a name="28319" href="Logic.html#28247" class="Function"
       >&#215;-distributes-&#8846;</a
-      ><a name="27701"
+      ><a name="28334"
       > </a
-      ><a name="27702" class="Symbol"
+      ><a name="28335" class="Symbol"
       >=</a
-      ><a name="27703"
+      ><a name="28336"
       >
   </a
-      ><a name="27706" class="Keyword"
+      ><a name="28339" class="Keyword"
       >record</a
-      ><a name="27712"
+      ><a name="28345"
       >
     </a
-      ><a name="27717" class="Symbol"
+      ><a name="28350" class="Symbol"
       >{</a
-      ><a name="27718"
+      ><a name="28351"
       > </a
-      ><a name="27719" class="Field"
+      ><a name="28352" class="Field"
       >to</a
-      ><a name="27721"
+      ><a name="28354"
       >   </a
-      ><a name="27724" class="Symbol"
+      ><a name="28357" class="Symbol"
       >=</a
-      ><a name="27725"
+      ><a name="28358"
       > </a
-      ><a name="27726" class="Symbol"
+      ><a name="28359" class="Symbol"
       >&#955;</a
-      ><a name="27727"
+      ><a name="28360"
       > </a
-      ><a name="27728" class="Symbol"
+      ><a name="28361" class="Symbol"
       >{</a
-      ><a name="27729"
+      ><a name="28362"
       > </a
-      ><a name="27730" class="Symbol"
+      ><a name="28363" class="Symbol"
       >((</a
-      ><a name="27732" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="28365" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="27736"
+      ><a name="28369"
       > </a
-      ><a name="27737" href="Logic.html#27737" class="Bound"
+      ><a name="28370" href="Logic.html#28370" class="Bound"
       >x</a
-      ><a name="27738" class="Symbol"
+      ><a name="28371" class="Symbol"
       >)</a
-      ><a name="27739"
+      ><a name="28372"
       > </a
-      ><a name="27740" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28373" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27741"
+      ><a name="28374"
       > </a
-      ><a name="27742" href="Logic.html#27742" class="Bound"
+      ><a name="28375" href="Logic.html#28375" class="Bound"
       >z</a
-      ><a name="27743" class="Symbol"
+      ><a name="28376" class="Symbol"
       >)</a
-      ><a name="27744"
+      ><a name="28377"
       > </a
-      ><a name="27745" class="Symbol"
+      ><a name="28378" class="Symbol"
       >&#8594;</a
-      ><a name="27746"
+      ><a name="28379"
       > </a
-      ><a name="27747" class="Symbol"
+      ><a name="28380" class="Symbol"
       >(</a
-      ><a name="27748" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="28381" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="27752"
+      ><a name="28385"
       > </a
-      ><a name="27753" class="Symbol"
+      ><a name="28386" class="Symbol"
       >(</a
-      ><a name="27754" href="Logic.html#27737" class="Bound"
+      ><a name="28387" href="Logic.html#28370" class="Bound"
       >x</a
-      ><a name="27755"
+      ><a name="28388"
       > </a
-      ><a name="27756" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28389" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27757"
+      ><a name="28390"
       > </a
-      ><a name="27758" href="Logic.html#27742" class="Bound"
+      ><a name="28391" href="Logic.html#28375" class="Bound"
       >z</a
-      ><a name="27759" class="Symbol"
+      ><a name="28392" class="Symbol"
       >))</a
-      ><a name="27761"
+      ><a name="28394"
       > 
                </a
-      ><a name="27778" class="Symbol"
+      ><a name="28411" class="Symbol"
       >;</a
-      ><a name="27779"
+      ><a name="28412"
       > </a
-      ><a name="27780" class="Symbol"
+      ><a name="28413" class="Symbol"
       >((</a
-      ><a name="27782" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="28415" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="27786"
+      ><a name="28419"
       > </a
-      ><a name="27787" href="Logic.html#27787" class="Bound"
+      ><a name="28420" href="Logic.html#28420" class="Bound"
       >y</a
-      ><a name="27788" class="Symbol"
+      ><a name="28421" class="Symbol"
       >)</a
-      ><a name="27789"
+      ><a name="28422"
       > </a
-      ><a name="27790" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28423" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27791"
+      ><a name="28424"
       > </a
-      ><a name="27792" href="Logic.html#27792" class="Bound"
+      ><a name="28425" href="Logic.html#28425" class="Bound"
       >z</a
-      ><a name="27793" class="Symbol"
+      ><a name="28426" class="Symbol"
       >)</a
-      ><a name="27794"
+      ><a name="28427"
       > </a
-      ><a name="27795" class="Symbol"
+      ><a name="28428" class="Symbol"
       >&#8594;</a
-      ><a name="27796"
+      ><a name="28429"
       > </a
-      ><a name="27797" class="Symbol"
+      ><a name="28430" class="Symbol"
       >(</a
-      ><a name="27798" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="28431" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="27802"
+      ><a name="28435"
       > </a
-      ><a name="27803" class="Symbol"
+      ><a name="28436" class="Symbol"
       >(</a
-      ><a name="27804" href="Logic.html#27787" class="Bound"
+      ><a name="28437" href="Logic.html#28420" class="Bound"
       >y</a
-      ><a name="27805"
+      ><a name="28438"
       > </a
-      ><a name="27806" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28439" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27807"
+      ><a name="28440"
       > </a
-      ><a name="27808" href="Logic.html#27792" class="Bound"
+      ><a name="28441" href="Logic.html#28425" class="Bound"
       >z</a
-      ><a name="27809" class="Symbol"
+      ><a name="28442" class="Symbol"
       >))</a
-      ><a name="27811"
+      ><a name="28444"
       >
                </a
-      ><a name="27827" class="Symbol"
+      ><a name="28460" class="Symbol"
       >}</a
-      ><a name="27828"
+      ><a name="28461"
       >
     </a
-      ><a name="27833" class="Symbol"
+      ><a name="28466" class="Symbol"
       >;</a
-      ><a name="27834"
+      ><a name="28467"
       > </a
-      ><a name="27835" class="Field"
+      ><a name="28468" class="Field"
       >fro</a
-      ><a name="27838"
+      ><a name="28471"
       >  </a
-      ><a name="27840" class="Symbol"
+      ><a name="28473" class="Symbol"
       >=</a
-      ><a name="27841"
+      ><a name="28474"
       > </a
-      ><a name="27842" class="Symbol"
+      ><a name="28475" class="Symbol"
       >&#955;</a
-      ><a name="27843"
+      ><a name="28476"
       > </a
-      ><a name="27844" class="Symbol"
+      ><a name="28477" class="Symbol"
       >{</a
-      ><a name="27845"
+      ><a name="28478"
       > </a
-      ><a name="27846" class="Symbol"
+      ><a name="28479" class="Symbol"
       >(</a
-      ><a name="27847" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="28480" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="27851"
+      ><a name="28484"
       > </a
-      ><a name="27852" class="Symbol"
+      ><a name="28485" class="Symbol"
       >(</a
-      ><a name="27853" href="Logic.html#27853" class="Bound"
+      ><a name="28486" href="Logic.html#28486" class="Bound"
       >x</a
-      ><a name="27854"
+      ><a name="28487"
       > </a
-      ><a name="27855" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28488" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27856"
+      ><a name="28489"
       > </a
-      ><a name="27857" href="Logic.html#27857" class="Bound"
+      ><a name="28490" href="Logic.html#28490" class="Bound"
       >z</a
-      ><a name="27858" class="Symbol"
+      ><a name="28491" class="Symbol"
       >))</a
-      ><a name="27860"
+      ><a name="28493"
       > </a
-      ><a name="27861" class="Symbol"
+      ><a name="28494" class="Symbol"
       >&#8594;</a
-      ><a name="27862"
+      ><a name="28495"
       > </a
-      ><a name="27863" class="Symbol"
+      ><a name="28496" class="Symbol"
       >((</a
-      ><a name="27865" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="28498" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="27869"
+      ><a name="28502"
       > </a
-      ><a name="27870" href="Logic.html#27853" class="Bound"
+      ><a name="28503" href="Logic.html#28486" class="Bound"
       >x</a
-      ><a name="27871" class="Symbol"
+      ><a name="28504" class="Symbol"
       >)</a
-      ><a name="27872"
+      ><a name="28505"
       > </a
-      ><a name="27873" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28506" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27874"
+      ><a name="28507"
       > </a
-      ><a name="27875" href="Logic.html#27857" class="Bound"
+      ><a name="28508" href="Logic.html#28490" class="Bound"
       >z</a
-      ><a name="27876" class="Symbol"
+      ><a name="28509" class="Symbol"
       >)</a
-      ><a name="27877"
+      ><a name="28510"
       >
                </a
-      ><a name="27893" class="Symbol"
+      ><a name="28526" class="Symbol"
       >;</a
-      ><a name="27894"
+      ><a name="28527"
       > </a
-      ><a name="27895" class="Symbol"
+      ><a name="28528" class="Symbol"
       >(</a
-      ><a name="27896" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="28529" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="27900"
+      ><a name="28533"
       > </a
-      ><a name="27901" class="Symbol"
+      ><a name="28534" class="Symbol"
       >(</a
-      ><a name="27902" href="Logic.html#27902" class="Bound"
+      ><a name="28535" href="Logic.html#28535" class="Bound"
       >y</a
-      ><a name="27903"
+      ><a name="28536"
       > </a
-      ><a name="27904" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28537" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27905"
+      ><a name="28538"
       > </a
-      ><a name="27906" href="Logic.html#27906" class="Bound"
+      ><a name="28539" href="Logic.html#28539" class="Bound"
       >z</a
-      ><a name="27907" class="Symbol"
+      ><a name="28540" class="Symbol"
       >))</a
-      ><a name="27909"
+      ><a name="28542"
       > </a
-      ><a name="27910" class="Symbol"
+      ><a name="28543" class="Symbol"
       >&#8594;</a
-      ><a name="27911"
+      ><a name="28544"
       > </a
-      ><a name="27912" class="Symbol"
+      ><a name="28545" class="Symbol"
       >((</a
-      ><a name="27914" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="28547" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="27918"
+      ><a name="28551"
       > </a
-      ><a name="27919" href="Logic.html#27902" class="Bound"
+      ><a name="28552" href="Logic.html#28535" class="Bound"
       >y</a
-      ><a name="27920" class="Symbol"
+      ><a name="28553" class="Symbol"
       >)</a
-      ><a name="27921"
+      ><a name="28554"
       > </a
-      ><a name="27922" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28555" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27923"
+      ><a name="28556"
       > </a
-      ><a name="27924" href="Logic.html#27906" class="Bound"
+      ><a name="28557" href="Logic.html#28539" class="Bound"
       >z</a
-      ><a name="27925" class="Symbol"
+      ><a name="28558" class="Symbol"
       >)</a
-      ><a name="27926"
+      ><a name="28559"
       >
                </a
-      ><a name="27942" class="Symbol"
+      ><a name="28575" class="Symbol"
       >}</a
-      ><a name="27943"
+      ><a name="28576"
       >
     </a
-      ><a name="27948" class="Symbol"
+      ><a name="28581" class="Symbol"
       >;</a
-      ><a name="27949"
+      ><a name="28582"
       > </a
-      ><a name="27950" class="Field"
+      ><a name="28583" class="Field"
       >inv&#737;</a
-      ><a name="27954"
+      ><a name="28587"
       > </a
-      ><a name="27955" class="Symbol"
+      ><a name="28588" class="Symbol"
       >=</a
-      ><a name="27956"
+      ><a name="28589"
       > </a
-      ><a name="27957" class="Symbol"
+      ><a name="28590" class="Symbol"
       >&#955;</a
-      ><a name="27958"
+      ><a name="28591"
       > </a
-      ><a name="27959" class="Symbol"
+      ><a name="28592" class="Symbol"
       >{</a
-      ><a name="27960"
+      ><a name="28593"
       > </a
-      ><a name="27961" class="Symbol"
+      ><a name="28594" class="Symbol"
       >((</a
-      ><a name="27963" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="28596" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="27967"
+      ><a name="28600"
       > </a
-      ><a name="27968" href="Logic.html#27968" class="Bound"
+      ><a name="28601" href="Logic.html#28601" class="Bound"
       >x</a
-      ><a name="27969" class="Symbol"
+      ><a name="28602" class="Symbol"
       >)</a
-      ><a name="27970"
+      ><a name="28603"
       > </a
-      ><a name="27971" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28604" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="27972"
+      ><a name="28605"
       > </a
-      ><a name="27973" href="Logic.html#27973" class="Bound"
+      ><a name="28606" href="Logic.html#28606" class="Bound"
       >z</a
-      ><a name="27974" class="Symbol"
+      ><a name="28607" class="Symbol"
       >)</a
-      ><a name="27975"
+      ><a name="28608"
       > </a
-      ><a name="27976" class="Symbol"
+      ><a name="28609" class="Symbol"
       >&#8594;</a
-      ><a name="27977"
+      ><a name="28610"
       > </a
-      ><a name="27978" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="28611" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="27982"
+      ><a name="28615"
       >
                </a
-      ><a name="27998" class="Symbol"
+      ><a name="28631" class="Symbol"
       >;</a
-      ><a name="27999"
+      ><a name="28632"
       > </a
-      ><a name="28000" class="Symbol"
+      ><a name="28633" class="Symbol"
       >((</a
-      ><a name="28002" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="28635" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28006"
+      ><a name="28639"
       > </a
-      ><a name="28007" href="Logic.html#28007" class="Bound"
+      ><a name="28640" href="Logic.html#28640" class="Bound"
       >y</a
-      ><a name="28008" class="Symbol"
+      ><a name="28641" class="Symbol"
       >)</a
-      ><a name="28009"
+      ><a name="28642"
       > </a
-      ><a name="28010" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28643" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28011"
+      ><a name="28644"
       > </a
-      ><a name="28012" href="Logic.html#28012" class="Bound"
+      ><a name="28645" href="Logic.html#28645" class="Bound"
       >z</a
-      ><a name="28013" class="Symbol"
+      ><a name="28646" class="Symbol"
       >)</a
-      ><a name="28014"
+      ><a name="28647"
       > </a
-      ><a name="28015" class="Symbol"
+      ><a name="28648" class="Symbol"
       >&#8594;</a
-      ><a name="28016"
+      ><a name="28649"
       > </a
-      ><a name="28017" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="28650" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="28021"
+      ><a name="28654"
       >
                </a
-      ><a name="28037" class="Symbol"
+      ><a name="28670" class="Symbol"
       >}</a
-      ><a name="28038"
+      ><a name="28671"
       >
     </a
-      ><a name="28043" class="Symbol"
+      ><a name="28676" class="Symbol"
       >;</a
-      ><a name="28044"
+      ><a name="28677"
       > </a
-      ><a name="28045" class="Field"
+      ><a name="28678" class="Field"
       >inv&#691;</a
-      ><a name="28049"
+      ><a name="28682"
       > </a
-      ><a name="28050" class="Symbol"
+      ><a name="28683" class="Symbol"
       >=</a
-      ><a name="28051"
+      ><a name="28684"
       > </a
-      ><a name="28052" class="Symbol"
+      ><a name="28685" class="Symbol"
       >&#955;</a
-      ><a name="28053"
+      ><a name="28686"
       > </a
-      ><a name="28054" class="Symbol"
+      ><a name="28687" class="Symbol"
       >{</a
-      ><a name="28055"
+      ><a name="28688"
       > </a
-      ><a name="28056" class="Symbol"
+      ><a name="28689" class="Symbol"
       >(</a
-      ><a name="28057" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="28690" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28061"
+      ><a name="28694"
       > </a
-      ><a name="28062" class="Symbol"
+      ><a name="28695" class="Symbol"
       >(</a
-      ><a name="28063" href="Logic.html#28063" class="Bound"
+      ><a name="28696" href="Logic.html#28696" class="Bound"
       >x</a
-      ><a name="28064"
+      ><a name="28697"
       > </a
-      ><a name="28065" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28698" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28066"
+      ><a name="28699"
       > </a
-      ><a name="28067" href="Logic.html#28067" class="Bound"
+      ><a name="28700" href="Logic.html#28700" class="Bound"
       >z</a
-      ><a name="28068" class="Symbol"
+      ><a name="28701" class="Symbol"
       >))</a
-      ><a name="28070"
+      ><a name="28703"
       > </a
-      ><a name="28071" class="Symbol"
+      ><a name="28704" class="Symbol"
       >&#8594;</a
-      ><a name="28072"
+      ><a name="28705"
       > </a
-      ><a name="28073" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="28706" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="28077"
+      ><a name="28710"
       >
                </a
-      ><a name="28093" class="Symbol"
+      ><a name="28726" class="Symbol"
       >;</a
-      ><a name="28094"
+      ><a name="28727"
       > </a
-      ><a name="28095" class="Symbol"
+      ><a name="28728" class="Symbol"
       >(</a
-      ><a name="28096" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="28729" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28100"
+      ><a name="28733"
       > </a
-      ><a name="28101" class="Symbol"
+      ><a name="28734" class="Symbol"
       >(</a
-      ><a name="28102" href="Logic.html#28102" class="Bound"
+      ><a name="28735" href="Logic.html#28735" class="Bound"
       >y</a
-      ><a name="28103"
+      ><a name="28736"
       > </a
-      ><a name="28104" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="28737" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28105"
+      ><a name="28738"
       > </a
-      ><a name="28106" href="Logic.html#28106" class="Bound"
+      ><a name="28739" href="Logic.html#28739" class="Bound"
       >z</a
-      ><a name="28107" class="Symbol"
+      ><a name="28740" class="Symbol"
       >))</a
-      ><a name="28109"
+      ><a name="28742"
       > </a
-      ><a name="28110" class="Symbol"
+      ><a name="28743" class="Symbol"
       >&#8594;</a
-      ><a name="28111"
+      ><a name="28744"
       > </a
-      ><a name="28112" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="28745" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="28116"
+      ><a name="28749"
       >
                </a
-      ><a name="28132" class="Symbol"
+      ><a name="28765" class="Symbol"
       >}</a
-      ><a name="28133"
+      ><a name="28766"
       >               
     </a
-      ><a name="28153" class="Symbol"
+      ><a name="28786" class="Symbol"
       >}</a
       >
 {% endraw %}</pre>
 
 Sums do not distribute over products up to isomorphism, but it is an embedding.
 <pre class="Agda">{% raw %}
-<a name="28260" href="Logic.html#28260" class="Function"
+<a name="28893" href="Logic.html#28893" class="Function"
       >&#8846;-distributes-&#215;</a
-      ><a name="28275"
+      ><a name="28908"
       > </a
-      ><a name="28276" class="Symbol"
+      ><a name="28909" class="Symbol"
       >:</a
-      ><a name="28277"
+      ><a name="28910"
       > </a
-      ><a name="28278" class="Symbol"
+      ><a name="28911" class="Symbol"
       >&#8704;</a
-      ><a name="28279"
+      ><a name="28912"
       > </a
-      ><a name="28280" class="Symbol"
+      ><a name="28913" class="Symbol"
       >{</a
-      ><a name="28281" href="Logic.html#28281" class="Bound"
+      ><a name="28914" href="Logic.html#28914" class="Bound"
       >A</a
-      ><a name="28282"
+      ><a name="28915"
       > </a
-      ><a name="28283" href="Logic.html#28283" class="Bound"
+      ><a name="28916" href="Logic.html#28916" class="Bound"
       >B</a
-      ><a name="28284"
+      ><a name="28917"
       > </a
-      ><a name="28285" href="Logic.html#28285" class="Bound"
+      ><a name="28918" href="Logic.html#28918" class="Bound"
       >C</a
-      ><a name="28286"
+      ><a name="28919"
       > </a
-      ><a name="28287" class="Symbol"
+      ><a name="28920" class="Symbol"
       >:</a
-      ><a name="28288"
+      ><a name="28921"
       > </a
-      ><a name="28289" class="PrimitiveType"
+      ><a name="28922" class="PrimitiveType"
       >Set</a
-      ><a name="28292" class="Symbol"
+      ><a name="28925" class="Symbol"
       >}</a
-      ><a name="28293"
+      ><a name="28926"
       > </a
-      ><a name="28294" class="Symbol"
+      ><a name="28927" class="Symbol"
       >&#8594;</a
-      ><a name="28295"
+      ><a name="28928"
       > </a
-      ><a name="28296" class="Symbol"
+      ><a name="28929" class="Symbol"
       >((</a
-      ><a name="28298" href="Logic.html#28281" class="Bound"
+      ><a name="28931" href="Logic.html#28914" class="Bound"
       >A</a
-      ><a name="28299"
+      ><a name="28932"
       > </a
-      ><a name="28300" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="28933" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="28301"
+      ><a name="28934"
       > </a
-      ><a name="28302" href="Logic.html#28283" class="Bound"
+      ><a name="28935" href="Logic.html#28916" class="Bound"
       >B</a
-      ><a name="28303" class="Symbol"
+      ><a name="28936" class="Symbol"
       >)</a
-      ><a name="28304"
+      ><a name="28937"
       > </a
-      ><a name="28305" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="28938" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="28306"
+      ><a name="28939"
       > </a
-      ><a name="28307" href="Logic.html#28285" class="Bound"
+      ><a name="28940" href="Logic.html#28918" class="Bound"
       >C</a
-      ><a name="28308" class="Symbol"
+      ><a name="28941" class="Symbol"
       >)</a
-      ><a name="28309"
+      ><a name="28942"
       > </a
-      ><a name="28310" href="Logic.html#5152" class="Record Operator"
+      ><a name="28943" href="Logic.html#5152" class="Record Operator"
       >&#8818;</a
-      ><a name="28311"
+      ><a name="28944"
       > </a
-      ><a name="28312" class="Symbol"
+      ><a name="28945" class="Symbol"
       >((</a
-      ><a name="28314" href="Logic.html#28281" class="Bound"
+      ><a name="28947" href="Logic.html#28914" class="Bound"
       >A</a
-      ><a name="28315"
+      ><a name="28948"
       > </a
-      ><a name="28316" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="28949" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="28317"
+      ><a name="28950"
       > </a
-      ><a name="28318" href="Logic.html#28285" class="Bound"
+      ><a name="28951" href="Logic.html#28918" class="Bound"
       >C</a
-      ><a name="28319" class="Symbol"
+      ><a name="28952" class="Symbol"
       >)</a
-      ><a name="28320"
+      ><a name="28953"
       > </a
-      ><a name="28321" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="28954" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="28322"
+      ><a name="28955"
       > </a
-      ><a name="28323" class="Symbol"
+      ><a name="28956" class="Symbol"
       >(</a
-      ><a name="28324" href="Logic.html#28283" class="Bound"
+      ><a name="28957" href="Logic.html#28916" class="Bound"
       >B</a
-      ><a name="28325"
+      ><a name="28958"
       > </a
-      ><a name="28326" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="28959" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="28327"
+      ><a name="28960"
       > </a
-      ><a name="28328" href="Logic.html#28285" class="Bound"
+      ><a name="28961" href="Logic.html#28918" class="Bound"
       >C</a
-      ><a name="28329" class="Symbol"
+      ><a name="28962" class="Symbol"
       >))</a
-      ><a name="28331"
+      ><a name="28964"
       >
 </a
-      ><a name="28332" href="Logic.html#28260" class="Function"
+      ><a name="28965" href="Logic.html#28893" class="Function"
       >&#8846;-distributes-&#215;</a
-      ><a name="28347"
+      ><a name="28980"
       > </a
-      ><a name="28348" class="Symbol"
+      ><a name="28981" class="Symbol"
       >=</a
-      ><a name="28349"
+      ><a name="28982"
       >
   </a
-      ><a name="28352" class="Keyword"
+      ><a name="28985" class="Keyword"
       >record</a
-      ><a name="28358"
+      ><a name="28991"
       >
     </a
-      ><a name="28363" class="Symbol"
+      ><a name="28996" class="Symbol"
       >{</a
-      ><a name="28364"
+      ><a name="28997"
       > </a
-      ><a name="28365" class="Field"
+      ><a name="28998" class="Field"
       >to</a
-      ><a name="28367"
+      ><a name="29000"
       >   </a
-      ><a name="28370" class="Symbol"
+      ><a name="29003" class="Symbol"
       >=</a
-      ><a name="28371"
+      ><a name="29004"
       > </a
-      ><a name="28372" class="Symbol"
+      ><a name="29005" class="Symbol"
       >&#955;</a
-      ><a name="28373"
+      ><a name="29006"
       > </a
-      ><a name="28374" class="Symbol"
+      ><a name="29007" class="Symbol"
       >{</a
-      ><a name="28375"
+      ><a name="29008"
       > </a
-      ><a name="28376" class="Symbol"
+      ><a name="29009" class="Symbol"
       >(</a
-      ><a name="28377" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29010" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28381"
+      ><a name="29014"
       > </a
-      ><a name="28382" class="Symbol"
+      ><a name="29015" class="Symbol"
       >(</a
-      ><a name="28383" href="Logic.html#28383" class="Bound"
+      ><a name="29016" href="Logic.html#29016" class="Bound"
       >x</a
-      ><a name="28384"
+      ><a name="29017"
       > </a
-      ><a name="28385" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29018" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28386"
+      ><a name="29019"
       > </a
-      ><a name="28387" href="Logic.html#28387" class="Bound"
+      ><a name="29020" href="Logic.html#29020" class="Bound"
       >y</a
-      ><a name="28388" class="Symbol"
+      ><a name="29021" class="Symbol"
       >))</a
-      ><a name="28390"
+      ><a name="29023"
       > </a
-      ><a name="28391" class="Symbol"
+      ><a name="29024" class="Symbol"
       >&#8594;</a
-      ><a name="28392"
+      ><a name="29025"
       > </a
-      ><a name="28393" class="Symbol"
+      ><a name="29026" class="Symbol"
       >(</a
-      ><a name="28394" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29027" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28398"
+      ><a name="29031"
       > </a
-      ><a name="28399" href="Logic.html#28383" class="Bound"
+      ><a name="29032" href="Logic.html#29016" class="Bound"
       >x</a
-      ><a name="28400"
+      ><a name="29033"
       > </a
-      ><a name="28401" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29034" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28402"
+      ><a name="29035"
       > </a
-      ><a name="28403" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29036" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28407"
+      ><a name="29040"
       > </a
-      ><a name="28408" href="Logic.html#28387" class="Bound"
+      ><a name="29041" href="Logic.html#29020" class="Bound"
       >y</a
-      ><a name="28409" class="Symbol"
+      ><a name="29042" class="Symbol"
       >)</a
-      ><a name="28410"
+      ><a name="29043"
       >
                </a
-      ><a name="28426" class="Symbol"
+      ><a name="29059" class="Symbol"
       >;</a
-      ><a name="28427"
+      ><a name="29060"
       > </a
-      ><a name="28428" class="Symbol"
+      ><a name="29061" class="Symbol"
       >(</a
-      ><a name="28429" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29062" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28433"
+      ><a name="29066"
       > </a
-      ><a name="28434" href="Logic.html#28434" class="Bound"
+      ><a name="29067" href="Logic.html#29067" class="Bound"
       >z</a
-      ><a name="28435" class="Symbol"
+      ><a name="29068" class="Symbol"
       >)</a
-      ><a name="28436"
+      ><a name="29069"
       >       </a
-      ><a name="28443" class="Symbol"
+      ><a name="29076" class="Symbol"
       >&#8594;</a
-      ><a name="28444"
+      ><a name="29077"
       > </a
-      ><a name="28445" class="Symbol"
+      ><a name="29078" class="Symbol"
       >(</a
-      ><a name="28446" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29079" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28450"
+      ><a name="29083"
       > </a
-      ><a name="28451" href="Logic.html#28434" class="Bound"
+      ><a name="29084" href="Logic.html#29067" class="Bound"
       >z</a
-      ><a name="28452"
+      ><a name="29085"
       > </a
-      ><a name="28453" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29086" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28454"
+      ><a name="29087"
       > </a
-      ><a name="28455" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29088" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28459"
+      ><a name="29092"
       > </a
-      ><a name="28460" href="Logic.html#28434" class="Bound"
+      ><a name="29093" href="Logic.html#29067" class="Bound"
       >z</a
-      ><a name="28461" class="Symbol"
+      ><a name="29094" class="Symbol"
       >)</a
-      ><a name="28462"
+      ><a name="29095"
       >
                </a
-      ><a name="28478" class="Symbol"
+      ><a name="29111" class="Symbol"
       >}</a
-      ><a name="28479"
+      ><a name="29112"
       >
     </a
-      ><a name="28484" class="Symbol"
+      ><a name="29117" class="Symbol"
       >;</a
-      ><a name="28485"
+      ><a name="29118"
       > </a
-      ><a name="28486" class="Field"
+      ><a name="29119" class="Field"
       >fro</a
-      ><a name="28489"
+      ><a name="29122"
       >  </a
-      ><a name="28491" class="Symbol"
+      ><a name="29124" class="Symbol"
       >=</a
-      ><a name="28492"
+      ><a name="29125"
       > </a
-      ><a name="28493" class="Symbol"
+      ><a name="29126" class="Symbol"
       >&#955;</a
-      ><a name="28494"
+      ><a name="29127"
       > </a
-      ><a name="28495" class="Symbol"
+      ><a name="29128" class="Symbol"
       >{</a
-      ><a name="28496"
+      ><a name="29129"
       > </a
-      ><a name="28497" class="Symbol"
+      ><a name="29130" class="Symbol"
       >(</a
-      ><a name="28498" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29131" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28502"
+      ><a name="29135"
       > </a
-      ><a name="28503" href="Logic.html#28503" class="Bound"
+      ><a name="29136" href="Logic.html#29136" class="Bound"
       >x</a
-      ><a name="28504"
+      ><a name="29137"
       > </a
-      ><a name="28505" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29138" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28506"
+      ><a name="29139"
       > </a
-      ><a name="28507" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29140" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28511"
+      ><a name="29144"
       > </a
-      ><a name="28512" href="Logic.html#28512" class="Bound"
+      ><a name="29145" href="Logic.html#29145" class="Bound"
       >y</a
-      ><a name="28513" class="Symbol"
+      ><a name="29146" class="Symbol"
       >)</a
-      ><a name="28514"
+      ><a name="29147"
       > </a
-      ><a name="28515" class="Symbol"
+      ><a name="29148" class="Symbol"
       >&#8594;</a
-      ><a name="28516"
+      ><a name="29149"
       > </a
-      ><a name="28517" class="Symbol"
+      ><a name="29150" class="Symbol"
       >(</a
-      ><a name="28518" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29151" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28522"
+      ><a name="29155"
       > </a
-      ><a name="28523" class="Symbol"
+      ><a name="29156" class="Symbol"
       >(</a
-      ><a name="28524" href="Logic.html#28503" class="Bound"
+      ><a name="29157" href="Logic.html#29136" class="Bound"
       >x</a
-      ><a name="28525"
+      ><a name="29158"
       > </a
-      ><a name="28526" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29159" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28527"
+      ><a name="29160"
       > </a
-      ><a name="28528" href="Logic.html#28512" class="Bound"
+      ><a name="29161" href="Logic.html#29145" class="Bound"
       >y</a
-      ><a name="28529" class="Symbol"
+      ><a name="29162" class="Symbol"
       >))</a
-      ><a name="28531"
+      ><a name="29164"
       >
                </a
-      ><a name="28547" class="Symbol"
+      ><a name="29180" class="Symbol"
       >;</a
-      ><a name="28548"
+      ><a name="29181"
       > </a
-      ><a name="28549" class="Symbol"
+      ><a name="29182" class="Symbol"
       >(</a
-      ><a name="28550" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29183" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28554"
+      ><a name="29187"
       > </a
-      ><a name="28555" href="Logic.html#28555" class="Bound"
+      ><a name="29188" href="Logic.html#29188" class="Bound"
       >x</a
-      ><a name="28556"
+      ><a name="29189"
       > </a
-      ><a name="28557" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29190" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28558"
+      ><a name="29191"
       > </a
-      ><a name="28559" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29192" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28563"
+      ><a name="29196"
       > </a
-      ><a name="28564" href="Logic.html#28564" class="Bound"
+      ><a name="29197" href="Logic.html#29197" class="Bound"
       >z</a
-      ><a name="28565" class="Symbol"
+      ><a name="29198" class="Symbol"
       >)</a
-      ><a name="28566"
+      ><a name="29199"
       > </a
-      ><a name="28567" class="Symbol"
+      ><a name="29200" class="Symbol"
       >&#8594;</a
-      ><a name="28568"
+      ><a name="29201"
       > </a
-      ><a name="28569" class="Symbol"
+      ><a name="29202" class="Symbol"
       >(</a
-      ><a name="28570" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29203" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28574"
+      ><a name="29207"
       > </a
-      ><a name="28575" href="Logic.html#28564" class="Bound"
+      ><a name="29208" href="Logic.html#29197" class="Bound"
       >z</a
-      ><a name="28576" class="Symbol"
+      ><a name="29209" class="Symbol"
       >)</a
-      ><a name="28577"
+      ><a name="29210"
       >
                </a
-      ><a name="28593" class="Symbol"
+      ><a name="29226" class="Symbol"
       >;</a
-      ><a name="28594"
+      ><a name="29227"
       > </a
-      ><a name="28595" class="Symbol"
+      ><a name="29228" class="Symbol"
       >(</a
-      ><a name="28596" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29229" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28600"
+      ><a name="29233"
       > </a
-      ><a name="28601" href="Logic.html#28601" class="Bound"
+      ><a name="29234" href="Logic.html#29234" class="Bound"
       >z</a
-      ><a name="28602"
+      ><a name="29235"
       > </a
-      ><a name="28603" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29236" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28604"
+      ><a name="29237"
       > </a
-      ><a name="28605" class="Symbol"
+      ><a name="29238" class="Symbol"
       >_</a
-      ><a name="28606"
+      ><a name="29239"
       > </a
-      ><a name="28607" class="Symbol"
+      ><a name="29240" class="Symbol"
       >)</a
-      ><a name="28608"
+      ><a name="29241"
       >     </a
-      ><a name="28613" class="Symbol"
+      ><a name="29246" class="Symbol"
       >&#8594;</a
-      ><a name="28614"
+      ><a name="29247"
       > </a
-      ><a name="28615" class="Symbol"
+      ><a name="29248" class="Symbol"
       >(</a
-      ><a name="28616" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29249" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28620"
+      ><a name="29253"
       > </a
-      ><a name="28621" href="Logic.html#28601" class="Bound"
+      ><a name="29254" href="Logic.html#29234" class="Bound"
       >z</a
-      ><a name="28622" class="Symbol"
+      ><a name="29255" class="Symbol"
       >)</a
-      ><a name="28623"
+      ><a name="29256"
       >
                </a
-      ><a name="28639" class="Symbol"
+      ><a name="29272" class="Symbol"
       >}</a
-      ><a name="28640"
+      ><a name="29273"
       >
     </a
-      ><a name="28645" class="Symbol"
+      ><a name="29278" class="Symbol"
       >;</a
-      ><a name="28646"
+      ><a name="29279"
       > </a
-      ><a name="28647" class="Field"
+      ><a name="29280" class="Field"
       >inv&#737;</a
-      ><a name="28651"
+      ><a name="29284"
       > </a
-      ><a name="28652" class="Symbol"
+      ><a name="29285" class="Symbol"
       >=</a
-      ><a name="28653"
+      ><a name="29286"
       > </a
-      ><a name="28654" class="Symbol"
+      ><a name="29287" class="Symbol"
       >&#955;</a
-      ><a name="28655"
+      ><a name="29288"
       > </a
-      ><a name="28656" class="Symbol"
+      ><a name="29289" class="Symbol"
       >{</a
-      ><a name="28657"
+      ><a name="29290"
       > </a
-      ><a name="28658" class="Symbol"
+      ><a name="29291" class="Symbol"
       >(</a
-      ><a name="28659" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="29292" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="28663"
+      ><a name="29296"
       > </a
-      ><a name="28664" class="Symbol"
+      ><a name="29297" class="Symbol"
       >(</a
-      ><a name="28665" href="Logic.html#28665" class="Bound"
+      ><a name="29298" href="Logic.html#29298" class="Bound"
       >x</a
-      ><a name="28666"
+      ><a name="29299"
       > </a
-      ><a name="28667" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="29300" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="28668"
+      ><a name="29301"
       > </a
-      ><a name="28669" href="Logic.html#28669" class="Bound"
+      ><a name="29302" href="Logic.html#29302" class="Bound"
       >y</a
-      ><a name="28670" class="Symbol"
+      ><a name="29303" class="Symbol"
       >))</a
-      ><a name="28672"
+      ><a name="29305"
       > </a
-      ><a name="28673" class="Symbol"
+      ><a name="29306" class="Symbol"
       >&#8594;</a
-      ><a name="28674"
+      ><a name="29307"
       > </a
-      ><a name="28675" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="29308" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="28679"
+      ><a name="29312"
       >
                </a
-      ><a name="28695" class="Symbol"
+      ><a name="29328" class="Symbol"
       >;</a
-      ><a name="28696"
+      ><a name="29329"
       > </a
-      ><a name="28697" class="Symbol"
+      ><a name="29330" class="Symbol"
       >(</a
-      ><a name="28698" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="29331" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="28702"
+      ><a name="29335"
       > </a
-      ><a name="28703" href="Logic.html#28703" class="Bound"
+      ><a name="29336" href="Logic.html#29336" class="Bound"
       >z</a
-      ><a name="28704" class="Symbol"
+      ><a name="29337" class="Symbol"
       >)</a
-      ><a name="28705"
+      ><a name="29338"
       >       </a
-      ><a name="28712" class="Symbol"
+      ><a name="29345" class="Symbol"
       >&#8594;</a
-      ><a name="28713"
+      ><a name="29346"
       > </a
-      ><a name="28714" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
+      ><a name="29347" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor"
       >refl</a
-      ><a name="28718"
+      ><a name="29351"
       >
                </a
-      ><a name="28734" class="Symbol"
+      ><a name="29367" class="Symbol"
       >}</a
-      ><a name="28735"
+      ><a name="29368"
       >
     </a
-      ><a name="28740" class="Symbol"
+      ><a name="29373" class="Symbol"
       >}</a
       >
 {% endraw %}</pre>
@@ -10756,48 +10772,48 @@ Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
 as implication of false. 
 <pre class="Agda">{% raw %}
-<a name="29737" href="Logic.html#29737" class="Function Operator"
+<a name="30370" href="Logic.html#30370" class="Function Operator"
       >&#172;_</a
-      ><a name="29739"
+      ><a name="30372"
       > </a
-      ><a name="29740" class="Symbol"
+      ><a name="30373" class="Symbol"
       >:</a
-      ><a name="29741"
+      ><a name="30374"
       > </a
-      ><a name="29742" class="PrimitiveType"
+      ><a name="30375" class="PrimitiveType"
       >Set</a
-      ><a name="29745"
+      ><a name="30378"
       > </a
-      ><a name="29746" class="Symbol"
+      ><a name="30379" class="Symbol"
       >&#8594;</a
-      ><a name="29747"
+      ><a name="30380"
       > </a
-      ><a name="29748" class="PrimitiveType"
+      ><a name="30381" class="PrimitiveType"
       >Set</a
-      ><a name="29751"
+      ><a name="30384"
       >
 </a
-      ><a name="29752" href="Logic.html#29737" class="Function Operator"
+      ><a name="30385" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="29753"
+      ><a name="30386"
       > </a
-      ><a name="29754" href="Logic.html#29754" class="Bound"
+      ><a name="30387" href="Logic.html#30387" class="Bound"
       >A</a
-      ><a name="29755"
+      ><a name="30388"
       > </a
-      ><a name="29756" class="Symbol"
+      ><a name="30389" class="Symbol"
       >=</a
-      ><a name="29757"
+      ><a name="30390"
       > </a
-      ><a name="29758" href="Logic.html#29754" class="Bound"
+      ><a name="30391" href="Logic.html#30387" class="Bound"
       >A</a
-      ><a name="29759"
+      ><a name="30392"
       > </a
-      ><a name="29760" class="Symbol"
+      ><a name="30393" class="Symbol"
       >&#8594;</a
-      ><a name="29761"
+      ><a name="30394"
       > </a
-      ><a name="29762" href="Logic.html#19450" class="Datatype"
+      ><a name="30395" href="Logic.html#19450" class="Datatype"
       >&#8869;</a
       >
 {% endraw %}</pre>
@@ -10815,84 +10831,84 @@ that `A` holds into evidence that `⊥` holds.
 Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
 In other words, if both `¬ A` and `A` hold, then we have a contradiction.
 <pre class="Agda">{% raw %}
-<a name="30337" href="Logic.html#30337" class="Function"
+<a name="30970" href="Logic.html#30970" class="Function"
       >&#172;-elim</a
-      ><a name="30343"
+      ><a name="30976"
       > </a
-      ><a name="30344" class="Symbol"
+      ><a name="30977" class="Symbol"
       >:</a
-      ><a name="30345"
+      ><a name="30978"
       > </a
-      ><a name="30346" class="Symbol"
+      ><a name="30979" class="Symbol"
       >&#8704;</a
-      ><a name="30347"
+      ><a name="30980"
       > </a
-      ><a name="30348" class="Symbol"
+      ><a name="30981" class="Symbol"
       >{</a
-      ><a name="30349" href="Logic.html#30349" class="Bound"
+      ><a name="30982" href="Logic.html#30982" class="Bound"
       >A</a
-      ><a name="30350"
+      ><a name="30983"
       > </a
-      ><a name="30351" class="Symbol"
+      ><a name="30984" class="Symbol"
       >:</a
-      ><a name="30352"
+      ><a name="30985"
       > </a
-      ><a name="30353" class="PrimitiveType"
+      ><a name="30986" class="PrimitiveType"
       >Set</a
-      ><a name="30356" class="Symbol"
+      ><a name="30989" class="Symbol"
       >}</a
-      ><a name="30357"
+      ><a name="30990"
       > </a
-      ><a name="30358" class="Symbol"
+      ><a name="30991" class="Symbol"
       >&#8594;</a
-      ><a name="30359"
+      ><a name="30992"
       > </a
-      ><a name="30360" href="Logic.html#29737" class="Function Operator"
+      ><a name="30993" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="30361"
+      ><a name="30994"
       > </a
-      ><a name="30362" href="Logic.html#30349" class="Bound"
+      ><a name="30995" href="Logic.html#30982" class="Bound"
       >A</a
-      ><a name="30363"
+      ><a name="30996"
       > </a
-      ><a name="30364" class="Symbol"
+      ><a name="30997" class="Symbol"
       >&#8594;</a
-      ><a name="30365"
+      ><a name="30998"
       > </a
-      ><a name="30366" href="Logic.html#30349" class="Bound"
+      ><a name="30999" href="Logic.html#30982" class="Bound"
       >A</a
-      ><a name="30367"
+      ><a name="31000"
       > </a
-      ><a name="30368" class="Symbol"
+      ><a name="31001" class="Symbol"
       >&#8594;</a
-      ><a name="30369"
+      ><a name="31002"
       > </a
-      ><a name="30370" href="Logic.html#19450" class="Datatype"
+      ><a name="31003" href="Logic.html#19450" class="Datatype"
       >&#8869;</a
-      ><a name="30371"
+      ><a name="31004"
       >
 </a
-      ><a name="30372" href="Logic.html#30337" class="Function"
+      ><a name="31005" href="Logic.html#30970" class="Function"
       >&#172;-elim</a
-      ><a name="30378"
+      ><a name="31011"
       > </a
-      ><a name="30379" href="Logic.html#30379" class="Bound"
+      ><a name="31012" href="Logic.html#31012" class="Bound"
       >&#172;a</a
-      ><a name="30381"
+      ><a name="31014"
       > </a
-      ><a name="30382" href="Logic.html#30382" class="Bound"
+      ><a name="31015" href="Logic.html#31015" class="Bound"
       >a</a
-      ><a name="30383"
+      ><a name="31016"
       > </a
-      ><a name="30384" class="Symbol"
+      ><a name="31017" class="Symbol"
       >=</a
-      ><a name="30385"
+      ><a name="31018"
       > </a
-      ><a name="30386" href="Logic.html#30379" class="Bound"
+      ><a name="31019" href="Logic.html#31012" class="Bound"
       >&#172;a</a
-      ><a name="30388"
+      ><a name="31021"
       > </a
-      ><a name="30389" href="Logic.html#30382" class="Bound"
+      ><a name="31022" href="Logic.html#31015" class="Bound"
       >a</a
       >
 {% endraw %}</pre>
@@ -10903,15 +10919,15 @@ means that `¬a` must be a function of type `A → ⊥`, and hence the applicati
 We set the precedence of negation so that it binds more tightly
 than disjunction and conjunction, but more tightly than anything else.
 <pre class="Agda">{% raw %}
-<a name="30790" class="Keyword"
+<a name="31423" class="Keyword"
       >infix</a
-      ><a name="30795"
+      ><a name="31428"
       > </a
-      ><a name="30796" class="Number"
+      ><a name="31429" class="Number"
       >3</a
-      ><a name="30797"
+      ><a name="31430"
       > </a
-      ><a name="30798" href="Logic.html#29737" class="Function Operator"
+      ><a name="31431" href="Logic.html#30370" class="Function Operator"
       >&#172;_</a
       >
 {% endraw %}</pre>
@@ -10921,80 +10937,80 @@ In *classical* logic, we have that `A` is equivalent to `¬ ¬ A`.
 As we discuss below, in Agda we use *intuitionistic* logic, wher
 we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
 <pre class="Agda">{% raw %}
-<a name="31073" href="Logic.html#31073" class="Function"
+<a name="31706" href="Logic.html#31706" class="Function"
       >&#172;&#172;-intro</a
-      ><a name="31081"
+      ><a name="31714"
       > </a
-      ><a name="31082" class="Symbol"
+      ><a name="31715" class="Symbol"
       >:</a
-      ><a name="31083"
+      ><a name="31716"
       > </a
-      ><a name="31084" class="Symbol"
+      ><a name="31717" class="Symbol"
       >&#8704;</a
-      ><a name="31085"
+      ><a name="31718"
       > </a
-      ><a name="31086" class="Symbol"
+      ><a name="31719" class="Symbol"
       >{</a
-      ><a name="31087" href="Logic.html#31087" class="Bound"
+      ><a name="31720" href="Logic.html#31720" class="Bound"
       >A</a
-      ><a name="31088"
+      ><a name="31721"
       > </a
-      ><a name="31089" class="Symbol"
+      ><a name="31722" class="Symbol"
       >:</a
-      ><a name="31090"
+      ><a name="31723"
       > </a
-      ><a name="31091" class="PrimitiveType"
+      ><a name="31724" class="PrimitiveType"
       >Set</a
-      ><a name="31094" class="Symbol"
+      ><a name="31727" class="Symbol"
       >}</a
-      ><a name="31095"
+      ><a name="31728"
       > </a
-      ><a name="31096" class="Symbol"
+      ><a name="31729" class="Symbol"
       >&#8594;</a
-      ><a name="31097"
+      ><a name="31730"
       > </a
-      ><a name="31098" href="Logic.html#31087" class="Bound"
+      ><a name="31731" href="Logic.html#31720" class="Bound"
       >A</a
-      ><a name="31099"
+      ><a name="31732"
       > </a
-      ><a name="31100" class="Symbol"
+      ><a name="31733" class="Symbol"
       >&#8594;</a
-      ><a name="31101"
+      ><a name="31734"
       > </a
-      ><a name="31102" href="Logic.html#29737" class="Function Operator"
+      ><a name="31735" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="31103"
+      ><a name="31736"
       > </a
-      ><a name="31104" href="Logic.html#29737" class="Function Operator"
+      ><a name="31737" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="31105"
+      ><a name="31738"
       > </a
-      ><a name="31106" href="Logic.html#31087" class="Bound"
+      ><a name="31739" href="Logic.html#31720" class="Bound"
       >A</a
-      ><a name="31107"
+      ><a name="31740"
       >
 </a
-      ><a name="31108" href="Logic.html#31073" class="Function"
+      ><a name="31741" href="Logic.html#31706" class="Function"
       >&#172;&#172;-intro</a
-      ><a name="31116"
+      ><a name="31749"
       > </a
-      ><a name="31117" href="Logic.html#31117" class="Bound"
+      ><a name="31750" href="Logic.html#31750" class="Bound"
       >a</a
-      ><a name="31118"
+      ><a name="31751"
       > </a
-      ><a name="31119" href="Logic.html#31119" class="Bound"
+      ><a name="31752" href="Logic.html#31752" class="Bound"
       >&#172;a</a
-      ><a name="31121"
+      ><a name="31754"
       > </a
-      ><a name="31122" class="Symbol"
+      ><a name="31755" class="Symbol"
       >=</a
-      ><a name="31123"
+      ><a name="31756"
       > </a
-      ><a name="31124" href="Logic.html#31119" class="Bound"
+      ><a name="31757" href="Logic.html#31752" class="Bound"
       >&#172;a</a
-      ><a name="31126"
+      ><a name="31759"
       > </a
-      ><a name="31127" href="Logic.html#31117" class="Bound"
+      ><a name="31760" href="Logic.html#31750" class="Bound"
       >a</a
       >
 {% endraw %}</pre>
@@ -11007,96 +11023,96 @@ shown `¬ ¬ A`.
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
 `¬ ¬ ¬ A` implies `¬ A`.
 <pre class="Agda">{% raw %}
-<a name="31491" href="Logic.html#31491" class="Function"
+<a name="32124" href="Logic.html#32124" class="Function"
       >&#172;&#172;&#172;-elim</a
-      ><a name="31499"
+      ><a name="32132"
       > </a
-      ><a name="31500" class="Symbol"
+      ><a name="32133" class="Symbol"
       >:</a
-      ><a name="31501"
+      ><a name="32134"
       > </a
-      ><a name="31502" class="Symbol"
+      ><a name="32135" class="Symbol"
       >&#8704;</a
-      ><a name="31503"
+      ><a name="32136"
       > </a
-      ><a name="31504" class="Symbol"
+      ><a name="32137" class="Symbol"
       >{</a
-      ><a name="31505" href="Logic.html#31505" class="Bound"
+      ><a name="32138" href="Logic.html#32138" class="Bound"
       >A</a
-      ><a name="31506"
+      ><a name="32139"
       > </a
-      ><a name="31507" class="Symbol"
+      ><a name="32140" class="Symbol"
       >:</a
-      ><a name="31508"
+      ><a name="32141"
       > </a
-      ><a name="31509" class="PrimitiveType"
+      ><a name="32142" class="PrimitiveType"
       >Set</a
-      ><a name="31512" class="Symbol"
+      ><a name="32145" class="Symbol"
       >}</a
-      ><a name="31513"
+      ><a name="32146"
       > </a
-      ><a name="31514" class="Symbol"
+      ><a name="32147" class="Symbol"
       >&#8594;</a
-      ><a name="31515"
+      ><a name="32148"
       > </a
-      ><a name="31516" href="Logic.html#29737" class="Function Operator"
+      ><a name="32149" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="31517"
+      ><a name="32150"
       > </a
-      ><a name="31518" href="Logic.html#29737" class="Function Operator"
+      ><a name="32151" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="31519"
+      ><a name="32152"
       > </a
-      ><a name="31520" href="Logic.html#29737" class="Function Operator"
+      ><a name="32153" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="31521"
+      ><a name="32154"
       > </a
-      ><a name="31522" href="Logic.html#31505" class="Bound"
+      ><a name="32155" href="Logic.html#32138" class="Bound"
       >A</a
-      ><a name="31523"
+      ><a name="32156"
       > </a
-      ><a name="31524" class="Symbol"
+      ><a name="32157" class="Symbol"
       >&#8594;</a
-      ><a name="31525"
+      ><a name="32158"
       > </a
-      ><a name="31526" href="Logic.html#29737" class="Function Operator"
+      ><a name="32159" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="31527"
+      ><a name="32160"
       > </a
-      ><a name="31528" href="Logic.html#31505" class="Bound"
+      ><a name="32161" href="Logic.html#32138" class="Bound"
       >A</a
-      ><a name="31529"
+      ><a name="32162"
       >
 </a
-      ><a name="31530" href="Logic.html#31491" class="Function"
+      ><a name="32163" href="Logic.html#32124" class="Function"
       >&#172;&#172;&#172;-elim</a
-      ><a name="31538"
+      ><a name="32171"
       > </a
-      ><a name="31539" href="Logic.html#31539" class="Bound"
+      ><a name="32172" href="Logic.html#32172" class="Bound"
       >&#172;&#172;&#172;a</a
-      ><a name="31543"
+      ><a name="32176"
       > </a
-      ><a name="31544" href="Logic.html#31544" class="Bound"
+      ><a name="32177" href="Logic.html#32177" class="Bound"
       >a</a
-      ><a name="31545"
+      ><a name="32178"
       > </a
-      ><a name="31546" class="Symbol"
+      ><a name="32179" class="Symbol"
       >=</a
-      ><a name="31547"
+      ><a name="32180"
       > </a
-      ><a name="31548" href="Logic.html#31539" class="Bound"
+      ><a name="32181" href="Logic.html#32172" class="Bound"
       >&#172;&#172;&#172;a</a
-      ><a name="31552"
+      ><a name="32185"
       > </a
-      ><a name="31553" class="Symbol"
+      ><a name="32186" class="Symbol"
       >(</a
-      ><a name="31554" href="Logic.html#31073" class="Function"
+      ><a name="32187" href="Logic.html#31706" class="Function"
       >&#172;&#172;-intro</a
-      ><a name="31562"
+      ><a name="32195"
       > </a
-      ><a name="31563" href="Logic.html#31544" class="Bound"
+      ><a name="32196" href="Logic.html#32177" class="Bound"
       >a</a
-      ><a name="31564" class="Symbol"
+      ><a name="32197" class="Symbol"
       >)</a
       >
 {% endraw %}</pre>
@@ -11110,120 +11126,120 @@ can conclude `¬ ¬ A` (evidenced by `¬¬-intro a`).  Then from
 Another law of logic is the *contrapositive*,
 stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
 <pre class="Agda">{% raw %}
-<a name="32047" href="Logic.html#32047" class="Function"
+<a name="32680" href="Logic.html#32680" class="Function"
       >contrapositive</a
-      ><a name="32061"
+      ><a name="32694"
       > </a
-      ><a name="32062" class="Symbol"
+      ><a name="32695" class="Symbol"
       >:</a
-      ><a name="32063"
+      ><a name="32696"
       > </a
-      ><a name="32064" class="Symbol"
+      ><a name="32697" class="Symbol"
       >&#8704;</a
-      ><a name="32065"
+      ><a name="32698"
       > </a
-      ><a name="32066" class="Symbol"
+      ><a name="32699" class="Symbol"
       >{</a
-      ><a name="32067" href="Logic.html#32067" class="Bound"
+      ><a name="32700" href="Logic.html#32700" class="Bound"
       >A</a
-      ><a name="32068"
+      ><a name="32701"
       > </a
-      ><a name="32069" href="Logic.html#32069" class="Bound"
+      ><a name="32702" href="Logic.html#32702" class="Bound"
       >B</a
-      ><a name="32070"
+      ><a name="32703"
       > </a
-      ><a name="32071" class="Symbol"
+      ><a name="32704" class="Symbol"
       >:</a
-      ><a name="32072"
+      ><a name="32705"
       > </a
-      ><a name="32073" class="PrimitiveType"
+      ><a name="32706" class="PrimitiveType"
       >Set</a
-      ><a name="32076" class="Symbol"
+      ><a name="32709" class="Symbol"
       >}</a
-      ><a name="32077"
+      ><a name="32710"
       > </a
-      ><a name="32078" class="Symbol"
+      ><a name="32711" class="Symbol"
       >&#8594;</a
-      ><a name="32079"
+      ><a name="32712"
       > </a
-      ><a name="32080" class="Symbol"
+      ><a name="32713" class="Symbol"
       >(</a
-      ><a name="32081" href="Logic.html#32067" class="Bound"
+      ><a name="32714" href="Logic.html#32700" class="Bound"
       >A</a
-      ><a name="32082"
+      ><a name="32715"
       > </a
-      ><a name="32083" class="Symbol"
+      ><a name="32716" class="Symbol"
       >&#8594;</a
-      ><a name="32084"
+      ><a name="32717"
       > </a
-      ><a name="32085" href="Logic.html#32069" class="Bound"
+      ><a name="32718" href="Logic.html#32702" class="Bound"
       >B</a
-      ><a name="32086" class="Symbol"
+      ><a name="32719" class="Symbol"
       >)</a
-      ><a name="32087"
+      ><a name="32720"
       > </a
-      ><a name="32088" class="Symbol"
+      ><a name="32721" class="Symbol"
       >&#8594;</a
-      ><a name="32089"
+      ><a name="32722"
       > </a
-      ><a name="32090" class="Symbol"
+      ><a name="32723" class="Symbol"
       >(</a
-      ><a name="32091" href="Logic.html#29737" class="Function Operator"
+      ><a name="32724" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="32092"
+      ><a name="32725"
       > </a
-      ><a name="32093" href="Logic.html#32069" class="Bound"
+      ><a name="32726" href="Logic.html#32702" class="Bound"
       >B</a
-      ><a name="32094"
+      ><a name="32727"
       > </a
-      ><a name="32095" class="Symbol"
+      ><a name="32728" class="Symbol"
       >&#8594;</a
-      ><a name="32096"
+      ><a name="32729"
       > </a
-      ><a name="32097" href="Logic.html#29737" class="Function Operator"
+      ><a name="32730" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="32098"
+      ><a name="32731"
       > </a
-      ><a name="32099" href="Logic.html#32067" class="Bound"
+      ><a name="32732" href="Logic.html#32700" class="Bound"
       >A</a
-      ><a name="32100" class="Symbol"
+      ><a name="32733" class="Symbol"
       >)</a
-      ><a name="32101"
+      ><a name="32734"
       >
 </a
-      ><a name="32102" href="Logic.html#32047" class="Function"
+      ><a name="32735" href="Logic.html#32680" class="Function"
       >contrapositive</a
-      ><a name="32116"
+      ><a name="32749"
       > </a
-      ><a name="32117" href="Logic.html#32117" class="Bound"
+      ><a name="32750" href="Logic.html#32750" class="Bound"
       >a&#8594;b</a
-      ><a name="32120"
+      ><a name="32753"
       > </a
-      ><a name="32121" href="Logic.html#32121" class="Bound"
+      ><a name="32754" href="Logic.html#32754" class="Bound"
       >&#172;b</a
-      ><a name="32123"
+      ><a name="32756"
       > </a
-      ><a name="32124" href="Logic.html#32124" class="Bound"
+      ><a name="32757" href="Logic.html#32757" class="Bound"
       >a</a
-      ><a name="32125"
+      ><a name="32758"
       > </a
-      ><a name="32126" class="Symbol"
+      ><a name="32759" class="Symbol"
       >=</a
-      ><a name="32127"
+      ><a name="32760"
       > </a
-      ><a name="32128" href="Logic.html#32121" class="Bound"
+      ><a name="32761" href="Logic.html#32754" class="Bound"
       >&#172;b</a
-      ><a name="32130"
+      ><a name="32763"
       > </a
-      ><a name="32131" class="Symbol"
+      ><a name="32764" class="Symbol"
       >(</a
-      ><a name="32132" href="Logic.html#32117" class="Bound"
+      ><a name="32765" href="Logic.html#32750" class="Bound"
       >a&#8594;b</a
-      ><a name="32135"
+      ><a name="32768"
       > </a
-      ><a name="32136" href="Logic.html#32124" class="Bound"
+      ><a name="32769" href="Logic.html#32757" class="Bound"
       >a</a
-      ><a name="32137" class="Symbol"
+      ><a name="32770" class="Symbol"
       >)</a
       >
 {% endraw %}</pre>
@@ -11244,40 +11260,40 @@ we know for arithmetic, where
 
 Indeed, there is exactly one proof of `⊥ → ⊥`.
 <pre class="Agda">{% raw %}
-<a name="32831" href="Logic.html#32831" class="Function"
+<a name="33464" href="Logic.html#33464" class="Function"
       >id</a
-      ><a name="32833"
+      ><a name="33466"
       > </a
-      ><a name="32834" class="Symbol"
+      ><a name="33467" class="Symbol"
       >:</a
-      ><a name="32835"
+      ><a name="33468"
       > </a
-      ><a name="32836" href="Logic.html#19450" class="Datatype"
+      ><a name="33469" href="Logic.html#19450" class="Datatype"
       >&#8869;</a
-      ><a name="32837"
+      ><a name="33470"
       > </a
-      ><a name="32838" class="Symbol"
+      ><a name="33471" class="Symbol"
       >&#8594;</a
-      ><a name="32839"
+      ><a name="33472"
       > </a
-      ><a name="32840" href="Logic.html#19450" class="Datatype"
+      ><a name="33473" href="Logic.html#19450" class="Datatype"
       >&#8869;</a
-      ><a name="32841"
+      ><a name="33474"
       >
 </a
-      ><a name="32842" href="Logic.html#32831" class="Function"
+      ><a name="33475" href="Logic.html#33464" class="Function"
       >id</a
-      ><a name="32844"
+      ><a name="33477"
       > </a
-      ><a name="32845" href="Logic.html#32845" class="Bound"
+      ><a name="33478" href="Logic.html#33478" class="Bound"
       >x</a
-      ><a name="32846"
+      ><a name="33479"
       > </a
-      ><a name="32847" class="Symbol"
+      ><a name="33480" class="Symbol"
       >=</a
-      ><a name="32848"
+      ><a name="33481"
       > </a
-      ><a name="32849" href="Logic.html#32845" class="Bound"
+      ><a name="33482" href="Logic.html#33478" class="Bound"
       >x</a
       >
 {% endraw %}</pre>
@@ -11289,114 +11305,114 @@ including a variant of the story from Call-by-Value is Dual to Call-by-Name.]
 
 The law of the excluded middle is irrefutable.
 <pre class="Agda">{% raw %}
-<a name="33148" href="Logic.html#33148" class="Function"
+<a name="33781" href="Logic.html#33781" class="Function"
       >excluded-middle-irrefutable</a
-      ><a name="33175"
+      ><a name="33808"
       > </a
-      ><a name="33176" class="Symbol"
+      ><a name="33809" class="Symbol"
       >:</a
-      ><a name="33177"
+      ><a name="33810"
       > </a
-      ><a name="33178" class="Symbol"
+      ><a name="33811" class="Symbol"
       >&#8704;</a
-      ><a name="33179"
+      ><a name="33812"
       > </a
-      ><a name="33180" class="Symbol"
+      ><a name="33813" class="Symbol"
       >{</a
-      ><a name="33181" href="Logic.html#33181" class="Bound"
+      ><a name="33814" href="Logic.html#33814" class="Bound"
       >A</a
-      ><a name="33182"
+      ><a name="33815"
       > </a
-      ><a name="33183" class="Symbol"
+      ><a name="33816" class="Symbol"
       >:</a
-      ><a name="33184"
+      ><a name="33817"
       > </a
-      ><a name="33185" class="PrimitiveType"
+      ><a name="33818" class="PrimitiveType"
       >Set</a
-      ><a name="33188" class="Symbol"
+      ><a name="33821" class="Symbol"
       >}</a
-      ><a name="33189"
+      ><a name="33822"
       > </a
-      ><a name="33190" class="Symbol"
+      ><a name="33823" class="Symbol"
       >&#8594;</a
-      ><a name="33191"
+      ><a name="33824"
       > </a
-      ><a name="33192" href="Logic.html#29737" class="Function Operator"
+      ><a name="33825" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="33193"
+      ><a name="33826"
       > </a
-      ><a name="33194" href="Logic.html#29737" class="Function Operator"
+      ><a name="33827" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="33195"
+      ><a name="33828"
       > </a
-      ><a name="33196" class="Symbol"
+      ><a name="33829" class="Symbol"
       >(</a
-      ><a name="33197" href="Logic.html#33181" class="Bound"
+      ><a name="33830" href="Logic.html#33814" class="Bound"
       >A</a
-      ><a name="33198"
+      ><a name="33831"
       > </a
-      ><a name="33199" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="33832" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="33200"
+      ><a name="33833"
       > </a
-      ><a name="33201" href="Logic.html#29737" class="Function Operator"
+      ><a name="33834" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="33202"
+      ><a name="33835"
       > </a
-      ><a name="33203" href="Logic.html#33181" class="Bound"
+      ><a name="33836" href="Logic.html#33814" class="Bound"
       >A</a
-      ><a name="33204" class="Symbol"
+      ><a name="33837" class="Symbol"
       >)</a
-      ><a name="33205"
+      ><a name="33838"
       >
 </a
-      ><a name="33206" href="Logic.html#33148" class="Function"
+      ><a name="33839" href="Logic.html#33781" class="Function"
       >excluded-middle-irrefutable</a
-      ><a name="33233"
+      ><a name="33866"
       > </a
-      ><a name="33234" href="Logic.html#33234" class="Bound"
+      ><a name="33867" href="Logic.html#33867" class="Bound"
       >k</a
-      ><a name="33235"
+      ><a name="33868"
       > </a
-      ><a name="33236" class="Symbol"
+      ><a name="33869" class="Symbol"
       >=</a
-      ><a name="33237"
+      ><a name="33870"
       > </a
-      ><a name="33238" href="Logic.html#33234" class="Bound"
+      ><a name="33871" href="Logic.html#33867" class="Bound"
       >k</a
-      ><a name="33239"
+      ><a name="33872"
       > </a
-      ><a name="33240" class="Symbol"
+      ><a name="33873" class="Symbol"
       >(</a
-      ><a name="33241" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="33874" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="33245"
+      ><a name="33878"
       > </a
-      ><a name="33246" class="Symbol"
+      ><a name="33879" class="Symbol"
       >(&#955;</a
-      ><a name="33248"
+      ><a name="33881"
       > </a
-      ><a name="33249" href="Logic.html#33249" class="Bound"
+      ><a name="33882" href="Logic.html#33882" class="Bound"
       >a</a
-      ><a name="33250"
+      ><a name="33883"
       > </a
-      ><a name="33251" class="Symbol"
+      ><a name="33884" class="Symbol"
       >&#8594;</a
-      ><a name="33252"
+      ><a name="33885"
       > </a
-      ><a name="33253" href="Logic.html#33234" class="Bound"
+      ><a name="33886" href="Logic.html#33867" class="Bound"
       >k</a
-      ><a name="33254"
+      ><a name="33887"
       > </a
-      ><a name="33255" class="Symbol"
+      ><a name="33888" class="Symbol"
       >(</a
-      ><a name="33256" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="33889" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="33260"
+      ><a name="33893"
       > </a
-      ><a name="33261" href="Logic.html#33249" class="Bound"
+      ><a name="33894" href="Logic.html#33882" class="Bound"
       >a</a
-      ><a name="33262" class="Symbol"
+      ><a name="33895" class="Symbol"
       >)))</a
       >
 {% endraw %}</pre>
@@ -11449,497 +11465,497 @@ a disjoint sum.
 **Exercise** Prove the following six formulas are equivalent.
 
 <pre class="Agda">{% raw %}
-<a name="35606" href="Logic.html#35606" class="Function"
+<a name="36239" href="Logic.html#36239" class="Function"
       >lone</a
-      ><a name="35610"
+      ><a name="36243"
       > </a
-      ><a name="35611" href="Logic.html#35611" class="Function"
+      ><a name="36244" href="Logic.html#36244" class="Function"
       >ltwo</a
-      ><a name="35615"
+      ><a name="36248"
       > </a
-      ><a name="35616" class="Symbol"
+      ><a name="36249" class="Symbol"
       >:</a
-      ><a name="35617"
+      ><a name="36250"
       > </a
-      ><a name="35618" href="Agda.Primitive.html#408" class="Postulate"
+      ><a name="36251" href="Agda.Primitive.html#408" class="Postulate"
       >Level</a
-      ><a name="35623"
+      ><a name="36256"
       >
 </a
-      ><a name="35624" href="Logic.html#35606" class="Function"
+      ><a name="36257" href="Logic.html#36239" class="Function"
       >lone</a
-      ><a name="35628"
+      ><a name="36261"
       > </a
-      ><a name="35629" class="Symbol"
+      ><a name="36262" class="Symbol"
       >=</a
-      ><a name="35630"
+      ><a name="36263"
       > </a
-      ><a name="35631" href="Agda.Primitive.html#625" class="Primitive"
+      ><a name="36264" href="Agda.Primitive.html#625" class="Primitive"
       >lsuc</a
-      ><a name="35635"
+      ><a name="36268"
       > </a
-      ><a name="35636" href="Agda.Primitive.html#609" class="Primitive"
+      ><a name="36269" href="Agda.Primitive.html#609" class="Primitive"
       >lzero</a
-      ><a name="35641"
+      ><a name="36274"
       >
 </a
-      ><a name="35642" href="Logic.html#35611" class="Function"
+      ><a name="36275" href="Logic.html#36244" class="Function"
       >ltwo</a
-      ><a name="35646"
+      ><a name="36279"
       > </a
-      ><a name="35647" class="Symbol"
+      ><a name="36280" class="Symbol"
       >=</a
-      ><a name="35648"
+      ><a name="36281"
       > </a
-      ><a name="35649" href="Agda.Primitive.html#625" class="Primitive"
+      ><a name="36282" href="Agda.Primitive.html#625" class="Primitive"
       >lsuc</a
-      ><a name="35653"
+      ><a name="36286"
       > </a
-      ><a name="35654" href="Logic.html#35606" class="Function"
+      ><a name="36287" href="Logic.html#36239" class="Function"
       >lone</a
-      ><a name="35658"
+      ><a name="36291"
       >
 
 </a
-      ><a name="35660" href="Logic.html#35660" class="Function"
+      ><a name="36293" href="Logic.html#36293" class="Function"
       >&#172;&#172;-elim</a
-      ><a name="35667"
+      ><a name="36300"
       > </a
-      ><a name="35668" href="Logic.html#35668" class="Function"
+      ><a name="36301" href="Logic.html#36301" class="Function"
       >excluded-middle</a
-      ><a name="35683"
+      ><a name="36316"
       > </a
-      ><a name="35684" href="Logic.html#35684" class="Function"
+      ><a name="36317" href="Logic.html#36317" class="Function"
       >peirce</a
-      ><a name="35690"
+      ><a name="36323"
       > </a
-      ><a name="35691" href="Logic.html#35691" class="Function"
+      ><a name="36324" href="Logic.html#36324" class="Function"
       >implication</a
-      ><a name="35702"
+      ><a name="36335"
       > </a
-      ><a name="35703" href="Logic.html#35703" class="Function"
+      ><a name="36336" href="Logic.html#36336" class="Function"
       >de-morgan</a
-      ><a name="35712"
+      ><a name="36345"
       > </a
-      ><a name="35713" class="Symbol"
+      ><a name="36346" class="Symbol"
       >:</a
-      ><a name="35714"
+      ><a name="36347"
       > </a
-      ><a name="35715" class="PrimitiveType"
+      ><a name="36348" class="PrimitiveType"
       >Set</a
-      ><a name="35718"
+      ><a name="36351"
       > </a
-      ><a name="35719" href="Logic.html#35606" class="Function"
+      ><a name="36352" href="Logic.html#36239" class="Function"
       >lone</a
-      ><a name="35723"
+      ><a name="36356"
       >
 </a
-      ><a name="35724" href="Logic.html#35660" class="Function"
+      ><a name="36357" href="Logic.html#36293" class="Function"
       >&#172;&#172;-elim</a
-      ><a name="35731"
+      ><a name="36364"
       > </a
-      ><a name="35732" class="Symbol"
+      ><a name="36365" class="Symbol"
       >=</a
-      ><a name="35733"
+      ><a name="36366"
       > </a
-      ><a name="35734" class="Symbol"
+      ><a name="36367" class="Symbol"
       >&#8704;</a
-      ><a name="35735"
+      ><a name="36368"
       > </a
-      ><a name="35736" class="Symbol"
+      ><a name="36369" class="Symbol"
       >{</a
-      ><a name="35737" href="Logic.html#35737" class="Bound"
+      ><a name="36370" href="Logic.html#36370" class="Bound"
       >A</a
-      ><a name="35738"
+      ><a name="36371"
       > </a
-      ><a name="35739" class="Symbol"
+      ><a name="36372" class="Symbol"
       >:</a
-      ><a name="35740"
+      ><a name="36373"
       > </a
-      ><a name="35741" class="PrimitiveType"
+      ><a name="36374" class="PrimitiveType"
       >Set</a
-      ><a name="35744" class="Symbol"
+      ><a name="36377" class="Symbol"
       >}</a
-      ><a name="35745"
+      ><a name="36378"
       > </a
-      ><a name="35746" class="Symbol"
+      ><a name="36379" class="Symbol"
       >&#8594;</a
-      ><a name="35747"
+      ><a name="36380"
       > </a
-      ><a name="35748" href="Logic.html#29737" class="Function Operator"
+      ><a name="36381" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35749"
+      ><a name="36382"
       > </a
-      ><a name="35750" href="Logic.html#29737" class="Function Operator"
+      ><a name="36383" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35751"
+      ><a name="36384"
       > </a
-      ><a name="35752" href="Logic.html#35737" class="Bound"
+      ><a name="36385" href="Logic.html#36370" class="Bound"
       >A</a
-      ><a name="35753"
+      ><a name="36386"
       > </a
-      ><a name="35754" class="Symbol"
+      ><a name="36387" class="Symbol"
       >&#8594;</a
-      ><a name="35755"
+      ><a name="36388"
       > </a
-      ><a name="35756" href="Logic.html#35737" class="Bound"
+      ><a name="36389" href="Logic.html#36370" class="Bound"
       >A</a
-      ><a name="35757"
+      ><a name="36390"
       >
 </a
-      ><a name="35758" href="Logic.html#35668" class="Function"
+      ><a name="36391" href="Logic.html#36301" class="Function"
       >excluded-middle</a
-      ><a name="35773"
+      ><a name="36406"
       > </a
-      ><a name="35774" class="Symbol"
+      ><a name="36407" class="Symbol"
       >=</a
-      ><a name="35775"
+      ><a name="36408"
       > </a
-      ><a name="35776" class="Symbol"
+      ><a name="36409" class="Symbol"
       >&#8704;</a
-      ><a name="35777"
+      ><a name="36410"
       > </a
-      ><a name="35778" class="Symbol"
+      ><a name="36411" class="Symbol"
       >{</a
-      ><a name="35779" href="Logic.html#35779" class="Bound"
+      ><a name="36412" href="Logic.html#36412" class="Bound"
       >A</a
-      ><a name="35780"
+      ><a name="36413"
       > </a
-      ><a name="35781" class="Symbol"
+      ><a name="36414" class="Symbol"
       >:</a
-      ><a name="35782"
+      ><a name="36415"
       > </a
-      ><a name="35783" class="PrimitiveType"
+      ><a name="36416" class="PrimitiveType"
       >Set</a
-      ><a name="35786" class="Symbol"
+      ><a name="36419" class="Symbol"
       >}</a
-      ><a name="35787"
+      ><a name="36420"
       > </a
-      ><a name="35788" class="Symbol"
+      ><a name="36421" class="Symbol"
       >&#8594;</a
-      ><a name="35789"
+      ><a name="36422"
       > </a
-      ><a name="35790" href="Logic.html#35779" class="Bound"
+      ><a name="36423" href="Logic.html#36412" class="Bound"
       >A</a
-      ><a name="35791"
+      ><a name="36424"
       > </a
-      ><a name="35792" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="36425" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="35793"
+      ><a name="36426"
       > </a
-      ><a name="35794" href="Logic.html#29737" class="Function Operator"
+      ><a name="36427" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35795"
+      ><a name="36428"
       > </a
-      ><a name="35796" href="Logic.html#35779" class="Bound"
+      ><a name="36429" href="Logic.html#36412" class="Bound"
       >A</a
-      ><a name="35797"
+      ><a name="36430"
       >
 </a
-      ><a name="35798" href="Logic.html#35684" class="Function"
+      ><a name="36431" href="Logic.html#36317" class="Function"
       >peirce</a
-      ><a name="35804"
+      ><a name="36437"
       > </a
-      ><a name="35805" class="Symbol"
+      ><a name="36438" class="Symbol"
       >=</a
-      ><a name="35806"
+      ><a name="36439"
       > </a
-      ><a name="35807" class="Symbol"
+      ><a name="36440" class="Symbol"
       >&#8704;</a
-      ><a name="35808"
+      ><a name="36441"
       > </a
-      ><a name="35809" class="Symbol"
+      ><a name="36442" class="Symbol"
       >{</a
-      ><a name="35810" href="Logic.html#35810" class="Bound"
+      ><a name="36443" href="Logic.html#36443" class="Bound"
       >A</a
-      ><a name="35811"
+      ><a name="36444"
       > </a
-      ><a name="35812" href="Logic.html#35812" class="Bound"
+      ><a name="36445" href="Logic.html#36445" class="Bound"
       >B</a
-      ><a name="35813"
+      ><a name="36446"
       > </a
-      ><a name="35814" class="Symbol"
+      ><a name="36447" class="Symbol"
       >:</a
-      ><a name="35815"
+      ><a name="36448"
       > </a
-      ><a name="35816" class="PrimitiveType"
+      ><a name="36449" class="PrimitiveType"
       >Set</a
-      ><a name="35819" class="Symbol"
+      ><a name="36452" class="Symbol"
       >}</a
-      ><a name="35820"
+      ><a name="36453"
       > </a
-      ><a name="35821" class="Symbol"
+      ><a name="36454" class="Symbol"
       >&#8594;</a
-      ><a name="35822"
+      ><a name="36455"
       > </a
-      ><a name="35823" class="Symbol"
+      ><a name="36456" class="Symbol"
       >(((</a
-      ><a name="35826" href="Logic.html#35810" class="Bound"
+      ><a name="36459" href="Logic.html#36443" class="Bound"
       >A</a
-      ><a name="35827"
+      ><a name="36460"
       > </a
-      ><a name="35828" class="Symbol"
+      ><a name="36461" class="Symbol"
       >&#8594;</a
-      ><a name="35829"
+      ><a name="36462"
       > </a
-      ><a name="35830" href="Logic.html#35812" class="Bound"
+      ><a name="36463" href="Logic.html#36445" class="Bound"
       >B</a
-      ><a name="35831" class="Symbol"
+      ><a name="36464" class="Symbol"
       >)</a
-      ><a name="35832"
+      ><a name="36465"
       > </a
-      ><a name="35833" class="Symbol"
+      ><a name="36466" class="Symbol"
       >&#8594;</a
-      ><a name="35834"
+      ><a name="36467"
       > </a
-      ><a name="35835" href="Logic.html#35810" class="Bound"
+      ><a name="36468" href="Logic.html#36443" class="Bound"
       >A</a
-      ><a name="35836" class="Symbol"
+      ><a name="36469" class="Symbol"
       >)</a
-      ><a name="35837"
+      ><a name="36470"
       > </a
-      ><a name="35838" class="Symbol"
+      ><a name="36471" class="Symbol"
       >&#8594;</a
-      ><a name="35839"
+      ><a name="36472"
       > </a
-      ><a name="35840" href="Logic.html#35810" class="Bound"
+      ><a name="36473" href="Logic.html#36443" class="Bound"
       >A</a
-      ><a name="35841" class="Symbol"
+      ><a name="36474" class="Symbol"
       >)</a
-      ><a name="35842"
+      ><a name="36475"
       >
 </a
-      ><a name="35843" href="Logic.html#35691" class="Function"
+      ><a name="36476" href="Logic.html#36324" class="Function"
       >implication</a
-      ><a name="35854"
+      ><a name="36487"
       > </a
-      ><a name="35855" class="Symbol"
+      ><a name="36488" class="Symbol"
       >=</a
-      ><a name="35856"
+      ><a name="36489"
       > </a
-      ><a name="35857" class="Symbol"
+      ><a name="36490" class="Symbol"
       >&#8704;</a
-      ><a name="35858"
+      ><a name="36491"
       > </a
-      ><a name="35859" class="Symbol"
+      ><a name="36492" class="Symbol"
       >{</a
-      ><a name="35860" href="Logic.html#35860" class="Bound"
+      ><a name="36493" href="Logic.html#36493" class="Bound"
       >A</a
-      ><a name="35861"
+      ><a name="36494"
       > </a
-      ><a name="35862" href="Logic.html#35862" class="Bound"
+      ><a name="36495" href="Logic.html#36495" class="Bound"
       >B</a
-      ><a name="35863"
+      ><a name="36496"
       > </a
-      ><a name="35864" class="Symbol"
+      ><a name="36497" class="Symbol"
       >:</a
-      ><a name="35865"
+      ><a name="36498"
       > </a
-      ><a name="35866" class="PrimitiveType"
+      ><a name="36499" class="PrimitiveType"
       >Set</a
-      ><a name="35869" class="Symbol"
+      ><a name="36502" class="Symbol"
       >}</a
-      ><a name="35870"
+      ><a name="36503"
       > </a
-      ><a name="35871" class="Symbol"
+      ><a name="36504" class="Symbol"
       >&#8594;</a
-      ><a name="35872"
+      ><a name="36505"
       > </a
-      ><a name="35873" class="Symbol"
+      ><a name="36506" class="Symbol"
       >(</a
-      ><a name="35874" href="Logic.html#35860" class="Bound"
+      ><a name="36507" href="Logic.html#36493" class="Bound"
       >A</a
-      ><a name="35875"
+      ><a name="36508"
       > </a
-      ><a name="35876" class="Symbol"
+      ><a name="36509" class="Symbol"
       >&#8594;</a
-      ><a name="35877"
+      ><a name="36510"
       > </a
-      ><a name="35878" href="Logic.html#35862" class="Bound"
+      ><a name="36511" href="Logic.html#36495" class="Bound"
       >B</a
-      ><a name="35879" class="Symbol"
+      ><a name="36512" class="Symbol"
       >)</a
-      ><a name="35880"
+      ><a name="36513"
       > </a
-      ><a name="35881" class="Symbol"
+      ><a name="36514" class="Symbol"
       >&#8594;</a
-      ><a name="35882"
+      ><a name="36515"
       > </a
-      ><a name="35883" href="Logic.html#29737" class="Function Operator"
+      ><a name="36516" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35884"
+      ><a name="36517"
       > </a
-      ><a name="35885" href="Logic.html#35860" class="Bound"
+      ><a name="36518" href="Logic.html#36493" class="Bound"
       >A</a
-      ><a name="35886"
+      ><a name="36519"
       > </a
-      ><a name="35887" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="36520" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="35888"
+      ><a name="36521"
       > </a
-      ><a name="35889" href="Logic.html#35862" class="Bound"
+      ><a name="36522" href="Logic.html#36495" class="Bound"
       >B</a
-      ><a name="35890"
+      ><a name="36523"
       >
 </a
-      ><a name="35891" href="Logic.html#35703" class="Function"
+      ><a name="36524" href="Logic.html#36336" class="Function"
       >de-morgan</a
-      ><a name="35900"
+      ><a name="36533"
       > </a
-      ><a name="35901" class="Symbol"
+      ><a name="36534" class="Symbol"
       >=</a
-      ><a name="35902"
+      ><a name="36535"
       > </a
-      ><a name="35903" class="Symbol"
+      ><a name="36536" class="Symbol"
       >&#8704;</a
-      ><a name="35904"
+      ><a name="36537"
       > </a
-      ><a name="35905" class="Symbol"
+      ><a name="36538" class="Symbol"
       >{</a
-      ><a name="35906" href="Logic.html#35906" class="Bound"
+      ><a name="36539" href="Logic.html#36539" class="Bound"
       >A</a
-      ><a name="35907"
+      ><a name="36540"
       > </a
-      ><a name="35908" href="Logic.html#35908" class="Bound"
+      ><a name="36541" href="Logic.html#36541" class="Bound"
       >B</a
-      ><a name="35909"
+      ><a name="36542"
       > </a
-      ><a name="35910" class="Symbol"
+      ><a name="36543" class="Symbol"
       >:</a
-      ><a name="35911"
+      ><a name="36544"
       > </a
-      ><a name="35912" class="PrimitiveType"
+      ><a name="36545" class="PrimitiveType"
       >Set</a
-      ><a name="35915" class="Symbol"
+      ><a name="36548" class="Symbol"
       >}</a
-      ><a name="35916"
+      ><a name="36549"
       > </a
-      ><a name="35917" class="Symbol"
+      ><a name="36550" class="Symbol"
       >&#8594;</a
-      ><a name="35918"
+      ><a name="36551"
       > </a
-      ><a name="35919" href="Logic.html#29737" class="Function Operator"
+      ><a name="36552" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35920"
+      ><a name="36553"
       > </a
-      ><a name="35921" class="Symbol"
+      ><a name="36554" class="Symbol"
       >(</a
-      ><a name="35922" href="Logic.html#29737" class="Function Operator"
+      ><a name="36555" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35923"
+      ><a name="36556"
       > </a
-      ><a name="35924" href="Logic.html#35906" class="Bound"
+      ><a name="36557" href="Logic.html#36539" class="Bound"
       >A</a
-      ><a name="35925"
+      ><a name="36558"
       > </a
-      ><a name="35926" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="36559" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="35927"
+      ><a name="36560"
       > </a
-      ><a name="35928" href="Logic.html#29737" class="Function Operator"
+      ><a name="36561" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35929"
+      ><a name="36562"
       > </a
-      ><a name="35930" href="Logic.html#35908" class="Bound"
+      ><a name="36563" href="Logic.html#36541" class="Bound"
       >B</a
-      ><a name="35931" class="Symbol"
+      ><a name="36564" class="Symbol"
       >)</a
-      ><a name="35932"
+      ><a name="36565"
       > </a
-      ><a name="35933" class="Symbol"
+      ><a name="36566" class="Symbol"
       >&#8594;</a
-      ><a name="35934"
+      ><a name="36567"
       > </a
-      ><a name="35935" href="Logic.html#35906" class="Bound"
+      ><a name="36568" href="Logic.html#36539" class="Bound"
       >A</a
-      ><a name="35936"
+      ><a name="36569"
       > </a
-      ><a name="35937" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="36570" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="35938"
+      ><a name="36571"
       > </a
-      ><a name="35939" href="Logic.html#35908" class="Bound"
+      ><a name="36572" href="Logic.html#36541" class="Bound"
       >B</a
-      ><a name="35940"
+      ><a name="36573"
       >
 </a
-      ><a name="35941" href="Logic.html#35941" class="Function"
+      ><a name="36574" href="Logic.html#36574" class="Function"
       >de-morgan&#8242;</a
-      ><a name="35951"
+      ><a name="36584"
       > </a
-      ><a name="35952" class="Symbol"
+      ><a name="36585" class="Symbol"
       >=</a
-      ><a name="35953"
+      ><a name="36586"
       > </a
-      ><a name="35954" class="Symbol"
+      ><a name="36587" class="Symbol"
       >&#8704;</a
-      ><a name="35955"
+      ><a name="36588"
       > </a
-      ><a name="35956" class="Symbol"
+      ><a name="36589" class="Symbol"
       >{</a
-      ><a name="35957" href="Logic.html#35957" class="Bound"
+      ><a name="36590" href="Logic.html#36590" class="Bound"
       >A</a
-      ><a name="35958"
+      ><a name="36591"
       > </a
-      ><a name="35959" href="Logic.html#35959" class="Bound"
+      ><a name="36592" href="Logic.html#36592" class="Bound"
       >B</a
-      ><a name="35960"
+      ><a name="36593"
       > </a
-      ><a name="35961" class="Symbol"
+      ><a name="36594" class="Symbol"
       >:</a
-      ><a name="35962"
+      ><a name="36595"
       > </a
-      ><a name="35963" class="PrimitiveType"
+      ><a name="36596" class="PrimitiveType"
       >Set</a
-      ><a name="35966" class="Symbol"
+      ><a name="36599" class="Symbol"
       >}</a
-      ><a name="35967"
+      ><a name="36600"
       > </a
-      ><a name="35968" class="Symbol"
+      ><a name="36601" class="Symbol"
       >&#8594;</a
-      ><a name="35969"
+      ><a name="36602"
       > </a
-      ><a name="35970" href="Logic.html#29737" class="Function Operator"
+      ><a name="36603" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35971"
+      ><a name="36604"
       > </a
-      ><a name="35972" class="Symbol"
+      ><a name="36605" class="Symbol"
       >(</a
-      ><a name="35973" href="Logic.html#29737" class="Function Operator"
+      ><a name="36606" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35974"
+      ><a name="36607"
       > </a
-      ><a name="35975" href="Logic.html#35957" class="Bound"
+      ><a name="36608" href="Logic.html#36590" class="Bound"
       >A</a
-      ><a name="35976"
+      ><a name="36609"
       > </a
-      ><a name="35977" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="36610" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="35978"
+      ><a name="36611"
       > </a
-      ><a name="35979" href="Logic.html#29737" class="Function Operator"
+      ><a name="36612" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="35980"
+      ><a name="36613"
       > </a
-      ><a name="35981" href="Logic.html#35959" class="Bound"
+      ><a name="36614" href="Logic.html#36592" class="Bound"
       >B</a
-      ><a name="35982" class="Symbol"
+      ><a name="36615" class="Symbol"
       >)</a
-      ><a name="35983"
+      ><a name="36616"
       > </a
-      ><a name="35984" class="Symbol"
+      ><a name="36617" class="Symbol"
       >&#8594;</a
-      ><a name="35985"
+      ><a name="36618"
       > </a
-      ><a name="35986" href="Logic.html#35957" class="Bound"
+      ><a name="36619" href="Logic.html#36590" class="Bound"
       >A</a
-      ><a name="35987"
+      ><a name="36620"
       > </a
-      ><a name="35988" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="36621" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="35989"
+      ><a name="36622"
       > </a
-      ><a name="35990" href="Logic.html#35959" class="Bound"
+      ><a name="36623" href="Logic.html#36592" class="Bound"
       >B</a
       >
 {% endraw %}</pre>
@@ -11957,142 +11973,551 @@ of `double-negation` and the others defines a type, we need to use
 
 ## Universals
 
+Given a variable `x` of type `A` and a proposition `B[x]` which
+contains `x` as a free variable, the universally quantified
+proposition `∀ (x : A) → B[x]` holds if for every term `M` of type
+`A` the proposition `B[M]` holds.  Here `B[M]` stands for
+the proposition `B[x]` with each free occurrence of `x` replaced by
+`M`.  The variable `x` appears free in `B[x]` but bound in
+`∀ (x : A) → B[x]`.  We formalise universal quantification using the
+dependent function type, which has appeared throughout this book.
+
+Evidence that `∀ (x : A) → B[x]` holds is of the form
+
+    λ (x : A) → N[x]
+
+where `N[x]` is a term of type `B[x]`; here `N[x]` is a term and `B[x]`
+is a proposition (or type) both containing as a free variable `x` of
+type `A`.  Given a term `L` providing evidence that `∀ (x : A) → B[x]`
+holds and a term `M` of type `A`, the term `L M` provides evidence
+that `B[M]` holds.  In other words, evidence that `∀ (x : A) → B[x]`
+holds is a function that converts a term `M` of type `A` into evidence
+that `B[M]` holds.
+
+Put another way, if we know that `∀ (x : A) → B[x]` holds and that `M`
+is a term of type `A` then we may conclude that `B[M]` holds. In
+medieval times, this rule was known by the name *dictum de omni*.
+
+If we introduce a universal and the immediately eliminate it, we can
+always simplify the resulting term. Thus
+
+    (λ (x : A) → N[x]) M
+
+simplifies to `N[M]` of type `B[M]`, where `N[M]` stands for the term
+`N[x]` with each free occurrence of `x` replaced by `M` of type `A`.
+
+Unlike with conjunction, disjunction, and implication, there is no simple
+analogy between universals and arithmetic.
+
+
 ## Existentials
+
+Given a variable `x` of type `A` and a proposition `B[x]` which
+contains `x` as a free variable, the existentially quantified
+proposition `∃ (λ (x : A) → B[x])` holds if for some term `M` of type
+`A` the proposition `B[M]` holds.  Here `B[M]` stands for
+the proposition `B[x]` with each free occurrence of `x` replaced by
+`M`.  The variable `x` appears free in `B[x]` but bound in
+`∃ (λ (x : A) → B[x])`.
+
+It is common to adopt a notation such as `∃[ x : A ]→ B[x]`,
+which introduces `x` as a bound variable of type `A` that appears
+free in `B[x]` and bound in `∃[ x : A ]→ B[x]`.  We won't do
+that here, but instead use the lambda notation built-in to Agda
+to introduce `x` as a bound variable.
+
+We formalise existential quantification by declaring a suitable
+inductive type.
+<pre class="Agda">{% raw %}
+<a name="39698" class="Keyword"
+      >data</a
+      ><a name="39702"
+      > </a
+      ><a name="39703" href="Logic.html#39703" class="Datatype"
+      >&#8707;</a
+      ><a name="39704"
+      > </a
+      ><a name="39705" class="Symbol"
+      >:</a
+      ><a name="39706"
+      > </a
+      ><a name="39707" class="Symbol"
+      >&#8704;</a
+      ><a name="39708"
+      > </a
+      ><a name="39709" class="Symbol"
+      >{</a
+      ><a name="39710" href="Logic.html#39710" class="Bound"
+      >A</a
+      ><a name="39711"
+      > </a
+      ><a name="39712" class="Symbol"
+      >:</a
+      ><a name="39713"
+      > </a
+      ><a name="39714" class="PrimitiveType"
+      >Set</a
+      ><a name="39717" class="Symbol"
+      >}</a
+      ><a name="39718"
+      > </a
+      ><a name="39719" class="Symbol"
+      >&#8594;</a
+      ><a name="39720"
+      > </a
+      ><a name="39721" class="Symbol"
+      >(</a
+      ><a name="39722" href="Logic.html#39710" class="Bound"
+      >A</a
+      ><a name="39723"
+      > </a
+      ><a name="39724" class="Symbol"
+      >&#8594;</a
+      ><a name="39725"
+      > </a
+      ><a name="39726" class="PrimitiveType"
+      >Set</a
+      ><a name="39729" class="Symbol"
+      >)</a
+      ><a name="39730"
+      > </a
+      ><a name="39731" class="Symbol"
+      >&#8594;</a
+      ><a name="39732"
+      > </a
+      ><a name="39733" class="PrimitiveType"
+      >Set</a
+      ><a name="39736"
+      > </a
+      ><a name="39737" class="Keyword"
+      >where</a
+      ><a name="39742"
+      >
+  </a
+      ><a name="39745" href="Logic.html#39745" class="InductiveConstructor Operator"
+      >_,_</a
+      ><a name="39748"
+      > </a
+      ><a name="39749" class="Symbol"
+      >:</a
+      ><a name="39750"
+      > </a
+      ><a name="39751" class="Symbol"
+      >&#8704;</a
+      ><a name="39752"
+      > </a
+      ><a name="39753" class="Symbol"
+      >{</a
+      ><a name="39754" href="Logic.html#39754" class="Bound"
+      >A</a
+      ><a name="39755"
+      > </a
+      ><a name="39756" class="Symbol"
+      >:</a
+      ><a name="39757"
+      > </a
+      ><a name="39758" class="PrimitiveType"
+      >Set</a
+      ><a name="39761" class="Symbol"
+      >}</a
+      ><a name="39762"
+      > </a
+      ><a name="39763" class="Symbol"
+      >{</a
+      ><a name="39764" href="Logic.html#39764" class="Bound"
+      >B</a
+      ><a name="39765"
+      > </a
+      ><a name="39766" class="Symbol"
+      >:</a
+      ><a name="39767"
+      > </a
+      ><a name="39768" href="Logic.html#39754" class="Bound"
+      >A</a
+      ><a name="39769"
+      > </a
+      ><a name="39770" class="Symbol"
+      >&#8594;</a
+      ><a name="39771"
+      > </a
+      ><a name="39772" class="PrimitiveType"
+      >Set</a
+      ><a name="39775" class="Symbol"
+      >}</a
+      ><a name="39776"
+      > </a
+      ><a name="39777" class="Symbol"
+      >&#8594;</a
+      ><a name="39778"
+      > </a
+      ><a name="39779" class="Symbol"
+      >(</a
+      ><a name="39780" href="Logic.html#39780" class="Bound"
+      >x</a
+      ><a name="39781"
+      > </a
+      ><a name="39782" class="Symbol"
+      >:</a
+      ><a name="39783"
+      > </a
+      ><a name="39784" href="Logic.html#39754" class="Bound"
+      >A</a
+      ><a name="39785" class="Symbol"
+      >)</a
+      ><a name="39786"
+      > </a
+      ><a name="39787" class="Symbol"
+      >&#8594;</a
+      ><a name="39788"
+      > </a
+      ><a name="39789" href="Logic.html#39764" class="Bound"
+      >B</a
+      ><a name="39790"
+      > </a
+      ><a name="39791" href="Logic.html#39780" class="Bound"
+      >x</a
+      ><a name="39792"
+      > </a
+      ><a name="39793" class="Symbol"
+      >&#8594;</a
+      ><a name="39794"
+      > </a
+      ><a name="39795" href="Logic.html#39703" class="Datatype"
+      >&#8707;</a
+      ><a name="39796"
+      > </a
+      ><a name="39797" href="Logic.html#39764" class="Bound"
+      >B</a
+      >
+{% endraw %}</pre>
+Evidence that `∃ (λ (x : A) → B[x])` holds is of the form
+`(M , N)` where `M` is a term of type `A`, and `N` is evidence
+that `B[M]` holds.
+
+Given evidence that `∃ (λ (x : A) → B[x])` holds, and
+given evidence that `∀ (x : A) → B[x] → C` holds, where `C` does
+not contain `x` as a free variable, we may conclude that `C` holds.
+<pre class="Agda">{% raw %}
+<a name="40151" href="Logic.html#40151" class="Function"
+      >&#8707;-elim</a
+      ><a name="40157"
+      > </a
+      ><a name="40158" class="Symbol"
+      >:</a
+      ><a name="40159"
+      > </a
+      ><a name="40160" class="Symbol"
+      >&#8704;</a
+      ><a name="40161"
+      > </a
+      ><a name="40162" class="Symbol"
+      >{</a
+      ><a name="40163" href="Logic.html#40163" class="Bound"
+      >A</a
+      ><a name="40164"
+      > </a
+      ><a name="40165" class="Symbol"
+      >:</a
+      ><a name="40166"
+      > </a
+      ><a name="40167" class="PrimitiveType"
+      >Set</a
+      ><a name="40170" class="Symbol"
+      >}</a
+      ><a name="40171"
+      > </a
+      ><a name="40172" class="Symbol"
+      >{</a
+      ><a name="40173" href="Logic.html#40173" class="Bound"
+      >B</a
+      ><a name="40174"
+      > </a
+      ><a name="40175" class="Symbol"
+      >:</a
+      ><a name="40176"
+      > </a
+      ><a name="40177" href="Logic.html#40163" class="Bound"
+      >A</a
+      ><a name="40178"
+      > </a
+      ><a name="40179" class="Symbol"
+      >&#8594;</a
+      ><a name="40180"
+      > </a
+      ><a name="40181" class="PrimitiveType"
+      >Set</a
+      ><a name="40184" class="Symbol"
+      >}</a
+      ><a name="40185"
+      > </a
+      ><a name="40186" class="Symbol"
+      >{</a
+      ><a name="40187" href="Logic.html#40187" class="Bound"
+      >C</a
+      ><a name="40188"
+      > </a
+      ><a name="40189" class="Symbol"
+      >:</a
+      ><a name="40190"
+      > </a
+      ><a name="40191" class="PrimitiveType"
+      >Set</a
+      ><a name="40194" class="Symbol"
+      >}</a
+      ><a name="40195"
+      > </a
+      ><a name="40196" class="Symbol"
+      >&#8594;</a
+      ><a name="40197"
+      > </a
+      ><a name="40198" href="Logic.html#39703" class="Datatype"
+      >&#8707;</a
+      ><a name="40199"
+      > </a
+      ><a name="40200" href="Logic.html#40173" class="Bound"
+      >B</a
+      ><a name="40201"
+      > </a
+      ><a name="40202" class="Symbol"
+      >&#8594;</a
+      ><a name="40203"
+      > </a
+      ><a name="40204" class="Symbol"
+      >(&#8704;</a
+      ><a name="40206"
+      > </a
+      ><a name="40207" class="Symbol"
+      >(</a
+      ><a name="40208" href="Logic.html#40208" class="Bound"
+      >x</a
+      ><a name="40209"
+      > </a
+      ><a name="40210" class="Symbol"
+      >:</a
+      ><a name="40211"
+      > </a
+      ><a name="40212" href="Logic.html#40163" class="Bound"
+      >A</a
+      ><a name="40213" class="Symbol"
+      >)</a
+      ><a name="40214"
+      > </a
+      ><a name="40215" class="Symbol"
+      >&#8594;</a
+      ><a name="40216"
+      > </a
+      ><a name="40217" href="Logic.html#40173" class="Bound"
+      >B</a
+      ><a name="40218"
+      > </a
+      ><a name="40219" href="Logic.html#40208" class="Bound"
+      >x</a
+      ><a name="40220"
+      > </a
+      ><a name="40221" class="Symbol"
+      >&#8594;</a
+      ><a name="40222"
+      > </a
+      ><a name="40223" href="Logic.html#40187" class="Bound"
+      >C</a
+      ><a name="40224" class="Symbol"
+      >)</a
+      ><a name="40225"
+      > </a
+      ><a name="40226" class="Symbol"
+      >&#8594;</a
+      ><a name="40227"
+      > </a
+      ><a name="40228" href="Logic.html#40187" class="Bound"
+      >C</a
+      ><a name="40229"
+      >
+</a
+      ><a name="40230" href="Logic.html#40151" class="Function"
+      >&#8707;-elim</a
+      ><a name="40236"
+      > </a
+      ><a name="40237" class="Symbol"
+      >(</a
+      ><a name="40238" href="Logic.html#40238" class="Bound"
+      >M</a
+      ><a name="40239"
+      > </a
+      ><a name="40240" href="Logic.html#39745" class="InductiveConstructor Operator"
+      >,</a
+      ><a name="40241"
+      > </a
+      ><a name="40242" href="Logic.html#40242" class="Bound"
+      >N</a
+      ><a name="40243" class="Symbol"
+      >)</a
+      ><a name="40244"
+      > </a
+      ><a name="40245" href="Logic.html#40245" class="Bound"
+      >P</a
+      ><a name="40246"
+      > </a
+      ><a name="40247" class="Symbol"
+      >=</a
+      ><a name="40248"
+      > </a
+      ><a name="40249" href="Logic.html#40245" class="Bound"
+      >P</a
+      ><a name="40250"
+      > </a
+      ><a name="40251" href="Logic.html#40238" class="Bound"
+      >M</a
+      ><a name="40252"
+      > </a
+      ><a name="40253" href="Logic.html#40242" class="Bound"
+      >N</a
+      >
+{% endraw %}</pre>
+In other words, if we know for every `x` of type `A` that `B[x]`
+implies `C`, and we know for some `x` of type `A` that `B[x]` holds,
+then we may conclude that `C` holds.  This is because we may
+instantiate that proof that `∀ (x : A) → B[x] → C` to any `x`, and we
+may choose the particular `x` provided by the evidence that `∃ (λ (x :
+A) → B[x])`.
+
+
+As an example, recall the definitions of `even` and `odd` from
+Chapter [Relations](Relations).  
 
 ## Decidability
 
 <pre class="Agda">{% raw %}
-<a name="36678" class="Keyword"
+<a name="40745" class="Keyword"
       >data</a
-      ><a name="36682"
+      ><a name="40749"
       > </a
-      ><a name="36683" href="Logic.html#36683" class="Datatype"
+      ><a name="40750" href="Logic.html#40750" class="Datatype"
       >Dec</a
-      ><a name="36686"
+      ><a name="40753"
       > </a
-      ><a name="36687" class="Symbol"
+      ><a name="40754" class="Symbol"
       >:</a
-      ><a name="36688"
+      ><a name="40755"
       > </a
-      ><a name="36689" class="PrimitiveType"
+      ><a name="40756" class="PrimitiveType"
       >Set</a
-      ><a name="36692"
+      ><a name="40759"
       > </a
-      ><a name="36693" class="Symbol"
+      ><a name="40760" class="Symbol"
       >&#8594;</a
-      ><a name="36694"
+      ><a name="40761"
       > </a
-      ><a name="36695" class="PrimitiveType"
+      ><a name="40762" class="PrimitiveType"
       >Set</a
-      ><a name="36698"
+      ><a name="40765"
       > </a
-      ><a name="36699" class="Keyword"
+      ><a name="40766" class="Keyword"
       >where</a
-      ><a name="36704"
+      ><a name="40771"
       >
   </a
-      ><a name="36707" href="Logic.html#36707" class="InductiveConstructor"
+      ><a name="40774" href="Logic.html#40774" class="InductiveConstructor"
       >yes</a
-      ><a name="36710"
+      ><a name="40777"
       > </a
-      ><a name="36711" class="Symbol"
+      ><a name="40778" class="Symbol"
       >:</a
-      ><a name="36712"
+      ><a name="40779"
       > </a
-      ><a name="36713" class="Symbol"
+      ><a name="40780" class="Symbol"
       >&#8704;</a
-      ><a name="36714"
+      ><a name="40781"
       > </a
-      ><a name="36715" class="Symbol"
+      ><a name="40782" class="Symbol"
       >{</a
-      ><a name="36716" href="Logic.html#36716" class="Bound"
+      ><a name="40783" href="Logic.html#40783" class="Bound"
       >A</a
-      ><a name="36717"
+      ><a name="40784"
       > </a
-      ><a name="36718" class="Symbol"
+      ><a name="40785" class="Symbol"
       >:</a
-      ><a name="36719"
+      ><a name="40786"
       > </a
-      ><a name="36720" class="PrimitiveType"
+      ><a name="40787" class="PrimitiveType"
       >Set</a
-      ><a name="36723" class="Symbol"
+      ><a name="40790" class="Symbol"
       >}</a
-      ><a name="36724"
+      ><a name="40791"
       > </a
-      ><a name="36725" class="Symbol"
+      ><a name="40792" class="Symbol"
       >&#8594;</a
-      ><a name="36726"
+      ><a name="40793"
       > </a
-      ><a name="36727" href="Logic.html#36716" class="Bound"
+      ><a name="40794" href="Logic.html#40783" class="Bound"
       >A</a
-      ><a name="36728"
+      ><a name="40795"
       > </a
-      ><a name="36729" class="Symbol"
+      ><a name="40796" class="Symbol"
       >&#8594;</a
-      ><a name="36730"
+      ><a name="40797"
       > </a
-      ><a name="36731" href="Logic.html#36683" class="Datatype"
+      ><a name="40798" href="Logic.html#40750" class="Datatype"
       >Dec</a
-      ><a name="36734"
+      ><a name="40801"
       > </a
-      ><a name="36735" href="Logic.html#36716" class="Bound"
+      ><a name="40802" href="Logic.html#40783" class="Bound"
       >A</a
-      ><a name="36736"
+      ><a name="40803"
       >
   </a
-      ><a name="36739" href="Logic.html#36739" class="InductiveConstructor"
+      ><a name="40806" href="Logic.html#40806" class="InductiveConstructor"
       >no</a
-      ><a name="36741"
+      ><a name="40808"
       >  </a
-      ><a name="36743" class="Symbol"
+      ><a name="40810" class="Symbol"
       >:</a
-      ><a name="36744"
+      ><a name="40811"
       > </a
-      ><a name="36745" class="Symbol"
+      ><a name="40812" class="Symbol"
       >&#8704;</a
-      ><a name="36746"
+      ><a name="40813"
       > </a
-      ><a name="36747" class="Symbol"
+      ><a name="40814" class="Symbol"
       >{</a
-      ><a name="36748" href="Logic.html#36748" class="Bound"
+      ><a name="40815" href="Logic.html#40815" class="Bound"
       >A</a
-      ><a name="36749"
+      ><a name="40816"
       > </a
-      ><a name="36750" class="Symbol"
+      ><a name="40817" class="Symbol"
       >:</a
-      ><a name="36751"
+      ><a name="40818"
       > </a
-      ><a name="36752" class="PrimitiveType"
+      ><a name="40819" class="PrimitiveType"
       >Set</a
-      ><a name="36755" class="Symbol"
+      ><a name="40822" class="Symbol"
       >}</a
-      ><a name="36756"
+      ><a name="40823"
       > </a
-      ><a name="36757" class="Symbol"
+      ><a name="40824" class="Symbol"
       >&#8594;</a
-      ><a name="36758"
+      ><a name="40825"
       > </a
-      ><a name="36759" class="Symbol"
+      ><a name="40826" class="Symbol"
       >(</a
-      ><a name="36760" href="Logic.html#29737" class="Function Operator"
+      ><a name="40827" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="36761"
+      ><a name="40828"
       > </a
-      ><a name="36762" href="Logic.html#36748" class="Bound"
+      ><a name="40829" href="Logic.html#40815" class="Bound"
       >A</a
-      ><a name="36763" class="Symbol"
+      ><a name="40830" class="Symbol"
       >)</a
-      ><a name="36764"
+      ><a name="40831"
       > </a
-      ><a name="36765" class="Symbol"
+      ><a name="40832" class="Symbol"
       >&#8594;</a
-      ><a name="36766"
+      ><a name="40833"
       > </a
-      ><a name="36767" href="Logic.html#36683" class="Datatype"
+      ><a name="40834" href="Logic.html#40750" class="Datatype"
       >Dec</a
-      ><a name="36770"
+      ><a name="40837"
       > </a
-      ><a name="36771" href="Logic.html#36748" class="Bound"
+      ><a name="40838" href="Logic.html#40815" class="Bound"
       >A</a
       >
 {% endraw %}</pre>
@@ -12113,620 +12538,620 @@ Two halves of de Morgan's laws hold intuitionistically.  The other two
 halves are each equivalent to the law of double negation.
 
 <pre class="Agda">{% raw %}
-<a name="37064" href="Logic.html#37064" class="Function"
+<a name="41131" href="Logic.html#41131" class="Function"
       >dem1</a
-      ><a name="37068"
+      ><a name="41135"
       > </a
-      ><a name="37069" class="Symbol"
+      ><a name="41136" class="Symbol"
       >:</a
-      ><a name="37070"
+      ><a name="41137"
       > </a
-      ><a name="37071" class="Symbol"
+      ><a name="41138" class="Symbol"
       >&#8704;</a
-      ><a name="37072"
+      ><a name="41139"
       > </a
-      ><a name="37073" class="Symbol"
+      ><a name="41140" class="Symbol"
       >{</a
-      ><a name="37074" href="Logic.html#37074" class="Bound"
+      ><a name="41141" href="Logic.html#41141" class="Bound"
       >A</a
-      ><a name="37075"
+      ><a name="41142"
       > </a
-      ><a name="37076" href="Logic.html#37076" class="Bound"
+      ><a name="41143" href="Logic.html#41143" class="Bound"
       >B</a
-      ><a name="37077"
+      ><a name="41144"
       > </a
-      ><a name="37078" class="Symbol"
+      ><a name="41145" class="Symbol"
       >:</a
-      ><a name="37079"
+      ><a name="41146"
       > </a
-      ><a name="37080" class="PrimitiveType"
+      ><a name="41147" class="PrimitiveType"
       >Set</a
-      ><a name="37083" class="Symbol"
+      ><a name="41150" class="Symbol"
       >}</a
-      ><a name="37084"
+      ><a name="41151"
       > </a
-      ><a name="37085" class="Symbol"
+      ><a name="41152" class="Symbol"
       >&#8594;</a
-      ><a name="37086"
+      ><a name="41153"
       > </a
-      ><a name="37087" href="Logic.html#37074" class="Bound"
+      ><a name="41154" href="Logic.html#41141" class="Bound"
       >A</a
-      ><a name="37088"
+      ><a name="41155"
       > </a
-      ><a name="37089" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="41156" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="37090"
+      ><a name="41157"
       > </a
-      ><a name="37091" href="Logic.html#37076" class="Bound"
+      ><a name="41158" href="Logic.html#41143" class="Bound"
       >B</a
-      ><a name="37092"
+      ><a name="41159"
       > </a
-      ><a name="37093" class="Symbol"
+      ><a name="41160" class="Symbol"
       >&#8594;</a
-      ><a name="37094"
+      ><a name="41161"
       > </a
-      ><a name="37095" href="Logic.html#29737" class="Function Operator"
+      ><a name="41162" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37096"
+      ><a name="41163"
       > </a
-      ><a name="37097" class="Symbol"
+      ><a name="41164" class="Symbol"
       >(</a
-      ><a name="37098" href="Logic.html#29737" class="Function Operator"
+      ><a name="41165" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37099"
+      ><a name="41166"
       > </a
-      ><a name="37100" href="Logic.html#37074" class="Bound"
+      ><a name="41167" href="Logic.html#41141" class="Bound"
       >A</a
-      ><a name="37101"
+      ><a name="41168"
       > </a
-      ><a name="37102" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="41169" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="37103"
+      ><a name="41170"
       > </a
-      ><a name="37104" href="Logic.html#29737" class="Function Operator"
+      ><a name="41171" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37105"
+      ><a name="41172"
       > </a
-      ><a name="37106" href="Logic.html#37076" class="Bound"
+      ><a name="41173" href="Logic.html#41143" class="Bound"
       >B</a
-      ><a name="37107" class="Symbol"
+      ><a name="41174" class="Symbol"
       >)</a
-      ><a name="37108"
+      ><a name="41175"
       >
 </a
-      ><a name="37109" href="Logic.html#37064" class="Function"
+      ><a name="41176" href="Logic.html#41131" class="Function"
       >dem1</a
-      ><a name="37113"
+      ><a name="41180"
       > </a
-      ><a name="37114" class="Symbol"
+      ><a name="41181" class="Symbol"
       >(</a
-      ><a name="37115" href="Logic.html#37115" class="Bound"
+      ><a name="41182" href="Logic.html#41182" class="Bound"
       >a</a
-      ><a name="37116"
+      ><a name="41183"
       > </a
-      ><a name="37117" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="41184" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="37118"
+      ><a name="41185"
       > </a
-      ><a name="37119" href="Logic.html#37119" class="Bound"
+      ><a name="41186" href="Logic.html#41186" class="Bound"
       >b</a
-      ><a name="37120" class="Symbol"
+      ><a name="41187" class="Symbol"
       >)</a
-      ><a name="37121"
+      ><a name="41188"
       > </a
-      ><a name="37122" class="Symbol"
+      ><a name="41189" class="Symbol"
       >(</a
-      ><a name="37123" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="41190" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="37127"
+      ><a name="41194"
       > </a
-      ><a name="37128" href="Logic.html#37128" class="Bound"
+      ><a name="41195" href="Logic.html#41195" class="Bound"
       >&#172;a</a
-      ><a name="37130" class="Symbol"
+      ><a name="41197" class="Symbol"
       >)</a
-      ><a name="37131"
+      ><a name="41198"
       > </a
-      ><a name="37132" class="Symbol"
+      ><a name="41199" class="Symbol"
       >=</a
-      ><a name="37133"
+      ><a name="41200"
       > </a
-      ><a name="37134" href="Logic.html#37128" class="Bound"
+      ><a name="41201" href="Logic.html#41195" class="Bound"
       >&#172;a</a
-      ><a name="37136"
+      ><a name="41203"
       > </a
-      ><a name="37137" href="Logic.html#37115" class="Bound"
+      ><a name="41204" href="Logic.html#41182" class="Bound"
       >a</a
-      ><a name="37138"
+      ><a name="41205"
       >
 </a
-      ><a name="37139" href="Logic.html#37064" class="Function"
+      ><a name="41206" href="Logic.html#41131" class="Function"
       >dem1</a
-      ><a name="37143"
+      ><a name="41210"
       > </a
-      ><a name="37144" class="Symbol"
+      ><a name="41211" class="Symbol"
       >(</a
-      ><a name="37145" href="Logic.html#37145" class="Bound"
+      ><a name="41212" href="Logic.html#41212" class="Bound"
       >a</a
-      ><a name="37146"
+      ><a name="41213"
       > </a
-      ><a name="37147" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="41214" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="37148"
+      ><a name="41215"
       > </a
-      ><a name="37149" href="Logic.html#37149" class="Bound"
+      ><a name="41216" href="Logic.html#41216" class="Bound"
       >b</a
-      ><a name="37150" class="Symbol"
+      ><a name="41217" class="Symbol"
       >)</a
-      ><a name="37151"
+      ><a name="41218"
       > </a
-      ><a name="37152" class="Symbol"
+      ><a name="41219" class="Symbol"
       >(</a
-      ><a name="37153" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="41220" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="37157"
+      ><a name="41224"
       > </a
-      ><a name="37158" href="Logic.html#37158" class="Bound"
+      ><a name="41225" href="Logic.html#41225" class="Bound"
       >&#172;b</a
-      ><a name="37160" class="Symbol"
+      ><a name="41227" class="Symbol"
       >)</a
-      ><a name="37161"
+      ><a name="41228"
       > </a
-      ><a name="37162" class="Symbol"
+      ><a name="41229" class="Symbol"
       >=</a
-      ><a name="37163"
+      ><a name="41230"
       > </a
-      ><a name="37164" href="Logic.html#37158" class="Bound"
+      ><a name="41231" href="Logic.html#41225" class="Bound"
       >&#172;b</a
-      ><a name="37166"
+      ><a name="41233"
       > </a
-      ><a name="37167" href="Logic.html#37149" class="Bound"
+      ><a name="41234" href="Logic.html#41216" class="Bound"
       >b</a
-      ><a name="37168"
+      ><a name="41235"
       >
 
 </a
-      ><a name="37170" href="Logic.html#37170" class="Function"
+      ><a name="41237" href="Logic.html#41237" class="Function"
       >dem2</a
-      ><a name="37174"
+      ><a name="41241"
       > </a
-      ><a name="37175" class="Symbol"
+      ><a name="41242" class="Symbol"
       >:</a
-      ><a name="37176"
+      ><a name="41243"
       > </a
-      ><a name="37177" class="Symbol"
+      ><a name="41244" class="Symbol"
       >&#8704;</a
-      ><a name="37178"
+      ><a name="41245"
       > </a
-      ><a name="37179" class="Symbol"
+      ><a name="41246" class="Symbol"
       >{</a
-      ><a name="37180" href="Logic.html#37180" class="Bound"
+      ><a name="41247" href="Logic.html#41247" class="Bound"
       >A</a
-      ><a name="37181"
+      ><a name="41248"
       > </a
-      ><a name="37182" href="Logic.html#37182" class="Bound"
+      ><a name="41249" href="Logic.html#41249" class="Bound"
       >B</a
-      ><a name="37183"
+      ><a name="41250"
       > </a
-      ><a name="37184" class="Symbol"
+      ><a name="41251" class="Symbol"
       >:</a
-      ><a name="37185"
+      ><a name="41252"
       > </a
-      ><a name="37186" class="PrimitiveType"
+      ><a name="41253" class="PrimitiveType"
       >Set</a
-      ><a name="37189" class="Symbol"
+      ><a name="41256" class="Symbol"
       >}</a
-      ><a name="37190"
+      ><a name="41257"
       > </a
-      ><a name="37191" class="Symbol"
+      ><a name="41258" class="Symbol"
       >&#8594;</a
-      ><a name="37192"
+      ><a name="41259"
       > </a
-      ><a name="37193" href="Logic.html#37180" class="Bound"
+      ><a name="41260" href="Logic.html#41247" class="Bound"
       >A</a
-      ><a name="37194"
+      ><a name="41261"
       > </a
-      ><a name="37195" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="41262" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="37196"
+      ><a name="41263"
       > </a
-      ><a name="37197" href="Logic.html#37182" class="Bound"
+      ><a name="41264" href="Logic.html#41249" class="Bound"
       >B</a
-      ><a name="37198"
+      ><a name="41265"
       > </a
-      ><a name="37199" class="Symbol"
+      ><a name="41266" class="Symbol"
       >&#8594;</a
-      ><a name="37200"
+      ><a name="41267"
       > </a
-      ><a name="37201" href="Logic.html#29737" class="Function Operator"
+      ><a name="41268" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37202"
+      ><a name="41269"
       > </a
-      ><a name="37203" class="Symbol"
+      ><a name="41270" class="Symbol"
       >(</a
-      ><a name="37204" href="Logic.html#29737" class="Function Operator"
+      ><a name="41271" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37205"
+      ><a name="41272"
       > </a
-      ><a name="37206" href="Logic.html#37180" class="Bound"
+      ><a name="41273" href="Logic.html#41247" class="Bound"
       >A</a
-      ><a name="37207"
+      ><a name="41274"
       > </a
-      ><a name="37208" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="41275" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="37209"
+      ><a name="41276"
       > </a
-      ><a name="37210" href="Logic.html#29737" class="Function Operator"
+      ><a name="41277" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37211"
+      ><a name="41278"
       > </a
-      ><a name="37212" href="Logic.html#37182" class="Bound"
+      ><a name="41279" href="Logic.html#41249" class="Bound"
       >B</a
-      ><a name="37213" class="Symbol"
+      ><a name="41280" class="Symbol"
       >)</a
-      ><a name="37214"
+      ><a name="41281"
       >
 </a
-      ><a name="37215" href="Logic.html#37170" class="Function"
+      ><a name="41282" href="Logic.html#41237" class="Function"
       >dem2</a
-      ><a name="37219"
+      ><a name="41286"
       > </a
-      ><a name="37220" class="Symbol"
+      ><a name="41287" class="Symbol"
       >(</a
-      ><a name="37221" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="41288" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="37225"
+      ><a name="41292"
       > </a
-      ><a name="37226" href="Logic.html#37226" class="Bound"
+      ><a name="41293" href="Logic.html#41293" class="Bound"
       >a</a
-      ><a name="37227" class="Symbol"
+      ><a name="41294" class="Symbol"
       >)</a
-      ><a name="37228"
+      ><a name="41295"
       > </a
-      ><a name="37229" class="Symbol"
+      ><a name="41296" class="Symbol"
       >(</a
-      ><a name="37230" href="Logic.html#37230" class="Bound"
+      ><a name="41297" href="Logic.html#41297" class="Bound"
       >&#172;a</a
-      ><a name="37232"
+      ><a name="41299"
       > </a
-      ><a name="37233" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="41300" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="37234"
+      ><a name="41301"
       > </a
-      ><a name="37235" href="Logic.html#37235" class="Bound"
+      ><a name="41302" href="Logic.html#41302" class="Bound"
       >&#172;b</a
-      ><a name="37237" class="Symbol"
+      ><a name="41304" class="Symbol"
       >)</a
-      ><a name="37238"
+      ><a name="41305"
       > </a
-      ><a name="37239" class="Symbol"
+      ><a name="41306" class="Symbol"
       >=</a
-      ><a name="37240"
+      ><a name="41307"
       > </a
-      ><a name="37241" href="Logic.html#37230" class="Bound"
+      ><a name="41308" href="Logic.html#41297" class="Bound"
       >&#172;a</a
-      ><a name="37243"
+      ><a name="41310"
       > </a
-      ><a name="37244" href="Logic.html#37226" class="Bound"
+      ><a name="41311" href="Logic.html#41293" class="Bound"
       >a</a
-      ><a name="37245"
+      ><a name="41312"
       >
 </a
-      ><a name="37246" href="Logic.html#37170" class="Function"
+      ><a name="41313" href="Logic.html#41237" class="Function"
       >dem2</a
-      ><a name="37250"
+      ><a name="41317"
       > </a
-      ><a name="37251" class="Symbol"
+      ><a name="41318" class="Symbol"
       >(</a
-      ><a name="37252" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="41319" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="37256"
+      ><a name="41323"
       > </a
-      ><a name="37257" href="Logic.html#37257" class="Bound"
+      ><a name="41324" href="Logic.html#41324" class="Bound"
       >b</a
-      ><a name="37258" class="Symbol"
+      ><a name="41325" class="Symbol"
       >)</a
-      ><a name="37259"
+      ><a name="41326"
       > </a
-      ><a name="37260" class="Symbol"
+      ><a name="41327" class="Symbol"
       >(</a
-      ><a name="37261" href="Logic.html#37261" class="Bound"
+      ><a name="41328" href="Logic.html#41328" class="Bound"
       >&#172;a</a
-      ><a name="37263"
+      ><a name="41330"
       > </a
-      ><a name="37264" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="41331" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="37265"
+      ><a name="41332"
       > </a
-      ><a name="37266" href="Logic.html#37266" class="Bound"
+      ><a name="41333" href="Logic.html#41333" class="Bound"
       >&#172;b</a
-      ><a name="37268" class="Symbol"
+      ><a name="41335" class="Symbol"
       >)</a
-      ><a name="37269"
+      ><a name="41336"
       > </a
-      ><a name="37270" class="Symbol"
+      ><a name="41337" class="Symbol"
       >=</a
-      ><a name="37271"
+      ><a name="41338"
       > </a
-      ><a name="37272" href="Logic.html#37266" class="Bound"
+      ><a name="41339" href="Logic.html#41333" class="Bound"
       >&#172;b</a
-      ><a name="37274"
+      ><a name="41341"
       > </a
-      ><a name="37275" href="Logic.html#37257" class="Bound"
+      ><a name="41342" href="Logic.html#41324" class="Bound"
       >b</a
       >
 {% endraw %}</pre>
 
 For the other variant of De Morgan's law, one way is an isomorphism.
 <pre class="Agda">{% raw %}
-<a name="37371" href="Logic.html#37371" class="Function"
+<a name="41438" href="Logic.html#41438" class="Function"
       >dem-&#8771;</a
-      ><a name="37376"
+      ><a name="41443"
       > </a
-      ><a name="37377" class="Symbol"
+      ><a name="41444" class="Symbol"
       >:</a
-      ><a name="37378"
+      ><a name="41445"
       > </a
-      ><a name="37379" class="Symbol"
+      ><a name="41446" class="Symbol"
       >&#8704;</a
-      ><a name="37380"
+      ><a name="41447"
       > </a
-      ><a name="37381" class="Symbol"
+      ><a name="41448" class="Symbol"
       >{</a
-      ><a name="37382" href="Logic.html#37382" class="Bound"
+      ><a name="41449" href="Logic.html#41449" class="Bound"
       >A</a
-      ><a name="37383"
+      ><a name="41450"
       > </a
-      ><a name="37384" href="Logic.html#37384" class="Bound"
+      ><a name="41451" href="Logic.html#41451" class="Bound"
       >B</a
-      ><a name="37385"
+      ><a name="41452"
       > </a
-      ><a name="37386" class="Symbol"
+      ><a name="41453" class="Symbol"
       >:</a
-      ><a name="37387"
+      ><a name="41454"
       > </a
-      ><a name="37388" class="PrimitiveType"
+      ><a name="41455" class="PrimitiveType"
       >Set</a
-      ><a name="37391" class="Symbol"
+      ><a name="41458" class="Symbol"
       >}</a
-      ><a name="37392"
+      ><a name="41459"
       > </a
-      ><a name="37393" class="Symbol"
+      ><a name="41460" class="Symbol"
       >&#8594;</a
-      ><a name="37394"
+      ><a name="41461"
       > </a
-      ><a name="37395" class="Symbol"
+      ><a name="41462" class="Symbol"
       >(</a
-      ><a name="37396" href="Logic.html#29737" class="Function Operator"
+      ><a name="41463" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37397"
+      ><a name="41464"
       > </a
-      ><a name="37398" class="Symbol"
+      ><a name="41465" class="Symbol"
       >(</a
-      ><a name="37399" href="Logic.html#37382" class="Bound"
+      ><a name="41466" href="Logic.html#41449" class="Bound"
       >A</a
-      ><a name="37400"
+      ><a name="41467"
       > </a
-      ><a name="37401" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="41468" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="37402"
+      ><a name="41469"
       > </a
-      ><a name="37403" href="Logic.html#37384" class="Bound"
+      ><a name="41470" href="Logic.html#41451" class="Bound"
       >B</a
-      ><a name="37404" class="Symbol"
+      ><a name="41471" class="Symbol"
       >))</a
-      ><a name="37406"
+      ><a name="41473"
       > </a
-      ><a name="37407" href="Logic.html#1478" class="Record Operator"
+      ><a name="41474" href="Logic.html#1478" class="Record Operator"
       >&#8771;</a
-      ><a name="37408"
+      ><a name="41475"
       > </a
-      ><a name="37409" class="Symbol"
+      ><a name="41476" class="Symbol"
       >(</a
-      ><a name="37410" href="Logic.html#29737" class="Function Operator"
+      ><a name="41477" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37411"
+      ><a name="41478"
       > </a
-      ><a name="37412" href="Logic.html#37382" class="Bound"
+      ><a name="41479" href="Logic.html#41449" class="Bound"
       >A</a
-      ><a name="37413"
+      ><a name="41480"
       > </a
-      ><a name="37414" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="41481" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="37415"
+      ><a name="41482"
       > </a
-      ><a name="37416" href="Logic.html#29737" class="Function Operator"
+      ><a name="41483" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37417"
+      ><a name="41484"
       > </a
-      ><a name="37418" href="Logic.html#37384" class="Bound"
+      ><a name="41485" href="Logic.html#41451" class="Bound"
       >B</a
-      ><a name="37419" class="Symbol"
+      ><a name="41486" class="Symbol"
       >)</a
-      ><a name="37420"
+      ><a name="41487"
       >
 </a
-      ><a name="37421" href="Logic.html#37371" class="Function"
+      ><a name="41488" href="Logic.html#41438" class="Function"
       >dem-&#8771;</a
-      ><a name="37426"
+      ><a name="41493"
       > </a
-      ><a name="37427" class="Symbol"
+      ><a name="41494" class="Symbol"
       >=</a
-      ><a name="37428"
+      ><a name="41495"
       > </a
-      ><a name="37429" href="Logic.html#26271" class="Function"
+      ><a name="41496" href="Logic.html#26904" class="Function"
       >&#8594;-distributes-&#8846;</a
       >
 {% endraw %}</pre>
 
 The other holds in only one direction.
 <pre class="Agda">{% raw %}
-<a name="37509" href="Logic.html#37509" class="Function"
+<a name="41576" href="Logic.html#41576" class="Function"
       >dem-half</a
-      ><a name="37517"
+      ><a name="41584"
       > </a
-      ><a name="37518" class="Symbol"
+      ><a name="41585" class="Symbol"
       >:</a
-      ><a name="37519"
+      ><a name="41586"
       > </a
-      ><a name="37520" class="Symbol"
+      ><a name="41587" class="Symbol"
       >&#8704;</a
-      ><a name="37521"
+      ><a name="41588"
       > </a
-      ><a name="37522" class="Symbol"
+      ><a name="41589" class="Symbol"
       >{</a
-      ><a name="37523" href="Logic.html#37523" class="Bound"
+      ><a name="41590" href="Logic.html#41590" class="Bound"
       >A</a
-      ><a name="37524"
+      ><a name="41591"
       > </a
-      ><a name="37525" href="Logic.html#37525" class="Bound"
+      ><a name="41592" href="Logic.html#41592" class="Bound"
       >B</a
-      ><a name="37526"
+      ><a name="41593"
       > </a
-      ><a name="37527" class="Symbol"
+      ><a name="41594" class="Symbol"
       >:</a
-      ><a name="37528"
+      ><a name="41595"
       > </a
-      ><a name="37529" class="PrimitiveType"
+      ><a name="41596" class="PrimitiveType"
       >Set</a
-      ><a name="37532" class="Symbol"
+      ><a name="41599" class="Symbol"
       >}</a
-      ><a name="37533"
+      ><a name="41600"
       > </a
-      ><a name="37534" class="Symbol"
+      ><a name="41601" class="Symbol"
       >&#8594;</a
-      ><a name="37535"
+      ><a name="41602"
       > </a
-      ><a name="37536" href="Logic.html#29737" class="Function Operator"
+      ><a name="41603" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37537"
+      ><a name="41604"
       > </a
-      ><a name="37538" href="Logic.html#37523" class="Bound"
+      ><a name="41605" href="Logic.html#41590" class="Bound"
       >A</a
-      ><a name="37539"
+      ><a name="41606"
       > </a
-      ><a name="37540" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="41607" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="37541"
+      ><a name="41608"
       > </a
-      ><a name="37542" href="Logic.html#29737" class="Function Operator"
+      ><a name="41609" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37543"
+      ><a name="41610"
       > </a
-      ><a name="37544" href="Logic.html#37525" class="Bound"
+      ><a name="41611" href="Logic.html#41592" class="Bound"
       >B</a
-      ><a name="37545"
+      ><a name="41612"
       > </a
-      ><a name="37546" class="Symbol"
+      ><a name="41613" class="Symbol"
       >&#8594;</a
-      ><a name="37547"
+      ><a name="41614"
       > </a
-      ><a name="37548" href="Logic.html#29737" class="Function Operator"
+      ><a name="41615" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37549"
+      ><a name="41616"
       > </a
-      ><a name="37550" class="Symbol"
+      ><a name="41617" class="Symbol"
       >(</a
-      ><a name="37551" href="Logic.html#37523" class="Bound"
+      ><a name="41618" href="Logic.html#41590" class="Bound"
       >A</a
-      ><a name="37552"
+      ><a name="41619"
       > </a
-      ><a name="37553" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="41620" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="37554"
+      ><a name="41621"
       > </a
-      ><a name="37555" href="Logic.html#37525" class="Bound"
+      ><a name="41622" href="Logic.html#41592" class="Bound"
       >B</a
-      ><a name="37556" class="Symbol"
+      ><a name="41623" class="Symbol"
       >)</a
-      ><a name="37557"
+      ><a name="41624"
       >
 </a
-      ><a name="37558" href="Logic.html#37509" class="Function"
+      ><a name="41625" href="Logic.html#41576" class="Function"
       >dem-half</a
-      ><a name="37566"
+      ><a name="41633"
       > </a
-      ><a name="37567" class="Symbol"
+      ><a name="41634" class="Symbol"
       >(</a
-      ><a name="37568" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="41635" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="37572"
+      ><a name="41639"
       > </a
-      ><a name="37573" href="Logic.html#37573" class="Bound"
+      ><a name="41640" href="Logic.html#41640" class="Bound"
       >&#172;a</a
-      ><a name="37575" class="Symbol"
+      ><a name="41642" class="Symbol"
       >)</a
-      ><a name="37576"
+      ><a name="41643"
       > </a
-      ><a name="37577" class="Symbol"
+      ><a name="41644" class="Symbol"
       >(</a
-      ><a name="37578" href="Logic.html#37578" class="Bound"
+      ><a name="41645" href="Logic.html#41645" class="Bound"
       >a</a
-      ><a name="37579"
+      ><a name="41646"
       > </a
-      ><a name="37580" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="41647" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="37581"
+      ><a name="41648"
       > </a
-      ><a name="37582" href="Logic.html#37582" class="Bound"
+      ><a name="41649" href="Logic.html#41649" class="Bound"
       >b</a
-      ><a name="37583" class="Symbol"
+      ><a name="41650" class="Symbol"
       >)</a
-      ><a name="37584"
+      ><a name="41651"
       > </a
-      ><a name="37585" class="Symbol"
+      ><a name="41652" class="Symbol"
       >=</a
-      ><a name="37586"
+      ><a name="41653"
       > </a
-      ><a name="37587" href="Logic.html#37573" class="Bound"
+      ><a name="41654" href="Logic.html#41640" class="Bound"
       >&#172;a</a
-      ><a name="37589"
+      ><a name="41656"
       > </a
-      ><a name="37590" href="Logic.html#37578" class="Bound"
+      ><a name="41657" href="Logic.html#41645" class="Bound"
       >a</a
-      ><a name="37591"
+      ><a name="41658"
       >
 </a
-      ><a name="37592" href="Logic.html#37509" class="Function"
+      ><a name="41659" href="Logic.html#41576" class="Function"
       >dem-half</a
-      ><a name="37600"
+      ><a name="41667"
       > </a
-      ><a name="37601" class="Symbol"
+      ><a name="41668" class="Symbol"
       >(</a
-      ><a name="37602" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="41669" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="37606"
+      ><a name="41673"
       > </a
-      ><a name="37607" href="Logic.html#37607" class="Bound"
+      ><a name="41674" href="Logic.html#41674" class="Bound"
       >&#172;b</a
-      ><a name="37609" class="Symbol"
+      ><a name="41676" class="Symbol"
       >)</a
-      ><a name="37610"
+      ><a name="41677"
       > </a
-      ><a name="37611" class="Symbol"
+      ><a name="41678" class="Symbol"
       >(</a
-      ><a name="37612" href="Logic.html#37612" class="Bound"
+      ><a name="41679" href="Logic.html#41679" class="Bound"
       >a</a
-      ><a name="37613"
+      ><a name="41680"
       > </a
-      ><a name="37614" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="41681" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="37615"
+      ><a name="41682"
       > </a
-      ><a name="37616" href="Logic.html#37616" class="Bound"
+      ><a name="41683" href="Logic.html#41683" class="Bound"
       >b</a
-      ><a name="37617" class="Symbol"
+      ><a name="41684" class="Symbol"
       >)</a
-      ><a name="37618"
+      ><a name="41685"
       > </a
-      ><a name="37619" class="Symbol"
+      ><a name="41686" class="Symbol"
       >=</a
-      ><a name="37620"
+      ><a name="41687"
       > </a
-      ><a name="37621" href="Logic.html#37607" class="Bound"
+      ><a name="41688" href="Logic.html#41674" class="Bound"
       >&#172;b</a
-      ><a name="37623"
+      ><a name="41690"
       > </a
-      ><a name="37624" href="Logic.html#37616" class="Bound"
+      ><a name="41691" href="Logic.html#41683" class="Bound"
       >b</a
       >
 {% endraw %}</pre>
@@ -12738,317 +13163,317 @@ intuitionistically or equivalent to classical logic.
 For several of the laws equivalent to classical logic, the reverse
 direction holds in intuitionistic long.
 <pre class="Agda">{% raw %}
-<a name="37950" href="Logic.html#37950" class="Function"
+<a name="42017" href="Logic.html#42017" class="Function"
       >implication-inv</a
-      ><a name="37965"
+      ><a name="42032"
       > </a
-      ><a name="37966" class="Symbol"
+      ><a name="42033" class="Symbol"
       >:</a
-      ><a name="37967"
+      ><a name="42034"
       > </a
-      ><a name="37968" class="Symbol"
+      ><a name="42035" class="Symbol"
       >&#8704;</a
-      ><a name="37969"
+      ><a name="42036"
       > </a
-      ><a name="37970" class="Symbol"
+      ><a name="42037" class="Symbol"
       >{</a
-      ><a name="37971" href="Logic.html#37971" class="Bound"
+      ><a name="42038" href="Logic.html#42038" class="Bound"
       >A</a
-      ><a name="37972"
+      ><a name="42039"
       > </a
-      ><a name="37973" href="Logic.html#37973" class="Bound"
+      ><a name="42040" href="Logic.html#42040" class="Bound"
       >B</a
-      ><a name="37974"
+      ><a name="42041"
       > </a
-      ><a name="37975" class="Symbol"
+      ><a name="42042" class="Symbol"
       >:</a
-      ><a name="37976"
+      ><a name="42043"
       > </a
-      ><a name="37977" class="PrimitiveType"
+      ><a name="42044" class="PrimitiveType"
       >Set</a
-      ><a name="37980" class="Symbol"
+      ><a name="42047" class="Symbol"
       >}</a
-      ><a name="37981"
+      ><a name="42048"
       > </a
-      ><a name="37982" class="Symbol"
+      ><a name="42049" class="Symbol"
       >&#8594;</a
-      ><a name="37983"
+      ><a name="42050"
       > </a
-      ><a name="37984" class="Symbol"
+      ><a name="42051" class="Symbol"
       >(</a
-      ><a name="37985" href="Logic.html#29737" class="Function Operator"
+      ><a name="42052" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="37986"
+      ><a name="42053"
       > </a
-      ><a name="37987" href="Logic.html#37971" class="Bound"
+      ><a name="42054" href="Logic.html#42038" class="Bound"
       >A</a
-      ><a name="37988"
+      ><a name="42055"
       > </a
-      ><a name="37989" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="42056" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="37990"
+      ><a name="42057"
       > </a
-      ><a name="37991" href="Logic.html#37973" class="Bound"
+      ><a name="42058" href="Logic.html#42040" class="Bound"
       >B</a
-      ><a name="37992" class="Symbol"
+      ><a name="42059" class="Symbol"
       >)</a
-      ><a name="37993"
+      ><a name="42060"
       > </a
-      ><a name="37994" class="Symbol"
+      ><a name="42061" class="Symbol"
       >&#8594;</a
-      ><a name="37995"
+      ><a name="42062"
       > </a
-      ><a name="37996" href="Logic.html#37971" class="Bound"
+      ><a name="42063" href="Logic.html#42038" class="Bound"
       >A</a
-      ><a name="37997"
+      ><a name="42064"
       > </a
-      ><a name="37998" class="Symbol"
+      ><a name="42065" class="Symbol"
       >&#8594;</a
-      ><a name="37999"
+      ><a name="42066"
       > </a
-      ><a name="38000" href="Logic.html#37973" class="Bound"
+      ><a name="42067" href="Logic.html#42040" class="Bound"
       >B</a
-      ><a name="38001"
+      ><a name="42068"
       >
 </a
-      ><a name="38002" href="Logic.html#37950" class="Function"
+      ><a name="42069" href="Logic.html#42017" class="Function"
       >implication-inv</a
-      ><a name="38017"
+      ><a name="42084"
       > </a
-      ><a name="38018" class="Symbol"
+      ><a name="42085" class="Symbol"
       >(</a
-      ><a name="38019" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="42086" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="38023"
+      ><a name="42090"
       > </a
-      ><a name="38024" href="Logic.html#38024" class="Bound"
+      ><a name="42091" href="Logic.html#42091" class="Bound"
       >&#172;a</a
-      ><a name="38026" class="Symbol"
+      ><a name="42093" class="Symbol"
       >)</a
-      ><a name="38027"
+      ><a name="42094"
       > </a
-      ><a name="38028" href="Logic.html#38028" class="Bound"
+      ><a name="42095" href="Logic.html#42095" class="Bound"
       >a</a
-      ><a name="38029"
+      ><a name="42096"
       > </a
-      ><a name="38030" class="Symbol"
+      ><a name="42097" class="Symbol"
       >=</a
-      ><a name="38031"
+      ><a name="42098"
       > </a
-      ><a name="38032" href="Logic.html#19890" class="Function"
+      ><a name="42099" href="Logic.html#19890" class="Function"
       >&#8869;-elim</a
-      ><a name="38038"
+      ><a name="42105"
       > </a
-      ><a name="38039" class="Symbol"
+      ><a name="42106" class="Symbol"
       >(</a
-      ><a name="38040" href="Logic.html#38024" class="Bound"
+      ><a name="42107" href="Logic.html#42091" class="Bound"
       >&#172;a</a
-      ><a name="38042"
+      ><a name="42109"
       > </a
-      ><a name="38043" href="Logic.html#38028" class="Bound"
+      ><a name="42110" href="Logic.html#42095" class="Bound"
       >a</a
-      ><a name="38044" class="Symbol"
+      ><a name="42111" class="Symbol"
       >)</a
-      ><a name="38045"
+      ><a name="42112"
       >
 </a
-      ><a name="38046" href="Logic.html#37950" class="Function"
+      ><a name="42113" href="Logic.html#42017" class="Function"
       >implication-inv</a
-      ><a name="38061"
+      ><a name="42128"
       > </a
-      ><a name="38062" class="Symbol"
+      ><a name="42129" class="Symbol"
       >(</a
-      ><a name="38063" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="42130" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="38067"
+      ><a name="42134"
       > </a
-      ><a name="38068" href="Logic.html#38068" class="Bound"
+      ><a name="42135" href="Logic.html#42135" class="Bound"
       >b</a
-      ><a name="38069" class="Symbol"
+      ><a name="42136" class="Symbol"
       >)</a
-      ><a name="38070"
+      ><a name="42137"
       >  </a
-      ><a name="38072" href="Logic.html#38072" class="Bound"
+      ><a name="42139" href="Logic.html#42139" class="Bound"
       >a</a
-      ><a name="38073"
+      ><a name="42140"
       > </a
-      ><a name="38074" class="Symbol"
+      ><a name="42141" class="Symbol"
       >=</a
-      ><a name="38075"
+      ><a name="42142"
       > </a
-      ><a name="38076" href="Logic.html#38068" class="Bound"
+      ><a name="42143" href="Logic.html#42135" class="Bound"
       >b</a
-      ><a name="38077"
+      ><a name="42144"
       >
 
 </a
-      ><a name="38079" href="Logic.html#38079" class="Function"
+      ><a name="42146" href="Logic.html#42146" class="Function"
       >demorgan-inv</a
-      ><a name="38091"
+      ><a name="42158"
       > </a
-      ><a name="38092" class="Symbol"
+      ><a name="42159" class="Symbol"
       >:</a
-      ><a name="38093"
+      ><a name="42160"
       > </a
-      ><a name="38094" class="Symbol"
+      ><a name="42161" class="Symbol"
       >&#8704;</a
-      ><a name="38095"
+      ><a name="42162"
       > </a
-      ><a name="38096" class="Symbol"
+      ><a name="42163" class="Symbol"
       >{</a
-      ><a name="38097" href="Logic.html#38097" class="Bound"
+      ><a name="42164" href="Logic.html#42164" class="Bound"
       >A</a
-      ><a name="38098"
+      ><a name="42165"
       > </a
-      ><a name="38099" href="Logic.html#38099" class="Bound"
+      ><a name="42166" href="Logic.html#42166" class="Bound"
       >B</a
-      ><a name="38100"
+      ><a name="42167"
       > </a
-      ><a name="38101" class="Symbol"
+      ><a name="42168" class="Symbol"
       >:</a
-      ><a name="38102"
+      ><a name="42169"
       > </a
-      ><a name="38103" class="PrimitiveType"
+      ><a name="42170" class="PrimitiveType"
       >Set</a
-      ><a name="38106" class="Symbol"
+      ><a name="42173" class="Symbol"
       >}</a
-      ><a name="38107"
+      ><a name="42174"
       > </a
-      ><a name="38108" class="Symbol"
+      ><a name="42175" class="Symbol"
       >&#8594;</a
-      ><a name="38109"
+      ><a name="42176"
       > </a
-      ><a name="38110" href="Logic.html#38097" class="Bound"
+      ><a name="42177" href="Logic.html#42164" class="Bound"
       >A</a
-      ><a name="38111"
+      ><a name="42178"
       > </a
-      ><a name="38112" href="Logic.html#14656" class="Datatype Operator"
+      ><a name="42179" href="Logic.html#14656" class="Datatype Operator"
       >&#8846;</a
-      ><a name="38113"
+      ><a name="42180"
       > </a
-      ><a name="38114" href="Logic.html#38099" class="Bound"
+      ><a name="42181" href="Logic.html#42166" class="Bound"
       >B</a
-      ><a name="38115"
+      ><a name="42182"
       > </a
-      ><a name="38116" class="Symbol"
+      ><a name="42183" class="Symbol"
       >&#8594;</a
-      ><a name="38117"
+      ><a name="42184"
       > </a
-      ><a name="38118" href="Logic.html#29737" class="Function Operator"
+      ><a name="42185" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="38119"
+      ><a name="42186"
       > </a
-      ><a name="38120" class="Symbol"
+      ><a name="42187" class="Symbol"
       >(</a
-      ><a name="38121" href="Logic.html#29737" class="Function Operator"
+      ><a name="42188" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="38122"
+      ><a name="42189"
       > </a
-      ><a name="38123" href="Logic.html#38097" class="Bound"
+      ><a name="42190" href="Logic.html#42164" class="Bound"
       >A</a
-      ><a name="38124"
+      ><a name="42191"
       > </a
-      ><a name="38125" href="Logic.html#7202" class="Datatype Operator"
+      ><a name="42192" href="Logic.html#7202" class="Datatype Operator"
       >&#215;</a
-      ><a name="38126"
+      ><a name="42193"
       > </a
-      ><a name="38127" href="Logic.html#29737" class="Function Operator"
+      ><a name="42194" href="Logic.html#30370" class="Function Operator"
       >&#172;</a
-      ><a name="38128"
+      ><a name="42195"
       > </a
-      ><a name="38129" href="Logic.html#38099" class="Bound"
+      ><a name="42196" href="Logic.html#42166" class="Bound"
       >B</a
-      ><a name="38130" class="Symbol"
+      ><a name="42197" class="Symbol"
       >)</a
-      ><a name="38131"
+      ><a name="42198"
       >
 </a
-      ><a name="38132" href="Logic.html#38079" class="Function"
+      ><a name="42199" href="Logic.html#42146" class="Function"
       >demorgan-inv</a
-      ><a name="38144"
+      ><a name="42211"
       > </a
-      ><a name="38145" class="Symbol"
+      ><a name="42212" class="Symbol"
       >(</a
-      ><a name="38146" href="Logic.html#14686" class="InductiveConstructor"
+      ><a name="42213" href="Logic.html#14686" class="InductiveConstructor"
       >inj&#8321;</a
-      ><a name="38150"
+      ><a name="42217"
       > </a
-      ><a name="38151" href="Logic.html#38151" class="Bound"
+      ><a name="42218" href="Logic.html#42218" class="Bound"
       >a</a
-      ><a name="38152" class="Symbol"
+      ><a name="42219" class="Symbol"
       >)</a
-      ><a name="38153"
+      ><a name="42220"
       > </a
-      ><a name="38154" class="Symbol"
+      ><a name="42221" class="Symbol"
       >(</a
-      ><a name="38155" href="Logic.html#38155" class="Bound"
+      ><a name="42222" href="Logic.html#42222" class="Bound"
       >&#172;a</a
-      ><a name="38157"
+      ><a name="42224"
       > </a
-      ><a name="38158" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="42225" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="38159"
+      ><a name="42226"
       > </a
-      ><a name="38160" href="Logic.html#38160" class="Bound"
+      ><a name="42227" href="Logic.html#42227" class="Bound"
       >&#172;b</a
-      ><a name="38162" class="Symbol"
+      ><a name="42229" class="Symbol"
       >)</a
-      ><a name="38163"
+      ><a name="42230"
       > </a
-      ><a name="38164" class="Symbol"
+      ><a name="42231" class="Symbol"
       >=</a
-      ><a name="38165"
+      ><a name="42232"
       >  </a
-      ><a name="38167" href="Logic.html#38155" class="Bound"
+      ><a name="42234" href="Logic.html#42222" class="Bound"
       >&#172;a</a
-      ><a name="38169"
+      ><a name="42236"
       > </a
-      ><a name="38170" href="Logic.html#38151" class="Bound"
+      ><a name="42237" href="Logic.html#42218" class="Bound"
       >a</a
-      ><a name="38171"
+      ><a name="42238"
       >
 </a
-      ><a name="38172" href="Logic.html#38079" class="Function"
+      ><a name="42239" href="Logic.html#42146" class="Function"
       >demorgan-inv</a
-      ><a name="38184"
+      ><a name="42251"
       > </a
-      ><a name="38185" class="Symbol"
+      ><a name="42252" class="Symbol"
       >(</a
-      ><a name="38186" href="Logic.html#14722" class="InductiveConstructor"
+      ><a name="42253" href="Logic.html#14722" class="InductiveConstructor"
       >inj&#8322;</a
-      ><a name="38190"
+      ><a name="42257"
       > </a
-      ><a name="38191" href="Logic.html#38191" class="Bound"
+      ><a name="42258" href="Logic.html#42258" class="Bound"
       >b</a
-      ><a name="38192" class="Symbol"
+      ><a name="42259" class="Symbol"
       >)</a
-      ><a name="38193"
+      ><a name="42260"
       > </a
-      ><a name="38194" class="Symbol"
+      ><a name="42261" class="Symbol"
       >(</a
-      ><a name="38195" href="Logic.html#38195" class="Bound"
+      ><a name="42262" href="Logic.html#42262" class="Bound"
       >&#172;a</a
-      ><a name="38197"
+      ><a name="42264"
       > </a
-      ><a name="38198" href="Logic.html#7232" class="InductiveConstructor Operator"
+      ><a name="42265" href="Logic.html#7232" class="InductiveConstructor Operator"
       >,</a
-      ><a name="38199"
+      ><a name="42266"
       > </a
-      ><a name="38200" href="Logic.html#38200" class="Bound"
+      ><a name="42267" href="Logic.html#42267" class="Bound"
       >&#172;b</a
-      ><a name="38202" class="Symbol"
+      ><a name="42269" class="Symbol"
       >)</a
-      ><a name="38203"
+      ><a name="42270"
       > </a
-      ><a name="38204" class="Symbol"
+      ><a name="42271" class="Symbol"
       >=</a
-      ><a name="38205"
+      ><a name="42272"
       >  </a
-      ><a name="38207" href="Logic.html#38200" class="Bound"
+      ><a name="42274" href="Logic.html#42267" class="Bound"
       >&#172;b</a
-      ><a name="38209"
+      ><a name="42276"
       > </a
-      ><a name="38210" href="Logic.html#38191" class="Bound"
+      ><a name="42277" href="Logic.html#42258" class="Bound"
       >b</a
       >
 {% endraw %}</pre>

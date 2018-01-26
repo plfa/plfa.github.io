@@ -21,17 +21,17 @@ http://homepages.inf.ed.ac.uk/wadler/
   - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
 -->
 
-  - [Naturals: Natural numbers]({{ "/Naturals" | relative_url }})
-  - [Properties: Proof by induction]({{ "/Properties" | relative_url }})
-  - [PropertiesAns: Solutions to exercises]({{ "/PropertiesAns" | relative_url }})
-  - [Relations: Inductive Definition of Relations]({{ "/Relations" | relative_url }})
-  - [RelationsAns: Solutions to exercises]({{ "/RelationsAns" | relative_url }})
-  - [Logic: Logic]({{ "/Logic" | relative_url }})
-  - [LogicAns: Solutions to exercises]({{ "/LogicAns" | relative_url }})
+  - [Naturals: Natural numbers](Naturals)
+  - [Properties: Proof by induction](Properties)
+  - [PropertiesAns: Solutions to exercises](PropertiesAns)
+  - [Relations: Inductive Definition of Relations](Relations)
+  - [RelationsAns: Solutions to exercises](RelationsAns)
+  - [Logic: Logic](Logic)
+  - [LogicAns: Solutions to exercises](LogicAns)
 
 ## Part 2: Programming Language Foundations
 
-  - [Maps: Total and Partial Maps]({{ "/Maps" | relative_url }})
-  - [Stlc: The Simply Typed Lambda-Calculus]({{ "/Stlc" | relative_url }})
-  - [StlcProp: Properties of STLC]({{ "/StlcProp" | relative_url }})
+  - [Maps: Total and Partial Maps](Maps)
+  - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
+  - [StlcProp: Properties of STLC](StlcProp)
 

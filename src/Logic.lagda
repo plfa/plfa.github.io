@@ -695,15 +695,32 @@ isomorphism.
 ## Implication is function
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
-whenever `A` holds then `B` must also hold.  We formalise this idea in
-terms of the function type.  Evidence that `A → B` holds is of the form
+whenever `A` holds then `B` must also hold.  We formalise implication using
+the function type, which has appeared throughout this book.
 
-    λ (x : A) → N
+Evidence that `A → B` holds is of the form
 
-where `N` is a term of type `B` containing as a free variable `x` of type `A`.
-In other words, evidence that `A → B` holds is a function that converts
-evidence that `A` holds into evidence that `B` holds.
+    λ (x : A) → N[x]
 
+where `N[x]` is a term of type `B` containing as a free variable `x` of type `A`.
+Given a term `L` providing evidence that `A → B` holds, and a term `M`
+providing evidence that `A` holds, the term `L M` provides evidence that
+`B` holds.  In other words, evidence that `A → B` holds is a function that
+converts evidence that `A` holds into evidence that `B` holds.
+
+Put another way, if we know that `A → B` and `A` both hold,
+then we may conclude that `B` holds. In medieval times, this rule was
+known by the name *modus ponens*.
+
+If we introduce an implication and then immediately eliminate it, we can
+always simplify the resulting term.  Thus
+
+    (λ (x : A) → N[x]) M
+
+simplifies to `N[M]` of type `B`, where `N[M]` stands for the term `N[x]` with each
+free occurrence of `x` replaced by `M` of type `A`.
+
+<!--
 Given evidence that `A → B` holds and that `A` holds, we can conclude that
 `B` holds.
 \begin{code}
@@ -711,8 +728,7 @@ Given evidence that `A → B` holds and that `A` holds, we can conclude that
 →-elim f x = f x
 \end{code}
 In medieval times, this rule was known by the latin name *modus ponens*.
-
-This rule is known by its latin name, *modus ponens*.
+-->
 
 Implication binds less tightly than any other operator. Thus, `A ⊎ B →
 B ⊎ A` parses as `(A ⊎ B) → (B ⊎ A)`.
@@ -727,24 +743,24 @@ type `Bool` with two members and a type `Tri` with three members,
 as defined earlier. The the type `Bool → Tri` has nine (that is,
 three squared) members:
 
-    {true→aa;false→aa}  {true→aa;false→bb}  {true→aa;false→cc}
-    {true→bb;false→aa}  {true→bb;false→bb}  {true→bb;false→cc}
-    {true→cc;false→aa}  {true→cc;false→bb}  {true→cc;false→cc}
+    {true → aa; false → aa}  {true → aa; false → bb}  {true → aa; false → cc}
+    {true → bb; false → aa}  {true → bb; false → bb}  {true → bb; false → cc}
+    {true → cc; false → aa}  {true → cc; false → bb}  {true → cc; false → cc}
 
 For example, the following function enumerates all possible
 arguments of the type `Bool → Tri`:
 \begin{code}
 →-count : (Bool → Tri) → ℕ
 →-count f with f true | f false
-...            | aa    | aa      = 1
-...            | aa    | bb      = 2  
-...            | aa    | cc      = 3
-...            | bb    | aa      = 4
-...            | bb    | bb      = 5
-...            | bb    | cc      = 6
-...            | cc    | aa      = 7
-...            | cc    | bb      = 8
-...            | cc    | cc      = 9  
+...           | aa    | aa      = 1
+...           | aa    | bb      = 2  
+...           | aa    | cc      = 3
+...           | bb    | aa      = 4
+...           | bb    | bb      = 5
+...           | bb    | cc      = 6
+...           | cc    | aa      = 7
+...           | cc    | bb      = 8
+...           | cc    | cc      = 9  
 \end{code}
 
 Exponential on types also share a property with exponential on
@@ -1078,7 +1094,104 @@ of `double-negation` and the others defines a type, we need to use
 
 ## Universals
 
+Given a variable `x` of type `A` and a proposition `B[x]` which
+contains `x` as a free variable, the universally quantified
+proposition `∀ (x : A) → B[x]` holds if for every term `M` of type
+`A` the proposition `B[M]` holds.  Here `B[M]` stands for
+the proposition `B[x]` with each free occurrence of `x` replaced by
+`M`.  The variable `x` appears free in `B[x]` but bound in
+`∀ (x : A) → B[x]`.  We formalise universal quantification using the
+dependent function type, which has appeared throughout this book.
+
+Evidence that `∀ (x : A) → B[x]` holds is of the form
+
+    λ (x : A) → N[x]
+
+where `N[x]` is a term of type `B[x]`; here `N[x]` is a term and `B[x]`
+is a proposition (or type) both containing as a free variable `x` of
+type `A`.  Given a term `L` providing evidence that `∀ (x : A) → B[x]`
+holds and a term `M` of type `A`, the term `L M` provides evidence
+that `B[M]` holds.  In other words, evidence that `∀ (x : A) → B[x]`
+holds is a function that converts a term `M` of type `A` into evidence
+that `B[M]` holds.
+
+Put another way, if we know that `∀ (x : A) → B[x]` holds and that `M`
+is a term of type `A` then we may conclude that `B[M]` holds. In
+medieval times, this rule was known by the name *dictum de omni*.
+
+If we introduce a universal and the immediately eliminate it, we can
+always simplify the resulting term. Thus
+
+    (λ (x : A) → N[x]) M
+
+simplifies to `N[M]` of type `B[M]`, where `N[M]` stands for the term
+`N[x]` with each free occurrence of `x` replaced by `M` of type `A`.
+
+Unlike with conjunction, disjunction, and implication, there is no simple
+analogy between universals and arithmetic.
+
+
 ## Existentials
+
+Given a variable `x` of type `A` and a proposition `B[x]` which
+contains `x` as a free variable, the existentially quantified
+proposition `∃ (λ (x : A) → B[x])` holds if for some term `M` of type
+`A` the proposition `B[M]` holds.  Here `B[M]` stands for
+the proposition `B[x]` with each free occurrence of `x` replaced by
+`M`.  The variable `x` appears free in `B[x]` but bound in
+`∃ (λ (x : A) → B[x])`.
+
+It is common to adopt a notation such as `∃[ x : A ]→ B[x]`,
+which introduces `x` as a bound variable of type `A` that appears
+free in `B[x]` and bound in `∃[ x : A ]→ B[x]`.  We won't do
+that here, but instead use the lambda notation built-in to Agda
+to introduce `x` as a bound variable.
+
+We formalise existential quantification by declaring a suitable
+inductive type.
+\begin{code}
+data ∃ : ∀ {A : Set} → (A → Set) → Set where
+  _,_ : ∀ {A : Set} {B : A → Set} → (x : A) → B x → ∃ B
+\end{code}
+Evidence that `∃ (λ (x : A) → B[x])` holds is of the form
+`(M , N)` where `M` is a term of type `A`, and `N` is evidence
+that `B[M]` holds.
+
+Given evidence that `∃ (λ (x : A) → B[x])` holds, and
+given evidence that `∀ (x : A) → B[x] → C` holds, where `C` does
+not contain `x` as a free variable, we may conclude that `C` holds.
+\begin{code}
+∃-elim : ∀ {A : Set} {B : A → Set} {C : Set} → ∃ B → (∀ (x : A) → B x → C) → C
+∃-elim (M , N) P = P M N
+\end{code}
+In other words, if we know for every `x` of type `A` that `B[x]`
+implies `C`, and we know for some `x` of type `A` that `B[x]` holds,
+then we may conclude that `C` holds.  This is because we may
+instantiate that proof that `∀ (x : A) → B[x] → C` to any `x`, and we
+may choose the particular `x` provided by the evidence that `∃ (λ (x :
+A) → B[x])`.
+
+[It would be better to have even and odd as an exercise.  Is there
+a simpler example that I could start with?]
+
+As an example, recall the definitions of `even` and `odd` from
+Chapter [Relations](Relations).  
+\begin{code}
+mutual
+  data even : ℕ → Set where
+    ev-zero : even zero
+    ev-suc : ∀ {n : ℕ} → odd n → even (suc n)
+  data odd : ℕ → Set where
+    od-suc : ∀ {n : ℕ} → even n → odd (suc n)
+\end{code}
+We show that a number `n` is even if and only if there exists
+another number `m` such that `n ≡ 2 * m`, and is odd if and only
+if there is another number `m` such that `n ≡ 1 + 2 * m`.
+
+Here is the proof in the forward direction.
+\begin{code}
+
+\end{code}
 
 ## Decidability
 
