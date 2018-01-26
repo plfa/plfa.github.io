@@ -1,7 +1,7 @@
 ---
-title     : "Relations Exercises"
+title     : "Relations Answers"
 layout    : page
-permalink : /RelationsEx
+permalink : /RelationsAns
 ---
 
 ## Imports

@@ -15,7 +15,7 @@ function, dependent product, Martin Löf equivalence).
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong-app)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ)
+open import Data.Nat using (ℕ; zero; suc)
 open import Agda.Primitive using (Level; lzero; lsuc)
 \end{code}
 
@@ -963,13 +963,13 @@ Let `¬¬¬a` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 Let `a` be evidence of `A`. Then by the previous result, we
 can conclude `¬ ¬ A` (evidenced by `¬¬-intro a`).  Then from
 `¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction (evidenced by
-`¬¬¬a (¬¬-intra a)`.  Hence we have shown `¬ A`.
+`¬¬¬a (¬¬-intro a)`.  Hence we have shown `¬ A`.
 
 Another law of logic is the *contrapositive*,
 stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
 \begin{code}
-contraposition : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
-contraposition a→b ¬b a = ¬b (a→b a)
+contrapositive : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
+contrapositive a→b ¬b a = ¬b (a→b a)
 \end{code}
 Let `a→b` be evidence of `A → B` and let `¬b` be evidence of `¬ B`.  We
 will show that assuming `A` leads to a contradiction, and hence
@@ -996,6 +996,12 @@ or `ℕ → bot`.
 
 [TODO?: Give the proof that one cannot falsify law of the excluded middle,
 including a variant of the story from Call-by-Value is Dual to Call-by-Name.]
+
+The law of the excluded middle is irrefutable.
+\begin{code}
+excluded-middle-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
+excluded-middle-irrefutable k = k (inj₂ (λ a → k (inj₁ a)))
+\end{code}
 
 
 ## Intuitive and Classical logic
@@ -1042,19 +1048,33 @@ a disjoint sum.
 (The passage above is taken from "Propositions as Types", Philip Wadler,
 *Communications of the ACM*, December 2015.)
 
-**Exercise** Prove the following five formulas are equivalent.
+**Exercise** Prove the following six formulas are equivalent.
 
 \begin{code}
-lone : Level
+lone ltwo : Level
 lone = lsuc lzero
+ltwo = lsuc lone
 
-double-negation excluded-middle peirce implication-as-disjunction de-morgan : Set lone
-double-negation = ∀ (A : Set) → ¬ ¬ A → A
-excluded-middle = ∀ (A : Set) → A ⊎ ¬ A
-peirce = ∀ (A B : Set) → (((A → B) → A) → A)
-implication-as-disjunction = ∀ (A B : Set) → (A → B) → ¬ A ⊎ B
-de-morgan = ∀ (A B : Set) → ¬ (¬ A × ¬ B) → A ⊎ B
+¬¬-elim excluded-middle peirce implication de-morgan : Set lone
+¬¬-elim = ∀ {A : Set} → ¬ ¬ A → A
+excluded-middle = ∀ {A : Set} → A ⊎ ¬ A
+peirce = ∀ {A B : Set} → (((A → B) → A) → A)
+implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
+de-morgan = ∀ {A B : Set} → ¬ (¬ A × ¬ B) → A ⊎ B
+de-morgan′ = ∀ {A B : Set} → ¬ (¬ A ⊎ ¬ B) → A × B
+
 \end{code}
+
+It turns out that an assertion such as `Set : Set` is paradoxical.
+Therefore, there are an infinite number of different levels of sets,
+where `Set lzero : Set lone` and `Set lone : Set ltwo`, and so on,
+where `lone` is `lsuc lzero`, and `ltwo` is `lsuc lone`, analogous to
+the way we represent the natural nuambers. So far, we have only used
+the type `Set`, Here is the demonstration that the reverse direction of one of the five
+formulas equivalent to which is equivalent to `Set lzero`.  Here, since each
+of `double-negation` and the others defines a type, we need to use
+`Set lone` as the "type of types".
+
 
 ## Universals
 
@@ -1076,4 +1096,52 @@ data Dec : Set → Set where
 This chapter introduces the following unicode.
 
     ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
+
+
+[NOTES]
+
+Two halves of de Morgan's laws hold intuitionistically.  The other two
+halves are each equivalent to the law of double negation.
+
+\begin{code}
+dem1 : ∀ {A B : Set} → A × B → ¬ (¬ A ⊎ ¬ B)
+dem1 (a , b) (inj₁ ¬a) = ¬a a
+dem1 (a , b) (inj₂ ¬b) = ¬b b
+
+dem2 : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
+dem2 (inj₁ a) (¬a , ¬b) = ¬a a
+dem2 (inj₂ b) (¬a , ¬b) = ¬b b
+\end{code}
+
+For the other variant of De Morgan's law, one way is an isomorphism.
+\begin{code}
+dem-≃ : ∀ {A B : Set} → (¬ (A ⊎ B)) ≃ (¬ A × ¬ B)
+dem-≃ = →-distributes-⊎
+\end{code}
+
+The other holds in only one direction.
+\begin{code}
+dem-half : ∀ {A B : Set} → ¬ A ⊎ ¬ B → ¬ (A × B)
+dem-half (inj₁ ¬a) (a , b) = ¬a a
+dem-half (inj₂ ¬b) (a , b) = ¬b b
+\end{code}
+
+The other variant does not appear to be equivalent to classical logic.
+So that undermines my idea that basic propositions are either true
+intuitionistically or equivalent to classical logic.
+
+For several of the laws equivalent to classical logic, the reverse
+direction holds in intuitionistic long.
+\begin{code}
+implication-inv : ∀ {A B : Set} → (¬ A ⊎ B) → A → B
+implication-inv (inj₁ ¬a) a = ⊥-elim (¬a a)
+implication-inv (inj₂ b)  a = b
+
+demorgan-inv : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
+demorgan-inv (inj₁ a) (¬a , ¬b) =  ¬a a
+demorgan-inv (inj₂ b) (¬a , ¬b) =  ¬b b
+\end{code}
+
+
+
     

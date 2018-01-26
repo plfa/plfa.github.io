@@ -1,7 +1,7 @@
 ---
-title     : "Properties Exercises"
+title     : "Properties Answers"
 layout    : page
-permalink : /PropertiesEx
+permalink : /PropertiesAns
 ---
 
 \begin{code}
