@@ -8,7 +8,7 @@ out/:
 	mkdir out
 
 out/%.md: src/%.lagda out/
-	agda2html --verbose --link-to-agda-stdlib --link-local -i $< -o $@
+	agda2html --verbose --link-to-agda-stdlib --jekyll-root=out/ -i $< -o $@
 
 .phony: serve
 
@@ -34,3 +34,12 @@ ifneq ($(strip $(markdown)),)
 	rm $(markdown)
 endif
 	rmdir out/
+
+setup:
+	cd /tmp;\
+		git clone https://github.com/wenkokke/agda2html.git;\
+		cd agda2html;\
+		stack install
+	rm -rf /tmp/agda2html
+
+.phony: setup
