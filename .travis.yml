@@ -1,0 +1,29 @@
+# Use new container infrastructure to enable caching
+sudo: false
+
+language: ruby
+
+# Caching so the next build will be fast too.
+cache:
+  directories:
+  - $HOME/.stack
+
+# Ensure necessary system libraries are present
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+      - libicu-dev
+
+before_install:
+# Download and unpack the stack executable
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+# Download and install agda
+- travis_retry curl -L https://github.com/agda/agda/archive/master.zip -o agda-master.zip; unzip agda-master.zip; cd agda-master; stack install --stack-yaml=stack-8.2.2.yaml
+# Download and install agda2html
+- travis_retry curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o agda2html-master.zip; unzip agda2html-master.zip; cd agda2html-master; stack install
+
+script:
+- make
