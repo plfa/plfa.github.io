@@ -7,7 +7,7 @@ permalink : /RelationsAns
 ## Imports
 
 \begin{code}
-open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Relations using (_≤_; _<_; Trichotomy; even; odd)
 open import Properties using (+-comm; +-identity; +-suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)

@@ -5,7 +5,7 @@ permalink : /PropertiesAns
 ---
 
 \begin{code}
-open import Naturals using (ℕ; suc; zero; _+_; _*_; _∸_)
+open import Data.Nat using (ℕ; suc; zero; _+_; _*_; _∸_)
 open import Properties using (+-assoc; +-comm)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 
