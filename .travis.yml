@@ -5,8 +5,12 @@ language: ruby
 
 # Caching so the next build will be fast too.
 cache:
+  bundler: true
   directories:
   - $HOME/.stack
+  - $HOME/.agda
+  - $HOME/.local
+  - $HOME/agda-stdlib-master
 
 # Ensure necessary system libraries are present
 addons:
@@ -20,24 +24,8 @@ before_install:
 - mkdir -p ~/.local/bin
 - export PATH=$HOME/.local/bin:$PATH
 - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-# Download and install agda
-- travis_retry curl -L https://github.com/agda/agda/archive/master.zip -o agda-master.zip
-- unzip -qq agda-master.zip
-- cd agda-master
-- stack install --stack-yaml=stack-8.2.2.yaml
-- cd ..
-# Download and install agda-stdlib
-- travis_retry curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o agda-stdlib-master.zip
-- unzip -qq agda-stdlib-master.zip
-- mkdir ~/.agda
-- echo "standard-library" >> ~/.agda/defaults
-- echo "$TRAVIS_BUILD_DIR/agda-stdlib-master/standard-library.agda-lib" >> ~/.agda/libraries
-# Download and install agda2html
-- travis_retry curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o agda2html-master.zip
-- unzip -qq agda2html-master.zip
-- cd agda2html-master
-- stack install
-- cd ..
+# Download and install agda, agda-stdlib, and agda2html
+- make setup
 
 script:
 - make
