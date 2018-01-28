@@ -4,8 +4,6 @@ layout    : page
 permalink : /Logic
 ---
 
-Hello! Did this change propogate?
-
 This chapter introduces the basic concepts of logic, by observing
 that each concept of logic is represented by a corresponding
 data type.
