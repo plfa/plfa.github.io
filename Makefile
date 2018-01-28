@@ -43,20 +43,20 @@ setup:\
 .phony: setup
 
 $(HOME)/.local/bin/agda:
-	curl -L https://github.com/agda/agda/archive/master.zip -o agda-master.zip
-	unzip -qq agda-master.zip
-	cd agda-master;\
+	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
+	unzip -qq $(HOME)/agda-master.zip
+	cd $(HOME)/agda-master;\
 		stack install --stack-yaml=stack-8.2.2.yaml
 
 $(HOME)/.local/bin/agda2html:
-	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o agda2html-master.zip
-	unzip -qq agda2html-master.zip
-	cd agda2html-master;\
+	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
+	unzip -qq $(HOME)/agda2html-master.zip
+	cd $(HOME)/agda2html-master;\
 		stack install
 
 $(HOME)/agda-stdlib-master/:
-	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o agda-stdlib-master.zip
-	unzip -qq agda-stdlib-master.zip -d $(HOME)
+	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
+	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
 	mkdir $(HOME)/.agda
 	$(file >$(HOME)/.agda/defaults,standard-library)
 	$(file >$(HOME)/.agda/libraries,$(HOME)/agda-stdlib-master/standard-library.agda-lib)

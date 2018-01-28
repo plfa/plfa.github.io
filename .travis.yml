@@ -30,6 +30,11 @@ before_install:
 script:
 - make
 
+before_deploy:
+- rm -rf .bundle
+- rm -rf vendor
+- make clean
+
 deploy:
   provider: pages
   skip-cleanup: true
