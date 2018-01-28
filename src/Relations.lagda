@@ -10,8 +10,8 @@ the next step is to define relations, such as *less than or equal*.
 ## Imports
 
 \begin{code}
-open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Properties using (+-comm)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
+open import Data.Nat.Properties.Simple using (+-comm)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 

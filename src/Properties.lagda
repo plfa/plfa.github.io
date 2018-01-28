@@ -13,15 +13,13 @@ by their name, properties of *inductive datatypes* are proved by
 ## Imports
 
 Each chapter will begin with a list of the imports we require from the
-Agda standard library.
-
-<!-- We will, of course, require the naturals; everything in the
+Agda standard library.  We will, of course, require the naturals; everything in the
 previous chapter is also found in the library module `Data.Nat`, so we
 import the required definitions from there.  We also require
-propositional equality. -->
+propositional equality.
 
 \begin{code}
-open import Naturals using (ℕ; zero; suc; _+_; _*_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
 \end{code}
 

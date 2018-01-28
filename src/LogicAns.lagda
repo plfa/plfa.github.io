@@ -9,6 +9,9 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Logic
 \end{code}
 
+
+*Equivalences for classical logic*
+
 \begin{code}
 ex1 : ¬¬-elim → excluded-middle
 ex1 h = h excluded-middle-irrefutable
@@ -46,3 +49,10 @@ help′ em ¬a×b with em | em
     ; invʳ =  λ { tt → refl }
     }
 \end{code}  
+
+*Existentials and Universals*
+
+\begin{code}
+∃¬¬∀ : ∀ {A : Set} {B : A → Set} → ∃ (λ (x : A) → ¬ B x) → ¬ (∀ (x : A) → B x)
+∃¬¬∀ (x , ¬bx) ∀bx = ¬bx (∀bx x)
+\end{code}
