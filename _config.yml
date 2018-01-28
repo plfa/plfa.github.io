@@ -22,7 +22,7 @@ disqus:
 
 # technical details below --- do not modify (ง'-')ง 
 baseurl: "/sf"
-url: "https://wenkokke.github.io"  
+url: "https://wenkokke.github.io/sf"  
 markdown: kramdown
 theme: minima
 plugins:
