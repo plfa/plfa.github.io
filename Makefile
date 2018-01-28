@@ -57,6 +57,6 @@ $(HOME)/.local/bin/agda2html:
 $(HOME)/agda-stdlib-master/:
 	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o agda-stdlib-master.zip
 	unzip -qq agda-stdlib-master.zip -d $HOME
-	mkdir ~/.agda
-	echo "standard-library" >> $HOME/.agda/defaults
-	echo "$HOME/agda-stdlib-master/standard-library.agda-lib" >> $HOME/.agda/libraries
+	mkdir $HOME/.agda
+	$(file >$(HOME)/.agda/defaults,standard-library)
+	$(file >$(HOME)/.agda/libraries,$(HOME)/agda-stdlib-master/standard-library.agda-lib)
