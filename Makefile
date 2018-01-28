@@ -44,7 +44,7 @@ setup:\
 
 $(HOME)/agda/:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
-	unzip -qq $(HOME)/agda-master.zip
+	unzip -qq $(HOME)/agda-master.zip -d $(HOME)
 	cd $(HOME)/agda-master;\
 		stack install --stack-yaml=stack-8.2.2.yaml
 
@@ -57,6 +57,6 @@ $(HOME)/agda-stdlib-master/:
 
 $(HOME)/agda2html/:
 	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
-	unzip -qq $(HOME)/agda2html-master.zip
+	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
 	cd $(HOME)/agda2html-master;\
 		stack install
