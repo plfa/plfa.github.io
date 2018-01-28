@@ -36,23 +36,17 @@ endif
 	rmdir out/
 
 setup:\
-	$(HOME)/.local/bin/agda\
-	$(HOME)/.local/bin/agda2html\
-	$(HOME)/agda-stdlib-master/
+	$(HOME)/agda/\
+	$(HOME)/agda-stdlib-master/\
+	$(HOME)/agda2html/
 
 .phony: setup
 
-$(HOME)/.local/bin/agda:
+$(HOME)/agda/:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
 	unzip -qq $(HOME)/agda-master.zip
 	cd $(HOME)/agda-master;\
 		stack install --stack-yaml=stack-8.2.2.yaml
-
-$(HOME)/.local/bin/agda2html:
-	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
-	unzip -qq $(HOME)/agda2html-master.zip
-	cd $(HOME)/agda2html-master;\
-		stack install
 
 $(HOME)/agda-stdlib-master/:
 	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
@@ -60,3 +54,9 @@ $(HOME)/agda-stdlib-master/:
 	mkdir $(HOME)/.agda
 	echo "standard-library" > $(HOME)/.agda/defaults
 	echo "$(HOME)/agda-stdlib-master/standard-library.agda-lib" > $(HOME)/.agda/libraries
+
+$(HOME)/agda2html/:
+	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
+	unzip -qq $(HOME)/agda2html-master.zip
+	cd $(HOME)/agda2html-master;\
+		stack install
