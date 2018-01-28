@@ -10,9 +10,9 @@ cache:
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
-  - $HOME/agda
+  - $HOME/agda-master
   - $HOME/agda-stdlib-master
-  - $HOME/agda2html
+  - $HOME/agda2html-master
 
 # Ensure necessary system libraries are present
 addons:

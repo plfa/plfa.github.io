@@ -36,13 +36,13 @@ endif
 	rmdir out/
 
 setup:\
-	$(HOME)/agda/\
+	$(HOME)/agda-master/\
 	$(HOME)/agda-stdlib-master/\
-	$(HOME)/agda2html/
+	$(HOME)/agda2html-master/
 
 .phony: setup
 
-$(HOME)/agda/:
+$(HOME)/agda-master/:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
 	unzip -qq $(HOME)/agda-master.zip -d $(HOME)
 	cd $(HOME)/agda-master;\
@@ -55,7 +55,7 @@ $(HOME)/agda-stdlib-master/:
 	echo "standard-library" > $(HOME)/.agda/defaults
 	echo "$(HOME)/agda-stdlib-master/standard-library.agda-lib" > $(HOME)/.agda/libraries
 
-$(HOME)/agda2html/:
+$(HOME)/agda2html-master/:
 	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
 	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
 	cd $(HOME)/agda2html-master;\
