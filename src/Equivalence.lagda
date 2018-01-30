@@ -109,9 +109,10 @@ Once more, a useful exercise is to carry out an interactive development.
 
 ## Tabular reasoning
 
-A few declarations allow us to support the form of tabular reasoning that
-we have used throughout the book.  We package the declarations into a module,
-to match the format used in Agda's standard library.
+A few declarations allow us to support the form of tabular reasoning
+that we have used throughout the book.  We package the declarations
+into a module, named `≡-Reasoning`, to match the format used in Agda's
+standard library.
 \begin{code}
 module ≡-Reasoning {ℓ} {A : Set ℓ} where
 
@@ -133,15 +134,59 @@ module ≡-Reasoning {ℓ} {A : Set ℓ} where
 
 open ≡-Reasoning
 \end{code}
+Opening the module makes all of the definitions
+available in the current environment.
 
-For example, here is a repeat of the definitions of naturals and
-of addition, and of the proof that `zero` is a right identity
-of addition.  (We need to repeat all the definitions, rather than
-importing some of them, because all of the relevant modules import
-the definition of equivalence from the Agda standard library, and
-hence importing any of them would report an attempt to redefine
-equivalence.)
+As a simple example, let's look at the proof of transitivity
+rewritten in tabular form.
+\begin{code}
+trans′ : ∀ {ℓ} {A : Set ℓ} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
+trans′ {_} {_} {x} {y} {z} x≡y y≡z =
+  begin
+    x
+  ≡⟨ x≡y ⟩
+    y
+  ≡⟨ y≡z ⟩
+    z
+  ∎
+\end{code}
+Tabular proofs begin with `begin`, end with `∎`
+(which is sometimes pronounced "qed" or "tombstone")
+and consist of a string of equations.  Due to the
+fixity declarations, the body parses as follows.
 
+    begin (x ≡⟨ x≡y ⟩ (y ≡⟨ y≡z ⟩ (z ∎)))
+
+The application of `begin` is purely cosmetic, as it simply returns
+its argument.  That argument consists of `_≡⟨_⟩_` applied to `x`,
+`x≡y`, and `y ≡⟨ y≡z ⟩ (z ∎)`.  The first argument is a term, `x`,
+while the second and third arguments are both proofs of equations, in
+particular proofs of `x ≡ y` and `y ≡ z` respectively, which are
+combined by `trans` in the body of `_≡⟨_⟩_` to yield a proof of `x ≡
+z`.  The proof of `y ≡ z` consists of `_≡⟨_⟩_` applied to `y`, `y≡z`,
+and `z ∎`.  The first argument is a term, `y`, while the second and
+third arguments are both proofs of equations, in particular proofs of
+`y ≡ z` and `z ≡ z` respectively, which are combined by `trans` in the
+body of `_≡⟨_⟩_` to yield a proof of `y ≡ z`.  Finally, the proof of
+`z ≡ z` consists of `_∎` applied to the term `z`, which yields `refl`.
+After simplification, the body is equivalent to the following term.
+
+    trans x≡y (trans y≡z refl)
+
+We could replace all uses of tabular reasoning by a chain of
+applications of `trans`, but the result would be far less perspicuous.
+Also note that the syntactic trick behind `∎` means that the chain
+always ends in the form `trans e refl` even though `e` alone would do,
+where `e` is a proof of an equivalence.
+
+
+
+
+As an example, we consider the proof that zero is a right identity for
+addition.  We first repeat the definitions of naturals and addition.
+We cannot import them, because the relevant modules import equivalence
+from the Agda standard library, and hence importing would report an
+attempt to redefine equivalence.
 \begin{code}
 data ℕ : Set where
   zero : ℕ
@@ -150,7 +195,10 @@ data ℕ : Set where
 _+_ : ℕ → ℕ → ℕ
 zero    + n  =  n
 (suc m) + n  =  suc (m + n)
+\end{code}
 
+We now repeat the proof that zero is a right identity.
+\begin{code}
 +-identity : ∀ (m : ℕ) → m + zero ≡ m
 +-identity zero =
   begin
@@ -167,6 +215,53 @@ zero    + n  =  n
     suc m
   ∎
 \end{code}
+Tabular proofs begin with `begin`, end with `∎`
+(which is sometimes pronounced "qed" or "tombstone")
+and consist of a string of equations.  Let's begin by
+considering the second proof.  Due to the relevant
+infix declarations, it parses as follows.
+
+  begin (... ≡⟨⟩ (... ≡⟨ ... ⟩ (... ∎)))
+
+The first argument to `_≡⟨⟩_` is a term (in this
+case, `suc m + zero`, and the second is the proof of
+an equation (in this case, of `suc (m + zero) ≡ suc m`).
+As far as Agda is concerned, `suc m + zero` and
+`suc (m + zero)` are identical, because the first
+simplifies to the second, so no justification is required.
+Similarly, the first argument to `_≡⟨_⟩_` is a term
+(in this case, `suc (m + zero)`) and the third argument
+is the proof of an equation (in this case, of `suc m ≡ suc m`),
+and the justification is also a proof of an equation
+(in this case, 
+
+
+The form
+`_≡⟨⟩_` is used for an equation that requires no justification,
+because both sides simplify to the same term.
+The form `_≡⟨_⟩_` gives
+
+
+
+
+
+Let's
+
+
+Each case involves equational reasoning set out in
+tabular form, beginning with `begin`, ending with `∎`
+(sometimes pronounced "qed" or "tombstone"), and with
+a sequence of equations and justifications.  The form
+`≡⟨⟩` is used for an equation that needs no justification,
+and the 
+
+pWhen the argument is zero,
+
+we must
+show `zero + zero ≡ zero`, which follows by simple
+computation
+
+
 
 ## Rewriting by an equation
 
@@ -182,7 +277,7 @@ data even : ℕ → Set where
 
 even-id : ∀ (m : ℕ) → even (m + zero) → even m
 even-id m ev with m + zero | +-identity m
-... | .m | refl = ev
+...             | .m       | refl          = ev
 \end{code}
 
 Including the lines

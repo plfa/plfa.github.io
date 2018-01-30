@@ -4,6 +4,9 @@ open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (∃; _,_)
 
++-assoc : ∀ (m n p : ℕ) → m + (n + p) ≡ (m + n) + p
++-assoc m n p = {!!}
+
 +-identity : ∀ (m : ℕ) → m + zero ≡ m
 +-identity zero =
   begin
@@ -59,6 +62,31 @@ open import Data.Product using (∃; _,_)
   ≡⟨⟩
     suc n + m
   ∎
+
+*-distrib-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+*-distrib-+ zero n p =
+  begin
+    (zero + n) * p
+  ≡⟨⟩
+    n * p
+  ≡⟨⟩
+    zero * p + n * p
+  ∎
+*-distrib-+ (suc m) n p =
+  begin
+    (suc m + n) * p
+  ≡⟨⟩
+    p + (m + n) * p
+  ≡⟨ cong (_+_ p) (*-distrib-+ m n p) ⟩
+    p + (m * p + n * p)
+  ≡⟨ +-assoc p (m * p) (n * p) ⟩
+    (p + m * p) + n * p
+  ≡⟨⟩
+    suc m * p + n * p
+  ∎
+  
+
+
 
 data even : ℕ → Set where
   ev0 : even zero
