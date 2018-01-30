@@ -28,6 +28,7 @@ http://homepages.inf.ed.ac.uk/wadler/
   - [RelationsAns: Solutions to exercises](RelationsAns)
   - [Logic: Logic](Logic)
   - [LogicAns: Solutions to exercises](LogicAns)
+  - [Equivalence: Equivalence and equational reasoning](Equivalence)
 
 ## Part 2: Programming Language Foundations
 

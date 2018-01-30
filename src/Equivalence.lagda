@@ -1,5 +1,5 @@
 ---
-title     : "Equivalence: Martin Löf equivalence"
+title     : "Equivalence: Equivalence and equational reasoning"
 layout    : page
 permalink : /Equivalence
 ---
@@ -9,6 +9,15 @@ and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
 are interchangeable.  So far we have taken equivalence as a primitive,
 but in fact it can be defined using the machinery of inductive
 datatypes.
+
+
+## Imports
+
+This chapter has no imports.  Pretty much every module in the Agda
+standard library, and every chapter in this book, imports the standard
+definition of equivalence. Since we define equivalence here, any
+import would create a conflict.
+
 
 ## Equivalence
 
@@ -31,6 +40,7 @@ We set the precedence of `_≡_` at level 4, the same as `_≤_`,
 which means it binds less tightly than any arithmetic operator.
 It associates neither to the left nor right; writing `x ≡ y ≡ z`
 is illegal.
+
 
 ## Equivalence is an equivalence relation
 
@@ -101,11 +111,9 @@ then they remain so after the same function is applied to both.
 \begin{code}
 cong : ∀ {ℓ} {A B : Set ℓ} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 cong f refl = refl
-
-autocong : ∀ {ℓ} {A B : Set ℓ} {f : A → B} {x y : A} → x ≡ y → f x ≡ f y
-autocong refl = refl
 \end{code}
 Once more, a useful exercise is to carry out an interactive development.
+
 
 ## Tabular reasoning
 
@@ -180,13 +188,12 @@ always ends in the form `trans e refl` even though `e` alone would do,
 where `e` is a proof of an equivalence.
 
 
+## Tabular reasoning, another example
 
-
-As an example, we consider the proof that zero is a right identity for
+As a second example of tabular reasoning, we consider the proof that zero is a right identity for
 addition.  We first repeat the definitions of naturals and addition.
-We cannot import them, because the relevant modules import equivalence
-from the Agda standard library, and hence importing would report an
-attempt to redefine equivalence.
+We cannot import them because (as noted at the beginning of this chapter)
+it would cause a conflict.
 \begin{code}
 data ℕ : Set where
   zero : ℕ
@@ -215,70 +222,79 @@ We now repeat the proof that zero is a right identity.
     suc m
   ∎
 \end{code}
-Tabular proofs begin with `begin`, end with `∎`
-(which is sometimes pronounced "qed" or "tombstone")
-and consist of a string of equations.  Let's begin by
-considering the second proof.  Due to the relevant
-infix declarations, it parses as follows.
+The tabular reasoning here is similar to that in the
+preceding section, the one addition being the use of
+`_≡⟨⟩_`, which we use when no justification is required.
+One can think of occurrences of `≡⟨⟩` as an equivalent
+to `≡⟨ refl ⟩`.
 
-  begin (... ≡⟨⟩ (... ≡⟨ ... ⟩ (... ∎)))
+Agda always treats a term as equivalent to its
+simplified term.  The reason that one can write
 
-The first argument to `_≡⟨⟩_` is a term (in this
-case, `suc m + zero`, and the second is the proof of
-an equation (in this case, of `suc (m + zero) ≡ suc m`).
-As far as Agda is concerned, `suc m + zero` and
-`suc (m + zero)` are identical, because the first
-simplifies to the second, so no justification is required.
-Similarly, the first argument to `_≡⟨_⟩_` is a term
-(in this case, `suc (m + zero)`) and the third argument
-is the proof of an equation (in this case, of `suc m ≡ suc m`),
-and the justification is also a proof of an equation
-(in this case, 
+    begin
+      zero + zero
+    ≡⟨⟩
+      zero
+    ∎
 
+is because Agda treats `zero + zero` and `zero` as the
+same thing.  This also means that one could instead write
+the proof in the form
 
-The form
-`_≡⟨⟩_` is used for an equation that requires no justification,
-because both sides simplify to the same term.
-The form `_≡⟨_⟩_` gives
+    begin
+      zero
+    ≡⟨⟩
+      zero + zero
+    ∎
 
-
-
-
-
-Let's
-
-
-Each case involves equational reasoning set out in
-tabular form, beginning with `begin`, ending with `∎`
-(sometimes pronounced "qed" or "tombstone"), and with
-a sequence of equations and justifications.  The form
-`≡⟨⟩` is used for an equation that needs no justification,
-and the 
-
-pWhen the argument is zero,
-
-we must
-show `zero + zero ≡ zero`, which follows by simple
-computation
-
-
+and Agda would not object. Agda only checks that the terms
+separated by `≡⟨⟩` are equivalent; it's up to us to write
+them in an order that will make sense to the reader.
 
 ## Rewriting by an equation
 
-Pretty much every module in the Agda standard library imports the
-library's definition of equivalence, as does every other chapter in this
-book. To avoid a conflict with the definition of equivalence given here,
-we eschew imports and instead repeat the relevant definitions.
-
+Consider a property of natural numbers, such as being even.
 \begin{code}
 data even : ℕ → Set where
   ev0 : even zero
   ev+2 : ∀ {n : ℕ} → even n → even (suc (suc n))
+\end{code}
+
+In the previous section, we proved `m + zero ≡ m`.
+So given evidence that `even (m + zero)` holds,
+we ought also to be able to take that as evidence
+that `even m` holds.  Here is a proof of that claim
+in Agda.
+
+[CONTINUE FROM HERE]
 
 even-id : ∀ (m : ℕ) → even (m + zero) → even m
 even-id m ev with m + zero | +-identity m
 ...             | .m       | refl          = ev
+
+\begin{code}
+even-id : ∀ (m : ℕ) → even (m + zero) → even m
+even-id m ev with m + zero | +-identity m
+...             | u        | v             = {!!}
 \end{code}
+
+
+Goal: even m
+————————————————————————————————————————————————————————————
+ev : even u
+v  : u ≡ m
+u  : ℕ
+m  : ℕ
+
+
+    even-id : ∀ (m : ℕ) → even (m + zero) → even m
+    even-id m ev with +-identity m
+    ...             | refl         = ev
+
+> Cannot solve variable m of type ℕ with solution m + zero because
+> the variable occurs in the solution, or in the type one of the
+> variables in the solution
+> when checking that the pattern refl has type (m + zero) ≡ m
 
 Including the lines
 \begin{code}
