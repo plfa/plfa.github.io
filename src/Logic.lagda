@@ -503,7 +503,7 @@ commutativity of sum and left identity.
   ≃-∎
 \end{code}
 Here we have used tabular reasoning for isomorphism,
-analogous to than used for equivalence.
+analogous to that used for equivalence.
 
 
 ## Implication is function

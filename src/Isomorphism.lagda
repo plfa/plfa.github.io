@@ -195,8 +195,8 @@ right inverses.
     ; invˡ = λ x → refl
     } 
 
-≲-tran : ∀ {A B C : Set} → A ≲ B → B ≲ C → A ≲ C
-≲-tran A≲B B≲C =
+≲-trans : ∀ {A B C : Set} → A ≲ B → B ≲ C → A ≲ C
+≲-trans A≲B B≲C =
   record
     { to = λ x → to B≲C (to A≲B x)
     ; fro = λ y → fro A≲B (fro B≲C y)
@@ -237,6 +237,30 @@ The first three components are copied from the embedding, while the
 last combines the left inverse of `B ≲ A` with the equivalences of
 the `to` and `fro` components from the two embeddings to obtain
 the right inverse of the isomorphism.
+
+## Tabular reasoning for encoding
+
+We can also support tabular reasoning for encoding,
+analogous to that used for isomorphism.
+
+\begin{code}
+module ≲-Reasoning where
+
+  infix  1 ≲-begin_
+  infixr 2 _≲⟨_⟩_
+  infix  3 _≲-∎
+
+  ≲-begin_ : ∀ {A B : Set} → A ≲ B → A ≲ B
+  ≲-begin A≲B = A≲B
+
+  _≲⟨_⟩_ : ∀ (A : Set) {B C : Set} → A ≲ B → B ≲ C → A ≲ C
+  A ≲⟨ A≲B ⟩ B≲C = ≲-trans A≲B B≲C
+
+  _≲-∎ : ∀ (A : Set) → A ≲ A
+  A ≲-∎ = ≲-refl
+
+open ≲-Reasoning
+\end{code}
 
 
 
