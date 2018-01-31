@@ -238,9 +238,9 @@ last combines the left inverse of `B ≲ A` with the equivalences of
 the `to` and `fro` components from the two embeddings to obtain
 the right inverse of the isomorphism.
 
-## Tabular reasoning for encoding
+## Tabular reasoning for embedding
 
-We can also support tabular reasoning for encoding,
+We can also support tabular reasoning for embedding,
 analogous to that used for isomorphism.
 
 \begin{code}
