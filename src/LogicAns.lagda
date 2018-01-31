@@ -6,6 +6,7 @@ permalink : /LogicAns
 
 \begin{code}
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
+open import Isomorphism using (_≃_)
 open import Logic
 \end{code}
 

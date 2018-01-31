@@ -26,7 +26,7 @@ logic.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Isomorphism using (_≃_; ≃-sym; _≲_)
+open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
 open Isomorphism.≃-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties.Simple using (+-suc)
@@ -257,22 +257,21 @@ same as `Bool`.  But there is an isomorphism betwee the two types.
 For instance, `(tt, true)`, which is a member of the former,
 corresponds to `true`, which is a member of the latter.
 
-That unit is also a right identity follows immediately from left
-identity, commutativity of product, and symmetry and transitivity of
-isomorphism.
+That unit is also a right identity follows immediately from
+commutativity of product and left identity.
 \begin{code}
-⊤-identityʳ : ∀ {A : Set} → A ≃ (A × ⊤)
+⊤-identityʳ : ∀ {A : Set} → (A × ⊤) ≃ A
 ⊤-identityʳ {A} =
   ≃-begin
+    (A × ⊤)
+  ≃⟨ ×-comm ⟩
+    (⊤ × A)
+  ≃⟨ ⊤-identityˡ ⟩
     A
-  ≃⟨ ≃-sym ⊤-identityˡ ⟩
-    ⊤ × A
-  ≃⟨ ×-comm {⊤} {A} ⟩
-    A × ⊤
   ≃-∎
 \end{code}
-
-[TODO: We could introduce a notation similar to that for reasoning on ≡.]
+Here we have used tabular reasoning for isomorphism,
+analogous to than used for equivalence.
 
 
 ## Disjunction is sum
@@ -490,20 +489,21 @@ isomorphism betwee the two types.  For instance, `inj₂ true`, which is
 a member of the former, corresponds to `true`, which is a member of
 the latter.
 
-That empty is also a right identity follows immediately from left
-identity, commutativity of sum, and symmetry and transitivity of
-isomorphism.
+That empty is also a right identity follows immediately from
+commutativity of sum and left identity.  
 \begin{code}
-⊥-identityʳ : ∀ {A : Set} → A ≃ (A ⊎ ⊥)
+⊥-identityʳ : ∀ {A : Set} → (A ⊎ ⊥) ≃ A
 ⊥-identityʳ {A} =
   ≃-begin
-    A
-  ≃⟨ sym ⊥-identityˡ ⟩
-    ⊤ × A
+    (A ⊎ ⊥)
   ≃⟨ ⊎-comm ⟩
-    A × ⊤
+    (⊥ ⊎ A)
+  ≃⟨ ⊥-identityˡ ⟩
+    A
   ≃-∎
 \end{code}
+Here we have used tabular reasoning for isomorphism,
+analogous to than used for equivalence.
 
 
 ## Implication is function
