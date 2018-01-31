@@ -274,7 +274,7 @@ followed by a proof of that equation.
 
 Here the inductive hypothesis is not assumed, but instead proved by a
 recursive invocation of the function we are definining, `assoc+ m n p`.
-As with addition, this is well founded because associativity of
+As with addition, this is well-founded because associativity of
 larger numbers is proved in terms of associativity of smaller numbers.
 In this case, `assoc (suc m) n p` is proved using `assoc m n p`.
 
