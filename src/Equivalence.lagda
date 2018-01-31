@@ -251,7 +251,7 @@ and Agda would not object. Agda only checks that the terms
 separated by `≡⟨⟩` are equivalent; it's up to us to write
 them in an order that will make sense to the reader.
 
-## Rewriting by an equation
+## Rewriting
 
 Consider a property of natural numbers, such as being even.
 \begin{code}
@@ -259,53 +259,93 @@ data even : ℕ → Set where
   ev0 : even zero
   ev+2 : ∀ {n : ℕ} → even n → even (suc (suc n))
 \end{code}
-
 In the previous section, we proved `m + zero ≡ m`.
-So given evidence that `even (m + zero)` holds,
+Given evidence that `even (m + zero)` holds,
 we ought also to be able to take that as evidence
-that `even m` holds.  Here is a proof of that claim
-in Agda.
+that `even m` holds.
 
-[CONTINUE FROM HERE]
-
-even-id : ∀ (m : ℕ) → even (m + zero) → even m
-even-id m ev with m + zero | +-identity m
-...             | .m       | refl          = ev
-
+Agda supports special notation to support just this
+kind of reasoning.  To enable this notation, we use
+pragmas to tell Agda which types and constructors
+correspond to equivalence and refl.
 \begin{code}
-even-id : ∀ (m : ℕ) → even (m + zero) → even m
-even-id m ev with m + zero | +-identity m
-...             | u        | v             = {!!}
+{-# BUILTIN EQUALITY _≡_ #-}
+{-# BUILTIN REFL refl #-}
+\end{code}
+
+We can the prove the desired fact by rewriting.
+\begin{code}
+even-identity : ∀ (m : ℕ) → even (m + zero) → even m
+even-identity m ev rewrite +-identity m = ev
+\end{code}
+It is instructive to develop the code interactively.
+
+
+
+We can also prove the converse.
+\begin{code}
+even-identity⁻¹ : ∀ (m : ℕ) → even m → even (m + zero)
+even-identity⁻¹ m ev rewrite sym (+-identity m) = {!!}
 \end{code}
 
 
-Goal: even m
-————————————————————————————————————————————————————————————
-ev : even u
-v  : u ≡ m
-u  : ℕ
-m  : ℕ
+\begin{code}
+postulate
+  +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
+
+even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
+even-comm m n ev rewrite sym (+-comm m n) = {!!}
+\end{code}
 
 
-    even-id : ∀ (m : ℕ) → even (m + zero) → even m
-    even-id m ev with +-identity m
-    ...             | refl         = ev
+
+Here is a proof of that claim
+in Agda.
+\begin{code}
+even-id′ : ∀ (m : ℕ) → even m → even (m + zero)
+even-id′ m ev with m + zero   | (+-identity m)
+...             | .m          | refl          = ev
+\end{code}
+The first clause asserts that `m + zero` and `m` are
+identical, and the second clause justifies that assertion
+with evidence of the appropriate equation.  Note the
+use of the "dot pattern" `.m`.  A dot pattern is followed
+by an expression (it need not be a variable, as it is in
+this case) and is made when other information allows one
+to identify the expession in the `with` clause with the
+given expression.  In this case, the identification of
+`m + zero` and `m` is justified by the subsequent matching
+of `+-identity m` against `refl`.
+
+This is a lot of work to prove something straightforward!
+Because this style of reasoning occurs often, Agda supports
+a special notation 
+
+
+    even-id′ : ∀ (m : ℕ) → even (m + zero) → even m
+    even-id′ m ev = {!!}
+
+    Goal: even m
+    ————————————————————————————————————————————————————————————
+    ev : even (m + zero)
+    m  : ℕ
+
+
+    even-id′ : ∀ (m : ℕ) → even (m + zero) → even m
+    even-id′ m ev with m + zero | +-identity m
+    ...             | u        | v             = {!!}
+
+    Goal: even m
+    ————————————————————————————————————————————————————————————
+    ev : even u
+    v  : u ≡ m
+    u  : ℕ
+    m  : ℕ
+
 
 > Cannot solve variable m of type ℕ with solution m + zero because
 > the variable occurs in the solution, or in the type one of the
 > variables in the solution
 > when checking that the pattern refl has type (m + zero) ≡ m
-
-Including the lines
-\begin{code}
-{-# BUILTIN EQUALITY _≡_ #-}
-{-# BUILTIN REFL refl #-}
-\end{code}
-permits the use of equivalences in rewrites. 
-
-\begin{code}
-even-id′ : ∀ (m : ℕ) → even (m + zero) → even m
-even-id′ m ev rewrite +-identity m = ev
-\end{code}
 
 

@@ -5,7 +5,24 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (∃; _,_)
 
 +-assoc : ∀ (m n p : ℕ) → m + (n + p) ≡ (m + n) + p
-+-assoc m n p = {!!}
++-assoc zero n p =
+  begin
+    zero + (n + p)
+  ≡⟨⟩
+    n + p
+  ≡⟨⟩
+    (zero + n) + p
+  ∎
++-assoc (suc m) n p =
+  begin
+    suc m + (n + p)
+  ≡⟨⟩
+    suc (m + (n + p))
+  ≡⟨ cong suc (+-assoc m n p) ⟩
+    suc ((m + n) + p)
+  ≡⟨⟩
+    (suc m + n) + p
+  ∎
 
 +-identity : ∀ (m : ℕ) → m + zero ≡ m
 +-identity zero =
