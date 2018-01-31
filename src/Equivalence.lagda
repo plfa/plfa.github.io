@@ -4,6 +4,9 @@ layout    : page
 permalink : /Equivalence
 ---
 
+<!-- TODO: Consider changing `Equivalence` to `Equality` or `Identity`.
+Possibly introduce the name `Martin Löf Identity` early on. -->
+
 Much of our reasoning has involved equivalence.  Given two terms `M`
 and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
 are interchangeable.  So far we have taken equivalence as a primitive,
@@ -13,10 +16,15 @@ datatypes.
 
 ## Imports
 
-This chapter has no imports.  Pretty much every module in the Agda
+Pretty much every module in the Agda
 standard library, and every chapter in this book, imports the standard
-definition of equivalence. Since we define equivalence here, any
-import would create a conflict.
+definition of equivalence. Since we define equivalence here, any such
+import would create a conflict.  The only import we make is the
+definition of type levels, which is so primitive that it precedes
+the definition of equivalence.
+\begin{code}
+open import Agda.Primitive using (Level; lzero; lsuc)
+\end{code}
 
 
 ## Equivalence
@@ -27,10 +35,12 @@ data _≡_ {ℓ} {A : Set ℓ} (x : A) : A → Set ℓ where
   refl : x ≡ x
 \end{code}
 In other words, for any type `A` and for any `x` of type `A`, the
-constructor `refl` provides evidence that `x ≡ x`.  Hence, every
-value is equivalent to itself, and we have no other way of showing values
-are equivalent.  Here we have quantified over all levels, so that
-we can apply equivalence to types belonging to any level.
+constructor `refl` provides evidence that `x ≡ x`. Hence, every value
+is equivalent to itself, and we have no other way of showing values
+are equivalent.  We have quantified over all levels, so that we can
+apply equivalence to types belonging to any level.  The definition
+features an asymetry, in that the first argument to `_≡_` is given by
+the parameter `x : A`, while the second is given by `A → Set ℓ`.
 
 We declare the precedence of equivalence as follows.
 \begin{code}
@@ -364,4 +374,92 @@ report an error.  (Try it and see!)
 ## Leibniz equality
 
 The form of asserting equivalence that we have used is due to Martin Löf,
-and was introduced in the 1970s.  
+and was published in 1975.  An older form is due to Leibniz, and was published
+in 1686.  Leibniz asserted the *identity of indiscernibles*: two objects are
+equal if and only if they satisfy the same properties. This
+principle sometimes goes by the name Leibniz' Law, and is closely
+related to Spock's Law, ``A difference that makes no difference is no
+difference''.  Here we define Leibniz equality, and show that two terms
+satsisfy Lebiniz equality iff and only if they satisfy Martin Löf equivalence.
+
+Leibniz equality is usually formalized to state that `x ≐ y`
+holds if every property `P` that holds of `x` also holds of
+`y`.  Perhaps surprisingly, this definition is
+sufficient to also ensure the converse, that every property `P` that
+holds of `y` also holds of `x`.
+
+Let `x` and `y` be objects of type $A$. We say that `x ≐ y` holds if
+for every predicate $P$ over type $A$ we have that `P x` implies `P y`.
+\begin{code}
+_≐_ : ∀ {ℓ} {A : Set ℓ} (x y : A) → Set (lsuc ℓ)
+_≐_ {ℓ} {A} x y = (P : A → Set ℓ) → P x → P y
+\end{code}
+Here we must make use of levels: if `A` is a set at level `ℓ` and `x` and `y`
+are two values of type `A` then `x ≐ y` is at the next level `lsuc ℓ`.
+
+Leibniz equality is reflexive and transitive,
+where the first follows by a variant of the identity function
+and the second by a variant of function composition.
+\begin{code}
+refl-≐ : ∀ {ℓ} {A : Set ℓ} {x : A} → x ≐ x
+refl-≐ P Px = Px
+
+trans-≐ : ∀ {ℓ} {A : Set ℓ} {x y z : A} → x ≐ y → y ≐ z → x ≐ z
+trans-≐ x≐y y≐z P Px = y≐z P (x≐y P Px)
+\end{code}
+
+Symmetry is less obvious.  We have to show that if `P x` implies `P y`
+for all predicates `P`, then the implication holds the other way round
+as well.  Given a specific `P` and a proof `Py` of `P y`, we have to
+construct a proof of `P x` given `x ≐ y`.  To do so, we instantiate
+the equality with a predicate `Q` such that `Q z` holds if `P z`
+implies `P x`.  The property `Q x` is trivial by reflexivity, and
+hence `Q y` follows from `x ≐ y`.  But `Q y` is exactly a proof of
+what we require, that `P y` implies `P x`.
+\begin{code}
+sym-≐ : ∀ {ℓ} {A : Set ℓ} {x y : A} → x ≐ y → y ≐ x
+sym-≐ {ℓ} {A} {x} {y} x≐y P = Qy
+  where
+    Q : A → Set ℓ
+    Q z = P z → P x
+    Qx : Q x
+    Qx = refl-≐ P
+    Qy : Q y
+    Qy = x≐y Q Qx
+\end{code}
+
+We now show that Martin Löf equivalence implies
+Leibniz equality, and vice versa.  In the forward direction, if we know
+`x ≡ y` we need for any `P` to take evidence of `P x` to evidence of `P y`,
+which is easy since equivalence of `x` and `y` implies that any proof
+of `P x` is also a proof of `P y`.
+\begin{code}
+≡-implies-≐ : ∀ {ℓ} {A : Set ℓ} {x y : A} → x ≡ y → x ≐ y
+≡-implies-≐ refl P Px = Px
+\end{code}
+The function `≡-implies-≐` is often called *substitution* because it
+says that if we know `x ≡ y` then we can substitute `y` for `x`,
+taking a proof of `P x` to a proof  of `P y` for any property `P`.
+
+In the reverse direction, given that for any `P` we can take a proof of `P x`
+to a proof of `P y` we need to show `x ≡ y`. The proof is similar to that
+for symmetry of Leibniz equality. We take $Q$
+to be the predicate that holds of `z` if `x ≡ z`. Then `Q x` is trivial
+by reflexivity of Martin Löf equivalence, and hence `Q y` follows from
+`x ≐ y`.  But `Q y` is exactly a proof of what we require, that `x ≡ y`.
+\begin{code}
+≐-implies-≡ : ∀ {ℓ} {A : Set ℓ} {x y : A} → x ≐ y → x ≡ y
+≐-implies-≡ {ℓ} {A} {x} {y} x≐y = Qy
+  where
+    Q : A → Set ℓ
+    Q z = x ≡ z
+    Qx : Q x
+    Qx = refl
+    Qy : Q y
+    Qy = x≐y Q Qx
+\end{code}
+
+(Parts of this section are adapted from *≐≃≡: Leibniz Equality is
+Isomorphic to Martin-Löf Identity, Parametrically*, by Andreas Abel,
+Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
+draft paper, 2017.)

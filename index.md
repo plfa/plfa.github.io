@@ -23,12 +23,14 @@ http://homepages.inf.ed.ac.uk/wadler/
 
   - [Naturals: Natural numbers](Naturals)
   - [Properties: Proof by induction](Properties)
-  - [PropertiesAns: Solutions to exercises](PropertiesAns)
   - [Relations: Inductive Definition of Relations](Relations)
-  - [RelationsAns: Solutions to exercises](RelationsAns)
-  - [Logic: Logic](Logic)
-  - [LogicAns: Solutions to exercises](LogicAns)
   - [Equivalence: Equivalence and equational reasoning](Equivalence)
+  - [Isomorphism: Isomorphism and embedding](Isomorphism)
+  - [Logic: Logic](Logic)
+
+  - [PropertiesAns: Solutions to exercises](PropertiesAns) 
+  - [RelationsAns: Solutions to exercises](RelationsAns) 
+  - [LogicAns: Solutions to exercises](LogicAns)
 
 ## Part 2: Programming Language Foundations
 
