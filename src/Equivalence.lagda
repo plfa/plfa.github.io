@@ -56,8 +56,8 @@ but on the left-hand side of the equation the argument has been instantiated to 
 which requires that `x` and `y` are the same.  Hence, for the right-hand side of the equation
 we need a term of type `x ≡ x`, and `refl` will do.
 
-It is instructive to create the definition of `sym` interactively.
-Say we use a variable for the argument on the left, and a hole for the term on the right:
+It is instructive to develop `sym` interactively.
+To start, we supply a variable for the argument on the left, and a hole for the body on the right:
 
     sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
     sym r = {! !}
@@ -190,8 +190,8 @@ where `e` is a proof of an equivalence.
 
 ## Tabular reasoning, another example
 
-As a second example of tabular reasoning, we consider the proof that zero is a right identity for
-addition.  We first repeat the definitions of naturals and addition.
+As a second example of tabular reasoning, we consider the proof that addition
+is commutative.  We first repeat the definitions of naturals and addition.
 We cannot import them because (as noted at the beginning of this chapter)
 it would cause a conflict.
 \begin{code}
@@ -204,22 +204,31 @@ zero    + n  =  n
 (suc m) + n  =  suc (m + n)
 \end{code}
 
-We now repeat the proof that zero is a right identity.
+We save space we postulate (rather than prove in full) two lemmas,
+and then repeat the proof of commutativity.
 \begin{code}
-+-identity : ∀ (m : ℕ) → m + zero ≡ m
-+-identity zero =
+postulate
+  +-identity : ∀ (m : ℕ) → m + zero ≡ m
+  +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
+
++-comm : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm m zero =
   begin
-    zero + zero
+    m + zero
+  ≡⟨ +-identity m ⟩
+    m
   ≡⟨⟩
-    zero
+    zero + m
   ∎
-+-identity (suc m) =
++-comm m (suc n) =
   begin
-    suc m + zero
+    m + suc n
+  ≡⟨ +-suc m n ⟩
+    suc (m + n)
+  ≡⟨ cong suc (+-comm m n) ⟩
+    suc (n + m)
   ≡⟨⟩
-    suc (m + zero)
-  ≡⟨ cong suc (+-identity m) ⟩
-    suc m
+    suc n + m
   ∎
 \end{code}
 The tabular reasoning here is similar to that in the
@@ -231,21 +240,17 @@ to `≡⟨ refl ⟩`.
 Agda always treats a term as equivalent to its
 simplified term.  The reason that one can write
 
-    begin
-      zero + zero
+      suc (n + m)
     ≡⟨⟩
-      zero
-    ∎
+      suc n + m
 
-is because Agda treats `zero + zero` and `zero` as the
-same thing.  This also means that one could instead write
-the proof in the form
+is because Agda treats both terms as the same.
+This also means that one could instead interchange
+the lines and write
 
-    begin
-      zero
+      suc n + m
     ≡⟨⟩
-      zero + zero
-    ∎
+      suc (n + m)
 
 and Agda would not object. Agda only checks that the terms
 separated by `≡⟨⟩` are equivalent; it's up to us to write
@@ -259,12 +264,12 @@ data even : ℕ → Set where
   ev0 : even zero
   ev+2 : ∀ {n : ℕ} → even n → even (suc (suc n))
 \end{code}
-In the previous section, we proved `m + zero ≡ m`.
-Given evidence that `even (m + zero)` holds,
+In the previous section, we proved addition is commutative.
+Given evidence that `even (m + n)` holds,
 we ought also to be able to take that as evidence
-that `even m` holds.
+that `even (n + m)` holds.
 
-Agda supports special notation to support just this
+Agda includes special notation to support just this
 kind of reasoning.  To enable this notation, we use
 pragmas to tell Agda which types and constructors
 correspond to equivalence and refl.
@@ -273,79 +278,90 @@ correspond to equivalence and refl.
 {-# BUILTIN REFL refl #-}
 \end{code}
 
-We can the prove the desired fact by rewriting.
+We can then prove the desired property as follows.
 \begin{code}
-even-identity : ∀ (m : ℕ) → even (m + zero) → even m
-even-identity m ev rewrite +-identity m = ev
-\end{code}
-It is instructive to develop the code interactively.
-
-
-
-We can also prove the converse.
-\begin{code}
-even-identity⁻¹ : ∀ (m : ℕ) → even m → even (m + zero)
-even-identity⁻¹ m ev rewrite sym (+-identity m) = {!!}
-\end{code}
-
-
-\begin{code}
-postulate
-  +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
-
 even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
-even-comm m n ev rewrite sym (+-comm m n) = {!!}
+even-comm m n ev rewrite +-comm m n = ev
 \end{code}
+Here `ev` ranges over evidence that `even (m + n)` holds, and we show
+that it is also provides evidence that `even (n + m)` holds.  In
+general, the keyword `rewrite` is followed by evidence of an
+equivalence, and that equivalence is used to rewrite the type of the
+goal and of any variable in scope.
+
+It is instructive to develop `even-comm` interactively.
+To start, we supply variables for the arguments on the left, and a hole for the body on the right:
+
+    even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
+    even-comm m n ev = {! !}
+
+If we go into the hole and type `C-C C-,` then Agda reports:
+
+    Goal: even (n + m)
+    ————————————————————————————————————————————————————————————
+    ev : even (m + n)
+    n  : ℕ
+    m  : ℕ
+
+Now we add the rewrite.
+
+    even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
+    even-comm m n ev rewrite +-comm m n = {! !}
+
+If we go into the hole again and type `C-C C-,` then Agda now reports:
+
+    Goal: even (n + m)
+    ————————————————————————————————————————————————————————————
+    ev : even (n + m)
+    n  : ℕ
+    m  : ℕ
+
+Now it is trivial to see that `ev` satisfies the goal, and typing `C-C C-A` in the
+hole causes it to be filled with `ev`.
 
 
+## Multiple rewrites
 
-Here is a proof of that claim
-in Agda.
+One may perform multiple rewrites, each separated by a vertical bar.  For instance,
+here is a second proof that addition is commutative, relying on rewrites rather
+than tabular reasoning.
 \begin{code}
-even-id′ : ∀ (m : ℕ) → even m → even (m + zero)
-even-id′ m ev with m + zero   | (+-identity m)
-...             | .m          | refl          = ev
++-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm′ zero n rewrite +-identity n = refl
++-comm′ (suc m) n rewrite +-suc n m | +-comm m n = refl
 \end{code}
-The first clause asserts that `m + zero` and `m` are
-identical, and the second clause justifies that assertion
-with evidence of the appropriate equation.  Note the
-use of the "dot pattern" `.m`.  A dot pattern is followed
-by an expression (it need not be a variable, as it is in
-this case) and is made when other information allows one
-to identify the expession in the `with` clause with the
-given expression.  In this case, the identification of
-`m + zero` and `m` is justified by the subsequent matching
-of `+-identity m` against `refl`.
-
-This is a lot of work to prove something straightforward!
-Because this style of reasoning occurs often, Agda supports
-a special notation 
+This is far more compact.  Among other things, whereas the previous
+proof required `cong suc (+-comm m n)` as the justification to invoke the
+inductive hypothesis, here it is sufficient to rewrite with `+-comm m n`, as
+rewriting automatically takes congruence into account.  Although proofs
+with rewriting are shorter, proofs in tabular form make the reasoning
+involved easier to follow, and we will stick with the latter when feasible.
 
 
-    even-id′ : ∀ (m : ℕ) → even (m + zero) → even m
-    even-id′ m ev = {!!}
+## Rewriting expanded
 
-    Goal: even m
-    ————————————————————————————————————————————————————————————
-    ev : even (m + zero)
-    m  : ℕ
-
-
-    even-id′ : ∀ (m : ℕ) → even (m + zero) → even m
-    even-id′ m ev with m + zero | +-identity m
-    ...             | u        | v             = {!!}
-
-    Goal: even m
-    ————————————————————————————————————————————————————————————
-    ev : even u
-    v  : u ≡ m
-    u  : ℕ
-    m  : ℕ
-
-
-> Cannot solve variable m of type ℕ with solution m + zero because
-> the variable occurs in the solution, or in the type one of the
-> variables in the solution
-> when checking that the pattern refl has type (m + zero) ≡ m
+The `rewrite` notation is in fact shorthand for an appropriate use of `with`
+abstraction.
+\begin{code}
+even-comm′ : ∀ (m n : ℕ) → even (m + n) → even (n + m)
+even-comm′ m n ev with   m + n  | +-comm m n
+...                  | .(n + m) | refl        = ev
+\end{code}
+The first clause asserts that `m + n` and `n + m` are identical, and
+the second clause justifies that assertion with evidence of the
+appropriate equivalence.  Note the use of the "dot pattern" `.(n +
+m)`.  A dot pattern is followed by an expression and is made when
+other information allows one to identify the expession in the `with`
+clause with the expression it matches against.  In this case, the
+identification of `m + n` and `n + m` is justified by the subsequent
+matching of `+-comm m n` against `refl`.  One might think that the
+first clause is redundant as the information is inherent in the second
+clause, but in fact Agda is rather picky on this point: omitting the
+first clause or reversing the order of the clauses will cause Agda to
+report an error.  (Try it and see!)
 
 
+## Leibniz equality
+
+The form of asserting equivalence that we have used is due to Martin Löf,
+and was introduced in the 1970s.  
