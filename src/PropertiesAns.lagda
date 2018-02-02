@@ -18,6 +18,14 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 +-swap m n p rewrite sym (+-assoc m n p) | +-comm m n | +-assoc n m p = refl
 \end{code}
 
+Without using `sym` property.
+
+\begin{code}
++-swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
++-swap zero n p = refl
++-swap (suc m) n p rewrite +-swap m n p | +-suc n (m + p) = relf
+\end{code}
+
 *Multiplication distributes over addition*
 
 \begin{code}
