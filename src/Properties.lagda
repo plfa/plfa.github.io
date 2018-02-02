@@ -80,7 +80,7 @@ which tells us that if `m` is a natural then `suc m` is also a natural.
 Proofs by induction follow the structure of this definition.  To prove
 a property of natural numbers by induction, we need prove two cases.
 First is the *base case*, where we show the property holds for `zero`.
-Second is the *inductive case*, where we assume the the property holds for
+Second is the *inductive case*, where we assume the property holds for
 an arbitary natural `m` (we call this the *inductive hypothesis*), and
 then show that the property must also hold for `suc m`.
 
@@ -162,7 +162,7 @@ we must show to hold, become:
 
     (m + n) + p ≡ m + (n + p)
     ---------------------------------
-    (suc m + n) + p ≡ (suc m + n) + p
+    (suc m + n) + p ≡ suc m + (n + p)
 
 In the inference rules, `n` and `p` are any arbitary natural numbers, so when we
 are done with the proof we know it holds for any `n` and `p` as well as any `m`.
@@ -195,7 +195,7 @@ For the inductive case, we assume
 
 and must show
 
-    (suc m + n) + p ≡ (suc m + n) + p
+    (suc m + n) + p ≡ suc m + (n + p)
 
 By (ii), the left-hand side simplifies to `suc ((m + n) + p)` and the
 right-hand side simplifies to `suc (m + (n + p))`, and the equality of
@@ -225,11 +225,11 @@ We encode this proof in Agda as follows.
 +-assoc zero n p = refl
 +-assoc (suc m) n p rewrite +-assoc m n p = refl
 \end{code}
-Here we have named the proof `assoc+`.  In Agda, identifiers can consist of
+Here we have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
 Let's unpack this code.  The first line states that we are
-defining the identifier `assoc+` which is a proof of the
+defining the identifier `+-assoc` which is a proof of the
 proposition
 
     ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
@@ -241,7 +241,7 @@ is a function that accepts three natural numbers---corresponding to
 to `m`, `n`, and `p`---and returns a proof of the equation.
 
 Proof by induction corresponds exactly to a recursive definition.
-Here we are induct on the first argument `m`, and leave the other two
+Here we induct on the first argument `m`, and leave the other two
 arguments `n` and `p` fixed.
 
 The base case corresponds to instantiating `m` by
@@ -273,10 +273,10 @@ Rewriting by a given equation is indicated by the keyword `rewrite`
 followed by a proof of that equation.
 
 Here the inductive hypothesis is not assumed, but instead proved by a
-recursive invocation of the function we are definining, `assoc+ m n p`.
+recursive invocation of the function we are definining, `+-assoc m n p`.
 As with addition, this is well-founded because associativity of
 larger numbers is proved in terms of associativity of smaller numbers.
-In this case, `assoc (suc m) n p` is proved using `assoc m n p`.
+In this case, `+-assoc (suc m) n p` is proved using `+-assoc m n p`.
 
 The correspondence between proof by induction and definition by
 recursion is one of the most appealing aspects of Agda.
