@@ -2,45 +2,57 @@ agda := $(wildcard src/*.lagda)
 agdai := $(wildcard src/*.agdai)
 markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 
-default: $(markdown)
+all: $(markdown)
 
 out/:
-	mkdir out
+	mkdir -p out
 
 out/%.md: src/%.lagda out/
 	agda2html --verbose --link-to-agda-stdlib --jekyll-root=out/ -i $< -o $@
 
-.phony: serve
 
+# serve website using jekyll
 serve:
-	ruby -S gem install bundler --no-ri --no-rdoc
-	ruby -S bundle install
 	ruby -S bundle exec jekyll serve
 
-.phony: clean
+.phony: serve
 
+
+# remove all auxiliary files
 clean:
 ifneq ($(strip $(agdai)),)
 	rm $(agdai)
 endif
 
-.phony: clobber
+.phony: clean
 
+
+# remove all generated files
 clobber: clean
-	ruby -S gem install bundler --no-ri --no-rdoc
-	ruby -S bundle install
 	ruby -S bundle exec jekyll clean
 ifneq ($(strip $(markdown)),)
 	rm $(markdown)
 endif
 	rmdir out/
 
-setup:\
+.phony: clobber
+
+
+# install bundler, and gem dependencies
+setup:
+	ruby -S gem install bundler --no-ri --no-rdoc
+	ruby -S bundle install
+
+.phony: setup
+
+
+# install agda, agda-stdlib, and agda2html
+travis-setup:\
 	$(HOME)/agda-master/\
 	$(HOME)/agda-stdlib-master/\
 	$(HOME)/agda2html-master/
 
-.phony: setup
+.phony: travis-setup
 
 $(HOME)/agda-master/:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
