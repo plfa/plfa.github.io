@@ -1,3 +1,4 @@
+
 ---
 title     : "Relations: Inductive Definition of Relations"
 layout    : page
@@ -86,12 +87,12 @@ ex₁ = s≤s (s≤s z≤n)
 In the Agda definition, the two lines defining the constructors
 use `∀`, very similar to our use of `∀` in propositions such as:
 
-    com+ : ∀ (m n : ℕ) → m + n ≡ n + m
+    +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 
 However, here the declarations are surrounded by curly braces `{ }`
 rather than parentheses `( )`.  This means that the arguments are
 *implicit* and need not be written explicitly.  Thus, we would write,
-for instance, `com+ m n` for the proof that `m + n ≡ n + m`, but
+for instance, `+-comm m n` for the proof that `m + n ≡ n + m`, but
 here will write `z≤n` for the proof that `m ≤ m`, leaving the `m` implicit,
 or if `m≤n` is evidence that `m ≤ n`, we write write `s≤s m≤n` for the
 evidence that `suc m ≤ suc n`, leaving both `m` and `n` implicit.
