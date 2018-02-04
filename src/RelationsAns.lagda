@@ -19,6 +19,21 @@ open even
 open odd
 \end{code}
 
+* Irreflexivity
+
+\begin{code}
+open import Logic using (⊥-elim; excluded-middle; ¬_; _⊎_; inj₁; inj₂)
+
+<-irrefl : ∀ (n : ℕ) → excluded-middle → ¬ ( n < n )
+<-irrefl zero _ ()
+<-irrefl (suc n) em with em {A = suc n < suc n}
+<-irrefl (suc n) em | inj₁ sn<sn = ⊥-elim (<-irrefl n em (helper n sn<sn))
+  where
+    helper : ∀ (n : ℕ) → suc n < suc n → n < n
+    helper n (s<s n<n) = n<n
+<-irrefl (suc n) em | inj₂ ¬sn<sn = ¬sn<sn
+\end{code}
+
 *Trichotomy*
 
 \begin{code}
@@ -67,7 +82,7 @@ trichotomy (suc m) (suc n) with trichotomy m n
 +-lemma m rewrite +-identity m | +-suc m m = refl
 
 +-lemma′ : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
-+-lemma′ m rewrite +-suc m (m + 0) = {!!}
++-lemma′ m rewrite +-suc m (m + 0) = {! !}
 
 mutual
   is-even : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
@@ -79,5 +94,3 @@ mutual
   is-odd (suc n) (od-suc evn) with is-even n evn
   ... | m , n≡2*m rewrite n≡2*m = m , refl
 \end{code}
-
-    
