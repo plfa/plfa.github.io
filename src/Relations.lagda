@@ -391,8 +391,8 @@ Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 
 Third, we combine the two previous results.
 \begin{code}
-mono+≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-mono+≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
++-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
++-mono-≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
 \end{code}
 Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
@@ -441,7 +441,7 @@ data Trichotomy : ℕ → ℕ → Set where
 
 + *Monotonicity* Show that
 
-  > if `m < n` and `p < q` then `m + n < p + q`.
+  > if `m < n` and `p < q` then `m + p < n + q`.
 
   Name your proof `+-mono-<`.
 
