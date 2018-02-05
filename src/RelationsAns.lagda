@@ -58,6 +58,23 @@ trichotomy (suc m) (suc n) with trichotomy m n
 ... | more n<m = more (s<s n<m)
 \end{code}
 
+*Monotonicity*
+
+\begin{code}
++-monoʳ-< : ∀ (m p q : ℕ) → p < q → m + p < m + q
++-monoʳ-< zero p q p<q =  p<q
++-monoʳ-< (suc m) p q p<q =  s<s (+-monoʳ-< m p q p<q)
+
++-monoˡ-< : ∀ (m n p : ℕ) → m < n → m + p < n + p
++-monoˡ-< m n p m<n rewrite +-comm m p | +-comm n p = +-monoʳ-< p m n m<n
+
++-mono-< : ∀ (m n p q : ℕ) → m < n → p < q → m + p < n + q
++-mono-< m n p q m<n p<q =
+  <-trans (m + p) (n + p) (n + q)
+    (+-monoˡ-< m n p m<n)
+    (+-monoʳ-< n p q p<q)
+\end{code}
+
 *Relate strict comparison to comparison*
 
 \begin{code}
