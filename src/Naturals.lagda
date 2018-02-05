@@ -149,7 +149,7 @@ natural number (on the day before today) then `suc m` is also a
 natural number (today).  We didn't know about any natural numbers
 before today, so the inductive case doesn't apply.
 
-    -- on the first day, there is one natural number   
+    -- on the first day, there is one natural number
     zero : ℕ
 
 Then we repeat the process, so on the next day we know about all the
@@ -260,8 +260,8 @@ and multiplication can be precisely defined in just a couple of lines.
 Here is the definition of addition in Agda:
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
-zero    + n  =  n                -- (i)
-(suc m) + n  =  suc (m + n)      -- (ii)
+zero    + n = n                -- (i)
+(suc m) + n = suc (m + n)      -- (ii)
 \end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
@@ -279,14 +279,14 @@ or `(suc m)` in (ii).
 
 If we write `zero` as `0` and `suc m` as `1 + m`, we get two familiar equations.
 
-   0       + n  =  n
-   (1 + m) + n  =  1 + (m + n)
+   0       + n = n
+   (1 + m) + n = 1 + (m + n)
 
 The first follows because zero is a left identity for addition,
 and the second because addition is associative.  In its most general
 form, associativity is written
 
-   (m + n) + p  =  m + (n + p)
+   (m + n) + p = m + (n + p)
 
 meaning that the order of parentheses is irrelevant.  We get the
 second equation from this one by taking `m` to be `1`, `n` to be `m`,
@@ -321,7 +321,7 @@ We can write this more compactly by only expanding shorthand as needed.
        suc (suc (0 + 3))
     =    (i)
        suc (suc 3)
-    =    
+    =
        5
 
 The first use of (ii) matches by taking `m = 1` and `n = 3`,
@@ -351,7 +351,7 @@ and the second follow because multiplication distributes
 over addition.  In its most general form, distribution of
 multiplication over addition is written
 
-  (m + n) * p  =  (m * p) + (n * p)
+  (m + n) * p = (m * p) + (n * p)
 
 We get the second equation from this one by taking `m` to be `1`, `n`
 to be `m`, and `p` to be `n`, and then using the fact that one is a
@@ -359,7 +359,7 @@ left identity for multiplication, so `1 * n = n`.
 
 Again, the definition is well-founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
- 
+
 For example, let's multiply two and three.
 
        2 * 3
@@ -385,8 +385,8 @@ Similarly, once we have defined multiplication, we can define
 exponentiation as repeated multiplication.
 \begin{code}
 _^_ : ℕ → ℕ → ℕ
-n ^ zero     =  suc zero       -- (v)
-n ^ (suc m)  =  n * (n ^ m)    -- (vi)
+n ^ zero    = suc zero       -- (v)
+n ^ (suc m) = n * (n ^ m)    -- (vi)
 \end{code}
 
 **Exercise** Compute `4 ^ 3`.
@@ -403,9 +403,9 @@ Monus is our first example of a definition that uses pattern
 matching against both arguments.
 \begin{code}
 _∸_ : ℕ → ℕ → ℕ
-m       ∸ zero     =  m         -- (vii)
-zero    ∸ (suc n)  =  zero      -- (viii)
-(suc m) ∸ (suc n)  =  m ∸ n     -- (ix)
+m       ∸ zero    = m         -- (vii)
+zero    ∸ (suc n) = zero      -- (viii)
+(suc m) ∸ (suc n) = m ∸ n     -- (ix)
 \end{code}
 We can do a simple analysis to show that all the cases are covered.
 
@@ -492,7 +492,7 @@ more equations.
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
     1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
 
-And we repeat the process again.  
+And we repeat the process again.
 
     -- on the third day, we know about addition of 0, 1, and 2
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
@@ -567,7 +567,7 @@ In each chapter, we will list at the end all unicode characters that
 first appear in that chapter.  This chapter introduces the following
 unicode.
 
-    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
+    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
 

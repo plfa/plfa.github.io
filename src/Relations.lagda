@@ -56,7 +56,7 @@ Both definitions above tell us the same two things:
 
 In fact, they each give us a bit more detail:
 
-+ *Base case*: for all naturals `n`, the constructor `z≤n` 
++ *Base case*: for all naturals `n`, the constructor `z≤n`
   produces evidence that `zero ≤ n` holds.
 + *Inductive case*: for all naturals `m` and `n`, the constructor
   `s≤s` takes evidence that `m ≤ n` holds into evidence that
@@ -255,7 +255,7 @@ the notion that given two propositions either one or the other holds.
 In Agda, we do so by declaring a suitable inductive type.
 \begin{code}
 data _⊎_ : Set → Set → Set where
-  inj₁  : ∀ {A B : Set} → A → A ⊎ B
+  inj₁ : ∀ {A B : Set} → A → A ⊎ B
   inj₂ : ∀ {A B : Set} → B → A ⊎ B
 \end{code}
 This tells us that if `A` and `B` are propositions then `A ⊎ B` is
@@ -277,8 +277,8 @@ for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 `m` and `n` are equal.
 \begin{code}
 ≤-total : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total zero n =  inj₁ z≤n
-≤-total (suc m) zero =  inj₂ z≤n
+≤-total zero n = inj₁ z≤n
+≤-total (suc m) zero = inj₂ z≤n
 ≤-total (suc m) (suc n) with ≤-total m n
 ... | inj₁ m≤n = inj₁ (s≤s m≤n)
 ... | inj₂ n≤m = inj₂ (s≤s n≤m)
@@ -338,8 +338,8 @@ always return the first disjunct, but there is a minor variant that
 always returns the second disjunct.
 \begin{code}
 ≤-total″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total″ m zero =  inj₂ z≤n
-≤-total″ zero (suc n) =  inj₁ z≤n
+≤-total″ m zero = inj₂ z≤n
+≤-total″ zero (suc n) = inj₁ z≤n
 ≤-total″ (suc m) (suc n) with ≤-total″ m n
 ... | inj₁ m≤n = inj₁ (s≤s m≤n)
 ... | inj₂ n≤m = inj₂ (s≤s n≤m)
@@ -364,8 +364,8 @@ and is best broken into three parts. First, we deal with the special
 case of showing addition is monotonic on the right.
 \begin{code}
 +-monoʳ-≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
-+-monoʳ-≤ zero p q p≤q =  p≤q
-+-monoʳ-≤ (suc m) p q p≤q =  s≤s (+-monoʳ-≤ m p q p≤q) 
++-monoʳ-≤ zero p q p≤q = p≤q
++-monoʳ-≤ (suc m) p q p≤q = s≤s (+-monoʳ-≤ m p q p≤q)
 \end{code}
 The proof is by induction on the first argument.
 
@@ -426,7 +426,7 @@ infix 4 _<_
   Show that for any given any naturals `m` and `n` that
   `Trichotomy m n` holds, using the defintions below.
   Name your proof `trichotomy`.
-  
+
 \begin{code}
 _>_ : ℕ → ℕ → Set
 n > m = m < n
@@ -489,4 +489,3 @@ This chapter introduces the following unicode.
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
-    
