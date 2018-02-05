@@ -34,6 +34,17 @@ open import Logic using (⊥-elim; excluded-middle; ¬_; _⊎_; inj₁; inj₂)
 <-irrefl (suc n) em | inj₂ ¬sn<sn = ¬sn<sn
 \end{code}
 
+*Transitivity*
+
+\begin{code}
+<-trans : ∀ (m n p : ℕ) → m < n → n < p → m < p
+<-trans zero n zero m<n ()
+<-trans zero n (suc p) m<n n<p = z<s
+<-trans (suc m) n zero m<n ()
+<-trans (suc m) zero (suc p) ()
+<-trans (suc m) (suc n) (suc p) (s<s m<n) (s<s n<p) = s<s (<-trans m n p m<n n<p)
+\end{code}
+
 *Trichotomy*
 
 \begin{code}
