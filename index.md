@@ -32,6 +32,7 @@ http://homepages.inf.ed.ac.uk/wadler/
   - [PropertiesAns: Solutions to exercises](PropertiesAns) 
   - [RelationsAns: Solutions to exercises](RelationsAns) 
   - [LogicAns: Solutions to exercises](LogicAns)
+  - [ListsAns: Solutions to exercises](ListsAns)
 
 ## Part 2: Programming Language Foundations
 

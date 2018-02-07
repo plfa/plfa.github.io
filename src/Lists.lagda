@@ -120,13 +120,15 @@ we write `(⊕ y)` for the function which applied to `x` also returns `x ⊕ y`.
 
 For example, here are definitions of the sections for cons.
 \begin{code}
+infix 5 _∷ ∷_
+
 _∷ : ∀ {A : Set} → A → List A → List A
 (x ∷) xs = x ∷ xs
 
 ∷_ : ∀ {A : Set} → List A → A → List A
 (∷ xs) x = x ∷ xs
 \end{code}
-We will make use of the first of these in the next section.
+These will prove useful in writing congruences.
 
 
 ## Append
@@ -153,8 +155,6 @@ of appending the list `[ 0 , 1 , 2 ]` to the list `[ 3 , 4 ]`.
 ex₂ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
 ex₂ =
   begin
-    [ 0 , 1 , 2 ] ++ [ 3 , 4 ]
-  ≡⟨⟩
     0 ∷ 1 ∷ 2 ∷ [] ++ 3 ∷ 4 ∷ []
   ≡⟨⟩
     0 ∷ (1 ∷ 2 ∷ [] ++ 3 ∷ 4 ∷ [])
@@ -164,12 +164,22 @@ ex₂ =
     0 ∷ 1 ∷ 2 ∷ ([] ++ 3 ∷ 4 ∷ [])
   ≡⟨⟩
     0 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ []
-  ≡⟨⟩
-    [ 0 , 1 , 2 , 3 , 4 ]
   ∎
 \end{code}
 Appending two lists requires time proportional to the
 number of elements in the first list.
+
+Here are the sections for append.
+\begin{code}
+infix 5 _++ ++_ 
+
+_++ : ∀ {A : Set} → List A → List A → List A
+(xs ++) ys = xs ++ ys
+
+++_ : ∀ {A : Set} → List A → List A → List A
+(++ ys) xs = xs ++ ys
+\end{code}
+Again, these will prove useful in writing congruences.
 
 
 ## Reasoning about append
@@ -197,9 +207,9 @@ about numbers.  Here is the proof that append is associative.
     ((x ∷ xs) ++ ys) ++ zs
   ∎
 \end{code}
-The proof is by induction. The base case instantiates the
-first argument to `[]`, and follows by straightforward computation.
-The inductive case instantiates the first argument to `x ∷ xs`,
+The proof is by induction on the first argument. The base case instantiates
+to `[]`, and follows by straightforward computation.
+The inductive case instantiates to `x ∷ xs`,
 and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `++-assoc xs ys zs`.
@@ -266,8 +276,6 @@ of `[ 0 , 1 , 2 ]`.
 ex₃ : length ([ 0 , 1 , 2 ]) ≡ 3
 ex₃ =
   begin
-    length ([ 0 , 1 , 2 ])
-  ≡⟨⟩
     length (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
     suc (length (1 ∷ 2 ∷ []))
@@ -277,8 +285,6 @@ ex₃ =
     suc (suc (suc (length {ℕ} [])))
   ≡⟨⟩
     suc (suc (suc zero))
-  ≡⟨⟩
-    3
   ∎
 \end{code}
 Computing the length of a list requires time
@@ -317,11 +323,11 @@ length-++ (x ∷ xs) ys =
     length (x ∷ xs) + length ys
   ∎
 \end{code}
-The proof is by induction. The base case instantiates the
-first argument to `[]`, and follows by straightforward computation.
+The proof is by induction on the first arugment. The base case instantiates
+to `[]`, and follows by straightforward computation.
 As before, Agda cannot infer the implicit type parameter to `length`,
 and it must be given explicitly.
-The inductive case instantiates the first argument to `x ∷ xs`,
+The inductive case instantiates to `x ∷ xs`,
 and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `length-++ xs ys`, and it is promoted
@@ -346,8 +352,6 @@ Here is an example showing how to reverse the list `[ 0 , 1 , 2 ]`.
 ex₄ : reverse ([ 0 , 1 , 2 ]) ≡ [ 2 , 1 , 0 ]
 ex₄ =
   begin
-    reverse ([ 0 , 1 , 2 ])
-  ≡⟨⟩
     reverse (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
     reverse (1 ∷ 2 ∷ []) ++ [ 0 ]
@@ -375,14 +379,122 @@ ex₄ =
     [ 2 , 1 , 0 ]
   ∎
 \end{code}
-Because append takes time proportional to the length
-of the first list, reversing a list in this way takes
-time proportional to the *square* of the length of the
-list, since `1 + ⋯ + n ≡ n * (n + 1) / 2`.
+Reversing a list in this way takes time *quadratic* in the length of
+the list. This is because reverse ends up appending lists of lengths
+`1`, `2`, up to `n - 1`, where `n` is the length of the list being
+reversed, append takes time proportional to the length of the first
+list, and the sum of the numbers up to `n` is `n * (n + 1) / 2`.
+(We will validate that last fact later in this chapter.)
 
+## Reasoning about reverse
 
+*Exercise*
 
-## Reverse
+Show that the reverse of one list appended to another is the
+reverse of the second appended to the reverse of the first.
+
+    reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+
+*Exercise*
+
+A function is an *involution* if when applied twice it acts
+as the identity function.  Show that reverse is an involution.
+
+    reverse (reverse xs) ≡ xs
+
+## Faster reverse
+
+The definition above, while easy to reason about, is less efficient than
+one might expect since it takes time quadratic in the length of the list.
+The idea is that we generalise reverse to take an additional argument.
+\begin{code}
+shunt : ∀ {A : Set} → List A → List A → List A
+shunt [] ys = ys
+shunt (x ∷ xs) ys =  shunt xs (x ∷ ys)
+\end{code}
+The definition is by recursion on the first argument. The second argument
+actually becomes *larger*, but this is not a problem because the argument
+on which we recurse becomes *smaller*.
+
+Shunt is related to reverse as follows.
+\begin{code}
+shunt-reverse : ∀ {A : Set} (xs ys : List A) → shunt xs ys ≡ reverse xs ++ ys
+shunt-reverse [] ys =
+  begin
+    shunt [] ys
+  ≡⟨⟩
+    ys
+  ≡⟨⟩
+    reverse [] ++ ys
+  ∎
+shunt-reverse (x ∷ xs) ys =
+  begin
+    shunt (x ∷ xs) ys
+  ≡⟨⟩
+    shunt xs (x ∷ ys)
+  ≡⟨ shunt-reverse xs (x ∷ ys) ⟩
+    reverse xs ++ (x ∷ ys)
+  ≡⟨⟩
+    reverse xs ++ ([ x ] ++ ys)
+  ≡⟨ ++-assoc (reverse xs) ([ x ]) ys ⟩
+    (reverse xs ++ [ x ]) ++ ys
+  ≡⟨⟩
+    reverse (x ∷ xs) ++ ys
+  ∎
+\end{code}
+The proof is by induction on the first argument.
+The base case instantiates to `[]`, and follows by straightforward computation.
+The inductive case instantiates to `x ∷ xs` and follows by the inductive
+hypothesis and associativity of append.  When we invoke the inductive hypothesis,
+the second argument actually becomes *larger*, but this is not a problem because
+the argument on which we induct becomes *smaller*.
+
+Generalising on an auxiliary argument, which becomes larger as the argument on
+which we recurse or induct becomes smaller, is a common trick. It belongs in
+you sling of arrows, ready to slay the right problem.
+
+Having defined shunt be generalisation, it is now easy to respecialise to
+give a more efficient definition of reverse.
+\begin{code}
+reverse′ : ∀ {A : Set} → List A → List A
+reverse′ xs = shunt xs []
+\end{code}
+
+Given our previous lemma, it is straightforward to show
+the two definitions equivalent.
+\begin{code}
+reverses : ∀ {A : Set} (xs : List A) → reverse′ xs ≡ reverse xs
+reverses xs =
+  begin
+    reverse′ xs
+  ≡⟨⟩
+    shunt xs []
+  ≡⟨ shunt-reverse xs [] ⟩
+    reverse xs ++ []
+  ≡⟨ ++-identityʳ (reverse xs) ⟩
+    reverse xs
+  ∎
+\end{code}
+
+Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`.
+\begin{code}
+ex₅ : reverse′ ([ 0 , 1 , 2 ]) ≡ [ 2 , 1 , 0 ]
+ex₅ =
+  begin
+    reverse′ (0 ∷ 1 ∷ 2 ∷ [])
+  ≡⟨⟩
+    shunt (0 ∷ 1 ∷ 2 ∷ []) []
+  ≡⟨⟩
+    shunt (1 ∷ 2 ∷ []) (0 ∷ [])
+  ≡⟨⟩
+    shunt (2 ∷ []) (1 ∷ 0 ∷ [])
+  ≡⟨⟩
+    shunt [] (2 ∷ 1 ∷ 0 ∷ [])
+  ≡⟨⟩  
+    2 ∷ 1 ∷ 0 ∷ []
+  ∎
+\end{code}
+Now the time to reverse a list is linear in the length of the list.
 
 ## Map
 
@@ -397,49 +509,13 @@ foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
 foldr c n []       = n
 foldr c n (x ∷ xs) = c x (foldr c n xs)
 
-ex₅ : map (λ x → x * x) ([ 1 , 2 , 3 ]) ≡ [ 1 , 4 , 9 ]
-ex₅ = refl
+ex₈ : map (λ x → x * x) ([ 1 , 2 , 3 ]) ≡ [ 1 , 4 , 9 ]
+ex₈ = refl
 
-ex₆ : foldr _+_ 0 ([ 1 , 2 , 3 ]) ≡ 6
-ex₆ = refl
+ex₉ : foldr _+_ 0 ([ 1 , 2 , 3 ]) ≡ 6
+ex₉ = refl
 \end{code}
 
-\begin{code}
-downto : ℕ → List ℕ
-downto zero = []
-downto (suc n) = suc n ∷ downto n
-
-sum : List ℕ → ℕ
-sum = foldr _+_ 0
-
-infix 6 _+
-
-_+ : ℕ → ℕ → ℕ
-(m +) n = m + n
-
-cong2 : ∀ {A B C : Set} {x x′ : A} {y y′ : B} →
-  (f : A → B → C) → (x ≡ x′) → (y ≡ y′) → (f x y ≡ f x′ y′)
-cong2 f x≡x′ y≡y′ rewrite x≡x′ | y≡y′ = refl
-
-sum-downto : ∀ (n : ℕ) → sum (downto n) * 2 ≡ suc n * n
-sum-downto zero = refl
-sum-downto (suc n) = 
-  begin
-    sum (downto (suc n)) * 2
-  ≡⟨⟩
-    sum (suc n ∷ downto n) * 2
-  ≡⟨⟩
-    (suc n + sum (downto n)) * 2
-  ≡⟨ distribʳ-*-+ 2 (suc n) (sum (downto n)) ⟩
-    suc n * 2 + sum (downto n) * 2
-  ≡⟨ cong (suc n * 2 +) (sum-downto n) ⟩
-    suc n * 2 + suc n * n
-  ≡⟨ cong2 _+_ (*-comm (suc n) 2) (*-comm (suc n) n) ⟩
-    2 * suc n + n * suc n
-  ≡⟨ sym (distribʳ-*-+ (suc n) 2 n)⟩
-    (2 + n) * suc n
-  ∎
-\end{code}
 
 
 
