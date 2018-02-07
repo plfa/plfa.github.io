@@ -14,7 +14,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Nat.Properties.Simple using (distribʳ-*-+)
+open import Data.Nat.Properties.Simple using (distribʳ-*-+; *-comm)
 \end{code}
 
 ## Lists
@@ -380,33 +380,6 @@ of the first list, reversing a list in this way takes
 time proportional to the *square* of the length of the
 list, since `1 + ⋯ + n ≡ n * (n + 1) / 2`.
 
-\begin{code}
-upto : ℕ → List ℕ
-upto zero = []
-upto (suc n) = suc n ∷ upto n
-
-sum : List ℕ → ℕ
-sum [] = zero
-sum (x ∷ xs) = x + sum xs
-
-sum-upto : ∀ (n : ℕ) → 2 * sum (upto n) ≡ n * suc n
-sum-upto zero = refl
-sum-upto (suc n) = {!!}
-{-
-  begin
-    2 * sum (upto (suc n))
-  ≡⟨⟩
-    2 * sum (suc n ∷ upto n)
-  ≡⟨⟩
-    2 * (suc n + sum (upto n))
-  ≡⟨ +-dist-* 2 (suc n) (sum (upto n)) ⟩
-    (2 * suc n) + (2 * sum (upto n))
-  ≡⟨ cong (_+_ (2 * suc n)) (sup-upto n) ⟩
-    (2 * suc n) + (n * suc n)
-  ≡⟨ sym (+-dist-* 
--}
-\end{code}
-
 
 
 ## Reverse
@@ -430,6 +403,45 @@ ex₅ = refl
 ex₆ : foldr _+_ 0 ([ 1 , 2 , 3 ]) ≡ 6
 ex₆ = refl
 \end{code}
+
+\begin{code}
+downto : ℕ → List ℕ
+downto zero = []
+downto (suc n) = suc n ∷ downto n
+
+sum : List ℕ → ℕ
+sum = foldr _+_ 0
+
+infix 6 _+
+
+_+ : ℕ → ℕ → ℕ
+(m +) n = m + n
+
+cong2 : ∀ {A B C : Set} {x x′ : A} {y y′ : B} →
+  (f : A → B → C) → (x ≡ x′) → (y ≡ y′) → (f x y ≡ f x′ y′)
+cong2 f x≡x′ y≡y′ rewrite x≡x′ | y≡y′ = refl
+
+sum-downto : ∀ (n : ℕ) → sum (downto n) * 2 ≡ suc n * n
+sum-downto zero = refl
+sum-downto (suc n) = 
+  begin
+    sum (downto (suc n)) * 2
+  ≡⟨⟩
+    sum (suc n ∷ downto n) * 2
+  ≡⟨⟩
+    (suc n + sum (downto n)) * 2
+  ≡⟨ distribʳ-*-+ 2 (suc n) (sum (downto n)) ⟩
+    suc n * 2 + sum (downto n) * 2
+  ≡⟨ cong (suc n * 2 +) (sum-downto n) ⟩
+    suc n * 2 + suc n * n
+  ≡⟨ cong2 _+_ (*-comm (suc n) 2) (*-comm (suc n) n) ⟩
+    2 * suc n + n * suc n
+  ≡⟨ sym (distribʳ-*-+ (suc n) 2 n)⟩
+    (2 + n) * suc n
+  ∎
+\end{code}
+
+
 
 
 \begin{code}
