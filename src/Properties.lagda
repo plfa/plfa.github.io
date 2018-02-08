@@ -257,7 +257,7 @@ becomes:
 
 The proof that a term is equal to itself is written `refl`.
 
-The inductive case corresponds to instantiating `m` by `suc zero`,
+The inductive case corresponds to instantiating `m` by `suc m`,
 so what we are required to prove is:
 
     (suc m + n) + p ≡ suc m + (n + p)
