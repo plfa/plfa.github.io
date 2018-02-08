@@ -141,13 +141,13 @@ _++_ : ∀ {A : Set} → List A → List A → List A
 \end{code}
 The type `A` is an implicit argument to append, making it
 a *polymorphic* function (one that can be used at many types).
-The empty list appended to a list `ys` is the same as `ys`.
-A list with head `x` and tail `xs` appended to a list `ys`
-yields a list with head `x` and with tail consisting of
-`xs` appended to `ys`.
+The empty list appended to another list yields the other list.
+A non-empty list appended to another list yields a list with
+head the same as the head of the first list and
+tail the same as the tail of the first list appended to the second list.
 
 Here is an example, showing how to compute the result
-of appending the list `[ 0 , 1 , 2 ]` to the list `[ 3 , 4 ]`.
+of appending two lists.
 \begin{code}
 ex₂ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
 ex₂ =
@@ -163,7 +163,7 @@ ex₂ =
     0 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ []
   ∎
 \end{code}
-Appending two lists requires time proportional to the
+Appending two lists requires time linear in the
 number of elements in the first list.
 
 Here are the sections for append.
@@ -264,11 +264,10 @@ length (x ∷ xs) = suc (length xs)
 \end{code}
 Again, it takes an implicit parameter `A`.
 The length of the empty list is zero.
-The length of the list with head `x` and tail `xs`
-is one greater than the length of its tail.
+The length of a non-empty list
+is one greater than the length of the tail of the list.
 
-Here is an example showing how to compute the length
-of `[ 0 , 1 , 2 ]`.
+Here is an example showing how to compute the length of a list.
 \begin{code}
 ex₃ : length ([ 0 , 1 , 2 ]) ≡ 3
 ex₃ =
@@ -285,7 +284,7 @@ ex₃ =
   ∎
 \end{code}
 Computing the length of a list requires time
-proportional to the number of elements in the list.
+linear in the number of elements in the list.
 
 In the second-to-last line, we cannot write
 simply `length []`  but must instead write
@@ -340,11 +339,11 @@ reverse [] = []
 reverse (x ∷ xs) = reverse xs ++ [ x ]
 \end{code}
 The reverse of the empty list is the empty list.
-The reverse of the list with head `x` and tail `xs`
+The reverse of a non-empty list
 is the reverse of its tail appended to a unit list
 containing its head.
 
-Here is an example showing how to reverse the list `[ 0 , 1 , 2 ]`.
+Here is an example showing how to reverse a list.
 \begin{code}
 ex₄ : reverse ([ 0 , 1 , 2 ]) ≡ [ 2 , 1 , 0 ]
 ex₄ =
@@ -379,7 +378,7 @@ ex₄ =
 Reversing a list in this way takes time *quadratic* in the length of
 the list. This is because reverse ends up appending lists of lengths
 `1`, `2`, up to `n - 1`, where `n` is the length of the list being
-reversed, append takes time proportional to the length of the first
+reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n` is `n * (n + 1) / 2`.
 (We will validate that last fact later in this chapter.)
 
@@ -495,25 +494,154 @@ Now the time to reverse a list is linear in the length of the list.
 
 ## Map
 
-## Fold
-
+Map applies a function to every element of a list to generate a corresponding list.
+Map is an example of a *higher-order function*, one which takes a function as an
+argument and returns a function as a result.
 \begin{code}
 map : ∀ {A B : Set} → (A → B) → List A → List B
 map f []       = []
 map f (x ∷ xs) = f x ∷ map f xs
+\end{code}
+Map of the empty list is the empty list.
+Map of a non-empty list yields a list
+with head the same as the function applied to the head of the given list,
+and tail the same as map of the function applied to the tail of the given list.
 
-foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
-foldr c n []       = n
-foldr c n (x ∷ xs) = c x (foldr c n xs)
+Here is an example showing how to use map to increment every element of a list.
+\begin{code}
+ex₆ : map suc ([ 0 , 1 , 2 ]) ≡ [ 1 , 2 , 3 ]
+ex₆ =
+  begin
+    map suc (0 ∷ 1 ∷ 2 ∷ [])
+  ≡⟨⟩
+    suc 0 ∷ map suc (1 ∷ 2 ∷ [])
+  ≡⟨⟩
+    suc 0 ∷ suc 1 ∷ map suc (2 ∷ [])
+  ≡⟨⟩
+    suc 0 ∷ suc 1 ∷ suc 2 ∷ map suc []
+  ≡⟨⟩
+    suc 0 ∷ suc 1 ∷ suc 2 ∷ []
+  ∎
+\end{code}
+Map requires time linear in the length of the list.
 
-ex₈ : map (λ x → x * x) ([ 1 , 2 , 3 ]) ≡ [ 1 , 4 , 9 ]
-ex₈ = refl
+It is often convenient to exploit currying by applying
+map to a function to yield a new function, and at a later
+point applying the resulting function.
+\begin{code}
+sucs : List ℕ → List ℕ
+sucs = map suc
 
-ex₉ : foldr _+_ 0 ([ 1 , 2 , 3 ]) ≡ 6
-ex₉ = refl
+ex₇ : sucs ([ 0 , 1 , 2 ]) ≡ [ 1 , 2 , 3 ]
+ex₇ = ex₆
 \end{code}
 
+Any type that is parameterised on another type, such as lists, has a
+corresponding map, which accepts a function and returns a function
+from the type parameterised on the domain of the function to the type
+parameterised on the range of the function. Further, a type that is
+parameterised on *n* types will have a map that is parameterised on
+*n* functions.
 
+
+*Exercise*
+
+The composition of two functions applies one and then the other.
+\begin{code}
+_∘_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
+(f ∘ g) x = f (g x)
+\end{code}
+Prove that the map of a composition is equal to the composition of two maps.
+
+    map (f ∘ g) ≡ map f ∘ map g
+
+The last step of the proof requires extensionality.
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} → {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
+\end{code}
+
+*Exercise*
+
+Prove the following relationship between map and append.
+
+    map f (xs ++ ys) ≡ map f xs ++ map f ys
+
+
+## Fold
+
+Fold takes an operator and a value, and uses the operator to combine
+each of the elements of the list, taking the given value as the result
+for the empty list.  
+\begin{code}
+foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
+foldr _⊗_ e []       = e
+foldr _⊗_ e (x ∷ xs) = x ⊗ foldr _⊗_ e xs
+\end{code}
+Fold of the empty list is the given value.
+Fold of a non-empty list uses the operator to combine
+the head of the list and the fold of the tail of the list.
+
+Here is an example showing how to use fold to find the sum of a list.
+\begin{code}
+ex₈ : foldr _+_ 0 ([ 1 , 2 , 3 , 4 ]) ≡ 10
+ex₈ =
+  begin
+    foldr _+_ 0 (1 ∷ 2 ∷ 3 ∷ 4 ∷ [])
+  ≡⟨⟩
+    1 + foldr _+_ 0 (2 ∷ 3 ∷ 4 ∷ [])
+  ≡⟨⟩
+    1 + (2 + foldr _+_ 0 (3 ∷ 4 ∷ []))
+  ≡⟨⟩
+    1 + (2 + (3 + foldr _+_ 0 (4 ∷ [])))
+  ≡⟨⟩
+    1 + (2 + (3 + (4 + foldr _+_ 0 [])))
+  ≡⟨⟩
+    1 + (2 + (3 + (4 + 0)))
+  ∎    
+\end{code}
+Fold requires time linear in the length of the list.
+
+It is often convenient to exploit currying by applying
+fold to an operator and a value to yield a new function,
+and at a later point applying the resulting function.
+\begin{code}
+sum : List ℕ → ℕ
+sum = foldr _+_ 0
+
+ex₉ : sum ([ 1 , 2 , 3 , 4 ]) ≡ 10
+ex₉ = ex₈
+\end{code}
+
+Just as the list type has two constructors, `[]` and `_∷_`,
+so the fold function takes two arguments, `e` and `_⊕_`
+(in addition to the list argument).
+In general, a data type with *n* constructors will have
+a corresponding fold function that takes *n* arguments.
+
+*Exercise*
+
+Use fold to define a function to find the product of a list of numbers.
+
+    product ([ 1 , 2 , 3 , 4 ]) ≡ 24
+
+
+## Monoids
+
+Typically when we use a fold the operator is associative and the
+value is a left and right identity for the value, meaning that the
+operator and the value form a *monoid*.
+
+We can define a monoid as a suitable record type.
+\begin{code}
+{-
+Monoid : ∀ (A : Set) → (A → A → A) → A → Set
+Monoid _⊗_ e =
+  record
+    ⊗-assoc : ∀ (x y z : A) → x ⊗ (y ⊗ z) ≡ (x ⊗ y) ⊗ z
+    ⊗-identity
+-}
+\end{code}
 
 
 
