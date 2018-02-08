@@ -14,7 +14,6 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Nat.Properties.Simple using (distribʳ-*-+; *-comm)
 \end{code}
 
 ## Lists
@@ -72,8 +71,6 @@ of `List A` by `List ℕ`, say.
 Including the lines
 \begin{code}
 {-# BUILTIN LIST List #-}
-{-# BUILTIN NIL  []   #-}
-{-# BUILTIN CONS _∷_  #-}
 \end{code}
 tells Agda that the type `List` corresponds to the Haskell type
 list, and the constructors `[]` and `_∷_` correspond to nil and
