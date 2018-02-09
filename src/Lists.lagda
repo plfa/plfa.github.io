@@ -108,26 +108,6 @@ The empty list must be written `[]`.  Writing `[ ]` fails
 to parse.
 
 
-## Sections
-
-Richard Bird introduced a convenient notation for partially applied binary
-operators, called *sections*.  If `_⊕_` is an arbitrary binary operator, we
-write `(x ⊕)` for the function which applied to `y` returns `x ⊕ y`, and
-we write `(⊕ y)` for the function which applied to `x` also returns `x ⊕ y`.
-
-For example, here are definitions of the sections for cons.
-\begin{code}
-infix 5 _∷ ∷_
-
-_∷ : ∀ {A : Set} → A → List A → List A
-(x ∷) xs = x ∷ xs
-
-∷_ : ∀ {A : Set} → List A → A → List A
-(∷ xs) x = x ∷ xs
-\end{code}
-These will prove useful in writing congruences.
-
-
 ## Append
 
 Our first function on lists is written `_++_` and pronounced
@@ -166,18 +146,6 @@ ex₂ =
 Appending two lists requires time linear in the
 number of elements in the first list.
 
-Here are the sections for append.
-\begin{code}
-infix 5 _++ ++_ 
-
-_++ : ∀ {A : Set} → List A → List A → List A
-(xs ++) ys = xs ++ ys
-
-++_ : ∀ {A : Set} → List A → List A → List A
-(++ ys) xs = xs ++ ys
-\end{code}
-Again, these will prove useful in writing congruences.
-
 
 ## Reasoning about append
 
@@ -198,7 +166,7 @@ about numbers.  Here is the proof that append is associative.
     (x ∷ xs) ++ (ys ++ zs)
   ≡⟨⟩
     x ∷ (xs ++ (ys ++ zs))
-  ≡⟨ cong (x ∷) (++-assoc xs ys zs) ⟩
+  ≡⟨ cong (x ∷_) (++-assoc xs ys zs) ⟩
     x ∷ ((xs ++ ys) ++ zs)
   ≡⟨⟩
     ((x ∷ xs) ++ ys) ++ zs
@@ -210,17 +178,20 @@ The inductive case instantiates to `x ∷ xs`,
 and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `++-assoc xs ys zs`.
-Applying the congruence `cong (x ∷)` promotes the inductive hypothesis
+
+Agda supports a variant of the *section* notation introduced by Richard Bird.
+If `_⊕_` is an arbitrary binary operator, we
+write `(x ⊕_)` for the function which applied to `y` returns `x ⊕ y`, and
+we write `(_⊕ y)` for the function which applied to `x` also returns `x ⊕ y`.
+Applying the congruence `cong (x ∷_)` promotes the inductive hypothesis
 
     xs ++ (ys ++ zs) ≡ (xs ++ ys) ++ zs
 
-to the equivalence needed in the proof
+to the equivalence
 
     x ∷ (xs ++ (ys ++ zs)) ≡ x ∷ ((xs ++ ys) ++ zs)
 
-The section notation `(x ∷)` makes it convenient to invoke the congruence.
-Else we would need to write `cong (_∷_ x)` or `cong (λ xs → x ∷ xs)`, each
-of which is longer and less pleasing to read.
+which is needed in the proof.
 
 It is also easy to show that `[]` is a left and right identity for `_++_`.
 That it is a left identity is immediate from the definition.
@@ -247,7 +218,7 @@ That it is a right identity follows by simple induction.
     (x ∷ xs) ++ []
   ≡⟨⟩
     x ∷ (xs ++ [])
-  ≡⟨ cong (x ∷) (++-identityʳ xs) ⟩
+  ≡⟨ cong (x ∷_) (++-identityʳ xs) ⟩
     x ∷ xs
   ∎
 \end{code}
@@ -634,16 +605,14 @@ operator and the value form a *monoid*.
 
 We can define a monoid as a suitable record type.
 \begin{code}
-{-
-Monoid : ∀ (A : Set) → (A → A → A) → A → Set
-Monoid _⊗_ e =
-  record
+record Monoid {A : Set} (_⊗_ : A → A → A) (e : A) : Set where
+  field
     ⊗-assoc : ∀ (x y z : A) → x ⊗ (y ⊗ z) ≡ (x ⊗ y) ⊗ z
-    ⊗-identity
--}
+    ⊗-identityˡ : ∀ (x : A) → e ⊗ x ≡ x
+    ⊗-identityʳ : ∀ (x : A) → x ⊗ e ≡ x
 \end{code}
 
-
+## Element
 
 \begin{code}
 data _∈_ {A : Set} (x : A) : List A → Set where
