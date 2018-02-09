@@ -281,11 +281,10 @@ that `even (n + m)` holds.
 
 Agda includes special notation to support just this
 kind of reasoning.  To enable this notation, we use
-pragmas to tell Agda which types and constructors
-correspond to equivalence and refl.
+pragmas to tell Agda which type
+corresponds to equivalence.
 \begin{code}
 {-# BUILTIN EQUALITY _≡_ #-}
-{-# BUILTIN REFL refl #-}
 \end{code}
 
 We can then prove the desired property as follows.
