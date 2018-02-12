@@ -14,6 +14,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Properties using (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 \end{code}
 
 ## Lists
@@ -69,9 +70,9 @@ the second form it would be permitted to replace an occurrence
 of `List A` by `List ℕ`, say.
 
 Including the lines
-\begin{code}
-{-# BUILTIN LIST List #-}
-\end{code}
+
+    {-# BUILTIN LIST List #-}
+
 tells Agda that the type `List` corresponds to the Haskell type
 list, and the constructors `[]` and `_∷_` correspond to nil and
 cons respectively, allowing a more efficient representation of lists.
@@ -152,24 +153,24 @@ number of elements in the first list.
 We can reason about lists in much the same way that we reason
 about numbers.  Here is the proof that append is associative.
 \begin{code}
-++-assoc : ∀ {A : Set} (xs ys zs : List A) → xs ++ (ys ++ zs) ≡ (xs ++ ys) ++ zs
+++-assoc : ∀ {A : Set} (xs ys zs : List A) → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
 ++-assoc [] ys zs =
   begin
-    [] ++ (ys ++ zs)
+    ([] ++ ys) ++ zs
   ≡⟨⟩
     ys ++ zs
   ≡⟨⟩
-    ([] ++ ys) ++ zs
+    [] ++ (ys ++ zs)
   ∎
 ++-assoc (x ∷ xs) ys zs =
   begin
-    (x ∷ xs) ++ (ys ++ zs)
+    (x ∷ xs ++ ys) ++ zs
   ≡⟨⟩
-    x ∷ (xs ++ (ys ++ zs))
-  ≡⟨ cong (x ∷_) (++-assoc xs ys zs) ⟩
     x ∷ ((xs ++ ys) ++ zs)
+  ≡⟨ cong (x ∷_) (++-assoc xs ys zs) ⟩
+    x ∷ (xs ++ (ys ++ zs))
   ≡⟨⟩
-    ((x ∷ xs) ++ ys) ++ zs
+    x ∷ xs ++ (ys ++ zs)
   ∎
 \end{code}
 The proof is by induction on the first argument. The base case instantiates
@@ -355,14 +356,14 @@ list, and the sum of the numbers up to `n` is `n * (n + 1) / 2`.
 
 ## Reasoning about reverse
 
-*Exercise*
+*Exercise* `reverse-++-commute`
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first.
 
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
-*Exercise*
+*Exercise* `reverse-involutive`
 
 A function is an *involution* if when applied twice it acts
 as the identity function.  Show that reverse is an involution.
@@ -403,7 +404,7 @@ shunt-reverse (x ∷ xs) ys =
     reverse xs ++ (x ∷ ys)
   ≡⟨⟩
     reverse xs ++ ([ x ] ++ ys)
-  ≡⟨ ++-assoc (reverse xs) ([ x ]) ys ⟩
+  ≡⟨ sym (++-assoc (reverse xs) ([ x ]) ys) ⟩
     (reverse xs ++ [ x ]) ++ ys
   ≡⟨⟩
     reverse (x ∷ xs) ++ ys
@@ -515,7 +516,7 @@ parameterised on *n* types will have a map that is parameterised on
 *n* functions.
 
 
-*Exercise*
+*Exercise* `map-compose`
 
 The composition of two functions applies one and then the other.
 \begin{code}
@@ -532,7 +533,7 @@ postulate
   extensionality : ∀ {A B : Set} → {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
 \end{code}
 
-*Exercise*
+*Exercise* `map-++-commute`
 
 Prove the following relationship between map and append.
 
@@ -590,11 +591,25 @@ so the fold function takes two arguments, `e` and `_⊕_`
 In general, a data type with *n* constructors will have
 a corresponding fold function that takes *n* arguments.
 
-*Exercise*
+*Exercise* (`product`)
 
 Use fold to define a function to find the product of a list of numbers.
 
     product ([ 1 , 2 , 3 , 4 ]) ≡ 24
+
+*Exercise* (`foldr-++`)
+
+Show that fold and append are related as follows.
+
+    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+
+*Exercise* (`map-is-foldr`)  <!-- `mapIsFold` in Data.List.Properties -->
+
+Show that map can be defined using fold.
+
+    map f ≡ foldr (λ x xs → f x ∷ xs) []
+
+This requires extensionality.
 
 
 ## Monoids
@@ -607,10 +622,74 @@ We can define a monoid as a suitable record type.
 \begin{code}
 record Monoid {A : Set} (_⊗_ : A → A → A) (e : A) : Set where
   field
-    ⊗-assoc : ∀ (x y z : A) → x ⊗ (y ⊗ z) ≡ (x ⊗ y) ⊗ z
-    ⊗-identityˡ : ∀ (x : A) → e ⊗ x ≡ x
-    ⊗-identityʳ : ∀ (x : A) → x ⊗ e ≡ x
+    assoc : ∀ (x y z : A) → (x ⊗ y) ⊗ z ≡ x ⊗ (y ⊗ z)
+    identityˡ : ∀ (x : A) → e ⊗ x ≡ x
+    identityʳ : ∀ (x : A) → x ⊗ e ≡ x
+
+open Monoid
 \end{code}
+
+As examples, sum and zero, multiplication and one, and append and the empty
+list, are all examples of monoids.
+\begin{code}
++-monoid : Monoid _+_ 0
++-monoid =
+  record
+    { assoc = +-assoc
+    ; identityˡ = +-identityˡ
+    ; identityʳ = +-identityʳ
+    }
+
+*-monoid : Monoid _*_ 1
+*-monoid =
+  record
+    { assoc = *-assoc
+    ; identityˡ = *-identityˡ
+    ; identityʳ = *-identityʳ
+    }
+
+++-monoid : ∀ {A : Set} → Monoid {List A} _++_ []
+++-monoid =
+  record
+    { assoc = ++-assoc
+    ; identityˡ = ++-identityˡ
+    ; identityʳ = ++-identityʳ
+    }
+\end{code}
+
+If `_⊕_` and `e` form a monoid, then we can re-express fold on the
+same operator and an arbitrary value.
+\begin{code}
+fold-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → Monoid _⊗_ e →
+  ∀ (y : A) (xs : List A) → foldr _⊗_ e xs ⊗ y ≡ foldr _⊗_ y xs
+fold-monoid _⊗_ e ⊗-monoid y [] =
+  begin
+    foldr _⊗_ e [] ⊗ y
+  ≡⟨⟩
+    (e ⊗ y)
+  ≡⟨ identityˡ ⊗-monoid y ⟩
+    y
+  ≡⟨⟩
+   foldr _⊗_ y []
+  ∎
+fold-monoid _⊗_ e ⊗-monoid y (x ∷ xs) =
+  begin
+    foldr _⊗_ e (x ∷ xs) ⊗ y
+  ≡⟨⟩
+    (x ⊗ foldr _⊗_ e xs) ⊗ y
+  ≡⟨ assoc ⊗-monoid x (foldr _⊗_ e xs) y ⟩
+    x ⊗ (foldr _⊗_ e xs ⊗ y)
+  ≡⟨ cong (x ⊗_) (fold-monoid _⊗_ e ⊗-monoid y xs) ⟩
+    x ⊗ (foldr _⊗_ y xs)
+  ≡⟨⟩
+    foldr _⊗_ y (x ∷ xs)
+  ∎
+\end{code}
+
+As a consequence of `foldr-++` and `fold-monoid`, it is easy to show
+
+    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+
 
 ## Element
 
@@ -625,3 +704,4 @@ infix 4 _∈_
 ## Unicode
 
     ∷  U+2237  PROPORTION  (\::)
+    ⊗  (\otimes)
