@@ -18,7 +18,6 @@ open import Data.Nat.Properties using (+-assoc; +-identityˡ; +-identityʳ; *-as
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Isomorphism using (_≃_)
-open import Function using (_∘′_)
 \end{code}
 
 ## Lists
@@ -83,34 +82,26 @@ cons respectively, allowing a more efficient representation of lists.
 
 ## List syntax
 
-We can write lists more conveniently be introducing the following definitions.
+We can write lists more conveniently by introducing the following definitions.
 \begin{code}
-infix 5 [_
-infixr 6 _,_
-infix 7 _]
+[_] : ∀ {A : Set} → A → List A
+[ z ] = z ∷ []
 
-[_ : ∀ {A : Set} → List A → List A
-[ xs  =  xs
+[_,_] : ∀ {A : Set} → A → A → List A
+[ y , z ] = y ∷ z ∷ []
 
-_,_ : ∀ {A : Set} → A → List A → List A
-x , xs = x ∷ xs
+[_,_,_] : ∀ {A : Set} → A → A → A → List A
+[ x , y , z ] = x ∷ y ∷ z ∷ []
 
-_] : ∀ {A : Set} → A → List A
-x ] = x ∷ []
+[_,_,_,_] : ∀ {A : Set} → A → A → A → A → List A
+[ w , x , y , z ] = w ∷ x ∷ y ∷ z ∷ []
+
+[_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → List A
+[ v , w , x , y , z ] = v ∷ w ∷ x ∷ y ∷ z ∷ []
+
+[_,_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → A → List A
+[ u , v , w , x , y , z ] = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 \end{code}
-
-These permit lists to be written in traditional notation.
-\begin{code}
-ex₁ : [ 0 , 1 , 2 ] ≡ 0 ∷ 1 ∷ 2 ∷ []
-ex₁ = refl
-\end{code}
-The precedences mean that `[ 0 , 1 , 2 ]` parses as
-`[ (0 , (1 , (2 ])))`, which evaluates to `0 ∷ 1 ∷ 2 ∷ []`,
-as desired.
-
-Note our syntactic trick only applies to non-empty lists.
-The empty list must be written `[]`.  Writing `[ ]` fails
-to parse.
 
 
 ## Append
@@ -245,7 +236,7 @@ is one greater than the length of the tail of the list.
 
 Here is an example showing how to compute the length of a list.
 \begin{code}
-ex₃ : length ([ 0 , 1 , 2 ]) ≡ 3
+ex₃ : length [ 0 , 1 , 2 ] ≡ 3
 ex₃ =
   begin
     length (0 ∷ 1 ∷ 2 ∷ [])
@@ -321,7 +312,7 @@ containing its head.
 
 Here is an example showing how to reverse a list.
 \begin{code}
-ex₄ : reverse ([ 0 , 1 , 2 ]) ≡ [ 2 , 1 , 0 ]
+ex₄ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
 ex₄ =
   begin
     reverse (0 ∷ 1 ∷ 2 ∷ [])
@@ -408,7 +399,7 @@ shunt-reverse (x ∷ xs) ys =
     reverse xs ++ (x ∷ ys)
   ≡⟨⟩
     reverse xs ++ ([ x ] ++ ys)
-  ≡⟨ sym (++-assoc (reverse xs) ([ x ]) ys) ⟩
+  ≡⟨ sym (++-assoc (reverse xs) [ x ] ys) ⟩
     (reverse xs ++ [ x ]) ++ ys
   ≡⟨⟩
     reverse (x ∷ xs) ++ ys
@@ -450,7 +441,7 @@ reverses xs =
 
 Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`.
 \begin{code}
-ex₅ : reverse′ ([ 0 , 1 , 2 ]) ≡ [ 2 , 1 , 0 ]
+ex₅ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
 ex₅ =
   begin
     reverse′ (0 ∷ 1 ∷ 2 ∷ [])
@@ -485,7 +476,7 @@ and tail the same as map of the function applied to the tail of the given list.
 
 Here is an example showing how to use map to increment every element of a list.
 \begin{code}
-ex₆ : map suc ([ 0 , 1 , 2 ]) ≡ [ 1 , 2 , 3 ]
+ex₆ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
 ex₆ =
   begin
     map suc (0 ∷ 1 ∷ 2 ∷ [])
@@ -508,7 +499,7 @@ point applying the resulting function.
 sucs : List ℕ → List ℕ
 sucs = map suc
 
-ex₇ : sucs ([ 0 , 1 , 2 ]) ≡ [ 1 , 2 , 3 ]
+ex₇ : sucs [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
 ex₇ = ex₆
 \end{code}
 
@@ -524,9 +515,12 @@ parameterised on *n* types will have a map that is parameterised on
 
 The composition of two functions applies one and then the other.
 \begin{code}
-_∘_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
+_∘_ : ∀ {ℓ₁ ℓ₂ ℓ₃} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃} → (B → C) → (A → B) → (A → C)
 (f ∘ g) x = f (g x)
 \end{code}
+Unlike most of our definitions, this one is parameterised with respect to levels,
+which will prove convenient later.
+
 Prove that the map of a composition is equal to the composition of two maps.
 
     map (f ∘ g) ≡ map f ∘ map g
@@ -560,7 +554,7 @@ the head of the list and the fold of the tail of the list.
 
 Here is an example showing how to use fold to find the sum of a list.
 \begin{code}
-ex₈ : foldr _+_ 0 ([ 1 , 2 , 3 , 4 ]) ≡ 10
+ex₈ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
 ex₈ =
   begin
     foldr _+_ 0 (1 ∷ 2 ∷ 3 ∷ 4 ∷ [])
@@ -585,7 +579,7 @@ and at a later point applying the resulting function.
 sum : List ℕ → ℕ
 sum = foldr _+_ 0
 
-ex₉ : sum ([ 1 , 2 , 3 , 4 ]) ≡ 10
+ex₉ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
 ex₉ = ex₈
 \end{code}
 
@@ -599,7 +593,7 @@ a corresponding fold function that takes *n* arguments.
 
 Use fold to define a function to find the product of a list of numbers.
 
-    product ([ 1 , 2 , 3 , 4 ]) ≡ 24
+    product [ 1 , 2 , 3 , 4 ] ≡ 24
 
 *Exercise* (`foldr-++`)
 
@@ -709,7 +703,7 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
   ∎
 \end{code}
     
-## All and Any
+## All
 
 We can also define predicates over lists. Two of the most important are `All` and `Any`.
 
@@ -731,11 +725,13 @@ than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
 `n`, and that if `m≤n` proves `m ≤ n` then `s≤s m≤n` proves `suc m ≤
 suc n`, for any `m` and `n`.
 \begin{code}
-ex₁₀ : All (_≤ 2) ([ 0 , 1 , 2 ])
+ex₁₀ : All (_≤ 2) [ 0 , 1 , 2 ]
 ex₁₀ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
 \end{code}
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
+
+## Any
 
 Predicate `Any P` holds if predicate `P` is satisfied by some element of a list.
 \begin{code}
@@ -755,26 +751,29 @@ x ∈ xs = Any (x ≡_) xs
 _∉_ : ∀ {A : Set} (x : A) (xs : List A) → Set
 x ∉ xs = ¬ (x ∈ xs)
 \end{code}
-For example, we have `0 ∈ ([ 0 , 1 , 0 ])`.  Indeed, we can demonstrate
+For example, zero is an element of the list `[ 0 , 1 , 0 , 2 ]`.  Indeed, we can demonstrate
 this fact in two different ways, corresponding to the two different
 occurrences of zero in the list, as the first element and as the third element.
 \begin{code}
-ex₁₁ ex₁₂ : 0 ∈ ([ 0 , 1 , 0 ])
+ex₁₁ ex₁₂ : 0 ∈ [ 0 , 1 , 0 , 2 ]
 ex₁₁ = here refl
 ex₁₂ = there (there (here refl))
 \end{code}
-Further, we can demonstrate that two is not in the list, because
+Further, we can demonstrate that three is not in the list, because
 any possible proof that it is in the list leads to contradiction.
 \begin{code}
-ex₁₃ : 2 ∉ ([ 0 , 1 , 0 ])
+ex₁₃ : 3 ∉ [ 0 , 1 , 0 , 2 ]
 ex₁₃ (here ())
 ex₁₃ (there (here ()))
 ex₁₃ (there (there (here ())))
-ex₁₃ (there (there (there ())))
+ex₁₃ (there (there (there (here ()))))
+ex₁₃ (there (there (there (there ()))))
 \end{code}
-The four occurrences of `()` attest to the fact that there is no
-possible evidence for the facts `2 ≡ 0`, `2 ≡ 1`, `2 ≡ 0`, and
-`2 ∈ []`, respectively.
+The five occurrences of `()` attest to the fact that there is no
+possible evidence for the facts `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
+`3 ∈ []`, respectively.
+
+## Any and append
 
 A predicate holds for every element of one list appended to another if and
 only if it holds for every element of each list.  Indeed, an even stronger
@@ -823,12 +822,12 @@ Show that `Any` and `All` satisfy a version of De Morgan's Law.
 
 \begin{code}
 postulate
-  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → ¬ Any P xs ≃ All (λ x → ¬ P x) xs
+  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → (¬_ ∘ Any P) xs ≃ All (¬_ ∘ P) xs
 \end{code}
 
 Do we also have the following?
 
-    ¬ All P xs ≃ Any (λ x → ¬ P x) xs
+    (¬_ ∘ All P) xs ≃ Any (¬_ ∘ P) xs
 
 If so, prove; if not, explain why.
 
@@ -836,4 +835,6 @@ If so, prove; if not, explain why.
 ## Unicode
 
     ∷  U+2237  PROPORTION  (\::)
-    ⊗  (\otimes)
+    ⊗  U+2297  CIRCLED TIMES  (\otimes)
+    ∈  U+2208  ELEMENT OF  (\in)
+    ∉  U+2209  NOT AN ELEMENT OF  (\inn)
