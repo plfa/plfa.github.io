@@ -52,7 +52,6 @@ https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
     C-c C-c x    split on variable x 
     C-c C-space  fill in hole
 
-
 Also see [here](
 http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
 ).

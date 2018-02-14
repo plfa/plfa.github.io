@@ -13,8 +13,12 @@ introducing polymorphic types and functions.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
+open import Relation.Nullary using (¬_)
+open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Isomorphism using (_≃_)
+open import Function using (_∘′_)
 \end{code}
 
 ## Lists
@@ -601,7 +605,12 @@ Use fold to define a function to find the product of a list of numbers.
 
 Show that fold and append are related as follows.
 
+\begin{code}
+postulate
+  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+\end{code}
+
 
 *Exercise* (`map-is-foldr`)  <!-- `mapIsFold` in Data.List.Properties -->
 
@@ -660,9 +669,9 @@ list, are all examples of monoids.
 If `_⊕_` and `e` form a monoid, then we can re-express fold on the
 same operator and an arbitrary value.
 \begin{code}
-fold-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → Monoid _⊗_ e →
-  ∀ (y : A) (xs : List A) → foldr _⊗_ e xs ⊗ y ≡ foldr _⊗_ y xs
-fold-monoid _⊗_ e ⊗-monoid y [] =
+foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → Monoid _⊗_ e →
+  ∀ (xs : List A) (y : A) → foldr _⊗_ e xs ⊗ y ≡ foldr _⊗_ y xs
+foldr-monoid _⊗_ e ⊗-monoid [] y =
   begin
     foldr _⊗_ e [] ⊗ y
   ≡⟨⟩
@@ -672,34 +681,157 @@ fold-monoid _⊗_ e ⊗-monoid y [] =
   ≡⟨⟩
    foldr _⊗_ y []
   ∎
-fold-monoid _⊗_ e ⊗-monoid y (x ∷ xs) =
+foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   begin
     foldr _⊗_ e (x ∷ xs) ⊗ y
   ≡⟨⟩
     (x ⊗ foldr _⊗_ e xs) ⊗ y
   ≡⟨ assoc ⊗-monoid x (foldr _⊗_ e xs) y ⟩
     x ⊗ (foldr _⊗_ e xs ⊗ y)
-  ≡⟨ cong (x ⊗_) (fold-monoid _⊗_ e ⊗-monoid y xs) ⟩
+  ≡⟨ cong (x ⊗_) (foldr-monoid _⊗_ e ⊗-monoid xs y) ⟩
     x ⊗ (foldr _⊗_ y xs)
   ≡⟨⟩
     foldr _⊗_ y (x ∷ xs)
   ∎
 \end{code}
 
-As a consequence of `foldr-++` and `fold-monoid`, it is easy to show
+As a consequence, using a previous exercise, we have the following.
+\begin{code}
+foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → Monoid _⊗_ e →
+  (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
+  begin
+    foldr _⊗_ e (xs ++ ys)
+  ≡⟨ foldr-++ _⊗_ e xs ys ⟩
+    foldr _⊗_ (foldr _⊗_ e ys) xs
+  ≡⟨ sym (foldr-monoid _⊗_ e monoid-⊗ xs (foldr _⊗_ e ys)) ⟩
+    foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+  ∎
+\end{code}
+    
+## All and Any
 
-    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+We can also define predicates over lists. Two of the most important are `All` and `Any`.
 
+Predicate `All P` holds if predicate `P` is satisfied by every element of a list.
+\begin{code}
+data All {A : Set} (P : A → Set) : List A → Set where
+  [] : All P []
+  _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
+\end{code}
+The type has two constructors, reusing the names of the same constructors for lists.
+The first asserts that `All P` always holds of the empty list.
+The second asserts that if `P` holds of the head of a list, and if `All P`
+holds of the tail of the list, then `All P` holds for the entire list.
+Agda uses type information to distinguish whether the constructor is building
+a list, or evidence that `All P` holds.
 
-## Element
+For example, `All (_≤ 2)` holds of a list where every element is less
+than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
+`n`, and that if `m≤n` proves `m ≤ n` then `s≤s m≤n` proves `suc m ≤
+suc n`, for any `m` and `n`.
+\begin{code}
+ex₁₀ : All (_≤ 2) ([ 0 , 1 , 2 ])
+ex₁₀ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
+\end{code}
+Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
+The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
+
+Predicate `Any P` holds if predicate `P` is satisfied by some element of a list.
+\begin{code}
+data Any {A : Set} (P : A → Set) : List A → Set where
+  here :  {x : A} {xs : List A} → P x → Any P (x ∷ xs)
+  there : {x : A} {xs : List A} → Any P xs → Any P (x ∷ xs)
+\end{code}
+The first constructor provides evidence that the head of the list satisfies `P`,
+while the second provides evidence that the tail of the list satisfies `Any P`.
+For example, we can define list membership as follows.
+\begin{code}
+infix 4 _∈_
+
+_∈_ : ∀ {A : Set} (x : A) (xs : List A) → Set
+x ∈ xs = Any (x ≡_) xs
+
+_∉_ : ∀ {A : Set} (x : A) (xs : List A) → Set
+x ∉ xs = ¬ (x ∈ xs)
+\end{code}
+For example, we have `0 ∈ ([ 0 , 1 , 0 ])`.  Indeed, we can demonstrate
+this fact in two different ways, corresponding to the two different
+occurrences of zero in the list, as the first element and as the third element.
+\begin{code}
+ex₁₁ ex₁₂ : 0 ∈ ([ 0 , 1 , 0 ])
+ex₁₁ = here refl
+ex₁₂ = there (there (here refl))
+\end{code}
+Further, we can demonstrate that two is not in the list, because
+any possible proof that it is in the list leads to contradiction.
+\begin{code}
+ex₁₃ : 2 ∉ ([ 0 , 1 , 0 ])
+ex₁₃ (here ())
+ex₁₃ (there (here ()))
+ex₁₃ (there (there (here ())))
+ex₁₃ (there (there (there ())))
+\end{code}
+The four occurrences of `()` attest to the fact that there is no
+possible evidence for the facts `2 ≡ 0`, `2 ≡ 1`, `2 ≡ 0`, and
+`2 ∈ []`, respectively.
+
+A predicate holds for every element of one list appended to another if and
+only if it holds for every element of each list.  Indeed, an even stronger
+result is true, as we can show that the two types are isomorphic.
+\begin{code}
+All-++ : ∀ {A : Set} {P : A → Set} (xs ys : List A) → All P (xs ++ ys) ≃ (All P xs × All P ys)
+All-++ xs ys =
+  record
+    { to   = to xs ys
+    ; fro  = fro xs ys
+    ; invˡ = invˡ xs ys
+    ; invʳ = invʳ xs ys
+    }
+
+  where
+
+  to : ∀ {A : Set} {P : A → Set} (xs ys : List A) → All P (xs ++ ys) → (All P xs × All P ys)
+  to [] ys AllPys = ⟨ [] , AllPys ⟩
+  to (x ∷ xs) ys (Px ∷ AllPxsys) with to xs ys AllPxsys
+  ... | ⟨ AllPxs , AllPys ⟩ = ⟨ Px ∷ AllPxs , AllPys ⟩
+
+  fro : ∀ { A : Set} {P : A → Set} (xs ys : List A) → All P xs × All P ys → All P (xs ++ ys)
+  fro [] ys ⟨ [] , AllPys ⟩ = AllPys
+  fro (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ =  Px ∷ fro xs ys ⟨ AllPxs , AllPys ⟩
+
+  invˡ : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsys : All P (xs ++ ys)) →
+    fro xs ys (to xs ys AllPxsys) ≡ AllPxsys
+  invˡ [] ys AllPys = refl
+  invˡ (x ∷ xs) ys (Px ∷ AllPxsys) = cong (Px ∷_) (invˡ xs ys AllPxsys)
+
+  invʳ : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsAllPys : All P xs × All P ys) →
+    to xs ys (fro xs ys AllPxsAllPys) ≡ AllPxsAllPys
+  invʳ [] ys ⟨ [] , AllPys ⟩ = refl
+  invʳ (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ rewrite invʳ xs ys ⟨ AllPxs , AllPys ⟩ = refl
+\end{code}
+
+*Exercise* `Any-++`
+
+Prove a result similar to `All-++`, but with `Any` in place of `All`, and a suitable
+replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
+`_∈_` and `_++_`.
+
+*Exercise* `¬Any≃All¬`
+
+Show that `Any` and `All` satisfy a version of De Morgan's Law.
 
 \begin{code}
-data _∈_ {A : Set} (x : A) : List A → Set where
-  here : {y : A} {ys : List A} → x ≡ y → x ∈ y ∷ ys
-  there : {y : A} {ys : List A} → x ∈ ys → x ∈ y ∷ ys
-
-infix 4 _∈_
+postulate
+  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → ¬ Any P xs ≃ All (λ x → ¬ P x) xs
 \end{code}
+
+Do we also have the following?
+
+    ¬ All P xs ≃ Any (λ x → ¬ P x) xs
+
+If so, prove; if not, explain why.
+
 
 ## Unicode
 

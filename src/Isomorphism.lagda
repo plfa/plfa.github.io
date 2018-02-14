@@ -27,7 +27,7 @@ record _≃_ (A B : Set) : Set where
     fro : B → A
     invˡ : ∀ (x : A) → fro (to x) ≡ x
     invʳ : ∀ (y : B) → to (fro y) ≡ y
-open _≃_
+open _≃_ 
 \end{code}
 Let's unpack the definition. An isomorphism between sets `A` and `B` consists
 of four things:
