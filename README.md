@@ -61,5 +61,8 @@ http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
 
 For markdown commands see [Daring Fireball](
 https://daringfireball.net/projects/markdown/syntax
+) or [CommonMark](
+http://spec.commonmark.org/0.28/
 ).
+
 
