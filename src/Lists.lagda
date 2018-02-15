@@ -4,8 +4,9 @@ layout    : page
 permalink : /Lists
 ---
 
-This chapter gives examples of other data types in Agda, as well as
-introducing polymorphic types and functions.
+This chapter discusses the list data type.  It uses many of the techniques
+developed for natural numbers in a different context, and provides
+examples of polymorphic types and functions.
 
 ## Imports
 
@@ -102,6 +103,9 @@ We can write lists more conveniently by introducing the following definitions.
 [_,_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → A → List A
 [ u , v , w , x , y , z ] = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 \end{code}
+Agda recognises that this is a bracketing notation,
+and hence we can write things like `length [ 0 , 1 , 2 ]`
+rather than `length ([ 0 , 1 , 2 ])`.
 
 
 ## Append
@@ -125,8 +129,8 @@ tail the same as the tail of the first list appended to the second list.
 Here is an example, showing how to compute the result
 of appending two lists.
 \begin{code}
-ex₂ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
-ex₂ =
+ex₁ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
+ex₁ =
   begin
     0 ∷ 1 ∷ 2 ∷ [] ++ 3 ∷ 4 ∷ []
   ≡⟨⟩
@@ -236,8 +240,8 @@ is one greater than the length of the tail of the list.
 
 Here is an example showing how to compute the length of a list.
 \begin{code}
-ex₃ : length [ 0 , 1 , 2 ] ≡ 3
-ex₃ =
+ex₂ : length [ 0 , 1 , 2 ] ≡ 3
+ex₂ =
   begin
     length (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -312,8 +316,8 @@ containing its head.
 
 Here is an example showing how to reverse a list.
 \begin{code}
-ex₄ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
-ex₄ =
+ex₃ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
+ex₃ =
   begin
     reverse (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -441,8 +445,8 @@ reverses xs =
 
 Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`.
 \begin{code}
-ex₅ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
-ex₅ =
+ex₄ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
+ex₄ =
   begin
     reverse′ (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -476,8 +480,8 @@ and tail the same as map of the function applied to the tail of the given list.
 
 Here is an example showing how to use map to increment every element of a list.
 \begin{code}
-ex₆ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
-ex₆ =
+ex₅ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
+ex₅ =
   begin
     map suc (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -499,8 +503,8 @@ point applying the resulting function.
 sucs : List ℕ → List ℕ
 sucs = map suc
 
-ex₇ : sucs [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
-ex₇ = ex₆
+ex₆ : sucs [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
+ex₆ = ex₅
 \end{code}
 
 Any type that is parameterised on another type, such as lists, has a
@@ -554,8 +558,8 @@ the head of the list and the fold of the tail of the list.
 
 Here is an example showing how to use fold to find the sum of a list.
 \begin{code}
-ex₈ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
-ex₈ =
+ex₇ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
+ex₇ =
   begin
     foldr _+_ 0 (1 ∷ 2 ∷ 3 ∷ 4 ∷ [])
   ≡⟨⟩
@@ -579,8 +583,8 @@ and at a later point applying the resulting function.
 sum : List ℕ → ℕ
 sum = foldr _+_ 0
 
-ex₉ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
-ex₉ = ex₈
+ex₈ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
+ex₈ = ex₇
 \end{code}
 
 Just as the list type has two constructors, `[]` and `_∷_`,
@@ -725,8 +729,8 @@ than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
 `n`, and that if `m≤n` proves `m ≤ n` then `s≤s m≤n` proves `suc m ≤
 suc n`, for any `m` and `n`.
 \begin{code}
-ex₁₀ : All (_≤ 2) [ 0 , 1 , 2 ]
-ex₁₀ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
+ex₉ : All (_≤ 2) [ 0 , 1 , 2 ]
+ex₉ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
 \end{code}
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
@@ -755,25 +759,25 @@ For example, zero is an element of the list `[ 0 , 1 , 0 , 2 ]`.  Indeed, we can
 this fact in two different ways, corresponding to the two different
 occurrences of zero in the list, as the first element and as the third element.
 \begin{code}
-ex₁₁ ex₁₂ : 0 ∈ [ 0 , 1 , 0 , 2 ]
-ex₁₁ = here refl
-ex₁₂ = there (there (here refl))
+ex₁₀ ex₁₁ : 0 ∈ [ 0 , 1 , 0 , 2 ]
+ex₁₀ = here refl
+ex₁₁ = there (there (here refl))
 \end{code}
 Further, we can demonstrate that three is not in the list, because
 any possible proof that it is in the list leads to contradiction.
 \begin{code}
-ex₁₃ : 3 ∉ [ 0 , 1 , 0 , 2 ]
-ex₁₃ (here ())
-ex₁₃ (there (here ()))
-ex₁₃ (there (there (here ())))
-ex₁₃ (there (there (there (here ()))))
-ex₁₃ (there (there (there (there ()))))
+ex₁₂ : 3 ∉ [ 0 , 1 , 0 , 2 ]
+ex₁₂ (here ())
+ex₁₂ (there (here ()))
+ex₁₂ (there (there (here ())))
+ex₁₂ (there (there (there (here ()))))
+ex₁₂ (there (there (there (there ()))))
 \end{code}
 The five occurrences of `()` attest to the fact that there is no
 possible evidence for the facts `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 `3 ∈ []`, respectively.
 
-## Any and append
+## All and append
 
 A predicate holds for every element of one list appended to another if and
 only if it holds for every element of each list.  Indeed, an even stronger
