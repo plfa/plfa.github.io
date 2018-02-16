@@ -28,6 +28,7 @@ http://homepages.inf.ed.ac.uk/wadler/
   - [Isomorphism: Isomorphism and embedding](Isomorphism)
   - [Logic: Logic](Logic)
   - [Lists: Lists and other data types](Lists)
+  - [Decidable: Booleans and decision procedures](Decidable)
 
   - [PropertiesAns: Solutions to exercises](PropertiesAns) 
   - [RelationsAns: Solutions to exercises](RelationsAns) 
