@@ -774,7 +774,7 @@ ex₁₂ (there (there (there (here ()))))
 ex₁₂ (there (there (there (there ()))))
 \end{code}
 The five occurrences of `()` attest to the fact that there is no
-possible evidence for the facts `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
+possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 `3 ∈ []`, respectively.
 
 ## All and append
