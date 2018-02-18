@@ -463,7 +463,7 @@ ex₄ =
 \end{code}
 Now the time to reverse a list is linear in the length of the list.
 
-## Map
+## Map {#Map}
 
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a *higher-order function*, one which takes a function as an
@@ -542,7 +542,7 @@ Prove the following relationship between map and append.
     map f (xs ++ ys) ≡ map f xs ++ map f ys
 
 
-## Fold
+## Fold {#Fold}
 
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
@@ -707,9 +707,10 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
   ∎
 \end{code}
     
-## All
+## All {#All}
 
-We can also define predicates over lists. Two of the most important are `All` and `Any`.
+We can also define predicates over lists. Two of the most important
+are `All` and `Any`.
 
 Predicate `All P` holds if predicate `P` is satisfied by every element of a list.
 \begin{code}
@@ -718,11 +719,11 @@ data All {A : Set} (P : A → Set) : List A → Set where
   _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
 \end{code}
 The type has two constructors, reusing the names of the same constructors for lists.
-The first asserts that `All P` always holds of the empty list.
-The second asserts that if `P` holds of the head of a list, and if `All P`
-holds of the tail of the list, then `All P` holds for the entire list.
-Agda uses type information to distinguish whether the constructor is building
-a list, or evidence that `All P` holds.
+The first asserts that `P` holds for ever element of the empty list.
+The second asserts that if `P` holds of the head of a list and for every
+element of the tail of a list, then `P` holds for every element of the list.
+Agda uses types to disambiguate whether the constructor is building
+a list or evidence that `All P` holds.
 
 For example, `All (_≤ 2)` holds of a list where every element is less
 than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
@@ -743,9 +744,10 @@ data Any {A : Set} (P : A → Set) : List A → Set where
   here :  {x : A} {xs : List A} → P x → Any P (x ∷ xs)
   there : {x : A} {xs : List A} → Any P xs → Any P (x ∷ xs)
 \end{code}
-The first constructor provides evidence that the head of the list satisfies `P`,
-while the second provides evidence that the tail of the list satisfies `Any P`.
-For example, we can define list membership as follows.
+The first constructor provides evidence that the head of the list
+satisfies `P`, while the second provides evidence that some element of
+the tail of the list satisfies `P`.  For example, we can define list
+membership as follows.
 \begin{code}
 infix 4 _∈_
 

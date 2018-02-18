@@ -22,6 +22,8 @@ open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contraposition)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.List using (List; []; _∷_; foldr; map)
+open import Function using (_∘_)
 \end{code}
 
 ## Evidence vs Computation
@@ -361,8 +363,8 @@ infixr 6 _×-dec_
 
 _×-dec_ : {A B : Set} → Dec A → Dec B → Dec (A × B)
 yes x ×-dec yes y = yes ⟨ x , y ⟩
-no ¬x ×-dec _     = no (λ { ⟨ x , y ⟩ → ¬x x })
-_     ×-dec no ¬y = no (λ { ⟨ x , y ⟩ → ¬y y })
+no ¬x ×-dec _     = no λ{ ⟨ x , y ⟩ → ¬x x }
+_     ×-dec no ¬y = no λ{ ⟨ x , y ⟩ → ¬y y }
 \end{code}
 The conjunction of two propositions holds if they both hold,
 and its negation holds if the negation of either holds.
@@ -392,9 +394,9 @@ decide their disjunction.
 infixr 5 _⊎-dec_
 
 _⊎-dec_ : {A B : Set} → Dec A → Dec B → Dec (A ⊎ B)
-_     ⊎-dec yes y = yes (inj₂ y)
 yes x ⊎-dec _     = yes (inj₁ x)
-no ¬x ⊎-dec no ¬y = no (λ { (inj₁ x) → ¬x x ; (inj₂ y) → ¬y y })
+_     ⊎-dec yes y = yes (inj₂ y)
+no ¬x ⊎-dec no ¬y = no λ{ (inj₁ x) → ¬x x ; (inj₂ y) → ¬y y }
 \end{code}
 The disjunction of two propositions holds if either holds,
 and its negation holds if the negation of both hold.
@@ -413,13 +415,13 @@ Correspondingly, given a decidable proposition, we
 can decide its negation.
 \begin{code}
 not? : {A : Set} → Dec A → Dec (¬ A)
-not? (yes x)  =  no (λ { ¬x → ¬x x })
+not? (yes x)  =  no λ{ ¬x → ¬x x }
 not? (no ¬x)  =  yes ¬x
 \end{code}
 We simply swap yes and no.  In the first equation,
 the right-hand side asserts that the negation of `¬ A` holds,
 in other words, that `¬ ¬ A` holds, which is an easy consequence
-of `A`.
+of the fact that `A` holds.
 
 There is also a slightly less familiar connective,
 corresponding to implication.
@@ -457,13 +459,61 @@ we apply the evidence of the implication `f` to the evidence of the
 first `x`, yielding a contradiction with the evidence `¬y` of
 the negation of the second.
 
-## All and Any
+## Decidability of All
 
+Recall that in Chapter [Lists](Lists#All) we defined a predicate `All P`
+that holds if a given predicate is satisfied by every element of a list.
+\begin{code}
+data All {A : Set} (P : A → Set) : List A → Set where
+  [] : All P []
+  _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
+\end{code}
 
+If instead we consider a predicate as a function that yields a boolean,
+it is easy to define an analogue of `All`, which returns true if
+a given predicate returns true for every element of a list.
+\begin{code}
+all : ∀ {A : Set} → (A → Bool) → List A → Bool
+all p  =  foldr _∧_ true ∘ map p
+\end{code}
+The function can be written in a particularly compact style by
+using the higher-order functions `map` and `foldr` as defined in
+the sections on [Map](Lists#Map) and [Fold](Lists#Fold).
+
+As one would hope, if we replace booleans by decidables there is again
+an analogue of `All`.  First, return to the notion of a predicate `P` as
+a function of type `A → Set`, taking a value `x` of type `A` into evidence
+`P x` that a property holds for `x`.  Say that a predicate `P` is *decidable*
+if we have a function that for a given `x` can decide `P x`.
+\begin{code}
+Decidable : ∀ {A : Set} → (A → Set) → Set
+Decidable {A} P  =  (x : A) → Dec (P x)
+\end{code}
+Then if predicate `P` is decidable, it is also decidable whether every
+element of a list satisfies the predicate.
+\begin{code}
+all? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
+all? p? [] = yes []
+all? p? (x ∷ xs) with p? x   | all? p? xs
+...                 | yes px | yes pxs     = yes (px ∷ pxs)
+...                 | no ¬px | _           = no λ{ (px ∷ pxs) → ¬px px   }
+...                 | _      | no ¬pxs     = no λ{ (px ∷ pxs) → ¬pxs pxs }
+\end{code}
+If the list is empty, then trivially `P` holds for every element of
+the list.  Otherwise, the structure of the proof is similar to that
+showing that the conjuction of two decidable propositions is itself
+decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
+the head and tail of the list.
+
+*Exercise* `any` `any?`
+
+Just as `All` has analogues `all` and `all?` which determine whether a
+predicate holds for every element of a list, so does `Any` have
+analogues `any` and `any?` which determine whether a predicates holds
+for some element of a list.  Give their definitions.
+
+<!-- import Data.List.All using (All; []; _∷_) renaming (all to all?) -->
 
 ## Unicode
 
-    ∷  U+2237  PROPORTION  (\::)
-    ⊗  U+2297  CIRCLED TIMES  (\otimes)
-    ∈  U+2208  ELEMENT OF  (\in)
-    ∉  U+2209  NOT AN ELEMENT OF  (\inn)
+    ᵇ  U+1D47  MODIFIER LETTER SMALL B  (\^b)
