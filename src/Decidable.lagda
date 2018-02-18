@@ -336,53 +336,128 @@ corresponding decidables.
 
 ## Logical connectives
 
+Most readers will be familiar with the logical connectives for booleans.
+Each of these extends to decidables.
 
+The conjunction of two booleans is true if both are true,
+and false is either is false.
 \begin{code}
 infixr 6 _∧_
-infixr 5 _∨_
 
 _∧_ : Bool → Bool → Bool
-true  ∧ b = b
-false ∧ b = false
+true  ∧ true  = true
+false ∧ _     = false
+_     ∧ false = false
+\end{code}
+In Emacs, the left-hand side of the third equation displays in grey,
+indicating that the order of the equations determines which of the
+second or the third can match.  However, regardless of which matches
+the answer is the same.
 
-_∨_ : Bool → Bool → Bool
-true  ∨ b = true
-false ∨ b = b
-
-not : Bool → Bool
-not true  = false
-not false = true
-\end{code}  
-
-## Decidable
-
-
-
+Correspondingly, given two decidable propositions, we can
+decide their conjunction.
 \begin{code}
 infixr 6 _×-dec_
-infixr 5 _⊎-dec_
-infixr 4 _→-dec_
 
 _×-dec_ : {A B : Set} → Dec A → Dec B → Dec (A × B)
 yes x ×-dec yes y = yes ⟨ x , y ⟩
-_     ×-dec no ¬y = no (λ { ⟨ x , y ⟩ → ¬y y })
 no ¬x ×-dec _     = no (λ { ⟨ x , y ⟩ → ¬x x })
+_     ×-dec no ¬y = no (λ { ⟨ x , y ⟩ → ¬y y })
+\end{code}
+The conjunction of two propositions holds if they both hold,
+and its negation holds if the negation of either holds.
+If both hold, then we pair the evidence for each to yield
+evidence of the conjunct.  If the negation of either holds,
+assuming the conjunct will lead to a contradiction.
+
+Again in Emacs, the left-hand side of the third equation displays in grey,
+indicating that the order of the equations determines which of the
+second or the third can match.  This time the answer is different depending
+on which matches; if both conjuncts fail to hold we pick the first to
+yield the contradiction, but it would be equally valid to pick the second.
+
+The disjunction of two booleans is true if either is true,
+and false if both are false.
+\begin{code}
+infixr 5 _∨_
+
+_∨_ : Bool → Bool → Bool
+true  ∨ _      = true
+_     ∨ true   = true
+false ∨ false  = false
+\end{code}
+Correspondingly, given two decidable propositions, we can
+decide their disjunction.
+\begin{code}
+infixr 5 _⊎-dec_
 
 _⊎-dec_ : {A B : Set} → Dec A → Dec B → Dec (A ⊎ B)
-no ¬x ⊎-dec no ¬y = no (λ { (inj₁ x) → ¬x x ; (inj₂ y) → ¬y y })
 _     ⊎-dec yes y = yes (inj₂ y)
 yes x ⊎-dec _     = yes (inj₁ x)
+no ¬x ⊎-dec no ¬y = no (λ { (inj₁ x) → ¬x x ; (inj₂ y) → ¬y y })
+\end{code}
+The disjunction of two propositions holds if either holds,
+and its negation holds if the negation of both hold.
+If either holds, we inject the evidence to yield
+evidence of the disjunct.  If the negation of both hold,
+assuming either disjunct will lead to a contradiction.
 
+The negation of a boolean is false if its argument is true,
+and vice versa.
+\begin{code}
+not : Bool → Bool
+not true  = false
+not false = true
+\end{code}
+Correspondingly, given a decidable proposition, we
+can decide its negation.
+\begin{code}
 not? : {A : Set} → Dec A → Dec (¬ A)
 not? (yes x)  =  no (λ { ¬x → ¬x x })
 not? (no ¬x)  =  yes ¬x
+\end{code}
+We simply swap yes and no.  In the first equation,
+the right-hand side asserts that the negation of `¬ A` holds,
+in other words, that `¬ ¬ A` holds, which is an easy consequence
+of `A`.
 
+There is also a slightly less familiar connective,
+corresponding to implication.
+\begin{code}
+_⊃_ : Bool → Bool → Bool
+_     ⊃ true   =  true
+false ⊃ _      =  true
+true  ⊃ false  =  false
+\end{code}
+One boolean implies another if
+whenever the first is true then the second is true.
+Hence, the implication of two booleans is true if
+the second is true or the first is false,
+and false if the first is true and the second is false.
+
+Correspondingly, given two decidable propositions,
+we can decide if the first implies the second.
+\begin{code}
 _→-dec_ : {A B : Set} → Dec A → Dec B → Dec (A → B)
 _     →-dec yes y  =  yes (λ _ → y)
 no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
 yes x →-dec no ¬y  =  no (λ f → ¬y (f x))
 \end{code}
+The implication holds if either the second holds or
+the negatioin of the first holds, and its negation
+holds if the first holds and the negation of the second holds.
+Evidence for the implication is a function from evidence
+of the first to evidence of the second.
+If the second holds, the function returns the evidence for it.
+If the negation of the first holds, the function takes the
+evidence of the first and derives a contradiction.
+If the first holds and the negation of the second holds,
+given evidence of the implication we must derive a contradiction;
+we apply the evidence of the implication `f` to the evidence of the
+first `x`, yielding a contradiction with the evidence `¬y` of
+the negation of the second.
 
+## All and Any
 
 
 
