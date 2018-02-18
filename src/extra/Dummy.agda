@@ -1,4 +1,6 @@
-import Data.List.Properties
-import Data.Nat.Properties
-import Data.Nat.Properties.Simple
+import Data.Bool
+import Relation.Nullary.Negation
+import Relation.Nullary.Decidable
+
+
 

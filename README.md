@@ -52,7 +52,6 @@ https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
     C-c C-c x    split on variable x 
     C-c C-space  fill in hole
 
-
 Also see [here](
 http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
 ).
@@ -61,5 +60,10 @@ http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
 
 For markdown commands see [Daring Fireball](
 https://daringfireball.net/projects/markdown/syntax
+), [CommonMark](
+http://spec.commonmark.org/0.28/
+), or [Kramdown](
+https://kramdown.gettalong.org/syntax.html
 ).
+
 

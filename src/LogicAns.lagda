@@ -27,13 +27,6 @@ ex3 em k with em
 ... | inj₁ a = a
 ... | inj₂ ¬a = k (λ a → ⊥-elim (¬a a))
 
-ex4 : de-morgan′ → ¬¬-elim
-ex4 dem ¬¬a = fst (dem (obvs ¬¬a))
-  where
-  obvs : ∀ {A : Set} → ¬ ¬ A → ¬ (¬ A ⊎ ¬ ⊤)
-  obvs ¬¬a (inj₁ ¬a) = ¬¬a ¬a
-  obvs ¬¬a (inj₂ ¬⊤) = ¬⊤ tt
-
 help′ : excluded-middle → ∀ {A B : Set} → ¬ (A × B) → ¬ A ⊎ ¬ B
 help′ em ¬a×b with em | em
 ... | inj₁ a | inj₁ b = ⊥-elim (¬a×b (a , b))

@@ -833,6 +833,22 @@ excluded-middle-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
 excluded-middle-irrefutable k = k (inj₂ (λ a → k (inj₁ a)))
 \end{code}
 
+*Exercise* (`¬⊎≃×¬`)
+
+Show that conjunction, disjunction, and negation are related by a
+version of De Morgan's Law.
+\begin{code}
+postulate
+  ¬⊎≃×¬ : ∀ {A B : Set} → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+\end{code}
+This result is an easy consequence of something we've proved previously.
+
+Do we also have the following?
+
+    ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
+
+If so, prove; if not, explain why.
+
 
 ## Intuitive and Classical logic
 
@@ -878,7 +894,7 @@ a disjoint sum.
 (The passage above is taken from "Propositions as Types", Philip Wadler,
 *Communications of the ACM*, December 2015.)
 
-**Exercise** Prove the following six formulas are equivalent.
+**Exercise** Prove the following five formulas are equivalent.
 
 \begin{code}
 lone ltwo : Level
@@ -890,9 +906,7 @@ ltwo = lsuc lone
 excluded-middle = ∀ {A : Set} → A ⊎ ¬ A
 peirce = ∀ {A B : Set} → (((A → B) → A) → A)
 implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
-de-morgan = ∀ {A B : Set} → ¬ (¬ A × ¬ B) → A ⊎ B
-de-morgan′ = ∀ {A B : Set} → ¬ (¬ A ⊎ ¬ B) → A × B
-
+de-morgan = ∀ {A B : Set} → ¬ (A × B) → ¬ A ⊎ ¬ B
 \end{code}
 
 It turns out that an assertion such as `Set : Set` is paradoxical.
