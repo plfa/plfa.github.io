@@ -57,16 +57,16 @@ env (Γ , A) = env Γ × type A
 Church : Type
 Church = (o ⇒ o) ⇒ o ⇒ o
 
-plus : Exp ε (Church ⇒ Church ⇒ Church)
+plus : ∀ {Γ : Env} → Exp Γ (Church ⇒ Church ⇒ Church)
 plus =  (abs (abs (abs (abs (app (app (var (S (S (S Z)))) (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))))
 
-one : Exp ε Church
+one : ∀ {Γ : Env} → Exp Γ Church
 one =  (abs (abs (app (var (S Z)) (var Z))))
 
-two : Exp ε Church
+two : ∀ {Γ : Env} → Exp Γ Church
 two = (app (app plus one) one)
 
-four : Exp ε Church
+four : ∀ {Γ : Env} → Exp Γ Church
 four = (app (app plus two) two)
 \end{code}
 
@@ -232,18 +232,20 @@ M ∎ = reflexive
 ex₁ : (app (abs (var Z)) (abs (var Z))) ⟶* (abs (var Z))
 ex₁ =
   begin
-    (app (abs (var Z)) (abs (var Z)))
-  ⟶⟨ β ⟩
+    (app (abs {Γ = ε} {A = o ⇒ o} (var Z)) (abs (var Z)))
+  ⟶⟨ β Fun ⟩
     (abs (var Z))
   ∎
 \end{code}
 
-ex₁ : (app (app plus one) one) ⟶ (abs (abs (app (var (S Z)) (app (var (S Z)) (var Z)))))
-ex₁ =
+\begin{code}
+ex₂ : (app {Γ = ε} (app plus one) one) ⟶* (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z)))))
+ex₂ =
   begin
     (app (app plus one) one)
-  ⟶⟨ ξ_1 β ⟩
-    (app (abs (abs (abs (app (app one) (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z))))) one)
-  ⟶⟨ β ⟩
-    (abs (abs (app (app one) (var (S Z))) (app (app one (var (S Z))) (var Z))))
-  ⟶⟨ ⟩
+  ⟶⟨ ξ₁ (β Fun) ⟩
+    (app (abs (abs (abs (app (app one (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) one)
+  ⟶⟨ β Fun ⟩
+    (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z)))))
+  ∎
+\end{code}
