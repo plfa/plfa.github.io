@@ -12,6 +12,8 @@ But the number of stars is finite, while natural numbers are infinite.
 Count all the stars, and you will still have as many natural numbers
 left over as you started with.
 
+[This line added to test make]
+
 
 ## The naturals are an inductive datatype
 
