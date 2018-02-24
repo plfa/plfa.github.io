@@ -11,7 +11,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 -- open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contraposition)
@@ -248,4 +248,29 @@ ex₂ =
   ⟶⟨ β Fun ⟩
     (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z)))))
   ∎
+\end{code}
+
+\begin{code}
+progress : ∀ {A : Type} → (M : Exp ε A) → (∃[ N ] (M ⟶ N)) ⊎ Val M
+progress (var ())
+progress (abs N)                                            = inj₂  Fun
+progress (app L M)    with progress L
+progress (app L M)       | inj₁ ⟨ L′ , r ⟩                  =  inj₁ ⟨ app L′ M , ξ₁ r ⟩
+progress (app (abs N) M) | inj₂ Fun  with progress M
+progress (app (abs N) M) | inj₂ Fun     | inj₁ ⟨ M′ , r ⟩   =  inj₁ ⟨ app (abs N) M′ , ξ₂ Fun r ⟩
+progress (app (abs N) M) | inj₂ Fun     | inj₂ ValM         =  inj₁ ⟨ substitute N M , β ValM ⟩
+\end{code}
+
+
+\begin{code}
+ex₃ : progress (app (app plus one) one) ≡
+  inj₁ ⟨ (app (abs (abs (abs (app (app one (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) one) , ξ₁ (β Fun) ⟩
+ex₃ = refl
+
+ex₄ : progress (app (abs (abs (abs (app (app one (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) one) ≡
+  inj₁ ⟨ (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z))))) , β Fun ⟩
+ex₄ = refl
+
+ex₅ : progress (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z))))) ≡ inj₂ Fun
+ex₅ = refl  
 \end{code}
