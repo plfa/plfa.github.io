@@ -68,11 +68,13 @@ extract : ∀ {A : Type} {Γ Δ : Env} → Extends (Γ , A) Δ → Var Δ A
 extract Z = Z
 extract (S k) = S (extract k)
 
+\end{code}
+
 toDB : ∀ {A : Type} → (Γ : Env) → PH (λ (B : Type) → (Δ : Env) → Extends (Γ , B) Δ) A → Exp Γ A
 toDB Γ (var x) = var (extract (x Γ))
 toDB {A ⇒ B} Γ (abs N) = abs {!toDB (Γ , A) (N ?) !}
 toDB Γ (app L M) = app (toDB Γ L) (toDB Γ M)
-\end{code}
+
 
 # Test code
 
