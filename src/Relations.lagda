@@ -1,3 +1,4 @@
+
 ---
 title     : "Relations: Inductive Definition of Relations"
 layout    : page
@@ -55,7 +56,7 @@ Both definitions above tell us the same two things:
 
 In fact, they each give us a bit more detail:
 
-+ *Base case*: for all naturals `n`, the constructor `z≤n` 
++ *Base case*: for all naturals `n`, the constructor `z≤n`
   produces evidence that `zero ≤ n` holds.
 + *Inductive case*: for all naturals `m` and `n`, the constructor
   `s≤s` takes evidence that `m ≤ n` holds into evidence that
@@ -86,12 +87,12 @@ ex₁ = s≤s (s≤s z≤n)
 In the Agda definition, the two lines defining the constructors
 use `∀`, very similar to our use of `∀` in propositions such as:
 
-    com+ : ∀ (m n : ℕ) → m + n ≡ n + m
+    +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 
 However, here the declarations are surrounded by curly braces `{ }`
 rather than parentheses `( )`.  This means that the arguments are
 *implicit* and need not be written explicitly.  Thus, we would write,
-for instance, `com+ m n` for the proof that `m + n ≡ n + m`, but
+for instance, `+-comm m n` for the proof that `m + n ≡ n + m`, but
 here will write `z≤n` for the proof that `m ≤ m`, leaving the `m` implicit,
 or if `m≤n` is evidence that `m ≤ n`, we write write `s≤s m≤n` for the
 evidence that `suc m ≤ suc n`, leaving both `m` and `n` implicit.
@@ -254,7 +255,7 @@ the notion that given two propositions either one or the other holds.
 In Agda, we do so by declaring a suitable inductive type.
 \begin{code}
 data _⊎_ : Set → Set → Set where
-  inj₁  : ∀ {A B : Set} → A → A ⊎ B
+  inj₁ : ∀ {A B : Set} → A → A ⊎ B
   inj₂ : ∀ {A B : Set} → B → A ⊎ B
 \end{code}
 This tells us that if `A` and `B` are propositions then `A ⊎ B` is
@@ -276,8 +277,8 @@ for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 `m` and `n` are equal.
 \begin{code}
 ≤-total : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total zero n =  inj₁ z≤n
-≤-total (suc m) zero =  inj₂ z≤n
+≤-total zero n = inj₁ z≤n
+≤-total (suc m) zero = inj₂ z≤n
 ≤-total (suc m) (suc n) with ≤-total m n
 ... | inj₁ m≤n = inj₁ (s≤s m≤n)
 ... | inj₂ n≤m = inj₂ (s≤s n≤m)
@@ -337,8 +338,8 @@ always return the first disjunct, but there is a minor variant that
 always returns the second disjunct.
 \begin{code}
 ≤-total″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total″ m zero =  inj₂ z≤n
-≤-total″ zero (suc n) =  inj₁ z≤n
+≤-total″ m zero = inj₂ z≤n
+≤-total″ zero (suc n) = inj₁ z≤n
 ≤-total″ (suc m) (suc n) with ≤-total″ m n
 ... | inj₁ m≤n = inj₁ (s≤s m≤n)
 ... | inj₂ n≤m = inj₂ (s≤s n≤m)
@@ -363,8 +364,8 @@ and is best broken into three parts. First, we deal with the special
 case of showing addition is monotonic on the right.
 \begin{code}
 +-monoʳ-≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
-+-monoʳ-≤ zero p q p≤q =  p≤q
-+-monoʳ-≤ (suc m) p q p≤q =  s≤s (+-monoʳ-≤ m p q p≤q) 
++-monoʳ-≤ zero p q p≤q = p≤q
++-monoʳ-≤ (suc m) p q p≤q = s≤s (+-monoʳ-≤ m p q p≤q)
 \end{code}
 The proof is by induction on the first argument.
 
@@ -390,8 +391,8 @@ Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 
 Third, we combine the two previous results.
 \begin{code}
-mono+≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-mono+≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
++-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
++-mono-≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
 \end{code}
 Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
@@ -425,7 +426,7 @@ infix 4 _<_
   Show that for any given any naturals `m` and `n` that
   `Trichotomy m n` holds, using the defintions below.
   Name your proof `trichotomy`.
-  
+
 \begin{code}
 _>_ : ℕ → ℕ → Set
 n > m = m < n
@@ -440,7 +441,7 @@ data Trichotomy : ℕ → ℕ → Set where
 
 + *Monotonicity* Show that
 
-  > if `m < n` and `p < q` then `m + n < p + q`.
+  > if `m < n` and `p < q` then `m + p < n + q`.
 
   Name your proof `+-mono-<`.
 
@@ -488,4 +489,3 @@ This chapter introduces the following unicode.
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
-    
