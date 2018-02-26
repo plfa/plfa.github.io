@@ -51,6 +51,29 @@ env ε = ⊤
 env (Γ , A) = env Γ × type A
 \end{code}
 
+
+# PH representation
+
+\begin{code}
+data PH (V : Type → Set) : Type → Set where
+  var : ∀ {A : Type} → V A → PH V A
+  abs : ∀ {A B : Type} → (V A → PH V B) → PH V (A ⇒ B)
+  app : ∀ {A B : Type} → PH V (A ⇒ B) → PH V A → PH V B
+
+data Extends : (Γ : Env) → (Δ : Env) → Set where
+  Z : ∀ {Γ : Env} → Extends Γ Γ
+  S : ∀ {A : Type} {Γ Δ : Env} → Extends Γ Δ → Extends Γ (Δ , A)
+
+extract : ∀ {A : Type} {Γ Δ : Env} → Extends (Γ , A) Δ → Var Δ A
+extract Z = Z
+extract (S k) = S (extract k)
+
+toDB : ∀ {A : Type} → (Γ : Env) → PH (λ (B : Type) → (Δ : Env) → Extends (Γ , B) Δ) A → Exp Γ A
+toDB Γ (var x) = var (extract (x Γ))
+toDB {A ⇒ B} Γ (abs N) = abs {!toDB (Γ , A) (N ?) !}
+toDB Γ (app L M) = app (toDB Γ L) (toDB Γ M)
+\end{code}
+
 # Test code
 
 \begin{code}
