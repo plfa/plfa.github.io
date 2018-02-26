@@ -40,4 +40,4 @@ http://homepages.inf.ed.ac.uk/wadler/
   - [Maps: Total and Partial Maps](Maps)
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
   - [StlcProp: Properties of STLC](StlcProp)
-
+  - [DeBruijn: Scoped and Typed DeBruijn representation](DeBruijn)
