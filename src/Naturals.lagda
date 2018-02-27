@@ -12,8 +12,6 @@ But the number of stars is finite, while natural numbers are infinite.
 Count all the stars, and you will still have as many natural numbers
 left over as you started with.
 
-[This line added to test make]
-
 
 ## The naturals are an inductive datatype
 
@@ -248,6 +246,20 @@ particular, if *n* is less than 2⁶⁴, it will require just one word on
 a machine with 64-bit words.
 
 
+## Equivalence
+
+Shortly we will want to write some equivalences that hold between
+terms involving natural numbers.  To support doing so, we import
+the definition of equivalence and some notations for reasoning
+about it from the Agda standard library.
+
+\begin{code}
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; sym; trans; cong)
+open Eq.≡-Reasoning
+\end{code}
+
+
 ## Operations on naturals are recursive functions
 
 Now that we have the natural numbers, what can we do with them?
@@ -301,34 +313,50 @@ addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called *well founded*.
 
 For example, let's add two and three.
-
-       2 + 3
-    =    (is shorthand for)
-       (suc (suc zero)) + (suc (suc (suc zero)))
-    =    (ii)
-       suc ((suc zero) + (suc (suc (suc zero))))
-    =    (ii)
-       suc (suc (zero + (suc (suc (suc zero)))))
-    =    (i)
-       suc (suc (suc (suc (suc zero))))
-    =    (is longhand for)
-       5
+\begin{code}
+ex₀ : 2 + 3 ≡ 5
+ex₀ =
+  begin
+    2 + 3
+  ≡⟨⟩    -- is shorthand for
+    (suc (suc zero)) + (suc (suc (suc zero)))
+  ≡⟨⟩    -- (ii)
+    suc ((suc zero) + (suc (suc (suc zero))))
+  ≡⟨⟩    -- (ii)
+    suc (suc (zero + (suc (suc (suc zero)))))
+  ≡⟨⟩    -- (i)
+    suc (suc (suc (suc (suc zero))))
+  ≡⟨⟩    -- is longhand for
+    5
+  ∎
+\end{code}
 
 We can write this more compactly by only expanding shorthand as needed.
-
-       2 + 3
-    =    (ii)
-       suc (1 + 3)
-    =    (ii)
-       suc (suc (0 + 3))
-    =    (i)
-       suc (suc 3)
-    =    
-       5
-
+\begin{code}
+ex₁ : 2 + 3 ≡ 5
+ex₁ =
+  begin
+    2 + 3
+  ≡⟨⟩    -- (ii)
+    suc (1 + 3)
+  ≡⟨⟩    -- (ii)
+    suc (suc (0 + 3))
+  ≡⟨⟩    -- (i)
+    suc (suc 3)
+  ≡⟨⟩    -- is longhand for
+    5
+  ∎
+\end{code}
 The first use of (ii) matches by taking `m = 1` and `n = 3`,
 The second use of (ii) matches by taking `m = 0` and `n = 3`,
 and the use of (i) matches by taking `n = 3`.
+
+In Agda, we write out chains of equivalences starting with
+`begin` and finishing with `∎` (pronounced "qed" or "tombstone",
+the latter from its appearance), and writing `≡⟨⟩` between
+two terms that have the same normal form.  We take equivalence and
+these notations as given for now, but will see how they are
+defined in Chapter [Equivalence](Equivalence).
 
 **Exercise** Compute `3 + 4` by the same technique.
 
@@ -363,17 +391,21 @@ Again, the definition is well-founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
  
 For example, let's multiply two and three.
-
-       2 * 3
-    =    (iv)
-       3 + (1 * 3)
-    =    (iv)
-       3 + (3 + (0 * 3))
-    =    (iii)
-       3 + (3 + 0)
-    =
-       6
-
+\begin{code}
+ex₂ : 2 * 3 ≡ 6
+ex₂ =
+  begin
+    2 * 3
+  ≡⟨⟩    -- (iv)
+    3 + (1 * 3)
+  ≡⟨⟩    -- (iv)
+    3 + (3 + (0 * 3))
+  ≡⟨⟩    -- (iii)
+    3 + (3 + 0)
+  ≡⟨⟩    -- simplify
+    6
+  ∎
+\end{code}
 The first use of (iv) matches by taking `m = 1` and `n = 3`,
 The second use of (iv) matches by taking `m = 0` and `n = 3`,
 and the use of (iii) matches by taking `n = 3`.
@@ -423,25 +455,34 @@ monus on bigger numbers is defined in terms of monus on
 small numbers.
 
 For example, let's subtract two from three.
-
-       3 ∸ 2
-    =    (ix)
-       2 ∸ 1
-    =    (ix)
-       1 ∸ 0
-    =    (vii)
-       1
-
+\begin{code}
+ex₃ : 3 ∸ 2 ≡ 1
+ex₃ =
+  begin
+     3 ∸ 2
+  ≡⟨⟩    -- (ix)
+     2 ∸ 1
+  ≡⟨⟩    -- (ix)
+     1 ∸ 0
+  ≡⟨⟩    -- (vii)
+     1
+  ∎
+\end{code}
 We did not use equation (viii) at all, but it will be required
 if we try to subtract a smaller number from a larger one.
-
-       2 ∸ 3
-    =    (ix)
-       1 ∸ 2
-    =    (ix)
-       0 ∸ 1
-    =    (viii)
-       0
+\begin{code}
+ex₄ : 2 ∸ 3 ≡ 0
+ex₄ =
+  begin
+     2 ∸ 3
+  ≡⟨⟩    -- (ix)
+     1 ∸ 2
+  ≡⟨⟩    -- (ix)
+     0 ∸ 1
+  ≡⟨⟩    -- (viii)
+     0
+  ∎
+\end{code}
 
 **Exercise** Compute `5 ∸ 3` and `3 ∸ 5` by the same technique.
 
@@ -572,12 +613,13 @@ unicode.
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
+    ∎  U+220E  END OF PROOF (\qed)
 
-Each line consists of the Unicode character (ℕ), the corresponding
-code point (U+2115), the name of the character (DOUBLE-STRUCK CAPITAL N),
-and the sequence to type into Emacs to generate the character (\bN).
+Each line consists of the Unicode character (`ℕ`), the corresponding
+code point (`U+2115`), the name of the character (`DOUBLE-STRUCK CAPITAL N`),
+and the sequence to type into Emacs to generate the character (`\bN`).
 
-The command \r is a little different to the others, because it gives
-access to a wide variety of Unicode arrows.  After typing \r, one can access
+The command `\r` is a little different to the others, because it gives
+access to a wide variety of Unicode arrows.  After typing `\r`, one can access
 the many available arrows by using the left, right, up, and down
 keys on the keyboard to navigate.
