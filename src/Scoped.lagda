@@ -106,17 +106,9 @@ ex : PH→DB twoPH ≡ twoDB
 ex = refl
 \end{code}
 
-## Convert Phoas to Exp
+## Decide whether environments and types are equal
 
 \begin{code}
-data Extends : (Γ : Env) → (Δ : Env) → Set where
-  Z : ∀ {Γ : Env} → Extends Γ Γ
-  S : ∀ {A : Type} {Γ Δ : Env} → Extends Γ Δ → Extends Γ (Δ , A)
-
-extract : ∀ {A : Type} {Γ Δ : Env} → Extends (Γ , A) Δ → Var Δ A
-extract Z = Z
-extract (S k) = S (extract k)
-
 _≟T_ : ∀ (A B : Type) → Dec (A ≡ B)
 o ≟T o = yes refl
 o ≟T (A′ ⇒ B′) = no (λ())
@@ -138,15 +130,20 @@ _≟_ : ∀ (Γ Δ : Env) → Dec (Γ ≡ Δ)
   obv1 ⟨ refl , refl ⟩ = refl
   obv2 : ∀ {Γ Δ A B} → (Γ , A) ≡ (Δ , B) → (Γ ≡ Δ) × (A ≡ B)
   obv2 refl = ⟨ refl , refl ⟩
+\end{code}
 
+
+## Convert Phoas to Exp
+
+\begin{code}
 postulate
   impossible : ∀ {A : Set} → A
 
-compare : ∀ (A : Type) (Γ Δ : Env) → Extends (Γ , A) Δ
+compare : ∀ (A : Type) (Γ Δ : Env) → Var Δ A   -- Extends (Γ , A) Δ
 compare A Γ Δ with (Γ , A) ≟ Δ
-compare A Γ Δ | yes refl = Z
+compare A Γ Δ       | yes refl = Z
 compare A Γ (Δ , B) | no ΓA≠ΔB = S (compare A Γ Δ)
-compare A Γ ε | no ΓA≠ΔB = impossible
+compare A Γ ε       | no ΓA≠ΔB = impossible
 
 PH→Exp : ∀ {A : Type} → (∀ {X} → PH X A) → Exp ε A
 PH→Exp M = h M ε
@@ -155,28 +152,43 @@ PH→Exp M = h M ε
   K A = Env
 
   h : ∀ {A} → PH K A → (Δ : Env) → Exp Δ A
-  h {A} (var Γ) Δ = var (extract (compare A Γ Δ))
+  h {A} (var Γ) Δ = var (compare A Γ Δ)
   h {A ⇒ B} (abs N) Δ = abs (h (N Δ) (Δ , A))
   h (app L M) Δ = app (h L Δ) (h M Δ)
 
-test : PH→Exp twoPH ≡ twoExp
-test = refl
+exPH : PH→Exp twoPH ≡ twoExp
+exPH = refl
 \end{code}
 
+## When one environment extends another
 
-# Test code
+We could get rid of the use of `impossible` above if we could prove
+that `Extends (Γ , A) Δ` in the `(var Γ)` case of the definition of `h`.
 
 \begin{code}
-plus : ∀ {Γ : Env} → Exp Γ (Church ⇒ Church ⇒ Church)
-plus =  (abs (abs (abs (abs (app (app (var (S (S (S Z)))) (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))))
+data Extends : (Γ : Env) → (Δ : Env) → Set where
+  Z : ∀ {Γ : Env} → Extends Γ Γ
+  S : ∀ {A : Type} {Γ Δ : Env} → Extends Γ Δ → Extends Γ (Δ , A)
 
-one : ∀ {Γ : Env} → Exp Γ Church
-one =  (abs (abs (app (var (S Z)) (var Z))))
+extract : ∀ {A : Type} {Γ Δ : Env} → Extends (Γ , A) Δ → Var Δ A
+extract Z     = Z
+extract (S k) = S (extract k)
+\end{code}
 
-two : ∀ {Γ : Env} → Exp Γ Church
+# Test code for semantics
+
+\begin{code}
+plus : Exp ε (Church ⇒ Church ⇒ Church)
+plus = PH→Exp (abs λ{m → (abs λ{n → (abs λ{s → (abs λ{z →
+  (app (app (var m) (var s)) (app (app (var n) (var s)) (var z)))})})})})
+
+one : Exp ε Church
+one =  PH→Exp (abs λ{s → (abs λ{z → (app (var s) (var z))})})
+
+two : Exp ε Church
 two = (app (app plus one) one)
 
-four : ∀ {Γ : Env} → Exp Γ Church
+four : Exp ε Church
 four = (app (app plus two) two)
 \end{code}
 
@@ -357,14 +369,17 @@ ex₁ =
 \end{code}
 
 \begin{code}
-ex₂ : (app {Γ = ε} (app plus one) one) ⟶* (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z)))))
+Γone : ∀ {Γ} → Exp Γ Church
+Γone = (abs (abs (app (var (S Z)) (var Z))))
+
+ex₂ : two ⟶* (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z)))))
 ex₂ =
   begin
     (app (app plus one) one)
   ⟶⟨ ξ₁ (β Fun) ⟩
-    (app (abs (abs (abs (app (app one (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) one)
+    (app (abs (abs (abs (app (app Γone (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) Γone)
   ⟶⟨ β Fun ⟩
-    (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z)))))
+    (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z)))))
   ∎
 \end{code}
 
@@ -382,13 +397,13 @@ progress (app (abs N) M) | inj₂ Fun     | inj₂ ValM         =  inj₁ ⟨ su
 
 \begin{code}
 ex₃ : progress (app (app plus one) one) ≡
-  inj₁ ⟨ (app (abs (abs (abs (app (app one (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) one) , ξ₁ (β Fun) ⟩
+  inj₁ ⟨ (app (abs (abs (abs (app (app Γone (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) Γone) , ξ₁ (β Fun) ⟩
 ex₃ = refl
 
-ex₄ : progress (app (abs (abs (abs (app (app one (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) one) ≡
-  inj₁ ⟨ (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z))))) , β Fun ⟩
+ex₄ : progress (app (abs (abs (abs (app (app Γone (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) Γone) ≡
+  inj₁ ⟨ (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z))))) , β Fun ⟩
 ex₄ = refl
 
-ex₅ : progress (abs (abs (app (app one (var (S Z))) (app (app one (var (S Z))) (var Z))))) ≡ inj₂ Fun
+ex₅ : progress (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z))))) ≡ inj₂ Fun
 ex₅ = refl  
 \end{code}

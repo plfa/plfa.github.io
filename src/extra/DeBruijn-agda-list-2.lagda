@@ -97,7 +97,7 @@ ex : PH→DB twoPH ≡ twoDB
 ex = refl
 \end{code}
 
-## Test environments and types for equality
+## Decide whether environments and types are equal
 
 \begin{code}
 _≟T_ : ∀ (A B : Type) → Dec (A ≡ B)
