@@ -1,10 +1,14 @@
-## DeBruijn encodings in Agda
-
-\begin{code}
-module DeBruijn where
-\end{code}
+---
+title     : "Scoped: Scoped and Typed DeBruijn representation"
+layout    : page
+permalink : /Scoped
+---
 
 ## Imports
+
+\begin{code}
+module Typed where
+\end{code}
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
