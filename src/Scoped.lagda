@@ -7,7 +7,7 @@ permalink : /Scoped
 ## Imports
 
 \begin{code}
-module Typed where
+module Scoped where
 \end{code}
 
 \begin{code}
