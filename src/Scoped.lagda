@@ -14,20 +14,23 @@ module Scoped where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 -- open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
 open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (¬_)
+open import Relation.Nullary using (¬_; Dec; yes; no)
+open import Relation.Nullary.Decidable using (map)
 open import Relation.Nullary.Negation using (contraposition)
+open import Relation.Nullary.Product using (_×-dec_)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Function using (_∘_)
+open import Function.Equivalence using (_⇔_; equivalence)
 \end{code}
 
 ## Syntax
 
 \begin{code}
-infixr 4 _⇒_
+infixr 5 _⇒_
 
 data Type : Set where
   o : Type
@@ -45,25 +48,67 @@ data Exp : Env → Type → Set where
   var : ∀ {Γ : Env} {A : Type} → Var Γ A → Exp Γ A
   abs : ∀ {Γ : Env} {A B : Type} → Exp (Γ , A) B → Exp Γ (A ⇒ B)
   app : ∀ {Γ : Env} {A B : Type} → Exp Γ (A ⇒ B) → Exp Γ A → Exp Γ B
+\end{code}
 
-type : Type → Set
-type o = ℕ
-type (A ⇒ B) = type A → type B
 
-env : Env → Set
-env ε = ⊤
-env (Γ , A) = env Γ × type A
+## Untyped DeBruijn
+
+\begin{code}
+data DB : Set where
+  var : ℕ → DB
+  abs : DB → DB
+  app : DB → DB → DB
 \end{code}
 
 
 # PH representation
 
 \begin{code}
-data PH (V : Type → Set) : Type → Set where
-  var : ∀ {A : Type} → V A → PH V A
-  abs : ∀ {A B : Type} → (V A → PH V B) → PH V (A ⇒ B)
-  app : ∀ {A B : Type} → PH V (A ⇒ B) → PH V A → PH V B
+data PH (X : Type → Set) : Type → Set where
+  var : ∀ {A : Type} → X A → PH X A
+  abs : ∀ {A B : Type} → (X A → PH X B) → PH X (A ⇒ B)
+  app : ∀ {A B : Type} → PH X (A ⇒ B) → PH X A → PH X B
+\end{code}
 
+
+# Convert PHOAS to DB
+
+\begin{code}
+PH→DB : ∀ {A} → (∀ {X} → PH X A) → DB
+PH→DB M = h M 0
+  where
+  K : Type → Set
+  K A = ℕ
+
+  h : ∀ {A} → PH K A → ℕ → DB
+  h (var k) j    =  var (j ∸ k)
+  h (abs N) j    =  abs (h (N (j + 1)) (j + 1))
+  h (app L M) j  =  app (h L j) (h M j)
+\end{code}
+
+
+# Test examples
+
+\begin{code}
+Church : Type
+Church = (o ⇒ o) ⇒ o ⇒ o
+
+twoExp : Exp ε Church
+twoExp = (abs (abs (app (var (S Z)) (app (var (S Z)) (var Z)))))
+
+twoPH : ∀ {X} → PH X Church
+twoPH = (abs (λ f → (abs (λ x → (app (var f) (app (var f) (var x)))))))
+
+twoDB : DB
+twoDB = (abs (abs (app (var 1) (app (var 1) (var 0)))))
+
+ex : PH→DB twoPH ≡ twoDB
+ex = refl
+\end{code}
+
+## Convert Phoas to Exp
+
+\begin{code}
 data Extends : (Γ : Env) → (Δ : Env) → Set where
   Z : ∀ {Γ : Env} → Extends Γ Γ
   S : ∀ {A : Type} {Γ Δ : Env} → Extends Γ Δ → Extends Γ (Δ , A)
@@ -72,20 +117,56 @@ extract : ∀ {A : Type} {Γ Δ : Env} → Extends (Γ , A) Δ → Var Δ A
 extract Z = Z
 extract (S k) = S (extract k)
 
-\end{code}
+_≟T_ : ∀ (A B : Type) → Dec (A ≡ B)
+o ≟T o = yes refl
+o ≟T (A′ ⇒ B′) = no (λ())
+(A ⇒ B) ≟T o = no (λ())
+(A ⇒ B) ≟T (A′ ⇒ B′) = map (equivalence obv1 obv2) ((A ≟T A′) ×-dec (B ≟T B′))
+  where
+  obv1 : ∀ {A B A′ B′ : Type} → (A ≡ A′) × (B ≡ B′) → A ⇒ B ≡ A′ ⇒ B′
+  obv1 ⟨ refl , refl ⟩ = refl
+  obv2 : ∀ {A B A′ B′ : Type} → A ⇒ B ≡ A′ ⇒ B′ → (A ≡ A′) × (B ≡ B′)
+  obv2 refl = ⟨ refl , refl ⟩
 
-toDB : ∀ {A : Type} → (Γ : Env) → PH (λ (B : Type) → (Δ : Env) → Extends (Γ , B) Δ) A → Exp Γ A
-toDB Γ (var x) = var (extract (x Γ))
-toDB {A ⇒ B} Γ (abs N) = abs {!toDB (Γ , A) (N ?) !}
-toDB Γ (app L M) = app (toDB Γ L) (toDB Γ M)
+_≟_ : ∀ (Γ Δ : Env) → Dec (Γ ≡ Δ)
+ε ≟ ε = yes refl
+ε ≟ (Γ , A) = no (λ())
+(Γ , A) ≟ ε = no (λ())
+(Γ , A) ≟ (Δ , B) = map (equivalence obv1 obv2) ((Γ ≟ Δ) ×-dec (A ≟T B))
+  where
+  obv1 : ∀ {Γ Δ A B} → (Γ ≡ Δ) × (A ≡ B) → (Γ , A) ≡ (Δ , B)
+  obv1 ⟨ refl , refl ⟩ = refl
+  obv2 : ∀ {Γ Δ A B} → (Γ , A) ≡ (Δ , B) → (Γ ≡ Δ) × (A ≡ B)
+  obv2 refl = ⟨ refl , refl ⟩
+
+postulate
+  impossible : ∀ {A : Set} → A
+
+compare : ∀ (A : Type) (Γ Δ : Env) → Extends (Γ , A) Δ
+compare A Γ Δ with (Γ , A) ≟ Δ
+compare A Γ Δ | yes refl = Z
+compare A Γ (Δ , B) | no ΓA≠ΔB = S (compare A Γ Δ)
+compare A Γ ε | no ΓA≠ΔB = impossible
+
+PH→Exp : ∀ {A : Type} → (∀ {X} → PH X A) → Exp ε A
+PH→Exp M = h M ε
+  where
+  K : Type → Set
+  K A = Env
+
+  h : ∀ {A} → PH K A → (Δ : Env) → Exp Δ A
+  h {A} (var Γ) Δ = var (extract (compare A Γ Δ))
+  h {A ⇒ B} (abs N) Δ = abs (h (N Δ) (Δ , A))
+  h (app L M) Δ = app (h L Δ) (h M Δ)
+
+test : PH→Exp twoPH ≡ twoExp
+test = refl
+\end{code}
 
 
 # Test code
 
 \begin{code}
-Church : Type
-Church = (o ⇒ o) ⇒ o ⇒ o
-
 plus : ∀ {Γ : Env} → Exp Γ (Church ⇒ Church ⇒ Church)
 plus =  (abs (abs (abs (abs (app (app (var (S (S (S Z)))) (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))))
 
@@ -103,6 +184,14 @@ four = (app (app plus two) two)
 # Denotational semantics
 
 \begin{code}
+type : Type → Set
+type o = ℕ
+type (A ⇒ B) = type A → type B
+
+env : Env → Set
+env ε = ⊤
+env (Γ , A) = env Γ × type A
+
 lookup : ∀ {Γ : Env} {A : Type} → Var Γ A → env Γ → type A
 lookup Z ⟨ ρ , v ⟩ = v
 lookup (S n) ⟨ ρ , v ⟩ = lookup n ρ
@@ -112,8 +201,8 @@ eval (var n) ρ  =  lookup n ρ
 eval (abs N) ρ  =  λ{ v → eval N ⟨ ρ , v ⟩ }
 eval (app L M) ρ  =  eval L ρ (eval M ρ)
 
-ex : eval four tt suc zero ≡ 4
-ex = refl
+ex₀ : eval four tt suc zero ≡ 4
+ex₀ = refl
 \end{code}
 
 # Operational semantics - with substitution a la Darais (31 lines)
