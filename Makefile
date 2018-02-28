@@ -8,9 +8,13 @@ out/%.md: src/%.lagda
 	mkdir -p out
 	agda2html --verbose --link-to-agda-stdlib --jekyll-root=out/ -i $< -o $@
 
-# serve website using jekyll
-serve:
+# start server
+server-start:
 	ruby -S bundle exec jekyll serve --no-watch --detach
+
+# stop server
+server-stop:
+	pkill -f jekyll
 
 # build website using jekyll
 build: $(markdown)
