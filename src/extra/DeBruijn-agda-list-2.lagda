@@ -1,8 +1,15 @@
-The typed DeBruijn representation is well known, as are typed PHOAS
-and untyped DeBruijn.  It is easy to convert PHOAS to untyped
-DeBruijn.  Is it known how to convert PHOAS to typed DeBruijn?
+Many thanks to Nils and Roman.
 
-Yours, -- P
+Attached find an implementation along the lines sketched by Roman;
+I found it after I sent my request and before Roman sent his helpful
+reply.
+
+One thing I note, in both Roman's code and mine, is that the code to
+decide whether two contexts are equal is lengthy (_≟T_ and _≟_,
+below).  Is there a better way to do it?  Does Agda offer an
+equivalent of Haskell's derivable for equality?
+
+Cheers, -- P
 
 
 ## Imports
@@ -127,14 +134,14 @@ _≟_ : ∀ (Γ Δ : Env) → Dec (Γ ≡ Δ)
 ## Convert Phoas to Exp
 
 \begin{code}
-postulate
-  impossible : ∀ {A : Set} → A
-
-compare : ∀ (A : Type) (Γ Δ : Env) → Var Δ A   -- Extends (Γ , A) Δ
-compare A Γ Δ with (Γ , A) ≟ Δ
+compare : ∀ (A : Type) (Γ Δ : Env) → Var Δ A
+compare A Γ Δ    with (Γ , A) ≟ Δ
 compare A Γ Δ       | yes refl = Z
-compare A Γ (Δ , B) | no ΓA≠ΔB = S (compare A Γ Δ)
-compare A Γ ε       | no ΓA≠ΔB = impossible
+compare A Γ (Δ , B) | no _     = S (compare A Γ Δ)
+compare A Γ ε       | no _     = impossible
+  where
+    postulate
+      impossible : ∀ {A : Set} → A
 
 PH→Exp : ∀ {A : Type} → (∀ {X} → PH X A) → Exp ε A
 PH→Exp M = h M ε

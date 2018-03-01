@@ -246,7 +246,7 @@ particular, if *n* is less than 2⁶⁴, it will require just one word on
 a machine with 64-bit words.
 
 
-## Equivalence
+## Imports
 
 Shortly we will want to write some equivalences that hold between
 terms involving natural numbers.  To support doing so, we import
@@ -255,9 +255,20 @@ about it from the Agda standard library.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
-open Eq.≡-Reasoning
+open Eq using (_≡_)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
 \end{code}
+
+The first line brings the standard library module that defines
+propositional equality into scope, with the name Eq. The second
+line opens that module, that is, adds all the names specified in
+the `using` clause into the current scope.  In this case, the only
+name added is that for the equivalence operator `_≡_`.
+The third line takes a record that specifies operators to support
+reasoning about equivalence, and adds all the names specified in
+the `using` clause into the current scope.  In this case, the
+names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We will see how
+these are used below.
 
 
 ## Operations on naturals are recursive functions
@@ -604,11 +615,31 @@ product of *m* and *n* to multiply *m* and *n*, whereas representing
 naturals as integers in Haskell requires time proportional to the sum
 of the logarithms of *m* and *n*.
 
+## Standard library
+
+At the end of each chapter, we will show where to find relevant
+definitions in the standard library.  
+
+    import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+
+The naturals, constructors for them, and basic operators upon them,
+are defined in the standard library module `Data.Nat`.
+
+Normally, we will show a "live" import, so Agda will complain if we
+attempt to import a definition that is not available.  This time,
+however, we have only shown the import as a comment, without attempting to
+execute it. This is because both this chapter and the standard library
+invoke the `NATURAL` pragma on two copies of the same type, `ℕ` as
+defined here and as defined in `Data.Nat`, and such a pragma can only
+be invoked once. Invoking it twice would raise confusion as to whether
+`2` is a value of type `ℕ` or type `Data.Nat.ℕ`.  Similarly for other
+pragmas. For this reason, we will not invoke pragmas in future
+chapters. More information on available pragmas can be found in the
+Agda documentation.
+
 ## Unicode
 
-In each chapter, we will list at the end all unicode characters that
-first appear in that chapter.  This chapter introduces the following
-unicode.
+At the end of each chapter, we will also list relevant unicode.
 
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
