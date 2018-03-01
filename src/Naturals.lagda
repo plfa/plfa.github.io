@@ -77,7 +77,9 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-**Exercise 1** Write out `7` in longhand.
+### Exercise (`longhand`)
+
+Write out `7` in longhand.
 
 
 ## Unpacking the inference rules
@@ -113,11 +115,11 @@ corresponding `data` declaration.  The lines
 tell us that `zero` is a natural number and that `suc` takes a natural
 number as argument and returns a natural number.
 
-You may have notices that `ℕ` and `→` are don't appear on your
-keyboard.  They are symbols in *unicode*.  At the end of each chapter
-is a list of all the unicode used in the chapter, including
-instructions on how to type them in the Emacs text editor using keys
-that are on your keyboard.
+You may have noticed that `ℕ` and `→` don't appear on your keyboard.
+They are symbols in *unicode*.  At the end of each chapter is a list
+of all unicode symbols introduced in the chapter, including
+instructions on how to type them in the Emacs text editor.  (Here
+*type* refers to typing with fingers as opposed to data typing!)
 
 
 ## The story of creation
@@ -128,9 +130,9 @@ Let's look again at the rules that define the natural numbers:
 + *Inductive case*: if `m` is a natural number, then `suc m` is also a
   natural number.
 
-Wait a minute! The second line defines natural numbers
-in terms of natural numbers. How can that posssibly be allowed?
-Isn't this as meaningless as claiming "Brexit means Brexit"?
+Hold on! The second line defines natural numbers in terms of natural
+numbers. How can that posssibly be allowed?  Isn't this as meaningless
+as the claim "Brexit means Brexit"?
 
 In fact, it is possible to assign our definition a meaning without
 resorting to any unpermitted circularities.  Furthermore, we can do so
@@ -152,7 +154,7 @@ before today, so the inductive case doesn't apply.
     -- on the first day, there is one natural number   
     zero : ℕ
 
-Then we repeat the process, so on the next day we know about all the
+Then we repeat the process. On the next day we know about all the
 numbers from the day before, plus any numbers added by the rules.  The
 base case tells us that `zero` is a natural number, but we already knew
 that. But now the inductive case tells us that since `zero` was a natural
@@ -206,7 +208,7 @@ a base case is useless, as in the phrase "Brexit means Brexit".
 A philosopher might observe that our reference to the first day,
 second day, and so on, implicitly involves an understanding of natural
 numbers.  In this sense, our definition might indeed be regarded as in
-some sense circular.  We need not let this circularity disturb us.
+some sense circular, but we need not let this disturb us.
 Everyone possesses a good informal understanding of the natural
 numbers, which we may take as a foundation for their formal
 description.
@@ -241,7 +243,7 @@ As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals as the Haskell type
 integer.  Representing the natural *n* with `zero` and `suc`
 requires space proportional to *n*, whereas representing it as an integer in
-Haskell only requires space proportional to the logarithm of *n*.  In
+Haskell only requires space proportional to the logarithm base 2 of *n*.  In
 particular, if *n* is less than 2⁶⁴, it will require just one word on
 a machine with 64-bit words.
 
@@ -255,7 +257,7 @@ about it from the Agda standard library.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_)
+open Eq using (_≡_; refl)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
 \end{code}
 
@@ -270,6 +272,11 @@ the `using` clause into the current scope.  In this case, the
 names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We will see how
 these are used below.
 
+Agda uses underbars to indicate where terms appear in infix or mixfix
+operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
+between two terms), while `begin_` is prefix (it is written before a
+term), and `_∎` is postfix (it is written after a term).
+
 
 ## Operations on naturals are recursive functions
 
@@ -279,8 +286,10 @@ addition and multiplication?
 
 As a child I spent much time memorising tables of addition and
 multiplication.  At first the rules seemed tricky and I would often
-make mistakes.  So it came as a shock to me to realise that all of addition
-and multiplication can be precisely defined in just a couple of lines.
+make mistakes.  It came as a shock to me to discover *recursion*,
+a simple technique by which every one of the infinite possible
+instances of addition and multiplication can be specified in
+just a couple of lines.
 
 Here is the definition of addition in Agda:
 \begin{code}
@@ -307,7 +316,7 @@ If we write `zero` as `0` and `suc m` as `1 + m`, we get two familiar equations.
    0       + n  =  n
    (1 + m) + n  =  1 + (m + n)
 
-The first follows because zero is a left identity for addition,
+The first follows because zero is an identity for addition,
 and the second because addition is associative.  In its most general
 form, associativity is written
 
@@ -325,8 +334,8 @@ numbers.  Such a definition is called *well founded*.
 
 For example, let's add two and three.
 \begin{code}
-ex₀ : 2 + 3 ≡ 5
-ex₀ =
+2+3 : 2 + 3 ≡ 5
+2+3 =
   begin
     2 + 3
   ≡⟨⟩    -- is shorthand for
@@ -344,8 +353,8 @@ ex₀ =
 
 We can write this more compactly by only expanding shorthand as needed.
 \begin{code}
-ex₁ : 2 + 3 ≡ 5
-ex₁ =
+2+3′ : 2 + 3 ≡ 5
+2+3′ =
   begin
     2 + 3
   ≡⟨⟩    -- (ii)
@@ -362,14 +371,42 @@ The first use of (ii) matches by taking `m = 1` and `n = 3`,
 The second use of (ii) matches by taking `m = 0` and `n = 3`,
 and the use of (i) matches by taking `n = 3`.
 
-In Agda, we write out chains of equivalences starting with
-`begin` and finishing with `∎` (pronounced "qed" or "tombstone",
-the latter from its appearance), and writing `≡⟨⟩` between
-two terms that have the same normal form.  We take equivalence and
-these notations as given for now, but will see how they are
+Agda uses two different symbols for equality.  Definitions
+are written with `=`, while assertions that two already defined
+things are the same are written with `≡`.  Here `2 + 3 ≡ 5`
+is the name of a type, which is occupied by evidence asserting
+that the equivalence holds.
+
+Here, we have written out our evidence that `2` and `3` sum to `5`
+as a chain of equivalences.  The chain starts with `begin` and
+finishes with `∎` (pronounced "qed" or "tombstone",
+the latter from its appearance), and consists of a series
+of terms separated by `≡⟨⟩`.
+
+The proof can also be written out much more compactly in Agda.
+\begin{code}
+2+3″ : 2 + 3 ≡ 5
+2+3″ = refl
+\end{code}
+Agda knows how to compute the value of `2 + 3`, and so can immediately
+check it is the same as `5`.  The assertion that a value is equal to
+itself is written `refl`, which is short for *reflexivity*.
+
+We take equivalence and the notations for chains of equivalences
+as given for now,  but will see how they are
 defined in Chapter [Equivalence](Equivalence).
 
-**Exercise** Compute `3 + 4` by the same technique.
+In most languages, identifiers must consist only of letters, or
+perhaps start with a letter and then consist of letters, digits, and
+perhaps a few other symbols. In Agda, identifiers can consist of
+almost any sequence of symbols, and hence `2+3` and `2+3′` are
+perfectly fine names. This convention means we often need to use space
+in Agda. Thus `2 + 3` combines two numbers with the operator for
+addition, while `2+3` is a name.
+
+### Exercise (`3+4`)
+
+Compute `3 + 4`, writing it out in the same style as above.
 
 
 ## Multiplication
@@ -388,23 +425,23 @@ Again, rewriting gives us two familiar equations.
   (1 + m) * n  =  n + (m * n)
 
 The first follows because zero times anything is zero,
-and the second follow because multiplication distributes
+and the second follows because multiplication distributes
 over addition.  In its most general form, distribution of
 multiplication over addition is written
 
   (m + n) * p  =  (m * p) + (n * p)
 
 We get the second equation from this one by taking `m` to be `1`, `n`
-to be `m`, and `p` to be `n`, and then using the fact that one is a
-left identity for multiplication, so `1 * n = n`.
+to be `m`, and `p` to be `n`, and then using the fact that one is an
+identity for multiplication, so `1 * n = n`.
 
 Again, the definition is well-founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
  
 For example, let's multiply two and three.
 \begin{code}
-ex₂ : 2 * 3 ≡ 6
-ex₂ =
+2*3 : 2 * 3 ≡ 6
+2*3 =
   begin
     2 * 3
   ≡⟨⟩    -- (iv)
@@ -421,7 +458,9 @@ The first use of (iv) matches by taking `m = 1` and `n = 3`,
 The second use of (iv) matches by taking `m = 0` and `n = 3`,
 and the use of (iii) matches by taking `n = 3`.
 
-**Exercise** Compute `3 * 4` by the same technique.
+### Exercise (`3*4`)
+
+Compute `3 * 4`.
 
 
 ## Exponentiation
@@ -434,7 +473,9 @@ n ^ zero     =  suc zero       -- (v)
 n ^ (suc m)  =  n * (n ^ m)    -- (vi)
 \end{code}
 
-**Exercise** Compute `4 ^ 3`.
+### Exercise (`3^4`)
+
+Compute `3 ^ 4`.
 
 
 ## Monus
@@ -467,8 +508,8 @@ small numbers.
 
 For example, let's subtract two from three.
 \begin{code}
-ex₃ : 3 ∸ 2 ≡ 1
-ex₃ =
+3∸2 : 3 ∸ 2 ≡ 1
+3∸2 =
   begin
      3 ∸ 2
   ≡⟨⟩    -- (ix)
@@ -482,8 +523,8 @@ ex₃ =
 We did not use equation (viii) at all, but it will be required
 if we try to subtract a smaller number from a larger one.
 \begin{code}
-ex₄ : 2 ∸ 3 ≡ 0
-ex₄ =
+2∸3 : 2 ∸ 3 ≡ 0
+2∸3 =
   begin
      2 ∸ 3
   ≡⟨⟩    -- (ix)
@@ -495,17 +536,21 @@ ex₄ =
   ∎
 \end{code}
 
-**Exercise** Compute `5 ∸ 3` and `3 ∸ 5` by the same technique.
+### Exercise (`5∸3`, `3∸5`)
+
+Compute `5 ∸ 3` and `3 ∸ 5`.
 
 ## The story of creation, revisited
 
-As with the definition of the naturals by induction, in the definition
-of addition by recursion we have defined addition in terms of addition.
+Just as our inductive definition defines the naturals in terms of the
+naturals, so does our recursive definition define addition in terms
+of addition.
 
 Again, it is possible to assign our definition a meaning without
 resorting to unpermitted circularities.  We do so by reducing our
 definition to equivalent inference rules for judgements about equality.
 
+    n : ℕ
     ------------
     zero + n = n
 
@@ -576,7 +621,7 @@ Application *binds more tightly than* (or *has precedence over*) any
 operator, and so we may write `suc m + n` to mean `(suc m) + n`.
 As another example, we say that multiplication binds more tightly than
 addition, and so write `n + m * n` to mean `n + (m * n)`.
-We also sometimes say that addition is *associates to the left*, and
+We also sometimes say that addition *associates to the left*, and
 so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
@@ -591,8 +636,7 @@ binds more tightly that addition or subtraction because it has a
 higher precedence.  Writing `infixl` indicates that all three
 operators associate to the left.  One can also write `infixr` to
 indicate that an operator associates to the right, or just `infix` to
-indicate that it has no associativity and parentheses are always
-required to disambiguate.
+indicate that parentheses are always required to disambiguate.
 
 ## More pragmas
 
@@ -607,8 +651,8 @@ and enables it to perform these computations using the corresponing
 Haskell operators on the integer type.  Representing naturals with
 `zero` and `suc` requires time proportional to *m* to add *m* and *n*,
 whereas representing naturals as integers in Haskell requires time
-proportional to the larger of the logarithms of *m* and *n*.  In
-particular, if *m* and *n* are both less than 2⁶⁴, it will require
+proportional to the larger of the logarithms (base 2) of *m* and *n*.  In
+particular, if *m* and *n* are both less than 2⁶⁴, addition requires
 constant time on a machine with 64-bit words.  Similarly, representing
 naturals with `zero` and `suc` requires time proportional to the
 product of *m* and *n* to multiply *m* and *n*, whereas representing
@@ -645,12 +689,27 @@ At the end of each chapter, we will also list relevant unicode.
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
     ∎  U+220E  END OF PROOF (\qed)
+    ′  U+2032  PRIME (\')
+    ″  U+2033  DOUBLE PRIME (\')
 
 Each line consists of the Unicode character (`ℕ`), the corresponding
 code point (`U+2115`), the name of the character (`DOUBLE-STRUCK CAPITAL N`),
 and the sequence to type into Emacs to generate the character (`\bN`).
 
-The command `\r` is a little different to the others, because it gives
-access to a wide variety of Unicode arrows.  After typing `\r`, one can access
-the many available arrows by using the left, right, up, and down
-keys on the keyboard to navigate.
+The command `\r` gives access to a wide variety of rightward arrows.
+After typing `\r`, one can access the many available arrows by using
+the left, right, up, and down keys to navigate.  Similarly, `\'` gives
+access to several primes, which one can access by using the left and
+right keys to navigate.  The commands remember where you navigated to
+the last time, and start with the same character next time.
+
+In place of left, right, up, and down keys, one may also use control characters.
+
+    ^B  left (Backward)
+    ^F  right (Forward)
+    ^P  up (uP)
+    ^N  down (dowN)
+
+We use `^B` to mean `control B`, and similarly.
+
+
