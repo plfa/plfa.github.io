@@ -4,19 +4,13 @@ title: About
 permalink: /about/
 ---
 
-This is a rewrite of the text [Software Foundations](
-https://softwarefoundations.cis.upenn.edu/current/index.html
-)
-from Coq to Agda. The authors are 
-[Wen Kokke](
-https://github.com/wenkokke
-)
-and
-[Philip Wadler](
-http://homepages.inf.ed.ac.uk/wadler/
-).
-Please send us comments! Contact details below.
+This is a rewrite of the text [Software Foundations][sf] from Coq to
+Agda. The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
+Please send us comments!  The text is currrently being drafted. The
+first draft of the first half will be completed before the end of
+March 2018. When that is done it will be announced here, and that would be
+an excellent time to comment on the first half.
 
 ## How to host literate code
 
