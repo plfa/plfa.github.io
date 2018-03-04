@@ -85,23 +85,29 @@ cons respectively, allowing a more efficient representation of lists.
 
 We can write lists more conveniently by introducing the following definitions.
 \begin{code}
-[_] : ∀ {A : Set} → A → List A
-[ z ] = z ∷ []
+-- [_] : ∀ {A : Set} → A → List A
+-- pattern [ z ] = z ∷ []
+pattern [_] z = z ∷ []
 
-[_,_] : ∀ {A : Set} → A → A → List A
-[ y , z ] = y ∷ z ∷ []
+-- [_,_] : ∀ {A : Set} → A → A → List A
+-- pattern [ y , z ] = y ∷ z ∷ []
+pattern [_,_] y z = y ∷ z ∷ []
 
-[_,_,_] : ∀ {A : Set} → A → A → A → List A
-[ x , y , z ] = x ∷ y ∷ z ∷ []
+-- [_,_,_] : ∀ {A : Set} → A → A → A → List A
+-- pattern [ x , y , z ] = x ∷ y ∷ z ∷ []
+pattern [_,_,_] x y z = x ∷ y ∷ z ∷ []
 
-[_,_,_,_] : ∀ {A : Set} → A → A → A → A → List A
-[ w , x , y , z ] = w ∷ x ∷ y ∷ z ∷ []
+-- [_,_,_,_] : ∀ {A : Set} → A → A → A → A → List A
+-- pattern [ w , x , y , z ] = w ∷ x ∷ y ∷ z ∷ []
+pattern [_,_,_,_] w x y z = w ∷ x ∷ y ∷ z ∷ []
 
-[_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → List A
-[ v , w , x , y , z ] = v ∷ w ∷ x ∷ y ∷ z ∷ []
+-- [_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → List A
+-- pattern [ v , w , x , y , z ] = v ∷ w ∷ x ∷ y ∷ z ∷ []
+pattern [_,_,_,_,_] v w x y z = v ∷ w ∷ x ∷ y ∷ z ∷ []
 
-[_,_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → A → List A
-[ u , v , w , x , y , z ] = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
+-- [_,_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → A → List A
+-- pattern [ u , v , w , x , y , z ] = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
+pattern [_,_,_,_,_,_] u v w x y z = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 \end{code}
 Agda recognises that this is a bracketing notation,
 and hence we can write things like `length [ 0 , 1 , 2 ]`
@@ -129,8 +135,8 @@ tail the same as the tail of the first list appended to the second list.
 Here is an example, showing how to compute the result
 of appending two lists.
 \begin{code}
-ex₁ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
-ex₁ =
+_ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
+_ =
   begin
     0 ∷ 1 ∷ 2 ∷ [] ++ 3 ∷ 4 ∷ []
   ≡⟨⟩
@@ -240,8 +246,8 @@ is one greater than the length of the tail of the list.
 
 Here is an example showing how to compute the length of a list.
 \begin{code}
-ex₂ : length [ 0 , 1 , 2 ] ≡ 3
-ex₂ =
+_ : length [ 0 , 1 , 2 ] ≡ 3
+_ =
   begin
     length (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -316,8 +322,8 @@ containing its head.
 
 Here is an example showing how to reverse a list.
 \begin{code}
-ex₃ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
-ex₃ =
+_ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
+_ =
   begin
     reverse (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
