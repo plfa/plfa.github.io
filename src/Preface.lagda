@@ -7,6 +7,15 @@ permalink : /Preface
 This book is an introduction to programming language theory, written
 in Agda.
 
+Please send suggestions to improve the text to [me][phil].  The text
+is currrently being drafted. The first draft of the first half will be
+completed before the end of March 2018. When that is done it will be
+announced here, and that would be an excellent time to comment on the
+first half.
+
+
+## Personal remarks
+
 Since 2013, I teach a course on Types and Semantics for Programming
 Languages to fourth-year undergraduates and masters students at the
 University of Edinburgh.  That course had been based on the textbook
@@ -57,12 +66,6 @@ I am fortunate that my student, [Wen Kokke][wen], was keen to help.
 They guided me as a newbie to Agda and provided an infrastructure that
 is easy to use and produces pages that are a pleasure to view.  Most
 of the text was written during a sabbatical in the first half of 2018.
-
-Please send suggestions to improve the text to [me][phil].  The text
-is currrently being drafted. The first draft of the first half will be
-completed before the end of March 2018. When that is done it will be
-announced here, and that would be an excellent time to comment on the
-first half.
 
 -- Philip Wadler, Rio de Janeiro, January--June 2018
 
