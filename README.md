@@ -4,13 +4,16 @@ title: About
 permalink: /about/
 ---
 
-This is a rewrite of the text [Software Foundations][sf] from Coq to
-Agda. The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
+This book is an introduction to programming language theory, written
+in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
 Please send us comments!  The text is currrently being drafted. The
-first draft of the first half will be completed before the end of
+first draft of Part I will be completed before the end of
 March 2018. When that is done it will be announced here, and that would be
-an excellent time to comment on the first half.
+an excellent time to comment on the first part.
+
+The book was inspired by [Software Foundations][sf], but presents the
+material in a different way; see the [Preface](Preface).
 
 ## How to host literate code
 

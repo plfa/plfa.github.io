@@ -5,13 +5,12 @@ permalink : /Preface
 ---
 
 This book is an introduction to programming language theory, written
-in Agda.
+in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
-Please send suggestions to improve the text to [me][phil].  The text
-is currrently being drafted. The first draft of the first half will be
-completed before the end of March 2018. When that is done it will be
-announced here, and that would be an excellent time to comment on the
-first half.
+Please send us comments!  The text is currrently being drafted. The
+first draft of Part I will be completed before the end of
+March 2018. When that is done it will be announced here, and that would be
+an excellent time to comment on the first part.
 
 
 ## Personal remarks
@@ -50,7 +49,7 @@ using just one name for each concept, e.g., substitution is
 attempt at consistency. *Propositions as types* as a foundation of
 proof is on proud display.
 
-Alas, there is no standard text for programming language theory in
+Alas, there is no textbook for programming language theory in
 Agda.  Stump's [Verified Functional Programming in Agda][stump] covers
 related ground, but focusses more on programming with dependent
 types than on teaching the theory of programming languages.
@@ -59,13 +58,14 @@ The original goal was to simply adapt *Software Foundations*,
 maintaining the same text but transposing the code from Coq to Agda.
 But it quickly became clear to me that after five years in the
 classroom I had my own ideas about how to present the material.  They
-say you should never write a book unless you cannot not write the
+say you should never write a book unless you cannot *not* write the
 book, and I soon found that this was a book I could not not write.
 
 I am fortunate that my student, [Wen Kokke][wen], was keen to help.
 They guided me as a newbie to Agda and provided an infrastructure that
-is easy to use and produces pages that are a pleasure to view.  Most
-of the text was written during a sabbatical in the first half of 2018.
+is easy to use and produces pages that are a pleasure to view.
+
+Most of the text was written during a sabbatical in the first half of 2018.
 
 -- Philip Wadler, Rio de Janeiro, January--June 2018
 
