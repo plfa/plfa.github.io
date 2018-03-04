@@ -19,11 +19,11 @@ material in a different way; see the [Preface](Preface).
 
 In directory `sf/` run the following:
 
-	`$ make macos-setup` (might need sudo, but try it without first)
-	`$ make build` (builds lagda->markdown and website)
-	`$ make build-incremental` (builds lagda->markdown and website using incremental)
-	`$ make server-start` (starts server in detached mode)
-	`$ make server-stop` (stops the server, uses pkill)
+    $ make macos-setup          (might need sudo, but try it without first)
+    $ make build                (builds lagda->markdown and website)
+    $ make build-incremental    (builds lagda->markdown and website using incremental)
+    $ make server-start         (starts server in detached mode)
+    $ make server-stop          (stops the server, uses pkill)
 
 The visible page appears at
 
