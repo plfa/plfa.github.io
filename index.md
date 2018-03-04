@@ -3,23 +3,21 @@ title  : Table of Contents
 layout : page
 ---
 
-This is a rewrite of the text [Software Foundations](
-https://softwarefoundations.cis.upenn.edu/current/index.html
-)
+This is a rewrite of the text [Software Foundations][sf]
 from Coq to Agda. The authors are 
-[Wen Kokke](
-https://github.com/wenkokke
+[Wen Kokke][wen]
+
 )
 and  
-[Philip Wadler](
-http://homepages.inf.ed.ac.uk/wadler/
+[Philip Wadler][phil]
+
+(
+
 ).
 
-## Part 1: Logical Foundations
+  - [Preface](Preface)
 
-<!--
-  - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
--->
+## Part 1: Logical Foundations
 
   - [Naturals: Natural numbers](Naturals)
   - [Properties: Proof by induction](Properties)
@@ -41,3 +39,13 @@ http://homepages.inf.ed.ac.uk/wadler/
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
   - [StlcProp: Properties of STLC](StlcProp)
   - [Scoped: Scoped and Typed DeBruijn representation](Scoped)
+
+[sf]: https://softwarefoundations.cis.upenn.edu/
+[wen]: https://github.com/wenkokke
+[phil]: http://homepages.inf.ed.ac.uk/wadler/
+
+
+<!--
+  - [Basics: Functional Programming in Agda]({{ "/Basics" | relative_url }})
+-->
+

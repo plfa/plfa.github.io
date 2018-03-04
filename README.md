@@ -22,13 +22,21 @@ Please send us comments! Contact details below.
 
 In directory `sf/` run the following:
 
-    $ make clobber
-    $ make
-    $ make serve &
+	`$ make macos-setup` (might need sudo, but try it without first)
+	`$ make build` (builds lagda->markdown and website)
+	`$ make build-incremental` (builds lagda->markdown and website using incremental)
+	`$ make server-start` (starts server in detached mode)
+	`$ make server-stop` (stops the server, uses pkill)
 
 The visible page appears at
 
     localhost:4000/sf/<permalink>
+
+<!--
+    $ make clobber
+    $ make
+    $ make serve &
+-->
 
 ## Unicode abbreviations
 
