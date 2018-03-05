@@ -12,23 +12,14 @@ by their name, properties of *inductive datatypes* are proved by
 
 ## Imports
 
-Each chapter will begin with a list of the imports we require from the
-Agda standard library.  We will, of course, require the naturals; everything in the
-previous chapter is also found in the library module `Data.Nat`, so we
-import the required definitions from there.  We also require
-propositional equality.
-
+We require equivalence as in the previous chapter, plus the naturals
+and some operations upon them.
 \begin{code}
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
 \end{code}
-
-Each import consists of the keywords `open` and `import`, followed by
-the module name, followed by the keyword `using`, followed by the
-names of each identifier imported from the module, surrounded by
-parentheses and separated by semicolons. Parentheses and semicolons
-are among the few characters that cannot appear in names, so we do not
-need extra spaces in the import list.
 
 
 ## Associativity
@@ -44,17 +35,21 @@ that range over all natural numbers.
 
 We can test the proposition by choosing specific numbers for the three
 variables.
-
-       (3 + 4) + 5
-    ≡
-       7 + 5
-    ≡
-       12
-    ≡
-       3 + 9
-    ≡
-       3 + (4 + 5)
-
+\begin{code}
+_ : (3 + 4) + 5 ≡ 3 + (4 + 5)
+_ =
+  begin
+    (3 + 4) + 5
+  ≡⟨⟩
+    7 + 5
+  ≡⟨⟩
+    12
+  ≡⟨⟩
+    3 + 9
+  ≡⟨⟩
+    3 + (4 + 5)
+  ∎
+\end{code}
 Here we have displayed the computation in tabular form, one term to a
 line.  It is often easiest to read such computations from the top down
 until one reaches the simplest term (in this case, `12`), and

@@ -254,20 +254,23 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
 \end{code}
 
 The first line brings the standard library module that defines
-propositional equality into scope, with the name Eq. The second
-line opens that module, that is, adds all the names specified in
-the `using` clause into the current scope.  In this case, the only
-name added is that for the equivalence operator `_≡_`.
-The third line takes a record that specifies operators to support
-reasoning about equivalence, and adds all the names specified in
-the `using` clause into the current scope.  In this case, the
-names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We will see how
-these are used below.
+propositional equality into scope, with the name `Eq`. The second line
+opens that module, that is, adds all the names specified in the
+`using` clause into the current scope. In this case the names added
+are `_≡_`, the equivalence operator, and `refl`, the name for evidence
+that two terms are equal.  The third line takes a record that
+specifies operators to support reasoning about equivalence, and adds
+all the names specified in the `using` clause into the current scope.
+In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
+will see how these are used below.
 
 Agda uses underbars to indicate where terms appear in infix or mixfix
 operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
 between two terms), while `begin_` is prefix (it is written before a
 term), and `_∎` is postfix (it is written after a term).
+
+Parentheses and semicolons are among the few characters that cannot
+appear in names, so we do not need extra spaces in the `using` list.
 
 
 ## Operations on naturals are recursive functions
@@ -326,8 +329,7 @@ numbers.  Such a definition is called *well founded*.
 
 For example, let's add two and three.
 \begin{code}
-2+3 : 2 + 3 ≡ 5
-2+3 =
+_ =
   begin
     2 + 3
   ≡⟨⟩    -- is shorthand for
@@ -342,11 +344,15 @@ For example, let's add two and three.
     5
   ∎
 \end{code}
+Here we have written an Agda term, bound to the dummy name `_`,
+which we will use for all examples.
+The type of the term is `2 + 3 ≡ 5`,
+that is, the term provides *evidence* for the corresponding equivalence.
 
-We can write this more compactly by only expanding shorthand as needed.
+We can write the same derivation more compactly by only
+expanding shorthand as needed.
 \begin{code}
-2+3′ : 2 + 3 ≡ 5
-2+3′ =
+_ =
   begin
     2 + 3
   ≡⟨⟩    -- (ii)
@@ -363,38 +369,33 @@ The first use of (ii) matches by taking `m = 1` and `n = 3`,
 The second use of (ii) matches by taking `m = 0` and `n = 3`,
 and the use of (i) matches by taking `n = 3`.
 
-Agda uses two different symbols for equality.  Definitions
-are written with `=`, while assertions that two already defined
-things are the same are written with `≡`.  Here `2 + 3 ≡ 5`
-is the name of a type, which is occupied by evidence asserting
-that the equivalence holds.
-
-Here, we have written out our evidence that `2` and `3` sum to `5`
-as a chain of equivalences.  The chain starts with `begin` and
-finishes with `∎` (pronounced "qed" or "tombstone",
-the latter from its appearance), and consists of a series
-of terms separated by `≡⟨⟩`.
-
-The proof can also be written out much more compactly in Agda.
-\begin{code}
-2+3″ : 2 + 3 ≡ 5
-2+3″ = refl
-\end{code}
-Agda knows how to compute the value of `2 + 3`, and so can immediately
-check it is the same as `5`.  The assertion that a value is equal to
-itself is written `refl`, which is short for *reflexivity*.
-
-We take equivalence and the notations for chains of equivalences
-as given for now,  but will see how they are
+Agda uses two different symbols for equality.  Definitions are written
+with `=`, while assertions that two already defined things are the
+same are written with `≡`.  Here, we have written out our evidence
+that `2` and `3` sum to `5` as a chain of equivalences.  The chain
+starts with `begin` and finishes with `∎` (pronounced "qed" or
+"tombstone", the latter from its appearance), and consists of a series
+of terms separated by `≡⟨⟩`.  We take equivalence and the notations
+for chains of equivalences as given for now, but will see how they are
 defined in Chapter [Equivalence](Equivalence).
 
-In most languages, identifiers must consist only of letters, or
-perhaps start with a letter and then consist of letters, digits, and
-perhaps a few other symbols. In Agda, identifiers can consist of
-almost any sequence of symbols, and hence `2+3` and `2+3′` are
-perfectly fine names. This convention means we often need to use space
-in Agda. Thus `2 + 3` combines two numbers with the operator for
-addition, while `2+3` is a name.
+The same proof can also be written out even more compactly.
+\begin{code}
+_ : 2 + 3 ≡ 5
+_ = refl
+\end{code}
+Agda knows how to compute the value of `2 + 3`, and so can immediately
+check it is the same as `5`.  Evidence that a value is equal to
+itself is written `refl`, which is short for *reflexivity*.
+
+Here `2 + 3 ≡ 5` is a type, and `refl` is a term of the given type;
+alternatively, one can think of `refl` as *evidence* for the assertion `2 + 3 ≡ 5`.
+We could have preceded the other two examples also with the line `_ : 2 + 3 ≡ 5`,
+but it was redundant; here it is required because otherwise one would not know
+which equivalence `refl` was providing evidence for.
+This duality of interpretation---as a term of a type, or as evidence
+for an assertion---is central to how we formalise concepts in Agda.
+
 
 ### Exercise (`3+4`)
 
@@ -432,8 +433,7 @@ larger numbers is defined in terms of multiplication of smaller numbers.
  
 For example, let's multiply two and three.
 \begin{code}
-2*3 : 2 * 3 ≡ 6
-2*3 =
+_ =
   begin
     2 * 3
   ≡⟨⟩    -- (iv)
@@ -500,8 +500,7 @@ small numbers.
 
 For example, let's subtract two from three.
 \begin{code}
-3∸2 : 3 ∸ 2 ≡ 1
-3∸2 =
+_ =
   begin
      3 ∸ 2
   ≡⟨⟩    -- (ix)
@@ -515,8 +514,7 @@ For example, let's subtract two from three.
 We did not use equation (viii) at all, but it will be required
 if we try to subtract a smaller number from a larger one.
 \begin{code}
-2∸3 : 2 ∸ 3 ≡ 0
-2∸3 =
+_ =
   begin
      2 ∸ 3
   ≡⟨⟩    -- (ix)
