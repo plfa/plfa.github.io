@@ -16,7 +16,7 @@ We require equivalence as in the previous chapter, plus the naturals
 and some operations upon them.
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
+open Eq using (_≡_; refl; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 \end{code}
@@ -159,8 +159,48 @@ we must show to hold, become:
     ---------------------------------
     (suc m + n) + p ≡ (suc m + n) + p
 
-In the inference rules, `n` and `p` are any arbitary natural numbers, so when we
-are done with the proof we know it holds for any `n` and `p` as well as any `m`.
+In the inference rules, `n` and `p` are arbitary natural numbers, so
+when we are done with the proof we know the equation hold for any `n`
+and `p` as well as any `m`.
+
+Here is the proof, written out in full.
+\begin{code}
++-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc zero n p =
+  begin
+    (zero + n) + p
+  ≡⟨⟩                                   -- (i)
+    n + p
+  ≡⟨⟩                                   -- (i)
+   zero + (n + p)
+  ∎
++-assoc (suc m) n p =
+  begin
+    (suc m + n) + p
+  ≡⟨⟩                                   -- (ii)
+    suc (m + n) + p
+  ≡⟨⟩                                   -- (ii)
+    suc ((m + n) + p)
+  ≡⟨ cong suc (+-assoc m n p) ⟩         -- (induction hypothesis)
+    suc (m + (n + p))
+  ≡⟨⟩                                   -- (ii)
+    suc m + (n + p)
+  ∎  
+\end{code}
+We have named the proof `+-assoc`.  In Agda, identifiers can consist of
+any sequence of characters not including spaces or the characters `@.(){};_`.
+
+Let's unpack this code.  The first line states that we are
+defining the identifier `+-assoc` which is a proof of the
+proposition
+
+    ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+
+The upside down A is pronounced "for all", and the proposition
+asserts that for all natural numbers `m`, `n`, and `p` that
+the equations `(m + n) + p ≡ m + (n + p)` holds.  Such a proof
+is a function that accepts three natural numbers---corresponding to
+to `m`, `n`, and `p`---and returns a proof of the equation.
 
 Recall the definition of addition has two clauses. 
 
@@ -215,11 +255,11 @@ induction hypothesis.
 ## Encoding the proof in Agda
 
 We encode this proof in Agda as follows.
-\begin{code}
-+-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-+-assoc zero n p = refl
-+-assoc (suc m) n p rewrite +-assoc m n p = refl
-\end{code}
+
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+    +-assoc zero n p = refl
+    +-assoc (suc m) n p rewrite +-assoc m n p = refl
+
 Here we have named the proof `assoc+`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
@@ -236,7 +276,7 @@ is a function that accepts three natural numbers---corresponding to
 to `m`, `n`, and `p`---and returns a proof of the equation.
 
 Proof by induction corresponds exactly to a recursive definition.
-Here we are induct on the first argument `m`, and leave the other two
+Here we induct on the first argument `m`, and leave the other two
 arguments `n` and `p` fixed.
 
 The base case corresponds to instantiating `m` by
@@ -435,7 +475,7 @@ we must show to hold, become:
     ---------------------
     suc m + n ≡ n + suc m
 
-In the inference rules, `n` is any arbitary natural number, so when we
+In the inference rules, `n` is an arbitary natural number, so when we
 are done with the proof we know it holds for any `n` as well as any `m`.
 
 By equation (i) of the definition of addition, the left-hand side of
@@ -537,19 +577,82 @@ QED.
 
 ## Encoding the proofs in Agda
 
-These proofs can be encoded concisely in Agda.
 \begin{code}
 +-identity : ∀ (n : ℕ) → n + zero ≡ n
-+-identity zero = refl
-+-identity (suc n) rewrite +-identity n = refl
++-identity zero =
+  begin
+    zero + zero
+  ≡⟨⟩
+    zero
+  ∎
++-identity (suc n) =
+  begin
+    suc n + zero
+  ≡⟨⟩
+    suc (n + zero)
+  ≡⟨ cong suc (+-identity n) ⟩
+    suc n
+  ∎
+\end{code}
 
+\begin{code}
 +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
-+-suc zero n = refl
-+-suc (suc m) n rewrite +-suc m n = refl
++-suc zero n =
+  begin
+    zero + suc n
+  ≡⟨⟩
+    suc n
+  ≡⟨⟩
+    suc (zero + n)
+  ∎
++-suc (suc m) n =
+  begin
+    suc m + suc n
+  ≡⟨⟩
+    suc (m + suc n)
+  ≡⟨ cong suc (+-suc m n) ⟩
+    suc (suc (m + n))
+  ≡⟨⟩
+    suc (suc m + n)
+  ∎
+\end{code}
 
+\begin{code}
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
-+-comm zero n rewrite +-identity n = refl
-+-comm (suc m) n rewrite +-suc n m | +-comm m n = refl
++-comm m zero =
+  begin
+    m + zero
+  ≡⟨ +-identity m ⟩
+    m
+  ≡⟨⟩
+    zero + m
+  ∎
++-comm m (suc n) =
+  begin
+    m + suc n
+  ≡⟨ +-suc m n ⟩
+    suc (m + n)
+  ≡⟨ cong suc (+-comm m n) ⟩
+    suc (n + m)
+  ≡⟨⟩
+    suc n + m
+  ∎    
+\end{code}
+
+
+These proofs can be encoded concisely in Agda.
+\begin{code}
++-identity′ : ∀ (n : ℕ) → n + zero ≡ n
++-identity′ zero = refl
++-identity′ (suc n) rewrite +-identity′ n = refl
+
++-suc′ : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
++-suc′ zero n = refl
++-suc′ (suc m) n rewrite +-suc′ m n = refl
+
++-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm′ m zero rewrite +-identity′ m = refl
++-comm′ m (suc n) rewrite +-suc′ m n | +-comm′ m n = refl
 \end{code}
 Here we have renamed Lemma (x) and (xi) to `+-identity` and `+-suc`,
 respectively.  In the final line, rewriting with two equations is
@@ -613,3 +716,10 @@ This chapter introduces the following unicode.
 
     ≡  U+2261  IDENTICAL TO (\==)
     ∀  U+2200  FOR ALL (\forall)
+    ′  U+2032  PRIME (\')
+    ″  U+2033  DOUBLE PRIME (\')
+
+Like `\r`, after typing `\'`, one can access different primes (single,
+double, triple, quadruple) by using the left, right, up, and down keys
+to navigate.  The command remembers where you navigated to the last
+time, and starts with the same character next time.

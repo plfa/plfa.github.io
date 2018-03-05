@@ -123,7 +123,7 @@ Let's look again at the rules that define the natural numbers:
   natural number.
 
 Hold on! The second line defines natural numbers in terms of natural
-numbers. How can that posssibly be allowed?  Isn't this as meaningless
+numbers. How can that possibly be allowed?  Isn't this as meaningless
 as the claim "Brexit means Brexit"?
 
 In fact, it is possible to assign our definition a meaning without
@@ -294,7 +294,7 @@ zero    + n  =  n                -- (i)
 \end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
-written with underbars where the arguement go, hence its name is
+written with underbars where the argument go, hence its name is
 `_+_`.  It's type, `ℕ → ℕ → ℕ`, indicates that it accepts two naturals
 and returns a natural.  There are two ways to construct a natural,
 with `zero` or with `suc`, so there are two lines defining addition,
@@ -329,6 +329,7 @@ numbers.  Such a definition is called *well founded*.
 
 For example, let's add two and three.
 \begin{code}
+_ : 2 + 3 ≡ 5
 _ =
   begin
     2 + 3
@@ -344,14 +345,11 @@ _ =
     5
   ∎
 \end{code}
-Here we have written an Agda term, bound to the dummy name `_`,
-which we will use for all examples.
-The type of the term is `2 + 3 ≡ 5`,
-that is, the term provides *evidence* for the corresponding equivalence.
 
 We can write the same derivation more compactly by only
 expanding shorthand as needed.
 \begin{code}
+_ : 2 + 3 ≡ 5
 _ =
   begin
     2 + 3
@@ -369,17 +367,23 @@ The first use of (ii) matches by taking `m = 1` and `n = 3`,
 The second use of (ii) matches by taking `m = 0` and `n = 3`,
 and the use of (i) matches by taking `n = 3`.
 
-Agda uses two different symbols for equality.  Definitions are written
-with `=`, while assertions that two already defined things are the
-same are written with `≡`.  Here, we have written out our evidence
-that `2` and `3` sum to `5` as a chain of equivalences.  The chain
-starts with `begin` and finishes with `∎` (pronounced "qed" or
-"tombstone", the latter from its appearance), and consists of a series
-of terms separated by `≡⟨⟩`.  We take equivalence and the notations
-for chains of equivalences as given for now, but will see how they are
-defined in Chapter [Equivalence](Equivalence).
+In both cases, we write a type (after a colon) and a term of that type
+(after an equal sign), both assigned to the dummy name `_`.  The dummy
+name can be assigned many times, and is convenient for examples.  One
+can also use other names, but each must be used only once in a module.
+Note that definitions are written with `=`, while assertions that two
+already defined things are the same are written with `≡`.
 
-The same proof can also be written out even more compactly.
+Here the type is `2 + 3 ≡ 5` and the term provides *evidence* for the
+corresponding equation, here written as a chain of equations.  The
+chain starts with `begin` and finishes with `∎` (pronounced "qed" or
+"tombstone", the latter from its appearance), and consists of a series
+of terms separated by `≡⟨⟩`.  We take equivalence and chains as givens
+for now, but will see how they are defined in Chapter
+[Equivalence](Equivalence).
+
+In fact, both proofs are longer than need be, and Agda is satisfied
+with the following.
 \begin{code}
 _ : 2 + 3 ≡ 5
 _ = refl
@@ -388,18 +392,40 @@ Agda knows how to compute the value of `2 + 3`, and so can immediately
 check it is the same as `5`.  Evidence that a value is equal to
 itself is written `refl`, which is short for *reflexivity*.
 
-Here `2 + 3 ≡ 5` is a type, and `refl` is a term of the given type;
-alternatively, one can think of `refl` as *evidence* for the assertion `2 + 3 ≡ 5`.
-We could have preceded the other two examples also with the line `_ : 2 + 3 ≡ 5`,
-but it was redundant; here it is required because otherwise one would not know
-which equivalence `refl` was providing evidence for.
-This duality of interpretation---as a term of a type, or as evidence
-for an assertion---is central to how we formalise concepts in Agda.
+In the chains of equations, all Agda checks is that each of the terms
+computes to the same value. If we jumble the equations, omit lines, or
+add extraneous lines it will still pass, because all Agda does is
+check that each term in the chain computes to the same value.
+\begin{code}
+_ : 2 + 3 ≡ 5
+_ =
+  begin
+    2 + 3
+  ≡⟨⟩
+    4 + 1
+  ≡⟨⟩
+    5
+  ≡⟨⟩
+    suc (suc (0 + 3))
+  ∎
+\end{code}
+Of course, writing a proof in this way would be misleading and confusing,
+so we won't do it.
 
+Here `2 + 3 ≡ 5` is a type, and the chain of equations (or `refl`) is
+a term of the given type; alternatively, one can think of the term as
+*evidence* for the assertion `2 + 3 ≡ 5`.  This duality of
+interpretation---as a term of a type, or as evidence for an
+assertion---is central to how we formalise concepts in Agda.  When we
+use the word *evidence* it is nothing equivocal.  It is not like
+testimony in a court which must be weighed to determine whether the
+witness is trustworthy.  Rather, it is ironclad.  The other word for
+evidence, which we may use interchangeably, is *proof*.
 
 ### Exercise (`3+4`)
 
-Compute `3 + 4`, writing it out in the same style as above.
+Compute `3 + 4`, writing out your reasoning as a chain of equations.
+
 
 
 ## Multiplication
@@ -630,14 +656,14 @@ indicate that parentheses are always required to disambiguate.
 
 ## More pragmas
 
-Inluding the lines
+Including the lines
 \begin{code}
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
 \end{code}
 tells Agda that these three operators correspond to the usual ones,
-and enables it to perform these computations using the corresponing
+and enables it to perform these computations using the corresponding
 Haskell operators on the integer type.  Representing naturals with
 `zero` and `suc` requires time proportional to *m* to add *m* and *n*,
 whereas representing naturals as integers in Haskell requires time
@@ -652,35 +678,32 @@ of the logarithms of *m* and *n*.
 ## Standard library
 
 At the end of each chapter, we will show where to find relevant
-definitions in the standard library.  
+definitions in the standard library.  The naturals, constructors for
+them, and basic operators upon them, are defined in the standard
+library module `Data.Nat`.
 
     import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
 
-The naturals, constructors for them, and basic operators upon them,
-are defined in the standard library module `Data.Nat`.
-
-Normally, we will show a "live" import, so Agda will complain if we
-attempt to import a definition that is not available.  This time,
-however, we have only shown the import as a comment, without attempting to
-execute it. This is because both this chapter and the standard library
-invoke the `NATURAL` pragma on two copies of the same type, `ℕ` as
-defined here and as defined in `Data.Nat`, and such a pragma can only
-be invoked once. Invoking it twice would raise confusion as to whether
-`2` is a value of type `ℕ` or type `Data.Nat.ℕ`.  Similarly for other
-pragmas. For this reason, we will not invoke pragmas in future
-chapters. More information on available pragmas can be found in the
-Agda documentation.
+Normally, we will show an import as running code, so Agda will
+complain if we attempt to import a definition that is not available.
+This time, however, we have only shown the import as a comment.  Both
+this chapter and the standard library invoke the `NATURAL` pragma, the
+former on `ℕ`, and the latter on the equivalent type `Data.Nat.ℕ`.
+Such a pragma can only be invoked once, as invoking it twice would
+raise confusion as to whether `2` is a value of type `ℕ` or type
+`Data.Nat.ℕ`.  Similar confusions arise if other pragmas are invoked
+twice. For this reason, we will not invoke pragmas in future chapters,
+leaving that to the standard library. More information on available
+pragmas can be found in the Agda documentation.
 
 ## Unicode
 
-At the end of each chapter, we will also list relevant unicode.
+At the end of each chapter, we will list relevant unicode.
 
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
     ∎  U+220E  END OF PROOF (\qed)
-    ′  U+2032  PRIME (\')
-    ″  U+2033  DOUBLE PRIME (\')
 
 Each line consists of the Unicode character (`ℕ`), the corresponding
 code point (`U+2115`), the name of the character (`DOUBLE-STRUCK CAPITAL N`),
@@ -688,10 +711,9 @@ and the sequence to type into Emacs to generate the character (`\bN`).
 
 The command `\r` gives access to a wide variety of rightward arrows.
 After typing `\r`, one can access the many available arrows by using
-the left, right, up, and down keys to navigate.  Similarly, `\'` gives
-access to several primes, which one can access by using the left and
-right keys to navigate.  The commands remember where you navigated to
-the last time, and start with the same character next time.
+the left, right, up, and down keys to navigate.  The command remembers
+where you navigated to the last time, and starts with the same
+character next time.
 
 In place of left, right, up, and down keys, one may also use control characters.
 
