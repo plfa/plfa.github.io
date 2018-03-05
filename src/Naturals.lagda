@@ -475,6 +475,8 @@ _ =
 The first use of (iv) matches by taking `m = 1` and `n = 3`,
 The second use of (iv) matches by taking `m = 0` and `n = 3`,
 and the use of (iii) matches by taking `n = 3`.
+Here we have omitted the line declaring `_ : 2 * 3 ≡ 6`, since
+it can easily be inferred from the corresponding term.
 
 ### Exercise (`3*4`)
 

@@ -72,7 +72,7 @@ Recall the definition of natural numbers consists of a *base case*
 which tells us that `zero` is a natural, and an *inductive case*
 which tells us that if `m` is a natural then `suc m` is also a natural.
 
-Proofs by induction follow the structure of this definition.  To prove
+Proof by induction follows the structure of this definition.  To prove
 a property of natural numbers by induction, we need prove two cases.
 First is the *base case*, where we show the property holds for `zero`.
 Second is the *inductive case*, where we assume the the property holds for
@@ -149,8 +149,12 @@ In order to prove associativity, we take `P m` to be the property
 
     (m + n) + p ≡ m + (n + p)
 
-Then the appropriate instances of the inference rules, which
-we must show to hold, become:
+Here `n` and `p` are arbitary natural numbers, so if we can show the
+equation holds for all `m` it will also hold for all `n` and `p`.
+
+<!--
+The appropriate instances of the inference rules---which
+we must show to hold---are:
 
     -------------------------------
     (zero + n) + p ≡ zero + (n + p)
@@ -158,10 +162,7 @@ we must show to hold, become:
     (m + n) + p ≡ m + (n + p)
     ---------------------------------
     (suc m + n) + p ≡ (suc m + n) + p
-
-In the inference rules, `n` and `p` are arbitary natural numbers, so
-when we are done with the proof we know the equation hold for any `n`
-and `p` as well as any `m`.
+-->
 
 Here is the proof, written out in full.
 \begin{code}
@@ -169,21 +170,21 @@ Here is the proof, written out in full.
 +-assoc zero n p =
   begin
     (zero + n) + p
-  ≡⟨⟩                                   -- (i)
+  ≡⟨⟩
     n + p
-  ≡⟨⟩                                   -- (i)
+  ≡⟨⟩
    zero + (n + p)
   ∎
 +-assoc (suc m) n p =
   begin
     (suc m + n) + p
-  ≡⟨⟩                                   -- (ii)
+  ≡⟨⟩
     suc (m + n) + p
-  ≡⟨⟩                                   -- (ii)
+  ≡⟨⟩
     suc ((m + n) + p)
-  ≡⟨ cong suc (+-assoc m n p) ⟩         -- (induction hypothesis)
+  ≡⟨ cong suc (+-assoc m n p) ⟩
     suc (m + (n + p))
-  ≡⟨⟩                                   -- (ii)
+  ≡⟨⟩
     suc m + (n + p)
   ∎  
 \end{code}
@@ -191,16 +192,16 @@ We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
 Let's unpack this code.  The first line states that we are
-defining the identifier `+-assoc` which is a proof of the
+defining the identifier `+-assoc` which provide evidence for the
 proposition
 
     ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 
 The upside down A is pronounced "for all", and the proposition
 asserts that for all natural numbers `m`, `n`, and `p` that
-the equations `(m + n) + p ≡ m + (n + p)` holds.  Such a proof
+the equation `(m + n) + p ≡ m + (n + p)` holds.  Evidence for the proposition
 is a function that accepts three natural numbers---corresponding to
-to `m`, `n`, and `p`---and returns a proof of the equation.
+to `m`, `n`, and `p`---and returns evidence for the instance of the equation.
 
 Recall the definition of addition has two clauses. 
 
