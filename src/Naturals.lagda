@@ -166,7 +166,7 @@ the first of these, but the second is new.
     suc zero : ℕ
     suc (suc zero) : ℕ
 
-You've probably got the hang of it by now.
+You've got the hang of it by now.
 
     -- on the fourth day, there are four natural numbers
     zero : ℕ
@@ -262,7 +262,8 @@ that two terms are equal.  The third line takes a record that
 specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
-will see how these are used below.
+will see how these are used below.  We take all these as givens for now,
+but will see how they are defined in Chapter [Equivalence](Equivalence).
 
 Agda uses underbars to indicate where terms appear in infix or mixfix
 operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
@@ -308,18 +309,18 @@ or `(suc m)` in (ii).
 
 If we write `zero` as `0` and `suc m` as `1 + m`, we get two familiar equations.
 
-   0       + n  =  n
-   (1 + m) + n  =  1 + (m + n)
+     0       + n  ≡  n
+     (1 + m) + n  ≡  1 + (m + n)
 
-The first follows because zero is an identity for addition,
-and the second because addition is associative.  In its most general
-form, associativity is written
+The first follows because zero is an identity for addition, and the
+second because addition is associative.  In its most general form, associativity is written
 
-   (m + n) + p  =  m + (n + p)
+     (m + n) + p  ≡  m + (n + p)
 
 meaning that the order of parentheses is irrelevant.  We get the
 second equation from this one by taking `m` to be `1`, `n` to be `m`,
-and `p` to be `n`.
+and `p` to be `n`.  Note that we write `=` for definitions, while we
+write `≡` for assertions that two already defined things are the same.
 
 The definition is *recursive*, in that the last line defines addition
 in terms of addition.  As with the inductive definition of the
@@ -345,7 +346,6 @@ _ =
     5
   ∎
 \end{code}
-
 We can write the same derivation more compactly by only
 expanding shorthand as needed.
 \begin{code}
@@ -369,18 +369,14 @@ and the use of (i) matches by taking `n = 3`.
 
 In both cases, we write a type (after a colon) and a term of that type
 (after an equal sign), both assigned to the dummy name `_`.  The dummy
-name can be assigned many times, and is convenient for examples.  One
-can also use other names, but each must be used only once in a module.
-Note that definitions are written with `=`, while assertions that two
-already defined things are the same are written with `≡`.
+name can be assigned many times, and is convenient for examples.  Names
+other than `_` must be used only once in a module.
 
 Here the type is `2 + 3 ≡ 5` and the term provides *evidence* for the
 corresponding equation, here written as a chain of equations.  The
 chain starts with `begin` and finishes with `∎` (pronounced "qed" or
 "tombstone", the latter from its appearance), and consists of a series
-of terms separated by `≡⟨⟩`.  We take equivalence and chains as givens
-for now, but will see how they are defined in Chapter
-[Equivalence](Equivalence).
+of terms separated by `≡⟨⟩`.
 
 In fact, both proofs are longer than need be, and Agda is satisfied
 with the following.
@@ -410,17 +406,19 @@ _ =
   ∎
 \end{code}
 Of course, writing a proof in this way would be misleading and confusing,
-so we won't do it.
+so it's to be avoided even if Agda does accept it.
 
-Here `2 + 3 ≡ 5` is a type, and the chain of equations (or `refl`) is
-a term of the given type; alternatively, one can think of the term as
-*evidence* for the assertion `2 + 3 ≡ 5`.  This duality of
-interpretation---as a term of a type, or as evidence for an
-assertion---is central to how we formalise concepts in Agda.  When we
-use the word *evidence* it is nothing equivocal.  It is not like
-testimony in a court which must be weighed to determine whether the
-witness is trustworthy.  Rather, it is ironclad.  The other word for
-evidence, which we may use interchangeably, is *proof*.
+Here `2 + 3 ≡ 5` is a type, and the chains of equations (or `refl`)
+are terms of the given type; alternatively, one can think of each term
+as *evidence* for the assertion `2 + 3 ≡ 5`.  This duality of
+interpretation---of a type as a proposition, and of a term as evidence
+for a proposition---is central to how we formalise concepts in Agda,
+and will be a running theme throughout this book.
+
+Note that when we use the word *evidence* it is nothing equivocal.  It
+is not like testimony in a court which must be weighed to determine
+whether the witness is trustworthy.  Rather, it is ironclad.  The
+other word for evidence, which we may use interchangeably, is *proof*.
 
 ### Exercise (`3+4`)
 
@@ -440,15 +438,15 @@ zero * n     =  zero           -- (iii)
 
 Again, rewriting gives us two familiar equations.
 
-  0       * n  =  0
-  (1 + m) * n  =  n + (m * n)
+    0       * n  ≡  0
+    (1 + m) * n  ≡  n + (m * n)
 
-The first follows because zero times anything is zero,
-and the second follows because multiplication distributes
-over addition.  In its most general form, distribution of
-multiplication over addition is written
+The first follows because zero times anything is zero, and the second
+follows because multiplication distributes over addition.
+In its most general form, distribution of multiplication over addition
+is written
 
-  (m + n) * p  =  (m * p) + (n * p)
+    (m + n) * p  ≡  (m * p) + (n * p)
 
 We get the second equation from this one by taking `m` to be `1`, `n`
 to be `m`, and `p` to be `n`, and then using the fact that one is an
@@ -558,6 +556,104 @@ _ =
 
 Compute `5 ∸ 3` and `3 ∸ 5`.
 
+
+## Writing definitions interactively
+
+Agda is designed to be used with the Emacs text editor, and the two
+in combination provide features that help to create proofs interactively.
+
+Begin by typing
+
+    _+_ : ℕ → ℕ → ℕ
+    m + n = ?
+
+The question mark indicates that you would like Agda to help with filling
+in that part of the code. If you type `^C ^L` (control-C followed by control-L)
+the question mark will be replaced.
+
+    _+_ : ℕ → ℕ → ℕ
+    m + n = { }0
+
+The empty braces are called a *hole*, and 0 is a number used for
+referring to the hole.  The hole will display highlighted in green.
+Emacs will also create a window displaying the text
+
+    ?0 : ℕ
+
+to indicate that hole 0 is to be filled in with a term of type `ℕ`.
+
+We wish to define addition by recursion on the first argument.
+Move the cursor into the hole and type `^C ^C`.   You will be given
+the prompt:
+
+    pattern variables to case (empty for split on result):
+
+Typing `m` will cause a split on that variable, resulting
+in an update to the code.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = { }0
+    suc m + n = { }1
+
+There are now two holes, and the window at the bottom tells you the
+required type of each.
+
+    ?0 : ℕ
+    ?1 : ℕ
+
+Going into hole 0 and type `^C ^,` will display information on the
+required type of the hole, and what free variables are available.
+
+    Goal: ℕ
+    ————————————————————————————————————————————————————————————
+    n : ℕ
+
+This strongly suggests filling the hole with `n`.  After the hole is
+filled, you can type `^C ^space`, which will remove the hole.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = { }1
+
+Again, going into hole 1 and type `^C ^,` will display information on the
+required type of the hole, and what free variables are available.
+
+    Goal: ℕ
+    ————————————————————————————————————————————————————————————
+    n : ℕ
+    m : ℕ
+
+Going into the hole and type `^C ^R` will fill it in with a constructor
+(if there is a unique choice) or tell you what constructors you might use,
+if there is a choice.  In this case, it displays the following.
+
+    Don't know which constructor to introduce of zero or suc
+
+Filling the hole with `suc ?` and typing `^C ^space` results in the following.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = suc { }1
+
+Going into the new hole and typing `^C ^,` gives similar information to before.
+
+    Goal: ℕ
+    ————————————————————————————————————————————————————————————
+    n : ℕ
+    m : ℕ
+
+We can fill the hole with `m + n` and type `^C ^space` to complete the program.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = suc (m + n)
+
+Exploiting interaction to this degree is probably not helpful for a program this
+simple, but the same techniques can help with more complex programs.  Even for
+a program this simple, using `^C ^C` to split cases can be helpful.
+
+
+
 ## The story of creation, revisited
 
 Just as our inductive definition defines the naturals in terms of the
@@ -616,7 +712,7 @@ And we repeat the process again.
     1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
     2 + 0 = 2     2 + 1 = 3     2 + 2 = 4     2 + 3 = 5     ...
 
-You've probably got the hang of it by now.
+You've got the hang of it by now.
 
     -- on the fourth day, we know about addition of 0, 1, 2, and 3
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
@@ -630,6 +726,56 @@ equations where the first number is less than *m*.
 As we can see, the reasoning that justifies inductive and recursive
 definitions is quite similar.  They might be considered two sides of
 the same coin.
+
+
+## The story of creation, finitely {#finite-creation}
+
+The above story was told in a stratified way.  First, we create
+the infinite set of naturals.  We take that set as given when
+creating instances of addition, so even on day one we have an
+infinite set of instances.
+
+Instead, we could choose to create both the naturals and the instances
+of addition at the same time. Then on any day there would be only
+a finite set of instances.
+
+    -- in the beginning, we know nothing
+
+Now, we apply the rules to all the judgment we know about.  Only the
+base case for naturals applies.
+
+    -- on the first day, we know zero
+    0 : ℕ
+
+Again, we apply all the rules we know.  This gives us a new natural,
+and our first equation about addition.
+
+    -- on the second day, we know one and all sums that yield zero
+    0 : ℕ
+    1 : ℕ    0 + 0 = 0
+
+Then we repeat the process.  We get one more equation about addition
+from the base case, and also get an equation from the inductive case,
+applied to equation of the previous day.
+
+    -- on the third day, we know two and all sums that yield one
+    0 : ℕ
+    1 : ℕ    0 + 0 = 0
+    2 : ℕ    0 + 1 = 1   1 + 0 = 1
+
+You've got the hang of it by now.
+
+    -- on the fourth day, we know three and all sums that yield two
+    0 : ℕ
+    1 : ℕ    0 + 0 = 0
+    2 : ℕ    0 + 1 = 1   1 + 0 = 1
+    3 : ℕ    0 + 2 = 2   1 + 1 = 2    2 + 0 = 2
+
+On the *n*th day there will be *n* distinct natural numbers, and *n ×
+(n-1) / 2* equations about addition.  The number *n* and all equations
+for addition of numbers less than *n* first appear by day *n+1*.
+This gives an entirely finitist view of infinite sets of data and
+equations relating the data.
 
 
 ## Precedence
@@ -724,6 +870,6 @@ In place of left, right, up, and down keys, one may also use control characters.
     ^P  up (uP)
     ^N  down (dowN)
 
-We use `^B` to mean `control B`, and similarly.
+We write `^B` to stand for `control-B`, and similarly.
 
 
