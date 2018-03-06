@@ -9,7 +9,7 @@ permalink : /RelationsAns
 \begin{code}
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Relations using (_≤_; _<_; Trichotomy; even; odd)
-open import Properties using (+-comm; +-identity; +-suc)
+open import Data.Nat.Properties using (+-comm; +-identityʳ; +-suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Data.Product using (∃; _,_)
 open Trichotomy
@@ -64,7 +64,7 @@ trichotomy (suc m) (suc n) with trichotomy m n
 
 \begin{code}
 +-lemma : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
-+-lemma m rewrite +-identity m | +-suc m m = refl
++-lemma m rewrite +-identityʳ m | +-suc m m = refl
 
 +-lemma′ : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
 +-lemma′ m rewrite +-suc m (m + 0) = {!!}
