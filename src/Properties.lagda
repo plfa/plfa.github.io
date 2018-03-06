@@ -17,7 +17,7 @@ and some operations upon them.  We also import a couple of new operations,
 `cong` and `_≡⟨_⟩_`, which are explained below.
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; cong)
+open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 \end{code}
@@ -25,14 +25,12 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 
 ## Associativity
 
-One property of addition is that it is *associative*, that is that the
+One property of addition is that it is *associative*, that is, that the
 order of the parentheses does not matter:
 
     (m + n) + p ≡ m + (n + p)
 
-We write `=` in an Agda definition, whereas we write `≡` for an
-equality we are trying to prove.  Here `m`, `n`, and `p` are variables
-that range over all natural numbers.
+Here `m`, `n`, and `p` are variables that range over all natural numbers.
 
 We can test the proposition by choosing specific numbers for the three
 variables.
@@ -51,8 +49,8 @@ _ =
     3 + (4 + 5)
   ∎
 \end{code}
-Here we have displayed the computation in tabular form, one term to a
-line.  It is often easiest to read such computations from the top down
+Here we have displayed the computation as a chain of equations,
+one term to a line.  It is often easiest to read such chains from the top down
 until one reaches the simplest term (in this case, `12`), and
 then from the bottom up until one reaches the same term.
 
@@ -93,7 +91,7 @@ demonstrate are the following two inference rules:
 Let's unpack these rules.  The first rule is the base case, and
 requires we show that property `P` holds for `zero`.  The second rule
 is the inductive case, and requires we show that if we assume the
-inductive hypothesis, that `P` holds for `m`, then it follows that
+inductive hypothesis, namely that `P` holds for `m`, then it follows that
 `P` also holds for `suc m`.
 
 Why does this work?  Again, it can be explained by a creation story.
@@ -192,7 +190,7 @@ Here is the proposition's statement and proof.
 We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
-Let's unpack this code.  The first line states that we are
+Let's unpack this code.  The signature states that we are
 defining the identifier `+-assoc` which provide evidence for the
 proposition:
 
@@ -208,22 +206,20 @@ For the base case, we must show:
 
     (zero + n) + p ≡ zero + (n + p)
 
-Applying the base case of the definition of addition to both sides yields
-and simplifying yields the trivially true equation:
+Simplifying both sides with the base case of addition yields the equation:
 
    n + p ≡ n + p
 
-Reading the chain of equations in the base case of the proof,
+This holds trivially.  Reading the chain of equations in the base case of the proof,
 the top and bottom of the chain match the two sides of the equation to
 be shown, and reading down from the top and up from the bottom takes us to
-(`n + p`) in the middle.
+`n + p` in the middle.  No justification other than simplification is required.
 
 For the inductive case, we must show:
 
     (suc m + n) + p ≡ (suc m + n) + p
 
-Applying the inductive case of the definition of addition to both sides
-yields the simplified equation:
+Simplifying both sides with the inductive case of addition yields the equation:
 
    suc ((m + n) + p) ≡ suc (m + (n + p))
 
@@ -232,16 +228,15 @@ hypothesis:
 
     (m + n) + p ≡ m + (n + p)
 
-Reading the chain of equations in the inductive case of the proof,
-the top and bottom of the chain match the two sides of the equation to
-be shown, and reading down from the top and up from the bottom takes us to
-the two sides of the simplified equation in the middle.  The remaining
-equivalence does not follow from computation alone, so here we
-use an additional operator for chain reasoning, `_≡⟨_⟩_`, where a
-justification for the equation appears within angle brackets.  The
-justification given is:
+Reading the chain of equations in the inductive case of the proof, the
+top and bottom of the chain match the two sides of the equation to be
+shown, and reading down from the top and up from the bottom takes us
+to the simplified equation above. The remaining equation, does not follow
+from simplification alone, so we use an additional operator for chain
+reasoning, `_≡⟨_⟩_`, where a justification for the equation appears
+within angle brackets.  The justification given is:
 
-    cong suc (+-assoc m n p)
+    ⟨ cong suc (+-assoc m n p) ⟩
 
 Here, the recursive invocation `+-assoc m n p` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
@@ -262,19 +257,21 @@ recursion is one of the most appealing aspects of Agda.
 
 ## Our second proof: commutativity
 
-Another important property of addition is that it is commutative, that is
+Another important property of addition is that it is *commutative*, that is,
 that the order of the operands does not matter:
 
     m + n ≡ n + m
 
 The proof requires that we first demonstrate two lemmas.
 
+### The first lemma
+
 The base case of the definition of addition states that zero
-is a left-identity.
+is a left-identity:
 
     zero + n ≡ n
 
-Our first lemma states that zero is also a right-identity.
+Our first lemma states that zero is also a right-identity:
 
     m + zero ≡ m
 
@@ -296,29 +293,26 @@ Here is the lemma's statement and proof.
     suc m
   ∎
 \end{code}
-The first line states that we are defining the identifier
-`+-identityʳ` which provides evidence for the proposition:
+The signature states that we are defining the identifier `+-identityʳ` which
+provides evidence for the proposition:
 
     ∀ (m : ℕ) → m + zero ≡ m
 
-Evidence for the proposition is a function that accepts a
-natural number, binds it to `m`, and returns evidence for the
-corresponding instance of the equation.  The proof is by
-induction on `m`.
+Evidence for the proposition is a function that accepts a natural
+number, binds it to `m`, and returns evidence for the corresponding
+instance of the equation.  The proof is by induction on `m`.
 
 For the base case, we must show:
 
     zero + zero ≡ zero
 
-Applying the base case of the definition of addition,
-this is straightforward.
+Simplifying with the base case of of addition, this is straightforward.
 
 For the inductive case, we must show:
 
     (suc m) + zero = suc m
 
-Applying the inductive case of the definition of addition yields
-the simplified equation:
+Simplifying both sides with the inductive case of addition yields the equation:
 
     suc (m + zero) = suc m
 
@@ -328,14 +322,16 @@ hypothesis:
     m + zero ≡ m
 
 Reading the chain of equations down from the top and up from the bottom
-takes us to the simplified equation in the middle.  The remaining
-equivalence has the justification:
+takes us to the simplified equation above.  The remaining
+equation has the justification:
 
-    cong suc (+-identityʳ m)
+    ⟨ cong suc (+-identityʳ m) ⟩
 
 Here, the recursive invocation `+-identityʳ m` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
 yield the needed equation.  This completes the first lemma.
+
+### The second lemma
 
 The inductive case of the definition of addition pushes `suc` on the
 first argument to the outside:
@@ -368,28 +364,26 @@ Here is the lemma's statement and proof.
     suc (suc m + n)
   ∎
 \end{code}
-The first line states that we are defining the identifier
-`+-suc` which provides evidence for the proposition:
+The signature states that we are defining the identifier `+-suc` which provides
+evidence for the proposition:
 
     ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
 
-Evidence for the proposition is a function that accepts two
-natural numbers, binds them to `m` and `n`, and returns evidence for the
-corresponding instance of the equation.  The proof is by induction on `m`.
+Evidence for the proposition is a function that accepts two natural numbers,
+binds them to `m` and `n`, and returns evidence for the corresponding instance
+of the equation.  The proof is by induction on `m`.
 
 For the base case, we must show:
 
     zero + suc n ≡ suc (zero + n)
 
-Applying the base case of the definition of addition,
-this is straightforward.
+Simplifying with the base case of of addition, this is straightforward.
 
 For the inductive case, we must show:
 
     suc m + suc n ≡ suc (suc m + n)
 
-Applying the inductive case of the definition of addition yields
-the simplified equation:
+Simplifying both sides with the inductive case of addition yields the equation:
 
     suc (m + suc n) ≡ suc (suc (m + n))
 
@@ -400,13 +394,15 @@ hypothesis:
 
 Reading the chain of equations down from the top and up from the bottom
 takes us to the simplified equation in the middle.  The remaining
-equivalence has the justification:
+equation has the justification:
 
-    cong suc (+-suc m n)
+    ⟨ cong suc (+-suc m n) ⟩
 
 Here, the recursive invocation `+-suc m n` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
 yield the needed equation.  This completes the second lemma.
+
+### The proposition
 
 Finally, here is our proposition's statement and proof.
 \begin{code}
@@ -444,14 +440,13 @@ For the base case, we must show:
 
     m + zero ≡ zero + m
 
-Applying the base case for the definition of addition, this
-simplifies to:
+Simplifying both sides with the base case of addition yields the equation:
 
     m + zero ≡ m
 
-The the reamining equivalence has the justification
+The the remaining equation has the justification
 
-    +-identityʳ m
+    ⟨ +-identityʳ m ⟩
 
 which invokes the first lemma.
 
@@ -459,8 +454,7 @@ For the inductive case, we must show:
 
     m + suc n ≡ suc n + m
 
-Applying the inductive case of the definition of addition yields
-the simplified equation:
+Simplifying both sides with the inductive case of addition yields the equation:
 
     m + suc n ≡ suc (n + m)
 
@@ -476,118 +470,19 @@ have
 which is justified by congruence and the induction hypothesis,
 `⟨ cong suc (+-comm m n) ⟩`.  This completes the proposition.
 
-
-## Finding the proof
-
-By equation (i) of the definition of addition, the left-hand side of
-the conclusion of the base case simplifies to `n`, so the base case
-will hold if we can show
-
-    n + zero ≡ n    -- (x)
-
-By equation (ii) of the definition of addition, the left-hand side of
-the conclusion of the inductive case simplifies to `suc (m + n)`, so
-the inductive case will hold if we can show
-
-    n + suc m ≡ suc (n + m)    -- (xi)
-
-and then apply the inductive hypothesis to rewrite `m + n` to `n + m`.
-We use induction two more times, on `n` this time rather than `m`, to
-show both (x) and (xi).
-
-Here is the proof written out in full, using tabular form.
-
-Proposition.
-
-    m + n ≡ n + m
-
-Proof. By induction on `m`.
-
-Base case.
-
-       zero + n
-    ≡    (i)
-       n
-    ≡    (x)
-       n + zero
-
-Inductive case.
-
-       suc m + n
-    ≡    (ii)
-       suc (m + n)
-    ≡    (inductive hypothesis)
-       suc (n + m)
-    ≡    (xi)
-       n + suc m
-       
-QED.
-
-As with other tabular prooofs, it is best understood by reading from top
-down and bottom up and meeting in the middle.
-
-We now prove each of the two required lemmas, (x) and (xi).
-
-Lemma (x).
-
-    n + zero ≡ n
-
-Proof. By induction on `n`.
-
-Base case.
-
-       zero + zero
-    ≡    (i)
-       zero
-
-Inductive case.
-
-       suc n + zero
-    ≡    (ii)
-       suc (n + zero)
-    ≡    (inductive hypothesis)
-       suc n
-
-QED.
-
-Lemma (xi).
-
-    m + suc n ≡ suc (m + n)
-
-Proof. By induction on `m`.
-
-Base case.
-
-       zero + suc n
-    ≡    (i)
-       suc n
-    ≡    (i)
-       suc (zero + n)
-
-Inductive case.
-
-       suc m + suc n
-    ≡    (ii)
-       suc (m + suc n)
-    ≡    (inductive hypothesis)
-       suc (suc (m + n))
-    ≡    (ii)
-       suc (suc m + n)
-
-QED.
-
-## Encoding the proofs in Agda
-
-
-
+Agda requires that identifiers are defined before they are used,
+so we must present the lemmas before the main proposition, as we
+have done above.  In practice, one will often attempt to prove
+the main proposition first, and the equations required to do so
+will suggest what lemmas to prove.
 
 
 
 ## Creation, one last time
 
-Again, it may be helpful to view the recursive definition as
-a creation story.  This time we are concerned with judgements
-asserting associativity.
+Returing to the proof of associativity, it may be helpful to view the inductive
+proof (or, equivalently, the recursive definition) as a creation story.  This
+time we are concerned with judgements asserting associativity.
 
      -- in the beginning, we know nothing about associativity
 
@@ -640,44 +535,43 @@ days using a finite story of creation, as
 
 ## Associativity with rewrite
 
-Here is a more compact way to encode the proof of associativity
-of addition in Agda, using `rewrite` rather than chains of equations.
+There is more than one way to skin a cat.  Here is a second proof of
+associativity of addition in Agda, using `rewrite` rather than chains of
+equations.
 \begin{code}
 +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc′ zero n p = refl
 +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 \end{code}
-The base case requires we prove:
+
+For the base case, we must show:
 
     (zero + n) + p ≡ zero + (n + p)
 
-After simplifying with the definition of addition, this equation
-becomes:
+Simplifying both sides with the base case of addition yields the equation:
 
     n + p ≡ n + p
 
-The proof that a term is equal to itself is written `refl`.
+This holds trivially. The proof that a term is equal to itself is written `refl`.
 
-The inductive case requires that we prove:
+For the inductive case, we must show:
 
     (suc m + n) + p ≡ suc m + (n + p)
 
-After simplifying with the definition of addition, this equation
-becomes:
+Simplifying both sides with the inductive case of addition yields the equation:
 
     suc ((m + n) + p) ≡ suc (m + (n + p))
 
-After rewriting with the inductive hypothesis these two terms are
-equal, and the proof is again given by `refl`.
-Rewriting by a given equation is indicated by the keyword `rewrite`
-followed by a proof of that equation.  Rewriting avoids not only
-chains of equations but also the need to invoke `cong`.
+After rewriting with the inductive hypothesis these two terms are equal, and the
+proof is again given by `refl`.  Rewriting by a given equation is indicated by
+the keyword `rewrite` followed by a proof of that equation.  Rewriting avoids
+not only chains of equations but also the need to invoke `cong`.
 
 
 ## Commutativity with rewrite
 
-We can also give the proof that addition is commutative more compactly
-by utilising rewrite.
+Here is a second proof of commutativity of addition, using `rewrite` rather than
+chains of equations.
 \begin{code}
 +-identity′ : ∀ (n : ℕ) → n + zero ≡ n
 +-identity′ zero = refl
@@ -798,55 +692,59 @@ typing `^C ^R` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-## Exercises
+### Exercise (`+-swap`)
 
-+ *Swapping terms*. Show
+Show
 
     m + (n + p) ≡ n + (m + p)
 
-  for all naturals `m`, `n`, and `p`. No induction is needed,
-  just apply the previous results which show addition
-  is associative and commutative.  You may need to use
-  one or more of the following functions from the standard library:
+for all naturals `m`, `n`, and `p`. No induction is needed,
+just apply the previous results which show addition
+is associative and commutative.  You may need to use
+the following function from the standard library:
 
-     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
-     trans : ∀ {m n p : ℕ} → m ≡ n → n ≡ p → m ≡ p
+    sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
-  Name your proof `+-swap`.  
+### Exercise (`*-distrib-+`)
 
-+ *Multiplication distributes over addition*. Show
+Show multiplication distributes over addition, that is,
 
     (m + n) * p ≡ m * p + n * p
 
-  for all naturals `m`, `n`, and `p`. Name your proof `*-distrib-+`.
+for all naturals `m`, `n`, and `p`.
 
-+ *Multiplication is associative*. Show
+### Exercise (`*-assoc`)
+
+Show multiplication is associative, that is,
 
     (m * n) * p ≡ m * (n * p)
 
-  for all naturals `m`, `n`, and `p`. Name your proof `*-assoc`.
+for all naturals `m`, `n`, and `p`.
 
-+ *Multiplication is commutative*. Show
+### Exercise (`*-comm`)
+
+Show multiplication is commutative, that is,
 
     m * n ≡ n * m
 
-  for all naturals `m` and `n`.  As with commutativity of addition,
-  you will need to formulate and prove suitable lemmas.
-  Name your proof `*-comm`.
+for all naturals `m` and `n`.  As with commutativity of addition,
+you will need to formulate and prove suitable lemmas.
 
-+ *Monus from zero* Show
+### Exercise (`0∸n≡0`)
+
+Show
 
     zero ∸ n ≡ zero
 
-  for all naturals `n`. Did your proof require induction?
-  Name your proof `0∸n≡0`.
+for all naturals `n`. Did your proof require induction?
 
-+ *Associativity of monus with addition* Show
+### Exercise (`∸-+-assoc`)
+
+Show that monus associates with addition, that is,
 
     m ∸ n ∸ p ≡ m ∸ (n + p)
 
-  for all naturals `m`, `n`, and `p`.
-  Name your proof `∸-+-assoc`.
+for all naturals `m`, `n`, and `p`.
 
 ## Unicode
 
@@ -854,10 +752,9 @@ This chapter introduces the following unicode.
 
     ≡  U+2261  IDENTICAL TO (\==)
     ∀  U+2200  FOR ALL (\forall)
+    ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
     ′  U+2032  PRIME (\')
-    ″  U+2033  DOUBLE PRIME (\')
 
-Like `\r`, after typing `\'`, one can access different primes (single,
-double, triple, quadruple) by using the left, right, up, and down keys
-to navigate.  The command remembers where you navigated to the last
-time, and starts with the same character next time.
+Similar to `\r`, the command `\^r` gives access to a variety of superscript
+rightward arrows, and also a superscript letter `r`.  Also similarly, the
+command `\'` gives access to a range of primes (`′ ″ ‴ ⁗`).

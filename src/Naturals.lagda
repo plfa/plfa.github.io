@@ -104,14 +104,15 @@ corresponding `data` declaration.  The lines
     zero : ℕ
     suc : ℕ → ℕ
 
-tell us that `zero` is a natural number and that `suc` takes a natural
+give *signatures* specifying the types of the constructors `zero` and `suc`.
+They tell us that `zero` is a natural number and that `suc` takes a natural
 number as argument and returns a natural number.
 
 You may have noticed that `ℕ` and `→` don't appear on your keyboard.
 They are symbols in *unicode*.  At the end of each chapter is a list
 of all unicode symbols introduced in the chapter, including
-instructions on how to type them in the Emacs text editor.  (Here
-*type* refers to typing with fingers as opposed to data typing!)
+instructions on how to type them in the Emacs text editor.  Here
+*type* refers to typing with fingers as opposed to data typing!
 
 
 ## The story of creation
@@ -214,7 +215,7 @@ principia, nova methodo exposita*" (The principles of arithmetic
 presented by a new method), published the following year.
 
 
-## A useful pragma
+## A pragma
 
 In Agda, any text following `--` or enclosed between `{-`
 and `-}` is considered a *comment*.  Comments have no effect on the
@@ -232,12 +233,11 @@ declaration is not permitted unless the type given has two constructors,
 one corresponding to zero and one to successor.
 
 As well as enabling the above shorthand, the pragma also enables a
-more efficient internal representation of naturals as the Haskell type
-integer.  Representing the natural *n* with `zero` and `suc`
-requires space proportional to *n*, whereas representing it as an integer in
-Haskell only requires space proportional to the logarithm base 2 of *n*.  In
-particular, if *n* is less than 2⁶⁴, it will require just one word on
-a machine with 64-bit words.
+more efficient internal representation of naturals using the Haskell
+type for arbitrary-precision integers.  Representing the natural *n*
+with `zero` and `suc` requires space proportional to *n*, whereas
+representing it as an arbitary-precision integer in Haskell only
+requires space proportional to the logarithm base 2 of *n*.
 
 
 ## Imports
@@ -296,30 +296,34 @@ zero    + n  =  n                -- (i)
 
 Let's unpack this definition.  Addition is an infix operator.  It is
 written with underbars where the argument go, hence its name is
-`_+_`.  It's type, `ℕ → ℕ → ℕ`, indicates that it accepts two naturals
-and returns a natural.  There are two ways to construct a natural,
-with `zero` or with `suc`, so there are two lines defining addition,
-labeled with comments as (i) and (ii).  Line (i) says that
-adding zero to a number (`zero + n`) returns that number (`n`). Line
-(ii) says that adding the successor of a number to another number
-(`(suc m) + n`) returns the successor of adding the two numbers (`suc
-(m+n)`).  We say we are using *pattern matching* when we use a
-constructor applied to a term as an argument, such as `zero` in (i)
-or `(suc m)` in (ii).
+`_+_`.  The first line is a signature specifying the type of the operator.
+The type `ℕ → ℕ → ℕ`, indicates that addition accepts two naturals
+and returns a natural.  Infix notation is just a shorthand for application;
+the terms `m + n` and `_+_ m n` are equivalent.  
 
-If we write `zero` as `0` and `suc m` as `1 + m`, we get two familiar equations.
+The definition has a base case and an inductive case, corresponding to
+those for the natural numbers.  The base case says that adding zero to
+a number (`zero + n`) returns that number (`n`).  The inductive case
+says that adding the successor of a number to another number (`(suc m)
++ n`) returns the successor of adding the two numbers (`suc (m+n)`).
+We say we are using *pattern matching* when constructors appear on the
+left-hand side of an equation.
+
+If we write `zero` as `0` and `suc m` as `1 + m`, the definition turns
+into two familiar equations.
 
      0       + n  ≡  n
      (1 + m) + n  ≡  1 + (m + n)
 
 The first follows because zero is an identity for addition, and the
-second because addition is associative.  In its most general form, associativity is written
+second because addition is associative.  In its most general form,
+associativity is written
 
      (m + n) + p  ≡  m + (n + p)
 
 meaning that the order of parentheses is irrelevant.  We get the
 second equation from this one by taking `m` to be `1`, `n` to be `m`,
-and `p` to be `n`.  Note that we write `=` for definitions, while we
+and `p` to be `n`.  We write `=` for definitions, while we
 write `≡` for assertions that two already defined things are the same.
 
 The definition is *recursive*, in that the last line defines addition
@@ -336,11 +340,11 @@ _ =
     2 + 3
   ≡⟨⟩    -- is shorthand for
     (suc (suc zero)) + (suc (suc (suc zero)))
-  ≡⟨⟩    -- (ii)
+  ≡⟨⟩    -- inductive case
     suc ((suc zero) + (suc (suc (suc zero))))
-  ≡⟨⟩    -- (ii)
+  ≡⟨⟩    -- inductive case
     suc (suc (zero + (suc (suc (suc zero)))))
-  ≡⟨⟩    -- (i)
+  ≡⟨⟩    -- base case
     suc (suc (suc (suc (suc zero))))
   ≡⟨⟩    -- is longhand for
     5
@@ -353,24 +357,24 @@ _ : 2 + 3 ≡ 5
 _ =
   begin
     2 + 3
-  ≡⟨⟩    -- (ii)
+  ≡⟨⟩
     suc (1 + 3)
-  ≡⟨⟩    -- (ii)
+  ≡⟨⟩
     suc (suc (0 + 3))
-  ≡⟨⟩    -- (i)
+  ≡⟨⟩
     suc (suc 3)
-  ≡⟨⟩    -- is longhand for
+  ≡⟨⟩
     5
   ∎
 \end{code}
-The first use of (ii) matches by taking `m = 1` and `n = 3`,
-The second use of (ii) matches by taking `m = 0` and `n = 3`,
-and the use of (i) matches by taking `n = 3`.
+The first line matches the inductive case by taking `m = 1` and `n = 3`,
+the second line matches the inductive case by taking `m = 0` and `n = 3`,
+and the third line matches the base case by taking `n = 3`.
 
-In both cases, we write a type (after a colon) and a term of that type
-(after an equal sign), both assigned to the dummy name `_`.  The dummy
-name can be assigned many times, and is convenient for examples.  Names
-other than `_` must be used only once in a module.
+Both derivations consist of a signature, giving a type, and a binding,
+giving a term of the given type.  Here we use the dummy name `_`.  The
+dummy name can be reused, and is convenient for examples.  Names other
+than `_` must be used only once in a module.
 
 Here the type is `2 + 3 ≡ 5` and the term provides *evidence* for the
 corresponding equation, here written as a chain of equations.  The
@@ -385,13 +389,13 @@ _ : 2 + 3 ≡ 5
 _ = refl
 \end{code}
 Agda knows how to compute the value of `2 + 3`, and so can immediately
-check it is the same as `5`.  Evidence that a value is equal to
-itself is written `refl`, which is short for *reflexivity*.
+check it is the same as `5`.  A binary relation is said to be *reflexive* if
+it holds between a value and itself.  Evidence that a value is equal to
+itself is written `refl`.
 
 In the chains of equations, all Agda checks is that each of the terms
-computes to the same value. If we jumble the equations, omit lines, or
-add extraneous lines it will still pass, because all Agda does is
-check that each term in the chain computes to the same value.
+simplifies to the same value. If we jumble the equations, omit lines, or
+add extraneous lines it will still be accepted.
 \begin{code}
 _ : 2 + 3 ≡ 5
 _ =
@@ -408,17 +412,17 @@ _ =
 Of course, writing a proof in this way would be misleading and confusing,
 so it's to be avoided even if Agda does accept it.
 
-Here `2 + 3 ≡ 5` is a type, and the chains of equations (or `refl`)
-are terms of the given type; alternatively, one can think of each term
-as *evidence* for the assertion `2 + 3 ≡ 5`.  This duality of
-interpretation---of a type as a proposition, and of a term as evidence
-for a proposition---is central to how we formalise concepts in Agda,
-and will be a running theme throughout this book.
+Here `2 + 3 ≡ 5` is a type, and the chains of equations (and also
+`refl`) are terms of the given type; alternatively, one can think of
+each term as *evidence* for the assertion `2 + 3 ≡ 5`.  This duality
+of interpretation---of a type as a proposition, and of a term as
+evidence---is central to how we formalise concepts in Agda, and will
+be a running theme throughout this book.
 
 Note that when we use the word *evidence* it is nothing equivocal.  It
 is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
-other word for evidence, which we may use interchangeably, is *proof*.
+other word for evidence, which we will use interchangeably, is *proof*.
 
 ### Exercise (`3+4`)
 
@@ -432,8 +436,8 @@ Once we have defined addition, we can define multiplication
 as repeated addition.
 \begin{code}
 _*_ : ℕ → ℕ → ℕ
-zero * n     =  zero           -- (iii)
-(suc m) * n  =  n + (m * n)    -- (iv)
+zero * n     =  zero 
+(suc m) * n  =  n + (m * n)
 \end{code}
 
 Again, rewriting gives us two familiar equations.
@@ -460,40 +464,34 @@ For example, let's multiply two and three.
 _ =
   begin
     2 * 3
-  ≡⟨⟩    -- (iv)
+  ≡⟨⟩    -- inductive case
     3 + (1 * 3)
-  ≡⟨⟩    -- (iv)
+  ≡⟨⟩    -- inductive case
     3 + (3 + (0 * 3))
-  ≡⟨⟩    -- (iii)
+  ≡⟨⟩    -- base case
     3 + (3 + 0)
   ≡⟨⟩    -- simplify
     6
   ∎
 \end{code}
-The first use of (iv) matches by taking `m = 1` and `n = 3`,
-The second use of (iv) matches by taking `m = 0` and `n = 3`,
-and the use of (iii) matches by taking `n = 3`.
-Here we have omitted the line declaring `_ : 2 * 3 ≡ 6`, since
+The first line matches the inductive case by taking `m = 1` and `n = 3`,
+The second line matches the inductive case by taking `m = 0` and `n = 3`,
+and the third line matches the base case by taking `n = 3`.
+Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 ### Exercise (`3*4`)
 
 Compute `3 * 4`.
 
+### Exercise (`_^_`).
 
-## Exponentiation
+Define exponentiation, which is given by the following equations.
 
-Similarly, once we have defined multiplication, we can define
-exponentiation as repeated multiplication.
-\begin{code}
-_^_ : ℕ → ℕ → ℕ
-n ^ zero     =  suc zero       -- (v)
-n ^ (suc m)  =  n * (n ^ m)    -- (vi)
-\end{code}
+    n ^ 0        =  1
+    n ^ (1 + m)  =  n * (n ^ m)
 
-### Exercise (`3^4`)
-
-Compute `3 ^ 4`.
+Check that `3 ^ 4` is `81`.
 
 
 ## Monus
@@ -507,18 +505,18 @@ Monus is our first example of a definition that uses pattern
 matching against both arguments.
 \begin{code}
 _∸_ : ℕ → ℕ → ℕ
-m       ∸ zero     =  m         -- (vii)
-zero    ∸ (suc n)  =  zero      -- (viii)
-(suc m) ∸ (suc n)  =  m ∸ n     -- (ix)
+m       ∸ zero     =  m
+zero    ∸ (suc n)  =  zero
+(suc m) ∸ (suc n)  =  m ∸ n
 \end{code}
 We can do a simple analysis to show that all the cases are covered.
 
   * The second argument is either `zero` or `suc n` for some `n`.
-    + If it is `zero`, then equation (vii) applies.
+    + If it is `zero`, then the first equation applies.
     + If it is `suc n`, then the first argument is either `zero`
       or `suc m` for some `m`.
-      - If it is `zero`, then equation (viii) applies.
-      - If it is `suc m`, then equation (ix) applies.
+      - If it is `zero`, then the second equation applies.
+      - If it is `suc m`, then the third equation applies.
 
 Again, the recursive definition is well-founded because
 monus on bigger numbers is defined in terms of monus on
@@ -529,25 +527,25 @@ For example, let's subtract two from three.
 _ =
   begin
      3 ∸ 2
-  ≡⟨⟩    -- (ix)
+  ≡⟨⟩
      2 ∸ 1
-  ≡⟨⟩    -- (ix)
+  ≡⟨⟩
      1 ∸ 0
-  ≡⟨⟩    -- (vii)
+  ≡⟨⟩
      1
   ∎
 \end{code}
-We did not use equation (viii) at all, but it will be required
+We did not use the third equation at all, but it will be required
 if we try to subtract a smaller number from a larger one.
 \begin{code}
 _ =
   begin
      2 ∸ 3
-  ≡⟨⟩    -- (ix)
+  ≡⟨⟩
      1 ∸ 2
-  ≡⟨⟩    -- (ix)
+  ≡⟨⟩
      0 ∸ 1
-  ≡⟨⟩    -- (viii)
+  ≡⟨⟩
      0
   ∎
 \end{code}
@@ -557,101 +555,29 @@ _ =
 Compute `5 ∸ 3` and `3 ∸ 5`.
 
 
-## Writing definitions interactively
+## Precedence
 
-Agda is designed to be used with the Emacs text editor, and the two
-in combination provide features that help to create proofs interactively.
+We often use *precedence* to avoid writing too many parentheses.
+Application *binds more tightly than* (or *has precedence over*) any
+operator, and so we may write `suc m + n` to mean `(suc m) + n`.
+As another example, we say that multiplication binds more tightly than
+addition, and so write `n + m * n` to mean `n + (m * n)`.
+We also sometimes say that addition *associates to the left*, and
+so write `m + n + p` to mean `(m + n) + p`.
 
-Begin by typing
-
-    _+_ : ℕ → ℕ → ℕ
-    m + n = ?
-
-The question mark indicates that you would like Agda to help with filling
-in that part of the code. If you type `^C ^L` (control-C followed by control-L)
-the question mark will be replaced.
-
-    _+_ : ℕ → ℕ → ℕ
-    m + n = { }0
-
-The empty braces are called a *hole*, and 0 is a number used for
-referring to the hole.  The hole will display highlighted in green.
-Emacs will also create a window displaying the text
-
-    ?0 : ℕ
-
-to indicate that hole 0 is to be filled in with a term of type `ℕ`.
-
-We wish to define addition by recursion on the first argument.
-Move the cursor into the hole and type `^C ^C`.   You will be given
-the prompt:
-
-    pattern variables to case (empty for split on result):
-
-Typing `m` will cause a split on that variable, resulting
-in an update to the code.
-
-    _+_ : ℕ → ℕ → ℕ
-    zero + n = { }0
-    suc m + n = { }1
-
-There are now two holes, and the window at the bottom tells you the
-required type of each.
-
-    ?0 : ℕ
-    ?1 : ℕ
-
-Going into hole 0 and type `^C ^,` will display information on the
-required type of the hole, and what free variables are available.
-
-    Goal: ℕ
-    ————————————————————————————————————————————————————————————
-    n : ℕ
-
-This strongly suggests filling the hole with `n`.  After the hole is
-filled, you can type `^C ^space`, which will remove the hole.
-
-    _+_ : ℕ → ℕ → ℕ
-    zero + n = n
-    suc m + n = { }1
-
-Again, going into hole 1 and type `^C ^,` will display information on the
-required type of the hole, and what free variables are available.
-
-    Goal: ℕ
-    ————————————————————————————————————————————————————————————
-    n : ℕ
-    m : ℕ
-
-Going into the hole and type `^C ^R` will fill it in with a constructor
-(if there is a unique choice) or tell you what constructors you might use,
-if there is a choice.  In this case, it displays the following.
-
-    Don't know which constructor to introduce of zero or suc
-
-Filling the hole with `suc ?` and typing `^C ^space` results in the following.
-
-    _+_ : ℕ → ℕ → ℕ
-    zero + n = n
-    suc m + n = suc { }1
-
-Going into the new hole and typing `^C ^,` gives similar information to before.
-
-    Goal: ℕ
-    ————————————————————————————————————————————————————————————
-    n : ℕ
-    m : ℕ
-
-We can fill the hole with `m + n` and type `^C ^space` to complete the program.
-
-    _+_ : ℕ → ℕ → ℕ
-    zero + n = n
-    suc m + n = suc (m + n)
-
-Exploiting interaction to this degree is probably not helpful for a program this
-simple, but the same techniques can help with more complex programs.  Even for
-a program this simple, using `^C ^C` to split cases can be helpful.
-
+In Agda the precedence and associativity of infix operators
+needs to be declared.
+\begin{code}
+infixl 7  _*_
+infixl 6  _+_  _∸_
+\end{code}
+This states that operator `_*_` has precedence level 7, and that
+operators `_+_` and `_∸_` have precedence level 6.  Multiplication
+binds more tightly that addition or subtraction because it has a
+higher precedence.  Writing `infixl` indicates that all three
+operators associate to the left.  One can also write `infixr` to
+indicate that an operator associates to the right, or just `infix` to
+indicate that parentheses are always required to disambiguate.
 
 
 ## The story of creation, revisited
@@ -778,29 +704,101 @@ This gives an entirely finitist view of infinite sets of data and
 equations relating the data.
 
 
-## Precedence
+## Writing definitions interactively
 
-We often use *precedence* to avoid writing too many parentheses.
-Application *binds more tightly than* (or *has precedence over*) any
-operator, and so we may write `suc m + n` to mean `(suc m) + n`.
-As another example, we say that multiplication binds more tightly than
-addition, and so write `n + m * n` to mean `n + (m * n)`.
-We also sometimes say that addition *associates to the left*, and
-so write `m + n + p` to mean `(m + n) + p`.
+Agda is designed to be used with the Emacs text editor, and the two
+in combination provide features that help to create proofs interactively.
 
-In Agda the precedence and associativity of infix operators
-needs to be declared.
-\begin{code}
-infixl 7  _*_
-infixl 6  _+_  _∸_
-\end{code}
-This states that operator `_*_` has precedence level 7, and that
-operators `_+_` and `_∸_` have precedence level 6.  Multiplication
-binds more tightly that addition or subtraction because it has a
-higher precedence.  Writing `infixl` indicates that all three
-operators associate to the left.  One can also write `infixr` to
-indicate that an operator associates to the right, or just `infix` to
-indicate that parentheses are always required to disambiguate.
+Begin by typing
+
+    _+_ : ℕ → ℕ → ℕ
+    m + n = ?
+
+The question mark indicates that you would like Agda to help with filling
+in that part of the code. If you type `^C ^L` (control-C followed by control-L)
+the question mark will be replaced.
+
+    _+_ : ℕ → ℕ → ℕ
+    m + n = { }0
+
+The empty braces are called a *hole*, and 0 is a number used for
+referring to the hole.  The hole will display highlighted in green.
+Emacs will also create a window displaying the text
+
+    ?0 : ℕ
+
+to indicate that hole 0 is to be filled in with a term of type `ℕ`.
+
+We wish to define addition by recursion on the first argument.
+Move the cursor into the hole and type `^C ^C`.   You will be given
+the prompt:
+
+    pattern variables to case (empty for split on result):
+
+Typing `m` will cause a split on that variable, resulting
+in an update to the code.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = { }0
+    suc m + n = { }1
+
+There are now two holes, and the window at the bottom tells you the
+required type of each.
+
+    ?0 : ℕ
+    ?1 : ℕ
+
+Going into hole 0 and type `^C ^,` will display information on the
+required type of the hole, and what free variables are available.
+
+    Goal: ℕ
+    ————————————————————————————————————————————————————————————
+    n : ℕ
+
+This strongly suggests filling the hole with `n`.  After the hole is
+filled, you can type `^C ^space`, which will remove the hole.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = { }1
+
+Again, going into hole 1 and type `^C ^,` will display information on the
+required type of the hole, and what free variables are available.
+
+    Goal: ℕ
+    ————————————————————————————————————————————————————————————
+    n : ℕ
+    m : ℕ
+
+Going into the hole and type `^C ^R` will fill it in with a constructor
+(if there is a unique choice) or tell you what constructors you might use,
+if there is a choice.  In this case, it displays the following.
+
+    Don't know which constructor to introduce of zero or suc
+
+Filling the hole with `suc ?` and typing `^C ^space` results in the following.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = suc { }1
+
+Going into the new hole and typing `^C ^,` gives similar information to before.
+
+    Goal: ℕ
+    ————————————————————————————————————————————————————————————
+    n : ℕ
+    m : ℕ
+
+We can fill the hole with `m + n` and type `^C ^space` to complete the program.
+
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = suc (m + n)
+
+Exploiting interaction to this degree is probably not helpful for a program this
+simple, but the same techniques can help with more complex programs.  Even for
+a program this simple, using `^C ^C` to split cases can be helpful.
+
 
 ## More pragmas
 
@@ -812,16 +810,16 @@ Including the lines
 \end{code}
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
-Haskell operators on the integer type.  Representing naturals with
-`zero` and `suc` requires time proportional to *m* to add *m* and *n*,
-whereas representing naturals as integers in Haskell requires time
-proportional to the larger of the logarithms (base 2) of *m* and *n*.  In
-particular, if *m* and *n* are both less than 2⁶⁴, addition requires
-constant time on a machine with 64-bit words.  Similarly, representing
-naturals with `zero` and `suc` requires time proportional to the
-product of *m* and *n* to multiply *m* and *n*, whereas representing
-naturals as integers in Haskell requires time proportional to the sum
-of the logarithms of *m* and *n*.
+Haskell operators on the arbitrary-precision integer type.
+Representing naturals with `zero` and `suc` requires time proportional
+to *m* to add *m* and *n*, whereas representing naturals as integers
+in Haskell requires time proportional to the larger of the logarithms
+(base 2) of *m* and *n*.  Similarly, representing naturals with `zero`
+and `suc` requires time proportional to the product of *m* and *n* to
+multiply *m* and *n*, whereas representing naturals as integers in
+Haskell requires time proportional to the sum of the logarithms of *m*
+and *n*.
+
 
 ## Standard library
 
@@ -841,12 +839,13 @@ Such a pragma can only be invoked once, as invoking it twice would
 raise confusion as to whether `2` is a value of type `ℕ` or type
 `Data.Nat.ℕ`.  Similar confusions arise if other pragmas are invoked
 twice. For this reason, we will not invoke pragmas in future chapters,
-leaving that to the standard library. More information on available
+leaving that to the standard library. Information on available
 pragmas can be found in the Agda documentation.
+
 
 ## Unicode
 
-At the end of each chapter, we will list relevant unicode.
+This chapter introduces the following unicode.
 
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
@@ -870,6 +869,7 @@ In place of left, right, up, and down keys, one may also use control characters.
     ^P  up (uP)
     ^N  down (dowN)
 
-We write `^B` to stand for `control-B`, and similarly.
+We write `^B` to stand for control-B, and similarly.  One can also navigate
+left and write by typing the digits that appear in the displayed list.
 
 
