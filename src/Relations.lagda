@@ -14,7 +14,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Data.Nat.Properties.Simple using (+-comm)
+open import Data.Nat.Properties using (+-comm)
 \end{code}
 
 ## Defining relations
@@ -157,9 +157,9 @@ such relations?)
 The first property to prove about comparison is that it is reflexive:
 for any natural `n`, the relation `n ≤ n` holds.
 \begin{code}
-≤-refl : ∀ (n : ℕ) → n ≤ n
-≤-refl zero = z≤n
-≤-refl (suc n) = s≤s (≤-refl n)
+≤-refl : ∀ {n : ℕ} → n ≤ n
+≤-refl {zero} = z≤n
+≤-refl {suc n} = s≤s (≤-refl {n})
 \end{code}
 The proof is a straightforward induction on `n`.  In the base case,
 `zero ≤ zero` holds by `z≤n`.  In the inductive case, the inductive
@@ -199,8 +199,6 @@ that `m ≤ p`, and our goal follows by applying `s≤s`.
 
 In the base case, `m ≤ n` holds by `z≤n`, so it must be that
 `m` is `zero`, in which case `m ≤ p` also holds by `z≤n`. In this
-
-
 case, the fact that `n ≤ p` is irrelevant, and we write `_` as the
 pattern to indicate that the corresponding evidence is unused.
 
@@ -422,9 +420,9 @@ Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 
-## Exercises
+### Exercise (`<-irrefl`, `<-trans`, `trichotomy`, `+-mono-<`)
 
-We can define strict comparison similarly to comparison.
+We can define strict inequality similarly to inequality.
 \begin{code}
 data _<_ : ℕ → ℕ → Set where
   z<s : ∀ {n : ℕ} → zero < suc n
@@ -436,19 +434,17 @@ infix 4 _<_
 + *Irreflexivity* Show that `n < n` never holds
   for any natural `n`. (This requires negation,
   introduced in the chapter on Logic.)
-  Name your proof `<-irrefl`.
 
 + *Transitivity* Show that
 
   > if `m < n` and `n < p` then `m < p`
 
-  for all naturals `m`, `n`, and `p`. Name your proof `<-trans`.
+  for all naturals `m`, `n`, and `p`.
 
 + *Trichotomy* Corresponding to anti-symmetry and totality
   of comparison, we have trichotomy for strict comparison.
   Show that for any given any naturals `m` and `n` that
   `Trichotomy m n` holds, using the defintions below.
-  Name your proof `trichotomy`.
   
 \begin{code}
 _>_ : ℕ → ℕ → Set
@@ -471,15 +467,17 @@ data Trichotomy : ℕ → ℕ → Set where
 + *Relate strict comparison to comparison*
   Show that `m < n` if and only if `suc m ≤ n`.
   Name the two parts of your proof
-  `<-implies-≤` and `≤-implies-<`
+  `<-implies-≤` and `≤-implies-<`.
 
-  To confirm your understanding, you should prove transitivity, trichotomy,
-  and monotonicity for `<` directly by modifying
-  the original proofs for `≤`.  Once you've done so, you may then wish to redo
-  the proofs exploiting the last exercise, so each property of `<` becomes
-  an easy consequence of the corresponding property for `≤`.
+To confirm your understanding, you should prove transitivity, trichotomy,
+and monotonicity for `<` directly by modifying
+the original proofs for `≤`.  Once you've done so, you may then wish to redo
+the proofs exploiting the last exercise, so each property of `<` becomes
+an easy consequence of the corresponding property for `≤`.
 
-+ *Even and odd* Another example of a useful relation is to define
+### Exercise
+
+*Even and odd* Another example of a useful relation is to define
   even and odd numbers, as done below.  Using these definitions, show
   - the sum of two even numbers is even
   - the sum of an even and an odd number is odd
@@ -488,10 +486,10 @@ data Trichotomy : ℕ → ℕ → Set where
 \begin{code}
 mutual
   data even : ℕ → Set where
-    ev-zero : even zero
-    ev-suc : ∀ {n : ℕ} → odd n → even (suc n)
+    even-zero : even zero
+    even-suc : ∀ {n : ℕ} → odd n → even (suc n)
   data odd : ℕ → Set where
-    od-suc : ∀ {n : ℕ} → even n → odd (suc n)
+    odd-suc : ∀ {n : ℕ} → even n → odd (suc n)
 \end{code}
 The keyword `mutual` indicates that the nested definitions
 are mutually recursive.
@@ -501,6 +499,14 @@ Because the two defintions are mutually recursive, the type
 `Even` and `Odd` must be declared before they are defined.  The
 declaration just repeats the first line of the definition, but without
 the keyword `where`. -->
+
+## Standard prelude
+
+Definitions from this chapter can be found in the standard library.
+\begin{code}
+import Data.Nat using (_≤_; z≤n; s≤s)
+import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total; +-mono-≤)
+\end{code}
 
 
 ## Unicode
