@@ -14,7 +14,7 @@ by their name, properties of *inductive datatypes* are proved by
 
 We require equivalence as in the previous chapter, plus the naturals
 and some operations upon them.  We also import a couple of new operations,
-`cong` and `_≡⟨_⟩_`, which are explained below.
+`cong`, `sym`, and `_≡⟨_⟩_`, which are explained below.
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
