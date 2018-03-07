@@ -750,7 +750,7 @@ for all naturals `m`, `n`, and `p`.
 
 Definitions from this chapter can be found in the standard library.
 \begin{code}
-import Data.Nat.Properties.Simple using (+-assoc; +-identityʳ; +-suc; +-comm)
+import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 \end{code}
 
 ## Unicode
