@@ -10,15 +10,17 @@ the next step is to define relations, such as *less than or equal*.
 ## Imports
 
 \begin{code}
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; cong; sym)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Nat.Properties.Simple using (+-comm)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
 ## Defining relations
 
 The relation *less than or equal* has an infinite number of
-instances.  Here are just a few of them:
+instances.  Here are a few of them:
 
    0 ≤ 0     0 ≤ 1     0 ≤ 2     0 ≤ 3     ...
              1 ≤ 1     1 ≤ 2     1 ≤ 3     ...
@@ -45,7 +47,7 @@ data _≤_ : ℕ → ℕ → Set where
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names,
 while `m ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces)
-are propositions.
+are types.
 
 Both definitions above tell us the same two things:
 
@@ -61,10 +63,6 @@ In fact, they each give us a bit more detail:
   `s≤s` takes evidence that `m ≤ n` holds into evidence that
   `suc m ≤ suc n` holds.
 
-Here we have used the word *evidence* as interchangeable with the
-word *proof*.  We will tend to say *evidence* when we want to stress
-that proofs are just terms in Agda.
-
 For example, here in inference rule notation is the proof that
 `2 ≤ 4`.
 
@@ -77,32 +75,34 @@ For example, here in inference rule notation is the proof that
 
 And here is the corresponding Agda proof.
 \begin{code}
-ex₁ : 2 ≤ 4
-ex₁ = s≤s (s≤s z≤n)
+_ : 2 ≤ 4
+_ = s≤s (s≤s z≤n)
 \end{code}
+
 
 ## Implicit arguments
 
 In the Agda definition, the two lines defining the constructors
 use `∀`, very similar to our use of `∀` in propositions such as:
 
-    com+ : ∀ (m n : ℕ) → m + n ≡ n + m
+    +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 
 However, here the declarations are surrounded by curly braces `{ }`
 rather than parentheses `( )`.  This means that the arguments are
-*implicit* and need not be written explicitly.  Thus, we would write,
-for instance, `com+ m n` for the proof that `m + n ≡ n + m`, but
-here will write `z≤n` for the proof that `m ≤ m`, leaving the `m` implicit,
-or if `m≤n` is evidence that `m ≤ n`, we write write `s≤s m≤n` for the
+*implicit* and need not be written explicitly; instead, they are
+*inferred* by Agda's typechecker. Thus, we write
+`+-comm m n` for the proof that `m + n ≡ n + m`, but
+`z≤n` for the proof that `m ≤ m`, leaving `m` implicit.
+Similarly, if `m≤n` is evidence that `m ≤ n`, we write write `s≤s m≤n` for
 evidence that `suc m ≤ suc n`, leaving both `m` and `n` implicit.
 
-It is possible to provide implicit arguments explicitly if we wish, by
+If we wish, it is possible to provide implicit arguments explicitly by
 writing the arguments inside curly braces.  For instance, here is the
 Agda proof that `2 ≤ 4` repeated, with the implicit arguments made
 explicit.
 \begin{code}
-ex₂ : 2 ≤ 4
-ex₂ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
+_ : 2 ≤ 4
+_ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
 \end{code}
 
 ## Precedence
@@ -111,12 +111,11 @@ We declare the precedence for comparison as follows.
 \begin{code}
 infix 4 _≤_
 \end{code}
-We set the precedence of `_≤_` at level 4, which means it binds less
-tightly that `_+_` at level 6 or `_*_` at level 7, meaning that `1 + 2
-≤ 3` parses as `(1 + 2) ≤ 3`.  We write `infix` to indicate that the
-operator does not associate to either the left or right, as it makes
-no sense to give `1 ≤ 2 ≤ 3` either the meaning `(1 ≤ 2) ≤ 3` or `1 ≤
-(2 ≤ 3)`.
+We set the precedence of `_≤_` at level 4, so it binds less tightly
+that `_+_` at level 6 and hence `1 + 2 ≤ 3` parses as `(1 + 2) ≤ 3`.
+We write `infix` to indicate that the operator does not associate to
+either the left or right, as it makes no sense to parse `1 ≤ 2 ≤ 3` as
+either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 
 ## Properties of ordering relations
 
@@ -148,7 +147,7 @@ Less frivolously, if you ever bump into a relation while reading
 a technical paper, this gives you an easy way to orient yourself,
 by checking whether or not it is a preorder, partial order, or total order.
 A careful author will often make it explicit, for instance by saying
-that a given relation is a preoder but not a partial order, or a
+that a given relation is a preorder but not a partial order, or a
 partial order but not a total order. (Can you think of examples of
 such relations?)
 
@@ -184,12 +183,26 @@ p` hold, then `m ≤ p` holds.
 Here the proof is most easily thought of as by induction on the
 *evidence* that `m ≤ n`, so we have left `m`, `n`, and `p` implicit.
 
+In the base case, the first inequality holds by `z≤n`, and so
+arwe are given `zero ≤ n` and `n ≤ p` and must show `zero ≤ p`,
+which follows immediately by `z≤n`.  In this
+case, the fact that `n ≤ p` is irrelevant, and we write `_` as the
+pattern to indicate that the corresponding evidence is unused.
+
+In the inductive case, the first inequality holds by `s≤s m≤n`
+and the second inequality by `s≤s n≤p`, and so we are given
+`suc m ≤ suc n` and `suc n ≤ suc p`, and must show `suc m ≤ suc p`.
+The inductive hypothesis `≤-trans m≤n n≤p` establishes
+that `m ≤ p`, and our goal follows by applying `s≤s`.
+
+<!--
+
 In the base case, `m ≤ n` holds by `z≤n`, so it must be that
 `m` is `zero`, in which case `m ≤ p` also holds by `z≤n`. In this
+
+
 case, the fact that `n ≤ p` is irrelevant, and we write `_` as the
-pattern to indicate that the corresponding evidence is unused. We
-could instead have written `n≤p` but not used that variable on the
-right-hand side of the equation.
+pattern to indicate that the corresponding evidence is unused.
 
 In the inductive case, `m ≤ n` holds by `s≤s m≤n`, so it must be that `m`
 is `suc m′` and `n` is `suc n′` for some `m′` and `n′`, and `m≤n` is
@@ -199,10 +212,12 @@ evidence that `n′ ≤ p′`.  The inductive hypothesis `≤-trans m≤n n≤p`
 provides evidence that `m′ ≤ p′`, and applying `s≤s` to that gives
 evidence of the desired conclusion, `suc m′ ≤ suc p′`.
 
-The case `≤-trans (s≤s m≤n) z≤n` cannot arise, since the first piece of
-evidence implies `n` must be `suc n′` for some `n′` while the second
-implies `n` must be `zero`.  Agda can determine that such a case cannot
-arise, and does not require it to be listed.
+-->
+
+The case `≤-trans (s≤s m≤n) z≤n` cannot arise, since the first
+inequality implies the middle value is `suc n` while the second
+inequality implies that it is `zero`.  Agda can determine that
+such a case cannot arise, and does not require it to be listed.
 
 Alternatively, we could make the implicit parameters explicit.
 \begin{code}
@@ -210,9 +225,9 @@ Alternatively, we could make the implicit parameters explicit.
 ≤-trans′ zero n p z≤n _ = z≤n
 ≤-trans′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans′ m n p m≤n n≤p)
 \end{code}
-One might argue that this is clearer, since it shows us the forms of `m`, `n`,
-and `p`, or one might argue that the extra length obscures the essence of the
-proof.  We will usually opt for shorter proofs.
+One might argue that this is clearer or one might argue that the extra
+length obscures the essence of the proof.  We will usually opt for
+shorter proofs.
 
 The technique of inducting on evidence that a property holds (e.g.,
 inducting on evidence that `m ≤ n`)---rather than induction on the
@@ -222,6 +237,7 @@ out to be immensely valuable, and one that we use often.
 Again, it is a good exercise to prove transitivity interactively in Emacs,
 using holes and the `^C ^C`, `^C ^,`, and `^C ^R` commands.
 
+
 ## Anti-symmetry
 
 The third property to prove about comparison is that it is antisymmetric:
@@ -230,22 +246,36 @@ for all naturals `m` and `n`, if both `m ≤ n` and `n ≤ m` hold, then
 \begin{code}
 ≤-antisym : ∀ {m n : ℕ} → m ≤ n → n ≤ m → m ≡ n
 ≤-antisym z≤n z≤n = refl
-≤-antisym (s≤s m≤n) (s≤s n≤m) rewrite ≤-antisym m≤n n≤m = refl
+≤-antisym (s≤s m≤n) (s≤s n≤m) = cong suc (≤-antisym m≤n n≤m)
 \end{code}
 Again, the proof is by induction over the evidence that `m ≤ n`
 and `n ≤ m` hold, and so we have left `m` and `n` implicit.
 
+In the base case, both inequalities hold by `z≤n`,
+and so we are given `zero ≤ zero` and `zero ≤ zero` and must
+show `zero ≡ zero`, which follows by reflexivity.  (Reflexivity
+of equality, that is, not reflexivity of inequality.)
+
+In the inductive case, the first inequality holds by `s≤s m≤n`
+and the second inequality holds by `s≤s n≤m`, and so we are
+given `suc m ≤ suc n` and `suc n ≤ suc m` and must show `suc m ≡ suc n`.
+The inductive hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`,
+and our goal follows by congruence.
+
+<!--
+
 In the base case, both relations hold by `z≤n`,
 so it must be the case that `m` and `n` are both `zero`,
 in which case `m ≡ n` holds by reflexivity. (The reflexivity
-of equivalance, that is, not the reflexivity of comparison.)
+of `_≡_`, that is, not the reflexivity of `_≤_`.)
 
 In the inductive case, `m ≤ n` holds by `s≤s m≤n` and `n ≤ m` holds by
 `s≤s n≤m`, so it must be that `m` is `suc m′` and `n` is `suc n′`, for
 some `m′` and `n′`, where `m≤n` is evidence that `m′ ≤ n′` and `n≤m`
 is evidence that `n′ ≤ m′`.  The inductive hypothesis `≤-antisym m≤n n≤m`
-establishes that `m′ ≡ n′`, and rewriting by this equation establishes
-that `m ≡ n` holds by reflexivity.
+establishes that `m′ ≡ n′`, and so the final result follows by congruence.
+
+-->
 
 ## Disjunction
 
@@ -254,18 +284,18 @@ the notion that given two propositions either one or the other holds.
 In Agda, we do so by declaring a suitable inductive type.
 \begin{code}
 data _⊎_ : Set → Set → Set where
-  inj₁  : ∀ {A B : Set} → A → A ⊎ B
+  inj₁ : ∀ {A B : Set} → A → A ⊎ B
   inj₂ : ∀ {A B : Set} → B → A ⊎ B
 \end{code}
 This tells us that if `A` and `B` are propositions then `A ⊎ B` is
 also a proposition.  Evidence that `A ⊎ B` holds is either of the form
-`inj₁ a`, where `a` is evidence that `A` holds, or `inj₂ b`, where
-`b` is evidence that `B` holds.
+`inj₁ x`, where `x` is evidence that `A` holds, or `inj₂ y`, where
+`y` is evidence that `B` holds.
 
-We set the precedence of disjunction so that it binds less tightly
-than comparison.
+We set the precedence of disjunction so that it binds less tightly than
+inequality.
 \begin{code}
-infix 1 _⊎_
+infixr 1 _⊎_
 \end{code}
 Thus, `m ≤ n ⊎ n ≤ m` parses as `(m ≤ n) ⊎ (n ≤ m)`.
 
@@ -306,10 +336,10 @@ and second arguments.  We perform a case analysis:
     proposition holds with `s≤s n≤m` as evidence that `suc n ≤ suc m`.
 
 This is our first use of the `with` clause in Agda.  The keyword
-`with` is followed by an expression, and one or more subsequent lines.
+`with` is followed by an expression and one or more subsequent lines.
 Each line begins with an ellipsis (`...`) and a vertical bar (`|`),
-followed by a pattern to be matched against the expression, an equal
-sign, and the right-hand side of the equation.
+followed by a pattern to be matched against the expression
+and the right-hand side of the equation.
 
 Every use of `with` is equivalent to defining a helper function.  For
 example, the definition above is equivalent to the following.
@@ -323,18 +353,17 @@ example, the definition above is equivalent to the following.
   helper (inj₁ m≤n) = inj₁ (s≤s m≤n)
   helper (inj₂ n≤m) = inj₂ (s≤s n≤m)
 \end{code}
-This is also our first use of a `where` clause in Agda.  The keyword
-`where` is followed by one or more definitions, which must be
-indented.  Any identifiers bound in the nested definition are in scope
-in the right-hand side of the preceding equation (in this case,
-`helper`), and any variables bound of the left-hand side of the
-preceding equation are in scope within the nested definition (in this
-case, `m` and `n`).
+This is also our first use of a `where` clause in Agda.  The keyword `where` is
+followed by one or more definitions, which must be indented.  Any variables
+bound of the left-hand side of the preceding equation (in this case, `m` and
+`n`) are in scope within the nested definition, and any identifiers bound in the
+nested definition (in this case, `helper`) are in scope in the right-hand side
+of the preceding equation.
 
 If both arguments are equal, then both the first and second disjuncts
 hold and we could return evidence of either.  In the code above we
-always return the first disjunct, but there is a minor variant that
-always returns the second disjunct.
+return the first disjunct, but there is a minor variant that
+returns the second disjunct.
 \begin{code}
 ≤-total″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
 ≤-total″ m zero =  inj₂ z≤n
@@ -347,16 +376,12 @@ always returns the second disjunct.
 
 ## Monotonicity
 
-If one bumps into both an operator and an order relation at
+If one bumps into both an operator and an ordering at
 a party, one may ask if the operator is *monotonic* with regard
-to the order relation.  For example, addition is monotonic
-with regard to comparison, meaning
+to the ordering.  For example, addition is monotonic
+with regard to inequality, meaning
 
   ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
-
-Addition (precedence level 6) binds more tightly than comparison
-(precedence level 4), so `m + n ≤ p + q` parses as
-`(m + n) ≤ (p + q)`.
 
 The proof is straightforward using the techniques we have learned,
 and is best broken into three parts. First, we deal with the special
@@ -370,13 +395,12 @@ The proof is by induction on the first argument.
 
 + *Base case*: The first argument is `zero` in which case
   `zero + p ≤ zero + q` simplifies to `p ≤ q`, the evidence
-  for which is given by the explicit argument `p≤q`.
+  for which is given by the argument `p≤q`.
 
 + *Inductive case*: The first argument is `suc m`, in which case
   `suc m + p ≤ suc m + q` simplifies to `suc (m + p) ≤ suc (m + q)`.
   The inductive hypothesis `+-monoʳ-≤ m p q p≤q` establishes that
-  `m + p ≤ m + q`, from which the desired conclusion follows
-  by an application of `s≤s`.
+  `m + p ≤ m + q`, and our goal follows by applying `s≤s`.
 
 Second, we deal with the special case of showing addition is
 monotonic on the left. This follows from the previous

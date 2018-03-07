@@ -746,6 +746,13 @@ Show that monus associates with addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
+## Standard library
+
+Definitions from this chapter can be found in the standard library.
+\begin{code}
+import Data.Nat.Properties.Simple using (+-assoc; +-identityʳ; +-suc; +-comm)
+\end{code}
+
 ## Unicode
 
 This chapter introduces the following unicode.
