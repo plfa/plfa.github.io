@@ -7,7 +7,7 @@ permalink : /RelationsAns
 ## Imports
 
 \begin{code}
-open import Relations using (_≤_; _<_; even; odd; e+e≡e)
+open import Relations using (_≤_; _<_; even; odd; e+e≡e; ≤-refl; ≤-trans; +-mono-≤)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
@@ -20,7 +20,15 @@ open even
 open odd
 \end{code}
 
-*Trichotomy*
+### Transitivity
+
+\begin{code}
+<-trans : ∀ {m n p} → m < n → n < p → m < p
+<-trans z<s       (s<s n<p)  =  z<s
+<-trans (s<s m<n) (s<s n<p)  =  s<s (<-trans m<n n<p)
+\end{code}
+
+### Trichotomy
 
 \begin{code}
 _>_ : ℕ → ℕ → Set
@@ -41,16 +49,39 @@ trichotomy (suc m) (suc n) with trichotomy m n
 ...                           | more m>n   =  more (s<s m>n)
 \end{code}
 
-*Relate strict inequality to equality*
+### Monotonicity
 
 \begin{code}
-<-implies-≤ : ∀ {m n : ℕ} → m < n → suc m ≤ n
-<-implies-≤ z<s = s≤s z≤n
-<-implies-≤ (s<s m<n) = s≤s (<-implies-≤ m<n)
++-monoʳ-< : ∀ (m p q : ℕ) → p < q → m + p < m + q
++-monoʳ-< zero    p q p<q  =  p<q
++-monoʳ-< (suc m) p q p<q  =  s<s (+-monoʳ-< m p q p<q) 
 
-≤-implies-< : ∀ {m n : ℕ} → suc m ≤ n → m < n
-≤-implies-< (s≤s z≤n) = z<s
-≤-implies-< (s≤s (s≤s m≤n)) = s<s (≤-implies-< (s≤s m≤n))
++-monoˡ-< : ∀ (m n p : ℕ) → m < n → m + p < n + p
++-monoˡ-< m n p m<n rewrite +-comm m p | +-comm n p = +-monoʳ-< p m n m<n
+
++-mono-< : ∀ (m n p q : ℕ) → m < n → p < q → m + p < n + q
++-mono-< m n p q m<n p<q = <-trans (+-monoˡ-< m n p m<n) (+-monoʳ-< n p q p<q)
+\end{code}
+
+### Relate inequality to strict inequality
+
+\begin{code}
+≤→< : ∀ {m n : ℕ} → suc m ≤ n → m < n
+≤→< (s≤s z≤n) = z<s
+≤→< (s≤s (s≤s m≤n)) = s<s (≤→< (s≤s m≤n))
+
+<→≤ : ∀ {m n : ℕ} → m < n → suc m ≤ n
+<→≤ z<s = s≤s z≤n
+<→≤ (s<s m<n) = s≤s (<→≤ m<n)
+
+<-trans′ : ∀ {m n p : ℕ} → m < n → n < p → m < p
+<-trans′ m<n n<p = ≤→< (helper (<→≤ m<n) (<→≤ n<p))
+  where
+  helper : ∀ {m n p : ℕ} → suc m ≤ n → suc n ≤ p → suc m ≤ p
+  helper sm≤n sn≤p = ≤-trans sm≤n (≤-trans n≤sn sn≤p)
+    where
+    n≤sn : ∀ {n : ℕ} → n ≤ suc n
+    n≤sn {n} = +-mono-≤ 0 1 n n z≤n ≤-refl
 \end{code}
 
 *Even and odd*
