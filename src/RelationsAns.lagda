@@ -7,14 +7,15 @@ permalink : /RelationsAns
 ## Imports
 
 \begin{code}
+open import Relations using (_≤_; _<_; even; odd; e+e≡e)
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; cong; sym)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Relations using (_≤_; _<_; Trichotomy; even; odd)
 open import Data.Nat.Properties using (+-comm; +-identityʳ; +-suc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Data.Product using (∃; _,_)
-open Trichotomy
-open _<_
 open _≤_
+open _<_
 open even
 open odd
 \end{code}
@@ -22,17 +23,25 @@ open odd
 *Trichotomy*
 
 \begin{code}
+_>_ : ℕ → ℕ → Set
+m > n = n < m
+
+data Trichotomy (m n : ℕ) : Set where
+  less : m < n → Trichotomy m n
+  same : m ≡ n → Trichotomy m n
+  more : m > n → Trichotomy m n
+  
 trichotomy : ∀ (m n : ℕ) → Trichotomy m n
-trichotomy zero zero = same refl
-trichotomy zero (suc n) = less z<s
-trichotomy (suc m) zero = more z<s
+trichotomy zero    zero                    =  same refl
+trichotomy zero    (suc n)                 =  less z<s
+trichotomy (suc m) zero                    =  more z<s
 trichotomy (suc m) (suc n) with trichotomy m n
-... | less m<n = less (s<s m<n)
-... | same refl = same refl
-... | more n<m = more (s<s n<m)
+...                           | less m<n   =  less (s<s m<n)
+...                           | same refl  =  same refl
+...                           | more m>n   =  more (s<s m>n)
 \end{code}
 
-*Relate strict comparison to comparison*
+*Relate strict inequality to equality*
 
 \begin{code}
 <-implies-≤ : ∀ {m n : ℕ} → m < n → suc m ≤ n
@@ -47,37 +56,36 @@ trichotomy (suc m) (suc n) with trichotomy m n
 *Even and odd*
 
 \begin{code}
-+-evev : ∀ {m n : ℕ} → even m → even n → even (m + n)
-+-evev ev-zero evn = evn
-+-evev (ev-suc (od-suc evm)) evn = ev-suc (od-suc (+-evev evm evn))
+o+o≡e : ∀ {m n : ℕ} → odd  m → odd n → even (m + n)
+e+o≡o : ∀ {m n : ℕ} → even m → odd n → odd  (m + n)
 
-+-evod : ∀ {m n : ℕ} → even m → odd n → odd (m + n)
-+-evod ev-zero odn = odn
-+-evod (ev-suc (od-suc evm)) odn = od-suc (ev-suc (+-evod evm odn))
+o+o≡e (odd-suc em)  on  =  even-suc (e+o≡o em on)
 
-+-odev : ∀ {m n : ℕ} → odd m → even n → odd (m + n)
-+-odev (od-suc evm) evn = od-suc (+-evev evm evn)
+e+o≡o even-zero     on  =  on
+e+o≡o (even-suc om) on  =  odd-suc  (o+o≡e om on)
 
-+-odod : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
-+-odod (od-suc evm) odn = ev-suc (+-evod evm odn)
+o+o≡e′ : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
+o+o≡e′ {suc m} {suc n} (odd-suc em) (odd-suc en)
+  rewrite +-suc m n = even-suc (odd-suc (e+e≡e em en))
 \end{code}
+
+
+The following is a solution to an exercise that should be moved
+to the chapter that introduces quantifiers.
 
 \begin{code}
 +-lemma : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
-+-lemma m rewrite +-identityʳ m | +-suc m m = refl
++-lemma m rewrite +-suc m (m + 0) = refl
 
-+-lemma′ : ∀ (m : ℕ) → suc (suc (m + (m + 0))) ≡ suc m + (suc m + 0)
-+-lemma′ m rewrite +-suc m (m + 0) = {!!}
+is-even : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
+is-odd : ∀ (n : ℕ) → odd n → ∃(λ (m : ℕ) → n ≡ 1 + 2 * m)
 
-mutual
-  is-even : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
-  is-even zero ev-zero =  zero , refl
-  is-even (suc n) (ev-suc odn) with is-odd n odn
-  ... | m , n≡1+2*m rewrite n≡1+2*m | +-lemma m = suc m , refl
+is-even zero even-zero =  zero , refl
+is-even (suc n) (even-suc on) with is-odd n on
+... | m , n≡1+2*m rewrite n≡1+2*m | +-lemma m = suc m , refl
 
-  is-odd : ∀ (n : ℕ) → odd n → ∃(λ (m : ℕ) → n ≡ 1 + 2 * m)
-  is-odd (suc n) (od-suc evn) with is-even n evn
-  ... | m , n≡2*m rewrite n≡2*m = m , refl
+is-odd (suc n) (odd-suc en) with is-even n en
+... | m , n≡2*m rewrite n≡2*m = m , refl
 \end{code}
 
     

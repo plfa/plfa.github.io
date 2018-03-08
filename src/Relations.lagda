@@ -122,6 +122,13 @@ either the left or right, as it makes no sense to parse `1 ≤ 2 ≤ 3` as
 either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 
 
+## Decidability
+
+Given two numbers, it is straightforward to compute whether or not the first is
+less than or equal to the second.  We don't give the code for doing so here, but
+will return to this point in Chapter [Decidability](Decidability).
+
+
 ## Properties of ordering relations
 
 Relations occur all the time, and mathematicians have agreed
@@ -341,7 +348,7 @@ preference to indexed types when possible.
 
 With that preliminary out of the way, we specify and prove totality.
 \begin{code}
-≤-total : ∀ (m n : ℕ) → ≤-total m n
+≤-total : ∀ (m n : ℕ) → Total m n
 ≤-total zero    n                         =  forward z≤n
 ≤-total (suc m) zero                      =  flipped z≤n
 ≤-total (suc m) (suc n) with ≤-total m n
@@ -482,17 +489,10 @@ requires logical negation, as does the fact that the three cases in
 trichotomy are mutually exclusive, so those points are deferred
 until the negation is introduced in Chapter [Logic](Logic).
 
-Instead of defining strict inequality directly, we can define it
-in terms of inequality.
-\begin{code}
-infix 4 _<′_
-
-_<′_ : ℕ → ℕ → Set
-m <′ n = m ≤ suc n
-\end{code}
-It is a straightforward exercise to show each implies the other.
-One can then to derive the properties of strict inequality, such as
-transitivity, from the corresponding properties of equality.
+It is straightforward to show that `suc m ≤ n` implies `m < n`,
+and conversely.  One can then give an alternative derivation of the
+properties of strict inequality, such as transitivity, by directly
+exploiting the corresponding properties of inequality.
 
 ### Exercise (`<-trans`)
 
@@ -511,23 +511,22 @@ we will be in a position to show that the three cases are mutually exclusive.)
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
-### Exercise (`<→<′`, `<′→<`)
+### Exercise (`≤→<`, `<→≤`)
 
-Show that each definition of strict inequality implies the other.
+Show that `suc m ≤ n` implies `m < n`, and conversely.
 
-### Exercise (`<′-trans`, `<-trans′`)
+### Exercise (`<-trans′`)
 
-Show that the alternative definition of strict inequality is transitive
-follows immediately from inequality being transitive.  From that, use the
-equivalence of the two definitions to give an alternative proof that the
-original definition of strict inequality is transitive.
+Give an alternative proof that strict inequality is transitive,
+using the relating between strict inequality and inequality and
+the fact that inequality is transitive.
 
 
 ## Even and odd
 
-As a further example, let's specify even and odd naturals.  Whereas
-inequality and strict inequality are *binary relations*, even and odd are
-*unary relations*, sometimes called *predicates*.
+As a further example, let's specify even and odd numbers.  
+Inequality and strict inequality are *binary relations*,
+while even and odd are *unary relations*, sometimes called *predicates*.
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -551,57 +550,36 @@ which were given earlier).
 
 We show that the sum of two even numbers is even.
 \begin{code}
-e+e→e : ∀ {m n : ℕ} → even m → even n → even (m + n)
-o+e→o : ∀ {m n : ℕ} → odd  m → even n → odd  (m + n)
+e+e≡e : ∀ {m n : ℕ} → even m → even n → even (m + n)
+o+e≡o : ∀ {m n : ℕ} → odd  m → even n → odd  (m + n)
 
-e+e→e even-zero       evenn  =  evenn
-e+e→e (even-suc oddm) evenn  =  even-suc (o+e→o oddm evenn)
+e+e≡e even-zero     en  =  en
+e+e≡e (even-suc om) en  =  even-suc (o+e≡o om en)
 
-o+e→o (odd-suc evenm) evenn  =  odd-suc (e+e→e evenm evenn)
+o+e≡o (odd-suc  em) en  =  odd-suc  (e+e≡e em en)
 \end{code}
-Corresponding to the mutually recursive types, we use two
-mutually recursive functions, one to show that the sum of
-two even numbers is even, and the other to show that the sum
-of an odd and an even number is odd.
+Corresponding to the mutually recursive types, we use two mutually recursive
+functions, one to show that the sum of two even numbers is even, and the other
+to show that the sum of an odd and an even number is odd.
 
-To show that the sum of two even numbers is even, consider
-the evidence that the first number is even. If it because it
-is zero, then the sum is even
-because the second number is even.  If it is because it
-is the successor of an odd number, then the result is even
-because it is the successor of the sum of an odd and an
+To show that the sum of two even numbers is even, consider the evidence that the
+first number is even. If it because it is zero, then the sum is even because the
+second number is even.  If it is because it is the successor of an odd number,
+then the result is even because it is the successor of the sum of an odd and an
 even number, which is odd.
 
-To show that the sum of an odd and even number is odd, consider
-the evidence that the first number is odd. If it is because it
-is the successor of an even number, then the result is odd
-because it is the successor of the sum of two even numbers,
-which is even.
+To show that the sum of an odd and even number is odd, consider the evidence
+that the first number is odd. If it is because it is the successor of an even
+number, then the result is odd because it is the successor of the sum of two
+even numbers, which is even.
 
-This is our first use of mutually recursive functions.
-Since each identifier must be defined before it is used,
-we first give the signatures for both functions and then
-the equations that define them.
+This is our first use of mutually recursive functions.  Since each identifier
+must be defined before it is used, we first give the signatures for both
+functions and then the equations that define them.
 
-### Exercisse (`o+o→e`)
+### Exercise (`o+o≡e`)
 
 Show that the sum of two odd numbers is even.
-
-<!--
-\begin{code}
-o+o→e : ∀ {m n : ℕ} → odd  m → odd n → even (m + n)
-e+o→o : ∀ {m n : ℕ} → even m → odd n → odd  (m + n)
-
-o+o→e (odd-suc evenm) oddn  =  even-suc (e+o→o evenm oddn)
-
-e+o→o even-zero       oddn  =  oddn
-e+o→o (even-suc oddm) oddn  =  odd-suc (o+o→e oddm oddn)
-
-o+o→e′ : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
-o+o→e′ {suc m} {suc n} (odd-suc evenm) (odd-suc evenn)
-  rewrite +-suc m n = even-suc (odd-suc (e+e→e evenm evenn))
-\end{code}
--->
 
 
 ## Standard prelude
@@ -614,7 +592,7 @@ import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
 \end{code}
 In the standard library, `≤-total` is formalised in terms of disjunction (which
 we define in Chapter [Logic](Logic)), and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤`
-make implicit parameters that are explicit here.
+make implicit arguments that here are explicit.
 
 ## Unicode
 
