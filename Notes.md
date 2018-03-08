@@ -26,3 +26,13 @@ The following comments were collected on the Agda mailing list.
 * David Darais (not on mailing list)
   + suggests Scoped PHOAS
     - https://plum-umd.github.io/darailude-agda/SF.PHOAS.html
+
+## Untyped lambda calculus
+
+* http://www.cse.chalmers.se/~nad/listings/partiality-monad/Lambda.Simplified.Delay-monad.Interpreter.html
+
+## Syntax for lambda calculus
+
+* ƛ \Gl-
+* ∙ \.
+

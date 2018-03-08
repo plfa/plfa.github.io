@@ -748,7 +748,7 @@ for all naturals `m`, `n`, and `p`.
 
 ## Standard library
 
-Definitions from this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
 import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 \end{code}
@@ -761,7 +761,10 @@ This chapter introduces the following unicode.
     ∀  U+2200  FOR ALL (\forall)
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
     ′  U+2032  PRIME (\')
+    ″  U+2033  DOUBLE PRIME (\')
+    ‴  U+2034  TRIPLE PRIME (\')
+    ⁗  U+2057  QUADRUPLE PRIME (\')
 
-Similar to `\r`, the command `\^r` gives access to a variety of superscript
-rightward arrows, and also a superscript letter `r`.  Also similarly, the
-command `\'` gives access to a range of primes (`′ ″ ‴ ⁗`).
+Similar to `\r`, the command `\^r` gives access to a variety of
+superscript rightward arrows, and also a superscript letter `r`.
+The command `\'` gives access to a range of primes (`′ ″ ‴ ⁗`).

@@ -7,6 +7,7 @@ permalink : /Relations
 After having defined operations such as addition and multiplication,
 the next step is to define relations, such as *less than or equal*.
 
+
 ## Imports
 
 \begin{code}
@@ -14,8 +15,9 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Data.Nat.Properties using (+-comm)
+open import Data.Nat.Properties using (+-comm; +-suc)
 \end{code}
+
 
 ## Defining relations
 
@@ -47,7 +49,8 @@ data _≤_ : ℕ → ℕ → Set where
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names,
 while `m ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces)
-are types.
+are types.  This is our first use of an *indexed* datatype,
+where we say the type `m ≤ n` is indexed by two naturals, `m` and `n`.
 
 Both definitions above tell us the same two things:
 
@@ -82,19 +85,19 @@ _ = s≤s (s≤s z≤n)
 
 ## Implicit arguments
 
-In the Agda definition, the two lines defining the constructors
+This is our first use of implicit arguments.
+In the definition of inequality, the two lines defining the constructors
 use `∀`, very similar to our use of `∀` in propositions such as:
 
     +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 
-However, here the declarations are surrounded by curly braces `{ }`
-rather than parentheses `( )`.  This means that the arguments are
-*implicit* and need not be written explicitly; instead, they are
-*inferred* by Agda's typechecker. Thus, we write
-`+-comm m n` for the proof that `m + n ≡ n + m`, but
-`z≤n` for the proof that `m ≤ m`, leaving `m` implicit.
-Similarly, if `m≤n` is evidence that `m ≤ n`, we write write `s≤s m≤n` for
-evidence that `suc m ≤ suc n`, leaving both `m` and `n` implicit.
+However, here the declarations are surrounded by curly braces `{ }` rather than
+parentheses `( )`.  This means that the arguments are *implicit* and need not be
+written explicitly; instead, they are *inferred* by Agda's typechecker. Thus, we
+write `+-comm m n` for the proof that `m + n ≡ n + m`, but `z≤n` for the proof
+that `m ≤ m`, leaving `m` implicit.  Similarly, if `m≤n` is evidence that `m ≤
+n`, we write write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving both `m`
+and `n` implicit.
 
 If we wish, it is possible to provide implicit arguments explicitly by
 writing the arguments inside curly braces.  For instance, here is the
@@ -104,6 +107,7 @@ explicit.
 _ : 2 ≤ 4
 _ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
 \end{code}
+
 
 ## Precedence
 
@@ -116,6 +120,7 @@ that `_+_` at level 6 and hence `1 + 2 ≤ 3` parses as `(1 + 2) ≤ 3`.
 We write `infix` to indicate that the operator does not associate to
 either the left or right, as it makes no sense to parse `1 ≤ 2 ≤ 3` as
 either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
+
 
 ## Properties of ordering relations
 
@@ -275,6 +280,9 @@ establishes that `m′ ≡ n′`, and so the final result follows by congruence.
 
 -->
 
+
+<!--
+
 ## Disjunction
 
 In order to state totality, we need a way to formalise disjunction,
@@ -297,40 +305,70 @@ infixr 1 _⊎_
 \end{code}
 Thus, `m ≤ n ⊎ n ≤ m` parses as `(m ≤ n) ⊎ (n ≤ m)`.
 
+-->
+
+
 ## Total
 
 The fourth property to prove about comparison is that it is total:
 for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 `m` and `n` are equal.
+
+We specify what it means for inequality to be total.
 \begin{code}
-≤-total : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total zero n =  inj₁ z≤n
-≤-total (suc m) zero =  inj₂ z≤n
+data Total (m n : ℕ) : Set where
+  forward : m ≤ n → Total m n
+  flipped : n ≤ m → Total m n
+\end{code}
+Evidence that `Total m n` holds is either of the form
+`forward m≤n` or `flipped n≤m`, where `m≤n` and `n≤m` are
+evidence of `m ≤ n` and `n ≤ m` respectively.
+
+This is our first use of a datatype with *parameters*,
+in this case `m` and `n`.  It is equivalent to the following
+indexed datatype.
+\begin{code}
+data Total′ : ℕ → ℕ → Set where
+  forward : ∀ {m n : ℕ} → m ≤ n → Total′ m n
+  flipped : ∀ {m n : ℕ} → n ≤ m → Total′ m n
+\end{code}
+Unlike an indexed datatype, where the indexes can vary
+(as in `zero ≤ n` and `suc m ≤ suc n`), in a parameterised
+datatype the parameters must always be the same (as in `Total m n`).
+Parameterised declarations are shorter, easier to read, and let Agda
+exploit the uniformity of the parameters, so we will use them in
+preference to indexed types when possible.
+
+With that preliminary out of the way, we specify and prove totality.
+\begin{code}
+≤-total : ∀ (m n : ℕ) → ≤-total m n
+≤-total zero    n                         =  forward z≤n
+≤-total (suc m) zero                      =  flipped z≤n
 ≤-total (suc m) (suc n) with ≤-total m n
-... | inj₁ m≤n = inj₁ (s≤s m≤n)
-... | inj₂ n≤m = inj₂ (s≤s n≤m)
+...                        | forward m≤n  =  forward (s≤s m≤n)
+...                        | flipped n≤m  =  flipped (s≤s n≤m)
 \end{code}
 In this case the proof is by induction over both the first
 and second arguments.  We perform a case analysis:
 
 + *First base case*: If the first argument is `zero` and the
-  second argument is `n` then
-  the first disjunct holds, with `z≤n` as evidence that `zero ≤ n`.
+  second argument is `n` then the forward case holds, 
+  with `z≤n` as evidence that `zero ≤ n`.
 
 + *Second base case*: If the first argument is `suc m` and the
-  second argument is `n` then the right disjunct holds, with
-  `z≤n` as evidence that `n ≤ m`.
+  second argument is `zero` then the flipped case holds, with
+  `z≤n` as evidence that `zero ≤ suc m`.
 
 + *Inductive case*: If the first argument is `suc m` and the
   second argument is `suc n`, then the inductive hypothesis
   `≤-total m n` establishes one of the following:
 
-  - The first disjunct of the inductive hypothesis holds with `m≤n` as
-    evidence that `m ≤ n`, in which case the first disjunct of the
+  - The forward case of the inductive hypothesis holds with `m≤n` as
+    evidence that `m ≤ n`, from which it follows that the forward case of the
     proposition holds with `s≤s m≤n` as evidence that `suc m ≤ suc n`.
 
-  - The second disjunct of the inductive hypothesis holds with `n≤m` as
-    evidence that `n ≤ m`, in which case the second disjunct of the
+  - The flipped case of the inductive hypothesis holds with `n≤m` as
+    evidence that `n ≤ m`, from which it follows that the flipped case of the
     proposition holds with `s≤s n≤m` as evidence that `suc n ≤ suc m`.
 
 This is our first use of the `with` clause in Agda.  The keyword
@@ -342,14 +380,14 @@ and the right-hand side of the equation.
 Every use of `with` is equivalent to defining a helper function.  For
 example, the definition above is equivalent to the following.
 \begin{code}
-≤-total′ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total′ zero n = inj₁ z≤n
-≤-total′ (suc m) zero = inj₂ z≤n
-≤-total′ (suc m) (suc n) = helper (≤-total′ m n)
+≤-total′ : ∀ (m n : ℕ) → Total m n
+≤-total′ zero    n        =  forward z≤n
+≤-total′ (suc m) zero     =  flipped z≤n
+≤-total′ (suc m) (suc n)  =  helper (≤-total′ m n)
   where
-  helper : m ≤ n ⊎ n ≤ m → suc m ≤ suc n ⊎ suc n ≤ suc m
-  helper (inj₁ m≤n) = inj₁ (s≤s m≤n)
-  helper (inj₂ n≤m) = inj₂ (s≤s n≤m)
+  helper : Total m n → Total (suc m) (suc n)
+  helper (forward m≤n)  =  forward (s≤s m≤n)
+  helper (flipped n≤m)  =  flipped (s≤s n≤m)
 \end{code}
 This is also our first use of a `where` clause in Agda.  The keyword `where` is
 followed by one or more definitions, which must be indented.  Any variables
@@ -358,36 +396,34 @@ bound of the left-hand side of the preceding equation (in this case, `m` and
 nested definition (in this case, `helper`) are in scope in the right-hand side
 of the preceding equation.
 
-If both arguments are equal, then both the first and second disjuncts
-hold and we could return evidence of either.  In the code above we
-return the first disjunct, but there is a minor variant that
-returns the second disjunct.
+If both arguments are equal, then both cases hold and we could return evidence
+of either.  In the code above we return the forward case, but there is a
+variant that returns the flipped case.
 \begin{code}
-≤-total″ : ∀ (m n : ℕ) → m ≤ n ⊎ n ≤ m
-≤-total″ m zero =  inj₂ z≤n
-≤-total″ zero (suc n) =  inj₁ z≤n
+≤-total″ : ∀ (m n : ℕ) → Total m n
+≤-total″ m       zero                      =  flipped z≤n
+≤-total″ zero    (suc n)                   =  forward z≤n
 ≤-total″ (suc m) (suc n) with ≤-total″ m n
-... | inj₁ m≤n = inj₁ (s≤s m≤n)
-... | inj₂ n≤m = inj₂ (s≤s n≤m)
+...                        | forward m≤n   =  forward (s≤s m≤n)
+...                        | flipped n≤m   =  flipped (s≤s n≤m)
 \end{code}
 
 
 ## Monotonicity
 
-If one bumps into both an operator and an ordering at
-a party, one may ask if the operator is *monotonic* with regard
-to the ordering.  For example, addition is monotonic
-with regard to inequality, meaning
+If one bumps into both an operator and an ordering at a party, one may ask if
+the operator is *monotonic* with regard to the ordering.  For example, addition
+is monotonic with regard to inequality, meaning
 
   ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
 
-The proof is straightforward using the techniques we have learned,
-and is best broken into three parts. First, we deal with the special
-case of showing addition is monotonic on the right.
+The proof is straightforward using the techniques we have learned, and is best
+broken into three parts. First, we deal with the special case of showing
+addition is monotonic on the right.
 \begin{code}
 +-monoʳ-≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
-+-monoʳ-≤ zero p q p≤q =  p≤q
-+-monoʳ-≤ (suc m) p q p≤q =  s≤s (+-monoʳ-≤ m p q p≤q) 
++-monoʳ-≤ zero    p q p≤q  =  p≤q
++-monoʳ-≤ (suc m) p q p≤q  =  s≤s (+-monoʳ-≤ m p q p≤q) 
 \end{code}
 The proof is by induction on the first argument.
 
@@ -412,110 +448,182 @@ Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 
 Third, we combine the two previous results.
 \begin{code}
-mono+≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-mono+≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
++-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
++-mono-≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
 \end{code}
 Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 
-### Exercise (`<-irrefl`, `<-trans`, `trichotomy`, `+-mono-<`)
+## Strict inequality.
 
 We can define strict inequality similarly to inequality.
 \begin{code}
+infix 4 _<_
+
 data _<_ : ℕ → ℕ → Set where
   z<s : ∀ {n : ℕ} → zero < suc n
   s<s : ∀ {m n : ℕ} → m < n → suc m < suc n
-
-infix 4 _<_
 \end{code}
+The key difference is that zero is less than the successor of an
+arbitrary number, but is not less than zero.
 
-+ *Irreflexivity* Show that `n < n` never holds
-  for any natural `n`. (This requires negation,
-  introduced in the chapter on Logic.)
+Clearly, strict inequality is not reflexive. However it is
+*irreflexive* in that `n < n` never holds for any value of `n`.
+Like inequality, strict inequality is transitive.
+Strict inequality is not total, but satisfies the closely related property of
+*trichotomy*: for any `m` and `n`, exactly one of `m < n`, `m ≡ n`, or `m > n`
+holds (where we define `m > n` to hold exactly where `n < m`).
+It is also monotonic with regards to addition and multiplication.
 
-+ *Transitivity* Show that
+Most of the above are considered in exercises below.  Irreflexivity
+requires logical negation, as does the fact that the three cases in
+trichotomy are mutually exclusive, so those points are deferred
+until the negation is introduced in Chapter [Logic](Logic).
 
-  > if `m < n` and `n < p` then `m < p`
-
-  for all naturals `m`, `n`, and `p`.
-
-+ *Trichotomy* Corresponding to anti-symmetry and totality
-  of comparison, we have trichotomy for strict comparison.
-  Show that for any given any naturals `m` and `n` that
-  `Trichotomy m n` holds, using the defintions below.
-  
+Instead of defining strict inequality directly, we can define it
+in terms of inequality.
 \begin{code}
-_>_ : ℕ → ℕ → Set
-n > m = m < n
+infix 4 _<′_
 
-infix 4 _>_
-
-data Trichotomy : ℕ → ℕ → Set where
-  less : ∀ {m n : ℕ} → m < n → Trichotomy m n
-  same : ∀ {m n : ℕ} → m ≡ n → Trichotomy m n
-  more : ∀ {m n : ℕ} → m > n → Trichotomy m n
+_<′_ : ℕ → ℕ → Set
+m <′ n = m ≤ suc n
 \end{code}
+It is a straightforward exercise to show each implies the other.
+One can then to derive the properties of strict inequality, such as
+transitivity, from the corresponding properties of equality.
 
-+ *Monotonicity* Show that
+### Exercise (`<-trans`)
 
-  > if `m < n` and `p < q` then `m + n < p + q`.
+Show that strict inequality is transitive.
 
-  Name your proof `+-mono-<`.
+### Exercise (`trichotomy`)
 
-+ *Relate strict comparison to comparison*
-  Show that `m < n` if and only if `suc m ≤ n`.
-  Name the two parts of your proof
-  `<-implies-≤` and `≤-implies-<`.
+Show that strict inequality satisfies a weak version of trichotomy, in the sense
+that for any `m` and `n` that one of `m < n`, `m ≡ n`, or `m > n`
+holds. You will need to define a suitable data structure, similar
+to the one used for totality.  (After negation is introduced in Chapter [Logic](Logic),
+we will be in a position to show that the three cases are mutually exclusive.)
 
-To confirm your understanding, you should prove transitivity, trichotomy,
-and monotonicity for `<` directly by modifying
-the original proofs for `≤`.  Once you've done so, you may then wish to redo
-the proofs exploiting the last exercise, so each property of `<` becomes
-an easy consequence of the corresponding property for `≤`.
+### Exercise (`+-mono-<`)
 
-### Exercise
+Show that addition is monotonic with respect to strict inequality.
+As with inequality, some additional definitions may be required.
 
-*Even and odd* Another example of a useful relation is to define
-  even and odd numbers, as done below.  Using these definitions, show
-  - the sum of two even numbers is even
-  - the sum of an even and an odd number is odd
-  - the sum of two odd numbers is even
+### Exercise (`<→<′`, `<′→<`)
 
+Show that each definition of strict inequality implies the other.
+
+### Exercise (`<′-trans`, `<-trans′`)
+
+Show that the alternative definition of strict inequality is transitive
+follows immediately from inequality being transitive.  From that, use the
+equivalence of the two definitions to give an alternative proof that the
+original definition of strict inequality is transitive.
+
+
+## Even and odd
+
+As a further example, let's specify even and odd naturals.  Whereas
+inequality and strict inequality are *binary relations*, even and odd are
+*unary relations*, sometimes called *predicates*.
 \begin{code}
-mutual
-  data even : ℕ → Set where
-    even-zero : even zero
-    even-suc : ∀ {n : ℕ} → odd n → even (suc n)
-  data odd : ℕ → Set where
-    odd-suc : ∀ {n : ℕ} → even n → odd (suc n)
-\end{code}
-The keyword `mutual` indicates that the nested definitions
-are mutually recursive.
+data even : ℕ → Set
+data odd  : ℕ → Set
 
-<!-- Newer version of Agda?
-Because the two defintions are mutually recursive, the type
-`Even` and `Odd` must be declared before they are defined.  The
-declaration just repeats the first line of the definition, but without
-the keyword `where`. -->
+data even where
+  even-zero : even zero
+  even-suc  : ∀ {n : ℕ} → odd n → even (suc n)
+
+data odd where
+  odd-suc   : ∀ {n : ℕ} → even n → odd (suc n)
+\end{code}
+A number is even if it is zero or the successor of an odd number,
+and a number is odd if it is the successor of an even number.
+
+This is our first use of a mutually recursive datatype declaration.
+Since each identifier must be defined before it is used, we first
+declare the indexed types `even` and `odd` (omitting the `where`
+keyword and the declarations of the constructors) and then
+declare the constructors (omitting the signatures `ℕ → Set`
+which were given earlier).
+
+We show that the sum of two even numbers is even.
+\begin{code}
+e+e→e : ∀ {m n : ℕ} → even m → even n → even (m + n)
+o+e→o : ∀ {m n : ℕ} → odd  m → even n → odd  (m + n)
+
+e+e→e even-zero       evenn  =  evenn
+e+e→e (even-suc oddm) evenn  =  even-suc (o+e→o oddm evenn)
+
+o+e→o (odd-suc evenm) evenn  =  odd-suc (e+e→e evenm evenn)
+\end{code}
+Corresponding to the mutually recursive types, we use two
+mutually recursive functions, one to show that the sum of
+two even numbers is even, and the other to show that the sum
+of an odd and an even number is odd.
+
+To show that the sum of two even numbers is even, consider
+the evidence that the first number is even. If it because it
+is zero, then the sum is even
+because the second number is even.  If it is because it
+is the successor of an odd number, then the result is even
+because it is the successor of the sum of an odd and an
+even number, which is odd.
+
+To show that the sum of an odd and even number is odd, consider
+the evidence that the first number is odd. If it is because it
+is the successor of an even number, then the result is odd
+because it is the successor of the sum of two even numbers,
+which is even.
+
+This is our first use of mutually recursive functions.
+Since each identifier must be defined before it is used,
+we first give the signatures for both functions and then
+the equations that define them.
+
+### Exercisse (`o+o→e`)
+
+Show that the sum of two odd numbers is even.
+
+<!--
+\begin{code}
+o+o→e : ∀ {m n : ℕ} → odd  m → odd n → even (m + n)
+e+o→o : ∀ {m n : ℕ} → even m → odd n → odd  (m + n)
+
+o+o→e (odd-suc evenm) oddn  =  even-suc (e+o→o evenm oddn)
+
+e+o→o even-zero       oddn  =  oddn
+e+o→o (even-suc oddm) oddn  =  odd-suc (o+o→e oddm oddn)
+
+o+o→e′ : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
+o+o→e′ {suc m} {suc n} (odd-suc evenm) (odd-suc evenn)
+  rewrite +-suc m n = even-suc (odd-suc (e+e→e evenm evenn))
+\end{code}
+-->
+
 
 ## Standard prelude
 
-Definitions from this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
 import Data.Nat using (_≤_; z≤n; s≤s)
-import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total; +-mono-≤)
+import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
+                                  +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 \end{code}
-
+In the standard library, `≤-total` is formalised in terms of disjunction (which
+we define in Chapter [Logic](Logic)), and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤`
+make implicit parameters that are explicit here.
 
 ## Unicode
 
 This chapter introduces the following unicode.
 
     ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
+    ≥  U+2265  GREATER-THAN OR EQUAL TO (̄\>=, \ge)
     ˡ  U+02E1  MODIFIER LETTER SMALL L (\^l)
-    ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
-    ₁  U+2081  SUBSCRIPT ONE (\_1)
-    ₂  U+2082  SUBSCRIPT TWO (\_2)
-    
+
+Similar to `\^r`, the command `\^l` gives access to a variety of
+superscript leftward arrows, and also a superscript letter `l`.
+
