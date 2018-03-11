@@ -66,16 +66,16 @@ trichotomy (suc m) (suc n) with trichotomy m n
 ### Relate inequality to strict inequality
 
 \begin{code}
-≤→< : ∀ {m n : ℕ} → suc m ≤ n → m < n
-≤→< (s≤s z≤n) = z<s
-≤→< (s≤s (s≤s m≤n)) = s<s (≤→< (s≤s m≤n))
+≤-implies-< : ∀ {m n : ℕ} → suc m ≤ n → m < n
+≤-implies-< (s≤s z≤n) = z<s
+≤-implies-< (s≤s (s≤s m≤n)) = s<s (≤-implies-< (s≤s m≤n))
 
-<→≤ : ∀ {m n : ℕ} → m < n → suc m ≤ n
-<→≤ z<s = s≤s z≤n
-<→≤ (s<s m<n) = s≤s (<→≤ m<n)
+<-implies-≤ : ∀ {m n : ℕ} → m < n → suc m ≤ n
+<-implies-≤ z<s = s≤s z≤n
+<-implies-≤ (s<s m<n) = s≤s (<-implies-≤ m<n)
 
 <-trans′ : ∀ {m n p : ℕ} → m < n → n < p → m < p
-<-trans′ m<n n<p = ≤→< (helper (<→≤ m<n) (<→≤ n<p))
+<-trans′ m<n n<p = ≤-implies-< (helper (<-implies-≤ m<n) (<-implies-≤ n<p))
   where
   helper : ∀ {m n p : ℕ} → suc m ≤ n → suc n ≤ p → suc m ≤ p
   helper sm≤n sn≤p = ≤-trans sm≤n (≤-trans n≤sn sn≤p)
@@ -94,7 +94,10 @@ o+o≡e (odd-suc em)  on  =  even-suc (e+o≡o em on)
 
 e+o≡o even-zero     on  =  on
 e+o≡o (even-suc om) on  =  odd-suc  (o+o≡e om on)
+\end{code}
 
+An alternative proof
+\begin{code}
 o+o≡e′ : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
 o+o≡e′ {suc m} {suc n} (odd-suc em) (odd-suc en)
   rewrite +-suc m n = even-suc (odd-suc (e+e≡e em en))

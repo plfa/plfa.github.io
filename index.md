@@ -23,7 +23,7 @@ material in a different way; see the [Preface](Preface).
   - [Naturals: Natural numbers](Naturals)
   - [Properties: Proof by induction](Properties)
   - [Relations: Inductive Definition of Relations](Relations)
-  - [Equivalence: Equivalence and equational reasoning](Equivalence)
+  - [Equality: Equality and equational reasoning](Equality)
   - [Isomorphism: Isomorphism and embedding](Isomorphism)
   - [Logic: Logic](Logic)
   - [Lists: Lists and other data types](Lists)

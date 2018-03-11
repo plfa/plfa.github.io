@@ -1,13 +1,13 @@
 ---
-title     : "Equivalence: Equivalence and equational reasoning"
+title     : "Equality: Equality and equational reasoning"
 layout    : page
-permalink : /Equivalence
+permalink : /Equality
 ---
 
 <!-- TODO: Consider changing `Equivalence` to `Equality` or `Identity`.
 Possibly introduce the name `Martin Löf Identity` early on. -->
 
-Much of our reasoning has involved equivalence.  Given two terms `M`
+Much of our reasoning has involved equality.  Given two terms `M`
 and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
 are interchangeable.  So far we have taken equivalence as a primitive,
 but in fact it can be defined using the machinery of inductive
@@ -16,12 +16,12 @@ datatypes.
 
 ## Imports
 
-Pretty much every module in the Agda
-standard library, and every chapter in this book, imports the standard
-definition of equivalence. Since we define equivalence here, any such
+Nearly every module in the Agda
+standard library, and every chapter in this book, imports equality.
+Since we define equality here, any such
 import would create a conflict.  The only import we make is the
 definition of type levels, which is so primitive that it precedes
-the definition of equivalence.
+the definition of equality.
 \begin{code}
 open import Agda.Primitive using (Level; lzero; lsuc)
 \end{code}
@@ -29,7 +29,7 @@ open import Agda.Primitive using (Level; lzero; lsuc)
 
 ## Equivalence
 
-We declare equivalence as follows.
+We declare equivality as follows.
 \begin{code}
 data _≡_ {ℓ} {A : Set ℓ} (x : A) : A → Set ℓ where
   refl : x ≡ x
@@ -40,7 +40,10 @@ is equivalent to itself, and we have no other way of showing values
 are equivalent.  We have quantified over all levels, so that we can
 apply equivalence to types belonging to any level.  The definition
 features an asymetry, in that the first argument to `_≡_` is given by
-the parameter `x : A`, while the second is given by `A → Set ℓ`.
+the parameter `x : A`, while the second is given by an index in `A → Set ℓ`.
+This follows our policy of using parameters wherever possible.
+The first argument to `_≡_` can be a parameter because it doesn't vary,
+while the second must be an index.
 
 We declare the precedence of equivalence as follows.
 \begin{code}
@@ -52,7 +55,7 @@ It associates neither to the left nor right; writing `x ≡ y ≡ z`
 is illegal.
 
 
-## Equivalence is an equivalence relation
+## Equality is an equivalence relation
 
 An equivalence relation is one which is reflexive, symmetric, and transitive.
 Reflexivity is built-in to the definition of equivalence, via the
@@ -70,19 +73,19 @@ It is instructive to develop `sym` interactively.
 To start, we supply a variable for the argument on the left, and a hole for the body on the right:
 
     sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
-    sym r = {! !}
+    sym e = {! !}
 
 If we go into the hole and type `C-C C-,` then Agda reports:
 
     Goal: .y ≡ .x
     ————————————————————————————————————————————————————————————
-    r  : .x ≡ .y
+    e  : .x ≡ .y
     .y : .A
     .x : .A
     .A : Set .ℓ
     .ℓ : .Agda.Primitive.Level
 
-If in the hole we type `C-C C-C r` then Agda will instantiate `r` to all possible constructors,
+If in the hole we type `C-C C-C e` then Agda will instantiate `e` to all possible constructors,
 with one equation for each. There is only one possible constructor:
 
     sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
@@ -116,19 +119,27 @@ Again, a useful exercise is to carry out an interactive development, checking
 how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
-Equivalence also satisfies *congruence*.  If two terms are equivalent,
-then they remain so after the same function is applied to both.
+## Congruence and Substitution
+
+Equality also satisfies *congruence*.  If two terms are equal,
+they remain so after the same function is applied to both.
 \begin{code}
 cong : ∀ {ℓ} {A B : Set ℓ} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 cong f refl = refl
 \end{code}
 Once more, a useful exercise is to carry out an interactive development.
 
+If two values are equal and a predicate holds of the first then it also holds of the second.
+\begin{code}
+subst : ∀ {A : Set} {x y : A} (P : A → Set) → x ≡ y → P x → P y
+subst P refl px = px
+\end{code}
+
 
 ## Tabular reasoning
 
-A few declarations allow us to support the form of tabular reasoning
-that we have used throughout the book.  We package the declarations
+Here we show how to support the form of tabular reasoning
+we have used throughout the book.  We package the declarations
 into a module, named `≡-Reasoning`, to match the format used in Agda's
 standard library.
 \begin{code}
@@ -159,7 +170,7 @@ As a simple example, let's look at the proof of transitivity
 rewritten in tabular form.
 \begin{code}
 trans′ : ∀ {ℓ} {A : Set ℓ} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
-trans′ {_} {_} {x} {y} {z} x≡y y≡z =
+trans′ {ℓ} {A} {x} {y} {z} x≡y y≡z =
   begin
     x
   ≡⟨ x≡y ⟩
@@ -168,10 +179,7 @@ trans′ {_} {_} {x} {y} {z} x≡y y≡z =
     z
   ∎
 \end{code}
-Tabular proofs begin with `begin`, end with `∎`
-(which is sometimes pronounced "qed" or "tombstone")
-and consist of a string of equations.  Due to the
-fixity declarations, the body parses as follows.
+According to the fixity declarations, the body parses as follows.
 
     begin (x ≡⟨ x≡y ⟩ (y ≡⟨ y≡z ⟩ (z ∎)))
 
@@ -192,11 +200,12 @@ After simplification, the body is equivalent to the following term.
     trans x≡y (trans y≡z refl)
 
 We could replace all uses of tabular reasoning by a chain of
-applications of `trans`, but the result would be far less perspicuous.
+applications of `trans`; the result would be more compact but harder to read.
 Also note that the syntactic trick behind `∎` means that the chain
-always ends in the form `trans e refl` even though `e` alone would do,
-where `e` is a proof of an equivalence.
+always ends in the form `trans e refl`, where `e` proves some equation,
+even though `e` alone would do.
 
+<!--
 
 ## Tabular reasoning, another example
 
@@ -214,13 +223,14 @@ zero    + n  =  n
 (suc m) + n  =  suc (m + n)
 \end{code}
 
-We save space we postulate (rather than prove in full) two lemmas,
+To save space we postulate (rather than prove in full) two lemmas,
 and then repeat the proof of commutativity.
 \begin{code}
 postulate
   +-identity : ∀ (m : ℕ) → m + zero ≡ m
   +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
 
+{-
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
   begin
@@ -240,6 +250,7 @@ postulate
   ≡⟨⟩
     suc n + m
   ∎
+-}
 \end{code}
 The tabular reasoning here is similar to that in the
 preceding section, the one addition being the use of
@@ -266,9 +277,12 @@ and Agda would not object. Agda only checks that the terms
 separated by `≡⟨⟩` are equivalent; it's up to us to write
 them in an order that will make sense to the reader.
 
+-->
+
 ## Rewriting
 
 Consider a property of natural numbers, such as being even.
+
 \begin{code}
 data even : ℕ → Set where
   ev0 : even zero
@@ -289,6 +303,9 @@ corresponds to equivalence.
 
 We can then prove the desired property as follows.
 \begin{code}
+postulate
+  +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
+
 even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
 even-comm m n ev rewrite +-comm m n = ev
 \end{code}
@@ -379,7 +396,7 @@ equal if and only if they satisfy the same properties. This
 principle sometimes goes by the name Leibniz' Law, and is closely
 related to Spock's Law, ``A difference that makes no difference is no
 difference''.  Here we define Leibniz equality, and show that two terms
-satsisfy Lebiniz equality iff and only if they satisfy Martin Löf equivalence.
+satsisfy Lebiniz equality if and only if they satisfy Martin Löf equivalence.
 
 Leibniz equality is usually formalized to state that `x ≐ y`
 holds if every property `P` that holds of `x` also holds of
@@ -401,10 +418,10 @@ where the first follows by a variant of the identity function
 and the second by a variant of function composition.
 \begin{code}
 refl-≐ : ∀ {ℓ} {A : Set ℓ} {x : A} → x ≐ x
-refl-≐ P Px = Px
+refl-≐ P Px  =  Px
 
 trans-≐ : ∀ {ℓ} {A : Set ℓ} {x y z : A} → x ≐ y → y ≐ z → x ≐ z
-trans-≐ x≐y y≐z P Px = y≐z P (x≐y P Px)
+trans-≐ x≐y y≐z P Px  =  y≐z P (x≐y P Px)
 \end{code}
 
 Symmetry is less obvious.  We have to show that if `P x` implies `P y`
@@ -417,7 +434,7 @@ hence `Q y` follows from `x ≐ y`.  But `Q y` is exactly a proof of
 what we require, that `P y` implies `P x`.
 \begin{code}
 sym-≐ : ∀ {ℓ} {A : Set ℓ} {x y : A} → x ≐ y → y ≐ x
-sym-≐ {ℓ} {A} {x} {y} x≐y P = Qy
+sym-≐ {ℓ} {A} {x} {y} x≐y P  =  Qy
   where
     Q : A → Set ℓ
     Q z = P z → P x

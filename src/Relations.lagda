@@ -414,6 +414,8 @@ variant that returns the flipped case.
 ...                        | forward m≤n   =  forward (s≤s m≤n)
 ...                        | flipped n≤m   =  flipped (s≤s n≤m)
 \end{code}
+It differs from the original code in that it pattern
+matches on the second argument before the first argument.
 
 
 ## Monotonicity
@@ -511,7 +513,7 @@ we will be in a position to show that the three cases are mutually exclusive.)
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
-### Exercise (`≤→<`, `<→≤`)
+### Exercise (`≤-implies-<`, `<-implies-≤`)
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
@@ -580,6 +582,24 @@ functions and then the equations that define them.
 ### Exercise (`o+o≡e`)
 
 Show that the sum of two odd numbers is even.
+
+
+## Formalising preorder
+
+\begin{code}
+record IsPreorder {A : Set} (_≤_ : A → A → Set) : Set where
+  field
+    reflexive : ∀ {x : A} → x ≤ x
+    trans : ∀ {x y z : A} → x ≤ y → y ≤ z → x ≤ z
+
+IsPreorder-≤ : IsPreorder _≤_
+IsPreorder-≤ =
+  record
+    { reflexive = ≤-refl
+    ; trans = ≤-trans
+    }
+\end{code}
+
 
 
 ## Standard prelude
