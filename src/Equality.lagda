@@ -13,20 +13,14 @@ datatypes.
 
 ## Imports
 
-Nearly every module in the Agda
-standard library, and every chapter in this book, imports equality.
-Since we define equality here, any such
-import would create a conflict.  The only import we make is the
-definition of type levels, which is so primitive that it precedes
-the definition of equality.
-\begin{code}
-open import Agda.Primitive using (Level; lzero; lsuc)
-\end{code}
+This chapter has no imports.  Every chapter in this book, and nearly
+every module in the Agda, imports equality.  Since we define equality
+here, any import would create a conflict.
 
 
-## Equivalence
+## Equality
 
-We declare equivality as follows.
+We declare equality as follows.
 \begin{code}
 data _≡_ {A : Set} : A → A → Set where
   refl : ∀ {x : A} → x ≡ x
