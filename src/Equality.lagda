@@ -119,6 +119,14 @@ cong : ∀ {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 cong f refl = refl
 \end{code}
 
+Equality is also a congruence in the application position.
+If two functions are equal, then applying them to the same term
+yields equal terms.
+\begin{code}
+cong-app : ∀ {A B : Set} {f g : A → B} → f ≡ g → ∀ (x : A) → f x ≡ g x
+cong-app refl x = refl
+\end{code}
+
 Equality also satisfies *substitution*.
 If two values are equal and a predicate holds of the first then it also holds of the second.
 \begin{code}

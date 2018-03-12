@@ -4,142 +4,158 @@ layout    : page
 permalink : /Isomorphism
 ---
 
+This section introduces isomorphism as a way of asserting that two
+types are equal, and embedding as a way of asserting that one type is
+smaller than another.  We apply isomorphisms in the next chapter
+to demonstrate that operations on types such as product and sum
+satisfy properties akin to associativity, commutativity, and
+distributivity.
+
 ## Imports
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl; sym; trans; cong; cong-app)
 open Eq.≡-Reasoning
--- open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
--- open import Data.Nat.Properties.Simple using (+-suc)
--- open import Agda.Primitive using (Level; lzero; lsuc)
 \end{code}
 
 ## Isomorphism
 
-As a prelude, we begin by introducing the notion of isomorphism.
-In set theory, two sets are isomorphism if they are in 1-to-1 correspondence.
+In set theory, two sets are isomorphic if they are in one-to-one correspondence.
 Here is the formal definition of isomorphism.
 \begin{code}
 record _≃_ (A B : Set) : Set where
   field
-    to : A → B
-    fro : B → A
-    invˡ : ∀ (x : A) → fro (to x) ≡ x
-    invʳ : ∀ (y : B) → to (fro y) ≡ y
+    to   : A → B
+    from : B → A
+    from∘to : ∀ (x : A) → from (to x) ≡ x
+    to∘from : ∀ (y : B) → to (from y) ≡ y
 open _≃_ 
 \end{code}
 Let's unpack the definition. An isomorphism between sets `A` and `B` consists
 of four things:
 + A function `to` from `A` to `B`,
-+ A function `fro` from `B` back to `A`,
-+ Evidence `invˡ` asserting that `to` followed by `from` is the identity,
-+ Evidence `invʳ` asserting that `from` followed by `to` is the identity.
-The declaration `open _≃_` makes avaialable the names `to`, `fro`,
-`invˡ`, and `invʳ`, otherwise we would need to write `_≃_.to` and so on.
++ A function `from` from `B` back to `A`,
++ Evidence `from∘to` asserting that `from` is a *right-identity* for `to`,
++ Evidence `to∘from` asserting that `to` is a *left-identity* for `from`.
+The declaration `open _≃_` makes avaialable the names `to`, `from`,
+`from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
-The above is our first example of a record declaration. It is equivalent
+The above is our first use of records. A record declaration is equivalent
 to a corresponding inductive data declaration.
 \begin{code}
-data _≃′_ : Set → Set → Set where
-  mk-≃′ : ∀ {A B : Set} →
-         ∀ (to : A → B) →
-         ∀ (fro : B → A) → 
-         ∀ (invˡ : (∀ (x : A) → fro (to x) ≡ x)) →
-         ∀ (invʳ : (∀ (y : B) → to (fro y) ≡ y)) →
-         A ≃′ B
+data _≃′_ (A B : Set): Set where
+  mk-≃′ : ∀ (to : A → B) →
+          ∀ (from : B → A) → 
+          ∀ (from∘to : (∀ (x : A) → from (to x) ≡ x)) →
+          ∀ (to∘from : (∀ (y : B) → to (from y) ≡ y)) →
+          A ≃′ B
 
 to′ : ∀ {A B : Set} → (A ≃′ B) → (A → B)
-to′ (mk-≃′ f g gfx≡x fgy≡y) = f
+to′ (mk-≃′ f g g∘f f∘g) = f
 
-fro′ : ∀ {A B : Set} → (A ≃′ B) → (B → A)
-fro′ (mk-≃′ f g gfx≡x fgy≡y) = g
+from′ : ∀ {A B : Set} → (A ≃′ B) → (B → A)
+from′ (mk-≃′ f g g∘f f∘g) = g
 
-invˡ′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (x : A) → fro′ A≃B (to′ A≃B x) ≡ x)
-invˡ′ (mk-≃′ f g gfx≡x fgy≡y) = gfx≡x
+from∘to′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (x : A) → from′ A≃B (to′ A≃B x) ≡ x)
+from∘to′ (mk-≃′ f g g∘f f∘g) = g∘f
 
-invʳ′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (y : B) → to′ A≃B (fro′ A≃B y) ≡ y)
-invʳ′ (mk-≃′ f g gfx≡x fgy≡y) = fgy≡y
+to∘from′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (y : B) → to′ A≃B (from′ A≃B y) ≡ y)
+to∘from′ (mk-≃′ f g g∘f f∘g) = f∘g
 \end{code}
 We construct values of the record type with the syntax:
 
     record
-      { to = f
-      ; fro = g
-      ; invˡ = gfx≡x
-      ; invʳ = fgy≡y
+      { to    = f
+      ; from  = g
+      ; from∘to = g∘f
+      ; to∘from = f∘g
       }
 
 which corresponds to using the constructor of the corresponding
 inductive type:
 
-    mk-≃′ f g gfx≡x fgy≡y
+    mk-≃′ f g g∘f f∘g
 
-where `f`, `g`, `gfx≡x`, and `fgy≡y` are values of suitable types.
-      
+where `f`, `g`, `g∘f`, and `f∘g` are values of suitable types.
+
+
+## Isomorphism is an equivalence
+
 Isomorphism is an equivalence, meaning that it is reflexive, symmetric,
 and transitive.  To show isomorphism is reflexive, we take both `to`
-and `fro` to be the identity function.
+and `from` to be the identity function.
 \begin{code}
 ≃-refl : ∀ {A : Set} → A ≃ A
 ≃-refl =
   record
-    { to = λ x → x
-    ; fro = λ y → y
-    ; invˡ = λ x → refl
-    ; invʳ = λ y → refl
+    { to      = λ{x → x}
+    ; from    = λ{y → y}
+    ; from∘to = λ{x → refl}
+    ; to∘from = λ{y → refl}
     } 
 \end{code}
+This is our first use of *lambda expressions*.  A term of the form
+
+    λ{p → e}
+    
+is equivalent to a function `f` defined by the equation
+
+    f p = e
+
+where `p` is a pattern (left-hand side of an equation) and `e` is an expression
+(right-hand side of an equation).  Thus, in the above, `to` and `from` are both
+bound to identity functions, and `from∘to` and `to∘from` are both bound to functions
+that discard their argument and return `refl`. The latter discard their arguments
+because the proofs are so straightforward that they are independent of the argument.
+That will not be the case for many of the later proofs.
+
 To show isomorphism is symmetric, we simply swap the roles of `to`
-and `fro`, and `invˡ` and `invʳ`.
+and `from`, and `from∘to` and `to∘from`.
 \begin{code}
 ≃-sym : ∀ {A B : Set} → A ≃ B → B ≃ A
 ≃-sym A≃B =
   record
-    { to = fro A≃B
-    ; fro = to A≃B
-    ; invˡ = invʳ A≃B
-    ; invʳ = invˡ A≃B
+    { to      = from A≃B
+    ; from    = to A≃B
+    ; from∘to = to∘from A≃B
+    ; to∘from = from∘to A≃B
     }
 \end{code}
-To show isomorphism is transitive, we compose the `to` and `fro` functions, and use
+To show isomorphism is transitive, we compose the `to` and `from` functions, and use
 equational reasoning to combine the inverses.
 \begin{code}
 ≃-trans : ∀ {A B C : Set} → A ≃ B → B ≃ C → A ≃ C
 ≃-trans A≃B B≃C =
   record
-    { to = λ x → to B≃C (to A≃B x)
-    ; fro = λ y → fro A≃B (fro B≃C y)
-    ; invˡ = λ x →
+    { to       = λ{x → to B≃C (to A≃B x)}
+    ; from     = λ{y → from A≃B (from B≃C y)}
+    ; from∘to  = λ{x →
         begin
-          fro A≃B (fro B≃C (to B≃C (to A≃B x)))
-        ≡⟨ cong (fro A≃B) (invˡ B≃C (to A≃B x)) ⟩
-          fro A≃B (to A≃B x)
-        ≡⟨ invˡ A≃B x ⟩
+          from A≃B (from B≃C (to B≃C (to A≃B x)))
+        ≡⟨ cong (from A≃B) (from∘to B≃C (to A≃B x)) ⟩
+          from A≃B (to A≃B x)
+        ≡⟨ from∘to A≃B x ⟩
           x
-        ∎ 
-    ; invʳ = λ y →
+        ∎} 
+    ; to∘from = λ{y →
         begin
-          to B≃C (to A≃B (fro A≃B (fro B≃C y)))
-        ≡⟨ cong (to B≃C) (invʳ A≃B (fro B≃C y)) ⟩
-          to B≃C (fro B≃C y)
-        ≡⟨ invʳ B≃C y ⟩
+          to B≃C (to A≃B (from A≃B (from B≃C y)))
+        ≡⟨ cong (to B≃C) (to∘from A≃B (from B≃C y)) ⟩
+          to B≃C (from B≃C y)
+        ≡⟨ to∘from B≃C y ⟩
           y
-        ∎
+        ∎}
      }
 \end{code}
 
-We will make good use of isomorphisms in what follows to demonstrate
-that operations on types such as product and sum satisfy properties
-akin to associativity, commutativity, and distributivity.
 
+## Equational reasoning for isomorphism
 
-## Tabular reasoning for isomorphism
-
-It is straightforward to support a variant of tabular reasoning for
+It is straightforward to support a variant of equational reasoning for
 isomorphism.  We essentially copy the previous definition for
-equivalence.  We omit the form that corresponds to `_≡⟨⟩_`, since
-trivial isomorphisms arise far less often than trivial equivalences.
+of equivality.  We omit the form that corresponds to `_≡⟨⟩_`, since
+trivial isomorphisms arise far less often than trivial equalities.
 
 \begin{code}
 module ≃-Reasoning where
@@ -163,51 +179,50 @@ open ≃-Reasoning
 
 ## Embedding
 
-We will also need the notion of *embedding*, which is a weakening
-of isomorphism.  While an isomorphism shows that two types are
-in one-to-one correspondence, and embedding shows that the first
-type is, in a sense, included in the second; or, equivalently,
-that there is a many-to-one correspondence between the second
-type and the first.
+We also need the notion of *embedding*, which is a weakening of
+isomorphism.  While an isomorphism shows that two types are in
+one-to-one correspondence, and embedding shows that the first type is
+included in the second; or, equivalently, that there is a many-to-one
+correspondence between the second type and the first.
 
 Here is the formal definition of embedding.
 \begin{code}
 record _≲_ (A B : Set) : Set where
   field
-    to : A → B
-    fro : B → A
-    invˡ : ∀ (x : A) → fro (to x) ≡ x
+    to      : A → B
+    from    : B → A
+    from∘to : ∀ (x : A) → from (to x) ≡ x
 open _≲_
 \end{code}
-It is the same as an isomorphism, save that it lacks the `invʳ` field.
-Hence, we know that `fro` is left inverse to `to`, but not that it is
-a right inverse.
+It is the same as an isomorphism, save that it lacks the `to∘from` field.
+Hence, we know that `from` is a right-identity for `to`, but not that `to`
+is a left-identity fro `from`.
 
-Embedding is reflexive and transitive.  The proofs are cut down
+Embedding is reflexive and transitive, but not symmetric.  The proofs are cut down
 versions of the similar proofs for isomorphism, simply dropping the
 right inverses.
 \begin{code}
 ≲-refl : ∀ {A : Set} → A ≲ A
 ≲-refl =
   record
-    { to = λ x → x
-    ; fro = λ y → y
-    ; invˡ = λ x → refl
+    { to      = λ{x → x}
+    ; from    = λ{y → y}
+    ; from∘to = λ{x → refl}
     } 
 
 ≲-trans : ∀ {A B C : Set} → A ≲ B → B ≲ C → A ≲ C
 ≲-trans A≲B B≲C =
   record
-    { to = λ x → to B≲C (to A≲B x)
-    ; fro = λ y → fro A≲B (fro B≲C y)
-    ; invˡ = λ x →
+    { to      = λ{x → to B≲C (to A≲B x)}
+    ; from    = λ{y → from A≲B (from B≲C y)}
+    ; from∘to = λ{x →
         begin
-          fro A≲B (fro B≲C (to B≲C (to A≲B x)))
-        ≡⟨ cong (fro A≲B) (invˡ B≲C (to A≲B x)) ⟩
-          fro A≲B (to A≲B x)
-        ≡⟨ invˡ A≲B x ⟩
+          from A≲B (from B≲C (to B≲C (to A≲B x)))
+        ≡⟨ cong (from A≲B) (from∘to B≲C (to A≲B x)) ⟩
+          from A≲B (to A≲B x)
+        ≡⟨ from∘to A≲B x ⟩
           x
-        ∎ 
+        ∎} 
      }
 \end{code}
 It is also easy to see that if two types embed in each other,
@@ -215,30 +230,30 @@ and the embedding functions correspond, then they are isomorphic.
 This is a weak form of anti-symmetry.
 \begin{code}
 ≲-antisym : ∀ {A B : Set} → (A≲B : A ≲ B) → (B≲A : B ≲ A) →
-  (to A≲B ≡ fro B≲A) → (fro A≲B ≡ to B≲A) → A ≃ B
-≲-antisym A≲B B≲A to≡fro fro≡to =
+  (to A≲B ≡ from B≲A) → (from A≲B ≡ to B≲A) → A ≃ B
+≲-antisym A≲B B≲A to≡from from≡to =
   record
-    { to   = to A≲B
-    ; fro  = fro A≲B
-    ; invˡ = invˡ A≲B
-    ; invʳ = λ y →
+    { to      = to A≲B
+    ; from    = from A≲B
+    ; from∘to = from∘to A≲B
+    ; to∘from = λ{y →
         begin
-          to A≲B (fro A≲B y)
-        ≡⟨ cong (\w → to A≲B (w y)) fro≡to ⟩
+          to A≲B (from A≲B y)
+        ≡⟨ cong (to A≲B) (cong-app from≡to y) ⟩
           to A≲B (to B≲A y)
-        ≡⟨ cong (\w → w (to B≲A y)) to≡fro ⟩
-          fro B≲A (to B≲A y)
-        ≡⟨ invˡ B≲A y ⟩
+        ≡⟨ cong-app to≡from (to B≲A y) ⟩
+          from B≲A (to B≲A y)
+        ≡⟨ from∘to B≲A y ⟩
           y
-        ∎
+        ∎}
     }
 \end{code}
 The first three components are copied from the embedding, while the
 last combines the left inverse of `B ≲ A` with the equivalences of
-the `to` and `fro` components from the two embeddings to obtain
+the `to` and `from` components from the two embeddings to obtain
 the right inverse of the isomorphism.
 
-## Tabular reasoning for embedding
+## Equational reasoning for embedding
 
 We can also support tabular reasoning for embedding,
 analogous to that used for isomorphism.
