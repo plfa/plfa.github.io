@@ -755,9 +755,8 @@ import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 
 ## Unicode
 
-This chapter introduces the following unicode.
+This chapter uses the following unicode.
 
-    ≡  U+2261  IDENTICAL TO (\==)
     ∀  U+2200  FOR ALL (\forall)
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
     ′  U+2032  PRIME (\')

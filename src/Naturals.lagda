@@ -377,8 +377,8 @@ dummy name can be reused, and is convenient for examples.  Names other
 than `_` must be used only once in a module.
 
 Here the type is `2 + 3 ≡ 5` and the term provides *evidence* for the
-corresponding equation, here written as a chain of equations.  The
-chain starts with `begin` and finishes with `∎` (pronounced "qed" or
+corresponding equation, here written in tabular form as a chain of equations.
+The chain starts with `begin` and finishes with `∎` (pronounced "qed" or
 "tombstone", the latter from its appearance), and consists of a series
 of terms separated by `≡⟨⟩`.
 
@@ -413,7 +413,6 @@ other word for evidence, which we will use interchangeably, is *proof*.
 ### Exercise (`3+4`)
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
-
 
 
 ## Multiplication
@@ -466,9 +465,11 @@ and the third line matches the base case by taking `n = 3`.
 Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
+
 ### Exercise (`3*4`)
 
 Compute `3 * 4`.
+
 
 ### Exercise (`_^_`).
 
@@ -824,18 +825,20 @@ former on `ℕ`, and the latter on the equivalent type `Data.Nat.ℕ`.
 Such a pragma can only be invoked once, as invoking it twice would
 raise confusion as to whether `2` is a value of type `ℕ` or type
 `Data.Nat.ℕ`.  Similar confusions arise if other pragmas are invoked
-twice. For this reason, we will not invoke pragmas in future chapters,
-leaving that to the standard library. Information on available
-pragmas can be found in the Agda documentation.
+twice. For this reason, we will usually avoid pragmas in future chapters.
+Information on pragmas can be found in the Agda documentation.
 
 
 ## Unicode
 
-This chapter introduces the following unicode.
+This chapter uses the following unicode.
 
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
+    ≡  U+2261  IDENTICAL TO (\==)  =
+    ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
+    ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
     ∎  U+220E  END OF PROOF (\qed)
 
 Each line consists of the Unicode character (`ℕ`), the corresponding

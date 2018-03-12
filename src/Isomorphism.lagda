@@ -24,10 +24,17 @@ open Eq.≡-Reasoning
 In set theory, two sets are isomorphic if they are in one-to-one correspondence.
 Here is the formal definition of isomorphism.
 \begin{code}
+record _InverseOf_ {A B : Set} (to : A → B) (from : B → A) : Set where
+  field
+    left-inverse-of  : ∀ (x : A) → from (to x) ≡ x
+    right-inverse-of : ∀ (y : B) → to (from y) ≡ y
+open _InverseOf_    
+
 record _≃_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
+    -- inverse-of : to InverseOf from
     from∘to : ∀ (x : A) → from (to x) ≡ x
     to∘from : ∀ (y : B) → to (from y) ≡ y
 open _≃_ 
@@ -95,20 +102,23 @@ and `from` to be the identity function.
     ; to∘from = λ{y → refl}
     } 
 \end{code}
-This is our first use of *lambda expressions*.  A term of the form
+This is our first use of *lambda expressions*, provide a compact way to
+define functions without naming them.  A term of the form
 
-    λ{p → e}
+    λ{p₁ → e₁; ⋯ ; pᵢ → eᵢ}
     
-is equivalent to a function `f` defined by the equation
+is equivalent to a function `f` defined by the equations
 
-    f p = e
+    f p₁ = e₁
+    ⋯
+    f pᵢ = eᵢ
 
-where `p` is a pattern (left-hand side of an equation) and `e` is an expression
+where the `pᵢ` are patterns (left-hand sides of an equation) and the `eᵢ` are expressions
 (right-hand side of an equation).  Thus, in the above, `to` and `from` are both
 bound to identity functions, and `from∘to` and `to∘from` are both bound to functions
-that discard their argument and return `refl`. The latter discard their arguments
-because the proofs are so straightforward that they are independent of the argument.
-That will not be the case for many of the later proofs.
+that discard their argument and return `refl`.  In this case, `refl` alone is an adequate
+proof since for the left inverse, `λ{y → y} (λ{x → x} x)` simplifies to `x`, and similarly
+for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
 and `from`, and `from∘to` and `to∘from`.
@@ -117,7 +127,7 @@ and `from`, and `from∘to` and `to∘from`.
 ≃-sym A≃B =
   record
     { to      = from A≃B
-    ; from    = to A≃B
+    ; from    = to   A≃B
     ; from∘to = to∘from A≃B
     ; to∘from = from∘to A≃B
     }
@@ -128,7 +138,7 @@ equational reasoning to combine the inverses.
 ≃-trans : ∀ {A B C : Set} → A ≃ B → B ≃ C → A ≃ C
 ≃-trans A≃B B≃C =
   record
-    { to       = λ{x → to B≃C (to A≃B x)}
+    { to       = λ{x → to   B≃C (to   A≃B x)}
     ; from     = λ{y → from A≃B (from B≃C y)}
     ; from∘to  = λ{x →
         begin
@@ -213,7 +223,7 @@ right inverses.
 ≲-trans : ∀ {A B C : Set} → A ≲ B → B ≲ C → A ≲ C
 ≲-trans A≲B B≲C =
   record
-    { to      = λ{x → to B≲C (to A≲B x)}
+    { to      = λ{x → to   B≲C (to   A≲B x)}
     ; from    = λ{y → from A≲B (from B≲C y)}
     ; from∘to = λ{x →
         begin
@@ -278,4 +288,11 @@ open ≲-Reasoning
 \end{code}
 
 
+## Standard library
+
+Definitions similar to those in this chapter can be found in the standard library.
+\begin{code}
+-- import Function.Inverse using (Inverse; _↔_; to; from; inverse-of; left-inverse-of; right-inverse-of)
+-- import Function.LeftInverse using (LeftInverse; _↞_; to; from; left-inverse-of)
+\end{code}
 

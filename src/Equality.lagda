@@ -6,9 +6,8 @@ permalink : /Equality
 
 Much of our reasoning has involved equality.  Given two terms `M`
 and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
-are interchangeable.  So far we have taken equivalence as a primitive,
-but in fact it can be defined using the machinery of inductive
-datatypes.
+are interchangeable.  So far we have treated equality as a primitive,
+but in fact it can be defined an an inductive datatype.
 
 
 ## Imports
@@ -198,11 +197,11 @@ After simplification, the body is equivalent to the term:
 
     trans x≡y (trans y≡z refl)
 
-We could replace all uses of tabular reasoning by a chain of
+We could replace any use of a chain of equations by a chain of
 applications of `trans`; the result would be more compact but harder
-to read.  The trick behind `∎` means that the chain always ends in the
-form `trans e refl`, where `e` proves some equation, even though `e`
-alone would do.
+to read.  The trick behind `∎` means that a chain of equalities simplifies
+to a chain of applications of `trans` than ends in `trans e refl`,
+where `e` is a term that proves some equality, even though `e` alone would do.
 
 
 ## Chains of equations, another example
@@ -348,7 +347,7 @@ hole causes it to be filled with `ev`.
 
 One may perform multiple rewrites, each separated by a vertical bar.  For instance,
 here is a second proof that addition is commutative, relying on rewrites rather
-than tabular reasoning.
+than chains of equalities.
 \begin{code}
 +-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm′ zero n rewrite +-identity n = refl
@@ -358,8 +357,8 @@ This is far more compact.  Among other things, whereas the previous
 proof required `cong suc (+-comm m n)` as the justification to invoke the
 inductive hypothesis, here it is sufficient to rewrite with `+-comm m n`, as
 rewriting automatically takes congruence into account.  Although proofs
-with rewriting are shorter, proofs in tabular form make the reasoning
-involved easier to follow, and we will stick with the latter when feasible.
+with rewriting are shorter, proofs as chains of equalities are easier to follow,
+and we will stick with the latter when feasible.
 
 
 ## Rewriting expanded
@@ -495,3 +494,26 @@ by reflexivity of Martin Löf equivalence, and hence `Q y` follows from
 Isomorphic to Martin-Löf Identity, Parametrically*, by Andreas Abel,
 Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
 draft paper, 2017.)
+
+
+## Standard library
+
+Definitions similar to those in this chapter can be found in the standard library.
+
+    import Relation.Binary.PropositionalEquality as Eq
+    open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
+    open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+
+Here the import is shown as comment rather than code to avoid collisions,
+as mentioned in the introduction.
+
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    ≡  U+2261  IDENTICAL TO (\==)  =
+    ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
+    ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
+    ∎  U+220E  END OF PROOF (\qed)
+    ≐  U+2250  APPROACHES THE LIMIT (\.=)
