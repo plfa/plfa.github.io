@@ -393,24 +393,10 @@ check it is the same as `5`.  A binary relation is said to be *reflexive* if
 it holds between a value and itself.  Evidence that a value is equal to
 itself is written `refl`.
 
-In the chains of equations, all Agda checks is that each of the terms
+In the chains of equations, all Agda checks is that each term
 simplifies to the same value. If we jumble the equations, omit lines, or
-add extraneous lines it will still be accepted.
-\begin{code}
-_ : 2 + 3 ≡ 5
-_ =
-  begin
-    2 + 3
-  ≡⟨⟩
-    4 + 1
-  ≡⟨⟩
-    5
-  ≡⟨⟩
-    suc (suc (0 + 3))
-  ∎
-\end{code}
-Of course, writing a proof in this way would be misleading and confusing,
-so it's to be avoided even if Agda does accept it.
+add extraneous lines it will still be accepted.  It's up to us to write
+the equations in an order that makes sense to the reader.
 
 Here `2 + 3 ≡ 5` is a type, and the chains of equations (and also
 `refl`) are terms of the given type; alternatively, one can think of
