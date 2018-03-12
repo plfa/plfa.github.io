@@ -6,6 +6,7 @@ language: ruby
 # Caching so the next build will be fast too.
 cache:
   bundler: true
+  timeout: 1200
   directories:
   - $HOME/.stack
   - $HOME/.agda
@@ -47,10 +48,9 @@ before_deploy:
 - make clean
 
 deploy:
-  edge:
-    branch: v1.8.47
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
+  edge: true
   on:
     branch: master
