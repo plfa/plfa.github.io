@@ -22,7 +22,7 @@ open Eq.≡-Reasoning
 ## Isomorphism
 
 In set theory, two sets are isomorphic if they are in one-to-one correspondence.
-Here is the formal definition of isomorphism.
+Here is a formal definition of isomorphism.
 \begin{code}
 record _≃_ (A B : Set) : Set where
   field
@@ -106,12 +106,19 @@ is equivalent to a function `f` defined by the equations
     ⋯
     f pᵢ = eᵢ
 
-where the `pᵢ` are patterns (left-hand sides of an equation) and the `eᵢ` are expressions
-(right-hand side of an equation).  Thus, in the above, `to` and `from` are both
-bound to identity functions, and `from∘to` and `to∘from` are both bound to functions
-that discard their argument and return `refl`.  In this case, `refl` alone is an adequate
-proof since for the left inverse, `λ{y → y} (λ{x → x} x)` simplifies to `x`, and similarly
-for the right inverse.
+where the `pᵢ` are patterns (left-hand sides of an equation) and the
+`eᵢ` are expressions (right-hand side of an equation). Often using an
+anonymous lambda expression is more convenient than using a named
+function: it avoids a lengthy type declaration; and the definition
+appears exactly where the function is used, so there is no need for
+the writer to remember to declare it in advance, or for the reader to
+search for the definition elsewhere in the code.
+
+In the above, `to` and `from` are both bound to identity functions,
+and `from∘to` and `to∘from` are both bound to functions that discard
+their argument and return `refl`.  In this case, `refl` alone is an
+adequate proof since for the left inverse, `λ{y → y} (λ{x → x} x)`
+simplifies to `x`, and similarly for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
 and `from`, and `from∘to` and `to∘from`.

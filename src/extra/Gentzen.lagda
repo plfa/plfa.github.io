@@ -86,7 +86,80 @@ These rules differ only slightly from Gentzen's original.  We
 have written `A × B` where Gentzen wrote `A & B`, for reasons
 that will become clear later.
 
-[following not used in above: We also adopt an idea from Gentzen's
-sequent calculus, writing `Γ ⊢ A` to make explicit the set of
-assumptions `Γ` from which proposition `A` follows.]
 
+## Natural deduction as a logic (no terms)
+
+We adopt an idea from Gentzen's sequent calculus, writing `Γ ⊢ A` to
+make explicit the set of assumptions `Γ` from which proposition `A`
+follows.
+
+    Γ ⊢ A
+    Γ ⊢ B
+    --------- ×-I
+    Γ ⊢ A × B
+
+    Γ ⊢ A × B
+    --------- ×-E₁
+    Γ ⊢ A
+
+    Γ ⊢ A × B
+    --------- ×-E₁₂
+    Γ ⊢ B
+
+    ----- ⊤-I
+    Γ ⊢ ⊤
+
+    Γ ⊢ A
+    --------- +-I₁
+    Γ ⊢ A ⊎ B
+
+    Γ ⊢ B
+    --------- +-I₂
+    Γ ⊢ A ⊎ B
+
+    Γ ⊢ A ⊎ B
+    Γ , A ⊢ C
+    Γ , B ⊢ C
+    ----------- +-E
+    Γ ⊢ C
+
+    Γ ⊢ ⊥
+    ----- ⊥-E
+    Γ ⊢ C
+
+    Γ , A ⊢ B
+    --------- →-I
+    Γ ⊢ A → B
+
+    Γ ⊢ A → B
+    Γ ⊢ A
+    --------- →-E
+    Γ ⊢ B
+
+    Γ , A ⊢ ⊥
+    --------- ¬-I
+    Γ ⊢ ¬ A
+
+    Γ ⊢ ¬ A
+    Γ ⊢ A
+    -------- ¬-E
+    Γ ⊢ ⊥
+
+    Γ , x : A ⊢ B
+    ------------------ ∀-I  (x does not appear free in Γ)
+    Γ ⊢ ∀ (x : A) → B
+
+    Γ ⊢ ∀ (x : A) → B
+    Γ ⊢ M : A
+    ----------------- ∀-E
+    Γ ⊢ B [ x := M ]
+
+    Γ ⊢ M : A
+    Γ ⊢ B [ x := M ]
+    ----------------- ∃-I
+    Γ ⊢ ∃ [ x : A ] B
+
+    Γ ⊢ ∃ [ x : A ] B
+    Γ , x : A ⊢ C
+    ----------------- ∃-E  (x does not appear free in Γ or C)
+    Γ ⊢ C

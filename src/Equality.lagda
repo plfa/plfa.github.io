@@ -220,13 +220,20 @@ zero    + n  =  n
 (suc m) + n  =  suc (m + n)
 \end{code}
 
-To save space we postulate (rather than prove in full) two lemmas,
-and then repeat the proof of commutativity.
+To save space we postulate (rather than prove in full) two lemmas.
 \begin{code}
 postulate
   +-identity : ∀ (m : ℕ) → m + zero ≡ m
   +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
+\end{code}
+This is our first use of a *postulate*.  A postulate specifies a
+signature for an identifier but no definition.  Here we postulate
+something proved earlier to save space.  Postulates must be used with
+caution.  If we postulate something false then we could use Agda to
+prove anything whatsoever.
 
+We then repeat the proof of commutativity.
+\begin{code}
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
   begin
@@ -390,6 +397,49 @@ even-comm″ m n  =  subst even (+-comm m n)
 \end{code}
 Nonetheless, rewrite is a vital part of the Agda toolkit,
 as earlier examples have shown.
+
+
+## Extensionality {!#extensionality}
+
+Extensionality asserts that they only way to distinguish functions is
+by applying them; if two functions applied to the same argument always
+yield the same result, then they are the same functions.  It is the
+converse of `cong-app`, introduced earlier.
+
+Agda does not presume extensionality, but we can postulate that it holds.
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
+\end{code}
+Postulating extensionality does not lead to difficulties, as it is
+known to be consistent with the theory that underlies Agda.
+
+As an example, consider that we need results from two libraries,
+one where addition is defined as above, and one where it is
+defined the other way around.
+\begin{code}
+_+′_ : ℕ → ℕ → ℕ
+m +′ zero  = m
+m +′ suc n = suc (m +′ n)
+\end{code}
+Applying commutativity, it is easy to show that both operators always
+return the same result given the same arguments.
+\begin{code}
+same-app : ∀ (m n : ℕ) → m +′ n ≡ m + n
+same-app m n rewrite +-comm m n = helper m n
+  where
+  helper : ∀ (m n : ℕ) → m +′ n ≡ n + m
+  helper m zero    = refl
+  helper m (suc n) = cong suc (helper m n)
+\end{code}
+However, it might be convenient to assert that the two operators are
+actually indistinguishable. This we can do via two applications of
+extensionality.
+\begin{code}
+same : _+′_ ≡ _+_
+same = extensionality λ{m → extensionality λ{n → same-app m n}}
+\end{code}
+We will occasionally have need to postulate extensionality in what follows.
 
 
 ## Leibniz equality
