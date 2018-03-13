@@ -24,17 +24,10 @@ open Eq.≡-Reasoning
 In set theory, two sets are isomorphic if they are in one-to-one correspondence.
 Here is the formal definition of isomorphism.
 \begin{code}
-record _InverseOf_ {A B : Set} (to : A → B) (from : B → A) : Set where
-  field
-    left-inverse-of  : ∀ (x : A) → from (to x) ≡ x
-    right-inverse-of : ∀ (y : B) → to (from y) ≡ y
-open _InverseOf_    
-
 record _≃_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
-    -- inverse-of : to InverseOf from
     from∘to : ∀ (x : A) → from (to x) ≡ x
     to∘from : ∀ (y : B) → to (from y) ≡ y
 open _≃_ 
@@ -292,7 +285,16 @@ open ≲-Reasoning
 
 Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
--- import Function.Inverse using (Inverse; _↔_; to; from; inverse-of; left-inverse-of; right-inverse-of)
--- import Function.LeftInverse using (LeftInverse; _↞_; to; from; left-inverse-of)
+import Function.Inverse using (Inverse; _↔_)
+import Function.LeftInverse using (LeftInverse; _↞_)
 \end{code}
+However, those definitions are harder to use, so we will stick with the ones given here.
+
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~-)
+    ≲  U+2272  LESS-THAN OR EQUIVALENT TO (\<~)
 
