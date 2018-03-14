@@ -25,7 +25,9 @@ material in a different way; see the [Preface](Preface).
   - [Relations: Inductive Definition of Relations](Relations)
   - [Equality: Equality and equational reasoning](Equality)
   - [Isomorphism: Isomorphism and embedding](Isomorphism)
-  - [Logic: Logic](Logic)
+  - [Connectives: Conjunction, Disjunction, and Implication](Connectives)
+  - [Negation: Negation, with Classical and Intuitionistic Logic](Negation)
+  - [Quantiers: Universals and Existentials](Quantifiers)
   - [Lists: Lists and other data types](Lists)
   - [Decidable: Booleans and decision procedures](Decidable)
 

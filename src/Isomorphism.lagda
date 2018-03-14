@@ -19,6 +19,17 @@ open Eq using (_≡_; refl; sym; trans; cong; cong-app)
 open Eq.≡-Reasoning
 \end{code}
 
+## Function composition
+
+In what follows, we will make use of function composition.
+\begin{code}
+_∘_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
+(g ∘ f) x  = g (f x)
+\end{code}
+Thus, `g ∘ f` is the function that first applies `f` and
+then applies `g`.
+
+
 ## Isomorphism
 
 In set theory, two sets are isomorphic if they are in one-to-one correspondence.
@@ -38,6 +49,8 @@ of four things:
 + A function `from` from `B` back to `A`,
 + Evidence `from∘to` asserting that `from` is a *right-identity* for `to`,
 + Evidence `to∘from` asserting that `to` is a *left-identity* for `from`.
+In particular, the third asserts that `from ∘ to` is the identity, and
+the fourth that `to ∘ from` is the identity, hence the names.
 The declaration `open _≃_` makes avaialable the names `to`, `from`,
 `from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
@@ -138,8 +151,8 @@ equational reasoning to combine the inverses.
 ≃-trans : ∀ {A B C : Set} → A ≃ B → B ≃ C → A ≃ C
 ≃-trans A≃B B≃C =
   record
-    { to       = λ{x → to   B≃C (to   A≃B x)}
-    ; from     = λ{y → from A≃B (from B≃C y)}
+    { to       = to   B≃C ∘ to   A≃B
+    ; from     = from A≃B ∘ from B≃C
     ; from∘to  = λ{x →
         begin
           from A≃B (from B≃C (to B≃C (to A≃B x)))
@@ -292,10 +305,12 @@ open ≲-Reasoning
 
 Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
-import Function.Inverse using (Inverse; _↔_)
-import Function.LeftInverse using (LeftInverse; _↞_)
+import Function using (_∘_)
+import Function.Inverse using (_↔_)
+import Function.LeftInverse using (_↞_)
 \end{code}
-However, those definitions are harder to use, so we will stick with the ones given here.
+Here `_↔_` correpsonds to our `_≃_`, and `_↞_` corresponds to our `_≲_`.
+
 
 
 ## Unicode

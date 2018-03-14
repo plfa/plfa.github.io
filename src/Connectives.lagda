@@ -1,5 +1,5 @@
 ---
-title     : "Connectives: Logical connectives"
+title     : "Connectives: Conjunction, Disjunction, and Implication"
 layout    : page
 permalink : /Connectives
 ---
@@ -25,8 +25,16 @@ open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
 open Isomorphism.≃-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties.Simple using (+-suc)
-open import Agda.Primitive using (Level; lzero; lsuc)
+open import Function using (_∘_)
 \end{code}
+
+In what follows, we will occasionally require [extensionality][extensionality].
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
+\end{code}
+
+[extensionality]: Equality/index.html#extensionality
 
 
 ## Conjunction is product
@@ -56,7 +64,7 @@ proj₂ (x , y) = y
 If `L` is evidence that `A × B` holds, then `fst L` is evidence
 that `A` holds, and `proj₂ L` is evidence that `B` holds.
 
-Equivalently, we could also declare product as a record type.
+Equivalently, we could also declare conjunction as a record type.
 \begin{code}
 record _×′_ (A B : Set) : Set where
   field
@@ -77,11 +85,22 @@ corresponds to the term
 
 where `M` is a term of type `A` and `N` is a term of type `B`.
 
-When `(_,_)` is used on the right-hand side of an equation we
-say that it *constructs* a product, and on the left-hand side (as in
-the definition of `proj₁` and `proj₂`) it *deconstructs* a product.
-Other terminology refers to construction as *introducing* a product,
-and to deconstruction as *eliminating* a product.
+When `(_,_)` appears on the right-hand side of an equation we
+refer to it as a *constructor*, and when it appears on the
+left-hand side we refer to it as a *destructor*.  We also refer
+to `proj₁` and `proj₂` as destructors, since they play a similar role.
+Other terminology refers to constructor as *introducing* a conjunction,
+and to a destructor as *eliminating* a conjunction.
+
+Applying each destructor and reassembling the results with the
+constructor is the identity over products.
+\begin{code}
+η-× : ∀ {A B : Set} (w : A × B) → (proj₁ w , proj₂ w) ≡ w
+η-× (x , y) = refl
+\end{code}
+The pattern matching on the left-hand side is essential, since
+replacing `w` by `(x , y)` allows both sides of the equation to
+simplify to the same term.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction, and of the pairing
@@ -205,6 +224,16 @@ Given evidence that `⊤` holds, there is nothing more of interest we
 can conclude.  Since truth always holds, knowing that it holds tells
 us nothing new.
 
+The nullary case of `η-×` is `η-⊤`, which asserts that any
+term of type `⊤` must be equal to `tt`.
+\begin{code}
+η-⊤ : ∀ (w : ⊤) → tt ≡ w
+η-⊤ tt = refl
+\end{code}
+The pattern matching on the left-hand side is essential.  Replacing
+`w` by `tt` allows both sides of the equation to simplify to the
+same term.
+
 We refer to `⊤` as the *unit* type. And, indeed,
 type `⊤` has exactly once member, `tt`.  For example, the following
 function enumerates all possible arguments of type `⊤`:
@@ -281,6 +310,30 @@ evidence that `A ⊎ B` holds we can conlude that `C` holds.
 \end{code}
 Pattern matching against `inj₁` and `inj₂` is typical of how we exploit
 evidence that a disjunction holds.
+
+When `inj₁` and `inj₂` appear on the right-hand side of an equation we
+refer to them as *constructors*, and when they appears on the
+left-hand side we refer to them as *destructors*.  We also refer
+to `⊎-elim` as a destructor, since it plays a similar role.
+Other terminology refers to constructorse as *introducing* a disjunction,
+and to a destructors as *eliminating* a disjunction.
+
+Applying the destructor to each of the constructors is the identity.
+\begin{code}
+η-⊎ : ∀ {A B : Set} (w : A ⊎ B) → ⊎-elim inj₁ inj₂ w ≡ w
+η-⊎ (inj₁ x) = refl
+η-⊎ (inj₂ y) = refl
+\end{code}
+More generally, we can also throw in an arbitrary function from a disjunction.
+\begin{code}
+uniq-⊎ : ∀ {A B C : Set} (h : A ⊎ B → C) (w : A ⊎ B) →
+  ⊎-elim (h ∘ inj₁) (h ∘ inj₂) w ≡ h w
+uniq-⊎ h (inj₁ x) = refl
+uniq-⊎ h (inj₂ y) = refl
+\end{code}
+The pattern matching on the left-hand side is essential.  Replacing
+`w` by `inj₁ x` allows both sides of the equation to simplify to the
+same term, and similarly for `inj₂ y`.
 
 We set the precedence of disjunction so that it binds less tightly
 than any other declared operator.
@@ -410,7 +463,17 @@ We formalise it as follows.
 This is our first use of the *absurd pattern* `()`.
 Here since `⊥` is a type with no members, we indicate that it is
 *never* possible to match against a value of this type by using
-the pattern `()`.  
+the pattern `()`.
+
+The nullary case of `uniq-⊎` is `uniq-⊥`, which asserts that `⊥-elim`
+is equal to any arbitrary function from `⊥`.
+\begin{code}
+uniq-⊥ : ∀ {C : Set} (h : ⊥ → C) (w : ⊥) → ⊥-elim w ≡ h w
+uniq-⊥ ()
+\end{code}
+The pattern matching on the left-hand side is essential.  Using
+the absurd pattern asserts there are no possible values for `w`,
+so the equation holds trivially.
 
 We refer to `⊥` as *empty* type. And, indeed,
 type `⊥` has no members. For example, the following function
@@ -492,6 +555,23 @@ Put another way, if we know that `A → B` and `A` both hold,
 then we may conclude that `B` holds. In medieval times, this rule was
 known by the name *modus ponens*.
 
+Defining a function, with an named definition or a lambda expression,
+is referred to as *introducing* a function,
+while applying a function is referred to as *eliminating* the function.
+
+Elimination followed by introduction is the identity.
+\begin{code}
+η-→ : ∀ {A B : Set} (f : A → B) → (λ{x → f x}) ≡ f
+η-→ {A} {B} f = extensionality η-helper
+  where
+  η-lhs : A → B
+  η-lhs = λ{x → f x}
+
+  η-helper : (x : A) → η-lhs x ≡ f x
+  η-helper x = refl
+\end{code}
+The proof depends essentially on extensionality.
+
 <!--
 
 If we introduce an implication and then immediately eliminate it, we can
@@ -560,11 +640,8 @@ we have the isomorphism
 Both types can be viewed as functions that given evidence that `A` holds
 and evidence that `B` holds can return evidence that `C` holds.
 This isomorphism sometimes goes by the name *currying*.
-The proof of the right inverse requires [extensionality][extensionality].
+The proof of the right inverse requires extensionality.
 \begin{code}
-postulate
-  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
-
 currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
 currying =
   record
@@ -574,8 +651,6 @@ currying =
     ; to∘from =  λ{ g → extensionality λ{ (x , y) → refl }}
     }
 \end{code}
-
-[extensionality]: Equality/index.html#extensionality
 
 Currying tells us that instead of a function that takes a pair of arguments,
 we can have a function that takes the first argument and returns a function that
@@ -606,13 +681,11 @@ is the same as the assertion that if `A` holds then `C` holds and if
 →-distributes-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
 →-distributes-⊎ =
   record
-    { to      = λ{ f → ( ? , ? ) }
-                -- λ{ f → ( λ{ x → f (inj₁ x) } , λ{ y → f (inj₂ y) } ) }
+    { to      = λ{ f → ( (λ{ x → f (inj₁ x) }) , (λ{ y → f (inj₂ y) }) ) }
     ; from    = λ{ (g , h) → λ{ (inj₁ x) → g x ; (inj₂ y) → h y } }
     ; from∘to = λ{ f → extensionality λ{ (inj₁ x) → refl ; (inj₂ y) → refl } }
     ; to∘from = λ{ (g , h) → refl }
     }
-
 \end{code}
 
 Corresponding to the law
@@ -626,17 +699,12 @@ we have the isomorphism
 That is, the assertion that if either `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.  The proof of left inverse requires both extensionality
-and a *eta rule* for products.  Just as extensionality states that the only
-thing one can do with a function is apply it, so the eta rule states that 
-for products, which states that `(proj₁ w , proj₂ w) ≡ w` for any product `w`.
+and the rule `η-×` for products.
 \begin{code}
-η-× : ∀ {A B : Set} → ∀ (w : A × B) → (proj₁ w , proj₂ w) ≡ w
-η-× = extensionality λ{ (x , y) → refl }
-
 →-distributes-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
 →-distributes-× =
   record
-    { to      = λ{ f → ( λ{ x → proj₁ (f x) } , λ{ y → proj₂ (f y)} ) }
+    { to      = λ{ f → ( (λ{ x → proj₁ (f x) }) , (λ{ y → proj₂ (f y)}) ) }
     ; from    = λ{ (g , h) → λ{ x → (g x , h x) } }
     ; from∘to = λ{ f → extensionality λ{ x → η-× (f x) } }
     ; to∘from = λ{ (g , h) → refl }
@@ -702,452 +770,6 @@ gives rise to an isomorphism, while the second only gives rise to an
 embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
+<!-- Introduce biimplication `⇔` in a previous section, so that it
+has a formal meaning when it is referred to here. -->
 
-## Negation
-
-Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
-We formalise this idea by declaring negation to be the same
-as implication of false. 
-\begin{code}
-¬_ : Set → Set
-¬ A = A → ⊥
-\end{code}
-This is a form of *proof by contradiction*: if assuming `A` leads
-to the conclusion `⊥` (a contradiction), then we must have `¬ A`.
-
-Evidence that `¬ A` holds is of the form
-
-    λ (x : A) → N
-
-where `N` is a term of type `⊥` containing as a free variable `x` of type `A`.
-In other words, evidence that `¬ A` holds is a function that converts evidence
-that `A` holds into evidence that `⊥` holds.
-
-Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
-In other words, if both `¬ A` and `A` hold, then we have a contradiction.
-\begin{code}
-¬-elim : ∀ {A : Set} → ¬ A → A → ⊥
-¬-elim ¬a a = ¬a a
-\end{code}
-Here we write `¬a` for evidence of `¬ A` and `a` for evidence of `A`.  This
-means that `¬a` must be a function of type `A → ⊥`, and hence the application
-`¬a a` must be of type `⊥`.  Note that this rule is just a special case of `→-elim`.
-
-We set the precedence of negation so that it binds more tightly
-than disjunction and conjunction, but more tightly than anything else.
-\begin{code}
-infix 3 ¬_
-\end{code}
-Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)`.
-
-In *classical* logic, we have that `A` is equivalent to `¬ ¬ A`.
-As we discuss below, in Agda we use *intuitionistic* logic, wher
-we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
-\begin{code}
-¬¬-intro : ∀ {A : Set} → A → ¬ ¬ A
-¬¬-intro a ¬a = ¬a a
-\end{code}
-Let `a` be evidence of `A`. We will show that assuming
-`¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
-Let `¬a` be evidence of `¬ A`.  Then from `A` and `¬ A`
-we have a contradiction (evidenced by `¬a a`).  Hence, we have
-shown `¬ ¬ A`.
-
-We cannot show that `¬ ¬ A` implies `A`, but we can show that
-`¬ ¬ ¬ A` implies `¬ A`.
-\begin{code}
-¬¬¬-elim : ∀ {A : Set} → ¬ ¬ ¬ A → ¬ A
-¬¬¬-elim ¬¬¬a a = ¬¬¬a (¬¬-intro a)
-\end{code}
-Let `¬¬¬a` be evidence of `¬ ¬ ¬ A`. We will show that assuming
-`A` leads to a contradiction, and hence `¬ A` must hold.
-Let `a` be evidence of `A`. Then by the previous result, we
-can conclude `¬ ¬ A` (evidenced by `¬¬-intro a`).  Then from
-`¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction (evidenced by
-`¬¬¬a (¬¬-intro a)`.  Hence we have shown `¬ A`.
-
-Another law of logic is the *contrapositive*,
-stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
-\begin{code}
-contrapositive : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
-contrapositive a→b ¬b a = ¬b (a→b a)
-\end{code}
-Let `a→b` be evidence of `A → B` and let `¬b` be evidence of `¬ B`.  We
-will show that assuming `A` leads to a contradiction, and hence
-`¬ A` must hold. Let `a` be evidence of `A`.  Then from `A → B` and
-`A` we may conclude `B` (evidenced by `a→b a`), and from `B` and `¬ B`
-we may conclude `⊥` (evidenced by `¬b (a→b a)`).  Hence, we have shown
-`¬ A`.
-
-Given the correspondence of implication to exponentiation and
-false to the type with no members, we can view negation as
-raising to the zero power.  This indeed corresponds to what
-we know for arithmetic, where
-
-    0 ^ n  =  1,  if n = 0
-           =  0,  if n ≠ 0
-
-Indeed, there is exactly one proof of `⊥ → ⊥`.
-\begin{code}
-id : ⊥ → ⊥
-id x = x
-\end{code}
-However, there are no possible values of type `Bool → ⊥`
-or `ℕ → bot`.
-
-[TODO?: Give the proof that one cannot falsify law of the excluded middle,
-including a variant of the story from Call-by-Value is Dual to Call-by-Name.]
-
-The law of the excluded middle is irrefutable.
-\begin{code}
-excluded-middle-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
-excluded-middle-irrefutable k = k (inj₂ (λ a → k (inj₁ a)))
-\end{code}
-
-*Exercise* (`¬⊎≃×¬`)
-
-Show that conjunction, disjunction, and negation are related by a
-version of De Morgan's Law.
-\begin{code}
-postulate
-  ¬⊎≃×¬ : ∀ {A B : Set} → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
-\end{code}
-This result is an easy consequence of something we've proved previously.
-
-Do we also have the following?
-
-    ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
-
-If so, prove; if not, explain why.
-
-
-## Intuitive and Classical logic
-
-In Gilbert and Sullivan's *The Gondoliers*, Casilda is told that
-as an infant she was married to the heir of the King of Batavia, but
-that due to a mix-up no one knows which of two individuals, Marco or
-Giuseppe, is the heir.  Alarmed, she wails ``Then do you mean to say
-that I am married to one of two gondoliers, but it is impossible to
-say which?''  To which the response is ``Without any doubt of any kind
-whatever.''
-
-Logic comes in many varieties, and one distinction is between
-*classical* and *intuitionistic*. Intuitionists, concerned
-by cavalier assumptions made by some logicians about the nature of
-infinity, insist upon a constructionist notion of truth.  In
-particular, they insist that a proof of `A ⊎ B` must show
-*which* of `A` or `B` holds, and hence they would reject the
-claim that Casilda is married to Marco or Giuseppe until one of the
-two was identified as her husband.  Perhaps Gilbert and Sullivan
-anticipated intuitionism, for their story's outcome is that the heir
-turns out to be a third individual, Luiz, with whom Casilda is,
-conveniently, already in love.
-
-Intuitionists also reject the law of the excluded
-middle, which asserts `A ⊎ ¬ A` for every `A`, since the law
-gives no clue as to *which* of `A` or `¬ A` holds. Heyting
-formalised a variant of Hilbert's classical logic that captures the
-intuitionistic notion of provability. In particular, the law of the
-excluded middle is provable in Hilbert's logic, but not in Heyting's.
-Further, if the law of the excluded middle is added as an axiom to
-Heyting's logic, then it becomes equivalent to Hilbert's.
-Kolmogorov
-showed the two logics were closely related: he gave a double-negation
-translation, such that a formula is provable in classical logic if and
-only if its translation is provable in intuitionistic logic.
-
-Propositions as Types was first formulated for intuitionistic logic.
-It is a perfect fit, because in the intuitionist interpretation the
-formula `A ⊎ B` is provable exactly when one exhibits either a proof
-of `A` or a proof of `B`, so the type corresponding to disjunction is
-a disjoint sum.
-
-(The passage above is taken from "Propositions as Types", Philip Wadler,
-*Communications of the ACM*, December 2015.)
-
-**Exercise** Prove the following five formulas are equivalent.
-
-\begin{code}
-lone ltwo : Level
-lone = lsuc lzero
-ltwo = lsuc lone
-
-¬¬-elim excluded-middle peirce implication de-morgan : Set lone
-¬¬-elim = ∀ {A : Set} → ¬ ¬ A → A
-excluded-middle = ∀ {A : Set} → A ⊎ ¬ A
-peirce = ∀ {A B : Set} → (((A → B) → A) → A)
-implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
-de-morgan = ∀ {A B : Set} → ¬ (A × B) → ¬ A ⊎ ¬ B
-\end{code}
-
-It turns out that an assertion such as `Set : Set` is paradoxical.
-Therefore, there are an infinite number of different levels of sets,
-where `Set lzero : Set lone` and `Set lone : Set ltwo`, and so on,
-where `lone` is `lsuc lzero`, and `ltwo` is `lsuc lone`, analogous to
-the way we represent the natural nuambers. So far, we have only used
-the type `Set`, Here is the demonstration that the reverse direction of one of the five
-formulas equivalent to which is equivalent to `Set lzero`.  Here, since each
-of `double-negation` and the others defines a type, we need to use
-`Set lone` as the "type of types".
-
-
-## Universals
-
-Given a variable `x` of type `A` and a proposition `B[x]` which
-contains `x` as a free variable, the universally quantified
-proposition `∀ (x : A) → B[x]` holds if for every term `M` of type
-`A` the proposition `B[M]` holds.  Here `B[M]` stands for
-the proposition `B[x]` with each free occurrence of `x` replaced by
-`M`.  The variable `x` appears free in `B[x]` but bound in
-`∀ (x : A) → B[x]`.  We formalise universal quantification using the
-dependent function type, which has appeared throughout this book.
-
-Evidence that `∀ (x : A) → B[x]` holds is of the form
-
-    λ (x : A) → N[x]
-
-where `N[x]` is a term of type `B[x]`; here `N[x]` is a term and `B[x]`
-is a proposition (or type) both containing as a free variable `x` of
-type `A`.  Given a term `L` providing evidence that `∀ (x : A) → B[x]`
-holds and a term `M` of type `A`, the term `L M` provides evidence
-that `B[M]` holds.  In other words, evidence that `∀ (x : A) → B[x]`
-holds is a function that converts a term `M` of type `A` into evidence
-that `B[M]` holds.
-
-Put another way, if we know that `∀ (x : A) → B[x]` holds and that `M`
-is a term of type `A` then we may conclude that `B[M]` holds. In
-medieval times, this rule was known by the name *dictum de omni*.
-
-If we introduce a universal and the immediately eliminate it, we can
-always simplify the resulting term. Thus
-
-    (λ (x : A) → N[x]) M
-
-simplifies to `N[M]` of type `B[M]`, where `N[M]` stands for the term
-`N[x]` with each free occurrence of `x` replaced by `M` of type `A`.
-
-Unlike with conjunction, disjunction, and implication, there is no simple
-analogy between universals and arithmetic.
-
-
-## Existentials
-
-Given a variable `x` of type `A` and a proposition `B[x]` which
-contains `x` as a free variable, the existentially quantified
-proposition `∃ (λ (x : A) → B[x])` holds if for some term `M` of type
-`A` the proposition `B[M]` holds.  Here `B[M]` stands for
-the proposition `B[x]` with each free occurrence of `x` replaced by
-`M`.  The variable `x` appears free in `B[x]` but bound in
-`∃ (λ (x : A) → B[x])`.
-
-It is common to adopt a notation such as `∃[ x : A ]→ B[x]`,
-which introduces `x` as a bound variable of type `A` that appears
-free in `B[x]` and bound in `∃[ x : A ]→ B[x]`.  We won't do
-that here, but instead use the lambda notation built-in to Agda
-to introduce `x` as a bound variable.
-
-We formalise existential quantification by declaring a suitable
-inductive type.
-\begin{code}
-data ∃ {A : Set} (B : A → Set) : Set where
-  _,_ : (x : A) → B x → ∃ B
-\end{code}
-Evidence that `∃ (λ (x : A) → B[x])` holds is of the form
-`(M , N)` where `M` is a term of type `A`, and `N` is evidence
-that `B[M]` holds.
-
-Given evidence that `∃ (λ (x : A) → B[x])` holds, and
-given evidence that `∀ (x : A) → B[x] → C` holds, where `C` does
-not contain `x` as a free variable, we may conclude that `C` holds.
-\begin{code}
-∃-elim : ∀ {A : Set} {B : A → Set} {C : Set} → ∃ B → (∀ (x : A) → B x → C) → C
-∃-elim (M , N) P = P M N
-\end{code}
-In other words, if we know for every `x` of type `A` that `B[x]`
-implies `C`, and we know for some `x` of type `A` that `B[x]` holds,
-then we may conclude that `C` holds.  This is because we may
-instantiate that proof that `∀ (x : A) → B[x] → C` to any `x`, and we
-may choose the particular `x` provided by the evidence that `∃ (λ (x :
-A) → B[x])`.
-
-
-[It would be better to have even and odd as an exercise.  Is there
-a simpler example that I could start with?]
-
-As an example, recall the definitions of `even` from
-Chapter [Relations](Relations).  
-\begin{code}
-data even : ℕ → Set where
-  ev0 : even zero
-  ev+2 : ∀ {n : ℕ} → even n → even (suc (suc n))
-\end{code}
-A number is even if it is zero, or if it is two
-greater than an even number.
-
-We will show that a number is even if and only if it is twice some
-other number.  That is, number `n` is even if and only if there exists
-a number `m` such that twice `m` is `n`.
-
-First, we need a lemma, which allows us to
-simplify twice the successor of `m` to two
-more than twice `m`.
-\begin{code}
-lemma : ∀ (m : ℕ) → 2 * suc m ≡ suc (suc (2 * m))
-lemma m =
-  begin
-    2 * suc m
-  ≡⟨⟩
-    suc m + (suc m + zero)
-  ≡⟨⟩
-    suc (m + (suc (m + zero)))
-  ≡⟨ cong suc (+-suc m (m + zero)) ⟩
-    suc (suc (m + (m + zero)))
-  ≡⟨⟩
-    suc (suc (2 * m))
-  ∎
-\end{code}
-The lemma is straightforward, and uses the lemma
-`+-suc` from Chapter [Properties](Properties), which
-allows us to simplify `m + suc n` to `suc (m + n)`.
-
-Here is the proof in the forward direction.
-\begin{code}  
-ev-ex : ∀ {n : ℕ} → even n → ∃(λ (m : ℕ) → 2 * m ≡ n)
-ev-ex ev0 =  (zero , refl)
-ev-ex (ev+2 ev) with ev-ex ev
-... | (m , refl) = (suc m , lemma m)
-\end{code}
-Given an even number, we must show it is twice some
-other number.  The proof is a function, which
-given a proof that `n` is even
-returns a pair consisting of `m` and a proof
-that twice `m` is `n`.  The proof is by induction over
-the evidence that `n` is even.
-
-- If the number is even because it is zero, then we return a pair
-consisting of zero and the (trivial) proof that twice zero is zero.
-
-- If the number is even because it is two more than another even
-number `n`, then we apply the induction hypothesis, giving us a number
-`m` and a proof that `2 * m ≡ n`, which we match against `refl`.  We
-return a pair consisting of `suc m` and a proof that `2 * suc m ≡ suc
-(suc n)`, which follows from `2 * m ≡ n` and the lemma.
-
-Here is the proof in the reverse direction.
-\begin{code}
-ex-ev : ∀ {n : ℕ} → ∃(λ (m : ℕ) → 2 * m ≡ n) → even n
-ex-ev (zero , refl) = ev0
-ex-ev (suc m , refl) rewrite lemma m = ev+2 (ex-ev (m , refl))
-\end{code}
-Given a number that is twice some other number,
-we must show that it is even.  The proof is a function,
-which given a number `m` and a proof that `n` is twice `m`,
-returns a proof that `n` is even.  The proof is by induction
-over the number `m`.
-
-- If it is zero, then we must show that twice zero is even,
-which follows by rule `ev0`. 
-
-- If it is `suc m`, then we must show that `2 * suc m` is
-even.  After rewriting with our lemma, we must show that
-`suc (suc (2 * m))` is even.  The inductive hypothesis tells
-us `2 * m` is even, from which the desired result follows
-by rule `ev+2`.
-
-Negation of an existential is isomorphic to universal
-of a negation.  Considering that existentials are generalised
-disjuntion and universals are generalised conjunction, this
-result is analogous to the one which tells us that negation
-of a disjuntion is isomorphic to a conjunction of negations.
-\begin{code}
-¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃ (λ (x : A) → B x)) ≃ ∀ (x : A) → ¬ B x
-¬∃∀ =
-  record
-    { to   =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
-    ; from  =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
-    ; from∘to =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) } 
-    ; to∘from =  λ { ∀¬bx → refl } 
-    }
-\end{code}
-In the `to` direction, we are given a value `¬∃bx` of type
-`¬ ∃ (λ (x : A) → B x)`, and need to show that given a value
-`x` of type `A` that `¬ B x` follows, in other words, from
-a value `bx` of type `B x` we can derive false.  Combining
-`x` and `bx` gives us a value `(x , bx)` of type `∃ (λ (x : A) → B x)`,
-and applying `¬∃bx` to that yields a contradiction.
-
-In the `from` direction, we are given a value `∀¬bx` of type
-`∀ (x : A) → ¬ B x`, and need to show that from a value `(x , bx)`
-of type `∃ (λ (x : A) → B x)` we can derive false.  Applying `∀¬bx`
-to `x` gives a value of type `¬ B x`, and applying that to `bx` yields
-a contradiction.
-
-The two inverse proofs are straightforward, where one direction
-requires extensionality.
-
-*Exercise* Show `∃ (λ (x : A) → ¬ B x) → ¬ (∀ (x : A) → B x)`.
-
-
-
-## Decidability
-
-\begin{code}
-data Dec : Set → Set where
-  yes : ∀ {A : Set} → A → Dec A
-  no  : ∀ {A : Set} → (¬ A) → Dec A
-\end{code}
-
-## Unicode
-
-This chapter introduces the following unicode.
-
-    ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
-
-
-[NOTES]
-
-Two halves of de Morgan's laws hold intuitionistically.  The other two
-halves are each equivalent to the law of double negation.
-
-\begin{code}
-dem1 : ∀ {A B : Set} → A × B → ¬ (¬ A ⊎ ¬ B)
-dem1 (a , b) (inj₁ ¬a) = ¬a a
-dem1 (a , b) (inj₂ ¬b) = ¬b b
-
-dem2 : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
-dem2 (inj₁ a) (¬a , ¬b) = ¬a a
-dem2 (inj₂ b) (¬a , ¬b) = ¬b b
-\end{code}
-
-For the other variant of De Morgan's law, one way is an isomorphism.
-\begin{code}
-dem-≃ : ∀ {A B : Set} → (¬ (A ⊎ B)) ≃ (¬ A × ¬ B)
-dem-≃ = →-distributes-⊎
-\end{code}
-
-The other holds in only one direction.
-\begin{code}
-dem-half : ∀ {A B : Set} → ¬ A ⊎ ¬ B → ¬ (A × B)
-dem-half (inj₁ ¬a) (a , b) = ¬a a
-dem-half (inj₂ ¬b) (a , b) = ¬b b
-\end{code}
-
-The other variant does not appear to be equivalent to classical logic.
-So that undermines my idea that basic propositions are either true
-intuitionistically or equivalent to classical logic.
-
-For several of the laws equivalent to classical logic, the reverse
-direction holds in intuitionistic long.
-\begin{code}
-implication-inv : ∀ {A B : Set} → (¬ A ⊎ B) → A → B
-implication-inv (inj₁ ¬a) a = ⊥-elim (¬a a)
-implication-inv (inj₂ b)  a = b
-
-demorgan-inv : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
-demorgan-inv (inj₁ a) (¬a , ¬b) =  ¬a a
-demorgan-inv (inj₂ b) (¬a , ¬b) =  ¬b b
-\end{code}
-
-
-
-    
