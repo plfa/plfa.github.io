@@ -469,7 +469,7 @@ The nullary case of `uniq-⊎` is `uniq-⊥`, which asserts that `⊥-elim`
 is equal to any arbitrary function from `⊥`.
 \begin{code}
 uniq-⊥ : ∀ {C : Set} (h : ⊥ → C) (w : ⊥) → ⊥-elim w ≡ h w
-uniq-⊥ ()
+uniq-⊥ h ()
 \end{code}
 The pattern matching on the left-hand side is essential.  Using
 the absurd pattern asserts there are no possible values for `w`,
