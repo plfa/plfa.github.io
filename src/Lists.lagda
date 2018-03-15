@@ -795,9 +795,9 @@ All-++ : ∀ {A : Set} {P : A → Set} (xs ys : List A) → All P (xs ++ ys) ≃
 All-++ xs ys =
   record
     { to   = to xs ys
-    ; fro  = fro xs ys
-    ; invˡ = invˡ xs ys
-    ; invʳ = invʳ xs ys
+    ; from  = from xs ys
+    ; from∘to = from∘to xs ys
+    ; to∘from = to∘from xs ys
     }
 
   where
@@ -807,19 +807,19 @@ All-++ xs ys =
   to (x ∷ xs) ys (Px ∷ AllPxsys) with to xs ys AllPxsys
   ... | ⟨ AllPxs , AllPys ⟩ = ⟨ Px ∷ AllPxs , AllPys ⟩
 
-  fro : ∀ { A : Set} {P : A → Set} (xs ys : List A) → All P xs × All P ys → All P (xs ++ ys)
-  fro [] ys ⟨ [] , AllPys ⟩ = AllPys
-  fro (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ =  Px ∷ fro xs ys ⟨ AllPxs , AllPys ⟩
+  from : ∀ { A : Set} {P : A → Set} (xs ys : List A) → All P xs × All P ys → All P (xs ++ ys)
+  from [] ys ⟨ [] , AllPys ⟩ = AllPys
+  from (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ =  Px ∷ from xs ys ⟨ AllPxs , AllPys ⟩
 
-  invˡ : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsys : All P (xs ++ ys)) →
-    fro xs ys (to xs ys AllPxsys) ≡ AllPxsys
-  invˡ [] ys AllPys = refl
-  invˡ (x ∷ xs) ys (Px ∷ AllPxsys) = cong (Px ∷_) (invˡ xs ys AllPxsys)
+  from∘to : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsys : All P (xs ++ ys)) →
+    from xs ys (to xs ys AllPxsys) ≡ AllPxsys
+  from∘to [] ys AllPys = refl
+  from∘to (x ∷ xs) ys (Px ∷ AllPxsys) = cong (Px ∷_) (from∘to xs ys AllPxsys)
 
-  invʳ : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsAllPys : All P xs × All P ys) →
-    to xs ys (fro xs ys AllPxsAllPys) ≡ AllPxsAllPys
-  invʳ [] ys ⟨ [] , AllPys ⟩ = refl
-  invʳ (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ rewrite invʳ xs ys ⟨ AllPxs , AllPys ⟩ = refl
+  to∘from : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsAllPys : All P xs × All P ys) →
+    to xs ys (from xs ys AllPxsAllPys) ≡ AllPxsAllPys
+  to∘from [] ys ⟨ [] , AllPys ⟩ = refl
+  to∘from (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ rewrite to∘from xs ys ⟨ AllPxs , AllPys ⟩ = refl
 \end{code}
 
 *Exercise* `Any-++`
