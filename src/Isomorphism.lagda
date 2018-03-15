@@ -310,8 +310,8 @@ import Function.Inverse using (_↔_)
 import Function.LeftInverse using (_↞_)
 \end{code}
 Here `_↔_` correpsonds to our `_≃_`, and `_↞_` corresponds to our `_≲_`.
-
-
+However, we stick with the definitions given here, mainly because `_↔_` is
+specified as a nested record, rather than the flat records used here.
 
 ## Unicode
 

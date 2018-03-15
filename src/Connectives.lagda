@@ -770,6 +770,43 @@ gives rise to an isomorphism, while the second only gives rise to an
 embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
-<!-- Introduce biimplication `⇔` in a previous section, so that it
-has a formal meaning when it is referred to here. -->
+### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`)
+
+Define equivalence of propositions (also known as "if and only if") as follows.
+\begin{code}
+record _⇔_ (A B : Set) : Set where
+  field
+    to   : A → B
+    from : B → A
+\end{code}
+Show that equivalence is reflexive, symmetric, and transitive.
+
+
+### Exercise (`⇔-iso`)
+
+Show that `A ⇔ B` is isomorphic to `(A → B) × (B → A)`.
+
+
+## Standard library
+
+Definitions similar to those in this chapter can be found in the standard library.
+\begin{code}
+import Data.Product using (_×_; _,_; proj₁; proj₂)
+import Data.Unit using (⊤; tt)
+import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to ⊎-elim)
+import Data.Empty using (⊥; ⊥-elim)
+\end{code}
+
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    ×  U+00D7  MULTIPLICATION SIGN (\x)
+    ⊎  U+228E  MULTISET UNION (\u+)
+    ⊤  U+22A4  DOWN TACK (\top)
+    ⊥  U+22A5  UP TACK (\bot)
+    ₁  U+2081  SUBSCRIPT ONE (\_1)
+    ₂  U+2082  SUBSCRIPT TWO (\_2)
+    ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>)
 
