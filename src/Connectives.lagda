@@ -552,8 +552,13 @@ providing evidence that `A` holds, the term `L M` provides evidence that
 converts evidence that `A` holds into evidence that `B` holds.
 
 Put another way, if we know that `A → B` and `A` both hold,
-then we may conclude that `B` holds. In medieval times, this rule was
-known by the name *modus ponens*.
+then we may conclude that `B` holds.
+\begin{code}
+→-elim : ∀ {A B : Set} → (A → B) → A → B
+→-elim f x = f x
+\end{code}
+In medieval times, this rule was known by the name *modus ponens*.
+It corresponds to function application.
 
 Defining a function, with an named definition or a lambda expression,
 is referred to as *introducing* a function,
@@ -564,13 +569,10 @@ Elimination followed by introduction is the identity.
 η-→ : ∀ {A B : Set} (f : A → B) → (λ{x → f x}) ≡ f
 η-→ {A} {B} f = extensionality η-helper
   where
-  η-lhs : A → B
-  η-lhs = λ{x → f x}
-
-  η-helper : (x : A) → η-lhs x ≡ f x
+  η-helper : (x : A) → (λ (x′ : A) → f x′) x ≡ f x
   η-helper x = refl
 \end{code}
-The proof depends essentially on extensionality.
+The proof depends on extensionality.
 
 <!--
 
@@ -581,14 +583,6 @@ always simplify the resulting term.  Thus
 
 simplifies to `N[x := M]`, where `N[x := M]` stands for the term `N` with each
 free occurrence of `x` replaced by `M`.
-
-Given evidence that `A → B` holds and that `A` holds, we can conclude that
-`B` holds.
-\begin{code}
-→-elim : ∀ {A B : Set} → (A → B) → A → B
-→-elim f x = f x
-\end{code}
-In medieval times, this rule was known by the latin name *modus ponens*.
 
 -->
 

@@ -108,24 +108,30 @@ and `from` to be the identity function.
     ; to∘from = λ{y → refl}
     } 
 \end{code}
-This is our first use of *lambda expressions*, provide a compact way to
+This is our first use of *lambda expressions*, which provide a compact way to
 define functions without naming them.  A term of the form
 
-    λ{p₁ → e₁; ⋯ ; pᵢ → eᵢ}
+    λ{ P₁ → N₁; ⋯ ; Pᵢ → Nᵢ }
     
 is equivalent to a function `f` defined by the equations
 
-    f p₁ = e₁
+    f P₁ = e₁
     ⋯
-    f pᵢ = eᵢ
+    f Pᵢ = eᵢ
 
-where the `pᵢ` are patterns (left-hand sides of an equation) and the
-`eᵢ` are expressions (right-hand side of an equation). Often using an
-anonymous lambda expression is more convenient than using a named
-function: it avoids a lengthy type declaration; and the definition
-appears exactly where the function is used, so there is no need for
-the writer to remember to declare it in advance, or for the reader to
-search for the definition elsewhere in the code.
+where the `Pᵢ` are patterns (left-hand sides of an equation) and the
+`Nᵢ` are expressions (right-hand side of an equation).  In the case that
+the pattern is a variable, we may also use the syntax
+
+    λ (x : A) → N
+
+which is equivalent to `λ{ x → N }` but allows one to specify the
+domain of the function. Often using an anonymous lambda expression is
+more convenient than using a named function: it avoids a lengthy type
+declaration; and the definition appears exactly where the function is
+used, so there is no need for the writer to remember to declare it in
+advance, or for the reader to search for the definition elsewhere in
+the code.
 
 In the above, `to` and `from` are both bound to identity functions,
 and `from∘to` and `to∘from` are both bound to functions that discard
@@ -319,4 +325,4 @@ This chapter uses the following unicode.
 
     ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~-)
     ≲  U+2272  LESS-THAN OR EQUIVALENT TO (\<~)
-
+    λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
