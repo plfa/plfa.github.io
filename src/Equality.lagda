@@ -59,8 +59,9 @@ but on the left-hand side of the equation the argument has been instantiated to 
 which requires that `x` and `y` are the same.  Hence, for the right-hand side of the equation
 we need a term of type `x ≡ x`, and `refl` will do.
 
-It is instructive to develop `sym` interactively.
-To start, we supply a variable for the argument on the left, and a hole for the body on the right:
+It is instructive to develop `sym` interactively.  To start, we supply
+a variable for the argument on the left, and a hole for the body on
+the right:
 
     sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
     sym e = {! !}
@@ -75,8 +76,9 @@ If we go into the hole and type `C-C C-,` then Agda reports:
     .A : Set .ℓ
     .ℓ : .Agda.Primitive.Level
 
-If in the hole we type `C-C C-C e` then Agda will instantiate `e` to all possible constructors,
-with one equation for each. There is only one possible constructor:
+If in the hole we type `C-C C-C e` then Agda will instantiate `e` to
+all possible constructors, with one equation for each. There is only
+one possible constructor:
 
     sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
     sym refl = {! !}

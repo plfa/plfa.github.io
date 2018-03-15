@@ -1,19 +1,16 @@
 ---
-title     : "Negation: Negation, with Classical and Intuitionistic Logic"
+title     : "Negation: Negation, with Intuitionistic and Classical Logic"
 layout    : page
 permalink : /Negation
 ---
 
+This chapter introduces negation, and discusses intuitionistic
+and classical logic.
+
 ## Imports
 
 \begin{code}
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
-open Eq.≡-Reasoning
 open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
-open Isomorphism.≃-Reasoning
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Nat.Properties.Simple using (+-suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
@@ -84,11 +81,11 @@ can conclude `¬ ¬ A` (evidenced by `¬¬-intro x`).  Then from
 `¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction (evidenced by
 `¬¬¬x (¬¬-intro x)`.  Hence we have shown `¬ A`.
 
-Another law of logic is the *contrapositive*,
+Another law of logic is *contraposition*,
 stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
 \begin{code}
-contrapositive : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
-contrapositive f ¬y x = ¬y (f x)
+contraposition : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
+contraposition f ¬y x = ¬y (f x)
 \end{code}
 Let `f` be evidence of `A → B` and let `¬y` be evidence of `¬ B`.  We
 will show that assuming `A` leads to a contradiction, and hence
@@ -268,7 +265,7 @@ Philip Wadler, *International Conference on Functional Programming*, 2003.)
 
 ### Exercise
 
-Prove the following four formulas are equivalent to each other,
+Prove the following three formulas are equivalent to each other,
 and to the formulas `EM` and `⊎-Dual-+` given earlier.
 \begin{code}
 ¬¬-Elim Peirce Implication : Set₁
@@ -277,61 +274,34 @@ Peirce = ∀ {A B : Set} → (((A → B) → A) → A)
 Implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
 \end{code}
 
-<!-- 
-
-It turns out that an assertion such as `Set : Set` is paradoxical.
-Therefore, there are an infinite number of different levels of sets,
-where `Set lzero : Set lone` and `Set lone : Set ltwo`, and so on,
-where `lone` is `lsuc lzero`, and `ltwo` is `lsuc lone`, analogous to
-the way we represent the natural nuambers. So far, we have only used
-the type `Set`,  which is equivalent to `Set lzero`.  Here, since each
-of `double-negation` and the others defines a type, we need to use
-`Set₁` as the "type of types".
-
--->
-
-[NOTES]
-
-Two halves of de Morgan's laws hold intuitionistically.  The other two
-halves are each equivalent to the law of double negation.
-
-\begin{code}
-dem1 : ∀ {A B : Set} → A × B → ¬ (¬ A ⊎ ¬ B)
-dem1 (a , b) (inj₁ ¬a) = ¬a a
-dem1 (a , b) (inj₂ ¬b) = ¬b b
-
-dem2 : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
-dem2 (inj₁ a) (¬a , ¬b) = ¬a a
-dem2 (inj₂ b) (¬a , ¬b) = ¬b b
-\end{code}
-
-For the other variant of De Morgan's law, one way is an isomorphism.
-\begin{code}
--- dem-≃ : ∀ {A B : Set} → (¬ (A ⊎ B)) ≃ (¬ A × ¬ B)
--- dem-≃ = →-distributes-⊎
-\end{code}
-
-The other holds in only one direction.
-\begin{code}
-dem-half : ∀ {A B : Set} → ¬ A ⊎ ¬ B → ¬ (A × B)
-dem-half (inj₁ ¬a) (a , b) = ¬a a
-dem-half (inj₂ ¬b) (a , b) = ¬b b
-\end{code}
-
-The other variant does not appear to be equivalent to classical logic.
-So that undermines my idea that basic propositions are either true
-intuitionistically or equivalent to classical logic.
-
-For several of the laws equivalent to classical logic, the reverse
-direction holds in intuitionistic long.
-\begin{code}
-implication-inv : ∀ {A B : Set} → (¬ A ⊎ B) → A → B
-implication-inv (inj₁ ¬a) a = ⊥-elim (¬a a)
-implication-inv (inj₂ b)  a = b
-
-demorgan-inv : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
-demorgan-inv (inj₁ a) (¬a , ¬b) =  ¬a a
-demorgan-inv (inj₂ b) (¬a , ¬b) =  ¬b b
-\end{code}
-
     
+### Exercise (`¬-stable`, `×-stable`)
+
+Say that a formula is *stable* if double negation elimination holds for it.
+\begin{code}
+Stable : Set → Set
+Stable A = ¬ ¬ A → A
+\end{code}
+Show that any negated formula is stable, and that the conjunction
+of two stable formulas is stable.
+\begin{code}
+¬-Stable : Set₁
+¬-Stable = ∀ {A : Set} → Stable (¬ A)
+
+×-Stable : Set₁
+×-Stable = ∀ {A B : Set} → Stable A → Stable B → Stable (A × B)
+\end{code}
+
+## Standard Prelude
+
+Definitions similar to those in this chapter can be found in the standard library.
+\begin{code}
+import Relation.Nullary using (¬_)
+import Relation.Nullary.Negation using (contraposition)
+\end{code}
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    ¬  U+00AC  NOT SIGN (\neg)

@@ -4,6 +4,8 @@ layout    : page
 permalink : /Quantifiers
 ---
 
+This chapter introduces universal and existential quatification.
+
 ## Imports
 
 \begin{code}
@@ -16,6 +18,8 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties.Simple using (+-suc)
 open import Relation.Nullary using (¬_)
 open import Function using (_∘_)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 \end{code}
 
 In what follows, we will occasionally require [extensionality][extensionality].
@@ -29,52 +33,73 @@ postulate
 
 ## Universals
 
-Given a variable `x` of type `A` and a proposition `B[x]` which
+Given a variable `x` of type `A` and a proposition `B x` which
 contains `x` as a free variable, the universally quantified
-proposition `∀ (x : A) → B[x]` holds if for every term `M` of type
-`A` the proposition `B[M]` holds.  Here `B[M]` stands for
-the proposition `B[x]` with each free occurrence of `x` replaced by
-`M`.  The variable `x` appears free in `B[x]` but bound in
-`∀ (x : A) → B[x]`.  We formalise universal quantification using the
+proposition `∀ (x : A) → B x` holds if for every term `M` of type
+`A` the proposition `B M` holds.  Here `B M` stands for
+the proposition `B x` with each free occurrence of `x` replaced by
+`M`.  The variable `x` appears free in `B x` but bound in
+`∀ (x : A) → B x`.  We formalise universal quantification using the
 dependent function type, which has appeared throughout this book.
 
-Evidence that `∀ (x : A) → B[x]` holds is of the form
+Evidence that `∀ (x : A) → B x` holds is of the form
 
-    λ (x : A) → N[x]
+    λ (x : A) → N x
 
-where `N[x]` is a term of type `B[x]`; here `N[x]` is a term and `B[x]`
-is a proposition (or type) both containing as a free variable `x` of
-type `A`.  Given a term `L` providing evidence that `∀ (x : A) → B[x]`
-holds and a term `M` of type `A`, the term `L M` provides evidence
-that `B[M]` holds.  In other words, evidence that `∀ (x : A) → B[x]`
-holds is a function that converts a term `M` of type `A` into evidence
-that `B[M]` holds.
+where `N x` is a term of type `B x`, and `N x` and `B x` both contain
+a free variable `x` of type `A`.  Given a term `L` providing evidence
+that `∀ (x : A) → B x` holds, and a term `M` of type `A`, the term `L
+M` provides evidence that `B M` holds.  In other words, evidence that
+`∀ (x : A) → B x` holds is a function that converts a term `M` of type
+`A` into evidence that `B M` holds.
 
-Put another way, if we know that `∀ (x : A) → B[x]` holds and that `M`
-is a term of type `A` then we may conclude that `B[M]` holds. In
-medieval times, this rule was known by the name *dictum de omni*.
+Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
+is a term of type `A` then we may conclude that `B M` holds.
+\begin{code}
+∀-elim : ∀ {A : Set} {B : A → Set} → (∀ (x : A) → B x) → (M : A) → B M
+∀-elim L M = L M
+\end{code}
+In medieval times, this rule was known by the name *dictum de omni*.
 
-If we introduce a universal and the immediately eliminate it, we can
-always simplify the resulting term. Thus
-
-    (λ (x : A) → N[x]) M
-
-simplifies to `N[M]` of type `B[M]`, where `N[M]` stands for the term
-`N[x]` with each free occurrence of `x` replaced by `M` of type `A`.
+Ordinary function types arise as the special case of dependent
+function types where the range does not depend on a variable drawn
+from the domain.  When an ordinary function is viewed as evidence of
+implication, both its domain and range are viewed as types of
+evidence, whereas when a dependent function is viewed as evidence of a
+universal, its domain is viewed as a data type and its range is viewed
+as a type of evidence.  This is just a matter of interpretation, since
+in Agda data types and types of evidence are indistinguishable.
 
 Unlike with conjunction, disjunction, and implication, there is no simple
 analogy between universals and arithmetic.
 
+### Exercise (`∀-distrib-×`)
+
+Show that universals distribute over conjunction.
+\begin{code}
+∀-Distrib-× = ∀ {A : Set} {B C : A → Set} →
+  (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
+\end{code}
+Compare this with the result (`→-distrib-×`) in Chapter [Connectives](Connectives).
+
+### Exercise (`⊎∀-implies-∀⊎`)
+
+Show that a disjunction of universals implies a universal of disjunctions.
+\begin{code}
+⊎∀-Implies-∀⊎ = ∀ {A : Set} { B C : A → Set } →
+  (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
+\end{code}
+Does the converse also hold? If so, prove; if not, explain why.
 
 ## Existentials
 
-Given a variable `x` of type `A` and a proposition `B[x]` which
+Given a variable `x` of type `A` and a proposition `B x` which
 contains `x` as a free variable, the existentially quantified
-proposition `∃ (λ (x : A) → B[x])` holds if for some term `M` of type
-`A` the proposition `B[M]` holds.  Here `B[M]` stands for
-the proposition `B[x]` with each free occurrence of `x` replaced by
-`M`.  The variable `x` appears free in `B[x]` but bound in
-`∃ (λ (x : A) → B[x])`.
+proposition `∃[ x ] → B x` holds if for some term `M` of type
+`A` the proposition `B M` holds.  Here `B M` stands for
+the proposition `B x` with each free occurrence of `x` replaced by
+`M`.  The variable `x` appears free in `B x` but bound in
+`∃[ x ] → B x`.
 
 It is common to adopt a notation such as `∃[ x : A ]→ B[x]`,
 which introduces `x` as a bound variable of type `A` that appears
@@ -85,18 +110,23 @@ to introduce `x` as a bound variable.
 We formalise existential quantification by declaring a suitable
 inductive type.
 \begin{code}
-data ∃ {A : Set} (B : A → Set) : Set where
-  _,_ : (x : A) → B x → ∃ B
+data ∃ (A : Set) (B : A → Set) : Set where
+  _,_ : (x : A) → B x → ∃ A B
 \end{code}
 Evidence that `∃ (λ (x : A) → B[x])` holds is of the form
 `(M , N)` where `M` is a term of type `A`, and `N` is evidence
 that `B[M]` holds.
 
+\begin{code}
+syntax ∃ A (λ x → B) = ∃[ x ∈ A ] B
+\end{code}
+
 Given evidence that `∃ (λ (x : A) → B[x])` holds, and
 given evidence that `∀ (x : A) → B[x] → C` holds, where `C` does
 not contain `x` as a free variable, we may conclude that `C` holds.
 \begin{code}
-∃-elim : ∀ {A : Set} {B : A → Set} {C : Set} → ∃ B → (∀ (x : A) → B x → C) → C
+∃-elim : ∀ {A : Set} {B : A → Set} {C : Set} →
+  (∃[ x ∈ A ] B x) → (∀ (x : A) → B x → C) → C
 ∃-elim (M , N) P = P M N
 \end{code}
 In other words, if we know for every `x` of type `A` that `B[x]`
@@ -148,7 +178,7 @@ allows us to simplify `m + suc n` to `suc (m + n)`.
 
 Here is the proof in the forward direction.
 \begin{code}  
-ev-ex : ∀ {n : ℕ} → even n → ∃(λ (m : ℕ) → 2 * m ≡ n)
+ev-ex : ∀ {n : ℕ} → even n → ∃[ m ∈ ℕ ] (2 * m ≡ n)
 ev-ex ev0 =  (zero , refl)
 ev-ex (ev+2 ev) with ev-ex ev
 ... | (m , refl) = (suc m , lemma m)
@@ -171,7 +201,7 @@ return a pair consisting of `suc m` and a proof that `2 * suc m ≡ suc
 
 Here is the proof in the reverse direction.
 \begin{code}
-ex-ev : ∀ {n : ℕ} → ∃(λ (m : ℕ) → 2 * m ≡ n) → even n
+ex-ev : ∀ {n : ℕ} → ∃[ m ∈ ℕ ] (2 * m ≡ n) → even n
 ex-ev (zero , refl) = ev0
 ex-ev (suc m , refl) rewrite lemma m = ev+2 (ex-ev (m , refl))
 \end{code}
@@ -196,11 +226,11 @@ disjuntion and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
 of a disjuntion is isomorphic to a conjunction of negations.
 \begin{code}
-¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃ (λ (x : A) → B x)) ≃ ∀ (x : A) → ¬ B x
+¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃[ x ∈ A ] B x) ≃ ∀ (x : A) → ¬ B x
 ¬∃∀ =
   record
-    { to   =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
-    ; from  =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
+    { to      =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
+    ; from    =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
     ; from∘to =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) } 
     ; to∘from =  λ { ∀¬bx → refl } 
     }
@@ -223,7 +253,12 @@ requires extensionality.
 
 *Exercise* Show `∃ (λ (x : A) → ¬ B x) → ¬ (∀ (x : A) → B x)`.
 
+## Standard Prelude
 
+Definitions similar to those in this chapter can be found in the standard library.
+\begin{code}
+import Data.Product using (∃)
+\end{code}
 
 ## Unicode
 

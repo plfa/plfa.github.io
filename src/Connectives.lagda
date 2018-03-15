@@ -534,7 +534,6 @@ Right identity follows from commutativity of sum and left identity.
   ≃-∎
 \end{code}
 
-
 ## Implication is function
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
@@ -543,9 +542,9 @@ the function type, which has appeared throughout this book.
 
 Evidence that `A → B` holds is of the form
 
-    λ{ x → N }
+    λ (x : A) → N x
 
-where `N` is a term of type `B` containing as a free variable `x` of type `A`.
+where `N x` is a term of type `B` containing as a free variable `x` of type `A`.
 Given a term `L` providing evidence that `A → B` holds, and a term `M`
 providing evidence that `A` holds, the term `L M` provides evidence that
 `B` holds.  In other words, evidence that `A → B` holds is a function that
@@ -555,7 +554,7 @@ Put another way, if we know that `A → B` and `A` both hold,
 then we may conclude that `B` holds.
 \begin{code}
 →-elim : ∀ {A B : Set} → (A → B) → A → B
-→-elim f x = f x
+→-elim L M = L M
 \end{code}
 In medieval times, this rule was known by the name *modus ponens*.
 It corresponds to function application.
@@ -566,10 +565,10 @@ while applying a function is referred to as *eliminating* the function.
 
 Elimination followed by introduction is the identity.
 \begin{code}
-η-→ : ∀ {A B : Set} (f : A → B) → (λ{x → f x}) ≡ f
+η-→ : ∀ {A B : Set} (f : A → B) → (λ (x : A) → f x) ≡ f
 η-→ {A} {B} f = extensionality η-helper
   where
-  η-helper : (x : A) → (λ (x′ : A) → f x′) x ≡ f x
+  η-helper : (x : A) → (λ (x : A) → f x) x ≡ f x
   η-helper x = refl
 \end{code}
 The proof depends on extensionality.
@@ -672,8 +671,8 @@ That is, the assertion that if either `A` holds or `B` holds then `C` holds
 is the same as the assertion that if `A` holds then `C` holds and if
 `B` holds then `C` holds.  The proof of the left inverse requires extensionality.
 \begin{code}
-→-distributes-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
-→-distributes-⊎ =
+→-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
+→-distrib-⊎ =
   record
     { to      = λ{ f → ( (λ{ x → f (inj₁ x) }) , (λ{ y → f (inj₂ y) }) ) }
     ; from    = λ{ (g , h) → λ{ (inj₁ x) → g x ; (inj₂ y) → h y } }
@@ -695,8 +694,8 @@ is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.  The proof of left inverse requires both extensionality
 and the rule `η-×` for products.
 \begin{code}
-→-distributes-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
-→-distributes-× =
+→-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
+→-distrib-× =
   record
     { to      = λ{ f → ( (λ{ x → proj₁ (f x) }) , (λ{ y → proj₂ (f y)}) ) }
     ; from    = λ{ (g , h) → λ{ x → (g x , h x) } }
@@ -711,8 +710,8 @@ and the rule `η-×` for products.
 Products distributes over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results.
 \begin{code}
-×-distributes-⊎ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
-×-distributes-⊎ =
+×-distrib-⊎ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
+×-distrib-⊎ =
   record
     { to   = λ { ((inj₁ x) , z) → (inj₁ (x , z)) 
                ; ((inj₂ y) , z) → (inj₂ (y , z))
@@ -731,8 +730,8 @@ this fact is similar in structure to our previous results.
 
 Sums do not distribute over products up to isomorphism, but it is an embedding.
 \begin{code}
-⊎-distributes-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
-⊎-distributes-× =
+⊎-distrib-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
+⊎-distrib-× =
   record
     { to   = λ { (inj₁ (x , y)) → (inj₁ x , inj₁ y)
                ; (inj₂ z)       → (inj₂ z , inj₂ z)
@@ -800,6 +799,7 @@ This chapter uses the following unicode.
     ⊎  U+228E  MULTISET UNION (\u+)
     ⊤  U+22A4  DOWN TACK (\top)
     ⊥  U+22A5  UP TACK (\bot)
+    η  U+03B7  GREEK SMALL LETTER ETA (\eta)
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
     ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>)
