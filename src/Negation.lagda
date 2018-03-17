@@ -11,6 +11,8 @@ and classical logic.
 
 \begin{code}
 open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
@@ -65,7 +67,7 @@ we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
 Let `x` be evidence of `A`. We will show that assuming
 `¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
 Let `¬x` be evidence of `¬ A`.  Then from `A` and `¬ A`
-we have a contradiction (evidenced by `¬x x`).  Hence, we have
+we have a contradiction, evidenced by `¬x x`.  Hence, we have
 shown `¬ ¬ A`.
 
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
@@ -77,8 +79,8 @@ We cannot show that `¬ ¬ A` implies `A`, but we can show that
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 `A` leads to a contradiction, and hence `¬ A` must hold.
 Let `x` be evidence of `A`. Then by the previous result, we
-can conclude `¬ ¬ A` (evidenced by `¬¬-intro x`).  Then from
-`¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction (evidenced by
+can conclude `¬ ¬ A`, evidenced by `¬¬-intro x`.  Then from
+`¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction, evidenced by
 `¬¬¬x (¬¬-intro x)`.  Hence we have shown `¬ A`.
 
 Another law of logic is *contraposition*,
@@ -90,9 +92,32 @@ contraposition f ¬y x = ¬y (f x)
 Let `f` be evidence of `A → B` and let `¬y` be evidence of `¬ B`.  We
 will show that assuming `A` leads to a contradiction, and hence
 `¬ A` must hold. Let `x` be evidence of `A`.  Then from `A → B` and
-`A` we may conclude `B` (evidenced by `f x`), and from `B` and `¬ B`
-we may conclude `⊥` (evidenced by `¬y (f x)`).  Hence, we have shown
+`A` we may conclude `B`, evidenced by `f x`, and from `B` and `¬ B`
+we may conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown
 `¬ A`.
+
+Using negation, it is straightforward to define unequal.
+\begin{code}
+_≢_ : ∀ {A : Set} → A → A → Set
+x ≢ y  =  ¬ (x ≡ y)
+\end{code}
+It is straightforward to show distinct numbers are unequal.
+\begin{code}
+_ : 1 ≢ 2
+_ = λ()
+\end{code}
+This is our first use of an absurd patters in a lambda expression.
+The type `M ≡ N` is occupied exactly when `M` and `N` simplify to
+identical terms. Since `1` and `2` simplify to distinct normal forms,
+Agda determines that the absurd pattern `()` matches all arguments of
+type `1 ≡ 2`.  As a second example, it is also easy to validate
+Peano's postulate that zero is not the successor of any number.
+\begin{code}
+peano : ∀ {m : ℕ} → zero ≢ suc m
+peano = λ()
+\end{code}
+The evidence is essentially the same, as the absurd pattern matches
+all arguments of type `zero ≡ suc m`. 
 
 Given the correspondence of implication to exponentiation and
 false to the type with no members, we can view negation as
