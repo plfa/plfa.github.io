@@ -212,25 +212,43 @@ or of the form `no ¬x`, where `¬x` provides evidence that `A` cannot hold
 
 For example, here is a function which given two numbers decides whether one
 is less than or equal to the other, and provides evidence to justify its conclusion.
+
+First, we introduce two functions useful for constructing evidence that
+an inequality does not hold.
+\begin{code}
+¬s≤z : ∀ {m : ℕ} → ¬ (suc m ≤ zero)
+¬s≤z ()
+
+¬s≤s : ∀ {m n : ℕ} → ¬ (m ≤ n) → ¬ (suc m ≤ suc n)
+¬s≤s ¬m≤n (s≤s m≤n) = ¬m≤n m≤n
+\end{code}
+The first of these asserts that `¬ (suc m ≤ zero)`, and follows by
+absurdity, since any evidence of inequality has the form `zero ≤ n`
+or `suc m ≤ suc n`, neither of which match `suc m ≤ suc n`. The second
+of these takes evidence `¬m≤n` of `¬ (m ≤ n)` and returns a proof of
+`¬ (suc m ≤ suc n)`.  Any evidence of `suc m ≤ suc n` must have the
+form `s≤s m≤n` where `m≤n` is evidence that `m ≤ n`.  Hence, we have
+a contradiction, evidenced by `¬m≤n m≤n`.
+
+Using these, it is straightforward to decide an inequality.
 \begin{code}
 _≤?_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 zero ≤? n = yes z≤n
-suc m ≤? zero = no λ()
+suc m ≤? zero = no ¬s≤z
 suc m ≤? suc n with m ≤? n
 ... | yes m≤n = yes (s≤s m≤n)
-... | no ¬m≤n = no λ{ (s≤s m≤n) → ¬m≤n m≤n }
+... | no ¬m≤n = no (¬s≤s ¬m≤n)
 \end{code}
-As with `_≤ᵇ_`, the definition has three clauses.  In the first clause,
-it is immediate that `zero ≤ n` holds, and it is evidenced by `z≤n`.
-In the second clause, it is immediate that `suc m ≤ n` does not hold,
-and the absence of possible evidence is attested by `λ()`.  In the third
-clause, to decide whether `suc m ≤ suc n` holds we recursively invoke
-`m ≤? n`.  There are two possibilities.  In the `yes` case it returns evidence `m≤n` that
-`m ≤ n`, and `s≤s m≤n` provides evidence that `suc m ≤ suc n`.
-In the `no` case it returns evidence `¬m≤n` that `¬ (m ≤ n)`.  Then given evidence
-`s≤s m≤n` that `suc m ≤ suc n` holds, we can combine `¬m≤n` and `m≤n` to derive
-a contradiction, and hence we know that `¬ (suc m ≤ suc n)`.  In the `no`
-case, we need not consider `z≤n`, because it cannot prove `suc m ≤ suc n`.
+As with `_≤ᵇ_`, the definition has three clauses.  In the first
+clause, it is immediate that `zero ≤ n` holds, and it is evidenced by
+`z≤n`.  In the second clause, it is immediate that `suc m ≤ n` does
+not hold, and it is evidenced by `¬s≤z`.
+In the third clause, to decide whether `suc m ≤ suc n` holds we
+recursively invoke `m ≤? n`.  There are two possibilities.  In the
+`yes` case it returns evidence `m≤n` that `m ≤ n`, and `s≤s m≤n`
+provides evidence that `suc m ≤ suc n`.  In the `no` case it returns
+evidence `¬m≤n` that `¬ (m ≤ n)`, and `¬s≤s ¬m≤n` provides evidence
+that `¬ (suc m ≤ suc n)`.
 
 When we wrote `_≤ᵇ_`, we had to write two other functions, `≤ᵇ→≤` and `≤→≤ᵇ`,
 in order to show that it was correct.  In contrast, the definition of `_≤?_`
@@ -242,25 +260,19 @@ to derive them from the first.
 We can use our new function to *compute* the *evidence* that earlier we had to
 think up on our own.
 \begin{code}
-_ : Dec (2 ≤ 4)
-_ = 2 ≤? 4   -- evaluates to:  yes (s≤s (s≤s z≤n))
+_ : 2 ≤? 4 ≡ yes (s≤s (s≤s z≤n))
+_ = refl
 
-_ : Dec (4 ≤ 2)
-_ = 4 ≤? 2   -- evaluates to:  no λ{(s≤s (s≤s ()))}
+_ : 4 ≤? 2 ≡ no (¬s≤s (¬s≤s ¬s≤z))
+_ = refl
 \end{code}
-You can check that Agda will indeed compute these values.  Replace the
-right hand sides of the two equations above by holes; fill in the
-holes with, respectively, `2 ≤? 4` and `4 ≤? 2`, then type `^C ^N`
-while in the holes to compute the corresponding values.  In the first
-case, it yields exactly the given value. In the second case, it
-yields
+You can check that Agda will indeed compute these values.  Typing
+`^C ^N` and providing `2 ≤? 4` or `4 ≤? 2` as the requested expression
+causes Agda to print the values given above.
 
-    no (λ { (s≤s m≤n) → (λ { (s≤s m≤n) → (λ ()) m≤n }) m≤n })
-
-which simplifies to the value given above.  (As of this writing there
-is a bug in Agda, which yields a spurious `1` in the middle of the
-term above.)
-
+(A subtlety: if we do not define `¬s≤z` and `¬s≤s` as top-level functions,
+but instead use inline anonymous functions then Agda may have
+trouble normalising evidence of negation.)
 
 ## Decidables from booleans, and booleans from decidables
 
