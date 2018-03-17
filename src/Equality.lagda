@@ -91,7 +91,8 @@ If we go into the hole again and type `C-C C-,` then Agda now reports:
      .A : Set .ℓ
      .ℓ : .Agda.Primitive.Level
 
-This is the key step---Agda has worked out that `x` and `y` must be the same to match the pattern `refl`!
+This is the key step---Agda has worked out that `x` and `y` must be
+the same to match the pattern `refl`!
 
 Finally, if we go back into the hole and type `C-C C-R` it will
 instantiate the hole with the one constructor that yields a value of

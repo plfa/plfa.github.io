@@ -79,8 +79,8 @@ middle clause arises because there is no possible evidence that
 For example, we can compute that `2 ≤ 4` holds,
 and we can compute that `4 ≤ 2` does not hold.
 \begin{code}
-2≤ᵇ4 : (2 ≤ᵇ 4) ≡ true
-2≤ᵇ4 =
+_ : (2 ≤ᵇ 4) ≡ true
+_ =
   begin
     2 ≤ᵇ 4
   ≡⟨⟩
@@ -91,8 +91,8 @@ and we can compute that `4 ≤ 2` does not hold.
     true
   ∎
 
-4≤ᵇ2 : (4 ≤ᵇ 2) ≡ false
-4≤ᵇ2 =
+_ : (4 ≤ᵇ 2) ≡ false
+_ =
   begin
     4 ≤ᵇ 2
   ≡⟨⟩
@@ -199,7 +199,7 @@ A function that returns a boolean returns exactly a single bit of information:
 does the relation hold or does it not? Conversely, the evidence approach tells
 us exactly why the relation holds, but we are responsible for generating the
 evidence.  But it is easy to define a type that combines the benefits of
-both approaches.  It is called `Dec A`, where `Dec` is short for *decide*.
+both approaches.  It is called `Dec A`, where `Dec` is short for *decidable*.
 \begin{code}
 data Dec (A : Set) : Set where
   yes : A → Dec A
@@ -242,17 +242,18 @@ to derive them from the first.
 We can use our new function to *compute* the *evidence* that earlier we had to
 think up on our own.
 \begin{code}
-2≤?4 : Dec (2 ≤ 4)
-2≤?4 = yes (s≤s (s≤s z≤n))
+_ : Dec (2 ≤ 4)
+_ = 2 ≤? 4   -- evaluates to:  yes (s≤s (s≤s z≤n))
 
-4≤?2 : Dec (4 ≤ 2)
-4≤?2 = no λ{(s≤s (s≤s ()))}
+_ : Dec (4 ≤ 2)
+_ = 4 ≤? 2   -- evaluates to:  no λ{(s≤s (s≤s ()))}
 \end{code}
-You can check that Agda will indeed compute these values.  Replace the right hand
-sides of the two equations above by holes containing, respectively, `2 ≤? 4`
-and `4 ≤? 2`, then type `^C ^N` while in the holes to compute the corresponding
-values.  In the first case, it yields exactly the value given, while in the
-second case, it yields
+You can check that Agda will indeed compute these values.  Replace the
+right hand sides of the two equations above by holes; fill in the
+holes with, respectively, `2 ≤? 4` and `4 ≤? 2`, then type `^C ^N`
+while in the holes to compute the corresponding values.  In the first
+case, it yields exactly the given value. In the second case, it
+yields
 
     no (λ { (s≤s m≤n) → (λ { (s≤s m≤n) → (λ ()) m≤n }) m≤n })
 
