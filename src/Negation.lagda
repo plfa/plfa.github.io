@@ -265,13 +265,14 @@ Philip Wadler, *International Conference on Functional Programming*, 2003.)
 
 ### Exercise
 
-Prove the following three formulas are equivalent to each other,
-and to the formulas `EM` and `⊎-Dual-+` given earlier.
+Prove the following four formulas are equivalent to each other,
+and to the formula `EM` given earlier.
 \begin{code}
 ¬¬-Elim Peirce Implication : Set₁
 ¬¬-Elim = ∀ {A : Set} → ¬ ¬ A → A
 Peirce = ∀ {A B : Set} → (((A → B) → A) → A)
 Implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
+×-Implies-⊎ = ∀ {A B : Set} → ¬ (A × B) → (¬ A) ⊎ (¬ B)
 \end{code}
 
     

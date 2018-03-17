@@ -142,10 +142,10 @@ and similarly for `invʳ`, which does the same (up to renaming).
 ×-comm : ∀ {A B : Set} → (A × B) ≃ (B × A)
 ×-comm =
   record
-    { to = λ { (x , y) → (y , x)}
-    ; fro = λ { (y , x) → (x , y)}
-    ; invˡ = λ { (x , y) → refl }
-    ; invʳ = λ { (y , x) → refl }
+    { to      = λ { (x , y) → (y , x)}
+    ; from    = λ { (y , x) → (x , y)}
+    ; from∘to = λ { (x , y) → refl }
+    ; to∘from = λ { (y , x) → refl }
     } 
 \end{code}
 
@@ -171,10 +171,10 @@ matching against a suitable pattern to enable simplificition.
 ×-assoc : ∀ {A B C : Set} → ((A × B) × C) ≃ (A × (B × C))
 ×-assoc =
   record
-    { to = λ { ((x , y) , z) → (x , (y , z)) }
-    ; fro = λ { (x , (y , z)) → ((x , y) , z) }
-    ; invˡ = λ { ((x , y) , z) → refl }
-    ; invʳ = λ { (x , (y , z)) → refl }
+    { to      = λ { ((x , y) , z) → (x , (y , z)) }
+    ; from    = λ { (x , (y , z)) → ((x , y) , z) }
+    ; from∘to = λ { ((x , y) , z) → refl }
+    ; to∘from = λ { (x , (y , z)) → refl }
     } 
 \end{code}
 
@@ -237,10 +237,10 @@ a suitable pattern to enable simplification.
 ⊤-identityˡ : ∀ {A : Set} → (⊤ × A) ≃ A
 ⊤-identityˡ =
   record
-    { to   = λ { (tt , x) → x }
-    ; fro  = λ { x → (tt , x) }
-    ; invˡ = λ { (tt , x) → refl }
-    ; invʳ = λ { x → refl}
+    { to      = λ { (tt , x) → x }
+    ; from    = λ { x → (tt , x) }
+    ; from∘to = λ { (tt , x) → refl }
+    ; to∘from = λ { x → refl}
     }
 \end{code}
 
@@ -343,18 +343,18 @@ does the same (up to renaming).
 \begin{code}
 ⊎-comm : ∀ {A B : Set} → (A ⊎ B) ≃ (B ⊎ A)
 ⊎-comm = record
-  { to   = λ { (inj₁ x) → (inj₂ x)
-             ; (inj₂ y) → (inj₁ y)
-             }
-  ; fro  = λ { (inj₁ y) → (inj₂ y)
-             ; (inj₂ x) → (inj₁ x)
-             }
-  ; invˡ = λ { (inj₁ x) → refl
-             ; (inj₂ y) → refl
-             }
-  ; invʳ = λ { (inj₁ y) → refl
-             ; (inj₂ x) → refl
-             }
+  { to      = λ { (inj₁ x) → (inj₂ x)
+              ; (inj₂ y) → (inj₁ y)
+              }
+  ; from    = λ { (inj₁ y) → (inj₂ y)
+              ; (inj₂ x) → (inj₁ x)
+              }
+  ; from∘to = λ { (inj₁ x) → refl
+                ; (inj₂ y) → refl
+                } 
+  ; to∘from = λ { (inj₁ y) → refl
+                ; (inj₂ x) → refl
+                }  
   }
 \end{code}
 Being *commutative* is different from being *commutative up to
