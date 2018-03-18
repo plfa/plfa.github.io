@@ -14,22 +14,16 @@ suc m ≤? suc n with m ≤? n
 ... | yes m≤n = yes (s≤s m≤n)
 ... | no ¬m≤n = no λ{ (s≤s m≤n) → ¬m≤n m≤n }
 
-_ : Dec (2 ≤ 4)
-_ = 2 ≤? 4   -- yes (s≤s (s≤s z≤n))
-
 _ : 2 ≤? 4 ≡ yes (s≤s (s≤s z≤n))
 _ = refl
 
-_ : Dec (4 ≤ 2)
-_ = 4 ≤? 2   -- no λ{(s≤s (s≤s ()))}
-
-_ : 4 ≤? 2 ≡ no (λ { (s≤s m≤n) → (λ { (s≤s m≤n) → (λ ()) m≤n }) m≤n })
+_ : 4 ≤? 2 ≡ no {!!}
 _ = refl
 
 {-
-/Users/wadler/sf/src/extra/DecidableBroken.agda:27,5-9
-(λ { (s≤s m≤n) → (λ { (s≤s m≤n) → (λ ()) 1 m≤n }) m≤n }) x !=
-(λ { (s≤s m≤n) → _34 m≤n }) x of type .Data.Empty.⊥
-when checking that the expression refl has type
-(4 ≤? 2) ≡ no (λ { (s≤s m≤n) → _34 m≤n })
+Using ^C ^N, the term 
+  4 ≤? 2
+evaluates to
+  no (λ { (s≤s m≤n) → (λ { (s≤s m≤n) → (λ ()) 1 m≤n }) m≤n })
+The 1 is spurious.
 -}

@@ -35,6 +35,7 @@ then applies `g`.
 In set theory, two sets are isomorphic if they are in one-to-one correspondence.
 Here is a formal definition of isomorphism.
 \begin{code}
+infix 0 _≃_
 record _≃_ (A B : Set) : Set where
   field
     to   : A → B
@@ -216,6 +217,7 @@ correspondence between the second type and the first.
 
 Here is the formal definition of embedding.
 \begin{code}
+infix 0 _≲_
 record _≲_ (A B : Set) : Set where
   field
     to      : A → B

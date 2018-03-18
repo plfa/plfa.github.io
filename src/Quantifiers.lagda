@@ -93,7 +93,7 @@ Show that a disjunction of universals implies a universal of disjunctions.
 ⊎∀-Implies-∀⊎ = ∀ {A : Set} { B C : A → Set } →
   (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
 \end{code}
-Does the converse also hold? If so, prove; if not, explain why.
+Does the converse hold? If so, prove; if not, explain why.
 
 
 ## Existentials
@@ -133,24 +133,29 @@ are provided by the evidence for `∃ (λ (x : A) → B x)`.
 
 Agda makes it possible to define our own syntactic abbreviations.
 \begin{code}
-syntax ∃ {A} (λ x → B) = ∃[ x ∈ A ] B
+syntax ∃ (λ x → B) = ∃[ x ] B
 \end{code}
-This allows us to write `∃[ x ∈ A ] (B x)` in place of
-`∃ (λ (x : A) → B x)`.
+This allows us to write `∃[ x ] (B x)` in place of `∃ (λ x → B x)`.
 
-As an example, recall the definitions of `even` from
+As an example, recall the definitions of `even` and `odd` from
 Chapter [Relations](Relations).  
 \begin{code}
-data even : ℕ → Set where
-  ev0 : even zero
-  ev+2 : ∀ {n : ℕ} → even n → even (suc (suc n))
+data even : ℕ → Set
+data odd  : ℕ → Set
+
+data even where
+  even-zero : even zero
+  even-suc  : ∀ {n : ℕ} → odd n → even (suc n)
+
+data odd where
+  odd-suc   : ∀ {n : ℕ} → even n → odd (suc n)
 \end{code}
-A number is even if it is zero, or if it is two
-greater than an even number.
+A number is even if it is zero or the successor of an odd number, and
+odd if it the successor of an even number.
 
 We will show that a number is even if and only if it is twice some
-other number.  That is, number `n` is even if and only if there exists
-a number `m` such that twice `m` is `n`.
+other number, and odd if and only if it is one more than twice
+some other number.
 
 First, we need a lemma, which allows us to
 simplify twice the successor of `m` to two
@@ -175,48 +180,71 @@ The lemma is straightforward, and uses the lemma
 allows us to simplify `m + suc n` to `suc (m + n)`.
 
 Here is the proof in the forward direction.
-\begin{code}  
-ev-ex : ∀ {n : ℕ} → even n → ∃[ m ∈ ℕ ] (2 * m ≡ n)
-ev-ex ev0 =  (zero , refl)
-ev-ex (ev+2 ev) with ev-ex ev
-... | (m , refl) = (suc m , lemma m)
+\begin{code}
+even-∃ : ∀ {n : ℕ} → even n → ∃[ m ] (    2 * m ≡ n)
+odd-∃  : ∀ {n : ℕ} →  odd n → ∃[ m ] (1 + 2 * m ≡ n)
+
+even-∃ even-zero =  zero , refl
+even-∃ (even-suc o) with odd-∃ o
+...                    | m , refl = suc m , lemma m
+
+odd-∃  (odd-suc e)  with even-∃ e
+...                    | m , refl = m , refl
 \end{code}
-Given an even number, we must show it is twice some
-other number.  The proof is a function, which
-given a proof that `n` is even
-returns a pair consisting of `m` and a proof
-that twice `m` is `n`.  The proof is by induction over
-the evidence that `n` is even.
+We define two mutually recursive functions. Given
+evidence that `n` is even or odd, we return a
+number `m` and evidence that `2 * m ≡ n` or `1 + 2 * m ≡ n`.
+(By convention, one tends to put a constant at the
+end of a term, so why have we chosen here
+to write `1 + 2 * m` rather than `2 * m + 1`?)
+We induct over the evidence that `n` is even or odd.
 
 - If the number is even because it is zero, then we return a pair
 consisting of zero and the (trivial) proof that twice zero is zero.
 
-- If the number is even because it is two more than another even
-number `n`, then we apply the induction hypothesis, giving us a number
-`m` and a proof that `2 * m ≡ n`, which we match against `refl`.  We
-return a pair consisting of `suc m` and a proof that `2 * suc m ≡ suc
-(suc n)`, which follows from `2 * m ≡ n` and the lemma.
+- If the number is even because it is one more than an odd number,
+then we apply the induction hypothesis to give a number `m` and
+evidence that `1 + 2 * m ≡ n`. We return a pair consisting of `suc m`
+and evidence that `2 * (suc m)` ≡ suc n`, which after substituting for
+`n` means we need to show `2 * (suc m) ≡ 2 + 2 * m`, which follows
+from our lemma.
+
+- If the number is odd because it is the successor of an even
+number, then we apply the induction hypothesis to give a number `m`
+and evidence that `2 * m ≡ n`. We return a pair conisting of `suc m`
+and evidence that `1 + 2 * m = suc n`, which is immediate
+after substituting for `n`.
+
+This completes the proof in the forward direction.
 
 Here is the proof in the reverse direction.
 \begin{code}
-ex-ev : ∀ {n : ℕ} → ∃[ m ∈ ℕ ] (2 * m ≡ n) → even n
-ex-ev (zero , refl) = ev0
-ex-ev (suc m , refl) rewrite lemma m = ev+2 (ex-ev (m , refl))
+∃-even : ∀ {n : ℕ} → ∃[ m ] (   2 * m ≡ n) → even n
+∃-odd  : ∀ {n : ℕ} → ∃[ m ] (1 + 2 * m ≡ n) →  odd n
+
+∃-even ( zero , refl)                  =  even-zero
+∃-even (suc m , refl) rewrite lemma m  =  even-suc (∃-odd (m , refl))
+
+∃-odd  (    m , refl)                  =  odd-suc (∃-even (m , refl))
 \end{code}
-Given a number that is twice some other number,
-we must show that it is even.  The proof is a function,
-which given a number `m` and a proof that `n` is twice `m`,
-returns a proof that `n` is even.  The proof is by induction
-over the number `m`.
+Given a number that is twice some other number we must show
+it is even, and a number that is one more than twice some other
+number we must show it is odd.  We induct over the evidence
+of the existential, and in particular the number that is doubled.
 
-- If it is zero, then we must show that twice zero is even,
-which follows by rule `ev0`. 
+- In the even case, if it is `zero`, then we must show `2 * zero` is
+even, which follows by `even-zero`.
 
-- If it is `suc m`, then we must show that `2 * suc m` is
-even.  After rewriting with our lemma, we must show that
-`suc (suc (2 * m))` is even.  The inductive hypothesis tells
-us `2 * m` is even, from which the desired result follows
-by rule `ev+2`.
+- In the even case, if it is `suc n`, then we must show `2 * suc m` is
+even.  After rewriting with our lemma, we must show that `2 + 2 * m`
+is even. The inductive hypothesis tells us that `1 + 2 * m` is odd,
+from which the desired result follows by `even-suc`.
+
+- In the odd case, then we must show `1 + 2 * suc m` is odd.  The
+inductive hypothesis tell us that `2 * m` is even, from which the
+desired result follows by `odd-suc`.
+
+This completes the proof in the backward direction.
 
 Negation of an existential is isomorphic to universal
 of a negation.  Considering that existentials are generalised
@@ -224,44 +252,67 @@ disjuntion and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
 of a disjuntion is isomorphic to a conjunction of negations.
 \begin{code}
-¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃[ x ∈ A ] B x) ≃ ∀ (x : A) → ¬ B x
+¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
 ¬∃∀ =
   record
-    { to      =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
-    ; from    =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
-    ; from∘to =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) } 
-    ; to∘from =  λ { ∀¬bx → refl } 
+    { to      =  λ{ ¬∃xy x y → ¬∃xy (x , y) }
+    ; from    =  λ{ ∀¬xy (x , y) → ∀¬xy x y }
+    ; from∘to =  λ{ ¬∃xy → extensionality λ{ (x , y) → refl } } 
+    ; to∘from =  λ{ ∀¬xy → refl } 
     }
 \end{code}
-In the `to` direction, we are given a value `¬∃bx` of type
-`¬ ∃ (λ (x : A) → B x)`, and need to show that given a value
-`x` of type `A` that `¬ B x` follows, in other words, from
-a value `bx` of type `B x` we can derive false.  Combining
-`x` and `bx` gives us a value `(x , bx)` of type `∃ (λ (x : A) → B x)`,
-and applying `¬∃bx` to that yields a contradiction.
+In the `to` direction, we are given a value `¬∃xy` of type
+`¬ ∃[ x ] B x`, and need to show that given a value
+`x` that `¬ B x` follows, in other words, from
+a value `y` of type `B x` we can derive false.  Combining
+`x` and `y` gives us a value `(x , y)` of type `∃[ x ] B x`,
+and applying `¬∃xy` to that yields a contradiction.
 
-In the `from` direction, we are given a value `∀¬bx` of type
-`∀ (x : A) → ¬ B x`, and need to show that from a value `(x , bx)`
-of type `∃ (λ (x : A) → B x)` we can derive false.  Applying `∀¬bx`
-to `x` gives a value of type `¬ B x`, and applying that to `bx` yields
+In the `from` direction, we are given a value `∀¬xy` of type
+`∀ x → ¬ B x`, and need to show that from a value `(x , y)`
+of type `∃[ x ] B x` we can derive false.  Applying `∀¬xy`
+to `x` gives a value of type `¬ B x`, and applying that to `y` yields
 a contradiction.
 
 The two inverse proofs are straightforward, where one direction
 requires extensionality.
 
-*Exercise* Show `∃ (λ (x : A) → ¬ B x) → ¬ (∀ (x : A) → B x)`.
+### Exercise (`∃-distrib-⊎`)
+
+Show that universals distribute over conjunction.
+\begin{code}
+∃-Distrib-⊎ = ∀ {A : Set} {B C : A → Set} →
+  ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
+\end{code}
+
+### Exercise (`∃×-implies-×∃`)
+
+Show that an existential of conjunctions implies a conjunction of existentials.
+\begin{code}
+∃×-Implies-×∃ = ∀ {A : Set} { B C : A → Set } →
+  ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
+\end{code}
+Does the converse hold? If so, prove; if not, explain why.
+
+### Exercise (`∃¬-Implies-¬∀)
+
+Show `∃[ x ] ¬ B x → ¬ (∀ x → B x)`.
+
+Does the converse hold? If so, prove; if not, explain why.
+
 
 ## Standard Prelude
 
 Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
-import Data.Product using (∃)
+import Data.Product using (∃;_,_)
 \end{code}
+
 
 ## Unicode
 
-This chapter introduces the following unicode.
+This chapter uses the following unicode.
 
-    ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
+    ∃  U+2203  THERE EXISTS (\ex, \exists)
 
 

@@ -540,7 +540,7 @@ data odd where
   odd-suc   : ∀ {n : ℕ} → even n → odd (suc n)
 \end{code}
 A number is even if it is zero or the successor of an odd number,
-and a number is odd if it is the successor of an even number.
+and odd if it is the successor of an even number.
 
 This is our first use of a mutually recursive datatype declaration.
 Since each identifier must be defined before it is used, we first

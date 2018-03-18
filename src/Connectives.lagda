@@ -694,7 +694,7 @@ is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.  The proof of left inverse requires both extensionality
 and the rule `η-×` for products.
 \begin{code}
-→-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
+→-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ (A → B) × (A → C)
 →-distrib-× =
   record
     { to      = λ{ f → ( (λ{ x → proj₁ (f x) }) , (λ{ y → proj₂ (f y)}) ) }
@@ -710,39 +710,39 @@ and the rule `η-×` for products.
 Products distributes over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results.
 \begin{code}
-×-distrib-⊎ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
+×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
 ×-distrib-⊎ =
   record
-    { to   = λ { ((inj₁ x) , z) → (inj₁ (x , z)) 
-               ; ((inj₂ y) , z) → (inj₂ (y , z))
-               }
-    ; from  = λ { (inj₁ (x , z)) → ((inj₁ x) , z)
-               ; (inj₂ (y , z)) → ((inj₂ y) , z)
-               }
-    ; from∘to = λ { ((inj₁ x) , z) → refl
-               ; ((inj₂ y) , z) → refl
-               }
-    ; to∘from = λ { (inj₁ (x , z)) → refl
-               ; (inj₂ (y , z)) → refl
-               }               
+    { to      = λ{ ((inj₁ x) , z) → (inj₁ (x , z)) 
+                 ; ((inj₂ y) , z) → (inj₂ (y , z))
+                 }
+    ; from    = λ{ (inj₁ (x , z)) → ((inj₁ x) , z)
+                 ; (inj₂ (y , z)) → ((inj₂ y) , z)
+                 }
+    ; from∘to = λ{ ((inj₁ x) , z) → refl
+                 ; ((inj₂ y) , z) → refl
+                 }
+    ; to∘from = λ{ (inj₁ (x , z)) → refl
+                 ; (inj₂ (y , z)) → refl
+                 }               
     }
 \end{code}
 
 Sums do not distribute over products up to isomorphism, but it is an embedding.
 \begin{code}
-⊎-distrib-× : ∀ {A B C : Set} → ((A × B) ⊎ C) ≲ ((A ⊎ C) × (B ⊎ C))
+⊎-distrib-× : ∀ {A B C : Set} → (A × B) ⊎ C ≲ (A ⊎ C) × (B ⊎ C)
 ⊎-distrib-× =
   record
-    { to   = λ { (inj₁ (x , y)) → (inj₁ x , inj₁ y)
-               ; (inj₂ z)       → (inj₂ z , inj₂ z)
-               }
-    ; from  = λ { (inj₁ x , inj₁ y) → (inj₁ (x , y))
-               ; (inj₁ x , inj₂ z) → (inj₂ z)
-               ; (inj₂ z , _ )     → (inj₂ z)
-               }
-    ; from∘to = λ { (inj₁ (x , y)) → refl
-               ; (inj₂ z)       → refl
-               }
+    { to      = λ{ (inj₁ (x , y)) → (inj₁ x , inj₁ y)
+                 ; (inj₂ z)       → (inj₂ z , inj₂ z)
+                 }  
+    ; from    = λ{ (inj₁ x , inj₁ y) → (inj₁ (x , y))
+                 ; (inj₁ x , inj₂ z) → (inj₂ z)
+                 ; (inj₂ z , _ )     → (inj₂ z)
+                 }
+    ; from∘to = λ{ (inj₁ (x , y)) → refl
+                 ; (inj₂ z)       → refl
+                 } 
     }
 \end{code}
 Note that there is a choice in how we write the `from` function.
@@ -762,6 +762,16 @@ corresponds to `_×_` and `_∨_` corresponds to `_⊎_`, then the first
 gives rise to an isomorphism, while the second only gives rise to an
 embedding, revealing a sense in which one of these laws is "more
 true" than the other.
+
+
+### Exercise (`×⊎-implies-⊎×`)
+
+Show that a conjunct of disjuncts implies a disjunct of conjuncts.
+\begin{code}
+×⊎-Implies-⊎× = ∀ {A B C D : Set} → (A ⊎ B) × (C ⊎ D) → (A × C) ⊎ (B × D)
+\end{code}
+Does the converse hold? If so, prove; if not, explain why.
+
 
 ### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`)
 
