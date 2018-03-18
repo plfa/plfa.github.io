@@ -303,9 +303,9 @@ the terms `m + n` and `_+_ m n` are equivalent.
 
 The definition has a base case and an inductive case, corresponding to
 those for the natural numbers.  The base case says that adding zero to
-a number (`zero + n`) returns that number (`n`).  The inductive case
-says that adding the successor of a number to another number (`(suc m)
-+ n`) returns the successor of adding the two numbers (`suc (m+n)`).
+a number, `zero + n`, returns that number, `n`.  The inductive case
+says that adding the successor of a number to another number,
+`(suc m) + n`, returns the successor of adding the two numbers, `suc (m+n)`.
 We say we are using *pattern matching* when constructors appear on the
 left-hand side of an equation.
 
