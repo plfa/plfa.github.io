@@ -61,21 +61,25 @@ is a term of type `A` then we may conclude that `B M` holds.
 \end{code}
 As with `→-elim`, the rule corresponds to function application.
 
-Ordinary function types arise as the special case of dependent
-function types where the range does not depend on a variable drawn
-from the domain.  When an ordinary function is viewed as evidence of
-implication, both its domain and range are viewed as types of
-evidence, whereas when a dependent function is viewed as evidence of a
-universal, its domain is viewed as a data type and its range is viewed
-as a type of evidence.  This is just a matter of interpretation, since
-in Agda data types and types of evidence are indistinguishable.
+Function types arise as a special case of dependent function types,
+where the range does not depend on a variable drawn from the domain.
+When a function is viewed as evidence of implication, both its
+argument and result are viewed as evidence, whereas when a dependent
+function is viewed as evidence of a universal, its argument is viewed
+as an element of a data type and its result is viewed as evidence of
+a proposition that depends on the argument. This difference is largely
+a matter of interpretation, since in Agda data types and types of
+evidence are indistinguishable.
 
 Dependent function types are sometimes referred to as dependent products,
 because if `A` is a finite type with values `{ x₁ , ⋯ , xᵢ }`, and if
 each of the types `B x₁ , ⋯ B xᵢ` has `m₁ , ⋯ , mᵢ` distinct members,
-then `∀ (x : A) → B x` has `m₁ × ⋯ × mᵢ` members.  Because of the
-association of `Π` with products, sometimes the notation `∀ (x : A) → B x`
-is replaced by a notation such as `Π[ x ∈ A ] (B x)`.
+then `∀ (x : A) → B x` has `m₁ × ⋯ × mᵢ` members.  Because of this
+association, sometimes the notation `∀ (x : A) → B x`
+is replaced by a notation such as `Π[ x ∈ A ] (B x)`,
+where `Π` stands for product.  However, we will stick with the name
+dependent function, because (as we will see) dependent product is ambiguous.
+
 
 ### Exercise (`∀-distrib-×`)
 
@@ -116,6 +120,26 @@ Evidence that `∃ (λ (x : A) → B x)` holds is of the form
 `(M , N)` where `M` is a term of type `A`, and `N` is evidence
 that `B M` holds.
 
+Equivalently, we could also declare existentials as a record type.
+\begin{code}
+record ∃′ {A : Set} (B : A → Set) : Set where
+  field
+    proj₁ : A
+    proj₂ : B proj₁
+\end{code}
+Here record construction
+
+    record
+      { proj₁′ = M
+      ; proj₂′ = N
+      }
+
+corresponds to the term
+
+    ( M , N )
+
+where `M` is a term of type `A` and `N` is a term of type `B M`.
+
 Given evidence that `∃ (λ (x : A) → B x)` holds, and
 given evidence that `∀ (x : A) → B x → C` holds, where `C` does
 not contain `x` as a free variable, we may conclude that `C` holds.
@@ -131,11 +155,47 @@ instantiate that proof that `∀ (x : A) → B x → C` to any value
 `M` of type `A` and any `N` of type `B M`, and exactly such values
 are provided by the evidence for `∃ (λ (x : A) → B x)`.
 
+Products arise a special case of existentials, where the second
+component does not depend on a variable drawn from the first
+component.  When a product is viewed as evidence of a conjunction,
+both of its components are viewed as evidence, whereas when viewed as
+evidence of an existential, the first component is viewed as an
+element of a datatype and the second component is viewed as evidence
+of a proposition that depends on the first component.  This difference
+is largely a matter of interpretation, since in Agda data types and
+types of evidence are indistinguishable.
+
+Existentials are sometimes referred to as dependent sums,
+because if `A` is a finite type with values `{ x₁ , ⋯ , xᵢ }`, and if
+each of the types `B x₁ , ⋯ B xᵢ` has `m₁ , ⋯ , mᵢ` distinct members,
+then `∃ (λ (x : A) → B x)` has `m₁ + ⋯ + mᵢ` members.  Because of this
+association, sometimes the notation `∃ (λ (x : A) → B x)`
+is replaced by a notation such as `Σ[ x ∈ A ] (B x)`,
+where `Σ` stands for sum.
+
+Existentials are sometimes referred to as dependent products, since
+products arise as a special case.  However, that choice of names is
+doubly confusing, because universals also have
+a claim to the name dependent product, and because existentials
+have a claim to the name dependent sum.
+
+
+
+
+
 Agda makes it possible to define our own syntactic abbreviations.
 \begin{code}
-syntax ∃ (λ x → B) = ∃[ x ] B
+∃-syntax = ∃
+syntax ∃-syntax (λ x → B) = ∃[ x ] B
 \end{code}
 This allows us to write `∃[ x ] (B x)` in place of `∃ (λ x → B x)`.
+We could also define a syntax that makes the argument explicit.
+\begin{code}
+Σ-syntax = ∃
+syntax Σ-syntax {A} (λ x → B) = Σ[ x ∈ A ] B
+\end{code}
+Both forms of syntax are provided by the Agda standard library.
+We will usually use the first, as it is more compact.
 
 As an example, recall the definitions of `even` and `odd` from
 Chapter [Relations](Relations).  
@@ -277,6 +337,8 @@ a contradiction.
 The two inverse proofs are straightforward, where one direction
 requires extensionality.
 
+
+
 ### Exercise (`∃-distrib-⊎`)
 
 Show that universals distribute over conjunction.
@@ -294,7 +356,7 @@ Show that an existential of conjunctions implies a conjunction of existentials.
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
-### Exercise (`∃¬-Implies-¬∀)
+### Exercise (`∃¬-Implies-¬∀`)
 
 Show `∃[ x ] ¬ B x → ¬ (∀ x → B x)`.
 

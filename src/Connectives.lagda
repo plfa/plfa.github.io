@@ -91,6 +91,8 @@ left-hand side we refer to it as a *destructor*.  We also refer
 to `proj₁` and `proj₂` as destructors, since they play a similar role.
 Other terminology refers to constructor as *introducing* a conjunction,
 and to a destructor as *eliminating* a conjunction.
+Indeed, `proj₁` and `proj₂` are sometimes given the names
+`×-elim₁` and `×-elim₂`.
 
 Applying each destructor and reassembling the results with the
 constructor is the identity over products.
