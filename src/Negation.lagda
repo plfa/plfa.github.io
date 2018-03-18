@@ -96,28 +96,28 @@ will show that assuming `A` leads to a contradiction, and hence
 we may conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown
 `¬ A`.
 
-Using negation, it is straightforward to define unequal.
+Using negation, it is straightforward to define inequality.
 \begin{code}
 _≢_ : ∀ {A : Set} → A → A → Set
 x ≢ y  =  ¬ (x ≡ y)
 \end{code}
-It is straightforward to show distinct numbers are unequal.
+It is straightforward to show distinct numbers are not equal.
 \begin{code}
 _ : 1 ≢ 2
 _ = λ()
 \end{code}
-This is our first use of an absurd patters in a lambda expression.
+This is our first use of an absurd pattern in a lambda expression.
 The type `M ≡ N` is occupied exactly when `M` and `N` simplify to
 identical terms. Since `1` and `2` simplify to distinct normal forms,
-Agda determines that the absurd pattern `()` matches all arguments of
-type `1 ≡ 2`.  As a second example, it is also easy to validate
+Agda determines that there is no possible evidence that `1 ≡ 2`.
+As a second example, it is also easy to validate
 Peano's postulate that zero is not the successor of any number.
 \begin{code}
 peano : ∀ {m : ℕ} → zero ≢ suc m
 peano = λ()
 \end{code}
 The evidence is essentially the same, as the absurd pattern matches
-all arguments of type `zero ≡ suc m`. 
+all possible evidence of type `zero ≡ suc m`. 
 
 Given the correspondence of implication to exponentiation and
 false to the type with no members, we can view negation as

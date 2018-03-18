@@ -22,7 +22,7 @@ open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 \end{code}
 
-In what follows, we will occasionally require [extensionality][extensionality].
+We assume [extensionality][extensionality].
 \begin{code}
 postulate
   extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
@@ -44,9 +44,9 @@ dependent function type, which has appeared throughout this book.
 
 Evidence that `∀ (x : A) → B x` holds is of the form
 
-    λ (x : A) → N x
+    λ (x : A) → N
 
-where `N x` is a term of type `B x`, and `N x` and `B x` both contain
+where `N` is a term of type `B x`, and `N x` and `B x` both contain
 a free variable `x` of type `A`.  Given a term `L` providing evidence
 that `∀ (x : A) → B x` holds, and a term `M` of type `A`, the term `L
 M` provides evidence that `B M` holds.  In other words, evidence that
@@ -59,7 +59,7 @@ is a term of type `A` then we may conclude that `B M` holds.
 ∀-elim : ∀ {A : Set} {B : A → Set} → (∀ (x : A) → B x) → (M : A) → B M
 ∀-elim L M = L M
 \end{code}
-In medieval times, this rule was known by the name *dictum de omni*.
+As with `→-elim`, the rule corresponds to function application.
 
 Ordinary function types arise as the special case of dependent
 function types where the range does not depend on a variable drawn
@@ -70,8 +70,12 @@ universal, its domain is viewed as a data type and its range is viewed
 as a type of evidence.  This is just a matter of interpretation, since
 in Agda data types and types of evidence are indistinguishable.
 
-Unlike with conjunction, disjunction, and implication, there is no simple
-analogy between universals and arithmetic.
+Dependent function types are sometimes referred to as dependent products,
+because if `A` is a finite type with values `{ x₁ , ⋯ , xᵢ }`, and if
+each of the types `B x₁ , ⋯ B xᵢ` has `m₁ , ⋯ , mᵢ` distinct members,
+then `∀ (x : A) → B x` has `m₁ × ⋯ × mᵢ` members.  Because of the
+association of `Π` with products, sometimes the notation `∀ (x : A) → B x`
+is replaced by a notation such as `Π[ x ∈ A ] (B x)`.
 
 ### Exercise (`∀-distrib-×`)
 
@@ -91,54 +95,48 @@ Show that a disjunction of universals implies a universal of disjunctions.
 \end{code}
 Does the converse also hold? If so, prove; if not, explain why.
 
+
 ## Existentials
 
 Given a variable `x` of type `A` and a proposition `B x` which
 contains `x` as a free variable, the existentially quantified
-proposition `∃[ x ] → B x` holds if for some term `M` of type
+proposition `∃ (λ (x : A) → B x)` holds if for some term `M` of type
 `A` the proposition `B M` holds.  Here `B M` stands for
 the proposition `B x` with each free occurrence of `x` replaced by
 `M`.  The variable `x` appears free in `B x` but bound in
-`∃[ x ] → B x`.
-
-It is common to adopt a notation such as `∃[ x : A ]→ B[x]`,
-which introduces `x` as a bound variable of type `A` that appears
-free in `B[x]` and bound in `∃[ x : A ]→ B[x]`.  We won't do
-that here, but instead use the lambda notation built-in to Agda
-to introduce `x` as a bound variable.
+`∃ (λ (x : A) → B x)`.
 
 We formalise existential quantification by declaring a suitable
 inductive type.
 \begin{code}
-data ∃ (A : Set) (B : A → Set) : Set where
-  _,_ : (x : A) → B x → ∃ A B
+data ∃ {A : Set} (B : A → Set) : Set where
+  _,_ : (x : A) → B x → ∃ B
 \end{code}
-Evidence that `∃ (λ (x : A) → B[x])` holds is of the form
+Evidence that `∃ (λ (x : A) → B x)` holds is of the form
 `(M , N)` where `M` is a term of type `A`, and `N` is evidence
-that `B[M]` holds.
+that `B M` holds.
 
-\begin{code}
-syntax ∃ A (λ x → B) = ∃[ x ∈ A ] B
-\end{code}
-
-Given evidence that `∃ (λ (x : A) → B[x])` holds, and
-given evidence that `∀ (x : A) → B[x] → C` holds, where `C` does
+Given evidence that `∃ (λ (x : A) → B x)` holds, and
+given evidence that `∀ (x : A) → B x → C` holds, where `C` does
 not contain `x` as a free variable, we may conclude that `C` holds.
 \begin{code}
 ∃-elim : ∀ {A : Set} {B : A → Set} {C : Set} →
-  (∃[ x ∈ A ] B x) → (∀ (x : A) → B x → C) → C
+  (∃ (λ (x : A) → B x)) → (∀ (x : A) → B x → C) → C
 ∃-elim (M , N) P = P M N
 \end{code}
-In other words, if we know for every `x` of type `A` that `B[x]`
-implies `C`, and we know for some `x` of type `A` that `B[x]` holds,
+In other words, if we know for every `x` of type `A` that `B x`
+implies `C`, and we know for some `x` of type `A` that `B x` holds,
 then we may conclude that `C` holds.  This is because we may
-instantiate that proof that `∀ (x : A) → B[x] → C` to any `x`, and we
-may choose the particular `x` provided by the evidence that `∃ (λ (x :
-A) → B[x])`.
+instantiate that proof that `∀ (x : A) → B x → C` to any value
+`M` of type `A` and any `N` of type `B M`, and exactly such values
+are provided by the evidence for `∃ (λ (x : A) → B x)`.
 
-
-[It would be better to have even and odd as an exercise.  Is there
-a simpler example that I could start with?]
+Agda makes it possible to define our own syntactic abbreviations.
+\begin{code}
+syntax ∃ {A} (λ x → B) = ∃[ x ∈ A ] B
+\end{code}
+This allows us to write `∃[ x ∈ A ] (B x)` in place of
+`∃ (λ (x : A) → B x)`.
 
 As an example, recall the definitions of `even` from
 Chapter [Relations](Relations).  

@@ -28,7 +28,7 @@ open import Data.Nat.Properties.Simple using (+-suc)
 open import Function using (_∘_)
 \end{code}
 
-In what follows, we will occasionally require [extensionality][extensionality].
+We assume [extensionality][extensionality].
 \begin{code}
 postulate
   extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
