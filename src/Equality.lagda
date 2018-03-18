@@ -29,7 +29,7 @@ constructor `refl` provides evidence that `x ≡ x`. Hence, every value
 is equivalent to itself, and we have no other way of showing values
 are equivalent.  We have quantified over all levels, so that we can
 apply equivalence to types belonging to any level.  The definition
-features an asymetry, in that the first argument to `_≡_` is given by
+features an asymmetry, in that the first argument to `_≡_` is given by
 the parameter `x : A`, while the second is given by an index in `A → Set ℓ`.
 This follows our policy of using parameters wherever possible.
 The first argument to `_≡_` can be a parameter because it doesn't vary,
@@ -454,9 +454,9 @@ equal if and only if they satisfy the same properties. This
 principle sometimes goes by the name Leibniz' Law, and is closely
 related to Spock's Law, ``A difference that makes no difference is no
 difference''.  Here we define Leibniz equality, and show that two terms
-satsisfy Lebiniz equality if and only if they satisfy Martin Löf equivalence.
+satisfy Leibniz equality if and only if they satisfy Martin Löf equivalence.
 
-Leibniz equality is usually formalized to state that `x ≐ y`
+Leibniz equality is usually formalised to state that `x ≐ y`
 holds if every property `P` that holds of `x` also holds of
 `y`.  Perhaps surprisingly, this definition is
 sufficient to also ensure the converse, that every property `P` that

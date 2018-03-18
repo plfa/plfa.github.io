@@ -4,7 +4,7 @@ layout    : page
 permalink : /Quantifiers
 ---
 
-This chapter introduces universal and existential quatification.
+This chapter introduces universal and existential quantification.
 
 ## Imports
 
@@ -238,11 +238,11 @@ We will show that a number is even if and only if it is twice some
 other number, and odd if and only if it is one more than twice
 some other number.  In other words, we will show
 
-> `even n`  *iff*  `∃[ m ] (    2 * m ≡ n)`
-> `odd  n`  *iff*  `∃[ m ] (1 + 2 * m ≡ n)`
+    even n   iff   ∃[ m ] (    2 * m ≡ n)
+    odd  n   iff   ∃[ m ] (1 + 2 * m ≡ n)
 
-First, we need a lemma, which allows us to simplify twice the
-successor of `m` to two more than twice `m`.
+First, we need a lemma, which states that twice the successor of `m`
+is two more than twice `m`.
 \begin{code}
 lemma : ∀ (m : ℕ) → 2 * suc m ≡ 2 + 2 * m
 lemma m =
@@ -294,7 +294,7 @@ from our lemma.
 
 - If the number is odd because it is the successor of an even
 number, then we apply the induction hypothesis to give a number `m`
-and evidence that `2 * m ≡ n`. We return a pair conisting of `suc m`
+and evidence that `2 * m ≡ n`. We return a pair consisting of `suc m`
 and evidence that `1 + 2 * m = suc n`, which is immediate
 after substituting for `n`.
 
@@ -331,9 +331,9 @@ This completes the proof in the backward direction.
 
 Negation of an existential is isomorphic to universal
 of a negation.  Considering that existentials are generalised
-disjuntion and universals are generalised conjunction, this
+disjunction and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
-of a disjuntion is isomorphic to a conjunction of negations.
+of a disjunction is isomorphic to a conjunction of negations.
 \begin{code}
 ¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
 ¬∃∀ =

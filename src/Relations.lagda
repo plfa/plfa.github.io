@@ -184,7 +184,7 @@ using holes and the `^C ^C`, `^C ^,`, and `^C ^R` commands.
 ## Transitivity
 
 The second property to prove about comparison is that it is
-transitive: for any naturals `m`, `n`, andl `p`, if `m ≤ n` and `n ≤
+transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤
 p` hold, then `m ≤ p` holds.
 \begin{code}
 ≤-trans : ∀ {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p
@@ -195,7 +195,7 @@ Here the proof is most easily thought of as by induction on the
 *evidence* that `m ≤ n`, so we have left `m`, `n`, and `p` implicit.
 
 In the base case, the first inequality holds by `z≤n`, and so
-arwe are given `zero ≤ n` and `n ≤ p` and must show `zero ≤ p`,
+we are given `zero ≤ n` and `n ≤ p` and must show `zero ≤ p`,
 which follows immediately by `z≤n`.  In this
 case, the fact that `n ≤ p` is irrelevant, and we write `_` as the
 pattern to indicate that the corresponding evidence is unused.

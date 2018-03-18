@@ -270,7 +270,7 @@ The devil paused.  "I choose (b)."
 The man was disappointed but not surprised.  That was that, he thought.
 But the offer gnawed at him.  Imagine what he could do with his wish!
 Many years passed, and the man began to accumulate money.  To get the
-money he sometimes did bad things, and dimly he realized that
+money he sometimes did bad things, and dimly he realised that
 this must be what the devil had in mind.
 Eventually he had his billion dollars, and the devil appeared again.
 

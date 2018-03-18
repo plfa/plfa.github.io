@@ -27,6 +27,7 @@ For answering questions on the Agda mailing list.
 * Nils Anders Danielsson <nad@cse.gu.se>
 * Miëtek Bak <mietek@bak.io>
 * Gergő Érdi <gergo@erdi.hu>
+* Adam Sandberg Eriksson <adam@sandbergericsson.se>
 * David Janin <david.janin@labri.fr>
 * András Kovács <kovacsahun@hotmail.com>
 * Ulf Norell <ulf.norell@gmail.com>

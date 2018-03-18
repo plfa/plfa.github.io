@@ -49,7 +49,7 @@ data _×_ : Set → Set → Set where
 Evidence that `A × B` holds is of the form
 `(M , N)`, where `M` is evidence that `A` holds and
 `N` is evidence that `B` holds.  By convention, we
-parenthesize pairs, even though `M , N` is also
+parenthesise pairs, even though `M , N` is also
 accepted by Agda.
 
 Given evidence that `A × B` holds, we can conclude that either
@@ -189,7 +189,7 @@ to `(aa , true)`, which is a member of the latter.
 For associativity, the `to` function reassociates two uses of pairing,
 taking `((x , y) , z)` to `(x , (y , z))`, and the `from` function does
 the inverse.  Again, the evidence of left and right inverse requires
-matching against a suitable pattern to enable simplificition.
+matching against a suitable pattern to enable simplification.
 \begin{code}
 ×-assoc : ∀ {A B C : Set} → ((A × B) × C) ≃ (A × (B × C))
 ×-assoc =
@@ -269,7 +269,7 @@ Having an *identity* is different from having an identity
 In the first case, we might have that `m` is `2`, and both
 `1 * m` and `m` are equal to `2`.  In the second
 case, we might have that `A` is `Bool`, and `⊤ × Bool` is *not* the
-same as `Bool`.  But there is an isomorphism betwee the two types.
+same as `Bool`.  But there is an isomorphism between the two types.
 For instance, `(tt, true)`, which is a member of the former,
 corresponds to `true`, which is a member of the latter.
 
@@ -304,7 +304,7 @@ is evidence that `A` holds, or `inj₂ N`, where `N` is evidence that
 `B` holds.
 
 Given evidence that `A → C` and `B → C` both hold, then given
-evidence that `A ⊎ B` holds we can conlude that `C` holds.
+evidence that `A ⊎ B` holds we can conclude that `C` holds.
 \begin{code}
 ⊎-elim : ∀ {A B C : Set} → (A → C) → (B → C) → (A ⊎ B → C)
 ⊎-elim f g (inj₁ x) = f x
@@ -317,7 +317,7 @@ When `inj₁` and `inj₂` appear on the right-hand side of an equation we
 refer to them as *constructors*, and when they appears on the
 left-hand side we refer to them as *destructors*.  We also refer
 to `⊎-elim` as a destructor, since it plays a similar role.
-Other terminology refers to constructorse as *introducing* a disjunction,
+Other terminology refers to constructors as *introducing* a disjunction,
 and to a destructors as *eliminating* a disjunction.
 
 Applying the destructor to each of the constructors is the identity.
@@ -411,7 +411,7 @@ former, corresponds to `inj₂ true`, which is a member of the latter.
 
 For associativity, the `to` function reassociates, and the `from` function does
 the inverse.  Again, the evidence of left and right inverse requires
-matching against a suitable pattern to enable simplificition.
+matching against a suitable pattern to enable simplification.
 \begin{code}
 ⊎-assoc : ∀ {A B C : Set} → ((A ⊎ B) ⊎ C) ≃ (A ⊎ (B ⊎ C))
 ⊎-assoc = record
@@ -487,7 +487,7 @@ enumerates all possible arguments of type `⊥`:
 Here again the absurd pattern `()` indicates that no value can match
 type `⊥`.
 
-For numbers, zero is the identity of additition. Correspondingly,
+For numbers, zero is the identity of addition. Correspondingly,
 empty is the identity of sums *up to isomorphism*.
 For left identity, the `to` function observes that `inj₁ ()` can never arise,
 and takes `inj₂ x` to `x`, and the `from` function
@@ -519,7 +519,7 @@ Having an *identity* is different from having an identity
 In the first case, we might have that `m` is `2`, and both `0 + m` and
 `m` are equal to `2`.  In the second case, we might have that `A` is
 `Bool`, and `⊥ ⊎ Bool` is *not* the same as `Bool`.  But there is an
-isomorphism betwee the two types.  For instance, `inj₂ true`, which is
+isomorphism between the two types.  For instance, `inj₂ true`, which is
 a member of the former, corresponds to `true`, which is a member of
 the latter.
 
@@ -594,7 +594,7 @@ Given two types `A` and `B`, we refer to `A → B` as the *function*
 space from `A` to `B`.  It is also sometimes called the *exponential*,
 with `B` raised to the `A` power.  Among other reasons for calling
 it the exponential, note that if type `A` has `m` distinct
-memebers, and type `B` has `n` distinct members, then the type
+members, and type `B` has `n` distinct members, then the type
 `A → B` has `n ^ m` distinct members.  For instance, consider a
 type `Bool` with two members and a type `Tri` with three members,
 as defined earlier. The the type `Bool → Tri` has nine (that is,

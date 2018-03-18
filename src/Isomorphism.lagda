@@ -52,7 +52,7 @@ of four things:
 + Evidence `to∘from` asserting that `to` is a *left-identity* for `from`.
 In particular, the third asserts that `from ∘ to` is the identity, and
 the fourth that `to ∘ from` is the identity, hence the names.
-The declaration `open _≃_` makes avaialable the names `to`, `from`,
+The declaration `open _≃_` makes available the names `to`, `from`,
 `from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
 The above is our first use of records. A record declaration is equivalent
@@ -184,7 +184,7 @@ equational reasoning to combine the inverses.
 
 It is straightforward to support a variant of equational reasoning for
 isomorphism.  We essentially copy the previous definition for
-of equivality.  We omit the form that corresponds to `_≡⟨⟩_`, since
+of equality.  We omit the form that corresponds to `_≡⟨⟩_`, since
 trivial isomorphisms arise far less often than trivial equalities.
 
 \begin{code}
@@ -317,7 +317,7 @@ import Function using (_∘_)
 import Function.Inverse using (_↔_)
 import Function.LeftInverse using (_↞_)
 \end{code}
-Here `_↔_` correpsonds to our `_≃_`, and `_↞_` corresponds to our `_≲_`.
+Here `_↔_` corresponds to our `_≃_`, and `_↞_` corresponds to our `_≲_`.
 However, we stick with the definitions given here, mainly because `_↔_` is
 specified as a nested record, rather than the flat records used here.
 

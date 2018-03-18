@@ -75,7 +75,7 @@ Proof by induction follows the structure of this definition.  To prove
 a property of natural numbers by induction, we need prove two cases.
 First is the *base case*, where we show the property holds for `zero`.
 Second is the *inductive case*, where we assume the the property holds for
-an arbitary natural `m` (we call this the *inductive hypothesis*), and
+an arbitrary natural `m` (we call this the *inductive hypothesis*), and
 then show that the property must also hold for `suc m`.
 
 If we write `P m` for a property of `m`, then what we need to
@@ -149,7 +149,7 @@ In order to prove associativity, we take `P m` to be the property
 
     (m + n) + p ≡ m + (n + p)
 
-Here `n` and `p` are arbitary natural numbers, so if we can show the
+Here `n` and `p` are arbitrary natural numbers, so if we can show the
 equation holds for all `m` it will also hold for all `n` and `p`.
 The appropriate instances of the inference rules are:
 
@@ -247,7 +247,7 @@ preserved by applying that function.  If `e` is evidence that `x ≡ y`,
 then `cong f e` is evidence that `f x ≡ f y`, for any function `f`.
 
 Here the inductive hypothesis is not assumed, but instead proved by a
-recursive invocation of the function we are definining, `+-assoc m n p`.
+recursive invocation of the function we are defining, `+-assoc m n p`.
 As with addition, this is well founded because associativity of
 larger numbers is proved in terms of associativity of smaller numbers.
 In this case, `assoc (suc m) n p` is proved using `assoc m n p`.
@@ -462,7 +462,7 @@ We show this in two steps.  First, we have:
 
     m + suc n ≡ suc (m + n)
 
-which is justifed by the second lemma, `⟨ +-suc m n ⟩`.  Then we
+which is justified by the second lemma, `⟨ +-suc m n ⟩`.  Then we
 have
 
     suc (m + n) ≡ suc (n + m)
@@ -480,7 +480,7 @@ will suggest what lemmas to prove.
 
 ## Creation, one last time
 
-Returing to the proof of associativity, it may be helpful to view the inductive
+Returning to the proof of associativity, it may be helpful to view the inductive
 proof (or, equivalently, the recursive definition) as a creation story.  This
 time we are concerned with judgements asserting associativity.
 

@@ -592,7 +592,7 @@ When I first learned about currying, I was told it was misattributed,
 since the same idea was previously proposed by Moses Schönfinkel in
 the 1920's.  I was told a joke: "It should be called schönfinkeling,
 but currying is tastier". Only later did I learn that the explanation
-of the misattribution was itself a misattribution.  The idea actully
+of the misattribution was itself a misattribution.  The idea actually
 appears in the *Begriffschrift* of Gottlob Frege, published in 1879.
 We should call it frigging!
 
