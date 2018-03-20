@@ -1,4 +1,4 @@
-title: Software Foundations in Agda
+title: Programming Language Theory in Agda
 
 # the author field should not be used in the template
 author: Wen Kokke
@@ -14,7 +14,7 @@ contributors:
     twitter_username: philipwadler
 
 description: > 
-  Software Foundations in Agda.
+  Programming Language Theory in Agda.
 
 # include disqus to allow comments e.d.
 disqus:

@@ -4,8 +4,8 @@ layout    : page
 permalink : /Lists
 ---
 
-This chapter discusses the list data type.  It uses many of the techniques
-developed for natural numbers in a different context, and provides
+This chapter discusses the list data type.  It gives further examples
+of many of the techniques we have developed so far, and provides
 examples of polymorphic types and functions.
 
 ## Imports
@@ -26,52 +26,44 @@ open import Isomorphism using (_≃_)
 Lists are defined in Agda as follows.
 \begin{code}
 data List (A : Set) : Set where
-  [] : List A
+  []  : List A
   _∷_ : A → List A → List A
 
 infixr 5 _∷_
 \end{code}
-Let's unpack this definition. The phrase
-
-    List (A : Set) : Set
-
-tells us that `List` is a function from a `Set` to a `Set`.
-We write `A` consistently for the argument of `List` throughout
-the declaration.  The next two lines tell us that `[]` (pronounced *nil*)
-is the empty list of type `A`, and that `_∷_` (pronounced *cons*,
-short for *constructor*) takes a value of type `A` and a `List A` and
-returns a `List A`.  Operator `_∷_` has precedence level 5 and associates
-to the right.
+Let's unpack this definition. If `A` is a set, then `List A` is a set.
+The next two lines tell us that `[]` (pronounced *nil*) is a list of
+type `A` (often called the *empty* list), and that `_∷_` (pronounced
+*cons*, short for *constructor*) takes a value of type `A` and a `List
+A` and returns a `List A`.  Operator `_∷_` has precedence level 5 and
+associates to the right.
 
 For example,
 \begin{code}
-ex₀ : List ℕ
-ex₀ = 0 ∷ 1 ∷ 2 ∷ []
+_ : List ℕ
+_ = 0 ∷ 1 ∷ 2 ∷ []
 \end{code}
 denotes the list of the first three natural numbers.  Since `_::_`
-associates to the right, the term above parses as `0 ∷ (1 ∷ (2 ∷ []))`.
+associates to the right, the term parses as `0 ∷ (1 ∷ (2 ∷ []))`.
 Here `0` is the first element of the list, called the *head*,
 and `1 ∷ (2 ∷ [])` is a list of the remaining elements, called the
-*tail*. Lists are a rather strange beast: a head and a tail, 
+*tail*. Lists are a rather strange beast: they have a head and a tail, 
 nothing in between, and the tail is itself another list!
 
-The definition of lists could also be written as follows.
+As we've seen, parameterised types can be translated to
+indexed types. The definition above is equivalent to the following.
 \begin{code}
 data List′ : Set → Set where
-  []′ : ∀ {A : Set} → List′ A
+  []′  : ∀ {A : Set} → List′ A
   _∷′_ : ∀ {A : Set} → A → List′ A → List′ A
 \end{code}
-This is essentially equivalent to the previous definition,
-and lets us see that constructors `[]` and `_∷_` each act as
-if they take an implicit argument, the type of the list.
-
-The previous form is preferred because it is more compact
-and easier to read; using it also improves Agda's ability to
-reason about when a function definition based on pattern matching
-is well defined. An important difference is that in the previous
-form we must write `List A` consistently everywhere, whereas in
-the second form it would be permitted to replace an occurrence
-of `List A` by `List ℕ`, say.
+Each constructor takes the parameter as an implicit argument.
+Thus, our example list could also be written
+\begin{code}
+_ : List ℕ
+_ = _∷_ {ℕ} 0 (_∷_ {ℕ} 1 (_∷_ {ℕ} 2 ([] {ℕ})))
+\end{code}
+where here we have made the implicit parameters explicit.
 
 Including the lines
 
@@ -81,37 +73,25 @@ tells Agda that the type `List` corresponds to the Haskell type
 list, and the constructors `[]` and `_∷_` correspond to nil and
 cons respectively, allowing a more efficient representation of lists.
 
+
 ## List syntax
 
 We can write lists more conveniently by introducing the following definitions.
 \begin{code}
--- [_] : ∀ {A : Set} → A → List A
--- pattern [ z ] = z ∷ []
 pattern [_] z = z ∷ []
-
--- [_,_] : ∀ {A : Set} → A → A → List A
--- pattern [ y , z ] = y ∷ z ∷ []
 pattern [_,_] y z = y ∷ z ∷ []
-
--- [_,_,_] : ∀ {A : Set} → A → A → A → List A
--- pattern [ x , y , z ] = x ∷ y ∷ z ∷ []
 pattern [_,_,_] x y z = x ∷ y ∷ z ∷ []
-
--- [_,_,_,_] : ∀ {A : Set} → A → A → A → A → List A
--- pattern [ w , x , y , z ] = w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_] w x y z = w ∷ x ∷ y ∷ z ∷ []
-
--- [_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → List A
--- pattern [ v , w , x , y , z ] = v ∷ w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_,_] v w x y z = v ∷ w ∷ x ∷ y ∷ z ∷ []
-
--- [_,_,_,_,_,_] : ∀ {A : Set} → A → A → A → A → A → A → List A
--- pattern [ u , v , w , x , y , z ] = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_,_,_] u v w x y z = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 \end{code}
-Agda recognises that this is a bracketing notation,
-and hence we can write things like `length [ 0 , 1 , 2 ]`
-rather than `length ([ 0 , 1 , 2 ])`.
+This is our first use of pattern declarations.  For instance,
+the third line tells us that `[ x , y , z ]` is equivalent to
+`x ∷ y ∷ z ∷ []`, and permits the former to appear either in
+a pattern on the left-hand side of an equation, or a term
+on the right-hand side of an equation.
+Agda recognises `[_,_,_]` as a bracketing notation, and hence `length
+[ 0 , 1 , 2 ]` parses as `length ([ 0 , 1 , 2 ])`.
 
 
 ## Append

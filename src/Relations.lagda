@@ -271,48 +271,6 @@ given `suc m ≤ suc n` and `suc n ≤ suc m` and must show `suc m ≡ suc n`.
 The inductive hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`,
 and our goal follows by congruence.
 
-<!--
-
-In the base case, both relations hold by `z≤n`,
-so it must be the case that `m` and `n` are both `zero`,
-in which case `m ≡ n` holds by reflexivity. (The reflexivity
-of `_≡_`, that is, not the reflexivity of `_≤_`.)
-
-In the inductive case, `m ≤ n` holds by `s≤s m≤n` and `n ≤ m` holds by
-`s≤s n≤m`, so it must be that `m` is `suc m′` and `n` is `suc n′`, for
-some `m′` and `n′`, where `m≤n` is evidence that `m′ ≤ n′` and `n≤m`
-is evidence that `n′ ≤ m′`.  The inductive hypothesis `≤-antisym m≤n n≤m`
-establishes that `m′ ≡ n′`, and so the final result follows by congruence.
-
--->
-
-
-<!--
-
-## Disjunction
-
-In order to state totality, we need a way to formalise disjunction,
-the notion that given two propositions either one or the other holds.
-In Agda, we do so by declaring a suitable inductive type.
-\begin{code}
-data _⊎_ : Set → Set → Set where
-  inj₁ : ∀ {A B : Set} → A → A ⊎ B
-  inj₂ : ∀ {A B : Set} → B → A ⊎ B
-\end{code}
-This tells us that if `A` and `B` are propositions then `A ⊎ B` is
-also a proposition.  Evidence that `A ⊎ B` holds is either of the form
-`inj₁ x`, where `x` is evidence that `A` holds, or `inj₂ y`, where
-`y` is evidence that `B` holds.
-
-We set the precedence of disjunction so that it binds less tightly than
-inequality.
-\begin{code}
-infixr 1 _⊎_
-\end{code}
-Thus, `m ≤ n ⊎ n ≤ m` parses as `(m ≤ n) ⊎ (n ≤ m)`.
-
--->
-
 
 ## Total
 

@@ -13,15 +13,21 @@ March 2018. When that is done it will be announced here, and that would be
 an excellent time to comment on the first part.
 
 
-## Personal remarks
+## Personal remarks: From TAPL to PLTA
 
-Since 2013, I teach a course on Types and Semantics for Programming
-Languages to fourth-year undergraduates and masters students at the
-University of Edinburgh.  That course had been based on the textbook
-[Software Foundations][sf], by Pierce and others, written in Coq.  I
-am convinced of Pierce's claim that basing a course around a proof
-assistant aids learning, as summarised in his ICFP Keynote, [Lambda,
-The Ultimate TA][ta].
+I, along with many others, am a fan of Peirce's [Types and Programming
+Languages][tapl], known by the acronym TAPL. One of my best students
+started writing his own systems with no help from me, trained by that
+book.
+
+Since 2013, I have taught a course on Types and Semantics for
+Programming Languages to fourth-year undergraduates and masters
+students at the University of Edinburgh.  That course is not based on
+TAPL, but on Pierce's subsequent textbook, [Software Foundations],
+written in collaboration with others and based on Coq.  I am convinced
+of Pierce's claim that basing a course around a proof assistant aids
+learning, as summarised in his ICFP Keynote, [Lambda, The Ultimate
+TA][ta].
 
 However, after five years of experience, I have come to the conclusion
 that Coq may not be the best vehicle.  Too much of the course needs to
@@ -69,6 +75,7 @@ Most of the text was written during a sabbatical in the first half of 2018.
 
 -- Philip Wadler, Rio de Janeiro, January--June 2018
 
+[tapl]: http://www.cis.upenn.edu/~bcpierce/tapl/index.html
 [sf]: https://softwarefoundations.cis.upenn.edu/
 [ta]: http://www.cis.upenn.edu/~bcpierce/papers/plcurriculum.pdf
 [stump]: http://www.morganclaypoolpublishers.com/catalog_Orig/product_info.php?cPath=24&products_id=908
