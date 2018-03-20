@@ -28,7 +28,7 @@ material in a different way; see the [Preface](Preface).
   - [Connectives: Conjunction, Disjunction, and Implication](Connectives)
   - [Negation: Negation, with Intuitionistic and Classical Logic](Negation)
   - [Quantiers: Universals and Existentials](Quantifiers)
-  - [Lists: Lists and other data types](Lists)
+  - [Lists: Lists and higher-order functions](Lists)
   - [Decidable: Booleans and decision procedures](Decidable)
 
   - [PropertiesAns: Solutions to exercises](PropertiesAns) 

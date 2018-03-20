@@ -386,6 +386,7 @@ import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 
 This chapter uses the following unicode.
 
+    Π  U+03A0  GREEK CAPITAL LETTER PI (\Pi)
     ∃  U+2203  THERE EXISTS (\ex, \exists)
 
 

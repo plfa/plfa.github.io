@@ -1,12 +1,12 @@
 ---
-title     : "Lists: Lists and other data types"
+title     : "Lists: Lists and higher-order functions"
 layout    : page
 permalink : /Lists
 ---
 
 This chapter discusses the list data type.  It gives further examples
 of many of the techniques we have developed so far, and provides
-examples of polymorphic types and functions.
+examples of polymorphic types and higher-order functions.
 
 ## Imports
 
@@ -15,11 +15,22 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; s≤s; z≤n)
-open import Data.Nat.Properties using (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
+open import Data.Nat.Properties using
+  (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Isomorphism using (_≃_)
+open import Function using (_∘_)
 \end{code}
+
+We assume [extensionality][extensionality].
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
+\end{code}
+
+[extensionality]: Equality/index.html#extensionality
+
 
 ## Lists
 
@@ -90,8 +101,6 @@ the third line tells us that `[ x , y , z ]` is equivalent to
 `x ∷ y ∷ z ∷ []`, and permits the former to appear either in
 a pattern on the left-hand side of an equation, or a term
 on the right-hand side of an equation.
-Agda recognises `[_,_,_]` as a bracketing notation, and hence `length
-[ 0 , 1 , 2 ]` parses as `length ([ 0 , 1 , 2 ])`.
 
 
 ## Append
@@ -102,8 +111,8 @@ Our first function on lists is written `_++_` and pronounced
 infixr 5 _++_
 
 _++_ : ∀ {A : Set} → List A → List A → List A
-[] ++ ys = ys
-(x ∷ xs) ++ ys = x ∷ (xs ++ ys)
+[]       ++ ys  =  ys
+(x ∷ xs) ++ ys  =  x ∷ (xs ++ ys)
 \end{code}
 The type `A` is an implicit argument to append, making it
 a *polymorphic* function (one that can be used at many types).
@@ -173,7 +182,7 @@ Applying the congruence `cong (x ∷_)` promotes the inductive hypothesis
 
     xs ++ (ys ++ zs) ≡ (xs ++ ys) ++ zs
 
-to the equivalence
+to the equality
 
     x ∷ (xs ++ (ys ++ zs)) ≡ x ∷ ((xs ++ ys) ++ zs)
 
@@ -208,7 +217,8 @@ That it is a right identity follows by simple induction.
     x ∷ xs
   ∎
 \end{code}
-These three properties establish that `_++_` and `[]` form
+As we will see later,
+these three properties establish that `_++_` and `[]` form
 a *monoid* over lists.
 
 ## Length
@@ -216,8 +226,8 @@ a *monoid* over lists.
 Our next function finds the length of a list.
 \begin{code}
 length : ∀ {A : Set} → List A → ℕ
-length [] = zero
-length (x ∷ xs) = suc (length xs)
+length []        =  zero
+length (x ∷ xs)  =  suc (length xs)
 \end{code}
 Again, it takes an implicit parameter `A`.
 The length of the empty list is zero.
@@ -243,12 +253,9 @@ _ =
 Computing the length of a list requires time
 linear in the number of elements in the list.
 
-In the second-to-last line, we cannot write
-simply `length []`  but must instead write
-`length {ℕ} []`.  This is because Agda has
-insufficient information to infer the implicit
-parameter; after all, `[]` could just as well
-be an empty list with elements of any type.
+In the second-to-last line, we cannot write simply `length []` but
+must instead write `length {ℕ} []`.  Since `[]` has no elements, Agda
+has insufficient information to infer the implicit parameter.
 
 
 ## Reasoning about length
@@ -339,16 +346,14 @@ reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n` is `n * (n + 1) / 2`.
 (We will validate that last fact later in this chapter.)
 
-## Reasoning about reverse
-
-*Exercise* `reverse-++-commute`
+### Exercise (`reverse-++-commute`)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first.
 
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
-*Exercise* `reverse-involutive`
+### Exercise (`reverse-involutive`)
 
 A function is an *involution* if when applied twice it acts
 as the identity function.  Show that reverse is an involution.
@@ -431,8 +436,8 @@ reverses xs =
 
 Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`.
 \begin{code}
-ex₄ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
-ex₄ =
+_ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
+_ =
   begin
     reverse′ (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -456,8 +461,8 @@ Map is an example of a *higher-order function*, one which takes a function as an
 argument and returns a function as a result.
 \begin{code}
 map : ∀ {A B : Set} → (A → B) → List A → List B
-map f []       = []
-map f (x ∷ xs) = f x ∷ map f xs
+map f []        =  []
+map f (x ∷ xs)  =  f x ∷ map f xs
 \end{code}
 Map of the empty list is the empty list.
 Map of a non-empty list yields a list
@@ -466,8 +471,8 @@ and tail the same as map of the function applied to the tail of the given list.
 
 Here is an example showing how to use map to increment every element of a list.
 \begin{code}
-ex₅ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
-ex₅ =
+_ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
+_ =
   begin
     map suc (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
@@ -489,8 +494,15 @@ point applying the resulting function.
 sucs : List ℕ → List ℕ
 sucs = map suc
 
-ex₆ : sucs [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
-ex₆ = ex₅
+_ : sucs [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
+_ =
+  begin
+    sucs [ 0 , 1 , 2 ]
+  ≡⟨⟩
+    map suc [ 0 , 1 , 2 ]
+  ≡⟨⟩
+    [ 1 , 2 , 3 ]
+  ∎
 \end{code}
 
 Any type that is parameterised on another type, such as lists, has a
@@ -501,25 +513,13 @@ parameterised on *n* types will have a map that is parameterised on
 *n* functions.
 
 
-*Exercise* `map-compose`
-
-The composition of two functions applies one and then the other.
-\begin{code}
-_∘_ : ∀ {ℓ₁ ℓ₂ ℓ₃} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃} → (B → C) → (A → B) → (A → C)
-(f ∘ g) x = f (g x)
-\end{code}
-Unlike most of our definitions, this one is parameterised with respect to levels,
-which will prove convenient later.
+### Exercise (`map-compose`)
 
 Prove that the map of a composition is equal to the composition of two maps.
 
     map (f ∘ g) ≡ map f ∘ map g
 
 The last step of the proof requires extensionality.
-\begin{code}
-postulate
-  extensionality : ∀ {A B : Set} → {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
-\end{code}
 
 *Exercise* `map-++-commute`
 
@@ -535,8 +535,8 @@ each of the elements of the list, taking the given value as the result
 for the empty list.  
 \begin{code}
 foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
-foldr _⊗_ e []       = e
-foldr _⊗_ e (x ∷ xs) = x ⊗ foldr _⊗_ e xs
+foldr _⊗_ e []        =  e
+foldr _⊗_ e (x ∷ xs)  =  x ⊗ foldr _⊗_ e xs
 \end{code}
 Fold of the empty list is the given value.
 Fold of a non-empty list uses the operator to combine
@@ -569,8 +569,8 @@ and at a later point applying the resulting function.
 sum : List ℕ → ℕ
 sum = foldr _+_ 0
 
-ex₈ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
-ex₈ = ex₇
+_ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
+_ = ex₇
 \end{code}
 
 Just as the list type has two constructors, `[]` and `_∷_`,
@@ -588,7 +588,6 @@ Use fold to define a function to find the product of a list of numbers.
 *Exercise* (`foldr-++`)
 
 Show that fold and append are related as follows.
-
 \begin{code}
 postulate
   foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
@@ -599,9 +598,11 @@ postulate
 *Exercise* (`map-is-foldr`)  <!-- `mapIsFold` in Data.List.Properties -->
 
 Show that map can be defined using fold.
-
+\begin{code}
+postulate
+  map-is-foldr : ∀ {A B : Set} {f : A → B} →
     map f ≡ foldr (λ x xs → f x ∷ xs) []
-
+\end{code}
 This requires extensionality.
 
 
@@ -613,19 +614,19 @@ operator and the value form a *monoid*.
 
 We can define a monoid as a suitable record type.
 \begin{code}
-record Monoid {A : Set} (_⊗_ : A → A → A) (e : A) : Set where
+record IsMonoid {A : Set} (_⊗_ : A → A → A) (e : A) : Set where
   field
     assoc : ∀ (x y z : A) → (x ⊗ y) ⊗ z ≡ x ⊗ (y ⊗ z)
     identityˡ : ∀ (x : A) → e ⊗ x ≡ x
     identityʳ : ∀ (x : A) → x ⊗ e ≡ x
 
-open Monoid
+open IsMonoid
 \end{code}
 
 As examples, sum and zero, multiplication and one, and append and the empty
 list, are all examples of monoids.
 \begin{code}
-+-monoid : Monoid _+_ 0
++-monoid : IsMonoid _+_ 0
 +-monoid =
   record
     { assoc = +-assoc
@@ -633,7 +634,7 @@ list, are all examples of monoids.
     ; identityʳ = +-identityʳ
     }
 
-*-monoid : Monoid _*_ 1
+*-monoid : IsMonoid _*_ 1
 *-monoid =
   record
     { assoc = *-assoc
@@ -641,7 +642,7 @@ list, are all examples of monoids.
     ; identityʳ = *-identityʳ
     }
 
-++-monoid : ∀ {A : Set} → Monoid {List A} _++_ []
+++-monoid : ∀ {A : Set} → IsMonoid {List A} _++_ []
 ++-monoid =
   record
     { assoc = ++-assoc
@@ -653,42 +654,42 @@ list, are all examples of monoids.
 If `_⊕_` and `e` form a monoid, then we can re-express fold on the
 same operator and an arbitrary value.
 \begin{code}
-foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → Monoid _⊗_ e →
-  ∀ (xs : List A) (y : A) → foldr _⊗_ e xs ⊗ y ≡ foldr _⊗_ y xs
+foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
+  ∀ (xs : List A) (y : A) → foldr _⊗_ y xs ≡ foldr _⊗_ e xs ⊗ y
 foldr-monoid _⊗_ e ⊗-monoid [] y =
   begin
-    foldr _⊗_ e [] ⊗ y
+    foldr _⊗_ y []
   ≡⟨⟩
-    (e ⊗ y)
-  ≡⟨ identityˡ ⊗-monoid y ⟩
     y
+  ≡⟨ sym (identityˡ ⊗-monoid y) ⟩
+    (e ⊗ y)
   ≡⟨⟩
-   foldr _⊗_ y []
+    foldr _⊗_ e [] ⊗ y
   ∎
 foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   begin
-    foldr _⊗_ e (x ∷ xs) ⊗ y
-  ≡⟨⟩
-    (x ⊗ foldr _⊗_ e xs) ⊗ y
-  ≡⟨ assoc ⊗-monoid x (foldr _⊗_ e xs) y ⟩
-    x ⊗ (foldr _⊗_ e xs ⊗ y)
-  ≡⟨ cong (x ⊗_) (foldr-monoid _⊗_ e ⊗-monoid xs y) ⟩
-    x ⊗ (foldr _⊗_ y xs)
-  ≡⟨⟩
     foldr _⊗_ y (x ∷ xs)
+  ≡⟨⟩
+    x ⊗ (foldr _⊗_ y xs)
+  ≡⟨ cong (x ⊗_) (foldr-monoid _⊗_ e ⊗-monoid xs y) ⟩
+    x ⊗ (foldr _⊗_ e xs ⊗ y)
+  ≡⟨ sym (assoc ⊗-monoid x (foldr _⊗_ e xs) y) ⟩
+    (x ⊗ foldr _⊗_ e xs) ⊗ y
+  ≡⟨⟩
+    foldr _⊗_ e (x ∷ xs) ⊗ y
   ∎
 \end{code}
 
 As a consequence, using a previous exercise, we have the following.
 \begin{code}
-foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → Monoid _⊗_ e →
-  (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
+  ∀ (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
 foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
   begin
     foldr _⊗_ e (xs ++ ys)
   ≡⟨ foldr-++ _⊗_ e xs ys ⟩
     foldr _⊗_ (foldr _⊗_ e ys) xs
-  ≡⟨ sym (foldr-monoid _⊗_ e monoid-⊗ xs (foldr _⊗_ e ys)) ⟩
+  ≡⟨ foldr-monoid _⊗_ e monoid-⊗ xs (foldr _⊗_ e ys) ⟩
     foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
   ∎
 \end{code}
@@ -716,8 +717,8 @@ than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
 `n`, and that if `m≤n` proves `m ≤ n` then `s≤s m≤n` proves `suc m ≤
 suc n`, for any `m` and `n`.
 \begin{code}
-ex₉ : All (_≤ 2) [ 0 , 1 , 2 ]
-ex₉ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
+_ : All (_≤ 2) [ 0 , 1 , 2 ]
+_ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
 \end{code}
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
@@ -747,19 +748,21 @@ For example, zero is an element of the list `[ 0 , 1 , 0 , 2 ]`.  Indeed, we can
 this fact in two different ways, corresponding to the two different
 occurrences of zero in the list, as the first element and as the third element.
 \begin{code}
-ex₁₀ ex₁₁ : 0 ∈ [ 0 , 1 , 0 , 2 ]
-ex₁₀ = here refl
-ex₁₁ = there (there (here refl))
+_ : 0 ∈ [ 0 , 1 , 0 , 2 ]
+_ = here refl
+
+_ : 0 ∈ [ 0 , 1 , 0 , 2 ]
+_ = there (there (here refl))
 \end{code}
 Further, we can demonstrate that three is not in the list, because
 any possible proof that it is in the list leads to contradiction.
 \begin{code}
-ex₁₂ : 3 ∉ [ 0 , 1 , 0 , 2 ]
-ex₁₂ (here ())
-ex₁₂ (there (here ()))
-ex₁₂ (there (there (here ())))
-ex₁₂ (there (there (there (here ()))))
-ex₁₂ (there (there (there (there ()))))
+not-in : 3 ∉ [ 0 , 1 , 0 , 2 ]
+not-in (here ())
+not-in (there (here ()))
+not-in (there (there (here ())))
+not-in (there (there (there (here ()))))
+not-in (there (there (there (there ()))))
 \end{code}
 The five occurrences of `()` attest to the fact that there is no
 possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
@@ -771,47 +774,49 @@ A predicate holds for every element of one list appended to another if and
 only if it holds for every element of each list.  Indeed, an even stronger
 result is true, as we can show that the two types are isomorphic.
 \begin{code}
-All-++ : ∀ {A : Set} {P : A → Set} (xs ys : List A) → All P (xs ++ ys) ≃ (All P xs × All P ys)
+All-++ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+  All P (xs ++ ys) ≃ (All P xs × All P ys)
 All-++ xs ys =
   record
-    { to   = to xs ys
-    ; from  = from xs ys
-    ; from∘to = from∘to xs ys
-    ; to∘from = to∘from xs ys
+    { to       =  to xs ys
+    ; from     =  from xs ys
+    ; from∘to  =  from∘to xs ys
+    ; to∘from  =  to∘from xs ys
     }
 
   where
 
-  to : ∀ {A : Set} {P : A → Set} (xs ys : List A) → All P (xs ++ ys) → (All P xs × All P ys)
-  to [] ys AllPys = ⟨ [] , AllPys ⟩
-  to (x ∷ xs) ys (Px ∷ AllPxsys) with to xs ys AllPxsys
-  ... | ⟨ AllPxs , AllPys ⟩ = ⟨ Px ∷ AllPxs , AllPys ⟩
+  to : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+    All P (xs ++ ys) → (All P xs × All P ys)
+  to [] ys ∀Pys = ⟨ [] , ∀Pys ⟩
+  to (x ∷ xs) ys (Px ∷ ∀Pxs++ys) with to xs ys ∀Pxs++ys
+  ... | ⟨ ∀Pxs , ∀Pys ⟩ = ⟨ Px ∷ ∀Pxs , ∀Pys ⟩
 
-  from : ∀ { A : Set} {P : A → Set} (xs ys : List A) → All P xs × All P ys → All P (xs ++ ys)
-  from [] ys ⟨ [] , AllPys ⟩ = AllPys
-  from (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ =  Px ∷ from xs ys ⟨ AllPxs , AllPys ⟩
+  from : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
+    All P xs × All P ys → All P (xs ++ ys)
+  from [] ys ⟨ [] , ∀Pys ⟩ = ∀Pys
+  from (x ∷ xs) ys ⟨ Px ∷ ∀Pxs , ∀Pys ⟩ =  Px ∷ from xs ys ⟨ ∀Pxs , ∀Pys ⟩
 
-  from∘to : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsys : All P (xs ++ ys)) →
-    from xs ys (to xs ys AllPxsys) ≡ AllPxsys
-  from∘to [] ys AllPys = refl
-  from∘to (x ∷ xs) ys (Px ∷ AllPxsys) = cong (Px ∷_) (from∘to xs ys AllPxsys)
+  from∘to : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
+    ∀ (u : All P (xs ++ ys)) → from xs ys (to xs ys u) ≡ u
+  from∘to [] ys ∀Pys = refl
+  from∘to (x ∷ xs) ys (Px ∷ ∀Pxs++ys) = cong (Px ∷_) (from∘to xs ys ∀Pxs++ys)
 
-  to∘from : ∀ { A : Set} {P : A → Set} (xs ys : List A) → (AllPxsAllPys : All P xs × All P ys) →
-    to xs ys (from xs ys AllPxsAllPys) ≡ AllPxsAllPys
-  to∘from [] ys ⟨ [] , AllPys ⟩ = refl
-  to∘from (x ∷ xs) ys ⟨ Px ∷ AllPxs , AllPys ⟩ rewrite to∘from xs ys ⟨ AllPxs , AllPys ⟩ = refl
+  to∘from : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
+    ∀ (v : All P xs × All P ys) → to xs ys (from xs ys v) ≡ v
+  to∘from [] ys ⟨ [] , ∀Pys ⟩ = refl
+  to∘from (x ∷ xs) ys ⟨ Px ∷ ∀Pxs , ∀Pys ⟩ rewrite to∘from xs ys ⟨ ∀Pxs , ∀Pys ⟩ = refl
 \end{code}
 
-*Exercise* `Any-++`
+### Exercise (`Any-++`)
 
 Prove a result similar to `All-++`, but with `Any` in place of `All`, and a suitable
 replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
 `_∈_` and `_++_`.
 
-*Exercise* `¬Any≃All¬`
+### Exercise (`¬Any≃All¬`)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law.
-
 \begin{code}
 postulate
   ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → (¬_ ∘ Any P) xs ≃ All (¬_ ∘ P) xs
