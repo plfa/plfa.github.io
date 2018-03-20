@@ -213,11 +213,31 @@ Indeed, the converse also holds, and the two together form an isomorphism.
     ; to∘from =  λ{ g → extensionality λ{ (x , y) → refl }}
     }
 \end{code}
-The result can be viewed as a generalisation of currying, and the code to
-establish the isomorphism is identical.
+The result can be viewed as a generalisation of currying.  Indeed, the code to
+establish the isomorphism is identical to what we wrote when discussing
+[implication][implication].
+
+[implication]: Connectives/index.html#implication
+
+### Exercise (`∃-distrib-⊎`)
+
+Show that universals distribute over conjunction.
+\begin{code}
+∃-Distrib-⊎ = ∀ {A : Set} {B C : A → Set} →
+  ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
+\end{code}
+
+### Exercise (`∃×-implies-×∃`)
+
+Show that an existential of conjunctions implies a conjunction of existentials.
+\begin{code}
+∃×-Implies-×∃ = ∀ {A : Set} { B C : A → Set } →
+  ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
+\end{code}
+Does the converse hold? If so, prove; if not, explain why.
 
 
-## Existential examples
+## An existential example
 
 Recall the definitions of `even` and `odd` from Chapter [Relations](Relations).  
 \begin{code}
@@ -238,48 +258,28 @@ We will show that a number is even if and only if it is twice some
 other number, and odd if and only if it is one more than twice
 some other number.  In other words, we will show
 
-    even n   iff   ∃[ m ] (    2 * m ≡ n)
-    odd  n   iff   ∃[ m ] (1 + 2 * m ≡ n)
+    even n   iff   ∃[ m ] (    m * 2 ≡ n)
+    odd  n   iff   ∃[ m ] (1 + m * 2 ≡ n)
 
-First, we need a lemma, which states that twice the successor of `m`
-is two more than twice `m`.
-\begin{code}
-lemma : ∀ (m : ℕ) → 2 * suc m ≡ 2 + 2 * m
-lemma m =
-  begin
-    2 * suc m
-  ≡⟨⟩
-    suc m + (suc m + zero)
-  ≡⟨⟩
-    suc (m + (suc (m + zero)))
-  ≡⟨ cong suc (+-suc m (m + zero)) ⟩
-    suc (suc (m + (m + zero)))
-  ≡⟨⟩
-    2 + 2 * m
-  ∎
-\end{code}
-The lemma is straightforward, and uses the lemma
-`+-suc` from Chapter [Properties](Properties), which
-allows us to simplify `m + suc n` to `suc (m + n)`.
+By convention, one tends to write constant factors first and to put
+the constant term in a sum last. Here we've reversed each of those
+conventions, because doing so eases the proof.
 
 Here is the proof in the forward direction.
 \begin{code}
-even-∃ : ∀ {n : ℕ} → even n → ∃[ m ] (    2 * m ≡ n)
-odd-∃  : ∀ {n : ℕ} →  odd n → ∃[ m ] (1 + 2 * m ≡ n)
+even-∃ : ∀ {n : ℕ} → even n → ∃[ m ] (    m * 2 ≡ n)
+odd-∃  : ∀ {n : ℕ} →  odd n → ∃[ m ] (1 + m * 2 ≡ n)
 
 even-∃ even-zero =  zero , refl
 even-∃ (even-suc o) with odd-∃ o
-...                    | m , refl = suc m , lemma m
+...                    | m , refl = suc m , refl
 
 odd-∃  (odd-suc e)  with even-∃ e
 ...                    | m , refl = m , refl
 \end{code}
 We define two mutually recursive functions. Given
 evidence that `n` is even or odd, we return a
-number `m` and evidence that `2 * m ≡ n` or `1 + 2 * m ≡ n`.
-(By convention, one tends to put a constant at the
-end of a term, so why have we chosen here
-to write `1 + 2 * m` rather than `2 * m + 1`?)
+number `m` and evidence that `m * 2 ≡ n` or `1 + m * 2 ≡ n`.
 We induct over the evidence that `n` is even or odd.
 
 - If the number is even because it is zero, then we return a pair
@@ -287,47 +287,55 @@ consisting of zero and the (trivial) proof that twice zero is zero.
 
 - If the number is even because it is one more than an odd number,
 then we apply the induction hypothesis to give a number `m` and
-evidence that `1 + 2 * m ≡ n`. We return a pair consisting of `suc m`
-and evidence that `2 * (suc m)` ≡ suc n`, which after substituting for
-`n` means we need to show `2 * (suc m) ≡ 2 + 2 * m`, which follows
-from our lemma.
+evidence that `1 + m * 2 ≡ n`. We return a pair consisting of `suc m`
+and evidence that `suc m * 2` ≡ suc n`, which is immediate after
+substituting for `n`.
 
-- If the number is odd because it is the successor of an even
-number, then we apply the induction hypothesis to give a number `m`
-and evidence that `2 * m ≡ n`. We return a pair consisting of `suc m`
-and evidence that `1 + 2 * m = suc n`, which is immediate
-after substituting for `n`.
+- If the number is odd because it is the successor of an even number,
+then we apply the induction hypothesis to give a number `m` and
+evidence that `m * 2 ≡ n`. We return a pair consisting of `suc m` and
+evidence that `1 + 2 * m = suc n`, which is immediate after
+substituting for `n`.
 
 This completes the proof in the forward direction.
 
 Here is the proof in the reverse direction.
 \begin{code}
-∃-even : ∀ {n : ℕ} → ∃[ m ] (   2 * m ≡ n) → even n
-∃-odd  : ∀ {n : ℕ} → ∃[ m ] (1 + 2 * m ≡ n) →  odd n
+∃-even : ∀ {n : ℕ} → ∃[ m ] (    m * 2 ≡ n) → even n
+∃-odd  : ∀ {n : ℕ} → ∃[ m ] (1 + m * 2 ≡ n) →  odd n
 
-∃-even ( zero , refl)                  =  even-zero
-∃-even (suc m , refl) rewrite lemma m  =  even-suc (∃-odd (m , refl))
+∃-even ( zero , refl)   =  even-zero
+∃-even (suc m , refl)   =  even-suc (∃-odd (m , refl))
 
-∃-odd  (    m , refl)                  =  odd-suc (∃-even (m , refl))
+∃-odd  (    m , refl)   =  odd-suc (∃-even (m , refl))
 \end{code}
-Given a number that is twice some other number we must show
-it is even, and a number that is one more than twice some other
-number we must show it is odd.  We induct over the evidence
-of the existential, and in particular the number that is doubled.
+Given a number that is twice some other number we must show it is
+even, and a number that is one more than twice some other number we
+must show it is odd.  We induct over the evidence of the existential,
+and in the even case consider the two possibilities for the number
+that is doubled.
 
-- In the even case, if it is `zero`, then we must show `2 * zero` is
-even, which follows by `even-zero`.
+- In the even case for `zero`, we must show `2 * zero` is even, which
+follows by `even-zero`.
 
-- In the even case, if it is `suc n`, then we must show `2 * suc m` is
-even.  After rewriting with our lemma, we must show that `2 + 2 * m`
-is even. The inductive hypothesis tells us that `1 + 2 * m` is odd,
-from which the desired result follows by `even-suc`.
+- In the even case for `suc n`, we must show `2 * suc m` is even.  The
+inductive hypothesis tells us that `1 + 2 * m` is odd, from which the
+desired result follows by `even-suc`.
 
-- In the odd case, then we must show `1 + 2 * suc m` is odd.  The
-inductive hypothesis tell us that `2 * m` is even, from which the
-desired result follows by `odd-suc`.
+- In the odd case, we must show `1 + m * 2` is odd.  The inductive
+hypothesis tell us that `m * 2` is even, from which the desired result
+follows by `odd-suc`.
 
 This completes the proof in the backward direction.
+
+### Exercise (`∃-even′, ∃-odd′`)
+
+How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
+by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
+restated in this way.
+
+
+## Existentials, Universals, and Negation
 
 Negation of an existential is isomorphic to universal
 of a negation.  Considering that existentials are generalised
@@ -361,23 +369,6 @@ The two inverse proofs are straightforward, where one direction
 requires extensionality.
 
 
-
-### Exercise (`∃-distrib-⊎`)
-
-Show that universals distribute over conjunction.
-\begin{code}
-∃-Distrib-⊎ = ∀ {A : Set} {B C : A → Set} →
-  ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
-\end{code}
-
-### Exercise (`∃×-implies-×∃`)
-
-Show that an existential of conjunctions implies a conjunction of existentials.
-\begin{code}
-∃×-Implies-×∃ = ∀ {A : Set} { B C : A → Set } →
-  ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
-\end{code}
-Does the converse hold? If so, prove; if not, explain why.
 
 ### Exercise (`∃¬-Implies-¬∀`)
 

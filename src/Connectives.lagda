@@ -536,7 +536,7 @@ Right identity follows from commutativity of sum and left identity.
   ≃-∎
 \end{code}
 
-## Implication is function
+## Implication is function {#implication}
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
 whenever `A` holds then `B` must also hold.  We formalise implication using

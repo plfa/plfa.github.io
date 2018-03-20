@@ -74,3 +74,12 @@ Most of the text was written during a sabbatical in the first half of 2018.
 [stump]: http://www.morganclaypoolpublishers.com/catalog_Orig/product_info.php?cPath=24&products_id=908
 [wen]: https://github.com/wenkokke
 [phil]: http://homepages.inf.ed.ac.uk/wadler/
+
+## A word on the exercises
+
+Each exercise is followed by a name, which is the name you should use when
+preparing an Agda file that solves the exercise.  Sometimes it is up to you to
+work out the type of the identifier, but sometimes we give it in the exercise.
+In the latter case, the type is bound to an identifier with a capital in its
+name, where the identifier you are to define has a small letter instead.
+
