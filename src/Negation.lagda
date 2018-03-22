@@ -311,11 +311,9 @@ Stable A = ¬ ¬ A → A
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 \begin{code}
-¬-Stable : Set₁
-¬-Stable = ∀ {A : Set} → Stable (¬ A)
-
-×-Stable : Set₁
-×-Stable = ∀ {A B : Set} → Stable A → Stable B → Stable (A × B)
+postulate
+  ¬-stable : ∀ {A : Set} → Stable (¬ A)
+  ×-stable : ∀ {A B : Set} → Stable A → Stable B → Stable (A × B)
 \end{code}
 
 ## Standard Prelude

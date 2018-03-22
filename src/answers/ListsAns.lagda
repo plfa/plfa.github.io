@@ -8,8 +8,9 @@ permalink : /ListsAns
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; suc; zero; _+_; _*_)
-open import Data.Nat.Properties.Simple using (*-comm; distribʳ-*-+)
+open import Data.Nat using (ℕ; suc; zero; _+_; _*_; _∸_)
+open import Data.Nat.Properties using (*-comm; *-distribˡ-+)
+  renaming (*-distribʳ-+ to funny-*-distribʳ-+)
 open import Data.List using (List; []; _∷_; [_]; _++_; length; foldr)
 open import Data.Product using (proj₁; proj₂)
 \end{code}
@@ -82,14 +83,6 @@ reverse [] = []
 reverse (x ∷ xs) = reverse xs ++ [ x ]
 \end{code}
 
-The proof of distribution of multiplication over addition from
-the standard library takes its arguments in a strange order.
-We fix that here.
-\begin{code}
-*-distrib-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
-*-distrib-+ m n p = distribʳ-*-+ p m n
-\end{code}
-
 
 ## Reverse and append
 
@@ -150,39 +143,44 @@ reverse-involutive (x ∷ xs) =
 
 ## Sum of count
 
+The proof of distribution of multiplication over addition from
+the standard library takes its arguments in a strange order.
+We fix that here.
+\begin{code}
+*-distribʳ-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+*-distribʳ-+ m n p = funny-*-distribʳ-+ p m n
+\end{code}
+
 \begin{code}
 sum : List ℕ → ℕ
 sum = foldr _+_ 0
 
-countdown : ℕ → List ℕ
-countdown zero = []
-countdown (suc n) = suc n ∷ countdown n
-
-infix 6 _+
-
-_+ : ℕ → ℕ → ℕ
-(m +) n = m + n
+downFrom : ℕ → List ℕ
+downFrom zero = []
+downFrom (suc n) = n ∷ downFrom n
 
 cong2 : ∀ {A B C : Set} {x x′ : A} {y y′ : B} →
   (f : A → B → C) → (x ≡ x′) → (y ≡ y′) → (f x y ≡ f x′ y′)
 cong2 f x≡x′ y≡y′ rewrite x≡x′ | y≡y′ = refl
 
-sum-countdown : ∀ (n : ℕ) → sum (countdown n) * 2 ≡ suc n * n
-sum-countdown zero = refl
-sum-countdown (suc n) = 
+sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
+sum-downFrom zero = refl
+sum-downFrom (suc zero) = refl
+sum-downFrom (suc (suc n)) = 
   begin
-    sum (countdown (suc n)) * 2
+    sum (downFrom (suc (suc n))) * 2
   ≡⟨⟩
-    sum (suc n ∷ countdown n) * 2
+    sum (suc n ∷ downFrom (suc n)) * 2
   ≡⟨⟩
-    (suc n + sum (countdown n)) * 2
-  ≡⟨ *-distrib-+ (suc n) (sum (countdown n)) 2 ⟩
-    suc n * 2 + sum (countdown n) * 2
-  ≡⟨ cong (suc n * 2 +) (sum-countdown n) ⟩
+    (suc n + sum (downFrom (suc n))) * 2
+  ≡⟨ *-distribʳ-+ (suc n) (sum (downFrom (suc n))) 2 ⟩
+    suc n * 2 + sum (downFrom (suc n)) * 2
+  ≡⟨ cong (suc n * 2 +_) (sum-downFrom (suc n)) ⟩
     suc n * 2 + suc n * n
-  ≡⟨ cong2 _+_ (*-comm (suc n) 2) (*-comm (suc n) n) ⟩
-    2 * suc n + n * suc n
-  ≡⟨ sym (*-distrib-+ 2 n (suc n))⟩
-    (2 + n) * suc n
+  ≡⟨ sym (*-distribˡ-+ (suc n) 2 n) ⟩
+    suc n * (2 + n)
+  ≡⟨ *-comm (suc n) (2 + n) ⟩
+    suc (suc n) * suc n
   ∎
 \end{code}
+

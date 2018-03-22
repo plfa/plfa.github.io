@@ -20,6 +20,7 @@ open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contraposition)
+  renaming (contradiction to ¬¬-intro)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; foldr; map)
@@ -128,7 +129,6 @@ no possible evidence that `T b` holds if `b` is false.
 
 Another way to put this is that `T b` is inhabited exactly when `b ≡ true`
 is inhabited.
-
 In the forward direction, we need to do a case analysis on the boolean `b`.
 \begin{code}
 T→≡ : ∀ (b : Bool) → T b → b ≡ true
@@ -276,14 +276,14 @@ trouble normalising evidence of negation.)
 
 ## Decidables from booleans, and booleans from decidables
 
-Curious readers might wonder if we could reuse the definition of `m ≤ᵇ
-n`, together with the proofs that it is equivalent to `m ≤ n`, to show
+Curious readers might wonder if we could reuse the definition of
+`m ≤ᵇ n`, together with the proofs that it is equivalent to `m ≤ n`, to show
 decidability.  Indeed we can do so as follows.
 \begin{code}
 _≤?′_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
-... | true  | p | _   = yes (p tt)
-... | false | _ | ¬p  = no ¬p
+...        | true   | p        | _            = yes (p tt)
+...        | false  | _        | ¬p           = no ¬p
 \end{code}
 If `m ≤ᵇ n` is true then `≤ᵇ→≤` yields a proof that `m ≤ n` holds,
 while if it is false then `≤→≤ᵇ` takes a proof the `m ≤ n` holds into a contradiction.
@@ -304,7 +304,7 @@ then Agda would make two complaints, one for each clause
     T (m ≤ᵇ n) !=< ⊥ of type Set
     when checking that the expression ≤→≤ᵇ {m} {n} has type ¬ m ≤ n
 
-Putting the expressions into the with clause permits Agda to exploit
+Putting the expressions into the `with` clause permits Agda to exploit
 the fact that `T (m ≤ᵇ n)` is `⊤` when `m ≤ᵇ n` is true, and that
 `T (m ≤ᵇ n)` is `⊥` when `m ≤ᵇ n` is false.
 
@@ -401,6 +401,11 @@ true  ∨ _      = true
 _     ∨ true   = true
 false ∨ false  = false
 \end{code}
+In Emacs, the left-hand side of the second equation displays in grey,
+indicating that the order of the equations determines which of the
+first or the second can match.  However, regardless of which matches
+the answer is the same.
+
 Correspondingly, given two decidable propositions, we can
 decide their disjunction.
 \begin{code}
@@ -417,6 +422,12 @@ If either holds, we inject the evidence to yield
 evidence of the disjunct.  If the negation of both hold,
 assuming either disjunct will lead to a contradiction.
 
+Again in Emacs, the left-hand side of the second equation displays in grey,
+indicating that the order of the equations determines which of the
+first or the second can match.  This time the answer is different depending
+on which matches; if both disjuncts hold we pick the first,
+but it would be equally valid to pick the second.
+
 The negation of a boolean is false if its argument is true,
 and vice versa.
 \begin{code}
@@ -427,9 +438,9 @@ not false = true
 Correspondingly, given a decidable proposition, we
 can decide its negation.
 \begin{code}
-not? : {A : Set} → Dec A → Dec (¬ A)
-not? (yes x)  =  no λ{ ¬x → ¬x x }
-not? (no ¬x)  =  yes ¬x
+¬? : {A : Set} → Dec A → Dec (¬ A)
+¬? (yes x)  =  no (¬¬-intro x)
+¬? (no ¬x)  =  yes ¬x
 \end{code}
 We simply swap yes and no.  In the first equation,
 the right-hand side asserts that the negation of `¬ A` holds,
@@ -449,6 +460,10 @@ whenever the first is true then the second is true.
 Hence, the implication of two booleans is true if
 the second is true or the first is false,
 and false if the first is true and the second is false.
+In Emacs, the left-hand side of the second equation displays in grey,
+indicating that the order of the equations determines which of the
+first or the second can match.  However, regardless of which matches
+the answer is the same.
 
 Correspondingly, given two decidable propositions,
 we can decide if the first implies the second.
@@ -471,6 +486,12 @@ given evidence of the implication we must derive a contradiction;
 we apply the evidence of the implication `f` to the evidence of the
 first `x`, yielding a contradiction with the evidence `¬y` of
 the negation of the second.
+
+Again in Emacs, the left-hand side of the second equation displays in grey,
+indicating that the order of the equations determines which of the
+first or the second can match.  This time the answer is different depending
+on which matches; but either is equally valid.
+
 
 ## Decidability of All
 
@@ -500,17 +521,17 @@ a function of type `A → Set`, taking a value `x` of type `A` into evidence
 if we have a function that for a given `x` can decide `P x`.
 \begin{code}
 Decidable : ∀ {A : Set} → (A → Set) → Set
-Decidable {A} P  =  (x : A) → Dec (P x)
+Decidable {A} P  =  ∀ (x : A) → Dec (P x)
 \end{code}
 Then if predicate `P` is decidable, it is also decidable whether every
 element of a list satisfies the predicate.
 \begin{code}
-all? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
-all? p? [] = yes []
-all? p? (x ∷ xs) with p? x   | all? p? xs
-...                 | yes px | yes pxs     = yes (px ∷ pxs)
-...                 | no ¬px | _           = no λ{ (px ∷ pxs) → ¬px px   }
-...                 | _      | no ¬pxs     = no λ{ (px ∷ pxs) → ¬pxs pxs }
+All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
+All? P? [] = yes []
+All? P? (x ∷ xs) with P? x   | All? P? xs
+...                 | yes Px | yes Pxs     = yes (Px ∷ Pxs)
+...                 | no ¬Px | _           = no λ{ (Px ∷ Pxs) → ¬Px Px   }
+...                 | _      | no ¬Pxs     = no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
 \end{code}
 If the list is empty, then trivially `P` holds for every element of
 the list.  Otherwise, the structure of the proof is similar to that
@@ -525,8 +546,21 @@ predicate holds for every element of a list, so does `Any` have
 analogues `any` and `any?` which determine whether a predicates holds
 for some element of a list.  Give their definitions.
 
-<!-- import Data.List.All using (All; []; _∷_) renaming (all to all?) -->
+## Standard Library
+
+\begin{code}
+import Data.Bool.Base using (Bool; T; _∧_; _∨_; not)
+import Data.Nat.Base using (_≤?_)
+import Data.List.All using (All; []; _∷_) renaming (all to All?)
+import Relation.Nullary using (Dec; yes; no)
+import Relation.Nullary.Decidable using (⌊_⌋; toWitness; fromWitness)
+import Relation.Nullary.Negation using (¬?)
+import Relation.Nullary.Product using (_×-dec_)
+import Relation.Nullary.Sum using (_⊎-dec_)
+\end{code}
+
 
 ## Unicode
 
     ᵇ  U+1D47  MODIFIER LETTER SMALL B  (\^b)
+

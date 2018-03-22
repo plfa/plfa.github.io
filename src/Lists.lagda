@@ -14,7 +14,7 @@ examples of polymorphic types and higher-order functions.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; s≤s; z≤n)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_)
@@ -343,8 +343,8 @@ Reversing a list in this way takes time *quadratic* in the length of
 the list. This is because reverse ends up appending lists of lengths
 `1`, `2`, up to `n - 1`, where `n` is the length of the list being
 reversed, append takes time linear in the length of the first
-list, and the sum of the numbers up to `n` is `n * (n + 1) / 2`.
-(We will validate that last fact later in this chapter.)
+list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
+(We will validate that last fact in an exercise later in this chapter.)
 
 ### Exercise (`reverse-++-commute`)
 
@@ -544,8 +544,8 @@ the head of the list and the fold of the tail of the list.
 
 Here is an example showing how to use fold to find the sum of a list.
 \begin{code}
-ex₇ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
-ex₇ =
+_ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
+_ =
   begin
     foldr _+_ 0 (1 ∷ 2 ∷ 3 ∷ 4 ∷ [])
   ≡⟨⟩
@@ -570,7 +570,14 @@ sum : List ℕ → ℕ
 sum = foldr _+_ 0
 
 _ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
-_ = ex₇
+_ =
+  begin
+    sum [ 1 , 2 , 3 , 4 ]
+  ≡⟨⟩
+    foldr _+_ 0 [ 1 , 2 , 3 , 4 ]
+  ≡⟨⟩
+    10
+  ∎
 \end{code}
 
 Just as the list type has two constructors, `[]` and `_∷_`,
@@ -579,13 +586,13 @@ so the fold function takes two arguments, `e` and `_⊕_`
 In general, a data type with *n* constructors will have
 a corresponding fold function that takes *n* arguments.
 
-*Exercise* (`product`)
+## Exercise (`product`)
 
 Use fold to define a function to find the product of a list of numbers.
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-*Exercise* (`foldr-++`)
+### Exercise (`foldr-++`)
 
 Show that fold and append are related as follows.
 \begin{code}
@@ -595,7 +602,7 @@ postulate
 \end{code}
 
 
-*Exercise* (`map-is-foldr`)  <!-- `mapIsFold` in Data.List.Properties -->
+### Exercise (`map-is-foldr`)  
 
 Show that map can be defined using fold.
 \begin{code}
@@ -604,6 +611,33 @@ postulate
     map f ≡ foldr (λ x xs → f x ∷ xs) []
 \end{code}
 This requires extensionality.
+
+### Exercise (`sum-downFrom`)
+
+Define a function that counts down as follows.
+\begin{code}
+downFrom : ℕ → List ℕ
+downFrom zero     =  []
+downFrom (suc n)  =  n ∷ downFrom n
+\end{code}
+For example,
+\begin{code}
+_ : downFrom 3 ≡ [ 2 , 1 , 0 ]
+_ = refl
+\end{code}
+Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
+equal to `n * (n - 1) / 2`.
+\begin{code}
+postulate
+  sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
+\end{code}
+
+
+<!-- `mapIsFold` in Data.List.Properties -->
+
+
+
+
 
 
 ## Monoids
@@ -828,8 +862,22 @@ Do we also have the following?
 
 If so, prove; if not, explain why.
 
+## Standard Library
+
+Definitions similar to those in this chapter can be found in the standard library.
+\begin{code}
+import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
+import Data.List.All using (All)
+import Data.List.Any using (Any)
+import Algebra.Structures using (IsMonoid)
+\end{code}
+The standard library version of `IsMonoid` differs from the
+one given here, in that it is also parameterised on an equivalence relation.
+
 
 ## Unicode
+
+This chapter uses the following unicode.
 
     ∷  U+2237  PROPORTION  (\::)
     ⊗  U+2297  CIRCLED TIMES  (\otimes)

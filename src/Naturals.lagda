@@ -290,8 +290,8 @@ just a couple of lines.
 Here is the definition of addition in Agda:
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
-zero    + n  =  n                -- (i)
-(suc m) + n  =  suc (m + n)      -- (ii)
+zero    + n  =  n
+(suc m) + n  =  suc (m + n)
 \end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
