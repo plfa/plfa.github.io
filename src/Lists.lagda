@@ -21,6 +21,7 @@ open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Isomorphism using (_≃_)
 open import Function using (_∘_)
+open import Level using (Level)
 \end{code}
 
 We assume [extensionality][extensionality].
@@ -850,15 +851,24 @@ replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
 
 ### Exercise (`¬Any≃All¬`)
 
+We first generalise composition to arbitrary levels, using
+[universe polymorphism][unipoly].
+\begin{code}
+_∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃} → (B → C) → (A → B) → A → C
+(g ∘′ f) x  =  g (f x)
+\end{code}
+
+[unipoly]: Equality/index.html#unipoly
+
 Show that `Any` and `All` satisfy a version of De Morgan's Law.
 \begin{code}
 postulate
-  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → (¬_ ∘ Any P) xs ≃ All (¬_ ∘ P) xs
+  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → (¬_ ∘′ Any P) xs ≃ All (¬_ ∘′ P) xs
 \end{code}
 
 Do we also have the following?
 
-    (¬_ ∘ All P) xs ≃ Any (¬_ ∘ P) xs
+    (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
 
 If so, prove; if not, explain why.
 

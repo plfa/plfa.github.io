@@ -299,6 +299,7 @@ module ≲-Reasoning where
   ≲-begin_ : ∀ {A B : Set} → A ≲ B → A ≲ B
   ≲-begin A≲B = A≲B
 
+
   _≲⟨_⟩_ : ∀ (A : Set) {B C : Set} → A ≲ B → B ≲ C → A ≲ C
   A ≲⟨ A≲B ⟩ B≲C = ≲-trans A≲B B≲C
 

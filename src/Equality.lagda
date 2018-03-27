@@ -63,7 +63,7 @@ It is instructive to develop `sym` interactively.  To start, we supply
 a variable for the argument on the left, and a hole for the body on
 the right:
 
-    sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
+    sym : ∀ {A : Set} {x y : A} →  x ≡ y → y ≡ x
     sym e = {! !}
 
 If we go into the hole and type `C-C C-,` then Agda reports:
@@ -73,14 +73,13 @@ If we go into the hole and type `C-C C-,` then Agda reports:
     e  : .x ≡ .y
     .y : .A
     .x : .A
-    .A : Set .ℓ
-    .ℓ : .Agda.Primitive.Level
+    .A : Set
 
 If in the hole we type `C-C C-C e` then Agda will instantiate `e` to
 all possible constructors, with one equation for each. There is only
 one possible constructor:
 
-    sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
+    sym : ∀ {A : Set} {x y : A} →  x ≡ y → y ≡ x
     sym refl = {! !}
 
 If we go into the hole again and type `C-C C-,` then Agda now reports:
@@ -88,8 +87,7 @@ If we go into the hole again and type `C-C C-,` then Agda now reports:
      Goal: .x ≡ .x
      ————————————————————————————————————————————————————————————
      .x : .A
-     .A : Set .ℓ
-     .ℓ : .Agda.Primitive.Level
+     .A : Set
 
 This is the key step---Agda has worked out that `x` and `y` must be
 the same to match the pattern `refl`!
@@ -98,7 +96,7 @@ Finally, if we go back into the hole and type `C-C C-R` it will
 instantiate the hole with the one constructor that yields a value of
 the expected type.
 
-    sym : ∀ {ℓ} {A : Set ℓ} {x y : A} →  x ≡ y → y ≡ x
+    sym : ∀ {A : Set} {x y : A} →  x ≡ y → y ≡ x
     sym refl = refl
 
 This completes the definition as given above.
@@ -112,7 +110,7 @@ Again, a useful exercise is to carry out an interactive development, checking
 how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
-## Congruence and Substitution
+## Congruence and substitution
 
 Equality satisfies *congruence*.  If two terms are equal,
 they remain so after the same function is applied to both.
@@ -547,6 +545,62 @@ by reflexivity of Martin Löf equivalence, and hence `Q y` follows from
 Isomorphic to Martin-Löf Identity, Parametrically*, by Andreas Abel,
 Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
 draft paper, 2017.)
+
+
+## Universe polymorphism {#unipoly}
+
+As we have seen, not every type belongs to `Set`, but instead every
+type belongs somewhere in the hierarchy `Set₀`, `Set₁`, `Set₂`, and so on,
+where `Set` abbreviates `Set₀`, and `Set₀ : Set₁`, `Set₁ : Set₂`, and so on.
+The definition of equality given above is fine if we want to compare two
+values of a type that belongs to `Set`, but what if we want to compare
+two values of a type that belongs to `Set ℓ` for some arbitrary level `ℓ`?
+
+The answer is *universe polymorphism*, where a definition is made
+with respect to an arbitrary level `ℓ`. To make use of levels, we
+first import the following.
+\begin{code}
+open import Level using (Level; suc; zero; _⊔_)
+\end{code}
+Levels are isomorphic to natural numbers, and have the same constructors:
+
+    zero : Level
+    suc  : Level → Level
+
+The names `Set₀`, `Set₁`, `Set₂` and so on are abbreviations for
+
+    Set zero
+    Set (suc zero)
+    Set (suc (suc zero))
+
+and so on. There is also an operator
+
+    _⊔_ : Level → Level → Level
+
+that given two levels returns the larger of the two.
+
+Here is the definition of equality, generalised to an arbitrary level.
+\begin{code}
+data _≡′_ {ℓ : Level} {A : Set ℓ} : A → A → Set ℓ where
+  refl′ : ∀ {x : A} → x ≡′ x
+\end{code}
+Similarly, here is the generalised definition of symmetry.
+\begin{code}
+sym′ : ∀ {ℓ : Level} {A : Set ℓ} {x y : A} →  x ≡′ y → y ≡′ x
+sym′ refl′ = refl′
+\end{code}
+For simplicity, we avoid universe polymorphism in the definitions given in
+the text, but most definitions in the standard library, including those for
+equality, are generalised to arbitrary levels as above.
+
+Here is the generalised definition of Leibniz equality.
+\begin{code}
+_≐′_ : ∀ {ℓ : Level} {A : Set ℓ} (x y : A) → Set (suc ℓ)
+_≐′_ {A} x y = ∀ (P : A → Set ℓ) → P x → P y
+\end{code}
+Before the signature used `Set₁` as the type of a term that includes
+`Set`, whereas here the signature uses `Set (suc ℓ)` as the type of a
+term that includes `Set ℓ`.
 
 
 ## Standard library
