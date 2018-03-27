@@ -293,9 +293,11 @@ in this case `m` and `n`.  It is equivalent to the following
 indexed datatype.
 \begin{code}
 data Total′ : ℕ → ℕ → Set where
-  forward : ∀ {m n : ℕ} → m ≤ n → Total′ m n
-  flipped : ∀ {m n : ℕ} → n ≤ m → Total′ m n
+  forward′ : ∀ {m n : ℕ} → m ≤ n → Total′ m n
+  flipped′ : ∀ {m n : ℕ} → n ≤ m → Total′ m n
 \end{code}
+Each parameter of the type translates as an implicit
+parameter of each constructor.
 Unlike an indexed datatype, where the indexes can vary
 (as in `zero ≤ n` and `suc m ≤ suc n`), in a parameterised
 datatype the parameters must always be the same (as in `Total m n`).

@@ -331,6 +331,11 @@ How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
+### Exercise (`∃-+-≤`)
+
+Show that `y ≤ z` holds if and only if there exists a `x` such that
+`x + y ≡ z`.
+
 
 ## Existentials, Universals, and Negation
 
@@ -388,5 +393,3 @@ This chapter uses the following unicode.
 
     Π  U+03A0  GREEK CAPITAL LETTER PI (\Pi)
     ∃  U+2203  THERE EXISTS (\ex, \exists)
-
-
