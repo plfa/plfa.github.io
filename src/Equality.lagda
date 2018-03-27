@@ -400,7 +400,7 @@ Nonetheless, rewrite is a vital part of the Agda toolkit,
 as earlier examples have shown.
 
 
-## Extensionality {!#extensionality}
+## Extensionality {#extensionality}
 
 Extensionality asserts that they only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
@@ -624,3 +624,4 @@ This chapter uses the following unicode.
     ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
     ∎  U+220E  END OF PROOF (\qed)
     ≐  U+2250  APPROACHES THE LIMIT (\.=)
+    ℓ  U+2113  SCRIPT SMALL L (\ell)

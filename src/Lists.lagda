@@ -851,7 +851,7 @@ replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
 
 ### Exercise (`¬Any≃All¬`)
 
-We first generalise composition to arbitrary levels, using
+First generalise composition to arbitrary levels, using
 [universe polymorphism][unipoly].
 \begin{code}
 _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃} → (B → C) → (A → B) → A → C

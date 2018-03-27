@@ -17,6 +17,7 @@ distributivity.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong-app)
 open Eq.≡-Reasoning
+open Level
 \end{code}
 
 ## Function composition
