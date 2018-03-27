@@ -6,19 +6,23 @@ layout : page
 This book is an introduction to programming language theory, written
 in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
-Please send us comments!  The text is currrently being drafted. The
-first draft of Part I will be completed before the end of
-March 2018. When that is done it will be announced here, and that would be
-an excellent time to comment on the first part.
+Please send us comments!  The text is currrently being drafted.  Part I
+is ready for comment. We plan that Part II will be ready for comment
+by the end of May.
 
-The book was inspired by [Software Foundations][sf], but presents the
-material in a different way; see the [Preface](Preface).
+Comments on all matters---organisation, material we should add,
+material we should remove, parts that require better explanation, good
+exercises, errors, and typos---are welcome.  Pull requests for small
+fixes are encouraged.
+
 
 ## Front matter
 
   - [Preface](Preface)
 
 ## Part 1: Logical Foundations
+
+(This part is ready for review. Please send your comments!)
 
   - [Naturals: Natural numbers](Naturals)
   - [Properties: Proof by induction](Properties)
@@ -31,12 +35,9 @@ material in a different way; see the [Preface](Preface).
   - [Lists: Lists and higher-order functions](Lists)
   - [Decidable: Booleans and decision procedures](Decidable)
 
-  - [PropertiesAns: Solutions to exercises](PropertiesAns) 
-  - [RelationsAns: Solutions to exercises](RelationsAns) 
-  - [LogicAns: Solutions to exercises](LogicAns)
-  - [ListsAns: Solutions to exercises](ListsAns)
-
 ## Part 2: Programming Language Foundations
+
+(This part is not yet ready for review.)
 
   - [Maps: Total and Partial Maps](Maps)
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)

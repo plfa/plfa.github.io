@@ -560,18 +560,18 @@ The answer is *universe polymorphism*, where a definition is made
 with respect to an arbitrary level `ℓ`. To make use of levels, we
 first import the following.
 \begin{code}
-open import Level using (Level; suc; zero; _⊔_)
+open import Level using (Level; _⊔_) renaming (suc to lsuc; zero to lzero)
 \end{code}
-Levels are isomorphic to natural numbers, and have the same constructors:
+Levels are isomorphic to natural numbers, and have similar constructors:
 
-    zero : Level
-    suc  : Level → Level
+    lzero : Level
+    lsuc  : Level → Level
 
 The names `Set₀`, `Set₁`, `Set₂` and so on are abbreviations for
 
-    Set zero
-    Set (suc zero)
-    Set (suc (suc zero))
+    Set lzero
+    Set (lsuc lzero)
+    Set (lsuc (lsuc lzero))
 
 and so on. There is also an operator
 
@@ -595,8 +595,8 @@ equality, are generalised to arbitrary levels as above.
 
 Here is the generalised definition of Leibniz equality.
 \begin{code}
-_≐′_ : ∀ {ℓ : Level} {A : Set ℓ} (x y : A) → Set (suc ℓ)
-_≐′_ {A} x y = ∀ (P : A → Set ℓ) → P x → P y
+_≐′_ : ∀ {ℓ : Level} {A : Set ℓ} (x y : A) → Set (lsuc ℓ)
+_≐′_ {ℓ} {A} x y = ∀ (P : A → Set ℓ) → P x → P y
 \end{code}
 Before the signature used `Set₁` as the type of a term that includes
 `Set`, whereas here the signature uses `Set (suc ℓ)` as the type of a

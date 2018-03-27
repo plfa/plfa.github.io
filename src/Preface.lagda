@@ -7,18 +7,23 @@ permalink : /Preface
 This book is an introduction to programming language theory, written
 in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
-Please send us comments!  The text is currrently being drafted. The
-first draft of Part I will be completed before the end of
-March 2018. When that is done it will be announced here, and that would be
+Please send us comments!  The text is currrently being drafted.  Part I
+is ready for comment. We plan that Part II will be ready for comment
+by the end of May.
+
+Comments on all matters---organisation, material we should add,
+material we should remove, parts that require better explanation, good
+exercises, errors, and typos---are welcome.  Pull requests for small
+fixes are encouraged.
+
+<!--
+The first draft of Part I will be completed before the end of March
+2018. When that is done it will be announced here, and that would be
 an excellent time to comment on the first part.
+-->
 
 
 ## Personal remarks: From TAPL to PLTA
-
-I, along with many others, am a fan of Peirce's [Types and Programming
-Languages][tapl], known by the acronym TAPL. One of my best students
-started writing his own systems with no help from me, trained by that
-book.
 
 Since 2013, I have taught a course on Types and Semantics for
 Programming Languages to fourth-year undergraduates and masters
