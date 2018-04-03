@@ -161,10 +161,8 @@ substitution.  Working from top to bottom (from the high-level
 property we are actually interested in to the lowest-level
 technical lemmas), the story goes like this:
 
-  <!--
   - The _preservation theorem_ is proved by induction on a typing derivation.
     derivation, pretty much as we did in chapter [Types]({{ "Types" | relative_url }})
-  -->
 
   - The one case that is significantly different is the one for the
     `βλ·` rule, whose definition uses the substitution operation.  To see that

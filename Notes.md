@@ -29,7 +29,24 @@ The following comments were collected on the Agda mailing list.
 
 ## Untyped lambda calculus
 
-* http://www.cse.chalmers.se/~nad/listings/partiality-monad/Lambda.Simplified.Delay-monad.Interpreter.html
+* Nils Anders Danielsson <nad@cse.gu.se>
+  +
+  http://www.cse.chalmers.se/~nad/listings/partiality-monad/Lambda.Simplified.Delay-monad.Interpreter.html
+  + /~nad/repos/codata/Lambda/Closure/Functional
+* untyped lambda calculus by Gallais
+  + https://gist.github.com/gallais/303cfcfe053fbc63eb61
+* lambda calculus
+  + https://github.com/pi8027/lambda-calculus/tree/master/agda/Lambda
+
+## Agda resources
+* Chalmers class
+  + http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/
+* Dybjer lecture notes
+  + http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/LectureNotes.pdf
+* Ulf Norell and James Chapman lecture notes
+  + http://www.cse.chalmers.se/~ulfn/darcs/AFP08/LectureNotes/AgdaIntro.pdf
+* Chalmer Take Home exam 2017
+  + http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/TakeHomeExamTypes2017.pdf
 
 ## Syntax for lambda calculus
 
