@@ -52,9 +52,9 @@ data _∋_ : Env → Type → Set where
     Γ , A ∋ A
 
   S_ : ∀ {Γ} {A B} →
-    Γ ∋ A →
+    Γ ∋ B →
     -----------
-    Γ , B ∋ A
+    Γ , A ∋ B
 
 data _⊢_ : Env → Type → Set where
 
@@ -172,30 +172,34 @@ _ = refl
 ## Renaming
 
 \begin{code}
-ext∋ : ∀ {Γ Δ} {B} → (∀ {A} → Γ ∋ A → Δ ∋ A) → Δ ∋ B → (∀ {A} → Γ , B ∋ A → Δ ∋ A)
-ext∋ ρ j Z      =  j
-ext∋ ρ j (S k)  =  ρ k
-
-rename : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-rename ρ (⌊ n ⌋)  =  ⌊ ρ n ⌋
-rename ρ (ƛ N)    =  ƛ (rename (ext∋ (S_ ∘ ρ) Z) N)
-rename ρ (L · M)  =  (rename ρ L) · (rename ρ M)
+rename : ∀ {Γ Δ} → (∀ {B} → Γ ∋ B → Δ ∋ B) → (∀ {B} → Γ ⊢ B → Δ ⊢ B)
+rename ρ (⌊ n ⌋)                   =  ⌊ ρ n ⌋
+rename {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (rename ρ′ N)
+  where
+  ρ′ : ∀ {B} → Γ , A ∋ B → Δ , A ∋ B
+  ρ′ Z      =  Z
+  ρ′ (S k)  =  S (ρ k)
+rename ρ (L · M)                   =  (rename ρ L) · (rename ρ M)
 \end{code}
 
 ## Substitution
 
 \begin{code}
-ext⊢ : ∀ {Γ Δ} {B} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → Δ ⊢ B → (∀ {A} → Γ , B ∋ A → Δ ⊢ A)
-ext⊢ ρ M Z      =  M
-ext⊢ ρ M (S k)  =  ρ k
+subst : ∀ {Γ Δ} → (∀ {B} → Γ ∋ B → Δ ⊢ B) → (∀ {B} → Γ ⊢ B → Δ ⊢ B)
+subst ρ (⌊ k ⌋)                   =  ρ k
+subst {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (subst ρ′ N)
+  where
+  ρ′ : ∀ {B} → Γ , A ∋ B → Δ , A ⊢ B
+  ρ′ Z      =  ⌊ Z ⌋
+  ρ′ (S k)  =  rename S_ (ρ k)
+subst ρ (L · M)                   =  (subst ρ L) · (subst ρ M)
 
-subst : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-subst ρ (⌊ n ⌋)  =  ρ n
-subst ρ (ƛ N)    =  ƛ (subst (ext⊢ (rename S_ ∘ ρ) ⌊ Z ⌋) N)
-subst ρ (L · M)  =  (subst ρ L) · (subst ρ M)
-
-substitute : ∀ {Γ} {A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
-substitute N M =  subst (ext⊢ ⌊_⌋ M) N 
+substitute : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
+substitute {Γ} {A} {B} N M =  subst ρ N
+  where
+  ρ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
+  ρ Z      =  M
+  ρ (S k)  =  ⌊ k ⌋
 \end{code}
 
 ## Normal
