@@ -74,6 +74,6 @@ $(HOME)/agda2html-master/:
 .phony: serve build clean clobber macos-setup travis-setup
 
 # workaround for a bug in agda2html
-bugfix:
+bugfix: out/
 	@touch out/Nat.md
 .phony: bugfix
