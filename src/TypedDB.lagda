@@ -172,11 +172,11 @@ _ = refl
 ## Renaming
 
 \begin{code}
-rename : ∀ {Γ Δ} → (∀ {B} → Γ ∋ B → Δ ∋ B) → (∀ {B} → Γ ⊢ B → Δ ⊢ B)
+rename : ∀ {Γ Δ} → (∀ {C} → Γ ∋ C → Δ ∋ C) → (∀ {C} → Γ ⊢ C → Δ ⊢ C)
 rename ρ (⌊ n ⌋)                   =  ⌊ ρ n ⌋
-rename {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (rename ρ′ N)
+rename {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (rename {Γ , A} {Δ , A} ρ′ N)
   where
-  ρ′ : ∀ {B} → Γ , A ∋ B → Δ , A ∋ B
+  ρ′ : ∀ {C} → Γ , A ∋ C → Δ , A ∋ C
   ρ′ Z      =  Z
   ρ′ (S k)  =  S (ρ k)
 rename ρ (L · M)                   =  (rename ρ L) · (rename ρ M)
@@ -185,19 +185,19 @@ rename ρ (L · M)                   =  (rename ρ L) · (rename ρ M)
 ## Substitution
 
 \begin{code}
-subst : ∀ {Γ Δ} → (∀ {B} → Γ ∋ B → Δ ⊢ B) → (∀ {B} → Γ ⊢ B → Δ ⊢ B)
+subst : ∀ {Γ Δ} → (∀ {C} → Γ ∋ C → Δ ⊢ C) → (∀ {C} → Γ ⊢ C → Δ ⊢ C)
 subst ρ (⌊ k ⌋)                   =  ρ k
-subst {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (subst ρ′ N)
+subst {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (subst {Γ , A} {Δ , A} ρ′ N)
   where
-  ρ′ : ∀ {B} → Γ , A ∋ B → Δ , A ⊢ B
+  ρ′ : ∀ {C} → Γ , A ∋ C → Δ , A ⊢ C
   ρ′ Z      =  ⌊ Z ⌋
   ρ′ (S k)  =  rename S_ (ρ k)
 subst ρ (L · M)                   =  (subst ρ L) · (subst ρ M)
 
 substitute : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
-substitute {Γ} {A} {B} N M =  subst ρ N
+substitute {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
   where
-  ρ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
+  ρ : ∀ {C} → Γ , A ∋ C → Γ ⊢ C
   ρ Z      =  M
   ρ (S k)  =  ⌊ k ⌋
 \end{code}
