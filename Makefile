@@ -2,7 +2,7 @@ agda := $(wildcard src/*.lagda)
 agdai := $(wildcard src/*.agdai)
 markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 
-all: $(markdown)
+all: bugfix $(markdown)
 
 out/%.md: src/%.lagda
 	mkdir -p out
@@ -72,3 +72,8 @@ $(HOME)/agda2html-master/:
 		stack install
 
 .phony: serve build clean clobber macos-setup travis-setup
+
+# workaround for a bug in agda2html
+bugfix:
+	@touch out/Nat.md
+.phony: bugfix
