@@ -496,7 +496,7 @@ we show that if `∅ ⊢ V ∶ A` then `Γ ⊢ N [ x := V ] ∶ B`.
 
   - The remaining cases are similar to application.
 
-We need a couple of lemmas. A closed term can be weakened to any context, and `just` is injective.
+We need a lemmas stating that a closed term can be weakened to any context.
 \begin{code}
 weaken-closed : ∀ {V A Γ} → ∅ ⊢ V ∶ A → Γ ⊢ V ∶ A
 weaken-closed {V} {A} {Γ} ⊢V = context-lemma Γ~Γ′ ⊢V

@@ -1,7 +1,7 @@
 ---
 title     : "TypedDB: Typed DeBruijn representation"
 layout    : page
-permalink : /Scoped
+permalink : /TypedDB
 ---
 
 ## Imports
@@ -13,18 +13,16 @@ module TypedDB where
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
--- open Eq.≡-Reasoning
+open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Unit using (⊤; tt)
+open import Function using (_∘_)
+open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Decidable using (map)
 open import Relation.Nullary.Negation using (contraposition)
 open import Relation.Nullary.Product using (_×-dec_)
-open import Data.Unit using (⊤; tt)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Function using (_∘_)
-open import Function.Equivalence using (_⇔_; equivalence)
 \end{code}
 
 
@@ -77,43 +75,6 @@ data _⊢_ : Env → Type → Set where
     Γ ⊢ B
 \end{code}
 
-## Writing variables as naturals
-
-\begin{code}
-postulate
-  impossible : ⊥
-  _≟Tp_ : ∀ (A B : Type) → Dec (A ≡ B)
-
-conv : ∀ {Γ} {A} → ℕ → Γ ∋ A
-conv {ε} = ⊥-elim impossible
-conv {Γ , B} (suc n) = S (conv n)
-conv {Γ , A} {B} zero with A ≟Tp B
-...                   | yes refl  =  Z
-...                   | no  A≢B   =  ⊥-elim impossible
-
-⌈_⌉ : ∀ {Γ} {A} → ℕ → Γ ⊢ A
-⌈ n ⌉  =  ⌊ conv n ⌋
-\end{code}
-
-## Test examples
-
-\begin{code}
-Ch : Type
-Ch = (o ⇒ o) ⇒ o ⇒ o
-
-plus : ∀ {Γ} → Γ ⊢ Ch ⇒ Ch ⇒ Ch
-plus = ƛ ƛ ƛ ƛ (⌊ S S S Z ⌋ · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))
-
-two : ∀ {Γ} → Γ ⊢ Ch
-two = ƛ ƛ (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))
-
-four : ∀ {Γ} → Γ ⊢ Ch
-four = ƛ ƛ (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))))
-
-four′ : ∀ {Γ} → Γ ⊢ Ch
-four′ = plus · two · two
-\end{code}
-
 ## Decide whether environments and types are equal
 
 \begin{code}
@@ -140,6 +101,44 @@ _≟_ : ∀ (Γ Δ : Env) → Dec (Γ ≡ Δ)
   obv2 refl = ⟨ refl , refl ⟩
 \end{code}
 
+
+## Writing variables as naturals
+
+This turned out to be a lot harder than expected. Probably not a good idea.
+
+\begin{code}
+postulate
+  impossible : ⊥
+
+conv : ∀ {Γ} {A} → ℕ → Γ ∋ A
+conv {ε} = ⊥-elim impossible
+conv {Γ , B} (suc n) = S (conv n)
+conv {Γ , A} {B} zero with A ≟T B
+...                   | yes refl  =  Z
+...                   | no  A≢B   =  ⊥-elim impossible
+
+var : ∀ {Γ} {A} → ℕ → Γ ⊢ A
+var n  =  ⌊ conv n ⌋
+\end{code}
+
+## Test examples
+
+\begin{code}
+Ch : Type
+Ch = (o ⇒ o) ⇒ o ⇒ o
+
+plus : ∀ {Γ} → Γ ⊢ Ch ⇒ Ch ⇒ Ch
+plus = ƛ ƛ ƛ ƛ ⌊ S S S Z ⌋ · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)
+
+two : ∀ {Γ} → Γ ⊢ Ch
+two = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)
+
+four : ∀ {Γ} → Γ ⊢ Ch
+four = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+
+four′ : ∀ {Γ} → Γ ⊢ Ch
+four′ = plus · two · two
+\end{code}
 
 # Denotational semantics
 
@@ -202,22 +201,22 @@ substitute N M =  subst (ext⊢ ⌊_⌋ M) N
 ## Normal
 
 \begin{code}
-data Normal : ∀ {Γ} {A} → Γ ⊢ A → Set
+data Normal  : ∀ {Γ} {A} → Γ ⊢ A → Set
 data Neutral : ∀ {Γ} {A} → Γ ⊢ A → Set
 
 data Normal where
-  Fun : ∀ {Γ} {A B} {N : Γ , A ⊢ B} → Normal N → Normal (ƛ N)
-  Neu : ∀ {Γ} {A} {M : Γ ⊢ A} → Neutral M → Normal M
+  ƛ_  : ∀ {Γ} {A B} {N : Γ , A ⊢ B} → Normal N → Normal (ƛ N)
+  ⌈_⌉ : ∀ {Γ} {A} {M : Γ ⊢ A} → Neutral M → Normal M
 
 data Neutral where
-  Var : ∀ {Γ} {A} → {n : Γ ∋ A} → Neutral ⌊ n ⌋
-  App : ∀ {Γ} {A B} → {L : Γ ⊢ A ⇒ B} {M : Γ ⊢ A} → Neutral L → Normal M → Neutral (L · M)
+  ⌊_⌋   : ∀ {Γ} {A} → (n : Γ ∋ A) → Neutral ⌊ n ⌋
+  _·_  : ∀ {Γ} {A B} → {L : Γ ⊢ A ⇒ B} {M : Γ ⊢ A} → Neutral L → Normal M → Neutral (L · M)
 \end{code}
 
 ## Reduction step
 
 \begin{code}
-infix  2 _⟶_
+infix 2 _⟶_
 
 data _⟶_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
 
@@ -247,43 +246,28 @@ data _⟶_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
 
 \begin{code}
 infix  2 _⟶*_
-
-data _⟶*_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
-
-  reflexive : ∀ {Γ} {A} {M : Γ ⊢ A} →
-    --------
-    M ⟶* M
-
-  inclusion : ∀ {Γ} {A} {M N : Γ ⊢ A} →
-    M ⟶ N →
-    ---------
-    M ⟶* N
-
-  transitive : ∀ {Γ} {A} {L M N : Γ ⊢ A} →
-    L ⟶* M →
-    M ⟶* N →
-    ----------
-    L ⟶* N
-\end{code}
-
-## Displaying reduction sequences
-
-\begin{code}
 infix 1 begin_
 infixr 2 _⟶⟨_⟩_
 infix 3 _∎
 
+data _⟶*_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
+
+  _∎ : ∀ {Γ} {A} (M : Γ ⊢ A) →
+    -------------
+    M ⟶* M
+
+  _⟶⟨_⟩_ : ∀ {Γ} {A} (L : Γ ⊢ A) {M N : Γ ⊢ A} →
+    L ⟶ M →
+    M ⟶* N →
+    ---------
+    L ⟶* N
+
 begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A} → (M ⟶* N) → (M ⟶* N)
 begin M⟶*N = M⟶*N
-
-_⟶⟨_⟩_ : ∀ {Γ} {A} (L : Γ ⊢ A) {M N : Γ ⊢ A} → (L ⟶ M) → (M ⟶* N) → (L ⟶* N)
-L ⟶⟨ L⟶M ⟩ M⟶*N = transitive (inclusion L⟶M) M⟶*N
-
-_∎ : ∀ {Γ} {A} (M : Γ ⊢ A) → M ⟶* M
-M ∎ = reflexive
 \end{code}
 
-## Example reduction sequence
+
+## Example reduction sequences
 
 \begin{code}
 id : ∀ (A : Type) → ε ⊢ A ⇒ A
@@ -292,65 +276,67 @@ id A = ƛ ⌊ Z ⌋
 _ : id (o ⇒ o) · id o  ⟶* id o
 _ =
   begin
-    id (o ⇒ o) · id o
-  ⟶⟨ β (Fun (Neu Var)) ⟩
-    id o
+    (ƛ ⌊ Z ⌋) · (ƛ ⌊ Z ⌋)
+  ⟶⟨ β (ƛ ⌈ ⌊ Z ⌋ ⌉) ⟩
+    ƛ ⌊ Z ⌋
   ∎
 
-Nmplus : Normal (plus {ε})
-Nmplus = Fun (Fun (Fun (Fun (Neu (App (App Var (Neu Var)) (Neu (App (App Var (Neu Var)) (Neu Var))))))))
-
-Nmtwo : Normal (two {ε})
-Nmtwo =  Fun (Fun (Neu (App Var (Neu (App Var (Neu Var))))))
 
 _ : four′ {ε} ⟶* four {ε}
 _ =
   begin
     plus · two · two
-  ⟶⟨ ξ₁ (β Nmtwo) ⟩
-    (ƛ ƛ ƛ (two · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))) · two
-  ⟶⟨ β Nmtwo ⟩
-    (ƛ ƛ (two · ⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)))
-  ⟶⟨ ζ (ζ (ξ₁ (β (Neu Var)))) ⟩
-    (ƛ ƛ ((ƛ (⌊ S S Z ⌋ · (⌊ S S Z ⌋ · ⌊ Z ⌋))) · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)))
-  ⟶⟨ ζ (ζ (ξ₂ (Fun (Neu (App Var (Neu (App Var (Neu Var)))))) (ξ₁ (β (Neu Var))))) ⟩
-    (ƛ ƛ ((ƛ (⌊ S S Z ⌋ · (⌊ S S Z ⌋ · ⌊ Z ⌋))) · ((ƛ (⌊ S S Z ⌋ · (⌊ S S Z ⌋ · ⌊ Z ⌋))) · ⌊ Z ⌋)))
-  ⟶⟨ ζ (ζ (ξ₂ (Fun (Neu (App Var (Neu (App Var (Neu Var)))))) (β (Neu Var)))) ⟩
-    (ƛ ƛ ((ƛ (⌊ S S Z ⌋ · (⌊ S S Z ⌋ · ⌊ Z ⌋))) · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))))
-  ⟶⟨ ζ (ζ (β (Neu (App Var (Neu (App Var (Neu Var))))))) ⟩
-    (ƛ ƛ (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))))
+  ⟶⟨ ξ₁ (β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉))) ⟩
+    (ƛ ƛ ƛ two · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
+  ⟶⟨ ξ₁ (ζ (ζ (ζ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+    (ƛ ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
+  ⟶⟨ ξ₁ (ζ (ζ (ζ (β ⌈ (⌊ S (S Z) ⌋ · ⌈ ⌊ S Z ⌋ ⌉) · ⌈ ⌊ Z ⌋ ⌉ ⌉)))) ⟩
+    (ƛ ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))) · two
+  ⟶⟨ β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
+    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
+  ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋))
+  ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (β ⌈ ⌊ Z ⌋ ⌉)))) ⟩
+    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
   ∎
 \end{code}
+
 
 ## Progress
 
 \begin{code}
-progress : ∀ {Γ} {A} → (M : Γ ⊢ A) → (∃[ N ] (M ⟶ N)) ⊎ Normal M
-progress ⌊ x ⌋                                                  =  inj₂ (Neu Var)
+data Progress {Γ A} (M : Γ ⊢ A) : Set where
+  step : ∀ (N : Γ ⊢ A) → M ⟶ N → Progress M
+  done : Normal M → Progress M
+
+progress : ∀ {Γ} {A} → (M : Γ ⊢ A) → Progress M
+progress ⌊ x ⌋                                                  =  done ⌈ ⌊ x ⌋ ⌉
 progress (ƛ N)       with progress N
-progress (ƛ N)          | inj₁ ⟨ N′ , r ⟩                       =  inj₁ ⟨ ƛ N′ , ζ r ⟩
-progress (ƛ V)          | inj₂ NmV                              =  inj₂ (Fun NmV)
+progress (ƛ N)          | step N′ r                             =  step (ƛ N′) (ζ r)
+progress (ƛ V)          | done NmV                              =  done (ƛ NmV)
 progress (L · M)     with progress L
-progress (L · M)        | inj₁ ⟨ L′ , r ⟩                       =  inj₁ ⟨ L′ · M , ξ₁ r ⟩
-progress (V · M)        | inj₂ NmV     with progress M
-progress (V · M)        | inj₂ NmV        | inj₁ ⟨ M′ , r ⟩     =  inj₁ ⟨ V · M′ , ξ₂ NmV r ⟩
-progress (V · W)        | inj₂ (Neu NeV)  | inj₂ NmW            =  inj₂ (Neu (App NeV NmW))
-progress ((ƛ V) · W)    | inj₂ (Fun NmV)  | inj₂ NmW            =  inj₁ ⟨ substitute V W , β NmW ⟩
+progress (L · M)        | step L′ r                             =  step (L′ · M) (ξ₁ r)
+progress (V · M)        | done NmV     with progress M
+progress (V · M)        | done NmV        | step M′ r           =  step (V · M′) (ξ₂ NmV r)
+progress (V · W)        | done ⌈ NeV ⌉    | done NmW            =  done ⌈ NeV · NmW ⌉
+progress ((ƛ V) · W)    | done (ƛ NmV)    | done NmW            =  step (substitute V W) (β NmW)
 \end{code}
 
+
+## Normalise
 
 \begin{code}
-{-
-ex₃ : progress (app (app plus one) one) ≡
-  inj₁ ⟨ (app (abs (abs (abs (app (app Γone (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) Γone) , ξ₁ (β Fun) ⟩
-ex₃ = refl
+data Normalise {Γ A} (M : Γ ⊢ A) : Set where
+  out-of-gas : Normalise M
+  normal : ∀ (N : Γ ⊢ A) → Normal N → M ⟶* N → Normalise M
 
-ex₄ : progress (app (abs (abs (abs (app (app Γone (var (S Z))) (app (app (var (S (S Z))) (var (S Z))) (var Z)))))) Γone) ≡
-  inj₁ ⟨ (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z))))) , β Fun ⟩
-ex₄ = refl
-
-ex₅ : progress (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z))))) ≡ inj₂ Fun
-ex₅ = refl  
-
--}
+normalise : ∀ {Γ} {A} → ℕ → (M : Γ ⊢ A) → Normalise M
+normalise zero    L                                                =  out-of-gas
+normalise (suc n) L with progress L
+...                    | done NmL                                  =  normal L NmL (L ∎)
+...                    | step M L⟶M with normalise n M
+...                                      | out-of-gas              =  out-of-gas
+...                                      | normal N NmN M⟶*N     =  normal N NmN (L ⟶⟨ L⟶M ⟩ M⟶*N)
 \end{code}
+
+

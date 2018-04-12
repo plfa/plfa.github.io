@@ -327,8 +327,10 @@ to treat variables as values, and to treat
 `λ[ x ∶ A ] N` as a value only if `N` is a value.
 Indeed, this is how Agda normalises terms.
 Formalising this approach requires a more sophisticated
-definition of substitution, which permits substituting
-closed terms for values.
+definition of substitution.  Here we only
+substitute closed terms for variables, while
+the alternative requires the ability to substitute
+open terms for variables.
 
 ## Substitution
 
@@ -342,11 +344,11 @@ For instance, we have
     ⟹
       not · (not · true)
 
-where we substitute `false` for `` `x `` in the body
+where we substitute `not` for `` `f `` in the body
 of the function abstraction.
 
 We write substitution as `N [ x := V ]`, meaning
-substitute term `V` for free occurrences of variable `x` in term `V`,
+substitute term `V` for free occurrences of variable `x` in term `N`,
 or, more compactly, substitute `V` for `x` in `N`.
 Substitution works if `V` is any closed term;
 it need not be a value, but we use `V` since we
@@ -637,9 +639,7 @@ reduction₂ =
   ∎
 \end{code}
 
-<!--
 Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
--->
 
 #### Special characters
 
@@ -861,7 +861,7 @@ or explain why there is no such `A`.
 3. `` ∅ ⊢ λ[ y ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` x · ` y ∶ A ``
 4. `` ∅ , x ∶ A ⊢ λ[ y : 𝔹 ⇒ 𝔹 ] `y · `x : A ``
 
-For each of the following, give type `A`, `B`, and `C` for which it is derivable,
+For each of the following, give type `A`, `B`, `C`, and `D` for which it is derivable,
 or explain why there are no such types.
 
 1. `` ∅ ⊢ λ[ y ∶ 𝔹 ⇒ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` y · ` x ∶ A ``

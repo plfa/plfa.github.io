@@ -42,7 +42,7 @@ fixes are encouraged.
   - [Maps: Total and Partial Maps](Maps)
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
   - [StlcProp: Properties of STLC](StlcProp)
-  - [Scoped: Scoped and Typed DeBruijn representation](Scoped)
+  - [TypedDB: Typed DeBruijn representation](TypedDB)
 
 ## Backmatter
 
