@@ -43,6 +43,7 @@ fixes are encouraged.
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
   - [StlcProp: Properties of STLC](StlcProp)
   - [TypedDB: Typed DeBruijn representation](TypedDB)
+  - [Typed: Typed term representation](Typed)
 
 ## Backmatter
 
