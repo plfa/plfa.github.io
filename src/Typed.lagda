@@ -197,27 +197,24 @@ _ = refl
 ## Biggest identifier
 
 \begin{code}
-lemma : ∀ {y z} → y ≤ z → y ≢ 1 + z
-lemma {y} {z} y≤z y≡1+z = 1+n≰n (≤-trans 1+z≤y y≤z)
+fresh : ∀ (Γ : Env) → ∃[ w ] (∀ {z C} → Γ ∋ z ⦂ C → z ≤ w)
+fresh ε                           = ⟨ 0 , σ ⟩
   where
-  1+z≤y : 1 + z ≤ y
-  1+z≤y rewrite y≡1+z = ≤-refl
-
-emp≤ : ∀ {y B z} → ε ∋ y ⦂ B → y ≤ z
-emp≤ ()
-
-ext≤ : ∀ {Γ x z A} → (∀ {y B} → Γ ∋ y ⦂ B → y ≤ z) → x ≤ z → (∀ {y B} → Γ , x ⦂ A ∋ y ⦂ B → y ≤ z)
-ext≤ ρ x≤z Z        =  x≤z
-ext≤ ρ x≤z (S _ k)  =  ρ k
-
-fresh : ∀ (Γ : Env) → ∃[ z ] (∀ {y B} → Γ ∋ y ⦂ B → y ≤ z)
-fresh ε                           = ⟨ 0 , emp≤ ⟩
+  σ : ∀ {z C} → ε ∋ z ⦂ C → z ≤ 0
+  σ ()
 fresh (Γ , x ⦂ A) with fresh Γ
-...                  | ⟨ z , ρ ⟩  = ⟨ w , ext≤ ((λ y≤z → ≤-trans y≤z z≤w) ∘ ρ) x≤w ⟩
+...                  | ⟨ w , σ ⟩  = ⟨ w′ , σ′ ⟩
   where
-  w   = x ⊔ z
-  z≤w = n≤m⊔n x z
-  x≤w = m≤m⊔n x z
+  w′  = x ⊔ w
+  σ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → z ≤ w′
+  σ′ Z        =  m≤m⊔n x w
+  σ′ (S _ k)  =  ≤-trans (σ k) (n≤m⊔n x w)
+
+fresh-lemma : ∀ {z w} → z ≤ w → 1 + w ≢ z
+fresh-lemma {z} {w} z≤w 1+w≡z = 1+n≰n (≤-trans 1+w≤z z≤w)
+  where
+  1+w≤z : 1 + w ≤ z
+  1+w≤z rewrite 1+w≡z = ≤-refl
 \end{code}
 
 ## Erasure
@@ -245,44 +242,33 @@ erase-lemma (⊢L · ⊢M)                =  cong₂ _·_ (erase-lemma ⊢L) (er
 ## Renaming
 
 \begin{code}
-rename : ∀ {Γ} → (∀ {y B} → Γ ∋ y ⦂ B → Id) → (∀ {M A} → Γ ⊢ M ⦂ A → Term)
+rename : ∀ {Γ} → (∀ {z C} → Γ ∋ z ⦂ C → Id) → (∀ {M A} → Γ ⊢ M ⦂ A → Term)
 rename ρ (⌊ k ⌋)                       =  ⌊ ρ k ⌋
 rename ρ (⊢L · ⊢M)                     =  (rename ρ ⊢L) · (rename ρ ⊢M)
 rename {Γ} ρ (ƛ_ {x = x} {A = A} ⊢N)   =  ƛ x′ ⦂ A ⇒ (rename ρ′ ⊢N)
   where
   x′    : Id
   x′    = 1 + proj₁ (fresh Γ)
-  ρ′ : ∀ {y B} → Γ , x ⦂ A ∋ y ⦂ B → Id
+  ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Id
   ρ′ Z        =  x′
   ρ′ (S _ j)  =  ρ j
 
-{-
-⊢rename : ∀ {Γ Δ} → (ρ : ∀ {y B} → Γ ∋ y ⦂ B → ∃[ y′ ] (Δ ∋ y′ ⦂ B)) →
+-- CONTINUE FROM HERE
+
+⊢rename : ∀ {Γ Δ} → (ρ : ∀ {z C} → Γ ∋ z ⦂ C → ∃[ z′ ] (Δ ∋ z′ ⦂ C)) →
                        (∀ {M A} → (⊢M : Γ ⊢ M ⦂ A) → Δ ⊢ rename (proj₁ ∘ ρ) ⊢M ⦂ A)
-⊢rename ρ (⌊ k ⌋)                       =  ⌊ proj₂ (ρ k) ⌋
-⊢rename ρ (⊢L · ⊢M)                     =  (⊢rename ρ ⊢L) · (⊢rename ρ ⊢M)
-⊢rename {Γ} ρ (ƛ_ {x = x} {A = A} ⊢N)
-  with fresh Γ
-  ... | ⟨ w , σ ⟩                       =  ƛ x′ ⦂ A ⇒ (rename ρ′ ⊢N)
+⊢rename ρ (⌊ k ⌋)             =  ⌊ proj₂ (ρ k) ⌋
+⊢rename ρ (⊢L · ⊢M)           =  (⊢rename ρ ⊢L) · (⊢rename ρ ⊢M)
+⊢rename {Γ} {Δ} ρ (ƛ_ {x = x} {A = A} ⊢N) with fresh Γ
+... | ⟨ w , σ ⟩               =  {!!}  -- ƛ (⊢rename {Γ , x ⦂ A} {Δ , x′ ⦂ A} ρ′ ⊢N)
+{-
   where
   x′    : Id
   x′    = 1 + w
-  ρ′ : ∀ {y B} → Γ , x ⦂ A ∋ y ⦂ B → ∃[ y′ ] (Δ ∋ y′ ⦂ B)
-  ρ′ Z        =  x′
-  ρ′ (S _ j)  =  ρ j
--}
-
-
-ext∋ : ∀ {Γ Δ x A} → (∀ {y B} → Γ ∋ y ⦂ B → Δ ∋ y ⦂ B) → Δ ∋ x ⦂ A → (∀ {y B} → Γ , x ⦂ A ∋ y ⦂ B → Δ ∋ y ⦂ B)
-ext∋ ρ j Z        =  j
-ext∋ ρ j (S _ k)  =  ρ k
-
-
-{-
-⊢rename : ∀ {Γ Δ} → (ρ : ∀ {y B} → Γ ∋ y ⦂ B → Δ ∋ y ⦂ B) → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ rename ρ M ⦂ A)
-⊢rename ρ (⌊ x ⌋)    =  ⌊ ρ x ⌋
-⊢rename ρ (ƛ ⊢N)     =  ƛ (⊢rename (ext∋ (S {!!} ∘ ρ) Z) ⊢N)
-⊢rename ρ (⊢L · ⊢M)  =  (⊢rename ρ ⊢L) · (⊢rename ρ ⊢M)
+  ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → ∃[ z′ ] (Δ , x′ ⦂ A ∋ z′ ⦂ C)
+  ρ′ Z                         =  ⟨ x′ , Z ⟩
+  ρ′ (S _ j) with ρ j
+  ...           | ⟨ z′ , j′ ⟩  =  ⟨ z′ , S (fresh-lemma (σ j)) j′ ⟩
 -}
 \end{code}
 
