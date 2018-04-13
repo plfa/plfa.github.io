@@ -14,15 +14,18 @@ module Typed where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.List using (List; []; _∷_; [_]; _++_; foldr; filter)
+open import Data.List.Any using (Any; here; there)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
 open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.Unit using (⊤; tt)
 open import Function using (_∘_)
+open import Function.Equality using (≡-setoid)
 open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Decidable using (map; From-no; from-no)
-open import Relation.Nullary.Negation using (contraposition)
+open import Relation.Nullary.Negation using (contraposition; ¬?)
 open import Relation.Nullary.Product using (_×-dec_)
 \end{code}
 
@@ -192,30 +195,104 @@ _ : ⟦ ⊢four ⟧ tt suc zero ≡ 4
 _ = refl
 \end{code}
 
-## Operational semantics - with simultaneous substitution, a la McBride
+## Operational semantics
 
-## Biggest identifier
+### Free variables
 
 \begin{code}
-fresh : ∀ (Γ : Env) → ∃[ w ] (∀ {z C} → Γ ∋ z ⦂ C → z ≤ w)
-fresh ε                           = ⟨ 0 , σ ⟩
-  where
-  σ : ∀ {z C} → ε ∋ z ⦂ C → z ≤ 0
-  σ ()
-fresh (Γ , x ⦂ A) with fresh Γ
-...                  | ⟨ w , σ ⟩  = ⟨ w′ , σ′ ⟩
-  where
-  w′  = x ⊔ w
-  σ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → z ≤ w′
-  σ′ Z        =  m≤m⊔n x w
-  σ′ (S _ k)  =  ≤-trans (σ k) (n≤m⊔n x w)
+_\\_ : List Id → Id → List Id
+xs \\ x  =  filter (¬? ∘ (x ≟_)) xs
 
-fresh-lemma : ∀ {z w} → z ≤ w → 1 + w ≢ z
-fresh-lemma {z} {w} z≤w 1+w≡z = 1+n≰n (≤-trans 1+w≤z z≤w)
-  where
-  1+w≤z : 1 + w ≤ z
-  1+w≤z rewrite 1+w≡z = ≤-refl
+free : Term → List Id
+free ⌊ x ⌋          =  [ x ]
+free (ƛ x ⦂ A ⇒ N)  =  free N \\ x
+free (L · M)        =  free L ++ free M
 \end{code}
+
+### Fresh identifier
+
+\begin{code}
+fresh : List Id → Id
+fresh = suc ∘ foldr _⊔_ 0
+\end{code}
+
+### Identifier maps
+
+\begin{code}
+∅ : Id → Term
+∅ x = ⌊ x ⌋
+
+_,_↦_ : (Id → Term) → Id → Term → (Id → Term)
+(ρ , x ↦ M) y with x ≟ y
+...               | yes _   =  M
+...               | no  _   =  ρ y
+\end{code}
+
+### Substitution
+
+\begin{code}
+subst : List Id → (Id → Term) → Term → Term
+subst xs ρ ⌊ x ⌋          = ρ x
+subst xs ρ (ƛ x ⦂ A ⇒ N)  = ƛ y ⦂ A ⇒ subst (y ∷ xs) (ρ , x ↦ ⌊ y ⌋) N
+  where
+  y = fresh xs
+subst xs ρ (L · M)        = subst xs ρ L · subst xs ρ M
+
+_[_:=_] : Term → Id → Term → Term
+N [ x := M ]  =  subst (free M) (∅ , x ↦ M) N
+\end{code}
+
+### Domain of an environment
+
+\begin{code}
+dom : Env → List Id
+dom ε            =  []
+dom (Γ , x ⦂ A)  =  x ∷ dom Γ
+
+_∈_ : Id → List Id → Set
+x ∈ xs  =  Any (x ≡_) xs
+
+_⊆_ : List Id → List Id → Set
+xs ⊆ ys = ∀ {x} → x ∈ xs → x ∈ ys
+\end{code}
+
+
+### Substitution preserves types
+
+\begin{code}
+⊢weaken : ∀ {Δ y A} → (∀ {z C} → Δ ∋ z ⦂ C → Δ , y ⦂ A ∋ z ⦂ C)
+⊢weaken = {!!} 
+
+⊢rename : ∀ {Γ Δ} → (∀ {z C} → Γ ∋ z ⦂ C → Δ ∋ z ⦂ C) →
+                    (∀ {M C} → Γ ⊢ M ⦂ C → Δ ⊢ M ⦂ C)
+⊢rename ⊢ρ (⌊ ⊢x ⌋)    =  ⌊ ⊢ρ ⊢x ⌋
+⊢rename {Γ} {Δ} ⊢ρ (ƛ_ {x = x} {A = A} N)
+                       =  ƛ (⊢rename {Γ , x ⦂ A} {Δ , x ⦂ A} ⊢ρ′ N)
+  where
+  ⊢ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , x ⦂ A ∋ z ⦂ C
+  ⊢ρ′ Z          =  Z
+  ⊢ρ′ (S x≢y k)  =  S x≢y (⊢ρ k)
+⊢rename ⊢ρ (L · M)     =  ⊢rename ⊢ρ L · ⊢rename ⊢ρ M
+
+⊢subst : ∀ {Γ Δ xs ρ} → (dom Δ ⊆ xs) → (∀ {x A} → Γ ∋ x ⦂ A → Δ ⊢ ρ x ⦂ A) →
+                                       (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ subst xs ρ M ⦂ A)
+⊢subst ⊆Δ ⊢ρ ⌊ ⊢x ⌋       =  ⊢ρ ⊢x
+⊢subst {Γ} {Δ} {xs} {ρ} ⊆Δ ⊢ρ (ƛ_ {x = x} {A = A} {B = B} ⊢N)
+                         = ƛ ⊢subst {xs = xs′} {ρ = ρ′} {!!} ⊢ρ′ ⊢N
+  where
+  y = fresh xs
+  xs′ = y ∷ xs
+  ρ′ : Id → Term
+  ρ′ = ρ , x ↦ ⌊ y ⌋
+  ⊢ρ′ : (∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , y ⦂ A ⊢ ρ′ z ⦂ C)
+  ⊢ρ′ (S _ ⊢x)  =  {!!}  -- ⊢rename (⊢weaken {Δ} {y} {A}) (⊢ρ ⊢x)
+  ⊢ρ′ Z  with x ≟ x
+  ...       | yes _      =  ⌊ Z ⌋
+  ...       | no  x≢x    =  ⊥-elim (x≢x refl)
+⊢subst ⊆Δ ⊢ρ (⊢L · ⊢M)    =  ⊢subst ⊆Δ ⊢ρ ⊢L · ⊢subst ⊆Δ ⊢ρ ⊢M
+\end{code}
+
+
 
 ## Erasure
 
@@ -239,36 +316,62 @@ erase-lemma (ƛ_ {x = x} {A = A} ⊢N)  =  cong (ƛ x ⦂ A ⇒_) (erase-lemma �
 erase-lemma (⊢L · ⊢M)                =  cong₂ _·_ (erase-lemma ⊢L) (erase-lemma ⊢M)
 \end{code}
 
+
+## Biggest identifier
+
+\begin{code}
+fresh′ : ∀ (Γ : Env) → ∃[ w ] (∀ {z C} → Γ ∋ z ⦂ C → z ≤ w)
+fresh′ ε                           = ⟨ 0 , σ ⟩
+  where
+  σ : ∀ {z C} → ε ∋ z ⦂ C → z ≤ 0
+  σ ()
+fresh′ (Γ , x ⦂ A) with fresh′ Γ
+...                  | ⟨ w , σ ⟩  = ⟨ w′ , σ′ ⟩
+  where
+  w′  = x ⊔ w
+  σ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → z ≤ w′
+  σ′ Z        =  m≤m⊔n x w
+  σ′ (S _ k)  =  ≤-trans (σ k) (n≤m⊔n x w)
+
+fresh′-lemma : ∀ {z w} → z ≤ w → 1 + w ≢ z
+fresh′-lemma {z} {w} z≤w 1+w≡z = 1+n≰n (≤-trans 1+w≤z z≤w)
+  where
+  1+w≤z : 1 + w ≤ z
+  1+w≤z rewrite 1+w≡z = ≤-refl
+\end{code}
+
 ## Renaming
 
 \begin{code}
-rename : ∀ {Γ} → (∀ {z C} → Γ ∋ z ⦂ C → Id) → (∀ {M A} → Γ ⊢ M ⦂ A → Term)
-rename ρ (⌊ k ⌋)                       =  ⌊ ρ k ⌋
-rename ρ (⊢L · ⊢M)                     =  (rename ρ ⊢L) · (rename ρ ⊢M)
-rename {Γ} ρ (ƛ_ {x = x} {A = A} ⊢N)   =  ƛ x′ ⦂ A ⇒ (rename ρ′ ⊢N)
+rename′ : ∀ {Γ} → (∀ {z C} → Γ ∋ z ⦂ C → Id) → (∀ {M A} → Γ ⊢ M ⦂ A → Term)
+rename′ ρ (⌊ k ⌋)                       =  ⌊ ρ k ⌋
+rename′ ρ (⊢L · ⊢M)                     =  (rename′ ρ ⊢L) · (rename′ ρ ⊢M)
+rename′ {Γ} ρ (ƛ_ {x = x} {A = A} ⊢N)   =  ƛ x′ ⦂ A ⇒ (rename′ ρ′ ⊢N)
   where
   x′    : Id
-  x′    = 1 + proj₁ (fresh Γ)
+  x′    = 1 + proj₁ (fresh′ Γ)
   ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Id
   ρ′ Z        =  x′
   ρ′ (S _ j)  =  ρ j
+\end{code}
 
--- CONTINUE FROM HERE
+CONTINUE FROM HERE
 
-⊢rename : ∀ {Γ Δ} → (ρ : ∀ {z C} → Γ ∋ z ⦂ C → ∃[ z′ ] (Δ ∋ z′ ⦂ C)) →
-                       (∀ {M A} → (⊢M : Γ ⊢ M ⦂ A) → Δ ⊢ rename (proj₁ ∘ ρ) ⊢M ⦂ A)
-⊢rename ρ (⌊ k ⌋)             =  ⌊ proj₂ (ρ k) ⌋
-⊢rename ρ (⊢L · ⊢M)           =  (⊢rename ρ ⊢L) · (⊢rename ρ ⊢M)
-⊢rename {Γ} {Δ} ρ (ƛ_ {x = x} {A = A} ⊢N) with fresh Γ
-... | ⟨ w , σ ⟩               =  {!!}  -- ƛ (⊢rename {Γ , x ⦂ A} {Δ , x′ ⦂ A} ρ′ ⊢N)
+\begin{code}
 {-
+⊢rename′ : ∀ {Γ Δ} → (ρ : ∀ {z C} → Γ ∋ z ⦂ C → ∃[ z′ ] (Δ ∋ z′ ⦂ C)) →
+                       (∀ {M A} → (⊢M : Γ ⊢ M ⦂ A) → Δ ⊢ rename′ (proj₁ ∘ ρ) ⊢M ⦂ A)
+⊢rename′ ρ (⌊ k ⌋)             =  ⌊ proj₂ (ρ k) ⌋
+⊢rename′ ρ (⊢L · ⊢M)           =  (⊢rename′ ρ ⊢L) · (⊢rename′ ρ ⊢M)
+⊢rename′ {Γ} {Δ} ρ (ƛ_ {x = x} {A = A} ⊢N) with fresh′ Γ
+... | ⟨ w , σ ⟩               =  {!!}  -- ƛ (⊢rename′ {Γ , x ⦂ A} {Δ , x′ ⦂ A} ρ′ ⊢N)
   where
   x′    : Id
   x′    = 1 + w
   ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → ∃[ z′ ] (Δ , x′ ⦂ A ∋ z′ ⦂ C)
   ρ′ Z                         =  ⟨ x′ , Z ⟩
   ρ′ (S _ j) with ρ j
-  ...           | ⟨ z′ , j′ ⟩  =  ⟨ z′ , S (fresh-lemma (σ j)) j′ ⟩
+  ...           | ⟨ z′ , j′ ⟩  =  ⟨ z′ , S (fresh′-lemma (σ j)) j′ ⟩
 -}
 \end{code}
 

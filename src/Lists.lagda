@@ -877,8 +877,8 @@ If so, prove; if not, explain why.
 Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
 import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
-import Data.List.All using (All)
-import Data.List.Any using (Any)
+import Data.List.All using (All; []; _∷_)
+import Data.List.Any using (Any; here; there)
 import Algebra.Structures using (IsMonoid)
 \end{code}
 The standard library version of `IsMonoid` differs from the

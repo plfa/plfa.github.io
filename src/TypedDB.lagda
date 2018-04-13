@@ -191,7 +191,7 @@ subst {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (subst {Γ , A} {Δ , A} ρ′ N)
   where
   ρ′ : ∀ {C} → Γ , A ∋ C → Δ , A ⊢ C
   ρ′ Z      =  ⌊ Z ⌋
-  ρ′ (S k)  =  rename S_ (ρ k)
+  ρ′ (S k)  =  rename {Δ} {Δ , A} S_ (ρ k)
 subst ρ (L · M)                   =  (subst ρ L) · (subst ρ M)
 
 substitute : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
