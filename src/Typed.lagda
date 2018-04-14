@@ -311,24 +311,6 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 ⊢rename ⊢ρ (L · M)     =  ⊢rename ⊢ρ L · ⊢rename ⊢ρ M
 \end{code}
 
-### Extending environment
-
-The following can be used to shorten the definition that substitution preserves types,
-but it actually makes the proof longer and more complex, so is probably not worth it.
-\begin{code}
-extend : ∀ {Γ Δ ρ x y A M} → (∀ {z C} → Δ ∋ z ⦂ C → y ≢ z) → (Δ , y ⦂ A ⊢ M ⦂ A) →
-  (∀ {z C} → Γ         ∋ z ⦂ C → Δ         ⊢ ρ z           ⦂ C) →
-  (∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , y ⦂ A ⊢ (ρ , x ↦ M) z ⦂ C)
-extend {x = x} y≢ ⊢M ⊢ρ Z  with x ≟ x
-...       | yes _             =  ⊢M
-...       | no  x≢x           =  ⊥-elim (x≢x refl)
-extend {Δ = Δ} {x = x} {y = y} {A = A} y≢ ⊢M ⊢ρ {z} (S x≢z ⊢z) with x ≟ z
-...       | yes x≡z           =  ⊥-elim (x≢z x≡z)
-...       | no  _             =  ⊢rename {Δ} {Δ , y ⦂ A} ⊢weaken (⊢ρ ⊢z)
-  where
-  ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ , y ⦂ A ∋ z ⦂ C
-  ⊢weaken ⊢z  =  S (y≢ ⊢z) ⊢z
-\end{code}
 
 ### Substitution preserves types
 
@@ -348,15 +330,12 @@ extend {Δ = Δ} {x = x} {y = y} {A = A} y≢ ⊢M ⊢ρ {z} (S x≢z ⊢z) with
   ⊆xs′ :  dom Δ′ ⊆ xs′
   ⊆xs′ =  ∷⊆ ⊆xs
 
-  y-lemma : ∀ {z C} → Δ ∋ z ⦂ C → y ≢ z
-  y-lemma ⊢z                    =   fresh-lemma (⊆xs (dom-lemma ⊢z))
+  y≢ : ∀ {z C} → Δ ∋ z ⦂ C → y ≢ z
+  y≢ ⊢z  =  fresh-lemma (⊆xs (dom-lemma ⊢z))
 
   ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
-  ⊢weaken ⊢z                    =  S (y-lemma ⊢z) ⊢z
+  ⊢weaken ⊢z  =  S (y≢ ⊢z) ⊢z
 
-  ⊢ρ′ : ∀ {z C} → Γ′ ∋ z ⦂ C → Δ′ ⊢ ρ′ z ⦂ C
-  ⊢ρ′  =  extend y-lemma ⌊ Z ⌋ ⊢ρ
-{-
   ⊢ρ′ : ∀ {z C} → Γ′ ∋ z ⦂ C → Δ′ ⊢ ρ′ z ⦂ C
   ⊢ρ′ Z  with x ≟ x
   ...       | yes _             =  ⌊ Z ⌋
@@ -364,7 +343,6 @@ extend {Δ = Δ} {x = x} {y = y} {A = A} y≢ ⊢M ⊢ρ {z} (S x≢z ⊢z) with
   ⊢ρ′ {z} (S x≢z ⊢z) with x ≟ z
   ...       | yes x≡z           =  ⊥-elim (x≢z x≡z)
   ...       | no  _             =  ⊢rename {Δ} {Δ′} ⊢weaken (⊢ρ ⊢z) 
--}
 ⊢subst ⊆xs ⊢ρ (⊢L · ⊢M)         =  ⊢subst ⊆xs ⊢ρ ⊢L · ⊢subst ⊆xs ⊢ρ ⊢M
 \end{code}
 
