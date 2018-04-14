@@ -88,36 +88,6 @@ data _⊢_⦂_ : Env → Term → Type → Set where
     Γ ⊢ L · M ⦂ B
 \end{code}
 
-## Decide whether types and environments are equal
-
-\begin{code}
-_≟I_ : ∀ (x y : Id) → Dec (x ≡ y)
-_≟I_ = _≟_
-
-_≟T_ : ∀ (A B : Type) → Dec (A ≡ B)
-o ≟T o = yes refl
-o ≟T (A′ ⇒ B′) = no (λ())
-(A ⇒ B) ≟T o = no (λ())
-(A ⇒ B) ≟T (A′ ⇒ B′) = map (equivalence obv1 obv2) ((A ≟T A′) ×-dec (B ≟T B′))
-  where
-  obv1 : ∀ {A B A′ B′ : Type} → (A ≡ A′) × (B ≡ B′) → A ⇒ B ≡ A′ ⇒ B′
-  obv1 ⟨ refl , refl ⟩ = refl
-  obv2 : ∀ {A B A′ B′ : Type} → A ⇒ B ≡ A′ ⇒ B′ → (A ≡ A′) × (B ≡ B′)
-  obv2 refl = ⟨ refl , refl ⟩
-
-_≟E_ : ∀ (Γ Δ : Env) → Dec (Γ ≡ Δ)
-ε ≟E ε = yes refl
-ε ≟E (Γ , x ⦂ A) = no (λ())
-(Γ , x ⦂ A) ≟E ε = no (λ())
-(Γ , x ⦂ A) ≟E (Δ , y ⦂ B) = map (equivalence obv1 obv2) ((Γ ≟E Δ) ×-dec ((x ≟I y) ×-dec (A ≟T B)))
-  where
-  obv1 : ∀ {Γ Δ A B x y} → (Γ ≡ Δ) × ((x ≡ y) × (A ≡ B)) → (Γ , x ⦂ A) ≡ (Δ , y ⦂ B)
-  obv1 ⟨ refl , ⟨ refl , refl ⟩ ⟩ = refl
-  obv2 : ∀ {Γ Δ A B} → (Γ , x ⦂ A) ≡ (Δ , y ⦂ B) → (Γ ≡ Δ) × ((x ≡ y) × (A ≡ B))
-  obv2 refl = ⟨ refl , ⟨ refl , refl ⟩ ⟩
-\end{code}
-
-
 ## Test examples
 
 \begin{code}
@@ -185,6 +155,7 @@ four′ = plus · two · two
 ⊢four′ = ⊢plus · ⊢two · ⊢two
 \end{code}
 
+
 # Denotational semantics
 
 \begin{code}
@@ -211,6 +182,34 @@ _ = refl
 _ : ⟦ ⊢four ⟧ tt suc zero ≡ 4
 _ = refl
 \end{code}
+
+
+## Erasure
+
+\begin{code}
+lookup : ∀ {Γ x A} → Γ ∋ x ⦂ A → Id
+lookup {Γ , x ⦂ A} Z        =  x
+lookup {Γ , x ⦂ A} (S _ k)  =  lookup {Γ} k
+
+erase : ∀ {Γ M A} → Γ ⊢ M ⦂ A → Term
+erase ⌊ k ⌋                     =  ⌊ lookup k ⌋
+erase (ƛ_ {x = x} {A = A} ⊢N)   =  ƛ x ⦂ A ⇒ erase ⊢N
+erase (⊢L · ⊢M)                 =  erase ⊢L · erase ⊢M
+\end{code}
+
+### Properties of erasure
+
+\begin{code}
+lookup-lemma : ∀ {Γ x A} → (k : Γ ∋ x ⦂ A) → lookup k ≡ x
+lookup-lemma Z        =  refl
+lookup-lemma (S _ k)  =  lookup-lemma k
+
+erase-lemma : ∀ {Γ M A} → (⊢M : Γ ⊢ M ⦂ A) → erase ⊢M ≡ M
+erase-lemma ⌊ k ⌋                    =  cong ⌊_⌋ (lookup-lemma k)
+erase-lemma (ƛ_ {x = x} {A = A} ⊢N)  =  cong (ƛ x ⦂ A ⇒_) (erase-lemma ⊢N)
+erase-lemma (⊢L · ⊢M)                =  cong₂ _·_ (erase-lemma ⊢L) (erase-lemma ⊢M)
+\end{code}
+
 
 ## Substitution
 
@@ -270,18 +269,94 @@ _,_↦_ : (Id → Term) → Id → Term → (Id → Term)
 
 \begin{code}
 subst : List Id → (Id → Term) → Term → Term
-subst xs ρ ⌊ x ⌋          = ρ x
-subst xs ρ (ƛ x ⦂ A ⇒ N)  = ƛ y ⦂ A ⇒ subst (y ∷ xs) (ρ , x ↦ ⌊ y ⌋) N
+subst xs ρ ⌊ x ⌋          =  ρ x
+subst xs ρ (ƛ x ⦂ A ⇒ N)  =  ƛ y ⦂ A ⇒ subst (y ∷ xs) (ρ , x ↦ ⌊ y ⌋) N
   where
   y = fresh xs
-subst xs ρ (L · M)        = subst xs ρ L · subst xs ρ M
+subst xs ρ (L · M)        =  subst xs ρ L · subst xs ρ M
 
 _[_:=_] : Term → Id → Term → Term
 N [ x := M ]  =  subst (free M) (∅ , x ↦ M) N
 \end{code}
 
 
-## Substitution preserves types
+## Values
+
+\begin{code}
+data Value : Term → Set where
+
+  Fun : ∀ {x A N} →
+    --------------------
+    Value (ƛ x ⦂ A ⇒ N)
+\end{code}
+
+## Reduction
+
+\begin{code}
+infix 4 _⟹_
+
+data _⟹_ : Term → Term → Set where
+
+  β-⇒ : ∀ {x A N V} →
+    Value V →
+    ----------------------------------
+    (ƛ x ⦂ A ⇒ N) · V ⟹ N [ x := V ]
+
+  ξ-⇒₁ : ∀ {L L′ M} →
+    L ⟹ L′ →
+    ----------------
+    L · M ⟹ L′ · M
+
+  ξ-⇒₂ : ∀ {V M M′} →
+    Value V →
+    M ⟹ M′ →
+    ----------------
+    V · M ⟹ V · M′
+\end{code}
+
+## Reflexive and transitive closure
+
+\begin{code}
+infix  2 _⟹*_
+infix 1 begin_
+infixr 2 _⟹⟨_⟩_
+infix 3 _∎
+
+data _⟹*_ : Term → Term → Set where
+
+  _∎ : ∀ {M} →
+    -------------
+    M ⟹* M
+
+  _⟹⟨_⟩_ : ∀ (L : Term) {M N} →
+    L ⟹ M →
+    M ⟹* N →
+    ---------
+    L ⟹* N
+
+begin_ : ∀ {M N} → (M ⟹* N) → (M ⟹* N)
+begin M⟹*N = M⟹*N
+\end{code}
+
+## Progress
+
+\begin{code}
+data Progress (M : Term) : Set where
+  step : ∀ {N} → M ⟹ N → Progress M
+  done : Value M → Progress M
+
+progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
+progress ⌊ () ⌋
+progress (ƛ_ ⊢N)                                        =  done Fun
+progress (⊢L · ⊢M) with progress ⊢L
+...                   | step L⟹L′                       =  step (ξ-⇒₁ L⟹L′)
+...                   | done Fun      with progress ⊢M
+...                                      | step M⟹M′    =  step (ξ-⇒₂ Fun M⟹M′)
+...                                      | done valM      =  step (β-⇒ valM)
+\end{code}
+
+
+## Preservation
 
 ### Domain of an environment
 
@@ -293,30 +368,34 @@ dom (Γ , x ⦂ A)  =  x ∷ dom Γ
 dom-lemma : ∀ {Γ y B} → Γ ∋ y ⦂ B → y ∈ dom Γ
 dom-lemma Z           =  here refl
 dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
+
+free-lemma : ∀ {Γ M A} → Γ ⊢ M ⦂ A → free M ⊆ dom Γ
+free-lemma = {!!}
 \end{code}
 
-### Renaming
+### Weakening
 
 \begin{code}
 
-⊢rename : ∀ {Γ Δ} → (∀ {z C} → Γ ∋ z ⦂ C → Δ ∋ z ⦂ C) →
-                    (∀ {M C} → Γ ⊢ M ⦂ C → Δ ⊢ M ⦂ C)
-⊢rename ⊢ρ (⌊ ⊢x ⌋)    =  ⌊ ⊢ρ ⊢x ⌋
-⊢rename {Γ} {Δ} ⊢ρ (ƛ_ {x = x} {A = A} N)
-                       =  ƛ (⊢rename {Γ , x ⦂ A} {Δ , x ⦂ A} ⊢ρ′ N)
+⊢weaken : ∀ {Γ Δ} → (∀ {z C} → Γ ∋ z ⦂ C  →  Δ ∋ z ⦂ C) →
+                    (∀ {M C} → Γ ⊢ M ⦂ C  →  Δ ⊢ M ⦂ C)
+⊢weaken ⊢σ (⌊ ⊢x ⌋)    =  ⌊ ⊢σ ⊢x ⌋
+⊢weaken {Γ} {Δ} ⊢σ (ƛ_ {x = x} {A = A} N)
+                       =  ƛ (⊢weaken {Γ , x ⦂ A} {Δ , x ⦂ A} ⊢σ′ N)
   where
-  ⊢ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , x ⦂ A ∋ z ⦂ C
-  ⊢ρ′ Z                =  Z
-  ⊢ρ′ (S x≢y k)        =  S x≢y (⊢ρ k)
-⊢rename ⊢ρ (L · M)     =  ⊢rename ⊢ρ L · ⊢rename ⊢ρ M
+  ⊢σ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , x ⦂ A ∋ z ⦂ C
+  ⊢σ′ Z                =  Z
+  ⊢σ′ (S x≢y k)        =  S x≢y (⊢σ k)
+⊢weaken ⊢σ (L · M)     =  ⊢weaken ⊢σ L · ⊢weaken ⊢σ M
 \end{code}
 
 
 ### Substitution preserves types
 
 \begin{code}
-⊢subst : ∀ {Γ Δ xs ρ} → (dom Δ ⊆ xs) → (∀ {x A} → Γ ∋ x ⦂ A → Δ ⊢ ρ x ⦂ A) →
-                                       (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ subst xs ρ M ⦂ A)
+⊢subst : ∀ {Γ Δ xs ρ} → (dom Δ ⊆ xs) →
+             (∀ {x A} → Γ ∋ x ⦂ A  →  Δ ⊢ ρ x ⦂ A) →
+             (∀ {M A} → Γ ⊢ M ⦂ A  →  Δ ⊢ subst xs ρ M ⦂ A)
 ⊢subst ⊆xs ⊢ρ ⌊ ⊢x ⌋            =  ⊢ρ ⊢x
 ⊢subst {Γ} {Δ} {xs} {ρ} ⊆xs ⊢ρ (ƛ_ {x = x} {A = A} ⊢N)
                                 = ƛ ⊢subst {Γ′} {Δ′} {xs′} {ρ′} ⊆xs′ ⊢ρ′ ⊢N
@@ -333,8 +412,8 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
   y≢ : ∀ {z C} → Δ ∋ z ⦂ C → y ≢ z
   y≢ ⊢z  =  fresh-lemma (⊆xs (dom-lemma ⊢z))
 
-  ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
-  ⊢weaken ⊢z  =  S (y≢ ⊢z) ⊢z
+  ⊢σ : ∀ {z C} → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
+  ⊢σ ⊢z  =  S (y≢ ⊢z) ⊢z
 
   ⊢ρ′ : ∀ {z C} → Γ′ ∋ z ⦂ C → Δ′ ⊢ ρ′ z ⦂ C
   ⊢ρ′ Z  with x ≟ x
@@ -342,90 +421,39 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
   ...       | no  x≢x           =  ⊥-elim (x≢x refl)
   ⊢ρ′ {z} (S x≢z ⊢z) with x ≟ z
   ...       | yes x≡z           =  ⊥-elim (x≢z x≡z)
-  ...       | no  _             =  ⊢rename {Δ} {Δ′} ⊢weaken (⊢ρ ⊢z) 
+  ...       | no  _             =  ⊢weaken {Δ} {Δ′} ⊢σ (⊢ρ ⊢z) 
+
 ⊢subst ⊆xs ⊢ρ (⊢L · ⊢M)         =  ⊢subst ⊆xs ⊢ρ ⊢L · ⊢subst ⊆xs ⊢ρ ⊢M
+
+⊢substitution : ∀ {Γ x A M B N} →
+  Γ , x ⦂ A ⊢ N ⦂ B →
+  Γ ⊢ M ⦂ A →
+  --------------------
+  Γ ⊢ N [ x := M ] ⦂ B
+⊢substitution {Γ} {x} {A} {M} ⊢N ⊢M =
+  {!!} -- ⊢subst {Γ , x ⦂ A} {Γ} {xs} {ρ}  ⊢ρ ⊢N
+  where
+  xs     =  dom Γ
+  ρ      =  ∅ , x ↦ M
+  ⊢ρ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Γ ⊢ ρ z ⦂ C
+  ⊢ρ {.x} Z         with x ≟ x
+  ...                  | yes _     =  ⊢M
+  ...                  | no  x≢x   =  ⊥-elim (x≢x refl)
+  ⊢ρ {z} (S x≢z ⊢x) with x ≟ z
+  ...                  | yes x≡z   =  ⊥-elim (x≢z x≡z)
+  ...                  | no  _     =  {!!}
 \end{code}
 
-
-
-## Erasure
+### Preservation
 
 \begin{code}
-lookup : ∀ {Γ x A} → Γ ∋ x ⦂ A → Id
-lookup {Γ , x ⦂ A} Z        =  x
-lookup {Γ , x ⦂ A} (S _ k)  =  lookup {Γ} k
-
-erase : ∀ {Γ M A} → Γ ⊢ M ⦂ A → Term
-erase ⌊ k ⌋                     =  ⌊ lookup k ⌋
-erase (ƛ_ {x = x} {A = A} ⊢N)   =  ƛ x ⦂ A ⇒ erase ⊢N
-erase (⊢L · ⊢M)                 =  erase ⊢L · erase ⊢M
-
-lookup-lemma : ∀ {Γ x A} → (k : Γ ∋ x ⦂ A) → lookup k ≡ x
-lookup-lemma Z        =  refl
-lookup-lemma (S _ k)  =  lookup-lemma k
-
-erase-lemma : ∀ {Γ M A} → (⊢M : Γ ⊢ M ⦂ A) → erase ⊢M ≡ M
-erase-lemma ⌊ k ⌋                    =  cong ⌊_⌋ (lookup-lemma k)
-erase-lemma (ƛ_ {x = x} {A = A} ⊢N)  =  cong (ƛ x ⦂ A ⇒_) (erase-lemma ⊢N)
-erase-lemma (⊢L · ⊢M)                =  cong₂ _·_ (erase-lemma ⊢L) (erase-lemma ⊢M)
+preservation : ∀ {Γ M N A} →  Γ ⊢ M ⦂ A  →  M ⟹ N  →  Γ ⊢ N ⦂ A
+preservation ⌊ ⊢x ⌋ ()
+preservation (ƛ ⊢N) ()
+preservation (⊢L · ⊢M) (ξ-⇒₁ L⟹L′)        =  preservation ⊢L L⟹L′ · ⊢M
+preservation (⊢V · ⊢M) (ξ-⇒₂ valV M⟹M′)   =  ⊢V · preservation ⊢M M⟹M′
+preservation ((ƛ ⊢N) · ⊢W) (β-⇒ valW)      =  ⊢substitution ⊢N ⊢W
 \end{code}
 
 
-## Biggest identifier
-
-\begin{code}
-fresh′ : ∀ (Γ : Env) → ∃[ w ] (∀ {z C} → Γ ∋ z ⦂ C → z ≤ w)
-fresh′ ε                           = ⟨ 0 , σ ⟩
-  where
-  σ : ∀ {z C} → ε ∋ z ⦂ C → z ≤ 0
-  σ ()
-fresh′ (Γ , x ⦂ A) with fresh′ Γ
-...                  | ⟨ w , σ ⟩  = ⟨ w′ , σ′ ⟩
-  where
-  w′  = x ⊔ w
-  σ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → z ≤ w′
-  σ′ Z        =  m≤m⊔n x w
-  σ′ (S _ k)  =  ≤-trans (σ k) (n≤m⊔n x w)
-
-fresh′-lemma : ∀ {z w} → z ≤ w → 1 + w ≢ z
-fresh′-lemma {z} {w} z≤w 1+w≡z = 1+n≰n (≤-trans 1+w≤z z≤w)
-  where
-  1+w≤z : 1 + w ≤ z
-  1+w≤z rewrite 1+w≡z = ≤-refl
-\end{code}
-
-## Renaming
-
-\begin{code}
-rename′ : ∀ {Γ} → (∀ {z C} → Γ ∋ z ⦂ C → Id) → (∀ {M A} → Γ ⊢ M ⦂ A → Term)
-rename′ ρ (⌊ k ⌋)                       =  ⌊ ρ k ⌋
-rename′ ρ (⊢L · ⊢M)                     =  (rename′ ρ ⊢L) · (rename′ ρ ⊢M)
-rename′ {Γ} ρ (ƛ_ {x = x} {A = A} ⊢N)   =  ƛ x′ ⦂ A ⇒ (rename′ ρ′ ⊢N)
-  where
-  x′    : Id
-  x′    = 1 + proj₁ (fresh′ Γ)
-  ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Id
-  ρ′ Z        =  x′
-  ρ′ (S _ j)  =  ρ j
-\end{code}
-
-CONTINUE FROM HERE
-
-\begin{code}
-{-
-⊢rename′ : ∀ {Γ Δ} → (ρ : ∀ {z C} → Γ ∋ z ⦂ C → ∃[ z′ ] (Δ ∋ z′ ⦂ C)) →
-                       (∀ {M A} → (⊢M : Γ ⊢ M ⦂ A) → Δ ⊢ rename′ (proj₁ ∘ ρ) ⊢M ⦂ A)
-⊢rename′ ρ (⌊ k ⌋)             =  ⌊ proj₂ (ρ k) ⌋
-⊢rename′ ρ (⊢L · ⊢M)           =  (⊢rename′ ρ ⊢L) · (⊢rename′ ρ ⊢M)
-⊢rename′ {Γ} {Δ} ρ (ƛ_ {x = x} {A = A} ⊢N) with fresh′ Γ
-... | ⟨ w , σ ⟩               =  {!!}  -- ƛ (⊢rename′ {Γ , x ⦂ A} {Δ , x′ ⦂ A} ρ′ ⊢N)
-  where
-  x′    : Id
-  x′    = 1 + w
-  ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → ∃[ z′ ] (Δ , x′ ⦂ A ∋ z′ ⦂ C)
-  ρ′ Z                         =  ⟨ x′ , Z ⟩
-  ρ′ (S _ j) with ρ j
-  ...           | ⟨ z′ , j′ ⟩  =  ⟨ z′ , S (fresh′-lemma (σ j)) j′ ⟩
--}
-\end{code}
 

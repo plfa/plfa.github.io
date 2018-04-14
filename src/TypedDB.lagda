@@ -75,52 +75,6 @@ data _⊢_ : Env → Type → Set where
     Γ ⊢ B
 \end{code}
 
-## Decide whether environments and types are equal
-
-\begin{code}
-_≟T_ : ∀ (A B : Type) → Dec (A ≡ B)
-o ≟T o = yes refl
-o ≟T (A′ ⇒ B′) = no (λ())
-(A ⇒ B) ≟T o = no (λ())
-(A ⇒ B) ≟T (A′ ⇒ B′) = map (equivalence obv1 obv2) ((A ≟T A′) ×-dec (B ≟T B′))
-  where
-  obv1 : ∀ {A B A′ B′ : Type} → (A ≡ A′) × (B ≡ B′) → A ⇒ B ≡ A′ ⇒ B′
-  obv1 ⟨ refl , refl ⟩ = refl
-  obv2 : ∀ {A B A′ B′ : Type} → A ⇒ B ≡ A′ ⇒ B′ → (A ≡ A′) × (B ≡ B′)
-  obv2 refl = ⟨ refl , refl ⟩
-
-_≟_ : ∀ (Γ Δ : Env) → Dec (Γ ≡ Δ)
-ε ≟ ε = yes refl
-ε ≟ (Γ , A) = no (λ())
-(Γ , A) ≟ ε = no (λ())
-(Γ , A) ≟ (Δ , B) = map (equivalence obv1 obv2) ((Γ ≟ Δ) ×-dec (A ≟T B))
-  where
-  obv1 : ∀ {Γ Δ A B} → (Γ ≡ Δ) × (A ≡ B) → (Γ , A) ≡ (Δ , B)
-  obv1 ⟨ refl , refl ⟩ = refl
-  obv2 : ∀ {Γ Δ A B} → (Γ , A) ≡ (Δ , B) → (Γ ≡ Δ) × (A ≡ B)
-  obv2 refl = ⟨ refl , refl ⟩
-\end{code}
-
-
-## Writing variables as naturals
-
-This turned out to be a lot harder than expected. Probably not a good idea.
-
-\begin{code}
-postulate
-  impossible : ⊥
-
-conv : ∀ {Γ} {A} → ℕ → Γ ∋ A
-conv {ε} = ⊥-elim impossible
-conv {Γ , B} (suc n) = S (conv n)
-conv {Γ , A} {B} zero with A ≟T B
-...                   | yes refl  =  Z
-...                   | no  A≢B   =  ⊥-elim impossible
-
-var : ∀ {Γ} {A} → ℕ → Γ ⊢ A
-var n  =  ⌊ conv n ⌋
-\end{code}
-
 ## Test examples
 
 \begin{code}
