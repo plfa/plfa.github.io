@@ -197,6 +197,18 @@ _ = refl
 
 ## Operational semantics
 
+
+### Lists as sets
+
+\begin{code}
+_∈_ : Id → List Id → Set
+x ∈ xs  =  Any (x ≡_) xs
+
+_⊆_ : List Id → List Id → Set
+xs ⊆ ys = ∀ {x} → x ∈ xs → x ∈ ys
+\end{code}
+
+
 ### Free variables
 
 \begin{code}
@@ -209,11 +221,19 @@ free (ƛ x ⦂ A ⇒ N)  =  free N \\ x
 free (L · M)        =  free L ++ free M
 \end{code}
 
+
 ### Fresh identifier
 
 \begin{code}
 fresh : List Id → Id
 fresh = suc ∘ foldr _⊔_ 0
+
+⊔-lemma : ∀ {x xs} → x ∈ xs → x ≤ foldr _⊔_ 0 xs
+⊔-lemma (here refl)  =  m≤m⊔n _ _
+⊔-lemma (there x∈)   =  ≤-trans (⊔-lemma x∈) (n≤m⊔n _ _)
+
+fresh-lemma : ∀ {x xs} → x ∈ xs → fresh xs ≢ x
+fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
 \end{code}
 
 ### Identifier maps
@@ -249,19 +269,15 @@ dom : Env → List Id
 dom ε            =  []
 dom (Γ , x ⦂ A)  =  x ∷ dom Γ
 
-_∈_ : Id → List Id → Set
-x ∈ xs  =  Any (x ≡_) xs
-
-_⊆_ : List Id → List Id → Set
-xs ⊆ ys = ∀ {x} → x ∈ xs → x ∈ ys
+dom-lemma : ∀ {Γ y B} → Γ ∋ y ⦂ B → y ∈ dom Γ
+dom-lemma Z           =  here refl
+dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 \end{code}
 
 
 ### Substitution preserves types
 
 \begin{code}
-⊢weaken : ∀ {Δ y A} → (∀ {z C} → Δ ∋ z ⦂ C → Δ , y ⦂ A ∋ z ⦂ C)
-⊢weaken = {!!} 
 
 ⊢rename : ∀ {Γ Δ} → (∀ {z C} → Γ ∋ z ⦂ C → Δ ∋ z ⦂ C) →
                     (∀ {M C} → Γ ⊢ M ⦂ C → Δ ⊢ M ⦂ C)
@@ -270,26 +286,37 @@ xs ⊆ ys = ∀ {x} → x ∈ xs → x ∈ ys
                        =  ƛ (⊢rename {Γ , x ⦂ A} {Δ , x ⦂ A} ⊢ρ′ N)
   where
   ⊢ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , x ⦂ A ∋ z ⦂ C
-  ⊢ρ′ Z          =  Z
-  ⊢ρ′ (S x≢y k)  =  S x≢y (⊢ρ k)
+  ⊢ρ′ Z                =  Z
+  ⊢ρ′ (S x≢y k)        =  S x≢y (⊢ρ k)
 ⊢rename ⊢ρ (L · M)     =  ⊢rename ⊢ρ L · ⊢rename ⊢ρ M
 
 ⊢subst : ∀ {Γ Δ xs ρ} → (dom Δ ⊆ xs) → (∀ {x A} → Γ ∋ x ⦂ A → Δ ⊢ ρ x ⦂ A) →
                                        (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ subst xs ρ M ⦂ A)
-⊢subst ⊆Δ ⊢ρ ⌊ ⊢x ⌋       =  ⊢ρ ⊢x
-⊢subst {Γ} {Δ} {xs} {ρ} ⊆Δ ⊢ρ (ƛ_ {x = x} {A = A} {B = B} ⊢N)
-                         = ƛ ⊢subst {xs = xs′} {ρ = ρ′} {!!} ⊢ρ′ ⊢N
+⊢subst Δ⊆ ⊢ρ ⌊ ⊢x ⌋       =  ⊢ρ ⊢x
+⊢subst {Γ} {Δ} {xs} {ρ} Δ⊆ ⊢ρ (ƛ_ {x = x} {A = A} {B = B} ⊢N)
+        = ƛ ⊢subst {Γ = Γ′} {Δ = Δ′} {xs = xs′} {ρ = ρ′} Δ′⊆ ⊢ρ′ ⊢N
   where
   y = fresh xs
+  Γ′ = Γ , x ⦂ A
+  Δ′ = Δ , y ⦂ A
   xs′ = y ∷ xs
   ρ′ : Id → Term
   ρ′ = ρ , x ↦ ⌊ y ⌋
-  ⊢ρ′ : (∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , y ⦂ A ⊢ ρ′ z ⦂ C)
-  ⊢ρ′ (S _ ⊢x)  =  {!!}  -- ⊢rename (⊢weaken {Δ} {y} {A}) (⊢ρ ⊢x)
+  Δ′⊆ : dom Δ′ ⊆ xs′
+  Δ′⊆ (here refl)               =  here refl
+  Δ′⊆ (there ∈Δ)                =  there (Δ⊆ ∈Δ)  
+  y-lemma : ∀ {z C} → Δ ∋ z ⦂ C → y ≢ z
+  y-lemma {z} {C}  ⊢z           =   fresh-lemma (Δ⊆ (dom-lemma {Δ} {z} {C} ⊢z))
+  ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ , y ⦂ A ∋ z ⦂ C
+  ⊢weaken ⊢z                    =  S (y-lemma ⊢z) ⊢z 
+  ⊢ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , y ⦂ A ⊢ ρ′ z ⦂ C
   ⊢ρ′ Z  with x ≟ x
-  ...       | yes _      =  ⌊ Z ⌋
-  ...       | no  x≢x    =  ⊥-elim (x≢x refl)
-⊢subst ⊆Δ ⊢ρ (⊢L · ⊢M)    =  ⊢subst ⊆Δ ⊢ρ ⊢L · ⊢subst ⊆Δ ⊢ρ ⊢M
+  ...       | yes _             =  ⌊ Z ⌋
+  ...       | no  x≢x           =  ⊥-elim (x≢x refl)
+  ⊢ρ′ {z} (S x≢z ⊢z) with x ≟ z
+  ...       | yes x≡z           =  ⊥-elim (x≢z x≡z)
+  ...       | no  _             =  ⊢rename ⊢weaken (⊢ρ ⊢z) 
+⊢subst Δ⊆ ⊢ρ (⊢L · ⊢M)          =  ⊢subst Δ⊆ ⊢ρ ⊢L · ⊢subst Δ⊆ ⊢ρ ⊢M
 \end{code}
 
 
