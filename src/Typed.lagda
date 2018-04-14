@@ -88,21 +88,11 @@ data _⊢_⦂_ : Env → Term → Type → Set where
     Γ ⊢ L · M ⦂ B
 \end{code}
 
-## Decide whether environments and types are equal
+## Decide whether types and environments are equal
 
 \begin{code}
 _≟I_ : ∀ (x y : Id) → Dec (x ≡ y)
 _≟I_ = _≟_
-
-{-
-_≟I_ : ∀ (x y : Id) → Dec (x ≡ y)
-(id m) ≟I (id n) with m ≟ n
-...                 | yes refl  =  yes refl
-...                 | no  m≢n   =  no (f m≢n)
-  where
-  f : ∀ {m n : ℕ} → m ≢ n → id m ≢ id n
-  f m≢n refl = m≢n refl
--}
 
 _≟T_ : ∀ (A B : Type) → Dec (A ≡ B)
 o ≟T o = yes refl
@@ -137,6 +127,24 @@ n = 1
 s = 2
 z = 3
 
+z≢s : z ≢ s
+z≢s ()
+
+z≢n : z ≢ n
+z≢n ()
+
+s≢n : s ≢ n
+s≢n ()
+
+z≢m : z ≢ m
+z≢m ()
+
+s≢m : s ≢ m
+s≢m ()
+
+n≢m : n ≢ m
+n≢m ()
+
 Ch : Type
 Ch = (o ⇒ o) ⇒ o ⇒ o
 
@@ -144,22 +152,31 @@ two : Term
 two = ƛ s ⦂ (o ⇒ o) ⇒ ƛ z ⦂ o ⇒ (⌊ s ⌋ · (⌊ s ⌋ · ⌊ z ⌋))
 
 ⊢two : ε ⊢ two ⦂ Ch
-⊢two = ƛ ƛ (⌊ S (λ()) Z ⌋ · (⌊ S (λ()) Z ⌋ · ⌊ Z ⌋))
+⊢two = ƛ ƛ ⌊ ⊢s ⌋ · (⌊ ⊢s ⌋ · ⌊ ⊢z ⌋)
+  where
+  ⊢s = S z≢s Z
+  ⊢z = Z
 
 four : Term
-four = ƛ s ⦂ (o ⇒ o) ⇒ ƛ z ⦂ o ⇒ (⌊ s ⌋ · (⌊ s ⌋ · (⌊ s ⌋ · (⌊ s ⌋ · ⌊ z ⌋))))
+four = ƛ s ⦂ (o ⇒ o) ⇒ ƛ z ⦂ o ⇒ ⌊ s ⌋ · (⌊ s ⌋ · (⌊ s ⌋ · (⌊ s ⌋ · ⌊ z ⌋)))
 
 ⊢four : ε ⊢ four ⦂ Ch
-⊢four = ƛ ƛ (⌊ S (λ()) Z ⌋ · (⌊ S (λ()) Z ⌋ ·
-              (⌊ S (λ()) Z ⌋ · (⌊ S (λ()) Z ⌋ · ⌊ Z ⌋))))
+⊢four = ƛ ƛ ⌊ ⊢s ⌋ · (⌊ ⊢s ⌋ · (⌊ ⊢s ⌋ · (⌊ ⊢s ⌋ · ⌊ ⊢z ⌋)))
+  where
+  ⊢s = S z≢s Z
+  ⊢z = Z
 
 plus : Term
 plus = ƛ m ⦂ Ch ⇒ ƛ n ⦂ Ch ⇒ ƛ s ⦂ (o ⇒ o) ⇒ ƛ z ⦂ o ⇒
          ⌊ m ⌋ · ⌊ s ⌋ · (⌊ n ⌋ · ⌊ s ⌋ · ⌊ z ⌋)
 
 ⊢plus : ε ⊢ plus ⦂ Ch ⇒ Ch ⇒ Ch
-⊢plus = ƛ (ƛ (ƛ (ƛ ((⌊ (S (λ ()) (S (λ ()) (S (λ ()) Z))) ⌋ · ⌊ S (λ ()) Z ⌋) ·
-          (⌊ S (λ ()) (S (λ ()) Z) ⌋ · ⌊ S (λ ()) Z ⌋ · ⌊ Z ⌋)))))
+⊢plus = ƛ ƛ ƛ ƛ  ⌊ ⊢m ⌋ ·  ⌊ ⊢s ⌋ · (⌊ ⊢n ⌋ · ⌊ ⊢s ⌋ · ⌊ ⊢z ⌋)
+  where
+  ⊢z = Z
+  ⊢s = S z≢s Z
+  ⊢n = S z≢n (S s≢n Z)
+  ⊢m = S z≢m (S s≢m (S n≢m Z))
 
 four′ : Term
 four′ = plus · two · two
@@ -195,8 +212,7 @@ _ : ⟦ ⊢four ⟧ tt suc zero ≡ 4
 _ = refl
 \end{code}
 
-## Operational semantics
-
+## Substitution
 
 ### Lists as sets
 
@@ -206,8 +222,11 @@ x ∈ xs  =  Any (x ≡_) xs
 
 _⊆_ : List Id → List Id → Set
 xs ⊆ ys = ∀ {x} → x ∈ xs → x ∈ ys
-\end{code}
 
+∷⊆ : ∀ {x xs ys} → xs ⊆ ys → (x ∷ xs) ⊆ (x ∷ ys)
+∷⊆ xs⊆ (here refl)   =  here refl
+∷⊆ xs⊆ (there ∈xs)   =  there (xs⊆ ∈xs)
+\end{code}
 
 ### Free variables
 
@@ -220,7 +239,6 @@ free ⌊ x ⌋          =  [ x ]
 free (ƛ x ⦂ A ⇒ N)  =  free N \\ x
 free (L · M)        =  free L ++ free M
 \end{code}
-
 
 ### Fresh identifier
 
@@ -262,6 +280,9 @@ _[_:=_] : Term → Id → Term → Term
 N [ x := M ]  =  subst (free M) (∅ , x ↦ M) N
 \end{code}
 
+
+## Substitution preserves types
+
 ### Domain of an environment
 
 \begin{code}
@@ -274,8 +295,7 @@ dom-lemma Z           =  here refl
 dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 \end{code}
 
-
-### Substitution preserves types
+### Renaming
 
 \begin{code}
 
@@ -289,34 +309,63 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
   ⊢ρ′ Z                =  Z
   ⊢ρ′ (S x≢y k)        =  S x≢y (⊢ρ k)
 ⊢rename ⊢ρ (L · M)     =  ⊢rename ⊢ρ L · ⊢rename ⊢ρ M
+\end{code}
 
+### Extending environment
+
+The following can be used to shorten the definition that substitution preserves types,
+but it actually makes the proof longer and more complex, so is probably not worth it.
+\begin{code}
+extend : ∀ {Γ Δ ρ x y A M} → (∀ {z C} → Δ ∋ z ⦂ C → y ≢ z) → (Δ , y ⦂ A ⊢ M ⦂ A) →
+  (∀ {z C} → Γ         ∋ z ⦂ C → Δ         ⊢ ρ z           ⦂ C) →
+  (∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , y ⦂ A ⊢ (ρ , x ↦ M) z ⦂ C)
+extend {x = x} y≢ ⊢M ⊢ρ Z  with x ≟ x
+...       | yes _             =  ⊢M
+...       | no  x≢x           =  ⊥-elim (x≢x refl)
+extend {Δ = Δ} {x = x} {y = y} {A = A} y≢ ⊢M ⊢ρ {z} (S x≢z ⊢z) with x ≟ z
+...       | yes x≡z           =  ⊥-elim (x≢z x≡z)
+...       | no  _             =  ⊢rename {Δ} {Δ , y ⦂ A} ⊢weaken (⊢ρ ⊢z)
+  where
+  ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ , y ⦂ A ∋ z ⦂ C
+  ⊢weaken ⊢z  =  S (y≢ ⊢z) ⊢z
+\end{code}
+
+### Substitution preserves types
+
+\begin{code}
 ⊢subst : ∀ {Γ Δ xs ρ} → (dom Δ ⊆ xs) → (∀ {x A} → Γ ∋ x ⦂ A → Δ ⊢ ρ x ⦂ A) →
                                        (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ subst xs ρ M ⦂ A)
-⊢subst Δ⊆ ⊢ρ ⌊ ⊢x ⌋       =  ⊢ρ ⊢x
-⊢subst {Γ} {Δ} {xs} {ρ} Δ⊆ ⊢ρ (ƛ_ {x = x} {A = A} {B = B} ⊢N)
-        = ƛ ⊢subst {Γ = Γ′} {Δ = Δ′} {xs = xs′} {ρ = ρ′} Δ′⊆ ⊢ρ′ ⊢N
+⊢subst ⊆xs ⊢ρ ⌊ ⊢x ⌋            =  ⊢ρ ⊢x
+⊢subst {Γ} {Δ} {xs} {ρ} ⊆xs ⊢ρ (ƛ_ {x = x} {A = A} ⊢N)
+                                = ƛ ⊢subst {Γ′} {Δ′} {xs′} {ρ′} ⊆xs′ ⊢ρ′ ⊢N
   where
-  y = fresh xs
-  Γ′ = Γ , x ⦂ A
-  Δ′ = Δ , y ⦂ A
-  xs′ = y ∷ xs
-  ρ′ : Id → Term
-  ρ′ = ρ , x ↦ ⌊ y ⌋
-  Δ′⊆ : dom Δ′ ⊆ xs′
-  Δ′⊆ (here refl)               =  here refl
-  Δ′⊆ (there ∈Δ)                =  there (Δ⊆ ∈Δ)  
+  y   =  fresh xs
+  Γ′  =  Γ , x ⦂ A
+  Δ′  =  Δ , y ⦂ A
+  xs′ =  y ∷ xs
+  ρ′  =  ρ , x ↦ ⌊ y ⌋
+
+  ⊆xs′ :  dom Δ′ ⊆ xs′
+  ⊆xs′ =  ∷⊆ ⊆xs
+
   y-lemma : ∀ {z C} → Δ ∋ z ⦂ C → y ≢ z
-  y-lemma {z} {C}  ⊢z           =   fresh-lemma (Δ⊆ (dom-lemma {Δ} {z} {C} ⊢z))
-  ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ , y ⦂ A ∋ z ⦂ C
-  ⊢weaken ⊢z                    =  S (y-lemma ⊢z) ⊢z 
-  ⊢ρ′ : ∀ {z C} → Γ , x ⦂ A ∋ z ⦂ C → Δ , y ⦂ A ⊢ ρ′ z ⦂ C
+  y-lemma ⊢z                    =   fresh-lemma (⊆xs (dom-lemma ⊢z))
+
+  ⊢weaken : ∀ {z C} → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
+  ⊢weaken ⊢z                    =  S (y-lemma ⊢z) ⊢z
+
+  ⊢ρ′ : ∀ {z C} → Γ′ ∋ z ⦂ C → Δ′ ⊢ ρ′ z ⦂ C
+  ⊢ρ′  =  extend y-lemma ⌊ Z ⌋ ⊢ρ
+{-
+  ⊢ρ′ : ∀ {z C} → Γ′ ∋ z ⦂ C → Δ′ ⊢ ρ′ z ⦂ C
   ⊢ρ′ Z  with x ≟ x
   ...       | yes _             =  ⌊ Z ⌋
   ...       | no  x≢x           =  ⊥-elim (x≢x refl)
   ⊢ρ′ {z} (S x≢z ⊢z) with x ≟ z
   ...       | yes x≡z           =  ⊥-elim (x≢z x≡z)
-  ...       | no  _             =  ⊢rename ⊢weaken (⊢ρ ⊢z) 
-⊢subst Δ⊆ ⊢ρ (⊢L · ⊢M)          =  ⊢subst Δ⊆ ⊢ρ ⊢L · ⊢subst Δ⊆ ⊢ρ ⊢M
+  ...       | no  _             =  ⊢rename {Δ} {Δ′} ⊢weaken (⊢ρ ⊢z) 
+-}
+⊢subst ⊆xs ⊢ρ (⊢L · ⊢M)         =  ⊢subst ⊆xs ⊢ρ ⊢L · ⊢subst ⊆xs ⊢ρ ⊢M
 \end{code}
 
 
