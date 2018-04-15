@@ -444,6 +444,26 @@ free-lemma = {!!}
   ...                  | no  _     =  {!!}
 \end{code}
 
+Can I falsify the theorem? Consider the case where the renamed variable
+already exists in the environment.
+
+    (ƛ f ⦂ o ⇒ g) [ f := (ƛ z ⦂ o ⇒ z)]
+
+Since I only rename to variables guaranteed not to be free in M and M is closed,
+I could accidentally rename f to g. So I must instead pick all the variables
+free in M and N.
+
+In that case, could I still falsify preservation of typing? Let's say we have:
+
+   ε , g ⦂ A , h ⦂ B ⊢ (ƛ f ⦂ o ⇒ o ⇒ g) ⦂ (o ⇒ o) ⇒ A
+   ε , g ⦂ A , h ⦂ B ⊢ (ƛ z ⦂ o ⇒ z) ⦂ o ⇒ o
+
+And let's say I rename f to h.  Then the result is:
+
+   ε , g ⦂ A , h ⦂ B ⊢ λ h ⦂ o ⇒ g
+
+Then `y≢` in the body of `⊢subst` is falsified, which could be an issue!
+
 ### Preservation
 
 \begin{code}
