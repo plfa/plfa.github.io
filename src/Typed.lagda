@@ -19,6 +19,7 @@ open import Data.List.Any using (Any; here; there)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
 open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Unit using (⊤; tt)
 open import Function using (_∘_)
 open import Function.Equality using (≡-setoid)
@@ -219,30 +220,26 @@ erase-lemma (⊢L · ⊢M)                =  cong₂ _·_ (erase-lemma ⊢L) (er
 infix  4 _∈_
 infix  4 _⊆_
 infixl 5 _∪_
+infixl 5 _\\_
 
 _∈_ : Id → List Id → Set
 x ∈ xs  =  Any (x ≡_) xs
 
 _⊆_ : List Id → List Id → Set
-xs ⊆ ys  =  ∀ {x} → x ∈ xs → x ∈ ys
+xs ⊆ ys  =  ∀ {w} → w ∈ xs → w ∈ ys
 
 _∪_ : List Id → List Id → List Id
 xs ∪ ys  =  xs ++ ys
 
-left : ∀ {xs ys} → xs ⊆ xs ∪ ys
-left (here refl)  =  here refl
-left (there x∈)   =  there (left x∈)
+_\\_ : List Id → Id → List Id
+xs \\ x  =  filter (¬? ∘ (x ≟_)) xs
+\end{code}
 
-right : ∀ {xs ys} → ys ⊆ xs ∪ ys
-right {[]}     y∈  =  y∈
-right {x ∷ xs} y∈  =  there (right {xs} y∈)
+### Properties of sets
 
-prev : ∀ {z y xs} → y ≢ z → z ∈ y ∷ xs → z ∈ xs
-prev y≢z (here z≡y)  = ⊥-elim (y≢z (sym z≡y))
-prev _   (there z∈)  =  z∈
-
-⊆∷ : ∀ {x xs} → xs ⊆ x ∷ xs
-⊆∷ y∈  =  there (y∈)
+\begin{code}
+⊆∷ : ∀ {y xs ys} → xs ⊆ ys → xs ⊆ y ∷ ys
+⊆∷ xs⊆ ∈xs  =  there (xs⊆ ∈xs)
 
 ∷⊆∷ : ∀ {x xs ys} → xs ⊆ ys → (x ∷ xs) ⊆ (x ∷ ys)
 ∷⊆∷ xs⊆ (here refl)   =  here refl
@@ -254,19 +251,35 @@ prev _   (there z∈)  =  z∈
 ⊆[_] : ∀ {x xs} → x ∈ xs → [ x ] ⊆ xs
 ⊆[_] x∈ (here refl) = x∈
 ⊆[_] x∈ (there ())
+
+bind : ∀ {x xs} → xs \\ x ⊆ xs
+bind {x} {[]} ()
+bind {x} {y ∷ ys} with x ≟ y
+...                   | yes refl  =  ⊆∷  (bind {x} {ys})
+...                   | no  _     =  ∷⊆∷ (bind {x} {ys})
+
+left : ∀ {xs ys} → xs ⊆ xs ∪ ys
+left (here refl)  =  here refl
+left (there x∈)   =  there (left x∈)
+
+right : ∀ {xs ys} → ys ⊆ xs ∪ ys
+right {[]}     y∈  =  y∈
+right {x ∷ xs} y∈  =  there (right {xs} y∈)
+
+prev : ∀ {z y xs} → y ≢ z → z ∈ y ∷ xs → z ∈ xs
+prev y≢z (here z≡y)  =  ⊥-elim (y≢z (sym z≡y))
+prev _   (there z∈)  =  z∈
 \end{code}
 
 ### Free variables
 
 \begin{code}
-_\\_ : List Id → Id → List Id
-xs \\ x  =  filter (¬? ∘ (x ≟_)) xs
-
 free : Term → List Id
 free ⌊ x ⌋          =  [ x ]
 free (ƛ x ⦂ A ⇒ N)  =  free N \\ x
-free (L · M)        =  free L ++ free M
+free (L · M)        =  free L ∪ free M
 \end{code}
+
 
 ### Fresh identifier
 
@@ -376,7 +389,7 @@ data Progress (M : Term) : Set where
 
 progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
 progress ⌊ () ⌋
-progress (ƛ_ ⊢N)                                        =  done Fun
+progress (ƛ_ ⊢N)                                          =  done Fun
 progress (⊢L · ⊢M) with progress ⊢L
 ...                   | step L⟹L′                       =  step (ξ-⇒₁ L⟹L′)
 ...                   | done Fun      with progress ⊢M
@@ -398,20 +411,58 @@ dom-lemma : ∀ {Γ y B} → Γ ∋ y ⦂ B → y ∈ dom Γ
 dom-lemma Z           =  here refl
 dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 
+f : ∀ {x y} → y ∈ [ x ] → y ≡ x
+f (here y≡x)  =  y≡x
+f (there ())
+
+g : ∀ {w xs ys} → w ∈ xs ∪ ys → w ∈ xs ⊎ w ∈ ys
+g {_} {[]}     {ys} w∈  =  inj₂ w∈
+g {_} {x ∷ xs} {ys} (here px)  =  inj₁ (here px)
+g {_} {x ∷ xs} {ys} (there w∈) with g w∈
+...                               | inj₁ ∈xs  =  inj₁ (there ∈xs)
+...                               | inj₂ ∈ys  =  inj₂ ∈ys
+
+k : ∀ {w x xs} → w ∈ xs \\ x → x ≢ w
+k {w} {x} {[]}       ()
+k {w} {x} {x′ ∷ xs′} w∈           with x ≟ x′
+k {w} {x} {x′ ∷ xs′} w∈           | yes refl   =  k {w} {x} {xs′} w∈
+k {w} {x} {x′ ∷ xs′} (here w≡x′)  | no  x≢x′   =  λ x≡w → x≢x′ (trans x≡w w≡x′)
+k {w} {x} {x′ ∷ xs′} (there w∈)   | no  x≢x′   =  k {w} {x} {xs′} w∈
+
+h : ∀ {x xs ys} → xs ⊆ x ∷ ys → xs \\ x ⊆ ys
+h {x} {xs} {ys} xs⊆ {w} w∈ with xs⊆ (bind w∈)
+...                           | here  w≡x      =  ⊥-elim (k {w} {x} {xs} w∈ (sym w≡x))
+...                           | there w∈′      =  w∈′
+
 free-lemma : ∀ {Γ M A} → Γ ⊢ M ⦂ A → free M ⊆ dom Γ
-free-lemma = {!!}
+free-lemma ⌊ ⊢x ⌋ w∈ rewrite f w∈ = dom-lemma ⊢x
+free-lemma {Γ} (ƛ_ {x = x} {N = N} ⊢N)  =  h ih
+  where
+  ih : free N ⊆ x ∷ dom Γ
+  ih = free-lemma ⊢N 
+free-lemma (⊢L · ⊢M) w∈ with g w∈
+...                        | inj₁ ∈L  = free-lemma ⊢L ∈L
+...                        | inj₂ ∈M  = free-lemma ⊢M ∈M
 \end{code}
+
+Wow! A lot of work to prove stuff that is obvious. Gulp!
 
 ### Renaming
 
 \begin{code}
+∷drop : ∀ {v vs ys} → v ∷ vs ⊆ ys → vs ⊆ ys
+∷drop ⊆ys ∈vs  =  ⊆ys (there ∈vs)
+
+j : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
+j = {!!}
+
 ⊢rename : ∀ {Γ Δ xs} → (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A) →
                        (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
 ⊢rename ⊢σ ⊆xs (⌊ ⊢x ⌋)          =  ⌊ ⊢σ ∈xs ⊢x ⌋
   where
   ∈xs = [_]⊆ ⊆xs
 ⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (ƛ_ {x = x} {A = A} {N = N} ⊢N)
-                                 =  ƛ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
+                                 =  ƛ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)    -- ⊆xs : free N \\ x ⊆ xs
   where
   Γ′   =  Γ , x ⦂ A
   Δ′   =  Δ , x ⦂ A
@@ -419,18 +470,13 @@ free-lemma = {!!}
 
   ⊢σ′ : ∀ {y B} → y ∈ xs′ → Γ′ ∋ y ⦂ B → Δ′ ∋ y ⦂ B
   ⊢σ′ ∈xs′ Z                      =  Z
-  ⊢σ′ ∈xs′ (S x≢y k)              =  S x≢y (⊢σ ∈xs k)
-    where
-    ∈xs  =  {!!}
+  ⊢σ′ ∈xs′ (S x≢y k) with ∈xs′
+  ...                   | here refl  =  ⊥-elim (x≢y refl)
+  ...                   | there ∈xs  =  S x≢y (⊢σ ∈xs k)
 
   ⊆xs′ : free N ⊆ xs′
-  ⊆xs′  = {!!}
-⊢rename {xs = xs} ⊢σ {L · M} ⊆xs (⊢L · ⊢M)  =  ⊢rename ⊢σ L⊆xs ⊢L · ⊢rename ⊢σ M⊆xs ⊢M
-  where
-  L⊆xs  : free L ⊆ xs
-  L⊆xs  =  {!!}
-  M⊆xs  : free M ⊆ xs
-  M⊆xs  =  {!!}
+  ⊆xs′  = j ⊆xs
+⊢rename {xs = xs} ⊢σ {L · M} ⊆xs (⊢L · ⊢M)  =  ⊢rename ⊢σ (⊆xs ∘ left) ⊢L · ⊢rename ⊢σ (⊆xs ∘ right) ⊢M
 \end{code}
 
 
@@ -468,7 +514,6 @@ free-lemma = {!!}
   ⊢ρ′ {z} z∈ (S x≢z ⊢z) with x ≟ z
   ...         | yes x≡z           =  ⊥-elim (x≢z x≡z)
   ...         | no  _             =  ⊢rename {Δ} {Δ′} {xs} ⊢σ (Σ (prev {!!} z∈)) (⊢ρ {!!} ⊢z)
-                                     -- ⊢rename {Δ} {Δ′} {xs} (Σ (prev z∈)) ⊢σ (⊢ρ ? ⊢z)̄̄
 
 ⊢subst {xs = xs} Σ ⊢ρ {L · M} ⊆xs (⊢L · ⊢M)           =  ⊢subst Σ ⊢ρ L⊆xs ⊢L · ⊢subst Σ ⊢ρ M⊆xs ⊢M
   where
