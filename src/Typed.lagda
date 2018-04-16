@@ -14,7 +14,7 @@ module Typed where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; [_]; _++_; foldr; filter)
+open import Data.List using (List; []; _∷_; [_]; _++_; map; foldr; filter)
 open import Data.List.Any using (Any; here; there)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
@@ -25,7 +25,6 @@ open import Function using (_∘_)
 open import Function.Equality using (≡-setoid)
 open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (map; From-no; from-no)
 open import Relation.Nullary.Negation using (contraposition; ¬?)
 open import Relation.Nullary.Product using (_×-dec_)
 \end{code}
@@ -285,11 +284,11 @@ free (L · M)        =  free L ∪ free M
 
 \begin{code}
 fresh : List Id → Id
-fresh = suc ∘ foldr _⊔_ 0
+fresh = foldr _⊔_ 0 ∘ map suc
 
-⊔-lemma : ∀ {x xs} → x ∈ xs → x ≤ foldr _⊔_ 0 xs
-⊔-lemma (here refl)  =  m≤m⊔n _ _
-⊔-lemma (there x∈)   =  ≤-trans (⊔-lemma x∈) (n≤m⊔n _ _)
+⊔-lemma : ∀ {x xs} → x ∈ xs → suc x ≤ fresh xs
+⊔-lemma {x} {.x ∷ xs} (here refl)  =  m≤m⊔n (suc x) (fresh xs)
+⊔-lemma {x} {y  ∷ xs} (there x∈)   =  ≤-trans (⊔-lemma {x} {xs} x∈) (n≤m⊔n (suc y) (fresh xs))
 
 fresh-lemma : ∀ {x xs} → x ∈ xs → fresh xs ≢ x
 fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
