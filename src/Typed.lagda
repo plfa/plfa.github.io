@@ -493,6 +493,13 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
 ### Substitution preserves types
 
 \begin{code}
+lemma₁ : ∀ {y ys} → [ y ] ⊆ y ∷ ys
+lemma₁ (here refl)  =  here refl
+lemma₁ (there ())
+
+lemma₂ : ∀ {z x xs} → z ∈ x ∷ xs → x ≢ z → z ∈ xs
+lemma₂ = {!!}
+
 ⊢subst : ∀ {Γ Δ xs ys ρ} →
              (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys) →
              (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ⊢ ρ x ⦂ A) →
@@ -509,11 +516,22 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
   ρ′  =  ρ , x ↦ ⌊ y ⌋
 
   Σ′ : ∀ {z} → z ∈ xs′ →  free (ρ′ z) ⊆ ys′
-  Σ′ (here refl)  =  {!⊆[] here!}
-  Σ′ (there x∈)   =  {!there ∘ (Σ x∈)!}
+  Σ′ {z} (here refl)  with x ≟ z
+  ...                    | yes refl  =  lemma₁
+  ...                    | no  x≢z   =  ⊥-elim (x≢z refl)
+  Σ′ {z} (there x∈)   with x ≟ z
+  ...                    | yes refl  =  lemma₁
+  ...                    | no  _     =  there ∘ (Σ x∈)
   
   ⊆xs′ :  free N ⊆ xs′
-  ⊆xs′ =  {!!}
+  ⊆xs′ =  j ⊆xs
+{-
+       free (ƛ x ⦂ A ⇒ N) ⊆ xs
+    =    def'n
+       free N \\ x ⊆ xs
+    =    adjoint
+       free N ⊆ x ∷ xs
+-}
 
   ⊢σ : ∀ {z C} → z ∈ ys → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
   ⊢σ z∈ ⊢z  =  S (fresh-lemma z∈) ⊢z
@@ -522,9 +540,11 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
   ⊢ρ′ _ Z  with x ≟ x
   ...         | yes _             =  ⌊ Z ⌋
   ...         | no  x≢x           =  ⊥-elim (x≢x refl)
-  ⊢ρ′ {z} z∈ (S x≢z ⊢z) with x ≟ z
+  ⊢ρ′ {z} z∈′ (S x≢z ⊢z) with x ≟ z
   ...         | yes x≡z           =  ⊥-elim (x≢z x≡z)
-  ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ {!!} (⊢ρ {!!} ⊢z)
+  ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ z∈) (⊢ρ z∈ ⊢z)
+              where
+              z∈  =  lemma₂ z∈′ x≢z
 
 ⊢subst {xs = xs} Σ ⊢ρ {L · M} ⊆xs (⊢L · ⊢M)           =  ⊢subst Σ ⊢ρ L⊆xs ⊢L · ⊢subst Σ ⊢ρ M⊆xs ⊢M
   where
