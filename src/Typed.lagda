@@ -497,7 +497,7 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
              (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ xs) →
              (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ⊢ ρ x ⦂ A) →
              (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ subst xs ρ M ⦂ A)
-⊢subst Σ ⊢ρ ⊆xs ⌊ ⊢x ⌋            =  ⊢ρ {!!} ⊢x
+⊢subst Σ ⊢ρ ⊆xs ⌊ ⊢x ⌋            =  ⊢ρ (⊆xs (here refl)) ⊢x
 ⊢subst {Γ} {Δ} {xs} {ρ} Σ ⊢ρ ⊆xs (ƛ_ {x = x} {A = A} {N = N} ⊢N)
                                 = ƛ ⊢subst {Γ′} {Δ′} {xs′} {ρ′} Σ′ ⊢ρ′ ⊆xs′ ⊢N
   where
