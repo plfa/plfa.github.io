@@ -288,7 +288,8 @@ fresh = foldr _⊔_ 0 ∘ map suc
 
 ⊔-lemma : ∀ {x xs} → x ∈ xs → suc x ≤ fresh xs
 ⊔-lemma {x} {.x ∷ xs} (here refl)  =  m≤m⊔n (suc x) (fresh xs)
-⊔-lemma {x} {y  ∷ xs} (there x∈)   =  ≤-trans (⊔-lemma {x} {xs} x∈) (n≤m⊔n (suc y) (fresh xs))
+⊔-lemma {x} {y  ∷ xs} (there x∈)   =  ≤-trans (⊔-lemma {x} {xs} x∈)
+                                              (n≤m⊔n (suc y) (fresh xs))
 
 fresh-lemma : ∀ {x xs} → x ∈ xs → fresh xs ≢ x
 fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
@@ -452,8 +453,18 @@ Wow! A lot of work to prove stuff that is obvious. Gulp!
 ∷drop : ∀ {v vs ys} → v ∷ vs ⊆ ys → vs ⊆ ys
 ∷drop ⊆ys ∈vs  =  ⊆ys (there ∈vs)
 
+i : ∀ {w x xs} → w ∈ xs → x ≢ w → w ∈ xs \\ x
+i {w} {x} {.w ∷ xs} (here refl) x≢w with x ≟ w
+...                                    | yes refl  =  ⊥-elim (x≢w refl)
+...                                    | no  _     =  here refl
+i {w} {x} {y ∷ xs}  (there w∈)  x≢w with x ≟ y
+...                                    | yes refl  =  (i {w} {x} {xs} w∈ x≢w)
+...                                    | no  _     =  there (i {w} {x} {xs} w∈ x≢w)
+
 j : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
-j = {!!}
+j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
+...                           | yes refl  =  here refl
+...                           | no  x≢w   =  there (⊆ys (i w∈ x≢w))
 
 ⊢rename : ∀ {Γ Δ xs} → (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A) →
                        (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
