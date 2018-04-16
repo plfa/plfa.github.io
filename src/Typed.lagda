@@ -497,8 +497,9 @@ lemma₁ : ∀ {y ys} → [ y ] ⊆ y ∷ ys
 lemma₁ (here refl)  =  here refl
 lemma₁ (there ())
 
-lemma₂ : ∀ {z x xs} → z ∈ x ∷ xs → x ≢ z → z ∈ xs
-lemma₂ = {!!}
+lemma₂ : ∀ {z x xs} → x ≢ z → z ∈ x ∷ xs → z ∈ xs
+lemma₂ x≢z (here refl)   =  ⊥-elim (x≢z refl)
+lemma₂ _   (there z∈xs)  =  z∈xs
 
 ⊢subst : ∀ {Γ Δ xs ys ρ} →
              (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys) →
@@ -544,7 +545,7 @@ lemma₂ = {!!}
   ...         | yes x≡z           =  ⊥-elim (x≢z x≡z)
   ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ z∈) (⊢ρ z∈ ⊢z)
               where
-              z∈  =  lemma₂ z∈′ x≢z
+              z∈  =  lemma₂ x≢z z∈′ 
 
 ⊢subst {xs = xs} Σ ⊢ρ {L · M} ⊆xs (⊢L · ⊢M)           =  ⊢subst Σ ⊢ρ L⊆xs ⊢L · ⊢subst Σ ⊢ρ M⊆xs ⊢M
   where
