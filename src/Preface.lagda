@@ -28,12 +28,11 @@ an excellent time to comment on the first part.
 Since 2013, I have taught a course on Types and Semantics for
 Programming Languages to fourth-year undergraduates and masters
 students at the University of Edinburgh.  That course is not based on
-the excellent [Types and Programming Languages][tapl] by Benjamin
-Pierce, but on Pierce's subsequent textbook, [Software Foundations][sf],
-written in collaboration with others and based on Coq.  I am convinced
-of Pierce's claim that basing a course around a proof assistant aids
-learning, as summarised in his ICFP Keynote, [Lambda, The Ultimate
-TA][ta].
+Benjamin Pierce's excellent [TAPL][tapl], but on Pierce's subsequent
+textbook, [Software Foundations][sf], written in collaboration with
+others and based on Coq.  I am convinced of Pierce's claim that basing
+a course around a proof assistant aids learning, as summarised in his
+ICFP Keynote, [Lambda, The Ultimate TA][ta].
 
 However, after five years of experience, I have come to the conclusion
 that Coq may not be the best vehicle.  Too much of the course needs to
