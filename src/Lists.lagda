@@ -872,6 +872,7 @@ Do we also have the following?
 
 If so, prove; if not, explain why.
 
+
 ## Standard Library
 
 Definitions similar to those in this chapter can be found in the standard library.
