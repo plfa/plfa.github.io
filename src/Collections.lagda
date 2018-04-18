@@ -1,0 +1,164 @@
+---
+title     : "Collections: Collections represented as Lists"
+layout    : page
+permalink : /Collections
+---
+
+This chapter presents operations on collections and a number of
+useful operations on them.
+
+
+## Imports
+
+\begin{code}
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; _≢_; refl; sym; trans; cong)
+open Eq.≡-Reasoning
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
+-- open import Data.Nat.Properties using
+--   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
+open import Relation.Nullary using (¬_)
+open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Empty using (⊥; ⊥-elim)
+open import Isomorphism using (_≃_)
+open import Function using (_∘_)
+open import Level using (Level)
+open import Data.List using (List; []; _∷_; _++_; map; foldr; filter)
+open import Data.List.All using (All; []; _∷_)
+open import Data.List.Any using (Any; here; there)
+open import Data.Maybe using (Maybe; just; nothing)
+-- open import Data.List.Any.Membership.Propositional using (_∈_)
+open import Relation.Nullary using (¬_; Dec; yes; no)
+open import Relation.Nullary.Negation using (contraposition; ¬?)
+open import Relation.Nullary.Product using (_×-dec_)
+-- open import Relation.Binary using (IsEquivalence)
+\end{code}
+
+
+## Collections
+
+\begin{code}
+infix 0 _↔_
+
+_↔_ : Set → Set → Set
+A ↔ B  =  (A → B) × (B → A)
+
+module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
+
+--  abstract
+
+    Coll : Set → Set
+    Coll A  =  List A
+
+    [_] : A → Coll A
+    [ x ]  =  x ∷ []
+
+    infix 4 _∈_
+    infix 4 _⊆_
+    infixl 5 _∪_
+    infixl 5 _\\_
+
+    data _∈_ : A → Coll A → Set where
+
+      here : ∀ {x xs} →
+        ----------
+        x ∈ x ∷ xs
+        
+      there : ∀ {w x xs} →
+        w ∈ xs →
+        ----------
+        w ∈ x ∷ xs
+
+    _⊆_ : Coll A → Coll A → Set
+    xs ⊆ ys  =  ∀ {w} → w ∈ xs → w ∈ ys
+
+    _∪_ : Coll A → Coll A → Coll A
+    _∪_ = _++_
+
+    _\\_ : Coll A → A → Coll A
+    xs \\ x  =  filter (¬? ∘ (_≟ x)) xs
+
+    lemma₅ : ∀ {w x xs} → w ∈ xs → w ≢ x → w ∈ xs \\ x
+    lemma₅ {w} {x}         here       w≢ with w ≟ x
+    ...                                     | yes refl  =  ⊥-elim (w≢ refl)
+    ...                                     | no  _     =  here
+    lemma₅ {_} {x} {y ∷ _} (there w∈) w≢ with y ≟ x
+    ...                                     | yes refl  =  lemma₅ w∈ w≢
+    ...                                     | no  _     =  there (lemma₅ w∈ w≢)
+
+    lemma₆ : ∀ {x : A} {xs ys : Coll A} → xs \\ x ⊆ ys ↔ xs ⊆ x ∷ ys
+    lemma₆ = ⟨ forward , backward ⟩
+      where
+
+      forward : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
+      forward {x} ⊆ys {w} w∈ with w ≟ x
+      ...                       | yes refl  =  here
+      ...                       | no  w≢    =  there (⊆ys (lemma₅ w∈ w≢))
+
+      backward = {!!}
+
+
+    ⊆-refl : ∀ {xs} → xs ⊆ xs
+    ⊆-refl ∈xs  =  ∈xs
+
+    ⊆-trans : ∀ {xs ys zs} → xs ⊆ ys → ys ⊆ zs → xs ⊆ zs
+    ⊆-trans xs⊆ ys⊆  =  ys⊆ ∘ xs⊆
+
+    lemma₁ : ∀ {w xs} → w ∈ xs ↔ [ w ] ⊆ xs
+    lemma₁ = ⟨ forward , backward ⟩
+      where
+
+      forward : ∀ {w xs} → w ∈ xs → [ w ] ⊆ xs
+      forward ∈xs here        =  ∈xs
+      forward ∈xs (there ())
+
+      backward : ∀ {w xs} → [ w ] ⊆ xs → w ∈ xs
+      backward ⊆xs  =  ⊆xs here
+
+    lemma₂ : ∀ {xs ys} → xs ⊆ xs ∪ ys
+    lemma₂ here         =  here
+    lemma₂ (there ∈xs)  =  there (lemma₂ ∈xs)
+
+    lemma₃ : ∀ {xs ys} → ys ⊆ xs ∪ ys
+    lemma₃ {[]}     ∈ys  =  ∈ys
+    lemma₃ {x ∷ xs} ∈ys  =  there (lemma₃ {xs} ∈ys)
+
+    lemma₄ : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys ↔ w ∈ xs ∪ ys
+    lemma₄ = ⟨ forward , backward ⟩
+      where
+
+      forward : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys → w ∈ xs ∪ ys
+      forward (inj₁ ∈xs)  =  lemma₂ ∈xs
+      forward (inj₂ ∈ys)  =  lemma₃ ∈ys
+
+      backward : ∀ {xs ys w} → w ∈ xs ∪ ys → w ∈ xs ⊎ w ∈ ys
+      backward {[]}     ∈ys                               =  inj₂ ∈ys
+      backward {x ∷ xs} here                              =  inj₁ here
+      backward {x ∷ xs} (there w∈) with backward {xs} w∈
+      ...                             | inj₁ ∈xs          =  inj₁ (there ∈xs)
+      ...                             | inj₂ ∈ys          =  inj₂ ∈ys
+
+
+\end{code}        
+
+
+## Standard Library
+
+Definitions similar to those in this chapter can be found in the standard library.
+\begin{code}
+-- EDIT
+\end{code}
+The standard library version of `IsMonoid` differs from the
+one given here, in that it is also parameterised on an equivalence relation.
+
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    EDIT
+    ∷  U+2237  PROPORTION  (\::)
+    ⊗  U+2297  CIRCLED TIMES  (\otimes)
+    ∈  U+2208  ELEMENT OF  (\in)
+    ∉  U+2209  NOT AN ELEMENT OF  (\inn)
