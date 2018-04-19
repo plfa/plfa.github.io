@@ -1,5 +1,5 @@
 ---
-title     : "Relations: Inductive Definition of Relations"
+title     : "Relations: Inductive definition of relations"
 layout    : page
 permalink : /Relations
 ---

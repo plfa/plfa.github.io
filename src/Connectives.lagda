@@ -1,5 +1,5 @@
 ---
-title     : "Connectives: Conjunction, Disjunction, and Implication"
+title     : "Connectives: Conjunction, disjunction, and implication"
 layout    : page
 permalink : /Connectives
 ---

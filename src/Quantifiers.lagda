@@ -1,5 +1,5 @@
 ---
-title     : "Quantifiers: Universals and Existentials"
+title     : "Quantifiers: Universals and existentials"
 layout    : page
 permalink : /Quantifiers
 ---

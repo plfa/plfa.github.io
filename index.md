@@ -26,12 +26,12 @@ fixes are encouraged.
 
   - [Naturals: Natural numbers](Naturals)
   - [Properties: Proof by induction](Properties)
-  - [Relations: Inductive Definition of Relations](Relations)
+  - [Relations: Inductive definition of relations](Relations)
   - [Equality: Equality and equational reasoning](Equality)
   - [Isomorphism: Isomorphism and embedding](Isomorphism)
-  - [Connectives: Conjunction, Disjunction, and Implication](Connectives)
-  - [Negation: Negation, with Intuitionistic and Classical Logic](Negation)
-  - [Quantifiers: Universals and Existentials](Quantifiers)
+  - [Connectives: Conjunction, disjunction, and implication](Connectives)
+  - [Negation: Negation, with intuitionistic and classical Logic](Negation)
+  - [Quantifiers: Universals and existentials](Quantifiers)
   - [Lists: Lists and higher-order functions](Lists)
   - [Decidable: Booleans and decision procedures](Decidable)
 
@@ -39,11 +39,15 @@ fixes are encouraged.
 
 (This part is not yet ready for review.)
 
+  Old
   - [Maps: Total and Partial Maps](Maps)
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
   - [StlcProp: Properties of STLC](StlcProp)
-  - [TypedDB: Typed DeBruijn representation](TypedDB)
+
+  New
+  - [Collections](Collections)
   - [Typed: Typed term representation](Typed)
+  - [TypedDB: Typed DeBruijn representation](TypedDB) 
 
 ## Backmatter
 

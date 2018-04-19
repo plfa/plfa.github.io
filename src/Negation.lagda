@@ -1,5 +1,5 @@
 ---
-title     : "Negation: Negation, with Intuitionistic and Classical Logic"
+title     : "Negation: Negation, with intuitionistic and classical logic"
 layout    : page
 permalink : /Negation
 ---

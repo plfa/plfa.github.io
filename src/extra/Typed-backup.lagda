@@ -244,12 +244,12 @@ xs \\ x  =  filter (¬? ∘ (x ≟_)) xs
 ∷⊆∷ xs⊆ (here refl)   =  here refl
 ∷⊆∷ xs⊆ (there ∈xs)   =  there (xs⊆ ∈xs)
 
-[_]⊆ : ∀ {x xs} → [ x ] ⊆ xs → x ∈ xs
-[_]⊆ ⊆xs = ⊆xs (here refl)
+[]⊆ : ∀ {x xs} → [ x ] ⊆ xs → x ∈ xs
+[]⊆ ⊆xs = ⊆xs (here refl)
 
-⊆[_] : ∀ {x xs} → x ∈ xs → [ x ] ⊆ xs
-⊆[_] x∈ (here refl) = x∈
-⊆[_] x∈ (there ())
+⊆[] : ∀ {x xs} → x ∈ xs → [ x ] ⊆ xs
+⊆[] x∈ (here refl) = x∈
+⊆[] x∈ (there ())
 
 bind : ∀ {x xs} → xs \\ x ⊆ xs
 bind {x} {[]} ()
@@ -311,14 +311,14 @@ _,_↦_ : (Id → Term) → Id → Term → (Id → Term)
 
 \begin{code}
 subst : List Id → (Id → Term) → Term → Term
-subst xs ρ ⌊ x ⌋          =  ρ x
-subst xs ρ (ƛ x ⦂ A ⇒ N)  =  ƛ y ⦂ A ⇒ subst (y ∷ xs) (ρ , x ↦ ⌊ y ⌋) N
+subst ys ρ ⌊ x ⌋          =  ρ x
+subst ys ρ (ƛ x ⦂ A ⇒ N)  =  ƛ y ⦂ A ⇒ subst (y ∷ ys) (ρ , x ↦ ⌊ y ⌋) N
   where
-  y = fresh xs
-subst xs ρ (L · M)        =  subst xs ρ L · subst xs ρ M
+  y = fresh ys
+subst ys ρ (L · M)        =  subst ys ρ L · subst ys ρ M
 
 _[_:=_] : Term → Id → Term → Term
-N [ x := M ]  =  subst (free M ∪ free N) (∅ , x ↦ M) N
+N [ x := M ]  =  subst (free M ∪ (free N \\ x)) (∅ , x ↦ M) N
 \end{code}
 
 
@@ -470,7 +470,7 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
                        (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
 ⊢rename ⊢σ ⊆xs (⌊ ⊢x ⌋)          =  ⌊ ⊢σ ∈xs ⊢x ⌋
   where
-  ∈xs = [_]⊆ ⊆xs
+  ∈xs = []⊆ ⊆xs
 ⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (ƛ_ {x = x} {A = A} {N = N} ⊢N)
                                  =  ƛ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)    -- ⊆xs : free N \\ x ⊆ xs
   where
@@ -493,44 +493,66 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
 ### Substitution preserves types
 
 \begin{code}
-⊢subst : ∀ {Γ Δ xs ρ} →
-             (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ xs) →
+lemma₁ : ∀ {y ys} → [ y ] ⊆ y ∷ ys
+lemma₁ (here refl)  =  here refl
+lemma₁ (there ())
+
+lemma₂ : ∀ {z x xs} → x ≢ z → z ∈ x ∷ xs → z ∈ xs
+lemma₂ x≢z (here refl)   =  ⊥-elim (x≢z refl)
+lemma₂ _   (there z∈xs)  =  z∈xs
+
+⊢subst : ∀ {Γ Δ xs ys ρ} →
+             (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys) →
              (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ⊢ ρ x ⦂ A) →
-             (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ subst xs ρ M ⦂ A)
-⊢subst Σ ⊢ρ ⊆xs ⌊ ⊢x ⌋            =  ⊢ρ (⊆xs (here refl)) ⊢x
-⊢subst {Γ} {Δ} {xs} {ρ} Σ ⊢ρ ⊆xs (ƛ_ {x = x} {A = A} {N = N} ⊢N)
-                                = ƛ ⊢subst {Γ′} {Δ′} {xs′} {ρ′} Σ′ ⊢ρ′ ⊆xs′ ⊢N
+             (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ subst ys ρ M ⦂ A)
+⊢subst Σ ⊢ρ ⊆xs ⌊ ⊢x ⌋  =  ⊢ρ (⊆xs (here refl)) ⊢x
+⊢subst {Γ} {Δ} {xs} {ys} {ρ} Σ ⊢ρ ⊆xs (ƛ_ {x = x} {A = A} {N = N} ⊢N)
+                        = ƛ_ {x = y} {A = A} (⊢subst {Γ′} {Δ′} {xs′} {ys′} {ρ′} Σ′ ⊢ρ′ ⊆xs′ ⊢N)
   where
-  y   =  fresh xs
+  y   =  fresh ys
   Γ′  =  Γ , x ⦂ A
   Δ′  =  Δ , y ⦂ A
-  xs′ =  y ∷ xs
+  xs′ =  x ∷ xs
+  ys′ =  y ∷ ys
   ρ′  =  ρ , x ↦ ⌊ y ⌋
 
-  Σ′ : ∀ {z} → z ∈ xs′ →  free (ρ′ z) ⊆ xs′
-  Σ′ (here refl)  =  {!!}
-  Σ′ (there x∈)   =  {!!}
+  Σ′ : ∀ {z} → z ∈ xs′ →  free (ρ′ z) ⊆ ys′
+  Σ′ {z} (here refl)  with x ≟ z
+  ...                    | yes refl  =  lemma₁
+  ...                    | no  x≢z   =  ⊥-elim (x≢z refl)
+  Σ′ {z} (there x∈)   with x ≟ z
+  ...                    | yes refl  =  lemma₁
+  ...                    | no  _     =  there ∘ (Σ x∈)
   
   ⊆xs′ :  free N ⊆ xs′
-  ⊆xs′ =  {!!}
+  ⊆xs′ =  j ⊆xs
+{-
+       free (ƛ x ⦂ A ⇒ N) ⊆ xs
+    =    def'n
+       free N \\ x ⊆ xs
+    =    adjoint
+       free N ⊆ x ∷ xs
+-}
 
-  ⊢σ : ∀ {z C} → z ∈ xs → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
+  ⊢σ : ∀ {z C} → z ∈ ys → Δ ∋ z ⦂ C → Δ′ ∋ z ⦂ C
   ⊢σ z∈ ⊢z  =  S (fresh-lemma z∈) ⊢z
 
   ⊢ρ′ : ∀ {z C} → z ∈ xs′ → Γ′ ∋ z ⦂ C → Δ′ ⊢ ρ′ z ⦂ C
   ⊢ρ′ _ Z  with x ≟ x
   ...         | yes _             =  ⌊ Z ⌋
   ...         | no  x≢x           =  ⊥-elim (x≢x refl)
-  ⊢ρ′ {z} z∈ (S x≢z ⊢z) with x ≟ z
+  ⊢ρ′ {z} z∈′ (S x≢z ⊢z) with x ≟ z
   ...         | yes x≡z           =  ⊥-elim (x≢z x≡z)
-  ...         | no  _             =  ⊢rename {Δ} {Δ′} {xs} ⊢σ (Σ (prev {!!} z∈)) (⊢ρ {!!} ⊢z)
+  ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ z∈) (⊢ρ z∈ ⊢z)
+              where
+              z∈  =  lemma₂ x≢z z∈′ 
 
 ⊢subst {xs = xs} Σ ⊢ρ {L · M} ⊆xs (⊢L · ⊢M)           =  ⊢subst Σ ⊢ρ L⊆xs ⊢L · ⊢subst Σ ⊢ρ M⊆xs ⊢M
   where
   L⊆xs  : free L ⊆ xs
-  L⊆xs  =  {!!}
+  L⊆xs  =  ⊆xs ∘ left
   M⊆xs  : free M ⊆ xs
-  M⊆xs  =  {!!}
+  M⊆xs  =  ⊆xs ∘ right
 
 ⊢substitution : ∀ {Γ x A N B M} →
   Γ , x ⦂ A ⊢ N ⦂ B →
@@ -538,17 +560,20 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
   --------------------
   Γ ⊢ N [ x := M ] ⦂ B
 ⊢substitution {Γ} {x} {A} {N} {B} {M} ⊢N ⊢M =
-  ⊢subst {Γ′} {Γ} {xs} {ρ} Σ ⊢ρ {N} {B} ⊆xs ⊢N
+  ⊢subst {Γ′} {Γ} {xs} {ys} {ρ} Σ ⊢ρ {N} {B} ⊆xs ⊢N
   where
   Γ′     =  Γ , x ⦂ A
-  xs     =  free M ∪ free N
+  xs     =  free N
+  ys     =  free M ∪ (free N \\ x)
   ρ      =  ∅ , x ↦ M
 
-  Σ : ∀ {x} → x ∈ xs → free (ρ x) ⊆ xs
-  Σ {y} y∈ with x ≟ y
-  ...         | no _   =  ⊆[_] y∈
-  ...         | yes _  =  {!!}  -- left
-
+  Σ : ∀ {w} → w ∈ xs → free (ρ w) ⊆ ys
+  Σ {w} w∈ y∈ with x ≟ w
+  ...            | yes _   =  left y∈
+  ...            | no x≢w  with y∈
+  ...                         | here refl  =  right (i {w} {x} {free N} w∈ x≢w)
+  ...                         | there ()   
+  
   ⊢ρ : ∀ {z C} → z ∈ xs → Γ′ ∋ z ⦂ C → Γ ⊢ ρ z ⦂ C
   ⊢ρ {.x} z∈ Z         with x ≟ x
   ...                     | yes _     =  ⊢M
@@ -558,40 +583,18 @@ j {x} {xs} {ys} ⊆ys {w} w∈ with x ≟ w
   ...                     | no  _     =   ⌊ ⊢z ⌋
 
   ⊆xs : free N ⊆ xs
-  ⊆xs = {!!}
+  ⊆xs x∈ = x∈
 \end{code}
-
-Can I falsify the theorem? Consider the case where the renamed variable
-already exists in the environment.
-
-    (ƛ f ⦂ o ⇒ g) [ f := (ƛ z ⦂ o ⇒ z)]
-
-Since I only rename to variables guaranteed not to be free in M and M is closed,
-I could accidentally rename f to g. So I must instead pick all the variables
-free in M and N.
-
-In that case, could I still falsify preservation of typing? Let's say we have:
-
-   ε , g ⦂ A , h ⦂ B ⊢ (ƛ f ⦂ o ⇒ o ⇒ g) ⦂ (o ⇒ o) ⇒ A
-   ε , g ⦂ A , h ⦂ B ⊢ (ƛ z ⦂ o ⇒ z) ⦂ o ⇒ o
-
-And let's say I rename f to h.  Then the result is:
-
-   ε , g ⦂ A , h ⦂ B ⊢ λ h ⦂ o ⇒ g
-
-Then `y≢` in the body of `⊢subst` is falsified, which could be an issue!
 
 ### Preservation
 
 \begin{code}
-{-
 preservation : ∀ {Γ M N A} →  Γ ⊢ M ⦂ A  →  M ⟹ N  →  Γ ⊢ N ⦂ A
 preservation ⌊ ⊢x ⌋ ()
 preservation (ƛ ⊢N) ()
 preservation (⊢L · ⊢M) (ξ-⇒₁ L⟹L′)        =  preservation ⊢L L⟹L′ · ⊢M
 preservation (⊢V · ⊢M) (ξ-⇒₂ valV M⟹M′)   =  ⊢V · preservation ⊢M M⟹M′
 preservation ((ƛ ⊢N) · ⊢W) (β-⇒ valW)      =  ⊢substitution ⊢N ⊢W
--}
 \end{code}
 
 
