@@ -16,12 +16,6 @@ material we should remove, parts that require better explanation, good
 exercises, errors, and typos---are welcome.  Pull requests for small
 fixes are encouraged.
 
-<!--
-The first draft of Part I will be completed before the end of March
-2018. When that is done it will be announced here, and that would be
-an excellent time to comment on the first part.
--->
-
 
 ## Personal remarks: From TAPL to PLTA
 

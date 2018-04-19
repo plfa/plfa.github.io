@@ -31,7 +31,7 @@ fixes are encouraged.
   - [Isomorphism: Isomorphism and embedding](Isomorphism)
   - [Connectives: Conjunction, Disjunction, and Implication](Connectives)
   - [Negation: Negation, with Intuitionistic and Classical Logic](Negation)
-  - [Quantiers: Universals and Existentials](Quantifiers)
+  - [Quantifiers: Universals and Existentials](Quantifiers)
   - [Lists: Lists and higher-order functions](Lists)
   - [Decidable: Booleans and decision procedures](Decidable)
 
