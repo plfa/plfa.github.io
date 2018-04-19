@@ -79,28 +79,33 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     _\\_ : Coll A → A → Coll A
     xs \\ x  =  filter (¬? ∘ (_≟ x)) xs
 
+    ⊆-refl : ∀ {xs} → xs ⊆ xs
+    ⊆-refl ∈xs  =  ∈xs
+
+    ⊆-trans : ∀ {xs ys zs} → xs ⊆ ys → ys ⊆ zs → xs ⊆ zs
+    ⊆-trans xs⊆ ys⊆  =  ys⊆ ∘ xs⊆
+
     lemma-\\-∈-≢ : ∀ {w x xs} → w ∈ xs \\ x ↔ w ∈ xs × w ≢ x
     lemma-\\-∈-≢ = ⟨ forward , backward ⟩
       where    
 
+      next : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x
+      next ⟨ ∈xs , ≢x ⟩   =  ⟨ there ∈xs , ≢x ⟩
+
       forward : ∀ {w x xs} → w ∈ xs \\ x → w ∈ xs × w ≢ x
-      forward {w} {x} {[]}    ()
-      forward {w} {x} {y ∷ xs}  w∈         with y ≟ x
-      forward {w} {x} {.x ∷ xs} w∈            | yes refl
-                        with forward {w} {x} {xs} w∈
-      ...                  |  ⟨ ∈xs , ≢x ⟩                   =  ⟨ there ∈xs , ≢x ⟩
-      forward {.y} {x} {y ∷ xs} here        | no  y≢         =  ⟨ here , (λ y≡ → y≢ y≡) ⟩
-      forward {w} {x} {y ∷ xs} (there w∈)   | no  _
-                        with forward {w} {x} {xs} w∈
-      ...                  |  ⟨ ∈xs , ≢x ⟩                   =  ⟨ there ∈xs , ≢x ⟩
+      forward {_} {x} {[]}    ()
+      forward {_} {x} {y ∷ _} w∈         with y ≟ x
+      forward {_} {x} {y ∷ _} w∈            | yes refl  =  next (forward w∈)
+      forward {_} {x} {y ∷ _} here          | no  y≢    =  ⟨ here , (λ y≡ → y≢ y≡) ⟩
+      forward {_} {x} {y ∷ _} (there w∈)    | no  _     =  next (forward w∈)
 
       backward : ∀ {w x xs} → w ∈ xs × w ≢ x → w ∈ xs \\ x
-      backward {w} {x}         ⟨ here ,      w≢ ⟩ with w ≟ x
-      ...                                     | yes refl     =  ⊥-elim (w≢ refl)
-      ...                                     | no  _        =  here
+      backward {_} {x} {y ∷ _} ⟨ here     , w≢ ⟩ with y ≟ x
+      ...                                  | yes refl        =  ⊥-elim (w≢ refl)
+      ...                                  | no  _           =  here
       backward {_} {x} {y ∷ _} ⟨ there w∈ , w≢ ⟩ with y ≟ x
-      ...                                     | yes refl     =  backward ⟨ w∈ , w≢ ⟩
-      ...                                     | no  _        =  there (backward ⟨ w∈ , w≢ ⟩)
+      ...                                  | yes refl        =  backward ⟨ w∈ , w≢ ⟩
+      ...                                  | no  _           =  there (backward ⟨ w∈ , w≢ ⟩)
 
 
     lemma-\\-∷ : ∀ {x xs ys} → xs \\ x ⊆ ys ↔ xs ⊆ x ∷ ys
@@ -119,12 +124,6 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       ...                                          | no  w≢   with (xs⊆ ∈xs)
       ...                                                        | here        =  ⊥-elim (≢x refl)
       ...                                                        | there ∈ys   =  ∈ys
-
-    ⊆-refl : ∀ {xs} → xs ⊆ xs
-    ⊆-refl ∈xs  =  ∈xs
-
-    ⊆-trans : ∀ {xs ys zs} → xs ⊆ ys → ys ⊆ zs → xs ⊆ zs
-    ⊆-trans xs⊆ ys⊆  =  ys⊆ ∘ xs⊆
 
     lemma₁ : ∀ {w xs} → w ∈ xs ↔ [ w ] ⊆ xs
     lemma₁ = ⟨ forward , backward ⟩
