@@ -90,7 +90,7 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       where    
 
       next : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x
-      next ⟨ ∈xs , ≢x ⟩   =  ⟨ there ∈xs , ≢x ⟩
+      next ⟨ w∈ , w≢ ⟩   =  ⟨ there w∈ , w≢ ⟩
 
       forward : ∀ {w x xs} → w ∈ xs \\ x → w ∈ xs × w ≢ x
       forward {_} {x} {[]}    ()
@@ -100,12 +100,14 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       forward {_} {x} {y ∷ _} (there w∈)    | no  _     =  next (forward w∈)
 
       backward : ∀ {w x xs} → w ∈ xs × w ≢ x → w ∈ xs \\ x
-      backward {_} {x} {y ∷ _} ⟨ here     , w≢ ⟩ with y ≟ x
-      ...                                  | yes refl        =  ⊥-elim (w≢ refl)
-      ...                                  | no  _           =  here
-      backward {_} {x} {y ∷ _} ⟨ there w∈ , w≢ ⟩ with y ≟ x
-      ...                                  | yes refl        =  backward ⟨ w∈ , w≢ ⟩
-      ...                                  | no  _           =  there (backward ⟨ w∈ , w≢ ⟩)
+      backward {_} {x} {y ∷ _} ⟨ here     , w≢ ⟩
+                                         with y ≟ x
+      ...                                   | yes refl  =  ⊥-elim (w≢ refl)
+      ...                                   | no  _     =  here
+      backward {_} {x} {y ∷ _} ⟨ there w∈ , w≢ ⟩
+                                         with y ≟ x
+      ...                                  | yes refl   =  backward ⟨ w∈ , w≢ ⟩
+      ...                                  | no  _      =  there (backward ⟨ w∈ , w≢ ⟩)
 
 
     lemma-\\-∷ : ∀ {x xs ys} → xs \\ x ⊆ ys ↔ xs ⊆ x ∷ ys
@@ -113,17 +115,19 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       where
 
       forward : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
-      forward {x} ⊆ys {w} ∈xs with w ≟ x
-      ...                        | yes refl  =  here
-      ...                        | no  ≢x    =  there (⊆ys (proj₂ lemma-\\-∈-≢ ⟨ ∈xs , ≢x ⟩))
+      forward {x} ⊆ys {w} ∈xs
+           with w ≟ x
+      ...     | yes refl  =  here
+      ...     | no  ≢x    =  there (⊆ys (proj₂ lemma-\\-∈-≢ ⟨ ∈xs , ≢x ⟩))
 
       backward : ∀ {x xs ys} → xs ⊆ x ∷ ys → xs \\ x ⊆ ys
-      backward {x} xs⊆ {w} w∈ with proj₁ lemma-\\-∈-≢ w∈
-      ...                        | ⟨ ∈xs , ≢x ⟩ with w ≟ x
-      ...                                          | yes refl                  =  ⊥-elim (≢x refl)
-      ...                                          | no  w≢   with (xs⊆ ∈xs)
-      ...                                                        | here        =  ⊥-elim (≢x refl)
-      ...                                                        | there ∈ys   =  ∈ys
+      backward {x} xs⊆ {w} w∈
+           with proj₁ lemma-\\-∈-≢ w∈
+      ...     | ⟨ ∈xs , ≢x ⟩ with w ≟ x
+      ...                       | yes refl                  =  ⊥-elim (≢x refl)
+      ...                       | no  w≢   with (xs⊆ ∈xs)
+      ...                                     | here        =  ⊥-elim (≢x refl)
+      ...                                     | there ∈ys   =  ∈ys
 
     lemma₁ : ∀ {w xs} → w ∈ xs ↔ [ w ] ⊆ xs
     lemma₁ = ⟨ forward , backward ⟩
