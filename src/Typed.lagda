@@ -383,22 +383,11 @@ free-lemma {Γ} (ƛ_ {x = x} {N = N} ⊢N)  =  proj₂ lemma-\\-∷ (free-lemma 
 free-lemma (⊢L · ⊢M) w∈ with proj₂ lemma-⊎-∪ w∈
 ...                        | inj₁ ∈L    = free-lemma ⊢L ∈L
 ...                        | inj₂ ∈M    = free-lemma ⊢M ∈M
-
-
--- f : ∀ {x y} → y ∈ [ x ] → y ≡ x
--- g : ∀ {w xs ys} → w ∈ xs ∪ ys → w ∈ xs ⊎ w ∈ ys
--- k : ∀ {w x xs} → w ∈ xs \\ x → x ≢ w
--- h : ∀ {x xs ys} → xs ⊆ x ∷ ys → xs \\ x ⊆ ys
-
 \end{code}
 
 ### Renaming
 
 \begin{code}
--- ∷drop : ∀ {v vs ys} → v ∷ vs ⊆ ys → vs ⊆ ys
--- i : ∀ {w x xs} → w ∈ xs → x ≢ w → w ∈ xs \\ x
--- j : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
-
 ⊢rename : ∀ {Γ Δ xs} → (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A) →
                        (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
 ⊢rename ⊢σ ⊆xs (⌊ ⊢x ⌋)              =  ⌊ ⊢σ ∈xs ⊢x ⌋
@@ -480,8 +469,8 @@ lemma₂ _   (there w∈)  =  w∈
 ⊢subst {xs = xs} Σ ⊢ρ {L · M} ⊆xs (⊢L · ⊢M)
     =  ⊢subst Σ ⊢ρ L⊆ ⊢L · ⊢subst Σ ⊢ρ M⊆ ⊢M
   where
-  L⊆ = trans-⊆ (proj₁ lemma-⊎-∪ ∘ inj₁) ⊆xs
-  M⊆ = trans-⊆ (proj₁ lemma-⊎-∪ ∘ inj₂) ⊆xs
+  L⊆ = trans-⊆ lemma-∪₁ ⊆xs
+  M⊆ = trans-⊆ lemma-∪₂ ⊆xs
 
 ⊢substitution : ∀ {Γ x A N B M} →
   Γ , x ⦂ A ⊢ N ⦂ B →
@@ -501,7 +490,7 @@ lemma₂ _   (there w∈)  =  w∈
   ...            | yes _                  =  lemma-∪₁ y∈
   ...            | no w≢  with y∈
   ...                        | here       =  lemma-∪₂
-                                 (proj₂ (lemma-\\-∈-≢ {w} {x} {free N}) ⟨ w∈ , w≢ ⟩)
+                                                (proj₂ lemma-\\-∈-≢ ⟨ w∈ , w≢ ⟩)
   ...                        | there ()   
   
   ⊢ρ : ∀ {z C} → z ∈ xs → Γ′ ∋ z ⦂ C → Γ ⊢ ρ z ⦂ C
