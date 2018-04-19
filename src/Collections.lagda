@@ -1,5 +1,5 @@
 ---
-title     : "Collections: Collections represented as Lists"
+title     : "Collections: Representing collections as lists"
 layout    : page
 permalink : /Collections
 ---
@@ -44,9 +44,7 @@ infix 0 _↔_
 _↔_ : Set → Set → Set
 A ↔ B  =  (A → B) × (B → A)
 
-module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
-
---  abstract
+module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
 
     Coll : Set → Set
     Coll A  =  List A
@@ -79,11 +77,22 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     _\\_ : Coll A → A → Coll A
     xs \\ x  =  filter (¬? ∘ (_≟ x)) xs
 
-    ⊆-refl : ∀ {xs} → xs ⊆ xs
-    ⊆-refl ∈xs  =  ∈xs
+    refl-⊆ : ∀ {xs} → xs ⊆ xs
+    refl-⊆ ∈xs  =  ∈xs
 
-    ⊆-trans : ∀ {xs ys zs} → xs ⊆ ys → ys ⊆ zs → xs ⊆ zs
-    ⊆-trans xs⊆ ys⊆  =  ys⊆ ∘ xs⊆
+    trans-⊆ : ∀ {xs ys zs} → xs ⊆ ys → ys ⊆ zs → xs ⊆ zs
+    trans-⊆ xs⊆ ys⊆  =  ys⊆ ∘ xs⊆
+
+    lemma-[_] : ∀ {w xs} → w ∈ xs ↔ [ w ] ⊆ xs
+    lemma-[_] = ⟨ forward , backward ⟩
+      where
+
+      forward : ∀ {w xs} → w ∈ xs → [ w ] ⊆ xs
+      forward ∈xs here        =  ∈xs
+      forward ∈xs (there ())
+
+      backward : ∀ {w xs} → [ w ] ⊆ xs → w ∈ xs
+      backward ⊆xs  =  ⊆xs here
 
     lemma-\\-∈-≢ : ∀ {w x xs} → w ∈ xs \\ x ↔ w ∈ xs × w ≢ x
     lemma-\\-∈-≢ = ⟨ forward , backward ⟩
@@ -129,32 +138,21 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       ...                                     | here        =  ⊥-elim (≢x refl)
       ...                                     | there ∈ys   =  ∈ys
 
-    lemma₁ : ∀ {w xs} → w ∈ xs ↔ [ w ] ⊆ xs
-    lemma₁ = ⟨ forward , backward ⟩
-      where
+    lemma-∪₁ : ∀ {xs ys} → xs ⊆ xs ∪ ys
+    lemma-∪₁ here         =  here
+    lemma-∪₁ (there ∈xs)  =  there (lemma-∪₁ ∈xs)
 
-      forward : ∀ {w xs} → w ∈ xs → [ w ] ⊆ xs
-      forward ∈xs here        =  ∈xs
-      forward ∈xs (there ())
+    lemma-∪₂ : ∀ {xs ys} → ys ⊆ xs ∪ ys
+    lemma-∪₂ {[]}     ∈ys  =  ∈ys
+    lemma-∪₂ {x ∷ xs} ∈ys  =  there (lemma-∪₂ {xs} ∈ys)
 
-      backward : ∀ {w xs} → [ w ] ⊆ xs → w ∈ xs
-      backward ⊆xs  =  ⊆xs here
-
-    lemma₂ : ∀ {xs ys} → xs ⊆ xs ∪ ys
-    lemma₂ here         =  here
-    lemma₂ (there ∈xs)  =  there (lemma₂ ∈xs)
-
-    lemma₃ : ∀ {xs ys} → ys ⊆ xs ∪ ys
-    lemma₃ {[]}     ∈ys  =  ∈ys
-    lemma₃ {x ∷ xs} ∈ys  =  there (lemma₃ {xs} ∈ys)
-
-    lemma₄ : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys ↔ w ∈ xs ∪ ys
-    lemma₄ = ⟨ forward , backward ⟩
+    lemma-⊎-∪ : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys ↔ w ∈ xs ∪ ys
+    lemma-⊎-∪ = ⟨ forward , backward ⟩
       where
 
       forward : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys → w ∈ xs ∪ ys
-      forward (inj₁ ∈xs)  =  lemma₂ ∈xs
-      forward (inj₂ ∈ys)  =  lemma₃ ∈ys
+      forward (inj₁ ∈xs)  =  lemma-∪₁ ∈xs
+      forward (inj₂ ∈ys)  =  lemma-∪₂ ∈ys
 
       backward : ∀ {xs ys w} → w ∈ xs ∪ ys → w ∈ xs ⊎ w ∈ ys
       backward {[]}     ∈ys                               =  inj₂ ∈ys
