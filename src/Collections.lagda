@@ -18,7 +18,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n
 -- open import Data.Nat.Properties using
 --   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Isomorphism using (_≃_)
@@ -79,25 +79,46 @@ module Collection (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     _\\_ : Coll A → A → Coll A
     xs \\ x  =  filter (¬? ∘ (_≟ x)) xs
 
-    lemma₅ : ∀ {w x xs} → w ∈ xs → w ≢ x → w ∈ xs \\ x
-    lemma₅ {w} {x}         here       w≢ with w ≟ x
-    ...                                     | yes refl  =  ⊥-elim (w≢ refl)
-    ...                                     | no  _     =  here
-    lemma₅ {_} {x} {y ∷ _} (there w∈) w≢ with y ≟ x
-    ...                                     | yes refl  =  lemma₅ w∈ w≢
-    ...                                     | no  _     =  there (lemma₅ w∈ w≢)
+    lemma-\\-∈-≢ : ∀ {w x xs} → w ∈ xs \\ x ↔ w ∈ xs × w ≢ x
+    lemma-\\-∈-≢ = ⟨ forward , backward ⟩
+      where    
 
-    lemma₆ : ∀ {x : A} {xs ys : Coll A} → xs \\ x ⊆ ys ↔ xs ⊆ x ∷ ys
-    lemma₆ = ⟨ forward , backward ⟩
+      forward : ∀ {w x xs} → w ∈ xs \\ x → w ∈ xs × w ≢ x
+      forward {w} {x} {[]}    ()
+      forward {w} {x} {y ∷ xs}  w∈         with y ≟ x
+      forward {w} {x} {.x ∷ xs} w∈            | yes refl
+                        with forward {w} {x} {xs} w∈
+      ...                  |  ⟨ ∈xs , ≢x ⟩                   =  ⟨ there ∈xs , ≢x ⟩
+      forward {.y} {x} {y ∷ xs} here        | no  y≢         =  ⟨ here , (λ y≡ → y≢ y≡) ⟩
+      forward {w} {x} {y ∷ xs} (there w∈)   | no  _
+                        with forward {w} {x} {xs} w∈
+      ...                  |  ⟨ ∈xs , ≢x ⟩                   =  ⟨ there ∈xs , ≢x ⟩
+
+      backward : ∀ {w x xs} → w ∈ xs × w ≢ x → w ∈ xs \\ x
+      backward {w} {x}         ⟨ here ,      w≢ ⟩ with w ≟ x
+      ...                                     | yes refl     =  ⊥-elim (w≢ refl)
+      ...                                     | no  _        =  here
+      backward {_} {x} {y ∷ _} ⟨ there w∈ , w≢ ⟩ with y ≟ x
+      ...                                     | yes refl     =  backward ⟨ w∈ , w≢ ⟩
+      ...                                     | no  _        =  there (backward ⟨ w∈ , w≢ ⟩)
+
+
+    lemma-\\-∷ : ∀ {x xs ys} → xs \\ x ⊆ ys ↔ xs ⊆ x ∷ ys
+    lemma-\\-∷ = ⟨ forward , backward ⟩
       where
 
       forward : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
-      forward {x} ⊆ys {w} w∈ with w ≟ x
-      ...                       | yes refl  =  here
-      ...                       | no  w≢    =  there (⊆ys (lemma₅ w∈ w≢))
+      forward {x} ⊆ys {w} ∈xs with w ≟ x
+      ...                        | yes refl  =  here
+      ...                        | no  ≢x    =  there (⊆ys (proj₂ lemma-\\-∈-≢ ⟨ ∈xs , ≢x ⟩))
 
-      backward = {!!}
-
+      backward : ∀ {x xs ys} → xs ⊆ x ∷ ys → xs \\ x ⊆ ys
+      backward {x} xs⊆ {w} w∈ with proj₁ lemma-\\-∈-≢ w∈
+      ...                        | ⟨ ∈xs , ≢x ⟩ with w ≟ x
+      ...                                          | yes refl                  =  ⊥-elim (≢x refl)
+      ...                                          | no  w≢   with (xs⊆ ∈xs)
+      ...                                                        | here        =  ⊥-elim (≢x refl)
+      ...                                                        | there ∈ys   =  ∈ys
 
     ⊆-refl : ∀ {xs} → xs ⊆ xs
     ⊆-refl ∈xs  =  ∈xs
