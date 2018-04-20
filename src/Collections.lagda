@@ -80,8 +80,8 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     [_]-⊆ here        =  here
     [_]-⊆ (there ()) 
 
-    lemma₂ : ∀ {w x xs} → x ≢ w → w ∈ x ∷ xs → w ∈ xs
-    lemma₂ x≢  here        =  ⊥-elim (x≢ refl)
+    lemma₂ : ∀ {w x xs} → w ≢ x → w ∈ x ∷ xs → w ∈ xs
+    lemma₂ w≢  here        =  ⊥-elim (w≢ refl)
     lemma₂ _   (there w∈)  =  w∈
 
     there⟨_⟩ : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x

@@ -67,11 +67,11 @@ data _∋_⦂_ : Env → Id → Type → Set where
       -----------------
     → Γ , x ⦂ A ∋ x ⦂ A
 
-  S : ∀ {Γ A B x y}
-    → x ≢ y
-    → Γ ∋ y ⦂ B
+  S : ∀ {Γ A B x w}
+    → w ≢ x
+    → Γ ∋ w ⦂ B
       -----------------
-    → Γ , x ⦂ A ∋ y ⦂ B
+    → Γ , x ⦂ A ∋ w ⦂ B
 
 data _⊢_⦂_ : Env → Term → Type → Set where
 
@@ -101,23 +101,23 @@ n = 1
 s = 2
 z = 3
 
-z≢s : z ≢ s
-z≢s ()
+s≢z : s ≢ z
+s≢z ()
 
-z≢n : z ≢ n
-z≢n ()
+n≢z : n ≢ z
+n≢z ()
 
-s≢n : s ≢ n
-s≢n ()
+n≢s : n ≢ s
+n≢s ()
 
-z≢m : z ≢ m
-z≢m ()
+m≢z : m ≢ z
+m≢z ()
 
-s≢m : s ≢ m
-s≢m ()
+m≢s : m ≢ s
+m≢s ()
 
-n≢m : n ≢ m
-n≢m ()
+m≢n : m ≢ n
+m≢n ()
 
 Ch : Type
 Ch = (`ℕ ⟹ `ℕ) ⟹ `ℕ ⟹ `ℕ
@@ -128,7 +128,7 @@ two = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
 ⊢two : ε ⊢ two ⦂ Ch
 ⊢two = `λ `λ ` ⊢s · (` ⊢s · ` ⊢z)
   where
-  ⊢s = S z≢s Z
+  ⊢s = S s≢z Z
   ⊢z = Z
 
 four : Term
@@ -137,7 +137,7 @@ four = `λ s ⇒ `λ z ⇒ ` s · (` s · (` s · (` s · ` z)))
 ⊢four : ε ⊢ four ⦂ Ch
 ⊢four = `λ `λ ` ⊢s · (` ⊢s · (` ⊢s · (` ⊢s · ` ⊢z)))
   where
-  ⊢s = S z≢s Z
+  ⊢s = S s≢z Z
   ⊢z = Z
 
 plus : Term
@@ -147,9 +147,9 @@ plus = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
 ⊢plus = `λ `λ `λ `λ  ` ⊢m ·  ` ⊢s · (` ⊢n · ` ⊢s · ` ⊢z)
   where
   ⊢z = Z
-  ⊢s = S z≢s Z
-  ⊢n = S z≢n (S s≢n Z)
-  ⊢m = S z≢m (S s≢m (S n≢m Z))
+  ⊢s = S s≢z Z
+  ⊢n = S n≢z (S n≢s Z)
+  ⊢m = S m≢z (S m≢s (S m≢n Z))
 
 four′ : Term
 four′ = plus · two · two
@@ -241,7 +241,7 @@ fresh = foldr _⊔_ 0 ∘ map suc
 ⊔-lemma {_} {_ ∷ xs} here        =  m≤m⊔n _ (fresh xs)
 ⊔-lemma {_} {_ ∷ xs} (there x∈)  =  ≤-trans (⊔-lemma x∈) (n≤m⊔n _ (fresh xs))
 
-fresh-lemma : ∀ {x xs} → x ∈ xs → fresh xs ≢ x
+fresh-lemma : ∀ {x xs} → x ∈ xs → x ≢ fresh xs
 fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
 \end{code}
 
@@ -446,14 +446,14 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   ⊢σ w∈ ⊢w  =  S (fresh-lemma w∈) ⊢w
 
   ⊢ρ′ : ∀ {w C} → w ∈ xs′ → Γ′ ∋ w ⦂ C → Δ′ ⊢ ρ′ w ⦂ C
-  ⊢ρ′ {w} Z  with w ≟ x
+  ⊢ρ′ {w} _ Z with w ≟ x
   ...         | yes _             =  ` Z
   ...         | no  w≢x           =  ⊥-elim (w≢x refl)
-  ⊢ρ′ {w} w∈′ (S x≢w ⊢w) with w ≟ x
-  ...         | yes refl          =  ⊥-elim (x≢w refl)
+  ⊢ρ′ {w} w∈′ (S w≢x ⊢w) with w ≟ x
+  ...         | yes refl          =  ⊥-elim (w≢x refl)
   ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ w∈) (⊢ρ w∈ ⊢w)
               where
-              w∈  =  lemma₂ x≢w w∈′ 
+              w∈  =  lemma₂ w≢x w∈′ 
 
 ⊢subst Σ ⊢ρ ⊆xs (⊢L · ⊢M)
     =  ⊢subst Σ ⊢ρ L⊆ ⊢L · ⊢subst Σ ⊢ρ M⊆ ⊢M
@@ -481,13 +481,13 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   ...                        | here       =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
   ...                        | there ()   
   
-  ⊢ρ : ∀ {z C} → z ∈ xs → Γ′ ∋ z ⦂ C → Γ ⊢ ρ z ⦂ C
-  ⊢ρ {.x} z∈ Z         with x ≟ x
+  ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
+  ⊢ρ {w} w∈ Z         with w ≟ x
   ...                     | yes _     =  ⊢M
-  ...                     | no  x≢x   =  ⊥-elim (x≢x refl)
-  ⊢ρ {z} z∈ (S x≢z ⊢z) with z ≟ x
-  ...                     | yes refl  =  ⊥-elim (x≢z refl)
-  ...                     | no  _     =  ` ⊢z
+  ...                     | no  w≢x   =  ⊥-elim (w≢x refl)
+  ⊢ρ {w} w∈ (S w≢x ⊢w) with w ≟ x
+  ...                     | yes refl  =  ⊥-elim (w≢x refl)
+  ...                     | no  _     =  ` ⊢w
 
   ⊆xs : free N ⊆ xs
   ⊆xs x∈ = x∈
