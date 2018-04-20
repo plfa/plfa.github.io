@@ -410,7 +410,7 @@ the argument on which we induct becomes *smaller*.
 
 Generalising on an auxiliary argument, which becomes larger as the argument on
 which we recurse or induct becomes smaller, is a common trick. It belongs in
-you sling of arrows, ready to slay the right problem.
+your quiver of arrows, ready to slay the right problem.
 
 Having defined shunt be generalisation, it is now easy to respecialise to
 give a more efficient definition of reverse.
