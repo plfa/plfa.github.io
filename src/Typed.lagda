@@ -453,7 +453,7 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   ...         | yes refl          =  ⊥-elim (w≢x refl)
   ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ w∈) (⊢ρ w∈ ⊢w)
               where
-              w∈  =  lemma₂ w≢x w∈′ 
+              w∈  =  ≢-∷-to-∈ w≢x w∈′ 
 
 ⊢subst Σ ⊢ρ ⊆xs (⊢L · ⊢M)
     =  ⊢subst Σ ⊢ρ L⊆ ⊢L · ⊢subst Σ ⊢ρ M⊆ ⊢M

@@ -15,7 +15,7 @@ module Typed where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; _++_; map; foldr; filter)
+open import Data.List using (List; []; _∷_; [_]; _++_; map; foldr; filter)
 open import Data.List.Any using (Any; here; there)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
@@ -67,11 +67,11 @@ data _∋_⦂_ : Env → Id → Type → Set where
       -----------------
     → Γ , x ⦂ A ∋ x ⦂ A
 
-  S : ∀ {Γ A B x y}
-    → x ≢ y
-    → Γ ∋ y ⦂ B
+  S : ∀ {Γ A B x w}
+    → w ≢ x
+    → Γ ∋ w ⦂ B
       -----------------
-    → Γ , x ⦂ A ∋ y ⦂ B
+    → Γ , x ⦂ A ∋ w ⦂ B
 
 data _⊢_⦂_ : Env → Term → Type → Set where
 
@@ -101,23 +101,23 @@ n = 1
 s = 2
 z = 3
 
-z≢s : z ≢ s
-z≢s ()
+s≢z : s ≢ z
+s≢z ()
 
-z≢n : z ≢ n
-z≢n ()
+n≢z : n ≢ z
+n≢z ()
 
-s≢n : s ≢ n
-s≢n ()
+n≢s : n ≢ s
+n≢s ()
 
-z≢m : z ≢ m
-z≢m ()
+m≢z : m ≢ z
+m≢z ()
 
-s≢m : s ≢ m
-s≢m ()
+m≢s : m ≢ s
+m≢s ()
 
-n≢m : n ≢ m
-n≢m ()
+m≢n : m ≢ n
+m≢n ()
 
 Ch : Type
 Ch = (`ℕ ⟹ `ℕ) ⟹ `ℕ ⟹ `ℕ
@@ -128,7 +128,7 @@ two = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
 ⊢two : ε ⊢ two ⦂ Ch
 ⊢two = `λ `λ ` ⊢s · (` ⊢s · ` ⊢z)
   where
-  ⊢s = S z≢s Z
+  ⊢s = S s≢z Z
   ⊢z = Z
 
 four : Term
@@ -137,7 +137,7 @@ four = `λ s ⇒ `λ z ⇒ ` s · (` s · (` s · (` s · ` z)))
 ⊢four : ε ⊢ four ⦂ Ch
 ⊢four = `λ `λ ` ⊢s · (` ⊢s · (` ⊢s · (` ⊢s · ` ⊢z)))
   where
-  ⊢s = S z≢s Z
+  ⊢s = S s≢z Z
   ⊢z = Z
 
 plus : Term
@@ -147,9 +147,9 @@ plus = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
 ⊢plus = `λ `λ `λ `λ  ` ⊢m ·  ` ⊢s · (` ⊢n · ` ⊢s · ` ⊢z)
   where
   ⊢z = Z
-  ⊢s = S z≢s Z
-  ⊢n = S z≢n (S s≢n Z)
-  ⊢m = S z≢m (S s≢m (S n≢m Z))
+  ⊢s = S s≢z Z
+  ⊢n = S n≢z (S n≢s Z)
+  ⊢m = S m≢z (S m≢s (S m≢n Z))
 
 four′ : Term
 four′ = plus · two · two
@@ -228,7 +228,7 @@ open Collections.CollectionDec (Id) (_≟_)
 free : Term → List Id
 free (` x)       =  [ x ]
 free (`λ x ⇒ N)  =  free N \\ x
-free (L · M)     =  free L ∪ free M
+free (L · M)     =  free L ++ free M
 \end{code}
 
 ### Fresh identifier
@@ -238,11 +238,10 @@ fresh : List Id → Id
 fresh = foldr _⊔_ 0 ∘ map suc
 
 ⊔-lemma : ∀ {w xs} → w ∈ xs → suc w ≤ fresh xs
-⊔-lemma {w} {x ∷ xs} here         =  m≤m⊔n (suc w) (fresh xs)
-⊔-lemma {w} {x ∷ xs} (there x∈)   =  ≤-trans (⊔-lemma {w} {xs} x∈)
-                                             (n≤m⊔n (suc x) (fresh xs))
+⊔-lemma {_} {_ ∷ xs} here        =  m≤m⊔n _ (fresh xs)
+⊔-lemma {_} {_ ∷ xs} (there x∈)  =  ≤-trans (⊔-lemma x∈) (n≤m⊔n _ (fresh xs))
 
-fresh-lemma : ∀ {x xs} → x ∈ xs → fresh xs ≢ x
+fresh-lemma : ∀ {x xs} → x ∈ xs → x ≢ fresh xs
 fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
 \end{code}
 
@@ -271,7 +270,7 @@ subst ys ρ (`λ x ⇒ N)     =  `λ y ⇒ subst (y ∷ ys) (ρ , x ↦ ` y) N
 subst ys ρ (L · M)        =  subst ys ρ L · subst ys ρ M
 
 _[_:=_] : Term → Id → Term → Term
-N [ x := M ]  =  subst (free M ∪ (free N \\ x)) (∅ , x ↦ M) N
+N [ x := M ]  =  subst (free M ++ (free N \\ x)) (∅ , x ↦ M) N
 \end{code}
 
 
@@ -374,8 +373,8 @@ free-lemma : ∀ {Γ M A} → Γ ⊢ M ⦂ A → free M ⊆ dom Γ
 free-lemma (` ⊢x) w∈ with w∈
 ...                     | here          =  dom-lemma ⊢x
 ...                     | there ()   
-free-lemma {Γ} (`λ_ {x = x} {N = N} ⊢N)  =  proj₂ lemma-\\-∷ (free-lemma ⊢N)
-free-lemma (⊢L · ⊢M) w∈ with proj₂ lemma-⊎-∪ w∈
+free-lemma {Γ} (`λ_ {x = x} {N = N} ⊢N)  =  ∷-to-\\ (free-lemma ⊢N)
+free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 ...                        | inj₁ ∈L    = free-lemma ⊢L ∈L
 ...                        | inj₂ ∈M    = free-lemma ⊢M ∈M
 \end{code}
@@ -387,11 +386,11 @@ free-lemma (⊢L · ⊢M) w∈ with proj₂ lemma-⊎-∪ w∈
   → (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A)
     --------------------------------------------------
   → (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
-⊢rename ⊢σ ⊆xs (` ⊢x)                =  ` ⊢σ ∈xs ⊢x
+⊢rename ⊢σ ⊆xs (` ⊢x)     =  ` ⊢σ ∈xs ⊢x
   where
-  ∈xs = proj₂ lemma-[_] ⊆xs
+  ∈xs = ⊆xs here
 ⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (`λ_ {x = x} {A = A} {N = N} ⊢N)
-                                     =  `λ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
+                          =  `λ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
   where
   Γ′   =  Γ , x ⦂ A
   Δ′   =  Δ , x ⦂ A
@@ -404,25 +403,17 @@ free-lemma (⊢L · ⊢M) w∈ with proj₂ lemma-⊎-∪ w∈
   ...                   | there ∈xs  =  S x≢y (⊢σ ∈xs ⊢y)
 
   ⊆xs′ : free N ⊆ xs′
-  ⊆xs′ = proj₁ lemma-\\-∷ ⊆xs
-⊢rename {xs = xs} ⊢σ {L · M} ⊆xs (⊢L · ⊢M)
-                                     =  ⊢rename ⊢σ L⊆ ⊢L · ⊢rename ⊢σ M⊆ ⊢M
+  ⊆xs′ = \\-to-∷ ⊆xs
+⊢rename ⊢σ ⊆xs (⊢L · ⊢M)  =  ⊢rename ⊢σ L⊆ ⊢L · ⊢rename ⊢σ M⊆ ⊢M
   where
-  L⊆ = trans-⊆ (proj₁ lemma-⊎-∪ ∘ inj₁) ⊆xs
-  M⊆ = trans-⊆ (proj₁ lemma-⊎-∪ ∘ inj₂) ⊆xs
+  L⊆ = trans-⊆ ⊆-++₁ ⊆xs
+  M⊆ = trans-⊆ ⊆-++₂ ⊆xs
 \end{code}
 
 
 ### Substitution preserves types
 
 \begin{code}
-lemma₁ : ∀ {y ys} → [ y ] ⊆ y ∷ ys
-lemma₁ = proj₁ lemma-[_] here
-
-lemma₂ : ∀ {w x xs} → x ≢ w → w ∈ x ∷ xs → w ∈ xs
-lemma₂ x≢  here        =  ⊥-elim (x≢ refl)
-lemma₂ _   (there w∈)  =  w∈
-
 ⊢subst : ∀ {Γ Δ xs ys ρ}
   → (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys)
   → (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ⊢ ρ x ⦂ A)
@@ -442,33 +433,33 @@ lemma₂ _   (there w∈)  =  w∈
 
   Σ′ : ∀ {w} → w ∈ xs′ →  free (ρ′ w) ⊆ ys′
   Σ′ {w} here         with w ≟ x
-  ...                    | yes refl  =  lemma₁
+  ...                    | yes refl  =  [_]-⊆
   ...                    | no  w≢    =  ⊥-elim (w≢ refl)
   Σ′ {w} (there w∈)   with w ≟ x
-  ...                    | yes refl  =  lemma₁
+  ...                    | yes refl  =  [_]-⊆
   ...                    | no  _     =  there ∘ (Σ w∈)
   
   ⊆xs′ :  free N ⊆ xs′
-  ⊆xs′ =  proj₁ lemma-\\-∷ ⊆xs
+  ⊆xs′ =  \\-to-∷ ⊆xs
 
   ⊢σ : ∀ {w C} → w ∈ ys → Δ ∋ w ⦂ C → Δ′ ∋ w ⦂ C
   ⊢σ w∈ ⊢w  =  S (fresh-lemma w∈) ⊢w
 
   ⊢ρ′ : ∀ {w C} → w ∈ xs′ → Γ′ ∋ w ⦂ C → Δ′ ⊢ ρ′ w ⦂ C
-  ⊢ρ′ _ Z  with x ≟ x
+  ⊢ρ′ {w} _ Z with w ≟ x
   ...         | yes _             =  ` Z
-  ...         | no  x≢x           =  ⊥-elim (x≢x refl)
-  ⊢ρ′ {w} w∈′ (S x≢w ⊢w) with w ≟ x
-  ...         | yes refl          =  ⊥-elim (x≢w refl)
+  ...         | no  w≢x           =  ⊥-elim (w≢x refl)
+  ⊢ρ′ {w} w∈′ (S w≢x ⊢w) with w ≟ x
+  ...         | yes refl          =  ⊥-elim (w≢x refl)
   ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ w∈) (⊢ρ w∈ ⊢w)
               where
-              w∈  =  lemma₂ x≢w w∈′ 
+              w∈  =  lemma₂ w≢x w∈′ 
 
-⊢subst {xs = xs} Σ ⊢ρ {L · M} ⊆xs (⊢L · ⊢M)
+⊢subst Σ ⊢ρ ⊆xs (⊢L · ⊢M)
     =  ⊢subst Σ ⊢ρ L⊆ ⊢L · ⊢subst Σ ⊢ρ M⊆ ⊢M
   where
-  L⊆ = trans-⊆ lemma-∪₁ ⊆xs
-  M⊆ = trans-⊆ lemma-∪₂ ⊆xs
+  L⊆ = trans-⊆ ⊆-++₁ ⊆xs
+  M⊆ = trans-⊆ ⊆-++₂ ⊆xs
 
 ⊢substitution : ∀ {Γ x A N B M} →
   Γ , x ⦂ A ⊢ N ⦂ B →
@@ -480,24 +471,23 @@ lemma₂ _   (there w∈)  =  w∈
   where
   Γ′     =  Γ , x ⦂ A
   xs     =  free N
-  ys     =  free M ∪ (free N \\ x)
+  ys     =  free M ++ (free N \\ x)
   ρ      =  ∅ , x ↦ M
 
   Σ : ∀ {w} → w ∈ xs → free (ρ w) ⊆ ys
   Σ {w} w∈ y∈ with w ≟ x
-  ...            | yes _                  =  lemma-∪₁ y∈
+  ...            | yes _                  =  ⊆-++₁ y∈
   ...            | no w≢  with y∈
-  ...                        | here       =  lemma-∪₂
-                                                (proj₂ lemma-\\-∈-≢ ⟨ w∈ , w≢ ⟩)
+  ...                        | here       =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
   ...                        | there ()   
   
-  ⊢ρ : ∀ {z C} → z ∈ xs → Γ′ ∋ z ⦂ C → Γ ⊢ ρ z ⦂ C
-  ⊢ρ {.x} z∈ Z         with x ≟ x
+  ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
+  ⊢ρ {w} w∈ Z         with w ≟ x
   ...                     | yes _     =  ⊢M
-  ...                     | no  x≢x   =  ⊥-elim (x≢x refl)
-  ⊢ρ {z} z∈ (S x≢z ⊢z) with z ≟ x
-  ...                     | yes refl  =  ⊥-elim (x≢z refl)
-  ...                     | no  _     =  ` ⊢z
+  ...                     | no  w≢x   =  ⊥-elim (w≢x refl)
+  ⊢ρ {w} w∈ (S w≢x ⊢w) with w ≟ x
+  ...                     | yes refl  =  ⊥-elim (w≢x refl)
+  ...                     | no  _     =  ` ⊢w
 
   ⊆xs : free N ⊆ xs
   ⊆xs x∈ = x∈
