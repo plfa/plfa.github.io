@@ -476,10 +476,8 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 
   Σ : ∀ {w} → w ∈ xs → free (ρ w) ⊆ ys
   Σ {w} w∈ y∈ with w ≟ x
-  ...            | yes _                  =  ⊆-++₁ y∈
-  ...            | no w≢  with y∈
-  ...                        | here       =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
-  ...                        | there ()   
+  ...            | yes _                   =  ⊆-++₁ y∈
+  ...            | no w≢ rewrite ∈-[_] y∈  =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
   
   ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
   ⊢ρ {w} w∈ Z         with w ≟ x
