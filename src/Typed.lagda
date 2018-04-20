@@ -396,11 +396,11 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   Δ′   =  Δ , x ⦂ A
   xs′  =  x ∷ xs
 
-  ⊢σ′ : ∀ {y B} → y ∈ xs′ → Γ′ ∋ y ⦂ B → Δ′ ∋ y ⦂ B
-  ⊢σ′ ∈xs′ Z                         =  Z
-  ⊢σ′ ∈xs′ (S x≢y ⊢y) with ∈xs′
-  ...                   | here       =  ⊥-elim (x≢y refl)
-  ...                   | there ∈xs  =  S x≢y (⊢σ ∈xs ⊢y)
+  ⊢σ′ : ∀ {w B} → w ∈ xs′ → Γ′ ∋ w ⦂ B → Δ′ ∋ w ⦂ B
+  ⊢σ′ w∈′ Z          =  Z
+  ⊢σ′ w∈′ (S w≢ ⊢w)  =  S w≢ (⊢σ ∈w ⊢w)
+    where
+    ∈w  =  there⁻¹ w∈′ w≢
 
   ⊆xs′ : free N ⊆ xs′
   ⊆xs′ = \\-to-∷ ⊆xs
