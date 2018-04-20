@@ -24,7 +24,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Isomorphism using (_≃_)
 open import Function using (_∘_)
 open import Level using (Level)
-open import Data.List using (List; []; _∷_; _++_; map; foldr; filter)
+open import Data.List using (List; []; _∷_; [_]; _++_; map; foldr; filter)
 open import Data.List.All using (All; []; _∷_)
 open import Data.List.Any using (Any; here; there)
 open import Data.Maybe using (Maybe; just; nothing)
@@ -49,15 +49,11 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     Coll : Set → Set
     Coll A  =  List A
 
-    [_] : A → Coll A
-    [ x ]  =  x ∷ []
-
     infix 4 _∈_
     infix 4 _⊆_
-    infixl 5 _∪_
     infixl 5 _\\_
 
-    data _∈_ : A → Coll A → Set where
+    data _∈_ : A → List A → Set where
 
       here : ∀ {x xs} →
         ----------
@@ -68,13 +64,10 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
         ----------
         w ∈ x ∷ xs
 
-    _⊆_ : Coll A → Coll A → Set
+    _⊆_ : List A → List A → Set
     xs ⊆ ys  =  ∀ {w} → w ∈ xs → w ∈ ys
 
-    _∪_ : Coll A → Coll A → Coll A
-    _∪_ = _++_
-
-    _\\_ : Coll A → A → Coll A
+    _\\_ : List A → A → List A
     xs \\ x  =  filter (¬? ∘ (_≟ x)) xs
 
     refl-⊆ : ∀ {xs} → xs ⊆ xs
@@ -83,83 +76,62 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     trans-⊆ : ∀ {xs ys zs} → xs ⊆ ys → ys ⊆ zs → xs ⊆ zs
     trans-⊆ xs⊆ ys⊆  =  ys⊆ ∘ xs⊆
 
-    lemma-[_] : ∀ {w xs} → w ∈ xs ↔ [ w ] ⊆ xs
-    lemma-[_] = ⟨ forward , backward ⟩
-      where
+    [_]-⊆ : ∀ {x xs} → [ x ] ⊆ x ∷ xs
+    [_]-⊆ here        =  here
+    [_]-⊆ (there ()) 
 
-      forward : ∀ {w xs} → w ∈ xs → [ w ] ⊆ xs
-      forward ∈xs here        =  ∈xs
-      forward ∈xs (there ())
+    lemma₂ : ∀ {w x xs} → x ≢ w → w ∈ x ∷ xs → w ∈ xs
+    lemma₂ x≢  here        =  ⊥-elim (x≢ refl)
+    lemma₂ _   (there w∈)  =  w∈
 
-      backward : ∀ {w xs} → [ w ] ⊆ xs → w ∈ xs
-      backward ⊆xs  =  ⊆xs here
+    there⟨_⟩ : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x
+    there⟨ ⟨ w∈ , w≢ ⟩ ⟩  =  ⟨ there w∈ , w≢ ⟩
 
-    lemma-\\-∈-≢ : ∀ {w x xs} → w ∈ xs \\ x ↔ w ∈ xs × w ≢ x
-    lemma-\\-∈-≢ = ⟨ forward , backward ⟩
-      where    
+    \\-to-∈-≢ : ∀ {w x xs} → w ∈ xs \\ x → w ∈ xs × w ≢ x
+    \\-to-∈-≢ {_} {x} {[]}    ()
+    \\-to-∈-≢ {_} {x} {y ∷ _} w∈            with y ≟ x
+    \\-to-∈-≢ {_} {x} {y ∷ _} w∈               | yes refl  =  there⟨ \\-to-∈-≢ w∈ ⟩
+    \\-to-∈-≢ {_} {x} {y ∷ _} here             | no  w≢    =  ⟨ here , w≢ ⟩
+    \\-to-∈-≢ {_} {x} {y ∷ _} (there w∈)       | no  _     =  there⟨ \\-to-∈-≢ w∈ ⟩
 
-      next : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x
-      next ⟨ w∈ , w≢ ⟩   =  ⟨ there w∈ , w≢ ⟩
-
-      forward : ∀ {w x xs} → w ∈ xs \\ x → w ∈ xs × w ≢ x
-      forward {_} {x} {[]}    ()
-      forward {_} {x} {y ∷ _} w∈         with y ≟ x
-      forward {_} {x} {y ∷ _} w∈            | yes refl  =  next (forward w∈)
-      forward {_} {x} {y ∷ _} here          | no  y≢    =  ⟨ here , (λ y≡ → y≢ y≡) ⟩
-      forward {_} {x} {y ∷ _} (there w∈)    | no  _     =  next (forward w∈)
-
-      backward : ∀ {w x xs} → w ∈ xs × w ≢ x → w ∈ xs \\ x
-      backward {_} {x} {y ∷ _} ⟨ here     , w≢ ⟩
-                                         with y ≟ x
-      ...                                   | yes refl  =  ⊥-elim (w≢ refl)
-      ...                                   | no  _     =  here
-      backward {_} {x} {y ∷ _} ⟨ there w∈ , w≢ ⟩
-                                         with y ≟ x
-      ...                                  | yes refl   =  backward ⟨ w∈ , w≢ ⟩
-      ...                                  | no  _      =  there (backward ⟨ w∈ , w≢ ⟩)
+    ∈-≢-to-\\ : ∀ {w x xs} → w ∈ xs → w ≢ x → w ∈ xs \\ x
+    ∈-≢-to-\\ {_} {x} {y ∷ _} here       w≢ with y ≟ x
+    ...                                        | yes refl  =  ⊥-elim (w≢ refl)
+    ...                                        | no  _     =  here
+    ∈-≢-to-\\ {_} {x} {y ∷ _} (there w∈) w≢ with y ≟ x
+    ...                                        | yes refl  =  ∈-≢-to-\\ w∈ w≢
+    ...                                        | no  _     =  there (∈-≢-to-\\ w∈ w≢)
 
 
-    lemma-\\-∷ : ∀ {x xs ys} → xs \\ x ⊆ ys ↔ xs ⊆ x ∷ ys
-    lemma-\\-∷ = ⟨ forward , backward ⟩
-      where
+    \\-to-∷ : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
+    \\-to-∷ {x} ⊆ys {w} ∈xs
+         with w ≟ x
+    ...     | yes refl  =  here
+    ...     | no  ≢x    =  there (⊆ys (∈-≢-to-\\ ∈xs ≢x))
 
-      forward : ∀ {x xs ys} → xs \\ x ⊆ ys → xs ⊆ x ∷ ys
-      forward {x} ⊆ys {w} ∈xs
-           with w ≟ x
-      ...     | yes refl  =  here
-      ...     | no  ≢x    =  there (⊆ys (proj₂ lemma-\\-∈-≢ ⟨ ∈xs , ≢x ⟩))
+    ∷-to-\\ : ∀ {x xs ys} → xs ⊆ x ∷ ys → xs \\ x ⊆ ys
+    ∷-to-\\ {x} xs⊆ {w} w∈
+         with \\-to-∈-≢ w∈
+    ...     | ⟨ ∈xs , ≢x ⟩ with w ≟ x
+    ...                       | yes refl                  =  ⊥-elim (≢x refl)
+    ...                       | no  w≢   with (xs⊆ ∈xs)
+    ...                                     | here        =  ⊥-elim (≢x refl)
+    ...                                     | there ∈ys   =  ∈ys
 
-      backward : ∀ {x xs ys} → xs ⊆ x ∷ ys → xs \\ x ⊆ ys
-      backward {x} xs⊆ {w} w∈
-           with proj₁ lemma-\\-∈-≢ w∈
-      ...     | ⟨ ∈xs , ≢x ⟩ with w ≟ x
-      ...                       | yes refl                  =  ⊥-elim (≢x refl)
-      ...                       | no  w≢   with (xs⊆ ∈xs)
-      ...                                     | here        =  ⊥-elim (≢x refl)
-      ...                                     | there ∈ys   =  ∈ys
+    ⊆-++₁ : ∀ {xs ys} → xs ⊆ xs ++ ys
+    ⊆-++₁ here         =  here
+    ⊆-++₁ (there ∈xs)  =  there (⊆-++₁ ∈xs)
 
-    lemma-∪₁ : ∀ {xs ys} → xs ⊆ xs ∪ ys
-    lemma-∪₁ here         =  here
-    lemma-∪₁ (there ∈xs)  =  there (lemma-∪₁ ∈xs)
+    ⊆-++₂ : ∀ {xs ys} → ys ⊆ xs ++ ys
+    ⊆-++₂ {[]}     ∈ys  =  ∈ys
+    ⊆-++₂ {x ∷ xs} ∈ys  =  there (⊆-++₂ {xs} ∈ys)
 
-    lemma-∪₂ : ∀ {xs ys} → ys ⊆ xs ∪ ys
-    lemma-∪₂ {[]}     ∈ys  =  ∈ys
-    lemma-∪₂ {x ∷ xs} ∈ys  =  there (lemma-∪₂ {xs} ∈ys)
-
-    lemma-⊎-∪ : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys ↔ w ∈ xs ∪ ys
-    lemma-⊎-∪ = ⟨ forward , backward ⟩
-      where
-
-      forward : ∀ {w xs ys} → w ∈ xs ⊎ w ∈ ys → w ∈ xs ∪ ys
-      forward (inj₁ ∈xs)  =  lemma-∪₁ ∈xs
-      forward (inj₂ ∈ys)  =  lemma-∪₂ ∈ys
-
-      backward : ∀ {xs ys w} → w ∈ xs ∪ ys → w ∈ xs ⊎ w ∈ ys
-      backward {[]}     ∈ys                               =  inj₂ ∈ys
-      backward {x ∷ xs} here                              =  inj₁ here
-      backward {x ∷ xs} (there w∈) with backward {xs} w∈
-      ...                             | inj₁ ∈xs          =  inj₁ (there ∈xs)
-      ...                             | inj₂ ∈ys          =  inj₂ ∈ys
+    ++-to-⊎ : ∀ {xs ys w} → w ∈ xs ++ ys → w ∈ xs ⊎ w ∈ ys
+    ++-to-⊎ {[]}     ∈ys                            =  inj₂ ∈ys
+    ++-to-⊎ {x ∷ xs} here                           =  inj₁ here
+    ++-to-⊎ {x ∷ xs} (there w∈) with ++-to-⊎ {xs} w∈
+    ...                            | inj₁ ∈xs       =  inj₁ (there ∈xs)
+    ...                            | inj₂ ∈ys       =  inj₂ ∈ys
 
 
 \end{code}        
