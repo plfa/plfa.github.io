@@ -79,13 +79,10 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     ∈-[_] : ∀ {w x} → w ∈ [ x ] → w ≡ x
     ∈-[_] here         =  refl
     ∈-[_] (there ())
-    
-    [_]-⊆ : ∀ {x xs} → [ x ] ⊆ x ∷ xs
-    [_]-⊆ w∈ rewrite ∈-[_] w∈  =  here
 
-    ≢-∷-to-∈ : ∀ {w x xs} → w ≢ x → w ∈ x ∷ xs → w ∈ xs
-    ≢-∷-to-∈ w≢  here        =  ⊥-elim (w≢ refl)
-    ≢-∷-to-∈ _   (there w∈)  =  w∈
+    there⁻¹ : ∀ {w x xs} → w ∈ x ∷ xs → w ≢ x → w ∈ xs
+    there⁻¹ here       w≢  =  ⊥-elim (w≢ refl)
+    there⁻¹ (there w∈) w≢  =  w∈
 
     there⟨_⟩ : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x
     there⟨ ⟨ w∈ , w≢ ⟩ ⟩  =  ⟨ there w∈ , w≢ ⟩
