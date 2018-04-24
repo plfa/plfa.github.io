@@ -396,11 +396,11 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   Δ′   =  Δ , x ⦂ A
   xs′  =  x ∷ xs
 
-  ⊢σ′ : ∀ {y B} → y ∈ xs′ → Γ′ ∋ y ⦂ B → Δ′ ∋ y ⦂ B
-  ⊢σ′ ∈xs′ Z                         =  Z
-  ⊢σ′ ∈xs′ (S x≢y ⊢y) with ∈xs′
-  ...                   | here       =  ⊥-elim (x≢y refl)
-  ...                   | there ∈xs  =  S x≢y (⊢σ ∈xs ⊢y)
+  ⊢σ′ : ∀ {w B} → w ∈ xs′ → Γ′ ∋ w ⦂ B → Δ′ ∋ w ⦂ B
+  ⊢σ′ w∈′ Z          =  Z
+  ⊢σ′ w∈′ (S w≢ ⊢w)  =  S w≢ (⊢σ ∈w ⊢w)
+    where
+    ∈w  =  there⁻¹ w∈′ w≢
 
   ⊆xs′ : free N ⊆ xs′
   ⊆xs′ = \\-to-∷ ⊆xs
@@ -432,12 +432,9 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   ρ′  =  ρ , x ↦ ` y
 
   Σ′ : ∀ {w} → w ∈ xs′ →  free (ρ′ w) ⊆ ys′
-  Σ′ {w} here         with w ≟ x
-  ...                    | yes refl  =  [_]-⊆
-  ...                    | no  w≢    =  ⊥-elim (w≢ refl)
-  Σ′ {w} (there w∈)   with w ≟ x
-  ...                    | yes refl  =  [_]-⊆
-  ...                    | no  _     =  there ∘ (Σ w∈)
+  Σ′ {w} w∈′ with w ≟ x
+  ...            | yes refl    =  ⊆-++₁
+  ...            | no  w≢      =  ⊆-++₂ ∘ Σ (there⁻¹ w∈′ w≢)
   
   ⊆xs′ :  free N ⊆ xs′
   ⊆xs′ =  \\-to-∷ ⊆xs
@@ -448,12 +445,12 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   ⊢ρ′ : ∀ {w C} → w ∈ xs′ → Γ′ ∋ w ⦂ C → Δ′ ⊢ ρ′ w ⦂ C
   ⊢ρ′ {w} _ Z with w ≟ x
   ...         | yes _             =  ` Z
-  ...         | no  w≢x           =  ⊥-elim (w≢x refl)
-  ⊢ρ′ {w} w∈′ (S w≢x ⊢w) with w ≟ x
-  ...         | yes refl          =  ⊥-elim (w≢x refl)
+  ...         | no  w≢            =  ⊥-elim (w≢ refl)
+  ⊢ρ′ {w} w∈′ (S w≢ ⊢w) with w ≟ x
+  ...         | yes refl          =  ⊥-elim (w≢ refl)
   ...         | no  _             =  ⊢rename {Δ} {Δ′} {ys} ⊢σ (Σ w∈) (⊢ρ w∈ ⊢w)
               where
-              w∈  =  lemma₂ w≢x w∈′ 
+              w∈  =  there⁻¹ w∈′ w≢
 
 ⊢subst Σ ⊢ρ ⊆xs (⊢L · ⊢M)
     =  ⊢subst Σ ⊢ρ L⊆ ⊢L · ⊢subst Σ ⊢ρ M⊆ ⊢M
@@ -476,18 +473,16 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 
   Σ : ∀ {w} → w ∈ xs → free (ρ w) ⊆ ys
   Σ {w} w∈ y∈ with w ≟ x
-  ...            | yes _                  =  ⊆-++₁ y∈
-  ...            | no w≢  with y∈
-  ...                        | here       =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
-  ...                        | there ()   
+  ...            | yes _                   =  ⊆-++₁ y∈
+  ...            | no w≢ rewrite ∈-[_] y∈  =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
   
   ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
   ⊢ρ {w} w∈ Z         with w ≟ x
-  ...                     | yes _     =  ⊢M
-  ...                     | no  w≢x   =  ⊥-elim (w≢x refl)
-  ⊢ρ {w} w∈ (S w≢x ⊢w) with w ≟ x
-  ...                     | yes refl  =  ⊥-elim (w≢x refl)
-  ...                     | no  _     =  ` ⊢w
+  ...                    | yes _     =  ⊢M
+  ...                    | no  w≢    =  ⊥-elim (w≢ refl)
+  ⊢ρ {w} w∈ (S w≢ ⊢w) with w ≟ x
+  ...                    | yes refl  =  ⊥-elim (w≢ refl)
+  ...                    | no  _     =  ` ⊢w
 
   ⊆xs : free N ⊆ xs
   ⊆xs x∈ = x∈
