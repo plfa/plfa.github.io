@@ -248,21 +248,31 @@ fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
 ### Identifier maps
 
 \begin{code}
-∅ : Id → Term
-∅ x = ` x
+Map : List Id → Set
+Map xs = ∀ {x} → x ∈ xs → Term
+
+default : ∀ (xs : List Id) → Map xs
+default xs = φ
+  where
+  φ : ∀ {x : Id} (x∈ : x ∈ xs) → Term
+  φ {x} x∈  =  ` x
 
 infixl 5 _,_↦_
 
-_,_↦_ : (Id → Term) → Id → Term → (Id → Term)
-(ρ , x ↦ M) w with w ≟ x
-...               | yes _   =  M
-...               | no  _   =  ρ w
+_,_↦_ : ∀ {xs} → Map xs → (x : Id) → Term → Map (x ∷ xs)
+(φ , x ↦ M) here        =  M
+(φ , x ↦ M) (there w∈)  =  φ w∈
 \end{code}
+
+### Free variables
 
 ### Substitution
 
+Build-in the invariant that `rho` covers all free variables in term,
+and don't pass y separately
+
 \begin{code}
-subst : List Id → (Id → Term) → Term → Term
+subst : ∀ (N : Term) → Map (free N) → Term
 subst ys ρ (` x)          =  ρ x
 subst ys ρ (`λ x ⇒ N)     =  `λ y ⇒ subst (y ∷ ys) (ρ , x ↦ ` y) N
   where
@@ -501,6 +511,7 @@ preservation (`λ ⊢N) ()
 preservation (⊢L · ⊢M) (ξ-⟹₁ L⟶L′)        =  preservation ⊢L L⟶L′ · ⊢M
 preservation (⊢V · ⊢M) (ξ-⟹₂ valV M⟶M′)   =  ⊢V · preservation ⊢M M⟶M′
 preservation ((`λ ⊢N) · ⊢W) (β-⟹ valW)      =  ⊢substitution ⊢N ⊢W
+-}
 \end{code}
 
 
