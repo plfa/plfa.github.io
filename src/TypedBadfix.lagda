@@ -8,7 +8,7 @@ permalink : /Typed
 ## Imports
 
 \begin{code}
-module Typed where
+module TypedBadfix where
 \end{code}
 
 \begin{code}
@@ -437,15 +437,15 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 ### Substitution preserves types, general case
 
 \begin{code}
-map-≡ : ∀ {w x ρ M} → w ≡ x → (ρ , x ↦ M) w ≡ M
-map-≡ {w} {x} w≡ with w ≟ x
-...                   | yes _    =  refl
-...                   | no  w≢   =  ⊥-elim (w≢ w≡)
+map-≡ : ∀ {ρ M w x} → w ≡ x → (ρ , x ↦ M) w ≡ M
+map-≡ {_} {_} {w} {x} w≡ with w ≟ x
+...                         | yes _    =  refl
+...                         | no  w≢   =  ⊥-elim (w≢ w≡)
 
-map-≢ : ∀ {w x ρ M} → w ≢ x → (ρ , x ↦ M) w ≡ ρ w
-map-≢ {w} {x} w≢ with w ≟ x
-...                   | yes w≡   =  ⊥-elim (w≢ w≡)
-...                   | no  _    =  refl
+map-≢ : ∀ {ρ M w x} → w ≢ x → (ρ , x ↦ M) w ≡ ρ w
+map-≢ {_} {_} {w} {x} w≢ with w ≟ x
+...                         | yes w≡   =  ⊥-elim (w≢ w≡)
+...                         | no  _    =  refl
 \end{code}
 
 \begin{code}
@@ -476,8 +476,8 @@ map-≢ {w} {x} w≢ with w ≟ x
     w≢ = fresh-lemma (⊆ys (dom-lemma ⊢w))
 
   ⊢ρ′ : ∀ {w C} → Γ′ ∋ w ⦂ C → Δ′ ⊢ ρ′ w ⦂ C
-  ⊢ρ′ {w} Z         rewrite map-≡ {w} {x} {ρ} {` y} refl  =  ` Z
-  ⊢ρ′ {w} (S w≢ ⊢w) rewrite map-≢ {w} {x} {ρ} {` y} w≢    =  ⊢weaken {Δ} {Δ′} ⊢σ (⊢ρ ⊢w)
+  ⊢ρ′ {w} Z         rewrite map-≡ {ρ} {` y} {w} {x} refl  =  ` Z
+  ⊢ρ′ {w} (S w≢ ⊢w) rewrite map-≢ {ρ} {` y} {w} {x} w≢    =  ⊢weaken {Δ} {Δ′} ⊢σ (⊢ρ ⊢w)
 
 ⊢subst Σ ⊢ρ (⊢L · ⊢M)
     =  ⊢subst Σ ⊢ρ ⊢L · ⊢subst Σ ⊢ρ ⊢M
@@ -541,21 +541,21 @@ _//_ : Env → List Id → Env
 ...                        | no  _  =  Γ // ys
 
 //-lemma : ∀ {Γ xs} → dom (Γ // xs) ≡ xs
-//-lemma = ?
+//-lemma = {!!}
 
 ⊢stronger : ∀ {Γ ys M A}
   → free M ⊆ ys
   → Γ ⊢ M ⦂ A
     -------------------
   → Γ // ys ⊢ M ⦂ A
-⊢stronger = ?
+⊢stronger = {!!}
 
 ⊢weaker : ∀ {Γ ys M A}
   → free M ⊆ ys
   → Γ // ys ⊢ M ⦂ A
     ---------------
   → Γ ⊢ M ⦂ A
-⊢weaker = ?
+⊢weaker = {!!}
 
 ⊢substitution₀ : ∀ {Δ x A N B M}
   → dom Δ ⊆ free M ++ (free N \\ x)
@@ -563,8 +563,9 @@ _//_ : Env → List Id → Env
   → Δ ⊢ M ⦂ A
     ---------------------
   → Δ ⊢ N [ x := M ] ⦂ B
-⊢substitution₀ = ?
+⊢substitution₀ = {!!}
 
+{-
 ⊢substitution : ∀ {Γ x A N B M}
   → Γ , x ⦂ A ⊢ N ⦂ B
   → Γ ⊢ M ⦂ A
@@ -584,6 +585,7 @@ _//_ : Env → List Id → Env
     ⊆M = ?
     ⊆N[x:=M] : free (N [ x := M ]) ⊆ ys
     ⊆N[x:=M] = ?
+-}
   
 {-
 ⊢substitution : ∀ {Γ x A N B M} →
