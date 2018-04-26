@@ -42,8 +42,10 @@ infix  4 _∋_⦂_
 infix  4 _⊢_⦂_
 infix  5 `λ_⇒_
 infix  5 `λ_
-infixl 6 _·_
-infix  7 `_
+infixl 6 `if0_then_else_
+infix  7 `suc_ `pred_ `Y_
+infixl 8 _·_
+infix  9 `_
 
 Id : Set
 Id = ℕ
@@ -57,9 +59,14 @@ data Env : Set where
   _,_⦂_ : Env → Id → Type → Env
 
 data Term : Set where
-  `_    : Id → Term
-  `λ_⇒_ : Id → Term → Term
-  _·_   : Term → Term → Term  
+  `_              : Id → Term
+  `λ_⇒_           : Id → Term → Term
+  _·_             : Term → Term → Term
+  `zero           : Term    
+  `suc_           : Term → Term
+  `pred_          : Term → Term
+  `if0_then_else_ : Term → Term → Term → Term
+  `Y_             : Term → Term
 
 data _∋_⦂_ : Env → Id → Type → Set where
 
@@ -80,7 +87,7 @@ data _⊢_⦂_ : Env → Term → Type → Set where
       ---------------------
     → Γ ⊢ ` x ⦂ A
 
-  `λ_ : ∀ {Γ x A N B}
+  `λ_ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       ------------------------
     → Γ ⊢ (`λ x ⇒ N) ⦂ A ⟹ B
@@ -90,6 +97,32 @@ data _⊢_⦂_ : Env → Term → Type → Set where
     → Γ ⊢ M ⦂ A
       --------------
     → Γ ⊢ L · M ⦂ B
+
+  `zero : ∀ {Γ}
+      --------------
+    → Γ ⊢ `zero ⦂ `ℕ
+
+  `suc_ : ∀ {Γ M}
+    → Γ ⊢ M ⦂ `ℕ
+      ---------------
+    → Γ ⊢ `suc M ⦂ `ℕ
+
+  `pred_ : ∀ {Γ M}
+    → Γ ⊢ M ⦂ `ℕ
+      ----------------
+    → Γ ⊢ `pred M ⦂ `ℕ
+
+  `if0 : ∀ {Γ L M N A}
+    → Γ ⊢ L ⦂ `ℕ
+    → Γ ⊢ M ⦂ A
+    → Γ ⊢ N ⦂ A
+      ----------------------------
+    → Γ ⊢ `if0 L then M else N ⦂ A
+
+  `Y_ : ∀ {Γ M A}
+    → Γ ⊢ M ⦂ A ⟹ A
+      ---------------
+    → Γ ⊢ `Y M ⦂ A
 \end{code}
 
 ## Test examples
@@ -122,40 +155,49 @@ m≢n ()
 Ch : Type
 Ch = (`ℕ ⟹ `ℕ) ⟹ `ℕ ⟹ `ℕ
 
-two : Term
-two = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
+twoCh : Term
+twoCh = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
 
-⊢two : ε ⊢ two ⦂ Ch
-⊢two = `λ `λ ` ⊢s · (` ⊢s · ` ⊢z)
+⊢twoCh : ε ⊢ twoCh ⦂ Ch
+⊢twoCh = `λ `λ ` ⊢s · (` ⊢s · ` ⊢z)
   where
   ⊢s = S s≢z Z
   ⊢z = Z
 
-four : Term
-four = `λ s ⇒ `λ z ⇒ ` s · (` s · (` s · (` s · ` z)))
+fourCh : Term
+fourCh = `λ s ⇒ `λ z ⇒ ` s · (` s · (` s · (` s · ` z)))
 
-⊢four : ε ⊢ four ⦂ Ch
-⊢four = `λ `λ ` ⊢s · (` ⊢s · (` ⊢s · (` ⊢s · ` ⊢z)))
+⊢fourCh : ε ⊢ fourCh ⦂ Ch
+⊢fourCh = `λ `λ ` ⊢s · (` ⊢s · (` ⊢s · (` ⊢s · ` ⊢z)))
   where
   ⊢s = S s≢z Z
   ⊢z = Z
 
-plus : Term
-plus = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
+plusCh : Term
+plusCh = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
 
-⊢plus : ε ⊢ plus ⦂ Ch ⟹ Ch ⟹ Ch
-⊢plus = `λ `λ `λ `λ  ` ⊢m ·  ` ⊢s · (` ⊢n · ` ⊢s · ` ⊢z)
+⊢plusCh : ε ⊢ plusCh ⦂ Ch ⟹ Ch ⟹ Ch
+⊢plusCh = `λ `λ `λ `λ  ` ⊢m ·  ` ⊢s · (` ⊢n · ` ⊢s · ` ⊢z)
   where
   ⊢z = Z
   ⊢s = S s≢z Z
   ⊢n = S n≢z (S n≢s Z)
   ⊢m = S m≢z (S m≢s (S m≢n Z))
 
-four′ : Term
-four′ = plus · two · two
+fourCh′ : Term
+fourCh′ = plusCh · twoCh · twoCh
 
-⊢four′ : ε ⊢ four′ ⦂ Ch
-⊢four′ = ⊢plus · ⊢two · ⊢two
+⊢fourCh′ : ε ⊢ fourCh′ ⦂ Ch
+⊢fourCh′ = ⊢plusCh · ⊢twoCh · ⊢twoCh
+
+fromCh : Term
+fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
+
+⊢fromCh : ε ⊢ fromCh ⦂ Ch ⟹ `ℕ
+⊢fromCh = `λ ` ⊢m · (`λ `suc ` ⊢s) · `zero
+  where
+  ⊢m = Z
+  ⊢s = Z
 \end{code}
 
 
@@ -163,7 +205,7 @@ four′ = plus · two · two
 
 \begin{code}
 ⟦_⟧ᵀ : Type → Set
-⟦ `ℕ ⟧ᵀ     =  ℕ
+⟦ `ℕ ⟧ᵀ      =  ℕ
 ⟦ A ⟹ B ⟧ᵀ  =  ⟦ A ⟧ᵀ → ⟦ B ⟧ᵀ
 
 ⟦_⟧ᴱ : Env → Set
@@ -175,14 +217,27 @@ four′ = plus · two · two
 ⟦ S _ x ⟧ⱽ ⟨ ρ , v ⟩ = ⟦ x ⟧ⱽ ρ
 
 ⟦_⟧ : ∀ {Γ M A} → Γ ⊢ M ⦂ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ ` x ⟧     ρ  =  ⟦ x ⟧ⱽ ρ
-⟦ `λ ⊢N ⟧   ρ  =  λ{ v → ⟦ ⊢N ⟧ ⟨ ρ , v ⟩ }
-⟦ ⊢L · ⊢M ⟧ ρ  =  (⟦ ⊢L ⟧ ρ) (⟦ ⊢M ⟧ ρ)
+⟦ ` x ⟧      ρ       =  ⟦ x ⟧ⱽ ρ
+⟦ `λ ⊢N ⟧    ρ       =  λ{ v → ⟦ ⊢N ⟧ ⟨ ρ , v ⟩ }
+⟦ ⊢L · ⊢M ⟧  ρ       =  (⟦ ⊢L ⟧ ρ) (⟦ ⊢M ⟧ ρ)
+⟦ `zero ⟧    ρ       =  zero
+⟦ `suc ⊢M ⟧  ρ       =  suc (⟦ ⊢M ⟧ ρ)
+⟦ `pred ⊢M ⟧ ρ       =  pred (⟦ ⊢M ⟧ ρ)
+  where
+  pred : ℕ → ℕ
+  pred zero     =  zero
+  pred (suc n)  =  n
+⟦ `if0 ⊢L ⊢M ⊢N ⟧ ρ  =  if0 ⟦ ⊢L ⟧ ρ then ⟦ ⊢M ⟧ ρ else ⟦ ⊢N ⟧ ρ
+  where
+  if0_then_else_ : ∀ {A} → ℕ → A → A → A
+  if0 zero  then m else n  =  m
+  if0 suc _ then m else n  =  n
+⟦ `Y ⊢M ⟧    ρ       =  {!!}
 
-_ : ⟦ ⊢four′ ⟧ tt ≡ ⟦ ⊢four ⟧ tt
+_ : ⟦ ⊢fourCh′ ⟧ tt ≡ ⟦ ⊢fourCh ⟧ tt
 _ = refl
 
-_ : ⟦ ⊢four ⟧ tt suc zero ≡ 4
+_ : ⟦ ⊢fourCh ⟧ tt suc zero ≡ 4
 _ = refl
 \end{code}
 
@@ -195,14 +250,23 @@ lookup {Γ , x ⦂ A} Z        =  x
 lookup {Γ , x ⦂ A} (S _ k)  =  lookup {Γ} k
 
 erase : ∀ {Γ M A} → Γ ⊢ M ⦂ A → Term
-erase (` k)              =  ` lookup k
-erase (`λ_ {x = x} ⊢N)   =  `λ x ⇒ erase ⊢N
-erase (⊢L · ⊢M)          =  erase ⊢L · erase ⊢M
+erase (` k)             =  ` lookup k
+erase (`λ_ {x = x} ⊢N)  =  `λ x ⇒ erase ⊢N
+erase (⊢L · ⊢M)         =  erase ⊢L · erase ⊢M
+erase (`zero)           =  `zero
+erase (`suc ⊢M)         =  `suc (erase ⊢M)
+erase (`pred ⊢M)        =  `pred (erase ⊢M)
+erase (`if0 ⊢L ⊢M ⊢N)   =  `if0 (erase ⊢L) then (erase ⊢M) else (erase ⊢N)
+erase (`Y ⊢M)           =  `Y (erase ⊢M)
 \end{code}
 
 ### Properties of erasure
 
 \begin{code}
+cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} → 
+                               s ≡ t → u ≡ v → x ≡ y → f s u x ≡ f t v y
+cong₃ f refl refl refl = refl
+
 lookup-lemma : ∀ {Γ x A} → (⊢x : Γ ∋ x ⦂ A) → lookup ⊢x ≡ x
 lookup-lemma Z        =  refl
 lookup-lemma (S _ k)  =  lookup-lemma k
@@ -211,6 +275,12 @@ erase-lemma : ∀ {Γ M A} → (⊢M : Γ ⊢ M ⦂ A) → erase ⊢M ≡ M
 erase-lemma (` ⊢x)            =  cong `_ (lookup-lemma ⊢x)
 erase-lemma (`λ_ {x = x} ⊢N)  =  cong (`λ x ⇒_) (erase-lemma ⊢N)
 erase-lemma (⊢L · ⊢M)         =  cong₂ _·_ (erase-lemma ⊢L) (erase-lemma ⊢M)
+erase-lemma (`zero)           =  refl
+erase-lemma (`suc ⊢M)         =  cong `suc_ (erase-lemma ⊢M)
+erase-lemma (`pred ⊢M)        =  cong `pred_ (erase-lemma ⊢M)
+erase-lemma (`if0 ⊢L ⊢M ⊢N)   =  cong₃ `if0_then_else_
+                                   (erase-lemma ⊢L) (erase-lemma ⊢M) (erase-lemma ⊢N)
+erase-lemma (`Y ⊢M)           =  cong `Y_ (erase-lemma ⊢M)
 \end{code}
 
 
@@ -226,9 +296,14 @@ open Collections.CollectionDec (Id) (_≟_)
 
 \begin{code}
 free : Term → List Id
-free (` x)       =  [ x ]
-free (`λ x ⇒ N)  =  free N \\ x
-free (L · M)     =  free L ++ free M
+free (` x)                   =  [ x ]
+free (`λ x ⇒ N)              =  free N \\ x
+free (L · M)                 =  free L ++ free M
+free (`zero)                 =  []
+free (`suc M)                =  free M
+free (`pred M)               =  free M
+free (`if0 L then M else N)  =  free L ++ free M ++ free N
+free (`Y M)                  =  free M
 \end{code}
 
 ### Fresh identifier
@@ -263,12 +338,18 @@ _,_↦_ : (Id → Term) → Id → Term → (Id → Term)
 
 \begin{code}
 subst : List Id → (Id → Term) → Term → Term
-subst ys ρ (` x)          =  ρ x
-subst ys ρ (`λ x ⇒ N)     =  `λ y ⇒ subst (y ∷ ys) (ρ , x ↦ ` y) N
+subst ys ρ (` x)       =  ρ x
+subst ys ρ (`λ x ⇒ N)  =  `λ y ⇒ subst (y ∷ ys) (ρ , x ↦ ` y) N
   where
   y = fresh ys
-subst ys ρ (L · M)        =  subst ys ρ L · subst ys ρ M
-
+subst ys ρ (L · M)     =  subst ys ρ L · subst ys ρ M
+subst ys ρ (`zero)     =  `zero
+subst ys ρ (`suc M)    =  `suc (subst ys ρ M)
+subst ys ρ (`pred M)   =  `pred (subst ys ρ M)
+subst ys ρ (`if0 L then M else N)
+  =  `if0 (subst ys ρ L) then (subst ys ρ M) else (subst ys ρ N)
+subst ys ρ (`Y M)      =  `Y (subst ys ρ M)  
+                       
 _[_:=_] : Term → Id → Term → Term
 N [ x := M ]  =  subst (free M ++ (free N \\ x)) (∅ , x ↦ M) N
 \end{code}
@@ -279,6 +360,15 @@ N [ x := M ]  =  subst (free M ++ (free N \\ x)) (∅ , x ↦ M) N
 \begin{code}
 data Value : Term → Set where
 
+  Zero :
+      ----------
+      Value `zero
+
+  Suc : ∀ {V}
+    → Value V
+      --------------
+    → Value (`suc V)
+      
   Fun : ∀ {x N}
       ---------------
     → Value (`λ x ⇒ N)
@@ -291,21 +381,65 @@ infix 4 _⟶_
 
 data _⟶_ : Term → Term → Set where
 
+  ξ-·₁ : ∀ {L L′ M}
+    → L ⟶ L′
+      ----------------
+    → L · M ⟶ L′ · M
+
+  ξ-·₂ : ∀ {V M M′}
+    → Value V
+    → M ⟶ M′
+      ----------------
+    → V · M ⟶ V · M′
+
   β-⟹ : ∀ {x N V}
     → Value V
       ------------------------------
     → (`λ x ⇒ N) · V ⟶ N [ x := V ]
 
-  ξ-⟹₁ : ∀ {L L′ M}
-    → L ⟶ L′
-      ----------------
-    → L · M ⟶ L′ · M
+  ξ-suc : ∀ {M M′}
+    → M ⟶ M′
+      ------------------
+    → `suc M ⟶ `suc M′
 
-  ξ-⟹₂ : ∀ {V M M′} →
-    Value V →
-    M ⟶ M′ →
-    ----------------
-    V · M ⟶ V · M′
+  ξ-pred : ∀ {M M′}
+    → M ⟶ M′
+      --------------------
+    → `pred M ⟶ `pred M′
+
+  β-pred-zero :
+      ---------------------
+      `pred `zero ⟶ `zero
+
+  β-pred-suc : ∀ {V}
+    → Value V
+      --------------------
+    → `pred (`suc V) ⟶ V
+
+  ξ-if0 : ∀ {L L′ M N}
+    → L ⟶ L′
+      ----------------------------------------------
+    → `if0 L then M else N ⟶ `if0 L′ then M else N
+
+  β-if0-zero : ∀ {M N}
+      ------------------------------
+    → `if0 `zero then M else N ⟶ M
+  
+  β-if0-suc : ∀ {V M N}
+    → Value V
+      ---------------------------------
+    → `if0 (`suc V) then M else N ⟶ N
+
+  ξ-Y : ∀ {M M′}
+    → M ⟶ M′
+      --------------
+    → `Y M ⟶ `Y M′
+
+  β-Y : ∀ {V x N}
+    → Value V
+    → V ≡ `λ x ⇒ N
+      ------------------------
+    → `Y V ⟶ N [ x := `Y V ]
 \end{code}
 
 ## Reflexive and transitive closure
@@ -332,6 +466,61 @@ begin_ : ∀ {M N} → (M ⟶* N) → (M ⟶* N)
 begin M⟶*N = M⟶*N
 \end{code}
 
+## Canonical forms
+
+\begin{code}
+data Canonical : Term → Type → Set where
+
+  Zero : 
+      ------------------
+      Canonical `zero `ℕ
+
+  Suc : ∀ {V}
+    → Canonical V `ℕ
+      ---------------------
+    → Canonical (`suc V) `ℕ
+ 
+  Fun : ∀ {x N A B}
+    → ε , x ⦂ A ⊢ N ⦂ B
+      ------------------------------
+    → Canonical (`λ x ⇒ N) (A ⟹ B)
+\end{code}
+
+## Canonical forms lemma
+
+\begin{code}
+canonical : ∀ {V A}
+  → ε ⊢ V ⦂ A
+  → Value V
+    -------------
+  → Canonical V A
+canonical `zero     Zero      =  Zero
+canonical (`suc ⊢V) (Suc VV)  =  Suc (canonical ⊢V VV)
+canonical (`λ ⊢N)   Fun       =  Fun ⊢N
+\end{code}
+
+## Every canonical form is a typed value
+
+\begin{code}
+value : ∀ {V A}
+  → Canonical V A
+    -------------
+  → Value V
+value Zero      =  Zero
+value (Suc CM)  =  Suc (value CM)
+value (Fun ⊢N)  =  Fun
+
+typed : ∀ {V A}
+  → Canonical V A
+    -------------
+  → ε ⊢ V ⦂ A
+typed Zero      =  `zero
+typed (Suc CM)  =  `suc (typed CM)
+typed (Fun ⊢N)  =  `λ ⊢N
+
+
+\end{code}
+    
 ## Progress
 
 \begin{code}
@@ -347,12 +536,31 @@ data Progress (M : Term) : Set where
 
 progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
 progress (` ())
-progress (`λ_ ⊢N)                                         =  done Fun
+progress (`λ ⊢N)                           =  done Fun
 progress (⊢L · ⊢M) with progress ⊢L
-...                   | step L⟶L′                       =  step (ξ-⟹₁ L⟶L′)
-...                   | done Fun      with progress ⊢M
-...                                      | step M⟶M′    =  step (ξ-⟹₂ Fun M⟶M′)
-...                                      | done valM      =  step (β-⟹ valM)
+...    | step L⟶L′                       =  step (ξ-·₁ L⟶L′)
+...    | done VL with canonical ⊢L VL
+...        | Fun _ with progress ⊢M
+...            | step M⟶M′               =  step (ξ-·₂ Fun M⟶M′)
+...            | done VM                   =  step (β-⟹ VM)
+progress `zero                             =  done Zero
+progress (`suc ⊢M) with progress ⊢M
+...    | step M⟶M′                       =  step (ξ-suc M⟶M′)
+...    | done VM                           =  done (Suc VM)
+progress (`pred ⊢M) with progress ⊢M
+...    | step M⟶M′                       =  step (ξ-pred M⟶M′)
+...    | done VM with canonical ⊢M VM
+...        | Zero                          =  step β-pred-zero
+...        | Suc CM                        =  step (β-pred-suc (value CM))
+progress (`if0 ⊢L ⊢M ⊢N) with progress ⊢L
+...    | step L⟶L′                       =  step (ξ-if0 L⟶L′)
+...    | done VL with canonical ⊢L VL
+...        | Zero                          =  step β-if0-zero
+...        | Suc CM                        =  step (β-if0-suc (value CM))
+progress (`Y ⊢M) with progress ⊢M
+...    | step M⟶M′                       =  step (ξ-Y M⟶M′)
+...    | done VM with canonical ⊢M VM
+...         | Fun _                        =  step (β-Y VM refl)
 \end{code}
 
 
@@ -373,10 +581,20 @@ free-lemma : ∀ {Γ M A} → Γ ⊢ M ⦂ A → free M ⊆ dom Γ
 free-lemma (` ⊢x) w∈ with w∈
 ...                     | here          =  dom-lemma ⊢x
 ...                     | there ()   
-free-lemma {Γ} (`λ_ {x = x} {N = N} ⊢N)  =  ∷-to-\\ (free-lemma ⊢N)
+free-lemma {Γ} (`λ_ {N = N} ⊢N)         =  ∷-to-\\ (free-lemma ⊢N)
 free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 ...                        | inj₁ ∈L    = free-lemma ⊢L ∈L
 ...                        | inj₂ ∈M    = free-lemma ⊢M ∈M
+free-lemma `zero ()
+free-lemma (`suc ⊢M) w∈                 = free-lemma ⊢M w∈
+free-lemma (`pred ⊢M) w∈                = free-lemma ⊢M w∈
+free-lemma (`if0 ⊢L ⊢M ⊢N) w∈
+        with ++-to-⊎ w∈
+...         | inj₁ ∈L                   = free-lemma ⊢L ∈L
+...         | inj₂ ∈MN with ++-to-⊎ ∈MN
+...                       | inj₁ ∈M     = free-lemma ⊢M ∈M
+...                       | inj₂ ∈N     = free-lemma ⊢N ∈N
+free-lemma (`Y ⊢M) w∈                   = free-lemma ⊢M w∈       
 \end{code}
 
 ### Renaming
@@ -386,11 +604,11 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   → (∀ {x A} → x ∈ xs      →  Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A)
     --------------------------------------------------
   → (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
-⊢rename ⊢σ ⊆xs (` ⊢x)     =  ` ⊢σ ∈xs ⊢x
+⊢rename ⊢σ ⊆xs (` ⊢x)      =  ` ⊢σ ∈xs ⊢x
   where
   ∈xs = ⊆xs here
-⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (`λ_ {x = x} {A = A} {N = N} ⊢N)
-                          =  `λ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
+⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (`λ_ {x = x} {N = N} {A = A} ⊢N)
+                           =  `λ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
   where
   Γ′   =  Γ , x ⦂ A
   Δ′   =  Δ , x ⦂ A
@@ -404,10 +622,21 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 
   ⊆xs′ : free N ⊆ xs′
   ⊆xs′ = \\-to-∷ ⊆xs
-⊢rename ⊢σ ⊆xs (⊢L · ⊢M)  =  ⊢rename ⊢σ L⊆ ⊢L · ⊢rename ⊢σ M⊆ ⊢M
+⊢rename ⊢σ ⊆xs (⊢L · ⊢M)   =  ⊢rename ⊢σ L⊆ ⊢L · ⊢rename ⊢σ M⊆ ⊢M
   where
   L⊆ = trans-⊆ ⊆-++₁ ⊆xs
   M⊆ = trans-⊆ ⊆-++₂ ⊆xs
+⊢rename ⊢σ ⊆xs (`zero)     =  `zero
+⊢rename ⊢σ ⊆xs (`suc ⊢M)   =  `suc (⊢rename ⊢σ ⊆xs ⊢M)
+⊢rename ⊢σ ⊆xs (`pred ⊢M)  =  `pred (⊢rename ⊢σ ⊆xs ⊢M)
+⊢rename ⊢σ ⊆xs (`if0 {L = L} ⊢L ⊢M ⊢N)
+  = `if0 (⊢rename ⊢σ L⊆ ⊢L) (⊢rename ⊢σ M⊆ ⊢M) (⊢rename ⊢σ N⊆ ⊢N)
+    where
+    L⊆ = trans-⊆ ⊆-++₁ ⊆xs
+    M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
+    N⊆ = trans-⊆ ⊆-++₂ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
+⊢rename ⊢σ ⊆xs (`Y ⊢M)     =  `Y (⊢rename ⊢σ ⊆xs ⊢M)
+    
 \end{code}
 
 
@@ -421,7 +650,7 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   → (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ subst ys ρ M ⦂ A)
 ⊢subst Σ ⊢ρ ⊆xs (` ⊢x)
     =  ⊢ρ (⊆xs here) ⊢x
-⊢subst {Γ} {Δ} {xs} {ys} {ρ} Σ ⊢ρ ⊆xs (`λ_ {x = x} {A = A} {N = N} ⊢N)
+⊢subst {Γ} {Δ} {xs} {ys} {ρ} Σ ⊢ρ ⊆xs (`λ_ {x = x} {N = N} {A = A} ⊢N)
     = `λ_ {x = y} {A = A} (⊢subst {Γ′} {Δ′} {xs′} {ys′} {ρ′} Σ′ ⊢ρ′ ⊆xs′ ⊢N)
   where
   y   =  fresh ys
@@ -457,6 +686,16 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
   where
   L⊆ = trans-⊆ ⊆-++₁ ⊆xs
   M⊆ = trans-⊆ ⊆-++₂ ⊆xs
+⊢subst Σ ⊢ρ ⊆xs `zero            =  `zero
+⊢subst Σ ⊢ρ ⊆xs (`suc ⊢M)        =  `suc (⊢subst Σ ⊢ρ ⊆xs ⊢M)
+⊢subst Σ ⊢ρ ⊆xs (`pred ⊢M)       =  `pred (⊢subst Σ ⊢ρ ⊆xs ⊢M)
+⊢subst Σ ⊢ρ ⊆xs (`if0 {L = L} ⊢L ⊢M ⊢N)
+    =  `if0 (⊢subst Σ ⊢ρ L⊆ ⊢L) (⊢subst Σ ⊢ρ M⊆ ⊢M) (⊢subst Σ ⊢ρ N⊆ ⊢N)
+    where
+    L⊆ = trans-⊆ ⊆-++₁ ⊆xs
+    M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
+    N⊆ = trans-⊆ ⊆-++₂ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
+⊢subst Σ ⊢ρ ⊆xs (`Y ⊢M)          =  `Y (⊢subst Σ ⊢ρ ⊆xs ⊢M)    
 
 ⊢substitution : ∀ {Γ x A N B M} →
   Γ , x ⦂ A ⊢ N ⦂ B →
@@ -498,9 +737,19 @@ preservation : ∀ {Γ M N A}
   →  Γ ⊢ N ⦂ A
 preservation (` ⊢x) ()
 preservation (`λ ⊢N) ()
-preservation (⊢L · ⊢M) (ξ-⟹₁ L⟶L′)        =  preservation ⊢L L⟶L′ · ⊢M
-preservation (⊢V · ⊢M) (ξ-⟹₂ valV M⟶M′)   =  ⊢V · preservation ⊢M M⟶M′
-preservation ((`λ ⊢N) · ⊢W) (β-⟹ valW)      =  ⊢substitution ⊢N ⊢W
+preservation (⊢L · ⊢M)              (ξ-·₁ L⟶L′)   =  preservation ⊢L L⟶L′ · ⊢M
+preservation (⊢V · ⊢M)              (ξ-·₂ _ M⟶M′) =  ⊢V · preservation ⊢M M⟶M′
+preservation ((`λ ⊢N) · ⊢W)         (β-⟹ _)       =  ⊢substitution ⊢N ⊢W
+preservation (`zero)                ()
+preservation (`suc ⊢M)              (ξ-suc M⟶M′)  =  `suc (preservation ⊢M M⟶M′)
+preservation (`pred ⊢M)             (ξ-pred M⟶M′) =  `pred (preservation ⊢M M⟶M′)
+preservation (`pred `zero)          (β-pred-zero)   =  `zero
+preservation (`pred (`suc ⊢M))      (β-pred-suc _)  =  ⊢M
+preservation (`if0 ⊢L ⊢M ⊢N)        (ξ-if0 L⟶L′)  =  `if0 (preservation ⊢L L⟶L′) ⊢M ⊢N
+preservation (`if0 `zero ⊢M ⊢N)     β-if0-zero      =  ⊢M
+preservation (`if0 (`suc ⊢V) ⊢M ⊢N) (β-if0-suc _)   =  ⊢N
+preservation (`Y ⊢M)                (ξ-Y M⟶M′)    =  `Y (preservation ⊢M M⟶M′)
+preservation (`Y (`λ ⊢N))           (β-Y _ refl)    =  ⊢substitution ⊢N (`Y (`λ ⊢N))
 \end{code}
 
 

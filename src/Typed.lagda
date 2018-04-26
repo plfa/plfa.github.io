@@ -381,12 +381,12 @@ infix 4 _⟶_
 
 data _⟶_ : Term → Term → Set where
 
-  ξ-⟹₁ : ∀ {L L′ M}
+  ξ-·₁ : ∀ {L L′ M}
     → L ⟶ L′
       ----------------
     → L · M ⟶ L′ · M
 
-  ξ-⟹₂ : ∀ {V M M′}
+  ξ-·₂ : ∀ {V M M′}
     → Value V
     → M ⟶ M′
       ----------------
@@ -476,7 +476,8 @@ data Canonical : Term → Type → Set where
       Canonical `zero `ℕ
 
   Suc : ∀ {V}
-    → Canonical V `ℕ
+    → ε ⊢ V ⦂ `ℕ
+    → Value V
       ---------------------
     → Canonical (`suc V) `ℕ
  
@@ -488,6 +489,8 @@ data Canonical : Term → Type → Set where
 
 ## Canonical forms lemma
 
+Every typed value is canonical.
+
 \begin{code}
 canonical : ∀ {V A}
   → ε ⊢ V ⦂ A
@@ -495,30 +498,28 @@ canonical : ∀ {V A}
     -------------
   → Canonical V A
 canonical `zero     Zero      =  Zero
-canonical (`suc ⊢V) (Suc VV)  =  Suc (canonical ⊢V VV)
+canonical (`suc ⊢V) (Suc VV)  =  Suc ⊢V VV
 canonical (`λ ⊢N)   Fun       =  Fun ⊢N
 \end{code}
 
-## Every canonical form is a typed value
+Every canonical form is typed and a value.
 
 \begin{code}
-value : ∀ {V A}
-  → Canonical V A
-    -------------
-  → Value V
-value Zero      =  Zero
-value (Suc CM)  =  Suc (value CM)
-value (Fun ⊢N)  =  Fun
-
 typed : ∀ {V A}
   → Canonical V A
     -------------
   → ε ⊢ V ⦂ A
-typed Zero      =  `zero
-typed (Suc CM)  =  `suc (typed CM)
-typed (Fun ⊢N)  =  `λ ⊢N
+typed Zero         =  `zero
+typed (Suc ⊢V VV)  =  `suc ⊢V
+typed (Fun ⊢N)     =  `λ ⊢N
 
-
+value : ∀ {V A}
+  → Canonical V A
+    -------------
+  → Value V
+value Zero         =  Zero
+value (Suc ⊢V VV)  =  Suc VV
+value (Fun ⊢N)     =  Fun
 \end{code}
     
 ## Progress
@@ -538,10 +539,10 @@ progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
 progress (` ())
 progress (`λ ⊢N)                           =  done Fun
 progress (⊢L · ⊢M) with progress ⊢L
-...    | step L⟶L′                       =  step (ξ-⟹₁ L⟶L′)
+...    | step L⟶L′                       =  step (ξ-·₁ L⟶L′)
 ...    | done VL with canonical ⊢L VL
 ...        | Fun _ with progress ⊢M
-...            | step M⟶M′               =  step (ξ-⟹₂ Fun M⟶M′)
+...            | step M⟶M′               =  step (ξ-·₂ Fun M⟶M′)
 ...            | done VM                   =  step (β-⟹ VM)
 progress `zero                             =  done Zero
 progress (`suc ⊢M) with progress ⊢M
@@ -551,16 +552,16 @@ progress (`pred ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-pred M⟶M′)
 ...    | done VM with canonical ⊢M VM
 ...        | Zero                          =  step β-pred-zero
-...        | Suc CM                        =  step (β-pred-suc (value CM))
+...        | Suc ⊢V VV                     =  step (β-pred-suc VV)
 progress (`if0 ⊢L ⊢M ⊢N) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-if0 L⟶L′)
 ...    | done VL with canonical ⊢L VL
 ...        | Zero                          =  step β-if0-zero
-...        | Suc CM                        =  step (β-if0-suc (value CM))
+...        | Suc ⊢V VV                     =  step (β-if0-suc VV)
 progress (`Y ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-Y M⟶M′)
 ...    | done VM with canonical ⊢M VM
-...         | Fun _                        =  step (β-Y VM refl)
+...        | Fun _                         =  step (β-Y VM refl)
 \end{code}
 
 
@@ -737,19 +738,19 @@ preservation : ∀ {Γ M N A}
   →  Γ ⊢ N ⦂ A
 preservation (` ⊢x) ()
 preservation (`λ ⊢N) ()
-preservation (⊢L · ⊢M) (ξ-⟹₁ L⟶L′)             =  preservation ⊢L L⟶L′ · ⊢M
-preservation (⊢V · ⊢M) (ξ-⟹₂ _ M⟶M′)           =  ⊢V · preservation ⊢M M⟶M′
-preservation ((`λ ⊢N) · ⊢W) (β-⟹ _)              =  ⊢substitution ⊢N ⊢W
-preservation (`zero) ()
-preservation (`suc ⊢M) (ξ-suc M⟶M′)              =  `suc (preservation ⊢M M⟶M′)
-preservation (`pred ⊢M) (ξ-pred M⟶M′)            =  `pred (preservation ⊢M M⟶M′)
-preservation (`pred `zero) (β-pred-zero)           =  `zero
-preservation (`pred (`suc ⊢M)) (β-pred-suc _)      =  ⊢M
-preservation (`if0 ⊢L ⊢M ⊢N) (ξ-if0 L⟶L′)        =  `if0 (preservation ⊢L L⟶L′) ⊢M ⊢N
-preservation (`if0 `zero ⊢M ⊢N) β-if0-zero         =   ⊢M
-preservation (`if0 (`suc ⊢V) ⊢M ⊢N) (β-if0-suc _)  =   ⊢N
-preservation (`Y ⊢M) (ξ-Y M⟶M′)                  =  `Y (preservation ⊢M M⟶M′)
-preservation (`Y (`λ ⊢N)) (β-Y _ refl)             =  ⊢substitution ⊢N (`Y (`λ ⊢N))
+preservation (⊢L · ⊢M)              (ξ-·₁ L⟶L′)   =  preservation ⊢L L⟶L′ · ⊢M
+preservation (⊢V · ⊢M)              (ξ-·₂ _ M⟶M′) =  ⊢V · preservation ⊢M M⟶M′
+preservation ((`λ ⊢N) · ⊢W)         (β-⟹ _)       =  ⊢substitution ⊢N ⊢W
+preservation (`zero)                ()
+preservation (`suc ⊢M)              (ξ-suc M⟶M′)  =  `suc (preservation ⊢M M⟶M′)
+preservation (`pred ⊢M)             (ξ-pred M⟶M′) =  `pred (preservation ⊢M M⟶M′)
+preservation (`pred `zero)          (β-pred-zero)   =  `zero
+preservation (`pred (`suc ⊢M))      (β-pred-suc _)  =  ⊢M
+preservation (`if0 ⊢L ⊢M ⊢N)        (ξ-if0 L⟶L′)  =  `if0 (preservation ⊢L L⟶L′) ⊢M ⊢N
+preservation (`if0 `zero ⊢M ⊢N)     β-if0-zero      =  ⊢M
+preservation (`if0 (`suc ⊢V) ⊢M ⊢N) (β-if0-suc _)   =  ⊢N
+preservation (`Y ⊢M)                (ξ-Y M⟶M′)    =  `Y (preservation ⊢M M⟶M′)
+preservation (`Y (`λ ⊢N))           (β-Y _ refl)    =  ⊢substitution ⊢N (`Y (`λ ⊢N))
 \end{code}
 
 
