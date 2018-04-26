@@ -129,10 +129,11 @@ data _⊢_⦂_ : Env → Term → Type → Set where
 
 \begin{code}
 m n s z : Id
-m = 0
-n = 1
-s = 2
-z = 3
+p = 0
+m = 1
+n = 2
+s = 3
+z = 4
 
 s≢z : s ≢ z
 s≢z ()
@@ -152,6 +153,34 @@ m≢s ()
 m≢n : m ≢ n
 m≢n ()
 
+p≢n : p ≢ n
+p≢n ()
+
+p≢m : p ≢ m
+p≢m ()
+
+two : Term
+two = `suc `suc `zero
+
+⊢two : ε ⊢ two ⦂ `ℕ
+⊢two = `suc `suc `zero
+
+plus : Term
+plus = `Y (`λ p ⇒ `λ m ⇒ `λ n ⇒ `if0 ` m then ` n else ` p · (`pred ` m) · ` n)
+
+⊢plus : ε ⊢ plus ⦂ `ℕ ⟹ `ℕ ⟹ `ℕ
+⊢plus = `Y (`λ `λ `λ `if0 (` ⊢m) (` ⊢n) (` ⊢p · (`pred ` ⊢m) · ` ⊢n))
+  where
+  ⊢p = S p≢n (S p≢m Z)
+  ⊢m = S m≢n Z
+  ⊢n = Z
+
+four : Term
+four = plus · two · two
+
+⊢four : ε ⊢ four ⦂ `ℕ
+⊢four = ⊢plus · ⊢two · ⊢two
+
 Ch : Type
 Ch = (`ℕ ⟹ `ℕ) ⟹ `ℕ ⟹ `ℕ
 
@@ -164,31 +193,16 @@ twoCh = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
   ⊢s = S s≢z Z
   ⊢z = Z
 
-fourCh : Term
-fourCh = `λ s ⇒ `λ z ⇒ ` s · (` s · (` s · (` s · ` z)))
-
-⊢fourCh : ε ⊢ fourCh ⦂ Ch
-⊢fourCh = `λ `λ ` ⊢s · (` ⊢s · (` ⊢s · (` ⊢s · ` ⊢z)))
-  where
-  ⊢s = S s≢z Z
-  ⊢z = Z
-
 plusCh : Term
 plusCh = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
 
 ⊢plusCh : ε ⊢ plusCh ⦂ Ch ⟹ Ch ⟹ Ch
 ⊢plusCh = `λ `λ `λ `λ  ` ⊢m ·  ` ⊢s · (` ⊢n · ` ⊢s · ` ⊢z)
   where
-  ⊢z = Z
-  ⊢s = S s≢z Z
-  ⊢n = S n≢z (S n≢s Z)
   ⊢m = S m≢z (S m≢s (S m≢n Z))
-
-fourCh′ : Term
-fourCh′ = plusCh · twoCh · twoCh
-
-⊢fourCh′ : ε ⊢ fourCh′ ⦂ Ch
-⊢fourCh′ = ⊢plusCh · ⊢twoCh · ⊢twoCh
+  ⊢n = S n≢z (S n≢s Z)
+  ⊢s = S s≢z Z
+  ⊢z = Z
 
 fromCh : Term
 fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
@@ -198,6 +212,12 @@ fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
   where
   ⊢m = Z
   ⊢s = Z
+
+fourCh : Term
+fourCh = fromCh · (plusCh · twoCh · twoCh)
+
+⊢fourCh : ε ⊢ fourCh ⦂ `ℕ
+⊢fourCh = ⊢fromCh · (⊢plusCh · ⊢twoCh · ⊢twoCh)
 \end{code}
 
 
@@ -234,10 +254,10 @@ fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
   if0 suc _ then m else n  =  n
 ⟦ `Y ⊢M ⟧    ρ       =  {!!}
 
-_ : ⟦ ⊢fourCh′ ⟧ tt ≡ ⟦ ⊢fourCh ⟧ tt
-_ = refl
+-- _ : ⟦ ⊢four ⟧ tt ≡ 4
+-- _ = refl
 
-_ : ⟦ ⊢fourCh ⟧ tt suc zero ≡ 4
+_ : ⟦ ⊢fourCh ⟧ tt ≡ 4
 _ = refl
 \end{code}
 
