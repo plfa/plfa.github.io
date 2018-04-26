@@ -16,20 +16,14 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; [_]; _++_; map; foldr; filter)
-open import Data.List.Any using (Any; here; there)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
-open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax)
-              renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Unit using (⊤; tt)
 open import Function using (_∘_)
-open import Function.Equality using (≡-setoid)
-open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Negation using (contraposition; ¬?)
-open import Relation.Nullary.Product using (_×-dec_)
-open import Collections using (_↔_)
+open import Relation.Nullary.Negation using (¬?)
+open import Collections
 \end{code}
 
 
@@ -217,49 +211,6 @@ fourCh = fromCh · (plusCh · twoCh · twoCh)
 
 ⊢fourCh : ε ⊢ fourCh ⦂ `ℕ
 ⊢fourCh = ⊢fromCh · (⊢plusCh · ⊢twoCh · ⊢twoCh)
-\end{code}
-
-
-# Denotational semantics
-
-\begin{code}
-⟦_⟧ᵀ : Type → Set
-⟦ `ℕ ⟧ᵀ      =  ℕ
-⟦ A ⇒ B ⟧ᵀ   =  ⟦ A ⟧ᵀ → ⟦ B ⟧ᵀ
-
-⟦_⟧ᴱ : Env → Set
-⟦ ε ⟧ᴱ          =  ⊤
-⟦ Γ , x ⦂ A ⟧ᴱ  =  ⟦ Γ ⟧ᴱ × ⟦ A ⟧ᵀ
-
-⟦_⟧ⱽ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ Z ⟧ⱽ     ⟨ ρ , v ⟩ = v
-⟦ S _ x ⟧ⱽ ⟨ ρ , v ⟩ = ⟦ x ⟧ⱽ ρ
-
-⟦_⟧ : ∀ {Γ M A} → Γ ⊢ M ⦂ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ Ax x ⟧     ρ       =  ⟦ x ⟧ⱽ ρ
-⟦ ⊢λ ⊢N ⟧    ρ       =  λ{ v → ⟦ ⊢N ⟧ ⟨ ρ , v ⟩ }
-⟦ ⊢L · ⊢M ⟧  ρ       =  (⟦ ⊢L ⟧ ρ) (⟦ ⊢M ⟧ ρ)
-⟦ ⊢zero ⟧    ρ       =  zero
-⟦ ⊢suc ⊢M ⟧  ρ       =  suc (⟦ ⊢M ⟧ ρ)
-⟦ ⊢pred ⊢M ⟧ ρ       =  pred (⟦ ⊢M ⟧ ρ)
-  where
-  pred : ℕ → ℕ
-  pred zero     =  zero
-  pred (suc n)  =  n
-⟦ ⊢if0 ⊢L ⊢M ⊢N ⟧ ρ  =  if0 ⟦ ⊢L ⟧ ρ then ⟦ ⊢M ⟧ ρ else ⟦ ⊢N ⟧ ρ
-  where
-  if0_then_else_ : ∀ {A} → ℕ → A → A → A
-  if0 zero  then m else n  =  m
-  if0 suc _ then m else n  =  n
-⟦ ⊢Y ⊢M ⟧    ρ       =  {!!}
-
-{-
-_ : ⟦ ⊢four ⟧ tt ≡ 4
-_ = refl
--}
-
-_ : ⟦ ⊢fourCh ⟧ tt ≡ 4
-_ = refl
 \end{code}
 
 
