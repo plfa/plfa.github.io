@@ -1,7 +1,7 @@
 ---
-title     : "Typed: Typed Lambda term representation"
+title     : "TypedBadfix: Typed Lambda term representation (bad fix)"
 layout    : page
-permalink : /Typed
+permalink : /TypedBadfix
 ---
 
 
