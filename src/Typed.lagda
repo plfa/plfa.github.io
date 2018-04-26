@@ -476,8 +476,7 @@ data Canonical : Term → Type → Set where
       Canonical `zero `ℕ
 
   Suc : ∀ {V}
-    → ε ⊢ V ⦂ `ℕ
-    → Value V
+    → Canonical V `ℕ
       ---------------------
     → Canonical (`suc V) `ℕ
  
@@ -498,70 +497,66 @@ canonical : ∀ {V A}
     -------------
   → Canonical V A
 canonical `zero     Zero      =  Zero
-canonical (`suc ⊢V) (Suc VV)  =  Suc ⊢V VV
+canonical (`suc ⊢V) (Suc VV)  =  Suc (canonical ⊢V VV)
 canonical (`λ ⊢N)   Fun       =  Fun ⊢N
 \end{code}
 
-Every canonical form is typed and a value.
+Every canonical form has a type and a value.
 
 \begin{code}
-typed : ∀ {V A}
+type : ∀ {V A}
   → Canonical V A
     -------------
   → ε ⊢ V ⦂ A
-typed Zero         =  `zero
-typed (Suc ⊢V VV)  =  `suc ⊢V
-typed (Fun ⊢N)     =  `λ ⊢N
+type Zero         =  `zero
+type (Suc CV)     =  `suc (type CV)
+type (Fun ⊢N)     =  `λ ⊢N
 
 value : ∀ {V A}
   → Canonical V A
     -------------
   → Value V
 value Zero         =  Zero
-value (Suc ⊢V VV)  =  Suc VV
+value (Suc CV)     =  Suc (value CV)
 value (Fun ⊢N)     =  Fun
 \end{code}
     
 ## Progress
 
 \begin{code}
-data Progress (M : Term) : Set where
+data Progress (M : Term) (A : Type) : Set where
   step : ∀ {N}
     → M ⟶ N
       ----------
-    → Progress M
+    → Progress M A
   done :
-      Value M
-      ----------
-    → Progress M
+      Canonical M A
+      -------------
+    → Progress M A
 
-progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
+progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M A
 progress (` ())
-progress (`λ ⊢N)                           =  done Fun
+progress (`λ ⊢N)                           =  done (Fun ⊢N)
 progress (⊢L · ⊢M) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-·₁ L⟶L′)
-...    | done VL with canonical ⊢L VL
-...        | Fun _ with progress ⊢M
+...    | done (Fun _) with progress ⊢M
 ...            | step M⟶M′               =  step (ξ-·₂ Fun M⟶M′)
-...            | done VM                   =  step (β-⟹ VM)
+...            | done CM                   =  step (β-⟹ (value CM))
 progress `zero                             =  done Zero
 progress (`suc ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-suc M⟶M′)
-...    | done VM                           =  done (Suc VM)
+...    | done CM                           =  done (Suc CM)
 progress (`pred ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-pred M⟶M′)
-...    | done VM with canonical ⊢M VM
-...        | Zero                          =  step β-pred-zero
-...        | Suc ⊢V VV                     =  step (β-pred-suc VV)
+...    | done Zero                         =  step β-pred-zero
+...    | done (Suc CM)                     =  step (β-pred-suc (value CM))
 progress (`if0 ⊢L ⊢M ⊢N) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-if0 L⟶L′)
-...    | done VL with canonical ⊢L VL
-...        | Zero                          =  step β-if0-zero
-...        | Suc ⊢V VV                     =  step (β-if0-suc VV)
+...    | done Zero                         =  step β-if0-zero
+...    | done (Suc CM)                     =  step (β-if0-suc (value CM))
 progress (`Y ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-Y M⟶M′)
-...    | done VM with canonical ⊢M VM
-...        | Fun _                         =  step (β-Y VM refl)
+...    | done (Fun _)                      =  step (β-Y Fun refl)
 \end{code}
 
 

@@ -476,7 +476,8 @@ data Canonical : Term → Type → Set where
       Canonical `zero `ℕ
 
   Suc : ∀ {V}
-    → Canonical V `ℕ
+    → ε ⊢ V ⦂ `ℕ
+    → Value V
       ---------------------
     → Canonical (`suc V) `ℕ
  
@@ -488,6 +489,8 @@ data Canonical : Term → Type → Set where
 
 ## Canonical forms lemma
 
+Every typed value is canonical.
+
 \begin{code}
 canonical : ∀ {V A}
   → ε ⊢ V ⦂ A
@@ -495,30 +498,28 @@ canonical : ∀ {V A}
     -------------
   → Canonical V A
 canonical `zero     Zero      =  Zero
-canonical (`suc ⊢V) (Suc VV)  =  Suc (canonical ⊢V VV)
+canonical (`suc ⊢V) (Suc VV)  =  Suc ⊢V VV
 canonical (`λ ⊢N)   Fun       =  Fun ⊢N
 \end{code}
 
-## Every canonical form is a typed value
+Every canonical form is typed and a value.
 
 \begin{code}
-value : ∀ {V A}
-  → Canonical V A
-    -------------
-  → Value V
-value Zero      =  Zero
-value (Suc CM)  =  Suc (value CM)
-value (Fun ⊢N)  =  Fun
-
 typed : ∀ {V A}
   → Canonical V A
     -------------
   → ε ⊢ V ⦂ A
-typed Zero      =  `zero
-typed (Suc CM)  =  `suc (typed CM)
-typed (Fun ⊢N)  =  `λ ⊢N
+typed Zero         =  `zero
+typed (Suc ⊢V VV)  =  `suc ⊢V
+typed (Fun ⊢N)     =  `λ ⊢N
 
-
+value : ∀ {V A}
+  → Canonical V A
+    -------------
+  → Value V
+value Zero         =  Zero
+value (Suc ⊢V VV)  =  Suc VV
+value (Fun ⊢N)     =  Fun
 \end{code}
     
 ## Progress
@@ -551,16 +552,16 @@ progress (`pred ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-pred M⟶M′)
 ...    | done VM with canonical ⊢M VM
 ...        | Zero                          =  step β-pred-zero
-...        | Suc CM                        =  step (β-pred-suc (value CM))
+...        | Suc ⊢V VV                     =  step (β-pred-suc VV)
 progress (`if0 ⊢L ⊢M ⊢N) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-if0 L⟶L′)
 ...    | done VL with canonical ⊢L VL
 ...        | Zero                          =  step β-if0-zero
-...        | Suc CM                        =  step (β-if0-suc (value CM))
+...        | Suc ⊢V VV                     =  step (β-if0-suc VV)
 progress (`Y ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-Y M⟶M′)
 ...    | done VM with canonical ⊢M VM
-...         | Fun _                        =  step (β-Y VM refl)
+...        | Fun _                         =  step (β-Y VM refl)
 \end{code}
 
 
