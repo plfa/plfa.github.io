@@ -129,10 +129,11 @@ data _⊢_⦂_ : Env → Term → Type → Set where
 
 \begin{code}
 m n s z : Id
-m = 0
-n = 1
-s = 2
-z = 3
+p = 0
+m = 1
+n = 2
+s = 3
+z = 4
 
 s≢z : s ≢ z
 s≢z ()
@@ -152,6 +153,34 @@ m≢s ()
 m≢n : m ≢ n
 m≢n ()
 
+p≢n : p ≢ n
+p≢n ()
+
+p≢m : p ≢ m
+p≢m ()
+
+two : Term
+two = `suc `suc `zero
+
+⊢two : ε ⊢ two ⦂ `ℕ
+⊢two = `suc `suc `zero
+
+plus : Term
+plus = `Y (`λ p ⇒ `λ m ⇒ `λ n ⇒ `if0 ` m then ` n else ` p · (`pred ` m) · ` n)
+
+⊢plus : ε ⊢ plus ⦂ `ℕ ⟹ `ℕ ⟹ `ℕ
+⊢plus = `Y (`λ `λ `λ `if0 (` ⊢m) (` ⊢n) (` ⊢p · (`pred ` ⊢m) · ` ⊢n))
+  where
+  ⊢p = S p≢n (S p≢m Z)
+  ⊢m = S m≢n Z
+  ⊢n = Z
+
+four : Term
+four = plus · two · two
+
+⊢four : ε ⊢ four ⦂ `ℕ
+⊢four = ⊢plus · ⊢two · ⊢two
+
 Ch : Type
 Ch = (`ℕ ⟹ `ℕ) ⟹ `ℕ ⟹ `ℕ
 
@@ -164,31 +193,16 @@ twoCh = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
   ⊢s = S s≢z Z
   ⊢z = Z
 
-fourCh : Term
-fourCh = `λ s ⇒ `λ z ⇒ ` s · (` s · (` s · (` s · ` z)))
-
-⊢fourCh : ε ⊢ fourCh ⦂ Ch
-⊢fourCh = `λ `λ ` ⊢s · (` ⊢s · (` ⊢s · (` ⊢s · ` ⊢z)))
-  where
-  ⊢s = S s≢z Z
-  ⊢z = Z
-
 plusCh : Term
 plusCh = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
 
 ⊢plusCh : ε ⊢ plusCh ⦂ Ch ⟹ Ch ⟹ Ch
 ⊢plusCh = `λ `λ `λ `λ  ` ⊢m ·  ` ⊢s · (` ⊢n · ` ⊢s · ` ⊢z)
   where
-  ⊢z = Z
-  ⊢s = S s≢z Z
-  ⊢n = S n≢z (S n≢s Z)
   ⊢m = S m≢z (S m≢s (S m≢n Z))
-
-fourCh′ : Term
-fourCh′ = plusCh · twoCh · twoCh
-
-⊢fourCh′ : ε ⊢ fourCh′ ⦂ Ch
-⊢fourCh′ = ⊢plusCh · ⊢twoCh · ⊢twoCh
+  ⊢n = S n≢z (S n≢s Z)
+  ⊢s = S s≢z Z
+  ⊢z = Z
 
 fromCh : Term
 fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
@@ -198,6 +212,12 @@ fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
   where
   ⊢m = Z
   ⊢s = Z
+
+fourCh : Term
+fourCh = fromCh · (plusCh · twoCh · twoCh)
+
+⊢fourCh : ε ⊢ fourCh ⦂ `ℕ
+⊢fourCh = ⊢fromCh · (⊢plusCh · ⊢twoCh · ⊢twoCh)
 \end{code}
 
 
@@ -234,10 +254,10 @@ fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
   if0 suc _ then m else n  =  n
 ⟦ `Y ⊢M ⟧    ρ       =  {!!}
 
-_ : ⟦ ⊢fourCh′ ⟧ tt ≡ ⟦ ⊢fourCh ⟧ tt
-_ = refl
+-- _ : ⟦ ⊢four ⟧ tt ≡ 4
+-- _ = refl
 
-_ : ⟦ ⊢fourCh ⟧ tt suc zero ≡ 4
+_ : ⟦ ⊢fourCh ⟧ tt ≡ 4
 _ = refl
 \end{code}
 
@@ -476,8 +496,7 @@ data Canonical : Term → Type → Set where
       Canonical `zero `ℕ
 
   Suc : ∀ {V}
-    → ε ⊢ V ⦂ `ℕ
-    → Value V
+    → Canonical V `ℕ
       ---------------------
     → Canonical (`suc V) `ℕ
  
@@ -498,70 +517,66 @@ canonical : ∀ {V A}
     -------------
   → Canonical V A
 canonical `zero     Zero      =  Zero
-canonical (`suc ⊢V) (Suc VV)  =  Suc ⊢V VV
+canonical (`suc ⊢V) (Suc VV)  =  Suc (canonical ⊢V VV)
 canonical (`λ ⊢N)   Fun       =  Fun ⊢N
 \end{code}
 
-Every canonical form is typed and a value.
+Every canonical form has a type and a value.
 
 \begin{code}
-typed : ∀ {V A}
+type : ∀ {V A}
   → Canonical V A
     -------------
   → ε ⊢ V ⦂ A
-typed Zero         =  `zero
-typed (Suc ⊢V VV)  =  `suc ⊢V
-typed (Fun ⊢N)     =  `λ ⊢N
+type Zero         =  `zero
+type (Suc CV)     =  `suc (type CV)
+type (Fun ⊢N)     =  `λ ⊢N
 
 value : ∀ {V A}
   → Canonical V A
     -------------
   → Value V
 value Zero         =  Zero
-value (Suc ⊢V VV)  =  Suc VV
+value (Suc CV)     =  Suc (value CV)
 value (Fun ⊢N)     =  Fun
 \end{code}
     
 ## Progress
 
 \begin{code}
-data Progress (M : Term) : Set where
+data Progress (M : Term) (A : Type) : Set where
   step : ∀ {N}
     → M ⟶ N
       ----------
-    → Progress M
+    → Progress M A
   done :
-      Value M
-      ----------
-    → Progress M
+      Canonical M A
+      -------------
+    → Progress M A
 
-progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
+progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M A
 progress (` ())
-progress (`λ ⊢N)                           =  done Fun
+progress (`λ ⊢N)                           =  done (Fun ⊢N)
 progress (⊢L · ⊢M) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-·₁ L⟶L′)
-...    | done VL with canonical ⊢L VL
-...        | Fun _ with progress ⊢M
+...    | done (Fun _) with progress ⊢M
 ...            | step M⟶M′               =  step (ξ-·₂ Fun M⟶M′)
-...            | done VM                   =  step (β-⟹ VM)
+...            | done CM                   =  step (β-⟹ (value CM))
 progress `zero                             =  done Zero
 progress (`suc ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-suc M⟶M′)
-...    | done VM                           =  done (Suc VM)
+...    | done CM                           =  done (Suc CM)
 progress (`pred ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-pred M⟶M′)
-...    | done VM with canonical ⊢M VM
-...        | Zero                          =  step β-pred-zero
-...        | Suc ⊢V VV                     =  step (β-pred-suc VV)
+...    | done Zero                         =  step β-pred-zero
+...    | done (Suc CM)                     =  step (β-pred-suc (value CM))
 progress (`if0 ⊢L ⊢M ⊢N) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-if0 L⟶L′)
-...    | done VL with canonical ⊢L VL
-...        | Zero                          =  step β-if0-zero
-...        | Suc ⊢V VV                     =  step (β-if0-suc VV)
+...    | done Zero                         =  step β-if0-zero
+...    | done (Suc CM)                     =  step (β-if0-suc (value CM))
 progress (`Y ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-Y M⟶M′)
-...    | done VM with canonical ⊢M VM
-...        | Fun _                         =  step (β-Y VM refl)
+...    | done (Fun _)                      =  step (β-Y Fun refl)
 \end{code}
 
 
