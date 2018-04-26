@@ -112,7 +112,7 @@ data _⊢_⦂_ : Env → Term → Type → Set where
       ----------------
     → Γ ⊢ `pred M ⦂ `ℕ
 
-  `if0_then_else_ : ∀ {Γ L M N A}
+  `if0 : ∀ {Γ L M N A}
     → Γ ⊢ L ⦂ `ℕ
     → Γ ⊢ M ⦂ A
     → Γ ⊢ N ⦂ A
@@ -217,22 +217,22 @@ fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
 ⟦ S _ x ⟧ⱽ ⟨ ρ , v ⟩ = ⟦ x ⟧ⱽ ρ
 
 ⟦_⟧ : ∀ {Γ M A} → Γ ⊢ M ⦂ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ ` x ⟧      ρ  =  ⟦ x ⟧ⱽ ρ
-⟦ `λ ⊢N ⟧    ρ  =  λ{ v → ⟦ ⊢N ⟧ ⟨ ρ , v ⟩ }
-⟦ ⊢L · ⊢M ⟧  ρ  =  (⟦ ⊢L ⟧ ρ) (⟦ ⊢M ⟧ ρ)
-⟦ `zero ⟧    ρ  =  zero
-⟦ `Y ⊢M ⟧  ρ  =  {!!}
-⟦ `suc ⊢M ⟧  ρ  =  suc (⟦ ⊢M ⟧ ρ)
-⟦ `pred ⊢M ⟧ ρ  =  pred (⟦ ⊢M ⟧ ρ)
+⟦ ` x ⟧      ρ       =  ⟦ x ⟧ⱽ ρ
+⟦ `λ ⊢N ⟧    ρ       =  λ{ v → ⟦ ⊢N ⟧ ⟨ ρ , v ⟩ }
+⟦ ⊢L · ⊢M ⟧  ρ       =  (⟦ ⊢L ⟧ ρ) (⟦ ⊢M ⟧ ρ)
+⟦ `zero ⟧    ρ       =  zero
+⟦ `suc ⊢M ⟧  ρ       =  suc (⟦ ⊢M ⟧ ρ)
+⟦ `pred ⊢M ⟧ ρ       =  pred (⟦ ⊢M ⟧ ρ)
   where
   pred : ℕ → ℕ
   pred zero     =  zero
   pred (suc n)  =  n
-⟦ `if0 ⊢L then ⊢M else ⊢N ⟧ ρ  =  if0 ⟦ ⊢L ⟧ ρ then ⟦ ⊢M ⟧ ρ else ⟦ ⊢N ⟧ ρ
+⟦ `if0 ⊢L ⊢M ⊢N ⟧ ρ  =  if0 ⟦ ⊢L ⟧ ρ then ⟦ ⊢M ⟧ ρ else ⟦ ⊢N ⟧ ρ
   where
   if0_then_else_ : ∀ {A} → ℕ → A → A → A
   if0 zero  then m else n  =  m
   if0 suc _ then m else n  =  n
+⟦ `Y ⊢M ⟧    ρ       =  {!!}
 
 _ : ⟦ ⊢fourCh′ ⟧ tt ≡ ⟦ ⊢fourCh ⟧ tt
 _ = refl
@@ -256,14 +256,17 @@ erase (⊢L · ⊢M)         =  erase ⊢L · erase ⊢M
 erase (`zero)           =  `zero
 erase (`suc ⊢M)         =  `suc (erase ⊢M)
 erase (`pred ⊢M)        =  `pred (erase ⊢M)
-erase (`if0 ⊢L then ⊢M else ⊢N)
-                        =  `if0 (erase ⊢L) then (erase ⊢M) else (erase ⊢N)
+erase (`if0 ⊢L ⊢M ⊢N)   =  `if0 (erase ⊢L) then (erase ⊢M) else (erase ⊢N)
 erase (`Y ⊢M)           =  `Y (erase ⊢M)
 \end{code}
 
 ### Properties of erasure
 
 \begin{code}
+cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} → 
+                               s ≡ t → u ≡ v → x ≡ y → f s u x ≡ f t v y
+cong₃ f refl refl refl = refl
+
 lookup-lemma : ∀ {Γ x A} → (⊢x : Γ ∋ x ⦂ A) → lookup ⊢x ≡ x
 lookup-lemma Z        =  refl
 lookup-lemma (S _ k)  =  lookup-lemma k
@@ -275,12 +278,8 @@ erase-lemma (⊢L · ⊢M)         =  cong₂ _·_ (erase-lemma ⊢L) (erase-lem
 erase-lemma (`zero)           =  refl
 erase-lemma (`suc ⊢M)         =  cong `suc_ (erase-lemma ⊢M)
 erase-lemma (`pred ⊢M)        =  cong `pred_ (erase-lemma ⊢M)
-erase-lemma (`if0 ⊢L then ⊢M else ⊢N)
-   =  cong₃ `if0_then_else_ (erase-lemma ⊢L) (erase-lemma ⊢M) (erase-lemma ⊢N)
-   where
-   cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} → 
-                                  s ≡ t → u ≡ v → x ≡ y → f s u x ≡ f t v y
-   cong₃ f refl refl refl = refl
+erase-lemma (`if0 ⊢L ⊢M ⊢N)   =  cong₃ `if0_then_else_
+                                   (erase-lemma ⊢L) (erase-lemma ⊢M) (erase-lemma ⊢N)
 erase-lemma (`Y ⊢M)           =  cong `Y_ (erase-lemma ⊢M)
 \end{code}
 
@@ -297,15 +296,14 @@ open Collections.CollectionDec (Id) (_≟_)
 
 \begin{code}
 free : Term → List Id
-free (` x)       =  [ x ]
-free (`λ x ⇒ N)  =  free N \\ x
-free (L · M)     =  free L ++ free M
-free (`zero)     =  []
-free (`suc M)    =  free M
-free (`pred M)   =  free M
-free (`if0 L then M else N)
-                 =  free L ++ free M ++ free N
-free (`Y M)      =  free M
+free (` x)                   =  [ x ]
+free (`λ x ⇒ N)              =  free N \\ x
+free (L · M)                 =  free L ++ free M
+free (`zero)                 =  []
+free (`suc M)                =  free M
+free (`pred M)               =  free M
+free (`if0 L then M else N)  =  free L ++ free M ++ free N
+free (`Y M)                  =  free M
 \end{code}
 
 ### Fresh identifier
@@ -501,7 +499,7 @@ canonical (`suc ⊢V) (Suc VV)  =  Suc (canonical ⊢V VV)
 canonical (`λ ⊢N)   Fun       =  Fun ⊢N
 \end{code}
 
-## Every canonical form is a value
+## Every canonical form is a typed value
 
 \begin{code}
 value : ∀ {V A}
@@ -511,6 +509,16 @@ value : ∀ {V A}
 value Zero      =  Zero
 value (Suc CM)  =  Suc (value CM)
 value (Fun ⊢N)  =  Fun
+
+typed : ∀ {V A}
+  → Canonical V A
+    -------------
+  → ε ⊢ V ⦂ A
+typed Zero      =  `zero
+typed (Suc CM)  =  `suc (typed CM)
+typed (Fun ⊢N)  =  `λ ⊢N
+
+
 \end{code}
     
 ## Progress
@@ -528,32 +536,31 @@ data Progress (M : Term) : Set where
 
 progress : ∀ {M A} → ε ⊢ M ⦂ A → Progress M
 progress (` ())
-progress (`λ ⊢N)                                             =  done Fun
+progress (`λ ⊢N)                           =  done Fun
 progress (⊢L · ⊢M) with progress ⊢L
-...                   | step L⟶L′                          =  step (ξ-⟹₁ L⟶L′)
-...                   | done VL with canonical ⊢L VL
-...                                | Fun _ with progress ⊢M
-...                                           | step M⟶M′  =  step (ξ-⟹₂ Fun M⟶M′)
-...                                           | done VM      =  step (β-⟹ VM)
-progress `zero                                               =  done Zero
+...    | step L⟶L′                       =  step (ξ-⟹₁ L⟶L′)
+...    | done VL with canonical ⊢L VL
+...        | Fun _ with progress ⊢M
+...            | step M⟶M′               =  step (ξ-⟹₂ Fun M⟶M′)
+...            | done VM                   =  step (β-⟹ VM)
+progress `zero                             =  done Zero
 progress (`suc ⊢M) with progress ⊢M
-...                   | step M⟶M′                          =  step (ξ-suc M⟶M′)
-...                   | done VM                              =  done (Suc VM)
+...    | step M⟶M′                       =  step (ξ-suc M⟶M′)
+...    | done VM                           =  done (Suc VM)
 progress (`pred ⊢M) with progress ⊢M
-...                    | step M⟶M′                         =  step (ξ-pred M⟶M′)
-...                    | done VM with canonical ⊢M VM
-...                                 | Zero                   =  step β-pred-zero
-...                                 | Suc CM                 =  step (β-pred-suc (value CM))
-progress (`if0 ⊢L then ⊢M else ⊢N)
-                    with progress ⊢L
-...                    | step L⟶L′                         =  step (ξ-if0 L⟶L′)
-...                    | done VL with canonical ⊢L VL
-...                                 | Zero                   =  step β-if0-zero
-...                                 | Suc CM                 =  step (β-if0-suc (value CM))
+...    | step M⟶M′                       =  step (ξ-pred M⟶M′)
+...    | done VM with canonical ⊢M VM
+...        | Zero                          =  step β-pred-zero
+...        | Suc CM                        =  step (β-pred-suc (value CM))
+progress (`if0 ⊢L ⊢M ⊢N) with progress ⊢L
+...    | step L⟶L′                       =  step (ξ-if0 L⟶L′)
+...    | done VL with canonical ⊢L VL
+...        | Zero                          =  step β-if0-zero
+...        | Suc CM                        =  step (β-if0-suc (value CM))
 progress (`Y ⊢M) with progress ⊢M
-...                 | step M⟶M′                            =  step (ξ-Y M⟶M′)
-...                 | done VM with canonical ⊢M VM
-...                              | Fun _                     =  step (β-Y VM refl)
+...    | step M⟶M′                       =  step (ξ-Y M⟶M′)
+...    | done VM with canonical ⊢M VM
+...         | Fun _                        =  step (β-Y VM refl)
 \end{code}
 
 
@@ -581,7 +588,7 @@ free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 free-lemma `zero ()
 free-lemma (`suc ⊢M) w∈                 = free-lemma ⊢M w∈
 free-lemma (`pred ⊢M) w∈                = free-lemma ⊢M w∈
-free-lemma (`if0 ⊢L then ⊢M else ⊢N) w∈
+free-lemma (`if0 ⊢L ⊢M ⊢N) w∈
         with ++-to-⊎ w∈
 ...         | inj₁ ∈L                   = free-lemma ⊢L ∈L
 ...         | inj₂ ∈MN with ++-to-⊎ ∈MN
@@ -622,8 +629,8 @@ free-lemma (`Y ⊢M) w∈                   = free-lemma ⊢M w∈
 ⊢rename ⊢σ ⊆xs (`zero)     =  `zero
 ⊢rename ⊢σ ⊆xs (`suc ⊢M)   =  `suc (⊢rename ⊢σ ⊆xs ⊢M)
 ⊢rename ⊢σ ⊆xs (`pred ⊢M)  =  `pred (⊢rename ⊢σ ⊆xs ⊢M)
-⊢rename ⊢σ ⊆xs (`if0_then_else_ {L = L} ⊢L ⊢M ⊢N)
-  = `if0 ⊢rename ⊢σ L⊆ ⊢L then ⊢rename ⊢σ M⊆ ⊢M else ⊢rename ⊢σ N⊆ ⊢N
+⊢rename ⊢σ ⊆xs (`if0 {L = L} ⊢L ⊢M ⊢N)
+  = `if0 (⊢rename ⊢σ L⊆ ⊢L) (⊢rename ⊢σ M⊆ ⊢M) (⊢rename ⊢σ N⊆ ⊢N)
     where
     L⊆ = trans-⊆ ⊆-++₁ ⊆xs
     M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
@@ -682,8 +689,8 @@ free-lemma (`Y ⊢M) w∈                   = free-lemma ⊢M w∈
 ⊢subst Σ ⊢ρ ⊆xs `zero            =  `zero
 ⊢subst Σ ⊢ρ ⊆xs (`suc ⊢M)        =  `suc (⊢subst Σ ⊢ρ ⊆xs ⊢M)
 ⊢subst Σ ⊢ρ ⊆xs (`pred ⊢M)       =  `pred (⊢subst Σ ⊢ρ ⊆xs ⊢M)
-⊢subst Σ ⊢ρ ⊆xs (`if0_then_else_ {L = L} ⊢L ⊢M ⊢N)
-    =  `if0 (⊢subst Σ ⊢ρ L⊆ ⊢L) then (⊢subst Σ ⊢ρ M⊆ ⊢M) else (⊢subst Σ ⊢ρ N⊆ ⊢N)
+⊢subst Σ ⊢ρ ⊆xs (`if0 {L = L} ⊢L ⊢M ⊢N)
+    =  `if0 (⊢subst Σ ⊢ρ L⊆ ⊢L) (⊢subst Σ ⊢ρ M⊆ ⊢M) (⊢subst Σ ⊢ρ N⊆ ⊢N)
     where
     L⊆ = trans-⊆ ⊆-++₁ ⊆xs
     M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
@@ -730,19 +737,19 @@ preservation : ∀ {Γ M N A}
   →  Γ ⊢ N ⦂ A
 preservation (` ⊢x) ()
 preservation (`λ ⊢N) ()
-preservation (⊢L · ⊢M) (ξ-⟹₁ L⟶L′)                       =  preservation ⊢L L⟶L′ · ⊢M
-preservation (⊢V · ⊢M) (ξ-⟹₂ _ M⟶M′)                     =  ⊢V · preservation ⊢M M⟶M′
-preservation ((`λ ⊢N) · ⊢W) (β-⟹ _)                       =  ⊢substitution ⊢N ⊢W
+preservation (⊢L · ⊢M) (ξ-⟹₁ L⟶L′)             =  preservation ⊢L L⟶L′ · ⊢M
+preservation (⊢V · ⊢M) (ξ-⟹₂ _ M⟶M′)           =  ⊢V · preservation ⊢M M⟶M′
+preservation ((`λ ⊢N) · ⊢W) (β-⟹ _)              =  ⊢substitution ⊢N ⊢W
 preservation (`zero) ()
-preservation (`suc ⊢M) (ξ-suc M⟶M′)                        =  `suc (preservation ⊢M M⟶M′)
-preservation (`pred ⊢M) (ξ-pred M⟶M′)                      =  `pred (preservation ⊢M M⟶M′)
-preservation (`pred `zero) (β-pred-zero)                     =  `zero
-preservation (`pred (`suc ⊢M)) (β-pred-suc _)                =  ⊢M
-preservation (`if0 ⊢L then ⊢M else ⊢N) (ξ-if0 L⟶L′)        =  `if0 (preservation ⊢L L⟶L′) then ⊢M else ⊢N
-preservation (`if0 `zero then ⊢M else ⊢N) β-if0-zero         =   ⊢M
-preservation (`if0 (`suc ⊢V) then ⊢M else ⊢N) (β-if0-suc _)  =  ⊢N
-preservation (`Y ⊢M) (ξ-Y M⟶M′)                             =  `Y (preservation ⊢M M⟶M′)
-preservation (`Y (`λ ⊢N)) (β-Y _ refl)                        =  ⊢substitution ⊢N (`Y (`λ ⊢N))
+preservation (`suc ⊢M) (ξ-suc M⟶M′)              =  `suc (preservation ⊢M M⟶M′)
+preservation (`pred ⊢M) (ξ-pred M⟶M′)            =  `pred (preservation ⊢M M⟶M′)
+preservation (`pred `zero) (β-pred-zero)           =  `zero
+preservation (`pred (`suc ⊢M)) (β-pred-suc _)      =  ⊢M
+preservation (`if0 ⊢L ⊢M ⊢N) (ξ-if0 L⟶L′)        =  `if0 (preservation ⊢L L⟶L′) ⊢M ⊢N
+preservation (`if0 `zero ⊢M ⊢N) β-if0-zero         =   ⊢M
+preservation (`if0 (`suc ⊢V) ⊢M ⊢N) (β-if0-suc _)  =   ⊢N
+preservation (`Y ⊢M) (ξ-Y M⟶M′)                  =  `Y (preservation ⊢M M⟶M′)
+preservation (`Y (`λ ⊢N)) (β-Y _ refl)             =  ⊢substitution ⊢N (`Y (`λ ⊢N))
 \end{code}
 
 
