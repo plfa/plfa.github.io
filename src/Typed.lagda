@@ -721,4 +721,3 @@ preservation (⊢Y (⊢λ ⊢N))           (β-Y _ refl)    =  ⊢substitution �
 \end{code}
 
 
-
