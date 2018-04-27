@@ -16,9 +16,8 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; _++_; map; foldr; filter)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
-open import Data.String using (String)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
@@ -26,34 +25,9 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
 open import Collections
 
-import Data.Nat as Nat
-import Data.String as String
-
 pattern [_]     x      =  x ∷ []
 pattern [_,_]   x y    =  x ∷ y ∷ []
 pattern [_,_,_] x y z  =  x ∷ y ∷ z ∷ []
-\end{code}
-
-
-## Identifiers
-
-\begin{code}
-data Id : Set where
-  id : String → ℕ → Id
-
-_≟_ : ∀ (x y : Id) → Dec (x ≡ y)
-id s m ≟ id t n with s String.≟ t | m Nat.≟ n
-...                | yes refl     | yes refl   =  yes refl
-...                | yes refl     | no  m≢n    =  no (λ {refl → m≢n refl})
-...                | no  s≢t      | _          =  no (λ {refl → s≢t refl})
-
-{-
-_≠_ : ∀ (x y : Id) → x ≢ y
-x ≠ y with x ≟ y
-...      | no  x≢y  =  x≢y
-...      | yes _    =  impossible
-  where postulate impossible : _
--}
 \end{code}
 
 
@@ -69,6 +43,9 @@ infixl 6 `if0_then_else_
 infix  7 `suc_ `pred_ `Y_
 infixl 8 _·_
 infix  9 `_
+
+Id : Set
+Id = ℕ
 
 data Type : Set where
   `ℕ  : Type
@@ -149,11 +126,11 @@ data _⊢_⦂_ : Env → Term → Type → Set where
 
 \begin{code}
 m n s z : Id
-p = id "p" 0 -- 0
-m = id "m" 0 -- 1
-n = id "n" 0 -- 2
-s = id "s" 0 -- 3
-z = id "z" 0 -- 4
+p = 0
+m = 1
+n = 2
+s = 3
+z = 4
 
 s≢z : s ≢ z
 s≢z ()
@@ -308,35 +285,15 @@ free (`Y M)                  =  free M
 ### Fresh identifier
 
 \begin{code}
-bump : String → Id → ℕ
-bump s (id t n) with s String.≟ t
-...                | yes refl       = suc n
-...                | no  _          = 0
+fresh : List Id → Id
+fresh = foldr _⊔_ 0 ∘ map suc
 
-next : String → List Id → ℕ
-next s  = foldr _⊔_ 0 ∘ map (bump s)
+⊔-lemma : ∀ {w xs} → w ∈ xs → suc w ≤ fresh xs
+⊔-lemma {_} {_ ∷ xs} here        =  m≤m⊔n _ (fresh xs)
+⊔-lemma {_} {_ ∷ xs} (there x∈)  =  ≤-trans (⊔-lemma x∈) (n≤m⊔n _ (fresh xs))
 
-⊔-lemma : ∀ {s w xs} → w ∈ xs → bump s w ≤ next s xs
-⊔-lemma {s} {_} {_ ∷ xs} here        =  m≤m⊔n _ (next s xs)
-⊔-lemma {s} {_} {_ ∷ xs} (there x∈)  =  ≤-trans (⊔-lemma x∈) (n≤m⊔n _ (next s xs))
-
-fresh : Id → List Id → Id
-fresh (id s _) xs = id s (next s xs)
-
-fresh-lemma : ∀ {w x xs} → w ∈ xs → w ≢ fresh x xs
-fresh-lemma {w @ (id t n)} {x @ (id s _)} {xs} w∈ w≢fr = {! (⊔-lemma {s} {w} {xs} w∈)!}    -- with s String.≟ t
-{-
-... | yes refl  = {! (⊔-lemma {s} {w} {xs} w∈)!}
-... | no  s≢t   = {!!}
-
-
-with s String.≟ t | fresh x xs
-...  | yes refl | fr  =  {! (⊔-lemma {s} {w} {xs} w∈)!}
-...  | no  s≢t  | _   =  s≢t refl     
-
-
-next-lemma : ∀ {x xs} → x ∈ xs → x ≢ next xs
-next-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
+fresh-lemma : ∀ {x xs} → x ∈ xs → x ≢ fresh xs
+fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
 \end{code}
 
 ### Identifier maps
@@ -782,7 +739,6 @@ preservation (⊢if0 ⊢zero ⊢M ⊢N)     β-if0-zero     =  ⊢M
 preservation (⊢if0 (⊢suc ⊢V) ⊢M ⊢N) (β-if0-suc _)  =  ⊢N
 preservation (⊢Y ⊢M)                (ξ-Y M⟶)     =  ⊢Y (preservation ⊢M M⟶)
 preservation (⊢Y (⊢λ ⊢N))           (β-Y _ refl)   =  ⊢substitution ⊢N (⊢Y (⊢λ ⊢N))
--}
 \end{code}
 
 
