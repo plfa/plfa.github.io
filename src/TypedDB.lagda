@@ -253,7 +253,6 @@ begin M⟶*N = M⟶*N
 ## Example reduction sequences
 
 \begin{code}
-{-
 id : ∀ (A : Type) → ε ⊢ A ⇒ A
 id A = ƛ ⌊ Z ⌋
 
@@ -261,10 +260,11 @@ _ : ∀ {A} → id (A ⇒ A) · id A  ⟶* id A
 _ =
   begin
     (ƛ ⌊ Z ⌋) · (ƛ ⌊ Z ⌋)
-  ⟶⟨ β (ƛ ⌈ ⌊ Z ⌋ ⌉) ⟩
+  ⟶⟨ β-⇒ Fun ⟩
     ƛ ⌊ Z ⌋
   ∎
 
+{-
 
 _ : four′ {ε} {`ℕ} ⟶* four {ε} {`ℕ}
 _ =
@@ -287,26 +287,55 @@ _ =
 \end{code}
 
 
+## Canonical forms
+
+(No longer needed)
+
+data Canonical : Term → Type → Set where
+
+  Zero : 
+      ------------------
+      Canonical `zero `ℕ
+
+  Suc : ∀ {V}
+    → Canonical V `ℕ
+      ---------------------
+    → Canonical (`suc V) `ℕ
+ 
+  Fun : ∀ {x N A B}
+    → (N : ε , A ⊢ B)
+      ------------------------
+    → Canonical (ƛ N) (A ⇒ B)
+
+
+
+
+
 ## Progress
 
 \begin{code}
-{-
-data Progress {Γ A} (M : Γ ⊢ A) : Set where
-  step : ∀ (N : Γ ⊢ A) → M ⟶ N → Progress M
-  done : Normal M → Progress M
+data Progress {A} (M : ε ⊢ A) : Set where
+  step : ∀ {N : ε ⊢ A}
+    → M ⟶ N
+      -------------
+    → Progress M
+  done :
+      Value M
+      ----------
+    → Progress M
 
-progress : ∀ {Γ} {A} → (M : Γ ⊢ A) → Progress M
-progress ⌊ x ⌋                                                  =  done ⌈ ⌊ x ⌋ ⌉
-progress (ƛ N)       with progress N
-progress (ƛ N)          | step N′ r                             =  step (ƛ N′) (ζ r)
-progress (ƛ V)          | done NmV                              =  done (ƛ NmV)
-progress (L · M)     with progress L
-progress (L · M)        | step L′ r                             =  step (L′ · M) (ξ₁ r)
-progress (V · M)        | done NmV     with progress M
-progress (V · M)        | done NmV        | step M′ r           =  step (V · M′) (ξ₂ NmV r)
-progress (V · W)        | done ⌈ NeV ⌉    | done NmW            =  done ⌈ NeV · NmW ⌉
-progress ((ƛ V) · W)    | done (ƛ NmV)    | done NmW            =  step (substitute V W) (β NmW)
--}
+progress : ∀ {A} → (M : ε ⊢ A) → Progress M
+progress ⌊ () ⌋
+progress (ƛ N)                       =  done Fun
+progress (L · M) with progress L
+...    | step L⟶L′                 =  step (ξ-⇒₁ L⟶L′)
+...    | done Fun with progress M
+...        | step M⟶M′             =  step (ξ-⇒₂ Fun M⟶M′)
+...        | done VM                 =  step (β-⇒ VM)
+progress (`zero)                     =  done Zero
+progress (`suc M) with progress M
+...    | step M⟶M′                 =  step (ξ-ℕ M⟶M′)
+...    | done VM                     =  done (Suc VM)
 \end{code}
 
 

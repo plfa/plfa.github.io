@@ -1,13 +1,16 @@
 ---
-title     : "TypedDB: Typed DeBruijn representation"
+title     : "Untyped: Normal forms for untyped lambda calculus"
 layout    : page
-permalink : /TypedDB
+permalink : /Untyped
 ---
+
+This is still the typed code for full normalisation,
+and needs to be updated.
 
 ## Imports
 
 \begin{code}
-module TypedDB where
+module Unyped where
 \end{code}
 
 \begin{code}
