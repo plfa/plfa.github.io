@@ -10,7 +10,7 @@ and needs to be updated.
 ## Imports
 
 \begin{code}
-module Unyped where
+module Untyped where
 \end{code}
 
 \begin{code}
