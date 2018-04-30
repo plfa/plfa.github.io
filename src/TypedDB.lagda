@@ -38,7 +38,7 @@ infix  6 S_
 infix  4 ƛ_
 
 data Type : Set where
-  o   : Type
+  `ℕ  : Type
   _⇒_ : Type → Type → Type
 
 data Env : Set where
@@ -47,58 +47,70 @@ data Env : Set where
 
 data _∋_ : Env → Type → Set where
 
-  Z : ∀ {Γ} {A} →
-    ------------
-    Γ , A ∋ A
+  Z : ∀ {Γ} {A}
+      ----------
+    → Γ , A ∋ A
 
-  S_ : ∀ {Γ} {A B} →
-    Γ ∋ B →
-    -----------
-    Γ , A ∋ B
+  S_ : ∀ {Γ} {A B}
+    → Γ ∋ B
+      ---------
+    → Γ , A ∋ B
 
 data _⊢_ : Env → Type → Set where
 
-  ⌊_⌋ : ∀ {Γ} {A} →
-    Γ ∋ A →
-    -------
-    Γ ⊢ A
+  ⌊_⌋ : ∀ {Γ} {A}
+    → Γ ∋ A
+      ------
+    → Γ ⊢ A
 
-  ƛ_  :  ∀ {Γ} {A B} →
-    Γ , A ⊢ B →
-    ------------
-    Γ ⊢ A ⇒ B
+  ƛ_  :  ∀ {Γ} {A B}
+    → Γ , A ⊢ B
+      ----------
+    → Γ ⊢ A ⇒ B
 
-  _·_ : ∀ {Γ} {A B} →
-    Γ ⊢ A ⇒ B →
-    Γ ⊢ A →
-    ------------
-    Γ ⊢ B
+  _·_ : ∀ {Γ} {A B}
+    → Γ ⊢ A ⇒ B
+    → Γ ⊢ A
+      ----------
+    → Γ ⊢ B
+
+  `zero : ∀ {Γ}
+      ----------
+    → Γ ⊢ `ℕ
+
+  `suc : ∀ {Γ}
+    → Γ ⊢ `ℕ
+      -------
+    → Γ ⊢ `ℕ
 \end{code}
 
 ## Test examples
 
 \begin{code}
-Ch : Type
-Ch = (o ⇒ o) ⇒ o ⇒ o
+Ch : Type → Type
+Ch A  =  (A ⇒ A) ⇒ A ⇒ A
 
-plus : ∀ {Γ} → Γ ⊢ Ch ⇒ Ch ⇒ Ch
+plus : ∀ {Γ A} → Γ ⊢ Ch A ⇒ Ch A ⇒ Ch A
 plus = ƛ ƛ ƛ ƛ ⌊ S S S Z ⌋ · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)
 
-two : ∀ {Γ} → Γ ⊢ Ch
+two : ∀ {Γ A} → Γ ⊢ Ch A
 two = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)
 
-four : ∀ {Γ} → Γ ⊢ Ch
+four : ∀ {Γ A} → Γ ⊢ Ch A
 four = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
 
-four′ : ∀ {Γ} → Γ ⊢ Ch
+four′ : ∀ {Γ A} → Γ ⊢ Ch A
 four′ = plus · two · two
+
+fromCh : ε ⊢ Ch `ℕ ⇒ `ℕ
+fromCh = ƛ ⌊ Z ⌋ · (ƛ `suc ⌊ Z ⌋) · `zero
 \end{code}
 
 # Denotational semantics
 
 \begin{code}
 ⟦_⟧ᵀ : Type → Set
-⟦ o ⟧ᵀ      =  ℕ
+⟦ `ℕ ⟧ᵀ     =  ℕ
 ⟦ A ⇒ B ⟧ᵀ  =  ⟦ A ⟧ᵀ → ⟦ B ⟧ᵀ
 
 ⟦_⟧ᴱ : Env → Set
@@ -110,14 +122,16 @@ four′ = plus · two · two
 ⟦ S n ⟧ⱽ ⟨ ρ , v ⟩ = ⟦ n ⟧ⱽ ρ
 
 ⟦_⟧ : ∀ {Γ : Env} {A : Type} → Γ ⊢ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ ⌊ n ⌋ ⟧ ρ  =  ⟦ n ⟧ⱽ ρ
-⟦ ƛ N   ⟧ ρ  =  λ{ v → ⟦ N ⟧ ⟨ ρ , v ⟩ }
-⟦ L · M ⟧ ρ  =  (⟦ L ⟧ ρ) (⟦ M ⟧ ρ)
+⟦ ⌊ n ⌋  ⟧ ρ  =  ⟦ n ⟧ⱽ ρ
+⟦ ƛ N    ⟧ ρ  =  λ{ v → ⟦ N ⟧ ⟨ ρ , v ⟩ }
+⟦ L · M  ⟧ ρ  =  (⟦ L ⟧ ρ) (⟦ M ⟧ ρ)
+⟦ `zero  ⟧ ρ  =  zero
+⟦ `suc M ⟧ ρ  =  suc (⟦ M ⟧ ρ)
 
-_ : ⟦ four ⟧ tt ≡ ⟦ four′ ⟧ tt
+_ : ⟦ four {ε} {`ℕ} ⟧ tt ≡ ⟦ four′ {ε} {`ℕ} ⟧ tt
 _ = refl
 
-_ : ⟦ four ⟧ tt suc zero ≡ 4
+_ : ⟦ fromCh · four ⟧ tt ≡ 4
 _ = refl
 \end{code}
 
@@ -127,13 +141,15 @@ _ = refl
 
 \begin{code}
 rename : ∀ {Γ Δ} → (∀ {C} → Γ ∋ C → Δ ∋ C) → (∀ {C} → Γ ⊢ C → Δ ⊢ C)
-rename ρ (⌊ n ⌋)                   =  ⌊ ρ n ⌋
-rename {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (rename {Γ , A} {Δ , A} ρ′ N)
+rename σ (⌊ n ⌋)                   =  ⌊ σ n ⌋
+rename {Γ} {Δ} σ (ƛ_ {A = A} N)    =  ƛ (rename {Γ , A} {Δ , A} σ′ N)
   where
-  ρ′ : ∀ {C} → Γ , A ∋ C → Δ , A ∋ C
-  ρ′ Z      =  Z
-  ρ′ (S k)  =  S (ρ k)
-rename ρ (L · M)                   =  (rename ρ L) · (rename ρ M)
+  σ′ : ∀ {C} → Γ , A ∋ C → Δ , A ∋ C
+  σ′ Z      =  Z
+  σ′ (S k)  =  S (σ k)
+rename σ (L · M)                   =  (rename σ L) · (rename σ M)
+rename σ (`zero)                   =  `zero
+rename σ (`suc M)                  =  `suc (rename σ M)
 \end{code}
 
 ## Substitution
@@ -147,57 +163,66 @@ subst {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (subst {Γ , A} {Δ , A} ρ′ N)
   ρ′ Z      =  ⌊ Z ⌋
   ρ′ (S k)  =  rename {Δ} {Δ , A} S_ (ρ k)
 subst ρ (L · M)                   =  (subst ρ L) · (subst ρ M)
+subst ρ (`zero)                   =  `zero
+subst ρ (`suc M)                  =  `suc (subst ρ M)
 
-substitute : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
-substitute {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
+_[_] : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
+_[_] {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
   where
   ρ : ∀ {C} → Γ , A ∋ C → Γ ⊢ C
   ρ Z      =  M
   ρ (S k)  =  ⌊ k ⌋
 \end{code}
 
-## Normal
+## Value
 
 \begin{code}
-data Normal  : ∀ {Γ} {A} → Γ ⊢ A → Set
-data Neutral : ∀ {Γ} {A} → Γ ⊢ A → Set
+data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
-data Normal where
-  ƛ_  : ∀ {Γ} {A B} {N : Γ , A ⊢ B} → Normal N → Normal (ƛ N)
-  ⌈_⌉ : ∀ {Γ} {A} {M : Γ ⊢ A} → Neutral M → Normal M
+  Zero : ∀ {Γ} → 
+      -----------------
+      Value (`zero {Γ})
 
-data Neutral where
-  ⌊_⌋   : ∀ {Γ} {A} → (n : Γ ∋ A) → Neutral ⌊ n ⌋
-  _·_  : ∀ {Γ} {A B} → {L : Γ ⊢ A ⇒ B} {M : Γ ⊢ A} → Neutral L → Normal M → Neutral (L · M)
+  Suc : ∀ {Γ} {V : Γ ⊢ `ℕ}
+    → Value V
+      --------------
+    → Value (`suc V)
+      
+  Fun : ∀ {Γ A B} {N : Γ , A ⊢ B}
+      ---------------------------
+    → Value (ƛ N)
 \end{code}
+
+Here `` `zero `` requires an implicit parameter to aid inference
+(much in the same way that `[]` did in [Lists](Lists)).
 
 ## Reduction step
 
 \begin{code}
 infix 2 _⟶_
 
-data _⟶_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
+data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  ξ₁ : ∀ {Γ} {A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A} →
-    L ⟶ L′ →
-    -----------------
-    L · M ⟶ L′ · M
+  ξ-⇒₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
+    → L ⟶ L′
+      -----------------
+    → L · M ⟶ L′ · M
 
-  ξ₂ : ∀ {Γ} {A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A} →
-    Normal V →
-    M ⟶ M′ →
-    ----------------
-    V · M ⟶ V · M′
+  ξ-⇒₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
+    → Value V
+    → M ⟶ M′
+      ----------------
+    → V · M ⟶ V · M′
 
-  ζ : ∀ {Γ} {A B} {N N′ : Γ , A ⊢ B} →
-    N ⟶ N′ →
-    ------------
-    ƛ N ⟶ ƛ N′
+  β-⇒ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
+    → Value W
+      ---------------------
+    → (ƛ N) · W ⟶ N [ W ]
 
-  β : ∀ {Γ} {A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A} → 
-    Normal W →
-    ----------------------------
-    (ƛ N) · W ⟶ substitute N W
+  ξ-ℕ : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
+    → M ⟶ M′
+      ------------------
+    → `suc M ⟶ `suc M′
 \end{code}
 
 ## Reflexive and transitive closure
@@ -208,17 +233,17 @@ infix 1 begin_
 infixr 2 _⟶⟨_⟩_
 infix 3 _∎
 
-data _⟶*_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
+data _⟶*_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  _∎ : ∀ {Γ} {A} (M : Γ ⊢ A) →
-    -------------
-    M ⟶* M
+  _∎ : ∀ {Γ A} (M : Γ ⊢ A)
+      --------
+    → M ⟶* M
 
-  _⟶⟨_⟩_ : ∀ {Γ} {A} (L : Γ ⊢ A) {M N : Γ ⊢ A} →
-    L ⟶ M →
-    M ⟶* N →
-    ---------
-    L ⟶* N
+  _⟶⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
+    → L ⟶ M
+    → M ⟶* N
+      ---------
+    → L ⟶* N
 
 begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A} → (M ⟶* N) → (M ⟶* N)
 begin M⟶*N = M⟶*N
@@ -228,10 +253,11 @@ begin M⟶*N = M⟶*N
 ## Example reduction sequences
 
 \begin{code}
+{-
 id : ∀ (A : Type) → ε ⊢ A ⇒ A
 id A = ƛ ⌊ Z ⌋
 
-_ : id (o ⇒ o) · id o  ⟶* id o
+_ : ∀ {A} → id (A ⇒ A) · id A  ⟶* id A
 _ =
   begin
     (ƛ ⌊ Z ⌋) · (ƛ ⌊ Z ⌋)
@@ -240,7 +266,7 @@ _ =
   ∎
 
 
-_ : four′ {ε} ⟶* four {ε}
+_ : four′ {ε} {`ℕ} ⟶* four {ε} {`ℕ}
 _ =
   begin
     plus · two · two
@@ -257,12 +283,14 @@ _ =
   ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (β ⌈ ⌊ Z ⌋ ⌉)))) ⟩
     ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
   ∎
+-}
 \end{code}
 
 
 ## Progress
 
 \begin{code}
+{-
 data Progress {Γ A} (M : Γ ⊢ A) : Set where
   step : ∀ (N : Γ ⊢ A) → M ⟶ N → Progress M
   done : Normal M → Progress M
@@ -278,12 +306,14 @@ progress (V · M)        | done NmV     with progress M
 progress (V · M)        | done NmV        | step M′ r           =  step (V · M′) (ξ₂ NmV r)
 progress (V · W)        | done ⌈ NeV ⌉    | done NmW            =  done ⌈ NeV · NmW ⌉
 progress ((ƛ V) · W)    | done (ƛ NmV)    | done NmW            =  step (substitute V W) (β NmW)
+-}
 \end{code}
 
 
 ## Normalise
 
 \begin{code}
+{-
 data Normalise {Γ A} (M : Γ ⊢ A) : Set where
   out-of-gas : Normalise M
   normal : ∀ (N : Γ ⊢ A) → Normal N → M ⟶* N → Normalise M
@@ -295,6 +325,7 @@ normalise (suc n) L with progress L
 ...                    | step M L⟶M with normalise n M
 ...                                      | out-of-gas              =  out-of-gas
 ...                                      | normal N NmN M⟶*N     =  normal N NmN (L ⟶⟨ L⟶M ⟩ M⟶*N)
+-}
 \end{code}
 
 
