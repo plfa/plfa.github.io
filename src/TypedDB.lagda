@@ -286,6 +286,35 @@ _ =
     ƛ ⌊ Z ⌋
   ∎
 
+_ : plus {ε} · two · two ⟶* four
+_ =
+    plus · two · two
+  ⟶⟨ ξ-⇒₁ (ξ-⇒₁ β-μ) ⟩
+    (ƛ (ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))) · two · two
+  ⟶⟨ ξ-⇒₁ (β-⇒ (Suc (Suc Zero))) ⟩
+    (ƛ `caseℕ two ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two
+  ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
+    `caseℕ two two (`suc (plus · ⌊ Z ⌋ · two))
+  ⟶⟨ β-ℕ₂ (Suc Zero) ⟩
+    `suc (plus · `suc `zero · two)
+  ⟶⟨ ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ)) ⟩
+    `suc ((ƛ (ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))) · `suc `zero · two)
+  ⟶⟨ ξ-ℕ (ξ-⇒₁ (β-⇒ (Suc Zero))) ⟩
+    `suc ((ƛ `caseℕ (`suc `zero) ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two)
+  ⟶⟨ ξ-ℕ (β-⇒ (Suc (Suc Zero))) ⟩
+    `suc (`caseℕ (`suc `zero) (two) (`suc (plus · ⌊ Z ⌋ · two)))
+  ⟶⟨ ξ-ℕ (β-ℕ₂ Zero) ⟩
+    `suc (`suc (plus · `zero · two))
+  ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ))) ⟩
+    `suc (`suc ((ƛ (ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))) · `zero · two))
+  ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (β-⇒ Zero))) ⟩
+    `suc (`suc ((ƛ `caseℕ `zero ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two))
+  ⟶⟨ ξ-ℕ (ξ-ℕ (β-⇒ (Suc (Suc Zero)))) ⟩
+    `suc (`suc (`caseℕ `zero (two) (`suc (plus · ⌊ Z ⌋ · two))))
+ ⟶⟨ ξ-ℕ (ξ-ℕ β-ℕ₁) ⟩
+  `suc (`suc (`suc (`suc `zero)))
+ ∎
+
 _ : fromCh · (plusCh · twoCh · twoCh) ⟶* four
 _ =
   begin
@@ -317,141 +346,6 @@ _ =
   ⟶⟨ β-⇒ (Suc (Suc (Suc Zero))) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
-
-_ : plus {ε} · two · two ⟶* four
-_ =
- ((μ
-  (ƛ
-   (ƛ
-    `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
- · `suc (`suc `zero)
- · `suc (`suc `zero)
- ⟶⟨ ξ-⇒₁ (ξ-⇒₁ β-μ) ⟩
- (ƛ
-  (ƛ
-   `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋
-   (`suc
-    ((μ
-      (ƛ
-       (ƛ
-        `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-     · ⌊ Z ⌋
-     · ⌊ S Z ⌋))))
- · `suc (`suc `zero)
- · `suc (`suc `zero)
- ⟶⟨ ξ-⇒₁ (β-⇒ (Suc (Suc Zero))) ⟩
- (ƛ
-  `caseℕ (`suc (`suc `zero)) ⌊ Z ⌋
-  (`suc
-   ((μ
-     (ƛ
-      (ƛ
-       `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-    · ⌊ Z ⌋
-    · ⌊ S Z ⌋)))
- · `suc (`suc `zero)
- ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
- `caseℕ (`suc (`suc `zero)) (`suc (`suc `zero))
- (`suc
-  ((μ
-    (ƛ
-     (ƛ
-      `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-   · ⌊ Z ⌋
-   · `suc (`suc `zero)))
- ⟶⟨ β-ℕ₂ (Suc Zero) ⟩
- `suc
- ((μ
-   (ƛ
-    (ƛ
-     `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-  · `suc `zero
-  · `suc (`suc `zero))
- ⟶⟨ ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ)) ⟩
- `suc
- ((ƛ
-   (ƛ
-    `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋
-    (`suc
-     ((μ
-       (ƛ
-        (ƛ
-         `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-      · ⌊ Z ⌋
-      · ⌊ S Z ⌋))))
-  · `suc `zero
-  · `suc (`suc `zero))
- ⟶⟨ ξ-ℕ (ξ-⇒₁ (β-⇒ (Suc Zero))) ⟩
- `suc
- ((ƛ
-   `caseℕ (`suc `zero) ⌊ Z ⌋
-   (`suc
-    ((μ
-      (ƛ
-       (ƛ
-        `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-     · ⌊ Z ⌋
-     · ⌊ S Z ⌋)))
-  · `suc (`suc `zero))
- ⟶⟨ ξ-ℕ (β-⇒ (Suc (Suc Zero))) ⟩
- `suc
- (`caseℕ (`suc `zero) (`suc (`suc `zero))
-  (`suc
-   ((μ
-     (ƛ
-      (ƛ
-       `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-    · ⌊ Z ⌋
-    · `suc (`suc `zero))))
- ⟶⟨ ξ-ℕ (β-ℕ₂ Zero) ⟩
- `suc
- (`suc
-  ((μ
-    (ƛ
-     (ƛ
-      `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-   · `zero
-   · `suc (`suc `zero)))
- ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ))) ⟩
- `suc
- (`suc
-  ((ƛ
-    (ƛ
-     `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋
-     (`suc
-      ((μ
-        (ƛ
-         (ƛ
-          `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-       · ⌊ Z ⌋
-       · ⌊ S Z ⌋))))
-   · `zero
-   · `suc (`suc `zero)))
- ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (β-⇒ Zero))) ⟩
- `suc
- (`suc
-  ((ƛ
-    `caseℕ `zero ⌊ Z ⌋
-    (`suc
-     ((μ
-       (ƛ
-        (ƛ
-         `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-      · ⌊ Z ⌋
-      · ⌊ S Z ⌋)))
-   · `suc (`suc `zero)))
- ⟶⟨ ξ-ℕ (ξ-ℕ (β-⇒ (Suc (Suc Zero)))) ⟩
- `suc
- (`suc
-  (`caseℕ `zero (`suc (`suc `zero))
-   (`suc
-    ((μ
-      (ƛ
-       (ƛ
-        `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S (S (S Z)) ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋)))))
-     · ⌊ Z ⌋
-     · `suc (`suc `zero)))))
- ⟶⟨ ξ-ℕ (ξ-ℕ β-ℕ₁) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
 \end{code}
 
 
