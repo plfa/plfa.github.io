@@ -290,7 +290,7 @@ _ : plus {ε} · two · two ⟶* four
 _ =
     plus · two · two
   ⟶⟨ ξ-⇒₁ (ξ-⇒₁ β-μ) ⟩
-    (ƛ (ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))) · two · two
+    (ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two · two
   ⟶⟨ ξ-⇒₁ (β-⇒ (Suc (Suc Zero))) ⟩
     (ƛ `caseℕ two ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two
   ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
@@ -298,7 +298,8 @@ _ =
   ⟶⟨ β-ℕ₂ (Suc Zero) ⟩
     `suc (plus · `suc `zero · two)
   ⟶⟨ ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ)) ⟩
-    `suc ((ƛ (ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))) · `suc `zero · two)
+    `suc ((ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))
+      · `suc `zero · two)
   ⟶⟨ ξ-ℕ (ξ-⇒₁ (β-⇒ (Suc Zero))) ⟩
     `suc ((ƛ `caseℕ (`suc `zero) ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two)
   ⟶⟨ ξ-ℕ (β-⇒ (Suc (Suc Zero))) ⟩
@@ -306,14 +307,15 @@ _ =
   ⟶⟨ ξ-ℕ (β-ℕ₂ Zero) ⟩
     `suc (`suc (plus · `zero · two))
   ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ))) ⟩
-    `suc (`suc ((ƛ (ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))) · `zero · two))
+    `suc (`suc ((ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))
+      · `zero · two))
   ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (β-⇒ Zero))) ⟩
     `suc (`suc ((ƛ `caseℕ `zero ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two))
   ⟶⟨ ξ-ℕ (ξ-ℕ (β-⇒ (Suc (Suc Zero)))) ⟩
     `suc (`suc (`caseℕ `zero (two) (`suc (plus · ⌊ Z ⌋ · two))))
- ⟶⟨ ξ-ℕ (ξ-ℕ β-ℕ₁) ⟩
-  `suc (`suc (`suc (`suc `zero)))
- ∎
+  ⟶⟨ ξ-ℕ (ξ-ℕ β-ℕ₁) ⟩
+   `suc (`suc (`suc (`suc `zero)))
+  ∎
 
 _ : fromCh · (plusCh · twoCh · twoCh) ⟶* four
 _ =
@@ -346,6 +348,22 @@ _ =
   ⟶⟨ β-⇒ (Suc (Suc (Suc Zero))) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
+\end{code}
+
+## Values do not reduce
+
+Values do not reduce.
+\begin{code}
+Value-lemma : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M ⟶ N)
+Value-lemma Fun ()
+Value-lemma Zero ()
+Value-lemma (Suc VM) (ξ-ℕ M⟶N)  =  Value-lemma VM M⟶N
+\end{code}
+
+As a corollary, terms that reduce are not values.
+\begin{code}
+⟶-corollary : ∀ {Γ A} {M N : Γ ⊢ A} → (M ⟶ N) → ¬ Value M
+⟶-corollary M⟶N VM  =  Value-lemma VM M⟶N
 \end{code}
 
 
