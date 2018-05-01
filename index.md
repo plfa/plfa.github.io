@@ -47,7 +47,8 @@ fixes are encouraged.
   New
   - [Collections](Collections)
   - [Typed: Typed term representation](Typed)
-  - [TypedDB: Typed DeBruijn representation](TypedDB) 
+  - [TypedDB: Typed DeBruijn representation](TypedDB)
+  - [Extensions: Extensions to simply-typed lambda calculus](Extensions)
 
 ## Backmatter
 

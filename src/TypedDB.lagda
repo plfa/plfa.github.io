@@ -207,12 +207,12 @@ infix 2 _⟶_
 
 data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  ξ-⇒₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
+  ξ-·₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
     → L ⟶ L′
       -----------------
     → L · M ⟶ L′ · M
 
-  ξ-⇒₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
+  ξ-·₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
     → Value V
     → M ⟶ M′
       -----------------
@@ -223,7 +223,7 @@ data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------------------
     → (ƛ N) · W ⟶ N [ W ]
 
-  ξ-ℕ : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
+  ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
     → M ⟶ M′
       -------------------
     → `suc M ⟶ `suc M′
@@ -289,31 +289,31 @@ _ =
 _ : plus {ε} · two · two ⟶* four
 _ =
     plus · two · two
-  ⟶⟨ ξ-⇒₁ (ξ-⇒₁ β-μ) ⟩
+  ⟶⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
     (ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two · two
-  ⟶⟨ ξ-⇒₁ (β-⇒ (Suc (Suc Zero))) ⟩
+  ⟶⟨ ξ-·₁ (β-⇒ (Suc (Suc Zero))) ⟩
     (ƛ `caseℕ two ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two
   ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
     `caseℕ two two (`suc (plus · ⌊ Z ⌋ · two))
   ⟶⟨ β-ℕ₂ (Suc Zero) ⟩
     `suc (plus · `suc `zero · two)
-  ⟶⟨ ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ)) ⟩
+  ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
     `suc ((ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))
       · `suc `zero · two)
-  ⟶⟨ ξ-ℕ (ξ-⇒₁ (β-⇒ (Suc Zero))) ⟩
+  ⟶⟨ ξ-suc (ξ-·₁ (β-⇒ (Suc Zero))) ⟩
     `suc ((ƛ `caseℕ (`suc `zero) ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two)
-  ⟶⟨ ξ-ℕ (β-⇒ (Suc (Suc Zero))) ⟩
+  ⟶⟨ ξ-suc (β-⇒ (Suc (Suc Zero))) ⟩
     `suc (`caseℕ (`suc `zero) (two) (`suc (plus · ⌊ Z ⌋ · two)))
-  ⟶⟨ ξ-ℕ (β-ℕ₂ Zero) ⟩
+  ⟶⟨ ξ-suc (β-ℕ₂ Zero) ⟩
     `suc (`suc (plus · `zero · two))
-  ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (ξ-⇒₁ β-μ))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
     `suc (`suc ((ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋)))
       · `zero · two))
-  ⟶⟨ ξ-ℕ (ξ-ℕ (ξ-⇒₁ (β-⇒ Zero))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-⇒ Zero))) ⟩
     `suc (`suc ((ƛ `caseℕ `zero ⌊ Z ⌋ (`suc (plus · ⌊ Z ⌋ · ⌊ S Z ⌋))) · two))
-  ⟶⟨ ξ-ℕ (ξ-ℕ (β-⇒ (Suc (Suc Zero)))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (β-⇒ (Suc (Suc Zero)))) ⟩
     `suc (`suc (`caseℕ `zero (two) (`suc (plus · ⌊ Z ⌋ · two))))
-  ⟶⟨ ξ-ℕ (ξ-ℕ β-ℕ₁) ⟩
+  ⟶⟨ ξ-suc (ξ-suc β-ℕ₁) ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
 
@@ -321,29 +321,29 @@ _ : fromCh · (plusCh · twoCh · twoCh) ⟶* four
 _ =
   begin
     fromCh · (plusCh · twoCh · twoCh)
-  ⟶⟨ ξ-⇒₂ Fun (ξ-⇒₁ (β-⇒ Fun)) ⟩
+  ⟶⟨ ξ-·₂ Fun (ξ-·₁ (β-⇒ Fun)) ⟩
     fromCh · ((ƛ ƛ ƛ twoCh · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · twoCh)
-  ⟶⟨ ξ-⇒₂ Fun (β-⇒ Fun) ⟩
+  ⟶⟨ ξ-·₂ Fun (β-⇒ Fun) ⟩
     fromCh · (ƛ ƛ twoCh · ⌊ S Z ⌋ · (twoCh · ⌊ S Z ⌋ · ⌊ Z ⌋))
   ⟶⟨ β-⇒ Fun ⟩
     (ƛ ƛ twoCh · ⌊ S Z ⌋ · (twoCh · ⌊ S Z ⌋ · ⌊ Z ⌋)) · inc · `zero
-  ⟶⟨ ξ-⇒₁ (β-⇒ Fun) ⟩
+  ⟶⟨ ξ-·₁ (β-⇒ Fun) ⟩
     (ƛ twoCh · inc · (twoCh · inc · ⌊ Z ⌋)) · `zero
   ⟶⟨ β-⇒ Zero ⟩
     twoCh · inc · (twoCh · inc · `zero)
-  ⟶⟨ ξ-⇒₁ (β-⇒ Fun) ⟩
+  ⟶⟨ ξ-·₁ (β-⇒ Fun) ⟩
     (ƛ inc · (inc · ⌊ Z ⌋)) · (twoCh · inc · `zero)
-  ⟶⟨ ξ-⇒₂ Fun (ξ-⇒₁ (β-⇒ Fun)) ⟩
+  ⟶⟨ ξ-·₂ Fun (ξ-·₁ (β-⇒ Fun)) ⟩
     (ƛ inc · (inc · ⌊ Z ⌋)) · ((ƛ inc · (inc · ⌊ Z ⌋)) · `zero)
-  ⟶⟨ ξ-⇒₂ Fun (β-⇒ Zero) ⟩
+  ⟶⟨ ξ-·₂ Fun (β-⇒ Zero) ⟩
     (ƛ inc · (inc · ⌊ Z ⌋)) · (inc · (inc · `zero))
-  ⟶⟨ ξ-⇒₂ Fun (ξ-⇒₂ Fun (β-⇒ Zero)) ⟩
+  ⟶⟨ ξ-·₂ Fun (ξ-·₂ Fun (β-⇒ Zero)) ⟩
     (ƛ inc · (inc · ⌊ Z ⌋)) · (inc · `suc `zero)
-  ⟶⟨ ξ-⇒₂ Fun (β-⇒ (Suc Zero)) ⟩
+  ⟶⟨ ξ-·₂ Fun (β-⇒ (Suc Zero)) ⟩
     (ƛ inc · (inc · ⌊ Z ⌋)) · `suc (`suc `zero)
   ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
     inc · (inc · `suc (`suc `zero))
-  ⟶⟨ ξ-⇒₂ Fun (β-⇒ (Suc (Suc Zero))) ⟩
+  ⟶⟨ ξ-·₂ Fun (β-⇒ (Suc (Suc Zero))) ⟩
     inc · `suc (`suc (`suc `zero))
   ⟶⟨ β-⇒ (Suc (Suc (Suc Zero))) ⟩
     `suc (`suc (`suc (`suc `zero)))
@@ -357,7 +357,7 @@ Values do not reduce.
 Value-lemma : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M ⟶ N)
 Value-lemma Fun ()
 Value-lemma Zero ()
-Value-lemma (Suc VM) (ξ-ℕ M⟶N)  =  Value-lemma VM M⟶N
+Value-lemma (Suc VM) (ξ-suc M⟶N)  =  Value-lemma VM M⟶N
 \end{code}
 
 As a corollary, terms that reduce are not values.
@@ -382,16 +382,16 @@ data Progress {A} (M : ε ⊢ A) : Set where
 
 progress : ∀ {A} → (M : ε ⊢ A) → Progress M
 progress ⌊ () ⌋
-progress (ƛ N)                       =  done Fun
+progress (ƛ N)                            =  done Fun
 progress (L · M) with progress L
-...    | step L⟶L′                 =  step (ξ-⇒₁ L⟶L′)
+...    | step L⟶L′                      =  step (ξ-·₁ L⟶L′)
 ...    | done Fun with progress M
-...        | step M⟶M′             =  step (ξ-⇒₂ Fun M⟶M′)
-...        | done VM                 =  step (β-⇒ VM)
-progress (`zero)                     =  done Zero
+...        | step M⟶M′                  =  step (ξ-·₂ Fun M⟶M′)
+...        | done VM                      =  step (β-⇒ VM)
+progress (`zero)                          =  done Zero
 progress (`suc M) with progress M
-...    | step M⟶M′                 =  step (ξ-ℕ M⟶M′)
-...    | done VM                     =  done (Suc VM)
+...    | step M⟶M′                      =  step (ξ-suc M⟶M′)
+...    | done VM                          =  done (Suc VM)
 progress (`caseℕ L M N) with progress L
 ...    | step L⟶L′                       =  step (ξ-caseℕ L⟶L′)
 ...    | done Zero                         =  step (β-ℕ₁)
@@ -410,7 +410,7 @@ data Normalise {A} (M : ε ⊢ A) : Set where
   normal : ∀ {N : ε ⊢ A}
     → Gas
     → M ⟶* N
-      -----------
+      ------------
     → Normalise M
 
 normalise : ∀ {A} → ℕ → (L : ε ⊢ A) → Normalise L
