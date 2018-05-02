@@ -200,10 +200,10 @@ A variable `x` appears _free_ in a term `M` if `M` contains an
 occurrence of `x` that is not bound in an enclosing lambda abstraction.
 For example:
 
-  - `x` appears free, but `f` does not, in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x`
-  - both `f` and `x` appear free in `(λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x) · ` f`;
-    indeed, `f` appears both bound and free in this term
-  - no variables appear free in `λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] ` f · ` x`
+  - Variable `x` appears free, but `f` does not, in ``λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x``.
+  - Both `f` and `x` appear free in ``(λ[ f ∶ (𝔹 ⇒ 𝔹) ] ` f · ` x) · ` f``.
+    Indeed, `f` appears both bound and free in this term.
+  - No variables appear free in ``λ[ f ∶ (𝔹 ⇒ 𝔹) ] λ[ x ∶ 𝔹 ] ` f · ` x``.
 
 Formally:
 
