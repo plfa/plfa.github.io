@@ -637,13 +637,14 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
     M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
     N⊆ = trans-⊆ ⊆-++₂ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
 ⊢rename ⊢σ ⊆xs (⊢Y ⊢M)     =  ⊢Y (⊢rename ⊢σ ⊆xs ⊢M)
-    
+-}    
 \end{code}
 
 
 ### Substitution preserves types
 
 \begin{code}
+{-
 ⊢subst : ∀ {Γ Δ xs ys ρ}
   → (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys)
   → (∀ {x A} → x ∈ xs      →  Γ ∋ x `: A  →  Δ ⊢ ρ x `: A)
@@ -726,11 +727,13 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 
   ⊆xs : free N ⊆ xs
   ⊆xs x∈ = x∈
+-}
 \end{code}
 
 ### Preservation
 
 \begin{code}
+{-
 preservation : ∀ {Γ M N A}
   →  Γ ⊢ M `: A
   →  M ⟶ N
@@ -751,11 +754,13 @@ preservation (⊢if0 ⊢zero ⊢M ⊢N)     β-if0-zero     =  ⊢M
 preservation (⊢if0 (⊢suc ⊢V) ⊢M ⊢N) (β-if0-suc _)  =  ⊢N
 preservation (⊢Y ⊢M)                (ξ-Y M⟶)     =  ⊢Y (preservation ⊢M M⟶)
 preservation (⊢Y (⊢λ ⊢N))           (β-Y _ refl)   =  ⊢substitution ⊢N (⊢Y (⊢λ ⊢N))
+-}
 \end{code}
 
 ## Normalise
 
 \begin{code}
+{-
 data Normalise {M A} (⊢M : ε ⊢ M `: A) : Set where
   out-of-gas : ∀ {N} → M ⟶* N → ε ⊢ N `: A → Normalise ⊢M
   normal     : ∀ {V} → ℕ → Canonical V A → M ⟶* V → Normalise ⊢M
