@@ -599,17 +599,56 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 
 ### Renaming
 
+Let's try an example.  The result I want to prove is:
+
+    ⊢subst : ∀ {Γ Δ ρ}
+      → (∀ {x A} →  Γ ∋ x `: A  →  Δ ⊢ ρ x `: A)
+        -----------------------------------------------
+      → (∀ {M A} →  Γ ⊢ M `: A  →  Δ ⊢ subst ρ M `: A)
+
+For this to work, I need to know that neither `Δ` or any of the
+bound variables in `ρ x` will collide with any bound variable in `M`.
+How can I establish this?
+
+In particular, I need to check that the conditions for ordinary
+substitution are sufficient to establish the required invariants.
+In that case we have:
+
+    ⊢substitution : ∀ {Γ x A N B M} →
+      Γ , x `: A ⊢ N `: B →
+      Γ ⊢ M `: A →
+      --------------------
+      Γ ⊢ N [ x := M ] `: B
+
+Here, since `N` is well-typed, none of it's bound variables collide
+with `Γ`, and hence cannot collide with any free variable of `M`.
+*But* we can't make a similar guarantee for the *bound* variables
+of `M`, so substitution may break the invariants. Here is an example:
+
+      ε , "z" `: `ℕ ⊢ (`λ "x" `→ `λ "y" → ` "x" · ` "y" · ` "z") (`λ "y" `→ ` "y" · ` "z")
+    ⟶
+      ε , "z" `: `ℕ ⊢ (`λ "y" → (`λ "y" `→ ` "y" · ` "z") · ` "y" · ` "z")
+
+This doesn't maintain the invariant, but doesn't break either.
+But I don't know how to prove it never breaks. Maybe I can come
+up with an example that does break after a few steps.  Or, maybe
+I don't need the nested variables to be unique. Maybe all I need
+is for the free variables in each `ρ x` to be distinct from any
+of the bound variables in `N`. But this requires every bound
+variable in `N` to not appear in `Γ`. Not clear how to maintain
+such a condition without the invariant, so I don't know how
+the proof works. Bugger!
+
+
 \begin{code}
 {-
 ⊢rename : ∀ {Γ Δ xs}
-  → (∀ {x A} → x ∈ xs      →  Γ ∋ x `: A  →  Δ ∋ x `: A)
+  → (∀ {x A} → Γ ∋ x `: A  →  Δ ∋ x `: A)
     --------------------------------------------------
-  → (∀ {M A} → free M ⊆ xs →  Γ ⊢ M `: A  →  Δ ⊢ M `: A)
-⊢rename ⊢σ ⊆xs (Ax ⊢x)     =  Ax (⊢σ ∈xs ⊢x)
-  where
-  ∈xs = ⊆xs here
-⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (⊢λ {x = x} {N = N} {A = A} ⊢N)
-                           =  ⊢λ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
+  → (∀ {M A} → Γ ⊢ M `: A  →  Δ ⊢ M `: A)
+⊢rename ⊢σ (Ax ⊢x)     =  Ax (⊢σ ⊢x)
+⊢rename {Γ} {Δ} ⊢σ (⊢λ {x = x} {N = N} {A = A} x∉Γ ⊢N)
+                           =  ⊢λ x∉Δ (⊢rename {Γ′} {Δ′} ⊢σ′ ⊢N)
   where
   Γ′   =  Γ , x `: A
   Δ′   =  Δ , x `: A
@@ -637,7 +676,6 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
     M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
     N⊆ = trans-⊆ ⊆-++₂ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
 ⊢rename ⊢σ ⊆xs (⊢Y ⊢M)     =  ⊢Y (⊢rename ⊢σ ⊆xs ⊢M)
--}    
 \end{code}
 
 
