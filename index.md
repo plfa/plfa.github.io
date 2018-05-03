@@ -44,10 +44,13 @@ fixes are encouraged.
   - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
   - [StlcProp: Properties of STLC](StlcProp)
 
-  New
-  - [Collections](Collections)
+  In progress
+  - [FreshUnstuck: Generation of fresh names with strings](TypedFresh)
   - [Typed: Raw terms with types (broken)](Typed)
   - [TypedFresh: Raw terms with fresh names (broken)](TypedFresh)
+
+  New
+  - [Collections](Collections)
   - [TypedDB: Typed DeBruijn representation](TypedDB)
   - [Extensions: Extensions to simply-typed lambda calculus](Extensions)
 
