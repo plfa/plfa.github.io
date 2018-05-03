@@ -364,7 +364,7 @@ data _⟶_ : Term → Term → Set where
       -----------------
     → V · M ⟶ V · M′
 
-  β-`→ : ∀ {x N V}
+  β-→ : ∀ {x N V}
     → Value V
       ---------------------------------
     → (`λ x `→ N) · V ⟶ N [ x := V ]
@@ -519,25 +519,32 @@ det : ∀ {M M′ M″}
   → M′ ≡ M″
 det (ξ-·₁ L⟶L′) (ξ-·₁ L⟶L″) =  cong₂ _·_ (det L⟶L′ L⟶L″) refl
 det (ξ-·₁ L⟶L′) (ξ-·₂ VL _) = ⊥-elim (Val-⟶ VL L⟶L′)
-det (ξ-·₁ L⟶L′) (β-`→ _) = ⊥-elim (Val-⟶ Fun L⟶L′)
+det (ξ-·₁ L⟶L′) (β-→ _) = ⊥-elim (Val-⟶ Fun L⟶L′)
 det (ξ-·₂ VL _) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ VL L⟶L″)
 det (ξ-·₂ _ M⟶M′) (ξ-·₂ _ M⟶M″) = cong₂ _·_ refl (det M⟶M′ M⟶M″)
-det (ξ-·₂ _ M⟶M′) (β-`→ VM) = ⊥-elim (Val-⟶ VM M⟶M′)
-det (β-`→ VM) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ Fun L⟶L″)
-det (β-`→ VM) (ξ-·₂ _ M⟶M″) = ⊥-elim (Val-⟶ VM M⟶M″)
-det (β-`→ _) (β-`→ _) = refl
+det (ξ-·₂ _ M⟶M′) (β-→ VM) = ⊥-elim (Val-⟶ VM M⟶M′)
+det (β-→ VM) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ Fun L⟶L″)
+det (β-→ VM) (ξ-·₂ _ M⟶M″) = ⊥-elim (Val-⟶ VM M⟶M″)
+det (β-→ _) (β-→ _) = refl
 det (ξ-suc M⟶M′) (ξ-suc M⟶M″) = cong `suc_ (det M⟶M′ M⟶M″)
 det (ξ-pred M⟶M′) (ξ-pred M⟶M″) = cong `pred_ (det M⟶M′ M⟶M″)
-det (ξ-pred M⟶M′) β-pred-zero = {!!}
-det (ξ-pred M⟶M′) (β-pred-suc x) = {!!}
-det β-pred-zero L⟶N = {!!}
-det (β-pred-suc x) L⟶N = {!!}
-det (ξ-if0 L⟶M) L⟶N = {!!}
-det β-if0-zero L⟶N = {!!}
-det (β-if0-suc x) L⟶N = {!!}
-det (ξ-Y L⟶M) L⟶N = {!!}
-det (β-Y x₁) L⟶N = {!!}
-
+det (ξ-pred M⟶M′) β-pred-zero = ⊥-elim (Val-⟶ Zero M⟶M′)
+det (ξ-pred M⟶M′) (β-pred-suc VM) = ⊥-elim (Val-⟶ (Suc VM) M⟶M′)
+det β-pred-zero (ξ-pred M⟶M′) = ⊥-elim (Val-⟶ Zero M⟶M′)
+det β-pred-zero β-pred-zero = refl
+det (β-pred-suc VM) (ξ-pred M⟶M′) = ⊥-elim (Val-⟶ (Suc VM) M⟶M′)
+det (β-pred-suc _) (β-pred-suc _) = refl
+det (ξ-if0 L⟶L′) (ξ-if0 L⟶L″) = cong₃ `if0_then_else_ (det L⟶L′ L⟶L″) refl refl
+det (ξ-if0 L⟶L′) β-if0-zero = ⊥-elim (Val-⟶ Zero L⟶L′)
+det (ξ-if0 L⟶L′) (β-if0-suc VL) = ⊥-elim (Val-⟶ (Suc VL) L⟶L′)
+det β-if0-zero (ξ-if0 L⟶L″) = ⊥-elim (Val-⟶ Zero L⟶L″)
+det β-if0-zero β-if0-zero = refl
+det (β-if0-suc VL) (ξ-if0 L⟶L″) = ⊥-elim (Val-⟶ (Suc VL) L⟶L″)
+det (β-if0-suc _) (β-if0-suc _) = refl
+det (ξ-Y M⟶M′) (ξ-Y M⟶M″) = cong `Y_ (det M⟶M′ M⟶M″)
+det (ξ-Y M⟶M′) (β-Y refl) = ⊥-elim (Val-⟶ Fun M⟶M′)
+det (β-Y refl) (ξ-Y M⟶M″) =  ⊥-elim (Val-⟶ Fun M⟶M″) 
+det (β-Y refl) (β-Y refl) = refl
 \end{code}
 
 ## Progress
@@ -560,7 +567,7 @@ progress (⊢L · ⊢M) with progress ⊢L
 ...    | step L⟶L′                       =  step (ξ-·₁ L⟶L′)
 ...    | done (Fun _) with progress ⊢M
 ...            | step M⟶M′               =  step (ξ-·₂ Fun M⟶M′)
-...            | done CM                   =  step (β-`→ (value CM))
+...            | done CM                   =  step (β-→ (value CM))
 progress ⊢zero                             =  done Zero
 progress (⊢suc ⊢M) with progress ⊢M
 ...    | step M⟶M′                       =  step (ξ-suc M⟶M′)
@@ -723,7 +730,7 @@ preservation (Ax ⊢x) ()
 preservation (⊢λ ⊢N) ()
 preservation (⊢L · ⊢M)              (ξ-·₁ L⟶)    =  preservation ⊢L L⟶ · ⊢M
 preservation (⊢V · ⊢M)              (ξ-·₂ _ M⟶)  =  ⊢V · preservation ⊢M M⟶
-preservation ((⊢λ ⊢N) · ⊢W)         (β-`→ _)       =  ⊢substitution ⊢N ⊢W
+preservation ((⊢λ ⊢N) · ⊢W)         (β-→ _)       =  ⊢substitution ⊢N ⊢W
 preservation (⊢zero)                ()
 preservation (⊢suc ⊢M)              (ξ-suc M⟶)   =  ⊢suc (preservation ⊢M M⟶)
 preservation (⊢pred ⊢M)             (ξ-pred M⟶)  =  ⊢pred (preservation ⊢M M⟶)
@@ -763,10 +770,10 @@ _ =
   ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y refl)) ⟩
     (`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
       `suc (plus · (`pred (` "m")) · (` "n"))))  · two · two
-  ⟶⟨ ξ-·₁ (β-`→ (Suc (Suc Zero))) ⟩
+  ⟶⟨ ξ-·₁ (β-→ (Suc (Suc Zero))) ⟩
     (`λ "n" `→ `if0 two then ` "n" else
       `suc (plus · (`pred two) · (` "n"))) · two
-  ⟶⟨ β-`→ (Suc (Suc Zero)) ⟩
+  ⟶⟨ β-→ (Suc (Suc Zero)) ⟩
    `if0 two then two else
      `suc (plus · (`pred two) · two)
   ⟶⟨ β-if0-suc (Suc Zero) ⟩
@@ -777,10 +784,10 @@ _ =
   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc (Suc Zero)))) ⟩
    `suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
      `suc (plus · (`pred (` "m")) · (` "n")))) · (`suc `zero) · two)
-  ⟶⟨ ξ-suc (ξ-·₁ (β-`→ (Suc Zero))) ⟩
+  ⟶⟨ ξ-suc (ξ-·₁ (β-→ (Suc Zero))) ⟩
    `suc ((`λ "n" `→ `if0 `suc `zero then ` "n" else
      `suc (plus · (`pred (`suc `zero)) · (` "n")))) · two
-  ⟶⟨ ξ-suc (β-`→ (Suc (Suc Zero))) ⟩
+  ⟶⟨ ξ-suc (β-→ (Suc (Suc Zero))) ⟩
    `suc (`if0 `suc `zero then two else
      `suc (plus · (`pred (`suc `zero)) · two))
   ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
@@ -791,10 +798,10 @@ _ =
   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
    `suc (`suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
      `suc (plus · (`pred (` "m")) · (` "n")))) · `zero · two))
-  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-`→ Zero))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-→ Zero))) ⟩
    `suc (`suc ((`λ "n" `→ `if0 `zero then ` "n" else
      `suc (plus · (`pred `zero) · (` "n"))) · two))
-  ⟶⟨ ξ-suc (ξ-suc (β-`→ (Suc (Suc Zero)))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (β-→ (Suc (Suc Zero)))) ⟩
    `suc (`suc (`if0 `zero then two else
      `suc (plus · (`pred `zero) · two)))
   ⟶⟨ ξ-suc (ξ-suc β-if0-zero) ⟩
