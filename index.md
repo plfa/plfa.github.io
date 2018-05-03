@@ -46,7 +46,8 @@ fixes are encouraged.
 
   New
   - [Collections](Collections)
-  - [Typed: Typed term representation](Typed)
+  - [Typed: Raw terms with types (broken)](Typed)
+  - [TypedFresh: Raw terms with fresh names (broken)](TypedFresh)
   - [TypedDB: Typed DeBruijn representation](TypedDB)
   - [Extensions: Extensions to simply-typed lambda calculus](Extensions)
 

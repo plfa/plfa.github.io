@@ -1,9 +1,19 @@
 ---
-title     : "Typed: Typed Lambda term representation"
+title     : "Typed: Raw terms with types (broken)"
 layout    : page
 permalink : /Typed
 ---
 
+This version uses raw terms. Substitution presumes that no
+generation of fresh names is required.
+
+The substitution algorithm is based on one by McBride.
+It is given a map from names to terms. Say the mapping of a
+name is trivial if it takes a name to a term consisting of
+just the variable with that name. No fresh names are required
+if the mapping on each variable is either trivial or to a
+closed term. However, the proof of correctness currently
+contains a hole, and may be difficult to repair.
 
 ## Imports
 
@@ -437,6 +447,123 @@ begin_ : ∀ {M N} → (M ⟶* N) → (M ⟶* N)
 begin M⟶*N = M⟶*N
 \end{code}
 
+## Sample execution
+
+\begin{code}
+_ : plus · two · two ⟶* (`suc (`suc (`suc (`suc `zero))))
+_ = 
+  begin
+    plus · two · two
+  ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y refl)) ⟩
+    (`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
+      `suc (plus · (`pred (` "m")) · (` "n"))))  · two · two
+  ⟶⟨ ξ-·₁ (β-→ (Suc (Suc Zero))) ⟩
+    (`λ "n" `→ `if0 two then ` "n" else
+      `suc (plus · (`pred two) · (` "n"))) · two
+  ⟶⟨ β-→ (Suc (Suc Zero)) ⟩
+   `if0 two then two else
+     `suc (plus · (`pred two) · two)
+  ⟶⟨ β-if0-suc (Suc Zero) ⟩
+   `suc (plus · (`pred two) · two)
+  ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ (β-Y refl))) ⟩
+   `suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
+     `suc (plus · (`pred (` "m")) · (` "n")))) · (`pred two) · two)
+  ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc (Suc Zero)))) ⟩
+   `suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
+     `suc (plus · (`pred (` "m")) · (` "n")))) · (`suc `zero) · two)
+  ⟶⟨ ξ-suc (ξ-·₁ (β-→ (Suc Zero))) ⟩
+   `suc ((`λ "n" `→ `if0 `suc `zero then ` "n" else
+     `suc (plus · (`pred (`suc `zero)) · (` "n")))) · two
+  ⟶⟨ ξ-suc (β-→ (Suc (Suc Zero))) ⟩
+   `suc (`if0 `suc `zero then two else
+     `suc (plus · (`pred (`suc `zero)) · two))
+  ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
+   `suc (`suc (plus · (`pred (`suc `zero)) · two))
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ (β-Y refl)))) ⟩
+   `suc (`suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else 
+     `suc (plus · (`pred (` "m")) · (` "n")))) · (`pred (`suc `zero)) · two))
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
+   `suc (`suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
+     `suc (plus · (`pred (` "m")) · (` "n")))) · `zero · two))
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-→ Zero))) ⟩
+   `suc (`suc ((`λ "n" `→ `if0 `zero then ` "n" else
+     `suc (plus · (`pred `zero) · (` "n"))) · two))
+  ⟶⟨ ξ-suc (ξ-suc (β-→ (Suc (Suc Zero)))) ⟩
+   `suc (`suc (`if0 `zero then two else
+     `suc (plus · (`pred `zero) · two)))
+  ⟶⟨ ξ-suc (ξ-suc β-if0-zero) ⟩
+   `suc (`suc (`suc (`suc `zero)))
+  ∎
+\end{code}
+
+## Values do not reduce
+
+Values do not reduce.
+\begin{code}
+Val-⟶ : ∀ {M N} → Value M → ¬ (M ⟶ N)
+Val-⟶ Fun ()
+Val-⟶ Zero ()
+Val-⟶ (Suc VM) (ξ-suc M⟶N)  =  Val-⟶ VM M⟶N
+\end{code}
+
+As a corollary, terms that reduce are not values.
+\begin{code}
+⟶-Val : ∀ {M N} → (M ⟶ N) → ¬ Value M
+⟶-Val M⟶N VM  =  Val-⟶ VM M⟶N
+\end{code}
+
+## Reduction is deterministic
+
+\begin{code}
+det : ∀ {M M′ M″}
+  → (M ⟶ M′)
+  → (M ⟶ M″)
+    ----------
+  → M′ ≡ M″
+det (ξ-·₁ L⟶L′) (ξ-·₁ L⟶L″) =  cong₂ _·_ (det L⟶L′ L⟶L″) refl
+det (ξ-·₁ L⟶L′) (ξ-·₂ VL _) = ⊥-elim (Val-⟶ VL L⟶L′)
+det (ξ-·₁ L⟶L′) (β-→ _) = ⊥-elim (Val-⟶ Fun L⟶L′)
+det (ξ-·₂ VL _) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ VL L⟶L″)
+det (ξ-·₂ _ M⟶M′) (ξ-·₂ _ M⟶M″) = cong₂ _·_ refl (det M⟶M′ M⟶M″)
+det (ξ-·₂ _ M⟶M′) (β-→ VM) = ⊥-elim (Val-⟶ VM M⟶M′)
+det (β-→ VM) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ Fun L⟶L″)
+det (β-→ VM) (ξ-·₂ _ M⟶M″) = ⊥-elim (Val-⟶ VM M⟶M″)
+det (β-→ _) (β-→ _) = refl
+det (ξ-suc M⟶M′) (ξ-suc M⟶M″) = cong `suc_ (det M⟶M′ M⟶M″)
+det (ξ-pred M⟶M′) (ξ-pred M⟶M″) = cong `pred_ (det M⟶M′ M⟶M″)
+det (ξ-pred M⟶M′) β-pred-zero = ⊥-elim (Val-⟶ Zero M⟶M′)
+det (ξ-pred M⟶M′) (β-pred-suc VM) = ⊥-elim (Val-⟶ (Suc VM) M⟶M′)
+det β-pred-zero (ξ-pred M⟶M′) = ⊥-elim (Val-⟶ Zero M⟶M′)
+det β-pred-zero β-pred-zero = refl
+det (β-pred-suc VM) (ξ-pred M⟶M′) = ⊥-elim (Val-⟶ (Suc VM) M⟶M′)
+det (β-pred-suc _) (β-pred-suc _) = refl
+det (ξ-if0 L⟶L′) (ξ-if0 L⟶L″) = cong₃ `if0_then_else_ (det L⟶L′ L⟶L″) refl refl
+det (ξ-if0 L⟶L′) β-if0-zero = ⊥-elim (Val-⟶ Zero L⟶L′)
+det (ξ-if0 L⟶L′) (β-if0-suc VL) = ⊥-elim (Val-⟶ (Suc VL) L⟶L′)
+det β-if0-zero (ξ-if0 L⟶L″) = ⊥-elim (Val-⟶ Zero L⟶L″)
+det β-if0-zero β-if0-zero = refl
+det (β-if0-suc VL) (ξ-if0 L⟶L″) = ⊥-elim (Val-⟶ (Suc VL) L⟶L″)
+det (β-if0-suc _) (β-if0-suc _) = refl
+det (ξ-Y M⟶M′) (ξ-Y M⟶M″) = cong `Y_ (det M⟶M′ M⟶M″)
+det (ξ-Y M⟶M′) (β-Y refl) = ⊥-elim (Val-⟶ Fun M⟶M′)
+det (β-Y refl) (ξ-Y M⟶M″) = ⊥-elim (Val-⟶ Fun M⟶M″)
+det (β-Y refl) (β-Y refl) = refl
+\end{code}
+
+Almost half the lines in the above proof are redundant, for example
+
+    det (ξ-·₁ L⟶L′) (ξ-·₂ VL _) = ⊥-elim (Val-⟶ VL L⟶L′)
+    det (ξ-·₂ VL _) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ VL L⟶L″)
+ 
+are essentially identical. What we might like to do is delete the
+redundant lines and add
+
+    det M⟶M′ M⟶M″ = sym (det M⟶M″ M⟶M′)
+
+to the bottom of the proof. But this does not work. The termination
+checker complains, because the arguments have merely switched order
+and neither is smaller.
+
 ## Canonical forms
 
 \begin{code}
@@ -492,61 +619,6 @@ value (Suc CV)     =  Suc (value CV)
 value (Fun ⊢N)     =  Fun
 \end{code}
     
-## Values do not reduce
-
-Values do not reduce.
-\begin{code}
-Val-⟶ : ∀ {M N} → Value M → ¬ (M ⟶ N)
-Val-⟶ Fun ()
-Val-⟶ Zero ()
-Val-⟶ (Suc VM) (ξ-suc M⟶N)  =  Val-⟶ VM M⟶N
-\end{code}
-
-As a corollary, terms that reduce are not values.
-\begin{code}
-⟶-Val : ∀ {M N} → (M ⟶ N) → ¬ Value M
-⟶-Val M⟶N VM  =  Val-⟶ VM M⟶N
-\end{code}
-
-
-## Reduction is deterministic
-
-\begin{code}
-det : ∀ {M M′ M″}
-  → (M ⟶ M′)
-  → (M ⟶ M″)
-    ----------
-  → M′ ≡ M″
-det (ξ-·₁ L⟶L′) (ξ-·₁ L⟶L″) =  cong₂ _·_ (det L⟶L′ L⟶L″) refl
-det (ξ-·₁ L⟶L′) (ξ-·₂ VL _) = ⊥-elim (Val-⟶ VL L⟶L′)
-det (ξ-·₁ L⟶L′) (β-→ _) = ⊥-elim (Val-⟶ Fun L⟶L′)
-det (ξ-·₂ VL _) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ VL L⟶L″)
-det (ξ-·₂ _ M⟶M′) (ξ-·₂ _ M⟶M″) = cong₂ _·_ refl (det M⟶M′ M⟶M″)
-det (ξ-·₂ _ M⟶M′) (β-→ VM) = ⊥-elim (Val-⟶ VM M⟶M′)
-det (β-→ VM) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ Fun L⟶L″)
-det (β-→ VM) (ξ-·₂ _ M⟶M″) = ⊥-elim (Val-⟶ VM M⟶M″)
-det (β-→ _) (β-→ _) = refl
-det (ξ-suc M⟶M′) (ξ-suc M⟶M″) = cong `suc_ (det M⟶M′ M⟶M″)
-det (ξ-pred M⟶M′) (ξ-pred M⟶M″) = cong `pred_ (det M⟶M′ M⟶M″)
-det (ξ-pred M⟶M′) β-pred-zero = ⊥-elim (Val-⟶ Zero M⟶M′)
-det (ξ-pred M⟶M′) (β-pred-suc VM) = ⊥-elim (Val-⟶ (Suc VM) M⟶M′)
-det β-pred-zero (ξ-pred M⟶M′) = ⊥-elim (Val-⟶ Zero M⟶M′)
-det β-pred-zero β-pred-zero = refl
-det (β-pred-suc VM) (ξ-pred M⟶M′) = ⊥-elim (Val-⟶ (Suc VM) M⟶M′)
-det (β-pred-suc _) (β-pred-suc _) = refl
-det (ξ-if0 L⟶L′) (ξ-if0 L⟶L″) = cong₃ `if0_then_else_ (det L⟶L′ L⟶L″) refl refl
-det (ξ-if0 L⟶L′) β-if0-zero = ⊥-elim (Val-⟶ Zero L⟶L′)
-det (ξ-if0 L⟶L′) (β-if0-suc VL) = ⊥-elim (Val-⟶ (Suc VL) L⟶L′)
-det β-if0-zero (ξ-if0 L⟶L″) = ⊥-elim (Val-⟶ Zero L⟶L″)
-det β-if0-zero β-if0-zero = refl
-det (β-if0-suc VL) (ξ-if0 L⟶L″) = ⊥-elim (Val-⟶ (Suc VL) L⟶L″)
-det (β-if0-suc _) (β-if0-suc _) = refl
-det (ξ-Y M⟶M′) (ξ-Y M⟶M″) = cong `Y_ (det M⟶M′ M⟶M″)
-det (ξ-Y M⟶M′) (β-Y refl) = ⊥-elim (Val-⟶ Fun M⟶M′)
-det (β-Y refl) (ξ-Y M⟶M″) =  ⊥-elim (Val-⟶ Fun M⟶M″) 
-det (β-Y refl) (β-Y refl) = refl
-\end{code}
-
 ## Progress
 
 \begin{code}
@@ -760,51 +832,3 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...          | normal n CV M⟶*V          =  normal n CV (L ⟶⟨ L⟶M ⟩ M⟶*V)
 \end{code}
 
-## Sample execution
-
-\begin{code}
-_ : plus · two · two ⟶* (`suc (`suc (`suc (`suc `zero))))
-_ = 
-  begin
-    plus · two · two
-  ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y refl)) ⟩
-    (`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
-      `suc (plus · (`pred (` "m")) · (` "n"))))  · two · two
-  ⟶⟨ ξ-·₁ (β-→ (Suc (Suc Zero))) ⟩
-    (`λ "n" `→ `if0 two then ` "n" else
-      `suc (plus · (`pred two) · (` "n"))) · two
-  ⟶⟨ β-→ (Suc (Suc Zero)) ⟩
-   `if0 two then two else
-     `suc (plus · (`pred two) · two)
-  ⟶⟨ β-if0-suc (Suc Zero) ⟩
-   `suc (plus · (`pred two) · two)
-  ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ (β-Y refl))) ⟩
-   `suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
-     `suc (plus · (`pred (` "m")) · (` "n")))) · (`pred two) · two)
-  ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc (Suc Zero)))) ⟩
-   `suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
-     `suc (plus · (`pred (` "m")) · (` "n")))) · (`suc `zero) · two)
-  ⟶⟨ ξ-suc (ξ-·₁ (β-→ (Suc Zero))) ⟩
-   `suc ((`λ "n" `→ `if0 `suc `zero then ` "n" else
-     `suc (plus · (`pred (`suc `zero)) · (` "n")))) · two
-  ⟶⟨ ξ-suc (β-→ (Suc (Suc Zero))) ⟩
-   `suc (`if0 `suc `zero then two else
-     `suc (plus · (`pred (`suc `zero)) · two))
-  ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
-   `suc (`suc (plus · (`pred (`suc `zero)) · two))
-  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ (β-Y refl)))) ⟩
-   `suc (`suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else 
-     `suc (plus · (`pred (` "m")) · (` "n")))) · (`pred (`suc `zero)) · two))
-  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
-   `suc (`suc ((`λ "m" `→ (`λ "n" `→ `if0 ` "m" then ` "n" else
-     `suc (plus · (`pred (` "m")) · (` "n")))) · `zero · two))
-  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-→ Zero))) ⟩
-   `suc (`suc ((`λ "n" `→ `if0 `zero then ` "n" else
-     `suc (plus · (`pred `zero) · (` "n"))) · two))
-  ⟶⟨ ξ-suc (ξ-suc (β-→ (Suc (Suc Zero)))) ⟩
-   `suc (`suc (`if0 `zero then two else
-     `suc (plus · (`pred `zero) · two)))
-  ⟶⟨ ξ-suc (ξ-suc β-if0-zero) ⟩
-   `suc (`suc (`suc (`suc `zero)))
-  ∎
-\end{code}
