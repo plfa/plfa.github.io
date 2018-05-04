@@ -5,7 +5,7 @@ permalink : /TypedFresh
 ---
 
 Generation of fresh names, where names are string-integer pairs.
-Fixed by James McKenna.
+Fixed by James McKinna.
 
 \begin{code}
 module FreshUnstuck where
