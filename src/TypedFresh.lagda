@@ -168,10 +168,10 @@ two = `suc `suc `zero
 ⊢two = (⊢suc (⊢suc ⊢zero))
 
 plus : Term
-plus = `Y (`λ p ⇒ `λ m ⇒ `λ n ⇒ `if0 ` m then ` n else ` p · (`pred ` m) · ` n)
+plus = `Y (`λ p ⇒ `λ m ⇒ `λ n ⇒ `if0 ` m then ` n else `suc (` p · (`pred ` m) · ` n))
 
 ⊢plus : ε ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-⊢plus = (⊢Y (⊢λ (⊢λ (⊢λ (⊢if0 (Ax ⊢m) (Ax ⊢n) (Ax ⊢p · (⊢pred (Ax ⊢m)) · Ax ⊢n))))))
+⊢plus = (⊢Y (⊢λ (⊢λ (⊢λ (⊢if0 (Ax ⊢m) (Ax ⊢n) (⊢suc (Ax ⊢p · (⊢pred (Ax ⊢m)) · Ax ⊢n)))))))
   where
   ⊢p = S p≢n (S p≢m Z)
   ⊢m = S m≢n Z
@@ -824,34 +824,66 @@ _ : normalise 1 ⊢four ≡
   out-of-gas
   ((`Y
     (`λ 0 ⇒
-     (`λ 1 ⇒ (`λ 2 ⇒ `if0 ` 1 then ` 2 else ` 0 · (`pred ` 1) · ` 2))))
+     (`λ 1 ⇒
+      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
    · (`suc (`suc `zero))
    · (`suc (`suc `zero))
    ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y Fun refl)) ⟩
    (`λ 0 ⇒
     (`λ 1 ⇒
      `if0 ` 0 then ` 1 else
+     `suc
      (`Y
       (`λ 0 ⇒
-       (`λ 1 ⇒ (`λ 2 ⇒ `if0 ` 1 then ` 2 else ` 0 · (`pred ` 1) · ` 2))))
+       (`λ 1 ⇒
+        (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
      · (`pred ` 0)
      · ` 1))
    · (`suc (`suc `zero))
    · (`suc (`suc `zero))
+   ⟶⟨ ξ-·₁ (β-⇒ (Suc (Suc Zero))) ⟩
+   (`λ 0 ⇒
+    `if0 `suc (`suc `zero) then ` 0 else
+    `suc
+    (`Y
+     (`λ 1 ⇒
+      (`λ 2 ⇒
+       (`λ 3 ⇒ `if0 ` 2 then ` 3 else `suc ` 1 · (`pred ` 2) · ` 3))))
+    · (`pred (`suc (`suc `zero)))
+    · ` 0)
+   · (`suc (`suc `zero))
+   ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
+   `if0 `suc (`suc `zero) then `suc (`suc `zero) else
+   `suc
+   (`Y
+    (`λ 0 ⇒
+     (`λ 1 ⇒
+      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ β-if0-suc (Suc Zero) ⟩
+   `suc
+   (`Y
+    (`λ 0 ⇒
+     (`λ 1 ⇒
+      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
    ∎)
-  (⊢λ
-   (⊢λ
-    (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z)
-     (⊢Y
+  (⊢suc
+   (⊢Y
+    (⊢λ
+     (⊢λ
       (⊢λ
-       (⊢λ
-        (⊢λ
-         (⊢if0 (Ax (S m≢n Z)) (Ax Z)
-          (Ax (S p≢n (S p≢m Z)) · ⊢pred (Ax (S m≢n Z)) · Ax Z)))))
-      · ⊢pred (Ax (S (fresh-lemma CollectionDec.here) Z))
-      · Ax Z)))
-   · ⊢suc (⊢suc ⊢zero)
-   · ⊢suc (⊢suc ⊢zero))
+       (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z)
+        (⊢suc
+         (Ax
+          (S (fresh-lemma (CollectionDec.there CollectionDec.here))
+           (S (fresh-lemma CollectionDec.here) Z))
+          · ⊢pred (Ax (S (fresh-lemma CollectionDec.here) Z))
+          · Ax Z))))))
+    · ⊢pred (⊢suc (⊢suc ⊢zero))
+    · ⊢suc (⊢suc ⊢zero)))
 _ = refl
 -}
 \end{code}
@@ -884,129 +916,129 @@ _ : normalise 1
   · ⊢suc (⊢suc ⊢zero))
   ≡
   out-of-gas
-  ((`λ _x_1862 ⇒
-    (`λ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ⇒
-     `if0 ` _x_1862 then
-     ` (suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)) else
+  ((`λ _x_2065 ⇒
+    (`λ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ⇒
+     `if0 ` _x_2065 then
+     ` (suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)) else
      (`Y
       (`λ 0 ⇒
        (`λ 1 ⇒ (`λ 2 ⇒ `if0 ` 1 then ` 2 else ` 0 · (`pred ` 1) · ` 2))))
-     · (`pred ` _x_1862)
-     · ` (suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005))))
+     · (`pred ` _x_2065)
+     · ` (suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208))))
    · (`suc (`suc `zero))
    · (`suc (`suc `zero))
    ⟶⟨ ξ-·₁ (β-⇒ (Suc (Suc Zero))) ⟩
    (`λ
     foldr _⊔_ 0
     (map suc
-     (filter (λ x → ¬? (x ≟ _x_1862))
+     (filter (λ x → ¬? (x ≟ _x_2065))
       (filter
-       (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-       (_x_1862 ∷
-        [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-        suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-       | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))
+       (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+       (_x_2065 ∷
+        [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+        suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+       | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))
     ⇒
     `if0
     (((λ w →
-         ((λ x → ` x) , _x_1862 ↦ `suc (`suc `zero)) w | w ≟ _x_1862)
-      , suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ↦
+         ((λ x → ` x) , _x_2065 ↦ `suc (`suc `zero)) w | w ≟ _x_2065)
+      , suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ↦
       `
       foldr _⊔_ 0
       (map suc
-       (filter (λ x → ¬? (x ≟ _x_1862))
+       (filter (λ x → ¬? (x ≟ _x_2065))
         (filter
-         (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-         (_x_1862 ∷
-          [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-          suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-         | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
-     _x_1862
-     | _x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
+         (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+         (_x_2065 ∷
+          [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+          suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+         | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
+     _x_2065
+     | _x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
     then
     (((λ w →
-         ((λ x → ` x) , _x_1862 ↦ `suc (`suc `zero)) w | w ≟ _x_1862)
-      , suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ↦
+         ((λ x → ` x) , _x_2065 ↦ `suc (`suc `zero)) w | w ≟ _x_2065)
+      , suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ↦
       `
       foldr _⊔_ 0
       (map suc
-       (filter (λ x → ¬? (x ≟ _x_1862))
+       (filter (λ x → ¬? (x ≟ _x_2065))
         (filter
-         (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-         (_x_1862 ∷
-          [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-          suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-         | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
-     (suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
-     | suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ≟
-       suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
+         (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+         (_x_2065 ∷
+          [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+          suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+         | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
+     (suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
+     | suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ≟
+       suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
     else
     (`Y
      (`λ
       suc
       (foldr _⊔_ 0
        (map suc
-        (filter (λ x → ¬? (x ≟ _x_1862))
+        (filter (λ x → ¬? (x ≟ _x_2065))
          (filter
-          (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-          (_x_1862 ∷
-           [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-           suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-          | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+          (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+          (_x_2065 ∷
+           [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+           suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+          | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
       ⊔
       foldr _⊔_ 0
       (map suc
-       (filter (λ x → ¬? (x ≟ _x_1862))
+       (filter (λ x → ¬? (x ≟ _x_2065))
         (filter
-         (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-         (_x_1862 ∷
-          [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-          suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-         | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))
+         (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+         (_x_2065 ∷
+          [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+          suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+         | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))
       ⇒
       (`λ
        suc
        (suc
         (foldr _⊔_ 0
          (map suc
-          (filter (λ x → ¬? (x ≟ _x_1862))
+          (filter (λ x → ¬? (x ≟ _x_2065))
            (filter
-            (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-            (_x_1862 ∷
-             [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-             suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-            | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+            (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+            (_x_2065 ∷
+             [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+             suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+            | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
         ⊔
         foldr _⊔_ 0
         (map suc
-         (filter (λ x → ¬? (x ≟ _x_1862))
+         (filter (λ x → ¬? (x ≟ _x_2065))
           (filter
-           (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-           (_x_1862 ∷
-            [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-            suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-           | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+           (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+           (_x_2065 ∷
+            [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+            suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+           | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
        ⊔
        (suc
         (foldr _⊔_ 0
          (map suc
-          (filter (λ x → ¬? (x ≟ _x_1862))
+          (filter (λ x → ¬? (x ≟ _x_2065))
            (filter
-            (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-            (_x_1862 ∷
-             [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-             suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-            | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+            (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+            (_x_2065 ∷
+             [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+             suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+            | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
         ⊔
         foldr _⊔_ 0
         (map suc
-         (filter (λ x → ¬? (x ≟ _x_1862))
+         (filter (λ x → ¬? (x ≟ _x_2065))
           (filter
-           (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-           (_x_1862 ∷
-            [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-            suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-           | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+           (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+           (_x_2065 ∷
+            [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+            suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+           | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
        ⇒
        (`λ
         suc
@@ -1014,87 +1046,87 @@ _ : normalise 1
          (suc
           (foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
          ⊔
          (suc
           (foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))))
         ⊔
         (suc
          (suc
           (foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
          ⊔
          (suc
           (foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))))
         ⇒
         `if0
         `
@@ -1102,44 +1134,44 @@ _ : normalise 1
          (suc
           (foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
          ⊔
          (suc
           (foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))))
         then
         `
         (suc
@@ -1147,109 +1179,109 @@ _ : normalise 1
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))))
          ⊔
          (suc
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))))
         else
         `
         (suc
          (foldr _⊔_ 0
           (map suc
-           (filter (λ x → ¬? (x ≟ _x_1862))
+           (filter (λ x → ¬? (x ≟ _x_2065))
             (filter
-             (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-             (_x_1862 ∷
-              [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-              suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-             | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+             (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+             (_x_2065 ∷
+              [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+              suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+             | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
          ⊔
          foldr _⊔_ 0
          (map suc
-          (filter (λ x → ¬? (x ≟ _x_1862))
+          (filter (λ x → ¬? (x ≟ _x_2065))
            (filter
-            (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-            (_x_1862 ∷
-             [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-             suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-            | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+            (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+            (_x_2065 ∷
+             [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+             suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+            | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
         ·
         (`pred
          `
@@ -1257,44 +1289,44 @@ _ : normalise 1
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))))
         ·
         `
         (suc
@@ -1302,197 +1334,197 @@ _ : normalise 1
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))))))
          ⊔
          (suc
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-              | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+              | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
           ⊔
           (suc
            (foldr _⊔_ 0
             (map suc
-             (filter (λ x → ¬? (x ≟ _x_1862))
+             (filter (λ x → ¬? (x ≟ _x_2065))
               (filter
-               (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-               (_x_1862 ∷
-                [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-                suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-               | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
+               (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+               (_x_2065 ∷
+                [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+                suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+               | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
            ⊔
            foldr _⊔_ 0
            (map suc
-            (filter (λ x → ¬? (x ≟ _x_1862))
+            (filter (λ x → ¬? (x ≟ _x_2065))
              (filter
-              (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-              (_x_1862 ∷
-               [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-               suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
+              (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+              (_x_2065 ∷
+               [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+               suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
               | ¬?
-                (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))))))))
+                (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))))))))
     ·
     (`pred
      (((λ w →
-          ((λ x → ` x) , _x_1862 ↦ `suc (`suc `zero)) w | w ≟ _x_1862)
-       , suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ↦
+          ((λ x → ` x) , _x_2065 ↦ `suc (`suc `zero)) w | w ≟ _x_2065)
+       , suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ↦
        `
        foldr _⊔_ 0
        (map suc
-        (filter (λ x → ¬? (x ≟ _x_1862))
+        (filter (λ x → ¬? (x ≟ _x_2065))
          (filter
-          (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-          (_x_1862 ∷
-           [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-           suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-          | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
-      _x_1862
-      | _x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
+          (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+          (_x_2065 ∷
+           [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+           suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+          | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
+      _x_2065
+      | _x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
     ·
     (((λ w →
-         ((λ x → ` x) , _x_1862 ↦ `suc (`suc `zero)) w | w ≟ _x_1862)
-      , suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ↦
+         ((λ x → ` x) , _x_2065 ↦ `suc (`suc `zero)) w | w ≟ _x_2065)
+      , suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ↦
       `
       foldr _⊔_ 0
       (map suc
-       (filter (λ x → ¬? (x ≟ _x_1862))
+       (filter (λ x → ¬? (x ≟ _x_2065))
         (filter
-         (λ x → ¬? (x ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
-         (_x_1862 ∷
-          [ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) , _x_1862 ,
-          suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ])
-         | ¬? (_x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))))))
-     (suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005))
-     | suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_2005) ≟
-       suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887)))
+         (λ x → ¬? (x ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
+         (_x_2065 ∷
+          [ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) , _x_2065 ,
+          suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ])
+         | ¬? (_x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))))))
+     (suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208))
+     | suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2208) ≟
+       suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090)))
    · (`suc (`suc `zero))
    ∎)
   (⊢λ
    (⊢if0
-    (.Typed.⊢ρ′
+    (.TypedFresh.⊢ρ′
      (λ {w} w∈ {z₁} y∈ →
-        .Typed.Σ
+        .TypedFresh.Σ
         (⊢λ
-         (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+         (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
         (⊢suc (⊢suc ⊢zero)) w∈ y∈
-        | w ≟ _x_1862)
-     (.Typed.⊢ρ
+        | w ≟ _x_2065)
+     (.TypedFresh.⊢ρ
       (⊢λ
-       (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+       (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
       (⊢suc (⊢suc ⊢zero)))
      (λ {_} x∈ → x∈)
-     (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016)
+     (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219)
      (CollectionDec.\\-to-∷ ℕ _≟_ (λ {_} x∈ → x∈) CollectionDec.here
-      | _x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
+      | _x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
      (S (fresh-lemma CollectionDec.here) Z)
-     | _x_1862 ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
-    (.Typed.⊢ρ′
+     | _x_2065 ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
+    (.TypedFresh.⊢ρ′
      (λ {w} w∈ {z₁} y∈ →
-        .Typed.Σ
+        .TypedFresh.Σ
         (⊢λ
-         (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+         (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
         (⊢suc (⊢suc ⊢zero)) w∈ y∈
-        | w ≟ _x_1862)
-     (.Typed.⊢ρ
+        | w ≟ _x_2065)
+     (.TypedFresh.⊢ρ
       (⊢λ
-       (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+       (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
       (⊢suc (⊢suc ⊢zero)))
      (λ {_} x∈ → x∈)
-     (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016)
+     (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219)
      (CollectionDec.\\-to-∷ ℕ _≟_ (λ {_} x∈ → x∈)
       (CollectionDec.there CollectionDec.here)
-      | suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ≟
-        suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
+      | suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ≟
+        suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
      Z
-     | suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887) ≟
-       suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
+     | suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090) ≟
+       suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
     (⊢subst
      (λ {w} w∈′ {z₁} →
-        .Typed.Σ′
+        .TypedFresh.Σ′
         (λ {w₁} w∈ {z₂} y∈ →
-           .Typed.Σ
+           .TypedFresh.Σ
            (⊢λ
-            (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+            (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
            (⊢suc (⊢suc ⊢zero)) w∈ y∈
-           | w₁ ≟ _x_1862)
-        (.Typed.⊢ρ
+           | w₁ ≟ _x_2065)
+        (.TypedFresh.⊢ρ
          (⊢λ
-          (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+          (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
          (⊢suc (⊢suc ⊢zero)))
         (λ {_} x∈ → x∈)
-        (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016) w∈′
-        | w ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
-     (.Typed.⊢ρ′
+        (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219) w∈′
+        | w ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
+     (.TypedFresh.⊢ρ′
       (λ {w} w∈ {z₁} y∈ →
-         .Typed.Σ
+         .TypedFresh.Σ
          (⊢λ
-          (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+          (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
          (⊢suc (⊢suc ⊢zero)) w∈ y∈
-         | w ≟ _x_1862)
-      (.Typed.⊢ρ
+         | w ≟ _x_2065)
+      (.TypedFresh.⊢ρ
        (⊢λ
-        (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+        (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
        (⊢suc (⊢suc ⊢zero)))
       (λ {_} x∈ → x∈)
-      (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2016))
+      (⊢if0 (Ax (S (fresh-lemma CollectionDec.here) Z)) (Ax Z) _2219))
      (λ {z₁} x →
         CollectionDec.\\-to-∷ ℕ _≟_ (λ {_} x∈ → x∈)
         (CollectionDec.there (CollectionDec.there x))
-        | z₁ ≟ suc _x_1862 ⊔ foldr _⊔_ 0 (map suc _xs_1887))
-     _2016))
+        | z₁ ≟ suc _x_2065 ⊔ foldr _⊔_ 0 (map suc _xs_2090))
+     _2219))
    · ⊢suc (⊢suc ⊢zero))
 -}
 \end{code}
