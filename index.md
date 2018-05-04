@@ -45,7 +45,7 @@ fixes are encouraged.
   - [StlcProp: Properties of STLC](StlcProp)
 
   In progress
-  - [FreshUnstuck: Generation of fresh names with strings](TypedFresh)
+  - [FreshUnstuck: Generation of fresh names with strings](FreshUnstuck)
   - [Typed: Raw terms with types (broken)](Typed)
   - [TypedFresh: Raw terms with fresh names (broken)](TypedFresh)
 
