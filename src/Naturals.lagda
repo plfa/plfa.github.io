@@ -5,7 +5,7 @@ permalink : /Naturals
 ---
 
 The night sky holds more stars than I can count, though less than five
-thousand are visible to the naked sky.  The observable universe
+thousand are visible to the naked eye.  The observable universe
 contains about seventy sextillion stars.
 
 But the number of stars is finite, while natural numbers are infinite.
