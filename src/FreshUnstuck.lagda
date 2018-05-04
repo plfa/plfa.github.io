@@ -1,7 +1,7 @@
 ---
 title     : "FreshUnstuck: Generation of fresh names with strings"
 layout    : page
-permalink : /TypedFresh
+permalink : /FreshUnstuck
 ---
 
 Generation of fresh names, where names are string-integer pairs.

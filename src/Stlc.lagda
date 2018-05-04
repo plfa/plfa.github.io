@@ -121,8 +121,8 @@ We use the following special characters
 
     ⇒  U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
     `  U+0060: GRAVE ACCENT 
-    λ  U+03BB:  GREEK SMALL LETTER LAMBDA (\Gl or \lambda)
-    ∶  U+2236:  RATIO (\:)
+    λ  U+03BB: GREEK SMALL LETTER LAMBDA (\Gl or \lambda)
+    ∶  U+2236: RATIO (\:)
     ·  U+00B7: MIDDLE DOT (\cdot)
 
 Note that ∶ (U+2236 RATIO) is not the same as : (U+003A COLON).
@@ -183,7 +183,7 @@ irrelevant.  Thus the five terms
 * `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
 * `` λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y) ``
 * `` λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander) ``
-* `` λ[ 😈 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😄 ∶ 𝔹 ] ` 😈 · (` 😈 · ` 😄) ``  
+* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``  
 * `` λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f) ``
 
 are all considered equivalent.  This equivalence relation
@@ -227,8 +227,8 @@ same names.
 
 #### Special characters
 
+    😇  U+1F607: SMILING FACE WITH HALO
     😈  U+1F608: SMILING FACE WITH HORNS
-    😄  U+1F604: SMILING FACE WITH OPEN MOUTH AND SMILING EYES
 
 #### Precedence
 
