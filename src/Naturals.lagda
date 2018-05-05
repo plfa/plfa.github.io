@@ -4,7 +4,7 @@ layout    : page
 permalink : /Naturals
 ---
 
-The night sky holds more stars than I can count, though less than five
+The night sky holds more stars than I can count, though fewer than five
 thousand are visible to the naked eye.  The observable universe
 contains about seventy sextillion stars.
 
