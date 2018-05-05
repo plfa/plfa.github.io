@@ -217,7 +217,7 @@ be shown, and reading down from the top and up from the bottom takes us to
 
 For the inductive case, we must show:
 
-    (suc m + n) + p ≡ (suc m + n) + p
+    (suc m + n) + p ≡ suc m + (n + p)
 
 Simplifying both sides with the inductive case of addition yields the equation:
 
