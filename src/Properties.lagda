@@ -616,13 +616,6 @@ displaying the text
 
 This indicates that hole 0 is to be filled in with a proof of
 the stated judgement.
-Emacs will also create a new window at the bottom of the screen
-displaying the text
-
-    ?0 : ((m + n) + p) ≡ (m + (n + p))
-
-This indicates that hole 0 is to be filled in with a proof of
-the stated judgement.
 
 We wish to prove the proposition by induction on `m`.  Move
 the cursor into the hole and type `^C ^C`.  You will be given
