@@ -1,5 +1,31 @@
 # Notes
 
+## Possible structures for the book
+
+* One possible development
+  + raw terms
+  + scoped terms (is conversion from raw to scoped a function?)
+  + typed terms (via bidirectional typing)
+
+* The above could be developed either for
+  + pure lambda terms with full normalisation
+  + PCF with top-level reduction to value
+
+* If I follow raw-scoped-typed then:
+  + might want to have reductions for completely raw terms
+    later in the book rather than earlier
+  + full normalisation requires substitution of open terms
+
+* Today's task (Tue 8 May)
+  + consider lambda terms to values (not PCF)
+  + raw, scoped, typed
+
+  + Note that substitution for open terms is not hard,
+    it is proving it correct that is difficult!
+  + can put each development in a separate module
+	to support reuse of names
+
+
 ## PHOAS
 
 The following comments were collected on the Agda mailing list.
