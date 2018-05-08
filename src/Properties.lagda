@@ -217,7 +217,7 @@ be shown, and reading down from the top and up from the bottom takes us to
 
 For the inductive case, we must show:
 
-    (suc m + n) + p ≡ (suc m + n) + p
+    (suc m + n) + p ≡ suc m + (n + p)
 
 Simplifying both sides with the inductive case of addition yields the equation:
 
@@ -609,13 +609,6 @@ followed by control-L), the question mark will be replaced.
 
 The empty braces are called a *hole*, and 0 is a number used for
 referring to the hole.  The hole may display highlighted in green.
-Emacs will also create a new window at the bottom of the screen
-displaying the text
-
-    ?0 : ((m + n) + p) ≡ (m + (n + p))
-
-This indicates that hole 0 is to be filled in with a proof of
-the stated judgement.
 Emacs will also create a new window at the bottom of the screen
 displaying the text
 
