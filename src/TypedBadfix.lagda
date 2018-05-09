@@ -29,7 +29,7 @@ open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (contraposition; ¬?)
 open import Relation.Nullary.Product using (_×-dec_)
-open import Collections using (_↔_)
+import Collections
 \end{code}
 
 
@@ -219,7 +219,7 @@ erase-lemma (⊢L · ⊢M)         =  cong₂ _·_ (erase-lemma ⊢L) (erase-lem
 ### Lists as sets
 
 \begin{code}
-open Collections.CollectionDec (Id) (_≟_)
+open Collections (Id) (_≟_)
 \end{code}
 
 ### Free variables
