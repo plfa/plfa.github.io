@@ -39,12 +39,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 ## Collections
 
 \begin{code}
-infix 0 _↔_
-
-_↔_ : Set → Set → Set
-A ↔ B  =  (A → B) × (B → A)
-
-module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
+module Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
 
     Coll : Set → Set
     Coll A  =  List A

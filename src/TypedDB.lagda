@@ -29,24 +29,24 @@ open import Relation.Nullary.Product using (_×-dec_)
 ## Syntax
 
 \begin{code}
-infixl 6 _,_
 infix  4 _⊢_
 infix  4 _∋_
+infixl 5 _,_
 infixr 5 _⇒_
-infixl 5 _·_
-infix  6 S_
-infix  4 ƛ_
-infix  4 μ_
+infix  5 ƛ_
+infix  5 μ_
+infixl 6 _·_
+infix  7 S_
 
 data Type : Set where
   `ℕ  : Type
   _⇒_ : Type → Type → Type
 
-data Env : Set where
-  ε   : Env
-  _,_ : Env → Type → Env
+data Ctx : Set where
+  ε   : Ctx
+  _,_ : Ctx → Type → Ctx
 
-data _∋_ : Env → Type → Set where
+data _∋_ : Ctx → Type → Set where
 
   Z : ∀ {Γ} {A}
       ----------
@@ -57,7 +57,7 @@ data _∋_ : Env → Type → Set where
       ---------
     → Γ , A ∋ B
 
-data _⊢_ : Env → Type → Set where
+data _⊢_ : Ctx → Type → Set where
 
   ⌊_⌋ : ∀ {Γ} {A}
     → Γ ∋ A

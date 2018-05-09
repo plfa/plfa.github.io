@@ -28,7 +28,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
-open import Collections
+import Collections
 
 pattern [_]     x      =  x ∷ []
 pattern [_,_]   x y    =  x ∷ y ∷ []
@@ -270,7 +270,7 @@ erase-lemma (⊢Y ⊢M)          =  cong `Y_ (erase-lemma ⊢M)
 ### Lists as sets
 
 \begin{code}
-open Collections.CollectionDec (Id) (_≟_)
+open Collections (Id) (_≟_)
 \end{code}
 
 ### Free variables
