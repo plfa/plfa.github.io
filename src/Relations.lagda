@@ -47,7 +47,7 @@ data _≤_ : ℕ → ℕ → Set where
   s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ suc n
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names,
-while `m ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces)
+while `zero ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces)
 are types.  This is our first use of an *indexed* datatype,
 where we say the type `m ≤ n` is indexed by two naturals, `m` and `n`.
 
@@ -94,9 +94,9 @@ However, here the declarations are surrounded by curly braces `{ }` rather than
 parentheses `( )`.  This means that the arguments are *implicit* and need not be
 written explicitly; instead, they are *inferred* by Agda's typechecker. Thus, we
 write `+-comm m n` for the proof that `m + n ≡ n + m`, but `z≤n` for the proof
-that `m ≤ m`, leaving `m` implicit.  Similarly, if `m≤n` is evidence that `m ≤
-n`, we write write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving both `m`
-and `n` implicit.
+that `zero ≤ m`, leaving `m` implicit.  Similarly, if `m≤n` is evidence that
+`m ≤ n`, we write write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving
+both `m` and `n` implicit.
 
 If we wish, it is possible to provide implicit arguments explicitly by
 writing the arguments inside curly braces.  For instance, here is the
