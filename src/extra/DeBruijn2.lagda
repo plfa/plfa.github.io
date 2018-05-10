@@ -1,7 +1,7 @@
 ## DeBruijn encodings in Agda
 
 \begin{code}
-module DeBruijn where
+module DeBruijn2 where
 \end{code}
 
 ## Imports
