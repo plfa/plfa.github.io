@@ -20,7 +20,7 @@ module TypedFresh where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; _++_; map; foldr; filter)
+open import Data.List using (List; []; _∷_; _++_; map; foldr; filter; concat)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_; _≟_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
@@ -639,6 +639,51 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 
 ### Substitution preserves types
 
+I can remove the `ys` argument from `subst` by always
+computing it as `frees ρ M`. As I step into an abstraction,
+this will automatically add the renaming of the bound
+variable, since the bound variable gets added to `M` and
+its renaming gets added to `ρ`.
+
+A possible new version.
+Simpler to state, is it simpler to prove?
+
+What may be tricky to establish is that sufficient
+renaming occurs to justify the `≢` term added to `S`.
+
+It may be hard to establish because we use it
+when we instantiate `⊢rename′ {Δ} {Δ , y ⦂ A} (S w≢y)`
+and the problem is that `w≢y` for every `w` in
+`free (ρ x)`, but there may be other `w` in `Δ`.
+Bugger.
+
+\begin{code}
+frees : (Id → Term) → Term → List Id
+frees ρ M  =  concat (map (free ∘ ρ) (free M))
+
+subst′ : (Id → Term) → Term → Term
+subst′ ρ M = subst (frees ρ M) ρ M
+
+⊢rename′ : ∀ {Γ Δ M A}
+  → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
+  → Γ ⊢ M ⦂ A
+    ----------------------------------
+  → Δ ⊢ M ⦂ A
+⊢rename′ = {!!}  
+
+⊢subst′ : ∀ {Γ Δ ρ M A}
+  → (∀ {w B} → Γ ∋ w ⦂ B → Δ ⊢ ρ w ⦂ B)
+  → Γ ⊢ M ⦂ A
+    ------------------------------------
+  → Δ ⊢ subst ρ M ⦂ A
+⊢subst′ = {!!}
+\end{code}
+Stepping into a subterm, just need to precompose `ρ` with a
+lemma stating that the free variables of the subterm are
+a subset of the free variables of the term.
+
+
+Previous version
 \begin{code}
 ⊢subst : ∀ {Γ Δ xs ys ρ}
   → (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys)
