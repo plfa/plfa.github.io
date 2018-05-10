@@ -655,7 +655,9 @@ It may be hard to establish because we use it
 when we instantiate `⊢rename′ {Δ} {Δ , y ⦂ A} (S w≢y)`
 and the problem is that `w≢y` for every `w` in
 `free (ρ x)`, but there may be other `w` in `Δ`.
-Bugger.
+Bugger. But I think the theorems are true despite
+this problem in the proof, so there may be a way
+around it.
 
 \begin{code}
 frees : (Id → Term) → Term → List Id
@@ -675,7 +677,7 @@ subst′ ρ M = subst (frees ρ M) ρ M
   → (∀ {w B} → Γ ∋ w ⦂ B → Δ ⊢ ρ w ⦂ B)
   → Γ ⊢ M ⦂ A
     ------------------------------------
-  → Δ ⊢ subst ρ M ⦂ A
+  → Δ ⊢ subst′ ρ M ⦂ A
 ⊢subst′ = {!!}
 \end{code}
 Stepping into a subterm, just need to precompose `ρ` with a
