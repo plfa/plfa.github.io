@@ -402,7 +402,7 @@ as earlier examples have shown.
 
 ## Extensionality {#extensionality}
 
-Extensionality asserts that they only way to distinguish functions is
+Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
 yield the same result, then they are the same functions.  It is the
 converse of `cong-app`, introduced earlier.
