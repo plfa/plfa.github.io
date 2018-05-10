@@ -45,10 +45,26 @@
       renaming in case of substitution by closed
       terms, but I think this is hard
 
-  + easy to define break, make to extract a prefix
-    and count primes at end of an id, but hard
+* Today's achievements and next steps (Thu 10 May)
+  + defined break, make to extract a prefix
+    and count primes at end of an id.  But hard
     to do corresponding proofs.  Need to figure out
 	how to exploit abstraction to make terms readable.
+  + Conversion of raw to scoped and scoped to raw
+	is easy if I use impossible 
+  + Added conversion of TypedDB to PHOAS in
+    extra/DeBruijn-agda-list-4.lagda
+  + Next: try adding bidirectional typing to
+    convert Raw or Scoped to TypedDB
+  + Next: Can proofs in Typed be simplified by
+    applying suitable lemmas about free?
+  + updated Agda from:
+      Agda version 2.6.0-4654bfb-dirty
+    to:
+      Agda version 2.6.0-2f2f4f5 
+    Now TypedFresh.lagda computes 2+2 in milliseconds
+    (as opposed to failing to compute it in one day).
+
 
 ## PHOAS
 
