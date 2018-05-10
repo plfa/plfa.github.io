@@ -23,8 +23,32 @@
   + Note that substitution for open terms is not hard,
     it is proving it correct that is difficult!
   + can put each development in a separate module
-	to support reuse of names
+    to support reuse of names
 
+* Today's thoughts (Thu 10 May)
+  + simplify TypedFresh
+    - Does it become easier once I have
+      suitable lemmas about free in place?
+  + still need a chain of development
+    - raw -> scoped -> typed
+    - raw -> typed and typed -> raw needed for examples
+    - look again at raw to scoped
+    - look at scoped to typed
+    - typed to raw requires fresh names
+    - fresh name strategy: primed or numbers?
+    - ops on strings: show, read, strip from end
+  + trickier ideas
+    - factor TypedFresh into Barendregt followed
+      by substitution? This might actually lead
+      to a much longer development
+    - would be cool if Barendregt never required
+      renaming in case of substitution by closed
+      terms, but I think this is hard
+
+  + easy to define break, make to extract a prefix
+    and count primes at end of an id, but hard
+    to do corresponding proofs.  Need to figure out
+	how to exploit abstraction to make terms readable.
 
 ## PHOAS
 

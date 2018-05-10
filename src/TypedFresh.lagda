@@ -30,9 +30,10 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
 import Collections
 
-pattern [_]     x      =  x ∷ []
-pattern [_,_]   x y    =  x ∷ y ∷ []
-pattern [_,_,_] x y z  =  x ∷ y ∷ z ∷ []
+pattern [_]       w        =  w ∷ []
+pattern [_,_]     w x      =  w ∷ x ∷ []
+pattern [_,_,_]   w x y    =  w ∷ x ∷ y ∷ []
+pattern [_,_,_,_] w x y z  =  w ∷ x ∷ y ∷ z ∷ []
 \end{code}
 
 

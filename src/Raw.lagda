@@ -36,6 +36,37 @@ pattern [_,_,_,_] w x y z  =  w ∷ x ∷ y ∷ z ∷ []
 \end{code}
 
 
+## Identifiers
+
+\begin{code}
+Id : Set
+Id = String
+\end{code}
+
+### Fresh variables
+\begin{code}
+fresh : List Id → Id → Id
+fresh xs₀ y = helper xs₀ (length xs₀) y
+  where
+
+  prime : Id → Id
+  prime x = x String.++ "′"
+
+  helper : List Id → ℕ → Id → Id
+  helper []       _       w                =  w
+  helper (x ∷ xs) n       w with w ≟ x
+  helper (x ∷ xs) n       w    | no  _     =  helper xs n w
+  helper (x ∷ xs) (suc n) w    | yes refl  =  helper xs₀ n (prime w)
+  helper (x ∷ xs) zero    w    | yes refl  =  ⊥-elim impossible
+    where postulate impossible : ⊥
+\end{code}
+
+### Lists of identifiers
+
+\begin{code}
+open Collections (Id) (_≟_)
+\end{code}
+
 ## First development: Raw
 
 \begin{code}
@@ -47,9 +78,6 @@ module Raw where
 \begin{code}
   infix   6  `λ_`→_
   infixl  9  _·_
-
-  Id : Set
-  Id = String
 
   data Type : Set where
     `ℕ   : Type
@@ -81,12 +109,6 @@ module Raw where
   norm = `λ "m" `→ ⌊ "m" ⌋ · (`λ "x" `→ `suc ⌊ "x" ⌋) · `zero
 \end{code}
 
-### Lists of identifiers
-
-\begin{code}
-  open Collections (Id) (_≟_)
-\end{code}
-
 ### Free variables
 
 \begin{code}
@@ -114,23 +136,6 @@ module Raw where
 
 ### Fresh variables
 
-\begin{code}
-  fresh : List Id → Id → Id
-  fresh xs₀ y = helper xs₀ (length xs₀) y
-    where
-
-    prime : Id → Id
-    prime x = x String.++ "′"
-
-    helper : List Id → ℕ → Id → Id
-    helper []       _       w                =  w
-    helper (x ∷ xs) n       w with w ≟ x
-    helper (x ∷ xs) n       w    | no  _     =  helper xs n w
-    helper (x ∷ xs) (suc n) w    | yes refl  =  helper xs₀ n (prime w)
-    helper (x ∷ xs) zero    w    | yes refl  =  ⊥-elim impossible
-      where postulate impossible : ⊥
-
-\end{code}
 
 ### Substitution
 
@@ -464,10 +469,6 @@ module Scoped where
   infixl 5 _,*
   infix  5 `λ_`→_
   infixl 6 _·_
-  infix  7 S_
-
-  Id : Set
-  Id = String
 
   data Ctx : Set where
     ε   : Ctx
@@ -479,7 +480,7 @@ module Scoped where
         ------------
       → Γ ,* ∋*
 
-    S_ : ∀ {Γ}
+    S : ∀ {Γ}
       → Γ ∋*
         --------
       → Γ ,* ∋* 
@@ -512,64 +513,117 @@ module Scoped where
       → Γ ⊢* 
 \end{code}
 
-## Conversion: Raw to Scoped
+### Shorthand for variables
 
 \begin{code}
-  infix 4 _∈_
+  short : ∀{Γ} → ℕ → Γ ∋*
+  short {ε} n = ⊥-elim impossible
+    where postulate impossible : ⊥
+  short {Γ ,*} zero     =  Z
+  short {Γ ,*} (suc n)  =  S (short {Γ} n)
 
-  data _∈_ : Id → List Id → Set where
+  ⌈_⌉ : ∀{Γ} → ℕ → Γ ⊢*
+  ⌈ n ⌉ = ⌊ short n ⌋
+\end{code}
 
-    here : ∀ {x xs} →
-      ----------
-      x ∈ x ∷ xs
-      
-    there : ∀ {w x xs} →
-      w ∈ xs →
-      ----------
-      w ∈ x ∷ xs
+### Sample terms
+\begin{code}
+  two : ∀{Γ} → Γ ⊢*
+  two = `λ "s" `→ `λ "z" `→ ⌈ 1 ⌉ · (⌈ 1 ⌉ · ⌈ 0 ⌉)
 
-  _?∈_ : ∀ (x : Id) (xs : List Id) → Dec (x ∈ xs)
-  x ?∈ []  =  no (λ())
-  x ?∈ (y ∷ ys) with x ≟ y
-  ...              | yes refl              =  yes here
-  ...              | no x≢  with x ?∈ ys
-  ...                          | yes x∈    =  yes (there x∈)
-  ...                          | no x∉     =  no  (λ{ here → x≢ refl
-                                                    ; (there x∈) → x∉ x∈
-                                                    })
+  plus : ∀{Γ} → Γ ⊢*
+  plus = `λ "m" `→ `λ "n" `→ `λ "s" `→ `λ "z" `→
+           ⌈ 3 ⌉ · ⌈ 1 ⌉ · (⌈ 2 ⌉ · ⌈ 1 ⌉ · ⌈ 0 ⌉)
 
-  distinct : List Id → List Id
-  distinct []  =  []
-  distinct (x ∷ xs) with x ?∈ distinct xs
-  ... | yes x∈  =  distinct xs
-  ... | no  x∉  =  x ∷ distinct xs
+  norm : ∀{Γ} → Γ ⊢*
+  norm = `λ "m" `→ ⌈ 0 ⌉ · (`λ "x" `→ `suc ⌈ 0 ⌉) · `zero
+\end{code}
 
-  context : Raw.Term → Ctx
-  context M  =  helper (distinct (Raw.free M))
+### Conversion: Raw to Scoped
+
+Doing the conversion from Raw to Scoped is hard.
+The conversion takes a list of variables, with the invariant
+is that every free variable in the term appears in this list.
+But ensuring that the invariant holds is difficult.
+
+One way around this may be *not* to ensure the invariant,
+and to return `impossible` if it is violated.  If the
+conversion succeeds, it is guaranteed to return a term of
+the correct type.
+
+\begin{code}
+  raw→scoped : Raw.Term → ε ⊢*
+  raw→scoped M  =  helper [] M
     where
-    helper : List Id → Ctx
-    helper []        =  ε
-    helper (x ∷ xs)  =  helper xs ,*
+    lookup : List Id → Id → ℕ
+    lookup [] w                   =  ⊥-elim impossible
+      where postulate impossible : ⊥
+    lookup (x ∷ xs) w with w ≟ x
+    ...                  | yes _  =  0
+    ...                  | no  _  =  suc (lookup xs w)
+ 
+    helper : ∀ {Γ} → List Id → Raw.Term → Γ ⊢*
+    helper xs Raw.⌊ x ⌋         = ⌈ lookup xs x ⌉
+    helper xs (Raw.`λ x `→ N)  =  `λ x `→ helper (x ∷ xs) N
+    helper xs (L Raw.· M)      =  helper xs L · helper xs M
+    helper xs Raw.`zero        =  `zero
+    helper xs (Raw.`suc M)     =  `suc (helper xs M)
+\end{code}
 
-  raw→scoped : (M : Raw.Term) → (context M ⊢*)
-  raw→scoped M = {!!}
+### Test cases
+
+\begin{code}
+  _ : raw→scoped Raw.two ≡ two
+  _ = refl
+
+  _ : raw→scoped Raw.plus ≡ plus
+  _ = refl
+
+  _ : raw→scoped Raw.norm ≡ norm
+  _ = refl
+\end{code}
+
+### Conversion: Scoped to Raw
+
+\begin{code}
+  scoped→raw : ε ⊢* → Raw.Term
+  scoped→raw M = helper [] M
     where
+    index : ∀ {Γ} → List Id → Γ ∋* → Id
+    index [] w            =  ⊥-elim impossible
+      where postulate impossible : ⊥
+    index (x ∷ xs) Z      =  x
+    index (x ∷ xs) (S w)  =  index xs w
 
-    xs₀ = distinct (Raw.free M)
+    helper : ∀ {Γ} → List Id → Γ ⊢* → Raw.Term
+    helper xs ⌊ x ⌋         = Raw.⌊ index xs x ⌋
+    helper xs (`λ x `→ N)  =  Raw.`λ y `→ helper (y ∷ xs) N
+      where y = fresh xs x
+    helper xs (L · M)      =  (helper xs L) Raw.· (helper xs M)
+    helper xs `zero        =  Raw.`zero
+    helper xs (`suc M)     =  Raw.`suc (helper xs M)
+\end{code}
 
-{-
-    The following does not work because `context M` should shrink on recursive calls.
+This is all straightforward. But what I would like to do is show that
+meaning is preserved (or reductions are preserved) by the translations,
+and that would be harder.  I'm especially concerned by how one would
+show the call to fresh is needed, or what goes wrong if it is omitted.
 
-    lookup : Id → (context M ⊢*)
-    lookup w = helper w xs₀
-      where
-      helper : Id → List Id → (context M ⊢*)
-      helper w []                    =  ⊥-elim impossible
-        where postulate impossible : ⊥
-      helper w (x ∷ xs) with w ≟ x
-      ...                  | yes _   =  Z
-      ...                  | no  _   =  S (helper xs)
--}    
+### Test cases
+
+\begin{code}
+  _ : scoped→raw two ≡ Raw.two
+  _ = refl
+
+  _ : scoped→raw plus ≡ Raw.plus
+  _ = refl
+
+  _ : scoped→raw norm ≡ Raw.norm
+  _ = refl
+
+  _ : scoped→raw (`λ "x" `→ `λ "x" `→ ⌈ 1 ⌉ · ⌈ 0 ⌉) ≡
+        Raw.`λ "x" `→ Raw.`λ "x′" `→ Raw.⌊ "x" ⌋ Raw.· Raw.⌊ "x′" ⌋
+  _ = refl
 \end{code}
 
 
@@ -578,18 +632,20 @@ module Scoped where
 
 \begin{code}
 module Typed where
-\end{code}
   infix  4 _⊢_
   infix  4 _∋_
   infixl 5 _,_
   infixr 5 _`→_
-  infix  5 ƛ_`→_
+  infix  5 `λ_`→_
   infixl 6 _·_
-  infix  7 S_
 
   data Type : Set where
     `ℕ   : Type
     _`→_ : Type → Type → Type
+
+  data Ctx : Set where
+    ε   : Ctx
+    _,_ : Ctx → Type → Ctx
 
   data _∋_ : Ctx → Type → Set where
 
@@ -597,7 +653,7 @@ module Typed where
         ----------
       → Γ , A ∋ A
 
-    S_ : ∀ {Γ A B}
+    S : ∀ {Γ A B}
       → Γ ∋ B
         ---------
       → Γ , A ∋ B

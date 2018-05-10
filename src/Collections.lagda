@@ -129,7 +129,28 @@ module Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
     ...                            | inj₂ ∈ys       =  inj₂ ∈ys
 
 
-\end{code}        
+\end{code}
+
+Neither of the following are currently needed, but I put them here
+in case they turn out to be useful later.
+
+\begin{code}
+    _?∈_ : ∀ (x : A) (xs : List A) → Dec (x ∈ xs)
+    x ?∈ []  =  no (λ())
+    x ?∈ (y ∷ ys) with x ≟ y
+    ...              | yes refl               =  yes here
+    ...              | no  x≢  with x ?∈ ys
+    ...                           | yes x∈    =  yes (there x∈)
+    ...                           | no  x∉    =  no  (λ{ here       → x≢ refl
+                                                       ; (there x∈) → x∉ x∈
+                                                       })
+
+    distinct : List A → List A
+    distinct []  =  []
+    distinct (x ∷ xs) with x ?∈ distinct xs
+    ... | yes x∈  =  distinct xs
+    ... | no  x∉  =  x ∷ distinct xs
+\end{code}
 
 
 ## Standard Library
