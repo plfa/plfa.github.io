@@ -259,7 +259,8 @@ opens that module, that is, adds all the names specified in the
 `using` clause into the current scope. In this case the names added
 are `_≡_`, the equivalence operator, and `refl`, the name for evidence
 that two terms are equal.  The third line takes a record that
-specifies operators to support reasoning about equivalence, and adds
+specifies operators to support reasoning about equivalence, 
+dds
 all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
 will see how these are used below.  We take all these as givens for now,
@@ -575,7 +576,7 @@ second argument.  This trick goes by the name *currying*.
 
 Agda, like other functional languages such as
 ML and Haskell, is designed to make currying easy to use.  Function
-arrows associate to the left and application associates to the right.
+arrows associate to the right and application associates to the left.
 
     ℕ → ℕ → ℕ    stands for    ℕ → (ℕ → ℕ)
 
