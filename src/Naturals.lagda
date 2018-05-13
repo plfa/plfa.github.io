@@ -259,8 +259,7 @@ opens that module, that is, adds all the names specified in the
 `using` clause into the current scope. In this case the names added
 are `_≡_`, the equivalence operator, and `refl`, the name for evidence
 that two terms are equal.  The third line takes a record that
-specifies operators to support reasoning about equivalence, 
-dds
+specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
 will see how these are used below.  We take all these as givens for now,
