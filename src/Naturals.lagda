@@ -522,7 +522,7 @@ _ =
      1
   ∎
 \end{code}
-We did not use the third equation at all, but it will be required
+We did not use the second equation at all, but it will be required
 if we try to subtract a smaller number from a larger one.
 \begin{code}
 _ =
