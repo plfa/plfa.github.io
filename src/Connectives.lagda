@@ -713,7 +713,7 @@ and the rule `η-×` for products.
 
 ## Distribution
 
-Products distributes over sum, up to isomorphism.  The code to validate
+Product distributes over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results.
 \begin{code}
 ×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
