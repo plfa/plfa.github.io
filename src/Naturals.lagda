@@ -575,7 +575,7 @@ second argument.  This trick goes by the name *currying*.
 
 Agda, like other functional languages such as
 ML and Haskell, is designed to make currying easy to use.  Function
-arrows associate to the left and application associates to the right.
+arrows associate to the right and application associates to the left.
 
     ℕ → ℕ → ℕ    stands for    ℕ → (ℕ → ℕ)
 
