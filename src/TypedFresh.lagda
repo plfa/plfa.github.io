@@ -1,13 +1,11 @@
 ---
-title     : "TypedFresh: Fresh variables in substitution (broken)"
+title     : "TypedFresh: Fresh variables in substitution"
 layout    : page
 permalink : /TypedFresh
 ---
 
 This version uses raw terms. Substitution generates
 a fresh name whenever substituting for a lambda term.
-The proof is complete, but computing a reduction sequence
-is currently intractable, as described at the end.
 
 
 ## Imports
@@ -44,11 +42,10 @@ infixr 5 _⇒_
 infixl 5 _,_⦂_
 infix  4 _∋_⦂_
 infix  4 _⊢_⦂_
-infix  5 `λ_⇒_
+infix  5 ƛ_⇒_
 infixl 6 `if0_then_else_
 infix  7 `suc_ `pred_ `Y_
 infixl 8 _·_
-infix  9 `_
 
 Id : Set
 Id = ℕ
@@ -62,8 +59,8 @@ data Env : Set where
   _,_⦂_ : Env → Id → Type → Env
 
 data Term : Set where
-  `_              : Id → Term
-  `λ_⇒_           : Id → Term → Term
+  ⌊_⌋              : Id → Term
+  ƛ_⇒_            : Id → Term → Term
   _·_             : Term → Term → Term
   `zero           : Term    
   `suc_           : Term → Term
@@ -88,12 +85,12 @@ data _⊢_⦂_ : Env → Term → Type → Set where
   Ax : ∀ {Γ A x}
     → Γ ∋ x ⦂ A
       ---------------------
-    → Γ ⊢ ` x ⦂ A
+    → Γ ⊢ ⌊ x ⌋ ⦂ A
 
   ⊢λ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       ------------------------
-    → Γ ⊢ (`λ x ⇒ N) ⦂ A ⇒ B
+    → Γ ⊢ (ƛ x ⇒ N) ⦂ A ⇒ B
 
   _·_ : ∀ {Γ L M A B}
     → Γ ⊢ L ⦂ A ⇒ B
@@ -169,7 +166,7 @@ two = `suc `suc `zero
 ⊢two = (⊢suc (⊢suc ⊢zero))
 
 plus : Term
-plus = `Y (`λ p ⇒ `λ m ⇒ `λ n ⇒ `if0 ` m then ` n else `suc (` p · (`pred ` m) · ` n))
+plus = `Y (ƛ p ⇒ ƛ m ⇒ ƛ n ⇒ `if0 ⌊ m ⌋ then ⌊ n ⌋ else `suc (⌊ p ⌋ · (`pred ⌊ m ⌋) · ⌊ n ⌋))
 
 ⊢plus : ε ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
 ⊢plus = (⊢Y (⊢λ (⊢λ (⊢λ (⊢if0 (Ax ⊢m) (Ax ⊢n) (⊢suc (Ax ⊢p · (⊢pred (Ax ⊢m)) · Ax ⊢n)))))))
@@ -188,7 +185,7 @@ Ch : Type
 Ch = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 
 twoCh : Term
-twoCh = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
+twoCh = ƛ s ⇒ ƛ z ⇒ (⌊ s ⌋ · (⌊ s ⌋ · ⌊ z ⌋))
 
 ⊢twoCh : ε ⊢ twoCh ⦂ Ch
 ⊢twoCh = (⊢λ (⊢λ (Ax ⊢s · (Ax ⊢s · Ax ⊢z))))
@@ -197,7 +194,7 @@ twoCh = `λ s ⇒ `λ z ⇒ (` s · (` s · ` z))
   ⊢z = Z
 
 plusCh : Term
-plusCh = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` z)
+plusCh = ƛ m ⇒ ƛ n ⇒ ƛ s ⇒ ƛ z ⇒ ⌊ m ⌋ · ⌊ s ⌋ · (⌊ n ⌋ · ⌊ s ⌋ · ⌊ z ⌋)
 
 ⊢plusCh : ε ⊢ plusCh ⦂ Ch ⇒ Ch ⇒ Ch
 ⊢plusCh = (⊢λ (⊢λ (⊢λ (⊢λ (Ax ⊢m ·  Ax ⊢s · (Ax ⊢n · Ax ⊢s · Ax ⊢z))))))
@@ -208,7 +205,7 @@ plusCh = `λ m ⇒ `λ n ⇒ `λ s ⇒ `λ z ⇒ ` m · ` s · (` n · ` s · ` 
   ⊢z = Z
 
 fromCh : Term
-fromCh = `λ m ⇒ ` m · (`λ s ⇒ `suc ` s) · `zero
+fromCh = ƛ m ⇒ ⌊ m ⌋ · (ƛ s ⇒ `suc ⌊ s ⌋) · `zero
 
 ⊢fromCh : ε ⊢ fromCh ⦂ Ch ⇒ `ℕ
 ⊢fromCh = (⊢λ (Ax ⊢m · (⊢λ (⊢suc (Ax ⊢s))) · ⊢zero))
@@ -232,8 +229,8 @@ lookup {Γ , x ⦂ A} Z         =  x
 lookup {Γ , x ⦂ A} (S _ ⊢w)  =  lookup {Γ} ⊢w
 
 erase : ∀ {Γ M A} → Γ ⊢ M ⦂ A → Term
-erase (Ax ⊢w)           =  ` lookup ⊢w
-erase (⊢λ {x = x} ⊢N)   =  `λ x ⇒ erase ⊢N
+erase (Ax ⊢w)           =  ⌊ lookup ⊢w ⌋
+erase (⊢λ {x = x} ⊢N)   =  ƛ x ⇒ erase ⊢N
 erase (⊢L · ⊢M)         =  erase ⊢L · erase ⊢M
 erase (⊢zero)           =  `zero
 erase (⊢suc ⊢M)         =  `suc (erase ⊢M)
@@ -254,8 +251,8 @@ lookup-lemma Z         =  refl
 lookup-lemma (S _ ⊢w)  =  lookup-lemma ⊢w
 
 erase-lemma : ∀ {Γ M A} → (⊢M : Γ ⊢ M ⦂ A) → erase ⊢M ≡ M
-erase-lemma (Ax ⊢x)          =  cong `_ (lookup-lemma ⊢x)
-erase-lemma (⊢λ {x = x} ⊢N)  =  cong (`λ x ⇒_) (erase-lemma ⊢N)
+erase-lemma (Ax ⊢x)          =  cong ⌊_⌋ (lookup-lemma ⊢x)
+erase-lemma (⊢λ {x = x} ⊢N)  =  cong (ƛ x ⇒_) (erase-lemma ⊢N)
 erase-lemma (⊢L · ⊢M)        =  cong₂ _·_ (erase-lemma ⊢L) (erase-lemma ⊢M)
 erase-lemma (⊢zero)          =  refl
 erase-lemma (⊢suc ⊢M)        =  cong `suc_ (erase-lemma ⊢M)
@@ -278,8 +275,8 @@ open Collections (Id) (_≟_)
 
 \begin{code}
 free : Term → List Id
-free (` x)                   =  [ x ]
-free (`λ x ⇒ N)              =  free N \\ x
+free (⌊ x ⌋)                  =  [ x ]
+free (ƛ x ⇒ N)               =  free N \\ x
 free (L · M)                 =  free L ++ free M
 free (`zero)                 =  []
 free (`suc M)                =  free M
@@ -306,7 +303,7 @@ fresh-lemma x∈ refl =  1+n≰n (⊔-lemma x∈)
 
 \begin{code}
 ∅ : Id → Term
-∅ x = ` x
+∅ x = ⌊ x ⌋
 
 infixl 5 _,_↦_
 
@@ -320,8 +317,8 @@ _,_↦_ : (Id → Term) → Id → Term → (Id → Term)
 
 \begin{code}
 subst : List Id → (Id → Term) → Term → Term
-subst ys ρ (` x)       =  ρ x
-subst ys ρ (`λ x ⇒ N)  =  `λ y ⇒ subst (y ∷ ys) (ρ , x ↦ ` y) N
+subst ys ρ (⌊ x ⌋)     =  ρ x
+subst ys ρ (ƛ x ⇒ N)  =  ƛ y ⇒ subst (y ∷ ys) (ρ , x ↦ ⌊ y ⌋) N
   where
   y = fresh ys
 subst ys ρ (L · M)     =  subst ys ρ L · subst ys ρ M
@@ -339,17 +336,17 @@ N [ x := M ]  =  subst (free M ++ (free N \\ x)) (∅ , x ↦ M) N
 ### Testing substitution
 
 \begin{code}
-_ : (` s · ` s · ` z) [ z := `zero ] ≡ (` s · ` s · `zero)
+_ : (⌊ s ⌋ · ⌊ s ⌋ · ⌊ z ⌋) [ z := `zero ] ≡ (⌊ s ⌋ · ⌊ s ⌋ · `zero)
 _ = refl
 
-_ : (` s · ` s · ` z) [ s := (`λ m ⇒ `suc ` m) ] [ z := `zero ] 
-     ≡ ((`λ p ⇒ `suc ` p) · (`λ p ⇒ `suc ` p) · `zero)
+_ : (⌊ s ⌋ · ⌊ s ⌋ · ⌊ z ⌋)[ s := (ƛ m ⇒ `suc ⌊ m ⌋) ] [ z := `zero ] 
+     ≡ ((ƛ p ⇒ `suc ⌊ p ⌋) · (ƛ p ⇒ `suc ⌊ p ⌋) · `zero)
 _ = refl
 
-_ : (`λ m ⇒ ` m ·  ` n) [ n := ` m ] ≡  (`λ n ⇒ ` n · ` m)
+_ : (ƛ m ⇒ ⌊ m ⌋ · ⌊ n ⌋) [ n := ⌊ m ⌋ ] ≡  (ƛ n ⇒ ⌊ n ⌋ · ⌊ m ⌋)
 _ = refl
 
-_ : subst [ m , n ] (∅ , m ↦ ` n , n ↦ ` m) (` m · ` n)  ≡ (` n · ` m)
+_ : subst [ m , n ] (∅ , m ↦ ⌊ n ⌋ , n ↦ ⌊ m ⌋) (⌊ m ⌋ · ⌊ n ⌋)  ≡  (⌊ n ⌋ · ⌊ m ⌋)
 _ = refl
 \end{code}
 
@@ -370,7 +367,7 @@ data Value : Term → Set where
       
   Fun : ∀ {x N}
       ---------------
-    → Value (`λ x ⇒ N)
+    → Value (ƛ x ⇒ N)
 \end{code}
 
 ## Reduction
@@ -394,7 +391,7 @@ data _⟶_ : Term → Term → Set where
   β-⇒ : ∀ {x N V}
     → Value V
       ------------------------------
-    → (`λ x ⇒ N) · V ⟶ N [ x := V ]
+    → (ƛ x ⇒ N) · V ⟶ N [ x := V ]
 
   ξ-suc : ∀ {M M′}
     → M ⟶ M′
@@ -436,7 +433,7 @@ data _⟶_ : Term → Term → Set where
 
   β-Y : ∀ {V x N}
     → Value V
-    → V ≡ `λ x ⇒ N
+    → V ≡ ƛ x ⇒ N
       ------------------------
     → `Y V ⟶ N [ x := `Y V ]
 \end{code}
@@ -482,7 +479,7 @@ data Canonical : Term → Type → Set where
   Fun : ∀ {x N A B}
     → ε , x ⦂ A ⊢ N ⦂ B
       ------------------------------
-    → Canonical (`λ x ⇒ N) (A ⇒ B)
+    → Canonical (ƛ x ⇒ N) (A ⇒ B)
 \end{code}
 
 ## Canonical forms lemma
@@ -560,6 +557,43 @@ progress (⊢Y ⊢M) with progress ⊢M
 
 
 ## Preservation
+
+### Lemmas about free variables
+
+\begin{code}
+id : ∀ {X : Set} → X → X
+id x = x
+
+fr-ƛ : ∀ {x N} → free (ƛ x ⇒ N) ⊆ free N
+fr-ƛ = proj₁ ∘ \\-to-∈-≢
+
+fr-ƛ-≢ : ∀ {w x N} → w ∈ free (ƛ x ⇒ N) → w ≢ x
+fr-ƛ-≢ {w} {x} {N} = proj₂ ∘ \\-to-∈-≢ {w} {x} {free N}
+
+fr-·₁ : ∀ {L M} → free L ⊆ free (L · M)
+fr-·₁ = ⊆-++₁
+
+fr-·₂ : ∀ {L M} → free M ⊆ free (L · M)
+fr-·₂ = ⊆-++₂
+
+fr-suc : ∀ {M} → free M ⊆ free (`suc M)
+fr-suc = id
+
+fr-pred : ∀ {M} → free M ⊆ free (`pred M)
+fr-pred = id
+
+fr-if0₁ : ∀ {L M N} → free L ⊆ free (`if0 L then M else N)
+fr-if0₁ = ⊆-++₁
+
+fr-if0₂ : ∀ {L M N} → free M ⊆ free (`if0 L then M else N)
+fr-if0₂ {L} = ⊆-++₂ {free L} ∘ ⊆-++₁
+
+fr-if0₃ : ∀ {L M N} → free N ⊆ free (`if0 L then M else N)
+fr-if0₃ {L} = ⊆-++₂ {free L} ∘ ⊆-++₂
+
+fr-Y : ∀ {M} → free M ⊆ free (`Y M)
+fr-Y = id
+\end{code}
 
 ### Domain of an environment
 
@@ -639,53 +673,6 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 
 ### Substitution preserves types
 
-I can remove the `ys` argument from `subst` by always
-computing it as `frees ρ M`. As I step into an abstraction,
-this will automatically add the renaming of the bound
-variable, since the bound variable gets added to `M` and
-its renaming gets added to `ρ`.
-
-A possible new version.
-Simpler to state, is it simpler to prove?
-
-What may be tricky to establish is that sufficient
-renaming occurs to justify the `≢` term added to `S`.
-
-It may be hard to establish because we use it
-when we instantiate `⊢rename′ {Δ} {Δ , y ⦂ A} (S w≢y)`
-and the problem is that `w≢y` for every `w` in
-`free (ρ x)`, but there may be other `w` in `Δ`.
-Bugger. But I think the theorems are true despite
-this problem in the proof, so there may be a way
-around it.
-
-\begin{code}
-frees : (Id → Term) → Term → List Id
-frees ρ M  =  concat (map (free ∘ ρ) (free M))
-
-subst′ : (Id → Term) → Term → Term
-subst′ ρ M = subst (frees ρ M) ρ M
-
-⊢rename′ : ∀ {Γ Δ M A}
-  → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
-  → Γ ⊢ M ⦂ A
-    ----------------------------------
-  → Δ ⊢ M ⦂ A
-⊢rename′ = {!!}  
-
-⊢subst′ : ∀ {Γ Δ ρ M A}
-  → (∀ {w B} → Γ ∋ w ⦂ B → Δ ⊢ ρ w ⦂ B)
-  → Γ ⊢ M ⦂ A
-    ------------------------------------
-  → Δ ⊢ subst′ ρ M ⦂ A
-⊢subst′ = {!!}
-\end{code}
-Stepping into a subterm, just need to precompose `ρ` with a
-lemma stating that the free variables of the subterm are
-a subset of the free variables of the term.
-
-
-Previous version
 \begin{code}
 ⊢subst : ∀ {Γ Δ xs ys ρ}
   → (∀ {x}   → x ∈ xs      →  free (ρ x) ⊆ ys)
@@ -702,7 +689,7 @@ Previous version
   Δ′  =  Δ , y ⦂ A
   xs′ =  x ∷ xs
   ys′ =  y ∷ ys
-  ρ′  =  ρ , x ↦ ` y
+  ρ′  =  ρ , x ↦ ⌊ y ⌋
 
   Σ′ : ∀ {w} → w ∈ xs′ →  free (ρ′ w) ⊆ ys′
   Σ′ {w} w∈′ with w ≟ x
@@ -812,183 +799,250 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...      | ⊢M with normalise m ⊢M
 ...          | out-of-gas M⟶*N ⊢N        =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N) ⊢N
 ...          | normal n CV M⟶*V          =  normal n CV (L ⟶⟨ L⟶M ⟩ M⟶*V)
-
-_ : Normalise ⊢four
-_ = normalise 4 ⊢four -- as normalize-4.txt
-
-_ : Normalise ⊢four
-_ = normalise 8 ⊢four -- as normalize-8.txt
-
-_ : Normalise ⊢four
-_ = normalise 16 ⊢four -- as normalize-16.txt
-
 \end{code}
 
 ## Test case
 
 \begin{code}
 _ : plus · two · two ⟶* (`suc (`suc (`suc (`suc `zero))))
-_ = (`Y
-  (`λ 0 ⇒
-   (`λ 1 ⇒
-    (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
- · (`suc (`suc `zero))
- · (`suc (`suc `zero))
- ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y Fun refl)) ⟩
- (`λ 0 ⇒
-  (`λ 1 ⇒
-   `if0 ` 0 then ` 1 else
-   `suc
-   (`Y
-    (`λ 0 ⇒
-     (`λ 1 ⇒
-      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-   · (`pred ` 0)
-   · ` 1))
- · (`suc (`suc `zero))
- · (`suc (`suc `zero))
- ⟶⟨ ξ-·₁ (β-⇒ (Suc (Suc Zero))) ⟩
- (`λ 0 ⇒
-  `if0 `suc (`suc `zero) then ` 0 else
-  `suc
+_ =
   (`Y
-   (`λ 1 ⇒
-    (`λ 2 ⇒
-     (`λ 3 ⇒ `if0 ` 2 then ` 3 else `suc ` 1 · (`pred ` 2) · ` 3))))
-  · (`pred (`suc (`suc `zero)))
-  · ` 0)
- · (`suc (`suc `zero))
- ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
- `if0 `suc (`suc `zero) then `suc (`suc `zero) else
- `suc
- (`Y
-  (`λ 0 ⇒
-   (`λ 1 ⇒
-    (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
- · (`pred (`suc (`suc `zero)))
- · (`suc (`suc `zero))
- ⟶⟨ β-if0-suc (Suc Zero) ⟩
- `suc
- (`Y
-  (`λ 0 ⇒
-   (`λ 1 ⇒
-    (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
- · (`pred (`suc (`suc `zero)))
- · (`suc (`suc `zero))
- ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ (β-Y Fun refl))) ⟩
- `suc
- (`λ 0 ⇒
-  (`λ 1 ⇒
-   `if0 ` 0 then ` 1 else
-   `suc
-   (`Y
-    (`λ 0 ⇒
-     (`λ 1 ⇒
-      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-   · (`pred ` 0)
-   · ` 1))
- · (`pred (`suc (`suc `zero)))
- · (`suc (`suc `zero))
- ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc (Suc Zero)))) ⟩
- `suc
- (`λ 0 ⇒
-  (`λ 1 ⇒
-   `if0 ` 0 then ` 1 else
-   `suc
-   (`Y
-    (`λ 0 ⇒
-     (`λ 1 ⇒
-      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-   · (`pred ` 0)
-   · ` 1))
- · (`suc `zero)
- · (`suc (`suc `zero))
- ⟶⟨ ξ-suc (ξ-·₁ (β-⇒ (Suc Zero))) ⟩
- `suc
- (`λ 0 ⇒
-  `if0 `suc `zero then ` 0 else
-  `suc
-  (`Y
-   (`λ 1 ⇒
-    (`λ 2 ⇒
-     (`λ 3 ⇒ `if0 ` 2 then ` 3 else `suc ` 1 · (`pred ` 2) · ` 3))))
-  · (`pred (`suc `zero))
-  · ` 0)
- · (`suc (`suc `zero))
- ⟶⟨ ξ-suc (β-⇒ (Suc (Suc Zero))) ⟩
- `suc
- (`if0 `suc `zero then `suc (`suc `zero) else
-  `suc
-  (`Y
-   (`λ 0 ⇒
-    (`λ 1 ⇒
-     (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-  · (`pred (`suc `zero))
-  · (`suc (`suc `zero)))
- ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
- `suc
- (`suc
-  (`Y
-   (`λ 0 ⇒
-    (`λ 1 ⇒
-     (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-  · (`pred (`suc `zero))
-  · (`suc (`suc `zero)))
- ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ (β-Y Fun refl)))) ⟩
- `suc
- (`suc
-  (`λ 0 ⇒
-   (`λ 1 ⇒
-    `if0 ` 0 then ` 1 else
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+   · (`suc (`suc `zero))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y Fun refl)) ⟩
+   (ƛ 0 ⇒
+    (ƛ 1 ⇒
+     `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred ⌊ 0 ⌋)
+     · ⌊ 1 ⌋))
+   · (`suc (`suc `zero))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-·₁ (β-⇒ (Suc (Suc Zero))) ⟩
+   (ƛ 0 ⇒
+    `if0 `suc (`suc `zero) then ⌊ 0 ⌋ else
     `suc
     (`Y
-     (`λ 0 ⇒
-      (`λ 1 ⇒
-       (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-    · (`pred ` 0)
-    · ` 1))
-  · (`pred (`suc `zero))
-  · (`suc (`suc `zero)))
- ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
- `suc
- (`suc
-  (`λ 0 ⇒
-   (`λ 1 ⇒
-    `if0 ` 0 then ` 1 else
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       (ƛ 3 ⇒
+        `if0 ⌊ 2 ⌋ then ⌊ 3 ⌋ else `suc ⌊ 1 ⌋ · (`pred ⌊ 2 ⌋) · ⌊ 3 ⌋))))
+    · (`pred (`suc (`suc `zero)))
+    · ⌊ 0 ⌋)
+   · (`suc (`suc `zero))
+   ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
+   `if0 `suc (`suc `zero) then `suc (`suc `zero) else
+   `suc
+   (`Y
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ β-if0-suc (Suc Zero) ⟩
+   `suc
+   (`Y
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ (β-Y Fun refl))) ⟩
+   `suc
+   (ƛ 0 ⇒
+    (ƛ 1 ⇒
+     `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred ⌊ 0 ⌋)
+     · ⌊ 1 ⌋))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc (Suc Zero)))) ⟩
+   `suc
+   (ƛ 0 ⇒
+    (ƛ 1 ⇒
+     `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred ⌊ 0 ⌋)
+     · ⌊ 1 ⌋))
+   · (`suc `zero)
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (ξ-·₁ (β-⇒ (Suc Zero))) ⟩
+   `suc
+   (ƛ 0 ⇒
+    `if0 `suc `zero then ⌊ 0 ⌋ else
     `suc
     (`Y
-     (`λ 0 ⇒
-      (`λ 1 ⇒
-       (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-    · (`pred ` 0)
-    · ` 1))
-  · `zero
-  · (`suc (`suc `zero)))
- ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-⇒ Zero))) ⟩
- `suc
- (`suc
-  (`λ 0 ⇒
-   `if0 `zero then ` 0 else
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       (ƛ 3 ⇒
+        `if0 ⌊ 2 ⌋ then ⌊ 3 ⌋ else `suc ⌊ 1 ⌋ · (`pred ⌊ 2 ⌋) · ⌊ 3 ⌋))))
+    · (`pred (`suc `zero))
+    · ⌊ 0 ⌋)
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (β-⇒ (Suc (Suc Zero))) ⟩
    `suc
-   (`Y
-    (`λ 1 ⇒
-     (`λ 2 ⇒
-      (`λ 3 ⇒ `if0 ` 2 then ` 3 else `suc ` 1 · (`pred ` 2) · ` 3))))
-   · (`pred `zero)
-   · ` 0)
-  · (`suc (`suc `zero)))
- ⟶⟨ ξ-suc (ξ-suc (β-⇒ (Suc (Suc Zero)))) ⟩
- `suc
- (`suc
-  (`if0 `zero then `suc (`suc `zero) else
+   (`if0 `suc `zero then `suc (`suc `zero) else
+    `suc
+    (`Y
+     (ƛ 0 ⇒
+      (ƛ 1 ⇒
+       (ƛ 2 ⇒
+        `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+    · (`pred (`suc `zero))
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
    `suc
-   (`Y
-    (`λ 0 ⇒
-     (`λ 1 ⇒
-      (`λ 2 ⇒ `if0 ` 1 then ` 2 else `suc ` 0 · (`pred ` 1) · ` 2))))
-   · (`pred `zero)
-   · (`suc (`suc `zero))))
- ⟶⟨ ξ-suc (ξ-suc β-if0-zero) ⟩
- `suc (`suc (`suc (`suc `zero)))
- ∎
+   (`suc
+    (`Y
+     (ƛ 0 ⇒
+      (ƛ 1 ⇒
+       (ƛ 2 ⇒
+        `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+    · (`pred (`suc `zero))
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ (β-Y Fun refl)))) ⟩
+   `suc
+   (`suc
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+      `suc
+      (`Y
+       (ƛ 0 ⇒
+        (ƛ 1 ⇒
+         (ƛ 2 ⇒
+          `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+      · (`pred ⌊ 0 ⌋)
+      · ⌊ 1 ⌋))
+    · (`pred (`suc `zero))
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
+   `suc
+   (`suc
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+      `suc
+      (`Y
+       (ƛ 0 ⇒
+        (ƛ 1 ⇒
+         (ƛ 2 ⇒
+          `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+      · (`pred ⌊ 0 ⌋)
+      · ⌊ 1 ⌋))
+    · `zero
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-⇒ Zero))) ⟩
+   `suc
+   (`suc
+    (ƛ 0 ⇒
+     `if0 `zero then ⌊ 0 ⌋ else
+     `suc
+     (`Y
+      (ƛ 1 ⇒
+       (ƛ 2 ⇒
+        (ƛ 3 ⇒
+         `if0 ⌊ 2 ⌋ then ⌊ 3 ⌋ else `suc ⌊ 1 ⌋ · (`pred ⌊ 2 ⌋) · ⌊ 3 ⌋))))
+     · (`pred `zero)
+     · ⌊ 0 ⌋)
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (β-⇒ (Suc (Suc Zero)))) ⟩
+   `suc
+   (`suc
+    (`if0 `zero then `suc (`suc `zero) else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred `zero)
+     · (`suc (`suc `zero))))
+   ⟶⟨ ξ-suc (ξ-suc β-if0-zero) ⟩
+     `suc (`suc (`suc (`suc `zero)))
+   ∎
 \end{code}
+
+
+### Discussion
+
+
+
+
+I can remove the `ys` argument from `subst` by always
+computing it as `frees ρ M`. As I step into an abstraction,
+this will automatically add the renaming of the bound
+variable, since the bound variable gets added to `M` and
+its renaming gets added to `ρ`.
+
+A possible new version.
+Simpler to state, is it simpler to prove?
+
+What may be tricky to establish is that sufficient
+renaming occurs to justify the `≢` term added to `S`.
+
+It may be hard to establish because we use it
+when we instantiate `⊢rename′ {Δ} {Δ , y ⦂ A} (S w≢y)`
+and the problem is that `w≢y` for every `w` in
+`free (ρ x)`, but there may be other `w` in `Δ`.
+Bugger. But I think the theorems are true despite
+this problem in the proof, so there may be a way
+around it.
+
+    frees : (Id → Term) → Term → List Id
+    frees ρ M  =  concat (map (free ∘ ρ) (free M))
+
+    subst′ : (Id → Term) → Term → Term 
+    subst′ ρ M = subst (frees ρ M) ρ M
+
+    ⊢rename′ : ∀ {Γ Δ M A}
+      → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
+      → Γ ⊢ M ⦂ A
+        ----------------------------------
+      → Δ ⊢ M ⦂ A
+    ⊢rename′ = {!!}  
+
+    ⊢subst′ : ∀ {Γ Δ ρ M A}
+      → (∀ {w B} → Γ ∋ w ⦂ B → Δ ⊢ ρ w ⦂ B)
+      → Γ ⊢ M ⦂ A
+        ------------------------------------
+      → Δ ⊢ subst′ ρ M ⦂ A
+    ⊢subst′ = {!!}
+
+I expect `⊢rename′` is easy to show.
+
+I think `⊢subst′` is true but hard to show.
+The difficult part is to establish the argument to `⊢rename′`,
+since I can only create a variable that is fresh with regard to
+names in frees, not all names in the domain of `Δ`.
+
+Can I establish a counter-example, or convince myself that
+`⊢subst′` is true anyway? The latter is easily seen to be true,
+since the simpler formulations are immediate consequences of
+what I have already proved.
+
+Stepping into a subterm, just need to precompose `ρ` with a
+lemma stating that the free variables of the subterm are
+a subset of the free variables of the term.
