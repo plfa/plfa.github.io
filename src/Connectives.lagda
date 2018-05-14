@@ -6,7 +6,7 @@ permalink : /Connectives
 
 This chapter introduces the basic logical connectives, by observing
 a correspondence between connectives of logic and data types,
-a principal known as *Propositions as Types*.
+a principle known as *Propositions as Types*.
 
 + *conjunction* is *product*
 + *disjunction* is *sum*
