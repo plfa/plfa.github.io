@@ -564,17 +564,25 @@ progress (⊢Y ⊢M) with progress ⊢M
 id : ∀ {X : Set} → X → X
 id x = x
 
+fr-⌊⌋ : ∀ {x} → x ∈ free ⌊ x ⌋
+fr-⌊⌋ = here
+
+fr-ƛ : ∀ {x N xs} → free (ƛ x ⇒ N) ⊆ xs → free N ⊆ x ∷ xs
+fr-ƛ = \\-to-∷
+
+{-
 fr-ƛ : ∀ {x N} → free (ƛ x ⇒ N) ⊆ free N
 fr-ƛ = proj₁ ∘ \\-to-∈-≢
 
 fr-ƛ-≢ : ∀ {w x N} → w ∈ free (ƛ x ⇒ N) → w ≢ x
 fr-ƛ-≢ {w} {x} {N} = proj₂ ∘ \\-to-∈-≢ {w} {x} {free N}
+-}
 
-fr-·₁ : ∀ {L M} → free L ⊆ free (L · M)
-fr-·₁ = ⊆-++₁
+fr-·₁ : ∀ {L M xs} → free (L · M) ⊆ xs → free L ⊆ xs
+fr-·₁ ⊆xs = ⊆xs ∘ ⊆-++₁
 
-fr-·₂ : ∀ {L M} → free M ⊆ free (L · M)
-fr-·₂ = ⊆-++₂
+fr-·₂ : ∀ {L M xs} → free (L · M) ⊆ xs → free M ⊆ xs
+fr-·₂ ⊆xs = ⊆xs ∘ ⊆-++₂
 
 fr-suc : ∀ {M} → free M ⊆ free (`suc M)
 fr-suc = id
@@ -582,14 +590,14 @@ fr-suc = id
 fr-pred : ∀ {M} → free M ⊆ free (`pred M)
 fr-pred = id
 
-fr-if0₁ : ∀ {L M N} → free L ⊆ free (`if0 L then M else N)
-fr-if0₁ = ⊆-++₁
+fr-if0₁ : ∀ {L M N xs} → free (`if0 L then M else N) ⊆ xs → free L ⊆ xs
+fr-if0₁ ⊆xs = ⊆xs ∘ ⊆-++₁
 
-fr-if0₂ : ∀ {L M N} → free M ⊆ free (`if0 L then M else N)
-fr-if0₂ {L} = ⊆-++₂ {free L} ∘ ⊆-++₁
+fr-if0₂ : ∀ {L M N xs} → free (`if0 L then M else N) ⊆ xs → free M ⊆ xs
+fr-if0₂ {L} ⊆xs = ⊆xs ∘ ⊆-++₂ {free L} ∘ ⊆-++₁
 
-fr-if0₃ : ∀ {L M N} → free N ⊆ free (`if0 L then M else N)
-fr-if0₃ {L} = ⊆-++₂ {free L} ∘ ⊆-++₂
+fr-if0₃ : ∀ {L M N xs} → free (`if0 L then M else N) ⊆ xs → free N ⊆ xs
+fr-if0₃ {L} ⊆xs = ⊆xs ∘ ⊆-++₂ {free L} ∘ ⊆-++₂
 
 fr-Y : ∀ {M} → free M ⊆ free (`Y M)
 fr-Y = id
@@ -635,7 +643,7 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
   → (∀ {M A} → free M ⊆ xs →  Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A)
 ⊢rename ⊢σ ⊆xs (Ax ⊢x)     =  Ax (⊢σ ∈xs ⊢x)
   where
-  ∈xs = ⊆xs here
+  ∈xs = ⊆xs fr-⌊⌋
 ⊢rename {Γ} {Δ} {xs} ⊢σ ⊆xs (⊢λ {x = x} {N = N} {A = A} ⊢N)
                            =  ⊢λ (⊢rename {Γ′} {Δ′} {xs′} ⊢σ′ ⊆xs′ ⊢N)
   where
@@ -650,24 +658,21 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
     ∈w  =  there⁻¹ w∈′ w≢
 
   ⊆xs′ : free N ⊆ xs′
-  ⊆xs′ = \\-to-∷ ⊆xs
-⊢rename ⊢σ ⊆xs (_·_ {L = L} {M = M} ⊢L ⊢M)   =  ⊢rename ⊢σ L⊆ ⊢L · ⊢rename ⊢σ M⊆ ⊢M
+  ⊆xs′ =  fr-ƛ {x} {N} ⊆xs
+⊢rename ⊢σ ⊆xs (_·_ {L = L} {M = M} ⊢L ⊢M)  =  ⊢rename ⊢σ L⊆ ⊢L · ⊢rename ⊢σ M⊆ ⊢M
   where
-  L⊆ = trans-⊆ ⊆-++₁ ⊆xs
-  M⊆ = trans-⊆ (⊆-++₂ {free L} {free M}) ⊆xs
-
+  L⊆ = fr-·₁ {L} {M} ⊆xs
+  M⊆ = fr-·₂ {L} {M} ⊆xs
 ⊢rename ⊢σ ⊆xs (⊢zero)     =  ⊢zero
 ⊢rename ⊢σ ⊆xs (⊢suc ⊢M)   =  ⊢suc (⊢rename ⊢σ ⊆xs ⊢M)
 ⊢rename ⊢σ ⊆xs (⊢pred ⊢M)  =  ⊢pred (⊢rename ⊢σ ⊆xs ⊢M)
 ⊢rename ⊢σ ⊆xs (⊢if0 {L = L} {M = M} {N = N} ⊢L ⊢M ⊢N)
   = ⊢if0 (⊢rename ⊢σ L⊆ ⊢L) (⊢rename ⊢σ M⊆ ⊢M) (⊢rename ⊢σ N⊆ ⊢N)
     where
-    L⊆ = trans-⊆ ⊆-++₁ ⊆xs
-    M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
-    N⊆ = trans-⊆ (⊆-++₂ {free M} {free N}) (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
-
+    L⊆ = fr-if0₁ {L} {M} {N} ⊆xs
+    M⊆ = fr-if0₂ {L} {M} {N} ⊆xs
+    N⊆ = fr-if0₃ {L} {M} {N} ⊆xs 
 ⊢rename ⊢σ ⊆xs (⊢Y ⊢M)     =  ⊢Y (⊢rename ⊢σ ⊆xs ⊢M)
-    
 \end{code}
 
 
