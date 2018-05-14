@@ -522,7 +522,7 @@ _ =
      1
   ∎
 \end{code}
-We did not use the third equation at all, but it will be required
+We did not use the second equation at all, but it will be required
 if we try to subtract a smaller number from a larger one.
 \begin{code}
 _ =
@@ -575,7 +575,7 @@ second argument.  This trick goes by the name *currying*.
 
 Agda, like other functional languages such as
 ML and Haskell, is designed to make currying easy to use.  Function
-arrows associate to the left and application associates to the right.
+arrows associate to the right and application associates to the left.
 
     ℕ → ℕ → ℕ    stands for    ℕ → (ℕ → ℕ)
 
