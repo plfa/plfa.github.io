@@ -59,6 +59,9 @@ module Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
         ----------
         w ∈ x ∷ xs
 
+    _∉_ : A → List A → Set
+    x ∉ xs = ¬ (x ∈ xs)
+
     _⊆_ : List A → List A → Set
     xs ⊆ ys  =  ∀ {w} → w ∈ xs → w ∈ ys
 
