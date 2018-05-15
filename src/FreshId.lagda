@@ -44,41 +44,11 @@ Id : Set
 Id = String
 
 open Collections (Id) (String._≟_)
+\end{code}
 
-{-
+## Abstract operators prefix, suffix, and make
 
-br : Id → String × ℕ
-br x with partition (Char._≟_ '′') (reverse (toList x))
-...     | ⟨ s , t ⟩  =  ⟨ fromList (reverse t) , length s ⟩
-
-br-lemma : (x : Id) → proj₂ (br (proj₁ (br x))) ≡ zero
-br-lemma = {!!}
-
-break : Id → Prefix × ℕ
-break x  =  ⟨ ⟨ s , br-lemma x ⟩ , n ⟩
-  where
-  s = proj₁ (br x)
-  n = proj₂ (br x)
-
-make : Prefix → ℕ → Id
-make s n  =  fromList (toList (proj₁ s) ++ replicate n '′')
-
-x0 = "x"
-x1 = "x′"
-x2 = "x′′"
-x3 = "x′′′"
-y0 = "y"
-y1 = "y′"
-zs4 = "zs′′′′"
-
-_ : fresh x0 [ x0 , x1 , x2 , zs4 ] ≡ x3
-_ = refl
-
-_ : fresh y1 [ x0 , x1 , x2 , zs4 ] ≡ y0
-_ = refl
-
--}
-
+\begin{code}
 abstract
 
   data Head {A : Set} (P : A → Bool) : List A → Set where
@@ -96,8 +66,11 @@ abstract
   Prefix : Set
   Prefix = ∃[ x ] (isPrefix x)
 
+  body : Prefix → String
+  body = proj₁
+
   make : Prefix → ℕ → Id
-  make ⟨ s , pr ⟩ n = fromList (toList s ++ replicate n prime)
+  make ⟨ s , _ ⟩ n = fromList (toList s ++ replicate n prime)
 
   prefixS : Id → String
   prefixS = fromList ∘ dropWhile isPrime ∘ reverse ∘ toList
@@ -113,20 +86,22 @@ abstract
   suffix : Id → ℕ
   suffix =  length ∘ takeWhile isPrime ∘ reverse ∘ toList
 
-  prefix-lemma : ∀ {s n} → prefix (make s n) ≡ s
-  prefix-lemma {⟨ s , pr ⟩} {n} = {!!}
+  _≟Pr_ : ∀ (p q : Prefix) → Dec (body p ≡ body q)
+  p ≟Pr q = (body p) String.≟ (body q)
 
+  prefix-lemma : ∀ {p n} → prefix (make p n) ≡ p
+  prefix-lemma {p} {n} = {!!}
 
-
-  suffix-lemma : ∀ {s n} → suffix (make s n) ≡ n
+  suffix-lemma : ∀ {p n} → suffix (make p n) ≡ n
   suffix-lemma = {!!}
 
   make-lemma : ∀ {x} → make (prefix x) (suffix x) ≡ x
   make-lemma = {!!}
+\end{code}
 
-  _≟Pr_ : ∀ (s t : Prefix) → Dec (s ≡ t)
-  _≟Pr_ = {!!}
+## Basic lemmas
 
+\begin{code}
 bump : Prefix → Id → ℕ
 bump p x with p ≟Pr prefix x
 ...         | yes _  =  suc (suffix x)
@@ -139,7 +114,29 @@ fresh : Id → List Id → Id
 fresh x xs  =  make p (next p xs)
   where
   p = prefix x
+\end{code}
 
+## Test cases
+
+\begin{code}
+x0 = "x"
+x1 = "x′"
+x2 = "x′′"
+x3 = "x′′′"
+y0 = "y"
+y1 = "y′"
+zs4 = "zs′′′′"
+
+_ : fresh x0 [ x0 , x1 , x2 , zs4 ] ≡ x3
+_ = {!!}
+
+_ : fresh y1 [ x0 , x1 , x2 , zs4 ] ≡ y0
+_ = {!!}
+\end{code}
+
+## Main lemmas
+
+\begin{code}
 ⊔-lemma : ∀ {p w xs} → w ∈ xs → bump p w ≤ next p xs
 ⊔-lemma {p} {_} {_ ∷ xs} here        =  m≤m⊔n _ (next p xs)
 ⊔-lemma {p} {w} {x ∷ xs} (there x∈)  =

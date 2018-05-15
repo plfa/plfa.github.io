@@ -288,6 +288,7 @@ free (`Y M)                  =  free M
 ### Fresh identifier
 
 \begin{code}
+
 fresh : List Id → Id
 fresh = foldr _⊔_ 0 ∘ map suc
 
@@ -993,11 +994,198 @@ _ =
    ∎
 \end{code}
 
+### An issue
+
+While executing normalise works fine, checking that the
+result is as computed takes forever.  Hence, it is commented
+out below.
+
+\begin{code}
+{-
+_ : normalise 100 ⊢four ≡
+  normal 86 (Suc (Suc (Suc (Suc Zero))))
+  ((`Y
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+   · (`suc (`suc `zero))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y Fun refl)) ⟩
+   (ƛ 0 ⇒
+    (ƛ 1 ⇒
+     `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred ⌊ 0 ⌋)
+     · ⌊ 1 ⌋))
+   · (`suc (`suc `zero))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-·₁ (β-⇒ (Suc (Suc Zero))) ⟩
+   (ƛ 0 ⇒
+    `if0 `suc (`suc `zero) then ⌊ 0 ⌋ else
+    `suc
+    (`Y
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       (ƛ 3 ⇒
+        `if0 ⌊ 2 ⌋ then ⌊ 3 ⌋ else `suc ⌊ 1 ⌋ · (`pred ⌊ 2 ⌋) · ⌊ 3 ⌋))))
+    · (`pred (`suc (`suc `zero)))
+    · ⌊ 0 ⌋)
+   · (`suc (`suc `zero))
+   ⟶⟨ β-⇒ (Suc (Suc Zero)) ⟩
+   `if0 `suc (`suc `zero) then `suc (`suc `zero) else
+   `suc
+   (`Y
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ β-if0-suc (Suc Zero) ⟩
+   `suc
+   (`Y
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ (β-Y Fun refl))) ⟩
+   `suc
+   (ƛ 0 ⇒
+    (ƛ 1 ⇒
+     `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred ⌊ 0 ⌋)
+     · ⌊ 1 ⌋))
+   · (`pred (`suc (`suc `zero)))
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc (Suc Zero)))) ⟩
+   `suc
+   (ƛ 0 ⇒
+    (ƛ 1 ⇒
+     `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred ⌊ 0 ⌋)
+     · ⌊ 1 ⌋))
+   · (`suc `zero)
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (ξ-·₁ (β-⇒ (Suc Zero))) ⟩
+   `suc
+   (ƛ 0 ⇒
+    `if0 `suc `zero then ⌊ 0 ⌋ else
+    `suc
+    (`Y
+     (ƛ 1 ⇒
+      (ƛ 2 ⇒
+       (ƛ 3 ⇒
+        `if0 ⌊ 2 ⌋ then ⌊ 3 ⌋ else `suc ⌊ 1 ⌋ · (`pred ⌊ 2 ⌋) · ⌊ 3 ⌋))))
+    · (`pred (`suc `zero))
+    · ⌊ 0 ⌋)
+   · (`suc (`suc `zero))
+   ⟶⟨ ξ-suc (β-⇒ (Suc (Suc Zero))) ⟩
+   `suc
+   (`if0 `suc `zero then `suc (`suc `zero) else
+    `suc
+    (`Y
+     (ƛ 0 ⇒
+      (ƛ 1 ⇒
+       (ƛ 2 ⇒
+        `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+    · (`pred (`suc `zero))
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
+   `suc
+   (`suc
+    (`Y
+     (ƛ 0 ⇒
+      (ƛ 1 ⇒
+       (ƛ 2 ⇒
+        `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+    · (`pred (`suc `zero))
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ (β-Y Fun refl)))) ⟩
+   `suc
+   (`suc
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+      `suc
+      (`Y
+       (ƛ 0 ⇒
+        (ƛ 1 ⇒
+         (ƛ 2 ⇒
+          `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+      · (`pred ⌊ 0 ⌋)
+      · ⌊ 1 ⌋))
+    · (`pred (`suc `zero))
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
+   `suc
+   (`suc
+    (ƛ 0 ⇒
+     (ƛ 1 ⇒
+      `if0 ⌊ 0 ⌋ then ⌊ 1 ⌋ else
+      `suc
+      (`Y
+       (ƛ 0 ⇒
+        (ƛ 1 ⇒
+         (ƛ 2 ⇒
+          `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+      · (`pred ⌊ 0 ⌋)
+      · ⌊ 1 ⌋))
+    · `zero
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-⇒ Zero))) ⟩
+   `suc
+   (`suc
+    (ƛ 0 ⇒
+     `if0 `zero then ⌊ 0 ⌋ else
+     `suc
+     (`Y
+      (ƛ 1 ⇒
+       (ƛ 2 ⇒
+        (ƛ 3 ⇒
+         `if0 ⌊ 2 ⌋ then ⌊ 3 ⌋ else `suc ⌊ 1 ⌋ · (`pred ⌊ 2 ⌋) · ⌊ 3 ⌋))))
+     · (`pred `zero)
+     · ⌊ 0 ⌋)
+    · (`suc (`suc `zero)))
+   ⟶⟨ ξ-suc (ξ-suc (β-⇒ (Suc (Suc Zero)))) ⟩
+   `suc
+   (`suc
+    (`if0 `zero then `suc (`suc `zero) else
+     `suc
+     (`Y
+      (ƛ 0 ⇒
+       (ƛ 1 ⇒
+        (ƛ 2 ⇒
+         `if0 ⌊ 1 ⌋ then ⌊ 2 ⌋ else `suc ⌊ 0 ⌋ · (`pred ⌊ 1 ⌋) · ⌊ 2 ⌋))))
+     · (`pred `zero)
+     · (`suc (`suc `zero))))
+   ⟶⟨ ξ-suc (ξ-suc β-if0-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
+_ = refl
+-}
+\end{code}
 
 ### Discussion
 
-
-
+(Notes to myself)
 
 I can remove the `ys` argument from `subst` by always
 computing it as `frees ρ M`. As I step into an abstraction,
@@ -1007,7 +1195,6 @@ its renaming gets added to `ρ`.
 
 A possible new version.
 Simpler to state, is it simpler to prove?
-
 What may be tricky to establish is that sufficient
 renaming occurs to justify the `≢` term added to `S`.
 
@@ -1041,15 +1228,13 @@ around it.
 
 I expect `⊢rename′` is easy to show.
 
-I think `⊢subst′` is true but hard to show.
+I think `⊢subst′` is hard to show, 
 The difficult part is to establish the argument to `⊢rename′`,
 since I can only create a variable that is fresh with regard to
 names in frees, not all names in the domain of `Δ`.
 
-Can I establish a counter-example, or convince myself that
-`⊢subst′` is true anyway? The latter is easily seen to be true,
-since the simpler formulations are immediate consequences of
-what I have already proved.
+Nonetheless, `⊢subst` is obviously true, since it is a corollary
+of the current version of `⊢subst`.
 
 Stepping into a subterm, just need to precompose `ρ` with a
 lemma stating that the free variables of the subterm are
