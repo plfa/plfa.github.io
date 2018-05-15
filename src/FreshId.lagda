@@ -42,12 +42,11 @@ Id = String
 
 open Collections (Id) (String._≟_)
 
+{-
+
 br : Id → String × ℕ
 br x with partition (Char._≟_ '′') (reverse (toList x))
-... | ⟨ s , t ⟩  =  ⟨ fromList (reverse t) , length s ⟩
-
-Prefix : Set
-Prefix = ∃[ x ] (proj₂ (br x) ≡ zero)
+...     | ⟨ s , t ⟩  =  ⟨ fromList (reverse t) , length s ⟩
 
 br-lemma : (x : Id) → proj₂ (br (proj₁ (br x))) ≡ zero
 br-lemma = {!!}
@@ -60,19 +59,6 @@ break x  =  ⟨ ⟨ s , br-lemma x ⟩ , n ⟩
 
 make : Prefix → ℕ → Id
 make s n  =  fromList (toList (proj₁ s) ++ replicate n '′')
-
-bump : Prefix → Id → ℕ
-bump s x with proj₁ s String.≟ proj₁ (proj₁ (break x))
-...         | yes _  =  suc (proj₂ (break x))
-...         | no  _  =  zero
-
-next : Prefix → List Id → ℕ
-next s  = foldr _⊔_ 0 ∘ map (bump s)
-
-fresh : Id → List Id → Id
-fresh x xs  =  make s (next s xs)
-  where
-  s = proj₁ (break x)
 
 x0 = "x"
 x1 = "x′"
@@ -88,14 +74,49 @@ _ = refl
 _ : fresh y1 [ x0 , x1 , x2 , zs4 ] ≡ y0
 _ = refl
 
-break-lemma₁ : ∀ {s n} → proj₁ (break (make s n)) ≡ s
-break-lemma₁ = {!!}
+-}
 
-break-lemma₂ : ∀ {s n} → proj₂ (break (make s n)) ≡ n
-break-lemma₂ = {!!}
+abstract
 
-make-lemma : ∀ {x} → x ≡ make (proj₁ (break x)) (proj₂ (break x))
-make-lemma = {!!}
+  isPrefix : String → Set
+  isPrefix = {!!}
+
+  Prefix : Set
+  Prefix = ∃[ x ] (isPrefix x)
+
+  make : Prefix → ℕ → Id
+  make = {!!}
+
+  prefix : Id → Prefix
+  prefix = {!!}
+
+  suffix : Id → ℕ
+  suffix = {!!}
+
+  prefix-lemma : ∀ {s n} → prefix (make s n) ≡ s
+  prefix-lemma = {!!}
+
+  suffix-lemma : ∀ {s n} → suffix (make s n) ≡ n
+  suffix-lemma = {!!}
+
+  make-lemma : ∀ {x} → make (prefix x) (suffix x) ≡ x
+  make-lemma = {!!}
+
+  _≟Pr_ : ∀ (s t : Prefix) → Dec (s ≡ t)
+  _≟Pr_ = {!!}
+
+bump : Prefix → Id → ℕ
+bump s x with s ≟Pr prefix x
+...         | yes _  =  suc (suffix x)
+...         | no  _  =  zero
+
+next : Prefix → List Id → ℕ
+next s  = foldr _⊔_ 0 ∘ map (bump s)
+
+fresh : Id → List Id → Id
+fresh x xs  =  make s (next s xs)
+  where
+  s = prefix x
 
 ⊔-lemma : ∀ {s w xs} → w ∈ xs → bump s w ≤ next s xs
 ⊔-lemma {s} {_} {_ ∷ xs} here        =  m≤m⊔n _ (next s xs)
@@ -103,37 +124,16 @@ make-lemma = {!!}
   ≤-trans (⊔-lemma {s} {w} x∈) (n≤m⊔n (bump s x) (next s xs))
 
 bump-lemma : ∀ {s n} → bump s (make s n) ≡ suc n
-bump-lemma {s} {n} rewrite break-lemma₁ {s} {n} | break-lemma₂ {s} {n}
-  with proj₁ s ≟ proj₁ s
-...  | yes refl rewrite break-lemma₁ {s} {n} | break-lemma₂ {s} {n} = {! refl!}
-...  | no  s≢s  = ⊥-elim (s≢s refl)
+bump-lemma {s} {n}
+  with s ≟Pr prefix (make s n)
+...  | yes eqn  rewrite suffix-lemma {s} {n}  =  refl
+...  | no  s≢   rewrite prefix-lemma {s} {n}  =  ⊥-elim (s≢ refl)
 
-fresh-lemma₁ : ∀ {s n w xs} → w ∈ xs → w ≢ fresh (make s n) xs
-fresh-lemma₁ {s} {n} {w} {xs} w∈ refl
-  with ⊔-lemma {s} {make s (next s xs)} {xs} {!!} -- w∈
-...  | prf rewrite bump-lemma {s} {next s xs} = 1+n≰n prf
-
-fresh-lemma : ∀ {x w xs} → w ∈ xs → w ≢ fresh x xs
-fresh-lemma {x} {w} {xs} w∈ refl rewrite make-lemma {x}
-  = fresh-lemma₁ {s} {n} {w} {xs} {!!} {- w∈ -} {! refl!} -- refl
-  where
-  s = proj₁ (break x)
-  n = proj₂ (break x)
+fresh-lemma : ∀ {w x xs} → w ∈ xs → w ≢ fresh x xs
+fresh-lemma {w} {x} {xs} w∈ refl
+  with ⊔-lemma {prefix x} {make (prefix x) (next (prefix x) xs)} {xs} w∈
+...  | leq rewrite bump-lemma {prefix x} {next (prefix x) xs} = 1+n≰n leq
 \end{code}
-
-Why does `⊔-lemma` imply `fresh x xs ∉ xs`?
-
-    fresh : Id → List Id → Id
-    fresh x xs with break x
-    ...           | ⟨ s , _ ⟩ = make s (next s xs)
-
-So
-
-    bump s (make s (next s xs)) ≤ next s xs
-
-becomes
-
-    suc (next s xs) ≤ next s xs
 
 
 
