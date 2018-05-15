@@ -663,7 +663,7 @@ is isomorphic to a function that accepts a pair of arguments:
 
 Agda is optimised for currying, so `2 + 3` abbreviates `_+_ 2 3`.
 In a language optimised for pairing, we would instead take `2 +′ 3` as
-an abbreviation for `_+′_ (2 , 3)`.
+an abbreviation for `_+′_ ⟨ 2 , 3 ⟩`.
 
 Corresponding to the law
 
@@ -713,7 +713,7 @@ and the rule `η-×` for products.
 
 ## Distribution
 
-Products distributes over sum, up to isomorphism.  The code to validate
+Products distribute over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results.
 \begin{code}
 ×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
