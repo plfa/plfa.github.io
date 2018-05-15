@@ -276,7 +276,7 @@ erase-lemma (⊢Y ⊢M)          =  cong `Y_ (erase-lemma ⊢M)
 ### Lists as sets
 
 \begin{code}
-open Collections (Id) (_≟_)
+open Collections (Id) (_≟_) hiding (_∉_)
 \end{code}
 
 ### Free variables
