@@ -770,11 +770,11 @@ embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
-### Exercise (`×⊎-implies-⊎×`)
+### Exercise (`⊎×-implies-×⊎`)
 
-Show that a conjunct of disjuncts implies a disjunct of conjuncts.
+Show that a disjunct of conjuncts implies a conjunct of disjuncts.
 \begin{code}
-×⊎-Implies-⊎× = ∀ {A B C D : Set} → (A ⊎ B) × (C ⊎ D) → (A × C) ⊎ (B × D)
+⊎×-Implies-×⊎ = ∀ {A B C D : Set} → (A × C) ⊎ (B × D) → (A ⊎ B) × (C ⊎ D)
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
