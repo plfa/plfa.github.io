@@ -42,30 +42,30 @@ open Collections (Id) (_≟_)
 prime : Id → Id
 prime x = x Str.++ "′"
 
-lemma₀ : ∀ (us : List Id) → us ++ [] ≡ us
-lemma₀ []        =  refl
-lemma₀ (u ∷ us)  =  cong (u ∷_) (lemma₀ us)
+++-identityʳ : ∀ (us : List Id) → us ++ [] ≡ us
+++-identityʳ []        =  refl
+++-identityʳ (u ∷ us)  =  cong (u ∷_) (++-identityʳ us)
 
-lemma₁ : ∀ (us vs : List Id) (v : Id) →
-  (us ++ [ v ]) ++ vs ≡ us ++ (v ∷ vs)
-lemma₁ [] vs v        =  refl
-lemma₁ (u ∷ us) vs v  =  cong (u ∷_) (lemma₁ us vs v)
+++-assoc : ∀ (us vs ws : List Id) →
+  (us ++ vs) ++ ws ≡ us ++ (vs ++ ws)
+++-assoc [] vs ws        =  refl
+++-assoc (u ∷ us) vs ws  =  cong (u ∷_) (++-assoc us vs ws)
 
-lemma₂ : ∀ (us : List Id) (v w : Id)
+lemma : ∀ (us : List Id) (v w : Id)
   → w ∉ us → w ≢ v → w ∉ (us ++ [ v ])
-lemma₂ []       v w w∉ w≢ =  λ{ here → w≢ refl
+lemma []       v w w∉ w≢ =  λ{ here → w≢ refl
                               ; (there ())
                               }
-lemma₂ (u ∷ us) v w w∉ w≢ =  λ{ here → w∉ here
-                              ; (there y∈) → (lemma₂ us v w (w∉ ∘ there) w≢) y∈
+lemma (u ∷ us) v w w∉ w≢ =  λ{ here → w∉ here
+                              ; (there y∈) → (lemma us v w (w∉ ∘ there) w≢) y∈
                               }
 
 helper : ∀ (n : ℕ) (us vs xs : List Id) (w : Id)
   → w ∉ us → us ++ vs ≡ xs → ∃[ y ]( y ∉ xs)
-helper n us []       xs w w∉ refl rewrite lemma₀ us = ⟨ w , w∉ ⟩
+helper n us []       xs w w∉ refl rewrite ++-identityʳ us = ⟨ w , w∉ ⟩
 helper n us (v ∷ vs) xs w w∉ refl with w ≟ v
 helper n us (v ∷ vs) xs w w∉ refl | no w≢
-  =  helper n (us ++ [ v ]) vs xs w (lemma₂ us v w w∉ w≢) (lemma₁ us vs v)
+  =  helper n (us ++ [ v ]) vs xs w (lemma us v w w∉ w≢) (++-assoc us [ v ] vs)
 helper (suc n) us (v ∷ vs) xs w w∉ refl | yes _
   =  helper n [] xs xs w (λ()) refl
 helper zero us (v ∷ vs) xs w w∉ refl | yes _
