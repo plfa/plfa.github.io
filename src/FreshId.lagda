@@ -118,7 +118,7 @@ module IdBase
   prefixS-lemma x
     rewrite toList∘fromList ((reverse ∘ dropWhile P? ∘ reverse ∘ toList) x)
           | reverse-involutive ((dropWhile P? ∘ reverse ∘ toList) x)
-    =  {!dropWhile-lemma P? ((reverse ∘ toList) x) !}
+    =  dropWhile-lemma P? ((reverse ∘ toList) x) 
     
   prefix : Id → Prefix
   prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩ 
