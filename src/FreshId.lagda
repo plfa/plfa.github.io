@@ -17,8 +17,9 @@ module FreshId where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; _++_; map; foldr; filter;
-  reverse; partition; replicate; length; takeWhile; dropWhile)
+open import Data.List using (List; []; _∷_; _++_; map; foldr; 
+  reverse; replicate; length)
+open import Data.List.Properties using (reverse-involutive)
 open import Data.List.All using (All; []; _∷_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
@@ -43,7 +44,40 @@ pattern [_]       x        =  x ∷ []
 pattern [_,_]     x y      =  x ∷ y ∷ []
 pattern [_,_,_]   x y z    =  x ∷ y ∷ z ∷ []
 pattern [_,_,_,_] x y z w  =  x ∷ y ∷ z ∷ w ∷ []
+\end{code}
 
+## DropWhile and TakeWhile for decidable predicates
+
+\begin{code}
+Head : ∀ {A : Set} → (A → Set) → List A → Set
+Head P []        =  ⊥
+Head P (x ∷ xs)  =  P x
+
+module TakeDrop {A : Set} {P : A → Set} (P? : ∀ (x : A) → Dec (P x)) where
+
+  takeWhile : List A → List A
+  takeWhile []                   =  []
+  takeWhile (x ∷ xs) with P? x
+  ...                   | yes _  =  x ∷ takeWhile xs
+  ...                   | no  _  =  []
+
+  dropWhile : List A → List A
+  dropWhile []                   =  []
+  dropWhile (x ∷ xs) with P? x
+  ...                   | yes _  =  dropWhile xs
+  ...                   | no  _  =  x ∷ xs
+
+  takeWhile-lemma : ∀ (xs : List A) → All P (takeWhile xs)
+  takeWhile-lemma []                    =  []
+  takeWhile-lemma (x ∷ xs) with P? x
+  ...                         | yes px  =  px ∷ takeWhile-lemma xs
+  ...                         | no  _   =  []
+
+  dropWhile-lemma : ∀ (xs : List A) → ¬ Head P (dropWhile xs)
+  dropWhile-lemma []                     =  λ()
+  dropWhile-lemma (x ∷ xs) with P? x
+  ...                         | yes _    =  dropWhile-lemma xs
+  ...                         | no  ¬px  =  ¬px
 \end{code}
 
 ## Abstract operators prefix, suffix, and make
@@ -52,40 +86,21 @@ pattern [_,_,_,_] x y z w  =  x ∷ y ∷ z ∷ w ∷ []
 Id : Set
 Id = String
 
-module ListLemmas (A : Set) (P : A → Bool) where
-
-  data Head : List A → Set where
-    head : ∀ (x : A) (xs : List A) → T (P x) → Head (x ∷ xs)
-
-  drop-lemma : ∀ (s : List A) → ¬ Head (dropWhile P s)
-  drop-lemma [] = λ()
-  drop-lemma (c ∷ s) with P c
-  ...  | true   =  drop-lemma s
-  ...  | false  =  f
-    where
-    f : ¬ Head (c ∷ s)
-    f (head c s eq) = {!!}
-
-  take-lemma : ∀ (s : List A) → All (T ∘ P) (takeWhile P s)
-  take-lemma [] = []
-  take-lemma (c ∷ s) with P c
-  ...  | true   =  {!!} ∷ take-lemma s
-  ...  | false  =  []
-
 open Collections (Id) (String._≟_)
 
 module IdBase
-  (P : Char → Bool)
+  (P : Char → Set)
+  (P? : ∀ (c : Char) → Dec (P c))
   (toℕ : List Char → ℕ)
   (fromℕ : ℕ → List Char)
   (toℕ∘fromℕ : ∀ (n : ℕ) → toℕ (fromℕ n) ≡ n)
-  (fromℕ∘toℕ : ∀ (s : List Char) → (All (T ∘ P) s) → fromℕ (toℕ s) ≡ s)
+  (fromℕ∘toℕ : ∀ (s : List Char) → (All P s) → fromℕ (toℕ s) ≡ s)
   where
 
-  open ListLemmas (Char) (P)
+  open TakeDrop
 
   isPrefix : String → Set
-  isPrefix s =  ¬ Head (reverse (toList s))
+  isPrefix s =  ¬ Head P (reverse (toList s))
 
   Prefix : Set
   Prefix = ∃[ x ] (isPrefix x)
@@ -97,19 +112,19 @@ module IdBase
   make p n = fromList (toList (body p) ++ fromℕ n)
 
   prefixS : Id → String
-  prefixS = fromList ∘ dropWhile P ∘ reverse ∘ toList
+  prefixS = fromList ∘ reverse ∘ dropWhile P? ∘ reverse ∘ toList
 
   prefixS-lemma : ∀ (x : Id) → isPrefix (prefixS x)
-  prefixS-lemma x  =  h (reverse (toList x))
-    where
-    h : ∀ (s : List Char) → isPrefix ((fromList ∘ dropWhile P) s)
-    h = {!!}
+  prefixS-lemma x
+    rewrite toList∘fromList ((reverse ∘ dropWhile P? ∘ reverse ∘ toList) x)
+          | reverse-involutive ((dropWhile P? ∘ reverse ∘ toList) x)
+    =  {!dropWhile-lemma P? ((reverse ∘ toList) x) !}
     
   prefix : Id → Prefix
   prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩ 
     
   suffix : Id → ℕ
-  suffix =  length ∘ takeWhile P ∘ reverse ∘ toList
+  suffix =  length ∘ takeWhile P? ∘ reverse ∘ toList
 
   _≟Pr_ : ∀ (p q : Prefix) → Dec (body p ≡ body q)
   p ≟Pr q = (body p) String.≟ (body q)
@@ -178,8 +193,11 @@ module IdLemmas
 prime : Char
 prime = '′'
 
-isPrime : Char → Bool
-isPrime c = ⌊ c Char.≟ prime ⌋
+isPrime : Char → Set
+isPrime c  =  c ≡ prime
+
+isPrime? : (c : Char) → Dec (isPrime c)
+isPrime? c  =  c Char.≟ prime
 
 toℕ : List Char → ℕ
 toℕ s  =  length s
@@ -190,10 +208,10 @@ fromℕ n  =  replicate n prime
 toℕ∘fromℕ : ∀ (n : ℕ) → toℕ (fromℕ n) ≡ n
 toℕ∘fromℕ = {!!}
 
-fromℕ∘toℕ : ∀ (s : List Char) → All (T ∘ isPrime) s → fromℕ (toℕ s) ≡ s
+fromℕ∘toℕ : ∀ (s : List Char) → All isPrime s → fromℕ (toℕ s) ≡ s
 fromℕ∘toℕ = {!!}
 
-open IdBase (isPrime) (toℕ) (fromℕ) (toℕ∘fromℕ) (fromℕ∘toℕ)
+open IdBase (isPrime) (isPrime?) (toℕ) (fromℕ) (toℕ∘fromℕ) (fromℕ∘toℕ)
 open IdLemmas (Prefix) (prefix) (suffix) (make) (body) (_≟Pr_)
   (prefix-lemma) (suffix-lemma) (make-lemma)
 
@@ -203,14 +221,16 @@ x2 = "x′′"
 x3 = "x′′′"
 y0 = "y"
 y1 = "y′"
-zs4 = "zs′′′′"
+zs0 = "zs"
+zs1 = "zs′"
+zs2 = "zs′′"
 
-_ : fresh x0 [ x0 , x1 , x2 , zs4 ] ≡ x3
+_ : fresh x0 [ x0 , x1 , x2 , zs2 ] ≡ x3
 _ = refl
 
 -- fresh "x" [ "x" , "x′" , "x′′" , "y" ] ≡ "x′′′"
 
-_ : fresh y1 [ x0 , x1 , x2 , zs4 ] ≡ y0
+_ : fresh zs0 [ x0 , x1 , x2 , zs1 ] ≡ zs2
 _ = refl
 \end{code}
 

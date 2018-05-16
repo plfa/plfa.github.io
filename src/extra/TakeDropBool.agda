@@ -8,41 +8,37 @@ open import Data.Unit using (⊤; tt)
 open import Relation.Nullary using (¬_)
 open import Function using (_∘_)
 
-module TakeDropLemmas (A : Set) (P : A → Bool) where
+module TakeDropBool (A : Set) (P : A → Bool) where
 
   Head : ∀ {A : Set} → (A → Bool) → List A → Set
   Head P []       =  ⊥
   Head P (c ∷ s)  =  T (P c)
 
-  drop-lemma : ∀ (s : List A) → ¬ Head P (dropWhile P s)
-  drop-lemma [] = λ()
-  drop-lemma (c ∷ s) with P c
-  ...  | true   =  drop-lemma s
-  ...  | false  =  {!!}
+  data Book (x : A) (b : Bool) : Set where
+    book : P x ≡ b → Book x b
 
-  take-lemma : ∀ (s : List A) → All (T ∘ P) (takeWhile P s)
-  take-lemma [] = []
-  take-lemma (c ∷ s) with P c
-  ...  | true   =  {!!} ∷ take-lemma s
-  ...  | false  =  []
+  boo : ∀ (x : A) → Book x (P x)
+  boo x = book refl
+
+  dropWhile-lemma : ∀ (s : List A) → ¬ Head P (dropWhile P s)
+  dropWhile-lemma []                                         =  λ()
+  dropWhile-lemma (c ∷ s) with P c    | boo c
+  ...                        | true   | _                    =  dropWhile-lemma s
+  ...                        | false  | book eq  rewrite eq  =  λ()
+
+  takeWhile-lemma : ∀ (s : List A) → All (T ∘ P) (takeWhile P s)
+  takeWhile-lemma []                                         =  []
+  takeWhile-lemma (c ∷ s) with P c    | boo c
+  ...                        | false  | _                    =  []
+  ...                        | true   | book eq rewrite eq   =  {! tt!} ∷ takeWhile-lemma s
+
 
 {-  Hole 0
-Goal: ⊥
-————————————————————————————————————————————————————————————
-s  : List A
-c  : A
-eq : T (P c)
-P  : A → Bool
-s  : List A
-c  : A
-A  : Set
--}
-
-{- Hole 1
 Goal: T (P c)
 ————————————————————————————————————————————————————————————
-s : List A
-c : A
-P : A → Bool
-A : Set
+s  : List A
+eq : P c ≡ true
+c  : A
+P  : A → Bool
+A  : Set
 -}
