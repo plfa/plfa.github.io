@@ -1183,6 +1183,24 @@ _ = refl
 -}
 \end{code}
 
+### Ulf writes
+
+I believe the problem you've run into is that we don't have explicit sharing in the
+internal terms. The normal form of `normalise 100 ⊢four` is small, but the weak-head
+normal form is huge, and the type checker compares terms for equality by successive
+weak-head reduction steps. The lack of explicit sharing means that evaluation won't be
+shared across reduction steps.
+
+Here are some numbers:
+
+    n    size of whnf of `normalise n ⊢four` (#nodes in syntax tree)
+    1    916
+    2    122,597
+    3    53,848,821
+    4    ??
+    100  ????
+
+
 ### Discussion
 
 (Notes to myself)
@@ -1239,3 +1257,4 @@ of the current version of `⊢subst`.
 Stepping into a subterm, just need to precompose `ρ` with a
 lemma stating that the free variables of the subterm are
 a subset of the free variables of the term.
+

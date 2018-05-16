@@ -4,6 +4,7 @@ layout    : page
 permalink : /FreshId
 ---
 
+
 Generation of fresh names, where names are strings.
 Each name has a base (a string not ending in a prime)
 and a suffix (a sequence of primes).
@@ -40,16 +41,17 @@ pattern [_,_]     x y      =  x ∷ y ∷ []
 pattern [_,_,_]   x y z    =  x ∷ y ∷ z ∷ []
 pattern [_,_,_,_] x y z w  =  x ∷ y ∷ z ∷ w ∷ []
 
-Id : Set
-Id = String
-
-open Collections (Id) (String._≟_)
 \end{code}
 
 ## Abstract operators prefix, suffix, and make
 
 \begin{code}
-abstract
+Id : Set
+Id = String
+
+open Collections (Id) (String._≟_)
+
+module IdBase where
 
   data Head {A : Set} (P : A → Bool) : List A → Set where
     head : ∀ {x xs} → P x ≡ true → Head P (x ∷ xs)
@@ -70,7 +72,7 @@ abstract
   body = proj₁
 
   make : Prefix → ℕ → Id
-  make ⟨ s , _ ⟩ n = fromList (toList s ++ replicate n prime)
+  make p n = fromList (toList (body p) ++ replicate n prime)
 
   prefixS : Id → String
   prefixS = fromList ∘ dropWhile isPrime ∘ reverse ∘ toList
@@ -89,36 +91,71 @@ abstract
   _≟Pr_ : ∀ (p q : Prefix) → Dec (body p ≡ body q)
   p ≟Pr q = (body p) String.≟ (body q)
 
-  prefix-lemma : ∀ {p n} → prefix (make p n) ≡ p
-  prefix-lemma {p} {n} = {!!}
+  prefix-lemma : ∀ (p : Prefix) (n : ℕ) → prefix (make p n) ≡ p
+  prefix-lemma = {!!}
 
-  suffix-lemma : ∀ {p n} → suffix (make p n) ≡ n
+  suffix-lemma : ∀ (p : Prefix) (n : ℕ) → suffix (make p n) ≡ n
   suffix-lemma = {!!}
 
-  make-lemma : ∀ {x} → make (prefix x) (suffix x) ≡ x
+  make-lemma : ∀ (x : Id) → make (prefix x) (suffix x) ≡ x
   make-lemma = {!!}
 \end{code}
 
-## Basic lemmas
+## Main lemmas
 
 \begin{code}
-bump : Prefix → Id → ℕ
-bump p x with p ≟Pr prefix x
-...         | yes _  =  suc (suffix x)
-...         | no  _  =  zero
-
-next : Prefix → List Id → ℕ
-next p  = foldr _⊔_ 0 ∘ map (bump p)
-
-fresh : Id → List Id → Id
-fresh x xs  =  make p (next p xs)
+module IdLemmas
+  (Prefix : Set)
+  (prefix : Id → Prefix)
+  (suffix : Id → ℕ)
+  (make : Prefix → ℕ → Id)
+  (body : Prefix → String)
+  (_≟Pr_ : ∀ (p q : Prefix) → Dec (body p ≡ body q))
+  (prefix-lemma : ∀ (p : Prefix) (n : ℕ) → prefix (make p n) ≡ p)
+  (suffix-lemma : ∀ (p : Prefix) (n : ℕ) → suffix (make p n) ≡ n)
+  (make-lemma : ∀ (x : Id) → make (prefix x) (suffix x) ≡ x)
   where
-  p = prefix x
+
+  bump : Prefix → Id → ℕ
+  bump p x with p ≟Pr prefix x
+  ...         | yes _  =  suc (suffix x)
+  ...         | no  _  =  zero
+
+  next : Prefix → List Id → ℕ
+  next p  = foldr _⊔_ 0 ∘ map (bump p)
+
+  fresh : Id → List Id → Id
+  fresh x xs  =  make p (next p xs)
+    where
+    p = prefix x
+
+  ⊔-lemma : ∀ {p w xs} → w ∈ xs → bump p w ≤ next p xs
+  ⊔-lemma {p} {_} {_ ∷ xs} here        =  m≤m⊔n _ (next p xs)
+  ⊔-lemma {p} {w} {x ∷ xs} (there x∈)  =
+    ≤-trans (⊔-lemma {p} {w} x∈) (n≤m⊔n (bump p x) (next p xs))
+
+  bump-lemma : ∀ {p n} → bump p (make p n) ≡ suc n
+  bump-lemma {p} {n}
+    with p ≟Pr prefix (make p n)
+  ...  | yes eqn  rewrite suffix-lemma p n  =  refl
+  ...  | no  p≢   rewrite prefix-lemma p n  =  ⊥-elim (p≢ refl)
+
+  fresh-lemma : ∀ {w x xs} → w ∈ xs → w ≢ fresh x xs
+  fresh-lemma {w} {x} {xs} w∈  =  h {prefix x}
+    where
+    h : ∀ {p} → w ≢ make p (next p xs)
+    h {p} refl
+      with ⊔-lemma {p} {make p (next p xs)} {xs} w∈
+    ... | leq rewrite bump-lemma {p} {next p xs} = 1+n≰n leq
 \end{code}
 
 ## Test cases
 
 \begin{code}
+open IdBase
+open IdLemmas (Prefix) (prefix) (suffix) (make) (body) (_≟Pr_)
+  (prefix-lemma) (suffix-lemma) (make-lemma)
+
 x0 = "x"
 x1 = "x′"
 x2 = "x′′"
@@ -128,33 +165,12 @@ y1 = "y′"
 zs4 = "zs′′′′"
 
 _ : fresh x0 [ x0 , x1 , x2 , zs4 ] ≡ x3
-_ = {!!}
+_ = refl
+
+-- fresh "x" [ "x" , "x′" , "x′′" , "y" ] ≡ "x′′′"
 
 _ : fresh y1 [ x0 , x1 , x2 , zs4 ] ≡ y0
-_ = {!!}
-\end{code}
-
-## Main lemmas
-
-\begin{code}
-⊔-lemma : ∀ {p w xs} → w ∈ xs → bump p w ≤ next p xs
-⊔-lemma {p} {_} {_ ∷ xs} here        =  m≤m⊔n _ (next p xs)
-⊔-lemma {p} {w} {x ∷ xs} (there x∈)  =
-  ≤-trans (⊔-lemma {p} {w} x∈) (n≤m⊔n (bump p x) (next p xs))
-
-bump-lemma : ∀ {p n} → bump p (make p n) ≡ suc n
-bump-lemma {p} {n}
-  with p ≟Pr prefix (make p n)
-...  | yes eqn  rewrite suffix-lemma {p} {n}  =  refl
-...  | no  p≢   rewrite prefix-lemma {p} {n}  =  ⊥-elim (p≢ refl)
-
-fresh-lemma : ∀ {w x xs} → w ∈ xs → w ≢ fresh x xs
-fresh-lemma {w} {x} {xs} w∈  =  h {prefix x}
-  where
-  h : ∀ {p} → w ≢ make p (next p xs)
-  h {p} refl
-    with ⊔-lemma {p} {make p (next p xs)} {xs} w∈
-  ... | leq rewrite bump-lemma {p} {next p xs} = 1+n≰n leq
+_ = refl
 \end{code}
 
 
