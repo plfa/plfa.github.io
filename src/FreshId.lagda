@@ -19,13 +19,17 @@ open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; _++_; map; foldr; filter;
   reverse; partition; replicate; length; takeWhile; dropWhile)
+open import Data.List.All using (All; []; _∷_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
-open import Data.Bool using (Bool; true; false)
+open import Data.Bool using (Bool; true; false; T)
 open import Data.Char using (Char)
-open import Data.String using (String; toList; fromList; _≟_)
+import Data.Char as Char using (_≟_)
+open import Data.String using (String; toList; fromList; _≟_;
+  toList∘fromList; fromList∘toList)
 open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax)
   renaming (_,_ to ⟨_,_⟩)
+open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
@@ -33,7 +37,6 @@ open import Relation.Nullary.Negation using (¬?)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 import Data.Nat as Nat
 import Data.String as String
-import Data.Char as Char
 import Collections
 
 pattern [_]       x        =  x ∷ []
@@ -49,21 +52,40 @@ pattern [_,_,_,_] x y z w  =  x ∷ y ∷ z ∷ w ∷ []
 Id : Set
 Id = String
 
+module ListLemmas (A : Set) (P : A → Bool) where
+
+  data Head : List A → Set where
+    head : ∀ (x : A) (xs : List A) → T (P x) → Head (x ∷ xs)
+
+  drop-lemma : ∀ (s : List A) → ¬ Head (dropWhile P s)
+  drop-lemma [] = λ()
+  drop-lemma (c ∷ s) with P c
+  ...  | true   =  drop-lemma s
+  ...  | false  =  f
+    where
+    f : ¬ Head (c ∷ s)
+    f (head c s eq) = {!!}
+
+  take-lemma : ∀ (s : List A) → All (T ∘ P) (takeWhile P s)
+  take-lemma [] = []
+  take-lemma (c ∷ s) with P c
+  ...  | true   =  {!!} ∷ take-lemma s
+  ...  | false  =  []
+
 open Collections (Id) (String._≟_)
 
-module IdBase where
+module IdBase
+  (P : Char → Bool)
+  (toℕ : List Char → ℕ)
+  (fromℕ : ℕ → List Char)
+  (toℕ∘fromℕ : ∀ (n : ℕ) → toℕ (fromℕ n) ≡ n)
+  (fromℕ∘toℕ : ∀ (s : List Char) → (All (T ∘ P) s) → fromℕ (toℕ s) ≡ s)
+  where
 
-  data Head {A : Set} (P : A → Bool) : List A → Set where
-    head : ∀ {x xs} → P x ≡ true → Head P (x ∷ xs)
-
-  prime : Char
-  prime = '′'
-
-  isPrime : Char → Bool
-  isPrime c = ⌊ c Char.≟ prime ⌋
+  open ListLemmas (Char) (P)
 
   isPrefix : String → Set
-  isPrefix s =  ¬ Head isPrime (reverse (toList s))
+  isPrefix s =  ¬ Head (reverse (toList s))
 
   Prefix : Set
   Prefix = ∃[ x ] (isPrefix x)
@@ -72,21 +94,22 @@ module IdBase where
   body = proj₁
 
   make : Prefix → ℕ → Id
-  make p n = fromList (toList (body p) ++ replicate n prime)
+  make p n = fromList (toList (body p) ++ fromℕ n)
 
   prefixS : Id → String
-  prefixS = fromList ∘ dropWhile isPrime ∘ reverse ∘ toList
+  prefixS = fromList ∘ dropWhile P ∘ reverse ∘ toList
 
-  prefix : Id → Prefix
-  prefix x  =  ⟨ s , pr ⟩ 
+  prefixS-lemma : ∀ (x : Id) → isPrefix (prefixS x)
+  prefixS-lemma x  =  h (reverse (toList x))
     where
-    s : String
-    s = prefixS x
-    pr : isPrefix s
-    pr = {!!}
+    h : ∀ (s : List Char) → isPrefix ((fromList ∘ dropWhile P) s)
+    h = {!!}
+    
+  prefix : Id → Prefix
+  prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩ 
     
   suffix : Id → ℕ
-  suffix =  length ∘ takeWhile isPrime ∘ reverse ∘ toList
+  suffix =  length ∘ takeWhile P ∘ reverse ∘ toList
 
   _≟Pr_ : ∀ (p q : Prefix) → Dec (body p ≡ body q)
   p ≟Pr q = (body p) String.≟ (body q)
@@ -152,7 +175,25 @@ module IdLemmas
 ## Test cases
 
 \begin{code}
-open IdBase
+prime : Char
+prime = '′'
+
+isPrime : Char → Bool
+isPrime c = ⌊ c Char.≟ prime ⌋
+
+toℕ : List Char → ℕ
+toℕ s  =  length s
+
+fromℕ : ℕ → List Char
+fromℕ n  =  replicate n prime
+
+toℕ∘fromℕ : ∀ (n : ℕ) → toℕ (fromℕ n) ≡ n
+toℕ∘fromℕ = {!!}
+
+fromℕ∘toℕ : ∀ (s : List Char) → All (T ∘ isPrime) s → fromℕ (toℕ s) ≡ s
+fromℕ∘toℕ = {!!}
+
+open IdBase (isPrime) (toℕ) (fromℕ) (toℕ∘fromℕ) (fromℕ∘toℕ)
 open IdLemmas (Prefix) (prefix) (suffix) (make) (body) (_≟Pr_)
   (prefix-lemma) (suffix-lemma) (make-lemma)
 
