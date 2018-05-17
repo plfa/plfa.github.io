@@ -16,11 +16,19 @@ module FreshId where
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
+open Eq.≡-Reasoning
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; _++_; map; foldr; 
-  reverse; replicate; length)
-open import Data.List.Properties using (reverse-involutive)
+open import Data.List
+  using (List; []; _∷_; _++_; map; foldr; replicate; length; _∷ʳ_)
+  renaming (reverse to rev)
+open import Data.List.Properties
+  using (++-assoc; ++-identityʳ)
+  renaming (unfold-reverse to revʳ;
+            reverse-++-commute to rev-++;
+            reverse-involutive to rev-inv)
 open import Data.List.All using (All; []; _∷_)
+open import Data.List.All.Properties
+  renaming (++⁺ to _++All_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _⊔_)
 open import Data.Nat.Properties using (≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; 1+n≰n)
 open import Data.Bool using (Bool; true; false; T)
@@ -35,7 +43,8 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
-open import Relation.Nullary.Decidable using (⌊_⌋)
+-- open import Relation.Nullary.Decidable using (⌊_⌋)
+open import Relation.Unary using (Decidable)
 import Data.Nat as Nat
 import Data.String as String
 import Collections
@@ -49,46 +58,76 @@ pattern [_,_,_,_] x y z w  =  x ∷ y ∷ z ∷ w ∷ []
 ## DropWhile and TakeWhile for decidable predicates
 
 \begin{code}
-Head : ∀ {A : Set} → (A → Set) → List A → Set
-Head P []        =  ⊥
-Head P (x ∷ xs)  =  P x
+module Break {A : Set} where
 
-module TakeDrop {A : Set} {P : A → Set} (P? : ∀ (x : A) → Dec (P x)) where
+  data Break (P : A → Set) : List A → Set where
+    none : ∀ {xs} → All P xs → Break P xs
+    some : ∀ {xs y zs} → All P xs → ¬ P y → Break P (xs ++ [ y ] ++ zs)
 
-  takeWhile : List A → List A
-  takeWhile []                   =  []
-  takeWhile (x ∷ xs) with P? x
-  ...                   | yes _  =  x ∷ takeWhile xs
-  ...                   | no  _  =  []
+  break : ∀ {P : A → Set} (P? : Decidable P) → (xs : List A) → Break P xs
+  break P? []                                           =  none []
+  break P? (w ∷ ws) with P? w
+  ...                  | no ¬Pw                         =  some [] ¬Pw
+  ...                  | yes Pw with break P? ws
+  ...                              | none Pws           =  none (Pw ∷ Pws)
+  ...                              | some Pws ¬Py       =  some (Pw ∷ Pws) ¬Py
 
-  dropWhile : List A → List A
-  dropWhile []                   =  []
-  dropWhile (x ∷ xs) with P? x
-  ...                   | yes _  =  dropWhile xs
-  ...                   | no  _  =  x ∷ xs
+  takeWhile : ∀ {P : A → Set} (P? : Decidable P) → List A → List A
+  takeWhile P? ws with break P? ws
+  ...                | none {xs} Pxs               =  xs
+  ...                | some {xs} {y} {zs} Pxs ¬Py  =  xs
 
-  takeWhile-lemma : ∀ (xs : List A) → All P (takeWhile xs)
-  takeWhile-lemma []                    =  []
-  takeWhile-lemma (x ∷ xs) with P? x
-  ...                         | yes px  =  px ∷ takeWhile-lemma xs
-  ...                         | no  _   =  []
+  dropWhile : ∀ {P : A → Set} (P? : Decidable P) → List A → List A
+  dropWhile P? ws with break P? ws
+  ...                | none {xs} Pxs               =  []
+  ...                | some {xs} {y} {zs} Pxs ¬Py  =  y ∷ zs
 
-  dropWhile-lemma : ∀ (xs : List A) → ¬ Head P (dropWhile xs)
-  dropWhile-lemma []                     =  λ()
-  dropWhile-lemma (x ∷ xs) with P? x
-  ...                         | yes _    =  dropWhile-lemma xs
-  ...                         | no  ¬px  =  ¬px
+module RevBreak {A : Set} where
+
+  open Break {A}
+
+  data RevBreak (P : A → Set) : List A → Set where
+    rnone : ∀ {xs} → All P (rev xs) → RevBreak P xs
+    rsome : ∀ {zs y xs} → ¬ P y → All P (rev xs) → RevBreak P (zs ++ [ y ] ++ xs)
+
+{-
+  revBreak : ∀ {P : A → Set} (P? : Decidable P) → (xs : List A) → RevBreak P xs
+  revBreak P? ws with break P? (rev ws)
+  ... | none {xs} Pxs = ?
+--    rewrite rev-inv ws
+--    = rnone {xs = rev xs} Pxs
+  ... | some {xs} {y} {zs} Pxs ¬Py = ?
+--    rewrite rev-inv xs | rev-inv zs
+--    = rsome {zs = rev zs} {y = y} {xs = rev xs} ¬Py Pxs
+-}
+
+{-
+  _++All_ : ∀ {xs ys : List A} (P : A → Set) → All P xs → All P ys → All P (xs ++ ys)
+
+  revAll : ∀ {xs : List A} (P : A → Set) → All P xs → All P (rev xs)
+
+  data BBreak (P : A → Set) : List A → Set where
+    none : ∀ {xs} → All P xs → BBreak P xs
+    some : ∀ {xs y zs} → ¬ P y → All P zs → BBreak P (xs ++ [ y ] ++ zs)
+
+  bbreak : ∀ {P : A → Set} (P? : Decidable P) → (xs : List A) → Break P xs
+  bbreak P? ws with break P? (rev ws)
+  ...             | none {xs} Pxs               =  none {rev xs} (revAll Pws)
+  ...             | some {xs} {y} {zs} Pxs ¬Py  =  some ¬Py 
+-}
 \end{code}
 
 ## Abstract operators prefix, suffix, and make
 
 \begin{code}
+{-
 Id : Set
 Id = String
 
 open Collections (Id) (String._≟_)
 
 module IdBase
+
   (P : Char → Set)
   (P? : ∀ (c : Char) → Dec (P c))
   (toℕ : List Char → ℕ)
@@ -97,16 +136,19 @@ module IdBase
   (fromℕ∘toℕ : ∀ (s : List Char) → (All P s) → fromℕ (toℕ s) ≡ s)
   where
 
-  open TakeDrop
+  open Break
 
   isPrefix : String → Set
   isPrefix s =  ¬ Head P (reverse (toList s))
 
   Prefix : Set
-  Prefix = ∃[ x ] (isPrefix x)
+  Prefix = ∃[ s ] (isPrefix s)
 
   body : Prefix → String
   body = proj₁
+
+  prop : (p : Prefix) → isPrefix (body p)
+  prop = proj₂
 
   make : Prefix → ℕ → Id
   make p n = fromList (toList (body p) ++ fromℕ n)
@@ -130,18 +172,20 @@ module IdBase
   p ≟Pr q = (body p) String.≟ (body q)
 
   prefix-lemma : ∀ (p : Prefix) (n : ℕ) → prefix (make p n) ≡ p
-  prefix-lemma = {!!}
+  prefix-lemma p n = ?
 
   suffix-lemma : ∀ (p : Prefix) (n : ℕ) → suffix (make p n) ≡ n
   suffix-lemma = {!!}
 
   make-lemma : ∀ (x : Id) → make (prefix x) (suffix x) ≡ x
   make-lemma = {!!}
+-}
 \end{code}
 
 ## Main lemmas
 
 \begin{code}
+{-
 module IdLemmas
   (Prefix : Set)
   (prefix : Id → Prefix)
@@ -185,11 +229,13 @@ module IdLemmas
     h {p} refl
       with ⊔-lemma {p} {make p (next p xs)} {xs} w∈
     ... | leq rewrite bump-lemma {p} {next p xs} = 1+n≰n leq
+-}
 \end{code}
 
 ## Test cases
 
 \begin{code}
+{-
 prime : Char
 prime = '′'
 
@@ -232,6 +278,7 @@ _ = refl
 
 _ : fresh zs0 [ x0 , x1 , x2 , zs1 ] ≡ zs2
 _ = refl
+-}
 \end{code}
 
 
