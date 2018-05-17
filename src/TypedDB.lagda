@@ -247,6 +247,20 @@ data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → μ N ⟶ N [ μ N ]
 \end{code}
 
+Two possible formulations of `μ`
+
+    μ f → N  ⟶  N [ f := μ f → N ]
+
+    (μ f → λ x → N) · V  ⟶  N [ f := μ f → λ x → N , x := V ]
+
+The first is odd in that we substitute for `f` a term that is not a value.
+
+The second has two values of function type, both lambda abstractions and fixpoints.
+
+
+
+
+
 ## Reflexive and transitive closure
 
 \begin{code}
