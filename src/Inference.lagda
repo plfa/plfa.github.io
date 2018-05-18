@@ -219,46 +219,40 @@ _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 ## Lookup type of a variable in the context
 
 \begin{code}
-data Lookup (Γ : Ctx) (x : Id) : Set where
-  ok : ∀ (A : Type) → (Γ ∋ x `: A) → Lookup Γ x
-
-lookup : ∀ (Γ : Ctx) (x : Id) → TC (Lookup Γ x)
+lookup : ∀ (Γ : Ctx) (x : Id) → TC (∃[ A ](Γ ∋ x `: A))
 lookup ε x  =
   error⁺ "variable not bound" ⌊ x ⌋ []
 lookup (Γ , x `: A) w with w ≟ x
 ... | yes refl =
-  return (ok A Z)
+  return ⟨ A , Z ⟩
 ... | no w≢ =
-  do ok A ⊢x ← lookup Γ w
-     return (ok A (S w≢ ⊢x))
+  do ⟨ A , ⊢x ⟩ ← lookup Γ w
+     return ⟨ A , S w≢ ⊢x ⟩
 \end{code}
   
 ## Synthesize and inherit types
 
 \begin{code}
-data Synthesize (Γ : Ctx) (M : Term⁺) : Set where
-  ok : ∀ (A : Type) → (Γ ⊢ M ↑ A) → Synthesize Γ M
-
-synthesize : ∀ (Γ : Ctx) (M : Term⁺) → TC (Synthesize Γ M)
+synthesize : ∀ (Γ : Ctx) (M : Term⁺) → TC (∃[ A ](Γ ⊢ M ↑ A))
 inherit : ∀ (Γ : Ctx) (M : Term⁻) (A : Type) → TC (Γ ⊢ M ↓ A)
 
 synthesize Γ ⌊ x ⌋ =
-  do ok A ⊢x ← lookup Γ x
-     return (ok A (Ax ⊢x))
+  do ⟨ A , ⊢x ⟩ ← lookup Γ x
+     return ⟨ A , Ax ⊢x ⟩
 synthesize Γ (L · M) =
-  do ok (A `→ B) ⊢L ← synthesize Γ L
-       where ok `ℕ _ → error⁺ "must apply function" (L · M) []
+  do ⟨ A `→ B , ⊢L ⟩ ← synthesize Γ L
+       where ⟨ `ℕ , _ ⟩ → error⁺ "must apply function" (L · M) []
      ⊢M ← inherit Γ M A
-     return (ok B (⊢L · ⊢M))
+     return ⟨ B , ⊢L · ⊢M ⟩
 synthesize Γ (M ↓ A) =
   do ⊢M ← inherit Γ M A
-     return (ok A (⊢↓ ⊢M))
+     return ⟨ A , ⊢↓ ⊢M ⟩
 
 inherit Γ (`λ x `→ N) (A `→ B) =
   do ⊢N ← inherit (Γ , x `: A) N B
      return (⊢λ ⊢N)
 inherit Γ (`λ x `→ N) `ℕ =
-  error⁻ "lambda cannot be natural" (`λ x `→ N) []
+  error⁻ "lambda cannot be of type natural" (`λ x `→ N) []
 inherit Γ `zero `ℕ =
   return ⊢zero
 inherit Γ `zero (A `→ B) =
@@ -268,11 +262,11 @@ inherit Γ (`suc M) `ℕ =
      return (⊢suc ⊢M)
 inherit Γ (`suc M) (A `→ B) =
   error⁻ "suc cannot be function" (`suc M) [ A `→ B ]
-inherit Γ `case L [`zero`→ M |`suc x `→ N ] A =
-  do ok `ℕ ⊢L ← synthesize Γ L
-       where ok (A `→ B) _ → error⁻ "cannot case on function"
+inherit Γ (`case L [`zero`→ M |`suc x `→ N ]) A =
+  do ⟨ `ℕ , ⊢L ⟩ ← synthesize Γ L
+       where ⟨ B `→ C , _ ⟩ → error⁻ "cannot case on function"
                                     (`case L [`zero`→ M |`suc x `→ N ])
-                                    [ A `→ B ]
+                                    [ B `→ C ]
      ⊢M ← inherit Γ M A
      ⊢N ← inherit (Γ , x `: `ℕ) N A
      return (⊢case ⊢L ⊢M ⊢N)
@@ -280,7 +274,7 @@ inherit Γ (`μ x `→ M) A =
   do ⊢M ← inherit (Γ , x `: A) M A
      return (⊢μ ⊢M)
 inherit Γ (M ↑) B =
-  do ok A ⊢M ← synthesize Γ M
+  do ⟨ A , ⊢M ⟩ ← synthesize Γ M
      yes A≡B ← return (A ≟Tp B)
        where no _ → error⁺ "inheritance and synthesis conflict" M [ A , B ]
      return (⊢↑ ⊢M A≡B)
@@ -297,7 +291,7 @@ x ≠ y  with x ≟ y
 
 _ : synthesize ε four ≡
   return
-    (ok `ℕ
+    ⟨ `ℕ ,
      (⊢↓
       (⊢μ
        (⊢λ
@@ -313,12 +307,12 @@ _ : synthesize ε four ≡
              · ⊢↑ (Ax (S (_≠_ "n" "m") Z)) refl)
             refl))))))
       · ⊢suc (⊢suc ⊢zero)
-      · ⊢suc (⊢suc ⊢zero)))
+      · ⊢suc (⊢suc ⊢zero)) ⟩
 _ = refl
 
 _ : synthesize ε fourCh ≡
   return
-    (ok `ℕ
+    ⟨ `ℕ ,
      (⊢↓ (⊢λ (⊢↑ (Ax Z · ⊢λ (⊢suc (⊢↑ (Ax Z) refl)) · ⊢zero) refl)) ·
       ⊢↑
       (⊢↓
@@ -357,7 +351,7 @@ _ : synthesize ε fourCh ≡
           ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
           refl)
          refl)))
-      refl))
+      refl) ⟩
 _ = refl
 \end{code}
 
@@ -374,7 +368,7 @@ _ : synthesize ε ((two ↓ `ℕ) · two) ≡
 _ = refl
 
 _ : synthesize ε (twoCh ↓ `ℕ) ≡
-  error⁻ "lambda cannot be natural"
+  error⁻ "lambda cannot be of type natural"
     (`λ "s" `→ (`λ "z" `→ ⌊ "s" ⌋ · (⌊ "s" ⌋ · (⌊ "z" ⌋ ↑) ↑) ↑)) []
 _ = refl 
 
