@@ -202,17 +202,20 @@ module Raw where
 ## Type checking monad
 
 \begin{code}
-  Error : Set
-  Error = String
+  Msg : Set
+  Msg = String
+
+  data Error : Set where
+    err : Msg → Term → List Type → Error
 
   TC : Set → Set
   TC A = Error ⊎ A
 
-  error : ∀ {A : Set} → Error → TC A
-  error = inj₁
+  error : ∀ {A : Set} → Msg → Term → List Type → TC A
+  error msg M As  =  inj₁ (err msg M As)
 
   return : ∀ {A : Set} → A → TC A
-  return = inj₂
+  return  =  inj₂
 
   _>>=_ : ∀ {A B : Set} → TC A → (A → TC B) → TC B
   inj₁ e >>= k  =  inj₁ e
@@ -225,15 +228,12 @@ module Raw where
   _≟Tp_ : (A B : Type) → Dec (A ≡ B)
   A ≟Tp B = {!!}
 
-  show : Type → String
-  show A = {!!}
-
   data Lookup (Γ : Ctx) (x : Id) : Set where
     ok : ∀ (A : Type) → (Γ ∋ x `: A) → Lookup Γ x
   
   lookup : ∀ (Γ : Ctx) (x : Id) → TC (Lookup Γ x)
   lookup ε x  =
-    error ("variable " ++ x ++ " not bound")
+    error "variable not bound" ⌊ x ⌋ []
   lookup (Γ , x `: A) w with w ≟ x
   ... | yes refl =
     return (ok A Z)
@@ -252,44 +252,48 @@ module Raw where
        return (ok A (Ax ⊢x))
   synth Γ (L · M) =
     do ok (A₀ `→ B) ⊢L ← synth Γ L
-         where ok `ℕ _ → error "cannot apply number"
-       ok A₁        ⊢M ← synth Γ M
-       yes refl        ← return (A₀ ≟Tp A₁)
-         where no _ → error "types differ in application"
+         where ok `ℕ _ → error "must apply function" (L · M) []
+       ok A₁ ⊢M ← synth Γ M
+       yes refl ← return (A₀ ≟Tp A₁)
+         where no _ → error "types differ in application" (L · M) [ A₀ , A₁ ]
        return (ok B (⊢L · ⊢M))
   synth Γ (M `: A) =
     do ⊢M ← inher Γ M A
        return (ok A (↑↓ ⊢M))
+  {-# CATCHALL #-}
   synth Γ M =
-    error "untypable term"
+    error "untypable term" M []
 
   inher Γ (`λ x `→ N) (A `→ B) =
     do ⊢N ← inher (Γ , x `: A) N B
        return (⊢λ ⊢N)
   inher Γ (`λ x `→ N) `ℕ =
-    error "lambda cannot be natural"
+    error "lambda cannot be natural" (`λ x `→ N) []
   inher Γ `zero `ℕ =
-    do return ⊢zero
-  inher Γ `zero (A `→ b) =
-    error "zero cannot be function"
+    return ⊢zero
+  inher Γ `zero (A `→ B) =
+    error "zero cannot be function" `zero [ A `→ B ]
   inher Γ (`suc M) `ℕ =
     do ⊢M ← inher Γ M `ℕ
        return (⊢suc ⊢M)
   inher Γ (`suc M) (A `→ B) =
-    error "suc cannot be function"
+    error "suc cannot be function" (`suc M) [ A `→ B ]
   inher Γ `case L [`zero`→ M |`suc x `→ N ] A =
     do ok `ℕ ⊢L ← synth Γ L
-         where ok (_ `→ _) _ → error "cannot case on function"
+         where ok (A `→ B) _ → error "cannot case on function"
+                                     (`case L [`zero`→ M |`suc x `→ N ])
+                                     [ A `→ B ]
        ⊢M ← inher Γ M A
        ⊢N ← inher (Γ , x `: `ℕ) N A
        return (⊢case ⊢L ⊢M ⊢N)
   inher Γ (`μ x `→ M) A =
     do ⊢M ← inher (Γ , x `: A) M A
        return (⊢μ ⊢M)
+  {-# CATCHALL #-}
   inher Γ M A₀ =
     do ok A₁ ⊢M ← synth Γ M
        yes refl ← return (A₀ ≟Tp A₁)
-         where no _ → error "inheritance and synthesis conflict"
+         where no _ → error "inheritance and synthesis conflict" M [ A₀ , A₁ ]
        return (↓↑ ⊢M)
 \end{code}
 
