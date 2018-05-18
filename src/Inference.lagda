@@ -184,14 +184,14 @@ module Raw where
     ⊢case : ∀ {Γ L M x N A}
       → Γ ⊢ L ↑ `ℕ
       → Γ ⊢ M ↓ A
-      → Γ , x `: A ⊢ N ↓ A
+      → Γ , x `: `ℕ ⊢ N ↓ A
         ------------------------------------------
       → Γ ⊢ `case L [`zero`→ M |`suc x `→ N ] ↓ A
 
     ⊢μ : ∀ {Γ x N A}
       → Γ , x `: A ⊢ N ↓ A
         -----------------------
-      → Γ ⊢ `μ x `→ N ↓ A `→ A
+      → Γ ⊢ `μ x `→ N ↓ A
 
     ↓↑ : ∀ {Γ M A}
       → Γ ⊢ M ↑ A
@@ -252,7 +252,7 @@ module Raw where
        return (ok A (Ax ⊢x))
   synth Γ (L · M) =
     do ok (A₀ `→ B) ⊢L ← synth Γ L
-         where _ → error "application of non-function"
+         where ok `ℕ _ → error "cannot apply number"
        ok A₁        ⊢M ← synth Γ M
        yes refl        ← return (A₀ ≟Tp A₁)
          where no _ → error "types differ in application"
@@ -263,7 +263,33 @@ module Raw where
   synth Γ M =
     error "untypable term"
 
-  inher Γ M A = {!!}
-
+  inher Γ (`λ x `→ N) (A `→ B) =
+    do ⊢N ← inher (Γ , x `: A) N B
+       return (⊢λ ⊢N)
+  inher Γ (`λ x `→ N) `ℕ =
+    error "lambda cannot be natural"
+  inher Γ `zero `ℕ =
+    do return ⊢zero
+  inher Γ `zero (A `→ b) =
+    error "zero cannot be function"
+  inher Γ (`suc M) `ℕ =
+    do ⊢M ← inher Γ M `ℕ
+       return (⊢suc ⊢M)
+  inher Γ (`suc M) (A `→ B) =
+    error "suc cannot be function"
+  inher Γ `case L [`zero`→ M |`suc x `→ N ] A =
+    do ok `ℕ ⊢L ← synth Γ L
+         where ok (_ `→ _) _ → error "cannot case on function"
+       ⊢M ← inher Γ M A
+       ⊢N ← inher (Γ , x `: `ℕ) N A
+       return (⊢case ⊢L ⊢M ⊢N)
+  inher Γ (`μ x `→ M) A =
+    do ⊢M ← inher (Γ , x `: A) M A
+       return (⊢μ ⊢M)
+  inher Γ M A₀ =
+    do ok A₁ ⊢M ← synth Γ M
+       yes refl ← return (A₀ ≟Tp A₁)
+         where no _ → error "inheritance and synthesis conflict"
+       return (↓↑ ⊢M)
 \end{code}
 
