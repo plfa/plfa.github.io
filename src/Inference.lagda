@@ -69,7 +69,7 @@ infix   4  _∋_`:_
 infix   4  _⊢_↑_
 infix   4  _⊢_↓_
 infixl  5  _,_`:_
-infix   5  _`:_
+infix   5  _↓_
 infixr  6  _`→_
 infix   6  `λ_`→_
 infix   6  `μ_`→_
@@ -91,20 +91,20 @@ data Term : Set where
   `suc                       : Term → Term   
   `case_[`zero`→_|`suc_`→_]  : Term → Term → Id → Term → Term
   `μ_`→_                     : Id → Term → Term
-  _`:_                       : Term → Type → Term
+  _↓_                       : Term → Type → Term
 \end{code}
 
 ## Example terms
 
 \begin{code}
 two : Term
-two = `suc (`suc `zero) `: `ℕ
+two = `suc (`suc `zero) ↓ `ℕ
 
 plus : Term
 plus = (`μ "p" `→ `λ "m" `→ `λ "n" `→
           `case ⌊ "m" ⌋ [`zero`→ ⌊ "n" ⌋
-                        |`suc "m" `→ `suc (⌊ "p" ⌋ · ⌊ "m" ⌋) · ⌊ "n" ⌋ ])
-            `: `ℕ `→ `ℕ
+                        |`suc "m" `→ `suc (⌊ "p" ⌋ · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
+            ↓ `ℕ `→ `ℕ `→ `ℕ
 
 four : Term
 four = plus · two · two
@@ -113,16 +113,16 @@ Ch : Type
 Ch = (`ℕ `→ `ℕ) `→ `ℕ `→ `ℕ
 
 twoCh : Term
-twoCh = (`λ "s" `→ `λ "z" `→ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) `: Ch
+twoCh = (`λ "s" `→ `λ "z" `→ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) ↓ Ch
 
 plusCh : Term
 plusCh = (`λ "m" `→ `λ "n" `→ `λ "s" `→ `λ "z" `→
            ⌊ "m" ⌋ · ⌊ "s" ⌋ · (⌊ "n" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋))
-             `: Ch `→ Ch `→ Ch
+             ↓ Ch `→ Ch `→ Ch
 
 fromCh : Term
 fromCh = (`λ "m" `→ ⌊ "m" ⌋ · (`λ "x" `→ `suc ⌊ "x" ⌋) · `zero)
-           `: Ch `→ `ℕ
+           ↓ Ch `→ `ℕ
 
 fourCh : Term
 fourCh = fromCh · (plusCh · twoCh · twoCh)
@@ -154,14 +154,14 @@ data _⊢_↑_ where
 
   _·_ : ∀ {Γ L M A B}
     → Γ ⊢ L ↑ A `→ B
-    → Γ ⊢ M ↑ A
+    → Γ ⊢ M ↓ A
       ---------------
     → Γ ⊢ L · M ↑ B
 
-  ↑↓ : ∀ {Γ M A}
+  ⊢↓ : ∀ {Γ M A}
     → Γ ⊢ M ↓ A
-      ----------------
-    → Γ ⊢ M `: A ↑ A
+      -----------------
+    → Γ ⊢ (M ↓ A) ↑ A
 
 data _⊢_↓_ where
 
@@ -191,10 +191,11 @@ data _⊢_↓_ where
       -----------------------
     → Γ ⊢ `μ x `→ N ↓ A
 
-  ↓↑ : ∀ {Γ M A}
+  ⊢↑ : ∀ {Γ M A B}
     → Γ ⊢ M ↑ A
+    → A ≡ B
       ----------
-    → Γ ⊢ M ↓ A
+    → Γ ⊢ M ↓ B
 \end{code}
 
 ## Type checking monad
@@ -216,7 +217,13 @@ return v       >>= k  =  k v
 
 \begin{code}
 _≟Tp_ : (A B : Type) → Dec (A ≡ B)
-A ≟Tp B = {!!}
+`ℕ         ≟Tp `ℕ         =  yes refl
+`ℕ         ≟Tp (A `→ B)   =  no (λ())
+(A  `→ B ) ≟Tp `ℕ         =  no (λ())
+(A₀ `→ B₀) ≟Tp (A₁ `→ B₁) with A₀ ≟Tp A₁ | B₀ ≟Tp B₁
+... | no A≢    | _         =  no (λ{refl → A≢ refl})
+... | yes _    | no B≢     =  no (λ{refl → B≢ refl})
+... | yes refl | yes refl  =  yes refl
 
 data Lookup (Γ : Ctx) (x : Id) : Set where
   ok : ∀ (A : Type) → (Γ ∋ x `: A) → Lookup Γ x
@@ -241,15 +248,13 @@ synthesize Γ ⌊ x ⌋ =
   do ok A ⊢x ← lookup Γ x
      return (ok A (Ax ⊢x))
 synthesize Γ (L · M) =
-  do ok (A₀ `→ B) ⊢L ← synthesize Γ L
+  do ok (A `→ B) ⊢L ← synthesize Γ L
        where ok `ℕ _ → error "must apply function" (L · M) []
-     ok A₁ ⊢M ← synthesize Γ M
-     yes refl ← return (A₀ ≟Tp A₁)
-       where no _ → error "types differ in application" (L · M) [ A₀ , A₁ ]
+     ⊢M ← inherit Γ M A
      return (ok B (⊢L · ⊢M))
-synthesize Γ (M `: A) =
+synthesize Γ (M ↓ A) =
   do ⊢M ← inherit Γ M A
-     return (ok A (↑↓ ⊢M))
+     return (ok A (⊢↓ ⊢M))
 {-# CATCHALL #-}
 synthesize Γ M =
   error "cannot synthesize type for term" M []
@@ -280,10 +285,86 @@ inherit Γ (`μ x `→ M) A =
   do ⊢M ← inherit (Γ , x `: A) M A
      return (⊢μ ⊢M)
 {-# CATCHALL #-}
-inherit Γ M A₀ =
-  do ok A₁ ⊢M ← synthesize Γ M
-     yes refl ← return (A₀ ≟Tp A₁)
-       where no _ → error "inheritance and synthesis conflict" M [ A₀ , A₁ ]
-     return (↓↑ ⊢M)
+inherit Γ M B =
+  do ok A ⊢M ← synthesize Γ M
+     yes refl ← return (A ≟Tp B)
+       where no _ → error "inheritance and synthesis conflict" M [ A , B ]
+     return (⊢↑ ⊢M refl)
+\end{code}
+
+## Test Cases
+
+\begin{code}
+_≠_ : ∀ (x y : Id) → x ≢ y
+x ≠ y  with x ≟ y
+...       | no  x≢y  =  x≢y
+...       | yes _    =  ⊥-elim impossible
+  where postulate impossible : ⊥
+
+_ : synthesize ε four ≡
+  return
+    (ok `ℕ
+     (⊢↓
+      (⊢μ
+       (⊢λ
+        (⊢λ
+         (⊢case (Ax (S ("m" ≠ "n") Z)) (⊢↑ (Ax Z) refl)
+          (⊢suc
+           (⊢↑
+            (Ax (S ("p" ≠ "m") (S ("p" ≠ "n") (S ("p" ≠ "m") Z)))
+             · ⊢↑ (Ax Z) refl
+             · ⊢↑ (Ax (S ("n" ≠ "m") Z)) refl)
+            refl))))))
+      · ⊢↑ (⊢↓ (⊢suc (⊢suc ⊢zero))) refl
+      · ⊢↑ (⊢↓ (⊢suc (⊢suc ⊢zero))) refl))
+_ = refl
+
+_ : synthesize ε fourCh ≡
+  return
+  (ok `ℕ
+    (⊢↓ (⊢λ (⊢↑ (Ax Z · ⊢λ (⊢suc (⊢↑ (Ax Z) refl)) · ⊢zero) refl)) ·
+     ⊢↑
+     (⊢↓
+      (⊢λ
+       (⊢λ
+        (⊢λ
+         (⊢λ
+          (⊢↑
+           (Ax
+            (S ("m" ≠ "z")
+             (S ("m" ≠ "s")
+              (S ("m" ≠ "n") Z)))
+            · ⊢↑ (Ax (S ("s" ≠ "z") Z)) refl
+            ·
+            ⊢↑
+            (Ax (S ("n" ≠ "z") (S ("n" ≠ "s") Z))
+             · ⊢↑ (Ax (S ("s" ≠ "z") Z)) refl
+             · ⊢↑ (Ax Z) refl)
+            refl)
+           refl)))))
+      ·
+      ⊢↑
+      (⊢↓
+       (⊢λ
+        (⊢λ
+         (⊢↑
+          (Ax (S ("s" ≠ "z") Z) ·
+           ⊢↑ (Ax (S ("s" ≠ "z") Z) · ⊢↑ (Ax Z) refl)
+           refl)
+          refl))))
+      refl
+      ·
+      ⊢↑
+      (⊢↓
+       (⊢λ
+        (⊢λ
+         (⊢↑
+          (Ax (S ("s" ≠ "z") Z) ·
+           ⊢↑ (Ax (S ("s" ≠ "z") Z) · ⊢↑ (Ax Z) refl)
+           refl)
+          refl))))
+      refl)
+     refl))
+_ = refl
 \end{code}
 
