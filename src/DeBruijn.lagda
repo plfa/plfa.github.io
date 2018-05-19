@@ -1,13 +1,13 @@
 ---
-title     : "TypedDB: Typed DeBruijn representation"
+title     : "DeBruijn: Inherently typed DeBruijn representation"
 layout    : page
-permalink : /TypedDB
+permalink : /DeBruijn
 ---
 
 ## Imports
 
 \begin{code}
-module TypedDB where
+module DeBruijn where
 \end{code}
 
 \begin{code}
@@ -32,11 +32,11 @@ open import Relation.Nullary.Product using (_×-dec_)
 infix  4 _⊢_
 infix  4 _∋_
 infixl 5 _,_
-infixr 5 _⇒_
 infix  5 ƛ_
 infix  5 μ_
-infixl 6 _·_
-infix  7 S_
+infixr 7 _⇒_
+infixl 7 _·_
+infix  8 S_
 
 data Type : Set where
   `ℕ  : Type
@@ -111,6 +111,9 @@ four = `suc (`suc (`suc (`suc `zero)))
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
 plus = μ ƛ ƛ `caseℕ ⌊ S Z ⌋ ⌊ Z ⌋ (`suc (⌊ S S S Z ⌋ · ⌊ Z ⌋ · ⌊ S Z ⌋))
 
+four′ : ∀ {Γ} → Γ ⊢ `ℕ
+four′ = plus · two · two
+
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
 
@@ -123,14 +126,14 @@ twoCh = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)
 fourCh : ∀ {Γ A} → Γ ⊢ Ch A
 fourCh = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
 
-fourCh′ : ∀ {Γ A} → Γ ⊢ Ch A
-fourCh′ = plusCh · twoCh · twoCh
-
 inc : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ
 inc = ƛ `suc ⌊ Z ⌋
 
-fromCh : ε ⊢ Ch `ℕ ⇒ `ℕ
+fromCh : ∀ {Γ} → Γ ⊢ Ch `ℕ ⇒ `ℕ
 fromCh = ƛ ⌊ Z ⌋ · inc · `zero
+
+fourCh′ : ∀ {Γ} → Γ ⊢ `ℕ
+fourCh′ = fromCh · (plusCh · twoCh · twoCh)
 \end{code}
 
 ## Operational semantics
@@ -259,8 +262,6 @@ The second has two values of function type, both lambda abstractions and fixpoin
 
 
 
-
-
 ## Reflexive and transitive closure
 
 \begin{code}
@@ -331,7 +332,7 @@ _ =
    `suc (`suc (`suc (`suc `zero)))
   ∎
 
-_ : fromCh · (plusCh · twoCh · twoCh) ⟶* four
+_ : fromCh {ε} · (plusCh · twoCh · twoCh) ⟶* four
 _ =
   begin
     fromCh · (plusCh · twoCh · twoCh)
