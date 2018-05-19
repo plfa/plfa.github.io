@@ -724,7 +724,11 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 ### Substitution preserves types
 
 \begin{code}
+-- trivial : Set
+-- trivial = ∀ ρ x → ρ x ≡ ` x ⊎ closed (ρ x)
+
 ⊢subst : ∀ {Γ Δ ρ}
+--  → (∀ {x A} → Γ ∋ x `: A  →  trivial ρ x)
   → (∀ {x A} → Γ ∋ x `: A  →  Δ ⊢ ρ x `: A)
     -------------------------------------------------
   → (∀ {M A} → Γ ⊢ M `: A  →  Δ ⊢ subst ρ M `: A)
@@ -762,13 +766,18 @@ Let's look at examples.  Assume `M` is closed.  Example 1.
 
 Example 2.
 
-      subst (∅ , "y" ↦ ` "y" , "x" ↦ M) (`λ "y" `→ ` "x" · ` "y")
+      subst (∅ , "y" ↦ N , "x" ↦ M) (`λ "y" `→ ` "x" · ` "y")
     ≡
-      `λ "y" `→ subst (∅ , "y" ↦ ` "y" , "x" ↦ M , "y" ↦ ` "y") (` "x" · ` "y")
+      `λ "y" `→ subst (∅ , "y" ↦ ` N , "x" ↦ M , "y" ↦ ` "y") (` "x" · ` "y")
     ≡
       `λ "y" `→ (M · ` "y")
 
-The hypotheses of the theorem appear to be violated. Drat!
+Before I wrote: "The hypotheses of the theorem appear to be violated. Drat!"
+But let's assume that ``M `: A``, ``N `: B``, and the lambda bound `y` has type `C`.
+Then ``Γ ∋ y `: B`` will not hold for the extended `ρ` because of interference
+by the earlier `y`. So I'm not sure the hypothesis is violated.
+
+
 
 \begin{code}
 ⊢substitution : ∀ {Γ x A N B M}

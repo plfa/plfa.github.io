@@ -11,7 +11,7 @@ a fresh name whenever substituting for a lambda term.
 ## Imports
 
 \begin{code}
-module TypedFresh where
+module fresh.TypedFresh where
 \end{code}
 
 \begin{code}
