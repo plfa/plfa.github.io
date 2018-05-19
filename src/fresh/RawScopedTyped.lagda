@@ -1,17 +1,17 @@
 ---
 title     : "Raw: Raw, Scoped, Typed"
 layout    : page
-permalink : /Raw
+permalink : /RawScopedTyped
 ---
 
-This version uses raw terms.
+This version uses raw, scoped, and typed terms.
 
 The substitution algorithm is based on one by McBride.
 
 ## Imports
 
 \begin{code}
-module Raw where
+module RawScopedTyped where
 \end{code}
 
 \begin{code}
