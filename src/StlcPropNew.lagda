@@ -55,9 +55,9 @@ terms are not stuck: either a well-typed term can take a reduction
 step or it is a value.
 
 \begin{code}
-data Progress : Term → Set where
-  steps : ∀ {M N} → M ⟹ N → Progress M
-  done  : ∀ {M} → Value M → Progress M
+data Progress (M : Term) : Set where
+  steps : ∀ {N} → M ⟹ N → Progress M
+  done  : Value M → Progress M
 
 progress : ∀ {M A} → ∅ ⊢ M ⦂ A → Progress M
 \end{code}
@@ -109,20 +109,20 @@ This completes the proof.
 
 \begin{code}
 progress (Ax ())
-progress (⇒-I ⊢N) = done value-λ
+progress (⇒-I ⊢N)  =  done value-λ
 progress (⇒-E ⊢L ⊢M) with progress ⊢L
-... | steps L⟹L′ = steps (ξ·₁ L⟹L′)
+... | steps L⟹L′  =  steps (ξ·₁ L⟹L′)
 ... | done valueL with progress ⊢M
-...   | steps M⟹M′ = steps (ξ·₂ valueL M⟹M′)
+...   | steps M⟹M′  =  steps (ξ·₂ valueL M⟹M′)
 ...   | done valueM with canonical-forms ⊢L valueL
-...     | canonical-λ = steps (βλ· valueM)
-progress 𝔹-I₁ = done value-true
-progress 𝔹-I₂ = done value-false
+...     | canonical-λ  =  steps (βλ· valueM)
+progress 𝔹-I₁  =  done value-true
+progress 𝔹-I₂  =  done value-false
 progress (𝔹-E ⊢L ⊢M ⊢N) with progress ⊢L
-... | steps L⟹L′ = steps (ξif L⟹L′)
+... | steps L⟹L′  =  steps (ξif L⟹L′)
 ... | done valueL with canonical-forms ⊢L valueL
-...   | canonical-true = steps βif-true
-...   | canonical-false = steps βif-false
+...   | canonical-true   =  steps βif-true
+...   | canonical-false  =  steps βif-false
 \end{code}
 
 This code reads neatly in part because we consider the
@@ -358,11 +358,11 @@ rename σ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (rename σ ⊢L) (rename σ ⊢M) (re
 
 As a corollary, any closed term can be weakened to any context.
 \begin{code}
-rename₀ : ∀ {Γ M A} → ∅ ⊢ M ⦂ A → Γ ⊢ M ⦂ A
-rename₀ {Γ} ⊢M = rename σ₀ ⊢M
+rename-∅ : ∀ {Γ M A} → ∅ ⊢ M ⦂ A → Γ ⊢ M ⦂ A
+rename-∅ {Γ} ⊢M = rename σ ⊢M
   where
-  σ₀ : ∀ {w B} → ∅ ∋ w ⦂ B → Γ ∋ w ⦂ B
-  σ₀ ()
+  σ : ∀ {z C} → ∅ ∋ z ⦂ C → Γ ∋ z ⦂ C
+  σ ()
 \end{code}
 
 Now we come to the conceptual heart of the proof that reduction
@@ -400,46 +400,35 @@ way.
 -->
 
 \begin{code}
-permute : ∀ {Γ x y z A B C}
-  → x ≢ y
-  → Γ , x ⦂ A , y ⦂ B ∋ z ⦂ C
-    --------------------------
-  → Γ , y ⦂ B , x ⦂ A ∋ z ⦂ C
-permute x≢y Z                   =  S (λ{refl → x≢y refl}) Z
-permute x≢y (S z≢y Z)           =  Z
-permute x≢y (S z≢y (S z≢x ∋w))  =  S z≢x (S z≢y ∋w)
-
-substitution : ∀ {Γ w A N B V}
-  → Γ , w ⦂ A ⊢ N ⦂ B
+subst : ∀ {Γ x N V A B}
+  → Γ , x ⦂ A ⊢ N ⦂ B
   → ∅ ⊢ V ⦂ A
     -----------------------
-  → Γ ⊢ N [ w := V ] ⦂ B
-substitution ⊢N ⊢V = {!!}
-{-
-substitution {Γ} {w} {A} (Ax {.(Γ , w ⦂ A)} {x} ∋x) ⊢V with w ≟ x
-...| yes refl              =  rename₀ ⊢V
-...| no  w≢  with ∋x
-...             | Z        =  ⊥-elim (w≢ refl)
-...             | S _ ∋x′  =  Ax ∋x′
-substitution {Γ} {w} {A} {ƛ x ⦂ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite x≡x′ = rename Γ′~Γ (⇒-I ⊢N′)
+  → Γ ⊢ N [ x := V ] ⦂ B
+subst {Γ} {y} {# x} (Ax Z) ⊢V with x ≟ y
+... | yes refl  =  rename-∅ ⊢V
+... | no  x≢y   =  ⊥-elim (x≢y refl)
+subst {Γ} {y} {# x} (Ax (S x≢y ∋x)) ⊢V with x ≟ y
+... | yes refl  =  ⊥-elim (x≢y refl)
+... | no  _     =  Ax ∋x
+subst {Γ} {y} {ƛ x ⇒ N} (⇒-I ⊢N) ⊢V with x ≟ y
+  -- Γ , y ⦂ _ , x ⦂ _ ⊢ N ⦂ _
+... | yes refl  =  ⇒-I (rename σ ⊢N)
   where
-  Γ′~Γ : ∀ {y} → y ∈ (λ[ x′ ⦂ A′ ] N′) → (Γ , x′ ⦂ A) y ≡ Γ y
-  Γ′~Γ {y} (free-λ x′≢y y∈N′) with x′ ≟ y
-  ...| yes x′≡y  = ⊥-elim (x′≢y x′≡y)
-  ...| no  _     = refl
-...| no  x≢x′ = ⇒-I ⊢N′V
+  σ : ∀ {z C} → Γ , y ⦂ _ , x ⦂ _ ∋ z ⦂ C → Γ , x ⦂ _ ∋ z ⦂ C
+  σ Z                   =  Z
+  σ (S z≢x Z)           =  ⊥-elim (z≢x refl)
+  σ (S z≢x (S z≢y ∋z))  =  S z≢x ∋z
+... | no  x≢y   =  ⇒-I (subst (rename σ ⊢N) ⊢V)
   where
-  x′x⊢N′ : Γ , x′ ⦂ A′ , x ⦂ A ⊢ N′ ⦂ B′
-  x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = ⊢N′
-  ⊢N′V : (Γ , x′ ⦂ A′) ⊢ N′ [ x := V ] ⦂ B′
-  ⊢N′V = substitution x′x⊢N′ ⊢V
-substitution (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (substitution ⊢L ⊢V) (substitution ⊢M ⊢V)
-substitution 𝔹-I₁ ⊢V = 𝔹-I₁
-substitution 𝔹-I₂ ⊢V = 𝔹-I₂
-substitution (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
-  𝔹-E (substitution ⊢L ⊢V) (substitution ⊢M ⊢V) (substitution ⊢N ⊢V)
--}
+  σ : ∀ {z C} → Γ , y ⦂ _ , x ⦂ _ ∋ z ⦂ C → Γ , x ⦂ _ , y ⦂ _ ∋ z ⦂ C
+  σ Z                    =  S (λ{refl → x≢y refl}) Z
+  σ (S z≢x Z)            =  Z
+  σ (S z≢x (S z≢y ∋z))   =  S z≢y (S z≢x ∋z)
+subst (⇒-E ⊢L ⊢M) ⊢V     =  ⇒-E (subst ⊢L ⊢V) (subst ⊢M ⊢V)
+subst 𝔹-I₁ ⊢V            =  𝔹-I₁
+subst 𝔹-I₂ ⊢V            =  𝔹-I₂
+subst (𝔹-E ⊢L ⊢M ⊢N) ⊢V  =  𝔹-E (subst ⊢L ⊢V) (subst ⊢M ⊢V) (subst ⊢N ⊢V)
 \end{code}
 
 
@@ -451,57 +440,20 @@ is also a closed term with type `A`.  In other words, small-step
 reduction preserves types.
 
 \begin{code}
-{-
 preservation : ∀ {M N A} → ∅ ⊢ M ⦂ A → M ⟹ N → ∅ ⊢ N ⦂ A
--}
-\end{code}
-
-_Proof_: By induction on the derivation of `∅ ⊢ M ⦂ A`.
-
-- We can immediately rule out `Ax`, `⇒-I`, `𝔹-I₁`, and
-  `𝔹-I₂` as the final rules in the derivation, since in each of
-  these cases `M` cannot take a step.
-
-- If the last rule in the derivation was `⇒-E`, then `M = L · M`.
-  There are three cases to consider, one for each rule that
-  could have been used to show that `L · M` takes a step to `N`.
-
-    - If `L · M` takes a step by `ξ·₁`, with `L` stepping to
-      `L′`, then by the IH `L′` has the same type as `L`, and
-      hence `L′ · M` has the same type as `L · M`.
-
-    - The `ξ·₂` case is similar.
-
-    - If `L · M` takes a step by `β⇒`, then `L = λ[ x ⦂ A ] N` and `M
-      = V` and `L · M` steps to `N [ x := V]`; the desired result now
-      follows from the fact that substitution preserves types.
-
-- If the last rule in the derivation was `if`, then `M = if L
-  then M else N`, and there are again three cases depending on
-  how `if L then M else N` steps.
-
-    - If it steps via `β𝔹₁` or `βB₂`, the result is immediate, since
-      `M` and `N` have the same type as `if L then M else N`.
-
-    - Otherwise, `L` steps by `ξif`, and the desired conclusion
-      follows directly from the induction hypothesis.
-
-\begin{code}
-{-
-preservation (Ax Γx≡A) ()
+preservation (Ax ())
 preservation (⇒-I ⊢N) ()
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV) = substitution ⊢N ⊢V
 preservation (⇒-E ⊢L ⊢M) (ξ·₁ L⟹L′) with preservation ⊢L L⟹L′
-...| ⊢L′ = ⇒-E ⊢L′ ⊢M
+... | ⊢L′  =  ⇒-E ⊢L′ ⊢M
 preservation (⇒-E ⊢L ⊢M) (ξ·₂ valueL M⟹M′) with preservation ⊢M M⟹M′
-...| ⊢M′ = ⇒-E ⊢L ⊢M′
+... | ⊢M′  =  ⇒-E ⊢L ⊢M′
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV)  =  subst ⊢N ⊢V
 preservation 𝔹-I₁ ()
 preservation 𝔹-I₂ ()
-preservation (𝔹-E 𝔹-I₁ ⊢M ⊢N) βif-true = ⊢M
-preservation (𝔹-E 𝔹-I₂ ⊢M ⊢N) βif-false = ⊢N
 preservation (𝔹-E ⊢L ⊢M ⊢N) (ξif L⟹L′) with preservation ⊢L L⟹L′
-...| ⊢L′ = 𝔹-E ⊢L′ ⊢M ⊢N
--}
+... | ⊢L′  =  𝔹-E ⊢L′ ⊢M ⊢N
+preservation (𝔹-E 𝔹-I₁ ⊢M ⊢N) βif-true   =  ⊢M
+preservation (𝔹-E 𝔹-I₂ ⊢M ⊢N) βif-false  =  ⊢N
 \end{code}
 
 
@@ -543,27 +495,15 @@ postulate
 
 <div class="hidden">
 \begin{code}
-{-
 Soundness′ : ∀ {M N A} → ∅ ⊢ M ⦂ A → M ⟹* N → ¬ (Stuck N)
-Soundness′ ⊢M (M ∎) (¬M⟹N , ¬ValueM) with progress ⊢M
-... | steps M⟹N  = ¬M⟹N M⟹N
-... | done ValueM  = ¬ValueM ValueM
-Soundness′ {L} {N} {A} ⊢L (_⟹⟨_⟩_ .L {M} {.N} L⟹M M⟹*N) = Soundness′ ⊢M M⟹*N
+Soundness′ ⊢M (M ∎) ⟨ ¬M⟹N , ¬ValueM ⟩ with progress ⊢M
+... | steps M⟹N   =  ¬M⟹N M⟹N
+... | done  ValueM  =  ¬ValueM ValueM
+Soundness′ ⊢L (L ⟹⟨ L⟹M ⟩ M⟹*N) = Soundness′ ⊢M M⟹*N
   where
-  ⊢M : ∅ ⊢ M ⦂ A
   ⊢M = preservation ⊢L L⟹M
--}
 \end{code}
 </div>
-
-
-## Uniqueness of Types
-
-#### Exercise: 3 stars (types_unique)
-
-Another nice property of the STLC is that types are unique: a
-given term (in a given context) has at most one type.
-Formalize this statement and prove it.
 
 
 ## Additional Exercises
@@ -602,11 +542,11 @@ false, give a counterexample.
 Suppose instead that we add a new term `foo` with the following
 reduction rules:
 
-                 ----------------------             (ST_Foo1)
-                 (λ[ x ⦂ A ] ` x) ⟹ foo
+                 -------------------              (ST_Foo1)
+                 (λ x ⇒ # x) ⟹ foo
 
-                     -----------                    (ST_Foo2)
-                     foo ⟹ true
+                    ------------                  (ST_Foo2)
+                    foo ⟹ true
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either

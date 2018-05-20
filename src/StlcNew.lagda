@@ -339,17 +339,17 @@ Here is the formal definition in Agda.
 infix 25 _[_:=_]
 
 _[_:=_] : Term → Id → Term → Term
-(# x) [ w := V ] with w ≟ x
+(# x) [ y := V ] with x ≟ y
 ... | yes _ = V
 ... | no  _ = # x
-(ƛ x ⇒ N) [ w := V ] with w ≟ x
+(ƛ x ⇒ N) [ y := V ] with x ≟ y
 ... | yes _ = ƛ x ⇒ N
-... | no  _ = ƛ x ⇒ (N [ w := V ])
-(L · M) [ w := V ] =  (L [ w := V ]) · (M [ w := V ])
-(true) [ w := V ] = true
-(false) [ w := V ] = false
-(if L then M else N) [ w := V ] =
-  if L [ w := V ] then M [ w := V ] else N [ w := V ]
+... | no  _ = ƛ x ⇒ (N [ y := V ])
+(L · M) [ y := V ] =  (L [ y := V ]) · (M [ y := V ])
+(true) [ y := V ] = true
+(false) [ y := V ] = false
+(if L then M else N) [ y := V ] =
+  if L [ y := V ] then M [ y := V ] else N [ y := V ]
 \end{code}
 
 The two key cases are variables and abstraction.
@@ -702,11 +702,11 @@ data _∋_⦂_ : Context → Id → Type → Set where
       ------------------
     → Γ , x ⦂ A ∋ x ⦂ A
 
-  S : ∀ {Γ w x A B}
-    → w ≢ x
-    → Γ ∋ w ⦂ B
+  S : ∀ {Γ x y A B}
+    → x ≢ y
+    → Γ ∋ x ⦂ A
       ------------------
-    → Γ , x ⦂ A ∋ w ⦂ B
+    → Γ , y ⦂ B ∋ x ⦂ A
 
 data _⊢_⦂_ : Context → Term → Type → Set where
 
@@ -779,7 +779,7 @@ Where `∋f` and `∋x` abbreviate the two derivations:
 
 
                  ---------------- Z           
-    "f" ≢ "x"    Γ₁ ∋ "f" ⦂ B ⇒ B          
+    "x" ≢ "f"    Γ₁ ∋ "f" ⦂ B ⇒ B          
     ----------------------------- S        ------------- Z  
     Γ₂ ∋ "f" ⦂ B ⇒ B                       Γ₂ ∋ "x" ⦂ 𝔹
 
@@ -914,3 +914,4 @@ This chapter uses the following unicode
     β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
 
 Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).
+
