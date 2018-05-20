@@ -257,37 +257,6 @@ then `Γ` must assign a type to `x`.
 
 \begin{code}
 free-lemma : ∀ {w M A Γ} → w ∈ M → Γ ⊢ M ⦂ A → ∃[ B ](Γ ∋ w ⦂ B)
-\end{code}
-
-_Proof_: We show, by induction on the proof that `x` appears
-  free in `M`, that, for all contexts `Γ`, if `M` is well
-  typed under `Γ`, then `Γ` assigns some type to `x`.
-
-  - If the last rule used was `` free-` ``, then `M = `` `x ``, and from
-    the assumption that `M` is well typed under `Γ` we have
-    immediately that `Γ` assigns a type to `x`.
-
-  - If the last rule used was `free-·₁`, then `M = L · M` and `x`
-    appears free in `L`.  Since `L` is well typed under `Γ`,
-    we can see from the typing rules that `L` must also be, and
-    the IH then tells us that `Γ` assigns `x` a type.
-
-  - Almost all the other cases are similar: `x` appears free in a
-    subterm of `M`, and since `M` is well typed under `Γ`, we
-    know the subterm of `M` in which `x` appears is well typed
-    under `Γ` as well, and the IH yields the desired conclusion.
-
-  - The only remaining case is `free-λ`.  In this case `M =
-    λ[ y ⦂ A ] N`, and `x` appears free in `N`; we also know that
-    `x` is different from `y`.  The difference from the previous
-    cases is that whereas `M` is well typed under `Γ`, its
-    body `N` is well typed under `(Γ , y ⦂ A)`, so the IH
-    allows us to conclude that `x` is assigned some type by the
-    extended context `(Γ , y ⦂ A)`.  To conclude that `Γ`
-    assigns a type to `x`, we appeal the decidable equality for names
-    `_≟_`, and note that `x` and `y` are different variables.
-
-\begin{code}
 free-lemma free-# (Ax {Γ} {w} {B} ∋w) = ⟨ B , ∋w ⟩
 free-lemma (free-ƛ {w} {x} w≢ ∈N) (⇒-I ⊢N) with w ≟ x
 ... | yes refl                           =  ⊥-elim (w≢ refl)
@@ -356,14 +325,59 @@ rename σ 𝔹-I₂           = 𝔹-I₂
 rename σ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (rename σ ⊢L) (rename σ ⊢M) (rename σ ⊢N)
 \end{code}
 
-As a corollary, any closed term can be weakened to any context.
+We have three important corrolaries.  First,
+any closed term can be weakened to any context.
 \begin{code}
-rename-∅ : ∀ {Γ M A} → ∅ ⊢ M ⦂ A → Γ ⊢ M ⦂ A
+rename-∅ : ∀ {Γ M A}
+  → ∅ ⊢ M ⦂ A
+    ----------
+  → Γ ⊢ M ⦂ A
 rename-∅ {Γ} ⊢M = rename σ ⊢M
   where
-  σ : ∀ {z C} → ∅ ∋ z ⦂ C → Γ ∋ z ⦂ C
+  σ : ∀ {z C}
+    → ∅ ∋ z ⦂ C
+      ---------
+    → Γ ∋ z ⦂ C
   σ ()
 \end{code}
+
+Second, if the last two variable in a context are
+equal, the term can be renamed to drop the redundant one.
+\begin{code}
+rename-≡ : ∀ {Γ x M A B C}
+  → Γ , x ⦂ A , x ⦂ B ⊢ M ⦂ C
+    --------------------------
+  → Γ , x ⦂ B ⊢ M ⦂ C
+rename-≡ {Γ} {x} {M} {A} {B} {C} ⊢M = rename σ ⊢M
+  where
+  σ : ∀ {z C}
+    → Γ , x ⦂ A , x ⦂ B ∋ z ⦂ C
+      -------------------------
+    → Γ , x ⦂ B ∋ z ⦂ C
+  σ Z                   =  Z
+  σ (S z≢x Z)           =  ⊥-elim (z≢x refl)
+  σ (S z≢x (S z≢y ∋z))  =  S z≢x ∋z
+\end{code}
+
+Third, if the last two variable in a context differ,
+the term can be renamed to flip their order.
+\begin{code}
+rename-≢ : ∀ {Γ x y M A B C}
+  → x ≢ y
+  → Γ , y ⦂ A , x ⦂ B ⊢ M ⦂ C
+    --------------------------
+  → Γ , x ⦂ B , y ⦂ A ⊢ M ⦂ C
+rename-≢ {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename σ ⊢M
+  where
+  σ : ∀ {z C}
+    → Γ , y ⦂ A , x ⦂ B ∋ z ⦂ C
+      --------------------------
+    → Γ , x ⦂ B , y ⦂ A ∋ z ⦂ C
+  σ Z                    =  S (λ{refl → x≢y refl}) Z
+  σ (S z≢x Z)            =  Z
+  σ (S z≢x (S z≢y ∋z))   =  S z≢y (S z≢x ∋z)
+\end{code}
+
 
 Now we come to the conceptual heart of the proof that reduction
 preserves types---namely, the observation that _substitution_
@@ -405,6 +419,7 @@ subst : ∀ {Γ x N V A B}
   → ∅ ⊢ V ⦂ A
     -----------------------
   → Γ ⊢ N [ x := V ] ⦂ B
+
 subst {Γ} {y} {# x} (Ax Z) ⊢V with x ≟ y
 ... | yes refl  =  rename-∅ ⊢V
 ... | no  x≢y   =  ⊥-elim (x≢y refl)
@@ -412,19 +427,8 @@ subst {Γ} {y} {# x} (Ax (S x≢y ∋x)) ⊢V with x ≟ y
 ... | yes refl  =  ⊥-elim (x≢y refl)
 ... | no  _     =  Ax ∋x
 subst {Γ} {y} {ƛ x ⇒ N} (⇒-I ⊢N) ⊢V with x ≟ y
-  -- Γ , y ⦂ _ , x ⦂ _ ⊢ N ⦂ _
-... | yes refl  =  ⇒-I (rename σ ⊢N)
-  where
-  σ : ∀ {z C} → Γ , y ⦂ _ , x ⦂ _ ∋ z ⦂ C → Γ , x ⦂ _ ∋ z ⦂ C
-  σ Z                   =  Z
-  σ (S z≢x Z)           =  ⊥-elim (z≢x refl)
-  σ (S z≢x (S z≢y ∋z))  =  S z≢x ∋z
-... | no  x≢y   =  ⇒-I (subst (rename σ ⊢N) ⊢V)
-  where
-  σ : ∀ {z C} → Γ , y ⦂ _ , x ⦂ _ ∋ z ⦂ C → Γ , x ⦂ _ , y ⦂ _ ∋ z ⦂ C
-  σ Z                    =  S (λ{refl → x≢y refl}) Z
-  σ (S z≢x Z)            =  Z
-  σ (S z≢x (S z≢y ∋z))   =  S z≢y (S z≢x ∋z)
+... | yes refl  =  ⇒-I (rename-≡ ⊢N)
+... | no  x≢y   =  ⇒-I (subst (rename-≢ x≢y ⊢N) ⊢V)
 subst (⇒-E ⊢L ⊢M) ⊢V     =  ⇒-E (subst ⊢L ⊢V) (subst ⊢M ⊢V)
 subst 𝔹-I₁ ⊢V            =  𝔹-I₁
 subst 𝔹-I₂ ⊢V            =  𝔹-I₂
