@@ -1,8 +1,10 @@
 ---
-title     : "Stlc: The Simply Typed Lambda-Calculus"
+title     : "StlcOld: The Simply Typed Lambda-Calculus"
 layout    : page
-permalink : /Stlc
+permalink : /StlcOld
 ---
+
+[Original version]
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:

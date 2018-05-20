@@ -1,7 +1,7 @@
 ---
-title     : "StlcProp: Properties of STLC"
+title     : "StlcPropOld: Properties of STLC"
 layout    : page
-permalink : /StlcProp
+permalink : /StlcPropOld
 ---
 
 In this chapter, we develop the fundamental theory of the Simply
@@ -21,7 +21,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; tra
 open import Maps using (Id; _≟_; PartialMap)
 open Maps.PartialMap using (∅; apply-∅; update-permute; just≢nothing; just-injective)
                      renaming (_,_↦_ to _,_∶_)
-open import Stlc
+open import StlcOld
 import Data.Nat using (ℕ)
 \end{code}
 
