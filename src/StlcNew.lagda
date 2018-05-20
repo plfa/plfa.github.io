@@ -742,7 +742,7 @@ data _⊢_⦂_ : Context → Term → Type → Set where
     → Γ ⊢ if L then M else N ⦂ A    
 \end{code}
 
-#### Example type derivations
+### Example type derivations
 
 Here are a couple of typing examples.  First, here is how
 they would be written in an informal description of the
@@ -788,19 +788,17 @@ where `Γ₁ = ∅ , f ⦂ 𝔹 ⇒ 𝔹` and `Γ₂ = ∅ , f ⦂ 𝔹 ⇒ 𝔹
 Here are the above derivations formalised in Agda.
 
 \begin{code}
-_≠_ : ∀ (x y : Id) → x ≢ y
-x ≠ y with x ≟ y
-...   | no  x≢y     =  x≢y
-...   | yes _       =  ⊥-elim impossible
-  where postulate impossible : ⊥
-
 ⊢not : ∅ ⊢ not ⦂ 𝔹 ⇒ 𝔹
 ⊢not = ⇒-I (𝔹-E (Ax Z) 𝔹-I₂ 𝔹-I₁)
 
 ⊢two : ∅ ⊢ two ⦂ (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹
 ⊢two = ⇒-I (⇒-I (⇒-E (Ax ⊢f) (⇒-E (Ax ⊢f) (Ax ⊢x))))
   where
-  ⊢f = S ("f" ≠ "x") Z
+
+  f≢x : "f" ≢ "x"
+  f≢x ()
+
+  ⊢f = S f≢x Z
   ⊢x = Z
 \end{code}
 
@@ -841,7 +839,21 @@ hole. After filling in all holes, the term is as above.
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
-#### Non-examples
+### Injective
+
+Note that `Γ ∋ x ⦂ A` is injective.
+\begin{code}
+∋-injective : ∀ {Γ w A B} → Γ ∋ w ⦂ A → Γ ∋ w ⦂ B → A ≡ B
+∋-injective Z        Z          =  refl
+∋-injective Z        (S w≢ _)   =  ⊥-elim (w≢ refl)
+∋-injective (S w≢ _) Z          =  ⊥-elim (w≢ refl)
+∋-injective (S _ ∋w) (S _ ∋w′)  =  ∋-injective ∋w ∋w′
+\end{code}
+
+The relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
+the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
+
+### Non-examples
 
 We can also show that terms are _not_ typeable.  For example, here is
 a formal proof that it is not possible to type the term `` true ·
@@ -850,8 +862,8 @@ cannot be typed, because doing so requires that the first term in the
 application is both a boolean and a function.
 
 \begin{code}
-¬⊢₁ : ∀ {A} → ¬ (∅ ⊢ true · false ⦂ A)
-¬⊢₁ (⇒-E () _)
+ex₁ : ∀ {A} → ¬ (∅ ⊢ true · false ⦂ A)
+ex₁ (⇒-E () _)
 \end{code}
 
 As a second example, here is a formal proof that it is not possible to
@@ -862,14 +874,8 @@ doing so requires some types `A` and `B` such that `A ⇒ B ≡ A`.
 contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
 contradiction ()
 
-∋-injective : ∀ {Γ x A₁ A₂} → Γ ∋ x ⦂ A₁ → Γ ∋ x ⦂ A₂ → A₁ ≡ A₂
-∋-injective Z         Z          =  refl
-∋-injective Z         (S w≢ _)   =  ⊥-elim (w≢ refl)
-∋-injective (S w≢ _)  Z          =  ⊥-elim (w≢ refl)
-∋-injective (S _ ∋w₁) (S _ ∋w₂)  =  ∋-injective ∋w₁ ∋w₂
-
-¬⊢₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ # "x" · # "x" ⦂ A)
-¬⊢₂ (⇒-I (⇒-E (Ax ∋x₁) (Ax ∋x₂)))  =  contradiction (∋-injective ∋x₁ ∋x₂)
+ex₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ # "x" · # "x" ⦂ A)
+ex₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective ∋x ∋x′)
 \end{code}
 
 
