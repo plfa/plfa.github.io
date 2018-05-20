@@ -143,11 +143,17 @@ Simultaneous substitution, a la McBride
 ## Renaming
 
 \begin{code}
-ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
+ext : ∀ {Γ Δ}
+  → (∀ {B}   →     Γ ∋ B →     Δ ∋ B)
+    ----------------------------------
+  → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
 ext σ Z      =  Z
 ext σ (S x)  =  S (σ x)
 
-rename : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+rename : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    ------------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
 rename σ (⌊ n ⌋)         =  ⌊ σ n ⌋
 rename σ (ƛ N)           =  ƛ (rename (ext σ) N)
 rename σ (L · M)         =  (rename σ L) · (rename σ M)
@@ -160,11 +166,17 @@ rename σ (μ N)           =  μ (rename (ext σ) N)
 ## Substitution
 
 \begin{code}
-exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
+exts : ∀ {Γ Δ}
+  → (∀ {B}   →     Γ ∋ B →     Δ ⊢ B)
+    ----------------------------------
+  → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
 exts ρ Z      =  ⌊ Z ⌋
 exts ρ (S x)  =  rename S_ (ρ x)
 
-subst : ∀ {Γ Δ} → (∀ {C} → Γ ∋ C → Δ ⊢ C) → (∀ {C} → Γ ⊢ C → Δ ⊢ C)
+subst : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ⊢ A)
+    ------------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
 subst ρ (⌊ k ⌋)         =  ρ k
 subst ρ (ƛ N)           =  ƛ (subst (exts ρ) N)
 subst ρ (L · M)         =  (subst ρ L) · (subst ρ M)

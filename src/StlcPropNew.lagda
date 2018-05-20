@@ -337,79 +337,32 @@ as the two contexts agree on those variables, one can be
 exchanged for the other.
 
 \begin{code}
-context-lemma : ∀ {Γ Δ M A}
-        → (∀ {w B} → w ∈ M → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
-        → Γ ⊢ M ⦂ A  
-        → Δ ⊢ M ⦂ A
-\end{code}
+ext : ∀ {Γ Δ}
+  → (∀ {w B}     →        Γ ∋ w ⦂ B →         Δ ∋ w ⦂ B)
+    -----------------------------------------------------
+  → (∀ {w x A B} → Γ , x ⦂ A ∋ w ⦂ B → Δ , x ⦂ A ∋ w ⦂ B)
+ext σ Z          =  Z
+ext σ (S w≢ ∋w)  =  S w≢ (σ ∋w)
 
-_Proof_: By induction on the derivation of `Γ ⊢ M ⦂ A`.
-
-  - If the last rule in the derivation was `Ax`, then `M = x`
-    and `Γ x ≡ just A`.  By assumption, `Γ′ x = just A` as well, and
-    hence `Γ′ ⊢ M : A` by `Ax`.
-
-  - If the last rule was `⇒-I`, then `M = λ[ y : A] N`, with
-    `A = A ⇒ B` and `Γ , y ⦂ A ⊢ N ⦂ B`.  The
-    induction hypothesis is that, for any context `Γ″`, if
-    `Γ , y : A` and `Γ″` assign the same types to all the
-    free variables in `N`, then `N` has type `B` under
-    `Γ″`.  Let `Γ′` be a context which agrees with
-    `Γ` on the free variables in `N`; we must show
-    `Γ′ ⊢ λ[ y ⦂ A] N ⦂ A ⇒ B`.
-
-    By `⇒-I`, it suffices to show that `Γ′ , y:A ⊢ N ⦂ B`.
-    By the IH (setting `Γ″ = Γ′ , y : A`), it suffices to show
-    that `Γ , y : A` and `Γ′ , y : A` agree on all the variables
-    that appear free in `N`.
-
-    Any variable occurring free in `N` must be either `y` or
-    some other variable.  Clearly, `Γ , y : A` and `Γ′ , y : A`
-    agree on `y`.  Otherwise, any variable other
-    than `y` that occurs free in `N` also occurs free in
-    `λ[ y : A] N`, and by assumption `Γ` and
-    `Γ′` agree on all such variables; hence so do
-    `Γ , y : A` and `Γ′ , y : A`.
-
-  - If the last rule was `⇒-E`, then `M = L · M`, with `Γ ⊢ L ⦂ A ⇒ B`
-    and `Γ ⊢ M ⦂ B`.  One induction hypothesis states that for all
-    contexts `Γ′`, if `Γ′` agrees with `Γ` on the free variables in
-    `L` then `L` has type `A ⇒ B` under `Γ′`; there is a similar IH
-    for `M`.  We must show that `L · M` also has type `B` under `Γ′`,
-    given the assumption that `Γ′` agrees with `Γ` on all the free
-    variables in `L · M`.  By `⇒-E`, it suffices to show that `L` and
-    `M` each have the same type under `Γ′` as under `Γ`.  But all free
-    variables in `L` are also free in `L · M`; in the proof, this is
-    expressed by composing `free-·₁ : ∀ {x} → x ∈ L → x ∈ L · M` with
-    `Γ~Γ′ : (∀ {x} → x ∈ L · M → Γ x ≡ Γ′ x)` to yield `Γ~Γ′ ∘ free-·₁
-    : ∀ {x} → x ∈ L → Γ x ≡ Γ′ x`.  Similarly for `M`; hence the
-    desired result follows from the induction hypotheses.
-
-  - The remaining cases are similar to `⇒-E`.
-
-\begin{code}
-context-lemma Γ⊆Δ (Ax ∋w) = Ax (Γ⊆Δ free-# ∋w)
-context-lemma {Γ} {Δ} {ƛ x ⇒ N} Γ⊆Δ (⇒-I ⊢N) = ⇒-I (context-lemma Γ′⊆Δ′ ⊢N)
-  where
-  Γ′⊆Δ′ : ∀ {w A B} → w ∈ N → Γ , x ⦂ A ∋ w ⦂ B → Δ , x ⦂ A ∋ w ⦂ B
-  Γ′⊆Δ′ ∈N Z          =  Z
-  Γ′⊆Δ′ ∈N (S w≢ ∋w)  =  S w≢ (Γ⊆Δ (free-ƛ w≢ ∈N) ∋w)
-context-lemma Γ⊆Δ (⇒-E ⊢L ⊢M) = ⇒-E (context-lemma (Γ⊆Δ ∘ free-·₁) ⊢L)
-                                     (context-lemma (Γ⊆Δ ∘ free-·₂) ⊢M) 
-context-lemma Γ⊆Δ 𝔹-I₁ = 𝔹-I₁
-context-lemma Γ⊆Δ 𝔹-I₂ = 𝔹-I₂
-context-lemma Γ⊆Δ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (context-lemma (Γ⊆Δ ∘ free-if₁) ⊢L)
-                                         (context-lemma (Γ⊆Δ ∘ free-if₂) ⊢M)
-                                         (context-lemma (Γ⊆Δ ∘ free-if₃) ⊢N)
+rename : ∀ {Γ Δ}
+        → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
+          ----------------------------------
+        → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
+rename σ (Ax ∋w)        = Ax (σ ∋w)
+rename σ (⇒-I ⊢N)       = ⇒-I (rename (ext σ) ⊢N)
+rename σ (⇒-E ⊢L ⊢M)    = ⇒-E (rename σ ⊢L) (rename σ ⊢M) 
+rename σ 𝔹-I₁           = 𝔹-I₁
+rename σ 𝔹-I₂           = 𝔹-I₂
+rename σ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (rename σ ⊢L) (rename σ ⊢M) (rename σ ⊢N)
 \end{code}
 
 As a corollary, any closed term can be weakened to any context.
 \begin{code}
-weaken-closed : ∀ {M A Γ} → ∅ ⊢ M ⦂ A → Γ ⊢ M ⦂ A
-weaken-closed {M} {A} {Γ} ⊢M = context-lemma ∅⊆Δ ⊢M
+rename₀ : ∀ {Γ M A} → ∅ ⊢ M ⦂ A → Γ ⊢ M ⦂ A
+rename₀ {Γ} ⊢M = rename σ₀ ⊢M
   where
-  ∅⊆Δ : ∀ {w B} → w ∈ M → ∅ ∋ w ⦂ B → Γ ∋ w ⦂ B
-  ∅⊆Δ _ ()
+  σ₀ : ∀ {w B} → ∅ ∋ w ⦂ B → Γ ∋ w ⦂ B
+  σ₀ ()
 \end{code}
 
 Now we come to the conceptual heart of the proof that reduction
@@ -427,16 +380,6 @@ and obtain a new term that still has type `B`.
 
 _Lemma_: If `Γ , x ⦂ A ⊢ N ⦂ B` and `∅ ⊢ V ⦂ A`, then
 `Γ ⊢ (N [ x := V ]) ⦂ B`.
-
-\begin{code}
-{-
-preservation-[:=] : ∀ {Γ w A N B V}
-  → Γ , w ⦂ A ⊢ N ⦂ B
-  → ∅ ⊢ V ⦂ A
-    -----------------------
-  → Γ ⊢ N [ w := V ] ⦂ B
--}
-\end{code}
 
 One technical subtlety in the statement of the lemma is that we assume
 `V` is closed; it has type `A` in the _empty_ context.  This
@@ -456,62 +399,30 @@ assign a type to `N [ x := V ]`---the result is the same either
 way.
 -->
 
-_Proof_:  By induction on the derivation of `Γ , x ⦂ A ⊢ N ⦂ B`,
-we show that if `∅ ⊢ V ⦂ A` then `Γ ⊢ N [ x := V ] ⦂ B`.
-
-  - If `N` is a variable there are two cases to consider,
-    depending on whether `N` is `x` or some other variable.
-
-      - If `N = `` `x ``, then from `Γ , x ⦂ A ⊢ x ⦂ B`
-        we know that looking up `x` in `Γ , x : A` gives
-        `just B`, but we already know it gives `just A`;
-        applying injectivity for `just` we conclude that `A ≡ B`.
-        We must show that `x [ x := V] = V`
-        has type `A` under `Γ`, given the assumption that
-        `V` has type `A` under the empty context.  This
-        follows from context invariance: if a closed term has type
-        `A` in the empty context, it has that type in any context.
-
-      - If `N` is some variable `x′` different from `x`, then
-        we need only note that `x′` has the same type under `Γ , x ⦂ A`
-        as under `Γ`.
-
-  - If `N` is an abstraction `λ[ x′ ⦂ A′ ] N′`, then the IH tells us,
-    for all `Γ′`́ and `B′`, that if `Γ′ , x ⦂ A ⊢ N′ ⦂ B′`
-    and `∅ ⊢ V ⦂ A`, then `Γ′ ⊢ N′ [ x := V ] ⦂ B′`.
-
-    The substitution in the conclusion behaves differently
-    depending on whether `x` and `x′` are the same variable.
-
-    First, suppose `x ≡ x′`.  Then, by the definition of
-    substitution, `N [ x := V] = N`, so we just need to show `Γ ⊢ N ⦂ B`.
-    But we know `Γ , x ⦂ A ⊢ N ⦂ B` and, since `x ≡ x′`
-    does not appear free in `λ[ x′ ⦂ A′ ] N′`, the context invariance
-    lemma yields `Γ ⊢ N ⦂ B`.
-
-    Second, suppose `x ≢ x′`.  We know `Γ , x ⦂ A , x′ ⦂ A′ ⊢ N′ ⦂ B′`
-    by inversion of the typing relation, from which
-    `Γ , x′ ⦂ A′ , x ⦂ A ⊢ N′ ⦂ B′` follows by update permute,
-    so the IH applies, giving us `Γ , x′ ⦂ A′ ⊢ N′ [ x := V ] ⦂ B′`
-    By `⇒-I`, we have `Γ ⊢ λ[ x′ ⦂ A′ ] (N′ [ x := V ]) ⦂ A′ ⇒ B′`
-    and the definition of substitution (noting `x ≢ x′`) gives
-    `Γ ⊢ (λ[ x′ ⦂ A′ ] N′) [ x := V ] ⦂ A′ ⇒ B′` as required.
-
-  - If `N` is an application `L′ · M′`, the result follows
-    straightforwardly from the definition of substitution and the
-    induction hypotheses.
-
-  - The remaining cases are similar to application.
-
 \begin{code}
+permute : ∀ {Γ x y z A B C}
+  → x ≢ y
+  → Γ , x ⦂ A , y ⦂ B ∋ z ⦂ C
+    --------------------------
+  → Γ , y ⦂ B , x ⦂ A ∋ z ⦂ C
+permute x≢y Z                   =  S (λ{refl → x≢y refl}) Z
+permute x≢y (S z≢y Z)           =  Z
+permute x≢y (S z≢y (S z≢x ∋w))  =  S z≢x (S z≢y ∋w)
+
+substitution : ∀ {Γ w A N B V}
+  → Γ , w ⦂ A ⊢ N ⦂ B
+  → ∅ ⊢ V ⦂ A
+    -----------------------
+  → Γ ⊢ N [ w := V ] ⦂ B
+substitution ⊢N ⊢V = {!!}
 {-
-preservation-[:=] {Γ} {w} {A} (Ax {.(Γ , w ⦂ A)} {x} ∋x) ⊢V with w ≟ x
-...| yes refl              =  weaken-closed ⊢V
+substitution {Γ} {w} {A} (Ax {.(Γ , w ⦂ A)} {x} ∋x) ⊢V with w ≟ x
+...| yes refl              =  rename₀ ⊢V
 ...| no  w≢  with ∋x
 ...             | Z        =  ⊥-elim (w≢ refl)
 ...             | S _ ∋x′  =  Ax ∋x′
-preservation-[:=] {Γ} {w} {A} {ƛ x ⦂ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
-...| yes x≡x′ rewrite x≡x′ = context-lemma Γ′~Γ (⇒-I ⊢N′)
+substitution {Γ} {w} {A} {ƛ x ⦂ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-I ⊢N′) ⊢V with x ≟ x′
+...| yes x≡x′ rewrite x≡x′ = rename Γ′~Γ (⇒-I ⊢N′)
   where
   Γ′~Γ : ∀ {y} → y ∈ (λ[ x′ ⦂ A′ ] N′) → (Γ , x′ ⦂ A) y ≡ Γ y
   Γ′~Γ {y} (free-λ x′≢y y∈N′) with x′ ≟ y
@@ -522,12 +433,12 @@ preservation-[:=] {Γ} {w} {A} {ƛ x ⦂ A′ ] N′} {.A′ ⇒ B′} {V} (⇒-
   x′x⊢N′ : Γ , x′ ⦂ A′ , x ⦂ A ⊢ N′ ⦂ B′
   x′x⊢N′ rewrite update-permute Γ x A x′ A′ x≢x′ = ⊢N′
   ⊢N′V : (Γ , x′ ⦂ A′) ⊢ N′ [ x := V ] ⦂ B′
-  ⊢N′V = preservation-[:=] x′x⊢N′ ⊢V
-preservation-[:=] (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V)
-preservation-[:=] 𝔹-I₁ ⊢V = 𝔹-I₁
-preservation-[:=] 𝔹-I₂ ⊢V = 𝔹-I₂
-preservation-[:=] (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
-  𝔹-E (preservation-[:=] ⊢L ⊢V) (preservation-[:=] ⊢M ⊢V) (preservation-[:=] ⊢N ⊢V)
+  ⊢N′V = substitution x′x⊢N′ ⊢V
+substitution (⇒-E ⊢L ⊢M) ⊢V = ⇒-E (substitution ⊢L ⊢V) (substitution ⊢M ⊢V)
+substitution 𝔹-I₁ ⊢V = 𝔹-I₁
+substitution 𝔹-I₂ ⊢V = 𝔹-I₂
+substitution (𝔹-E ⊢L ⊢M ⊢N) ⊢V =
+  𝔹-E (substitution ⊢L ⊢V) (substitution ⊢M ⊢V) (substitution ⊢N ⊢V)
 -}
 \end{code}
 
@@ -579,7 +490,7 @@ _Proof_: By induction on the derivation of `∅ ⊢ M ⦂ A`.
 {-
 preservation (Ax Γx≡A) ()
 preservation (⇒-I ⊢N) ()
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV) = preservation-[:=] ⊢N ⊢V
+preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV) = substitution ⊢N ⊢V
 preservation (⇒-E ⊢L ⊢M) (ξ·₁ L⟹L′) with preservation ⊢L L⟹L′
 ...| ⊢L′ = ⇒-E ⊢L′ ⊢M
 preservation (⇒-E ⊢L ⊢M) (ξ·₂ valueL M⟹M′) with preservation ⊢M M⟹M′

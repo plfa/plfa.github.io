@@ -293,7 +293,8 @@ updates.
     ... | yes refl | yes refl  =  ⊥-elim (x≢y refl)
     ... | no  x≢z  | yes refl  =  sym (update-eq′ ρ z w)
     ... | yes refl | no  y≢z   =  update-eq′ ρ z v
-    ... | no  x≢z  | no  y≢z   =  trans (update-neq ρ x v z x≢z) (sym (update-neq ρ y w z y≢z))  
+    ... | no  x≢z  | no  y≢z   =  trans (update-neq ρ x v z x≢z)
+                                        (sym (update-neq ρ y w z y≢z))  
 \end{code}
 
 And a slightly different version of the same proof.
@@ -305,7 +306,8 @@ And a slightly different version of the same proof.
   ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
   ... | no  x≢z | yes y≡z rewrite y≡z  =  sym (update-eq′ ρ z w)  
   ... | yes x≡z | no  y≢z rewrite x≡z  =  update-eq′ ρ z v
-  ... | no  x≢z | no  y≢z  =  trans (update-neq ρ x v z x≢z) (sym (update-neq ρ y w z y≢z))  
+  ... | no  x≢z | no  y≢z  =  trans (update-neq ρ x v z x≢z)
+                                    (sym (update-neq ρ y w z y≢z))  
 \end{code}
 </div>
 
