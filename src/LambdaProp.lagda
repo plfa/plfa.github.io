@@ -312,7 +312,6 @@ subst {x = y} (ℕ-E {x = x} ⊢L ⊢M ⊢N) ⊢V with x ≟ y
 subst {x = y} (Fix {x = x} ⊢M) ⊢V with x ≟ y
 ... | yes refl        =  Fix (rename-≡ ⊢M)
 ... | no  x≢y         =  Fix (subst (rename-≢ x≢y ⊢M) ⊢V)
-{-
 \end{code}
 
 
@@ -324,20 +323,22 @@ is also a closed term with type `A`.  In other words, small-step
 reduction preserves types.
 
 \begin{code}
-preservation : ∀ {M N A} → ∅ ⊢ M ⦂ A → M ⟹ N → ∅ ⊢ N ⦂ A
-preservation (Ax ())
-preservation (⇒-I ⊢N) ()
-preservation (⇒-E ⊢L ⊢M) (ξ·₁ L⟹L′) with preservation ⊢L L⟹L′
-... | ⊢L′  =  ⇒-E ⊢L′ ⊢M
-preservation (⇒-E ⊢L ⊢M) (ξ·₂ valueL M⟹M′) with preservation ⊢M M⟹M′
-... | ⊢M′  =  ⇒-E ⊢L ⊢M′
-preservation (⇒-E (⇒-I ⊢N) ⊢V) (βλ· valueV)  =  subst ⊢N ⊢V
-preservation `ℕ-I₁ ()
-preservation `ℕ-I₂ ()
-preservation (`ℕ-E ⊢L ⊢M ⊢N) (ξif L⟹L′) with preservation ⊢L L⟹L′
-... | ⊢L′  =  `ℕ-E ⊢L′ ⊢M ⊢N
-preservation (`ℕ-E `ℕ-I₁ ⊢M ⊢N) βif-true   =  ⊢M
-preservation (`ℕ-E `ℕ-I₂ ⊢M ⊢N) βif-false  =  ⊢N
+preserve : ∀ {M N A}
+  → ∅ ⊢ M ⦂ A
+  → M ⟹ N
+    ----------
+  → ∅ ⊢ N ⦂ A
+preserve (Ax ())               
+preserve (⇒-I ⊢N)              ()
+preserve (⇒-E ⊢L ⊢M)           (ξ-·₁ L⟹L′)     =  ⇒-E (preserve ⊢L L⟹L′) ⊢M
+preserve (⇒-E ⊢L ⊢M)           (ξ-·₂ VL M⟹M′)  =  ⇒-E ⊢L (preserve ⊢M M⟹M′)
+preserve (⇒-E (⇒-I ⊢N) ⊢V)     (β-ƛ· VV)        =  subst ⊢N ⊢V
+preserve ℕ-I₁                  ()
+preserve (ℕ-I₂ ⊢M)             (ξ-suc M⟹M′)    =  ℕ-I₂ (preserve ⊢M M⟹M′)
+preserve (ℕ-E ⊢L ⊢M ⊢N)        (ξ-case L⟹L′)   =  ℕ-E (preserve ⊢L L⟹L′) ⊢M ⊢N
+preserve (ℕ-E ℕ-I₁ ⊢M ⊢N)      β-case-zero      =  ⊢M
+preserve (ℕ-E (ℕ-I₂ ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢N ⊢V
+preserve (Fix ⊢M)              (β-μ)            =  subst ⊢M (Fix ⊢M)
 \end{code}
 
 
@@ -357,7 +358,7 @@ The preservation property is sometimes called _subject reduction_.
 Its opposite is _subject expansion_, which holds if
 `M ==> N` and `∅ ⊢ N ⦂ A`, then `∅ ⊢ M ⦂ A`.
 Find two counter-examples to subject expansion, one
-with conditionals and one not involving conditionals.
+with case expressions and one not involving case expressions.
 
 ## Type Soundness
 
@@ -374,18 +375,24 @@ Stuck : Term → Set
 Stuck M = Normal M × ¬ Value M
 
 postulate
-  Soundness : ∀ {M N A} → ∅ ⊢ M ⦂ A → M ⟹* N → ¬ (Stuck N)
+  Soundness : ∀ {M N A}
+    → ∅ ⊢ M ⦂ A
+    → M ⟹* N
+      -----------
+    → ¬ (Stuck N)
 \end{code}
 
 <div class="hidden">
 \begin{code}
-Soundness′ : ∀ {M N A} → ∅ ⊢ M ⦂ A → M ⟹* N → ¬ (Stuck N)
-Soundness′ ⊢M (M ∎) ⟨ ¬M⟹N , ¬ValueM ⟩ with progress ⊢M
-... | steps M⟹N   =  ¬M⟹N M⟹N
-... | done  ValueM  =  ¬ValueM ValueM
-Soundness′ ⊢L (L ⟹⟨ L⟹M ⟩ M⟹*N) = Soundness′ ⊢M M⟹*N
-  where
-  ⊢M = preservation ⊢L L⟹M
+Soundness′ : ∀ {M N A}
+  → ∅ ⊢ M ⦂ A
+  → M ⟹* N
+    -----------
+  → ¬ (Stuck N)
+Soundness′ ⊢M (M ∎) ⟨ ¬M⟹N , ¬VM ⟩ with progress ⊢M
+... | steps M⟹N                     =  ¬M⟹N M⟹N
+... | done  VM                        =  ¬VM VM
+Soundness′ ⊢L (L ⟹⟨ L⟹M ⟩ M⟹*N)  =  Soundness′ (preserve ⊢L L⟹M) M⟹*N
 \end{code}
 </div>
 
@@ -527,7 +534,7 @@ Suppose we add the following new rule to the typing relation
 of the STLC:
 
                 --------------------              (T_FunnyAbs)
-                ∅ ⊢ λ[ x ⦂ `ℕ ] N ⦂ `ℕ
+                ∅ ⊢ ƛ x ⇒ N ⦂ `ℕ
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -541,6 +548,3 @@ false, give a counterexample.
   - Preservation
 
 
-\begin{code}
--}
-\end{code}
