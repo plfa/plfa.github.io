@@ -30,8 +30,15 @@ Chapter [DeBruijn](DeBruijn), leads to a more compact formulation.
 Nonetheless, we begin with named variables, partly because such terms
 are easier to read and partly because the development is more traditional.
 
-*(((Say something about how I stole from but improved upon SF)))*
-
+The development in this chapter was inspired by the corresponding
+development in Chapter STLC of _Software Foundations_.  We differ by
+representing contexts explicitly (as lists pairing identifiers with
+types) rather than as partial maps (which take identifiers to types),
+which will corresponds better to our subsequent development of DeBruin
+notation. We also differ by taking natural numbers as the base type
+rather than booleans, allowing more sophisticated examples. In
+particular, we will be able to show (twice!) that two plus two is
+four.
 
 ## Imports
 
