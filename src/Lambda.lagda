@@ -30,6 +30,8 @@ Chapter [DeBruijn](DeBruijn), leads to a more compact formulation.
 Nonetheless, we begin with named variables, partly because such terms
 are easier to read and partly because the development is more traditional.
 
+*(((Say something about how I stole from but improved upon SF)))*
+
 
 ## Imports
 
@@ -87,10 +89,10 @@ And here it is formalised in Agda.
 Id : Set
 Id = String
 
-infix  5  ƛ_⇒_
-infix  5  μ_⇒_
-infix  6  `suc_
-infixl 8  _·_
+infix  6  ƛ_⇒_
+infix  6  μ_⇒_
+infixl 7  _·_
+infix  8  `suc_
 infix  9  #_
 
 data Term : Set where
@@ -99,13 +101,14 @@ data Term : Set where
   _·_                      :  Term → Term → Term
   `zero                    :  Term
   `suc_                    :  Term → Term
-  `case_[zero⇒_|suc_⇒_]  :  Term → Term → Id → Term → Term
+  `case_[zero⇒_|suc_⇒_]    :  Term → Term → Id → Term → Term
   μ_⇒_                     :  Id → Term → Term
 \end{code}
 We represent identifiers by strings.  We choose precedence so that
-lambda abstraction and fixpoint bind least tightly, then successor, then application,
-and tightest of all is the constructor for variables.  Case
+lambda abstraction and fixpoint bind least tightly, then application,
+then successor, and tightest of all is the constructor for variables.  Case
 expressions are self-bracketing.
+
 
 ### Example terms
 
@@ -507,10 +510,7 @@ data _⟹_ : Term → Term → Set where
   βμ : ∀ {x M}
       ------------------------------
     → μ x ⇒ M ⟹ M [ x := μ x ⇒ M ]
-{-
 \end{code}
-
-*(((CONTINUE FROM HERE)))*
 
 
 #### Quiz
@@ -600,34 +600,8 @@ We can read this as follows.
 The names have been chosen to allow us to lay
 out example reductions in an appealing way.
 
+*(((REDUCTION EXAMPLES GO HERE, ONCE I CAN COMPUTE THEM)))*
 \begin{code}
-_ : not · true ⟹* false
-_ =
-  begin
-    not · true
-  ⟹⟨ βλ· value-true ⟩
-    if true then false else true
-  ⟹⟨ βif-true ⟩
-    false
-  ∎
-
-_ : two · not · true ⟹* true
-_ =
-  begin
-    two · not · true
-  ⟹⟨ ξ·₁ (βλ· value-λ) ⟩
-    (ƛ "x" ⇒ not · (not · # "x")) · true
-  ⟹⟨ βλ· value-true ⟩
-    not · (not · true)
-  ⟹⟨ ξ·₂ value-λ (βλ· value-true) ⟩
-    not · (if true then false else true)
-  ⟹⟨ ξ·₂ value-λ βif-true  ⟩
-    not · false
-  ⟹⟨ βλ· value-false ⟩
-    if false then false else true
-  ⟹⟨ βif-false ⟩
-    true
-  ∎
 \end{code}
 
 Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
@@ -638,16 +612,9 @@ Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
 We have just two types.
 
   * Functions, `A ⇒ B`
-  * Natural, `` `ℕ ``
+  * Naturals, `` `ℕ ``
 
-We require some form of base type, because otherwise the set of types
-would be empty.  The obvious names to use in our object calculus
-would be `A → B` for functions
-and `ℕ` for naturals, 
-
-We cannot use the name `ℕ` for the type of naturals in
-our object calculus, because naturals already have that name in Agda,
-so we use the name `` `ℕ `` instead.
+As before, to avoid overlap we use variants of the names used by Agda.
 
 Here is the syntax of types in BNF.
 
@@ -656,7 +623,7 @@ Here is the syntax of types in BNF.
 And here it is formalised in Agda.
 
 \begin{code}
-infixr 20 _⇒_
+infixr 6 _⇒_
 
 data Type : Set where
   _⇒_ : Type → Type → Type
@@ -670,51 +637,32 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus,
 
-* `(𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹` abbreviates `(𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)`
-* `two · not · true` abbreviates `(two · not) · true`.
-
-We choose the binding strength for abstractions and conditionals
-to be weaker than application. For instance,
-
-* `` ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x") ``
-  - denotes `` (ƛ "f" ⇒ (ƛ "x" ⇒ (# "f" · (# "f" · # "x")))) ``
-  - and not `` (ƛ "f" ⇒ (ƛ "x" ⇒ # "f")) · (# "f" · # "x") ``
-
-\begin{code}
-_ : (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ≡ (𝔹 ⇒ 𝔹) ⇒ (𝔹 ⇒ 𝔹)
-_ = refl
-
-_ : two · not · true ≡ (two · not) · true
-_ = refl
-
-_ : ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x")
-      ≡ (ƛ "f" ⇒ (ƛ "x" ⇒ (# "f" · (# "f" · # "x"))))
-_ = refl
-\end{code}
+* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` abbreviates ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
+* `# "+" · # "m" · # "n"` abbreviates `(# "+" · # "m") · # "n"`.
 
 ### Quiz
 
 * What is the type of the following term?
 
-    ƛ "f" ⇒ # "f" · (# "f"  · true)
+    ƛ "s" ⇒ # "s" · (# "s"  · `zero)
 
-  1. `𝔹 ⇒ (𝔹 ⇒ 𝔹)`
-  2. `(𝔹 ⇒ 𝔹) ⇒ 𝔹`
-  3. `𝔹 ⇒ 𝔹 ⇒ 𝔹`
-  4. `𝔹 ⇒ 𝔹`
-  5. `𝔹`
+  1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
+  2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
+  3. `` `ℕ ⇒ `ℕ ⇒ `ℕ ``
+  4. `` `ℕ ⇒ `ℕ ``
+  5. `` `ℕ ``
 
   Give more than one answer if appropriate.
 
 * What is the type of the following term?
 
-    (ƛ "f" ⇒ # "f" · (# "f"  · true)) · not
+    (ƛ "s" ⇒ # "s" · (# "s"  · `zero)) · (ƛ "m" ⇒ `suc # "m")
 
-  1. `𝔹 ⇒ (𝔹 ⇒ 𝔹)`
-  2. `(𝔹 ⇒ 𝔹) ⇒ 𝔹`
-  3. `𝔹 ⇒ 𝔹 ⇒ 𝔹`
-  4. `𝔹 ⇒ 𝔹`
-  5. `𝔹`
+  1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
+  2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
+  3. `` `ℕ ⇒ `ℕ ⇒ `ℕ ``
+  4. `` `ℕ ⇒ `ℕ ``
+  5. `` `ℕ ``
 
   Give more than one answer if appropriate.
 
@@ -727,6 +675,8 @@ consider terms with free variables.  To type a term,
 we must first type its subterms, and in particular in the
 body of an abstraction its bound variable may appear free.
 
+*(((update following later)))*
+
 In general, we use typing _judgements_ of the form
 
     Γ ⊢ M ⦂ A
@@ -736,17 +686,17 @@ Environment `Γ` provides types for all the free variables in `M`.
 
 Here are three examples. 
 
-* `` ∅ , "f" ⦂ 𝔹 ⇒ 𝔹 , "x" ⦂ 𝔹 ⊢ # "f" · (# "f" · # "x") ⦂  𝔹 ``
-* `` ∅ , "f" ⦂ 𝔹 ⇒ 𝔹 ⊢ (ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  𝔹 ⇒ 𝔹 ``
-* `` ∅ ⊢ ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹 ``
+* `` ∅ , "f" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ # "f" · (# "f" · # "x") ⦂  `ℕ ``
+* `` ∅ , "f" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  `ℕ ⇒ `ℕ ``
+* `` ∅ ⊢ ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 Environments are partial maps from identifiers to types, built using `∅`
 for the empty map, and `Γ , x ⦂ A` for the map that extends
 environment `Γ` by mapping variable `x` to type `A`.
 
-*It's redundant to have two versions of the rules*
+*(((It's redundant to have two versions of the rules)))*
 
-*Need text to explain `Γ ∋ x ⦂ A`*
+*(((Need text to explain `Γ ∋ x ⦂ A`)))*
 
 In an informal presentation of the formal semantics, 
 the rules for typing are written as follows.
@@ -764,16 +714,16 @@ the rules for typing are written as follows.
     -------------- ⇒-E
     Γ ⊢ L · M ⦂ B
 
-    ------------- 𝔹-I₁
-    Γ ⊢ true ⦂ 𝔹
+    ------------- `ℕ-I₁
+    Γ ⊢ true ⦂ `ℕ
 
-    -------------- 𝔹-I₂
-    Γ ⊢ false ⦂ 𝔹
+    -------------- `ℕ-I₂
+    Γ ⊢ false ⦂ `ℕ
 
-    Γ ⊢ L : 𝔹
+    Γ ⊢ L : `ℕ
     Γ ⊢ M ⦂ A
     Γ ⊢ N ⦂ A
-    -------------------------- 𝔹-E
+    -------------------------- `ℕ-E
     Γ ⊢ if L then M else N ⦂ A
 
 As we will show later, the rules are deterministic, in that
@@ -799,7 +749,7 @@ infix  4  _⊢_⦂_
 infixl 5  _,_⦂_
 
 data Context : Set where
-  ∅ : Context 
+  ∅     : Context 
   _,_⦂_ : Context → Id → Type → Context
 
 data _∋_⦂_ : Context → Id → Type → Set where
@@ -832,128 +782,118 @@ data _⊢_⦂_ : Context → Term → Type → Set where
       --------------
     → Γ ⊢ L · M ⦂ B
 
-  𝔹-I₁ : ∀ {Γ}
+  ℕ-I₁ : ∀ {Γ}
       -------------
-    → Γ ⊢ true ⦂ 𝔹
+    → Γ ⊢ `zero ⦂ `ℕ
 
-  𝔹-I₂ : ∀ {Γ}
-      --------------
-    → Γ ⊢ false ⦂ 𝔹
+  ℕ-I₂ : ∀ {Γ M}
+    → Γ ⊢ M ⦂ `ℕ
+      ---------------
+    → Γ ⊢ `suc M ⦂ `ℕ
 
-  𝔹-E : ∀ {Γ L M N A}
-    → Γ ⊢ L ⦂ 𝔹
+  `ℕ-E : ∀ {Γ L M x N A}
+    → Γ ⊢ L ⦂ `ℕ
     → Γ ⊢ M ⦂ A
-    → Γ ⊢ N ⦂ A
-      ---------------------------
-    → Γ ⊢ if L then M else N ⦂ A    
+    → Γ , x ⦂ `ℕ ⊢ N ⦂ A
+      --------------------------------------
+    → Γ ⊢ `case L [zero⇒ M |suc x ⇒ N ] ⦂ A
 \end{code}
 
 ### Example type derivations
 
-Here are a couple of typing examples.  First, here is how
-they would be written in an informal description of the
+Here is a typing example.  First, here is how
+it would be written in an informal description of the
 formal semantics.
 
-Derivation of `not`:
+Derivation of for the Church numeral two:
 
-    ------------ Z
-    Γ₀ ∋ "x" ⦂ B
-    -------------- Ax    -------------- 𝔹-I₂    ------------- 𝔹-I₁
-    Γ₀ ⊢ # "x" ⦂ 𝔹       Γ₀ ⊢ false ⦂ 𝔹         Γ₀ ⊢ true ⦂ 𝔹
-    ------------------------------------------------------ 𝔹-E
-    Γ₀ ⊢ if # "x" then false else true ⦂ 𝔹
-    --------------------------------------------------- ⇒-I
-    ∅ ⊢ ƛ "x" ⇒ if # "x" then false else true ⦂ 𝔹 ⇒ 𝔹
-
-where `Γ₀ = ∅ , x ⦂ 𝔹`.
-
-Derivation of `two`:
-
-    ∋f                        ∋f                          ∋x
+    ∋s                        ∋s                          ∋z
     ------------------- Ax    ------------------- Ax     --------------- Ax
-    Γ₂ ⊢ # "f" ⦂ 𝔹 ⇒ 𝔹        Γ₂ ⊢ # "f" ⦂ 𝔹 ⇒ 𝔹         Γ₂ ⊢ # "x" ⦂ 𝔹
+    Γ₂ ⊢ # "s" ⦂ `ℕ ⇒ `ℕ        Γ₂ ⊢ # "s" ⦂ `ℕ ⇒ `ℕ         Γ₂ ⊢ # "z" ⦂ `ℕ
     ------------------- Ax    ------------------------------------------ ⇒-E
-    Γ₂ ⊢ # "f" ⦂ 𝔹 ⇒ 𝔹        Γ₂ ⊢ # "f" · # "x" ⦂ 𝔹
+    Γ₂ ⊢ # "s" ⦂ `ℕ ⇒ `ℕ        Γ₂ ⊢ # "s" · # "z" ⦂ `ℕ
     --------------------------------------------------  ⇒-E
-    Γ₂ ⊢ # "f" · (# "f" · # "x") ⦂ 𝔹
+    Γ₂ ⊢ # "s" · (# "s" · # "z") ⦂ `ℕ
     ---------------------------------------------- ⇒-I
-    Γ₁ ⊢ ƛ "x" ⇒ # "f" · (# "f" · # "x") ⦂ 𝔹 ⇒ 𝔹
+    Γ₁ ⊢ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ `ℕ ⇒ `ℕ
     ---------------------------------------------------------- ⇒-I
-    ∅ ⊢ ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x") ⦂ 𝔹 ⇒ 𝔹
+    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ `ℕ ⇒ `ℕ
 
-Where `∋f` and `∋x` abbreviate the two derivations:
+Where `∋s` and `∋z` abbreviate the two derivations:
 
 
                  ---------------- Z           
-    "x" ≢ "f"    Γ₁ ∋ "f" ⦂ B ⇒ B          
+    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ B ⇒ B          
     ----------------------------- S        ------------- Z  
-    Γ₂ ∋ "f" ⦂ B ⇒ B                       Γ₂ ∋ "x" ⦂ 𝔹
+    Γ₂ ∋ "s" ⦂ B ⇒ B                       Γ₂ ∋ "z" ⦂ `ℕ
 
-where `Γ₁ = ∅ , f ⦂ 𝔹 ⇒ 𝔹` and `Γ₂ = ∅ , f ⦂ 𝔹 ⇒ 𝔹 , x ⦂ 𝔹`.
+where `Γ₁ = ∅ , s ⦂ `ℕ ⇒ `ℕ` and `Γ₂ = ∅ , s ⦂ `ℕ ⇒ `ℕ , z ⦂ `ℕ`.
 
-Here are the above derivations formalised in Agda.
+*((( possibly add another example, for plus )))*
+
+Here is the above derivation formalised in Agda.
 
 \begin{code}
-⊢not : ∅ ⊢ not ⦂ 𝔹 ⇒ 𝔹
-⊢not = ⇒-I (𝔹-E (Ax Z) 𝔹-I₂ 𝔹-I₁)
-
-⊢two : ∅ ⊢ two ⦂ (𝔹 ⇒ 𝔹) ⇒ 𝔹 ⇒ 𝔹
-⊢two = ⇒-I (⇒-I (⇒-E (Ax ⊢f) (⇒-E (Ax ⊢f) (Ax ⊢x))))
+⊢ch2 : ∅ ⊢ ch2 ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+⊢ch2 = ⇒-I (⇒-I (⇒-E (Ax ⊢s) (⇒-E (Ax ⊢s) (Ax ⊢z))))
   where
 
-  f≢x : "f" ≢ "x"
-  f≢x ()
+  s≢z : "s" ≢ "z"
+  s≢z ()
 
-  ⊢f = S f≢x Z
-  ⊢x = Z
+  ⊢s = S s≢z Z
+  ⊢z = Z
 \end{code}
 
+
 #### Interaction with Agda
+
+*(((rewrite the followign)))*
 
 Construction of a type derivation is best done interactively.
 Start with the declaration:
 
-    ⊢not : ∅ ⊢ not ⦂ 𝔹 ⇒ 𝔹
+    ⊢not : ∅ ⊢ not ⦂ `ℕ ⇒ `ℕ
     ⊢not = ?
 
 Typing C-l causes Agda to create a hole and tell us its expected type.
 
     ⊢not = { }0
-    ?0 : ∅ ⊢ not ⦂ 𝔹 ⇒ 𝔹
+    ?0 : ∅ ⊢ not ⦂ `ℕ ⇒ `ℕ
 
 Now we fill in the hole by typing C-c C-r. Agda observes that
 the outermost term in `not` in a `λ`, which is typed using `⇒-I`. The
 `⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
     ⊢not = ⇒-I { }0
-    ?0 : ∅ , x ⦂ 𝔹 ⊢ if ` x then false else true ⦂ 𝔹
+    ?0 : ∅ , x ⦂ `ℕ ⊢ if ` x then false else true ⦂ `ℕ
 
 Again we fill in the hole by typing C-c C-r. Agda observes that the
-outermost term is now `if_then_else_`, which is typed using `𝔹-E`. The
-`𝔹-E` rule in turn takes three arguments, which Agda leaves as holes.
+outermost term is now `if_then_else_`, which is typed using ``ℕ-E`. The
+``ℕ-E` rule in turn takes three arguments, which Agda leaves as holes.
 
-    ⊢not = ⇒-I (𝔹-E { }0 { }1 { }2)
-    ?0 : ∅ , x ⦂ 𝔹 ⊢ ` x ⦂
-    ?1 : ∅ , x ⦂ 𝔹 ⊢ false ⦂ 𝔹
-    ?2 : ∅ , x ⦂ 𝔹 ⊢ true ⦂ 𝔹
+    ⊢not = ⇒-I (`ℕ-E { }0 { }1 { }2)
+    ?0 : ∅ , x ⦂ `ℕ ⊢ ` x ⦂
+    ?1 : ∅ , x ⦂ `ℕ ⊢ false ⦂ `ℕ
+    ?2 : ∅ , x ⦂ `ℕ ⊢ true ⦂ `ℕ
 
 Again we fill in the three holes by typing C-c C-r in each. Agda observes
-that `` ` x ``, `false`, and `true` are typed using `Ax`, `𝔹-I₂`, and
-`𝔹-I₁` respectively. The `Ax` rule in turn takes an argument, to show
-that `(∅ , x ⦂ 𝔹) x = just 𝔹`, which can in turn be specified with a
+that `` ` x ``, `false`, and `true` are typed using `Ax`, ``ℕ-I₂`, and
+``ℕ-I₁` respectively. The `Ax` rule in turn takes an argument, to show
+that `(∅ , x ⦂ `ℕ) x = just `ℕ`, which can in turn be specified with a
 hole. After filling in all holes, the term is as above.
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
-### Injective
+### Lookup is injective
 
 Note that `Γ ∋ x ⦂ A` is injective.
 \begin{code}
-∋-injective : ∀ {Γ w A B} → Γ ∋ w ⦂ A → Γ ∋ w ⦂ B → A ≡ B
+∋-injective : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-injective Z        Z          =  refl
-∋-injective Z        (S w≢ _)   =  ⊥-elim (w≢ refl)
-∋-injective (S w≢ _) Z          =  ⊥-elim (w≢ refl)
-∋-injective (S _ ∋w) (S _ ∋w′)  =  ∋-injective ∋w ∋w′
+∋-injective Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
+∋-injective (S x≢ _) Z          =  ⊥-elim (x≢ refl)
+∋-injective (S _ ∋x) (S _ ∋x′)  =  ∋-injective ∋x ∋x′
 \end{code}
 
 The relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
@@ -962,26 +902,26 @@ the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
 ### Non-examples
 
 We can also show that terms are _not_ typeable.  For example, here is
-a formal proof that it is not possible to type the term `` true ·
-false ``.  In other words, no type `A` is the type of this term.  It
+a formal proof that it is not possible to type the term `` `suc `zero ·
+`zero ``.  In other words, no type `A` is the type of this term.  It
 cannot be typed, because doing so requires that the first term in the
-application is both a boolean and a function.
+application is both a natural and a function.
 
 \begin{code}
-ex₁ : ∀ {A} → ¬ (∅ ⊢ true · false ⦂ A)
-ex₁ (⇒-E () _)
+nope₁ : ∀ {A} → ¬ (∅ ⊢ `suc `zero · `zero ⦂ A)
+nope₁ (⇒-E () _)
 \end{code}
 
 As a second example, here is a formal proof that it is not possible to
 type `` ƛ "x" ⇒ # "x" · # "x" `` It cannot be typed, because
-doing so requires some types `A` and `B` such that `A ⇒ B ≡ A`.
+doing so requires types `A` and `B` such that `A ⇒ B ≡ A`.
 
 \begin{code}
-contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
-contradiction ()
-
-ex₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ # "x" · # "x" ⦂ A)
-ex₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective ∋x ∋x′)
+nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ # "x" · # "x" ⦂ A)
+nope₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective ∋x ∋x′)
+  where
+  contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
+  contradiction ()
 \end{code}
 
 
@@ -990,15 +930,15 @@ ex₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective �
 For each of the following, given a type `A` for which it is derivable,
 or explain why there is no such `A`.
 
-1. `` ∅ , y ⦂ A ⊢ λ[ x ⦂ 𝔹 ] ` x ⦂ 𝔹 ⇒ 𝔹 ``
-2. `` ∅ ⊢ λ[ y ⦂ 𝔹 ⇒ 𝔹 ] λ[ x ⦂ 𝔹 ] ` y · ` x ⦂ A ``
-3. `` ∅ ⊢ λ[ y ⦂ 𝔹 ⇒ 𝔹 ] λ[ x ⦂ 𝔹 ] ` x · ` y ⦂ A ``
-4. `` ∅ , x ⦂ A ⊢ λ[ y : 𝔹 ⇒ 𝔹 ] `y · `x : A ``
+1. `` ∅ , y ⦂ A ⊢ λ[ x ⦂ `ℕ ] ` x ⦂ `ℕ ⇒ `ℕ ``
+2. `` ∅ ⊢ λ[ y ⦂ `ℕ ⇒ `ℕ ] λ[ x ⦂ `ℕ ] ` y · ` x ⦂ A ``
+3. `` ∅ ⊢ λ[ y ⦂ `ℕ ⇒ `ℕ ] λ[ x ⦂ `ℕ ] ` x · ` y ⦂ A ``
+4. `` ∅ , x ⦂ A ⊢ λ[ y : `ℕ ⇒ `ℕ ] `y · `x : A ``
 
 For each of the following, give type `A`, `B`, `C`, and `D` for which it is derivable,
 or explain why there are no such types.
 
-1. `` ∅ ⊢ λ[ y ⦂ 𝔹 ⇒ 𝔹 ⇒ 𝔹 ] λ[ x ⦂ 𝔹 ] ` y · ` x ⦂ A ``
+1. `` ∅ ⊢ λ[ y ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ ] λ[ x ⦂ `ℕ ] ` y · ` x ⦂ A ``
 2. `` ∅ , x ⦂ A ⊢ x · x ⦂ B ``
 3. `` ∅ , x ⦂ A , y ⦂ B ⊢ λ[ z ⦂ C ] ` x · (` y · ` z) ⦂ D ``
 
@@ -1020,7 +960,3 @@ This chapter uses the following unicode
     β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
 
 Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).
-
-\begin{code}
--}
-\end{code}
