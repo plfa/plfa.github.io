@@ -116,14 +116,20 @@ Here are some example terms: the naturals two and four, the recursive
 definition of a function to naturals, and a term that computes
 two plus two.
 \begin{code}
-tm2 tm4 tm+ tm2+2 : Term
-tm2    =  `suc `suc `zero
-tm4    =  `suc `suc `suc `suc `zero
-tm+    =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-            `case # "m"
-              [zero⇒ # "n"
-              |suc "m" ⇒ `suc (# "+" · # "m" · # "n") ]
-tm2+2  =  tm+ · tm2 · tm2            
+tm2 : Term
+tm2 = `suc `suc `zero
+
+tm4 : Term
+tm4 =  `suc `suc `suc `suc `zero
+
+tm+ : Term
+tm+ =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+         `case # "m"
+           [zero⇒ # "n"
+           |suc "m" ⇒ `suc (# "+" · # "m" · # "n") ]
+
+tm2+2 : Term
+tm2+2 = tm+ · tm2 · tm2            
 \end{code}
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in Chapter [Natural](Naturals).
@@ -136,13 +142,21 @@ naturals.  Similar to before, we define: the numerals two and four, a
 function to add numerals, a function to convert numerals to naturals,
 and a term that computes two plus two.
 \begin{code}
-ch2 ch4 ch+ chℕ ch2+2 : Term
-ch2    =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")
-ch4    =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · (# "s" · (# "s" · # "z")))
-ch+    =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
-            # "m" · # "s" · (# "n" · # "s" · # "z")
-chℕ    =  ƛ "n" ⇒ # "n" · (ƛ "m" ⇒ `suc (# "m")) · `zero
-ch2+2  =  ch+ · ch2 · ch2
+ch2 : Term
+ch2 =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")
+
+ch4 : Term
+ch4 =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · (# "s" · (# "s" · # "z")))
+
+ch+ : Term
+ch+ =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
+         # "m" · # "s" · (# "n" · # "s" · # "z")
+
+chℕ : Term
+chℕ = ƛ "m" ⇒ # "m" · (ƛ "n" ⇒ `suc (# "n")) · `zero
+
+ch2+2 : Term
+ch2+2 = chℕ · (ch+ · ch2 · ch2)
 \end{code}
 Two takes two arguments `s` and `z`, and applies `s` twice to `z`;
 similarly for four.  Addition takes two numerals `m` and `n`, a
@@ -840,14 +854,68 @@ Here is the above derivation formalised in Agda.
 
 \begin{code}
 ⊢ch2 : ∅ ⊢ ch2 ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
-⊢ch2 = ⇒-I (⇒-I (⇒-E (Ax ⊢s) (⇒-E (Ax ⊢s) (Ax ⊢z))))
+⊢ch2 = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))
   where
 
   s≢z : "s" ≢ "z"
   s≢z ()
 
-  ⊢s = S s≢z Z
-  ⊢z = Z
+  ∋s = S s≢z Z
+  ∋z = Z
+\end{code}
+
+\begin{code}
+⊢tm2 : ∅ ⊢ tm2 ⦂ `ℕ
+⊢tm2 = ℕ-I₂ (ℕ-I₂ ℕ-I₁)
+
+⊢tm4 : ∅ ⊢ tm4 ⦂ `ℕ
+⊢tm4 = ℕ-I₂ (ℕ-I₂ (ℕ-I₂ (ℕ-I₂ ℕ-I₁)))
+
+⊢tm+ : ∅ ⊢ tm+ ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
+⊢tm+ = Fix (⇒-I (⇒-I (ℕ-E (Ax ∋m) (Ax ∋n)
+         (ℕ-I₂ (⇒-E (⇒-E (Ax ∋+) (Ax ∋m′)) (Ax ∋n′))))))
+  where
+  ∋+  = (S (λ()) (S (λ()) (S (λ()) Z)))
+  ∋m  = (S (λ()) Z)
+  ∋n  = Z
+  ∋m′ = Z
+  ∋n′ = (S (λ()) Z)
+
+⊢tm2+2 : ∅ ⊢ tm2+2 ⦂ `ℕ
+⊢tm2+2 = ⇒-E (⇒-E ⊢tm+ ⊢tm2) ⊢tm2
+\end{code}
+
+Typing for the rest of the Church terms.
+\begin{code}
+Ch : Type → Type
+Ch A = (A ⇒ A) ⇒ A ⇒ A
+
+⊢ch4 : ∀ {A} → (∅ ⊢ ch4 ⦂ (Ch A))
+⊢ch4 = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s)
+                    (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))))
+  where
+  ∋s = S (λ()) Z
+  ∋z = Z
+                    
+
+⊢ch+ : ∀ {A} → ∅ ⊢ ch+ ⦂ Ch A ⇒ Ch A ⇒ Ch A
+⊢ch+ = ⇒-I (⇒-I (⇒-I (⇒-I (⇒-E (⇒-E (Ax ∋m) (Ax ∋s))
+                             (⇒-E (⇒-E (Ax ∋n) (Ax ∋s)) (Ax ∋z))))))
+  where
+  ∋m = S (λ()) (S (λ()) (S (λ()) Z))
+  ∋n = S (λ()) (S (λ()) Z)
+  ∋s = S (λ()) Z
+  ∋z = Z
+
+
+⊢chℕ : ∅ ⊢ chℕ ⦂ Ch `ℕ ⇒ `ℕ
+⊢chℕ = ⇒-I (⇒-E (⇒-E (Ax ∋m) (⇒-I (ℕ-I₂ (Ax ∋n)))) ℕ-I₁)
+  where
+  ∋m = Z
+  ∋n = Z
+
+⊢ch2+2 : ∅ ⊢ ch2+2 ⦂ `ℕ
+⊢ch2+2 = ⇒-E (⊢chℕ) (⇒-E (⇒-E ⊢ch+ ⊢ch2) ⊢ch2)
 \end{code}
 
 

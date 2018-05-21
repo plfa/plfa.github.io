@@ -14,6 +14,7 @@ module LambdaProp where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Data.String using (String; _≟_)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
@@ -81,7 +82,7 @@ step or it is a value.
 \begin{code}
 data Progress (M : Term) : Set where
 
-  steps : ∀ {N}
+  step : ∀ {N}
     → M ⟹ N
       ----------
     → Progress M
@@ -98,29 +99,29 @@ progress : ∀ {M A}
 progress (Ax ())
 progress (⇒-I ⊢N)                           =  done V-ƛ
 progress (⇒-E ⊢L ⊢M) with progress ⊢L
-... | steps L⟹L′                          =  steps (ξ-·₁ L⟹L′)
+... | step L⟹L′                            =  step (ξ-·₁ L⟹L′)
 ... | done VL with progress ⊢M
-...   | steps M⟹M′                        =  steps (ξ-·₂ VL M⟹M′)
+...   | step M⟹M′                          =  step (ξ-·₂ VL M⟹M′)
 ...   | done VM with canonical ⊢L VL
-...     | C-ƛ                               =  steps (β-ƛ· VM)
+...     | C-ƛ                                =  step (β-ƛ· VM)
 progress ℕ-I₁                               =  done V-zero
 progress (ℕ-I₂ ⊢M) with progress ⊢M
-...  | steps M⟹M′                          =  steps (ξ-suc M⟹M′)
+...  | step M⟹M′                           =  step (ξ-suc M⟹M′)
 ...  | done VM                               =  done (V-suc VM)
 progress (ℕ-E ⊢L ⊢M ⊢N) with progress ⊢L
-... | steps L⟹L′                           =  steps (ξ-case L⟹L′)
+... | step L⟹L′                            =  step (ξ-case L⟹L′)
 ... | done VL with canonical ⊢L VL
-...   | C-zero                               =  steps β-case-zero
-...   | C-suc CL                             =  steps (β-case-suc (value CL))
-progress (Fix ⊢M)                            =  steps β-μ
+...   | C-zero                               =  step β-case-zero
+...   | C-suc CL                             =  step (β-case-suc (value CL))
+progress (Fix ⊢M)                            =  step β-μ
 \end{code}
 
 This code reads neatly in part because we consider the
-`steps` option before the `done` option. We could, of course,
+`step` option before the `done` option. We could, of course,
 do it the other way around, but then the `...` abbreviation
 no longer works, and we will need to write out all the arguments
 in full. In general, the rule of thumb is to consider the easy case
-(here `steps`) before the hard case (here `done`).
+(here `step`) before the hard case (here `done`).
 If you have two hard cases, you will have to expand out `...`
 or introduce subsidiary functions.
 
@@ -341,6 +342,42 @@ preserve (ℕ-E (ℕ-I₂ ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢N ⊢V
 preserve (Fix ⊢M)              (β-μ)            =  subst ⊢M (Fix ⊢M)
 \end{code}
 
+## Normalisation
+
+\begin{code}
+Gas : Set
+Gas = ℕ
+
+data Normalise (M : Term) : Set where
+
+  out-of-gas : ∀ {N A}
+    → M ⟹* N
+    → ∅ ⊢ N ⦂ A
+      -------------
+    → Normalise M
+
+  normal : ∀ {V}
+    → Gas
+    → M ⟹* V
+    → Value V
+     --------------
+    → Normalise M
+
+normalise : ∀ {M A}
+  → ℕ
+  → ∅ ⊢ M ⦂ A
+    -----------
+  → Normalise M
+normalise {L} zero    ⊢L                   =  out-of-gas (L ∎) ⊢L
+normalise {L} (suc m) ⊢L with progress ⊢L
+...  | done VL                             =  normal (suc m) (L ∎) VL
+...  | step L⟹M with normalise m (preserve ⊢L L⟹M)
+...          | out-of-gas M⟹*N ⊢N        =  out-of-gas (L ⟹⟨ L⟹M ⟩ M⟹*N) ⊢N
+...          | normal n M⟹*V VV          =  normal n (L ⟹⟨ L⟹M ⟩ M⟹*V) VV
+\end{code}
+
+
+
 
 #### Exercise: 2 stars, recommended (subject_expansion_stlc)
 
@@ -390,8 +427,8 @@ Soundness′ : ∀ {M N A}
     -----------
   → ¬ (Stuck N)
 Soundness′ ⊢M (M ∎) ⟨ ¬M⟹N , ¬VM ⟩ with progress ⊢M
-... | steps M⟹N                     =  ¬M⟹N M⟹N
-... | done  VM                        =  ¬VM VM
+... | step M⟹N                      =  ¬M⟹N M⟹N
+... | done VM                         =  ¬VM VM
 Soundness′ ⊢L (L ⟹⟨ L⟹M ⟩ M⟹*N)  =  Soundness′ (preserve ⊢L L⟹M) M⟹*N
 \end{code}
 </div>
