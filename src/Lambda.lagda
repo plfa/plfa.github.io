@@ -262,15 +262,15 @@ The predicate `Value M` holds if term `M` is a value.
 \begin{code}
 data Value : Term → Set where
 
-  value-ƛ : ∀ {x N}
+  V-ƛ : ∀ {x N}
       ---------------
     → Value (ƛ x ⇒ N)
 
-  value-zero :
+  V-zero :
       -----------
       Value `zero
 
-  value-suc : ∀ {V}
+  V-suc : ∀ {V}
     → Value V
       --------------
     → Value (`suc V)
@@ -472,42 +472,42 @@ infix 4 _⟹_
 
 data _⟹_ : Term → Term → Set where
 
-  ξ·₁ : ∀ {L L′ M}
+  ξ-·₁ : ∀ {L L′ M}
     → L ⟹ L′
       -----------------
     → L · M ⟹ L′ · M
 
-  ξ·₂ : ∀ {V M M′}
+  ξ-·₂ : ∀ {V M M′}
     → Value V
     → M ⟹ M′
       -----------------
     → V · M ⟹ V · M′
 
-  βλ· : ∀ {x N V}
+  β-ƛ· : ∀ {x N V}
     → Value V
       ------------------------------
     → (ƛ x ⇒ N) · V ⟹ N [ x := V ]
 
-  ξsuc : ∀ {M M′}
+  ξ-suc : ∀ {M M′}
     → M ⟹ M′
       ------------------
     → `suc M ⟹ `suc M′
 
-  ξcase : ∀ {x L L′ M N}
+  ξ-case : ∀ {x L L′ M N}
     → L ⟹ L′    
       -----------------------------------------------------------------
     → `case L [zero⇒ M |suc x ⇒ N ] ⟹ `case L′ [zero⇒ M |suc x ⇒ N ]
 
-  βcase-zero : ∀ {x M N}
+  β-case-zero : ∀ {x M N}
       ----------------------------------------
     → `case `zero [zero⇒ M |suc x ⇒ N ] ⟹ M
 
-  βcase-suc : ∀ {x V M N}
+  β-case-suc : ∀ {x V M N}
     → Value V
       ---------------------------------------------------
     → `case `suc V [zero⇒ M |suc x ⇒ N ] ⟹ N [ x := V ]
 
-  βμ : ∀ {x M}
+  β-μ : ∀ {x M}
       ------------------------------
     → μ x ⇒ M ⟹ M [ x := μ x ⇒ M ]
 \end{code}
@@ -714,16 +714,16 @@ the rules for typing are written as follows.
     -------------- ⇒-E
     Γ ⊢ L · M ⦂ B
 
-    ------------- `ℕ-I₁
+    ------------- ℕ-I₁
     Γ ⊢ true ⦂ `ℕ
 
-    -------------- `ℕ-I₂
+    -------------- ℕ-I₂
     Γ ⊢ false ⦂ `ℕ
 
     Γ ⊢ L : `ℕ
     Γ ⊢ M ⦂ A
     Γ ⊢ N ⦂ A
-    -------------------------- `ℕ-E
+    -------------------------- ℕ-E
     Γ ⊢ if L then M else N ⦂ A
 
 As we will show later, the rules are deterministic, in that
@@ -791,12 +791,17 @@ data _⊢_⦂_ : Context → Term → Type → Set where
       ---------------
     → Γ ⊢ `suc M ⦂ `ℕ
 
-  `ℕ-E : ∀ {Γ L M x N A}
+  ℕ-E : ∀ {Γ L M x N A}
     → Γ ⊢ L ⦂ `ℕ
     → Γ ⊢ M ⦂ A
     → Γ , x ⦂ `ℕ ⊢ N ⦂ A
       --------------------------------------
     → Γ ⊢ `case L [zero⇒ M |suc x ⇒ N ] ⦂ A
+
+  Fix : ∀ {Γ x M A}
+    → Γ , x ⦂ A ⊢ M ⦂ A
+      ------------------
+    → Γ ⊢ μ x ⇒ M ⦂ A
 \end{code}
 
 ### Example type derivations
