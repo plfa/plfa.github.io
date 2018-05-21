@@ -116,23 +116,20 @@ Here are some example terms: the naturals two and four, the recursive
 definition of a function to naturals, and a term that computes
 two plus two.
 \begin{code}
-tm2 : Term
-tm2 = `suc `suc `zero
+two : Term
+two = `suc `suc `zero
 
-tm4 : Term
-tm4 =  `suc `suc `suc `suc `zero
-
-tm+ : Term
-tm+ =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+plus : Term
+plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
          `case # "m"
            [zero⇒ # "n"
            |suc "m" ⇒ `suc (# "+" · # "m" · # "n") ]
-
-tm2+2 : Term
-tm2+2 = tm+ · tm2 · tm2            
 \end{code}
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in Chapter [Natural](Naturals).
+Later we will confirm that two plus two is four, in other words
+
+    plus · two · two ⟹ `suc `suc `suc `suc `zero
 
 As a second example, we use higher-order functions to represent
 natural numbers.  In particular, the number _n_ is represented by a
@@ -142,21 +139,15 @@ naturals.  Similar to before, we define: the numerals two and four, a
 function to add numerals, a function to convert numerals to naturals,
 and a term that computes two plus two.
 \begin{code}
-ch2 : Term
-ch2 =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")
+twoᶜ : Term
+twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")
 
-ch4 : Term
-ch4 =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · (# "s" · (# "s" · # "z")))
-
-ch+ : Term
-ch+ =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
+plusᶜ : Term
+plusᶜ =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
          # "m" · # "s" · (# "n" · # "s" · # "z")
 
-chℕ : Term
-chℕ = ƛ "m" ⇒ # "m" · (ƛ "n" ⇒ `suc (# "n")) · `zero
-
-ch2+2 : Term
-ch2+2 = chℕ · (ch+ · ch2 · ch2)
+sucᶜ : Term
+sucᶜ = ƛ "n" ⇒ `suc (# "n")
 \end{code}
 Two takes two arguments `s` and `z`, and applies `s` twice to `z`;
 similarly for four.  Addition takes two numerals `m` and `n`, a
@@ -166,6 +157,10 @@ result of using `n` to apply `s` to `z`; hence `s` is applied `m` plus
 `n`.  The conversion function takes a numeral `n` and instantiates its
 first argument to the successor function and its second argument to
 zero.
+
+Again, later we will confirm that two plus two is four, in other words
+
+    plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⟹ `suc `suc `suc `suc `zero
 
 ### Formal vs informal
 
@@ -614,12 +609,83 @@ We can read this as follows.
 The names have been chosen to allow us to lay
 out example reductions in an appealing way.
 
-*(((REDUCTION EXAMPLES GO HERE, ONCE I CAN COMPUTE THEM)))*
 \begin{code}
+_ : plus · two · two ⟹* `suc `suc `suc `suc `zero
+_ =
+  begin
+    plus · two · two
+  ⟹⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+    (ƛ "m" ⇒ ƛ "n" ⇒ 
+      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+        · two · two
+  ⟹⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+    (ƛ "n" ⇒
+      `case two [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+         · two
+  ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+    `case two [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ]
+  ⟹⟨ β-case-suc (V-suc V-zero) ⟩
+    `suc (plus · `suc `zero · two)
+  ⟹⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+    `suc ((ƛ "m" ⇒ ƛ "n" ⇒ 
+      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+        · `suc `zero · two)
+  ⟹⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
+    `suc ((ƛ "n" ⇒ 
+      `case `suc `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+        · two)
+  ⟹⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+    `suc (`case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ])
+  ⟹⟨ ξ-suc (β-case-suc V-zero) ⟩
+    `suc `suc (plus · `zero · two)
+  ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+    `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒ 
+      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+        · `zero · two)
+  ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
+    `suc `suc ((ƛ "n" ⇒ 
+      `case `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+        · two)
+  ⟹⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
+    `suc `suc (`case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ])
+  ⟹⟨ ξ-suc (ξ-suc β-case-zero) ⟩
+    `suc (`suc (`suc (`suc `zero)))
+  ∎
 \end{code}
 
-Much of the above, though not all, can be filled in using C-c C-r and C-c C-s.
-
+\begin{code}
+_ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⟹* `suc `suc `suc `suc `zero
+_ =
+  begin
+    (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ # "m" · # "s" · (# "n" · # "s" · # "z"))
+      · twoᶜ · twoᶜ · sucᶜ · `zero
+  ⟹⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
+    (ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · # "s" · (# "n" · # "s" · # "z"))
+      · twoᶜ · sucᶜ · `zero
+  ⟹⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+    (ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · # "s" · (twoᶜ · # "s" · # "z")) · sucᶜ · `zero
+  ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+    (ƛ "z" ⇒ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · # "z")) · `zero
+  ⟹⟨ β-ƛ· V-zero ⟩
+    twoᶜ · sucᶜ · (twoᶜ · sucᶜ · `zero)
+  ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (twoᶜ · sucᶜ · `zero)
+  ⟹⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · ((ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · `zero)
+  ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (sucᶜ · (sucᶜ · `zero))
+  ⟹⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (sucᶜ · (`suc `zero))
+  ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (`suc `suc `zero)
+  ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+    sucᶜ · (sucᶜ · `suc `suc `zero)
+  ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+    sucᶜ · (`suc `suc `suc `zero)
+  ⟹⟨ β-ƛ· (V-suc (V-suc (V-suc V-zero))) ⟩
+   `suc (`suc (`suc (`suc `zero)))
+  ∎
+\end{code}
 
 ## Syntax of types
 
@@ -853,8 +919,8 @@ where `Γ₁ = ∅ , s ⦂ `ℕ ⇒ `ℕ` and `Γ₂ = ∅ , s ⦂ `ℕ ⇒ `ℕ
 Here is the above derivation formalised in Agda.
 
 \begin{code}
-⊢ch2 : ∅ ⊢ ch2 ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
-⊢ch2 = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))
+⊢twoᶜ : ∅ ⊢ twoᶜ ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+⊢twoᶜ = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))
   where
 
   s≢z : "s" ≢ "z"
@@ -865,14 +931,11 @@ Here is the above derivation formalised in Agda.
 \end{code}
 
 \begin{code}
-⊢tm2 : ∅ ⊢ tm2 ⦂ `ℕ
-⊢tm2 = ℕ-I₂ (ℕ-I₂ ℕ-I₁)
+⊢two : ∅ ⊢ two ⦂ `ℕ
+⊢two = ℕ-I₂ (ℕ-I₂ ℕ-I₁)
 
-⊢tm4 : ∅ ⊢ tm4 ⦂ `ℕ
-⊢tm4 = ℕ-I₂ (ℕ-I₂ (ℕ-I₂ (ℕ-I₂ ℕ-I₁)))
-
-⊢tm+ : ∅ ⊢ tm+ ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-⊢tm+ = Fix (⇒-I (⇒-I (ℕ-E (Ax ∋m) (Ax ∋n)
+⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
+⊢plus = Fix (⇒-I (⇒-I (ℕ-E (Ax ∋m) (Ax ∋n)
          (ℕ-I₂ (⇒-E (⇒-E (Ax ∋+) (Ax ∋m′)) (Ax ∋n′))))))
   where
   ∋+  = (S (λ()) (S (λ()) (S (λ()) Z)))
@@ -880,9 +943,6 @@ Here is the above derivation formalised in Agda.
   ∋n  = Z
   ∋m′ = Z
   ∋n′ = (S (λ()) Z)
-
-⊢tm2+2 : ∅ ⊢ tm2+2 ⦂ `ℕ
-⊢tm2+2 = ⇒-E (⇒-E ⊢tm+ ⊢tm2) ⊢tm2
 \end{code}
 
 Typing for the rest of the Church terms.
@@ -890,16 +950,8 @@ Typing for the rest of the Church terms.
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
 
-⊢ch4 : ∀ {A} → (∅ ⊢ ch4 ⦂ (Ch A))
-⊢ch4 = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s)
-                    (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))))
-  where
-  ∋s = S (λ()) Z
-  ∋z = Z
-                    
-
-⊢ch+ : ∀ {A} → ∅ ⊢ ch+ ⦂ Ch A ⇒ Ch A ⇒ Ch A
-⊢ch+ = ⇒-I (⇒-I (⇒-I (⇒-I (⇒-E (⇒-E (Ax ∋m) (Ax ∋s))
+⊢plusᶜ : ∀ {A} → ∅ ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
+⊢plusᶜ = ⇒-I (⇒-I (⇒-I (⇒-I (⇒-E (⇒-E (Ax ∋m) (Ax ∋s))
                              (⇒-E (⇒-E (Ax ∋n) (Ax ∋s)) (Ax ∋z))))))
   where
   ∋m = S (λ()) (S (λ()) (S (λ()) Z))
@@ -907,15 +959,10 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
   ∋s = S (λ()) Z
   ∋z = Z
 
-
-⊢chℕ : ∅ ⊢ chℕ ⦂ Ch `ℕ ⇒ `ℕ
-⊢chℕ = ⇒-I (⇒-E (⇒-E (Ax ∋m) (⇒-I (ℕ-I₂ (Ax ∋n)))) ℕ-I₁)
+⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
+⊢sucᶜ = ⇒-I (ℕ-I₂ (Ax ∋n))
   where
-  ∋m = Z
   ∋n = Z
-
-⊢ch2+2 : ∅ ⊢ ch2+2 ⦂ `ℕ
-⊢ch2+2 = ⇒-E (⊢chℕ) (⇒-E (⇒-E ⊢ch+ ⊢ch2) ⊢ch2)
 \end{code}
 
 
