@@ -1,5 +1,5 @@
 ---
-title     : "DeBruijn: Inherently typed DeBruijn representation"
+title     : "DeBruijn: Inherently typed De Bruijn representation"
 layout    : page
 permalink : /DeBruijn
 ---

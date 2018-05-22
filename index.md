@@ -22,7 +22,7 @@ fixes are encouraged.
 
 ## Part 1: Logical Foundations
 
-(This part is ready for review. Please send your comments!)
+(This part is ready for review. Please comment!)
 
   - [Naturals: Natural numbers](Naturals)
   - [Properties: Proof by induction](Properties)
@@ -39,20 +39,11 @@ fixes are encouraged.
 
 (This part is not yet ready for review.)
 
-  Old
-  - [Maps: Total and Partial Maps](Maps)
-  - [Stlc: The Simply Typed Lambda-Calculus](Stlc)
-  - [StlcProp: Properties of STLC](StlcProp)
-
-  In progress
-  - [FreshUnstuck: Generation of fresh names with strings](FreshUnstuck)
-  - [Typed: Raw terms with types (broken)](Typed)
-  - [TypedFresh: Raw terms with fresh names (broken)](TypedFresh)
-
-  New
-  - [Collections](Collections)
-  - [TypedDB: Typed DeBruijn representation](TypedDB)
+  - [Lambda: Lambda: Introduction to Lambda Calculus](Lambda)
+  - [LambdaProp: Properties of Simply-Typed Lambda Calculus](LambdaProp)
+  - [DeBruijn: Inherently typed De Bruijn representation](DeBruijn)
   - [Extensions: Extensions to simply-typed lambda calculus](Extensions)
+  - [Untyped: Untyped lambda calculus with full normalisation](Untyped)
 
 ## Backmatter
 

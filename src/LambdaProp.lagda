@@ -385,6 +385,233 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...          | normal n M⟹*V VV          =  normal n (L ⟹⟨ L⟹M ⟩ M⟹*V) VV
 \end{code}
 
+### Examples
+
+\begin{code}
+_ : normalise 100 ⊢four ≡
+  normal 88
+  ((μ "+" ⇒
+    (ƛ "m" ⇒
+     (ƛ "n" ⇒
+      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+      ])))
+   · `suc (`suc `zero)
+   · `suc (`suc `zero)
+   ⟹⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+   (ƛ "m" ⇒
+    (ƛ "n" ⇒
+     `case # "m" [zero⇒ # "n" |suc "m" ⇒
+     `suc
+     ((μ "+" ⇒
+       (ƛ "m" ⇒
+        (ƛ "n" ⇒
+         `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+         ])))
+      · # "m"
+      · # "n")
+     ]))
+   · `suc (`suc `zero)
+   · `suc (`suc `zero)
+   ⟹⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+   (ƛ "n" ⇒
+    `case `suc (`suc `zero) [zero⇒ # "n" |suc "m" ⇒
+    `suc
+    ((μ "+" ⇒
+      (ƛ "m" ⇒
+       (ƛ "n" ⇒
+        `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+        ])))
+     · # "m"
+     · # "n")
+    ])
+   · `suc (`suc `zero)
+   ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+   `case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+   `suc
+   ((μ "+" ⇒
+     (ƛ "m" ⇒
+      (ƛ "n" ⇒
+       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+       ])))
+    · # "m"
+    · `suc (`suc `zero))
+   ]
+   ⟹⟨ β-case-suc (V-suc V-zero) ⟩
+   `suc
+   ((μ "+" ⇒
+     (ƛ "m" ⇒
+      (ƛ "n" ⇒
+       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+       ])))
+    · `suc `zero
+    · `suc (`suc `zero))
+   ⟹⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+   `suc
+   ((ƛ "m" ⇒
+     (ƛ "n" ⇒
+      `case # "m" [zero⇒ # "n" |suc "m" ⇒
+      `suc
+      ((μ "+" ⇒
+        (ƛ "m" ⇒
+         (ƛ "n" ⇒
+          `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+          ])))
+       · # "m"
+       · # "n")
+      ]))
+    · `suc `zero
+    · `suc (`suc `zero))
+   ⟹⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
+   `suc
+   ((ƛ "n" ⇒
+     `case `suc `zero [zero⇒ # "n" |suc "m" ⇒
+     `suc
+     ((μ "+" ⇒
+       (ƛ "m" ⇒
+        (ƛ "n" ⇒
+         `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+         ])))
+      · # "m"
+      · # "n")
+     ])
+    · `suc (`suc `zero))
+   ⟹⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+   `suc
+   `case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+   `suc
+   ((μ "+" ⇒
+     (ƛ "m" ⇒
+      (ƛ "n" ⇒
+       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+       ])))
+    · # "m"
+    · `suc (`suc `zero))
+   ]
+   ⟹⟨ ξ-suc (β-case-suc V-zero) ⟩
+   `suc
+   (`suc
+    ((μ "+" ⇒
+      (ƛ "m" ⇒
+       (ƛ "n" ⇒
+        `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+        ])))
+     · `zero
+     · `suc (`suc `zero)))
+   ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+   `suc
+   (`suc
+    ((ƛ "m" ⇒
+      (ƛ "n" ⇒
+       `case # "m" [zero⇒ # "n" |suc "m" ⇒
+       `suc
+       ((μ "+" ⇒
+         (ƛ "m" ⇒
+          (ƛ "n" ⇒
+           `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+           ])))
+        · # "m"
+        · # "n")
+       ]))
+     · `zero
+     · `suc (`suc `zero)))
+   ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
+   `suc
+   (`suc
+    ((ƛ "n" ⇒
+      `case `zero [zero⇒ # "n" |suc "m" ⇒
+      `suc
+      ((μ "+" ⇒
+        (ƛ "m" ⇒
+         (ƛ "n" ⇒
+          `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+          ])))
+       · # "m"
+       · # "n")
+      ])
+     · `suc (`suc `zero)))
+   ⟹⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
+   `suc
+   (`suc
+    `case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+    `suc
+    ((μ "+" ⇒
+      (ƛ "m" ⇒
+       (ƛ "n" ⇒
+        `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (# "+" · # "m" · # "n")
+        ])))
+     · # "m"
+     · `suc (`suc `zero))
+    ])
+   ⟹⟨ ξ-suc (ξ-suc β-case-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
+  (V-suc (V-suc (V-suc (V-suc V-zero))))
+_ = refl
+\end{code}
+
+\begin{code}
+_ : normalise 100 ⊢fourᶜ ≡
+  normal 88
+  ((ƛ "m" ⇒
+    (ƛ "n" ⇒
+     (ƛ "s" ⇒ (ƛ "z" ⇒ # "m" · # "s" · (# "n" · # "s" · # "z")))))
+   · (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z")))
+   · (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z")))
+   · (ƛ "n" ⇒ `suc # "n")
+   · `zero
+   ⟹⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
+   (ƛ "n" ⇒
+    (ƛ "s" ⇒
+     (ƛ "z" ⇒
+      (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · # "s" ·
+      (# "n" · # "s" · # "z"))))
+   · (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z")))
+   · (ƛ "n" ⇒ `suc # "n")
+   · `zero
+   ⟹⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+   (ƛ "s" ⇒
+    (ƛ "z" ⇒
+     (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · # "s" ·
+     ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · # "s" · # "z")))
+   · (ƛ "n" ⇒ `suc # "n")
+   · `zero
+   ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+   (ƛ "z" ⇒
+    (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
+    ·
+    ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
+     · # "z"))
+   · `zero
+   ⟹⟨ β-ƛ· V-zero ⟩
+   (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
+   ·
+   ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
+    · `zero)
+   ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+   (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
+   ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
+    · `zero)
+   ⟹⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+   (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
+   ((ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
+    `zero)
+   ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
+   (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
+   ((ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · `zero))
+   ⟹⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
+   (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
+   ((ƛ "n" ⇒ `suc # "n") · `suc `zero)
+   ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
+   (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
+   `suc (`suc `zero)
+   ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+   (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · `suc (`suc `zero))
+   ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+   (ƛ "n" ⇒ `suc # "n") · `suc (`suc (`suc `zero)) ⟹⟨
+   β-ƛ· (V-suc (V-suc (V-suc V-zero))) ⟩
+   `suc (`suc (`suc (`suc `zero))) ∎)
+  (V-suc (V-suc (V-suc (V-suc V-zero))))
+_ = refl
+\end{code}
+
 
 
 
@@ -479,10 +706,10 @@ false, give a counterexample.
 Suppose instead that we add a new term `foo` with the following
 reduction rules:
 
-                 -------------------              (ST_Foo1)
+                 -------------------              (Foo₁)
                  (λ x ⇒ # x) ⟹ foo
 
-                    ------------                  (ST_Foo2)
+                    ------------                  (Foo₂)
                     foo ⟹ true
 
 Which of the following properties of the STLC remain true in
@@ -514,8 +741,8 @@ false, give a counterexample.
 Suppose instead that we add the following new rule to the
 reduction relation:
 
-        ----------------------------------        (ST_FunnyIfTrue)
-        (if true then t_1 else t_2) ⟹ true
+     ----------------------------------------      (FunnyCaseZero)
+     case zero [zero⇒ M |suc x ⇒ N ] ⟹ true
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -536,7 +763,7 @@ relation:
 
              Γ ⊢ L ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
              Γ ⊢ M ⦂ `ℕ
-             ------------------------------          (T_FunnyApp)
+             ------------------------------          (FunnyApp)
              Γ ⊢ L · M ⦂ `ℕ
 
 Which of the following properties of the STLC remain true in
@@ -558,7 +785,7 @@ relation:
 
                 Γ ⊢ L ⦂ `ℕ
                 Γ ⊢ M ⦂ `ℕ
-                ---------------------               (T_FunnyApp')
+                ---------------------               (FunnyApp')
                 Γ ⊢ L · M ⦂ `ℕ
 
 Which of the following properties of the STLC remain true in

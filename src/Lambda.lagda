@@ -23,12 +23,12 @@ syntax, small-step semantics, and typing rules.  The next chapter
 progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
 
-Readers should be warned up front: the approach we take here is
-_not_ our recommended approach to formalisation.  It turns out that
-using De Bruijn indices and inherently-typed terms, as we will do in
-Chapter [DeBruijn](DeBruijn), leads to a more compact formulation.
-Nonetheless, we begin with named variables, partly because such terms
-are easier to read and partly because the development is more traditional.
+Be aware that the approach we take here is _not_ our recommended
+approach to formalisation.  Using De Bruijn indices and
+inherently-typed terms, as we will do in Chapter [DeBruijn](DeBruijn),
+leads to a more compact formulation.  Nonetheless, we begin with named
+variables, partly because such terms are easier to read and partly
+because the development is more traditional.
 
 The development in this chapter was inspired by the corresponding
 development in Chapter STLC of _Software Foundations_.  We differ by
@@ -131,12 +131,18 @@ plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
          `case # "m"
            [zero⇒ # "n"
            |suc "m" ⇒ `suc (# "+" · # "m" · # "n") ]
+
+four : Term
+four = plus · two · two
 \end{code}
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in Chapter [Natural](Naturals).
-Later we will confirm that two plus two is four, in other words
+Later we will confirm that two plus two is four, in other words that
+the term
 
-    plus · two · two ⟹ `suc `suc `suc `suc `zero
+    plus · two · two
+
+reduces to `` `suc `suc `suc `suc `zero ``.
 
 As a second example, we use higher-order functions to represent
 natural numbers.  In particular, the number _n_ is represented by a
@@ -155,6 +161,9 @@ plusᶜ =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
 
 sucᶜ : Term
 sucᶜ = ƛ "n" ⇒ `suc (# "n")
+
+fourᶜ : Term
+fourᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
 Two takes two arguments `s` and `z`, and applies `s` twice to `z`;
 similarly for four.  Addition takes two numerals `m` and `n`, a
@@ -163,11 +172,12 @@ result of using `n` to apply `s` to `z`; hence `s` is applied `m` plus
 `n` times to `z`, yielding the Church numeral for the sum of `m` and
 `n`.  The conversion function takes a numeral `n` and instantiates its
 first argument to the successor function and its second argument to
-zero.
+zero. Again, later we will confirm that two plus two is four,
+in other words that the term
 
-Again, later we will confirm that two plus two is four, in other words
+    plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 
-    plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⟹ `suc `suc `suc `suc `zero
+reduces to `` `suc `suc `suc `suc `zero ``.
 
 ### Formal vs informal
 
@@ -617,7 +627,7 @@ The names have been chosen to allow us to lay
 out example reductions in an appealing way.
 
 \begin{code}
-_ : plus · two · two ⟹* `suc `suc `suc `suc `zero
+_ : four ⟹* `suc `suc `suc `suc `zero
 _ =
   begin
     plus · two · two
@@ -661,7 +671,7 @@ _ =
 \end{code}
 
 \begin{code}
-_ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⟹* `suc `suc `suc `suc `zero
+_ : fourᶜ ⟹* `suc `suc `suc `suc `zero
 _ =
   begin
     (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ # "m" · # "s" · (# "n" · # "s" · # "z"))
@@ -901,32 +911,35 @@ Derivation of for the Church numeral two:
 
     ∋s                        ∋s                          ∋z
     ------------------- Ax    ------------------- Ax     --------------- Ax
-    Γ₂ ⊢ # "s" ⦂ `ℕ ⇒ `ℕ        Γ₂ ⊢ # "s" ⦂ `ℕ ⇒ `ℕ         Γ₂ ⊢ # "z" ⦂ `ℕ
+    Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" ⦂ A ⇒ A         Γ₂ ⊢ # "z" ⦂ A
     ------------------- Ax    ------------------------------------------ ⇒-E
-    Γ₂ ⊢ # "s" ⦂ `ℕ ⇒ `ℕ        Γ₂ ⊢ # "s" · # "z" ⦂ `ℕ
+    Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" · # "z" ⦂ A
     --------------------------------------------------  ⇒-E
-    Γ₂ ⊢ # "s" · (# "s" · # "z") ⦂ `ℕ
+    Γ₂ ⊢ # "s" · (# "s" · # "z") ⦂ A
     ---------------------------------------------- ⇒-I
-    Γ₁ ⊢ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ `ℕ ⇒ `ℕ
+    Γ₁ ⊢ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
     ---------------------------------------------------------- ⇒-I
-    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ `ℕ ⇒ `ℕ
+    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
 
 Where `∋s` and `∋z` abbreviate the two derivations:
 
 
                  ---------------- Z           
-    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ B ⇒ B          
+    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
     ----------------------------- S        ------------- Z  
-    Γ₂ ∋ "s" ⦂ B ⇒ B                       Γ₂ ∋ "z" ⦂ `ℕ
+    Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
 
-where `Γ₁ = ∅ , s ⦂ `ℕ ⇒ `ℕ` and `Γ₂ = ∅ , s ⦂ `ℕ ⇒ `ℕ , z ⦂ `ℕ`.
+where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
 
 *((( possibly add another example, for plus )))*
 
 Here is the above derivation formalised in Agda.
 
 \begin{code}
-⊢twoᶜ : ∅ ⊢ twoᶜ ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+Ch : Type → Type
+Ch A = (A ⇒ A) ⇒ A ⇒ A
+
+⊢twoᶜ : ∀ {A} → ∅ ⊢ twoᶜ ⦂ Ch A
 ⊢twoᶜ = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))
   where
 
@@ -937,6 +950,7 @@ Here is the above derivation formalised in Agda.
   ∋z = Z
 \end{code}
 
+Typing for the first example.
 \begin{code}
 ⊢two : ∅ ⊢ two ⦂ `ℕ
 ⊢two = ℕ-I₂ (ℕ-I₂ ℕ-I₁)
@@ -950,13 +964,13 @@ Here is the above derivation formalised in Agda.
   ∋n  = Z
   ∋m′ = Z
   ∋n′ = (S (λ()) Z)
+
+⊢four : ∅ ⊢ four ⦂ `ℕ
+⊢four = ⇒-E (⇒-E ⊢plus ⊢two) ⊢two
 \end{code}
 
-Typing for the rest of the Church terms.
+Typing for the rest of the Church example.
 \begin{code}
-Ch : Type → Type
-Ch A = (A ⇒ A) ⇒ A ⇒ A
-
 ⊢plusᶜ : ∀ {A} → ∅ ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⇒-I (⇒-I (⇒-I (⇒-I (⇒-E (⇒-E (Ax ∋m) (Ax ∋s))
                              (⇒-E (⇒-E (Ax ∋n) (Ax ∋s)) (Ax ∋z))))))
@@ -970,6 +984,9 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ⊢sucᶜ = ⇒-I (ℕ-I₂ (Ax ∋n))
   where
   ∋n = Z
+
+⊢fourᶜ : ∅ ⊢ plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⦂ `ℕ
+⊢fourᶜ = ⇒-E (⇒-E (⇒-E (⇒-E ⊢plusᶜ ⊢twoᶜ) ⊢twoᶜ) ⊢sucᶜ) ℕ-I₁
 \end{code}
 
 
