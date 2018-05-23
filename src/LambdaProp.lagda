@@ -301,7 +301,7 @@ way.
 subst : ∀ {Γ x N V A B}
   → Γ , x ⦂ A ⊢ N ⦂ B
   → ∅ ⊢ V ⦂ A
-    -----------------------
+    --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
 
 subst {x = y} (Ax {x = x} Z) ⊢V with x ≟ y

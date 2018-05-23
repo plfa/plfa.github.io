@@ -43,6 +43,7 @@ fixes are encouraged.
   - [LambdaProp: Properties of Simply-Typed Lambda Calculus](LambdaProp)
   - [DeBruijn: Inherently typed De Bruijn representation](DeBruijn)
   - [Extensions: Extensions to simply-typed lambda calculus](Extensions)
+  - [Inference: Bidirectional type inference](Inference)
   - [Untyped: Untyped lambda calculus with full normalisation](Untyped)
 
 ## Backmatter

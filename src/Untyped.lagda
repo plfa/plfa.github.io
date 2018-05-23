@@ -32,129 +32,94 @@ open import Relation.Nullary.Product using (_×-dec_)
 ## Syntax
 
 \begin{code}
-infixl 6 _,_
-infix  4 _⊢_
-infix  4 _∋_
-infixr 5 _⇒_
-infixl 5 _·_
-infix  6 S_
-infix  4 ƛ_
+infix  6  ƛ_
+infixl 7  _·_
 
-data Type : Set where
-  o   : Type
-  _⇒_ : Type → Type → Type
+data Fin : ℕ → Set where
 
-data Env : Set where
-  ε   : Env
-  _,_ : Env → Type → Env
+  Z : ∀ {n}
+     -----------
+   → Fin (suc n)
 
-data _∋_ : Env → Type → Set where
+  S_ : ∀ {n}
+    → Fin n
+      -----------
+    → Fin (suc n)
 
-  Z : ∀ {Γ} {A} →
-    ------------
-    Γ , A ∋ A
+data Term : ℕ → Set where
 
-  S_ : ∀ {Γ} {A B} →
-    Γ ∋ B →
-    -----------
-    Γ , A ∋ B
+  ⌊_⌋ : ∀ {n}
+    → Fin n
+      ------
+    → Term n
 
-data _⊢_ : Env → Type → Set where
+  ƛ_  :  ∀ {n}
+    → Term (suc n)
+      ------------
+    → Term n
 
-  ⌊_⌋ : ∀ {Γ} {A} →
-    Γ ∋ A →
-    -------
-    Γ ⊢ A
+  _·_ : ∀ {n}
+    → Term n
+    → Term n
+      ------
+    → Term n
+\end{code}
 
-  ƛ_  :  ∀ {Γ} {A B} →
-    Γ , A ⊢ B →
-    ------------
-    Γ ⊢ A ⇒ B
+## Writing variables as numerals
 
-  _·_ : ∀ {Γ} {A B} →
-    Γ ⊢ A ⇒ B →
-    Γ ⊢ A →
-    ------------
-    Γ ⊢ B
+\begin{code}
+#_ : ∀ {n} → ℕ → Term n
+#_ {n} m  =  ⌊ h n m ⌋
+  where
+  h : ∀ n → ℕ → Fin n
+  h zero    _        =  ⊥-elim impossible
+    where postulate impossible : ⊥
+  h (suc n) 0        =  Z
+  h (suc n) (suc m)  =  S (h n m)
 \end{code}
 
 ## Test examples
 
 \begin{code}
-Ch : Type
-Ch = (o ⇒ o) ⇒ o ⇒ o
-
-plus : ∀ {Γ} → Γ ⊢ Ch ⇒ Ch ⇒ Ch
+plus : ∀ {n} → Term n
 plus = ƛ ƛ ƛ ƛ ⌊ S S S Z ⌋ · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)
 
-two : ∀ {Γ} → Γ ⊢ Ch
+two : ∀ {n} → Term n
 two = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)
 
-four : ∀ {Γ} → Γ ⊢ Ch
+four : ∀ {n} → Term n
 four = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-
-four′ : ∀ {Γ} → Γ ⊢ Ch
-four′ = plus · two · two
 \end{code}
-
-# Denotational semantics
-
-\begin{code}
-⟦_⟧ᵀ : Type → Set
-⟦ o ⟧ᵀ      =  ℕ
-⟦ A ⇒ B ⟧ᵀ  =  ⟦ A ⟧ᵀ → ⟦ B ⟧ᵀ
-
-⟦_⟧ᴱ : Env → Set
-⟦ ε ⟧ᴱ      =  ⊤
-⟦ Γ , A ⟧ᴱ  =  ⟦ Γ ⟧ᴱ × ⟦ A ⟧ᵀ
-
-⟦_⟧ⱽ : ∀ {Γ : Env} {A : Type} → Γ ∋ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ Z ⟧ⱽ   ⟨ ρ , v ⟩ = v
-⟦ S n ⟧ⱽ ⟨ ρ , v ⟩ = ⟦ n ⟧ⱽ ρ
-
-⟦_⟧ : ∀ {Γ : Env} {A : Type} → Γ ⊢ A → ⟦ Γ ⟧ᴱ → ⟦ A ⟧ᵀ
-⟦ ⌊ n ⌋ ⟧ ρ  =  ⟦ n ⟧ⱽ ρ
-⟦ ƛ N   ⟧ ρ  =  λ{ v → ⟦ N ⟧ ⟨ ρ , v ⟩ }
-⟦ L · M ⟧ ρ  =  (⟦ L ⟧ ρ) (⟦ M ⟧ ρ)
-
-_ : ⟦ four ⟧ tt ≡ ⟦ four′ ⟧ tt
-_ = refl
-
-_ : ⟦ four ⟧ tt suc zero ≡ 4
-_ = refl
-\end{code}
-
-## Operational semantics - with simultaneous substitution, a la McBride
 
 ## Renaming
 
 \begin{code}
-rename : ∀ {Γ Δ} → (∀ {C} → Γ ∋ C → Δ ∋ C) → (∀ {C} → Γ ⊢ C → Δ ⊢ C)
-rename ρ (⌊ n ⌋)                   =  ⌊ ρ n ⌋
-rename {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (rename {Γ , A} {Δ , A} ρ′ N)
+rename : ∀ {m n} → (Fin m → Fin n) → (Term m → Term n)
+rename ρ ⌊ k ⌋            =  ⌊ ρ k ⌋
+rename {m} {n} ρ (ƛ N)    =  ƛ (rename {suc m} {suc n} ρ′ N)
   where
-  ρ′ : ∀ {C} → Γ , A ∋ C → Δ , A ∋ C
+  ρ′ : Fin (suc m) → Fin (suc n)
   ρ′ Z      =  Z
   ρ′ (S k)  =  S (ρ k)
-rename ρ (L · M)                   =  (rename ρ L) · (rename ρ M)
+rename ρ (L · M)           =  (rename ρ L) · (rename ρ M)
 \end{code}
 
 ## Substitution
 
 \begin{code}
-subst : ∀ {Γ Δ} → (∀ {C} → Γ ∋ C → Δ ⊢ C) → (∀ {C} → Γ ⊢ C → Δ ⊢ C)
-subst ρ (⌊ k ⌋)                   =  ρ k
-subst {Γ} {Δ} ρ (ƛ_ {A = A} N)    =  ƛ (subst {Γ , A} {Δ , A} ρ′ N)
+subst : ∀ {m n} → (Fin m → Term n) → (Term m → Term n)
+subst ρ ⌊ k ⌋                =  ρ k
+subst {m} {n} ρ (ƛ N)        =  ƛ (subst {suc m} {suc n} ρ′ N)
   where
-  ρ′ : ∀ {C} → Γ , A ∋ C → Δ , A ⊢ C
+  ρ′ : Fin (suc m) → Term (suc n)
   ρ′ Z      =  ⌊ Z ⌋
-  ρ′ (S k)  =  rename {Δ} {Δ , A} S_ (ρ k)
-subst ρ (L · M)                   =  (subst ρ L) · (subst ρ M)
+  ρ′ (S k)  =  rename {n} {suc n} S_ (ρ k)
+subst ρ (L · M)               =  (subst ρ L) · (subst ρ M)
 
-substitute : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
-substitute {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
+substitute : ∀ {n} → Term (suc n) → Term n → Term n
+substitute {n} N M  =  subst {suc n} {n} ρ N
   where
-  ρ : ∀ {C} → Γ , A ∋ C → Γ ⊢ C
+  ρ : Fin (suc n) → Term n
   ρ Z      =  M
   ρ (S k)  =  ⌊ k ⌋
 \end{code}
@@ -162,16 +127,16 @@ substitute {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
 ## Normal
 
 \begin{code}
-data Normal  : ∀ {Γ} {A} → Γ ⊢ A → Set
-data Neutral : ∀ {Γ} {A} → Γ ⊢ A → Set
+data Normal  : ∀ {n} → Term n → Set
+data Neutral : ∀ {n} → Term n → Set
 
 data Normal where
-  ƛ_  : ∀ {Γ} {A B} {N : Γ , A ⊢ B} → Normal N → Normal (ƛ N)
-  ⌈_⌉ : ∀ {Γ} {A} {M : Γ ⊢ A} → Neutral M → Normal M
+  ƛ_ : ∀ {n} {N : Term (suc n)} → Normal N → Normal (ƛ N)
+  ⌈_⌉ : ∀ {n} {M : Term n} → Neutral M → Normal M
 
 data Neutral where
-  ⌊_⌋   : ∀ {Γ} {A} → (n : Γ ∋ A) → Neutral ⌊ n ⌋
-  _·_  : ∀ {Γ} {A B} → {L : Γ ⊢ A ⇒ B} {M : Γ ⊢ A} → Neutral L → Normal M → Neutral (L · M)
+  ⌊_⌋   : ∀ {n} → (k : Fin n) → Neutral ⌊ k ⌋
+  _·_  : ∀ {n} → {L : Term n} {M : Term n} → Neutral L → Normal M → Neutral (L · M)
 \end{code}
 
 ## Reduction step
@@ -179,28 +144,28 @@ data Neutral where
 \begin{code}
 infix 2 _⟶_
 
-data _⟶_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
+data _⟶_ : ∀ {n} → Term n → Term n → Set where
 
-  ξ₁ : ∀ {Γ} {A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A} →
-    L ⟶ L′ →
-    -----------------
-    L · M ⟶ L′ · M
+  ξ₁ : ∀ {n} {L L′ M : Term n}
+    → L ⟶ L′
+      -----------------
+    → L · M ⟶ L′ · M
 
-  ξ₂ : ∀ {Γ} {A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A} →
-    Normal V →
-    M ⟶ M′ →
-    ----------------
-    V · M ⟶ V · M′
+  ξ₂ : ∀ {n} {V M M′ : Term n}
+    → Normal V
+    → M ⟶ M′
+      ----------------
+    → V · M ⟶ V · M′
 
-  ζ : ∀ {Γ} {A B} {N N′ : Γ , A ⊢ B} →
-    N ⟶ N′ →
-    ------------
-    ƛ N ⟶ ƛ N′
+  ζ : ∀ {n} {N N′ : Term (suc n)}
+    → N ⟶ N′
+      -----------
+    → ƛ N ⟶ ƛ N′
 
-  β : ∀ {Γ} {A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A} → 
-    Normal W →
-    ----------------------------
-    (ƛ N) · W ⟶ substitute N W
+  β : ∀ {n} {N : Term (suc n)} {V : Term n}
+    → Normal V
+      ----------------------------
+    → (ƛ N) · V ⟶ substitute N V
 \end{code}
 
 ## Reflexive and transitive closure
@@ -211,19 +176,19 @@ infix 1 begin_
 infixr 2 _⟶⟨_⟩_
 infix 3 _∎
 
-data _⟶*_ : ∀ {Γ} {A} → Γ ⊢ A → Γ ⊢ A → Set where
+data _⟶*_ : ∀ {n} → Term n → Term n → Set where
 
-  _∎ : ∀ {Γ} {A} (M : Γ ⊢ A) →
-    -------------
-    M ⟶* M
+  _∎ : ∀ {n} (M : Term n)
+      ---------------------
+    → M ⟶* M
 
-  _⟶⟨_⟩_ : ∀ {Γ} {A} (L : Γ ⊢ A) {M N : Γ ⊢ A} →
-    L ⟶ M →
-    M ⟶* N →
-    ---------
-    L ⟶* N
+  _⟶⟨_⟩_ : ∀ {n} (L : Term n) {M N : Term n}
+    → L ⟶ M
+    → M ⟶* N
+      ---------
+    → L ⟶* N
 
-begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A} → (M ⟶* N) → (M ⟶* N)
+begin_ : ∀ {n} {M N : Term n} → (M ⟶* N) → (M ⟶* N)
 begin M⟶*N = M⟶*N
 \end{code}
 
@@ -231,26 +196,26 @@ begin M⟶*N = M⟶*N
 ## Example reduction sequences
 
 \begin{code}
-id : ∀ (A : Type) → ε ⊢ A ⇒ A
-id A = ƛ ⌊ Z ⌋
+id : Term zero
+id = ƛ ⌊ Z ⌋
 
-_ : id (o ⇒ o) · id o  ⟶* id o
+_ : id · id  ⟶* id
 _ =
   begin
     (ƛ ⌊ Z ⌋) · (ƛ ⌊ Z ⌋)
   ⟶⟨ β (ƛ ⌈ ⌊ Z ⌋ ⌉) ⟩
-    ƛ ⌊ Z ⌋
+    (ƛ ⌊ Z ⌋)
   ∎
 
-
-_ : four′ {ε} ⟶* four {ε}
+_ : plus {zero} · two · two ⟶* four
 _ =
   begin
     plus · two · two
-  ⟶⟨ ξ₁ (β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉))) ⟩
+  ⟶⟨ ξ₁ (β (ƛ ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
     (ƛ ƛ ƛ two · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
   ⟶⟨ ξ₁ (ζ (ζ (ζ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
-    (ƛ ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
+    (ƛ ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
+      (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
   ⟶⟨ ξ₁ (ζ (ζ (ζ (β ⌈ (⌊ S (S Z) ⌋ · ⌈ ⌊ S Z ⌋ ⌉) · ⌈ ⌊ Z ⌋ ⌉ ⌉)))) ⟩
     (ƛ ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))) · two
   ⟶⟨ β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
@@ -266,11 +231,11 @@ _ =
 ## Progress
 
 \begin{code}
-data Progress {Γ A} (M : Γ ⊢ A) : Set where
-  step : ∀ (N : Γ ⊢ A) → M ⟶ N → Progress M
+data Progress {n} (M : Term n) : Set where
+  step : ∀ (N : Term n) → M ⟶ N → Progress M
   done : Normal M → Progress M
 
-progress : ∀ {Γ} {A} → (M : Γ ⊢ A) → Progress M
+progress : ∀ {n} → (M : Term n) → Progress M
 progress ⌊ x ⌋                                                  =  done ⌈ ⌊ x ⌋ ⌉
 progress (ƛ N)       with progress N
 progress (ƛ N)          | step N′ r                             =  step (ƛ N′) (ζ r)
@@ -287,17 +252,77 @@ progress ((ƛ V) · W)    | done (ƛ NmV)    | done NmW            =  step (subs
 ## Normalise
 
 \begin{code}
-data Normalise {Γ A} (M : Γ ⊢ A) : Set where
-  out-of-gas : Normalise M
-  normal : ∀ (N : Γ ⊢ A) → Normal N → M ⟶* N → Normalise M
+Gas : Set
+Gas = ℕ
 
-normalise : ∀ {Γ} {A} → ℕ → (M : Γ ⊢ A) → Normalise M
-normalise zero    L                                                =  out-of-gas
-normalise (suc n) L with progress L
-...                    | done NmL                                  =  normal L NmL (L ∎)
-...                    | step M L⟶M with normalise n M
-...                                      | out-of-gas              =  out-of-gas
-...                                      | normal N NmN M⟶*N     =  normal N NmN (L ⟶⟨ L⟶M ⟩ M⟶*N)
+data Normalise {n} (M : Term n) : Set where
+
+  out-of-gas : ∀ {N : Term n}
+    → M ⟶* N
+      -------------
+    → Normalise M
+
+  normal : ∀ {N : Term n}
+    → Gas
+    → M ⟶* N
+    → Normal N
+     --------------
+    → Normalise M
+
+normalise : ∀ {n}
+  → Gas
+  → ∀ (M : Term n)
+    -------------
+  → Normalise M
+normalise zero    L                       =  out-of-gas (L ∎)
+normalise (suc g) L with progress L
+...  | done VL                            =  normal (suc g) (L ∎) VL
+...  | step M L⟶M with normalise g M
+...          | out-of-gas M⟶*N           =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N)
+...          | normal h M⟶*N VN          =  normal h (L ⟶⟨ L⟶M ⟩ M⟶*N) VN
 \end{code}
 
-
+\begin{code}
+_ : normalise 100 (plus {zero} · two · two) ≡
+  normal 94
+  ((ƛ
+    (ƛ
+     (ƛ
+      (ƛ ⌊ S (S (S Z)) ⌋ · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)))))
+   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+   ⟶⟨ ξ₁ (β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉))) ⟩
+   (ƛ
+    (ƛ
+     (ƛ
+      (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ ·
+      (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))
+   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+   ⟶⟨ ξ₁ (ζ (ζ (ζ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+   (ƛ
+    (ƛ
+     (ƛ
+      (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
+      (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))
+   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+   ⟶⟨ ξ₁ (ζ (ζ (ζ (β ⌈ ⌊ S (S Z) ⌋ · ⌈ ⌊ S Z ⌋ ⌉ · ⌈ ⌊ Z ⌋ ⌉ ⌉)))) ⟩
+   (ƛ (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))) ·
+   (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+   ⟶⟨ β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
+   ƛ
+   (ƛ
+    ⌊ S Z ⌋ ·
+    (⌊ S Z ⌋ ·
+     ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋)))
+   ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+   ƛ
+   (ƛ
+    ⌊ S Z ⌋ ·
+    (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋)))
+   ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (β ⌈ ⌊ Z ⌋ ⌉)))) ⟩
+   ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))) ∎)
+  (ƛ
+   (ƛ
+    ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉ ⌉ ⌉))
+_ = refl
+\end{code}
