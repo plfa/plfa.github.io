@@ -11,8 +11,6 @@ untyped rather than simply-typed; uses terms that are inherently-scoped
 rather than weak head-normal form; and uses call-by-name rather than
 call-by-value order of reduction.
 
-*(((Need to update from call-by-value to call-by-name)))*
-
 ## Imports
 
 \begin{code}
@@ -122,8 +120,8 @@ subst {m} {n} ρ (ƛ N)        =  ƛ (subst {suc m} {suc n} ρ′ N)
   ρ′ (S k)  =  rename {n} {suc n} S_ (ρ k)
 subst ρ (L · M)               =  (subst ρ L) · (subst ρ M)
 
-substitute : ∀ {n} → Term (suc n) → Term n → Term n
-substitute {n} N M  =  subst {suc n} {n} ρ N
+_[_] : ∀ {n} → Term (suc n) → Term n → Term n
+_[_] {n} N M  =  subst {suc n} {n} ρ N
   where
   ρ : Var (suc n) → Term n
   ρ Z      =  M
@@ -150,28 +148,42 @@ data Neutral where
 \begin{code}
 infix 2 _⟶_
 
+data App : ∀ {n} → Term n → Set where
+  app : ∀ {n}
+    → {L : Term n}
+    → {M : Term n}
+      ------------
+    → App (L · M)
+
 data _⟶_ : ∀ {n} → Term n → Term n → Set where
 
   ξ₁ : ∀ {n} {L L′ M : Term n}
+    → App L
     → L ⟶ L′
-      -----------------
+      ----------------
     → L · M ⟶ L′ · M
 
-  ξ₂ : ∀ {n} {V M M′ : Term n}
-    → Normal V
+{-
+  ξ₁ : ∀ {n} {L M LM′ N : Term n}
+    → L · M ⟶ LM′
+      ---------------------
+    → L · M · N ⟶ LM′ · N
+-}
+
+  ξ₂ : ∀ {n} {L M M′ : Term n}
+    → Neutral L
     → M ⟶ M′
       ----------------
-    → V · M ⟶ V · M′
+    → L · M ⟶ L · M′
+
+  β : ∀ {n} {N : Term (suc n)} {M : Term n}
+      -------------------------------------
+    → (ƛ N) · M ⟶ N [ M ]
 
   ζ : ∀ {n} {N N′ : Term (suc n)}
     → N ⟶ N′
       -----------
     → ƛ N ⟶ ƛ N′
-
-  β : ∀ {n} {N : Term (suc n)} {V : Term n}
-    → Normal V
-      ----------------------------
-    → (ƛ N) · V ⟶ substitute N V
 \end{code}
 
 ## Reflexive and transitive closure
@@ -209,27 +221,26 @@ _ : id · id  ⟶* id
 _ =
   begin
     (ƛ ⌊ Z ⌋) · (ƛ ⌊ Z ⌋)
-  ⟶⟨ β (ƛ ⌈ ⌊ Z ⌋ ⌉) ⟩
-    (ƛ ⌊ Z ⌋)
+  ⟶⟨ β ⟩
+    ƛ ⌊ Z ⌋
   ∎
 
 _ : plus {zero} · two · two ⟶* four
 _ =
   begin
     plus · two · two
-  ⟶⟨ ξ₁ (β (ƛ ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
+  ⟶⟨ ξ₁ app β ⟩
     (ƛ ƛ ƛ two · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
-  ⟶⟨ ξ₁ (ζ (ζ (ζ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
-    (ƛ ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
-      (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
-  ⟶⟨ ξ₁ (ζ (ζ (ζ (β ⌈ (⌊ S (S Z) ⌋ · ⌈ ⌊ S Z ⌋ ⌉) · ⌈ ⌊ Z ⌋ ⌉ ⌉)))) ⟩
-    (ƛ ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))) · two
-  ⟶⟨ β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
-    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
-  ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+  ⟶⟨ β ⟩
+    ƛ ƛ two · ⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)
+  ⟶⟨ ζ (ζ (ξ₁ app β)) ⟩
+    ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)
+  ⟶⟨ ζ (ζ β) ⟩
+    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋))
+  ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ app β)))) ⟩
     ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋))
-  ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (β ⌈ ⌊ Z ⌋ ⌉)))) ⟩
-    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+  ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ β))) ⟩
+   ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))))
   ∎
 \end{code}
 
@@ -238,20 +249,31 @@ _ =
 
 \begin{code}
 data Progress {n} (M : Term n) : Set where
-  step : ∀ (N : Term n) → M ⟶ N → Progress M
-  done : Normal M → Progress M
+
+  step : ∀ {N : Term n}
+    → M ⟶ N
+      ----------
+    → Progress M
+
+  done :
+      Normal M
+      ----------
+    → Progress M
 
 progress : ∀ {n} → (M : Term n) → Progress M
-progress ⌊ x ⌋                                                  =  done ⌈ ⌊ x ⌋ ⌉
-progress (ƛ N)       with progress N
-progress (ƛ N)          | step N′ r                             =  step (ƛ N′) (ζ r)
-progress (ƛ V)          | done NmV                              =  done (ƛ NmV)
-progress (L · M)     with progress L
-progress (L · M)        | step L′ r                             =  step (L′ · M) (ξ₁ r)
-progress (V · M)        | done NmV     with progress M
-progress (V · M)        | done NmV        | step M′ r           =  step (V · M′) (ξ₂ NmV r)
-progress (V · W)        | done ⌈ NeV ⌉    | done NmW            =  done ⌈ NeV · NmW ⌉
-progress ((ƛ V) · W)    | done (ƛ NmV)    | done NmW            =  step (substitute V W) (β NmW)
+progress ⌊ x ⌋                                 =  done ⌈ ⌊ x ⌋ ⌉
+progress (ƛ N)  with  progress N
+... | step N⟶N′                              =  step (ζ N⟶N′)
+... | done Nⁿ                                  =  done (ƛ Nⁿ)
+progress (⌊ x ⌋ · M) with progress M
+... | step M⟶M′                              =  step (ξ₂ ⌊ x ⌋ M⟶M′)
+... | done Mⁿ                                  =  done ⌈ ⌊ x ⌋ · Mⁿ ⌉
+progress ((ƛ N) · M)                           =  step β
+progress (L@(_ · _) · M) with progress L
+... | step L⟶L′                              =  step (ξ₁ app L⟶L′)
+... | done ⌈ Lᵘ ⌉ with progress M
+...    | step M⟶M′                           =  step (ξ₂ Lᵘ M⟶M′)
+...    | done Mⁿ                               =  done ⌈ Lᵘ · Mⁿ ⌉
 \end{code}
 
 
@@ -280,16 +302,16 @@ normalise : ∀ {n}
   → ∀ (M : Term n)
     -------------
   → Normalise M
-normalise zero    L                       =  out-of-gas (L ∎)
+normalise zero L                         =  out-of-gas (L ∎)
 normalise (suc g) L with progress L
-...  | done VL                            =  normal (suc g) (L ∎) VL
-...  | step M L⟶M with normalise g M
-...          | out-of-gas M⟶*N           =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N)
-...          | normal h M⟶*N VN          =  normal h (L ⟶⟨ L⟶M ⟩ M⟶*N) VN
+... | done Lⁿ                            =  normal (suc g) (L ∎) Lⁿ
+... | step {M} L⟶M with normalise g M
+...     | out-of-gas M⟶*N              =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N)
+...     | normal g′ M⟶*N Nⁿ            =  normal g′ (L ⟶⟨ L⟶M ⟩ M⟶*N) Nⁿ
 \end{code}
 
 \begin{code}
-_ : normalise 100 (plus {zero} · two · two) ≡
+_ : normalise 100 (plus {zero} · two · two) ≡ 
   normal 94
   ((ƛ
     (ƛ
@@ -297,35 +319,35 @@ _ : normalise 100 (plus {zero} · two · two) ≡
       (ƛ ⌊ S (S (S Z)) ⌋ · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)))))
    · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
    · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ξ₁ (β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉))) ⟩
+   ⟶⟨ ξ₁ app β ⟩
    (ƛ
     (ƛ
      (ƛ
       (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ ·
       (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))
    · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ξ₁ (ζ (ζ (ζ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+   ⟶⟨ β ⟩
+   ƛ
    (ƛ
-    (ƛ
-     (ƛ
-      (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
-      (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))
-   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ξ₁ (ζ (ζ (ζ (β ⌈ ⌊ S (S Z) ⌋ · ⌈ ⌊ S Z ⌋ ⌉ · ⌈ ⌊ Z ⌋ ⌉ ⌉)))) ⟩
-   (ƛ (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))) ·
-   (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ β (ƛ (ƛ ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉)) ⟩
+    (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ ·
+    ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
+   ⟶⟨ ζ (ζ (ξ₁ app β)) ⟩
+   ƛ
+   (ƛ
+    (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
+    ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
+   ⟶⟨ ζ (ζ β) ⟩
    ƛ
    (ƛ
     ⌊ S Z ⌋ ·
     (⌊ S Z ⌋ ·
      ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₁ (β ⌈ ⌊ S Z ⌋ ⌉))))) ⟩
+   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ app β)))) ⟩
    ƛ
    (ƛ
     ⌊ S Z ⌋ ·
     (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋)))
-   ⟶⟨ ζ (ζ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (ξ₂ ⌈ ⌊ S Z ⌋ ⌉ (β ⌈ ⌊ Z ⌋ ⌉)))) ⟩
+   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ β))) ⟩
    ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))) ∎)
   (ƛ
    (ƛ

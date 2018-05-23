@@ -134,10 +134,6 @@ in full. In general, the rule of thumb is to consider the easy case
 If you have two hard cases, you will have to expand out `...`
 or introduce subsidiary functions.
 
-#### Exercise: 3 stars, optional (progress_from_term_ind)
-Show that progress can also be proved by induction on terms
-instead of induction on typing derivations.
-
 \begin{code}
 postulate
   progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Progress M
