@@ -49,6 +49,7 @@ fixes are encouraged.
 ## Backmatter
 
   - [Acknowledgements](Acknowledgements)
+  - [Fonts: Test page for fonts](Fonts)
 
 [sf]: https://softwarefoundations.cis.upenn.edu/
 [wen]: https://github.com/wenkokke

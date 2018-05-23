@@ -4,8 +4,14 @@ layout    : page
 permalink : /Untyped
 ---
 
-This is still the typed code for full normalisation,
-and needs to be updated.
+This chapter considers a system that varies, in interesting ways,
+what has gone earlier.  The lambda calculus in this section is
+untyped rather than simply-typed; uses terms that are inherently-scoped
+(as opposed to inherently-typed); reduces terms to full normal form
+rather than weak head-normal form; and uses call-by-name rather than
+call-by-value order of reduction.
+
+*(((Need to update from call-by-value to call-by-name)))*
 
 ## Imports
 
@@ -35,21 +41,21 @@ open import Relation.Nullary.Product using (_×-dec_)
 infix  6  ƛ_
 infixl 7  _·_
 
-data Fin : ℕ → Set where
+data Var : ℕ → Set where
 
   Z : ∀ {n}
      -----------
-   → Fin (suc n)
+   → Var (suc n)
 
   S_ : ∀ {n}
-    → Fin n
+    → Var n
       -----------
-    → Fin (suc n)
+    → Var (suc n)
 
 data Term : ℕ → Set where
 
   ⌊_⌋ : ∀ {n}
-    → Fin n
+    → Var n
       ------
     → Term n
 
@@ -71,7 +77,7 @@ data Term : ℕ → Set where
 #_ : ∀ {n} → ℕ → Term n
 #_ {n} m  =  ⌊ h n m ⌋
   where
-  h : ∀ n → ℕ → Fin n
+  h : ∀ n → ℕ → Var n
   h zero    _        =  ⊥-elim impossible
     where postulate impossible : ⊥
   h (suc n) 0        =  Z
@@ -94,11 +100,11 @@ four = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ 
 ## Renaming
 
 \begin{code}
-rename : ∀ {m n} → (Fin m → Fin n) → (Term m → Term n)
+rename : ∀ {m n} → (Var m → Var n) → (Term m → Term n)
 rename ρ ⌊ k ⌋            =  ⌊ ρ k ⌋
 rename {m} {n} ρ (ƛ N)    =  ƛ (rename {suc m} {suc n} ρ′ N)
   where
-  ρ′ : Fin (suc m) → Fin (suc n)
+  ρ′ : Var (suc m) → Var (suc n)
   ρ′ Z      =  Z
   ρ′ (S k)  =  S (ρ k)
 rename ρ (L · M)           =  (rename ρ L) · (rename ρ M)
@@ -107,11 +113,11 @@ rename ρ (L · M)           =  (rename ρ L) · (rename ρ M)
 ## Substitution
 
 \begin{code}
-subst : ∀ {m n} → (Fin m → Term n) → (Term m → Term n)
+subst : ∀ {m n} → (Var m → Term n) → (Term m → Term n)
 subst ρ ⌊ k ⌋                =  ρ k
 subst {m} {n} ρ (ƛ N)        =  ƛ (subst {suc m} {suc n} ρ′ N)
   where
-  ρ′ : Fin (suc m) → Term (suc n)
+  ρ′ : Var (suc m) → Term (suc n)
   ρ′ Z      =  ⌊ Z ⌋
   ρ′ (S k)  =  rename {n} {suc n} S_ (ρ k)
 subst ρ (L · M)               =  (subst ρ L) · (subst ρ M)
@@ -119,7 +125,7 @@ subst ρ (L · M)               =  (subst ρ L) · (subst ρ M)
 substitute : ∀ {n} → Term (suc n) → Term n → Term n
 substitute {n} N M  =  subst {suc n} {n} ρ N
   where
-  ρ : Fin (suc n) → Term n
+  ρ : Var (suc n) → Term n
   ρ Z      =  M
   ρ (S k)  =  ⌊ k ⌋
 \end{code}
@@ -135,7 +141,7 @@ data Normal where
   ⌈_⌉ : ∀ {n} {M : Term n} → Neutral M → Normal M
 
 data Neutral where
-  ⌊_⌋   : ∀ {n} → (k : Fin n) → Neutral ⌊ k ⌋
+  ⌊_⌋   : ∀ {n} → (k : Var n) → Neutral ⌊ k ⌋
   _·_  : ∀ {n} → {L : Term n} {M : Term n} → Neutral L → Normal M → Neutral (L · M)
 \end{code}
 
