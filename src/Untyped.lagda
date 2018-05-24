@@ -32,7 +32,6 @@ open import Relation.Nullary.Negation using (contraposition)
 open import Relation.Nullary.Product using (_×-dec_)
 \end{code}
 
-
 ## Syntax
 
 \begin{code}
@@ -148,27 +147,18 @@ data Neutral where
 \begin{code}
 infix 2 _⟶_
 
-data App : ∀ {n} → Term n → Set where
-  app : ∀ {n}
-    → {L : Term n}
-    → {M : Term n}
-      ------------
-    → App (L · M)
+Application : ∀ {n} → Term n → Set
+Application ⌊ _ ⌋    =  ⊥
+Application (ƛ _)    =  ⊥
+Application (_ · _)  =  ⊤
 
 data _⟶_ : ∀ {n} → Term n → Term n → Set where
 
   ξ₁ : ∀ {n} {L L′ M : Term n}
-    → App L
+    → Application L
     → L ⟶ L′
       ----------------
     → L · M ⟶ L′ · M
-
-{-
-  ξ₁ : ∀ {n} {L M LM′ N : Term n}
-    → L · M ⟶ LM′
-      ---------------------
-    → L · M · N ⟶ LM′ · N
--}
 
   ξ₂ : ∀ {n} {L M M′ : Term n}
     → Neutral L
@@ -229,15 +219,15 @@ _ : plus {zero} · two · two ⟶* four
 _ =
   begin
     plus · two · two
-  ⟶⟨ ξ₁ app β ⟩
+  ⟶⟨ ξ₁ tt β ⟩
     (ƛ ƛ ƛ two · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
   ⟶⟨ β ⟩
     ƛ ƛ two · ⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)
-  ⟶⟨ ζ (ζ (ξ₁ app β)) ⟩
+  ⟶⟨ ζ (ζ (ξ₁ tt β)) ⟩
     ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)
   ⟶⟨ ζ (ζ β) ⟩
     ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋))
-  ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ app β)))) ⟩
+  ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ tt β)))) ⟩
     ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋))
   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ β))) ⟩
    ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))))
@@ -270,7 +260,7 @@ progress (⌊ x ⌋ · M) with progress M
 ... | done Mⁿ                                  =  done ⌈ ⌊ x ⌋ · Mⁿ ⌉
 progress ((ƛ N) · M)                           =  step β
 progress (L@(_ · _) · M) with progress L
-... | step L⟶L′                              =  step (ξ₁ app L⟶L′)
+... | step L⟶L′                              =  step (ξ₁ tt L⟶L′)
 ... | done ⌈ Lᵘ ⌉ with progress M
 ...    | step M⟶M′                           =  step (ξ₂ Lᵘ M⟶M′)
 ...    | done Mⁿ                               =  done ⌈ Lᵘ · Mⁿ ⌉
@@ -319,7 +309,7 @@ _ : normalise 100 (plus {zero} · two · two) ≡
       (ƛ ⌊ S (S (S Z)) ⌋ · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)))))
    · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
    · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ξ₁ app β ⟩
+   ⟶⟨ ξ₁ tt β ⟩
    (ƛ
     (ƛ
      (ƛ
@@ -331,7 +321,7 @@ _ : normalise 100 (plus {zero} · two · two) ≡
    (ƛ
     (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ ·
     ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
-   ⟶⟨ ζ (ζ (ξ₁ app β)) ⟩
+   ⟶⟨ ζ (ζ (ξ₁ tt β)) ⟩
    ƛ
    (ƛ
     (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
@@ -342,7 +332,7 @@ _ : normalise 100 (plus {zero} · two · two) ≡
     ⌊ S Z ⌋ ·
     (⌊ S Z ⌋ ·
      ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ app β)))) ⟩
+   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ tt β)))) ⟩
    ƛ
    (ƛ
     ⌊ S Z ⌋ ·
