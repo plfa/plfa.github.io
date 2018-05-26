@@ -39,7 +39,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 ## Collections
 
 \begin{code}
-module Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
+module fresh.Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
 
     Coll : Set → Set
     Coll A  =  List A
