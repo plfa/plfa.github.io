@@ -31,7 +31,7 @@ before_install:
 - make travis-setup
 
 script:
-- make build
+- make
 
 before_deploy:
 - rm -rf .bundle
