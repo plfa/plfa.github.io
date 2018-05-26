@@ -1,10 +1,19 @@
+// Define variables for code formatting
+
+$code-font-family: Source Code Pro, Menlo, DejaVu Sans Mono, Bitstream Vera Sans Mono, Consolas, Monaco, Lucida Console, Liberation Mono, Courier New, monospace, serif;
+
+/* Code. */
+.highlight {
+    font-family: $code-font-family;
+}
+
 /* Agda. */
 .Agda {
     padding: .4em .4em;
     background: #e8f2fb;
     border: 1px solid #c9e1f6;
     border-radius: 3px;
-    font-family: Menlo, Source Code Pro, Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+    font-family: $code-font-family; 
     font-size: .85em; }
 
 .Spec {
