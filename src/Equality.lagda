@@ -400,6 +400,43 @@ Nonetheless, rewrite is a vital part of the Agda toolkit,
 as earlier examples have shown.
 
 
+## Lambda expressions
+
+We pause for a moment to define *lambda expressions*, which provide a
+compact way to define functions without naming them, and will prove
+convenient in much of what follows.
+
+A term of the form
+
+    λ{ P₁ → N₁; ⋯ ; Pᵢ → Nᵢ }
+    
+is equivalent to a function `f` defined by the equations
+
+    f P₁ = e₁
+    ⋯
+    f Pᵢ = eᵢ
+
+where the `Pᵢ` are patterns (left-hand sides of an equation) and the
+`Nᵢ` are expressions (right-hand side of an equation).
+
+In the case that the pattern is a variable, we may also use the syntax
+
+    λ x → N
+
+or
+
+    λ (x : A) → N
+
+both of which are equivalent to `λ{ x → N }`. The latter allows one to
+specify the domain of the function.
+
+Often using an anonymous lambda expression is more convenient than
+using a named function: it avoids a lengthy type declaration; and the
+definition appears exactly where the function is used, so there is no
+need for the writer to remember to declare it in advance, or for the
+reader to search for the definition elsewhere in the code.
+
+
 ## Extensionality {#extensionality}
 
 Extensionality asserts that the only way to distinguish functions is
@@ -606,11 +643,11 @@ term that includes `Set ℓ`.
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library.
-
-    import Relation.Binary.PropositionalEquality as Eq
-    open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
-    open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
-
+\begin{code}
+-- import Relation.Binary.PropositionalEquality as Eq
+-- open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
+-- open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+\end{code}
 Here the import is shown as comment rather than code to avoid collisions,
 as mentioned in the introduction.
 
@@ -619,9 +656,10 @@ as mentioned in the introduction.
 
 This chapter uses the following unicode.
 
-    ≡  U+2261  IDENTICAL TO (\==)  =
+    ≡  U+2261  IDENTICAL TO (\==)
     ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
     ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
     ∎  U+220E  END OF PROOF (\qed)
+    λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
     ≐  U+2250  APPROACHES THE LIMIT (\.=)
     ℓ  U+2113  SCRIPT SMALL L (\ell)

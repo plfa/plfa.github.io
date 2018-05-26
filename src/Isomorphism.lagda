@@ -109,35 +109,10 @@ and `from` to be the identity function.
     ; to∘from = λ{y → refl}
     } 
 \end{code}
-This is our first use of *lambda expressions*, which provide a compact way to
-define functions without naming them.  A term of the form
-
-    λ{ P₁ → N₁; ⋯ ; Pᵢ → Nᵢ }
-    
-is equivalent to a function `f` defined by the equations
-
-    f P₁ = e₁
-    ⋯
-    f Pᵢ = eᵢ
-
-where the `Pᵢ` are patterns (left-hand sides of an equation) and the
-`Nᵢ` are expressions (right-hand side of an equation).  In the case that
-the pattern is a variable, we may also use the syntax
-
-    λ (x : A) → N
-
-which is equivalent to `λ{ x → N }` but allows one to specify the
-domain of the function. Often using an anonymous lambda expression is
-more convenient than using a named function: it avoids a lengthy type
-declaration; and the definition appears exactly where the function is
-used, so there is no need for the writer to remember to declare it in
-advance, or for the reader to search for the definition elsewhere in
-the code.
-
 In the above, `to` and `from` are both bound to identity functions,
 and `from∘to` and `to∘from` are both bound to functions that discard
 their argument and return `refl`.  In this case, `refl` alone is an
-adequate proof since for the left inverse, `λ{y → y} (λ{x → x} x)`
+adequate proof since for the left inverse, `to (from x)`
 simplifies to `x`, and similarly for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
@@ -319,8 +294,9 @@ import Function.Inverse using (_↔_)
 import Function.LeftInverse using (_↞_)
 \end{code}
 Here `_↔_` corresponds to our `_≃_`, and `_↞_` corresponds to our `_≲_`.
-However, we stick with the definitions given here, mainly because `_↔_` is
-specified as a nested record, rather than the flat records used here.
+However, we stick with our definitions, because those in the
+standard library are less convenient to use: they use a nested record structure,
+and are parameterised with regard to an arbitrary notion of equivalence.
 
 ## Unicode
 
@@ -328,4 +304,3 @@ This chapter uses the following unicode.
 
     ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~-)
     ≲  U+2272  LESS-THAN OR EQUIVALENT TO (\<~)
-    λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
