@@ -112,7 +112,7 @@ You may have noticed that `ℕ` and `→` don't appear on your keyboard.
 They are symbols in *unicode*.  At the end of each chapter is a list
 of all unicode symbols introduced in the chapter, including
 instructions on how to type them in the Emacs text editor.  Here
-*type* refers to typing with fingers as opposed to data typing!
+*type* refers to typing with fingers as opposed to data types!
 
 
 ## The story of creation
@@ -124,11 +124,11 @@ Let's look again at the rules that define the natural numbers:
   natural number.
 
 Hold on! The second line defines natural numbers in terms of natural
-numbers. How can that possibly be allowed?  Isn't this as meaningless
-as the claim "Brexit means Brexit"?
+numbers. How can that possibly be allowed?  Isn't this as useless a
+definition as "Brexit means Brexit"?
 
 In fact, it is possible to assign our definition a meaning without
-resorting to any unpermitted circularities.  Furthermore, we can do so
+resorting to unpermitted circularities.  Furthermore, we can do so
 while only working with *finite* sets and never referring to the
 entire *infinite* set of natural numbers.
 
@@ -229,22 +229,24 @@ Including the line
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.  The
-declaration is not permitted unless the type given has two constructors,
-one corresponding to zero and one to successor.
+declaration is not permitted unless the type given has exactly two
+constructors, one with no argument (corresponding to zero) and
+one with a single argument the same as the type being defined
+(corresponding to successor).
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals using the Haskell
 type for arbitrary-precision integers.  Representing the natural *n*
 with `zero` and `suc` requires space proportional to *n*, whereas
 representing it as an arbitary-precision integer in Haskell only
-requires space proportional to the logarithm base 2 of *n*.
+requires space proportional to the logarithm of *n*.
 
 
 ## Imports
 
-Shortly we will want to write some equivalences that hold between
+Shortly we will want to write some equations that hold between
 terms involving natural numbers.  To support doing so, we import
-the definition of equivalence and some notations for reasoning
+the definition of equality and notations for reasoning
 about it from the Agda standard library.
 
 \begin{code}
@@ -254,10 +256,10 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
 \end{code}
 
 The first line brings the standard library module that defines
-propositional equality into scope, with the name `Eq`. The second line
+equality into scope and gives it the name `Eq`. The second line
 opens that module, that is, adds all the names specified in the
 `using` clause into the current scope. In this case the names added
-are `_≡_`, the equivalence operator, and `refl`, the name for evidence
+are `_≡_`, the equivality operator, and `refl`, the name for evidence
 that two terms are equal.  The third line takes a record that
 specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
@@ -306,7 +308,7 @@ those for the natural numbers.  The base case says that adding zero to
 a number, `zero + n`, returns that number, `n`.  The inductive case
 says that adding the successor of a number to another number,
 `(suc m) + n`, returns the successor of adding the two numbers, `suc (m+n)`.
-We say we are using *pattern matching* when constructors appear on the
+We say we use *pattern matching* when constructors appear on the
 left-hand side of an equation.
 
 If we write `zero` as `0` and `suc m` as `1 + m`, the definition turns
@@ -831,7 +833,7 @@ Haskell operators on the arbitrary-precision integer type.
 Representing naturals with `zero` and `suc` requires time proportional
 to *m* to add *m* and *n*, whereas representing naturals as integers
 in Haskell requires time proportional to the larger of the logarithms
-(base 2) of *m* and *n*.  Similarly, representing naturals with `zero`
+of *m* and *n*.  Similarly, representing naturals with `zero`
 and `suc` requires time proportional to the product of *m* and *n* to
 multiply *m* and *n*, whereas representing naturals as integers in
 Haskell requires time proportional to the sum of the logarithms of *m*
@@ -845,7 +847,9 @@ definitions in the standard library.  The naturals, constructors for
 them, and basic operators upon them, are defined in the standard
 library module `Data.Nat`.
 
-    import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+\begin{code}
+-- import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+\end{code}
 
 Normally, we will show an import as running code, so Agda will
 complain if we attempt to import a definition that is not available.
