@@ -158,7 +158,7 @@ The appropriate instances of the inference rules are:
 
     (m + n) + p ≡ m + (n + p)
     ---------------------------------
-    (suc m + n) + p ≡ (suc m + n) + p
+    (suc m + n) + p ≡ suc m + (n + p)
 
 If we can demonstrate both of these, then associativity of addition
 follows by induction.
