@@ -22,15 +22,6 @@ addons:
       - libgmp-dev
       - libicu-dev
 
-# Configure recipients for notifications
-notifications:
-  email:
-    recipients:
-    - wen.kokke@ed.ac.uk
-    - wadler@inf.ed.ac.uk
-    on_success: never
-    on_failure: always
-
 before_install:
 # Download and unpack the stack executable
 - mkdir -p ~/.local/bin
