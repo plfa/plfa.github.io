@@ -323,7 +323,7 @@ associativity is written
 
      (m + n) + p  ≡  m + (n + p)
 
-meaning that the order of parentheses is irrelevant.  We get the
+meaning that the location of parentheses is irrelevant.  We get the
 second equation from this one by taking `m` to be `1`, `n` to be `m`,
 and `p` to be `n`.  We write `=` for definitions, while we
 write `≡` for assertions that two already defined things are the same.

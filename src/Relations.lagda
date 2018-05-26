@@ -206,23 +206,6 @@ and the second inequality by `s≤s n≤p`, and so we are given
 The inductive hypothesis `≤-trans m≤n n≤p` establishes
 that `m ≤ p`, and our goal follows by applying `s≤s`.
 
-<!--
-
-In the base case, `m ≤ n` holds by `z≤n`, so it must be that
-`m` is `zero`, in which case `m ≤ p` also holds by `z≤n`. In this
-case, the fact that `n ≤ p` is irrelevant, and we write `_` as the
-pattern to indicate that the corresponding evidence is unused.
-
-In the inductive case, `m ≤ n` holds by `s≤s m≤n`, so it must be that `m`
-is `suc m′` and `n` is `suc n′` for some `m′` and `n′`, and `m≤n` is
-evidence that `m′ ≤ n′`.  In this case, the only way that `p ≤ n` can
-hold is by `s≤s n≤p`, where `p` is `suc p′` for some `p′` and `n≤p` is
-evidence that `n′ ≤ p′`.  The inductive hypothesis `≤-trans m≤n n≤p`
-provides evidence that `m′ ≤ p′`, and applying `s≤s` to that gives
-evidence of the desired conclusion, `suc m′ ≤ suc p′`.
-
--->
-
 The case `≤-trans (s≤s m≤n) z≤n` cannot arise, since the first
 inequality implies the middle value is `suc n` while the second
 inequality implies that it is `zero`.  Agda can determine that
@@ -270,6 +253,11 @@ and the second inequality holds by `s≤s n≤m`, and so we are
 given `suc m ≤ suc n` and `suc n ≤ suc m` and must show `suc m ≡ suc n`.
 The inductive hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`,
 and our goal follows by congruence.
+
+### Exercise (≤-antisym-cases)
+
+The above proof omits cases where one argument is `z≤n` and one
+argument is `s≤s`.  Why is it ok to omit them?
 
 
 ## Total
@@ -383,7 +371,7 @@ If one bumps into both an operator and an ordering at a party, one may ask if
 the operator is *monotonic* with regard to the ordering.  For example, addition
 is monotonic with regard to inequality, meaning
 
-  ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
+    ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
 
 The proof is straightforward using the techniques we have learned, and is best
 broken into three parts. First, we deal with the special case of showing
@@ -423,8 +411,17 @@ Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
+### Exercise (stretch, `≤-reasoning`)
 
-## Strict inequality.
+The proof of monotonicity (and the associated lemmas) can be written
+in a more readable form by using an anologue of our notation for
+`≡-reasoning`.  Read ahead to chapter [Equivalence](Equivalence) to
+see how `≡-reasoning` is defined, define `≤-reasoning` analogously,
+and use it to write out an alternative proof that addition is
+monotonic with regard to inequality.
+
+
+## Strict inequality {#strict-inequality}
 
 We can define strict inequality similarly to inequality.
 \begin{code}
@@ -446,9 +443,9 @@ holds (where we define `m > n` to hold exactly where `n < m`).
 It is also monotonic with regards to addition and multiplication.
 
 Most of the above are considered in exercises below.  Irreflexivity
-requires logical negation, as does the fact that the three cases in
+requires negation, as does the fact that the three cases in
 trichotomy are mutually exclusive, so those points are deferred
-until the negation is introduced in Chapter [Logic](Logic).
+to the chapter that introduces [negation](Negation).
 
 It is straightforward to show that `suc m ≤ n` implies `m < n`,
 and conversely.  One can then give an alternative derivation of the
@@ -459,13 +456,17 @@ exploiting the corresponding properties of inequality.
 
 Show that strict inequality is transitive.
 
-### Exercise (`trichotomy`)
+### Exercise (`trichotomy`) {#trichotomy}
 
-Show that strict inequality satisfies a weak version of trichotomy, in the sense
-that for any `m` and `n` that one of `m < n`, `m ≡ n`, or `m > n`
-holds. You will need to define a suitable data structure, similar
-to the one used for totality.  (After negation is introduced in Chapter [Logic](Logic),
-we will be in a position to show that the three cases are mutually exclusive.)
+Show that strict inequality satisfies a weak version of trichotomy, in
+the sense that for any `m` and `n` that one of the following holds:
+* `m < n`,
+* `m ≡ n`, or
+* `m > n`
+This only involves two relations, as we define `m > n` to
+be the same as `n < m`. You will need a suitable data declaration,
+similar to that used for totality.  (We will show that the three cases
+are exclusive after [negation](Negation) is introduced.)
 
 ### Exercise (`+-mono-<`)
 
@@ -485,19 +486,19 @@ the fact that inequality is transitive.
 
 ## Even and odd
 
-As a further example, let's specify even and odd numbers.  
-Inequality and strict inequality are *binary relations*,
-while even and odd are *unary relations*, sometimes called *predicates*.
+As a further example, let's specify even and odd numbers.  Inequality
+and strict inequality are *binary relations*, while even and odd are
+*unary relations*, sometimes called *predicates*.
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
 
 data even where
-  even-zero : even zero
-  even-suc  : ∀ {n : ℕ} → odd n → even (suc n)
+  zero : even zero
+  suc  : ∀ {n : ℕ} → odd n → even (suc n)
 
 data odd where
-  odd-suc   : ∀ {n : ℕ} → even n → odd (suc n)
+  suc   : ∀ {n : ℕ} → even n → odd (suc n)
 \end{code}
 A number is even if it is zero or the successor of an odd number,
 and odd if it is the successor of an even number.
@@ -509,19 +510,37 @@ keyword and the declarations of the constructors) and then
 declare the constructors (omitting the signatures `ℕ → Set`
 which were given earlier).
 
+This is also our first use of *overloaded* constructors,
+that is, using the same name for different constructors depending on
+the context.  Here `suc` means one of three constructors:
+
+    suc : `ℕ → `ℕ
+    suc : ∀ {n : ℕ} → odd n → even (suc n)
+    suc : ∀ {n : ℕ} → even n → odd (suc n)
+
+Similarly, `zero` refers to one of two constructors. Due to how it
+does type inference, Agda does not allow overloading of defined names,
+but does allow overloading of constructors.  It is recommended that
+one restrict overloading to related meanings, as we have done here,
+but it is not required.
+
 We show that the sum of two even numbers is even.
 \begin{code}
 e+e≡e : ∀ {m n : ℕ} → even m → even n → even (m + n)
 o+e≡o : ∀ {m n : ℕ} → odd  m → even n → odd  (m + n)
 
-e+e≡e even-zero     en  =  en
-e+e≡e (even-suc om) en  =  even-suc (o+e≡o om en)
+e+e≡e zero     en  =  en
+e+e≡e (suc om) en  =  suc (o+e≡o om en)
 
-o+e≡o (odd-suc  em) en  =  odd-suc  (e+e≡e em en)
+o+e≡o (suc em) en  =  suc (e+e≡e em en)
 \end{code}
 Corresponding to the mutually recursive types, we use two mutually recursive
 functions, one to show that the sum of two even numbers is even, and the other
 to show that the sum of an odd and an even number is odd.
+
+This is our first use of mutually recursive functions.  Since each identifier
+must be defined before it is used, we first give the signatures for both
+functions and then the equations that define them.
 
 To show that the sum of two even numbers is even, consider the evidence that the
 first number is even. If it because it is zero, then the sum is even because the
@@ -534,14 +553,12 @@ that the first number is odd. If it is because it is the successor of an even
 number, then the result is odd because it is the successor of the sum of two
 even numbers, which is even.
 
-This is our first use of mutually recursive functions.  Since each identifier
-must be defined before it is used, we first give the signatures for both
-functions and then the equations that define them.
-
 ### Exercise (`o+o≡e`)
 
 Show that the sum of two odd numbers is even.
 
+
+<!--
 
 ## Formalising preorder
 
@@ -559,6 +576,7 @@ IsPreorder-≤ =
     }
 \end{code}
 
+-->
 
 
 ## Standard prelude
@@ -569,19 +587,19 @@ import Data.Nat using (_≤_; z≤n; s≤s)
 import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 \end{code}
-In the standard library, `≤-total` is formalised in terms of disjunction (which
-we define in Chapter [Logic](Logic)), and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤`
-make implicit arguments that here are explicit.
+In the standard library, `≤-total` is formalised in terms of
+disjunction (which we define in Chapter [Connectives](Connectives)),
+and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than here
+as well as taking as implicit arguments that here are explicit.
 
 ## Unicode
 
 This chapter uses the following unicode.
 
     ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
-    ≥  U+2265  GREATER-THAN OR EQUAL TO (̄\>=, \ge)
+    ≥  U+2265  GREATER-THAN OR EQUAL TO (\>=, \ge)
     ˡ  U+02E1  MODIFIER LETTER SMALL L (\^l)
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
 
 The commands `\^l` and `\^r` give access to a variety of superscript
-leftward and rightward arrows, and also superscript letters `l` and `r`.
-
+leftward and rightward arrows in addition to superscript letters `l` and `r`.

@@ -12,7 +12,7 @@ by their name, properties of *inductive datatypes* are proved by
 
 ## Imports
 
-We require equivalence as in the previous chapter, plus the naturals
+We require equivality as in the previous chapter, plus the naturals
 and some operations upon them.  We also import a couple of new operations,
 `cong`, `sym`, and `_≡⟨_⟩_`, which are explained below.
 \begin{code}
@@ -26,7 +26,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 ## Associativity
 
 One property of addition is that it is *associative*, that is, that the
-order of the parentheses does not matter:
+location of the parentheses does not matter:
 
     (m + n) + p ≡ m + (n + p)
 
@@ -129,7 +129,7 @@ the first of these, but the second is new.
     P (suc zero)
     P (suc (suc zero))
 
-You've probably got the hang of it by now.
+You've got the hang of it by now.
 
     -- on the fourth day, four properties are known
     P zero
@@ -145,7 +145,7 @@ day *n+1*.
 
 ## Our first proof: associativity
 
-In order to prove associativity, we take `P m` to be the property
+To prove associativity, we take `P m` to be the property
 
     (m + n) + p ≡ m + (n + p)
 
@@ -208,7 +208,7 @@ For the base case, we must show:
 
 Simplifying both sides with the base case of addition yields the equation:
 
-   n + p ≡ n + p
+    n + p ≡ n + p
 
 This holds trivially.  Reading the chain of equations in the base case of the proof,
 the top and bottom of the chain match the two sides of the equation to
@@ -221,7 +221,7 @@ For the inductive case, we must show:
 
 Simplifying both sides with the inductive case of addition yields the equation:
 
-   suc ((m + n) + p) ≡ suc (m + (n + p))
+    suc ((m + n) + p) ≡ suc (m + (n + p))
 
 This in turn follows by prefacing `suc` to both sides of the induction
 hypothesis:

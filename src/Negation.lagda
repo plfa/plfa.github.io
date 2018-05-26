@@ -132,8 +132,27 @@ Indeed, there is exactly one proof of `⊥ → ⊥`.
 id : ⊥ → ⊥
 id x = x
 \end{code}
-However, there are no possible values of type `ℕ → ⊥`,
-or indeed of type `A → ⊥` when `A` is anything other than `⊥` itself.
+However, there are no possible values of type `A → ⊥`
+when `A` is anything other than `⊥` itself.
+
+
+### Exercise (`≢`, `<-irrerflexive`)
+
+Using negation, show that [strict inequality](Relations/#strict-inequality)
+is irreflexive, that is, `n < n` holds for no `n`.
+
+
+### Exercise (`trichotomy`)
+
+Show that strict inequality satisfies [trichotomy](Relations/#trichotomy),
+that is, for any naturals `m` and `n` exactly one of the following holds:
+
+* `m < n`
+* `m ≡ n`
+* `m > n`
+
+Here "exactly one" means that one must hold, and each implies the
+negation of the other two.
 
 
 ### Exercise (`⊎-dual-×`)
