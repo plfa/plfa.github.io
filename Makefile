@@ -33,10 +33,7 @@ endif
 # remove all generated files
 clobber: clean
 	ruby -S bundle exec jekyll clean
-ifneq ($(strip $(markdown)),)
-	rm $(markdown)
-endif
-	rmdir out/
+	rm -rf out/
 
 # install bundler, and gem dependencies
 macos-setup:
