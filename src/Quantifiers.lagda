@@ -312,11 +312,11 @@ must show it is odd.  We induct over the evidence of the existential,
 and in the even case consider the two possibilities for the number
 that is doubled.
 
-- In the even case for `zero`, we must show `2 * zero` is even, which
+- In the even case for `zero`, we must show `zero * 2` is even, which
 follows by `even-zero`.
 
-- In the even case for `suc n`, we must show `2 * suc m` is even.  The
-inductive hypothesis tells us that `1 + 2 * m` is odd, from which the
+- In the even case for `suc n`, we must show `suc m * 2` is even.  The
+inductive hypothesis tells us that `1 + m * 2` is odd, from which the
 desired result follows by `even-suc`.
 
 - In the odd case, we must show `1 + m * 2` is odd.  The inductive
