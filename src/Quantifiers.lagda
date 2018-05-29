@@ -291,7 +291,7 @@ substituting for `n`.
 - If the number is odd because it is the successor of an even number,
 then we apply the induction hypothesis to give a number `m` and
 evidence that `m * 2 ≡ n`. We return a pair consisting of `suc m` and
-evidence that `1 + 2 * m = suc n`, which is immediate after
+evidence that `1 + m * 2 ≡ suc n`, which is immediate after
 substituting for `n`.
 
 This completes the proof in the forward direction.
