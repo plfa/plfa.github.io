@@ -6,7 +6,7 @@ all: bugfix $(markdown)
 
 out/%.md: src/%.lagda
 	mkdir -p out
-	agda2html --verbose --link-to-agda-stdlib --jekyll-root=out/ -i $< -o $@
+	agda2html --verbose --link-to-agda-stdlib --use-jekyll=out/ -i $< -o $@
 
 # start server
 server-start:
