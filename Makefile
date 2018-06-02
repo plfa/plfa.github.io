@@ -1,5 +1,5 @@
 agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda)
-agdai := $(patsubst %.lagda,%.agdai,$(agda))
+agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai)
 markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 
 all: bugfix $(markdown)
