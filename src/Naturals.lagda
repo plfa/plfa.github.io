@@ -1,7 +1,7 @@
 ---
 title     : "Naturals: Natural numbers"
 layout    : page
-permalink : /Naturals
+permalink : /Naturals/
 ---
 
 The night sky holds more stars than I can count, though fewer than five

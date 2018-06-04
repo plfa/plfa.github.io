@@ -5,12 +5,16 @@ markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 all: $(markdown)
 
 test: $(markdown)
+	ruby -S bundle exec jekyll clean
 	ruby -S bundle exec jekyll build -d _site/sf/
-	ruby -S bundle exec htmlproofer _site
+	ruby -S bundle exec htmlproofer _site --disable-external
 
-out/%.md: src/%.lagda
-	mkdir -p out
-	agda2html --verbose --link-to-agda-stdlib --use-jekyll=out/ -i $< -o $@
+out/:
+	mkdir -p out/
+
+out/%.md: src/%.lagda | out/
+	agda2html --verbose --link-to-agda-stdlib --use-jekyll=out/ -i $< -o $@ 2>&1 \
+		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 
 # start server
 server-start:

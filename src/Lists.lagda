@@ -1,7 +1,7 @@
 ---
 title     : "Lists: Lists and higher-order functions"
 layout    : page
-permalink : /Lists
+permalink : /Lists/
 ---
 
 This chapter discusses the list data type.  It gives further examples

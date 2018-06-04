@@ -1,7 +1,7 @@
 ---
 title     : "Acknowledgements"
 layout    : page
-permalink : /Acknowledgements
+permalink : /Acknowledgements/
 ---
 
 Thank you to the following.
@@ -14,7 +14,7 @@ To Conor McBride and James McKinna, for cool ideas and handholding.
 
 To Andreas Abel and Ulf Norell, ditto.
 
-To David Darais, for showing me how much more compact it is to avoid raw terms.
+To David Darais, for showing us how much more compact it is to avoid raw terms.
 
 For pull requests.
 * Vikraman Choudhury

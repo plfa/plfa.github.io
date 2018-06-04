@@ -1,7 +1,7 @@
 ---
 title     : "Quantifiers: Universals and existentials"
 layout    : page
-permalink : /Quantifiers
+permalink : /Quantifiers/
 ---
 
 This chapter introduces universal and existential quantification.

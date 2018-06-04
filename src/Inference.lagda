@@ -1,7 +1,7 @@
 ---
 title     : "Inference: Bidirectional type inference"
 layout    : page
-permalink : /Inference
+permalink : /Inference/
 ---
 
 ## Imports

@@ -1,7 +1,7 @@
 ---
 title     : "Relations: Inductive definition of relations"
 layout    : page
-permalink : /Relations
+permalink : /Relations/
 ---
 
 After having defined operations such as addition and multiplication,
