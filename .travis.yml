@@ -34,9 +34,8 @@ script:
 - make
 
 before_deploy:
-- rm -rf .bundle
-- rm -rf vendor
 - make clean
+- rm -rf .bundle/ vendor/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile Notes.md README.md 
 
 deploy:
   provider: pages
