@@ -265,7 +265,7 @@ specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
 will see how these are used below.  We take all these as givens for now,
-but will see how they are defined in Chapter [Equality]({{ site.baseurl }}{% link out/Equivalence.md %}).
+but will see how they are defined in Chapter [Equality]({{ site.baseurl }}{% link out/Equality.md %}).
 
 Agda uses underbars to indicate where terms appear in infix or mixfix
 operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
