@@ -28,6 +28,10 @@ url: "https://wenkokke.github.io/sf"
 markdown: kramdown
 theme: minima
 exclude:
-  - src/
-  - Gemfile
-  - Gemfile.lock
+  - "src/"
+  - "extra/"
+  - "README.md"
+  - "Notes.md"
+  - "*.lagda"
+  - "Gemfile"
+  - "Gemfile.lock"

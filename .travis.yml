@@ -6,7 +6,7 @@ language: ruby
 # Caching so the next build will be fast too.
 cache:
   bundler: true
-  timeout: 1200
+  timeout: 1500
   directories:
   - $HOME/.stack
   - $HOME/.agda
