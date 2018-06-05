@@ -608,7 +608,7 @@ postulate
 Show that map can be defined using fold.
 \begin{code}
 postulate
-  map-is-foldr : ∀ {A B : Set} {f : A → B} →
+  map-is-foldr : ∀ {A B : Set} (f : A → B) →
     map f ≡ foldr (λ x xs → f x ∷ xs) []
 \end{code}
 This requires extensionality.
