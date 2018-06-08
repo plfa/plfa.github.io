@@ -20,7 +20,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Data.Product using (_×_; proj₁; proj₂; ∃; ∃-syntax)
+open import Data.Product using (_×_; Σ; Σ-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -453,20 +453,34 @@ data _wf : ∀ {n} → Context n → Set where
 ## Weaking of typing judgements
 
 \begin{code}
-⊢rename : ∀ {n} {Γ : Context n} {N A B : Term n} {s : Sort}
-  → Γ ⊢ A ⦂ ⟪ s ⟫
-  → Γ ⊢ N ⦂ B
-    -----------------------------------------
-  → Γ , A ⊢ rename S_ N ⦂ rename S_ B
-⊢rename ⊢C ⟪*⟫ = ⟪*⟫
-⊢rename ⊢C ⌊ k ⌋ = ⌊ S k ⌋
-⊢rename ⊢C (Π[ st ] ⊢A ⇒ ⊢N) = {!Π[ st ] ⊢rename ⊢C ⊢A ⇒ ? !}
--- ? is not weaken ⊢C ⊢N because the weakening is one step out
--- one possible fix is to generalise to an arbitrary ρ,
--- but then I need to know how to fill in the missing types in the context
-⊢rename ⊢C (ƛ[ x ] ⊢N ⇒ ⊢N₁ ⦂ ⊢N₂) = {!!}
-⊢rename ⊢C (⊢N · ⊢N₁) = {!!}
-⊢rename ⊢C (Eq ⊢N x) = {!!}
+infix 4 _→ʳ_
+
+_→ʳ_ : ∀ {m n} → Context m → Context n →  Set
+_→ʳ_ {m} {n} Γ Δ =
+  Σ[ ρ ∈ (Var m → Var n) ] ∀ (k : Var m) →
+    rename ρ (lookup Γ k) ≡ lookup Δ (ρ k)
+
+⊢extr : ∀ {m n} {Γ : Context m} {Δ : Context n} {A : Term m} →
+  (⊢ρ : Γ →ʳ Δ) → ((Γ , A) →ʳ (Δ , rename (proj₁ ⊢ρ) A))
+⊢extr {m} {n} {Γ} {Δ} {A} ⊢ρ = ⟨ extr (proj₁ ⊢ρ) , h ⟩
+  where
+  h : ∀ (k : Var (suc m)) →
+              rename (extr (proj₁ ⊢ρ)) (lookup (Γ , A) k) ≡
+              lookup (Δ , rename (proj₁ ⊢ρ) A) (extr (proj₁ ⊢ρ) k)
+  h Z      =  {!!}
+  h (S k)  =  {!!} -- proj₂ ⊢ρ k
+
+⊢rename : ∀ {m n} {Γ : Context m} {Δ : Context n} {M A : Term m}
+  → (⊢ρ : Γ →ʳ Δ)
+  → Γ ⊢ M ⦂ A
+    ----------------------------------------------
+  → Δ ⊢ rename (proj₁ ⊢ρ) M ⦂ rename (proj₁ ⊢ρ) A
+⊢rename ⊢ρ ⟪*⟫ = ⟪*⟫
+⊢rename ⊢ρ ⌊ k ⌋ rewrite proj₂ ⊢ρ k = ⌊ proj₁ ⊢ρ k ⌋
+⊢rename ⊢ρ (Π[ st ] ⊢A ⇒ ⊢N) = {!Π[ st ] ⊢rename ρ ⊢ρ ⊢A ⇒ rename (extr ρ ⊢ρ) N !}
+⊢rename ⊢ρ (ƛ[ x ] ⊢N ⇒ ⊢N₁ ⦂ ⊢N₂) = {!!}
+⊢rename ⊢ρ (⊢N · ⊢N₁) = {!!}
+⊢rename ⊢ρ (Eq ⊢N x) = {!!}
 
 
 
