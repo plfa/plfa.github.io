@@ -34,7 +34,7 @@ postulate
   extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
 \end{code}
 
-[extensionality]: Equality/index.html#extensionality
+[extensionality]: ../Equality/index.html#extensionality
 
 
 ## Conjunction is product
