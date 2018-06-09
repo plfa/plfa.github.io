@@ -4,6 +4,10 @@ layout    : page
 permalink : /Lambda/
 ---
 
+[Parts of this chapter take their text from chapter _Stlc_ in
+book _Programming Language Foundations_ of _Software Foundations_.
+Those parts will be revised.]
+
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
 variables, abstraction, and application.  It embodies the concept of

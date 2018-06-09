@@ -4,6 +4,10 @@ layout    : page
 permalink : /LambdaProp/
 ---
 
+[Parts of this chapter take their text from chapter StlcProp in
+_Software Foundations: Programming Language Foundations_.
+Those parts will be revised.]
+
 This chapter develops the fundamental theory of the Simply
 Typed Lambda Calculus, particularly progress and preservation.
 
