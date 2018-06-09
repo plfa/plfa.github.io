@@ -1,7 +1,7 @@
 ---
 title     : "Fonts"
 layout    : page
-permalink : /Fonts
+permalink : /Fonts/
 ---
 
 Test page for fonts.

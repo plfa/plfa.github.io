@@ -1,7 +1,7 @@
 ---
 title     : "Pure: Pure Type Systems"
 layout    : page
-permalink : /Untyped
+permalink : /Pure/
 ---
 
 Barendregt, H. (1991). Introduction to generalized type

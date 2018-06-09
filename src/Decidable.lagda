@@ -1,7 +1,7 @@
 ---
 title     : "Decidable: Booleans and decision procedures"
 layout    : page
-permalink : /Decidable
+permalink : /Decidable/
 ---
 
 We have a choice as to how to represent relations:

@@ -1,7 +1,7 @@
 ---
 title     : "Properties: Proof by Induction"
 layout    : page
-permalink : /Properties
+permalink : /Properties/
 ---
 
 Now that we've defined the naturals and operations upon them, our next

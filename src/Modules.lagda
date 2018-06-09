@@ -1,7 +1,7 @@
 ---
 title     : "Modules: Modules and List Examples"
 layout    : page
-permalink : /Modules
+permalink : /Modules/
 ---
 
 ** Turn this into a Setoid example. Copy equivalence relation and setoid

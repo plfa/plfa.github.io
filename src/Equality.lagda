@@ -1,7 +1,7 @@
 ---
 title     : "Equality: Equality and equational reasoning"
 layout    : page
-permalink : /Equality
+permalink : /Equality/
 ---
 
 Much of our reasoning has involved equality.  Given two terms `M`

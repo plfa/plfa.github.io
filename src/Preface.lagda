@@ -1,7 +1,7 @@
 ---
 title     : "Preface"
 layout    : page
-permalink : /Preface
+permalink : /Preface/
 ---
 
 This book is an introduction to programming language theory, written

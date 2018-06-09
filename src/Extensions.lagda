@@ -1,7 +1,7 @@
 ---
 title     : "Extensions: Extensions to simply-typed lambda calculus"
 layout    : page
-permalink : /Extensions
+permalink : /Extensions/
 ---
 
 ## Imports

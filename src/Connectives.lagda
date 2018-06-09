@@ -1,7 +1,7 @@
 ---
 title     : "Connectives: Conjunction, disjunction, and implication"
 layout    : page
-permalink : /Connectives
+permalink : /Connectives/
 ---
 
 This chapter introduces the basic logical connectives, by observing

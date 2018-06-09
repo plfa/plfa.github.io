@@ -1,12 +1,20 @@
-agda := $(wildcard src/*.lagda)
-agdai := $(wildcard src/*.agdai)
+agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda)
+agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai)
 markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 
-all: bugfix $(markdown)
+all: $(markdown)
 
-out/%.md: src/%.lagda
-	mkdir -p out
-	agda2html --verbose --link-to-agda-stdlib --jekyll-root=out/ -i $< -o $@
+test: $(markdown)
+	ruby -S bundle exec jekyll clean
+	ruby -S bundle exec jekyll build -d _site/sf/
+	ruby -S bundle exec htmlproofer _site --disable-external
+
+out/:
+	mkdir -p out/
+
+out/%.md: src/%.lagda | out/
+	agda2html --verbose --link-to-agda-stdlib --use-jekyll=out/ -i $< -o $@ 2>&1 \
+		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 
 # start server
 server-start:
@@ -68,7 +76,7 @@ $(HOME)/agda2html-master/:
 	cd $(HOME)/agda2html-master;\
 		stack install
 
-.phony: serve build clean clobber macos-setup travis-setup
+.phony: serve build test clean clobber macos-setup travis-setup
 
 # workaround for a bug in agda2html
 bugfix:

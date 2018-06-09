@@ -1,7 +1,7 @@
 ---
 title     : "Negation: Negation, with intuitionistic and classical logic"
 layout    : page
-permalink : /Negation
+permalink : /Negation/
 ---
 
 This chapter introduces negation, and discusses intuitionistic

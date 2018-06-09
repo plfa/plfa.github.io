@@ -1,7 +1,7 @@
 ---
 title     : "Isomorphism: Isomorphism and Embedding"
 layout    : page
-permalink : /Isomorphism
+permalink : /Isomorphism/
 ---
 
 This section introduces isomorphism as a way of asserting that two

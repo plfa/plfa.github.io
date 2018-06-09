@@ -1,7 +1,7 @@
 ---
 title     : "Untyped: Untyped lambda calculus with full normalisation"
 layout    : page
-permalink : /Untyped
+permalink : /Untyped/
 ---
 
 This chapter considers a system that varies, in interesting ways,

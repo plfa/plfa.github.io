@@ -1,7 +1,7 @@
 ---
 title     : "Lists: Lists and higher-order functions"
 layout    : page
-permalink : /Lists
+permalink : /Lists/
 ---
 
 This chapter discusses the list data type.  It gives further examples
@@ -880,7 +880,7 @@ Definitions similar to those in this chapter can be found in the standard librar
 import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
 import Data.List.All using (All; []; _∷_)
 import Data.List.Any using (Any; here; there)
-import Data.List.Any.Membership.Propositional using (_∈_)
+import Data.List.Membership.Propositional using (_∈_)
 import Algebra.Structures using (IsMonoid)
 \end{code}
 The standard library version of `IsMonoid` differs from the

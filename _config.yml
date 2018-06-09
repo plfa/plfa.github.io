@@ -22,12 +22,15 @@ description: >
 disqus:
   shortname: wenkokke
 
-# technical details below --- do not modify (ง'-')ง 
 baseurl: "/sf"
-url: "https://wenkokke.github.io/sf"  
+url: "https://wenkokke.github.io"
 markdown: kramdown
 theme: minima
 exclude:
-  - src/
-  - Gemfile
-  - Gemfile.lock
+  - "src/"
+  - "extra/"
+  - "README.md"
+  - "Notes.md"
+  - "*.lagda"
+  - "Gemfile"
+  - "Gemfile.lock"

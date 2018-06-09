@@ -1,7 +1,7 @@
 ---
 title     : "DeBruijn: Inherently typed De Bruijn representation"
 layout    : page
-permalink : /DeBruijn
+permalink : /DeBruijn/
 ---
 
 ## Imports

@@ -1,7 +1,7 @@
 ---
 title     : "Lambda: Introduction to Lambda Calculus"
 layout    : page
-permalink : /Lambda
+permalink : /Lambda/
 ---
 
 The _lambda-calculus_, first published by the logician Alonzo Church in

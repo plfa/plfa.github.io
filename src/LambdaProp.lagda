@@ -1,7 +1,7 @@
 ---
 title     : "LambdaProp: Properties of Simply-Typed Lambda Calculus"
 layout    : page
-permalink : /LambdaProp
+permalink : /LambdaProp/
 ---
 
 This chapter develops the fundamental theory of the Simply
