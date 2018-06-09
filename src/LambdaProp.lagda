@@ -237,7 +237,7 @@ rename-≡ {Γ} {x} {M} {A} {B} {C} ⊢M = rename σ ⊢M
   σ (S z≢x (S z≢y ∋z))  =  S z≢x ∋z
 \end{code}
 
-Third, if the last two variable in a context differ,
+Third, if the last two variables in a context differ,
 the term can be renamed to flip their order.
 \begin{code}
 rename-≢ : ∀ {Γ x y M A B C}
@@ -256,8 +256,8 @@ rename-≢ {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename σ ⊢M
   σ (S z≢x (S z≢y ∋z))   =  S z≢y (S z≢x ∋z)
 \end{code}
 
-## Substitution
 
+## Substitution
 
 Now we come to the conceptual heart of the proof that reduction
 preserves types---namely, the observation that _substitution_

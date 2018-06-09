@@ -8,6 +8,29 @@ Barendregt, H. (1991). Introduction to generalized type
 systems. Journal of Functional Programming, 1(2),
 125-154. doi:10.1017/S0956796800020025
 
+Fri 8 June
+
+Tried to add weakening directly as a rule.  Doing so broke the
+definition of renaming, and I could not figure out how to fix it.
+Also, need to have variables as a separate construct in order to
+define substitution a la Conor.  Tried to prove weakening as a derived
+rule, but it is tricky.  In
+
+  Π[_]_⇒_ : ∀ {n} {Γ : Context n} {A : Term n} {B : Term (suc n)} {s t : Sort}
+    → Permitted s t
+    → Γ ⊢ A ⦂ ⟪ s ⟫
+    → Γ , A ⊢ B ⦂ ⟪ t ⟫
+      -------------------
+    → Γ ⊢ Π A ⇒ B ⦂ ⟪ t ⟫
+
+weakening on the middle hypothesis take Γ to Γ , C but weakening on
+the last hypothesis takes Γ , A to Γ , C , A, so permutation is required
+before one can apply the induction hypothesis.  I presume this could
+be done similarly to LambdaProp.
+
+
+
+
 
 ## Imports
 
@@ -49,8 +72,8 @@ data Sort : Set where
 data Var : ℕ → Set where
 
   Z : ∀ {n}
-     -----------
-   → Var (suc n)
+      -----------
+    → Var (suc n)
 
   S_ : ∀ {n}
     → Var n
@@ -385,28 +408,40 @@ data Permitted : Sort → Sort → Set where
   ▢* : Permitted ▢ *
   ▢▢ : Permitted ▢ ▢
 
-infix  4  _wf
 infix  4  _⊢_⦂_
+infix  4  _∋_⦂_
 infixl 5  _,_
 
 data Context : ℕ → Set where
   ∅   : Context zero
   _,_ : ∀ {n} → Context n → Term n → Context (suc n)
 
-lookup : ∀ {n} → Context n → Var n → Term n
-lookup (Γ , A) Z      =  rename S_ A
-lookup (Γ , A) (S k)  =  rename S_ (lookup Γ k)
+data _∋_⦂_ : ∀ {n} → Context n →  Var n → Term n → Set
+data _⊢_⦂_ : ∀ {n} → Context n → Term n → Term n → Set
 
-data _⊢_⦂_ : ∀ {n} → Context n → Term n → Term n → Set where
+data _∋_⦂_  where
+
+  Z[_] : ∀ {n} {Γ : Context n} {A : Term n} {s : Sort}
+    → Γ ⊢ A ⦂ ⟪ s ⟫
+      -----------------------
+    → Γ , A ∋ Z ⦂ rename S_ A
+
+  S[_]_ : ∀ {n} {Γ : Context n} {x : Var n} {A B : Term n} {s : Sort}
+    → Γ ⊢ A ⦂ ⟪ s ⟫
+    → Γ ∋ x ⦂ B 
+      -------------------------
+    → Γ , A ∋ S x ⦂ rename S_ B
+
+data _⊢_⦂_ where
 
   ⟪*⟫ : ∀ {n} {Γ : Context n}
       -----------------
     → Γ ⊢ ⟪ * ⟫ ⦂ ⟪ ▢ ⟫
 
-  ⌊_⌋ : ∀ {n} {Γ : Context n}
-    → (k : Var n)
-      ----------------------
-    → Γ ⊢ ⌊ k ⌋ ⦂ lookup Γ k
+  ⌊_⌋ : ∀ {n} {Γ : Context n} {x : Var n} {A : Term n}
+    → Γ ∋ x ⦂ A
+      -------------
+    → Γ ⊢ ⌊ x ⌋ ⦂ A
 
   Π[_]_⇒_ : ∀ {n} {Γ : Context n} {A : Term n} {B : Term (suc n)} {s t : Sort}
     → Permitted s t
@@ -436,64 +471,93 @@ data _⊢_⦂_ : ∀ {n} → Context n → Term n → Term n → Set where
     → Γ ⊢ M ⦂ B
 \end{code}
 
+## Rename
+
 \begin{code}
-data _wf : ∀ {n} → Context n → Set where
+⊢extr : ∀ {m n} {Γ : Context m} {Δ : Context n}
+  → (ρ : Var m → Var n)
+  → (∀ {w : Var m} {B : Term m} → Γ ∋ w ⦂ B → Δ ∋ ρ w ⦂ rename ρ B)
+    ---------------------------------------------------------------
+  → (∀ {w : Var (suc m)} {A : Term m} {B : Term (suc m)}
+      → Γ , A ∋ w ⦂ B → Δ , rename ρ A ∋ extr ρ w ⦂ rename (extr ρ) B)
 
-  ∅ :
-      ----
-      ∅ wf
+⊢rename : ∀ {m n} {Γ : Context m} {Δ : Context n}
+  → (ρ : Var m → Var n)
+  → (∀ {w : Var m} {B : Term m} → Γ ∋ w ⦂ B → Δ ∋ ρ w ⦂ rename ρ B)
+    ------------------------------------------------------
+  → (∀ {w : Var m} {M A : Term m}
+      → Γ ⊢ M ⦂ A → Δ ⊢ rename ρ M ⦂ rename ρ A)
 
-  _,_ : ∀ {n} {Γ : Context n} {A : Term n} {s : Sort}
-    → Γ wf
-    → Γ ⊢ A ⦂ ⟪ s ⟫
-      --------------
-    → Γ , A wf
+⊢extr ρ ⊢ρ Z[ ⊢A ]       =  Z[ ⊢rename ρ ⊢ρ ⊢A ]
+⊢extr ρ ⊢ρ (S[ ⊢A ] ∋w)  =  S[ ⊢rename ρ ⊢ρ ⊢A ] (ρ ∋w)
+
+⊢rename = {!!}
+{-
+⊢rename σ (Ax ∋w)         =  Ax (σ ∋w)
+⊢rename σ (⇒-I ⊢N)        =  ⇒-I (⊢rename (⊢extr σ) ⊢N)
+⊢rename σ (⇒-E ⊢L ⊢M)     =  ⇒-E (⊢rename σ ⊢L) (⊢rename σ ⊢M) 
+⊢rename σ ℕ-I₁            =  ℕ-I₁
+⊢rename σ (ℕ-I₂ ⊢M)       =  ℕ-I₂ (⊢rename σ ⊢M)
+⊢rename σ (ℕ-E ⊢L ⊢M ⊢N)  =  ℕ-E (⊢rename σ ⊢L) (⊢rename σ ⊢M) (⊢rename (⊢extr σ) ⊢N)
+⊢rename σ (Fix ⊢M)        =  Fix (⊢rename (⊢extr σ) ⊢M)
+-}
 \end{code}
 
-## Weaking of typing judgements
+
+## Weakening
 
 \begin{code}
-infix 4 _→ʳ_
+{-
+weak : ∀ {n} {Γ : Context n} {M : Term n} {A B : Term n} {s : Sort}
+  → Γ ⊢ A ⦂ ⟪ s ⟫
+  → Γ ⊢ M ⦂ B
+    ---------------------------------
+  → Γ , A ⊢ rename S_ M ⦂ rename S_ B
+weak ⊢C ⟪*⟫ = ⟪*⟫
+weak ⊢C ⌊ ∋x ⌋ =  ⌊ S[ ⊢C ] ∋x ⌋
+weak ⊢C (Π[ st ] ⊢A ⇒ ⊢B) = {! Π[ st ] weak ⊢A ⇒ weak ⊢B!}
+weak ⊢C (ƛ[ x ] ⊢M ⇒ ⊢M₁ ⦂ ⊢M₂) = {!!}
+weak ⊢C (⊢M · ⊢M₁) = {!!}
+weak ⊢C (Eq ⊢M x) = {!!}
+-}
+\end{code}
 
-_→ʳ_ : ∀ {m n} → Context m → Context n →  Set
-_→ʳ_ {m} {n} Γ Δ =
-  Σ[ ρ ∈ (Var m → Var n) ] ∀ (k : Var m) →
-    rename ρ (lookup Γ k) ≡ lookup Δ (ρ k)
 
-⊢extr : ∀ {m n} {Γ : Context m} {Δ : Context n} {A : Term m} →
-  (⊢ρ : Γ →ʳ Δ) → ((Γ , A) →ʳ (Δ , rename (proj₁ ⊢ρ) A))
-⊢extr {m} {n} {Γ} {Δ} {A} ⊢ρ = ⟨ extr (proj₁ ⊢ρ) , h ⟩
+## Substitution in type derivations
+
+\begin{code}
+{-
+exts : ∀ {m n} → (Var m → Term n) → (Var (suc m) → Term (suc n))
+exts ρ Z      =  ⌊ Z ⌋
+exts ρ (S k)  =  rename S_ (ρ k)
+
+subst : ∀ {m n} → (Var m → Term n) → (Term m → Term n)
+subst σ ⟪ s ⟫      =  ⟪ s ⟫
+subst σ ⌊ k ⌋      =  σ k
+subst σ (Π A ⇒ B)  =  Π subst σ A ⇒ subst (exts σ) B
+subst σ (ƛ A ⇒ N)  =  ƛ subst σ A ⇒ subst (exts σ) N
+subst σ (L · M)    =  subst σ L · subst σ M
+
+_[_] : ∀ {n} → Term (suc n) → Term n → Term n
+_[_] {n} N M  =  subst {suc n} {n} σ N
   where
-  h : ∀ (k : Var (suc m)) →
-              rename (extr (proj₁ ⊢ρ)) (lookup (Γ , A) k) ≡
-              lookup (Δ , rename (proj₁ ⊢ρ) A) (extr (proj₁ ⊢ρ) k)
-  h Z      =  {!!}
-  h (S k)  =  {!!} -- proj₂ ⊢ρ k
-
-⊢rename : ∀ {m n} {Γ : Context m} {Δ : Context n} {M A : Term m}
-  → (⊢ρ : Γ →ʳ Δ)
-  → Γ ⊢ M ⦂ A
-    ----------------------------------------------
-  → Δ ⊢ rename (proj₁ ⊢ρ) M ⦂ rename (proj₁ ⊢ρ) A
-⊢rename ⊢ρ ⟪*⟫ = ⟪*⟫
-⊢rename ⊢ρ ⌊ k ⌋ rewrite proj₂ ⊢ρ k = ⌊ proj₁ ⊢ρ k ⌋
-⊢rename ⊢ρ (Π[ st ] ⊢A ⇒ ⊢N) = {!Π[ st ] ⊢rename ρ ⊢ρ ⊢A ⇒ rename (extr ρ ⊢ρ) N !}
-⊢rename ⊢ρ (ƛ[ x ] ⊢N ⇒ ⊢N₁ ⦂ ⊢N₂) = {!!}
-⊢rename ⊢ρ (⊢N · ⊢N₁) = {!!}
-⊢rename ⊢ρ (Eq ⊢N x) = {!!}
-
-
-
+  σ : Var (suc n) → Term n
+  σ Z      =  M
+  σ (S k)  =  ⌊ k ⌋
+-}
 \end{code}
 
 ## Test examples are well-typed
 
 \begin{code}
--- _⇒[_]_ : ∀ {Γ A B s t} → Γ ⊢ A ⦂ ⟪ s ⟫ → Permitted s t → Γ ⊢ B ⦂ ⟪ t ⟫ → Γ ⊢ A ⇒ B ⦂ ⟪ t ⟫
--- ⊢A ⇒[ st ] ⊢B  =  Π[ st ] ⊢A ⇒ ⊢rename S_ ⊢B
+{-
+_⊢⇒_ : ∀ {n} {Γ : Context n} {A B : Term n}
+         → Γ ⊢ A ⦂ ⟪ * ⟫ → Γ ⊢ B ⦂ ⟪ * ⟫ → Γ ⊢ A ⇒ B ⦂ ⟪ * ⟫
+⊢A ⊢⇒ ⊢B  =  Π[ ** ] ⊢A ⇒ rename S_ ⊢B
+-}
 
 -- ⊢Ch : ∅ ⊢ Ch ⦂ ⟪ * ⟫
--- ⊢Ch = Π[ ** ] ⟪*⟫ ⇒ Π[ ** ] ⌊ Z ⌋ 
+-- ⊢Ch = Π[ ** ] ⟪ * ⟫ ⇒ Π[ ** ] ⌊ Z ⌋ 
 -- Ch = Π ⟪ * ⟫ ⇒ ((# 0 ⇒ # 0) ⇒ # 0 ⇒ # 0)
 -- Ch = Π X ⦂ * ⇒ (X ⇒ X) ⇒ X ⇒ X
 
