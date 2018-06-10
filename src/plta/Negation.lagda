@@ -4,13 +4,17 @@ layout    : page
 permalink : /Negation/
 ---
 
+\begin{code}
+module plta.Negation where
+\end{code}
+
 This chapter introduces negation, and discusses intuitionistic
 and classical logic.
 
 ## Imports
 
 \begin{code}
-open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -24,7 +28,7 @@ open import Function using (_∘_)
 
 Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
-as implication of false. 
+as implication of false.
 \begin{code}
 ¬_ : Set → Set
 ¬ A = A → ⊥
@@ -117,7 +121,7 @@ peano : ∀ {m : ℕ} → zero ≢ suc m
 peano = λ()
 \end{code}
 The evidence is essentially the same, as the absurd pattern matches
-all possible evidence of type `zero ≡ suc m`. 
+all possible evidence of type `zero ≡ suc m`.
 
 Given the correspondence of implication to exponentiation and
 false to the type with no members, we can view negation as
@@ -264,7 +268,7 @@ pick the first disjunct.
 
     em-irrefutable k = k (inj₂ λ{ x → k (inj₁ x) })
 
-There are no holes left! This completes the proof. 
+There are no holes left! This completes the proof.
 
 The following story illustrates the behaviour of the term we have created.
 (With apologies to Peter Selinger, who tells a similar story
@@ -319,7 +323,7 @@ Implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
 ×-Implies-⊎ = ∀ {A B : Set} → ¬ (A × B) → (¬ A) ⊎ (¬ B)
 \end{code}
 
-    
+
 ### Exercise (`¬-stable`, `×-stable`)
 
 Say that a formula is *stable* if double negation elimination holds for it.

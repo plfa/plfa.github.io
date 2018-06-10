@@ -4,9 +4,9 @@ layout    : page
 permalink : /Lambda/
 ---
 
-[Parts of this chapter take their text from chapter _Stlc_ in
-book _Programming Language Foundations_ of _Software Foundations_.
-Those parts will be revised.]
+\begin{code}
+module plta.Lambda where
+\end{code}
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
@@ -47,8 +47,6 @@ four.
 ## Imports
 
 \begin{code}
-module Lambda where
-
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
@@ -75,7 +73,7 @@ And one is for recursion:
   * Fixpoint, `μ x ⇒ M`
 
 Abstraction is also called lambda abstraction, and is the construct
-from which the calculus takes its name. 
+from which the calculus takes its name.
 
 With the exception of variables and fixpoints, each term
 form either constructs a value of a given type (abstractions yield functions,
@@ -211,7 +209,7 @@ leaves the meaning of a term unchanged.  Thus the five terms
 * `` ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ``
 * `` ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x") ``
 * `` ƛ "fred" ⇒ ƛ "xander" ⇒ # "fred" · (# "fred" · # "xander") ``
-* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``  
+* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``
 * `` ƛ "z" ⇒ ƛ "s" ⇒ # "z" · (# "z" · # "s") ``
 
 are all considered equivalent.  Following the convention introduced
@@ -234,7 +232,7 @@ _open_.  Of the three terms above, the first is closed and the other
 two are open.
 
 Different occurrences of a variable may be bound and free.
-In the term 
+In the term
 
     (ƛ "x" ⇒ # "x") · # "x"
 
@@ -259,7 +257,7 @@ to alpha renaming. In the term
 
 notice that there are two binding occurrences of `m`, one in the first
 line and one in the last line.  It is equivalent to the following term,
-    
+
     μ "plus" ⇒ ƛ "x" ⇒ ƛ "y" ⇒
       `case # "x"
         [zero⇒ # "y"
@@ -267,7 +265,7 @@ line and one in the last line.  It is equivalent to the following term,
 
 where the two binding occurrences corresponding to `m` now have distinct
 names, `x` and `x′`.
-    
+
 
 ## Values
 
@@ -456,7 +454,7 @@ conditional, we first reduce the condition until it becomes a value;
 if the condition is true the conditional reduces to the first
 branch and if false it reduces to the second branch.
 
-In an informal presentation of the formal semantics, 
+In an informal presentation of the formal semantics,
 the rules for reduction are written as follows.
 
     L ⟹ L′
@@ -498,7 +496,7 @@ and indeed such rules are traditionally called beta rules.
 Here are the above rules formalised in Agda.
 
 \begin{code}
-infix 4 _⟹_ 
+infix 4 _⟹_
 
 data _⟹_ : Term → Term → Set where
 
@@ -524,7 +522,7 @@ data _⟹_ : Term → Term → Set where
     → `suc M ⟹ `suc M′
 
   ξ-case : ∀ {x L L′ M N}
-    → L ⟹ L′    
+    → L ⟹ L′
       -----------------------------------------------------------------
     → `case L [zero⇒ M |suc x ⇒ N ] ⟹ `case L′ [zero⇒ M |suc x ⇒ N ]
 
@@ -599,7 +597,7 @@ Here it is formalised in Agda, along similar lines to what
 we used for reasoning about [Equality](Equality).
 
 \begin{code}
-infix  2 _⟹*_ 
+infix  2 _⟹*_
 infix  1 begin_
 infixr 2 _⟹⟨_⟩_
 infix  3 _∎
@@ -613,7 +611,7 @@ data _⟹*_ : Term → Term → Set where
     → L ⟹ M
     → M ⟹* N
       ---------
-    → L ⟹* N  
+    → L ⟹* N
 
 begin_ : ∀ {M N} → (M ⟹* N) → (M ⟹* N)
 begin M⟹*N = M⟹*N
@@ -636,7 +634,7 @@ _ =
   begin
     plus · two · two
   ⟹⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
-    (ƛ "m" ⇒ ƛ "n" ⇒ 
+    (ƛ "m" ⇒ ƛ "n" ⇒
       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · two · two
   ⟹⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
@@ -648,11 +646,11 @@ _ =
   ⟹⟨ β-case-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
   ⟹⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
-    `suc ((ƛ "m" ⇒ ƛ "n" ⇒ 
+    `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · `suc `zero · two)
   ⟹⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
-    `suc ((ƛ "n" ⇒ 
+    `suc ((ƛ "n" ⇒
       `case `suc `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · two)
   ⟹⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
@@ -660,11 +658,11 @@ _ =
   ⟹⟨ ξ-suc (β-case-suc V-zero) ⟩
     `suc `suc (plus · `zero · two)
   ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
-    `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒ 
+    `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · `zero · two)
   ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
-    `suc `suc ((ƛ "n" ⇒ 
+    `suc `suc ((ƛ "n" ⇒
       `case `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · two)
   ⟹⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
@@ -785,7 +783,7 @@ In general, we use typing _judgements_ of the form
 to assert in type environment `Γ` that term `M` has type `A`.
 Environment `Γ` provides types for all the free variables in `M`.
 
-Here are three examples. 
+Here are three examples.
 
 * `` ∅ , "f" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ # "f" · (# "f" · # "x") ⦂  `ℕ ``
 * `` ∅ , "f" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  `ℕ ⇒ `ℕ ``
@@ -799,7 +797,7 @@ environment `Γ` by mapping variable `x` to type `A`.
 
 *(((Need text to explain `Γ ∋ x ⦂ A`)))*
 
-In an informal presentation of the formal semantics, 
+In an informal presentation of the formal semantics,
 the rules for typing are written as follows.
 
     Γ x ≡ A
@@ -828,7 +826,7 @@ the rules for typing are written as follows.
     Γ ⊢ if L then M else N ⦂ A
 
 As we will show later, the rules are deterministic, in that
-at most one rule applies to every term. 
+at most one rule applies to every term.
 
 The proof rules come in pairs, with rules to introduce and to
 eliminate each connective, labeled `-I` and `-E`, respectively. As we
@@ -850,7 +848,7 @@ infix  4  _⊢_⦂_
 infixl 5  _,_⦂_
 
 data Context : Set where
-  ∅     : Context 
+  ∅     : Context
   _,_⦂_ : Context → Id → Type → Context
 
 data _∋_⦂_ : Context → Id → Type → Set where
@@ -928,9 +926,9 @@ Derivation of for the Church numeral two:
 Where `∋s` and `∋z` abbreviate the two derivations:
 
 
-                 ---------------- Z           
+                 ---------------- Z
     "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
-    ----------------------------- S        ------------- Z  
+    ----------------------------- S        ------------- Z
     Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
 
 where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.

@@ -4,6 +4,10 @@ layout    : page
 permalink : /Acknowledgements/
 ---
 
+\begin{code}
+module plta.Acknowledgements where
+\end{code}
+
 Thank you to the following.
 
 To the inventors of Agda, for giving us a new playground.

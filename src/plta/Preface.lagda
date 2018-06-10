@@ -4,6 +4,10 @@ layout    : page
 permalink : /Preface/
 ---
 
+\begin{code}
+module plta.Preface where
+\end{code}
+
 This book is an introduction to programming language theory, written
 in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
@@ -88,4 +92,3 @@ preparing an Agda file that solves the exercise.  Sometimes it is up to you to
 work out the type of the identifier, but sometimes we give it in the exercise.
 In some cases the type is bound to an identifier with a capital in its
 name, where the identifier you are to define has a small letter instead.
-

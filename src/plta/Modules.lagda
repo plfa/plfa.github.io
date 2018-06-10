@@ -7,6 +7,10 @@ permalink : /Modules/
 ** Turn this into a Setoid example. Copy equivalence relation and setoid
 from the standard library. **
 
+\begin{code}
+module plta.Modules where
+\end{code}
+
 This chapter introduces modules as a way of structuring proofs,
 and proves some general results which will be useful later.
 
@@ -17,18 +21,15 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
--- open import Data.Nat.Properties using
---   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Isomorphism using (_≃_)
+open import plta.Isomorphism using (_≃_)
 open import Function using (_∘_)
 open import Level using (Level)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.List using (List; []; _∷_; _++_; map; foldr; downFrom)
 open import Data.List.All using (All; []; _∷_)
 open import Data.List.Any using (Any; here; there)
--- open import Data.List.Any.Membership.Propositional using (_∈_)
 \end{code}
 
 We assume [extensionality][extensionality].
@@ -101,7 +102,7 @@ Say I want to define a type of stacks, with operations push and pop.
 I can define stacks in terms of lists, but hide the definitions from
 the rest of the program.
 \begin{code}
-abstract 
+abstract
 
   Stack : Set → Set
   Stack A = List A

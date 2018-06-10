@@ -4,6 +4,10 @@ layout    : page
 permalink : /Untyped/
 ---
 
+\begin{code}
+module plta.Untyped where
+\end{code}
+
 This chapter considers a system that varies, in interesting ways,
 what has gone earlier.  The lambda calculus in this section is
 untyped rather than simply-typed; uses terms that are inherently-scoped
@@ -12,10 +16,6 @@ rather than weak head-normal form; and uses call-by-name rather than
 call-by-value order of reduction.
 
 ## Imports
-
-\begin{code}
-module Untyped where
-\end{code}
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
@@ -301,7 +301,7 @@ normalise (suc g) L with progress L
 \end{code}
 
 \begin{code}
-_ : normalise 100 (plus {zero} · two · two) ≡ 
+_ : normalise 100 (plus {zero} · two · two) ≡
   normal 94
   ((ƛ
     (ƛ

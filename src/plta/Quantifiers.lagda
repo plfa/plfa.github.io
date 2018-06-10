@@ -4,6 +4,10 @@ layout    : page
 permalink : /Quantifiers/
 ---
 
+\begin{code}
+module plta.Quantifiers where
+\end{code}
+
 This chapter introduces universal and existential quantification.
 
 ## Imports
@@ -12,8 +16,8 @@ This chapter introduces universal and existential quantification.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
-open Isomorphism.≃-Reasoning
+open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open plta.Isomorphism.≃-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties.Simple using (+-suc)
 open import Relation.Nullary using (¬_)
@@ -74,7 +78,7 @@ evidence of a proposition are indistinguishable.
 Dependent function types are sometimes referred to as dependent products,
 because if `A` is a finite type with values `x₁ , ⋯ , xᵢ`, and if
 each of the types `B x₁ , ⋯ , B xᵢ` has `m₁ , ⋯ , mᵢ` distinct members,
-then `∀ (x : A) → B x` has `m₁ * ⋯ * mᵢ` members.  
+then `∀ (x : A) → B x` has `m₁ * ⋯ * mᵢ` members.
 Indeed, sometimes the notation `∀ (x : A) → B x`
 is replaced by a notation such as `Π[ x ∈ A ] (B x)`,
 where `Π` stands for product.  However, we will stick with the name
@@ -236,7 +240,7 @@ Does the converse hold? If so, prove; if not, explain why.
 
 ## An existential example
 
-Recall the definitions of `even` and `odd` from Chapter [Relations](Relations).  
+Recall the definitions of `even` and `odd` from Chapter [Relations](Relations).
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -350,8 +354,8 @@ of a disjunction is isomorphic to a conjunction of negations.
   record
     { to      =  λ{ ¬∃xy x y → ¬∃xy ⟨ x , y ⟩ }
     ; from    =  λ{ ∀¬xy ⟨ x , y ⟩ → ∀¬xy x y }
-    ; from∘to =  λ{ ¬∃xy → extensionality λ{ ⟨ x , y ⟩ → refl } } 
-    ; to∘from =  λ{ ∀¬xy → refl } 
+    ; from∘to =  λ{ ¬∃xy → extensionality λ{ ⟨ x , y ⟩ → refl } }
+    ; to∘from =  λ{ ∀¬xy → refl }
     }
 \end{code}
 In the `to` direction, we are given a value `¬∃xy` of type

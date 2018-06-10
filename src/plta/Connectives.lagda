@@ -4,6 +4,10 @@ layout    : page
 permalink : /Connectives/
 ---
 
+\begin{code}
+module plta.Connectives where
+\end{code}
+
 This chapter introduces the basic logical connectives, by observing
 a correspondence between connectives of logic and data types,
 a principle known as *Propositions as Types*.
@@ -21,8 +25,8 @@ a principle known as *Propositions as Types*.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
-open Isomorphism.≃-Reasoning
+open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open plta.Isomorphism.≃-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties.Simple using (+-suc)
 open import Function using (_∘_)
@@ -53,7 +57,7 @@ the pair constructor is `_,_`, but here we rename it to
 `⟨_,_⟩` so that comma is available for other notations
 (in particular, lists and environments).
 
-<!-- 
+<!--
 By convention, we parenthesise pairs, even though `M , N` is also
 accepted by Agda.
 -->
@@ -174,10 +178,10 @@ and similarly for `to∘from`, which does the same (up to renaming).
 ×-comm =
   record
     { to       =  λ{ ⟨ x , y ⟩ → ⟨ y , x ⟩ }
-    ; from     =  λ{ ⟨ y , x ⟩ → ⟨ x , y ⟩ } 
+    ; from     =  λ{ ⟨ y , x ⟩ → ⟨ x , y ⟩ }
     ; from∘to  =  λ{ ⟨ x , y ⟩ → refl }
     ; to∘from  =  λ{ ⟨ y , x ⟩ → refl }
-    } 
+    }
 \end{code}
 
 Being *commutative* is different from being *commutative up to
@@ -206,7 +210,7 @@ matching against a suitable pattern to enable simplification.
     ; from    = λ{ ⟨ x , ⟨ y , z ⟩ ⟩ → ⟨ ⟨ x , y ⟩ , z ⟩ }
     ; from∘to = λ{ ⟨ ⟨ x , y ⟩ , z ⟩ → refl }
     ; to∘from = λ{ ⟨ x , ⟨ y , z ⟩ ⟩ → refl }
-    } 
+    }
 \end{code}
 
 Being *associative* is not the same as being *associative
@@ -438,7 +442,7 @@ matching against a suitable pattern to enable simplification.
   ; to∘from  =  λ{ (inj₁ x)        → refl
                  ; (inj₂ (inj₁ y)) → refl
                  ; (inj₂ (inj₂ z)) → refl
-                 } 
+                 }
   }
 \end{code}
 
@@ -527,7 +531,7 @@ isomorphism between the two types.  For instance, `inj₂ true`, which is
 a member of the former, corresponds to `true`, which is a member of
 the latter.
 
-Right identity follows from commutativity of sum and left identity.  
+Right identity follows from commutativity of sum and left identity.
 \begin{code}
 ⊥-identityʳ : ∀ {A : Set} → (A ⊎ ⊥) ≃ A
 ⊥-identityʳ {A} =
@@ -614,14 +618,14 @@ arguments of the type `Bool → Tri`:
 →-count : (Bool → Tri) → ℕ
 →-count f with f true | f false
 ...           | aa    | aa      =   1
-...           | aa    | bb      =   2  
+...           | aa    | bb      =   2
 ...           | aa    | cc      =   3
 ...           | bb    | aa      =   4
 ...           | bb    | bb      =   5
 ...           | bb    | cc      =   6
 ...           | cc    | aa      =   7
 ...           | cc    | bb      =   8
-...           | cc    | cc      =   9  
+...           | cc    | cc      =   9
 \end{code}
 
 Exponential on types also share a property with exponential on
@@ -719,7 +723,7 @@ this fact is similar in structure to our previous results.
 ×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
 ×-distrib-⊎ =
   record
-    { to      = λ{ ⟨ inj₁ x , z ⟩ → (inj₁ ⟨ x , z ⟩) 
+    { to      = λ{ ⟨ inj₁ x , z ⟩ → (inj₁ ⟨ x , z ⟩)
                  ; ⟨ inj₂ y , z ⟩ → (inj₂ ⟨ y , z ⟩)
                  }
     ; from    = λ{ (inj₁ ⟨ x , z ⟩) → ⟨ inj₁ x , z ⟩
@@ -730,7 +734,7 @@ this fact is similar in structure to our previous results.
                  }
     ; to∘from = λ{ (inj₁ ⟨ x , z ⟩) → refl
                  ; (inj₂ ⟨ y , z ⟩) → refl
-                 }               
+                 }
     }
 \end{code}
 
@@ -741,14 +745,14 @@ Sums do not distribute over products up to isomorphism, but it is an embedding.
   record
     { to      = λ{ (inj₁ ⟨ x , y ⟩) → ⟨ inj₁ x , inj₁ y ⟩
                  ; (inj₂ z)         → ⟨ inj₂ z , inj₂ z ⟩
-                 }  
+                 }
     ; from    = λ{ ⟨ inj₁ x , inj₁ y ⟩ → (inj₁ ⟨ x , y ⟩)
                  ; ⟨ inj₁ x , inj₂ z ⟩ → (inj₂ z)
                  ; ⟨ inj₂ z , _      ⟩ → (inj₂ z)
                  }
     ; from∘to = λ{ (inj₁ ⟨ x , y ⟩) → refl
                  ; (inj₂ z)         → refl
-                 } 
+                 }
     }
 \end{code}
 Note that there is a choice in how we write the `from` function.
@@ -820,4 +824,3 @@ This chapter uses the following unicode.
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
     ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>)
-

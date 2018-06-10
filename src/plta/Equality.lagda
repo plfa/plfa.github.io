@@ -4,6 +4,10 @@ layout    : page
 permalink : /Equality/
 ---
 
+\begin{code}
+module plta.Equality where
+\end{code}
+
 Much of our reasoning has involved equality.  Given two terms `M`
 and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
 are interchangeable.  So far we have treated equality as a primitive,
@@ -409,7 +413,7 @@ convenient in much of what follows.
 A term of the form
 
     λ{ P₁ → N₁; ⋯ ; Pᵢ → Nᵢ }
-    
+
 is equivalent to a function `f` defined by the equations
 
     f P₁ = e₁

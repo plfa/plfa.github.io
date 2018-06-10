@@ -4,6 +4,10 @@ layout    : page
 permalink : /Naturals/
 ---
 
+\begin{code}
+module plta.Naturals where
+\end{code}
+
 The night sky holds more stars than I can count, though fewer than five
 thousand are visible to the naked eye.  The observable universe
 contains about seventy sextillion stars.
@@ -144,7 +148,7 @@ natural number (on the day before today) then `suc m` is also a
 natural number (today).  We didn't know about any natural numbers
 before today, so the inductive case doesn't apply.
 
-    -- on the first day, there is one natural number   
+    -- on the first day, there is one natural number
     zero : ℕ
 
 Then we repeat the process. On the next day we know about all the
@@ -301,7 +305,7 @@ written with underbars where the argument go, hence its name is
 `_+_`.  The first line is a signature specifying the type of the operator.
 The type `ℕ → ℕ → ℕ`, indicates that addition accepts two naturals
 and returns a natural.  Infix notation is just a shorthand for application;
-the terms `m + n` and `_+_ m n` are equivalent.  
+the terms `m + n` and `_+_ m n` are equivalent.
 
 The definition has a base case and an inductive case, corresponding to
 those for the natural numbers.  The base case says that adding zero to
@@ -423,7 +427,7 @@ Once we have defined addition, we can define multiplication
 as repeated addition.
 \begin{code}
 _*_ : ℕ → ℕ → ℕ
-zero * n     =  zero 
+zero * n     =  zero
 (suc m) * n  =  n + (m * n)
 \end{code}
 
@@ -445,7 +449,7 @@ identity for multiplication, so `1 * n = n`.
 
 Again, the definition is well-founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
- 
+
 For example, let's multiply two and three.
 \begin{code}
 _ =
@@ -650,7 +654,7 @@ more equations.
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
     1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
 
-And we repeat the process again.  
+And we repeat the process again.
 
     -- on the third day, we know about addition of 0, 1, and 2
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
@@ -867,7 +871,7 @@ Information on pragmas can be found in the Agda documentation.
 
 This chapter uses the following unicode.
 
-    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)  
+    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
     ≡  U+2261  IDENTICAL TO (\==)  =
@@ -894,5 +898,3 @@ In place of left, right, up, and down keys, one may also use control characters.
 
 We write `^B` to stand for control-B, and similarly.  One can also navigate
 left and write by typing the digits that appear in the displayed list.
-
-
