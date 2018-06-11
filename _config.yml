@@ -24,6 +24,8 @@ disqus:
 
 baseurl: "/sf"
 url: "https://wenkokke.github.io"
+plugins:
+  - jekyll-feed
 markdown: kramdown
 theme: minima
 exclude:

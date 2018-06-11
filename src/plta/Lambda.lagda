@@ -28,13 +28,13 @@ recursive function definitions.
 
 This chapter formalises the simply-typed lambda calculus, giving its
 syntax, small-step semantics, and typing rules.  The next chapter
-[LambdaProp](LambdaProp) reviews its main properties, including
+[LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %}) reviews its main properties, including
 progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
 
 Be aware that the approach we take here is _not_ our recommended
 approach to formalisation.  Using De Bruijn indices and
-inherently-typed terms, as we will do in Chapter [DeBruijn](DeBruijn),
+inherently-typed terms, as we will do in Chapter [DeBruijn]({{ site.baseurl }}{% link out/plta/DeBruijn.md %}),
 leads to a more compact formulation.  Nonetheless, we begin with named
 variables, partly because such terms are easier to read and partly
 because the development is more traditional.
@@ -144,7 +144,7 @@ four : Term
 four = plus · two · two
 \end{code}
 The recursive definition of addition is similar to our original
-definition of `_+_` for naturals, as given in Chapter [Natural](Naturals).
+definition of `_+_` for naturals, as given in Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %}).
 Later we will confirm that two plus two is four, in other words that
 the term
 
@@ -278,7 +278,7 @@ names, `x` and `x′`.
 We only consider reduction of _closed_ terms,
 those that contain no free variables.  We consider
 a precise definition of free variables in Chapter
-[LambdaProp](LambdaProp).
+[LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %}).
 
 *rewrite (((*
 A term is a value if it is fully reduced.
@@ -326,7 +326,7 @@ An alternative is not to focus on closed terms,
 to treat variables as values, and to treat
 `ƛ x ⇒ N` as a value only if `N` is a value.
 Indeed, this is how Agda normalises terms.
-We consider this approach in a [later chapter](Untyped).
+We consider this approach in a [later chapter]({{ site.baseurl }}{% link out/plta/Untyped.md %}).
 
 ## Substitution
 
@@ -600,7 +600,7 @@ are written as follows.
     L ⟹* N
 
 Here it is formalised in Agda, along similar lines to what
-we used for reasoning about [Equality](Equality).
+we used for reasoning about [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}).
 
 \begin{code}
 infix  2 _⟹*_

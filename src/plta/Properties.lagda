@@ -534,7 +534,7 @@ which is left as an exercise for the reader.
 
 Write out what is known about associativity on each of the first four
 days using a finite story of creation, as
-[earlier](Naturals/index.html#finite-creation).
+[earlier]({{ site.baseurl }}{% link out/plta/Naturals.md %}#finite-creation).
 
 
 ## Associativity with rewrite

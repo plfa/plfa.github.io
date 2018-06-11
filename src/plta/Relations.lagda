@@ -128,7 +128,7 @@ either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 
 Given two numbers, it is straightforward to compute whether or not the first is
 less than or equal to the second.  We don't give the code for doing so here, but
-will return to this point in Chapter [Decidability](Decidability).
+will return to this point in Chapter [Decidable]({{ site.baseurl }}{% link out/plta/Decidable.md %}).
 
 
 ## Properties of ordering relations
@@ -418,7 +418,7 @@ transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 The proof of monotonicity (and the associated lemmas) can be written
 in a more readable form by using an anologue of our notation for
-`≡-reasoning`.  Read ahead to chapter [Equivalence](Equivalence) to
+`≡-reasoning`.  Read ahead to chapter [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}) to
 see how `≡-reasoning` is defined, define `≤-reasoning` analogously,
 and use it to write out an alternative proof that addition is
 monotonic with regard to inequality.
@@ -448,7 +448,7 @@ It is also monotonic with regards to addition and multiplication.
 Most of the above are considered in exercises below.  Irreflexivity
 requires negation, as does the fact that the three cases in
 trichotomy are mutually exclusive, so those points are deferred
-to the chapter that introduces [negation](Negation).
+to the chapter that introduces [negation]({{ site.baseurl }}{% link out/plta/Negation.md %}).
 
 It is straightforward to show that `suc m ≤ n` implies `m < n`,
 and conversely.  One can then give an alternative derivation of the
@@ -469,7 +469,7 @@ the sense that for any `m` and `n` that one of the following holds:
 This only involves two relations, as we define `m > n` to
 be the same as `n < m`. You will need a suitable data declaration,
 similar to that used for totality.  (We will show that the three cases
-are exclusive after [negation](Negation) is introduced.)
+are exclusive after [negation]({{ site.baseurl }}{% link out/plta/Negation.md %}) is introduced.)
 
 ### Exercise (`+-mono-<`)
 
@@ -591,7 +591,7 @@ import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 \end{code}
 In the standard library, `≤-total` is formalised in terms of
-disjunction (which we define in Chapter [Connectives](Connectives)),
+disjunction (which we define in Chapter [Connectives]({{ site.baseurl }}{% link out/plta/Connectives.md %})),
 and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than here
 as well as taking as implicit arguments that here are explicit.
 

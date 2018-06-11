@@ -212,8 +212,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
     → Value (ƛ N)
 \end{code}
 
-Here `` `zero `` requires an implicit parameter to aid inference
-(much in the same way that `[]` did in [Lists](Lists)).
+Here `zero` requires an implicit parameter to aid inference (much in the same way that `[]` did in [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})).
 
 ## Reduction step
 

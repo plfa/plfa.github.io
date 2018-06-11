@@ -34,7 +34,7 @@ postulate
   extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
 \end{code}
 
-[extensionality]: Equality#extensionality
+[extensionality]: {{ site.baseurl }}{% link out/plta/Equality.md %}#extensionality
 
 
 ## Lists
@@ -862,7 +862,7 @@ _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} 
 (g ∘′ f) x  =  g (f x)
 \end{code}
 
-[unipoly]: Equality/index.html#unipoly
+[unipoly]: {{ site.baseurl }}{% link out/plta/Equality.md %}#unipoly
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law.
 \begin{code}

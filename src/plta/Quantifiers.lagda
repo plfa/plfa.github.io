@@ -32,7 +32,7 @@ postulate
   extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
 \end{code}
 
-[extensionality]: Equality/index.html#extensionality
+[extensionality]: {{ site.baseurl }}{% link out/plta/Equality.md %}#extensionality
 
 
 ## Universals
@@ -92,7 +92,7 @@ Show that universals distribute over conjunction.
 ∀-Distrib-× = ∀ {A : Set} {B C : A → Set} →
   (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 \end{code}
-Compare this with the result (`→-distrib-×`) in Chapter [Connectives](Connectives).
+Compare this with the result (`→-distrib-×`) in Chapter [Connectives]({{ site.baseurl }}{% link out/plta/Connectives.md %}).
 
 ### Exercise (`⊎∀-implies-∀⊎`)
 
@@ -218,7 +218,7 @@ The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
 [implication][implication].
 
-[implication]: Connectives/index.html#implication
+[implication]: {{ site.baseurl }}{% link out/plta/Connectives.md %}/index.html#implication
 
 ### Exercise (`∃-distrib-⊎`)
 
@@ -240,7 +240,7 @@ Does the converse hold? If so, prove; if not, explain why.
 
 ## An existential example
 
-Recall the definitions of `even` and `odd` from Chapter [Relations](Relations).
+Recall the definitions of `even` and `odd` from Chapter [Relations]({{ site.baseurl }}{% link out/plta/Relations.md %}).
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set

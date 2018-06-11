@@ -142,13 +142,13 @@ when `A` is anything other than `⊥` itself.
 
 ### Exercise (`≢`, `<-irrerflexive`)
 
-Using negation, show that [strict inequality](Relations/#strict-inequality)
+Using negation, show that [strict inequality]({{ site.baseurl }}{% link out/plta/Relations.md %}/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 
 ### Exercise (`trichotomy`)
 
-Show that strict inequality satisfies [trichotomy](Relations/#trichotomy),
+Show that strict inequality satisfies [trichotomy]({{ site.baseurl }}{% link out/plta/Relations.md %}/#trichotomy),
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
 * `m < n`
