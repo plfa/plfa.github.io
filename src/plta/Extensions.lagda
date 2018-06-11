@@ -4,11 +4,12 @@ layout    : page
 permalink : /Extensions/
 ---
 
-## Imports
-
 \begin{code}
-module Extensions where
+module plta.Extensions where
 \end{code}
+
+
+## Imports
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
@@ -144,7 +145,7 @@ data _⊢_ : Env → Type → Set where
   `case⊥ : ∀ {Γ A}
     → Γ ⊢ `⊥
       -------
-    → Γ ⊢ A 
+    → Γ ⊢ A
 
   `[] : ∀ {Γ A}
       ------------
@@ -204,7 +205,7 @@ rename σ (`case⊥ L)      =  `case⊥ (rename σ L)
 rename σ `[]             =  `[]
 rename σ (M `∷ N)        =  (rename σ M) `∷ (rename σ N)
 rename σ (`caseL L M N)  =  `caseL (rename σ L) (rename σ M) (rename (ext (ext σ)) N)
-rename σ (`let M N)      =  `let (rename σ M) (rename (ext σ) N) 
+rename σ (`let M N)      =  `let (rename σ M) (rename (ext σ) N)
 \end{code}
 
 ## Substitution
@@ -233,7 +234,7 @@ subst ρ (`case⊥ L)      =  `case⊥ (subst ρ L)
 subst ρ `[]             =  `[]
 subst ρ (M `∷ N)        =  (subst ρ M) `∷ (subst ρ N)
 subst ρ (`caseL L M N)  =  `caseL (subst ρ L) (subst ρ M) (subst (exts (exts ρ)) N)
-subst ρ (`let M N)      =  `let (subst ρ M) (subst (exts ρ) N) 
+subst ρ (`let M N)      =  `let (subst ρ M) (subst (exts ρ) N)
 
 _[_] : ∀ {Γ A B}
   → Γ , A ⊢ B
@@ -265,7 +266,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} ρ N
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
-  Zero : ∀ {Γ} → 
+  Zero : ∀ {Γ} →
       -----------------
       Value (`zero {Γ})
 
@@ -273,7 +274,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
     → Value V
       --------------
     → Value (`suc V)
-      
+
   Fun : ∀ {Γ A B} {N : Γ , A ⊢ B}
       ---------------------------
     → Value (ƛ N)
@@ -409,7 +410,7 @@ data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   β-⊎₁ : ∀ {Γ A B C} {V : Γ ⊢ A} {M : Γ , A ⊢ C} {N : Γ , B ⊢ C}
     → Value V
       ---------------------------------
-    → `case⊎ (`inj₁ V) M N ⟶ M [ V ] 
+    → `case⊎ (`inj₁ V) M N ⟶ M [ V ]
 
   β-⊎₂ : ∀ {Γ A B C} {W : Γ ⊢ B} {M : Γ , A ⊢ C} {N : Γ , B ⊢ C}
     → Value W
@@ -447,7 +448,7 @@ data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → Value W
       -------------------------------------
     → `caseL (V `∷ W) M N ⟶ N [ V ][ W ]
-  
+
   ξ-let : ∀ {Γ A B} {M M′ : Γ ⊢ A} {N : Γ , A ⊢ B}
     → M ⟶ M′
       -----------------------
@@ -456,7 +457,7 @@ data _⟶_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   β-let : ∀ {Γ A B} {V : Γ ⊢ A} {N : Γ , A ⊢ B}
     → Value V
       ---------------------
-    → `let V N ⟶ N [ V ] 
+    → `let V N ⟶ N [ V ]
 \end{code}
 
 ## Reflexive and transitive closure
@@ -600,5 +601,3 @@ normalise (suc g) L with progress L
 ...    | step {M} L⟶M with normalise g M
 ...        | normal h M⟶*N                =  normal (suc h) (L ⟶⟨ L⟶M ⟩ M⟶*N)
 \end{code}
-
-

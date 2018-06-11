@@ -4,6 +4,10 @@ layout    : page
 permalink : /Isomorphism/
 ---
 
+\begin{code}
+module plta.Isomorphism where
+\end{code}
+
 This section introduces isomorphism as a way of asserting that two
 types are equal, and embedding as a way of asserting that one type is
 smaller than another.  We apply isomorphisms in the next chapter
@@ -42,7 +46,7 @@ record _≃_ (A B : Set) : Set where
     from : B → A
     from∘to : ∀ (x : A) → from (to x) ≡ x
     to∘from : ∀ (y : B) → to (from y) ≡ y
-open _≃_ 
+open _≃_
 \end{code}
 Let's unpack the definition. An isomorphism between sets `A` and `B` consists
 of four things:
@@ -60,7 +64,7 @@ to a corresponding inductive data declaration.
 \begin{code}
 data _≃′_ (A B : Set): Set where
   mk-≃′ : ∀ (to : A → B) →
-          ∀ (from : B → A) → 
+          ∀ (from : B → A) →
           ∀ (from∘to : (∀ (x : A) → from (to x) ≡ x)) →
           ∀ (to∘from : (∀ (y : B) → to (from y) ≡ y)) →
           A ≃′ B
@@ -107,7 +111,7 @@ and `from` to be the identity function.
     ; from    = λ{y → y}
     ; from∘to = λ{x → refl}
     ; to∘from = λ{y → refl}
-    } 
+    }
 \end{code}
 In the above, `to` and `from` are both bound to identity functions,
 and `from∘to` and `to∘from` are both bound to functions that discard
@@ -142,7 +146,7 @@ equational reasoning to combine the inverses.
           from A≃B (to A≃B x)
         ≡⟨ from∘to A≃B x ⟩
           x
-        ∎} 
+        ∎}
     ; to∘from = λ{y →
         begin
           to B≃C (to A≃B (from A≃B (from B≃C y)))
@@ -214,7 +218,7 @@ right inverses.
     { to      = λ{x → x}
     ; from    = λ{y → y}
     ; from∘to = λ{x → refl}
-    } 
+    }
 
 ≲-trans : ∀ {A B C : Set} → A ≲ B → B ≲ C → A ≲ C
 ≲-trans A≲B B≲C =
@@ -228,7 +232,7 @@ right inverses.
           from A≲B (to A≲B x)
         ≡⟨ from∘to A≲B x ⟩
           x
-        ∎} 
+        ∎}
      }
 \end{code}
 It is also easy to see that if two types embed in each other,

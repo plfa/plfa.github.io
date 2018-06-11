@@ -4,6 +4,10 @@ layout    : page
 permalink : /Fonts/
 ---
 
+\begin{code}
+module plta.Fonts where
+\end{code}
+
 Test page for fonts.
 
 Agda:
@@ -31,7 +35,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ
 ⌊⌋⌈⌉
 ----
 -}
-\end{code}    
+\end{code}
 
 Indented code:
 
@@ -55,4 +59,3 @@ Indented code:
     ------------
     ⌊⌋⌈⌉
     ----
-

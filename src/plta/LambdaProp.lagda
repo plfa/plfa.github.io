@@ -4,6 +4,11 @@ layout    : page
 permalink : /LambdaProp/
 ---
 
+
+\begin{code}
+module plta.LambdaProp where
+\end{code}
+
 [Parts of this chapter take their text from chapter _Stlc_
 of _Software Foundations_ (_Programming Language Foundations_).
 Those parts will be revised.]
@@ -25,8 +30,6 @@ types without needing to develop a separate inductive definition of the
 ## Imports
 
 \begin{code}
-module LambdaProp where
-
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
@@ -37,7 +40,7 @@ open import Data.Product
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Function using (_∘_)
-open import Lambda
+open import plta.Lambda
 \end{code}
 
 
@@ -46,7 +49,7 @@ open import Lambda
 The first step in establishing basic properties of reduction and typing
 is to identify the possible _canonical forms_ (i.e., well-typed closed values)
 belonging to each type.  For function types the canonical forms are lambda-abstractions,
-while for boolean types they are values `true` and `false`.  
+while for boolean types they are values `true` and `false`.
 
 \begin{code}
 infix  4 Canonical_⦂_
@@ -157,7 +160,7 @@ technical lemmas), the story goes like this:
   - The _preservation theorem_ is proved by induction on a typing derivation.
     The definition of `β-ƛ· uses substitution.  To see that
     this step preserves typing, we need to know that the substitution itself
-    does.  So we prove a ... 
+    does.  So we prove a ...
 
   - _substitution lemma_, stating that substituting a (closed) term
     `V` for a variable `x` in a term `N` preserves the type of `N`.
@@ -202,7 +205,7 @@ rename : ∀ {Γ Δ}
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
 rename σ (Ax ∋w)         =  Ax (σ ∋w)
 rename σ (⇒-I ⊢N)        =  ⇒-I (rename (ext σ) ⊢N)
-rename σ (⇒-E ⊢L ⊢M)     =  ⇒-E (rename σ ⊢L) (rename σ ⊢M) 
+rename σ (⇒-E ⊢L ⊢M)     =  ⇒-E (rename σ ⊢L) (rename σ ⊢M)
 rename σ ℕ-I₁            =  ℕ-I₁
 rename σ (ℕ-I₂ ⊢M)       =  ℕ-I₂ (rename σ ⊢M)
 rename σ (ℕ-E ⊢L ⊢M ⊢N)  =  ℕ-E (rename σ ⊢L) (rename σ ⊢M) (rename (ext σ) ⊢N)
@@ -340,7 +343,7 @@ preserve : ∀ {M N A}
   → M ⟹ N
     ----------
   → ∅ ⊢ N ⦂ A
-preserve (Ax ())               
+preserve (Ax ())
 preserve (⇒-I ⊢N)              ()
 preserve (⇒-E ⊢L ⊢M)           (ξ-·₁ L⟹L′)     =  ⇒-E (preserve ⊢L L⟹L′) ⊢M
 preserve (⇒-E ⊢L ⊢M)           (ξ-·₂ VL M⟹M′)  =  ⇒-E ⊢L (preserve ⊢M M⟹M′)
@@ -822,5 +825,3 @@ false, give a counterexample.
   - Progress
 
   - Preservation
-
-

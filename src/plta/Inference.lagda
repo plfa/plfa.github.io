@@ -4,11 +4,12 @@ layout    : page
 permalink : /Inference/
 ---
 
-## Imports
-
 \begin{code}
-module Inference where
+module plta.Inference where
 \end{code}
+
+
+## Imports
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
@@ -24,8 +25,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
-open import DeBruijn using (Type; `ℕ; _⇒_)
-import DeBruijn as DB
+open import plta.DeBruijn as DB using (Type; `ℕ; _⇒_)
 
 pattern [_]       w        =  w ∷ []
 pattern [_,_]     w x      =  w ∷ x ∷ []
@@ -61,7 +61,7 @@ data Ctx : Set where
 
 Terms that synthesize `Term⁺` and inherit `Term⁻` their types.
 \begin{code}
-data Term⁺ : Set 
+data Term⁺ : Set
 data Term⁻ : Set
 
 data Term⁺ where
@@ -225,7 +225,7 @@ lookup (Γ , x ⦂ A) w with w ≟ x
   do ⟨ A , ⊢x ⟩ ← lookup Γ w
      return ⟨ A , S w≢ ⊢x ⟩
 \end{code}
-  
+
 ## Synthesize and inherit types
 
 \begin{code}
@@ -368,15 +368,15 @@ _ = refl
 _ : synthesize ε (twoCh ↓ `ℕ) ≡
   error⁻ "lambda cannot be of type natural"
     (ƛ "s" ⇒ (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · (⌊ "z" ⌋ ↑) ↑) ↑)) []
-_ = refl 
+_ = refl
 
 _ : synthesize ε (`zero ↓ `ℕ ⇒ `ℕ) ≡
   error⁻ "zero cannot be function" `zero [ `ℕ ⇒ `ℕ ]
-_ = refl 
+_ = refl
 
 _ : synthesize ε (two ↓ `ℕ ⇒ `ℕ) ≡
   error⁻ "suc cannot be function" (`suc (`suc `zero)) [ `ℕ ⇒ `ℕ ]
-_ = refl 
+_ = refl
 
 _ : synthesize ε
       ((`case (twoCh ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ⌊ "x" ⌋ ↑ ] ↓ `ℕ) ) ≡
@@ -384,11 +384,11 @@ _ : synthesize ε
     `case (ƛ "s" ⇒ (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · (⌊ "z" ⌋ ↑) ↑) ↑))
           ↓ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ [zero⇒ `zero |suc "x" ⇒ ⌊ "x" ⌋ ↑ ]
     [ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ]
-_ = refl 
+_ = refl
 
 _ : synthesize ε (((ƛ "x" ⇒ ⌊ "x" ⌋ ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡
   error⁺ "inheritance and synthesis conflict" ⌊ "x" ⌋ [ `ℕ , `ℕ ⇒ `ℕ ]
-_ = refl 
+_ = refl
 \end{code}
 
 ## Erasure
@@ -405,8 +405,8 @@ _ = refl
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
 
-∥ Ax ⊢x ∥⁺ =  DB.⌊ ∥ ⊢x ∥∋ ⌋ 
-∥ ⊢L · ⊢M ∥⁺ =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻ 
+∥ Ax ⊢x ∥⁺ =  DB.⌊ ∥ ⊢x ∥∋ ⌋
+∥ ⊢L · ⊢M ∥⁺ =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
 ∥ ⊢↓ ⊢M ∥⁺ =  ∥ ⊢M ∥⁻
 
 ∥ ⊢λ ⊢N ∥⁻ =  DB.ƛ ∥ ⊢N ∥⁻
@@ -426,5 +426,3 @@ _ = refl
 _ : ∥ ⊢fourCh ∥⁺ ≡ DB.fourCh′
 _ = refl
 \end{code}
-
-

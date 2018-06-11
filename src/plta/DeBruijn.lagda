@@ -4,11 +4,11 @@ layout    : page
 permalink : /DeBruijn/
 ---
 
-## Imports
-
 \begin{code}
-module DeBruijn where
+module plta.DeBruijn where
 \end{code}
+
+## Imports
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
@@ -198,7 +198,7 @@ _[_] {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
-  Zero : ∀ {Γ} → 
+  Zero : ∀ {Γ} →
       -----------------
       Value (`zero {Γ})
 
@@ -206,7 +206,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
     → Value V
       --------------
     → Value (`suc V)
-      
+
   Fun : ∀ {Γ A B} {N : Γ , A ⊢ B}
       ---------------------------
     → Value (ƛ N)
@@ -288,7 +288,7 @@ The second has two values of function type, both lambda abstractions and fixpoin
 
     (μ f → μ g → N) · V
       ⟶ (μ f → μ g → N′) · V
-      ⟶ (μ f → μ g → λ x → N″) · V      
+      ⟶ (μ f → μ g → λ x → N″) · V
       ⟶ (μ g → λ x → N″) [ f := μ f → μ g → λ x → N″ ] · V
       ⟶ (μ g → λ x → N″ [ f := μ f → μ g → λ x → N″ ]) · V
       ⟶ (λ x → N″ [ f := μ f → μ g → λ x → N″ ])
@@ -476,5 +476,3 @@ normalise (suc g) L with progress L
 ...    | step {M} L⟶M with normalise g M
 ...        | normal h M⟶*N                =  normal (suc h) (L ⟶⟨ L⟶M ⟩ M⟶*N)
 \end{code}
-
-

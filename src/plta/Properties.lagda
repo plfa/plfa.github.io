@@ -4,6 +4,10 @@ layout    : page
 permalink : /Properties/
 ---
 
+\begin{code}
+module plta.Properties where
+\end{code}
+
 Now that we've defined the naturals and operations upon them, our next
 step is to learn how to prove properties that they satisfy.  As hinted
 by their name, properties of *inductive datatypes* are proved by
@@ -140,7 +144,7 @@ You've got the hang of it by now.
 The process continues.  On the *n*th day there will be *n* distinct
 properties that hold.  The property of every natural number will appear
 on some given day.  In particular, the property `P n` first appears on
-day *n+1*. 
+day *n+1*.
 
 
 ## Our first proof: associativity
@@ -185,7 +189,7 @@ Here is the proposition's statement and proof.
     suc (m + (n + p))
   ≡⟨⟩
     suc m + (n + p)
-  ∎  
+  ∎
 \end{code}
 We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
@@ -424,7 +428,7 @@ Finally, here is our proposition's statement and proof.
     suc (n + m)
   ≡⟨⟩
     suc n + m
-  ∎    
+  ∎
 \end{code}
 The first line states that we are defining the identifier
 `+-comm` which provides evidence for the proposition:
@@ -495,7 +499,7 @@ before today, so that rule doesn't give us any new judgments.
 
     -- on the first day, we know about associativity of 0
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
-    
+
 Then we repeat the process, so on the next day we know about all the
 judgements from the day before, plus any judgements added by the rules.
 The base case tells us nothing new, but now the inductive case adds

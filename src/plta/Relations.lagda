@@ -4,9 +4,12 @@ layout    : page
 permalink : /Relations/
 ---
 
+\begin{code}
+module plta.Relations where
+\end{code}
+
 After having defined operations such as addition and multiplication,
 the next step is to define relations, such as *less than or equal*.
-
 
 ## Imports
 
@@ -59,7 +62,7 @@ Both definitions above tell us the same two things:
 
 In fact, they each give us a bit more detail:
 
-+ *Base case*: for all naturals `n`, the constructor `z≤n` 
++ *Base case*: for all naturals `n`, the constructor `z≤n`
   produces evidence that `zero ≤ n` holds.
 + *Inductive case*: for all naturals `m` and `n`, the constructor
   `s≤s` takes evidence that `m ≤ n` holds into evidence that
@@ -306,7 +309,7 @@ In this case the proof is by induction over both the first
 and second arguments.  We perform a case analysis:
 
 + *First base case*: If the first argument is `zero` and the
-  second argument is `n` then the forward case holds, 
+  second argument is `n` then the forward case holds,
   with `z≤n` as evidence that `zero ≤ n`.
 
 + *Second base case*: If the first argument is `suc m` and the
@@ -379,7 +382,7 @@ addition is monotonic on the right.
 \begin{code}
 +-monoʳ-≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
 +-monoʳ-≤ zero    p q p≤q  =  p≤q
-+-monoʳ-≤ (suc m) p q p≤q  =  s≤s (+-monoʳ-≤ m p q p≤q) 
++-monoʳ-≤ (suc m) p q p≤q  =  s≤s (+-monoʳ-≤ m p q p≤q)
 \end{code}
 The proof is by induction on the first argument.
 

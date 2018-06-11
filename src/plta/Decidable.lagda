@@ -4,6 +4,10 @@ layout    : page
 permalink : /Decidable/
 ---
 
+\begin{code}
+module plta.Decidable where
+\end{code}
+
 We have a choice as to how to represent relations:
 as an inductive data type of *evidence* that the relation holds,
 or as a function that *computes* whether the relation holds.
@@ -115,7 +119,7 @@ and the one use of `()` when showing there can be no evidence that `4 ≤ 2`.
 
 We would hope to be able to show these two approaches are related, and
 indeed we can.  First, we define a function that lets us map from the
-computation world to the evidence world.  
+computation world to the evidence world.
 \begin{code}
 T : Bool → Set
 T true = ⊤
@@ -149,7 +153,7 @@ hence `T b` is inhabited by `tt`.
 Now we can show that `T (m ≤ᵇ n)` is inhabited exactly when `m ≤ n` is inhabited.
 
 In the forward direction, we consider the three clauses in the definition
-of `_≤ᵇ_`. 
+of `_≤ᵇ_`.
 \begin{code}
 ≤ᵇ→≤ : ∀ (m n : ℕ) → T (m ≤ᵇ n) → m ≤ n
 ≤ᵇ→≤ zero n tt = z≤n
@@ -563,4 +567,3 @@ import Relation.Nullary.Sum using (_⊎-dec_)
 ## Unicode
 
     ᵇ  U+1D47  MODIFIER LETTER SMALL B  (\^b)
-
