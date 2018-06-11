@@ -4,8 +4,8 @@ layout    : page
 permalink : /Lambda/
 ---
 
-[Parts of this chapter take their text from chapter _Stlc_ in
-book _Programming Language Foundations_ of _Software Foundations_.
+[Parts of this chapter take their text from chapter _Stlc_
+of _Software Foundations_ (_Programming Language Foundations_).
 Those parts will be revised.]
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
@@ -35,7 +35,8 @@ variables, partly because such terms are easier to read and partly
 because the development is more traditional.
 
 The development in this chapter was inspired by the corresponding
-development in Chapter STLC of _Software Foundations_.  We differ by
+development in Chapter _Stlc_ of _Software Foundations_ 
+(_Programming Language Foundations_).  We differ by
 representing contexts explicitly (as lists pairing identifiers with
 types) rather than as partial maps (which take identifiers to types),
 which will corresponds better to our subsequent development of DeBruin

@@ -4,18 +4,20 @@ layout    : page
 permalink : /LambdaProp/
 ---
 
-[Parts of this chapter take their text from chapter StlcProp in
-_Software Foundations: Programming Language Foundations_.
+[Parts of this chapter take their text from chapter _Stlc_
+of _Software Foundations_ (_Programming Language Foundations_).
 Those parts will be revised.]
 
 This chapter develops the fundamental theory of the Simply
 Typed Lambda Calculus, particularly progress and preservation.
 
 The development in this chapter was inspired by the corresponding
-development in Chapter STLCProp of _Software Foundations_.  It will turn
+development in Chapter _StlcProp_ of _Software Foundations_
+(_Programming Language Foundations_).  It will turn
 out that one of our technical choices in the previous chapter
-(to introduce an explicit judgment `Γ ∋ x ⦂ A`) permits a somewhat
-simpler development. In particular, we can prove substitution preserves
+(to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
+treating a context as a function from identifiers to types)
+permits a simpler development. In particular, we can prove substitution preserves
 types without needing to develop a separate inductive definition of the
 `appears_free_in` relation.
 
@@ -780,6 +782,7 @@ false, give a counterexample.
 
 
 #### Exercise: 2 stars, optional (stlc_variation6)
+
 Suppose instead that we add the following new rule to the typing
 relation:
 
