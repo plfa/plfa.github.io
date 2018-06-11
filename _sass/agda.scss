@@ -16,7 +16,7 @@ pre.highlight {
     @include code-container;
     border-style: dashed !important;
 }
-pre.highlight code {
+code {
     @include code-font;
 }
 
