@@ -18,7 +18,6 @@ pre.highlight {
 }
 pre.highlight code {
     @include code-font;
-    color: #B22222;
 }
 
 /* Agda. */
@@ -31,6 +30,7 @@ pre.Spec {
     @include code-font;
     @include code-container;
     border-style: dashed !important;
+    color: #B22222;
 }
 
 /* Aspects. */
