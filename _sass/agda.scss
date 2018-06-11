@@ -1,24 +1,29 @@
 // Define variables for code formatting
 
-$code-font-family: Source Code Pro, Menlo, DejaVu Sans Mono, Bitstream Vera Sans Mono, Consolas, Monaco, Lucida Console, Liberation Mono, Courier New, monospace, serif;
-
-/* Code. */
-.highlight {
-    font-family: $code-font-family;
-}
-
-/* Agda. */
-.Agda {
+@mixin code {
     padding: .4em .4em;
     background: #e8f2fb;
     border: 1px solid #c9e1f6;
     border-radius: 3px;
-    font-family: $code-font-family; 
-    font-size: .85em; }
+    font-family: 'Source Code Pro', monospace;
+    font-size: .85em;
+}
 
-.Spec {
+/* Code. */
+pre.highlight {
+    @include code;
+    color: #B22222;
+}
+
+/* Agda. */
+pre.Agda {
+    @include code;
+}
+
+pre.Spec {
+    @include code;
     border: 1px dashed hsl(208,71%,71%) !important;
-  }
+}
 
 /* Aspects. */
 .Comment       { color: #B22222 }
