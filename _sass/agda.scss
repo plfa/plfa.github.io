@@ -1,28 +1,36 @@
 // Define variables for code formatting
 
-@mixin code {
+@mixin code-font {
+    font-family: 'Source Code Pro', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Menlo', 'Consolas', 'Monaco', 'Ludica Console', 'Liberation Mono', 'Courier New', monospace, serif;
+    font-size: .85em;
+}
+@mixin code-container {
     padding: .4em .4em;
     background: #e8f2fb;
     border: 1px solid #c9e1f6;
     border-radius: 3px;
-    font-family: 'Source Code Pro', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Menlo', 'Consolas', 'Monaco', 'Ludica Console', 'Liberation Mono', 'Courier New', monospace, serif;
-    font-size: .85em;
 }
 
 /* Code. */
 pre.highlight {
-    @include code;
+    @include code-container;
+    border-style: dashed !important;
+}
+pre.highlight code {
+    @include code-font;
     color: #B22222;
 }
 
 /* Agda. */
 pre.Agda {
-    @include code;
+    @include code-font;
+    @include code-container;
 }
 
 pre.Spec {
-    @include code;
-    border: 1px dashed hsl(208,71%,71%) !important;
+    @include code-font;
+    @include code-container;
+    border-style: dashed !important;
 }
 
 /* Aspects. */
