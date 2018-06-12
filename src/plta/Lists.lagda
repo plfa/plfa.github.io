@@ -23,9 +23,9 @@ open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import plta.Isomorphism using (_≃_)
 open import Function using (_∘_)
 open import Level using (Level)
+open import plta.Isomorphism using (_≃_)
 \end{code}
 
 We assume [extensionality][extensionality].

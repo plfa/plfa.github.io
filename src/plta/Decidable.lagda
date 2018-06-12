@@ -497,7 +497,8 @@ on which matches; but either is equally valid.
 
 ## Decidability of All
 
-Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %}#All) we defined a predicate `All P` that holds if a given predicate is satisfied by every element of a list.
+Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %}#All)
+we defined a predicate `All P` that holds if a given predicate is satisfied by every element of a list.
 \begin{code}
 data All {A : Set} (P : A → Set) : List A → Set where
   [] : All P []

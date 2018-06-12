@@ -14,13 +14,13 @@ and classical logic.
 ## Imports
 
 \begin{code}
-open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
+open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
 \end{code}
 
 
