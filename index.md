@@ -50,6 +50,7 @@ fixes are encouraged.
 
   - [Acknowledgements]({{ site.baseurl }}{% link out/plta/Acknowledgements.md %})
   - [Fonts: Test page for fonts]({{ site.baseurl }}{% link out/plta/Fonts.md %})
+  - [Statistics: Line counts for each chapter]({{ site.baseurl }}{% link out/plta/Statistics.md %})
 
 [sf]: https://softwarefoundations.cis.upenn.edu/
 [wen]: https://github.com/wenkokke

@@ -130,16 +130,32 @@ _[_] {n} N M  =  subst {suc n} {n} ρ N
 ## Normal
 
 \begin{code}
-data Normal  : ∀ {n} → Term n → Set
 data Neutral : ∀ {n} → Term n → Set
-
-data Normal where
-  ƛ_  : ∀ {n} {N : Term (suc n)} → Normal N → Normal (ƛ N)
-  ⌈_⌉ : ∀ {n} {M : Term n} → Neutral M → Normal M
+data Normal  : ∀ {n} → Term n → Set
 
 data Neutral where
-  ⌊_⌋  : ∀ {n} → (k : Var n) → Neutral ⌊ k ⌋
-  _·_  : ∀ {n} → {L : Term n} {M : Term n} → Neutral L → Normal M → Neutral (L · M)
+
+  ⌊_⌋  : ∀ {n}
+    → (k : Var n)
+      -------------
+    → Neutral ⌊ k ⌋
+
+  _·_  : ∀ {n} {L : Term n} {M : Term n}
+    → Neutral L
+    → Normal M
+      ---------------
+    → Neutral (L · M)
+
+data Normal where
+
+  ƛ_  : ∀ {n} {N : Term (suc n)}
+    → Normal N
+      ------------
+    → Normal (ƛ N)
+
+  ⌈_⌉ : ∀ {n} {M : Term n}
+    → Neutral M
+    → Normal M
 \end{code}
 
 ## Reduction step
