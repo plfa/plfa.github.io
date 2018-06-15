@@ -378,7 +378,7 @@ data Normalise (M : Term) : Set where
     → Normalise M
 
 normalise : ∀ {M A}
-  → ℕ
+  → Gas
   → ∅ ⊢ M ⦂ A
     -----------
   → Normalise M

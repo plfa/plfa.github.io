@@ -72,7 +72,7 @@ Three are for the naturals:
 
   * Zero, `` `zero ``
   * Successor, `` `suc ``
-  * Case, `` `case L [zero⇒ M |suc x⇒ N ] ``
+  * Case, `` `case L [zero⇒ M |suc x ⇒ N ] ``
 
 And one is for recursion:
 
