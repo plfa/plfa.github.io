@@ -739,7 +739,7 @@ for all naturals `n`. Did your proof require induction?
 
 Show that monus associates with addition, that is,
 
-    m ∸ n ∸ p ≡ m ∸ (n + p)
+    (m ∸ n) + p ≡ m ∸ (n + p)
 
 for all naturals `m`, `n`, and `p`.
 
