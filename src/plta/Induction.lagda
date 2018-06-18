@@ -1,11 +1,11 @@
 ---
-title     : "Properties: Proof by Induction"
+title     : "Induction: Proof by Induction"
 layout    : page
-permalink : /Properties/
+permalink : /Induction/
 ---
 
 \begin{code}
-module plta.Properties where
+module plta.Induction where
 \end{code}
 
 Now that we've defined the naturals and operations upon them, our next

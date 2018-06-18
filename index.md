@@ -25,7 +25,7 @@ fixes are encouraged.
 (This part is ready for review. Please comment!)
 
   - [Naturals: Natural numbers]({{ site.baseurl }}{% link out/plta/Naturals.md %})
-  - [Properties: Proof by induction](Properties)
+  - [Induction: Proof by induction]({{ site.baseurl }}{% link out/plta/Induction.md %})
   - [Relations: Inductive definition of relations]({{ site.baseurl }}{% link out/plta/Relations.md %})
   - [Equality: Equality and equational reasoning]({{ site.baseurl }}{% link out/plta/Equality.md %})
   - [Isomorphism: Isomorphism and embedding]({{ site.baseurl }}{% link out/plta/Isomorphism.md %})

@@ -41,7 +41,7 @@ infix   4  _⊢_
 infix   4  _∋_
 infix   4  _⊆_
 infixl  5  _,_
-infix   6  _/_
+infixr  6  _/_
 infix   6  ƛ_⇒_
 infix   7  Π_⇒_
 -- infixr  8  _⇒_
@@ -95,12 +95,38 @@ data Tp where
       ----------
     → Tp Γ
 
+  {-
   W : ∀ {Γ : Ctx} {A : Tp Γ}
     → Tp Γ
       -----------
     → Tp (Γ , A)
+  -}
+
+data _⊆_ : Ctx → Ctx → Set
+
+_/_ : ∀ {Γ Δ : Ctx} → Γ ⊆ Δ → Tp Γ → Tp Δ
+
+_/∋_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → (θ : Γ ⊆ Δ) → Γ ∋ A → Δ ∋ θ / A
+
+_/⊢_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → (θ : Γ ⊆ Δ) → Γ ⊢ A → Δ ⊢ θ / A
 
 -- vcons : Π (n : ℕ) → Vec n → Vec (suc n)
+
+data _⊆_ where
+
+  I : ∀ {Γ : Ctx}
+      -----
+    → Γ ⊆ Γ
+
+  W : ∀ {Γ Δ : Ctx} {A : Tp Δ}
+    → Γ ⊆ Δ
+      ---------
+    → Γ ⊆ Δ , A
+
+  S : ∀ {Γ Δ : Ctx} {A : Tp Γ}
+    → (θ : Γ ⊆ Δ)
+      -----------------
+    → Γ , A ⊆ Δ , θ / A
 
 _[_] : ∀ {Γ : Ctx}
   → {A : Tp Γ}
@@ -119,12 +145,12 @@ data _∋_ where
 
   Z : ∀ {Γ : Ctx} {A : Tp Γ}
       ----------------------
-    → Γ , A ∋ W A
+    → Γ , A ∋ W I / A
 
   S : ∀ {Γ : Ctx} {A B : Tp Γ}
     → Γ ∋ B
-      -----------
-    → Γ , A ∋ W B
+      ----------------
+    → Γ , A ∋ W I / B
 
 data _⊢_ where
 
@@ -160,37 +186,31 @@ data _⊢_ where
       ------------------------------------------
     → Γ ⊢ ⌈ B ⌉ [ M ]
 
-data _⊆_ : Ctx → Ctx → Set
+I / A        =  A
+S θ / ⟪ s ⟫  =  ⟪ s ⟫
+W θ / ⟪ s ⟫  =  ⟪ s ⟫
+S θ / ⌈ A ⌉  =  ⌈ S θ /⊢ A ⌉
+W θ / ⌈ A ⌉  =  ⌈ W θ /⊢ A ⌉
 
-_/_ : ∀ {Γ Δ : Ctx} → Γ ⊆ Δ → Tp Γ → Tp Δ
+lemma : ∀ {Γ Δ : Ctx} (θ : Γ ⊆ Δ) (A : Tp Γ)
+  → S {A = A} θ / W I / A ≡ W I / θ / A
 
-_/∋_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → (θ : Γ ⊆ Δ) → Γ ∋ A → Δ ∋ θ / A
+lemma = {!!} 
 
-_/⊢_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → (θ : Γ ⊆ Δ) → Γ ⊢ A → Δ ⊢ θ / A
+-- we need a lemma like this one
+-- S θ / W I / A ≡ W I / θ / A 
 
-data _⊆_ where
 
-  ∅ :
-      -----
-      ∅ ⊆ ∅
+I /∋ x = x
+W θ /∋ x =  S {! θ /∋ x!} 
+S {A = A} θ /∋ Z rewrite lemma θ A  = {! Z!}
+S θ /∋ S x = {!!}
 
-  W : ∀ {Γ Δ : Ctx} {A : Tp Δ}
-    → Γ ⊆ Δ
-      ---------
-    → Γ ⊆ Δ , A
-
-  S : ∀ {Γ Δ : Ctx} {A : Tp Γ}
-    → (θ : Γ ⊆ Δ)
-      -----------------
-    → Γ , A ⊆ Δ , θ / A
-
-∅ / A = A
-W θ / A = {!!}
-S θ / A = {!!}
-
-∅ /∋ x = x
-W θ /∋ x = {!S x!}
-S θ /∋ x = {!!}
+{-
+∅ /∋ Z = Z
+W θ /∋ x = {!S (θ / x)!}
+S θ /∋ (S x) = {!S (θ / x)!}
+-}
 
 θ /⊢ A = {!!} 
 
