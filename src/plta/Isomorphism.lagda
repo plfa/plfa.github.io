@@ -21,7 +21,49 @@ distributivity.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong-app)
 open Eq.≡-Reasoning
+open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat.Properties using (+-comm)
 \end{code}
+
+
+## Lambda expressions
+
+The chapter begins with a few preliminaries that will be useful
+here and elsewhere: lambda expressions, function composition, and
+extensionality.
+
+*Lambda expressions* provide a compact way to define functions without
+naming them.  A term of the form
+
+    λ{ P₁ → N₁; ⋯ ; Pᵢ → Nᵢ }
+
+is equivalent to a function `f` defined by the equations
+
+    f P₁ = e₁
+    ⋯
+    f Pᵢ = eᵢ
+
+where the `Pᵢ` are patterns (left-hand sides of an equation) and the
+`Nᵢ` are expressions (right-hand side of an equation).
+
+In the case that there is one equation and the pattern is a variable,
+we may also use the syntax
+
+    λ x → N
+
+or
+
+    λ (x : A) → N
+
+both of which are equivalent to `λ{x → N}`. The latter allows one to
+specify the domain of the function.
+
+Often using an anonymous lambda expression is more convenient than
+using a named function: it avoids a lengthy type declaration; and the
+definition appears exactly where the function is used, so there is no
+need for the writer to remember to declare it in advance, or for the
+reader to search for the definition elsewhere in the code.
+
 
 ## Function composition
 
@@ -31,12 +73,62 @@ _∘_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
 (g ∘ f) x  = g (f x)
 \end{code}
 Thus, `g ∘ f` is the function that first applies `f` and
-then applies `g`.
+then applies `g`.  An equivalent definition, exploiting lambda
+expressions, is as follows.
+\begin{code}
+_∘′_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
+g ∘′ f  =  λ x → g (f x)
+\end{code}
+
+
+## Extensionality {#extensionality}
+
+Extensionality asserts that the only way to distinguish functions is
+by applying them; if two functions applied to the same argument always
+yield the same result, then they are the same functions.  It is the
+converse of `cong-app`, as introduced
+[earlier]({{ site.baseurl }}{% link out/plta/Equality.md %}/#cong).
+
+Agda does not presume extensionality, but we can postulate that it holds.
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
+\end{code}
+Postulating extensionality does not lead to difficulties, as it is
+known to be consistent with the theory that underlies Agda.
+
+As an example, consider that we need results from two libraries,
+one where addition is defined as in
+Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %})
+and one where it is defined the other way around.
+\begin{code}
+_+′_ : ℕ → ℕ → ℕ
+m +′ zero  = m
+m +′ suc n = suc (m +′ n)
+\end{code}
+Applying commutativity, it is easy to show that both operators always
+return the same result given the same arguments.
+\begin{code}
+same-app : ∀ (m n : ℕ) → m +′ n ≡ m + n
+same-app m n rewrite +-comm m n = helper m n
+  where
+  helper : ∀ (m n : ℕ) → m +′ n ≡ n + m
+  helper m zero    = refl
+  helper m (suc n) = cong suc (helper m n)
+\end{code}
+However, it might be convenient to assert that the two operators are
+actually indistinguishable. This we can do via two applications of
+extensionality.
+\begin{code}
+same : _+′_ ≡ _+_
+same = extensionality (λ m → extensionality (λ n → same-app m n))
+\end{code}
+We will occasionally need to postulate extensionality in what follows.
 
 
 ## Isomorphism
 
-In set theory, two sets are isomorphic if they are in one-to-one correspondence.
+Two sets are isomorphic if they are in one-to-one correspondence.
 Here is a formal definition of isomorphism.
 \begin{code}
 infix 0 _≃_

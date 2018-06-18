@@ -22,16 +22,8 @@ open import Relation.Nullary using (¬_)
 open import Function using (_∘_)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
 \end{code}
-
-We assume [extensionality][extensionality].
-\begin{code}
-postulate
-  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
-\end{code}
-
-[extensionality]: {{ site.baseurl }}{% link out/plta/Equality.md %}#extensionality
 
 
 ## Universals
@@ -217,7 +209,7 @@ The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
 [implication][implication].
 
-[implication]: {{ site.baseurl }}{% link out/plta/Connectives.md %}/index.html#implication
+[implication]: {{ site.baseurl }}{% link out/plta/Connectives.md %}/#implication
 
 ### Exercise (`∃-distrib-⊎`)
 

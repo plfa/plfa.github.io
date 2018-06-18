@@ -78,7 +78,7 @@ Most of the text was written during a sabbatical in the first half of 2018.
 
 -- Philip Wadler, Rio de Janeiro, January--June 2018
 
-[tapl]: http://www.cis.upenn.edu/~bcpierce/tapl/index.html
+[tapl]: http://www.cis.upenn.edu/~bcpierce/tapl/
 [sf]: https://softwarefoundations.cis.upenn.edu/
 [ta]: http://www.cis.upenn.edu/~bcpierce/papers/plcurriculum.pdf
 [stump]: http://www.morganclaypoolpublishers.com/catalog_Orig/product_info.php?cPath=24&products_id=908

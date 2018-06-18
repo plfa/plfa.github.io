@@ -33,7 +33,9 @@ open import Function using (_∘_)
 
 ## Evidence vs Computation
 
-Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plta/Relations.md %}) defined comparison an inductive datatype, which provides *evidence* that one number is less than or equal to another.
+Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plta/Relations.md %})
+defined comparison an inductive datatype, which provides *evidence* that one number
+is less than or equal to another.
 \begin{code}
 infix 4 _≤_
 
@@ -62,11 +64,8 @@ data Bool : Set where
   true  : Bool
   false : Bool
 \end{code}
-We will use `true` to represent the case where a proposition holds,
-and `false` to represent the case where a proposition fails to hold.
-
 Given booleans, we can define a function of two numbers that
-*computes* to true if the comparison holds, and false otherwise.
+*computes* to `true` if the comparison holds and to `false` otherwise.
 \begin{code}
 infix 4 _≤ᵇ_
 
@@ -347,8 +346,8 @@ exactly when `m ≤ n` is inhabited.
 ≤→≤ᵇ′ = fromWitness
 \end{code}
 
-In summary, it is usually best to eschew booleans and rely on decidables instead.  If you
-need booleans, they and their properties are easily derived from the
+In summary, it is usually best to eschew booleans and rely on decidables instead.
+If you need booleans, they and their properties are easily derived from the
 corresponding decidables.
 
 ## Logical connectives

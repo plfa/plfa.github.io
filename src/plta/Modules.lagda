@@ -23,22 +23,14 @@ open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import plta.Isomorphism using (_≃_)
 open import Function using (_∘_)
 open import Level using (Level)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Data.List using (List; []; _∷_; _++_; map; foldr; downFrom)
 open import Data.List.All using (All; []; _∷_)
 open import Data.List.Any using (Any; here; there)
+open import plta.Isomorphism using (_≃_; extensionality)
 \end{code}
-
-We assume [extensionality][extensionality].
-\begin{code}
-postulate
-  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
-\end{code}
-
-[extensionality]: {{ site.baseurl }}{% link out/plta/Equality.md %}#extensionality
 
 
 

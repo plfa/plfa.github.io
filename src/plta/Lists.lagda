@@ -28,14 +28,6 @@ open import Level using (Level)
 open import plta.Isomorphism using (_≃_)
 \end{code}
 
-We assume [extensionality][extensionality].
-\begin{code}
-postulate
-  extensionality : ∀ {A B : Set} {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
-\end{code}
-
-[extensionality]: {{ site.baseurl }}{% link out/plta/Equality.md %}#extensionality
-
 
 ## Lists
 
