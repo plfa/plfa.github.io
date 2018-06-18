@@ -15,26 +15,28 @@ Those parts will be revised.]
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
-variables, abstraction, and application.  It embodies the concept of
-_functional abstraction_, which shows up in almost every programming
-language in some form (as functions, procedures, or methods).
+variables, abstraction, and application.  It captures the key concept of
+_functional abstraction_, which appears in pretty much every programming
+language, in the form of either functions, procedures, or methods.
 The _simply-typed lambda calculus_ (or STLC) is a variant of the
 lambda calculus published by Church in 1940.  It has the three
 constructs above for function types, plus whatever else is required
 for base types. Church had a minimal base type with no operations.
-We will instead echo the power of Plotkin's Programmable Computable
+We will instead echo Plotkin's Programmable Computable
 Functions (PCF), and add operations on natural numbers and
 recursive function definitions.
 
 This chapter formalises the simply-typed lambda calculus, giving its
 syntax, small-step semantics, and typing rules.  The next chapter
-[LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %}) reviews its main properties, including
+[LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %})
+reviews its main properties, including
 progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
 
 Be aware that the approach we take here is _not_ our recommended
 approach to formalisation.  Using De Bruijn indices and
-inherently-typed terms, as we will do in Chapter [DeBruijn]({{ site.baseurl }}{% link out/plta/DeBruijn.md %}),
+inherently-typed terms, as we will do in
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plta/DeBruijn.md %}),
 leads to a more compact formulation.  Nonetheless, we begin with named
 variables, partly because such terms are easier to read and partly
 because the development is more traditional.
@@ -78,7 +80,7 @@ And one is for recursion:
 
   * Fixpoint, `μ x ⇒ M`
 
-Abstraction is also called lambda abstraction, and is the construct
+Abstraction is also called _lambda abstraction_, and is the construct
 from which the calculus takes its name.
 
 With the exception of variables and fixpoints, each term
@@ -121,15 +123,15 @@ data Term : Set where
 \end{code}
 We represent identifiers by strings.  We choose precedence so that
 lambda abstraction and fixpoint bind least tightly, then application,
-then successor, and tightest of all is the constructor for variables.  Case
-expressions are self-bracketing.
+then successor, and tightest of all is the constructor for variables.
+Case expressions are self-bracketing.
 
 
 ### Example terms
 
-Here are some example terms: the naturals two and four, the recursive
-definition of a function to naturals, and a term that computes
-two plus two.
+Here are some example terms: the natural number two,
+a function that adds naturals,
+and a term that computes two plus two.
 \begin{code}
 two : Term
 two = `suc `suc `zero
@@ -144,7 +146,8 @@ four : Term
 four = plus · two · two
 \end{code}
 The recursive definition of addition is similar to our original
-definition of `_+_` for naturals, as given in Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %}).
+definition of `_+_` for naturals, as given in
+Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %}#plus).
 Later we will confirm that two plus two is four, in other words that
 the term
 
@@ -156,8 +159,8 @@ As a second example, we use higher-order functions to represent
 natural numbers.  In particular, the number _n_ is represented by a
 function that accepts two arguments and applies the first to the
 second _n_ times.  This is called the _Church representation_ of the
-naturals.  Similar to before, we define: the numerals two and four, a
-function to add numerals, a function to convert numerals to naturals,
+naturals.  Here are some example terms: the Church numeral two, a
+function that adds Church numerals, a function to compute successor,
 and a term that computes two plus two.
 \begin{code}
 twoᶜ : Term
@@ -173,27 +176,28 @@ sucᶜ = ƛ "n" ⇒ `suc (# "n")
 fourᶜ : Term
 fourᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
-Two takes two arguments `s` and `z`, and applies `s` twice to `z`;
-similarly for four.  Addition takes two numerals `m` and `n`, a
+The Church numeral for two takes two arguments `s` and `z`
+and applies `s` twice to `z`.
+Addition takes two numerals `m` and `n`, a
 function `s` and an argument `z`, and it uses `m` to apply `s` to the
 result of using `n` to apply `s` to `z`; hence `s` is applied `m` plus
 `n` times to `z`, yielding the Church numeral for the sum of `m` and
-`n`.  The conversion function takes a numeral `n` and instantiates its
-first argument to the successor function and its second argument to
-zero. Again, later we will confirm that two plus two is four,
+`n`.  For convenience, we define a function that computes successor;
+to convert a Church numeral to the corresponding natural, we apply
+it to this function and the natural number zero.
+Again, later we will confirm that two plus two is four,
 in other words that the term
 
     plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 
 reduces to `` `suc `suc `suc `suc `zero ``.
 
+
 ### Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
 variable name to disambiguate and writes `x` rather than `# x`
 for a term that is a variable. Agda requires we distinguish.
-Often researchers use `var x` rather than `# x`, but we chose
-the latter as less noisy.
 
 Similarly, informal presentation often use the same notation for
 function types, lambda abstraction, and function application in both
@@ -209,17 +213,18 @@ meta-language, Agda.
 
 In an abstraction `ƛ x ⇒ N` we call `x` the _bound_ variable
 and `N` the _body_ of the abstraction.  One of the most important
-aspects of lambda calculus is consistent renaming of bound variables
+aspects of lambda calculus is that consistent renaming of bound variables
 leaves the meaning of a term unchanged.  Thus the five terms
 
 * `` ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ``
 * `` ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x") ``
-* `` ƛ "fred" ⇒ ƛ "xander" ⇒ # "fred" · (# "fred" · # "xander") ``
-* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``
+* `` ƛ "sam" ⇒ ƛ "zelda" ⇒ # "sam" · (# "sam" · # "zelda") ``
 * `` ƛ "z" ⇒ ƛ "s" ⇒ # "z" · (# "z" · # "s") ``
+* `` ƛ "😇" ⇒ ƛ "😈" ⇒ # "😇" · (# "😇" · # "😈" ) ``
 
 are all considered equivalent.  Following the convention introduced
-by Haskell Curry, this equivalence relation is called _alpha renaming_.
+by Haskell Curry, who used the Greek letter `α` (_alpha_) to label such rules,
+this equivalence relation is called _alpha renaming_.
 
 As we descend from a term into its subterms, variables
 that are bound may become free.  Consider the following terms.
@@ -248,7 +253,7 @@ Note that by alpha renaming, the term above is equivalent to
     (ƛ "y" ⇒ # "y") · # "x"
 
 in which `y` is bound and `x` is free.  A common convention, called the
-Barendregt convention, is to use alpha renaming to ensure that the bound
+_Barendregt convention_, is to use alpha renaming to ensure that the bound
 variables in a term are distinct from the free variables, which can
 avoid confusions that may arise if bound and free variables have the
 same names.
@@ -280,16 +285,11 @@ those that contain no free variables.  We consider
 a precise definition of free variables in Chapter
 [LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %}).
 
-*rewrite (((*
-A term is a value if it is fully reduced.
-For booleans, the situation is clear: `true` and
-`false` are values, while conditionals are not.
-For functions, applications are not values, because
-we expect them to further reduce, and variables are
-not values, because we focus on closed terms.
-Following convention, we treat all abstractions
-as values.
-*)))*
+A _value_ is a term that corresponds to an answer.
+Thus, `` `suc `suc `suc `suc `zero` `` is a value,
+while `` plus · two · two `` is not.
+Following convention, we treat all function abstractions
+as values; thus, `` plus `` by itself is considered a value.
 
 The predicate `Value M` holds if term `M` is a value.
 
@@ -326,11 +326,11 @@ An alternative is not to focus on closed terms,
 to treat variables as values, and to treat
 `ƛ x ⇒ N` as a value only if `N` is a value.
 Indeed, this is how Agda normalises terms.
-We consider this approach in a [later chapter]({{ site.baseurl }}{% link out/plta/Untyped.md %}).
+We consider this approach in
+Chapter [Untyped]({{ site.baseurl }}{% link out/plta/Untyped.md %}).
+
 
 ## Substitution
-
-*((( rewrite examples with `not` )))*
 
 The heart of lambda calculus is the operation of
 substituting one term for a variable in another term.
@@ -338,32 +338,36 @@ Substitution plays a key role in defining the
 operational semantics of function application.
 For instance, we have
 
-      (ƛ "f" ⇒ # "f" · (# "f" · true)) · not
-    ⟹
-      not · (not · true)
+      (ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")) · sucᶜ · `zero
+    ⟶
+      (ƛ "z" ⇒ sucᶜ · (sucᶜ · "z")) · `zero
+    ⟶
+      sucᶜ · (sucᶜ · `zero)
 
-where we substitute `not` for `` `f `` in the body
-of the function abstraction.
+where we substitute `sucᶜ` for `` # "s" `` and `` `zero `` for `` # "z" ``
+in the body of the function abstraction.
 
 We write substitution as `N [ x := V ]`, meaning
 "substitute term `V` for free occurrences of variable `x` in term `N`",
 or, more compactly, "substitute `V` for `x` in `N`".
 Substitution works if `V` is any closed term;
-it need not be a value, but we use `V` since we
+it need not be a value, but we use `V` since in fact we
 always substitute values.
 
 Here are some examples.
 
-* `` # "f" [ "f" := not ] `` yields `` not ``
-* `` true [ "f" := not ] `` yields `` true ``
-* `` (# "f" · true) [ "f" := not ] `` yields `` not · true ``
-* `` (# "f" · (# "f" · true)) [ "f" := not ] `` yields `` not · (not · true) ``
-* `` (ƛ "x" ⇒ # "f" · (# "f" · # "x")) [ "f" := not ] `` yields `` ƛ "x" ⇒ not · (not · # "x") ``
-* `` (ƛ "y" ⇒ # "y") [ "x" := true ] `` yields `` ƛ "y" ⇒ # "y" ``
-* `` (ƛ "x" ⇒ # "x") [ "x" := true ] `` yields `` ƛ "x" ⇒ # "x" ``
+* `` # "s" [ "s" := sucᶜ ] `` yields `` sucᶜ ``
+* `` # "z" [ "s" := sucᶜ ] `` yields `` # "z" ``
+* `` (# "s" · # "z") [ "s" := sucᶜ ] `` yields `` sucᶜ · # "z" ``
+* `` (# "s" · (# "s" · # "z")) [ "s" := sucᶜ ] `` yields `` sucᶜ · (sucᶜ · # "z") ``
+* `` (ƛ "z" ⇒ # "s" · (# "s" · # "z")) [ "s" := sucᶜ ] `` yields
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z") ``
+* `` (ƛ "y" ⇒ # "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ # "y" ``
+* `` (ƛ "x" ⇒ # "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ # "x" ``
+* `` (ƛ "y" ⇒ # "x") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ # `zero ``
 
-The last example is important: substituting `true` for `x` in
-`` ƛ "x" ⇒ # "x" `` does _not_ yield `` ƛ "x" ⇒ true ``.
+The last but one example is important: substituting `` `zero `` for `x` in
+`` ƛ "x" ⇒ # "x" `` does _not_ yield `` ƛ "x" ⇒ `zero ``.
 The reason for this is that `x` in the body of `` ƛ "x" ⇒ # "x" ``
 is _bound_ by the abstraction.  An important feature of abstraction
 is that the choice of bound names is irrelevant: both
@@ -396,8 +400,6 @@ _[_:=_] : Term → Id → Term → Term
 ... | no  _  =  μ x ⇒ N [ y := V ]
 \end{code}
 
-*((( add material about binding in case and μ )))*
-
 The two key cases are variables and abstraction.
 
 * For variables, we compare `w`, the variable we are substituting for,
@@ -408,9 +410,10 @@ we yield `V`, otherwise we yield `x` unchanged.
 with `x`, the variable bound in the abstraction. If they are the same,
 we yield the abstraction unchanged, otherwise we subsititute inside the body.
 
+Case expressions and recursion also have bound variables that
+are treated similarly to those in lambda abstractions.
 In all other cases, we push substitution recursively into
 the subterms.
-
 
 
 #### Examples
@@ -418,22 +421,28 @@ the subterms.
 Here is confirmation that the examples above are correct.
 
 \begin{code}
-_ : (# "s" · # "s" · # "z") [ "z" := `zero ] ≡  # "s" · # "s" · `zero
+_ : (# "s") [ "s" := sucᶜ ] ≡  sucᶜ
 _ = refl
 
-_ : `zero [ "m" := `zero ] ≡ `zero
+_ : (# "z") [ "s" := sucᶜ ] ≡  # "z"
 _ = refl
 
-_ : (`suc `suc # "n") [ "n" := `suc `suc `zero ] ≡ `suc `suc `suc `suc `zero
+_ : (# "s" · # "z") [ "s" := sucᶜ ] ≡  sucᶜ · # "z"
+_ = refl
+
+_ : (# "s" · # "s" · # "z") [ "s" := sucᶜ ] ≡  sucᶜ · sucᶜ · # "z"
+_ = refl
+
+_ : (ƛ "z" ⇒ # "s" · # "s" · # "z") [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · sucᶜ · # "z"
+_ = refl
+
+_ : (ƛ "y" ⇒ # "y") [ "x" := `zero ] ≡ ƛ "y" ⇒ # "y"
 _ = refl
 
 _ : (ƛ "x" ⇒ # "x") [ "x" := `zero ] ≡ ƛ "x" ⇒ # "x"
 _ = refl
 
 _ : (ƛ "x" ⇒ # "y") [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
-_ = refl
-
-_ : (ƛ "y" ⇒ # "y") [ "x" := `zero ] ≡ ƛ "y" ⇒ # "y"
 _ = refl
 \end{code}
 
@@ -460,90 +469,80 @@ conditional, we first reduce the condition until it becomes a value;
 if the condition is true the conditional reduces to the first
 branch and if false it reduces to the second branch.
 
-In an informal presentation of the formal semantics,
-the rules for reduction are written as follows.
+In an informal presentation of the operational semantics,
+the rules for reduction of lambda terms are written as follows.
 
-    L ⟹ L′
+    L ⟶ L′
     --------------- ξ·₁
-    L · M ⟹ L′ · M
+    L · M ⟶ L′ · M
 
-    M ⟹ M′
+    M ⟶ M′
     --------------- ξ·₂
-    V · M ⟹ V · M′
+    V · M ⟶ V · M′
 
     --------------------------------- βλ·
-    (ƛ x ⇒ N) · V ⟹ N [ x := V ]
+    (ƛ x ⇒ N) · V ⟶ N [ x := V ]
 
-    L ⟹ L′
-    ----------------------------------------- ξif
-    if L then M else N ⟹ if L′ then M else N
+The Agda version of the rules below will be similar, except that universal
+quantifications are made explicit, and so are the predicates that indicate
+which terms are values.
 
-    -------------------------- βif-true
-    if true then M else N ⟹ M
+The rules break into two sorts. Compatibility rules direct us to
+reduce some part of a term.  We give them names starting with the
+Greek letter `ξ` (_xi_).  Once a term is sufficiently reduced, it will
+consist of a constructor and a deconstructor, in our case `λ` and `·`,
+which reduces directly.  We give them names starting with the Greek
+letter `β` (_beta_) and such rules are traditionally called _beta rules_.
 
-    --------------------------- βif-false
-    if false then M else N ⟹ N
+The rules are deterministic, in that at most one rule applies to every
+term.  We will show in the next chapter that for every well-typed term
+either a reduction applies or it is a value.
 
-As we will show later, the rules are deterministic, in that
-at most one rule applies to every term.  As we will also show
-later, for every well-typed term either a reduction applies
-or it is a value.
-
-The rules break into two sorts. Compatibility rules
-direct us to reduce some part of a term.
-We give them names starting with the Greek letter xi, `ξ`.
-Once a term is sufficiently
-reduced, it will consist of a constructor and
-a deconstructor, in our case `λ` and `·`, or
-`if` and `true`, or `if` and `false`.
-We give them names starting with the Greek letter beta, `β`,
-and indeed such rules are traditionally called beta rules.
-
-Here are the above rules formalised in Agda.
+Here are the rules formalised in Agda.
 
 \begin{code}
-infix 4 _⟹_
+infix 4 _⟶_
 
-data _⟹_ : Term → Term → Set where
+data _⟶_ : Term → Term → Set where
 
   ξ-·₁ : ∀ {L L′ M}
-    → L ⟹ L′
+    → L ⟶ L′
       -----------------
-    → L · M ⟹ L′ · M
+    → L · M ⟶ L′ · M
 
   ξ-·₂ : ∀ {V M M′}
     → Value V
-    → M ⟹ M′
+    → M ⟶ M′
       -----------------
-    → V · M ⟹ V · M′
+    → V · M ⟶ V · M′
 
   β-ƛ· : ∀ {x N V}
     → Value V
       ------------------------------
-    → (ƛ x ⇒ N) · V ⟹ N [ x := V ]
+    → (ƛ x ⇒ N) · V ⟶ N [ x := V ]
 
   ξ-suc : ∀ {M M′}
-    → M ⟹ M′
+    → M ⟶ M′
       ------------------
-    → `suc M ⟹ `suc M′
+    → `suc M ⟶ `suc M′
 
   ξ-case : ∀ {x L L′ M N}
-    → L ⟹ L′
+    → L ⟶ L′
       -----------------------------------------------------------------
-    → `case L [zero⇒ M |suc x ⇒ N ] ⟹ `case L′ [zero⇒ M |suc x ⇒ N ]
+    → `case L [zero⇒ M |suc x ⇒ N ] ⟶ `case L′ [zero⇒ M |suc x ⇒ N ]
 
   β-case-zero : ∀ {x M N}
       ----------------------------------------
-    → `case `zero [zero⇒ M |suc x ⇒ N ] ⟹ M
+    → `case `zero [zero⇒ M |suc x ⇒ N ] ⟶ M
 
   β-case-suc : ∀ {x V M N}
     → Value V
       ---------------------------------------------------
-    → `case `suc V [zero⇒ M |suc x ⇒ N ] ⟹ N [ x := V ]
+    → `case `suc V [zero⇒ M |suc x ⇒ N ] ⟶ N [ x := V ]
 
   β-μ : ∀ {x M}
       ------------------------------
-    → μ x ⇒ M ⟹ M [ x := μ x ⇒ M ]
+    → μ x ⇒ M ⟶ M [ x := μ x ⇒ M ]
 \end{code}
 
 
@@ -551,7 +550,7 @@ data _⟹_ : Term → Term → Set where
 
 What does the following term step to?
 
-    (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x")  ⟹  ???
+    (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x")  ⟶  ???
 
 1.  `` (ƛ "x" ⇒ # "x") ``
 2.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
@@ -559,158 +558,146 @@ What does the following term step to?
 
 What does the following term step to?
 
-    (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x")  ⟹  ???
+    (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x")  ⟶  ???
 
 1.  `` (ƛ "x" ⇒ # "x") ``
 2.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
 3.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
 
-What does the following term step to?  (Where `not` is as defined above.)
+What does the following term step to?  (Where `two` and `sucᶜ` are as defined above.)
 
-    not · true  ⟹  ???
+    two · sucᶜ · `zero  ⟶  ???
 
-1.  `` if # "x" then false else true ``
-2.  `` if true then false else true ``
-3.  `` true ``
-4.  `` false ``
+1.  `` sucᶜ · (sucᶜ · `zero) ``
+2.  `` (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · `zero ``
+3.  `` `zero ``
 
-What does the following term step to?  (Where `two` and `not` are as defined above.)
-
-    two · not · true  ⟹  ???
-
-1.  `` not · (not · true) ``
-2.  `` (ƛ "x" ⇒ not · (not · # "x")) · true ``
-3.  `` true ``
-4.  `` false ``
 
 ## Reflexive and transitive closure
 
 A single step is only part of the story. In general, we wish to repeatedly
 step a closed term until it reduces to a value.  We do this by defining
-the reflexive and transitive closure `⟹*` of the step function `⟹`.
-In an informal presentation of the formal semantics, the rules
-are written as follows.
-
-    ------- done
-    M ⟹* M
-
-    L ⟹ M
-    M ⟹* N
-    ------- step
-    L ⟹* N
-
-Here it is formalised in Agda, along similar lines to what
-we used for reasoning about [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}).
+the reflexive and transitive closure `⟶*` of the step function `⟶`.
+Here it is formalised in Agda, along similar lines to what we defined in
+Chapter [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}).
 
 \begin{code}
-infix  2 _⟹*_
+infix  2 _⟶*_
 infix  1 begin_
-infixr 2 _⟹⟨_⟩_
+infixr 2 _⟶⟨_⟩_
 infix  3 _∎
 
-data _⟹*_ : Term → Term → Set where
+data _⟶*_ : Term → Term → Set where
   _∎ : ∀ M
       ---------
-    → M ⟹* M
+    → M ⟶* M
 
-  _⟹⟨_⟩_ : ∀ L {M N}
-    → L ⟹ M
-    → M ⟹* N
+  _⟶⟨_⟩_ : ∀ L {M N}
+    → L ⟶ M
+    → M ⟶* N
       ---------
-    → L ⟹* N
+    → L ⟶* N
 
-begin_ : ∀ {M N} → (M ⟹* N) → (M ⟹* N)
-begin M⟹*N = M⟹*N
+begin_ : ∀ {M N} → (M ⟶* N) → (M ⟶* N)
+begin M⟶*N = M⟶*N
 \end{code}
 
 We can read this as follows.
 
-* From term `M`, we can take no steps, giving `M ∎` of type `M ⟹* M`.
+* From term `M`, we can take no steps,
+  giving a step of type `M ⟶* M`.
+  (It is written `M ∎`.)
 
-* From term `L` we can take a single step `L⟹M` of type `L ⟹ M`
-  followed by zero or more steps `M⟹*N` of type `M ⟹* N`,
-  giving `L ⟨ L⟹M ⟩ M⟹*N` of type `L ⟹* N`.
+* From term `L` we can take a single of type `L ⟶ M`
+  followed by zero or more steps of type `M ⟶* N`,
+  giving a step of type `L ⟶* N`.
+  (It is written `L ⟨ L⟶M ⟩ M⟶*N`,
+  where `L⟶M` and `M⟶*N` are steps of the appropriate type.)
 
 The names have been chosen to allow us to lay
 out example reductions in an appealing way.
-
+Here is a sample reduction demonstating that two plus two is four.
 \begin{code}
-_ : four ⟹* `suc `suc `suc `suc `zero
+_ : four ⟶* `suc `suc `suc `suc `zero
 _ =
   begin
     plus · two · two
-  ⟹⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+  ⟶⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
     (ƛ "m" ⇒ ƛ "n" ⇒
       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · two · two
-  ⟹⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+  ⟶⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
     (ƛ "n" ⇒
       `case two [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
          · two
-  ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+  ⟶⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
     `case two [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ]
-  ⟹⟨ β-case-suc (V-suc V-zero) ⟩
+  ⟶⟨ β-case-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
-  ⟹⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+  ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
     `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · `suc `zero · two)
-  ⟹⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
+  ⟶⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
     `suc ((ƛ "n" ⇒
       `case `suc `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · two)
-  ⟹⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+  ⟶⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
     `suc (`case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ])
-  ⟹⟨ ξ-suc (β-case-suc V-zero) ⟩
+  ⟶⟨ ξ-suc (β-case-suc V-zero) ⟩
     `suc `suc (plus · `zero · two)
-  ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
     `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · `zero · two)
-  ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
     `suc `suc ((ƛ "n" ⇒
       `case `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
         · two)
-  ⟹⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
+  ⟶⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
     `suc `suc (`case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ])
-  ⟹⟨ ξ-suc (ξ-suc β-case-zero) ⟩
+  ⟶⟨ ξ-suc (ξ-suc β-case-zero) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
 \end{code}
 
+And here is a similar sample reduction for Church numerals.
 \begin{code}
-_ : fourᶜ ⟹* `suc `suc `suc `suc `zero
+_ : fourᶜ ⟶* `suc `suc `suc `suc `zero
 _ =
   begin
     (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ # "m" · # "s" · (# "n" · # "s" · # "z"))
       · twoᶜ · twoᶜ · sucᶜ · `zero
-  ⟹⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
+  ⟶⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
     (ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · # "s" · (# "n" · # "s" · # "z"))
       · twoᶜ · sucᶜ · `zero
-  ⟹⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+  ⟶⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
     (ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · # "s" · (twoᶜ · # "s" · # "z")) · sucᶜ · `zero
-  ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+  ⟶⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
     (ƛ "z" ⇒ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · # "z")) · `zero
-  ⟹⟨ β-ƛ· V-zero ⟩
+  ⟶⟨ β-ƛ· V-zero ⟩
     twoᶜ · sucᶜ · (twoᶜ · sucᶜ · `zero)
-  ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+  ⟶⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (twoᶜ · sucᶜ · `zero)
-  ⟹⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+  ⟶⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · ((ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · `zero)
-  ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
+  ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (sucᶜ · (sucᶜ · `zero))
-  ⟹⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
+  ⟶⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (sucᶜ · (`suc `zero))
-  ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
+  ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (`suc `suc `zero)
-  ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+  ⟶⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
     sucᶜ · (sucᶜ · `suc `suc `zero)
-  ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+  ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
     sucᶜ · (`suc `suc `suc `zero)
-  ⟹⟨ β-ƛ· (V-suc (V-suc (V-suc V-zero))) ⟩
+  ⟶⟨ β-ƛ· (V-suc (V-suc (V-suc V-zero))) ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
 \end{code}
+
+In the next chapter, we will see how to compute such reduction sequences.
+
 
 ## Syntax of types
 
@@ -742,8 +729,8 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus,
 
-* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` abbreviates ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
-* `# "+" · # "m" · # "n"` abbreviates `(# "+" · # "m") · # "n"`.
+* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
+* `plus · two · two` stands for `(plus · two) · two`.
 
 ### Quiz
 
@@ -753,24 +740,25 @@ Thus,
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
-  3. `` `ℕ ⇒ `ℕ ⇒ `ℕ ``
-  4. `` `ℕ ⇒ `ℕ ``
-  5. `` `ℕ ``
+  3. `` `ℕ ⇒ (`ℕ ⇒ `ℕ) ``
+  4. `` `ℕ ⇒ `ℕ ⇒ `ℕ ``
+  5. `` `ℕ ⇒ `ℕ ``
+  6. `` `ℕ ``
 
   Give more than one answer if appropriate.
 
 * What is the type of the following term?
 
-    (ƛ "s" ⇒ # "s" · (# "s"  · `zero)) · (ƛ "m" ⇒ `suc # "m")
+    (ƛ "s" ⇒ # "s" · (# "s"  · `zero)) · sucᵐ
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
-  3. `` `ℕ ⇒ `ℕ ⇒ `ℕ ``
-  4. `` `ℕ ⇒ `ℕ ``
-  5. `` `ℕ ``
+  3. `` `ℕ ⇒ (`ℕ ⇒ `ℕ) ``
+  4. `` `ℕ ⇒ `ℕ ⇒ `ℕ ``
+  5. `` `ℕ ⇒ `ℕ ``
+  6. `` `ℕ ``
 
   Give more than one answer if appropriate.
-
 
 
 ## Typing
@@ -780,59 +768,42 @@ consider terms with free variables.  To type a term,
 we must first type its subterms, and in particular in the
 body of an abstraction its bound variable may appear free.
 
-*(((update following later)))*
+A _context_ associates variables with types.  We let `Γ` and `Δ` range
+over contexts.  We write `∅` for the empty context, and `Γ , x ⦂ A`
+for the context that extends `Γ` by mapping variable `x` to type `A`.
+For example,
 
-In general, we use typing _judgements_ of the form
+* `` `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
+
+is the context that associates variable ` "s" ` with type `` `ℕ ⇒ `ℕ ``,
+and variable ` "z" ` with type `` `ℕ ``.
+
+We have two forms of _judgement_.  The first is written
+
+    Γ ∋ x ⦂ A
+
+and indicates in context `Γ` that variable `x` has type `A`.
+For example
+
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
+
+give us the types associated with variables ` "z" ` and ` "s" `, respectively.
+The symbol `∋` (pronounced "ni", for "in" backwards) is chosen because
+checking that `Γ ∋ x ⦂ A` is anologous to checking whether `x ⦂ A` appears
+in a list of variables and types corresponding to `Γ`.
+
+The second judgement is written
 
     Γ ⊢ M ⦂ A
 
-to assert in type environment `Γ` that term `M` has type `A`.
-Environment `Γ` provides types for all the free variables in `M`.
+and indicates in context `Γ` that term `M` has type `A`.
+Context `Γ` provides types for all the free variables in `M`.
+For example
 
-Here are three examples.
-
-* `` ∅ , "f" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ # "f" · (# "f" · # "x") ⦂  `ℕ ``
-* `` ∅ , "f" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  `ℕ ⇒ `ℕ ``
-* `` ∅ ⊢ ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
-
-Environments are partial maps from identifiers to types, built using `∅`
-for the empty map, and `Γ , x ⦂ A` for the map that extends
-environment `Γ` by mapping variable `x` to type `A`.
-
-*(((It's redundant to have two versions of the rules)))*
-
-*(((Need text to explain `Γ ∋ x ⦂ A`)))*
-
-In an informal presentation of the formal semantics,
-the rules for typing are written as follows.
-
-    Γ x ≡ A
-    ----------- Ax
-    Γ ⊢ ` x ⦂ A
-
-    Γ , x ⦂ A ⊢ N ⦂ B
-    ------------------------ ⇒-I
-    Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
-
-    Γ ⊢ L ⦂ A ⇒ B
-    Γ ⊢ M ⦂ A
-    -------------- ⇒-E
-    Γ ⊢ L · M ⦂ B
-
-    ------------- ℕ-I₁
-    Γ ⊢ true ⦂ `ℕ
-
-    -------------- ℕ-I₂
-    Γ ⊢ false ⦂ `ℕ
-
-    Γ ⊢ L : `ℕ
-    Γ ⊢ M ⦂ A
-    Γ ⊢ N ⦂ A
-    -------------------------- ℕ-E
-    Γ ⊢ if L then M else N ⦂ A
-
-As we will show later, the rules are deterministic, in that
-at most one rule applies to every term.
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ # "s" · (# "s" · # "z") ⦂  `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ # "s" · (# "s" · # "z")) ⦂  `ℕ ⇒ `ℕ ``
+* `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 The proof rules come in pairs, with rules to introduce and to
 eliminate each connective, labeled `-I` and `-E`, respectively. As we
@@ -842,11 +813,11 @@ connective, which appears in the conclusion but not in the premises;
 while the second _eliminates_ a formula for the connective, which appears in
 a premise but not in the conclusion. An introduction rule describes
 how to construct a value of the type (abstractions yield functions,
-true and false yield booleans), while an elimination rule describes
+`` `suc `` and `` `zero `` yield naturals), while an elimination rule describes
 how to deconstruct a value of the given type (applications use
-functions, conditionals use booleans).
+functions, case expressions use naturals).
 
-Here are the above rules formalised in Agda.
+Here are contexts, lookup rules, and type rules formalised in Agda.
 
 \begin{code}
 infix  4  _∋_⦂_
@@ -909,6 +880,10 @@ data _⊢_⦂_ : Context → Term → Type → Set where
     → Γ ⊢ μ x ⇒ M ⦂ A
 \end{code}
 
+The rules are deterministic, in that
+at most one rule applies to every term.
+
+
 ### Example type derivations
 
 Here is a typing example.  First, here is how
@@ -922,7 +897,7 @@ Derivation of for the Church numeral two:
     Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" ⦂ A ⇒ A         Γ₂ ⊢ # "z" ⦂ A
     ------------------- Ax    ------------------------------------------ ⇒-E
     Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" · # "z" ⦂ A
-    --------------------------------------------------  ⇒-E
+    -------------------------------------------------- ⇒-E
     Γ₂ ⊢ # "s" · (# "s" · # "z") ⦂ A
     ---------------------------------------------- ⇒-I
     Γ₁ ⊢ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
@@ -937,9 +912,7 @@ Where `∋s` and `∋z` abbreviate the two derivations:
     ----------------------------- S        ------------- Z
     Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
 
-where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
-
-*((( possibly add another example, for plus )))*
+and where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
 
 Here is the above derivation formalised in Agda.
 
@@ -997,34 +970,40 @@ Typing for the rest of the Church example.
 ⊢fourᶜ = ⇒-E (⇒-E (⇒-E (⇒-E ⊢plusᶜ ⊢twoᶜ) ⊢twoᶜ) ⊢sucᶜ) ℕ-I₁
 \end{code}
 
+*(((Rename I and E rules with the constructors and a turnstyle)))*
+
+*(((Explain the alternative names with I and E)))*
+
+*(((Copy ≠ from chapter Inference and use it to replace `λ()` in examples)))*
+
 
 #### Interaction with Agda
 
-*(((rewrite the followign)))*
+*(((rewrite the following)))*
 
 Construction of a type derivation is best done interactively.
 Start with the declaration:
 
-    ⊢not : ∅ ⊢ not ⦂ `ℕ ⇒ `ℕ
-    ⊢not = ?
+    ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
+    ⊢sucᶜ = ?
 
 Typing C-l causes Agda to create a hole and tell us its expected type.
 
-    ⊢not = { }0
-    ?0 : ∅ ⊢ not ⦂ `ℕ ⇒ `ℕ
+    ⊢sucᶜ = { }0
+    ?0 : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
 
 Now we fill in the hole by typing C-c C-r. Agda observes that
-the outermost term in `not` in a `λ`, which is typed using `⇒-I`. The
+the outermost term in `sucᶜ` in a `λ`, which is typed using `⇒-I`. The
 `⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
-    ⊢not = ⇒-I { }0
+    ⊢sucᶜ = ⇒-I { }0
     ?0 : ∅ , x ⦂ `ℕ ⊢ if ` x then false else true ⦂ `ℕ
 
 Again we fill in the hole by typing C-c C-r. Agda observes that the
 outermost term is now `if_then_else_`, which is typed using ``ℕ-E`. The
 ``ℕ-E` rule in turn takes three arguments, which Agda leaves as holes.
 
-    ⊢not = ⇒-I (`ℕ-E { }0 { }1 { }2)
+    ⊢sucᶜ = ⇒-I (`ℕ-E { }0 { }1 { }2)
     ?0 : ∅ , x ⦂ `ℕ ⊢ ` x ⦂
     ?1 : ∅ , x ⦂ `ℕ ⊢ false ⦂ `ℕ
     ?2 : ∅ , x ⦂ `ℕ ⊢ true ⦂ `ℕ
@@ -1102,13 +1081,11 @@ This chapter uses the following unicode
 
     ⇒    U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
     ƛ    U+019B: LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
-    ⦂    U+2982: Z NOTATION TYPE COLON (\:)
     ·    U+00B7: MIDDLE DOT (\cdot)
     😇   U+1F607: SMILING FACE WITH HALO
     😈   U+1F608: SMILING FACE WITH HORNS
-    ′    U+2032: PRIME (\')
-    ⟹  U+27F9: LONG RIGHTWARDS DOUBLE ARROW (\r6)
+    ⟶  U+27F9: LONG RIGHTWARDS ARROW (\r5, \-->)
     ξ    U+03BE: GREEK SMALL LETTER XI (\Gx or \xi)
     β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
+    ⦂    U+2982: Z NOTATION TYPE COLON (\:)
 
-Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).

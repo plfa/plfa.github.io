@@ -567,11 +567,11 @@ term that includes `Set ℓ`.
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library.
-\begin{code}
--- import Relation.Binary.PropositionalEquality as Eq
--- open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
--- open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
-\end{code}
+
+    import Relation.Binary.PropositionalEquality as Eq
+    open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
+    open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+
 Here the import is shown as comment rather than code to avoid collisions,
 as mentioned in the introduction.
 
@@ -584,6 +584,5 @@ This chapter uses the following unicode.
     ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
     ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
     ∎  U+220E  END OF PROOF (\qed)
-    λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
     ≐  U+2250  APPROACHES THE LIMIT (\.=)
     ℓ  U+2113  SCRIPT SMALL L (\ell)

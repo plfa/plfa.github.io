@@ -280,7 +280,7 @@ Parentheses and semicolons are among the few characters that cannot
 appear in names, so we do not need extra spaces in the `using` list.
 
 
-## Operations on naturals are recursive functions
+## Operations on naturals are recursive functions {#plus}
 
 Now that we have the natural numbers, what can we do with them?
 For instance, can we define arithmetic operations such as

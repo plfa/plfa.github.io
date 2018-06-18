@@ -101,7 +101,7 @@ step or it is a value.
 data Progress (M : Term) : Set where
 
   step : ∀ {N}
-    → M ⟹ N
+    → M ⟶ N
       ----------
     → Progress M
 
@@ -117,17 +117,17 @@ progress : ∀ {M A}
 progress (Ax ())
 progress (⇒-I ⊢N)                           =  done V-ƛ
 progress (⇒-E ⊢L ⊢M) with progress ⊢L
-... | step L⟹L′                            =  step (ξ-·₁ L⟹L′)
+... | step L⟶L′                            =  step (ξ-·₁ L⟶L′)
 ... | done VL with progress ⊢M
-...   | step M⟹M′                          =  step (ξ-·₂ VL M⟹M′)
+...   | step M⟶M′                          =  step (ξ-·₂ VL M⟶M′)
 ...   | done VM with canonical ⊢L VL
 ...     | C-ƛ                                =  step (β-ƛ· VM)
 progress ℕ-I₁                               =  done V-zero
 progress (ℕ-I₂ ⊢M) with progress ⊢M
-...  | step M⟹M′                           =  step (ξ-suc M⟹M′)
+...  | step M⟶M′                           =  step (ξ-suc M⟶M′)
 ...  | done VM                               =  done (V-suc VM)
 progress (ℕ-E ⊢L ⊢M ⊢N) with progress ⊢L
-... | step L⟹L′                            =  step (ξ-case L⟹L′)
+... | step L⟶L′                            =  step (ξ-case L⟶L′)
 ... | done VL with canonical ⊢L VL
 ...   | C-zero                               =  step β-case-zero
 ...   | C-suc CL                             =  step (β-case-suc (value CL))
@@ -340,17 +340,17 @@ reduction preserves types.
 \begin{code}
 preserve : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
-  → M ⟹ N
+  → M ⟶ N
     ----------
   → ∅ ⊢ N ⦂ A
 preserve (Ax ())
 preserve (⇒-I ⊢N)              ()
-preserve (⇒-E ⊢L ⊢M)           (ξ-·₁ L⟹L′)     =  ⇒-E (preserve ⊢L L⟹L′) ⊢M
-preserve (⇒-E ⊢L ⊢M)           (ξ-·₂ VL M⟹M′)  =  ⇒-E ⊢L (preserve ⊢M M⟹M′)
+preserve (⇒-E ⊢L ⊢M)           (ξ-·₁ L⟶L′)     =  ⇒-E (preserve ⊢L L⟶L′) ⊢M
+preserve (⇒-E ⊢L ⊢M)           (ξ-·₂ VL M⟶M′)  =  ⇒-E ⊢L (preserve ⊢M M⟶M′)
 preserve (⇒-E (⇒-I ⊢N) ⊢V)     (β-ƛ· VV)        =  subst ⊢N ⊢V
 preserve ℕ-I₁                  ()
-preserve (ℕ-I₂ ⊢M)             (ξ-suc M⟹M′)    =  ℕ-I₂ (preserve ⊢M M⟹M′)
-preserve (ℕ-E ⊢L ⊢M ⊢N)        (ξ-case L⟹L′)   =  ℕ-E (preserve ⊢L L⟹L′) ⊢M ⊢N
+preserve (ℕ-I₂ ⊢M)             (ξ-suc M⟶M′)    =  ℕ-I₂ (preserve ⊢M M⟶M′)
+preserve (ℕ-E ⊢L ⊢M ⊢N)        (ξ-case L⟶L′)   =  ℕ-E (preserve ⊢L L⟶L′) ⊢M ⊢N
 preserve (ℕ-E ℕ-I₁ ⊢M ⊢N)      β-case-zero      =  ⊢M
 preserve (ℕ-E (ℕ-I₂ ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢N ⊢V
 preserve (Fix ⊢M)              (β-μ)            =  subst ⊢M (Fix ⊢M)
@@ -365,14 +365,14 @@ Gas = ℕ
 data Normalise (M : Term) : Set where
 
   out-of-gas : ∀ {N A}
-    → M ⟹* N
+    → M ⟶* N
     → ∅ ⊢ N ⦂ A
       -------------
     → Normalise M
 
   normal : ∀ {V}
     → Gas
-    → M ⟹* V
+    → M ⟶* V
     → Value V
      --------------
     → Normalise M
@@ -385,9 +385,9 @@ normalise : ∀ {M A}
 normalise {L} zero    ⊢L                   =  out-of-gas (L ∎) ⊢L
 normalise {L} (suc m) ⊢L with progress ⊢L
 ...  | done VL                             =  normal (suc m) (L ∎) VL
-...  | step L⟹M with normalise m (preserve ⊢L L⟹M)
-...          | out-of-gas M⟹*N ⊢N        =  out-of-gas (L ⟹⟨ L⟹M ⟩ M⟹*N) ⊢N
-...          | normal n M⟹*V VV          =  normal n (L ⟹⟨ L⟹M ⟩ M⟹*V) VV
+...  | step L⟶M with normalise m (preserve ⊢L L⟶M)
+...          | out-of-gas M⟶*N ⊢N        =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N) ⊢N
+...          | normal n M⟶*V VV          =  normal n (L ⟶⟨ L⟶M ⟩ M⟶*V) VV
 \end{code}
 
 ### Examples
@@ -402,7 +402,7 @@ _ : normalise 100 ⊢four ≡
       ])))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
-   ⟹⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+   ⟶⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
    (ƛ "m" ⇒
     (ƛ "n" ⇒
      `case # "m" [zero⇒ # "n" |suc "m" ⇒
@@ -417,7 +417,7 @@ _ : normalise 100 ⊢four ≡
      ]))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
-   ⟹⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+   ⟶⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
    (ƛ "n" ⇒
     `case `suc (`suc `zero) [zero⇒ # "n" |suc "m" ⇒
     `suc
@@ -430,7 +430,7 @@ _ : normalise 100 ⊢four ≡
      · # "n")
     ])
    · `suc (`suc `zero)
-   ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+   ⟶⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
    `case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
    `suc
    ((μ "+" ⇒
@@ -441,7 +441,7 @@ _ : normalise 100 ⊢four ≡
     · # "m"
     · `suc (`suc `zero))
    ]
-   ⟹⟨ β-case-suc (V-suc V-zero) ⟩
+   ⟶⟨ β-case-suc (V-suc V-zero) ⟩
    `suc
    ((μ "+" ⇒
      (ƛ "m" ⇒
@@ -450,7 +450,7 @@ _ : normalise 100 ⊢four ≡
        ])))
     · `suc `zero
     · `suc (`suc `zero))
-   ⟹⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
    `suc
    ((ƛ "m" ⇒
      (ƛ "n" ⇒
@@ -466,7 +466,7 @@ _ : normalise 100 ⊢four ≡
       ]))
     · `suc `zero
     · `suc (`suc `zero))
-   ⟹⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
+   ⟶⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
    `suc
    ((ƛ "n" ⇒
      `case `suc `zero [zero⇒ # "n" |suc "m" ⇒
@@ -480,7 +480,7 @@ _ : normalise 100 ⊢four ≡
       · # "n")
      ])
     · `suc (`suc `zero))
-   ⟹⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+   ⟶⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
    `suc
    `case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
    `suc
@@ -492,7 +492,7 @@ _ : normalise 100 ⊢four ≡
     · # "m"
     · `suc (`suc `zero))
    ]
-   ⟹⟨ ξ-suc (β-case-suc V-zero) ⟩
+   ⟶⟨ ξ-suc (β-case-suc V-zero) ⟩
    `suc
    (`suc
     ((μ "+" ⇒
@@ -502,7 +502,7 @@ _ : normalise 100 ⊢four ≡
         ])))
      · `zero
      · `suc (`suc `zero)))
-   ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
    `suc
    (`suc
     ((ƛ "m" ⇒
@@ -519,7 +519,7 @@ _ : normalise 100 ⊢four ≡
        ]))
      · `zero
      · `suc (`suc `zero)))
-   ⟹⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
+   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
    `suc
    (`suc
     ((ƛ "n" ⇒
@@ -534,7 +534,7 @@ _ : normalise 100 ⊢four ≡
        · # "n")
       ])
      · `suc (`suc `zero)))
-   ⟹⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
+   ⟶⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
    `suc
    (`suc
     `case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
@@ -547,7 +547,7 @@ _ : normalise 100 ⊢four ≡
      · # "m"
      · `suc (`suc `zero))
     ])
-   ⟹⟨ ξ-suc (ξ-suc β-case-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
+   ⟶⟨ ξ-suc (ξ-suc β-case-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
   (V-suc (V-suc (V-suc (V-suc V-zero))))
 _ = refl
 \end{code}
@@ -562,7 +562,7 @@ _ : normalise 100 ⊢fourᶜ ≡
    · (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z")))
    · (ƛ "n" ⇒ `suc # "n")
    · `zero
-   ⟹⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
+   ⟶⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
    (ƛ "n" ⇒
     (ƛ "s" ⇒
      (ƛ "z" ⇒
@@ -571,46 +571,46 @@ _ : normalise 100 ⊢fourᶜ ≡
    · (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z")))
    · (ƛ "n" ⇒ `suc # "n")
    · `zero
-   ⟹⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+   ⟶⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
    (ƛ "s" ⇒
     (ƛ "z" ⇒
      (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · # "s" ·
      ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · # "s" · # "z")))
    · (ƛ "n" ⇒ `suc # "n")
    · `zero
-   ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+   ⟶⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
    (ƛ "z" ⇒
     (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
     ·
     ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
      · # "z"))
    · `zero
-   ⟹⟨ β-ƛ· V-zero ⟩
+   ⟶⟨ β-ƛ· V-zero ⟩
    (ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
    ·
    ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
     · `zero)
-   ⟹⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
+   ⟶⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
    ((ƛ "s" ⇒ (ƛ "z" ⇒ # "s" · (# "s" · # "z"))) · (ƛ "n" ⇒ `suc # "n")
     · `zero)
-   ⟹⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
+   ⟶⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
    ((ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
     `zero)
-   ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
+   ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
    ((ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · `zero))
-   ⟹⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
+   ⟶⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
    ((ƛ "n" ⇒ `suc # "n") · `suc `zero)
-   ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
+   ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · # "z")) ·
    `suc (`suc `zero)
-   ⟹⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
+   ⟶⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
    (ƛ "n" ⇒ `suc # "n") · ((ƛ "n" ⇒ `suc # "n") · `suc (`suc `zero))
-   ⟹⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
-   (ƛ "n" ⇒ `suc # "n") · `suc (`suc (`suc `zero)) ⟹⟨
+   ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
+   (ƛ "n" ⇒ `suc # "n") · `suc (`suc (`suc `zero)) ⟶⟨
    β-ƛ· (V-suc (V-suc (V-suc V-zero))) ⟩
    `suc (`suc (`suc (`suc `zero))) ∎)
   (V-suc (V-suc (V-suc (V-suc V-zero))))
@@ -630,8 +630,8 @@ that, if `M ==> N` and `∅ ⊢ N ⦂ A`, then `∅ ⊢ M ⦂ A`?  It is easy to
 counter-example with conditionals, find one not involving conditionals.
 -->
 
-We say that `M` _reduces_ to `N` if `M ⟹ N`,
-and that `M` _expands_ to `N` if `N ⟹ M`.
+We say that `M` _reduces_ to `N` if `M ⟶ N`,
+and that `M` _expands_ to `N` if `N ⟶ M`.
 The preservation property is sometimes called _subject reduction_.
 Its opposite is _subject expansion_, which holds if
 `M ==> N` and `∅ ⊢ N ⦂ A`, then `∅ ⊢ M ⦂ A`.
@@ -647,7 +647,7 @@ term can _never_ reach a stuck state.
 
 \begin{code}
 Normal : Term → Set
-Normal M = ∀ {N} → ¬ (M ⟹ N)
+Normal M = ∀ {N} → ¬ (M ⟶ N)
 
 Stuck : Term → Set
 Stuck M = Normal M × ¬ Value M
@@ -655,7 +655,7 @@ Stuck M = Normal M × ¬ Value M
 postulate
   Soundness : ∀ {M N A}
     → ∅ ⊢ M ⦂ A
-    → M ⟹* N
+    → M ⟶* N
       -----------
     → ¬ (Stuck N)
 \end{code}
@@ -664,13 +664,13 @@ postulate
 \begin{code}
 Soundness′ : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
-  → M ⟹* N
+  → M ⟶* N
     -----------
   → ¬ (Stuck N)
-Soundness′ ⊢M (M ∎) ⟨ ¬M⟹N , ¬VM ⟩ with progress ⊢M
-... | step M⟹N                      =  ¬M⟹N M⟹N
+Soundness′ ⊢M (M ∎) ⟨ ¬M⟶N , ¬VM ⟩ with progress ⊢M
+... | step M⟶N                      =  ¬M⟶N M⟶N
 ... | done VM                         =  ¬VM VM
-Soundness′ ⊢L (L ⟹⟨ L⟹M ⟩ M⟹*N)  =  Soundness′ (preserve ⊢L L⟹M) M⟹*N
+Soundness′ ⊢L (L ⟶⟨ L⟶M ⟩ M⟶*N)  =  Soundness′ (preserve ⊢L L⟶M) M⟶*N
 \end{code}
 </div>
 
@@ -687,7 +687,7 @@ and preservation theorems for the simply typed lambda-calculus.
 Suppose we add a new term `zap` with the following reduction rule
 
                      ---------                  (ST_Zap)
-                     M ⟹ zap
+                     M ⟶ zap
 
 and the following typing rule:
 
@@ -712,10 +712,10 @@ Suppose instead that we add a new term `foo` with the following
 reduction rules:
 
                  -------------------              (Foo₁)
-                 (λ x ⇒ # x) ⟹ foo
+                 (λ x ⇒ # x) ⟶ foo
 
                     ------------                  (Foo₂)
-                    foo ⟹ true
+                    foo ⟶ true
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
@@ -730,7 +730,7 @@ false, give a counterexample.
 
 #### Exercise: 2 stars (stlc_variation3)
 
-Suppose instead that we remove the rule `ξ·₁` from the `⟹`
+Suppose instead that we remove the rule `ξ·₁` from the `⟶`
 relation. Which of the following properties of the STLC remain
 true in the absence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
@@ -747,7 +747,7 @@ Suppose instead that we add the following new rule to the
 reduction relation:
 
      ----------------------------------------      (FunnyCaseZero)
-     case zero [zero⇒ M |suc x ⇒ N ] ⟹ true
+     case zero [zero⇒ M |suc x ⇒ N ] ⟶ true
 
 Which of the following properties of the STLC remain true in
 the presence of this rule?  For each one, write either
