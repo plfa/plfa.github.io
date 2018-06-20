@@ -17,7 +17,7 @@ material in a different way; see the [Preface](Preface).
 
 ## How to host literate code
 
-In directory `sf/` run the following:
+In directory `plta/` run the following:
 
     $ make clobber              (remove all files before rebuilding system)
     $ make macos-setup          (might need sudo, but try it without first)
@@ -30,12 +30,6 @@ The visible page appears at
 
     localhost:4000/sf/<permalink>
 
-<!--
-    $ make clobber
-    $ make
-    $ make serve &
--->
-
 ## Unicode abbreviations
 
 
@@ -43,32 +37,28 @@ The visible page appears at
     \u+    ⊎
     \all   ∀
     \x     ×
-	x\_1   x₁
-	x\_i   xᵢ
+    x\_1   x₁
+    x\_i   xᵢ
 
-Also see [here](
-https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194
-).
+See [agda-input.el](https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194) for more details.
 
-## Bindings for Agda mode
+## How to use `agda-mode`
 
     ?            create hole
     {!...!}      create hole
-    C-c C-l      reload
+    C-c C-l      load buffer
     C-c C-c x    split on variable x 
     C-c C-space  fill in hole
 
-Also see [here](
-http://agda.readthedocs.io/en/latest/tools/emacs-mode.html
-).
+See [the emacs-mode docs]( http://agda.readthedocs.io/en/latest/tools/emacs-mode.html) for more details.
 
 ## Markdown
 
-For markdown commands see [Daring Fireball](
+For an overview of the Markdown syntax, see [the original description](
 https://daringfireball.net/projects/markdown/syntax
-), [CommonMark](
+), [the CommonMark project](
 http://spec.commonmark.org/0.28/
-), or [Kramdown](
+), or [the version that is used in this book](
 https://kramdown.gettalong.org/syntax.html
 ).
 
