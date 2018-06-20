@@ -31,7 +31,6 @@ theme: minima
 exclude:
   - "src/"
   - "extra/"
-  - "README.md"
   - "Notes.md"
   - "*.lagda"
   - "Gemfile"
