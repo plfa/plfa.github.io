@@ -905,38 +905,38 @@ data _⊢_⦂_ : Context → Term → Type → Set where
     → Γ ⊢ ⌊ x ⌋ ⦂ A
 
   -- ⇒-I
-  ⇒-I : ∀ {Γ x N A B}
+  ⊢ƛ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       -------------------
     → Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
 
   -- ⇒-E
-  ⇒-E : ∀ {Γ L M A B}
+  _·_ : ∀ {Γ L M A B}
     → Γ ⊢ L ⦂ A ⇒ B
     → Γ ⊢ M ⦂ A
       -------------
     → Γ ⊢ L · M ⦂ B
 
   -- ℕ-I₁
-  ℕ-I₁ : ∀ {Γ}
+  ⊢zero : ∀ {Γ}
       --------------
     → Γ ⊢ `zero ⦂ `ℕ
 
   -- ℕ-I₂
-  ℕ-I₂ : ∀ {Γ M}
+  ⊢suc : ∀ {Γ M}
     → Γ ⊢ M ⦂ `ℕ
       ---------------
     → Γ ⊢ `suc M ⦂ `ℕ
 
   -- ℕ-E
-  ℕ-E : ∀ {Γ L M x N A}
+  ⊢case : ∀ {Γ L M x N A}
     → Γ ⊢ L ⦂ `ℕ
     → Γ ⊢ M ⦂ A
     → Γ , x ⦂ `ℕ ⊢ N ⦂ A
       -------------------------------------
     → Γ ⊢ `case L [zero⇒ M |suc x ⇒ N ] ⦂ A
 
-  Fix : ∀ {Γ x M A}
+  ⊢μ : ∀ {Γ x M A}
     → Γ , x ⦂ A ⊢ M ⦂ A
       -----------------
     → Γ ⊢ μ x ⇒ M ⦂ A
@@ -1002,9 +1002,9 @@ is a type derivation for the Church numberal two:
     Γ₂ ⊢ ⌊ "s" ⌋ ⦂ A ⇒ A        Γ₂ ⊢ ⌊ "s" ⌋ · ⌊ "z" ⌋ ⦂ A
     -------------------------------------------------- _·_
     Γ₂ ⊢ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂ A
-    ---------------------------------------------- ƛ_
+    ---------------------------------------------- ⊢ƛ
     Γ₁ ⊢ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂ A ⇒ A
-    ---------------------------------------------------------- ƛ_
+    ---------------------------------------------------------- ⊢ƛ
     ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂ A ⇒ A
 
 where `∋s` and `∋z` abbreviate the two derivations:
@@ -1022,7 +1022,7 @@ Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
 
 ⊢twoᶜ : ∀ {A} → ∅ ⊢ twoᶜ ⦂ Ch A
-⊢twoᶜ = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))
+⊢twoᶜ = ⊢ƛ (⊢ƛ (Ax ∋s · (Ax ∋s · Ax ∋z)))
   where
 
   ∋s = S ("s" ≠ "z") Z
@@ -1032,11 +1032,11 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 Here are the typings corresponding to our first example.
 \begin{code}
 ⊢two : ∅ ⊢ two ⦂ `ℕ
-⊢two = ℕ-I₂ (ℕ-I₂ ℕ-I₁)
+⊢two = ⊢suc (⊢suc ⊢zero)
 
 ⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-⊢plus = Fix (⇒-I (⇒-I (ℕ-E (Ax ∋m) (Ax ∋n)
-         (ℕ-I₂ (⇒-E (⇒-E (Ax ∋+) (Ax ∋m′)) (Ax ∋n′))))))
+⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (Ax ∋m) (Ax ∋n)
+         (⊢suc (Ax ∋+ · Ax ∋m′ · Ax ∋n′)))))
   where
   ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
   ∋m  = (S ("m" ≠ "n") Z)
@@ -1045,7 +1045,7 @@ Here are the typings corresponding to our first example.
   ∋n′ = (S ("n" ≠ "m") Z)
 
 ⊢four : ∅ ⊢ four ⦂ `ℕ
-⊢four = ⇒-E (⇒-E ⊢plus ⊢two) ⊢two
+⊢four = ⊢plus · ⊢two · ⊢two
 \end{code}
 The two occcurrences of variable `"n"` in the original term appear
 in different contexts, and correspond here to the two different
@@ -1057,8 +1057,7 @@ branch of the case expression.
 Here are typings for the remainder of the Church example.
 \begin{code}
 ⊢plusᶜ : ∀ {A} → ∅ ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
-⊢plusᶜ = ⇒-I (⇒-I (⇒-I (⇒-I (⇒-E (⇒-E (Ax ∋m) (Ax ∋s))
-                             (⇒-E (⇒-E (Ax ∋n) (Ax ∋s)) (Ax ∋z))))))
+⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (Ax ∋m · Ax ∋s · (Ax ∋n · Ax ∋s · Ax ∋z)))))
   where
   ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
   ∋n = S ("n" ≠ "z") (S ("n" ≠ "s") Z)
@@ -1066,12 +1065,12 @@ Here are typings for the remainder of the Church example.
   ∋z = Z
 
 ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
-⊢sucᶜ = ⇒-I (ℕ-I₂ (Ax ∋n))
+⊢sucᶜ = ⊢ƛ (⊢suc (Ax ∋n))
   where
   ∋n = Z
 
 ⊢fourᶜ : ∅ ⊢ plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⦂ `ℕ
-⊢fourᶜ = ⇒-E (⇒-E (⇒-E (⇒-E ⊢plusᶜ ⊢twoᶜ) ⊢twoᶜ) ⊢sucᶜ) ℕ-I₁
+⊢fourᶜ = ⊢plusᶜ · ⊢twoᶜ · ⊢twoᶜ · ⊢sucᶜ · ⊢zero
 \end{code}
 
 
@@ -1089,20 +1088,20 @@ Typing C-l causes Agda to create a hole and tell us its expected type.
     ?0 : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
 
 Now we fill in the hole by typing C-c C-r. Agda observes that
-the outermost term in `sucᶜ` in `ƛ`, which is typed using `⇒-I`. The
-`⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
+the outermost term in `sucᶜ` in `⊢ƛ`, which is typed using `ƛ`. The
+`ƛ` rule in turn takes one argument, which Agda leaves as a hole.
 
-    ⊢sucᶜ = ⇒-I { }1
+    ⊢sucᶜ = ⊢ƛ { }1
     ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc ⌊ "n" ⌋ ⦂ `ℕ
 
 We can fill in the hole by type C-c C-r again.
 
-    ⊢sucᶜ = ⇒-I (`ℕ-I₂ { }2)
+    ⊢sucᶜ = ⊢ƛ (⊢suc { }2)
     ?2 : ∅ , "n" ⦂ `ℕ ⊢ ⌊ "n" ⌋ ⦂ `ℕ
 
 And again.
 
-    ⊢suc′ = ⇒-I (ℕ-I₂ (Ax { }3))
+    ⊢suc′ = ⊢ƛ (⊢suc (Ax { }3))
     ?3 : ∅ , "n" ⦂ `ℕ ∋ "n" ⦂ `ℕ
 
 A further attempt with C-c C-r yields the message:
@@ -1111,7 +1110,7 @@ A further attempt with C-c C-r yields the message:
 
 We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are done.
 
-    ⊢suc′ = ⇒-I (ℕ-I₂ (Ax Z))
+    ⊢suc′ = ⊢ƛ (⊢suc (Ax Z))
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
@@ -1144,7 +1143,7 @@ application is both a natural and a function.
 
 \begin{code}
 nope₁ : ∀ {A} → ¬ (∅ ⊢ `zero · `suc `zero ⦂ A)
-nope₁ (⇒-E () _)
+nope₁ (() · _)
 \end{code}
 
 As a second example, here is a formal proof that it is not possible to
@@ -1153,7 +1152,7 @@ doing so requires types `A` and `B` such that `A ⇒ B ≡ A`.
 
 \begin{code}
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ⌊ "x" ⌋ · ⌊ "x" ⌋ ⦂ A)
-nope₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective ∋x ∋x′)
+nope₂ (⊢ƛ (Ax ∋x · Ax ∋x′))  =  contradiction (∋-injective ∋x ∋x′)
   where
   contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
   contradiction ()

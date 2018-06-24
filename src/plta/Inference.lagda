@@ -149,7 +149,7 @@ data _⊢_↑_ where
 
 data _⊢_↓_ where
 
-  ⊢λ : ∀ {Γ x N A B}
+  ⊢ƛ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ↓ B
       -----------------------
     → Γ ⊢ ƛ x ⇒ N ↓ A ⇒ B
@@ -246,7 +246,7 @@ synthesize Γ (M ↓ A) =
 
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) =
   do ⊢N ← inherit (Γ , x ⦂ A) N B
-     return (⊢λ ⊢N)
+     return (⊢ƛ ⊢N)
 inherit Γ (ƛ x ⇒ N) `ℕ =
   error⁻ "lambda cannot be of type natural" (ƛ x ⇒ N) []
 inherit Γ `zero `ℕ =
@@ -289,8 +289,8 @@ x ≠ y  with x ≟ y
 ⊢four =
   (⊢↓
    (⊢μ
-    (⊢λ
-     (⊢λ
+    (⊢ƛ
+     (⊢ƛ
       (⊢case (Ax (S (_≠_ "m" "n") Z)) (⊢↑ (Ax Z) refl)
        (⊢suc
         (⊢↑
@@ -309,13 +309,13 @@ _ = refl
 
 ⊢fourCh : ε ⊢ fourCh ↑ `ℕ
 ⊢fourCh =
-  (⊢↓ (⊢λ (⊢↑ (Ax Z · ⊢λ (⊢suc (⊢↑ (Ax Z) refl)) · ⊢zero) refl)) ·
+  (⊢↓ (⊢ƛ (⊢↑ (Ax Z · ⊢ƛ (⊢suc (⊢↑ (Ax Z) refl)) · ⊢zero) refl)) ·
    ⊢↑
    (⊢↓
-    (⊢λ
-     (⊢λ
-      (⊢λ
-       (⊢λ
+    (⊢ƛ
+     (⊢ƛ
+      (⊢ƛ
+       (⊢ƛ
         (⊢↑
          (Ax
           (S (_≠_ "m" "z")
@@ -332,16 +332,16 @@ _ = refl
           refl)
          refl)))))
     ·
-    ⊢λ
-    (⊢λ
+    ⊢ƛ
+    (⊢ƛ
      (⊢↑
       (Ax (S (_≠_ "s" "z") Z) ·
        ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
        refl)
       refl))
     ·
-    ⊢λ
-    (⊢λ
+    ⊢ƛ
+    (⊢ƛ
      (⊢↑
       (Ax (S (_≠_ "s" "z") Z) ·
        ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
@@ -391,6 +391,7 @@ _ : synthesize ε (((ƛ "x" ⇒ ⌊ "x" ⌋ ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) 
 _ = refl
 \end{code}
 
+
 ## Erasure
 
 \begin{code}
@@ -409,7 +410,7 @@ _ = refl
 ∥ ⊢L · ⊢M ∥⁺ =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
 ∥ ⊢↓ ⊢M ∥⁺ =  ∥ ⊢M ∥⁻
 
-∥ ⊢λ ⊢N ∥⁻ =  DB.ƛ ∥ ⊢N ∥⁻
+∥ ⊢ƛ ⊢N ∥⁻ =  DB.ƛ ∥ ⊢N ∥⁻
 ∥ ⊢zero ∥⁻ =  DB.`zero
 ∥ ⊢suc ⊢M ∥⁻ =  DB.`suc ∥ ⊢M ∥⁻
 ∥ ⊢case ⊢L ⊢M ⊢N ∥⁻ =  DB.`caseℕ ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻

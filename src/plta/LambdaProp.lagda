@@ -75,13 +75,13 @@ canonical : ∀ {M A}
   → Value M
     ---------------
   → Canonical M ⦂ A
-canonical (Ax ())        ()
-canonical (⇒-I ⊢N)       V-ƛ         =  C-ƛ
-canonical (⇒-E ⊢L ⊢M)    ()
-canonical ℕ-I₁           V-zero      =  C-zero
-canonical (ℕ-I₂ ⊢V)      (V-suc VV)  =  C-suc (canonical ⊢V VV)
-canonical (ℕ-E ⊢L ⊢M ⊢N) ()
-canonical (Fix ⊢M)       ()
+canonical (Ax ())          ()
+canonical (⊢ƛ ⊢N)          V-ƛ         =  C-ƛ
+canonical (⊢L · ⊢M)        ()
+canonical ⊢zero            V-zero      =  C-zero
+canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
+canonical (⊢case ⊢L ⊢M ⊢N) ()
+canonical (⊢μ ⊢M)          ()
 
 value : ∀ {M A}
   → Canonical M ⦂ A
@@ -116,23 +116,23 @@ progress : ∀ {M A}
     ----------
   → Progress M
 progress (Ax ())
-progress (⇒-I ⊢N)                           =  done V-ƛ
-progress (⇒-E ⊢L ⊢M) with progress ⊢L
+progress (⊢ƛ ⊢N)                             =  done V-ƛ
+progress (⊢L · ⊢M) with progress ⊢L
 ... | step L⟶L′                            =  step (ξ-·₁ L⟶L′)
 ... | done VL with progress ⊢M
 ...   | step M⟶M′                          =  step (ξ-·₂ VL M⟶M′)
 ...   | done VM with canonical ⊢L VL
 ...     | C-ƛ                                =  step (β-ƛ· VM)
-progress ℕ-I₁                               =  done V-zero
-progress (ℕ-I₂ ⊢M) with progress ⊢M
+progress ⊢zero                               =  done V-zero
+progress (⊢suc ⊢M) with progress ⊢M
 ...  | step M⟶M′                           =  step (ξ-suc M⟶M′)
 ...  | done VM                               =  done (V-suc VM)
-progress (ℕ-E ⊢L ⊢M ⊢N) with progress ⊢L
+progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | step L⟶L′                            =  step (ξ-case L⟶L′)
 ... | done VL with canonical ⊢L VL
 ...   | C-zero                               =  step β-case-zero
 ...   | C-suc CL                             =  step (β-case-suc (value CL))
-progress (Fix ⊢M)                            =  step β-μ
+progress (⊢μ ⊢M)                            =  step β-μ
 \end{code}
 
 This code reads neatly in part because we consider the
@@ -204,13 +204,13 @@ rename : ∀ {Γ Δ}
         → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
           ----------------------------------
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
-rename σ (Ax ∋w)         =  Ax (σ ∋w)
-rename σ (⇒-I ⊢N)        =  ⇒-I (rename (ext σ) ⊢N)
-rename σ (⇒-E ⊢L ⊢M)     =  ⇒-E (rename σ ⊢L) (rename σ ⊢M)
-rename σ ℕ-I₁            =  ℕ-I₁
-rename σ (ℕ-I₂ ⊢M)       =  ℕ-I₂ (rename σ ⊢M)
-rename σ (ℕ-E ⊢L ⊢M ⊢N)  =  ℕ-E (rename σ ⊢L) (rename σ ⊢M) (rename (ext σ) ⊢N)
-rename σ (Fix ⊢M)        =  Fix (rename (ext σ) ⊢M)
+rename σ (Ax ∋w)           =  Ax (σ ∋w)
+rename σ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext σ) ⊢N)
+rename σ (⊢L · ⊢M)         =  (rename σ ⊢L) · (rename σ ⊢M)
+rename σ ⊢zero             =  ⊢zero
+rename σ (⊢suc ⊢M)         =  ⊢suc (rename σ ⊢M)
+rename σ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename σ ⊢L) (rename σ ⊢M) (rename (ext σ) ⊢N)
+rename σ (⊢μ ⊢M)           =  ⊢μ (rename (ext σ) ⊢M)
 \end{code}
 
 We have three important corollaries.  First,
@@ -316,18 +316,18 @@ subst {x = y} (Ax {x = x} Z) ⊢V with x ≟ y
 subst {x = y} (Ax {x = x} (S x≢y ∋x)) ⊢V with x ≟ y
 ... | yes refl        =  ⊥-elim (x≢y refl)
 ... | no  _           =  Ax ∋x
-subst {x = y} (⇒-I {x = x} ⊢N) ⊢V with x ≟ y
-... | yes refl        =  ⇒-I (rename-≡ ⊢N)
-... | no  x≢y         =  ⇒-I (subst (rename-≢ x≢y ⊢N) ⊢V)
-subst (⇒-E ⊢L ⊢M) ⊢V  =  ⇒-E (subst ⊢L ⊢V) (subst ⊢M ⊢V)
-subst ℕ-I₁ ⊢V         =  ℕ-I₁
-subst (ℕ-I₂ ⊢M) ⊢V    =  ℕ-I₂ (subst ⊢M ⊢V)
-subst {x = y} (ℕ-E {x = x} ⊢L ⊢M ⊢N) ⊢V with x ≟ y
-... | yes refl        =  ℕ-E (subst ⊢L ⊢V) (subst ⊢M ⊢V) (rename-≡ ⊢N)
-... | no  x≢y         =  ℕ-E (subst ⊢L ⊢V) (subst ⊢M ⊢V) (subst (rename-≢ x≢y ⊢N) ⊢V)
-subst {x = y} (Fix {x = x} ⊢M) ⊢V with x ≟ y
-... | yes refl        =  Fix (rename-≡ ⊢M)
-... | no  x≢y         =  Fix (subst (rename-≢ x≢y ⊢M) ⊢V)
+subst {x = y} (⊢ƛ {x = x} ⊢N) ⊢V with x ≟ y
+... | yes refl        =  ⊢ƛ (rename-≡ ⊢N)
+... | no  x≢y         =  ⊢ƛ (subst (rename-≢ x≢y ⊢N) ⊢V)
+subst (⊢L · ⊢M) ⊢V    = (subst ⊢L ⊢V) · (subst ⊢M ⊢V)
+subst ⊢zero ⊢V        =  ⊢zero
+subst (⊢suc ⊢M) ⊢V    =  ⊢suc (subst ⊢M ⊢V)
+subst {x = y} (⊢case {x = x} ⊢L ⊢M ⊢N) ⊢V with x ≟ y
+... | yes refl        =  ⊢case (subst ⊢L ⊢V) (subst ⊢M ⊢V) (rename-≡ ⊢N)
+... | no  x≢y         =  ⊢case (subst ⊢L ⊢V) (subst ⊢M ⊢V) (subst (rename-≢ x≢y ⊢N) ⊢V)
+subst {x = y} (⊢μ {x = x} ⊢M) ⊢V with x ≟ y
+... | yes refl        =  ⊢μ (rename-≡ ⊢M)
+... | no  x≢y         =  ⊢μ (subst (rename-≢ x≢y ⊢M) ⊢V)
 \end{code}
 
 
@@ -345,17 +345,36 @@ preserve : ∀ {M N A}
     ----------
   → ∅ ⊢ N ⦂ A
 preserve (Ax ())
-preserve (⇒-I ⊢N)              ()
-preserve (⇒-E ⊢L ⊢M)           (ξ-·₁ L⟶L′)     =  ⇒-E (preserve ⊢L L⟶L′) ⊢M
-preserve (⇒-E ⊢L ⊢M)           (ξ-·₂ VL M⟶M′)  =  ⇒-E ⊢L (preserve ⊢M M⟶M′)
-preserve (⇒-E (⇒-I ⊢N) ⊢V)     (β-ƛ· VV)        =  subst ⊢N ⊢V
-preserve ℕ-I₁                  ()
-preserve (ℕ-I₂ ⊢M)             (ξ-suc M⟶M′)    =  ℕ-I₂ (preserve ⊢M M⟶M′)
-preserve (ℕ-E ⊢L ⊢M ⊢N)        (ξ-case L⟶L′)   =  ℕ-E (preserve ⊢L L⟶L′) ⊢M ⊢N
-preserve (ℕ-E ℕ-I₁ ⊢M ⊢N)      β-case-zero      =  ⊢M
-preserve (ℕ-E (ℕ-I₂ ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢N ⊢V
-preserve (Fix ⊢M)              (β-μ)            =  subst ⊢M (Fix ⊢M)
+preserve (⊢ƛ ⊢N)                 ()
+preserve (⊢L · ⊢M)               (ξ-·₁ L⟶L′)     =  (preserve ⊢L L⟶L′) · ⊢M
+preserve (⊢L · ⊢M)               (ξ-·₂ VL M⟶M′)  =  ⊢L · (preserve ⊢M M⟶M′)
+preserve ((⊢ƛ ⊢N) · ⊢V)          (β-ƛ· VV)        =  subst ⊢N ⊢V
+preserve ⊢zero                   ()
+preserve (⊢suc ⊢M)               (ξ-suc M⟶M′)    =  ⊢suc (preserve ⊢M M⟶M′)
+preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L⟶L′)   =  ⊢case (preserve ⊢L L⟶L′) ⊢M ⊢N
+preserve (⊢case ⊢zero ⊢M ⊢N)     β-case-zero      =  ⊢M
+preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢N ⊢V
+preserve (⊢μ ⊢M)                 (β-μ)            =  subst ⊢M (⊢μ ⊢M)
 \end{code}
+
+
+## Normalisation with streams
+
+codata Lift (A : Set) where
+  lift : A → Lift A
+
+data _↠_ : Term → Term → Set where
+
+  _∎ : ∀ (M : Term)
+      -----
+    → M ↠ M
+
+  _↦⟨_⟩_ : ∀ (L : Term) {M N : Term}
+    → L ⟶ M
+    → Lift (M ↠ N)
+      ------------
+    → L ↠ N
+
 
 ## Normalisation
 
