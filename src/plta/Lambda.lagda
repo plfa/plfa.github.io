@@ -60,6 +60,7 @@ open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
+open import Relation.Nullary.Negation using (¬?)
 \end{code}
 
 ## Syntax of terms
@@ -667,7 +668,7 @@ above are equivalent.
 
 ## Examples
 
-Here is a sample reduction demonstating that two plus two is four.
+Here is a sample reduction demonstrating that two plus two is four.
 \begin{code}
 _ : four ⟶* `suc `suc `suc `suc `zero
 _ =
@@ -829,11 +830,22 @@ For example,
 is the context that associates variable ` "s" ` with type `` `ℕ ⇒ `ℕ ``,
 and variable ` "z" ` with type `` `ℕ ``.
 
+Contexts are formalised as follows.
+
+\begin{code}
+infixl 5  _,_⦂_
+
+data Context : Set where
+  ∅     : Context
+  _,_⦂_ : Context → Id → Type → Context
+\end{code}
+
 We have two forms of _judgement_.  The first is written
 
     Γ ∋ x ⦂ A
 
 and indicates in context `Γ` that variable `x` has type `A`.
+It is called _lookup_.
 For example
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
@@ -843,6 +855,37 @@ give us the types associated with variables ` "z" ` and ` "s" `, respectively.
 The symbol `∋` (pronounced "ni", for "in" backwards) is chosen because
 checking that `Γ ∋ x ⦂ A` is anologous to checking whether `x ⦂ A` appears
 in a list corresponding to `Γ`.
+
+If two variables in a context have the same name, then lookup
+should return the most recently bound variable, which _shadows_
+the other variables.  For example,
+
+* `` ∅ , "x" : `ℕ ⇒ `ℕ , "x" : `ℕ ∋ "x" ⦂ `ℕ
+
+Here ` "x" ⦂ `ℕ ⇒ `ℕ ` is shadowed by ` "x" ⦂ `ℕ `.
+
+Lookup is formalised as follows.
+\begin{code}
+infix  4  _∋_⦂_
+
+data _∋_⦂_ : Context → Id → Type → Set where
+
+  Z : ∀ {Γ x A}
+      ------------------
+    → Γ , x ⦂ A ∋ x ⦂ A
+
+  S : ∀ {Γ x y A B}
+    → x ≢ y
+    → Γ ∋ x ⦂ A
+      ------------------
+    → Γ , y ⦂ B ∋ x ⦂ A
+\end{code}
+
+The constructors `Z` and `S` correspond roughly to the constructors
+`here` and `there` for the element-of relation `_∈_` on lists.
+Constructor `S` takes an additional paramemer, which ensures that
+when we look up a variable that it is not _shadowed_ by another
+variable with the same name earlier in the list.
 
 The second judgement is written
 
@@ -856,40 +899,9 @@ For example
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ # "s" · (# "s" · # "z")) ⦂  `ℕ ⇒ `ℕ ``
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
-The proof rules come in pairs, with rules to introduce and to
-eliminate each connective, labeled `-I` and `-E`, respectively. As we
-read the rules from top to bottom, introduction and elimination rules
-do what they say on the tin: the first _introduces_ a formula for the
-connective, which appears in the conclusion but not in the premises;
-while the second _eliminates_ a formula for the connective, which appears in
-a premise but not in the conclusion. An introduction rule describes
-how to construct a value of the type (abstractions yield functions,
-`` `suc `` and `` `zero `` yield naturals), while an elimination rule describes
-how to deconstruct a value of the given type (applications use
-functions, case expressions use naturals).
-
-Here are contexts, lookup rules, and type rules formalised in Agda.
-
+Typing is formalised as follows.
 \begin{code}
-infix  4  _∋_⦂_
 infix  4  _⊢_⦂_
-infixl 5  _,_⦂_
-
-data Context : Set where
-  ∅     : Context
-  _,_⦂_ : Context → Id → Type → Context
-
-data _∋_⦂_ : Context → Id → Type → Set where
-
-  Z : ∀ {Γ x A}
-      ------------------
-    → Γ , x ⦂ A ∋ x ⦂ A
-
-  S : ∀ {Γ x y A B}
-    → x ≢ y
-    → Γ ∋ x ⦂ A
-      ------------------
-    → Γ , y ⦂ B ∋ x ⦂ A
 
 data _⊢_⦂_ : Context → Term → Type → Set where
 
@@ -898,26 +910,31 @@ data _⊢_⦂_ : Context → Term → Type → Set where
       -------------
     → Γ ⊢ # x ⦂ A
 
+  -- ⇒-I
   ⇒-I : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       --------------------
     → Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
 
+  -- ⇒-E
   ⇒-E : ∀ {Γ L M A B}
     → Γ ⊢ L ⦂ A ⇒ B
     → Γ ⊢ M ⦂ A
       --------------
     → Γ ⊢ L · M ⦂ B
 
+  -- ℕ-I₁
   ℕ-I₁ : ∀ {Γ}
       -------------
     → Γ ⊢ `zero ⦂ `ℕ
 
+  -- ℕ-I₂
   ℕ-I₂ : ∀ {Γ M}
     → Γ ⊢ M ⦂ `ℕ
       ---------------
     → Γ ⊢ `suc M ⦂ `ℕ
 
+  -- ℕ-E
   ℕ-E : ∀ {Γ L M x N A}
     → Γ ⊢ L ⦂ `ℕ
     → Γ ⊢ M ⦂ A
@@ -931,32 +948,72 @@ data _⊢_⦂_ : Context → Term → Type → Set where
     → Γ ⊢ μ x ⇒ M ⦂ A
 \end{code}
 
-The rules are deterministic, in that
-at most one rule applies to every term.
+Each type rule is named after the constructor for the
+corresponding term.
+
+Most of the rules have a second name,
+derived from a convention in logic, whereby the rule is
+named after the type connective that it concerns;
+rules to introduce and to
+eliminate each connective are labeled `-I` and `-E`, respectively. As we
+read the rules from top to bottom, introduction and elimination rules
+do what they say on the tin: the first _introduces_ a formula for the
+connective, which appears in the conclusion but not in the premises;
+while the second _eliminates_ a formula for the connective, which appears in
+a premise but not in the conclusion. An introduction rule describes
+how to construct a value of the type (abstractions yield functions,
+`` `suc `` and `` `zero `` yield naturals), while an elimination rule describes
+how to deconstruct a value of the given type (applications use
+functions, case expressions use naturals).
+
+The rules are deterministic, in that at most one rule applies to every term.
+
+
+### Checking inequality and postulating the impossible
+
+The following function makes it convenient to assert an inequality.
+\begin{code}
+_≠_ : ∀ (x y : Id) → x ≢ y
+x ≠ y  with x ≟ y
+...       | no  x≢y  =  x≢y
+...       | yes _    =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+Here `_≟_` is the function that tests two identifiers for equality.
+We intend to apply the function only when the
+two arguments are indeed unequal, and indicate that the second
+case should never arise by postulating a term `impossible` of
+with the empty type `⊥`.  If we use ^C ^N to normalise the term
+
+    "a" ≠ "a"
+
+Agda will return an answer warning us that the impossible has occurred:
+
+    ⊥-elim (.plta.Lambda.impossible "a" "a" refl)
+
+While postulating the impossible is a useful technique, it must be
+used with care, since such postulation could allow us to provide
+evidence of _any_ proposition whatsoever, regardless of its truth.
 
 
 ### Example type derivations
 
-Here is a typing example.  First, here is how
-it would be written in an informal description of the
-formal semantics.
-
-Derivation of for the Church numeral two:
+Type derivations correspond to trees. In informal notation, here
+is a type derivation for the Church numberal two:
 
     ∋s                        ∋s                          ∋z
-    ------------------- Ax    ------------------- Ax     --------------- Ax
+    ------------------- ⌊_⌋   ------------------- ⌊_⌋    --------------- ⌊_⌋
     Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" ⦂ A ⇒ A         Γ₂ ⊢ # "z" ⦂ A
-    ------------------- Ax    ------------------------------------------ ⇒-E
+    ------------------- ⌊_⌋   ------------------------------------------ _·_
     Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" · # "z" ⦂ A
-    -------------------------------------------------- ⇒-E
+    -------------------------------------------------- _·_
     Γ₂ ⊢ # "s" · (# "s" · # "z") ⦂ A
-    ---------------------------------------------- ⇒-I
+    ---------------------------------------------- ƛ_
     Γ₁ ⊢ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
-    ---------------------------------------------------------- ⇒-I
+    ---------------------------------------------------------- ƛ_
     ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
 
-Where `∋s` and `∋z` abbreviate the two derivations:
-
+where `∋s` and `∋z` abbreviate the two derivations:
 
                  ---------------- Z
     "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
@@ -965,8 +1022,7 @@ Where `∋s` and `∋z` abbreviate the two derivations:
 
 and where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
 
-Here is the above derivation formalised in Agda.
-
+Here is the above typing derivation formalised in Agda.
 \begin{code}
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
@@ -975,14 +1031,11 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ⊢twoᶜ = ⇒-I (⇒-I (⇒-E (Ax ∋s) (⇒-E (Ax ∋s) (Ax ∋z))))
   where
 
-  s≢z : "s" ≢ "z"
-  s≢z ()
-
-  ∋s = S s≢z Z
+  ∋s = S ("s" ≠ "z") Z
   ∋z = Z
 \end{code}
 
-Typing for the first example.
+Here are the typings corresponding to our first example.
 \begin{code}
 ⊢two : ∅ ⊢ two ⦂ `ℕ
 ⊢two = ℕ-I₂ (ℕ-I₂ ℕ-I₁)
@@ -991,25 +1044,31 @@ Typing for the first example.
 ⊢plus = Fix (⇒-I (⇒-I (ℕ-E (Ax ∋m) (Ax ∋n)
          (ℕ-I₂ (⇒-E (⇒-E (Ax ∋+) (Ax ∋m′)) (Ax ∋n′))))))
   where
-  ∋+  = (S (λ()) (S (λ()) (S (λ()) Z)))
-  ∋m  = (S (λ()) Z)
+  ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
+  ∋m  = (S ("m" ≠ "n") Z)
   ∋n  = Z
   ∋m′ = Z
-  ∋n′ = (S (λ()) Z)
+  ∋n′ = (S ("n" ≠ "m") Z)
 
 ⊢four : ∅ ⊢ four ⦂ `ℕ
 ⊢four = ⇒-E (⇒-E ⊢plus ⊢two) ⊢two
 \end{code}
+The two occcurrences of variable `"n"` in the original term appear
+in different contexts, and correspond here to the two different
+lookup judgements, `∋n` and `∋n′`.  The first looks up `"n"` in
+a context that ends with the binding for "n", while the second looks
+it up in a context extended by the binding for "m" in the second
+branch of the case expression.
 
-Typing for the rest of the Church example.
+Here are typings for the remainder of the Church example.
 \begin{code}
 ⊢plusᶜ : ∀ {A} → ∅ ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⇒-I (⇒-I (⇒-I (⇒-I (⇒-E (⇒-E (Ax ∋m) (Ax ∋s))
                              (⇒-E (⇒-E (Ax ∋n) (Ax ∋s)) (Ax ∋z))))))
   where
-  ∋m = S (λ()) (S (λ()) (S (λ()) Z))
-  ∋n = S (λ()) (S (λ()) Z)
-  ∋s = S (λ()) Z
+  ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
+  ∋n = S ("n" ≠ "z") (S ("n" ≠ "s") Z)
+  ∋s = S ("s" ≠ "z") Z
   ∋z = Z
 
 ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
@@ -1021,18 +1080,10 @@ Typing for the rest of the Church example.
 ⊢fourᶜ = ⇒-E (⇒-E (⇒-E (⇒-E ⊢plusᶜ ⊢twoᶜ) ⊢twoᶜ) ⊢sucᶜ) ℕ-I₁
 \end{code}
 
-*(((Rename I and E rules with the constructors and a turnstyle)))*
-
-*(((Explain the alternative names with I and E)))*
-
-*(((Copy ≠ from chapter Inference and use it to replace `λ()` in examples)))*
-
 
 #### Interaction with Agda
 
-*(((rewrite the following)))*
-
-Construction of a type derivation is best done interactively.
+Construction of a type derivation may be done interactively.
 Start with the declaration:
 
     ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
@@ -1044,32 +1095,40 @@ Typing C-l causes Agda to create a hole and tell us its expected type.
     ?0 : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
 
 Now we fill in the hole by typing C-c C-r. Agda observes that
-the outermost term in `sucᶜ` in a `λ`, which is typed using `⇒-I`. The
+the outermost term in `sucᶜ` in `ƛ`, which is typed using `⇒-I`. The
 `⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
-    ⊢sucᶜ = ⇒-I { }0
-    ?0 : ∅ , x ⦂ `ℕ ⊢ if ` x then false else true ⦂ `ℕ
+    ⊢sucᶜ = ⇒-I { }1
+    ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc # "n" ⦂ `ℕ
 
-Again we fill in the hole by typing C-c C-r. Agda observes that the
-outermost term is now `if_then_else_`, which is typed using ``ℕ-E`. The
-``ℕ-E` rule in turn takes three arguments, which Agda leaves as holes.
+We can fill in the hole by type C-c C-r again.
 
-    ⊢sucᶜ = ⇒-I (`ℕ-E { }0 { }1 { }2)
-    ?0 : ∅ , x ⦂ `ℕ ⊢ ` x ⦂
-    ?1 : ∅ , x ⦂ `ℕ ⊢ false ⦂ `ℕ
-    ?2 : ∅ , x ⦂ `ℕ ⊢ true ⦂ `ℕ
+    ⊢sucᶜ = ⇒-I (`ℕ-I₂ { }2)
+    ?2 : ∅ , "n" ⦂ `ℕ ⊢ # "n" ⦂ `ℕ
 
-Again we fill in the three holes by typing C-c C-r in each. Agda observes
-that `` ` x ``, `false`, and `true` are typed using `Ax`, ``ℕ-I₂`, and
-``ℕ-I₁` respectively. The `Ax` rule in turn takes an argument, to show
-that `(∅ , x ⦂ `ℕ) x = just `ℕ`, which can in turn be specified with a
-hole. After filling in all holes, the term is as above.
+And again.
+
+    ⊢suc′ = ⇒-I (ℕ-I₂ (Ax { }3))
+    ?3 : ∅ , "n" ⦂ `ℕ ∋ "n" ⦂ `ℕ
+
+A further attempt with C-c C-r yields the message:
+
+    Don't know which constructor to introduce of Z or S
+
+We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are done.
+
+    ⊢suc′ = ⇒-I (ℕ-I₂ (Ax Z))
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
+Chapter [Inference]({{ site.baseurl }}{% link out/plta/DeBruijn.md %})
+will show how to use Agda to compute type derivations directly.
+
+
 ### Lookup is injective
 
-Note that `Γ ∋ x ⦂ A` is injective.
+The lookup relation `Γ ∋ x ⦂ A` is injective, in that for each `Γ` and `x`
+there is at most one `A` such that the judgement holds.
 \begin{code}
 ∋-injective : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-injective Z        Z          =  refl
@@ -1078,19 +1137,19 @@ Note that `Γ ∋ x ⦂ A` is injective.
 ∋-injective (S _ ∋x) (S _ ∋x′)  =  ∋-injective ∋x ∋x′
 \end{code}
 
-The relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
+The typing relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
 the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
 
 ### Non-examples
 
 We can also show that terms are _not_ typeable.  For example, here is
-a formal proof that it is not possible to type the term `` `suc `zero ·
-`zero ``.  In other words, no type `A` is the type of this term.  It
+a formal proof that it is not possible to type the term `` `zero ·
+`suc `zero ``.  In other words, no type `A` is the type of this term.  It
 cannot be typed, because doing so requires that the first term in the
 application is both a natural and a function.
 
 \begin{code}
-nope₁ : ∀ {A} → ¬ (∅ ⊢ `suc `zero · `zero ⦂ A)
+nope₁ : ∀ {A} → ¬ (∅ ⊢ `zero · `suc `zero ⦂ A)
 nope₁ (⇒-E () _)
 \end{code}
 
@@ -1125,7 +1184,6 @@ or explain why there are no such types.
 3. `` ∅ , x ⦂ A , y ⦂ B ⊢ λ[ z ⦂ C ] ` x · (` y · ` z) ⦂ D ``
 
 
-
 ## Unicode
 
 This chapter uses the following unicode
@@ -1138,5 +1196,7 @@ This chapter uses the following unicode
     ⟶  U+27F9: LONG RIGHTWARDS ARROW (\r5, \-->)
     ξ    U+03BE: GREEK SMALL LETTER XI (\Gx or \xi)
     β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
+    ∋    U+220B: CONTAINS AS MEMBER (\ni)
+    ⊢    U+22A2: RIGHT TACK (\vdash or \|-)
     ⦂    U+2982: Z NOTATION TYPE COLON (\:)
 
