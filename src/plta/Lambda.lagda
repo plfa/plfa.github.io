@@ -93,12 +93,8 @@ correspond to introduction rules and deconstructors to eliminators.
 Here is the syntax of terms in BNF.
 
     L, M, N  ::=
-      ⌊ x ⌋
-      ƛ x ⇒ N
-      L · M
-      `zero
-      `suc M
-      `case L [zero⇒ M |suc x ⇒ N]
+      ⌊ x ⌋  |  ƛ x ⇒ N  |  L · M  |
+      `zero  |  `suc M  |  `case L [zero⇒ M |suc x ⇒ N]  |
       μ x ⇒ M
 
 And here it is formalised in Agda.
@@ -110,7 +106,6 @@ infix  6  ƛ_⇒_
 infix  6  μ_⇒_
 infixl 7  _·_
 infix  8  `suc_
-infix  9  ⌊_⌋
 
 data Term : Set where
   ⌊_⌋                      :  Id → Term
