@@ -4,7 +4,6 @@ layout    : page
 permalink : /Lambda/
 ---
 
-
 \begin{code}
 module plta.Lambda where
 \end{code}
@@ -67,7 +66,7 @@ open import Relation.Nullary.Negation using (¬?)
 
 Terms have seven constructs. Three are for the core lambda calculus:
 
-  * Variables `# x`
+  * Variables `⌊ x ⌋`
   * Abstractions `ƛ x ⇒ N`
   * Applications `L · M`
 
@@ -94,7 +93,7 @@ correspond to introduction rules and deconstructors to eliminators.
 Here is the syntax of terms in BNF.
 
     L, M, N  ::=
-      # x
+      ⌊ x ⌋
       ƛ x ⇒ N
       L · M
       `zero
@@ -111,10 +110,10 @@ infix  6  ƛ_⇒_
 infix  6  μ_⇒_
 infixl 7  _·_
 infix  8  `suc_
-infix  9  #_
+infix  9  ⌊_⌋
 
 data Term : Set where
-  #_                       :  Id → Term
+  ⌊_⌋                      :  Id → Term
   ƛ_⇒_                     :  Id → Term → Term
   _·_                      :  Term → Term → Term
   `zero                    :  Term
@@ -139,9 +138,9 @@ two = `suc `suc `zero
 
 plus : Term
 plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-         `case # "m"
-           [zero⇒ # "n"
-           |suc "m" ⇒ `suc (# "+" · # "m" · # "n") ]
+         `case ⌊ "m" ⌋
+           [zero⇒ ⌊ "n" ⌋
+           |suc "m" ⇒ `suc (⌊ "+" ⌋ · ⌊ "m" ⌋ · ⌊ "n" ⌋) ]
 
 four : Term
 four = plus · two · two
@@ -158,21 +157,21 @@ reduces to `` `suc `suc `suc `suc `zero ``.
 
 As a second example, we use higher-order functions to represent
 natural numbers.  In particular, the number _n_ is represented by a
-function that accepts two arguments and applies the first to the
-second _n_ times.  This is called the _Church representation_ of the
+function that accepts two arguments and applies the first _n_ times to the
+second.  This is called the _Church representation_ of the
 naturals.  Here are some example terms: the Church numeral two, a
 function that adds Church numerals, a function to compute successor,
 and a term that computes two plus two.
 \begin{code}
 twoᶜ : Term
-twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")
+twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)
 
 plusᶜ : Term
 plusᶜ =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
-         # "m" · # "s" · (# "n" · # "s" · # "z")
+         ⌊ "m" ⌋ · ⌊ "s" ⌋ · (⌊ "n" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋)
 
 sucᶜ : Term
-sucᶜ = ƛ "n" ⇒ `suc (# "n")
+sucᶜ = ƛ "n" ⇒ `suc (⌊ "n" ⌋)
 
 fourᶜ : Term
 fourᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
@@ -197,7 +196,7 @@ reduces to `` `suc `suc `suc `suc `zero ``.
 ### Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
-variable name to disambiguate and writes `x` rather than `# x`
+variable name to disambiguate and writes `x` rather than `⌊ x ⌋`
 for a term that is a variable. Agda requires we distinguish.
 
 Similarly, informal presentation often use the same notation for
@@ -217,10 +216,10 @@ and `N` the _body_ of the abstraction.  One of the most important
 aspects of lambda calculus is that consistent renaming of bound variables
 leaves the meaning of a term unchanged.  Thus the five terms
 
-* `` ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ``
-* `` ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x") ``
-* `` ƛ "sam" ⇒ ƛ "zelda" ⇒ # "sam" · (# "sam" · # "zelda") ``
-* `` ƛ "z" ⇒ ƛ "s" ⇒ # "z" · (# "z" · # "s") ``
+* `` ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ``
+* `` ƛ "f" ⇒ ƛ "x" ⇒ ⌊ "f" ⌋ · (⌊ "f" ⌋ · ⌊ "x" ⌋) ``
+* `` ƛ "sam" ⇒ ƛ "zelda" ⇒ ⌊ "sam" ⌋ · (⌊ "sam" ⌋ · ⌊ "zelda" ⌋) ``
+* `` ƛ "z" ⇒ ƛ "s" ⇒ ⌊ "z" ⌋ · (⌊ "z" ⌋ · ⌊ "s" ⌋) ``
 * `` ƛ "😇" ⇒ ƛ "😈" ⇒ # "😇" · (# "😇" · # "😈" ) ``
 
 are all considered equivalent.  Following the convention introduced
@@ -230,13 +229,13 @@ this equivalence relation is called _alpha renaming_.
 As we descend from a term into its subterms, variables
 that are bound may become free.  Consider the following terms.
 
-* `` ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ``
+* `` ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ``
   has both `s` and `z` as bound variables.
 
-* `` ƛ "z" ⇒ # "s" · (# "s" · # "z") ``
+* `` ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ``
   has `s` bound and `z` free.
 
-* `` # "s" · (# "s" · # "z") ``
+* `` ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ``
   has both `s` and `z` as free variables.
 
 We say that a term with no free variables is _closed_; otherwise it is
@@ -246,12 +245,12 @@ two are open.
 Different occurrences of a variable may be bound and free.
 In the term
 
-    (ƛ "x" ⇒ # "x") · # "x"
+    (ƛ "x" ⇒ ⌊ "x" ⌋) · ⌊ "x" ⌋
 
 the inner occurrence of `x` is bound while the outer occurrence is free.
 Note that by alpha renaming, the term above is equivalent to
 
-    (ƛ "y" ⇒ # "y") · # "x"
+    (ƛ "y" ⇒ ⌊ "y" ⌋) · ⌊ "x" ⌋
 
 in which `y` is bound and `x` is free.  A common convention, called the
 _Barendregt convention_, is to use alpha renaming to ensure that the bound
@@ -263,17 +262,17 @@ Case and recursion also introduce bound variables, which are also subject
 to alpha renaming. In the term
 
     μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-      `case # "m"
-        [zero⇒ # "n"
-        |suc "m" ⇒ `suc (# "+" · # "m" · # "n") ]
+      `case ⌊ "m" ⌋
+        [zero⇒ ⌊ "n" ⌋
+        |suc "m" ⇒ `suc (⌊ "+" ⌋ · ⌊ "m" ⌋ · ⌊ "n" ⌋) ]
 
 notice that there are two binding occurrences of `m`, one in the first
 line and one in the last line.  It is equivalent to the following term,
 
     μ "plus" ⇒ ƛ "x" ⇒ ƛ "y" ⇒
-      `case # "x"
-        [zero⇒ # "y"
-        |suc "x′" ⇒ `suc (# "plus" · # "x′" · # "y") ]
+      `case ⌊ "x" ⌋
+        [zero⇒ ⌊ "y" ⌋
+        |suc "x′" ⇒ `suc (⌊ "plus" ⌋ · ⌊ "x′" ⌋ · ⌊ "y" ⌋) ]
 
 where the two binding occurrences corresponding to `m` now have distinct
 names, `x` and `x′`.
@@ -339,13 +338,13 @@ Substitution plays a key role in defining the
 operational semantics of function application.
 For instance, we have
 
-      (ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")) · sucᶜ · `zero
+      (ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) · sucᶜ · `zero
     ⟶
       (ƛ "z" ⇒ sucᶜ · (sucᶜ · "z")) · `zero
     ⟶
       sucᶜ · (sucᶜ · `zero)
 
-where we substitute `sucᶜ` for `` # "s" `` and `` `zero `` for `` # "z" ``
+where we substitute `sucᶜ` for `` ⌊ "s" ⌋ `` and `` `zero `` for `` ⌊ "z" ⌋ ``
 in the body of the function abstraction.
 
 We write substitution as `N [ x := V ]`, meaning
@@ -357,22 +356,22 @@ always substitute values.
 
 Here are some examples.
 
-* `` # "s" [ "s" := sucᶜ ] `` yields `` sucᶜ ``
-* `` # "z" [ "s" := sucᶜ ] `` yields `` # "z" ``
-* `` (# "s" · # "z") [ "s" := sucᶜ ] `` yields `` sucᶜ · # "z" ``
-* `` (# "s" · (# "s" · # "z")) [ "s" := sucᶜ ] `` yields `` sucᶜ · (sucᶜ · # "z") ``
-* `` (ƛ "z" ⇒ # "s" · (# "s" · # "z")) [ "s" := sucᶜ ] `` yields
-  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z") ``
-* `` (ƛ "y" ⇒ # "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ # "y" ``
-* `` (ƛ "x" ⇒ # "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ # "x" ``
-* `` (ƛ "y" ⇒ # "x") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ # `zero ``
+* `` ⌊ "s" ⌋ [ "s" := sucᶜ ] `` yields `` sucᶜ ``
+* `` ⌊ "z" ⌋ [ "s" := sucᶜ ] `` yields `` ⌊ "z" ⌋ ``
+* `` (⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] `` yields `` sucᶜ · ⌊ "z" ⌋ ``
+* `` (⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) [ "s" := sucᶜ ] `` yields `` sucᶜ · (sucᶜ · ⌊ "z" ⌋) ``
+* `` (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) [ "s" := sucᶜ ] `` yields
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋) ``
+* `` (ƛ "y" ⇒ ⌊ "y" ⌋) [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ⌊ "y" ⌋ ``
+* `` (ƛ "x" ⇒ ⌊ "x" ⌋) [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ⌊ "x" ⌋ ``
+* `` (ƛ "y" ⇒ ⌊ "x" ⌋) [ "x" := `zero ] `` yields `` ƛ "y" ⇒ # `zero ``
 
 The last but one example is important: substituting `` `zero `` for `x` in
-`` ƛ "x" ⇒ # "x" `` does _not_ yield `` ƛ "x" ⇒ `zero ``.
-The reason for this is that `x` in the body of `` ƛ "x" ⇒ # "x" ``
+`` ƛ "x" ⇒ ⌊ "x" ⌋ `` does _not_ yield `` ƛ "x" ⇒ `zero ``.
+The reason for this is that `x` in the body of `` ƛ "x" ⇒ ⌊ "x" ⌋ ``
 is _bound_ by the abstraction.  An important feature of abstraction
 is that the choice of bound names is irrelevant: both
-`` ƛ "x" ⇒ # "x" `` and `` ƛ "y" ⇒ # "y" `` stand for the
+`` ƛ "x" ⇒ ⌊ "x" ⌋ `` and `` ƛ "y" ⇒ ⌊ "y" ⌋ `` stand for the
 identity function.  The way to think of this is that `x` within
 the body of the abstraction stands for a _different_ variable than
 `x` outside the abstraction, they both just happen to have the same
@@ -384,9 +383,9 @@ Here is the formal definition in Agda.
 infix 9 _[_:=_]
 
 _[_:=_] : Term → Id → Term → Term
-(# x) [ y := V ] with x ≟ y
+⌊ x ⌋ [ y := V ] with x ≟ y
 ... | yes _  =  V
-... | no  _  =  # x
+... | no  _  =  ⌊ x ⌋
 (ƛ x ⇒ N) [ y := V ] with x ≟ y
 ... | yes _  =  ƛ x ⇒ N
 ... | no  _  =  ƛ x ⇒ N [ y := V ]
@@ -422,28 +421,28 @@ the subterms.
 Here is confirmation that the examples above are correct.
 
 \begin{code}
-_ : (# "s") [ "s" := sucᶜ ] ≡  sucᶜ
+_ : (⌊ "s" ⌋) [ "s" := sucᶜ ] ≡  sucᶜ
 _ = refl
 
-_ : (# "z") [ "s" := sucᶜ ] ≡  # "z"
+_ : (⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  ⌊ "z" ⌋
 _ = refl
 
-_ : (# "s" · # "z") [ "s" := sucᶜ ] ≡  sucᶜ · # "z"
+_ : (⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  sucᶜ · ⌊ "z" ⌋
 _ = refl
 
-_ : (# "s" · # "s" · # "z") [ "s" := sucᶜ ] ≡  sucᶜ · sucᶜ · # "z"
+_ : (⌊ "s" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  sucᶜ · sucᶜ · ⌊ "z" ⌋
 _ = refl
 
-_ : (ƛ "z" ⇒ # "s" · # "s" · # "z") [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · sucᶜ · # "z"
+_ : (ƛ "z" ⇒ ⌊ "s" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · sucᶜ · ⌊ "z" ⌋
 _ = refl
 
-_ : (ƛ "y" ⇒ # "y") [ "x" := `zero ] ≡ ƛ "y" ⇒ # "y"
+_ : (ƛ "y" ⇒ ⌊ "y" ⌋) [ "x" := `zero ] ≡ ƛ "y" ⇒ ⌊ "y" ⌋
 _ = refl
 
-_ : (ƛ "x" ⇒ # "x") [ "x" := `zero ] ≡ ƛ "x" ⇒ # "x"
+_ : (ƛ "x" ⇒ ⌊ "x" ⌋) [ "x" := `zero ] ≡ ƛ "x" ⇒ ⌊ "x" ⌋
 _ = refl
 
-_ : (ƛ "x" ⇒ # "y") [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
+_ : (ƛ "x" ⇒ ⌊ "y" ⌋) [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
 _ = refl
 \end{code}
 
@@ -451,11 +450,11 @@ _ = refl
 
 What is the result of the following substitution?
 
-    (ƛ "y" ⇒ # "x" · (ƛ "x" ⇒ # "x")) [ "x" := true ]
+    (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ ⌊ "x" ⌋)) [ "x" := true ]
 
-1. `` (ƛ "y" ⇒ # "x" · (ƛ "x" ⇒ # "x")) ``
-2. `` (ƛ "y" ⇒ # "x" · (ƛ "x" ⇒ true)) ``
-3. `` (ƛ "y" ⇒ true · (ƛ "x" ⇒ # "x")) ``
+1. `` (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ ⌊ "x" ⌋)) ``
+2. `` (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ true)) ``
+3. `` (ƛ "y" ⇒ true · (ƛ "x" ⇒ ⌊ "x" ⌋)) ``
 4. `` (ƛ "y" ⇒ true · (ƛ "x" ⇒ true)) ``
 
 
@@ -553,26 +552,26 @@ data _⟶_ : Term → Term → Set where
 
 What does the following term step to?
 
-    (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x")  ⟶  ???
+    (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋)  ⟶  ???
 
-1.  `` (ƛ "x" ⇒ # "x") ``
-2.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
-3.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
+1.  `` (ƛ "x" ⇒ ⌊ "x" ⌋) ``
+2.  `` (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) ``
+3.  `` (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) ``
 
 What does the following term step to?
 
-    (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x")  ⟶  ???
+    (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋)  ⟶  ???
 
-1.  `` (ƛ "x" ⇒ # "x") ``
-2.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
-3.  `` (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") · (ƛ "x" ⇒ # "x") ``
+1.  `` (ƛ "x" ⇒ ⌊ "x" ⌋) ``
+2.  `` (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) ``
+3.  `` (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) · (ƛ "x" ⇒ ⌊ "x" ⌋) ``
 
 What does the following term step to?  (Where `two` and `sucᶜ` are as defined above.)
 
     two · sucᶜ · `zero  ⟶  ???
 
 1.  `` sucᶜ · (sucᶜ · `zero) ``
-2.  `` (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · `zero ``
+2.  `` (ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · `zero ``
 3.  `` `zero ``
 
 
@@ -676,38 +675,38 @@ _ =
     plus · two · two
   ⟶⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
     (ƛ "m" ⇒ ƛ "n" ⇒
-      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+      `case ⌊ "m" ⌋ [zero⇒ ⌊ "n" ⌋ |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
         · two · two
   ⟶⟨ ξ-·₁ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
     (ƛ "n" ⇒
-      `case two [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+      `case two [zero⇒ ⌊ "n" ⌋ |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
          · two
   ⟶⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
-    `case two [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ]
+    `case two [zero⇒ two |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · two) ]
   ⟶⟨ β-case-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
   ⟶⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
     `suc ((ƛ "m" ⇒ ƛ "n" ⇒
-      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+      `case ⌊ "m" ⌋ [zero⇒ ⌊ "n" ⌋ |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
         · `suc `zero · two)
   ⟶⟨ ξ-suc (ξ-·₁ (β-ƛ· (V-suc V-zero))) ⟩
     `suc ((ƛ "n" ⇒
-      `case `suc `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+      `case `suc `zero [zero⇒ ⌊ "n" ⌋ |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
         · two)
   ⟶⟨ ξ-suc (β-ƛ· (V-suc (V-suc V-zero))) ⟩
-    `suc (`case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ])
+    `suc (`case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · two) ])
   ⟶⟨ ξ-suc (β-case-suc V-zero) ⟩
     `suc `suc (plus · `zero · two)
   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
     `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒
-      `case # "m" [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+      `case ⌊ "m" ⌋ [zero⇒ ⌊ "n" ⌋ |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
         · `zero · two)
   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ· V-zero))) ⟩
     `suc `suc ((ƛ "n" ⇒
-      `case `zero [zero⇒ # "n" |suc "m" ⇒ `suc (plus · # "m" · # "n") ])
+      `case `zero [zero⇒ ⌊ "n" ⌋ |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · ⌊ "n" ⌋) ])
         · two)
   ⟶⟨ ξ-suc (ξ-suc (β-ƛ· (V-suc (V-suc V-zero)))) ⟩
-    `suc `suc (`case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · # "m" · two) ])
+    `suc `suc (`case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ⌊ "m" ⌋ · two) ])
   ⟶⟨ ξ-suc (ξ-suc β-case-zero) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
@@ -718,27 +717,27 @@ And here is a similar sample reduction for Church numerals.
 _ : fourᶜ ⟶* `suc `suc `suc `suc `zero
 _ =
   begin
-    (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ # "m" · # "s" · (# "n" · # "s" · # "z"))
+    (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "m" ⌋ · ⌊ "s" ⌋ · (⌊ "n" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋))
       · twoᶜ · twoᶜ · sucᶜ · `zero
   ⟶⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ))) ⟩
-    (ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · # "s" · (# "n" · # "s" · # "z"))
+    (ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · ⌊ "s" ⌋ · (⌊ "n" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋))
       · twoᶜ · sucᶜ · `zero
   ⟶⟨ ξ-·₁ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
-    (ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · # "s" · (twoᶜ · # "s" · # "z")) · sucᶜ · `zero
+    (ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · ⌊ "s" ⌋ · (twoᶜ · ⌊ "s" ⌋ · ⌊ "z" ⌋)) · sucᶜ · `zero
   ⟶⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
-    (ƛ "z" ⇒ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · # "z")) · `zero
+    (ƛ "z" ⇒ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · ⌊ "z" ⌋)) · `zero
   ⟶⟨ β-ƛ· V-zero ⟩
     twoᶜ · sucᶜ · (twoᶜ · sucᶜ · `zero)
   ⟶⟨ ξ-·₁ (β-ƛ· V-ƛ) ⟩
-    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (twoᶜ · sucᶜ · `zero)
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · (twoᶜ · sucᶜ · `zero)
   ⟶⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ· V-ƛ)) ⟩
-    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · ((ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · `zero)
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · ((ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · `zero)
   ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· V-zero) ⟩
-    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (sucᶜ · (sucᶜ · `zero))
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · (sucᶜ · (sucᶜ · `zero))
   ⟶⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ· V-zero)) ⟩
-    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (sucᶜ · (`suc `zero))
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · (sucᶜ · (`suc `zero))
   ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc V-zero)) ⟩
-    (ƛ "z" ⇒ sucᶜ · (sucᶜ · # "z")) · (`suc `suc `zero)
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋)) · (`suc `suc `zero)
   ⟶⟨ β-ƛ· (V-suc (V-suc V-zero)) ⟩
     sucᶜ · (sucᶜ · `suc `suc `zero)
   ⟶⟨ ξ-·₂ V-ƛ (β-ƛ· (V-suc (V-suc V-zero))) ⟩
@@ -788,7 +787,7 @@ Thus,
 
 * What is the type of the following term?
 
-    ƛ "s" ⇒ # "s" · (# "s"  · `zero)
+    ƛ "s" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋  · `zero)
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
@@ -801,7 +800,7 @@ Thus,
 
 * What is the type of the following term?
 
-    (ƛ "s" ⇒ # "s" · (# "s"  · `zero)) · sucᵐ
+    (ƛ "s" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋  · `zero)) · sucᵐ
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
@@ -895,9 +894,9 @@ and indicates in context `Γ` that term `M` has type `A`.
 Context `Γ` provides types for all the free variables in `M`.
 For example
 
-* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ # "s" · (# "s" · # "z") ⦂  `ℕ ``
-* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ # "s" · (# "s" · # "z")) ⦂  `ℕ ⇒ `ℕ ``
-* `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂  `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) ⦂  `ℕ ⇒ `ℕ ``
+* `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 Typing is formalised as follows.
 \begin{code}
@@ -908,24 +907,24 @@ data _⊢_⦂_ : Context → Term → Type → Set where
   Ax : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
       -------------
-    → Γ ⊢ # x ⦂ A
+    → Γ ⊢ ⌊ x ⌋ ⦂ A
 
   -- ⇒-I
   ⇒-I : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
-      --------------------
+      -------------------
     → Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
 
   -- ⇒-E
   ⇒-E : ∀ {Γ L M A B}
     → Γ ⊢ L ⦂ A ⇒ B
     → Γ ⊢ M ⦂ A
-      --------------
+      -------------
     → Γ ⊢ L · M ⦂ B
 
   -- ℕ-I₁
   ℕ-I₁ : ∀ {Γ}
-      -------------
+      --------------
     → Γ ⊢ `zero ⦂ `ℕ
 
   -- ℕ-I₂
@@ -939,12 +938,12 @@ data _⊢_⦂_ : Context → Term → Type → Set where
     → Γ ⊢ L ⦂ `ℕ
     → Γ ⊢ M ⦂ A
     → Γ , x ⦂ `ℕ ⊢ N ⦂ A
-      --------------------------------------
+      -------------------------------------
     → Γ ⊢ `case L [zero⇒ M |suc x ⇒ N ] ⦂ A
 
   Fix : ∀ {Γ x M A}
     → Γ , x ⦂ A ⊢ M ⦂ A
-      ------------------
+      -----------------
     → Γ ⊢ μ x ⇒ M ⦂ A
 \end{code}
 
@@ -1003,15 +1002,15 @@ is a type derivation for the Church numberal two:
 
     ∋s                        ∋s                          ∋z
     ------------------- ⌊_⌋   ------------------- ⌊_⌋    --------------- ⌊_⌋
-    Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" ⦂ A ⇒ A         Γ₂ ⊢ # "z" ⦂ A
+    Γ₂ ⊢ ⌊ "s" ⌋ ⦂ A ⇒ A        Γ₂ ⊢ ⌊ "s" ⌋ ⦂ A ⇒ A         Γ₂ ⊢ ⌊ "z" ⌋ ⦂ A
     ------------------- ⌊_⌋   ------------------------------------------ _·_
-    Γ₂ ⊢ # "s" ⦂ A ⇒ A        Γ₂ ⊢ # "s" · # "z" ⦂ A
+    Γ₂ ⊢ ⌊ "s" ⌋ ⦂ A ⇒ A        Γ₂ ⊢ ⌊ "s" ⌋ · ⌊ "z" ⌋ ⦂ A
     -------------------------------------------------- _·_
-    Γ₂ ⊢ # "s" · (# "s" · # "z") ⦂ A
+    Γ₂ ⊢ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂ A
     ---------------------------------------------- ƛ_
-    Γ₁ ⊢ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
+    Γ₁ ⊢ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂ A ⇒ A
     ---------------------------------------------------------- ƛ_
-    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ # "s" · (# "s" · # "z") ⦂ A ⇒ A
+    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ⦂ A ⇒ A
 
 where `∋s` and `∋z` abbreviate the two derivations:
 
@@ -1099,12 +1098,12 @@ the outermost term in `sucᶜ` in `ƛ`, which is typed using `⇒-I`. The
 `⇒-I` rule in turn takes one argument, which Agda leaves as a hole.
 
     ⊢sucᶜ = ⇒-I { }1
-    ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc # "n" ⦂ `ℕ
+    ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc ⌊ "n" ⌋ ⦂ `ℕ
 
 We can fill in the hole by type C-c C-r again.
 
     ⊢sucᶜ = ⇒-I (`ℕ-I₂ { }2)
-    ?2 : ∅ , "n" ⦂ `ℕ ⊢ # "n" ⦂ `ℕ
+    ?2 : ∅ , "n" ⦂ `ℕ ⊢ ⌊ "n" ⌋ ⦂ `ℕ
 
 And again.
 
@@ -1154,11 +1153,11 @@ nope₁ (⇒-E () _)
 \end{code}
 
 As a second example, here is a formal proof that it is not possible to
-type `` ƛ "x" ⇒ # "x" · # "x" `` It cannot be typed, because
+type `` ƛ "x" ⇒ ⌊ "x" ⌋ · ⌊ "x" ⌋ `` It cannot be typed, because
 doing so requires types `A` and `B` such that `A ⇒ B ≡ A`.
 
 \begin{code}
-nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ # "x" · # "x" ⦂ A)
+nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ⌊ "x" ⌋ · ⌊ "x" ⌋ ⦂ A)
 nope₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective ∋x ∋x′)
   where
   contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
@@ -1171,17 +1170,15 @@ nope₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective 
 For each of the following, given a type `A` for which it is derivable,
 or explain why there is no such `A`.
 
-1. `` ∅ , y ⦂ A ⊢ λ[ x ⦂ `ℕ ] ` x ⦂ `ℕ ⇒ `ℕ ``
-2. `` ∅ ⊢ λ[ y ⦂ `ℕ ⇒ `ℕ ] λ[ x ⦂ `ℕ ] ` y · ` x ⦂ A ``
-3. `` ∅ ⊢ λ[ y ⦂ `ℕ ⇒ `ℕ ] λ[ x ⦂ `ℕ ] ` x · ` y ⦂ A ``
-4. `` ∅ , x ⦂ A ⊢ λ[ y : `ℕ ⇒ `ℕ ] `y · `x : A ``
+1. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ ⌊ "y" ⌋ · ⌊ "x" ⌋ ⦂ A ``
+2. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ ⌊ "x" ⌋ · ⌊ "y" ⌋ ⦂ A ``
+3. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ ⊢ ƛ "x" ⇒ ⌊ "y" ⌋ · ⌊ "x" ⌋ ⦂ A ``
 
-For each of the following, give type `A`, `B`, `C`, and `D` for which it is derivable,
+For each of the following, give type `A`, `B`, and `C` for which it is derivable,
 or explain why there are no such types.
 
-1. `` ∅ ⊢ λ[ y ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ ] λ[ x ⦂ `ℕ ] ` y · ` x ⦂ A ``
-2. `` ∅ , x ⦂ A ⊢ x · x ⦂ B ``
-3. `` ∅ , x ⦂ A , y ⦂ B ⊢ λ[ z ⦂ C ] ` x · (` y · ` z) ⦂ D ``
+1. `` ∅ , "x" ⦂ A ⊢ ⌊ "x" ⌋ · ⌊ "x" ⌋ ⦂ B ``
+2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ⌊ "x" ⌋ · (⌊ "y" ⌋ · ⌊ "z" ⌋) ⦂ C ``
 
 
 ## Unicode
