@@ -66,19 +66,19 @@ open import Relation.Nullary using (Dec; yes; no; ¬_)
 
 Terms have seven constructs. Three are for the core lambda calculus:
 
-  * Variables, `# x`
-  * Abstractions, `ƛ x ⇒ N`
-  * Applications, `L · M`
+  * Variables `# x`
+  * Abstractions `ƛ x ⇒ N`
+  * Applications `L · M`
 
 Three are for the naturals:
 
-  * Zero, `` `zero ``
-  * Successor, `` `suc ``
-  * Case, `` `case L [zero⇒ M |suc x ⇒ N ] ``
+  * Zero `` `zero ``
+  * Successor `` `suc ``
+  * Case `` `case L [zero⇒ M |suc x ⇒ N ] ``
 
 And one is for recursion:
 
-  * Fixpoint, `μ x ⇒ M`
+  * Fixpoint `μ x ⇒ M`
 
 Abstraction is also called _lambda abstraction_, and is the construct
 from which the calculus takes its name.
@@ -464,13 +464,10 @@ We give the reduction rules for call-by-value lambda calculus.  To
 reduce an application, first we reduce the left-hand side until it
 becomes a value (which must be an abstraction); then we reduce the
 right-hand side until it becomes a value; and finally we substitute
-the argument for the variable in the abstraction.  To reduce a
-conditional, we first reduce the condition until it becomes a value;
-if the condition is true the conditional reduces to the first
-branch and if false it reduces to the second branch.
+the argument for the variable in the abstraction.
 
 In an informal presentation of the operational semantics,
-the rules for reduction of lambda terms are written as follows.
+the rules for reduction of applications are written as follows.
 
     L ⟶ L′
     --------------- ξ·₁
@@ -481,7 +478,7 @@ the rules for reduction of lambda terms are written as follows.
     V · M ⟶ V · M′
 
     --------------------------------- βλ·
-    (ƛ x ⇒ N) · V ⟶ N [ x := V ]
+    (ƛ x ⇒ N) · V ⟶ N [ x := V ] 
 
 The Agda version of the rules below will be similar, except that universal
 quantifications are made explicit, and so are the predicates that indicate
@@ -497,6 +494,11 @@ letter `β` (_beta_) and such rules are traditionally called _beta rules_.
 The rules are deterministic, in that at most one rule applies to every
 term.  We will show in the next chapter that for every well-typed term
 either a reduction applies or it is a value.
+
+For numbers, zero does not reduce and successor reduces the subterm.
+A case expression reduces its argument to a number, and then chooses
+the zero or successor branch as appropriate.  A fixpoint replaces
+the bound variable by the entire fixpoint term.
 
 Here are the rules formalised in Agda.
 
@@ -578,44 +580,93 @@ What does the following term step to?  (Where `two` and `sucᶜ` are as defined 
 A single step is only part of the story. In general, we wish to repeatedly
 step a closed term until it reduces to a value.  We do this by defining
 the reflexive and transitive closure `⟶*` of the step function `⟶`.
-Here it is formalised in Agda, along similar lines to what we defined in
-Chapter [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}).
 
+The reflexive and transitive closure `⟶*` of an arbitrary relation `⟶`
+is the smallest relation that includes `⟶` and is also reflexive
+and transitive.  We could define this directly, as follows.
 \begin{code}
-infix  2 _⟶*_
-infix  1 begin_
-infixr 2 _⟶⟨_⟩_
-infix  3 _∎
+module Closure (A : Set) (_⟶_ : A → A → Set) where
 
-data _⟶*_ : Term → Term → Set where
-  _∎ : ∀ M
-      ---------
-    → M ⟶* M
+  data _⟶*_ : A → A → Set where
 
-  _⟶⟨_⟩_ : ∀ L {M N}
-    → L ⟶ M
-    → M ⟶* N
-      ---------
-    → L ⟶* N
+    refl : ∀ {M}
+        --------
+      → M ⟶* M
 
-begin_ : ∀ {M N} → (M ⟶* N) → (M ⟶* N)
-begin M⟶*N = M⟶*N
+    trans : ∀ {L M N}
+      → L ⟶* M
+      → M ⟶* N
+        --------
+      → L ⟶* N
+
+    inc : ∀ {M N}
+      → M ⟶ N
+        --------
+      → M ⟶* N
 \end{code}
+Here we use a module to define the reflexive and transitive
+closure of an arbitrary relation.
+The three clauses specify that `⟶*` is reflexive and transitive,
+and that `⟶` implies `⟶*`.
 
+However, it will prove more convenient to define the transitive
+closure as a sequence of zero or more steps of the underlying
+relation, along lines similar to that for reasoning about
+chains of equalities
+Chapter [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}).
+\begin{code}
+module Chain (A : Set) (_⟶_ : A → A → Set) where
+
+  infix  2 _⟶*_
+  infix  1 begin_
+  infixr 2 _⟶⟨_⟩_
+  infix  3 _∎
+
+  data _⟶*_ : A → A → Set where
+    _∎ : ∀ M
+        ---------
+      → M ⟶* M
+
+    _⟶⟨_⟩_ : ∀ L {M N}
+      → L ⟶ M
+      → M ⟶* N
+        ---------
+      → L ⟶* N
+
+  begin_ : ∀ {M N} → (M ⟶* N) → (M ⟶* N)
+  begin M⟶*N = M⟶*N
+\end{code}
 We can read this as follows.
 
 * From term `M`, we can take no steps,
   giving a step of type `M ⟶* M`.
-  (It is written `M ∎`.)
+  It is written `M ∎`.
 
 * From term `L` we can take a single of type `L ⟶ M`
   followed by zero or more steps of type `M ⟶* N`,
-  giving a step of type `L ⟶* N`.
-  (It is written `L ⟨ L⟶M ⟩ M⟶*N`,
-  where `L⟶M` and `M⟶*N` are steps of the appropriate type.)
+  giving a step of type `L ⟶* N`,
+  It is written `L ⟨ L⟶M ⟩ M⟶*N`,
+  where `L⟶M` and `M⟶*N` are steps of the appropriate type.
 
-The names have been chosen to allow us to lay
-out example reductions in an appealing way.
+The notation is chosen to allow us to lay
+out example reductions in an appealing way,
+as we will see in the next section.
+
+We then instantiate the second module to our specific notion
+of reduction step.
+\begin{code}
+open Chain (Term) (_⟶_)
+\end{code}
+
+
+### Exercise
+
+Show that the two notions of reflexive and transitive closure
+above are equivalent.
+
+
+## Examples
+
 Here is a sample reduction demonstating that two plus two is four.
 \begin{code}
 _ : four ⟶* `suc `suc `suc `suc `zero
@@ -773,7 +824,7 @@ over contexts.  We write `∅` for the empty context, and `Γ , x ⦂ A`
 for the context that extends `Γ` by mapping variable `x` to type `A`.
 For example,
 
-* `` `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
 
 is the context that associates variable ` "s" ` with type `` `ℕ ⇒ `ℕ ``,
 and variable ` "z" ` with type `` `ℕ ``.
@@ -791,7 +842,7 @@ For example
 give us the types associated with variables ` "z" ` and ` "s" `, respectively.
 The symbol `∋` (pronounced "ni", for "in" backwards) is chosen because
 checking that `Γ ∋ x ⦂ A` is anologous to checking whether `x ⦂ A` appears
-in a list of variables and types corresponding to `Γ`.
+in a list corresponding to `Γ`.
 
 The second judgement is written
 

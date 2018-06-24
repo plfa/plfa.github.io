@@ -8,6 +8,10 @@ permalink : /Induction/
 module plta.Induction where
 \end{code}
 
+> Induction makes you feel guilty for getting something out of nothing
+> ... but it is one of the greatest ideas of civilization.
+> -- Herbert Wilf
+
 Now that we've defined the naturals and operations upon them, our next
 step is to learn how to prove properties that they satisfy.  As hinted
 by their name, properties of *inductive datatypes* are proved by

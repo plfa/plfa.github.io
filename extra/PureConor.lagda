@@ -203,7 +203,7 @@ lemma = {!!}
 
 I /∋ x = x
 W θ /∋ x =  S {! θ /∋ x!} 
-S {A = A} θ /∋ Z rewrite lemma θ A  = {! Z!}
+S {A = A} θ /∋ Z rewrite lemma θ A  =  Z
 S θ /∋ S x = {!!}
 
 {-
