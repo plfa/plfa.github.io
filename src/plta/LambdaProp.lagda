@@ -375,7 +375,6 @@ data _↠_ : Term → Term → Set where
       ------------
     → L ↠ N
 
-
 ## Normalisation
 
 \begin{code}
