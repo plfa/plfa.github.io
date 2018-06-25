@@ -8,9 +8,10 @@ permalink : /Lambda/
 module plta.Lambda where
 \end{code}
 
-[Parts of this chapter take their text from chapter _Stlc_
+[This chapter was originally based on Chapter _Stlc_
 of _Software Foundations_ (_Programming Language Foundations_).
-Those parts will be revised.]
+It has now been updated, but if you catch any unintended
+copying please let me know.]
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
