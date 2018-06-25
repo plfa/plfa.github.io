@@ -12,8 +12,8 @@ This chapter introduces streams and coinduction.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Isomorphism using (_≃_)
 open import Coinduction using (∞; ♯_; ♭)
+open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 \end{code}
 
 We assume [extensionality][extensionality].
@@ -27,7 +27,7 @@ postulate
 
 ## Streams
 
-Lists are defined in Agda as follows.
+Streams are defined in Agda as follows.
 \begin{code}
 record Stream (A : Set) : Set where
   coinductive
@@ -129,9 +129,37 @@ force (toE xs) = cons (hd xs) (toE (tl xs))
 
 fromE : ∀ {A} → EStream A → Stream A
 hd (fromE xs′) with force xs′
-...              | cons x xs″ = x
+...               | cons x xs″ = x
 tl (fromE xs′) with force xs′
-...              | cons x xs″ = fromE xs″
+...               | cons x xs″ = fromE xs″
+
+record _∼_ {A : Set} (xs : Stream A) (ys : Stream A) : Set where
+  coinductive
+  field
+    hd-∼ : hd xs ≡ hd ys
+    tl-∼ : tl xs ∼ tl ys
+
+open _∼_
+
+record _≈_ {A : Set} (xs′ ys′ : EStream A) : Set
+_≋_ : ∀ {A : Set} (xs″ ys″ : OStream A) → Set
+
+record _≈_ {A : Set} (xs′ ys′ : EStream A) where
+  coinductive
+  field
+    force-≈ : force xs′ ≋ force ys′
+
+open _≈_
+
+cons x xs ≋ cons y ys = (x ≡ y) × (xs ≈ ys)
+
+fromE∘toE : ∀ {A} (xs : Stream A) → fromE (toE xs) ∼ xs
+hd-∼ (fromE∘toE xs) = refl
+tl-∼ (fromE∘toE xs) = fromE∘toE (tl xs)
+
+toE∘fromE : ∀ {A} (xs′ : EStream A) → toE (fromE xs′) ≈ xs′
+force-≈ (toE∘fromE xs′) with force xs′
+...                        | cons x xs  =  ⟨ refl , toE∘fromE xs ⟩
 \end{code}
 
 ## Standard Library
@@ -139,8 +167,6 @@ tl (fromE xs′) with force xs′
 Definitions similar to those in this chapter can be found in the standard library.
 \begin{code}
 \end{code}
-The standard library version of `IsMonoid` differs from the
-one given here, in that it is also parameterised on an equivalence relation.
 
 
 ## Unicode
