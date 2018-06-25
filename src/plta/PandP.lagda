@@ -1,5 +1,5 @@
 ---
-title     : "PandP: Progress and Preservation
+title     : "PandP: Progress and Preservation"
 layout    : page
 permalink : /PandP/
 ---
@@ -14,31 +14,11 @@ Those parts will be revised.]
 
 The last chapter formalised simply-typed lambda calculus and
 introduced several important relations over it.
-We write
-
-    Value M
-
-if term `M` is a value, we write
-
-    M ⟶ N
-
-if term `M` reduces to term `N`, and we write
-
-    Γ ⊢ M ⦂ A
-
-if in context `Γ` the term `M` has type `A`.
-
-Some derived notions are also important. We write
-
-    M ⟶* N
-
-for the reflexive and transitive closure of reduction, that is
-term `M` reduces to term `N` in zero or more steps.  We write
-
-    ∅ ⊢ M ⦂ A
-
-if term `M` has type `A` in the empty context `∅`, which
-ensures that term `M` is _closed_, that is, that it has no _free variables_.
+We write `Value M` if term `M` is a value.
+We write `M ⟶ N` if term `M` reduces to term `N`.
+And we write `Γ ⊢ M ⦂ A` if in context `Γ` the term `M` has type `A`.
+We are particularly concerned with terms typed in the empty context
+`∅`, which must be _closed_ (that is, have no _free variables_).
 
 Ultimately, we would like to show that we can keep reducing a term
 until we reach a value.  For instance, if `M` is a term of type natural,
@@ -52,10 +32,7 @@ and
 
     plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 
-both have type natural, and both reduce to the term
-
-    `suc `suc `suc `suc `zero
-
+both reduce to `` `suc `suc `suc `suc `zero ``,
 which represents the natural number four.
 
 What we might expect is that every term is either a value or can take
