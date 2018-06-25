@@ -1,12 +1,14 @@
 ---
-title     : "LambdaProp: Properties of Simply-Typed Lambda Calculus"
+title     : "StreamLambdaProp: Properties of Simply-Typed Lambda Calculus"
 layout    : page
-permalink : /LambdaProp/
+permalink : /StreamLambdaProp/
 ---
+
+[Variant of normalise that uses streams is at end]
 
 
 \begin{code}
-module plta.LambdaProp where
+module StreamLambdaProp where
 \end{code}
 
 [Parts of this chapter take their text from chapter _Stlc_
