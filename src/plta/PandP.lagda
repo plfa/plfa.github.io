@@ -1,20 +1,101 @@
 ---
-title     : "LambdaProp: Properties of Simply-Typed Lambda Calculus"
+title     : "PandP: Progress and Preservation
 layout    : page
-permalink : /LambdaProp/
+permalink : /PandP/
 ---
 
-
 \begin{code}
-module plta.LambdaProp where
+module plta.PandP where
 \end{code}
 
-[Parts of this chapter take their text from chapter _Stlc_
+[Parts of this chapter take their text from chapter _StlcProp_
 of _Software Foundations_ (_Programming Language Foundations_).
 Those parts will be revised.]
 
-This chapter develops the fundamental theory of the Simply
-Typed Lambda Calculus, particularly progress and preservation.
+The last chapter formalised simply-typed lambda calculus and
+introduced several important relations over it.
+We write
+
+    Value M
+
+if term `M` is a value, we write
+
+    M ⟶ N
+
+if term `M` reduces to term `N`, and we write
+
+    Γ ⊢ M ⦂ A
+
+if in context `Γ` the term `M` has type `A`.
+
+Some derived notions are also important. We write
+
+    M ⟶* N
+
+for the reflexive and transitive closure of reduction, that is
+term `M` reduces to term `N` in zero or more steps.  We write
+
+    ∅ ⊢ M ⦂ A
+
+if term `M` has type `A` in the empty context `∅`, which
+ensures that term `M` is _closed_, that is, that it has no _free variables_.
+
+Ultimately, we would like to show that we can keep reducing a term
+until we reach a value.  For instance, if `M` is a term of type natural,
+we would like to show that ultimately it reduces to a term representing
+some specific natural number.  We have seen two examples in the previous
+chapter, where the terms
+
+    plus · two · two
+
+and
+
+    plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
+
+both have type natural, and both reduce to the term
+
+    `suc `suc `suc `suc `zero
+
+which represents the natural number four.
+
+What we might expect is that every term is either a value or can take
+a reduction step.  However, this is not true in general.  The term
+
+    `zero · `suc `zero
+
+is neither a value nor can take a reduction step. And if `` s ⦂ `ℕ ⇒ `ℕ ``
+then the term
+
+     s · `zero
+
+cannot reduce because we do not know which function is bound to the
+free variable `s`.
+
+However, the first of those terms is ill-typed, and the second has a free
+variable.  It turns out that the property we want does hold for every
+closed, well-typed term.
+
+_Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
+that `M ⟶ N`.
+
+So, either we have a value, and we are done, or we can take a reduction step.
+In the latter case, we would like to apply progress again. But first we need
+to know that the term yielded by the reduction is itself closed and well-typed.
+It turns out that this property holds whenever we start with a closed,
+well-typed term.
+
+_Preservation_: If `∅ ⊢ M ⦂ A` and `M ⟶ N` then `∅ ⊢ N ⦂ A`.
+
+This gives us a recipe for evaluation. Start with a closed and well-typed term.
+By progress, it is either a value, in which case we are done, or it reduces
+to some other term.  By preservation, that other term will itself be closed
+and well-typed.  Repeat.  We will either loop forever, in which case evaluation
+does not terminate, or we will eventually reach a value, which is guaranteed
+to be closed and of the same type as the original term.
+
+In this chapter we will prove _Preservation_ and _Progress_, and show
+how to apply them to get Agda to evaluate a term for us, that is, to reduce
+that term until it reaches a value (or to loop forever).
 
 The development in this chapter was inspired by the corresponding
 development in Chapter _StlcProp_ of _Software Foundations_
@@ -47,17 +128,20 @@ open Chain (Term) (_⟶_)
 
 ## Canonical Forms
 
-The first step in establishing basic properties of reduction and typing
-is to identify the possible _canonical forms_ (i.e., well-typed closed values)
-belonging to each type.  For function types the canonical forms are lambda-abstractions,
-while for boolean types they are values `true` and `false`.
-
+Well-typed values must take one of a small number of _canonical forms_.
+We provide an analogue of the `Value` relation that relates values
+to their types.  A lambda expression must have a function type,
+and a zero or successor expression must be a natural.
+Further, the body of a function must be well-typed in a context
+containing only its bound variable, and the argument of successor
+must itself be canonical.
 \begin{code}
 infix  4 Canonical_⦂_
 
 data Canonical_⦂_ : Term → Type → Set where
 
   C-ƛ : ∀ {x A N B}
+    → ∅ , x ⦂ A ⊢ N ⦂ B
       -----------------------------
     → Canonical (ƛ x ⇒ N) ⦂ (A ⇒ B)
 
@@ -69,34 +153,63 @@ data Canonical_⦂_ : Term → Type → Set where
     → Canonical V ⦂ `ℕ
       ---------------------
     → Canonical `suc V ⦂ `ℕ
+\end{code}    
 
-canonical : ∀ {M A}
-  → ∅ ⊢ M ⦂ A
-  → Value M
-    ---------------
-  → Canonical M ⦂ A
+Every closed, well-typed term that is a value
+must satisfy the canonical relation.
+\begin{code}
+canonical : ∀ {V A}
+  → ∅ ⊢ V ⦂ A
+  → Value V
+    -----------
+  → Canonical V ⦂ A
 canonical (Ax ())          ()
-canonical (⊢ƛ ⊢N)          V-ƛ         =  C-ƛ
+canonical (⊢ƛ ⊢N)          V-ƛ         =  C-ƛ ⊢N
 canonical (⊢L · ⊢M)        ()
 canonical ⊢zero            V-zero      =  C-zero
 canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
+\end{code}
+There are only three interesting cases to consider; the variable
+case is thrown out because it is not closed and not a value, and
+the cases for application, zero, successor, and fixpoint are thrown
+out because they are not values.  If the term is a lambda abstraction,
+then well-typing of the term guarantees well-typing of the body.
+If the term is a zero than it is canonical trivially.  If the
+term is a successor then since it is well-typed its argument is
+well-typed, and since it is a value its argument is a value.  Hence,
+by induction its argument is also canonical.
 
+Conversely, if a term is canonical then it is a value
+and it is well-typed in the empty context.
+\begin{code}
 value : ∀ {M A}
   → Canonical M ⦂ A
     ----------------
   → Value M
-value C-ƛ         = V-ƛ
+value (C-ƛ ⊢N)    = V-ƛ
 value C-zero      = V-zero
 value (C-suc CM)  = V-suc (value CM)
+
+typed : ∀ {M A}
+  → Canonical M ⦂ A
+    ---------------
+  → ∅ ⊢ M ⦂ A
+typed (C-ƛ ⊢N)    = ⊢ƛ ⊢N
+typed C-zero      = ⊢zero
+typed (C-suc CM)  = ⊢suc (typed CM)
 \end{code}
+The proofs are straightforward, and again use induction in the
+case of successor.
+
 
 ## Progress
 
-As before, the _progress_ theorem tells us that closed, well-typed
-terms are not stuck: either a well-typed term can take a reduction
-step or it is a value.
+We now show that every closed, well-typed term is either a value
+or can take a reduction step.  First, we define a relation
+`Progress M` which holds of a term `M` if it is a value or
+if it can take a reduction step.
 
 \begin{code}
 data Progress (M : Term) : Set where
@@ -110,7 +223,9 @@ data Progress (M : Term) : Set where
       Value M
       ----------
     → Progress M
+\end{code}    
 
+\begin{code}
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     ----------
@@ -122,7 +237,7 @@ progress (⊢L · ⊢M) with progress ⊢L
 ... | done VL with progress ⊢M
 ...   | step M⟶M′                          =  step (ξ-·₂ VL M⟶M′)
 ...   | done VM with canonical ⊢L VL
-...     | C-ƛ                                =  step (β-ƛ· VM)
+...     | C-ƛ _                              =  step (β-ƛ· VM)
 progress ⊢zero                               =  done V-zero
 progress (⊢suc ⊢M) with progress ⊢M
 ...  | step M⟶M′                           =  step (ξ-suc M⟶M′)
@@ -132,7 +247,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | done VL with canonical ⊢L VL
 ...   | C-zero                               =  step β-case-zero
 ...   | C-suc CL                             =  step (β-case-suc (value CL))
-progress (⊢μ ⊢M)                            =  step β-μ
+progress (⊢μ ⊢M)                             =  step β-μ
 \end{code}
 
 This code reads neatly in part because we consider the
@@ -829,61 +944,5 @@ false, give a counterexample.
   - Preservation
 
 
-## Normalisation with streams
-
-\begin{code}
-record Lift (M : Term) : Set
-data Steps (M : Term) : Set
-
-record Lift (M : Term) where
-  coinductive
-  field
-    force : Steps M
-
-open Lift
-
-data Steps (M : Term) where
-
-  done :
-      Value M
-      -------
-    → Steps M
-
-  step : ∀ {N : Term}
-    → M ⟶ N
-    → Lift N
-      --------------
-    → Steps M
-
-norm : ∀ {M A}
-  → ∅ ⊢ M ⦂ A
-    ----------
-  → Lift M
-force (norm ⊢M) with progress ⊢M
-... | done VM   =   done VM
-... | step M↦N  =   step M↦N (norm (preserve ⊢M M↦N))
-
-data Take (M : Term) : Set where
-
-  out-of-gas : ∀ {N : Term}
-    → M ⟶* N
-      --------
-    → Take M
-
-  normal : ∀ {V : Term}
-    → Gas
-    → M ⟶* V
-    → Value V
-      -------
-    → Take M
-
-take : ∀ {L} → Gas → Lift L → Take L
-take {L} zero _                               =  out-of-gas (L ∎)
-take {L} (suc n) LiftL with force LiftL
-... | done VL                                 =  normal n (L ∎) VL
-... | step L↦M LiftM  with  take n LiftM
-...   |  out-of-gas M↠N                       =  out-of-gas (L ⟶⟨ L↦M ⟩ M↠N)
-...   |  normal g M↠V VV                      =  normal g (L ⟶⟨ L↦M ⟩ M↠V) VV
-\end{code}
 
 

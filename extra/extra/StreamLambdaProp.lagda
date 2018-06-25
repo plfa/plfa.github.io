@@ -865,27 +865,34 @@ force (norm ⊢M) with progress ⊢M
 ... | done VM   =   done VM
 ... | step M↦N  =   step M↦N (norm (preserve ⊢M M↦N))
 
-data Take (M : Term) : Set where
+data Cut (M : Term) : Set where
 
   out-of-gas : ∀ {N : Term}
     → M ⟶* N
       --------
-    → Take M
+    → Cut M
 
   normal : ∀ {V : Term}
     → Gas
     → M ⟶* V
     → Value V
       -------
-    → Take M
+    → Cut M
 
-take : ∀ {L} → Gas → Lift L → Take L
-take {L} zero _                               =  out-of-gas (L ∎)
+cut : ∀ {L} → Gas → Lift L → Cut L
+cut {L} zero _                               =  out-of-gas (L ∎)
+cut {L} (suc n) LiftL with force LiftL
+... | done VL                                =  normal n (L ∎) VL
+... | step L↦M LiftM  with  cut n LiftM
+...   |  out-of-gas M↠N                      =  out-of-gas (L ⟶⟨ L↦M ⟩ M↠N)
+...   |  normal g M↠V VV                     =  normal g (L ⟶⟨ L↦M ⟩ M↠V) VV
+
+take : ∀ {L} → Gas → Lift L → ∃[ N ](L ⟶* N)
+take {L} zero _                               =  ⟨ L , L ∎ ⟩
 take {L} (suc n) LiftL with force LiftL
-... | done VL                                 =  normal n (L ∎) VL
+... | done _                                  =  ⟨ L , L ∎ ⟩
 ... | step L↦M LiftM  with  take n LiftM
-...   |  out-of-gas M↠N                       =  out-of-gas (L ⟶⟨ L↦M ⟩ M↠N)
-...   |  normal g M↠V VV                      =  normal g (L ⟶⟨ L↦M ⟩ M↠V) VV
+...   |  ⟨ N , M↠N ⟩                          =  ⟨ N , L ⟶⟨ L↦M ⟩ M↠N ⟩
 \end{code}
 
 

@@ -10,8 +10,8 @@ module plta.Lambda where
 
 [This chapter was originally based on Chapter _Stlc_
 of _Software Foundations_ (_Programming Language Foundations_).
-It has now been updated, but if you catch any unintended
-copying please let me know.]
+It has now been updated, but if you spot any plagiarism
+please let me know. -- P]
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
@@ -22,14 +22,14 @@ The _simply-typed lambda calculus_ (or STLC) is a variant of the
 lambda calculus published by Church in 1940.  It has the three
 constructs above for function types, plus whatever else is required
 for base types. Church had a minimal base type with no operations.
-We will instead echo Plotkin's Programmable Computable
-Functions (PCF), and add operations on natural numbers and
+We will instead echo Plotkin's _Programmable Computable
+Functions_ (PCF), and add operations on natural numbers and
 recursive function definitions.
 
 This chapter formalises the simply-typed lambda calculus, giving its
 syntax, small-step semantics, and typing rules.  The next chapter
-[LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %})
-reviews its main properties, including
+[PandP]({{ site.baseurl }}{% link out/plta/PandP.md %})
+proves its main properties, including
 progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
 
@@ -276,10 +276,12 @@ names, `x` and `x′`.
 
 ## Values
 
+<!--
 We only consider reduction of _closed_ terms,
 those that contain no free variables.  We consider
 a precise definition of free variables in Chapter
-[LambdaProp]({{ site.baseurl }}{% link out/plta/LambdaProp.md %}).
+[PandP]({{ site.baseurl }}{% link out/plta/PandP.md %}).
+-->
 
 A _value_ is a term that corresponds to an answer.
 Thus, `` `suc `suc `suc `suc `zero` `` is a value,

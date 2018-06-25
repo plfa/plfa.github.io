@@ -34,7 +34,7 @@ Comments on all matters---organisation, material we should add, material we shou
 (This part is not yet ready for review.)
 
   - [Lambda: Lambda: Introduction to Lambda Calculus]({{ site.baseurl }}{% link out/plta/Lambda.md %})
-  - [LambdaProp: Properties of Simply-Typed Lambda Calculus]({{ site.baseurl }}{% link out/plta/LambdaProp.md %})
+  - [PandP: Progress and Preservation]({{ site.baseurl }}{% link out/plta/PandP.md %})
   - [DeBruijn: Inherently typed De Bruijn representation]({{ site.baseurl }}{% link out/plta/DeBruijn.md %})
   - [Extensions: Extensions to simply-typed lambda calculus]({{ site.baseurl }}{% link out/plta/Extensions.md %})
   - [Inference: Bidirectional type inference]({{ site.baseurl }}{% link out/plta/Inference.md %})
