@@ -857,7 +857,7 @@ the other variables.  For example,
 
 * `` ∅ , "x" : `ℕ ⇒ `ℕ , "x" : `ℕ ∋ "x" ⦂ `ℕ
 
-Here ` "x" ⦂ `ℕ ⇒ `ℕ ` is shadowed by ` "x" ⦂ `ℕ `.
+Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
 Lookup is formalised as follows.
 \begin{code}
