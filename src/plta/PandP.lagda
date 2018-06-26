@@ -36,21 +36,8 @@ both reduce to `` `suc `suc `suc `suc `zero ``,
 which represents the natural number four.
 
 What we might expect is that every term is either a value or can take
-a reduction step.  However, this is not true in general.  The term
-
-    `zero · `suc `zero
-
-is neither a value nor can take a reduction step. And if `` s ⦂ `ℕ ⇒ `ℕ ``
-then the term
-
-     s · `zero
-
-cannot reduce because we do not know which function is bound to the
-free variable `s`.
-
-However, the first of those terms is ill-typed, and the second has a free
-variable.  It turns out that the property we want does hold for every
-closed, well-typed term.
+a reduction step.  As we will see, this property does _not_ hold for
+every term, but it does hold for every closed, well-typed term.
 
 _Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
 that `M ⟶ N`.
@@ -68,16 +55,16 @@ By progress, it is either a value, in which case we are done, or it reduces
 to some other term.  By preservation, that other term will itself be closed
 and well-typed.  Repeat.  We will either loop forever, in which case evaluation
 does not terminate, or we will eventually reach a value, which is guaranteed
-to be closed and of the same type as the original term.
+to be closed and of the same type as the original term.  We will turn this
+recipe into Agda code that can compute for us the reduction sequence of
+`plus · two · two`, and its Church numeral variant.
 
 In this chapter we will prove _Preservation_ and _Progress_, and show
-how to apply them to get Agda to evaluate a term for us, that is, to reduce
-that term until it reaches a value (or to loop forever).
+how to apply them to get Agda to evaluate terms.
 
 The development in this chapter was inspired by the corresponding
-development in Chapter _StlcProp_ of _Software Foundations_
-(_Programming Language Foundations_).  It will turn
-out that one of our technical choices in the previous chapter
+development in in _Software Foundations, volume _Programming Language
+Foundations_, chapter _StlcProp_.  It will turn out that one of our technical choices
 (to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
 treating a context as a function from identifiers to types)
 permits a simpler development. In particular, we can prove substitution preserves
@@ -98,6 +85,7 @@ open import Data.Product
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Function using (_∘_)
+open import plta.Isomorphism
 open import plta.Lambda
 open Chain (Term) (_⟶_)
 \end{code}
@@ -183,11 +171,26 @@ case of successor.
 
 ## Progress
 
-We now show that every closed, well-typed term is either a value
-or can take a reduction step.  First, we define a relation
-`Progress M` which holds of a term `M` if it is a value or
-if it can take a reduction step.
+We would like to show that every term is either a value or takes a
+reduction step.  However, this is not true in general.  The term
 
+    `zero · `suc `zero
+
+is neither a value nor can take a reduction step. And if `` s ⦂ `ℕ ⇒ `ℕ ``
+then the term
+
+     s · `zero
+
+cannot reduce because we do not know which function is bound to the
+free variable `s`.  The first of those terms is ill-typed, and the
+second has a free variable.  Every term that is well-typed and closed
+has the desired property.
+
+_Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
+that `M ⟶ N`.
+
+To formulate this property, we first introduce a relation that
+captures what it means for a term `M` to make progess.
 \begin{code}
 data Progress (M : Term) : Set where
 
@@ -200,8 +203,12 @@ data Progress (M : Term) : Set where
       Value M
       ----------
     → Progress M
-\end{code}    
+\end{code}
+A term `M` makes progress if either it can take a step, meaning there
+exists a term `N` such that `M ⟶ N`, or if it is done, meaning that
+`M` is a value.
 
+If a term is well-typed in the empty context then it is a value.
 \begin{code}
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
@@ -226,8 +233,43 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-suc CL                             =  step (β-case-suc (value CL))
 progress (⊢μ ⊢M)                             =  step β-μ
 \end{code}
+Let's unpack the first three cases.  We induct on the evidence that
+`M` is well-typed.
 
-This code reads neatly in part because we consider the
+* The term cannot be a variable, since no variable is well typed
+  in the empty context.
+
+* If the term is a lambda abstraction then it is a value.
+
+* If the term is an application `L · M`, recursively apply
+  progress to the derivation that `L` is well-typed.
+
+  + If the term steps, we have evidence that `L ⟶ L′`,
+    which by `ξ-·₁` means that our original term steps
+    to `L′ · M`
+
+  + If the term is done, we have evidence that `L` is
+    a value. Recursively apply progress to the derivation
+    that `M` is well-typed.
+
+    - If the term steps, we have evidence that `M ⟶ M′`,
+      which by `ξ-·₂` means that our original term steps
+      to `L · M′`.  Step `ξ-·₂` applies only if we have
+      evidence that `L` is a value, but progress on that
+      subterm has already supplied the required evidence.
+
+    - If the term is done, we have evidence that `M` is
+      a value.  We apply the canonical forms lemma to the
+      evidence that `L` is well typed and a value, which
+      since we are in an application leads to the
+      conclusion that `L` must be a lambda
+      abstraction.  We also have evidence that `M` is
+      a value, so our original term steps by `β-ƛ·`.
+
+The remaining cases, for zero, successor, case, and fixpoint,
+are similar.
+
+Our code reads neatly in part because we consider the
 `step` option before the `done` option. We could, of course,
 do it the other way around, but then the `...` abbreviation
 no longer works, and we will need to write out all the arguments
@@ -236,10 +278,28 @@ in full. In general, the rule of thumb is to consider the easy case
 If you have two hard cases, you will have to expand out `...`
 or introduce subsidiary functions.
 
+Instead of defining a data type for `Progress M`, we could
+have formulated progress using disjunction and existentials:
 \begin{code}
 postulate
-  progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Progress M
+  progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Value M ⊎ ∃[ N ](M ⟶ N)
 \end{code}
+This leads to a less perspicous proof.  Instead of the mnemonic `done`
+and `step` we use `inj₁` and `inj₂`, and the term `N` is no longer
+implicit and so must be written out in full.  In the case for `β-ƛ·`
+this requires that we match against the lambda expression `L` to
+determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
+`L · M` reduces to `N [ x := M ]`.
+
+#### Exercise (`progress′`)
+
+Write out the proof of `progress′` in full, and compare it to the
+proof of `progress`.
+
+#### Exercise (`Progress-iso`)
+
+Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M ⟶ N)`.
+
 
 ## Prelude to preservation
 

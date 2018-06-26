@@ -189,6 +189,12 @@ in other words that the term
 reduces to `` `suc `suc `suc `suc `zero ``.
 
 
+#### Exercise (`mul`)
+
+Write out the defintion of a lambda term that multiplies
+two natural numbers.
+
+
 ### Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
@@ -414,7 +420,7 @@ In all other cases, we push substitution recursively into
 the subterms.
 
 
-#### Examples
+### Examples
 
 Here is confirmation that the examples above are correct.
 
@@ -657,7 +663,7 @@ open Chain (Term) (_⟶_)
 \end{code}
 
 
-### Exercise
+#### Exercise (`closure-equivalent`)
 
 Show that the two notions of reflexive and transitive closure
 above are equivalent.
@@ -746,6 +752,12 @@ _ =
 \end{code}
 
 In the next chapter, we will see how to compute such reduction sequences.
+
+
+#### Exercise (`mul-ex`)
+
+Using the term `mul` you defined earlier, write out the reduction
+sequence demonstrating that two times two is four.
 
 
 ## Syntax of types
@@ -1077,7 +1089,7 @@ Here are typings for the remainder of the Church example.
 \end{code}
 
 
-#### Interaction with Agda
+### Interaction with Agda
 
 Construction of a type derivation may be done interactively.
 Start with the declaration:
@@ -1176,6 +1188,12 @@ or explain why there are no such types.
 
 1. `` ∅ , "x" ⦂ A ⊢ ⌊ "x" ⌋ · ⌊ "x" ⌋ ⦂ B ``
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ⌊ "x" ⌋ · (⌊ "y" ⌋ · ⌊ "z" ⌋) ⦂ C ``
+
+
+#### Exercise (`mul-type`)
+
+Using the term `mul` you defined earlier, write out the derivation
+showing that it is well-typed.
 
 
 ## Unicode
