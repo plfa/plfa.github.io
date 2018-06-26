@@ -1,7 +1,7 @@
 // Define variables for code formatting
 
 @mixin code-font {
-    font-family: 'DejaVu Sans Mono', 'Monaco', 'Source Code Pro', 'Courier New', 'Menlo', 'Ludica Console', 'Liberation Mono', monospace, serif;
+    font-family: 'FreeMono', 'DejaVu Sans Mono', 'Monaco', 'Source Code Pro', 'Courier New', 'Menlo', 'Ludica Console', 'Liberation Mono', monospace, serif;
     font-size: .85em;
 }
 @mixin code-container {

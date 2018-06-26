@@ -294,7 +294,7 @@ determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 #### Exercise (`progress′`)
 
 Write out the proof of `progress′` in full, and compare it to the
-proof of `progress`.
+proof of `progress` above.
 
 #### Exercise (`Progress-iso`)
 
@@ -303,39 +303,68 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M ⟶ N)`.
 
 ## Prelude to preservation
 
-The other half of the type soundness property is the preservation
-of types during reduction.  For this, we need to develop
-technical machinery for reasoning about variables and
-substitution.  Working from top to bottom (from the high-level
-property we are actually interested in to the lowest-level
-technical lemmas), the story goes like this:
+The other property we wish to prove, preservation of typing under
+reduction, turns out to require considerably more work.  Our proof
+draws on a line of work by Thorsten Altenkirch, Conor McBride,
+James McKinna, and others.  The proof has three key steps.
 
-  - The _preservation theorem_ is proved by induction on a typing derivation.
-    The definition of `β-ƛ· uses substitution.  To see that
-    this step preserves typing, we need to know that the substitution itself
-    does.  So we prove a ...
+The first step is to show that types are preserved by _renaming_.
 
-  - _substitution lemma_, stating that substituting a (closed) term
-    `V` for a variable `x` in a term `N` preserves the type of `N`.
-    The proof goes by induction on the typing derivation of `N`.
-    The lemma does not require that `V` be a value,
-    though in practice we only substitute values.  The tricky cases
-    are the ones for variables and those that do binding, namely,
-    function abstraction, case over a natural, and fixpoints.  In each
-    case, we discover that we need to take a term `V` that has been
-    shown to be well-typed in some context `Γ` and consider the same
-    term in a different context `Δ`.  For this we prove a ...
+_Renaming_:
+Let `Γ` and `Δ` be two context such that every variable that
+appears in `Γ` also appears with the same type in `Δ`.  Then
+if a term is typable under `Γ`, it has the same type under `Δ`.
 
-  - _renaming lemma_, showing that typing is preserved
-    under weakening of the context---a term `M`
-    well typed in `Γ` is also well typed in `Δ`, so long as
-    every free variable found in `Γ` is also found in `Δ`.
+In symbols,
 
-To make Agda happy, we need to formalize the story in the opposite
-order.
+    Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
+    -----------------------
+    Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
+
+Special cases of renaming include _weakening_ (where `Δ` is an
+extension of `Γ`) and _swapping_ (reordering the occurrence of
+variables in `Γ` and `Δ`).  Our renaming lemma is similar to the
+_context invariance_ lemma in _Software Foundations_, but does not
+require a separate definition of `appears_free_in` relation that
+specifies the free variables of a term.
+
+The second step is to show that types are preserved by
+_substitution_.
+
+_Substitution_:
+Say we have a closed term `V` of type `A`, and under the
+assumption that `x` has type `A` the term `N` has type `B`.
+Then substituting `V` for `x` in `N` yields a term that
+also has type `B`.
+
+In symbols,
+
+    ∅ ⊢ V ⦂ A
+    Γ , x ⦂ A ⊢ N ⦂ B
+    ------------------
+    Γ ⊢ N [x := V] ⦂ B
+
+The result does not depend on `V` being a value.  Indeed, we
+only substitute closed terms into closed terms, but the more
+general context `Γ` will be required to prove the result by induction.
+
+The lemma establishes that substituion composes well with typing: if
+we first type the components separately and then combine them we get
+the same result as if we first substituted and then type the result.
+
+The third step is to show preservation.
+
+_Preservation_:
+If `∅ ⊢ M ⦂ A` and `M ⟶ N` then `∅ ⊢ N ⦂ A`.
+
+The proof is by induction over the possible reductions, and
+the substitution lemma is crucial in showing that each of the
+`β` rules which uses substitution preserves types.
+
+We now proceed with our three-step programme.
 
 
-### Renaming
+## Renaming
 
 Sometimes, when we have a proof `Γ ⊢ M ⦂ A`, we will need to
 replace `Γ` by a different context `Δ`.  When is it safe
