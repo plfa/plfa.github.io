@@ -46,11 +46,14 @@ Here are some characters that are not required to be monospaced.
 
 \begin{code}
 {-
-------------
-⟶⟶⟶⟶
-⟹⟹⟹⟹
-------------
-𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛
-𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑖𝑗𝑘
+------------|
+⟶⟶⟶⟶|
+⟹⟹⟹⟹|
+------------|
+----------|
+𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛|
+𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑖𝑗𝑘|
+----------|
+
 -}
 \end{code}
