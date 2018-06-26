@@ -75,7 +75,7 @@ types without needing to develop a separate inductive definition of the
 ## Imports
 
 \begin{code}
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym)
 open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -233,8 +233,8 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-suc CL                             =  step (β-case-suc (value CL))
 progress (⊢μ ⊢M)                             =  step β-μ
 \end{code}
-Let's unpack the first three cases.  We induct on the evidence that
-`M` is well-typed.
+We induct on the evidence that `M` is well-typed.
+Let's unpack the first three cases.  
 
 * The term cannot be a variable, since no variable is well typed
   in the empty context.
@@ -366,49 +366,104 @@ We now proceed with our three-step programme.
 
 ## Renaming
 
-Sometimes, when we have a proof `Γ ⊢ M ⦂ A`, we will need to
-replace `Γ` by a different context `Δ`.  When is it safe
-to do this?  Intuitively, whenever every variable given a type
-by `Γ` is also given a type by `Δ`.
+We often need to "rebase" a type derivation, replacing a
+derivation `Γ ⊢ M ⦂ A` by a related derivation `Δ ⊢ M ⦂ A`.
+We may do so as long as every variable that appears in
+`Γ` also appears in `Δ`, and with the same type.
 
-*(((Need to explain ext)))*
+Three of the rules for typing (lambda abstraction, case on naturals,
+and fixpoint) have hypotheses that extend the context to include a
+bound variable. In each of these rules, `Γ` appears in the conclusion
+and `Γ , x ⦂ A` appears in a hypothesis.  Thus:
 
+    Γ , x ⦂ A ⊢ N ⦂ B
+    ------------------- ⊢ƛ
+    Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
+
+for lambda expressions, and similarly for case and fixpoint.  To deal
+with this situation, we first prove a lemma showing that if one context
+extends another, this is still true after adding the same variable to
+both contexts.
 \begin{code}
-ext : ∀ {Γ Δ}
-  → (∀ {w B}     →        Γ ∋ w ⦂ B →         Δ ∋ w ⦂ B)
+extʳ : ∀ {Γ Δ}
+  → (∀ {x A}     →         Γ ∋ x ⦂ A →         Δ ∋ x ⦂ A)
     -----------------------------------------------------
-  → (∀ {w x A B} → Γ , x ⦂ A ∋ w ⦂ B → Δ , x ⦂ A ∋ w ⦂ B)
-ext σ Z          =  Z
-ext σ (S w≢ ∋w)  =  S w≢ (σ ∋w)
+  → (∀ {x y A B} → Γ , y ⦂ B ∋ x ⦂ A → Δ , y ⦂ B ∋ x ⦂ A)
 
+extʳ ρ Z           =  Z
+extʳ ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
+\end{code}
+Let `ρ` be the name of the map that takes evidence that
+`x` appears in `Γ` to evidence that `x` appears in `Δ`.
+The proof is by induction on the evidence that `x` appears
+in the extended map `Γ , y ⦂ B`. If `x` is the same as `y`,
+we used `Z` to access the last variable in the extended `Γ`;
+and can similarly use `Z` to access the last variable in the
+extended `Δ`.  If `x` differs from `y`, then we used `S`
+to skip over the last variable in the extended `Γ`, where
+`x≢y` is evidence that `x` and `y` differ, and `∋x` is the
+evidence that `x` appears in `Γ`; and we can similarly use
+`S` to skip over the last variable in the extended `Δ`,
+applying `ρ` to find the evidence that `w` appears
+in `Δ`.
+
+With this lemma under our belts, it is straightforward to
+prove renaming preserves types.
+\begin{code}
 rename : ∀ {Γ Δ}
         → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
           ----------------------------------
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
-rename σ (Ax ∋w)           =  Ax (σ ∋w)
-rename σ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext σ) ⊢N)
-rename σ (⊢L · ⊢M)         =  (rename σ ⊢L) · (rename σ ⊢M)
-rename σ ⊢zero             =  ⊢zero
-rename σ (⊢suc ⊢M)         =  ⊢suc (rename σ ⊢M)
-rename σ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename σ ⊢L) (rename σ ⊢M) (rename (ext σ) ⊢N)
-rename σ (⊢μ ⊢M)           =  ⊢μ (rename (ext σ) ⊢M)
+rename ρ (Ax ∋w)           =  Ax (ρ ∋w)
+rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (extʳ ρ) ⊢N)
+rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)
+rename ρ ⊢zero             =  ⊢zero
+rename ρ (⊢suc ⊢M)         =  ⊢suc (rename ρ ⊢M)
+rename ρ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename ρ ⊢L) (rename ρ ⊢M) (rename (extʳ ρ) ⊢N)
+rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (extʳ ρ) ⊢M)
 \end{code}
+As before, let `ρ` be the name of the map that takes evidence that
+`w` appears in `Γ` to evidence that `w` appears in `Δ`.  We induct
+on the evidence that `M` is well-typed in `Γ`.  Let's unpack the
+first three cases.
 
-We have three important corollaries.  First,
+* If the term is a variable, then applying `ρ` to the evidence
+that the variable appears in `Γ` yields the corresponding evidence that
+the variable appears in `Δ`.
+
+* If the term is a lambda abstraction, use the previous lemma to
+extend the map `ρ` suitably and recursively rename the body of the
+abstraction
+
+* If the term is an application, recursively rename both the
+function and the argument.
+
+The remaining cases, for zero, successor, case, and fixpoint, are
+similar.  In case and fixpoint, as with lambda abstraction, map `ρ`
+needs to be extended to account for the bound variable.  The induction
+is over the derivation that the term is well-typed, so the extension
+doesn't invalidate the inductive hypothesis. Equivalently, the
+recursion terminates because the second argument is always smaller,
+even though the first argument sometimes grows larger.
+
+We have three important corollaries, each proved by constructing
+a suitable map between contexts.  First,
 any closed term can be weakened to any context.
 \begin{code}
 rename-∅ : ∀ {Γ M A}
   → ∅ ⊢ M ⦂ A
     ----------
   → Γ ⊢ M ⦂ A
-rename-∅ {Γ} ⊢M = rename σ ⊢M
+rename-∅ {Γ} ⊢M = rename ρ ⊢M
   where
-  σ : ∀ {z C}
+  ρ : ∀ {z C}
     → ∅ ∋ z ⦂ C
       ---------
     → Γ ∋ z ⦂ C
-  σ ()
+  ρ ()
 \end{code}
+Here the map `ρ` is trivial, since there are no possible
+arguments in the empty context `∅`.
 
 Second, if the last two variables in a context are
 equal, the term can be renamed to drop the redundant one.
@@ -417,16 +472,22 @@ rename-≡ : ∀ {Γ x M A B C}
   → Γ , x ⦂ A , x ⦂ B ⊢ M ⦂ C
     --------------------------
   → Γ , x ⦂ B ⊢ M ⦂ C
-rename-≡ {Γ} {x} {M} {A} {B} {C} ⊢M = rename σ ⊢M
+rename-≡ {Γ} {x} {M} {A} {B} {C} ⊢M = rename ρ ⊢M
   where
-  σ : ∀ {z C}
+  ρ : ∀ {z C}
     → Γ , x ⦂ A , x ⦂ B ∋ z ⦂ C
       -------------------------
     → Γ , x ⦂ B ∋ z ⦂ C
-  σ Z                   =  Z
-  σ (S z≢x Z)           =  ⊥-elim (z≢x refl)
-  σ (S z≢x (S z≢y ∋z))  =  S z≢x ∋z
+  ρ Z                 =  Z
+  ρ (S x≢x Z)         =  ⊥-elim (x≢x refl)
+  ρ (S z≢x (S _ ∋z))  =  S z≢x ∋z
 \end{code}
+Here map `ρ` can never be invoked on the inner occurence of `x` since
+it is masked by the outer occurence.  Skipping over the `x` in the
+first position can only happen if the variable looked for differs from
+`x` (the evidence for which is `x≢x` or `z≢x`) but if the variable is
+found in the second position, which also contains `x`, this leads to a
+contradiction (evidenced by `x≢x refl`).
 
 Third, if the last two variables in a context differ,
 the term can be renamed to flip their order.
@@ -436,36 +497,26 @@ rename-≢ : ∀ {Γ x y M A B C}
   → Γ , y ⦂ A , x ⦂ B ⊢ M ⦂ C
     --------------------------
   → Γ , x ⦂ B , y ⦂ A ⊢ M ⦂ C
-rename-≢ {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename σ ⊢M
+rename-≢ {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
   where
-  σ : ∀ {z C}
+  ρ : ∀ {z C}
     → Γ , y ⦂ A , x ⦂ B ∋ z ⦂ C
       --------------------------
     → Γ , x ⦂ B , y ⦂ A ∋ z ⦂ C
-  σ Z                    =  S (λ{refl → x≢y refl}) Z
-  σ (S z≢x Z)            =  Z
-  σ (S z≢x (S z≢y ∋z))   =  S z≢y (S z≢x ∋z)
+  ρ Z                   =  S x≢y Z
+  ρ (S y≢x Z)           =  Z
+  ρ (S z≢x (S z≢y ∋z))  =  S z≢y (S z≢x ∋z)
 \end{code}
+Here the renaming map takes a variable at the
+end into a variable one from the end, and vice versa.
 
 
 ## Substitution
 
-Now we come to the conceptual heart of the proof that reduction
-preserves types---namely, the observation that _substitution_
-preserves types.
+The key to preservation–and the trickiest bit of the proof–is
+the lemma establishing that substitution preserves types.
 
-Formally, the _Substitution Lemma_ says this: Suppose we
-have a term `N` with a free variable `x`, where `N` has
-type `B` under the assumption that `x` has some type `A`.
-Also, suppose that we have some other term `V`,
-where `V` has type `A`.  Then, since `V` satisfies
-the assumption we made about `x` when typing `N`, we should be
-able to substitute `V` for each of the occurrences of `x` in `N`
-and obtain a new term that still has type `B`.
-
-_Lemma_: If `Γ , x ⦂ A ⊢ N ⦂ B` and `∅ ⊢ V ⦂ A`, then
-`Γ ⊢ (N [ x := V ]) ⦂ B`.
-
+<!--
 One technical subtlety in the statement of the lemma is that we assume
 `V` is closed; it has type `A` in the _empty_ context.  This
 assumption simplifies the `λ` case of the proof because the context
@@ -474,15 +525,8 @@ all---we don't have to worry about free variables in `V` clashing with
 the variable being introduced into the context by `λ`. It is possible
 to prove the theorem under the more general assumption `Γ ⊢ V ⦂ A`,
 but the proof is more difficult.
-
-<!--
-Intuitively, the substitution lemma says that substitution and typing can
-be done in either order: we can either assign types to the terms
-`N` and `V` separately (under suitable contexts) and then combine
-them using substitution, or we can substitute first and then
-assign a type to `N [ x := V ]`---the result is the same either
-way.
 -->
+
 
 \begin{code}
 subst : ∀ {Γ x N V A B}
