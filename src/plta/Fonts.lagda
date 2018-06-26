@@ -32,7 +32,6 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ⟨⟨⟨⟩⟩⟩|
 →→→⇒⇒⇒|
 ←←←⇐⇐⇐|
-------|
 
 ----|
 ⌊⌋⌈⌉|
@@ -40,6 +39,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ↦↦↦↦|
 ↠↠↠↠|
 ͰͰͰͰ|
+⊦⊦⊦⊦|
 ∈∈∈∈|
 ∋∋∋∋|
 ----|
