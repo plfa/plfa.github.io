@@ -214,8 +214,8 @@ meta-language, Agda.
 ### Bound and free variables
 
 In an abstraction `ƛ x ⇒ N` we call `x` the _bound_ variable
-and `N` the _body_ of the abstraction.  One of the most important
-aspects of lambda calculus is that consistent renaming of bound variables
+and `N` the _body_ of the abstraction.  A central feature
+of lambda calculus is that consistent renaming of bound variables
 leaves the meaning of a term unchanged.  Thus the five terms
 
 * `` ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋) ``
@@ -250,7 +250,7 @@ In the term
     (ƛ "x" ⇒ ⌊ "x" ⌋) · ⌊ "x" ⌋
 
 the inner occurrence of `x` is bound while the outer occurrence is free.
-Note that by alpha renaming, the term above is equivalent to
+By alpha renaming, the term above is equivalent to
 
     (ƛ "y" ⇒ ⌊ "y" ⌋) · ⌊ "x" ⌋
 
@@ -356,32 +356,45 @@ We write substitution as `N [ x := V ]`, meaning
 or, more compactly, "substitute `V` for `x` in `N`".
 Substitution works if `V` is any closed term;
 it need not be a value, but we use `V` since in fact we
-always substitute values.
+usually substitute values.
 
-Here are some examples.
+Here are some examples:
 
-* `` ⌊ "s" ⌋ [ "s" := sucᶜ ] `` yields `` sucᶜ ``
-* `` ⌊ "z" ⌋ [ "s" := sucᶜ ] `` yields `` ⌊ "z" ⌋ ``
-* `` (⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] `` yields `` sucᶜ · ⌊ "z" ⌋ ``
-* `` (⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) [ "s" := sucᶜ ] `` yields `` sucᶜ · (sucᶜ · ⌊ "z" ⌋) ``
+* `` (sucᶜ · (sucᶜ · ⌊ "z" ⌋)) [ "z" := `zero ] `` yields
+  `` sucᶜ · (sucᶜ · `zero) ``
 * `` (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · ⌊ "z" ⌋)) [ "s" := sucᶜ ] `` yields
-  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋) ``
-* `` (ƛ "y" ⇒ ⌊ "y" ⌋) [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ⌊ "y" ⌋ ``
+     ƛ "z" ⇒ sucᶜ · (sucᶜ · ⌊ "z" ⌋) ``
+* `` (ƛ "x" ⇒ ⌊ "y" ⌋) [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``
 * `` (ƛ "x" ⇒ ⌊ "x" ⌋) [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ⌊ "x" ⌋ ``
-* `` (ƛ "y" ⇒ ⌊ "x" ⌋) [ "x" := `zero ] `` yields `` ƛ "y" ⇒ # `zero ``
+* `` (ƛ "y" ⇒ ⌊ "y" ⌋) [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ⌊ "x" ⌋ ``
 
-The last but one example is important: substituting `` `zero `` for `x` in
-`` ƛ "x" ⇒ ⌊ "x" ⌋ `` does _not_ yield `` ƛ "x" ⇒ `zero ``.
-The reason for this is that `x` in the body of `` ƛ "x" ⇒ ⌊ "x" ⌋ ``
-is _bound_ by the abstraction.  An important feature of abstraction
-is that the choice of bound names is irrelevant: both
+In the last but one example, substituting `` `zero `` for `x` in
+`` ƛ "x" ⇒ ⌊ "x" ⌋ `` does _not_ yield `` ƛ "x" ⇒ `zero ``,
+since `x` is bound in the lambda abstraction.
+The choice of bound names is irrelevant: both
 `` ƛ "x" ⇒ ⌊ "x" ⌋ `` and `` ƛ "y" ⇒ ⌊ "y" ⌋ `` stand for the
-identity function.  The way to think of this is that `x` within
+identity function.  One way to think of this is that `x` within
 the body of the abstraction stands for a _different_ variable than
-`x` outside the abstraction, they both just happen to have the same
-name.
+`x` outside the abstraction, they just happen to have the same name.
 
-Here is the formal definition in Agda.
+We will give a definition of substitution that is only valid
+when term substituted for the variable is closed. This is because
+substitution by terms that are _not_ closed may require renaming
+of bound variables. For example:
+
+* `` (ƛ "x" ⇒ ⌊ "x" ⌋ · ⌊ "y" ⌋) [ "y" := ⌊ "x" ⌋ · ⌊ "y" ⌋ ] `` should not yield
+  `` ƛ "x" ⇒ ⌊ "x" ⌋ · (⌊ "x" ⌋ · ⌊ "y" ⌋) ``
+
+Instead, we should rename the variables to avoid capture.
+
+* `` (ƛ "x" ⇒ ⌊ "x" ⌋ · ⌊ "y" ⌋) [ "y" := ⌊ "x" ⌋ · ⌊ "y" ⌋ ] `` should yield
+  `` ƛ "z" ⇒ ⌊ "z" ⌋ · (⌊ "x" ⌋ · ⌊ "y" ⌋) ``
+
+Formal definition of substitution with suitable renaming is considerably
+more complex, so we avoid it by restricting to substitution by closed terms,
+which will be adequate for our purposes.
+
+Here is the formal definition of substitution by closed terms in Agda.
 
 \begin{code}
 infix 9 _[_:=_]
@@ -393,9 +406,9 @@ _[_:=_] : Term → Id → Term → Term
 (ƛ x ⇒ N) [ y := V ] with x ≟ y
 ... | yes _  =  ƛ x ⇒ N
 ... | no  _  =  ƛ x ⇒ N [ y := V ]
-(L · M) [ y := V ] =  L [ y := V ] · M [ y := V ]
-(`zero) [ y := V ] = `zero
-(`suc M) [ y := V ] = `suc M [ y := V ]
+(L · M) [ y := V ]   =  L [ y := V ] · M [ y := V ]
+(`zero) [ y := V ]   =  `zero
+(`suc M) [ y := V ]  =  `suc M [ y := V ]
 (`case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
 ... | yes _  =  `case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
 ... | no  _  =  `case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
@@ -404,9 +417,9 @@ _[_:=_] : Term → Id → Term → Term
 ... | no  _  =  μ x ⇒ N [ y := V ]
 \end{code}
 
-The two key cases are variables and abstraction.
+Let's unpack the first three cases.
 
-* For variables, we compare `w`, the variable we are substituting for,
+* For variables, we compare `y`, the substituted variable,
 with `x`, the variable in the term. If they are the same,
 we yield `V`, otherwise we yield `x` unchanged.
 
@@ -414,10 +427,12 @@ we yield `V`, otherwise we yield `x` unchanged.
 with `x`, the variable bound in the abstraction. If they are the same,
 we yield the abstraction unchanged, otherwise we subsititute inside the body.
 
-Case expressions and recursion also have bound variables that
-are treated similarly to those in lambda abstractions.
-In all other cases, we push substitution recursively into
-the subterms.
+* For application, we recursively substitute in the function
+and the argument.
+
+Case expressions and recursion also have bound variables that are
+treated similarly to those in lambda abstractions.  Otherwise we
+simply push substitution recursively into the subterms.
 
 
 ### Examples
@@ -425,28 +440,19 @@ the subterms.
 Here is confirmation that the examples above are correct.
 
 \begin{code}
-_ : (⌊ "s" ⌋) [ "s" := sucᶜ ] ≡  sucᶜ
-_ = refl
-
-_ : (⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  ⌊ "z" ⌋
-_ = refl
-
-_ : (⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  sucᶜ · ⌊ "z" ⌋
-_ = refl
-
-_ : (⌊ "s" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  sucᶜ · sucᶜ · ⌊ "z" ⌋
+_ : (sucᶜ · sucᶜ · ⌊ "z" ⌋) [ "z" := `zero ] ≡  sucᶜ · sucᶜ · `zero
 _ = refl
 
 _ : (ƛ "z" ⇒ ⌊ "s" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · sucᶜ · ⌊ "z" ⌋
 _ = refl
 
-_ : (ƛ "y" ⇒ ⌊ "y" ⌋) [ "x" := `zero ] ≡ ƛ "y" ⇒ ⌊ "y" ⌋
+_ : (ƛ "x" ⇒ ⌊ "y" ⌋) [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
 _ = refl
 
 _ : (ƛ "x" ⇒ ⌊ "x" ⌋) [ "x" := `zero ] ≡ ƛ "x" ⇒ ⌊ "x" ⌋
 _ = refl
 
-_ : (ƛ "x" ⇒ ⌊ "y" ⌋) [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
+_ : (ƛ "y" ⇒ ⌊ "y" ⌋) [ "x" := `zero ] ≡ ƛ "y" ⇒ ⌊ "y" ⌋
 _ = refl
 \end{code}
 
@@ -454,12 +460,12 @@ _ = refl
 
 What is the result of the following substitution?
 
-    (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ ⌊ "x" ⌋)) [ "x" := true ]
+    (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ ⌊ "x" ⌋)) [ "x" := `zero ]
 
 1. `` (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ ⌊ "x" ⌋)) ``
-2. `` (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ true)) ``
-3. `` (ƛ "y" ⇒ true · (ƛ "x" ⇒ ⌊ "x" ⌋)) ``
-4. `` (ƛ "y" ⇒ true · (ƛ "x" ⇒ true)) ``
+2. `` (ƛ "y" ⇒ ⌊ "x" ⌋ · (ƛ "x" ⇒ `zero)) ``
+3. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ ⌊ "x" ⌋)) ``
+4. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ `zero)) ``
 
 
 ## Reduction

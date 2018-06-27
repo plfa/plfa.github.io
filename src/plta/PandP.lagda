@@ -325,8 +325,8 @@ Special cases of renaming include _weakening_ (where `Δ` is an
 extension of `Γ`) and _swapping_ (reordering the occurrence of
 variables in `Γ` and `Δ`).  Our renaming lemma is similar to the
 _context invariance_ lemma in _Software Foundations_, but does not
-require a separate definition of `appears_free_in` relation that
-specifies the free variables of a term.
+require a separate definition of the `appears_free_in` relation
+which is needed there.
 
 The second step is to show that types are preserved by
 _substitution_.
@@ -344,13 +344,17 @@ In symbols,
     ------------------
     Γ ⊢ N [x := V] ⦂ B
 
-The result does not depend on `V` being a value.  Indeed, we
-only substitute closed terms into closed terms, but the more
-general context `Γ` will be required to prove the result by induction.
+The result does not depend on `V` being a value, but it does
+require that `V` be closed; recall that we restricted our attention
+to substitution by closed terms in order to avoid the need to
+rename bound variables.  The term into which we are substituting
+is typed in an arbitrary context `Γ`, extended by the variable
+`x` for which we are substituting; and the result term is typed
+in `Γ`. 
 
-The lemma establishes that substituion composes well with typing: if
-we first type the components separately and then combine them we get
-the same result as if we first substituted and then type the result.
+The lemma establishes that substitution composes well with typing:
+if we first type the components separately and then combine them we get
+the same result as if we first substitute and then type the result.
 
 The third step is to show preservation.
 
@@ -385,13 +389,13 @@ with this situation, we first prove a lemma showing that if one context
 extends another, this is still true after adding the same variable to
 both contexts.
 \begin{code}
-extʳ : ∀ {Γ Δ}
+ext : ∀ {Γ Δ}
   → (∀ {x A}     →         Γ ∋ x ⦂ A →         Δ ∋ x ⦂ A)
     -----------------------------------------------------
   → (∀ {x y A B} → Γ , y ⦂ B ∋ x ⦂ A → Δ , y ⦂ B ∋ x ⦂ A)
 
-extʳ ρ Z           =  Z
-extʳ ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
+ext ρ Z           =  Z
+ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 \end{code}
 Let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.
@@ -411,19 +415,19 @@ With this lemma under our belts, it is straightforward to
 prove renaming preserves types.
 \begin{code}
 rename : ∀ {Γ Δ}
-        → (∀ {w B} → Γ ∋ w ⦂ B → Δ ∋ w ⦂ B)
+        → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
           ----------------------------------
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
 rename ρ (Ax ∋w)           =  Ax (ρ ∋w)
-rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (extʳ ρ) ⊢N)
+rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext ρ) ⊢N)
 rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)
 rename ρ ⊢zero             =  ⊢zero
 rename ρ (⊢suc ⊢M)         =  ⊢suc (rename ρ ⊢M)
-rename ρ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename ρ ⊢L) (rename ρ ⊢M) (rename (extʳ ρ) ⊢N)
-rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (extʳ ρ) ⊢M)
+rename ρ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename ρ ⊢L) (rename ρ ⊢M) (rename (ext ρ) ⊢N)
+rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (ext ρ) ⊢M)
 \end{code}
 As before, let `ρ` be the name of the map that takes evidence that
-`w` appears in `Γ` to evidence that `w` appears in `Δ`.  We induct
+`x` appears in `Γ` to evidence that `x` appears in `Δ`.  We induct
 on the evidence that `M` is well-typed in `Γ`.  Let's unpack the
 first three cases.
 
@@ -494,66 +498,105 @@ the term can be renamed to flip their order.
 \begin{code}
 rename-≢ : ∀ {Γ x y M A B C}
   → x ≢ y
-  → Γ , y ⦂ A , x ⦂ B ⊢ M ⦂ C
+  → Γ , y ⦂ B , x ⦂ A ⊢ M ⦂ C
     --------------------------
-  → Γ , x ⦂ B , y ⦂ A ⊢ M ⦂ C
+  → Γ , x ⦂ A , y ⦂ B ⊢ M ⦂ C
 rename-≢ {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
   where
   ρ : ∀ {z C}
-    → Γ , y ⦂ A , x ⦂ B ∋ z ⦂ C
+    → Γ , y ⦂ B , x ⦂ A ∋ z ⦂ C
       --------------------------
-    → Γ , x ⦂ B , y ⦂ A ∋ z ⦂ C
+    → Γ , x ⦂ A , y ⦂ B ∋ z ⦂ C
   ρ Z                   =  S x≢y Z
   ρ (S y≢x Z)           =  Z
   ρ (S z≢x (S z≢y ∋z))  =  S z≢y (S z≢x ∋z)
 \end{code}
-Here the renaming map takes a variable at the
-end into a variable one from the end, and vice versa.
+Here the renaming map takes a variable at the end into a variable one
+from the end, and vice versa.  The first line is responsible for
+moving `x` from a position at the end to a position one from the end
+with `y` at the end, and requires the provided evidence that `x ≢ y`.
 
 
 ## Substitution
 
-The key to preservation–and the trickiest bit of the proof–is
+The key to preservation – and the trickiest bit of the proof – is
 the lemma establishing that substitution preserves types.
 
-<!--
-One technical subtlety in the statement of the lemma is that we assume
-`V` is closed; it has type `A` in the _empty_ context.  This
-assumption simplifies the `λ` case of the proof because the context
-invariance lemma then tells us that `V` has type `A` in any context at
-all---we don't have to worry about free variables in `V` clashing with
-the variable being introduced into the context by `λ`. It is possible
-to prove the theorem under the more general assumption `Γ ⊢ V ⦂ A`,
-but the proof is more difficult.
--->
+Recall that in order to avoid renaming bound variables,
+substitution is restricted to be by closed terms only.
+This restriction was not enforced by our definition of substitution,
+but it is captured by our lemma to assert that substitution
+preserves typing.
 
+Our concern is with reducing closed terms, which means that when
+we apply `β` reduction, the term substituted in contains a single
+free variable (the bound variable of the lambda abstraction, or
+similarly for case or fixpoint). However, substitution
+is defined by recursion, and as we descend into terms with bound
+variables the context grows.  So for the induction to go through,
+we require an arbitrary context `Γ`, as in the statement of the lemma.
 
+Here is the formal statement and proof that substitution preserves types.
 \begin{code}
 subst : ∀ {Γ x N V A B}
-  → Γ , x ⦂ A ⊢ N ⦂ B
   → ∅ ⊢ V ⦂ A
+  → Γ , x ⦂ A ⊢ N ⦂ B
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
-
-subst {x = y} (Ax {x = x} Z) ⊢V with x ≟ y
+subst {x = y} ⊢V (Ax {x = x} Z) with x ≟ y
 ... | yes refl        =  rename-∅ ⊢V
 ... | no  x≢y         =  ⊥-elim (x≢y refl)
-subst {x = y} (Ax {x = x} (S x≢y ∋x)) ⊢V with x ≟ y
+subst {x = y} ⊢V (Ax {x = x} (S x≢y ∋x)) with x ≟ y
 ... | yes refl        =  ⊥-elim (x≢y refl)
 ... | no  _           =  Ax ∋x
-subst {x = y} (⊢ƛ {x = x} ⊢N) ⊢V with x ≟ y
+subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
 ... | yes refl        =  ⊢ƛ (rename-≡ ⊢N)
-... | no  x≢y         =  ⊢ƛ (subst (rename-≢ x≢y ⊢N) ⊢V)
-subst (⊢L · ⊢M) ⊢V    = (subst ⊢L ⊢V) · (subst ⊢M ⊢V)
-subst ⊢zero ⊢V        =  ⊢zero
-subst (⊢suc ⊢M) ⊢V    =  ⊢suc (subst ⊢M ⊢V)
-subst {x = y} (⊢case {x = x} ⊢L ⊢M ⊢N) ⊢V with x ≟ y
-... | yes refl        =  ⊢case (subst ⊢L ⊢V) (subst ⊢M ⊢V) (rename-≡ ⊢N)
-... | no  x≢y         =  ⊢case (subst ⊢L ⊢V) (subst ⊢M ⊢V) (subst (rename-≢ x≢y ⊢N) ⊢V)
-subst {x = y} (⊢μ {x = x} ⊢M) ⊢V with x ≟ y
+... | no  x≢y         =  ⊢ƛ (subst ⊢V (rename-≢ x≢y ⊢N))
+subst ⊢V (⊢L · ⊢M)    = subst ⊢V ⊢L · subst ⊢V ⊢M
+subst ⊢V ⊢zero        =  ⊢zero
+subst ⊢V (⊢suc ⊢M)    =  ⊢suc (subst ⊢V ⊢M)
+subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
+... | yes refl        =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (rename-≡ ⊢N)
+... | no  x≢y         =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (rename-≢ x≢y ⊢N))
+subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
 ... | yes refl        =  ⊢μ (rename-≡ ⊢M)
-... | no  x≢y         =  ⊢μ (subst (rename-≢ x≢y ⊢M) ⊢V)
+... | no  x≢y         =  ⊢μ (subst ⊢V (rename-≢ x≢y ⊢M))
 \end{code}
+We induct on the evidence that `N` is well-typed in the
+context `Γ` extended by `x`.
+
+Immediately, we note a wee problem with naming.  In the lemma
+statement, the variable `x` is an implicit parameter for the variable
+substituted, while in the type rules for variables, abstractions,
+cases, and fixpoints, the variable `x` is an implicit parameter for
+the relevant variable.  We are going to need to get hold of both
+variables, so we use the syntax `{x = y}` to bind `y` to the
+substituted variable and the syntax `{x = x}` to bind `x` to the
+relevant variable in the patterns for `Ax`, `⊢ƛ`, `⊢case`, and `⊢μ`.
+Indeed, using the name `y` here is consistent with the naming in the
+original definition of substitution in the previous chapter.
+
+Now let's unpack the first three cases.
+
+* In the variable case, given `∅ ⊢ V ⦂ A` and `Γ , y ⦂ A ⊢ x ⦂ B`,
+  we need to show `Γ ⊢ x [ y := V ] ⦂ B`.  There are two subcases,
+  based on the evidence for `Γ , y ⦂ A ∋ x ⦂ B`.
+
+  + If `x` appears at the end of the context (`Z`),
+    then `x` and `y` are necessarily identical, as are `A` and `B`.
+    Nonetheless, we must evaluate `x ≟ y` in order to allow
+    the definition of substitution to simplify.  If they are equal,
+    `x [ y := V ]` simplifies to `V`, and by the weakening lemma
+    `rename-∅` from `∅ ⊢ V ⦂ A` it follows that `Γ ⊢ V ⦂ A` as required.
+    If they are unequal, we have a contradiction and the result
+    follows immediately by `⊥-elim`.
+
+  + If `x` appears elsewhere in the context (`S`),
+    then `x` and `y` are necessarily distinct. 
+    Nonetheless, we must again evaluate `x ≟ y` in order to allow
+    the definition of substitution to simplify.  If they are equal,
+    we have a contradiction and the result follows immediately by `⊥-elim`.
+    If they are unequal ... CONTINUE FROM HERE
 
 
 ### Main Theorem
@@ -573,13 +616,13 @@ preserve (Ax ())
 preserve (⊢ƛ ⊢N)                 ()
 preserve (⊢L · ⊢M)               (ξ-·₁ L⟶L′)     =  (preserve ⊢L L⟶L′) · ⊢M
 preserve (⊢L · ⊢M)               (ξ-·₂ VL M⟶M′)  =  ⊢L · (preserve ⊢M M⟶M′)
-preserve ((⊢ƛ ⊢N) · ⊢V)          (β-ƛ· VV)        =  subst ⊢N ⊢V
+preserve ((⊢ƛ ⊢N) · ⊢V)          (β-ƛ· VV)        =  subst ⊢V ⊢N
 preserve ⊢zero                   ()
 preserve (⊢suc ⊢M)               (ξ-suc M⟶M′)    =  ⊢suc (preserve ⊢M M⟶M′)
 preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L⟶L′)   =  ⊢case (preserve ⊢L L⟶L′) ⊢M ⊢N
 preserve (⊢case ⊢zero ⊢M ⊢N)     β-case-zero      =  ⊢M
-preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢N ⊢V
-preserve (⊢μ ⊢M)                 (β-μ)            =  subst ⊢M (⊢μ ⊢M)
+preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢V ⊢N 
+preserve (⊢μ ⊢M)                 (β-μ)            =  subst (⊢μ ⊢M) ⊢M
 \end{code}
 
 
