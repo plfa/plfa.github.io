@@ -1,7 +1,45 @@
 // Define variables for code formatting
 
+@font-face {
+    font-family: "FreeMono";
+    src: url("fonts/FreeMono.woff");
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: normal;
+    unicode-range: U+20-7E, U+A0-220, U+224-233, U+237,
+        U+250-254, U+256-259, U+25B-25C, U+25F-261,
+        U+265-26B, U+26D, U+26F-275, U+279-285,
+        U+287-289, U+28C-28E, U+290-2A2, U+2B0-36F,
+        U+374-375, U+37A, U+37E, U+384-38A,
+        U+38C, U+38E-3A1, U+3A3-3CE, U+3D0-3D6,
+        U+3DA-3DD, U+3F0-3F1, U+3F4-3F5, U+400-45F,
+        U+470-472, U+484-486, U+48A-4F9, U+510-513,
+        U+51A-51F, U+5B0-5B9, U+5BB-5C4, U+5D0-5EA,
+        U+5F0-5F4, U+10D0-10F5, U+10F9, U+10FB-10FC,
+        U+1E00-1E9B, U+1EA0-1EF9, U+2000-2064, U+2070-2071,
+        U+2074-208E, U+2090-2094, U+20A3-20A6, U+20A9-20AE,
+        U+20B1-20B5, U+20B8-20B9, U+2100-2101, U+2103,
+        U+2105-2107, U+2109, U+210E, U+2111-2113,
+        U+2116, U+2118, U+211C, U+2120-2122,
+        U+2126-2127, U+2129-212B, U+212E, U+2132,
+        U+2135-2138, U+213A-213B, U+2141-2144, U+214B,
+        U+214D-214E, U+2153-215F, U+2190-2199, U+21A4-21A7,
+        U+21B9, U+21BC-21CC, U+21D0-21D5, U+2200-221F,
+        U+2223, U+2225, U+2227-222C, U+2234-2237,
+        U+223C, U+2248, U+2260-2261, U+2264-2265,
+        U+2282-2287, U+22A5, U+22C2-22C3, U+2310,
+        U+2329-232A, U+2423, U+2500-2595, U+25A0-25A1,
+        U+25A3-25BA, U+25BC-25C7, U+25C9-25CB, U+25CD,
+        U+25CF-25D9, U+25E2-25F7, U+2607-2609, U+2630-2637,
+        U+2639-263B, U+2660-2667, U+2669-266F, U+2E16-2E18,
+        U+2E1A-2E1B, U+2E1E-2E1F, U+2E28-2E2E, U+2E30,
+        U+A788-A78C, U+FB00-FB02, U+FB1D, U+FB1F-FB20,
+        U+FB2A-FB36, U+FB38-FB3C, U+FB3E, U+FB40-FB41,
+        U+FB43-FB44, U+FB46-FB4F, U+FFF9-FFFD;
+}
+
 @mixin code-font {
-    font-family: 'FreeMono', 'DejaVu Sans Mono', 'Monaco', 'Source Code Pro', 'Courier New', 'Menlo', 'Ludica Console', 'Liberation Mono', monospace, serif;
+    font-family: 'FreeMono', 'Courier New', 'Monaco', 'Menlo', 'Source Code Pro', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace, serif;
     font-size: .85em;
 }
 @mixin code-container {
