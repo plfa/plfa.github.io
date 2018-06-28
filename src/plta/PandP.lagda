@@ -120,8 +120,7 @@ data Canonical_⦂_ : Term → Type → Set where
     → Canonical `suc V ⦂ `ℕ
 \end{code}    
 
-Every closed, well-typed term that is a value
-must satisfy the canonical relation.
+Every closed, well-typed value is canonical.
 \begin{code}
 canonical : ∀ {V A}
   → ∅ ⊢ V ⦂ A
@@ -136,15 +135,21 @@ canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
 \end{code}
-There are only three interesting cases to consider; the variable
-case is thrown out because it is not closed and not a value, and
-the cases for application, zero, successor, and fixpoint are thrown
-out because they are not values.  If the term is a lambda abstraction,
-then well-typing of the term guarantees well-typing of the body.
-If the term is a zero than it is canonical trivially.  If the
-term is a successor then since it is well-typed its argument is
-well-typed, and since it is a value its argument is a value.  Hence,
-by induction its argument is also canonical.
+There are only three interesting cases to consider. 
+
+* If the term is a lambda abstraction, then well-typing of the term
+  guarantees well-typing of the body.
+
+* If the term is zero than it is canonical trivially.
+
+* If the term is a successor then since it is well-typed its argument
+  is well-typed, and since it is a value its argument is a value.
+  Hence, by induction its argument is also canonical.
+
+The variable case is thrown out because a closed term has no free
+variables and because a variable is not a value.  The cases for
+application, zero, successor, and fixpoint are thrown out because they
+are not values.
 
 Conversely, if a term is canonical then it is a value
 and it is well-typed in the empty context.
@@ -153,17 +158,17 @@ value : ∀ {M A}
   → Canonical M ⦂ A
     ----------------
   → Value M
-value (C-ƛ ⊢N)    = V-ƛ
-value C-zero      = V-zero
-value (C-suc CM)  = V-suc (value CM)
+value (C-ƛ ⊢N)    =  V-ƛ
+value C-zero      =  V-zero
+value (C-suc CM)  =  V-suc (value CM)
 
 typed : ∀ {M A}
   → Canonical M ⦂ A
     ---------------
   → ∅ ⊢ M ⦂ A
-typed (C-ƛ ⊢N)    = ⊢ƛ ⊢N
-typed C-zero      = ⊢zero
-typed (C-suc CM)  = ⊢suc (typed CM)
+typed (C-ƛ ⊢N)    =  ⊢ƛ ⊢N
+typed C-zero      =  ⊢zero
+typed (C-suc CM)  =  ⊢suc (typed CM)
 \end{code}
 The proofs are straightforward, and again use induction in the
 case of successor.
@@ -544,28 +549,28 @@ subst : ∀ {Γ x N V A B}
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
 subst {x = y} ⊢V (Ax {x = x} Z) with x ≟ y
-... | yes refl        =  rename-∅ ⊢V
-... | no  x≢y         =  ⊥-elim (x≢y refl)
+... | yes refl     =  rename-∅ ⊢V
+... | no  x≢y      =  ⊥-elim (x≢y refl)
 subst {x = y} ⊢V (Ax {x = x} (S x≢y ∋x)) with x ≟ y
-... | yes refl        =  ⊥-elim (x≢y refl)
-... | no  _           =  Ax ∋x
+... | yes refl     =  ⊥-elim (x≢y refl)
+... | no  _        =  Ax ∋x
 subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
-... | yes refl        =  ⊢ƛ (rename-≡ ⊢N)
-... | no  x≢y         =  ⊢ƛ (subst ⊢V (rename-≢ x≢y ⊢N))
-subst ⊢V (⊢L · ⊢M)    = subst ⊢V ⊢L · subst ⊢V ⊢M
-subst ⊢V ⊢zero        =  ⊢zero
-subst ⊢V (⊢suc ⊢M)    =  ⊢suc (subst ⊢V ⊢M)
+... | yes refl     =  ⊢ƛ (rename-≡ ⊢N)
+... | no  x≢y      =  ⊢ƛ (subst ⊢V (rename-≢ x≢y ⊢N))
+subst ⊢V (⊢L · ⊢M) = subst ⊢V ⊢L · subst ⊢V ⊢M
+subst ⊢V ⊢zero     =  ⊢zero
+subst ⊢V (⊢suc ⊢M) =  ⊢suc (subst ⊢V ⊢M)
 subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
-... | yes refl        =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (rename-≡ ⊢N)
-... | no  x≢y         =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (rename-≢ x≢y ⊢N))
+... | yes refl     =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (rename-≡ ⊢N)
+... | no  x≢y      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (rename-≢ x≢y ⊢N))
 subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
-... | yes refl        =  ⊢μ (rename-≡ ⊢M)
-... | no  x≢y         =  ⊢μ (subst ⊢V (rename-≢ x≢y ⊢M))
+... | yes refl     =  ⊢μ (rename-≡ ⊢M)
+... | no  x≢y      =  ⊢μ (subst ⊢V (rename-≢ x≢y ⊢M))
 \end{code}
 We induct on the evidence that `N` is well-typed in the
 context `Γ` extended by `x`.
 
-Immediately, we note a wee problem with naming.  In the lemma
+Immediately, we note a wee issue with naming.  In the lemma
 statement, the variable `x` is an implicit parameter for the variable
 substituted, while in the type rules for variables, abstractions,
 cases, and fixpoints, the variable `x` is an implicit parameter for
@@ -573,38 +578,190 @@ the relevant variable.  We are going to need to get hold of both
 variables, so we use the syntax `{x = y}` to bind `y` to the
 substituted variable and the syntax `{x = x}` to bind `x` to the
 relevant variable in the patterns for `Ax`, `⊢ƛ`, `⊢case`, and `⊢μ`.
-Indeed, using the name `y` here is consistent with the naming in the
-original definition of substitution in the previous chapter.
+Using the name `y` here is consistent with the naming in the original
+definition of substitution in the previous chapter.  The proof never
+mentions the types of `x`, `y`, `V`, or `N`, so in what follows we
+choose type name as convenient.
 
 Now let's unpack the first three cases.
 
-* In the variable case, given `∅ ⊢ V ⦂ A` and `Γ , y ⦂ A ⊢ x ⦂ B`,
-  we need to show `Γ ⊢ x [ y := V ] ⦂ B`.  There are two subcases,
-  based on the evidence for `Γ , y ⦂ A ∋ x ⦂ B`.
+* In the variable case, given `∅ ⊢ V ⦂ B` and `Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A`,
+  we need to show `Γ ⊢ x [ y := V ] ⦂ A`.  There are two subcases,
+  depending on the evidence demonstrating `Γ , y ⦂ B ∋ x ⦂ A`.
 
-  + If `x` appears at the end of the context (`Z`),
+  + If `x` appears at the end of the context, as evidenced by `Z`,
     then `x` and `y` are necessarily identical, as are `A` and `B`.
-    Nonetheless, we must evaluate `x ≟ y` in order to allow
-    the definition of substitution to simplify.  If they are equal,
-    `x [ y := V ]` simplifies to `V`, and by the weakening lemma
-    `rename-∅` from `∅ ⊢ V ⦂ A` it follows that `Γ ⊢ V ⦂ A` as required.
-    If they are unequal, we have a contradiction and the result
-    follows immediately by `⊥-elim`.
+    Nonetheless, we must evaluate `x ≟ y` in order to allow the
+    definition of substitution to simplify.
 
-  + If `x` appears elsewhere in the context (`S`),
-    then `x` and `y` are necessarily distinct. 
-    Nonetheless, we must again evaluate `x ≟ y` in order to allow
-    the definition of substitution to simplify.  If they are equal,
-    we have a contradiction and the result follows immediately by `⊥-elim`.
-    If they are unequal ... CONTINUE FROM HERE
+    - If the variables are equal, then `x [ x := V ]` simplifies to
+      `V`, and the weakening lemma `rename-∅` applied to evidence of 
+      `∅ ⊢ V ⦂ A` yields evidence that `Γ ⊢ V ⦂ A`, as required.
+ 
+    - If the variables are unequal, we have a contradiction and the
+      result follows immediately by `⊥-elim`.
+
+  + If `x` appears elsewhere in the context, as evidenced by `S x≢y
+    ∋x`, then `x` and `y` are necessarily distinct.  Nonetheless, we
+    must again evaluate `x ≟ y` in order to allow the definition of
+    substitution to simplify.
+
+    - If the variables are equal, we have a contradiction and the
+      result follows immediately by `⊥-elim`.
+
+    - If the variables are unequal, then `x [ y := V ]` simplifies to
+      `x`, and `∋x` provides evidence that `Γ ∋ x ⦂ A`, as required.
+
+* In the abstraction case, given `∅ ⊢ V ⦂ B` and `Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C`
+  we need to show `Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C`.  We evaluate `x ≟ y` in
+  order to allow the definition of substitution to simplify.
+
+  + If the variables are equal, then `(ƛ x ⇒ N) [ x := V ]` simplifies
+    to `ƛ x ⇒ N`, and the drop lemma `rename-≡` applied to evidence of
+    `Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C` yields evidence that `Γ , x ⦂ A ⊢ N ⦂ C`.
+    The typing rule for abstractions then yields `Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C`,
+    as required.
+
+
+  + If the variables are unequal, then `(ƛ x ⇒ N) [ y := V ]` simplifies
+    to `ƛ x ⇒ (N [ y := V ])`.  The swap lemma `rename-≢` applied to
+    evidence of `Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C` yields evidence that
+    `Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C`, which allows us to apply the inductive
+    hypothesis to conclude `Γ , x ⦂ A ⊢ N [ y := V ] ⦂ C`. By the typing
+    rule for abstactions we then have `Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C`,
+    as required.
+
+* In the application case, given `∅ ⊢ V ⦂ C` and `Γ , y ⦂ C ⊢ L ⦂ A ⇒ B` and
+  `Γ , y ⦂ C ⊢ M ⦂ A`.  Applying the induction hypothesis to `L` and `M`
+  `Γ ⊢ L [ y := V ] ⦂ A ⇒ B` and `Γ ⊢ M [ y := V ] ⦂ A`.  By the typing rule
+  for applications we then have `Γ ⊢ (L · M) [ y := V ] ⦂ B` as required.
+
+The remaining cases, for zero, successor, case, and fixpoint,
+are similar.
+
+
+---
+
+revised attempt
+
+---
+
+* In the variable case, we must show
+
+    ∅ ⊢ V ⦂ B
+    Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A
+    ------------------------
+    Γ ⊢ ⌊ x ⌋ [ y := V ] ⦂ A
+
+  There are two subcases, depending on the evidence demonstrating
+  `Γ , y ⦂ B ∋ x ⦂ A`.
+
+  + If `x` appears at the end of the context, as evidenced by `Z`,
+    then `x` and `y` are necessarily identical, as are `A` and `B`.
+    Nonetheless, we must evaluate `x ≟ y` in order to allow the
+    definition of substitution to simplify.
+
+    - If the variables are equal, then after simplification we
+      must show
+
+        ∅ ⊢ V ⦂ A
+        Γ , x ⦂ A ⊢ ⌊ x ⌋ ⦂ A
+        ------------------------
+        Γ ⊢ V ⦂ A
+
+      The first hypothesis implies the conclusion by the weakening
+      lemma `rename-∅`.
+
+    - If the variables are unequal we have a contradiction.
+
+  + If `x` appears elsewhere in the context, as evidenced by `S x≢y ∋x`,
+    then `x` and `y` are necessarily distinct.  Nonetheless, we
+    must again evaluate `x ≟ y` in order to allow the definition of
+    substitution to simplify.
+
+    - If the variables are equal we have a contradiction.
+
+    - If the variables are unequal, then after simplification we
+      must show
+
+        ∅ ⊢ V ⦂ B
+        Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A
+        ------------------------
+        Γ ⊢ ⌊ x ⌋ ⦂ A
+
+      This follows immediately, since `∋x` provides evidence that `Γ ∋ x ⦂ A`.
+
+* In the abstraction case, we must show
+
+    ∅ ⊢ V ⦂ B
+    Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+    --------------------------------
+    Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C
+
+  We evaluate `x ≟ y` in order to allow the definition of substitution to simplify.
+
+  + If the variables are equal then after simplification we must show
+
+      ∅ ⊢ V ⦂ B
+      Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
+      -------------------------
+      Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C
+
+    From the drop lemma, `rename-≡`, we may conclude
+
+      Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
+      -------------------------
+      Γ , x ⦂ A ⊢ N ⦂ C
+
+    The typing rule for abstractions then yields the required conclusion.    
+
+  + If the variables are unequal then after simplification we must show
+
+      ∅ ⊢ V ⦂ B
+      Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+      --------------------------------
+      Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C
+
+    From the swap lemma, `rename-≢`, we may conclude
+
+      Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+      -------------------------
+      Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
+
+    The inductive hypothesis gives us
+
+      ∅ ⊢ V ⦂ B
+      Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C        
+      ------------------------------------
+      Γ , x ⦂ A , y ⦂ B ⊢ N [ y := V ] ⦂ C
+
+    The typing rule for abstractions then yields the required conclusion.
+
+* In the application case, we must show
+
+    ∅ ⊢ V ⦂ C
+    Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
+    Γ , y ⦂ C ⊢ M ⦂ A
+    ------------------------------
+    Γ ⊢ (L · M) [ y := V ] ⦂ B
+
+  By the definition of substitution, we must show
+
+    Γ ⊢ (L [ y := V ]) · (M [ y := V ])
+
+  Applying the induction hypothesis for `L` and `M` and the typing
+  rule for applications yields the required conclusion.
+
+The remaining cases, for zero, successor, case, and fixpoint,
+are similar.
+
+
 
 
 ### Main Theorem
 
-We now have the tools we need to prove preservation: if a closed
-term `M` has type `A` and takes a step to `N`, then `N`
-is also a closed term with type `A`.  In other words, small-step
-reduction preserves types.
+Once we have shown that substitution preserves types, showing
+that reduction preserves types is straightforward.
 
 \begin{code}
 preserve : ∀ {M N A}
