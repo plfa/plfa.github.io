@@ -594,21 +594,21 @@ Now that naming is resolved, let's unpack the first three cases.
 
 * In the variable case, we must show
 
-    ∅ ⊢ V ⦂ B
-    Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A
-    ------------------------
-    Γ ⊢ ⌊ x ⌋ [ y := V ] ⦂ A
+      ∅ ⊢ V ⦂ B
+      Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A
+      ------------------------
+      Γ ⊢ ⌊ x ⌋ [ y := V ] ⦂ A
 
   where the second hypothesis follows from:
 
-    Γ , y ⦂ B ∋ x ⦂ A
+      Γ , y ⦂ B ∋ x ⦂ A
     
   There are two subcases, depending on the evidence for this judgement.
 
   + The lookup judgement is evidenced by rule `Z`:
 
-       -----------------
-       Γ , x ⦂ A ⊢ x ⦂ A
+        -----------------
+        Γ , x ⦂ A ⊢ x ⦂ A
 
     In this case, `x` and `y` are necessarily identical, as are `A`
     and `B`.  Nonetheless, we must evaluate `x ≟ y` in order to allow
@@ -617,9 +617,9 @@ Now that naming is resolved, let's unpack the first three cases.
     - If the variables are equal, then after simplification we
       must show
 
-        ∅ ⊢ V ⦂ A
-        ---------
-        Γ ⊢ V ⦂ A
+          ∅ ⊢ V ⦂ A
+          ---------
+          Γ ⊢ V ⦂ A
 
       which follows by weakening.
 
@@ -627,10 +627,10 @@ Now that naming is resolved, let's unpack the first three cases.
 
   + The lookup judgement is evidenced by rule `S`:
 
-       x ≢ y
-       Γ ∋ x ⦂ A
-       -----------------
-       Γ , y ⦂ B ∋ x ⦂ A
+        x ≢ y
+        Γ ∋ x ⦂ A
+        -----------------
+        Γ , y ⦂ B ∋ x ⦂ A
 
     In this case, `x` and `y` are necessarily distinct.
     Nonetheless, we must again evaluate `x ≟ y` in order to allow
@@ -641,83 +641,83 @@ Now that naming is resolved, let's unpack the first three cases.
     - If the variables are unequal, then after simplification we
       must show
 
-        ∅ ⊢ V ⦂ B
-        x ≢ y
-        Γ ∋ x ⦂ A
-        -------------
-        Γ ⊢ ⌊ x ⌋ ⦂ A
+          ∅ ⊢ V ⦂ B
+          x ≢ y
+          Γ ∋ x ⦂ A
+          -------------
+          Γ ⊢ ⌊ x ⌋ ⦂ A
 
       which follows by the typing rule for variables.
 
 * In the abstraction case, we must show
 
-    ∅ ⊢ V ⦂ B
-    Γ , y ⦂ B ⊢ (ƛ x ⇒ N) ⦂ A ⇒ C
-    --------------------------------
-    Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C
+      ∅ ⊢ V ⦂ B
+      Γ , y ⦂ B ⊢ (ƛ x ⇒ N) ⦂ A ⇒ C
+      --------------------------------
+      Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C
 
   where the second hypothesis follows from
 
-    Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+      Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
 
   We evaluate `x ≟ y` in order to allow the definition of substitution to simplify.
 
   + If the variables are equal then after simplification we must show
 
-      ∅ ⊢ V ⦂ B
-      Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
-      -------------------------
-      Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C
+        ∅ ⊢ V ⦂ B
+        Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
+        -------------------------
+        Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C
 
     From the drop lemma, `drop`, we may conclude
 
-      Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
-      -------------------------
-      Γ , x ⦂ A ⊢ N ⦂ C
+        Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
+        -------------------------
+        Γ , x ⦂ A ⊢ N ⦂ C
 
     The typing rule for abstractions then yields the required conclusion.    
 
   + If the variables are distinct then after simplification we must show
 
-      ∅ ⊢ V ⦂ B
-      Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
-      --------------------------------
-      Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C
+        ∅ ⊢ V ⦂ B
+        Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+        --------------------------------
+        Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C
 
     From the swap lemma we may conclude
 
-      Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
-      -------------------------
-      Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
+        Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+        -------------------------
+        Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
 
     The inductive hypothesis gives us
 
-      ∅ ⊢ V ⦂ B
-      Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C        
-      ------------------------------------
-      Γ , x ⦂ A , y ⦂ B ⊢ N [ y := V ] ⦂ C
+        ∅ ⊢ V ⦂ B
+        Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C        
+        ------------------------------------
+        Γ , x ⦂ A , y ⦂ B ⊢ N [ y := V ] ⦂ C
 
     The typing rule for abstractions then yields the required conclusion.
 
 * In the application case, we must show
 
-    ∅ ⊢ V ⦂ C
-    Γ , y ⦂ C ⊢ L · M ⦂ B
-    --------------------------
-    Γ ⊢ (L · M) [ y := V ] ⦂ B
+      ∅ ⊢ V ⦂ C
+      Γ , y ⦂ C ⊢ L · M ⦂ B
+      --------------------------
+      Γ ⊢ (L · M) [ y := V ] ⦂ B
 
   where the second hypothesis follows from the two judgements
 
-    Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
-    Γ , y ⦂ C ⊢ M ⦂ A
+      Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
+      Γ , y ⦂ C ⊢ M ⦂ A
 
   By the definition of substitution, we must show
 
-    ∅ ⊢ V ⦂ C
-    Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
-    Γ , y ⦂ C ⊢ M ⦂ A
-    ---------------------------------------
-    Γ ⊢ (L [ y := V ]) · (M [ y := V ]) ⦂ B
+      ∅ ⊢ V ⦂ C
+      Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
+      Γ , y ⦂ C ⊢ M ⦂ A
+      ---------------------------------------
+      Γ ⊢ (L [ y := V ]) · (M [ y := V ]) ⦂ B
 
   Applying the induction hypothesis for `L` and `M` and the typing
   rule for applications yields the required conclusion.
@@ -757,46 +757,46 @@ Let's unpack the cases for two of the reduction rules.
 
 * Rule `ξ-·₁`.  We have
 
-    L ⟶ L′
-    ----------------
-    L · M ⟶ L′ · M
+      L ⟶ L′
+      ----------------
+      L · M ⟶ L′ · M
 
   where the left-hand side is typed by
 
-    Γ ⊢ L ⦂ A ⇒ B
-    Γ ⊢ M ⦂ A
-    -------------
-    Γ ⊢ L · M ⦂ B
+      Γ ⊢ L ⦂ A ⇒ B
+      Γ ⊢ M ⦂ A
+      -------------
+      Γ ⊢ L · M ⦂ B
 
   By induction, we have
 
-    Γ ⊢ L ⦂ A ⇒ B
-    L ⟶ L′
-    --------------
-    Γ ⊢ L′ ⦂ A ⇒ B
+      Γ ⊢ L ⦂ A ⇒ B
+      L ⟶ L′
+      --------------
+      Γ ⊢ L′ ⦂ A ⇒ B
 
   from which the typing of the right-hand side follows immediately.
 
 * Rule `β-ƛ·`.  We have
 
-    Value V
-    ----------------------------
-    (ƛ x ⇒ N) · V ⊢ N [ x := V ]
+      Value V
+      ----------------------------
+      (ƛ x ⇒ N) · V ⊢ N [ x := V ]
 
   where the left-hand side is typed by
 
-    Γ , x ⦂ A ⊢ N ⦂ B
-    -------------------
-    Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B    Γ ⊢ V ⦂ A
-    --------------------------------
-    Γ ⊢ (ƛ x ⇒ N) · V ⦂ B
+      Γ , x ⦂ A ⊢ N ⦂ B
+      -------------------
+      Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B    Γ ⊢ V ⦂ A
+      --------------------------------
+      Γ ⊢ (ƛ x ⇒ N) · V ⦂ B
 
   By the substitution lemma, we have
 
-    Γ ⊢ V ⦂ A
-    Γ , x ⦂ A ⊢ N ⦂ B
-    --------------------
-    Γ ⊢ N [ x := V ] ⦂ B
+      Γ ⊢ V ⦂ A
+      Γ , x ⦂ A ⊢ N ⦂ B
+      --------------------
+      Γ ⊢ N [ x := V ] ⦂ B
 
   from which the typing of the right-hand side follows immediately.
 
@@ -854,6 +854,7 @@ When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value or indicate that it ran out of gas.
 \begin{code}
 data Finished (N : Term) : Set where
+
    done :
        Value N
        ----------
@@ -1214,7 +1215,8 @@ Show that if a term is well-typed it is not stuck,
 and that any descendant of a well-typed term is also well-typed.
 Combine these results to show `wttdgs`. 
 
-<div class="hidden">
+Answer:
+
 If a term is well-typed, it does not get stuck.
 \begin{code}
 unstuck : ∀ {M A}
@@ -1246,7 +1248,6 @@ wttdgs′ : ∀ {M N A}
   → ¬ (Stuck N)
 wttdgs′ ⊢M M⟶*N  =  unstuck (preserve* ⊢M M⟶*N)
 \end{code}
-</div>
 
 
 #### Exercise: `progress-preservation`
