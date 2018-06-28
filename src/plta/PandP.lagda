@@ -804,12 +804,121 @@ The remaining cases are similar.  Each `ξ` rule follws by induction,
 and each `β` rule follows by the substitution lemma.
 
 
-## Normalisation
+## Evaluation
+
+By repeated application of progress and preservation, we can evaluate
+any well-typed term.  In this section, we will present an Agda
+function that computes the reduction sequence from any given closed,
+well-typed term to its value, if it has one.
+
+Some terms may reduce forever.  Here is a simple example.
+\begin{code}
+_ =
+  begin
+    μ "x" ⇒ `suc ⌊ "x" ⌋
+  ⟶⟨ β-μ ⟩
+    `suc (μ "x" ⇒ `suc ⌊ "x" ⌋)
+  ⟶⟨ ξ-suc β-μ ⟩
+    `suc `suc (μ "x" ⇒ `suc ⌊ "x" ⌋)
+  ⟶⟨ ξ-suc (ξ-suc β-μ) ⟩
+    `suc `suc `suc (μ "x" ⇒ `suc ⌊ "x" ⌋)
+  --  ...
+  ∎
+\end{code}
+Since every Agda computation must terminate,
+we cannot simply ask Agda to reduce a term to a value.
+Instead, we will provide a natural number to Agda, and permit it
+to stop short of a value if the term requires more than the given
+number of reduction steps.
+
+A similar issue arises with cryptocurrencies.  Systems which use use
+smart contracts require the miners that maintain the blockchain to
+evaluate the program which embodies the contract.  For instance,
+validating a transaction on Ethereum may require executing a program
+for the Ethereum Virtual Machine (EVM).  A long-running or
+non-terminating program might cause the miner to invest arbitary
+effort in validating a contract for little or no return.  To avoid
+this situation, each transaction is accompanied by an amount of `gas`
+available for computation.  Each step executed on the EVM is charged
+an advertised amount of gas, and the transaction pays for the gas at a
+published rate: a given number of Ethers (the currency of Ethereum)
+per unit of gas.
+
+By analogy, we will use the name _gas_ for the parameter which puts a
+bound on the number of reduction steps.  Gas is specified by a natural number.
+\begin{code}
+data Gas : Set where
+  gas : ℕ → Gas
+\end{code}
+When our evaluator returns a term `N`, it will either give evidence that
+`N` is a value or indicate that it ran out of gas.
+\begin{code}
+data Done? (N : Term) : Set where
+   done :
+       Value N
+       -------
+     → Done? N
+
+   out-of-gas :
+       -------
+       Done? N
+\end{code}
+Given a term `M` of type `A`, the evaluator will, for some `N`, return
+a reduction sequence from `M` to `N` along with evidence that `N` is
+well-typed and an indication of whether reduction completed.
+\begin{code}
+data Eval (M : Term) (A : Type) : Set where
+
+  steps : ∀ {N}
+    → M ⟶* N
+    → ∅ ⊢ N ⦂ A
+    → Done? N
+      --------
+    → Eval M A
+\end{code}
+The evaluator takes gas and evidence that a term is well-typed,
+and returns the result of evaluating that term for a number of
+steps specified by the gas.
+\begin{code}
+eval : ∀ {L A}
+  → Gas
+  → ∅ ⊢ L ⦂ A
+    ---------
+  → Eval L A
+eval {L} (gas zero)    ⊢L       =  steps (L ∎) ⊢L out-of-gas
+eval {L} (gas (suc m)) ⊢L with progress ⊢L
+... | done VL                   =  steps (L ∎) ⊢L (done VL)
+... | step L⟶M with normalise (gas m) (preserve ⊢L L⟶M)
+...    | steps M⟶*N ⊢N done?  =  steps (L ⟶⟨ L⟶M ⟩ M⟶*N) ⊢N done?
+\end{code}
+Let `L` be the name of the term we are reducing, and `⊢L` be the
+evidence that `L` is well-typed.  We consider the amount of gas
+remaining.  There are two possibilities.
+
+* It is zero, so we stop early.  We return the trivial reduction
+  sequence `L ⟶* L`, evidence that `L` is well-typed, and an
+  indication that we are out of gas.
+
+* It is non-zero and after the next step we have `m` gas remaining.
+  Apply progress to the evidence that term `L` is well-typed.  There
+  are two possibilities.
+
+  + Term `L` is a value, so we are done. We return the
+    trivial reduction sequence `L ⟶* L`, evidence that `L` is
+    well-typed, and the evidence that `L` is a value.
+  
+  + Term `L` steps to another term `M`.  Preservation provides
+    evidence that `M` is also well-typed, and we recursively invoke
+    `eval` on the remaining gas.  The result will be another term
+    `N` such that `M ⟶* N` and `N` is well-typed plus an indication
+    of how reduction terminated.  We combine the evidence that `L ⟶ M`
+    and `M ⟶* N` to return evidence that `L ⟶* N`, together with
+    the evidence that `N` is well-typed and the indication of how
+    reduction termination.
+
 
 \begin{code}
-Gas : Set
-Gas = ℕ
-
+{-
 data Normalise (M : Term) : Set where
 
   out-of-gas : ∀ {N A}
@@ -836,11 +945,13 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...  | step L⟶M with normalise m (preserve ⊢L L⟶M)
 ...          | out-of-gas M⟶*N ⊢N        =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N) ⊢N
 ...          | normal n M⟶*V VV          =  normal n (L ⟶⟨ L⟶M ⟩ M⟶*V) VV
+-}
 \end{code}
 
 ### Examples
 
 \begin{code}
+{-
 _ : normalise 100 ⊢four ≡
   normal 88
   ((μ "+" ⇒
@@ -1063,6 +1174,7 @@ _ : normalise 100 ⊢fourᶜ ≡
    `suc (`suc (`suc (`suc `zero))) ∎)
   (V-suc (V-suc (V-suc (V-suc V-zero))))
 _ = refl
+-}
 \end{code}
 
 
