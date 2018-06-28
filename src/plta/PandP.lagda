@@ -328,15 +328,16 @@ In symbols,
     -----------------------
     Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
 
-Special cases of renaming include the _weaken_ lemma (a term
+Three important corollaries follow.  The _weaken_ lemma asserts a term
 well-typed in the empty context is also well-typed in an arbitary
-context) the _drop_ lemma (a term well-typed in a context where the
+context.  The _drop_ lemma asserts a term well-typed in a context where the
 same variable appears twice remains well-typed if we drop the shadowed
-occurrence) and the _swap_ lemma (a term well-typed in a context
-remains well-typed if we swap two variables).  Renaming is similar to
-the _context invariance_ lemma in _Software Foundations_, but it does
-not require the definition of `appears_free_in` nor the
-`free_in_context` lemma.
+occurrence.  The _swap_ lemma asserts a term well-typed in a context
+remains well-typed if we swap two variables.
+
+Renaming is similar to the _context invariance_ lemma in _Software
+Foundations_, but it does not require the definition of
+`appears_free_in` nor the `free_in_context` lemma.
 
 The second step is to show that types are preserved by
 _substitution_.
@@ -647,7 +648,6 @@ Now that naming is resolved, let's unpack the first three cases.
         Γ ⊢ ⌊ x ⌋ ⦂ A
 
       which follows by the typing rule for variables.
-      
 
 * In the abstraction case, we must show
 
@@ -677,7 +677,7 @@ Now that naming is resolved, let's unpack the first three cases.
 
     The typing rule for abstractions then yields the required conclusion.    
 
-  + If the variables are unequal then after simplification we must show
+  + If the variables are distinct then after simplification we must show
 
       ∅ ⊢ V ⦂ B
       Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
@@ -722,12 +722,12 @@ Now that naming is resolved, let's unpack the first three cases.
   Applying the induction hypothesis for `L` and `M` and the typing
   rule for applications yields the required conclusion.
 
-The remaining cases, for zero, successor, case, and fixpoint,
-are similar.  Case and fixpoint are similar to lambda abstaction,
-in that we need to test whether the variables are equal, applying
-the drop lemma in one case and the swap lemma in the other.
+The remaining cases are similar, using induction for each subterm.
+Where the construct introduces a bound variable we need to compare it
+with the substituted variable, applying the drop lemma if they are
+equal and the swap lemma if they are distinct.
 
-### Main Theorem
+## Preservation
 
 Once we have shown that substitution preserves types, showing
 that reduction preserves types is straightforward.
@@ -800,7 +800,8 @@ Let's unpack the cases for two of the reduction rules.
 
   from which the typing of the right-hand side follows immediately.
 
-The remaining cases are similar
+The remaining cases are similar.  Each `ξ` rule follws by induction,
+and each `β` rule follows by the substitution lemma.
 
 
 ## Normalisation
