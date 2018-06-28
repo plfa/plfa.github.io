@@ -271,8 +271,10 @@ Let's unpack the first three cases.
       abstraction.  We also have evidence that `M` is
       a value, so our original term steps by `β-ƛ·`.
 
-The remaining cases, for zero, successor, case, and fixpoint,
-are similar.
+The remaining cases are similar.  If by induction we have a
+`step` case we apply a `ξ` rule, and if we have a `done` case
+then either we have a value or apply a `β` rule.  For fixpoint,
+no induction is required as the `β` rule applies immediately.
 
 Our code reads neatly in part because we consider the
 `step` option before the `done` option. We could, of course,
@@ -326,12 +328,15 @@ In symbols,
     -----------------------
     Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
 
-Special cases of renaming include _weakening_ (where `Δ` is an
-extension of `Γ`) and _swapping_ (reordering the occurrence of
-variables in `Γ` and `Δ`).  Our renaming lemma is similar to the
-_context invariance_ lemma in _Software Foundations_, but does not
-require a separate definition of the `appears_free_in` relation
-which is needed there.
+Special cases of renaming include the _weaken_ lemma (a term
+well-typed in the empty context is also well-typed in an arbitary
+context) the _drop_ lemma (a term well-typed in a context where the
+same variable appears twice remains well-typed if we drop the shadowed
+occurrence) and the _swap_ lemma (a term well-typed in a context
+remains well-typed if we swap two variables).  Renaming is similar to
+the _context invariance_ lemma in _Software Foundations_, but it does
+not require the definition of `appears_free_in` nor the
+`free_in_context` lemma.
 
 The second step is to show that types are preserved by
 _substitution_.
@@ -375,10 +380,10 @@ We now proceed with our three-step programme.
 
 ## Renaming
 
-We often need to "rebase" a type derivation, replacing a
-derivation `Γ ⊢ M ⦂ A` by a related derivation `Δ ⊢ M ⦂ A`.
-We may do so as long as every variable that appears in
-`Γ` also appears in `Δ`, and with the same type.
+We often need to "rebase" a type derivation, replacing a derivation
+`Γ ⊢ M ⦂ A` by a related derivation `Δ ⊢ M ⦂ A`.  We may do so as long
+as every variable that appears in `Γ` also appears in `Δ`, and with
+the same type.
 
 Three of the rules for typing (lambda abstraction, case on naturals,
 and fixpoint) have hypotheses that extend the context to include a
@@ -405,18 +410,19 @@ ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 Let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.
 The proof is by induction on the evidence that `x` appears
-in the extended map `Γ , y ⦂ B`. If `x` is the same as `y`,
-we used `Z` to access the last variable in the extended `Γ`;
-and can similarly use `Z` to access the last variable in the
-extended `Δ`.  If `x` differs from `y`, then we used `S`
-to skip over the last variable in the extended `Γ`, where
-`x≢y` is evidence that `x` and `y` differ, and `∋x` is the
-evidence that `x` appears in `Γ`; and we can similarly use
-`S` to skip over the last variable in the extended `Δ`,
-applying `ρ` to find the evidence that `w` appears
-in `Δ`.
+in the extended map `Γ , y ⦂ B`.
 
-With this lemma under our belts, it is straightforward to
+* If `x` is the same as `y`, we used `Z` to access the last variable
+in the extended `Γ`; and can similarly use `Z` to access the last
+variable in the extended `Δ`.
+
+* If `x` differs from `y`, then we used `S` to skip over the last
+variable in the extended `Γ`, where `x≢y` is evidence that `x` and `y`
+differ, and `∋x` is the evidence that `x` appears in `Γ`; and we can
+similarly use `S` to skip over the last variable in the extended `Δ`,
+applying `ρ` to find the evidence that `w` appears in `Δ`.
+
+With the extension lemma under our belts, it is straightforward to
 prove renaming preserves types.
 \begin{code}
 rename : ∀ {Γ Δ}
@@ -441,29 +447,30 @@ that the variable appears in `Γ` yields the corresponding evidence that
 the variable appears in `Δ`.
 
 * If the term is a lambda abstraction, use the previous lemma to
-extend the map `ρ` suitably and recursively rename the body of the
+extend the map `ρ` suitably and use induction to rename the body of the
 abstraction
 
-* If the term is an application, recursively rename both the
+* If the term is an application, use induction to rename both the
 function and the argument.
 
-The remaining cases, for zero, successor, case, and fixpoint, are
-similar.  In case and fixpoint, as with lambda abstraction, map `ρ`
-needs to be extended to account for the bound variable.  The induction
-is over the derivation that the term is well-typed, so the extension
-doesn't invalidate the inductive hypothesis. Equivalently, the
-recursion terminates because the second argument is always smaller,
-even though the first argument sometimes grows larger.
+The remaining cases are similar, using induction for each subterm, and
+also extension where the construct introduces a bound variable.
+
+The induction is over the derivation that the term is well-typed,
+so extending the context doesn't invalidate the inductive hypothesis.
+Equivalently, the recursion terminates because the second argument
+always grows smaller, even though the first argument sometimes grows larger.
 
 We have three important corollaries, each proved by constructing
-a suitable map between contexts.  First,
-any closed term can be weakened to any context.
+a suitable map between contexts.
+
+First, a closed term can be weakened to any context.
 \begin{code}
-rename-∅ : ∀ {Γ M A}
+weaken : ∀ {Γ M A}
   → ∅ ⊢ M ⦂ A
     ----------
   → Γ ⊢ M ⦂ A
-rename-∅ {Γ} ⊢M = rename ρ ⊢M
+weaken {Γ} ⊢M = rename ρ ⊢M
   where
   ρ : ∀ {z C}
     → ∅ ∋ z ⦂ C
@@ -474,14 +481,14 @@ rename-∅ {Γ} ⊢M = rename ρ ⊢M
 Here the map `ρ` is trivial, since there are no possible
 arguments in the empty context `∅`.
 
-Second, if the last two variables in a context are
-equal, the term can be renamed to drop the redundant one.
+Second, if the last two variables in a context are equal then we can
+drop the shadowed one.
 \begin{code}
-rename-≡ : ∀ {Γ x M A B C}
+drop : ∀ {Γ x M A B C}
   → Γ , x ⦂ A , x ⦂ B ⊢ M ⦂ C
     --------------------------
   → Γ , x ⦂ B ⊢ M ⦂ C
-rename-≡ {Γ} {x} {M} {A} {B} {C} ⊢M = rename ρ ⊢M
+drop {Γ} {x} {M} {A} {B} {C} ⊢M = rename ρ ⊢M
   where
   ρ : ∀ {z C}
     → Γ , x ⦂ A , x ⦂ B ∋ z ⦂ C
@@ -498,15 +505,14 @@ first position can only happen if the variable looked for differs from
 found in the second position, which also contains `x`, this leads to a
 contradiction (evidenced by `x≢x refl`).
 
-Third, if the last two variables in a context differ,
-the term can be renamed to flip their order.
+Third, if the last two variables in a context differ then we can swap them.
 \begin{code}
-rename-≢ : ∀ {Γ x y M A B C}
+swap : ∀ {Γ x y M A B C}
   → x ≢ y
   → Γ , y ⦂ B , x ⦂ A ⊢ M ⦂ C
     --------------------------
   → Γ , x ⦂ A , y ⦂ B ⊢ M ⦂ C
-rename-≢ {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
+swap {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
   where
   ρ : ∀ {z C}
     → Γ , y ⦂ B , x ⦂ A ∋ z ⦂ C
@@ -549,28 +555,28 @@ subst : ∀ {Γ x N V A B}
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
 subst {x = y} ⊢V (Ax {x = x} Z) with x ≟ y
-... | yes refl     =  rename-∅ ⊢V
+... | yes refl     =  weaken ⊢V
 ... | no  x≢y      =  ⊥-elim (x≢y refl)
 subst {x = y} ⊢V (Ax {x = x} (S x≢y ∋x)) with x ≟ y
 ... | yes refl     =  ⊥-elim (x≢y refl)
 ... | no  _        =  Ax ∋x
 subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
-... | yes refl     =  ⊢ƛ (rename-≡ ⊢N)
-... | no  x≢y      =  ⊢ƛ (subst ⊢V (rename-≢ x≢y ⊢N))
+... | yes refl     =  ⊢ƛ (drop ⊢N)
+... | no  x≢y      =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
 subst ⊢V (⊢L · ⊢M) = subst ⊢V ⊢L · subst ⊢V ⊢M
 subst ⊢V ⊢zero     =  ⊢zero
 subst ⊢V (⊢suc ⊢M) =  ⊢suc (subst ⊢V ⊢M)
 subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
-... | yes refl     =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (rename-≡ ⊢N)
-... | no  x≢y      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (rename-≢ x≢y ⊢N))
+... | yes refl     =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
+... | no  x≢y      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
 subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
-... | yes refl     =  ⊢μ (rename-≡ ⊢M)
-... | no  x≢y      =  ⊢μ (subst ⊢V (rename-≢ x≢y ⊢M))
+... | yes refl     =  ⊢μ (drop ⊢M)
+... | no  x≢y      =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
 \end{code}
 We induct on the evidence that `N` is well-typed in the
 context `Γ` extended by `x`.
 
-Immediately, we note a wee issue with naming.  In the lemma
+First, we note a wee issue with naming.  In the lemma
 statement, the variable `x` is an implicit parameter for the variable
 substituted, while in the type rules for variables, abstractions,
 cases, and fixpoints, the variable `x` is an implicit parameter for
@@ -583,68 +589,7 @@ definition of substitution in the previous chapter.  The proof never
 mentions the types of `x`, `y`, `V`, or `N`, so in what follows we
 choose type name as convenient.
 
-Now let's unpack the first three cases.
-
-* In the variable case, given `∅ ⊢ V ⦂ B` and `Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A`,
-  we need to show `Γ ⊢ x [ y := V ] ⦂ A`.  There are two subcases,
-  depending on the evidence demonstrating `Γ , y ⦂ B ∋ x ⦂ A`.
-
-  + If `x` appears at the end of the context, as evidenced by `Z`,
-    then `x` and `y` are necessarily identical, as are `A` and `B`.
-    Nonetheless, we must evaluate `x ≟ y` in order to allow the
-    definition of substitution to simplify.
-
-    - If the variables are equal, then `x [ x := V ]` simplifies to
-      `V`, and the weakening lemma `rename-∅` applied to evidence of 
-      `∅ ⊢ V ⦂ A` yields evidence that `Γ ⊢ V ⦂ A`, as required.
- 
-    - If the variables are unequal, we have a contradiction and the
-      result follows immediately by `⊥-elim`.
-
-  + If `x` appears elsewhere in the context, as evidenced by `S x≢y
-    ∋x`, then `x` and `y` are necessarily distinct.  Nonetheless, we
-    must again evaluate `x ≟ y` in order to allow the definition of
-    substitution to simplify.
-
-    - If the variables are equal, we have a contradiction and the
-      result follows immediately by `⊥-elim`.
-
-    - If the variables are unequal, then `x [ y := V ]` simplifies to
-      `x`, and `∋x` provides evidence that `Γ ∋ x ⦂ A`, as required.
-
-* In the abstraction case, given `∅ ⊢ V ⦂ B` and `Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C`
-  we need to show `Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C`.  We evaluate `x ≟ y` in
-  order to allow the definition of substitution to simplify.
-
-  + If the variables are equal, then `(ƛ x ⇒ N) [ x := V ]` simplifies
-    to `ƛ x ⇒ N`, and the drop lemma `rename-≡` applied to evidence of
-    `Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C` yields evidence that `Γ , x ⦂ A ⊢ N ⦂ C`.
-    The typing rule for abstractions then yields `Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C`,
-    as required.
-
-
-  + If the variables are unequal, then `(ƛ x ⇒ N) [ y := V ]` simplifies
-    to `ƛ x ⇒ (N [ y := V ])`.  The swap lemma `rename-≢` applied to
-    evidence of `Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C` yields evidence that
-    `Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C`, which allows us to apply the inductive
-    hypothesis to conclude `Γ , x ⦂ A ⊢ N [ y := V ] ⦂ C`. By the typing
-    rule for abstactions we then have `Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C`,
-    as required.
-
-* In the application case, given `∅ ⊢ V ⦂ C` and `Γ , y ⦂ C ⊢ L ⦂ A ⇒ B` and
-  `Γ , y ⦂ C ⊢ M ⦂ A`.  Applying the induction hypothesis to `L` and `M`
-  `Γ ⊢ L [ y := V ] ⦂ A ⇒ B` and `Γ ⊢ M [ y := V ] ⦂ A`.  By the typing rule
-  for applications we then have `Γ ⊢ (L · M) [ y := V ] ⦂ B` as required.
-
-The remaining cases, for zero, successor, case, and fixpoint,
-are similar.
-
-
----
-
-revised attempt
-
----
+Now that naming is resolved, let's unpack the first three cases.
 
 * In the variable case, we must show
 
@@ -653,31 +598,42 @@ revised attempt
     ------------------------
     Γ ⊢ ⌊ x ⌋ [ y := V ] ⦂ A
 
-  There are two subcases, depending on the evidence demonstrating
-  `Γ , y ⦂ B ∋ x ⦂ A`.
+  where the second hypothesis follows from:
 
-  + If `x` appears at the end of the context, as evidenced by `Z`,
-    then `x` and `y` are necessarily identical, as are `A` and `B`.
-    Nonetheless, we must evaluate `x ≟ y` in order to allow the
-    definition of substitution to simplify.
+    Γ , y ⦂ B ∋ x ⦂ A
+    
+  There are two subcases, depending on the evidence for this judgement.
+
+  + The lookup judgement is evidenced by rule `Z`:
+
+       -----------------
+       Γ , x ⦂ A ⊢ x ⦂ A
+
+    In this case, `x` and `y` are necessarily identical, as are `A`
+    and `B`.  Nonetheless, we must evaluate `x ≟ y` in order to allow
+    the definition of substitution to simplify.
 
     - If the variables are equal, then after simplification we
       must show
 
         ∅ ⊢ V ⦂ A
-        Γ , x ⦂ A ⊢ ⌊ x ⌋ ⦂ A
-        ------------------------
+        ---------
         Γ ⊢ V ⦂ A
 
-      The first hypothesis implies the conclusion by the weakening
-      lemma `rename-∅`.
+      which follows by weakening.
 
     - If the variables are unequal we have a contradiction.
 
-  + If `x` appears elsewhere in the context, as evidenced by `S x≢y ∋x`,
-    then `x` and `y` are necessarily distinct.  Nonetheless, we
-    must again evaluate `x ≟ y` in order to allow the definition of
-    substitution to simplify.
+  + The lookup judgement is evidenced by rule `S`:
+
+       x ≢ y
+       Γ ∋ x ⦂ A
+       -----------------
+       Γ , y ⦂ B ∋ x ⦂ A
+
+    In this case, `x` and `y` are necessarily distinct.
+    Nonetheless, we must again evaluate `x ≟ y` in order to allow
+    the definition of substitution to simplify.
 
     - If the variables are equal we have a contradiction.
 
@@ -685,18 +641,24 @@ revised attempt
       must show
 
         ∅ ⊢ V ⦂ B
-        Γ , y ⦂ B ⊢ ⌊ x ⌋ ⦂ A
-        ------------------------
+        x ≢ y
+        Γ ∋ x ⦂ A
+        -------------
         Γ ⊢ ⌊ x ⌋ ⦂ A
 
-      This follows immediately, since `∋x` provides evidence that `Γ ∋ x ⦂ A`.
+      which follows by the typing rule for variables.
+      
 
 * In the abstraction case, we must show
 
     ∅ ⊢ V ⦂ B
-    Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
+    Γ , y ⦂ B ⊢ (ƛ x ⇒ N) ⦂ A ⇒ C
     --------------------------------
     Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C
+
+  where the second hypothesis follows from
+
+    Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
 
   We evaluate `x ≟ y` in order to allow the definition of substitution to simplify.
 
@@ -707,7 +669,7 @@ revised attempt
       -------------------------
       Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C
 
-    From the drop lemma, `rename-≡`, we may conclude
+    From the drop lemma, `drop`, we may conclude
 
       Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
       -------------------------
@@ -722,7 +684,7 @@ revised attempt
       --------------------------------
       Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C
 
-    From the swap lemma, `rename-≢`, we may conclude
+    From the swap lemma we may conclude
 
       Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
       -------------------------
@@ -740,23 +702,30 @@ revised attempt
 * In the application case, we must show
 
     ∅ ⊢ V ⦂ C
+    Γ , y ⦂ C ⊢ L · M ⦂ B
+    --------------------------
+    Γ ⊢ (L · M) [ y := V ] ⦂ B
+
+  where the second hypothesis follows from the two judgements
+
     Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
     Γ , y ⦂ C ⊢ M ⦂ A
-    ------------------------------
-    Γ ⊢ (L · M) [ y := V ] ⦂ B
 
   By the definition of substitution, we must show
 
-    Γ ⊢ (L [ y := V ]) · (M [ y := V ])
+    ∅ ⊢ V ⦂ C
+    Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
+    Γ , y ⦂ C ⊢ M ⦂ A
+    ---------------------------------------
+    Γ ⊢ (L [ y := V ]) · (M [ y := V ]) ⦂ B
 
   Applying the induction hypothesis for `L` and `M` and the typing
   rule for applications yields the required conclusion.
 
 The remaining cases, for zero, successor, case, and fixpoint,
-are similar.
-
-
-
+are similar.  Case and fixpoint are similar to lambda abstaction,
+in that we need to test whether the variables are equal, applying
+the drop lemma in one case and the swap lemma in the other.
 
 ### Main Theorem
 
@@ -781,6 +750,57 @@ preserve (⊢case ⊢zero ⊢M ⊢N)     β-case-zero      =  ⊢M
 preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-case-suc VV)  =  subst ⊢V ⊢N 
 preserve (⊢μ ⊢M)                 (β-μ)            =  subst (⊢μ ⊢M) ⊢M
 \end{code}
+The proof never mentions the types of `M` or `N`,
+so in what follows we choose type name as convenient.
+
+Let's unpack the cases for two of the reduction rules.
+
+* Rule `ξ-·₁`.  We have
+
+    L ⟶ L′
+    ----------------
+    L · M ⟶ L′ · M
+
+  where the left-hand side is typed by
+
+    Γ ⊢ L ⦂ A ⇒ B
+    Γ ⊢ M ⦂ A
+    -------------
+    Γ ⊢ L · M ⦂ B
+
+  By induction, we have
+
+    Γ ⊢ L ⦂ A ⇒ B
+    L ⟶ L′
+    --------------
+    Γ ⊢ L′ ⦂ A ⇒ B
+
+  from which the typing of the right-hand side follows immediately.
+
+* Rule `β-ƛ·`.  We have
+
+    Value V
+    ----------------------------
+    (ƛ x ⇒ N) · V ⊢ N [ x := V ]
+
+  where the left-hand side is typed by
+
+    Γ , x ⦂ A ⊢ N ⦂ B
+    -------------------
+    Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B    Γ ⊢ V ⦂ A
+    --------------------------------
+    Γ ⊢ (ƛ x ⇒ N) · V ⦂ B
+
+  By the substitution lemma, we have
+
+    Γ ⊢ V ⦂ A
+    Γ , x ⦂ A ⊢ N ⦂ B
+    --------------------
+    Γ ⊢ N [ x := V ] ⦂ B
+
+  from which the typing of the right-hand side follows immediately.
+
+The remaining cases are similar
 
 
 ## Normalisation
