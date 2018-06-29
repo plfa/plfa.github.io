@@ -123,6 +123,13 @@ cong : ∀ {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 cong f refl = refl
 \end{code}
 
+Congruence of functions with two arguments is similar.
+\begin{code}
+cong₂ : ∀ {A B C : Set} (f : A → B → C) {u x : A} {v y : B}
+  → u ≡ x → v ≡ y → f u v ≡ f x y
+cong₂ f refl refl = refl
+\end{code}
+
 Equality is also a congruence in the application position.
 If two functions are equal, then applying them to the same term
 yields equal terms.

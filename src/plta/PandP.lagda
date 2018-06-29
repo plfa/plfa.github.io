@@ -75,7 +75,8 @@ types without needing to develop a separate inductive definition of the
 ## Imports
 
 \begin{code}
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -88,6 +89,125 @@ open import Function using (_∘_)
 open import plta.Isomorphism
 open import plta.Lambda
 \end{code}
+
+
+## Values do not reduce
+
+We start with any easy observation. Values do not reduce.
+\begin{code}
+V¬↦ : ∀ {M N} → Value M → ¬ (M ↦ N)
+V¬↦ V-ƛ        ()
+V¬↦ V-zero     ()
+V¬↦ (V-suc VM) (ξ-suc M↦N) = V¬↦ VM M↦N
+\end{code}
+We consider the three possibilities for values.
+
+* If it is an abstraction, no reduction applies
+
+* If it is zero, no reduction applies
+
+* If it is a successor rule `ξ-suc` may apply.
+  But in that case the successor is of a value that
+  reduces, which by induction cannot occur.
+
+As a corollary, terms that reduce are not values.
+\begin{code}
+↦¬V : ∀ {M N} → (M ↦ N) → ¬ Value M
+↦¬V M↦N VM  =  V¬↦ VM M↦N
+\end{code}
+If we expand out the negations, we have
+
+    V¬↦ : ∀ {M N} → Value M → M ↦ N → ⊥
+    ↦¬V : ∀ {M N} → M ↦ N → Value M → ⊥
+
+which are the same function with the arguments swapped.
+
+## Reduction is deterministic
+
+Reduction is deterministic: for any term, there is at most
+one other term to which it reduces.
+
+A case term takes four arguments (three subterms and a bound
+variable), and to complete our proof we will need a variant
+of congruence to deal with functions of four arguments.  It
+is exactly analogous to `cong` and `cong₂` as defined previously.
+\begin{code}
+cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
+  {s w : A} {t x : B} {u y : C} {v z : D}
+  → s ≡ w → t ≡ x → u ≡ y → v ≡ z → f s t u v ≡ f w x y z
+cong₄ f refl refl refl refl = refl
+\end{code}
+
+It is now straightforward to show that reduction is deterministic.
+\begin{code}
+det : ∀ {M M′ M″}
+  → (M ↦ M′)
+  → (M ↦ M″)
+    --------
+  → M′ ≡ M″
+det (ξ-·₁ L↦L′)   (ξ-·₁ L↦L″)    =  cong₂ _·_ (det L↦L′ L↦L″) refl
+det (ξ-·₁ L↦L′)   (ξ-·₂ VL M↦M″) =  ⊥-elim (V¬↦ VL L↦L′)
+det (ξ-·₁ L↦L′)   (β-ƛ _)        =  ⊥-elim (V¬↦ V-ƛ L↦L′)
+det (ξ-·₂ VL _)   (ξ-·₁ L↦L″)    =  ⊥-elim (V¬↦ VL L↦L″)
+det (ξ-·₂ _ M↦M′) (ξ-·₂ _ M↦M″)  =  cong₂ _·_ refl (det M↦M′ M↦M″)
+det (ξ-·₂ _ M↦M′) (β-ƛ VM)       =  ⊥-elim (V¬↦ VM M↦M′)
+det (β-ƛ _)       (ξ-·₁ L↦L″)    =  ⊥-elim (V¬↦ V-ƛ L↦L″)
+det (β-ƛ VM)      (ξ-·₂ _ M↦M″)  =  ⊥-elim (V¬↦ VM M↦M″)
+det (β-ƛ _)       (β-ƛ _)        =  refl
+det (ξ-suc M↦M′)  (ξ-suc M↦M″)   =  cong `suc_ (det M↦M′ M↦M″)
+det (ξ-case L↦L′) (ξ-case L↦L″)  =  cong₄ `case_[zero⇒_|suc_⇒_]
+                                      (det L↦L′ L↦L″) refl refl refl
+det (ξ-case L↦L′) β-zero         =  ⊥-elim (V¬↦ V-zero L↦L′)
+det (ξ-case L↦L′) (β-suc VL)     =  ⊥-elim (V¬↦ (V-suc VL) L↦L′)
+det β-zero        (ξ-case M↦M″)  =  ⊥-elim (V¬↦ V-zero M↦M″)
+det β-zero        β-zero = refl
+det (β-suc VL)    (ξ-case L↦L″)  =  ⊥-elim (V¬↦ (V-suc VL) L↦L″)
+det (β-suc _)     (β-suc _)      =  refl
+det β-μ           β-μ            =  refl
+\end{code}
+The proof is by induction over the possible reductions.  We consider
+three typical cases.
+
+* Two instances of `ξ-·₁`.
+
+    L ↦ L′                 L ↦ L″
+    -------------- ξ-·₁    -------------- ξ-·₁
+    L · M ↦ L′ · M         L · M ↦ L″ · M
+
+  By induction we have `L′ ≡ L″`, and hence by congruence
+  `L′ · M ≡ L″ · M`.
+  
+* An instance of `ξ-·₁` and an instance of `ξ-·₂`.
+
+                           Value L
+    L ↦ L′                 M ↦ M″
+    -------------- ξ-·₁    -------------- ξ-·₂
+    L · M ↦ L′ · M         L · M ↦ L · M″
+
+  The rule on the left requires `L` to reduce, but the rule on the right
+  requires `L` to be a value.  This is a contradiction since values do
+  not reduce.
+
+* Two instances of `β-ƛ`.
+
+    Value V                             Value V                         
+    ---------------------------- β-ƛ    ---------------------------- β-ƛ
+    (ƛ x ⇒ N) · V ↦ N [ x := V ]        (ƛ x ⇒ N) · V ↦ N [ x := V ]
+
+  Since the left-hand sides are identical, the right-hand sides are
+  also identical.
+
+Almost half the lines in the above proof are redundant, e.g., the case
+when one rule is `ξ-·₁` and the other is `ξ-·₂` is considered twice,
+once with `ξ-·₁` first and `ξ-·₂` second, and the other time with the
+two swapped.  What we might like to do is delete the redundant lines
+and add
+
+    det M↦M′ M↦M″ = sym (det M↦M″ M↦M′)
+
+to the bottom of the proof. But this does not work. The termination
+checker complains, because the arguments have merely switched order
+and neither is smaller.
 
 
 ## Canonical Forms
