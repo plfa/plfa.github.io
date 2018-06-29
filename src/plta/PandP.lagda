@@ -12,64 +12,11 @@ module plta.PandP where
 of _Software Foundations_ (_Programming Language Foundations_).
 Those parts will be revised.]
 
-The last chapter formalised simply-typed lambda calculus and
-introduced several important relations over it.
-We write `Value M` if term `M` is a value.
-We write `M ↦ N` if term `M` reduces to term `N`.
-And we write `Γ ⊢ M ⦂ A` if in context `Γ` the term `M` has type `A`.
-We are particularly concerned with terms typed in the empty context
-`∅`, which must be _closed_ (that is, have no _free variables_).
-
-Ultimately, we would like to show that we can keep reducing a term
-until we reach a value.  For instance, if `M` is a term of type natural,
-we would like to show that ultimately it reduces to a term representing
-some specific natural number.  We have seen two examples in the previous
-chapter, where the terms
-
-    plus · two · two
-
-and
-
-    plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
-
-both reduce to `` `suc `suc `suc `suc `zero ``,
-which represents the natural number four.
-
-What we might expect is that every term is either a value or can take
-a reduction step.  As we will see, this property does _not_ hold for
-every term, but it does hold for every closed, well-typed term.
-
-_Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
-that `M ↦ N`.
-
-So, either we have a value, and we are done, or we can take a reduction step.
-In the latter case, we would like to apply progress again. But first we need
-to know that the term yielded by the reduction is itself closed and well-typed.
-It turns out that this property holds whenever we start with a closed,
-well-typed term.
-
-_Preservation_: If `∅ ⊢ M ⦂ A` and `M ↦ N` then `∅ ⊢ N ⦂ A`.
-
-This gives us a recipe for evaluation. Start with a closed and well-typed term.
-By progress, it is either a value, in which case we are done, or it reduces
-to some other term.  By preservation, that other term will itself be closed
-and well-typed.  Repeat.  We will either loop forever, in which case evaluation
-does not terminate, or we will eventually reach a value, which is guaranteed
-to be closed and of the same type as the original term.  We will turn this
-recipe into Agda code that can compute for us the reduction sequence of
-`plus · two · two`, and its Church numeral variant.
-
-In this chapter we will prove _Preservation_ and _Progress_, and show
-how to apply them to get Agda to evaluate terms.
-
-The development in this chapter was inspired by the corresponding
-development in in _Software Foundations, volume _Programming Language
-Foundations_, chapter _StlcProp_.  It will turn out that one of our technical choices
-(to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
-treating a context as a function from identifiers to types)
-permits a simpler development. In particular, we can prove substitution preserves
-types without needing to develop a separate inductive definition of the
-`appears_free_in` relation.
+This chapter covers properties of the simply-typed lambda calculus, as
+introduced in the previous chapter.  The most important of these
+properties are progress and preservation.  We introduce these below,
+and show how to combine them to get Agda to compute reduction
+sequences for us.
 
 
 ## Imports
@@ -91,6 +38,57 @@ open import plta.Lambda
 \end{code}
 
 
+## Introduction
+
+The last chapter introduced simply-typed lambda calculus,
+including the notions of closed terms, terms that are values,
+reducing one term to another, and well-typed terms.
+
+Ultimately, we would like to show that we can keep reducing a term
+until we reach a value.  For instance, in the last chapter we showed
+that two plust two is four,
+
+    plus · two · two  ↠  `suc `suc `suc `suc `zero
+
+which was proved by a long chain of reductions, ending in the value
+on the right.  Every term in the chain had the same type, `` `ℕ ``.
+We also saw a second, similar example involving Church numerals.
+
+What we might expect is that every term is either a value or can take
+a reduction step.  As we will see, this property does _not_ hold for
+every term, but it does hold for every closed, well-typed term.
+
+_Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
+that `M ↦ N`.
+
+So, either we have a value, and we are done, or we can take a reduction step.
+In the latter case, we would like to apply progress again. But to do so we need
+to know that the term yielded by the reduction is itself closed and well-typed.
+It turns out that this property holds whenever we start with a closed,
+well-typed term.
+
+_Preservation_: If `∅ ⊢ M ⦂ A` and `M ↦ N` then `∅ ⊢ N ⦂ A`.
+
+This gives us a recipe for automating evaluation. Start with a closed
+and well-typed term.  By progress, it is either a value, in which case
+we are done, or it reduces to some other term.  By preservation, that
+other term will itself be closed and well-typed.  Repeat.  We will
+either loop forever, in which case evaluation does not terminate, or
+we will eventually reach a value, which is guaranteed to be closed and
+of the same type as the original term.  We will turn this recipe into
+Agda code that can compute for us the reduction sequence of `plus ·
+two · two`, and its Church numeral variant.
+
+The development in this chapter was inspired by the corresponding
+development in in _Software Foundations, volume _Programming Language
+Foundations_, chapter _StlcProp_.  It will turn out that one of our technical choices
+(to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
+treating a context as a function from identifiers to types)
+permits a simpler development. In particular, we can prove substitution preserves
+types without needing to develop a separate inductive definition of the
+`appears_free_in` relation.
+
+
 ## Values do not reduce
 
 We start with any easy observation. Values do not reduce.
@@ -102,13 +100,13 @@ V¬↦ (V-suc VM) (ξ-suc M↦N) = V¬↦ VM M↦N
 \end{code}
 We consider the three possibilities for values.
 
-* If it is an abstraction, no reduction applies
+* If it is an abstraction then no reduction applies
 
-* If it is zero, no reduction applies
+* If it is zero then no reduction applies
 
-* If it is a successor rule `ξ-suc` may apply.
-  But in that case the successor is of a value that
-  reduces, which by induction cannot occur.
+* If it is a successor then rule `ξ-suc` may apply,
+  but in that case the successor is itself of a value
+  that reduces, which by induction cannot occur.
 
 As a corollary, terms that reduce are not values.
 \begin{code}
@@ -160,39 +158,40 @@ det (ξ-case L↦L′) (ξ-case L↦L″)  =  cong₄ `case_[zero⇒_|suc_⇒_]
 det (ξ-case L↦L′) β-zero         =  ⊥-elim (V¬↦ V-zero L↦L′)
 det (ξ-case L↦L′) (β-suc VL)     =  ⊥-elim (V¬↦ (V-suc VL) L↦L′)
 det β-zero        (ξ-case M↦M″)  =  ⊥-elim (V¬↦ V-zero M↦M″)
-det β-zero        β-zero = refl
+det β-zero        β-zero         =  refl
 det (β-suc VL)    (ξ-case L↦L″)  =  ⊥-elim (V¬↦ (V-suc VL) L↦L″)
 det (β-suc _)     (β-suc _)      =  refl
 det β-μ           β-μ            =  refl
 \end{code}
-The proof is by induction over the possible reductions.  We consider
+The proof is by induction over possible reductions.  We consider
 three typical cases.
 
 * Two instances of `ξ-·₁`.
 
-    L ↦ L′                 L ↦ L″
-    -------------- ξ-·₁    -------------- ξ-·₁
-    L · M ↦ L′ · M         L · M ↦ L″ · M
+      L ↦ L′                 L ↦ L″
+      -------------- ξ-·₁    -------------- ξ-·₁
+      L · M ↦ L′ · M         L · M ↦ L″ · M
 
   By induction we have `L′ ≡ L″`, and hence by congruence
   `L′ · M ≡ L″ · M`.
   
 * An instance of `ξ-·₁` and an instance of `ξ-·₂`.
 
-                           Value L
-    L ↦ L′                 M ↦ M″
-    -------------- ξ-·₁    -------------- ξ-·₂
-    L · M ↦ L′ · M         L · M ↦ L · M″
+                             Value L
+      L ↦ L′                 M ↦ M″
+      -------------- ξ-·₁    -------------- ξ-·₂
+      L · M ↦ L′ · M         L · M ↦ L · M″
 
   The rule on the left requires `L` to reduce, but the rule on the right
   requires `L` to be a value.  This is a contradiction since values do
-  not reduce.
+  not reduce.  If the value constraint was removed from `ξ-·₂`, or from
+  one of the other reduction rules, then determinism would no longer hold.
 
 * Two instances of `β-ƛ`.
 
-    Value V                             Value V                         
-    ---------------------------- β-ƛ    ---------------------------- β-ƛ
-    (ƛ x ⇒ N) · V ↦ N [ x := V ]        (ƛ x ⇒ N) · V ↦ N [ x := V ]
+      Value V                             Value V                         
+      ---------------------------- β-ƛ    ---------------------------- β-ƛ
+      (ƛ x ⇒ N) · V ↦ N [ x := V ]        (ƛ x ⇒ N) · V ↦ N [ x := V ]
 
   Since the left-hand sides are identical, the right-hand sides are
   also identical.
