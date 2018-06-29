@@ -987,13 +987,13 @@ Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished.
 \begin{code}
-data Steps (L : Term) (A : Type) : Set where
+data Steps (L : Term) : Set where
 
   steps : ∀ {N}
     → L ↠ N  
     → Finished N
       ----------
-    → Steps L A
+    → Steps L
 \end{code}
 The evaluator takes gas and evidence that a term is well-typed,
 and returns the corresponding steps.
@@ -1002,7 +1002,7 @@ eval : ∀ {L A}
   → Gas
   → ∅ ⊢ L ⦂ A
     ---------
-  → Steps L A
+  → Steps L
 eval {L} (gas zero)    ⊢L                           =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
 ... | done VL                                       =  steps (L ∎) (done VL)
