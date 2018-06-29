@@ -865,32 +865,30 @@ data Finished (N : Term) : Set where
        Finished N
 \end{code}
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
-a reduction sequence from `L` to `N` along with evidence that `N` is
-well-typed and an indication of whether reduction finished.
+a reduction sequence from `L` to `N` and an indication of whether
+reduction finished.
 \begin{code}
 data Steps (L : Term) (A : Type) : Set where
 
   steps : ∀ {N}
     → L ↠ N  
-    → ∅ ⊢ N ⦂ A
     → Finished N
       ----------
     → Steps L A
 \end{code}
 The evaluator takes gas and evidence that a term is well-typed,
-and returns the result of evaluating that term for a number of
-steps specified by the gas.
+and returns the corresponding steps.
 \begin{code}
 eval : ∀ {L A}
   → Gas
   → ∅ ⊢ L ⦂ A
     ---------
   → Steps L A
-eval {L} (gas zero)    ⊢L    =  steps (L ∎) ⊢L out-of-gas
+eval {L} (gas zero)    ⊢L                           =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                =  steps (L ∎) ⊢L (done VL)
+... | done VL                                       =  steps (L ∎) (done VL)
 ... | step L↦M with eval (gas m) (preserve ⊢L L↦M)
-...    | steps M↠N ⊢N fin    =  steps (L ↦⟨ L↦M ⟩ M↠N) ⊢N fin
+...    | steps M↠N fin                              =  steps (L ↦⟨ L↦M ⟩ M↠N) fin
 \end{code}
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well-typed.  We consider the amount of gas
@@ -937,7 +935,7 @@ _ : eval (gas 3) ⊢sucμ ≡
    `suc (μ "x" ⇒ `suc ` "x") ↦⟨ ξ-suc β-μ ⟩
    `suc (`suc (μ "x" ⇒ `suc ` "x")) ↦⟨ ξ-suc (ξ-suc β-μ) ⟩
    `suc (`suc (`suc (μ "x" ⇒ `suc ` "x"))) ∎)
-  (⊢suc (⊢suc (⊢suc (⊢μ (⊢suc (Ax Z)))))) out-of-gas
+  out-of-gas
 _ = refl
 \end{code}
 
@@ -1099,7 +1097,6 @@ _ : eval (gas 100) ⊢four ≡
      · `suc (`suc `zero))
     ])
    ↦⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
-  (⊢suc (⊢suc (⊢suc (⊢suc ⊢zero))))
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 _ = refl
 \end{code}
@@ -1171,22 +1168,11 @@ _ : eval (gas 100) ⊢fourᶜ ≡
    (ƛ "n" ⇒ `suc ` "n") · `suc (`suc (`suc `zero)) ↦⟨
    β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
    `suc (`suc (`suc (`suc `zero))) ∎)
-  (⊢suc (⊢suc (⊢suc (⊢suc ⊢zero))))
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 _ = refl
 \end{code}
 Again, the example in the previous section was derived by editing the
 above.
-
-#### Exercise `subject_expansion`
-
-We say that `M` _reduces_ to `N` if `M ↦ N`,
-and conversely that `M` _expands_ to `N` if `N ↦ M`.
-The preservation property is sometimes called _subject reduction_.
-Its opposite is _subject expansion_, which holds if
-`M ==> N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
-Find two counter-examples to subject expansion, one
-with case expressions and one not involving case expressions.
 
 ## Well-typed terms don't get stuck
 
@@ -1202,7 +1188,28 @@ Stuck : Term → Set
 Stuck M  =  Normal M × ¬ Value M
 \end{code}
 
-Using progress and preservation, it is easy to show that well-typed terms don't get stuck.
+Using progress, it is easy to show that no well-typed term is stuck.
+\begin{code}
+postulate
+  unstuck : ∀ {M A}
+    → ∅ ⊢ M ⦂ A
+      -----------
+    → ¬ (Stuck M)
+\end{code}
+
+Using preservation, it is easy to show that after any number of steps, a well-typed term remains well-typed.
+\begin{code}
+postulate
+  preserves : ∀ {M N A}
+    → ∅ ⊢ M ⦂ A
+    → M ↠ N
+      ---------
+    → ∅ ⊢ N ⦂ A
+\end{code}
+
+An easy consequence is that after any number of steps, a well-typed term does not get stuck.
+Felleisen and Wright, who introduced proofs via progress and preservation, summarised this
+result with the slogan _well-typed terms don't get stuck_.
 \begin{code}
 postulate
   wttdgs : ∀ {M N A}
@@ -1216,34 +1223,32 @@ postulate
 
 Give an example of a not well-typed term that does get stuck.
 
-#### Exercise `wttdgs`
+#### Exercise `unstuck`, `preserves`, `wttdgs`.
 
-Show that if a term is well-typed it is not stuck,
-and that any descendant of a well-typed term is also well-typed.
-Combine these results to show `wttdgs`. 
+Provide proofs of the three postulates above.
 
-Answer:
+#### Answer
 
-If a term is well-typed, it does not get stuck.
+No well-typed term is stuck.
 \begin{code}
-unstuck : ∀ {M A}
+unstuck′ : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     -----------
   → ¬ (Stuck M)
-unstuck ⊢M ⟨ ¬M↦N , ¬VM ⟩ with progress ⊢M 
+unstuck′ ⊢M ⟨ ¬M↦N , ¬VM ⟩ with progress ⊢M 
 ... | step M↦N  =  ¬M↦N M↦N
-... | done VM    =  ¬VM VM
+... | done VM   =  ¬VM VM
 \end{code}
 
 Any descendant of a well-typed term is well-typed.
 \begin{code}
-preserve* : ∀ {M N A}
+preserves′ : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
   → M ↠ N
     ---------
   → ∅ ⊢ N ⦂ A
-preserve* ⊢M (M ∎)                   =  ⊢M
-preserve* ⊢L (L ↦⟨ L↦M ⟩ M↠N)  =  preserve* (preserve ⊢L L↦M) M↠N
+preserves′ ⊢M (M ∎)             =  ⊢M
+preserves′ ⊢L (L ↦⟨ L↦M ⟩ M↠N)  =  preserves′ (preserve ⊢L L↦M) M↠N
 \end{code}
 
 Combining the above gives us the desired result.
@@ -1253,7 +1258,7 @@ wttdgs′ : ∀ {M N A}
   → M ↠ N
     -----------
   → ¬ (Stuck N)
-wttdgs′ ⊢M M↠N  =  unstuck (preserve* ⊢M M↠N)
+wttdgs′ ⊢M M↠N  =  unstuck′ (preserves′ ⊢M M↠N)
 \end{code}
 
 
@@ -1262,6 +1267,16 @@ wttdgs′ ⊢M M↠N  =  unstuck (preserve* ⊢M M↠N)
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
 
+
+#### Exercise `subject_expansion`
+
+We say that `M` _reduces_ to `N` if `M ↦ N`,
+and conversely that `M` _expands_ to `N` if `N ↦ M`.
+The preservation property is sometimes called _subject reduction_.
+Its opposite is _subject expansion_, which holds if
+`M ↦ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
+Find two counter-examples to subject expansion, one
+with case expressions and one not involving case expressions.
 
 #### Quiz
 
@@ -1342,7 +1357,7 @@ to interpret a natural as a function from naturals to naturals.
 And that we add the corresponding reduction rule.
 
     fᵢ(m) → n
-    --------- δ-ℕ⇒ℕ
+    --------- δ
     i · m → n
 
 Which of the following properties remain true in
