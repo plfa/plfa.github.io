@@ -28,7 +28,7 @@ recursive function definitions.
 
 This chapter formalises the simply-typed lambda calculus, giving its
 syntax, small-step semantics, and typing rules.  The next chapter
-[PandP]({{ site.baseurl }}{% link out/plta/PandP.md %})
+[Properties]({{ site.baseurl }}{% link out/plta/Properties.md %})
 proves its main properties, including
 progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
@@ -243,7 +243,7 @@ that are bound may become free.  Consider the following terms.
 
 We say that a term with no free variables is _closed_; otherwise it is
 _open_.  Of the three terms above, the first is closed and the other
-two are open.
+two are open.  We will focus on reduction of closed terms.
 
 Different occurrences of a variable may be bound and free.
 In the term
@@ -282,13 +282,6 @@ names, `x` and `x′`.
 
 
 ## Values
-
-<!--
-We only consider reduction of _closed_ terms,
-those that contain no free variables.  We consider
-a precise definition of free variables in Chapter
-[PandP]({{ site.baseurl }}{% link out/plta/PandP.md %}).
--->
 
 A _value_ is a term that corresponds to an answer.
 Thus, `` `suc `suc `suc `suc `zero` `` is a value,

@@ -26,7 +26,7 @@ Total number of lines and number of lines of Agda code in each chapter
     Decidable                    566     170
 
     Lambda                      1114     345
-    LambdaProp                   827     450
+    Properties                   827     450
     DeBruijn                     477     351
     Extensions                   603     524
     Inference                    428     350

@@ -1,11 +1,11 @@
 ---
-title     : "PandP: Progress and Preservation"
+title     : "Properties: Progress and Preservation"
 layout    : page
-permalink : /PandP/
+permalink : /Properties/
 ---
 
 \begin{code}
-module plta.PandP where
+module plta.Properties where
 \end{code}
 
 [Parts of this chapter take their text from chapter _StlcProp_
