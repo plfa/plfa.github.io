@@ -1060,7 +1060,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
   ∋z = Z
 \end{code}
 
-Here are the typings corresponding to our first example.
+Here are the typings corresponding to computing two plus two.
 \begin{code}
 ⊢two : ∅ ⊢ two ⦂ `ℕ
 ⊢two = ⊢suc (⊢suc ⊢zero)
@@ -1075,8 +1075,8 @@ Here are the typings corresponding to our first example.
   ∋m′ = Z
   ∋n′ = (S ("n" ≠ "m") Z)
 
-⊢four : ∅ ⊢ four ⦂ `ℕ
-⊢four = ⊢plus · ⊢two · ⊢two
+⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
+⊢2+2 = ⊢plus · ⊢two · ⊢two
 \end{code}
 The two occcurrences of variable `"n"` in the original term appear
 in different contexts, and correspond here to the two different
@@ -1085,7 +1085,7 @@ a context that ends with the binding for "n", while the second looks
 it up in a context extended by the binding for "m" in the second
 branch of the case expression.
 
-Here are typings for the remainder of the Church example.
+And here are typings for the remainder of the Church example.
 \begin{code}
 ⊢plusᶜ : ∀ {A} → ∅ ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (Ax ∋m · Ax ∋s · (Ax ∋n · Ax ∋s · Ax ∋z)))))
@@ -1100,8 +1100,11 @@ Here are typings for the remainder of the Church example.
   where
   ∋n = Z
 
-⊢fourᶜ : ∅ ⊢ plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⦂ `ℕ
-⊢fourᶜ = ⊢plusᶜ · ⊢twoᶜ · ⊢twoᶜ · ⊢sucᶜ · ⊢zero
+⊢2ᶜ : ∅ ⊢ twoᶜ · sucᶜ · `zero ⦂ `ℕ
+⊢2ᶜ = ⊢twoᶜ · ⊢sucᶜ · ⊢zero
+
+⊢2+2ᶜ : ∅ ⊢ plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⦂ `ℕ
+⊢2+2ᶜ = ⊢plusᶜ · ⊢twoᶜ · ⊢twoᶜ · ⊢sucᶜ · ⊢zero
 \end{code}
 
 
