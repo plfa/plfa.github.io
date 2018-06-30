@@ -403,42 +403,61 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 \end{code}
 
 
-## Test examples
+### Test examples
 
 We repeat the test examples from
 Chapter [Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %}).
 You can find the 
 [here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#derivation)
 for comparison.
+
+First, computing two plus two on naturals.
 \begin{code}
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
 
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
-plus = μ ƛ ƛ `case (` S Z) (` Z) (`suc (` S S S Z · ` Z · ` S Z))
+plus = μ ƛ ƛ (`case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 
 2+2 : ∅ ⊢ `ℕ
 2+2 = plus · two · two
+\end{code}
+We specify that `two` and `plus` can be typed in an arbitrary environment,
+rather than just the empty environment, because later we will give examples
+where they appear nested inside binders.  We need not do the same with `2+2`,
+which will only appear at the top-level of a term.
 
+Next, computing two plus two on Church numerals.
+\begin{code}
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
 
-plusᶜ : ∀ {Γ A} → Γ ⊢ Ch A ⇒ Ch A ⇒ Ch A
-plusᶜ = ƛ ƛ ƛ ƛ ` S S S Z · ` S Z · (` S S Z · ` S Z · ` Z)
-
 twoᶜ : ∀ {Γ A} → Γ ⊢ Ch A
-twoᶜ = ƛ ƛ ` S Z · (` S Z · ` Z)
+twoᶜ = ƛ ƛ (# 1 · (# 1 · # 0))
+
+plusᶜ : ∀ {Γ A} → Γ ⊢ Ch A ⇒ Ch A ⇒ Ch A
+plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
 
 sucᶜ : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ
-sucᶜ = ƛ `suc ` Z
+sucᶜ = ƛ `suc (# 0)
 
 2+2ᶜ : ∅ ⊢ `ℕ
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
+As before we generalise everything save `2+2ᶜ` to arbitary contexts.
+While we are at it, we also generalise `twoᶜ` and `plusᶜ` to Church
+numerals over arbitrary types.
 
-## Operational semantics
+## Substitution
 
-Simultaneous substitution, a la McBride
+With terms in hand, we turn to substitution, the heart of lambda
+calculus.  Whereas before we had to restrict our attention to
+substituting only one variable at a time and could only substitute
+closed terms, here we can consider simultaneous subsitution of
+multiple open terms.  The definition of substitution we consider
+is due to Conor McBride.  Whereas before we defined substitution
+in one chapter and showed in preserved types in another chapter,
+here we will do both at once.
 
 ## Renaming
 
@@ -447,20 +466,20 @@ ext : ∀ {Γ Δ}
   → (∀ {B}   →     Γ ∋ B →     Δ ∋ B)
     ----------------------------------
   → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
-ext σ Z      =  Z
-ext σ (S x)  =  S (σ x)
+ext ρ Z      =  Z
+ext ρ (S x)  =  S (ρ x)
 
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
     ------------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-rename σ (` n)         =  ` σ n
-rename σ (ƛ N)           =  ƛ (rename (ext σ) N)
-rename σ (L · M)         =  (rename σ L) · (rename σ M)
-rename σ (`zero)         =  `zero
-rename σ (`suc M)        =  `suc (rename σ M)
-rename σ (`case L M N)  =  `case (rename σ L) (rename σ M) (rename (ext σ) N)
-rename σ (μ N)           =  μ (rename (ext σ) N)
+rename ρ (` n)          =  ` (ρ n)
+rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+rename ρ (`zero)        =  `zero
+rename ρ (`suc M)       =  `suc (rename ρ M)
+rename ρ (`case L M N)  =  `case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
+rename ρ (μ N)          =  μ (rename (ext ρ) N)
 \end{code}
 
 ## Substitution
@@ -470,30 +489,32 @@ exts : ∀ {Γ Δ}
   → (∀ {B}   →     Γ ∋ B →     Δ ⊢ B)
     ----------------------------------
   → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
-exts ρ Z      =  ` Z
-exts ρ (S x)  =  rename S_ (ρ x)
+exts σ Z      =  ` Z
+exts σ (S x)  =  rename S_ (σ x)
 
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ------------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-subst ρ (` k)         =  ρ k
-subst ρ (ƛ N)           =  ƛ (subst (exts ρ) N)
-subst ρ (L · M)         =  (subst ρ L) · (subst ρ M)
-subst ρ (`zero)         =  `zero
-subst ρ (`suc M)        =  `suc (subst ρ M)
-subst ρ (`case L M N)  =  `case (subst ρ L) (subst ρ M) (subst (exts ρ) N)
-subst ρ (μ N)           =  μ (subst (exts ρ) N)
+subst σ (` k)         =  σ k
+subst σ (ƛ N)           =  ƛ (subst (exts σ) N)
+subst σ (L · M)         =  (subst σ L) · (subst σ M)
+subst σ (`zero)         =  `zero
+subst σ (`suc M)        =  `suc (subst σ M)
+subst σ (`case L M N)  =  `case (subst σ L) (subst σ M) (subst (exts σ) N)
+subst σ (μ N)           =  μ (subst (exts σ) N)
 
 _[_] : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
-_[_] {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
+_[_] {Γ} {A} N M =  subst {Γ , A} {Γ} σ N
   where
-  ρ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
-  ρ Z      =  M
-  ρ (S x)  =  ` x
+  σ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
+  σ Z      =  M
+  σ (S x)  =  ` x
 \end{code}
 
-## Value
+## Reductions
+
+### Value
 
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -514,7 +535,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
 Here `zero` requires an implicit parameter to aid inference (much in the same way that `[]` did in [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})).
 
-## Reduction step
+### Reduction step
 
 \begin{code}
 infix 2 _↦_
@@ -529,35 +550,35 @@ data _↦_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   ξ-·₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
     → Value V
     → M ↦ M′
-      -----------------
+      --------------
     → V · M ↦ V · M′
 
   β-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
     → Value W
-      ---------------------
+      -------------------
     → (ƛ N) · W ↦ N [ W ]
 
   ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
     → M ↦ M′
-      -------------------
+      ----------------
     → `suc M ↦ `suc M′
 
   ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → L ↦ L′
-      -------------------------------
+      --------------------------
     → `case L M N ↦ `case L′ M N
 
   β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
-      -----------------------
+      -------------------
     → `case `zero M N ↦ M
 
   β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → Value V
-      --------------------------------
+      ----------------------------
     → `case (`suc V) M N ↦ N [ V ]
 
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
-      ------------------
+      ---------------
     → μ N ↦ N [ μ N ]
 \end{code}
 
