@@ -8,14 +8,14 @@ permalink : /DeBruijn/
 module plta.DeBruijn where
 \end{code}
 
-The previous two chapters introduced lambda calculus, with
-a formalisation based on named variables, and separate definitions
-of terms and types.  We began with that approach because it is
-traditional, not because it is best.  This chapter presents an
-alternative approach, where named variables are replaced by
-De Bruijn indices and terms are inherently typed.  Our new
-presentation is more compact, using less than half the lines of
-code required previously to do cover the same ground.
+The previous two chapters introduced lambda calculus, with a
+formalisation based on named variables, and terms defined separately
+from types.  We began with that approach because it is traditional,
+but it is not the one we recommend.  This chapter presents an
+alternative approach, where named variables are replaced by De Bruijn
+indices and terms are inherently typed.  Our new presentation is more
+compact, using less than half the lines of code required previously to
+do cover the same ground.
 
 ## Imports
 
@@ -33,6 +33,131 @@ open import Relation.Nullary.Decidable using (map)
 open import Relation.Nullary.Negation using (contraposition)
 open import Relation.Nullary.Product using (_×-dec_)
 \end{code}
+
+## Introduction
+
+There is a close correspondence between the structure of a term and
+the structure of the derivation showing that it is well-typed.  For
+example, here is the term for the Church numeral two:
+
+    twoᶜ  : Term
+    twoᶜ  = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
+
+and here is its corresponding type derivation:
+
+    ⊢twoᶜ  :  ∀ {A} ⇒ ∅ ⊢ two ⦂ Ch A
+    ⊢twoᶜ  =  ⊢ƛ (⊢ƛ (Ax ∋s · (Ax ∋s · Ax ∋z)))
+               where    
+               ∋s = S ("s" ≠ "z") Z
+               ∋z = Z
+
+(These are both taken from
+Chapter [Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %})
+and you can see the corresponding derivation tree written out in full
+[here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#derivation).)
+The two definitions are in close correspondence, where
+
+  * `` `_ `` corresponds to `Ax`
+  * `ƛ_⇒_`   corresponds to `⊢ƛ`
+  * `_·_`    corresponds to `_·_`
+
+Further, if we think of `Z` as zero and `S` as successor, then the
+lookup derivation for each variable corresponds to a number which
+tells us how many enclosing binding terms to count to find the binding
+of that variable.  Here `"z"` corresponds to `Z` or zero and `"s"`
+corresponds to `S Z` or one.  And, indeed, "z" is bound by the inner
+abstraction (count outward past zero abstractions) and "s" is bound by
+the outer abstraction (count outward past one abstraction).
+
+In this chapter, we are going to exploit this correspondence, and
+introduce a new notation for terms that simultaneously resembles the
+term and its type derivation.  Now we will write the following.
+
+    twoᶜ  :  ∅ ⊢ Ch `ℕ
+    twoᶜ  =  ƛ ƛ (# 1 · (# 1 · # 0))
+
+A variable is represented by a natural number (written with `Z` and `S`, and
+abbreviated in the usual way), and tells us how many enclosing binding terms
+to count to find the binding of that variable. Thus, `# 0` is bound at the
+inner `ƛ`, and `# 1` at the outer `ƛ`.
+
+Replacing variables by numbers in this way is called _De Bruijn
+representation_, and the numbers themselves are called _De Bruijn
+indices_, after the Dutch mathematician Nicolaas Govert (Dick) De
+Bruijn (1918—2012), a pioneer in the creation of proof assistants.
+One advantage of replacing named variables with De Bruijn indices
+is that each term now has a unique representation, rather than being
+represented by the equivalence class of terms under alpha renaming.
+
+The other important feature of our chosen representation is that it is
+_inherently typed_.  In the previous two chapters, the definition of
+terms and the definition of types are completely separate.  All terms
+have type `Term`, and nothing in Agda prevents one from writing a
+nonsense term such as `` `zero · `suc `zero `` which has no type.  Such
+terms that exist independent of types are sometimes called _preterms_
+or _raw terms_.  Here we are going to replace the type `Term` of raw
+terms by the more sophisticated type `Γ ⊢ A` of inherently typed
+terms, which in context `Γ` have type `A`.
+
+While these two choices fit well, they are independent.  One can use
+De Bruijn indices in raw terms, or (with more difficulty) have
+inherently typed terms with names.  In
+Chapter [Untyped]({{ site.baseurl }}{% link out/plta/Untyped.md %},
+we will terms that are not typed with De Bruijn indices
+are inherently scoped.
+
+
+
+
+
+
+
+
+
+
+For each constructor
+of terms `M`, there is a corresponding constructor of type derivations,
+`Γ ⊢ M ⦂ A`:
+
+* `` `_ `` corresponds to `Ax`
+* `ƛ_⇒_` corresponds to `⊢ƛ`
+* `_·_` corresponds to `_·_`
+* `` `zero `` corresponds to `⊢zero`
+* `` `suc_ `` corresponds to `⊢suc`
+* `` `case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
+* `μ_⇒_` corresponds to `⊢μ`
+
+Variable names `x` in terms correspond to derivations that
+look up a name in the environment.  There are two constructors of such
+derivations `Z` and `S`, which behave similarly to constructors `here`
+and `there` for looking up elements in a list.  But derivations also
+correspond to a natural number, take `Z` as zero and `S` as successor.
+
+
+
+    ∋s                        ∋s                        ∋z
+    ------------------- `_    ------------------- `_    --------------- `_
+    Γ₂ ⊢ ` "s" ⦂ A ⇒ A        Γ₂ ⊢ ` "s" ⦂ A ⇒ A         Γ₂ ⊢ ` "z" ⦂ A
+    ------------------- `_    ------------------------------------------ _·_
+    Γ₂ ⊢ ` "s" ⦂ A ⇒ A        Γ₂ ⊢ ` "s" · ` "z" ⦂ A
+    -------------------------------------------------- _·_
+    Γ₂ ⊢ ` "s" · (` "s" · ` "z") ⦂ A
+    ---------------------------------------------- ⊢ƛ
+    Γ₁ ⊢ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ A ⇒ A
+    ------------------------------------------------------------- ⊢ƛ
+    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ (A ⇒ A) ⇒ A ⇒ A
+
+where `∋s` and `∋z` abbreviate the two derivations:
+
+                 ---------------- Z
+    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
+    ----------------------------- S        ------------- Z
+    Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
+
+and where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
+
+
+
 
 
 ## Syntax

@@ -149,6 +149,10 @@ four = plus · two · two
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in
 Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %}#plus).
+Note that there are two different binding occurrences of the
+variable "m", one in a lambda abstraction and one in a case term;
+the occurrence of "m" in the argument of the case refers to the former
+and the occurrence of "m" in the successor branch of the case refers to the latter.
 Later we will confirm that two plus two is four, in other words that
 the term
 
@@ -1021,41 +1025,43 @@ used with care, since such postulation could allow us to provide
 evidence of _any_ proposition whatsoever, regardless of its truth.
 
 
-### Example type derivations
+### Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
 is a type derivation for the Church numberal two:
 
-    ∋s                        ∋s                        ∋z
-    ------------------- `_    ------------------- `_    --------------- `_
-    Γ₂ ⊢ ` "s" ⦂ A ⇒ A        Γ₂ ⊢ ` "s" ⦂ A ⇒ A         Γ₂ ⊢ ` "z" ⦂ A
-    ------------------- `_    ------------------------------------------ _·_
-    Γ₂ ⊢ ` "s" ⦂ A ⇒ A        Γ₂ ⊢ ` "s" · ` "z" ⦂ A
+                               ∋s                         ∋z
+                               -------------------- `_    --------------- `_
+    ∋s                         Γ₂ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ       Γ₂ ⊢ ` "z" ⦂ `ℕ
+    -------------------- `_    ------------------------------------------ _·_
+    Γ₂ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ       Γ₂ ⊢ ` "s" · ` "z" ⦂ `ℕ
     -------------------------------------------------- _·_
-    Γ₂ ⊢ ` "s" · (` "s" · ` "z") ⦂ A
+    Γ₂ ⊢ ` "s" · (` "s" · ` "z") ⦂ `ℕ
     ---------------------------------------------- ⊢ƛ
-    Γ₁ ⊢ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ A ⇒ A
-    ---------------------------------------------------------- ⊢ƛ
-    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ A ⇒ A
+    Γ₁ ⊢ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ `ℕ ⇒ `ℕ
+    ----------------------------------------------------------------- ⊢ƛ
+    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 
 where `∋s` and `∋z` abbreviate the two derivations:
 
                  ---------------- Z
-    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
+    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ `ℕ ⇒ `ℕ
     ----------------------------- S        ------------- Z
-    Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
+    Γ₂ ∋ "s" ⦂ `ℕ ⇒ `ℕ                       Γ₂ ∋ "z" ⦂ `ℕ
 
-and where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
+and where ``Γ₁ = ∅ , s ⦂ `ℕ ⇒ `ℕ`` and ``Γ₂ = ∅ , s ⦂ `ℕ ⇒ `ℕ , z ⦂ `ℕ``.
+In fact, `plusᶜ` also has this typing derivation if we replace `∅` by an
+arbitrary context `Γ`, and `` `ℕ `` by an arbitrary type `A`, but the above
+will suffice for our purposes.
 
 Here is the above typing derivation formalised in Agda.
 \begin{code}
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
 
-⊢twoᶜ : ∀ {A} → ∅ ⊢ twoᶜ ⦂ Ch A
+⊢twoᶜ : ∅ ⊢ twoᶜ ⦂ Ch `ℕ
 ⊢twoᶜ = ⊢ƛ (⊢ƛ (Ax ∋s · (Ax ∋s · Ax ∋z)))
   where
-
   ∋s = S ("s" ≠ "z") Z
   ∋z = Z
 \end{code}
@@ -1087,7 +1093,7 @@ branch of the case expression.
 
 And here are typings for the remainder of the Church example.
 \begin{code}
-⊢plusᶜ : ∀ {A} → ∅ ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
+⊢plusᶜ : ∅ ⊢ plusᶜ ⦂ Ch `ℕ ⇒ Ch `ℕ ⇒ Ch `ℕ
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (Ax ∋m · Ax ∋s · (Ax ∋n · Ax ∋s · Ax ∋z)))))
   where
   ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
@@ -1106,7 +1112,6 @@ And here are typings for the remainder of the Church example.
 ⊢2+2ᶜ : ∅ ⊢ plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⦂ `ℕ
 ⊢2+2ᶜ = ⊢plusᶜ · ⊢twoᶜ · ⊢twoᶜ · ⊢sucᶜ · ⊢zero
 \end{code}
-
 
 ### Interaction with Agda
 
