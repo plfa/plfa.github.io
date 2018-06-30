@@ -115,14 +115,11 @@ data _⊢_ : Ctx → Type → Set where
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
 
-four : ∀ {Γ} → Γ ⊢ `ℕ
-four = `suc `suc `suc `suc `zero
-
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
 plus = μ ƛ ƛ `case (` S Z) (` Z) (`suc (` S S S Z · ` Z · ` S Z))
 
-four′ : ∀ {Γ} → Γ ⊢ `ℕ
-four′ = plus · two · two
+2+2 : ∅ ⊢ `ℕ
+2+2 = plus · two · two
 
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
@@ -135,6 +132,9 @@ twoᶜ = ƛ ƛ ` S Z · (` S Z · ` Z)
 
 sucᶜ : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ
 sucᶜ = ƛ `suc ` Z
+
+2+2ᶜ : ∅ ⊢ `ℕ
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
 
 ## Operational semantics
@@ -342,7 +342,7 @@ _ =
     ƛ ` Z
   ∎
 
-_ : plus {∅} · two · two ↠ four
+_ : plus {∅} · two · two ↠ `suc `suc `suc `suc `zero
 _ =
     plus · two · two
   ↦⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
@@ -375,7 +375,7 @@ _ =
 \end{code}
 
 \begin{code}
-_ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ↠ `suc `suc `suc `suc `zero 
+_ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ↠ `suc `suc `suc `suc `zero {∅}
 _ =
   begin
     plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero

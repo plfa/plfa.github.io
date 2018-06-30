@@ -46,6 +46,8 @@ infix   5  μ_⇒_
 infix   6  _↓_
 infix   6  _↑
 infixl  7  _·_
+infix   8  `suc_
+infix   9  `_
 \end{code}
 
 These should get imported from Typed (or Fresh, or Raw).
@@ -55,7 +57,7 @@ Id : Set
 Id = String
 
 data Ctx : Set where
-  ε      : Ctx
+  ∅      : Ctx
   _,_⦂_ : Ctx → Id → Type → Ctx
 \end{code}
 
@@ -65,14 +67,14 @@ data Term⁺ : Set
 data Term⁻ : Set
 
 data Term⁺ where
-  ⌊_⌋                        : Id → Term⁺
+  `_                        : Id → Term⁺
   _·_                       : Term⁺ → Term⁻ → Term⁺
   _↓_                       : Term⁻ → Type → Term⁺
 
 data Term⁻ where
   ƛ_⇒_                     : Id → Term⁻ → Term⁻
   `zero                    : Term⁻
-  `suc                     : Term⁻ → Term⁻
+  `suc_                    : Term⁻ → Term⁻
   `case_[zero⇒_|suc_⇒_]    : Term⁺ → Term⁻ → Id → Term⁻ → Term⁻
   μ_⇒_                     : Id → Term⁻ → Term⁻
   _↑                       : Term⁺ → Term⁻
@@ -86,31 +88,26 @@ two = `suc (`suc `zero)
 
 plus : Term⁺
 plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-          `case ⌊ "m" ⌋ [zero⇒ ⌊ "n" ⌋ ↑
-                        |suc "m" ⇒ `suc (⌊ "p" ⌋ · (⌊ "m" ⌋ ↑) · (⌊ "n" ⌋ ↑) ↑) ])
+          `case (` "m") [zero⇒ ` "n" ↑
+                        |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
             ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
-
-four : Term⁺
-four = plus · two · two
 
 Ch : Type
 Ch = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 
-twoCh : Term⁻
-twoCh = (ƛ "s" ⇒ ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · (⌊ "z" ⌋ ↑) ↑) ↑)
+twoᶜ : Term⁻
+twoᶜ = (ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑)
 
-plusCh : Term⁺
-plusCh = (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
-           ⌊ "m" ⌋ · (⌊ "s" ⌋ ↑) · (⌊ "n" ⌋ · (⌊ "s" ⌋ ↑) · (⌊ "z" ⌋ ↑) ↑) ↑)
+plusᶜ : Term⁺
+plusᶜ = (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
+           ` "m" · (` "s" ↑) · (` "n" · (` "s" ↑) · (` "z" ↑) ↑) ↑)
              ↓ Ch ⇒ Ch ⇒ Ch
 
-fromCh : Term⁺
-fromCh = (ƛ "m" ⇒ ⌊ "m" ⌋ · (ƛ "x" ⇒ `suc (⌊ "x" ⌋ ↑)) · `zero ↑)
-           ↓ Ch ⇒ `ℕ
-
-fourCh : Term⁺
-fourCh = fromCh · (plusCh · twoCh · twoCh ↑)
+sucᶜ : Term⁻
+sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
 \end{code}
+
+
 ## Bidirectional type checking
 
 \begin{code}
@@ -134,7 +131,7 @@ data _⊢_↑_ where
   Ax : ∀ {Γ A x}
     → Γ ∋ x ⦂ A
       --------------
-    → Γ ⊢ ⌊ x ⌋ ↑ A
+    → Γ ⊢ ` x ↑ A
 
   _·_ : ∀ {Γ L M A B}
     → Γ ⊢ L ↑ A ⇒ B
@@ -216,8 +213,8 @@ _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 
 \begin{code}
 lookup : ∀ (Γ : Ctx) (x : Id) → TC (∃[ A ](Γ ∋ x ⦂ A))
-lookup ε x  =
-  error⁺ "variable not bound" ⌊ x ⌋ []
+lookup ∅ x  =
+  error⁺ "variable not bound" (` x) []
 lookup (Γ , x ⦂ A) w with w ≟ x
 ... | yes refl =
   return ⟨ A , Z ⟩
@@ -232,7 +229,7 @@ lookup (Γ , x ⦂ A) w with w ≟ x
 synthesize : ∀ (Γ : Ctx) (M : Term⁺) → TC (∃[ A ](Γ ⊢ M ↑ A))
 inherit : ∀ (Γ : Ctx) (M : Term⁻) (A : Type) → TC (Γ ⊢ M ↓ A)
 
-synthesize Γ ⌊ x ⌋ =
+synthesize Γ (` x) =
   do ⟨ A , ⊢x ⟩ ← lookup Γ x
      return ⟨ A , Ax ⊢x ⟩
 synthesize Γ (L · M) =
@@ -285,8 +282,11 @@ x ≠ y  with x ≟ y
 ...       | yes _    =  ⊥-elim impossible
   where postulate impossible : ⊥
 
-⊢four : ε ⊢ four ↑ `ℕ
-⊢four =
+2+2 : Term⁺
+2+2 = plus · two · two
+
+⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
+⊢2+2 =
   (⊢↓
    (⊢μ
     (⊢ƛ
@@ -304,90 +304,92 @@ x ≠ y  with x ≟ y
    · ⊢suc (⊢suc ⊢zero)
    · ⊢suc (⊢suc ⊢zero))
 
-_ : synthesize ε four ≡ return ⟨ `ℕ , ⊢four ⟩
+_ : synthesize ∅ 2+2 ≡ return ⟨ `ℕ , ⊢2+2 ⟩
 _ = refl
 
-⊢fourCh : ε ⊢ fourCh ↑ `ℕ
-⊢fourCh =
-  (⊢↓ (⊢ƛ (⊢↑ (Ax Z · ⊢ƛ (⊢suc (⊢↑ (Ax Z) refl)) · ⊢zero) refl)) ·
-   ⊢↑
-   (⊢↓
+2+2ᶜ : Term⁺
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
+
+⊢2+2ᶜ : ∅ ⊢ 2+2ᶜ ↑ `ℕ
+⊢2+2ᶜ =
+  ⊢↓
+  (⊢ƛ
+   (⊢ƛ
     (⊢ƛ
      (⊢ƛ
-      (⊢ƛ
-       (⊢ƛ
-        (⊢↑
-         (Ax
-          (S (_≠_ "m" "z")
-           (S (_≠_ "m" "s")
-            (S (_≠_ "m" "n") Z)))
-          · ⊢↑ (Ax (S (_≠_ "s" "z") Z)) refl
-          ·
-          ⊢↑
-          (Ax
-           (S (_≠_ "n" "z")
-            (S (_≠_ "n" "s") Z))
-           · ⊢↑ (Ax (S (_≠_ "s" "z") Z)) refl
-           · ⊢↑ (Ax Z) refl)
-          refl)
-         refl)))))
-    ·
-    ⊢ƛ
-    (⊢ƛ
-     (⊢↑
-      (Ax (S (_≠_ "s" "z") Z) ·
-       ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
-       refl)
-      refl))
-    ·
-    ⊢ƛ
-    (⊢ƛ
-     (⊢↑
-      (Ax (S (_≠_ "s" "z") Z) ·
-       ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
-       refl)
-      refl)))
-   refl)
+      (⊢↑
+       (Ax
+        (S (_≠_ "m" "z")
+         (S (_≠_ "m" "s")
+          (S (_≠_ "m" "n") Z)))
+        · ⊢↑ (Ax (S (_≠_ "s" "z") Z)) refl
+        ·
+        ⊢↑
+        (Ax
+         (S (_≠_ "n" "z")
+          (S (_≠_ "n" "s") Z))
+         · ⊢↑ (Ax (S (_≠_ "s" "z") Z)) refl
+         · ⊢↑ (Ax Z) refl)
+        refl)
+       refl)))))
+  ·
+  ⊢ƛ
+  (⊢ƛ
+   (⊢↑
+    (Ax (S (_≠_ "s" "z") Z) ·
+     ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
+     refl)
+    refl))
+  ·
+  ⊢ƛ
+  (⊢ƛ
+   (⊢↑
+    (Ax (S (_≠_ "s" "z") Z) ·
+     ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
+     refl)
+    refl))
+  · ⊢ƛ (⊢suc (⊢↑ (Ax Z) refl))
+  · ⊢zero
 
-_ : synthesize ε fourCh ≡ return ⟨ `ℕ , ⊢fourCh ⟩
+_ : synthesize ∅ 2+2ᶜ ≡ return ⟨ `ℕ , ⊢2+2ᶜ ⟩
 _ = refl
 \end{code}
 
 ## Testing all possible errors
 
 \begin{code}
-_ : synthesize ε ((ƛ "x" ⇒ ⌊ "y" ⌋ ↑) ↓ `ℕ ⇒ `ℕ) ≡
-  error⁺ "variable not bound" ⌊ "y" ⌋ []
+_ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ `ℕ ⇒ `ℕ) ≡
+  error⁺ "variable not bound" (` "y") []
 _ = refl
 
-_ : synthesize ε ((two ↓ `ℕ) · two) ≡
+_ : synthesize ∅ ((two ↓ `ℕ) · two) ≡
   error⁺ "must apply function"
     ((`suc (`suc `zero) ↓ `ℕ) · `suc (`suc `zero)) []
 _ = refl
 
-_ : synthesize ε (twoCh ↓ `ℕ) ≡
+_ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡
   error⁻ "lambda cannot be of type natural"
-    (ƛ "s" ⇒ (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · (⌊ "z" ⌋ ↑) ↑) ↑)) []
+    (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑)) []
 _ = refl
 
-_ : synthesize ε (`zero ↓ `ℕ ⇒ `ℕ) ≡
+_ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡
   error⁻ "zero cannot be function" `zero [ `ℕ ⇒ `ℕ ]
 _ = refl
 
-_ : synthesize ε (two ↓ `ℕ ⇒ `ℕ) ≡
+_ : synthesize ∅ (two ↓ `ℕ ⇒ `ℕ) ≡
   error⁻ "suc cannot be function" (`suc (`suc `zero)) [ `ℕ ⇒ `ℕ ]
 _ = refl
 
-_ : synthesize ε
-      ((`case (twoCh ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ⌊ "x" ⌋ ↑ ] ↓ `ℕ) ) ≡
+_ : synthesize ∅
+      ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡
   error⁻ "cannot case on function"
-    `case (ƛ "s" ⇒ (ƛ "z" ⇒ ⌊ "s" ⌋ · (⌊ "s" ⌋ · (⌊ "z" ⌋ ↑) ↑) ↑))
-          ↓ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ [zero⇒ `zero |suc "x" ⇒ ⌊ "x" ⌋ ↑ ]
+    `case (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑))
+          ↓ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ]
     [ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ]
 _ = refl
 
-_ : synthesize ε (((ƛ "x" ⇒ ⌊ "x" ⌋ ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡
-  error⁺ "inheritance and synthesis conflict" ⌊ "x" ⌋ [ `ℕ , `ℕ ⇒ `ℕ ]
+_ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡
+  error⁺ "inheritance and synthesis conflict" (` "x") [ `ℕ , `ℕ ⇒ `ℕ ]
 _ = refl
 \end{code}
 
@@ -396,7 +398,7 @@ _ = refl
 
 \begin{code}
 ∥_∥Γ : Ctx → DB.Ctx
-∥ ε ∥Γ = DB.ε
+∥ ∅ ∥Γ = DB.∅
 ∥ Γ , x ⦂ A ∥Γ = ∥ Γ ∥Γ DB., A
 
 ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Γ DB.∋ A
@@ -406,14 +408,14 @@ _ = refl
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
 
-∥ Ax ⊢x ∥⁺ =  DB.⌊ ∥ ⊢x ∥∋ ⌋
+∥ Ax ⊢x ∥⁺ =  DB.` ∥ ⊢x ∥∋
 ∥ ⊢L · ⊢M ∥⁺ =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
 ∥ ⊢↓ ⊢M ∥⁺ =  ∥ ⊢M ∥⁻
 
 ∥ ⊢ƛ ⊢N ∥⁻ =  DB.ƛ ∥ ⊢N ∥⁻
 ∥ ⊢zero ∥⁻ =  DB.`zero
 ∥ ⊢suc ⊢M ∥⁻ =  DB.`suc ∥ ⊢M ∥⁻
-∥ ⊢case ⊢L ⊢M ⊢N ∥⁻ =  DB.`caseℕ ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
+∥ ⊢case ⊢L ⊢M ⊢N ∥⁻ =  DB.`case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
 ∥ ⊢μ ⊢M ∥⁻ =  DB.μ ∥ ⊢M ∥⁻
 ∥ ⊢↑ ⊢M refl ∥⁻ =  ∥ ⊢M ∥⁺
 \end{code}
@@ -421,9 +423,9 @@ _ = refl
 Testing erasure
 
 \begin{code}
-_ : ∥ ⊢four ∥⁺ ≡ DB.four′
+_ : ∥ ⊢2+2 ∥⁺ ≡ DB.2+2
 _ = refl
 
-_ : ∥ ⊢fourCh ∥⁺ ≡ DB.fourCh′
+_ : ∥ ⊢2+2ᶜ ∥⁺ ≡ DB.2+2ᶜ
 _ = refl
 \end{code}

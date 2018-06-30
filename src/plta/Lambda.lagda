@@ -4,6 +4,10 @@ layout    : page
 permalink : /Lambda/
 ---
 
+*Add a couple of simpler examples* ``id · `zero`` and ``twoᶜ · sucᶜ · `zero``.
+
+*Experiment with defining variables* smart constructor `` ƛ`_⇒_ ``
+
 \begin{code}
 module plta.Lambda where
 \end{code}
@@ -103,8 +107,8 @@ And here it is formalised in Agda.
 Id : Set
 Id = String
 
-infix  6  ƛ_⇒_
-infix  6  μ_⇒_
+infix  5  ƛ_⇒_
+infix  5  μ_⇒_
 infixl 7  _·_
 infix  8  `suc_
 infix  9  `_

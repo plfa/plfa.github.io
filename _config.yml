@@ -1,4 +1,6 @@
-title: Programming Language Theory in Agda
+title: >
+  Code the Infinite:
+  Programming Languages in Agda
 
 # the author field should not be used in the template
 author: Wen Kokke
@@ -16,7 +18,7 @@ contributors:
     twitter_username: philipwadler
 
 description: > 
-  Programming Language Theory in Agda.
+  Programming Languages in Agda.
 
 # include disqus to allow comments e.d.
 disqus:

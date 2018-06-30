@@ -3,11 +3,18 @@ title  : Table of Contents
 layout : page
 ---
 
-This book is an introduction to programming language theory, written in Agda.  The authors are [Wen Kokke](twitter.com/wenkokke) and [Philip Wadler](https://softwarefoundations.cis.upenn.edu/).
+This book is an introduction to programming language theory, written
+in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
-Please send us comments!  The text is currrently being drafted.  Part I is ready for comment. We plan that Part II will be ready for comment by the end of June.
+Please send us comments!  The text is currrently being drafted.  Part I
+is ready for comment. We plan that Part II will be ready for comment
+by the end of July.
 
-Comments on all matters---organisation, material we should add, material we should remove, parts that require better explanation, good exercises, errors, and typos---are welcome.  Pull requests for small fixes are encouraged.
+Comments on all matters---organisation, material we should add,
+material we should remove, parts that require better explanation, good
+exercises, errors, and typos---are welcome.  Pull requests
+are encouraged.
+
 
 
 ## Front matter
@@ -46,3 +53,5 @@ Comments on all matters---organisation, material we should add, material we shou
   - [Fonts: Test page for fonts]({{ site.baseurl }}{% link out/plta/Fonts.md %})
   - [Statistics: Line counts for each chapter]({{ site.baseurl }}{% link out/plta/Statistics.md %})
 
+[wen]: https://github.com/wenkokke
+[phil]: http://homepages.inf.ed.ac.uk/wadler/
