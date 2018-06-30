@@ -669,6 +669,24 @@ above are isomorphic.
 
 ## Examples
 
+We start with a simple example. The Church numeral two applied to the
+successor function and zero yields the natural number two.
+\begin{code}
+_ : twoᶜ · sucᶜ · `zero ↠ `suc `suc `zero
+_ =
+  begin
+    twoᶜ · sucᶜ · `zero
+  ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+    (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero
+  ↦⟨ β-ƛ V-zero ⟩
+    sucᶜ · (sucᶜ · `zero)
+  ↦⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+    sucᶜ · `suc `zero
+  ↦⟨ β-ƛ (V-suc V-zero) ⟩
+   `suc (`suc `zero)
+  ∎
+\end{code}
+
 Here is a sample reduction demonstrating that two plus two is four.
 \begin{code}
 _ : four ↠ `suc `suc `suc `suc `zero
