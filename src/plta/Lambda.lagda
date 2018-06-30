@@ -143,17 +143,17 @@ plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
            [zero⇒ ` "n"
            |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
 
-four : Term
-four = plus · two · two
+2+2 : Term
+2+2 = plus · two · two
 \end{code}
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in
 Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %}#plus).
-Note that there are two different binding occurrences of the
-variable "m", one in a lambda abstraction and one in a case term;
-the occurrence of "m" in the argument of the case refers to the former
-and the occurrence of "m" in the successor branch of the case refers to the latter.
-Later we will confirm that two plus two is four, in other words that
+Here variable "m" is bound twice, once in a lambda abstraction and once in
+the successor branch of the case; the first use of "m" refers to
+the former and the second to the latter.  Any use of "m" in the successor branch
+must refer to the latter binding, and so we say that the latter binding _shadows_
+the former.  Later we will confirm that two plus two is four, in other words that
 the term
 
     plus · two · two
@@ -693,7 +693,7 @@ _ =
 
 Here is a sample reduction demonstrating that two plus two is four.
 \begin{code}
-_ : four ↠ `suc `suc `suc `suc `zero
+_ : plus · two · two ↠ `suc `suc `suc `suc `zero
 _ =
   begin
     plus · two · two
@@ -1084,12 +1084,11 @@ Here are the typings corresponding to computing two plus two.
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
 \end{code}
-The two occcurrences of variable `"n"` in the original term appear
-in different contexts, and correspond here to the two different
-lookup judgements, `∋n` and `∋n′`.  The first looks up `"n"` in
-a context that ends with the binding for "n", while the second looks
-it up in a context extended by the binding for "m" in the second
-branch of the case expression.
+Here the two lookup judgements `∋m` and `∋m′` refer to two different
+bindings of variables named `"m"`.  In contrast, the two judgements `∋n` and
+`∋n′` both refer to the same binding of `"n"` but accessed in different
+contexts, the first where "n" is the last binding in the context, and
+the second after "m" is bound in the successor branch of the case.
 
 And here are typings for the remainder of the Church example.
 \begin{code}

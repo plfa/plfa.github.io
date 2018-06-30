@@ -1,5 +1,5 @@
 ---
-title     : "DeBruijn: Inherently typed De Bruijn representation"
+title     : "DeBruijn: Inherently typed de Bruijn representation"
 layout    : page
 permalink : /DeBruijn/
 ---
@@ -12,7 +12,7 @@ The previous two chapters introduced lambda calculus, with a
 formalisation based on named variables, and terms defined separately
 from types.  We began with that approach because it is traditional,
 but it is not the one we recommend.  This chapter presents an
-alternative approach, where named variables are replaced by De Bruijn
+alternative approach, where named variables are replaced by de Bruijn
 indices and terms are inherently typed.  Our new presentation is more
 compact, using less than half the lines of code required previously to
 do cover the same ground.
@@ -43,7 +43,7 @@ example, here is the term for the Church numeral two:
     twoᶜ  : Term
     twoᶜ  = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
 
-and here is its corresponding type derivation:
+And here is its corresponding type derivation:
 
     ⊢twoᶜ  :  ∀ {A} ⇒ ∅ ⊢ two ⦂ Ch A
     ⊢twoᶜ  =  ⊢ƛ (⊢ƛ (Ax ∋s · (Ax ∋s · Ax ∋z)))
@@ -70,7 +70,7 @@ abstraction (count outward past zero abstractions) and "s" is bound by
 the outer abstraction (count outward past one abstraction).
 
 In this chapter, we are going to exploit this correspondence, and
-introduce a new notation for terms that simultaneously resembles the
+introduce a new notation for terms that simultaneously represents the
 term and its type derivation.  Now we will write the following.
 
     twoᶜ  :  ∅ ⊢ Ch `ℕ
@@ -81,11 +81,11 @@ abbreviated in the usual way), and tells us how many enclosing binding terms
 to count to find the binding of that variable. Thus, `# 0` is bound at the
 inner `ƛ`, and `# 1` at the outer `ƛ`.
 
-Replacing variables by numbers in this way is called _De Bruijn
-representation_, and the numbers themselves are called _De Bruijn
-indices_, after the Dutch mathematician Nicolaas Govert (Dick) De
+Replacing variables by numbers in this way is called _de Bruijn
+representation_, and the numbers themselves are called _de Bruijn
+indices_, after the Dutch mathematician Nicolaas Govert (Dick) de
 Bruijn (1918—2012), a pioneer in the creation of proof assistants.
-One advantage of replacing named variables with De Bruijn indices
+One advantage of replacing named variables with de Bruijn indices
 is that each term now has a unique representation, rather than being
 represented by the equivalence class of terms under alpha renaming.
 
@@ -107,13 +107,75 @@ we will terms that are not typed with De Bruijn indices
 are inherently scoped.
 
 
+## A second example
+
+De Bruijn indices can be tricky to get the hang of, so before
+proceeding further let's consider a second example.  Here is the
+term that adds two naturals:
+
+    plus : Term
+    plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+             `case ` "m"
+               [zero⇒ ` "n"
+               |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
+  
+Note variable "m" is bound twice, once in a lambda abstraction and once
+in the successor branch of the case.  Any appearance of "m" in the successor
+branch must refer to the latter binding, due to shadowing.
+
+Here is its corresponding type derivation:
+
+    ⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
+    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (Ax ∋m) (Ax ∋n)
+             (⊢suc (Ax ∋+ · Ax ∋m′ · Ax ∋n′)))))
+      where
+      ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
+      ∋m  = (S ("m" ≠ "n") Z)
+      ∋n  = Z
+      ∋m′ = Z
+      ∋n′ = (S ("n" ≠ "m") Z)
+
+The two definitions are in close correspondence, where in addition
+to the previous correspondences we have
+
+  * `` `zero `` corresponds to `⊢zero`
+  * `` `suc_ `` corresponds to `⊢suc`
+  * `` `case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
+  * `μ_⇒_` corresponds to `⊢μ`
+
+Note the two lookup judgements `∋m` and `∋m′` refer to two different
+bindings of variables named `"m"`.  In contrast, the two judgements `∋n` and
+`∋n′` both refer to the same binding of `"n"` but accessed in different
+contexts, the first where "n" is the last binding in the context, and
+the second after "m" is bound in the successor branch of the case.
+
+Here is the term and its type derivation in the notation of this chapter.
+
+    plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
+    plus = μ ƛ ƛ `case (# 1) (# 0) (`suc (# 3 · # 0 · # 1))
+
+Readering from left to right, each de Bruijn index corresponds to a lookup derivation:
+
+  * `# 1` corresponds to `∋m`
+  * `# 0` corresponds to `∋n`
+  * `# 3` corresponds to `∋+`
+  * `# 0` corresponds to `∋m′`
+  * `# 1` corresponds to `∋n′`
+
+The de Bruijn index counts the number of `S` constructs in the
+corresponding lookup derivation.  Variable "n" bound in the inner
+abstraction is referred to as `# 0` in the zero branch of the case but
+as `# 1` in the successor banch of the case, because of the
+intervening binding.  Variable "m" bound in the lambda abstraction is
+referred to by the first `# 1` in the code, while variable "m" bound
+in the successor branch of the case is referred to by the second
+`# 0`.  There is no shadowing: with variable names, there is no way to
+refer to the former binding in the scope of the latter, but with de
+Bruijn indices it could be referred to as `# 2`.
 
 
 
-
-
-
-
+OBSOLETE TEXT
 
 For each constructor
 of terms `M`, there is a corresponding constructor of type derivations,
