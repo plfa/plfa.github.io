@@ -802,6 +802,15 @@ import Data.Unit using (⊤; tt)
 import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to ⊎-elim)
 import Data.Empty using (⊥; ⊥-elim)
 \end{code}
+The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
+The former makes it convenient to make triples or larger tuples from pairs,
+permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
+other useful notations, such as `[_,_]` and `[_,_,_]` to construct
+lists of two or three elements in
+Chapter [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})
+or `Γ , A` to extend environments in
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plta/DeBruijn.md %}).
+
 
 
 ## Unicode

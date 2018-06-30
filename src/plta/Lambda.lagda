@@ -782,7 +782,7 @@ sequence demonstrating that two times two is four.
 
 ## Syntax of types
 
-We have just two types.
+We have just two types:
 
   * Functions, `A ⇒ B`
   * Naturals, `` `ℕ ``
@@ -844,6 +844,8 @@ Thus,
 
 ## Typing
 
+### Contexts
+
 While reduction considers only closed terms, typing must
 consider terms with free variables.  To type a term,
 we must first type its subterms, and in particular in the
@@ -868,6 +870,8 @@ data Context : Set where
   ∅     : Context
   _,_⦂_ : Context → Id → Type → Context
 \end{code}
+
+### Lookup judgement
 
 We have two forms of _judgement_.  The first is written
 
@@ -912,9 +916,11 @@ data _∋_⦂_ : Context → Id → Type → Set where
 
 The constructors `Z` and `S` correspond roughly to the constructors
 `here` and `there` for the element-of relation `_∈_` on lists.
-Constructor `S` takes an additional paramemer, which ensures that
+Constructor `S` takes an additional parameter, which ensures that
 when we look up a variable that it is not _shadowed_ by another
 variable with the same name earlier in the list.
+
+### Typing judgement
 
 The second judgement is written
 
@@ -924,6 +930,9 @@ and indicates in context `Γ` that term `M` has type `A`.
 Context `Γ` provides types for all the free variables in `M`.
 For example
 
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` ` "s" · ` "z" ⦂  `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" · (` "s" · ` "z") ⦂  `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
@@ -998,7 +1007,7 @@ functions, case expressions use naturals).
 The rules are deterministic, in that at most one rule applies to every term.
 
 
-### Checking inequality and postulating the impossible
+### Checking inequality and postulating the impossible {#impossible}
 
 The following function makes it convenient to assert an inequality.
 \begin{code}

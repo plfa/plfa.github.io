@@ -174,56 +174,12 @@ refer to the former binding in the scope of the latter, but with de
 Bruijn indices it could be referred to as `# 2`.
 
 
+## Inherently typed terms
 
-OBSOLETE TEXT
+With two examples under our belt, we can begin our formal development.
 
-For each constructor
-of terms `M`, there is a corresponding constructor of type derivations,
-`Γ ⊢ M ⦂ A`:
-
-* `` `_ `` corresponds to `Ax`
-* `ƛ_⇒_` corresponds to `⊢ƛ`
-* `_·_` corresponds to `_·_`
-* `` `zero `` corresponds to `⊢zero`
-* `` `suc_ `` corresponds to `⊢suc`
-* `` `case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
-* `μ_⇒_` corresponds to `⊢μ`
-
-Variable names `x` in terms correspond to derivations that
-look up a name in the environment.  There are two constructors of such
-derivations `Z` and `S`, which behave similarly to constructors `here`
-and `there` for looking up elements in a list.  But derivations also
-correspond to a natural number, take `Z` as zero and `S` as successor.
-
-
-
-    ∋s                        ∋s                        ∋z
-    ------------------- `_    ------------------- `_    --------------- `_
-    Γ₂ ⊢ ` "s" ⦂ A ⇒ A        Γ₂ ⊢ ` "s" ⦂ A ⇒ A         Γ₂ ⊢ ` "z" ⦂ A
-    ------------------- `_    ------------------------------------------ _·_
-    Γ₂ ⊢ ` "s" ⦂ A ⇒ A        Γ₂ ⊢ ` "s" · ` "z" ⦂ A
-    -------------------------------------------------- _·_
-    Γ₂ ⊢ ` "s" · (` "s" · ` "z") ⦂ A
-    ---------------------------------------------- ⊢ƛ
-    Γ₁ ⊢ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ A ⇒ A
-    ------------------------------------------------------------- ⊢ƛ
-    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ (A ⇒ A) ⇒ A ⇒ A
-
-where `∋s` and `∋z` abbreviate the two derivations:
-
-                 ---------------- Z
-    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
-    ----------------------------- S        ------------- Z
-    Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
-
-and where `Γ₁ = ∅ , s ⦂ A ⇒ A` and `Γ₂ = ∅ , s ⦂ A ⇒ A , z ⦂ A`.
-
-
-
-
-
-## Syntax
-
+First, we get all our infix declarations out of the way.  For ease of reading,
+we list operators in order from least tightly binding to most.
 \begin{code}
 infix  4 _⊢_
 infix  4 _∋_
@@ -233,29 +189,106 @@ infix  5 μ_
 infixr 7 _⇒_
 infixl 7 _·_
 infix  8 `suc_
-infix  8 `_
-infix  8 S_
+infix  9 `_
+infix  9 S_
+infix  9 #_ 
+\end{code}
 
+Since terms are inherently typed, we must define types and contexts
+before terms.
+
+### Types
+
+As before, we have just two types, functions and naturals.  The formal definition
+is unchanged.
+\begin{code}
 data Type : Set where
-  `ℕ  : Type
   _⇒_ : Type → Type → Type
+  `ℕ  : Type
+\end{code}
+For example,
+\begin{code}
+_ : Type
+_ = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+\end{code}
+is a type that can be assigned to a Church numeral.
 
-data Ctx : Set where
-  ∅   : Ctx
-  _,_ : Ctx → Type → Ctx
+### Contexts
 
-data _∋_ : Ctx → Type → Set where
+Contexts are as before, but we drop the names.
+Contexts are formalised as follows.
+\begin{code}
+data Context : Set where
+  ∅   : Context
+  _,_ : Context → Type → Context
+\end{code}
+A context is just a list of types, with the type of the most recently
+bound variable on the right.  As before, we let `Γ` and `Δ` range over contexts.
+We write `∅` for the empty context, and `Γ , A` for the context `Γ` extended
+by type `A`.  For example
+\begin{code}
+_ : Context
+_ = ∅ , `ℕ ⇒ `ℕ , `ℕ
+\end{code}
+is a context with two variables in scope, where the outer bound one has
+type `` `ℕ → `ℕ ``, and the inner bound one has type `` `ℕ ``.
 
-  Z : ∀ {Γ} {A}
+### Variables and the lookup judgement
+
+Inherently typed variables correspond to the lookup judgement.
+They are represented by de Bruijn indices, and hence also correspond to natural numbers.
+We write
+
+    Γ ∋ A
+
+for variables which in context `Γ` have type `A`.
+Their formalisation looks exactly like the old lookup judgement,
+but with all names dropped.
+\begin{code}
+data _∋_ : Context → Type → Set where
+
+  Z : ∀ {Γ A}
       ----------
     → Γ , A ∋ A
 
-  S_ : ∀ {Γ} {A B}
-    → Γ ∋ B
+  S_ : ∀ {Γ A B}
+    → Γ ∋ A
       ---------
-    → Γ , A ∋ B
+    → Γ , B ∋ A
+\end{code}
+Constructor `S` no longer requires an additional parameter, since
+without names shadowing is no longer an issue.  Now constructors
+`Z` and `S` correspond even more closely to the constructors
+`here` and `there` for the element-of relation `_∈_` on lists,
+as well as to constructors `zero` and `suc` for natural numbers.
 
-data _⊢_ : Ctx → Type → Set where
+For example, consider the following old-style lookup judgements:
+
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
+
+They correspond to the following inherently-typed variables.
+\begin{code}
+_ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
+_ = Z
+
+_ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ ⇒ `ℕ
+_ = S Z
+\end{code}
+In the given context, `"z"` is represented by `Z`, and `"s"` by `S Z`.
+
+### Terms and the typing judgement
+
+Inherently typed terms correspond to the typing judgement.
+We write
+
+    Γ ⊢ A
+
+for terms which in context `Γ` has type `A`.
+Their formalisation looks exactly like the old typing judgement,
+but with all terms and names dropped.
+\begin{code}
+data _⊢_ : Context → Type → Set where
 
   `_ : ∀ {Γ} {A}
     → Γ ∋ A
@@ -294,10 +327,89 @@ data _⊢_ : Ctx → Type → Set where
       ----------
     → Γ ⊢ A
 \end{code}
+The definition exploits the close correspondence between the
+structure of terms and the structure of a derivation showing that it
+is well-typed: now we use the derivation _as_ the term.  For example,
+consider the following three terms, building up the Church numeral
+two.
+
+For example, consider the following old-style typing judgements:
+
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` ` "s" · ` "z" ⦂  `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" · (` "s" · ` "z") ⦂  `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
+* `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
+
+They correspond to the following inherently-typed terms.
+\begin{code}
+_ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
+_ = ` Z
+
+_ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ ⇒ `ℕ
+_ = ` S Z
+
+_ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
+_ = ` S Z · ` Z
+
+_ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
+_ = ` S Z · (` S Z · ` Z)
+
+_ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
+_ = ƛ (` S Z · (` S Z · ` Z))
+
+_ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+_ = ƛ ƛ (` S Z · (` S Z · ` Z))
+\end{code}
+The final inherently-typed term represents the Church numeral two.
+
+### A convenient abbreviation
+
+We can use a natural number to select a type from a context.
+\begin{code}
+lookup : Context → ℕ → Type
+lookup (Γ , A) zero     =  A
+lookup (Γ , _) (suc n)  =  lookup Γ n
+lookup ∅       _        =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+We intend to apply the function only when the natural is shorter
+than the length of the context, which we indicate by postulating
+an `impossible` term, just as we did
+[here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#impossible).
+
+Given the above, we can convert a natural to a corresponding
+De Bruijn indice, looking up its type in the context.
+\begin{code}
+count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
+count {Γ , _} zero     =  Z
+count {Γ , _} (suc n)  =  S (count n)
+count {∅}     _        =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+This requires the same trick as before.
+
+We can then introduce a convenient abbreviation for variables.
+\begin{code}
+#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
+# n  =  ` count n
+\end{code}
+
+With this abbreviation, we can rewrite the Church numeral two more compactly.
+\begin{code}
+_ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+_ = ƛ ƛ (# 1 · (# 1 · # 0))
+\end{code}
 
 
 ## Test examples
 
+We repeat the test examples from
+Chapter [Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %}).
+You can find the 
+[here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#derivation)
+for comparison.
 \begin{code}
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
