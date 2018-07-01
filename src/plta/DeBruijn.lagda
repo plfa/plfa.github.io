@@ -459,7 +459,7 @@ is due to Conor McBride.  Whereas before we defined substitution
 in one chapter and showed in preserved types in another chapter,
 here we will do both at once.
 
-## Renaming
+### Renaming
 
 As before, renaming is a necessary prelude to substitution, enabling
 us to "rebase" a term from one context to another.  It corresponds
@@ -544,7 +544,7 @@ _ : rename S_ M₀ ≡ M₁
 _ = refl
 \end{code}
 
-## Substitution
+### Substitution
 
 \begin{code}
 exts : ∀ {Γ Δ}
@@ -566,7 +566,11 @@ subst σ (`suc M)        =  `suc (subst σ M)
 subst σ (`case L M N)  =  `case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)           =  μ (subst (exts σ) N)
 
-_[_] : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
+_[_] : ∀ {Γ A B}
+        → Γ , A ⊢ B
+        → Γ ⊢ A 
+          ---------
+        → Γ ⊢ B
 _[_] {Γ} {A} N M =  subst {Γ , A} {Γ} σ N
   where
   σ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
