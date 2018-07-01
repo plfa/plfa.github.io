@@ -400,19 +400,19 @@ Here is the formal definition of substitution by closed terms in Agda.
 
 \begin{code}
 infix 9 _[_:=_]
-infix 9 _[[_][_:=_]]
+infix 9 _⟨_⟩[_:=_]
 
 _[_:=_]   : Term → Id → Term → Term
 
-_[[_][_:=_]] : Term → Id → Id → Term → Term
-N [[ x ][ y := V ]] with x ≟ y
+_⟨_⟩[_:=_] : Term → Id → Id → Term → Term
+N ⟨ x ⟩[ y := V ] with x ≟ y
 ... | yes _                  =  N
 ... | no  _                  =  N [ y := V ]
 
 (` x) [ y := V ] with x ≟ y
 ... | yes _                  =  V
 ... | no  _                  =  ` x
-(ƛ x ⇒ N) [ y := V ]         =  ƛ x ⇒ N [[ x ][ y := V ]]
+(ƛ x ⇒ N) [ y := V ]         =  ƛ x ⇒ N ⟨ x ⟩[ y := V ]
 (L · M) [ y := V ]           =  (L [ y := V ]) · (M [ y := V ])
 (`zero) [ y := V ]           =  `zero
 (`suc M) [ y := V ]          =  `suc (M [ y := V ])
@@ -420,8 +420,8 @@ N [[ x ][ y := V ]] with x ≟ y
   [zero⇒ M
   |suc x ⇒ N ]) [ y := V ]   =  `case L [ y := V ]
                                    [zero⇒ M [ y := V ]
-                                   |suc x ⇒ N [[ x ][ y := V ]] ]
-(μ x ⇒ N) [ y := V ]         =  μ x ⇒ (N [[ x ][ y := V ]])
+                                   |suc x ⇒ N ⟨ x ⟩[ y := V ] ]
+(μ x ⇒ N) [ y := V ]         =  μ x ⇒ (N ⟨ x ⟩[ y := V ])
 
 
 {-
@@ -979,7 +979,7 @@ data _⊢_⦂_ : Context → Term → Type → Set where
 
   Ax : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
-      -------------
+       -------------
     → Γ ⊢ ` x ⦂ A
 
   -- ⇒-I
