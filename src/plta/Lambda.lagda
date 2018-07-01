@@ -977,7 +977,8 @@ infix  4  _⊢_⦂_
 
 data _⊢_⦂_ : Context → Term → Type → Set where
 
-  Ax : ∀ {Γ x A}
+  -- Axiom
+  ⊢` : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
        -------------
     → Γ ⊢ ` x ⦂ A
@@ -1103,7 +1104,7 @@ Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
 
 ⊢twoᶜ : ∅ ⊢ twoᶜ ⦂ Ch `ℕ
-⊢twoᶜ = ⊢ƛ (⊢ƛ (Ax ∋s · (Ax ∋s · Ax ∋z)))
+⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
   where
   ∋s = S ("s" ≠ "z") Z
   ∋z = Z
@@ -1115,8 +1116,8 @@ Here are the typings corresponding to computing two plus two.
 ⊢two = ⊢suc (⊢suc ⊢zero)
 
 ⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (Ax ∋m) (Ax ∋n)
-         (⊢suc (Ax ∋+ · Ax ∋m′ · Ax ∋n′)))))
+⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
+         (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
   where
   ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
   ∋m  = (S ("m" ≠ "n") Z)
@@ -1136,7 +1137,7 @@ the second after "m" is bound in the successor branch of the case.
 And here are typings for the remainder of the Church example.
 \begin{code}
 ⊢plusᶜ : ∅ ⊢ plusᶜ ⦂ Ch `ℕ ⇒ Ch `ℕ ⇒ Ch `ℕ
-⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (Ax ∋m · Ax ∋s · (Ax ∋n · Ax ∋s · Ax ∋z)))))
+⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
   ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
   ∋n = S ("n" ≠ "z") (S ("n" ≠ "s") Z)
@@ -1144,7 +1145,7 @@ And here are typings for the remainder of the Church example.
   ∋z = Z
 
 ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
-⊢sucᶜ = ⊢ƛ (⊢suc (Ax ∋n))
+⊢sucᶜ = ⊢ƛ (⊢suc (⊢` ∋n))
   where
   ∋n = Z
 
@@ -1182,7 +1183,7 @@ We can fill in the hole by type C-c C-r again.
 
 And again.
 
-    ⊢suc′ = ⊢ƛ (⊢suc (Ax { }3))
+    ⊢suc′ = ⊢ƛ (⊢suc (⊢` { }3))
     ?3 : ∅ , "n" ⦂ `ℕ ∋ "n" ⦂ `ℕ
 
 A further attempt with C-c C-r yields the message:
@@ -1191,7 +1192,7 @@ A further attempt with C-c C-r yields the message:
 
 We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are done.
 
-    ⊢suc′ = ⊢ƛ (⊢suc (Ax Z))
+    ⊢suc′ = ⊢ƛ (⊢suc (⊢` Z))
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
@@ -1233,7 +1234,7 @@ doing so requires types `A` and `B` such that `A ⇒ B ≡ A`.
 
 \begin{code}
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ` "x" · ` "x" ⦂ A)
-nope₂ (⊢ƛ (Ax ∋x · Ax ∋x′))  =  contradiction (∋-injective ∋x ∋x′)
+nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-injective ∋x ∋x′)
   where
   contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
   contradiction ()

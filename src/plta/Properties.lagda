@@ -245,7 +245,7 @@ canonical : ∀ {V A}
   → Value V
     -----------
   → Canonical V ⦂ A
-canonical (Ax ())          ()
+canonical (⊢` ())          ()
 canonical (⊢ƛ ⊢N)          V-ƛ         =  C-ƛ ⊢N
 canonical (⊢L · ⊢M)        ()
 canonical ⊢zero            V-zero      =  C-zero
@@ -337,7 +337,7 @@ progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     ----------
   → Progress M
-progress (Ax ())
+progress (⊢` ())
 progress (⊢ƛ ⊢N)                            =  done V-ƛ
 progress (⊢L · ⊢M) with progress ⊢L
 ... | step L↦L′                             =  step (ξ-·₁ L↦L′)
@@ -547,7 +547,7 @@ rename : ∀ {Γ Δ}
         → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
           ----------------------------------
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
-rename ρ (Ax ∋w)           =  Ax (ρ ∋w)
+rename ρ (⊢` ∋w)           =  ⊢` (ρ ∋w)
 rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext ρ) ⊢N)
 rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)
 rename ρ ⊢zero             =  ⊢zero
@@ -685,7 +685,7 @@ substbind : ∀ {Γ x y N V A B C}
     ---------------------------------
   → Γ , x ⦂ A ⊢ N ⟨ x ⟩[ y := V ] ⦂ C
 
-subst ⊢V (Ax ∋x)           =  substvar ⊢V ∋x
+subst ⊢V (⊢` ∋x)           =  substvar ⊢V ∋x
 subst ⊢V (⊢ƛ ⊢N)           =  ⊢ƛ (substbind ⊢V ⊢N)
 subst ⊢V (⊢L · ⊢M)         =  subst ⊢V ⊢L · subst ⊢V ⊢M
 subst ⊢V ⊢zero             =  ⊢zero
@@ -698,7 +698,7 @@ substvar {x = x} {y = y} ⊢V Z with x ≟ y
 ... | no  x≢y              =  ⊥-elim (x≢y refl)
 substvar {x = x} {y = y} ⊢V (S x≢y ∋x) with x ≟ y
 ... | yes refl             =  ⊥-elim (x≢y refl)
-... | no  _                =  Ax ∋x
+... | no  _                =  ⊢` ∋x
 
 substbind {x = x} {y = y} ⊢V ⊢N with x ≟ y
 ... | yes refl             =  drop ⊢N
@@ -723,12 +723,12 @@ subst : ∀ {Γ x N V A B}
   → Γ , x ⦂ A ⊢ N ⦂ B
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
-subst {x = y} ⊢V (Ax {x = x} Z) with x ≟ y
+subst {x = y} ⊢V (⊢` {x = x} Z) with x ≟ y
 ... | yes refl     =  weaken ⊢V
 ... | no  x≢y      =  ⊥-elim (x≢y refl)
-subst {x = y} ⊢V (Ax {x = x} (S x≢y ∋x)) with x ≟ y
+subst {x = y} ⊢V (⊢` {x = x} (S x≢y ∋x)) with x ≟ y
 ... | yes refl     =  ⊥-elim (x≢y refl)
-... | no  _        =  Ax ∋x
+... | no  _        =  ⊢` ∋x
 subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
 ... | yes refl     =  ⊢ƛ (drop ⊢N)
 ... | no  x≢y      =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
@@ -753,7 +753,7 @@ cases, and fixpoints, the variable `x` is an implicit parameter for
 the relevant variable.  We are going to need to get hold of both
 variables, so we use the syntax `{x = y}` to bind `y` to the
 substituted variable and the syntax `{x = x}` to bind `x` to the
-relevant variable in the patterns for `Ax`, `⊢ƛ`, `⊢case`, and `⊢μ`.
+relevant variable in the patterns for `⊢``, `⊢ƛ`, `⊢case`, and `⊢μ`.
 Using the name `y` here is consistent with the naming in the original
 definition of substitution in the previous chapter.  The proof never
 mentions the types of `x`, `y`, `V`, or `N`, so in what follows we
@@ -907,7 +907,7 @@ preserve : ∀ {M N A}
   → M ↦ N
     ----------
   → ∅ ⊢ N ⦂ A
-preserve (Ax ())
+preserve (⊢` ())
 preserve (⊢ƛ ⊢N)                 ()
 preserve (⊢L · ⊢M)               (ξ-·₁ L↦L′)     =  (preserve ⊢L L↦L′) · ⊢M
 preserve (⊢L · ⊢M)               (ξ-·₂ VL M↦M′)  =  ⊢L · (preserve ⊢M M↦M′)
@@ -1093,7 +1093,7 @@ sequence given earlier.  First, we show that the term `sucμ`
 is well-typed.
 \begin{code}
 ⊢sucμ : ∅ ⊢ μ "x" ⇒ `suc ` "x" ⦂ `ℕ
-⊢sucμ = ⊢μ (⊢suc (Ax ∋x))
+⊢sucμ = ⊢μ (⊢suc (⊢` ∋x))
   where
   ∋x = Z
 \end{code}
