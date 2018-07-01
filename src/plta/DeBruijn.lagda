@@ -286,7 +286,7 @@ We write
 
 for terms which in context `Γ` has type `A`.
 Their formalisation looks exactly like the old typing judgement,
-but with all terms and names dropped.
+but with all names and terms dropped.
 \begin{code}
 data _⊢_ : Context → Type → Set where
 
@@ -461,25 +461,87 @@ here we will do both at once.
 
 ## Renaming
 
+As before, renaming is a necessary prelude to substitution, enabling
+us to "rebase" a term from one context to another.  It corresponds
+directly to the renaming result from the previous chapter.
+
+As before, we first need an extension lemma that allows us to extend
+the context when we encounter a binder: if variables in one context map to
+variables in another, this is still true after adding the some other variable to
+the end of both contexts.  It looks exactly like the old extension lemma, but with all
+names and terms dropped.
 \begin{code}
 ext : ∀ {Γ Δ}
-  → (∀ {B}   →     Γ ∋ B →     Δ ∋ B)
+  → (∀ {A}   →     Γ ∋ A →     Δ ∋ A)
     ----------------------------------
-  → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
+  → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
+\end{code}
+Let `ρ` be the name of the map that takes variables in `Γ`
+to variables in `Δ`.  Consider the De Bruijn index of the
+variable in `Γ , B`.
 
+* If it is `Z`, we return index `Z` to a variable in `Δ , B`.
+
+* If it is `S x`, for some variable `x` in `Γ`, then `ρ x`
+  is a variable in `Δ`, and hence `S (ρ x)` is a variable in
+  `Δ , B`.
+
+With extension under our belts, it is straightforward
+to define renaming.  If variables in one context map to
+variables in another, then terms in one context map to
+terms in another.
+\begin{code}
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
     ------------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-rename ρ (` n)          =  ` (ρ n)
+rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
 rename ρ (`zero)        =  `zero
 rename ρ (`suc M)       =  `suc (rename ρ M)
 rename ρ (`case L M N)  =  `case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
+\end{code}
+Let `ρ` be the name of the map that takes variables in `Γ`
+to variables in `Δ`.  Let's unpack the first three cases.
+
+* If the term is a variable, simply apply `ρ`.
+
+* If the term is an abstraction, use the previous lemma
+  to extend the map `ρ` suitably and recursively rename the
+  body of the abstraction.
+
+* If the term is an application, recursively rename both
+  both the function and the argument.
+
+The remaining cases are similar, recursing on each subterm, and
+extending the map whenever the construct introduces a bound variable.
+
+Whereas before renaming was a result that carried evidence that
+a term is well-typed in one context to evidence that it is well-typed
+in another context, now it actually transforms the term, suitably
+altering the bound variables.
+
+**Add example based on a term with one bound and one free variable**
+
+**Give an example in the introduction of what happens when substituting
+  a term with a free variable**
+
+**See what happens when subsituting a term with both a lambda bound
+  and a free variable underneath a lambda term**
+
+\begin{code}
+M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
+M₀ = ƛ (# 1 · (# 1 · # 0))
+
+M₁ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ ⇒ `ℕ
+M₁ = ƛ (# 2 · (# 2 · # 0))
+
+_ : rename S_ M₀ ≡ M₁
+_ = refl
 \end{code}
 
 ## Substitution

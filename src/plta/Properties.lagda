@@ -514,8 +514,8 @@ and `Γ , x ⦂ A` appears in a hypothesis.  Thus:
     Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
 
 for lambda expressions, and similarly for case and fixpoint.  To deal
-with this situation, we first prove a lemma showing that if one context
-extends another, this is still true after adding the same variable to
+with this situation, we first prove a lemma showing that if one context maps to another, 
+this is still true after adding the same variable to
 both contexts.
 \begin{code}
 ext : ∀ {Γ Δ}
@@ -527,7 +527,7 @@ ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 \end{code}
 Let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.
-The proof is by induction on the evidence that `x` appears
+The proof is by case analysis of the evidence that `x` appears
 in the extended map `Γ , y ⦂ B`.
 
 * If `x` is the same as `y`, we used `Z` to access the last variable
@@ -572,7 +572,7 @@ abstraction
 function and the argument.
 
 The remaining cases are similar, using induction for each subterm, and
-also extension where the construct introduces a bound variable.
+extending the map whenever the construct introduces a bound variable.
 
 The induction is over the derivation that the term is well-typed,
 so extending the context doesn't invalidate the inductive hypothesis.
