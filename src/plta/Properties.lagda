@@ -1085,7 +1085,7 @@ writing `twoᶜ` and `sucᶜ` in place of their expansions.
 
 Next, we show two plus two is four.
 \begin{code}
-_ : eval (gas 100) ⊢four ≡
+_ : eval (gas 100) ⊢2+2 ≡
   steps
   ((μ "+" ⇒
     (ƛ "m" ⇒
@@ -1248,7 +1248,7 @@ editing the above.
 
 Similarly, can evaluate the corresponding term for Church numerals.
 \begin{code}
-_ : eval (gas 100) ⊢fourᶜ ≡
+_ : eval (gas 100) ⊢2+2ᶜ ≡
   steps
   ((ƛ "m" ⇒
     (ƛ "n" ⇒
