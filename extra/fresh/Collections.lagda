@@ -21,7 +21,6 @@ open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Isomorphism using (_≃_)
 open import Function using (_∘_)
 open import Level using (Level)
 open import Data.List using (List; []; _∷_; [_]; _++_; map; foldr; filter)
@@ -40,7 +39,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 
 \begin{code}
 module fresh.Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
-
+  
     Coll : Set → Set
     Coll A  =  List A
 
