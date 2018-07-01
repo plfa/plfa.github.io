@@ -558,13 +558,13 @@ subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ------------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-subst σ (` k)         =  σ k
-subst σ (ƛ N)           =  ƛ (subst (exts σ) N)
-subst σ (L · M)         =  (subst σ L) · (subst σ M)
-subst σ (`zero)         =  `zero
-subst σ (`suc M)        =  `suc (subst σ M)
+subst σ (` k)          =  σ k
+subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
+subst σ (L · M)        =  (subst σ L) · (subst σ M)
+subst σ (`zero)        =  `zero
+subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (`case L M N)  =  `case (subst σ L) (subst σ M) (subst (exts σ) N)
-subst σ (μ N)           =  μ (subst (exts σ) N)
+subst σ (μ N)          =  μ (subst (exts σ) N)
 
 _[_] : ∀ {Γ A B}
         → Γ , A ⊢ B
