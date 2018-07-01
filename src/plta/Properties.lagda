@@ -672,6 +672,18 @@ subst : ∀ {Γ x N V A B}
   → Γ , x ⦂ A ⊢ N ⦂ B
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
+
+{-
+substbind : ∀ {Γ x y N V A B C}
+  → ∅ ⊢ V ⦂ B
+  → Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
+    -----------------------------------
+  → Γ , x ⦂ A ⊢ N [[ x ][ y := V ]] ⦂ C
+substbind {x = x} {y = y} ⊢V ⊢N with x ≟ y
+... | yes refl     =  drop ⊢N
+... | no  x≢y      =  subst ⊢V (swap x≢y ⊢N)
+-}
+
 subst {x = y} ⊢V (Ax {x = x} Z) with x ≟ y
 ... | yes refl     =  weaken ⊢V
 ... | no  x≢y      =  ⊥-elim (x≢y refl)
@@ -690,6 +702,33 @@ subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
 subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
 ... | yes refl     =  ⊢μ (drop ⊢M)
 ... | no  x≢y      =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
+
+
+{-
+subst : ∀ {Γ x N V A B}
+  → ∅ ⊢ V ⦂ A
+  → Γ , x ⦂ A ⊢ N ⦂ B
+    --------------------
+  → Γ ⊢ N [ x := V ] ⦂ B
+subst {x = y} ⊢V (Ax {x = x} Z) with x ≟ y
+... | yes refl     =  weaken ⊢V
+... | no  x≢y      =  ⊥-elim (x≢y refl)
+subst {x = y} ⊢V (Ax {x = x} (S x≢y ∋x)) with x ≟ y
+... | yes refl     =  ⊥-elim (x≢y refl)
+... | no  _        =  Ax ∋x
+subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
+... | yes refl     =  ⊢ƛ (drop ⊢N)
+... | no  x≢y      =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
+subst ⊢V (⊢L · ⊢M) = subst ⊢V ⊢L · subst ⊢V ⊢M
+subst ⊢V ⊢zero     =  ⊢zero
+subst ⊢V (⊢suc ⊢M) =  ⊢suc (subst ⊢V ⊢M)
+subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
+... | yes refl     =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
+... | no  x≢y      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
+subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
+... | yes refl     =  ⊢μ (drop ⊢M)
+... | no  x≢y      =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
+-}
 \end{code}
 We induct on the evidence that `N` is well-typed in the
 context `Γ` extended by `x`.

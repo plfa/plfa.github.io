@@ -400,23 +400,57 @@ Here is the formal definition of substitution by closed terms in Agda.
 
 \begin{code}
 infix 9 _[_:=_]
+infix 9 _[[_][_:=_]]
+
+_[_:=_]   : Term → Id → Term → Term
+
+_[[_][_:=_]] : Term → Id → Id → Term → Term
+N [[ x ][ y := V ]] with x ≟ y
+... | yes _                  =  N
+... | no  _                  =  N [ y := V ]
+
+(` x) [ y := V ] with x ≟ y
+... | yes _                  =  V
+... | no  _                  =  ` x
+(ƛ x ⇒ N) [ y := V ]         =  ƛ x ⇒ N [[ x ][ y := V ]]
+(L · M) [ y := V ]           =  (L [ y := V ]) · (M [ y := V ])
+(`zero) [ y := V ]           =  `zero
+(`suc M) [ y := V ]          =  `suc (M [ y := V ])
+(`case L
+  [zero⇒ M
+  |suc x ⇒ N ]) [ y := V ]   =  `case L [ y := V ]
+                                   [zero⇒ M [ y := V ]
+                                   |suc x ⇒ N [[ x ][ y := V ]] ]
+(μ x ⇒ N) [ y := V ]         =  μ x ⇒ (N [[ x ][ y := V ]])
+
+
+{-
+infix 9 _[_:=_]
 
 _[_:=_] : Term → Id → Term → Term
 (` x) [ y := V ] with x ≟ y
-... | yes _  =  V
-... | no  _  =  ` x
+... | yes _                      =  V
+... | no  _                      =  ` x
 (ƛ x ⇒ N) [ y := V ] with x ≟ y
-... | yes _  =  ƛ x ⇒ N
-... | no  _  =  ƛ x ⇒ (N [ y := V ])
-(L · M) [ y := V ]   =  (L [ y := V ]) · (M [ y := V ])
-(`zero) [ y := V ]   =  `zero
-(`suc M) [ y := V ]  =  `suc (M [ y := V ])
-(`case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
-... | yes _  =  `case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
-... | no  _  =  `case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
+... | yes _                      =  ƛ x ⇒ N
+... | no  _                      =  ƛ x ⇒ (N [ y := V ])
+(L · M) [ y := V ]               =  (L [ y := V ]) · (M [ y := V ])
+(`zero) [ y := V ]               =  `zero
+(`suc M) [ y := V ]              =  `suc (M [ y := V ])
+(`case L
+  [zero⇒ M
+  |suc x ⇒ N ])
+  [ y := V ] with x ≟ y
+... | yes _                      =  `case L [ y := V ]
+                                       [zero⇒ M [ y := V ]
+                                       |suc x ⇒ N ]
+... | no  _                      =  `case L [ y := V ]
+                                       [zero⇒ M [ y := V ]
+                                       |suc x ⇒ N [ y := V ] ]
 (μ x ⇒ N) [ y := V ] with x ≟ y
-... | yes _  =  μ x ⇒ N
-... | no  _  =  μ x ⇒ (N [ y := V ])
+... | yes _                      =  μ x ⇒ N
+... | no  _                      =  μ x ⇒ (N [ y := V ])
+-}
 \end{code}
 
 Let's unpack the first three cases.
@@ -442,10 +476,10 @@ simply push substitution recursively into the subterms.
 Here is confirmation that the examples above are correct.
 
 \begin{code}
-_ : (sucᶜ · sucᶜ · ` "z") [ "z" := `zero ] ≡  sucᶜ · sucᶜ · `zero
+_ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡  sucᶜ · (sucᶜ · `zero)
 _ = refl
 
-_ : (ƛ "z" ⇒ ` "s" · ` "s" · ` "z") [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · sucᶜ · ` "z"
+_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
 _ = refl
 
 _ : (ƛ "x" ⇒ ` "y") [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
