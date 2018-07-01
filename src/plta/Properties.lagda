@@ -48,7 +48,7 @@ Ultimately, we would like to show that we can keep reducing a term
 until we reach a value.  For instance, in the last chapter we showed
 that two plust two is four,
 
-    plus · two · two  ↠  `suc `suc `suc `suc `zero
+    plus · two · two  —↠  `suc `suc `suc `suc `zero
 
 which was proved by a long chain of reductions, ending in the value
 on the right.  Every term in the chain had the same type, `` `ℕ ``.
@@ -59,7 +59,7 @@ a reduction step.  As we will see, this property does _not_ hold for
 every term, but it does hold for every closed, well-typed term.
 
 _Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
-that `M ↦ N`.
+that `M —→ N`.
 
 So, either we have a value, and we are done, or we can take a reduction step.
 In the latter case, we would like to apply progress again. But to do so we need
@@ -67,7 +67,7 @@ to know that the term yielded by the reduction is itself closed and well-typed.
 It turns out that this property holds whenever we start with a closed,
 well-typed term.
 
-_Preservation_: If `∅ ⊢ M ⦂ A` and `M ↦ N` then `∅ ⊢ N ⦂ A`.
+_Preservation_: If `∅ ⊢ M ⦂ A` and `M —→ N` then `∅ ⊢ N ⦂ A`.
 
 This gives us a recipe for automating evaluation. Start with a closed
 and well-typed term.  By progress, it is either a value, in which case
@@ -93,10 +93,10 @@ types without needing to develop a separate inductive definition of the
 
 We start with any easy observation. Values do not reduce.
 \begin{code}
-V¬↦ : ∀ {M N} → Value M → ¬ (M ↦ N)
-V¬↦ V-ƛ        ()
-V¬↦ V-zero     ()
-V¬↦ (V-suc VM) (ξ-suc M↦N) = V¬↦ VM M↦N
+V¬—→ : ∀ {M N} → Value M → ¬ (M —→ N)
+V¬—→ V-ƛ        ()
+V¬—→ V-zero     ()
+V¬—→ (V-suc VM) (ξ-suc M—→N) = V¬—→ VM M—→N
 \end{code}
 We consider the three possibilities for values.
 
@@ -110,13 +110,13 @@ We consider the three possibilities for values.
 
 As a corollary, terms that reduce are not values.
 \begin{code}
-↦¬V : ∀ {M N} → (M ↦ N) → ¬ Value M
-↦¬V M↦N VM  =  V¬↦ VM M↦N
+—→¬V : ∀ {M N} → (M —→ N) → ¬ Value M
+—→¬V M—→N VM  =  V¬—→ VM M—→N
 \end{code}
 If we expand out the negations, we have
 
-    V¬↦ : ∀ {M N} → Value M → M ↦ N → ⊥
-    ↦¬V : ∀ {M N} → M ↦ N → Value M → ⊥
+    V¬—→ : ∀ {M N} → Value M → M —→ N → ⊥
+    —→¬V : ∀ {M N} → M —→ N → Value M → ⊥
 
 which are the same function with the arguments swapped.
 
@@ -139,38 +139,38 @@ cong₄ f refl refl refl refl = refl
 It is now straightforward to show that reduction is deterministic.
 \begin{code}
 det : ∀ {M M′ M″}
-  → (M ↦ M′)
-  → (M ↦ M″)
+  → (M —→ M′)
+  → (M —→ M″)
     --------
   → M′ ≡ M″
-det (ξ-·₁ L↦L′)   (ξ-·₁ L↦L″)    =  cong₂ _·_ (det L↦L′ L↦L″) refl
-det (ξ-·₁ L↦L′)   (ξ-·₂ VL M↦M″) =  ⊥-elim (V¬↦ VL L↦L′)
-det (ξ-·₁ L↦L′)   (β-ƛ _)        =  ⊥-elim (V¬↦ V-ƛ L↦L′)
-det (ξ-·₂ VL _)   (ξ-·₁ L↦L″)    =  ⊥-elim (V¬↦ VL L↦L″)
-det (ξ-·₂ _ M↦M′) (ξ-·₂ _ M↦M″)  =  cong₂ _·_ refl (det M↦M′ M↦M″)
-det (ξ-·₂ _ M↦M′) (β-ƛ VM)       =  ⊥-elim (V¬↦ VM M↦M′)
-det (β-ƛ _)       (ξ-·₁ L↦L″)    =  ⊥-elim (V¬↦ V-ƛ L↦L″)
-det (β-ƛ VM)      (ξ-·₂ _ M↦M″)  =  ⊥-elim (V¬↦ VM M↦M″)
-det (β-ƛ _)       (β-ƛ _)        =  refl
-det (ξ-suc M↦M′)  (ξ-suc M↦M″)   =  cong `suc_ (det M↦M′ M↦M″)
-det (ξ-case L↦L′) (ξ-case L↦L″)  =  cong₄ `case_[zero⇒_|suc_⇒_]
-                                      (det L↦L′ L↦L″) refl refl refl
-det (ξ-case L↦L′) β-zero         =  ⊥-elim (V¬↦ V-zero L↦L′)
-det (ξ-case L↦L′) (β-suc VL)     =  ⊥-elim (V¬↦ (V-suc VL) L↦L′)
-det β-zero        (ξ-case M↦M″)  =  ⊥-elim (V¬↦ V-zero M↦M″)
-det β-zero        β-zero         =  refl
-det (β-suc VL)    (ξ-case L↦L″)  =  ⊥-elim (V¬↦ (V-suc VL) L↦L″)
-det (β-suc _)     (β-suc _)      =  refl
-det β-μ           β-μ            =  refl
+det (ξ-·₁ L—→L′)   (ξ-·₁ L—→L″)     =  cong₂ _·_ (det L—→L′ L—→L″) refl
+det (ξ-·₁ L—→L′)   (ξ-·₂ VL M—→M″)  =  ⊥-elim (V¬—→ VL L—→L′)
+det (ξ-·₁ L—→L′)   (β-ƛ _)          =  ⊥-elim (V¬—→ V-ƛ L—→L′)
+det (ξ-·₂ VL _)   (ξ-·₁ L—→L″)      =  ⊥-elim (V¬—→ VL L—→L″)
+det (ξ-·₂ _ M—→M′) (ξ-·₂ _ M—→M″)   =  cong₂ _·_ refl (det M—→M′ M—→M″)
+det (ξ-·₂ _ M—→M′) (β-ƛ VM)         =  ⊥-elim (V¬—→ VM M—→M′)
+det (β-ƛ _)       (ξ-·₁ L—→L″)      =  ⊥-elim (V¬—→ V-ƛ L—→L″)
+det (β-ƛ VM)      (ξ-·₂ _ M—→M″)    =  ⊥-elim (V¬—→ VM M—→M″)
+det (β-ƛ _)       (β-ƛ _)           =  refl
+det (ξ-suc M—→M′)  (ξ-suc M—→M″)    =  cong `suc_ (det M—→M′ M—→M″)
+det (ξ-case L—→L′) (ξ-case L—→L″)   =  cong₄ `case_[zero⇒_|suc_⇒_]
+                                         (det L—→L′ L—→L″) refl refl refl
+det (ξ-case L—→L′) β-zero           =  ⊥-elim (V¬—→ V-zero L—→L′)
+det (ξ-case L—→L′) (β-suc VL)       =  ⊥-elim (V¬—→ (V-suc VL) L—→L′)
+det β-zero        (ξ-case M—→M″)    =  ⊥-elim (V¬—→ V-zero M—→M″)
+det β-zero        β-zero            =  refl
+det (β-suc VL)    (ξ-case L—→L″)    =  ⊥-elim (V¬—→ (V-suc VL) L—→L″)
+det (β-suc _)     (β-suc _)         =  refl
+det β-μ           β-μ               =  refl
 \end{code}
 The proof is by induction over possible reductions.  We consider
 three typical cases.
 
 * Two instances of `ξ-·₁`.
 
-      L ↦ L′                 L ↦ L″
+      L —→ L′                 L —→ L″
       -------------- ξ-·₁    -------------- ξ-·₁
-      L · M ↦ L′ · M         L · M ↦ L″ · M
+      L · M —→ L′ · M         L · M —→ L″ · M
 
   By induction we have `L′ ≡ L″`, and hence by congruence
   `L′ · M ≡ L″ · M`.
@@ -178,9 +178,9 @@ three typical cases.
 * An instance of `ξ-·₁` and an instance of `ξ-·₂`.
 
                              Value L
-      L ↦ L′                 M ↦ M″
+      L —→ L′                 M —→ M″
       -------------- ξ-·₁    -------------- ξ-·₂
-      L · M ↦ L′ · M         L · M ↦ L · M″
+      L · M —→ L′ · M         L · M —→ L · M″
 
   The rule on the left requires `L` to reduce, but the rule on the right
   requires `L` to be a value.  This is a contradiction since values do
@@ -191,7 +191,7 @@ three typical cases.
 
       Value V                             Value V                         
       ---------------------------- β-ƛ    ---------------------------- β-ƛ
-      (ƛ x ⇒ N) · V ↦ N [ x := V ]        (ƛ x ⇒ N) · V ↦ N [ x := V ]
+      (ƛ x ⇒ N) · V —→ N [ x := V ]        (ƛ x ⇒ N) · V —→ N [ x := V ]
 
   Since the left-hand sides are identical, the right-hand sides are
   also identical.
@@ -202,7 +202,7 @@ once with `ξ-·₁` first and `ξ-·₂` second, and the other time with the
 two swapped.  What we might like to do is delete the redundant lines
 and add
 
-    det M↦M′ M↦M″ = sym (det M↦M″ M↦M′)
+    det M—→M′ M—→M″ = sym (det M—→M″ M—→M′)
 
 to the bottom of the proof. But this does not work. The termination
 checker complains, because the arguments have merely switched order
@@ -310,7 +310,7 @@ second has a free variable.  Every term that is well-typed and closed
 has the desired property.
 
 _Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
-that `M ↦ N`.
+that `M —→ N`.
 
 To formulate this property, we first introduce a relation that
 captures what it means for a term `M` to make progess.
@@ -318,7 +318,7 @@ captures what it means for a term `M` to make progess.
 data Progress (M : Term) : Set where
 
   step : ∀ {N}
-    → M ↦ N
+    → M —→ N
       ----------
     → Progress M
 
@@ -328,7 +328,7 @@ data Progress (M : Term) : Set where
     → Progress M
 \end{code}
 A term `M` makes progress if either it can take a step, meaning there
-exists a term `N` such that `M ↦ N`, or if it is done, meaning that
+exists a term `N` such that `M —→ N`, or if it is done, meaning that
 `M` is a value.
 
 If a term is well-typed in the empty context then it is a value.
@@ -340,17 +340,17 @@ progress : ∀ {M A}
 progress (⊢` ())
 progress (⊢ƛ ⊢N)                            =  done V-ƛ
 progress (⊢L · ⊢M) with progress ⊢L
-... | step L↦L′                             =  step (ξ-·₁ L↦L′)
+... | step L—→L′                            =  step (ξ-·₁ L—→L′)
 ... | done VL with progress ⊢M
-...   | step M↦M′                           =  step (ξ-·₂ VL M↦M′)
+...   | step M—→M′                          =  step (ξ-·₂ VL M—→M′)
 ...   | done VM with canonical ⊢L VL
 ...     | C-ƛ _                             =  step (β-ƛ VM)
 progress ⊢zero                              =  done V-zero
 progress (⊢suc ⊢M) with progress ⊢M
-...  | step M↦M′                            =  step (ξ-suc M↦M′)
+...  | step M—→M′                           =  step (ξ-suc M—→M′)
 ...  | done VM                              =  done (V-suc VM)
 progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
-... | step L↦L′                             =  step (ξ-case L↦L′)
+... | step L—→L′                            =  step (ξ-case L—→L′)
 ... | done VL with canonical ⊢L VL
 ...   | C-zero                              =  step β-zero
 ...   | C-suc CL                            =  step (β-suc (value CL))
@@ -367,7 +367,7 @@ Let's unpack the first three cases.
 * If the term is an application `L · M`, recursively apply
   progress to the derivation that `L` is well-typed.
 
-  + If the term steps, we have evidence that `L ↦ L′`,
+  + If the term steps, we have evidence that `L —→ L′`,
     which by `ξ-·₁` means that our original term steps
     to `L′ · M`
 
@@ -375,7 +375,7 @@ Let's unpack the first three cases.
     a value. Recursively apply progress to the derivation
     that `M` is well-typed.
 
-    - If the term steps, we have evidence that `M ↦ M′`,
+    - If the term steps, we have evidence that `M —→ M′`,
       which by `ξ-·₂` means that our original term steps
       to `L · M′`.  Step `ξ-·₂` applies only if we have
       evidence that `L` is a value, but progress on that
@@ -407,7 +407,7 @@ Instead of defining a data type for `Progress M`, we could
 have formulated progress using disjunction and existentials:
 \begin{code}
 postulate
-  progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Value M ⊎ ∃[ N ](M ↦ N)
+  progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Value M ⊎ ∃[ N ](M —→ N)
 \end{code}
 This leads to a less perspicous proof.  Instead of the mnemonic `done`
 and `step` we use `inj₁` and `inj₂`, and the term `N` is no longer
@@ -423,7 +423,7 @@ proof of `progress` above.
 
 #### Exercise (`Progress-iso`)
 
-Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M ↦ N)`.
+Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
 
 ## Prelude to preservation
@@ -488,7 +488,7 @@ the same result as if we first substitute and then type the result.
 The third step is to show preservation.
 
 _Preservation_:
-If `∅ ⊢ M ⦂ A` and `M ↦ N` then `∅ ⊢ N ⦂ A`.
+If `∅ ⊢ M ⦂ A` and `M —→ N` then `∅ ⊢ N ⦂ A`.
 
 The proof is by induction over the possible reductions, and
 the substitution lemma is crucial in showing that each of the
@@ -904,20 +904,20 @@ that reduction preserves types is straightforward.
 \begin{code}
 preserve : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
-  → M ↦ N
+  → M —→ N
     ----------
   → ∅ ⊢ N ⦂ A
 preserve (⊢` ())
 preserve (⊢ƛ ⊢N)                 ()
-preserve (⊢L · ⊢M)               (ξ-·₁ L↦L′)     =  (preserve ⊢L L↦L′) · ⊢M
-preserve (⊢L · ⊢M)               (ξ-·₂ VL M↦M′)  =  ⊢L · (preserve ⊢M M↦M′)
-preserve ((⊢ƛ ⊢N) · ⊢V)          (β-ƛ VV)        =  subst ⊢V ⊢N
+preserve (⊢L · ⊢M)               (ξ-·₁ L—→L′)     =  (preserve ⊢L L—→L′) · ⊢M
+preserve (⊢L · ⊢M)               (ξ-·₂ VL M—→M′)  =  ⊢L · (preserve ⊢M M—→M′)
+preserve ((⊢ƛ ⊢N) · ⊢V)          (β-ƛ VV)         =  subst ⊢V ⊢N
 preserve ⊢zero                   ()
-preserve (⊢suc ⊢M)               (ξ-suc M↦M′)    =  ⊢suc (preserve ⊢M M↦M′)
-preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L↦L′)   =  ⊢case (preserve ⊢L L↦L′) ⊢M ⊢N
-preserve (⊢case ⊢zero ⊢M ⊢N)     β-zero          =  ⊢M
-preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-suc VV)      =  subst ⊢V ⊢N 
-preserve (⊢μ ⊢M)                 (β-μ)           =  subst (⊢μ ⊢M) ⊢M
+preserve (⊢suc ⊢M)               (ξ-suc M—→M′)    =  ⊢suc (preserve ⊢M M—→M′)
+preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L—→L′)   =  ⊢case (preserve ⊢L L—→L′) ⊢M ⊢N
+preserve (⊢case ⊢zero ⊢M ⊢N)     β-zero           =  ⊢M
+preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-suc VV)       =  subst ⊢V ⊢N 
+preserve (⊢μ ⊢M)                 (β-μ)            =  subst (⊢μ ⊢M) ⊢M
 \end{code}
 The proof never mentions the types of `M` or `N`,
 so in what follows we choose type name as convenient.
@@ -926,9 +926,9 @@ Let's unpack the cases for two of the reduction rules.
 
 * Rule `ξ-·₁`.  We have
 
-      L ↦ L′
+      L —→ L′
       ----------------
-      L · M ↦ L′ · M
+      L · M —→ L′ · M
 
   where the left-hand side is typed by
 
@@ -940,7 +940,7 @@ Let's unpack the cases for two of the reduction rules.
   By induction, we have
 
       Γ ⊢ L ⦂ A ⇒ B
-      L ↦ L′
+      L —→ L′
       --------------
       Γ ⊢ L′ ⦂ A ⇒ B
 
@@ -987,11 +987,11 @@ sucμ  =  μ "x" ⇒ `suc (` "x")
 _ =
   begin
     sucμ
-  ↦⟨ β-μ ⟩
+  —→⟨ β-μ ⟩
     `suc sucμ
-  ↦⟨ ξ-suc β-μ ⟩
+  —→⟨ ξ-suc β-μ ⟩
     `suc `suc sucμ
-  ↦⟨ ξ-suc (ξ-suc β-μ) ⟩
+  —→⟨ ξ-suc (ξ-suc β-μ) ⟩
     `suc `suc `suc sucμ
   --  ...
   ∎
@@ -1042,7 +1042,7 @@ reduction finished.
 data Steps (L : Term) : Set where
 
   steps : ∀ {N}
-    → L ↠ N  
+    → L —↠ N  
     → Finished N
       ----------
     → Steps L
@@ -1058,15 +1058,15 @@ eval : ∀ {L A}
 eval {L} (gas zero)    ⊢L                           =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
 ... | done VL                                       =  steps (L ∎) (done VL)
-... | step L↦M with eval (gas m) (preserve ⊢L L↦M)
-...    | steps M↠N fin                              =  steps (L ↦⟨ L↦M ⟩ M↠N) fin
+... | step L—→M with eval (gas m) (preserve ⊢L L—→M)
+...    | steps M—↠N fin                              =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well-typed.  We consider the amount of gas
 remaining.  There are two possibilities.
 
 * It is zero, so we stop early.  We return the trivial reduction
-  sequence `L ↠ L`, evidence that `L` is well-typed, and an
+  sequence `L —↠ L`, evidence that `L` is well-typed, and an
   indication that we are out of gas.
 
 * It is non-zero and after the next step we have `m` gas remaining.
@@ -1074,15 +1074,15 @@ remaining.  There are two possibilities.
   are two possibilities.
 
   + Term `L` is a value, so we are done. We return the
-    trivial reduction sequence `L ↠ L`, evidence that `L` is
+    trivial reduction sequence `L —↠ L`, evidence that `L` is
     well-typed, and the evidence that `L` is a value.
   
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well-typed, and we recursively invoke
     `eval` on the remaining gas.  The result is evidence that
-    `M ↠ N`, together with evidence that `N` is well-typed and an
+    `M —↠ N`, together with evidence that `N` is well-typed and an
     indication of whether reduction finished.  We combine the evidence
-    that `L ↦ M` and `M ↠ N` to return evidence that `L ↠ N`,
+    that `L —→ M` and `M —↠ N` to return evidence that `L —↠ N`,
     together with the other relevant evidence.
 
 
@@ -1102,9 +1102,9 @@ sequence, we evaluate with three steps worth of gas.
 \begin{code}
 _ : eval (gas 3) ⊢sucμ ≡
   steps
-  (μ "x" ⇒ `suc ` "x" ↦⟨ β-μ ⟩
-   `suc (μ "x" ⇒ `suc ` "x") ↦⟨ ξ-suc β-μ ⟩
-   `suc (`suc (μ "x" ⇒ `suc ` "x")) ↦⟨ ξ-suc (ξ-suc β-μ) ⟩
+  (μ "x" ⇒ `suc ` "x" —→⟨ β-μ ⟩
+   `suc (μ "x" ⇒ `suc ` "x") —→⟨ ξ-suc β-μ ⟩
+   `suc (`suc (μ "x" ⇒ `suc ` "x")) —→⟨ ξ-suc (ξ-suc β-μ) ⟩
    `suc (`suc (`suc (μ "x" ⇒ `suc ` "x"))) ∎)
   out-of-gas
 _ = refl
@@ -1118,13 +1118,13 @@ _ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
   steps
   ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
    · `zero
-   ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
    `zero
-   ↦⟨ β-ƛ V-zero ⟩
-   (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero) ↦⟨
+   —→⟨ β-ƛ V-zero ⟩
+   (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero) —→⟨
    ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
-   (ƛ "n" ⇒ `suc ` "n") · `suc `zero ↦⟨ β-ƛ (V-suc V-zero) ⟩
+   (ƛ "n" ⇒ `suc ` "n") · `suc `zero —→⟨ β-ƛ (V-suc V-zero) ⟩
    `suc (`suc `zero) ∎)
   (done (V-suc (V-suc V-zero)))
 _ = refl
@@ -1146,7 +1146,7 @@ _ : eval (gas 100) ⊢2+2 ≡
       ])))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
-   ↦⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+   —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
    (ƛ "m" ⇒
     (ƛ "n" ⇒
      `case ` "m" [zero⇒ ` "n" |suc "m" ⇒
@@ -1161,7 +1161,7 @@ _ : eval (gas 100) ⊢2+2 ≡
      ]))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
-   ↦⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
    (ƛ "n" ⇒
     `case `suc (`suc `zero) [zero⇒ ` "n" |suc "m" ⇒
     `suc
@@ -1174,7 +1174,7 @@ _ : eval (gas 100) ⊢2+2 ≡
      · ` "n")
     ])
    · `suc (`suc `zero)
-   ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
    `case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
    `suc
    ((μ "+" ⇒
@@ -1185,7 +1185,7 @@ _ : eval (gas 100) ⊢2+2 ≡
     · ` "m"
     · `suc (`suc `zero))
    ]
-   ↦⟨ β-suc (V-suc V-zero) ⟩
+   —→⟨ β-suc (V-suc V-zero) ⟩
    `suc
    ((μ "+" ⇒
      (ƛ "m" ⇒
@@ -1194,7 +1194,7 @@ _ : eval (gas 100) ⊢2+2 ≡
        ])))
     · `suc `zero
     · `suc (`suc `zero))
-   ↦⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+   —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
    `suc
    ((ƛ "m" ⇒
      (ƛ "n" ⇒
@@ -1210,7 +1210,7 @@ _ : eval (gas 100) ⊢2+2 ≡
       ]))
     · `suc `zero
     · `suc (`suc `zero))
-   ↦⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
    `suc
    ((ƛ "n" ⇒
      `case `suc `zero [zero⇒ ` "n" |suc "m" ⇒
@@ -1224,7 +1224,7 @@ _ : eval (gas 100) ⊢2+2 ≡
       · ` "n")
      ])
     · `suc (`suc `zero))
-   ↦⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
    `suc
    `case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
    `suc
@@ -1236,7 +1236,7 @@ _ : eval (gas 100) ⊢2+2 ≡
     · ` "m"
     · `suc (`suc `zero))
    ]
-   ↦⟨ ξ-suc (β-suc V-zero) ⟩
+   —→⟨ ξ-suc (β-suc V-zero) ⟩
    `suc
    (`suc
     ((μ "+" ⇒
@@ -1246,7 +1246,7 @@ _ : eval (gas 100) ⊢2+2 ≡
         ])))
      · `zero
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
    `suc
    (`suc
     ((ƛ "m" ⇒
@@ -1263,7 +1263,7 @@ _ : eval (gas 100) ⊢2+2 ≡
        ]))
      · `zero
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
    `suc
    (`suc
     ((ƛ "n" ⇒
@@ -1278,7 +1278,7 @@ _ : eval (gas 100) ⊢2+2 ≡
        · ` "n")
       ])
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
    `suc
    (`suc
     `case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
@@ -1291,7 +1291,7 @@ _ : eval (gas 100) ⊢2+2 ≡
      · ` "m"
      · `suc (`suc `zero))
     ])
-   ↦⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
+   —→⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 _ = refl
 \end{code}
@@ -1309,7 +1309,7 @@ _ : eval (gas 100) ⊢2+2ᶜ ≡
    · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
    · (ƛ "n" ⇒ `suc ` "n")
    · `zero
-   ↦⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+   —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
    (ƛ "n" ⇒
     (ƛ "s" ⇒
      (ƛ "z" ⇒
@@ -1318,46 +1318,46 @@ _ : eval (gas 100) ⊢2+2ᶜ ≡
    · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
    · (ƛ "n" ⇒ `suc ` "n")
    · `zero
-   ↦⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+   —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
    (ƛ "s" ⇒
     (ƛ "z" ⇒
      (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" ·
      ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" · ` "z")))
    · (ƛ "n" ⇒ `suc ` "n")
    · `zero
-   ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
    (ƛ "z" ⇒
     (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
     ·
     ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
      · ` "z"))
    · `zero
-   ↦⟨ β-ƛ V-zero ⟩
+   —→⟨ β-ƛ V-zero ⟩
    (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
    ·
    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
     · `zero)
-   ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
     · `zero)
-   ↦⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+   —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
    ((ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
     `zero)
-   ↦⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
    ((ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero))
-   ↦⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+   —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
    ((ƛ "n" ⇒ `suc ` "n") · `suc `zero)
-   ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
    `suc (`suc `zero)
-   ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
    (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `suc (`suc `zero))
-   ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-   (ƛ "n" ⇒ `suc ` "n") · `suc (`suc (`suc `zero)) ↦⟨
+   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+   (ƛ "n" ⇒ `suc ` "n") · `suc (`suc (`suc `zero)) —→⟨
    β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
    `suc (`suc (`suc (`suc `zero))) ∎)
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
@@ -1371,7 +1371,7 @@ above.
 A term is _normal_ if it cannot reduce.
 \begin{code}
 Normal : Term → Set
-Normal M  =  ∀ {N} → ¬ (M ↦ N)
+Normal M  =  ∀ {N} → ¬ (M —→ N)
 \end{code}
 
 A term is _stuck_ if it is normal yet not a value.
@@ -1394,7 +1394,7 @@ Using preservation, it is easy to show that after any number of steps, a well-ty
 postulate
   preserves : ∀ {M N A}
     → ∅ ⊢ M ⦂ A
-    → M ↠ N
+    → M —↠ N
       ---------
     → ∅ ⊢ N ⦂ A
 \end{code}
@@ -1406,7 +1406,7 @@ result with the slogan _well-typed terms don't get stuck_.
 postulate
   wttdgs : ∀ {M N A}
     → ∅ ⊢ M ⦂ A
-    → M ↠ N
+    → M —↠ N
       -----------
     → ¬ (Stuck M)
 \end{code}
@@ -1427,8 +1427,8 @@ unstuck′ : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     -----------
   → ¬ (Stuck M)
-unstuck′ ⊢M ⟨ ¬M↦N , ¬VM ⟩ with progress ⊢M 
-... | step M↦N  =  ¬M↦N M↦N
+unstuck′ ⊢M ⟨ ¬M—→N , ¬VM ⟩ with progress ⊢M 
+... | step M—→N  =  ¬M—→N M—→N
 ... | done VM   =  ¬VM VM
 \end{code}
 
@@ -1436,21 +1436,21 @@ Any descendant of a well-typed term is well-typed.
 \begin{code}
 preserves′ : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
-  → M ↠ N
+  → M —↠ N
     ---------
   → ∅ ⊢ N ⦂ A
 preserves′ ⊢M (M ∎)             =  ⊢M
-preserves′ ⊢L (L ↦⟨ L↦M ⟩ M↠N)  =  preserves′ (preserve ⊢L L↦M) M↠N
+preserves′ ⊢L (L —→⟨ L—→M ⟩ M—↠N)  =  preserves′ (preserve ⊢L L—→M) M—↠N
 \end{code}
 
 Combining the above gives us the desired result.
 \begin{code}
 wttdgs′ : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
-  → M ↠ N
+  → M —↠ N
     -----------
   → ¬ (Stuck N)
-wttdgs′ ⊢M M↠N  =  unstuck′ (preserves′ ⊢M M↠N)
+wttdgs′ ⊢M M—↠N  =  unstuck′ (preserves′ ⊢M M—↠N)
 \end{code}
 
 
@@ -1462,20 +1462,21 @@ and preservation theorems for the simply typed lambda-calculus.
 
 #### Exercise `subject_expansion`
 
-We say that `M` _reduces_ to `N` if `M ↦ N`,
-and conversely that `M` _expands_ to `N` if `N ↦ M`.
+We say that `M` _reduces_ to `N` if `M —→ N`,
+and conversely that `M` _expands_ to `N` if `N —→ M`.
 The preservation property is sometimes called _subject reduction_.
 Its opposite is _subject expansion_, which holds if
-`M ↦ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
+`M —→ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
 Find two counter-examples to subject expansion, one
 with case expressions and one not involving case expressions.
+
 
 #### Quiz
 
 Suppose we add a new term `zap` with the following reduction rule
 
-    --------- β-zap
-    M ↦ zap
+    -------- β-zap
+    M —→ zap
 
 and the following typing rule:
 
@@ -1499,11 +1500,11 @@ false, give a counterexample.
 Suppose instead that we add a new term `foo` with the following
 reduction rules:
 
-  --------------------- β-foo₁
-  (λ x ⇒ ` x) ↦ foo
+  ------------------ β-foo₁
+  (λ x ⇒ ` x) —→ foo
 
-  ------------ β-foo₂
-  foo ↦ zero
+  ----------- β-foo₂
+  foo —→ zero
 
 Which of the following properties remain true in
 the presence of this rule?  For each one, write either
@@ -1543,14 +1544,14 @@ to interpret a natural as a function from naturals to naturals.
 
     Γ ⊢ L ⦂ `ℕ
     Γ ⊢ M ⦂ `ℕ
-    -------------- ⊢ℕ⇒ℕ
+    -------------- _·ℕ_
     Γ ⊢ L · M ⦂ `ℕ
 
 And that we add the corresponding reduction rule.
 
-    fᵢ(m) → n
-    --------- δ
-    i · m → n
+    fᵢ(m) —→ n
+    ---------- δ
+    i · m —→ n
 
 Which of the following properties remain true in
 the presence of this rule?  For each one, write either
@@ -1563,3 +1564,5 @@ false, give a counterexample.
 
   - Preservation
 
+Are all properties preserved in this case? Are there any
+other alterations we would wish to make to the system?

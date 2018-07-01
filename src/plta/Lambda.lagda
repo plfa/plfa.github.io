@@ -345,9 +345,9 @@ operational semantics of function application.
 For instance, we have
 
       (ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) · sucᶜ · `zero
-    ↦
+    —→
       (ƛ "z" ⇒ sucᶜ · (sucᶜ · "z")) · `zero
-    ↦
+    —→
       sucᶜ · (sucᶜ · `zero)
 
 where we substitute `sucᶜ` for `` ` "s" `` and `` `zero `` for `` ` "z" ``
@@ -515,16 +515,16 @@ the argument for the variable in the abstraction.
 In an informal presentation of the operational semantics,
 the rules for reduction of applications are written as follows.
 
-    L ↦ L′
+    L —→ L′
     -------------- ξ-·₁
-    L · M ↦ L′ · M
+    L · M —→ L′ · M
 
-    M ↦ M′
+    M —→ M′
     -------------- ξ-·₂
-    V · M ↦ V · M′
+    V · M —→ V · M′
 
     ---------------------------- β-ƛ
-    (ƛ x ⇒ N) · V ↦ N [ x := V ] 
+    (ƛ x ⇒ N) · V —→ N [ x := V ] 
 
 The Agda version of the rules below will be similar, except that universal
 quantifications are made explicit, and so are the predicates that indicate
@@ -549,48 +549,48 @@ the bound variable by the entire fixpoint term.
 Here are the rules formalised in Agda.
 
 \begin{code}
-infix 4 _↦_
+infix 4 _—→_
 
-data _↦_ : Term → Term → Set where
+data _—→_ : Term → Term → Set where
 
   ξ-·₁ : ∀ {L L′ M}
-    → L ↦ L′
+    → L —→ L′
       -----------------
-    → L · M ↦ L′ · M
+    → L · M —→ L′ · M
 
   ξ-·₂ : ∀ {V M M′}
     → Value V
-    → M ↦ M′
+    → M —→ M′
       -----------------
-    → V · M ↦ V · M′
+    → V · M —→ V · M′
 
   β-ƛ : ∀ {x N V}
     → Value V
       ------------------------------
-    → (ƛ x ⇒ N) · V ↦ N [ x := V ]
+    → (ƛ x ⇒ N) · V —→ N [ x := V ]
 
   ξ-suc : ∀ {M M′}
-    → M ↦ M′
+    → M —→ M′
       ------------------
-    → `suc M ↦ `suc M′
+    → `suc M —→ `suc M′
 
   ξ-case : ∀ {x L L′ M N}
-    → L ↦ L′
+    → L —→ L′
       -----------------------------------------------------------------
-    → `case L [zero⇒ M |suc x ⇒ N ] ↦ `case L′ [zero⇒ M |suc x ⇒ N ]
+    → `case L [zero⇒ M |suc x ⇒ N ] —→ `case L′ [zero⇒ M |suc x ⇒ N ]
 
   β-zero : ∀ {x M N}
       ----------------------------------------
-    → `case `zero [zero⇒ M |suc x ⇒ N ] ↦ M
+    → `case `zero [zero⇒ M |suc x ⇒ N ] —→ M
 
   β-suc : ∀ {x V M N}
     → Value V
       ---------------------------------------------------
-    → `case `suc V [zero⇒ M |suc x ⇒ N ] ↦ N [ x := V ]
+    → `case `suc V [zero⇒ M |suc x ⇒ N ] —→ N [ x := V ]
 
   β-μ : ∀ {x M}
       ------------------------------
-    → μ x ⇒ M ↦ M [ x := μ x ⇒ M ]
+    → μ x ⇒ M —→ M [ x := μ x ⇒ M ]
 \end{code}
 
 The reduction rules are carefully designed to ensure that subterms
@@ -600,14 +600,14 @@ This is referred to as _call by value_ reduction.
 Further, we have arranged that subterms are reduced in a
 left-to-right order.  This means that reduction is _deterministic_:
 for any term, there is at most one other term to which it reduces.
-Put another way, our reduction relation `↦` is in fact a function.
+Put another way, our reduction relation `—→` is in fact a function.
 
 
 #### Quiz
 
 What does the following term step to?
 
-    (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  ↦  ???
+    (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  —→  ???
 
 1.  `` (ƛ "x" ⇒ ` "x") ``
 2.  `` (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") ``
@@ -615,7 +615,7 @@ What does the following term step to?
 
 What does the following term step to?
 
-    (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  ↦  ???
+    (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  —→  ???
 
 1.  `` (ƛ "x" ⇒ ` "x") ``
 2.  `` (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") ``
@@ -623,7 +623,7 @@ What does the following term step to?
 
 What does the following term step to?  (Where `two` and `sucᶜ` are as defined above.)
 
-    two · sucᶜ · `zero  ↦  ???
+    two · sucᶜ · `zero  —→  ???
 
 1.  `` sucᶜ · (sucᶜ · `zero) ``
 2.  `` (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero ``
@@ -634,72 +634,72 @@ What does the following term step to?  (Where `two` and `sucᶜ` are as defined 
 
 A single step is only part of the story. In general, we wish to repeatedly
 step a closed term until it reduces to a value.  We do this by defining
-the reflexive and transitive closure `↠` of the step relation `↦`.
+the reflexive and transitive closure `—↠` of the step relation `—→`.
 
 We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
 reasoning about chains of equalities
 Chapter [Equality]({{ site.baseurl }}{% link out/plta/Equality.md %}).
 \begin{code}
-infix  2 _↠_
+infix  2 _—↠_
 infix  1 begin_
-infixr 2 _↦⟨_⟩_
+infixr 2 _—→⟨_⟩_
 infix  3 _∎
 
-data _↠_ : Term → Term → Set where
+data _—↠_ : Term → Term → Set where
   _∎ : ∀ M
       ---------
-    → M ↠ M
+    → M —↠ M
 
-  _↦⟨_⟩_ : ∀ L {M N}
-    → L ↦ M
-    → M ↠ N
+  _—→⟨_⟩_ : ∀ L {M N}
+    → L —→ M
+    → M —↠ N
       ---------
-    → L ↠ N
+    → L —↠ N
 
-begin_ : ∀ {M N} → (M ↠ N) → (M ↠ N)
-begin M↠N = M↠N
+begin_ : ∀ {M N} → (M —↠ N) → (M —↠ N)
+begin M—↠N = M—↠N
 \end{code}
 We can read this as follows.
 
-* From term `M`, we can take no steps, giving a step of type `M ↠ M`.
+* From term `M`, we can take no steps, giving a step of type `M —↠ M`.
   It is written `M ∎`.
 
-* From term `L` we can take a single of type `L ↦ M` followed by zero
-  or more steps of type `M ↠ N`, giving a step of type `L ↠ N`. It is
-  written `L ↦⟨ L↦M ⟩ M↠N`, where `L↦M` and `M↠N` are steps of the
+* From term `L` we can take a single of type `L —→ M` followed by zero
+  or more steps of type `M —↠ N`, giving a step of type `L —↠ N`. It is
+  written `L —→⟨ L—→M ⟩ M—↠N`, where `L—→M` and `M—↠N` are steps of the
   appropriate type.
 
 The notation is chosen to allow us to lay out example reductions in an
 appealing way, as we will see in the next section.
 
 As alternative is to define reflexive and transitive closure directly,
-as the smallest relation that includes `↦` and is also reflexive
+as the smallest relation that includes `—→` and is also reflexive
 and transitive.  We could do so as follows.
 \begin{code}
-data _↠′_ : Term → Term → Set where
+data _—↠′_ : Term → Term → Set where
 
   step : ∀ {M N}
-    → M ↦ N
+    → M —→ N
       ------
-    → M ↠′ N
+    → M —↠′ N
 
   refl : ∀ {M}
       ------
-    → M ↠′ M
+    → M —↠′ M
 
   trans : ∀ {L M N}
-    → L ↠′ M
-    → M ↠′ N
+    → L —↠′ M
+    → M —↠′ N
       ------
-    → L ↠′ N
+    → L —↠′ N
 \end{code}
-The three constructors specify, respectively, that `↠` includes `↦`
+The three constructors specify, respectively, that `—↠` includes `—→`
 and is reflexive and transitive.
 
 It is a straightforward exercise to show the two are equivalent.
 
-#### Exercise (`↠≃↠′`)
+#### Exercise (`—↠≃—↠′`)
 
 Show that the two notions of reflexive and transitive closure
 above are isomorphic.
@@ -710,97 +710,97 @@ above are isomorphic.
 We start with a simple example. The Church numeral two applied to the
 successor function and zero yields the natural number two.
 \begin{code}
-_ : twoᶜ · sucᶜ · `zero ↠ `suc `suc `zero
+_ : twoᶜ · sucᶜ · `zero —↠ `suc `suc `zero
 _ =
   begin
     twoᶜ · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero
-  ↦⟨ β-ƛ V-zero ⟩
+  —→⟨ β-ƛ V-zero ⟩
     sucᶜ · (sucᶜ · `zero)
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
     sucᶜ · `suc `zero
-  ↦⟨ β-ƛ (V-suc V-zero) ⟩
+  —→⟨ β-ƛ (V-suc V-zero) ⟩
    `suc (`suc `zero)
   ∎
 \end{code}
 
 Here is a sample reduction demonstrating that two plus two is four.
 \begin{code}
-_ : plus · two · two ↠ `suc `suc `suc `suc `zero
+_ : plus · two · two —↠ `suc `suc `suc `suc `zero
 _ =
   begin
     plus · two · two
-  ↦⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+  —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
     (ƛ "m" ⇒ ƛ "n" ⇒
       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two · two
-  ↦⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
     (ƛ "n" ⇒
       `case two [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
          · two
-  ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+  —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
     `case two [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ]
-  ↦⟨ β-suc (V-suc V-zero) ⟩
+  —→⟨ β-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
-  ↦⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+  —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
     `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · `suc `zero · two)
-  ↦⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+  —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
     `suc ((ƛ "n" ⇒
       `case `suc `zero [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two)
-  ↦⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
     `suc (`case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ])
-  ↦⟨ ξ-suc (β-suc V-zero) ⟩
+  —→⟨ ξ-suc (β-suc V-zero) ⟩
     `suc `suc (plus · `zero · two)
-  ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+  —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
     `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · `zero · two)
-  ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+  —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
     `suc `suc ((ƛ "n" ⇒
       `case `zero [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two)
-  ↦⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+  —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
     `suc `suc (`case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ])
-  ↦⟨ ξ-suc (ξ-suc β-zero) ⟩
+  —→⟨ ξ-suc (ξ-suc β-zero) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
 \end{code}
 
 And here is a similar sample reduction for Church numerals.
 \begin{code}
-_ : fourᶜ ↠ `suc `suc `suc `suc `zero
+_ : fourᶜ —↠ `suc `suc `suc `suc `zero
 _ =
   begin
     (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ ` "m" · ` "s" · (` "n" · ` "s" · ` "z"))
       · twoᶜ · twoᶜ · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+  —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
     (ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · ` "s" · (` "n" · ` "s" · ` "z"))
       · twoᶜ · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+  —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
     (ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · ` "s" · (twoᶜ · ` "s" · ` "z")) · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
     (ƛ "z" ⇒ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · ` "z")) · `zero
-  ↦⟨ β-ƛ V-zero ⟩
+  —→⟨ β-ƛ V-zero ⟩
     twoᶜ · sucᶜ · (twoᶜ · sucᶜ · `zero)
-  ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (twoᶜ · sucᶜ · `zero)
-  ↦⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+  —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · ((ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero)
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (sucᶜ · (sucᶜ · `zero))
-  ↦⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+  —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (sucᶜ · (`suc `zero))
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (`suc `suc `zero)
-  ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+  —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
     sucᶜ · (sucᶜ · `suc `suc `zero)
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
     sucᶜ · (`suc `suc `suc `zero)
-  ↦⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
+  —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
 \end{code}
@@ -1267,16 +1267,16 @@ showing that it is well-typed.
 
 This chapter uses the following unicode
 
-    ⇒    U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
-    ƛ    U+019B: LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
-    ·    U+00B7: MIDDLE DOT (\cdot)
+    ⇒    U+21D2:  RIGHTWARDS DOUBLE ARROW (\=>)
+    ƛ    U+019B:  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+    ·    U+00B7:  MIDDLE DOT (\cdot)
     😇   U+1F607: SMILING FACE WITH HALO
     😈   U+1F608: SMILING FACE WITH HORNS
-    ↦    U+21A6: RIGHTWARDS ARROW FROM BAR (\mapsto, \r-|)
-    ↠    U+21A0: RIGHTWARDS TWO HEADED ARROW (\rr-)
-    ξ    U+03BE: GREEK SMALL LETTER XI (\Gx or \xi)
-    β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
-    ∋    U+220B: CONTAINS AS MEMBER (\ni)
-    ⊢    U+22A2: RIGHT TACK (\vdash or \|-)
-    ⦂    U+2982: Z NOTATION TYPE COLON (\:)
+    —    U+2014:  EM DASH (\em)
+    ↠    U+21A0:  RIGHTWARDS TWO HEADED ARROW (\rr-)
+    ξ    U+03BE:  GREEK SMALL LETTER XI (\Gx or \xi)
+    β    U+03B2:  GREEK SMALL LETTER BETA (\Gb or \beta)
+    ∋    U+220B:  CONTAINS AS MEMBER (\ni)
+    ⊢    U+22A2:  RIGHT TACK (\vdash or \|-)
+    ⦂    U+2982:  Z NOTATION TYPE COLON (\:)
 
