@@ -243,7 +243,7 @@ A term `M` makes progress if either it can take a step, meaning there
 exists a term `N` such that `M —→ N`, or if it is done, meaning that
 `M` is a value.
 
-If a term is well-typed in the empty context then it is a value.
+If a term is well-typed in the empty context then it satisfies progress.
 \begin{code}
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
@@ -580,6 +580,7 @@ we require an arbitrary context `Γ`, as in the statement of the lemma.
 Here is the formal statement and proof that substitution preserves types.
 \begin{code}
 subst : ∀ {Γ y N V A B}
+  → ∅ ⊢ V ⦂ B
   → Γ , y ⦂ B ⊢ N ⦂ A
     --------------------
   → Γ ⊢ N [ y := V ] ⦂ A
@@ -614,45 +615,6 @@ substvar {x = x} {y = y} ⊢V (S x≢y ∋x) with x ≟ y
 substbind {x = x} {y = y} ⊢V ⊢N with x ≟ y
 ... | yes refl             =  drop ⊢N
 ... | no  x≢y              =  subst ⊢V (swap x≢y ⊢N)
-
-{-
-subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
-... | yes refl     =  ⊢ƛ (drop ⊢N)
-... | no  x≢y      =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
-subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
-... | yes refl     =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
-... | no  x≢y      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
-subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
-... | yes refl     =  ⊢μ (drop ⊢M)
-... | no  x≢y      =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
--}
-
-
-{-
-subst : ∀ {Γ x N V A B}
-  → ∅ ⊢ V ⦂ A
-  → Γ , x ⦂ A ⊢ N ⦂ B
-    --------------------
-  → Γ ⊢ N [ x := V ] ⦂ B
-subst {x = y} ⊢V (⊢` {x = x} Z) with x ≟ y
-... | yes refl     =  weaken ⊢V
-... | no  x≢y      =  ⊥-elim (x≢y refl)
-subst {x = y} ⊢V (⊢` {x = x} (S x≢y ∋x)) with x ≟ y
-... | yes refl     =  ⊥-elim (x≢y refl)
-... | no  _        =  ⊢` ∋x
-subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
-... | yes refl     =  ⊢ƛ (drop ⊢N)
-... | no  x≢y      =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
-subst ⊢V (⊢L · ⊢M) = subst ⊢V ⊢L · subst ⊢V ⊢M
-subst ⊢V ⊢zero     =  ⊢zero
-subst ⊢V (⊢suc ⊢M) =  ⊢suc (subst ⊢V ⊢M)
-subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
-... | yes refl     =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
-... | no  x≢y      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
-subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
-... | yes refl     =  ⊢μ (drop ⊢M)
-... | no  x≢y      =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
--}
 \end{code}
 We induct on the evidence that `N` is well-typed in the
 context `Γ` extended by `x`.
@@ -966,11 +928,11 @@ eval : ∀ {L A}
   → ∅ ⊢ L ⦂ A
     ---------
   → Steps L
-eval {L} (gas zero)    ⊢L                           =  steps (L ∎) out-of-gas
+eval {L} (gas zero)    ⊢L                             =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                                       =  steps (L ∎) (done VL)
+... | done VL                                         =  steps (L ∎) (done VL)
 ... | step L—→M with eval (gas m) (preserve ⊢L L—→M)
-...    | steps M—↠N fin                              =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+...    | steps M—↠N fin                               =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well-typed.  We consider the amount of gas
@@ -1367,11 +1329,11 @@ wttdgs′ ⊢M M—↠N  =  unstuck′ (preserves′ ⊢M M—↠N)
 
 ## Reduction is deterministic
 
-When we introduced reduction, we claimed it was deterministic:
-for any term, there is at most one other term to which it reduces.
+When we introduced reduction, we claimed it was deterministic.
+For completeness, we present a formal proof here.
 
 A case term takes four arguments (three subterms and a bound
-variable), and to complete our proof we will need a variant
+variable), and our proof will need a variant
 of congruence to deal with functions of four arguments.  It
 is exactly analogous to `cong` and `cong₂` as defined previously.
 \begin{code}

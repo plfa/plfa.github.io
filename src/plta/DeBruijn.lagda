@@ -1016,6 +1016,9 @@ V¬—→ (V-suc VM) (ξ-suc M—→N) = V¬—→ VM M—→N
 
 ## Progress
 
+As before, every term that is well-typed and closed is either
+a value or takes a reduction step.  The formulation of progress
+is just as before, but annotated with types.
 \begin{code}
 data Progress {A} (M : ∅ ⊢ A) : Set where
   step : ∀ {N : ∅ ⊢ A}
@@ -1026,31 +1029,40 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
       Value M
       ----------
     → Progress M
+\end{code}
 
+The statement and proof of progress is much as before.
+Again, we must add a type annotation.  We no longer need
+to explicitly refer to the Canonical Forms lemma, since it
+is built-in to the definition of value.
+\begin{code}
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
-progress (ƛ N)                            =  done V-ƛ
+progress (ƛ N)                          =  done V-ƛ
 progress (L · M) with progress L
-...    | step L—→L′                      =  step (ξ-·₁ L—→L′)
+...    | step L—→L′                     =  step (ξ-·₁ L—→L′)
 ...    | done V-ƛ with progress M
-...        | step M—→M′                  =  step (ξ-·₂ V-ƛ M—→M′)
-...        | done VM                      =  step (β-ƛ VM)
-progress (`zero)                          =  done V-zero
+...        | step M—→M′                 =  step (ξ-·₂ V-ƛ M—→M′)
+...        | done VM                    =  step (β-ƛ VM)
+progress (`zero)                        =  done V-zero
 progress (`suc M) with progress M
-...    | step M—→M′                      =  step (ξ-suc M—→M′)
-...    | done VM                          =  done (V-suc VM)
+...    | step M—→M′                     =  step (ξ-suc M—→M′)
+...    | done VM                        =  done (V-suc VM)
 progress (`case L M N) with progress L
-...    | step L—→L′                       =  step (ξ-case L—→L′)
-...    | done V-zero                         =  step (β-zero)
-...    | done (V-suc VL)                     =  step (β-suc VL)
-progress (μ N)                             =  step (β-μ)
+...    | step L—→L′                     =  step (ξ-case L—→L′)
+...    | done V-zero                    =  step (β-zero)
+...    | done (V-suc VL)                =  step (β-suc VL)
+progress (μ N)                          =  step (β-μ)
 \end{code}
 
 
 ## Evaluation
 
-By analogy, we will use the name _gas_ for the parameter which puts a
-bound on the number of reduction steps.  Gas is specified by a natural number.
+Before, we combined progress and preservation to evaluate a term.
+We can do much the same here, but we no longer need to explicitly
+refer to preservation, since it is built-in to the definition of reduction.
+
+As previously, gas is specified by a natural number.
 \begin{code}
 data Gas : Set where
   gas : ℕ → Gas
@@ -1081,8 +1093,7 @@ data Steps : ∀ {A} → ∅ ⊢ A → Set where
       ----------
     → Steps L
 \end{code}
-The evaluator takes gas and evidence that a term is well-typed,
-and returns the corresponding steps.
+The evaluator takes gas and a term and returns the corresponding steps.
 \begin{code}
 eval : ∀ {A}
   → Gas
@@ -1093,8 +1104,9 @@ eval (gas zero)    L                     =  steps (L ∎) out-of-gas
 eval (gas (suc m)) L with progress L
 ... | done VL                            =  steps (L ∎) (done VL)
 ... | step {M} L—→M with eval (gas m) M
-...    | steps M—↠N fin                   =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
+The definition is mu
 
 ## Examples
 
