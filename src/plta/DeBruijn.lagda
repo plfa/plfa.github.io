@@ -1106,10 +1106,45 @@ eval (gas (suc m)) L with progress L
 ... | step {M} L—→M with eval (gas m) M
 ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
-The definition is mu
+The definition is a little simpler than previously, as we no longer need
+to invoke preservation.
 
 ## Examples
 
+We reiterate each of our previous examples.  We re-define the term
+`sucμ` that loops forever.
+\begin{code}
+sucμ : ∅ ⊢ `ℕ
+sucμ = μ (`suc (# 0))
+\end{code}
+To compute the first three steps of the infinite reduction sequence,
+we evaluate with three steps worth of gas.
+\begin{code}
+_ : eval (gas 3) sucμ ≡
+  steps
+  (μ `suc ` Z —→⟨ β-μ ⟩
+   `suc (μ `suc ` Z) —→⟨ ξ-suc β-μ ⟩
+   `suc (`suc (μ `suc ` Z)) —→⟨ ξ-suc (ξ-suc β-μ) ⟩
+   `suc (`suc (`suc (μ `suc ` Z))) ∎)
+  out-of-gas
+_ = refl
+\end{code}
+
+The Church numeral two applied to successor and zero.
+\begin{code}
+_ : eval (gas 100) (twoᶜ · sucᶜ · `zero) ≡
+  steps
+  ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero —→⟨
+   ξ-·₁ (β-ƛ V-ƛ) ⟩
+   (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `zero —→⟨ β-ƛ V-zero ⟩
+   (ƛ `suc ` Z) · ((ƛ `suc ` Z) · `zero) —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+   (ƛ `suc ` Z) · `suc `zero —→⟨ β-ƛ (V-suc V-zero) ⟩
+   `suc (`suc `zero) ∎)
+  (done (V-suc (V-suc V-zero)))
+_ = refl
+\end{code}
+
+Two plus two is four.
 \begin{code}
 _ : eval (gas 100) (plus · two · two) ≡
   steps
@@ -1249,6 +1284,7 @@ _ : eval (gas 100) (plus · two · two) ≡
 _ = refl
 \end{code}
 
+And the corresponding term for Church numerals.
 \begin{code}
 _ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
   steps
@@ -1306,3 +1342,10 @@ _ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 _ = refl
 \end{code}
+
+We omit the proof that reduction is deterministic, since it is
+tedious and almost identical to the previous proof.
+
+Counting the lines of code is instructive.  While this chapter
+covers the same formal development as the previous two
+chapters, it has about half the number of lines of code.

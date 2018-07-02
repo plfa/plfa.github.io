@@ -1376,7 +1376,7 @@ three typical cases.
 * Two instances of `ξ-·₁`.
 
       L —→ L′                 L —→ L″
-      -------------- ξ-·₁    -------------- ξ-·₁
+      --------------- ξ-·₁    --------------- ξ-·₁
       L · M —→ L′ · M         L · M —→ L″ · M
 
   By induction we have `L′ ≡ L″`, and hence by congruence
@@ -1384,9 +1384,9 @@ three typical cases.
   
 * An instance of `ξ-·₁` and an instance of `ξ-·₂`.
 
-                             Value L
+                              Value L
       L —→ L′                 M —→ M″
-      -------------- ξ-·₁    -------------- ξ-·₂
+      --------------- ξ-·₁    --------------- ξ-·₂
       L · M —→ L′ · M         L · M —→ L · M″
 
   The rule on the left requires `L` to reduce, but the rule on the right
@@ -1396,12 +1396,12 @@ three typical cases.
 
 * Two instances of `β-ƛ`.
 
-      Value V                             Value V                         
-      ---------------------------- β-ƛ    ---------------------------- β-ƛ
+      Value V                              Value V                         
+      ----------------------------- β-ƛ    ----------------------------- β-ƛ
       (ƛ x ⇒ N) · V —→ N [ x := V ]        (ƛ x ⇒ N) · V —→ N [ x := V ]
 
   Since the left-hand sides are identical, the right-hand sides are
-  also identical.
+  also identical. The formal proof invokes `refl`.
 
 Almost half the lines in the above proof are redundant, e.g., the case
 when one rule is `ξ-·₁` and the other is `ξ-·₂` is considered twice,
