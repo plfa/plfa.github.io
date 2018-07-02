@@ -538,7 +538,8 @@ from variables in one context to variables in another,
 extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped.
-\begin{code} ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
+\begin{code}
+ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
     ----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
 ext ρ Z      =  Z
@@ -784,8 +785,9 @@ define values and reduction.
 
 ### Value
 
-The definition of value is much 
-
+The definition of value is much as before, save that the
+added types incorporate the same information found in the
+Canonical Forms lemma.
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -803,222 +805,221 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
     → Value (`suc V)
 \end{code}
 
-Here `zero` requires an implicit parameter to aid inference (much in the same way that `[]` did in [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})).
+Here `zero` requires an implicit parameter to aid inference,
+much in the same way that `[]` did in
+[Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})).
 
 ### Reduction step
 
-\begin{code}
-infix 2 _↦_
+The reduction rules are the same as those given earlier, save
+that for each term we must specify its types.  As before, we
+have compatibility rules that reduce a part of a term,
+labelled with `ξ`, and rules that simplify a constructor
+combined with a destructor, labelled with `β`.
 
-data _↦_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+\begin{code}
+infix 2 _—→_
+
+data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   ξ-·₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
-    → L ↦ L′
+    → L —→ L′
       -----------------
-    → L · M ↦ L′ · M
+    → L · M —→ L′ · M
 
   ξ-·₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
     → Value V
-    → M ↦ M′
+    → M —→ M′
       --------------
-    → V · M ↦ V · M′
+    → V · M —→ V · M′
 
   β-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
     → Value W
       -------------------
-    → (ƛ N) · W ↦ N [ W ]
+    → (ƛ N) · W —→ N [ W ]
 
   ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
-    → M ↦ M′
+    → M —→ M′
       ----------------
-    → `suc M ↦ `suc M′
+    → `suc M —→ `suc M′
 
   ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
-    → L ↦ L′
+    → L —→ L′
       --------------------------
-    → `case L M N ↦ `case L′ M N
+    → `case L M N —→ `case L′ M N
 
   β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
       -------------------
-    → `case `zero M N ↦ M
+    → `case `zero M N —→ M
 
   β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → Value V
-      ----------------------------
-    → `case (`suc V) M N ↦ N [ V ]
+      -----------------------------
+    → `case (`suc V) M N —→ N [ V ]
 
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
       ---------------
-    → μ N ↦ N [ μ N ]
+    → μ N —→ N [ μ N ]
 \end{code}
+The definition states that `M —→ N` can only hold of terms `M`
+and `N` which _both_ have type `Γ ⊢ A` for some context `Γ`
+and type `A`.  In other words, it is _built-in_ to our
+definition that reduction preserves types.  There is no
+separate Preservation theorem to prove.  The Agda type-checker
+validates that each term preserves types.  In the case of `β`
+rules, preservation depends on the fact that substitution
+preserves types, which we previously is built-in to our
+definition of substitution.
 
-Two possible formulations of `μ`
-
-    μ N  ↦  N [ μ N ]
-
-    (μ N) · V  ↦  N [ μ N , V ]
-
-    (μ (ƛ N)) · V  ↦  N [ μ (ƛ N) , V ]
-
-The first is odd in that we substitute for `f` a term that is not a value.
-
-The second has two values of function type, both lambda abstractions and fixpoints.
-
-    What if the body of μ must first reduce to a value? Two cases.
-
-    Value is a lambda.
-
-    (μ f → N) · V
-      ↦  (μ f → ƛ x → N′) · V
-      ↦  (ƛ x → N′) [ f := μ f → ƛ x → N ] · V
-      ↦  (ƛ x → N′ [ f := μ f → ƛ x → N ]) · V
-      ↦  N′ [ f := μ f → ƛ x → N , x := V ]
-
-    Value is itself a mu.
-
-    (μ f → μ g → N) · V
-      ↦ (μ f → μ g → N′) · V
-      ↦ (μ f → μ g → λ x → N″) · V
-      ↦ (μ g → λ x → N″) [ f := μ f → μ g → λ x → N″ ] · V
-      ↦ (μ g → λ x → N″ [ f := μ f → μ g → λ x → N″ ]) · V
-      ↦ (λ x → N″ [ f := μ f → μ g → λ x → N″ ])
-            [ g := μ g → λ x → N″ [ f := μ f → μ g → λ x → N″ ] · V
-      ↦ (λ x → N″ [ f := μ f → μ g → λ x → N″ ]
-            [ g := μ g → λ x → N″ [ f := μ f → μ g → λ x → N″ ]) · V
-      ↦ N″ [ f := μ f → μ g → λ x → N″ ]
-             [ g := μ g → λ x → N″ [ f := μ f → μ g → λ x → N″ ]
-             [ x := V ]
-
-    This is something you would *never* want to do, because f and g are
-    bound to the same function. Better to avoid it by building functions
-    into the syntax, I expect.
 
 ## Reflexive and transitive closure
 
+The reflexive and transitive closure is exactly as before.
+We simply cut-and-paste the previous definition.
 \begin{code}
-infix  2 _↠_
+infix  2 _—↠_
 infix 1 begin_
-infixr 2 _↦⟨_⟩_
+infixr 2 _—→⟨_⟩_
 infix 3 _∎
 
-data _↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   _∎ : ∀ {Γ A} (M : Γ ⊢ A)
       --------
-    → M ↠ M
+    → M —↠ M
 
-  _↦⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
-    → L ↦ M
-    → M ↠ N
+  _—→⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
+    → L —→ M
+    → M —↠ N
       ---------
-    → L ↠ N
+    → L —↠ N
 
-begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A} → (M ↠ N) → (M ↠ N)
-begin M↠N = M↠N
+begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A} → (M —↠ N) → (M —↠ N)
+begin M—↠N = M—↠N
 \end{code}
 
 
-## Example reduction sequences
+### Examples
 
+We reiterate each of our previous examples.  First, the Church
+numeral two applied to the successor function and zero yields
+the natural number two.
 \begin{code}
-id : ∀ (A : Type) → ∅ ⊢ A ⇒ A
-id A = ƛ ` Z
-
-_ : ∀ {A} → id (A ⇒ A) · id A  ↠ id A
+_ : twoᶜ · sucᶜ · `zero {∅} —↠ `suc `suc `zero
 _ =
   begin
-    (ƛ ` Z) · (ƛ ` Z)
-  ↦⟨ β-ƛ V-ƛ ⟩
-    ƛ ` Z
+    twoᶜ · sucᶜ · `zero
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+    (ƛ (sucᶜ · (sucᶜ · # 0))) · `zero
+  —→⟨ β-ƛ V-zero ⟩
+    sucᶜ · (sucᶜ · `zero)
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+    sucᶜ · `suc `zero
+  —→⟨ β-ƛ (V-suc V-zero) ⟩
+   `suc (`suc `zero)
   ∎
+\end{code}
+As before, we need to supply an explicit context to `` `zero ``.
 
-_ : plus {∅} · two · two ↠ `suc `suc `suc `suc `zero
+Next, a sample reduction demonstrating that two plus two is four.
+\begin{code}
+_ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
     plus · two · two
-  ↦⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+  —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
     (ƛ ƛ `case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z))) · two · two
-  ↦⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
     (ƛ `case two (` Z) (`suc (plus · ` Z · ` S Z))) · two
-  ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+  —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
     `case two two (`suc (plus · ` Z · two))
-  ↦⟨ β-suc (V-suc V-zero) ⟩
+  —→⟨ β-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
-  ↦⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+  —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
     `suc ((ƛ ƛ `case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
       · `suc `zero · two)
-  ↦⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+  —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
     `suc ((ƛ `case (`suc `zero) (` Z) (`suc (plus · ` Z · ` S Z))) · two)
-  ↦⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
     `suc (`case (`suc `zero) (two) (`suc (plus · ` Z · two)))
-  ↦⟨ ξ-suc (β-suc V-zero) ⟩
+  —→⟨ ξ-suc (β-suc V-zero) ⟩
     `suc (`suc (plus · `zero · two))
-  ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+  —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
     `suc (`suc ((ƛ ƛ `case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
       · `zero · two))
-  ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+  —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
     `suc (`suc ((ƛ `case `zero (` Z) (`suc (plus · ` Z · ` S Z))) · two))
-  ↦⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+  —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
     `suc (`suc (`case `zero (two) (`suc (plus · ` Z · two))))
-  ↦⟨ ξ-suc (ξ-suc β-zero) ⟩
+  —→⟨ ξ-suc (ξ-suc β-zero) ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
 \end{code}
 
+And finally, a similar sample reduction for Church numerals.
 \begin{code}
-_ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ↠ `suc `suc `suc `suc `zero {∅}
+_ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero {∅}
 _ =
   begin
     plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+  —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
     (ƛ ƛ ƛ twoᶜ · ` S Z · (` S S Z · ` S Z · ` Z)) · twoᶜ · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+  —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
     (ƛ ƛ twoᶜ · ` S Z · (twoᶜ · ` S Z · ` Z)) · sucᶜ · `zero
-  ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
     (ƛ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · ` Z)) · `zero
-  ↦⟨ β-ƛ V-zero ⟩
+  —→⟨ β-ƛ V-zero ⟩
     twoᶜ · sucᶜ · (twoᶜ · sucᶜ · `zero)
-  ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
     (ƛ sucᶜ · (sucᶜ · ` Z)) · (twoᶜ · sucᶜ · `zero)
-  ↦⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+  —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
     (ƛ sucᶜ · (sucᶜ · ` Z)) · ((ƛ sucᶜ · (sucᶜ · ` Z)) · `zero)
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
     (ƛ sucᶜ · (sucᶜ · ` Z)) · (sucᶜ · (sucᶜ · `zero))
-  ↦⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+  —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
     (ƛ sucᶜ · (sucᶜ · ` Z)) · (sucᶜ · `suc `zero)
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
     (ƛ sucᶜ · (sucᶜ · ` Z)) · `suc (`suc `zero)
-  ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+  —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
     sucᶜ · (sucᶜ · `suc (`suc `zero))
-  ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
     sucᶜ · `suc (`suc (`suc `zero))
-  ↦⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
+  —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
 \end{code}
 
 ## Values do not reduce
 
-Values do not reduce.
-\begin{code}
-Value-lemma : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M ↦ N)
-Value-lemma V-ƛ ()
-Value-lemma V-zero ()
-Value-lemma (V-suc VM) (ξ-suc M↦N)  =  Value-lemma VM M↦N
-\end{code}
+We have now completed all the definitions, which of
+necessity included some important results: Canonical Forms,
+Substitution preserves types, and Preservation.
+We now turn to proving the remaining results from the
+preceding section.
 
-As a corollary, terms that reduce are not values.
-\begin{code}
-↦-corollary : ∀ {Γ A} {M N : Γ ⊢ A} → (M ↦ N) → ¬ Value M
-↦-corollary M↦N VM  =  Value-lemma VM M↦N
-\end{code}
+### Exercise `V¬—→`, `—→¬V`
 
+Adapt the reesults of the previous section to show values do
+not reduce, and its corollary, terms that reduce are not
+values.
+
+<!--
+\begin{code}
+V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M —→ N)
+V¬—→ V-ƛ        ()
+V¬—→ V-zero     ()
+V¬—→ (V-suc VM) (ξ-suc M—→N) = V¬—→ VM M—→N
+
+—→¬V : ∀ {Γ A} {M N : Γ ⊢ A} → (M —→ N) → ¬ Value M
+—→¬V M—→N VM  =  V¬—→ VM M—→N
+\end{code}
+-->
 
 ## Progress
 
 \begin{code}
 data Progress {A} (M : ∅ ⊢ A) : Set where
   step : ∀ {N : ∅ ⊢ A}
-    → M ↦ N
+    → M —→ N
       -------------
     → Progress M
   done :
@@ -1030,16 +1031,16 @@ progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
 progress (ƛ N)                            =  done V-ƛ
 progress (L · M) with progress L
-...    | step L↦L′                      =  step (ξ-·₁ L↦L′)
+...    | step L—→L′                      =  step (ξ-·₁ L—→L′)
 ...    | done V-ƛ with progress M
-...        | step M↦M′                  =  step (ξ-·₂ V-ƛ M↦M′)
+...        | step M—→M′                  =  step (ξ-·₂ V-ƛ M—→M′)
 ...        | done VM                      =  step (β-ƛ VM)
 progress (`zero)                          =  done V-zero
 progress (`suc M) with progress M
-...    | step M↦M′                      =  step (ξ-suc M↦M′)
+...    | step M—→M′                      =  step (ξ-suc M—→M′)
 ...    | done VM                          =  done (V-suc VM)
 progress (`case L M N) with progress L
-...    | step L↦L′                       =  step (ξ-case L↦L′)
+...    | step L—→L′                       =  step (ξ-case L—→L′)
 ...    | done V-zero                         =  step (β-zero)
 ...    | done (V-suc VL)                     =  step (β-suc VL)
 progress (μ N)                             =  step (β-μ)
@@ -1075,7 +1076,7 @@ reduction finished.
 data Steps : ∀ {A} → ∅ ⊢ A → Set where
 
   steps : ∀ {A} {L N : ∅ ⊢ A}
-    → L ↠ N
+    → L —↠ N
     → Finished N
       ----------
     → Steps L
@@ -1091,8 +1092,8 @@ eval : ∀ {A}
 eval (gas zero)    L                     =  steps (L ∎) out-of-gas
 eval (gas (suc m)) L with progress L
 ... | done VL                            =  steps (L ∎) (done VL)
-... | step {M} L↦M with eval (gas m) M
-...    | steps M↠N fin                   =  steps (L ↦⟨ L↦M ⟩ M↠N) fin
+... | step {M} L—→M with eval (gas m) M
+...    | steps M—↠N fin                   =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
 
 ## Examples
@@ -1106,7 +1107,7 @@ _ : eval (gas 100) (plus · two · two) ≡
       `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
-   ↦⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+   —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
    (ƛ
     (ƛ
      `case (` (S Z)) (` Z)
@@ -1119,7 +1120,7 @@ _ : eval (gas 100) (plus · two · two) ≡
        · ` (S Z)))))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
-   ↦⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
    (ƛ
     `case (`suc (`suc `zero)) (` Z)
     (`suc
@@ -1130,7 +1131,7 @@ _ : eval (gas 100) (plus · two · two) ≡
       · ` Z
       · ` (S Z))))
    · `suc (`suc `zero)
-   ↦⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
    `case (`suc (`suc `zero)) (`suc (`suc `zero))
    (`suc
     ((μ
@@ -1139,7 +1140,7 @@ _ : eval (gas 100) (plus · two · two) ≡
         `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · ` Z
      · `suc (`suc `zero)))
-   ↦⟨ β-suc (V-suc V-zero) ⟩
+   —→⟨ β-suc (V-suc V-zero) ⟩
    `suc
    ((μ
      (ƛ
@@ -1147,7 +1148,7 @@ _ : eval (gas 100) (plus · two · two) ≡
        `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
     · `suc `zero
     · `suc (`suc `zero))
-   ↦⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+   —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
    `suc
    ((ƛ
      (ƛ
@@ -1161,7 +1162,7 @@ _ : eval (gas 100) (plus · two · two) ≡
         · ` (S Z)))))
     · `suc `zero
     · `suc (`suc `zero))
-   ↦⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
    `suc
    ((ƛ
      `case (`suc `zero) (` Z)
@@ -1173,7 +1174,7 @@ _ : eval (gas 100) (plus · two · two) ≡
        · ` Z
        · ` (S Z))))
     · `suc (`suc `zero))
-   ↦⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
    `suc
    `case (`suc `zero) (`suc (`suc `zero))
    (`suc
@@ -1183,7 +1184,7 @@ _ : eval (gas 100) (plus · two · two) ≡
         `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · ` Z
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (β-suc V-zero) ⟩
+   —→⟨ ξ-suc (β-suc V-zero) ⟩
    `suc
    (`suc
     ((μ
@@ -1192,7 +1193,7 @@ _ : eval (gas 100) (plus · two · two) ≡
         `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · `zero
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
    `suc
    (`suc
     ((ƛ
@@ -1207,7 +1208,7 @@ _ : eval (gas 100) (plus · two · two) ≡
          · ` (S Z)))))
      · `zero
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
    `suc
    (`suc
     ((ƛ
@@ -1220,7 +1221,7 @@ _ : eval (gas 100) (plus · two · two) ≡
         · ` Z
         · ` (S Z))))
      · `suc (`suc `zero)))
-   ↦⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
    `suc
    (`suc
     `case `zero (`suc (`suc `zero))
@@ -1231,7 +1232,7 @@ _ : eval (gas 100) (plus · two · two) ≡
          `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
       · ` Z
       · `suc (`suc `zero))))
-   ↦⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
+   —→⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 _ = refl
 \end{code}
@@ -1246,7 +1247,7 @@ _ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
    · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
    · (ƛ `suc (` Z))
    · `zero
-   ↦⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+   —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
    (ƛ
     (ƛ
      (ƛ
@@ -1255,39 +1256,39 @@ _ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
    · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
    · (ƛ `suc (` Z))
    · `zero
-   ↦⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+   —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
    (ƛ
     (ƛ
      (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) ·
      ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) · ` Z)))
    · (ƛ `suc (` Z))
    · `zero
-   ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
    (ƛ
     (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc (` Z)) ·
     ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc (` Z)) · ` Z))
    · `zero
-   ↦⟨ β-ƛ V-zero ⟩
+   —→⟨ β-ƛ V-zero ⟩
    (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc (` Z)) ·
    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc (` Z)) · `zero)
-   ↦⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
    (ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) ·
    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc (` Z)) · `zero)
-   ↦⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+   —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
    (ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) ·
    ((ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) · `zero)
-   ↦⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
    (ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) ·
    ((ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · `zero))
-   ↦⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+   —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
    (ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) ·
    ((ƛ `suc (` Z)) · `suc `zero)
-   ↦⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
-   (ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) · `suc (`suc `zero) ↦⟨
+   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+   (ƛ (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · ` Z)) · `suc (`suc `zero) —→⟨
    β-ƛ (V-suc (V-suc V-zero)) ⟩
-   (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · `suc (`suc `zero)) ↦⟨
+   (ƛ `suc (` Z)) · ((ƛ `suc (` Z)) · `suc (`suc `zero)) —→⟨
    ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-   (ƛ `suc (` Z)) · `suc (`suc (`suc `zero)) ↦⟨
+   (ƛ `suc (` Z)) · `suc (`suc (`suc `zero)) —→⟨
    β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
    `suc (`suc (`suc (`suc `zero))) ∎)
   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))

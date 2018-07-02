@@ -537,14 +537,17 @@ consist of a constructor and a deconstructor, in our case `λ` and `·`,
 which reduces directly.  We give them names starting with the Greek
 letter `β` (_beta_) and such rules are traditionally called _beta rules_.
 
-The rules are deterministic, in that at most one rule applies to every
-term.  We will show in the next chapter that for every well-typed term
+If a term is a value, then no reduction applies; conversely,
+if a reduction applies to a term then it is not a value.
+We will show in the next chapter that for well-typed terms
+this exhausts the possibilities: for every well-typed term
 either a reduction applies or it is a value.
 
 For numbers, zero does not reduce and successor reduces the subterm.
 A case expression reduces its argument to a number, and then chooses
 the zero or successor branch as appropriate.  A fixpoint replaces
-the bound variable by the entire fixpoint term.
+the bound variable by the entire fixpoint term; this is the one
+case where we substitute by a term that is not a value.
 
 Here are the rules formalised in Agda.
 
@@ -695,9 +698,53 @@ data _—↠′_ : Term → Term → Set where
     → L —↠′ N
 \end{code}
 The three constructors specify, respectively, that `—↠` includes `—→`
-and is reflexive and transitive.
+and is reflexive and transitive.  A good exercise is to show that
+the two definitions are equivalent (indeed, isomoprhic).
 
-It is a straightforward exercise to show the two are equivalent.
+One important property a reduction relation might satisfy is
+to be _confluent_.  If term `L` reduces to two other terms,
+`M` and `N`, then both of these reduce to a common term `P`.
+It can be illustrated as follows.
+
+               L
+              / \
+             /   \
+            /     \
+           M       N
+            \     /
+             \   /
+              \ /
+               P
+
+Here `L`, `M`, `N` are universally quantified while `P`
+is existentially quantified.  If each line stand for zero
+or more reduction steps, this is called confluence,
+while if each line stands a single reduction step it is
+called the _diamond property_.  In symbols:
+
+    confluence : ∀ {L M N} → ∃[ P ]
+      ( ((L —↠ M) × (L —↠ N))
+        --------------------
+      → ((M —↠ P) × (M —↠ P)) )
+
+    diamond : ∀ {L M N} → ∃[ P ]
+      ( ((L —↠ M) × (L —↠ N))
+        --------------------
+      → ((M —↠ P) × (M —↠ P)) )
+
+All of the reduction systems studied in this text are determistic.
+In symbols:
+
+    deterministic : ∀ {L M N}
+      → L —→ M
+      → L —→ N
+        ------
+      → M ≡ N
+
+It is easy to show that every deterministic relation satisfies
+the diamond property, and that every relation that satisfies
+the diamond property is confluent.  Hence, all the reduction
+systems studied in this text are trivially confluent.
 
 #### Exercise (`—↠≃—↠′`)
 
