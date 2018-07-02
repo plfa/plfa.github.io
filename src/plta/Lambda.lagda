@@ -384,13 +384,13 @@ when term substituted for the variable is closed. This is because
 substitution by terms that are _not_ closed may require renaming
 of bound variables. For example:
 
-* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · ` "y" ] `` should not yield
-  `` ƛ "x" ⇒ ` "x" · (` "x" · ` "y") ``
+* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield
+  `` (ƛ "x" ⇒ ` "x" · (` "x" · ` `zero)) ``
 
-Instead, we should rename the variables to avoid capture.
+Instead, we should rename the bound variable to avoid capture.
 
-* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · ` "y" ] `` should yield
-  `` ƛ "z" ⇒ ` "z" · (` "x" · ` "y") ``
+* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield
+  `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
 
 Formal definition of substitution with suitable renaming is considerably
 more complex, so we avoid it by restricting to substitution by closed terms,

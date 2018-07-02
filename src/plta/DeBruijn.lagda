@@ -468,9 +468,10 @@ but here the theorem that ensures renaming preserves typing
 also acts as code that performs renaming.
 
 As before, we first need an extension lemma that allows us to extend 
-the context when we encounter a binder: if variables in one context map to
-variables in another, this is still true after adding a variable with the same type to
-the end of both contexts.  It looks exactly like the old extension lemma, but with all
+the context when we encounter a binder. Given a map from variables in
+one context to variables in another, extension yields a map from the
+first context extended to the second context similarly extended.
+It looks exactly like the old extension lemma, but with all
 names and terms dropped.
 \begin{code}
 ext : ∀ {Γ Δ}
@@ -493,8 +494,8 @@ variable in `Γ , B`.
 
 With extension under our belts, it is straightforward
 to define renaming.  If variables in one context map to
-variables in another, then terms in one context map to
-terms in another.
+variables in another, then terms in the first context map to
+terms in the second.
 \begin{code}
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -513,9 +514,9 @@ to variables in `Δ`.  Let's unpack the first three cases.
 
 * If the term is a variable, simply apply `ρ`.
 
-* If the term is an abstraction, use the previous lemma
-  to extend the map `ρ` suitably and recursively rename the
-  body of the abstraction.
+* If the term is an abstraction, use the previous result
+  to extend the map `ρ` suitably and recursively rename
+  the body of the abstraction.
 
 * If the term is an application, recursively rename both
   both the function and the argument.
@@ -568,15 +569,15 @@ a map that takes each free variable of the original term to
 another term. Further, the substituted terms are over an
 arbitrary context, and need not be closed.
 
-The structure of the definition and the proof is remarkably
-close to that for renaming.  Again, we first need an extension
-lemma that allows us to extend the context when we encounter
-a binder.  Whereas the previous extension lemma takes a map
-from variables in one context to variables in another, the
-new extension lemma takes a map from variables in one context
-to _terms_ in another.  If variables in one context map to
-terms in another, this is still true after adding adding a
-variable with the same type to the end of both contexts.
+The structure of the definition and the proof is remarkably close to
+that for renaming.  Again, we first need an extension lemma that
+allows us to extend the context when we encounter a binder.  Whereas
+renaming concerned a map from from variables in one context to
+variables in another, substitution takes a map from variables in one
+context to _terms_ in another.  Given a map from
+variables in one context map to terms over another,
+extension yields a map from the first context extended
+to the second context similarly extended.
 \begin{code}
 exts : ∀ {Γ Δ}
   → (∀ {A}   →     Γ ∋ A →     Δ ⊢ A)
@@ -601,7 +602,10 @@ This is why we had to define renaming first, since
 we require it to convert a term over context `Δ`
 to a term over the extended context `Δ , B`.
 
-
+With extension under our belts, it is straightforward
+to define substitution.  If variable in one context map
+to terms over another, then terms in the first context
+map to terms in the second.
 \begin{code}
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -614,18 +618,87 @@ subst σ (`zero)        =  `zero
 subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (`case L M N)  =  `case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
+\end{code}
+Let `σ` be the name of the map that takes variables in `Γ`
+to terms over `Δ`.  Let's unpack the first three cases.
 
+* If the term is a variable, simply apply `σ`.
+
+* If the term is an abstraction, use the previous result
+  to extend the map `σ` suitably and recursively substitute
+  over the body of the abstraction.
+
+* If the term is an application, recursively substitute over
+  both the function and the argument.
+
+The remaining cases are similar, recursing on each subterm, and
+extending the map whenever the construct introduces a bound variable.
+
+From the general case of substitution for multiple free variables
+in is easy to define the special case of substitution for one free
+variable.
+\begin{code}
 _[_] : ∀ {Γ A B}
-        → Γ , A ⊢ B
-        → Γ ⊢ A 
+        → Γ , B ⊢ A
+        → Γ ⊢ B 
           ---------
-        → Γ ⊢ B
-_[_] {Γ} {A} N M =  subst {Γ , A} {Γ} σ N
+        → Γ ⊢ A
+_[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   where
-  σ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
+  σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
   σ Z      =  M
   σ (S x)  =  ` x
 \end{code}
+In a term of type `A` over context `Γ , B`, we replace the
+variable of type `B` by a term of type `B` over context `Γ`.  To do
+so, we use a map from the context `Γ , B` to the context `Γ`, that
+maps the last variable in the context to the term of type `B` and
+every other free variable to itself.
+
+Consider the previous example.
+
+* `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
+     ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+
+Here is the example formalised.
+\begin{code}
+M₂ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
+M₂ = ƛ # 1 · (# 1 · # 0)
+
+M₃ : ∅ ⊢ `ℕ ⇒ `ℕ
+M₃ = ƛ `suc # 0
+
+M₄ : ∅ ⊢ `ℕ ⇒ `ℕ
+M₄ = ƛ (ƛ `suc # 0) · ((ƛ `suc # 0) · # 0)
+
+_ : M₂ [ M₃ ] ≡ M₄
+_ = refl
+\end{code}
+
+Previously, we presented an example of substitution that we did not
+implement, since it needed to rename the bound variable to avoid capture.
+
+* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield
+  `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
+
+Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted `"y"` has
+type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
+Here is the example formalised.
+\begin{code}
+M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
+M₅ = ƛ # 0 · # 1
+
+M₆ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ
+M₆ = # 0 · `zero
+
+M₇ : ∅ , `ℕ ⇒ `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
+M₇ = ƛ (# 0 · (# 1 · `zero))
+
+_ : M₂ [ M₃ ] ≡ M₄
+_ = refl
+\end{code}
+
+
 
 **Show what happens when subsituting a term with both a lambda bound
   and a free variable underneath a lambda term**
