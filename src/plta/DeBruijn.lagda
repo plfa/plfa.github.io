@@ -456,18 +456,20 @@ substituting only one variable at a time and could only substitute
 closed terms, here we can consider simultaneous subsitution of
 multiple open terms.  The definition of substitution we consider
 is due to Conor McBride.  Whereas before we defined substitution
-in one chapter and showed in preserved types in another chapter,
-here we will do both at once.
+in one chapter and showed it preserved types in the next chapter,
+here we write a single piece of code that does both at once.
 
 ### Renaming
 
-As before, renaming is a necessary prelude to substitution, enabling
+Renaming is a necessary prelude to substitution, enabling
 us to "rebase" a term from one context to another.  It corresponds
-directly to the renaming result from the previous chapter.
+directly to the renaming result from the previous chapter,
+but here the theorem that ensures renaming preserves typing
+also acts as code that performs renaming.
 
-As before, we first need an extension lemma that allows us to extend
+As before, we first need an extension lemma that allows us to extend 
 the context when we encounter a binder: if variables in one context map to
-variables in another, this is still true after adding the some other variable to
+variables in another, this is still true after adding a variable with the same type to
 the end of both contexts.  It looks exactly like the old extension lemma, but with all
 names and terms dropped.
 \begin{code}
@@ -479,10 +481,11 @@ ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 \end{code}
 Let `ρ` be the name of the map that takes variables in `Γ`
-to variables in `Δ`.  Consider the De Bruijn index of the
+to variables in `Δ`.  Consider the de Bruijn index of the
 variable in `Γ , B`.
 
-* If it is `Z`, we return index `Z` to a variable in `Δ , B`.
+* If it is `Z`, which has type `B` in `Γ , B`,
+  then we return `Z`, which also has type `B` in `Δ , B`.
 
 * If it is `S x`, for some variable `x` in `Γ`, then `ρ x`
   is a variable in `Δ`, and hence `S (ρ x)` is a variable in
@@ -523,16 +526,12 @@ extending the map whenever the construct introduces a bound variable.
 Whereas before renaming was a result that carried evidence that
 a term is well-typed in one context to evidence that it is well-typed
 in another context, now it actually transforms the term, suitably
-altering the bound variables.
+altering the bound variables. Typechecking the code in Agda ensures
+that it is only passed and returns terms that are well-typed by
+the rules of simply-typed lambda calculus.
 
-**Add example based on a term with one bound and one free variable**
-
-**Give an example in the introduction of what happens when substituting
-  a term with a free variable**
-
-**See what happens when subsituting a term with both a lambda bound
-  and a free variable underneath a lambda term**
-
+Here is an example of renaming a term with one free variable and one
+bound variable.
 \begin{code}
 M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₀ = ƛ (# 1 · (# 1 · # 0))
@@ -543,17 +542,67 @@ M₁ = ƛ (# 2 · (# 2 · # 0))
 _ : rename S_ M₀ ≡ M₁
 _ = refl
 \end{code}
+In general, `rename S_` will increment the de Bruijn index for each
+free variable by one, while leaving the index for each bound variable
+unchanged.  The code achieves this naturally: the map originally increments
+each variable by one, and is extended for each bound variable by a map
+that leaves it unchanged.
+
+We will see below that renaming by `S_` plays a key role in substitution.
+For traditional uses of de Bruijn indices without inherent typing, 
+this is a little tricky. The code keeps count of a number where all
+greater indexes are free and all smaller indexes bound, and increment only
+indexes greater than the number. It's easy to have off-by-one errors.
+But it's hard to imagine an off-by-one error that preserves typing, and
+hence the Agda code for inherently-typed de Bruijn terms is inherently
+reliable.
+
 
 ### Substitution
 
+Because de Bruijn indices free us of concerns with renaming, it
+becomes easy to provide a definition of substitution that is
+more general than the one considered previously.  Instead of
+substituting a closed term for a single variable, it provides
+a map that takes each free variable of the original term to
+another term. Further, the substituted terms are over an
+arbitrary context, and need not be closed.
+
+The structure of the definition and the proof is remarkably
+close to that for renaming.  Again, we first need an extension
+lemma that allows us to extend the context when we encounter
+a binder.  Whereas the previous extension lemma takes a map
+from variables in one context to variables in another, the
+new extension lemma takes a map from variables in one context
+to _terms_ in another.  If variables in one context map to
+terms in another, this is still true after adding adding a
+variable with the same type to the end of both contexts.
 \begin{code}
 exts : ∀ {Γ Δ}
-  → (∀ {B}   →     Γ ∋ B →     Δ ⊢ B)
+  → (∀ {A}   →     Γ ∋ A →     Δ ⊢ A)
     ----------------------------------
-  → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
+  → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
+\end{code}
+Let `σ` be the name of the map that takes variables in `Γ`
+to terms over `Δ`.  Consider the de Bruijn index of the
+variable in `Γ , B`.
 
+* If it is `Z`, which has type `B` in `Γ , B`,
+  then we return the term `` ` Z``, which also has
+  type `B` in `Δ , B`.
+
+* If it is `S x`, for some variable `x` in `Γ`, then
+  `σ x` is a term in `Δ`, and hence `rename S_ (σ x)`
+  is a term in `Δ , B`.
+
+This is why we had to define renaming first, since
+we require it to convert a term over context `Δ`
+to a term over the extended context `Δ , B`.
+
+
+\begin{code}
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ------------------------
@@ -577,6 +626,10 @@ _[_] {Γ} {A} N M =  subst {Γ , A} {Γ} σ N
   σ Z      =  M
   σ (S x)  =  ` x
 \end{code}
+
+**Show what happens when subsituting a term with both a lambda bound
+  and a free variable underneath a lambda term**
+
 
 ## Reductions
 
