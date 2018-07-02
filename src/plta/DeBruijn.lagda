@@ -9,13 +9,14 @@ module plta.DeBruijn where
 \end{code}
 
 The previous two chapters introduced lambda calculus, with a
-formalisation based on named variables, and terms defined separately
-from types.  We began with that approach because it is traditional,
-but it is not the one we recommend.  This chapter presents an
-alternative approach, where named variables are replaced by de Bruijn
-indices and terms are inherently typed.  Our new presentation is more
-compact, using less than half the lines of code required previously to
-do cover the same ground.
+formalisation based on named variables, and terms defined
+separately from types.  We began with that approach because it
+is traditional, but it is not the one we recommend.  This
+chapter presents an alternative approach, where named
+variables are replaced by de Bruijn indices and terms are
+inherently typed.  Our new presentation is more compact, using
+less than half the lines of code required previously to do
+cover the same ground.
 
 ## Imports
 
@@ -36,9 +37,10 @@ open import Relation.Nullary.Product using (_×-dec_)
 
 ## Introduction
 
-There is a close correspondence between the structure of a term and
-the structure of the derivation showing that it is well-typed.  For
-example, here is the term for the Church numeral two:
+There is a close correspondence between the structure of a
+term and the structure of the derivation showing that it is
+well-typed.  For example, here is the term for the Church
+numeral two:
 
     twoᶜ  : Term
     twoᶜ  = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
@@ -51,9 +53,10 @@ And here is its corresponding type derivation:
                ∋s = S ("s" ≠ "z") Z
                ∋z = Z
 
-(These are both taken from
-Chapter [Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %})
-and you can see the corresponding derivation tree written out in full
+(These are both taken from Chapter
+[Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %})
+and you can see the corresponding derivation tree written out
+in full
 [here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#derivation).)
 The two definitions are in close correspondence, where
 
@@ -61,57 +64,62 @@ The two definitions are in close correspondence, where
   * `ƛ_⇒_`   corresponds to `⊢ƛ`
   * `_·_`    corresponds to `_·_`
 
-Further, if we think of `Z` as zero and `S` as successor, then the
-lookup derivation for each variable corresponds to a number which
-tells us how many enclosing binding terms to count to find the binding
-of that variable.  Here `"z"` corresponds to `Z` or zero and `"s"`
-corresponds to `S Z` or one.  And, indeed, "z" is bound by the inner
-abstraction (count outward past zero abstractions) and "s" is bound by
-the outer abstraction (count outward past one abstraction).
+Further, if we think of `Z` as zero and `S` as successor, then
+the lookup derivation for each variable corresponds to a
+number which tells us how many enclosing binding terms to
+count to find the binding of that variable.  Here `"z"`
+corresponds to `Z` or zero and `"s"` corresponds to `S Z` or
+one.  And, indeed, "z" is bound by the inner abstraction
+(count outward past zero abstractions) and "s" is bound by the
+outer abstraction (count outward past one abstraction).
 
-In this chapter, we are going to exploit this correspondence, and
-introduce a new notation for terms that simultaneously represents the
-term and its type derivation.  Now we will write the following.
+In this chapter, we are going to exploit this correspondence,
+and introduce a new notation for terms that simultaneously
+represents the term and its type derivation.  Now we will
+write the following.
 
     twoᶜ  :  ∅ ⊢ Ch `ℕ
     twoᶜ  =  ƛ ƛ (# 1 · (# 1 · # 0))
 
-A variable is represented by a natural number (written with `Z` and `S`, and
-abbreviated in the usual way), and tells us how many enclosing binding terms
-to count to find the binding of that variable. Thus, `# 0` is bound at the
-inner `ƛ`, and `# 1` at the outer `ƛ`.
+A variable is represented by a natural number (written with
+`Z` and `S`, and abbreviated in the usual way), and tells us
+how many enclosing binding terms to count to find the binding
+of that variable. Thus, `# 0` is bound at the inner `ƛ`, and
+`# 1` at the outer `ƛ`.
 
-Replacing variables by numbers in this way is called _de Bruijn
-representation_, and the numbers themselves are called _de Bruijn
-indices_, after the Dutch mathematician Nicolaas Govert (Dick) de
-Bruijn (1918—2012), a pioneer in the creation of proof assistants.
-One advantage of replacing named variables with de Bruijn indices
-is that each term now has a unique representation, rather than being
-represented by the equivalence class of terms under alpha renaming.
+Replacing variables by numbers in this way is called _de
+Bruijn representation_, and the numbers themselves are called
+_de Bruijn indices_, after the Dutch mathematician Nicolaas
+Govert (Dick) de Bruijn (1918—2012), a pioneer in the creation
+of proof assistants.  One advantage of replacing named
+variables with de Bruijn indices is that each term now has a
+unique representation, rather than being represented by the
+equivalence class of terms under alpha renaming.
 
-The other important feature of our chosen representation is that it is
-_inherently typed_.  In the previous two chapters, the definition of
-terms and the definition of types are completely separate.  All terms
-have type `Term`, and nothing in Agda prevents one from writing a
-nonsense term such as `` `zero · `suc `zero `` which has no type.  Such
-terms that exist independent of types are sometimes called _preterms_
-or _raw terms_.  Here we are going to replace the type `Term` of raw
-terms by the more sophisticated type `Γ ⊢ A` of inherently typed
-terms, which in context `Γ` have type `A`.
+The other important feature of our chosen representation is
+that it is _inherently typed_.  In the previous two chapters,
+the definition of terms and the definition of types are
+completely separate.  All terms have type `Term`, and nothing
+in Agda prevents one from writing a nonsense term such as ``
+`zero · `suc `zero `` which has no type.  Such terms that
+exist independent of types are sometimes called _preterms_ or
+_raw terms_.  Here we are going to replace the type `Term` of
+raw terms by the more sophisticated type `Γ ⊢ A` of inherently
+typed terms, which in context `Γ` have type `A`.
 
-While these two choices fit well, they are independent.  One can use
-De Bruijn indices in raw terms, or (with more difficulty) have
-inherently typed terms with names.  In
-Chapter [Untyped]({{ site.baseurl }}{% link out/plta/Untyped.md %},
-we will terms that are not typed with De Bruijn indices
-are inherently scoped.
+While these two choices fit well, they are independent.  One
+can use De Bruijn indices in raw terms, or (with more
+difficulty) have inherently typed terms with names.  In
+Chapter [Untyped]({{ site.baseurl }}{% link
+out/plta/Untyped.md %}, we will terms that are not typed with
+De Bruijn indices are inherently scoped.
 
 
 ## A second example
 
 De Bruijn indices can be tricky to get the hang of, so before
-proceeding further let's consider a second example.  Here is the
-term that adds two naturals:
+proceeding further let's consider a second example.  Here is
+the term that adds two naturals:
 
     plus : Term
     plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
@@ -119,9 +127,10 @@ term that adds two naturals:
                [zero⇒ ` "n"
                |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
   
-Note variable "m" is bound twice, once in a lambda abstraction and once
-in the successor branch of the case.  Any appearance of "m" in the successor
-branch must refer to the latter binding, due to shadowing.
+Note variable "m" is bound twice, once in a lambda abstraction
+and once in the successor branch of the case.  Any appearance
+of "m" in the successor branch must refer to the latter
+binding, due to shadowing.
 
 Here is its corresponding type derivation:
 
@@ -135,26 +144,28 @@ Here is its corresponding type derivation:
       ∋m′ = Z
       ∋n′ = (S ("n" ≠ "m") Z)
 
-The two definitions are in close correspondence, where in addition
-to the previous correspondences we have
+The two definitions are in close correspondence, where in
+addition to the previous correspondences we have
 
   * `` `zero `` corresponds to `⊢zero`
   * `` `suc_ `` corresponds to `⊢suc`
   * `` `case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
   * `μ_⇒_` corresponds to `⊢μ`
 
-Note the two lookup judgements `∋m` and `∋m′` refer to two different
-bindings of variables named `"m"`.  In contrast, the two judgements `∋n` and
-`∋n′` both refer to the same binding of `"n"` but accessed in different
-contexts, the first where "n" is the last binding in the context, and
-the second after "m" is bound in the successor branch of the case.
+Note the two lookup judgements `∋m` and `∋m′` refer to two
+different bindings of variables named `"m"`.  In contrast, the
+two judgements `∋n` and `∋n′` both refer to the same binding
+of `"n"` but accessed in different contexts, the first where
+"n" is the last binding in the context, and the second after
+"m" is bound in the successor branch of the case.
 
 Here is the term and its type derivation in the notation of this chapter.
 
     plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
     plus = μ ƛ ƛ `case (# 1) (# 0) (`suc (# 3 · # 0 · # 1))
 
-Readering from left to right, each de Bruijn index corresponds to a lookup derivation:
+Reading from left to right, each de Bruijn index corresponds
+to a lookup derivation:
 
   * `# 1` corresponds to `∋m`
   * `# 0` corresponds to `∋n`
@@ -163,23 +174,70 @@ Readering from left to right, each de Bruijn index corresponds to a lookup deriv
   * `# 1` corresponds to `∋n′`
 
 The de Bruijn index counts the number of `S` constructs in the
-corresponding lookup derivation.  Variable "n" bound in the inner
-abstraction is referred to as `# 0` in the zero branch of the case but
-as `# 1` in the successor banch of the case, because of the
-intervening binding.  Variable "m" bound in the lambda abstraction is
-referred to by the first `# 1` in the code, while variable "m" bound
-in the successor branch of the case is referred to by the second
-`# 0`.  There is no shadowing: with variable names, there is no way to
-refer to the former binding in the scope of the latter, but with de
+corresponding lookup derivation.  Variable "n" bound in the
+inner abstraction is referred to as `# 0` in the zero branch
+of the case but as `# 1` in the successor banch of the case,
+because of the intervening binding.  Variable "m" bound in the
+lambda abstraction is referred to by the first `# 1` in the
+code, while variable "m" bound in the successor branch of the
+case is referred to by the second `# 0`.  There is no
+shadowing: with variable names, there is no way to refer to
+the former binding in the scope of the latter, but with de
 Bruijn indices it could be referred to as `# 2`.
 
 
+## Order of presentation
+
+The presentation in the previous two chapters was ordered as
+follows, where the first chapter introduces raw terms, and the
+second proves their properties.
+
+  * Lambda: Introduction to Lambda Calculus
+    + 1.1 Syntax
+    + 1.2 Values
+    + 1.3 Substitution
+    + 1.4 Reduction
+    + 1.5 Typing
+  * Properties: Progress and Preservation
+    + 2.1 Canonical forms lemma
+    + 2.2 Progress
+    + 2.3 Renaming lemma
+    + 2.4 Substitution preserves types
+    + 2.5 Preservation
+    + 2.6 Evaluation
+
+In the current chapter, the use of inherently-typed terms
+necessitates that we cannot introduce operations such as
+substitution or reduction without also showing that they
+preserve types.  Hence, the order of presentation must change.
+For each new section, we show the corresponding old section or
+sections.
+
+  * DeBruijn: Inherently typed de Bruijn representation
+    + Inherently typed terms (1.1, 1.5)
+    + Values (1.2, 2.1)
+    + Renaming (2.3)
+    + Substitution (1.3, 2.3)
+    + Reduction (1.3, 2.4)
+    + Progress (2.2)
+    + Evaluation (2.6)
+
+The definition of terms now combines both the syntax of terms
+and their typing rules, and the definition of values now
+incorporates the Canonical Forms lemma.  The definition of
+substitution is somewhat more involved, but incorporates the
+trickiest part of the previous proof, the lemma establishing
+that substitution preserves types.  The definition of
+reduction incorporates preservation, which no longer requires
+a separate proof.
+
 ## Inherently typed terms
 
-With two examples under our belt, we can begin our formal development.
+We now begin our formal development.
 
-First, we get all our infix declarations out of the way.  For ease of reading,
-we list operators in order from least tightly binding to most.
+First, we get all our infix declarations out of the way.  For
+ease of reading, we list operators in order from least tightly
+binding to most.
 \begin{code}
 infix  4 _⊢_
 infix  4 _∋_
@@ -194,13 +252,13 @@ infix  9 S_
 infix  9 #_ 
 \end{code}
 
-Since terms are inherently typed, we must define types and contexts
-before terms.
+Since terms are inherently typed, we must define types and
+contexts before terms.
 
 ### Types
 
-As before, we have just two types, functions and naturals.  The formal definition
-is unchanged.
+As before, we have just two types, functions and naturals.
+The formal definition is unchanged.
 \begin{code}
 data Type : Set where
   _⇒_ : Type → Type → Type
@@ -222,28 +280,30 @@ data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
 \end{code}
-A context is just a list of types, with the type of the most recently
-bound variable on the right.  As before, we let `Γ` and `Δ` range over contexts.
-We write `∅` for the empty context, and `Γ , A` for the context `Γ` extended
-by type `A`.  For example
+A context is just a list of types, with the type of the most
+recently bound variable on the right.  As before, we let `Γ`
+and `Δ` range over contexts.  We write `∅` for the empty
+context, and `Γ , A` for the context `Γ` extended by type `A`.
+For example
 \begin{code}
 _ : Context
 _ = ∅ , `ℕ ⇒ `ℕ , `ℕ
 \end{code}
-is a context with two variables in scope, where the outer bound one has
-type `` `ℕ → `ℕ ``, and the inner bound one has type `` `ℕ ``.
+is a context with two variables in scope, where the outer
+bound one has type `` `ℕ → `ℕ ``, and the inner bound one has
+type `` `ℕ ``.
 
 ### Variables and the lookup judgement
 
 Inherently typed variables correspond to the lookup judgement.
-They are represented by de Bruijn indices, and hence also correspond to natural numbers.
-We write
+They are represented by de Bruijn indices, and hence also
+correspond to natural numbers.  We write
 
     Γ ∋ A
 
-for variables which in context `Γ` have type `A`.
-Their formalisation looks exactly like the old lookup judgement,
-but with all names dropped.
+for variables which in context `Γ` have type `A`.  Their
+formalisation looks exactly like the old lookup judgement, but
+with all variable names dropped.
 \begin{code}
 data _∋_ : Context → Type → Set where
 
@@ -256,13 +316,15 @@ data _∋_ : Context → Type → Set where
       ---------
     → Γ , B ∋ A
 \end{code}
-Constructor `S` no longer requires an additional parameter, since
-without names shadowing is no longer an issue.  Now constructors
-`Z` and `S` correspond even more closely to the constructors
-`here` and `there` for the element-of relation `_∈_` on lists,
-as well as to constructors `zero` and `suc` for natural numbers.
+Constructor `S` no longer requires an additional parameter,
+since without names shadowing is no longer an issue.  Now
+constructors `Z` and `S` correspond even more closely to the
+constructors `here` and `there` for the element-of relation
+`_∈_` on lists, as well as to constructors `zero` and `suc`
+for natural numbers.
 
-For example, consider the following old-style lookup judgements:
+For example, consider the following old-style lookup
+judgements:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
@@ -284,9 +346,9 @@ We write
 
     Γ ⊢ A
 
-for terms which in context `Γ` has type `A`.
-Their formalisation looks exactly like the old typing judgement,
-but with all names and terms dropped.
+for terms which in context `Γ` has type `A`.  Their
+formalisation looks exactly like the old typing judgement, but
+with all terms and variable names dropped.
 \begin{code}
 data _⊢_ : Context → Type → Set where
 
@@ -328,12 +390,13 @@ data _⊢_ : Context → Type → Set where
     → Γ ⊢ A
 \end{code}
 The definition exploits the close correspondence between the
-structure of terms and the structure of a derivation showing that it
-is well-typed: now we use the derivation _as_ the term.  For example,
-consider the following three terms, building up the Church numeral
-two.
+structure of terms and the structure of a derivation showing
+that it is well-typed: now we use the derivation _as_ the
+term.  For example, consider the following three terms,
+building up the Church numeral two.
 
-For example, consider the following old-style typing judgements:
+For example, consider the following old-style typing
+judgements:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ
@@ -362,7 +425,8 @@ _ = ƛ (` S Z · (` S Z · ` Z))
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (` S Z · (` S Z · ` Z))
 \end{code}
-The final inherently-typed term represents the Church numeral two.
+The final inherently-typed term represents the Church numeral
+two.
 
 ### A convenient abbreviation
 
@@ -374,9 +438,9 @@ lookup (Γ , _) (suc n)  =  lookup Γ n
 lookup ∅       _        =  ⊥-elim impossible
   where postulate impossible : ⊥
 \end{code}
-We intend to apply the function only when the natural is shorter
-than the length of the context, which we indicate by postulating
-an `impossible` term, just as we did
+We intend to apply the function only when the natural is
+shorter than the length of the context, which we indicate by
+postulating an `impossible` term, just as we did
 [here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#impossible).
 
 Given the above, we can convert a natural to a corresponding
@@ -444,38 +508,37 @@ sucᶜ = ƛ `suc (# 0)
 2+2ᶜ : ∅ ⊢ `ℕ
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
-As before we generalise everything save `2+2ᶜ` to arbitary contexts.
-While we are at it, we also generalise `twoᶜ` and `plusᶜ` to Church
-numerals over arbitrary types.
+As before we generalise everything save `2+2ᶜ` to arbitary
+contexts.  While we are at it, we also generalise `twoᶜ` and
+`plusᶜ` to Church numerals over arbitrary types.
 
 ## Substitution
 
-With terms in hand, we turn to substitution, the heart of lambda
-calculus.  Whereas before we had to restrict our attention to
-substituting only one variable at a time and could only substitute
-closed terms, here we can consider simultaneous subsitution of
-multiple open terms.  The definition of substitution we consider
-is due to Conor McBride.  Whereas before we defined substitution
-in one chapter and showed it preserved types in the next chapter,
+With terms in hand, we turn to substitution, the heart of
+lambda calculus.  Whereas before we had to restrict our
+attention to substituting only one variable at a time and
+could only substitute closed terms, here we can consider
+simultaneous subsitution of multiple open terms.  The
+definition of substitution we consider is due to Conor
+McBride.  Whereas before we defined substitution in one
+chapter and showed it preserved types in the next chapter,
 here we write a single piece of code that does both at once.
 
 ### Renaming
 
-Renaming is a necessary prelude to substitution, enabling
-us to "rebase" a term from one context to another.  It corresponds
-directly to the renaming result from the previous chapter,
-but here the theorem that ensures renaming preserves typing
-also acts as code that performs renaming.
+Renaming is a necessary prelude to substitution, enabling us
+to "rebase" a term from one context to another.  It
+corresponds directly to the renaming result from the previous
+chapter, but here the theorem that ensures renaming preserves
+typing also acts as code that performs renaming.
 
-As before, we first need an extension lemma that allows us to extend 
-the context when we encounter a binder. Given a map from variables in
-one context to variables in another, extension yields a map from the
-first context extended to the second context similarly extended.
-It looks exactly like the old extension lemma, but with all
-names and terms dropped.
-\begin{code}
-ext : ∀ {Γ Δ}
-  → (∀ {A}   →     Γ ∋ A →     Δ ∋ A)
+As before, we first need an extension lemma that allows us to
+extend the context when we encounter a binder. Given a map
+from variables in one context to variables in another,
+extension yields a map from the first context extended to the
+second context similarly extended.  It looks exactly like the
+old extension lemma, but with all names and terms dropped.
+\begin{code} ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
     ----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
 ext ρ Z      =  Z
@@ -521,18 +584,20 @@ to variables in `Δ`.  Let's unpack the first three cases.
 * If the term is an application, recursively rename both
   both the function and the argument.
 
-The remaining cases are similar, recursing on each subterm, and
-extending the map whenever the construct introduces a bound variable.
-
-Whereas before renaming was a result that carried evidence that
-a term is well-typed in one context to evidence that it is well-typed
-in another context, now it actually transforms the term, suitably
-altering the bound variables. Typechecking the code in Agda ensures
-that it is only passed and returns terms that are well-typed by
-the rules of simply-typed lambda calculus.
-
-Here is an example of renaming a term with one free variable and one
+The remaining cases are similar, recursing on each subterm,
+and extending the map whenever the construct introduces a
 bound variable.
+
+Whereas before renaming was a result that carried evidence
+that a term is well-typed in one context to evidence that it
+is well-typed in another context, now it actually transforms
+the term, suitably altering the bound variables. Typechecking
+the code in Agda ensures that it is only passed and returns
+terms that are well-typed by the rules of simply-typed lambda
+calculus.
+
+Here is an example of renaming a term with one free
+and one bound variable.
 \begin{code}
 M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₀ = ƛ (# 1 · (# 1 · # 0))
@@ -543,44 +608,45 @@ M₁ = ƛ (# 2 · (# 2 · # 0))
 _ : rename S_ M₀ ≡ M₁
 _ = refl
 \end{code}
-In general, `rename S_` will increment the de Bruijn index for each
-free variable by one, while leaving the index for each bound variable
-unchanged.  The code achieves this naturally: the map originally increments
-each variable by one, and is extended for each bound variable by a map
-that leaves it unchanged.
+In general, `rename S_` will increment the de Bruijn index for
+each free variable by one, while leaving the index for each
+bound variable unchanged.  The code achieves this naturally:
+the map originally increments each variable by one, and is
+extended for each bound variable by a map that leaves it
+unchanged.
 
-We will see below that renaming by `S_` plays a key role in substitution.
-For traditional uses of de Bruijn indices without inherent typing, 
-this is a little tricky. The code keeps count of a number where all
-greater indexes are free and all smaller indexes bound, and increment only
-indexes greater than the number. It's easy to have off-by-one errors.
-But it's hard to imagine an off-by-one error that preserves typing, and
-hence the Agda code for inherently-typed de Bruijn terms is inherently
-reliable.
+We will see below that renaming by `S_` plays a key role in
+substitution.  For traditional uses of de Bruijn indices
+without inherent typing, this is a little tricky. The code
+keeps count of a number where all greater indexes are free and
+all smaller indexes bound, and increment only indexes greater
+than the number. It's easy to have off-by-one errors.  But
+it's hard to imagine an off-by-one error that preserves
+typing, and hence the Agda code for inherently-typed de Bruijn
+terms is inherently reliable.
 
 
 ### Substitution
 
-Because de Bruijn indices free us of concerns with renaming, it
-becomes easy to provide a definition of substitution that is
-more general than the one considered previously.  Instead of
-substituting a closed term for a single variable, it provides
-a map that takes each free variable of the original term to
-another term. Further, the substituted terms are over an
-arbitrary context, and need not be closed.
+Because de Bruijn indices free us of concerns with renaming,
+it becomes easy to provide a definition of substitution that
+is more general than the one considered previously.  Instead
+of substituting a closed term for a single variable, it
+provides a map that takes each free variable of the original
+term to another term. Further, the substituted terms are over
+an arbitrary context, and need not be closed.
 
-The structure of the definition and the proof is remarkably close to
-that for renaming.  Again, we first need an extension lemma that
-allows us to extend the context when we encounter a binder.  Whereas
-renaming concerned a map from from variables in one context to
-variables in another, substitution takes a map from variables in one
-context to _terms_ in another.  Given a map from
-variables in one context map to terms over another,
-extension yields a map from the first context extended
-to the second context similarly extended.
+The structure of the definition and the proof is remarkably
+close to that for renaming.  Again, we first need an extension
+lemma that allows us to extend the context when we encounter a
+binder.  Whereas renaming concerned a map from from variables
+in one context to variables in another, substitution takes a
+map from variables in one context to _terms_ in another.
+Given a map from variables in one context map to terms over
+another, extension yields a map from the first context
+extended to the second context similarly extended.
 \begin{code}
-exts : ∀ {Γ Δ}
-  → (∀ {A}   →     Γ ∋ A →     Δ ⊢ A)
+exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
 exts σ Z      =  ` Z
@@ -631,12 +697,13 @@ to terms over `Δ`.  Let's unpack the first three cases.
 * If the term is an application, recursively substitute over
   both the function and the argument.
 
-The remaining cases are similar, recursing on each subterm, and
-extending the map whenever the construct introduces a bound variable.
+The remaining cases are similar, recursing on each subterm,
+and extending the map whenever the construct introduces a
+bound variable.
 
-From the general case of substitution for multiple free variables
-in is easy to define the special case of substitution for one free
-variable.
+From the general case of substitution for multiple free
+variables in is easy to define the special case of
+substitution for one free variable.
 \begin{code}
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
@@ -650,10 +717,10 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   σ (S x)  =  ` x
 \end{code}
 In a term of type `A` over context `Γ , B`, we replace the
-variable of type `B` by a term of type `B` over context `Γ`.  To do
-so, we use a map from the context `Γ , B` to the context `Γ`, that
-maps the last variable in the context to the term of type `B` and
-every other free variable to itself.
+variable of type `B` by a term of type `B` over context `Γ`.
+To do so, we use a map from the context `Γ , B` to the context
+`Γ`, that maps the last variable in the context to the term of
+type `B` and every other free variable to itself.
 
 Consider the previous example.
 
@@ -675,15 +742,16 @@ _ : M₂ [ M₃ ] ≡ M₄
 _ = refl
 \end{code}
 
-Previously, we presented an example of substitution that we did not
-implement, since it needed to rename the bound variable to avoid capture.
+Previously, we presented an example of substitution that we
+did not implement, since it needed to rename the bound
+variable to avoid capture.
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield
   `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
 
-Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted `"y"` has
-type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
-Here is the example formalised.
+Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
+`"y"` has type `` `ℕ ``, and the free `"x"` also has type ``
+`ℕ ⇒ `ℕ ``.  Here is the example formalised.
 \begin{code}
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
@@ -698,15 +766,25 @@ _ : M₂ [ M₃ ] ≡ M₄
 _ = refl
 \end{code}
 
-
-
-**Show what happens when subsituting a term with both a lambda bound
-  and a free variable underneath a lambda term**
+The logician Haskell Curry observed that getting the
+definition of substitution right can be a tricky business.  It
+can be even trickier when using de Bruijn indices, which can
+often be hard to decipher.  Under the current approach, any
+definition of substitution must, of necessity, preserves
+types.  While this makes the definition more involved, it
+means that once it is done the hardest work is out of the way.
+And combining definition with proof makes it harder for errors
+to sneak in.
 
 
 ## Reductions
 
+With substitution out of the way, it is straightforward to
+define values and reduction.
+
 ### Value
+
+The definition of value is much 
 
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
