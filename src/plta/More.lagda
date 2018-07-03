@@ -51,6 +51,7 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infix  9 S_
+infix  9 #_
 
 data Type : Set where
   `ℕ    : Type
@@ -61,11 +62,11 @@ data Type : Set where
   `⊥    : Type
   `List : Type → Type
 
-data Env : Set where
-  ∅   : Env
-  _,_ : Env → Type → Env
+data Context : Set where
+  ∅   : Context
+  _,_ : Context → Type → Context
 
-data _∋_ : Env → Type → Set where
+data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ} {A}
       ----------
@@ -76,7 +77,7 @@ data _∋_ : Env → Type → Set where
       ---------
     → Γ , A ∋ B
 
-data _⊢_ : Env → Type → Set where
+data _⊢_ : Context → Type → Set where
 
   `_ : ∀ {Γ} {A}
     → Γ ∋ A
@@ -181,15 +182,36 @@ data _⊢_ : Env → Type → Set where
     → Γ ⊢ B
 \end{code}
 
+## Abbreviating de Bruijn indices
+
+\begin{code}
+lookup : Context → ℕ → Type
+lookup (Γ , A) zero     =  A
+lookup (Γ , _) (suc n)  =  lookup Γ n
+lookup ∅       _        =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+
+\begin{code}
+count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
+count {Γ , _} zero     =  Z
+count {Γ , _} (suc n)  =  S (count n)
+count {∅}     _        =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+
+\begin{code}
+#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
+# n  =  ` count n
+\end{code}
+
 
 ## Test examples
 
 
-## Operational semantics
+## Substitution
 
-Simultaneous substitution, a la McBride
-
-## Renaming
+### Renaming
 
 \begin{code}
 ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
@@ -218,7 +240,7 @@ rename ρ (`caseL L M N)  =  `caseL (rename ρ L) (rename ρ M) (rename (ext (ex
 rename ρ (`let M N)      =  `let (rename ρ M) (rename (ext ρ) N)
 \end{code}
 
-## Substitution
+### Simultaneous Substitution
 
 \begin{code}
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
@@ -245,7 +267,11 @@ subst σ `[]             =  `[]
 subst σ (M `∷ N)        =  (subst σ M) `∷ (subst σ N)
 subst σ (`caseL L M N)  =  `caseL (subst σ L) (subst σ M) (subst (exts (exts σ)) N)
 subst σ (`let M N)      =  `let (subst σ M) (subst (exts σ) N)
+\end{code}
 
+### Single and double substitution
+
+\begin{code}
 _[_] : ∀ {Γ A B}
   → Γ , A ⊢ B
   → Γ ⊢ A
@@ -271,7 +297,9 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   σ (S (S x))  =  ` x
 \end{code}
 
-## Value
+## Reductions
+
+### Value
 
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -295,12 +323,12 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
       -----------------
     → Value `⟨ V , W ⟩
 
-  Inj₁ : ∀ {Γ A B} {V : Γ ⊢ A}
+  V-inj₁ : ∀ {Γ A B} {V : Γ ⊢ A}
     → Value V
       ------------------------
     → Value (`inj₁ {B = B} V)
 
-  Inj₂ : ∀ {Γ A B} {W : Γ ⊢ B}
+  V-inj₂ : ∀ {Γ A B} {W : Γ ⊢ B}
     → Value W
       ------------------------
     → Value (`inj₂ {A = A} W)
@@ -505,8 +533,8 @@ Value-lemma V-zero        ()
 Value-lemma (V-suc VM)    (ξ-suc M—→M′)     =  Value-lemma VM M—→M′
 Value-lemma (V-⟨_,_⟩ VM _) (ξ-⟨,⟩₁ M—→M′)    =  Value-lemma VM M—→M′
 Value-lemma (V-⟨_,_⟩ _ VN) (ξ-⟨,⟩₂ _ N—→N′)  =  Value-lemma VN N—→N′
-Value-lemma (Inj₁ VM)   (ξ-inj₁ M—→M′)    =  Value-lemma VM M—→M′
-Value-lemma (Inj₂ VN)   (ξ-inj₂ N—→N′)    =  Value-lemma VN N—→N′
+Value-lemma (V-inj₁ VM)   (ξ-inj₁ M—→M′)    =  Value-lemma VM M—→M′
+Value-lemma (V-inj₂ VN)   (ξ-inj₂ N—→N′)    =  Value-lemma VN N—→N′
 Value-lemma TT          ()
 Value-lemma Nil         ()
 Value-lemma (Cons VM _) (ξ-∷₁ M—→M′)      =  Value-lemma VM M—→M′
@@ -563,14 +591,14 @@ progress (`proj₂ L) with progress L
 ...    | done (V-⟨ VM , VN ⟩)              =  step (β-×₂ VM VN)
 progress (`inj₁ M) with progress M
 ...    | step M—→M′                       =  step (ξ-inj₁ M—→M′)
-...    | done VM                           =  done (Inj₁ VM)
+...    | done VM                           =  done (V-inj₁ VM)
 progress (`inj₂ N) with progress N
 ...    | step N—→N′                       =  step (ξ-inj₂ N—→N′)
-...    | done VN                           =  done (Inj₂ VN)
+...    | done VN                           =  done (V-inj₂ VN)
 progress (`case⊎ L M N) with progress L
 ...    | step L—→L′                       =  step (ξ-case⊎ L—→L′)
-...    | done (Inj₁ VV)                    =  step (β-⊎₁ VV)
-...    | done (Inj₂ VW)                    =  step (β-⊎₂ VW)
+...    | done (V-inj₁ VV)                    =  step (β-⊎₁ VV)
+...    | done (V-inj₂ VW)                    =  step (β-⊎₂ VW)
 progress (`tt)                             =  done TT
 progress (`case⊥ {A = A} L) with progress L
 ...    | step L—→L′                       =  step (ξ-case⊥ {A = A} L—→L′)

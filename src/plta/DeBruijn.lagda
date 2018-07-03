@@ -235,16 +235,17 @@ a separate proof.
 
 We now begin our formal development.
 
-First, we get all our infix declarations out of the way.  For
-ease of reading, we list operators in order from least tightly
-binding to most.
+First, we get all our infix declarations out of the way.
+We list separately operators for judgements, types, and terms.
 \begin{code}
 infix  4 _⊢_
 infix  4 _∋_
 infixl 5 _,_
+
+infixr 7 _⇒_
+
 infix  5 ƛ_
 infix  5 μ_
-infixr 7 _⇒_
 infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
@@ -264,12 +265,6 @@ data Type : Set where
   _⇒_ : Type → Type → Type
   `ℕ  : Type
 \end{code}
-For example,
-\begin{code}
-_ : Type
-_ = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
-\end{code}
-is a type that can be assigned to a Church numeral.
 
 ### Contexts
 
@@ -377,7 +372,7 @@ data _⊢_ : Context → Type → Set where
       -------
     → Γ ⊢ `ℕ
 
-  `case : ∀ {Γ A}
+  `caseℕ : ∀ {Γ A}
     → Γ ⊢ `ℕ
     → Γ ⊢ A
     → Γ , `ℕ ⊢ A
@@ -481,7 +476,7 @@ two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
 
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
-plus = μ ƛ ƛ (`case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+plus = μ ƛ ƛ (`caseℕ (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 
 2+2 : ∅ ⊢ `ℕ
 2+2 = plus · two · two
@@ -514,15 +509,15 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 
 ## Substitution
 
-With terms in hand, we turn to substitution, the heart of
-lambda calculus.  Whereas before we had to restrict our
+With terms in hand, we turn to substitution.
+Whereas before we had to restrict our
 attention to substituting only one variable at a time and
 could only substitute closed terms, here we can consider
-simultaneous subsitution of multiple open terms.  The
+simultaneous subsitution of open terms.  The
 definition of substitution we consider is due to Conor
 McBride.  Whereas before we defined substitution in one
 chapter and showed it preserved types in the next chapter,
-here we write a single piece of code that does both at once.
+here we write code that does both at once.
 
 ### Renaming
 
@@ -570,7 +565,7 @@ rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
 rename ρ (`zero)        =  `zero
 rename ρ (`suc M)       =  `suc (rename ρ M)
-rename ρ (`case L M N)  =  `case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
+rename ρ (`caseℕ L M N)  =  `caseℕ (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 \end{code}
 Let `ρ` be the name of the map that takes variables in `Γ`
@@ -627,7 +622,7 @@ typing, and hence the Agda code for inherently-typed de Bruijn
 terms is inherently reliable.
 
 
-### Substitution
+### Simultaneous Substitution
 
 Because de Bruijn indices free us of concerns with renaming,
 it becomes easy to provide a definition of substitution that
@@ -683,7 +678,7 @@ subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
 subst σ (L · M)        =  (subst σ L) · (subst σ M)
 subst σ (`zero)        =  `zero
 subst σ (`suc M)       =  `suc (subst σ M)
-subst σ (`case L M N)  =  `case (subst σ L) (subst σ M) (subst (exts σ) N)
+subst σ (`caseℕ L M N)  =  `caseℕ (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
 \end{code}
 Let `σ` be the name of the map that takes variables in `Γ`
@@ -701,6 +696,8 @@ to terms over `Δ`.  Let's unpack the first three cases.
 The remaining cases are similar, recursing on each subterm,
 and extending the map whenever the construct introduces a
 bound variable.
+
+### Single substitution
 
 From the general case of substitution for multiple free
 variables in is easy to define the special case of
@@ -846,16 +843,16 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → L —→ L′
       --------------------------
-    → `case L M N —→ `case L′ M N
+    → `caseℕ L M N —→ `caseℕ L′ M N
 
   β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
       -------------------
-    → `case `zero M N —→ M
+    → `caseℕ `zero M N —→ M
 
   β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → Value V
       -----------------------------
-    → `case (`suc V) M N —→ N [ V ]
+    → `caseℕ (`suc V) M N —→ N [ V ]
 
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
       ---------------
@@ -927,29 +924,29 @@ _ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
     plus · two · two
   —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
-    (ƛ ƛ `case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z))) · two · two
+    (ƛ ƛ `caseℕ (` S Z) (` Z) (`suc (plus · ` Z · ` S Z))) · two · two
   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    (ƛ `case two (` Z) (`suc (plus · ` Z · ` S Z))) · two
+    (ƛ `caseℕ two (` Z) (`suc (plus · ` Z · ` S Z))) · two
   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    `case two two (`suc (plus · ` Z · two))
+    `caseℕ two two (`suc (plus · ` Z · two))
   —→⟨ β-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
   —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
-    `suc ((ƛ ƛ `case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
+    `suc ((ƛ ƛ `caseℕ (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
       · `suc `zero · two)
   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
-    `suc ((ƛ `case (`suc `zero) (` Z) (`suc (plus · ` Z · ` S Z))) · two)
+    `suc ((ƛ `caseℕ (`suc `zero) (` Z) (`suc (plus · ` Z · ` S Z))) · two)
   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    `suc (`case (`suc `zero) (two) (`suc (plus · ` Z · two)))
+    `suc (`caseℕ (`suc `zero) (two) (`suc (plus · ` Z · two)))
   —→⟨ ξ-suc (β-suc V-zero) ⟩
     `suc (`suc (plus · `zero · two))
   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
-    `suc (`suc ((ƛ ƛ `case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
+    `suc (`suc ((ƛ ƛ `caseℕ (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
       · `zero · two))
   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
-    `suc (`suc ((ƛ `case `zero (` Z) (`suc (plus · ` Z · ` S Z))) · two))
+    `suc (`suc ((ƛ `caseℕ `zero (` Z) (`suc (plus · ` Z · ` S Z))) · two))
   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
-    `suc (`suc (`case `zero (two) (`suc (plus · ` Z · two))))
+    `suc (`suc (`caseℕ `zero (two) (`suc (plus · ` Z · two))))
   —→⟨ ξ-suc (ξ-suc β-zero) ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
@@ -1048,7 +1045,7 @@ progress (`zero)                        =  done V-zero
 progress (`suc M) with progress M
 ...    | step M—→M′                     =  step (ξ-suc M—→M′)
 ...    | done VM                        =  done (V-suc VM)
-progress (`case L M N) with progress L
+progress (`caseℕ L M N) with progress L
 ...    | step L—→L′                     =  step (ξ-case L—→L′)
 ...    | done V-zero                    =  step (β-zero)
 ...    | done (V-suc VL)                =  step (β-suc VL)
@@ -1151,40 +1148,40 @@ _ : eval (gas 100) (plus · two · two) ≡
   ((μ
     (ƛ
      (ƛ
-      `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+      `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
    —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
    (ƛ
     (ƛ
-     `case (` (S Z)) (` Z)
+     `caseℕ (` (S Z)) (` Z)
      (`suc
       ((μ
         (ƛ
          (ƛ
-          `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+          `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
        · ` Z
        · ` (S Z)))))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
    —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
    (ƛ
-    `case (`suc (`suc `zero)) (` Z)
+    `caseℕ (`suc (`suc `zero)) (` Z)
     (`suc
      ((μ
        (ƛ
         (ƛ
-         `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+         `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
       · ` Z
       · ` (S Z))))
    · `suc (`suc `zero)
    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-   `case (`suc (`suc `zero)) (`suc (`suc `zero))
+   `caseℕ (`suc (`suc `zero)) (`suc (`suc `zero))
    (`suc
     ((μ
       (ƛ
        (ƛ
-        `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+        `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · ` Z
      · `suc (`suc `zero)))
    —→⟨ β-suc (V-suc V-zero) ⟩
@@ -1192,19 +1189,19 @@ _ : eval (gas 100) (plus · two · two) ≡
    ((μ
      (ƛ
       (ƛ
-       `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+       `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
     · `suc `zero
     · `suc (`suc `zero))
    —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
    `suc
    ((ƛ
      (ƛ
-      `case (` (S Z)) (` Z)
+      `caseℕ (` (S Z)) (` Z)
       (`suc
        ((μ
          (ƛ
           (ƛ
-           `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+           `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
         · ` Z
         · ` (S Z)))))
     · `suc `zero
@@ -1212,23 +1209,23 @@ _ : eval (gas 100) (plus · two · two) ≡
    —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
    `suc
    ((ƛ
-     `case (`suc `zero) (` Z)
+     `caseℕ (`suc `zero) (` Z)
      (`suc
       ((μ
         (ƛ
          (ƛ
-          `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+          `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
        · ` Z
        · ` (S Z))))
     · `suc (`suc `zero))
    —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
    `suc
-   `case (`suc `zero) (`suc (`suc `zero))
+   `caseℕ (`suc `zero) (`suc (`suc `zero))
    (`suc
     ((μ
       (ƛ
        (ƛ
-        `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+        `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · ` Z
      · `suc (`suc `zero)))
    —→⟨ ξ-suc (β-suc V-zero) ⟩
@@ -1237,7 +1234,7 @@ _ : eval (gas 100) (plus · two · two) ≡
     ((μ
       (ƛ
        (ƛ
-        `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+        `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · `zero
      · `suc (`suc `zero)))
    —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
@@ -1245,12 +1242,12 @@ _ : eval (gas 100) (plus · two · two) ≡
    (`suc
     ((ƛ
       (ƛ
-       `case (` (S Z)) (` Z)
+       `caseℕ (` (S Z)) (` Z)
        (`suc
         ((μ
           (ƛ
            (ƛ
-            `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+            `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
          · ` Z
          · ` (S Z)))))
      · `zero
@@ -1259,24 +1256,24 @@ _ : eval (gas 100) (plus · two · two) ≡
    `suc
    (`suc
     ((ƛ
-      `case `zero (` Z)
+      `caseℕ `zero (` Z)
       (`suc
        ((μ
          (ƛ
           (ƛ
-           `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+           `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
         · ` Z
         · ` (S Z))))
      · `suc (`suc `zero)))
    —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
    `suc
    (`suc
-    `case `zero (`suc (`suc `zero))
+    `caseℕ `zero (`suc (`suc `zero))
     (`suc
      ((μ
        (ƛ
         (ƛ
-         `case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+         `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
       · ` Z
       · `suc (`suc `zero))))
    —→⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)
