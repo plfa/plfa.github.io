@@ -1,7 +1,7 @@
 Preface
 --
 Naturals
-Properties
+Induction
 Relations
 Equality
 Isomorphism

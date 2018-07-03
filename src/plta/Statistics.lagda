@@ -16,7 +16,7 @@ Total number of lines and number of lines of Agda code in each chapter
     Preface                       99       1
 
     Naturals                     900      86
-    Properties                  1533     724
+    Induction                    770     107
     Relations                    608      93
     Equality                     595     128
     Isomorphism                  403     170
