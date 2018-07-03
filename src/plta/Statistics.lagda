@@ -29,7 +29,7 @@ Total number of lines and number of lines of Agda code in each chapter
     Lambda                      1300     386
     Properties                  1533     724
     DeBruijn                    1363     627
-    Extensions                   603     524
+    More                         603     524
     Inference                    431     350
     Untyped                      362     281
 

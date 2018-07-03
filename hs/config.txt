@@ -14,7 +14,7 @@ Decidable
 Lambda
 Properties
 DeBruijn
-Extensions
+More
 Inference
 Untyped
 --

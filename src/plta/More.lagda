@@ -1,11 +1,11 @@
 ---
-title     : "Extensions: Extensions to simply-typed lambda calculus"
+title     : "More: More constructs of simply-typed lambda calculus"
 layout    : page
-permalink : /Extensions/
+permalink : /More/
 ---
 
 \begin{code}
-module plta.Extensions where
+module plta.More where
 \end{code}
 
 
