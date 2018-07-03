@@ -1,11 +1,5 @@
 import Prelude
 
-begin :: String
-begin =  "\\begin{code}"
-
-end :: String
-end =  "\\end{code}"
-
 prefix :: Eq a => [a] -> [a] -> Bool
 prefix xs ys  =  take (length xs) ys == xs
 
@@ -33,11 +27,19 @@ count b e = sum . map length . strip b e
 test2 :: Bool
 test2 =  count (== 'b') (== 'e') ex1 == 6
 
-info :: String -> IO (Int , Int)
-info f =
-  do xs <- readFile f
-     return ((length . lines) xs),
-             (count (prefix begin) (prefix end) . lines) xs)
+agda :: String -> Int
+agda =  count (prefix begin) (prefix end) . lines
+  where
+  begin  =  "\\begin{code}"
+  end    =  "\\end{code}"
+
+wc :: String -> Int
+wc =  length . lines
+
+type Name = String
+
+info :: String -> (Int, Int)
+info xs = (wc xs, agda xs)
 
 pad :: Int -> String -> String
 pad n s  =  take n (s ++ repeat ' ')
@@ -45,21 +47,30 @@ pad n s  =  take n (s ++ repeat ' ')
 rjust :: Int -> String -> String
 rjust n = reverse . pad n . reverse
 
-format :: String -> IO String
-format "--" = ""
-format f =
-  do (lines, code) <- info f
-     return (replicate 4 ' ' ++
-             pad 28 f ++
-             rjust 4 lines ++
-             replicate 4 ' ' ++
-             rjust 4 ' ')
+format :: Name -> (Int, Int) -> String
+format name (wc, ag) =
+  (replicate 4 ' ' ++
+   pad 28 name ++
+   rjust 4 (show wc) ++
+   replicate 4 ' ' ++
+   rjust 4 (show ag))
 
-config : IO [String]
-config =
-  do stuff <- readFile "config.txt"
-     return (lines stuff)
+process :: Name -> IO String
+process "--"  =  return ""
+process name  =
+  do xs <- readFile (pre ++ name ++ post)
+     return (format name (info xs))
+  where
+  pre  = "../src/plta/"
+  post = ".lagda"
 
-answer : IO String
-answer =
-  do 
+header :: String
+header =
+  unlines
+    ["                                total   code",
+     "                                -----   ----"]
+main :: IO ()
+main =
+  do config <- readFile "config.txt"
+     content <- sequence (map process (lines config))
+     putStrLn (header ++ unlines content)

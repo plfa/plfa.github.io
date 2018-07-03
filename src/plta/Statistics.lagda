@@ -9,29 +9,30 @@ module plta.Statistics where
 \end{code}
 
 Total number of lines and number of lines of Agda code in each chapter
-(as of 11 June 2018).
+(as of 2 July 2018).
 
                                 total   code
-    Preface                       94       1
+                                -----   ----
+    Preface                       99       1
 
     Naturals                     900      86
-    Properties                   766     107
-    Relations                    608      93    
-    Equality                     669     141
-    Isomorphism                  310     153
-    Connectives                  826     245
+    Properties                  1533     724
+    Relations                    608      93
+    Equality                     595     128
+    Isomorphism                  403     170
+    Connectives                  827     243
     Negation                     354      47
-    Quantifiers                  399      82
-    Lists                        901     414
+    Quantifiers                  390      79
+    Lists                        893     412
     Decidable                    566     170
 
-    Lambda                      1114     345
-    Properties                   827     450
-    DeBruijn                     477     351
+    Lambda                      1300     386
+    Properties                  1533     724
+    DeBruijn                    1363     627
     Extensions                   603     524
-    Inference                    428     350
-    Untyped                      346     265
+    Inference                    431     350
+    Untyped                      362     281
 
     Acknowledgements              46       1
-    Fonts                         61      23
-    Statistics                    34       1
+    Fonts                         62      44
+    Statistics                    38       1

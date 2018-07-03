@@ -330,13 +330,13 @@ judgements:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
 They correspond to the following inherently-typed variables.
-\begin{code}
+-- \begin{code}
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
 
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ ⇒ `ℕ
 _ = S Z
-\end{code}
+-- \end{code}
 In the given context, `"z"` is represented by `Z`, and `"s"` by `S Z`.
 
 ### Terms and the typing judgement
@@ -1348,4 +1348,16 @@ tedious and almost identical to the previous proof.
 
 Counting the lines of code is instructive.  While this chapter
 covers the same formal development as the previous two
-chapters, it has about half the number of lines of code.
+chapters, it has much less code.  Omitting all the examples,
+and all proofs that appear in Properties but not DeBruijn
+(such as the proof that reduction is deterministic), the
+number of lines of code is as follows.
+
+    Lambda                      216
+    Properties                  235
+    DeBruijn                    275
+
+The relation between the two approaches approximates the
+golden ratio: raw terms with a separate typing relation
+require about 1.6 times as much code as inherently-typed terms
+with de Bruijn indices.
