@@ -275,20 +275,20 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
-  Zero : ∀ {Γ} →
+  V-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B}
+      ---------------------------
+    → Value (ƛ N)
+
+  V-zero : ∀ {Γ} →
       -----------------
       Value (`zero {Γ})
 
-  Suc : ∀ {Γ} {V : Γ ⊢ `ℕ}
+  V-suc : ∀ {Γ} {V : Γ ⊢ `ℕ}
     → Value V
       --------------
     → Value (`suc V)
 
-  Fun : ∀ {Γ A B} {N : Γ , A ⊢ B}
-      ---------------------------
-    → Value (ƛ N)
-
-  Pair : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
+  V-⟨_,_⟩ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
     → Value V
     → Value W
       -----------------
@@ -340,7 +340,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       -----------------
     → V · M —→ V · M′
 
-  β-⇒ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
+  β-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
     → Value W
       ---------------------
     → (ƛ N) · W —→ N [ W ]
@@ -499,11 +499,11 @@ begin M—↠N = M—↠N
 Values do not reduce.
 \begin{code}
 Value-lemma : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M —→ N)
-Value-lemma Fun         ()
-Value-lemma Zero        ()
-Value-lemma (Suc VM)    (ξ-suc M—→M′)     =  Value-lemma VM M—→M′
-Value-lemma (Pair VM _) (ξ-⟨,⟩₁ M—→M′)    =  Value-lemma VM M—→M′
-Value-lemma (Pair _ VN) (ξ-⟨,⟩₂ _ N—→N′)  =  Value-lemma VN N—→N′
+Value-lemma V-ƛ         ()
+Value-lemma V-zero        ()
+Value-lemma (V-suc VM)    (ξ-suc M—→M′)     =  Value-lemma VM M—→M′
+Value-lemma (V-⟨_,_⟩ VM _) (ξ-⟨,⟩₁ M—→M′)    =  Value-lemma VM M—→M′
+Value-lemma (V-⟨_,_⟩ _ VN) (ξ-⟨,⟩₂ _ N—→N′)  =  Value-lemma VN N—→N′
 Value-lemma (Inj₁ VM)   (ξ-inj₁ M—→M′)    =  Value-lemma VM M—→M′
 Value-lemma (Inj₂ VN)   (ξ-inj₂ N—→N′)    =  Value-lemma VN N—→N′
 Value-lemma TT          ()
@@ -534,32 +534,32 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
 
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
-progress (ƛ N)                             =  done Fun
+progress (ƛ N)                             =  done V-ƛ
 progress (L · M) with progress L
 ...    | step L—→L′                       =  step (ξ-·₁ L—→L′)
-...    | done Fun with progress M
-...        | step M—→M′                   =  step (ξ-·₂ Fun M—→M′)
-...        | done VM                       =  step (β-⇒ VM)
-progress (`zero)                           =  done Zero
+...    | done V-ƛ with progress M
+...        | step M—→M′                   =  step (ξ-·₂ V-ƛ M—→M′)
+...        | done VM                       =  step (β-ƛ VM)
+progress (`zero)                           =  done V-zero
 progress (`suc M) with progress M
 ...    | step M—→M′                       =  step (ξ-suc M—→M′)
-...    | done VM                           =  done (Suc VM)
+...    | done VM                           =  done (V-suc VM)
 progress (`caseℕ L M N) with progress L
 ...    | step L—→L′                       =  step (ξ-caseℕ L—→L′)
-...    | done Zero                         =  step β-ℕ₁
-...    | done (Suc VL)                     =  step (β-ℕ₂ VL)
+...    | done V-zero                         =  step β-ℕ₁
+...    | done (V-suc VL)                     =  step (β-ℕ₂ VL)
 progress (μ N)                             =  step β-μ
 progress `⟨ M , N ⟩ with progress M
 ...    | step M—→M′                       =  step (ξ-⟨,⟩₁ M—→M′)
 ...    | done VM with progress N
 ...        | step N—→N′                   =  step (ξ-⟨,⟩₂ VM N—→N′)
-...        | done VN                       =  done (Pair VM VN)
+...        | done VN                       =  done (V-⟨ VM , VN ⟩)
 progress (`proj₁ L) with progress L
 ...    | step L—→L′                       =  step (ξ-proj₁ L—→L′)
-...    | done (Pair VM VN)                 =  step (β-×₁ VM VN)
+...    | done (V-⟨ VM , VN ⟩)              =  step (β-×₁ VM VN)
 progress (`proj₂ L) with progress L
 ...    | step L—→L′                       =  step (ξ-proj₂ L—→L′)
-...    | done (Pair VM VN)                 =  step (β-×₂ VM VN)
+...    | done (V-⟨ VM , VN ⟩)              =  step (β-×₂ VM VN)
 progress (`inj₁ M) with progress M
 ...    | step M—→M′                       =  step (ξ-inj₁ M—→M′)
 ...    | done VM                           =  done (Inj₁ VM)
@@ -637,20 +637,116 @@ data _~_ : ∀ {Γ A} → Γ ⊢ A → Γ ⊢ A → Set where
      -------------
    → (` x) ~ (` x)
 
-  ~ƛ : ∀ {Γ A B} {N N′ : Γ , A ⊢ B}
-    → N ~ N′
-      --------------
-    → (ƛ N) ~ (ƛ N′)
+  ~ƛ : ∀ {Γ A B} {Nₛ Nₜ : Γ , A ⊢ B}
+    → Nₛ ~ Nₜ
+      ---------------
+    → (ƛ Nₛ) ~ (ƛ Nₜ)
 
-  ~· : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
-    → L ~ L′
-    → M ~ M′
-      -------------------
-    → (L · M) ~ (L′ · M′)
+  ~· : ∀ {Γ A B} {Lₛ Lₜ : Γ ⊢ A ⇒ B} {Mₛ Mₜ : Γ ⊢ A}
+    → Lₛ ~ Lₜ
+    → Mₛ ~ Mₜ
+      ---------------------
+    → (Lₛ · Mₛ) ~ (Lₜ · Mₜ)
 
-  ~let : ∀ {Γ A B} {M M′ : Γ ⊢ A} {N N′ : Γ , A ⊢ B}
-    → M ~ M′
-    → N ~ N′
-      --------------------------
-    → (`let M N) ~ ((ƛ N′) · M′)
+  ~let : ∀ {Γ A B} {Mₛ Mₜ : Γ ⊢ A} {Nₛ Nₜ : Γ , A ⊢ B}
+    → Mₛ ~ Mₜ
+    → Nₛ ~ Nₜ
+      ----------------------------
+    → (`let Mₛ Nₛ) ~ ((ƛ Nₜ) · Mₜ)
+\end{code}
+
+\begin{code}
+data BiVal {Γ A} (Vₛ Vₜ : Γ ⊢ A) : Set where
+
+  val :
+      Value Vₜ
+      ----------
+    → BiVal Vₛ Vₜ
+
+bival : ∀ {Γ A} {Vₛ Vₜ : Γ ⊢ A} 
+  → Vₛ ~ Vₜ
+  → Value Vₛ
+    -----------
+  → BiVal Vₛ Vₜ
+bival ~` ()
+bival (~ƛ Vₛ~Vₜ) V-ƛ = val V-ƛ
+bival (~· Vₛ~Vₜ Vₛ~Vₜ₁) ()
+bival (~let Vₛ~Vₜ Vₛ~Vₜ₁) ()
+
+bivar : ∀ {Γ A B} {x : Γ , B ∋ A} {Vₛ Vₜ : Γ ⊢ B} 
+  → Vₛ ~ Vₜ
+    -------------------------------
+  → ((` x) [ Vₛ ]) ~ ((` x) [ Vₜ ])
+bivar {x = Z} Vₛ~Vₜ = Vₛ~Vₜ
+bivar {x = S x} Vₛ~Vₜ = ~`
+
+biren : ∀ {Γ Δ}
+  → (ρ : ∀ {A} → Γ ∋ A → Δ ∋ A)
+    ---------------------------
+  → (∀ {A} {Mₛ Mₜ : Γ ⊢ A}
+     → Mₛ ~ Mₜ
+     → rename ρ Mₛ ~ rename ρ Mₜ)
+biren ρ (~` {x = x}) = ~`
+biren ρ (~ƛ ~N) = ~ƛ (biren (ext ρ) ~N)
+biren ρ (~· ~L ~M) = ~· (biren ρ ~L) (biren ρ ~M)
+biren ρ (~let ~M ~N) = ~let (biren ρ ~M) (biren (ext ρ) ~N)
+
+biexts : ∀ {Γ Δ}
+  → {σₛ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → {σₜ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → (∀ {A} → (x : Γ ∋ A) → σₛ x ~ σₜ x)
+    -----------------------------------
+  → (∀ {A B} → (x : Γ , B ∋ A) → exts σₛ x ~ exts σₜ x)
+biexts ~σ Z =  ~`
+biexts ~σ (S x) =  biren S_ (~σ x)
+
+bisubst : ∀ {Γ Δ}
+  → {σₛ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → {σₜ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → (∀ {A} → (x : Γ ∋ A) → σₛ x ~ σₜ x)
+    -----------------------------------
+  → (∀ {A} {Mₛ Mₜ : Γ ⊢ A}
+     → Mₛ ~ Mₜ
+     → subst σₛ Mₛ ~ subst σₜ Mₜ)
+bisubst ~σ (~` {x = x}) = ~σ x
+bisubst ~σ (~ƛ ~N) = ~ƛ (bisubst (biexts ~σ) ~N)
+bisubst ~σ (~· ~L ~M) = ~· (bisubst ~σ ~L) (bisubst ~σ ~M)
+bisubst ~σ (~let ~M ~N) = ~let (bisubst ~σ ~M) (bisubst (biexts ~σ) ~N)
+
+bisub : ∀ {Γ A B} {Nₛ Nₜ : Γ , B ⊢ A} {Vₛ Vₜ : Γ ⊢ B} 
+  → Nₛ ~ Nₜ
+  → Vₛ ~ Vₜ
+    -------------------------
+  → (Nₛ [ Vₛ ]) ~ (Nₜ [ Vₜ ])
+bisub {Γ} {A} {B} ~N ~V = bisubst {Γ , B} {Γ} ~σ {A} ~N
+  where
+  ~σ : ∀ {A} → (x : Γ , B ∋ A) → _ ~ _
+  ~σ Z      =  ~V
+  ~σ (S x)  =  ~`
+
+data Bisim {Γ A} (Mₛ Mₜ Mₛ′ : Γ ⊢ A) : Set where
+
+  bi : ∀ {Mₜ′ : Γ ⊢ A}
+    → (Mₛ′ ~ Mₜ′)
+    → (Mₜ —→ Mₜ′)
+      ---------------
+    → Bisim Mₛ Mₜ Mₛ′
+
+bisim : ∀ {Γ A} {Mₛ Mₜ Mₛ′ : Γ ⊢ A}
+  → Mₛ ~ Mₜ
+  → Mₛ —→ Mₛ′
+    ---------------
+  → Bisim Mₛ Mₜ Mₛ′
+bisim ~` ()
+bisim (~ƛ Nₛ~Nₜ) ()
+bisim (~· Lₛ~Lₜ Mₛ~Mₜ) (ξ-·₁ Lₛ—→Lₛ′) with bisim Lₛ~Lₜ Lₛ—→Lₛ′
+... | bi Lₛ′~Lₜ′ Lₜ—→Lₜ′ =  bi (~· Lₛ′~Lₜ′ Mₛ~Mₜ) (ξ-·₁ Lₜ—→Lₜ′)
+bisim (~· Lₛ~Lₜ Mₛ~Mₜ) (ξ-·₂ VLₛ Mₛ—→Mₛ′) with bival Lₛ~Lₜ VLₛ | bisim Mₛ~Mₜ Mₛ—→Mₛ′ 
+... | val VLₜ | bi Mₛ′~Mₜ′ Mₜ—→Mₜ′ =  bi (~· Lₛ~Lₜ Mₛ′~Mₜ′) (ξ-·₂ VLₜ Mₜ—→Mₜ′)
+bisim (~· (~ƛ Nₛ~Nₜ) Mₛ~Mₜ) (β-ƛ VMₛ) with bival Mₛ~Mₜ VMₛ
+... | val VMₜ  =  bi (bisub Nₛ~Nₜ Mₛ~Mₜ) (β-ƛ VMₜ)
+bisim (~let Mₛ~Mₜ Nₛ~Nₜ) (ξ-let Mₛ—→Mₛ′) with bisim Mₛ~Mₜ Mₛ—→Mₛ′
+... | bi Mₛ′~Mₜ′ Mₜ—→Mₜ′ =  bi (~let Mₛ′~Mₜ′ Nₛ~Nₜ) (ξ-·₂ V-ƛ Mₜ—→Mₜ′)
+bisim (~let Mₛ~Mₜ Nₛ~Nₜ) (β-let VMₛ) with bival Mₛ~Mₜ VMₛ
+... | val VMₜ  =  bi (bisub Nₛ~Nₜ Mₛ~Mₜ) (β-ƛ VMₜ)
 \end{code}
