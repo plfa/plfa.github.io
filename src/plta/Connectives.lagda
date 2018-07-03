@@ -8,15 +8,15 @@ permalink : /Connectives/
 module plta.Connectives where
 \end{code}
 
-This chapter introduces the basic logical connectives, by observing
-a correspondence between connectives of logic and data types,
-a principle known as *Propositions as Types*.
+This chapter introduces the basic logical connectives, by observing a
+correspondence between connectives of logic and data types, a
+principle known as _Propositions as Types_.
 
-+ *conjunction* is *product*
-+ *disjunction* is *sum*
-+ *true* is *unit type*
-+ *false* is *empty type*
-+ *implication* is *function space*
+  * _conjunction_ is _product_
+  * _disjunction_ is _sum_
+  * _true_ is _unit type_
+  * _false_ is _empty type_
+  * _implication_ is _function space_
 
 
 ## Imports

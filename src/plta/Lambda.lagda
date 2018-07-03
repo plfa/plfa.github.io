@@ -4,18 +4,18 @@ layout    : page
 permalink : /Lambda/
 ---
 
-*Add a couple of simpler examples* ``id · `zero`` and ``twoᶜ · sucᶜ · `zero``.
-
-*Experiment with defining variables* smart constructor `` ƛ`_⇒_ ``
+*Todo: Experiment with defining variable names* smart constructor `` ƛ`_⇒_ ``
 
 \begin{code}
 module plta.Lambda where
 \end{code}
 
+<!--
 [This chapter was originally based on Chapter _Stlc_
 of _Software Foundations_ (_Programming Language Foundations_).
 It has now been updated, but if you spot any plagiarism
 please let me know. – P]
+-->
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:

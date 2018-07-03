@@ -1369,7 +1369,7 @@ det β-zero        β-zero            =  refl
 det (β-suc VL)    (ξ-case L—→L″)    =  ⊥-elim (V¬—→ (V-suc VL) L—→L″)
 det (β-suc _)     (β-suc _)         =  refl
 det β-μ           β-μ               =  refl
--- \end{code}
+\end{code}
 The proof is by induction over possible reductions.  We consider
 three typical cases.
 
