@@ -46,6 +46,7 @@ infixr 9 _`×_
 
 infix  5 ƛ_
 infix  5 μ_
+infix  6 _`∷_
 infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
