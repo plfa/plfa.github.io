@@ -330,13 +330,13 @@ judgements:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
 They correspond to the following inherently-typed variables.
--- \begin{code}
+\begin{code}
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
 
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ ⇒ `ℕ
 _ = S Z
--- \end{code}
+\end{code}
 In the given context, `"z"` is represented by `Z`, and `"s"` by `S Z`.
 
 ### Terms and the typing judgement
