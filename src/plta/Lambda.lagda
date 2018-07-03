@@ -690,18 +690,19 @@ It can be illustrated as follows.
 Here `L`, `M`, `N` are universally quantified while `P`
 is existentially quantified.  If each line stand for zero
 or more reduction steps, this is called confluence,
-while if each line stands a single reduction step it is
-called the _diamond property_.  In symbols:
+while if the top two lines stand for a single reduction
+step and the bottom two stand for zero or more reduction
+steps it is called the diamond property. In symbols:
 
     confluence : ∀ {L M N} → ∃[ P ]
       ( ((L —↠ M) × (L —↠ N))
         --------------------
-      → ((M —↠ P) × (M —↠ P)) )
+      → ((M —↠ P) × (N —↠ P)) )
 
     diamond : ∀ {L M N} → ∃[ P ]
-      ( ((L —↠ M) × (L —↠ N))
+      ( ((L —→ M) × (L —→ N))
         --------------------
-      → ((M —↠ P) × (M —↠ P)) )
+      → ((M —↠ P) × (N —↠ P)) )
 
 All of the reduction systems studied in this text are determistic.
 In symbols:

@@ -391,7 +391,7 @@ import Function.LeftInverse using (_↞_)
 \end{code}
 Here `_↔_` corresponds to our `_≃_`, and `_↞_` corresponds to our `_≲_`.
 However, we stick with our definitions, because those in the
-standard library are less convenient to use: they use a nested record structure,
+standard library are less convenient: they depend on a nested record structure,
 and are parameterised with regard to an arbitrary notion of equivalence.
 
 ## Unicode

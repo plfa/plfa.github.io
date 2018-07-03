@@ -8,6 +8,16 @@ permalink : /More/
 module plta.More where
 \end{code}
 
+So far, we have focussed on a relatively minimal language,
+based on Plotkin's PCF, which supports functions, naturals, and
+fixpoints.  In this chapter we extend our calculus to support
+more datatypes, including products, sums, unit type, empty
+type, and lists, all of which will be familiar from Part I of
+this textbook.  We also describe _let_ bindings.  Most of the
+description will be informal.  We show how to formalise a few
+of the constructs, but leave the rest as an exercise for the
+reader.
+
 
 ## Imports
 
@@ -21,9 +31,6 @@ open import Data.Unit using (⊤; tt)
 open import Function using (_∘_)
 open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (map)
-open import Relation.Nullary.Negation using (contraposition)
-open import Relation.Nullary.Product using (_×-dec_)
 \end{code}
 
 
@@ -600,4 +607,11 @@ normalise (suc g) L with progress L
 ...    | done VL                            =  normal (suc zero) (L ∎)
 ...    | step {M} L⟶M with normalise g M
 ...        | normal h M⟶*N                =  normal (suc h) (L ⟶⟨ L⟶M ⟩ M⟶*N)
+\end{code}
+
+
+## Bisimulation
+
+
+
 \end{code}
