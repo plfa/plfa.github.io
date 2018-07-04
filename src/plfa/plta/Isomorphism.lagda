@@ -5,7 +5,7 @@ permalink : /Isomorphism/
 ---
 
 \begin{code}
-module plta.Isomorphism where
+module plfa.Isomorphism where
 \end{code}
 
 This section introduces isomorphism as a way of asserting that two

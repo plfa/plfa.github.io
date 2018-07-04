@@ -5,7 +5,7 @@ permalink : /Relations/
 ---
 
 \begin{code}
-module plta.Relations where
+module plfa.Relations where
 \end{code}
 
 After having defined operations such as addition and multiplication,

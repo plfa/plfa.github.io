@@ -5,7 +5,7 @@ permalink : /Induction/
 ---
 
 \begin{code}
-module plta.Induction where
+module plfa.Induction where
 \end{code}
 
 > Induction makes you feel guilty for getting something out of nothing

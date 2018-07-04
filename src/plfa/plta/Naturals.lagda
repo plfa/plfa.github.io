@@ -5,7 +5,7 @@ permalink : /Naturals/
 ---
 
 \begin{code}
-module plta.Naturals where
+module plfa.Naturals where
 \end{code}
 
 The night sky holds more stars than I can count, though fewer than five

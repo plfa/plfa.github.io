@@ -4,10 +4,6 @@ layout    : page
 permalink : /Fonts/
 ---
 
-\begin{code}
-module plta.Fonts where
-\end{code}
-
 Test page for fonts. All vertical bars should line up.
 
 \begin{code}
@@ -17,7 +13,8 @@ abcdefghijklmnopqrstuvwxyz|
 ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖ ʳˢᵗᵘᵛʷˣʸᶻ|
 ᴬᴮ ᴰᴱ ᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾ ᴿ ᵀᵁⱽᵂ   |
-ₐ   ₑ   ᵢⱼ    ₒ  ᵣ  ᵤ  ₓ  |
+ₐ   ₑ   ᵢⱼ    ₒ  ᵣₛₜᵤ  ₓ  |
+𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ|
 --------------------------|
 ----------|
 0123456789|
@@ -29,23 +26,42 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ|
 ------------------------|
 ----|
+ℕℕℕℕ|
 ∀∀∃∃|
 ƛƛ··|
+′′″″|
+‴‴⁗⁗|
+††‡‡|
+''""|
+``~~|
 ≡≡≢≢|
+≃≃≲≲|
 ≟≟≐≐|
 ⟨⟨⟩⟩|
 ⌊⌊⌋⌋|
 ⌈⌈⌉⌉|
 →→⇒⇒|
 ←←⇐⇐|
-↦↦↠↠|
+——↠↠|
 ∈∈∋∋|
 ⊢⊢⊣⊣|
+∷∷∷∷|
+⦂⦂⦂⦂|
 ----|
 -}
 \end{code}
 
-Here are some characters that are not required to be monospaced.
+Here are some characters that are exactly two spaces wide.
+\begin{code}
+{-
+----|
+😇😇|
+😈😈|
+----|
+-}
+\end{code}
+
+Here are some characters that are not used because they are not monospaced.
 
 \begin{code}
 {-

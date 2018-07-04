@@ -5,7 +5,7 @@ permalink : /Inference/
 ---
 
 \begin{code}
-module plta.Inference where
+module plfa.Inference where
 \end{code}
 
 

@@ -7,7 +7,7 @@ permalink : /Lambda/
 *Todo: Experiment with defining variable names* smart constructor `` ƛ`_⇒_ ``
 
 \begin{code}
-module plta.Lambda where
+module plfa.Lambda where
 \end{code}
 
 <!--

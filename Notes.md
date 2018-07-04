@@ -81,6 +81,11 @@ The following comments were collected on the Agda mailing list.
     - https://github.com/effectfully/random-stuff/blob/master/Normalization/Liftable.agda
   + also cites Abel's habilitation
     -  http://www.cse.chalmers.se/~abela/habil.pdf
+  + See his note to the Agda mailing list of 26 June,
+	"Typed Jigger in vanilla Agda"
+    It points to the following solution.
+    - https://github.com/effectfully/random-stuff/blob/master/TypedJigger.agda
+  
 
 * András Kovács <kovacsahun@hotmail.com>
   + applies unary parametricity

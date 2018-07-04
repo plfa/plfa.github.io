@@ -4,10 +4,6 @@ layout    : page
 permalink : /Statistics/
 ---
 
-\begin{code}
-module plta.Statistics where
-\end{code}
-
 Total number of lines and number of lines of Agda code in each chapter
 (as of 2 July 2018).
 

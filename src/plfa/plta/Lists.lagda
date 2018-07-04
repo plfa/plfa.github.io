@@ -5,7 +5,7 @@ permalink : /Lists/
 ---
 
 \begin{code}
-module plta.Lists where
+module plfa.Lists where
 \end{code}
 
 This chapter discusses the list data type.  It gives further examples

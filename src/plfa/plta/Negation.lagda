@@ -5,7 +5,7 @@ permalink : /Negation/
 ---
 
 \begin{code}
-module plta.Negation where
+module plfa.Negation where
 \end{code}
 
 This chapter introduces negation, and discusses intuitionistic

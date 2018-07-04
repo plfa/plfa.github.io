@@ -5,7 +5,7 @@ permalink : /Equality/
 ---
 
 \begin{code}
-module plta.Equality where
+module plfa.Equality where
 \end{code}
 
 Much of our reasoning has involved equality.  Given two terms `M`

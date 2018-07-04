@@ -5,7 +5,7 @@ permalink : /Untyped/
 ---
 
 \begin{code}
-module plta.Untyped where
+module plfa.Untyped where
 \end{code}
 
 This chapter considers a system that varies, in interesting ways,

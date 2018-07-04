@@ -8,7 +8,7 @@ permalink : /Modules/
 from the standard library. **
 
 \begin{code}
-module plta.Modules where
+module plfa.Modules where
 \end{code}
 
 This chapter introduces modules as a way of structuring proofs,

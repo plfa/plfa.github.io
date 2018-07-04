@@ -5,7 +5,7 @@ permalink : /Decidable/
 ---
 
 \begin{code}
-module plta.Decidable where
+module plfa.Decidable where
 \end{code}
 
 We have a choice as to how to represent relations:

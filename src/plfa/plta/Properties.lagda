@@ -5,7 +5,7 @@ permalink : /Properties/
 ---
 
 \begin{code}
-module plta.Properties where
+module plfa.Properties where
 \end{code}
 
 [Parts of this chapter take their text from chapter _StlcProp_

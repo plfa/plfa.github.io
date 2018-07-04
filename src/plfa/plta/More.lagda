@@ -5,7 +5,7 @@ permalink : /More/
 ---
 
 \begin{code}
-module plta.More where
+module plfa.More where
 \end{code}
 
 So far, we have focussed on a relatively minimal language,

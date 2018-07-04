@@ -4,10 +4,6 @@ layout    : page
 permalink : /Preface/
 ---
 
-\begin{code}
-module plta.Preface where
-\end{code}
-
 The most profound connection between logic and computation is a pun.
 The doctrine of Propositions as Types asserts that a certain kind of formal
 structure may be read in two ways: either as a proposition in logic or

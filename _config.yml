@@ -1,6 +1,5 @@
 title: >
-  Code the Infinite:
-  Programming Languages in Agda
+  Programming Language Foundations in Agda
 
 # the author field should not be used in the template
 author: Wen Kokke
@@ -18,7 +17,7 @@ contributors:
     twitter_username: philipwadler
 
 description: > 
-  Programming Languages in Agda.
+  Programming Language Foundations in Agda
 
 # include disqus to allow comments e.d.
 disqus:

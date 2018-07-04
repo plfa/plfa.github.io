@@ -5,7 +5,7 @@ permalink : /Quantifiers/
 ---
 
 \begin{code}
-module plta.Quantifiers where
+module plfa.Quantifiers where
 \end{code}
 
 This chapter introduces universal and existential quantification.

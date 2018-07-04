@@ -5,7 +5,7 @@ permalink : /DeBruijn/
 ---
 
 \begin{code}
-module plta.DeBruijn where
+module plfa.DeBruijn where
 \end{code}
 
 The previous two chapters introduced lambda calculus, with a

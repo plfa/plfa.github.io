@@ -5,7 +5,7 @@ permalink : /Connectives/
 ---
 
 \begin{code}
-module plta.Connectives where
+module plfa.Connectives where
 \end{code}
 
 This chapter introduces the basic logical connectives, by observing a
