@@ -33,8 +33,8 @@ open import Data.Product
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Function using (_∘_)
-open import plta.Isomorphism
-open import plta.Lambda
+open import plfa.Isomorphism
+open import plfa.Lambda
 \end{code}
 
 

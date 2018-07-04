@@ -5,7 +5,7 @@ permalink : /Bisimulation/
 ---
 
 \begin{code}
-module plta.Bisimulation where
+module plfa.Bisimulation where
 \end{code}
 
 
@@ -21,7 +21,7 @@ open import Data.Unit using (⊤; tt)
 open import Function using (_∘_)
 open import Function.Equivalence using (_⇔_; equivalence)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import plta.More
+open import plfa.More
 \end{code}
 
 

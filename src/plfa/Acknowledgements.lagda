@@ -4,21 +4,19 @@ layout    : page
 permalink : /Acknowledgements/
 ---
 
-\begin{code}
-module plta.Acknowledgements where
-\end{code}
+Thank you to:
+* The inventors of Agda, for a new playground.
+* The authors of Software Foundations, for inspiration.
 
-Thank you to the following.
+A special thank you, for inventing ideas on which
+this book is based, and for hand-holding.
+* Conor McBride
+* James McKinna
+* Ulf Norell
+* Andreas Abel
 
-To the inventors of Agda, for giving us a new playground.
-
-To the authors of Software Foundations, for inspiration.
-
-To Conor McBride and James McKinna, for cool ideas and handholding.
-
-To Andreas Abel and Ulf Norell, ditto.
-
-To David Darais, for showing us how much more compact it is to avoid raw terms.
+For a note showing how much more compact it is to avoid raw terms.
+* David Darais
 
 For pull requests.
 * Vikraman Choudhury

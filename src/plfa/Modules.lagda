@@ -29,7 +29,7 @@ open import Data.Maybe using (Maybe; just; nothing)
 open import Data.List using (List; []; _∷_; _++_; map; foldr; downFrom)
 open import Data.List.All using (All; []; _∷_)
 open import Data.List.Any using (Any; here; there)
-open import plta.Isomorphism using (_≃_; extensionality)
+open import plfa.Isomorphism using (_≃_; extensionality)
 \end{code}
 
 

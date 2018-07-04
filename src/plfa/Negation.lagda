@@ -20,7 +20,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
-open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
 \end{code}
 
 
@@ -142,13 +142,13 @@ when `A` is anything other than `⊥` itself.
 
 ### Exercise (`≢`, `<-irrerflexive`)
 
-Using negation, show that [strict inequality]({{ site.baseurl }}{% link out/plta/Relations.md %}/#strict-inequality)
+Using negation, show that [strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 
 ### Exercise (`trichotomy`)
 
-Show that strict inequality satisfies [trichotomy]({{ site.baseurl }}{% link out/plta/Relations.md %}/#trichotomy),
+Show that strict inequality satisfies [trichotomy]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#trichotomy),
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
 * `m < n`

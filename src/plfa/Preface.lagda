@@ -12,14 +12,11 @@ either the proof of the proposition or as a programme of the
 corresponding type.  Further still, simplification of proofs
 corresponds to evaluation of programs.
 
-The title of this book also has two readings.  "Code the
-Infinite" may be taken as a declarative — code is everything — or as
-an imperative — write code to capture an infinite realm.  Further, the
-subtitle may be parsed as "(Programming Language Foundations) in Agda"
-or "Programming (Language Foundations) in Agda" — the specifications
-we will write in the proof assistant Agda both describe programming
-languages and are themselves programmes.
-
+The title of this book also has two readings.  It may be parsed as
+"(Programming Language Foundations) in Agda" or "Programming (Language
+Foundations) in Agda" — the specifications we will write in the proof
+assistant Agda both describe programming languages and are themselves
+programmes.
 
 ## Personal remarks
 

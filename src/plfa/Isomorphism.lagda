@@ -87,7 +87,7 @@ Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
 yield the same result, then they are the same functions.  It is the
 converse of `cong-app`, as introduced
-[earlier]({{ site.baseurl }}{% link out/plta/Equality.md %}/#cong).
+[earlier]({{ site.baseurl }}{% link out/plfa/Equality.md %}/#cong).
 
 Agda does not presume extensionality, but we can postulate that it holds.
 \begin{code}
@@ -99,7 +99,7 @@ known to be consistent with the theory that underlies Agda.
 
 As an example, consider that we need results from two libraries,
 one where addition is defined as in
-Chapter [Naturals]({{ site.baseurl }}{% link out/plta/Naturals.md %})
+Chapter [Naturals]({{ site.baseurl }}{% link out/plfa/Naturals.md %})
 and one where it is defined the other way around.
 \begin{code}
 _+′_ : ℕ → ℕ → ℕ

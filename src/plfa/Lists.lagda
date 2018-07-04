@@ -25,7 +25,7 @@ open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
 open import Level using (Level)
-open import plta.Isomorphism using (_≃_)
+open import plfa.Isomorphism using (_≃_)
 \end{code}
 
 
@@ -854,7 +854,7 @@ _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} 
 (g ∘′ f) x  =  g (f x)
 \end{code}
 
-[unipoly]: {{ site.baseurl }}{% link out/plta/Equality.md %}#unipoly
+[unipoly]: {{ site.baseurl }}{% link out/plfa/Equality.md %}#unipoly
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law.
 \begin{code}

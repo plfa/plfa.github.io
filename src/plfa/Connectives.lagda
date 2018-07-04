@@ -28,8 +28,8 @@ open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties using (+-suc)
 open import Function using (_∘_)
-open import plta.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
-open plta.Isomorphism.≃-Reasoning
+open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open plfa.Isomorphism.≃-Reasoning
 \end{code}
 
 
@@ -807,9 +807,9 @@ The former makes it convenient to make triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
 other useful notations, such as `[_,_]` and `[_,_,_]` to construct
 lists of two or three elements in
-Chapter [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})
+Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})
 or `Γ , A` to extend environments in
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plta/DeBruijn.md %}).
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
 
 
 

@@ -25,7 +25,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
-open import plta.DeBruijn as DB using (Type; `ℕ; _⇒_)
+open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
 
 pattern [_]       w        =  w ∷ []
 pattern [_,_]     w x      =  w ∷ x ∷ []
@@ -56,9 +56,9 @@ These should get imported from Typed (or Fresh, or Raw).
 Id : Set
 Id = String
 
-data Ctx : Set where
-  ∅      : Ctx
-  _,_⦂_ : Ctx → Id → Type → Ctx
+data Context : Set where
+  ∅      : Context
+  _,_⦂_ : Context → Id → Type → Context
 \end{code}
 
 Terms that synthesize `Term⁺` and inherit `Term⁻` their types.
@@ -111,7 +111,7 @@ sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
 ## Bidirectional type checking
 
 \begin{code}
-data _∋_⦂_ : Ctx → Id → Type → Set where
+data _∋_⦂_ : Context → Id → Type → Set where
 
   Z : ∀ {Γ x A}
       --------------------
@@ -123,8 +123,8 @@ data _∋_⦂_ : Ctx → Id → Type → Set where
       --------------------
     → Γ , x ⦂ A ∋ w ⦂ B
 
-data _⊢_↑_ : Ctx → Term⁺ → Type → Set
-data _⊢_↓_ : Ctx → Term⁻ → Type → Set
+data _⊢_↑_ : Context → Term⁺ → Type → Set
+data _⊢_↓_ : Context → Term⁻ → Type → Set
 
 data _⊢_↑_ where
 
@@ -212,7 +212,7 @@ _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 ## Lookup type of a variable in the context
 
 \begin{code}
-lookup : ∀ (Γ : Ctx) (x : Id) → TC (∃[ A ](Γ ∋ x ⦂ A))
+lookup : ∀ (Γ : Context) (x : Id) → TC (∃[ A ](Γ ∋ x ⦂ A))
 lookup ∅ x  =
   error⁺ "variable not bound" (` x) []
 lookup (Γ , x ⦂ A) w with w ≟ x
@@ -226,8 +226,8 @@ lookup (Γ , x ⦂ A) w with w ≟ x
 ## Synthesize and inherit types
 
 \begin{code}
-synthesize : ∀ (Γ : Ctx) (M : Term⁺) → TC (∃[ A ](Γ ⊢ M ↑ A))
-inherit : ∀ (Γ : Ctx) (M : Term⁻) (A : Type) → TC (Γ ⊢ M ↓ A)
+synthesize : ∀ (Γ : Context) (M : Term⁺) → TC (∃[ A ](Γ ⊢ M ↑ A))
+inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type) → TC (Γ ⊢ M ↓ A)
 
 synthesize Γ (` x) =
   do ⟨ A , ⊢x ⟩ ← lookup Γ x
@@ -397,7 +397,7 @@ _ = refl
 ## Erasure
 
 \begin{code}
-∥_∥Γ : Ctx → DB.Ctx
+∥_∥Γ : Context → DB.Context
 ∥ ∅ ∥Γ = DB.∅
 ∥ Γ , x ⦂ A ∥Γ = ∥ Γ ∥Γ DB., A
 
@@ -415,7 +415,7 @@ _ = refl
 ∥ ⊢ƛ ⊢N ∥⁻ =  DB.ƛ ∥ ⊢N ∥⁻
 ∥ ⊢zero ∥⁻ =  DB.`zero
 ∥ ⊢suc ⊢M ∥⁻ =  DB.`suc ∥ ⊢M ∥⁻
-∥ ⊢case ⊢L ⊢M ⊢N ∥⁻ =  DB.`case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
+∥ ⊢case ⊢L ⊢M ⊢N ∥⁻ =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
 ∥ ⊢μ ⊢M ∥⁻ =  DB.μ ∥ ⊢M ∥⁻
 ∥ ⊢↑ ⊢M refl ∥⁻ =  ∥ ⊢M ∥⁺
 \end{code}

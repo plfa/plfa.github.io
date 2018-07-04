@@ -33,7 +33,7 @@ open import Function using (_∘_)
 
 ## Evidence vs Computation
 
-Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plta/Relations.md %})
+Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %})
 defined comparison an inductive datatype, which provides *evidence* that one number
 is less than or equal to another.
 \begin{code}
@@ -496,7 +496,7 @@ on which matches; but either is equally valid.
 
 ## Decidability of All
 
-Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plta/Lists.md %}#All)
+Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %}#All)
 we defined a predicate `All P` that holds if a given predicate is satisfied by every element of a list.
 \begin{code}
 data All {A : Set} (P : A → Set) : List A → Set where
@@ -513,7 +513,7 @@ all p  =  foldr _∧_ true ∘ map p
 \end{code}
 The function can be written in a particularly compact style by
 using the higher-order functions `map` and `foldr` as defined in
-the sections on [Map]({{ site.baseurl }}{% link out/plta/Lists.md %}#Map) and [Fold]({{ site.baseurl }}{% link out/plta/Lists.md %}#Fold).
+the sections on [Map]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Map) and [Fold]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Fold).
 
 As one would hope, if we replace booleans by decidables there is again
 an analogue of `All`.  First, return to the notion of a predicate `P` as

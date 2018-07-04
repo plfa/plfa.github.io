@@ -54,10 +54,10 @@ And here is its corresponding type derivation:
                ∋z = Z
 
 (These are both taken from Chapter
-[Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %})
+[Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
 and you can see the corresponding derivation tree written out
 in full
-[here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#derivation).)
+[here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#derivation).)
 The two definitions are in close correspondence, where
 
   * `` `_ `` corresponds to `Ax`
@@ -111,7 +111,7 @@ While these two choices fit well, they are independent.  One
 can use De Bruijn indices in raw terms, or (with more
 difficulty) have inherently typed terms with names.  In
 Chapter [Untyped]({{ site.baseurl }}{% link
-out/plta/Untyped.md %}, we will terms that are not typed with
+out/plfa/Untyped.md %}, we will terms that are not typed with
 De Bruijn indices are inherently scoped.
 
 
@@ -436,7 +436,7 @@ lookup ∅       _        =  ⊥-elim impossible
 We intend to apply the function only when the natural is
 shorter than the length of the context, which we indicate by
 postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#impossible).
+[here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#impossible).
 
 Given the above, we can convert a natural to a corresponding
 De Bruijn indice, looking up its type in the context.
@@ -465,9 +465,9 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ### Test examples
 
 We repeat the test examples from
-Chapter [Lambda]({{ site.baseurl }}{% link out/plta/Lambda.md %}).
+Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}).
 You can find the 
-[here]({{ site.baseurl }}{% link out/plta/Lambda.md %}/#derivation)
+[here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#derivation)
 for comparison.
 
 First, computing two plus two on naturals.
@@ -804,7 +804,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
 Here `zero` requires an implicit parameter to aid inference,
 much in the same way that `[]` did in
-[Lists]({{ site.baseurl }}{% link out/plta/Lists.md %})).
+[Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})).
 
 ### Reduction step
 
