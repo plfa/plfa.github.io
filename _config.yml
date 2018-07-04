@@ -23,7 +23,7 @@ description: >
 disqus:
   shortname: wenkokke
 
-baseurl: "/sf"
+baseurl: "/plfa"
 url: "https://wenkokke.github.io"
 plugins:
   - jekyll-feed
