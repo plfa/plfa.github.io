@@ -874,7 +874,7 @@ This chapter uses the following unicode.
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)
     →  U+2192  RIGHTWARDS ARROW (\to, \r)
     ∸  U+2238  DOT MINUS (\.-)
-    ≡  U+2261  IDENTICAL TO (\==)  =
+    ≡  U+2261  IDENTICAL TO (\==)
     ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
     ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
     ∎  U+220E  END OF PROOF (\qed)
@@ -887,7 +887,7 @@ The command `\r` gives access to a wide variety of rightward arrows.
 After typing `\r`, one can access the many available arrows by using
 the left, right, up, and down keys to navigate.  The command remembers
 where you navigated to the last time, and starts with the same
-character next time.
+character next time.  The command `\l` works similarly for left arrows.
 
 In place of left, right, up, and down keys, one may also use control characters.
 
@@ -897,4 +897,4 @@ In place of left, right, up, and down keys, one may also use control characters.
     ^N  down (dowN)
 
 We write `^B` to stand for control-B, and similarly.  One can also navigate
-left and write by typing the digits that appear in the displayed list.
+left and right by typing the digits that appear in the displayed list.

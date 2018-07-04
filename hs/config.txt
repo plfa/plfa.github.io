@@ -15,6 +15,7 @@ Lambda
 Properties
 DeBruijn
 More
+Bisimulation
 Inference
 Untyped
 --

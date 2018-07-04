@@ -37,6 +37,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ≡≡≢≢|
 ≃≃≲≲|
 ≟≟≐≐|
+∸∸^^|
 ⟨⟨⟩⟩|
 ⌊⌊⌋⌋|
 ⌈⌈⌉⌉|
@@ -46,6 +47,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ∈∈∋∋|
 ⊢⊢⊣⊣|
 ∷∷∷∷|
+∎∎∎∎|
 ⦂⦂⦂⦂|
 ----|
 -}

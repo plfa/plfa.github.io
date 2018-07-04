@@ -136,9 +136,9 @@ data Normal  : ∀ {n} → Term n → Set
 data Neutral where
 
   ⌊_⌋  : ∀ {n}
-    → (k : Var n)
+    → (x : Var n)
       -------------
-    → Neutral ⌊ k ⌋
+    → Neutral ⌊ x ⌋
 
   _·_  : ∀ {n} {L : Term n} {M : Term n}
     → Neutral L
@@ -155,6 +155,7 @@ data Normal where
 
   ⌈_⌉ : ∀ {n} {M : Term n}
     → Neutral M
+      ---------
     → Normal M
 \end{code}
 

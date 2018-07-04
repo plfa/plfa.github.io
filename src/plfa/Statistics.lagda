@@ -9,7 +9,7 @@ Total number of lines and number of lines of Agda code in each chapter
 
                                 total   code
                                 -----   ----
-    Preface                       99       1
+    Preface                       92       0
 
     Naturals                     900      86
     Induction                    770     107
@@ -22,13 +22,14 @@ Total number of lines and number of lines of Agda code in each chapter
     Lists                        893     412
     Decidable                    566     170
 
-    Lambda                      1300     386
-    Properties                  1533     724
-    DeBruijn                    1363     627
-    More                         603     524
+    Lambda                      1304     389
+    Properties                  1539     568
+    DeBruijn                    1363     635
+    More                         675     570
+    Bisimulation                 151     110
     Inference                    431     350
     Untyped                      362     281
 
-    Acknowledgements              46       1
-    Fonts                         62      44
-    Statistics                    38       1
+    Acknowledgements              44       0
+    Fonts                         78      59
+    Statistics                    34       0
