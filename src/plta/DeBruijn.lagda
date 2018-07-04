@@ -123,7 +123,7 @@ the term that adds two naturals:
 
     plus : Term
     plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-             `case ` "m"
+             case ` "m"
                [zero⇒ ` "n"
                |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
   
@@ -149,7 +149,7 @@ addition to the previous correspondences we have
 
   * `` `zero `` corresponds to `⊢zero`
   * `` `suc_ `` corresponds to `⊢suc`
-  * `` `case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
+  * `` case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
   * `μ_⇒_` corresponds to `⊢μ`
 
 Note the two lookup judgements `∋m` and `∋m′` refer to two
@@ -162,7 +162,7 @@ of `"n"` but accessed in different contexts, the first where
 Here is the term and its type derivation in the notation of this chapter.
 
     plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
-    plus = μ ƛ ƛ `case (# 1) (# 0) (`suc (# 3 · # 0 · # 1))
+    plus = μ ƛ ƛ case (# 1) (# 0) (`suc (# 3 · # 0 · # 1))
 
 Reading from left to right, each de Bruijn index corresponds
 to a lookup derivation:
@@ -372,7 +372,7 @@ data _⊢_ : Context → Type → Set where
       -------
     → Γ ⊢ `ℕ
 
-  `caseℕ : ∀ {Γ A}
+  case : ∀ {Γ A}
     → Γ ⊢ `ℕ
     → Γ ⊢ A
     → Γ , `ℕ ⊢ A
@@ -476,7 +476,7 @@ two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
 
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
-plus = μ ƛ ƛ (`caseℕ (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 
 2+2 : ∅ ⊢ `ℕ
 2+2 = plus · two · two
@@ -565,7 +565,7 @@ rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
 rename ρ (`zero)        =  `zero
 rename ρ (`suc M)       =  `suc (rename ρ M)
-rename ρ (`caseℕ L M N)  =  `caseℕ (rename ρ L) (rename ρ M) (rename (ext ρ) N)
+rename ρ (case L M N)  =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 \end{code}
 Let `ρ` be the name of the map that takes variables in `Γ`
@@ -678,7 +678,7 @@ subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
 subst σ (L · M)        =  (subst σ L) · (subst σ M)
 subst σ (`zero)        =  `zero
 subst σ (`suc M)       =  `suc (subst σ M)
-subst σ (`caseℕ L M N)  =  `caseℕ (subst σ L) (subst σ M) (subst (exts σ) N)
+subst σ (case L M N)  =  case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
 \end{code}
 Let `σ` be the name of the map that takes variables in `Γ`
@@ -843,16 +843,16 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → L —→ L′
       --------------------------
-    → `caseℕ L M N —→ `caseℕ L′ M N
+    → case L M N —→ case L′ M N
 
   β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
       -------------------
-    → `caseℕ `zero M N —→ M
+    → case `zero M N —→ M
 
   β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → Value V
       -----------------------------
-    → `caseℕ (`suc V) M N —→ N [ V ]
+    → case (`suc V) M N —→ N [ V ]
 
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
       ---------------
@@ -875,9 +875,9 @@ The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition.
 \begin{code}
 infix  2 _—↠_
-infix 1 begin_
+infix  1 begin_
 infixr 2 _—→⟨_⟩_
-infix 3 _∎
+infix  3 _∎
 
 data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
@@ -891,7 +891,10 @@ data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------
     → L —↠ N
 
-begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A} → (M —↠ N) → (M —↠ N)
+begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
+  → M —↠ N
+    ------
+  → M —↠ N
 begin M—↠N = M—↠N
 \end{code}
 
@@ -924,29 +927,29 @@ _ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
     plus · two · two
   —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
-    (ƛ ƛ `caseℕ (` S Z) (` Z) (`suc (plus · ` Z · ` S Z))) · two · two
+    (ƛ ƛ case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z))) · two · two
   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    (ƛ `caseℕ two (` Z) (`suc (plus · ` Z · ` S Z))) · two
+    (ƛ case two (` Z) (`suc (plus · ` Z · ` S Z))) · two
   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    `caseℕ two two (`suc (plus · ` Z · two))
+    case two two (`suc (plus · ` Z · two))
   —→⟨ β-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
   —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
-    `suc ((ƛ ƛ `caseℕ (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
+    `suc ((ƛ ƛ case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
       · `suc `zero · two)
   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
-    `suc ((ƛ `caseℕ (`suc `zero) (` Z) (`suc (plus · ` Z · ` S Z))) · two)
+    `suc ((ƛ case (`suc `zero) (` Z) (`suc (plus · ` Z · ` S Z))) · two)
   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    `suc (`caseℕ (`suc `zero) (two) (`suc (plus · ` Z · two)))
+    `suc (case (`suc `zero) (two) (`suc (plus · ` Z · two)))
   —→⟨ ξ-suc (β-suc V-zero) ⟩
     `suc (`suc (plus · `zero · two))
   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
-    `suc (`suc ((ƛ ƛ `caseℕ (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
+    `suc (`suc ((ƛ ƛ case (` S Z) (` Z) (`suc (plus · ` Z · ` S Z)))
       · `zero · two))
   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
-    `suc (`suc ((ƛ `caseℕ `zero (` Z) (`suc (plus · ` Z · ` S Z))) · two))
+    `suc (`suc ((ƛ case `zero (` Z) (`suc (plus · ` Z · ` S Z))) · two))
   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
-    `suc (`suc (`caseℕ `zero (two) (`suc (plus · ` Z · two))))
+    `suc (`suc (case `zero (two) (`suc (plus · ` Z · two))))
   —→⟨ ξ-suc (ξ-suc β-zero) ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
@@ -1045,7 +1048,7 @@ progress (`zero)                        =  done V-zero
 progress (`suc M) with progress M
 ...    | step M—→M′                     =  step (ξ-suc M—→M′)
 ...    | done VM                        =  done (V-suc VM)
-progress (`caseℕ L M N) with progress L
+progress (case L M N) with progress L
 ...    | step L—→L′                     =  step (ξ-case L—→L′)
 ...    | done V-zero                    =  step (β-zero)
 ...    | done (V-suc VL)                =  step (β-suc VL)
@@ -1148,40 +1151,40 @@ _ : eval (gas 100) (plus · two · two) ≡
   ((μ
     (ƛ
      (ƛ
-      `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+      case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
    —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
    (ƛ
     (ƛ
-     `caseℕ (` (S Z)) (` Z)
+     case (` (S Z)) (` Z)
      (`suc
       ((μ
         (ƛ
          (ƛ
-          `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
        · ` Z
        · ` (S Z)))))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
    —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
    (ƛ
-    `caseℕ (`suc (`suc `zero)) (` Z)
+    case (`suc (`suc `zero)) (` Z)
     (`suc
      ((μ
        (ƛ
         (ƛ
-         `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+         case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
       · ` Z
       · ` (S Z))))
    · `suc (`suc `zero)
    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-   `caseℕ (`suc (`suc `zero)) (`suc (`suc `zero))
+   case (`suc (`suc `zero)) (`suc (`suc `zero))
    (`suc
     ((μ
       (ƛ
        (ƛ
-        `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+        case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · ` Z
      · `suc (`suc `zero)))
    —→⟨ β-suc (V-suc V-zero) ⟩
@@ -1189,19 +1192,19 @@ _ : eval (gas 100) (plus · two · two) ≡
    ((μ
      (ƛ
       (ƛ
-       `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+       case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
     · `suc `zero
     · `suc (`suc `zero))
    —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
    `suc
    ((ƛ
      (ƛ
-      `caseℕ (` (S Z)) (` Z)
+      case (` (S Z)) (` Z)
       (`suc
        ((μ
          (ƛ
           (ƛ
-           `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+           case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
         · ` Z
         · ` (S Z)))))
     · `suc `zero
@@ -1209,23 +1212,23 @@ _ : eval (gas 100) (plus · two · two) ≡
    —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
    `suc
    ((ƛ
-     `caseℕ (`suc `zero) (` Z)
+     case (`suc `zero) (` Z)
      (`suc
       ((μ
         (ƛ
          (ƛ
-          `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
        · ` Z
        · ` (S Z))))
     · `suc (`suc `zero))
    —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
    `suc
-   `caseℕ (`suc `zero) (`suc (`suc `zero))
+   case (`suc `zero) (`suc (`suc `zero))
    (`suc
     ((μ
       (ƛ
        (ƛ
-        `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+        case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · ` Z
      · `suc (`suc `zero)))
    —→⟨ ξ-suc (β-suc V-zero) ⟩
@@ -1234,7 +1237,7 @@ _ : eval (gas 100) (plus · two · two) ≡
     ((μ
       (ƛ
        (ƛ
-        `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+        case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
      · `zero
      · `suc (`suc `zero)))
    —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
@@ -1242,12 +1245,12 @@ _ : eval (gas 100) (plus · two · two) ≡
    (`suc
     ((ƛ
       (ƛ
-       `caseℕ (` (S Z)) (` Z)
+       case (` (S Z)) (` Z)
        (`suc
         ((μ
           (ƛ
            (ƛ
-            `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+            case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
          · ` Z
          · ` (S Z)))))
      · `zero
@@ -1256,24 +1259,24 @@ _ : eval (gas 100) (plus · two · two) ≡
    `suc
    (`suc
     ((ƛ
-      `caseℕ `zero (` Z)
+      case `zero (` Z)
       (`suc
        ((μ
          (ƛ
           (ƛ
-           `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+           case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
         · ` Z
         · ` (S Z))))
      · `suc (`suc `zero)))
    —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
    `suc
    (`suc
-    `caseℕ `zero (`suc (`suc `zero))
+    case `zero (`suc (`suc `zero))
     (`suc
      ((μ
        (ƛ
         (ƛ
-         `caseℕ (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+         case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
       · ` Z
       · `suc (`suc `zero))))
    —→⟨ ξ-suc (ξ-suc β-zero) ⟩ `suc (`suc (`suc (`suc `zero))) ∎)

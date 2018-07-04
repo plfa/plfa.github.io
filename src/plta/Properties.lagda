@@ -93,7 +93,10 @@ types without needing to develop a separate inductive definition of the
 
 We start with any easy observation. Values do not reduce.
 \begin{code}
-V¬—→ : ∀ {M N} → Value M → ¬ (M —→ N)
+V¬—→ : ∀ {M N}
+  → Value M
+    ----------
+  → ¬ (M —→ N)
 V¬—→ V-ƛ        ()
 V¬—→ V-zero     ()
 V¬—→ (V-suc VM) (ξ-suc M—→N) = V¬—→ VM M—→N
@@ -110,7 +113,10 @@ We consider the three possibilities for values.
 
 As a corollary, terms that reduce are not values.
 \begin{code}
-—→¬V : ∀ {M N} → (M —→ N) → ¬ Value M
+—→¬V : ∀ {M N}
+  → M —→ N
+    ---------
+  → ¬ Value M
 —→¬V M—→N VM  =  V¬—→ VM M—→N
 \end{code}
 If we expand out the negations, we have
@@ -1015,19 +1021,19 @@ _ : eval (gas 100) ⊢2+2 ≡
   ((μ "+" ⇒
     (ƛ "m" ⇒
      (ƛ "n" ⇒
-      `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+      case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
       ])))
    · `suc (`suc `zero)
    · `suc (`suc `zero)
    —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
    (ƛ "m" ⇒
     (ƛ "n" ⇒
-     `case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+     case ` "m" [zero⇒ ` "n" |suc "m" ⇒
      `suc
      ((μ "+" ⇒
        (ƛ "m" ⇒
         (ƛ "n" ⇒
-         `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
          ])))
       · ` "m"
       · ` "n")
@@ -1036,24 +1042,24 @@ _ : eval (gas 100) ⊢2+2 ≡
    · `suc (`suc `zero)
    —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
    (ƛ "n" ⇒
-    `case `suc (`suc `zero) [zero⇒ ` "n" |suc "m" ⇒
+    case `suc (`suc `zero) [zero⇒ ` "n" |suc "m" ⇒
     `suc
     ((μ "+" ⇒
       (ƛ "m" ⇒
        (ƛ "n" ⇒
-        `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
         ])))
      · ` "m"
      · ` "n")
     ])
    · `suc (`suc `zero)
    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-   `case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+   case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
    `suc
    ((μ "+" ⇒
      (ƛ "m" ⇒
       (ƛ "n" ⇒
-       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
        ])))
     · ` "m"
     · `suc (`suc `zero))
@@ -1063,7 +1069,7 @@ _ : eval (gas 100) ⊢2+2 ≡
    ((μ "+" ⇒
      (ƛ "m" ⇒
       (ƛ "n" ⇒
-       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
        ])))
     · `suc `zero
     · `suc (`suc `zero))
@@ -1071,12 +1077,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    `suc
    ((ƛ "m" ⇒
      (ƛ "n" ⇒
-      `case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+      case ` "m" [zero⇒ ` "n" |suc "m" ⇒
       `suc
       ((μ "+" ⇒
         (ƛ "m" ⇒
          (ƛ "n" ⇒
-          `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
           ])))
        · ` "m"
        · ` "n")
@@ -1086,12 +1092,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
    `suc
    ((ƛ "n" ⇒
-     `case `suc `zero [zero⇒ ` "n" |suc "m" ⇒
+     case `suc `zero [zero⇒ ` "n" |suc "m" ⇒
      `suc
      ((μ "+" ⇒
        (ƛ "m" ⇒
         (ƛ "n" ⇒
-         `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
          ])))
       · ` "m"
       · ` "n")
@@ -1099,12 +1105,12 @@ _ : eval (gas 100) ⊢2+2 ≡
     · `suc (`suc `zero))
    —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
    `suc
-   `case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+   case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
    `suc
    ((μ "+" ⇒
      (ƛ "m" ⇒
       (ƛ "n" ⇒
-       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
        ])))
     · ` "m"
     · `suc (`suc `zero))
@@ -1115,7 +1121,7 @@ _ : eval (gas 100) ⊢2+2 ≡
     ((μ "+" ⇒
       (ƛ "m" ⇒
        (ƛ "n" ⇒
-        `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
         ])))
      · `zero
      · `suc (`suc `zero)))
@@ -1124,12 +1130,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    (`suc
     ((ƛ "m" ⇒
       (ƛ "n" ⇒
-       `case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+       case ` "m" [zero⇒ ` "n" |suc "m" ⇒
        `suc
        ((μ "+" ⇒
          (ƛ "m" ⇒
           (ƛ "n" ⇒
-           `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
            ])))
         · ` "m"
         · ` "n")
@@ -1140,12 +1146,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    `suc
    (`suc
     ((ƛ "n" ⇒
-      `case `zero [zero⇒ ` "n" |suc "m" ⇒
+      case `zero [zero⇒ ` "n" |suc "m" ⇒
       `suc
       ((μ "+" ⇒
         (ƛ "m" ⇒
          (ƛ "n" ⇒
-          `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
           ])))
        · ` "m"
        · ` "n")
@@ -1154,12 +1160,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
    `suc
    (`suc
-    `case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+    case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
     `suc
     ((μ "+" ⇒
       (ƛ "m" ⇒
        (ƛ "n" ⇒
-        `case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
         ])))
      · ` "m"
      · `suc (`suc `zero))
@@ -1360,7 +1366,7 @@ det (β-ƛ _)       (ξ-·₁ L—→L″)      =  ⊥-elim (V¬—→ V-ƛ L—
 det (β-ƛ VM)      (ξ-·₂ _ M—→M″)    =  ⊥-elim (V¬—→ VM M—→M″)
 det (β-ƛ _)       (β-ƛ _)           =  refl
 det (ξ-suc M—→M′)  (ξ-suc M—→M″)    =  cong `suc_ (det M—→M′ M—→M″)
-det (ξ-case L—→L′) (ξ-case L—→L″)   =  cong₄ `case_[zero⇒_|suc_⇒_]
+det (ξ-case L—→L′) (ξ-case L—→L″)   =  cong₄ case_[zero⇒_|suc_⇒_]
                                          (det L—→L′ L—→L″) refl refl refl
 det (ξ-case L—→L′) β-zero           =  ⊥-elim (V¬—→ V-zero L—→L′)
 det (ξ-case L—→L′) (β-suc VL)       =  ⊥-elim (V¬—→ (V-suc VL) L—→L′)
