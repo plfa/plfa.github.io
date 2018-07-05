@@ -4,9 +4,7 @@ markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 
 all: $(markdown)
 
-test: $(markdown)
-	ruby -S bundle exec jekyll clean -d _test
-	ruby -S bundle exec jekyll build -d _test/plfa/
+test: build
 	ruby -S bundle exec htmlproofer _test
 
 statistics:

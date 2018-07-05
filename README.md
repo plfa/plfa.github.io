@@ -23,7 +23,7 @@ In directory `plta/` run the following:
 
 The visible page appears at
 
-    localhost:4000/plfa/<permalink>
+    localhost:4000/<permalink>
 
 ## Unicode abbreviations
 
