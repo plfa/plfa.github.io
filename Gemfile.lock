@@ -257,7 +257,6 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   html-proofer
-  minima
 
 BUNDLED WITH
    1.16.2
