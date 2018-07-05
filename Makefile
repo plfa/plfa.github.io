@@ -9,6 +9,9 @@ test: $(markdown)
 	ruby -S bundle exec jekyll build -d _test/plfa/
 	ruby -S bundle exec htmlproofer _test
 
+statistics:
+	hs/agda-count
+
 out/:
 	mkdir -p out/
 
