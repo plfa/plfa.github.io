@@ -30,8 +30,10 @@ plugins:
 markdown: kramdown
 theme: minima
 exclude:
+  - "hs/"
   - "src/"
   - "extra/"
+  - "vendor/"
   - "Notes.md"
   - "*.lagda"
   - "Gemfile"
