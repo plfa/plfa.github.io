@@ -32,7 +32,7 @@ before_install:
 - make travis-setup
 
 script:
-- make
+- make test
 
 before_deploy:
 - make clean
