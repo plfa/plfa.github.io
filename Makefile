@@ -5,7 +5,7 @@ markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
 all: $(markdown)
 
 test: build
-	ruby -S bundle exec htmlproofer _site
+	ruby -S bundle exec htmlproofer _site --disable-external
 
 statistics:
 	hs/agda-count
