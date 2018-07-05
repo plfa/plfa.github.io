@@ -23,8 +23,8 @@ description: >
 disqus:
   shortname: wenkokke
 
-baseurl: ""
-url: "https://plfa.github.io"
+baseurl: "/plfa"
+url: "https://wenkokke.github.io"
 plugins:
   - jekyll-feed
 markdown: kramdown
