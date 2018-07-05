@@ -12,7 +12,7 @@ The book was inspired by [Software Foundations](softwarefoundations.cis.upenn.ed
 
 ## How to host literate code
 
-In directory `plfa/` run the following:
+In directory `plfa.github.io/` run the following:
 
     $ make clobber              (remove all files before rebuilding system)
     $ make macos-setup          (might need sudo, but try it without first)
@@ -23,7 +23,7 @@ In directory `plfa/` run the following:
 
 The visible page appears at
 
-    localhost:4000/plfa/<permalink>
+    localhost:4000/<permalink>
 
 ## Unicode abbreviations
 

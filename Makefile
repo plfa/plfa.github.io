@@ -6,7 +6,7 @@ all: $(markdown)
 
 test: build
 	ruby -S bundle exec jekyll clean
-	ruby -S bundle exec jekyll build -d _test/plfa
+	ruby -S bundle exec jekyll build
 	ruby -S bundle exec htmlproofer _test
 
 statistics:
