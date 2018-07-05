@@ -314,7 +314,7 @@ For the base case, we must show:
 
     zero + zero ≡ zero
 
-Simplifying with the base case of of addition, this is straightforward.
+Simplifying with the base case of addition, this is straightforward.
 
 For the inductive case, we must show:
 
@@ -385,7 +385,7 @@ For the base case, we must show:
 
     zero + suc n ≡ suc (zero + n)
 
-Simplifying with the base case of of addition, this is straightforward.
+Simplifying with the base case of addition, this is straightforward.
 
 For the inductive case, we must show:
 
