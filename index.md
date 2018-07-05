@@ -16,9 +16,9 @@ exercises, errors, and typos---are welcome.  Pull requests
 are encouraged.
 
 
-
 ## Front matter
 
+  - [Dedication]({{ site.baseurl }}{% link out/plfa/Dedication.md %})
   - [Preface]({{ site.baseurl }}{% link out/plfa/Preface.md %})
 
 ## Part 1: Logical Foundations
