@@ -52,3 +52,23 @@ See [the emacs-mode docs](http://agda.readthedocs.io/en/latest/tools/emacs-mode.
 For an overview of the Markdown syntax, see [the original description](https://daringfireball.net/projects/markdown/syntax), [the CommonMark project](https://spec.commonmark.org/0.28/), or [the version that is used in this book](https://kramdown.gettalong.org/syntax.html).
 
 
+## Git
+
+Checkout this repository with
+
+    git clone git@github.com:plfa/plfa.github.io.git
+
+You can check this worked:
+
+    bruichladdich$ cd plfa.github.io
+	bruichladdich$ git status
+	On branch dev
+	Your branch is up-to-date with 'origin/dev'.
+
+	Untracked files:
+	  (use "git add <file>..." to include in what will be committed)
+
+		out/
+
+	nothing added to commit but untracked files present (use "git add" to track)
+	bruichladdich$ 
