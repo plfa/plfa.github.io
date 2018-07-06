@@ -24,7 +24,7 @@ disqus:
   shortname: wenkokke
 
 baseurl: ""
-url: "https://plfa.github.io/"
+url: "https://plfa.ed.inf.ac.uk"
 plugins:
   - jekyll-feed
 markdown: kramdown
