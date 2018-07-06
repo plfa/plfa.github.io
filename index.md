@@ -6,15 +6,15 @@ layout : page
 This book is an introduction to programming language theory, written
 in Agda.  The authors are [Wen Kokke][wen] and [Philip Wadler][phil].
 
-Please send us comments!  The text is currrently being drafted.  Part I
-is ready for comment. We plan that Part II will be ready for comment
+Please send us comments!  The text is currrently being drafted.
+Part I and the first half of Part II is ready for comment.
+We plan that the second half of Part II will be ready for comment
 by the end of July.
 
 Comments on all matters---organisation, material we should add,
 material we should remove, parts that require better explanation, good
 exercises, errors, and typos---are welcome.  Pull requests
 are encouraged.
-
 
 ## Front matter
 
@@ -23,7 +23,7 @@ are encouraged.
 
 ## Part 1: Logical Foundations
 
-(This part is ready for review. Please comment!)
+(The following is ready for review. Please comment!)
 
   - [Naturals: Natural numbers]({{ site.baseurl }}{% link out/plfa/Naturals.md %})
   - [Induction: Proof by induction]({{ site.baseurl }}{% link out/plfa/Induction.md %})
@@ -38,11 +38,14 @@ are encouraged.
 
 ## Part 2: Programming Language Foundations
 
-(This part is not yet ready for review.)
+(The following is ready for review. Please comment!)
 
   - [Lambda: Lambda: Introduction to Lambda Calculus]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
   - [Properties: Progress and Preservation]({{ site.baseurl }}{% link out/plfa/Properties.md %})
   - [DeBruijn: Inherently typed De Bruijn representation]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %})
+
+(The following is not yet ready for review.)
+
   - [More: More constructs of simply-typed lambda calculus]({{ site.baseurl }}{% link out/plfa/More.md %}) 
   - [Bisimulation: Relating reductions systems]({{ site.baseurl }}{% link out/plfa/Bisimulation.md %}) 
   - [Inference: Bidirectional type inference]({{ site.baseurl }}{% link out/plfa/Inference.md %})
