@@ -334,14 +334,23 @@ this requires that we match against the lambda expression `L` to
 determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 `L · M` reduces to `N [ x := M ]`.
 
+#### Exercise (`Progress-iso`)
+
+Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
+
 #### Exercise (`progress′`)
 
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-#### Exercise (`Progress-iso`)
+#### Exercise (`value`)
 
-Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
+Combine `progress` and `—→¬V` to write a program that decides
+whether a well-typed term is a value.
+\begin{code}
+postulate
+  value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
+\end{code}
 
 
 ## Prelude to preservation
