@@ -12,11 +12,11 @@ either the proof of the proposition or as a programme of the
 corresponding type.  Further still, simplification of proofs
 corresponds to evaluation of programs.
 
-The title of this book also has two readings.  It may be parsed as
-"(Programming Language Foundations) in Agda" or "Programming (Language
-Foundations) in Agda" — the specifications we will write in the proof
-assistant Agda both describe programming languages and are themselves
-programmes.
+Accordingly, the title of this book also has two readings.  It may be
+parsed as "(Programming Language) Foundations in Agda" or "Programming
+(Language Foundations) in Agda" — the specifications we will write in
+the proof assistant Agda both describe programming languages and are
+themselves programmes.
 
 ## Personal remarks
 
