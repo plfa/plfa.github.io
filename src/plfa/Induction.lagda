@@ -314,7 +314,7 @@ For the base case, we must show:
 
     zero + zero ≡ zero
 
-Simplifying with the base case of of addition, this is straightforward.
+Simplifying with the base case of addition, this is straightforward.
 
 For the inductive case, we must show:
 
@@ -385,7 +385,7 @@ For the base case, we must show:
 
     zero + suc n ≡ suc (zero + n)
 
-Simplifying with the base case of of addition, this is straightforward.
+Simplifying with the base case of addition, this is straightforward.
 
 For the inductive case, we must show:
 
@@ -497,9 +497,10 @@ time we are concerned with judgements asserting associativity.
 Now, we apply the rules to all the judgements we know about.  The base
 case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
 `n` and `p`.  The inductive case tells us that if `(m + n) + p ≡ m +
-(n + p)` (on the day before today) then `(suc m + n) + p ≡ suc m + (n
-+ p)` (today).  We didn't know any judgments about associativity
-before today, so that rule doesn't give us any new judgments.
+(n + p)` (on the day before today) then
+`(suc m + n) + p ≡ suc m + (n + p)` (today).
+We didn't know any judgments about associativity before today, so that
+rule doesn't give us any new judgments.
 
     -- on the first day, we know about associativity of 0
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
