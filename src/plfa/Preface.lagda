@@ -50,7 +50,7 @@ no longer any need to learn about tactics: there is just
 dependently-typed programming, plain and simple. Introduction is
 always by a constructor, elimination is always by pattern
 matching. Induction is no longer a mysterious separate concept, but
-corresponds to the familiar notion of recursion. Multifix syntax is
+corresponds to the familiar notion of recursion. Mixfix syntax is
 flexible while using just one name for each concept, e.g.,
 substitution is `_[_:=_]`. The standard library is not perfect, but
 there is a fair attempt at consistency. *Propositions as types* as a
