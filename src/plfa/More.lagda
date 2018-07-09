@@ -43,7 +43,7 @@ Syntax
       `proj₁ L                            project first component
       `proj₂ L                            project second component
 
-    V, W ::=                            Values
+    V, W ::= ...                        Values
       `⟨ V , W ⟩                          pair  
 
 Typing
@@ -85,18 +85,20 @@ Reduction
     ---------------------- β-proj₂
     `proj₂ `⟨ V , W ⟩ —→ W
 
-As an example, here is the definition of a function to swap
-the components of a pair.
+Example
+
+Here is the definition of a function to swap the components of a pair.
 
     swap× : ∅ ⊢ A `× B ⇒ B `× A
     swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
 
 
-## An alternative formulation of products
+## Alternative formulation of products
 
-There is an alternative formulation of products, where projections
-are replaced by a case term.  We repeat the syntax in full, but
-only give the new type and reduction rules.
+There is an alternative formulation of products, where in place of two
+ways to eliminate the type we have a case term that binds two
+variables.  We repeat the syntax in full, but only give the new type
+and reduction rules.
 
 Syntax
 
@@ -110,14 +112,14 @@ Syntax
     V, W ::=                            Values
       `⟨ V , W ⟩                          pair  
 
-Types
+Typing
 
     Γ ⊢ L ⦂ A `× B
     Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
     ------------------------------ case× or ×-E
     Γ ⊢ case L [⟨ x , y ⟩⇒ N ] ⦂ C
 
-Reductions
+Reduction
 
     L —→ L′
     ----------------------- ξ-case×
@@ -126,20 +128,197 @@ Reductions
     ---------------------------------- β-case×
     case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
 
+Example
 
+Function to swap the components of a pair rewritten in the new notation.
 
-    
-
-
-
+    swap×-case : ∅ ⊢ A `× B ⇒ B `× A
+    swap×-case = ƛ z ⇒ case× z 
+                         [⟨ x , y ⟩⇒ `⟨ y , x ⟩ ]
 
 ## Sums
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      A `⊎ B                              sum type
+
+    L, M, N ::= ...                     Terms
+      `inj₁ M                             inject first component
+      `inj₂ N                             inject second component
+
+    V, W ::= ...                        Values
+      `inj₁ V                             inject first component
+      `inj₂ W                             inject second component
+
+Typing
+
+    Γ ⊢ M ⦂ A
+    -------------------- `inj₁ or ⊎-I₁
+    Γ ⊢ `inj₁ M ⦂ A `⊎ B
+
+    Γ ⊢ B
+    ----------- `inj₂ or ⊎-I₂
+    Γ ⊢ A `⊎ B
+
+    Γ ⊢ L ⦂ A `⊎ B
+    Γ , x ⦂ A ⊢ M ⦂ C
+    Γ , y ⦂ B ⊢ N ⦂ C
+    ----------------------------------------- case⊎ or ⊎-E
+    Γ ⊢ case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] ⦂ C
+
+Reduction
+
+    M —→ M′
+    --------------------------- ξ-inj₁
+    `inj₁ {B = B} M —→ `inj₁ M′
+
+    N —→ N′
+    --------------------------- ξ-inj₂
+    `inj₂ {A = A} N —→ `inj₂ N′
+
+    L —→ L′
+    --------------------------- ξ-case⊎
+    case⊎ L M N —→ case⊎ L′ M N
+
+    Value V
+    ------------------------------ β-inj₁
+    case⊎ (`inj₁ V) M N —→ M [ V ]
+
+    Value W
+    ------------------------------ β-inj₂
+    case⊎ (`inj₂ W) M N —→ N [ W ]
+
+Example
+
+Here is the definition of a function to swap the components of a sum.
+
+    swap⊎ : ∅ ⊢ A `⊎ B ⇒ B `⊎ A
+    swap⊎ = ƛ z ⇒ case⊎ z
+                    [inl x ⇒ `inr x
+                    |inr y ⇒ `inl y ]
 
 
 ## Unit type
 
+In the case of the unit type, there is a way to introduce
+values of the type, but no way to eliminate values of the type.
+There are no reduction rules.
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      `⊤                                  unit type
+
+    L, M, N ::= ...                     Terms
+      `tt                                 unit value
+
+    V, W ::= ...                        Values
+      `tt                                 unit value
+
+Typing
+
+    ------ `tt or ⊤-I
+    Γ ⊢ `⊤
+
+Reduction
+
+(none)
+
+Example
+
+Here is the isomorphism between `A` and ``A `× `⊤``.
+
+    to×⊤ : ∅ ⊢ A ⇒ A `× `⊤
+    to×⊤ = ƛ x ⇒ `⟨ x , `tt ⟩
+
+    from×⊤ : ∅ ⊢ A `× `⊤ ⇒ A
+    from×⊤ = ƛ z ⇒ proj₁ z
+
+
+## Alternative formulation of unit type
+
+There is an alternative formulation of the unit type, where in place of 
+no way to eliminate the type we have a case term that binds zero variables.
+We repeat the syntax in full, but only give the new type and reduction rules.
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      `⊤                                  unit type
+
+    L, M, N ::= ...                     Terms
+      `tt                                 unit value
+      `case⊤[⟨⟩⇒ N ]                      case
+
+    V, W ::= ...                        Values
+      `tt                                 unit value
+
+Typing
+
+    Γ ⊢ L ⦂ `⊤
+    Γ ⊢ M ⦂ A
+    --------------------- case⊤ or ⊤-E
+    Γ ⊢ case⊤[⟨⟩⇒ M ] ⦂ A
+
+Reduction
+
+    L —→ L′
+    ----------------------- ξ-case⊤
+    case⊤ L M —→ case⊤ L′ M
+
+    ---------------- β-case⊤
+    case⊤ `tt M —→ M
+
+Example
+
+Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new notation.
+
+    from×⊤-case : ∅ ⊢ A `× `⊤ ⇒ A
+    from×⊤-case = ƛ z ⇒ case× z
+                         [⟨ x , y ⟩⇒ case⊤
+                                       [⟨⟩⇒ y ] ]
+
 
 ## Empty type
+
+In the case of the empty type, there is no way to introduce values of
+the type, but a way to eliminate values of the type.  There are no
+values of the type and no β rule, but there is a ξ rule.  The `case⊥`
+construct plays a role similar to `⊥-elim` in Agda.
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      `⊥                                  empty type
+
+    L, M, N ::= ...                     Terms
+      case⊥ L []                          case
+
+Typing
+
+    Γ ⊢ `⊥
+    ------- case⊥ or ⊥-E
+    Γ ⊢ A
+
+Reduction
+
+    L —→ L′
+    ------------------- ξ-case⊥
+    case⊥ L —→ case⊥ L′
+
+Example
+
+Here is the isomorphism between `A` and ``A `⊎ `⊥``.
+
+    to⊎⊥ : ∅ ⊢ A ⇒ A `⊎ `⊥
+    to⊎⊥ = ƛ x ⇒ `inj₁ x
+
+    from⊎⊥ : ∅ ⊢ A `⊎ `⊥ ⇒ A
+    from⊎⊥ = ƛ z ⇒ case⊎ z
+                     [inj₁ x ⇒ x
+                     |inj₂ y ⇒ case⊥ y
+                                 [] ]
 
 
 ## Lists
@@ -292,6 +471,12 @@ data _⊢_ : Context → Type → Set where
       ------
     → Γ ⊢ `⊤
 
+  case⊤ : ∀ {Γ A}
+    → Γ ⊢ `⊤
+    → Γ ⊢ A
+      -----
+    → Γ ⊢ A
+      
   case⊥ : ∀ {Γ A}
     → Γ ⊢ `⊥
       -------
@@ -345,9 +530,6 @@ count {∅}     _        =  ⊥-elim impossible
 \end{code}
 
 
-## Test examples
-
-
 ## Substitution
 
 ### Renaming
@@ -373,6 +555,7 @@ rename ρ (`inj₁ M)      =  `inj₁ (rename ρ M)
 rename ρ (`inj₂ N)      =  `inj₂ (rename ρ N)
 rename ρ (case⊎ L M N)  =  case⊎ (rename ρ L) (rename (ext ρ) M) (rename (ext ρ) N)
 rename ρ `tt            =  `tt
+rename ρ (case⊤ L M)    =  case⊤ (rename ρ L) (rename ρ M)
 rename ρ (case⊥ L)      =  case⊥ (rename ρ L)
 rename ρ `[]            =  `[]
 rename ρ (M `∷ N)       =  (rename ρ M) `∷ (rename ρ N)
@@ -403,6 +586,7 @@ subst σ (`inj₁ M)      =  `inj₁ (subst σ M)
 subst σ (`inj₂ N)      =  `inj₂ (subst σ N)
 subst σ (case⊎ L M N)  =  case⊎ (subst σ L) (subst (exts σ) M) (subst (exts σ) N)
 subst σ `tt            =  `tt
+subst σ (case⊤ L M)    =  case⊤ (subst σ L) (subst σ M)
 subst σ (case⊥ L)      =  case⊥ (subst σ L)
 subst σ `[]            =  `[]
 subst σ (M `∷ N)       =  (subst σ M) `∷ (subst σ N)
@@ -607,6 +791,15 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ------------------------------
     → case⊎ (`inj₂ W) M N —→ N [ W ]
 
+  ξ-case⊤ : ∀ {Γ A} {L L′ : Γ ⊢ `⊤} {M : Γ ⊢ A}
+    → L —→ L′
+      -----------------------
+    → case⊤ L M —→ case⊤ L′ M
+
+  β-case⊤ : ∀ {Γ A} {M : Γ ⊢ A}
+      ----------------
+    → case⊤ `tt M —→ M
+
   ξ-case⊥ : ∀ {Γ A} {L L′ : Γ ⊢ `⊥}
     → L —→ L′
       ---------------------------
@@ -769,6 +962,9 @@ progress (case⊎ L M N) with progress L
 ...    | done (V-inj₁ VV)                   =  step (β-inj₁ VV)
 ...    | done (V-inj₂ VW)                   =  step (β-inj₂ VW)
 progress (`tt)                              =  done V-tt
+progress (case⊤ L M) with progress L
+...    | step L—→L′                         =  step (ξ-case⊤ L—→L′)
+...    | done V-tt                          =  step β-case⊤
 progress (case⊥ {A = A} L) with progress L
 ...    | step L—→L′                         =  step (ξ-case⊥ {A = A} L—→L′)
 ...    | done ()
