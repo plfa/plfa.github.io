@@ -8,22 +8,29 @@ permalink : /More/
 module plfa.More where
 \end{code}
 
-So far, we have focussed on a relatively minimal language,
-based on Plotkin's PCF, which supports functions, naturals, and
-fixpoints.  In this chapter we extend our calculus to support
-more datatypes, including products, sums, unit type, empty
-type, and lists, all of which are familiar from Part I of
-this textbook.  We also describe _let_ bindings.  Most of the
-description will be informal. We show how to formalise a few
-of the constructs and leave the rest as an exercise for the reader.
+So far, we have focussed on a relatively minimal language, based on
+Plotkin's PCF, which supports functions, naturals, and fixpoints.  In
+this chapter we extend our calculus to support `let` bindings and more
+datatypes, including products, sums, unit type, empty type, and lists,
+all of which are familiar from Part I of this textbook.  We also give
+alternative formulations of products and unit type.  For `let` and the
+alternative formulations we show how they translate to other constructs
+in the calculus.  Most of the description will be informal. We show
+how to formalise a few of the constructs and leave the rest as an
+exercise for the reader.
 
 Our informal descriptions will be in the style of
 Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
-using named variables and a separate type relation.
-Unlike before, we list types before reductions, in order to
-encourage formalisation will be in the style of
+using named variables and a separate type relation,
+while our formalisation will be in the style of
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
 using de Bruijn indices and inherently typed terms.
+
+By now, explaining with symbols should be more concise, more precise,
+and easier to follow than explaining in prose.
+For each construct, we give syntax, typing, reductions, and an example.
+We also give translations where relevant.  Formally establishing the
+correctness of such translations will be the subject of the next chapter.
 
 ## Let bindings
 
@@ -69,17 +76,8 @@ We can translate each _let_ term into an application of an abstraction.
 
     (`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
 
-Formally establishing the correctness of this translation will be the
-subject of the next chapter.
-
 
 ## Products
-
-The syntax, type, and reduction rules for products are
-straightforward.  By now, explaining with symbols should be more
-concise and precise than explaining in prose.  We informally
-define values via syntax, while in the formalism we will need
-to add corresponding rules to `Value` predicate.  
 
 Syntax
 
@@ -164,17 +162,23 @@ Typing
 
     Γ ⊢ L ⦂ A `× B
     Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
-    ------------------------------ case× or ×-E
-    Γ ⊢ case L [⟨ x , y ⟩⇒ N ] ⦂ C
+    ------------------------------- case× or ×-E
+    Γ ⊢ case× L
+          [⟨ x , y ⟩⇒ N ] ⦂ C
 
 Reduction
 
     L —→ L′
-    ----------------------- ξ-case×
-    case× L M —→ case× L′ M
+    -------------------- ξ-case×
+       case× L
+         [⟨ x , y ⟩⇒ M ]
+    —→ case× L′
+         [⟨ x , y ⟩⇒ M ]
 
-    ---------------------------------- β-case×
-    case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
+    -------------------------- β-case×
+       case× `⟨ V , W ⟩
+         [⟨ x , y ⟩⇒  M
+    —→ M [ x := V ] [ y := W ]
 
 Example
 
@@ -183,6 +187,23 @@ Function to swap the components of a pair rewritten in the new notation.
     swap×-case : ∅ ⊢ A `× B ⇒ B `× A
     swap×-case = ƛ z ⇒ case× z 
                          [⟨ x , y ⟩⇒ `⟨ y , x ⟩ ]
+
+Translation
+
+We can translate the alternative formulation into the one with projections.
+
+    (case× L
+           [⟨ x , y ⟩⇒ M ]) †  =
+    `let z `= (L †) `in
+    `let x `= `proj₁ z `in
+    `let y `= `proj₂ z `in
+    (M †)
+
+Here `z` is a variable that does not appear free in `M`.
+We can also translate back the other way.
+
+    (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
+    (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
 ## Sums
 
@@ -218,24 +239,29 @@ Typing
 Reduction
 
     M —→ M′
-    --------------------------- ξ-inj₁
-    `inj₁ {B = B} M —→ `inj₁ M′
+    ------------------- ξ-inj₁
+    `inj₁ M —→ `inj₁ M′
 
     N —→ N′
-    --------------------------- ξ-inj₂
-    `inj₂ {A = A} N —→ `inj₂ N′
+    ------------------- ξ-inj₂
+    `inj₂ N —→ `inj₂ N′
 
     L —→ L′
-    --------------------------- ξ-case⊎
-    case⊎ L M N —→ case⊎ L′ M N
+    ------------------------ ξ-case⊎
+       case⊎ L [inj₁ x ⇒ M
+               |inj₂ y ⇒ N ]
+    —→ case⊎ L′[inj₁ x ⇒ M
+               |inj₂ y ⇒ N ]
 
-    Value V
-    ------------------------------ β-inj₁
-    case⊎ (`inj₁ V) M N —→ M [ V ]
+    -------------------------------- β-inj₁
+       case⊎ (`inj₁ V) [inj₁ x ⇒ M
+                       |inj₂ y ⇒ N ]
+    —→ M [ x := V ]
 
-    Value W
-    ------------------------------ β-inj₂
-    case⊎ (`inj₂ W) M N —→ N [ W ]
+    -------------------------------- β-inj₂
+       case⊎ (`inj₂ V) [inj₁ x ⇒ M
+                       |inj₂ y ⇒ N ]
+    —→ N [ y := V ]
 
 Example
 
@@ -249,8 +275,8 @@ Here is the definition of a function to swap the components of a sum.
 
 ## Unit type
 
-In the case of the unit type, there is a way to introduce
-values of the type, but no way to eliminate values of the type.
+For the unit type, there is a way to introduce
+values of the type but no way to eliminate values of the type.
 There are no reduction rules.
 
 Syntax
@@ -306,17 +332,17 @@ Typing
 
     Γ ⊢ L ⦂ `⊤
     Γ ⊢ M ⦂ A
-    --------------------- case⊤ or ⊤-E
-    Γ ⊢ case⊤[⟨⟩⇒ M ] ⦂ A
+    ------------------------ case⊤ or ⊤-E
+    Γ ⊢ case⊤ L [⟨⟩⇒ M ] ⦂ A
 
 Reduction
 
     L —→ L′
-    ----------------------- ξ-case⊤
-    case⊤ L M —→ case⊤ L′ M
+    ------------------------------------- ξ-case⊤
+    case⊤ L [⟨⟩⇒ M ] —→ case⊤ L′ [⟨⟩⇒ M ]
 
-    ---------------- β-case⊤
-    case⊤ `tt M —→ M
+    ----------------------- β-case⊤
+    case⊤ `tt [⟨⟩⇒ M ] —→ M
 
 Example
 
@@ -328,10 +354,19 @@ Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new
                                        [⟨⟩⇒ y ] ]
 
 
+Translation
+
+We can translate the alternative formulation into one without case.
+
+    (case⊤ L [⟨⟩⇒ M ]) †  =  `let z `= (L †) `in (M †)
+
+Here `z` is a variable that does not appear free in `M`.
+
+
 ## Empty type
 
-In the case of the empty type, there is no way to introduce values of
-the type, but a way to eliminate values of the type.  There are no
+For the empty type, there is a way to eliminate values of
+the type but no way to introduce values of the type.  There are no
 values of the type and no β rule, but there is a ξ rule.  The `case⊥`
 construct plays a role similar to `⊥-elim` in Agda.
 
@@ -345,15 +380,15 @@ Syntax
 
 Typing
 
-    Γ ⊢ `⊥
-    ------- case⊥ or ⊥-E
-    Γ ⊢ A
+    Γ ⊢ L ⦂ `⊥
+    ------------------ case⊥ or ⊥-E
+    Γ ⊢ case⊥ L [] ⦂ A
 
 Reduction
 
     L —→ L′
-    ------------------- ξ-case⊥
-    case⊥ L —→ case⊥ L′
+    ------------------------- ξ-case⊥
+    case⊥ L [] —→ case⊥ L′ []
 
 Example
 
