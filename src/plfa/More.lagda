@@ -372,8 +372,54 @@ Reduction
     ---------------------------------- β-∷
     caseL (V `∷ W) M N —→ N [ V ][ W ]
 
+Example
+
+Here is the map function for lists.
+
+    mapL : (A → B) → List A → List B
+    mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
+             caseL xs
+               [[] => `[]
+               | x ∷ xs ⇒ f · x `∷ ml · f · xs ]
+
 
 ## Let bindings
+
+Let bindings affect only the syntax of terms; they introduce no new
+types or values.
+
+Syntax
+
+    L, M, N ::= ...                     Terms
+      `let x `= M `in N                   let
+
+Typing
+
+    Γ ⊢ M ⦂ A
+    Γ , x ⦂ A ⊢ N ⦂ B
+    ------------------------- `let
+    Γ ⊢ `let x `= M `in N ⦂ B
+
+Reduction
+
+    M —→ M′
+    --------------------------------------- ξ-let
+    `let x `= M `in N —→ `let x `= M′ `in N
+
+    ---------------------------- β-let
+    `let x `= V `in N —→ N [ V ]
+
+Example
+
+Let _`*_ : ∅ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ represent multiplication of naturals.
+Then raising a natural to the tenth power can be defined as follows.
+
+    exp10 : ∅ ⊢ `ℕ ⇒ `ℕ
+    exp10 = ƛ x ⇒ `let x2  `= x  `* x  `in
+                  `let x4  `= x2 `* x2 `in
+                  `let x5  `= x4 `* x  `in
+                  `let x10 `= x5 `* x5 `in
+                  x10
 
 
 ## Imports
