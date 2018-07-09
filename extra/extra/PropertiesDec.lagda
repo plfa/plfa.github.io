@@ -1,11 +1,11 @@
 ---
-title     : "Properties: Progress and Preservation"
+title     : "PropertiesDec: Progress and Preservation"
 layout    : page
-permalink : /Properties/
+permalink : /PropertiesDec/
 ---
 
 \begin{code}
-module plfa.Properties where
+module plfa.PropertiesDec where
 \end{code}
 
 [Parts of this chapter take their text from chapter _StlcProp_
@@ -909,30 +909,16 @@ bound on the number of reduction steps.  Gas is specified by a natural number.
 data Gas : Set where
   gas : ℕ → Gas
 \end{code}
-When our evaluator returns a term `N`, it will either give evidence that
-`N` is a value or indicate that it ran out of gas.
-\begin{code}
-data Finished (N : Term) : Set where
-
-  done :
-      Value N
-      ----------
-    → Finished N
-
-  out-of-gas :
-      ----------
-      Finished N
-\end{code}
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
-a reduction sequence from `L` to `N` and an indication of whether
-reduction finished.
+a reduction sequence from `L` to `N` and tell us whether it succeeded in
+reducing `N` to a value or ran out of gas and stopped early.
 \begin{code}
 data Steps (L : Term) : Set where
 
   steps : ∀ {N}
     → L —↠ N  
-    → Finished N
-      ----------
+    → Dec (Value N)
+      -------------
     → Steps L
 \end{code}
 The evaluator takes gas and evidence that a term is well-typed,
@@ -943,6 +929,24 @@ eval : ∀ {L A}
   → ∅ ⊢ L ⦂ A
     ---------
   → Steps L
+{-
+eval {L} g ⊢L with progress ⊢L
+... | done VL                                      =  steps (L ∎) (yes VL)
+... | step L—→M with g
+...    | gas zero                                  =  steps (L ∎) (no (—→¬V L—→M))
+...    | gas (suc n) with eval (gas n) (preserve ⊢L L—→M)
+...       | steps M—↠N val?                        =  steps (L —→⟨ L—→M ⟩ M—↠N) val?
+-}
+
+eval     _             ⊢L with progress ⊢L
+eval {L} _             ⊢L    | done VL      =  steps (L ∎) (yes VL)
+eval {L} (gas zero)    ⊢L    | step L—→M    =  steps (L ∎) (no (—→¬V L—→M))
+eval {L} (gas (suc n)) ⊢L    | step L—→M
+  with eval (gas n) (preserve ⊢L L—→M)
+...  | steps M—↠N val?                      =  steps (L —→⟨ L—→M ⟩ M—↠N) val?
+
+
+{-
 eval {L} (gas zero)    ⊢L                             =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
 ... | done VL                                         =  steps (L ∎) (done VL)
@@ -1546,3 +1550,7 @@ false, give a counterexample.
 
 Are all properties preserved in this case? Are there any
 other alterations we would wish to make to the system?
+
+\begin{code}
+-}
+\end{code}

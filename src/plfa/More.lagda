@@ -1,5 +1,5 @@
 ---
-title     : "More: More constructs of simply-typed lambda calculus"
+title     : "More: Additional constructs of simply-typed lambda calculus"
 layout    : page
 permalink : /More/
 ---
@@ -12,11 +12,33 @@ So far, we have focussed on a relatively minimal language,
 based on Plotkin's PCF, which supports functions, naturals, and
 fixpoints.  In this chapter we extend our calculus to support
 more datatypes, including products, sums, unit type, empty
-type, and lists, all of which will be familiar from Part I of
+type, and lists, all of which are familiar from Part I of
 this textbook.  We also describe _let_ bindings.  Most of the
 description will be informal.  We show how to formalise a few
 of the constructs, and leave the rest as an exercise for the
 reader.
+
+## Products
+
+
+
+## An alternative formulation of products
+
+
+## Sums
+
+
+## Unit type
+
+
+## Empty type
+
+
+## Lists
+
+
+## Let bindings
+
 
 ## Imports
 
@@ -135,6 +157,12 @@ data _⊢_ : Context → Type → Set where
       -----------
     → Γ ⊢ B
 
+  case× : ∀ {Γ A B C}
+    → Γ ⊢ A `× B
+    → Γ , A , B ⊢ C
+      --------------
+    → Γ ⊢ C
+
   `inj₁ : ∀ {Γ A B}
     → Γ ⊢ A
       -----------
@@ -232,6 +260,7 @@ rename ρ (μ N)          =  μ (rename (ext ρ) N)
 rename ρ `⟨ M , N ⟩     =  `⟨ rename ρ M , rename ρ N ⟩
 rename ρ (`proj₁ L)     =  `proj₁ (rename ρ L)
 rename ρ (`proj₂ L)     =  `proj₂ (rename ρ L)
+rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
 rename ρ (`inj₁ M)      =  `inj₁ (rename ρ M)
 rename ρ (`inj₂ N)      =  `inj₂ (rename ρ N)
 rename ρ (case⊎ L M N)  =  case⊎ (rename ρ L) (rename (ext ρ) M) (rename (ext ρ) N)
@@ -261,6 +290,7 @@ subst σ (μ N)          =  μ (subst (exts σ) N)
 subst σ `⟨ M , N ⟩     =  `⟨ subst σ M , subst σ N ⟩
 subst σ (`proj₁ L)     =  `proj₁ (subst σ L)
 subst σ (`proj₂ L)     =  `proj₂ (subst σ L)
+subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 subst σ (`inj₁ M)      =  `inj₁ (subst σ M)
 subst σ (`inj₂ N)      =  `inj₂ (subst σ N)
 subst σ (case⊎ L M N)  =  case⊎ (subst σ L) (subst (exts σ) M) (subst (exts σ) N)
@@ -387,11 +417,11 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       -------------------------
     → case L M N —→ case L′ M N
 
-  β-ℕ₁ :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+  β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
       -------------------
     → case `zero M N —→ M
 
-  β-ℕ₂ : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+  β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → Value V
       ----------------------------
     → case (`suc V) M N —→ N [ V ]
@@ -421,17 +451,28 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------------------
     → `proj₂ L —→ `proj₂ L′
 
-  β-×₁ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
+  β-proj₁ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
     → Value V
     → Value W
       ----------------------
     → `proj₁ `⟨ V , W ⟩ —→ V
 
-  β-×₂ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
+  β-proj₂ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
     → Value V
     → Value W
       ----------------------
     → `proj₂ `⟨ V , W ⟩ —→ W
+
+  ξ-case× : ∀ {Γ A B C} {L L′ : Γ ⊢ A `× B} {M : Γ , A , B ⊢ C}
+    → L —→ L′
+      -----------------------
+    → case× L M —→ case× L′ M
+
+  β-case× : ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {M : Γ , A , B ⊢ C}
+    → Value V
+    → Value W
+      ----------------------------------
+    → case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
 
   ξ-inj₁ : ∀ {Γ A B} {M M′ : Γ ⊢ A}
     → M —→ M′
@@ -448,12 +489,12 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------------------------
     → case⊎ L M N —→ case⊎ L′ M N
 
-  β-⊎₁ : ∀ {Γ A B C} {V : Γ ⊢ A} {M : Γ , A ⊢ C} {N : Γ , B ⊢ C}
+  β-inj₁ : ∀ {Γ A B C} {V : Γ ⊢ A} {M : Γ , A ⊢ C} {N : Γ , B ⊢ C}
     → Value V
       ------------------------------
     → case⊎ (`inj₁ V) M N —→ M [ V ]
 
-  β-⊎₂ : ∀ {Γ A B C} {W : Γ ⊢ B} {M : Γ , A ⊢ C} {N : Γ , B ⊢ C}
+  β-inj₂ : ∀ {Γ A B C} {W : Γ ⊢ B} {M : Γ , A ⊢ C} {N : Γ , B ⊢ C}
     → Value W
       ------------------------------
     → case⊎ (`inj₂ W) M N —→ N [ W ]
@@ -479,11 +520,11 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------------------------
     → caseL L M N —→ caseL L′ M N
 
-  β-List₁ : ∀ {Γ A B} {M : Γ ⊢ B} {N : Γ , A , `List A ⊢ B}
+  β-[] : ∀ {Γ A B} {M : Γ ⊢ B} {N : Γ , A , `List A ⊢ B}
       ------------------
     → caseL `[] M N —→ M
 
-  β-List₂ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ `List A}
+  β-∷ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ `List A}
     {M : Γ ⊢ B} {N : Γ , A , `List A ⊢ B}
     → Value V
     → Value W
@@ -592,8 +633,8 @@ progress (`suc M) with progress M
 ...    | done VM                            =  done (V-suc VM)
 progress (case L M N) with progress L
 ...    | step L—→L′                         =  step (ξ-case L—→L′)
-...    | done V-zero                        =  step β-ℕ₁
-...    | done (V-suc VL)                    =  step (β-ℕ₂ VL)
+...    | done V-zero                        =  step β-zero
+...    | done (V-suc VL)                    =  step (β-suc VL)
 progress (μ N)                              =  step β-μ
 progress `⟨ M , N ⟩ with progress M
 ...    | step M—→M′                         =  step (ξ-⟨,⟩₁ M—→M′)
@@ -602,10 +643,13 @@ progress `⟨ M , N ⟩ with progress M
 ...        | done VN                        =  done (V-⟨ VM , VN ⟩)
 progress (`proj₁ L) with progress L
 ...    | step L—→L′                         =  step (ξ-proj₁ L—→L′)
-...    | done (V-⟨ VM , VN ⟩)               =  step (β-×₁ VM VN)
+...    | done (V-⟨ VM , VN ⟩)               =  step (β-proj₁ VM VN)
 progress (`proj₂ L) with progress L
 ...    | step L—→L′                         =  step (ξ-proj₂ L—→L′)
-...    | done (V-⟨ VM , VN ⟩)               =  step (β-×₂ VM VN)
+...    | done (V-⟨ VM , VN ⟩)               =  step (β-proj₂ VM VN)
+progress (case× L M) with progress L
+...    | step L—→L′                         =  step (ξ-case× L—→L′)
+...    | done (V-⟨ VM , VN ⟩)               =  step (β-case× VM VN)
 progress (`inj₁ M) with progress M
 ...    | step M—→M′                         =  step (ξ-inj₁ M—→M′)
 ...    | done VM                            =  done (V-inj₁ VM)
@@ -614,8 +658,8 @@ progress (`inj₂ N) with progress N
 ...    | done VN                            =  done (V-inj₂ VN)
 progress (case⊎ L M N) with progress L
 ...    | step L—→L′                         =  step (ξ-case⊎ L—→L′)
-...    | done (V-inj₁ VV)                   =  step (β-⊎₁ VV)
-...    | done (V-inj₂ VW)                   =  step (β-⊎₂ VW)
+...    | done (V-inj₁ VV)                   =  step (β-inj₁ VV)
+...    | done (V-inj₂ VW)                   =  step (β-inj₂ VW)
 progress (`tt)                              =  done V-tt
 progress (case⊥ {A = A} L) with progress L
 ...    | step L—→L′                         =  step (ξ-case⊥ {A = A} L—→L′)
@@ -628,8 +672,8 @@ progress (M `∷ N) with progress M
 ...        | done VN                        =  done (_V-∷_ VM VN)
 progress (caseL L M N) with progress L
 ...    | step L—→L′                         =  step (ξ-caseL L—→L′)
-...    | done V-[]                          =  step β-List₁
-...    | done (_V-∷_ VV VW)                 =  step (β-List₂ VV VW)
+...    | done V-[]                          =  step β-[]
+...    | done (_V-∷_ VV VW)                 =  step (β-∷ VV VW)
 progress (`let M N) with progress M
 ...    | step M—→M′                         =  step (ξ-let M—→M′)
 ...    | done VM                            =  step (β-let VM)

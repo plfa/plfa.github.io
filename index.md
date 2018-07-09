@@ -31,7 +31,7 @@ are encouraged.
   - [Equality: Equality and equational reasoning]({{ site.baseurl }}{% link out/plfa/Equality.md %})
   - [Isomorphism: Isomorphism and embedding]({{ site.baseurl }}{% link out/plfa/Isomorphism.md %})
   - [Connectives: Conjunction, disjunction, and implication]({{ site.baseurl }}{% link out/plfa/Connectives.md %})
-  - [Negation: Negation, with intuitionistic and classical Logic]({{ site.baseurl }}{% link out/plfa/Negation.md %})
+  - [Negation: Negation, with intuitionistic and classical logic]({{ site.baseurl }}{% link out/plfa/Negation.md %})
   - [Quantifiers: Universals and existentials]({{ site.baseurl }}{% link out/plfa/Quantifiers.md %})
   - [Lists: Lists and higher-order functions]({{ site.baseurl }}{% link out/plfa/Lists.md %})
   - [Decidable: Booleans and decision procedures]({{ site.baseurl }}{% link out/plfa/Decidable.md %})
@@ -40,13 +40,13 @@ are encouraged.
 
 (The following is ready for review. Please comment!)
 
-  - [Lambda: Lambda: Introduction to Lambda Calculus]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+  - [Lambda: Introduction to Lambda Calculus]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
   - [Properties: Progress and Preservation]({{ site.baseurl }}{% link out/plfa/Properties.md %})
   - [DeBruijn: Inherently typed De Bruijn representation]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %})
 
 (The following is not yet ready for review.)
 
-  - [More: More constructs of simply-typed lambda calculus]({{ site.baseurl }}{% link out/plfa/More.md %}) 
+  - [More: Additional constructs of simply-typed lambda calculus]({{ site.baseurl }}{% link out/plfa/More.md %}) 
   - [Bisimulation: Relating reductions systems]({{ site.baseurl }}{% link out/plfa/Bisimulation.md %}) 
   - [Inference: Bidirectional type inference]({{ site.baseurl }}{% link out/plfa/Inference.md %})
   - [Untyped: Untyped lambda calculus with full normalisation]({{ site.baseurl }}{% link out/plfa/Untyped.md %})
