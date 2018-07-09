@@ -320,8 +320,57 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``.
                      |inj₂ y ⇒ case⊥ y
                                  [] ]
 
-
 ## Lists
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      `List A                             list type
+
+    L, M, N ::= ...                     Terms
+      `[]                                 nil
+      M `∷ N                              cons
+      caseL L [nil=> M | x ∷ y ⇒ N ]      case
+
+    V, W ::= ...                        Values
+      `[]                                 nil
+      V `∷ W                              cons
+
+Typing
+
+    ----------------- `[] or List-I₁
+    Γ ⊢ `[] ⦂ `List A
+
+    Γ ⊢ M ⦂ A
+    Γ ⊢ N ⦂ `List A
+    -------------------- _`∷_ or List-I₂
+    Γ ⊢ M `∷ N ⦂ `List A
+
+    Γ ⊢ L ⦂ `List A
+    Γ ⊢ M ⦂ B
+    Γ , x ⦂ A , xs ⦂ `List A ⊢ N ⦂ B
+    -------------------------------------- caseL or List-E
+    Γ ⊢ caseL L [[]=> M | x ∷ xs ⇒ N ] ⦂ B
+
+Reduction
+
+    M —→ M′
+    ----------------- ξ-∷₁
+    M `∷ N —→ M′ `∷ N
+
+    N —→ N′
+    ----------------- ξ-∷₂
+    V `∷ N —→ V `∷ N′
+
+    L —→ L′
+    --------------------------- ξ-caseL
+    caseL L M N —→ caseL L′ M N
+
+    ------------------ β-[]
+    caseL `[] M N —→ M
+
+    ---------------------------------- β-∷
+    caseL (V `∷ W) M N —→ N [ V ][ W ]
 
 
 ## Let bindings

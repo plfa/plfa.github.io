@@ -25,7 +25,7 @@ sequences for us.
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
@@ -913,22 +913,82 @@ Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and tell us whether it succeeded in
 reducing `N` to a value or ran out of gas and stopped early.
 \begin{code}
-data Steps (L : Term) : Set where
+{-
+data Steps (n : ℕ) (L : Term) : Set where
+
+  done : ∀ {N}
+    → (L—↠N : L —↠ N)
+    → len L—↠N ≤ n
+    → Value N
+      -------------
+    → Steps n L
 
   steps : ∀ {N}
-    → L —↠ N  
-    → Dec (Value N)
+    → (L—↠N : L —↠ N)
+    → len L—↠N ≡ n
+    → ¬ Value N
       -------------
-    → Steps L
+    → Steps n L
+-}
 \end{code}
 The evaluator takes gas and evidence that a term is well-typed,
 and returns the corresponding steps.
 \begin{code}
 eval : ∀ {L A}
-  → Gas
+  → (n : ℕ)
   → ∅ ⊢ L ⦂ A
-    ---------
-  → Steps L
+    ----------------
+  → ∃[ N ]( L —↠ N )
+eval {L} zero    ⊢L                             =  ⟨ L , L ∎ ⟩
+eval {L} (suc n) ⊢L with progress ⊢L
+... | done _                                    =  ⟨ L , L ∎ ⟩
+... | step L—→M with eval n (preserve ⊢L L—→M)
+...    | ⟨ N , M—↠N ⟩                           =  ⟨ N , L —→⟨ L—→M ⟩ M—↠N ⟩
+
+len : ∀ {M N} → (M —↠ N) → ℕ
+len (L ∎)                =  zero
+len (L —→⟨ L—→M ⟩ M—↠N)  =  suc (len M—↠N)
+
+data Seq {L} (n : ℕ) : ∃[ N ]( L —↠ N) → Set where
+
+  yes : ∀ {V L—↠V}
+    → len L—↠V ≤ n
+    → Value V
+      ------------------
+    → Seq n ⟨ V , L—↠V ⟩
+
+  no : ∀ {N L—↠N}
+    → len L—↠N ≡ n
+    → ¬ Value N
+      ------------------
+    → Seq n ⟨ N , L—↠N ⟩
+
+classify : ∀ {L A}
+  → (n : ℕ)
+  → (⊢L : ∅ ⊢ L ⦂ A)
+    -----------------
+  → Seq n (eval n ⊢L)
+classify zero ⊢L with progress ⊢L
+...                 | done VL         =  yes z≤n VL
+...                 | step L—→M       =  no  refl (—→¬V L—→M)
+classify (suc n) ⊢L with progress ⊢L
+...                 | done VL         =  yes z≤n VL
+...                 | step L—→M
+  with classify n (preserve ⊢L L—→M)
+...  | yes ≤n  VN                     =  yes (s≤s ≤n)      VN
+...  | no  ≡n ¬VN                     =  no  (cong suc ≡n) ¬VN
+
+
+{-
+eval     _       ⊢L with progress ⊢L
+eval {L} _       ⊢L    | done VL      =  done  (L ∎) z≤n VL
+eval {L} zero    ⊢L    | step L—→M    =  steps (L ∎) refl (—→¬V L—→M)
+eval {L} (suc n) ⊢L    | step L—→M
+  with eval n (preserve ⊢L L—→M)
+...  | done  M—↠N l≤n  VN             =  done  (L —→⟨ L—→M ⟩ M—↠N) (s≤s l≤n) VN
+...  | steps M—↠N refl ¬VN            =  steps (L —→⟨ L—→M ⟩ M—↠N) refl      ¬VN
+-}
+
 {-
 eval {L} g ⊢L with progress ⊢L
 ... | done VL                                      =  steps (L ∎) (yes VL)
@@ -937,13 +997,6 @@ eval {L} g ⊢L with progress ⊢L
 ...    | gas (suc n) with eval (gas n) (preserve ⊢L L—→M)
 ...       | steps M—↠N val?                        =  steps (L —→⟨ L—→M ⟩ M—↠N) val?
 -}
-
-eval     _             ⊢L with progress ⊢L
-eval {L} _             ⊢L    | done VL      =  steps (L ∎) (yes VL)
-eval {L} (gas zero)    ⊢L    | step L—→M    =  steps (L ∎) (no (—→¬V L—→M))
-eval {L} (gas (suc n)) ⊢L    | step L—→M
-  with eval (gas n) (preserve ⊢L L—→M)
-...  | steps M—↠N val?                      =  steps (L —→⟨ L—→M ⟩ M—↠N) val?
 
 
 {-
