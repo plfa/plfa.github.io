@@ -37,19 +37,19 @@ correctness of such translations will be the subject of the next chapter.
 Let bindings affect only the syntax of terms; they introduce no new
 types or values.
 
-Syntax
+### Syntax
 
     L, M, N ::= ...                     Terms
       `let x `= M `in N                   let
 
-Typing
+### Typing
 
     Γ ⊢ M ⦂ A
     Γ , x ⦂ A ⊢ N ⦂ B
     ------------------------- `let
     Γ ⊢ `let x `= M `in N ⦂ B
 
-Reduction
+### Reduction
 
     M —→ M′
     --------------------------------------- ξ-let
@@ -58,7 +58,7 @@ Reduction
     ---------------------------- β-let
     `let x `= V `in N —→ N [ V ]
 
-Example
+### Example
 
 Let _`*_ : ∅ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ represent multiplication of naturals.
 Then raising a natural to the tenth power can be defined as follows.
@@ -70,7 +70,7 @@ Then raising a natural to the tenth power can be defined as follows.
                   `let x10 `= x5 `* x5 `in
                   x10
 
-Translation
+### Translation
 
 We can translate each _let_ term into an application of an abstraction.
 
@@ -79,7 +79,7 @@ We can translate each _let_ term into an application of an abstraction.
 
 ## Products
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       A `× B                              product type
@@ -92,7 +92,7 @@ Syntax
     V, W ::= ...                        Values
       `⟨ V , W ⟩                          pair  
 
-Typing
+### Typing
 
     Γ ⊢ M ⦂ A
     Γ ⊢ N ⦂ B
@@ -107,7 +107,7 @@ Typing
     ---------------- `proj₂ or `×-E₂
     Γ ⊢ `proj₂ L ⦂ B
 
-Reduction
+### Reduction
 
     M —→ M′
     ------------------------- ξ-⟨,⟩₁
@@ -131,7 +131,7 @@ Reduction
     ---------------------- β-proj₂
     `proj₂ `⟨ V , W ⟩ —→ W
 
-Example
+### Example
 
 Here is the definition of a function to swap the components of a pair.
 
@@ -146,7 +146,7 @@ ways to eliminate the type we have a case term that binds two
 variables.  We repeat the syntax in full, but only give the new type
 and reduction rules.
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       A `× B                              product type
@@ -158,7 +158,7 @@ Syntax
     V, W ::=                            Values
       `⟨ V , W ⟩                          pair  
 
-Typing
+### Typing
 
     Γ ⊢ L ⦂ A `× B
     Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
@@ -166,7 +166,7 @@ Typing
     Γ ⊢ case× L
           [⟨ x , y ⟩⇒ N ] ⦂ C
 
-Reduction
+### Reduction
 
     L —→ L′
     -------------------- ξ-case×
@@ -180,7 +180,7 @@ Reduction
          [⟨ x , y ⟩⇒  M
     —→ M [ x := V ] [ y := W ]
 
-Example
+### Example
 
 Function to swap the components of a pair rewritten in the new notation.
 
@@ -188,7 +188,7 @@ Function to swap the components of a pair rewritten in the new notation.
     swap×-case = ƛ z ⇒ case× z 
                          [⟨ x , y ⟩⇒ `⟨ y , x ⟩ ]
 
-Translation
+### Translation
 
 We can translate the alternative formulation into the one with projections.
 
@@ -200,6 +200,7 @@ We can translate the alternative formulation into the one with projections.
     (M †)
 
 Here `z` is a variable that does not appear free in `M`.
+
 We can also translate back the other way.
 
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
@@ -207,7 +208,7 @@ We can also translate back the other way.
 
 ## Sums
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       A `⊎ B                              sum type
@@ -220,7 +221,7 @@ Syntax
       `inj₁ V                             inject first component
       `inj₂ W                             inject second component
 
-Typing
+### Typing
 
     Γ ⊢ M ⦂ A
     -------------------- `inj₁ or ⊎-I₁
@@ -236,7 +237,7 @@ Typing
     ----------------------------------------- case⊎ or ⊎-E
     Γ ⊢ case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] ⦂ C
 
-Reduction
+### Reduction
 
     M —→ M′
     ------------------- ξ-inj₁
@@ -263,7 +264,7 @@ Reduction
                        |inj₂ y ⇒ N ]
     —→ N [ y := V ]
 
-Example
+### Example
 
 Here is the definition of a function to swap the components of a sum.
 
@@ -279,7 +280,7 @@ For the unit type, there is a way to introduce
 values of the type but no way to eliminate values of the type.
 There are no reduction rules.
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       `⊤                                  unit type
@@ -290,16 +291,16 @@ Syntax
     V, W ::= ...                        Values
       `tt                                 unit value
 
-Typing
+### Typing
 
     ------ `tt or ⊤-I
     Γ ⊢ `⊤
 
-Reduction
+### Reduction
 
 (none)
 
-Example
+### Example
 
 Here is the isomorphism between `A` and ``A `× `⊤``.
 
@@ -316,7 +317,7 @@ There is an alternative formulation of the unit type, where in place of
 no way to eliminate the type we have a case term that binds zero variables.
 We repeat the syntax in full, but only give the new type and reduction rules.
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       `⊤                                  unit type
@@ -328,23 +329,29 @@ Syntax
     V, W ::= ...                        Values
       `tt                                 unit value
 
-Typing
+### Typing
 
     Γ ⊢ L ⦂ `⊤
     Γ ⊢ M ⦂ A
-    ------------------------ case⊤ or ⊤-E
-    Γ ⊢ case⊤ L [⟨⟩⇒ M ] ⦂ A
+    ------------------ case⊤ or ⊤-E
+    Γ ⊢ case⊤ L
+          [⟨⟩⇒ M ] ⦂ A
 
-Reduction
+### Reduction
 
     L —→ L′
-    ------------------------------------- ξ-case⊤
-    case⊤ L [⟨⟩⇒ M ] —→ case⊤ L′ [⟨⟩⇒ M ]
+    ------------- ξ-case⊤
+       case⊤ L
+         [⟨⟩⇒ M ]
+    —→ case⊤ L′
+         [⟨⟩⇒ M ]
 
-    ----------------------- β-case⊤
-    case⊤ `tt [⟨⟩⇒ M ] —→ M
+    ------------- β-case⊤
+       case⊤ `tt
+         [⟨⟩⇒ M ]
+    —→ M
 
-Example
+### Example
 
 Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new notation.
 
@@ -354,7 +361,7 @@ Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new
                                        [⟨⟩⇒ y ] ]
 
 
-Translation
+### Translation
 
 We can translate the alternative formulation into one without case.
 
@@ -370,7 +377,7 @@ the type but no way to introduce values of the type.  There are no
 values of the type and no β rule, but there is a ξ rule.  The `case⊥`
 construct plays a role similar to `⊥-elim` in Agda.
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       `⊥                                  empty type
@@ -378,19 +385,19 @@ Syntax
     L, M, N ::= ...                     Terms
       case⊥ L []                          case
 
-Typing
+### Typing
 
     Γ ⊢ L ⦂ `⊥
     ------------------ case⊥ or ⊥-E
     Γ ⊢ case⊥ L [] ⦂ A
 
-Reduction
+### Reduction
 
     L —→ L′
     ------------------------- ξ-case⊥
     case⊥ L [] —→ case⊥ L′ []
 
-Example
+### Example
 
 Here is the isomorphism between `A` and ``A `⊎ `⊥``.
 
@@ -405,7 +412,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``.
 
 ## Lists
 
-Syntax
+### Syntax
 
     A, B, C ::= ...                     Types
       `List A                             list type
@@ -419,7 +426,7 @@ Syntax
       `[]                                 nil
       V `∷ W                              cons
 
-Typing
+### Typing
 
     ----------------- `[] or List-I₁
     Γ ⊢ `[] ⦂ `List A
@@ -435,7 +442,7 @@ Typing
     -------------------------------------- caseL or List-E
     Γ ⊢ caseL L [[]=> M | x ∷ xs ⇒ N ] ⦂ B
 
-Reduction
+### Reduction
 
     M —→ M′
     ----------------- ξ-∷₁
@@ -447,22 +454,33 @@ Reduction
 
     L —→ L′
     --------------------------- ξ-caseL
-    caseL L M N —→ caseL L′ M N
+       caseL L
+         [[]⇒ M
+         | x ∷ xs ⇒ N ]
+    —→ caseL L′
+         [[]⇒ M
+         | x ∷ xs ⇒ N ]
 
     ------------------ β-[]
-    caseL `[] M N —→ M
+       caseL `[]
+         [[]⇒ M
+         | x ∷ xs ⇒ N ]
+    —→ M
 
-    ---------------------------------- β-∷
-    caseL (V `∷ W) M N —→ N [ V ][ W ]
+    --------------------------- β-∷
+       caseL (V `∷ W)
+         [[]⇒ M
+         | x ∷ xs ⇒ N ]
+    —→ N [ x := V ] [ xs := W ]
 
-Example
+### Example
 
 Here is the map function for lists.
 
     mapL : (A → B) → List A → List B
     mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
              caseL xs
-               [[] => `[]
+               [[]⇒ `[]
                | x ∷ xs ⇒ f · x `∷ ml · f · xs ]
 
 
