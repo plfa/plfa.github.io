@@ -14,15 +14,123 @@ fixpoints.  In this chapter we extend our calculus to support
 more datatypes, including products, sums, unit type, empty
 type, and lists, all of which are familiar from Part I of
 this textbook.  We also describe _let_ bindings.  Most of the
-description will be informal.  We show how to formalise a few
-of the constructs, and leave the rest as an exercise for the
-reader.
+description will be informal. We show how to formalise a few
+of the constructs and leave the rest as an exercise for the reader.
+
+Our informal descriptions will be in the style of
+Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+using named variables and a separate type relation.
+Unlike before, we list types before reductions, in order to
+encourage formalisation will be in the style of
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
+using de Bruijn indices and inherently typed terms.
 
 ## Products
 
+The syntax, type, and reduction rules for products are
+straightforward.  By now, explaining with symbols should be more
+concise and precise than explaining in prose.  We informally
+define values via syntax, while in the formalism we will need
+to add corresponding rules to `Value` predicate.  
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      A `× B                              product type
+
+    L, M, N ::= ...                     Terms
+      `⟨ M , N ⟩                          pair
+      `proj₁ L                            project first component
+      `proj₂ L                            project second component
+
+    V, W ::=                            Values
+      `⟨ V , W ⟩                          pair  
+
+Typing
+
+    Γ ⊢ M ⦂ A
+    Γ ⊢ N ⦂ B
+    ----------------------- `⟨_,_⟩ or `×-I
+    Γ ⊢ `⟨ M , N ⟩ ⦂ A `× B
+
+    Γ ⊢ L ⦂ A `× B
+    ---------------- `proj₁ or `×-E₁
+    Γ ⊢ `proj₁ L ⦂ A
+
+    Γ ⊢ L ⦂ A `× B
+    ---------------- `proj₂ or `×-E₂
+    Γ ⊢ `proj₂ L ⦂ B
+
+Reduction
+
+    M —→ M′
+    ------------------------- ξ-⟨,⟩₁
+    `⟨ M , N ⟩ —→ `⟨ M′ , N ⟩
+
+    N —→ N′
+    ------------------------- ξ-⟨,⟩₂
+    `⟨ V , N ⟩ —→ `⟨ V , N′ ⟩
+
+    L —→ L′
+    --------------------- ξ-proj₁
+    `proj₁ L —→ `proj₁ L′
+
+    L —→ L′
+    --------------------- ξ-proj₂
+    `proj₂ L —→ `proj₂ L′
+
+    ---------------------- β-proj₁
+    `proj₁ `⟨ V , W ⟩ —→ V
+
+    ---------------------- β-proj₂
+    `proj₂ `⟨ V , W ⟩ —→ W
+
+As an example, here is the definition of a function to swap
+the components of a pair.
+
+    swap× : ∅ ⊢ A `× B ⇒ B `× A
+    swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
 
 
 ## An alternative formulation of products
+
+There is an alternative formulation of products, where projections
+are replaced by a case term.  We repeat the syntax in full, but
+only give the new type and reduction rules.
+
+Syntax
+
+    A, B, C ::= ...                     Types
+      A `× B                              product type
+
+    L, M, N ::= ...                     Terms
+      `⟨ M , N ⟩                          pair
+      case× L [⟨ x , y ⟩=> M ]            case
+
+    V, W ::=                            Values
+      `⟨ V , W ⟩                          pair  
+
+Types
+
+    Γ ⊢ L ⦂ A `× B
+    Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
+    ------------------------------ case× or ×-E
+    Γ ⊢ case L [⟨ x , y ⟩⇒ N ] ⦂ C
+
+Reductions
+
+    L —→ L′
+    ----------------------- ξ-case×
+    case× L M —→ case× L′ M
+
+    ---------------------------------- β-case×
+    case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
+
+
+
+    
+
+
 
 
 ## Sums
@@ -716,4 +824,40 @@ eval (gas (suc m)) L with progress L
 ... | step {M} L—→M with eval (gas m) M
 ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
+
+
+## Examples
+
+\begin{code}
+swap× : ∀ {A B} → ∅ ⊢ A `× B ⇒ B `× A
+swap× = ƛ `⟨ `proj₂ (# 0) , `proj₁ (# 0) ⟩
+
+_ : swap× · `⟨ `tt , `zero ⟩ —↠ `⟨ `zero , `tt ⟩
+_ =
+  begin
+    swap× · `⟨ `tt , `zero ⟩
+  —→⟨ β-ƛ V-⟨ V-tt , V-zero ⟩ ⟩
+    `⟨ `proj₂ `⟨ `tt , `zero ⟩ , `proj₁ `⟨ `tt , `zero ⟩ ⟩
+  —→⟨ ξ-⟨,⟩₁ (β-proj₂ V-tt V-zero) ⟩
+    `⟨ `zero , `proj₁ `⟨ `tt , `zero ⟩ ⟩
+  —→⟨ ξ-⟨,⟩₂ V-zero (β-proj₁ V-tt V-zero) ⟩
+    `⟨ `zero , `tt ⟩
+  ∎
+\end{code}
+
+\begin{code}
+swap⊎ : ∀ {A B} → ∅ ⊢ A `⊎ B ⇒ B `⊎ A
+swap⊎ = ƛ (case⊎ (# 0) (`inj₂ (# 0)) (`inj₁ (# 0)))
+
+_ : swap⊎ {B = `⊥} · `inj₁ `zero —↠ `inj₂ `zero
+_ = 
+  begin
+    (ƛ (case⊎ (# 0) (`inj₂ (# 0)) (`inj₁ (# 0)))) · `inj₁ `zero
+  —→⟨ β-ƛ (V-inj₁ V-zero) ⟩
+    case⊎ (`inj₁ `zero) (`inj₂ (# 0)) (`inj₁ (# 0))
+  —→⟨ β-inj₁ V-zero ⟩
+   `inj₂ `zero
+  ∎
+\end{code}
+
 
