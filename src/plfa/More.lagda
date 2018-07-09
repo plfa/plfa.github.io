@@ -25,6 +25,54 @@ encourage formalisation will be in the style of
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
 using de Bruijn indices and inherently typed terms.
 
+## Let bindings
+
+Let bindings affect only the syntax of terms; they introduce no new
+types or values.
+
+Syntax
+
+    L, M, N ::= ...                     Terms
+      `let x `= M `in N                   let
+
+Typing
+
+    Γ ⊢ M ⦂ A
+    Γ , x ⦂ A ⊢ N ⦂ B
+    ------------------------- `let
+    Γ ⊢ `let x `= M `in N ⦂ B
+
+Reduction
+
+    M —→ M′
+    --------------------------------------- ξ-let
+    `let x `= M `in N —→ `let x `= M′ `in N
+
+    ---------------------------- β-let
+    `let x `= V `in N —→ N [ V ]
+
+Example
+
+Let _`*_ : ∅ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ represent multiplication of naturals.
+Then raising a natural to the tenth power can be defined as follows.
+
+    exp10 : ∅ ⊢ `ℕ ⇒ `ℕ
+    exp10 = ƛ x ⇒ `let x2  `= x  `* x  `in
+                  `let x4  `= x2 `* x2 `in
+                  `let x5  `= x4 `* x  `in
+                  `let x10 `= x5 `* x5 `in
+                  x10
+
+Translation
+
+We can translate each _let_ term into an application of an abstraction.
+
+    (`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
+
+Formally establishing the correctness of this translation will be the
+subject of the next chapter.
+
+
 ## Products
 
 The syntax, type, and reduction rules for products are
@@ -383,45 +431,6 @@ Here is the map function for lists.
                | x ∷ xs ⇒ f · x `∷ ml · f · xs ]
 
 
-## Let bindings
-
-Let bindings affect only the syntax of terms; they introduce no new
-types or values.
-
-Syntax
-
-    L, M, N ::= ...                     Terms
-      `let x `= M `in N                   let
-
-Typing
-
-    Γ ⊢ M ⦂ A
-    Γ , x ⦂ A ⊢ N ⦂ B
-    ------------------------- `let
-    Γ ⊢ `let x `= M `in N ⦂ B
-
-Reduction
-
-    M —→ M′
-    --------------------------------------- ξ-let
-    `let x `= M `in N —→ `let x `= M′ `in N
-
-    ---------------------------- β-let
-    `let x `= V `in N —→ N [ V ]
-
-Example
-
-Let _`*_ : ∅ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ represent multiplication of naturals.
-Then raising a natural to the tenth power can be defined as follows.
-
-    exp10 : ∅ ⊢ `ℕ ⇒ `ℕ
-    exp10 = ƛ x ⇒ `let x2  `= x  `* x  `in
-                  `let x4  `= x2 `* x2 `in
-                  `let x5  `= x4 `* x  `in
-                  `let x10 `= x5 `* x5 `in
-                  x10
-
-
 ## Imports
 
 \begin{code}
@@ -486,10 +495,14 @@ data _∋_ : Context → Type → Set where
 
 data _⊢_ : Context → Type → Set where
 
+  -- variables
+
   `_ : ∀ {Γ A}
     → Γ ∋ A
       -----
     → Γ ⊢ A
+
+  -- functions
 
   ƛ_  :  ∀ {Γ A B}
     → Γ , A ⊢ B
@@ -501,6 +514,8 @@ data _⊢_ : Context → Type → Set where
     → Γ ⊢ A
       ---------
     → Γ ⊢ B
+
+  -- naturals
 
   `zero : ∀ {Γ}
       ------
@@ -518,10 +533,22 @@ data _⊢_ : Context → Type → Set where
       -----
     → Γ ⊢ A
 
+  -- fixpoint
+
   μ_ : ∀ {Γ A}
     → Γ , A ⊢ A
       ----------
     → Γ ⊢ A
+
+  -- let
+
+  `let : ∀ {Γ A B}
+    → Γ ⊢ A
+    → Γ , A ⊢ B
+      ----------
+    → Γ ⊢ B
+
+  -- products
 
   `⟨_,_⟩ : ∀ {Γ A B}
     → Γ ⊢ A
@@ -539,11 +566,15 @@ data _⊢_ : Context → Type → Set where
       -----------
     → Γ ⊢ B
 
+  -- alternative formulation of products
+
   case× : ∀ {Γ A B C}
     → Γ ⊢ A `× B
     → Γ , A , B ⊢ C
       --------------
     → Γ ⊢ C
+
+  -- sums
 
   `inj₁ : ∀ {Γ A B}
     → Γ ⊢ A
@@ -562,9 +593,13 @@ data _⊢_ : Context → Type → Set where
       ----------
     → Γ ⊢ C
 
+  -- unit type
+
   `tt : ∀ {Γ}
       ------
     → Γ ⊢ `⊤
+
+  -- alternative formulation of unit type
 
   case⊤ : ∀ {Γ A}
     → Γ ⊢ `⊤
@@ -572,10 +607,14 @@ data _⊢_ : Context → Type → Set where
       -----
     → Γ ⊢ A
       
+  -- empty type
+
   case⊥ : ∀ {Γ A}
     → Γ ⊢ `⊥
       -------
     → Γ ⊢ A
+
+  -- lists
 
   `[] : ∀ {Γ A}
       ------------
@@ -592,12 +631,6 @@ data _⊢_ : Context → Type → Set where
     → Γ ⊢ B
     → Γ , A , `List A ⊢ B
       --------------------
-    → Γ ⊢ B
-
-  `let : ∀ {Γ A B}
-    → Γ ⊢ A
-    → Γ , A ⊢ B
-      ----------
     → Γ ⊢ B
 \end{code}
 
@@ -724,9 +757,13 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
+  -- functions
+
   V-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B}
       ---------------------------
     → Value (ƛ N)
+
+  -- naturals
 
   V-zero : ∀ {Γ} →
       -----------------
@@ -737,11 +774,15 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
       --------------
     → Value (`suc V)
 
+  -- products
+
   V-⟨_,_⟩ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
     → Value V
     → Value W
       ----------------
     → Value `⟨ V , W ⟩
+
+  -- sums
 
   V-inj₁ : ∀ {Γ A B} {V : Γ ⊢ A}
     → Value V
@@ -753,9 +794,13 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
       -----------------------
     → Value (`inj₂ {A = A} W)
 
+  -- unit type
+
   V-tt : ∀ {Γ}
       -------------------
     → Value (`tt {Γ = Γ})
+
+  -- lists
 
   V-[] : ∀ {Γ A}
       ---------------------------
@@ -771,12 +816,14 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 Implicit arguments need to be supplied when they are
 not fixed by the given arguments.
 
-## Reduction step
+## Reduction
 
 \begin{code}
 infix 2 _—→_
 
 data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+
+  -- functions
 
   ξ-·₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
     → L —→ L′
@@ -793,6 +840,8 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → Value V
       --------------------
     → (ƛ N) · V —→ N [ V ]
+
+  -- naturals
 
   ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
     → M —→ M′
@@ -813,9 +862,25 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------------------
     → case (`suc V) M N —→ N [ V ]
 
+  -- fixpoint
+
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
       ----------------
     → μ N —→ N [ μ N ]
+
+  -- let
+
+  ξ-let : ∀ {Γ A B} {M M′ : Γ ⊢ A} {N : Γ , A ⊢ B}
+    → M —→ M′
+      ---------------------
+    → `let M N —→ `let M′ N
+
+  β-let : ∀ {Γ A B} {V : Γ ⊢ A} {N : Γ , A ⊢ B}
+    → Value V
+      -------------------
+    → `let V N —→ N [ V ]
+
+  -- products
 
   ξ-⟨,⟩₁ : ∀ {Γ A B} {M M′ : Γ ⊢ A} {N : Γ ⊢ B}
     → M —→ M′
@@ -850,6 +915,8 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------------
     → `proj₂ `⟨ V , W ⟩ —→ W
 
+  -- alternative formulation of products
+
   ξ-case× : ∀ {Γ A B C} {L L′ : Γ ⊢ A `× B} {M : Γ , A , B ⊢ C}
     → L —→ L′
       -----------------------
@@ -860,6 +927,8 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → Value W
       ----------------------------------
     → case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
+
+  -- sums
 
   ξ-inj₁ : ∀ {Γ A B} {M M′ : Γ ⊢ A}
     → M —→ M′
@@ -886,6 +955,8 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ------------------------------
     → case⊎ (`inj₂ W) M N —→ N [ W ]
 
+  -- alternative formulation of unit type
+
   ξ-case⊤ : ∀ {Γ A} {L L′ : Γ ⊢ `⊤} {M : Γ ⊢ A}
     → L —→ L′
       -----------------------
@@ -895,10 +966,14 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------
     → case⊤ `tt M —→ M
 
+  -- empty type
+
   ξ-case⊥ : ∀ {Γ A} {L L′ : Γ ⊢ `⊥}
     → L —→ L′
       ---------------------------
     → case⊥ {A = A} L —→ case⊥ L′
+
+  -- lists
 
   ξ-∷₁ : ∀ {Γ A} {M M′ : Γ ⊢ A} {N : Γ ⊢ `List A}
     → M —→ M′
@@ -926,16 +1001,6 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → Value W
       ----------------------------------
     → caseL (V `∷ W) M N —→ N [ V ][ W ]
-
-  ξ-let : ∀ {Γ A B} {M M′ : Γ ⊢ A} {N : Γ , A ⊢ B}
-    → M —→ M′
-      ---------------------
-    → `let M N —→ `let M′ N
-
-  β-let : ∀ {Γ A B} {V : Γ ⊢ A} {N : Γ , A ⊢ B}
-    → Value V
-      -------------------
-    → `let V N —→ N [ V ]
 \end{code}
 
 ## Reflexive and transitive closure
@@ -1134,9 +1199,7 @@ _ =
   —→⟨ ξ-⟨,⟩₂ V-zero (β-proj₁ V-tt V-zero) ⟩
     `⟨ `zero , `tt ⟩
   ∎
-\end{code}
 
-\begin{code}
 swap⊎ : ∀ {A B} → ∅ ⊢ A `⊎ B ⇒ B `⊎ A
 swap⊎ = ƛ (case⊎ (# 0) (`inj₂ (# 0)) (`inj₁ (# 0)))
 
