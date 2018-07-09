@@ -214,7 +214,7 @@ For each new section, we show the corresponding old section or
 sections.
 
   * DeBruijn: Inherently typed de Bruijn representation
-    + Inherently typed terms (1.1, 1.5)
+    + Syntax (1.1, 1.5)
     + Values (1.2, 2.1)
     + Renaming (2.3)
     + Substitution (1.3, 2.3)
@@ -222,16 +222,14 @@ sections.
     + Progress (2.2)
     + Evaluation (2.6)
 
-The definition of terms now combines both the syntax of terms
-and their typing rules, and the definition of values now
-incorporates the Canonical Forms lemma.  The definition of
-substitution is somewhat more involved, but incorporates the
-trickiest part of the previous proof, the lemma establishing
-that substitution preserves types.  The definition of
-reduction incorporates preservation, which no longer requires
-a separate proof.
+The syntax of terms now incorporates their typing rules, and the
+definition of values now incorporates the Canonical Forms lemma.  The
+definition of substitution is somewhat more involved, but incorporates
+the trickiest part of the previous proof, the lemma establishing that
+substitution preserves types.  The definition of reduction
+incorporates preservation, which no longer requires a separate proof.
 
-## Inherently typed terms
+## Syntax
 
 We now begin our formal development.
 
@@ -423,7 +421,7 @@ _ = ƛ ƛ (` S Z · (` S Z · ` Z))
 The final inherently-typed term represents the Church numeral
 two.
 
-### A convenient abbreviation
+### Abbreviating de Bruijn indices
 
 We can use a natural number to select a type from a context.
 \begin{code}
@@ -775,7 +773,7 @@ And combining definition with proof makes it harder for errors
 to sneak in.
 
 
-## Reductions
+## Reduction
 
 With substitution out of the way, it is straightforward to
 define values and reduction.
@@ -869,7 +867,7 @@ preserves types, which we previously is built-in to our
 definition of substitution.
 
 
-## Reflexive and transitive closure
+### Reflexive and transitive closure
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition.
@@ -899,7 +897,7 @@ begin M—↠N = M—↠N
 \end{code}
 
 
-### Examples
+## Examples
 
 We reiterate each of our previous examples.  First, the Church
 numeral two applied to the successor function and zero yields

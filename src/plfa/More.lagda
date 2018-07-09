@@ -10,14 +10,22 @@ module plfa.More where
 
 So far, we have focussed on a relatively minimal language, based on
 Plotkin's PCF, which supports functions, naturals, and fixpoints.  In
-this chapter we extend our calculus to support `let` bindings and more
-datatypes, including products, sums, unit type, empty type, and lists,
-all of which are familiar from Part I of this textbook.  We also give
-alternative formulations of products and unit type.  For `let` and the
-alternative formulations we show how they translate to other constructs
-in the calculus.  Most of the description will be informal. We show
-how to formalise a few of the constructs and leave the rest as an
-exercise for the reader.
+this chapter we extend our calculus to support the following:
+
+  * _let_ bindings
+  * products
+  * an alternative formulation of products
+  * sums
+  * unit type
+  * and an alternative formulation of unit type
+  * empty type
+  * lists
+
+All of the data types should be familiar from Part I of this textbook.
+For _let_ and the alternative formulations we show how they translate
+to other constructs in the calculus.  Most of the description will be
+informal. We show how to formalise the first three constructs and leave
+the rest as an exercise for the reader.
 
 Our informal descriptions will be in the style of
 Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
@@ -29,8 +37,8 @@ using de Bruijn indices and inherently typed terms.
 By now, explaining with symbols should be more concise, more precise,
 and easier to follow than explaining in prose.
 For each construct, we give syntax, typing, reductions, and an example.
-We also give translations where relevant.  Formally establishing the
-correctness of such translations will be the subject of the next chapter.
+We also give translations where relevant; formally establishing the
+correctness of translations will be the subject of the next chapter.
 
 ## Let bindings
 
@@ -484,6 +492,17 @@ Here is the map function for lists.
                | x ∷ xs ⇒ f · x `∷ ml · f · xs ]
 
 
+## Formalisation
+
+We now show how to formalise
+
+  * _let_ bindings
+  * products
+  * an alternative formulation of products
+
+and leave formalisation of the remaining constructs as an exercise.
+
+
 ## Imports
 
 \begin{code}
@@ -521,7 +540,11 @@ infix  9 #_
 
 infixr 6 _V-∷_
 infix  8 V-suc_
+\end{code}
 
+### Types
+
+\begin{code}
 data Type : Set where
   `ℕ    : Type
   _⇒_   : Type → Type → Type
@@ -530,11 +553,19 @@ data Type : Set where
   `⊤    : Type
   `⊥    : Type
   `List : Type → Type
+\end{code}
 
+### Contexts
+
+\begin{code}
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
+\end{code}
 
+### Variables and the lookup judgement
+
+\begin{code}
 data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ A}
@@ -545,7 +576,11 @@ data _∋_ : Context → Type → Set where
     → Γ ∋ B
       ---------
     → Γ , A ∋ B
+\end{code}   
 
+### Terms and the typing judgment
+
+\begin{code}
 data _⊢_ : Context → Type → Set where
 
   -- variables
@@ -695,21 +730,16 @@ lookup (Γ , A) zero     =  A
 lookup (Γ , _) (suc n)  =  lookup Γ n
 lookup ∅       _        =  ⊥-elim impossible
   where postulate impossible : ⊥
-\end{code}
 
-\begin{code}
 count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
 count {Γ , _} zero     =  Z
 count {Γ , _} (suc n)  =  S (count n)
 count {∅}     _        =  ⊥-elim impossible
   where postulate impossible : ⊥
-\end{code}
 
-\begin{code}
 #_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
 # n  =  ` count n
 \end{code}
-
 
 ## Substitution
 
@@ -803,7 +833,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   σ (S (S x))  =  ` x
 \end{code}
 
-## Reductions
+## Reduction
 
 ### Value
 
@@ -869,7 +899,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 Implicit arguments need to be supplied when they are
 not fixed by the given arguments.
 
-## Reduction
+### Reduction step
 
 \begin{code}
 infix 2 _—→_
@@ -1056,7 +1086,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → caseL (V `∷ W) M N —→ N [ V ][ W ]
 \end{code}
 
-## Reflexive and transitive closure
+### Reflexive and transitive closure
 
 \begin{code}
 infix  2 _—↠_

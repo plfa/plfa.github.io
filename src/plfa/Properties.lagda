@@ -8,10 +8,6 @@ permalink : /Properties/
 module plfa.Properties where
 \end{code}
 
-[Parts of this chapter take their text from chapter _StlcProp_
-of _Software Foundations_ (_Programming Language Foundations_).
-Those parts will be revised.]
-
 This chapter covers properties of the simply-typed lambda calculus, as
 introduced in the previous chapter.  The most important of these
 properties are progress and preservation.  We introduce these below,
@@ -1429,9 +1425,6 @@ and add
 to the bottom of the proof. But this does not work. The termination
 checker complains, because the arguments have merely switched order
 and neither is smaller.
-
-
-
 
 
 #### Exercise: `progress-preservation`

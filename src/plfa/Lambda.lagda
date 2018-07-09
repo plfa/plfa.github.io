@@ -10,13 +10,6 @@ permalink : /Lambda/
 module plfa.Lambda where
 \end{code}
 
-<!--
-[This chapter was originally based on Chapter _Stlc_
-of _Software Foundations_ (_Programming Language Foundations_).
-It has now been updated, but if you spot any plagiarism
-please let me know. – P]
--->
-
 The _lambda-calculus_, first published by the logician Alonzo Church in
 1932, is a core calculus with only three syntactic constructs:
 variables, abstraction, and application.  It captures the key concept of
@@ -675,6 +668,13 @@ The three constructors specify, respectively, that `—↠` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
 the two definitions are equivalent (indeed, isomoprhic).
 
+#### Exercise (`—↠≃—↠′`)
+
+Show that the two notions of reflexive and transitive closure
+above are isomorphic.
+
+## Confluence
+
 One important property a reduction relation might satisfy is
 to be _confluent_.  If term `L` reduces to two other terms,
 `M` and `N`, then both of these reduce to a common term `P`.
@@ -720,11 +720,6 @@ It is easy to show that every deterministic relation satisfies
 the diamond property, and that every relation that satisfies
 the diamond property is confluent.  Hence, all the reduction
 systems studied in this text are trivially confluent.
-
-#### Exercise (`—↠≃—↠′`)
-
-Show that the two notions of reflexive and transitive closure
-above are isomorphic.
 
 
 ## Examples
@@ -1302,3 +1297,5 @@ This chapter uses the following unicode
     ⊢    U+22A2:  RIGHT TACK (\vdash or \|-)
     ⦂    U+2982:  Z NOTATION TYPE COLON (\:)
 
+We compose reduction —→ from an em dash — and an arrow →.
+Similarly for reflexive and transitive closure —↠.
