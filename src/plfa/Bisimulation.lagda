@@ -8,6 +8,67 @@ permalink : /Bisimulation/
 module plfa.Bisimulation where
 \end{code}
 
+Some constructs can be defined in terms of other constructs.  In the
+previous chapter, we saw how _let_ terms can be rewritten as an
+application of an abstraction, and how two alternative formulations of
+products — one with projections and one with case — can be formulated
+in terms of each other.  In this chapter, we look at how to formalise
+these claims.  In particular, we explain what it means to claim that
+two different systems, with different terms and reduction rules, are
+equivalent.
+
+The relevant concept is _bisimulation_.  Consider two different
+systems, let's call them _source_ and _target_.  Let `M`, `N` range
+over terms of the source, and `M†`, `N†` range over terms of the
+target.  We define a relation
+
+    M ~ M†
+
+between corresponding terms of the two systems. We have a
+_simulation_ of the source by the target if every reduction
+step in the source has a corresponding reduction step
+in the target:
+
+> For every `M`, `M†`, and `N`:
+> If `M ~ M†` and `M —→ N`
+> then `M† —→ N†` and `N ~ N†`
+> for some `N†`.
+        
+Or, in symbols:
+
+    M  —→ N
+    ~     ~
+    M† —→ N†
+
+We are particularly interested in the situation where every
+reduction step in the target also has a corresponding reduction
+step in the source; this is called a _bisimulation_.
+
+For instance, `S` might be lambda calculus with _let_
+added, and `T` the same system with `let` translated out. 
+The key rule defining our relation will be:
+
+    M ~ M†
+    N ~ N†
+    ------------------------------
+    let x = M in N ~ ((ƛ x ⇒ N) M)
+
+All the other rules are congruences: variables relate to
+themselves, and abstractions and applications relate if their
+components relate.
+
+    -----
+    x ~ x
+
+    N ~ N†
+    ------------------
+    ƛ x ⇒ N ~ ƛ x ⇒ N†
+
+    L ~ L†
+    M ~ M†
+    ---------------
+    L · M ~ L† · M†
+
 
 ## Imports
 
@@ -120,6 +181,8 @@ data _~_ : ∀ {Γ A} → Γ ⊢ A → Γ ⊢ A → Set where
 \end{code}
 
 ## The given relation is a bisimulation
+
+**Actually, I think this is just a simulation!**
 
 \begin{code}
 data Bisim {Γ A} (Mₛ Mₜ Mₛ′ : Γ ⊢ A) : Set where

@@ -43,10 +43,10 @@ are encouraged.
   - [Lambda: Introduction to Lambda Calculus]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
   - [Properties: Progress and Preservation]({{ site.baseurl }}{% link out/plfa/Properties.md %})
   - [DeBruijn: Inherently typed De Bruijn representation]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %})
+  - [More: Additional constructs of simply-typed lambda calculus]({{ site.baseurl }}{% link out/plfa/More.md %}) 
 
 (The following is not yet ready for review.)
 
-  - [More: Additional constructs of simply-typed lambda calculus]({{ site.baseurl }}{% link out/plfa/More.md %}) 
   - [Bisimulation: Relating reductions systems]({{ site.baseurl }}{% link out/plfa/Bisimulation.md %}) 
   - [Inference: Bidirectional type inference]({{ site.baseurl }}{% link out/plfa/Inference.md %})
   - [Untyped: Untyped lambda calculus with full normalisation]({{ site.baseurl }}{% link out/plfa/Untyped.md %})
