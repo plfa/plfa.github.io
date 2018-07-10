@@ -721,17 +721,20 @@ progress (`zero)                            =  done V-zero
 progress (`suc M) with progress M
 ...    | step M—→M′                         =  step (ξ-suc M—→M′)
 ...    | done VM                            =  done (V-suc VM)
+progress (case L M N) with progress L
+...    | step L—→L′                         =  step (ξ-case L—→L′)
+...    | done V-zero                        =  step β-zero
+...    | done (V-suc VL)                    =  step (β-suc VL)
+progress (μ N)                              =  step β-μ
+progress (`let M N) with progress M
+...    | step M—→M′                         =  step (ξ-let M—→M′)
+...    | done VM                            =  step (β-let VM)
 progress (con n)                            =  done V-con
 progress (L `* M) with progress L
 ...    | step L—→L′                         =  step (ξ-*₁ L—→L′)
 ...    | done V-con with progress M
 ...        | step M—→M′                     =  step (ξ-*₂ V-con M—→M′)
 ...        | done V-con                     =  step δ-*
-progress (case L M N) with progress L
-...    | step L—→L′                         =  step (ξ-case L—→L′)
-...    | done V-zero                        =  step β-zero
-...    | done (V-suc VL)                    =  step (β-suc VL)
-progress (μ N)                              =  step β-μ
 progress `⟨ M , N ⟩ with progress M
 ...    | step M—→M′                         =  step (ξ-⟨,⟩₁ M—→M′)
 ...    | done VM with progress N
@@ -773,9 +776,6 @@ progress (caseL L M N) with progress L
 ...    | step L—→L′                         =  step (ξ-caseL L—→L′)
 ...    | done V-[]                          =  step β-[]
 ...    | done (_V-∷_ VV VW)                 =  step (β-∷ VV VW)
-progress (`let M N) with progress M
-...    | step M—→M′                         =  step (ξ-let M—→M′)
-...    | done VM                            =  step (β-let VM)
 \end{code}
 
 
