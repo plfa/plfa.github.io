@@ -18,22 +18,6 @@ open import Data.Product using (proj₁; proj₂)
 We copy the proofs of associativity and identity, which are hard to extract from
 the standard libary.
 \begin{code}
-infix 5 _∷ ∷_
-
-_∷ : ∀ {A : Set} → A → List A → List A
-(x ∷) xs = x ∷ xs
-
-∷_ : ∀ {A : Set} → List A → A → List A
-(∷ xs) x = x ∷ xs
-
-infix 5 _++ ++_ 
-
-_++ : ∀ {A : Set} → List A → List A → List A
-(xs ++) ys = xs ++ ys
-
-++_ : ∀ {A : Set} → List A → List A → List A
-(++ ys) xs = xs ++ ys
-
 ++-assoc : ∀ {A : Set} (xs ys zs : List A) → xs ++ (ys ++ zs) ≡ (xs ++ ys) ++ zs
 ++-assoc [] ys zs =
   begin
@@ -48,7 +32,7 @@ _++ : ∀ {A : Set} → List A → List A → List A
     (x ∷ xs) ++ (ys ++ zs)
   ≡⟨⟩
     x ∷ (xs ++ (ys ++ zs))
-  ≡⟨ cong (x ∷) (++-assoc xs ys zs) ⟩
+  ≡⟨ cong (x ∷_) (++-assoc xs ys zs) ⟩
     x ∷ ((xs ++ ys) ++ zs)
   ≡⟨⟩
     ((x ∷ xs) ++ ys) ++ zs
@@ -74,7 +58,7 @@ _++ : ∀ {A : Set} → List A → List A → List A
     (x ∷ xs) ++ []
   ≡⟨⟩
     x ∷ (xs ++ [])
-  ≡⟨ cong (x ∷) (++-identityʳ xs) ⟩
+  ≡⟨ cong (x ∷_) (++-identityʳ xs) ⟩
     x ∷ xs
   ∎
 
@@ -105,7 +89,7 @@ reverse-++ (x ∷ xs) ys =
     reverse (x ∷ (xs ++ ys))
   ≡⟨⟩
     reverse (xs ++ ys) ++ [ x ]
-  ≡⟨ cong (++ [ x ]) (reverse-++ xs ys) ⟩
+  ≡⟨ cong (_++ [ x ]) (reverse-++ xs ys) ⟩
     (reverse ys ++ reverse xs) ++ [ x ]
   ≡⟨ sym (++-assoc (reverse ys) (reverse xs) ([ x ])) ⟩
     reverse ys ++ (reverse xs ++ [ x ])
@@ -133,7 +117,7 @@ reverse-involutive (x ∷ xs) =
     reverse ([ x ]) ++ reverse (reverse xs)
   ≡⟨⟩
     x ∷ reverse (reverse xs)
-  ≡⟨ cong (x ∷) (reverse-involutive xs) ⟩
+  ≡⟨ cong (x ∷_) (reverse-involutive xs) ⟩
     x ∷ xs
   ∎
 \end{code}
