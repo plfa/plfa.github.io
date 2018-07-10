@@ -18,6 +18,13 @@ inherently typed.  Our new presentation is more compact, using
 less than half the lines of code required previously to do
 cover the same ground.
 
+The inherently typed representation was first proposed by
+Thorsten Altenkirch and Bernhard Reus.
+The formalisation of renaming and substitution
+we use is due to Conor McBride.
+Related work has been carried out by
+James Chapman, James McKinna, and many others.
+
 ## Imports
 
 \begin{code}
@@ -185,42 +192,12 @@ shadowing: with variable names, there is no way to refer to
 the former binding in the scope of the latter, but with de
 Bruijn indices it could be referred to as `# 2`.
 
-
 ## Order of presentation
-
-The presentation in the previous two chapters was ordered as
-follows, where the first chapter introduces raw terms, and the
-second proves their properties.
-
-  * Lambda: Introduction to Lambda Calculus
-    + 1.1 Syntax
-    + 1.2 Values
-    + 1.3 Substitution
-    + 1.4 Reduction
-    + 1.5 Typing
-  * Properties: Progress and Preservation
-    + 2.1 Canonical forms lemma
-    + 2.2 Progress
-    + 2.3 Renaming lemma
-    + 2.4 Substitution preserves types
-    + 2.5 Preservation
-    + 2.6 Evaluation
 
 In the current chapter, the use of inherently-typed terms
 necessitates that we cannot introduce operations such as
 substitution or reduction without also showing that they
 preserve types.  Hence, the order of presentation must change.
-For each new section, we show the corresponding old section or
-sections.
-
-  * DeBruijn: Inherently typed de Bruijn representation
-    + Syntax (1.1, 1.5)
-    + Values (1.2, 2.1)
-    + Renaming (2.3)
-    + Substitution (1.3, 2.3)
-    + Reduction (1.3, 2.4)
-    + Progress (2.2)
-    + Evaluation (2.6)
 
 The syntax of terms now incorporates their typing rules, and the
 definition of values now incorporates the Canonical Forms lemma.  The
@@ -505,19 +482,7 @@ As before we generalise everything save `2+2ᶜ` to arbitary
 contexts.  While we are at it, we also generalise `twoᶜ` and
 `plusᶜ` to Church numerals over arbitrary types.
 
-## Substitution
-
-With terms in hand, we turn to substitution.
-Whereas before we had to restrict our
-attention to substituting only one variable at a time and
-could only substitute closed terms, here we can consider
-simultaneous subsitution of open terms.  The
-definition of substitution we consider is due to Conor
-McBride.  Whereas before we defined substitution in one
-chapter and showed it preserved types in the next chapter,
-here we write code that does both at once.
-
-### Renaming
+## Renaming
 
 Renaming is a necessary prelude to substitution, enabling us
 to "rebase" a term from one context to another.  It
@@ -620,7 +585,7 @@ typing, and hence the Agda code for inherently-typed de Bruijn
 terms is inherently reliable.
 
 
-### Simultaneous Substitution
+## Simultaneous Substitution
 
 Because de Bruijn indices free us of concerns with renaming,
 it becomes easy to provide a definition of substitution that
@@ -695,7 +660,7 @@ The remaining cases are similar, recursing on each subterm,
 and extending the map whenever the construct introduces a
 bound variable.
 
-### Single substitution
+## Single substitution
 
 From the general case of substitution for multiple free
 variables in is easy to define the special case of
@@ -773,12 +738,7 @@ And combining definition with proof makes it harder for errors
 to sneak in.
 
 
-## Reduction
-
-With substitution out of the way, it is straightforward to
-define values and reduction.
-
-### Value
+## Values
 
 The definition of value is much as before, save that the
 added types incorporate the same information found in the
@@ -804,7 +764,8 @@ Here `zero` requires an implicit parameter to aid inference,
 much in the same way that `[]` did in
 [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})).
 
-### Reduction step
+
+## Reduction
 
 The reduction rules are the same as those given earlier, save
 that for each term we must specify its types.  As before, we
@@ -867,7 +828,7 @@ preserves types, which we previously is built-in to our
 definition of substitution.
 
 
-### Reflexive and transitive closure
+## Reflexive and transitive closure
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition.

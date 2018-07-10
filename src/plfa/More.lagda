@@ -12,6 +12,7 @@ So far, we have focussed on a relatively minimal language, based on
 Plotkin's PCF, which supports functions, naturals, and fixpoints.  In
 this chapter we extend our calculus to support the following:
 
+  * primitive numbers
   * _let_ bindings
   * products
   * an alternative formulation of products
@@ -24,7 +25,7 @@ this chapter we extend our calculus to support the following:
 All of the data types should be familiar from Part I of this textbook.
 For _let_ and the alternative formulations we show how they translate
 to other constructs in the calculus.  Most of the description will be
-informal. We show how to formalise the first three constructs and leave
+informal. We show how to formalise the first four constructs and leave
 the rest as an exercise for the reader.
 
 Our informal descriptions will be in the style of
@@ -39,6 +40,58 @@ and easier to follow than explaining in prose.
 For each construct, we give syntax, typing, reductions, and an example.
 We also give translations where relevant; formally establishing the
 correctness of translations will be the subject of the next chapter.
+
+## Primitive numbers
+
+We define a `Num` type equivalent to the built-in natural number type
+with multiplication as a primitive operation on numbers.
+
+### Syntax
+
+    L, M, N ::= ...                     Terms
+      con c                               constant
+      L `* M                              multiplication
+
+### Typing
+
+The hypothesis of the `con` rule is unusual, in that
+it refers to a typing judgement of Agda rather than a
+typing judgement of the defined calculus.
+
+    c : ℕ
+    --------------- con
+    Γ ⊢ con c : Nat
+
+    Γ ⊢ L : Nat
+    Γ ⊢ M : Nat
+    ---------------- _`*_
+    Γ ⊢ L `* M : Nat
+
+### Reduction
+
+A rule that defines a primitive directly, such as the last rule below,
+is called a δ rule.  Here the δ rule defines multiplication of
+primitive numbers in terms of multiplication of naturals as given
+by the Agda standard prelude.
+
+    L —→ L′
+    ----------------- ξ-*₁
+    L `* M —→ L′ `* M
+
+    M —→ M′
+    ----------------- ξ-*₂
+    V `* M —→ V `* M′
+
+    ----------------------------- δ-*
+    con c `* con d —→ con (c * d)
+
+### Example
+
+Here is a function to cube a primitive number.
+
+    cube : ∅ ⊢ Nat ⇒ Nat
+    cube = ƛ x ⇒ x `* x `* x
+
 
 ## Let bindings
 
@@ -68,15 +121,13 @@ types or values.
 
 ### Example
 
-Let _`*_ : ∅ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ represent multiplication of naturals.
-Then raising a natural to the tenth power can be defined as follows.
+Here is a function to raise a primitive number to the tenth power.
 
-    exp10 : ∅ ⊢ `ℕ ⇒ `ℕ
+    exp10 : ∅ ⊢ Nat ⇒ Nat
     exp10 = ƛ x ⇒ `let x2  `= x  `* x  `in
                   `let x4  `= x2 `* x2 `in
                   `let x5  `= x4 `* x  `in
-                  `let x10 `= x5 `* x5 `in
-                  x10
+                  x5 `* x5
 
 ### Translation
 
@@ -141,7 +192,7 @@ We can translate each _let_ term into an application of an abstraction.
 
 ### Example
 
-Here is the definition of a function to swap the components of a pair.
+Here is a function to swap the components of a pair.
 
     swap× : ∅ ⊢ A `× B ⇒ B `× A
     swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
@@ -190,7 +241,7 @@ and reduction rules.
 
 ### Example
 
-Function to swap the components of a pair rewritten in the new notation.
+Here is a function to swap the components of a pair rewritten in the new notation.
 
     swap×-case : ∅ ⊢ A `× B ⇒ B `× A
     swap×-case = ƛ z ⇒ case× z 
@@ -274,7 +325,7 @@ We can also translate back the other way.
 
 ### Example
 
-Here is the definition of a function to swap the components of a sum.
+Here is a function to swap the components of a sum.
 
     swap⊎ : ∅ ⊢ A `⊎ B ⇒ B `⊎ A
     swap⊎ = ƛ z ⇒ case⊎ z
@@ -496,6 +547,7 @@ Here is the map function for lists.
 
 We now show how to formalise
 
+  * primitive numbers
   * _let_ bindings
   * products
   * an alternative formulation of products
@@ -509,7 +561,7 @@ and leave formalisation of the remaining constructs as an exercise.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _*_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Unit using (⊤; tt)
 open import Function using (_∘_)
@@ -533,6 +585,7 @@ infix  5 ƛ_
 infix  5 μ_
 infixr 6 _`∷_
 infixl 7 _·_
+infixl 8 _`*_
 infix  8 `suc_
 infix  9 `_
 infix  9 S_
@@ -548,6 +601,7 @@ infix  8 V-suc_
 data Type : Set where
   `ℕ    : Type
   _⇒_   : Type → Type → Type
+  Nat   : Type
   _`×_  : Type → Type → Type
   _`⊎_  : Type → Type → Type
   `⊤    : Type
@@ -627,6 +681,19 @@ data _⊢_ : Context → Type → Set where
     → Γ , A ⊢ A
       ----------
     → Γ ⊢ A
+
+  -- primitive
+
+  con : ∀ {Γ}
+    → ℕ
+      -------
+    → Γ ⊢ Nat
+
+  _`*_ : ∀ {Γ}
+    → Γ ⊢ Nat
+    → Γ ⊢ Nat
+      -------
+    → Γ ⊢ Nat
 
   -- let
 
@@ -722,7 +789,7 @@ data _⊢_ : Context → Type → Set where
     → Γ ⊢ B
 \end{code}
 
-## Abbreviating de Bruijn indices
+### Abbreviating de Bruijn indices
 
 \begin{code}
 lookup : Context → ℕ → Type
@@ -741,9 +808,7 @@ count {∅}     _        =  ⊥-elim impossible
 # n  =  ` count n
 \end{code}
 
-## Substitution
-
-### Renaming
+## Renaming
 
 \begin{code}
 ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
@@ -758,6 +823,9 @@ rename ρ (`zero)        =  `zero
 rename ρ (`suc M)       =  `suc (rename ρ M)
 rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
+rename ρ (con n)        =  con n
+rename ρ (M `* N)       =  rename ρ M `* rename ρ N
+rename ρ (`let M N)     =  `let (rename ρ M) (rename (ext ρ) N)
 rename ρ `⟨ M , N ⟩     =  `⟨ rename ρ M , rename ρ N ⟩
 rename ρ (`proj₁ L)     =  `proj₁ (rename ρ L)
 rename ρ (`proj₂ L)     =  `proj₂ (rename ρ L)
@@ -771,10 +839,9 @@ rename ρ (case⊥ L)      =  case⊥ (rename ρ L)
 rename ρ `[]            =  `[]
 rename ρ (M `∷ N)       =  (rename ρ M) `∷ (rename ρ N)
 rename ρ (caseL L M N)  =  caseL (rename ρ L) (rename ρ M) (rename (ext (ext ρ)) N)
-rename ρ (`let M N)     =  `let (rename ρ M) (rename (ext ρ) N)
 \end{code}
 
-### Simultaneous Substitution
+## Simultaneous Substitution
 
 \begin{code}
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
@@ -789,6 +856,9 @@ subst σ (`zero)        =  `zero
 subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
+subst σ (con n)        =  con n
+subst σ (M `* N)       =  subst σ M `* subst σ N
+subst σ (`let M N)     =  `let (subst σ M) (subst (exts σ) N)
 subst σ `⟨ M , N ⟩     =  `⟨ subst σ M , subst σ N ⟩
 subst σ (`proj₁ L)     =  `proj₁ (subst σ L)
 subst σ (`proj₂ L)     =  `proj₂ (subst σ L)
@@ -802,10 +872,9 @@ subst σ (case⊥ L)      =  case⊥ (subst σ L)
 subst σ `[]            =  `[]
 subst σ (M `∷ N)       =  (subst σ M) `∷ (subst σ N)
 subst σ (caseL L M N)  =  caseL (subst σ L) (subst σ M) (subst (exts (exts σ)) N)
-subst σ (`let M N)     =  `let (subst σ M) (subst (exts σ) N)
 \end{code}
 
-### Single and double substitution
+## Single and double substitution
 
 \begin{code}
 _[_] : ∀ {Γ A B}
@@ -833,9 +902,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   σ (S (S x))  =  ` x
 \end{code}
 
-## Reduction
-
-### Value
+## Values
 
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -856,6 +923,12 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
     → Value V
       --------------
     → Value (`suc V)
+
+  -- primitives
+
+  V-con : ∀ {Γ n}
+      ---------------------
+    → Value {Γ = Γ} (con n)
 
   -- products
 
@@ -899,7 +972,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 Implicit arguments need to be supplied when they are
 not fixed by the given arguments.
 
-### Reduction step
+## Reduction
 
 \begin{code}
 infix 2 _—→_
@@ -950,6 +1023,23 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
       ----------------
     → μ N —→ N [ μ N ]
+
+  -- primitives
+
+  ξ-*₁ : ∀ {Γ} {L L′ M : Γ ⊢ Nat}
+    → L —→ L′
+      -----------------
+    → L `* M —→ L′ `* M
+
+  ξ-*₂ : ∀ {Γ} {V M M′ : Γ ⊢ Nat}
+    → Value V
+    → M —→ M′
+      -----------------
+    → V `* M —→ V `* M′
+
+  δ-* : ∀ {Γ c d}
+      -------------------------------------
+    → con {Γ = Γ} c `* con d —→ con (c * d)
 
   -- let
 
@@ -1086,7 +1176,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → caseL (V `∷ W) M N —→ N [ V ][ W ]
 \end{code}
 
-### Reflexive and transitive closure
+## Reflexive and transitive closure
 
 \begin{code}
 infix  2 _—↠_
@@ -1116,7 +1206,6 @@ begin M—↠N = M—↠N
 
 ## Values do not reduce
 
-Values do not reduce.
 \begin{code}
 V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A}
   → Value M
@@ -1125,6 +1214,7 @@ V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A}
 V¬—→ V-ƛ          ()
 V¬—→ V-zero       ()
 V¬—→ (V-suc VM)   (ξ-suc M—→M′)     =  V¬—→ VM M—→M′
+V¬—→ V-con        ()
 V¬—→ V-⟨ VM , _ ⟩ (ξ-⟨,⟩₁ M—→M′)    =  V¬—→ VM M—→M′
 V¬—→ V-⟨ _ , VN ⟩ (ξ-⟨,⟩₂ _ N—→N′)  =  V¬—→ VN N—→N′
 V¬—→ (V-inj₁ VM)  (ξ-inj₁ M—→M′)    =  V¬—→ VM M—→M′
@@ -1133,15 +1223,6 @@ V¬—→ V-tt         ()
 V¬—→ V-[]         ()
 V¬—→ (VM V-∷ _)   (ξ-∷₁ M—→M′)      =  V¬—→ VM M—→M′
 V¬—→ (_ V-∷ VN)   (ξ-∷₂ _ N—→N′)    =  V¬—→ VN N—→N′
-\end{code}
-
-As a corollary, terms that reduce are not values.
-\begin{code}
-—→¬V : ∀ {Γ A} {M N : Γ ⊢ A}
-  → M —→ N
-    ---------
-  → ¬ Value M
-—→¬V M—→N VM  =  V¬—→ VM M—→N
 \end{code}
 
 
@@ -1175,6 +1256,12 @@ progress (`zero)                            =  done V-zero
 progress (`suc M) with progress M
 ...    | step M—→M′                         =  step (ξ-suc M—→M′)
 ...    | done VM                            =  done (V-suc VM)
+progress (con n)                            =  done V-con
+progress (L `* M) with progress L
+...    | step L—→L′                         =  step (ξ-*₁ L—→L′)
+...    | done V-con with progress M
+...        | step M—→M′                     =  step (ξ-*₂ V-con M—→M′)
+...        | done V-con                     =  step δ-*
 progress (case L M N) with progress L
 ...    | step L—→L′                         =  step (ξ-case L—→L′)
 ...    | done V-zero                        =  step β-zero
@@ -1268,6 +1355,49 @@ eval (gas (suc m)) L with progress L
 ## Examples
 
 \begin{code}
+cube : ∅ ⊢ Nat ⇒ Nat
+cube = ƛ (# 0 `* # 0 `* # 0)
+
+_ : cube · con 2 —↠ con 8
+_ = 
+  begin
+    cube · con 2
+  —→⟨ β-ƛ V-con ⟩
+    con 2 `* con 2 `* con 2
+  —→⟨ ξ-*₁ δ-* ⟩
+    con 4 `* con 2
+  —→⟨ δ-* ⟩
+    con 8
+  ∎
+
+exp10 : ∅ ⊢ Nat ⇒ Nat
+exp10 = ƛ (`let (# 0 `* # 0)
+            (`let (# 0 `* # 0)
+              (`let (# 0 `* # 2)
+                (# 0 `* # 0))))
+
+_ : exp10 · con 2 —↠ con 1024
+_ =
+  begin
+    exp10 · con 2
+  —→⟨ β-ƛ V-con ⟩
+    `let (con 2 `* con 2) (`let (# 0 `* # 0) (`let (# 0 `* con 2) (# 0 `* # 0)))
+  —→⟨ ξ-let δ-* ⟩
+    `let (con 4) (`let (# 0 `* # 0) (`let (# 0 `* con 2) (# 0 `* # 0)))
+  —→⟨ β-let V-con ⟩
+    `let (con 4 `* con 4) (`let (# 0 `* con 2) (# 0 `* # 0))
+  —→⟨ ξ-let δ-* ⟩
+    `let (con 16) (`let (# 0 `* con 2) (# 0 `* # 0))
+  —→⟨ β-let V-con ⟩
+    `let (con 16 `* con 2) (# 0 `* # 0)
+  —→⟨ ξ-let δ-* ⟩
+    `let (con 32) (# 0 `* # 0)
+  —→⟨ β-let V-con ⟩
+    con 32 `* con 32
+  —→⟨ δ-* ⟩
+    con 1024
+  ∎
+
 swap× : ∀ {A B} → ∅ ⊢ A `× B ⇒ B `× A
 swap× = ƛ `⟨ `proj₂ (# 0) , `proj₁ (# 0) ⟩
 
@@ -1283,6 +1413,22 @@ _ =
     `⟨ `zero , `tt ⟩
   ∎
 
+swap×-case : ∀ {A B} → ∅ ⊢ A `× B ⇒ B `× A
+swap×-case = ƛ case× (# 0) `⟨ # 0 , # 1 ⟩
+
+_ : swap×-case · `⟨ `tt , `zero ⟩ —↠ `⟨ `zero , `tt ⟩
+_ =
+  begin
+     swap×-case · `⟨ `tt , `zero ⟩
+   —→⟨ β-ƛ V-⟨ V-tt , V-zero ⟩ ⟩
+     case× `⟨ `tt , `zero ⟩ `⟨ # 0 , # 1 ⟩
+   —→⟨ β-case× V-tt V-zero ⟩
+     `⟨ `zero , `tt ⟩
+   ∎
+\end{code}
+
+
+\begin{code}
 swap⊎ : ∀ {A B} → ∅ ⊢ A `⊎ B ⇒ B `⊎ A
 swap⊎ = ƛ (case⊎ (# 0) (`inj₂ (# 0)) (`inj₁ (# 0)))
 
@@ -1298,3 +1444,6 @@ _ =
 \end{code}
 
 
+#### Exercise (`More`)
+
+Formalise the remaining constructs defined in this chapter.

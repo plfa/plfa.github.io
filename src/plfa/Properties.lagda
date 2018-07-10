@@ -352,9 +352,8 @@ postulate
 ## Prelude to preservation
 
 The other property we wish to prove, preservation of typing under
-reduction, turns out to require considerably more work.  Our proof
-draws on a line of work by Thorsten Altenkirch, Conor McBride,
-James McKinna, and others.  The proof has three key steps.
+reduction, turns out to require considerably more work.  The proof has
+three key steps.
 
 The first step is to show that types are preserved by _renaming_.
 
