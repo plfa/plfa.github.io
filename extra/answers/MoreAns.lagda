@@ -24,14 +24,10 @@ and leave formalisation of the remaining constructs as an exercise.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _*_)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Unit using (⊤; tt)
-open import Function using (_∘_)
-open import Function.Equivalence using (_⇔_; equivalence)
-open import Relation.Nullary using (¬_; Dec; yes; no)
+open import Relation.Nullary using (¬_)
 \end{code}
 
 
