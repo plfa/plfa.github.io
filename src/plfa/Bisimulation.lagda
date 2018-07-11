@@ -26,23 +26,32 @@ target.  We define a relation
 
 between corresponding terms of the two systems. We have a
 _simulation_ of the source by the target if every reduction
-step in the source has a corresponding reduction step
+sequence in the source has a corresponding reduction sequence
 in the target:
 
 > For every `M`, `M†`, and `N`:
-> If `M ~ M†` and `M —→ N`
-> then `M† —→ N†` and `N ~ N†`
+> If `M ~ M†` and `M —↠ N`
+> then `M† —↠ N†` and `N ~ N†`
 > for some `N†`.
         
-Or, in symbols:
+Or, in a diagram:
 
-    M  —→ N
-    ~     ~
-    M† —→ N†
+    M  --- —↠ --- N
+    |             |
+    |             |
+    ~             ~
+    |             |
+    |             |
+    M† --- —↠ --- N†
 
 We are particularly interested in the situation where every
-reduction step in the target also has a corresponding reduction
-step in the source; this is called a _bisimulation_.
+reduction sequence in the target also has a corresponding reduction
+sequence in the source, a situation called a _bisimulation_.
+
+Bisimulation is established by case analysis over all possible
+reductions and all possible relations.  For each reduction step in the
+source we must show a corresponding reduction sequence in the target
+for a simulation, and also vice-versa for a bisimulation.
 
 For instance, `S` might be lambda calculus with _let_
 added, and `T` the same system with `let` translated out. 
@@ -50,8 +59,8 @@ The key rule defining our relation will be:
 
     M ~ M†
     N ~ N†
-    ------------------------------
-    let x = M in N ~ ((ƛ x ⇒ N) M)
+    ---------------------------------
+    `let x `= M `in N ~ ((ƛ x ⇒ N) M)
 
 All the other rules are congruences: variables relate to
 themselves, and abstractions and applications relate if their
@@ -68,6 +77,28 @@ components relate.
     M ~ M†
     ---------------
     L · M ~ L† · M†
+
+Covering the other cases would add little to our exposition,
+save length.
+
+In this case, our relation can be specified by a function.
+
+    (x) †              =  x
+    (ƛ x ⇒ N) †        =  ƛ x ⇒ (N †)
+    (L · M) †          =  (L †) · (M †)
+    `let x `= M `in N  =  (ƛ x ⇒ (N †)) · (M †)
+
+And we have
+
+    M † ≡ N
+    =======
+    M ~ N   
+    
+where the double rule between the two formulas stands for
+"if and only if".  But in general we may have only a relation,
+rather than a function.
+
+    
 
 
 ## Imports
