@@ -546,7 +546,7 @@ must be defined before it is used, we first give the signatures for both
 functions and then the equations that define them.
 
 To show that the sum of two even numbers is even, consider the evidence that the
-first number is even. If it because it is zero, then the sum is even because the
+first number is even. If it is because it is zero, then the sum is even because the
 second number is even.  If it is because it is the successor of an odd number,
 then the result is even because it is the successor of the sum of an odd and an
 even number, which is odd.
