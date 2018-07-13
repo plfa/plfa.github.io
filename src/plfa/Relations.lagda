@@ -98,7 +98,7 @@ parentheses `( )`.  This means that the arguments are *implicit* and need not be
 written explicitly; instead, they are *inferred* by Agda's typechecker. Thus, we
 write `+-comm m n` for the proof that `m + n ≡ n + m`, but `z≤n` for the proof
 that `zero ≤ m`, leaving `m` implicit.  Similarly, if `m≤n` is evidence that
-`m ≤ n`, we write write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving
+`m ≤ n`, we write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving
 both `m` and `n` implicit.
 
 If we wish, it is possible to provide implicit arguments explicitly by
