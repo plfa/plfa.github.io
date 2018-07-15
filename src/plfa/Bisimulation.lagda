@@ -45,16 +45,17 @@ Or, in a diagram:
     M† --- —↠ --- N†
 
 We are particularly interested in the situation where every
-reduction sequence in the target also has a corresponding reduction
+reduction sequence in the target also is a corresponding reduction
 sequence in the source, a situation called a _bisimulation_.
 
 Bisimulation is established by case analysis over all possible
-reductions and all possible relations.  For each reduction step in the
-source we must show a corresponding reduction sequence in the target
-for a simulation, and also vice-versa for a bisimulation.
+reductions and all possible terms to which they are related.  For each
+reduction step in the source we must show a corresponding reduction
+sequence in the target for a simulation, and also vice-versa for a
+bisimulation.
 
-For instance, `S` might be lambda calculus with _let_
-added, and `T` the same system with `let` translated out. 
+For instance, the source might be lambda calculus with _let_
+added, and the target the same system with `let` translated out. 
 The key rule defining our relation will be:
 
     M ~ M†
@@ -78,10 +79,12 @@ components relate.
     ---------------
     L · M ~ L† · M†
 
-Covering the other cases would add little to our exposition,
-save length.
+Covering the other constructs of our language — for naturals,
+fixpoints, products, and so on — would add little save length.
 
-In this case, our relation can be specified by a function.
+
+In this case, our relation can be specified by a function
+from source to target.
 
     (x) †              =  x
     (ƛ x ⇒ N) †        =  ƛ x ⇒ (N †)
@@ -91,14 +94,38 @@ In this case, our relation can be specified by a function.
 And we have
 
     M † ≡ N
-    =======
-    M ~ N   
-    
-where the double rule between the two formulas stands for
-"if and only if".  But in general we may have only a relation,
-rather than a function.
+    -------
+    M ~ N
+
+But in general we may be given only the relation, without
+any corresponding function.
+
+Further, we also have a function from target to source.
+In this case, it is trivial, since the source is a
+subset of the target.
+
+    (x) #              =  x
+    (ƛ x ⇒ N) #        =  ƛ x ⇒ (N #)
+    (L · M) #          =  (L #) · (M #)
+
+And we have
+
+    M ≡ N #
+    -------
+    M ~ N
+
 
     
+    
+## Reflection
+
+In some cases, the relation can be specified by a pair of
+functions, a _compiling_ function from the source to the
+target, and a _decompiling_ function from the target to
+the source.  Taking a transition in the source should be
+equivalent to compiling, taking a transition in the source,
+and decompiling.
+
 
 
 ## Imports
@@ -130,22 +157,22 @@ data _~_ : ∀ {Γ A} → Γ ⊢ A → Γ ⊢ A → Set where
      ---------
    → ` x ~ ` x
 
-  ~ƛ_ : ∀ {Γ A B} {Nₛ Nₜ : Γ , A ⊢ B}
-    → Nₛ ~ Nₜ
-      -----------
-    → ƛ Nₛ ~ ƛ Nₜ
+  ~ƛ_ : ∀ {Γ A B} {N N† : Γ , A ⊢ B}
+    → N ~ N†
+      ----------
+    → ƛ N ~ ƛ N†
 
-  _~·_ : ∀ {Γ A B} {Lₛ Lₜ : Γ ⊢ A ⇒ B} {Mₛ Mₜ : Γ ⊢ A}
-    → Lₛ ~ Lₜ
-    → Mₛ ~ Mₜ
-      -----------------
-    → Lₛ · Mₛ ~ Lₜ · Mₜ
+  _~·_ : ∀ {Γ A B} {L L† : Γ ⊢ A ⇒ B} {M M† : Γ ⊢ A}
+    → L ~ L†
+    → M ~ M†
+      ---------------
+    → L · M ~ L† · M†
 
-  ~let : ∀ {Γ A B} {Mₛ Mₜ : Γ ⊢ A} {Nₛ Nₜ : Γ , A ⊢ B}
-    → Mₛ ~ Mₜ
-    → Nₛ ~ Nₜ
-      ------------------------
-    → `let Mₛ Nₛ ~ (ƛ Nₜ) · Mₜ
+  ~let : ∀ {Γ A B} {M M† : Γ ⊢ A} {N N† : Γ , A ⊢ B}
+    → M ~ M†
+    → N ~ N†
+      ----------------------
+    → `let M N ~ (ƛ N†) · M†
 \end{code}
 
 ## Bisimulation commutes with values
@@ -180,30 +207,30 @@ data _~_ : ∀ {Γ A} → Γ ⊢ A → Γ ⊢ A → Set where
 
 \begin{code}
 ~exts : ∀ {Γ Δ}
-  → {σₛ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
-  → {σₜ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
-  → (∀ {A} → (x : Γ ∋ A) → σₛ x ~ σₜ x)
-    ---------------------------------------------------
-  → (∀ {A B} → (x : Γ , B ∋ A) → exts σₛ x ~ exts σₜ x)
+  → {σ  : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → {σ† : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → (∀ {A} → (x : Γ ∋ A) → σ x ~ σ† x)
+    --------------------------------------------------
+  → (∀ {A B} → (x : Γ , B ∋ A) → exts σ x ~ exts σ† x)
 ~exts ~σ Z =  ~`
 ~exts ~σ (S x) =  ~rename S_ (~σ x)
 
 ~subst : ∀ {Γ Δ}
-  → {σₛ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
-  → {σₜ : ∀ {A} → Γ ∋ A → Δ ⊢ A}
-  → (∀ {A} → (x : Γ ∋ A) → σₛ x ~ σₜ x)
+  → {σ  : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → {σ† : ∀ {A} → Γ ∋ A → Δ ⊢ A}
+  → (∀ {A} → (x : Γ ∋ A) → σ x ~ σ† x)
     -------------------------------------------------------------
-  → (∀ {A} {Mₛ Mₜ : Γ ⊢ A} → Mₛ ~ Mₜ → subst σₛ Mₛ ~ subst σₜ Mₜ)
+  → (∀ {A} {Mₛ Mₜ : Γ ⊢ A} → Mₛ ~ Mₜ → subst σ Mₛ ~ subst σ† Mₜ)
 ~subst ~σ (~` {x = x}) = ~σ x
 ~subst ~σ (~ƛ ~N) = ~ƛ (~subst (~exts ~σ) ~N)
 ~subst ~σ (~L ~· ~M) = (~subst ~σ ~L) ~· (~subst ~σ ~M)
 ~subst ~σ (~let ~M ~N) = ~let (~subst ~σ ~M) (~subst (~exts ~σ) ~N)
 
-~sub : ∀ {Γ A B} {Nₛ Nₜ : Γ , B ⊢ A} {Vₛ Vₜ : Γ ⊢ B} 
-  → Nₛ ~ Nₜ
-  → Vₛ ~ Vₜ
-    -------------------------
-  → (Nₛ [ Vₛ ]) ~ (Nₜ [ Vₜ ])
+~sub : ∀ {Γ A B} {N N† : Γ , B ⊢ A} {V V† : Γ ⊢ B} 
+  → N ~ N†
+  → V ~ V†
+    -----------------------
+  → (N [ V ]) ~ (N† [ V† ])
 ~sub {Γ} {A} {B} ~N ~V = ~subst {Γ , B} {Γ} ~σ {A} ~N
   where
   ~σ : ∀ {A} → (x : Γ , B ∋ A) → _ ~ _
@@ -211,35 +238,36 @@ data _~_ : ∀ {Γ A} → Γ ⊢ A → Γ ⊢ A → Set where
   ~σ (S x)  =  ~`
 \end{code}
 
-## The given relation is a bisimulation
-
-**Actually, I think this is just a simulation!**
+## The relation is a simulation, source to target
 
 \begin{code}
-data Bisim {Γ A} (Mₛ Mₜ Mₛ′ : Γ ⊢ A) : Set where
+data Leg {Γ A} (M† N : Γ ⊢ A) : Set where
 
-  bi : ∀ {Mₜ′ : Γ ⊢ A}
-    → Mₛ′ ~ Mₜ′
-    → Mₜ —→ Mₜ′
-      ---------------
-    → Bisim Mₛ Mₜ Mₛ′
-
-bisim : ∀ {Γ A} {Mₛ Mₜ Mₛ′ : Γ ⊢ A}
-  → Mₛ ~ Mₜ
-  → Mₛ —→ Mₛ′
-    ---------------
-  → Bisim Mₛ Mₜ Mₛ′
-bisim ~`              ()
-bisim (~ƛ ~N)         ()
-bisim (~L ~· ~M)      (ξ-·₁ L—→)
-  with bisim ~L L—→
-...  | bi ~L′ —→L′                   =  bi (~L′ ~· ~M)   (ξ-·₁ —→L′)
-bisim (~V ~· ~M)      (ξ-·₂ VV M—→)
-  with bisim ~M M—→
-...  | bi ~M′ —→M′                   =  bi (~V ~· ~M′)   (ξ-·₂ (~val ~V VV) —→M′)
-bisim ((~ƛ ~N) ~· ~V) (β-ƛ VV)       =  bi (~sub ~N ~V)  (β-ƛ (~val ~V VV))
-bisim (~let ~M ~N)    (ξ-let M—→)
-  with bisim ~M M—→
-...  | bi ~M′ —→M′                   =  bi (~let ~M′ ~N) (ξ-·₂ V-ƛ —→M′)
-bisim (~let ~V ~N)    (β-let VV)     =  bi (~sub ~N ~V)  (β-ƛ (~val ~V VV))
+  leg : ∀ {N† : Γ ⊢ A}
+    → N ~ N†
+    → M† —→ N†
+      --------
+    → Leg M† N
 \end{code}
+
+\begin{code}
+simul : ∀ {Γ A} {M M† N : Γ ⊢ A}
+  → M ~ M†
+  → M —→ N
+    ---------
+  → Leg  M† N
+simul ~`              ()
+simul (~ƛ ~N)         ()
+simul (~L ~· ~M)      (ξ-·₁ L—→)
+  with simul ~L L—→
+...  | leg ~L′ L†—→                   =  leg (~L′ ~· ~M)   (ξ-·₁ L†—→)
+simul (~V ~· ~M)      (ξ-·₂ VV M—→)
+  with simul ~M M—→
+...  | leg ~M′ M†—→                   =  leg (~V ~· ~M′)   (ξ-·₂ (~val ~V VV) M†—→)
+simul ((~ƛ ~N) ~· ~V) (β-ƛ VV)        =  leg (~sub ~N ~V)  (β-ƛ (~val ~V VV))
+simul (~let ~M ~N)    (ξ-let M—→)
+  with simul ~M M—→
+...  | leg ~M′ M†—→                   =  leg (~let ~M′ ~N) (ξ-·₂ V-ƛ M†—→)
+simul (~let ~V ~N)    (β-let VV)      =  leg (~sub ~N ~V)  (β-ƛ (~val ~V VV))
+\end{code}
+
