@@ -46,7 +46,7 @@ definition as a pair of inference rules:
 And here is the definition in Agda:
 \begin{code}
 data _≤_ : ℕ → ℕ → Set where
-  z≤n : ∀ {m : ℕ} → zero ≤ m
+  z≤n : ∀ {n : ℕ} → zero ≤ n
   s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ suc n
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names,
