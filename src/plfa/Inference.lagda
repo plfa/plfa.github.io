@@ -8,6 +8,120 @@ permalink : /Inference/
 module plfa.Inference where
 \end{code}
 
+So far in our development, type derivations for the corresponding
+term have been provided by fiat.  
+In Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+type derivations were given separately from the term, while
+in Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %})
+the type derivation was inherently part of the term.
+
+In practice, one often writes down a term with a few decorations and
+applies an algorithm to _infer_ the corresponding type derivation.
+Indeed, this is exactly what happens in Agda: we specify the types for
+top-level function declarations, and the remaining type information is
+inferred from this.  The style of inference used is descended from an
+algorithm called _bidirectional_ type inference, which will be
+presented in this chapter.
+
+This chapter ties our previous developements together. We begin with
+a term with some type annotations, quite close to the raw terms of
+Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+and from it we compute a term with inherent types, in the style of
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+
+## Introduction: Inference rules as algorithms
+
+In the calculus we have considered so far, a term may have more than
+one type.  For example,
+
+    (ƛ x ⇒ x) ⦂ (A ⇒ A)
+
+for _every_ type `A`.  We start by considering a small language for
+lambda terms where every term has a unique type.  All we need do
+is decorate each abstraction term with the type of its argument.
+This gives us the grammar:
+
+    L, M, N ::=				decorated terms
+       x				  variable
+       ƛ x ⦂ A ⇒ N                        abstraction (decorated)
+       L M                                application
+
+Each of the associated type rules can be read as an algorithm for
+type checking.  For each typing judgement, we label each position
+as either an _input_ or an _output_.
+
+For the judgement
+
+    Γ ∋ x ⦂ A
+
+we take the context `Γ` and the variable `x` as inputs, and the
+type `A` as output.  Consider the rules:
+
+    ----------------- Z
+    Γ , x ⦂ A ∋ x ⦂ A
+
+    Γ ∋ y ⦂ B
+    ----------------- S
+    Γ , x ⦂ A ∋ y ⦂ B
+
+From the inputs we can determine which rule applies: if the last
+variable in the context matches the given variable then the first
+rule applies, else the second.  (For de Bruijn indices, it is even
+easier: zero matches the first rule and successor the second.)
+For the first rule, the output type can be read off as the last
+type in the input context. For the second rule, the inputs of the
+conclusion determine the inputs of the hypothesis, and the ouptut
+of the hypothesis determines the output of the conclusion.
+
+For the judgement
+
+    Γ ⊢ M ⦂ A
+
+we take the context `Γ` and term `M` as inputs, and the type `A`
+as ouput. Consider the rules:
+
+    Γ ∋ x ⦂ A
+    -----------
+    Γ ⊢ ` x ⦂ A
+
+    Γ , x ⦂ A ⊢ N ⦂ B
+    --------------------------- 
+    Γ ⊢ (ƛ x ⦂ A ⇒ N) ⦂ (A ⇒ B)
+
+    Γ ⊢ L ⦂ A ⇒ B
+    Γ ⊢ M ⦂ A′
+    A ≡ A′
+    -------------
+    Γ ⊢ L · M ⦂ B
+
+The term input determines which rule applies: variables use the first
+rule, abstractions the second, and applications the third.  In such a
+situation, we say the rules are _syntactically determined_.  For the
+variable rule, the inputs of the conclusion determine the inputs of
+the hypothesis, and the output of the hypothesis determines the output
+of the conclusion.  Same for the abstraction rule — the bound variable
+and argument type of the abstraction are carried into the context of
+the hypothesis, and this is why we added the argument type to the
+abstraction.  For the application rule, we add a third hypothesis to
+check whether domain of the function matches the type of the argument;
+this judgement is decidable when both types are given as inputs. The
+inputs of the conclusion determine the inputs of the first two
+hypotheses, the outputs of the first two hypotheses determine the
+inputs of the third hypothesis, and the output of the first hypothesis
+determines the output of the conclusion.
+
+Converting the above to an algorithm is straightforward. But we omit
+the details, and instead move on to consider a different approach that
+requires less obtrusive decoration.  The idea is to break the normal
+typing judgement into two judgements, one that produces the type
+as an output (as above), and another that takes it as an input.
+
+
+## Inheriting and synthesising types
+
+
+
+
 
 ## Imports
 
