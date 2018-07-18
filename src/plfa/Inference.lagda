@@ -41,8 +41,8 @@ lambda terms where every term has a unique type.  All we need do
 is decorate each abstraction term with the type of its argument.
 This gives us the grammar:
 
-    L, M, N ::=				decorated terms
-       x				  variable
+    L, M, N ::=                         decorated terms
+       x                                  variable
        ƛ x ⦂ A ⇒ N                        abstraction (decorated)
        L M                                application
 
@@ -96,7 +96,7 @@ as ouput. Consider the rules:
 
 The term input determines which rule applies: variables use the first
 rule, abstractions the second, and applications the third.  In such a
-situation, we say the rules are _syntactically determined_.  For the
+situation, we say the rules are _syntax directed_.  For the
 variable rule, the inputs of the conclusion determine the inputs of
 the hypothesis, and the output of the hypothesis determines the output
 of the conclusion.  Same for the abstraction rule — the bound variable
@@ -110,14 +110,72 @@ hypotheses, the outputs of the first two hypotheses determine the
 inputs of the third hypothesis, and the output of the first hypothesis
 determines the output of the conclusion.
 
-Converting the above to an algorithm is straightforward. But we omit
-the details, and instead move on to consider a different approach that
-requires less obtrusive decoration.  The idea is to break the normal
-typing judgement into two judgements, one that produces the type
-as an output (as above), and another that takes it as an input.
+Converting the above to an algorithm is straightforward.  We omit the
+details.  Instead, we consider a detailed description of a different
+approach that requires less obtrusive decoration.  The idea is to
+break the normal typing judgement into two judgements, one that
+produces the type as an output (as above), and another that takes it
+as an input.
 
 
-## Inheriting and synthesising types
+## Synthesising and inheriting types
+
+In addition to the lookup judgement for variables, which will remain
+as before, we now have two judgements for the type of the term.
+
+    Γ ⊢ M ↑ A
+    Γ ⊢ M ↓ A
+
+The first of these _synthesises_ the type of a term, as before,
+while the second _inherits_ the type.  In the first, the context
+and term are inputs and the type is an output, while in the
+second, all three of the context, term, and type are inputs.
+
+Which terms use synthesis and which inheritance?  Our approach will be
+that the main term in a _deconstructor_ are typed via synthesis while
+_constructors_ a typed via inheritance.  For instance, the function in
+an application is typed via synthesis, but an abstraction is typed via
+inheritance.  The inherited type in an abstraction term serves the
+same purpose as the argument type decoration of the previous section.
+
+Terms that deconstruct a value of a type always have a main term
+(supplying an argument of the required type) and often have
+side-terms.  For application, the main term supplies the function and
+the side term supplies the argument.  For case terms, the main term
+supplies a natural and the side terms are the two branches.  In a
+deconstructor, the main term will be typed using synthesis but the
+side terms will be typed using inheritance.  As we will see, this
+leads naturally to an application as a whole being typed by synthesis,
+while a case term as a whole will be typed by inheritance.
+Variables are naturally typed by synthesis, since we can look up
+the type in the input context.  Fixed points will be naturally
+typed by inheritance.
+
+In order to get a syntax-directed type system we break terms into two
+kinds, `Term⁺` and `Term⁻, which are typed by synthesis and
+inheritance, respectively.  At some points, we may expect a subterm to
+be typed by synthesis when in fact it is typed by inheritance, or
+vice-versa, and this gives rise to two new term forms.
+
+For instance, we said above that the argument of an application is
+typed by inheritance and that variables are typed by synthesis, giving
+a mismatch if the argument of an application is a variable.  Hence, we
+need a way to treat a synthesized term as if it is inherited.  We
+introduce a new term form, `M ↑` for this purpose.  The typing judgement
+checks that the inherited and synthesised types match.
+
+Similarly, we said
+above that the function of an application is typed by synthesis and
+that abstractions are typed by inheritance, giving a mismatch if the
+function of an application is a variable.  Hence, we need a way to
+treat an inherited term as if it is synthesised.  We introduce a
+new term form `M ↓ A` for this purpose.
+
+
+
+
+
+
 
 
 
