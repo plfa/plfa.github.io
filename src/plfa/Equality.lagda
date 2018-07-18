@@ -11,7 +11,7 @@ module plfa.Equality where
 Much of our reasoning has involved equality.  Given two terms `M`
 and `N`, both of type `A`, we write `M ≡ N` to assert that `M` and `N`
 are interchangeable.  So far we have treated equality as a primitive,
-but in fact it can be defined an an inductive datatype.
+but in fact it can be defined as an inductive datatype.
 
 
 ## Imports
@@ -428,8 +428,8 @@ holds if every property `P` that holds of `x` also holds of
 sufficient to also ensure the converse, that every property `P` that
 holds of `y` also holds of `x`.
 
-Let `x` and `y` be objects of type $A$. We say that `x ≐ y` holds if
-for every predicate $P$ over type $A$ we have that `P x` implies `P y`.
+Let `x` and `y` be objects of type `A`. We say that `x ≐ y` holds if
+for every predicate `P` over type `A` we have that `P x` implies `P y`.
 \begin{code}
 _≐_ : ∀ {A : Set} (x y : A) → Set₁
 _≐_ {A} x y = ∀ (P : A → Set) → P x → P y
