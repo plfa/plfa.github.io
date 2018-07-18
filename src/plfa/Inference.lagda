@@ -206,7 +206,6 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Negation using (¬?)
-open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
 
 pattern [_]       w        =  w ∷ []
 pattern [_,_]     w x      =  w ∷ x ∷ []
@@ -214,35 +213,62 @@ pattern [_,_,_]   w x y    =  w ∷ x ∷ y ∷ []
 pattern [_,_,_,_] w x y z  =  w ∷ x ∷ y ∷ z ∷ []
 \end{code}
 
+Once we have a type derivation, it will be easy to construct
+from it the inherently typed representation.  In order that we
+can compare with our previous development, we import
+module `pfla.DeBruijn`.  
+
+\begin{code}
+open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
+\end{code}
+
+The phrase `as DB` allows us to refer to definitions
+from that module as, for instance, `DB._⊢_`, which is
+invoked as `Γ DB.⊢ A`, where `Γ` has type
+`DB.Context` and `A` has type `DB.Type`.  We also import
+`Type` and its constructors directly, so the latter may
+also be referred to as just `Type`.
+
 
 ## Syntax
+
+First, we get all our infix declarations out of the way.
+We list separately operators for judgements and terms.
 
 \begin{code}
 infix   4  _∋_⦂_
 infix   4  _⊢_↑_
 infix   4  _⊢_↓_
 infixl  5  _,_⦂_
+
 infix   5  ƛ_⇒_
 infix   5  μ_⇒_
-infix   6  _↓_
 infix   6  _↑
+infix   6  _↓_
 infixl  7  _·_
 infix   8  `suc_
 infix   9  `_
 \end{code}
 
-These should get imported from Typed (or Fresh, or Raw).
-
+Identifiers are as before.
 \begin{code}
 Id : Set
 Id = String
+\end{code}
 
+And so are contexts. (Recall that `Type` is imported from
+[DeBruinn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).)
+\begin{code}
 data Context : Set where
   ∅      : Context
   _,_⦂_ : Context → Id → Type → Context
 \end{code}
 
-Terms that synthesize `Term⁺` and inherit `Term⁻` their types.
+We define `Term⁺` and `Term⁻` by mutual recursion,
+for terms with synthesized and inherited types, respectively.
+The plus and minus labels in each follow from the discussion
+above.  Note the inclusion of the switching forms,
+`M ↓ A` and `M ↑`.
 \begin{code}
 data Term⁺ : Set
 data Term⁻ : Set
@@ -263,6 +289,9 @@ data Term⁻ where
 
 ## Example terms
 
+We can recreate the examples from preceding chapters.
+
+First, computing two plus two on naturals.
 \begin{code}
 two : Term⁻
 two = `suc (`suc `zero)
@@ -272,7 +301,12 @@ plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
           `case (` "m") [zero⇒ ` "n" ↑
                         |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
             ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
+\end{code}
+The only change is to decorate with down and up arrows as required.
+The only type decoration required is for `plus`.
 
+Next, computing two plus two on Church numerals.
+\begin{code}
 Ch : Type
 Ch = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 
@@ -287,10 +321,12 @@ plusᶜ = (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
 sucᶜ : Term⁻
 sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
 \end{code}
-
+The only type decoration required is for `plusᶜ`.
 
 ## Bidirectional type checking
 
+The typing rules for variables are as in
+[Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}).
 \begin{code}
 data _∋_⦂_ : Context → Id → Type → Set where
 
@@ -303,7 +339,12 @@ data _∋_⦂_ : Context → Id → Type → Set where
     → Γ ∋ w ⦂ B
       --------------------
     → Γ , x ⦂ A ∋ w ⦂ B
+\end{code}
 
+As with syntax, the judgements for synthesizing
+and inheriting types are mutually recursive.
+
+\begin{code}
 data _⊢_↑_ : Context → Term⁺ → Type → Set
 data _⊢_↓_ : Context → Term⁻ → Type → Set
 
@@ -539,7 +580,7 @@ _ = refl
 ## Testing all possible errors
 
 \begin{code}
-_ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ `ℕ ⇒ `ℕ) ≡
+_ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡
   error⁺ "variable not bound" (` "y") []
 _ = refl
 
