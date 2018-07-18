@@ -29,7 +29,7 @@ Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
 and from it we compute a term with inherent types, in the style of
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
 
-## Introduction: Inference rules as algorithms
+## Introduction: Inference rules as algorithms {#algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -117,6 +117,17 @@ decoration.  The idea is to break the normal typing judgement into two
 judgements, one that produces the type as an output (as above), and
 another that takes it as an input.
 
+#### Exercise (`decoration`)
+
+What additional decorations are required for the full
+lambda calculus with naturals and fixpoints?
+Confirm for the extended syntax that
+inputs of the conclusion
+(and output of any preceding hypothesis)
+determine inputs of each hypothesis,
+and outputs of the hypotheses
+determine the output of the conclusion.
+
 
 ## Synthesising and inheriting types
 
@@ -171,6 +182,14 @@ need a way to treat an inherited term as if it is synthesised.  We
 introduce a new term form `M ↓ A` for this purpose.  The typing
 judgement returns `A` as the synthesized type of the term as a whole,
 as well as using it as the inherited type for `M`.
+
+The term form `M ↓ A` represents the only place terms need to
+be decorated with types.  It only appears when switching from
+synthesis to inheritance, that is, when a term that _deconstructs_
+a value of a type contains a term that _constructs_ a value of a
+type, in other words, a place where a β reduction will occur.
+Typically, we will find that such declarations are only required
+on top level declarations.
 
 We can extract the grammar for terms from the above:
 
@@ -264,10 +283,10 @@ data Context : Set where
   _,_⦂_ : Context → Id → Type → Context
 \end{code}
 
-We define `Term⁺` and `Term⁻` by mutual recursion,
+The syntax of terms is defined by mutual recursion.
+We use `Term⁺` and `Term⁻`
 for terms with synthesized and inherited types, respectively.
-The plus and minus labels in each follow from the discussion
-above.  Note the inclusion of the switching forms,
+Note the inclusion of the switching forms,
 `M ↓ A` and `M ↑`.
 \begin{code}
 data Term⁺ : Set
@@ -286,11 +305,15 @@ data Term⁻ where
   μ_⇒_                     : Id → Term⁻ → Term⁻
   _↑                       : Term⁺ → Term⁻
 \end{code}
+The choice as to whether each term is synthesized or
+inherited follows the discussion above, and can be read
+off from the preceding (informal) grammar.  Main terms in
+deconstructors synthesise, constructors and side terms
+in deconstructors inherit.
 
 ## Example terms
 
 We can recreate the examples from preceding chapters.
-
 First, computing two plus two on naturals.
 \begin{code}
 two : Term⁻
@@ -301,6 +324,9 @@ plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
           `case (` "m") [zero⇒ ` "n" ↑
                         |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
             ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
+
+2+2 : Term⁺
+2+2 = plus · two · two
 \end{code}
 The only change is to decorate with down and up arrows as required.
 The only type decoration required is for `plus`.
@@ -320,8 +346,12 @@ plusᶜ = (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
 
 sucᶜ : Term⁻
 sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
+
+2+2ᶜ : Term⁺
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
-The only type decoration required is for `plusᶜ`.
+The only type decoration required is for `plusᶜ`.  One is not even
+required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
 
 ## Bidirectional type checking
 
@@ -343,7 +373,6 @@ data _∋_⦂_ : Context → Id → Type → Set where
 
 As with syntax, the judgements for synthesizing
 and inheriting types are mutually recursive.
-
 \begin{code}
 data _⊢_↑_ : Context → Term⁺ → Type → Set
 data _⊢_↓_ : Context → Term⁻ → Type → Set
@@ -352,54 +381,66 @@ data _⊢_↑_ where
 
   Ax : ∀ {Γ A x}
     → Γ ∋ x ⦂ A
-      --------------
+      -----------
     → Γ ⊢ ` x ↑ A
 
   _·_ : ∀ {Γ L M A B}
     → Γ ⊢ L ↑ A ⇒ B
     → Γ ⊢ M ↓ A
-      ---------------
+      -------------
     → Γ ⊢ L · M ↑ B
 
   ⊢↓ : ∀ {Γ M A}
     → Γ ⊢ M ↓ A
-      -----------------
+      ---------------
     → Γ ⊢ (M ↓ A) ↑ A
 
 data _⊢_↓_ where
 
   ⊢ƛ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ↓ B
-      -----------------------
+      -------------------
     → Γ ⊢ ƛ x ⇒ N ↓ A ⇒ B
 
   ⊢zero : ∀ {Γ}
-      ---------------
+      --------------
     → Γ ⊢ `zero ↓ `ℕ
 
   ⊢suc : ∀ {Γ M}
     → Γ ⊢ M ↓ `ℕ
-      ----------------
+      ---------------
     → Γ ⊢ `suc M ↓ `ℕ
 
   ⊢case : ∀ {Γ L M x N A}
     → Γ ⊢ L ↑ `ℕ
     → Γ ⊢ M ↓ A
     → Γ , x ⦂ `ℕ ⊢ N ↓ A
-      ------------------------------------------
+      -------------------------------------
     → Γ ⊢ `case L [zero⇒ M |suc x ⇒ N ] ↓ A
 
   ⊢μ : ∀ {Γ x N A}
     → Γ , x ⦂ A ⊢ N ↓ A
-      -----------------------
+      -----------------
     → Γ ⊢ μ x ⇒ N ↓ A
 
-  ⊢↑ : ∀ {Γ M A B}
+  ⊢↑ : ∀ {Γ M A A′}
     → Γ ⊢ M ↑ A
-    → A ≡ B
+    → A ≡ A′
       --------------
-    → Γ ⊢ (M ↑) ↓ B
+    → Γ ⊢ (M ↑) ↓ A′
 \end{code}
+We follow the same convention as
+Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+prefacing the constructor with `⊢` to derive the name of the
+corresponding type rule.
+
+The most interesting rules are those for `⊢↑` and `⊢↓`.
+The former both passes the type decoration as the inherited type and returns
+it as the synthesised type.  The latter takes the synthesised type and the
+inherited type and confirms they are identical.  (It should remind you of
+the equality test in the application rule in the first
+[section]({{ site.baseurl }}{% link out/plfa/Inference.md %}/#algorithm).)
+
 
 ## Type checking monad
 
@@ -504,9 +545,6 @@ x ≠ y  with x ≟ y
 ...       | yes _    =  ⊥-elim impossible
   where postulate impossible : ⊥
 
-2+2 : Term⁺
-2+2 = plus · two · two
-
 ⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
 ⊢2+2 =
   (⊢↓
@@ -528,9 +566,6 @@ x ≠ y  with x ≟ y
 
 _ : synthesize ∅ 2+2 ≡ return ⟨ `ℕ , ⊢2+2 ⟩
 _ = refl
-
-2+2ᶜ : Term⁺
-2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 
 ⊢2+2ᶜ : ∅ ⊢ 2+2ᶜ ↑ `ℕ
 ⊢2+2ᶜ =
