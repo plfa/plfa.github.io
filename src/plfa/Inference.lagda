@@ -42,9 +42,9 @@ is decorate each abstraction term with the type of its argument.
 This gives us the grammar:
 
     L, M, N ::=                         decorated terms
-       x                                  variable
-       ƛ x ⦂ A ⇒ N                        abstraction (decorated)
-       L M                                application
+      x                                   variable
+      ƛ x ⦂ A ⇒ N                         abstraction (decorated)
+      L · M                               application
 
 Each of the associated type rules can be read as an algorithm for
 type checking.  For each typing judgement, we label each position
@@ -110,12 +110,12 @@ hypotheses, the outputs of the first two hypotheses determine the
 inputs of the third hypothesis, and the output of the first hypothesis
 determines the output of the conclusion.
 
-Converting the above to an algorithm is straightforward.  We omit the
-details.  Instead, we consider a detailed description of a different
-approach that requires less obtrusive decoration.  The idea is to
-break the normal typing judgement into two judgements, one that
-produces the type as an output (as above), and another that takes it
-as an input.
+Converting the above to an algorithm is straightforwart, as is adding
+naturals and fixpoint.  We omit the details.  Instead, we consider a
+detailed description of an approach that requires less obtrusive
+decoration.  The idea is to break the normal typing judgement into two
+judgements, one that produces the type as an output (as above), and
+another that takes it as an input.
 
 
 ## Synthesising and inheriting types
@@ -164,21 +164,30 @@ need a way to treat a synthesized term as if it is inherited.  We
 introduce a new term form, `M ↑` for this purpose.  The typing judgement
 checks that the inherited and synthesised types match.
 
-Similarly, we said
-above that the function of an application is typed by synthesis and
-that abstractions are typed by inheritance, giving a mismatch if the
-function of an application is a variable.  Hence, we need a way to
-treat an inherited term as if it is synthesised.  We introduce a
-new term form `M ↓ A` for this purpose.
+Similarly, we said above that the function of an application is typed
+by synthesis and that abstractions are typed by inheritance, giving a
+mismatch if the function of an application is a variable.  Hence, we
+need a way to treat an inherited term as if it is synthesised.  We
+introduce a new term form `M ↓ A` for this purpose.  The typing
+judgement returns `A` as the synthesized type of the term as a whole,
+as well as using it as the inherited type for `M`.
 
+We can extract the grammar for terms from the above:
 
+    L⁺, M⁺, N⁺ ::=                      terms with synthesized type
+      x                                   variable
+      L⁺ · M-                             application
+      M⁻ ↓ A                              switch to inherited
 
+    L⁻, M⁻, N⁻ ::=                      terms with inherited type
+      ƛ x ⇒ N                             abstraction
+      `zero                               zero
+      `suc M⁻                             successor
+      case L⁺ [zero⇒ M⁻ |suc x ⇒ N⁻ ]     case
+      μ x ⇒ N                             fixpoint
+      M ↑                                 switch to synthesized
 
-
-
-
-
-
+With the grammar in hand, we can begin the formal development.
 
 
 ## Imports
