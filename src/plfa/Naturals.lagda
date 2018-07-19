@@ -738,7 +738,7 @@ Begin by typing
     m + n = ?
 
 The question mark indicates that you would like Agda to help with filling
-in that part of the code. If you type `C-c C-l` (hitting the `c` key followed by `l` the key while pressing the Ctrl key)
+in that part of the code. If you type `C-c C-l` (hitting the `c` key followed by the `l` key while pressing the Ctrl key)
 the question mark will be replaced.
 
     _+_ : ℕ → ℕ → ℕ
@@ -894,7 +894,7 @@ In place of left, right, up, and down keys, one may also use control characters.
     C-b  left (backward one character)
     C-f  right (forward one character)
     C-p  up (to the previous line)
-    C-p  down (to the next line)
+    C-n  down (to the next line)
 
 We write `C-b` to stand for control-b, and similarly.  One can also navigate
 left and right by typing the digits that appear in the displayed list.
