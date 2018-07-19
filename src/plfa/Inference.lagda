@@ -442,40 +442,133 @@ the equality test in the application rule in the first
 [section]({{ site.baseurl }}{% link out/plfa/Inference.md %}/#algorithm).)
 
 
-## Type checking monad
+## Type equality
 
+The rule for `M ↑` requires the ability to decide whether two types
+are equal.  It is straightforward to code.
+\begin{code}
+_≟Tp_ : (A B : Type) → Dec (A ≡ B)
+`ℕ      ≟Tp `ℕ              =  yes refl
+`ℕ      ≟Tp (A ⇒ B)         =  no λ()
+(A ⇒ B) ≟Tp `ℕ              =  no λ()
+(A ⇒ B) ≟Tp (A′ ⇒ B′)
+  with A ≟Tp A′ | B ≟Tp B′
+...  | no A≢    | _         =  no λ{refl → A≢ refl}
+...  | yes _    | no B≢     =  no λ{refl → B≢ refl}
+...  | yes refl | yes refl  =  yes refl
+\end{code}
+
+
+## Type inference monad
+
+Type inference will either yield a value (such as a synthesized type)
+or an error message (for instance, when inherited and synthesized
+types differ).  An error message will be given by a string.
 \begin{code}
 Msg : Set
 Msg = String
+\end{code}
+The type `I X` represents the result of inference, where `X` is the
+type of the result returned (typically `Type` for synthesis or `⊤` for
+inheritance).
+\begin{code}
+data I (X : Set) : Set where
+  error⁺  : Msg → Term⁺ → List Type → I X
+  error⁻  : Msg → Term⁻ → List Type → I X
+  return  : X → I X
+\end{code}
+There are three possible constructors, two for error messages and one
+to return a value.  An error message also takes a term and a list of
+types relevant to the error, leading to one variant for each sort of
+term.
 
-data TC (A : Set) : Set where
-  error⁺  : Msg → Term⁺ → List Type → TC A
-  error⁻  : Msg → Term⁻ → List Type → TC A
-  return : A → TC A
-
-_>>=_ : ∀ {A B : Set} → TC A → (A → TC B) → TC B
+We need a way to compose functions that may return error messages.
+There is a standard construct for doing this, known as a _monad_.
+A monad is equipped with an operation, usually written `_>>=_`
+and pronounced _bind_.
+\begin{code}
+_>>=_ : ∀ {X Y : Set} → I X → (X → I Y) → I Y
 error⁺ msg M As >>= k  =  error⁺ msg M As
 error⁻ msg M As >>= k  =  error⁻ msg M As
-return v        >>= k  =  k v
+return x        >>= k  =  k x
 \end{code}
 
-## Decide type equality
-
+A monad is a bit like a monoid, in that it should satisfy a form of
+left and right identity laws and an associativity law.  In our case,
+all three are trivial to prove.
 \begin{code}
-_≟Tp_ : (A B : Type) → Dec (A ≡ B)
-`ℕ         ≟Tp `ℕ         =  yes refl
-`ℕ         ≟Tp (A ⇒ B)   =  no (λ())
-(A  ⇒ B ) ≟Tp `ℕ         =  no (λ())
-(A₀ ⇒ B₀) ≟Tp (A₁ ⇒ B₁) with A₀ ≟Tp A₁ | B₀ ≟Tp B₁
-... | no A≢    | _         =  no (λ{refl → A≢ refl})
-... | yes _    | no B≢     =  no (λ{refl → B≢ refl})
-... | yes refl | yes refl  =  yes refl
+identityˡ : ∀ {X Y : Set} (x : X) (k : X → I Y) → return x >>= k ≡ k x
+identityˡ x k = refl
+
+identityʳ : ∀ {X Y : Set} (i : I X) → i >>= (λ x → return x) ≡ i
+identityʳ (error⁺ _ _ _)  =  refl
+identityʳ (error⁻ _ _ _)  =  refl
+identityʳ (return _)      =  refl
+
+assoc : ∀ {X Y Z : Set} (i : I X) (k : X → I Y) (h : Y → I Z) →
+          (i >>= k) >>= h  ≡  i >>= (λ x → k x >>= (λ y → h y))
+assoc (error⁺ _ _ _)  k h  =  refl
+assoc (error⁻ _ _ _)  k h  =  refl
+assoc (return _)      k h  =  refl
 \end{code}
+
+
+## Syntactic sugar for monads
+
+Agda supports _syntactic sugar_ to support the use of monads.
+Writing
+
+    do x ← m
+       n
+
+translates to
+
+    m >>= λ x → n
+
+One can read either form as follows: Evaluate the Agda term `m`.
+If it succeeds bind Agda variable `x` to the value returned and
+evaluate Agda term `n` (which may contain `x`). If it fails yield the
+suitable error message.
+
+Similarly, writing
+
+    do x ← m
+       y ← n
+       o
+
+translates to
+
+    m >>= λ x → n >>= λ y → o
+
+where `m`, `n`, and `o` are Agda terms and `x` and `y` are Agda variables,
+and `n` may contain `x` and `o` may contain `x` and `y`.  (If `o` does
+not contain `x` then the term above has the same meaning whichever way we parenthesise it,
+thanks to the associative law.)  Similarly for any number of bindings.
+
+Additionally, writing
+
+    do p ← m
+         where q → n
+       o
+
+translates to
+
+    m >>= λ{ p → o ; q → n }
+
+One can read either form as follows: Evaluate Agda term `m`. If it
+succeeds bind Agda pattern `p` to the value returned and then evaluate
+Agda term `o` (which may contain variables in `p`).  If `p` fails to
+match then `q` must; bind Agda pattern `q` to the value returned and
+evaluate Agda term `n` (which may contain variables in `q`).  If `m`
+fails, yield the suitable error message.
+
+These notations will prove convenient in what follows.
+
 
 ## Lookup type of a variable in the context
 
 \begin{code}
-lookup : ∀ (Γ : Context) (x : Id) → TC (∃[ A ](Γ ∋ x ⦂ A))
+lookup : ∀ (Γ : Context) (x : Id) → I (∃[ A ](Γ ∋ x ⦂ A))
 lookup ∅ x  =
   error⁺ "variable not bound" (` x) []
 lookup (Γ , x ⦂ A) w with w ≟ x
@@ -489,8 +582,8 @@ lookup (Γ , x ⦂ A) w with w ≟ x
 ## Synthesize and inherit types
 
 \begin{code}
-synthesize : ∀ (Γ : Context) (M : Term⁺) → TC (∃[ A ](Γ ⊢ M ↑ A))
-inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type) → TC (Γ ⊢ M ↓ A)
+synthesize : ∀ (Γ : Context) (M : Term⁺) → I (∃[ A ](Γ ⊢ M ↑ A))
+inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type) → I (Γ ⊢ M ↓ A)
 
 synthesize Γ (` x) =
   do ⟨ A , ⊢x ⟩ ← lookup Γ x
@@ -532,7 +625,7 @@ inherit Γ (μ x ⇒ M) A =
 inherit Γ (M ↑) B =
   do ⟨ A , ⊢M ⟩ ← synthesize Γ M
      yes A≡B ← return (A ≟Tp B)
-       where no _ → error⁺ "inheritance and synthesis conflict" M [ A , B ]
+       where no _ → error⁻ "inheritance and synthesis conflict" (M ↑) [ A , B ]
      return (⊢↑ ⊢M A≡B)
 \end{code}
 
@@ -646,7 +739,7 @@ _ : synthesize ∅
 _ = refl
 
 _ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡
-  error⁺ "inheritance and synthesis conflict" (` "x") [ `ℕ , `ℕ ⇒ `ℕ ]
+  error⁻ "inheritance and synthesis conflict" (` "x" ↑) [ `ℕ , `ℕ ⇒ `ℕ ]
 _ = refl
 \end{code}
 

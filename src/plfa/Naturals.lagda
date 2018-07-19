@@ -896,5 +896,5 @@ In place of left, right, up, and down keys, one may also use control characters.
     C-p  up (to the previous line)
     C-p  down (to the next line)
 
-We write `C-b` to stand for Crl-b, and similarly.  One can also navigate
+We write `C-b` to stand for control-b, and similarly.  One can also navigate
 left and right by typing the digits that appear in the displayed list.
