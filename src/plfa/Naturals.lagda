@@ -738,7 +738,7 @@ Begin by typing
     m + n = ?
 
 The question mark indicates that you would like Agda to help with filling
-in that part of the code. If you type `^C ^L` (control-C followed by control-L)
+in that part of the code. If you type `C-c C-l` (hitting the `c` key followed by `l` the key while pressing the Ctrl key)
 the question mark will be replaced.
 
     _+_ : ℕ → ℕ → ℕ
@@ -753,7 +753,7 @@ Emacs will also create a window displaying the text
 to indicate that hole 0 is to be filled in with a term of type `ℕ`.
 
 We wish to define addition by recursion on the first argument.
-Move the cursor into the hole and type `^C ^C`.   You will be given
+Move the cursor into the hole and type `C-c C-c`.   You will be given
 the prompt:
 
     pattern variables to case (empty for split on result):
@@ -771,7 +771,7 @@ required type of each.
     ?0 : ℕ
     ?1 : ℕ
 
-Going into hole 0 and type `^C ^,` will display information on the
+Going into hole 0 and type `C-c C-,` will display information on the
 required type of the hole, and what free variables are available.
 
     Goal: ℕ
@@ -779,13 +779,13 @@ required type of the hole, and what free variables are available.
     n : ℕ
 
 This strongly suggests filling the hole with `n`.  After the hole is
-filled, you can type `^C ^space`, which will remove the hole.
+filled, you can type `C-c C-space`, which will remove the hole.
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = n
     suc m + n = { }1
 
-Again, going into hole 1 and type `^C ^,` will display information on the
+Again, going into hole 1 and type `C-c C-,` will display information on the
 required type of the hole, and what free variables are available.
 
     Goal: ℕ
@@ -793,26 +793,26 @@ required type of the hole, and what free variables are available.
     n : ℕ
     m : ℕ
 
-Going into the hole and type `^C ^R` will fill it in with a constructor
+Going into the hole and type `C-c C-r` will fill it in with a constructor
 (if there is a unique choice) or tell you what constructors you might use,
 if there is a choice.  In this case, it displays the following.
 
     Don't know which constructor to introduce of zero or suc
 
-Filling the hole with `suc ?` and typing `^C ^space` results in the following.
+Filling the hole with `suc ?` and typing `C-c C-space` results in the following.
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = n
     suc m + n = suc { }1
 
-Going into the new hole and typing `^C ^,` gives similar information to before.
+Going into the new hole and typing `C-c C-,` gives similar information to before.
 
     Goal: ℕ
     ————————————————————————————————————————————————————————————
     n : ℕ
     m : ℕ
 
-We can fill the hole with `m + n` and type `^C ^space` to complete the program.
+We can fill the hole with `m + n` and type `C-c C-space` to complete the program.
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = n
@@ -820,7 +820,7 @@ We can fill the hole with `m + n` and type `^C ^space` to complete the program.
 
 Exploiting interaction to this degree is probably not helpful for a program this
 simple, but the same techniques can help with more complex programs.  Even for
-a program this simple, using `^C ^C` to split cases can be helpful.
+a program this simple, using `C-c C-c` to split cases can be helpful.
 
 
 ## More pragmas
@@ -891,10 +891,10 @@ character next time.  The command `\l` works similarly for left arrows.
 
 In place of left, right, up, and down keys, one may also use control characters.
 
-    ^B  left (Backward)
-    ^F  right (Forward)
-    ^P  up (uP)
-    ^N  down (dowN)
+    C-b  left (backward one character)
+    C-f  right (forward one character)
+    C-p  up (to the previous line)
+    C-p  down (to the next line)
 
-We write `^B` to stand for control-B, and similarly.  One can also navigate
+We write `C-b` to stand for Crl-b, and similarly.  One can also navigate
 left and right by typing the digits that appear in the displayed list.
