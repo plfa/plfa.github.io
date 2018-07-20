@@ -46,7 +46,7 @@ definition as a pair of inference rules:
 And here is the definition in Agda:
 \begin{code}
 data _≤_ : ℕ → ℕ → Set where
-  z≤n : ∀ {m : ℕ} → zero ≤ m
+  z≤n : ∀ {n : ℕ} → zero ≤ n
   s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ suc n
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names,
@@ -181,7 +181,7 @@ hypothesis `≤-refl n` gives us a proof of `n ≤ n`, and applying `s≤s`
 to that yields a proof of `suc n ≤ suc n`.
 
 It is a good exercise to prove reflexivity interactively in Emacs,
-using holes and the `^C ^C`, `^C ^,`, and `^C ^R` commands.
+using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 
 ## Transitivity
@@ -230,7 +230,7 @@ value of which the property holds (e.g., inducting on `m`)---will turn
 out to be immensely valuable, and one that we use often.
 
 Again, it is a good exercise to prove transitivity interactively in Emacs,
-using holes and the `^C ^C`, `^C ^,`, and `^C ^R` commands.
+using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 
 ## Anti-symmetry
