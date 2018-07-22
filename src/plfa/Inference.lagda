@@ -959,12 +959,13 @@ Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
 
 ## Bidirectional inference in Agda
 
-Agda itself uses bidirection inference.  This explains why constructors
-can be overloaded while other defined names cannot — here by _overloaded_
-we mean that the same name can be used for constructors of different
-types.  It is because constructors are typed by inheritance, and so the
-name is available when resolving the constructor, whereas variables are
-typed by synthesis, and so each variable must have a unique type.
+Agda itself uses bidirectional inference.  This explains why
+constructors can be overloaded while other defined names cannot — here
+by _overloaded_ we mean that the same name can be used for
+constructors of different types.  Constructors are typed by
+inheritance, and so the name is available when resolving the
+constructor, whereas variables are typed by synthesis, and so each
+variable must have a unique type.
 
 
 ## Unicode
