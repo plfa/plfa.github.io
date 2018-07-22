@@ -80,7 +80,7 @@ dependent function, because (as we will see) dependent product is ambiguous.
 
 Show that universals distribute over conjunction.
 \begin{code}
-∀-Distrib-× = ∀ {A : Set} {B C : A → Set} →
+∀-Distrib-× : ∀ {A : Set} {B C : A → Set} →
   (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 \end{code}
 Compare this with the result (`→-distrib-×`) in Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}).
@@ -89,7 +89,7 @@ Compare this with the result (`→-distrib-×`) in Chapter [Connectives]({{ site
 
 Show that a disjunction of universals implies a universal of disjunctions.
 \begin{code}
-⊎∀-Implies-∀⊎ = ∀ {A : Set} { B C : A → Set } →
+⊎∀-Implies-∀⊎ : ∀ {A : Set} { B C : A → Set } →
   (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
@@ -215,7 +215,7 @@ establish the isomorphism is identical to what we wrote when discussing
 
 Show that universals distribute over conjunction.
 \begin{code}
-∃-Distrib-⊎ = ∀ {A : Set} {B C : A → Set} →
+∃-Distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
   ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 \end{code}
 
@@ -223,7 +223,7 @@ Show that universals distribute over conjunction.
 
 Show that an existential of conjunctions implies a conjunction of existentials.
 \begin{code}
-∃×-Implies-×∃ = ∀ {A : Set} { B C : A → Set } →
+∃×-Implies-×∃ : ∀ {A : Set} { B C : A → Set } →
   ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
