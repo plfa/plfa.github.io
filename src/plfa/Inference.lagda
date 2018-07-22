@@ -364,11 +364,11 @@ data _∋_⦂_ : Context → Id → Type → Set where
       --------------------
     → Γ , x ⦂ A ∋ x ⦂ A
 
-  S : ∀ {Γ w x A B}
-    → w ≢ x
-    → Γ ∋ w ⦂ B
-      --------------------
-    → Γ , x ⦂ A ∋ w ⦂ B
+  S : ∀ {Γ x y A B}
+    → x ≢ y
+    → Γ ∋ x ⦂ A
+      -----------------
+    → Γ , y ⦂ B ∋ x ⦂ A
 \end{code}
 
 As with syntax, the judgements for synthesizing
@@ -475,8 +475,8 @@ Message = String
 \end{code}
 The type `I A` represents the result of inference, where `A` is an
 arbitrary Agda set representing the type of the result returned;
-in our case, we will return derivations for type judgments.
-Observe a conflict in our conventions: here `A` ranges over
+in our case, we will return evidence for type judgments.
+Note here `A` ranges over
 Agda sets rather than types of our target lambda calculus.
 \begin{code}
 data I (A : Set) : Set where
@@ -499,11 +499,11 @@ error⁺ msg M As >>= k  =  error⁺ msg M As
 error⁻ msg M As >>= k  =  error⁻ msg M As
 return x        >>= k  =  k x
 \end{code}
-Here `A` ranges over Agda sets, while `As` ranges over
-types of our target lambda calculus.
 If the left argument raises an error, the bind term raises
 the same error.  If the right argument returns a value, the
 bind term applies its left argument to that value.
+There is a conflict in our conventions: here `A` ranges over Agda
+sets, while `As` ranges over types of our target lambda calculus.
 
 A monad is a bit like a monoid, in that it should satisfy something
 akin to a left and right identity law and an associativity law.  The
@@ -513,13 +513,13 @@ all three laws are trivial to prove.
 identityˡ : ∀ {A B : Set} (x : A) (k : A → I B) → return x >>= k ≡ k x
 identityˡ x k = refl
 
-identityʳ : ∀ {A B : Set} (m : I A) → m >>= (λ x → return x) ≡ i
+identityʳ : ∀ {A B : Set} (m : I A) → m >>= (λ x → return x) ≡ m
 identityʳ (error⁺ _ _ _)  =  refl
 identityʳ (error⁻ _ _ _)  =  refl
 identityʳ (return _)      =  refl
 
 assoc : ∀ {X Y Z : Set} (m : I X) (k : X → I Y) (h : Y → I Z) →
-  (m >>= λ x → k) >>= (λ y → h y)  ≡  m >>= (λ x → k x >>= (λ y → h y))
+  (m >>= λ x → k x) >>= (λ y → h y)  ≡  m >>= (λ x → k x >>= (λ y → h y))
 assoc (error⁺ _ _ _)  k h  =  refl
 assoc (error⁻ _ _ _)  k h  =  refl
 assoc (return _)      k h  =  refl
@@ -530,7 +530,11 @@ the law is about re-arranging parentheses.
 
 ## Syntactic sugar for monads
 
-Agda supports _syntactic sugar_ to support the use of monads.
+Agda has built-in syntax to support the use of monads, which
+translates into applications of the binding operator `_>>=_`.  Such
+translation of one construct into another is referred to as _syntactic
+sugar_, and we will apply it to sweeten our subsequent presentation.
+
 Writing
 
     do x ← M
@@ -634,29 +638,52 @@ translates to
 
     L >>= λ{ P → N ; Q₁ → M₁ ; ... ; Qₙ → Mₙ }
 
-These notations will prove convenient in what follows.
+We will apply this sugar to sweeten our subsequent presentation.
 
 
 ## Lookup type of a variable in the context
 
+Given a context `Γ` and a variable `x`, we return a type `A` and
+evidence that `Γ ∋ x ⦂ A`.  If `x` does not appear in `Γ`, then
+we raise an error.
 \begin{code}
 lookup : ∀ (Γ : Context) (x : Id) → I (∃[ A ](Γ ∋ x ⦂ A))
 lookup ∅ x  =
   error⁺ "variable not bound" (` x) []
-lookup (Γ , x ⦂ A) w with w ≟ x
+lookup (Γ , y ⦂ B) x with x ≟ y
 ... | yes refl =
-  return ⟨ A , Z ⟩
-... | no w≢ =
-  do ⟨ A , ⊢x ⟩ ← lookup Γ w
-     return ⟨ A , S w≢ ⊢x ⟩
+  return ⟨ B , Z ⟩
+... | no x≢y =
+  do ⟨ A , ⊢x ⟩ ← lookup Γ x
+     return ⟨ A , S x≢y ⊢x ⟩
 \end{code}
+There are three cases.
+
+* If the context is empty, we raise an error.
+
+* If the variable appears in the most recent binding, we
+  return its corresponding type.
+
+* If the variable does not appear in the most recent binding,
+  we invoke recurse.
 
 ## Synthesize and inherit types
 
+The table has been set, the starters consumed, and we are ready
+for the main course.  We have two mutually recursive functions,
+one for synthesis and one for inheritance.  Synthesis is given
+a context `Γ` and a synthesis term `M` and
+returns a type `A` and evidence that `Γ ⊢ M ↑ A`.
+Inheritance is given a context `Γ`, an inheritance term `M`,
+and a type `A` and reuturns evidence that `Γ ⊢ M ↓ A`.
+An error is raised when appropriate.
 \begin{code}
 synthesize : ∀ (Γ : Context) (M : Term⁺) → I (∃[ A ](Γ ⊢ M ↑ A))
 inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type) → I (Γ ⊢ M ↓ A)
+\end{code}
 
+
+\begin{code}
 synthesize Γ (` x) =
   do ⟨ A , ⊢x ⟩ ← lookup Γ x
      return ⟨ A , Ax ⊢x ⟩
