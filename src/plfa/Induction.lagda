@@ -610,7 +610,7 @@ Begin by typing
     +-assoc′ m n p = ?
 
 The question mark indicates that you would like Agda to help with
-filling in that part of the code.  If you type `C-c ^C-l` (control-c
+filling in that part of the code.  If you type `C-c C-l` (control-c
 followed by control-l), the question mark will be replaced.
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
