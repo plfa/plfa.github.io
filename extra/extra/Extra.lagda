@@ -37,5 +37,11 @@ extensionality2 : ∀ {A B C : Set} → {f g : A → B → C} → (∀ (x : A) (
 extensionality2 fxy≡gxy = extensionality (λ x → extensionality (λ y → fxy≡gxy x y))
 \end{code}
 
+------------------------------------------------------------------------
+Inference
 
-
+Confirm for the resulting type rules that inputs of the conclusion
+(and output of any preceding hypothesis) determine inputs of each
+hypothesis, and outputs of the hypotheses determine the output of the
+conclusion.
+------------------------------------------------------------------------

@@ -117,17 +117,6 @@ decoration.  The idea is to break the normal typing judgement into two
 judgements, one that produces the type as an output (as above), and
 another that takes it as an input.
 
-#### Exercise (`decoration`)
-
-What additional decorations are required for the full
-lambda calculus with naturals and fixpoints?
-Confirm for the extended syntax that
-inputs of the conclusion
-(and output of any preceding hypothesis)
-determine inputs of each hypothesis,
-and outputs of the hypotheses
-determine the output of the conclusion.
-
 
 ## Synthesising and inheriting types
 
@@ -331,7 +320,7 @@ plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
 The only change is to decorate with down and up arrows as required.
 The only type decoration required is for `plus`.
 
-Next, computing two plus two on Church numerals.
+Next, computing two plus two with Church numerals.
 \begin{code}
 Ch : Type
 Ch = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
@@ -423,11 +412,11 @@ data _⊢_↓_ where
       -----------------
     → Γ ⊢ μ x ⇒ N ↓ A
 
-  ⊢↑ : ∀ {Γ M A A′}
+  ⊢↑ : ∀ {Γ M A B}
     → Γ ⊢ M ↑ A
-    → A ≡ A′
-      --------------
-    → Γ ⊢ (M ↑) ↓ A′
+    → A ≡ B
+      -------------
+    → Γ ⊢ (M ↑) ↓ B
 \end{code}
 We follow the same convention as
 Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
@@ -601,13 +590,13 @@ translates to
 where `P`, `Q` are Agda patterns, and `L`, `M`, `N` are Agda terms.
 Extending our notation to allow a pattern to the left of a turnstyle, we have:
 
-   Γ ⊢ L : I A
-   Γ , P : A ⊢ N : I B
-   Γ , Q : A ⊢ M : I B
-   ---------------------------
-   Γ ⊢ (do P ← L          
-             where Q → M
-           N)            : I B
+    Γ ⊢ L : I A
+    Γ , P : A ⊢ N : I B
+    Γ , Q : A ⊢ M : I B
+    ---------------------------
+    Γ ⊢ (do P ← L          
+              where Q → M
+            N)            : I B
 
 One can read this form as follows: Evaluate `M`; if it fails, yield
 the error message; if it succeeds, match `P` to the value returned and
@@ -615,7 +604,7 @@ evaluate `N` (which may contain variables matched by `P`); otherwise
 match `Q` to the value returned and evaluate `M` (which may contain
 variables matched by `Q`); one of `P` and `Q` must match.
 
-The notations extend to any number of bindings. Thus,
+The notations extend to any number of bindings or patterns. Thus,
 
     do x₁ ← M₁
        ...
@@ -665,7 +654,7 @@ There are three cases.
   return its corresponding type.
 
 * If the variable does not appear in the most recent binding,
-  we invoke recurse.
+  we recurse.
 
 ## Synthesize and inherit types
 
@@ -682,7 +671,7 @@ synthesize : ∀ (Γ : Context) (M : Term⁺) → I (∃[ A ](Γ ⊢ M ↑ A))
 inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type) → I (Γ ⊢ M ↓ A)
 \end{code}
 
-
+We first consider the code for synthesis.
 \begin{code}
 synthesize Γ (` x) =
   do ⟨ A , ⊢x ⟩ ← lookup Γ x
@@ -695,7 +684,23 @@ synthesize Γ (L · M) =
 synthesize Γ (M ↓ A) =
   do ⊢M ← inherit Γ M A
      return ⟨ A , ⊢↓ ⊢M ⟩
+\end{code}
+There are three cases.
 
+* If the term is a variable, we use lookup as defined above.
+
+* If the term is an application, we recurse to synthesize the type of
+  the function.  We check that the synthesied type is a function of
+  the form `A ⇒ B`.  If it is not (e.g., it is of type `` `ℕ ``), then
+  we report an error.  The argument is typed by inheriting `A`, and
+  type `B` is returned as the synthesised type of the term as a whole.
+
+* If the term switches from synthesized to inherited, then the type
+  decoration `A` in the contained term is typed by inheriting `A`, and
+  `A` is also returned as the synthesized type of the term as a whole.
+
+We next consider the code for inheritance.
+\begin{code}
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) =
   do ⊢N ← inherit (Γ , x ⦂ A) N B
      return (⊢ƛ ⊢N)
@@ -727,38 +732,69 @@ inherit Γ (M ↑) B =
        where no _ → error⁻ "inheritance and synthesis conflict" (M ↑) [ A , B ]
      return (⊢↑ ⊢M A≡B)
 \end{code}
+There are nine cases.  We consider those for abstraction
+and for switching from inherited to synthesized.
 
-## Test Cases
+* If the term is an abstraction and the inherited type is of the form `A ⇒ B`
+  then we extend the context by giving the variable type `A` and
+  recuse to type the body by inheriting type `B`.
 
+* If the term is an abstraction and the inherited type is not a function
+  (e.g., of the form `` `ℕ ``), then we report an error.
+
+* If the term switches from inherited to synthesised, then
+  we synthesise the type of the contained term and compare it
+  to the inherited type. If they are not equal, we raise an error.
+
+The remaining cases are similar, and their code can pretty much be
+read directly from the corresponding typing rules.
+
+## Testing the example terms
+
+First, we copy a function introduced ealier that makes it easy to
+compute the evidence that two variable names are distinct.
 \begin{code}
 _≠_ : ∀ (x y : Id) → x ≢ y
 x ≠ y  with x ≟ y
 ...       | no  x≢y  =  x≢y
 ...       | yes _    =  ⊥-elim impossible
   where postulate impossible : ⊥
+\end{code}
 
+Here is the result of typing two plus two on naturals.
+\begin{code}
 ⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
 ⊢2+2 =
   (⊢↓
    (⊢μ
     (⊢ƛ
      (⊢ƛ
-      (⊢case (Ax (S (_≠_ "m" "n") Z)) (⊢↑ (Ax Z) refl)
+      (⊢case (Ax (S ("m" ≠ "n") Z)) (⊢↑ (Ax Z) refl)
        (⊢suc
         (⊢↑
          (Ax
-          (S (_≠_ "p" "m")
-           (S (_≠_ "p" "n")
-            (S (_≠_ "p" "m") Z)))
+          (S ("p" ≠ "m")
+           (S ("p" ≠ "n")
+            (S ("p" ≠ "m") Z)))
           · ⊢↑ (Ax Z) refl
-          · ⊢↑ (Ax (S (_≠_ "n" "m") Z)) refl)
+          · ⊢↑ (Ax (S ("n" ≠ "m") Z)) refl)
          refl))))))
    · ⊢suc (⊢suc ⊢zero)
    · ⊢suc (⊢suc ⊢zero))
-
+\end{code}
+We confirm that synthesis on the relevant term returns
+natural as the type and the above derivation.
+\begin{code}
 _ : synthesize ∅ 2+2 ≡ return ⟨ `ℕ , ⊢2+2 ⟩
 _ = refl
+\end{code}
+Indeed, the above derivation was computed by evaluating the
+term on the left, and editing.  The only editing required is to
+replace Agda's representation of the evidence that two strings are
+unequal (which it can print not read) by equivalent calls to `≠`.
 
+Here is the result of typing two plus two with Church numerals.
+\begin{code}
 ⊢2+2ᶜ : ∅ ⊢ 2+2ᶜ ↑ `ℕ
 ⊢2+2ᶜ =
   ⊢↓
@@ -768,16 +804,16 @@ _ = refl
      (⊢ƛ
       (⊢↑
        (Ax
-        (S (_≠_ "m" "z")
-         (S (_≠_ "m" "s")
-          (S (_≠_ "m" "n") Z)))
-        · ⊢↑ (Ax (S (_≠_ "s" "z") Z)) refl
+        (S ("m" ≠ "z")
+         (S ("m" ≠ "s")
+          (S ("m" ≠ "n") Z)))
+        · ⊢↑ (Ax (S ("s" ≠ "z") Z)) refl
         ·
         ⊢↑
         (Ax
-         (S (_≠_ "n" "z")
-          (S (_≠_ "n" "s") Z))
-         · ⊢↑ (Ax (S (_≠_ "s" "z") Z)) refl
+         (S ("n" ≠ "z")
+          (S ("n" ≠ "s") Z))
+         · ⊢↑ (Ax (S ("s" ≠ "z") Z)) refl
          · ⊢↑ (Ax Z) refl)
         refl)
        refl)))))
@@ -785,27 +821,35 @@ _ = refl
   ⊢ƛ
   (⊢ƛ
    (⊢↑
-    (Ax (S (_≠_ "s" "z") Z) ·
-     ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
+    (Ax (S ("s" ≠ "z") Z) ·
+     ⊢↑ (Ax (S ("s" ≠ "z") Z) · ⊢↑ (Ax Z) refl)
      refl)
     refl))
   ·
   ⊢ƛ
   (⊢ƛ
    (⊢↑
-    (Ax (S (_≠_ "s" "z") Z) ·
-     ⊢↑ (Ax (S (_≠_ "s" "z") Z) · ⊢↑ (Ax Z) refl)
+    (Ax (S ("s" ≠ "z") Z) ·
+     ⊢↑ (Ax (S ("s" ≠ "z") Z) · ⊢↑ (Ax Z) refl)
      refl)
     refl))
   · ⊢ƛ (⊢suc (⊢↑ (Ax Z) refl))
   · ⊢zero
-
+\end{code}
+We confirm that synthesis on the relevant term returns
+natural as the type and the above derivation.
+\begin{code}
 _ : synthesize ∅ 2+2ᶜ ≡ return ⟨ `ℕ , ⊢2+2ᶜ ⟩
 _ = refl
 \end{code}
+Again, the above derivation was computed by evaluating the
+term on the left, and editing.
 
-## Testing all possible errors
+## Testing the error cases
 
+It is important not just to check that code works as intended,
+but also that it fails as intended.  Here is one test case to
+exercise each of the possible error messages.
 \begin{code}
 _ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡
   error⁺ "variable not bound" (` "y") []
@@ -845,15 +889,33 @@ _ = refl
 
 ## Erasure
 
+From the evidence that a decorated term has the correct type it is
+easy to extract the corresponding inherently typed term.  We use the
+name `DB` to refer to the code in
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+It is easy to define an _erasure_ function that takes evidence of a
+type judgement into the corresponding inherently typed term.
+
+First, we give code to erase a context.
 \begin{code}
 ∥_∥Γ : Context → DB.Context
 ∥ ∅ ∥Γ = DB.∅
 ∥ Γ , x ⦂ A ∥Γ = ∥ Γ ∥Γ DB., A
+\end{code}
+It simply drops the variable names.
 
+Next, we give code to erase a lookup judgment.
+\begin{code}
 ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Γ DB.∋ A
 ∥ Z ∥∋ =  DB.Z
-∥ S w≢ ⊢w ∥∋ =  DB.S ∥ ⊢w ∥∋
+∥ S x≢ ⊢x ∥∋ =  DB.S ∥ ⊢x ∥∋
+\end{code}
+It just drops the evidence that variable names are distinct.
 
+Finally, we give the code to erase a typing judgement.
+Just as there are two mutually recursive typing judgements,
+there are two mutually recursive erasure functions.
+\begin{code}
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
 
@@ -868,9 +930,14 @@ _ = refl
 ∥ ⊢μ ⊢M ∥⁻ =  DB.μ ∥ ⊢M ∥⁻
 ∥ ⊢↑ ⊢M refl ∥⁻ =  ∥ ⊢M ∥⁺
 \end{code}
+Erasure replaces constructors for each typing judgement
+by the corresponding term constructor from `DB`.  The
+constructors that correspond to switching from synthesized
+to inherited or vice versa are dropped.
 
-Testing erasure
-
+We confirm that the erasure of the type derivations in
+this chapter yield the corresponding inherently typed terms
+from the earlier chapter.
 \begin{code}
 _ : ∥ ⊢2+2 ∥⁺ ≡ DB.2+2
 _ = refl
@@ -878,3 +945,33 @@ _ = refl
 _ : ∥ ⊢2+2ᶜ ∥⁺ ≡ DB.2+2ᶜ
 _ = refl
 \end{code}
+Thus, we have confirmed that bidirectional type inference to
+convert decorated versions of the lambda terms from
+Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+to the inherently typed terms of
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+
+#### Exercise (`decoration`)
+
+Extend bidirectional inference to include each of the constructs in
+Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+
+
+## Bidirectional inference in Agda
+
+Agda itself uses bidirection inference.  This explains why constructors
+can be overloaded while other defined names cannot — here by _overloaded_
+we mean that the same name can be used for constructors of different
+types.  It is because constructors are typed by inheritance, and so the
+name is available when resolving the constructor, whereas variables are
+typed by synthesis, and so each variable must have a unique type.
+
+
+## Unicode
+
+This chapter uses the following unicode
+
+    ↓  U+2193:  DOWNWARDS ARROW (\d)
+    ↑  U+2191:  UPWARDS ARROW (\u)
+    ←  U+2190:  LEFTWARDS ARROW (\l)
+    ∥  U+2225:  PARALLEL TO (\||)
