@@ -461,106 +461,178 @@ _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 
 ## Type inference monad
 
+One construct you will find in the functional programmer's toolbox
+is the _monad_, which can describe error handling, state, and
+many other computational effects.  Here we introduce a monad to
+manage error messages in our inferencer.
+
 Type inference will either yield a value (such as a synthesized type)
 or an error message (for instance, when inherited and synthesized
-types differ).  An error message will be given by a string.
+types differ).  An error message is given by a string.
 \begin{code}
-Msg : Set
-Msg = String
+Message : Set
+Message = String
 \end{code}
-The type `I X` represents the result of inference, where `X` is the
-type of the result returned (typically `Type` for synthesis or `⊤` for
-inheritance).
+The type `I A` represents the result of inference, where `A` is an
+arbitrary Agda set representing the type of the result returned;
+in our case, we will return derivations for type judgments.
+Observe a conflict in our conventions: here `A` ranges over
+Agda sets rather than types of our target lambda calculus.
 \begin{code}
-data I (X : Set) : Set where
-  error⁺  : Msg → Term⁺ → List Type → I X
-  error⁻  : Msg → Term⁻ → List Type → I X
-  return  : X → I X
+data I (A : Set) : Set where
+  error⁺  : Message → Term⁺ → List Type → I A
+  error⁻  : Message → Term⁻ → List Type → I A
+  return  : A → I A
 \end{code}
-There are three possible constructors, two for error messages and one
-to return a value.  An error message also takes a term and a list of
-types relevant to the error, leading to one variant for each sort of
-term.
+There are three possible constructors, two for errors and one to
+return a value.  An error also takes a message, a term, and a list of
+types relevant to the error; there is one variant for each sort of
+term.  Return embeds values of type `A` into the type `I A`.
 
-We need a way to compose functions that may return error messages.
-There is a standard construct for doing this, known as a _monad_.
+We need a way to compose functions that may return error messages,
+and monads provide the required structure.
 A monad is equipped with an operation, usually written `_>>=_`
 and pronounced _bind_.
 \begin{code}
-_>>=_ : ∀ {X Y : Set} → I X → (X → I Y) → I Y
+_>>=_ : ∀ {A B : Set} → I A → (A → I B) → I B
 error⁺ msg M As >>= k  =  error⁺ msg M As
 error⁻ msg M As >>= k  =  error⁻ msg M As
 return x        >>= k  =  k x
 \end{code}
+Here `A` ranges over Agda sets, while `As` ranges over
+types of our target lambda calculus.
+If the left argument raises an error, the bind term raises
+the same error.  If the right argument returns a value, the
+bind term applies its left argument to that value.
 
-A monad is a bit like a monoid, in that it should satisfy a form of
-left and right identity laws and an associativity law.  In our case,
-all three are trivial to prove.
+A monad is a bit like a monoid, in that it should satisfy something
+akin to a left and right identity law and an associativity law.  The
+role of the identity is played by `return`.  In our case,
+all three laws are trivial to prove.
 \begin{code}
-identityˡ : ∀ {X Y : Set} (x : X) (k : X → I Y) → return x >>= k ≡ k x
+identityˡ : ∀ {A B : Set} (x : A) (k : A → I B) → return x >>= k ≡ k x
 identityˡ x k = refl
 
-identityʳ : ∀ {X Y : Set} (i : I X) → i >>= (λ x → return x) ≡ i
+identityʳ : ∀ {A B : Set} (m : I A) → m >>= (λ x → return x) ≡ i
 identityʳ (error⁺ _ _ _)  =  refl
 identityʳ (error⁻ _ _ _)  =  refl
 identityʳ (return _)      =  refl
 
-assoc : ∀ {X Y Z : Set} (i : I X) (k : X → I Y) (h : Y → I Z) →
-          (i >>= k) >>= h  ≡  i >>= (λ x → k x >>= (λ y → h y))
+assoc : ∀ {X Y Z : Set} (m : I X) (k : X → I Y) (h : Y → I Z) →
+  (m >>= λ x → k) >>= (λ y → h y)  ≡  m >>= (λ x → k x >>= (λ y → h y))
 assoc (error⁺ _ _ _)  k h  =  refl
 assoc (error⁻ _ _ _)  k h  =  refl
 assoc (return _)      k h  =  refl
 \end{code}
-
+The left-hand side of the associativity law can be abbreviated to
+`(m >>= k) >>= h`, but it is written as above to make clear that
+the law is about re-arranging parentheses.
 
 ## Syntactic sugar for monads
 
 Agda supports _syntactic sugar_ to support the use of monads.
 Writing
 
-    do x ← m
-       n
+    do x ← M
+       N
 
 translates to
 
-    m >>= λ x → n
+    M >>= λ x → N
 
-One can read either form as follows: Evaluate the Agda term `m`.
-If it succeeds bind Agda variable `x` to the value returned and
-evaluate Agda term `n` (which may contain `x`). If it fails yield the
-suitable error message.
+Here `x` is an Agda variable and `M` and `N` are terms of Agda
+(rather than of our target lambda calculus).  Applying the notations
+we have learned to Agda itself, we can write
+
+    Γ ⊢ M : I A
+    Γ , x : A ⊢ N : I B
+    -------------------
+    Γ ⊢ (do x ← M
+            N)    : I B
+
+That is, term `M` has type `I A`, variable `x` has type `A`, and term
+`N` has type `I B` and may contain `x` as a free variable, and the
+whole term has type `I B`.  One can read this as follows:
+Evaluate `M`; if it fails, yield the error message; if it succeeds,
+bind `x` to the value returned and evaluate `N`.
 
 Similarly, writing
 
-    do x ← m
-       y ← n
-       o
+    do x ← L
+       y ← M
+       N
 
 translates to
 
-    m >>= λ x → n >>= λ y → o
+    L >>= λ x → (M >>= λ y → N)
 
-where `m`, `n`, and `o` are Agda terms and `x` and `y` are Agda variables,
-and `n` may contain `x` and `o` may contain `x` and `y`.  (If `o` does
-not contain `x` then the term above has the same meaning whichever way we parenthesise it,
-thanks to the associative law.)  Similarly for any number of bindings.
+If `x` does not appear free in `N`, then by the associative law we
+can parenthesise either way; though `x` may appear free in `N`.
+We can describe the types as before:
+
+    Γ ⊢ L : I A
+    Γ , x : A ⊢ M : I B
+    Γ , x : A , y : B ⊢ N : I C
+    ---------------------------
+    Γ ⊢ (do x ← L
+            y ← M
+            N)    : I C
+
+We can read this as: Evaluate `L`; if it fails, yield the error
+message; if it succeeds, bind `x` the the value returned and
+evaluate `M`; if it fails, yield the error message; if it
+succeeds, bind `y` to the value returned and evaluate `N`.
 
 Additionally, writing
 
-    do p ← m
-         where q → n
-       o
+    do P ← L
+         where Q → M
+       N
 
 translates to
 
-    m >>= λ{ p → o ; q → n }
+    L >>= λ{ P → N ; Q → M }
 
-One can read either form as follows: Evaluate Agda term `m`. If it
-succeeds bind Agda pattern `p` to the value returned and then evaluate
-Agda term `o` (which may contain variables in `p`).  If `p` fails to
-match then `q` must; bind Agda pattern `q` to the value returned and
-evaluate Agda term `n` (which may contain variables in `q`).  If `m`
-fails, yield the suitable error message.
+
+where `P`, `Q` are Agda patterns, and `L`, `M`, `N` are Agda terms.
+Extending our notation to allow a pattern to the left of a turnstyle, we have:
+
+   Γ ⊢ L : I A
+   Γ , P : A ⊢ N : I B
+   Γ , Q : A ⊢ M : I B
+   ---------------------------
+   Γ ⊢ (do P ← L          
+             where Q → M
+           N)            : I B
+
+One can read this form as follows: Evaluate `M`; if it fails, yield
+the error message; if it succeeds, match `P` to the value returned and
+evaluate `N` (which may contain variables matched by `P`); otherwise
+match `Q` to the value returned and evaluate `M` (which may contain
+variables matched by `Q`); one of `P` and `Q` must match.
+
+The notations extend to any number of bindings. Thus,
+
+    do x₁ ← M₁
+       ...
+       xₙ ← Mₙ
+       N
+
+translates to
+
+    M₁ >>= (λ x₁ → ... Mₙ >>= (λ xₙ → N)...)
+
+and
+
+    do P ← L          
+         where Q₁ → M₁
+               ...    
+               Qₙ → Mₙ
+       N 
+
+translates to
+
+    L >>= λ{ P → N ; Q₁ → M₁ ; ... ; Qₙ → Mₙ }
 
 These notations will prove convenient in what follows.
 
