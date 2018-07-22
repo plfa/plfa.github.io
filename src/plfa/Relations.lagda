@@ -404,6 +404,8 @@ result and the commutativity of addition.
 \end{code}
 Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 `p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
+(Go ahead to read a chapter [Equality Rewriting expanded] for details how 
+`rewrite` notation works internally).
 
 Third, we combine the two previous results.
 \begin{code}
