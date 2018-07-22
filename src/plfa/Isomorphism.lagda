@@ -233,6 +233,8 @@ equational reasoning to combine the inverses.
     ; from     = from A≃B ∘ from B≃C
     ; from∘to  = λ{x →
         begin
+          (from A≃B ∘ from B≃C) ((to B≃C ∘ to A≃B) x)
+        ≡⟨⟩
           from A≃B (from B≃C (to B≃C (to A≃B x)))
         ≡⟨ cong (from A≃B) (from∘to B≃C (to A≃B x)) ⟩
           from A≃B (to A≃B x)
@@ -241,6 +243,8 @@ equational reasoning to combine the inverses.
         ∎}
     ; to∘from = λ{y →
         begin
+          (to B≃C ∘ to A≃B) ((from A≃B ∘ from B≃C) y)
+        ≡⟨⟩
           to B≃C (to A≃B (from A≃B (from B≃C y)))
         ≡⟨ cong (to B≃C) (to∘from A≃B (from B≃C y)) ⟩
           to B≃C (from B≃C y)
