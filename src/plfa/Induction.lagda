@@ -535,7 +535,7 @@ judgements where the first number is less than *m*.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-### Exercise `+-assoc-finite`
+### Exercise (`+-assoc-finite`)
 
 Write out what is known about associativity on each of the first four
 days using a finite story of creation, as
@@ -610,8 +610,8 @@ Begin by typing
     +-assoc′ m n p = ?
 
 The question mark indicates that you would like Agda to help with
-filling in that part of the code.  If you type `^C ^L` (control-C
-followed by control-L), the question mark will be replaced.
+filling in that part of the code.  If you type `C-c C-l` (control-c
+followed by control-l), the question mark will be replaced.
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ m n p = { }0
@@ -627,7 +627,7 @@ This indicates that hole 0 is to be filled in with a proof of
 the stated judgement.
 
 We wish to prove the proposition by induction on `m`.  Move
-the cursor into the hole and type `^C ^C`.  You will be given
+the cursor into the hole and type `C-c C-c`.  You will be given
 the prompt:
 
     pattern variables to case (empty for split on result):
@@ -645,7 +645,7 @@ each is required to prove:
     ?0 : ((zero + n) + p) ≡ (zero + (n + p))
     ?1 : ((suc m + n) + p) ≡ (suc m + (n + p))
 
-Going into hole 0 and typing `^C ^,` will display the text:
+Going into hole 0 and typing `C-c C-,` will display the text:
 
     Goal: (n + p) ≡ (n + p)
     ————————————————————————————————————————————————————————————
@@ -655,14 +655,14 @@ Going into hole 0 and typing `^C ^,` will display the text:
 This indicates that after simplification the goal for hole 0 is as
 stated, and that variables `p` and `n` of the stated types are
 available to use in the proof.  The proof of the given goal is
-trivial, and going into the goal and typing `^C ^R` will fill it in,
+trivial, and going into the goal and typing `C-c C-r` will fill it in,
 renumbering the remaining hole to 0:
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ zero n p = refl
     +-assoc′ (suc m) n p = { }0
 
-Going into the new hole 0 and typing `^C ^,` will display the text:
+Going into the new hole 0 and typing `C-c C-,` will display the text:
 
     Goal: suc ((m + n) + p) ≡ suc (m + (n + p))
     ————————————————————————————————————————————————————————————
@@ -678,7 +678,7 @@ hypothesis, so let's edit the text accordingly:
     +-assoc′ zero n p = refl
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = { }0
 
-Going into the remaining hole and typing `^C ^,` will display the text:
+Going into the remaining hole and typing `C-c C-,` will display the text:
 
     Goal: suc (m + (n + p)) ≡ suc (m + (n + p))
     ————————————————————————————————————————————————————————————
@@ -687,7 +687,7 @@ Going into the remaining hole and typing `^C ^,` will display the text:
     m : ℕ
 
 The proof of the given goal is trivial, and going into the goal and
-typing `^C ^R` will fill it in, completing the proof:
+typing `C-c C-r` will fill it in, completing the proof:
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ zero n p = refl

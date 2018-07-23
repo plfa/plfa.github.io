@@ -70,7 +70,7 @@ the right:
     sym : ∀ {A : Set} {x y : A} →  x ≡ y → y ≡ x
     sym e = {! !}
 
-If we go into the hole and type `C-C C-,` then Agda reports:
+If we go into the hole and type `C-c C-,` then Agda reports:
 
     Goal: .y ≡ .x
     ————————————————————————————————————————————————————————————
@@ -79,14 +79,14 @@ If we go into the hole and type `C-C C-,` then Agda reports:
     .x : .A
     .A : Set
 
-If in the hole we type `C-C C-C e` then Agda will instantiate `e` to
+If in the hole we type `C-c C-c e` then Agda will instantiate `e` to
 all possible constructors, with one equation for each. There is only
 one possible constructor:
 
     sym : ∀ {A : Set} {x y : A} →  x ≡ y → y ≡ x
     sym refl = {! !}
 
-If we go into the hole again and type `C-C C-,` then Agda now reports:
+If we go into the hole again and type `C-c C-,` then Agda now reports:
 
      Goal: .x ≡ .x
      ————————————————————————————————————————————————————————————
@@ -96,7 +96,7 @@ If we go into the hole again and type `C-C C-,` then Agda now reports:
 This is the key step---Agda has worked out that `x` and `y` must be
 the same to match the pattern `refl`!
 
-Finally, if we go back into the hole and type `C-C C-R` it will
+Finally, if we go back into the hole and type `C-c C-r` it will
 instantiate the hole with the one constructor that yields a value of
 the expected type.
 
@@ -337,7 +337,7 @@ To start, we supply variables for the arguments on the left, and a hole for the 
     even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
     even-comm m n ev = {! !}
 
-If we go into the hole and type `C-C C-,` then Agda reports:
+If we go into the hole and type `C-c C-,` then Agda reports:
 
     Goal: even (n + m)
     ————————————————————————————————————————————————————————————
@@ -350,7 +350,7 @@ Now we add the rewrite.
     even-comm : ∀ (m n : ℕ) → even (m + n) → even (n + m)
     even-comm m n ev rewrite +-comm m n = {! !}
 
-If we go into the hole again and type `C-C C-,` then Agda now reports:
+If we go into the hole again and type `C-c C-,` then Agda now reports:
 
     Goal: even (n + m)
     ————————————————————————————————————————————————————————————
@@ -358,7 +358,7 @@ If we go into the hole again and type `C-C C-,` then Agda now reports:
     n  : ℕ
     m  : ℕ
 
-Now it is trivial to see that `ev` satisfies the goal, and typing `C-C C-A` in the
+Now it is trivial to see that `ev` satisfies the goal, and typing `C-c C-a` in the
 hole causes it to be filled with `ev`.
 
 

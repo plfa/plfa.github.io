@@ -9,24 +9,25 @@ Thank you to:
 * The authors of Software Foundations, for inspiration.
 
 A special thank you, for inventing ideas on which
-this book is based, and for hand-holding.
+this book is based, and for hand-holding:
 * Conor McBride
 * James McKinna
 * Ulf Norell
 * Andreas Abel
 
-For a note showing how much more compact it is to avoid raw terms.
+For a note showing how much more compact it is to avoid raw terms:
 * David Darais
 
-For pull requests.
+For pull requests:
 * Vikraman Choudhury
 * Phil de Joux
 * koo5
 * Juhana Laurinharju
 * Jonathan Prieto-Cubides
+* Zbigniew Stanasiuk 
 * Anish Tondwalkar
 
-For answering questions on the Agda mailing list.
+For answering questions on the Agda mailing list:
 * Guillaume Allais <guillaume.allais@ens-lyon.org>
 * Nils Anders Danielsson <nad@cse.gu.se>
 * Miëtek Bak <mietek@bak.io>
@@ -40,5 +41,5 @@ For answering questions on the Agda mailing list.
 * Roman <effectfully@gmail.com>
 * Amr A. Sabry <sabry@indiana.edu>
 
-For comments on the text.
+For comments on the text:
 * [your name goes here]
