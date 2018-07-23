@@ -224,7 +224,7 @@ leaves the meaning of a term unchanged.  Thus the five terms
 * `` ƛ "f" ⇒ ƛ "x" ⇒ ` "f" · (` "f" · ` "x") ``
 * `` ƛ "sam" ⇒ ƛ "zelda" ⇒ ` "sam" · (` "sam" · ` "zelda") ``
 * `` ƛ "z" ⇒ ƛ "s" ⇒ ` "z" · (` "z" · ` "s") ``
-* `` ƛ "😇" ⇒ ƛ "😈" ⇒ # "😇" · (# "😇" · # "😈" ) ``
+* `` ƛ "😇" ⇒ ƛ "😈" ⇒ ` "😇" · (` "😇" · ` "😈" ) ``
 
 are all considered equivalent.  Following the convention introduced
 by Haskell Curry, who used the Greek letter `α` (_alpha_) to label such rules,

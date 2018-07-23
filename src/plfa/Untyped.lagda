@@ -8,12 +8,34 @@ permalink : /Untyped/
 module plfa.Untyped where
 \end{code}
 
-This chapter considers a system that varies, in interesting ways,
-what has gone earlier.  The lambda calculus in this section is
-untyped rather than simply-typed; uses terms that are inherently-scoped
-(as opposed to inherently-typed); reduces terms to full normal form
-rather than weak head-normal form; and uses call-by-name rather than
-call-by-value order of reduction.
+In this chapter we play with variations on a theme.
+
+* Previous chapters consider inherently-typed calculi;
+  here we consider one that is untyped but inherently scoped.
+
+* Previous chapters consider call-by-value calculi;
+  here we consider call-by-name.
+
+* Previous chapters consider _weak head normal form_,
+  where reduction stops at a lambda abstraction;
+  here we consider _full normalisation_,
+  where reduction continues underneath a lambda.
+
+* Previous chapters consider reduction of _closed_ terms,
+  those with no free variables;
+  here we consider _open_ terms,
+  those which may have free variables.
+
+* Previous chapters consider lambda calculus extended
+  with natural numbers and fixpoints;
+  here we consider a tiny calculus with just variables,
+  abstraction, and application.
+
+In general, one may mix and match any of these features,
+save that full normalisation requires open terms.
+The aim of this chapter is to give some appreciation for
+the range of different lambda calculi one may encounter.
+
 
 ## Imports
 
@@ -32,12 +54,64 @@ open import Relation.Nullary.Negation using (contraposition)
 open import Relation.Nullary.Product using (_×-dec_)
 \end{code}
 
+
+## Untyped is Uni-typed
+
+Our development will be close to that in
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
+save that every term will have exactly the same type, written `⋆`
+and pronounced "any".
+This matches a slogan introduced by Dana Scott
+and echoed by Robert Harper: "Untyped is Uni-typed".
+One consequence of this approach is that constructs which previously
+had to be given separately (such as natural numbers and fixpoints)
+can now be defined in the language itself.
+
+
 ## Syntax
 
+First, we get all our infix declarations out of the way.
+
 \begin{code}
+{-
+infix  4  _⊢_
+infix  4  _∋_
+infixl 5  _,_
+
 infix  6  ƛ_
 infixl 7  _·_
+-}
+\end{code}
 
+## Types
+
+We have just one type.
+\begin{code}
+data Type : Set where
+  ⋆ : Type
+\end{code}
+
+#### Exercise (`Type≃⊤`)
+
+Show that `Type` is isomorphic to `⊤`, the unit type.
+
+## Contexts
+
+As before, a context is a list of types, with the type of the
+most recently bound variable on the right.
+\begin{code}
+data Context : Set where
+  ∅   : Context
+  _,_ : Context → Type → Context
+\end{code}
+We let `Γ` and `Δ` range over contexts.
+
+#### Exercise (`Context≃ℕ`)
+
+Show that `Context` is isomorphic to `ℕ`.
+
+\begin{code}
+{-
 data Var : ℕ → Set where
 
   Z : ∀ {n}
@@ -48,7 +122,11 @@ data Var : ℕ → Set where
     → Var n
       -----------
     → Var (suc n)
+-}
+\end{code}
 
+\begin{code}
+{-
 data Term : ℕ → Set where
 
   ⌊_⌋ : ∀ {n}
@@ -66,11 +144,13 @@ data Term : ℕ → Set where
     → Term n
       ------
     → Term n
+-}
 \end{code}
 
 ## Writing variables as numerals
 
 \begin{code}
+{-
 #_ : ∀ {n} → ℕ → Term n
 #_ {n} m  =  ⌊ h n m ⌋
   where
@@ -79,11 +159,13 @@ data Term : ℕ → Set where
     where postulate impossible : ⊥
   h (suc n) 0        =  Z
   h (suc n) (suc m)  =  S (h n m)
+-}
 \end{code}
 
 ## Test examples
 
 \begin{code}
+{-
 plus : ∀ {n} → Term n
 plus = ƛ ƛ ƛ ƛ ⌊ S S S Z ⌋ · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)
 
@@ -92,11 +174,13 @@ two = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)
 
 four : ∀ {n} → Term n
 four = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
+-}
 \end{code}
 
 ## Renaming
 
 \begin{code}
+{-
 rename : ∀ {m n} → (Var m → Var n) → (Term m → Term n)
 rename ρ ⌊ k ⌋            =  ⌊ ρ k ⌋
 rename {m} {n} ρ (ƛ N)    =  ƛ (rename {suc m} {suc n} ρ′ N)
@@ -105,11 +189,13 @@ rename {m} {n} ρ (ƛ N)    =  ƛ (rename {suc m} {suc n} ρ′ N)
   ρ′ Z      =  Z
   ρ′ (S k)  =  S (ρ k)
 rename ρ (L · M)           =  (rename ρ L) · (rename ρ M)
+-}
 \end{code}
 
 ## Substitution
 
 \begin{code}
+{-
 subst : ∀ {m n} → (Var m → Term n) → (Term m → Term n)
 subst ρ ⌊ k ⌋                =  ρ k
 subst {m} {n} ρ (ƛ N)        =  ƛ (subst {suc m} {suc n} ρ′ N)
@@ -125,11 +211,13 @@ _[_] {n} N M  =  subst {suc n} {n} ρ N
   ρ : Var (suc n) → Term n
   ρ Z      =  M
   ρ (S k)  =  ⌊ k ⌋
+-}
 \end{code}
 
 ## Normal
 
 \begin{code}
+{-
 data Neutral : ∀ {n} → Term n → Set
 data Normal  : ∀ {n} → Term n → Set
 
@@ -157,11 +245,13 @@ data Normal where
     → Neutral M
       ---------
     → Normal M
+-}
 \end{code}
 
 ## Reduction step
 
 \begin{code}
+{-
 infix 2 _⟶_
 
 Application : ∀ {n} → Term n → Set
@@ -191,11 +281,13 @@ data _⟶_ : ∀ {n} → Term n → Term n → Set where
     → N ⟶ N′
       -----------
     → ƛ N ⟶ ƛ N′
+-}
 \end{code}
 
 ## Reflexive and transitive closure
 
 \begin{code}
+{-
 infix  2 _⟶*_
 infix 1 begin_
 infixr 2 _⟶⟨_⟩_
@@ -215,12 +307,14 @@ data _⟶*_ : ∀ {n} → Term n → Term n → Set where
 
 begin_ : ∀ {n} {M N : Term n} → (M ⟶* N) → (M ⟶* N)
 begin M⟶*N = M⟶*N
+-}
 \end{code}
 
 
 ## Example reduction sequences
 
 \begin{code}
+{-
 id : Term zero
 id = ƛ ⌊ Z ⌋
 
@@ -249,12 +343,14 @@ _ =
   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ β))) ⟩
    ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))))
   ∎
+-}
 \end{code}
 
 
 ## Progress
 
 \begin{code}
+{-
 data Progress {n} (M : Term n) : Set where
 
   step : ∀ {N : Term n}
@@ -281,12 +377,14 @@ progress (L@(_ · _) · M) with progress L
 ... | done ⌈ Lᵘ ⌉ with progress M
 ...    | step M⟶M′                           =  step (ξ₂ Lᵘ M⟶M′)
 ...    | done Mⁿ                               =  done ⌈ Lᵘ · Mⁿ ⌉
+-}
 \end{code}
 
 
 ## Normalise
 
 \begin{code}
+{-
 Gas : Set
 Gas = ℕ
 
@@ -315,9 +413,11 @@ normalise (suc g) L with progress L
 ... | step {M} L⟶M with normalise g M
 ...     | out-of-gas M⟶*N              =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N)
 ...     | normal g′ M⟶*N Nⁿ            =  normal g′ (L ⟶⟨ L⟶M ⟩ M⟶*N) Nⁿ
+-}
 \end{code}
 
 \begin{code}
+{-
 _ : normalise 100 (plus {zero} · two · two) ≡
   normal 94
   ((ƛ
@@ -360,4 +460,5 @@ _ : normalise 100 (plus {zero} · two · two) ≡
    (ƛ
     ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉ ⌉ ⌉))
 _ = refl
+-}
 \end{code}

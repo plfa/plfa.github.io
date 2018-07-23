@@ -392,7 +392,7 @@ In symbols,
 
     ∅ ⊢ V ⦂ A
     Γ , x ⦂ A ⊢ N ⦂ B
-    --------------------
+    ------------------
     Γ ⊢ N [ x := V ] ⦂ B
 
 The result does not depend on `V` being a value, but it does
@@ -469,7 +469,7 @@ rename : ∀ {Γ Δ}
         → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
           ----------------------------------
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
-rename ρ (⊢` ∋x)           =  ⊢` (ρ ∋x)
+rename ρ (⊢` ∋w)           =  ⊢` (ρ ∋w)
 rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext ρ) ⊢N)
 rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)
 rename ρ ⊢zero             =  ⊢zero
