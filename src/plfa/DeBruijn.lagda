@@ -993,8 +993,8 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
     → Progress M
 \end{code}
 
-The statement and proof of progress is much as before.
-Again, we must add a type annotation.  We no longer need
+The statement and proof of progress is much as before,
+appropriately annotated.  We no longer need
 to explicitly refer to the Canonical Forms lemma, since it
 is built-in to the definition of value.
 \begin{code}

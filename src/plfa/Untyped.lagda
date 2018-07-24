@@ -78,6 +78,7 @@ infix  4  _∋_
 infixl 5  _,_
 
 infix  6  ƛ_
+infix  6  ′_
 infixl 7  _·_
 \end{code}
 
@@ -275,157 +276,256 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
 Reduction continues until a term is fully normalised.  Hence, instead
 of values, we are now interested in _normal forms_.  Terms in normal
 form are defined by mutual recursion with _neutral_ terms.
-
-Neutral terms arise because we now consider reduction of open terms,
-which may contain free variables.  A term that is just a variable
-cannot reduce further, nor can a term of the form `x · M₁ · ... · Mₙ`
-
-A term is
-neutral if it is a variable or a neutral term applied to a normal
-term.  A term is a normal form if it is neutral or an abstraction
-where the body is a normal form.
-
-CONTINUE FROM HERE
-
 \begin{code}
-{-
-data Neutral : ∀ {n} → Term n → Set
-data Normal  : ∀ {n} → Term n → Set
-
+data Neutral : ∀ {Γ A} → Γ ⊢ A → Set
+data Normal  : ∀ {Γ A} → Γ ⊢ A → Set
+\end{code}
+Neutral terms arise because we now consider reduction of open terms,
+which may contain free variables.  A term is neutral if it is a
+variable or a neutral term applied to a normal term.
+\begin{code}
 data Neutral where
 
-  ⌊_⌋  : ∀ {n}
-    → (x : Var n)
+  `_  : ∀ {Γ A} (x : Γ ∋ A)
       -------------
-    → Neutral ⌊ x ⌋
+    → Neutral (` x)
 
-  _·_  : ∀ {n} {L : Term n} {M : Term n}
+  _·_  : ∀ {Γ} {L M : Γ ⊢ ★}
     → Neutral L
     → Normal M
       ---------------
     → Neutral (L · M)
-
+\end{code}
+A term is a normal form if it is neutral or an abstraction where the
+body is a normal form. We use `′_` to label neutral terms; like `` `_ ``,
+it is unobtrusive.
+\begin{code}
 data Normal where
 
-  ƛ_  : ∀ {n} {N : Term (suc n)}
-    → Normal N
-      ------------
-    → Normal (ƛ N)
-
-  ⌈_⌉ : ∀ {n} {M : Term n}
+  ′_ : ∀ {Γ A} {M : Γ ⊢ A}
     → Neutral M
       ---------
     → Normal M
--}
+
+  ƛ_  : ∀ {Γ} {N : Γ , ★ ⊢ ★}
+    → Normal N
+      ------------
+    → Normal (ƛ N)
 \end{code}
+
+We introduce a convenient abbreviation for evidence that a variable is neutral.
+\begin{code}
+#′_ : ∀ {Γ} (n : ℕ) → Neutral {Γ} (# n)
+#′ n  =  ` count n
+\end{code}
+
+For example, here is the evidence that the Church numeral two is in
+normal form.
+\begin{code}
+_ : Normal (twoᶜ {∅})
+_ = ƛ ƛ (′ #′ 1 · (′ #′ 1 · (′ #′ 0)))
+\end{code}
+The evidence that a term is in normal form is almost identical to
+the term itself, decorated with some additional primes to indicate
+neutral terms, and using `#′` in place of `#`
+
+We will also need to characterise terms that are applications.
+\begin{code}
+data Application : ∀ {Γ A} → Γ ⊢ A → Set where
+
+  ap : ∀ {Γ} {L M : Γ ⊢ ★}
+      -------------------
+    → Application (L · M)
+\end{code}
+
 
 ## Reduction step
 
+The reduction rules are altered to switch from call-by-value to
+call-by-name and to enable full normalisation.
+
+* In rule `ξ₁`, the function term is required to be an application, 
+  to avoid conflict with rule `β`.
+
+* In rule `ξ₂`, the function term is required to be neutral
+  rather than a value; again, this avoids conflict with rule `β`.
+
+* In rule `β`, the requirement that the argument is a value
+  is dropped, corresponding to call-by-name evaluation.
+
+* A new rule `ζ` is added, to enable reduction underneath a lambda.
+
+Here are the formalised rules.
 \begin{code}
-{-
-infix 2 _⟶_
+infix 2 _—→_
 
-Application : ∀ {n} → Term n → Set
-Application ⌊ _ ⌋    =  ⊥
-Application (ƛ _)    =  ⊥
-Application (_ · _)  =  ⊤
+data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-data _⟶_ : ∀ {n} → Term n → Term n → Set where
-
-  ξ₁ : ∀ {n} {L L′ M : Term n}
+  ξ₁ : ∀ {Γ} {L L′ M : Γ ⊢ ★}
     → Application L
-    → L ⟶ L′
+    → L —→ L′
       ----------------
-    → L · M ⟶ L′ · M
+    → L · M —→ L′ · M
 
-  ξ₂ : ∀ {n} {L M M′ : Term n}
+  ξ₂ : ∀ {Γ} {L M M′ : Γ ⊢ ★}
     → Neutral L
-    → M ⟶ M′
+    → M —→ M′
       ----------------
-    → L · M ⟶ L · M′
+    → L · M —→ L · M′
 
-  β : ∀ {n} {N : Term (suc n)} {M : Term n}
-      -------------------------------------
-    → (ƛ N) · M ⟶ N [ M ]
+  β : ∀ {Γ} {N : Γ , ★ ⊢ ★} {M : Γ ⊢ ★}
+      ---------------------------------
+    → (ƛ N) · M —→ N [ M ]
 
-  ζ : ∀ {n} {N N′ : Term (suc n)}
-    → N ⟶ N′
+  ζ : ∀ {Γ} {N N′ : Γ , ★ ⊢ ★}
+    → N —→ N′
       -----------
-    → ƛ N ⟶ ƛ N′
--}
+    → ƛ N —→ ƛ N′
 \end{code}
+
+#### Exercise (`variant-1`)
+
+How would the rules change if we want call-by-value where terms
+normalise completely?  Assume that `β` should not permit reduction
+unless both terms are in normal form.
+
+#### Exercise (`variant-2`)
+
+How would the rules change if we want call-by-value.  Assume that `β`
+permits reduction when both terms are values (that is, lambda
+abstractions).  Reduction underneath lambda is permited only once the
+top-level term is a value.
+
 
 ## Reflexive and transitive closure
 
+We cut-and-paste the previous definition.
 \begin{code}
-{-
-infix  2 _⟶*_
-infix 1 begin_
-infixr 2 _⟶⟨_⟩_
-infix 3 _∎
+infix  2 _—↠_
+infix  1 begin_
+infixr 2 _—→⟨_⟩_
+infix  3 _∎
 
-data _⟶*_ : ∀ {n} → Term n → Term n → Set where
+data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  _∎ : ∀ {n} (M : Term n)
-      ---------------------
-    → M ⟶* M
+  _∎ : ∀ {Γ A} (M : Γ ⊢ A)
+      --------
+    → M —↠ M
 
-  _⟶⟨_⟩_ : ∀ {n} (L : Term n) {M N : Term n}
-    → L ⟶ M
-    → M ⟶* N
+  _—→⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
+    → L —→ M
+    → M —↠ N
       ---------
-    → L ⟶* N
+    → L —↠ N
 
-begin_ : ∀ {n} {M N : Term n} → (M ⟶* N) → (M ⟶* N)
-begin M⟶*N = M⟶*N
--}
+begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
+  → M —↠ N
+    ------
+  → M —↠ N
+begin M—↠N = M—↠N
 \end{code}
 
 
-## Example reduction sequences
+## Example reduction sequence
 
+Here is the demonstration that two plus two is four.
 \begin{code}
-{-
-id : Term zero
-id = ƛ ⌊ Z ⌋
-
-_ : id · id  ⟶* id
+_ : 2+2ᶜ —↠ fourᶜ
 _ =
   begin
-    (ƛ ⌊ Z ⌋) · (ƛ ⌊ Z ⌋)
-  ⟶⟨ β ⟩
-    ƛ ⌊ Z ⌋
+    plusᶜ · twoᶜ · twoᶜ
+  —→⟨ ξ₁ ap β ⟩
+    (ƛ ƛ ƛ twoᶜ · # 1 · (# 2 · # 1 · # 0)) · twoᶜ
+  —→⟨ β ⟩
+    ƛ ƛ twoᶜ · # 1 · (twoᶜ · # 1 · # 0)
+  —→⟨ ζ (ζ (ξ₁ ap β)) ⟩
+    ƛ ƛ ((ƛ # 2 · (# 2 · # 0)) · (twoᶜ · # 1 · # 0))
+  —→⟨ ζ (ζ β) ⟩
+    ƛ ƛ # 1 · (# 1 · (twoᶜ · # 1 · # 0))
+  —→⟨ ζ (ζ (ξ₂ (` S Z) (ξ₂ (` S Z) (ξ₁ ap β)))) ⟩
+    ƛ ƛ # 1 · (# 1 · ((ƛ # 2 · (# 2 · # 0)) · # 0))
+  —→⟨ ζ (ζ (ξ₂ (` S Z) (ξ₂ (` S Z) β))) ⟩
+   ƛ (ƛ # 1 · (# 1 · (# 1 · (# 1 · # 0))))
   ∎
+\end{code}
+After just two steps the top-level term is an abstraction,
+and `ζ` rules drive the rest of the normalisation.  In the
+applications of the `ξ₂` rule, the argument ``(` S Z)`` is
+a proof that `# 1` is a neutral term.
 
-_ : plus {zero} · two · two ⟶* four
-_ =
-  begin
-    plus · two · two
-  ⟶⟨ ξ₁ tt β ⟩
-    (ƛ ƛ ƛ two · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)) · two
-  ⟶⟨ β ⟩
-    ƛ ƛ two · ⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)
-  ⟶⟨ ζ (ζ (ξ₁ tt β)) ⟩
-    ƛ ƛ (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · (two · ⌊ S Z ⌋ · ⌊ Z ⌋)
-  ⟶⟨ ζ (ζ β) ⟩
-    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (two · ⌊ S Z ⌋ · ⌊ Z ⌋))
-  ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ tt β)))) ⟩
-    ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋))
-  ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ β))) ⟩
-   ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))))
-  ∎
--}
+
+## Numbers and fixpoint
+
+We could simulate numbers using Church numerals, but computing
+predecessor is notoriously tricky.  Instead, we use a different
+representation, called Scott numerals, where a number is essentially
+defined by the expression that corresponds to its own case statement.
+\begin{code}
+`zero : ∀ {Γ} → (Γ ⊢ ★)
+`zero = ƛ ƛ (# 0)
+
+`suc_ : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★)
+`suc_ M  = ƛ ƛ (# 1 · rename (S_ ∘ S_) M)
+
+case : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★) → (Γ , ★ ⊢ ★)  → (Γ ⊢ ★)
+case L M N = L · (ƛ N) · M
+\end{code}
+We can also define fixpoint.  Using named terms, we define
+
+    fix f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+
+This works because
+
+      fix f
+    ≡
+      (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+    —→
+      f · ((ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x)))
+    ≡
+      f · (fix f)
+
+With de Bruijn indices, we have the following.
+\begin{code}
+μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
+μ N  =  (ƛ (rename S_ (ƛ N) · (# 0 · # 0))) · (ƛ (rename S_ (ƛ N) · (# 0 · # 0)))
+\end{code}
+
+We can now define two plus two as before.
+\begin{code}
+infix 5 μ_
+
+two : ∀ {Γ} → Γ ⊢ ★
+two = `suc `suc `zero
+
+plus : ∀ {Γ} → Γ ⊢ ★
+plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+
+2+2 : ∅ ⊢ ★
+2+2 = plus · two · two
+
+pred : ∅ ⊢ ★
+pred = ƛ case (# 0) `zero (# 0)
 \end{code}
 
 
 ## Progress
 
-\begin{code}
-{-
-data Progress {n} (M : Term n) : Set where
+Progress adapts.  Instead of claiming that every term either is a value
+or takes a reduction step, we claim that every term is either in normal
+form or takes a reduction step.
 
-  step : ∀ {N : Term n}
-    → M ⟶ N
+Previously, progress only applied to closed, well-typed terms.  We had
+to rule out terms where we apply something other than a function (such
+as `` `zero ``) or terms with a free variable.  Now we can demonstrate
+it for open, well-scoped terms.  The definition of normal form permits
+free variables, and we have no terms that are not functions.
+
+A term makes progress if it can take a step or is in normal form.
+\begin{code}
+data Progress {Γ A} (M : Γ ⊢ A) : Set where
+
+  step : ∀ {N : Γ ⊢ A}
+    → M —→ N
       ----------
     → Progress M
 
@@ -433,105 +533,159 @@ data Progress {n} (M : Term n) : Set where
       Normal M
       ----------
     → Progress M
+\end{code}
 
-progress : ∀ {n} → (M : Term n) → Progress M
-progress ⌊ x ⌋                                 =  done ⌈ ⌊ x ⌋ ⌉
+If a term is well-scoped then it satisfies progress.
+\begin{code}
+progress : ∀ {Γ A} → (M : Γ ⊢ A) → Progress M
+progress (` x)                                 =  done (′ ` x)
 progress (ƛ N)  with  progress N
-... | step N⟶N′                              =  step (ζ N⟶N′)
-... | done Nⁿ                                  =  done (ƛ Nⁿ)
-progress (⌊ x ⌋ · M) with progress M
-... | step M⟶M′                              =  step (ξ₂ ⌊ x ⌋ M⟶M′)
-... | done Mⁿ                                  =  done ⌈ ⌊ x ⌋ · Mⁿ ⌉
+... | step N—→N′                               =  step (ζ N—→N′)
+... | done NrmN                                =  done (ƛ NrmN)
+progress (` x · M) with progress M
+... | step M—→M′                               =  step (ξ₂ (` x) M—→M′)
+... | done NrmM                                =  done (′ (` x) · NrmM)
 progress ((ƛ N) · M)                           =  step β
 progress (L@(_ · _) · M) with progress L
-... | step L⟶L′                              =  step (ξ₁ tt L⟶L′)
-... | done ⌈ Lᵘ ⌉ with progress M
-...    | step M⟶M′                           =  step (ξ₂ Lᵘ M⟶M′)
-...    | done Mⁿ                               =  done ⌈ Lᵘ · Mⁿ ⌉
--}
+... | step L—→L′                               =  step (ξ₁ ap L—→L′)
+... | done (′ NeuL) with progress M
+...    | step M—→M′                            =  step (ξ₂ NeuL M—→M′)
+...    | done NrmM                             =  done (′ NeuL · NrmM)
 \end{code}
+We induct on the evidence that the term is well-scoped.
 
+* If the term is a variable, then it is in normal form.
+  (This contrasts with previous proofs, where the variable case was
+  ruled out by the restriction to closed terms.)
 
-## Normalise
+* If the term is an abstraction, recursively invoke progress on the body.
+  + If it steps, then the whole term steps via `ζ`.
+  + If it is in normal form, then so is the whole term.
+  (This contrast with previous proofs, where an abstraction is
+  immediately a value.)
 
+* If the term is an application, consider the function subterm.
+  + If it is a variable, recursively invoke progress on the argument.
+    - If it steps, then the whole term steps via `ξ₂`;
+    - If it is normal, then so is the whole term.
+  + If it is an abstraction, then the whole term steps via `β`.
+  + If it is an application, recursively apply progress to the function subterm.
+    - If it steps, then the whole term steps via `ξ₁`.
+    - If it is normal, recursively apply progres to the argument subterm.
+      * If it steps, then the whole term steps via `ξ₂`.
+      * If it is normal, then so is the whole term.
+
+The final equation for progress uses an _at pattern_ of the form `P@Q`,
+which matches only if both pattern `P` and pattern `Q` match.  Character
+`@` is one of the few that Agda doesn't allow in names, so spaces are not
+required around it.  In this case, the pattern ensures that `L` is an
+application.
+
+## Evaluation
+
+As previously, progress immediately yields an evaluator.
+
+Gas is specified by a natural number.
 \begin{code}
-{-
-Gas : Set
-Gas = ℕ
+data Gas : Set where
+  gas : ℕ → Gas
+\end{code}
+When our evaluator returns a term `N`, it will either give evidence that
+`N` is normal or indicate that it ran out of gas.
+\begin{code}
+data Finished {Γ A} (N : Γ ⊢ A) : Set where
 
-data Normalise {n} (M : Term n) : Set where
+   done :
+       Normal N
+       ----------
+     → Finished N
 
-  out-of-gas : ∀ {N : Term n}
-    → M ⟶* N
-      -------------
-    → Normalise M
+   out-of-gas :
+       ----------
+       Finished N
+\end{code}
+Given a term `L` of type `A`, the evaluator will, for some `N`, return
+a reduction sequence from `L` to `N` and an indication of whether
+reduction finished.
+\begin{code}
+data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
 
-  normal : ∀ {N : Term n}
-    → Gas
-    → M ⟶* N
-    → Normal N
-     --------------
-    → Normalise M
-
-normalise : ∀ {n}
+  steps : ∀ {Γ A} {L N : Γ ⊢ A}
+    → L —↠ N
+    → Finished N
+      ----------
+    → Steps L
+\end{code}
+The evaluator takes gas and a term and returns the corresponding steps.
+\begin{code}
+eval : ∀ {Γ A}
   → Gas
-  → ∀ (M : Term n)
-    -------------
-  → Normalise M
-normalise zero L                         =  out-of-gas (L ∎)
-normalise (suc g) L with progress L
-... | done Lⁿ                            =  normal (suc g) (L ∎) Lⁿ
-... | step {M} L⟶M with normalise g M
-...     | out-of-gas M⟶*N              =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N)
-...     | normal g′ M⟶*N Nⁿ            =  normal g′ (L ⟶⟨ L⟶M ⟩ M⟶*N) Nⁿ
--}
+  → (L : Γ ⊢ A)
+    -----------
+  → Steps L
+eval (gas zero)    L                     =  steps (L ∎) out-of-gas
+eval (gas (suc m)) L with progress L
+... | done NrmL                          =  steps (L ∎) (done NrmL)
+... | step {M} L—→M with eval (gas m) M
+...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
+The definition is as before, save that the empty context `∅`
+generalises to an arbitrary context `Γ`.
 
+## Example
+
+We reiterate our previous example. Two plus two is four, with Church numerals.
 \begin{code}
-{-
-_ : normalise 100 (plus {zero} · two · two) ≡
-  normal 94
+_ : eval (gas 100) 2+2ᶜ ≡
+  steps
   ((ƛ
     (ƛ
      (ƛ
-      (ƛ ⌊ S (S (S Z)) ⌋ · ⌊ S Z ⌋ · (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)))))
-   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ξ₁ tt β ⟩
+      (ƛ
+       (` (S (S (S Z)))) · (` (S Z)) ·
+       ((` (S (S Z))) · (` (S Z)) · (` Z))))))
+   · (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z))))
+   · (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z))))
+   —→⟨ ξ₁ ap β ⟩
    (ƛ
     (ƛ
      (ƛ
-      (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ ·
-      (⌊ S (S Z) ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋))))
-   · (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ β ⟩
+      (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) ·
+      ((` (S (S Z))) · (` (S Z)) · (` Z)))))
+   · (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z))))
+   —→⟨ β ⟩
    ƛ
    (ƛ
-    (ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ ·
-    ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
-   ⟶⟨ ζ (ζ (ξ₁ tt β)) ⟩
+    (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) ·
+    ((ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) · (` Z)))
+   —→⟨ ζ (ζ (ξ₁ ap β)) ⟩
    ƛ
    (ƛ
-    (ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) ·
-    ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋))
-   ⟶⟨ ζ (ζ β) ⟩
+    (ƛ (` (S (S Z))) · ((` (S (S Z))) · (` Z))) ·
+    ((ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) · (` Z)))
+   —→⟨ ζ (ζ β) ⟩
    ƛ
    (ƛ
-    ⌊ S Z ⌋ ·
-    (⌊ S Z ⌋ ·
-     ((ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋))) · ⌊ S Z ⌋ · ⌊ Z ⌋)))
-   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ (ξ₁ tt β)))) ⟩
+    (` (S Z)) ·
+    ((` (S Z)) ·
+     ((ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) · (` Z))))
+   —→⟨ ζ (ζ (ξ₂ (` (S Z)) (ξ₂ (` (S Z)) (ξ₁ ap β)))) ⟩
    ƛ
    (ƛ
-    ⌊ S Z ⌋ ·
-    (⌊ S Z ⌋ · ((ƛ ⌊ S (S Z) ⌋ · (⌊ S (S Z) ⌋ · ⌊ Z ⌋)) · ⌊ Z ⌋)))
-   ⟶⟨ ζ (ζ (ξ₂ ⌊ S Z ⌋ (ξ₂ ⌊ S Z ⌋ β))) ⟩
-   ƛ (ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))) ∎)
-  (ƛ
+    (` (S Z)) ·
+    ((` (S Z)) ·
+     ((ƛ (` (S (S Z))) · ((` (S (S Z))) · (` Z))) · (` Z))))
+   —→⟨ ζ (ζ (ξ₂ (` (S Z)) (ξ₂ (` (S Z)) β))) ⟩
+   ƛ (ƛ (` (S Z)) · ((` (S Z)) · ((` (S Z)) · ((` (S Z)) · (` Z)))))
+   ∎)
+  (done
    (ƛ
-    ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ S Z ⌋ · ⌈ ⌊ Z ⌋ ⌉ ⌉ ⌉ ⌉ ⌉))
+    (ƛ
+     (′
+      (` (S Z)) ·
+      (′ (` (S Z)) · (′ (` (S Z)) · (′ (` (S Z)) · (′ (` Z)))))))))
+
 _ = refl
--}
 \end{code}
 
 ## Unicode

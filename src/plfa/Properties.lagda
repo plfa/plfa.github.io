@@ -270,7 +270,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-suc CL                            =  step (β-suc (value CL))
 progress (⊢μ ⊢M)                            =  step β-μ
 \end{code}
-We induct on the evidence that `M` is well-typed.
+We induct on the evidence that the term is well-typed.
 Let's unpack the first three cases.  
 
 * The term cannot be a variable, since no variable is well typed
