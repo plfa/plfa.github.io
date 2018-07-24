@@ -59,7 +59,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 
 Our development will be close to that in
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
-save that every term will have exactly the same type, written `⋆`
+save that every term will have exactly the same type, written `★`
 and pronounced "any".
 This matches a slogan introduced by Dana Scott
 and echoed by Robert Harper: "Untyped is Uni-typed".
@@ -73,14 +73,12 @@ can now be defined in the language itself.
 First, we get all our infix declarations out of the way.
 
 \begin{code}
-{-
 infix  4  _⊢_
 infix  4  _∋_
 infixl 5  _,_
 
 infix  6  ƛ_
 infixl 7  _·_
--}
 \end{code}
 
 ## Types
@@ -88,7 +86,7 @@ infixl 7  _·_
 We have just one type.
 \begin{code}
 data Type : Set where
-  ⋆ : Type
+  ★ : Type
 \end{code}
 
 #### Exercise (`Type≃⊤`)
@@ -110,111 +108,184 @@ We let `Γ` and `Δ` range over contexts.
 
 Show that `Context` is isomorphic to `ℕ`.
 
+## Variables and the lookup judgement
+
+Inherently typed variables correspond to the lookup judgement.  The
+rules are as before.
 \begin{code}
-{-
-data Var : ℕ → Set where
+data _∋_ : Context → Type → Set where
 
-  Z : ∀ {n}
-     -----------
-   → Var (suc n)
+  Z : ∀ {Γ A}
+     ---------
+   → Γ , A ∋ A
 
-  S_ : ∀ {n}
-    → Var n
-      -----------
-    → Var (suc n)
--}
+  S_ : ∀ {Γ A B}
+    → Γ ∋ A
+      ---------
+    → Γ , B ∋ A
 \end{code}
+We could write the rules with all instances of `A` and `B`
+replaced by `★`, but arguably it is clearer not to do so.
 
+Because `★` is the only type, the judgement doesn't guarantee anything
+useful about types.  But it does ensure that all variables are in
+scope.  For instance, we cannot use `S S Z` in a context that only
+binds two variables.
+
+
+## Terms and the scoping judgement
+
+Inherently typed terms correspond to the typing judgement, but with
+`★` as the only type.  The result is that we check that terms are
+well-scoped — that is, that all variables they mention are in scope —
+but not that they are well-typed.
 \begin{code}
-{-
-data Term : ℕ → Set where
+data _⊢_ : Context → Type → Set where
 
-  ⌊_⌋ : ∀ {n}
-    → Var n
+  `_ : ∀ {Γ A}
+    → Γ ∋ A
+      -----
+    → Γ ⊢ A
+
+  ƛ_  :  ∀ {Γ}
+    → Γ , ★ ⊢ ★
+      ---------
+    → Γ ⊢ ★
+
+  _·_ : ∀ {Γ}
+    → Γ ⊢ ★
+    → Γ ⊢ ★
       ------
-    → Term n
-
-  ƛ_  :  ∀ {n}
-    → Term (suc n)
-      ------------
-    → Term n
-
-  _·_ : ∀ {n}
-    → Term n
-    → Term n
-      ------
-    → Term n
--}
+    → Γ ⊢ ★
 \end{code}
+Now we have a tiny calculus, with only variables, abstraction, and
+application.  Below we will see how to represent naturals and
+fixpoints in this calculus.
 
 ## Writing variables as numerals
 
+As before, we can convert a natural to the corresponding de Bruing
+index.  We no longer need to lookup the type in the context, since
+every variable has the same type.
 \begin{code}
-{-
-#_ : ∀ {n} → ℕ → Term n
-#_ {n} m  =  ⌊ h n m ⌋
-  where
-  h : ∀ n → ℕ → Var n
-  h zero    _        =  ⊥-elim impossible
-    where postulate impossible : ⊥
-  h (suc n) 0        =  Z
-  h (suc n) (suc m)  =  S (h n m)
--}
+count : ∀ {Γ} → ℕ → Γ ∋ ★
+count {Γ , ★} zero     =  Z
+count {Γ , ★} (suc n)  =  S (count n)
+count {∅}     _        =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+
+We can then introduce a convenient abbreviation for variables.
+\begin{code}
+#_ : ∀ {Γ} → ℕ → Γ ⊢ ★
+# n  =  ` count n
 \end{code}
 
 ## Test examples
 
+Our only example is computing two plus two on Church numerals.
 \begin{code}
-{-
-plus : ∀ {n} → Term n
-plus = ƛ ƛ ƛ ƛ ⌊ S S S Z ⌋ · ⌊ S Z ⌋ · (⌊ S S Z ⌋ · ⌊ S Z ⌋ · ⌊ Z ⌋)
+twoᶜ : ∀ {Γ} → Γ ⊢ ★
+twoᶜ = ƛ ƛ (# 1 · (# 1 · # 0))
 
-two : ∀ {n} → Term n
-two = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)
+fourᶜ : ∀ {Γ} → Γ ⊢ ★
+fourᶜ = ƛ ƛ (# 1 · (# 1 · (# 1 · (# 1 · # 0))))
 
-four : ∀ {n} → Term n
-four = ƛ ƛ ⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · (⌊ S Z ⌋ · ⌊ Z ⌋)))
--}
+plusᶜ : ∀ {Γ} → Γ ⊢ ★
+plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
+
+2+2ᶜ : ∅ ⊢ ★
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ
 \end{code}
+Before, reduction stopped when we reached a lambda term, so we had to
+compute `` plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero `` to ensure we reduced
+to a representation of the natural four.  Now, reduction continues
+under lambda, so we don't need the extra arguments.  It is convenient
+to define a term to represent four as a Church numeral, as well as
+two.
 
 ## Renaming
 
+Our definition of renaming is as before.  First, we need an extension lemma.
 \begin{code}
-{-
-rename : ∀ {m n} → (Var m → Var n) → (Term m → Term n)
-rename ρ ⌊ k ⌋            =  ⌊ ρ k ⌋
-rename {m} {n} ρ (ƛ N)    =  ƛ (rename {suc m} {suc n} ρ′ N)
+ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    -----------------------------------
+  → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
+ext ρ Z      =  Z
+ext ρ (S x)  =  S (ρ x)
+\end{code}
+We could replace all instances of `A` and `B` by `★`, but arguably it is
+clearer not to do so.
+
+Now it is straighforward to define renaming.
+\begin{code}
+rename : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    ------------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+rename ρ (` x)          =  ` (ρ x)
+rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+\end{code}
+This is exactly as before, save that there are fewer term forms.
+
+## Simultaneous substitution
+
+Our definition of substitution is also exactly as before.
+First we need an extension lemma.
+\begin{code}
+exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
+    ----------------------------------
+  → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
+exts σ Z      =  ` Z
+exts σ (S x)  =  rename S_ (σ x)
+\end{code}
+Again, we could replace all instances of `A` and `B` by `★`.
+
+Now it is straighforward to define substitution.
+\begin{code}
+subst : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ⊢ A)
+    ------------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+subst σ (` k)          =  σ k
+subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
+subst σ (L · M)        =  (subst σ L) · (subst σ M)
+\end{code}
+Again, this is exactly as before, save that there are fewer term forms.
+
+## Single substitution
+
+It is easy to define the special case of substitution for one free variable.
+\begin{code}
+_[_] : ∀ {Γ A B}
+        → Γ , B ⊢ A
+        → Γ ⊢ B 
+          ---------
+        → Γ ⊢ A
+_[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   where
-  ρ′ : Var (suc m) → Var (suc n)
-  ρ′ Z      =  Z
-  ρ′ (S k)  =  S (ρ k)
-rename ρ (L · M)           =  (rename ρ L) · (rename ρ M)
--}
+  σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
+  σ Z      =  M
+  σ (S x)  =  ` x
 \end{code}
 
-## Substitution
+## Neutral and normal terms
 
-\begin{code}
-{-
-subst : ∀ {m n} → (Var m → Term n) → (Term m → Term n)
-subst ρ ⌊ k ⌋                =  ρ k
-subst {m} {n} ρ (ƛ N)        =  ƛ (subst {suc m} {suc n} ρ′ N)
-  where
-  ρ′ : Var (suc m) → Term (suc n)
-  ρ′ Z      =  ⌊ Z ⌋
-  ρ′ (S k)  =  rename {n} {suc n} S_ (ρ k)
-subst ρ (L · M)               =  (subst ρ L) · (subst ρ M)
+Reduction continues until a term is fully normalised.  Hence, instead
+of values, we are now interested in _normal forms_.  Terms in normal
+form are defined by mutual recursion with _neutral_ terms.
 
-_[_] : ∀ {n} → Term (suc n) → Term n → Term n
-_[_] {n} N M  =  subst {suc n} {n} ρ N
-  where
-  ρ : Var (suc n) → Term n
-  ρ Z      =  M
-  ρ (S k)  =  ⌊ k ⌋
--}
-\end{code}
+Neutral terms arise because we now consider reduction of open terms,
+which may contain free variables.  A term that is just a variable
+cannot reduce further, nor can a term of the form `x · M₁ · ... · Mₙ`
 
-## Normal
+A term is
+neutral if it is a variable or a neutral term applied to a normal
+term.  A term is a normal form if it is neutral or an abstraction
+where the body is a normal form.
+
+CONTINUE FROM HERE
 
 \begin{code}
 {-
@@ -462,3 +533,12 @@ _ : normalise 100 (plus {zero} · two · two) ≡
 _ = refl
 -}
 \end{code}
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    ★  U+2605  BLACK STAR (\st)
+
+The `\st` command permits navigation among many different stars;
+the one we use is number 7.

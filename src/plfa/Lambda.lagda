@@ -1282,20 +1282,20 @@ showing that it is well-typed.
 
 ## Unicode
 
-This chapter uses the following unicode
+This chapter uses the following unicode.
 
-    ⇒    U+21D2:  RIGHTWARDS DOUBLE ARROW (\=>)
-    ƛ    U+019B:  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
-    ·    U+00B7:  MIDDLE DOT (\cdot)
-    😇   U+1F607: SMILING FACE WITH HALO
-    😈   U+1F608: SMILING FACE WITH HORNS
-    —    U+2014:  EM DASH (\em)
-    ↠    U+21A0:  RIGHTWARDS TWO HEADED ARROW (\rr-)
-    ξ    U+03BE:  GREEK SMALL LETTER XI (\Gx or \xi)
-    β    U+03B2:  GREEK SMALL LETTER BETA (\Gb or \beta)
-    ∋    U+220B:  CONTAINS AS MEMBER (\ni)
-    ⊢    U+22A2:  RIGHT TACK (\vdash or \|-)
-    ⦂    U+2982:  Z NOTATION TYPE COLON (\:)
+    ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
+    ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+    ·  U+00B7  MIDDLE DOT (\cdot)
+    —  U+2014  EM DASH (\em)
+    ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
+    ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
+    β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
+    ∋  U+220B  CONTAINS AS MEMBER (\ni)
+    ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
+    ⦂  U+2982  Z NOTATION TYPE COLON (\:)
+    😇  U+1F607  SMILING FACE WITH HALO
+    😈  U+1F608  SMILING FACE WITH HORNS
 
 We compose reduction —→ from an em dash — and an arrow →.
 Similarly for reflexive and transitive closure —↠.

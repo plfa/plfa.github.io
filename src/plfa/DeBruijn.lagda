@@ -307,7 +307,10 @@ _ = Z
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ ⇒ `ℕ
 _ = S Z
 \end{code}
-In the given context, `"z"` is represented by `Z`, and `"s"` by `S Z`.
+In the given context, `"z"` is represented by `Z`
+(as the most recently bound variable),
+and `"s"` by `S Z`
+(as the next most recently bound variable).
 
 ### Terms and the typing judgement
 
@@ -414,7 +417,7 @@ postulating an `impossible` term, just as we did
 [here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#impossible).
 
 Given the above, we can convert a natural to a corresponding
-De Bruijn indice, looking up its type in the context.
+De Bruijn index, looking up its type in the context.
 \begin{code}
 count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
 count {Γ , _} zero     =  Z
@@ -498,7 +501,7 @@ second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped.
 \begin{code}
 ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
-    ----------------------------------
+    -----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
@@ -663,7 +666,7 @@ bound variable.
 ## Single substitution
 
 From the general case of substitution for multiple free
-variables in is easy to define the special case of
+variables it is easy to define the special case of
 substitution for one free variable.
 \begin{code}
 _[_] : ∀ {Γ A B}
