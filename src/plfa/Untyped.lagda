@@ -454,60 +454,6 @@ applications of the `ξ₂` rule, the argument ``(` S Z)`` is
 a proof that `# 1` is a neutral term.
 
 
-## Numbers and fixpoint
-
-We could simulate numbers using Church numerals, but computing
-predecessor is notoriously tricky.  Instead, we use a different
-representation, called Scott numerals, where a number is essentially
-defined by the expression that corresponds to its own case statement.
-\begin{code}
-`zero : ∀ {Γ} → (Γ ⊢ ★)
-`zero = ƛ ƛ (# 0)
-
-`suc_ : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★)
-`suc_ M  = ƛ ƛ (# 1 · rename (S_ ∘ S_) M)
-
-case : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★) → (Γ , ★ ⊢ ★)  → (Γ ⊢ ★)
-case L M N = L · (ƛ N) · M
-\end{code}
-We can also define fixpoint.  Using named terms, we define
-
-    fix f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
-
-This works because
-
-      fix f
-    ≡
-      (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
-    —→
-      f · ((ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x)))
-    ≡
-      f · (fix f)
-
-With de Bruijn indices, we have the following.
-\begin{code}
-μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
-μ N  =  (ƛ (rename S_ (ƛ N) · (# 0 · # 0))) · (ƛ (rename S_ (ƛ N) · (# 0 · # 0)))
-\end{code}
-
-We can now define two plus two as before.
-\begin{code}
-infix 5 μ_
-
-two : ∀ {Γ} → Γ ⊢ ★
-two = `suc `suc `zero
-
-plus : ∀ {Γ} → Γ ⊢ ★
-plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
-
-2+2 : ∅ ⊢ ★
-2+2 = plus · two · two
-
-pred : ∅ ⊢ ★
-pred = ƛ case (# 0) `zero (# 0)
-\end{code}
-
-
 ## Progress
 
 Progress adapts.  Instead of claiming that every term either is a value
@@ -687,6 +633,64 @@ _ : eval (gas 100) 2+2ᶜ ≡
 
 _ = refl
 \end{code}
+
+## Numbers and fixpoint
+
+We could simulate numbers using Church numerals, but computing
+predecessor is notoriously tricky.  Instead, we use a different
+representation, called Scott numerals, where a number is essentially
+defined by the expression that corresponds to its own case statement.
+\begin{code}
+`zero : ∀ {Γ} → (Γ ⊢ ★)
+`zero = ƛ ƛ (# 0)
+
+`suc_ : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★)
+`suc_ M  = (ƛ ƛ ƛ (# 1 · # 2)) · M
+
+case : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★) → (Γ , ★ ⊢ ★)  → (Γ ⊢ ★)
+case L M N = L · (ƛ N) · M
+\end{code}
+We can also define fixpoint.  Using named terms, we define
+
+    fix f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+
+This works because
+
+      fix f
+    ≡
+      (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+    —→
+      f · ((ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x)))
+    ≡
+      f · (fix f)
+
+With de Bruijn indices, we have the following.
+\begin{code}
+μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
+μ N  =  (ƛ ((ƛ (# 1 · (# 0 · # 0))) · (ƛ (# 1 · (# 0 · # 0))))) · (ƛ N)
+\end{code}
+
+We can now define two plus two as before.
+\begin{code}
+infix 5 μ_
+
+two : ∀ {Γ} → Γ ⊢ ★
+two = `suc `suc `zero
+
+four : ∀ {Γ} → Γ ⊢ ★
+four = `suc `suc `suc `suc `zero
+
+plus : ∀ {Γ} → Γ ⊢ ★
+plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+
+2+2 : ∅ ⊢ ★
+2+2 = plus · two · two
+\end{code}
+
+#### Exercise (`2+2≡four`)
+
+Use the evaluator to confirm that `2+2` and `four` evaluate to the same term.
+
 
 ## Unicode
 
