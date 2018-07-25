@@ -19,11 +19,11 @@ For a note showing how much more compact it is to avoid raw terms:
 * David Darais
 
 For pull requests:
+* Nathaniel Carroll
 * Vikraman Choudhury
 * Phil de Joux
 * koo5
 * Juhana Laurinharju
-* potato4444
 * Jonathan Prieto-Cubides
 * Zbigniew Stanasiuk 
 * Anish Tondwalkar
