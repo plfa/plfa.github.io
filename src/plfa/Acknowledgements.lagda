@@ -23,6 +23,7 @@ For pull requests:
 * Phil de Joux
 * koo5
 * Juhana Laurinharju
+* potato4444
 * Jonathan Prieto-Cubides
 * Zbigniew Stanasiuk 
 * Anish Tondwalkar
@@ -38,7 +39,7 @@ For answering questions on the Agda mailing list:
 * Ulf Norell <ulf.norell@gmail.com>
 * Liam O'Connor <liamoc@cse.unsw.edu.au>
 * N. Raghavendra <nyraghu27132@gmail.com>
-* Roman <effectfully@gmail.com>
+* Roman Kireev <effectfully@gmail.com>
 * Amr A. Sabry <sabry@indiana.edu>
 
 For comments on the text:
