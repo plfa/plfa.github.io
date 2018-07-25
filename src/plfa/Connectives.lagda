@@ -47,12 +47,7 @@ Evidence that `A × B` holds is of the form
 `N` provides evidence that `B` holds.  In the standard library,
 the pair constructor is `_,_`, but here we rename it to
 `⟨_,_⟩` so that comma is available for other notations
-(in particular, lists and environments).
-
-<!--
-By convention, we parenthesise pairs, even though `M , N` is also
-accepted by Agda.
--->
+(in particular, lists and contexts).
 
 Given evidence that `A × B` holds, we can conclude that either
 `A` holds or `B` holds.
@@ -112,12 +107,6 @@ tightly than anything save disjunction.
 infixr 2 _×_
 \end{code}
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
-
-<!--
-and of the pairing operator so that it binds less tightly
-than any arithmetic operator.
-`(m * n , p)` parses as `((m * n) , p)`.
--->
 
 Given two types `A` and `B`, we refer to `A x B` as the
 *product* of `A` and `B`.  In set theory, it is also sometimes
@@ -561,19 +550,15 @@ then we may conclude that `B` holds.
 In medieval times, this rule was known by the name *modus ponens*.
 It corresponds to function application.
 
-Defining a function, with an named definition or a lambda expression,
+Defining a function, with an named definition or a lambda abstraction,
 is referred to as *introducing* a function,
 while applying a function is referred to as *eliminating* the function.
 
 Elimination followed by introduction is the identity.
 \begin{code}
 η-→ : ∀ {A B : Set} (f : A → B) → (λ (x : A) → f x) ≡ f
-η-→ {A} {B} f = extensionality η-helper
-  where
-  η-helper : (x : A) → (λ (x : A) → f x) x ≡ f x
-  η-helper x = refl
+η-→ f = refl
 \end{code}
-The proof depends on extensionality.
 
 <!--
 
@@ -582,8 +567,8 @@ always simplify the resulting term.  Thus
 
     λ{ x → N } M
 
-simplifies to `N[x := M]`, where `N[x := M]` stands for the term `N` with each
-free occurrence of `x` replaced by `M`.
+simplifies to `N [ x := M ]`, where `N [ x := M ]` stands for the term
+`N` with each free occurrence of `x` replaced by `M`.
 
 -->
 
@@ -595,7 +580,7 @@ space from `A` to `B`.  It is also sometimes called the *exponential*,
 with `B` raised to the `A` power.  Among other reasons for calling
 it the exponential, note that if type `A` has `m` distinct
 members, and type `B` has `n` distinct members, then the type
-`A → B` has `n ^ m` distinct members.  For instance, consider a
+`A → B` has `nᵐ` distinct members.  For instance, consider a
 type `Bool` with two members and a type `Tri` with three members,
 as defined earlier. The the type `Bool → Tri` has nine (that is,
 three squared) members:
@@ -626,9 +611,9 @@ over to the types.
 
 Corresponding to the law
 
-    (p ^ n) ^ m  =  p ^ (n * m)
+    (pⁿ)ᵐ  ≡  pⁿᵐ
 
-we have the isomorphism
+(or, if you prefer, `(p ^ n) ^ m ≡ p ^ (n * m)`), we have the isomorphism
 
     A → (B → C)  ≃  (A × B) → C
 

@@ -31,8 +31,9 @@ In this chapter we play with variations on a theme.
   here we consider a tiny calculus with just variables,
   abstraction, and application.
 
-In general, one may mix and match any of these features,
-save that full normalisation requires open terms.
+In general, one may mix and match these features,
+save that full normalisation requires open terms and
+embedding naturals and fixpoints requires being untyped.
 The aim of this chapter is to give some appreciation for
 the range of different lambda calculi one may encounter.
 
@@ -503,13 +504,11 @@ We induct on the evidence that the term is well-scoped.
 * If the term is a variable, then it is in normal form.
   (This contrasts with previous proofs, where the variable case was
   ruled out by the restriction to closed terms.)
-
 * If the term is an abstraction, recursively invoke progress on the body.
-  + If it steps, then the whole term steps via `ζ`.
-  + If it is in normal form, then so is the whole term.
   (This contrast with previous proofs, where an abstraction is
   immediately a value.)
-
+  + If it steps, then the whole term steps via `ζ`.
+  + If it is in normal form, then so is the whole term.
 * If the term is an application, consider the function subterm.
   + If it is a variable, recursively invoke progress on the argument.
     - If it steps, then the whole term steps via `ξ₂`;
@@ -634,12 +633,35 @@ _ : eval (gas 100) 2+2ᶜ ≡
 _ = refl
 \end{code}
 
-## Numbers and fixpoint
+## Naturals and fixpoint
 
-We could simulate numbers using Church numerals, but computing
-predecessor is notoriously tricky.  Instead, we use a different
+We could simulate naturals using Church numerals, but computing
+predecessor is tricky and expensive.  Instead, we use a different
 representation, called Scott numerals, where a number is essentially
 defined by the expression that corresponds to its own case statement.
+
+Recall that Church numerals apply a given function for the
+corresponding number of times.  Using named terms, we represent the
+first three Church numerals as follows.
+
+    zero  =  ƛ s ⇒ ƛ z ⇒ z
+    one   =  ƛ s ⇒ ƛ z ⇒ s · z
+    two   =  ƛ s ⇒ ƛ z ⇒ s · (s · z)
+
+In contrast, for Scott numerals, we represent the first three naturals
+as follows:
+
+    zero = ƛ s ⇒ ƛ z ⇒ z
+    one  = ƛ s ⇒ ƛ z ⇒ s · zero
+    two  = ƛ s ⇒ ƛ z ⇒ s · one
+
+Each represenation expects two arguments, one corresponding to
+the successor branch of the case (it expects an additional argument,
+the predecessor of the current argument) and one corresponding to the
+zero branch of the case.  (The cases could be in either order.
+We put the successor case first to ease comparison with Church numerals.)
+
+Here is the representation of naturals encoded with de Bruijn indexes.
 \begin{code}
 `zero : ∀ {Γ} → (Γ ⊢ ★)
 `zero = ƛ ƛ (# 0)
@@ -650,27 +672,33 @@ defined by the expression that corresponds to its own case statement.
 case : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★) → (Γ , ★ ⊢ ★)  → (Γ ⊢ ★)
 case L M N = L · (ƛ N) · M
 \end{code}
+Here we have been careful to retain the exact form of our previous
+definitions.  The successor branch expects an additional variable to
+be in scope (as indicated by its type), so it is converted to an
+ordinary term using lambda abstraction.
+
 We can also define fixpoint.  Using named terms, we define
 
-    fix f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+    μ f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
 
 This works because
 
-      fix f
+      μ f
     ≡
       (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
     —→
       f · ((ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x)))
     ≡
-      f · (fix f)
+      f · (μ f)
 
 With de Bruijn indices, we have the following.
 \begin{code}
 μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
 μ N  =  (ƛ ((ƛ (# 1 · (# 0 · # 0))) · (ƛ (# 1 · (# 0 · # 0))))) · (ƛ N)
 \end{code}
+The argument to fixpoint is treated similarly to the successor branch of case.
 
-We can now define two plus two as before.
+We can now define two plus two exactly as before.
 \begin{code}
 infix 5 μ_
 
@@ -686,10 +714,20 @@ plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 2+2 : ∅ ⊢ ★
 2+2 = plus · two · two
 \end{code}
+Because `` `suc `` is now a defined term rather than primitive,
+it is no longer the case that `2+2` reduces to `four`, but they
+do both reduce to the same normal term. 
 
 #### Exercise (`2+2≡four`)
 
-Use the evaluator to confirm that `2+2` and `four` evaluate to the same term.
+Use the evaluator to confirm that `2+2` and `four` normalise to
+the same term.
+
+#### Exercise (`More-encoded`)
+
+Along the lines above, encode all of the constructs of
+Chapter [More]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+in the untyped lambda calculus.
 
 
 ## Unicode
