@@ -1,6 +1,7 @@
 ---
-title  : Table of Contents
-layout : page
+title          : Table of Contents
+layout         : page
+use_site_title : true
 ---
 
 This book is an introduction to programming language theory, written
