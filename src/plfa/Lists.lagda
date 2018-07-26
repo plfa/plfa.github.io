@@ -518,7 +518,7 @@ Prove that the map of a composition is equal to the composition of two maps.
 
 The last step of the proof requires extensionality.
 
-*Exercise* `map-++-commute`
+### Exercise (`map-++-commute`)
 
 Prove the following relationship between map and append.
 
@@ -583,7 +583,7 @@ so the fold function takes two arguments, `e` and `_⊕_`
 In general, a data type with *n* constructors will have
 a corresponding fold function that takes *n* arguments.
 
-## Exercise (`product`)
+### Exercise (`product`)
 
 Use fold to define a function to find the product of a list of numbers.
 
