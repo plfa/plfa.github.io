@@ -86,7 +86,7 @@ zero or more *judgments* written above a horizontal line, called the
 *conclusion*.  The first rule is the base case. It has no hypotheses,
 and the conclusion asserts that `zero` is a natural.  The second rule
 is the inductive case. It has one hypothesis, which assumes that `m`
-is a natural, and in that case the conclusion asserts that `suc n`
+is a natural, and in that case the conclusion asserts that `suc m`
 is a also a natural.
 
 
