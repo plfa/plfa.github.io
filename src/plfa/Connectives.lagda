@@ -197,8 +197,8 @@ matching against a suitable pattern to enable simplification.
 Being *associative* is not the same as being *associative
 up to isomorphism*.  Compare the two statements:
 
-  (m * n) * p ≡ m * (n * p)
-  (A × B) × C ≃ A × (B × C)
+    (m * n) * p ≡ m * (n * p)
+    (A × B) × C ≃ A × (B × C)
 
 For example, the type `(ℕ × Bool) × Tri` is *not* the same as `ℕ ×
 (Bool × Tri)`. But there is an isomorphism between the two types. For
