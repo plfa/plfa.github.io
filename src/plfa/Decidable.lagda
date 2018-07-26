@@ -268,7 +268,7 @@ _ : 4 ≤? 2 ≡ no (¬s≤s (¬s≤s ¬s≤z))
 _ = refl
 \end{code}
 You can check that Agda will indeed compute these values.  Typing
-`^C ^N` and providing `2 ≤? 4` or `4 ≤? 2` as the requested expression
+`C-c C-n` and providing `2 ≤? 4` or `4 ≤? 2` as the requested expression
 causes Agda to print the values given above.
 
 (A subtlety: if we do not define `¬s≤z` and `¬s≤s` as top-level functions,
@@ -540,7 +540,7 @@ showing that the conjuction of two decidable propositions is itself
 decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
-*Exercise* `any` `any?`
+###Exercise (`any` `any?`)
 
 Just as `All` has analogues `all` and `all?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
@@ -563,4 +563,7 @@ import Relation.Nullary.Sum using (_⊎-dec_)
 
 ## Unicode
 
+    ∧  U+2227  LOGICAL AND (\and, \wedge)
+    ∨  U+2228  LOGICAL OR (\or, \vee)
+    ⊃  U+2283  SUPERSET OF (\sup)
     ᵇ  U+1D47  MODIFIER LETTER SMALL B  (\^b)
