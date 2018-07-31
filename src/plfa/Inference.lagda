@@ -265,7 +265,7 @@ Id = String
 \end{code}
 
 And so are contexts. (Recall that `Type` is imported from
-[DeBruinn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).)
+[DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).)
 \begin{code}
 data Context : Set where
   ∅      : Context
@@ -428,7 +428,7 @@ The former both passes the type decoration as the inherited type and returns
 it as the synthesised type.  The latter takes the synthesised type and the
 inherited type and confirms they are identical.  (It should remind you of
 the equality test in the application rule in the first
-[section]({{ site.baseurl }}{% link out/plfa/Inference.md %}/#algorithm).)
+[section]({{ site.baseurl }}{% link out/plfa/Inference.md %}/#algorithms).)
 
 
 ## Type equality
