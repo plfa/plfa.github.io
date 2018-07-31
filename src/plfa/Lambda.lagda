@@ -935,16 +935,16 @@ For example
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
-give us the types associated with variables ` "z" ` and ` "s" `, respectively.
-The symbol `∋` (pronounced "ni", for "in" backwards) is chosen because
-checking that `Γ ∋ x ⦂ A` is anologous to checking whether `x ⦂ A` appears
-in a list corresponding to `Γ`.
+give us the types associated with variables `` "z" `` and `` "s" ``,
+respectively.  The symbol `∋` (pronounced "ni", for "in"
+backwards) is chosen because checking that `Γ ∋ x ⦂ A` is anologous to
+checking whether `x ⦂ A` appears in a list corresponding to `Γ`.
 
 If two variables in a context have the same name, then lookup
 should return the most recently bound variable, which _shadows_
 the other variables.  For example,
 
-* `` ∅ , "x" : `ℕ ⇒ `ℕ , "x" : `ℕ ∋ "x" ⦂ `ℕ
+* `` ∅ , "x" : `ℕ ⇒ `ℕ , "x" : `ℕ ∋ "x" ⦂ `ℕ ``
 
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
@@ -981,8 +981,8 @@ and indicates in context `Γ` that term `M` has type `A`.
 Context `Γ` provides types for all the free variables in `M`.
 For example
 
-* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ
-* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` ` "s" · ` "z" ⦂  `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" · (` "s" · ` "z") ⦂  `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
