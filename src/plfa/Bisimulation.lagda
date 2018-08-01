@@ -287,6 +287,10 @@ Or, in a diagram:
     |             |
     M† --- —↠ --- N†
 
+In our case, we are going to use a stronger version, where
+we replace both instances of `—↠` by `—→`.  The stronger
+version is called _lock-step_ or _on-the-nose_ bisimulation.
+
 We first formulate a concept corresponding to the lower leg
 of the diagram, that is, its left and bottom edges.
 \begin{code}
@@ -333,37 +337,98 @@ In its structure, it looks a little bit like a proof of progress.
 * If the related terms are abstractions, no reduction applies.
 * If the related terms are applications, there are three subcases.
   - The source term reduces via `ξ-·₁`, in which case the target term does as well.
-    Recursive invocation deals with the reduction contained in `ξ-·₁`.
+    Recursive invocation gives us
 
-          L · M  --- —→ ---  L′ · M
-            |                   |      
-            |                   |
-            ~                   ~
-            |                   |
-            |                   |
-         L† · M† --- —→ --- L′† · M†
+        L  --- —→ ---  L′
+        |              |
+        |              |
+        ~              ~
+        |              |
+        |              |
+        L† --- —→ --- L′†
+
+    from which follows
+
+         L · M  --- —→ ---  L′ · M
+           |                   |      
+           |                   |
+           ~                   ~
+           |                   |
+           |                   |
+        L† · M† --- —→ --- L′† · M†
                   
-
   - The source term reduces via `ξ-·₂`, in which case the target term does as well.
-    Again, recursive invocation deals with the reduction contained in `ξ-·₂`,
-    and now we also need that simulation commutes with values.
-  - The source term reduces via `β`, in which case the target term does as well.
-    Here we require that simulation commutes with both substitution and values.
+    Recursive invocation gives us
+
+        M  --- —→ ---  M′
+        |              |
+        |              |
+        ~              ~
+        |              |
+        |              |
+        M† --- —→ --- M′†
+
+    from which follows
+
+         V · M  --- —→ ---  V · M′
+           |                  |      
+           |                  |
+           ~                  ~
+           |                  |
+           |                  |
+        V† · M† --- —→ --- V† · M′†
+
+    Since simulation commutes with values and `V` is a value, `V†` is also a value.
+
+  - The source term reduces via `β-ƛ`, in which case the target term does as well.
+
+         (ƛ x ⇒ N) · V  --- —→ ---  N [ x := V ] 
+              |                           |      
+              |                           |
+              ~                           ~
+              |                           |
+              |                           |       
+        (ƛ x ⇒ N†) · V† --- —→ --- N† [ x :=  V† ]
+
+    Since simulation commutes with values and `V` is a value, `V†` is also a value.
+    Since simulation commutes with substitution and `N ~ N†` and `V ~ V†`,
+    we have `N [ x := V] ~ N† [ x := V† ]`.
+
 * If the related terms are a let and an application of an abstraction,
   there are two subcases.
+
   - The source term reduces via `ξ-let`, in which case the target term
-    reduces via `ξ-·₂`.
+    reduces via `ξ-·₂`.  Recursive invocation gives us
 
-         let x = M in N  --- —→ ---  let x = M′ in N
-               |                           |
-               |                           |
-               ~                           ~
-               |                           |
-               |                           |
-          (ƛ x ⇒ N) M    --- —→ ---   (ƛ x ⇒ N) M′
+        M  --- —→ ---  M′
+        |              |
+        |              |
+        ~              ~
+        |              |
+        |              |
+        M† --- —→ --- M′†
 
-    Recursive invocation deals with the reduction contained in `ξ-·₁`.
+    from which follows
 
+        let x = M in N --- —→ --- let x = M′ in N
+              |                         |
+              |                         |
+              ~                         ~
+              |                         |
+              |                         |
+        (ƛ x ⇒ N) · M  --- —→ --- (ƛ x ⇒ N) · M′
 
+  - The source term reduces via `β-let`, in which case the target
+    term reduces via `β-ƛ`.
 
+        let x = V in N  --- —→ ---  N [ x := V ]
+              |                         |
+              |                         |
+              ~                         ~
+              |                         |
+              |                         |
+        (ƛ x ⇒ N†) · V† --- —→ --- N† [ x := V ]
 
+    Since simulation commutes with values and `V` is a value, `V†` is also a value.
+    Since simulation commutes with substitution and `N ~ N†` and `V ~ V†`,
+    we have `N [ x := V] ~ N† [ x := V† ]`.
