@@ -25,17 +25,17 @@ target.  We define a relation
 
 between corresponding terms of the two systems. We have a
 _simulation_ of the source by the target if every reduction
-sequence in the source has a corresponding reduction sequence
+in the source has a corresponding reduction sequence
 in the target:
 
 > For every `M`, `M†`, and `N`:
-> If `M ~ M†` and `M —↠ N`
+> If `M ~ M†` and `M —→ N`
 > then `M† —↠ N†` and `N ~ N†`
 > for some `N†`.
         
 Or, in a diagram:
 
-    M  --- —↠ --- N
+    M  --- —→ --- N
     |             |
     |             |
     ~             ~
@@ -43,9 +43,24 @@ Or, in a diagram:
     |             |
     M† --- —↠ --- N†
 
-We are particularly interested in the situation where every
-reduction sequence in the target also is a corresponding reduction
-sequence in the source, a situation called a _bisimulation_.
+Sometimes we will have a stronger condition, where each reduction in the source
+corresponds to a reduction (rather than a reduction sequence)
+in the target:
+
+    M  --- —→ --- N
+    |             |
+    |             |
+    ~             ~
+    |             |
+    |             |
+    M† --- —→ --- N†
+
+This stronger condition is known as _lock-step_ or _on the nose_ simulation.
+
+We are particularly interested in the situation where there is also
+a simulation from the target to the source: every reduction in the
+target has a corresponding reduction sequence in the source.  This
+situation is called a _bisimulation_.
 
 Simulation is established by case analysis over all possible
 reductions and all possible terms to which they are related.  For each
@@ -58,8 +73,8 @@ The key rule defining our relation will be:
 
     M ~ M†
     N ~ N†
-    ---------------------------------
-    `let x `= M `in N ~ ((ƛ x ⇒ N) M)
+    --------------------------------
+    let x = M in N ~ (ƛ x ⇒ N†) · M†
 
 All the other rules are congruences: variables relate to
 themselves, and abstractions and applications relate if their
@@ -83,10 +98,10 @@ fixpoints, products, and so on — would add little save length.
 In this case, our relation can be specified by a function
 from source to target.
 
-    (x) †              =  x
-    (ƛ x ⇒ N) †        =  ƛ x ⇒ (N †)
-    (L · M) †          =  (L †) · (M †)
-    `let x `= M `in N  =  (ƛ x ⇒ (N †)) · (M †)
+    (x) †               =  x
+    (ƛ x ⇒ N) †         =  ƛ x ⇒ (N †)
+    (L · M) †           =  (L †) · (M †)
+    (let x = M in N) †  =  (ƛ x ⇒ (N †)) · (M †)
 
 And we have
 
@@ -94,8 +109,8 @@ And we have
     -------
     M ~ N
 
-But in general we may be given only the relation, without
-any corresponding function.
+But in general we may have a relation without any corresponding
+function.
 
 This chapter formalises establishing that `~` as defined
 above is a simulation from source to target.  We leave
@@ -108,24 +123,15 @@ are in bisimulation.
     
 ## Imports
 
+We import our source language from
+Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
 \begin{code}
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Unit using (⊤; tt)
-open import Function using (_∘_)
-open import Function.Equivalence using (_⇔_; equivalence)
-open import Relation.Nullary using (¬_; Dec; yes; no)
 open import plfa.More
 \end{code}
 
 
 ## Simulation
 
-We import our source language from
-Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
 The simulation is a straightforward formalisation of the rules
 in the introduction.
 \begin{code}
@@ -181,6 +187,11 @@ commutes with values.  That is, if `M ~ M†` and `M` is a value then
 \end{code}
 It is a straightforward case analysis, where here the only value
 of interest is a lambda abstraction.
+
+#### Exercise (`~bval`)
+
+Show that this also holds in the reverse direction: if `M ~ M†`
+and `Value M†` then `Value M`.
 
 
 ## Simulation commutes with renaming
@@ -432,3 +443,17 @@ In its structure, it looks a little bit like a proof of progress.
     Since simulation commutes with values and `V` is a value, `V†` is also a value.
     Since simulation commutes with substitution and `N ~ N†` and `V ~ V†`,
     we have `N [ x := V] ~ N† [ x := V† ]`.
+
+
+#### Exercise (`bLeg`, bsim`)
+
+Show that we also have a simulation in the other direction, and hence that we have
+a bisimulation.
+
+#### Exercise (bisimulation for products)
+
+Show that the two formulations of products in
+Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %})
+are in bisimulation.  The only constructs you need to include are
+variables, abstraction, application, and those connected to products.
+In this case, the simulation is _not_ lock-step.
