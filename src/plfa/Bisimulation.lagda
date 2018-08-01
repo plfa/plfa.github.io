@@ -109,8 +109,8 @@ And we have
     -------
     M ~ N
 
-But in general we may have a relation without any corresponding
-function.
+and conversely. But in general we may have a relation without any
+corresponding function.
 
 This chapter formalises establishing that `~` as defined
 above is a simulation from source to target.  We leave
@@ -168,6 +168,11 @@ However, leaving the simulation small let's us focus on the essence.
 It's a handy technical trick that we can have a large source language,
 but only bother to include in the simulation the terms of interest.
 
+#### Exercise (`_†`)
+
+Formalise the translation from source to target given in the introduction.
+Show that `M † ≡ N` implies `M ~ N`, and conversely.
+
 
 ## Simulation commutes with values
 
@@ -188,7 +193,7 @@ commutes with values.  That is, if `M ~ M†` and `M` is a value then
 It is a straightforward case analysis, where here the only value
 of interest is a lambda abstraction.
 
-#### Exercise (`~bval`)
+#### Exercise (`~val⁻¹`)
 
 Show that this also holds in the reverse direction: if `M ~ M†`
 and `Value M†` then `Value M`.
@@ -445,7 +450,7 @@ In its structure, it looks a little bit like a proof of progress.
     we have `N [ x := V] ~ N† [ x := V† ]`.
 
 
-#### Exercise (`bLeg`, bsim`)
+#### Exercise (`Leg⁻¹`, sim⁻¹`)
 
 Show that we also have a simulation in the other direction, and hence that we have
 a bisimulation.
@@ -455,5 +460,13 @@ a bisimulation.
 Show that the two formulations of products in
 Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %})
 are in bisimulation.  The only constructs you need to include are
-variables, abstraction, application, and those connected to products.
+variables, and those connected to functions and products.
 In this case, the simulation is _not_ lock-step.
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    †  U+2020  DAGGER (\dag)
+    ⁻  U+207B  SUPERSCRIPT MINUS (\^-)
+    ¹  U+00B9  SUPERSCRIPT ONE (\^1)
