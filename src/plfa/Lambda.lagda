@@ -237,7 +237,7 @@ that are bound may become free.  Consider the following terms.
   has both `s` and `z` as bound variables.
 
 * `` ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ``
-  has `s` bound and `z` free.
+  has `z` bound and `s` free.
 
 * `` ` "s" · (` "s" · ` "z") ``
   has both `s` and `z` as free variables.
