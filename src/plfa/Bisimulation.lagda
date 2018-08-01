@@ -28,10 +28,10 @@ _simulation_ of the source by the target if every reduction
 in the source has a corresponding reduction sequence
 in the target:
 
-> For every `M`, `M†`, and `N`:
-> If `M ~ M†` and `M —→ N`
-> then `M† —↠ N†` and `N ~ N†`
-> for some `N†`.
+_Simulation_: For every `M`, `M†`, and `N`:
+If `M ~ M†` and `M —→ N`
+then `M† —↠ N†` and `N ~ N†`
+for some `N†`.
         
 Or, in a diagram:
 
@@ -288,10 +288,10 @@ Once more, the structure of the proof resembles the original.
 Finally, we can show that the relation actually is a simulation.
 Recall that what we wish to show is:
 
-> For every `M`, `M†`, and `N`:
-> If `M ~ M†` and `M —↠ N`
-> then `M† —↠ N†` and `N ~ N†`
-> for some `N†`.
+_Simulation_: For every `M`, `M†`, and `N`:
+If `M ~ M†` and `M —↠ N`
+then `M† —↠ N†` and `N ~ N†`
+for some `N†`.
         
 Or, in a diagram:
 
