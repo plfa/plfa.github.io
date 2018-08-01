@@ -286,26 +286,23 @@ Once more, the structure of the proof resembles the original.
 ## The relation is a simulation
 
 Finally, we can show that the relation actually is a simulation.
-Recall that what we wish to show is:
+In fact, we will show the stronger condition of a lock-step simulation.
+What we wish to show is:
 
-_Simulation_: For every `M`, `M†`, and `N`:
-If `M ~ M†` and `M —↠ N`
-then `M† —↠ N†` and `N ~ N†`
+_Lock-step simulation_: For every `M`, `M†`, and `N`:
+If `M ~ M†` and `M —→ N`
+then `M† —→ N†` and `N ~ N†`
 for some `N†`.
         
 Or, in a diagram:
 
-    M  --- —↠ --- N
+    M  --- —→ --- N
     |             |
     |             |
     ~             ~
     |             |
     |             |
-    M† --- —↠ --- N†
-
-In our case, we are going to use a stronger version, where
-we replace both instances of `—↠` by `—→`.  The stronger
-version is called _lock-step_ or _on-the-nose_ bisimulation.
+    M† --- —→ --- N†
 
 We first formulate a concept corresponding to the lower leg
 of the diagram, that is, its left and bottom edges.
