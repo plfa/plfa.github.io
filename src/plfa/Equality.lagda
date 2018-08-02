@@ -25,19 +25,18 @@ here, any import would create a conflict.
 
 We declare equality as follows.
 \begin{code}
-data _≡_ {A : Set} : A → A → Set where
-  refl : ∀ {x : A} → x ≡ x
+data _≡_ {A : Set} (x : A) : A → Set where
+  refl : x ≡ x
 \end{code}
 In other words, for any type `A` and for any `x` of type `A`, the
 constructor `refl` provides evidence that `x ≡ x`. Hence, every value
 is equivalent to itself, and we have no other way of showing values
-are equivalent.  We have quantified over all levels, so that we can
-apply equivalence to types belonging to any level.  The definition
-features an asymmetry, in that the first argument to `_≡_` is given by
-the parameter `x : A`, while the second is given by an index in `A → Set ℓ`.
-This follows our policy of using parameters wherever possible.
-The first argument to `_≡_` can be a parameter because it doesn't vary,
-while the second must be an index.
+are equivalent.  The definition features an asymmetry, in that the
+first argument to `_≡_` is given by the parameter `x : A`, while the
+second is given by an index in `A → Set ℓ`.  This follows our policy
+of using parameters wherever possible.  The first argument to `_≡_`
+can be a parameter because it doesn't vary, while the second must be
+an index, so it can be required to be equal to the first.
 
 We declare the precedence of equivalence as follows.
 \begin{code}
@@ -58,10 +57,11 @@ constructor `refl`.  It is straightforward to show symmetry.
 sym : ∀ {A : Set} {x y : A} →  x ≡ y → y ≡ x
 sym refl = refl
 \end{code}
-How does this proof work? The argument to `sym` has type `x ≡ y`,
-but on the left-hand side of the equation the argument has been instantiated to the pattern `refl`,
-which requires that `x` and `y` are the same.  Hence, for the right-hand side of the equation
-we need a term of type `x ≡ x`, and `refl` will do.
+How does this proof work? The argument to `sym` has type `x ≡ y`, but
+on the left-hand side of the equation the argument has been
+instantiated to the pattern `refl`, which requires that `x` and `y`
+are the same.  Hence, for the right-hand side of the equation we need
+a term of type `x ≡ x`, and `refl` will do.
 
 It is instructive to develop `sym` interactively.  To start, we supply
 a variable for the argument on the left, and a hole for the body on

@@ -21,6 +21,7 @@ For a note showing how much more compact it is to avoid raw terms:
 For pull requests:
 * Nathaniel Carroll
 * Vikraman Choudhury
+* Ben Darwin
 * Phil de Joux
 * koo5
 * Juhana Laurinharju

@@ -589,42 +589,30 @@ we require an arbitrary context `Γ`, as in the statement of the lemma.
 
 Here is the formal statement and proof that substitution preserves types.
 \begin{code}
-subst : ∀ {Γ y N V A B}
-  → ∅ ⊢ V ⦂ B
-  → Γ , y ⦂ B ⊢ N ⦂ A
+subst : ∀ {Γ x N V A B}
+  → ∅ ⊢ V ⦂ A
+  → Γ , x ⦂ A ⊢ N ⦂ B
     --------------------
-  → Γ ⊢ N [ y := V ] ⦂ A
+  → Γ ⊢ N [ x := V ] ⦂ B
 
-substvar : ∀ {Γ x y V A B}
-  → ∅ ⊢ V ⦂ B
-  → Γ , y ⦂ B ∋ x ⦂ A
-    ------------------------
-  → Γ ⊢ (` x) [ y := V ] ⦂ A 
-
-substbind : ∀ {Γ x y N V A B C}
-  → ∅ ⊢ V ⦂ B
-  → Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
-    ---------------------------------
-  → Γ , x ⦂ A ⊢ N ⟨ x ⟩[ y := V ] ⦂ C
-
-subst ⊢V (⊢` ∋x)           =  substvar ⊢V ∋x
-subst ⊢V (⊢ƛ ⊢N)           =  ⊢ƛ (substbind ⊢V ⊢N)
-subst ⊢V (⊢L · ⊢M)         =  subst ⊢V ⊢L · subst ⊢V ⊢M
-subst ⊢V ⊢zero             =  ⊢zero
-subst ⊢V (⊢suc ⊢M)         =  ⊢suc (subst ⊢V ⊢M)
-subst ⊢V (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (substbind ⊢V ⊢N)
-subst ⊢V (⊢μ ⊢N)           =  ⊢μ (substbind ⊢V ⊢N)
-
-substvar {x = x} {y = y} ⊢V Z with x ≟ y
-... | yes refl             =  weaken ⊢V
-... | no  x≢y              =  ⊥-elim (x≢y refl)
-substvar {x = x} {y = y} ⊢V (S x≢y ∋x) with x ≟ y
-... | yes refl             =  ⊥-elim (x≢y refl)
-... | no  _                =  ⊢` ∋x
-
-substbind {x = x} {y = y} ⊢V ⊢N with x ≟ y
-... | yes refl             =  drop ⊢N
-... | no  x≢y              =  subst ⊢V (swap x≢y ⊢N)
+subst {x = y} ⊢V (⊢` {x = x} Z) with x ≟ y
+... | yes refl        =  weaken ⊢V
+... | no  x≢y         =  ⊥-elim (x≢y refl)
+subst {x = y} ⊢V (⊢` {x = x} (S x≢y ∋x)) with x ≟ y
+... | yes refl        =  ⊥-elim (x≢y refl)
+... | no  _           =  ⊢` ∋x
+subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
+... | yes refl        =  ⊢ƛ (drop ⊢N)
+... | no  x≢y         =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
+subst ⊢V (⊢L · ⊢M)    =  (subst ⊢V ⊢L) · (subst ⊢V ⊢M)
+subst ⊢V ⊢zero        =  ⊢zero
+subst  ⊢V(⊢suc ⊢M)    =  ⊢suc (subst ⊢V ⊢M)
+subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
+... | yes refl        =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
+... | no  x≢y         =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
+subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
+... | yes refl        =  ⊢μ (drop ⊢M)
+... | no  x≢y         =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
 \end{code}
 We induct on the evidence that `N` is well-typed in the
 context `Γ` extended by `x`.
