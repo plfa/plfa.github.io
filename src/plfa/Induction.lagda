@@ -14,8 +14,8 @@ module plfa.Induction where
 
 Now that we've defined the naturals and operations upon them, our next
 step is to learn how to prove properties that they satisfy.  As hinted
-by their name, properties of *inductive datatypes* are proved by
-*induction*.
+by their name, properties of _inductive datatypes_ are proved by
+_induction_.
 
 
 ## Imports
@@ -33,7 +33,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 
 ## Associativity
 
-One property of addition is that it is *associative*, that is, that the
+One property of addition is that it is _associative_, that is, that the
 location of the parentheses does not matter:
 
     (m + n) + p ≡ m + (n + p)
@@ -67,23 +67,23 @@ it appears.  Why should `7 + 5` be the same as `3 + 9`?  We might want
 to gather more evidence, testing the proposition by choosing other
 numbers.  But---since there are an infinite number of
 naturals---testing can never be complete.  Is there any way we can be
-sure that associativity holds for *all* the natural numbers?
+sure that associativity holds for _all_ the natural numbers?
 
 The answer is yes! We can prove a property holds for all naturals using
-*proof by induction*.
+_proof by induction_.
 
 
 ## Proof by induction
 
-Recall the definition of natural numbers consists of a *base case*
-which tells us that `zero` is a natural, and an *inductive case*
+Recall the definition of natural numbers consists of a _base case_
+which tells us that `zero` is a natural, and an _inductive case_
 which tells us that if `m` is a natural then `suc m` is also a natural.
 
 Proof by induction follows the structure of this definition.  To prove
 a property of natural numbers by induction, we need prove two cases.
-First is the *base case*, where we show the property holds for `zero`.
-Second is the *inductive case*, where we assume the the property holds for
-an arbitrary natural `m` (we call this the *inductive hypothesis*), and
+First is the _base case_, where we show the property holds for `zero`.
+Second is the _inductive case_, where we assume the the property holds for
+an arbitrary natural `m` (we call this the _inductive hypothesis_), and
 then show that the property must also hold for `suc m`.
 
 If we write `P m` for a property of `m`, then what we need to
@@ -99,7 +99,7 @@ demonstrate are the following two inference rules:
 Let's unpack these rules.  The first rule is the base case, and
 requires we show that property `P` holds for `zero`.  The second rule
 is the inductive case, and requires we show that if we assume the
-inductive hypothesis, namely that `P` holds for `m`, then it follows that
+inductive hypothesis---namely that `P` holds for `m`---then it follows that
 `P` also holds for `suc m`.
 
 Why does this work?  Again, it can be explained by a creation story.
@@ -145,10 +145,10 @@ You've got the hang of it by now.
     P (suc (suc zero))
     P (suc (suc (suc zero)))
 
-The process continues.  On the *n*th day there will be *n* distinct
+The process continues.  On the _n_'th day there will be _n_ distinct
 properties that hold.  The property of every natural number will appear
 on some given day.  In particular, the property `P n` first appears on
-day *n+1*.
+day _n+1_.
 
 
 ## Our first proof: associativity
@@ -250,7 +250,7 @@ Here, the recursive invocation `+-assoc m n p` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
 yield the needed equation.
 
-A relation is said to be a *congruence* for a given function if it is
+A relation is said to be a _congruence_ for a given function if it is
 preserved by applying that function.  If `e` is evidence that `x ≡ y`,
 then `cong f e` is evidence that `f x ≡ f y`, for any function `f`.
 
@@ -265,7 +265,7 @@ recursion is one of the most appealing aspects of Agda.
 
 ## Our second proof: commutativity
 
-Another important property of addition is that it is *commutative*, that is,
+Another important property of addition is that it is _commutative_, that is,
 that the order of the operands does not matter:
 
     m + n ≡ n + m
@@ -452,10 +452,7 @@ Simplifying both sides with the base case of addition yields the equation:
 
     m + zero ≡ m
 
-The the remaining equation has the justification
-
-    ⟨ +-identityʳ m ⟩
-
+The the remaining equation has the justification `⟨ +-identityʳ m ⟩`,
 which invokes the first lemma.
 
 For the inductive case, we must show:
@@ -476,14 +473,13 @@ have
     suc (m + n) ≡ suc (n + m)
 
 which is justified by congruence and the induction hypothesis,
-`⟨ cong suc (+-comm m n) ⟩`.  This completes the proposition.
+`⟨ cong suc (+-comm m n) ⟩`.  This completes the proof.
 
 Agda requires that identifiers are defined before they are used,
 so we must present the lemmas before the main proposition, as we
 have done above.  In practice, one will often attempt to prove
 the main proposition first, and the equations required to do so
 will suggest what lemmas to prove.
-
 
 
 ## Creation, one last time
@@ -529,8 +525,8 @@ You've got the hang of it by now.
     (2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...
     (3 + 0) + 0 ≡ 3 + (0 + 0)   ...   (3 + 4) + 5 ≡ 3 + (4 + 5)   ...
 
-The process continues.  On the *m*th day we will know all the
-judgements where the first number is less than *m*.
+The process continues.  On the _m_'th day we will know all the
+judgements where the first number is less than _m_.
 
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
@@ -616,7 +612,7 @@ followed by control-l), the question mark will be replaced.
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ m n p = { }0
 
-The empty braces are called a *hole*, and 0 is a number used for
+The empty braces are called a _hole_, and 0 is a number used for
 referring to the hole.  The hole may display highlighted in green.
 Emacs will also create a new window at the bottom of the screen
 displaying the text
