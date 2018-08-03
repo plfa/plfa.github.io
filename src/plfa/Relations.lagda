@@ -9,7 +9,7 @@ module plfa.Relations where
 \end{code}
 
 After having defined operations such as addition and multiplication,
-the next step is to define relations, such as *less than or equal*.
+the next step is to define relations, such as _less than or equal_.
 
 ## Imports
 
@@ -23,7 +23,7 @@ open import Data.Nat.Properties using (+-comm; +-suc)
 
 ## Defining relations
 
-The relation *less than or equal* has an infinite number of
+The relation _less than or equal_ has an infinite number of
 instances.  Here are a few of them:
 
     0 ≤ 0     0 ≤ 1     0 ≤ 2     0 ≤ 3     ...
@@ -46,25 +46,36 @@ definition as a pair of inference rules:
 And here is the definition in Agda:
 \begin{code}
 data _≤_ : ℕ → ℕ → Set where
-  z≤n : ∀ {n : ℕ} → zero ≤ n
-  s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ suc n
+
+  z≤n : ∀ {n : ℕ}
+      --------
+    → zero ≤ n
+
+  s≤s : ∀ {m n : ℕ}
+    → m ≤ n
+      -------------
+    → suc m ≤ suc n
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names,
 while `zero ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces)
-are types.  This is our first use of an *indexed* datatype,
-where we say the type `m ≤ n` is indexed by two naturals, `m` and `n`.
+are types.  By convention, in Agda any line beginning with two
+or more dashes is a comment, and here we have exploited that
+convention to write our Agda code in a form that resembles
+the corresponding inference rules, a trick we will use often
+from now on.  This is also our first use of an _indexed_ datatype,
+where the type `m ≤ n` is indexed by two naturals, `m` and `n`.
 
 Both definitions above tell us the same two things:
 
-+ *Base case*: for all naturals `n`, the proposition `zero ≤ n` holds
-+ *Inductive case*: for all naturals `m` and `n`, if the proposition
+* _Base case_: for all naturals `n`, the proposition `zero ≤ n` holds
+* _Inductive case_: for all naturals `m` and `n`, if the proposition
   `m ≤ n` holds, then the proposition `suc m ≤ suc n` holds.
 
 In fact, they each give us a bit more detail:
 
-+ *Base case*: for all naturals `n`, the constructor `z≤n`
+* _Base case_: for all naturals `n`, the constructor `z≤n`
   produces evidence that `zero ≤ n` holds.
-+ *Inductive case*: for all naturals `m` and `n`, the constructor
+* _Inductive case_: for all naturals `m` and `n`, the constructor
   `s≤s` takes evidence that `m ≤ n` holds into evidence that
   `suc m ≤ suc n` holds.
 
@@ -94,8 +105,8 @@ use `∀`, very similar to our use of `∀` in propositions such as:
     +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 
 However, here the declarations are surrounded by curly braces `{ }` rather than
-parentheses `( )`.  This means that the arguments are *implicit* and need not be
-written explicitly; instead, they are *inferred* by Agda's typechecker. Thus, we
+parentheses `( )`.  This means that the arguments are _implicit_ and need not be
+written explicitly; instead, they are _inferred_ by Agda's typechecker. Thus, we
 write `+-comm m n` for the proof that `m + n ≡ n + m`, but `z≤n` for the proof
 that `zero ≤ m`, leaving `m` implicit.  Similarly, if `m≤n` is evidence that
 `m ≤ n`, we write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving
@@ -136,21 +147,21 @@ will return to this point in Chapter [Decidable]({{ site.baseurl }}{% link out/p
 Relations occur all the time, and mathematicians have agreed
 on names for some of the most common properties.
 
-+ *Reflexive* For all `n`, the relation `n ≤ n` holds.
-+ *Transitive* For all `m`, `n`, and `p`, if `m ≤ n` and
++ _Reflexive_ For all `n`, the relation `n ≤ n` holds.
++ _Transitive_ For all `m`, `n`, and `p`, if `m ≤ n` and
 `n ≤ p` hold, then `m ≤ p` holds.
-+ *Anti-symmetric* For all `m` and `n`, if both `m ≤ n` and
++ _Anti-symmetric_ For all `m` and `n`, if both `m ≤ n` and
 `n ≤ m` hold, then `m ≡ n` holds.
-+ *Total* For all `m` and `n`, either `m ≤ n` or `n ≤ m`
++ _Total_ For all `m` and `n`, either `m ≤ n` or `n ≤ m`
 holds.
 
 The relation `_≤_` satisfies all four of these properties.
 
 There are also names for some combinations of these properties.
 
-+ *Preorder* Any relation that is reflexive and transitive.
-+ *Partial order* Any preorder that is also anti-symmetric.
-+ *Total order* Any partial order that is also total.
++ _Preorder_ Any relation that is reflexive and transitive.
++ _Partial order_ Any preorder that is also anti-symmetric.
++ _Total order_ Any partial order that is also total.
 
 If you ever bump into a relation at a party, you now know how
 to make small talk, by asking it whether it is reflexive, transitive,
@@ -195,7 +206,7 @@ p` hold, then `m ≤ p` holds.
 ≤-trans (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans m≤n n≤p)
 \end{code}
 Here the proof is most easily thought of as by induction on the
-*evidence* that `m ≤ n`, so we have left `m`, `n`, and `p` implicit.
+_evidence_ that `m ≤ n`, so we have left `m`, `n`, and `p` implicit.
 
 In the base case, the first inequality holds by `z≤n`, and so
 we are given `zero ≤ n` and `n ≤ p` and must show `zero ≤ p`,
@@ -279,7 +290,7 @@ Evidence that `Total m n` holds is either of the form
 `forward m≤n` or `flipped n≤m`, where `m≤n` and `n≤m` are
 evidence of `m ≤ n` and `n ≤ m` respectively.
 
-This is our first use of a datatype with *parameters*,
+This is our first use of a datatype with _parameters_,
 in this case `m` and `n`.  It is equivalent to the following
 indexed datatype.
 \begin{code}
@@ -308,15 +319,15 @@ With that preliminary out of the way, we specify and prove totality.
 In this case the proof is by induction over both the first
 and second arguments.  We perform a case analysis:
 
-+ *First base case*: If the first argument is `zero` and the
++ _First base case_: If the first argument is `zero` and the
   second argument is `n` then the forward case holds,
   with `z≤n` as evidence that `zero ≤ n`.
 
-+ *Second base case*: If the first argument is `suc m` and the
++ _Second base case_: If the first argument is `suc m` and the
   second argument is `zero` then the flipped case holds, with
   `z≤n` as evidence that `zero ≤ suc m`.
 
-+ *Inductive case*: If the first argument is `suc m` and the
++ _Inductive case_: If the first argument is `suc m` and the
   second argument is `suc n`, then the inductive hypothesis
   `≤-total m n` establishes one of the following:
 
@@ -371,7 +382,7 @@ matches on the second argument before the first argument.
 ## Monotonicity
 
 If one bumps into both an operator and an ordering at a party, one may ask if
-the operator is *monotonic* with regard to the ordering.  For example, addition
+the operator is _monotonic_ with regard to the ordering.  For example, addition
 is monotonic with regard to inequality, meaning
 
     ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
@@ -386,11 +397,11 @@ addition is monotonic on the right.
 \end{code}
 The proof is by induction on the first argument.
 
-+ *Base case*: The first argument is `zero` in which case
++ _Base case_: The first argument is `zero` in which case
   `zero + p ≤ zero + q` simplifies to `p ≤ q`, the evidence
   for which is given by the argument `p≤q`.
 
-+ *Inductive case*: The first argument is `suc m`, in which case
++ _Inductive case_: The first argument is `suc m`, in which case
   `suc m + p ≤ suc m + q` simplifies to `suc (m + p) ≤ suc (m + q)`.
   The inductive hypothesis `+-monoʳ-≤ m p q p≤q` establishes that
   `m + p ≤ m + q`, and our goal follows by applying `s≤s`.
@@ -440,10 +451,10 @@ The key difference is that zero is less than the successor of an
 arbitrary number, but is not less than zero.
 
 Clearly, strict inequality is not reflexive. However it is
-*irreflexive* in that `n < n` never holds for any value of `n`.
+_irreflexive_ in that `n < n` never holds for any value of `n`.
 Like inequality, strict inequality is transitive.
 Strict inequality is not total, but satisfies the closely related property of
-*trichotomy*: for any `m` and `n`, exactly one of `m < n`, `m ≡ n`, or `m > n`
+_trichotomy_: for any `m` and `n`, exactly one of `m < n`, `m ≡ n`, or `m > n`
 holds (where we define `m > n` to hold exactly where `n < m`).
 It is also monotonic with regards to addition and multiplication.
 
@@ -492,8 +503,8 @@ the fact that inequality is transitive.
 ## Even and odd
 
 As a further example, let's specify even and odd numbers.  Inequality
-and strict inequality are *binary relations*, while even and odd are
-*unary relations*, sometimes called *predicates*.
+and strict inequality are _binary relations_, while even and odd are
+_unary relations_, sometimes called _predicates_.
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -515,7 +526,7 @@ keyword and the declarations of the constructors) and then
 declare the constructors (omitting the signatures `ℕ → Set`
 which were given earlier).
 
-This is also our first use of *overloaded* constructors,
+This is also our first use of _overloaded_ constructors,
 that is, using the same name for different constructors depending on
 the context.  Here `suc` means one of three constructors:
 
