@@ -1,7 +1,6 @@
--- Factored definition of substitution
+## Factored definition of substitution
 
-
-
+\begin{code}
 infix 9 _[_:=_]
 infix 9 _⟨_⟩[_:=_]
 
@@ -25,9 +24,11 @@ N ⟨ x ⟩[ y := V ] with x ≟ y
                                    [zero⇒ M [ y := V ]
                                    |suc x ⇒ N ⟨ x ⟩[ y := V ] ]
 (μ x ⇒ N) [ y := V ]         =  μ x ⇒ (N ⟨ x ⟩[ y := V ])
+\end{code}
 
+## Factored proof that substitution preserves typing
 
-
+\begin{code}
 subst : ∀ {Γ y N V A B}
   → ∅ ⊢ V ⦂ B
   → Γ , y ⦂ B ⊢ N ⦂ A
@@ -64,3 +65,4 @@ substvar {x = x} {y = y} ⊢V (S x≢y ∋x) with x ≟ y
 substbind {x = x} {y = y} ⊢V ⊢N with x ≟ y
 ... | yes refl             =  drop ⊢N
 ... | no  x≢y              =  subst ⊢V (swap x≢y ⊢N)
+\end{code}

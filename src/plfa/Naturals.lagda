@@ -54,8 +54,8 @@ and `zero` and `suc` (short for *successor*) are the
 
 Both definitions above tell us the same two things:
 
-+ *Base case*: `zero` is a natural number.
-+ *Inductive case*: if `m` is a natural number, then `suc m` is also a
+* _Base case_: `zero` is a natural number.
+* _Inductive case_: if `m` is a natural number, then `suc m` is also a
   natural number.
 
 Further, these two rules give the *only* ways of creating natural numbers.
@@ -73,7 +73,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-### Exercise (`longhand`)
+### Exercise (`seven`)
 
 Write out `7` in longhand.
 
@@ -81,9 +81,9 @@ Write out `7` in longhand.
 ## Unpacking the inference rules
 
 Let's unpack the inference rules.  Each inference rule consists of
-zero or more *judgments* written above a horizontal line, called the
-*hypotheses*, and a single judgment written below, called the
-*conclusion*.  The first rule is the base case. It has no hypotheses,
+zero or more _judgments_ written above a horizontal line, called the
+_hypotheses_, and a single judgment written below, called the
+_conclusion_.  The first rule is the base case. It has no hypotheses,
 and the conclusion asserts that `zero` is a natural.  The second rule
 is the inductive case. It has one hypothesis, which assumes that `m`
 is a natural, and in that case the conclusion asserts that `suc m`
@@ -106,25 +106,25 @@ separate line, which is indented to indicate that it belongs to the
 corresponding `data` declaration.  The lines
 
     zero : ℕ
-    suc : ℕ → ℕ
+    suc  : ℕ → ℕ
 
-give *signatures* specifying the types of the constructors `zero` and `suc`.
+give _signatures_ specifying the types of the constructors `zero` and `suc`.
 They tell us that `zero` is a natural number and that `suc` takes a natural
 number as argument and returns a natural number.
 
 You may have noticed that `ℕ` and `→` don't appear on your keyboard.
-They are symbols in *unicode*.  At the end of each chapter is a list
+They are symbols in _unicode_.  At the end of each chapter is a list
 of all unicode symbols introduced in the chapter, including
 instructions on how to type them in the Emacs text editor.  Here
-*type* refers to typing with fingers as opposed to data types!
+_type_ refers to typing with fingers as opposed to data types!
 
 
 ## The story of creation
 
 Let's look again at the rules that define the natural numbers:
 
-+ *Base case*: `zero` is a natural number.
-+ *Inductive case*: if `m` is a natural number, then `suc m` is also a
+* _Base case_: `zero` is a natural number.
+* _Inductive case_: if `m` is a natural number, then `suc m` is also a
   natural number.
 
 Hold on! The second line defines natural numbers in terms of natural
@@ -133,8 +133,8 @@ definition as "Brexit means Brexit"?
 
 In fact, it is possible to assign our definition a meaning without
 resorting to unpermitted circularities.  Furthermore, we can do so
-while only working with *finite* sets and never referring to the
-entire *infinite* set of natural numbers.
+while only working with _finite_ sets and never referring to the
+_infinite_ set of natural numbers.
 
 We will think of it as a creation story.  To start with, we know about
 no natural numbers at all.
@@ -179,20 +179,20 @@ You've got the hang of it by now.
     suc (suc zero) : ℕ
     suc (suc (suc zero)) : ℕ
 
-The process continues.  On the *n*th day there will be *n* distinct
+The process continues.  On the _n_'th day there will be _n_ distinct
 natural numbers. Every natural number will appear on some given day.
-In particular, the number *n* first appears on day *n+1*. And we
+In particular, the number _n_ first appears on day _n+1_. And we
 never actually define the set of numbers in terms of itself. Instead,
-we define the set of numbers on day *n+1* in terms of the set of
-numbers on day *n*.
+we define the set of numbers on day _n+1_ in terms of the set of
+numbers on day _n_.
 
-A process like this one is called *inductive*. We start with nothing, and
+A process like this one is called _inductive_. We start with nothing, and
 build up a potentially infinite set by applying rules that convert one
 finite set into another finite set.
 
-The rule defining zero is called a *base case*, because it introduces
+The rule defining zero is called a _base case_, because it introduces
 a natural number even when we know no other natural numbers.  The rule
-defining successor is called an *inductive case*, because it
+defining successor is called an _inductive case_, because it
 introduces more natural numbers once we already know some.  Note the
 crucial role of the base case.  If we only had inductive rules, then
 we would have no numbers in the beginning, and still no numbers on the
@@ -212,19 +212,19 @@ description.
 
 While the natural numbers have been understood for as long as people
 can count, the inductive definition of the natural numbers is relatively
-recent.  It can be traced back to Richard Dedekind's paper "*Was sind
-und was sollen die Zahlen?*" (What are and what should be the
-numbers?), published in 1888, and Giuseppe Peano's book "*Arithmetices
-principia, nova methodo exposita*" (The principles of arithmetic
+recent.  It can be traced back to Richard Dedekind's paper "_Was sind
+und was sollen die Zahlen?_" (What are and what should be the
+numbers?), published in 1888, and Giuseppe Peano's book "_Arithmetices
+principia, nova methodo exposita_" (The principles of arithmetic
 presented by a new method), published the following year.
 
 
 ## A pragma
 
 In Agda, any text following `--` or enclosed between `{-`
-and `-}` is considered a *comment*.  Comments have no effect on the
+and `-}` is considered a _comment_.  Comments have no effect on the
 code, with the exception of one special kind of comment, called a
-*pragma*, which is enclosed between `{-#` and `#-}`.
+_pragma_, which is enclosed between `{-#` and `#-}`.
 
 Including the line
 \begin{code}
@@ -234,16 +234,16 @@ tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.  The
 declaration is not permitted unless the type given has exactly two
-constructors, one with no argument (corresponding to zero) and
+constructors, one with no arguments (corresponding to zero) and
 one with a single argument the same as the type being defined
 (corresponding to successor).
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals using the Haskell
-type for arbitrary-precision integers.  Representing the natural *n*
-with `zero` and `suc` requires space proportional to *n*, whereas
+type for arbitrary-precision integers.  Representing the natural _n_
+with `zero` and `suc` requires space proportional to _n_, whereas
 representing it as an arbitary-precision integer in Haskell only
-requires space proportional to the logarithm of *n*.
+requires space proportional to the logarithm of _n_.
 
 
 ## Imports
@@ -263,13 +263,14 @@ The first line brings the standard library module that defines
 equality into scope and gives it the name `Eq`. The second line
 opens that module, that is, adds all the names specified in the
 `using` clause into the current scope. In this case the names added
-are `_≡_`, the equivality operator, and `refl`, the name for evidence
-that two terms are equal.  The third line takes a record that
+are `_≡_`, the equality operator, and `refl`, the name for evidence
+that two terms are equal.  The third line takes a module that
 specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
-will see how these are used below.  We take all these as givens for now,
-but will see how they are defined in Chapter [Equality]({{ site.baseurl }}{% link out/plfa/Equality.md %}).
+will see how these are used below.  We take these as givens for now,
+but will see how they are defined in
+Chapter [Equality]({{ site.baseurl }}{% link out/plfa/Equality.md %}).
 
 Agda uses underbars to indicate where terms appear in infix or mixfix
 operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
@@ -288,7 +289,7 @@ addition and multiplication?
 
 As a child I spent much time memorising tables of addition and
 multiplication.  At first the rules seemed tricky and I would often
-make mistakes.  It came as a shock to me to discover *recursion*,
+make mistakes.  It came as a shock to me to discover _recursion_,
 a simple technique by which every one of the infinite possible
 instances of addition and multiplication can be specified in
 just a couple of lines.
@@ -312,7 +313,7 @@ those for the natural numbers.  The base case says that adding zero to
 a number, `zero + n`, returns that number, `n`.  The inductive case
 says that adding the successor of a number to another number,
 `(suc m) + n`, returns the successor of adding the two numbers, `suc (m+n)`.
-We say we use *pattern matching* when constructors appear on the
+We say we use _pattern matching_ when constructors appear on the
 left-hand side of an equation.
 
 If we write `zero` as `0` and `suc m` as `1 + m`, the definition turns
@@ -328,15 +329,15 @@ associativity is written
      (m + n) + p  ≡  m + (n + p)
 
 meaning that the location of parentheses is irrelevant.  We get the
-second equation from this one by taking `m` to be `1`, `n` to be `m`,
+second equation from the third by taking `m` to be `1`, `n` to be `m`,
 and `p` to be `n`.  We write `=` for definitions, while we
 write `≡` for assertions that two already defined things are the same.
 
-The definition is *recursive*, in that the last line defines addition
+The definition is _recursive_, in that the last line defines addition
 in terms of addition.  As with the inductive definition of the
 naturals, the apparent circularity is not a problem.  It works because
 addition of larger numbers is defined in terms of addition of smaller
-numbers.  Such a definition is called *well founded*.
+numbers.  Such a definition is called _well founded_.
 
 For example, let's add two and three.
 \begin{code}
@@ -377,16 +378,17 @@ The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
 
-Both derivations consist of a signature, giving a type, and a binding,
+Both derivations consist of a signature (written with a colon, `:`),
+giving a type, and a binding (written with an equal sign, `=`),
 giving a term of the given type.  Here we use the dummy name `_`.  The
 dummy name can be reused, and is convenient for examples.  Names other
 than `_` must be used only once in a module.
 
-Here the type is `2 + 3 ≡ 5` and the term provides *evidence* for the
-corresponding equation, here written in tabular form as a chain of equations.
-The chain starts with `begin` and finishes with `∎` (pronounced "qed" or
-"tombstone", the latter from its appearance), and consists of a series
-of terms separated by `≡⟨⟩`.
+Here the type is `2 + 3 ≡ 5` and the term provides _evidence_ for the
+corresponding equation, here written in tabular form as a chain of
+equations.  The chain starts with `begin` and finishes with `∎`
+(pronounced "qed" or "tombstone", the latter from its appearance), and
+consists of a series of terms separated by `≡⟨⟩`.
 
 In fact, both proofs are longer than need be, and Agda is satisfied
 with the following.
@@ -395,8 +397,8 @@ _ : 2 + 3 ≡ 5
 _ = refl
 \end{code}
 Agda knows how to compute the value of `2 + 3`, and so can immediately
-check it is the same as `5`.  A binary relation is said to be *reflexive* if
-it holds between a value and itself.  Evidence that a value is equal to
+check it is the same as `5`.  A binary relation is said to be _reflexive_
+if every value relates to itself.  Evidence that a value is equal to
 itself is written `refl`.
 
 In the chains of equations, all Agda checks is that each term
@@ -406,15 +408,15 @@ the equations in an order that makes sense to the reader.
 
 Here `2 + 3 ≡ 5` is a type, and the chains of equations (and also
 `refl`) are terms of the given type; alternatively, one can think of
-each term as *evidence* for the assertion `2 + 3 ≡ 5`.  This duality
+each term as _evidence_ for the assertion `2 + 3 ≡ 5`.  This duality
 of interpretation---of a type as a proposition, and of a term as
 evidence---is central to how we formalise concepts in Agda, and will
 be a running theme throughout this book.
 
-Note that when we use the word *evidence* it is nothing equivocal.  It
+Note that when we use the word _evidence_ it is nothing equivocal.  It
 is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
-other word for evidence, which we will use interchangeably, is *proof*.
+other word for evidence, which we will use interchangeably, is _proof_.
 
 ### Exercise (`3+4`)
 
@@ -443,9 +445,9 @@ is written
 
     (m + n) * p  ≡  (m * p) + (n * p)
 
-We get the second equation from this one by taking `m` to be `1`, `n`
+We get the second equation from the third by taking `m` to be `1`, `n`
 to be `m`, and `p` to be `n`, and then using the fact that one is an
-identity for multiplication, so `1 * n = n`.
+identity for multiplication, so `1 * n ≡ n`.
 
 Again, the definition is well-founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
@@ -474,7 +476,7 @@ it can easily be inferred from the corresponding term.
 
 ### Exercise (`3*4`)
 
-Compute `3 * 4`.
+Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 
 ### Exercise (`_^_`).
@@ -492,7 +494,7 @@ Check that `3 ^ 4` is `81`.
 We can also define subtraction.  Since there are no negative
 natural numbers, if we subtract a larger number from a smaller
 number we will take the result to be zero.  This adaption of
-subtraction to naturals is called *monus* (as compared to *minus*).
+subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first example of a definition that uses pattern
 matching against both arguments.
@@ -504,16 +506,15 @@ zero    ∸ (suc n)  =  zero
 \end{code}
 We can do a simple analysis to show that all the cases are covered.
 
-  * The second argument is either `zero` or `suc n` for some `n`.
+  * Consider the second argument.
     + If it is `zero`, then the first equation applies.
-    + If it is `suc n`, then the first argument is either `zero`
-      or `suc m` for some `m`.
+    + If it is `suc n`, then consider the first argument.
       - If it is `zero`, then the second equation applies.
       - If it is `suc m`, then the third equation applies.
 
 Again, the recursive definition is well-founded because
 monus on bigger numbers is defined in terms of monus on
-small numbers.
+smaller numbers.
 
 For example, let's subtract two from three.
 \begin{code}
@@ -545,29 +546,30 @@ _ =
 
 ### Exercise (`5∸3`, `3∸5`)
 
-Compute `5 ∸ 3` and `3 ∸ 5`.
+Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
 
 ## Precedence
 
-We often use *precedence* to avoid writing too many parentheses.
-Application *binds more tightly than* (or *has precedence over*) any
+We often use _precedence_ to avoid writing too many parentheses.
+Application _binds more tightly than_ (or _has precedence over_) any
 operator, and so we may write `suc m + n` to mean `(suc m) + n`.
 As another example, we say that multiplication binds more tightly than
 addition, and so write `n + m * n` to mean `n + (m * n)`.
-We also sometimes say that addition *associates to the left*, and
+We also sometimes say that addition _associates to the left_, and
 so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
 needs to be declared.
 \begin{code}
-infixl 7  _*_
 infixl 6  _+_  _∸_
+infixl 7  _*_
 \end{code}
-This states that operator `_*_` has precedence level 7, and that
-operators `_+_` and `_∸_` have precedence level 6.  Multiplication
-binds more tightly that addition or subtraction because it has a
-higher precedence.  Writing `infixl` indicates that all three
+This states operators `_+_` and `_∸_` have precedence level 6,
+and operator `_*_` has precedence level 7.
+Addition and monus bind less tightly than multiplication
+because they have lower precedence.
+Writing `infixl` indicates that all three
 operators associate to the left.  One can also write `infixr` to
 indicate that an operator associates to the right, or just `infix` to
 indicate that parentheses are always required to disambiguate.
@@ -577,17 +579,17 @@ indicate that parentheses are always required to disambiguate.
 
 We have chosen to represent a function of two arguments in terms
 of a function of the first argument that returns a function of the
-second argument.  This trick goes by the name *currying*.
+second argument.  This trick goes by the name _currying_.
 
-Agda, like other functional languages such as
-ML and Haskell, is designed to make currying easy to use.  Function
-arrows associate to the right and application associates to the left.
+Agda, like other functional languages such as Haskell and ML,
+is designed to make currying easy to use.  Function
+arrows associate to the right and application associates to the left:
 
-    ℕ → ℕ → ℕ    stands for    ℕ → (ℕ → ℕ)
+`ℕ → ℕ → ℕ` stands for `ℕ → (ℕ → ℕ)`
 
 and
 
-    _+_ 2 3    stands for    (_+_ 2) 3
+`_+_ 2 3` stands for `(_+_ 2) 3`.
 
 The term `_+_ 2` by itself stands for the function that adds two to
 its argument, hence applying it to three yields five.
@@ -599,7 +601,7 @@ since the same idea was previously proposed by Moses Schönfinkel in
 the 1920's.  I was told a joke: "It should be called schönfinkeling,
 but currying is tastier". Only later did I learn that the explanation
 of the misattribution was itself a misattribution.  The idea actually
-appears in the *Begriffschrift* of Gottlob Frege, published in 1879.
+appears in the _Begriffschrift_ of Gottlob Frege, published in 1879.
 We should call it frigging!
 
 
@@ -623,12 +625,12 @@ definition to equivalent inference rules for judgements about equality.
 
 Here we assume we have already defined the infinite set of natural
 numbers, specifying the meaning of the judgment `n : ℕ`.  The first
-inference rule is the base case, and corresponds to line (i) of the
-definition.  It asserts that if `n` is a natural number then adding
-zero to it gives `n`.  The second inference rule is the inductive
-case, and corresponds to line (ii) of the definition. It asserts that
-if adding `m` and `n` gives `p`, then adding `suc m` and `n` gives
-`suc p`.
+inference rule is the base case, and corresponds to the first line of
+the definition.  It asserts that if `n` is a natural number then
+adding zero to it gives `n`.  The second inference rule is the
+inductive case, and corresponds to the second line of the
+definition. It asserts that if adding `m` and `n` gives `p`, then
+adding `suc m` and `n` gives `suc p`.
 
 Again we resort to a creation story, where this time we are
 concerned with judgements about addition.
@@ -669,8 +671,8 @@ You've got the hang of it by now.
     2 + 0 = 2     2 + 1 = 3     2 + 2 = 4     2 + 3 = 5     ...
     3 + 0 = 3     3 + 1 = 4     3 + 2 = 5     3 + 3 = 6     ...
 
-The process continues.  On the *m*th day we will know all the
-equations where the first number is less than *m*.
+The process continues.  On the _m_'th day we will know all the
+equations where the first number is less than _m_.
 
 As we can see, the reasoning that justifies inductive and recursive
 definitions is quite similar.  They might be considered two sides of
@@ -720,9 +722,9 @@ You've got the hang of it by now.
     2 : ℕ    0 + 1 = 1   1 + 0 = 1
     3 : ℕ    0 + 2 = 2   1 + 1 = 2    2 + 0 = 2
 
-On the *n*th day there will be *n* distinct natural numbers, and *n ×
-(n-1) / 2* equations about addition.  The number *n* and all equations
-for addition of numbers less than *n* first appear by day *n+1*.
+On the _n_'th day there will be _n_ distinct natural numbers, and _n ×
+(n-1) / 2_ equations about addition.  The number _n_ and all equations
+for addition of numbers less than _n_ first appear by day _n+1_.
 This gives an entirely finitist view of infinite sets of data and
 equations relating the data.
 
@@ -730,15 +732,17 @@ equations relating the data.
 ## Writing definitions interactively
 
 Agda is designed to be used with the Emacs text editor, and the two
-in combination provide features that help to create proofs interactively.
+in combination provide features that help to create definitions
+and proofs interactively.
 
 Begin by typing
 
     _+_ : ℕ → ℕ → ℕ
     m + n = ?
 
-The question mark indicates that you would like Agda to help with filling
-in that part of the code. If you type `C-c C-l` (hitting the `c` key followed by the `l` key while pressing the Ctrl key)
+The question mark indicates that you would like Agda to help with
+filling in that part of the code. If you type `C-c C-l` (pressing
+the control key while hitting the `c` key followed by the `l` key)
 the question mark will be replaced.
 
     _+_ : ℕ → ℕ → ℕ
@@ -835,13 +839,13 @@ tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
 Haskell operators on the arbitrary-precision integer type.
 Representing naturals with `zero` and `suc` requires time proportional
-to *m* to add *m* and *n*, whereas representing naturals as integers
+to _m_ to add _m_ and _n_, whereas representing naturals as integers
 in Haskell requires time proportional to the larger of the logarithms
-of *m* and *n*.  Similarly, representing naturals with `zero`
-and `suc` requires time proportional to the product of *m* and *n* to
-multiply *m* and *n*, whereas representing naturals as integers in
-Haskell requires time proportional to the sum of the logarithms of *m*
-and *n*.
+of _m_ and _n_.  Similarly, representing naturals with `zero`
+and `suc` requires time proportional to the product of _m_ and _n_ to
+multiply _m_ and _n_, whereas representing naturals as integers in
+Haskell requires time proportional to the sum of the logarithms of
+_m_ and _n_.
 
 
 ## Standard library

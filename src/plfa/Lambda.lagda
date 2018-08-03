@@ -451,6 +451,7 @@ _ : (ƛ "y" ⇒ ` "y") [ "x" := `zero ] ≡ ƛ "y" ⇒ ` "y"
 _ = refl
 \end{code}
 
+
 #### Quiz
 
 What is the result of the following substitution?
@@ -461,6 +462,15 @@ What is the result of the following substitution?
 2. `` (ƛ "y" ⇒ ` "x" · (ƛ "x" ⇒ `zero)) ``
 3. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ ` "x")) ``
 4. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ `zero)) ``
+
+
+#### Exercise (`_[_:=_]′`)
+
+The definition of substitution above has three clauses (`ƛ`, `case`,
+and `μ`) that invoke a with clause to deal with bound variables.
+Rewrite the definition to factor the common part of these three
+clauses into a single function, defined by mutual recursion with
+substitution.
 
 
 ## Reduction

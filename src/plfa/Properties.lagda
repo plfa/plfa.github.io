@@ -767,6 +767,15 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
+#### Exercise (`subst′`)
+
+Rewrite `subst` to work with the modified definition `_[_:=_]′`
+from the exercise in the previous chapter.  As before, this
+should factor dealing with bound variables into a single function,
+defined by mutual recursion with the proof that substitution
+preserves types.
+
+
 ## Preservation
 
 Once we have shown that substitution preserves types, showing
