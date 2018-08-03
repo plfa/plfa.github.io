@@ -734,8 +734,14 @@ inherit Γ `case L [zero⇒ M |suc x ⇒ N ] A with synthesize Γ L
 ...    | yes ⊢M with inherit (Γ , x ⦂ `ℕ) N A
 ...       | no ¬⊢N          =  no (λ{ (⊢case _ _ ⊢N)   →  ¬⊢N ⊢N })
 ...       | yes ⊢N          =  yes (⊢case ⊢L ⊢M ⊢N)
-inherit Γ (μ x ⇒ M) A = {!!}
-inherit Γ (x ↑) A = {!!}
+inherit Γ (μ x ⇒ N) A with inherit (Γ , x ⦂ A) N A
+... | no ¬⊢N                =  no  (λ{ (⊢μ ⊢N)  →  ¬⊢N ⊢N })
+... | yes ⊢N                =  yes (⊢μ ⊢N)
+inherit Γ (M ↑) B with synthesize Γ M
+... | no  ¬∃                =  no  (λ{ (⊢↑ ⊢M _)  →  ¬∃ ⟨ _ , ⊢M ⟩ })
+... | yes ⟨ A , ⊢M ⟩ with A ≟Tp B
+...   | no  A≢B             =  no  (λ{ (⊢↑ ⊢M′ A≡B)  →  {!!} })
+...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
 {-
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) =
   do ⊢N ← inherit (Γ , x ⦂ A) N B
