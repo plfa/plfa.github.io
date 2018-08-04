@@ -629,6 +629,34 @@ translates to
 
 We will apply this sugar to sweeten our subsequent presentation.
 
+## Some obvious lemmas
+
+\begin{code}
+dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
+dom≡ refl = refl
+
+rng≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → B ≡ B′
+rng≡ refl = refl
+
+ℕ≢⇒ : ∀ {A B} → `ℕ ≢ A ⇒ B
+ℕ≢⇒ ()
+\end{code}
+
+## Synthesized types are unique
+
+\begin{code}
+∋uniq : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
+∋uniq Z Z                 =  refl
+∋uniq Z (S x≢y _)         =  ⊥-elim (x≢y refl)
+∋uniq (S x≢y _) Z         =  ⊥-elim (x≢y refl)
+∋uniq (S _ ∋x) (S _ ∋x′)  =  ∋uniq ∋x ∋x′
+
+uniq : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
+uniq (⊢` ∋x) (⊢` ∋x′)       =  ∋uniq ∋x ∋x′
+uniq (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq ⊢L ⊢L′)
+uniq (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl 
+\end{code}
+
 
 ## Lookup type of a variable in the context
 
@@ -675,15 +703,6 @@ inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type) → Dec (Γ ⊢ M ↓ A)
 
 We first consider the code for synthesis.
 \begin{code}
-uniq : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
-uniq ⊢M ⊢M′ = {!!}
-
-ℕ≢⇒ : ∀ {A B} → `ℕ ≢ A ⇒ B
-ℕ≢⇒ ()
-
-dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
-dom≡ refl = refl
-
 ¬arg : ∀ {Γ A B L M} → Γ ⊢ L ↑ A ⇒ B → ¬ Γ ⊢ M ↓ A → ¬ ∃[ B′ ](Γ ⊢ L · M ↑ B′)
 ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M ⟩ rewrite dom≡ (uniq ⊢L ⊢L′) = ¬⊢M ⊢M
 
