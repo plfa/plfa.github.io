@@ -684,8 +684,8 @@ uniq ⊢M ⊢M′ = {!!}
 dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
 dom≡ refl = refl
 
-nope : ∀ {Γ A B L M} → Γ ⊢ L ↑ A ⇒ B → ¬ Γ ⊢ M ↓ A → ¬ ∃[ B′ ](Γ ⊢ L · M ↑ B′)
-nope ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M ⟩ rewrite dom≡ (uniq ⊢L ⊢L′) = ¬⊢M ⊢M
+¬arg : ∀ {Γ A B L M} → Γ ⊢ L ↑ A ⇒ B → ¬ Γ ⊢ M ↓ A → ¬ ∃[ B′ ](Γ ⊢ L · M ↑ B′)
+¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M ⟩ rewrite dom≡ (uniq ⊢L ⊢L′) = ¬⊢M ⊢M
 
 synthesize Γ (` x) with lookup Γ x
 ... | no  ¬∃              =  no  (λ{ ⟨ A , ⊢` ∋x ⟩ → ¬∃ ⟨ A , ∋x ⟩ })
@@ -694,7 +694,7 @@ synthesize Γ (L · M) with synthesize Γ L
 ... | no  ¬∃              =  no  (λ{ ⟨ _ , ⊢L  · _  ⟩  →  ¬∃ ⟨ _ , ⊢L ⟩ })
 ... | yes ⟨ `ℕ ,    ⊢L ⟩  =  no  (λ{ ⟨ _ , ⊢L′ · _  ⟩  →  ℕ≢⇒ (uniq ⊢L ⊢L′) })
 ... | yes ⟨ A ⇒ B , ⊢L ⟩ with inherit Γ M A
-...    | no  ¬⊢M          =  no  (nope ⊢L ¬⊢M)
+...    | no  ¬⊢M          =  no  (¬arg ⊢L ¬⊢M)
 ...    | yes ⊢M           =  yes ⟨ B , ⊢L · ⊢M ⟩  
 synthesize Γ (M ↓ A) with inherit Γ M A
 ... | no  ¬⊢M             =  no  (λ{ ⟨ _ , ⊢↓ ⊢M ⟩  →  ¬⊢M ⊢M })
@@ -716,6 +716,9 @@ There are three cases.
 
 We next consider the code for inheritance.
 \begin{code}
+¬switch : ∀ {Γ M A A′ B} → (Γ ⊢ M ↑ A) → (Γ ⊢ M ↑ A′) → A ≢ B → A′ ≡ B → ⊥
+¬switch ⊢M ⊢M′ A≢B A′≡B rewrite uniq ⊢M ⊢M′ = A≢B A′≡B
+
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
 ... | no ¬⊢N                =  no  (λ{ (⊢ƛ ⊢N)  →  ¬⊢N ⊢N })
 ... | yes ⊢N                =  yes (⊢ƛ ⊢N)
@@ -727,52 +730,21 @@ inherit Γ (`suc M) `ℕ with inherit Γ M `ℕ
 ... | no ¬⊢M                =  no (λ{ (⊢suc ⊢M)  →  ¬⊢M ⊢M })
 ... | yes ⊢M                =  yes (⊢suc ⊢M)
 inherit Γ `case L [zero⇒ M |suc x ⇒ N ] A with synthesize Γ L
-... | no ¬∃                 =  no (λ{ (⊢case ⊢L  _ _)  →  ¬∃ ⟨ `ℕ , ⊢L ⟩})
-... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no (λ{ (⊢case ⊢L′ _ _)  →  ℕ≢⇒ (uniq ⊢L′ ⊢L) })   
+... | no ¬∃                 =  no (λ{ (⊢case ⊢L  _ _) → ¬∃ ⟨ `ℕ , ⊢L ⟩})
+... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq ⊢L′ ⊢L) })   
 ... | yes ⟨ `ℕ ,    ⊢L ⟩ with inherit Γ M A
-...    | no ¬⊢M             =  no (λ{ (⊢case _ ⊢M _)   →  ¬⊢M ⊢M })
+...    | no ¬⊢M             =  no (λ{ (⊢case _ ⊢M _) → ¬⊢M ⊢M })
 ...    | yes ⊢M with inherit (Γ , x ⦂ `ℕ) N A
-...       | no ¬⊢N          =  no (λ{ (⊢case _ _ ⊢N)   →  ¬⊢N ⊢N })
+...       | no ¬⊢N          =  no (λ{ (⊢case _ _ ⊢N) → ¬⊢N ⊢N })
 ...       | yes ⊢N          =  yes (⊢case ⊢L ⊢M ⊢N)
 inherit Γ (μ x ⇒ N) A with inherit (Γ , x ⦂ A) N A
-... | no ¬⊢N                =  no  (λ{ (⊢μ ⊢N)  →  ¬⊢N ⊢N })
+... | no ¬⊢N                =  no  (λ{ (⊢μ ⊢N) → ¬⊢N ⊢N })
 ... | yes ⊢N                =  yes (⊢μ ⊢N)
 inherit Γ (M ↑) B with synthesize Γ M
-... | no  ¬∃                =  no  (λ{ (⊢↑ ⊢M _)  →  ¬∃ ⟨ _ , ⊢M ⟩ })
+... | no  ¬∃                =  no  (λ{ (⊢↑ ⊢M _) → ¬∃ ⟨ _ , ⊢M ⟩ })
 ... | yes ⟨ A , ⊢M ⟩ with A ≟Tp B
-...   | no  A≢B             =  no  (λ{ (⊢↑ ⊢M′ A≡B)  →  {!!} })
+...   | no  A≢B             =  no  (λ{ (⊢↑ ⊢M′ A′≡B) → ¬switch ⊢M ⊢M′ A≢B A′≡B })
 ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
-{-
-inherit Γ (ƛ x ⇒ N) (A ⇒ B) =
-  do ⊢N ← inherit (Γ , x ⦂ A) N B
-     return (⊢ƛ ⊢N)
-inherit Γ (ƛ x ⇒ N) `ℕ =
-  error⁻ "lambda cannot be of type natural" (ƛ x ⇒ N) []
-inherit Γ `zero `ℕ =
-  return ⊢zero
-inherit Γ `zero (A ⇒ B) =
-  error⁻ "zero cannot be function" `zero [ A ⇒ B ]
-inherit Γ (`suc M) `ℕ =
-  do ⊢M ← inherit Γ M `ℕ
-     return (⊢suc ⊢M)
-inherit Γ (`suc M) (A ⇒ B) =
-  error⁻ "suc cannot be function" (`suc M) [ A ⇒ B ]
-inherit Γ (`case L [zero⇒ M |suc x ⇒ N ]) A =
-  do ⟨ `ℕ , ⊢L ⟩ ← synthesize Γ L
-       where ⟨ B ⇒ C , _ ⟩ → error⁻ "cannot case on function"
-                                    (`case L [zero⇒ M |suc x ⇒ N ])
-                                    [ B ⇒ C ]
-     ⊢M ← inherit Γ M A
-     ⊢N ← inherit (Γ , x ⦂ `ℕ) N A
-     return (⊢case ⊢L ⊢M ⊢N)
-inherit Γ (μ x ⇒ M) A =
-  do ⊢M ← inherit (Γ , x ⦂ A) M A
-     return (⊢μ ⊢M)
-inherit Γ (M ↑) B =
-  do ⟨ A , ⊢M ⟩ ← synthesize Γ M
-     yes A≡B ← return (A ≟Tp B)
-       where no _ → error⁻ "inheritance and synthesis conflict" (M ↑) [ A , B ]
-     return (⊢↑ ⊢M A≡B)
 \end{code}
 There are nine cases.  We consider those for abstraction
 and for switching from inherited to synthesized.
@@ -811,15 +783,15 @@ Here is the result of typing two plus two on naturals.
    (⊢μ
     (⊢ƛ
      (⊢ƛ
-      (⊢case (Ax (S ("m" ≠ "n") Z)) (⊢↑ (Ax Z) refl)
+      (⊢case (⊢` (S ("m" ≠ "n") Z)) (⊢↑ (⊢` Z) refl)
        (⊢suc
         (⊢↑
-         (Ax
+         (⊢`
           (S ("p" ≠ "m")
            (S ("p" ≠ "n")
             (S ("p" ≠ "m") Z)))
-          · ⊢↑ (Ax Z) refl
-          · ⊢↑ (Ax (S ("n" ≠ "m") Z)) refl)
+          · ⊢↑ (⊢` Z) refl
+          · ⊢↑ (⊢` (S ("n" ≠ "m") Z)) refl)
          refl))))))
    · ⊢suc (⊢suc ⊢zero)
    · ⊢suc (⊢suc ⊢zero))
@@ -827,7 +799,7 @@ Here is the result of typing two plus two on naturals.
 We confirm that synthesis on the relevant term returns
 natural as the type and the above derivation.
 \begin{code}
-_ : synthesize ∅ 2+2 ≡ return ⟨ `ℕ , ⊢2+2 ⟩
+_ : synthesize ∅ 2+2 ≡ yes ⟨ `ℕ , ⊢2+2 ⟩
 _ = refl
 \end{code}
 Indeed, the above derivation was computed by evaluating the
@@ -845,43 +817,43 @@ Here is the result of typing two plus two with Church numerals.
     (⊢ƛ
      (⊢ƛ
       (⊢↑
-       (Ax
+       (⊢`
         (S ("m" ≠ "z")
          (S ("m" ≠ "s")
           (S ("m" ≠ "n") Z)))
-        · ⊢↑ (Ax (S ("s" ≠ "z") Z)) refl
+        · ⊢↑ (⊢` (S ("s" ≠ "z") Z)) refl
         ·
         ⊢↑
-        (Ax
+        (⊢`
          (S ("n" ≠ "z")
           (S ("n" ≠ "s") Z))
-         · ⊢↑ (Ax (S ("s" ≠ "z") Z)) refl
-         · ⊢↑ (Ax Z) refl)
+         · ⊢↑ (⊢` (S ("s" ≠ "z") Z)) refl
+         · ⊢↑ (⊢` Z) refl)
         refl)
        refl)))))
   ·
   ⊢ƛ
   (⊢ƛ
    (⊢↑
-    (Ax (S ("s" ≠ "z") Z) ·
-     ⊢↑ (Ax (S ("s" ≠ "z") Z) · ⊢↑ (Ax Z) refl)
+    (⊢` (S ("s" ≠ "z") Z) ·
+     ⊢↑ (⊢` (S ("s" ≠ "z") Z) · ⊢↑ (⊢` Z) refl)
      refl)
     refl))
   ·
   ⊢ƛ
   (⊢ƛ
    (⊢↑
-    (Ax (S ("s" ≠ "z") Z) ·
-     ⊢↑ (Ax (S ("s" ≠ "z") Z) · ⊢↑ (Ax Z) refl)
+    (⊢` (S ("s" ≠ "z") Z) ·
+     ⊢↑ (⊢` (S ("s" ≠ "z") Z) · ⊢↑ (⊢` Z) refl)
      refl)
     refl))
-  · ⊢ƛ (⊢suc (⊢↑ (Ax Z) refl))
+  · ⊢ƛ (⊢suc (⊢↑ (⊢` Z) refl))
   · ⊢zero
 \end{code}
 We confirm that synthesis on the relevant term returns
 natural as the type and the above derivation.
 \begin{code}
-_ : synthesize ∅ 2+2ᶜ ≡ return ⟨ `ℕ , ⊢2+2ᶜ ⟩
+_ : synthesize ∅ 2+2ᶜ ≡ yes ⟨ `ℕ , ⊢2+2ᶜ ⟩
 _ = refl
 \end{code}
 Again, the above derivation was computed by evaluating the
@@ -890,41 +862,44 @@ term on the left, and editing.
 ## Testing the error cases
 
 It is important not just to check that code works as intended,
-but also that it fails as intended.  Here is one test case to
+but also that it fails as intended.
+<!--
+Here is one test case to
 exercise each of the possible error messages.
+-->
 \begin{code}
-_ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡
-  error⁺ "variable not bound" (` "y") []
+_ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡ no _
+  -- error⁺ "variable not bound" (` "y") []
 _ = refl
 
-_ : synthesize ∅ ((two ↓ `ℕ) · two) ≡
-  error⁺ "must apply function"
-    ((`suc (`suc `zero) ↓ `ℕ) · `suc (`suc `zero)) []
+_ : synthesize ∅ ((two ↓ `ℕ) · two) ≡ no _
+  -- error⁺ "must apply function"
+  --   ((`suc (`suc `zero) ↓ `ℕ) · `suc (`suc `zero)) []
 _ = refl
 
-_ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡
-  error⁻ "lambda cannot be of type natural"
-    (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑)) []
+_ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡ no _
+  -- error⁻ "lambda cannot be of type natural"
+  --   (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑)) []
 _ = refl
 
-_ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡
-  error⁻ "zero cannot be function" `zero [ `ℕ ⇒ `ℕ ]
+_ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡ no _
+  -- error⁻ "zero cannot be function" `zero [ `ℕ ⇒ `ℕ ]
 _ = refl
 
-_ : synthesize ∅ (two ↓ `ℕ ⇒ `ℕ) ≡
-  error⁻ "suc cannot be function" (`suc (`suc `zero)) [ `ℕ ⇒ `ℕ ]
+_ : synthesize ∅ (two ↓ `ℕ ⇒ `ℕ) ≡ no _
+  -- error⁻ "suc cannot be function" (`suc (`suc `zero)) [ `ℕ ⇒ `ℕ ]
 _ = refl
 
 _ : synthesize ∅
-      ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡
-  error⁻ "cannot case on function"
-    `case (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑))
-          ↓ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ]
-    [ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ]
+      ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
+  -- error⁻ "cannot case on function"
+  --   `case (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑))
+  --         ↓ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ]
+  --   [ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ]
 _ = refl
 
-_ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡
-  error⁻ "inheritance and synthesis conflict" (` "x" ↑) [ `ℕ , `ℕ ⇒ `ℕ ]
+_ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡ no _
+  -- error⁻ "inheritance and synthesis conflict" (` "x" ↑) [ `ℕ , `ℕ ⇒ `ℕ ]
 _ = refl
 \end{code}
 
@@ -961,7 +936,7 @@ there are two mutually recursive erasure functions.
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
 
-∥ Ax ⊢x ∥⁺ =  DB.` ∥ ⊢x ∥∋
+∥ ⊢` ⊢x ∥⁺ =  DB.` ∥ ⊢x ∥∋
 ∥ ⊢L · ⊢M ∥⁺ =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
 ∥ ⊢↓ ⊢M ∥⁺ =  ∥ ⊢M ∥⁻
 
@@ -986,7 +961,6 @@ _ = refl
 
 _ : ∥ ⊢2+2ᶜ ∥⁺ ≡ DB.2+2ᶜ
 _ = refl
--}
 \end{code}
 Thus, we have confirmed that bidirectional type inference to
 convert decorated versions of the lambda terms from
