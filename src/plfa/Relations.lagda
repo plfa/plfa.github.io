@@ -56,14 +56,13 @@ data _≤_ : ℕ → ℕ → Set where
       -------------
     → suc m ≤ suc n
 \end{code}
-Here `z≤n` and `s≤s` (with no spaces) are constructor names,
-while `zero ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces)
-are types.  By convention, in Agda any line beginning with two
-or more dashes is a comment, and here we have exploited that
-convention to write our Agda code in a form that resembles
-the corresponding inference rules, a trick we will use often
-from now on.  This is also our first use of an _indexed_ datatype,
-where the type `m ≤ n` is indexed by two naturals, `m` and `n`.
+Here `z≤n` and `s≤s` (with no spaces) are constructor names, while
+`zero ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces) are types.
+This is our first use of an _indexed_ datatype, where the type `m ≤ n`
+is indexed by two naturals, `m` and `n`.  In Agda any line beginning
+with two or more dashes is a comment, and here we have exploited that
+convention to write our Agda code in a form that resembles the
+corresponding inference rules, a trick we will use often from now on.
 
 Both definitions above tell us the same two things:
 
@@ -98,19 +97,20 @@ _ = s≤s (s≤s z≤n)
 
 ## Implicit arguments
 
-This is our first use of implicit arguments.
-In the definition of inequality, the two lines defining the constructors
-use `∀`, very similar to our use of `∀` in propositions such as:
+This is our first use of implicit arguments.  In the definition of
+inequality, the two lines defining the constructors use `∀`, very
+similar to our use of `∀` in propositions such as:
 
     +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 
-However, here the declarations are surrounded by curly braces `{ }` rather than
-parentheses `( )`.  This means that the arguments are _implicit_ and need not be
-written explicitly; instead, they are _inferred_ by Agda's typechecker. Thus, we
-write `+-comm m n` for the proof that `m + n ≡ n + m`, but `z≤n` for the proof
-that `zero ≤ m`, leaving `m` implicit.  Similarly, if `m≤n` is evidence that
-`m ≤ n`, we write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving
-both `m` and `n` implicit.
+However, here the declarations are surrounded by curly braces `{ }`
+rather than parentheses `( )`.  This means that the arguments are
+_implicit_ and need not be written explicitly; instead, they are
+_inferred_ by Agda's typechecker. Thus, we write `+-comm m n` for the
+proof that `m + n ≡ n + m`, but `z≤n` for the proof that `zero ≤ n`,
+leaving `n` implicit.  Similarly, if `m≤n` is evidence that `m ≤ n`,
+we write `s≤s m≤n` for evidence that `suc m ≤ suc n`, leaving both `m`
+and `n` implicit.
 
 If we wish, it is possible to provide implicit arguments explicitly by
 writing the arguments inside curly braces.  For instance, here is the
@@ -120,6 +120,17 @@ explicit.
 _ : 2 ≤ 4
 _ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
 \end{code}
+One may also identify implicit arguments by name.
+\begin{code}
+_ : 2 ≤ 4
+_ = s≤s {m = 1} {n = 3} (s≤s {m = 0} {n = 2} (z≤n {n = 2}))
+\end{code}
+In the latter format, you may only supply some implicit arguments.
+\begin{code}
+_ : 2 ≤ 4
+_ = s≤s {n = 3} (s≤s {n = 2} z≤n)
+\end{code}
+It is not permitted to swap implicit arguments, even when named.
 
 
 ## Precedence
@@ -137,9 +148,10 @@ either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 
 ## Decidability
 
-Given two numbers, it is straightforward to compute whether or not the first is
-less than or equal to the second.  We don't give the code for doing so here, but
-will return to this point in Chapter [Decidable]({{ site.baseurl }}{% link out/plfa/Decidable.md %}).
+Given two numbers, it is straightforward to compute whether or not the
+first is less than or equal to the second.  We don't give the code for
+doing so here, but will return to this point in
+Chapter [Decidable]({{ site.baseurl }}{% link out/plfa/Decidable.md %}).
 
 
 ## Properties of ordering relations
@@ -147,49 +159,57 @@ will return to this point in Chapter [Decidable]({{ site.baseurl }}{% link out/p
 Relations occur all the time, and mathematicians have agreed
 on names for some of the most common properties.
 
-+ _Reflexive_ For all `n`, the relation `n ≤ n` holds.
-+ _Transitive_ For all `m`, `n`, and `p`, if `m ≤ n` and
+* _Reflexive_ For all `n`, the relation `n ≤ n` holds.
+* _Transitive_ For all `m`, `n`, and `p`, if `m ≤ n` and
 `n ≤ p` hold, then `m ≤ p` holds.
-+ _Anti-symmetric_ For all `m` and `n`, if both `m ≤ n` and
+* _Anti-symmetric_ For all `m` and `n`, if both `m ≤ n` and
 `n ≤ m` hold, then `m ≡ n` holds.
-+ _Total_ For all `m` and `n`, either `m ≤ n` or `n ≤ m`
+* _Total_ For all `m` and `n`, either `m ≤ n` or `n ≤ m`
 holds.
 
 The relation `_≤_` satisfies all four of these properties.
 
 There are also names for some combinations of these properties.
 
-+ _Preorder_ Any relation that is reflexive and transitive.
-+ _Partial order_ Any preorder that is also anti-symmetric.
-+ _Total order_ Any partial order that is also total.
+* _Preorder_ Any relation that is reflexive and transitive.
+* _Partial order_ Any preorder that is also anti-symmetric.
+* _Total order_ Any partial order that is also total.
 
 If you ever bump into a relation at a party, you now know how
 to make small talk, by asking it whether it is reflexive, transitive,
 anti-symmetric, and total. Or instead you might ask whether it is a
 preorder, partial order, or total order.
 
-Less frivolously, if you ever bump into a relation while reading
-a technical paper, this gives you an easy way to orient yourself,
-by checking whether or not it is a preorder, partial order, or total order.
-A careful author will often make it explicit, for instance by saying
-that a given relation is a preorder but not a partial order, or a
-partial order but not a total order. (Can you think of examples of
-such relations?)
+Less frivolously, if you ever bump into a relation while reading a
+technical paper, this gives you an easy way to orient yourself, by
+checking whether or not it is a preorder, partial order, or total
+order.  A careful author will often make it explicit, for instance by
+saying that a given relation is a preorder but not a partial order, or
+a partial order but not a total order.
+
+
+#### Exercise (`orderings`).
+
+Give an example of a preorder that is not a partial order.
+
+Give an example of a partial order that is not a preorder.
 
 
 ## Reflexivity
 
 The first property to prove about comparison is that it is reflexive:
-for any natural `n`, the relation `n ≤ n` holds.
+for any natural `n`, the relation `n ≤ n` holds.  We follow the
+convention in the standard library and make the argument implicit,
+as that will make it easier to invoke reflection.
 \begin{code}
 ≤-refl : ∀ {n : ℕ} → n ≤ n
-≤-refl {zero} = z≤n
-≤-refl {suc n} = s≤s (≤-refl {n})
+≤-refl {zero}   =  z≤n
+≤-refl {suc n}  =  s≤s (≤-refl {n})
 \end{code}
-The proof is a straightforward induction on `n`.  In the base case,
-`zero ≤ zero` holds by `z≤n`.  In the inductive case, the inductive
-hypothesis `≤-refl n` gives us a proof of `n ≤ n`, and applying `s≤s`
-to that yields a proof of `suc n ≤ suc n`.
+The proof is a straightforward induction on the implicit argument `n`.
+In the base case, `zero ≤ zero` holds by `z≤n`.  In the inductive
+case, the inductive hypothesis `≤-refl {n}` gives us a proof of `n ≤
+n`, and applying `s≤s` to that yields a proof of `suc n ≤ suc n`.
 
 It is a good exercise to prove reflexivity interactively in Emacs,
 using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
@@ -198,21 +218,18 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 ## Transitivity
 
 The second property to prove about comparison is that it is
-transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤
-p` hold, then `m ≤ p` holds.
+transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤ p`
+hold, then `m ≤ p` holds.  Again, `m`, `n`, and `p` are implicit.
 \begin{code}
 ≤-trans : ∀ {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p
-≤-trans z≤n _ = z≤n
-≤-trans (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans m≤n n≤p)
+≤-trans z≤n       _          =  z≤n
+≤-trans (s≤s m≤n) (s≤s n≤p)  =  s≤s (≤-trans m≤n n≤p)
 \end{code}
-Here the proof is most easily thought of as by induction on the
-_evidence_ that `m ≤ n`, so we have left `m`, `n`, and `p` implicit.
-
-In the base case, the first inequality holds by `z≤n`, and so
-we are given `zero ≤ n` and `n ≤ p` and must show `zero ≤ p`,
-which follows immediately by `z≤n`.  In this
-case, the fact that `n ≤ p` is irrelevant, and we write `_` as the
-pattern to indicate that the corresponding evidence is unused.
+Here the proof is by induction on the _evidence_ that `m ≤ n`.  In the
+base case, the first inequality holds by `z≤n` and must show `zero ≤
+p`, which follows immediately by `z≤n`.  In this case, the fact that
+`n ≤ p` is irrelevant, and we write `_` as the pattern to indicate
+that the corresponding evidence is unused.
 
 In the inductive case, the first inequality holds by `s≤s m≤n`
 and the second inequality by `s≤s n≤p`, and so we are given
@@ -222,22 +239,22 @@ that `m ≤ p`, and our goal follows by applying `s≤s`.
 
 The case `≤-trans (s≤s m≤n) z≤n` cannot arise, since the first
 inequality implies the middle value is `suc n` while the second
-inequality implies that it is `zero`.  Agda can determine that
-such a case cannot arise, and does not require it to be listed.
+inequality implies that it is `zero`.  Agda can determine that such a
+case cannot arise, and does not require (or permit) it to be listed.
 
 Alternatively, we could make the implicit parameters explicit.
 \begin{code}
 ≤-trans′ : ∀ (m n p : ℕ) → m ≤ n → n ≤ p → m ≤ p
-≤-trans′ zero n p z≤n _ = z≤n
-≤-trans′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans′ m n p m≤n n≤p)
+≤-trans′ zero    _       _       z≤n       _          =  z≤n
+≤-trans′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p)  =  s≤s (≤-trans′ m n p m≤n n≤p)
 \end{code}
 One might argue that this is clearer or one might argue that the extra
 length obscures the essence of the proof.  We will usually opt for
 shorter proofs.
 
-The technique of inducting on evidence that a property holds (e.g.,
-inducting on evidence that `m ≤ n`)---rather than induction on the
-value of which the property holds (e.g., inducting on `m`)---will turn
+The technique of induction on evidence that a property holds (e.g.,
+inducting on evidence that `m ≤ n`)---rather than induction on 
+values of which the property holds (e.g., inducting on `m`)---will turn
 out to be immensely valuable, and one that we use often.
 
 Again, it is a good exercise to prove transitivity interactively in Emacs,
@@ -246,29 +263,29 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 ## Anti-symmetry
 
-The third property to prove about comparison is that it is antisymmetric:
-for all naturals `m` and `n`, if both `m ≤ n` and `n ≤ m` hold, then
-`m ≡ n` holds.
+The third property to prove about comparison is that it is
+antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and `n ≤
+m` hold, then `m ≡ n` holds.
 \begin{code}
 ≤-antisym : ∀ {m n : ℕ} → m ≤ n → n ≤ m → m ≡ n
-≤-antisym z≤n z≤n = refl
-≤-antisym (s≤s m≤n) (s≤s n≤m) = cong suc (≤-antisym m≤n n≤m)
+≤-antisym z≤n       z≤n        =  refl
+≤-antisym (s≤s m≤n) (s≤s n≤m)  =  cong suc (≤-antisym m≤n n≤m)
 \end{code}
 Again, the proof is by induction over the evidence that `m ≤ n`
-and `n ≤ m` hold, and so we have left `m` and `n` implicit.
+and `n ≤ m` hold.
 
-In the base case, both inequalities hold by `z≤n`,
-and so we are given `zero ≤ zero` and `zero ≤ zero` and must
-show `zero ≡ zero`, which follows by reflexivity.  (Reflexivity
-of equality, that is, not reflexivity of inequality.)
+In the base case, both inequalities hold by `z≤n`, and so we are given
+`zero ≤ zero` and `zero ≤ zero` and must show `zero ≡ zero`, which
+follows by reflexivity.  (Reflexivity of equality, that is, not
+reflexivity of inequality.)
 
-In the inductive case, the first inequality holds by `s≤s m≤n`
-and the second inequality holds by `s≤s n≤m`, and so we are
-given `suc m ≤ suc n` and `suc n ≤ suc m` and must show `suc m ≡ suc n`.
-The inductive hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`,
-and our goal follows by congruence.
+In the inductive case, the first inequality holds by `s≤s m≤n` and the
+second inequality holds by `s≤s n≤m`, and so we are given `suc m ≤ suc n`
+and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
+hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
+follows by congruence.
 
-### Exercise (≤-antisym-cases)
+### Exercise (`≤-antisym-cases`)
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -283,8 +300,16 @@ for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 We specify what it means for inequality to be total.
 \begin{code}
 data Total (m n : ℕ) : Set where
-  forward : m ≤ n → Total m n
-  flipped : n ≤ m → Total m n
+
+  forward :
+      m ≤ n
+      ---------
+    → Total m n
+
+  flipped :
+      n ≤ m
+      ---------
+    → Total m n
 \end{code}
 Evidence that `Total m n` holds is either of the form
 `forward m≤n` or `flipped n≤m`, where `m≤n` and `n≤m` are
@@ -295,16 +320,23 @@ in this case `m` and `n`.  It is equivalent to the following
 indexed datatype.
 \begin{code}
 data Total′ : ℕ → ℕ → Set where
-  forward′ : ∀ {m n : ℕ} → m ≤ n → Total′ m n
-  flipped′ : ∀ {m n : ℕ} → n ≤ m → Total′ m n
+
+  forward′ : ∀ {m n : ℕ}
+    → m ≤ n
+      ----------
+    → Total′ m n
+
+  flipped′ : ∀ {m n : ℕ}
+    → n ≤ m
+      ----------
+    → Total′ m n
 \end{code}
-Each parameter of the type translates as an implicit
-parameter of each constructor.
-Unlike an indexed datatype, where the indexes can vary
-(as in `zero ≤ n` and `suc m ≤ suc n`), in a parameterised
-datatype the parameters must always be the same (as in `Total m n`).
-Parameterised declarations are shorter, easier to read, and let Agda
-exploit the uniformity of the parameters, so we will use them in
+Each parameter of the type translates as an implicit parameter of each
+constructor.  Unlike an indexed datatype, where the indexes can vary
+(as in `zero ≤ n` and `suc m ≤ suc n`), in a parameterised datatype
+the parameters must always be the same (as in `Total m n`).
+Parameterised declarations are shorter, easier to read, and
+occcasionally aid Agda's termination checker, so we will use them in
 preference to indexed types when possible.
 
 With that preliminary out of the way, we specify and prove totality.
@@ -319,23 +351,23 @@ With that preliminary out of the way, we specify and prove totality.
 In this case the proof is by induction over both the first
 and second arguments.  We perform a case analysis:
 
-+ _First base case_: If the first argument is `zero` and the
+* _First base case_: If the first argument is `zero` and the
   second argument is `n` then the forward case holds,
   with `z≤n` as evidence that `zero ≤ n`.
 
-+ _Second base case_: If the first argument is `suc m` and the
+* _Second base case_: If the first argument is `suc m` and the
   second argument is `zero` then the flipped case holds, with
   `z≤n` as evidence that `zero ≤ suc m`.
 
-+ _Inductive case_: If the first argument is `suc m` and the
+* _Inductive case_: If the first argument is `suc m` and the
   second argument is `suc n`, then the inductive hypothesis
   `≤-total m n` establishes one of the following:
 
-  - The forward case of the inductive hypothesis holds with `m≤n` as
+  + The forward case of the inductive hypothesis holds with `m≤n` as
     evidence that `m ≤ n`, from which it follows that the forward case of the
     proposition holds with `s≤s m≤n` as evidence that `suc m ≤ suc n`.
 
-  - The flipped case of the inductive hypothesis holds with `n≤m` as
+  + The flipped case of the inductive hypothesis holds with `n≤m` as
     evidence that `n ≤ m`, from which it follows that the flipped case of the
     proposition holds with `s≤s n≤m` as evidence that `suc n ≤ suc m`.
 
@@ -397,11 +429,11 @@ addition is monotonic on the right.
 \end{code}
 The proof is by induction on the first argument.
 
-+ _Base case_: The first argument is `zero` in which case
+* _Base case_: The first argument is `zero` in which case
   `zero + p ≤ zero + q` simplifies to `p ≤ q`, the evidence
   for which is given by the argument `p≤q`.
 
-+ _Inductive case_: The first argument is `suc m`, in which case
+* _Inductive case_: The first argument is `suc m`, in which case
   `suc m + p ≤ suc m + q` simplifies to `suc (m + p) ≤ suc (m + q)`.
   The inductive hypothesis `+-monoʳ-≤ m p q p≤q` establishes that
   `m + p ≤ m + q`, and our goal follows by applying `s≤s`.
@@ -415,8 +447,6 @@ result and the commutativity of addition.
 \end{code}
 Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 `p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
-(Go ahead to read a chapter [Equality Rewriting expanded] for details how 
-`rewrite` notation works internally).
 
 Third, we combine the two previous results.
 \begin{code}
@@ -427,14 +457,19 @@ Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
-### Exercise (stretch, `≤-reasoning`)
+#### Exercise (stretch, `≤-reasoning`)
 
 The proof of monotonicity (and the associated lemmas) can be written
 in a more readable form by using an anologue of our notation for
-`≡-reasoning`.  Read ahead to chapter [Equality]({{ site.baseurl }}{% link out/plfa/Equality.md %}) to
-see how `≡-reasoning` is defined, define `≤-reasoning` analogously,
+`≡-reasoning`.  Read ahead to
+Chapter [Equality]({{ site.baseurl }}{% link out/plfa/Equality.md %})
+to see how `≡-reasoning` is defined, define `≤-reasoning` analogously,
 and use it to write out an alternative proof that addition is
 monotonic with regard to inequality.
+
+#### Exercise (stretch, `*-mono-≤`)
+
+Show that multiplication is monotonic with regard to inequality.
 
 
 ## Strict inequality {#strict-inequality}
@@ -444,8 +479,15 @@ We can define strict inequality similarly to inequality.
 infix 4 _<_
 
 data _<_ : ℕ → ℕ → Set where
-  z<s : ∀ {n : ℕ} → zero < suc n
-  s<s : ∀ {m n : ℕ} → m < n → suc m < suc n
+
+  z<s : ∀ {n : ℕ}
+      ------------
+    → zero < suc n
+
+  s<s : ∀ {m n : ℕ}
+    → m < n
+      -------------
+    → suc m < suc n
 \end{code}
 The key difference is that zero is less than the successor of an
 arbitrary number, but is not less than zero.
@@ -455,24 +497,24 @@ _irreflexive_ in that `n < n` never holds for any value of `n`.
 Like inequality, strict inequality is transitive.
 Strict inequality is not total, but satisfies the closely related property of
 _trichotomy_: for any `m` and `n`, exactly one of `m < n`, `m ≡ n`, or `m > n`
-holds (where we define `m > n` to hold exactly where `n < m`).
+holds (where we define `m > n` to hold exactly when `n < m`).
 It is also monotonic with regards to addition and multiplication.
 
 Most of the above are considered in exercises below.  Irreflexivity
 requires negation, as does the fact that the three cases in
-trichotomy are mutually exclusive, so those points are deferred
-to the chapter that introduces [negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}).
+trichotomy are mutually exclusive, so those points are deferred to
+Chapter [Negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}).
 
 It is straightforward to show that `suc m ≤ n` implies `m < n`,
 and conversely.  One can then give an alternative derivation of the
 properties of strict inequality, such as transitivity, by directly
 exploiting the corresponding properties of inequality.
 
-### Exercise (`<-trans`)
+#### Exercise (`<-trans`)
 
 Show that strict inequality is transitive.
 
-### Exercise (`trichotomy`) {#trichotomy}
+#### Exercise (`trichotomy`) {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -484,16 +526,16 @@ be the same as `n < m`. You will need a suitable data declaration,
 similar to that used for totality.  (We will show that the three cases
 are exclusive after [negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}) is introduced.)
 
-### Exercise (`+-mono-<`)
+#### Exercise (`+-mono-<`)
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
-### Exercise (`≤-implies-<`, `<-implies-≤`)
+#### Exercise (`≤-implies-<`, `<-implies-≤`)
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
-### Exercise (`<-trans′`)
+#### Exercise (`<-trans′`)
 
 Give an alternative proof that strict inequality is transitive,
 using the relating between strict inequality and inequality and
@@ -510,11 +552,22 @@ data even : ℕ → Set
 data odd  : ℕ → Set
 
 data even where
-  zero : even zero
-  suc  : ∀ {n : ℕ} → odd n → even (suc n)
+
+  zero :
+      ---------
+      even zero
+
+  suc  : ∀ {n : ℕ}
+    → odd n
+      ------------
+    → even (suc n)
 
 data odd where
-  suc   : ∀ {n : ℕ} → even n → odd (suc n)
+
+  suc   : ∀ {n : ℕ}
+    → even n
+      -----------
+    → odd (suc n)
 \end{code}
 A number is even if it is zero or the successor of an odd number,
 and odd if it is the successor of an even number.
