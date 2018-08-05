@@ -31,6 +31,53 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 \end{code}
 
 
+## Properties of operators
+
+Operators pop up all the time, and mathematicians have agreed
+on names for some of the most common properties.
+
+* _Identity_ Operator `+` has left identity `0` if `0 + n ≡ n`, and
+  right identity `0` if `n + 0 ≡ n`, for all `n`. A value that is both
+  a left and right identity is just called an identity. Identity is also
+  sometimes called _unit_.
+
+* _Associativity_ Operator `+` is associative if the location
+  of parentheses does not matter: `(m + n) + p ≡ m + (n + p)`,
+  for all `m`, `n`, and `p`.
+
+* _Commutatitivity_ Operator `+` is commutative if order or
+  arguments does not matter: `m + n ≡ n + m`, for all `m` and `n`.
+
+* _Distributivity_ Operator `*` distributes over operator `+` from the
+  left if `(m + n) * p ≡ (m * p) + (n * p)`, for all `m`, `n`, and `p`,
+  and from the right if `m * (p + q) ≡ (m * p) + (m * q)`, for all `m`,
+  `p`, and `q`.
+
+Addition has identity `0` and multiplication has identity `1`;
+addition and multiplication are both associative and commutative;
+and multiplications distributes over addition.
+
+If you ever bump into an operator at a party, you now know how
+to make small talk, by asking whether it is has a unit and is
+associative or commutative.  If you bump into two operators, you
+might ask them if one distributes over the other.
+
+Less frivolously, if you ever bump into an operator while reading a
+technical paper, this gives you a way to orient yourself, by checking
+whether or not it has an identity, is associative or commutative, or
+distributes over another operator.  A careful author will ofter call
+out these properties---or their lack---for instance by pointing out
+that a newly introduced operator is associative but not commutative.
+
+#### Exercise (`operators`)
+
+Give another example of a pair of operators that have an identity
+and are associative, commutative, and distribute over one another.
+
+Give an example of an operator that has an identity and is
+associative but is not commutative.
+
+
 ## Associativity
 
 One property of addition is that it is _associative_, that is, that the

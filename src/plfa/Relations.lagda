@@ -156,7 +156,7 @@ Chapter [Decidable]({{ site.baseurl }}{% link out/plfa/Decidable.md %}).
 
 ## Properties of ordering relations
 
-Relations occur all the time, and mathematicians have agreed
+Relations pop up all the time, and mathematicians have agreed
 on names for some of the most common properties.
 
 * _Reflexive_ For all `n`, the relation `n ≤ n` holds.
@@ -181,10 +181,10 @@ anti-symmetric, and total. Or instead you might ask whether it is a
 preorder, partial order, or total order.
 
 Less frivolously, if you ever bump into a relation while reading a
-technical paper, this gives you an easy way to orient yourself, by
-checking whether or not it is a preorder, partial order, or total
-order.  A careful author will often make it explicit, for instance by
-saying that a given relation is a preorder but not a partial order, or
+technical paper, this gives you a way to orient yourself, by checking
+whether or not it is a preorder, partial order, or total order.  A
+careful author will often call out these properties---or their
+lack---for instance by saying that a newly introduced relation is a
 a partial order but not a total order.
 
 
@@ -595,8 +595,17 @@ but it is not required.
 
 We show that the sum of two even numbers is even.
 \begin{code}
-e+e≡e : ∀ {m n : ℕ} → even m → even n → even (m + n)
-o+e≡o : ∀ {m n : ℕ} → odd  m → even n → odd  (m + n)
+e+e≡e : ∀ {m n : ℕ}
+  → even m
+  → even n
+    ------------
+  → even (m + n)
+
+o+e≡o : ∀ {m n : ℕ}
+  → odd m
+  → even n
+    -----------
+  → odd (m + n)
 
 e+e≡e zero     en  =  en
 e+e≡e (suc om) en  =  suc (o+e≡o om en)
@@ -611,16 +620,17 @@ This is our first use of mutually recursive functions.  Since each identifier
 must be defined before it is used, we first give the signatures for both
 functions and then the equations that define them.
 
-To show that the sum of two even numbers is even, consider the evidence that the
-first number is even. If it is because it is zero, then the sum is even because the
-second number is even.  If it is because it is the successor of an odd number,
-then the result is even because it is the successor of the sum of an odd and an
-even number, which is odd.
+To show that the sum of two even numbers is even, consider the
+evidence that the first number is even. If it is because it is zero,
+then the sum is even because the second number is even.  If it is
+because it is the successor of an odd number, then the result is even
+because it is the successor of the sum of an odd and an even number,
+which is odd.
 
-To show that the sum of an odd and even number is odd, consider the evidence
-that the first number is odd. If it is because it is the successor of an even
-number, then the result is odd because it is the successor of the sum of two
-even numbers, which is even.
+To show that the sum of an odd and even number is odd, consider the
+evidence that the first number is odd. If it is because it is the
+successor of an even number, then the result is odd because it is the
+successor of the sum of two even numbers, which is even.
 
 ### Exercise (`o+o≡e`)
 
@@ -657,9 +667,11 @@ import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 \end{code}
 In the standard library, `≤-total` is formalised in terms of
-disjunction (which we define in Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %})),
-and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than here
-as well as taking as implicit arguments that here are explicit.
+disjunction (which we define in
+Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %})),
+and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than here,
+and more arguments are implicit.
+
 
 ## Unicode
 
