@@ -578,7 +578,7 @@ judgements where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-### Exercise (`+-assoc-finite`)
+#### Exercise (`+-assoc-finite`)
 
 Write out what is known about associativity on each of the first four
 days using a finite story of creation, as
@@ -592,8 +592,8 @@ associativity of addition in Agda, using `rewrite` rather than chains of
 equations.
 \begin{code}
 +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-+-assoc′ zero n p = refl
-+-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
++-assoc′ zero    n p                          =  refl
++-assoc′ (suc m) n p  rewrite +-assoc′ m n p  =  refl
 \end{code}
 
 For the base case, we must show:
@@ -737,7 +737,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-### Exercise (`+-swap`)
+#### Exercise (`+-swap`)
 
 Show
 
@@ -750,7 +750,7 @@ the following function from the standard library:
 
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
-### Exercise (`*-distrib-+`)
+#### Exercise (`*-distrib-+`)
 
 Show multiplication distributes over addition, that is,
 
@@ -758,7 +758,7 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-### Exercise (`*-assoc`)
+#### Exercise (`*-assoc`)
 
 Show multiplication is associative, that is,
 
@@ -766,7 +766,7 @@ Show multiplication is associative, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-### Exercise (`*-comm`)
+#### Exercise (`*-comm`)
 
 Show multiplication is commutative, that is,
 
@@ -775,7 +775,7 @@ Show multiplication is commutative, that is,
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-### Exercise (`0∸n≡0`)
+#### Exercise (`0∸n≡0`)
 
 Show
 
@@ -783,7 +783,7 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-### Exercise (`∸-+-assoc`)
+#### Exercise (`∸-+-assoc`)
 
 Show that monus associates with addition, that is,
 

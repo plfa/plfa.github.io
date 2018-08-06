@@ -202,7 +202,9 @@ for any natural `n`, the relation `n ≤ n` holds.  We follow the
 convention in the standard library and make the argument implicit,
 as that will make it easier to invoke reflection.
 \begin{code}
-≤-refl : ∀ {n : ℕ} → n ≤ n
+≤-refl : ∀ {n : ℕ}
+    -----
+  → n ≤ n
 ≤-refl {zero}   =  z≤n
 ≤-refl {suc n}  =  s≤s (≤-refl {n})
 \end{code}
@@ -221,7 +223,11 @@ The second property to prove about comparison is that it is
 transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤ p`
 hold, then `m ≤ p` holds.  Again, `m`, `n`, and `p` are implicit.
 \begin{code}
-≤-trans : ∀ {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p
+≤-trans : ∀ {m n p : ℕ}
+  → m ≤ n
+  → n ≤ p
+    -----
+  → m ≤ p
 ≤-trans z≤n       _          =  z≤n
 ≤-trans (s≤s m≤n) (s≤s n≤p)  =  s≤s (≤-trans m≤n n≤p)
 \end{code}
@@ -244,7 +250,11 @@ case cannot arise, and does not require (or permit) it to be listed.
 
 Alternatively, we could make the implicit parameters explicit.
 \begin{code}
-≤-trans′ : ∀ (m n p : ℕ) → m ≤ n → n ≤ p → m ≤ p
+≤-trans′ : ∀ (m n p : ℕ)
+  → m ≤ n
+  → n ≤ p
+    -----
+  → m ≤ p
 ≤-trans′ zero    _       _       z≤n       _          =  z≤n
 ≤-trans′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p)  =  s≤s (≤-trans′ m n p m≤n n≤p)
 \end{code}
@@ -267,7 +277,11 @@ The third property to prove about comparison is that it is
 antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and `n ≤
 m` hold, then `m ≡ n` holds.
 \begin{code}
-≤-antisym : ∀ {m n : ℕ} → m ≤ n → n ≤ m → m ≡ n
+≤-antisym : ∀ {m n : ℕ}
+  → m ≤ n
+  → n ≤ m
+    -----
+  → m ≡ n
 ≤-antisym z≤n       z≤n        =  refl
 ≤-antisym (s≤s m≤n) (s≤s n≤m)  =  cong suc (≤-antisym m≤n n≤m)
 \end{code}
@@ -285,7 +299,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-### Exercise (`≤-antisym-cases`)
+#### Exercise (`≤-antisym-cases`)
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -423,7 +437,10 @@ The proof is straightforward using the techniques we have learned, and is best
 broken into three parts. First, we deal with the special case of showing
 addition is monotonic on the right.
 \begin{code}
-+-monoʳ-≤ : ∀ (m p q : ℕ) → p ≤ q → m + p ≤ m + q
++-monoʳ-≤ : ∀ (m p q : ℕ)
+  → p ≤ q
+    -------------
+  → m + p ≤ m + q
 +-monoʳ-≤ zero    p q p≤q  =  p≤q
 +-monoʳ-≤ (suc m) p q p≤q  =  s≤s (+-monoʳ-≤ m p q p≤q)
 \end{code}
@@ -442,16 +459,23 @@ Second, we deal with the special case of showing addition is
 monotonic on the left. This follows from the previous
 result and the commutativity of addition.
 \begin{code}
-+-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
-+-monoˡ-≤ m n p m≤n rewrite +-comm m p | +-comm n p = +-monoʳ-≤ p m n m≤n
++-monoˡ-≤ : ∀ (m n p : ℕ)
+  → m ≤ n
+    -------------
+  → m + p ≤ n + p
++-monoˡ-≤ m n p m≤n  rewrite +-comm m p | +-comm n p  = +-monoʳ-≤ p m n m≤n
 \end{code}
 Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 `p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
 
 Third, we combine the two previous results.
 \begin{code}
-+-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
-+-mono-≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
++-mono-≤ : ∀ (m n p q : ℕ)
+  → m ≤ n
+  → p ≤ q
+    -------------
+  → m + p ≤ n + q
++-mono-≤ m n p q m≤n p≤q  =  ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
 \end{code}
 Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
@@ -584,8 +608,16 @@ that is, using the same name for different constructors depending on
 the context.  Here `suc` means one of three constructors:
 
     suc : `ℕ → `ℕ
-    suc : ∀ {n : ℕ} → odd n → even (suc n)
-    suc : ∀ {n : ℕ} → even n → odd (suc n)
+
+    suc : ∀ {n : ℕ}
+      → odd n
+        ------------
+      → even (suc n)
+
+    suc : ∀ {n : ℕ}
+      → even n
+        -----------
+      → odd (suc n)
 
 Similarly, `zero` refers to one of two constructors. Due to how it
 does type inference, Agda does not allow overloading of defined names,
@@ -632,7 +664,7 @@ evidence that the first number is odd. If it is because it is the
 successor of an even number, then the result is odd because it is the
 successor of the sum of two even numbers, which is even.
 
-### Exercise (`o+o≡e`)
+#### Exercise (`o+o≡e`)
 
 Show that the sum of two odd numbers is even.
 
@@ -665,6 +697,7 @@ Definitions similar to those in this chapter can be found in the standard librar
 import Data.Nat using (_≤_; z≤n; s≤s)
 import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
+import Relation.Binary using (IsPreorder)
 \end{code}
 In the standard library, `≤-total` is formalised in terms of
 disjunction (which we define in

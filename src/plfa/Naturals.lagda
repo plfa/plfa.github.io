@@ -73,7 +73,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-### Exercise (`seven`)
+#### Exercise (`seven`)
 
 Write out `7` in longhand.
 
@@ -418,7 +418,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-### Exercise (`3+4`)
+#### Exercise (`3+4`)
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
 
@@ -474,12 +474,12 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-### Exercise (`3*4`)
+#### Exercise (`3*4`)
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 
-### Exercise (`_^_`).
+#### Exercise (`_^_`).
 
 Define exponentiation, which is given by the following equations.
 
@@ -496,7 +496,7 @@ natural numbers, if we subtract a larger number from a smaller
 number we will take the result to be zero.  This adaption of
 subtraction to naturals is called _monus_ (a twist on _minus_).
 
-Monus is our first example of a definition that uses pattern
+Monus is our first use of a definition that uses pattern
 matching against both arguments.
 \begin{code}
 _∸_ : ℕ → ℕ → ℕ
@@ -544,7 +544,7 @@ _ =
   ∎
 \end{code}
 
-### Exercise (`5∸3`, `3∸5`)
+#### Exercise (`5∸3`, `3∸5`)
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -616,12 +616,12 @@ resorting to unpermitted circularities.  We do so by reducing our
 definition to equivalent inference rules for judgements about equality.
 
     n : ℕ
-    ------------
-    zero + n = n
+    --------------
+    zero + n  =  n
 
-    m + n = p
-    -------------------
-    (suc m) + n = suc p
+    m + n  =  p
+    ---------------------
+    (suc m) + n  =  suc p
 
 Here we assume we have already defined the infinite set of natural
 numbers, specifying the meaning of the judgment `n : ℕ`.  The first
