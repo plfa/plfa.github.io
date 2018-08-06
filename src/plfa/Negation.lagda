@@ -33,7 +33,7 @@ as implication of false.
 ¬_ : Set → Set
 ¬ A = A → ⊥
 \end{code}
-This is a form of *proof by contradiction*: if assuming `A` leads
+This is a form of _proof by contradiction_: if assuming `A` leads
 to the conclusion `⊥` (a contradiction), then we must have `¬ A`.
 
 Evidence that `¬ A` holds is of the form
@@ -47,7 +47,11 @@ that `A` holds into evidence that `⊥` holds.
 Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
 In other words, if both `¬ A` and `A` hold, then we have a contradiction.
 \begin{code}
-¬-elim : ∀ {A : Set} → ¬ A → A → ⊥
+¬-elim : ∀ {A : Set}
+  → ¬ A
+  → A
+    ---
+  → ⊥
 ¬-elim ¬x x = ¬x x
 \end{code}
 Here we write `¬x` for evidence of `¬ A` and `x` for evidence of `A`.  This
@@ -61,14 +65,17 @@ infix 3 ¬_
 \end{code}
 Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)` and `¬ m ≡ n` as `¬ (m ≡ n)`.
 
-In *classical* logic, we have that `A` is equivalent to `¬ ¬ A`.
-As we discuss below, in Agda we use *intuitionistic* logic, where
+In _classical_ logic, we have that `A` is equivalent to `¬ ¬ A`.
+As we discuss below, in Agda we use _intuitionistic_ logic, where
 we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
 \begin{code}
-¬¬-intro : ∀ {A : Set} → A → ¬ ¬ A
+¬¬-intro : ∀ {A : Set}
+  → A
+    -----
+  → ¬ ¬ A
 ¬¬-intro x ¬x = ¬x x
 \end{code}
-Let `x` be evidence of `A`. We will show that assuming
+Let `x` be evidence of `A`. We show that assuming
 `¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
 Let `¬x` be evidence of `¬ A`.  Then from `A` and `¬ A`
 we have a contradiction, evidenced by `¬x x`.  Hence, we have
@@ -77,7 +84,10 @@ shown `¬ ¬ A`.
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
 `¬ ¬ ¬ A` implies `¬ A`.
 \begin{code}
-¬¬¬-elim : ∀ {A : Set} → ¬ ¬ ¬ A → ¬ A
+¬¬¬-elim : ∀ {A : Set}
+  → ¬ ¬ ¬ A
+    -------
+  → ¬ A
 ¬¬¬-elim ¬¬¬x x = ¬¬¬x (¬¬-intro x)
 \end{code}
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
@@ -87,25 +97,27 @@ can conclude `¬ ¬ A`, evidenced by `¬¬-intro x`.  Then from
 `¬ ¬ ¬ A` and `¬ ¬ A` we have a contradiction, evidenced by
 `¬¬¬x (¬¬-intro x)`.  Hence we have shown `¬ A`.
 
-Another law of logic is *contraposition*,
+Another law of logic is _contraposition_,
 stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
 \begin{code}
-contraposition : ∀ {A B : Set} → (A → B) → (¬ B → ¬ A)
+contraposition : ∀ {A B : Set}
+  → (A → B)
+    -----------
+  → (¬ B → ¬ A)
 contraposition f ¬y x = ¬y (f x)
 \end{code}
 Let `f` be evidence of `A → B` and let `¬y` be evidence of `¬ B`.  We
-will show that assuming `A` leads to a contradiction, and hence
-`¬ A` must hold. Let `x` be evidence of `A`.  Then from `A → B` and
-`A` we may conclude `B`, evidenced by `f x`, and from `B` and `¬ B`
-we may conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown
-`¬ A`.
+will show that assuming `A` leads to a contradiction, and hence `¬ A`
+must hold. Let `x` be evidence of `A`.  Then from `A → B` and `A` we
+may conclude `B`, evidenced by `f x`, and from `B` and `¬ B` we may
+conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown `¬ A`.
 
 Using negation, it is straightforward to define inequality.
 \begin{code}
 _≢_ : ∀ {A : Set} → A → A → Set
 x ≢ y  =  ¬ (x ≡ y)
 \end{code}
-It is straightforward to show distinct numbers are not equal.
+It is trivial to show distinct numbers are not equal.
 \begin{code}
 _ : 1 ≢ 2
 _ = λ()
@@ -128,34 +140,40 @@ false to the type with no members, we can view negation as
 raising to the zero power.  This indeed corresponds to what
 we know for arithmetic, where
 
-    0 ^ n  =  1,  if n = 0
-           =  0,  if n ≠ 0
+    0 ^ n  ≡  1,  if n ≡ 0
+           ≡  0,  if n ≢ 0
 
 Indeed, there is exactly one proof of `⊥ → ⊥`.
 \begin{code}
 id : ⊥ → ⊥
 id x = x
 \end{code}
-However, there are no possible values of type `A → ⊥`
-when `A` is anything other than `⊥` itself.
+It is easy to see there are no possible values of type `A → ⊥`
+unless `A` is equivalent to `⊥`.  We have that `⊥ → A`
+always holds, by `⊥-elim`, and hence if `A → ⊥` holds then
+`A` must be equivalent to `⊥`, in the sense that each implies
+the other.
+
 
 
 ### Exercise (`≢`, `<-irrerflexive`)
 
-Using negation, show that [strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
+Using negation, show that
+[strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 
 ### Exercise (`trichotomy`)
 
-Show that strict inequality satisfies [trichotomy]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#trichotomy),
+Show that strict inequality satisfies
+[trichotomy]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#trichotomy),
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
 * `m < n`
 * `m ≡ n`
 * `m > n`
 
-Here "exactly one" means that one must hold, and each implies the
+Here "exactly one" means that one of the three must hold, and each implies the
 negation of the other two.
 
 
@@ -164,23 +182,22 @@ negation of the other two.
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
 \begin{code}
-⊎-Dual-× : Set₁
-⊎-Dual-× = ∀ {A B : Set} → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+postulate
+  ⊎-dual-× : ∀ {A B : Set} → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
 \end{code}
-Show there is a term of type `⊎-Dual-×`.
 This result is an easy consequence of something we've proved previously.
 
 Is there also a term of the following type?
 \begin{code}
-×-Dual-⊎ : Set₁
-×-Dual-⊎ = ∀ {A B : Set} → ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
+postulate
+  ×-dual-⊎ : ∀ {A B : Set} → ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
 \end{code}
 If so, prove; if not, explain why.
 
 
 ## Intuitive and Classical logic
 
-In Gilbert and Sullivan's *The Gondoliers*, Casilda is told that
+In Gilbert and Sullivan's _The Gondoliers_, Casilda is told that
 as an infant she was married to the heir of the King of Batavia, but
 that due to a mix-up no one knows which of two individuals, Marco or
 Giuseppe, is the heir.  Alarmed, she wails "Then do you mean to say
@@ -189,29 +206,28 @@ say which?"  To which the response is "Without any doubt of any kind
 whatever."
 
 Logic comes in many varieties, and one distinction is between
-*classical* and *intuitionistic*. Intuitionists, concerned
-by cavalier assumptions made by some logicians about the nature of
+_classical_ and _intuitionistic_. Intuitionists, concerned
+by assumptions made by some logicians about the nature of
 infinity, insist upon a constructionist notion of truth.  In
 particular, they insist that a proof of `A ⊎ B` must show
-*which* of `A` or `B` holds, and hence they would reject the
+_which_ of `A` or `B` holds, and hence they would reject the
 claim that Casilda is married to Marco or Giuseppe until one of the
 two was identified as her husband.  Perhaps Gilbert and Sullivan
 anticipated intuitionism, for their story's outcome is that the heir
 turns out to be a third individual, Luiz, with whom Casilda is,
 conveniently, already in love.
 
-Intuitionists also reject the law of the excluded
-middle, which asserts `A ⊎ ¬ A` for every `A`, since the law
-gives no clue as to *which* of `A` or `¬ A` holds. Heyting
-formalised a variant of Hilbert's classical logic that captures the
-intuitionistic notion of provability. In particular, the law of the
-excluded middle is provable in Hilbert's logic, but not in Heyting's.
-Further, if the law of the excluded middle is added as an axiom to
-Heyting's logic, then it becomes equivalent to Hilbert's.
-Kolmogorov
-showed the two logics were closely related: he gave a double-negation
-translation, such that a formula is provable in classical logic if and
-only if its translation is provable in intuitionistic logic.
+Intuitionists also reject the law of the excluded middle, which
+asserts `A ⊎ ¬ A` for every `A`, since the law gives no clue as to
+_which_ of `A` or `¬ A` holds. Heyting formalised a variant of
+Hilbert's classical logic that captures the intuitionistic notion of
+provability. In particular, the law of the excluded middle is provable
+in Hilbert's logic, but not in Heyting's.  Further, if the law of the
+excluded middle is added as an axiom to Heyting's logic, then it
+becomes equivalent to Hilbert's.  Kolmogorov showed the two logics
+were closely related: he gave a double-negation translation, such that
+a formula is provable in classical logic if and only if its
+translation is provable in intuitionistic logic.
 
 Propositions as Types was first formulated for intuitionistic logic.
 It is a perfect fit, because in the intuitionist interpretation the
@@ -220,17 +236,17 @@ of `A` or a proof of `B`, so the type corresponding to disjunction is
 a disjoint sum.
 
 (Parts of the above are adopted from "Propositions as Types", Philip Wadler,
-*Communications of the ACM*, December 2015.)
+_Communications of the ACM_, December 2015.)
 
 ## Excluded middle is irrefutable
 
 The law of the excluded middle can be formulated as follows.
 \begin{code}
-EM : Set₁
-EM = ∀ {A : Set} → A ⊎ ¬ A
+postulate
+  em : ∀ {A : Set} → A ⊎ ¬ A
 \end{code}
 As we noted, the law of the excluded middle does not hold in
-intuitionistic logic.  However, we can show that it is *irrefutable*,
+intuitionistic logic.  However, we can show that it is _irrefutable_,
 meaning that the negation of its negation is provable (and hence that
 its negation is never provable).
 \begin{code}
@@ -257,7 +273,7 @@ a value of type `A` to hand, so let's pick the second disjunct.
 The second disjunct accepts evidence of `¬ A`, that is, a function
 that given a value of type `A` returns a value of the empty type.  We
 bind `x` to the value of type `A`, and now we need to fill in the hole
-with a value of the empty type.  Once again, he only way we can get a
+with a value of the empty type.  Once again, the only way we can get a
 value of the empty type is by applying `k` itself, so let's expand the
 hole accordingly.
 
@@ -308,25 +324,26 @@ And the devil handed back to the man the same valise that the man had
 just handed to him.
 
 (Parts of the above are adopted from "Call-by-Value is Dual to Call-by-Name",
-Philip Wadler, *International Conference on Functional Programming*, 2003.)
+Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 
-### Exercise
+#### Exercise
 
-Prove the following four formulas are equivalent to each other,
-and to the formula `EM` given earlier.
+Consider the following five terms of the given types.
 \begin{code}
-¬¬-Elim Peirce Implication : Set₁
-¬¬-Elim = ∀ {A : Set} → ¬ ¬ A → A
-Peirce = ∀ {A B : Set} → (((A → B) → A) → A)
-Implication = ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
-×-Implies-⊎ = ∀ {A B : Set} → ¬ (A × B) → (¬ A) ⊎ (¬ B)
+postulate
+  em′         : ∀ {A : Set} → A ⊎ ¬ A
+  ¬¬-elim     : ∀ {A : Set} → ¬ ¬ A → A
+  peirce      : ∀ {A B : Set} → (((A → B) → A) → A)
+  →-implies-⊎ : ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
+  ×-implies-⊎ : ∀ {A B : Set} → ¬ (A × B) → (¬ A) ⊎ (¬ B)
 \end{code}
+Show that given any one term of the specified type, we can derive the others.
 
 
 ### Exercise (`¬-stable`, `×-stable`)
 
-Say that a formula is *stable* if double negation elimination holds for it.
+Say that a formula is _stable_ if double negation elimination holds for it.
 \begin{code}
 Stable : Set → Set
 Stable A = ¬ ¬ A → A
@@ -335,8 +352,16 @@ Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 \begin{code}
 postulate
-  ¬-stable : ∀ {A : Set} → Stable (¬ A)
-  ×-stable : ∀ {A B : Set} → Stable A → Stable B → Stable (A × B)
+
+  ¬-stable : ∀ {A : Set}
+      ------------
+    → Stable (¬ A)
+
+  ×-stable : ∀ {A B : Set}
+    → Stable A
+    → Stable B
+      --------------
+    → Stable (A × B)
 \end{code}
 
 ## Standard Prelude

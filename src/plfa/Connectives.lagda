@@ -109,6 +109,9 @@ we say the connective holds---how to _define_ the connective. An
 elimination rule describes what we may conclude when the connective
 holds---how to _use_ the connective.
 
+(The paragraph above was adopted from "Propositions as Types", Philip Wadler,
+_Communications of the ACM_, December 2015.)
+
 In this case, applying each destructor and reassembling the results with the
 constructor is the identity over products.
 \begin{code}
