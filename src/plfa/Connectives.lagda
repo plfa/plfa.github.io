@@ -684,7 +684,7 @@ Corresponding to the law
 
     p ^ (n + m) = (p ^ n) * (p ^ m)
 
-(or, if you prefer, `p⁽ᵐ⁺ⁿ⁾ ≡ pᵐpⁿ`), we have the isomorphism
+(or, if you prefer, `pᵐ⁺ⁿ ≡ pᵐpⁿ`), we have the isomorphism
 
     (A ⊎ B) → C  ≃  (A → C) × (B → C)
 
@@ -706,7 +706,7 @@ Corresponding to the law
 
     (p * n) ^ m = (p ^ m) * (n ^ m)
 
-(or, if you prefer, `(pn)ᵐ ≡ (pᵐ)(nᵐ)`), we have the isomorphism
+(or, if you prefer, `(pn)ᵐ ≡ pᵐnᵐ`), we have the isomorphism
 
     A → B × C  ≃  (A → B) × (A → C)
 
