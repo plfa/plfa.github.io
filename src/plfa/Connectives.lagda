@@ -10,13 +10,13 @@ module plfa.Connectives where
 
 This chapter introduces the basic logical connectives, by observing a
 correspondence between connectives of logic and data types, a
-principle known as _Propositions as Types_.
+principle known as _Propositions as Types_:
 
-  * _conjunction_ is _product_
-  * _disjunction_ is _sum_
-  * _true_ is _unit type_
-  * _false_ is _empty type_
-  * _implication_ is _function space_
+  * _conjunction_ is _product_,
+  * _disjunction_ is _sum_,
+  * _true_ is _unit type_,
+  * _false_ is _empty type_,
+  * _implication_ is _function space_.
 
 
 ## Imports
@@ -40,22 +40,30 @@ if both `A` holds and `B` holds.  We formalise this idea by
 declaring a suitable inductive type.
 \begin{code}
 data _×_ : Set → Set → Set where
-  ⟨_,_⟩ : ∀ {A B : Set} → A → B → A × B
+
+  ⟨_,_⟩ : ∀ {A B : Set}
+    → A
+    → B
+      -----
+    → A × B
 \end{code}
-Evidence that `A × B` holds is of the form
-`⟨ M , N ⟩`, where `M` provides evidence that `A` holds and
-`N` provides evidence that `B` holds.  In the standard library,
-the pair constructor is `_,_`, but here we rename it to
-`⟨_,_⟩` so that comma is available for other notations
-(in particular, lists and contexts).
+Evidence that `A × B` holds is of the form `⟨ M , N ⟩`, where `M`
+provides evidence that `A` holds and `N` provides evidence that `B`
+holds.
 
 Given evidence that `A × B` holds, we can conclude that either
 `A` holds or `B` holds.
 \begin{code}
-proj₁ : ∀ {A B : Set} → A × B → A
+proj₁ : ∀ {A B : Set}
+  → A × B
+    -----
+  → A
 proj₁ ⟨ x , y ⟩ = x
 
-proj₂ : ∀ {A B : Set} → A × B → B
+proj₂ : ∀ {A B : Set}
+  → A × B
+    -----
+  → B
 proj₂ ⟨ x , y ⟩ = y
 \end{code}
 If `L` provides evidence that `A × B` holds, then `proj₁ L` provides evidence
@@ -83,15 +91,25 @@ corresponds to the term
 where `M` is a term of type `A` and `N` is a term of type `B`.
 
 When `⟨_,_⟩` appears in a term on the right-hand side of an equation
-we refer to it as a *constructor*, and when it appears in a pattern on
-the left-hand side of an equation we refer to it as a *destructor*.
-We also refer to `proj₁` and `proj₂` as destructors, since they play a
-similar role.  Other terminology refers to a constructor as
-*introducing* a conjunction, and to a destructor as *eliminating* a
-conjunction.  Indeed, `proj₁` and `proj₂` are sometimes given the
-names `×-elim₁` and `×-elim₂`.
+we refer to it as a _constructor_, and when it appears in a pattern on
+the left-hand side of an equation we refer to it as a _destructor_.
+We may also refer to `proj₁` and `proj₂` as destructors, since they
+play a similar role.
 
-Applying each destructor and reassembling the results with the
+Other terminology refers to `⟨_,_⟩` as the _introducing_ a conjunction, and
+to `proj₁` and `proj₂` as _eliminating_ a conjunction; indeed, the
+former is sometimes given the name `×-I` and the latter two the names
+`×-E₁` and `×-E₂`.  As we read the rules from top to bottom,
+introduction and elimination do what they say on the tin: the first
+_introduces_ a formula for the connective, which appears in the
+conclusion but not in the hypotheses; the second _eliminates_ a
+formula for the connective, which appears in a hypothesis but not in
+the conclusion. An introduction rule describes under what conditions
+we say the connective holds---how to _define_ the connective. An
+elimination rule describes what we may conclude when the connective
+holds---how to _use_ the connective.
+
+In this case, applying each destructor and reassembling the results with the
 constructor is the identity over products.
 \begin{code}
 η-× : ∀ {A B : Set} (w : A × B) → ⟨ proj₁ w , proj₂ w ⟩ ≡ w
@@ -109,9 +127,9 @@ infixr 2 _×_
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
 
 Given two types `A` and `B`, we refer to `A x B` as the
-*product* of `A` and `B`.  In set theory, it is also sometimes
-called the *cartesian product*, and in computing it corresponds
-to a *record* type. Among other reasons for
+_product_ of `A` and `B`.  In set theory, it is also sometimes
+called the _cartesian product_, and in computing it corresponds
+to a _record_ type. Among other reasons for
 calling it the product, note that if type `A` has `m`
 distinct members, and type `B` has `n` distinct members,
 then the type `A × B` has `m * n` distinct members.
@@ -119,7 +137,7 @@ For instance, consider a type `Bool` with two members, and
 a type `Tri` with three members.
 \begin{code}
 data Bool : Set where
-  true : Bool
+  true  : Bool
   false : Bool
 
 data Tri : Set where
@@ -146,14 +164,14 @@ possible arguments of type `Bool × Tri`:
 
 Product on types also shares a property with product on numbers in
 that there is a sense in which it is commutative and associative.  In
-particular, product is commutative and associative *up to
-isomorphism*.
+particular, product is commutative and associative _up to
+isomorphism_.
 
 For commutativity, the `to` function swaps a pair, taking `(x , y)` to
 `(y , x)`, and the `from` function does the same (up to renaming).
 Instantiating the patterns correctly in `from∘to` and `to∘from` is essential.
 Replacing the definition of `from∘to` by `λ w → refl` will not work;
-and similarly for `to∘from`, which does the same (up to renaming).
+and similarly for `to∘from`.
 \begin{code}
 ×-comm : ∀ {A B : Set} → A × B ≃ B × A
 ×-comm =
@@ -165,8 +183,8 @@ and similarly for `to∘from`, which does the same (up to renaming).
     }
 \end{code}
 
-Being *commutative* is different from being *commutative up to
-isomorphism*.  Compare the two statements:
+Being _commutative_ is different from being _commutative up to
+isomorphism_.  Compare the two statements:
 
     m * n ≡ n * m
     A × B ≃ B × A
@@ -174,10 +192,9 @@ isomorphism*.  Compare the two statements:
 In the first case, we might have that `m` is `2` and `n` is `3`, and
 both `m * n` and `n * m` are equal to `6`.  In the second case, we
 might have that `A` is `Bool` and `B` is `Tri`, and `Bool × Tri` is
-*not* the same as `Tri × Bool`.  But there is an isomorphism
-between the two types.  For
-instance, `(true , aa)`, which is a member of the former, corresponds
-to `(aa , true)`, which is a member of the latter.
+_not_ the same as `Tri × Bool`.  But there is an isomorphism between
+the two types.  For instance, `(true , aa)`, which is a member of the
+former, corresponds to `(aa , true)`, which is a member of the latter.
 
 For associativity, the `to` function reassociates two uses of pairing,
 taking `((x , y) , z)` to `(x , (y , z))`, and the `from` function does
@@ -194,13 +211,13 @@ matching against a suitable pattern to enable simplification.
     }
 \end{code}
 
-Being *associative* is not the same as being *associative
-up to isomorphism*.  Compare the two statements:
+Being _associative_ is not the same as being _associative
+up to isomorphism_.  Compare the two statements:
 
     (m * n) * p ≡ m * (n * p)
     (A × B) × C ≃ A × (B × C)
 
-For example, the type `(ℕ × Bool) × Tri` is *not* the same as `ℕ ×
+For example, the type `(ℕ × Bool) × Tri` is _not_ the same as `ℕ ×
 (Bool × Tri)`. But there is an isomorphism between the two types. For
 instance `((1 , true) , aa)`, which is a member of the former,
 corresponds to `(1 , (true , aa))`, which is a member of the latter.
@@ -211,10 +228,14 @@ Truth `⊤` always holds. We formalise this idea by
 declaring a suitable inductive type.
 \begin{code}
 data ⊤ : Set where
-  tt : ⊤
+
+  tt :
+    --
+    ⊤
 \end{code}
 Evidence that `⊤` holds is of the form `tt`.
 
+There is an introduction rule, but no elimination rule.
 Given evidence that `⊤` holds, there is nothing more of interest we
 can conclude.  Since truth always holds, knowing that it holds tells
 us nothing new.
@@ -229,7 +250,7 @@ The pattern matching on the left-hand side is essential.  Replacing
 `w` by `tt` allows both sides of the equation to simplify to the
 same term.
 
-We refer to `⊤` as the *unit* type. And, indeed,
+We refer to `⊤` as the _unit_ type. And, indeed,
 type `⊤` has exactly once member, `tt`.  For example, the following
 function enumerates all possible arguments of type `⊤`:
 \begin{code}
@@ -238,7 +259,7 @@ function enumerates all possible arguments of type `⊤`:
 \end{code}
 
 For numbers, one is the identity of multiplication. Correspondingly,
-unit is the identity of product *up to isomorphism*.  For left
+unit is the identity of product _up to isomorphism_.  For left
 identity, the `to` function takes `(tt , x)` to `x`, and the `from`
 function does the inverse.  The evidence of left inverse requires
 matching against a suitable pattern to enable simplification.
@@ -253,15 +274,15 @@ matching against a suitable pattern to enable simplification.
     }
 \end{code}
 
-Having an *identity* is different from having an identity
-*up to isomorphism*.  Compare the two statements:
+Having an _identity_ is different from having an identity
+_up to isomorphism_.  Compare the two statements:
 
     1 * m ≡ m
     ⊤ × A ≃ A
 
 In the first case, we might have that `m` is `2`, and both
 `1 * m` and `m` are equal to `2`.  In the second
-case, we might have that `A` is `Bool`, and `⊤ × Bool` is *not* the
+case, we might have that `A` is `Bool`, and `⊤ × Bool` is _not_ the
 same as `Bool`.  But there is an isomorphism between the two types.
 For instance, `(tt, true)`, which is a member of the former,
 corresponds to `true`, which is a member of the latter.
@@ -278,8 +299,8 @@ Right identity follows from commutativity of product and left identity.
     A
   ≃-∎
 \end{code}
-Here we have used a chain of isomorphisms,
-analogous to that used for equality.
+Here we have used a chain of isomorphisms, analogous to that used for
+equality.
 
 
 ## Disjunction is sum
@@ -289,8 +310,16 @@ if either `A` holds or `B` holds.  We formalise this idea by
 declaring a suitable inductive type.
 \begin{code}
 data _⊎_ : Set → Set → Set where
-  inj₁ : ∀ {A B : Set} → A → A ⊎ B
-  inj₂ : ∀ {A B : Set} → B → A ⊎ B
+
+  inj₁ : ∀ {A B : Set}
+    → A
+      -----
+    → A ⊎ B
+
+  inj₂ : ∀ {A B : Set}
+    → B
+      -----
+    → A ⊎ B
 \end{code}
 Evidence that `A ⊎ B` holds is either of the form `inj₁ M`, where `M`
 provides evidence that `A` holds, or `inj₂ N`, where `N` provides
@@ -299,30 +328,36 @@ evidence that `B` holds.
 Given evidence that `A → C` and `B → C` both hold, then given
 evidence that `A ⊎ B` holds we can conclude that `C` holds.
 \begin{code}
-⊎-elim : ∀ {A B C : Set} → (A → C) → (B → C) → (A ⊎ B → C)
-⊎-elim f g (inj₁ x) = f x
-⊎-elim f g (inj₂ y) = g y
+case-⊎ : ∀ {A B C : Set}
+  → (A → C)
+  → (B → C)
+    -----------
+  → (A ⊎ B → C)
+case-⊎ f g (inj₁ x) = f x
+case-⊎ f g (inj₂ y) = g y
 \end{code}
 Pattern matching against `inj₁` and `inj₂` is typical of how we exploit
 evidence that a disjunction holds.
 
 When `inj₁` and `inj₂` appear on the right-hand side of an equation we
-refer to them as *constructors*, and when they appears on the
-left-hand side we refer to them as *destructors*.  We also refer
-to `⊎-elim` as a destructor, since it plays a similar role.
-Other terminology refers to constructors as *introducing* a disjunction,
-and to a destructors as *eliminating* a disjunction.
+refer to them as _constructors_, and when they appears on the
+left-hand side we refer to them as _destructors_.  We also refer to
+`case-⊎` as a destructor, since it plays a similar role.  Other
+terminology refers to `inj₁` and `inj₂` as _introducing_ a
+disjunction, and to `case-⊎` as _eliminating_ a disjunction; indeed
+the former are sometimes given the names `⊎-I₁` and `⊎-I₂` and the
+latter the name `⊎-E`.
 
 Applying the destructor to each of the constructors is the identity.
 \begin{code}
-η-⊎ : ∀ {A B : Set} (w : A ⊎ B) → ⊎-elim inj₁ inj₂ w ≡ w
+η-⊎ : ∀ {A B : Set} (w : A ⊎ B) → case-⊎ inj₁ inj₂ w ≡ w
 η-⊎ (inj₁ x) = refl
 η-⊎ (inj₂ y) = refl
 \end{code}
 More generally, we can also throw in an arbitrary function from a disjunction.
 \begin{code}
 uniq-⊎ : ∀ {A B C : Set} (h : A ⊎ B → C) (w : A ⊎ B) →
-  ⊎-elim (h ∘ inj₁) (h ∘ inj₂) w ≡ h w
+  case-⊎ (h ∘ inj₁) (h ∘ inj₂) w ≡ h w
 uniq-⊎ h (inj₁ x) = refl
 uniq-⊎ h (inj₂ y) = refl
 \end{code}
@@ -338,9 +373,9 @@ infix 1 _⊎_
 Thus, `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
 
 Given two types `A` and `B`, we refer to `A ⊎ B` as the
-*sum* of `A` and `B`.  In set theory, it is also sometimes
-called the *disjoint union*, and in computing it corresponds
-to a *variant record* type. Among other reasons for
+_sum_ of `A` and `B`.  In set theory, it is also sometimes
+called the _disjoint union_, and in computing it corresponds
+to a _variant record_ type. Among other reasons for
 calling it the sum, note that if type `A` has `m`
 distinct members, and type `B` has `n` distinct members,
 then the type `A ⊎ B` has `m + n` distinct members.
@@ -365,13 +400,12 @@ possible arguments of type `Bool ⊎ Tri`:
 \end{code}
 
 Sum on types also shares a property with sum on numbers in that it is
-commutative and associative *up to isomorphism*.
+commutative and associative _up to isomorphism_.
 
 For commutativity, the `to` function swaps the two constructors,
 taking `inj₁ x` to `inj₂ x`, and `inj₂ y` to `inj₁ y`; and the `from`
 function does the same (up to renaming). Replacing the definition of
-`from∘to` by `λ w → refl` will not work; and similarly for `to∘from`, which
-does the same (up to renaming).
+`from∘to` by `λ w → refl` will not work; and similarly for `to∘from`.
 \begin{code}
 ⊎-comm : ∀ {A B : Set} → (A ⊎ B) ≃ (B ⊎ A)
 ⊎-comm = record
@@ -389,8 +423,8 @@ does the same (up to renaming).
                  }
   }
 \end{code}
-Being *commutative* is different from being *commutative up to
-isomorphism*.  Compare the two statements:
+Being _commutative_ is different from being _commutative up to
+isomorphism_.  Compare the two statements:
 
     m + n ≡ n + m
     A ⊎ B ≃ B ⊎ A
@@ -427,9 +461,9 @@ matching against a suitable pattern to enable simplification.
   }
 \end{code}
 
-Again, being *associative* is not the same as being *associative
-up to isomorphism*.  For example, the type `(ℕ + Bool) + Tri`
-is *not* the same as `ℕ + (Bool + Tri)`. But there is an
+Again, being _associative_ is not the same as being _associative
+up to isomorphism_.  For example, the type `(ℕ + Bool) + Tri`
+is _not_ the same as `ℕ + (Bool + Tri)`. But there is an
 isomorphism between the two types. For instance `inj₂ (inj₁ true)`,
 which is a member of the former, corresponds to `inj₁ (inj₂ true)`,
 which is a member of the latter.
@@ -444,20 +478,28 @@ data ⊥ : Set where
 \end{code}
 There is no possible evidence that `⊥` holds.
 
+Dual to `⊤`, for `⊥` there is no introduction rule but an elimination rule.
 Since false never holds, knowing that it holds tells us we are in a
 paradoxical situation.  Given evidence that `⊥` holds, we might
 conclude anything!  This is a basic principle of logic, known in
-medieval times by the latin phrase *ex falso*, and known to children
+medieval times by the latin phrase _ex falso_, and known to children
 through phrases such as "if pigs had wings, then I'd be the Queen of
 Sheba".  We formalise it as follows.
 \begin{code}
-⊥-elim : ∀ {A : Set} → ⊥ → A
+⊥-elim : ∀ {A : Set}
+  → ⊥
+    --
+  → A
 ⊥-elim ()
 \end{code}
-This is our first use of the *absurd pattern* `()`.
+This is our first use of the _absurd pattern_ `()`.
 Here since `⊥` is a type with no members, we indicate that it is
-*never* possible to match against a value of this type by using
+_never_ possible to match against a value of this type by using
 the pattern `()`.
+
+The nullary case of `case-⊎` is `⊥-elim`.  By analogy,
+we might have called it `case-⊥`, but chose to stick with the name
+in the standard library.
 
 The nullary case of `uniq-⊎` is `uniq-⊥`, which asserts that `⊥-elim`
 is equal to any arbitrary function from `⊥`.
@@ -468,7 +510,7 @@ uniq-⊥ h ()
 Using the absurd pattern asserts there are no possible values for `w`,
 so the equation holds trivially.
 
-We refer to `⊥` as *empty* type. And, indeed,
+We refer to `⊥` as the _empty_ type. And, indeed,
 type `⊥` has no members. For example, the following function
 enumerates all possible arguments of type `⊥`:
 \begin{code}
@@ -478,12 +520,12 @@ enumerates all possible arguments of type `⊥`:
 Here again the absurd pattern `()` indicates that no value can match
 type `⊥`.
 
-For numbers, zero is the identity of addition. Correspondingly,
-empty is the identity of sums *up to isomorphism*.
-For left identity, the `to` function observes that `inj₁ ()` can never arise,
-and takes `inj₂ x` to `x`, and the `from` function
-does the inverse.  The evidence of left inverse requires matching against
-a suitable pattern to enable simplification.
+For numbers, zero is the identity of addition. Correspondingly, empty
+is the identity of sums _up to isomorphism_.  For left identity, the
+`to` function observes that `inj₁ ()` can never arise, and takes `inj₂
+x` to `x`, and the `from` function does the inverse.  The evidence of
+left inverse requires matching against a suitable pattern to enable
+simplification.
 \begin{code}
 ⊥-identityˡ : ∀ {A : Set} → (⊥ ⊎ A) ≃ A
 ⊥-identityˡ =
@@ -499,15 +541,15 @@ a suitable pattern to enable simplification.
     }
 \end{code}
 
-Having an *identity* is different from having an identity
-*up to isomorphism*.  Compare the two statements:
+Having an _identity_ is different from having an identity
+_up to isomorphism_.  Compare the two statements:
 
     0 + m ≡ m
     ⊥ ⊎ A ≃ A
 
 In the first case, we might have that `m` is `2`, and both `0 + m` and
 `m` are equal to `2`.  In the second case, we might have that `A` is
-`Bool`, and `⊥ ⊎ Bool` is *not* the same as `Bool`.  But there is an
+`Bool`, and `⊥ ⊎ Bool` is _not_ the same as `Bool`.  But there is an
 isomorphism between the two types.  For instance, `inj₂ true`, which is
 a member of the former, corresponds to `true`, which is a member of
 the latter.
@@ -533,9 +575,9 @@ the function type, which has appeared throughout this book.
 
 Evidence that `A → B` holds is of the form
 
-    λ (x : A) → N x
+    λ (x : A) → N
 
-where `N x` is a term of type `B` containing as a free variable `x` of type `A`.
+where `N` is a term of type `B` containing as a free variable `x` of type `A`.
 Given a term `L` providing evidence that `A → B` holds, and a term `M`
 providing evidence that `A` holds, the term `L M` provides evidence that
 `B` holds.  In other words, evidence that `A → B` holds is a function that
@@ -544,15 +586,19 @@ converts evidence that `A` holds into evidence that `B` holds.
 Put another way, if we know that `A → B` and `A` both hold,
 then we may conclude that `B` holds.
 \begin{code}
-→-elim : ∀ {A B : Set} → (A → B) → A → B
+→-elim : ∀ {A B : Set}
+  → (A → B)
+  → A
+    -------
+  → B
 →-elim L M = L M
 \end{code}
-In medieval times, this rule was known by the name *modus ponens*.
+In medieval times, this rule was known by the name _modus ponens_.
 It corresponds to function application.
 
 Defining a function, with an named definition or a lambda abstraction,
-is referred to as *introducing* a function,
-while applying a function is referred to as *eliminating* the function.
+is referred to as _introducing_ a function,
+while applying a function is referred to as _eliminating_ the function.
 
 Elimination followed by introduction is the identity.
 \begin{code}
@@ -560,23 +606,11 @@ Elimination followed by introduction is the identity.
 η-→ f = refl
 \end{code}
 
-<!--
-
-If we introduce an implication and then immediately eliminate it, we can
-always simplify the resulting term.  Thus
-
-    λ{ x → N } M
-
-simplifies to `N [ x := M ]`, where `N [ x := M ]` stands for the term
-`N` with each free occurrence of `x` replaced by `M`.
-
--->
-
 Implication binds less tightly than any other operator. Thus, `A ⊎ B →
 B ⊎ A` parses as `(A ⊎ B) → (B ⊎ A)`.
 
-Given two types `A` and `B`, we refer to `A → B` as the *function*
-space from `A` to `B`.  It is also sometimes called the *exponential*,
+Given two types `A` and `B`, we refer to `A → B` as the _function_
+space from `A` to `B`.  It is also sometimes called the _exponential_,
 with `B` raised to the `A` power.  Among other reasons for calling
 it the exponential, note that if type `A` has `m` distinct
 members, and type `B` has `n` distinct members, then the type
@@ -594,15 +628,15 @@ arguments of the type `Bool → Tri`:
 \begin{code}
 →-count : (Bool → Tri) → ℕ
 →-count f with f true | f false
-...           | aa    | aa      =   1
-...           | aa    | bb      =   2
-...           | aa    | cc      =   3
-...           | bb    | aa      =   4
-...           | bb    | bb      =   5
-...           | bb    | cc      =   6
-...           | cc    | aa      =   7
-...           | cc    | bb      =   8
-...           | cc    | cc      =   9
+...          | aa     | aa      =   1
+...          | aa     | bb      =   2
+...          | aa     | cc      =   3
+...          | bb     | aa      =   4
+...          | bb     | bb      =   5
+...          | bb     | cc      =   6
+...          | cc     | aa      =   7
+...          | cc     | bb      =   8
+...          | cc     | cc      =   9
 \end{code}
 
 Exponential on types also share a property with exponential on
@@ -611,9 +645,9 @@ over to the types.
 
 Corresponding to the law
 
-    (pⁿ)ᵐ  ≡  pⁿᵐ
+    (p ^ n) ^ m  ≡  p ^ (n * m)
 
-(or, if you prefer, `(p ^ n) ^ m ≡ p ^ (n * m)`), we have the isomorphism
+(or, if you prefer, `(pⁿ)ᵐ ≡ pⁿᵐ`), we have the isomorphism
 
     A → (B → C)  ≃  (A × B) → C
 
@@ -650,7 +684,7 @@ Corresponding to the law
 
     p ^ (n + m) = (p ^ n) * (p ^ m)
 
-we have the isomorphism
+(or, if you prefer, `p⁽ᵐ⁺ⁿ⁾ ≡ pᵐpⁿ`), we have the isomorphism
 
     (A ⊎ B) → C  ≃  (A → C) × (B → C)
 
@@ -672,11 +706,11 @@ Corresponding to the law
 
     (p * n) ^ m = (p ^ m) * (n ^ m)
 
-we have the isomorphism
+(or, if you prefer, `(pn)ᵐ ≡ (pᵐ)(nᵐ)`), we have the isomorphism
 
     A → B × C  ≃  (A → B) × (A → C)
 
-That is, the assertion that if either `A` holds then `B` holds and `C` holds
+That is, the assertion that if `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.  The proof of left inverse requires both extensionality
 and the rule `η-×` for products.
@@ -751,7 +785,7 @@ embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
-### Exercise (`⊎×-implies-×⊎`)
+#### Exercise (`⊎×-implies-×⊎`)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts.
 \begin{code}
@@ -761,7 +795,7 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
-### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`)
+#### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`, `⇔-iso`)
 
 Define equivalence of propositions (also known as "if and only if") as follows.
 \begin{code}
@@ -770,12 +804,8 @@ record _⇔_ (A B : Set) : Set where
     to   : A → B
     from : B → A
 \end{code}
-Show that equivalence is reflexive, symmetric, and transitive.
-
-
-### Exercise (`⇔-iso`)
-
-Show that `A ⇔ B` is isomorphic to `(A → B) × (B → A)`.
+Show that equivalence is reflexive, symmetric, and transitive, and that
+`A ⇔ B` is isomorphic to `(A → B) × (B → A)`.
 
 
 ## Standard library
@@ -784,18 +814,16 @@ Definitions similar to those in this chapter can be found in the standard librar
 \begin{code}
 import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Data.Unit using (⊤; tt)
-import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to ⊎-elim)
+import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 import Data.Empty using (⊥; ⊥-elim)
 \end{code}
 The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to make triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
-other useful notations, such as `[_,_]` and `[_,_,_]` to construct
-lists of two or three elements in
+other useful notations, such as `[_,_]` to construct a list of two elements in
 Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})
-or `Γ , A` to extend environments in
+and `Γ , A` to extend environments in
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
-
 
 
 ## Unicode

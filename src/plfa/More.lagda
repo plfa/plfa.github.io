@@ -383,7 +383,7 @@ We repeat the syntax in full, but only give the new type and reduction rules.
 
     L, M, N ::= ...                     Terms
       `tt                                 unit value
-      `case⊤[⟨⟩⇒ N ]                      case
+      `case⊤[tt⇒ N ]                      case
 
     V, W ::= ...                        Values
       `tt                                 unit value
@@ -394,20 +394,20 @@ We repeat the syntax in full, but only give the new type and reduction rules.
     Γ ⊢ M ⦂ A
     ------------------ case⊤ or ⊤-E
     Γ ⊢ case⊤ L
-          [⟨⟩⇒ M ] ⦂ A
+          [tt⇒ M ] ⦂ A
 
 ### Reduction
 
     L —→ L′
     ------------- ξ-case⊤
        case⊤ L
-         [⟨⟩⇒ M ]
+         [tt⇒ M ]
     —→ case⊤ L′
-         [⟨⟩⇒ M ]
+         [tt⇒ M ]
 
     ------------- β-case⊤
        case⊤ `tt
-         [⟨⟩⇒ M ]
+         [tt⇒ M ]
     —→ M
 
 ### Example
@@ -417,14 +417,14 @@ Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new
     from×⊤-case : ∅ ⊢ A `× `⊤ ⇒ A
     from×⊤-case = ƛ z ⇒ case× z
                          [⟨ x , y ⟩⇒ case⊤
-                                       [⟨⟩⇒ y ] ]
+                                       [tt⇒ y ] ]
 
 
 ### Translation
 
 We can translate the alternative formulation into one without case.
 
-    (case⊤ L [⟨⟩⇒ M ]) †  =  `let z `= (L †) `in (M †)
+    (case⊤ L [tt⇒ M ]) †  =  `let z `= (L †) `in (M †)
 
 Here `z` is a variable that does not appear free in `M`.
 
