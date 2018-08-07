@@ -28,20 +28,22 @@ open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensiona
 
 ## Universals
 
+We formalise universal quantification using the
+dependent function type, which has appeared throughout this book.
+
 Given a variable `x` of type `A` and a proposition `B x` which
 contains `x` as a free variable, the universally quantified
 proposition `∀ (x : A) → B x` holds if for every term `M` of type
 `A` the proposition `B M` holds.  Here `B M` stands for
 the proposition `B x` with each free occurrence of `x` replaced by
-`M`.  The variable `x` appears free in `B x` but bound in
-`∀ (x : A) → B x`.  We formalise universal quantification using the
-dependent function type, which has appeared throughout this book.
+`M`.  Variable `x` appears free in `B x` but bound in
+`∀ (x : A) → B x`.  
 
 Evidence that `∀ (x : A) → B x` holds is of the form
 
-    λ (x : A) → N
+    λ (x : A) → N x
 
-where `N` is a term of type `B x`, and `N x` and `B x` both contain
+where `N x` is a term of type `B x`, and `N x` and `B x` both contain
 a free variable `x` of type `A`.  Given a term `L` providing evidence
 that `∀ (x : A) → B x` holds, and a term `M` of type `A`, the term `L
 M` provides evidence that `B M` holds.  In other words, evidence that
@@ -51,7 +53,11 @@ M` provides evidence that `B M` holds.  In other words, evidence that
 Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
 is a term of type `A` then we may conclude that `B M` holds.
 \begin{code}
-∀-elim : ∀ {A : Set} {B : A → Set} → (∀ (x : A) → B x) → (M : A) → B M
+∀-elim : ∀ {A : Set} {B : A → Set}
+  → (∀ (x : A) → B x)
+  → (M : A)
+    -----------------
+  → B M
 ∀-elim L M = L M
 \end{code}
 As with `→-elim`, the rule corresponds to function application.
@@ -63,20 +69,20 @@ argument and result are viewed as evidence, whereas when a dependent
 function is viewed as evidence of a universal, its argument is viewed
 as an element of a data type and its result is viewed as evidence of
 a proposition that depends on the argument. This difference is largely
-a matter of interpretation, since in Agda values of a type and
+a matter of interpretation, since in Agda a value of a type and
 evidence of a proposition are indistinguishable.
 
-Dependent function types are sometimes referred to as dependent products,
-because if `A` is a finite type with values `x₁ , ⋯ , xᵢ`, and if
-each of the types `B x₁ , ⋯ , B xᵢ` has `m₁ , ⋯ , mᵢ` distinct members,
-then `∀ (x : A) → B x` has `m₁ * ⋯ * mᵢ` members.
-Indeed, sometimes the notation `∀ (x : A) → B x`
-is replaced by a notation such as `Π[ x ∈ A ] (B x)`,
-where `Π` stands for product.  However, we will stick with the name
-dependent function, because (as we will see) dependent product is ambiguous.
+Dependent function types are sometimes referred to as dependent
+products, because if `A` is a finite type with values `x₁ , ⋯ , xₙ`,
+and if each of the types `B x₁ , ⋯ , B xₙ` has `m₁ , ⋯ , mₙ` distinct
+members, then `∀ (x : A) → B x` has `m₁ * ⋯ * mₙ` members.  Indeed,
+sometimes the notation `∀ (x : A) → B x` is replaced by a notation
+such as `Π[ x ∈ A ] (B x)`, where `Π` stands for product.  However, we
+will stick with the name dependent function, because (as we will see)
+dependent product is ambiguous.
 
 
-### Exercise (`∀-distrib-×`)
+#### Exercise (`∀-distrib-×`)
 
 Show that universals distribute over conjunction.
 \begin{code}
@@ -84,9 +90,10 @@ postulate
   ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 \end{code}
-Compare this with the result (`→-distrib-×`) in Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}).
+Compare this with the result (`→-distrib-×`) in
+Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}).
 
-### Exercise (`⊎∀-implies-∀⊎`)
+#### Exercise (`⊎∀-implies-∀⊎`)
 
 Show that a disjunction of universals implies a universal of disjunctions.
 \begin{code}
@@ -104,7 +111,7 @@ contains `x` as a free variable, the existentially quantified
 proposition `Σ[ x ∈ A ] B x` holds if for some term `M` of type
 `A` the proposition `B M` holds.  Here `B M` stands for
 the proposition `B x` with each free occurrence of `x` replaced by
-`M`.  The variable `x` appears free in `B x` but bound in
+`M`.  Variable `x` appears free in `B x` but bound in
 `Σ[ x ∈ A ] B x`.
 
 We formalise existential quantification by declaring a suitable
@@ -125,7 +132,7 @@ The special syntax is available only when the identifier
 `Σ-syntax` is imported.
 
 Evidence that `Σ[ x ∈ A ] B x` holds is of the form
-`(M , N)` where `M` is a term of type `A`, and `N` is evidence
+`⟨ M , N ⟩` where `M` is a term of type `A`, and `N` is evidence
 that `B M` holds.
 
 Equivalently, we could also declare existentials as a record type.
@@ -155,19 +162,19 @@ both of its components are viewed as evidence, whereas when it is
 viewed as evidence of an existential, the first component is viewed as
 an element of a datatype and the second component is viewed as
 evidence of a proposition that depends on the first component.  This
-difference is largely a matter of interpretation, since in Agda values
+difference is largely a matter of interpretation, since in Agda a value
 of a type and evidence of a proposition are indistinguishable.
 
 Existentials are sometimes referred to as dependent sums,
-because if `A` is a finite type with values `x₁ , ⋯ , xᵢ`, and if
-each of the types `B x₁ , ⋯ B xᵢ` has `m₁ , ⋯ , mᵢ` distinct members,
-then `Σ[ x ∈ A] B x` has `m₁ + ⋯ + mᵢ` members, which explains the
+because if `A` is a finite type with values `x₁ , ⋯ , xₙ`, and if
+each of the types `B x₁ , ⋯ B xₙ` has `m₁ , ⋯ , mₙ` distinct members,
+then `Σ[ x ∈ A] B x` has `m₁ + ⋯ + mₙ` members, which explains the
 choice of notation for existentials, since `Σ` stands for sum.
 
 Existentials are sometimes referred to as dependent products, since
 products arise as a special case.  However, that choice of names is
-doubly confusing, since universal also have a claim to the name dependent
-product and since existential also have a claim to the name dependent sum.
+doubly confusing, since universals also have a claim to the name dependent
+product and since existentials also have a claim to the name dependent sum.
 
 A common notation for existentials is `∃` (analogous to `∀` for universals).
 We follow the convention of the Agda standard library, and reserve this
@@ -186,7 +193,10 @@ Given evidence that `∀ x → B x → C` holds, where `C` does not contain
 `x` as a free variable, and given evidence that `∃[ x ] B x` holds, we
 may conclude that `C` holds.
 \begin{code}
-∃-elim : ∀ {A : Set} {B : A → Set} {C : Set} → (∀ x → B x → C) → ∃[ x ] B x → C
+∃-elim : ∀ {A : Set} {B : A → Set} {C : Set}
+  → (∀ x → B x → C)
+    ---------------
+  → ∃[ x ] B x → C
 ∃-elim f ⟨ x , y ⟩ = f x y
 \end{code}
 In other words, if we know for every `x` of type `A` that `B x`
@@ -198,7 +208,8 @@ the evidence for `∃[ x ] B x`.
 
 Indeed, the converse also holds, and the two together form an isomorphism.
 \begin{code}
-∀∃-currying : ∀ {A : Set} {B : A → Set} {C : Set} → (∀ x → B x → C) ≃ (∃[ x ] B x → C)
+∀∃-currying : ∀ {A : Set} {B : A → Set} {C : Set}
+  → (∀ x → B x → C) ≃ (∃[ x ] B x → C)
 ∀∃-currying =
   record
     { to      =  λ{ f → λ{ ⟨ x , y ⟩ → f x y }}
@@ -213,16 +224,16 @@ establish the isomorphism is identical to what we wrote when discussing
 
 [implication]: {{ site.baseurl }}{% link out/plfa/Connectives.md %}/#implication
 
-### Exercise (`∃-distrib-⊎`)
+#### Exercise (`∃-distrib-⊎`)
 
-Show that universals distribute over conjunction.
+Show that existentials distribute over disjunction.
 \begin{code}
 postulate
   ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 \end{code}
 
-### Exercise (`∃×-implies-×∃`)
+#### Exercise (`∃×-implies-×∃`)
 
 Show that an existential of conjunctions implies a conjunction of existentials.
 \begin{code}
@@ -235,17 +246,26 @@ Does the converse hold? If so, prove; if not, explain why.
 
 ## An existential example
 
-Recall the definitions of `even` and `odd` from Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %}).
+Recall the definitions of `even` and `odd` from
+Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %}).
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
 
 data even where
+
   even-zero : even zero
-  even-suc  : ∀ {n : ℕ} → odd n → even (suc n)
+
+  even-suc : ∀ {n : ℕ}
+    → odd n
+      ------------
+    → even (suc n)
 
 data odd where
-  odd-suc   : ∀ {n : ℕ} → even n → odd (suc n)
+  odd-suc : ∀ {n : ℕ}
+    → even n
+      -----------
+    → odd (suc n)
 \end{code}
 A number is even if it is zero or the successor of an odd number, and
 odd if it the successor of an even number.
@@ -254,8 +274,9 @@ We will show that a number is even if and only if it is twice some
 other number, and odd if and only if it is one more than twice
 some other number.  In other words, we will show
 
-    even n   iff   ∃[ m ] (    m * 2 ≡ n)
-    odd  n   iff   ∃[ m ] (1 + m * 2 ≡ n)
+`even n`   iff   `∃[ m ] (    m * 2 ≡ n)`
+
+`odd  n`   iff   `∃[ m ] (1 + m * 2 ≡ n)`
 
 By convention, one tends to write constant factors first and to put
 the constant term in a sum last. Here we've reversed each of those
@@ -278,16 +299,16 @@ evidence that `n` is even or odd, we return a
 number `m` and evidence that `m * 2 ≡ n` or `1 + m * 2 ≡ n`.
 We induct over the evidence that `n` is even or odd.
 
-- If the number is even because it is zero, then we return a pair
-consisting of zero and the (trivial) proof that twice zero is zero.
+* If the number is even because it is zero, then we return a pair
+consisting of zero and the evidence that twice zero is zero.
 
-- If the number is even because it is one more than an odd number,
+* If the number is even because it is one more than an odd number,
 then we apply the induction hypothesis to give a number `m` and
 evidence that `1 + m * 2 ≡ n`. We return a pair consisting of `suc m`
 and evidence that `suc m * 2` ≡ suc n`, which is immediate after
 substituting for `n`.
 
-- If the number is odd because it is the successor of an even number,
+* If the number is odd because it is the successor of an even number,
 then we apply the induction hypothesis to give a number `m` and
 evidence that `m * 2 ≡ n`. We return a pair consisting of `suc m` and
 evidence that `1 + m * 2 ≡ suc n`, which is immediate after
@@ -324,13 +345,13 @@ follows by `odd-suc`.
 
 This completes the proof in the backward direction.
 
-### Exercise (`∃-even′, ∃-odd′`)
+#### Exercise (`∃-even′, ∃-odd′`)
 
 How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
-### Exercise (`∃-+-≤`)
+#### Exercise (`∃-+-≤`)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
@@ -344,8 +365,9 @@ disjunction and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
 of a disjunction is isomorphic to a conjunction of negations.
 \begin{code}
-¬∃∀ : ∀ {A : Set} {B : A → Set} → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
-¬∃∀ =
+¬∃≃∀¬ : ∀ {A : Set} {B : A → Set}
+  → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
+¬∃≃∀¬ =
   record
     { to      =  λ{ ¬∃xy x y → ¬∃xy ⟨ x , y ⟩ }
     ; from    =  λ{ ∀¬xy ⟨ x , y ⟩ → ∀¬xy x y }
@@ -370,11 +392,16 @@ The two inverse proofs are straightforward, where one direction
 requires extensionality.
 
 
+#### Exercise (`∃¬-implies-¬∀`)
 
-### Exercise (`∃¬-Implies-¬∀`)
-
-Show `∃[ x ] ¬ B x → ¬ (∀ x → B x)`.
-
+Show that existential of a negation implies negation of a universal.
+\begin{code}
+postulate
+  ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
+    → ∃[ x ] (¬ B x)
+      --------------
+    → ¬ (∀ x → B x)
+\end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
 
