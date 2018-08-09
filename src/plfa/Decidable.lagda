@@ -9,8 +9,8 @@ module plfa.Decidable where
 \end{code}
 
 We have a choice as to how to represent relations:
-as an inductive data type of *evidence* that the relation holds,
-or as a function that *computes* whether the relation holds.
+as an inductive data type of _evidence_ that the relation holds,
+or as a function that _computes_ whether the relation holds.
 Here we explore the relation between these choices.
 
 ## Imports
@@ -19,7 +19,7 @@ Here we explore the relation between these choices.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _<_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
@@ -34,14 +34,21 @@ open import Function using (_∘_)
 ## Evidence vs Computation
 
 Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %})
-defined comparison an inductive datatype, which provides *evidence* that one number
+defined comparison an inductive datatype, which provides _evidence_ that one number
 is less than or equal to another.
 \begin{code}
 infix 4 _≤_
 
 data _≤_ : ℕ → ℕ → Set where
-  z≤n : ∀ {n : ℕ} → zero ≤ n
-  s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ suc n
+
+  z≤n : ∀ {n : ℕ}
+      --------
+    → zero ≤ n
+
+  s≤s : ∀ {m n : ℕ}
+    → m ≤ n
+      -------------
+    → suc m ≤ suc n
 \end{code}
 For example, we can provide evidence that `2 ≤ 4`,
 and show there is no possible evidence that `4 ≤ 2`.
@@ -65,7 +72,7 @@ data Bool : Set where
   false : Bool
 \end{code}
 Given booleans, we can define a function of two numbers that
-*computes* to `true` if the comparison holds and to `false` otherwise.
+_computes_ to `true` if the comparison holds and to `false` otherwise.
 \begin{code}
 infix 4 _≤ᵇ_
 
@@ -119,8 +126,8 @@ indeed we can.  First, we define a function that lets us map from the
 computation world to the evidence world.
 \begin{code}
 T : Bool → Set
-T true = ⊤
-T false = ⊥
+T true   =  ⊤
+T false  =  ⊥
 \end{code}
 Recall that `⊤` is the unit type which contains the single element `tt`,
 and the `⊥` is the empty type which contains no values.  (Also note that
@@ -133,7 +140,7 @@ is inhabited.
 In the forward direction, we need to do a case analysis on the boolean `b`.
 \begin{code}
 T→≡ : ∀ (b : Bool) → T b → b ≡ true
-T→≡ true tt = refl
+T→≡ true tt   =  refl
 T→≡ false ()
 \end{code}
 If `b` is true then `T b` is inhabited by `tt` and `b ≡ true` is inhabited
@@ -142,7 +149,7 @@ by `refl`, while if `b` is false then `T b` in uninhabited.
 In the reverse direction, there is no need for a case analysis.
 \begin{code}
 ≡→T : ∀ {b : Bool} → b ≡ true → T b
-≡→T refl = tt
+≡→T refl  =  tt
 \end{code}
 If `b ≡ true` is inhabited by `refl` we know that `b` is `true` and
 hence `T b` is inhabited by `tt`.
@@ -153,9 +160,9 @@ In the forward direction, we consider the three clauses in the definition
 of `_≤ᵇ_`.
 \begin{code}
 ≤ᵇ→≤ : ∀ (m n : ℕ) → T (m ≤ᵇ n) → m ≤ n
-≤ᵇ→≤ zero n tt = z≤n
-≤ᵇ→≤ (suc m) zero ()
-≤ᵇ→≤ (suc m) (suc n) t =  s≤s (≤ᵇ→≤ m n t)
+≤ᵇ→≤ zero    n       tt  =  z≤n
+≤ᵇ→≤ (suc m) zero    ()
+≤ᵇ→≤ (suc m) (suc n) t   =  s≤s (≤ᵇ→≤ m n t)
 \end{code}
 In the first clause, we immediately have that `zero ≤ᵇ n` is
 true, so `T (m ≤ᵇ n)` is evidenced by `tt`, and correspondingly `m ≤ n` is
@@ -171,8 +178,8 @@ In the reverse direction, we consider the possible forms of evidence
 that `m ≤ n`.
 \begin{code}
 ≤→≤ᵇ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ n)
-≤→≤ᵇ z≤n = tt
-≤→≤ᵇ (s≤s m≤n) = ≤→≤ᵇ m≤n
+≤→≤ᵇ z≤n        =  tt
+≤→≤ᵇ (s≤s m≤n)  =  ≤→≤ᵇ m≤n
 \end{code}
 If the evidence is `z≤n` then we immediately have that `zero ≤ᵇ n` is
 true, so `T (m ≤ᵇ n)` is evidenced by `tt`. If the evidence is `s≤s`
@@ -191,7 +198,7 @@ and can ignore those where it does not.
 On the other hand, sometimes the computation formulation may be just what
 we want.  Given a non-obvious relation over large values, it might be
 handy to have the computer work out the answer for us.  Fortunately,
-rather than choosing between *evidence* and *computation*,
+rather than choosing between _evidence_ and _computation_,
 there is a way to get the benefits of both.
 
 ## The best of both worlds
@@ -200,18 +207,18 @@ A function that returns a boolean returns exactly a single bit of information:
 does the relation hold or does it not? Conversely, the evidence approach tells
 us exactly why the relation holds, but we are responsible for generating the
 evidence.  But it is easy to define a type that combines the benefits of
-both approaches.  It is called `Dec A`, where `Dec` is short for *decidable*.
+both approaches.  It is called `Dec A`, where `Dec` is short for _decidable_.
 \begin{code}
 data Dec (A : Set) : Set where
-  yes : A → Dec A
-  no : ¬ A → Dec A
+  yes :   A → Dec A
+  no  : ¬ A → Dec A
 \end{code}
 Like booleans, the type has two constructors.  A value of type `Dec A`
 is either of the form `yes x`, where `x` provides evidence that `A` holds,
 or of the form `no ¬x`, where `¬x` provides evidence that `A` cannot hold
 (that is, `¬x` is a function which given evidence of `A` yields a contradiction).
 
-For example, here is a function which given two numbers decides whether one
+For example, we define a function `_≤?_` which given two numbers decides whether one
 is less than or equal to the other, and provides evidence to justify its conclusion.
 
 First, we introduce two functions useful for constructing evidence that
@@ -225,7 +232,7 @@ an inequality does not hold.
 \end{code}
 The first of these asserts that `¬ (suc m ≤ zero)`, and follows by
 absurdity, since any evidence of inequality has the form `zero ≤ n`
-or `suc m ≤ suc n`, neither of which match `suc m ≤ suc n`. The second
+or `suc m ≤ suc n`, neither of which match `suc m ≤ zero`. The second
 of these takes evidence `¬m≤n` of `¬ (m ≤ n)` and returns a proof of
 `¬ (suc m ≤ suc n)`.  Any evidence of `suc m ≤ suc n` must have the
 form `s≤s m≤n` where `m≤n` is evidence that `m ≤ n`.  Hence, we have
@@ -234,11 +241,11 @@ a contradiction, evidenced by `¬m≤n m≤n`.
 Using these, it is straightforward to decide an inequality.
 \begin{code}
 _≤?_ : ∀ (m n : ℕ) → Dec (m ≤ n)
-zero ≤? n = yes z≤n
-suc m ≤? zero = no ¬s≤z
+zero  ≤? n                   =  yes z≤n
+suc m ≤? zero                =  no ¬s≤z
 suc m ≤? suc n with m ≤? n
-... | yes m≤n = yes (s≤s m≤n)
-... | no ¬m≤n = no (¬s≤s ¬m≤n)
+...               | yes m≤n  =  yes (s≤s m≤n)
+...               | no ¬m≤n  =  no (¬s≤s ¬m≤n)
 \end{code}
 As with `_≤ᵇ_`, the definition has three clauses.  In the first
 clause, it is immediate that `zero ≤ n` holds, and it is evidenced by
@@ -256,9 +263,9 @@ in order to show that it was correct.  In contrast, the definition of `_≤?_`
 proves itself correct, as attested to by its type.  The code of `_≤?_`
 is far more compact than the combined code of `_≤ᵇ_`, `≤ᵇ→≤`, and `≤→≤ᵇ`.
 And, as we will later show, if you really want the latter three, it is easy
-to derive them from the first.
+to derive them from `_≤?_`.
 
-We can use our new function to *compute* the *evidence* that earlier we had to
+We can use our new function to _compute_ the _evidence_ that earlier we had to
 think up on our own.
 \begin{code}
 _ : 2 ≤? 4 ≡ yes (s≤s (s≤s z≤n))
@@ -275,11 +282,29 @@ causes Agda to print the values given above.
 but instead use inline anonymous functions then Agda may have
 trouble normalising evidence of negation.)
 
+
+#### Exercise (`_<?_`)
+
+Analogous to the function above, define a function to decide strict inequality.
+\begin{code}
+postulate
+  _<?_ : ∀ (m n : ℕ) → Dec (m < n)
+\end{code}
+
+#### Exercise (`_≡ℕ?_`)
+
+Define a function to decide whether two naturals are equal.
+\begin{code}
+postulate
+  _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
+\end{code}
+
+
 ## Decidables from booleans, and booleans from decidables
 
 Curious readers might wonder if we could reuse the definition of
 `m ≤ᵇ n`, together with the proofs that it is equivalent to `m ≤ n`, to show
-decidability.  Indeed we can do so as follows.
+decidability.  Indeed, we can do so as follows.
 \begin{code}
 _≤?′_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
@@ -294,8 +319,8 @@ If instead we wrote
 
     _≤?″_ : ∀ (m n : ℕ) → Dec (m ≤ n)
     m ≤?″ n with m ≤ᵇ n
-    ... | true  = yes (≤ᵇ→≤ m n tt)
-    ... | false = no (≤→≤ᵇ {m} {n})
+    ... | true   =  yes (≤ᵇ→≤ m n tt)
+    ... | false  =  no (≤→≤ᵇ {m} {n})
 
 then Agda would make two complaints, one for each clause
 
@@ -316,39 +341,40 @@ from `_≤?_`, as we will now show.
 Erasure takes a decidable value to a boolean.
 \begin{code}
 ⌊_⌋ : ∀ {A : Set} → Dec A → Bool
-⌊ yes x ⌋ = true
-⌊ no ¬x ⌋ = false
+⌊ yes x ⌋  =  true
+⌊ no ¬x ⌋  =  false
 \end{code}
 Using erasure, we can easily derive `_≤ᵇ_` from `_≤?_`.
 \begin{code}
 _≤ᵇ′_ : ℕ → ℕ → Bool
-m ≤ᵇ′ n = ⌊ m ≤? n ⌋
+m ≤ᵇ′ n  =  ⌊ m ≤? n ⌋
 \end{code}
 
 Further, if `D` is a value of type `Dec A`, then `T ⌊ D ⌋` is
 inhabited exactly when `A` is inhabited.
 \begin{code}
 toWitness : ∀ {A : Set} → {D : Dec A} → T ⌊ D ⌋ → A
-toWitness {A} {yes x} tt  = x
+toWitness {A} {yes x} tt  =  x
 toWitness {A} {no ¬x} ()
 
 fromWitness : ∀ {A : Set} → {D : Dec A} → A → T ⌊ D ⌋
-fromWitness {A} {yes x} _ = tt
-fromWitness {A} {no ¬x} x = ¬x x
+fromWitness {A} {yes x} _  =  tt
+fromWitness {A} {no ¬x} x  =  ¬x x
 \end{code}
 Using these, we can easily derive that `T (m ≤ᵇ′ n)` is inhabited
 exactly when `m ≤ n` is inhabited.
 \begin{code}
 ≤ᵇ′→≤ : ∀ {m n : ℕ} → T (m ≤ᵇ′ n) → m ≤ n
-≤ᵇ′→≤ = toWitness
+≤ᵇ′→≤  =  toWitness
 
 ≤→≤ᵇ′ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ′ n)
-≤→≤ᵇ′ = fromWitness
+≤→≤ᵇ′  =  fromWitness
 \end{code}
 
 In summary, it is usually best to eschew booleans and rely on decidables instead.
 If you need booleans, they and their properties are easily derived from the
 corresponding decidables.
+
 
 ## Logical connectives
 
@@ -513,12 +539,14 @@ all p  =  foldr _∧_ true ∘ map p
 \end{code}
 The function can be written in a particularly compact style by
 using the higher-order functions `map` and `foldr` as defined in
-the sections on [Map]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Map) and [Fold]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Fold).
+the sections on
+[Map]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Map) and
+[Fold]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Fold).
 
 As one would hope, if we replace booleans by decidables there is again
 an analogue of `All`.  First, return to the notion of a predicate `P` as
 a function of type `A → Set`, taking a value `x` of type `A` into evidence
-`P x` that a property holds for `x`.  Say that a predicate `P` is *decidable*
+`P x` that a property holds for `x`.  Say that a predicate `P` is _decidable_
 if we have a function that for a given `x` can decide `P x`.
 \begin{code}
 Decidable : ∀ {A : Set} → (A → Set) → Set
@@ -528,11 +556,11 @@ Then if predicate `P` is decidable, it is also decidable whether every
 element of a list satisfies the predicate.
 \begin{code}
 All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
-All? P? [] = yes []
+All? P? []                                 =  yes []
 All? P? (x ∷ xs) with P? x   | All? P? xs
-...                 | yes Px | yes Pxs     = yes (Px ∷ Pxs)
-...                 | no ¬Px | _           = no λ{ (Px ∷ Pxs) → ¬Px Px   }
-...                 | _      | no ¬Pxs     = no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
+...                 | yes Px | yes Pxs     =  yes (Px ∷ Pxs)
+...                 | no ¬Px | _           =  no λ{ (Px ∷ Pxs) → ¬Px Px   }
+...                 | _      | no ¬Pxs     =  no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
 \end{code}
 If the list is empty, then trivially `P` holds for every element of
 the list.  Otherwise, the structure of the proof is similar to that

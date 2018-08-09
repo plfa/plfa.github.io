@@ -40,11 +40,11 @@ data List (A : Set) : Set where
 infixr 5 _∷_
 \end{code}
 Let's unpack this definition. If `A` is a set, then `List A` is a set.
-The next two lines tell us that `[]` (pronounced *nil*) is a list of
+The next two lines tell us that `[]` (pronounced _nil_) is a list of
 type `A` (often called the *empty* list), and that `_∷_` (pronounced
-*cons*, short for *constructor*) takes a value of type `A` and a `List
-A` and returns a `List A`.  Operator `_∷_` has precedence level 5 and
-associates to the right.
+_cons_, short for _constructor_) takes a value of type `A` and a value
+of type `List A` and returns a value of type `List A`.  Operator `_∷_`
+has precedence level 5 and associates to the right.
 
 For example,
 \begin{code}
@@ -53,9 +53,9 @@ _ = 0 ∷ 1 ∷ 2 ∷ []
 \end{code}
 denotes the list of the first three natural numbers.  Since `_::_`
 associates to the right, the term parses as `0 ∷ (1 ∷ (2 ∷ []))`.
-Here `0` is the first element of the list, called the *head*,
+Here `0` is the first element of the list, called the _head_,
 and `1 ∷ (2 ∷ [])` is a list of the remaining elements, called the
-*tail*. Lists are a rather strange beast: they have a head and a tail,
+_tail_. Lists are a rather strange beast: they have a head and a tail,
 nothing in between, and the tail is itself another list!
 
 As we've seen, parameterised types can be translated to
@@ -71,9 +71,9 @@ Thus, our example list could also be written
 _ : List ℕ
 _ = _∷_ {ℕ} 0 (_∷_ {ℕ} 1 (_∷_ {ℕ} 2 ([] {ℕ})))
 \end{code}
-where here we have made the implicit parameters explicit.
+where here we have provided the implicit parameters explicitly.
 
-Including the lines
+Including the pragma
 
     {-# BUILTIN LIST List #-}
 
@@ -103,7 +103,7 @@ on the right-hand side of an equation.
 ## Append
 
 Our first function on lists is written `_++_` and pronounced
-*append*.
+_append_.
 \begin{code}
 infixr 5 _++_
 
@@ -111,12 +111,12 @@ _++_ : ∀ {A : Set} → List A → List A → List A
 []       ++ ys  =  ys
 (x ∷ xs) ++ ys  =  x ∷ (xs ++ ys)
 \end{code}
-The type `A` is an implicit argument to append, making it
-a *polymorphic* function (one that can be used at many types).
-The empty list appended to another list yields the other list.
-A non-empty list appended to another list yields a list with
-head the same as the head of the first list and
-tail the same as the tail of the first list appended to the second list.
+The type `A` is an implicit argument to append, making it a
+_polymorphic_ function (one that can be used at many types).  The
+empty list appended to another list yields the other list.  A
+non-empty list appended to another list yields a list with head the
+same as the head of the first list and tail the same as the tail of
+the first list appended to the second list.
 
 Here is an example, showing how to compute the result
 of appending two lists.
@@ -144,7 +144,8 @@ number of elements in the first list.
 We can reason about lists in much the same way that we reason
 about numbers.  Here is the proof that append is associative.
 \begin{code}
-++-assoc : ∀ {A : Set} (xs ys zs : List A) → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
+++-assoc : ∀ {A : Set} (xs ys zs : List A)
+  → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
 ++-assoc [] ys zs =
   begin
     ([] ++ ys) ++ zs
@@ -171,7 +172,7 @@ and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `++-assoc xs ys zs`.
 
-Agda supports a variant of the *section* notation introduced by Richard Bird.
+Agda supports a variant of the _section_ notation introduced by Richard Bird.
 If `_⊕_` is an arbitrary binary operator, we
 write `(x ⊕_)` for the function which applied to `y` returns `x ⊕ y`, and
 we write `(_⊕ y)` for the function which applied to `x` also returns `x ⊕ y`.
@@ -216,7 +217,7 @@ That it is a right identity follows by simple induction.
 \end{code}
 As we will see later,
 these three properties establish that `_++_` and `[]` form
-a *monoid* over lists.
+a _monoid_ over lists.
 
 ## Length
 
@@ -260,7 +261,8 @@ has insufficient information to infer the implicit parameter.
 The length of one list appended to another is the
 sum of the lengths of the lists.
 \begin{code}
-length-++ : ∀ {A : Set} (xs ys : List A) → length (xs ++ ys) ≡ length xs + length ys
+length-++ : ∀ {A : Set} (xs ys : List A)
+  → length (xs ++ ys) ≡ length xs + length ys
 length-++ {A} [] ys =
   begin
     length ([] ++ ys)
@@ -280,15 +282,14 @@ length-++ (x ∷ xs) ys =
     length (x ∷ xs) + length ys
   ∎
 \end{code}
-The proof is by induction on the first arugment. The base case instantiates
-to `[]`, and follows by straightforward computation.
-As before, Agda cannot infer the implicit type parameter to `length`,
-and it must be given explicitly.
-The inductive case instantiates to `x ∷ xs`,
-and follows by straightforward computation combined with the
-inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
-invocation of the proof, in this case `length-++ xs ys`, and it is promoted
-by the congruence `cong suc`.
+The proof is by induction on the first arugment. The base case
+instantiates to `[]`, and follows by straightforward computation.  As
+before, Agda cannot infer the implicit type parameter to `length`, and
+it must be given explicitly.  The inductive case instantiates to
+`x ∷ xs`, and follows by straightforward computation combined with the
+inductive hypothesis.  As usual, the inductive hypothesis is indicated
+by a recursive invocation of the proof, in this case `length-++ xs ys`,
+and it is promoted by the congruence `cong suc`.
 
 
 ## Reverse
@@ -296,8 +297,8 @@ by the congruence `cong suc`.
 Using append, it is easy to formulate a function to reverse a list.
 \begin{code}
 reverse : ∀ {A : Set} → List A → List A
-reverse [] = []
-reverse (x ∷ xs) = reverse xs ++ [ x ]
+reverse []        =  []
+reverse (x ∷ xs)  =  reverse xs ++ [ x ]
 \end{code}
 The reverse of the empty list is the empty list.
 The reverse of a non-empty list
@@ -336,26 +337,33 @@ _ =
     [ 2 , 1 , 0 ]
   ∎
 \end{code}
-Reversing a list in this way takes time *quadratic* in the length of
+Reversing a list in this way takes time _quadratic_ in the length of
 the list. This is because reverse ends up appending lists of lengths
 `1`, `2`, up to `n - 1`, where `n` is the length of the list being
 reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 (We will validate that last fact in an exercise later in this chapter.)
 
-### Exercise (`reverse-++-commute`)
+#### Exercise (`reverse-++-commute`)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first.
-
-    reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+\begin{code}
+postulate
+  reverse-++-commute : ∀ {A : Set} {xs ys : List A}
+    → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+\end{code}
 
 ### Exercise (`reverse-involutive`)
 
-A function is an *involution* if when applied twice it acts
+A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution.
+\begin{code}
+postulate
+  reverse-involutive : ∀ {A : Set} {xs : List A}
+    → reverse (reverse xs) ≡ xs
+\end{code}
 
-    reverse (reverse xs) ≡ xs
 
 ## Faster reverse
 
@@ -368,12 +376,13 @@ shunt [] ys = ys
 shunt (x ∷ xs) ys =  shunt xs (x ∷ ys)
 \end{code}
 The definition is by recursion on the first argument. The second argument
-actually becomes *larger*, but this is not a problem because the argument
-on which we recurse becomes *smaller*.
+actually becomes _larger_, but this is not a problem because the argument
+on which we recurse becomes _smaller_.
 
 Shunt is related to reverse as follows.
 \begin{code}
-shunt-reverse : ∀ {A : Set} (xs ys : List A) → shunt xs ys ≡ reverse xs ++ ys
+shunt-reverse : ∀ {A : Set} (xs ys : List A)
+  → shunt xs ys ≡ reverse xs ++ ys
 shunt-reverse [] ys =
   begin
     shunt [] ys
@@ -418,7 +427,8 @@ reverse′ xs = shunt xs []
 Given our previous lemma, it is straightforward to show
 the two definitions equivalent.
 \begin{code}
-reverses : ∀ {A : Set} (xs : List A) → reverse′ xs ≡ reverse xs
+reverses : ∀ {A : Set} (xs : List A)
+  → reverse′ xs ≡ reverse xs
 reverses xs =
   begin
     reverse′ xs
@@ -426,7 +436,7 @@ reverses xs =
     shunt xs []
   ≡⟨ shunt-reverse xs [] ⟩
     reverse xs ++ []
-  ≡⟨ ++-identityʳ (reverse xs) ⟩
+  ≡⟨ ++-identityʳ (reverse xs) ⟩  
     reverse xs
   ∎
 \end{code}
@@ -454,7 +464,7 @@ Now the time to reverse a list is linear in the length of the list.
 ## Map {#Map}
 
 Map applies a function to every element of a list to generate a corresponding list.
-Map is an example of a *higher-order function*, one which takes a function as an
+Map is an example of a _higher-order function_, one which takes a function as an
 argument and returns a function as a result.
 \begin{code}
 map : ∀ {A B : Set} → (A → B) → List A → List B
@@ -480,6 +490,8 @@ _ =
     suc 0 ∷ suc 1 ∷ suc 2 ∷ map suc []
   ≡⟨⟩
     suc 0 ∷ suc 1 ∷ suc 2 ∷ []
+  ≡⟨⟩
+    1 ∷ 2 ∷ 3 ∷ []
   ∎
 \end{code}
 Map requires time linear in the length of the list.
@@ -506,23 +518,44 @@ Any type that is parameterised on another type, such as lists, has a
 corresponding map, which accepts a function and returns a function
 from the type parameterised on the domain of the function to the type
 parameterised on the range of the function. Further, a type that is
-parameterised on *n* types will have a map that is parameterised on
-*n* functions.
+parameterised on _n_ types will have a map that is parameterised on
+_n_ functions.
 
 
-### Exercise (`map-compose`)
+#### Exercise (`map-compose`)
 
 Prove that the map of a composition is equal to the composition of two maps.
-
-    map (f ∘ g) ≡ map f ∘ map g
-
+\begin{code}
+postulate
+  map-compose : ∀ {A B C : Set} {f : A → B} {g : B → C}
+    → map (g ∘ f) ≡ map g ∘ map f
+\end{code}
 The last step of the proof requires extensionality.
 
-### Exercise (`map-++-commute`)
+#### Exercise (`map-++-commute`)
 
 Prove the following relationship between map and append.
+\begin{code}
+postulate
+  map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
+   →  map f (xs ++ ys) ≡ map f xs ++ map f ys
+\end{code}
 
-    map f (xs ++ ys) ≡ map f xs ++ map f ys
+#### Exercise (`map-Tree`)
+
+Define a type of trees with leaves of type `A` and internal
+nodes of type `B`.
+\begin{code}
+data Tree (A B : Set) : Set where
+  leaf : A → Tree A B
+  node : Tree A B → B → Tree A B → Tree A B
+\end{code}
+Define a suitabve map operator over trees.
+\begin{code}
+postulate
+  map-Tree : ∀ {A B C D : Set}
+    → (A → C) → (B → D) → Tree A B → Tree C D
+\end{code}
 
 
 ## Fold {#Fold}
@@ -580,16 +613,21 @@ _ =
 Just as the list type has two constructors, `[]` and `_∷_`,
 so the fold function takes two arguments, `e` and `_⊕_`
 (in addition to the list argument).
-In general, a data type with *n* constructors will have
-a corresponding fold function that takes *n* arguments.
+In general, a data type with _n_ constructors will have
+a corresponding fold function that takes _n_ arguments.
 
-### Exercise (`product`)
+#### Exercise (`product`)
 
 Use fold to define a function to find the product of a list of numbers.
+\begin{code}
+postulate
+  product : List ℕ → ℕ
+\end{code}
+For example,
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-### Exercise (`foldr-++`)
+#### Exercise (`foldr-++`)
 
 Show that fold and append are related as follows.
 \begin{code}
@@ -599,7 +637,7 @@ postulate
 \end{code}
 
 
-### Exercise (`map-is-foldr`)
+#### Exercise (`map-is-foldr`)
 
 Show that map can be defined using fold.
 \begin{code}
@@ -609,7 +647,7 @@ postulate
 \end{code}
 This requires extensionality.
 
-### Exercise (`sum-downFrom`)
+#### Exercise (`sum-downFrom`)
 
 Define a function that counts down as follows.
 \begin{code}
@@ -623,25 +661,32 @@ _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
 _ = refl
 \end{code}
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
-equal to `n * (n - 1) / 2`.
+equal to `n * (n ∸ 1) / 2`.
 \begin{code}
 postulate
-  sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
+  sum-downFrom : ∀ (n : ℕ)
+    → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 \end{code}
 
+#### Exercise (`fold-Tree`)
 
-<!-- `mapIsFold` in Data.List.Properties -->
+Define a suitable fold function for the type of trees given earlier.
+\begin{code}
+postulate
+  fold-Tree : ∀ {A B C : Set}
+    → (A → C) → (C → B → C → C) → Tree A B → C
+\end{code}
 
+#### Exercise (`map-Tree-is-fold-Tree`, stretch)
 
-
-
+Demonstrate an anologue of `map-is-foldr` for the type of trees.
 
 
 ## Monoids
 
 Typically when we use a fold the operator is associative and the
 value is a left and right identity for the value, meaning that the
-operator and the value form a *monoid*.
+operator and the value form a _monoid_.
 
 We can define a monoid as a suitable record type.
 \begin{code}
@@ -859,13 +904,16 @@ _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} 
 Show that `Any` and `All` satisfy a version of De Morgan's Law.
 \begin{code}
 postulate
-  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A) → (¬_ ∘′ Any P) xs ≃ All (¬_ ∘′ P) xs
+  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
+    → (¬_ ∘′ Any P) xs ≃ All (¬_ ∘′ P) xs
 \end{code}
 
 Do we also have the following?
-
-    (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
-
+\begin{code}
+postulate
+  ¬All≃Any¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
+    → (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
+\end{code}
 If so, prove; if not, explain why.
 
 
@@ -877,6 +925,9 @@ import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
 import Data.List.All using (All; []; _∷_)
 import Data.List.Any using (Any; here; there)
 import Data.List.Membership.Propositional using (_∈_)
+import Data.List.Properties
+  using (reverse-++-commute; map-compose; map-++-commute; foldr-++)
+  renaming (mapIsFold to map-is-foldr)
 import Algebra.Structures using (IsMonoid)
 \end{code}
 The standard library version of `IsMonoid` differs from the

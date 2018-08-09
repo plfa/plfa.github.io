@@ -6,7 +6,7 @@ permalink : /ListsAns
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; suc; zero; _+_; _*_; _∸_)
 open import Data.Nat.Properties using (*-comm; *-distribˡ-+)
@@ -140,12 +140,8 @@ sum : List ℕ → ℕ
 sum = foldr _+_ 0
 
 downFrom : ℕ → List ℕ
-downFrom zero = []
-downFrom (suc n) = n ∷ downFrom n
-
-cong2 : ∀ {A B C : Set} {x x′ : A} {y y′ : B} →
-  (f : A → B → C) → (x ≡ x′) → (y ≡ y′) → (f x y ≡ f x′ y′)
-cong2 f x≡x′ y≡y′ rewrite x≡x′ | y≡y′ = refl
+downFrom zero     =  []
+downFrom (suc n)  =  n ∷ downFrom n
 
 sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 sum-downFrom zero = refl
