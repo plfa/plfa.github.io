@@ -18,6 +18,8 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Nat.Properties using (+-comm; +-suc)
+open import Data.List using (List; []; _∷_)
+open import Function using (id; _∘_)
 \end{code}
 
 
@@ -685,7 +687,105 @@ IsPreorder-≤ =
     { reflexive = ≤-refl
     ; trans = ≤-trans
     }
+
+record Preorder : Set₁ where
+  field
+    A : Set
+    _≺_ : A → A → Set
+    isPre : IsPreorder _≺_
 \end{code}
+
+## Lexical order
+
+\begin{code}
+Rel : Set → Set₁
+Rel A  =  A → A → Set
+
+Reflexive : ∀ {A : Set} → Rel A → Set
+Reflexive {A} _≺_  =  ∀ {x : A}
+    -----
+  → x ≺ x
+
+Trans : ∀ {A : Set} → Rel A → Set
+Trans {A} _≺_  =  ∀ {x y z : A}
+  → x ≺ y
+  → y ≺ z
+    -----
+  → x ≺ z
+
+Antisym : ∀ {A : Set} → Rel A → Set
+Antisym {A} _≺_  =  ∀ {x y : A}
+  → x ≺ y
+  → y ≺ x
+    -----
+  → x ≡ y
+
+module Lexical (A : Set) (_≺_ : Rel A) (≺-trans : Trans _≺_) where
+
+  infix 4 _≪_
+
+  data _≪_ : Rel (List A) where
+ 
+    halt : ∀ {xs : List A}
+        -------
+      → [] ≪ xs
+
+    this : ∀ {x y : A} {xs ys : List A}
+      → x ≺ y
+        ----------------
+      → x ∷ xs ≪ y ∷ ys
+
+    next : ∀ {x : A} {xs ys : List A}
+      → xs ≪ ys
+        ---------------
+      → x ∷ xs ≪ x ∷ ys
+
+  ≪-refl : Reflexive _≪_
+  ≪-refl {[]}      =  halt
+  ≪-refl {x ∷ xs}  =  next (≪-refl {xs})
+
+  ≪-trans : Trans _≪_
+  ≪-trans halt         _             =  halt
+  ≪-trans (this x≺y)   (this y≺z)    =  this (≺-trans x≺y y≺z)
+  ≪-trans (this x≺y)   (next ys≪zs)  =  this x≺y
+  ≪-trans (next xs≪ys) (this x≺y)    =  this x≺y
+  ≪-trans (next xs≪ys) (next ys≪zs)  =  next (≪-trans xs≪ys ys≪zs)
+
+  -- ≪-antisym : Antirefl _≺_ → Antisym _≪_
+  -- ≪-antisym ≺-antisym halt halt           = refl
+  -- ≪-antisym ≺-antisym (this x≺y) (this y≺x)   = {!!}
+  -- ≪-antisym ≺-antisym (this x≺y) (next ys≪xs) = {!!}
+  -- ≪-antisym ≺-antisym (next xs≪ys) ys≪xs  = {!!}
+
+\end{code}
+
+\begin{code}
+module Subset (A : Set) where
+
+  infix 4 _⊆_
+  infix 4 _∈_ 
+
+  data _∈_ : A → List A → Set where
+
+    here : ∀ {x : A} {xs : List A}
+        ----------
+      → x ∈ x ∷ xs
+
+    there : ∀ {x y : A} {xs : List A}
+      → x ∈ xs
+        ----------
+      → x ∈ y ∷ xs
+        
+  _⊆_ : Rel (List A)
+  xs ⊆ ys  =  ∀ {w : A} → w ∈ xs → w ∈ ys
+
+  ⊆-refl : Reflexive _⊆_
+  ⊆-refl  =  id
+
+  ⊆-trans : Trans _⊆_
+  ⊆-trans xs⊆ys ys⊆zs  =  ys⊆zs ∘ xs⊆ys
+\end{code}
+
 
 -->
 
