@@ -20,6 +20,8 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Data.Nat.Properties using (+-comm; +-suc)
 open import Data.List using (List; []; _∷_)
 open import Function using (id; _∘_)
+open import Relation.Nullary using (¬_)
+open import Data.Empty using (⊥; ⊥-elim)
 \end{code}
 
 
@@ -713,12 +715,11 @@ Trans {A} _≺_  =  ∀ {x y z : A}
     -----
   → x ≺ z
 
-Antisym : ∀ {A : Set} → Rel A → Set
-Antisym {A} _≺_  =  ∀ {x y : A}
+Antirefl : ∀ {A : Set} → Rel A → Set
+Antirefl {A} _≺_  =  ∀ {x y : A}
   → x ≺ y
-  → y ≺ x
-    -----
-  → x ≡ y
+    ---------
+  → ¬ (x ≡ y)
 
 module Lexical (A : Set) (_≺_ : Rel A) (≺-trans : Trans _≺_) where
 
@@ -726,9 +727,9 @@ module Lexical (A : Set) (_≺_ : Rel A) (≺-trans : Trans _≺_) where
 
   data _≪_ : Rel (List A) where
  
-    halt : ∀ {xs : List A}
+    halt : ∀ {x : A} {xs : List A}
         -------
-      → [] ≪ xs
+      → [] ≪ x ∷ xs
 
     this : ∀ {x y : A} {xs ys : List A}
       → x ≺ y
@@ -740,22 +741,18 @@ module Lexical (A : Set) (_≺_ : Rel A) (≺-trans : Trans _≺_) where
         ---------------
       → x ∷ xs ≪ x ∷ ys
 
-  ≪-refl : Reflexive _≪_
-  ≪-refl {[]}      =  halt
-  ≪-refl {x ∷ xs}  =  next (≪-refl {xs})
-
   ≪-trans : Trans _≪_
-  ≪-trans halt         _             =  halt
+  ≪-trans halt         (this _)      =  halt
+  ≪-trans halt         (next _)      =  halt
   ≪-trans (this x≺y)   (this y≺z)    =  this (≺-trans x≺y y≺z)
   ≪-trans (this x≺y)   (next ys≪zs)  =  this x≺y
   ≪-trans (next xs≪ys) (this x≺y)    =  this x≺y
   ≪-trans (next xs≪ys) (next ys≪zs)  =  next (≪-trans xs≪ys ys≪zs)
 
-  -- ≪-antisym : Antirefl _≺_ → Antisym _≪_
-  -- ≪-antisym ≺-antisym halt halt           = refl
-  -- ≪-antisym ≺-antisym (this x≺y) (this y≺x)   = {!!}
-  -- ≪-antisym ≺-antisym (this x≺y) (next ys≪xs) = {!!}
-  -- ≪-antisym ≺-antisym (next xs≪ys) ys≪xs  = {!!}
+  ≪-antirefl : Antirefl _≺_ → Antirefl _≪_
+  ≪-antirefl ≺-antirefl halt ()
+  ≪-antirefl ≺-antirefl (this x≺y) refl = ⊥-elim (≺-antirefl x≺y refl)
+  ≪-antirefl ≺-antirefl (next xs≪ys) refl = ⊥-elim (≪-antirefl ≺-antirefl xs≪ys refl)
 
 \end{code}
 

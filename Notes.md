@@ -1,5 +1,42 @@
 # Notes
 
+## Where to put Lists?
+
+Three possible orders:
+  + (a) As current
+  + (b) Put Lists immediately after Induction.
+    - requires moving composition & extensionality earlier
+	- requires moving parameterised modules earlier for monoids
+    - add material to relations:
+	  lexical ordering, subtype ordering, All, Any, All-++ iff
+    - add material to isomorphism: All-++ isomorphism
+	- retain material on decidability of All, Any in Decidable
+  + (c) Put Lists after Decidable
+    - requires moving Any-decidable from Decidable to Lists
+  + (d) As (b) but put parameterised modules in a separate chapter
+
+Tradeoffs:
+  + (b) Distribution of exercises near where material is taught
+  + (b) Additional reinforcement for simple proofs by induction
+  + (a,c) Can drop material if there is lack of time
+  + (a,c) Earlier emphasis on induction over evidence	
+  + (c) More consistent structuring principle
+
+## Set up lists of exercises to do
+
+* Use md rather than HTML
+* Tell students to do _all_ exercises, and just mark some as stretch?
+* Make a list of exercises to do, with some marked as stretch?
+* Compare with previous set of exercises to discover some holes?
+* Add ==N as an exercise to Relations?
+
+## Other questions
+
+* Resolve any issues with modules to define properties of orderings?
+* Resolve any issues with equivalence and Setoids?
+
+# Old questions
+
 ## Possible structures for the book
 
 * One possible development
