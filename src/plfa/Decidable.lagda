@@ -29,6 +29,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; foldr; map)
 open import Function using (_∘_)
+open import plfa.Connectives (_⇔_)
 \end{code}
 
 ## Evidence vs Computation
@@ -519,6 +520,29 @@ indicating that the order of the equations determines which of the
 first or the second can match.  This time the answer is different depending
 on which matches; but either is equally valid.
 
+#### Exercise (`∧-×`, `∨-⊎`, `not-¬`, `⊃-→`)
+
+Show that erasure relates corresponding boolean and decidable operations.
+\begin{code}
+postulate
+  ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
+  ∨-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
+  not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
+  ⊃-→ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ⊃ ⌊ y ⌋ ≡ ⌊ x →-dec y ⌋  
+\end{code}
+  
+#### Exercise (`_iff_ `, `_⇔-dec_`)
+
+Give analogues of the `_⇔_` operation from 
+Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}#iff),
+operation on booleans and decidables, and also show the corresponding erasure.
+\begin{code}
+postulate
+  _iff_ : Bool → Bool → Bool
+  _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
+  iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋  
+\end{code}
+
 
 ## Decidability of All
 
@@ -568,7 +592,7 @@ showing that the conjuction of two decidable propositions is itself
 decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
-###Exercise (`any` `any?`)
+#### Exercise (`any` `any?`)
 
 Just as `All` has analogues `all` and `all?` which determine whether a
 predicate holds for every element of a list, so does `Any` have

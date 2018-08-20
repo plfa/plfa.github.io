@@ -798,7 +798,7 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`, `⇔-iso`)
+#### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`, `⇔-iso`) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows.
 \begin{code}
