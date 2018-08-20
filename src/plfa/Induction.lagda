@@ -791,6 +791,34 @@ Show that monus associates with addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
+#### Exercise (stretch, `toℕ∘inc`, `toℕ∘fromℕ`, `fromℕ∘toℕ`)
+
+Recall that 
+Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
+defines a datatype of bitstrings representing natural numbers
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  b0_ : Bin → Bin
+  b1_ : Bin → Bin
+\end{code}
+and asks you to define functions
+\begin{code}
+postulate
+  inc   : Bin → Bin
+  fromℕ : ℕ → Bin
+  toℕ   : Bin → ℕ
+\end{code}
+Consider each of the following.
+\begin{code}
+postulate
+  toℕ∘inc : ∀ {x : Bin} → toℕ (inc x) ≡ suc (toℕ x)
+  toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
+  fromℕ∘toℕ : ∀ {x : Bin} → fromℕ (toℕ x) ≡ x
+\end{code}
+If it holds, prove; if not, give a counterexample.
+
+
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library.

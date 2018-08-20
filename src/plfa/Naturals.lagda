@@ -848,6 +848,85 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
+#### Exercise (stretch: `ℕ¹`, `_+¹_ `, `_*¹_ `) {#Nat1}
+
+Some mathematicians, instead of defining the naturals as starting
+at zero define them as starting at one.
+\begin{code}
+data ℕ¹ : Set where
+  one : ℕ¹
+  suc : ℕ¹ → ℕ¹
+\end{code}
+In this system, there is no representation for zero, while
+three is represented by `suc (suc one)`.  This is our first
+use of _overloaded_ constructors, that is, using the same
+name for constructors of different types.
+
+Define versions of addition and multiplication that act on
+such numbers.
+\begin{code}
+postulate
+  _+¹_ : ℕ¹ → ℕ¹ → ℕ¹
+  _*¹_ : ℕ¹ → ℕ¹ → ℕ¹
+\end{code}
+In Agda, functions --- unlike constructors --- may not be overloaded,
+so we have chosen `_+¹_` and `_*¹_`  as names distinct from `_+_`
+and `_*_`.
+
+Confirm that two plus three is five and two times three is
+six in this representation.
+
+
+#### Exercise (stretch: `Bin`, `inc`, `nat-bin`, `bin-nat`) {#Bin}
+
+A more efficient representation of natural numbers uses a binary
+rather than a unary system.  We represent a number as a bitstring.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  b0_ : Bin → Bin
+  b1_ : Bin → Bin
+\end{code}
+For instance, the bitstring
+
+    1011
+
+standing for the number eleven is encoded, right to left, as
+
+    b1 b1 b0 b1 end
+
+Representations are not unique due to leading zeros.
+Hence, eleven is also represented by
+
+    b1 b1 b0 b1 b0 b0 end
+
+Define a function
+\begin{code}
+postulate
+  inc : Bin → Bin
+\end{code}
+that converts a bitstring to the bitstring for the next higher
+number.  For example, since 1100 encodes twelve, we should have
+
+    inc (b1 b1 b0 b1 end) ≡ b0 b0 b1 b1 end
+
+Confirms this gives the correct answer for the bitstrings
+up to that for the number seven.
+
+Using the above, define a pair of functions to convert
+between the two representations.
+\begin{code}
+postulate
+  fromℕ : ℕ → Bin
+  toℕ   : Bin → ℕ
+\end{code}
+For the former, choose the bitstring to have no leading zeros
+if it represents a positive natural, and represent zero by `b0 end`.
+Confirm that these both give the correct answer for the
+naturals up to seven.
+
+
+
 ## Standard library
 
 At the end of each chapter, we will show where to find relevant

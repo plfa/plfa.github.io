@@ -608,8 +608,8 @@ declare the constructors (omitting the signatures `ℕ → Set`
 which were given earlier).
 
 This is also our first use of _overloaded_ constructors,
-that is, using the same name for different constructors depending on
-the context.  Here `suc` means one of three constructors:
+that is, using the same name for constructors of different types.
+Here `suc` means one of three constructors:
 
     suc : `ℕ → `ℕ
 
@@ -672,6 +672,51 @@ successor of the sum of two even numbers, which is even.
 
 Show that the sum of two odd numbers is even.
 
+#### Exercise (stretch, `Norm`, `Norm∘inc`, `Norm∘fromℕ`, `toℕ∘fromℕ`) {#Norm}
+
+Recall that 
+Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
+defines a datatype of bitstrings representing natural numbers.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  b0_ : Bin → Bin
+  b1_ : Bin → Bin
+\end{code}
+And it asks you to define the following functions.
+\begin{code}
+postulate
+  inc   : Bin → Bin
+  fromℕ : ℕ → Bin
+  toℕ   : Bin → ℕ
+\end{code}
+Representations are not unique due to leading zeros.
+Hence, eleven may be represented by both of the following
+
+    b1 b1 b0 b1 end
+    b1 b1 b0 b1 b0 b0 end
+
+Define a predicate over bitstrings representing positive
+naturals that holds if the bitstring has a leading one.
+\begin{code}
+postulate
+  Pos : Bin → Set
+\end{code}
+Also define a predicate over all bitstrings that holds if the
+bitstring is either `b0 end` (representing zero) or has
+a leading one.
+\begin{code}
+postulate 
+  Norm : Bin → Set
+\end{code}
+Then show the following.
+\begin{code}
+postulate
+  Norm∘inc : ∀ {x : Bin} → Norm x → Norm (inc x)
+  Norm∘fromℕ : ∀ {n : ℕ} → Norm (fromℕ n)
+  fromℕ∘toℕ : ∀ {x : Bin} → Norm x → fromℕ (toℕ x) ≡ x
+\end{code}
+(Hint: You will first need to prove related properties of `Pos`.)
 
 <!--
 

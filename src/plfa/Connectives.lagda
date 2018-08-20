@@ -795,8 +795,7 @@ Show that a disjunct of conjuncts implies a conjunct of disjuncts.
 postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 \end{code}
-Does the converse hold? If so, prove; if not, explain why.
-
+Does the converse hold? If so, prove; if not, give a counterexample.
 
 #### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`, `⇔-iso`) {#iff}
 

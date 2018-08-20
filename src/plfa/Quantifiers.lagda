@@ -405,6 +405,42 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
+#### Exercise (stretch, `ℕ≃Bin`)
+
+Recall that 
+Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
+defines a datatype of bitstrings representing natural numbers.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  b0_ : Bin → Bin
+  b1_ : Bin → Bin
+\end{code}
+And it asks you to define the following functions.
+\begin{code}
+postulate
+  fromℕ : ℕ → Bin
+  toℕ   : Bin → ℕ
+\end{code}
+It also asks you to define a predicate for bitstrings in normal form.
+\begin{code}
+postulate
+  Norm : Bin → Set
+\end{code}
+It also asks you to confirm the following properties.
+\begin{code}
+postulate
+  toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
+  fromℕ∘toℕ : ∀ {x : Bin} → Norm x → fromℕ (toℕ x) ≡ x
+  Norm∘fromℕ : ∀ {n : ℕ} → Norm (fromℕ n)
+\end{code}
+Using the above, establish the following isomorphism.
+\begin{code}
+postulate
+  N≃Bin : ℕ ≃ ∃[ x ](Norm x)
+\end{code}  
+
+
 ## Standard Prelude
 
 Definitions similar to those in this chapter can be found in the standard library.
