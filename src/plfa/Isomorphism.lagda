@@ -433,9 +433,8 @@ import Function.LeftInverse using (_↞_)
 \end{code}
 The standard library `_↔_` and `_↞_` correspond to our `_≃_` and
 `_≲_`, respectively, but those in the standard library are less
-convenient, since they depend on a
-nested record structure and are parameterised with regard to an
-arbitrary notion of equivalence.
+convenient, since they depend on a nested record structure and are
+parameterised with regard to an arbitrary notion of equivalence.
 
 ## Unicode
 
