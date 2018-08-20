@@ -18,10 +18,11 @@ examples of polymorphic types and higher-order functions.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
+open import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
-open import Relation.Nullary using (¬_)
+open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
 open import Level using (Level)
@@ -864,24 +865,24 @@ All-++ xs ys =
 
   to : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
     All P (xs ++ ys) → (All P xs × All P ys)
-  to [] ys ∀Pys = ⟨ [] , ∀Pys ⟩
-  to (x ∷ xs) ys (Px ∷ ∀Pxs++ys) with to xs ys ∀Pxs++ys
-  ... | ⟨ ∀Pxs , ∀Pys ⟩ = ⟨ Px ∷ ∀Pxs , ∀Pys ⟩
+  to [] ys Pys = ⟨ [] , Pys ⟩
+  to (x ∷ xs) ys (Px ∷ Pxs++ys) with to xs ys Pxs++ys
+  ... | ⟨ Pxs , Pys ⟩ = ⟨ Px ∷ Pxs , Pys ⟩
 
   from : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
     All P xs × All P ys → All P (xs ++ ys)
-  from [] ys ⟨ [] , ∀Pys ⟩ = ∀Pys
-  from (x ∷ xs) ys ⟨ Px ∷ ∀Pxs , ∀Pys ⟩ =  Px ∷ from xs ys ⟨ ∀Pxs , ∀Pys ⟩
+  from [] ys ⟨ [] , Pys ⟩ = Pys
+  from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ =  Px ∷ from xs ys ⟨ Pxs , Pys ⟩
 
   from∘to : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
     ∀ (u : All P (xs ++ ys)) → from xs ys (to xs ys u) ≡ u
-  from∘to [] ys ∀Pys = refl
-  from∘to (x ∷ xs) ys (Px ∷ ∀Pxs++ys) = cong (Px ∷_) (from∘to xs ys ∀Pxs++ys)
+  from∘to [] ys Pys = refl
+  from∘to (x ∷ xs) ys (Px ∷ Pxs++ys) = cong (Px ∷_) (from∘to xs ys Pxs++ys)
 
   to∘from : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
     ∀ (v : All P xs × All P ys) → to xs ys (from xs ys v) ≡ v
-  to∘from [] ys ⟨ [] , ∀Pys ⟩ = refl
-  to∘from (x ∷ xs) ys ⟨ Px ∷ ∀Pxs , ∀Pys ⟩ rewrite to∘from xs ys ⟨ ∀Pxs , ∀Pys ⟩ = refl
+  to∘from [] ys ⟨ [] , Pys ⟩ = refl
+  to∘from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ rewrite to∘from xs ys ⟨ Pxs , Pys ⟩ = refl
 \end{code}
 
 ### Exercise (`Any-++`)
@@ -915,6 +916,80 @@ postulate
     → (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
 \end{code}
 If so, prove; if not, explain why.
+
+
+## Decidability of All
+
+<!--
+
+Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %}#All)
+we defined a predicate `All P` that holds if a given predicate is satisfied by every element of a list.
+\begin{code}
+{-
+data All {A : Set} (P : A → Set) : List A → Set where
+  [] : All P []
+  _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
+-}
+\end{code}
+
+If instead we consider a predicate as a function that yields a boolean,
+it is easy to define an analogue of `All`, which returns true if
+a given predicate returns true for every element of a list.
+\begin{code}
+{-
+all : ∀ {A : Set} → (A → Bool) → List A → Bool
+all p  =  foldr _∧_ true ∘ map p
+-}
+\end{code}
+The function can be written in a particularly compact style by
+using the higher-order functions `map` and `foldr` as defined in
+the sections on
+[Map]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Map) and
+[Fold]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Fold).
+
+-->
+
+If we consider a predicate as a function that yields a boolean,
+it is easy to define an analogue of `All`, which returns true if
+a given predicate returns true for every element of a list.
+\begin{code}
+all : ∀ {A : Set} → (A → Bool) → List A → Bool
+all p  =  foldr _∧_ true ∘ map p
+\end{code}
+The function can be written in a particularly compact style by
+using the higher-order functions `map` and `foldr`.
+
+As one would hope, if we replace booleans by decidables there is again
+an analogue of `All`.  First, return to the notion of a predicate `P` as
+a function of type `A → Set`, taking a value `x` of type `A` into evidence
+`P x` that a property holds for `x`.  Say that a predicate `P` is _decidable_
+if we have a function that for a given `x` can decide `P x`.
+\begin{code}
+Decidable : ∀ {A : Set} → (A → Set) → Set
+Decidable {A} P  =  ∀ (x : A) → Dec (P x)
+\end{code}
+Then if predicate `P` is decidable, it is also decidable whether every
+element of a list satisfies the predicate.
+\begin{code}
+All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
+All? P? []                                 =  yes []
+All? P? (x ∷ xs) with P? x   | All? P? xs
+...                 | yes Px | yes Pxs     =  yes (Px ∷ Pxs)
+...                 | no ¬Px | _           =  no λ{ (Px ∷ Pxs) → ¬Px Px   }
+...                 | _      | no ¬Pxs     =  no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
+\end{code}
+If the list is empty, then trivially `P` holds for every element of
+the list.  Otherwise, the structure of the proof is similar to that
+showing that the conjuction of two decidable propositions is itself
+decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
+the head and tail of the list.
+
+#### Exercise (`any` `any?`)
+
+Just as `All` has analogues `all` and `all?` which determine whether a
+predicate holds for every element of a list, so does `Any` have
+analogues `any` and `any?` which determine whether a predicates holds
+for some element of a list.  Give their definitions.
 
 
 ## Standard Library

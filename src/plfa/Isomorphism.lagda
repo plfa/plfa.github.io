@@ -431,11 +431,11 @@ import Function using (_∘_)
 import Function.Inverse using (_↔_)
 import Function.LeftInverse using (_↞_)
 \end{code}
-Their `_↔_` corresponds to our `_≃_`, and their `_↞_` corresponds to
-our `_≲_`.  We prefer our definitions, because those in the
-standard library are less convenient: they depend on a nested record
-structure, and are parameterised with regard to an arbitrary notion of
-equivalence.
+The standard library `_↔_` and `_↞_` correspond to our `_≃_` and
+`_≲_`, respectively, but those in the standard library are less
+convenient, since they depend on a
+nested record structure and are parameterised with regard to an
+arbitrary notion of equivalence.
 
 ## Unicode
 

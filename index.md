@@ -26,8 +26,8 @@ Pull requests are encouraged.
   - [Connectives: Conjunction, disjunction, and implication]({{ site.baseurl }}{% link out/plfa/Connectives.md %})
   - [Negation: Negation, with intuitionistic and classical logic]({{ site.baseurl }}{% link out/plfa/Negation.md %})
   - [Quantifiers: Universals and existentials]({{ site.baseurl }}{% link out/plfa/Quantifiers.md %})
-  - [Lists: Lists and higher-order functions]({{ site.baseurl }}{% link out/plfa/Lists.md %})
   - [Decidable: Booleans and decision procedures]({{ site.baseurl }}{% link out/plfa/Decidable.md %})
+  - [Lists: Lists and higher-order functions]({{ site.baseurl }}{% link out/plfa/Lists.md %})
 
 ## Part 2: Programming Language Foundations
 

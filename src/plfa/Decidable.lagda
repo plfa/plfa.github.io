@@ -29,7 +29,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; foldr; map)
 open import Function using (_∘_)
-open import plfa.Connectives (_⇔_)
+open import plfa.Connectives using (_⇔_)
 \end{code}
 
 ## Evidence vs Computation
@@ -544,65 +544,10 @@ postulate
 \end{code}
 
 
-## Decidability of All
-
-Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %}#All)
-we defined a predicate `All P` that holds if a given predicate is satisfied by every element of a list.
-\begin{code}
-data All {A : Set} (P : A → Set) : List A → Set where
-  [] : All P []
-  _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
-\end{code}
-
-If instead we consider a predicate as a function that yields a boolean,
-it is easy to define an analogue of `All`, which returns true if
-a given predicate returns true for every element of a list.
-\begin{code}
-all : ∀ {A : Set} → (A → Bool) → List A → Bool
-all p  =  foldr _∧_ true ∘ map p
-\end{code}
-The function can be written in a particularly compact style by
-using the higher-order functions `map` and `foldr` as defined in
-the sections on
-[Map]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Map) and
-[Fold]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Fold).
-
-As one would hope, if we replace booleans by decidables there is again
-an analogue of `All`.  First, return to the notion of a predicate `P` as
-a function of type `A → Set`, taking a value `x` of type `A` into evidence
-`P x` that a property holds for `x`.  Say that a predicate `P` is _decidable_
-if we have a function that for a given `x` can decide `P x`.
-\begin{code}
-Decidable : ∀ {A : Set} → (A → Set) → Set
-Decidable {A} P  =  ∀ (x : A) → Dec (P x)
-\end{code}
-Then if predicate `P` is decidable, it is also decidable whether every
-element of a list satisfies the predicate.
-\begin{code}
-All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
-All? P? []                                 =  yes []
-All? P? (x ∷ xs) with P? x   | All? P? xs
-...                 | yes Px | yes Pxs     =  yes (Px ∷ Pxs)
-...                 | no ¬Px | _           =  no λ{ (Px ∷ Pxs) → ¬Px Px   }
-...                 | _      | no ¬Pxs     =  no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
-\end{code}
-If the list is empty, then trivially `P` holds for every element of
-the list.  Otherwise, the structure of the proof is similar to that
-showing that the conjuction of two decidable propositions is itself
-decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
-the head and tail of the list.
-
-#### Exercise (`any` `any?`)
-
-Just as `All` has analogues `all` and `all?` which determine whether a
-predicate holds for every element of a list, so does `Any` have
-analogues `any` and `any?` which determine whether a predicates holds
-for some element of a list.  Give their definitions.
-
 ## Standard Library
 
 \begin{code}
-import Data.Bool.Base using (Bool; T; _∧_; _∨_; not)
+import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 import Data.Nat.Base using (_≤?_)
 import Data.List.All using (All; []; _∷_) renaming (all to All?)
 import Relation.Nullary using (Dec; yes; no)
