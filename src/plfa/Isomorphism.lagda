@@ -324,12 +324,11 @@ record _≲_ (A B : Set) : Set where
 open _≲_
 \end{code}
 It is the same as an isomorphism, save that it lacks the `to∘from` field.
-Hence, we know that `from` is a right-identity for `to`, but not that `to`
-is a left-identity of `from`.
+Hence, we know that `from` is right-inverse to `to`, but not that `to`
+is left-inverse to `from`.
 
 Embedding is reflexive and transitive, but not symmetric.  The proofs
-are cut down versions of the similar proofs for isomorphism, simply
-dropping the right inverses.
+are cut down versions of the similar proofs for isomorphism.
 \begin{code}
 ≲-refl : ∀ {A : Set} → A ≲ A
 ≲-refl =
@@ -406,7 +405,6 @@ module ≲-Reasoning where
     → A ≲ B
   ≲-begin A≲B = A≲B
 
-
   _≲⟨_⟩_ : ∀ (A : Set) {B C : Set}
     → A ≲ B
     → B ≲ C
@@ -420,6 +418,43 @@ module ≲-Reasoning where
   A ≲-∎ = ≲-refl
 
 open ≲-Reasoning
+\end{code}
+
+#### Exercise (`≃-implies-≲`)
+
+Show that every isomorphism implies an embedding.
+\begin{code}
+postulate
+  ≃-implies-≲ : ∀ {A B : Set}
+    → A ≃ B
+      -----
+    → A ≲ B  
+\end{code}
+
+#### Exercise (stretch, `ℕ≲Bin`)
+
+Recall that Exercises
+[Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin) and
+[toℕ∘fromℕ]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-to-from)
+define a datatype of bitstrings representing natural numbers.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
+\end{code}
+And ask you to define the following functions
+and prove the following properties.
+\begin{code}
+postulate
+  fromℕ : ℕ → Bin
+  toℕ : Bin → ℕ
+  toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
+\end{code}
+Using the above, establish the following embedding.
+\begin{code}
+postulate
+  N≲Bin : ℕ ≲ Bin
 \end{code}
 
 

@@ -419,7 +419,7 @@ data Bin : Set where
   x1_ : Bin → Bin
 \end{code}
 And ask you to define the following functions and predicates,
-and proved the following properties.
+and prove the following properties.
 \begin{code}
 postulate
   fromℕ : ℕ → Bin
@@ -449,4 +449,5 @@ import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 This chapter uses the following unicode.
 
     Π  U+03A0  GREEK CAPITAL LETTER PI (\Pi)
+    Σ  U+03A3  GREEK CAPITAL LETTER SIGMA (\Sigma)
     ∃  U+2203  THERE EXISTS (\ex, \exists)
