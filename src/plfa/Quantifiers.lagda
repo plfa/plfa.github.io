@@ -407,29 +407,24 @@ Does the converse hold? If so, prove; if not, explain why.
 
 #### Exercise (stretch, `ℕ≃Bin`)
 
-Recall that 
-Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
-defines a datatype of bitstrings representing natural numbers.
+Recall that Exercises
+[Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin),
+[toℕ∘fromℕ]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-to-from), and
+[Norm]({{ site.baseurl }}{% link out/plfa/Relations.md %}#Norm)
+define a datatype of bitstrings representing natural numbers.
 \begin{code}
 data Bin : Set where
   nil : Bin
-  b0_ : Bin → Bin
-  b1_ : Bin → Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
 \end{code}
-And it asks you to define the following functions.
+And ask you to define the following functions and predicates,
+and proved the following properties.
 \begin{code}
 postulate
   fromℕ : ℕ → Bin
-  toℕ   : Bin → ℕ
-\end{code}
-It also asks you to define a predicate for bitstrings in normal form.
-\begin{code}
-postulate
+  toℕ : Bin → ℕ
   Norm : Bin → Set
-\end{code}
-It also asks you to confirm the following properties.
-\begin{code}
-postulate
   toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
   fromℕ∘toℕ : ∀ {x : Bin} → Norm x → fromℕ (toℕ x) ≡ x
   Norm∘fromℕ : ∀ {n : ℕ} → Norm (fromℕ n)

@@ -791,7 +791,7 @@ Show that monus associates with addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise (stretch, `toℕ∘inc`, `toℕ∘fromℕ`, `fromℕ∘toℕ`)
+#### Exercise (stretch, `toℕ∘inc`, `toℕ∘fromℕ`, `fromℕ∘toℕ`) {#Bin-to-from}
 
 Recall that 
 Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
@@ -799,8 +799,8 @@ defines a datatype of bitstrings representing natural numbers
 \begin{code}
 data Bin : Set where
   nil : Bin
-  b0_ : Bin → Bin
-  b1_ : Bin → Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
 \end{code}
 and asks you to define functions
 \begin{code}

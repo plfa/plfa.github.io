@@ -680,8 +680,8 @@ defines a datatype of bitstrings representing natural numbers.
 \begin{code}
 data Bin : Set where
   nil : Bin
-  b0_ : Bin → Bin
-  b1_ : Bin → Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
 \end{code}
 And it asks you to define the following functions.
 \begin{code}
@@ -693,8 +693,8 @@ postulate
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following
 
-    b1 b1 b0 b1 end
-    b1 b1 b0 b1 b0 b0 end
+    x1 x1 x0 x1 nil
+    x1 x1 x0 x1 x0 x0 nil
 
 Define a predicate over bitstrings representing positive
 naturals that holds if the bitstring has a leading one.
@@ -703,7 +703,7 @@ postulate
   Pos : Bin → Set
 \end{code}
 Also define a predicate over all bitstrings that holds if the
-bitstring is either `b0 end` (representing zero) or has
+bitstring is either `x0 nil` (representing zero) or has
 a leading one.
 \begin{code}
 postulate 
@@ -725,7 +725,6 @@ Definitions similar to those in this chapter can be found in the standard librar
 import Data.Nat using (_≤_; z≤n; s≤s)
 import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
-import Relation.Binary using (IsPreorder)
 \end{code}
 In the standard library, `≤-total` is formalised in terms of
 disjunction (which we define in
