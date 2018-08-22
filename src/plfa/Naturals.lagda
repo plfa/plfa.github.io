@@ -73,7 +73,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-#### Exercise `ex-seven` {#ex-seven}
+#### Exercise `seven` {#seven}
 
 Write out `7` in longhand.
 
@@ -418,7 +418,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-#### Exercise `ex-plus` {#ex-plus}
+#### Exercise `+-example` {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
 
@@ -474,12 +474,12 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-#### Exercise `ex-times` {#ex-times}
+#### Exercise `*-example` {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 
-#### Exercise `ex-power` {#ex-power}
+#### Exercise `_^_` {#power}
 
 Define exponentiation, which is given by the following equations.
 
@@ -544,7 +544,7 @@ _ =
   ∎
 \end{code}
 
-#### Exercise `ex-monus` {#ex-monus}
+#### Exercise `∸-examples` {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -848,7 +848,7 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
-#### Exercise `ex-Bin` (stretch) {#ex-Bin}
+#### Exercise `Bin` (stretch) {#Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring.

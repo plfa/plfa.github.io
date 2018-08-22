@@ -69,7 +69,7 @@ distributes over another operator.  A careful author will ofter call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-#### Exercise `ex-operators` {#ex-operators}
+#### Exercise `operators` {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -578,9 +578,9 @@ judgements where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise `ex-assoc` {#ex-assoc}
+#### Exercise `finite-+-assoc` {#finite-plus-assoc}
 
-Write out what is known about associativity on each of the first four
+Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
 [earlier]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#finite-creation).
 
@@ -737,7 +737,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise `+-swap` {#ex-swap} 
+#### Exercise `+-swap` {#plus-swap} 
 
 Show
 
@@ -750,7 +750,7 @@ the following function from the standard library:
 
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
-#### Exercise `*-distrib-+` {#ex-distrib}
+#### Exercise `*-distrib-+` {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -758,7 +758,7 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise `*-assoc` {#ex-assoc}
+#### Exercise `*-assoc` {#times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -766,7 +766,7 @@ Show multiplication is associative, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise `*-comm` {#ex-comm}
+#### Exercise `*-comm` {#times-comm}
 
 Show multiplication is commutative, that is,
 
