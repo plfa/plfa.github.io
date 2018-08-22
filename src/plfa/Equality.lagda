@@ -350,7 +350,7 @@ Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %})
 can be written in a more readable form by using an anologue of our
 notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
-regard to inequality.
+regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
 
 
 
