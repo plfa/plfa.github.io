@@ -73,7 +73,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-#### Exercise (`seven`)
+#### Exercise `ex-seven` {#ex-seven}
 
 Write out `7` in longhand.
 
@@ -418,7 +418,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-#### Exercise (`3+4`)
+#### Exercise `ex-plus` {#ex-plus}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
 
@@ -474,12 +474,12 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-#### Exercise (`3*4`)
+#### Exercise `ex-times` {#ex-times}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 
-#### Exercise (`_^_`).
+#### Exercise `ex-power` {#ex-power}
 
 Define exponentiation, which is given by the following equations.
 
@@ -544,7 +544,7 @@ _ =
   ∎
 \end{code}
 
-#### Exercise (`5∸3`, `3∸5`)
+#### Exercise `ex-monus` {#ex-monus}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -848,7 +848,7 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
-#### Exercise (stretch, `Bin`, `inc`, `fromℕ`, `toℕ`) {#Bin}
+#### Exercise `ex-Bin` (stretch) {#ex-Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring.
@@ -867,7 +867,7 @@ standing for the number eleven is encoded, right to left, as
     x1 x1 x0 x1 nil
 
 Representations are not unique due to leading zeros.
-Hence, eleven is also represented by
+Hence, eleven is also represented by `001011`, encoded as
 
     x1 x1 x0 x1 x0 x0 nil
 
@@ -877,24 +877,23 @@ postulate
   inc : Bin → Bin
 \end{code}
 that converts a bitstring to the bitstring for the next higher
-number.  For example, since 1100 encodes twelve, we should have
+number.  For example, since `1100` encodes twelve, we should have
 
     inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
 
-Confirms this gives the correct answer for the bitstrings
-up to that for the number seven.
+Confirm that this gives the correct answer for the bitstrings
+encoding zero through four.
 
 Using the above, define a pair of functions to convert
 between the two representations.
 \begin{code}
 postulate
-  fromℕ : ℕ → Bin
-  toℕ   : Bin → ℕ
+  to   : ℕ → Bin
+  from : Bin → ℕ
 \end{code}
-For the former, choose the bitstring to have no leading zeros
-if it represents a positive natural, and represent zero by `b0 end`.
-Confirm that these both give the correct answer for the
-naturals up to seven.
+For the former, choose the bitstring to have no leading zeros if it
+represents a positive natural, and represent zero by `x0 nil`.
+Confirm that these both give the correct answer for zero through four.
 
 
 
