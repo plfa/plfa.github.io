@@ -192,7 +192,7 @@ lack---for instance by saying that a newly introduced relation is a
 a partial order but not a total order.
 
 
-#### Exercise (`orderings`).
+#### Exercise `orderings` {#orderings}
 
 Give an example of a preorder that is not a partial order.
 
@@ -303,7 +303,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-#### Exercise (`≤-antisym-cases`)
+#### Exercise `≤-antisym-cases` {#leq-antisym-cases} 
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -485,17 +485,8 @@ Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 `+-monoʳ-≤ n p q p≤q` proves `n + p ≤ n + q`, and combining these with
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
-#### Exercise (stretch, `≤-reasoning`)
 
-The proof of monotonicity (and the associated lemmas) can be written
-in a more readable form by using an anologue of our notation for
-`≡-reasoning`.  Read ahead to
-Chapter [Equality]({{ site.baseurl }}{% link out/plfa/Equality.md %})
-to see how `≡-reasoning` is defined, define `≤-reasoning` analogously,
-and use it to write out an alternative proof that addition is
-monotonic with regard to inequality.
-
-#### Exercise (stretch, `*-mono-≤`)
+#### Exercise `*-mono-≤` (stretch)
 
 Show that multiplication is monotonic with regard to inequality.
 
@@ -538,32 +529,33 @@ and conversely.  One can then give an alternative derivation of the
 properties of strict inequality, such as transitivity, by directly
 exploiting the corresponding properties of inequality.
 
-#### Exercise (`<-trans`)
+#### Exercise `<-trans` {#less-trans}
 
 Show that strict inequality is transitive.
 
-#### Exercise (`trichotomy`) {#trichotomy}
+#### Exercise `trichotomy` {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
-* `m < n`,
-* `m ≡ n`, or
-* `m > n`
-This only involves two relations, as we define `m > n` to
-be the same as `n < m`. You will need a suitable data declaration,
-similar to that used for totality.  (We will show that the three cases
-are exclusive after [negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}) is introduced.)
+  * `m < n`,
+  * `m ≡ n`, or
+  * `m > n`
+Define `m > n` to be the same as `n < m`.
+You will need a suitable data declaration,
+similar to that used for totality.
+(We will show that the three cases are exclusive after we introduce
+[negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}).)
 
-#### Exercise (`+-mono-<`)
+#### Exercise `+-mono-<` {#plus-mono-less}
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
-#### Exercise (`≤-implies-<`, `<-implies-≤`)
+#### Exercise `≤-iff-<` {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
-#### Exercise (`<-trans′`)
+#### Exercise `<-trans-revisited` {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relating between strict inequality and inequality and
@@ -668,11 +660,11 @@ evidence that the first number is odd. If it is because it is the
 successor of an even number, then the result is odd because it is the
 successor of the sum of two even numbers, which is even.
 
-#### Exercise (`o+o≡e`)
+#### Exercise `o+o≡e` {#odd-plus-odd}
 
 Show that the sum of two odd numbers is even.
 
-#### Exercise (stretch, `Norm`, `Norm∘inc`, `Norm∘fromℕ`, `toℕ∘fromℕ`) {#Norm}
+#### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that 
 Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
@@ -683,40 +675,49 @@ data Bin : Set where
   x0_ : Bin → Bin
   x1_ : Bin → Bin
 \end{code}
-And it asks you to define the following functions.
-\begin{code}
-postulate
-  inc   : Bin → Bin
-  fromℕ : ℕ → Bin
-  toℕ   : Bin → ℕ
-\end{code}
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following
 
     x1 x1 x0 x1 nil
     x1 x1 x0 x1 x0 x0 nil
 
-Define a predicate over bitstrings representing positive
-naturals that holds if the bitstring has a leading one.
-\begin{code}
-postulate
-  Pos : Bin → Set
+Define a predicate
+
+    Can : Bin → Set
+
+over all bitstrings that holds if the bitstring is canonical, meaning
+it has no leading zeros; the first representation of eleven above is
+canonical, and the second is not.  To define it, you will need an
+auxiliary predicate
+
+    One : Bin → Set
+
+that holds only if the bistring has a leading one.  A bitstring is
+canonical if it has a leading one (representing a positive number) or
+if it consists of a single zero (representing zero).
+
+Show that increment preserves canonical bitstrings.
+
+    Can x
+    ------------
+    Can (inc x)
+
+Show that converting a natural to a bitstring always yields a
+canonical bitstring.
+
+    ----------
+    Can (to n)
+
+Show that converting a canonical bitstring to a natural
+and back is the identity.
+
+    Can x
+    ---------------
+    to (from x) ≡ x
+
 \end{code}
-Also define a predicate over all bitstrings that holds if the
-bitstring is either `x0 nil` (representing zero) or has
-a leading one.
-\begin{code}
-postulate 
-  Norm : Bin → Set
-\end{code}
-Then show the following.
-\begin{code}
-postulate
-  Norm∘inc : ∀ {x : Bin} → Norm x → Norm (inc x)
-  Norm∘fromℕ : ∀ {n : ℕ} → Norm (fromℕ n)
-  fromℕ∘toℕ : ∀ {x : Bin} → Norm x → fromℕ (toℕ x) ≡ x
-\end{code}
-(Hint: You will first need to prove related properties of `Pos`.)
+(Hint: For each of these, you may first need to prove related
+properties of `One`.)
 
 ## Standard prelude
 

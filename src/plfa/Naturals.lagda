@@ -872,10 +872,9 @@ Hence, eleven is also represented by `001011`, encoded as
     x1 x1 x0 x1 x0 x0 nil
 
 Define a function
-\begin{code}
-postulate
-  inc : Bin → Bin
-\end{code}
+
+    inc : Bin → Bin
+
 that converts a bitstring to the bitstring for the next higher
 number.  For example, since `1100` encodes twelve, we should have
 
@@ -886,11 +885,10 @@ encoding zero through four.
 
 Using the above, define a pair of functions to convert
 between the two representations.
-\begin{code}
-postulate
-  to   : ℕ → Bin
-  from : Bin → ℕ
-\end{code}
+
+    to   : ℕ → Bin
+    from : Bin → ℕ
+
 For the former, choose the bitstring to have no leading zeros if it
 represents a positive natural, and represent zero by `x0 nil`.
 Confirm that these both give the correct answer for zero through four.

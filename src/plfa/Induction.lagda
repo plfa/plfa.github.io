@@ -775,7 +775,7 @@ Show multiplication is commutative, that is,
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-#### Exercise `0∸n≡0`
+#### Exercise `0∸n≡0` {#zero-monus}
 
 Show
 
@@ -783,7 +783,7 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-#### Exercise `∸-+-assoc` {#ex-monus-assoc}
+#### Exercise `∸-+-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -791,7 +791,7 @@ Show that monus associates with addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise (stretch, `toℕ∘inc`, `toℕ∘fromℕ`, `fromℕ∘toℕ`) {#Bin-to-from}
+#### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that 
 Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
@@ -803,20 +803,19 @@ data Bin : Set where
   x1_ : Bin → Bin
 \end{code}
 and asks you to define functions
-\begin{code}
-postulate
-  inc   : Bin → Bin
-  fromℕ : ℕ → Bin
-  toℕ   : Bin → ℕ
-\end{code}
-Consider each of the following.
-\begin{code}
-postulate
-  toℕ∘inc : ∀ {x : Bin} → toℕ (inc x) ≡ suc (toℕ x)
-  toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
-  fromℕ∘toℕ : ∀ {x : Bin} → fromℕ (toℕ x) ≡ x
-\end{code}
-If it holds, prove; if not, give a counterexample.
+
+    inc   : Bin → Bin
+    to    : ℕ → Bin
+    from  : Bin → ℕ
+
+Consider the following laws, where `n` ranges over naturals and `x`
+over bitstrings.
+
+    from (inc x) ≡ suc (from x)
+    to (from n) ≡ n
+    from (to x) ≡ x
+
+For each law: if it holds, prove; if not, give a counterexample.
 
 
 ## Standard library
