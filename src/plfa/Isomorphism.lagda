@@ -431,11 +431,11 @@ postulate
     → A ≲ B  
 \end{code}
 
-#### Exercise (stretch, `ℕ≲Bin`)
+#### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
 [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin) and
-[toℕ∘fromℕ]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-to-from)
+[Bin-laws]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-laws)
 define a datatype of bitstrings representing natural numbers.
 \begin{code}
 data Bin : Set where
@@ -443,19 +443,17 @@ data Bin : Set where
   x0_ : Bin → Bin
   x1_ : Bin → Bin
 \end{code}
-And ask you to define the following functions
-and prove the following properties.
-\begin{code}
-postulate
-  fromℕ : ℕ → Bin
-  toℕ : Bin → ℕ
-  toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
-\end{code}
-Using the above, establish the following embedding.
-\begin{code}
-postulate
-  N≲Bin : ℕ ≲ Bin
-\end{code}
+And ask you to define the following functions:
+
+    to : ℕ → Bin
+    from : Bin → ℕ
+
+which satisfy the following property:
+
+    from (to n) ≡ n
+
+Using the above, establish that there is an embedding of `ℕ` into `Bin`.
+Why is there not an isomorphism?
 
 
 ## Standard library

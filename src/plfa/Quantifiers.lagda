@@ -405,12 +405,12 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise (stretch, `ℕ≃Bin`)
+#### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
 [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin),
-[toℕ∘fromℕ]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-to-from), and
-[Norm]({{ site.baseurl }}{% link out/plfa/Relations.md %}#Norm)
+[Bin-laws]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-laws), and
+[Bin-predicates]({{ site.baseurl }}{% link out/plfa/Relations.md %}#Bin-predicates)
 define a datatype of bitstrings representing natural numbers.
 \begin{code}
 data Bin : Set where
@@ -418,22 +418,25 @@ data Bin : Set where
   x0_ : Bin → Bin
   x1_ : Bin → Bin
 \end{code}
-And ask you to define the following functions and predicates,
-and prove the following properties.
-\begin{code}
-postulate
-  fromℕ : ℕ → Bin
-  toℕ : Bin → ℕ
-  Norm : Bin → Set
-  toℕ∘fromℕ : ∀ {n : ℕ} → toℕ (fromℕ n) ≡ n
-  fromℕ∘toℕ : ∀ {x : Bin} → Norm x → fromℕ (toℕ x) ≡ x
-  Norm∘fromℕ : ∀ {n : ℕ} → Norm (fromℕ n)
-\end{code}
-Using the above, establish the following isomorphism.
-\begin{code}
-postulate
-  N≃Bin : ℕ ≃ ∃[ x ](Norm x)
-\end{code}  
+And ask you to define the following functions and predicates.
+
+    to   : ℕ → Bin
+    from : Bin → ℕ
+    Can  : Bin → Set
+
+And to establish the following properties.
+
+    from (to n) ≡ n
+
+    ----------
+    Can (to n)
+
+    Can x
+    ---------------
+    to (from x) ≡ x
+
+Using the above, establish that there is an isomorphism between `ℕ` and
+`∃[ x ](Can x)`.
 
 
 ## Standard Prelude
