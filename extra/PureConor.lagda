@@ -41,11 +41,12 @@ infix   4  _⊢_
 infix   4  _∋_
 infix   4  _⊆_
 infixl  5  _,_
-infixr  6  _/_
+infixl  6  _/_  _∋/_  _⊢/_
 infix   6  ƛ_⇒_
 infix   7  Π_⇒_
 -- infixr  8  _⇒_
 infixl  9  _·_
+infix  20  _W  _S
 
 data Sort : Set where
   * : Sort
@@ -68,7 +69,7 @@ data Tp : ∀ (Γ : Ctx) → Set
 data _∋_ : ∀ (Γ : Ctx) → Tp Γ → Set
 data _⊢_ : ∀ (Γ : Ctx) → Tp Γ → Set
 
-data _⟶_ {Γ : Ctx} {A : Tp Γ} : Γ ⊢ A → Γ ⊢ A → Set
+data _—→_ {Γ : Ctx} {A : Tp Γ} : Γ ⊢ A → Γ ⊢ A → Set
 data _=β_ {Γ : Ctx} {A : Tp Γ} : Γ ⊢ A → Γ ⊢ A → Set
 
 data Ctx where
@@ -104,11 +105,11 @@ data Tp where
 
 data _⊆_ : Ctx → Ctx → Set
 
-_/_ : ∀ {Γ Δ : Ctx} → Γ ⊆ Δ → Tp Γ → Tp Δ
+_/_ : ∀ {Γ Δ : Ctx} → Tp Γ → Γ ⊆ Δ → Tp Δ
 
-_/∋_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → (θ : Γ ⊆ Δ) → Γ ∋ A → Δ ∋ θ / A
+_∋/_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → Γ ∋ A → (θ : Γ ⊆ Δ) → Δ ∋ A / θ
 
-_/⊢_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → (θ : Γ ⊆ Δ) → Γ ⊢ A → Δ ⊢ θ / A
+_⊢/_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → Γ ⊢ A → (θ : Γ ⊆ Δ) → Δ ⊢ A / θ
 
 -- vcons : Π (n : ℕ) → Vec n → Vec (suc n)
 
@@ -118,18 +119,17 @@ data _⊆_ where
       -----
     → Γ ⊆ Γ
 
-  W : ∀ {Γ Δ : Ctx} {A : Tp Δ}
+  _W : ∀ {Γ Δ : Ctx} {A : Tp Δ}
     → Γ ⊆ Δ
-      ---------
-    → Γ ⊆ Δ , A
+      -----------
+    → Γ ⊆ (Δ , A)
 
-  S : ∀ {Γ Δ : Ctx} {A : Tp Γ}
+  _S : ∀ {Γ Δ : Ctx} {B : Tp Γ}
     → (θ : Γ ⊆ Δ)
-      -----------------
-    → Γ , A ⊆ Δ , θ / A
+      -----------------------
+    → (Γ , B) ⊆ (Δ , (B / θ))
 
-_[_] : ∀ {Γ : Ctx}
-  → {A : Tp Γ}
+_[_] : ∀ {Γ : Ctx} {A : Tp Γ}
   → (B : Tp (Γ , A))
   → (M : Γ ⊢ A)
     ----------------
@@ -145,12 +145,12 @@ data _∋_ where
 
   Z : ∀ {Γ : Ctx} {A : Tp Γ}
       ----------------------
-    → Γ , A ∋ W I / A
+    → Γ , A ∋ A / I W
 
-  S : ∀ {Γ : Ctx} {A B : Tp Γ}
-    → Γ ∋ B
+  _S : ∀ {Γ : Ctx} {A B : Tp Γ}
+    → Γ ∋ A
       ----------------
-    → Γ , A ∋ W I / B
+    → Γ , B ∋ A / I W
 
 data _⊢_ where
 
@@ -186,39 +186,58 @@ data _⊢_ where
       ------------------------------------------
     → Γ ⊢ ⌈ B ⌉ [ M ]
 
-I / A        =  A
-S θ / ⟪ s ⟫  =  ⟪ s ⟫
-W θ / ⟪ s ⟫  =  ⟪ s ⟫
-S θ / ⌈ A ⌉  =  ⌈ S θ /⊢ A ⌉
-W θ / ⌈ A ⌉  =  ⌈ W θ /⊢ A ⌉
+_-_ : ∀ {Γ Δ Θ : Ctx} → Γ ⊆ Δ → Δ ⊆ Θ → Γ ⊆ Θ
 
-lemma : ∀ {Γ Δ : Ctx} (θ : Γ ⊆ Δ) (A : Tp Γ)
-  → S {A = A} θ / W I / A ≡ W I / θ / A
-
-lemma = {!!} 
-
--- we need a lemma like this one
--- S θ / W I / A ≡ W I / θ / A 
+lemma : ∀ {Γ Δ Θ : Ctx} (A : Tp Γ)
+  → (θ : Γ ⊆ Δ)
+  → (φ : Δ ⊆ Θ)
+    -----------------------
+  → A / θ / φ ≡ A / (θ - φ)
 
 
-I /∋ x = x
-W θ /∋ x =  S {! θ /∋ x!} 
-S {A = A} θ /∋ Z rewrite lemma θ A  =  Z
-S θ /∋ S x = {!!}
+θ - I = θ
+θ - (φ W) = (θ - φ) W
+I - (φ S) = φ S
+(θ W) - (φ S) = (θ - φ) W
+_S {B = B} θ - (φ S) rewrite lemma B θ φ  = (θ - φ) S
+
+lemma = {!!}
+
+wk : ∀ {Γ : Ctx} (B : Tp Γ) → Γ ⊆ Γ , B
+wk B = I W
+
+A / I        =  A
+⟪ s ⟫ / θ S  =  ⟪ s ⟫
+⟪ s ⟫ / θ W  =  ⟪ s ⟫
+⌈ A ⌉ / θ S  =  ⌈ A ⊢/ (θ S) ⌉
+⌈ A ⌉ / θ W  =  ⌈ A ⊢/ (θ W) ⌉
+
+-- lemma : ∀ {Γ Δ : Ctx} (θ : Γ ⊆ Δ) (A B : Tp Γ)
+--  → A / wk B / θ S ≡ A / θ / wk (B / θ)
+-- lemma = {!!} 
+
+x ∋/ I = x
+x ∋/ θ W = {! x ∋/ θ!}
+x ∋/ θ S = {!!}
+
 
 {-
+I /∋ x = x
+θ W /∋ x =  {! θ /∋ x!}
+_S {B = B} θ /∋ Z rewrite lemma θ B B  =  Z
+θ S /∋ x S = {!!}
 ∅ /∋ Z = Z
 W θ /∋ x = {!S (θ / x)!}
 S θ /∋ (S x) = {!S (θ / x)!}
 -}
 
-θ /⊢ A = {!!} 
+A ⊢/ θ = {!!} 
 
 _[_]  =  {!!}
 
 _⟨_⟩  =  {!!}
 
-data _⟶_ where
+data _—→_ where
 
 data _=β_ where
 
