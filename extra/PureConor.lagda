@@ -10,6 +10,13 @@ systems. Journal of Functional Programming, 1(2),
 
 Attempt to create inherently typed terms with Connor.
 
+Phil and Conor's work on 24 Aug:
+  Tried to define thinning, Γ ⊆ Δ, and got our knickers in a twist.
+  Tried to define Wk directly on terms, as in Barendregt
+  We need to push weaking through Π, but this requires weaking
+    the slot one from the top, rather than the top slot
+  Next idea: try weaking at arbitrary position n
+  Also, make type weakened on explicit, to catch more errors
 
 ## Imports
 
@@ -41,7 +48,7 @@ infix   4  _⊢_
 infix   4  _∋_
 infix   4  _⊆_
 infixl  5  _,_
-infixl  6  _/_  _∋/_  _⊢/_
+infixl  6  _/_  _∋/_  _⊢/_  _[_]  _⟨_⟩
 infix   6  ƛ_⇒_
 infix   7  Π_⇒_
 -- infixr  8  _⇒_
@@ -66,7 +73,6 @@ ok3 _ _ _  =  ⊥
 data Ctx : Set
 
 data Tp : ∀ (Γ : Ctx) → Set
-data _∋_ : ∀ (Γ : Ctx) → Tp Γ → Set
 data _⊢_ : ∀ (Γ : Ctx) → Tp Γ → Set
 
 data _—→_ {Γ : Ctx} {A : Tp Γ} : Γ ⊢ A → Γ ⊢ A → Set
@@ -96,38 +102,10 @@ data Tp where
       ----------
     → Tp Γ
 
-  {-
-  W : ∀ {Γ : Ctx} {A : Tp Γ}
+wk : ∀ {Γ : Ctx} {A : Tp Γ} 
     → Tp Γ
       -----------
     → Tp (Γ , A)
-  -}
-
-data _⊆_ : Ctx → Ctx → Set
-
-_/_ : ∀ {Γ Δ : Ctx} → Tp Γ → Γ ⊆ Δ → Tp Δ
-
-_∋/_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → Γ ∋ A → (θ : Γ ⊆ Δ) → Δ ∋ A / θ
-
-_⊢/_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → Γ ⊢ A → (θ : Γ ⊆ Δ) → Δ ⊢ A / θ
-
--- vcons : Π (n : ℕ) → Vec n → Vec (suc n)
-
-data _⊆_ where
-
-  I : ∀ {Γ : Ctx}
-      -----
-    → Γ ⊆ Γ
-
-  _W : ∀ {Γ Δ : Ctx} {A : Tp Δ}
-    → Γ ⊆ Δ
-      -----------
-    → Γ ⊆ (Δ , A)
-
-  _S : ∀ {Γ Δ : Ctx} {B : Tp Γ}
-    → (θ : Γ ⊆ Δ)
-      -----------------------
-    → (Γ , B) ⊆ (Δ , (B / θ))
 
 _[_] : ∀ {Γ : Ctx} {A : Tp Γ}
   → (B : Tp (Γ , A))
@@ -141,29 +119,22 @@ _⟨_⟩ : ∀ {Γ : Ctx} {A : Tp Γ} {B : Tp (Γ , A)}
     ---------------
   → Γ ⊢ B [ M ]
 
-data _∋_ where
-
-  Z : ∀ {Γ : Ctx} {A : Tp Γ}
-      ----------------------
-    → Γ , A ∋ A / I W
-
-  _S : ∀ {Γ : Ctx} {A B : Tp Γ}
-    → Γ ∋ A
-      ----------------
-    → Γ , B ∋ A / I W
-
 data _⊢_ where
 
   ⟪_⟫ : ∀ {Γ : Ctx} {t : Sort}
     → (s : Sort)
-    → {_ : ok2 s t}
+    → {st : ok2 s t}
       -------------
     → Γ ⊢ ⟪ t ⟫
 
-  ⌊_⌋ : ∀ {Γ : Ctx} {A : Tp Γ}
-    → Γ ∋ A
-      -----
+  St : ∀ {Γ : Ctx} {A : Tp Γ}
+      ------------
+    → Γ , A ⊢ wk A
+
+  Wk : ∀ {Γ : Ctx} {A B : Tp Γ}
     → Γ ⊢ A
+      ------------
+    → Γ , B ⊢ wk A
 
   Π_⇒_ : ∀ {Γ : Ctx} {s t u : Sort} {stu : ok3 s t u} 
     → (A : Γ ⊢ ⟪ s ⟫)
@@ -186,6 +157,85 @@ data _⊢_ where
       ------------------------------------------
     → Γ ⊢ ⌈ B ⌉ [ M ]
 
+  Cnv : ∀ {Γ : Ctx} {s : Sort} {A B : Γ ⊢ ⟪ s ⟫}
+    → Γ ⊢ ⌈ A ⌉
+    → A =β B
+      ---------
+    → Γ ⊢ ⌈ B ⌉
+
+wk ⟪ s ⟫ =  ⟪ s ⟫
+wk ⌈ A ⌉ =  ⌈ Wk A ⌉
+
+_[_] = {!!}
+
+_⟨_⟩ = {!!}
+
+data _—→_ where
+
+  -- this is bollocks! It weakens on A, not on an arbitrary type
+  Wk-Π : ∀ {Γ : Ctx} {s t u : Sort} {stu : ok3 s t u}
+    → (A : Γ ⊢ ⟪ s ⟫)
+    → (B : Γ , ⌈ A ⌉ ⊢ ⟪ t ⟫)
+      -----------------------------------------------------------
+    → Wk (Π_⇒_ {stu = stu} A B) —→ Π_⇒_ {stu = stu} (Wk A) (Wk B)
+
+data _=β_ where
+
+  refl : ∀ {Γ : Ctx} {A : Tp Γ} {M : Γ ⊢ A}
+    → M =β M
+
+  tran : ∀ {Γ : Ctx} {A : Tp Γ} {L M N : Γ ⊢ A}
+    → L =β M
+    → M =β N
+      ------
+    → L =β N
+
+  symm :  ∀ {Γ : Ctx} {A : Tp Γ} {L M : Γ ⊢ A}
+    → L =β M
+      ------
+    → M =β L
+
+  step : ∀ {Γ : Ctx} {A : Tp Γ} {L M : Γ ⊢ A}
+    → L —→ M
+      ------
+    → L =β M
+{-
+
+data _⊆_ : Ctx → Ctx → Set
+
+_/_ : ∀ {Γ Δ : Ctx} → Tp Γ → Γ ⊆ Δ → Tp Δ
+
+_∋/_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → Γ ∋ A → (θ : Γ ⊆ Δ) → Δ ∋ A / θ
+
+_⊢/_ : ∀ {Γ Δ : Ctx} {A : Tp Γ} → Γ ⊢ A → (θ : Γ ⊆ Δ) → Δ ⊢ A / θ
+
+data _∋_ where
+
+  Z : ∀ {Γ : Ctx} {A : Tp Γ}
+      ----------------------
+    → Γ , A ∋ A / I W
+
+  _S : ∀ {Γ : Ctx} {A B : Tp Γ}
+    → Γ ∋ A
+      ----------------
+    → Γ , B ∋ A / I W
+
+data _⊆_ where
+
+  I : ∀ {Γ : Ctx}
+      -----
+    → Γ ⊆ Γ
+
+  _W : ∀ {Γ Δ : Ctx} {A : Tp Δ}
+    → Γ ⊆ Δ
+      -----------
+    → Γ ⊆ (Δ , A)
+
+  _S : ∀ {Γ Δ : Ctx} {B : Tp Γ}
+    → (θ : Γ ⊆ Δ)
+      -----------------------
+    → (Γ , B) ⊆ (Δ , (B / θ))
+
 _-_ : ∀ {Γ Δ Θ : Ctx} → Γ ⊆ Δ → Δ ⊆ Θ → Γ ⊆ Θ
 
 lemma : ∀ {Γ Δ Θ : Ctx} (A : Tp Γ)
@@ -193,7 +243,6 @@ lemma : ∀ {Γ Δ Θ : Ctx} (A : Tp Γ)
   → (φ : Δ ⊆ Θ)
     -----------------------
   → A / θ / φ ≡ A / (θ - φ)
-
 
 θ - I = θ
 θ - (φ W) = (θ - φ) W
@@ -203,23 +252,52 @@ _S {B = B} θ - (φ S) rewrite lemma B θ φ  = (θ - φ) S
 
 lemma = {!!}
 
+-- lemma A θ I = refl
+-- lemma A θ (φ W) = {!!}
+-- lemma A θ (φ S) = {!!}
+
+
+
 wk : ∀ {Γ : Ctx} (B : Tp Γ) → Γ ⊆ Γ , B
 wk B = I W
 
-A / I        =  A
-⟪ s ⟫ / θ S  =  ⟪ s ⟫
-⟪ s ⟫ / θ W  =  ⟪ s ⟫
-⌈ A ⌉ / θ S  =  ⌈ A ⊢/ (θ S) ⌉
-⌈ A ⌉ / θ W  =  ⌈ A ⊢/ (θ W) ⌉
+⟪ s ⟫ / θ  =  ⟪ s ⟫
+⌈ A ⌉ / θ  =  ⌈ A ⊢/ θ ⌉
 
 -- lemma : ∀ {Γ Δ : Ctx} (θ : Γ ⊆ Δ) (A B : Tp Γ)
 --  → A / wk B / θ S ≡ A / θ / wk (B / θ)
 -- lemma = {!!} 
 
-x ∋/ I = x
+x ∋/ I = {!!}
 x ∋/ θ W = {! x ∋/ θ!}
 x ∋/ θ S = {!!}
 
+
+thin-· : ∀ {Γ Δ : Ctx} {A : Tp Γ} (B : Tp (Γ , A)) (M : Γ ⊢ A) (θ : Γ ⊆ Δ)
+  → B [ M ] / θ ≡ B / θ S [ M ⊢/ θ ]
+
+⟪ s ⟫ {st} ⊢/ θ =  ⟪ s ⟫ {st}
+⌊ x ⌋ ⊢/ θ = ⌊ x ∋/ θ ⌋
+Π_⇒_ {stu = stu} A B ⊢/ θ =  Π_⇒_ {stu = stu} (A ⊢/ θ) (B ⊢/ θ S)
+ƛ_⇒_ {stu = stu} A N ⊢/ θ = ƛ_⇒_ {stu = stu} (A ⊢/ θ) (N ⊢/ θ S) 
+_·_ {stu = stu} {B = B} L M ⊢/ θ rewrite thin-· ⌈ B ⌉ M θ
+  =  _·_ {stu = stu} (L ⊢/ θ) (M ⊢/ θ)
+
+thin-· = {!!}
+
+_[_]  =  {!!}
+
+_⟨_⟩  =  {!!}
+
+-}
+
+{-
+A / I        =  {!!} -- A
+⟪ s ⟫ / θ S  =  ⟪ s ⟫
+⟪ s ⟫ / θ W  =  ⟪ s ⟫
+⌈ A ⌉ / θ S  =  ⌈ A ⊢/ (θ S) ⌉
+⌈ A ⌉ / θ W  =  ⌈ A ⊢/ (θ W) ⌉
+-}
 
 {-
 I /∋ x = x
@@ -230,18 +308,5 @@ _S {B = B} θ /∋ Z rewrite lemma θ B B  =  Z
 W θ /∋ x = {!S (θ / x)!}
 S θ /∋ (S x) = {!S (θ / x)!}
 -}
-
-A ⊢/ θ = {!!} 
-
-_[_]  =  {!!}
-
-_⟨_⟩  =  {!!}
-
-data _—→_ where
-
-data _=β_ where
-
-
-
 \end{code}
 
