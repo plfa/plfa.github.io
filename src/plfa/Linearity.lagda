@@ -32,7 +32,8 @@ infixr 9 [_·_]⊸_
 \begin{code}
 data Type : Set c where
   [_·_]⊸_ : Mult → Type → Type → Type
-  𝟏       : Type
+  `1      : Type
+  `0      : Type
 \end{code}
 
 \begin{code}
@@ -43,7 +44,7 @@ data Precontext : Set c where
 
 \begin{code}
 _ : Precontext
-_ = ∅ , [ 1# · 𝟏 ]⊸ 𝟏 , 𝟏
+_ = ∅ , [ 1# · `1 ]⊸ `1 , `1
 \end{code}
 
 \begin{code}
@@ -53,8 +54,8 @@ data Context : Precontext → Set c where
 \end{code}
 
 \begin{code}
-_ : Context (∅ , [ 1# · 𝟏 ]⊸ 𝟏 , 𝟏)
-_ = ∅ , 0# · [ 1# · 𝟏 ]⊸ 𝟏 , 1# · 𝟏
+_ : Context (∅ , [ 1# · `1 ]⊸ `1 , `1)
+_ = ∅ , 0# · [ 1# · `1 ]⊸ `1 , 1# · `1
 \end{code}
 
 \begin{code}
@@ -100,4 +101,8 @@ data _⊢_·_ : {Γ : Precontext} → Context Γ → Mult → Type → Set c whe
       → Δ₂ ⊢ ρ₁ * ρ₂ · A
         -----------------------
       → Δ₁ ++ Δ₂ ⊢ ρ₁ · B
+
+  tt  : ∀ {ρ}
+        ----------
+      → ∅ ⊢ ρ · `1
 \end{code}
