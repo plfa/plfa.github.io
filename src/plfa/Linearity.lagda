@@ -23,14 +23,16 @@ open Semiring MultSemiring
 
 
 \begin{code}
+infix  1 _⊢_·_
 infixl 5 _,_
 infixl 5 _,_·_
+infixr 9 [_·_]⊸_
 \end{code}
 
 \begin{code}
 data Type : Set c where
   [_·_]⊸_ : Mult → Type → Type → Type
-  `ℕ      : Type
+  𝟏       : Type
 \end{code}
 
 \begin{code}
@@ -41,7 +43,7 @@ data Precontext : Set c where
 
 \begin{code}
 _ : Precontext
-_ = ∅ , [ 1# · `ℕ ]⊸ `ℕ , `ℕ
+_ = ∅ , [ 1# · 𝟏 ]⊸ 𝟏 , 𝟏
 \end{code}
 
 \begin{code}
@@ -51,8 +53,8 @@ data Context : Precontext → Set c where
 \end{code}
 
 \begin{code}
-_ : Context (∅ , [ 1# · `ℕ ]⊸ `ℕ , `ℕ)
-_ = ∅ , 0# · [ 1# · `ℕ ]⊸ `ℕ , 1# · `ℕ
+_ : Context (∅ , [ 1# · 𝟏 ]⊸ 𝟏 , 𝟏)
+_ = ∅ , 0# · [ 1# · 𝟏 ]⊸ 𝟏 , 1# · 𝟏
 \end{code}
 
 \begin{code}
@@ -68,23 +70,34 @@ _++_ : ∀ {Γ} → Context Γ → Context Γ → Context Γ
 \end{code}
 
 \begin{code}
-data _·_∈_ : {Γ : Precontext} → Mult → Type → Context Γ → Set where
+data _∋_·_ : {Γ : Precontext} → Context Γ → Mult → Type → Set where
 
   Z : ∀ {Γ A ρ}
       ----------------------
-    → ρ · A ∈ (0· Γ , ρ · A)
+    → (0· Γ , ρ · A) ∋ ρ · A
 
   S_ : ∀ {Γ} {Δ : Context Γ} {A B ρ}
-    → ρ · A ∈ Δ
+    → Δ ∋ ρ · A
       --------------------
-    → ρ · A ∈ (Δ , 0# · B)
+    → (Δ , 0# · B) ∋ ρ · A
 \end{code}
 
 \begin{code}
-data _⊢_·_ : {Γ : Precontext} → Context Γ → Mult → Type → Set where
+data _⊢_·_ : {Γ : Precontext} → Context Γ → Mult → Type → Set c where
 
-  `_ : ∀ {Γ} {Δ : Context Γ} {ρ A}
-     → ρ · A ∈ Δ
-       ----------
-     → Δ ⊢ ρ · A
+  `_  : ∀ {Γ} {Δ : Context Γ} {ρ A}
+      → Δ ∋ ρ · A
+        ----------
+      → Δ ⊢ ρ · A
+
+  ƛ_  : ∀ {Γ} {Δ : Context Γ} {ρ₁ ρ₂ A B}
+      → Δ , ρ₁ * ρ₂ · A ⊢ ρ₂ · B
+        ------------------------
+      → Δ ⊢ ρ₁ · [ ρ₂ · A ]⊸ B
+
+  _·_ : ∀ {Γ} {Δ₁ Δ₂ : Context Γ} {ρ₁ ρ₂ A B}
+      → Δ₁ ⊢ ρ₁ · [ ρ₂ · A ]⊸ B
+      → Δ₂ ⊢ ρ₁ * ρ₂ · A
+        -----------------------
+      → Δ₁ ++ Δ₂ ⊢ ρ₁ · B
 \end{code}
