@@ -26,6 +26,7 @@ For pull requests:
 * koo5
 * Juhana Laurinharju
 * Jonathan Prieto-Cubides
+* Léo Gillot-Lamure
 * Zbigniew Stanasiuk 
 * Anish Tondwalkar
 
