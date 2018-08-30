@@ -58,7 +58,7 @@ addition and multiplication are both associative and commutative;
 and multiplications distributes over addition.
 
 If you ever bump into an operator at a party, you now know how
-to make small talk, by asking whether it is has a unit and is
+to make small talk, by asking whether it has a unit and is
 associative or commutative.  If you bump into two operators, you
 might ask them if one distributes over the other.
 
