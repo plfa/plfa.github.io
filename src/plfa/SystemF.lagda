@@ -267,3 +267,11 @@ data _⊢_ : ∀ {J} (Γ : Ctx) → ∥ Γ ∥ ⊢⋆ J → Set where
       ---------------
     → Γ ⊢ B [ A ]⋆
 \end{code}
+
+## Remainder
+
+The development continues from here as in
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %},
+defining renaming and substitution on terms and introducing reduction
+rules for terms, proving progress, and applying progress to derive an
+evaluator.

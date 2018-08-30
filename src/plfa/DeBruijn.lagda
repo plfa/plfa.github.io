@@ -117,9 +117,9 @@ typed terms, which in context `Γ` have type `A`.
 While these two choices fit well, they are independent.  One
 can use De Bruijn indices in raw terms, or (with more
 difficulty) have inherently typed terms with names.  In
-Chapter [Untyped]({{ site.baseurl }}{% link
-out/plfa/Untyped.md %}, we will terms that are not typed with
-De Bruijn indices are inherently scoped.
+Chapter [Untyped]({{ site.baseurl }}{% link out/plfa/Untyped.md %},
+we will introduce terms with De Bruijn indices that
+are inherently scoped but not typed.
 
 
 ## A second example
