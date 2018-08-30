@@ -30,10 +30,10 @@ open import Relation.Nullary.Product using (_×-dec_)
 To begin, we get all our infix declarations out of the way.
 We list separately operators for judgements, types, and terms.
 \begin{code}
-infix  4 _⊢⋆_
-infix  4 _⊢_
 infix  4 _∋⋆_
 infix  4 _∋_
+infix  4 _⊢⋆_
+infix  4 _⊢_
 infixl 5 _,⋆_
 infixl 5 _,_
 
