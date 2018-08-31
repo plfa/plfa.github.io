@@ -58,7 +58,7 @@ addition and multiplication are both associative and commutative;
 and multiplications distributes over addition.
 
 If you ever bump into an operator at a party, you now know how
-to make small talk, by asking whether it is has a unit and is
+to make small talk, by asking whether it has a unit and is
 associative or commutative.  If you bump into two operators, you
 might ask them if one distributes over the other.
 
@@ -69,7 +69,7 @@ distributes over another operator.  A careful author will ofter call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-#### Exercise (`operators`)
+#### Exercise `operators` {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -578,9 +578,9 @@ judgements where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise (`+-assoc-finite`)
+#### Exercise `finite-+-assoc` {#finite-plus-assoc}
 
-Write out what is known about associativity on each of the first four
+Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
 [earlier]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#finite-creation).
 
@@ -737,7 +737,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise (`+-swap`)
+#### Exercise `+-swap` {#plus-swap} 
 
 Show
 
@@ -750,7 +750,7 @@ the following function from the standard library:
 
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
-#### Exercise (`*-distrib-+`)
+#### Exercise `*-distrib-+` {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -758,7 +758,7 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise (`*-assoc`)
+#### Exercise `*-assoc` {#times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -766,7 +766,7 @@ Show multiplication is associative, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise (`*-comm`)
+#### Exercise `*-comm` {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -775,7 +775,7 @@ Show multiplication is commutative, that is,
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-#### Exercise (`0∸n≡0`)
+#### Exercise `0∸n≡0` {#zero-monus}
 
 Show
 
@@ -783,13 +783,40 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-#### Exercise (`∸-+-assoc`)
+#### Exercise `∸-+-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
     m ∸ n ∸ p ≡ m ∸ (n + p)
 
 for all naturals `m`, `n`, and `p`.
+
+#### Exercise `Bin-laws` (stretch) {#Bin-laws}
+
+Recall that 
+Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
+defines a datatype of bitstrings representing natural numbers
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
+\end{code}
+and asks you to define functions
+
+    inc   : Bin → Bin
+    to    : ℕ → Bin
+    from  : Bin → ℕ
+
+Consider the following laws, where `n` ranges over naturals and `x`
+over bitstrings.
+
+    from (inc x) ≡ suc (from x)
+    to (from n) ≡ n
+    from (to x) ≡ x
+
+For each law: if it holds, prove; if not, give a counterexample.
+
 
 ## Standard library
 

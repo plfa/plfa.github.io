@@ -26,7 +26,8 @@ For pull requests:
 * koo5
 * Juhana Laurinharju
 * Jonathan Prieto-Cubides
-* Zbigniew Stanasiuk
+* Léo Gillot-Lamure
+* Zbigniew Stanasiuk 
 * Anish Tondwalkar
 
 For answering questions on the Agda mailing list:

@@ -73,7 +73,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-#### Exercise (`seven`)
+#### Exercise `seven` {#seven}
 
 Write out `7` in longhand.
 
@@ -312,7 +312,7 @@ The definition has a base case and an inductive case, corresponding to
 those for the natural numbers.  The base case says that adding zero to
 a number, `zero + n`, returns that number, `n`.  The inductive case
 says that adding the successor of a number to another number,
-`(suc m) + n`, returns the successor of adding the two numbers, `suc (m+n)`.
+`(suc m) + n`, returns the successor of adding the two numbers, `suc (m + n)`.
 We say we use _pattern matching_ when constructors appear on the
 left-hand side of an equation.
 
@@ -418,7 +418,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-#### Exercise (`3+4`)
+#### Exercise `+-example` {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
 
@@ -474,12 +474,12 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-#### Exercise (`3*4`)
+#### Exercise `*-example` {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 
-#### Exercise (`_^_`).
+#### Exercise `_^_` {#power}
 
 Define exponentiation, which is given by the following equations.
 
@@ -544,7 +544,7 @@ _ =
   ∎
 \end{code}
 
-#### Exercise (`5∸3`, `3∸5`)
+#### Exercise `∸-examples` {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -846,6 +846,53 @@ and `suc` requires time proportional to the product of _m_ and _n_ to
 multiply _m_ and _n_, whereas representing naturals as integers in
 Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
+
+
+#### Exercise `Bin` (stretch) {#Bin}
+
+A more efficient representation of natural numbers uses a binary
+rather than a unary system.  We represent a number as a bitstring.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
+\end{code}
+For instance, the bitstring
+
+    1011
+
+standing for the number eleven is encoded, right to left, as
+
+    x1 x1 x0 x1 nil
+
+Representations are not unique due to leading zeros.
+Hence, eleven is also represented by `001011`, encoded as
+
+    x1 x1 x0 x1 x0 x0 nil
+
+Define a function
+
+    inc : Bin → Bin
+
+that converts a bitstring to the bitstring for the next higher
+number.  For example, since `1100` encodes twelve, we should have
+
+    inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
+
+Confirm that this gives the correct answer for the bitstrings
+encoding zero through four.
+
+Using the above, define a pair of functions to convert
+between the two representations.
+
+    to   : ℕ → Bin
+    from : Bin → ℕ
+
+For the former, choose the bitstring to have no leading zeros if it
+represents a positive natural, and represent zero by `x0 nil`.
+Confirm that these both give the correct answer for zero through four.
+
 
 
 ## Standard library

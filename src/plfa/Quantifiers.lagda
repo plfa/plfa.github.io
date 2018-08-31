@@ -405,6 +405,40 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
+#### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
+
+Recall that Exercises
+[Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin),
+[Bin-laws]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-laws), and
+[Bin-predicates]({{ site.baseurl }}{% link out/plfa/Relations.md %}#Bin-predicates)
+define a datatype of bitstrings representing natural numbers.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
+\end{code}
+And ask you to define the following functions and predicates.
+
+    to   : ℕ → Bin
+    from : Bin → ℕ
+    Can  : Bin → Set
+
+And to establish the following properties.
+
+    from (to n) ≡ n
+
+    ----------
+    Can (to n)
+
+    Can x
+    ---------------
+    to (from x) ≡ x
+
+Using the above, establish that there is an isomorphism between `ℕ` and
+`∃[ x ](Can x)`.
+
+
 ## Standard Prelude
 
 Definitions similar to those in this chapter can be found in the standard library.
@@ -418,4 +452,5 @@ import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 This chapter uses the following unicode.
 
     Π  U+03A0  GREEK CAPITAL LETTER PI (\Pi)
+    Σ  U+03A3  GREEK CAPITAL LETTER SIGMA (\Sigma)
     ∃  U+2203  THERE EXISTS (\ex, \exists)

@@ -26,8 +26,8 @@ Pull requests are encouraged.
   - [Connectives: Conjunction, disjunction, and implication]({{ site.baseurl }}{% link out/plfa/Connectives.md %})
   - [Negation: Negation, with intuitionistic and classical logic]({{ site.baseurl }}{% link out/plfa/Negation.md %})
   - [Quantifiers: Universals and existentials]({{ site.baseurl }}{% link out/plfa/Quantifiers.md %})
-  - [Lists: Lists and higher-order functions]({{ site.baseurl }}{% link out/plfa/Lists.md %})
   - [Decidable: Booleans and decision procedures]({{ site.baseurl }}{% link out/plfa/Decidable.md %})
+  - [Lists: Lists and higher-order functions]({{ site.baseurl }}{% link out/plfa/Lists.md %})
 
 ## Part 2: Programming Language Foundations
 
@@ -38,6 +38,10 @@ Pull requests are encouraged.
   - [Bisimulation: Relating reductions systems]({{ site.baseurl }}{% link out/plfa/Bisimulation.md %}) 
   - [Inference: Bidirectional type inference]({{ site.baseurl }}{% link out/plfa/Inference.md %})
   - [Untyped: Untyped lambda calculus with full normalisation]({{ site.baseurl }}{% link out/plfa/Untyped.md %})
+
+## Additional material
+
+  - [SystemF: Inherently typed System F]({{ site.baseurl }}{% link out/plfa/SystemF.md %})
 
 ## Backmatter
 

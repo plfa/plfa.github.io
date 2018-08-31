@@ -132,7 +132,7 @@ instantiated.
 
 ## Congruence and substitution {#cong}
 
-Equality satisfies *congruence*.  If two terms are equal,
+Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both.
 \begin{code}
 cong : ∀ {A B : Set} (f : A → B) {x y : A}
@@ -343,6 +343,17 @@ by `≡⟨⟩` have the same simplified form; it's up to us to write them in
 an order that will make sense to the reader.
 
 
+#### Exercise `≤-reasoning` (stretch)
+
+The proof of monotonicity from
+Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %})
+can be written in a more readable form by using an anologue of our
+notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
+it to write out an alternative proof that addition is monotonic with
+regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
+
+
+
 ## Rewriting
 
 Consider a property of natural numbers, such as being even.
@@ -540,12 +551,7 @@ trans-≐ x≐y y≐z P Px  =  y≐z P (x≐y P Px)
 
 Symmetry is less obvious.  We have to show that if `P x` implies `P y`
 for all predicates `P`, then the implication holds the other way round
-as well.  Given a specific `P` and a proof `Py` of `P y`, we have to
-construct a proof of `P x` given `x ≐ y`.  To do so, we instantiate
-the equality with a predicate `Q` such that `Q z` holds if `P z`
-implies `P x`.  The property `Q x` is trivial by reflexivity, and
-hence `Q y` follows from `x ≐ y`.  But `Q y` is exactly a proof of
-what we require, that `P y` implies `P x`.
+as well.
 \begin{code}
 sym-≐ : ∀ {A : Set} {x y : A}
   → x ≐ y
@@ -560,6 +566,12 @@ sym-≐ {A} {x} {y} x≐y P  =  Qy
     Qy : Q y
     Qy = x≐y Q Qx
 \end{code}
+Given `x ≐ y`, a specific `P`, a proof of `P y`, we have to
+construct a proof of `P x`.  To do so, we instantiate the equality
+with a predicate `Q` such that `Q z` holds if `P z` implies `P x`.
+The property `Q x` is trivial by reflexivity, and hence `Q y` follows
+from `x ≐ y`.  But `Q y` is exactly a proof of what we require, that
+`P y` implies `P x`.
 
 We now show that Martin Löf equivalence implies
 Leibniz equality, and vice versa.  In the forward direction, if we know
@@ -571,22 +583,18 @@ of `P x` is also a proof of `P y`.
   → x ≡ y
     -----
   → x ≐ y
-≡-implies-≐ x≡y P = subst P x≡y
+≡-implies-≐ x≡y P  =  subst P x≡y
 \end{code}
 This direction follows from substitution, which we showed earlier.
 
 In the reverse direction, given that for any `P` we can take a proof of `P x`
-to a proof of `P y` we need to show `x ≡ y`. The proof is similar to that
-for symmetry of Leibniz equality. We take `Q`
-to be the predicate that holds of `z` if `x ≡ z`. Then `Q x` is trivial
-by reflexivity of Martin Löf equivalence, and hence `Q y` follows from
-`x ≐ y`.  But `Q y` is exactly a proof of what we require, that `x ≡ y`.
+to a proof of `P y` we need to show `x ≡ y`. 
 \begin{code}
 ≐-implies-≡ : ∀ {A : Set} {x y : A}
   → x ≐ y
     -----
   → x ≡ y
-≐-implies-≡ {A} {x} {y} x≐y = Qy
+≐-implies-≡ {A} {x} {y} x≐y  =  Qy
   where
     Q : A → Set
     Q z = x ≡ z
@@ -595,6 +603,11 @@ by reflexivity of Martin Löf equivalence, and hence `Q y` follows from
     Qy : Q y
     Qy = x≐y Q Qx
 \end{code}
+The proof is similar to that for symmetry of Leibniz equality. We take
+`Q` to be the predicate that holds of `z` if `x ≡ z`. Then `Q x` is
+trivial by reflexivity of Martin Löf equivalence, and hence `Q y`
+follows from `x ≐ y`.  But `Q y` is exactly a proof of what we
+require, that `x ≡ y`.
 
 (Parts of this section are adapted from *≐≃≡: Leibniz Equality is
 Isomorphic to Martin-Löf Identity, Parametrically*, by Andreas Abel,

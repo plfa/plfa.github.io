@@ -324,12 +324,11 @@ record _≲_ (A B : Set) : Set where
 open _≲_
 \end{code}
 It is the same as an isomorphism, save that it lacks the `to∘from` field.
-Hence, we know that `from` is a right-identity for `to`, but not that `to`
-is a left-identity of `from`.
+Hence, we know that `from` is right-inverse to `to`, but not that `to`
+is left-inverse to `from`.
 
 Embedding is reflexive and transitive, but not symmetric.  The proofs
-are cut down versions of the similar proofs for isomorphism, simply
-dropping the right inverses.
+are cut down versions of the similar proofs for isomorphism.
 \begin{code}
 ≲-refl : ∀ {A : Set} → A ≲ A
 ≲-refl =
@@ -406,7 +405,6 @@ module ≲-Reasoning where
     → A ≲ B
   ≲-begin A≲B = A≲B
 
-
   _≲⟨_⟩_ : ∀ (A : Set) {B C : Set}
     → A ≲ B
     → B ≲ C
@@ -422,6 +420,41 @@ module ≲-Reasoning where
 open ≲-Reasoning
 \end{code}
 
+#### Exercise (`≃-implies-≲`)
+
+Show that every isomorphism implies an embedding.
+\begin{code}
+postulate
+  ≃-implies-≲ : ∀ {A B : Set}
+    → A ≃ B
+      -----
+    → A ≲ B  
+\end{code}
+
+#### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
+
+Recall that Exercises
+[Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin) and
+[Bin-laws]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-laws)
+define a datatype of bitstrings representing natural numbers.
+\begin{code}
+data Bin : Set where
+  nil : Bin
+  x0_ : Bin → Bin
+  x1_ : Bin → Bin
+\end{code}
+And ask you to define the following functions:
+
+    to : ℕ → Bin
+    from : Bin → ℕ
+
+which satisfy the following property:
+
+    from (to n) ≡ n
+
+Using the above, establish that there is an embedding of `ℕ` into `Bin`.
+Why is there not an isomorphism?
+
 
 ## Standard library
 
@@ -431,11 +464,10 @@ import Function using (_∘_)
 import Function.Inverse using (_↔_)
 import Function.LeftInverse using (_↞_)
 \end{code}
-Their `_↔_` corresponds to our `_≃_`, and their `_↞_` corresponds to
-our `_≲_`.  We prefer our definitions, because those in the
-standard library are less convenient: they depend on a nested record
-structure, and are parameterised with regard to an arbitrary notion of
-equivalence.
+The standard library `_↔_` and `_↞_` correspond to our `_≃_` and
+`_≲_`, respectively, but those in the standard library are less
+convenient, since they depend on a nested record structure and are
+parameterised with regard to an arbitrary notion of equivalence.
 
 ## Unicode
 

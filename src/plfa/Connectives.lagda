@@ -788,6 +788,17 @@ embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
+#### Exercise (`⊎-weak-×`)
+
+Show that the following properties hold.
+\begin{code}
+postulate
+  ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
+\end{code}
+This is called a _weak distributie law_. Give the corresponding
+distributive law, and explain how it relates to the weak version.
+
+
 #### Exercise (`⊎×-implies-×⊎`)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts.
@@ -795,10 +806,10 @@ Show that a disjunct of conjuncts implies a conjunct of disjuncts.
 postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 \end{code}
-Does the converse hold? If so, prove; if not, explain why.
+Does the converse hold? If so, prove; if not, give a counterexample.
 
 
-#### Exercise (`⇔-refl`, `⇔-sym`, `⇔-trans`, `⇔-iso`) {#iff}
+#### Exercise (`_⇔_`) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows.
 \begin{code}
@@ -819,14 +830,18 @@ import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Data.Unit using (⊤; tt)
 import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 import Data.Empty using (⊥; ⊥-elim)
+import Function.Equivalence using (_⇔_)
 \end{code}
 The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
-The former makes it convenient to make triples or larger tuples from pairs,
+The former makes it convenient to build triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
 other useful notations, such as `[_,_]` to construct a list of two elements in
 Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})
 and `Γ , A` to extend environments in
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+The standard library `_⇔_` is similar to ours, but the one in the
+standard library is less convenient, since it is parameterised with
+respect to an arbitrary notion of equivalence.
 
 
 ## Unicode
