@@ -29,7 +29,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; foldr; map)
 open import Function using (_∘_)
-open import plfa.Connectives (_⇔_)
+open import plfa.Connectives using (_⇔_)
 \end{code}
 
 ## Evidence vs Computation
