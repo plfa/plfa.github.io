@@ -312,7 +312,7 @@ The definition has a base case and an inductive case, corresponding to
 those for the natural numbers.  The base case says that adding zero to
 a number, `zero + n`, returns that number, `n`.  The inductive case
 says that adding the successor of a number to another number,
-`(suc m) + n`, returns the successor of adding the two numbers, `suc (m+n)`.
+`(suc m) + n`, returns the successor of adding the two numbers, `suc (m + n)`.
 We say we use _pattern matching_ when constructors appear on the
 left-hand side of an equation.
 
