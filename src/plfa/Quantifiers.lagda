@@ -82,7 +82,7 @@ will stick with the name dependent function, because (as we will see)
 dependent product is ambiguous.
 
 
-#### Exercise (`∀-distrib-×`)
+#### Exercise `∀-distrib-×`
 
 Show that universals distribute over conjunction.
 \begin{code}
@@ -93,7 +93,7 @@ postulate
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}).
 
-#### Exercise (`⊎∀-implies-∀⊎`)
+#### Exercise `⊎∀-implies-∀⊎`
 
 Show that a disjunction of universals implies a universal of disjunctions.
 \begin{code}
@@ -224,7 +224,7 @@ establish the isomorphism is identical to what we wrote when discussing
 
 [implication]: {{ site.baseurl }}{% link out/plfa/Connectives.md %}/#implication
 
-#### Exercise (`∃-distrib-⊎`)
+#### Exercise `∃-distrib-⊎`
 
 Show that existentials distribute over disjunction.
 \begin{code}
@@ -345,13 +345,13 @@ follows by `odd-suc`.
 
 This completes the proof in the backward direction.
 
-#### Exercise (`∃-even′, ∃-odd′`)
+#### Exercise `∃-even-odd`
 
 How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
-#### Exercise (`∃-+-≤`)
+#### Exercise `∃-+-≤`
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.

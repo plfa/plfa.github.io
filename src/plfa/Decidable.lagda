@@ -284,7 +284,7 @@ but instead use inline anonymous functions then Agda may have
 trouble normalising evidence of negation.)
 
 
-#### Exercise (`_<?_`)
+#### Exercise `_<?_`
 
 Analogous to the function above, define a function to decide strict inequality.
 \begin{code}
@@ -292,7 +292,7 @@ postulate
   _<?_ : ∀ (m n : ℕ) → Dec (m < n)
 \end{code}
 
-#### Exercise (`_≡ℕ?_`)
+#### Exercise `_≡ℕ?_`
 
 Define a function to decide whether two naturals are equal.
 \begin{code}
@@ -520,7 +520,7 @@ indicating that the order of the equations determines which of the
 first or the second can match.  This time the answer is different depending
 on which matches; but either is equally valid.
 
-#### Exercise (`∧-×`, `∨-⊎`, `not-¬`, `⊃-→`)
+#### Exercise `erasure`
 
 Show that erasure relates corresponding boolean and decidable operations.
 \begin{code}

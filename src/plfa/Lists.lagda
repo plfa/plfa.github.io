@@ -345,7 +345,7 @@ reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 (We will validate that last fact in an exercise later in this chapter.)
 
-#### Exercise (`reverse-++-commute`)
+#### Exercise `reverse-++-commute`
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first.
@@ -355,7 +355,7 @@ postulate
     → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 \end{code}
 
-### Exercise (`reverse-involutive`)
+### Exercise `reverse-involutive`
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution.
@@ -523,7 +523,7 @@ parameterised on _n_ types will have a map that is parameterised on
 _n_ functions.
 
 
-#### Exercise (`map-compose`)
+#### Exercise `map-compose`
 
 Prove that the map of a composition is equal to the composition of two maps.
 \begin{code}
@@ -533,7 +533,7 @@ postulate
 \end{code}
 The last step of the proof requires extensionality.
 
-#### Exercise (`map-++-commute`)
+#### Exercise `map-++-commute`
 
 Prove the following relationship between map and append.
 \begin{code}
@@ -542,7 +542,7 @@ postulate
    →  map f (xs ++ ys) ≡ map f xs ++ map f ys
 \end{code}
 
-#### Exercise (`map-Tree`)
+#### Exercise `map-Tree`
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`.
@@ -617,18 +617,14 @@ so the fold function takes two arguments, `e` and `_⊕_`
 In general, a data type with _n_ constructors will have
 a corresponding fold function that takes _n_ arguments.
 
-#### Exercise (`product`)
+#### Exercise `product`
 
 Use fold to define a function to find the product of a list of numbers.
-\begin{code}
-postulate
-  product : List ℕ → ℕ
-\end{code}
 For example,
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-#### Exercise (`foldr-++`)
+#### Exercise `foldr-++`
 
 Show that fold and append are related as follows.
 \begin{code}
@@ -638,7 +634,7 @@ postulate
 \end{code}
 
 
-#### Exercise (`map-is-foldr`)
+#### Exercise `map-is-foldr`
 
 Show that map can be defined using fold.
 \begin{code}
@@ -648,7 +644,20 @@ postulate
 \end{code}
 This requires extensionality.
 
-#### Exercise (`sum-downFrom`)
+#### Exercise `fold-Tree`
+
+Define a suitable fold function for the type of trees given earlier.
+\begin{code}
+postulate
+  fold-Tree : ∀ {A B C : Set}
+    → (A → C) → (C → B → C → C) → Tree A B → C
+\end{code}
+
+#### Exercise `map-is-fold-Tree`
+
+Demonstrate an anologue of `map-is-foldr` for the type of trees.
+
+#### Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows.
 \begin{code}
@@ -668,19 +677,6 @@ postulate
   sum-downFrom : ∀ (n : ℕ)
     → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 \end{code}
-
-#### Exercise (`fold-Tree`)
-
-Define a suitable fold function for the type of trees given earlier.
-\begin{code}
-postulate
-  fold-Tree : ∀ {A B C : Set}
-    → (A → C) → (C → B → C → C) → Tree A B → C
-\end{code}
-
-#### Exercise (`map-Tree-is-fold-Tree`, stretch)
-
-Demonstrate an anologue of `map-is-foldr` for the type of trees.
 
 
 ## Monoids
@@ -885,18 +881,19 @@ All-++ xs ys =
   to∘from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ rewrite to∘from xs ys ⟨ Pxs , Pys ⟩ = refl
 \end{code}
 
-### Exercise (`Any-++`)
+#### Exercise `Any-++`
 
 Prove a result similar to `All-++`, but with `Any` in place of `All`, and a suitable
 replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
 `_∈_` and `_++_`.
 
-### Exercise (`¬Any≃All¬`)
+#### Exercise `¬Any≃All¬` (stretch)
 
 First generalise composition to arbitrary levels, using
 [universe polymorphism][unipoly].
 \begin{code}
-_∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃} → (B → C) → (A → B) → A → C
+_∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
+  → (B → C) → (A → B) → A → C
 (g ∘′ f) x  =  g (f x)
 \end{code}
 
@@ -919,35 +916,6 @@ If so, prove; if not, explain why.
 
 
 ## Decidability of All
-
-<!--
-
-Recall that in Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %}#All)
-we defined a predicate `All P` that holds if a given predicate is satisfied by every element of a list.
-\begin{code}
-{-
-data All {A : Set} (P : A → Set) : List A → Set where
-  [] : All P []
-  _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
--}
-\end{code}
-
-If instead we consider a predicate as a function that yields a boolean,
-it is easy to define an analogue of `All`, which returns true if
-a given predicate returns true for every element of a list.
-\begin{code}
-{-
-all : ∀ {A : Set} → (A → Bool) → List A → Bool
-all p  =  foldr _∧_ true ∘ map p
--}
-\end{code}
-The function can be written in a particularly compact style by
-using the higher-order functions `map` and `foldr` as defined in
-the sections on
-[Map]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Map) and
-[Fold]({{ site.baseurl }}{% link out/plfa/Lists.md %}#Fold).
-
--->
 
 If we consider a predicate as a function that yields a boolean,
 it is easy to define an analogue of `All`, which returns true if
@@ -984,7 +952,7 @@ showing that the conjuction of two decidable propositions is itself
 decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
-#### Exercise (`any` `any?`)
+#### Exercise `any?`
 
 Just as `All` has analogues `all` and `all?` which determine whether a
 predicate holds for every element of a list, so does `Any` have

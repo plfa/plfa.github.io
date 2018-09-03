@@ -156,14 +156,14 @@ the other.
 
 
 
-### Exercise `<-irrerflexive`
+#### Exercise `<-irrerflexive`
 
 Using negation, show that
 [strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 
-### Exercise `trichotomy`
+#### Exercise `trichotomy`
 
 Show that strict inequality satisfies
 [trichotomy]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#trichotomy),
@@ -177,7 +177,7 @@ Here "exactly one" means that one of the three must hold, and each implies the
 negation of the other two.
 
 
-### Exercise `⊎-dual-×`
+#### Exercise `⊎-dual-×`
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
@@ -325,7 +325,7 @@ just handed to him.
 Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 
-#### Exercise `classical` (stretch)
+#### Exercise `Classical` (stretch)
 
 Consider the following principles.
 
@@ -338,7 +338,7 @@ Consider the following principles.
 Show that each of these implies all the others.
 
 
-#### Exercise `stable` (stretch)
+#### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it.
 \begin{code}
