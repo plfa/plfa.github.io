@@ -16,6 +16,8 @@ contributors:
     github_username:  wadler
     twitter_username: philipwadler
 
+google_analytics: "UA-125055580-1"
+
 description: > 
   Programming Language Foundations in Agda
 
