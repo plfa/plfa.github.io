@@ -156,14 +156,14 @@ the other.
 
 
 
-### Exercise (`≢`, `<-irrerflexive`)
+### Exercise `<-irrerflexive`
 
 Using negation, show that
 [strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 
-### Exercise (`trichotomy`)
+### Exercise `trichotomy`
 
 Show that strict inequality satisfies
 [trichotomy]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#trichotomy),
@@ -177,21 +177,19 @@ Here "exactly one" means that one of the three must hold, and each implies the
 negation of the other two.
 
 
-### Exercise (`⊎-dual-×`)
+### Exercise `⊎-dual-×`
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
-\begin{code}
-postulate
-  ⊎-dual-× : ∀ {A B : Set} → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
-\end{code}
+
+    ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+
 This result is an easy consequence of something we've proved previously.
 
 Is there also a term of the following type?
-\begin{code}
-postulate
-  ×-dual-⊎ : ∀ {A B : Set} → ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
-\end{code}
+
+    ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
+
 If so, prove; if not, explain why.
 
 
@@ -327,21 +325,20 @@ just handed to him.
 Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 
-#### Exercise
+#### Exercise `classical` (stretch)
 
-Consider the following five terms of the given types.
-\begin{code}
-postulate
-  em′         : ∀ {A : Set} → A ⊎ ¬ A
-  ¬¬-elim     : ∀ {A : Set} → ¬ ¬ A → A
-  peirce      : ∀ {A B : Set} → (((A → B) → A) → A)
-  →-implies-⊎ : ∀ {A B : Set} → (A → B) → ¬ A ⊎ B
-  ×-implies-⊎ : ∀ {A B : Set} → ¬ (A × B) → (¬ A) ⊎ (¬ B)
-\end{code}
-Show that given any one term of the specified type, we can derive the others.
+Consider the following principles.
+
+  * Excluded Middle: `A ⊎ ¬ A`, for all `A`
+  * Double Negation Elimination: `¬ ¬ A → A`, for all `A`
+  * Peirce's Law: `((A → B) → A) → A`, for all `A` and `B`.
+  * Implication as disjunction: `(A → B) → ¬ A ⊎ B`, for all `A` and `B`.
+  * De Morgan: `¬ (¬ A × ¬ B) → A ⊎ B`, for all `A` and `B`.
+
+Show that each of these implies all the others.
 
 
-### Exercise (`¬-stable`, `×-stable`)
+#### Exercise `stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it.
 \begin{code}
@@ -350,19 +347,6 @@ Stable A = ¬ ¬ A → A
 \end{code}
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
-\begin{code}
-postulate
-
-  ¬-stable : ∀ {A : Set}
-      ------------
-    → Stable (¬ A)
-
-  ×-stable : ∀ {A B : Set}
-    → Stable A
-    → Stable B
-      --------------
-    → Stable (A × B)
-\end{code}
 
 ## Standard Prelude
 

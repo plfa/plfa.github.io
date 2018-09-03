@@ -799,7 +799,7 @@ This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
 
-#### Exercise (`⊎×-implies-×⊎`)
+#### Exercise `⊎×-implies-×⊎`
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts.
 \begin{code}
@@ -809,7 +809,7 @@ postulate
 Does the converse hold? If so, prove; if not, give a counterexample.
 
 
-#### Exercise (`_⇔_`) {#iff}
+#### Exercise `_⇔_` {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows.
 \begin{code}
