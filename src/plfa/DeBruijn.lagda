@@ -524,7 +524,7 @@ rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
 rename ρ (`zero)        =  `zero
 rename ρ (`suc M)       =  `suc (rename ρ M)
-rename ρ (case L M N)  =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
+rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 \end{code}
 Let `ρ` be the name of the map that takes variables in `Γ`
@@ -637,7 +637,7 @@ subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
 subst σ (L · M)        =  (subst σ L) · (subst σ M)
 subst σ (`zero)        =  `zero
 subst σ (`suc M)       =  `suc (subst σ M)
-subst σ (case L M N)  =  case (subst σ L) (subst σ M) (subst (exts σ) N)
+subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
 \end{code}
 Let `σ` be the name of the map that takes variables in `Γ`

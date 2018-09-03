@@ -77,8 +77,8 @@ data _⊢⋆_ : Ctx⋆ → Kind → Set where
       --------
     → Φ ⊢⋆ J
 
-  Π_ : ∀ {Φ}
-    → Φ ,⋆ * ⊢⋆ *
+  Π_ : ∀ {Φ K}
+    → Φ ,⋆ K ⊢⋆ *
       -----------
     → Φ ⊢⋆ *
 
@@ -109,9 +109,9 @@ rename⋆ : ∀ {Φ Ψ}
   → (∀ {J} → Φ ∋⋆ J → Ψ ∋⋆ J)
     ----------------------------
   → (∀ {J} → Φ ⊢⋆ J → Ψ ⊢⋆ J)
-rename⋆ ρ (` α)          =  ` (ρ α)
-rename⋆ ρ (Π B)          =  Π (rename⋆ (ext⋆ ρ) B)
-rename⋆ ρ (A ⇒ B)       =  rename⋆ ρ A ⇒ rename⋆ ρ B
+rename⋆ ρ (` α)    =  ` (ρ α)
+rename⋆ ρ (Π B)    =  Π (rename⋆ (ext⋆ ρ) B)
+rename⋆ ρ (A ⇒ B)  =  rename⋆ ρ A ⇒ rename⋆ ρ B
 \end{code}
 
 Weakening is a special case of renaming.
@@ -143,9 +143,9 @@ subst⋆ : ∀ {Φ Ψ}
   → (∀ {J} → Φ ∋⋆ J → Ψ ⊢⋆ J)
     -----------------------------
   → (∀ {J} → Φ ⊢⋆ J → Ψ ⊢⋆ J)
-subst⋆ σ (` α)         =  σ α
-subst⋆ σ (Π B)         =  Π (subst⋆ (exts⋆ σ) B)
-subst⋆ σ (A ⇒ B)      =  subst⋆ σ A ⇒ subst⋆ σ B
+subst⋆ σ (` α)     =  σ α
+subst⋆ σ (Π B)     =  Π (subst⋆ (exts⋆ σ) B)
+subst⋆ σ (A ⇒ B)   =  subst⋆ σ A ⇒ subst⋆ σ B
 \end{code}
 
 A special case is substitution a type for the
@@ -188,9 +188,9 @@ context to a type context and a kind.
 
 The erasure of a context is a type context.
 \begin{code}
-∥ ∅ ∥  =  ∅
+∥ ∅ ∥       =  ∅
 ∥ Γ ,⋆ J ∥  =  ∥ Γ ∥ ,⋆ J
-∥ Γ , A ∥  =  ∥ Γ ∥
+∥ Γ , A ∥   =  ∥ Γ ∥
 \end{code}
 
 ## Variables
@@ -239,8 +239,8 @@ data _⊢_ : ∀ {J} (Γ : Ctx) → ∥ Γ ∥ ⊢⋆ J → Set where
       -----------
     → Γ ⊢ B
 
-  Λ_ : ∀ {Γ} {B : ∥ Γ ∥ ,⋆ * ⊢⋆ *}
-    → Γ ,⋆ * ⊢ B
+  Λ_ : ∀ {Γ K} {B : ∥ Γ ∥ ,⋆ K ⊢⋆ *}
+    → Γ ,⋆ K ⊢ B
       ----------
     → Γ ⊢ Π B
 

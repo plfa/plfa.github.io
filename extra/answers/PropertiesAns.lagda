@@ -15,7 +15,7 @@ unstuck′ : ∀ {M A}
   → ¬ (Stuck M)
 unstuck′ ⊢M ⟨ ¬M—→N , ¬VM ⟩ with progress ⊢M 
 ... | step M—→N  =  ¬M—→N M—→N
-... | done VM   =  ¬VM VM
+... | done VM    =  ¬VM VM
 \end{code}
 
 Any descendant of a well-typed term is well-typed.
@@ -25,7 +25,7 @@ preserves′ : ∀ {M N A}
   → M —↠ N
     ---------
   → ∅ ⊢ N ⦂ A
-preserves′ ⊢M (M ∎)             =  ⊢M
+preserves′ ⊢M (M ∎)                =  ⊢M
 preserves′ ⊢L (L —→⟨ L—→M ⟩ M—↠N)  =  preserves′ (preserve ⊢L L—→M) M—↠N
 \end{code}
 
