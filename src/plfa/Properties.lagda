@@ -330,16 +330,16 @@ this requires that we match against the lambda expression `L` to
 determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 `L · M` reduces to `N [ x := M ]`.
 
-#### Exercise (`Progress-iso`)
+#### Exercise `Progress-iso`
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
-#### Exercise (`progress′`)
+#### Exercise `progress′`
 
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-#### Exercise (`value`)
+#### Exercise `value?`
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value.
@@ -767,7 +767,7 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
-#### Exercise (`subst′`)
+#### Exercise `subst′` (stretch)
 
 Rewrite `subst` to work with the modified definition `_[_:=_]′`
 from the exercise in the previous chapter.  As before, this
@@ -1269,7 +1269,8 @@ postulate
     → ¬ (Stuck M)
 \end{code}
 
-Using preservation, it is easy to show that after any number of steps, a well-typed term remains well-typed.
+Using preservation, it is easy to show that after any number of steps,
+a well-typed term remains well-typed.
 \begin{code}
 postulate
   preserves : ∀ {M N A}
@@ -1279,9 +1280,10 @@ postulate
     → ∅ ⊢ N ⦂ A
 \end{code}
 
-An easy consequence is that after any number of steps, a well-typed term does not get stuck.
-Felleisen and Wright, who introduced proofs via progress and preservation, summarised this
-result with the slogan _well-typed terms don't get stuck_.
+An easy consequence is that after any number of steps, a well-typed
+term does not get stuck.  Felleisen and Wright, who introduced proofs
+via progress and preservation, summarised this result with the slogan
+_well-typed terms don't get stuck_.
 \begin{code}
 postulate
   wttdgs : ∀ {M N A}
@@ -1293,46 +1295,11 @@ postulate
 
 #### Exercise `stuck`
 
-Give an example of a not well-typed term that does get stuck.
+Give an example of an ill-typed term that does get stuck.
 
-#### Exercise `unstuck`, `preserves`, `wttdgs`.
+#### Exercise `unstuck`
 
-Provide proofs of the three postulates above.
-
-#### Answer
-
-No well-typed term is stuck.
-\begin{code}
-unstuck′ : ∀ {M A}
-  → ∅ ⊢ M ⦂ A
-    -----------
-  → ¬ (Stuck M)
-unstuck′ ⊢M ⟨ ¬M—→N , ¬VM ⟩ with progress ⊢M 
-... | step M—→N  =  ¬M—→N M—→N
-... | done VM   =  ¬VM VM
-\end{code}
-
-Any descendant of a well-typed term is well-typed.
-\begin{code}
-preserves′ : ∀ {M N A}
-  → ∅ ⊢ M ⦂ A
-  → M —↠ N
-    ---------
-  → ∅ ⊢ N ⦂ A
-preserves′ ⊢M (M ∎)             =  ⊢M
-preserves′ ⊢L (L —→⟨ L—→M ⟩ M—↠N)  =  preserves′ (preserve ⊢L L—→M) M—↠N
-\end{code}
-
-Combining the above gives us the desired result.
-\begin{code}
-wttdgs′ : ∀ {M N A}
-  → ∅ ⊢ M ⦂ A
-  → M —↠ N
-    -----------
-  → ¬ (Stuck N)
-wttdgs′ ⊢M M—↠N  =  unstuck′ (preserves′ ⊢M M—↠N)
-\end{code}
-
+Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
 ## Reduction is deterministic
 

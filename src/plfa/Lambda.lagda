@@ -464,7 +464,7 @@ What is the result of the following substitution?
 4. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ `zero)) ``
 
 
-#### Exercise (`_[_:=_]′`)
+#### Exercise `_[_:=_]′` (stretch)
 
 The definition of substitution above has three clauses (`ƛ`, `case`,
 and `μ`) that invoke a with clause to deal with bound variables.
@@ -673,7 +673,7 @@ The three constructors specify, respectively, that `—↠` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
 the two definitions are equivalent (indeed, isomoprhic).
 
-#### Exercise (`—↠≃—↠′`)
+#### Exercise `—↠≃—↠′`
 
 Show that the two notions of reflexive and transitive closure
 above are isomorphic.
@@ -830,7 +830,7 @@ _ =
 In the next chapter, we will see how to compute such reduction sequences.
 
 
-#### Exercise (`mul-ex`)
+#### Exercise `mul-ex`
 
 Using the term `mul` you defined earlier, write out the reduction
 sequence demonstrating that two times two is four.
@@ -1279,7 +1279,7 @@ or explain why there are no such types.
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
 
 
-#### Exercise (`mul-type`)
+#### Exercise `mul-type`
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well-typed.
