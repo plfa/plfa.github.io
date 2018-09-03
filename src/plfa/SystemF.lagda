@@ -8,23 +8,6 @@ permalink : /SystemF/
 module plfa.SystemF where
 \end{code}
 
-## Imports
-
-\begin{code}
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Unit using (⊤; tt)
-open import Function using (_∘_)
-open import Function.Equivalence using (_⇔_; equivalence)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (map)
-open import Relation.Nullary.Negation using (contraposition)
-open import Relation.Nullary.Product using (_×-dec_)
-\end{code}
-
 ## Fixity declarations
 
 To begin, we get all our infix declarations out of the way.
@@ -271,7 +254,7 @@ data _⊢_ : ∀ {J} (Γ : Ctx) → ∥ Γ ∥ ⊢⋆ J → Set where
 ## Remainder
 
 The development continues from here as in
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %},
+Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
 defining renaming and substitution on terms and introducing reduction
 rules for terms, proving progress, and applying progress to derive an
 evaluator.

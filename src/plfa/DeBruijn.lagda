@@ -29,17 +29,10 @@ James Chapman, James McKinna, and many others.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Unit using (⊤; tt)
-open import Function using (_∘_)
-open import Function.Equivalence using (_⇔_; equivalence)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (map)
-open import Relation.Nullary.Negation using (contraposition)
-open import Relation.Nullary.Product using (_×-dec_)
+open import Data.Nat using (ℕ; zero; suc)
+open import Relation.Nullary using (¬_)
 \end{code}
 
 ## Introduction
@@ -55,7 +48,7 @@ numeral two:
 And here is its corresponding type derivation:
 
     ⊢twoᶜ  :  ∀ {A} ⇒ ∅ ⊢ two ⦂ Ch A
-    ⊢twoᶜ  =  ⊢ƛ (⊢ƛ (Ax ∋s · (Ax ∋s · Ax ∋z)))
+    ⊢twoᶜ  =  ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
                where    
                ∋s = S ("s" ≠ "z") Z
                ∋z = Z
@@ -67,7 +60,7 @@ in full
 [here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#derivation).)
 The two definitions are in close correspondence, where
 
-  * `` `_ `` corresponds to `Ax`
+  * `` `_ `` corresponds to `` ⊢` ``
   * `ƛ_⇒_`   corresponds to `⊢ƛ`
   * `_·_`    corresponds to `_·_`
 

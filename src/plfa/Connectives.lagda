@@ -788,14 +788,14 @@ embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
-#### Exercise (`⊎-weak-×`)
+#### Exercise `⊎-weak-×`
 
 Show that the following properties hold.
 \begin{code}
 postulate
   ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
 \end{code}
-This is called a _weak distributie law_. Give the corresponding
+This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
 
