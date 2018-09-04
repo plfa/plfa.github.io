@@ -16,6 +16,7 @@ out/:
 out/%.md: src/%.lagda | out/
 	agda2html --verbose --link-to-agda-stdlib --use-jekyll=out/ -i $< -o $@ 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
+	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
 # start server
 server-start:

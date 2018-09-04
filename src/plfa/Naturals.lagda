@@ -2,6 +2,7 @@
 title     : "Naturals: Natural numbers"
 layout    : page
 permalink : /Naturals/
+next      : /Isomorphism/
 ---
 
 \begin{code}
