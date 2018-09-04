@@ -233,7 +233,7 @@ postulate
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 \end{code}
 
-#### Exercise (`∃×-implies-×∃`)
+#### Exercise `∃×-implies-×∃`
 
 Show that an existential of conjunctions implies a conjunction of existentials.
 \begin{code}
@@ -392,7 +392,7 @@ The two inverse proofs are straightforward, where one direction
 requires extensionality.
 
 
-#### Exercise (`∃¬-implies-¬∀`)
+#### Exercise `∃¬-implies-¬∀`
 
 Show that existential of a negation implies negation of a universal.
 \begin{code}
