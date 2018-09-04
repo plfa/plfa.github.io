@@ -420,7 +420,7 @@ module ≲-Reasoning where
 open ≲-Reasoning
 \end{code}
 
-#### Exercise (`≃-implies-≲`)
+#### Exercise `≃-implies-≲`
 
 Show that every isomorphism implies an embedding.
 \begin{code}
