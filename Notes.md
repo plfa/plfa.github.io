@@ -1,5 +1,11 @@
 # Notes
 
+> We want to alert you that you've been granted the following access:
+>      Manage Users and Edit
+> to the Google Analytics account `plfa (UA-125055580)` by `wen.kokke@gmail.com`.
+
+> [Google analytics](http://analytics.google.com/analytics/web/)
+
 ## Where to put Lists?
 
 Three possible orders:

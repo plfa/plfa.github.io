@@ -995,16 +995,16 @@ type judgement into the corresponding inherently typed term.
 First, we give code to erase a context.
 \begin{code}
 ∥_∥Γ : Context → DB.Context
-∥ ∅ ∥Γ = DB.∅
-∥ Γ , x ⦂ A ∥Γ = ∥ Γ ∥Γ DB., A
+∥ ∅ ∥Γ               =  DB.∅
+∥ Γ , x ⦂ A ∥Γ       =   ∥ Γ ∥Γ DB., A
 \end{code}
 It simply drops the variable names.
 
 Next, we give code to erase a lookup judgment.
 \begin{code}
 ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Γ DB.∋ A
-∥ Z ∥∋ =  DB.Z
-∥ S x≢ ⊢x ∥∋ =  DB.S ∥ ⊢x ∥∋
+∥ Z ∥∋               =  DB.Z
+∥ S x≢ ⊢x ∥∋         =  DB.S ∥ ⊢x ∥∋
 \end{code}
 It just drops the evidence that variable names are distinct.
 
@@ -1015,16 +1015,16 @@ there are two mutually recursive erasure functions.
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
 
-∥ ⊢` ⊢x ∥⁺ =  DB.` ∥ ⊢x ∥∋
-∥ ⊢L · ⊢M ∥⁺ =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
-∥ ⊢↓ ⊢M ∥⁺ =  ∥ ⊢M ∥⁻
+∥ ⊢` ⊢x ∥⁺           =  DB.` ∥ ⊢x ∥∋
+∥ ⊢L · ⊢M ∥⁺         =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
+∥ ⊢↓ ⊢M ∥⁺           =  ∥ ⊢M ∥⁻
 
-∥ ⊢ƛ ⊢N ∥⁻ =  DB.ƛ ∥ ⊢N ∥⁻
-∥ ⊢zero ∥⁻ =  DB.`zero
-∥ ⊢suc ⊢M ∥⁻ =  DB.`suc ∥ ⊢M ∥⁻
-∥ ⊢case ⊢L ⊢M ⊢N ∥⁻ =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
-∥ ⊢μ ⊢M ∥⁻ =  DB.μ ∥ ⊢M ∥⁻
-∥ ⊢↑ ⊢M refl ∥⁻ =  ∥ ⊢M ∥⁺
+∥ ⊢ƛ ⊢N ∥⁻           =  DB.ƛ ∥ ⊢N ∥⁻
+∥ ⊢zero ∥⁻           =  DB.`zero
+∥ ⊢suc ⊢M ∥⁻         =  DB.`suc ∥ ⊢M ∥⁻
+∥ ⊢case ⊢L ⊢M ⊢N ∥⁻  =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
+∥ ⊢μ ⊢M ∥⁻           =  DB.μ ∥ ⊢M ∥⁻
+∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
 \end{code}
 Erasure replaces constructors for each typing judgement
 by the corresponding term constructor from `DB`.  The
