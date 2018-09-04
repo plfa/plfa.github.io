@@ -4,8 +4,6 @@ layout    : page
 permalink : /Lambda/
 ---
 
-*Todo: Experiment with defining variable names* smart constructor `` ƛ`_⇒_ ``
-
 \begin{code}
 module plfa.Lambda where
 \end{code}
@@ -131,7 +129,7 @@ two : Term
 two = `suc `suc `zero
 
 plus : Term
-plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+plus = μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
          case ` "m"
            [zero⇒ ` "n"
            |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
@@ -191,10 +189,45 @@ in other words that the term
 reduces to `` `suc `suc `suc `suc `zero ``.
 
 
-#### Exercise (`mul`)
+#### Exercise `mul`
 
-Write out the defintion of a lambda term that multiplies
+Write out the definition of a lambda term that multiplies
 two natural numbers.
+
+
+#### Exercise `primed` (stretch)
+
+We can make examples with lambda terms slighly easier to write
+by adding the following definitions.
+\begin{code}
+ƛ′_⇒_ : Term → Term → Term
+ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
+ƛ′ _ ⇒ _      =  ⊥-elim impossible
+  where postulate impossible : ⊥
+
+case′_[zero⇒_|suc_⇒_] : Term → Term → Term → Term → Term
+case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
+case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
+  where postulate impossible : ⊥
+
+μ′_⇒_ : Term → Term → Term
+μ′ (` x) ⇒ N  =  μ x ⇒ N
+μ′ _ ⇒ _      =  ⊥-elim impossible
+  where postulate impossible : ⊥
+\end{code}
+The definition of `plus` can now be written as follows.
+\begin{code}
+plus′ : Term
+plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
+          case′ m
+            [zero⇒ n
+            |suc m ⇒ `suc (+ · m · n) ]
+  where
+  +  =  ` "+"
+  m  =  ` "m"
+  n  =  ` "n"
+\end{code}
+Write out the definition of multiplication in the same style.
 
 
 ### Formal vs informal
@@ -830,10 +863,9 @@ _ =
 In the next chapter, we will see how to compute such reduction sequences.
 
 
-#### Exercise `mul-ex`
+#### Exercise `plus-example`
 
-Using the term `mul` you defined earlier, write out the reduction
-sequence demonstrating that two times two is four.
+Write out the reduction sequence demonstrating that one plus one is two.
 
 
 ## Syntax of types

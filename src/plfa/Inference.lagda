@@ -473,6 +473,18 @@ the equality test in the application rule in the first
 [section]({{ site.baseurl }}{% link out/plfa/Inference.md %}/#algorithms).
 
 
+#### Exercise `bidirectional-ps`
+
+Extend the bidirectional type rules to include products and sums from
+Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+
+
+#### Exercise `bidirectional-rest` (stretch)
+
+Extend the bidirectional type rules to include the rest of the constructs from
+Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+
+
 ## Prerequisites
 
 The rule for `M ↑` requires the ability to decide whether two types
@@ -1035,9 +1047,16 @@ Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
 to the inherently typed terms of
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
 
-#### Exercise (`decoration`)
 
-Extend bidirectional inference to include each of the constructs in
+#### Exercise `inference-p`
+
+Extend bidirectional inference to include products from
+Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+
+
+#### Exercise `inference-rest` (stretch)
+
+Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
 
 

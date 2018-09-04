@@ -18,7 +18,7 @@ this chapter we extend our calculus to support the following:
   * an alternative formulation of products
   * sums
   * unit type
-  * and an alternative formulation of unit type
+  * an alternative formulation of unit type
   * empty type
   * lists
 
@@ -136,7 +136,7 @@ We can translate each _let_ term into an application of an abstraction.
     (`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
 
 
-## Products
+## Products {#products}
 
 ### Syntax
 
@@ -265,7 +265,7 @@ We can also translate back the other way.
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
-## Sums
+## Sums {#sums}
 
 ### Syntax
 
@@ -1207,6 +1207,12 @@ _ =
    ∎
 \end{code}
 
-#### Exercise (`More`)
+#### Exercise `More`
 
 Formalise the remaining constructs defined in this chapter.
+
+  * sums
+  * unit type
+  * an alternative formulation of unit type
+  * empty type
+  * lists

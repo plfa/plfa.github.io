@@ -392,10 +392,10 @@ unless both terms are in normal form.
 
 #### Exercise (`variant-2`)
 
-How would the rules change if we want call-by-value.  Assume that `β`
+How would the rules change if we want call-by-value where terms
+do not reduce underneath lambda?  Assume that `β`
 permits reduction when both terms are values (that is, lambda
-abstractions).  Reduction underneath lambda is permited only once the
-top-level term is a value.
+abstractions).  What would `2+2ᶜ` reduce to in this case?
 
 
 ## Reflexive and transitive closure
@@ -718,16 +718,16 @@ Because `` `suc `` is now a defined term rather than primitive,
 it is no longer the case that `2+2` reduces to `four`, but they
 do both reduce to the same normal term. 
 
-#### Exercise (`2+2≡four`)
+#### Exercise `2+2≡four`
 
 Use the evaluator to confirm that `2+2` and `four` normalise to
 the same term.
 
-#### Exercise (`More-encoded`)
+#### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
-Chapter [More]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
-in the untyped lambda calculus.
+Chapter [More]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+save for primitive numbers, in the untyped lambda calculus.
 
 
 ## Unicode

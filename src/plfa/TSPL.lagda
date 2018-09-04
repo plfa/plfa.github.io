@@ -85,6 +85,8 @@ some extra practice.
     - `erasure`
     - `iff-erasure` (recommended)
 
+* Assignment 3. Due 4pm Thursday 1 November (Week 7)
+
   + Lists
     - `reverse-++-commute` (recommended)
     - `reverse-involutive` (recommended)
@@ -101,13 +103,12 @@ some extra practice.
     - `¬Any≃All¬` (stretch)
     - `any?` (recommended)
 
-* Assignment 3. Due 4pm Thursday 1 November (Week 7)
-
   + Lambda
     - `mul` (recommended)
+    - `primed` (stretch)
     - `_[_:=_]′` (stretch)
     - `—↠≃—↠′`
-    - `mul-ex`
+    - `plus-example`
     - `mul-type` (recommended)
 
   + Properties
@@ -115,8 +116,37 @@ some extra practice.
     - `progress′`
     - `value?`
     - `subst′` (stretch)
+    - `mul-example` (recommended)
     - `unstuck` (recommended)
 
+  + DeBruijn
+    - `mul` (recommended)
+    - `V¬—→`
+    - `mul-example` (recommended)
+
 * Assignment 4. Due 4pm Thursday 15 November (Week 9)
+
+  + More
+    - `More` (recommended)
+
+  + Bisimulation
+    - `_†`
+    - `~val⁻¹`
+    - `sim⁻¹`
+    - `products`
+
+  + Inference
+    - `bidirectional-ps` (recommended)
+    - `bidirectional-rest` (stretch)
+    - `inference-p` (recommended)
+    - `inference-rest` (stretch)
+
+  + Untyped
+    - `Type≃⊤`
+    - `Context≃ℕ`
+    - `variant-1` (recommended)
+    - `variant-2`
+    - `2+2≡four` (recommended)
+    - `encode-more` (stretch)
 
 * Assignment 5. Due 4pm Thursday 22 November (Week 10)

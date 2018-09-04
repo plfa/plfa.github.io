@@ -1246,6 +1246,11 @@ _ = refl
 And again, the example in the previous section was derived by editing the
 above.
 
+#### Exercise `mul-example`
+
+Using the evaluator, confirm that two times two is four.
+
+
 ## Well-typed terms don't get stuck
 
 A term is _normal_ if it cannot reduce.

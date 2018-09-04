@@ -168,7 +168,7 @@ However, leaving the simulation small let's us focus on the essence.
 It's a handy technical trick that we can have a large source language,
 but only bother to include in the simulation the terms of interest.
 
-#### Exercise (`_†`)
+#### Exercise `_†`
 
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
@@ -193,7 +193,7 @@ commutes with values.  That is, if `M ~ M†` and `M` is a value then
 It is a straightforward case analysis, where here the only value
 of interest is a lambda abstraction.
 
-#### Exercise (`~val⁻¹`)
+#### Exercise `~val⁻¹`
 
 Show that this also holds in the reverse direction: if `M ~ M†`
 and `Value M†` then `Value M`.
@@ -447,12 +447,12 @@ In its structure, it looks a little bit like a proof of progress.
     we have `N [ x := V] ~ N† [ x := V† ]`.
 
 
-#### Exercise (`Leg⁻¹`, sim⁻¹`)
+#### Exercise `sim⁻¹`
 
 Show that we also have a simulation in the other direction, and hence that we have
 a bisimulation.
 
-#### Exercise (bisimulation for products)
+#### Exercise `products`
 
 Show that the two formulations of products in
 Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %})

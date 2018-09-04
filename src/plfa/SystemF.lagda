@@ -30,10 +30,10 @@ infix  9 S_
 
 ## Kinds
 
-The only kind is `*`, the kind of types.
+The only kind is `★`, the kind of types.
 \begin{code}
 data Kind : Set where
-  * : Kind
+  ★ : Kind
 \end{code}
 Let `J`, `K` range over kinds.
 
@@ -78,15 +78,15 @@ data _⊢⋆_ : Ctx⋆ → Kind → Set where
     → Φ ⊢⋆ J
 
   Π_ : ∀ {Φ K}
-    → Φ ,⋆ K ⊢⋆ *
+    → Φ ,⋆ K ⊢⋆ ★
       -----------
-    → Φ ⊢⋆ *
+    → Φ ⊢⋆ ★
 
   _⇒_ : ∀ {Φ}
-    → Φ ⊢⋆ *
-    → Φ ⊢⋆ *
+    → Φ ⊢⋆ ★
+    → Φ ⊢⋆ ★
       ------
-    → Φ ⊢⋆ *
+    → Φ ⊢⋆ ★
 \end{code}
 Let `A`, `B`, `C` range over types.
 
@@ -239,14 +239,14 @@ data _⊢_ : ∀ {J} (Γ : Ctx) → ∥ Γ ∥ ⊢⋆ J → Set where
       -----------
     → Γ ⊢ B
 
-  Λ_ : ∀ {Γ K} {B : ∥ Γ ∥ ,⋆ K ⊢⋆ *}
+  Λ_ : ∀ {Γ K} {B : ∥ Γ ∥ ,⋆ K ⊢⋆ ★}
     → Γ ,⋆ K ⊢ B
       ----------
     → Γ ⊢ Π B
 
   _·⋆_ : ∀ {Γ B}
     → Γ ⊢ Π B
-    → (A : ∥ Γ ∥ ⊢⋆ *)
+    → (A : ∥ Γ ∥ ⊢⋆ ★)
       ---------------
     → Γ ⊢ B [ A ]⋆
 \end{code}

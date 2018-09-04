@@ -478,6 +478,14 @@ As before we generalise everything save `2+2ᶜ` to arbitary
 contexts.  While we are at it, we also generalise `twoᶜ` and
 `plusᶜ` to Church numerals over arbitrary types.
 
+
+
+#### Exercise (`mul`)
+
+Write out the defintion of a lambda term that multiplies
+two natural numbers.
+
+
 ## Renaming
 
 Renaming is a necessary prelude to substitution, enabling us
@@ -946,28 +954,17 @@ _ =
 ## Values do not reduce
 
 We have now completed all the definitions, which of
-necessity included some important results: Canonical Forms,
+necessity subsumed some of the propositions from the
+earlier development: Canonical Forms,
 Substitution preserves types, and Preservation.
 We now turn to proving the remaining results from the
-preceding section.
+previous development.
 
-### Exercise `V¬—→`, `—→¬V`
+#### Exercise `V¬—→`
 
-Adapt the reesults of the previous section to show values do
+Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
 values.
-
-<!--
-\begin{code}
-V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M —→ N)
-V¬—→ V-ƛ        ()
-V¬—→ V-zero     ()
-V¬—→ (V-suc VM) (ξ-suc M—→N) = V¬—→ VM M—→N
-
-—→¬V : ∀ {Γ A} {M N : Γ ⊢ A} → (M —→ N) → ¬ Value M
-—→¬V M—→N VM  =  V¬—→ VM M—→N
-\end{code}
--->
 
 ## Progress
 
@@ -1300,6 +1297,14 @@ _ = refl
 
 We omit the proof that reduction is deterministic, since it is
 tedious and almost identical to the previous proof.
+
+
+#### Exercise `mul-example`
+
+Using the evaluator, confirm that two times two is four.
+
+
+## Inherently-typed is golden
 
 Counting the lines of code is instructive.  While this chapter
 covers the same formal development as the previous two
