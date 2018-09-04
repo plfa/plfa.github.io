@@ -44,7 +44,7 @@ infixr 5 _∷_
 \end{code}
 Let's unpack this definition. If `A` is a set, then `List A` is a set.
 The next two lines tell us that `[]` (pronounced _nil_) is a list of
-type `A` (often called the *empty* list), and that `_∷_` (pronounced
+type `A` (often called the _empty_ list), and that `_∷_` (pronounced
 _cons_, short for _constructor_) takes a value of type `A` and a value
 of type `List A` and returns a value of type `List A`.  Operator `_∷_`
 has precedence level 5 and associates to the right.
@@ -58,7 +58,7 @@ denotes the list of the first three natural numbers.  Since `_::_`
 associates to the right, the term parses as `0 ∷ (1 ∷ (2 ∷ []))`.
 Here `0` is the first element of the list, called the _head_,
 and `1 ∷ (2 ∷ [])` is a list of the remaining elements, called the
-_tail_. Lists are a rather strange beast: they have a head and a tail,
+_tail_. A list is a strange beast: it has a head and a tail,
 nothing in between, and the tail is itself another list!
 
 As we've seen, parameterised types can be translated to

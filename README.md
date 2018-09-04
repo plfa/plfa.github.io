@@ -87,7 +87,6 @@ You can check this worked:
 
 ## Analytics
 
-Wen and Phil have permission to view
 [Google Analytics](http://analytics.google.com/analytics/web/)
 account `plfa (UA-125055580)`.
-
+(Currently only Wen and Phil have access.)
