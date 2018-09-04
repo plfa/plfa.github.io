@@ -18,6 +18,9 @@ contributors:
 
 google_analytics: "UA-125055580-1"
 
+repository: plfa/plfa.github.io
+branch: dev
+
 description: > 
   Programming Language Foundations in Agda
 
