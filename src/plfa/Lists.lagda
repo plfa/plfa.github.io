@@ -355,7 +355,7 @@ postulate
     → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 \end{code}
 
-### Exercise `reverse-involutive`
+#### Exercise `reverse-involutive`
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution.
