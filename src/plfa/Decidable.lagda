@@ -531,7 +531,7 @@ postulate
   ⊃-→ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ⊃ ⌊ y ⌋ ≡ ⌊ x →-dec y ⌋  
 \end{code}
   
-#### Exercise (`_iff_ `, `_⇔-dec_`)
+#### Exercise `_iff_ `, `_⇔-dec_`
 
 Give analogues of the `_⇔_` operation from 
 Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}#iff),
