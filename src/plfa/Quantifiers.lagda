@@ -1,7 +1,9 @@
 ---
 title     : "Quantifiers: Universals and existentials"
 layout    : page
+prev      : /Negation/
 permalink : /Quantifiers/
+next      : /Decidable/
 ---
 
 \begin{code}

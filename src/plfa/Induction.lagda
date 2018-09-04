@@ -1,7 +1,9 @@
 ---
 title     : "Induction: Proof by Induction"
 layout    : page
+prev      : /Naturals/
 permalink : /Induction/
+next      : /Relations/
 ---
 
 \begin{code}

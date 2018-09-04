@@ -1,7 +1,9 @@
 ---
 title     : "Connectives: Conjunction, disjunction, and implication"
 layout    : page
+prev      : /Isomorphisms/
 permalink : /Connectives/
+next      : /Negation/
 ---
 
 \begin{code}

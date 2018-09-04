@@ -1,9 +1,9 @@
 ---
 title     : "Isomorphism: Isomorphism and Embedding"
 layout    : page
-prev      : /Naturals/
+prev      : /Equality/
 permalink : /Isomorphism/
-next      : /Relations/
+next      : /Connectives/
 ---
 
 \begin{code}

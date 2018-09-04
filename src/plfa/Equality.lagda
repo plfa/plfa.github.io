@@ -1,7 +1,9 @@
 ---
 title     : "Equality: Equality and equational reasoning"
 layout    : page
+prev      : /Relations/
 permalink : /Equality/
+next      : /Isomorphism/
 ---
 
 \begin{code}
