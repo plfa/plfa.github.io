@@ -596,15 +596,7 @@ The term `_+_ 2` by itself stands for the function that adds two to
 its argument, hence applying it to three yields five.
 
 Currying is named for Haskell Curry, after whom the programming
-language Haskell is also named.  Curry's work dates to the 1930's.
-When I first learned about currying, I was told it was misattributed,
-since the same idea was previously proposed by Moses Schönfinkel in
-the 1920's.  I was told a joke: "It should be called schönfinkeling,
-but currying is tastier". Only later did I learn that the explanation
-of the misattribution was itself a misattribution.  The idea actually
-appears in the _Begriffschrift_ of Gottlob Frege, published in 1879.
-We should call it frigging!
-
+language Haskell is also named.  
 
 ## The story of creation, revisited
 
