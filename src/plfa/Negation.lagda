@@ -158,7 +158,7 @@ the other.
 
 
 
-#### Exercise `<-irrerflexive`
+#### Exercise `<-irreflexive`
 
 Using negation, show that
 [strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
