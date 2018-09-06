@@ -938,7 +938,7 @@ _ : synthesize ∅ ((two ↓ `ℕ) · two) ≡ no _
 _ = refl
 \end{code}
 
-Abstraction inherits type natural.p
+Abstraction inherits type natural.
 \begin{code}
 _ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡ no _
 _ = refl
