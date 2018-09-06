@@ -157,7 +157,7 @@ either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 Given two numbers, it is straightforward to compute whether or not the
 first is less than or equal to the second.  We don't give the code for
 doing so here, but will return to this point in
-Chapter [Decidable]({{ site.baseurl }}{% link out/plfa/Decidable.md %}).
+Chapter [Decidable][plfa.Decidable].
 
 
 ## Properties of ordering relations
@@ -524,7 +524,7 @@ It is also monotonic with regards to addition and multiplication.
 Most of the above are considered in exercises below.  Irreflexivity
 requires negation, as does the fact that the three cases in
 trichotomy are mutually exclusive, so those points are deferred to
-Chapter [Negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}).
+Chapter [Negation][plfa.Negation].
 
 It is straightforward to show that `suc m ≤ n` implies `m < n`,
 and conversely.  One can then give an alternative derivation of the
@@ -546,7 +546,7 @@ Define `m > n` to be the same as `n < m`.
 You will need a suitable data declaration,
 similar to that used for totality.
 (We will show that the three cases are exclusive after we introduce
-[negation]({{ site.baseurl }}{% link out/plfa/Negation.md %}).)
+[negation][plfa.Negation].)
 
 #### Exercise `+-mono-<` {#plus-mono-less}
 
@@ -669,7 +669,7 @@ Show that the sum of two odd numbers is even.
 #### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that 
-Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
+Exercise [Bin][plfa.Naturals#Bin]
 defines a datatype of bitstrings representing natural numbers.
 \begin{code}
 data Bin : Set where
@@ -731,7 +731,7 @@ import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
 \end{code}
 In the standard library, `≤-total` is formalised in terms of
 disjunction (which we define in
-Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %})),
+Chapter [Connectives][plfa.Connectives]),
 and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than here,
 and more arguments are implicit.
 

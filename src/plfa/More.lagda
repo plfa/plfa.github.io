@@ -29,10 +29,10 @@ informal. We show how to formalise the first four constructs and leave
 the rest as an exercise for the reader.
 
 Our informal descriptions will be in the style of
-Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+Chapter [Lambda][plfa.Lambda],
 using named variables and a separate type relation,
 while our formalisation will be in the style of
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}),
+Chapter [DeBruijn][plfa.DeBruijn],
 using de Bruijn indices and inherently typed terms.
 
 By now, explaining with symbols should be more concise, more precise,

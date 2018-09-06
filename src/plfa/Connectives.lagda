@@ -838,9 +838,9 @@ The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to build triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
 other useful notations, such as `[_,_]` to construct a list of two elements in
-Chapter [Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})
+Chapter [Lists][plfa.Lists]
 and `Γ , A` to extend environments in
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+Chapter [DeBruijn][plfa.DeBruijn].
 The standard library `_⇔_` is similar to ours, but the one in the
 standard library is less convenient, since it is parameterised with
 respect to an arbitrary notion of equivalence.

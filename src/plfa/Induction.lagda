@@ -584,7 +584,7 @@ which is left as an exercise for the reader.
 
 Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
-[earlier]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#finite-creation).
+[earlier][plfa.Naturals#finite-creation]
 
 
 ## Associativity with rewrite
@@ -796,7 +796,7 @@ for all naturals `m`, `n`, and `p`.
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that 
-Exercise [Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin)
+Exercise [Bin][plfa.Naturals#Bin]
 defines a datatype of bitstrings representing natural numbers
 \begin{code}
 data Bin : Set where
