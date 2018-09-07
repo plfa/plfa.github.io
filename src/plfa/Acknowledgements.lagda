@@ -29,6 +29,7 @@ For pull requests:
 * Léo Gillot-Lamure
 * Zbigniew Stanasiuk 
 * Anish Tondwalkar
+* Spencer Whitt
 
 For answering questions on the Agda mailing list:
 * Guillaume Allais <guillaume.allais@ens-lyon.org>

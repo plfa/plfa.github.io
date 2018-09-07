@@ -32,6 +32,15 @@ The visible page appears at
 
     localhost:4000/<permalink>
 
+
+## Updates to agda2html
+
+Go to your clone of the agda2html repository, and run
+
+    $ git pull
+    $ stack install
+
+
 ## Unicode abbreviations
 
 
@@ -46,6 +55,7 @@ See
 [agda-input.el](https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194)
 for more details.
 
+
 ## How to use `agda-mode`
 
     ?            create hole
@@ -55,6 +65,7 @@ for more details.
     C-c C-space  fill in hole
 
 See [the emacs-mode docs](http://agda.readthedocs.io/en/latest/tools/emacs-mode.html) for more details.
+
 
 ## Markdown
 
@@ -84,6 +95,7 @@ You can check this worked:
 
     nothing added to commit but untracked files present (use "git add" to track)
     bruichladdich$
+
 
 ## Analytics
 

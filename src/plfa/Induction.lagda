@@ -586,7 +586,6 @@ Write out what is known about associativity of addition on each of the first fou
 days using a finite story of creation, as
 [earlier]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#finite-creation).
 
-
 ## Associativity with rewrite
 
 There is more than one way to skin a cat.  Here is a second proof of

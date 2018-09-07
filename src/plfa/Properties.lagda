@@ -1441,11 +1441,11 @@ false, give a counterexample.
 Suppose instead that we add a new term `foo` with the following
 reduction rules:
 
-  ------------------ β-foo₁
-  (λ x ⇒ ` x) —→ foo
+    ------------------ β-foo₁
+    (λ x ⇒ ` x) —→ foo
 
-  ----------- β-foo₂
-  foo —→ zero
+    ----------- β-foo₂
+    foo —→ zero
 
 Which of the following properties remain true in
 the presence of this rule?  For each one, write either
