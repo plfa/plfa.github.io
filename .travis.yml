@@ -32,6 +32,8 @@ before_install:
 - make travis-setup
 
 script:
+- agda --version
+- agda2html --version
 - make test
 
 before_deploy:
