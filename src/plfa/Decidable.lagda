@@ -36,7 +36,7 @@ open import plfa.Connectives using (_⇔_)
 
 ## Evidence vs Computation
 
-Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %})
+Recall that Chapter [Relations][plfa.Relations]
 defined comparison an inductive datatype, which provides _evidence_ that one number
 is less than or equal to another.
 \begin{code}
@@ -536,7 +536,7 @@ postulate
 #### Exercise `_iff_ `, `_⇔-dec_`
 
 Give analogues of the `_⇔_` operation from 
-Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}#iff),
+Chapter [Connectives][plfa.Connectives#iff],
 operation on booleans and decidables, and also show the corresponding erasure.
 \begin{code}
 postulate
