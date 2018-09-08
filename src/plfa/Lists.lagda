@@ -982,6 +982,7 @@ one given here, in that it is also parameterised on an equivalence relation.
 This chapter uses the following unicode.
 
     ∷  U+2237  PROPORTION  (\::)
-    ⊗  U+2297  CIRCLED TIMES  (\otimes)
+    ⊕  U+2295  CIRCLED PLUS (\oplus, \o+)
+    ⊗  U+2297  CIRCLED TIMES  (\otimes, \ox)
     ∈  U+2208  ELEMENT OF  (\in)
     ∉  U+2209  NOT AN ELEMENT OF  (\inn)
