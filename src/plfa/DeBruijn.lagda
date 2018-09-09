@@ -54,10 +54,10 @@ And here is its corresponding type derivation:
                ∋z = Z
 
 (These are both taken from Chapter
-[Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+[Lambda][plfa.Lambda]
 and you can see the corresponding derivation tree written out
 in full
-[here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#derivation).)
+[here][plfa.Lambda#derivation].)
 The two definitions are in close correspondence, where
 
   * `` `_ `` corresponds to `` ⊢` ``
@@ -110,7 +110,7 @@ typed terms, which in context `Γ` have type `A`.
 While these two choices fit well, they are independent.  One
 can use De Bruijn indices in raw terms, or (with more
 difficulty) have inherently typed terms with names.  In
-Chapter [Untyped]({{ site.baseurl }}{% link out/plfa/Untyped.md %},
+Chapter [Untyped][plfa.Untyped],
 we will introduce terms with De Bruijn indices that
 are inherently scoped but not typed.
 
@@ -407,7 +407,7 @@ lookup ∅       _        =  ⊥-elim impossible
 We intend to apply the function only when the natural is
 shorter than the length of the context, which we indicate by
 postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#impossible).
+[here][plfa.Lambda#impossible].
 
 Given the above, we can convert a natural to a corresponding
 De Bruijn index, looking up its type in the context.
@@ -436,9 +436,9 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ### Test examples
 
 We repeat the test examples from
-Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}).
+Chapter [Lambda][plfa.Lambda].
 You can find the 
-[here]({{ site.baseurl }}{% link out/plfa/Lambda.md %}/#derivation)
+[here][plfa.Lambda#derivation]
 for comparison.
 
 First, computing two plus two on naturals.
@@ -766,7 +766,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
 Here `zero` requires an implicit parameter to aid inference,
 much in the same way that `[]` did in
-[Lists]({{ site.baseurl }}{% link out/plfa/Lists.md %})).
+[Lists][plfa.Lists].
 
 
 ## Reduction

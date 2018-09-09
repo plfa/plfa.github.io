@@ -93,7 +93,7 @@ postulate
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 \end{code}
 Compare this with the result (`→-distrib-×`) in
-Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}).
+Chapter [Connectives][plfa.Connectives].
 
 #### Exercise `⊎∀-implies-∀⊎`
 
@@ -222,9 +222,7 @@ Indeed, the converse also holds, and the two together form an isomorphism.
 \end{code}
 The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
-[implication][implication].
-
-[implication]: {{ site.baseurl }}{% link out/plfa/Connectives.md %}/#implication
+[implication][plfa.Connectives#implication].
 
 #### Exercise `∃-distrib-⊎`
 
@@ -249,7 +247,7 @@ Does the converse hold? If so, prove; if not, explain why.
 ## An existential example
 
 Recall the definitions of `even` and `odd` from
-Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %}).
+Chapter [Relations][plfa.Relations].
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -410,9 +408,9 @@ Does the converse hold? If so, prove; if not, explain why.
 #### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
-[Bin]({{ site.baseurl }}{% link out/plfa/Naturals.md %}#Bin),
-[Bin-laws]({{ site.baseurl }}{% link out/plfa/Induction.md %}#Bin-laws), and
-[Bin-predicates]({{ site.baseurl }}{% link out/plfa/Relations.md %}#Bin-predicates)
+[Bin][plfa.Naturals#Bin],
+[Bin-laws][plfa.Induction#Bin-laws], and
+[Bin-predicates][plfa.Relations#Bin-predicates]
 define a datatype of bitstrings representing natural numbers.
 \begin{code}
 data Bin : Set where

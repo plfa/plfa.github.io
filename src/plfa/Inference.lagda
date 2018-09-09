@@ -10,9 +10,9 @@ module plfa.Inference where
 
 So far in our development, type derivations for the corresponding
 term have been provided by fiat.  
-In Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+In Chapter [Lambda][plfa.Lambda]
 type derivations were given separately from the term, while
-in Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %})
+in Chapter [DeBruijn][plfa.DeBruijn]
 the type derivation was inherently part of the term.
 
 In practice, one often writes down a term with a few decorations and
@@ -25,9 +25,9 @@ inference, which will be presented in this chapter.
 
 This chapter ties our previous developements together. We begin with
 a term with some type annotations, quite close to the raw terms of
-Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+Chapter [Lambda][plfa.Lambda],
 and from it we compute a term with inherent types, in the style of
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+Chapter [DeBruijn][plfa.DeBruijn].
 
 ## Introduction: Inference rules as algorithms {#algorithms}
 
@@ -250,7 +250,8 @@ open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; map; foldr; filter; length)
 open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.String using (String; _≟_; _++_)
+open import Data.String using (String; _++_)
+open import Data.String.Unsafe using (_≟_)
 open import Data.Product
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
   renaming (_,_ to ⟨_,_⟩)
@@ -304,7 +305,7 @@ Id = String
 \end{code}
 
 And so are contexts. (Recall that `Type` is imported from
-[DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).)
+[DeBruijn][plfa.DeBruijn].)
 \begin{code}
 data Context : Set where
   ∅     : Context
@@ -384,7 +385,7 @@ required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
 ## Bidirectional type checking
 
 The typing rules for variables are as in
-[Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}).
+[Lambda][plfa.Lambda].
 \begin{code}
 data _∋_⦂_ : Context → Id → Type → Set where
 
@@ -458,31 +459,31 @@ data _⊢_↓_ where
     → Γ ⊢ (M ↑) ↓ B
 \end{code}
 We follow the same convention as
-Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+Chapter [Lambda][plfa.Lambda],
 prefacing the constructor with `⊢` to derive the name of the
 corresponding type rule.
 
 The rules are similar to those in
-Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
+Chapter [Lambda][plfa.Lambda],
 modified to support synthesised and inherited types.
 The two new rules are those for `⊢↑` and `⊢↓`.
 The former both passes the type decoration as the inherited type and returns
 it as the synthesised type.  The latter takes the synthesised type and the
 inherited type and confirms they are identical --- it should remind you of
 the equality test in the application rule in the first
-[section]({{ site.baseurl }}{% link out/plfa/Inference.md %}/#algorithms).
+[section][plfa.Inference#algorithms].
 
 
 #### Exercise `bidirectional-ps`
 
 Extend the bidirectional type rules to include products and sums from
-Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+Chapter [More][plfa.More].
 
 
 #### Exercise `bidirectional-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+Chapter [More][plfa.More].
 
 
 ## Prerequisites
@@ -988,7 +989,7 @@ _ = refl
 From the evidence that a decorated term has the correct type it is
 easy to extract the corresponding inherently typed term.  We use the
 name `DB` to refer to the code in
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+Chapter [DeBruijn][plfa.DeBruijn].
 It is easy to define an _erasure_ function that takes evidence of a
 type judgement into the corresponding inherently typed term.
 
@@ -1043,21 +1044,21 @@ _ = refl
 \end{code}
 Thus, we have confirmed that bidirectional type inference
 converts decorated versions of the lambda terms from
-Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
+Chapter [Lambda][plfa.Lambda]
 to the inherently typed terms of
-Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
+Chapter [DeBruijn][plfa.DeBruijn].
 
 
 #### Exercise `inference-p`
 
 Extend bidirectional inference to include products from
-Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+Chapter [More][plfa.More].
 
 
 #### Exercise `inference-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More]({{ site.baseurl }}{% link out/plfa/More.md %}).
+Chapter [More][plfa.More].
 
 
 ## Bidirectional inference in Agda

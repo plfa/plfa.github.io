@@ -892,14 +892,12 @@ replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
 #### Exercise `¬Any≃All¬` (stretch)
 
 First generalise composition to arbitrary levels, using
-[universe polymorphism][unipoly].
+[universe polymorphism][plfa.Equality#unipoly].
 \begin{code}
 _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
   → (B → C) → (A → B) → A → C
 (g ∘′ f) x  =  g (f x)
 \end{code}
-
-[unipoly]: {{ site.baseurl }}{% link out/plfa/Equality.md %}#unipoly
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law.
 \begin{code}

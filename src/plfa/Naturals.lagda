@@ -271,7 +271,7 @@ all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
 will see how these are used below.  We take these as givens for now,
 but will see how they are defined in
-Chapter [Equality]({{ site.baseurl }}{% link out/plfa/Equality.md %}).
+Chapter [Equality][plfa.Equality].
 
 Agda uses underbars to indicate where terms appear in infix or mixfix
 operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
@@ -531,7 +531,7 @@ _ =
   ∎
 \end{code}
 We did not use the second equation at all, but it will be required
-if we try to subtract a smaller number from a larger one.
+if we try to subtract a larger number from a smaller one.
 \begin{code}
 _ =
   begin

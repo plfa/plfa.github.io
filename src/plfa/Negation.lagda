@@ -161,14 +161,14 @@ the other.
 #### Exercise `<-irreflexive`
 
 Using negation, show that
-[strict inequality]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#strict-inequality)
+[strict inequality][plfa.Relations#strict-inequality]
 is irreflexive, that is, `n < n` holds for no `n`.
 
 
 #### Exercise `trichotomy`
 
 Show that strict inequality satisfies
-[trichotomy]({{ site.baseurl }}{% link out/plfa/Relations.md %}/#trichotomy),
+[trichotomy][plfa.Relations#trichotomy],
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
 * `m < n`

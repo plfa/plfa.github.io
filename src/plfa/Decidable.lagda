@@ -36,7 +36,7 @@ open import plfa.Connectives using (_⇔_)
 
 ## Evidence vs Computation
 
-Recall that Chapter [Relations]({{ site.baseurl }}{% link out/plfa/Relations.md %})
+Recall that Chapter [Relations][plfa.Relations]
 defined comparison an inductive datatype, which provides _evidence_ that one number
 is less than or equal to another.
 \begin{code}
@@ -536,7 +536,7 @@ postulate
 #### Exercise `_iff_ `, `_⇔-dec_`
 
 Give analogues of the `_⇔_` operation from 
-Chapter [Connectives]({{ site.baseurl }}{% link out/plfa/Connectives.md %}#iff),
+Chapter [Connectives][plfa.Connectives#iff],
 operation on booleans and decidables, and also show the corresponding erasure.
 \begin{code}
 postulate
@@ -566,3 +566,5 @@ import Relation.Nullary.Sum using (_⊎-dec_)
     ∨  U+2228  LOGICAL OR (\or, \vee)
     ⊃  U+2283  SUPERSET OF (\sup)
     ᵇ  U+1D47  MODIFIER LETTER SMALL B  (\^b)
+    ⌊  U+230A  LEFT FLOOR (\cll)
+    ⌋  U+230B  RIGHT FLOOR (\clr)
