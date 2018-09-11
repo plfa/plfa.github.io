@@ -5,14 +5,14 @@
 
     <h2 class="footer-heading">{{ site.title | escape }}</h2>
 
-    {%- if site.authors -%}
     {%- for author in site.authors -%}
+    {%- if author.corresponding -%}
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
         <ul class="contact-list">
           <li class="p-name">{{ author.name | escape }}</li>
           {%- if author.email -%}
-          <li><a class="u-email" href="mailto:{{ author.email }}">{{ contributor.email }}</a></li>
+          <li><a class="u-email" href="mailto:{{ author.email }}">{{ author.email }}</a></li>
           {%- endif -%}
         </ul>
       </div>
@@ -27,35 +27,8 @@
         {%- endif -%}
       </div>
     </div>
-    {%- endfor -%}
-    {%- else -%}
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">
-            {%- if site.author -%}
-              {{ site.author | escape }}
-            {%- else -%}
-              {{ site.title | escape }}
-            {%- endif -%}
-            </li>
-            {%- if site.email -%}
-            <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-            {%- endif -%}
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2">
-        {%- assign author = site -%}
-        {%- include social.html -%}
-      </div>
-
-      <div class="footer-col footer-col-3">
-        <p>{{- site.description | escape -}}</p>
-      </div>
-    </div>
     {%- endif -%}
-
+    {%- endfor -%}
   </div>
 
 </footer>
