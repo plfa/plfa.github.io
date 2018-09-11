@@ -95,10 +95,3 @@ You can check this worked:
 
     nothing added to commit but untracked files present (use "git add" to track)
     bruichladdich$
-
-
-## Analytics
-
-[Google Analytics](http://analytics.google.com/analytics/web/)
-account `plfa (UA-125055580)`.
-(Currently only Wen and Phil have access.)
