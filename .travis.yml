@@ -15,6 +15,7 @@ cache:
   - $HOME/agda-master
   - $HOME/agda-stdlib-master
   - $HOME/agda2html-master
+  - $HOME/acknowledgements-master
 
 # Ensure necessary system libraries are present
 addons:
