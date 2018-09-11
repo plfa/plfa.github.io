@@ -35,6 +35,7 @@ before_install:
 script:
 - agda --version
 - agda2html --version
+- acknowledgements --version
 - make test
 
 before_deploy:
