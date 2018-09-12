@@ -39,7 +39,7 @@ script:
 - make test
 
 before_deploy:
-- acknowledgements _config.yml >> _config.yml
+- acknowledgements -i _config.yml >> _config.yml
 - make clean
 - rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile Notes.md
 
