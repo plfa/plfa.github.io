@@ -8,6 +8,7 @@ Thank you to:
   * The inventors of Agda, for a new playground.
   * The authors of Software Foundations, for inspiration.
 
+
 A special thank you, for inventing ideas on which
 this book is based, and for hand-holding:
   * Conor McBride
@@ -15,19 +16,21 @@ this book is based, and for hand-holding:
   * Ulf Norell
   * Andreas Abel
 
+<span class="force-end-of-list"></span>
 {%- if site.contributors -%}
-For contributions:
+<p>For pull requests big and small:</p>
 <ul>
 {%- for contributor in site.contributors -%}
   <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
 {%- endfor -%}
 </ul>
 {%- else -%}
-<!-- -->
 {%- endif -%}
+
 
 For a note showing how much more compact it is to avoid raw terms:
   * David Darais
+
 
 For answering questions on the Agda mailing list:
   * Guillaume Allais
