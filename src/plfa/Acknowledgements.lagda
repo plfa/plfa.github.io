@@ -18,7 +18,7 @@ this book is based, and for hand-holding:
 
 <span class="force-end-of-list"></span>
 {%- if site.contributors -%}
-<p>For pull requests big and small:</p>
+For pull requests big and small:
 <ul>
 {%- for contributor in site.contributors -%}
   <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
