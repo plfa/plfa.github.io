@@ -5,45 +5,43 @@ permalink : /Acknowledgements/
 ---
 
 Thank you to:
-* The inventors of Agda, for a new playground.
-* The authors of Software Foundations, for inspiration.
+  * The inventors of Agda, for a new playground.
+  * The authors of Software Foundations, for inspiration.
+
 
 A special thank you, for inventing ideas on which
 this book is based, and for hand-holding:
-* Conor McBride
-* James McKinna
-* Ulf Norell
-* Andreas Abel
+  * Conor McBride
+  * James McKinna
+  * Ulf Norell
+  * Andreas Abel
+
+<span class="force-end-of-list"></span>
+{%- if site.contributors -%}
+For pull requests big and small:
+<ul>
+{%- for contributor in site.contributors -%}
+  <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
+{%- endfor -%}
+</ul>
+{%- else -%}
+{%- endif -%}
+
 
 For a note showing how much more compact it is to avoid raw terms:
-* David Darais
+  * David Darais
 
-For pull requests:
-* Nathaniel Carroll
-* Vikraman Choudhury
-* Ben Darwin
-* Phil de Joux
-* koo5
-* Juhana Laurinharju
-* Jonathan Prieto-Cubides
-* Léo Gillot-Lamure
-* Zbigniew Stanasiuk 
-* Anish Tondwalkar
-* Spencer Whitt
 
 For answering questions on the Agda mailing list:
-* Guillaume Allais <guillaume.allais@ens-lyon.org>
-* Nils Anders Danielsson <nad@cse.gu.se>
-* Miëtek Bak <mietek@bak.io>
-* Gergő Érdi <gergo@erdi.hu>
-* Adam Sandberg Eriksson <adam@sandbergericsson.se>
-* David Janin <david.janin@labri.fr>
-* András Kovács <kovacsahun@hotmail.com>
-* Ulf Norell <ulf.norell@gmail.com>
-* Liam O'Connor <liamoc@cse.unsw.edu.au>
-* N. Raghavendra <nyraghu27132@gmail.com>
-* Roman Kireev <effectfully@gmail.com>
-* Amr A. Sabry <sabry@indiana.edu>
-
-For comments on the text:
-* [your name goes here]
+  * Guillaume Allais
+  * Nils Anders Danielsson
+  * Miëtek Bak
+  * Gergő Érdi
+  * Adam Sandberg Eriksson
+  * David Janin
+  * András Kovács
+  * Ulf Norell
+  * Liam O'Connor
+  * N. Raghavendra
+  * Roman Kireev
+  * Amr Sabry

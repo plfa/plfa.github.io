@@ -15,6 +15,7 @@ cache:
   - $HOME/agda-master
   - $HOME/agda-stdlib-master
   - $HOME/agda2html-master
+  - $HOME/acknowledgements-master
 
 # Ensure necessary system libraries are present
 addons:
@@ -34,9 +35,11 @@ before_install:
 script:
 - agda --version
 - agda2html --version
+- acknowledgements --version
 - make test
 
 before_deploy:
+- acknowledgements -i _config.yml >> _config.yml
 - make clean
 - rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile Notes.md
 

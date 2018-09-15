@@ -83,8 +83,8 @@ Checkout this repository with
 
 You can check this worked:
 
-    bruichladdich$ cd plfa.github.io
-    bruichladdich$ git status
+    $ cd plfa.github.io
+    $ git status
     On branch dev
     Your branch is up-to-date with 'origin/dev'.
 
@@ -94,11 +94,4 @@ You can check this worked:
     	out/
 
     nothing added to commit but untracked files present (use "git add" to track)
-    bruichladdich$
-
-
-## Analytics
-
-[Google Analytics](http://analytics.google.com/analytics/web/)
-account `plfa (UA-125055580)`.
-(Currently only Wen and Phil have access.)
+    $

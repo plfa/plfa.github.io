@@ -57,7 +57,8 @@ macos-setup:
 travis-setup:\
 	$(HOME)/agda-master/\
 	$(HOME)/agda-stdlib-master/\
-	$(HOME)/agda2html-master/
+	$(HOME)/agda2html-master/\
+	$(HOME)/acknowledgements-master/
 
 $(HOME)/agda-master/:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
@@ -76,6 +77,12 @@ $(HOME)/agda2html-master/:
 	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
 	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
 	cd $(HOME)/agda2html-master;\
+		stack install
+
+$(HOME)/acknowledgements-master/:
+	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
+	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
+	cd $(HOME)/acknowledgements-master;\
 		stack install
 
 .phony: serve build test clean clobber macos-setup travis-setup

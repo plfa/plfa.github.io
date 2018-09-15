@@ -6,6 +6,45 @@ permalink : /TSPL/
 
 ## Lectures
 
+* **Mon 17 Sep** [Naturals][plfa.Naturals]
+* **Wed 19 Sep** [Induction][plfa.Induction] 
+* **Fri 21 Sep** [Induction][plfa.Induction]
+* **Mon 24 Sep** [Relations][plfa.Relations] (Chad)
+* **Wed 26 Sep** [Relations][plfa.Relations] (Chad)
+* **Fri 28 Sep** (no lecture)
+* **Mon 1 Oct** [Equality][plfa.Equality]
+* **Wed 3 Oct** [Isomorphisms][plfa.Isomorphisms]
+* **Thu 4 Oct** _Assignment 1_
+* **Fri 5 Oct** [Connectives][plfa.Connectives]
+* **Mon 8 Oct** [Quantifiers][plfa.Quantifiers]
+* **Wed 10 Oct** [Negation][plfa.Negation]
+* **Fri 12 Oct** [Decidable][plfa.Decidable]
+* **Mon 15 Oct** [Lists][plfa.Lists]
+* **Wed 17 Oct** (no lecture)
+* **Thu 18 Oct** _Assignment 2_
+* **Fri 19 Oct** [Lists][plfa.Lists]
+* **Mon 22 Oct** [Lambda][plfa.Lambda]
+* **Wed 24 Oct** [Properties][plfa.Properties]
+* **Fri 26 Oct** (no lecture)
+* **Mon 29 Oct** [DeBruijn][plfa.DeBruijn]
+* **Wed 31 Oct** [More][plfa.More]
+* **Thu 1 Nov** _Assignment 3_
+* **Fri 2 Nov** (no lecture)
+* **Mon 5 Nov** [Bisimulation][plfa.Bisimulation]
+* **Wed 7 Nov** [Inference][plfa.Inference]
+* **Fri 9 Nov** (no lecture)
+* **Mon 12 Nov** [Untyped][plfa.Untyped]
+* **Wed 14 Nov** (no lecture)
+* **Thu 15 Nov** _Assignment 4_
+* **Fri 16 Nov** (no lecture)
+* **Mon 19 Nov** (tutorial only)
+* **Wed 21 Nov** (no lecture)
+* **Thu 22 Nov** _Assignment 5_
+* **Fri 23 Nov** (no lecture)
+* **Mon 26 Nov** Mock exam
+* **Wed 28 Nov** (no lecture)
+* **Fri 30 Nov** (no lecture)
+
 ## Assignments
 
 You must do _all_ the assignments labelled "(recommended)".
