@@ -1,6 +1,7 @@
 ---
 title     : "Naturals: Natural numbers"
 layout    : page
+prev      : /Prelude/
 permalink : /Naturals/
 next      : /Induction/
 ---
@@ -480,7 +481,7 @@ it can easily be inferred from the corresponding term.
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 
-#### Exercise `_^_` {#power}
+#### Exercise `_^_` (recommended) {#power}
 
 Define exponentiation, which is given by the following equations.
 
@@ -545,7 +546,7 @@ _ =
   ∎
 \end{code}
 
-#### Exercise `∸-examples` {#monus-examples}
+#### Exercise `∸-examples` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 

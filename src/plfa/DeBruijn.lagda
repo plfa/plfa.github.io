@@ -1,7 +1,9 @@
 ---
 title     : "DeBruijn: Inherently typed de Bruijn representation"
 layout    : page
+prev      : /Properties/
 permalink : /DeBruijn/
+next      : /More/
 ---
 
 \begin{code}

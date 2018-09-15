@@ -1,7 +1,9 @@
 ---
 title     : "More: Additional constructs of simply-typed lambda calculus"
 layout    : page
+prev      : /DeBruijn/
 permalink : /More/
+next      : /Bisimulation/
 ---
 
 \begin{code}

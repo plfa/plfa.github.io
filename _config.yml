@@ -10,7 +10,6 @@ description: >
 authors:
   - name: Philip Wadler
     email: wadler@inf.ed.ac.uk
-    github_username:  wadler
     corresponding: true
     github_username: wadler
   - name: Wen Kokke

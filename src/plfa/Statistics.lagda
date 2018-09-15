@@ -1,6 +1,7 @@
 ---
 title     : "Statistics: Line counts for each chapter"
 layout    : page
+prev      : /Fonts/
 permalink : /Statistics/
 ---
 

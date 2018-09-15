@@ -1,7 +1,9 @@
 ---
 title     : "Inference: Bidirectional type inference"
 layout    : page
+prev      : /Bisimulation/
 permalink : /Inference/
+next      : /Untyped/
 ---
 
 \begin{code}

@@ -39,10 +39,6 @@ Pull requests are encouraged.
   - [Inference: Bidirectional type inference]({{ site.baseurl }}{% link out/plfa/Inference.md %})
   - [Untyped: Untyped lambda calculus with full normalisation]({{ site.baseurl }}{% link out/plfa/Untyped.md %})
 
-## Additional material
-
-  - [SystemF: Inherently typed System F]({{ site.baseurl }}{% link out/plfa/SystemF.md %})
-
 ## Backmatter
 
   - [Acknowledgements]({{ site.baseurl }}{% link out/plfa/Acknowledgements.md %})

@@ -1,7 +1,9 @@
 ---
 title     : "Acknowledgements"
 layout    : page
+prev      : /Untyped/
 permalink : /Acknowledgements/
+next      : /Fonts/
 ---
 
 Thank you to:
@@ -15,17 +17,6 @@ this book is based, and for hand-holding:
   * James McKinna
   * Ulf Norell
   * Andreas Abel
-
-<span class="force-end-of-list"></span>
-{%- if site.contributors -%}
-For pull requests big and small:
-<ul>
-{%- for contributor in site.contributors -%}
-  <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
-{%- endfor -%}
-</ul>
-{%- else -%}
-{%- endif -%}
 
 
 For a note showing how much more compact it is to avoid raw terms:
@@ -45,3 +36,18 @@ For answering questions on the Agda mailing list:
   * N. Raghavendra
   * Roman Kireev
   * Amr Sabry
+
+
+<span class="force-end-of-list"></span>
+{%- if site.contributors -%}
+For pull requests big and small:
+<ul>
+{%- for contributor in site.contributors -%}
+  <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
+{%- endfor -%}
+<li>[Your name goes here]</li>
+</ul>
+{%- else -%}
+{%- endif -%}
+
+

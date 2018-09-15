@@ -580,7 +580,7 @@ judgements where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise `finite-+-assoc` {#finite-plus-assoc}
+#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
@@ -738,7 +738,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise `+-swap` {#plus-swap} 
+#### Exercise `+-swap` (recommended) {#plus-swap} 
 
 Show
 

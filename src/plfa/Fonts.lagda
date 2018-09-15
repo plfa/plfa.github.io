@@ -1,10 +1,11 @@
 ---
 title     : "Fonts"
 layout    : page
+prev      : /Acknowledgements/
 permalink : /Fonts/
 ---
 
-Test page for fonts. All vertical bars should line up.
+Test page for fonts. Preferably, all vertical bars should line up.
 
 \begin{code}
 {-
@@ -48,25 +49,20 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ⊢⊢⊣⊣|
 ∷∷∷∷|
 ∎∎∎∎|
+∅∅∅∅|
 ⦂⦂⦂⦂|
 ----|
 -}
 \end{code}
 
-Here are some characters that are exactly two spaces wide.
+Here are some characters that are often not monospaced.
+
 \begin{code}
 {-
 ----|
 😇😇|
 😈😈|
 ----|
--}
-\end{code}
-
-Here are some characters that are not used because they are not monospaced.
-
-\begin{code}
-{-
 ------------|
 ⟶⟶⟶⟶|
 ⟹⟹⟹⟹|

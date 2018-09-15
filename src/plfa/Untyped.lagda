@@ -1,7 +1,9 @@
 ---
 title     : "Untyped: Untyped lambda calculus with full normalisation"
 layout    : page
+prev      : /Inference/
 permalink : /Untyped/
+next      : /Acknowledgements/
 ---
 
 \begin{code}

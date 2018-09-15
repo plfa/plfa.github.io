@@ -531,7 +531,7 @@ and conversely.  One can then give an alternative derivation of the
 properties of strict inequality, such as transitivity, by directly
 exploiting the corresponding properties of inequality.
 
-#### Exercise `<-trans` {#less-trans}
+#### Exercise `<-trans` (recommended) {#less-trans}
 
 Show that strict inequality is transitive.
 
@@ -553,7 +553,7 @@ similar to that used for totality.
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
-#### Exercise `≤-iff-<` {#leq-iff-less}
+#### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
@@ -662,7 +662,7 @@ evidence that the first number is odd. If it is because it is the
 successor of an even number, then the result is odd because it is the
 successor of the sum of two even numbers, which is even.
 
-#### Exercise `o+o≡e` {#odd-plus-odd}
+#### Exercise `o+o≡e` (stretch) {#odd-plus-odd}
 
 Show that the sum of two odd numbers is even.
 
@@ -670,13 +670,7 @@ Show that the sum of two odd numbers is even.
 
 Recall that 
 Exercise [Bin][plfa.Naturals#Bin]
-defines a datatype of bitstrings representing natural numbers.
-\begin{code}
-data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
-\end{code}
+defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following
 
