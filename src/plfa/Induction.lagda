@@ -751,7 +751,7 @@ the following function from the standard library:
 
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
-#### Exercise `*-distrib-+` {#times-distrib-plus}
+#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -759,7 +759,7 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise `*-assoc` {#times-assoc}
+#### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
 

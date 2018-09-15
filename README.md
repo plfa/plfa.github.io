@@ -4,19 +4,6 @@ title: About
 permalink: /about/
 ---
 
-This book is an introduction to programming language theory, written
-in Agda.  The authors are [Wen Kokke](https://twitter.com/wenkokke)
-and [Philip Wadler](https://softwarefoundations.cis.upenn.edu/).
-
-Please send us comments!  The text is currrently being drafted. The
-first draft of Part I will be completed before the end of March
-2018. When that is done it will be announced here, and that would be
-an excellent time to comment on the first part.
-
-The book was inspired by [Software
-Foundations](https://softwarefoundations.cis.upenn.edu), but presents
-the material in a different way; see the [Preface](/Preface/).
-
 ## How to host literate code
 
 In directory `plfa.github.io/` run the following:
@@ -95,3 +82,7 @@ You can check this worked:
 
     nothing added to commit but untracked files present (use "git add" to track)
     $
+
+## Analytics
+
+Wen and Phil can track [Google Analytics](http://analytics.google.com/analytics/web/).
