@@ -13,7 +13,7 @@ permalink : /TSPL/
 * **Wed 26 Sep** [Relations][plfa.Relations] (Chad)
 * **Fri 28 Sep** (no lecture)
 * **Mon 1 Oct** [Equality][plfa.Equality]
-* **Wed 3 Oct** [Isomorphisms][plfa.Isomorphisms]
+* **Wed 3 Oct** [Isomorphism][plfa.Isomorphism]
 * **Thu 4 Oct** _Assignment 1_
 * **Fri 5 Oct** [Connectives][plfa.Connectives]
 * **Mon 8 Oct** [Quantifiers][plfa.Quantifiers]
@@ -47,12 +47,12 @@ permalink : /TSPL/
 
 ## Assignments
 
-You must do _all_ the assignments labelled "(recommended)".
+You must do _all_ the exercises labelled "(recommended)".
 
-Assignments labelled "(stretch)" are there to provide an extra challenge.
+Exercises labelled "(stretch)" are there to provide an extra challenge.
 You don't need to do all of these, but should attempt at least a few.
 
-Assignments without a label are optional, and may be done if you want
+Exercises without a label are optional, and may be done if you want
 some extra practice.
 
 * Assignment 1. Due 4pm Thursday 4 October (Week 3)
