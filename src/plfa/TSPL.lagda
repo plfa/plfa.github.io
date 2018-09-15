@@ -4,6 +4,13 @@ layout    : page
 permalink : /TSPL/
 ---
 
+## Staff
+
+* **Instructor** [Philip Wadler](http://homepages.inf.ed.ac.uk/wadler)
+* **Teaching assistants**
+  - [Wen Kokke](mailto:wen.kokke@ed.ac.uk)
+  - [Chad Nester](mailto:chad.nester@gmail.com)
+
 ## Lectures
 
 Lectures take place Monday, Wednesday, and Friday in AT 4.12.
@@ -86,14 +93,6 @@ Lectures take place Monday, Wednesday, and Friday in AT 4.12.
 </table>
 
 ## Assignments
-
-You must do _all_ the exercises labelled "(recommended)".
-
-Exercises labelled "(stretch)" are there to provide an extra challenge.
-You don't need to do all of these, but should attempt at least a few.
-
-Exercises without a label are optional, and may be done if you want
-some extra practice.
 
 * [Assignment 1][plfa.Assignment1] due 4pm Thursday 4 October (Week 3)
 * Assignment 2 due 4pm Thursday 18 October (Week 5)

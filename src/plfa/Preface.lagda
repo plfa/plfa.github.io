@@ -87,8 +87,10 @@ Most of the text was written during a sabbatical in the first half of 2018.
 
 ## A word on the exercises
 
-Each exercise is followed by a name, which is the name you should use when
-preparing an Agda file that solves the exercise.  Sometimes it is up to you to
-work out the type of the identifier, but sometimes we give it in the exercise.
-In some cases the type is bound to an identifier with a capital in its
-name, where the identifier you are to define has a small letter instead.
+Exercises labelled "(recommended)" are the ones students are
+required to do in the class taught at Edinburgh from this textbook.
+
+Exercises labelled "(stretch)" are there to provide an extra challenge.
+Few students do all of these, but most attempt at least a few.
+
+Exercises without a label are included for those who want extra practice.
