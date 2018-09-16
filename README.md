@@ -11,6 +11,7 @@ In directory `plfa.github.io/` run the following:
     $ make clobber              (remove all files before rebuilding system)
     $ make macos-setup          (might need sudo, but try it without first)
     $ make build                (builds lagda->markdown and website)
+    $ make test                 (checks all links are valid)
     $ make build-incremental    (builds lagda->markdown and website using incremental)
     $ make server-start         (starts server in detached mode)
     $ make server-stop          (stops the server, uses pkill)
@@ -18,6 +19,12 @@ In directory `plfa.github.io/` run the following:
 The visible page appears at
 
     localhost:4000/<permalink>
+
+
+## Travis
+
+Travis performs continuous integration (CI), generating web pages from github.
+View error messages at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
 
 
 ## Updates to agda2html
@@ -29,7 +36,6 @@ Go to your clone of the agda2html repository, and run
 
 
 ## Unicode abbreviations
-
 
     \to    →
     \u+    ⊎
