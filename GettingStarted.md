@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Setting up Agda for PLFA
-permalink: /Dice/
+permalink: /GettingStarted/
 ---
 
 Download the latest version of Programming Language Foundations in Agda from Github:

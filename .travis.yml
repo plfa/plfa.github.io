@@ -8,7 +8,6 @@ cache:
   bundler: true
   timeout: 1500
   directories:
-  - out/
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
