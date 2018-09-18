@@ -13,7 +13,7 @@ permalink : /TSPL/
 
 ## Lectures
 
-Lectures take place Monday, Wednesday, and Friday in AT 4.12.
+Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.07 and AT 4.12.)
 * **9.00--9.50am** Lecture
 * **10.00--10.50am** Tutorial
 
