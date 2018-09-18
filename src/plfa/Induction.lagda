@@ -813,8 +813,8 @@ Consider the following laws, where `n` ranges over naturals and `x`
 over bitstrings.
 
     from (inc x) ≡ suc (from x)
-    to (from n) ≡ n
-    from (to x) ≡ x
+    to (from x) ≡ x
+    from (to n) ≡ n
 
 For each law: if it holds, prove; if not, give a counterexample.
 
