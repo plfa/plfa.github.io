@@ -94,7 +94,7 @@ Lectures take place Monday, Wednesday, and Friday in AT 4.12.
 
 ## Assignments
 
-* [Assignment 1][plfa.Assignment1] due 4pm Thursday 4 October (Week 3)
+* [Assignment 1](/Assignment1/) due 4pm Thursday 4 October (Week 3)
 * Assignment 2 due 4pm Thursday 18 October (Week 5)
 * Assignment 3 due 4pm Thursday 1 November (Week 7)
 * Assignment 4 due 4pm Thursday 15 November (Week 9)
