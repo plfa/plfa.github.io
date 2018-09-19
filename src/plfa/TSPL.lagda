@@ -6,14 +6,15 @@ permalink : /TSPL/
 
 ## Staff
 
-* **Instructor** [Philip Wadler](http://homepages.inf.ed.ac.uk/wadler)
+* **Instructor**
+    [Philip Wadler](http://homepages.inf.ed.ac.uk/wadler)
 * **Teaching assistants**
   - [Wen Kokke](mailto:wen.kokke@ed.ac.uk)
   - [Chad Nester](mailto:chad.nester@gmail.com)
 
 ## Lectures
 
-Lectures take place Monday, Wednesday, and Friday in AT 4.12.
+Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.07 and AT 4.12.)
 * **9.00--9.50am** Lecture
 * **10.00--10.50am** Tutorial
 
@@ -94,8 +95,11 @@ Lectures take place Monday, Wednesday, and Friday in AT 4.12.
 
 ## Assignments
 
-* [Assignment 1](/Assignment1/) due 4pm Thursday 4 October (Week 3)
+For instructions on how to set up Agda for the assignments, see [here](/GettingStarted/).
+
+* [Assignment 1][plfa.Assignment1] due 4pm Thursday 4 October (Week 3)
 * Assignment 2 due 4pm Thursday 18 October (Week 5)
 * Assignment 3 due 4pm Thursday 1 November (Week 7)
 * Assignment 4 due 4pm Thursday 15 November (Week 9)
 * Assignment 5 due 4pm Thursday 22 November (Week 10)
+
