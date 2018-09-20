@@ -531,6 +531,53 @@ the main proposition first, and the equations required to do so
 will suggest what lemmas to prove.
 
 
+## Our first corollary: rearranging {#sections}
+
+We can apply associativity to rearrange parentheses however we like.
+Here is an example.
+\begin{code}
++-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
++-rearrange m n p q =
+  begin
+    (m + n) + (p + q)
+  ≡⟨ +-assoc m n (p + q) ⟩
+    m + (n + (p + q))
+  ≡⟨ cong (m +_) (sym (+-assoc n p q)) ⟩
+    m + ((n + p) + q)
+  ≡⟨ sym (+-assoc m (n + p) q) ⟩
+    (m + (n + p)) + q
+  ∎
+\end{code}
+No induction is required, we simply apply associativity twice.
+A few points are worthy of note.
+
+First, addition associates to the left, so `m + (n + p) + q`
+stands for `(m + (n + p)) + q`.
+
+Second, we use `sym` to interchange the sides of an equation.
+Proposition `+-assoc n p q` shifts parentheses from right to left:
+
+    (n + p) + q ≡ n + (p + q)
+
+To shift them the other way, we use `sym (+-assoc m n p)`:
+
+    n + (p + q) ≡ (n + p) + q
+
+In general, if `e` provides evidence for `x ≡ y` then `sym e` provides
+evidence for `y ≡ x`.
+
+Third, Agda supports a variant of the _section_ notation introduced by
+Richard Bird.  We write `(x +_)` for the function that applied to `y`
+returns `x + y`.  Thus, applying the congruence `cong (m +_)` takes
+the above equation into
+
+    m + (n + (p + q)) ≡ m + ((n + p) + q)
+
+Similarly, we write `(_+ x)` for the function that applied to `y`
+returns `y + x`; the same works for any infix operator.
+
+
+
 ## Creation, one last time
 
 Returning to the proof of associativity, it may be helpful to view the inductive
@@ -746,10 +793,7 @@ Show
 
 for all naturals `m`, `n`, and `p`. No induction is needed,
 just apply the previous results which show addition
-is associative and commutative.  You may need to use
-the following function from the standard library:
-
-    sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
+is associative and commutative.
 
 #### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
