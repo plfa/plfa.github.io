@@ -102,3 +102,4 @@ For instructions on how to set up Agda for the assignments, see [here](/GettingS
 * Assignment 3 due 4pm Thursday 1 November (Week 7)
 * Assignment 4 due 4pm Thursday 15 November (Week 9)
 * Assignment 5 due 4pm Thursday 22 November (Week 10)
+
