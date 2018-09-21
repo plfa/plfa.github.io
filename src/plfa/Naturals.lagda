@@ -411,8 +411,8 @@ the equations in an order that makes sense to the reader.
 Here `2 + 3 ≡ 5` is a type, and the chains of equations (and also
 `refl`) are terms of the given type; alternatively, one can think of
 each term as _evidence_ for the assertion `2 + 3 ≡ 5`.  This duality
-of interpretation---of a type as a proposition, and of a term as
-evidence---is central to how we formalise concepts in Agda, and will
+of interpretation -- of a type as a proposition, and of a term as
+evidence -- is central to how we formalise concepts in Agda, and will
 be a running theme throughout this book.
 
 Note that when we use the word _evidence_ it is nothing equivocal.  It
@@ -625,12 +625,10 @@ definition to equivalent inference rules for judgements about equality.
 
 Here we assume we have already defined the infinite set of natural
 numbers, specifying the meaning of the judgment `n : ℕ`.  The first
-inference rule is the base case, and corresponds to the first line of
-the definition.  It asserts that if `n` is a natural number then
-adding zero to it gives `n`.  The second inference rule is the
-inductive case, and corresponds to the second line of the
-definition. It asserts that if adding `m` and `n` gives `p`, then
-adding `suc m` and `n` gives `suc p`.
+inference rule is the base case.  It asserts that if `n` is a natural 
+number then adding zero to it gives `n`.  
+The second inference rule is the inductive case. It asserts that if 
+adding `m` and `n` gives `p`, then adding `suc m` and `n` gives `suc p`.
 
 Again we resort to a creation story, where this time we are
 concerned with judgements about addition.
