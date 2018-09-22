@@ -34,6 +34,7 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
+open import plfa.Relations using (_<_; z<s; s<s)
 \end{code}
 
 ## Naturals
@@ -143,6 +144,11 @@ is associative and commutative.  You may need to use
 the following function from the standard library:
 
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
+
+\begin{code}
+swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
+swap m n p rewrite sym (+-assoc m n p) | +-comm m n | +-assoc n m p = {!!}
+\end{code}
 
 #### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 

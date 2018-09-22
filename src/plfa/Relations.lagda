@@ -101,6 +101,8 @@ _ = s≤s (s≤s z≤n)
 \end{code}
 
 
+
+
 ## Implicit arguments
 
 This is our first use of implicit arguments.  In the definition of
