@@ -175,11 +175,8 @@ and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `++-assoc xs ys zs`.
 
-Agda supports a variant of the _section_ notation introduced by Richard Bird.
-If `_⊕_` is an arbitrary binary operator, we
-write `(x ⊕_)` for the function which applied to `y` returns `x ⊕ y`, and
-we write `(_⊕ y)` for the function which applied to `x` also returns `x ⊕ y`.
-Applying the congruence `cong (x ∷_)` promotes the inductive hypothesis
+Recall that Agda supports [sections][plfa.Induction#sections].
+Applying `cong (x ∷_)` promotes the inductive hypothesis
 
     xs ++ (ys ++ zs) ≡ (xs ++ ys) ++ zs
 
