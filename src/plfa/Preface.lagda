@@ -7,10 +7,10 @@ next      : /Naturals/
 ---
 
 The most profound connection between logic and computation is a pun.
-The doctrine of Propositions as Types asserts that a certain kind of formal
-structure may be read in two ways: either as a proposition in logic or
-as a type in computing.  Further, a related structure may be read as
-either the proof of the proposition or as a programme of the
+The doctrine of Propositions as Types asserts that a certain kind of
+formal structure may be read in two ways: either as a proposition in
+logic or as a type in computing.  Further, a related structure may be
+read as either the proof of the proposition or as a programme of the
 corresponding type.  Further still, simplification of proofs
 corresponds to evaluation of programs.
 
@@ -19,6 +19,20 @@ parsed as "(Programming Language) Foundations in Agda" or "Programming
 (Language Foundations) in Agda" — the specifications we will write in
 the proof assistant Agda both describe programming languages and are
 themselves programmes.
+
+The book is aimed at students in the last year of an undergraduate
+honours programme or the first year of a master or doctorate degree.
+It aims to teach the fundamentals of operational semantics of
+programming languages, with simply-typed lambda calculus as the
+central example.  The textbook is written as a literate script in
+Agda.  The hope is that using a proof assistant will make the
+development more concrete and accessible to students, and give them
+rapid feedback to find and correct misaprehensions.
+
+The book is broken into two parts. The first part, Logical
+Foundations, develops the needed formalisms.  The second part,
+Programming Language Foundations, introduces basic methods of
+operational semantics.
 
 ## Personal remarks
 

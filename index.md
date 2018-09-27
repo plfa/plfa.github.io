@@ -4,13 +4,11 @@ layout         : home
 ---
 
 This book is an introduction to programming language theory using the
-proof assistant Agda.  The authors are [Wen Kokke][wen] and
-[Philip Wadler][phil].
+proof assistant Agda.
 
-Please send us comments!  Comments on all matters---organisation,
-material we should add, material we should remove, parts that require
-better explanation, good exercises, errors, and typos---are welcome.
-Pull requests are encouraged.
+Comments on all matters---organisation, material to add, material to
+remove, parts that require better explanation, good exercises, errors,
+and typos---are welcome.  Pull requests are encouraged.
 
 ## Front matter
 
