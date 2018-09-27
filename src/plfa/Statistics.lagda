@@ -6,31 +6,31 @@ permalink : /Statistics/
 ---
 
 Total number of lines and number of lines of Agda code in each chapter
-(as of 2 July 2018).
+(as of 27 September 2018).
 
                                 total   code
                                 -----   ----
-    Preface                       92       0
+    Preface                      110       0
 
-    Naturals                     900      86
-    Induction                    770     107
-    Relations                    608      93
-    Equality                     595     128
-    Isomorphism                  403     170
-    Connectives                  827     243
-    Negation                     354      47
-    Quantifiers                  390      79
-    Lists                        893     412
-    Decidable                    566     170
+    Naturals                     951      90
+    Induction                    886     122
+    Relations                    745     164
+    Equality                     703     197
+    Isomorphism                  481     217
+    Connectives                  860     276
+    Negation                     365      48
+    Quantifiers                  456     109
+    Lists                        984     459
+    Decidable                    570     178
 
-    Lambda                      1304     389
-    Properties                  1539     568
-    DeBruijn                    1363     635
-    More                         675     570
-    Bisimulation                 151     110
-    Inference                    431     350
-    Untyped                      362     281
+    Lambda                      1341     408
+    Properties                  1512     539
+    DeBruijn                    1325     621
+    More                        1220     560
+    Bisimulation                 468      98
+    Inference                   1084     353
+    Untyped                      742     327
 
-    Acknowledgements              44       0
-    Fonts                         78      59
-    Statistics                    34       0
+    Acknowledgements              53       0
+    Fonts                         76      60
+    Statistics                    36       0
