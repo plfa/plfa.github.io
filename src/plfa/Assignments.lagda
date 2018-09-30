@@ -47,23 +47,28 @@ some extra practice.
     - `o+o≡e` (recommended)
     - `Bin-predicates` (stretch)
 
-* Assignment 2. Due 4pm Thursday 18 October (Week 5)
+* [Assignment 2][plfa.Assignment2]. Due 4pm Thursday 18 October (Week 5)
 
   + Equality
     - `≤-reasoning` (stretch)
 
   + Isomorphism
     - `≃-implies-≲`
+    - `_⇔_` (recommended)
     - `Bin-embedding` (stretch)
 
   + Connectives
+    - `⇔≃×` (recommended)
+    - `⊎-comm` (recommended)
+    - `⊎-assoc`
+    - `⊥-identityˡ` (recommended)
+    - `⊥-identityʳ`
     - `⊎-weak-×` (recommended)
-    - `⊎×-implies-×⊎` (recommended)
-    - `_⇔_` (recommended)
+    - `⊎×-implies-×⊎`
 
   + Negation
     - `<-irreflexive` (recommended)
-    - `trichotomy` (recommended)
+    - `trichotomy`
     - `⊎-dual-×` (recommended)
     - `Classical` (stretch)
     - `Stable` (stretch)

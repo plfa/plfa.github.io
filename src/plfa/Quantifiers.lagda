@@ -84,7 +84,7 @@ will stick with the name dependent function, because (as we will see)
 dependent product is ambiguous.
 
 
-#### Exercise `∀-distrib-×`
+#### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction.
 \begin{code}
@@ -224,7 +224,7 @@ The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
 [implication][plfa.Connectives#implication].
 
-#### Exercise `∃-distrib-⊎`
+#### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction.
 \begin{code}
@@ -392,7 +392,7 @@ The two inverse proofs are straightforward, where one direction
 requires extensionality.
 
 
-#### Exercise `∃¬-implies-¬∀`
+#### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal.
 \begin{code}

@@ -227,6 +227,12 @@ For example, the type `(ℕ × Bool) × Tri` is _not_ the same as `ℕ ×
 instance `((1 , true) , aa)`, which is a member of the former,
 corresponds to `(1 , (true , aa))`, which is a member of the latter.
 
+#### Exercise `⇔≃×` (recommended)
+
+Show that `A ⇔ B` as defined [earlier][plfa.Isomorphism#iff]
+is isomorphic to `(A → B) × (B → A)`.
+
+
 ## Truth is unit
 
 Truth `⊤` always holds. We formalise this idea by
@@ -407,71 +413,13 @@ possible arguments of type `Bool ⊎ Tri`:
 Sum on types also shares a property with sum on numbers in that it is
 commutative and associative _up to isomorphism_.
 
-For commutativity, the `to` function swaps the two constructors,
-taking `inj₁ x` to `inj₂ x`, and `inj₂ y` to `inj₁ y`; and the `from`
-function does the same (up to renaming). Replacing the definition of
-`from∘to` by `λ w → refl` will not work; and similarly for `to∘from`.
-\begin{code}
-⊎-comm : ∀ {A B : Set} → (A ⊎ B) ≃ (B ⊎ A)
-⊎-comm = record
-  { to       =  λ{ (inj₁ x) → (inj₂ x)
-                 ; (inj₂ y) → (inj₁ y)
-                 }
-  ; from     =  λ{ (inj₁ y) → (inj₂ y)
-                 ; (inj₂ x) → (inj₁ x)
-                 }
-  ; from∘to  =  λ{ (inj₁ x) → refl
-                 ; (inj₂ y) → refl
-                 }
-  ; to∘from  =  λ{ (inj₁ y) → refl
-                 ; (inj₂ x) → refl
-                 }
-  }
-\end{code}
-Being _commutative_ is different from being _commutative up to
-isomorphism_.  Compare the two statements:
+#### Exercise `⊎-comm` (recommended)
 
-    m + n ≡ n + m
-    A ⊎ B ≃ B ⊎ A
+Show sum is commutative up to isomorphism.
 
-In the first case, we might have that `m` is `2` and `n` is `3`, and
-both `m + n` and `n + m` are equal to `5`.  In the second case, we
-might have that `A` is `Bool` and `B` is `Tri`, and `Bool ⊎ Tri` is
-*not* the same as `Tri ⊎ Bool`.  But there is an isomorphism between
-the two types.  For instance, `inj₁ true`, which is a member of the
-former, corresponds to `inj₂ true`, which is a member of the latter.
+#### Exercise `⊎-assoc`
 
-For associativity, the `to` function reassociates, and the `from` function does
-the inverse.  Again, the evidence of left and right inverse requires
-matching against a suitable pattern to enable simplification.
-\begin{code}
-⊎-assoc : ∀ {A B C : Set} → (A ⊎ B) ⊎ C ≃ A ⊎ (B ⊎ C)
-⊎-assoc = record
-  { to       =  λ{ (inj₁ (inj₁ x)) → (inj₁ x)
-                 ; (inj₁ (inj₂ y)) → (inj₂ (inj₁ y))
-                 ; (inj₂ z)        → (inj₂ (inj₂ z))
-                 }
-  ; from     =  λ{ (inj₁ x)        → (inj₁ (inj₁ x))
-                 ; (inj₂ (inj₁ y)) → (inj₁ (inj₂ y))
-                 ; (inj₂ (inj₂ z)) → (inj₂ z)
-                 }
-  ; from∘to  =  λ{ (inj₁ (inj₁ x)) → refl
-                 ; (inj₁ (inj₂ y)) → refl
-                 ; (inj₂ z)        → refl
-                 }
-  ; to∘from  =  λ{ (inj₁ x)        → refl
-                 ; (inj₂ (inj₁ y)) → refl
-                 ; (inj₂ (inj₂ z)) → refl
-                 }
-  }
-\end{code}
-
-Again, being _associative_ is not the same as being _associative
-up to isomorphism_.  For example, the type `(ℕ + Bool) + Tri`
-is _not_ the same as `ℕ + (Bool + Tri)`. But there is an
-isomorphism between the two types. For instance `inj₂ (inj₁ true)`,
-which is a member of the former, corresponds to `inj₁ (inj₂ true)`,
-which is a member of the latter.
+Show sum is associative up to ismorphism. 
 
 ## False is empty
 
@@ -526,51 +474,15 @@ Here again the absurd pattern `()` indicates that no value can match
 type `⊥`.
 
 For numbers, zero is the identity of addition. Correspondingly, empty
-is the identity of sums _up to isomorphism_.  For left identity, the
-`to` function observes that `inj₁ ()` can never arise, and takes `inj₂
-x` to `x`, and the `from` function does the inverse.  The evidence of
-left inverse requires matching against a suitable pattern to enable
-simplification.
-\begin{code}
-⊥-identityˡ : ∀ {A : Set} → (⊥ ⊎ A) ≃ A
-⊥-identityˡ =
-  record
-    { to       =  λ{ (inj₁ ())
-                   ; (inj₂ x) → x
-                   }
-    ; from     =  λ{ x → inj₂ x }
-    ; from∘to  =  λ{ (inj₁ ())
-                   ; (inj₂ x) → refl
-                   }
-    ; to∘from  =  λ{ x → refl }
-    }
-\end{code}
+is the identity of sums _up to isomorphism_.
 
-Having an _identity_ is different from having an identity
-_up to isomorphism_.  Compare the two statements:
+#### Exercise `⊥-identityˡ` (recommended)
 
-    0 + m ≡ m
-    ⊥ ⊎ A ≃ A
+Show zero is the left identity of addition.
 
-In the first case, we might have that `m` is `2`, and both `0 + m` and
-`m` are equal to `2`.  In the second case, we might have that `A` is
-`Bool`, and `⊥ ⊎ Bool` is _not_ the same as `Bool`.  But there is an
-isomorphism between the two types.  For instance, `inj₂ true`, which is
-a member of the former, corresponds to `true`, which is a member of
-the latter.
+#### Exercise `⊥-identityʳ`
 
-Right identity follows from commutativity of sum and left identity.
-\begin{code}
-⊥-identityʳ : ∀ {A : Set} → (A ⊎ ⊥) ≃ A
-⊥-identityʳ {A} =
-  ≃-begin
-    (A ⊎ ⊥)
-  ≃⟨ ⊎-comm ⟩
-    (⊥ ⊎ A)
-  ≃⟨ ⊥-identityˡ ⟩
-    A
-  ≃-∎
-\end{code}
+Show zero is the right identity of addition. 
 
 ## Implication is function {#implication}
 
@@ -652,7 +564,7 @@ Corresponding to the law
 
     (p ^ n) ^ m  ≡  p ^ (n * m)
 
-(or, if you prefer, `(pⁿ)ᵐ ≡ pⁿᵐ`), we have the isomorphism
+we have the isomorphism
 
     A → (B → C)  ≃  (A × B) → C
 
@@ -689,7 +601,7 @@ Corresponding to the law
 
     p ^ (n + m) = (p ^ n) * (p ^ m)
 
-(or, if you prefer, `pᵐ⁺ⁿ ≡ pᵐpⁿ`), we have the isomorphism
+we have the isomorphism
 
     (A ⊎ B) → C  ≃  (A → C) × (B → C)
 
@@ -711,7 +623,7 @@ Corresponding to the law
 
     (p * n) ^ m = (p ^ m) * (n ^ m)
 
-(or, if you prefer, `(pn)ᵐ ≡ pᵐnᵐ`), we have the isomorphism
+we have the isomorphism
 
     A → B × C  ≃  (A → B) × (A → C)
 
@@ -790,9 +702,9 @@ embedding, revealing a sense in which one of these laws is "more
 true" than the other.
 
 
-#### Exercise `⊎-weak-×`
+#### Exercise `⊎-weak-×` (recommended)
 
-Show that the following properties hold.
+Show that the following property holds.
 \begin{code}
 postulate
   ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
@@ -809,19 +721,6 @@ postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 \end{code}
 Does the converse hold? If so, prove; if not, give a counterexample.
-
-
-#### Exercise `_⇔_` {#iff}
-
-Define equivalence of propositions (also known as "if and only if") as follows.
-\begin{code}
-record _⇔_ (A B : Set) : Set where
-  field
-    to   : A → B
-    from : B → A
-\end{code}
-Show that equivalence is reflexive, symmetric, and transitive, and that
-`A ⇔ B` is isomorphic to `(A → B) × (B → A)`.
 
 
 ## Standard library

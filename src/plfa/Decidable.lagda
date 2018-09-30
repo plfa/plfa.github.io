@@ -21,7 +21,7 @@ Here we explore the relation between these choices.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc; _<_)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
@@ -31,7 +31,8 @@ open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; []; _∷_; foldr; map)
 open import Function using (_∘_)
-open import plfa.Connectives using (_⇔_)
+open import plfa.Relations using (_<_; z<s; s<s)
+open import plfa.Isomorphism using (_⇔_)
 \end{code}
 
 ## Evidence vs Computation
@@ -286,7 +287,7 @@ but instead use inline anonymous functions then Agda may have
 trouble normalising evidence of negation.)
 
 
-#### Exercise `_<?_`
+#### Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality.
 \begin{code}
@@ -533,7 +534,7 @@ postulate
   ⊃-→ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ⊃ ⌊ y ⌋ ≡ ⌊ x →-dec y ⌋  
 \end{code}
   
-#### Exercise `_iff_ `, `_⇔-dec_`
+#### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from 
 Chapter [Connectives][plfa.Connectives#iff],

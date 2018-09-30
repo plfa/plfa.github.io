@@ -433,6 +433,17 @@ postulate
     → A ≲ B  
 \end{code}
 
+#### Exercise `_⇔_` {#iff}
+
+Define equivalence of propositions (also known as "if and only if") as follows.
+\begin{code}
+record _⇔_ (A B : Set) : Set where
+  field
+    to   : A → B
+    from : B → A
+\end{code}
+Show that equivalence is reflexive, symmetric, and transitive.
+
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises

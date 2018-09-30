@@ -158,7 +158,7 @@ the other.
 
 
 
-#### Exercise `<-irreflexive`
+#### Exercise `<-irreflexive` (recommended)
 
 Using negation, show that
 [strict inequality][plfa.Relations#strict-inequality]
@@ -179,7 +179,7 @@ Here "exactly one" means that one of the three must hold, and each implies the
 negation of the other two.
 
 
-#### Exercise `⊎-dual-×`
+#### Exercise `⊎-dual-×` (recommended)
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
@@ -188,11 +188,11 @@ version of De Morgan's Law.
 
 This result is an easy consequence of something we've proved previously.
 
-Is there also a term of the following type?
+Do we also have the following?
 
     ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
 
-If so, prove; if not, explain why.
+If so, prove; if not, give a variant that does hold.
 
 
 ## Intuitive and Classical logic
