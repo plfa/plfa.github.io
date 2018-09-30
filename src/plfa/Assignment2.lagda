@@ -293,12 +293,12 @@ Recall that Exercises
 [Bin-laws][plfa.Induction#Bin-laws], and
 [Bin-predicates][plfa.Relations#Bin-predicates]
 define a datatype of bitstrings representing natural numbers.
-\begin{code}
-data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
-\end{code}
+
+    data Bin : Set where
+      nil : Bin
+      x0_ : Bin → Bin
+      x1_ : Bin → Bin
+
 And ask you to define the following functions and predicates.
 
     to   : ℕ → Bin

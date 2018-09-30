@@ -531,13 +531,12 @@ postulate
   ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
   ∨-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
   not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
-  ⊃-→ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ⊃ ⌊ y ⌋ ≡ ⌊ x →-dec y ⌋  
 \end{code}
   
 #### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from 
-Chapter [Connectives][plfa.Connectives#iff],
+Chapter [Isomorphism][plfa.Isomorphism#iff],
 operation on booleans and decidables, and also show the corresponding erasure.
 \begin{code}
 postulate
