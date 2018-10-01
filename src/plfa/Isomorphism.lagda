@@ -490,3 +490,4 @@ This chapter uses the following unicode.
     λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
     ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~-)
     ≲  U+2272  LESS-THAN OR EQUIVALENT TO (\<~)
+    ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>)

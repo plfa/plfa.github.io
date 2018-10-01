@@ -396,7 +396,7 @@ even-comm : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
-even-comm m n ev  rewrite +-comm m n  =  ev
+even-comm m n ev  rewrite +-comm n m  =  ev
 \end{code}
 Here `ev` ranges over evidence that `even (m + n)` holds, and we show
 that it is also provides evidence that `even (n + m)` holds.  In
@@ -471,8 +471,8 @@ even-comm′ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
-even-comm′ m n ev with   m + n  | +-comm m n
-...                  | .(n + m) | refl        = ev
+even-comm′ m n ev with     m + n  | +-comm m n 
+...                  |   .(n + m) | refl         = ev
 \end{code}
 The first clause asserts that `m + n` and `n + m` are identical, and
 the second clause justifies that assertion with evidence of the
