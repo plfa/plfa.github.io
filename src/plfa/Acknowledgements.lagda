@@ -38,6 +38,16 @@ For answering questions on the Agda mailing list:
   * Amr Sabry
 
 
+Courses taught from the textbook:
+  * Philip Wadler, University of Edinburgh,
+    [2018](http://plfa.inf.ed.ac.uk/TSPL/)
+  * David Darais, University of Vermont,
+    [2018](http://david.darais.com/courses/uvm-cs295A-fa2018/)
+
+
+For support:
+  * EPSRC Programme Grant EP/K034413/1
+
 <span class="force-end-of-list"></span>
 {%- if site.contributors -%}
 For pull requests big and small:
