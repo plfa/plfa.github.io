@@ -248,7 +248,7 @@ We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
 Let's unpack this code.  The signature states that we are
-defining the identifier `+-assoc` which provide evidence for the
+defining the identifier `+-assoc` which provides evidence for the
 proposition:
 
     ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
