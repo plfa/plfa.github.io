@@ -54,10 +54,29 @@ for more details.
     ?            create hole
     {!...!}      create hole
     C-c C-l      load buffer
-    C-c C-c x    split on variable x 
-    C-c C-space  fill in hole
 
-See [the emacs-mode docs](http://agda.readthedocs.io/en/latest/tools/emacs-mode.html) for more details.
+Command to give when in a hole:
+
+    C-c C-c x    split on variable x
+    C-c C-space  fill in hole
+	C-c C-r      refine with constructor
+	C-c C-a      automatically fill in hole
+	C-c C-,      Goal type and context
+	C-c C-.      Goal type, context, and inferred type
+
+See
+[the emacs-mode docs](http://agda.readthedocs.io/en/latest/tools/emacs-mode.html)
+for more details.
+
+If you want to see messages beside rather than below your Agda code,
+you can do the following: Load your Agda file and do C-c C-l.  Type
+C-x 1 to get only your agda file showing, then type C-x 3 to split the
+window horizontally.  Now move to the right-hand half of your frame
+and switch to the buffer called "Agda information" by typing C-x b
+Agda TAB.  Now messages from Agda will appear next to your file,
+rather than squashed beneath it.
+
+
 
 
 ## Markdown
