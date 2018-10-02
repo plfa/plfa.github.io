@@ -18,6 +18,9 @@ out/%.md: src/%.lagda | out/
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
+serve:
+	ruby -S bundle exec jekyll serve
+
 # start server
 server-start:
 	ruby -S bundle exec jekyll serve --no-watch --detach

@@ -11,9 +11,11 @@
       <div class="footer-col footer-col-1">
         <ul class="contact-list">
           <li class="p-name">{{ author.name | escape }}</li>
+          <li>
           {%- if author.email -%}
-          <li><a class="u-email" href="mailto:{{ author.email }}">{{ author.email }}</a></li>
+            <a class="u-email" href="mailto:{{ author.email }}">{{ author.email }}</a>
           {%- endif -%}
+          </li>
         </ul>
       </div>
 
@@ -29,6 +31,6 @@
     </div>
     {%- endif -%}
     {%- endfor -%}
+    This work is licensed under a <a rel="license" href="{{ site.license-file }}">{{ site.license }}</a>
   </div>
-
 </footer>
