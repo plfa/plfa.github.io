@@ -122,4 +122,4 @@ Clone this repository with
 ## Travis Continuous Integration
 
 Travis offers continuous integration, and automatically updates the website.
-View error messages at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
+View the build history and error messages at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
