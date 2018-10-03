@@ -4,52 +4,79 @@ title: About
 permalink: /about/
 ---
 
-## How to host literate code
 
-In directory `plfa.github.io/` run the following:
+## How to build the book
 
-    $ make clobber              (remove all files before rebuilding system)
-    $ make macos-setup          (might need sudo, but try it without first)
-    $ make build                (builds lagda->markdown and website)
-    $ make test                 (checks all links are valid)
-    $ make build-incremental    (builds lagda->markdown and website using incremental)
-    $ make server-start         (starts server in detached mode)
-    $ make server-stop          (stops the server, uses pkill)
+There are several tools you need to build a local copy of the book:
 
-The visible page appears at
+  - [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html)
+  - [Agda standard library](https://github.com/agda/agda-stdlib)
+  - [agda2html](https://github.com/wenkokke/agda2html)
+  - [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+  - [Bundler](https://bundler.io/#getting-started)
+  
+For most of the tools, you can simply follow their respective build instructions.
+We aim to maintain compatibility with the latest release of Agda and the standard library.
+Most recent versions of Ruby should work.
 
-    localhost:4000/<permalink>
+We advise installing agda2html using [Stack](https://docs.haskellstack.org/en/stable/README/):
 
+    git clone https://github.com/wenkokke/agda2html.git
+    cd agda2html
+    stack install 
 
-## Travis
+Once you have installed these tools, you can build the book from source:
 
-Travis performs continuous integration (CI), generating web pages from github.
-View error messages at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
+    make build
+    
+You can host your copy of the book locally by running
+
+    make serve
+    
+The Makefile offers more than just these options:
+
+    make                      (builds lagda->markdown)
+    make build                (builds lagda->markdown and the website)
+    make build-incremental    (builds lagda->markdown and website incrementally)
+    make test                 (checks all links are valid)
+    make serve                (starts the server)
+    make server-start         (starts the server in detached mode)
+    make server-stop          (stops the server, uses pkill)
+    make clean                (removes all ~unnecessary~ generated files)
+    make clobber              (removes all generated files)
+
+If you simply wish to have a local copy of the book, e.g. for offline reading,
+but don't care about editing and rebuilding the book, you can grab a copy of the
+[master branch](https://github.com/plfa/plfa.github.io/archive/master.zip),
+which is automatically built using Travis. You will still need Ruby and Bundler
+to host the book (see above). To host the book this way, download a copy of the
+[master branch](https://github.com/plfa/plfa.github.io/archive/master.zip),
+unzip, and from within the directory run
+
+    bundle install
+    bundle exec jekyll serve
 
 
 ## Updates to agda2html
 
-Go to your clone of the agda2html repository, and run
+Sometimes we have to update agda2html.
+To update `agda2html`, go to your copy of the agda2html repository, and run
 
-    $ git pull
-    $ stack install
+    git pull
+    stack install
 
-
-## Unicode abbreviations
-
-    \to    →
-    \u+    ⊎
-    \all   ∀
-    \x     ×
-    x\_1   x₁
-    x\_i   xᵢ
-
-See
-[agda-input.el](https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194)
-for more details.
+Or simply follow the installation instructions again.
 
 
-## How to use `agda-mode`
+## Unicode characters
+
+If you're having trouble typing the Unicode characters into Emacs, the end of
+each chapter should provide a list of the unicode characters introduced in that
+chapter. For a full list of supported characters, see
+[agda-input.el](https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194).
+
+
+## Using `agda-mode`
 
     ?            create hole
     {!...!}      create hole
@@ -69,45 +96,31 @@ See
 for more details.
 
 If you want to see messages beside rather than below your Agda code,
-you can do the following: Load your Agda file and do C-c C-l.  Type
-C-x 1 to get only your agda file showing, then type C-x 3 to split the
-window horizontally.  Now move to the right-hand half of your frame
-and switch to the buffer called "Agda information" by typing C-x b
-Agda TAB.  Now messages from Agda will appear next to your file,
-rather than squashed beneath it.
+you can do the following: 
 
-
+  - Load your Agda file and do `C-c C-l`;
+  - type `C-x 1` to get only your Agda file showing; 
+  - type `C-x 3` to split the window horizontally;
+  - move your cursor to the right-hand half of your frame; 
+  - type `C-x b` and switch to the buffer called "Agda information"
+  
+Now, error messages from Agda will appear next to your file, rather than
+squished beneath it.
 
 
 ## Markdown
 
-For an overview of the Markdown syntax, see
-[the original description](https://daringfireball.net/projects/markdown/syntax),
-[the CommonMark project](https://spec.commonmark.org/0.28/), or
-[the version that is used in this book](https://kramdown.gettalong.org/syntax.html).
+The book is written in [Kramdown Markdown](https://kramdown.gettalong.org/syntax.html).
 
 
 ## Git
 
-Checkout this repository with
+Clone this repository with
 
     git clone git@github.com:plfa/plfa.github.io.git
 
-You can check this worked:
 
-    $ cd plfa.github.io
-    $ git status
-    On branch dev
-    Your branch is up-to-date with 'origin/dev'.
+## Travis Continuous Integration
 
-    Untracked files:
-      (use "git add <file>..." to include in what will be committed)
-
-    	out/
-
-    nothing added to commit but untracked files present (use "git add" to track)
-    $
-
-## Analytics
-
-Wen and Phil can track [Google Analytics](http://analytics.google.com/analytics/web/).
+Travis offers continuous integration, and automatically updates the website.
+View error messages at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
