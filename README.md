@@ -59,13 +59,12 @@ unzip, and from within the directory run
 
 ## Updates to agda2html
 
-Sometimes we have to update agda2html.
-To update `agda2html`, go to your copy of the agda2html repository, and run
+Sometimes we have to update agda2html. 
+To update your local copy, run the following commands from your clone of the
+agda2html repository, or simply follow the installation instructions again:
 
     git pull
     stack install
-
-Or simply follow the installation instructions again.
 
 
 ## Unicode characters
