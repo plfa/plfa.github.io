@@ -4,6 +4,7 @@ title: About
 permalink: /about/
 ---
 
+[![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
 
 ## How to build the book
 
