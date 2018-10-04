@@ -48,3 +48,23 @@ $ agda-mode setup
 
 If all goes well, when you open a file ending in `.agda` or `.lagda` with Emacs, the buffer for that file should have the Agda major mode enabled by default!
 
+## Fonts in Emacs
+
+It is reccommended that you add the following to the end of your emacs configuration file at `~/.emacs`:
+```
+;; Setting up Fonts for use with Agda/PLFA on DICE machines:
+;;
+;; default to DejaVu Sans Mono, 
+(set-face-attribute 'default nil
+		    :family "DejaVu Sans Mono"
+		    :height 120
+		    :weight 'normal
+		    :width  'normal)
+
+;; fix \:
+(set-fontset-font "fontset-default"
+		  (cons (decode-char 'ucs #x2982)
+			(decode-char 'ucs #x2982))
+		  "STIX")
+```
+
