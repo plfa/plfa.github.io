@@ -83,6 +83,18 @@ Let `¬x` be evidence of `¬ A`.  Then from `A` and `¬ A`
 we have a contradiction, evidenced by `¬x x`.  Hence, we have
 shown `¬ ¬ A`.
 
+An equivalent way to write the above is as follows.
+\begin{code}
+¬¬-intro′ : ∀ {A : Set}
+  → A
+    -----
+  → ¬ ¬ A
+¬¬-intro′ x ¬x = ¬x x
+\end{code}
+Here we have simply converted the argument of the lambda term
+to an additional argument of the function.  We will usually
+use this latter style, as it is more compact.
+
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
 `¬ ¬ ¬ A` implies `¬ A`.
 \begin{code}
@@ -163,8 +175,7 @@ By extensionality, `id ≡ id′` holds if for every
 `x` in their domain we have `id x ≡ id′ x`. But there
 is no `x` in their domain, so the equality holds trivially.
 
-Indeed, we can show that any two proofs of a negation
-must be equal.
+Indeed, we can show any two proofs of a negation are equal.
 \begin{code}
 assimilation : ∀ {A : Set} (¬x ¬x′ : ¬ A) → ¬x ≡ ¬x′
 assimilation ¬x ¬x′ = extensionality (λ x → ⊥-elim (¬x x))
