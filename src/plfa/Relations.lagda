@@ -713,7 +713,6 @@ and back is the identity.
     ---------------
     to (from x) ≡ x
 
-\end{code}
 (Hint: For each of these, you may first need to prove related
 properties of `One`.)
 

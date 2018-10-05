@@ -65,7 +65,7 @@ open import Relation.Nullary.Negation using (¬?)
 
 Terms have seven constructs. Three are for the core lambda calculus:
 
-  * Variables `` x`
+  * Variables `` ` x ``
   * Abstractions `ƛ x ⇒ N`
   * Applications `L · M`
 

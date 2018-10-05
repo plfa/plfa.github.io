@@ -8,7 +8,7 @@ proof assistant Agda.
 
 Comments on all matters---organisation, material to add, material to
 remove, parts that require better explanation, good exercises, errors,
-and typos---are welcome.  The book repository is on [git].
+and typos---are welcome.  The book repository is on [GitHub].
 Pull requests are encouraged.  
 
 ## Front matter
@@ -44,10 +44,9 @@ Pull requests are encouraged.
   - [Acknowledgements](/Acknowledgements/)
   - [Fonts](/Fonts/): Test page for fonts
   - [Statistics](/Statistics/): Line counts for each chapter
-
-A paper describing the book appears in [SBMF][sbmf].
+  - A paper describing the book appears in [SBMF][sbmf].
 
 [wen]: https://github.com/wenkokke
 [phil]: http://homepages.inf.ed.ac.uk/wadler/
-[git]: https://github.com/plfa/plfa.github.io/
+[GitHub]: https://github.com/plfa/plfa.github.io/
 [sbmf]: http://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf

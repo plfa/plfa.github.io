@@ -38,19 +38,19 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 Operators pop up all the time, and mathematicians have agreed
 on names for some of the most common properties.
 
-* _Identity_ Operator `+` has left identity `0` if `0 + n ≡ n`, and
+* _Identity_.   Operator `+` has left identity `0` if `0 + n ≡ n`, and
   right identity `0` if `n + 0 ≡ n`, for all `n`. A value that is both
   a left and right identity is just called an identity. Identity is also
   sometimes called _unit_.
 
-* _Associativity_ Operator `+` is associative if the location
+* _Associativity_.   Operator `+` is associative if the location
   of parentheses does not matter: `(m + n) + p ≡ m + (n + p)`,
   for all `m`, `n`, and `p`.
 
-* _Commutatitivity_ Operator `+` is commutative if order or
+* _Commutatitivity_.   Operator `+` is commutative if order or
   arguments does not matter: `m + n ≡ n + m`, for all `m` and `n`.
 
-* _Distributivity_ Operator `*` distributes over operator `+` from the
+* _Distributivity_.   Operator `*` distributes over operator `+` from the
   left if `(m + n) * p ≡ (m * p) + (n * p)`, for all `m`, `n`, and `p`,
   and from the right if `m * (p + q) ≡ (m * p) + (m * q)`, for all `m`,
   `p`, and `q`.
@@ -248,7 +248,7 @@ We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
 Let's unpack this code.  The signature states that we are
-defining the identifier `+-assoc` which provide evidence for the
+defining the identifier `+-assoc` which provides evidence for the
 proposition:
 
     ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)

@@ -4,6 +4,9 @@ title: >
 description: >
   Programming Language Foundations in Agda
 
+license: Creative Commons Attribution 4.0 International License
+license-file: https://creativecommons.org/licenses/by/4.0/
+
 # To include a new author, add them below in the order in which they are to be
 # displayed in the author list. If they have made contributions as an author via
 # GitHub, their username MUST be included in the list.

@@ -95,7 +95,8 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
 
 ## Assignments
 
-For instructions on how to set up Agda for the assignments, see [here](/GettingStarted/).
+For instructions on how to set up Agda for the assignments,
+see [here](/GettingStarted/).
 
 * [Assignment 1][plfa.Assignment1] cw1 due 4pm Thursday 4 October (Week 3)
 * [Assignment 2][plfa.Assignment2] cw2 due 4pm Thursday 18 October (Week 5)
@@ -105,6 +106,6 @@ For instructions on how to set up Agda for the assignments, see [here](/GettingS
 
 Assignments are submitted as
 
-    submit tspl <CODE> <FILENAME>
+    submit tspl cw1 Assignment1
 
-The code for Assignment 1 is `cw1`, and similarly for the others.
+and similarly for the others.

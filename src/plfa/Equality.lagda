@@ -471,8 +471,8 @@ even-comm′ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
-even-comm′ m n ev with   m + n  | +-comm m n 
-...                  | .(n + m) |            = ev
+even-comm′ m n ev with   m + n  | +-comm m n
+...                  | .(n + m) | refl       = ev
 \end{code}
 The first clause asserts that `m + n` and `n + m` are identical, and
 the second clause justifies that assertion with evidence of the
@@ -528,7 +528,7 @@ and instead we write `_≐_ {A} x y` to provide access to the implicit
 parameter `A` which appears on the right-hand side.
 
 This is our first use of _levels_.  We cannot assign `Set` the type
-`Set`, since this would lead to contradictions such as Russel's
+`Set`, since this would lead to contradictions such as Russell's
 Paradox and Girard's Paradox.  Instead, there is a hierarchy of types,
 where `Set : Set₁`, `Set₁ : Set₂`, and so on.  In fact, `Set` itself
 is just an abbreviation for `Set₀`.  Since the equation defining `_≐_`
