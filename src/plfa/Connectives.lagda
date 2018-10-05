@@ -342,8 +342,9 @@ evidence that `A ⊎ B` holds we can conclude that `C` holds.
 case-⊎ : ∀ {A B C : Set}
   → (A → C)
   → (B → C)
+  → A ⊎ B
     -----------
-  → (A ⊎ B → C)
+  → C
 case-⊎ f g (inj₁ x) = f x
 case-⊎ f g (inj₂ y) = g y
 \end{code}
@@ -692,14 +693,13 @@ an embedding rather than an isomorphism because the
 In the usual approach to logic, both of the distribution laws
 are given as equivalences, where each side implies the other:
 
-    A & (B ∨ C) ⇔ (A & B) ∨ (A & C)
-    A ∨ (B & C) ⇔ (A ∨ B) & (A ∨ C)
+    A × (B ⊎ C) ⇔ (A × B) ⊎ (A × C)  
+    A ⊎ (B × C) ⇔ (A ⊎ B) × (A ⊎ C)
 
-But when we consider the two laws in terms of evidence, where `_&_`
-corresponds to `_×_` and `_∨_` corresponds to `_⊎_`, then the first
-gives rise to an isomorphism, while the second only gives rise to an
-embedding, revealing a sense in which one of these laws is "more
-true" than the other.
+But when we consider the functions that provide evidence for these
+implications, then the first corresponds to an isomorphism while the
+second only corresponds to an embedding, revealing a sense in which
+one of these laws is "more true" than the other.
 
 
 #### Exercise `⊎-weak-×` (recommended)
