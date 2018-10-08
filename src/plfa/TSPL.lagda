@@ -104,6 +104,8 @@ see [here](/GettingStarted/).
 * Assignment 4 cw4 due 4pm Thursday 15 November (Week 9)
 * Assignment 5 cw5 due 4pm Thursday 22 November (Week 10)
 
-Assignments are submitted as follows.
+Assignments are submitted as
 
-    submit tspl cw1 Assignment1.lagda
+    submit tspl cw1 Assignment1
+
+and similarly for the others.

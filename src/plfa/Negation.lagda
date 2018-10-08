@@ -22,7 +22,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
-open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_)
+open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
 \end{code}
 
 
@@ -76,13 +76,24 @@ we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
     -----
   → ¬ ¬ A
 ¬¬-intro x  =  λ{¬x → ¬x x}
--- ¬¬-intro x ¬x = ¬x x
 \end{code}
 Let `x` be evidence of `A`. We show that assuming
 `¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
 Let `¬x` be evidence of `¬ A`.  Then from `A` and `¬ A`
 we have a contradiction, evidenced by `¬x x`.  Hence, we have
 shown `¬ ¬ A`.
+
+An equivalent way to write the above is as follows.
+\begin{code}
+¬¬-intro′ : ∀ {A : Set}
+  → A
+    -----
+  → ¬ ¬ A
+¬¬-intro′ x ¬x = ¬x x
+\end{code}
+Here we have simply converted the argument of the lambda term
+to an additional argument of the function.  We will usually
+use this latter style, as it is more compact.
 
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
 `¬ ¬ ¬ A` implies `¬ A`.
@@ -147,17 +158,34 @@ we know for arithmetic, where
     0 ^ n  ≡  1,  if n ≡ 0
            ≡  0,  if n ≢ 0
 
-Indeed, there is exactly one proof of `⊥ → ⊥`.
+Indeed, there is exactly one proof of `⊥ → ⊥`.  We can write
+this proof two different ways.
 \begin{code}
 id : ⊥ → ⊥
-id x  =  x
-\end{code}
-It is easy to see there are no possible values of type `A → ⊥`
-unless `A` is equivalent to `⊥`.  We have that `⊥ → A`
-always holds, by `⊥-elim`, and hence if `A → ⊥` holds then
-`A` must be equivalent to `⊥`, in the sense that each implies
-the other.
+id x = x
 
+id′ : ⊥ → ⊥
+id′ ()
+\end{code}
+But, using extensionality, we can prove these equal.
+\begin{code}
+id≡id′ : id ≡ id′
+id≡id′ = extensionality (λ())
+\end{code}
+By extensionality, `id ≡ id′` holds if for every
+`x` in their domain we have `id x ≡ id′ x`. But there
+is no `x` in their domain, so the equality holds trivially.
+
+Indeed, we can show any two proofs of a negation are equal.
+\begin{code}
+assimilation : ∀ {A : Set} (¬x ¬x′ : ¬ A) → ¬x ≡ ¬x′
+assimilation ¬x ¬x′ = extensionality (λ x → ⊥-elim (¬x x))
+\end{code}
+Evidence for `¬ A` implies that any evidence of `A`
+immediately leads to a contradiction.  But extensionality
+quantifies over all `x` such that `A` holds, hence any
+such `x` immediately leads to a contradiction,
+again causing the equality to hold trivially.
 
 
 #### Exercise `<-irreflexive` (recommended)
@@ -177,9 +205,8 @@ that is, for any naturals `m` and `n` exactly one of the following holds:
 * `m ≡ n`
 * `m > n`
 
-Here "exactly one" means that one of the three must hold, and each implies the
-negation of the other two.
-
+Here "exactly one" means that not only one of the three must hold,
+but that when one holds the negation of the other two must also hold.
 
 #### Exercise `⊎-dual-×` (recommended)
 
@@ -194,7 +221,8 @@ Do we also have the following?
 
     ¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
 
-If so, prove; if not, give a variant that does hold.
+If so, prove; if not, can you give a relation weaker than
+isomorphism that relates the two sides?
 
 
 ## Intuitive and Classical logic

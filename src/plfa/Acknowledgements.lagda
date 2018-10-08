@@ -38,6 +38,9 @@ For answering questions on the Agda mailing list:
   * Amr Sabry
 
 
+For support:
+  * EPSRC Programme Grant EP/K034413/1
+
 <span class="force-end-of-list"></span>
 {%- if site.contributors -%}
 For pull requests big and small:

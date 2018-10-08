@@ -44,7 +44,15 @@ Pull requests are encouraged.
   - [Acknowledgements](/Acknowledgements/)
   - [Fonts](/Fonts/): Test page for fonts
   - [Statistics](/Statistics/): Line counts for each chapter
+
+## Related
+
   - A paper describing the book appears in [SBMF][sbmf].
+  - Courses taught from the textbook:
+    * Philip Wadler, University of Edinburgh,
+      [2018](http://plfa.inf.ed.ac.uk/TSPL/)
+    * David Darais, University of Vermont,
+      [2018](http://david.darais.com/courses/uvm-cs295A-fa2018/)
 
 [wen]: https://github.com/wenkokke
 [phil]: http://homepages.inf.ed.ac.uk/wadler/
