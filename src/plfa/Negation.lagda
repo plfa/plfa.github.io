@@ -75,7 +75,8 @@ we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
   → A
     -----
   → ¬ ¬ A
-¬¬-intro x ¬x = ¬x x
+¬¬-intro x  =  λ{¬x → ¬x x}
+-- ¬¬-intro x ¬x = ¬x x
 \end{code}
 Let `x` be evidence of `A`. We show that assuming
 `¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
@@ -90,7 +91,8 @@ We cannot show that `¬ ¬ A` implies `A`, but we can show that
   → ¬ ¬ ¬ A
     -------
   → ¬ A
-¬¬¬-elim ¬¬¬x x = ¬¬¬x (¬¬-intro x)
+¬¬¬-elim ¬¬¬x  =  λ x → ¬¬¬x (¬¬-intro x)
+-- ¬¬¬-elim ¬¬¬x x = ¬¬¬x (¬¬-intro x)
 \end{code}
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 `A` leads to a contradiction, and hence `¬ A` must hold.
@@ -148,7 +150,7 @@ we know for arithmetic, where
 Indeed, there is exactly one proof of `⊥ → ⊥`.
 \begin{code}
 id : ⊥ → ⊥
-id x = x
+id x  =  x
 \end{code}
 It is easy to see there are no possible values of type `A → ⊥`
 unless `A` is equivalent to `⊥`.  We have that `⊥ → A`
@@ -251,7 +253,7 @@ meaning that the negation of its negation is provable (and hence that
 its negation is never provable).
 \begin{code}
 em-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
-em-irrefutable k = k (inj₂ λ{ x → k (inj₁ x) })
+em-irrefutable = λ k → k (inj₂ (λ x → k (inj₁ x)))
 \end{code}
 The best way to explain this code is to develop it interactively.
 

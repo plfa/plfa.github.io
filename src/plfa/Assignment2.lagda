@@ -86,6 +86,8 @@ record _⇔_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
+
+open _⇔_
 \end{code}
 Show that equivalence is reflexive, symmetric, and transitive.
 
@@ -120,6 +122,17 @@ Why is there not an isomorphism?
 
 Show that `A ⇔ B` as defined [earlier][plfa.Isomorphism#iff]
 is isomorphic to `(A → B) × (B → A)`.
+
+\begin{code}
+⇔≃× : ∀ {A B : Set} → (A ⇔ B) ≃ (A → B) × (B → A)
+⇔≃× =
+  record
+    { to  =  λ{ A⇔B → ⟨ to A⇔B , from A⇔B ⟩ }
+    ; from  =  λ{ ⟨ A→B , B→A ⟩ → record { to = A→B ; from = B→A } }
+    ; from∘to = λ{ A⇔B → refl }  
+    ; to∘from =  λ{ ⟨ A→B , B→A ⟩ → refl }
+    }
+\end{code}
 
 #### Exercise `⊎-comm` (recommended)
 

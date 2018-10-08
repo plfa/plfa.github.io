@@ -103,8 +103,6 @@ ex8 deMorgan {A} = deMorgan ¬[¬a×¬¬a]
 *Existentials and Universals*
 
 \begin{code}
-{-
 ∃¬¬∀ : ∀ {A : Set} {B : A → Set} → ∃ (λ (x : A) → ¬ B x) → ¬ (∀ (x : A) → B x)
 ∃¬¬∀ (x , ¬bx) ∀bx = ¬bx (∀bx x)
--}
 \end{code}

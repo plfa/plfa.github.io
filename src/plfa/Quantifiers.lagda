@@ -56,7 +56,7 @@ Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
 is a term of type `A` then we may conclude that `B M` holds.
 \begin{code}
 ∀-elim : ∀ {A : Set} {B : A → Set}
-  → (∀ (x : A) → B x)
+  → (L : ∀ (x : A) → B x)
   → (M : A)
     -----------------
   → B M
@@ -197,8 +197,9 @@ may conclude that `C` holds.
 \begin{code}
 ∃-elim : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C)
+  → ∃[ x ] B x
     ---------------
-  → ∃[ x ] B x → C
+  → C
 ∃-elim f ⟨ x , y ⟩ = f x y
 \end{code}
 In other words, if we know for every `x` of type `A` that `B x`
