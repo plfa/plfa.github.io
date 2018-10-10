@@ -14,7 +14,7 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises without a label are optional, and may be done if you want
 some extra practice.
 
-* [Assignment 1][plfa.Assignment1] Due 4pm Thursday 4 October (Week 3)
+* [Assignment 1][Assignment1] Due 4pm Thursday 4 October (Week 3)
 
   + Naturals
     - `seven`
@@ -42,12 +42,12 @@ some extra practice.
     - `<-trans` (recommended)
     - `trichotomy`
     - `+-mono-<`
-    - `≤-iff-<` (recommended) 
+    - `≤-iff-<` (recommended)
     - `<-trans-revisited`
     - `o+o≡e` (recommended)
     - `Bin-predicates` (stretch)
 
-* [Assignment 2][plfa.Assignment2]. Due 4pm Thursday 18 October (Week 5)
+* [Assignment 2][Assignment2]. Due 4pm Thursday 18 October (Week 5)
 
   + Equality
     - `≤-reasoning` (stretch)

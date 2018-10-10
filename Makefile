@@ -1,6 +1,6 @@
-agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda)
-agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai)
-markdown := $(subst src/,out/,$(subst .lagda,.md,$(agda)))
+agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda) $(wildcard tspl/*.lagda) $(wildcard tspl/**/*.lagda)
+agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai) $(wildcard tspl/*.agdai) $(wildcard tspl/**/*.agdai)
+markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 
 all: $(markdown)
 
@@ -14,6 +14,12 @@ out/:
 	mkdir -p out/
 
 out/%.md: src/%.lagda | out/
+	agda2html --verbose --link-to-agda-stdlib --link-to-local-agda-names --use-jekyll=out/ -i $< -o $@ 2>&1 \
+		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
+	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
+
+# should fix this -- it's the same as above
+out/%.md: tspl/%.lagda | out/
 	agda2html --verbose --link-to-agda-stdlib --link-to-local-agda-names --use-jekyll=out/ -i $< -o $@ 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
@@ -34,7 +40,7 @@ build: $(markdown)
 	ruby -S bundle exec jekyll build
 
 # build website using jekyll incrementally
-build-incremental:
+build-incremental: $(markdown)
 	ruby -S bundle exec jekyll build --incremental
 
 # remove all auxiliary files
