@@ -39,15 +39,15 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  </tr>
  <tr>
   <td>3</td>
-  <td><b>1 Oct</b> <a href="/Equality/">Equality</a></td>
-  <td><b>3 Oct</b> <a href="/Isomorphism/">Isomorphism</a></td>
-  <td><b>5 Oct</b> <a href="/Connectives/">Connectives</a></td>
+  <td><b>1 Oct</b> <a href="/Equality/">Equality</a> &amp; <a href="/Isomorphism/">Isomorphism</a></td>
+  <td><b>3 Oct</b> <a href="/Connectives/">Connectives</a></td>
+  <td><b>5 Oct</b> <a href="/Negation/">Negation</a></td>
  </tr>
  <tr>
   <td>4</td>
-  <td><b>8 Oct</b> <a href="/Negation/">Negation</a></td>
-  <td><b>10 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
-  <td><b>12 Oct</b> <a href="/Decidable/">Decidable</a></td>
+  <td><b>8 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
+  <td><b>10 Oct</b> <a href="/Decidable/">Decidable</a></td>
+  <td><b>12 Oct</b> (no lecture)</td>
  </tr>
  <tr>
   <td>5</td>
