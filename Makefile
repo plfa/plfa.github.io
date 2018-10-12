@@ -1,6 +1,7 @@
 agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda) $(wildcard tspl/*.lagda) $(wildcard tspl/**/*.lagda)
 agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai) $(wildcard tspl/*.agdai) $(wildcard tspl/**/*.agdai)
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
+PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: $(markdown)
 
@@ -66,8 +67,19 @@ macos-setup:
 travis-setup:\
 	$(HOME)/agda-master/\
 	$(HOME)/agda-stdlib-master/\
+	$(HOME)/.agda/defaults\
+	$(HOME)/.agda/libraries\
+	$(HOME)/agda-stdlib-master/\
 	$(HOME)/agda2html-master/\
 	$(HOME)/acknowledgements-master/
+
+$(HOME)/.agda/defaults:
+	echo "standard-library" >> $(HOME)/.agda/defaults
+	echo "plfa" >> $(HOME)/.agda/defaults
+
+$(HOME)/.agda/libraries:
+	echo "$(HOME)/agda-stdlib-master/standard-library.agda-lib" >> $(HOME)/.agda/libraries
+	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/agda-master/:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
@@ -79,8 +91,6 @@ $(HOME)/agda-stdlib-master/:
 	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
 	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
-	echo "standard-library" > $(HOME)/.agda/defaults
-	echo "$(HOME)/agda-stdlib-master/standard-library.agda-lib" > $(HOME)/.agda/libraries
 
 $(HOME)/agda2html-master/:
 	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
