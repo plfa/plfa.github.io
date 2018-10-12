@@ -65,13 +65,12 @@ macos-setup:
 
 # install agda, agda-stdlib, and agda2html
 travis-setup:\
-	$(HOME)/agda-master/\
-	$(HOME)/agda-stdlib-master/\
+	$(HOME)/.local/bin/agda\
+	$(HOME)/.local/bin/agda2html\
+	$(HOME)/.local/bin/acknowledgements\
+	$(HOME)/agda-stdlib-master/src\
 	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries\
-	$(HOME)/agda-stdlib-master/\
-	$(HOME)/agda2html-master/\
-	$(HOME)/acknowledgements-master/
+	$(HOME)/.agda/libraries
 
 $(HOME)/.agda/defaults:
 	echo "standard-library" >> $(HOME)/.agda/defaults
@@ -81,28 +80,28 @@ $(HOME)/.agda/libraries:
 	echo "$(HOME)/agda-stdlib-master/standard-library.agda-lib" >> $(HOME)/.agda/libraries
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
-$(HOME)/agda-master/:
+$(HOME)/.local/bin/agda:
 	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
 	unzip -qq $(HOME)/agda-master.zip -d $(HOME)
 	cd $(HOME)/agda-master;\
 		stack install --stack-yaml=stack-8.2.2.yaml
 
-$(HOME)/agda-stdlib-master/:
-	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
-	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
-	mkdir -p $(HOME)/.agda
-
-$(HOME)/agda2html-master/:
+$(HOME)/.local/bin/agda2html:
 	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
 	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
 	cd $(HOME)/agda2html-master;\
 		stack install
 
-$(HOME)/acknowledgements-master/:
+$(HOME)/.local/bin/acknowledgements:
 	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
 	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
 	cd $(HOME)/acknowledgements-master;\
 		stack install
+
+$(HOME)/agda-stdlib-master/src:
+	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
+	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
+	mkdir -p $(HOME)/.agda
 
 .phony: serve build test clean clobber macos-setup travis-setup
 
