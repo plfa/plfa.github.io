@@ -52,14 +52,14 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  <tr>
   <td>5</td>
   <td><b>15 Oct</b> <a href="/Lists/">Lists</a></td>
-  <td><b>17 Oct</b> (no lecture)</td>
+  <td><b>17 Oct</b> (tutorial only)</td>
   <td><b>19 Oct</b> <a href="/Lists/">Lists</a></td>
  </tr>
  <tr>
   <td>6</td>
   <td><b>22 Oct</b> <a href="/Lambda/">Lambda</a></td>
-  <td><b>24 Oct</b> <a href="/Properties/">Properties</a></td>
-  <td><b>26 Oct</b> (no lecture)</td>
+  <td><b>24 Oct</b> (no lecture)</td>
+  <td><b>26 Oct</b> <a href="/Properties/">Properties</a></td>
  </tr>
  <tr>
   <td>7</td>
