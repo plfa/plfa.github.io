@@ -236,14 +236,14 @@ Write out the definition of multiplication in the same style.
 ### Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
-variable name to disambiguate and writes `x` rather than `` x`
+variable name to disambiguate and writes `x` rather than `` ` x ``
 for a term that is a variable. Agda requires we distinguish.
 
 Similarly, informal presentation often use the same notation for
 function types, lambda abstraction, and function application in both
 the object language (the language one is describing) and the
 meta-language (the language in which the description is written),
-trusting readers can use context to distinguish the two.  Agda is is
+trusting readers can use context to distinguish the two.  Agda is
 not quite so forgiving, so here we use `ƛ x ⇒ N` and `L · M` for the
 object language, as compared to `λ x → N` and `L M` in our
 meta-language, Agda.
