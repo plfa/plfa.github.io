@@ -99,7 +99,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 
 * [Assignment 1][Assignment1] cw1 due 4pm Thursday 4 October (Week 3)
 * [Assignment 2][Assignment2] cw2 due 4pm Thursday 18 October (Week 5)
-* Assignment 3 cw3 due 4pm Thursday 1 November (Week 7)
+* [Assignment 3][Assignment3] cw3 due 4pm Thursday 1 November (Week 7)
 * Assignment 4 cw4 due 4pm Thursday 15 November (Week 9)
 * Assignment 5 cw5 due 4pm Thursday 22 November (Week 10)
 

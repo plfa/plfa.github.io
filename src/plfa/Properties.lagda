@@ -342,7 +342,7 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-#### Exercise `value?`
+#### Exercise `value?` (recommended)
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value.
@@ -1249,9 +1249,27 @@ _ = refl
 And again, the example in the previous section was derived by editing the
 above.
 
-#### Exercise `mul-example`
+#### Exercise `mul-example` (recommended)
 
 Using the evaluator, confirm that two times two is four.
+
+
+#### Exercise: `progress-preservation` (recommended)
+
+Without peeking at their statements above, write down the progress
+and preservation theorems for the simply typed lambda-calculus.
+
+
+#### Exercise `subject_expansion`
+
+We say that `M` _reduces_ to `N` if `M —→ N`,
+but we can also describe the same situation by saying
+that `N` _expands_ to `M`.
+The preservation property is sometimes called _subject reduction_.
+Its opposite is _subject expansion_, which holds if
+`M —→ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
+Find two counter-examples to subject expansion, one
+with case expressions and one not involving case expressions.
 
 
 ## Well-typed terms don't get stuck
@@ -1396,23 +1414,6 @@ and add
 to the bottom of the proof. But this does not work. The termination
 checker complains, because the arguments have merely switched order
 and neither is smaller.
-
-
-#### Exercise: `progress-preservation`
-
-Without peeking at their statements above, write down the progress
-and preservation theorems for the simply typed lambda-calculus.
-
-
-#### Exercise `subject_expansion`
-
-We say that `M` _reduces_ to `N` if `M —→ N`,
-and conversely that `M` _expands_ to `N` if `N —→ M`.
-The preservation property is sometimes called _subject reduction_.
-Its opposite is _subject expansion_, which holds if
-`M —→ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
-Find two counter-examples to subject expansion, one
-with case expressions and one not involving case expressions.
 
 
 #### Quiz
