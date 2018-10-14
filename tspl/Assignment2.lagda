@@ -5,7 +5,7 @@ permalink : /Assignment2/
 ---
 
 \begin{code}
-module plfa.Assignment2 where
+module Assignment2 where
 \end{code}
 
 ## YOUR NAME AND EMAIL GOES HERE
