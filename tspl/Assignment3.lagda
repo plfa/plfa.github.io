@@ -225,12 +225,25 @@ postulate
 If so, prove; if not, explain why.
 
 
-#### Exercise `any?`
+#### Exercise `any?` (stretch)
 
 Just as `All` has analogues `all` and `all?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
 analogues `any` and `any?` which determine whether a predicates holds
 for some element of a list.  Give their definitions.
+
+
+#### Exercise `filter?` (stretch)
+
+Define the following variant of the traditional `filter` function on lists,
+which given a list and a decidable predicate returns all elements of the
+list satisfying the predicate.
+\begin{code}
+postulate
+  filter? : ∀ {A : Set} {P : A → Set}
+    → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
+\end{code}
+
 
 ## Lambda
 

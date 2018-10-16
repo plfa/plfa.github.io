@@ -192,7 +192,7 @@ in other words that the term
 reduces to `` `suc `suc `suc `suc `zero ``.
 
 
-#### Exercise `mul`
+#### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers.
@@ -1314,7 +1314,7 @@ or explain why there are no such types.
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
 
 
-#### Exercise `mul-type`
+#### Exercise `mul-type` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well-typed.

@@ -25,7 +25,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n
 open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
 open import Level using (Level)
 open import plfa.Isomorphism using (_≃_; _⇔_)
@@ -616,14 +616,14 @@ so the fold function takes two arguments, `e` and `_⊕_`
 In general, a data type with _n_ constructors will have
 a corresponding fold function that takes _n_ arguments.
 
-#### Exercise `product`
+#### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
 For example,
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-#### Exercise `foldr-++`
+#### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows.
 \begin{code}
@@ -954,12 +954,25 @@ showing that the conjuction of two decidable propositions is itself
 decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
-#### Exercise `any?`
+
+#### Exercise `any?` (stretch)
 
 Just as `All` has analogues `all` and `all?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
 analogues `any` and `any?` which determine whether a predicates holds
 for some element of a list.  Give their definitions.
+
+
+#### Exercise `filter?` (stretch)
+
+Define the following variant of the traditional `filter` function on lists,
+which given a list and a decidable predicate returns all elements of the
+list satisfying the predicate.
+\begin{code}
+postulate
+  filter? : ∀ {A : Set} {P : A → Set}
+    → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
+\end{code}
 
 
 ## Standard Library
