@@ -57,6 +57,17 @@ unzip, and from within the directory run
     bundle install
     bundle exec jekyll serve
 
+### GNU sed and macOS
+
+The version of sed that ships with macOS is not fully compatible with the GNU sed.
+Therefore, you may get errors such as:
+```
+sed: 1: "out/plfa/Bisimulation.md": invalid command code o
+```
+You can fix this error by installing a GNU compatible version of sed, e.g. using [Homebrew](https://brew.sh/):
+```
+brew install gnu-sed --with-default-names
+```
 
 ## Updates to agda2html
 
