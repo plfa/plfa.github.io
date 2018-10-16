@@ -779,7 +779,7 @@ _ =
   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
     sucᶜ · `suc `zero
   —→⟨ β-ƛ (V-suc V-zero) ⟩
-   `suc (`suc `zero)
+    `suc (`suc `zero)
   ∎
 \end{code}
 

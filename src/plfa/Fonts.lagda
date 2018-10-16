@@ -3,6 +3,7 @@ title     : "Fonts"
 layout    : page
 prev      : /Acknowledgements/
 permalink : /Fonts/
+next      : /Statistics/
 ---
 
 Test page for fonts. Preferably, all vertical bars should line up.

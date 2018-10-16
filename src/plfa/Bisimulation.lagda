@@ -1,7 +1,9 @@
 ---
 title     : "Bisimulation: Relating reduction systems"
 layout    : page
+previous  : /More/
 permalink : /Bisimulation/
+next      : /Inference/
 ---
 
 \begin{code}
