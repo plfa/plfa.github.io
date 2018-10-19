@@ -36,10 +36,11 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n
 open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Function using (_∘_)
 open import Level using (Level)
+open import Relation.Unary using (Decidable)
 open import plfa.Relations using (_<_; z<s; s<s)
 open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
 open plfa.Isomorphism.≃-Reasoning
@@ -50,12 +51,6 @@ open import plfa.Properties hiding (value?)
 \end{code}
 
 #### Exercise `reverse-++-commute` (recommended)
-
-
-
-
-
-
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first.

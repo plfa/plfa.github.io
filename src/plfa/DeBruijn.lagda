@@ -756,9 +756,9 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
       ---------------------------
     → Value (ƛ N)
 
-  V-zero : ∀ {Γ} →
+  V-zero : ∀ {Γ}
       -----------------
-      Value (`zero {Γ})
+    → Value (`zero {Γ})
 
   V-suc : ∀ {Γ} {V : Γ ⊢ `ℕ}
     → Value V

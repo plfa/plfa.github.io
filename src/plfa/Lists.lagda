@@ -107,6 +107,7 @@ on the right-hand side of an equation.
 
 Our first function on lists is written `_++_` and pronounced
 _append_.
+
 \begin{code}
 infixr 5 _++_
 
@@ -611,7 +612,7 @@ _ =
 \end{code}
 
 Just as the list type has two constructors, `[]` and `_∷_`,
-so the fold function takes two arguments, `e` and `_⊕_`
+so the fold function takes two arguments, `e` and `_⊗_`
 (in addition to the list argument).
 In general, a data type with _n_ constructors will have
 a corresponding fold function that takes _n_ arguments.
@@ -723,7 +724,7 @@ list, are all examples of monoids.
     }
 \end{code}
 
-If `_⊕_` and `e` form a monoid, then we can re-express fold on the
+If `_⊗_` and `e` form a monoid, then we can re-express fold on the
 same operator and an arbitrary value.
 \begin{code}
 foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
@@ -987,10 +988,16 @@ import Data.List.Properties
   using (reverse-++-commute; map-compose; map-++-commute; foldr-++)
   renaming (mapIsFold to map-is-foldr)
 import Algebra.Structures using (IsMonoid)
+import Relation.Unary using (Decidable)
+import Relation.Binary using (Decidable)
 \end{code}
 The standard library version of `IsMonoid` differs from the
 one given here, in that it is also parameterised on an equivalence relation.
 
+Both `Relation.Unary` and `Relation.Binary` define a version of `Decidable`,
+one for unary relations (as used in this chapter where `P` ranges over
+unary predicates) and one for binary relations (as used earlier, where `_≤_`
+ranges over a binary relation).
 
 ## Unicode
 
