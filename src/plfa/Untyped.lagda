@@ -518,7 +518,7 @@ We induct on the evidence that the term is well-scoped.
   + If it is an abstraction, then the whole term steps via `β`.
   + If it is an application, recursively apply progress to the function subterm.
     - If it steps, then the whole term steps via `ξ₁`.
-    - If it is normal, recursively apply progres to the argument subterm.
+    - If it is normal, recursively apply progress to the argument subterm.
       * If it steps, then the whole term steps via `ξ₂`.
       * If it is normal, then so is the whole term.
 
