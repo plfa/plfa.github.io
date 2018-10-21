@@ -200,7 +200,7 @@ a partial order but not a total order.
 
 Give an example of a preorder that is not a partial order.
 
-Give an example of a partial order that is not a preorder.
+Give an example of a partial order that is not a total order.
 
 
 ## Reflexivity
