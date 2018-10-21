@@ -5,7 +5,7 @@ permalink : /Assignment2/
 ---
 
 \begin{code}
-module plfa.Assignment2 where
+module Assignment2 where
 \end{code}
 
 ## YOUR NAME AND EMAIL GOES HERE
@@ -86,6 +86,8 @@ record _⇔_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
+
+open _⇔_
 \end{code}
 Show that equivalence is reflexive, symmetric, and transitive.
 

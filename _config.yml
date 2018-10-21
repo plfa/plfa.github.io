@@ -33,6 +33,7 @@ theme: minima
 exclude:
   - "hs/"
   - "src/"
+  - "tspl/"
   - "extra/"
   - "vendor/"
   - "Notes.md"

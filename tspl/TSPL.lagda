@@ -52,14 +52,14 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  <tr>
   <td>5</td>
   <td><b>15 Oct</b> <a href="/Lists/">Lists</a></td>
-  <td><b>17 Oct</b> (no lecture)</td>
+  <td><b>17 Oct</b> (tutorial only)</td>
   <td><b>19 Oct</b> <a href="/Lists/">Lists</a></td>
  </tr>
  <tr>
   <td>6</td>
   <td><b>22 Oct</b> <a href="/Lambda/">Lambda</a></td>
-  <td><b>24 Oct</b> <a href="/Properties/">Properties</a></td>
-  <td><b>26 Oct</b> (no lecture)</td>
+  <td><b>24 Oct</b> (no lecture)</td>
+  <td><b>26 Oct</b> <a href="/Properties/">Properties</a></td>
  </tr>
  <tr>
   <td>7</td>
@@ -95,17 +95,16 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
 
 ## Assignments
 
-For instructions on how to set up Agda for the assignments,
-see [here](/GettingStarted/).
+For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
-* [Assignment 1][plfa.Assignment1] cw1 due 4pm Thursday 4 October (Week 3)
-* [Assignment 2][plfa.Assignment2] cw2 due 4pm Thursday 18 October (Week 5)
-* Assignment 3 cw3 due 4pm Thursday 1 November (Week 7)
+* [Assignment 1][Assignment1] cw1 due 4pm Thursday 4 October (Week 3)
+* [Assignment 2][Assignment2] cw2 due 4pm Thursday 18 October (Week 5)
+* [Assignment 3][Assignment3] cw3 due 4pm Thursday 1 November (Week 7)
 * Assignment 4 cw4 due 4pm Thursday 15 November (Week 9)
 * Assignment 5 cw5 due 4pm Thursday 22 November (Week 10)
 
-Assignments are submitted as
-
-    submit tspl cw1 Assignment1
-
-and similarly for the others.
+Assignments are submitted by running
+``` bash
+submit tspl cwN AssignmentN.lagda
+```
+where N is the number of the assignment.

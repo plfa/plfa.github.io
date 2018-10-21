@@ -25,10 +25,10 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n
 open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
 open import Level using (Level)
-open import plfa.Isomorphism using (_≃_)
+open import plfa.Isomorphism using (_≃_; _⇔_)
 \end{code}
 
 
@@ -107,6 +107,7 @@ on the right-hand side of an equation.
 
 Our first function on lists is written `_++_` and pronounced
 _append_.
+
 \begin{code}
 infixr 5 _++_
 
@@ -344,7 +345,7 @@ reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 (We will validate that last fact in an exercise later in this chapter.)
 
-#### Exercise `reverse-++-commute`
+#### Exercise `reverse-++-commute` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first.
@@ -354,7 +355,7 @@ postulate
     → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 \end{code}
 
-#### Exercise `reverse-involutive`
+#### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution.
@@ -611,19 +612,19 @@ _ =
 \end{code}
 
 Just as the list type has two constructors, `[]` and `_∷_`,
-so the fold function takes two arguments, `e` and `_⊕_`
+so the fold function takes two arguments, `e` and `_⊗_`
 (in addition to the list argument).
 In general, a data type with _n_ constructors will have
 a corresponding fold function that takes _n_ arguments.
 
-#### Exercise `product`
+#### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
 For example,
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-#### Exercise `foldr-++`
+#### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows.
 \begin{code}
@@ -723,7 +724,7 @@ list, are all examples of monoids.
     }
 \end{code}
 
-If `_⊕_` and `e` form a monoid, then we can re-express fold on the
+If `_⊗_` and `e` form a monoid, then we can re-express fold on the
 same operator and an arbitrary value.
 \begin{code}
 foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
@@ -765,6 +766,21 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
     foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
   ∎
 \end{code}
+
+#### Exercise `foldl`
+
+Define a function `foldl` which is analogous to `foldr`, but where
+operations associate to the left rather than the right.  For example,
+
+    foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
+    foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
+
+
+#### Exercise `foldr-monoid-foldl`
+
+Show that if `_⊕_` and `e` form a monoid, then `foldr _⊗_ e` and
+`foldl _⊗_ e` always compute the same result.
+
 
 ## All {#All}
 
@@ -843,19 +859,15 @@ possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 ## All and append
 
 A predicate holds for every element of one list appended to another if and
-only if it holds for every element of each list.  Indeed, an even stronger
-result is true, as we can show that the two types are isomorphic.
+only if it holds for every element of each list.
 \begin{code}
-All-++ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
-  All P (xs ++ ys) ≃ (All P xs × All P ys)
-All-++ xs ys =
+All-++-⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+  All P (xs ++ ys) ⇔ (All P xs × All P ys)
+All-++-⇔ xs ys =
   record
     { to       =  to xs ys
     ; from     =  from xs ys
-    ; from∘to  =  from∘to xs ys
-    ; to∘from  =  to∘from xs ys
     }
-
   where
 
   to : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
@@ -868,23 +880,17 @@ All-++ xs ys =
     All P xs × All P ys → All P (xs ++ ys)
   from [] ys ⟨ [] , Pys ⟩ = Pys
   from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ =  Px ∷ from xs ys ⟨ Pxs , Pys ⟩
-
-  from∘to : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
-    ∀ (u : All P (xs ++ ys)) → from xs ys (to xs ys u) ≡ u
-  from∘to [] ys Pys = refl
-  from∘to (x ∷ xs) ys (Px ∷ Pxs++ys) = cong (Px ∷_) (from∘to xs ys Pxs++ys)
-
-  to∘from : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
-    ∀ (v : All P xs × All P ys) → to xs ys (from xs ys v) ≡ v
-  to∘from [] ys ⟨ [] , Pys ⟩ = refl
-  to∘from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ rewrite to∘from xs ys ⟨ Pxs , Pys ⟩ = refl
 \end{code}
 
-#### Exercise `Any-++`
+#### Exercise `Any-++-⇔` (recommended)
 
-Prove a result similar to `All-++`, but with `Any` in place of `All`, and a suitable
-replacement for `_×_`.  As a consequence, demonstrate an isomorphism relating
+Prove a result similar to `All-++-↔`, but with `Any` in place of `All`, and a suitable
+replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
+
+#### Exercise `All-++-≃` (stetch)
+
+Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 
 #### Exercise `¬Any≃All¬` (stretch)
 
@@ -949,12 +955,25 @@ showing that the conjuction of two decidable propositions is itself
 decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
-#### Exercise `any?`
+
+#### Exercise `any?` (stretch)
 
 Just as `All` has analogues `all` and `all?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
 analogues `any` and `any?` which determine whether a predicates holds
 for some element of a list.  Give their definitions.
+
+
+#### Exercise `filter?` (stretch)
+
+Define the following variant of the traditional `filter` function on lists,
+which given a list and a decidable predicate returns all elements of the
+list satisfying the predicate.
+\begin{code}
+postulate
+  filter? : ∀ {A : Set} {P : A → Set}
+    → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
+\end{code}
 
 
 ## Standard Library
@@ -969,10 +988,16 @@ import Data.List.Properties
   using (reverse-++-commute; map-compose; map-++-commute; foldr-++)
   renaming (mapIsFold to map-is-foldr)
 import Algebra.Structures using (IsMonoid)
+import Relation.Unary using (Decidable)
+import Relation.Binary using (Decidable)
 \end{code}
 The standard library version of `IsMonoid` differs from the
 one given here, in that it is also parameterised on an equivalence relation.
 
+Both `Relation.Unary` and `Relation.Binary` define a version of `Decidable`,
+one for unary relations (as used in this chapter where `P` ranges over
+unary predicates) and one for binary relations (as used earlier, where `_≤_`
+ranges over a binary relation).
 
 ## Unicode
 

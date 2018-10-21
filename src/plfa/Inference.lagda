@@ -186,7 +186,7 @@ We can extract the grammar for terms from the above:
 
     L⁺, M⁺, N⁺ ::=                      terms with synthesized type
       x                                   variable
-      L⁺ · M-                             application
+      L⁺ · M⁻                             application
       M⁻ ↓ A                              switch to inherited
 
     L⁻, M⁻, N⁻ ::=                      terms with inherited type
