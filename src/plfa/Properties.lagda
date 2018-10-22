@@ -78,14 +78,14 @@ of the same type as the original term.  We will turn this recipe into
 Agda code that can compute for us the reduction sequence of `plus ·
 two · two`, and its Church numeral variant.
 
-The development in this chapter was inspired by the corresponding
+(The development in this chapter was inspired by the corresponding
 development in in _Software Foundations, volume _Programming Language
 Foundations_, chapter _StlcProp_.  It will turn out that one of our technical choices
-(to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
-treating a context as a function from identifiers to types)
+— to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
+treating a context as a function from identifiers to types —
 permits a simpler development. In particular, we can prove substitution preserves
 types without needing to develop a separate inductive definition of the
-`appears_free_in` relation.
+`appears_free_in` relation.)
 
 
 ## Values do not reduce
@@ -333,7 +333,7 @@ this requires that we match against the lambda expression `L` to
 determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 `L · M` reduces to `N [ x := M ]`.
 
-#### Exercise `Progress-iso`
+#### Exercise `Progress-≃`
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
@@ -342,7 +342,7 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-#### Exercise `value?` (recommended)
+#### Exercise `value?`
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value.
@@ -378,9 +378,9 @@ same variable appears twice remains well-typed if we drop the shadowed
 occurrence.  The _swap_ lemma asserts a term well-typed in a context
 remains well-typed if we swap two variables.
 
-Renaming is similar to the _context invariance_ lemma in _Software
+(Renaming is similar to the _context invariance_ lemma in _Software
 Foundations_, but it does not require the definition of
-`appears_free_in` nor the `free_in_context` lemma.
+`appears_free_in` nor the `free_in_context` lemma.)
 
 The second step is to show that types are preserved by
 _substitution_.
@@ -395,7 +395,7 @@ In symbols,
 
     ∅ ⊢ V ⦂ A
     Γ , x ⦂ A ⊢ N ⦂ B
-    ------------------
+    --------------------
     Γ ⊢ N [ x := V ] ⦂ B
 
 The result does not depend on `V` being a value, but it does
@@ -407,8 +407,8 @@ is typed in an arbitrary context `Γ`, extended by the variable
 in `Γ`. 
 
 The lemma establishes that substitution composes well with typing:
-if we first type the components separately and then combine them we get
-the same result as if we first substitute and then type the result.
+typing the components separately guarantees that the result of
+combining them is also well typed.
 
 The third step is to show preservation.
 
@@ -417,7 +417,7 @@ If `∅ ⊢ M ⦂ A` and `M —→ N` then `∅ ⊢ N ⦂ A`.
 
 The proof is by induction over the possible reductions, and
 the substitution lemma is crucial in showing that each of the
-`β` rules which uses substitution preserves types.
+`β` rules that uses substitution preserves types.
 
 We now proceed with our three-step programme.
 
@@ -1263,7 +1263,7 @@ above.
 Using the evaluator, confirm that two times two is four.
 
 
-#### Exercise: `progress-preservation` (recommended)
+#### Exercise: `progress-preservation`
 
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
@@ -1315,10 +1315,8 @@ postulate
     → ∅ ⊢ N ⦂ A
 \end{code}
 
-An easy consequence is that after any number of steps, a well-typed
-term does not get stuck.  Felleisen and Wright, who introduced proofs
-via progress and preservation, summarised this result with the slogan
-_well-typed terms don't get stuck_.
+An easy consequence is that starting from a well-typed term, taking
+any number of reduction steps leads to a term that is not stuck.
 \begin{code}
 postulate
   wttdgs : ∀ {M N A}
@@ -1327,12 +1325,18 @@ postulate
       -----------
     → ¬ (Stuck M)
 \end{code}
+Felleisen and Wright, who introduced proofs via progress and
+preservation, summarised this result with the slogan _well-typed terms
+don't get stuck_.  (They were referrring to earlier work by Robin
+Milner, who used denotational rather than operational semantics. He
+introduced `wrong` as the denotation of a term with a type error, and
+showed _well-typed terms don't go wrong_.)
 
 #### Exercise `stuck`
 
 Give an example of an ill-typed term that does get stuck.
 
-#### Exercise `unstuck`
+#### Exercise `unstuck` (recommended)
 
 Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
@@ -1410,7 +1414,7 @@ three typical cases.
       (ƛ x ⇒ N) · V —→ N [ x := V ]        (ƛ x ⇒ N) · V —→ N [ x := V ]
 
   Since the left-hand sides are identical, the right-hand sides are
-  also identical. The formal proof invokes `refl`.
+  also identical. The formal proof simply invokes `refl`.
 
 Five of the 18 lines in the above proof are redundant, e.g., the case
 when one rule is `ξ-·₁` and the other is `ξ-·₂` is considered twice,
@@ -1420,7 +1424,7 @@ and add
 
     det M—→M′ M—→M″ = sym (det M—→M″ M—→M′)
 
-to the bottom of the proof. But this does not work. The termination
+to the bottom of the proof. But this does not work: the termination
 checker complains, because the arguments have merely switched order
 and neither is smaller.
 

@@ -96,16 +96,20 @@ some extra practice.
     - `reverse-involutive` (recommended)
     - `map-compose`
     - `map-++-commute`
-    - `map-Tree` (recommended)
-    - `product`
+    - `map-Tree`
+    - `product` (recommended)
     - `fold-++` (recommended)
     - `map-is-foldr`
     - `fold-Tree`
     - `map-is-fold-Tree`
     - `sum-downFrom` (stretch)
-    - `Any-++` (recommended)
+    - `foldl`
+    - `foldr-monoid-foldl`
+    - `Any-++-⇔` (recommended)
+    - `All-++-≃` (stretch)
     - `¬Any≃All¬` (stretch)
-    - `any?` (recommended)
+    - `any?` (stretch)
+    - `filter?` (stretch)
 
   + Lambda
     - `mul` (recommended)
@@ -116,19 +120,23 @@ some extra practice.
     - `mul-type` (recommended)
 
   + Properties
-    - `Progress-iso`
+    - `Progress-≃`
     - `progress′`
-    - `value?`
+    - `value?` (recommended)
     - `subst′` (stretch)
     - `mul-example` (recommended)
+    - `progress-preservation`
+    - `subject-expansion`
+    - `stuck`
     - `unstuck` (recommended)
+
+* Assignment 4. Due 4pm Thursday 15 November (Week 9)
+
 
   + DeBruijn
     - `mul` (recommended)
     - `V¬—→`
     - `mul-example` (recommended)
-
-* Assignment 4. Due 4pm Thursday 15 November (Week 9)
 
   + More
     - `More` (recommended)

@@ -303,7 +303,7 @@ above are isomorphic.
 Write out the reduction sequence demonstrating that one plus one is two.
 
 
-#### Exercise `mul-type`
+#### Exercise `mul-type` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well-typed.
@@ -312,7 +312,7 @@ showing that it is well-typed.
 ## Properties
 
 
-#### Exercise `Progress-iso`
+#### Exercise `Progress-≃`
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
@@ -347,13 +347,13 @@ preserves types.
 Using the evaluator, confirm that two times two is four.
 
 
-#### Exercise: `progress-preservation` (recommended)
+#### Exercise: `progress-preservation`
 
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
 
 
-#### Exercise `subject_expansion`
+#### Exercise `subject-expansion`
 
 We say that `M` _reduces_ to `N` if `M —→ N`,
 and conversely that `M` _expands_ to `N` if `N —→ M`.
@@ -364,7 +364,7 @@ Find two counter-examples to subject expansion, one
 with case expressions and one not involving case expressions.
 
 
-#### Exercise `stuck` (recommended)
+#### Exercise `stuck`
 
 Give an example of an ill-typed term that does get stuck.
 
