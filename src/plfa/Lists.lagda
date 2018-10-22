@@ -794,7 +794,7 @@ data All {A : Set} (P : A → Set) : List A → Set where
   _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
 \end{code}
 The type has two constructors, reusing the names of the same constructors for lists.
-The first asserts that `P` holds for ever element of the empty list.
+The first asserts that `P` holds for every element of the empty list.
 The second asserts that if `P` holds of the head of a list and for every
 element of the tail of a list, then `P` holds for every element of the list.
 Agda uses types to disambiguate whether the constructor is building
