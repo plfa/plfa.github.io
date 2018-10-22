@@ -195,7 +195,16 @@ reduces to `` `suc `suc `suc `suc `zero ``.
 #### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
-two natural numbers.
+two natural numbers.  Your definition may use `plus` as
+defined earlier.
+
+
+#### Exercise `mulᶜ`
+
+Write out the definition of a lambda term that multiplies
+two natural numbers represented as Church numerals. Your
+definition may use `plusᶜ` as defined earlier (or may not
+— there are nice definitions both ways).
 
 
 #### Exercise `primed` (stretch)
@@ -394,10 +403,10 @@ Here are some examples:
 * `` (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] `` yields
   `` sucᶜ · (sucᶜ · `zero) ``
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
-     ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 * `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``
 * `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``
-* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``
+* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``
 
 In the last but one example, substituting `` `zero `` for `x` in
 `` ƛ "x" ⇒ ` "x" `` does _not_ yield `` ƛ "x" ⇒ `zero ``,
@@ -413,14 +422,15 @@ when term substituted for the variable is closed. This is because
 substitution by terms that are _not_ closed may require renaming
 of bound variables. For example:
 
-* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield
+* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield <br/>
   `` (ƛ "x" ⇒ ` "x" · (` "x" · ` `zero)) ``
 
 Instead, we should rename the bound variable to avoid capture.
 
-* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield
-  `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
+* `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield <br/>
+  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``
 
+Here `x′` is a fresh variable distinct from `x`.
 Formal definition of substitution with suitable renaming is considerably
 more complex, so we avoid it by restricting to substitution by closed terms,
 which will be adequate for our purposes.
@@ -1317,6 +1327,12 @@ or explain why there are no such types.
 #### Exercise `mul-type` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
+showing that it is well-typed.
+
+
+#### Exercise `mulᶜ-type`
+
+Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well-typed.
 
 

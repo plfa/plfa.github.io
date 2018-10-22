@@ -811,6 +811,13 @@ _ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
 
+It would be nice to rewrite the above as follows.
+\begin{code}
+_ : All (_≤ 2) [ 0 , 1 , 2 ]
+_ = [ ? , (s≤s z≤n) , (s≤s (s≤s z≤n)) ]
+\end{code}
+
+
 ## Any
 
 Predicate `Any P` holds if predicate `P` is satisfied by some element of a list.
@@ -888,7 +895,7 @@ Prove a result similar to `All-++-↔`, but with `Any` in place of `All`, and a 
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
-#### Exercise `All-++-≃` (stetch)
+#### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 
