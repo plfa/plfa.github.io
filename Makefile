@@ -2,8 +2,7 @@ agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda) $(wildcard tspl/*.lag
 agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai) $(wildcard tspl/*.agdai) $(wildcard tspl/**/*.agdai)
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
-all: $(markdown)
+AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
 
 test: build
 	ruby -S bundle exec htmlproofer _site --disable-external
@@ -15,13 +14,13 @@ out/:
 	mkdir -p out/
 
 out/%.md: src/%.lagda | out/
-	agda2html --verbose --link-to-agda-stdlib --link-to-local-agda-names --use-jekyll=out/ -i $< -o $@ 2>&1 \
+	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
 # should fix this -- it's the same as above
 out/%.md: tspl/%.lagda | out/
-	agda2html --verbose --link-to-agda-stdlib --link-to-local-agda-names --use-jekyll=out/ -i $< -o $@ 2>&1 \
+	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
@@ -36,11 +35,17 @@ server-start:
 server-stop:
 	pkill -f jekyll
 
+# build website using jekyll (offline)
+build-offline: $(markdown)
+	ruby -S bundle exec jekyll build
+
 # build website using jekyll
+build: AGDA2HTML_FLAGS += --link-to-agda-stdlib
 build: $(markdown)
 	ruby -S bundle exec jekyll build
 
 # build website using jekyll incrementally
+build-incremental: AGDA2HTML_FLAGS += --link-to-agda-stdlib
 build-incremental: $(markdown)
 	ruby -S bundle exec jekyll build --incremental
 
