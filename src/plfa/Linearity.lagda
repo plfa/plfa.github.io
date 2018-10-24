@@ -14,23 +14,25 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; suc; zero; _≤?_; _<_; s≤s)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Relation.Nullary.Decidable using (True; toWitness)
+open import Relation.Nullary.Decidable as D using (True; toWitness)
 open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl; cong)
 open Eq.≡-Reasoning
 open import Relation.Binary.Core using (Reflexive; Transitive; Total)
 \end{code}
 
 \begin{code}
-infix  1 _⊢_
-infix  1 _∋_
+infix  1 _⊢₁_
+infix  1 _∋₁_
 infixl 5 _,_
 infixl 5 _,_∙_
 
-infixr 8 [_∙_]⊸_
-infixr 9 _⊗_
-infixr 9 _&_
-infixr 9 _⊕_
+infixr 6 [_∙_]⊸_
+infixr 7 _⊗_
+infixr 7 _&_
+infixr 7 _⊕_
 
+infixl 9 _**_
+infixr 8 _⋈_
 
 infix  5 ƛ_
 infixl 7 _·_
@@ -38,14 +40,14 @@ infix  9 `_
 \end{code}
 
 \begin{code}
-data Usage : Set where
-  0# : Usage
-  1# : Usage
-  ω# : Usage
+data Mult : Set where
+  0# : Mult
+  1# : Mult
+  ω# : Mult
 \end{code}
 
 \begin{code}
-_+_ : Usage → Usage → Usage
+_+_ : Mult → Mult → Mult
 0# + π  = π
 1# + 0# = 1#
 1# + 1# = ω#
@@ -54,7 +56,7 @@ _+_ : Usage → Usage → Usage
 \end{code}
 
 \begin{code}
-_*_ : Usage → Usage → Usage
+_*_ : Mult → Mult → Mult
 0# * _  = 0#
 1# * 0# = 0#
 ω# * 0# = 0#
@@ -66,7 +68,7 @@ _*_ : Usage → Usage → Usage
 
 \begin{code}
 data Type : Set where
-  [_∙_]⊸_ : Usage → Type → Type → Type
+  [_∙_]⊸_ : Mult → Type → Type → Type
   `1      : Type
   `0      : Type
   `⊤      : Type
@@ -89,12 +91,12 @@ _ = ∅ , [ 1# ∙ `1 ]⊸ `1 , `1
 \begin{code}
 data Context : Precontext → Set where
   ∅     : Context ∅
-  _,_∙_ : ∀ {Γ} → Context Γ → Usage → (A : Type) → Context (Γ , A)
+  _,_∙_ : ∀ {Γ} → Context Γ → Mult → (A : Type) → Context (Γ , A)
 \end{code}
 
 \begin{code}
 _ : Context (∅ , [ 1# ∙ `1 ]⊸ `1 , `1)
-_ = ∅ , 0# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1
+_ = ∅ , 1# ∙ [ 1# ∙ `1 ]⊸ `1 , 0# ∙ `1
 \end{code}
 
 \begin{code}
@@ -104,129 +106,93 @@ _⋈_ : ∀ {γ} → Context γ → Context γ → Context γ
 \end{code}
 
 \begin{code}
-0∙_ : (Γ : Precontext) → Context Γ
-0∙  ∅      = ∅
-0∙ (Γ , A) = 0∙ Γ , 0# ∙ A
+data _⋈_↦_ : ∀ {γ} (Γ Γ′ Δ : Context γ) → Set where
+
+  ∅       : ---------
+            ∅ ⋈ ∅ ↦ ∅
+
+  _,0+0∙_ : ∀ {γ} {Γ Γ′ Δ : Context γ}
+          → Γ ⋈ Γ′ ↦ Δ
+          → (A : Type)
+          → (Γ , 0# ∙ A) ⋈ (Γ′ , 0# ∙ A) ↦ (Δ , 0# ∙ A)
+
+  _,0+1∙_ : ∀ {γ} {Γ Γ′ Δ : Context γ}
+          → Γ ⋈ Γ′ ↦ Δ
+          → (A : Type)
+          → (Γ , 0# ∙ A) ⋈ (Γ′ , 1# ∙ A) ↦ (Δ , 1# ∙ A)
+
+  _,1+0∙_ : ∀ {γ} {Γ Γ′ Δ : Context γ}
+          → Γ ⋈ Γ′ ↦ Δ
+          → (A : Type)
+          → (Γ , 1# ∙ A) ⋈ (Γ′ , 0# ∙ A) ↦ (Δ , 1# ∙ A)
 \end{code}
 
 \begin{code}
-data _∋_ : {γ : Precontext} → Context γ → Type → Set where
+0∙_ : ∀ γ → Context γ
+0∙  ∅      = ∅
+0∙ (γ , A) = 0∙ γ , 0# ∙ A
+\end{code}
 
-  Z  : ∀ {γ A}
+\begin{code}
+_**_ : ∀ {γ} → Mult → Context γ → Context γ
+π ** ∅ = ∅
+π ** (Γ , ρ ∙ A) = π ** Γ , π * ρ ∙ A
+\end{code}
 
+\begin{code}
+data _∋₁_ : ∀ {γ} → Context γ → Type → Set where
+
+  Z  : ∀ {γ} {A}
        -----------------
-     → 0∙ γ , 1# ∙ A ∋ A
+     → 0∙ γ , 1# ∙ A ∋₁ A
 
   S_ : ∀ {γ} {Γ : Context γ} {A B}
 
-     → Γ ∋ A
+     → Γ ∋₁ A
        --------------
-     → Γ , 0# ∙ B ∋ A
+     → Γ , 0# ∙ B ∋₁ A
 \end{code}
 
+
 \begin{code}
-data _⊢_ : {γ : Precontext} → Context γ → Type → Set where
+data _⊢₁_ : ∀ {γ} → Context γ → Type → Set where
 
   `_  : ∀ {γ} {Γ : Context γ} {A}
 
-      → Γ ∋ A
+      → Γ ∋₁ A
         -----
-      → Γ ⊢ A
+      → Γ ⊢₁ A
 
-  ƛ_  : ∀ {γ} {Γ : Context γ} {A B π}
+  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π}
 
-      → Γ , π ∙ A ⊢ B
-        ----------------
-      → Γ ⊢ [ π ∙ A ]⊸ B
+      → Γ , π ∙ A ⊢₁ B
+        -----------------
+      → Γ ⊢₁ [ π ∙ A ]⊸ B
 
-  _·_ : ∀ {γ} {Γ Δ : Context γ} {A B π}
+  _·_ : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
 
-      → Γ ⊢ [ π ∙ A ]⊸ B
-      → Δ ⊢ A
-        -----------
-      → Γ ⋈ Δ ⊢ B
-
-  `tt : ∀ {γ} {Γ : Context γ}
-
-        ------
-      → Γ ⊢ `1
-
-  `case1 : ∀ {γ} {Γ Δ : Context γ} {A}
-
-      → Γ ⊢ `1
-      → Δ ⊢ A
-        -----------
-      → Γ ⋈ Δ ⊢ A
-
-  `⟨_,_⟩ : ∀ {γ} {Γ Δ : Context γ} {A B}
-
-      → Γ ⊢ A
-      → Δ ⊢ B
-        ---------------
-      → Γ ⋈ Δ ⊢ A ⊗ B
-
-  `case⊗ : ∀ {γ} {Γ Δ : Context γ} {A B C}
-
-      → Γ ⊢ A ⊗ B
-      → Δ , 1# ∙ A , 1# ∙ B ⊢ C
-        ------------------------
-      → Γ ⋈ Δ ⊢ C
-
-  `⟪_,_⟫ : ∀ {γ} {Γ : Context γ} {A B}
-
-      → Γ ⊢ B
-      → Γ ⊢ A
-        ---------
-      → Γ ⊢ A & B
-
-  `proj₁ : ∀ {γ} {Γ : Context γ} {A B}
-
-      → Γ ⊢ A & B
-        ---------
-      → Γ ⊢ A
-
-  `proj₂ : ∀ {γ} {Γ : Context γ} {A B}
-
-      → Γ ⊢ A & B
-        ---------
-      → Γ ⊢ B
-
-  `inj₁ : ∀ {γ} {Γ : Context γ} {A B}
-
-      → Γ ⊢ A
-        ---------
-      → Γ ⊢ A ⊕ B
-
-  `inj₂ : ∀ {γ} {Γ : Context γ} {A B}
-
-      → Γ ⊢ B
-        ---------
-      → Γ ⊢ A ⊕ B
-
-  `case⊕ : ∀ {γ} {Γ Δ : Context γ} {A B C}
-
-      → Γ ⊢ A ⊕ B
-      → Δ , 1# ∙ A ⊢ C
-      → Δ , 1# ∙ B ⊢ C
+      → Γ ⊢₁ [ π ∙ A ]⊸ B
+      → Δ ⊢₁ A
+        ----------
+      → Γ ⋈ π ** Δ ⊢₁ B
 \end{code}
 
 \begin{code}
-_ : ∅ , 0# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1 ⊢ `1
+_ : ∅ , 0# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1 ⊢₁ `1
 _ = ` Z
 
-_ : ∅ , 1# ∙ [ 1# ∙ `1 ]⊸ `1 , 0# ∙ `1 ⊢ [ 1# ∙ `1 ]⊸ `1
+_ : ∅ , 1# ∙ [ 1# ∙ `1 ]⊸ `1 , 0# ∙ `1 ⊢₁ [ 1# ∙ `1 ]⊸ `1
 _ = ` S Z
 
-_ : ∅ , 1# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1 ⊢ `1
+_ : ∅ , 1# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1 ⊢₁ `1
 _ = ` S Z · ` Z
 
-_ : ∅ , ω# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1 ⊢ `1
+_ : ∅ , ω# ∙ [ 1# ∙ `1 ]⊸ `1 , 1# ∙ `1 ⊢₁ `1
 _ = ` S Z · (` S Z · ` Z)
 
-_ : ∅ , ω# ∙ [ ω# ∙ `1 ]⊸ `1 ⊢ [ 1# ∙ `1 ]⊸ `1
+_ : ∅ , ω# ∙ [ 1# ∙ `1 ]⊸ `1 ⊢₁ [ 1# ∙ `1 ]⊸ `1
 _ = ƛ ` S Z · (` S Z · ` Z)
 
-_ : ∅ ⊢ [ ω# ∙ [ 1# ∙ `1 ]⊸ `1 ]⊸ [ 1# ∙ `1 ]⊸ `1
+_ : ∅ ⊢₁ [ ω# ∙ [ 1# ∙ `1 ]⊸ `1 ]⊸ [ 1# ∙ `1 ]⊸ `1
 _ = ƛ ƛ ` S Z · (` S Z · ` Z)
 \end{code}
-
