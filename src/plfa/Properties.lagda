@@ -627,7 +627,7 @@ cases, and fixpoints, the variable `x` is an implicit parameter for
 the relevant variable.  We are going to need to get hold of both
 variables, so we use the syntax `{x = y}` to bind `y` to the
 substituted variable and the syntax `{x = x}` to bind `x` to the
-relevant variable in the patterns for `⊢``, `⊢ƛ`, `⊢case`, and `⊢μ`.
+relevant variable in the patterns for `` ⊢` ``, `⊢ƛ`, `⊢case`, and `⊢μ`.
 Using the name `y` here is consistent with the naming in the original
 definition of substitution in the previous chapter.  The proof never
 mentions the types of `x`, `y`, `V`, or `N`, so in what follows we
