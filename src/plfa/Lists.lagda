@@ -811,11 +811,11 @@ _ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
 
-It would be nice to rewrite the above as follows.
-\begin{code}
-_ : All (_≤ 2) [ 0 , 1 , 2 ]
-_ = [ ? , (s≤s z≤n) , (s≤s (s≤s z≤n)) ]
-\end{code}
+(One might wonder whether a pattern such as `[_,_,_]` can be used to
+construct values of type `All` as well as type `List`, since both use
+the same constructors. Indeed it can, so long as both types are in
+scope when the pattern is declared.  That's not the case here, since
+`List` is defined before `[_,_,_]`, but `All` is defined later.)
 
 
 ## Any

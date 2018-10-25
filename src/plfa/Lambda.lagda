@@ -1353,5 +1353,5 @@ This chapter uses the following unicode.
     😇  U+1F607  SMILING FACE WITH HALO
     😈  U+1F608  SMILING FACE WITH HORNS
 
-We compose reduction —→ from an em dash — and an arrow →.
-Similarly for reflexive and transitive closure —↠.
+We compose reduction `—→` from an em dash `—` and an arrow `→`.
+Similarly for reflexive and transitive closure `—↠`.

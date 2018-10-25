@@ -32,15 +32,15 @@ data _≡_ {A : Set} (x : A) : A → Set where
 \end{code}
 In other words, for any type `A` and for any `x` of type `A`, the
 constructor `refl` provides evidence that `x ≡ x`. Hence, every value
-is equivalent to itself, and we have no other way of showing values
-are equivalent.  The definition features an asymmetry, in that the
+is equal to itself, and we have no other way of showing values
+equal.  The definition features an asymmetry, in that the
 first argument to `_≡_` is given by the parameter `x : A`, while the
 second is given by an index in `A → Set`.  This follows our policy
 of using parameters wherever possible.  The first argument to `_≡_`
 can be a parameter because it doesn't vary, while the second must be
 an index, so it can be required to be equal to the first.
 
-We declare the precedence of equivalence as follows.
+We declare the precedence of equality as follows.
 \begin{code}
 infix 4 _≡_
 \end{code}
@@ -53,7 +53,7 @@ is illegal.
 ## Equality is an equivalence relation
 
 An equivalence relation is one which is reflexive, symmetric, and transitive.
-Reflexivity is built-in to the definition of equivalence, via the
+Reflexivity is built-in to the definition of equality, via the
 constructor `refl`.  It is straightforward to show symmetry.
 \begin{code}
 sym : ∀ {A : Set} {x y : A}
@@ -128,8 +128,8 @@ trans : ∀ {A : Set} {x y z : A}
   → x ≡ z
 trans refl refl  =  refl
 \end{code}
-Again, a useful exercise is to carry out an interactive development, checking
-how Agda's knowledge changes as each of the two arguments is
+Again, a useful exercise is to carry out an interactive development,
+checking how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
 ## Congruence and substitution {#cong}
@@ -178,10 +178,10 @@ subst P refl px = px
 
 ## Chains of equations
 
-Here we show how to support reasoning with chains of equations
-as used throughout the book.  We package the declarations
-into a module, named `≡-Reasoning`, to match the format used in Agda's
-standard library.
+Here we show how to support reasoning with chains of equations, as
+used throughout the book.  We package the declarations into a module,
+named `≡-Reasoning`, to match the format used in Agda's standard
+library.
 \begin{code}
 module ≡-Reasoning {A : Set} where
 
@@ -218,7 +218,7 @@ open ≡-Reasoning
 This is our first use of a nested module. It consists of the keyword
 `module` followed by the module name and any parameters, explicit or
 implicit, the keyword `where`, and the contents of the module indented.
-Modules may contain any sort of declaration, including nested modules.
+Modules may contain any sort of declaration, including other nested modules.
 Nested modules are similar to the top-level modules that constitute
 each chapter of this book, save that the body of a top-level module
 need not be indented.  Opening the module makes all of the definitions
@@ -320,10 +320,9 @@ We then repeat the proof of commutativity.
   ∎
 \end{code}
 The reasoning here is similar to that in the
-preceding section, the one addition being the use of
-`_≡⟨⟩_`, which we use when no justification is required.
-One can think of occurrences of `≡⟨⟩` as an equivalent
-to `≡⟨ refl ⟩`.
+preceding section.  We use
+`_≡⟨⟩_` when no justification is required.
+One can think of `_≡⟨⟩_` as equivalent to `_≡⟨ refl ⟩_`.
 
 Agda always treats a term as equivalent to its
 simplified term.  The reason that one can write
@@ -383,9 +382,10 @@ In the previous section, we proved addition is commutative.  Given
 evidence that `even (m + n)` holds, we ought also to be able to take
 that as evidence that `even (n + m)` holds.
 
-Agda includes special notation to support just this kind of reasoning.
+Agda includes special notation to support just this kind of reasoning,
+the `rewrite` notation we encountered earlier.
 To enable this notation, we use pragmas to tell Agda which type
-corresponds to equivalence.
+corresponds to equality.
 \begin{code}
 {-# BUILTIN EQUALITY _≡_ #-}
 \end{code}
@@ -401,7 +401,7 @@ even-comm m n ev  rewrite +-comm n m  =  ev
 Here `ev` ranges over evidence that `even (m + n)` holds, and we show
 that it is also provides evidence that `even (n + m)` holds.  In
 general, the keyword `rewrite` is followed by evidence of an
-equivalence, and that equivalence is used to rewrite the type of the
+equality, and that equality is used to rewrite the type of the
 goal and of any variable in scope.
 
 It is instructive to develop `even-comm` interactively.  To start, we
@@ -428,19 +428,21 @@ Now we add the rewrite.
       → even (m + n)
         ------------
       → even (n + m)
-    even-comm m n ev rewrite +-comm m n = {! !}
+    even-comm m n ev rewrite +-comm n m = {! !}
 
 If we go into the hole again and type `C-c C-,` then Agda now reports:
 
-    Goal: even (n + m)
+    Goal: even (m + n)
     ————————————————————————————————————————————————————————————
-    ev : even (n + m)
+    ev : even (m + n)
     n  : ℕ
     m  : ℕ
 
 The arguments have been swapped in the goal.  Now it is trivial to see
 that `ev` satisfies the goal, and typing `C-c C-a` in the hole causes
-it to be filled with `ev`.
+it to be filled with `ev`.  The command `C-c C-a` performs an
+automated search, including checking whether a variable in scope has
+the same type as the goal.
 
 
 ## Multiple rewrites
@@ -474,20 +476,25 @@ even-comm′ : ∀ (m n : ℕ)
 even-comm′ m n ev with   m + n  | +-comm m n
 ...                  | .(n + m) | refl       = ev
 \end{code}
-The first clause asserts that `m + n` and `n + m` are identical, and
-the second clause justifies that assertion with evidence of the
-appropriate equivalence.  Note the use of the _dot pattern_, `.(n +
-m)`.  A dot pattern consists of a dot followed by an expression, and
-is used when other information forces the value matched to be equal to
-the value of the expression in the dot pattern.  In this case, the
-identification of `m + n` and `n + m` is justified by the subsequent
-matching of `+-comm m n` against `refl`.  One might think that the
-first clause is redundant as the information is inherent in the second
-clause, but in fact Agda is rather picky on this point: omitting the
-first clause or reversing the order of the clauses will cause Agda to
-report an error.  (Try it and see!)
+In general, one can follow `with` by any number of expressions,
+separated by bars, where each following equation has the same number
+of patterns.  We often write expressions and the corresponding
+patterns so they line up in columns, as above. Here the first column
+asserts that `m + n` and `n + m` are identical, and the second column
+justifies that assertion with evidence of the appropriate equality.
+Note also the use of the _dot pattern_, `.(n + m)`.  A dot pattern
+consists of a dot followed by an expression, and is used when other
+information forces the value matched to be equal to the value of the
+expression in the dot pattern.  In this case, the identification of `m
++ n` and `n + m` is justified by the subsequent matching of `+-comm m
+n` against `refl`.  One might think that the first clause is redundant
+as the information is inherent in the second clause, but in fact Agda
+is rather picky on this point: omitting the first clause or reversing
+the order of the clauses will cause Agda to report an error.  (Try it
+and see!)
 
-In this case, we can avoid rewrite by simply applying substitution.
+In this case, we can avoid rewrite by simply applying the substitution
+function defined earlier.
 \begin{code}
 even-comm″ : ∀ (m n : ℕ)
   → even (m + n)
@@ -495,13 +502,13 @@ even-comm″ : ∀ (m n : ℕ)
   → even (n + m)
 even-comm″ m n  =  subst even (+-comm m n)
 \end{code}
-Nonetheless, rewrite is a vital part of the Agda toolkit,
-as earlier examples have shown.
+Nonetheless, rewrite is a vital part of the Agda toolkit.  We will use
+it sparingly, but it is occasionally essential.
 
 
 ## Leibniz equality
 
-The form of asserting equivalence that we have used is due to Martin
+The form of asserting equality that we have used is due to Martin
 Löf, and was published in 1975.  An older form is due to Leibniz, and
 was published in 1686.  Leibniz asserted the _identity of
 indiscernibles_: two objects are equal if and only if they satisfy the
@@ -509,13 +516,12 @@ same properties. This principle sometimes goes by the name Leibniz'
 Law, and is closely related to Spock's Law, "A difference that makes
 no difference is no difference".  Here we define Leibniz equality,
 and show that two terms satisfy Leibniz equality if and only if they
-satisfy Martin Löf equivalence.
+satisfy Martin Löf equality.
 
-Leibniz equality is usually formalised to state that `x ≐ y`
-holds if every property `P` that holds of `x` also holds of
-`y`.  Perhaps surprisingly, this definition is
-sufficient to also ensure the converse, that every property `P` that
-holds of `y` also holds of `x`.
+Leibniz equality is usually formalised to state that `x ≐ y` holds if
+every property `P` that holds of `x` also holds of `y`.  Perhaps
+surprisingly, this definition is sufficient to also ensure the
+converse, that every property `P` that holds of `y` also holds of `x`.
 
 Let `x` and `y` be objects of type `A`. We say that `x ≐ y` holds if
 for every predicate `P` over type `A` we have that `P x` implies `P y`.
@@ -568,17 +574,17 @@ sym-≐ {A} {x} {y} x≐y P  =  Qy
     Qy : Q y
     Qy = x≐y Q Qx
 \end{code}
-Given `x ≐ y`, a specific `P`, a proof of `P y`, we have to
+Given `x ≐ y`, a specific `P`, and a proof of `P y`, we have to
 construct a proof of `P x`.  To do so, we instantiate the equality
 with a predicate `Q` such that `Q z` holds if `P z` implies `P x`.
 The property `Q x` is trivial by reflexivity, and hence `Q y` follows
 from `x ≐ y`.  But `Q y` is exactly a proof of what we require, that
 `P y` implies `P x`.
 
-We now show that Martin Löf equivalence implies
+We now show that Martin Löf equality implies
 Leibniz equality, and vice versa.  In the forward direction, if we know
 `x ≡ y` we need for any `P` to take evidence of `P x` to evidence of `P y`,
-which is easy since equivalence of `x` and `y` implies that any proof
+which is easy since equality of `x` and `y` implies that any proof
 of `P x` is also a proof of `P y`.
 \begin{code}
 ≡-implies-≐ : ∀ {A : Set} {x y : A}
@@ -607,7 +613,7 @@ to a proof of `P y` we need to show `x ≡ y`.
 \end{code}
 The proof is similar to that for symmetry of Leibniz equality. We take
 `Q` to be the predicate that holds of `z` if `x ≡ z`. Then `Q x` is
-trivial by reflexivity of Martin Löf equivalence, and hence `Q y`
+trivial by reflexivity of Martin Löf equality, and hence `Q y`
 follows from `x ≐ y`.  But `Q y` is exactly a proof of what we
 require, that `x ≡ y`.
 
@@ -630,8 +636,11 @@ The answer is _universe polymorphism_, where a definition is made
 with respect to an arbitrary level `ℓ`. To make use of levels, we
 first import the following.
 \begin{code}
-open import Level using (Level; _⊔_) renaming (suc to lsuc; zero to lzero)
+open import Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc)
 \end{code}
+We rename constructors `zero` and `suc` to `lzero` and `lsuc` to avoid confusion
+between levels and naturals.
+
 Levels are isomorphic to natural numbers, and have similar constructors:
 
     lzero : Level
@@ -651,12 +660,15 @@ that given two levels returns the larger of the two.
 
 Here is the definition of equality, generalised to an arbitrary level.
 \begin{code}
-data _≡′_ {ℓ : Level} {A : Set ℓ} : A → A → Set ℓ where
-  refl′ : ∀ {x : A} → x ≡′ x
+data _≡′_ {ℓ : Level} {A : Set ℓ} (x : A) : A → Set ℓ where
+  refl′ : x ≡′ x
 \end{code}
 Similarly, here is the generalised definition of symmetry.
 \begin{code}
-sym′ : ∀ {ℓ : Level} {A : Set ℓ} {x y : A} →  x ≡′ y → y ≡′ x
+sym′ : ∀ {ℓ : Level} {A : Set ℓ} {x y : A}
+  → x ≡′ y
+    ------
+  → y ≡′ x
 sym′ refl′ = refl′
 \end{code}
 For simplicity, we avoid universe polymorphism in the definitions given in
@@ -669,11 +681,10 @@ _≐′_ : ∀ {ℓ : Level} {A : Set ℓ} (x y : A) → Set (lsuc ℓ)
 _≐′_ {ℓ} {A} x y = ∀ (P : A → Set ℓ) → P x → P y
 \end{code}
 Before the signature used `Set₁` as the type of a term that includes
-`Set`, whereas here the signature uses `Set (suc ℓ)` as the type of a
+`Set`, whereas here the signature uses `Set (lsuc ℓ)` as the type of a
 term that includes `Set ℓ`.
 
-Further information on levels can be found in
-the [Agda Wiki][wiki].
+Further information on levels can be found in the [Agda Wiki][wiki].
 
 [wiki]: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.UniversePolymorphism
 
@@ -701,3 +712,6 @@ This chapter uses the following unicode.
     ∎  U+220E  END OF PROOF (\qed)
     ≐  U+2250  APPROACHES THE LIMIT (\.=)
     ℓ  U+2113  SCRIPT SMALL L (\ell)
+    ₀  U+2080  SUBSCRIPT ZERO (\_0)
+    ₁  U+2081  SUBSCRIPT ONE (\_1)
+    ₂  U+2082  SUBSCRIPT TWO (\_2)
