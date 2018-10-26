@@ -885,7 +885,7 @@ Instead, we will provide a natural number to Agda, and permit it
 to stop short of a value if the term requires more than the given
 number of reduction steps.
 
-A similar issue arises with cryptocurrencies.  Systems which use use
+A similar issue arises with cryptocurrencies.  Systems which use
 smart contracts require the miners that maintain the blockchain to
 evaluate the program which embodies the contract.  For instance,
 validating a transaction on Ethereum may require executing a program
