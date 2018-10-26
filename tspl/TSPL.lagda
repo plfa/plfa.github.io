@@ -35,7 +35,7 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
   <td>2</td>
   <td><b>24 Sep</b> <a href="/Relations/">Relations</a> (Chad)</td>
   <td><b>26 Sep</b> <a href="/Relations/">Relations</a> (Chad)</td>
-  <td><b>28 Sep</b> (no lecture)</td>
+  <td><b>28 Sep</b> (no class)</td>
  </tr>
  <tr>
   <td>3</td>
@@ -47,7 +47,7 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
   <td>4</td>
   <td><b>8 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
   <td><b>10 Oct</b> <a href="/Decidable/">Decidable</a></td>
-  <td><b>12 Oct</b> (no lecture)</td>
+  <td><b>12 Oct</b> (tutorial only)</td>
  </tr>
  <tr>
   <td>5</td>
@@ -58,37 +58,37 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  <tr>
   <td>6</td>
   <td><b>22 Oct</b> <a href="/Lambda/">Lambda</a></td>
-  <td><b>24 Oct</b> (no lecture)</td>
+  <td><b>24 Oct</b> (no class)</td>
   <td><b>26 Oct</b> <a href="/Properties/">Properties</a></td>
  </tr>
  <tr>
   <td>7</td>
   <td><b>29 Oct</b> <a href="/DeBruijn/">DeBruijn</a></td>
   <td><b>31 Oct</b> <a href="/More/">More</a></td>
-  <td><b>2 Nov</b> (no lecture)</td>
+  <td><b>2 Nov</b> <a href="/Inference/">Inference</a></td>
  </tr>
  <tr>
   <td>8</td>
-  <td><b>5 Nov</b> <a href="/Bisimulation/">Bisimulation</a></td>
-  <td><b>7 Nov</b> <a href="/Inference/">Inference</a></td>
-  <td><b>9 Nov</b> (no lecture)</td>
+  <td><b>5 Nov</b> (no class)</td>
+  <td><b>7 Nov</b> (tutorial only)</td>
+  <td><b>9 Nov</b> <a href="/Untyped/">Untyped</a></td>
  </tr>
  <tr>
   <td>9</td>
-  <td><b>12 Nov</b> <a href="/Untyped/">Untyped</a></td>
-  <td><b>14 Nov</b> (no lecture)</td>
-  <td><b>16 Nov</b> (no lecture)</td>
+  <td><b>12 Nov</b> (no class)</td>
+  <td><b>14 Nov</b> (tutorial only)</td>
+  <td><b>16 Nov</b> (no class)</td>
  </tr>
  <tr>
   <td>10</td>
-  <td><b>19 Nov</b> (tutorial only)</td>
-  <td><b>21 Nov</b> (no lecture)</td>
-  <td><b>23 Nov</b> (no lecture)</td>
+  <td><b>19 Nov</b> (no class)</td>
+  <td><b>21 Nov</b> Propositions as Types</td>
+  <td><b>23 Nov</b> (no class)</td>
  </tr>
  <tr>
   <td>11</td>
-  <td><b>26 Nov</b> PaT</td>
-  <td><b>28 Nov</b> (no lecture)</td>
+  <td><b>26 Nov</b> (no class)</td>
+  <td><b>28 Nov</b> (tutorial only)</td>
   <td><b>30 Nov</b> (mock exam)</td>
  </tr>
 </table>
