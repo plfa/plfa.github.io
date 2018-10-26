@@ -1364,7 +1364,7 @@ postulate
     → ∅ ⊢ M ⦂ A
     → M —↠ N
       -----------
-    → ¬ (Stuck M)
+    → ¬ (Stuck N)
 \end{code}
 Felleisen and Wright, who introduced proofs via progress and
 preservation, summarised this result with the slogan _well-typed terms
