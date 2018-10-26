@@ -255,6 +255,46 @@ progress : ∀ {M A}
     ----------
   → Progress M
 progress (⊢` ())
+progress (⊢ƛ ⊢M) = done V-ƛ
+progress (⊢L · ⊢M) with progress ⊢L
+... | step L—→L′ = step (ξ-·₁ L—→L′)
+... | done VL with progress ⊢M
+...   | step M—→M′ = {!step (ξ-·₂ VL M—→M′)!}
+...   | done VM with canonical ⊢L VL
+...     | C-ƛ ⊢N  = step (β-ƛ VM)
+
+
+progress ⊢zero = {!!}
+progress (⊢suc ⊢M) = {!!}
+progress (⊢case ⊢M ⊢M₁ ⊢M₂) = {!!}
+progress (⊢μ ⊢M) = {!!}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{-
+progress (⊢` ())
 progress (⊢ƛ ⊢N)                            =  done V-ƛ
 progress (⊢L · ⊢M) with progress ⊢L
 ... | step L—→L′                            =  step (ξ-·₁ L—→L′)
@@ -272,6 +312,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-zero                              =  step β-zero
 ...   | C-suc CL                            =  step (β-suc (value CL))
 progress (⊢μ ⊢M)                            =  step β-μ
+-}
 \end{code}
 We induct on the evidence that the term is well-typed.
 Let's unpack the first three cases.  

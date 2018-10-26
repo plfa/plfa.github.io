@@ -48,7 +48,7 @@ open plfa.Isomorphism.≃-Reasoning
 open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
   _++_; reverse; map; foldr; sum; All; Any; here; there; _∈_)
 open import plfa.Lambda hiding (ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
-open import plfa.Properties hiding (value?)
+open import plfa.Properties hiding (value?; unstuck; preserves; wttdgs)
 \end{code}
 
 #### Exercise `reverse-++-commute` (recommended)

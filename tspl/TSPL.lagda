@@ -76,7 +76,7 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  <tr>
   <td>9</td>
   <td><b>12 Nov</b> <a href="/Untyped/">Untyped</a></td>
-  <td><b>14 Nov</b> (no lecture)</td>
+  <td><b>14 Nov</b> Propositions as Types</td>
   <td><b>16 Nov</b> (no lecture)</td>
  </tr>
  <tr>
@@ -87,7 +87,7 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  </tr>
  <tr>
   <td>11</td>
-  <td><b>26 Nov</b> PaT</td>
+  <td><b>26 Nov</b> (tutorial only)</td>
   <td><b>28 Nov</b> (no lecture)</td>
   <td><b>30 Nov</b> (mock exam)</td>
  </tr>
