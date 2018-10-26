@@ -363,13 +363,13 @@ The first step is to show that types are preserved by _renaming_.
 _Renaming_:
 Let `Γ` and `Δ` be two context such that every variable that
 appears in `Γ` also appears with the same type in `Δ`.  Then
-if a term is typable under `Γ`, it has the same type under `Δ`.
+if any term is typable under `Γ`, it has the same type under `Δ`.
 
 In symbols,
 
-    Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
-    -----------------------
-    Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
+    ∀ {x A} → Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
+    ---------------------------------
+    ∀ {M A} → Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
 
 Three important corollaries follow.  The _weaken_ lemma asserts a term
 well-typed in the empty context is also well-typed in an arbitary
@@ -627,7 +627,7 @@ cases, and fixpoints, the variable `x` is an implicit parameter for
 the relevant variable.  We are going to need to get hold of both
 variables, so we use the syntax `{x = y}` to bind `y` to the
 substituted variable and the syntax `{x = x}` to bind `x` to the
-relevant variable in the patterns for `⊢``, `⊢ƛ`, `⊢case`, and `⊢μ`.
+relevant variable in the patterns for `` ⊢` ``, `⊢ƛ`, `⊢case`, and `⊢μ`.
 Using the name `y` here is consistent with the naming in the original
 definition of substitution in the previous chapter.  The proof never
 mentions the types of `x`, `y`, `V`, or `N`, so in what follows we

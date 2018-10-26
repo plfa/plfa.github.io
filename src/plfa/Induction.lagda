@@ -22,7 +22,7 @@ _induction_.
 
 ## Imports
 
-We require equivality as in the previous chapter, plus the naturals
+We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also import a couple of new operations,
 `cong`, `sym`, and `_≡⟨_⟩_`, which are explained below.
 \begin{code}
@@ -47,7 +47,7 @@ on names for some of the most common properties.
   of parentheses does not matter: `(m + n) + p ≡ m + (n + p)`,
   for all `m`, `n`, and `p`.
 
-* _Commutatitivity_.   Operator `+` is commutative if order or
+* _Commutatitivity_.   Operator `+` is commutative if order of
   arguments does not matter: `m + n ≡ n + m`, for all `m` and `n`.
 
 * _Distributivity_.   Operator `*` distributes over operator `+` from the
@@ -67,7 +67,7 @@ might ask them if one distributes over the other.
 Less frivolously, if you ever bump into an operator while reading a
 technical paper, this gives you a way to orient yourself, by checking
 whether or not it has an identity, is associative or commutative, or
-distributes over another operator.  A careful author will ofter call
+distributes over another operator.  A careful author will often call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
@@ -131,7 +131,7 @@ which tells us that if `m` is a natural then `suc m` is also a natural.
 Proof by induction follows the structure of this definition.  To prove
 a property of natural numbers by induction, we need prove two cases.
 First is the _base case_, where we show the property holds for `zero`.
-Second is the _inductive case_, where we assume the the property holds for
+Second is the _inductive case_, where we assume the property holds for
 an arbitrary natural `m` (we call this the _inductive hypothesis_), and
 then show that the property must also hold for `suc m`.
 
@@ -746,8 +746,8 @@ Going into hole 0 and typing `C-c C-,` will display the text:
 This indicates that after simplification the goal for hole 0 is as
 stated, and that variables `p` and `n` of the stated types are
 available to use in the proof.  The proof of the given goal is
-trivial, and going into the goal and typing `C-c C-r` will fill it in,
-renumbering the remaining hole to 0:
+trivial, and going into the goal and typing `C-c C-r` will fill it in.
+Typing `C-c C-l` renumbers the remaining hole to 0:
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ zero n p = refl

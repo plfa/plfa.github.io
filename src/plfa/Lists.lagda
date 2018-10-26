@@ -794,7 +794,7 @@ data All {A : Set} (P : A → Set) : List A → Set where
   _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
 \end{code}
 The type has two constructors, reusing the names of the same constructors for lists.
-The first asserts that `P` holds for ever element of the empty list.
+The first asserts that `P` holds for every element of the empty list.
 The second asserts that if `P` holds of the head of a list and for every
 element of the tail of a list, then `P` holds for every element of the list.
 Agda uses types to disambiguate whether the constructor is building
@@ -810,6 +810,13 @@ _ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
 \end{code}
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
+
+(One might wonder whether a pattern such as `[_,_,_]` can be used to
+construct values of type `All` as well as type `List`, since both use
+the same constructors. Indeed it can, so long as both types are in
+scope when the pattern is declared.  That's not the case here, since
+`List` is defined before `[_,_,_]`, but `All` is defined later.)
+
 
 ## Any
 
@@ -888,7 +895,7 @@ Prove a result similar to `All-++-↔`, but with `Any` in place of `All`, and a 
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
-#### Exercise `All-++-≃` (stetch)
+#### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 

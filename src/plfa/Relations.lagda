@@ -63,7 +63,7 @@ data _≤_ : ℕ → ℕ → Set where
     → suc m ≤ suc n
 \end{code}
 Here `z≤n` and `s≤s` (with no spaces) are constructor names, while
-`zero ≤ m`, and `m ≤ n` and `suc m ≤ suc n` (with spaces) are types.
+`zero ≤ n`, and `m ≤ n` and `suc m ≤ suc n` (with spaces) are types.
 This is our first use of an _indexed_ datatype, where the type `m ≤ n`
 is indexed by two naturals, `m` and `n`.  In Agda any line beginning
 with two or more dashes is a comment, and here we have exploited that
@@ -208,7 +208,7 @@ Give an example of a partial order that is not a total order.
 The first property to prove about comparison is that it is reflexive:
 for any natural `n`, the relation `n ≤ n` holds.  We follow the
 convention in the standard library and make the argument implicit,
-as that will make it easier to invoke reflection.
+as that will make it easier to invoke reflexivity.
 \begin{code}
 ≤-refl : ∀ {n : ℕ}
     -----
@@ -336,6 +336,10 @@ data Total (m n : ℕ) : Set where
 Evidence that `Total m n` holds is either of the form
 `forward m≤n` or `flipped n≤m`, where `m≤n` and `n≤m` are
 evidence of `m ≤ n` and `n ≤ m` respectively.
+
+(For those familiar with logic, the above definition
+could also be written as a disjunction. Disjunctions will
+be introduced in Chapter [Connectives][plfa.Connectives].)
 
 This is our first use of a datatype with _parameters_,
 in this case `m` and `n`.  It is equivalent to the following
@@ -607,7 +611,7 @@ This is also our first use of _overloaded_ constructors,
 that is, using the same name for constructors of different types.
 Here `suc` means one of three constructors:
 
-    suc : `ℕ → `ℕ
+    suc : ℕ → ℕ
 
     suc : ∀ {n : ℕ}
       → odd n

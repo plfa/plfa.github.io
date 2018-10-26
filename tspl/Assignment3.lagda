@@ -39,15 +39,16 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Function using (_∘_)
+open import Algebra.Structures using (IsMonoid)
 open import Level using (Level)
 open import Relation.Unary using (Decidable)
 open import plfa.Relations using (_<_; z<s; s<s)
 open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
 open plfa.Isomorphism.≃-Reasoning
 open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
-  _++_; reverse; map; foldr; sum; Any; All; _∈_)
+  _++_; reverse; map; foldr; sum; All; Any; here; there; _∈_)
 open import plfa.Lambda hiding (ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
-open import plfa.Properties hiding (value?)
+open import plfa.Properties hiding (value?; unstuck; preserves; wttdgs)
 \end{code}
 
 #### Exercise `reverse-++-commute` (recommended)
@@ -189,7 +190,7 @@ replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
 
-#### Exercise `All-++-≃` (stetch)
+#### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 

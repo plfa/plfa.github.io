@@ -753,6 +753,7 @@ Emacs will also create a window displaying the text
     ?0 : ℕ
 
 to indicate that hole 0 is to be filled in with a term of type `ℕ`.
+Typing `C-c C-f` will move you into the next hole.
 
 We wish to define addition by recursion on the first argument.
 Move the cursor into the hole and type `C-c C-c`.   You will be given
