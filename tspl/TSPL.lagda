@@ -81,14 +81,14 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  </tr>
  <tr>
   <td>10</td>
-  <td><b>19 Nov</b> (tutorial only)</td>
-  <td><b>21 Nov</b> (no lecture)</td>
+  <td><b>19 Nov</b> (no lecture)</td>
+  <td><b>21 Nov</b> (tutorial only)</td>
   <td><b>23 Nov</b> (no lecture)</td>
  </tr>
  <tr>
   <td>11</td>
-  <td><b>26 Nov</b> (tutorial only)</td>
-  <td><b>28 Nov</b> (no lecture)</td>
+  <td><b>26 Nov</b> (no lecture)</td>
+  <td><b>28 Nov</b> (tutorial only)</td>
   <td><b>30 Nov</b> (mock exam)</td>
  </tr>
 </table>

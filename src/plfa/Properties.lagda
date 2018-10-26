@@ -255,46 +255,6 @@ progress : ∀ {M A}
     ----------
   → Progress M
 progress (⊢` ())
-progress (⊢ƛ ⊢M) = done V-ƛ
-progress (⊢L · ⊢M) with progress ⊢L
-... | step L—→L′ = step (ξ-·₁ L—→L′)
-... | done VL with progress ⊢M
-...   | step M—→M′ = {!step (ξ-·₂ VL M—→M′)!}
-...   | done VM with canonical ⊢L VL
-...     | C-ƛ ⊢N  = step (β-ƛ VM)
-
-
-progress ⊢zero = {!!}
-progress (⊢suc ⊢M) = {!!}
-progress (⊢case ⊢M ⊢M₁ ⊢M₂) = {!!}
-progress (⊢μ ⊢M) = {!!}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{-
-progress (⊢` ())
 progress (⊢ƛ ⊢N)                            =  done V-ƛ
 progress (⊢L · ⊢M) with progress ⊢L
 ... | step L—→L′                            =  step (ξ-·₁ L—→L′)
@@ -312,7 +272,6 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-zero                              =  step β-zero
 ...   | C-suc CL                            =  step (β-suc (value CL))
 progress (⊢μ ⊢M)                            =  step β-μ
--}
 \end{code}
 We induct on the evidence that the term is well-typed.
 Let's unpack the first three cases.  
@@ -404,13 +363,13 @@ The first step is to show that types are preserved by _renaming_.
 _Renaming_:
 Let `Γ` and `Δ` be two context such that every variable that
 appears in `Γ` also appears with the same type in `Δ`.  Then
-if a term is typable under `Γ`, it has the same type under `Δ`.
+if any term is typable under `Γ`, it has the same type under `Δ`.
 
 In symbols,
 
-    Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
-    -----------------------
-    Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
+    ∀ {x A} → Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
+    ---------------------------------
+    ∀ {M A} → Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
 
 Three important corollaries follow.  The _weaken_ lemma asserts a term
 well-typed in the empty context is also well-typed in an arbitary
