@@ -482,10 +482,11 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 
 
 
-#### Exercise (`mul`)
+#### Exercise (`mul`) (recommended)
 
-Write out the defintion of a lambda term that multiplies
-two natural numbers.
+Write out the definition of a lambda term that multiplies
+two natural numbers, now adapted to the inherently typed
+DeBruijn represenation.
 
 
 ## Renaming
@@ -1312,7 +1313,7 @@ We omit the proof that reduction is deterministic, since it is
 tedious and almost identical to the previous proof.
 
 
-#### Exercise `mul-example`
+#### Exercise `mul-example` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 

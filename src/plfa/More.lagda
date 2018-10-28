@@ -50,6 +50,9 @@ with multiplication as a primitive operation on numbers.
 
 ### Syntax
 
+    A, B, C ::= ...                     Types
+      Nat                                 primitive natural numbers
+
     L, M, N ::= ...                     Terms
       con c                               constant
       L `* M                              multiplication
@@ -136,6 +139,9 @@ Here is a function to raise a primitive number to the tenth power.
 We can translate each _let_ term into an application of an abstraction.
 
     (`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
+
+Here `M †` is the translation of term `M` from a calculus with the
+construct to a calculus without the construct.
 
 
 ## Products {#products}
@@ -255,10 +261,10 @@ We can translate the alternative formulation into the one with projections.
 
     (case× L
            [⟨ x , y ⟩⇒ M ]) †  =
-    `let z `= (L †) `in
-    `let x `= `proj₁ z `in
-    `let y `= `proj₂ z `in
-    (M †)
+      `let z `= (L †) `in
+      `let x `= `proj₁ z `in
+      `let y `= `proj₂ z `in
+      (M †)
 
 Here `z` is a variable that does not appear free in `M`.
 
@@ -309,21 +315,14 @@ We can also translate back the other way.
     `inj₂ N —→ `inj₂ N′
 
     L —→ L′
-    ------------------------ ξ-case⊎
-       case⊎ L [inj₁ x ⇒ M
-               |inj₂ y ⇒ N ]
-    —→ case⊎ L′[inj₁ x ⇒ M
-               |inj₂ y ⇒ N ]
+    ---------------------------------------------------------------------- ξ-case⊎
+    case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ case⊎ L′[inj₁ x ⇒ M |inj₂ y ⇒ N ]
 
-    -------------------------------- β-inj₁
-       case⊎ (`inj₁ V) [inj₁ x ⇒ M
-                       |inj₂ y ⇒ N ]
-    —→ M [ x := V ]
+    --------------------------------------------------------- β-inj₁
+    case⊎ (`inj₁ V) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ M [ x := V ]
 
-    -------------------------------- β-inj₂
-       case⊎ (`inj₂ V) [inj₁ x ⇒ M
-                       |inj₂ y ⇒ N ]
-    —→ N [ y := V ]
+    --------------------------------------------------------- β-inj₂
+    case⊎ (`inj₂ V) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ N [ y := V ]
 
 ### Example
 
@@ -394,23 +393,17 @@ We repeat the syntax in full, but only give the new type and reduction rules.
 
     Γ ⊢ L ⦂ `⊤
     Γ ⊢ M ⦂ A
-    ------------------ case⊤ or ⊤-E
-    Γ ⊢ case⊤ L
-          [tt⇒ M ] ⦂ A
+    ------------------------ case⊤ or ⊤-E
+    Γ ⊢ case⊤ L [tt⇒ M ] ⦂ A
 
 ### Reduction
 
     L —→ L′
-    ------------- ξ-case⊤
-       case⊤ L
-         [tt⇒ M ]
-    —→ case⊤ L′
-         [tt⇒ M ]
+    ------------------------------------- ξ-case⊤
+    case⊤ L [tt⇒ M ] —→ case⊤ L′ [tt⇒ M ]
 
-    ------------- β-case⊤
-       case⊤ `tt
-         [tt⇒ M ]
-    —→ M
+    ----------------------- β-case⊤
+    case⊤ `tt [tt⇒ M ] —→ M
 
 ### Example
 
@@ -514,25 +507,14 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``.
     V `∷ N —→ V `∷ N′
 
     L —→ L′
-    --------------------------- ξ-caseL
-       caseL L
-         [[]⇒ M
-         | x ∷ xs ⇒ N ]
-    —→ caseL L′
-         [[]⇒ M
-         | x ∷ xs ⇒ N ]
+    --------------------------------------------------------------- ξ-caseL
+    caseL L [[]⇒ M | x ∷ xs ⇒ N ] —→ caseL L′ [[]⇒ M | x ∷ xs ⇒ N ]
 
-    ------------------ β-[]
-       caseL `[]
-         [[]⇒ M
-         | x ∷ xs ⇒ N ]
-    —→ M
+    ------------------------------------ β-[]
+    caseL `[] [[]⇒ M | x ∷ xs ⇒ N ] —→ M
 
-    --------------------------- β-∷
-       caseL (V `∷ W)
-         [[]⇒ M
-         | x ∷ xs ⇒ N ]
-    —→ N [ x := V ] [ xs := W ]
+    ---------------------------------------------------------------- β-∷
+    caseL (V `∷ W) [[]⇒ M | x ∷ xs ⇒ N ] —→ N [ x := V ] [ xs := W ]
 
 ### Example
 
@@ -557,7 +539,7 @@ We now show how to formalise
 and leave formalisation of the remaining constructs as an exercise.
 
 
-## Imports
+### Imports
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
@@ -568,7 +550,7 @@ open import Relation.Nullary using (¬_)
 \end{code}
 
 
-## Syntax
+### Syntax
 
 \begin{code}
 infix  4 _⊢_
@@ -1212,9 +1194,11 @@ _ =
 #### Exercise `More`
 
 Formalise the remaining constructs defined in this chapter.
+Evaluate each example, applied to data as needed,
+to confirm it returns the expected answer.
 
-  * sums
+  * sums (recommended)
   * unit type
   * an alternative formulation of unit type
-  * empty type
+  * empty type (recommended)
   * lists

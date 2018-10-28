@@ -476,9 +476,9 @@ the equality test in the application rule in the first
 [section][plfa.Inference#algorithms].
 
 
-#### Exercise `bidirectional-ps`
+#### Exercise `bidirectional-products`
 
-Extend the bidirectional type rules to include products and sums from
+Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
 
 
@@ -1051,7 +1051,15 @@ to the inherently typed terms of
 Chapter [DeBruijn][plfa.DeBruijn].
 
 
-#### Exercise `inference-p`
+#### Exercise `inference-multiplication` (recommended)
+
+Rewrite your definition of multiplication from
+Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
+that erasure of the inferred typing yields your definition of
+multiplication from Chapter [DeBruijn][plfa.DeBruijn].
+
+
+#### Exercise `inference-products` (recommended)
 
 Extend bidirectional inference to include products from
 Chapter [More][plfa.More].
@@ -1080,5 +1088,4 @@ This chapter uses the following unicode
 
     ↓  U+2193:  DOWNWARDS ARROW (\d)
     ↑  U+2191:  UPWARDS ARROW (\u)
-    ←  U+2190:  LEFTWARDS ARROW (\l)
     ∥  U+2225:  PARALLEL TO (\||)

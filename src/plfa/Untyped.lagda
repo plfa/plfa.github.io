@@ -31,11 +31,12 @@ In this chapter we play with variations on a theme.
 * Previous chapters consider lambda calculus extended
   with natural numbers and fixpoints;
   here we consider a tiny calculus with just variables,
-  abstraction, and application.
+  abstraction, and application, in which the other
+  constructs may be encoded.
 
 In general, one may mix and match these features,
 save that full normalisation requires open terms and
-embedding naturals and fixpoints requires being untyped.
+encoding naturals and fixpoints requires being untyped.
 The aim of this chapter is to give some appreciation for
 the range of different lambda calculi one may encounter.
 
@@ -163,8 +164,8 @@ data _⊢_ : Context → Type → Set where
     → Γ ⊢ ★
 \end{code}
 Now we have a tiny calculus, with only variables, abstraction, and
-application.  Below we will see how to represent naturals and
-fixpoints in this calculus.
+application.  Below we will see how to encode naturals and
+fixpoints into this calculus.
 
 ## Writing variables as numerals
 
@@ -300,8 +301,8 @@ data Neutral where
     → Neutral (L · M)
 \end{code}
 A term is a normal form if it is neutral or an abstraction where the
-body is a normal form. We use `′_` to label neutral terms; like `` `_ ``,
-it is unobtrusive.
+body is a normal form. We use `′_` to label neutral terms.
+Like `` `_ ``, it is unobtrusive.
 \begin{code}
 data Normal where
 
@@ -723,6 +724,13 @@ do both reduce to the same normal term.
 
 Use the evaluator to confirm that `2+2` and `four` normalise to
 the same term.
+
+#### Exercise `multiplication-untyped` (recommended)
+
+Use the encodings above to translate your definition of
+multiplication from previous chapters with the Scott
+representation and the encoding of the fixpoint operator.
+Confirm that two times two is four.
 
 #### Exercise `encode-more` (stretch)
 
