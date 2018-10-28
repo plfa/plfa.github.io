@@ -28,8 +28,8 @@ Please ensure your files execute correctly under Agda!
 
 _IMPORTANT_ For ease of marking, when modifying the given code please write
 
-  -- !!! begin
-  -- !!! end
+  -- begin
+  -- end
 
 before and after code you add, to indicate your changes.
 
