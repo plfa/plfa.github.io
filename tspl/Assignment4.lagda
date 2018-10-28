@@ -44,7 +44,6 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.String using (String)
 open import Data.String.Unsafe using (_≟_)
--- open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 \end{code}
 
@@ -1122,10 +1121,3 @@ Confirm that two times two is four.
 Along the lines above, encode all of the constructs of
 Chapter [More][plfa.More],
 save for primitive numbers, in the untyped lambda calculus.
-
-
-
-
-
-
-
