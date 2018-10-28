@@ -38,19 +38,14 @@ before and after code you add, to indicate your changes.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; cong; sym)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
-open import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
-open import Data.Nat.Properties using
-  (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Function using (_∘_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open import Data.String using (String)
+open import Data.String.Unsafe using (_≟_)
+-- open import Function using (_∘_)
 open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Negation using (¬?)
-open import Relation.Unary using (Decidable)
 \end{code}
 
 
@@ -762,7 +757,7 @@ module Inference where
 ### Imports
 
 \begin{code}
-  open import DeBruinjn using (Type; `ℕ; _⇒_)
+  open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
 \end{code}
 
 ### Syntax
