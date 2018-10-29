@@ -52,7 +52,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 
 
 \begin{code}
-module More where
+module DeBruijn where
 \end{code}
 
 Remember to indent all code by two spaces.

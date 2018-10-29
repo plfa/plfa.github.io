@@ -33,6 +33,9 @@ agda =  count (prefix begin) (prefix end) . lines
   begin  =  "\\begin{code}"
   end    =  "\\end{code}"
 
+nonblank :: String -> Bool
+nonblank =  not . all (== ' ')
+
 wc :: String -> Int
 wc =  length . lines
 
