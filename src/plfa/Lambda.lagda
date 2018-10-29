@@ -700,29 +700,29 @@ and transitive.  We could do so as follows.
 \begin{code}
 data _—↠′_ : Term → Term → Set where
 
-  step : ∀ {M N}
+  step′ : ∀ {M N}
     → M —→ N
       -------
     → M —↠′ N
 
-  refl : ∀ {M}
+  refl′ : ∀ {M}
       -------
     → M —↠′ M
 
-  trans : ∀ {L M N}
+  trans′ : ∀ {L M N}
     → L —↠′ M
     → M —↠′ N
       -------
     → L —↠′ N
 \end{code}
-The three constructors specify, respectively, that `—↠` includes `—→`
+The three constructors specify, respectively, that `—↠′` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
-the two definitions are equivalent (indeed, isomoprhic).
+the two definitions are equivalent (indeed, one embeds in the other).
 
-#### Exercise `—↠≃—↠′`
+#### Exercise `—↠≲—↠′`
 
-Show that the two notions of reflexive and transitive closure
-above are isomorphic.
+Show that the first notion of reflexive and transitive closure
+above embeds into the second. Why are they not isomorphic?
 
 ## Confluence
 
@@ -1141,36 +1141,35 @@ evidence of _any_ proposition whatsoever, regardless of its truth.
 Type derivations correspond to trees. In informal notation, here
 is a type derivation for the Church numberal two:
 
-                               ∋s                         ∋z
-                               -------------------- ⊢`    -------------- ⊢`
-    ∋s                         Γ₂ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ       Γ₂ ⊢ ` "z" ⦂ `ℕ
-    -------------------- ⊢`   ------------------------------------------ _·_
-    Γ₂ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ      Γ₂ ⊢ ` "s" · ` "z" ⦂ `ℕ
-    ------------------------------------------------ _·_
-    Γ₂ ⊢ ` "s" · (` "s" · ` "z") ⦂ `ℕ
-    ---------------------------------------------- ⊢ƛ
-    Γ₁ ⊢ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ `ℕ ⇒ `ℕ
-    ----------------------------------------------------------------- ⊢ƛ
-    ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
+                            ∋s                     ∋z
+                            ------------------ ⊢`  -------------- ⊢`
+    ∋s                      Γ₂ ⊢ ` "s" ⦂ A ⇒ A     Γ₂ ⊢ ` "z" ⦂ A
+    ------------------ ⊢`   ------------------------------------- _·_
+    Γ₂ ⊢ ` "s" ⦂ A ⇒ A      Γ₂ ⊢ ` "s" · ` "z" ⦂ A
+    ---------------------------------------------- _·_
+    Γ₂ ⊢ ` "s" · (` "s" · ` "z") ⦂ A
+    -------------------------------------------- ⊢ƛ
+    Γ₁ ⊢ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ A ⇒ A
+    ------------------------------------------------------------- ⊢ƛ
+    Γ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ (A ⇒ A) ⇒ A ⇒ A
 
 where `∋s` and `∋z` abbreviate the two derivations:
 
-                 ------------------ Z
-    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ `ℕ ⇒ `ℕ
-    ------------------------------ S         ------------ Z
-    Γ₂ ∋ "s" ⦂ `ℕ ⇒ `ℕ                       Γ₂ ∋ "z" ⦂ `ℕ
+                 ---------------- Z
+    "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
+    ----------------------------- S       ------------- Z
+    Γ₂ ∋ "s" ⦂ A ⇒ A                       Γ₂ ∋ "z" ⦂ A
 
-and where ``Γ₁ = ∅ , s ⦂ `ℕ ⇒ `ℕ`` and ``Γ₂ = ∅ , s ⦂ `ℕ ⇒ `ℕ , z ⦂ `ℕ``.
-In fact, `plusᶜ` also has this typing derivation if we replace `∅` by an
-arbitrary context `Γ`, and `` `ℕ `` by an arbitrary type `A`, but the above
-will suffice for our purposes.
+and where `Γ₁ = Γ , s ⦂ A ⇒ A` and `Γ₂ = Γ , s ⦂ A ⇒ A , z ⦂ A`.
+The typing derivation is valid for any `Γ` and `A`, for instance,
+we might take `Γ` to be `∅` and `A` to be `` `ℕ ``.
 
 Here is the above typing derivation formalised in Agda.
 \begin{code}
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
 
-⊢twoᶜ : ∅ ⊢ twoᶜ ⦂ Ch `ℕ
+⊢twoᶜ : ∀ {Γ A} → Γ ⊢ twoᶜ ⦂ Ch A
 ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
   where
   ∋s = S ("s" ≠ "z") Z
@@ -1179,10 +1178,10 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 
 Here are the typings corresponding to computing two plus two.
 \begin{code}
-⊢two : ∅ ⊢ two ⦂ `ℕ
+⊢two : ∀ {Γ} → Γ ⊢ two ⦂ `ℕ
 ⊢two = ⊢suc (⊢suc ⊢zero)
 
-⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
+⊢plus : ∀ {Γ} → Γ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
 ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
          (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
   where
@@ -1195,6 +1194,9 @@ Here are the typings corresponding to computing two plus two.
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
 \end{code}
+In contrast to our earlier examples, here we have typed `two` and `plus`
+in an arbitrary context rather than the empty context; this makes it easy
+to use them inside other binding contexts as well as at the top level.
 Here the two lookup judgements `∋m` and `∋m′` refer to two different
 bindings of variables named `"m"`.  In contrast, the two judgements `∋n` and
 `∋n′` both refer to the same binding of `"n"` but accessed in different
@@ -1203,7 +1205,7 @@ the second after "m" is bound in the successor branch of the case.
 
 And here are typings for the remainder of the Church example.
 \begin{code}
-⊢plusᶜ : ∅ ⊢ plusᶜ ⦂ Ch `ℕ ⇒ Ch `ℕ ⇒ Ch `ℕ
+⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
   ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
@@ -1211,13 +1213,10 @@ And here are typings for the remainder of the Church example.
   ∋s = S ("s" ≠ "z") Z
   ∋z = Z
 
-⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
+⊢sucᶜ : ∀ {Γ} → Γ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
 ⊢sucᶜ = ⊢ƛ (⊢suc (⊢` ∋n))
   where
   ∋n = Z
-
-⊢2ᶜ : ∅ ⊢ twoᶜ · sucᶜ · `zero ⦂ `ℕ
-⊢2ᶜ = ⊢twoᶜ · ⊢sucᶜ · ⊢zero
 
 ⊢2+2ᶜ : ∅ ⊢ plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ⦂ `ℕ
 ⊢2+2ᶜ = ⊢plusᶜ · ⊢twoᶜ · ⊢twoᶜ · ⊢sucᶜ · ⊢zero
