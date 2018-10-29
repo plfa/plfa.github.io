@@ -504,7 +504,8 @@ extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped.
 \begin{code}
-ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
+ext : ∀ {Γ Δ}
+  → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
     -----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
 ext ρ Z      =  Z
@@ -612,7 +613,8 @@ Given a map from variables in one context map to terms over
 another, extension yields a map from the first context
 extended to the second context similarly extended.
 \begin{code}
-exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
+exts : ∀ {Γ Δ}
+  → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
     ----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
 exts σ Z      =  ` Z
@@ -730,7 +732,7 @@ M₆ = # 0 · `zero
 M₇ : ∅ , `ℕ ⇒ `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₇ = ƛ (# 0 · (# 1 · `zero))
 
-_ : M₂ [ M₃ ] ≡ M₄
+_ : M₅ [ M₆ ] ≡ M₇
 _ = refl
 \end{code}
 
@@ -976,10 +978,12 @@ a value or takes a reduction step.  The formulation of progress
 is just as before, but annotated with types.
 \begin{code}
 data Progress {A} (M : ∅ ⊢ A) : Set where
+
   step : ∀ {N : ∅ ⊢ A}
     → M —→ N
       -------------
     → Progress M
+
   done :
       Value M
       ----------

@@ -51,6 +51,17 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 ## DeBruijn
 
 
+\begin{code}
+module More where
+\end{code}
+
+Remember to indent all code by two spaces.
+
+\begin{code}
+  open import plfa.DeBruijn
+\end{code}
+
+
 #### Exercise (`mul`) (recommended)
 
 Write out the definition of a lambda term that multiplies
@@ -75,6 +86,8 @@ Using the evaluator, confirm that two times two is four.
 \begin{code}
 module More where
 \end{code}
+
+Remember to indent all code by two spaces.
 
 
 ### Syntax
@@ -752,6 +765,8 @@ In this case, the simulation is _not_ lock-step.
 \begin{code}
 module Inference where
 \end{code}
+
+Remember to indent all code by two spaces.
 
 ### Imports
 
