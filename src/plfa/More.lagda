@@ -295,6 +295,7 @@ We can also translate back the other way.
     L, M, N ::= ...                     Terms
       `inj₁ M                             inject first component
       `inj₂ N                             inject second component
+      case L [inj₁ x ⇒ M |inj₂ y ⇒ N ]    case
 
     V, W ::= ...                        Values
       `inj₁ V                             inject first component
