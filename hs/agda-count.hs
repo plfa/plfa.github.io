@@ -21,17 +21,20 @@ ex1 = "xbyexxbyyexxxbyyyexxxx"
 test1 :: Bool
 test1 =  strip (== 'b') (== 'e') ex1 == ["y","yy","yyy",""]
 
-count :: (a -> Bool) -> (a -> Bool) -> [a] -> Int
-count b e = sum . map length . strip b e
-
 test2 :: Bool
-test2 =  count (== 'b') (== 'e') ex1 == 6
+test2 =  (sum . map length . strip (== 'b') (== 'e')) ex1 == 6
+
+nonblank :: String -> Bool
+nonblank =  not . all (== ' ')
+
+count :: [[String]] -> Int
+count =  sum . map length . map (filter nonblank)
 
 agda :: String -> Int
-agda =  count (prefix begin) (prefix end) . lines
+agda =  count . strip begin end . lines
   where
-  begin  =  "\\begin{code}"
-  end    =  "\\end{code}"
+  begin  =  prefix "\\begin{code}"
+  end    =  prefix "\\end{code}"
 
 wc :: String -> Int
 wc =  length . lines

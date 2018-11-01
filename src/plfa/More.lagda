@@ -57,6 +57,9 @@ with multiplication as a primitive operation on numbers.
       con c                               constant
       L `* M                              multiplication
 
+    V, W ::= ...                        Values
+      con c                               constant
+
 ### Typing
 
 The hypothesis of the `con` rule is unusual, in that
@@ -230,22 +233,16 @@ and reduction rules.
     Γ ⊢ L ⦂ A `× B
     Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
     ------------------------------- case× or ×-E
-    Γ ⊢ case× L
-          [⟨ x , y ⟩⇒ N ] ⦂ C
+    Γ ⊢ case× L [⟨ x , y ⟩⇒ N ] ⦂ C
 
 ### Reduction
 
     L —→ L′
-    -------------------- ξ-case×
-       case× L
-         [⟨ x , y ⟩⇒ M ]
-    —→ case× L′
-         [⟨ x , y ⟩⇒ M ]
+    --------------------------------------------------- ξ-case×
+    case× L [⟨ x , y ⟩⇒ N ] —→ case× L′ [⟨ x , y ⟩⇒ N ]
 
-    -------------------------- β-case×
-       case× `⟨ V , W ⟩
-         [⟨ x , y ⟩⇒  M
-    —→ M [ x := V ] [ y := W ]
+    ---------------------------------------------------------- β-case×
+    case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒  N —→ N [ x := V ] [ y := W ]
 
 ### Example
 
@@ -259,14 +256,29 @@ Here is a function to swap the components of a pair rewritten in the new notatio
 
 We can translate the alternative formulation into the one with projections.
 
-    (case× L
-           [⟨ x , y ⟩⇒ M ]) †  =
+      (case× L [⟨ x , y ⟩⇒ N ]) †
+    =
       `let z `= (L †) `in
       `let x `= `proj₁ z `in
       `let y `= `proj₂ z `in
-      (M †)
+      (N †)
 
-Here `z` is a variable that does not appear free in `M`.
+Here `z` is a variable that does not appear free in `N`.  We refer
+to such a variable as _fresh_.
+
+One might think that we could instead use a more compact translation.
+
+    -- WRONG
+      (case× L [⟨ x , y ⟩⇒ N ]) †
+    =
+      (N †) [ x := proj₁ (L †) ] [ y := proj₂ (L †) ]
+
+But this behaves differently.  The first term always reduces `L`
+before `N`, and it computes `proj₁` and `proj₂` exactly once.  The
+second term does not reduce `L` to a value before reducing `N`, and
+depending on how many times and where `x` and `y` appear in `N`, it
+may reduce `L` many times or not at all, and it may compute `proj₁`
+and `proj₂` many times or not at all.
 
 We can also translate back the other way.
 
@@ -283,6 +295,7 @@ We can also translate back the other way.
     L, M, N ::= ...                     Terms
       `inj₁ M                             inject first component
       `inj₂ N                             inject second component
+      case L [inj₁ x ⇒ M |inj₂ y ⇒ N ]    case
 
     V, W ::= ...                        Values
       `inj₁ V                             inject first component
@@ -294,9 +307,9 @@ We can also translate back the other way.
     -------------------- `inj₁ or ⊎-I₁
     Γ ⊢ `inj₁ M ⦂ A `⊎ B
 
-    Γ ⊢ B
-    ----------- `inj₂ or ⊎-I₂
-    Γ ⊢ A `⊎ B
+    Γ ⊢ N ⦂ B
+    -------------------- `inj₂ or ⊎-I₂
+    Γ ⊢ `inj₂ N ⦂ A `⊎ B
 
     Γ ⊢ L ⦂ A `⊎ B
     Γ , x ⦂ A ⊢ M ⦂ C
@@ -322,7 +335,7 @@ We can also translate back the other way.
     case⊎ (`inj₁ V) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ M [ x := V ]
 
     --------------------------------------------------------- β-inj₂
-    case⊎ (`inj₂ V) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ N [ y := V ]
+    case⊎ (`inj₂ W) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ N [ y := W ]
 
 ### Example
 
@@ -330,8 +343,8 @@ Here is a function to swap the components of a sum.
 
     swap⊎ : ∅ ⊢ A `⊎ B ⇒ B `⊎ A
     swap⊎ = ƛ z ⇒ case⊎ z
-                    [inl x ⇒ `inr x
-                    |inr y ⇒ `inl y ]
+                    [inj₁ x ⇒ `inj₂ x
+                    |inj₂ y ⇒ `inj₁ y ]
 
 
 ## Unit type
@@ -353,8 +366,8 @@ There are no reduction rules.
 
 ### Typing
 
-    ------ `tt or ⊤-I
-    Γ ⊢ `⊤
+    ------------ `tt or ⊤-I
+    Γ ⊢ `tt ⦂ `⊤
 
 ### Reduction
 
@@ -411,8 +424,8 @@ Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new
 
     from×⊤-case : ∅ ⊢ A `× `⊤ ⇒ A
     from×⊤-case = ƛ z ⇒ case× z
-                         [⟨ x , y ⟩⇒ case⊤
-                                       [tt⇒ y ] ]
+                          [⟨ x , y ⟩⇒ case⊤ y
+                                        [tt⇒ x ] ]
 
 
 ### Translation
@@ -558,7 +571,6 @@ infix  4 _∋_
 infixl 5 _,_
 
 infixr 7 _⇒_
-infixr 8 _`⊎_
 infixr 9 _`×_
 
 infix  5 ƛ_
@@ -579,10 +591,6 @@ data Type : Set where
   _⇒_   : Type → Type → Type
   Nat   : Type
   _`×_  : Type → Type → Type
-  _`⊎_  : Type → Type → Type
-  `⊤    : Type
-  `⊥    : Type
-  `List : Type → Type
 \end{code}
 
 ### Contexts
