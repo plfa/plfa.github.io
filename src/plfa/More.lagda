@@ -533,7 +533,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``.
 
 Here is the map function for lists.
 
-    mapL : (A → B) → List A → List B
+    mapL : ∅ ⊢ (A ⇒ B) ⇒ `List A ⇒ `List B
     mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
              caseL xs
                [[]⇒ `[]
