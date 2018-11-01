@@ -306,7 +306,7 @@ Or, in a diagram:
     M† --- —→ --- N†
 
 We first formulate a concept corresponding to the lower leg
-of the diagram, that is, its left and bottom edges.
+of the diagram, that is, its right and bottom edges.
 \begin{code}
 data Leg {Γ A} (M† N : Γ ⊢ A) : Set where
 
