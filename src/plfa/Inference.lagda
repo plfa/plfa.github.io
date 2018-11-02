@@ -284,11 +284,13 @@ infix   4  _∋_⦂_
 infix   4  _⊢_↑_
 infix   4  _⊢_↓_
 infixl  5  _,_⦂_
+
+infixr  7  _⇒_
+
 infix   5  ƛ_⇒_
 infix   5  μ_⇒_
 infix   6  _↑
 infix   6  _↓_
-infixr  7  _⇒_
 infixl  7  _·_
 infix   8  `suc_
 infix   9  `_

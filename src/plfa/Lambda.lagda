@@ -897,7 +897,7 @@ Here is the syntax of types in BNF.
 And here it is formalised in Agda.
 
 \begin{code}
-infixr 6 _⇒_
+infixr 7 _⇒_
 
 data Type : Set where
   _⇒_ : Type → Type → Type
