@@ -263,7 +263,7 @@ can compare with our previous development, we import
 module `pfla.DeBruijn`.  
 
 \begin{code}
-open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
+import plfa.DeBruijn as DB
 \end{code}
 
 The phrase `as DB` allows us to refer to definitions
@@ -284,25 +284,25 @@ infix   4  _∋_⦂_
 infix   4  _⊢_↑_
 infix   4  _⊢_↓_
 infixl  5  _,_⦂_
-
 infix   5  ƛ_⇒_
 infix   5  μ_⇒_
 infix   6  _↑
 infix   6  _↓_
+infixr  7  _⇒_
 infixl  7  _·_
 infix   8  `suc_
 infix   9  `_
 \end{code}
 
-Identifiers are as before.
+Identifiers, types, and contexts are as before.
 \begin{code}
 Id : Set
 Id = String
-\end{code}
 
-And so are contexts. (Recall that `Type` is imported from
-[DeBruijn][plfa.DeBruijn].)
-\begin{code}
+data Type : Set where
+  `ℕ    : Type
+  _⇒_   : Type → Type → Type
+
 data Context : Set where
   ∅     : Context
   _,_⦂_ : Context → Id → Type → Context
@@ -348,7 +348,7 @@ plus : Term⁺
 plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
           `case (` "m") [zero⇒ ` "n" ↑
                         |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
-            ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
+            ↓ (`ℕ ⇒ `ℕ ⇒ `ℕ)
 
 2+2 : Term⁺
 2+2 = plus · two · two
@@ -367,7 +367,7 @@ twoᶜ = (ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · (` "z" ↑) ↑) ↑)
 plusᶜ : Term⁺
 plusᶜ = (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
            ` "m" · (` "s" ↑) · (` "n" · (` "s" ↑) · (` "z" ↑) ↑) ↑)
-             ↓ Ch ⇒ Ch ⇒ Ch
+             ↓ (Ch ⇒ Ch ⇒ Ch)
 
 sucᶜ : Term⁻
 sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
@@ -995,28 +995,36 @@ Chapter [DeBruijn][plfa.DeBruijn].
 It is easy to define an _erasure_ function that takes evidence of a
 type judgement into the corresponding inherently typed term.
 
-First, we give code to erase a context.
+First, we give code to erase a type.
 \begin{code}
-∥_∥Γ : Context → DB.Context
-∥ ∅ ∥Γ               =  DB.∅
-∥ Γ , x ⦂ A ∥Γ       =   ∥ Γ ∥Γ DB., A
+∥_∥Tp : Type → DB.Type
+∥ `ℕ ∥Tp             =  DB.`ℕ
+∥ A ⇒ B ∥Tp          =  ∥ A ∥Tp DB.⇒ ∥ B ∥Tp
+\end{code}
+It simply renames to the corresponding constructors in module `DB`.
+
+Next, we give the code to erase a context.
+\begin{code}
+∥_∥Cx : Context → DB.Context
+∥ ∅ ∥Cx              =  DB.∅
+∥ Γ , x ⦂ A ∥Cx      =  ∥ Γ ∥Cx DB., ∥ A ∥Tp
 \end{code}
 It simply drops the variable names.
 
-Next, we give code to erase a lookup judgment.
+Next, we give the code to erase a lookup judgment.
 \begin{code}
-∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Γ DB.∋ A
+∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Cx DB.∋ ∥ A ∥Tp
 ∥ Z ∥∋               =  DB.Z
 ∥ S x≢ ⊢x ∥∋         =  DB.S ∥ ⊢x ∥∋
 \end{code}
-It just drops the evidence that variable names are distinct.
+It simply drops the evidence that variable names are distinct.
 
 Finally, we give the code to erase a typing judgement.
 Just as there are two mutually recursive typing judgements,
 there are two mutually recursive erasure functions.
 \begin{code}
-∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
-∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
+∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
+∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
 
 ∥ ⊢` ⊢x ∥⁺           =  DB.` ∥ ⊢x ∥∋
 ∥ ⊢L · ⊢M ∥⁺         =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
