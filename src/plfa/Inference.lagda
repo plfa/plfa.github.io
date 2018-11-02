@@ -470,7 +470,13 @@ the equality test in the application rule in the first
 [section][plfa.Inference#algorithms].
 
 
-#### Exercise `bidirectional-products`
+#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+
+Rewrite your definition of multiplication from
+Chapter [Lambda][plfa.Lambda], decorated to support inference.
+
+
+#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
@@ -1047,17 +1053,16 @@ Chapter [DeBruijn][plfa.DeBruijn].
 
 #### Exercise `inference-multiplication` (recommended)
 
-Rewrite your definition of multiplication from
-Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
-that erasure of the inferred typing yields your definition of
+Apply inference to your decorated definition of multiplication from
+exercise [`bidirectional-mul`][#bidirectional-mul], and show that
+erasure of the inferred typing yields your definition of
 multiplication from Chapter [DeBruijn][plfa.DeBruijn].
-
 
 #### Exercise `inference-products` (recommended)
 
-Extend bidirectional inference to include products from
-Chapter [More][plfa.More].
-
+Using your rules from exercise
+[`bidirectional-products`][#bidirectional-products], extend
+bidirectional inference to include products.
 
 #### Exercise `inference-rest` (stretch)
 

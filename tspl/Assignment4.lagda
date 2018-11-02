@@ -822,6 +822,22 @@ Remember to indent all code by two spaces.
     _↑                       : Term⁺ → Term⁻
 \end{code}
 
+### Sample terms
+
+\begin{code}
+  two : Term⁻
+  two = `suc (`suc `zero)
+
+  plus : Term⁺
+  plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+            `case (` "m") [zero⇒ ` "n" ↑
+                          |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
+              ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
+
+  2+2 : Term⁺
+  2+2 = plus · two · two
+\end{code}
+
 ### Lookup 
 
 \begin{code}
@@ -1064,18 +1080,16 @@ Remember to indent all code by two spaces.
   ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
 \end{code}
 
-### Sample terms
+#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
-\begin{code}
-  two : Term⁻
-  two = `suc (`suc `zero)
+Rewrite your definition of multiplication from
+Chapter [Lambda][plfa.Lambda], decorated to support inference.
 
-  plus : Term⁺
-  plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-            `case (` "m") [zero⇒ ` "n" ↑
-                          |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
-              ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
-\end{code}
+
+#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+
+Extend the bidirectional type rules to include products from
+Chapter [More][plfa.More].
 
 
 #### Exercise `inference-multiplication` (recommended)
