@@ -771,7 +771,7 @@ Remember to indent all code by two spaces.
 ### Imports
 
 \begin{code}
-  open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
+  import plfa.DeBruijn as DB
 \end{code}
 
 ### Syntax
@@ -782,6 +782,8 @@ Remember to indent all code by two spaces.
   infix   4  _⊢_↓_
   infixl  5  _,_⦂_
 
+  infixr  7  _⇒_
+
   infix   5  ƛ_⇒_
   infix   5  μ_⇒_
   infix   6  _↑
@@ -791,11 +793,15 @@ Remember to indent all code by two spaces.
   infix   9  `_
 \end{code}
 
-### Identifiers and contexts
+### Identifiers, types, and contexts
 
 \begin{code}
   Id : Set
   Id = String
+
+  data Type : Set where
+    `ℕ    : Type
+    _⇒_   : Type → Type → Type
 
   data Context : Set where
     ∅     : Context
@@ -1057,16 +1063,20 @@ Remember to indent all code by two spaces.
 ### Erasure
 
 \begin{code}
-  ∥_∥Γ : Context → DB.Context
-  ∥ ∅ ∥Γ               =  DB.∅
-  ∥ Γ , x ⦂ A ∥Γ       =   ∥ Γ ∥Γ DB., A
+  ∥_∥Tp : Type → DB.Type
+  ∥ `ℕ ∥Tp             =  DB.`ℕ
+  ∥ A ⇒ B ∥Tp          =  ∥ A ∥Tp DB.⇒ ∥ B ∥Tp
 
-  ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Γ DB.∋ A
+  ∥_∥Cx : Context → DB.Context
+  ∥ ∅ ∥Cx              =  DB.∅
+  ∥ Γ , x ⦂ A ∥Cx      =  ∥ Γ ∥Cx DB., ∥ A ∥Tp
+
+  ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Cx DB.∋ ∥ A ∥Tp
   ∥ Z ∥∋               =  DB.Z
   ∥ S x≢ ⊢x ∥∋         =  DB.S ∥ ⊢x ∥∋
 
-  ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
-  ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Γ DB.⊢ A
+  ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
+  ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
 
   ∥ ⊢` ⊢x ∥⁺           =  DB.` ∥ ⊢x ∥∋
   ∥ ⊢L · ⊢M ∥⁺         =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
