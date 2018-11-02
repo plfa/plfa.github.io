@@ -420,12 +420,27 @@ module Problem3 where
   infix   9  `_
 \end{code}
 
-### Identifiers and contexts
+### Types
+
+\begin{code}
+  data Type : Set where
+    _⇒_   : Type → Type → Type
+    `ℕ    : Type
+    -- begin
+    Bool  : Type
+    -- end
+\end{code}
+
+### Identifiers 
 
 \begin{code}
   Id : Set
   Id = String
+\end{code}
 
+### Contexts
+
+\begin{code}
   data Context : Set where
     ∅     : Context
     _,_⦂_ : Context → Id → Type → Context

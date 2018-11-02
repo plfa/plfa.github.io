@@ -1064,8 +1064,29 @@ Remember to indent all code by two spaces.
   ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
 \end{code}
 
+### Sample terms
 
-#### Exercise `bidirectional-products-sums`
+\begin{code}
+  two : Term⁻
+  two = `suc (`suc `zero)
+
+  plus : Term⁺
+  plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+            `case (` "m") [zero⇒ ` "n" ↑
+                          |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
+              ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
+\end{code}
+
+
+#### Exercise `inference-multiplication` (recommended)
+
+Rewrite your definition of multiplication from
+Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
+that erasure of the inferred typing yields your definition of
+multiplication from Chapter [DeBruijn][plfa.DeBruijn].
+
+
+#### Exercise `bidirectional-products` (recommended)
 
 Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
@@ -1075,14 +1096,6 @@ Chapter [More][plfa.More].
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More][plfa.More].
-
-
-#### Exercise `inference-multiplication` (recommended)
-
-Rewrite your definition of multiplication from
-Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
-that erasure of the inferred typing yields your definition of
-multiplication from Chapter [DeBruijn][plfa.DeBruijn].
 
 
 #### Exercise `inference-products` (recommended)
