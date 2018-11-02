@@ -439,7 +439,7 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 
 We repeat the test examples from
 Chapter [Lambda][plfa.Lambda].
-You can find the 
+You can find them
 [here][plfa.Lambda#derivation]
 for comparison.
 
