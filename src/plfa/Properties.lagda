@@ -1494,7 +1494,7 @@ false, give a counterexample.
 #### Quiz
 
 We can enumerate all the computable function from naturals to
-naturals, by writing out all programs of type `ℕ ⇒ `ℕ in
+naturals, by writing out all programs of type `` `ℕ ⇒ `ℕ`` in
 lexical order.  Write `fᵢ` for the `i`'th function in this list.
 
 Say we add a typing rule that applies the above enumeration

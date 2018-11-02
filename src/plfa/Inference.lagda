@@ -72,7 +72,7 @@ rule applies, else the second.  (For de Bruijn indices, it is even
 easier: zero matches the first rule and successor the second.)
 For the first rule, the output type can be read off as the last
 type in the input context. For the second rule, the inputs of the
-conclusion determine the inputs of the hypothesis, and the ouptut
+conclusion determine the inputs of the hypothesis, and the output
 of the hypothesis determines the output of the conclusion.
 
 For the judgement
@@ -80,7 +80,7 @@ For the judgement
     Γ ⊢ M ⦂ A
 
 we take the context `Γ` and term `M` as inputs, and the type `A`
-as ouput. Consider the rules:
+as output. Consider the rules:
 
     Γ ∋ x ⦂ A
     -----------

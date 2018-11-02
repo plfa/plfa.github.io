@@ -397,7 +397,7 @@ We repeat the syntax in full, but only give the new type and reduction rules.
 
     L, M, N ::= ...                     Terms
       `tt                                 unit value
-      `case⊤[tt⇒ N ]                      case
+      `case⊤ L [tt⇒ N ]                   case
 
     V, W ::= ...                        Values
       `tt                                 unit value
@@ -533,7 +533,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``.
 
 Here is the map function for lists.
 
-    mapL : (A → B) → List A → List B
+    mapL : ∅ ⊢ (A ⇒ B) ⇒ `List A ⇒ `List B
     mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
              caseL xs
                [[]⇒ `[]

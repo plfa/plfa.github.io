@@ -1,5 +1,65 @@
 # Notes
 
+## Suggestion from Conor for Inference
+
+Conor McBride <conor.mcbride@strath.ac.uk>
+	
+29 Oct 2018, 09:34
+	
+Hi Phil
+
+In a rush, but...
+
+    data Tag : Set where
+      tag-ℕ : Tag
+      tag-⇒ : Tag
+
+...that's just Bool. Bool is almost never your friend.
+
+Get evidence!
+
+    -- yer types
+    data Type : Set where
+      nat : Type
+      _=>_ : Type -> Type -> Type
+
+    -- logic
+    data Zero : Set where
+    record One : Set where constructor <>
+
+    -- evidence of not being =>
+    Not=> : Type -> Set
+    Not=> (_ => _) = Zero
+    Not=> _ = One
+
+    -- constructing the "=> or not" view
+    data Is=>? : Type -> Set where
+      is=> : (S T : Type) -> Is=>? (S => T)
+      not=> : {T : Type} -> Not=> T -> Is=>? T
+
+    -- this will need all n cases, but you do it once
+    is=>? : (T : Type) -> Is=>? T
+    is=>? nat = not=> <>
+    is=>? (S => T) = is=> _ _
+
+    -- worked example: domain
+    data Maybe (X : Set) : Set where
+      yes : X -> Maybe X
+      no : Maybe X
+
+    -- only two cases
+    dom : Type -> Maybe Type
+    dom T with is=>? T
+    dom .(S => T) | is=> S T = yes S
+    dom T | not=> p = no
+
+    -- addendum: in the not=> p case, if we subsequently inspect T, we can rule out the => case using p
+    {- with T
+    dom T | not=> p | nat = no
+    dom T | not=> () | q => q₁
+    -}
+
+
 > We want to alert you that you've been granted the following access:
 >      Manage Users and Edit
 > to the Google Analytics account `plfa (UA-125055580)` by `wen.kokke@gmail.com`.
