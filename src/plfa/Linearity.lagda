@@ -402,6 +402,66 @@ smash-0# {γ} {δ} (Γ , π ∙ C) {B} Δ =
 \end{code}
 
 \begin{code}
+smash-** : ∀ {γ δ} (Γ : Context γ) {π}
+
+  → (Δ : ∀ {A} → γ ∋ A → Context δ)
+  -----------------------------------
+  → smash (π ** Γ) Δ ≡ π ** smash Γ Δ
+
+smash-** {γ} {δ} ∅ {π} Δ =
+  begin
+    (0∙ δ)
+  ≡⟨ 0∙-absorb δ π ⟩
+    π ** (0∙ δ)
+  ∎
+
+smash-** {γ} {δ} (Γ , π′ ∙ A) {π} Δ =
+  begin
+    ((π * π′) ** Δ Z) ++ (smash (π ** Γ) (Δ ∘ S_))
+  ≡⟨ cong ((π * π′) ** Δ Z ++_) (smash-** Γ (Δ ∘ S_)) ⟩
+    ((π * π′) ** Δ Z) ++ (π ** smash Γ (Δ ∘ S_))
+  ≡⟨ cong (_++ (π ** smash Γ (Δ ∘ S_))) (**-assoc (Δ Z)) ⟩
+    (π ** (π′ ** Δ Z)) ++ (π ** smash Γ (Δ ∘ S_))
+  ≡⟨ sym (**-distribˡ-++ (π′ ** Δ Z) (smash Γ (Δ ∘ S_))) ⟩
+    π ** (π′ ** Δ Z ++ smash Γ (Δ ∘ S_))
+  ∎
+\end{code}
+
+\begin{code}
+smash-++ : ∀ {γ} {δ} (Γ₁ Γ₂ : Context γ)
+
+  → (Δ : ∀ {A} → γ ∋ A → Context δ)
+  -----------------------------------------------
+  → smash (Γ₁ ++ Γ₂) Δ ≡ smash Γ₁ Δ ++ smash Γ₂ Δ
+
+smash-++ {δ = δ} ∅ ∅ Δ =
+  begin
+    (0∙ δ)
+  ≡⟨ sym (++-identityʳ (0∙ δ)) ⟩
+    (0∙ δ) ++ (0∙ δ)
+  ∎
+
+smash-++ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) Δ =
+  begin
+    (π₁ + π₂) ** Δ Z ++ smash (Γ₁ ++ Γ₂) (Δ ∘ S_)
+  ≡⟨ cong ((π₁ + π₂) ** Δ Z ++_) (smash-++ Γ₁ Γ₂ (Δ ∘ S_)) ⟩
+    (π₁ + π₂) ** Δ Z ++ (smash Γ₁ (Δ ∘ S_) ++ smash Γ₂ (Δ ∘ S_))
+  ≡⟨ cong (_++ smash Γ₁ (Δ ∘ S_) ++ smash Γ₂ (Δ ∘ S_)) (**-distribʳ-++ (Δ Z) π₁ π₂) ⟩
+    (π₁ ** Δ Z ++ π₂ ** Δ Z) ++ (smash Γ₁ (Δ ∘ S_) ++ smash Γ₂ (Δ ∘ S_))
+  ≡⟨ sym (++-assoc (π₁ ** Δ Z ++ π₂ ** Δ Z) (smash Γ₁ (Δ ∘ S_)) (smash Γ₂ (Δ ∘ S_))) ⟩
+    ((π₁ ** Δ Z ++ π₂ ** Δ Z) ++ smash Γ₁ (Δ ∘ S_)) ++ smash Γ₂ (Δ ∘ S_)
+  ≡⟨ cong (_++ smash Γ₂ (Δ ∘ S_)) (++-assoc (π₁ ** Δ Z) (π₂ ** Δ Z) (smash Γ₁ (Δ ∘ S_))) ⟩
+    (π₁ ** Δ Z ++ (π₂ ** Δ Z ++ smash Γ₁ (Δ ∘ S_))) ++ smash Γ₂ (Δ ∘ S_)
+  ≡⟨ cong (_++ smash Γ₂ (Δ ∘ S_)) (cong (π₁ ** Δ Z ++_) (++-comm (π₂ ** Δ Z) (smash Γ₁ (Δ ∘ S_)))) ⟩
+    (π₁ ** Δ Z ++ (smash Γ₁ (Δ ∘ S_) ++ π₂ ** Δ Z)) ++ smash Γ₂ (Δ ∘ S_)
+  ≡⟨ cong (_++ smash Γ₂ (Δ ∘ S_)) (sym (++-assoc (π₁ ** Δ Z) (smash Γ₁ (Δ ∘ S_)) (π₂ ** Δ Z))) ⟩
+    ((π₁ ** Δ Z ++ smash Γ₁ (Δ ∘ S_)) ++ π₂ ** Δ Z) ++ smash Γ₂ (Δ ∘ S_)
+  ≡⟨ ++-assoc (π₁ ** Δ Z ++ smash Γ₁ (Δ ∘ S_)) (π₂ ** Δ Z) (smash Γ₂ (Δ ∘ S_)) ⟩
+    (π₁ ** Δ Z ++ smash Γ₁ (Δ ∘ S_)) ++ (π₂ ** Δ Z ++ smash Γ₂ (Δ ∘ S_))
+  ∎
+\end{code}
+
+\begin{code}
 smash-VC₁ : ∀ {γ δ} {A}
 
   → (Δ : ∀ {A} → (γ ∋ A → Context δ))
@@ -495,14 +555,51 @@ data _⊢₁_ : ∀ {γ} {A} → Context γ → γ ⊢ A → Set where
 \end{code}
 
 \begin{code}
-postulate
-  rename-⊢₁ : ∀ {γ δ} {Γ : Context γ} {B}
+rename-⊢₁ : ∀ {γ δ} {Γ : Context γ} {B}
 
-    → {M : γ ⊢ B}
-    → (ρ : ∀ {A} → γ ∋ A → δ ∋ A)
-    → Γ ⊢₁ M
-    -------------------------------
-    → smash Γ (VC ∘ ρ) ⊢₁ rename ρ M
+  → {M : γ ⊢ B}
+  → (ρ : ∀ {A} → γ ∋ A → δ ∋ A)
+  → Γ ⊢₁ M
+  -------------------------------
+  → smash Γ (VC ∘ ρ) ⊢₁ rename ρ M
+
+rename-⊢₁ {δ = δ} ρ (var {γ} {Γ} {B} x refl) =
+  var (ρ x) (smash-VC₁ (VC ∘ ρ) x)
+rename-⊢₁ {δ = δ} ρ (lam {γ} {Γ} {A} {B} {π} {M} ⊢₁M) =
+  lam (Eq.subst (_⊢₁ rename (ext ρ) M) lem ⊢₁M′)
+  where
+    ⊢₁M′ = rename-⊢₁ (ext ρ) ⊢₁M
+    lem =
+      begin
+        (π ** (0∙ δ) , π * 1# ∙ A) ++ (smash Γ (λ x → VC (ρ x) , 0# ∙ A))
+      ≡⟨ cong ((π ** (0∙ δ) , π * 1# ∙ A) ++_) (smash-0# Γ (VC ∘ ρ)) ⟩
+        (π ** (0∙ δ) , π * 1# ∙ A) ++ (smash Γ (VC ∘ ρ) , 0# ∙ A)
+      ≡⟨⟩
+        π ** (0∙ δ) ++ smash Γ (VC ∘ ρ) , (π * 1#) + 0# ∙ A
+      ≡⟨ cong (π ** (0∙ δ) ++ smash Γ (VC ∘ ρ) ,_∙ A) (+-identityʳ (π * 1#)) ⟩
+        π ** (0∙ δ) ++ smash Γ (VC ∘ ρ) , π * 1# ∙ A
+      ≡⟨ cong (π ** (0∙ δ) ++ smash Γ (VC ∘ ρ) ,_∙ A) (*-identityʳ π) ⟩
+        π ** (0∙ δ) ++ smash Γ (VC ∘ ρ) , π ∙ A
+      ≡⟨ cong (_, π ∙ A) (cong (_++ smash Γ (VC ∘ ρ )) (sym (0∙-absorb δ π))) ⟩
+        (0∙ δ) ++ smash Γ (VC ∘ ρ) , π ∙ A
+      ≡⟨ cong (_, π ∙ A) (++-identityˡ (smash Γ (VC ∘ ρ))) ⟩
+        smash Γ (VC ∘ ρ) , π ∙ A
+      ∎
+rename-⊢₁ {δ = δ} ρ (app {γ} {Γ₁} {Γ₂} {Γ} {A} {B} {π} {M} {N} ⊢₁M ⊢₁N Γ≡Γ₁++π**Γ₂) =
+  app ⊢₁M′ ⊢₁N′ lem
+  where
+    ⊢₁M′ = rename-⊢₁ ρ ⊢₁M
+    ⊢₁N′ = rename-⊢₁ ρ ⊢₁N
+    lem =
+      begin
+        smash Γ (VC ∘ ρ)
+      ≡⟨ cong (λ Γ → smash Γ (VC ∘ ρ)) Γ≡Γ₁++π**Γ₂ ⟩
+        smash (Γ₁ ++ π ** Γ₂) (VC ∘ ρ)
+      ≡⟨ smash-++ Γ₁ (π ** Γ₂) (VC ∘ ρ) ⟩
+        smash Γ₁ (VC ∘ ρ) ++ smash (π ** Γ₂) (VC ∘ ρ)
+      ≡⟨ cong (smash Γ₁ (VC ∘ ρ) ++_) (smash-** Γ₂ (VC ∘ ρ)) ⟩
+        smash Γ₁ (VC ∘ ρ) ++ π ** smash Γ₂ (VC ∘ ρ)
+      ∎
 \end{code}
 
 \begin{code}
@@ -526,32 +623,6 @@ weaken-⊢₁ {γ} {Γ} {A} {B} {M} ⊢₁M
       ≡⟨ cong (_, 0# ∙ B) (smash-VC₂ Γ) ⟩
         Γ , 0# ∙ B
       ∎
-\end{code}
-
-\begin{code}
-smash-** : ∀ {γ δ} (Γ : Context γ) {π}
-
-  → (Δ : ∀ {A} → γ ∋ A → Context δ)
-  -----------------------------------
-  → smash (π ** Γ) Δ ≡ π ** smash Γ Δ
-
-smash-** {γ} {δ} ∅ {π} Δ =
-  begin
-    (0∙ δ)
-  ≡⟨ 0∙-absorb δ π ⟩
-    π ** (0∙ δ)
-  ∎
-
-smash-** {γ} {δ} (Γ , π′ ∙ A) {π} Δ =
-  begin
-    ((π * π′) ** Δ Z) ++ (smash (π ** Γ) (Δ ∘ S_))
-  ≡⟨ cong ((π * π′) ** Δ Z ++_) (smash-** Γ (Δ ∘ S_)) ⟩
-    ((π * π′) ** Δ Z) ++ (π ** smash Γ (Δ ∘ S_))
-  ≡⟨ cong (_++ (π ** smash Γ (Δ ∘ S_))) (**-assoc (Δ Z)) ⟩
-    (π ** (π′ ** Δ Z)) ++ (π ** smash Γ (Δ ∘ S_))
-  ≡⟨ sym (**-distribˡ-++ (π′ ** Δ Z) (smash Γ (Δ ∘ S_))) ⟩
-    π ** (π′ ** Δ Z ++ smash Γ (Δ ∘ S_))
-  ∎
 \end{code}
 
 \begin{code}
