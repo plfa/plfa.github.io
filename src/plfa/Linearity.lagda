@@ -626,56 +626,6 @@ weaken-⊢₁ {γ} {Γ} {A} {B} {M} ⊢₁M
 \end{code}
 
 \begin{code}
-subst-split : ∀ {γ δ} (Γ Γ₁ Γ₂ : Context γ)
-  → (σ : ∀ {A} → γ ∋ A → δ ⊢ A)
-  → (Δ : ∀ {A} → γ ∋ A → Context δ)
-  → (P : ∀ {A} → (x : γ ∋ A) → Δ x ⊢₁ σ x)
-  → Γ ≡ Γ₁ ++ Γ₂
-  → Σ[ Δ₁ ∈ (∀ {A} → γ ∋ A → Context δ) ]
-    Σ[ Δ₂ ∈ (∀ {A} → γ ∋ A → Context δ) ]
-     ( (∀ {A} → (x : γ ∋ A) → Δ₁ x ⊢₁ σ x)
-     × (∀ {A} → (x : γ ∋ A) → Δ₂ x ⊢₁ σ x)
-     × smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂ ≡ smash Γ Δ )
-subst-split {γ} {δ} ∅ ∅ ∅ σ Δ P _ =
-  ⟨ (λ()) , ⟨ (λ()) , ⟨ (λ()) , ⟨ (λ()) , (++-identityʳ (0∙ δ)) ⟩ ⟩ ⟩ ⟩
-subst-split {γ} {δ} (Γ , π ∙ A) (Γ₁ , π₁ ∙ .A) (Γ₂ , π₂ ∙ .A) σ Δ P refl
-  with subst-split Γ Γ₁ Γ₂ (σ ∘ S_) (Δ ∘ S_) (P ∘ S_) refl
-... | ⟨ Δ₁ , ⟨ Δ₂ , ⟨ P₁ , ⟨ P₂ , smash-++ ⟩ ⟩ ⟩ ⟩ =
-  ⟨ Δ₁′ , ⟨ Δ₂′ , ⟨ P₁′ , ⟨ P₂′ , smash-++′ ⟩ ⟩ ⟩ ⟩
-  where
-    Δ₁′ : ∀ {A} → γ ∋ A → Context δ
-    Δ₁′ Z     = Δ Z
-    Δ₁′ (S x) = Δ₁ x
-    Δ₂′ : ∀ {A} → γ ∋ A → Context δ
-    Δ₂′ Z     = Δ Z
-    Δ₂′ (S x) = Δ₂ x
-    P₁′ : ∀ {A} → (x : γ ∋ A) → Δ₁′ x ⊢₁ σ x
-    P₁′ Z     = P Z
-    P₁′ (S x) = P₁ x
-    P₂′ : ∀ {A} → (x : γ ∋ A) → Δ₂′ x ⊢₁ σ x
-    P₂′ Z     = P Z
-    P₂′ (S x) = P₂ x
-    smash-++′ =
-      begin
-        (π₁ ** Δ Z ++ smash Γ₁ Δ₁) ++ (π₂ ** Δ Z ++ smash Γ₂ Δ₂)
-      ≡⟨ sym (++-assoc (π₁ ** Δ Z ++ smash Γ₁ Δ₁) (π₂ ** Δ Z) (smash Γ₂ Δ₂)) ⟩
-        ((π₁ ** Δ Z ++ smash Γ₁ Δ₁) ++ π₂ ** Δ Z) ++ smash Γ₂ Δ₂
-      ≡⟨ cong (_++ smash Γ₂ Δ₂) (++-comm (π₁ ** Δ Z ++ smash Γ₁ Δ₁) (π₂ ** Δ Z)) ⟩
-        (π₂ ** Δ Z ++ (π₁ ** Δ Z ++ smash Γ₁ Δ₁)) ++ smash Γ₂ Δ₂
-      ≡⟨ cong (_++ smash Γ₂ Δ₂) (sym (++-assoc (π₂ ** Δ Z) (π₁ ** Δ Z) (smash Γ₁ Δ₁)) ) ⟩
-        ((π₂ ** Δ Z ++ π₁ ** Δ Z) ++ smash Γ₁ Δ₁) ++ smash Γ₂ Δ₂
-      ≡⟨ ++-assoc (π₂ ** Δ Z ++ π₁ ** Δ Z) (smash Γ₁ Δ₁) (smash Γ₂ Δ₂) ⟩
-        (π₂ ** Δ Z ++ π₁ ** Δ Z) ++ (smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂)
-      ≡⟨ cong (_++ (smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂)) (++-comm (π₂ ** Δ Z) (π₁ ** Δ Z)) ⟩
-        (π₁ ** Δ Z ++ π₂ ** Δ Z) ++ (smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂)
-      ≡⟨ cong (_++ (smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂)) (sym (**-distribʳ-++ (Δ Z) π₁ π₂)) ⟩
-        (π₁ + π₂) ** Δ Z ++ (smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂)
-      ≡⟨ cong ((π₁ + π₂) ** Δ Z ++_) smash-++ ⟩
-        (π₁ + π₂) ** Δ Z ++ smash (Γ₁ ++ Γ₂) (Δ ∘ S_)
-      ∎
-\end{code}
-
-\begin{code}
 subst-⊢₁ : ∀ {γ δ} {Γ : Context γ} {B}
 
   → {M : γ ⊢ B}
@@ -725,17 +675,18 @@ subst-⊢₁ {δ = δ} σ Δ P (lam {γ} {Γ} {A} {B} {π} {M} ⊢₁M)
       ∎
 
 subst-⊢₁ {δ = δ} σ Δ P (app {γ} {Γ₁} {Γ₂} {Γ} {A} {B} {π} ⊢₁M ⊢₁N Γ≡Γ₁++π**Γ₂)
-  with subst-split Γ Γ₁ (π ** Γ₂) σ Δ P Γ≡Γ₁++π**Γ₂
-... | ⟨ Δ₁ , ⟨ Δ₂ , ⟨ P₁ , ⟨ P₂ , smash-++ ⟩ ⟩ ⟩ ⟩ = app ⊢₁M′ ⊢₁N′ lem
+  = app ⊢₁M′ ⊢₁N′ lem
   where
-    ⊢₁M′ = subst-⊢₁ σ Δ₁ P₁ ⊢₁M
-    ⊢₁N′ = subst-⊢₁ σ Δ₂ P₂ ⊢₁N
+    ⊢₁M′ = subst-⊢₁ σ Δ P ⊢₁M
+    ⊢₁N′ = subst-⊢₁ σ Δ P ⊢₁N
     lem =
       begin
         smash Γ Δ
-      ≡⟨ sym (smash-++) ⟩
-        smash Γ₁ Δ₁ ++ smash (π ** Γ₂) Δ₂
-      ≡⟨ cong (smash Γ₁ Δ₁ ++_) (smash-** Γ₂ Δ₂) ⟩
-        smash Γ₁ Δ₁ ++ π ** smash Γ₂ Δ₂
+      ≡⟨ cong (λ z → smash z Δ) Γ≡Γ₁++π**Γ₂ ⟩
+        smash (Γ₁ ++ π ** Γ₂) Δ
+      ≡⟨ smash-++ Γ₁ (π ** Γ₂) Δ ⟩
+        smash Γ₁ Δ ++ smash (π ** Γ₂) Δ
+      ≡⟨ cong (smash Γ₁ Δ ++_) (smash-** Γ₂ Δ) ⟩
+        smash Γ₁ Δ ++ π ** smash Γ₂ Δ
       ∎
 \end{code}
