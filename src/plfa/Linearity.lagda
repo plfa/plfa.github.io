@@ -11,7 +11,7 @@ module plfa.Linearity where
 \begin{code}
 open import plfa.Mult
 open import Function using (_∘_)
-open import Data.Product using (Σ-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; Σ-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
@@ -511,11 +511,15 @@ subst-split : ∀ {γ δ} (Γ Γ₁ Γ₂ : Context γ)
   → Γ ≡ Γ₁ ++ Γ₂
   → Σ[ Δ₁ ∈ (∀ {A} → γ ∋ A → Context δ) ]
     Σ[ Δ₂ ∈ (∀ {A} → γ ∋ A → Context δ) ]
-     ( smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂ ≡ smash Γ Δ )
-subst-split {γ} {δ} ∅ ∅ ∅ σ Δ P p = ⟨ (λ()) , ⟨ (λ()) , ++-identityʳ (0∙ δ) ⟩ ⟩
+     ( (∀ {A} → (x : γ ∋ A) → Δ₁ x ⊢₁ σ x)
+     × (∀ {A} → (x : γ ∋ A) → Δ₂ x ⊢₁ σ x)
+     × smash Γ₁ Δ₁ ++ smash Γ₂ Δ₂ ≡ smash Γ Δ )
+subst-split {γ} {δ} ∅ ∅ ∅ σ Δ P _ =
+  ⟨ (λ()) , ⟨ (λ()) , ⟨ (λ()) , ⟨ (λ()) , (++-identityʳ (0∙ δ)) ⟩ ⟩ ⟩ ⟩
 subst-split {γ} {δ} (Γ , π ∙ A) (Γ₁ , π₁ ∙ .A) (Γ₂ , π₂ ∙ .A) σ Δ P refl
   with subst-split Γ Γ₁ Γ₂ (σ ∘ S_) (Δ ∘ S_) (P ∘ S_) refl
-...| ⟨ Δ₁ , ⟨ Δ₂ , smash-++ ⟩ ⟩ = ⟨ Δ₁′ , ⟨ Δ₂′ , lem ⟩ ⟩
+... | ⟨ Δ₁ , ⟨ Δ₂ , ⟨ P₁ , ⟨ P₂ , smash-++ ⟩ ⟩ ⟩ ⟩ =
+  ⟨ Δ₁′ , ⟨ Δ₂′ , ⟨ P₁′ , ⟨ P₂′ , smash-++′ ⟩ ⟩ ⟩ ⟩
   where
     Δ₁′ : ∀ {A} → γ ∋ A → Context δ
     Δ₁′ Z     = Δ Z
@@ -523,7 +527,13 @@ subst-split {γ} {δ} (Γ , π ∙ A) (Γ₁ , π₁ ∙ .A) (Γ₂ , π₂ ∙ 
     Δ₂′ : ∀ {A} → γ ∋ A → Context δ
     Δ₂′ Z     = Δ Z
     Δ₂′ (S x) = Δ₂ x
-    lem =
+    P₁′ : ∀ {A} → (x : γ ∋ A) → Δ₁′ x ⊢₁ σ x
+    P₁′ Z     = P Z
+    P₁′ (S x) = P₁ x
+    P₂′ : ∀ {A} → (x : γ ∋ A) → Δ₂′ x ⊢₁ σ x
+    P₂′ Z     = P Z
+    P₂′ (S x) = P₂ x
+    smash-++′ =
       begin
         (π₁ ** Δ Z ++ smash Γ₁ Δ₁) ++ (π₂ ** Δ Z ++ smash Γ₂ Δ₂)
       ≡⟨ sym (++-assoc (π₁ ** Δ Z ++ smash Γ₁ Δ₁) (π₂ ** Δ Z) (smash Γ₂ Δ₂)) ⟩
@@ -541,6 +551,29 @@ subst-split {γ} {δ} (Γ , π ∙ A) (Γ₁ , π₁ ∙ .A) (Γ₂ , π₂ ∙ 
       ≡⟨ cong ((π₁ + π₂) ** Δ Z ++_) smash-++ ⟩
         (π₁ + π₂) ** Δ Z ++ smash (Γ₁ ++ Γ₂) (Δ ∘ S_)
       ∎
+\end{code}
+
+\begin{code}
+**-distribˡ-++ : ∀ {γ} (Γ₁ Γ₂ : Context γ) {π}
+
+  --------------------------------------
+  → π ** (Γ₁ ++ Γ₂) ≡ π ** Γ₁ ++ π ** Γ₂
+
+**-distribˡ-++ ∅ ∅ =
+  begin
+    ∅
+  ≡⟨⟩
+    ∅
+  ∎
+
+**-distribˡ-++ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) {π} =
+  begin
+    π ** (Γ₁ ++ Γ₂) , π * (π₁ + π₂) ∙ A
+  ≡⟨ cong (π ** (Γ₁ ++ Γ₂) ,_∙ A) (*-distribˡ-+ π π₁ π₂) ⟩
+    π ** (Γ₁ ++ Γ₂) , (π * π₁) + (π * π₂) ∙ A
+  ≡⟨ cong (_, (π * π₁) + (π * π₂) ∙ A) (**-distribˡ-++ Γ₁ Γ₂) ⟩
+    π ** Γ₁ ++ π ** Γ₂ , (π * π₁) + (π * π₂) ∙ A
+  ∎
 \end{code}
 
 \begin{code}
@@ -562,9 +595,9 @@ smash-** {γ} {δ} (Γ , π′ ∙ A) {π} Δ =
     ((π * π′) ** Δ Z) ++ (smash (π ** Γ) (Δ ∘ S_))
   ≡⟨ cong ((π * π′) ** Δ Z ++_) (smash-** Γ (Δ ∘ S_)) ⟩
     ((π * π′) ** Δ Z) ++ (π ** smash Γ (Δ ∘ S_))
-  ≡⟨ {!!} ⟩
+  ≡⟨ cong (_++ (π ** smash Γ (Δ ∘ S_))) (**-assoc (Δ Z)) ⟩
     (π ** (π′ ** Δ Z)) ++ (π ** smash Γ (Δ ∘ S_))
-  ≡⟨ {!!} ⟩
+  ≡⟨ sym (**-distribˡ-++ (π′ ** Δ Z) (smash Γ (Δ ∘ S_))) ⟩
     π ** (π′ ** Δ Z ++ smash Γ (Δ ∘ S_))
   ∎
 \end{code}
@@ -620,16 +653,16 @@ subst-⊢₁ {δ = δ} σ Δ P (lam {γ} {Γ} {A} {B} {π} {M} ⊢₁M)
 
 subst-⊢₁ {δ = δ} σ Δ P (app {γ} {Γ₁} {Γ₂} {Γ} {A} {B} {π} ⊢₁M ⊢₁N Γ≡Γ₁++π**Γ₂)
   with subst-split Γ Γ₁ (π ** Γ₂) σ Δ P Γ≡Γ₁++π**Γ₂
-... | ⟨ Δ₁ , ⟨ Δ₂ , smash-++ ⟩ ⟩ = app ⊢₁M′ ⊢₁N′ lem
+... | ⟨ Δ₁ , ⟨ Δ₂ , ⟨ P₁ , ⟨ P₂ , smash-++ ⟩ ⟩ ⟩ ⟩ = app ⊢₁M′ ⊢₁N′ lem
   where
-    ⊢₁M′ = subst-⊢₁ σ Δ₁ {!!} ⊢₁M
-    ⊢₁N′ = subst-⊢₁ σ Δ₂ {!!} ⊢₁N
+    ⊢₁M′ = subst-⊢₁ σ Δ₁ P₁ ⊢₁M
+    ⊢₁N′ = subst-⊢₁ σ Δ₂ P₂ ⊢₁N
     lem =
       begin
         smash Γ Δ
       ≡⟨ sym (smash-++) ⟩
         smash Γ₁ Δ₁ ++ smash (π ** Γ₂) Δ₂
-      ≡⟨ {!!} ⟩
+      ≡⟨ cong (smash Γ₁ Δ₁ ++_) (smash-** Γ₂ Δ₂) ⟩
         smash Γ₁ Δ₁ ++ π ** smash Γ₂ Δ₂
       ∎
 \end{code}
