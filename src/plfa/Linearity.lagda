@@ -140,11 +140,15 @@ _ : Context (∅ , [ 1# ∙ `0 ]⊸ `0 , `0)
 _ = ∅ , 1# ∙ [ 1# ∙ `0 ]⊸ `0 , 0# ∙ `0
 \end{code}
 
+Scaling.
+
 \begin{code}
 _**_ : ∀ {γ} → Mult → Context γ → Context γ
 π ** ∅ = ∅
 π ** (Γ , ρ ∙ A) = π ** Γ , π * ρ ∙ A
 \end{code}
+
+Unit scaling does nothing.
 
 \begin{code}
 **-identity : ∀ {γ} (Γ : Context γ)
@@ -155,6 +159,8 @@ _**_ : ∀ {γ} → Mult → Context γ → Context γ
 **-identity ∅ = refl
 **-identity (Γ , π ∙ A) rewrite **-identity Γ = refl
 \end{code}
+
+Scaling by a product is the composition of scalings.
 
 \begin{code}
 **-assoc : ∀ {γ} (Γ : Context γ) {π π′}
@@ -173,11 +179,15 @@ _**_ : ∀ {γ} → Mult → Context γ → Context γ
   ∎
 \end{code}
 
+The 0-vector.
+
 \begin{code}
 0∙_ : ∀ γ → Context γ
 0∙  ∅      = ∅
 0∙ (γ , A) = 0∙ γ , 0# ∙ A
 \end{code}
+
+Scaling the 0-vector gives the 0-vector.
 
 \begin{code}
 0∙-absorb : ∀ γ π
@@ -202,6 +212,8 @@ _**_ : ∀ {γ} → Mult → Context γ → Context γ
   ∎
 \end{code}
 
+Scaling by 0 gives the 0-vector.
+
 \begin{code}
 0**Γ≡0∙γ : ∀ {γ} (Γ : Context γ)
 
@@ -212,11 +224,15 @@ _**_ : ∀ {γ} → Mult → Context γ → Context γ
 0**Γ≡0∙γ (Γ , π ∙ A) rewrite 0**Γ≡0∙γ Γ = refl
 \end{code}
 
+Vector addition.
+
 \begin{code}
 _++_ : ∀ {γ} → Context γ → Context γ → Context γ
 ∅ ++ ∅ = ∅
 (Γ₁ , π₁ ∙ A) ++ (Γ₂ , π₂ ∙ .A) = Γ₁ ++ Γ₂ , π₁ + π₂ ∙ A
 \end{code}
+
+Adding the 0-vector does nothing (left).
 
 \begin{code}
 ++-identityˡ : ∀ {γ} (Γ : Context γ)
@@ -228,6 +244,8 @@ _++_ : ∀ {γ} → Context γ → Context γ → Context γ
 ++-identityˡ (Γ , π ∙ A) rewrite ++-identityˡ Γ | +-identityʳ π = refl
 \end{code}
 
+Adding the 0-vector does nothing (right).
+
 \begin{code}
 ++-identityʳ : ∀ {γ} (Γ : Context γ)
 
@@ -237,6 +255,8 @@ _++_ : ∀ {γ} → Context γ → Context γ → Context γ
 ++-identityʳ ∅ = refl
 ++-identityʳ (Γ , π ∙ A) rewrite ++-identityʳ Γ | +-identityʳ π = refl
 \end{code}
+
+Vector addition is commutative.
 
 \begin{code}
 ++-comm : ∀ {γ} (Γ₁ Γ₂ : Context γ)
@@ -261,6 +281,8 @@ _++_ : ∀ {γ} → Context γ → Context γ → Context γ
   ∎
 \end{code}
 
+Vector addition is associative.
+
 \begin{code}
 ++-assoc : ∀ {γ} (Γ₁ Γ₂ Γ₃ : Context γ)
 
@@ -283,6 +305,8 @@ _++_ : ∀ {γ} → Context γ → Context γ → Context γ
     Γ₁ ++ (Γ₂ ++ Γ₃) , π₁ + (π₂ + π₃) ∙ A
   ∎
 \end{code}
+
+Scaling by a sum gives the sum of the scalings.
 
 \begin{code}
 **-distribʳ-++ : ∀ {γ} (Γ : Context γ) π₁ π₂
@@ -307,6 +331,7 @@ _++_ : ∀ {γ} → Context γ → Context γ → Context γ
   ∎
 \end{code}
 
+Scaling a sum gives the sum of the scalings.
 
 \begin{code}
 **-distribˡ-++ : ∀ {γ} (Γ₁ Γ₂ : Context γ) {π}
@@ -331,12 +356,15 @@ _++_ : ∀ {γ} → Context γ → Context γ → Context γ
   ∎
 \end{code}
 
+The i'th standard basis vector.
 
 \begin{code}
 VC : ∀ {A} {γ : Precontext} → γ ∋ A → Context γ
 VC {γ = γ , A} Z     = 0∙ γ , 1# ∙ A
 VC {γ = γ , B} (S x) = VC x , 0# ∙ B
 \end{code}
+
+Matrix-vector multiplication ΔᵀΓ.
 
 \begin{code}
 smash : ∀ {γ δ}
@@ -348,6 +376,8 @@ smash : ∀ {γ δ}
 smash {δ = δ} ∅           Δ = 0∙ δ
 smash {δ = δ} (Γ , π ∙ A) Δ = (π ** Δ Z) ++ smash Γ (Δ ∘ S_)
 \end{code}
+
+Linear maps preserve the 0-vector.
 
 \begin{code}
 smash-0∙ : ∀ {γ δ}
@@ -370,6 +400,8 @@ smash-0∙ {γ , A} {δ} Δ =
     (0∙ δ)
   ∎
 \end{code}
+
+Adding a row of 0s to the end of the matrix and then multiplying by a vector produces a vector with a 0 at the bottom.
 
 \begin{code}
 smash-0# : ∀ {γ δ} (Γ : Context γ) {B}
@@ -401,6 +433,8 @@ smash-0# {γ} {δ} (Γ , π ∙ C) {B} Δ =
   ∎
 \end{code}
 
+Linear maps preserve scaling.
+
 \begin{code}
 smash-** : ∀ {γ δ} (Γ : Context γ) {π}
 
@@ -426,6 +460,8 @@ smash-** {γ} {δ} (Γ , π′ ∙ A) {π} Δ =
     π ** (π′ ** Δ Z ++ smash Γ (Δ ∘ S_))
   ∎
 \end{code}
+
+Linear maps distribute over sums.
 
 \begin{code}
 smash-++ : ∀ {γ} {δ} (Γ₁ Γ₂ : Context γ)
@@ -461,6 +497,8 @@ smash-++ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) Δ =
   ∎
 \end{code}
 
+Multiplying by a standard basis vector projects out the corresponding column of the matrix.
+
 \begin{code}
 smash-VC₁ : ∀ {γ δ} {A}
 
@@ -495,6 +533,8 @@ smash-VC₁ {γ , B} {δ} {A} Δ (S x) =
     Δ (S x)
   ∎
 \end{code}
+
+The standard basis vectors put together give the identity matrix.
 
 \begin{code}
 smash-VC₂ : ∀ {γ} (Γ : Context γ)
@@ -554,6 +594,8 @@ data _⊢₁_ : ∀ {γ} {A} → Context γ → γ ⊢ A → Set where
       → Θ ⊢₁ (M · N)
 \end{code}
 
+We can do a change of basis (or, in this case, permutation of basis and introduction of 0-size dimensions) on the substitution matrix.
+
 \begin{code}
 rename-⊢₁ : ∀ {γ δ} {Γ : Context γ} {B}
 
@@ -602,6 +644,8 @@ rename-⊢₁ {δ = δ} ρ (app {γ} {Γ₁} {Γ₂} {Γ} {A} {B} {π} {M} {N} �
       ∎
 \end{code}
 
+We can introduce one 0-size dimension.
+
 \begin{code}
 weaken-⊢₁ : ∀ {γ} {Γ : Context γ} {A B}
 
@@ -624,6 +668,8 @@ weaken-⊢₁ {γ} {Γ} {A} {B} {M} ⊢₁M
         Γ , 0# ∙ B
       ∎
 \end{code}
+
+We can actually use the substitution matrix.
 
 \begin{code}
 subst-⊢₁ : ∀ {γ δ} {Γ : Context γ} {B}
@@ -675,10 +721,8 @@ subst-⊢₁ {δ = δ} σ Δ P (lam {γ} {Γ} {A} {B} {π} {M} ⊢₁M)
       ∎
 
 subst-⊢₁ {δ = δ} σ Δ P (app {γ} {Γ₁} {Γ₂} {Γ} {A} {B} {π} ⊢₁M ⊢₁N Γ≡Γ₁++π**Γ₂)
-  = app ⊢₁M′ ⊢₁N′ lem
+  = app (subst-⊢₁ σ Δ P ⊢₁M) (subst-⊢₁ σ Δ P ⊢₁N) lem
   where
-    ⊢₁M′ = subst-⊢₁ σ Δ P ⊢₁M
-    ⊢₁N′ = subst-⊢₁ σ Δ P ⊢₁N
     lem =
       begin
         smash Γ Δ
