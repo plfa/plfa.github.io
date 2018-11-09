@@ -771,7 +771,7 @@ Remember to indent all code by two spaces.
 ### Imports
 
 \begin{code}
-  import plfa.DeBruijn as DB
+  import plfa.More as DB
 \end{code}
 
 ### Syntax
