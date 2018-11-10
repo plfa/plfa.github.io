@@ -23,6 +23,7 @@ data Mult : Set where
 \end{code}
 
 \begin{code}
+open import Algebra
 open import Algebra.Structures         {A = Mult} _≡_
 open import Algebra.FunctionProperties {A = Mult} _≡_
 \end{code}
@@ -222,5 +223,18 @@ _*_ : Mult → Mult → Mult
     ; distrib               = *-distrib-+
     }
   ; zero = *-zero
+  }
+\end{code}
+
+\begin{code}
+semiring : Semiring _ _
+semiring = record
+  { Carrier    = Mult
+  ; _≈_        = _≡_
+  ; _+_        = _+_
+  ; _*_        = _*_
+  ; 0#         = 0#
+  ; 1#         = 1#
+  ; isSemiring = *-+-isSemiring
   }
 \end{code}
