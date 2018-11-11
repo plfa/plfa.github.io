@@ -103,9 +103,9 @@ Scaling by a product is the composition of scalings.
 **-assoc (Γ , π″ ∙ A) {π} {π′} =
   begin
     (π * π′) ** Γ , (π * π′) * π″ ∙ A
-  ≡⟨ cong ((π * π′) ** Γ ,_∙ A) (*-assoc π π′ π″) ⟩
+  ≡⟨ *-assoc π π′ π″ |> cong ((π * π′) ** Γ ,_∙ A) ⟩
     (π * π′) ** Γ , π * (π′ * π″) ∙ A
-  ≡⟨ cong (_, π * (π′ * π″) ∙ A) (**-assoc Γ) ⟩
+  ≡⟨ **-assoc Γ |> cong (_, π * (π′ * π″) ∙ A) ⟩
     π ** (π′ ** Γ) , π * (π′ * π″) ∙ A
   ∎
 \end{code}
@@ -130,9 +130,9 @@ Scaling the 0-vector gives the 0-vector.
 **-zeroʳ {γ , A} π =
   begin
     0s , 0# ∙ A
-  ≡⟨ cong (0s ,_∙ A) (sym (*-zeroʳ π)) ⟩
+  ≡⟨ *-zeroʳ π |> sym ∘ cong (0s ,_∙ A) ⟩
     0s , π * 0# ∙ A
-  ≡⟨ cong (_, π * 0# ∙ A) (**-zeroʳ π) ⟩
+  ≡⟨ **-zeroʳ π |> cong (_, π * 0# ∙ A) ⟩
     π ** 0s , π * 0# ∙ A
   ∎
 \end{code}
@@ -191,9 +191,9 @@ Vector addition is commutative.
 ⋈-comm (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) =
   begin
     Γ₁ ⋈ Γ₂ , π₁ + π₂ ∙ A
-  ≡⟨ cong (Γ₁ ⋈ Γ₂ ,_∙ A) (+-comm π₁ π₂) ⟩
+  ≡⟨ +-comm π₁ π₂ |> cong (Γ₁ ⋈ Γ₂ ,_∙ A) ⟩
     Γ₁ ⋈ Γ₂ , π₂ + π₁ ∙ A
-  ≡⟨ cong (_, π₂ + π₁ ∙ A) (⋈-comm Γ₁ Γ₂) ⟩
+  ≡⟨ ⋈-comm Γ₁ Γ₂ |> cong (_, π₂ + π₁ ∙ A) ⟩
     Γ₂ ⋈ Γ₁ , π₂ + π₁ ∙ A
   ∎
 \end{code}
@@ -210,9 +210,9 @@ Vector addition is associative.
 ⋈-assoc (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) (Γ₃ , π₃ ∙ .A) =
   begin
     (Γ₁ ⋈ Γ₂) ⋈ Γ₃ , (π₁ + π₂) + π₃ ∙ A
-  ≡⟨ cong ((Γ₁ ⋈ Γ₂) ⋈ Γ₃ ,_∙ A) (+-assoc π₁ π₂ π₃) ⟩
+  ≡⟨ +-assoc π₁ π₂ π₃ |> cong ((Γ₁ ⋈ Γ₂) ⋈ Γ₃ ,_∙ A) ⟩
     (Γ₁ ⋈ Γ₂) ⋈ Γ₃ , π₁ + (π₂ + π₃) ∙ A
-  ≡⟨ cong (_, π₁ + (π₂ + π₃) ∙ A) (⋈-assoc Γ₁ Γ₂ Γ₃) ⟩
+  ≡⟨ ⋈-assoc Γ₁ Γ₂ Γ₃ |> cong (_, π₁ + (π₂ + π₃) ∙ A) ⟩
     Γ₁ ⋈ (Γ₂ ⋈ Γ₃) , π₁ + (π₂ + π₃) ∙ A
   ∎
 \end{code}
@@ -229,9 +229,9 @@ Scaling by a sum gives the sum of the scalings.
 **-distribʳ-⋈ (Γ , π ∙ A) π₁ π₂ =
   begin
     (π₁ + π₂) ** Γ , (π₁ + π₂) * π ∙ A
-  ≡⟨ cong ((π₁ + π₂) ** Γ ,_∙ A) (*-distribʳ-+ π π₁ π₂) ⟩
+  ≡⟨ *-distribʳ-+ π π₁ π₂ |> cong ((π₁ + π₂) ** Γ ,_∙ A) ⟩
     (π₁ + π₂) ** Γ , (π₁ * π) + (π₂ * π) ∙ A
-  ≡⟨ cong (_, (π₁ * π) + (π₂ * π) ∙ A) (**-distribʳ-⋈ Γ π₁ π₂) ⟩
+  ≡⟨ **-distribʳ-⋈ Γ π₁ π₂ |> cong (_, (π₁ * π) + (π₂ * π) ∙ A) ⟩
     π₁ ** Γ ⋈ π₂ ** Γ , (π₁ * π) + (π₂ * π) ∙ A
   ∎
 \end{code}
@@ -248,9 +248,9 @@ Scaling a sum gives the sum of the scalings.
 **-distribˡ-⋈ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) {π} =
   begin
     π ** (Γ₁ ⋈ Γ₂) , π * (π₁ + π₂) ∙ A
-  ≡⟨ cong (π ** (Γ₁ ⋈ Γ₂) ,_∙ A) (*-distribˡ-+ π π₁ π₂) ⟩
+  ≡⟨ *-distribˡ-+ π π₁ π₂ |> cong (π ** (Γ₁ ⋈ Γ₂) ,_∙ A) ⟩
     π ** (Γ₁ ⋈ Γ₂) , (π * π₁) + (π * π₂) ∙ A
-  ≡⟨ cong (_, (π * π₁) + (π * π₂) ∙ A) (**-distribˡ-⋈ Γ₁ Γ₂) ⟩
+  ≡⟨ **-distribˡ-⋈ Γ₁ Γ₂ |> cong (_, (π * π₁) + (π * π₂) ∙ A) ⟩
     π ** Γ₁ ⋈ π ** Γ₂ , (π * π₁) + (π * π₂) ∙ A
   ∎
 \end{code}
@@ -291,9 +291,9 @@ Linear maps preserve the 0-vector.
     0s ⊛ Δ
   ≡⟨⟩
     0# ** Δ Z ⋈ 0s ⊛ (Δ ∘ S_)
-  ≡⟨ cong (0# ** Δ Z ⋈_) (⊛-zeroˡ {γ} (Δ ∘ S_)) ⟩
+  ≡⟨ ⊛-zeroˡ (Δ ∘ S_) |> cong (0# ** Δ Z ⋈_) ⟩
     0# ** Δ Z ⋈ 0s
-  ≡⟨ cong (_⋈ 0s) (**-zeroˡ (Δ Z)) ⟩
+  ≡⟨ **-zeroˡ (Δ Z) |> cong (_⋈ 0s) ⟩
     0s ⋈ 0s
   ≡⟨ ⋈-identityʳ 0s ⟩
     0s
@@ -313,15 +313,15 @@ Adding a row of 0s to the end of the matrix and then multiplying by a vector pro
 ⊛-zeroʳ {γ} {δ} (Γ , π ∙ C) {B} Δ =
   begin
     (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Δ (S x) , 0# ∙ B))
-  ≡⟨ cong ((π ** Δ Z , π * 0# ∙ B) ⋈_) (⊛-zeroʳ Γ (Δ ∘ S_)) ⟩
+  ≡⟨ ⊛-zeroʳ Γ (Δ ∘ S_) |> cong ((π ** Δ Z , π * 0# ∙ B) ⋈_) ⟩
     (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Δ (S x)) , 0# ∙ B)
   ≡⟨⟩
     (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (Δ ∘ S_) , 0# ∙ B)
   ≡⟨⟩
     (π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) , (π * 0#) + 0# ∙ B
-  ≡⟨ cong ((π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) ,_∙ B) (+-identityʳ (π * 0#)) ⟩
+  ≡⟨ +-identityʳ (π * 0#) |> cong ((π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) ,_∙ B) ⟩
     (π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) , π * 0# ∙ B
-  ≡⟨ cong ((π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) ,_∙ B) (*-zeroʳ π) ⟩
+  ≡⟨ *-zeroʳ π |> cong ((π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) ,_∙ B) ⟩
     (π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) , 0# ∙ B
   ∎
 \end{code}
@@ -345,11 +345,11 @@ Linear maps preserve scaling.
 ⊛-preserves-** {γ} {δ} (Γ , π′ ∙ A) {π} Δ =
   begin
     ((π * π′) ** Δ Z) ⋈ ((π ** Γ) ⊛ (Δ ∘ S_))
-  ≡⟨ cong ((π * π′) ** Δ Z ⋈_) (⊛-preserves-** Γ (Δ ∘ S_)) ⟩
+  ≡⟨ ⊛-preserves-** Γ (Δ ∘ S_) |> cong ((π * π′) ** Δ Z ⋈_) ⟩
     ((π * π′) ** Δ Z) ⋈ (π ** (Γ ⊛ (Δ ∘ S_)))
-  ≡⟨ cong (_⋈ (π ** (Γ ⊛ (Δ ∘ S_)))) (**-assoc (Δ Z)) ⟩
+  ≡⟨ **-assoc (Δ Z) |> cong (_⋈ (π ** (Γ ⊛ (Δ ∘ S_)))) ⟩
     (π ** (π′ ** Δ Z)) ⋈ (π ** (Γ ⊛ (Δ ∘ S_)))
-  ≡⟨ sym (**-distribˡ-⋈ (π′ ** Δ Z) (Γ ⊛ (Δ ∘ S_))) ⟩
+  ≡⟨ **-distribˡ-⋈ (π′ ** Δ Z) (Γ ⊛ (Δ ∘ S_)) |> sym ⟩
     π ** (π′ ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_))
   ∎
 \end{code}
@@ -373,17 +373,17 @@ Linear maps distribute over sums.
 ⊛-distribʳ-⋈ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) Δ =
   begin
     (π₁ + π₂) ** Δ Z ⋈ (Γ₁ ⋈ Γ₂) ⊛ (Δ ∘ S_)
-  ≡⟨ cong ((π₁ + π₂) ** Δ Z ⋈_) (⊛-distribʳ-⋈ Γ₁ Γ₂ (Δ ∘ S_)) ⟩
+  ≡⟨ ⊛-distribʳ-⋈ Γ₁ Γ₂ (Δ ∘ S_) |> cong ((π₁ + π₂) ** Δ Z ⋈_) ⟩
     (π₁ + π₂) ** Δ Z ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_))
-  ≡⟨ cong (_⋈ Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_)) (**-distribʳ-⋈ (Δ Z) π₁ π₂) ⟩
+  ≡⟨ **-distribʳ-⋈ (Δ Z) π₁ π₂ |> cong (_⋈ Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
     (π₁ ** Δ Z ⋈ π₂ ** Δ Z) ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_))
-  ≡⟨ sym (⋈-assoc (π₁ ** Δ Z ⋈ π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (Γ₂ ⊛ (Δ ∘ S_))) ⟩
+  ≡⟨ ⋈-assoc (π₁ ** Δ Z ⋈ π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (Γ₂ ⊛ (Δ ∘ S_)) |> sym ⟩
     ((π₁ ** Δ Z ⋈ π₂ ** Δ Z) ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) (⋈-assoc (π₁ ** Δ Z) (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_))) ⟩
+  ≡⟨ ⋈-assoc (π₁ ** Δ Z) (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
     (π₁ ** Δ Z ⋈ (π₂ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_))) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) (cong (π₁ ** Δ Z ⋈_) (⋈-comm (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)))) ⟩
+  ≡⟨ ⋈-comm (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ∘ cong (π₁ ** Δ Z ⋈_) ⟩
     (π₁ ** Δ Z ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ π₂ ** Δ Z)) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) (sym (⋈-assoc (π₁ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (π₂ ** Δ Z))) ⟩
+  ≡⟨ ⋈-assoc (π₁ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (π₂ ** Δ Z) |> sym ∘ cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
     ((π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ π₂ ** Δ Z) ⋈ Γ₂ ⊛ (Δ ∘ S_)
   ≡⟨ ⋈-assoc (π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) (π₂ ** Δ Z) (Γ₂ ⊛ (Δ ∘ S_)) ⟩
     (π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ (π₂ ** Δ Z ⋈ Γ₂ ⊛ (Δ ∘ S_))
@@ -405,7 +405,7 @@ Multiplying by a standard basis vector projects out the corresponding column of 
     identity Z ⊛ Δ
   ≡⟨⟩
     1# ** Δ Z ⋈ 0s ⊛ (Δ ∘ S_)
-  ≡⟨ cong ((1# ** Δ Z) ⋈_) (⊛-zeroˡ (Δ ∘ S_)) ⟩
+  ≡⟨ ⊛-zeroˡ (Δ ∘ S_) |> cong ((1# ** Δ Z) ⋈_) ⟩
     1# ** Δ Z ⋈ 0s
   ≡⟨ ⋈-identityʳ (1# ** Δ Z) ⟩
     1# ** Δ Z
@@ -418,9 +418,9 @@ Multiplying by a standard basis vector projects out the corresponding column of 
     identity (S x) ⊛ Δ
   ≡⟨⟩
     0# ** Δ Z ⋈ identity x ⊛ (Δ ∘ S_)
-  ≡⟨ cong (0# ** Δ Z ⋈_) (⊛-identityˡ (Δ ∘ S_) x) ⟩
+  ≡⟨ ⊛-identityˡ (Δ ∘ S_) x |> cong (0# ** Δ Z ⋈_) ⟩
     0# ** Δ Z ⋈ Δ (S x)
-  ≡⟨ cong (_⋈ Δ (S x)) (**-zeroˡ (Δ Z)) ⟩
+  ≡⟨ **-zeroˡ (Δ Z) |> cong (_⋈ Δ (S x)) ⟩
     0s ⋈ Δ (S x)
   ≡⟨ ⋈-identityˡ (Δ (S x)) ⟩
     Δ (S x)
@@ -439,19 +439,19 @@ The standard basis vectors put together give the identity matrix.
 ⊛-identityʳ {γ , .A} (Γ , π ∙ A) =
   begin
     (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → identity x , 0# ∙ A))
-  ≡⟨ cong ((π ** 0s , π * 1# ∙ A) ⋈_) (⊛-zeroʳ Γ identity) ⟩
+  ≡⟨ ⊛-zeroʳ Γ identity |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
     (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ identity , 0# ∙ A)
-  ≡⟨ cong ((π ** 0s , π * 1# ∙ A) ⋈_) (cong (_, 0# ∙ A) (⊛-identityʳ Γ)) ⟩
+  ≡⟨ ⊛-identityʳ Γ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ∘ cong (_, 0# ∙ A) ⟩
     (π ** 0s , π * 1# ∙ A) ⋈ (Γ , 0# ∙ A)
   ≡⟨⟩
     π ** 0s ⋈ Γ , (π * 1#) + 0# ∙ A
-  ≡⟨ cong ((π ** 0s ⋈ Γ) ,_∙ A) (+-identityʳ (π * 1#)) ⟩
+  ≡⟨ +-identityʳ (π * 1#) |> cong ((π ** 0s ⋈ Γ) ,_∙ A) ⟩
     π ** 0s ⋈ Γ , π * 1# ∙ A
-  ≡⟨ cong ((π ** 0s ⋈ Γ) ,_∙ A) (*-identityʳ π) ⟩
+  ≡⟨ *-identityʳ π |> cong ((π ** 0s ⋈ Γ) ,_∙ A) ⟩
     π ** 0s ⋈ Γ , π ∙ A
-  ≡⟨ cong (_, π ∙ A) (cong (_⋈ Γ) (sym (**-zeroʳ π))) ⟩
+  ≡⟨ **-zeroʳ π |> cong (_, π ∙ A) ∘ cong (_⋈ Γ) ∘ sym ⟩
     0s ⋈ Γ , π ∙ A
-  ≡⟨ cong (_, π ∙ A) (⋈-identityˡ Γ) ⟩
+  ≡⟨ ⋈-identityˡ Γ |> cong (_, π ∙ A) ⟩
     Γ , π ∙ A
   ∎
 \end{code}
@@ -555,7 +555,7 @@ weaken {γ} {Γ} {A} {B} M =
         Γ ⊛ (λ x → identity x , 0# ∙ B)
       ≡⟨ ⊛-zeroʳ Γ identity ⟩
         (Γ ⊛ identity) , 0# ∙ B
-      ≡⟨ cong (_, 0# ∙ B) (⊛-identityʳ Γ) ⟩
+      ≡⟨ ⊛-identityʳ Γ |> cong (_, 0# ∙ B) ⟩
         Γ , 0# ∙ B
       ∎
 \end{code}
@@ -614,3 +614,4 @@ subst Δ σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (s
         (Γ ⋈ π ** Γ′) ⊛ Δ
       ∎
 \end{code}
+
