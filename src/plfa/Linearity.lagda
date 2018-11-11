@@ -10,7 +10,7 @@ module plfa.Linearity where
 
 \begin{code}
 open import plfa.Mult
-open import Function using (_∘_)
+open import Function using (_∘_; _|>_)
 open import Data.Product using (_×_; Σ-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong)
@@ -18,7 +18,6 @@ open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
 \end{code}
 
 \begin{code}
-infix  1 _⊢₁_∋_
 infix  1 _⊢_
 infix  1 _∋_
 infixl 5 _,_
@@ -59,75 +58,6 @@ data _∋_ : Precontext → Type → Set where
      → γ ∋ A
        ---------
      → γ , B ∋ A
-\end{code}
-
-\begin{code}
-data _⊢_ : Precontext → Type → Set where
-
-  `_  : ∀ {γ} {A}
-
-      → γ ∋ A
-        -----
-      → γ ⊢ A
-
-  ƛ_  : ∀ {γ} {A B} {π}
-
-      → γ , A ⊢ B
-        ----------------
-      → γ ⊢ [ π ∙ A ]⊸ B
-
-  _·_ : ∀ {γ} {A B} {π}
-
-      → γ ⊢ [ π ∙ A ]⊸ B
-      → γ ⊢ A
-        ----------------
-      → γ ⊢ B
-\end{code}
-
-\begin{code}
-ext : ∀ {Γ Δ}
-
-  → (∀ {A} → Γ ∋ A → Δ ∋ A)
-  ---------------------------------
-  → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
-
-ext ρ Z      =  Z
-ext ρ (S x)  =  S (ρ x)
-\end{code}
-
-\begin{code}
-rename : ∀ {Γ Δ}
-
-  → (∀ {A} → Γ ∋ A → Δ ∋ A)
-  -----------------------
-  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-
-rename ρ (` x)          =  ` (ρ x)
-rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
-rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
-\end{code}
-
-\begin{code}
-exts : ∀ {Γ Δ}
-
-  → (∀ {A} → Γ ∋ A → Δ ⊢ A)
-  ---------------------------------
-  → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
-
-exts σ Z      =  ` Z
-exts σ (S x)  =  rename S_ (σ x)
-\end{code}
-
-\begin{code}
-subst : ∀ {Γ Δ}
-
-  → (∀ {A} → Γ ∋ A → Δ ⊢ A)
-  -----------------------
-  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-
-subst σ (` k)    =  σ k
-subst σ (ƛ N)    =  ƛ (subst (exts σ) N)
-subst σ (L · M)  =  (subst σ L) · (subst σ M)
 \end{code}
 
 \begin{code}
@@ -191,18 +121,18 @@ The 0-vector.
 Scaling the 0-vector gives the 0-vector.
 
 \begin{code}
-**-zeroʳ : ∀ γ π
+**-zeroʳ : ∀ {γ} π
 
   --------------------
   → 0s {γ} ≡ π ** 0s
 
-**-zeroʳ ∅ π = refl
-**-zeroʳ (γ , A) π =
+**-zeroʳ {∅} π = refl
+**-zeroʳ {γ , A} π =
   begin
     0s , 0# ∙ A
   ≡⟨ cong (0s ,_∙ A) (sym (*-zeroʳ π)) ⟩
     0s , π * 0# ∙ A
-  ≡⟨ cong (_, π * 0# ∙ A) (**-zeroʳ γ π) ⟩
+  ≡⟨ cong (_, π * 0# ∙ A) (**-zeroʳ π) ⟩
     π ** 0s , π * 0# ∙ A
   ∎
 \end{code}
@@ -408,7 +338,7 @@ Linear maps preserve scaling.
 ⊛-preserves-** {γ} {δ} ∅ {π} Δ =
   begin
     0s
-  ≡⟨ **-zeroʳ δ π ⟩
+  ≡⟨ **-zeroʳ π ⟩
     π ** 0s
   ∎
 
@@ -519,7 +449,7 @@ The standard basis vectors put together give the identity matrix.
     π ** 0s ⋈ Γ , π * 1# ∙ A
   ≡⟨ cong ((π ** 0s ⋈ Γ) ,_∙ A) (*-identityʳ π) ⟩
     π ** 0s ⋈ Γ , π ∙ A
-  ≡⟨ cong (_, π ∙ A) (cong (_⋈ Γ) (sym (**-zeroʳ γ π))) ⟩
+  ≡⟨ cong (_, π ∙ A) (cong (_⋈ Γ) (sym (**-zeroʳ π))) ⟩
     0s ⋈ Γ , π ∙ A
   ≡⟨ cong (_, π ∙ A) (⋈-identityˡ Γ) ⟩
     Γ , π ∙ A
@@ -527,90 +457,96 @@ The standard basis vectors put together give the identity matrix.
 \end{code}
 
 \begin{code}
-data _⊢₁_∋_ : ∀ {γ} (Γ : Context γ) (A : Type) (M : γ ⊢ A) → Set where
+data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
 
   `_  : ∀ {γ} {A}
 
       → (x : γ ∋ A)
-        -----------
-      → identity x ⊢₁ A ∋ (` x)
+        --------------
+      → identity x ⊢ A
 
-  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π} {N}
+  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π}
 
-      → (Γ , π ∙ A) ⊢₁ B ∋ N
-      → Γ ⊢₁ [ π ∙ A ]⊸ B ∋ (ƛ N)
+      → Γ , π ∙ A ⊢ B
+        ----------------
+      → Γ ⊢ [ π ∙ A ]⊸ B
 
-  _·_ : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {L M}
+  _·_ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π}
 
-      → Γ ⊢₁ [ π ∙ A ]⊸ B ∋ L
-      → Δ ⊢₁ A ∋ M
-      → Γ ⋈ π ** Δ ⊢₁ B ∋ (L · M)
+      → Γ  ⊢ [ π ∙ A ]⊸ B
+      → Γ′ ⊢ A
+        ----------------
+      → Γ ⋈ π ** Γ′ ⊢ B
 \end{code}
 
-We can do a change of basis (or, in this case, permutation of basis and introduction of 0-size dimensions) on the substitution matrix.
+\begin{code}
+ext : ∀ {γ δ}
+
+  → (∀ {A} → γ ∋ A → δ ∋ A)
+    ---------------------------------
+  → (∀ {A B} → γ , B ∋ A → δ , B ∋ A)
+
+ext ρ Z      =  Z
+ext ρ (S x)  =  S (ρ x)
+\end{code}
 
 \begin{code}
-rename′ : ∀ {γ δ} {Γ : Context γ} {B} {M}
+rename : ∀ {γ δ} {Γ : Context γ} {B}
 
   → (ρ : ∀ {A} → γ ∋ A → δ ∋ A)
-  → Γ ⊢₁ B ∋ M
+  → Γ ⊢ B
   -------------------------------
-  → Γ ⊛ (identity ∘ ρ) ⊢₁ B ∋ rename ρ M
+  → Γ ⊛ (identity ∘ ρ) ⊢ B
 
-rename′ {δ = δ} ρ (`_ {γ} {B} x) =
-  Eq.subst (_⊢₁ B ∋ (` ρ x)) lem (` ρ x)
+rename ρ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (` ρ x)
   where
     lem =
       begin
         identity (ρ x)
-      ≡⟨ sym (⊛-identityˡ (identity ∘ ρ) x) ⟩
+      ≡⟨ ⊛-identityˡ (identity ∘ ρ) x |> sym  ⟩
         identity x ⊛ (identity ∘ ρ)
       ∎
 
-rename′ {δ = δ} ρ (ƛ_ {γ} {Γ} {A} {B} {π} {N} ⊢N) =
-  ƛ Eq.subst (_⊢₁ B ∋ rename (ext ρ) N) lem (rename′ (ext ρ) ⊢N)
+rename ρ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (rename (ext ρ) N)
   where
     lem =
       begin
         (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → identity (ρ x) , 0# ∙ A))
-      ≡⟨ cong ((π ** 0s , π * 1# ∙ A) ⋈_) (⊛-zeroʳ Γ (identity ∘ ρ)) ⟩
+      ≡⟨ ⊛-zeroʳ Γ (identity ∘ ρ) |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
         (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (identity ∘ ρ) , 0# ∙ A)
       ≡⟨⟩
         π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , (π * 1#) + 0# ∙ A
-      ≡⟨ cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ A) (+-identityʳ (π * 1#)) ⟩
+      ≡⟨ +-identityʳ (π * 1#) |> cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ A) ⟩
         π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , π * 1# ∙ A
-      ≡⟨ cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ A) (*-identityʳ π) ⟩
+      ≡⟨ *-identityʳ π |> cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ A) ⟩
         π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , π ∙ A
-      ≡⟨ cong (_, π ∙ A) (cong (_⋈ Γ ⊛ (identity ∘ ρ )) (sym (**-zeroʳ δ π))) ⟩
+      ≡⟨ **-zeroʳ π |> sym ∘ cong (_, π ∙ A) ∘ cong (_⋈ Γ ⊛ (identity ∘ ρ )) ⟩
         0s ⋈ Γ ⊛ (identity ∘ ρ) , π ∙ A
-      ≡⟨ cong (_, π ∙ A) (⋈-identityˡ (Γ ⊛ (identity ∘ ρ))) ⟩
+      ≡⟨ ⋈-identityˡ (Γ ⊛ (identity ∘ ρ)) |> cong (_, π ∙ A) ⟩
         Γ ⊛ (identity ∘ ρ) , π ∙ A
       ∎
 
-rename′ {δ = δ} ρ (_·_ {γ} {Γ₁} {Γ₂} {A} {B} {π} {L} {M} ⊢L ⊢M) =
-  Eq.subst (_⊢₁ B ∋ (rename ρ L · rename ρ M)) lem (rename′ ρ ⊢L · rename′ ρ ⊢M)
+rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (rename ρ L · rename ρ M)
   where
     lem =
       begin
-        Γ₁ ⊛ (identity ∘ ρ) ⋈ π ** (Γ₂ ⊛ (identity ∘ ρ))
-      ≡⟨ cong (Γ₁ ⊛ (identity ∘ ρ) ⋈_) (sym (⊛-preserves-** Γ₂ (identity ∘ ρ))) ⟩
-        Γ₁ ⊛ (identity ∘ ρ) ⋈ (π ** Γ₂) ⊛ (identity ∘ ρ)
-      ≡⟨ sym (⊛-distribʳ-⋈ Γ₁ (π ** Γ₂) (identity ∘ ρ)) ⟩
-        (Γ₁ ⋈ π ** Γ₂) ⊛ (identity ∘ ρ)
+        Γ ⊛ (identity ∘ ρ) ⋈ π ** (Γ′ ⊛ (identity ∘ ρ))
+      ≡⟨ ⊛-preserves-** Γ′ (identity ∘ ρ) |> sym ∘ cong (Γ ⊛ (identity ∘ ρ) ⋈_) ⟩
+        Γ ⊛ (identity ∘ ρ) ⋈ (π ** Γ′) ⊛ (identity ∘ ρ)
+      ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) (identity ∘ ρ) |> sym ⟩
+        (Γ ⋈ π ** Γ′) ⊛ (identity ∘ ρ)
       ∎
 \end{code}
 
-We can introduce one 0-size dimension.
-
 \begin{code}
-weaken′ : ∀ {γ} {Γ : Context γ} {A B} {M}
+weaken : ∀ {γ} {Γ : Context γ} {A B}
 
-  → Γ ⊢₁ A ∋ M
-  ---------------------------
-  → Γ , 0# ∙ B ⊢₁ A ∋ rename S_ M
+  → Γ ⊢ A
+    ---------------------------
+  → Γ , 0# ∙ B ⊢ A
 
-weaken′ {γ} {Γ} {A} {B} {M} ⊢₁M
-  = Eq.subst (_⊢₁ A ∋ rename S_ M) lem (rename′ S_ ⊢₁M)
+weaken {γ} {Γ} {A} {B} M =
+  Eq.subst (_⊢ A) lem (rename S_ M)
   where
     lem =
       begin
@@ -624,65 +560,57 @@ weaken′ {γ} {Γ} {A} {B} {M} ⊢₁M
       ∎
 \end{code}
 
-We can actually use the substitution matrix.
-
 \begin{code}
-subst′ : ∀ {γ δ} {Γ : Context γ} {B} {M}
+subst : ∀ {γ δ} {Γ : Context γ} {B}
 
-  → (σ : ∀ {A} → γ ∋ A → δ ⊢ A)
   → (Δ : ∀ {A} → γ ∋ A → Context δ)
-  → (P : ∀ {A} → (x : γ ∋ A) → Δ x ⊢₁ A ∋ σ x)
-  → Γ ⊢₁ B ∋ M
+  → (σ : ∀ {A} → (x : γ ∋ A) → Δ x ⊢ A)
+  → Γ ⊢ B
     --------------------------------------
-  → Γ ⊛ Δ ⊢₁ B ∋ (subst σ M)
+  → Γ ⊛ Δ ⊢ B
 
-subst′ {δ = δ} σ Δ P (`_ {γ} {B} x)
-  = Eq.subst (_⊢₁ B ∋ σ x) lem (P x)
+subst Δ σ (`_  {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
   where
     lem =
       begin
         Δ x
-      ≡⟨ sym (⊛-identityˡ Δ x) ⟩
+      ≡⟨ ⊛-identityˡ Δ x |> sym ⟩
         identity x ⊛ Δ
       ∎
 
-subst′ {δ = δ} σ Δ P (ƛ_ {γ} {Γ} {A} {B} {π} {N} ⊢N)
-  = ƛ Eq.subst (_⊢₁ B ∋ subst (exts σ) N) lem ⊢N′
+subst Δ σ (ƛ_  {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst Δ′ σ′ N)
   where
-    ⊢N′ = subst′ (exts σ) Δ′ P′ ⊢N
-      where
-        Δ′ : ∀ {A B} → γ , B ∋ A → Context (δ , B)
-        Δ′ Z     = identity Z
-        Δ′ (S x) = Δ x , 0# ∙ _
-        P′ : ∀ {A B} → (x : γ , B ∋ A) → Δ′ x ⊢₁ A ∋ (exts σ) x
-        P′ Z     = ` Z 
-        P′ (S x) = weaken′ (P x)
+    Δ′ : ∀ {A B} → γ , B ∋ A → Context (_ , B)
+    Δ′ Z     = identity Z
+    Δ′ (S x) = Δ x , 0# ∙ _
+    σ′ : ∀ {A B} → (x : γ , B ∋ A) → Δ′ x ⊢ A
+    σ′ Z     = ` Z
+    σ′ (S x) = weaken (σ x)
     lem =
       begin
         (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → Δ x , 0# ∙ A))
-      ≡⟨ cong ((π ** 0s , π * 1# ∙ A) ⋈_) (⊛-zeroʳ Γ Δ) ⟩
+      ≡⟨ ⊛-zeroʳ Γ Δ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
         (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ Δ , 0# ∙ A)
       ≡⟨⟩
         π ** 0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ cong (_, (π * 1#) + 0# ∙ A) (cong (_⋈ Γ ⊛ Δ) (sym (**-zeroʳ δ π))) ⟩
+      ≡⟨ **-zeroʳ π |> cong (_, (π * 1#) + 0# ∙ A) ∘ cong (_⋈ Γ ⊛ Δ) ∘ sym ⟩
         0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ cong (_, (π * 1#) + 0# ∙ A) (⋈-identityˡ (Γ ⊛ Δ)) ⟩
+      ≡⟨ ⋈-identityˡ (Γ ⊛ Δ) |> cong (_, (π * 1#) + 0# ∙ A) ⟩
         Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ cong (Γ ⊛ Δ ,_∙ A) (+-identityʳ (π * 1#)) ⟩
+      ≡⟨ +-identityʳ (π * 1#) |> cong (Γ ⊛ Δ ,_∙ A) ⟩
         Γ ⊛ Δ , π * 1# ∙ A
-      ≡⟨ cong (Γ ⊛ Δ ,_∙ A) (*-identityʳ π) ⟩
+      ≡⟨ *-identityʳ π |> cong (Γ ⊛ Δ ,_∙ A) ⟩
         Γ ⊛ Δ , π ∙ A
       ∎
 
-subst′ {δ = δ} σ Δ P (_·_ {γ} {Γ₁} {Γ₂} {A} {B} {π} {L} {M} ⊢L ⊢M)
-  = Eq.subst (_⊢₁ B ∋ (subst σ L · subst σ M)) lem (subst′ σ Δ P ⊢L · subst′ σ Δ P ⊢M)
+subst Δ σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (subst Δ σ L · subst Δ σ M)
   where
     lem =
       begin
-        Γ₁ ⊛ Δ ⋈ π ** (Γ₂ ⊛ Δ)
-      ≡⟨ cong (Γ₁ ⊛ Δ ⋈_) (sym (⊛-preserves-** Γ₂ Δ)) ⟩
-        Γ₁ ⊛ Δ ⋈ (π ** Γ₂) ⊛ Δ
-      ≡⟨ sym (⊛-distribʳ-⋈ Γ₁ (π ** Γ₂) Δ) ⟩
-        (Γ₁ ⋈ π ** Γ₂) ⊛ Δ
+        Γ ⊛ Δ ⋈ π ** (Γ′ ⊛ Δ)
+      ≡⟨ ⊛-preserves-** Γ′ Δ |> cong (Γ ⊛ Δ ⋈_) ∘ sym ⟩
+        Γ ⊛ Δ ⋈ (π ** Γ′) ⊛ Δ
+      ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) Δ |> sym ⟩
+        (Γ ⋈ π ** Γ′) ⊛ Δ
       ∎
 \end{code}
