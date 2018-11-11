@@ -539,25 +539,37 @@ rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (ren
 \end{code}
 
 \begin{code}
-weaken : ∀ {γ} {Γ : Context γ} {A B}
+extd : ∀ {γ δ}
 
-  → Γ ⊢ A
-    ---------------------------
-  → Γ , 0# ∙ B ⊢ A
+  → (∀ {A}   →     γ ∋ A → Context δ)
+    ---------------------------------------
+  → (∀ {A B} → γ , B ∋ A → Context (δ , B))
 
-weaken {γ} {Γ} {A} {B} M =
-  Eq.subst (_⊢ A) lem (rename S_ M)
+extd Δ {A} {B} Z     = identity Z
+extd Δ {A} {B} (S x) = Δ x , 0# ∙ B
+\end{code}
+
+\begin{code}
+exts : ∀ {γ δ}
+
+  → {Δ : ∀ {A} → γ ∋ A → Context δ}
+  → (∀ {A}   → (x :     γ ∋ A) →      Δ x ⊢ A)
+    ------------------------------------------
+  → (∀ {A B} → (x : γ , B ∋ A) → extd Δ x ⊢ A)
+
+exts {γ} {δ} {Δ} σ {A} {B} Z     = ` Z
+exts {γ} {δ} {Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
   where
     lem =
       begin
-        Γ ⊛ (identity ∘ S_)
-      ≡⟨⟩
-        Γ ⊛ (λ x → identity x , 0# ∙ B)
-      ≡⟨ ⊛-zeroʳ Γ identity ⟩
-        (Γ ⊛ identity) , 0# ∙ B
-      ≡⟨ ⊛-identityʳ Γ |> cong (_, 0# ∙ B) ⟩
-        Γ , 0# ∙ B
-      ∎
+        Δ x ⊛ (identity ∘ S_)
+     ≡⟨⟩
+       Δ x ⊛ (λ x → identity x , 0# ∙ B)
+     ≡⟨ ⊛-zeroʳ (Δ x) identity ⟩
+       (Δ x ⊛ identity) , 0# ∙ B
+     ≡⟨ ⊛-identityʳ (Δ x) |> cong (_, 0# ∙ B) ⟩
+       Δ x , 0# ∙ B
+     ∎
 \end{code}
 
 \begin{code}
@@ -569,7 +581,7 @@ subst : ∀ {γ δ} {Γ : Context γ} {B}
     --------------------------------------
   → Γ ⊛ Δ ⊢ B
 
-subst Δ σ (`_  {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
+subst Δ σ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
   where
     lem =
       begin
@@ -578,14 +590,8 @@ subst Δ σ (`_  {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
         identity x ⊛ Δ
       ∎
 
-subst Δ σ (ƛ_  {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst Δ′ σ′ N)
+subst Δ σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst (extd Δ) (exts σ) N)
   where
-    Δ′ : ∀ {A B} → γ , B ∋ A → Context (_ , B)
-    Δ′ Z     = identity Z
-    Δ′ (S x) = Δ x , 0# ∙ _
-    σ′ : ∀ {A B} → (x : γ , B ∋ A) → Δ′ x ⊢ A
-    σ′ Z     = ` Z
-    σ′ (S x) = weaken (σ x)
     lem =
       begin
         (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → Δ x , 0# ∙ A))
