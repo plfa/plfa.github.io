@@ -538,6 +538,8 @@ rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (ren
       ∎
 \end{code}
 
+Extend a matrix as the identity matrix -- add a zero to the end of every row, and add a new row with a 1 and the rest 0s.
+
 \begin{code}
 extd : ∀ {γ δ}
 
@@ -557,8 +559,8 @@ exts : ∀ {γ δ}
     ------------------------------------------
   → (∀ {A B} → (x : γ , B ∋ A) → extd Δ x ⊢ A)
 
-exts {γ} {δ} {Δ} σ {A} {B} Z     = ` Z
-exts {γ} {δ} {Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
+exts {Δ = Δ} σ {A} {B} Z     = ` Z
+exts {Δ = Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
   where
     lem =
       begin
@@ -575,13 +577,13 @@ exts {γ} {δ} {Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
 \begin{code}
 subst : ∀ {γ δ} {Γ : Context γ} {B}
 
-  → (Δ : ∀ {A} → γ ∋ A → Context δ)
+  → {Δ : ∀ {A} → γ ∋ A → Context δ}
   → (σ : ∀ {A} → (x : γ ∋ A) → Δ x ⊢ A)
   → Γ ⊢ B
     --------------------------------------
   → Γ ⊛ Δ ⊢ B
 
-subst Δ σ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
+subst {Δ = Δ} σ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
   where
     lem =
       begin
@@ -590,7 +592,7 @@ subst Δ σ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
         identity x ⊛ Δ
       ∎
 
-subst Δ σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst (extd Δ) (exts σ) N)
+subst {Δ = Δ} σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst (exts σ) N)
   where
     lem =
       begin
@@ -609,7 +611,7 @@ subst Δ σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst (ex
         Γ ⊛ Δ , π ∙ A
       ∎
 
-subst Δ σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (subst Δ σ L · subst Δ σ M)
+subst {Δ = Δ} σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (subst σ L · subst σ M)
   where
     lem =
       begin
@@ -621,3 +623,28 @@ subst Δ σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (s
       ∎
 \end{code}
 
+\begin{code}
+_[_] : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π}
+
+  → Γ , π ∙ B ⊢ A
+  → Γ′ ⊢ B
+    --------------
+  → Γ ⋈ π ** Γ′ ⊢ A
+
+_[_] {γ} {Γ} {Γ′} {A} {B} {π} N M = Eq.subst (_⊢ A) lem (subst σ N)
+  where
+    Δ : ∀ {A} → γ , B ∋ A → Context γ
+    Δ Z     = Γ′
+    Δ (S x) = identity x
+    σ : ∀ {A} → (x : γ , B ∋ A) → Δ x ⊢ A
+    σ Z     = M
+    σ (S x) = ` x
+    lem =
+      begin
+        π ** Γ′ ⋈ Γ ⊛ identity
+      ≡⟨ ⋈-comm (π ** Γ′) (Γ ⊛ identity) ⟩
+        Γ ⊛ identity ⋈ π ** Γ′
+      ≡⟨ ⊛-identityʳ Γ |> cong (_⋈ π ** Γ′) ⟩
+        Γ ⋈ π ** Γ′
+      ∎
+\end{code}
