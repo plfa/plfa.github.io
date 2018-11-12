@@ -1130,7 +1130,7 @@ Chapter [More][plfa.More].
 
 #### Exercise `inference-rest` (stretch)
 
-Extend the bidirectional type rules to include the rest of the constructs from
+Extend bidirectional inference to include the rest of the constructs from
 Chapter [More][plfa.More].
 
 ## Untyped
