@@ -1,11 +1,18 @@
+---
+title     : "Exam: TSPL Mock Exam file"
+layout    : page
+permalink : /Exam/
+---
+
+
 \begin{code}
 module Exam where
 \end{code}
 
-_IMPORTANT_ For ease of marking, when modifying the given code please write
+**IMPORTANT** For ease of marking, when modifying the given code please write
 
-  -- begin
-  -- end
+    -- begin
+    -- end
 
 before and after code you add, to indicate your changes.
 
