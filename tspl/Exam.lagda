@@ -407,7 +407,7 @@ module Problem3 where
 ### Imports
 
 \begin{code}
-  open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
+  import plfa.DeBruijn as DB
 \end{code}
 
 ### Syntax
@@ -433,9 +433,6 @@ module Problem3 where
   data Type : Set where
     _⇒_   : Type → Type → Type
     `ℕ    : Type
-    -- begin
-    Bool  : Type
-    -- end
 \end{code}
 
 ### Identifiers 
