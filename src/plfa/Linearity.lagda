@@ -11,16 +11,22 @@ open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-module plfa.Linearity {Mult : Set} (_+_ _*_ : Mult → Mult → Mult) (0# 1# : Mult) (+-*-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#) where
+module plfa.Linearity
+  {Mult : Set}
+  (_+_ _*_ : Mult → Mult → Mult)
+  (0# 1# : Mult)
+  (+-*-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#)
+  where
 \end{code}
 
 \begin{code}
-open IsSemiring +-*-isSemiring
-  using (+-identityˡ; +-identityʳ; +-assoc; +-comm; *-identityˡ; *-identityʳ; *-assoc)
-  renaming (zeroˡ to *-zeroˡ; zeroʳ to *-zeroʳ; distribˡ to *-distribˡ-+; distribʳ to *-distribʳ-+)
 open import Function using (_∘_; _|>_)
 open import Data.Product using (_×_; Σ-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
+open IsSemiring +-*-isSemiring
+  using (+-identityˡ; +-identityʳ; +-assoc; +-comm; *-identityˡ; *-identityʳ; *-assoc)
+  renaming (zeroˡ to *-zeroˡ; zeroʳ to *-zeroʳ;
+            distribˡ to *-distribˡ-+; distribʳ to *-distribʳ-+)
 \end{code}
 
 \begin{code}
@@ -392,7 +398,7 @@ Linear maps distribute over sums.
     ((π₁ ** Δ Z ⋈ π₂ ** Δ Z) ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ Γ₂ ⊛ (Δ ∘ S_)
   ≡⟨ ⋈-assoc (π₁ ** Δ Z) (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
     (π₁ ** Δ Z ⋈ (π₂ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_))) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ ⋈-comm (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ∘ cong (π₁ ** Δ Z ⋈_) ⟩
+  ≡⟨ ⋈-comm (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong ((_⋈ Γ₂ ⊛ (Δ ∘ S_)) ∘ (π₁ ** Δ Z ⋈_)) ⟩
     (π₁ ** Δ Z ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ π₂ ** Δ Z)) ⋈ Γ₂ ⊛ (Δ ∘ S_)
   ≡⟨ ⋈-assoc (π₁ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (π₂ ** Δ Z) |> sym ∘ cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
     ((π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ π₂ ** Δ Z) ⋈ Γ₂ ⊛ (Δ ∘ S_)
@@ -452,7 +458,7 @@ The standard basis vectors put together give the identity matrix.
     (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → identity x , 0# ∙ A))
   ≡⟨ ⊛-zeroʳ Γ identity |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
     (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ identity , 0# ∙ A)
-  ≡⟨ ⊛-identityʳ Γ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ∘ cong (_, 0# ∙ A) ⟩
+  ≡⟨ ⊛-identityʳ Γ |> cong (((π ** 0s , π * 1# ∙ A) ⋈_) ∘ (_, 0# ∙ A)) ⟩
     (π ** 0s , π * 1# ∙ A) ⋈ (Γ , 0# ∙ A)
   ≡⟨⟩
     π ** 0s ⋈ Γ , (π * 1#) + 0# ∙ A
@@ -460,7 +466,7 @@ The standard basis vectors put together give the identity matrix.
     π ** 0s ⋈ Γ , π * 1# ∙ A
   ≡⟨ *-identityʳ π |> cong ((π ** 0s ⋈ Γ) ,_∙ A) ⟩
     π ** 0s ⋈ Γ , π ∙ A
-  ≡⟨ **-zeroʳ π |> cong (_, π ∙ A) ∘ cong (_⋈ Γ) ∘ sym ⟩
+  ≡⟨ **-zeroʳ π |> cong ((_, π ∙ A) ∘ (_⋈ Γ)) ∘ sym ⟩
     0s ⋈ Γ , π ∙ A
   ≡⟨ ⋈-identityˡ Γ |> cong (_, π ∙ A) ⟩
     Γ , π ∙ A
@@ -509,7 +515,8 @@ rename : ∀ {γ δ} {Γ : Context γ} {B}
   -------------------------------
   → Γ ⊛ (identity ∘ ρ) ⊢ B
 
-rename ρ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (` ρ x)
+rename ρ (`_ {γ} {A} x) =
+  Eq.subst (_⊢ A) lem (` ρ x)
   where
     lem =
       begin
@@ -518,7 +525,8 @@ rename ρ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (` ρ x)
         identity x ⊛ (identity ∘ ρ)
       ∎
 
-rename ρ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (rename (ext ρ) N)
+rename ρ (ƛ_ {γ} {Γ} {A} {B} {π} N) =
+  ƛ Eq.subst (_⊢ B) lem (rename (ext ρ) N)
   where
     lem =
       begin
@@ -531,13 +539,14 @@ rename ρ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (rename (ext
         π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , π * 1# ∙ A
       ≡⟨ *-identityʳ π |> cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ A) ⟩
         π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , π ∙ A
-      ≡⟨ **-zeroʳ π |> sym ∘ cong (_, π ∙ A) ∘ cong (_⋈ Γ ⊛ (identity ∘ ρ )) ⟩
+      ≡⟨ **-zeroʳ π |> cong ((_, π ∙ A) ∘ (_⋈ Γ ⊛ (identity ∘ ρ ))) ∘ sym ⟩
         0s ⋈ Γ ⊛ (identity ∘ ρ) , π ∙ A
       ≡⟨ ⋈-identityˡ (Γ ⊛ (identity ∘ ρ)) |> cong (_, π ∙ A) ⟩
         Γ ⊛ (identity ∘ ρ) , π ∙ A
       ∎
 
-rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (rename ρ L · rename ρ M)
+rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) =
+  Eq.subst (_⊢ B) lem (rename ρ L · rename ρ M)
   where
     lem =
       begin
@@ -594,7 +603,8 @@ subst : ∀ {γ δ} {Γ : Context γ} {B}
     --------------------------------------
   → Γ ⊛ Δ ⊢ B
 
-subst {Δ = Δ} σ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
+subst {Δ = Δ} σ (`_ {γ} {A} x) =
+  Eq.subst (_⊢ A) lem (σ x)
   where
     lem =
       begin
@@ -603,7 +613,8 @@ subst {Δ = Δ} σ (`_ {γ} {A} x) = Eq.subst (_⊢ A) lem (σ x)
         identity x ⊛ Δ
       ∎
 
-subst {Δ = Δ} σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (subst (exts σ) N)
+subst {Δ = Δ} σ (ƛ_ {γ} {Γ} {A} {B} {π} N) =
+  ƛ Eq.subst (_⊢ B) lem (subst (exts σ) N)
   where
     lem =
       begin
@@ -612,7 +623,7 @@ subst {Δ = Δ} σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (su
         (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ Δ , 0# ∙ A)
       ≡⟨⟩
         π ** 0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ **-zeroʳ π |> cong (_, (π * 1#) + 0# ∙ A) ∘ cong (_⋈ Γ ⊛ Δ) ∘ sym ⟩
+      ≡⟨ **-zeroʳ π |> cong ((_, (π * 1#) + 0# ∙ A) ∘ (_⋈ Γ ⊛ Δ)) ∘ sym ⟩
         0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
       ≡⟨ ⋈-identityˡ (Γ ⊛ Δ) |> cong (_, (π * 1#) + 0# ∙ A) ⟩
         Γ ⊛ Δ , (π * 1#) + 0# ∙ A
@@ -622,7 +633,8 @@ subst {Δ = Δ} σ (ƛ_ {γ} {Γ} {A} {B} {π} N) = ƛ Eq.subst (_⊢ B) lem (su
         Γ ⊛ Δ , π ∙ A
       ∎
 
-subst {Δ = Δ} σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) = Eq.subst (_⊢ B) lem (subst σ L · subst σ M)
+subst {Δ = Δ} σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) =
+  Eq.subst (_⊢ B) lem (subst σ L · subst σ M)
   where
     lem =
       begin
