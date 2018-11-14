@@ -670,3 +670,67 @@ _[_] {γ} {Γ} {Γ′} {A} {B} {π} N M = Eq.subst (_⊢ A) lem (subst σ N)
         Γ ⋈ π ** Γ′
       ∎
 \end{code}
+
+\begin{code}
+data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
+
+  V-ƛ : ∀ {γ} {Γ : Context γ} {A B} {π} {N : Γ , π ∙ A ⊢ B}
+
+        -----------
+      → Value (ƛ N)
+\end{code}
+
+\begin{code}
+infix 2 _—→_
+
+data _—→_ : ∀ {γ} {Γ : Context γ} {A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+
+  ξ-·₁ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π} {L L′ : Γ ⊢ [ π ∙ A ]⊸ B} {M : Γ′ ⊢ A}
+
+    → L —→ L′
+      -----------------
+    → L · M —→ L′ · M
+
+  ξ-·₂ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π} {V : Γ ⊢ [ π ∙ A ]⊸ B} {M M′ : Γ′ ⊢ A}
+
+    → Value V
+    → M —→ M′
+      --------------
+    → V · M —→ V · M′
+
+  β-ƛ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π} {N : Γ , π ∙ A ⊢ B} {W : Γ′ ⊢ A}
+
+    → Value W
+      -------------------
+    → (ƛ N) · W —→ N [ W ]
+\end{code}
+
+\begin{code}
+data Progress {γ} {Γ : Context γ} {A} (M : Γ ⊢ A) : Set where
+
+  step : {N : Γ ⊢ A}
+
+    → M —→ N
+      ----------
+    → Progress M
+
+  done :
+
+      Value M
+      ----------
+    → Progress M
+\end{code}
+
+\begin{code}
+progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
+progress M = go refl M
+  where
+    go : ∀ {γ} {Γ : Context γ} {A} → γ ≡ ∅ → (M : Γ ⊢ A) → Progress M
+    go refl (` ())
+    go refl (ƛ N)           = done V-ƛ
+    go refl (L · M) with go refl L
+    ...    | step L-→L′     = step (ξ-·₁ L-→L′)
+    ...    | done V-ƛ with go refl M
+    ...        | step M-→M′ = step (ξ-·₂ V-ƛ M-→M′)
+    ...        | done VM    = step (β-ƛ VM)
+\end{code}
