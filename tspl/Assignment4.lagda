@@ -771,7 +771,7 @@ Remember to indent all code by two spaces.
 ### Imports
 
 \begin{code}
-  import plfa.DeBruijn as DB
+  import plfa.More as DB
 \end{code}
 
 ### Syntax
@@ -1130,7 +1130,7 @@ Chapter [More][plfa.More].
 
 #### Exercise `inference-rest` (stretch)
 
-Extend the bidirectional type rules to include the rest of the constructs from
+Extend bidirectional inference to include the rest of the constructs from
 Chapter [More][plfa.More].
 
 ## Untyped

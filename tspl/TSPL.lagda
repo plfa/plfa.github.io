@@ -101,7 +101,10 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * [Assignment 2][Assignment2] cw2 due 4pm Thursday 18 October (Week 5)
 * [Assignment 3][Assignment3] cw3 due 4pm Thursday 1 November (Week 7)
 * [Assignment 4][Assignment4] cw4 due 4pm Thursday 15 November (Week 9)
-* Assignment 5 cw5 due 4pm Thursday 22 November (Week 10)
+* [Assignment 5](/tspl/Assignment5.pdf) cw5 due 4pm Thursday 22 November (Week 10)
+  <br />
+  Use file [Exam][Exam]. Despite the rubric, do **all three questions**.
+  
 
 Assignments are submitted by running
 ``` bash

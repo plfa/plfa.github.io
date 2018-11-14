@@ -1,11 +1,18 @@
+---
+title     : "Exam: TSPL Mock Exam file"
+layout    : page
+permalink : /Exam/
+---
+
+
 \begin{code}
 module Exam where
 \end{code}
 
-_IMPORTANT_ For ease of marking, when modifying the given code please write
+**IMPORTANT** For ease of marking, when modifying the given code please write
 
-  -- begin
-  -- end
+    -- begin
+    -- end
 
 before and after code you add, to indicate your changes.
 
@@ -32,21 +39,9 @@ module Problem1 where
 
 Remember to indent all code by two spaces.
 
-### Pattern declarations
-\begin{code}
-  pattern [_] z = z ∷ []
-  pattern [_,_] y z = y ∷ z ∷ []
-  pattern [_,_,_] x y z = x ∷ y ∷ z ∷ []
-  pattern [_,_,_,_] w x y z = w ∷ x ∷ y ∷ z ∷ []
-  pattern [_,_,_,_,_] v w x y z = v ∷ w ∷ x ∷ y ∷ z ∷ []
-  pattern [_,_,_,_,_,_] u v w x y z = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
-\end{code}
-
 ### (a)
 
 ### (b)
-
-### (c)
 
 
 ## Problem 2
@@ -400,7 +395,7 @@ module Problem3 where
 ### Imports
 
 \begin{code}
-  open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
+  import plfa.DeBruijn as DB
 \end{code}
 
 ### Syntax
@@ -426,9 +421,6 @@ module Problem3 where
   data Type : Set where
     _⇒_   : Type → Type → Type
     `ℕ    : Type
-    -- begin
-    Bool  : Type
-    -- end
 \end{code}
 
 ### Identifiers 
