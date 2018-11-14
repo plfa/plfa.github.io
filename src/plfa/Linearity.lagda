@@ -5,8 +5,7 @@ permalink : /Linearity/
 ---
 
 \begin{code}
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; cong)
+open import Relation.Binary.PropositionalEquality as Eq using (_≡_)
 open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
@@ -15,15 +14,15 @@ module plfa.Linearity
   {Mult : Set}
   (_+_ _*_ : Mult → Mult → Mult)
   (0# 1# : Mult)
-  (+-*-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#)
+  (*-+-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#)
   where
 \end{code}
 
 \begin{code}
 open import Function using (_∘_; _|>_)
-open import Data.Product using (_×_; Σ-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open Eq using (refl; sym; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
-open IsSemiring +-*-isSemiring
+open IsSemiring *-+-isSemiring
   using (+-identityˡ; +-identityʳ; +-assoc; +-comm; *-identityˡ; *-identityʳ; *-assoc)
   renaming (zeroˡ to *-zeroˡ; zeroʳ to *-zeroʳ;
             distribˡ to *-distribˡ-+; distribʳ to *-distribʳ-+)
@@ -274,36 +273,11 @@ Precontext         ~>  ℕ
 Context γ          ~>  Vector γ
 γ ∋ A → Context δ  ~>  Matrix γ δ
 
+(See [this sidenote][plfa.Linearity.LinAlg].)
+
 \begin{code}
 Matrix : Precontext → Precontext → Set
 Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
-\end{code}
-
-\begin{code}
-module Aside where
-
-  open import Data.Nat using (ℕ; suc; zero)
-  open import Data.Fin using (Fin; suc; zero)
-  open import Data.Vec using (Vec; _∷_; [])
-
-  ∥_∥ℕ : Precontext → ℕ
-  ∥ ∅     ∥ℕ = zero
-  ∥ γ , _ ∥ℕ = suc ∥ γ ∥ℕ
-
-  ∥_∥Fin : ∀ {γ} {A} → γ ∋ A → Fin ∥ γ ∥ℕ
-  ∥ Z   ∥Fin = zero
-  ∥ S x ∥Fin = suc ∥ x ∥Fin
-
-  ∥_∥Vec : ∀ {γ} → Context γ → Vec Mult ∥ γ ∥ℕ
-  ∥ ∅         ∥Vec = []
-  ∥ Γ , π ∙ _ ∥Vec = π ∷ ∥ Γ ∥Vec
-
-  Mat : Set → ℕ → ℕ → Set
-  Mat A n m = Vec (Vec A m) n
-
-  ∥_∥Mat : ∀ {γ δ} → Matrix γ δ → Mat Mult ∥ γ ∥ℕ ∥ δ ∥ℕ
-  ∥_∥Mat {∅}     {δ} Δ = []
-  ∥_∥Mat {γ , _} {δ} Δ = ∥ Δ Z ∥Vec ∷ ∥ (Δ ∘ S_) ∥Mat
 \end{code}
 
 \begin{code}

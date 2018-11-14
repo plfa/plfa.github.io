@@ -1,5 +1,5 @@
-agda := $(wildcard src/*.lagda) $(wildcard src/**/*.lagda) $(wildcard tspl/*.lagda) $(wildcard tspl/**/*.lagda)
-agdai := $(wildcard src/*.agdai) $(wildcard src/**/*.agdai) $(wildcard tspl/*.agdai) $(wildcard tspl/**/*.agdai)
+agda := $(shell find src tspl -type f -name '*.lagda')
+agdai := $(shell find src tspl -type f -name '*.agdai')
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
