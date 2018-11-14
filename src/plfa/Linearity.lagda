@@ -280,6 +280,33 @@ Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
 \end{code}
 
 \begin{code}
+module Aside where
+
+  open import Data.Nat using (ℕ; suc; zero)
+  open import Data.Fin using (Fin; suc; zero)
+  open import Data.Vec using (Vec; _∷_; [])
+
+  ∥_∥ℕ : Precontext → ℕ
+  ∥ ∅     ∥ℕ = zero
+  ∥ γ , _ ∥ℕ = suc ∥ γ ∥ℕ
+
+  ∥_∥Fin : ∀ {γ} {A} → γ ∋ A → Fin ∥ γ ∥ℕ
+  ∥ Z   ∥Fin = zero
+  ∥ S x ∥Fin = suc ∥ x ∥Fin
+
+  ∥_∥Vec : ∀ {γ} → Context γ → Vec Mult ∥ γ ∥ℕ
+  ∥ ∅         ∥Vec = []
+  ∥ Γ , π ∙ _ ∥Vec = π ∷ ∥ Γ ∥Vec
+
+  Mat : Set → ℕ → ℕ → Set
+  Mat A n m = Vec (Vec A m) n
+
+  ∥_∥Mat : ∀ {γ δ} → Matrix γ δ → Mat Mult ∥ γ ∥ℕ ∥ δ ∥ℕ
+  ∥_∥Mat {∅}     {δ} Δ = []
+  ∥_∥Mat {γ , _} {δ} Δ = ∥ Δ Z ∥Vec ∷ ∥ (Δ ∘ S_) ∥Mat
+\end{code}
+
+\begin{code}
 identity : ∀ {γ} → Matrix γ γ
 identity {γ , A} Z     = 0s , 1# ∙ A
 identity {γ , B} (S x) = identity x , 0# ∙ B
