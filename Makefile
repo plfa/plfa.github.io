@@ -68,12 +68,56 @@ macos-setup:
 	ruby -S bundle config build.nokogiri --use-system-libraries
 	ruby -S bundle install
 
+.phony: serve build test clean clobber macos-setup
+
 # install agda, agda-stdlib, and agda2html
 travis-setup:\
 	$(HOME)/.local/bin/agda\
 	$(HOME)/.local/bin/agda2html\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-master/src\
+	$(HOME)/.agda/defaults\
+	$(HOME)/.agda/libraries
+
+.phony: travis-setup
+
+
+travis-install-agda2html: $(HOME)/.local/bin/agda2html
+
+$(HOME)/.local/bin/agda2html:
+	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
+	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
+	cd $(HOME)/agda2html-master;\
+		stack install
+
+travis-uninstall-agda2html:
+	rm -rf $(HOME)/agda2html-master/
+	rm $(HOME)/.local/bin/agda2html
+
+travis-reinstall-agda2html: travis-uninstall-agda2html travis-install-agda2html
+
+.phony: travis-install-agda2html travis-uninstall-agda2html travis-reinstall-agda2html
+
+
+travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
+
+$(HOME)/.local/bin/acknowledgements:
+	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
+	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
+	cd $(HOME)/acknowledgements-master;\
+		stack install
+
+travis-uninstall-acknowledgements:
+	rm -rf $(HOME)/acknowledgements-master/
+	rm $(HOME)/.local/bin/acknowledgements
+
+travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-reinstall-acknowledgements
+
+.phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements
+
+
+travis-install-agda:\
+	$(HOME)/.local/bin/agda\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries
 
@@ -91,24 +135,30 @@ $(HOME)/.local/bin/agda:
 	cd $(HOME)/agda-master;\
 		stack install --stack-yaml=stack-8.2.2.yaml
 
-$(HOME)/.local/bin/agda2html:
-	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
-	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
-	cd $(HOME)/agda2html-master;\
-		stack install
+travis-uninstall-agda:
+	rm -rf $(HOME)/agda-master/
+	rm $(HOME)/.local/bin/agda
+	rm $(HOME)/.local/bin/agda-mode
 
-$(HOME)/.local/bin/acknowledgements:
-	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
-	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
-	cd $(HOME)/acknowledgements-master;\
-		stack install
+travis-reinstall-agda: travis-uninstall-agda travis-install-agda
+
+.phony: travis-install-agda travis-uninstall-agda travis-reinstall-agda
+
+
+travis-install-agda-stdlib: $(HOME)/agda-stdlib-master/
 
 $(HOME)/agda-stdlib-master/src:
 	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
 	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
 
-.phony: serve build test clean clobber macos-setup travis-setup
+travis-uninstall-agda-stdlib:
+	rm -rf $(HOME)/agda-stdlib-master/
+
+travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
+
+.phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib
+
 
 # workaround for a bug in agda2html
 bugfix:

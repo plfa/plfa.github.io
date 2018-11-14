@@ -11,11 +11,7 @@ open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-module plfa.Linearity
-  {Mult : Set}
-  (_+_ _*_ : Mult → Mult → Mult)
-  (0# 1# : Mult)
-  (+-*-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#) where
+module plfa.Linearity {Mult : Set} (_+_ _*_ : Mult → Mult → Mult) (0# 1# : Mult) (+-*-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#) where
 \end{code}
 
 \begin{code}
