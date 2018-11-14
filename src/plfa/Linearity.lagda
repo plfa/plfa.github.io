@@ -232,7 +232,7 @@ Vector addition is associative.
 Scaling by a sum gives the sum of the scalings.
 
 \begin{code}
-**-distribʳ-⋈ : ∀ {γ} (Γ : Context γ) π₁ π₂
+**-distribʳ-⋈ : ∀ {γ} (Γ : Context γ) (π₁ π₂ : Mult)
 
   -----------------------------------
   → (π₁ + π₂) ** Γ ≡ π₁ ** Γ ⋈ π₂ ** Γ
@@ -251,18 +251,18 @@ Scaling by a sum gives the sum of the scalings.
 Scaling a sum gives the sum of the scalings.
 
 \begin{code}
-**-distribˡ-⋈ : ∀ {γ} (Γ₁ Γ₂ : Context γ) {π}
+**-distribˡ-⋈ : ∀ {γ} (Γ₁ Γ₂ : Context γ) (π : Mult)
 
   --------------------------------------
   → π ** (Γ₁ ⋈ Γ₂) ≡ π ** Γ₁ ⋈ π ** Γ₂
 
-**-distribˡ-⋈ ∅ ∅ = refl
-**-distribˡ-⋈ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) {π} =
+**-distribˡ-⋈ ∅ ∅ π = refl
+**-distribˡ-⋈ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) π =
   begin
     π ** (Γ₁ ⋈ Γ₂) , π * (π₁ + π₂) ∙ A
   ≡⟨ *-distribˡ-+ π π₁ π₂ |> cong (π ** (Γ₁ ⋈ Γ₂) ,_∙ A) ⟩
     π ** (Γ₁ ⋈ Γ₂) , (π * π₁) + (π * π₂) ∙ A
-  ≡⟨ **-distribˡ-⋈ Γ₁ Γ₂ |> cong (_, (π * π₁) + (π * π₂) ∙ A) ⟩
+  ≡⟨ **-distribˡ-⋈ Γ₁ Γ₂ π |> cong (_, (π * π₁) + (π * π₂) ∙ A) ⟩
     π ** Γ₁ ⋈ π ** Γ₂ , (π * π₁) + (π * π₂) ∙ A
   ∎
 \end{code}
@@ -271,13 +271,18 @@ The identity matrix.
 
 Precontext         ~>  ℕ
 γ ∋ A              ~>  Fin γ
-Context γ          ~>  Vec γ
-γ ∋ A → Context δ  ~>  Mat γ δ
+Context γ          ~>  Vector γ
+γ ∋ A → Context δ  ~>  Matrix γ δ
 
 \begin{code}
-identity : ∀ {A} {γ : Precontext} → γ ∋ A → Context γ
-identity {γ = γ , A} Z     = 0s , 1# ∙ A
-identity {γ = γ , B} (S x) = identity x , 0# ∙ B
+Matrix : Precontext → Precontext → Set
+Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
+\end{code}
+
+\begin{code}
+identity : ∀ {γ} → Matrix γ γ
+identity {γ , A} Z     = 0s , 1# ∙ A
+identity {γ , B} (S x) = identity x , 0# ∙ B
 \end{code}
 
 Matrix-vector multiplication ΔᵀΓ.
@@ -285,8 +290,8 @@ Matrix-vector multiplication ΔᵀΓ.
 \begin{code}
 _⊛_ : ∀ {γ δ}
 
-  → (Γ : Context γ)
-  → (Δ : ∀ {A} → γ ∋ A → Context δ)
+  → Context γ
+  → Matrix γ δ
   → Context δ
 
 ∅           ⊛ Δ = 0s
@@ -296,9 +301,8 @@ _⊛_ : ∀ {γ δ}
 Linear maps preserve the 0-vector.
 
 \begin{code}
-⊛-zeroˡ : ∀ {γ δ}
+⊛-zeroˡ : ∀ {γ δ} (Δ : Matrix γ δ)
 
-  → (Δ : ∀ {A} → (γ ∋ A → Context δ))
   -----------------------------------
   → 0s ⊛ Δ ≡ 0s
 
@@ -320,14 +324,13 @@ Linear maps preserve the 0-vector.
 Adding a row of 0s to the end of the matrix and then multiplying by a vector produces a vector with a 0 at the bottom.
 
 \begin{code}
-⊛-zeroʳ : ∀ {γ δ} (Γ : Context γ) {B}
+⊛-zeroʳ : ∀ {γ δ} (Γ : Context γ) (Δ : Matrix γ δ) {B}
 
-  → (Δ : ∀ {A} → (γ ∋ A → Context δ))
   ---------------------------------------------------
   → Γ ⊛ (λ x → Δ x , 0# ∙ B) ≡ Γ ⊛ Δ , 0# ∙ B
 
-⊛-zeroʳ {γ} {δ} ∅ {B} Δ = refl
-⊛-zeroʳ {γ} {δ} (Γ , π ∙ C) {B} Δ =
+⊛-zeroʳ {γ} {δ} ∅ Δ {B} = refl
+⊛-zeroʳ {γ} {δ} (Γ , π ∙ C) Δ {B} =
   begin
     (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Δ (S x) , 0# ∙ B))
   ≡⟨ ⊛-zeroʳ Γ (Δ ∘ S_) |> cong ((π ** Δ Z , π * 0# ∙ B) ⋈_) ⟩
@@ -346,27 +349,26 @@ Adding a row of 0s to the end of the matrix and then multiplying by a vector pro
 Linear maps preserve scaling.
 
 \begin{code}
-⊛-preserves-** : ∀ {γ δ} (Γ : Context γ) {π}
+⊛-preserves-** : ∀ {γ δ} (Γ : Context γ) (Δ : Matrix γ δ) (π : Mult)
 
-  → (Δ : ∀ {A} → γ ∋ A → Context δ)
   -----------------------------------
   → (π ** Γ) ⊛ Δ ≡ π ** (Γ ⊛ Δ)
 
-⊛-preserves-** {γ} {δ} ∅ {π} Δ =
+⊛-preserves-** {γ} {δ} ∅ Δ π =
   begin
     0s
   ≡⟨ **-zeroʳ π ⟩
     π ** 0s
   ∎
 
-⊛-preserves-** {γ} {δ} (Γ , π′ ∙ A) {π} Δ =
+⊛-preserves-** {γ} {δ} (Γ , π′ ∙ A) Δ π =
   begin
     ((π * π′) ** Δ Z) ⋈ ((π ** Γ) ⊛ (Δ ∘ S_))
-  ≡⟨ ⊛-preserves-** Γ (Δ ∘ S_) |> cong ((π * π′) ** Δ Z ⋈_) ⟩
+  ≡⟨ ⊛-preserves-** Γ (Δ ∘ S_) π |> cong ((π * π′) ** Δ Z ⋈_) ⟩
     ((π * π′) ** Δ Z) ⋈ (π ** (Γ ⊛ (Δ ∘ S_)))
   ≡⟨ **-assoc (Δ Z) |> cong (_⋈ (π ** (Γ ⊛ (Δ ∘ S_)))) ⟩
     (π ** (π′ ** Δ Z)) ⋈ (π ** (Γ ⊛ (Δ ∘ S_)))
-  ≡⟨ **-distribˡ-⋈ (π′ ** Δ Z) (Γ ⊛ (Δ ∘ S_)) |> sym ⟩
+  ≡⟨ **-distribˡ-⋈ (π′ ** Δ Z) (Γ ⊛ (Δ ∘ S_)) π |> sym ⟩
     π ** (π′ ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_))
   ∎
 \end{code}
@@ -374,10 +376,9 @@ Linear maps preserve scaling.
 Linear maps distribute over sums.
 
 \begin{code}
-⊛-distribʳ-⋈ : ∀ {γ} {δ} (Γ₁ Γ₂ : Context γ)
+⊛-distribʳ-⋈ : ∀ {γ} {δ} (Γ₁ Γ₂ : Context γ) (Δ : Matrix γ δ)
 
-  → (Δ : ∀ {A} → γ ∋ A → Context δ)
-  -----------------------------------------------
+  ----------------------------------
   → (Γ₁ ⋈ Γ₂) ⊛ Δ ≡ Γ₁ ⊛ Δ ⋈ Γ₂ ⊛ Δ
 
 ⊛-distribʳ-⋈ ∅ ∅ Δ =
@@ -410,11 +411,10 @@ Linear maps distribute over sums.
 Multiplying by a standard basis vector projects out the corresponding column of the matrix.
 
 \begin{code}
-⊛-identityˡ : ∀ {γ δ} {A}
+⊛-identityˡ : ∀ {γ δ} {A} (Δ : Matrix γ δ)
 
-  → (Δ : ∀ {A} → (γ ∋ A → Context δ))
   → (x : γ ∋ A)
-  -----------------------------------
+  -----------------------
   → identity x ⊛ Δ ≡ Δ x
 
 ⊛-identityˡ {γ , A} {δ} {A} Δ Z =
@@ -499,7 +499,7 @@ data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
 \begin{code}
 ext : ∀ {γ δ}
 
-  → (∀ {A} → γ ∋ A → δ ∋ A)
+  → (∀ {A}   →     γ ∋ A →     δ ∋ A)
     ---------------------------------
   → (∀ {A B} → γ , B ∋ A → δ , B ∋ A)
 
@@ -551,7 +551,7 @@ rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) =
     lem =
       begin
         Γ ⊛ (identity ∘ ρ) ⋈ π ** (Γ′ ⊛ (identity ∘ ρ))
-      ≡⟨ ⊛-preserves-** Γ′ (identity ∘ ρ) |> sym ∘ cong (Γ ⊛ (identity ∘ ρ) ⋈_) ⟩
+      ≡⟨ ⊛-preserves-** Γ′ (identity ∘ ρ) π |> sym ∘ cong (Γ ⊛ (identity ∘ ρ) ⋈_) ⟩
         Γ ⊛ (identity ∘ ρ) ⋈ (π ** Γ′) ⊛ (identity ∘ ρ)
       ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) (identity ∘ ρ) |> sym ⟩
         (Γ ⋈ π ** Γ′) ⊛ (identity ∘ ρ)
@@ -561,23 +561,22 @@ rename ρ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) =
 Extend a matrix as the identity matrix -- add a zero to the end of every row, and add a new row with a 1 and the rest 0s.
 
 \begin{code}
-extd : ∀ {γ δ}
+extm : ∀ {γ δ}
 
-  → (∀ {A}   →     γ ∋ A → Context δ)
-    ---------------------------------------
-  → (∀ {A B} → γ , B ∋ A → Context (δ , B))
+  → Matrix γ δ
+    --------------------------------
+  → (∀ {B} → Matrix (γ , B) (δ , B))
 
-extd Δ {A} {B} Z     = identity Z
-extd Δ {A} {B} (S x) = Δ x , 0# ∙ B
+extm Δ {B} {A} Z     = identity Z
+extm Δ {B} {A} (S x) = Δ x , 0# ∙ B
 \end{code}
 
 \begin{code}
-exts : ∀ {γ δ}
+exts : ∀ {γ δ} {Δ : Matrix γ δ}
 
-  → {Δ : ∀ {A} → γ ∋ A → Context δ}
   → (∀ {A}   → (x :     γ ∋ A) →      Δ x ⊢ A)
     ------------------------------------------
-  → (∀ {A B} → (x : γ , B ∋ A) → extd Δ x ⊢ A)
+  → (∀ {A B} → (x : γ , B ∋ A) → extm Δ x ⊢ A)
 
 exts {Δ = Δ} σ {A} {B} Z     = ` Z
 exts {Δ = Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
@@ -595,9 +594,8 @@ exts {Δ = Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
 \end{code}
 
 \begin{code}
-subst : ∀ {γ δ} {Γ : Context γ} {B}
+subst : ∀ {γ δ} {Γ : Context γ} {Δ : Matrix γ δ} {B}
 
-  → {Δ : ∀ {A} → γ ∋ A → Context δ}
   → (σ : ∀ {A} → (x : γ ∋ A) → Δ x ⊢ A)
   → Γ ⊢ B
     --------------------------------------
@@ -639,7 +637,7 @@ subst {Δ = Δ} σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) =
     lem =
       begin
         Γ ⊛ Δ ⋈ π ** (Γ′ ⊛ Δ)
-      ≡⟨ ⊛-preserves-** Γ′ Δ |> cong (Γ ⊛ Δ ⋈_) ∘ sym ⟩
+      ≡⟨ ⊛-preserves-** Γ′ Δ π |> cong (Γ ⊛ Δ ⋈_) ∘ sym ⟩
         Γ ⊛ Δ ⋈ (π ** Γ′) ⊛ Δ
       ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) Δ |> sym ⟩
         (Γ ⋈ π ** Γ′) ⊛ Δ
@@ -656,7 +654,7 @@ _[_] : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π}
 
 _[_] {γ} {Γ} {Γ′} {A} {B} {π} N M = Eq.subst (_⊢ A) lem (subst σ N)
   where
-    Δ : ∀ {A} → γ , B ∋ A → Context γ
+    Δ : Matrix (γ , B) γ
     Δ Z     = Γ′
     Δ (S x) = identity x
     σ : ∀ {A} → (x : γ , B ∋ A) → Δ x ⊢ A
