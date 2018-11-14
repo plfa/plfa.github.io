@@ -5,15 +5,25 @@ permalink : /Linearity/
 ---
 
 \begin{code}
-module plfa.Linearity where
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; sym; cong)
+open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-open import plfa.Mult
+module plfa.Linearity
+  {Mult : Set}
+  (_+_ _*_ : Mult → Mult → Mult)
+  (0# 1# : Mult)
+  (+-*-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#) where
+\end{code}
+
+\begin{code}
+open IsSemiring +-*-isSemiring
+  using (+-identityˡ; +-identityʳ; +-assoc; +-comm; *-identityˡ; *-identityʳ; *-assoc)
+  renaming (zeroˡ to *-zeroˡ; zeroʳ to *-zeroʳ; distribˡ to *-distribˡ-+; distribʳ to *-distribʳ-+)
 open import Function using (_∘_; _|>_)
 open import Data.Product using (_×_; Σ-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
 \end{code}
 
@@ -88,7 +98,7 @@ Unit scaling does nothing.
   → 1# ** Γ ≡ Γ
 
 **-identityˡ ∅ = refl
-**-identityˡ (Γ , π ∙ A) rewrite **-identityˡ Γ = refl
+**-identityˡ (Γ , π ∙ A) rewrite **-identityˡ Γ | *-identityˡ π = refl
 \end{code}
 
 Scaling by a product is the composition of scalings.
@@ -146,7 +156,7 @@ Scaling by 0 gives the 0-vector.
   → 0# ** Γ ≡ 0s
 
 **-zeroˡ ∅ = refl
-**-zeroˡ (Γ , π ∙ A) rewrite **-zeroˡ Γ = refl
+**-zeroˡ (Γ , π ∙ A) rewrite **-zeroˡ Γ | *-zeroˡ π = refl
 \end{code}
 
 Vector addition.
@@ -166,7 +176,7 @@ Adding the 0-vector does nothing.
   → 0s ⋈ Γ ≡ Γ
 
 ⋈-identityˡ ∅ = refl
-⋈-identityˡ (Γ , π ∙ A) rewrite ⋈-identityˡ Γ | +-identityʳ π = refl
+⋈-identityˡ (Γ , π ∙ A) rewrite ⋈-identityˡ Γ | +-identityˡ π = refl
 \end{code}
 
 \begin{code}
@@ -223,7 +233,7 @@ Scaling by a sum gives the sum of the scalings.
 **-distribʳ-⋈ : ∀ {γ} (Γ : Context γ) π₁ π₂
 
   -----------------------------------
-  → π₁ + π₂ ** Γ ≡ π₁ ** Γ ⋈ π₂ ** Γ
+  → (π₁ + π₂) ** Γ ≡ π₁ ** Γ ⋈ π₂ ** Γ
 
 **-distribʳ-⋈ ∅ π₁ π₂ = refl
 **-distribʳ-⋈ (Γ , π ∙ A) π₁ π₂ =
@@ -256,6 +266,11 @@ Scaling a sum gives the sum of the scalings.
 \end{code}
 
 The identity matrix.
+
+Precontext         ~>  ℕ
+γ ∋ A              ~>  Fin γ
+Context γ          ~>  Vec γ
+γ ∋ A → Context δ  ~>  Mat γ δ
 
 \begin{code}
 identity : ∀ {A} {γ : Precontext} → γ ∋ A → Context γ
