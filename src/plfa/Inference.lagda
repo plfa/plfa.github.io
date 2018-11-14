@@ -1064,14 +1064,14 @@ Chapter [DeBruijn][plfa.DeBruijn].
 #### Exercise `inference-multiplication` (recommended)
 
 Apply inference to your decorated definition of multiplication from
-exercise [`bidirectional-mul`][#bidirectional-mul], and show that
+exercise [`bidirectional-mul`][plfa.Inference#bidirectional-mul], and show that
 erasure of the inferred typing yields your definition of
 multiplication from Chapter [DeBruijn][plfa.DeBruijn].
 
 #### Exercise `inference-products` (recommended)
 
 Using your rules from exercise
-[`bidirectional-products`][#bidirectional-products], extend
+[`bidirectional-products`][plfa.Inference#bidirectional-products], extend
 bidirectional inference to include products.
 
 #### Exercise `inference-rest` (stretch)
