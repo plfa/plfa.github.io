@@ -27,7 +27,7 @@ programming languages, with simply-typed lambda calculus as the
 central example.  The textbook is written as a literate script in
 Agda.  The hope is that using a proof assistant will make the
 development more concrete and accessible to students, and give them
-rapid feedback to find and correct misaprehensions.
+rapid feedback to find and correct misapprehensions.
 
 The book is broken into two parts. The first part, Logical
 Foundations, develops the needed formalisms.  The second part,
