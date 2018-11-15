@@ -1,7 +1,7 @@
 ---
-title     : "Linearity: Resources and Linear Algebra"
+title     : "Quantative: Resources and Linear Algebra"
 layout    : page
-permalink : /Linearity/LinAlg/
+permalink : /Quantative/LinAlg/
 ---
 
 \begin{code}
@@ -10,7 +10,7 @@ open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-module plfa.Linearity.LinAlg
+module plfa.Quantative.LinAlg
   {Mult : Set}
   (_+_ _*_ : Mult → Mult → Mult)
   (0# 1# : Mult)

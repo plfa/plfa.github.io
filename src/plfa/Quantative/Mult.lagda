@@ -1,11 +1,11 @@
 ---
-title     : "Linearity: Resources and Multiplicities"
+title     : "Quantative: Multiplicities and Linearity"
 layout    : page
-permalink : /Linearity/Mult/
+permalink : /Quantative/Mult/
 ---
 
 \begin{code}
-module plfa.Linearity.Mult where
+module plfa.Quantative.Mult where
 \end{code}
 
 \begin{code}
