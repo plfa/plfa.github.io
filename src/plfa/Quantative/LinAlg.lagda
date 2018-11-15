@@ -19,7 +19,7 @@ module plfa.Quantative.LinAlg
 \end{code}
 
 \begin{code}
-open import plfa.Linearity _+_ _*_ 0# 1# *-+-isSemiring
+open import plfa.Quantative _+_ _*_ 0# 1# *-+-isSemiring
 open import Function using (_∘_)
 open import Data.Nat using (ℕ; suc; zero)
 open import Data.Fin using (Fin; suc; zero)
