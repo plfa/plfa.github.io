@@ -1,7 +1,7 @@
 ---
-title     : "Quantative: Resources and Linear Algebra"
+title     : "Quantitative: Relation to Linear Algebra"
 layout    : page
-permalink : /Quantative/LinAlg/
+permalink : /Quantitative/LinAlg/
 ---
 
 \begin{code}
@@ -10,7 +10,7 @@ open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-module plfa.Quantative.LinAlg
+module plfa.Quantitative.LinAlg
   {Mult : Set}
   (_+_ _*_ : Mult → Mult → Mult)
   (0# 1# : Mult)
@@ -19,7 +19,7 @@ module plfa.Quantative.LinAlg
 \end{code}
 
 \begin{code}
-open import plfa.Quantative _+_ _*_ 0# 1# *-+-isSemiring
+open import plfa.Quantitative _+_ _*_ 0# 1# *-+-isSemiring
 open import Function using (_∘_)
 open import Data.Nat using (ℕ; suc; zero)
 open import Data.Fin using (Fin; suc; zero)

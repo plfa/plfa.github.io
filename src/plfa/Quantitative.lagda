@@ -1,7 +1,7 @@
 ---
-title     : "Quantative: Quantative Type Theory and the Linear Lambda Calculus"
+title     : "Quantitative: Resources and Types"
 layout    : page
-permalink : /Quantative/
+permalink : /Quantitative/
 ---
 
 \begin{code}
@@ -10,7 +10,7 @@ open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-module plfa.Quantative
+module plfa.Quantitative
   {Mult : Set}
   (_+_ _*_ : Mult → Mult → Mult)
   (0# 1# : Mult)
@@ -501,44 +501,44 @@ ext ρ (S x)  =  S (ρ x)
 \end{code}
 
 \begin{code}
-rename-` : ∀ {γ δ} {B} (ρ : ∀ {A} → γ ∋ A → δ ∋ A) (x : γ ∋ B) → _
-rename-` ρ x =
+subst-` : ∀ {γ δ} {A} {Δ : Matrix γ δ} (x : γ ∋ A) → _
+subst-` {γ} {δ} {A} {Δ} x =
   begin
-    identity (ρ x)
-  ≡⟨ ⊛-identityˡ (identity ∘ ρ) x |> sym  ⟩
-    identity x ⊛ (identity ∘ ρ)
+    Δ x
+  ≡⟨ ⊛-identityˡ Δ x |> sym ⟩
+    identity x ⊛ Δ
   ∎
 \end{code}
 
 \begin{code}
-rename-ƛ : ∀ {γ δ} (Γ : Context γ) {B} {π} (ρ : ∀ {A} → γ ∋ A → δ ∋ A) → _
-rename-ƛ {γ} {δ} Γ {B} {π} ρ =
+subst-ƛ : ∀ {γ δ} (Γ : Context γ) {A} {π} {Δ : Matrix γ δ} → _
+subst-ƛ {γ} {δ} Γ {A} {π} {Δ} =
   begin
-    (π ** 0s , π * 1# ∙ B) ⋈ (Γ ⊛ (λ x → identity (ρ x) , 0# ∙ B))
-  ≡⟨ ⊛-zeroʳ Γ (identity ∘ ρ) |> cong ((π ** 0s , π * 1# ∙ B) ⋈_) ⟩
-    (π ** 0s , π * 1# ∙ B) ⋈ (Γ ⊛ (identity ∘ ρ) , 0# ∙ B)
+    (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → Δ x , 0# ∙ A))
+  ≡⟨ ⊛-zeroʳ Γ Δ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
+    (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ Δ , 0# ∙ A)
   ≡⟨⟩
-    π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , (π * 1#) + 0# ∙ B
-  ≡⟨ +-identityʳ (π * 1#) |> cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ B) ⟩
-    π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , π * 1# ∙ B
-  ≡⟨ *-identityʳ π |> cong (π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) ,_∙ B) ⟩
-    π ** 0s ⋈ Γ ⊛ (identity ∘ ρ) , π ∙ B
-  ≡⟨ **-zeroʳ π |> cong ((_, π ∙ B) ∘ (_⋈ Γ ⊛ (identity ∘ ρ ))) ∘ sym ⟩
-    0s ⋈ Γ ⊛ (identity ∘ ρ) , π ∙ B
-  ≡⟨ ⋈-identityˡ (Γ ⊛ (identity ∘ ρ)) |> cong (_, π ∙ B) ⟩
-    Γ ⊛ (identity ∘ ρ) , π ∙ B
+    π ** 0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
+  ≡⟨ **-zeroʳ π |> cong ((_, (π * 1#) + 0# ∙ A) ∘ (_⋈ Γ ⊛ Δ)) ∘ sym ⟩
+    0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
+  ≡⟨ ⋈-identityˡ (Γ ⊛ Δ) |> cong (_, (π * 1#) + 0# ∙ A) ⟩
+    Γ ⊛ Δ , (π * 1#) + 0# ∙ A
+  ≡⟨ +-identityʳ (π * 1#) |> cong (Γ ⊛ Δ ,_∙ A) ⟩
+    Γ ⊛ Δ , π * 1# ∙ A
+  ≡⟨ *-identityʳ π |> cong (Γ ⊛ Δ ,_∙ A) ⟩
+    Γ ⊛ Δ , π ∙ A
   ∎
 \end{code}
 
 \begin{code}
-rename-· : ∀ {γ δ} (Γ Γ′ : Context γ) {π} (ρ : ∀ {A} → γ ∋ A → δ ∋ A) → _
-rename-· {γ} {δ} Γ Γ′ {π} ρ =
+subst-· : ∀ {γ δ} (Γ Γ′ : Context γ) {π} {Δ : Matrix γ δ} → _
+subst-· {γ} {δ} Γ Γ′ {π} {Δ} =
   begin
-    Γ ⊛ (identity ∘ ρ) ⋈ π ** (Γ′ ⊛ (identity ∘ ρ))
-  ≡⟨ ⊛-preserves-** Γ′ (identity ∘ ρ) π |> sym ∘ cong (Γ ⊛ (identity ∘ ρ) ⋈_) ⟩
-    Γ ⊛ (identity ∘ ρ) ⋈ (π ** Γ′) ⊛ (identity ∘ ρ)
-  ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) (identity ∘ ρ) |> sym ⟩
-    (Γ ⋈ π ** Γ′) ⊛ (identity ∘ ρ)
+    Γ ⊛ Δ ⋈ π ** (Γ′ ⊛ Δ)
+  ≡⟨ ⊛-preserves-** Γ′ Δ π |> cong (Γ ⊛ Δ ⋈_) ∘ sym ⟩
+    Γ ⊛ Δ ⋈ (π ** Γ′) ⊛ Δ
+  ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) Δ |> sym ⟩
+    (Γ ⋈ π ** Γ′) ⊛ Δ
   ∎
 \end{code}
 
@@ -550,9 +550,12 @@ rename : ∀ {γ δ} {Γ : Context γ} {B}
     ---------------------------
   → Γ ⊛ (identity ∘ ρ) ⊢ B
 
-rename ρ (` x)                       = Eq.subst (_⊢ _) (rename-` ρ x) (` ρ x)
-rename ρ (ƛ_  {Γ = Γ} N)             = ƛ (Eq.subst (_⊢ _) (rename-ƛ Γ ρ) (rename (ext ρ) N))
-rename ρ (_·_ {Γ = Γ} {Γ′ = Γ′} L M) = Eq.subst (_⊢ _) (rename-· Γ Γ′ ρ) (rename ρ L · rename ρ M)
+rename ρ (` x) =
+  Eq.subst (_⊢ _) (subst-` x) (` ρ x)
+rename ρ (ƛ_  {Γ = Γ} N) =
+  ƛ (Eq.subst (_⊢ _) (subst-ƛ Γ) (rename (ext ρ) N))
+rename ρ (_·_ {Γ = Γ} {Γ′ = Γ′} L M) =
+  Eq.subst (_⊢ _) (subst-· Γ Γ′) (rename ρ L · rename ρ M)
 \end{code}
 
 Extend a matrix as the identity matrix -- add a zero to the end of every row, and add a new row with a 1 and the rest 0s.
@@ -598,47 +601,12 @@ subst : ∀ {γ δ} {Γ : Context γ} {Δ : Matrix γ δ} {B}
     --------------------------------------
   → Γ ⊛ Δ ⊢ B
 
-subst {Δ = Δ} σ (`_ {γ} {A} x) =
-  Eq.subst (_⊢ A) lem (σ x)
-  where
-    lem =
-      begin
-        Δ x
-      ≡⟨ ⊛-identityˡ Δ x |> sym ⟩
-        identity x ⊛ Δ
-      ∎
-
-subst {Δ = Δ} σ (ƛ_ {γ} {Γ} {A} {B} {π} N) =
-  ƛ Eq.subst (_⊢ B) lem (subst (exts σ) N)
-  where
-    lem =
-      begin
-        (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → Δ x , 0# ∙ A))
-      ≡⟨ ⊛-zeroʳ Γ Δ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
-        (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ Δ , 0# ∙ A)
-      ≡⟨⟩
-        π ** 0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ **-zeroʳ π |> cong ((_, (π * 1#) + 0# ∙ A) ∘ (_⋈ Γ ⊛ Δ)) ∘ sym ⟩
-        0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ ⋈-identityˡ (Γ ⊛ Δ) |> cong (_, (π * 1#) + 0# ∙ A) ⟩
-        Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-      ≡⟨ +-identityʳ (π * 1#) |> cong (Γ ⊛ Δ ,_∙ A) ⟩
-        Γ ⊛ Δ , π * 1# ∙ A
-      ≡⟨ *-identityʳ π |> cong (Γ ⊛ Δ ,_∙ A) ⟩
-        Γ ⊛ Δ , π ∙ A
-      ∎
-
-subst {Δ = Δ} σ (_·_ {γ} {Γ} {Γ′} {A} {B} {π} L M) =
-  Eq.subst (_⊢ B) lem (subst σ L · subst σ M)
-  where
-    lem =
-      begin
-        Γ ⊛ Δ ⋈ π ** (Γ′ ⊛ Δ)
-      ≡⟨ ⊛-preserves-** Γ′ Δ π |> cong (Γ ⊛ Δ ⋈_) ∘ sym ⟩
-        Γ ⊛ Δ ⋈ (π ** Γ′) ⊛ Δ
-      ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) Δ |> sym ⟩
-        (Γ ⋈ π ** Γ′) ⊛ Δ
-      ∎
+subst {Δ = Δ} σ (` x) =
+  Eq.subst (_⊢ _) (subst-` x) (σ x)
+subst {Δ = Δ} σ (ƛ_  {Γ = Γ} N) =
+  ƛ (Eq.subst (_⊢ _) (subst-ƛ Γ) (subst (exts σ) N))
+subst {Δ = Δ} σ (_·_ {Γ = Γ} {Γ′ = Γ′} L M) =
+  Eq.subst (_⊢ _) (subst-· Γ Γ′)(subst σ L · subst σ M)
 \end{code}
 
 \begin{code}

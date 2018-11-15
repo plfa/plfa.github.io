@@ -1,11 +1,11 @@
 ---
-title     : "Quantative: Multiplicities and Linearity"
+title     : "Quantitative: Multiplicities and Linearity"
 layout    : page
-permalink : /Quantative/Mult/
+permalink : /Quantitative/Mult/
 ---
 
 \begin{code}
-module plfa.Quantative.Mult where
+module plfa.Quantitative.Mult where
 \end{code}
 
 \begin{code}
@@ -156,7 +156,7 @@ _*_ : Mult → Mult → Mult
 \begin{code}
 *-1-isMonoid : IsMonoid _*_ 1#
 *-1-isMonoid = record
-  { isSemigroup = *-isSemigroup 
+  { isSemigroup = *-isSemigroup
   ; identity    = *-identity
   }
 \end{code}
