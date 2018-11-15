@@ -35,6 +35,8 @@ open import Relation.Binary using (Decidable)
 
 \begin{code}
 module Problem1 where
+
+  open import Function using (_∘_)
 \end{code}
 
 Remember to indent all code by two spaces.
