@@ -106,6 +106,9 @@ _ : Context (∅ , [ 1# ∙ `0 ]⊸ `0 , `0)
 _ = ∅ , 1# ∙ [ 1# ∙ `0 ]⊸ `0 , 0# ∙ `0
 \end{code}
 
+
+# Resources and Linear Algebra
+
 Scaling.
 
 \begin{code}
@@ -130,12 +133,14 @@ _⋈_ : ∀ {γ} → Context γ → Context γ → Context γ
 (Γ₁ , π₁ ∙ A) ⋈ (Γ₂ , π₂ ∙ .A) = Γ₁ ⋈ Γ₂ , π₁ + π₂ ∙ A
 \end{code}
 
+Matrices.
+
+See [this sidenote][plfa.Quantitative.LinAlg].
+
 \begin{code}
 Matrix : Precontext → Precontext → Set
 Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
 \end{code}
-
-See [this sidenote][plfa.Linearity.LinAlg].
 
 The identity matrix.
 
@@ -152,6 +157,9 @@ _⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
 ∅           ⊛ Ξ = 0s
 (Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
 \end{code}
+
+
+# Terms and the typing judgement
 
 \begin{code}
 data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
@@ -175,6 +183,9 @@ data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
       ----------------
     → Γ ⋈ π ** Δ ⊢ B
 \end{code}
+
+
+# Properties of Vector Operations
 
 Unit scaling does nothing.
 
@@ -511,6 +522,9 @@ The standard basis vectors put together give the identity matrix.
   ∎
 \end{code}
 
+
+# Renaming
+
 \begin{code}
 ext : ∀ {γ δ}
 
@@ -580,6 +594,9 @@ rename ρ (_·_ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-· Γ Δ) (rename ρ L · rename ρ M)
 \end{code}
 
+
+# Simultaneous Substitution
+
 Extend a matrix as the identity matrix -- add a zero to the end of every row, and add a new row with a 1 and the rest 0s.
 
 \begin{code}
@@ -631,6 +648,9 @@ subst {Ξ = Ξ} σ (_·_ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-· Γ Δ)(subst σ L · subst σ M)
 \end{code}
 
+
+# Single Substitution
+
 \begin{code}
 lem-[] : ∀ {γ} (Γ Δ : Context γ) {π} → _
 lem-[] {γ} Γ Δ {π} =
@@ -661,6 +681,9 @@ _[_] {γ} {Γ} {Δ} {A} {B} {π} N M = Eq.subst (_⊢ A) (lem-[] Γ Δ) (subst �
     σ (S x) = ` x
 \end{code}
 
+
+# Values
+
 \begin{code}
 data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
 
@@ -669,6 +692,8 @@ data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
       -----------
     → Value (ƛ N)
 \end{code}
+
+# Reduction
 
 \begin{code}
 infix 2 _—→_
@@ -694,6 +719,9 @@ data _—→_ : ∀ {γ} {Γ : Context γ} {A} → (Γ ⊢ A) → (Γ ⊢ A) →
       -------------------
     → (ƛ N) · W —→ N [ W ]
 \end{code}
+
+
+# Progress
 
 \begin{code}
 data Progress {γ} {Γ : Context γ} {A} (M : Γ ⊢ A) : Set where
