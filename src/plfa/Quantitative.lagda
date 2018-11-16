@@ -18,12 +18,26 @@ module plfa.Quantitative
   where
 \end{code}
 
+
+# Imports
+
 \begin{code}
 open import Function using (_∘_; _|>_)
 open Eq using (refl; sym; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
 open IsSemiring *-+-isSemiring hiding (refl; sym)
 \end{code}
+
+
+# Introduction
+
+    data Mult : Set where
+      0# : Mult
+      1# : Mult
+      ω# : Mult
+
+
+# Syntax
 
 \begin{code}
 infix  1 _⊢_
@@ -36,12 +50,18 @@ infixl 8 _**_
 infix  9 _⊛_
 \end{code}
 
+
+# Types
+
 \begin{code}
 data Type : Set where
   [_∙_]⊸_ : Mult → Type → Type → Type
   `0      : Type
   `1      : Type
 \end{code}
+
+
+# Precontexts
 
 \begin{code}
 data Precontext : Set where
@@ -53,6 +73,9 @@ data Precontext : Set where
 _ : Precontext
 _ = ∅ , [ 1# ∙ `0 ]⊸ `0 , `0
 \end{code}
+
+
+# Variables and the lookup judgement
 
 \begin{code}
 data _∋_ : Precontext → Type → Set where
@@ -68,6 +91,9 @@ data _∋_ : Precontext → Type → Set where
        ---------
      → γ , B ∋ A
 \end{code}
+
+
+# Contexts
 
 \begin{code}
 data Context : Precontext → Set where
@@ -86,6 +112,68 @@ Scaling.
 _**_ : ∀ {γ} → Mult → Context γ → Context γ
 π ** ∅ = ∅
 π ** (Γ , ρ ∙ A) = π ** Γ , π * ρ ∙ A
+\end{code}
+
+The 0-vector.
+
+\begin{code}
+0s : ∀ {γ} → Context γ
+0s {∅}     = ∅
+0s {γ , A} = 0s , 0# ∙ A
+\end{code}
+
+Vector addition.
+
+\begin{code}
+_⋈_ : ∀ {γ} → Context γ → Context γ → Context γ
+∅ ⋈ ∅ = ∅
+(Γ₁ , π₁ ∙ A) ⋈ (Γ₂ , π₂ ∙ .A) = Γ₁ ⋈ Γ₂ , π₁ + π₂ ∙ A
+\end{code}
+
+\begin{code}
+Matrix : Precontext → Precontext → Set
+Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
+\end{code}
+
+See [this sidenote][plfa.Linearity.LinAlg].
+
+The identity matrix.
+
+\begin{code}
+identity : ∀ {γ} → Matrix γ γ
+identity {γ , A} Z     = 0s , 1# ∙ A
+identity {γ , B} (S x) = identity x , 0# ∙ B
+\end{code}
+
+Matrix-vector multiplication ΞᵀΓ.
+
+\begin{code}
+_⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
+∅           ⊛ Ξ = 0s
+(Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
+\end{code}
+
+\begin{code}
+data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
+
+  `_  : ∀ {γ} {A}
+
+    → (x : γ ∋ A)
+      --------------
+    → identity x ⊢ A
+
+  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π}
+
+    → Γ , π ∙ A ⊢ B
+      ----------------
+    → Γ ⊢ [ π ∙ A ]⊸ B
+
+  _·_ : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
+
+    → Γ ⊢ [ π ∙ A ]⊸ B
+    → Δ ⊢ A
+      ----------------
+    → Γ ⋈ π ** Δ ⊢ B
 \end{code}
 
 Unit scaling does nothing.
@@ -119,14 +207,6 @@ Scaling by a product is the composition of scalings.
   ∎
 \end{code}
 
-The 0-vector.
-
-\begin{code}
-0s : ∀ {γ} → Context γ
-0s {∅}     = ∅
-0s {γ , A} = 0s , 0# ∙ A
-\end{code}
-
 Scaling the 0-vector gives the 0-vector.
 
 \begin{code}
@@ -156,14 +236,6 @@ Scaling by 0 gives the 0-vector.
 
 **-zeroˡ ∅ = refl
 **-zeroˡ (Γ , π ∙ A) rewrite **-zeroˡ Γ | zeroˡ π = refl
-\end{code}
-
-Vector addition.
-
-\begin{code}
-_⋈_ : ∀ {γ} → Context γ → Context γ → Context γ
-∅ ⋈ ∅ = ∅
-(Γ₁ , π₁ ∙ A) ⋈ (Γ₂ , π₂ ∙ .A) = Γ₁ ⋈ Γ₂ , π₁ + π₂ ∙ A
 \end{code}
 
 Adding the 0-vector does nothing.
@@ -262,34 +334,6 @@ Scaling a sum gives the sum of the scalings.
   ≡⟨ **-distribˡ-⋈ Γ₁ Γ₂ π |> cong (_, (π * π₁) + (π * π₂) ∙ A) ⟩
     π ** Γ₁ ⋈ π ** Γ₂ , (π * π₁) + (π * π₂) ∙ A
   ∎
-\end{code}
-
-\begin{code}
-Matrix : Precontext → Precontext → Set
-Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
-\end{code}
-
-(See [this sidenote][plfa.Linearity.LinAlg].)
-
-The identity matrix.
-
-\begin{code}
-identity : ∀ {γ} → Matrix γ γ
-identity {γ , A} Z     = 0s , 1# ∙ A
-identity {γ , B} (S x) = identity x , 0# ∙ B
-\end{code}
-
-Matrix-vector multiplication ΞᵀΓ.
-
-\begin{code}
-_⊛_ : ∀ {γ δ}
-
-  → Context γ
-  → Matrix γ δ
-  → Context δ
-
-∅           ⊛ Ξ = 0s
-(Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
 \end{code}
 
 Linear maps preserve the 0-vector.
@@ -465,29 +509,6 @@ The standard basis vectors put together give the identity matrix.
   ≡⟨ ⋈-identityˡ Γ |> cong (_, π ∙ A) ⟩
     Γ , π ∙ A
   ∎
-\end{code}
-
-\begin{code}
-data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
-
-  `_  : ∀ {γ} {A}
-
-      → (x : γ ∋ A)
-        --------------
-      → identity x ⊢ A
-
-  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π}
-
-      → Γ , π ∙ A ⊢ B
-        ----------------
-      → Γ ⊢ [ π ∙ A ]⊸ B
-
-  _·_ : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
-
-      → Γ ⊢ [ π ∙ A ]⊸ B
-      → Δ ⊢ A
-        ----------------
-      → Γ ⋈ π ** Δ ⊢ B
 \end{code}
 
 \begin{code}
