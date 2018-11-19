@@ -1102,24 +1102,18 @@ Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
 
 
-#### Exercise `inference-multiplication` (recommended)
+#### Exercise `bidirectional-rest` (stretch)
+
+Extend the bidirectional type rules to include the rest of the constructs from
+Chapter [More][plfa.More].
+
+
+#### Exercise `inference-mul` (recommended)
 
 Rewrite your definition of multiplication from
 Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
 that erasure of the inferred typing yields your definition of
 multiplication from Chapter [DeBruijn][plfa.DeBruijn].
-
-
-#### Exercise `bidirectional-products` (recommended)
-
-Extend the bidirectional type rules to include products from
-Chapter [More][plfa.More].
-
-
-#### Exercise `bidirectional-rest` (stretch)
-
-Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More][plfa.More].
 
 
 #### Exercise `inference-products` (recommended)
