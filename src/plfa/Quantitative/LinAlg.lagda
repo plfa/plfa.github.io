@@ -5,26 +5,31 @@ permalink : /Quantitative/LinAlg/
 ---
 
 \begin{code}
-open import Relation.Binary.PropositionalEquality as Eq using (_≡_)
-open import Algebra.Structures using (module IsSemiring; IsSemiring)
+module plfa.Quantitative.LinAlg where
 \end{code}
 
-\begin{code}
-module plfa.Quantitative.LinAlg
-  {Mult : Set}
-  (_+_ _*_ : Mult → Mult → Mult)
-  (0# 1# : Mult)
-  (*-+-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#)
-  where
-\end{code}
+
+# Imports
 
 \begin{code}
-open import plfa.Quantitative _+_ _*_ 0# 1# *-+-isSemiring
+open import Data.Nat using (ℕ; suc; zero; _+_; _*_)
+open import Data.Nat.Properties using (*-+-isSemiring)
 open import Function using (_∘_)
-open import Data.Nat using (ℕ; suc; zero)
 open import Data.Fin using (Fin; suc; zero)
 open import Data.Vec using (Vec; _∷_; [])
+open import plfa.Quantitative _+_ _*_ 0 1 *-+-isSemiring
+
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl)
 \end{code}
+
+\begin{code}
+Mat : Set → ℕ → ℕ → Set
+Mat A n m = Vec (Vec A m) n
+\end{code}
+
+
+# Erasure
 
 \begin{code}
 ∥_∥ℕ : Precontext → ℕ
@@ -39,18 +44,35 @@ open import Data.Vec using (Vec; _∷_; [])
 \end{code}
 
 \begin{code}
-∥_∥Vec : ∀ {γ} → Context γ → Vec Mult ∥ γ ∥ℕ
+∥_∥Vec : ∀ {γ} → Context γ → Vec ℕ ∥ γ ∥ℕ
 ∥ ∅         ∥Vec = []
 ∥ Γ , π ∙ _ ∥Vec = π ∷ ∥ Γ ∥Vec
 \end{code}
 
 \begin{code}
-Mat : Set → ℕ → ℕ → Set
-Mat A n m = Vec (Vec A m) n
-\end{code}
-
-\begin{code}
-∥_∥Mat : ∀ {γ δ} → Matrix γ δ → Mat Mult ∥ γ ∥ℕ ∥ δ ∥ℕ
+∥_∥Mat : ∀ {γ δ} → Matrix γ δ → Mat ℕ ∥ γ ∥ℕ ∥ δ ∥ℕ
 ∥_∥Mat {∅}     {δ} Δ = []
 ∥_∥Mat {γ , _} {δ} Δ = ∥ Δ Z ∥Vec ∷ ∥ (Δ ∘ S_) ∥Mat
+\end{code}
+
+
+# Decoration
+
+\begin{code}
+ℕ∥_∥ : ℕ → Precontext
+ℕ∥ zero  ∥ = ∅
+ℕ∥ suc n ∥ = ℕ∥ n ∥ , `0
+\end{code}
+
+
+# Identities
+
+\begin{code}
+_ : ∥ identity {ℕ∥ 5 ∥} ∥Mat
+  ≡ (1 ∷ 0 ∷ 0 ∷ 0 ∷ 0 ∷ []) ∷
+    (0 ∷ 1 ∷ 0 ∷ 0 ∷ 0 ∷ []) ∷
+    (0 ∷ 0 ∷ 1 ∷ 0 ∷ 0 ∷ []) ∷
+    (0 ∷ 0 ∷ 0 ∷ 1 ∷ 0 ∷ []) ∷
+    (0 ∷ 0 ∷ 0 ∷ 0 ∷ 1 ∷ []) ∷ []
+_ = refl
 \end{code}
