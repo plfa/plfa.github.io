@@ -53,6 +53,7 @@ Pull requests are encouraged.
       [2018](http://plfa.inf.ed.ac.uk/TSPL/)
     * David Darais, University of Vermont,
       [2018](http://david.darais.com/courses/uvm-cs295A-fa2018/)
+    * John Leo, Google Seattle, 2018--2019
 
 [wen]: https://github.com/wenkokke
 [phil]: http://homepages.inf.ed.ac.uk/wadler/
