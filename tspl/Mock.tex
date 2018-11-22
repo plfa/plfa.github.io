@@ -312,7 +312,7 @@ Reduction:
 \inference[$\xi\dash\leaf$]
   {M \becomes M'}
   {\leaf{M} \becomes \leaf{M'}}
-\qquad
+\\~\\
 \inference[$\xi\dash\branch_1$]
   {M \becomes M'}
   {M~\branch~N \becomes M'~\branch~N}
@@ -324,7 +324,10 @@ Reduction:
 \\~\\
 \inference[$\xi\dash\CASET$]
   {L \becomes L'}
-  {\caseT{L}{x}{M}{y}{z}{N} \becomes \caseT{L'}{x}{M}{y}{z}{N}}
+  {\begin{array}{c}
+     \caseT{L}{x}{M}{y}{z}{N} \becomes \\
+     {} \quad \caseT{L'}{x}{M}{y}{z}{N}
+   \end{array}}
 \\~\\  
 \inference[$\beta\dash\leaf$]
   {\Value~V}
