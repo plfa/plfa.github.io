@@ -18,12 +18,26 @@ module plfa.Quantitative
   where
 \end{code}
 
+
+# Imports
+
 \begin{code}
 open import Function using (_∘_; _|>_)
 open Eq using (refl; sym; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
 open IsSemiring *-+-isSemiring hiding (refl; sym)
 \end{code}
+
+
+# Introduction
+
+    data Mult : Set where
+      0# : Mult
+      1# : Mult
+      ω# : Mult
+
+
+# Syntax
 
 \begin{code}
 infix  1 _⊢_
@@ -36,11 +50,18 @@ infixl 8 _**_
 infix  9 _⊛_
 \end{code}
 
+
+# Types
+
 \begin{code}
 data Type : Set where
   [_∙_]⊸_ : Mult → Type → Type → Type
   `0      : Type
+  `1      : Type
 \end{code}
+
+
+# Precontexts
 
 \begin{code}
 data Precontext : Set where
@@ -52,6 +73,9 @@ data Precontext : Set where
 _ : Precontext
 _ = ∅ , [ 1# ∙ `0 ]⊸ `0 , `0
 \end{code}
+
+
+# Variables and the lookup judgement
 
 \begin{code}
 data _∋_ : Precontext → Type → Set where
@@ -68,6 +92,9 @@ data _∋_ : Precontext → Type → Set where
      → γ , B ∋ A
 \end{code}
 
+
+# Contexts
+
 \begin{code}
 data Context : Precontext → Set where
   ∅     : Context ∅
@@ -79,6 +106,9 @@ _ : Context (∅ , [ 1# ∙ `0 ]⊸ `0 , `0)
 _ = ∅ , 1# ∙ [ 1# ∙ `0 ]⊸ `0 , 0# ∙ `0
 \end{code}
 
+
+# Resources and Linear Algebra
+
 Scaling.
 
 \begin{code}
@@ -86,6 +116,76 @@ _**_ : ∀ {γ} → Mult → Context γ → Context γ
 π ** ∅ = ∅
 π ** (Γ , ρ ∙ A) = π ** Γ , π * ρ ∙ A
 \end{code}
+
+The 0-vector.
+
+\begin{code}
+0s : ∀ {γ} → Context γ
+0s {∅}     = ∅
+0s {γ , A} = 0s , 0# ∙ A
+\end{code}
+
+Vector addition.
+
+\begin{code}
+_⋈_ : ∀ {γ} → Context γ → Context γ → Context γ
+∅ ⋈ ∅ = ∅
+(Γ₁ , π₁ ∙ A) ⋈ (Γ₂ , π₂ ∙ .A) = Γ₁ ⋈ Γ₂ , π₁ + π₂ ∙ A
+\end{code}
+
+Matrices.
+
+See [this sidenote][plfa.Quantitative.LinAlg].
+
+\begin{code}
+Matrix : Precontext → Precontext → Set
+Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
+\end{code}
+
+The identity matrix.
+
+\begin{code}
+identity : ∀ {γ} → Matrix γ γ
+identity {γ , A} Z     = 0s , 1# ∙ A
+identity {γ , B} (S x) = identity x , 0# ∙ B
+\end{code}
+
+Matrix-vector multiplication ΞᵀΓ.
+
+\begin{code}
+_⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
+∅           ⊛ Ξ = 0s
+(Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
+\end{code}
+
+
+# Terms and the typing judgement
+
+\begin{code}
+data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
+
+  `_  : ∀ {γ} {A}
+
+    → (x : γ ∋ A)
+      --------------
+    → identity x ⊢ A
+
+  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π}
+
+    → Γ , π ∙ A ⊢ B
+      ----------------
+    → Γ ⊢ [ π ∙ A ]⊸ B
+
+  _·_ : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
+
+    → Γ ⊢ [ π ∙ A ]⊸ B
+    → Δ ⊢ A
+      ----------------
+    → Γ ⋈ π ** Δ ⊢ B
+\end{code}
+
+
+# Properties of Vector Operations
 
 Unit scaling does nothing.
 
@@ -118,14 +218,6 @@ Scaling by a product is the composition of scalings.
   ∎
 \end{code}
 
-The 0-vector.
-
-\begin{code}
-0s : ∀ {γ} → Context γ
-0s {∅}     = ∅
-0s {γ , A} = 0s , 0# ∙ A
-\end{code}
-
 Scaling the 0-vector gives the 0-vector.
 
 \begin{code}
@@ -155,14 +247,6 @@ Scaling by 0 gives the 0-vector.
 
 **-zeroˡ ∅ = refl
 **-zeroˡ (Γ , π ∙ A) rewrite **-zeroˡ Γ | zeroˡ π = refl
-\end{code}
-
-Vector addition.
-
-\begin{code}
-_⋈_ : ∀ {γ} → Context γ → Context γ → Context γ
-∅ ⋈ ∅ = ∅
-(Γ₁ , π₁ ∙ A) ⋈ (Γ₂ , π₂ ∙ .A) = Γ₁ ⋈ Γ₂ , π₁ + π₂ ∙ A
 \end{code}
 
 Adding the 0-vector does nothing.
@@ -263,51 +347,23 @@ Scaling a sum gives the sum of the scalings.
   ∎
 \end{code}
 
-\begin{code}
-Matrix : Precontext → Precontext → Set
-Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
-\end{code}
-
-(See [this sidenote][plfa.Linearity.LinAlg].)
-
-The identity matrix.
-
-\begin{code}
-identity : ∀ {γ} → Matrix γ γ
-identity {γ , A} Z     = 0s , 1# ∙ A
-identity {γ , B} (S x) = identity x , 0# ∙ B
-\end{code}
-
-Matrix-vector multiplication ΔᵀΓ.
-
-\begin{code}
-_⊛_ : ∀ {γ δ}
-
-  → Context γ
-  → Matrix γ δ
-  → Context δ
-
-∅           ⊛ Δ = 0s
-(Γ , π ∙ A) ⊛ Δ = (π ** Δ Z) ⋈ Γ ⊛ (Δ ∘ S_)
-\end{code}
-
 Linear maps preserve the 0-vector.
 
 \begin{code}
-⊛-zeroˡ : ∀ {γ δ} (Δ : Matrix γ δ)
+⊛-zeroˡ : ∀ {γ δ} (Ξ : Matrix γ δ)
 
   -----------------------------------
-  → 0s ⊛ Δ ≡ 0s
+  → 0s ⊛ Ξ ≡ 0s
 
-⊛-zeroˡ {∅}     {δ} Δ = refl
-⊛-zeroˡ {γ , A} {δ} Δ =
+⊛-zeroˡ {∅}     {δ} Ξ = refl
+⊛-zeroˡ {γ , A} {δ} Ξ =
   begin
-    0s ⊛ Δ
+    0s ⊛ Ξ
   ≡⟨⟩
-    0# ** Δ Z ⋈ 0s ⊛ (Δ ∘ S_)
-  ≡⟨ ⊛-zeroˡ (Δ ∘ S_) |> cong (0# ** Δ Z ⋈_) ⟩
-    0# ** Δ Z ⋈ 0s
-  ≡⟨ **-zeroˡ (Δ Z) |> cong (_⋈ 0s) ⟩
+    0# ** Ξ Z ⋈ 0s ⊛ (Ξ ∘ S_)
+  ≡⟨ ⊛-zeroˡ (Ξ ∘ S_) |> cong (0# ** Ξ Z ⋈_) ⟩
+    0# ** Ξ Z ⋈ 0s
+  ≡⟨ **-zeroˡ (Ξ Z) |> cong (_⋈ 0s) ⟩
     0s ⋈ 0s
   ≡⟨ ⋈-identityʳ 0s ⟩
     0s
@@ -317,123 +373,123 @@ Linear maps preserve the 0-vector.
 Adding a row of 0s to the end of the matrix and then multiplying by a vector produces a vector with a 0 at the bottom.
 
 \begin{code}
-⊛-zeroʳ : ∀ {γ δ} (Γ : Context γ) (Δ : Matrix γ δ) {B}
+⊛-zeroʳ : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ) {B}
 
   ---------------------------------------------------
-  → Γ ⊛ (λ x → Δ x , 0# ∙ B) ≡ Γ ⊛ Δ , 0# ∙ B
+  → Γ ⊛ (λ x → Ξ x , 0# ∙ B) ≡ Γ ⊛ Ξ , 0# ∙ B
 
-⊛-zeroʳ {γ} {δ} ∅ Δ {B} = refl
-⊛-zeroʳ {γ} {δ} (Γ , π ∙ C) Δ {B} =
+⊛-zeroʳ {γ} {δ} ∅ Ξ {B} = refl
+⊛-zeroʳ {γ} {δ} (Γ , π ∙ C) Ξ {B} =
   begin
-    (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Δ (S x) , 0# ∙ B))
-  ≡⟨ ⊛-zeroʳ Γ (Δ ∘ S_) |> cong ((π ** Δ Z , π * 0# ∙ B) ⋈_) ⟩
-    (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Δ (S x)) , 0# ∙ B)
+    (π ** Ξ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Ξ (S x) , 0# ∙ B))
+  ≡⟨ ⊛-zeroʳ Γ (Ξ ∘ S_) |> cong ((π ** Ξ Z , π * 0# ∙ B) ⋈_) ⟩
+    (π ** Ξ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (λ x → Ξ (S x)) , 0# ∙ B)
   ≡⟨⟩
-    (π ** Δ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (Δ ∘ S_) , 0# ∙ B)
+    (π ** Ξ Z , π * 0# ∙ B) ⋈ (Γ ⊛ (Ξ ∘ S_) , 0# ∙ B)
   ≡⟨⟩
-    (π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) , (π * 0#) + 0# ∙ B
-  ≡⟨ +-identityʳ (π * 0#) |> cong ((π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) ,_∙ B) ⟩
-    (π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) , π * 0# ∙ B
-  ≡⟨ zeroʳ π |> cong ((π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) ,_∙ B) ⟩
-    (π ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_)) , 0# ∙ B
+    (π ** Ξ Z ⋈ Γ ⊛ (Ξ ∘ S_)) , (π * 0#) + 0# ∙ B
+  ≡⟨ +-identityʳ (π * 0#) |> cong ((π ** Ξ Z ⋈ Γ ⊛ (Ξ ∘ S_)) ,_∙ B) ⟩
+    (π ** Ξ Z ⋈ Γ ⊛ (Ξ ∘ S_)) , π * 0# ∙ B
+  ≡⟨ zeroʳ π |> cong ((π ** Ξ Z ⋈ Γ ⊛ (Ξ ∘ S_)) ,_∙ B) ⟩
+    (π ** Ξ Z ⋈ Γ ⊛ (Ξ ∘ S_)) , 0# ∙ B
   ∎
 \end{code}
 
 Linear maps preserve scaling.
 
 \begin{code}
-⊛-preserves-** : ∀ {γ δ} (Γ : Context γ) (Δ : Matrix γ δ) (π : Mult)
+⊛-preserves-** : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ) (π : Mult)
 
   -----------------------------------
-  → (π ** Γ) ⊛ Δ ≡ π ** (Γ ⊛ Δ)
+  → (π ** Γ) ⊛ Ξ ≡ π ** (Γ ⊛ Ξ)
 
-⊛-preserves-** {γ} {δ} ∅ Δ π =
+⊛-preserves-** {γ} {δ} ∅ Ξ π =
   begin
     0s
   ≡⟨ **-zeroʳ π ⟩
     π ** 0s
   ∎
 
-⊛-preserves-** {γ} {δ} (Γ , π′ ∙ A) Δ π =
+⊛-preserves-** {γ} {δ} (Γ , π′ ∙ A) Ξ π =
   begin
-    ((π * π′) ** Δ Z) ⋈ ((π ** Γ) ⊛ (Δ ∘ S_))
-  ≡⟨ ⊛-preserves-** Γ (Δ ∘ S_) π |> cong ((π * π′) ** Δ Z ⋈_) ⟩
-    ((π * π′) ** Δ Z) ⋈ (π ** (Γ ⊛ (Δ ∘ S_)))
-  ≡⟨ **-assoc (Δ Z) |> cong (_⋈ (π ** (Γ ⊛ (Δ ∘ S_)))) ⟩
-    (π ** (π′ ** Δ Z)) ⋈ (π ** (Γ ⊛ (Δ ∘ S_)))
-  ≡⟨ **-distribˡ-⋈ (π′ ** Δ Z) (Γ ⊛ (Δ ∘ S_)) π |> sym ⟩
-    π ** (π′ ** Δ Z ⋈ Γ ⊛ (Δ ∘ S_))
+    ((π * π′) ** Ξ Z) ⋈ ((π ** Γ) ⊛ (Ξ ∘ S_))
+  ≡⟨ ⊛-preserves-** Γ (Ξ ∘ S_) π |> cong ((π * π′) ** Ξ Z ⋈_) ⟩
+    ((π * π′) ** Ξ Z) ⋈ (π ** (Γ ⊛ (Ξ ∘ S_)))
+  ≡⟨ **-assoc (Ξ Z) |> cong (_⋈ (π ** (Γ ⊛ (Ξ ∘ S_)))) ⟩
+    (π ** (π′ ** Ξ Z)) ⋈ (π ** (Γ ⊛ (Ξ ∘ S_)))
+  ≡⟨ **-distribˡ-⋈ (π′ ** Ξ Z) (Γ ⊛ (Ξ ∘ S_)) π |> sym ⟩
+    π ** (π′ ** Ξ Z ⋈ Γ ⊛ (Ξ ∘ S_))
   ∎
 \end{code}
 
 Linear maps distribute over sums.
 
 \begin{code}
-⊛-distribʳ-⋈ : ∀ {γ} {δ} (Γ₁ Γ₂ : Context γ) (Δ : Matrix γ δ)
+⊛-distribʳ-⋈ : ∀ {γ} {δ} (Γ₁ Γ₂ : Context γ) (Ξ : Matrix γ δ)
 
   ----------------------------------
-  → (Γ₁ ⋈ Γ₂) ⊛ Δ ≡ Γ₁ ⊛ Δ ⋈ Γ₂ ⊛ Δ
+  → (Γ₁ ⋈ Γ₂) ⊛ Ξ ≡ Γ₁ ⊛ Ξ ⋈ Γ₂ ⊛ Ξ
 
-⊛-distribʳ-⋈ ∅ ∅ Δ =
+⊛-distribʳ-⋈ ∅ ∅ Ξ =
   begin
     0s
   ≡⟨ sym (⋈-identityʳ 0s) ⟩
     0s ⋈ 0s
   ∎
 
-⊛-distribʳ-⋈ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) Δ =
+⊛-distribʳ-⋈ (Γ₁ , π₁ ∙ A) (Γ₂ , π₂ ∙ .A) Ξ =
   begin
-    (π₁ + π₂) ** Δ Z ⋈ (Γ₁ ⋈ Γ₂) ⊛ (Δ ∘ S_)
-  ≡⟨ ⊛-distribʳ-⋈ Γ₁ Γ₂ (Δ ∘ S_) |> cong ((π₁ + π₂) ** Δ Z ⋈_) ⟩
-    (π₁ + π₂) ** Δ Z ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_))
-  ≡⟨ **-distribʳ-⋈ (Δ Z) π₁ π₂ |> cong (_⋈ Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
-    (π₁ ** Δ Z ⋈ π₂ ** Δ Z) ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ Γ₂ ⊛ (Δ ∘ S_))
-  ≡⟨ ⋈-assoc (π₁ ** Δ Z ⋈ π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (Γ₂ ⊛ (Δ ∘ S_)) |> sym ⟩
-    ((π₁ ** Δ Z ⋈ π₂ ** Δ Z) ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ ⋈-assoc (π₁ ** Δ Z) (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
-    (π₁ ** Δ Z ⋈ (π₂ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_))) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ ⋈-comm (π₂ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) |> cong ((_⋈ Γ₂ ⊛ (Δ ∘ S_)) ∘ (π₁ ** Δ Z ⋈_)) ⟩
-    (π₁ ** Δ Z ⋈ (Γ₁ ⊛ (Δ ∘ S_) ⋈ π₂ ** Δ Z)) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ ⋈-assoc (π₁ ** Δ Z) (Γ₁ ⊛ (Δ ∘ S_)) (π₂ ** Δ Z) |> sym ∘ cong (_⋈ Γ₂ ⊛ (Δ ∘ S_)) ⟩
-    ((π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ π₂ ** Δ Z) ⋈ Γ₂ ⊛ (Δ ∘ S_)
-  ≡⟨ ⋈-assoc (π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) (π₂ ** Δ Z) (Γ₂ ⊛ (Δ ∘ S_)) ⟩
-    (π₁ ** Δ Z ⋈ Γ₁ ⊛ (Δ ∘ S_)) ⋈ (π₂ ** Δ Z ⋈ Γ₂ ⊛ (Δ ∘ S_))
+    (π₁ + π₂) ** Ξ Z ⋈ (Γ₁ ⋈ Γ₂) ⊛ (Ξ ∘ S_)
+  ≡⟨ ⊛-distribʳ-⋈ Γ₁ Γ₂ (Ξ ∘ S_) |> cong ((π₁ + π₂) ** Ξ Z ⋈_) ⟩
+    (π₁ + π₂) ** Ξ Z ⋈ (Γ₁ ⊛ (Ξ ∘ S_) ⋈ Γ₂ ⊛ (Ξ ∘ S_))
+  ≡⟨ **-distribʳ-⋈ (Ξ Z) π₁ π₂ |> cong (_⋈ Γ₁ ⊛ (Ξ ∘ S_) ⋈ Γ₂ ⊛ (Ξ ∘ S_)) ⟩
+    (π₁ ** Ξ Z ⋈ π₂ ** Ξ Z) ⋈ (Γ₁ ⊛ (Ξ ∘ S_) ⋈ Γ₂ ⊛ (Ξ ∘ S_))
+  ≡⟨ ⋈-assoc (π₁ ** Ξ Z ⋈ π₂ ** Ξ Z) (Γ₁ ⊛ (Ξ ∘ S_)) (Γ₂ ⊛ (Ξ ∘ S_)) |> sym ⟩
+    ((π₁ ** Ξ Z ⋈ π₂ ** Ξ Z) ⋈ Γ₁ ⊛ (Ξ ∘ S_)) ⋈ Γ₂ ⊛ (Ξ ∘ S_)
+  ≡⟨ ⋈-assoc (π₁ ** Ξ Z) (π₂ ** Ξ Z) (Γ₁ ⊛ (Ξ ∘ S_)) |> cong (_⋈ Γ₂ ⊛ (Ξ ∘ S_)) ⟩
+    (π₁ ** Ξ Z ⋈ (π₂ ** Ξ Z ⋈ Γ₁ ⊛ (Ξ ∘ S_))) ⋈ Γ₂ ⊛ (Ξ ∘ S_)
+  ≡⟨ ⋈-comm (π₂ ** Ξ Z) (Γ₁ ⊛ (Ξ ∘ S_)) |> cong ((_⋈ Γ₂ ⊛ (Ξ ∘ S_)) ∘ (π₁ ** Ξ Z ⋈_)) ⟩
+    (π₁ ** Ξ Z ⋈ (Γ₁ ⊛ (Ξ ∘ S_) ⋈ π₂ ** Ξ Z)) ⋈ Γ₂ ⊛ (Ξ ∘ S_)
+  ≡⟨ ⋈-assoc (π₁ ** Ξ Z) (Γ₁ ⊛ (Ξ ∘ S_)) (π₂ ** Ξ Z) |> sym ∘ cong (_⋈ Γ₂ ⊛ (Ξ ∘ S_)) ⟩
+    ((π₁ ** Ξ Z ⋈ Γ₁ ⊛ (Ξ ∘ S_)) ⋈ π₂ ** Ξ Z) ⋈ Γ₂ ⊛ (Ξ ∘ S_)
+  ≡⟨ ⋈-assoc (π₁ ** Ξ Z ⋈ Γ₁ ⊛ (Ξ ∘ S_)) (π₂ ** Ξ Z) (Γ₂ ⊛ (Ξ ∘ S_)) ⟩
+    (π₁ ** Ξ Z ⋈ Γ₁ ⊛ (Ξ ∘ S_)) ⋈ (π₂ ** Ξ Z ⋈ Γ₂ ⊛ (Ξ ∘ S_))
   ∎
 \end{code}
 
 Multiplying by a standard basis vector projects out the corresponding column of the matrix.
 
 \begin{code}
-⊛-identityˡ : ∀ {γ δ} {A} (Δ : Matrix γ δ)
+⊛-identityˡ : ∀ {γ δ} {A} (Ξ : Matrix γ δ)
 
   → (x : γ ∋ A)
   -----------------------
-  → identity x ⊛ Δ ≡ Δ x
+  → identity x ⊛ Ξ ≡ Ξ x
 
-⊛-identityˡ {γ , A} {δ} {A} Δ Z =
+⊛-identityˡ {γ , A} {δ} {A} Ξ Z =
   begin
-    identity Z ⊛ Δ
+    identity Z ⊛ Ξ
   ≡⟨⟩
-    1# ** Δ Z ⋈ 0s ⊛ (Δ ∘ S_)
-  ≡⟨ ⊛-zeroˡ (Δ ∘ S_) |> cong ((1# ** Δ Z) ⋈_) ⟩
-    1# ** Δ Z ⋈ 0s
-  ≡⟨ ⋈-identityʳ (1# ** Δ Z) ⟩
-    1# ** Δ Z
-  ≡⟨ **-identityˡ (Δ Z) ⟩
-    Δ Z
+    1# ** Ξ Z ⋈ 0s ⊛ (Ξ ∘ S_)
+  ≡⟨ ⊛-zeroˡ (Ξ ∘ S_) |> cong ((1# ** Ξ Z) ⋈_) ⟩
+    1# ** Ξ Z ⋈ 0s
+  ≡⟨ ⋈-identityʳ (1# ** Ξ Z) ⟩
+    1# ** Ξ Z
+  ≡⟨ **-identityˡ (Ξ Z) ⟩
+    Ξ Z
   ∎
 
-⊛-identityˡ {γ , B} {δ} {A} Δ (S x) =
+⊛-identityˡ {γ , B} {δ} {A} Ξ (S x) =
   begin
-    identity (S x) ⊛ Δ
+    identity (S x) ⊛ Ξ
   ≡⟨⟩
-    0# ** Δ Z ⋈ identity x ⊛ (Δ ∘ S_)
-  ≡⟨ ⊛-identityˡ (Δ ∘ S_) x |> cong (0# ** Δ Z ⋈_) ⟩
-    0# ** Δ Z ⋈ Δ (S x)
-  ≡⟨ **-zeroˡ (Δ Z) |> cong (_⋈ Δ (S x)) ⟩
-    0s ⋈ Δ (S x)
-  ≡⟨ ⋈-identityˡ (Δ (S x)) ⟩
-    Δ (S x)
+    0# ** Ξ Z ⋈ identity x ⊛ (Ξ ∘ S_)
+  ≡⟨ ⊛-identityˡ (Ξ ∘ S_) x |> cong (0# ** Ξ Z ⋈_) ⟩
+    0# ** Ξ Z ⋈ Ξ (S x)
+  ≡⟨ **-zeroˡ (Ξ Z) |> cong (_⋈ Ξ (S x)) ⟩
+    0s ⋈ Ξ (S x)
+  ≡⟨ ⋈-identityˡ (Ξ (S x)) ⟩
+    Ξ (S x)
   ∎
 \end{code}
 
@@ -466,28 +522,8 @@ The standard basis vectors put together give the identity matrix.
   ∎
 \end{code}
 
-\begin{code}
-data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
 
-  `_  : ∀ {γ} {A}
-
-      → (x : γ ∋ A)
-        --------------
-      → identity x ⊢ A
-
-  ƛ_  : ∀ {γ} {Γ : Context γ} {A B} {π}
-
-      → Γ , π ∙ A ⊢ B
-        ----------------
-      → Γ ⊢ [ π ∙ A ]⊸ B
-
-  _·_ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π}
-
-      → Γ  ⊢ [ π ∙ A ]⊸ B
-      → Γ′ ⊢ A
-        ----------------
-      → Γ ⋈ π ** Γ′ ⊢ B
-\end{code}
+# Renaming
 
 \begin{code}
 ext : ∀ {γ δ}
@@ -501,44 +537,44 @@ ext ρ (S x)  =  S (ρ x)
 \end{code}
 
 \begin{code}
-subst-` : ∀ {γ δ} {A} {Δ : Matrix γ δ} (x : γ ∋ A) → _
-subst-` {γ} {δ} {A} {Δ} x =
+lem-` : ∀ {γ δ} {A} {Ξ : Matrix γ δ} (x : γ ∋ A) → _
+lem-` {γ} {δ} {A} {Ξ} x =
   begin
-    Δ x
-  ≡⟨ ⊛-identityˡ Δ x |> sym ⟩
-    identity x ⊛ Δ
+    Ξ x
+  ≡⟨ ⊛-identityˡ Ξ x |> sym ⟩
+    identity x ⊛ Ξ
   ∎
 \end{code}
 
 \begin{code}
-subst-ƛ : ∀ {γ δ} (Γ : Context γ) {A} {π} {Δ : Matrix γ δ} → _
-subst-ƛ {γ} {δ} Γ {A} {π} {Δ} =
+lem-ƛ : ∀ {γ δ} (Γ : Context γ) {A} {π} {Ξ : Matrix γ δ} → _
+lem-ƛ {γ} {δ} Γ {A} {π} {Ξ} =
   begin
-    (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → Δ x , 0# ∙ A))
-  ≡⟨ ⊛-zeroʳ Γ Δ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
-    (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ Δ , 0# ∙ A)
+    (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ (λ x → Ξ x , 0# ∙ A))
+  ≡⟨ ⊛-zeroʳ Γ Ξ |> cong ((π ** 0s , π * 1# ∙ A) ⋈_) ⟩
+    (π ** 0s , π * 1# ∙ A) ⋈ (Γ ⊛ Ξ , 0# ∙ A)
   ≡⟨⟩
-    π ** 0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-  ≡⟨ **-zeroʳ π |> cong ((_, (π * 1#) + 0# ∙ A) ∘ (_⋈ Γ ⊛ Δ)) ∘ sym ⟩
-    0s ⋈ Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-  ≡⟨ ⋈-identityˡ (Γ ⊛ Δ) |> cong (_, (π * 1#) + 0# ∙ A) ⟩
-    Γ ⊛ Δ , (π * 1#) + 0# ∙ A
-  ≡⟨ +-identityʳ (π * 1#) |> cong (Γ ⊛ Δ ,_∙ A) ⟩
-    Γ ⊛ Δ , π * 1# ∙ A
-  ≡⟨ *-identityʳ π |> cong (Γ ⊛ Δ ,_∙ A) ⟩
-    Γ ⊛ Δ , π ∙ A
+    π ** 0s ⋈ Γ ⊛ Ξ , (π * 1#) + 0# ∙ A
+  ≡⟨ **-zeroʳ π |> cong ((_, (π * 1#) + 0# ∙ A) ∘ (_⋈ Γ ⊛ Ξ)) ∘ sym ⟩
+    0s ⋈ Γ ⊛ Ξ , (π * 1#) + 0# ∙ A
+  ≡⟨ ⋈-identityˡ (Γ ⊛ Ξ) |> cong (_, (π * 1#) + 0# ∙ A) ⟩
+    Γ ⊛ Ξ , (π * 1#) + 0# ∙ A
+  ≡⟨ +-identityʳ (π * 1#) |> cong (Γ ⊛ Ξ ,_∙ A) ⟩
+    Γ ⊛ Ξ , π * 1# ∙ A
+  ≡⟨ *-identityʳ π |> cong (Γ ⊛ Ξ ,_∙ A) ⟩
+    Γ ⊛ Ξ , π ∙ A
   ∎
 \end{code}
 
 \begin{code}
-subst-· : ∀ {γ δ} (Γ Γ′ : Context γ) {π} {Δ : Matrix γ δ} → _
-subst-· {γ} {δ} Γ Γ′ {π} {Δ} =
+lem-· : ∀ {γ δ} (Γ Δ : Context γ) {π} {Ξ : Matrix γ δ} → _
+lem-· {γ} {δ} Γ Δ {π} {Ξ} =
   begin
-    Γ ⊛ Δ ⋈ π ** (Γ′ ⊛ Δ)
-  ≡⟨ ⊛-preserves-** Γ′ Δ π |> cong (Γ ⊛ Δ ⋈_) ∘ sym ⟩
-    Γ ⊛ Δ ⋈ (π ** Γ′) ⊛ Δ
-  ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Γ′) Δ |> sym ⟩
-    (Γ ⋈ π ** Γ′) ⊛ Δ
+    Γ ⊛ Ξ ⋈ π ** (Δ ⊛ Ξ)
+  ≡⟨ ⊛-preserves-** Δ Ξ π |> cong (Γ ⊛ Ξ ⋈_) ∘ sym ⟩
+    Γ ⊛ Ξ ⋈ (π ** Δ) ⊛ Ξ
+  ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Δ) Ξ |> sym ⟩
+    (Γ ⋈ π ** Δ) ⊛ Ξ
   ∎
 \end{code}
 
@@ -551,12 +587,15 @@ rename : ∀ {γ δ} {Γ : Context γ} {B}
   → Γ ⊛ (identity ∘ ρ) ⊢ B
 
 rename ρ (` x) =
-  Eq.subst (_⊢ _) (subst-` x) (` ρ x)
+  Eq.subst (_⊢ _) (lem-` x) (` ρ x)
 rename ρ (ƛ_  {Γ = Γ} N) =
-  ƛ (Eq.subst (_⊢ _) (subst-ƛ Γ) (rename (ext ρ) N))
-rename ρ (_·_ {Γ = Γ} {Γ′ = Γ′} L M) =
-  Eq.subst (_⊢ _) (subst-· Γ Γ′) (rename ρ L · rename ρ M)
+  ƛ (Eq.subst (_⊢ _) (lem-ƛ Γ) (rename (ext ρ) N))
+rename ρ (_·_ {Γ = Γ} {Δ = Δ} L M) =
+  Eq.subst (_⊢ _) (lem-· Γ Δ) (rename ρ L · rename ρ M)
 \end{code}
+
+
+# Simultaneous Substitution
 
 Extend a matrix as the identity matrix -- add a zero to the end of every row, and add a new row with a 1 and the rest 0s.
 
@@ -567,73 +606,83 @@ extm : ∀ {γ δ}
     --------------------------------
   → (∀ {B} → Matrix (γ , B) (δ , B))
 
-extm Δ {B} {A} Z     = identity Z
-extm Δ {B} {A} (S x) = Δ x , 0# ∙ B
+extm Ξ {B} {A} Z     = identity Z
+extm Ξ {B} {A} (S x) = Ξ x , 0# ∙ B
 \end{code}
 
 \begin{code}
-exts : ∀ {γ δ} {Δ : Matrix γ δ}
+exts : ∀ {γ δ} {Ξ : Matrix γ δ}
 
-  → (∀ {A}   → (x :     γ ∋ A) →      Δ x ⊢ A)
+  → (∀ {A}   → (x :     γ ∋ A) →      Ξ x ⊢ A)
     ------------------------------------------
-  → (∀ {A B} → (x : γ , B ∋ A) → extm Δ x ⊢ A)
+  → (∀ {A B} → (x : γ , B ∋ A) → extm Ξ x ⊢ A)
 
-exts {Δ = Δ} σ {A} {B} Z     = ` Z
-exts {Δ = Δ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
+exts {Ξ = Ξ} σ {A} {B} Z     = ` Z
+exts {Ξ = Ξ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
   where
     lem =
       begin
-        Δ x ⊛ (identity ∘ S_)
+        Ξ x ⊛ (identity ∘ S_)
      ≡⟨⟩
-       Δ x ⊛ (λ x → identity x , 0# ∙ B)
-     ≡⟨ ⊛-zeroʳ (Δ x) identity ⟩
-       (Δ x ⊛ identity) , 0# ∙ B
-     ≡⟨ ⊛-identityʳ (Δ x) |> cong (_, 0# ∙ B) ⟩
-       Δ x , 0# ∙ B
+       Ξ x ⊛ (λ x → identity x , 0# ∙ B)
+     ≡⟨ ⊛-zeroʳ (Ξ x) identity ⟩
+       (Ξ x ⊛ identity) , 0# ∙ B
+     ≡⟨ ⊛-identityʳ (Ξ x) |> cong (_, 0# ∙ B) ⟩
+       Ξ x , 0# ∙ B
      ∎
 \end{code}
 
 \begin{code}
-subst : ∀ {γ δ} {Γ : Context γ} {Δ : Matrix γ δ} {B}
+subst : ∀ {γ δ} {Γ : Context γ} {Ξ : Matrix γ δ} {B}
 
-  → (σ : ∀ {A} → (x : γ ∋ A) → Δ x ⊢ A)
+  → (σ : ∀ {A} → (x : γ ∋ A) → Ξ x ⊢ A)
   → Γ ⊢ B
     --------------------------------------
-  → Γ ⊛ Δ ⊢ B
+  → Γ ⊛ Ξ ⊢ B
 
-subst {Δ = Δ} σ (` x) =
-  Eq.subst (_⊢ _) (subst-` x) (σ x)
-subst {Δ = Δ} σ (ƛ_  {Γ = Γ} N) =
-  ƛ (Eq.subst (_⊢ _) (subst-ƛ Γ) (subst (exts σ) N))
-subst {Δ = Δ} σ (_·_ {Γ = Γ} {Γ′ = Γ′} L M) =
-  Eq.subst (_⊢ _) (subst-· Γ Γ′)(subst σ L · subst σ M)
+subst {Ξ = Ξ} σ (` x) =
+  Eq.subst (_⊢ _) (lem-` x) (σ x)
+subst {Ξ = Ξ} σ (ƛ_  {Γ = Γ} N) =
+  ƛ (Eq.subst (_⊢ _) (lem-ƛ Γ) (subst (exts σ) N))
+subst {Ξ = Ξ} σ (_·_ {Γ = Γ} {Δ = Δ} L M) =
+  Eq.subst (_⊢ _) (lem-· Γ Δ)(subst σ L · subst σ M)
+\end{code}
+
+
+# Single Substitution
+
+\begin{code}
+lem-[] : ∀ {γ} (Γ Δ : Context γ) {π} → _
+lem-[] {γ} Γ Δ {π} =
+  begin
+    π ** Δ ⋈ Γ ⊛ identity
+  ≡⟨ ⋈-comm (π ** Δ) (Γ ⊛ identity) ⟩
+    Γ ⊛ identity ⋈ π ** Δ
+  ≡⟨ ⊛-identityʳ Γ |> cong (_⋈ π ** Δ) ⟩
+    Γ ⋈ π ** Δ
+  ∎
 \end{code}
 
 \begin{code}
-_[_] : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π}
+_[_] : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
 
   → Γ , π ∙ B ⊢ A
-  → Γ′ ⊢ B
+  → Δ ⊢ B
     --------------
-  → Γ ⋈ π ** Γ′ ⊢ A
+  → Γ ⋈ π ** Δ ⊢ A
 
-_[_] {γ} {Γ} {Γ′} {A} {B} {π} N M = Eq.subst (_⊢ A) lem (subst σ N)
+_[_] {γ} {Γ} {Δ} {A} {B} {π} N M = Eq.subst (_⊢ A) (lem-[] Γ Δ) (subst σ N)
   where
-    Δ : Matrix (γ , B) γ
-    Δ Z     = Γ′
-    Δ (S x) = identity x
-    σ : ∀ {A} → (x : γ , B ∋ A) → Δ x ⊢ A
+    Ξ : Matrix (γ , B) γ
+    Ξ Z     = Δ
+    Ξ (S x) = identity x
+    σ : ∀ {A} → (x : γ , B ∋ A) → Ξ x ⊢ A
     σ Z     = M
     σ (S x) = ` x
-    lem =
-      begin
-        π ** Γ′ ⋈ Γ ⊛ identity
-      ≡⟨ ⋈-comm (π ** Γ′) (Γ ⊛ identity) ⟩
-        Γ ⊛ identity ⋈ π ** Γ′
-      ≡⟨ ⊛-identityʳ Γ |> cong (_⋈ π ** Γ′) ⟩
-        Γ ⋈ π ** Γ′
-      ∎
 \end{code}
+
+
+# Values
 
 \begin{code}
 data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
@@ -644,30 +693,35 @@ data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
     → Value (ƛ N)
 \end{code}
 
+# Reduction
+
 \begin{code}
 infix 2 _—→_
 
 data _—→_ : ∀ {γ} {Γ : Context γ} {A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  ξ-·₁ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π} {L L′ : Γ ⊢ [ π ∙ A ]⊸ B} {M : Γ′ ⊢ A}
+  ξ-·₁ : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {L L′ : Γ ⊢ [ π ∙ A ]⊸ B} {M : Δ ⊢ A}
 
     → L —→ L′
       -----------------
     → L · M —→ L′ · M
 
-  ξ-·₂ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π} {V : Γ ⊢ [ π ∙ A ]⊸ B} {M M′ : Γ′ ⊢ A}
+  ξ-·₂ : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {V : Γ ⊢ [ π ∙ A ]⊸ B} {M M′ : Δ ⊢ A}
 
     → Value V
     → M —→ M′
       --------------
     → V · M —→ V · M′
 
-  β-ƛ : ∀ {γ} {Γ Γ′ : Context γ} {A B} {π} {N : Γ , π ∙ A ⊢ B} {W : Γ′ ⊢ A}
+  β-ƛ : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {N : Γ , π ∙ A ⊢ B} {W : Δ ⊢ A}
 
     → Value W
       -------------------
     → (ƛ N) · W —→ N [ W ]
 \end{code}
+
+
+# Progress
 
 \begin{code}
 data Progress {γ} {Γ : Context γ} {A} (M : Γ ⊢ A) : Set where
