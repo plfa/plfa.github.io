@@ -19,7 +19,9 @@ open import Function using (_∘_; _|>_)
 open import Data.Fin using (Fin; suc; zero)
 open import Data.Vec using (Vec; _∷_; []; zipWith)
 open import Data.Vec.Properties using (zipWith-identityˡ)
-open import plfa.Quantitative _+_ _*_ 0 1 (IsCommutativeSemiring.isSemiring *-+-isCommutativeSemiring)
+-- Workaround for outdated agda-stdlib version
+*-+-isSemiring = IsCommutativeSemiring.isSemiring *-+-isCommutativeSemiring
+open import plfa.Quantitative _+_ _*_ 0 1 *-+-isSemiring
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong)
