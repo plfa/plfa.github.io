@@ -12,12 +12,13 @@ module plfa.Quantitative.LinAlg where
 # Imports
 
 \begin{code}
+open import Algebra.Structures using (IsCommutativeSemiring)
 open import Data.Nat using (ℕ; suc; zero; _+_; _*_)
-open import Data.Nat.Properties using (*-+-isSemiring)
+open import Data.Nat.Properties using (*-+-isCommutativeSemiring)
 open import Function using (_∘_)
 open import Data.Fin using (Fin; suc; zero)
 open import Data.Vec using (Vec; _∷_; [])
-open import plfa.Quantitative _+_ _*_ 0 1 *-+-isSemiring
+open import plfa.Quantitative _+_ _*_ 0 1 (IsCommutativeSemiring.isSemiring *-+-isCommutativeSemiring)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
