@@ -57,7 +57,6 @@ infix  9 _⊛_
 data Type : Set where
   [_∙_]⊸_ : Mult → Type → Type → Type
   `0      : Type
-  `1      : Type
 \end{code}
 
 
