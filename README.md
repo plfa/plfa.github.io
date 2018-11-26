@@ -7,78 +7,28 @@ permalink: /about/
 [![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
 
 
-Download the latest version of Programming Language Foundations in Agda from Github:
+## How to setup for making the exercises
+
+There are several tools you need to make the exercises:
+
+  - [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html)
+  - [Agda standard library](https://github.com/agda/agda-stdlib)
+
+For most of the tools, you can simply follow their respective build instructions.
+We aim to maintain compatibility with the latest release of Agda and the standard library, 
+but we maintain a copy of the standard library which is guaranteed to work with the book [here](https://github.com/plfa/agda-stdlib).
+
+You can get the latest version of Programming Language Foundations in Agda from Github, 
+either by cloning the repository, 
+or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archive/dev.zip):
 
 ``` bash
 git clone https://github.com/plfa/plfa.github.io ~/plfa.github.io
 ```
 
-Download the version of the Agda standard library that works with the textbook:
+We need to tell Agda where the standard library is located.
+The relevant instructions for doing so are located [here](https://agda.readthedocs.io/en/latest/tools/package-system.html).
 
-``` bash
-git clone https://github.com/plfa/agda-stdlib ~/agda-stdlib
-```
-
-We need to tell Agda to use the standard library, and the material
-from Programming Language Foundations in Agda by default. Create a
-directory called `.agda` inside of your home directory:
-
-``` bash
-mkdir ~/.agda
-```
-
-Agda expects `~/.agda` to contain two files:
-
-  1. `~/.agda/libraries`, a list of all the libraries we want Agda to
-     know about; and
-  2. `~/.agda/defaults`, a list of the libraries we want Agda to load
-     by default.
-
-Create `~/.agda/libraries`. It should contain:
-
-```
-~/agda-stdlib/standard-library.agda-lib
-~/plfa.github.io/plfa.agda-lib
-```
-
-Next, create `~/.agda/defaults` and edit its contents to be:
-
-```
-standard-library
-plfa
-```
-
-Finally, we need to enable the Emacs mode for Agda. To do so, run:
-
-``` bash
-agda-mode setup
-```
-
-If all goes well, when you open a file ending in `.agda` or `.lagda`
-with Emacs, the buffer for that file should have the Agda major mode
-enabled by default.
-
-## Fonts in Emacs
-
-It is reccommended that you add the following to the end of your emacs
-configuration file at `~/.emacs`, if you have the named fonts available.
-
-``` elisp
-;; Setting up Fonts for use with Agda/PLFA
-;;
-;; default to DejaVu Sans Mono, 
-(set-face-attribute 'default nil
-		    :family "DejaVu Sans Mono"
-		    :height 120
-		    :weight 'normal
-		    :width  'normal)
-
-;; fix \:
-(set-fontset-font "fontset-default"
-		  (cons (decode-char 'ucs #x2982)
-			(decode-char 'ucs #x2982))
-		  "STIX")
-```
 
 ## How to build the book
 
@@ -191,6 +141,29 @@ you can do the following:
   
 Now, error messages from Agda will appear next to your file, rather than
 squished beneath it.
+
+
+## Fonts in Emacs
+
+It is reccommended that you add the following to the end of your emacs
+configuration file at `~/.emacs`, if you have the named fonts available.
+
+``` elisp
+;; Setting up Fonts for use with Agda/PLFA
+;;
+;; default to DejaVu Sans Mono, 
+(set-face-attribute 'default nil
+		    :family "DejaVu Sans Mono"
+		    :height 120
+		    :weight 'normal
+		    :width  'normal)
+
+;; fix \:
+(set-fontset-font "fontset-default"
+		  (cons (decode-char 'ucs #x2982)
+			(decode-char 'ucs #x2982))
+		  "STIX")
+```
 
 
 ## Markdown
