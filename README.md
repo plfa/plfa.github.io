@@ -9,7 +9,7 @@ permalink: /about/
 
 # Getting Started with PLFA
 
-There are several tools you need to edit this book:
+There are several tools you need to work with PLFA:
 
   - [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html)
   - [Agda standard library](https://github.com/agda/agda-stdlib)
@@ -30,7 +30,7 @@ For this, you can follow the instructions [here](https://agda.readthedocs.io/en/
 
 # Building the book
 
-There are several tools you need to build a local copy of the book:
+There are several tools you need to build and host a local copy of the book:
 
   - [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html)
   - [Agda standard library](https://github.com/agda/agda-stdlib)
