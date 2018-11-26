@@ -7,7 +7,7 @@ permalink: /about/
 [![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
 
 
-## How to setup for making the exercises
+## Setup for editing the book
 
 There are several tools you need to make the exercises:
 
@@ -30,7 +30,7 @@ We need to tell Agda where the standard library is located.
 The relevant instructions for doing so are located [here](https://agda.readthedocs.io/en/latest/tools/package-system.html).
 
 
-## How to build the book
+## Setup for building the book
 
 There are several tools you need to build a local copy of the book:
 
