@@ -26,8 +26,8 @@ or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archi
 git clone https://github.com/plfa/plfa.github.io ~/plfa.github.io
 ```
 
-We need to tell Agda where the standard library is located.
-The relevant instructions for doing so are located [here](https://agda.readthedocs.io/en/latest/tools/package-system.html).
+Finally, we need to let Agda know where to find the standard library.
+For this, you can follow the instructions [here](https://agda.readthedocs.io/en/latest/tools/package-system.html#example-using-the-standard-library).
 
 
 ## Setup for building the book
