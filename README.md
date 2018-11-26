@@ -91,7 +91,7 @@ You can fix this error by installing a GNU compatible version of sed, e.g. using
 brew install gnu-sed --with-default-names
 ```
 
-## Updating to agda2html
+## Updating `agda2html`
 
 Sometimes we have to update agda2html. 
 To update your local copy, run the following commands from your clone of the
