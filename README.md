@@ -7,9 +7,9 @@ permalink: /about/
 [![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
 
 
-# Setup for editing the book
+# Getting Started with PLFA
 
-There are several tools you need to make the exercises:
+There are several tools you need to edit this book:
 
   - [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html)
   - [Agda standard library](https://github.com/agda/agda-stdlib)
@@ -28,7 +28,7 @@ Finally, we need to let Agda know where to find the standard library.
 For this, you can follow the instructions [here](https://agda.readthedocs.io/en/latest/tools/package-system.html#example-using-the-standard-library).
 
 
-# Setup for building the book
+# Building the book
 
 There are several tools you need to build a local copy of the book:
 
