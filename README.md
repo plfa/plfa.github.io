@@ -7,7 +7,7 @@ permalink: /about/
 [![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
 
 
-## Setup for editing the book
+# Setup for editing the book
 
 There are several tools you need to make the exercises:
 
@@ -22,15 +22,13 @@ You can get the latest version of Programming Language Foundations in Agda from 
 either by cloning the repository, 
 or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archive/dev.zip):
 
-``` bash
-git clone https://github.com/plfa/plfa.github.io ~/plfa.github.io
-```
+    git clone https://github.com/plfa/plfa.github.io 
 
 Finally, we need to let Agda know where to find the standard library.
 For this, you can follow the instructions [here](https://agda.readthedocs.io/en/latest/tools/package-system.html#example-using-the-standard-library).
 
 
-## Setup for building the book
+# Setup for building the book
 
 There are several tools you need to build a local copy of the book:
 
@@ -81,7 +79,7 @@ unzip, and from within the directory run
     bundle install
     bundle exec jekyll serve
 
-### GNU sed and macOS
+## GNU sed and macOS
 
 The version of sed that ships with macOS is not fully compatible with the GNU sed.
 Therefore, you may get errors such as:
@@ -93,7 +91,7 @@ You can fix this error by installing a GNU compatible version of sed, e.g. using
 brew install gnu-sed --with-default-names
 ```
 
-## Updates to agda2html
+## Updating to agda2html
 
 Sometimes we have to update agda2html. 
 To update your local copy, run the following commands from your clone of the
@@ -171,14 +169,6 @@ configuration file at `~/.emacs`, if you have the named fonts available.
 The book is written in [Kramdown Markdown](https://kramdown.gettalong.org/syntax.html).
 
 
-## Git
-
-Clone this repository with
-
-    git clone git@github.com:plfa/plfa.github.io.git
-
-
 ## Travis Continuous Integration
 
-Travis offers continuous integration, and automatically updates the website.
-View the build history and error messages at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
+You can view the build history of PLFA at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
