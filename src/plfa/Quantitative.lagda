@@ -57,7 +57,6 @@ infix  9 _⊛_
 data Type : Set where
   [_∙_]⊸_ : Mult → Type → Type → Type
   `0      : Type
-  `1      : Type
 \end{code}
 
 
@@ -752,3 +751,14 @@ progress M = go refl M
     ...        | step M-→M′ = step (ξ-·₂ V-ƛ M-→M′)
     ...        | done VM    = step (β-ƛ VM)
 \end{code}
+
+
+
+## Unicode
+
+This chapter uses the following unicode.
+
+    ω  U+03A9  GREEK CAPITAL LETTER OMEGA  (\omega, \Go)
+    ⊸  U+22B8  MULTIMAP  (\multimap, \-o)
+    ⋈  U+22C8  BOWTIE  (\bowtie)
+    ⊛  U+229B  CIRCLED ASTERISK OPERATOR  (\o*)

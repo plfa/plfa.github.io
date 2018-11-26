@@ -12,15 +12,20 @@ module plfa.Quantitative.LinAlg where
 # Imports
 
 \begin{code}
+open import Algebra.Structures using (IsCommutativeSemiring)
 open import Data.Nat using (ℕ; suc; zero; _+_; _*_)
-open import Data.Nat.Properties using (*-+-isSemiring)
-open import Function using (_∘_)
+open import Data.Nat.Properties using (*-+-isCommutativeSemiring)
+open import Function using (_∘_; _|>_)
 open import Data.Fin using (Fin; suc; zero)
-open import Data.Vec using (Vec; _∷_; [])
+open import Data.Vec using (Vec; _∷_; []; zipWith)
+open import Data.Vec.Properties using (zipWith-identityˡ)
+-- Workaround for outdated agda-stdlib version
+*-+-isSemiring = IsCommutativeSemiring.isSemiring *-+-isCommutativeSemiring
 open import plfa.Quantitative _+_ _*_ 0 1 *-+-isSemiring
 
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
+open Eq using (_≡_; refl; sym; cong)
+open Eq.≡-Reasoning
 \end{code}
 
 \begin{code}
@@ -59,20 +64,44 @@ Mat A n m = Vec (Vec A m) n
 # Decoration
 
 \begin{code}
-ℕ∥_∥ : ℕ → Precontext
-ℕ∥ zero  ∥ = ∅
-ℕ∥ suc n ∥ = ℕ∥ n ∥ , `0
+fromℕ : ℕ → Precontext
+fromℕ zero    = ∅
+fromℕ (suc n) = fromℕ n , `0
 \end{code}
 
 
-# Identities
+# Examples
 
 \begin{code}
-_ : ∥ identity {ℕ∥ 5 ∥} ∥Mat
+_ : ∥ 0s {γ = fromℕ 5} ∥Vec
+  ≡ (0 ∷ 0 ∷ 0 ∷ 0 ∷ 0 ∷ [])
+_ = refl
+\end{code}
+
+\begin{code}
+_ : ∥ identity {γ = fromℕ 5} ∥Mat
   ≡ (1 ∷ 0 ∷ 0 ∷ 0 ∷ 0 ∷ []) ∷
     (0 ∷ 1 ∷ 0 ∷ 0 ∷ 0 ∷ []) ∷
     (0 ∷ 0 ∷ 1 ∷ 0 ∷ 0 ∷ []) ∷
     (0 ∷ 0 ∷ 0 ∷ 1 ∷ 0 ∷ []) ∷
     (0 ∷ 0 ∷ 0 ∷ 0 ∷ 1 ∷ []) ∷ []
 _ = refl
+\end{code}
+
+
+# Identities
+
+\begin{code}
+lem-⋈-+ : ∀ {γ} (Γ Δ : Context γ)
+
+    --------------------------------------------
+  → ∥ Γ ⋈ Δ ∥Vec ≡ zipWith _+_ ∥ Γ ∥Vec ∥ Δ ∥Vec
+
+lem-⋈-+ ∅ ∅ = refl
+lem-⋈-+ (Γ , x ∙ A) (Δ , y ∙ .A) =
+  begin
+    x + y ∷ ∥ Γ ⋈ Δ ∥Vec
+  ≡⟨ lem-⋈-+ Γ Δ |> cong (x + y ∷_) ⟩
+    x + y ∷ zipWith _+_ ∥ Γ ∥Vec ∥ Δ ∥Vec
+  ∎
 \end{code}
