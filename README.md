@@ -112,7 +112,7 @@ The Makefile offers more than just these options:
 
     make                      (builds lagda->markdown)
     make build                (builds lagda->markdown and the website)
-    make build-incremental    (builds lagda->markdown and website incrementally)
+    make build-incremental    (builds lagda->markdown and the website incrementally)
     make test                 (checks all links are valid)
     make serve                (starts the server)
     make server-start         (starts the server in detached mode)
