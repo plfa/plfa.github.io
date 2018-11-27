@@ -17,7 +17,7 @@ open import Data.Nat using (ℕ; suc; zero; _+_; _*_)
 open import Data.Nat.Properties using (*-+-isCommutativeSemiring)
 open import Function using (_∘_; _|>_)
 open import Data.Fin using (Fin; suc; zero)
-open import Data.Vec using (Vec; _∷_; []; zipWith)
+open import Data.Vec using (Vec; _∷_; []; map; head; tail; zipWith)
 open import Data.Vec.Properties using (zipWith-identityˡ)
 -- Workaround for outdated agda-stdlib version
 *-+-isSemiring = IsCommutativeSemiring.isSemiring *-+-isCommutativeSemiring
@@ -92,16 +92,61 @@ _ = refl
 # Identities
 
 \begin{code}
-lem-⋈-+ : ∀ {γ} (Γ Δ : Context γ)
+**-is-map-* : ∀ {γ} (Γ : Context γ) x
+
+  → ∥ x ** Γ ∥Vec ≡ map (x *_) ∥ Γ ∥Vec
+
+**-is-map-* ∅ x = refl
+**-is-map-* (Γ , y ∙ A) x =
+  begin
+    x * y ∷ ∥ x ** Γ ∥Vec
+  ≡⟨ **-is-map-* Γ x |> cong (x * y ∷_) ⟩
+    x * y ∷ map (x *_) ∥ Γ ∥Vec
+  ∎
+\end{code}
+
+\begin{code}
+⋈-is-zipWith-+ : ∀ {γ} (Γ Δ : Context γ)
 
     --------------------------------------------
   → ∥ Γ ⋈ Δ ∥Vec ≡ zipWith _+_ ∥ Γ ∥Vec ∥ Δ ∥Vec
 
-lem-⋈-+ ∅ ∅ = refl
-lem-⋈-+ (Γ , x ∙ A) (Δ , y ∙ .A) =
+⋈-is-zipWith-+ ∅ ∅ = refl
+⋈-is-zipWith-+ (Γ , x ∙ A) (Δ , y ∙ .A) =
   begin
     x + y ∷ ∥ Γ ⋈ Δ ∥Vec
-  ≡⟨ lem-⋈-+ Γ Δ |> cong (x + y ∷_) ⟩
+    ≡⟨ ⋈-is-zipWith-+ Γ Δ |> cong (x + y ∷_) ⟩
     x + y ∷ zipWith _+_ ∥ Γ ∥Vec ∥ Δ ∥Vec
   ∎
+\end{code}
+
+Transposition.
+
+\begin{code}
+_ᵀ : ∀ {A} {m n} → Mat A m n → Mat A n m
+_ᵀ {A} {m} {zero}  xss = []
+_ᵀ {A} {m} {suc n} xss = map head xss ∷ (map tail xss ᵀ)
+\end{code}
+
+Dot product.
+
+\begin{code}
+_⊙_ : ∀ {n} (xs ys : Vec ℕ n) → ℕ
+[]       ⊙ []       = 0
+(x ∷ xs) ⊙ (y ∷ ys) = x * y + xs ⊙ ys
+\end{code}
+
+Matrix-vector multiplication.
+
+\begin{code}
+_⊛′_ : ∀ {m n} (xss : Mat ℕ n m) (ys : Vec ℕ m) → Vec ℕ n
+_⊛′_ {m} {zero}  xss ys = []
+_⊛′_ {m} {suc n} xss ys = head xss ⊙ ys ∷ (tail xss ⊛′ ys)
+\end{code}
+
+\begin{code}
+postulate
+  ⊛-is-⊛′ : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ) →
+
+    ∥ Γ ⊛ Ξ ∥Vec ≡ (∥ Ξ ∥Mat ᵀ) ⊛′ ∥ Γ ∥Vec
 \end{code}

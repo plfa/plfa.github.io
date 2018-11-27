@@ -31,6 +31,21 @@ open IsSemiring *-+-isSemiring hiding (refl; sym)
 
 # Introduction
 
+Identity and constant function.
+
+  - ``∅ , 1 ∙ "x" ⦂ A  ⊢ ` "x" ⦂ A``
+  - ``∅ ⊢ (ƛ "x" ⇒ ` "x") ⦂ [ 1 ∙ A ]⊸ A``
+  - ``∅ , 1 ∙ "x" ⦂ A , 0 ∙ "y" ⦂ B ⊢ ` "x" ⦂ A``
+  - ``∅ ⊢ (ƛ "x" ⇒ ƛ "y" ⇒ ` "x") ⦂ [ 1 ∙ A ]⊸ [ 0 ∙ B ]⊸ A``
+
+Some numbers.
+
+  - ``∅ , 1 ∙ "z" ⦂ ℕ , 0 ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ ` "z" ⦂ ℕ``
+  - ``∅ , 1 ∙ "z" ⦂ ℕ , 1 ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ (` "s" · ` "z") ⦂ ℕ``
+  - ``∅ , 1 ∙ "z" ⦂ ℕ , ω ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ (` "s" · (` "s" · ` "z")) ⦂ ℕ``
+
+Words.
+
     data Mult : Set where
       0# : Mult
       1# : Mult
@@ -55,8 +70,8 @@ infix  9 _⊛_
 
 \begin{code}
 data Type : Set where
-  [_∙_]⊸_ : Mult → Type → Type → Type
   `0      : Type
+  [_∙_]⊸_ : Mult → Type → Type → Type
 \end{code}
 
 
