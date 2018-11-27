@@ -146,7 +146,8 @@ _⊛′_ {m} {suc n} xss ys = head xss ⊙ ys ∷ (tail xss ⊛′ ys)
 
 \begin{code}
 postulate
-  ⊛-is-⊛′ : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ) →
+  ⊛-is-⊛′ : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ)
 
-    ∥ Γ ⊛ Ξ ∥Vec ≡ (∥ Ξ ∥Mat ᵀ) ⊛′ ∥ Γ ∥Vec
+      ---------------------------------------
+    → ∥ Γ ⊛ Ξ ∥Vec ≡ (∥ Ξ ∥Mat ᵀ) ⊛′ ∥ Γ ∥Vec
 \end{code}
