@@ -16,7 +16,7 @@ There are several tools you need to work with PLFA:
 
 For most of the tools, you can simply follow their respective build instructions.
 We aim to maintain compatibility with the latest release of Agda and the standard library, 
-but we maintain [a copy of the standard library which is guaranteed to work with the book]((https://github.com/plfa/agda-stdlib)).
+but we maintain [a copy of the standard library which is guaranteed to work with the book](https://github.com/plfa/agda-stdlib).
 
 You can get the latest version of Programming Language Foundations in Agda from Github, 
 either by cloning the repository, 
