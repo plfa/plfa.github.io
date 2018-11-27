@@ -25,7 +25,7 @@ out/%.md: tspl/%.lagda | out/
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
 serve:
-	ruby -S bundle exec jekyll serve
+	ruby -S bundle exec jekyll serve --incremental
 
 # start server
 server-start:
