@@ -393,3 +393,4 @@ import Relation.Nullary.Negation using (contraposition)
 This chapter uses the following unicode.
 
     ¬  U+00AC  NOT SIGN (\neg)
+    ≢  U+2262  NOT IDENTICAL TO (\==n)

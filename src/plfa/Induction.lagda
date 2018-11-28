@@ -874,7 +874,7 @@ import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 
 This chapter uses the following unicode.
 
-    ∀  U+2200  FOR ALL (\forall)
+    ∀  U+2200  FOR ALL (\forall, \all)
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
     ′  U+2032  PRIME (\')
     ″  U+2033  DOUBLE PRIME (\')

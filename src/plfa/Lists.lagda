@@ -20,7 +20,7 @@ examples of polymorphic types and higher-order functions.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
-open import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
+open import Data.Bool using (Bool; true; false; T; _∧_; _∨_; not)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ)
@@ -551,7 +551,7 @@ data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
 \end{code}
-Define a suitabve map operator over trees.
+Define a suitable map operator over trees.
 \begin{code}
 postulate
   map-Tree : ∀ {A B C D : Set}
@@ -790,8 +790,8 @@ are `All` and `Any`.
 Predicate `All P` holds if predicate `P` is satisfied by every element of a list.
 \begin{code}
 data All {A : Set} (P : A → Set) : List A → Set where
-  [] : All P []
-  _∷_ : {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
+  []  : All P []
+  _∷_ : ∀ {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
 \end{code}
 The type has two constructors, reusing the names of the same constructors for lists.
 The first asserts that `P` holds for every element of the empty list.
@@ -806,7 +806,7 @@ than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
 suc n`, for any `m` and `n`.
 \begin{code}
 _ : All (_≤ 2) [ 0 , 1 , 2 ]
-_ = z≤n ∷ (s≤s z≤n) ∷ (s≤s (s≤s z≤n)) ∷ []
+_ = z≤n ∷ s≤s z≤n ∷ s≤s (s≤s z≤n) ∷ []
 \end{code}
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
@@ -823,15 +823,15 @@ scope when the pattern is declared.  That's not the case here, since
 Predicate `Any P` holds if predicate `P` is satisfied by some element of a list.
 \begin{code}
 data Any {A : Set} (P : A → Set) : List A → Set where
-  here :  {x : A} {xs : List A} → P x → Any P (x ∷ xs)
-  there : {x : A} {xs : List A} → Any P xs → Any P (x ∷ xs)
+  here  : ∀ {x : A} {xs : List A} → P x → Any P (x ∷ xs)
+  there : ∀ {x : A} {xs : List A} → Any P xs → Any P (x ∷ xs)
 \end{code}
 The first constructor provides evidence that the head of the list
 satisfies `P`, while the second provides evidence that some element of
 the tail of the list satisfies `P`.  For example, we can define list
 membership as follows.
 \begin{code}
-infix 4 _∈_
+infix 4 _∈_ _∉_
 
 _∈_ : ∀ {A : Set} (x : A) (xs : List A) → Set
 x ∈ xs = Any (x ≡_) xs
@@ -1011,6 +1011,6 @@ ranges over a binary relation).
 This chapter uses the following unicode.
 
     ∷  U+2237  PROPORTION  (\::)
-    ⊗  U+2297  CIRCLED TIMES  (\otimes)
+    ⊗  U+2297  CIRCLED TIMES  (\otimes, \ox)
     ∈  U+2208  ELEMENT OF  (\in)
-    ∉  U+2209  NOT AN ELEMENT OF  (\inn)
+    ∉  U+2209  NOT AN ELEMENT OF  (\inn, \notin)

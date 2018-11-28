@@ -357,11 +357,11 @@ m ≤ᵇ′ n  =  ⌊ m ≤? n ⌋
 Further, if `D` is a value of type `Dec A`, then `T ⌊ D ⌋` is
 inhabited exactly when `A` is inhabited.
 \begin{code}
-toWitness : ∀ {A : Set} → {D : Dec A} → T ⌊ D ⌋ → A
+toWitness : ∀ {A : Set} {D : Dec A} → T ⌊ D ⌋ → A
 toWitness {A} {yes x} tt  =  x
 toWitness {A} {no ¬x} ()
 
-fromWitness : ∀ {A : Set} → {D : Dec A} → A → T ⌊ D ⌋
+fromWitness : ∀ {A : Set} {D : Dec A} → A → T ⌊ D ⌋
 fromWitness {A} {yes x} _  =  tt
 fromWitness {A} {no ¬x} x  =  ¬x x
 \end{code}
@@ -405,7 +405,7 @@ decide their conjunction.
 \begin{code}
 infixr 6 _×-dec_
 
-_×-dec_ : {A B : Set} → Dec A → Dec B → Dec (A × B)
+_×-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A × B)
 yes x ×-dec yes y = yes ⟨ x , y ⟩
 no ¬x ×-dec _     = no λ{ ⟨ x , y ⟩ → ¬x x }
 _     ×-dec no ¬y = no λ{ ⟨ x , y ⟩ → ¬y y }
@@ -442,7 +442,7 @@ decide their disjunction.
 \begin{code}
 infixr 5 _⊎-dec_
 
-_⊎-dec_ : {A B : Set} → Dec A → Dec B → Dec (A ⊎ B)
+_⊎-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⊎ B)
 yes x ⊎-dec _     = yes (inj₁ x)
 _     ⊎-dec yes y = yes (inj₂ y)
 no ¬x ⊎-dec no ¬y = no λ{ (inj₁ x) → ¬x x ; (inj₂ y) → ¬y y }
@@ -469,7 +469,7 @@ not false = true
 Correspondingly, given a decidable proposition, we
 can decide its negation.
 \begin{code}
-¬? : {A : Set} → Dec A → Dec (¬ A)
+¬? : ∀ {A : Set} → Dec A → Dec (¬ A)
 ¬? (yes x)  =  no (¬¬-intro x)
 ¬? (no ¬x)  =  yes ¬x
 \end{code}
@@ -499,7 +499,7 @@ the answer is the same.
 Correspondingly, given two decidable propositions,
 we can decide if the first implies the second.
 \begin{code}
-_→-dec_ : {A B : Set} → Dec A → Dec B → Dec (A → B)
+_→-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A → B)
 _     →-dec yes y  =  yes (λ _ → y)
 no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
 yes x →-dec no ¬y  =  no (λ f → ¬y (f x))
