@@ -43,7 +43,7 @@ development in Chapter _Stlc_ of _Software Foundations_
 (_Programming Language Foundations_).  We differ by
 representing contexts explicitly (as lists pairing identifiers with
 types) rather than as partial maps (which take identifiers to types),
-which will corresponds better to our subsequent development of DeBruin
+which will corresponds better to our subsequent development of DeBruijn
 notation. We also differ by taking natural numbers as the base type
 rather than booleans, allowing more sophisticated examples. In
 particular, we will be able to show (twice!) that two plus two is
