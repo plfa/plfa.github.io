@@ -360,7 +360,7 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 
 ## Existentials, Universals, and Negation
 
-Negation of an existential is isomorphic to universal
+Negation of an existential is isomorphic to the universal
 of a negation.  Considering that existentials are generalised
 disjunction and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation

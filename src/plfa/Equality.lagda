@@ -19,8 +19,8 @@ here we show how to define it as an inductive datatype.
 ## Imports
 
 This chapter has no imports.  Every chapter in this book, and nearly
-every module in the Agda, imports equality.  Since we define equality
-here, any import would create a conflict.
+every module in the Agda standard library, imports equality.
+Since we define equality here, any import would create a conflict.
 
 
 ## Equality
@@ -487,11 +487,11 @@ consists of a dot followed by an expression, and is used when other
 information forces the value matched to be equal to the value of the
 expression in the dot pattern.  In this case, the identification of
 `m + n` and `n + m` is justified by the subsequent matching of
-`+-comm m n` against `refl`.  One might think that the first clause
-is redundant as the information is inherent in the second clause, but
-in fact Agda is rather picky on this point: omitting the first clause
-or reversing the order of the clauses will cause Agda to report an
-error.  (Try it and see!)
+`+-comm m n` against `refl`.  One might think that the first clause is
+redundant as the information is inherent in the second clause, but in
+fact Agda is rather picky on this point: omitting the first clause or
+reversing the order of the clauses will cause Agda to report an error.
+(Try it and see!)
 
 In this case, we can avoid rewrite by simply applying the substitution
 function defined earlier.
@@ -596,7 +596,7 @@ of `P x` is also a proof of `P y`.
 This direction follows from substitution, which we showed earlier.
 
 In the reverse direction, given that for any `P` we can take a proof of `P x`
-to a proof of `P y` we need to show `x ≡ y`. 
+to a proof of `P y` we need to show `x ≡ y`.
 \begin{code}
 ≐-implies-≡ : ∀ {A : Set} {x y : A}
   → x ≐ y
@@ -706,12 +706,13 @@ collisions, as mentioned in the introduction.
 
 This chapter uses the following unicode.
 
-    ≡  U+2261  IDENTICAL TO (\==)
+    ≡  U+2261  IDENTICAL TO (\==, \equiv)
     ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
     ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
     ∎  U+220E  END OF PROOF (\qed)
     ≐  U+2250  APPROACHES THE LIMIT (\.=)
     ℓ  U+2113  SCRIPT SMALL L (\ell)
+    ⊔  U+2294  SQUARE CUP (\lub)
     ₀  U+2080  SUBSCRIPT ZERO (\_0)
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
