@@ -485,13 +485,13 @@ justifies that assertion with evidence of the appropriate equality.
 Note also the use of the _dot pattern_, `.(n + m)`.  A dot pattern
 consists of a dot followed by an expression, and is used when other
 information forces the value matched to be equal to the value of the
-expression in the dot pattern.  In this case, the identification of `m + n`
-and `n + m` is justified by the subsequent matching of `+-comm m n`
-against `refl`.  One might think that the first clause is redundant
-as the information is inherent in the second clause, but in fact Agda
-is rather picky on this point: omitting the first clause or reversing
-the order of the clauses will cause Agda to report an error.  (Try it
-and see!)
+expression in the dot pattern.  In this case, the identification of
+`m + n` and `n + m` is justified by the subsequent matching of
+`+-comm m n` against `refl`.  One might think that the first clause
+is redundant as the information is inherent in the second clause, but
+in fact Agda is rather picky on this point: omitting the first clause
+or reversing the order of the clauses will cause Agda to report an
+error.  (Try it and see!)
 
 In this case, we can avoid rewrite by simply applying the substitution
 function defined earlier.
