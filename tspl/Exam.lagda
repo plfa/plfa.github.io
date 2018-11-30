@@ -45,6 +45,8 @@ Remember to indent all code by two spaces.
 
 ### (b)
 
+### (c)
+
 
 ## Problem 2
 

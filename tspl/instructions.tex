@@ -20,47 +20,46 @@
 
 \begin{enumerate}
 
-\item  The exam lasts two hours.  
+\item
+  The exam lasts two hours.
 
-\item Place your student identity card face-up on the desk in
-  front of you.  The invigilator may come to check your identity, and
-  in this case you may be asked to allow the invigilator to briefly
-  use your computer.  The exam time has been calculated to allow time
-  for such interruptions.
+\item
+  Place your student identity card face-up on the desk in front of you.  The
+  invigilator may come to check your identity, and in this case you may be asked
+  to allow the invigilator to briefly use your computer.  The exam time has been
+  calculated to allow time for such interruptions.
 
-\item You may log into your computer as soon as you are ready to do so.
+\item
+  You may log into your computer as soon as you are ready to do so.
 
-\item To download the exam paper, open a terminal window and 
-type the following:
-\begin{center}
-   \texttt{getpapers}
-\end{center}
-This will create a subdirectory \texttt{tspl-pe} in your home directory,
-containing the following files.
-\begin{center}
-\begin{tabular}{ll}
-\texttt{tspl-pe/papers/exam.pdf}			& the exam \\
-\texttt{tspl-pe/papers/instructions.pdf}		& these instructions \\
-\texttt{tspl-pe/templates/Exam.lagda}			& exam template to edit \\
-\texttt{tspl-pe/original\_templates/Exam.lagda}		& backup of exam template
-\end{tabular}
-\end{center}
-The directories \texttt{tspl-pe/papers}, \texttt{tspl-pe/original\_templates} are
-read only, but you may read and write \texttt{tspl-pe/templates}.
+\item
+  To download the exam paper, open a terminal window and type:
+  \begin{center}
+    \texttt{getpapers}
+  \end{center}
+  This will create a subdirectory \texttt{tspl-mpe} in your home directory,
+  containing the following files.
+  \begin{center}
+    \begin{tabular}{ll}
+      \texttt{tspl-mpe/papers/exam.pdf}                & the exam \\
+      \texttt{tspl-mpe/papers/instructions.pdf}        & these instructions \\
+      \texttt{tspl-mpe/templates/Exam.lagda}           & exam template to edit \\
+      \texttt{tspl-mpe/original\_templates/Exam.lagda} & backup of exam template
+    \end{tabular}
+  \end{center}
+  The directories \texttt{tspl-mpe/papers}, \texttt{tspl-mpe/original\_templates}
+  are read only, but you may read and write \texttt{tspl-mpe/templates}.
 
-\item The textbook \emph{Programming Language Foundations in Agda} is available
-by pointing your browser at:
-\begin{center}
-\texttt{file:///group/examreadonly/full/plfa/}
-\end{center}
-\item The Agda standard library is available by pointing your browser at:
-\begin{center}
-\texttt{file:///group/examreadonly/full/agda-stdlib/}
-\end{center}
-\item The Agda user manual is available by pointing your browser at:
-\begin{center}
-\texttt{file:///group/examreadonly/full/agda-docs/}
-\end{center}
+\item
+  To setup the Agda environment, open a terminal window and type:
+  and type:
+  \begin{center}
+    \texttt{tspl-setup}
+  \end{center}
+  This will also open a browser, with three tabs which contain the textbook
+  \emph{Programming Language Foundations in Agda}, the documentation for the
+  Agda standard library, and the documentation for Agda are available.
+
 {\it (Note that internet access has been disabled.)}
 
 \begin{center}
@@ -72,13 +71,13 @@ by pointing your browser at:
 
 \item When the start of the exam is announced, open the exam paper
 \begin{center}
-  \texttt{tspl-pe/papers/exam.pdf}
+  \texttt{tspl-mpe/papers/exam.pdf}
 \end{center}
 with the standard PDF viewer.
 
 \item Change to the template directory
 \begin{center}
-  \texttt{cd tspl-pe/templates}
+  \texttt{cd tspl-mpe/templates}
 \end{center}
 and edit the file
 \begin{center}
