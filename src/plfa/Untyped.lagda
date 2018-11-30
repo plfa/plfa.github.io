@@ -169,7 +169,7 @@ fixpoints into this calculus.
 
 ## Writing variables as numerals
 
-As before, we can convert a natural to the corresponding de Bruing
+As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
 every variable has the same type.
 \begin{code}
