@@ -244,7 +244,7 @@ As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals using the Haskell
 type for arbitrary-precision integers.  Representing the natural _n_
 with `zero` and `suc` requires space proportional to _n_, whereas
-representing it as an arbitary-precision integer in Haskell only
+representing it as an arbitrary-precision integer in Haskell only
 requires space proportional to the logarithm of _n_.
 
 
