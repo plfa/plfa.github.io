@@ -57,7 +57,7 @@ on names for some of the most common properties.
 
 Addition has identity `0` and multiplication has identity `1`;
 addition and multiplication are both associative and commutative;
-and multiplications distributes over addition.
+and multiplication distributes over addition.
 
 If you ever bump into an operator at a party, you now know how
 to make small talk, by asking whether it has a unit and is
