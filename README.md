@@ -145,7 +145,7 @@ squished beneath it.
 
 ## Fonts in Emacs
 
-It is reccommended that you add the following to the end of your emacs
+It is recommended that you add the following to the end of your emacs
 configuration file at `~/.emacs`, if you have the named fonts available.
 
 ``` elisp
