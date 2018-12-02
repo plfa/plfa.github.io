@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Negation: Negation, with intuitionistic and classical logic | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Negation: Negation, with intuitionistic and classical logic" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/Negation/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/Negation/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/Negation/","headline":"Negation: Negation, with intuitionistic and classical logic","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Negation: Negation, with intuitionistic and classical logic</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/Connectives/">Prev</a>
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Negation.lagda">Source</a>
+    
+    
+    &bullet;
+    <a alt="Next chapter" href="/Quantifiers/">Next</a>
+    
+</p>
+
+
+  <div class="post-content">
+    <pre class="Agda"><a id="189" class="Keyword">module</a> <a id="196" href="/Negation/" class="Module">plfa.Negation</a> <a id="210" class="Keyword">where</a></pre>
+
+<p>This chapter introduces negation, and discusses intuitionistic
+and classical logic.</p>
+
+<h2 id="imports">Imports</h2>
+
+<pre class="Agda"><a id="338" class="Keyword">open</a> <a id="343" class="Keyword">import</a> <a id="350" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="388" class="Keyword">using</a> <a id="394" class="Symbol">(</a><a id="395" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">_≡_</a><a id="398" class="Symbol">;</a> <a id="400" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="404" class="Symbol">)</a>
+<a id="406" class="Keyword">open</a> <a id="411" class="Keyword">import</a> <a id="418" href="https://agda.github.io/agda-stdlib/Data.Nat.html" class="Module">Data.Nat</a> <a id="427" class="Keyword">using</a> <a id="433" class="Symbol">(</a><a id="434" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="435" class="Symbol">;</a> <a id="437" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a><a id="441" class="Symbol">;</a> <a id="443" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a><a id="446" class="Symbol">)</a>
+<a id="448" class="Keyword">open</a> <a id="453" class="Keyword">import</a> <a id="460" href="https://agda.github.io/agda-stdlib/Data.Empty.html" class="Module">Data.Empty</a> <a id="471" class="Keyword">using</a> <a id="477" class="Symbol">(</a><a id="478" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a><a id="479" class="Symbol">;</a> <a id="481" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a><a id="487" class="Symbol">)</a>
+<a id="489" class="Keyword">open</a> <a id="494" class="Keyword">import</a> <a id="501" href="https://agda.github.io/agda-stdlib/Data.Sum.html" class="Module">Data.Sum</a> <a id="510" class="Keyword">using</a> <a id="516" class="Symbol">(</a><a id="517" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#419" class="Datatype Operator">_⊎_</a><a id="520" class="Symbol">;</a> <a id="522" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#475" class="InductiveConstructor">inj₁</a><a id="526" class="Symbol">;</a> <a id="528" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#500" class="InductiveConstructor">inj₂</a><a id="532" class="Symbol">)</a>
+<a id="534" class="Keyword">open</a> <a id="539" class="Keyword">import</a> <a id="546" href="https://agda.github.io/agda-stdlib/Data.Product.html" class="Module">Data.Product</a> <a id="559" class="Keyword">using</a> <a id="565" class="Symbol">(</a><a id="566" href="https://agda.github.io/agda-stdlib/Data.Product.html#1353" class="Function Operator">_×_</a><a id="569" class="Symbol">;</a> <a id="571" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#155" class="Field">proj₁</a><a id="576" class="Symbol">;</a> <a id="578" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#167" class="Field">proj₂</a><a id="583" class="Symbol">)</a> <a id="585" class="Keyword">renaming</a> <a id="594" class="Symbol">(</a><a id="595" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">_,_</a> <a id="599" class="Symbol">to</a> <a id="602" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="607" class="Symbol">)</a>
+<a id="609" class="Keyword">open</a> <a id="614" class="Keyword">import</a> <a id="621" href="https://agda.github.io/agda-stdlib/Function.html" class="Module">Function</a> <a id="630" class="Keyword">using</a> <a id="636" class="Symbol">(</a><a id="637" href="https://agda.github.io/agda-stdlib/Function.html#769" class="Function Operator">_∘_</a><a id="640" class="Symbol">)</a>
+<a id="642" class="Keyword">open</a> <a id="647" class="Keyword">import</a> <a id="654" href="/Isomorphism/" class="Module">plfa.Isomorphism</a> <a id="671" class="Keyword">using</a> <a id="677" class="Symbol">(</a><a id="678" href="/Isomorphism/#4104" class="Record Operator">_≃_</a><a id="681" class="Symbol">;</a> <a id="683" href="/Isomorphism/#6802" class="Function">≃-sym</a><a id="688" class="Symbol">;</a> <a id="690" href="/Isomorphism/#7143" class="Function">≃-trans</a><a id="697" class="Symbol">;</a> <a id="699" href="/Isomorphism/#9013" class="Record Operator">_≲_</a><a id="702" class="Symbol">;</a> <a id="704" href="/Isomorphism/#2748" class="Postulate">extensionality</a><a id="718" class="Symbol">)</a></pre>
+
+<h2 id="negation">Negation</h2>
+
+<p>Given a proposition <code class="highlighter-rouge">A</code>, the negation <code class="highlighter-rouge">¬ A</code> holds if <code class="highlighter-rouge">A</code> cannot hold.
+We formalise this idea by declaring negation to be the same
+as implication of false.</p>
+<pre class="Agda"><a id="¬_"></a><a id="914" href="/Negation/#914" class="Function Operator">¬_</a> <a id="917" class="Symbol">:</a> <a id="919" class="PrimitiveType">Set</a> <a id="923" class="Symbol">→</a> <a id="925" class="PrimitiveType">Set</a>
+<a id="929" href="/Negation/#914" class="Function Operator">¬</a> <a id="931" href="/Negation/#931" class="Bound">A</a> <a id="933" class="Symbol">=</a> <a id="935" href="/Negation/#931" class="Bound">A</a> <a id="937" class="Symbol">→</a> <a id="939" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a></pre>
+<p>This is a form of <em>proof by contradiction</em>: if assuming <code class="highlighter-rouge">A</code> leads
+to the conclusion <code class="highlighter-rouge">⊥</code> (a contradiction), then we must have <code class="highlighter-rouge">¬ A</code>.</p>
+
+<p>Evidence that <code class="highlighter-rouge">¬ A</code> holds is of the form</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>λ{ x → N }
+</code></pre></div></div>
+
+<p>where <code class="highlighter-rouge">N</code> is a term of type <code class="highlighter-rouge">⊥</code> containing as a free variable <code class="highlighter-rouge">x</code> of type <code class="highlighter-rouge">A</code>.
+In other words, evidence that <code class="highlighter-rouge">¬ A</code> holds is a function that converts evidence
+that <code class="highlighter-rouge">A</code> holds into evidence that <code class="highlighter-rouge">⊥</code> holds.</p>
+
+<p>Given evidence that both <code class="highlighter-rouge">¬ A</code> and <code class="highlighter-rouge">A</code> hold, we can conclude that <code class="highlighter-rouge">⊥</code> holds.
+In other words, if both <code class="highlighter-rouge">¬ A</code> and <code class="highlighter-rouge">A</code> hold, then we have a contradiction.</p>
+<pre class="Agda"><a id="¬-elim"></a><a id="1511" href="/Negation/#1511" class="Function">¬-elim</a> <a id="1518" class="Symbol">:</a> <a id="1520" class="Symbol">∀</a> <a id="1522" class="Symbol">{</a><a id="1523" href="/Negation/#1523" class="Bound">A</a> <a id="1525" class="Symbol">:</a> <a id="1527" class="PrimitiveType">Set</a><a id="1530" class="Symbol">}</a>
+  <a id="1534" class="Symbol">→</a> <a id="1536" href="/Negation/#914" class="Function Operator">¬</a> <a id="1538" href="/Negation/#1523" class="Bound">A</a>
+  <a id="1542" class="Symbol">→</a> <a id="1544" href="/Negation/#1523" class="Bound">A</a>
+    <a id="1550" class="Comment">---</a>
+  <a id="1556" class="Symbol">→</a> <a id="1558" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a>
+<a id="1560" href="/Negation/#1511" class="Function">¬-elim</a> <a id="1567" href="/Negation/#1567" class="Bound">¬x</a> <a id="1570" href="/Negation/#1570" class="Bound">x</a> <a id="1572" class="Symbol">=</a> <a id="1574" href="/Negation/#1567" class="Bound">¬x</a> <a id="1577" href="/Negation/#1570" class="Bound">x</a></pre>
+<p>Here we write <code class="highlighter-rouge">¬x</code> for evidence of <code class="highlighter-rouge">¬ A</code> and <code class="highlighter-rouge">x</code> for evidence of <code class="highlighter-rouge">A</code>.  This
+means that <code class="highlighter-rouge">¬x</code> must be a function of type <code class="highlighter-rouge">A → ⊥</code>, and hence the application
+<code class="highlighter-rouge">¬x x</code> must be of type <code class="highlighter-rouge">⊥</code>.  Note that this rule is just a special case of <code class="highlighter-rouge">→-elim</code>.</p>
+
+<p>We set the precedence of negation so that it binds more tightly
+than disjunction and conjunction, but less tightly than anything else.</p>
+<pre class="Agda"><a id="1978" class="Keyword">infix</a> <a id="1984" class="Number">3</a> <a id="1986" href="/Negation/#914" class="Function Operator">¬_</a></pre>
+<p>Thus, <code class="highlighter-rouge">¬ A × ¬ B</code> parses as <code class="highlighter-rouge">(¬ A) × (¬ B)</code> and <code class="highlighter-rouge">¬ m ≡ n</code> as <code class="highlighter-rouge">¬ (m ≡ n)</code>.</p>
+
+<p>In <em>classical</em> logic, we have that <code class="highlighter-rouge">A</code> is equivalent to <code class="highlighter-rouge">¬ ¬ A</code>.
+As we discuss below, in Agda we use <em>intuitionistic</em> logic, where
+we have only half of this equivalence, namely that <code class="highlighter-rouge">A</code> implies <code class="highlighter-rouge">¬ ¬ A</code>.</p>
+<pre class="Agda"><a id="¬¬-intro"></a><a id="2291" href="/Negation/#2291" class="Function">¬¬-intro</a> <a id="2300" class="Symbol">:</a> <a id="2302" class="Symbol">∀</a> <a id="2304" class="Symbol">{</a><a id="2305" href="/Negation/#2305" class="Bound">A</a> <a id="2307" class="Symbol">:</a> <a id="2309" class="PrimitiveType">Set</a><a id="2312" class="Symbol">}</a>
+  <a id="2316" class="Symbol">→</a> <a id="2318" href="/Negation/#2305" class="Bound">A</a>
+    <a id="2324" class="Comment">-----</a>
+  <a id="2332" class="Symbol">→</a> <a id="2334" href="/Negation/#914" class="Function Operator">¬</a> <a id="2336" href="/Negation/#914" class="Function Operator">¬</a> <a id="2338" href="/Negation/#2305" class="Bound">A</a>
+<a id="2340" href="/Negation/#2291" class="Function">¬¬-intro</a> <a id="2349" href="/Negation/#2349" class="Bound">x</a>  <a id="2352" class="Symbol">=</a>  <a id="2355" class="Symbol">λ{</a><a id="2357" href="/Negation/#2357" class="Bound">¬x</a> <a id="2360" class="Symbol">→</a> <a id="2362" href="/Negation/#2357" class="Bound">¬x</a> <a id="2365" href="/Negation/#2349" class="Bound">x</a><a id="2366" class="Symbol">}</a></pre>
+<p>Let <code class="highlighter-rouge">x</code> be evidence of <code class="highlighter-rouge">A</code>. We show that assuming
+<code class="highlighter-rouge">¬ A</code> leads to a contradiction, and hence <code class="highlighter-rouge">¬ ¬ A</code> must hold.
+Let <code class="highlighter-rouge">¬x</code> be evidence of <code class="highlighter-rouge">¬ A</code>.  Then from <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">¬ A</code>
+we have a contradiction, evidenced by <code class="highlighter-rouge">¬x x</code>.  Hence, we have
+shown <code class="highlighter-rouge">¬ ¬ A</code>.</p>
+
+<p>An equivalent way to write the above is as follows.</p>
+<pre class="Agda"><a id="¬¬-intro′"></a><a id="2689" href="/Negation/#2689" class="Function">¬¬-intro′</a> <a id="2699" class="Symbol">:</a> <a id="2701" class="Symbol">∀</a> <a id="2703" class="Symbol">{</a><a id="2704" href="/Negation/#2704" class="Bound">A</a> <a id="2706" class="Symbol">:</a> <a id="2708" class="PrimitiveType">Set</a><a id="2711" class="Symbol">}</a>
+  <a id="2715" class="Symbol">→</a> <a id="2717" href="/Negation/#2704" class="Bound">A</a>
+    <a id="2723" class="Comment">-----</a>
+  <a id="2731" class="Symbol">→</a> <a id="2733" href="/Negation/#914" class="Function Operator">¬</a> <a id="2735" href="/Negation/#914" class="Function Operator">¬</a> <a id="2737" href="/Negation/#2704" class="Bound">A</a>
+<a id="2739" href="/Negation/#2689" class="Function">¬¬-intro′</a> <a id="2749" href="/Negation/#2749" class="Bound">x</a> <a id="2751" href="/Negation/#2751" class="Bound">¬x</a> <a id="2754" class="Symbol">=</a> <a id="2756" href="/Negation/#2751" class="Bound">¬x</a> <a id="2759" href="/Negation/#2749" class="Bound">x</a></pre>
+<p>Here we have simply converted the argument of the lambda term
+to an additional argument of the function.  We will usually
+use this latter style, as it is more compact.</p>
+
+<p>We cannot show that <code class="highlighter-rouge">¬ ¬ A</code> implies <code class="highlighter-rouge">A</code>, but we can show that
+<code class="highlighter-rouge">¬ ¬ ¬ A</code> implies <code class="highlighter-rouge">¬ A</code>.</p>
+<pre class="Agda"><a id="¬¬¬-elim"></a><a id="3041" href="/Negation/#3041" class="Function">¬¬¬-elim</a> <a id="3050" class="Symbol">:</a> <a id="3052" class="Symbol">∀</a> <a id="3054" class="Symbol">{</a><a id="3055" href="/Negation/#3055" class="Bound">A</a> <a id="3057" class="Symbol">:</a> <a id="3059" class="PrimitiveType">Set</a><a id="3062" class="Symbol">}</a>
+  <a id="3066" class="Symbol">→</a> <a id="3068" href="/Negation/#914" class="Function Operator">¬</a> <a id="3070" href="/Negation/#914" class="Function Operator">¬</a> <a id="3072" href="/Negation/#914" class="Function Operator">¬</a> <a id="3074" href="/Negation/#3055" class="Bound">A</a>
+    <a id="3080" class="Comment">-------</a>
+  <a id="3090" class="Symbol">→</a> <a id="3092" href="/Negation/#914" class="Function Operator">¬</a> <a id="3094" href="/Negation/#3055" class="Bound">A</a>
+<a id="3096" href="/Negation/#3041" class="Function">¬¬¬-elim</a> <a id="3105" href="/Negation/#3105" class="Bound">¬¬¬x</a>  <a id="3111" class="Symbol">=</a>  <a id="3114" class="Symbol">λ</a> <a id="3116" href="/Negation/#3116" class="Bound">x</a> <a id="3118" class="Symbol">→</a> <a id="3120" href="/Negation/#3105" class="Bound">¬¬¬x</a> <a id="3125" class="Symbol">(</a><a id="3126" href="/Negation/#2291" class="Function">¬¬-intro</a> <a id="3135" href="/Negation/#3116" class="Bound">x</a><a id="3136" class="Symbol">)</a>
+<a id="3138" class="Comment">-- ¬¬¬-elim ¬¬¬x x = ¬¬¬x (¬¬-intro x)</a></pre>
+<p>Let <code class="highlighter-rouge">¬¬¬x</code> be evidence of <code class="highlighter-rouge">¬ ¬ ¬ A</code>. We will show that assuming
+<code class="highlighter-rouge">A</code> leads to a contradiction, and hence <code class="highlighter-rouge">¬ A</code> must hold.
+Let <code class="highlighter-rouge">x</code> be evidence of <code class="highlighter-rouge">A</code>. Then by the previous result, we
+can conclude <code class="highlighter-rouge">¬ ¬ A</code>, evidenced by <code class="highlighter-rouge">¬¬-intro x</code>.  Then from
+<code class="highlighter-rouge">¬ ¬ ¬ A</code> and <code class="highlighter-rouge">¬ ¬ A</code> we have a contradiction, evidenced by
+<code class="highlighter-rouge">¬¬¬x (¬¬-intro x)</code>.  Hence we have shown <code class="highlighter-rouge">¬ A</code>.</p>
+
+<p>Another law of logic is <em>contraposition</em>,
+stating that if <code class="highlighter-rouge">A</code> implies <code class="highlighter-rouge">B</code>, then <code class="highlighter-rouge">¬ B</code> implies <code class="highlighter-rouge">¬ A</code>.</p>
+<pre class="Agda"><a id="contraposition"></a><a id="3653" href="/Negation/#3653" class="Function">contraposition</a> <a id="3668" class="Symbol">:</a> <a id="3670" class="Symbol">∀</a> <a id="3672" class="Symbol">{</a><a id="3673" href="/Negation/#3673" class="Bound">A</a> <a id="3675" href="/Negation/#3675" class="Bound">B</a> <a id="3677" class="Symbol">:</a> <a id="3679" class="PrimitiveType">Set</a><a id="3682" class="Symbol">}</a>
+  <a id="3686" class="Symbol">→</a> <a id="3688" class="Symbol">(</a><a id="3689" href="/Negation/#3673" class="Bound">A</a> <a id="3691" class="Symbol">→</a> <a id="3693" href="/Negation/#3675" class="Bound">B</a><a id="3694" class="Symbol">)</a>
+    <a id="3700" class="Comment">-----------</a>
+  <a id="3714" class="Symbol">→</a> <a id="3716" class="Symbol">(</a><a id="3717" href="/Negation/#914" class="Function Operator">¬</a> <a id="3719" href="/Negation/#3675" class="Bound">B</a> <a id="3721" class="Symbol">→</a> <a id="3723" href="/Negation/#914" class="Function Operator">¬</a> <a id="3725" href="/Negation/#3673" class="Bound">A</a><a id="3726" class="Symbol">)</a>
+<a id="3728" href="/Negation/#3653" class="Function">contraposition</a> <a id="3743" href="/Negation/#3743" class="Bound">f</a> <a id="3745" href="/Negation/#3745" class="Bound">¬y</a> <a id="3748" href="/Negation/#3748" class="Bound">x</a> <a id="3750" class="Symbol">=</a> <a id="3752" href="/Negation/#3745" class="Bound">¬y</a> <a id="3755" class="Symbol">(</a><a id="3756" href="/Negation/#3743" class="Bound">f</a> <a id="3758" href="/Negation/#3748" class="Bound">x</a><a id="3759" class="Symbol">)</a></pre>
+<p>Let <code class="highlighter-rouge">f</code> be evidence of <code class="highlighter-rouge">A → B</code> and let <code class="highlighter-rouge">¬y</code> be evidence of <code class="highlighter-rouge">¬ B</code>.  We
+will show that assuming <code class="highlighter-rouge">A</code> leads to a contradiction, and hence <code class="highlighter-rouge">¬ A</code>
+must hold. Let <code class="highlighter-rouge">x</code> be evidence of <code class="highlighter-rouge">A</code>.  Then from <code class="highlighter-rouge">A → B</code> and <code class="highlighter-rouge">A</code> we
+may conclude <code class="highlighter-rouge">B</code>, evidenced by <code class="highlighter-rouge">f x</code>, and from <code class="highlighter-rouge">B</code> and <code class="highlighter-rouge">¬ B</code> we may
+conclude <code class="highlighter-rouge">⊥</code>, evidenced by <code class="highlighter-rouge">¬y (f x)</code>.  Hence, we have shown <code class="highlighter-rouge">¬ A</code>.</p>
+
+<p>Using negation, it is straightforward to define inequality.</p>
+<pre class="Agda"><a id="_≢_"></a><a id="4191" href="/Negation/#4191" class="Function Operator">_≢_</a> <a id="4195" class="Symbol">:</a> <a id="4197" class="Symbol">∀</a> <a id="4199" class="Symbol">{</a><a id="4200" href="/Negation/#4200" class="Bound">A</a> <a id="4202" class="Symbol">:</a> <a id="4204" class="PrimitiveType">Set</a><a id="4207" class="Symbol">}</a> <a id="4209" class="Symbol">→</a> <a id="4211" href="/Negation/#4200" class="Bound">A</a> <a id="4213" class="Symbol">→</a> <a id="4215" href="/Negation/#4200" class="Bound">A</a> <a id="4217" class="Symbol">→</a> <a id="4219" class="PrimitiveType">Set</a>
+<a id="4223" href="/Negation/#4223" class="Bound">x</a> <a id="4225" href="/Negation/#4191" class="Function Operator">≢</a> <a id="4227" href="/Negation/#4227" class="Bound">y</a>  <a id="4230" class="Symbol">=</a>  <a id="4233" href="/Negation/#914" class="Function Operator">¬</a> <a id="4235" class="Symbol">(</a><a id="4236" href="/Negation/#4223" class="Bound">x</a> <a id="4238" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="4240" href="/Negation/#4227" class="Bound">y</a><a id="4241" class="Symbol">)</a></pre>
+<p>It is trivial to show distinct numbers are not equal.</p>
+<pre class="Agda"><a id="4321" href="/Negation/#4321" class="Function">_</a> <a id="4323" class="Symbol">:</a> <a id="4325" class="Number">1</a> <a id="4327" href="/Negation/#4191" class="Function Operator">≢</a> <a id="4329" class="Number">2</a>
+<a id="4331" class="Symbol">_</a> <a id="4333" class="Symbol">=</a> <a id="4335" class="Symbol">λ()</a></pre>
+<p>This is our first use of an absurd pattern in a lambda expression.
+The type <code class="highlighter-rouge">M ≡ N</code> is occupied exactly when <code class="highlighter-rouge">M</code> and <code class="highlighter-rouge">N</code> simplify to
+identical terms. Since <code class="highlighter-rouge">1</code> and <code class="highlighter-rouge">2</code> simplify to distinct normal forms,
+Agda determines that there is no possible evidence that <code class="highlighter-rouge">1 ≡ 2</code>.
+As a second example, it is also easy to validate
+Peano’s postulate that zero is not the successor of any number.</p>
+<pre class="Agda"><a id="peano"></a><a id="4744" href="/Negation/#4744" class="Function">peano</a> <a id="4750" class="Symbol">:</a> <a id="4752" class="Symbol">∀</a> <a id="4754" class="Symbol">{</a><a id="4755" href="/Negation/#4755" class="Bound">m</a> <a id="4757" class="Symbol">:</a> <a id="4759" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="4760" class="Symbol">}</a> <a id="4762" class="Symbol">→</a> <a id="4764" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a> <a id="4769" href="/Negation/#4191" class="Function Operator">≢</a> <a id="4771" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a> <a id="4775" href="/Negation/#4755" class="Bound">m</a>
+<a id="4777" href="/Negation/#4744" class="Function">peano</a> <a id="4783" class="Symbol">=</a> <a id="4785" class="Symbol">λ()</a></pre>
+<p>The evidence is essentially the same, as the absurd pattern matches
+all possible evidence of type <code class="highlighter-rouge">zero ≡ suc m</code>.</p>
+
+<p>Given the correspondence of implication to exponentiation and
+false to the type with no members, we can view negation as
+raising to the zero power.  This indeed corresponds to what
+we know for arithmetic, where</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0 ^ n  ≡  1,  if n ≡ 0
+       ≡  0,  if n ≢ 0
+</code></pre></div></div>
+
+<p>Indeed, there is exactly one proof of <code class="highlighter-rouge">⊥ → ⊥</code>.  We can write
+this proof two different ways.</p>
+<pre class="Agda"><a id="id"></a><a id="5287" href="/Negation/#5287" class="Function">id</a> <a id="5290" class="Symbol">:</a> <a id="5292" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a> <a id="5294" class="Symbol">→</a> <a id="5296" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a>
+<a id="5298" href="/Negation/#5287" class="Function">id</a> <a id="5301" href="/Negation/#5301" class="Bound">x</a> <a id="5303" class="Symbol">=</a> <a id="5305" href="/Negation/#5301" class="Bound">x</a>
+
+<a id="id′"></a><a id="5308" href="/Negation/#5308" class="Function">id′</a> <a id="5312" class="Symbol">:</a> <a id="5314" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a> <a id="5316" class="Symbol">→</a> <a id="5318" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a>
+<a id="5320" href="/Negation/#5308" class="Function">id′</a> <a id="5324" class="Symbol">()</a></pre>
+<p>But, using extensionality, we can prove these equal.</p>
+<pre class="Agda"><a id="id≡id′"></a><a id="5404" href="/Negation/#5404" class="Function">id≡id′</a> <a id="5411" class="Symbol">:</a> <a id="5413" href="/Negation/#5287" class="Function">id</a> <a id="5416" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="5418" href="/Negation/#5308" class="Function">id′</a>
+<a id="5422" href="/Negation/#5404" class="Function">id≡id′</a> <a id="5429" class="Symbol">=</a> <a id="5431" href="/Isomorphism/#2748" class="Postulate">extensionality</a> <a id="5446" class="Symbol">(λ())</a></pre>
+<p>By extensionality, <code class="highlighter-rouge">id ≡ id′</code> holds if for every
+<code class="highlighter-rouge">x</code> in their domain we have <code class="highlighter-rouge">id x ≡ id′ x</code>. But there
+is no <code class="highlighter-rouge">x</code> in their domain, so the equality holds trivially.</p>
+
+<p>Indeed, we can show any two proofs of a negation are equal.</p>
+<pre class="Agda"><a id="assimilation"></a><a id="5700" href="/Negation/#5700" class="Function">assimilation</a> <a id="5713" class="Symbol">:</a> <a id="5715" class="Symbol">∀</a> <a id="5717" class="Symbol">{</a><a id="5718" href="/Negation/#5718" class="Bound">A</a> <a id="5720" class="Symbol">:</a> <a id="5722" class="PrimitiveType">Set</a><a id="5725" class="Symbol">}</a> <a id="5727" class="Symbol">(</a><a id="5728" href="/Negation/#5728" class="Bound">¬x</a> <a id="5731" href="/Negation/#5731" class="Bound">¬x′</a> <a id="5735" class="Symbol">:</a> <a id="5737" href="/Negation/#914" class="Function Operator">¬</a> <a id="5739" href="/Negation/#5718" class="Bound">A</a><a id="5740" class="Symbol">)</a> <a id="5742" class="Symbol">→</a> <a id="5744" href="/Negation/#5728" class="Bound">¬x</a> <a id="5747" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="5749" href="/Negation/#5731" class="Bound">¬x′</a>
+<a id="5753" href="/Negation/#5700" class="Function">assimilation</a> <a id="5766" href="/Negation/#5766" class="Bound">¬x</a> <a id="5769" href="/Negation/#5769" class="Bound">¬x′</a> <a id="5773" class="Symbol">=</a> <a id="5775" href="/Isomorphism/#2748" class="Postulate">extensionality</a> <a id="5790" class="Symbol">(λ</a> <a id="5793" href="/Negation/#5793" class="Bound">x</a> <a id="5795" class="Symbol">→</a> <a id="5797" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a> <a id="5804" class="Symbol">(</a><a id="5805" href="/Negation/#5766" class="Bound">¬x</a> <a id="5808" href="/Negation/#5793" class="Bound">x</a><a id="5809" class="Symbol">))</a></pre>
+<p>Evidence for <code class="highlighter-rouge">¬ A</code> implies that any evidence of <code class="highlighter-rouge">A</code>
+immediately leads to a contradiction.  But extensionality
+quantifies over all <code class="highlighter-rouge">x</code> such that <code class="highlighter-rouge">A</code> holds, hence any
+such <code class="highlighter-rouge">x</code> immediately leads to a contradiction,
+again causing the equality to hold trivially.</p>
+
+<h4 id="exercise--irreflexive-recommended">Exercise <code class="highlighter-rouge">&lt;-irreflexive</code> (recommended)</h4>
+
+<p>Using negation, show that
+<a href="/Relations/#strict-inequality">strict inequality</a>
+is irreflexive, that is, <code class="highlighter-rouge">n &lt; n</code> holds for no <code class="highlighter-rouge">n</code>.</p>
+
+<h4 id="exercise-trichotomy">Exercise <code class="highlighter-rouge">trichotomy</code></h4>
+
+<p>Show that strict inequality satisfies
+<a href="/Relations/#trichotomy">trichotomy</a>,
+that is, for any naturals <code class="highlighter-rouge">m</code> and <code class="highlighter-rouge">n</code> exactly one of the following holds:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">m &lt; n</code></li>
+  <li><code class="highlighter-rouge">m ≡ n</code></li>
+  <li><code class="highlighter-rouge">m &gt; n</code></li>
+</ul>
+
+<p>Here “exactly one” means that not only one of the three must hold,
+but that when one holds the negation of the other two must also hold.</p>
+
+<h4 id="exercise--dual--recommended">Exercise <code class="highlighter-rouge">⊎-dual-×</code> (recommended)</h4>
+
+<p>Show that conjunction, disjunction, and negation are related by a
+version of De Morgan’s Law.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+</code></pre></div></div>
+
+<p>This result is an easy consequence of something we’ve proved previously.</p>
+
+<p>Do we also have the following?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>¬ (A × B) ≃ (¬ A) ⊎ (¬ B)
+</code></pre></div></div>
+
+<p>If so, prove; if not, can you give a relation weaker than
+isomorphism that relates the two sides?</p>
+
+<h2 id="intuitive-and-classical-logic">Intuitive and Classical logic</h2>
+
+<p>In Gilbert and Sullivan’s <em>The Gondoliers</em>, Casilda is told that
+as an infant she was married to the heir of the King of Batavia, but
+that due to a mix-up no one knows which of two individuals, Marco or
+Giuseppe, is the heir.  Alarmed, she wails “Then do you mean to say
+that I am married to one of two gondoliers, but it is impossible to
+say which?”  To which the response is “Without any doubt of any kind
+whatever.”</p>
+
+<p>Logic comes in many varieties, and one distinction is between
+<em>classical</em> and <em>intuitionistic</em>. Intuitionists, concerned
+by assumptions made by some logicians about the nature of
+infinity, insist upon a constructionist notion of truth.  In
+particular, they insist that a proof of <code class="highlighter-rouge">A ⊎ B</code> must show
+<em>which</em> of <code class="highlighter-rouge">A</code> or <code class="highlighter-rouge">B</code> holds, and hence they would reject the
+claim that Casilda is married to Marco or Giuseppe until one of the
+two was identified as her husband.  Perhaps Gilbert and Sullivan
+anticipated intuitionism, for their story’s outcome is that the heir
+turns out to be a third individual, Luiz, with whom Casilda is,
+conveniently, already in love.</p>
+
+<p>Intuitionists also reject the law of the excluded middle, which
+asserts <code class="highlighter-rouge">A ⊎ ¬ A</code> for every <code class="highlighter-rouge">A</code>, since the law gives no clue as to
+<em>which</em> of <code class="highlighter-rouge">A</code> or <code class="highlighter-rouge">¬ A</code> holds. Heyting formalised a variant of
+Hilbert’s classical logic that captures the intuitionistic notion of
+provability. In particular, the law of the excluded middle is provable
+in Hilbert’s logic, but not in Heyting’s.  Further, if the law of the
+excluded middle is added as an axiom to Heyting’s logic, then it
+becomes equivalent to Hilbert’s.  Kolmogorov showed the two logics
+were closely related: he gave a double-negation translation, such that
+a formula is provable in classical logic if and only if its
+translation is provable in intuitionistic logic.</p>
+
+<p>Propositions as Types was first formulated for intuitionistic logic.
+It is a perfect fit, because in the intuitionist interpretation the
+formula <code class="highlighter-rouge">A ⊎ B</code> is provable exactly when one exhibits either a proof
+of <code class="highlighter-rouge">A</code> or a proof of <code class="highlighter-rouge">B</code>, so the type corresponding to disjunction is
+a disjoint sum.</p>
+
+<p>(Parts of the above are adopted from “Propositions as Types”, Philip Wadler,
+<em>Communications of the ACM</em>, December 2015.)</p>
+
+<h2 id="excluded-middle-is-irrefutable">Excluded middle is irrefutable</h2>
+
+<p>The law of the excluded middle can be formulated as follows.</p>
+<pre class="Agda"><a id="9368" class="Keyword">postulate</a>
+  <a id="em"></a><a id="9380" href="/Negation/#9380" class="Postulate">em</a> <a id="9383" class="Symbol">:</a> <a id="9385" class="Symbol">∀</a> <a id="9387" class="Symbol">{</a><a id="9388" href="/Negation/#9388" class="Bound">A</a> <a id="9390" class="Symbol">:</a> <a id="9392" class="PrimitiveType">Set</a><a id="9395" class="Symbol">}</a> <a id="9397" class="Symbol">→</a> <a id="9399" href="/Negation/#9388" class="Bound">A</a> <a id="9401" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#419" class="Datatype Operator">⊎</a> <a id="9403" href="/Negation/#914" class="Function Operator">¬</a> <a id="9405" href="/Negation/#9388" class="Bound">A</a></pre>
+<p>As we noted, the law of the excluded middle does not hold in
+intuitionistic logic.  However, we can show that it is <em>irrefutable</em>,
+meaning that the negation of its negation is provable (and hence that
+its negation is never provable).</p>
+<pre class="Agda"><a id="em-irrefutable"></a><a id="9665" href="/Negation/#9665" class="Function">em-irrefutable</a> <a id="9680" class="Symbol">:</a> <a id="9682" class="Symbol">∀</a> <a id="9684" class="Symbol">{</a><a id="9685" href="/Negation/#9685" class="Bound">A</a> <a id="9687" class="Symbol">:</a> <a id="9689" class="PrimitiveType">Set</a><a id="9692" class="Symbol">}</a> <a id="9694" class="Symbol">→</a> <a id="9696" href="/Negation/#914" class="Function Operator">¬</a> <a id="9698" href="/Negation/#914" class="Function Operator">¬</a> <a id="9700" class="Symbol">(</a><a id="9701" href="/Negation/#9685" class="Bound">A</a> <a id="9703" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#419" class="Datatype Operator">⊎</a> <a id="9705" href="/Negation/#914" class="Function Operator">¬</a> <a id="9707" href="/Negation/#9685" class="Bound">A</a><a id="9708" class="Symbol">)</a>
+<a id="9710" href="/Negation/#9665" class="Function">em-irrefutable</a> <a id="9725" class="Symbol">=</a> <a id="9727" class="Symbol">λ</a> <a id="9729" href="/Negation/#9729" class="Bound">k</a> <a id="9731" class="Symbol">→</a> <a id="9733" href="/Negation/#9729" class="Bound">k</a> <a id="9735" class="Symbol">(</a><a id="9736" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#500" class="InductiveConstructor">inj₂</a> <a id="9741" class="Symbol">(λ</a> <a id="9744" href="/Negation/#9744" class="Bound">x</a> <a id="9746" class="Symbol">→</a> <a id="9748" href="/Negation/#9729" class="Bound">k</a> <a id="9750" class="Symbol">(</a><a id="9751" href="https://agda.github.io/agda-stdlib/Data.Sum.Base.html#475" class="InductiveConstructor">inj₁</a> <a id="9756" href="/Negation/#9744" class="Bound">x</a><a id="9757" class="Symbol">)))</a></pre>
+<p>The best way to explain this code is to develop it interactively.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>em-irrefutable k = ?
+</code></pre></div></div>
+
+<p>Given evidence <code class="highlighter-rouge">k</code> that <code class="highlighter-rouge">¬ (A ⊎ ¬ A)</code>, that is, a function that give a
+value of type <code class="highlighter-rouge">A ⊎ ¬ A</code> returns a value of the empty type, we must fill
+in <code class="highlighter-rouge">?</code> with a term that returns a value of the empty type.  The only way
+we can get a value of the empty type is by applying <code class="highlighter-rouge">k</code> itself, so let’s
+expand the hole accordingly.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>em-irrefutable k = k ?
+</code></pre></div></div>
+
+<p>We need to fill the new hole with a value of type <code class="highlighter-rouge">A ⊎ ¬ A</code>. We don’t have
+a value of type <code class="highlighter-rouge">A</code> to hand, so let’s pick the second disjunct.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>em-irrefutable k = k (inj₂ λ{ x → ? })
+</code></pre></div></div>
+
+<p>The second disjunct accepts evidence of <code class="highlighter-rouge">¬ A</code>, that is, a function
+that given a value of type <code class="highlighter-rouge">A</code> returns a value of the empty type.  We
+bind <code class="highlighter-rouge">x</code> to the value of type <code class="highlighter-rouge">A</code>, and now we need to fill in the hole
+with a value of the empty type.  Once again, the only way we can get a
+value of the empty type is by applying <code class="highlighter-rouge">k</code> itself, so let’s expand the
+hole accordingly.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>em-irrefutable k = k (inj₂ λ{ x → k ? })
+</code></pre></div></div>
+
+<p>This time we do have a value of type <code class="highlighter-rouge">A</code> to hand, namely <code class="highlighter-rouge">x</code>, so we can
+pick the first disjunct.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>em-irrefutable k = k (inj₂ λ{ x → k (inj₁ x) })
+</code></pre></div></div>
+
+<p>There are no holes left! This completes the proof.</p>
+
+<p>The following story illustrates the behaviour of the term we have created.
+(With apologies to Peter Selinger, who tells a similar story
+about a king, a wizard, and the Philosopher’s stone.)</p>
+
+<p>Once upon a time, the devil approached a man and made an offer:
+“Either (a) I will give you one billion dollars, or (b) I will grant
+you any wish if you pay me one billion dollars.
+Of course, I get to choose whether I offer (a) or (b).”</p>
+
+<p>The man was wary.  Did he need to sign over his soul?
+No, said the devil, all the man need do is accept the offer.</p>
+
+<p>The man pondered.  If he was offered (b) it was unlikely that he would
+ever be able to buy the wish, but what was the harm in having the
+opportunity available?</p>
+
+<p>“I accept,” said the man at last.  “Do I get (a) or (b)?”</p>
+
+<p>The devil paused.  “I choose (b).”</p>
+
+<p>The man was disappointed but not surprised.  That was that, he thought.
+But the offer gnawed at him.  Imagine what he could do with his wish!
+Many years passed, and the man began to accumulate money.  To get the
+money he sometimes did bad things, and dimly he realised that
+this must be what the devil had in mind.
+Eventually he had his billion dollars, and the devil appeared again.</p>
+
+<p>“Here is a billion dollars,” said the man, handing over a valise
+containing the money.  “Grant me my wish!”</p>
+
+<p>The devil took possession of the valise.  Then he said, “Oh, did I say
+(b) before?  I’m so sorry.  I meant (a).  It is my great pleasure to
+give you one billion dollars.”</p>
+
+<p>And the devil handed back to the man the same valise that the man had
+just handed to him.</p>
+
+<p>(Parts of the above are adopted from “Call-by-Value is Dual to Call-by-Name”,
+Philip Wadler, <em>International Conference on Functional Programming</em>, 2003.)</p>
+
+<h4 id="exercise-classical-stretch">Exercise <code class="highlighter-rouge">Classical</code> (stretch)</h4>
+
+<p>Consider the following principles.</p>
+
+<ul>
+  <li>Excluded Middle: <code class="highlighter-rouge">A ⊎ ¬ A</code>, for all <code class="highlighter-rouge">A</code></li>
+  <li>Double Negation Elimination: <code class="highlighter-rouge">¬ ¬ A → A</code>, for all <code class="highlighter-rouge">A</code></li>
+  <li>Peirce’s Law: <code class="highlighter-rouge">((A → B) → A) → A</code>, for all <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code>.</li>
+  <li>Implication as disjunction: <code class="highlighter-rouge">(A → B) → ¬ A ⊎ B</code>, for all <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code>.</li>
+  <li>De Morgan: <code class="highlighter-rouge">¬ (¬ A × ¬ B) → A ⊎ B</code>, for all <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code>.</li>
+</ul>
+
+<p>Show that each of these implies all the others.</p>
+
+<h4 id="exercise-stable-stretch">Exercise <code class="highlighter-rouge">Stable</code> (stretch)</h4>
+
+<p>Say that a formula is <em>stable</em> if double negation elimination holds for it.</p>
+<pre class="Agda"><a id="Stable"></a><a id="13272" href="/Negation/#13272" class="Function">Stable</a> <a id="13279" class="Symbol">:</a> <a id="13281" class="PrimitiveType">Set</a> <a id="13285" class="Symbol">→</a> <a id="13287" class="PrimitiveType">Set</a>
+<a id="13291" href="/Negation/#13272" class="Function">Stable</a> <a id="13298" href="/Negation/#13298" class="Bound">A</a> <a id="13300" class="Symbol">=</a> <a id="13302" href="/Negation/#914" class="Function Operator">¬</a> <a id="13304" href="/Negation/#914" class="Function Operator">¬</a> <a id="13306" href="/Negation/#13298" class="Bound">A</a> <a id="13308" class="Symbol">→</a> <a id="13310" href="/Negation/#13298" class="Bound">A</a></pre>
+<p>Show that any negated formula is stable, and that the conjunction
+of two stable formulas is stable.</p>
+
+<h2 id="standard-prelude">Standard Prelude</h2>
+
+<p>Definitions similar to those in this chapter can be found in the standard library.</p>
+<pre class="Agda"><a id="13541" class="Keyword">import</a> <a id="13548" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="13565" class="Keyword">using</a> <a id="13571" class="Symbol">(</a><a id="13572" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a><a id="13574" class="Symbol">)</a>
+<a id="13576" class="Keyword">import</a> <a id="13583" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Negation.html" class="Module">Relation.Nullary.Negation</a> <a id="13609" class="Keyword">using</a> <a id="13615" class="Symbol">(</a><a id="13616" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Negation.html#688" class="Function">contraposition</a><a id="13630" class="Symbol">)</a></pre>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>This chapter uses the following unicode.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>¬  U+00AC  NOT SIGN (\neg)
+≢  U+2262  NOT IDENTICAL TO (\==n)
+</code></pre></div></div>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/Connectives/">Prev</a>
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Negation.lagda">Source</a>
+    
+    
+    &bullet;
+    <a alt="Next chapter" href="/Quantifiers/">Next</a>
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

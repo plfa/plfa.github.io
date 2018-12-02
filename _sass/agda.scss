@@ -1,0 +1,114 @@
+// Define variables for code formatting
+
+@font-face {
+    font-family: "FreeMono";
+    src: url("fonts/FreeMono.woff");
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: normal;
+    unicode-range: U+20-7E, U+A0-220, U+224-233, U+237,
+        U+250-36F, U+374-375, U+37A, U+37E,
+        U+384-38A, U+38C, U+38E-3A1, U+3A3-3CE,
+        U+3D0-3D6, U+3DA-3DD, U+3F0-3F1, U+3F4-3F5,
+        U+400-47F, U+483-487, U+48A-4FF, U+510-513,
+        U+51A-51F, U+524-527, U+531-556, U+559-55F,
+        U+561-587, U+589-58A, U+58F, U+5B0-5C7,
+        U+5D0-5EA, U+5F0-5F4, U+606-60F, U+61B,
+        U+61E-657, U+659-6D5, U+6EE-6FF, U+10D0-10F5,
+        U+10F9, U+10FB-10FC, U+13A0-13F4, U+16A0-16F0,
+        U+1E00-1E9B, U+1EA0-1EF9, U+1F00-1F15, U+1F18-1F1D,
+        U+1F20-1F45, U+1F48-1F4D, U+1F50-1F57, U+1F59,
+        U+1F5B, U+1F5D, U+1F5F-1F7D, U+1F80-1FB4,
+        U+1FB6-1FC4, U+1FC6-1FD3, U+1FD6-1FDB, U+1FDD-1FEF,
+        U+1FF2-1FF4, U+1FF6-1FFE, U+2000-2064,
+        U+20A1-20B5, U+20B8-20B9,
+        U+20D0-20D2, U+20D6-20D7, U+20DB-20E3, U+20E5-20E6,
+        U+20E8, U+20EA-20EF, U+2100-2109, U+210D-211A,
+        U+211C-211E, U+2120-2122, U+2124, U+2126-2127,
+        U+2129-212B, U+212E, U+2132, U+2135-213B,
+        U+2141-2144, U+214B, U+214D-214E, U+2153-217F,
+        U+2190-21D5, U+21DC-21DD, U+21E6-21E9, U+21F3,
+        U+2200-22F1, U+2300, U+2302-2306, U+2308-2310,
+        U+2312, U+2314-2315, U+2318-2319, U+231C-2327,
+        U+2329-232C, U+2336-237A, U+237C-23B7, U+23BA-23CF,
+        U+23DA-23DB, U+23DE-23DF, U+23E2-23E6, U+2400-2426,
+        U+2440-244A, U+2460-2469, U+2500-2609, U+2610-2614,
+        U+261A-261F, U+2626-2629, U+262E-2653, U+2660-2667,
+        U+2669-266F, U+2680-2685, U+27C0-27CA, U+27CC,
+        U+27D0-27D7, U+27E4-27EB, U+27F2-27F3, U+27F5-27FC,
+        U+2800-28FF, U+2A00-2A06, U+2A1D, U+2A3F,
+        U+2B00-2B0D, U+2B12-2B19, U+2B1B-2B2B, U+2B53-2B54,
+        U+2E16-2E18, U+2E1A-2E1B, U+2E1E-2E1F, U+2E28-2E2E,
+        U+2E30, U+A788-A78C, U+A900-A92F, U+FB00-FB05,
+        U+FB1D-FB36, U+FB38-FB3C, U+FB3E, U+FB40-FB41,
+        U+FB43-FB44, U+FB46-FBBE, U+FBC0-FBC1, U+FBD3-FBE9,
+        U+FBFC-FBFF, U+FE70-FE74, U+FE76-FEFC, U+FEFF,
+        U+FFF9-FFFD;
+}
+
+@mixin code-font {
+    font-family: 'FreeMono', 'Courier New', 'Monaco', 'Menlo', 'Source Code Pro', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace, serif;
+    font-size: .85em;
+}
+@mixin code-container {
+    padding: .4em .4em;
+    background: #e8f2fb;
+    border: 1px solid #c9e1f6;
+    border-radius: 3px;
+}
+
+/* Code. */
+pre.highlight {
+    @include code-container;
+    border-style: dashed !important;
+}
+code {
+    @include code-font;
+}
+
+/* Agda. */
+pre.Agda {
+    @include code-font;
+    @include code-container;
+}
+
+pre.Spec {
+    @include code-font;
+    @include code-container;
+    border-style: dashed !important;
+    color: #B22222;
+}
+
+/* Aspects. */
+.Comment       { color: #B22222 }
+.Keyword       { color: #CD6600 }
+.String        { color: #B22222 }
+.Number        { color: #A020F0 }
+.Symbol        { color: #404040 }
+.PrimitiveType { color: #0000CD }
+.Operator      {}
+
+/* NameKinds. */
+.Bound                  { color: black   }
+.InductiveConstructor   { color: #008B00 }
+.CoinductiveConstructor { color: #8B7500 }
+.Datatype               { color: #0000CD }
+.Field                  { color: #EE1289 }
+.Function               { color: #0000CD }
+.Module                 { color: #A020F0 }
+.Postulate              { color: #0000CD }
+.Primitive              { color: #0000CD }
+.Record                 { color: #0000CD }
+
+/* OtherAspects. */
+.DottedPattern      {}
+.UnsolvedMeta       { color: black; background: yellow         }
+.UnsolvedConstraint { color: black; background: yellow         }
+.TerminationProblem { color: black; background: #FFA07A        }
+.IncompletePattern  { color: black; background: #F5DEB3        }
+.Error              { color: red;   text-decoration: underline }
+.TypeChecks         { color: black; background: #ADD8E6        }
+
+/* Standard attributes. */
+.Agda a { text-decoration: none }
+.Agda a[href]:hover { background-color: #B4EEB4 }

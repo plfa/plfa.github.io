@@ -1,0 +1,85 @@
+title: >
+  Programming Language Foundations in Agda
+
+description: >
+  Programming Language Foundations in Agda
+
+license: Creative Commons Attribution 4.0 International License
+license-file: https://creativecommons.org/licenses/by/4.0/
+
+# To include a new author, add them below in the order in which they are to be
+# displayed in the author list. If they have made contributions as an author via
+# GitHub, their username MUST be included in the list.
+authors:
+  - name: Philip Wadler
+    email: wadler@inf.ed.ac.uk
+    corresponding: true
+    github_username: wadler
+  - name: Wen Kokke
+    email: wen.kokke@ed.ac.uk
+    corresponding: true
+    github_username: wenkokke
+    twitter_username: wenkokke
+
+google_analytics: "UA-125055580-1"
+
+repository: plfa/plfa.github.io
+branch: dev
+
+baseurl: ""
+url: "https://plfa.ed.inf.ac.uk"
+markdown: kramdown
+theme: minima
+exclude:
+  - "hs/"
+  - "src/"
+  - "extra/"
+  - "vendor/"
+  - "Notes.md"
+  - "*.lagda"
+  - "Gemfile"
+  - "Gemfile.lock"
+contributors:
+- github_username: Kwezan
+  name: Zbigniew Stanasiuk
+- github_username: Fingerzam
+  name: Juhana Laurinharju
+- github_username: Cubesoup
+  name: Chad Nester
+- github_username: phi16
+  name: phi16
+- github_username: jonaprieto
+  name: Jonathan Prieto
+- github_username: livecodealex
+  name: Alexandru Brisan
+- github_username: michel-steuwer
+  name: Michel Steuwer
+- github_username: lzmartinico
+  name: Lorenzo Martinico
+- github_username: murilogiacometti
+  name: Murilo Giacometti Rocha
+- github_username: spwhitt
+  name: Spencer Whitt
+- github_username: Teggy
+  name: Torsten Grust
+- github_username: philderbeast
+  name: Phil de Joux
+- github_username: stepchowfun
+  name: Stephan Boyer
+- github_username: navaati
+  name: Léo Gillot-Lamure
+- github_username: caryoscelus
+  name: caryoscelus
+- github_username: kwxm
+  name: Kenneth MacKenzie
+- github_username: moleike
+  name: Alex Moreno
+- github_username: laMudri
+  name: James Wood
+- github_username: mdimjasevic
+  name: Marko Dimjašević
+- github_username: omelkonian
+  name: Orestis Melkonian
+- github_username: potato4444
+  name: Nathaniel Carroll
+

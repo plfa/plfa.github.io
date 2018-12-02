@@ -1,0 +1,3 @@
+name: tspl
+depend: standard-library plfa
+include: .

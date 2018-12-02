@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Getting Started | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Getting Started" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/GettingStarted/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/GettingStarted/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/GettingStarted/","headline":"Getting Started","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Getting Started</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    
+    
+</p>
+
+
+  <div class="post-content">
+    <p><a href="https://travis-ci.org/plfa/plfa.github.io"><img src="https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev" alt="Build Status" /></a></p>
+
+<h1 id="getting-started-with-plfa">Getting Started with PLFA</h1>
+
+<p>There are several tools you need to work with PLFA:</p>
+
+<ul>
+  <li><a href="https://agda.readthedocs.io/en/latest/getting-started/installation.html">Agda</a></li>
+  <li><a href="https://github.com/agda/agda-stdlib">Agda standard library</a></li>
+</ul>
+
+<p>For most of the tools, you can simply follow their respective build instructions.
+We aim to maintain compatibility with the latest release of Agda and the standard library, 
+but we maintain <a href="https://github.com/plfa/agda-stdlib">a copy of the standard library which is guaranteed to work with the book</a>.</p>
+
+<p>You can get the latest version of Programming Language Foundations in Agda from Github, 
+either by cloning the repository, 
+or by downloading <a href="https://github.com/plfa/plfa.github.io/archive/dev.zip">the zip archive</a>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/plfa/plfa.github.io 
+</code></pre></div></div>
+
+<p>Finally, we need to let Agda know where to find the standard library.
+For this, you can follow the instructions <a href="https://agda.readthedocs.io/en/latest/tools/package-system.html#example-using-the-standard-library">here</a>.</p>
+
+<p>(PLFA is itself an Agda library, so if you wish to import modules from the book, you can set it up in a similar way.)</p>
+
+<h1 id="building-the-book">Building the book</h1>
+
+<p>There are several tools you need to build and host a local copy of the book:</p>
+
+<ul>
+  <li><a href="https://agda.readthedocs.io/en/latest/getting-started/installation.html">Agda</a></li>
+  <li><a href="https://github.com/agda/agda-stdlib">Agda standard library</a></li>
+  <li><a href="https://github.com/wenkokke/agda2html">agda2html</a></li>
+  <li><a href="https://www.ruby-lang.org/en/documentation/installation/">Ruby</a></li>
+  <li><a href="https://bundler.io/#getting-started">Bundler</a></li>
+</ul>
+
+<p>For most of the tools, you can simply follow their respective build instructions.
+We aim to maintain compatibility with the latest release of Agda and the standard library.
+Most recent versions of Ruby should work.</p>
+
+<p>We advise installing agda2html using <a href="https://docs.haskellstack.org/en/stable/README/">Stack</a>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/wenkokke/agda2html.git
+cd agda2html
+stack install 
+</code></pre></div></div>
+
+<p>Once you have installed these tools, you can build the book from source:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make build
+</code></pre></div></div>
+
+<p>You can host your copy of the book locally by running</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make serve
+</code></pre></div></div>
+
+<p>The Makefile offers more than just these options:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make                      (builds lagda-&gt;markdown)
+make build                (builds lagda-&gt;markdown and the website)
+make build-incremental    (builds lagda-&gt;markdown and the website incrementally)
+make test                 (checks all links are valid)
+make serve                (starts the server)
+make server-start         (starts the server in detached mode)
+make server-stop          (stops the server, uses pkill)
+make clean                (removes all ~unnecessary~ generated files)
+make clobber              (removes all generated files)
+</code></pre></div></div>
+
+<p>If you simply wish to have a local copy of the book, e.g. for offline reading,
+but don’t care about editing and rebuilding the book, you can grab a copy of the
+<a href="https://github.com/plfa/plfa.github.io/archive/master.zip">master branch</a>,
+which is automatically built using Travis. You will still need Ruby and Bundler
+to host the book (see above). To host the book this way, download a copy of the
+<a href="https://github.com/plfa/plfa.github.io/archive/master.zip">master branch</a>,
+unzip, and from within the directory run</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle install
+bundle exec jekyll serve
+</code></pre></div></div>
+
+<h2 id="gnu-sed-and-macos">GNU sed and macOS</h2>
+
+<p>The version of sed that ships with macOS is not fully compatible with the GNU sed.
+Therefore, you may get errors such as:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sed: 1: "out/plfa/Bisimulation.md": invalid command code o
+</code></pre></div></div>
+<p>You can fix this error by installing a GNU compatible version of sed, e.g. using <a href="https://brew.sh/">Homebrew</a>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install gnu-sed --with-default-names
+</code></pre></div></div>
+
+<h2 id="updating-agda2html">Updating <code class="highlighter-rouge">agda2html</code></h2>
+
+<p>Sometimes we have to update agda2html. 
+To update your local copy, run the following commands from your clone of the
+agda2html repository, or simply follow the installation instructions again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull
+stack install
+</code></pre></div></div>
+
+<h2 id="unicode-characters">Unicode characters</h2>
+
+<p>If you’re having trouble typing the Unicode characters into Emacs, the end of
+each chapter should provide a list of the unicode characters introduced in that
+chapter. For a full list of supported characters, see
+<a href="https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194">agda-input.el</a>.</p>
+
+<h2 id="using-agda-mode">Using <code class="highlighter-rouge">agda-mode</code></h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>?            create hole
+{!...!}      create hole
+C-c C-l      load buffer
+</code></pre></div></div>
+
+<p>Command to give when in a hole:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C-c C-c x    split on variable x
+C-c C-space  fill in hole
+C-c C-r      refine with constructor
+C-c C-a      automatically fill in hole
+C-c C-,      Goal type and context
+C-c C-.      Goal type, context, and inferred type
+</code></pre></div></div>
+
+<p>See
+<a href="http://agda.readthedocs.io/en/latest/tools/emacs-mode.html">the emacs-mode docs</a>
+for more details.</p>
+
+<p>If you want to see messages beside rather than below your Agda code,
+you can do the following:</p>
+
+<ul>
+  <li>Load your Agda file and do <code class="highlighter-rouge">C-c C-l</code>;</li>
+  <li>type <code class="highlighter-rouge">C-x 1</code> to get only your Agda file showing;</li>
+  <li>type <code class="highlighter-rouge">C-x 3</code> to split the window horizontally;</li>
+  <li>move your cursor to the right-hand half of your frame;</li>
+  <li>type <code class="highlighter-rouge">C-x b</code> and switch to the buffer called “Agda information”</li>
+</ul>
+
+<p>Now, error messages from Agda will appear next to your file, rather than
+squished beneath it.</p>
+
+<h2 id="fonts-in-emacs">Fonts in Emacs</h2>
+
+<p>It is reccommended that you add the following to the end of your emacs
+configuration file at <code class="highlighter-rouge">~/.emacs</code>, if you have the named fonts available.</p>
+
+<div class="language-elisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">;; Setting up Fonts for use with Agda/PLFA</span>
+<span class="c1">;;</span>
+<span class="c1">;; default to DejaVu Sans Mono, </span>
+<span class="p">(</span><span class="nv">set-face-attribute</span> <span class="ss">'default</span> <span class="no">nil</span>
+		    <span class="ss">:family</span> <span class="s">"DejaVu Sans Mono"</span>
+		    <span class="ss">:height</span> <span class="mi">120</span>
+		    <span class="ss">:weight</span> <span class="ss">'normal</span>
+		    <span class="ss">:width</span>  <span class="ss">'normal</span><span class="p">)</span>
+
+<span class="c1">;; fix \:</span>
+<span class="p">(</span><span class="nv">set-fontset-font</span> <span class="s">"fontset-default"</span>
+		  <span class="p">(</span><span class="nb">cons</span> <span class="p">(</span><span class="nv">decode-char</span> <span class="ss">'ucs</span> <span class="m">#x2982</span><span class="p">)</span>
+			<span class="p">(</span><span class="nv">decode-char</span> <span class="ss">'ucs</span> <span class="m">#x2982</span><span class="p">))</span>
+		  <span class="s">"STIX"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="markdown">Markdown</h2>
+
+<p>The book is written in <a href="https://kramdown.gettalong.org/syntax.html">Kramdown Markdown</a>.</p>
+
+<h2 id="travis-continuous-integration">Travis Continuous Integration</h2>
+
+<p>You can view the build history of PLFA at <a href="http://travis-ci.org/plfa/plfa.github.io">travis-ci.org</a>.</p>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

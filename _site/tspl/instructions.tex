@@ -1,0 +1,120 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Instructions for TSPL Exam
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+\usepackage{a4,amssymb}
+% \setlength{\oddsidemargin}{-1.5cm}
+% \addtolength{\textwidth}{2cm}
+% \addtolength{\textheight}{3cm}
+
+\begin{document}
+\pagestyle{empty}
+\setcounter{page}{1}
+
+\begin{center}
+\large Types and Semantics for Programming Languages
+\end{center}
+
+\section*{Instructions}
+
+\begin{enumerate}
+
+\item
+  The exam lasts two hours.
+
+\item
+  Place your student identity card face-up on the desk in front of you.  The
+  invigilator may come to check your identity, and in this case you may be asked
+  to allow the invigilator to briefly use your computer.  The exam time has been
+  calculated to allow time for such interruptions.
+
+\item
+  You may log into your computer as soon as you are ready to do so.
+
+\item
+  To download the exam paper, open a terminal window and type:
+  \begin{center}
+    \texttt{getpapers}
+  \end{center}
+  This will create a subdirectory \texttt{tspl-mpe} in your home directory,
+  containing the following files.
+  \begin{center}
+    \begin{tabular}{ll}
+      \texttt{tspl-mpe/papers/exam.pdf}                & the exam \\
+      \texttt{tspl-mpe/papers/instructions.pdf}        & these instructions \\
+      \texttt{tspl-mpe/templates/Exam.lagda}           & exam template to edit \\
+      \texttt{tspl-mpe/original\_templates/Exam.lagda} & backup of exam template
+    \end{tabular}
+  \end{center}
+  The directories \texttt{tspl-mpe/papers}, \texttt{tspl-mpe/original\_templates}
+  are read only, but you may read and write \texttt{tspl-mpe/templates}.
+
+\item
+  To setup the Agda environment, open a terminal window and type:
+  and type:
+  \begin{center}
+    \texttt{tspl-setup}
+  \end{center}
+  This will also open a browser, with three tabs which contain the textbook
+  \emph{Programming Language Foundations in Agda}, the documentation for the
+  Agda standard library, and the documentation for Agda are available.
+
+{\it (Note that internet access has been disabled.)}
+
+\begin{center}
+  \textbf{Do nothing further until the start of the exam is announced!}
+\end{center}
+
+\hfill \textit{Please Turn Over}
+\newpage
+
+\item When the start of the exam is announced, open the exam paper
+\begin{center}
+  \texttt{tspl-mpe/papers/exam.pdf}
+\end{center}
+with the standard PDF viewer.
+
+\item Change to the template directory
+\begin{center}
+  \texttt{cd tspl-mpe/templates}
+\end{center}
+and edit the file
+\begin{center}
+  \texttt{Exam.lagda}
+\end{center}
+to include your answers, using Emacs or anything else suitable.
+You are recommended to save your work on a regular basis.
+
+\item Before submitting, make sure your file is processed by Agda
+  correctly. Code which prevents the file from compiling should be
+  made into comments. If you fail to solve part of a problem, you
+  may get more credit if you indicate clearly which part you have
+  not solved. 
+
+\item \emph{Please ensure before submission that the file}
+  \texttt{Exam.lagda} \emph{contains your solutions to the exam.}  Submit
+  your file using the command:
+  \begin{center}
+  \texttt{examsubmit Exam.lagda}
+  \end{center}
+  If you get an error, please check carefully that your file is called
+  \texttt{Exam.lagda} and that you are in the same directory as this
+  file. If you continue to have problems, please contact one of the
+  invigilators.
+ 
+Repeated submit commands are allowed, and will overwrite previous
+submissions.  The last file submitted will be the one marked.
+
+\item When the invigilators announce the end of the exam, you must
+  submit and log out immediately.
+
+\end{enumerate}
+
+\end{document}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

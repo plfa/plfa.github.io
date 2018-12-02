@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TSPL: Course notes | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="TSPL: Course notes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/TSPL/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/TSPL/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/TSPL/","headline":"TSPL: Course notes","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">TSPL: Course notes</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/tspl/TSPL.lagda">Source</a>
+    
+    
+</p>
+
+
+  <div class="post-content">
+    <h2 id="staff">Staff</h2>
+
+<ul>
+  <li><strong>Instructor</strong>
+  <a href="http://homepages.inf.ed.ac.uk/wadler">Philip Wadler</a></li>
+  <li><strong>Teaching assistants</strong>
+    <ul>
+      <li><a href="mailto:wen.kokke@ed.ac.uk">Wen Kokke</a></li>
+      <li><a href="mailto:chad.nester@gmail.com">Chad Nester</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="lectures">Lectures</h2>
+
+<p>Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.07 and AT 4.12.)</p>
+<ul>
+  <li><strong>9.00–9.50am</strong> Lecture</li>
+  <li><strong>10.00–10.50am</strong> Tutorial</li>
+</ul>
+
+<table>
+ <tr>
+  <th>Week</th>
+  <th>Mon</th>
+  <th>Wed</th>
+  <th>Fri</th>
+ </tr>
+ <tr>
+  <td>1</td>
+  <td><b>17 Sep</b> <a href="/Naturals/">Naturals</a></td>
+  <td><b>19 Sep</b> <a href="/Induction/">Induction</a></td>
+  <td><b>21 Sep</b> <a href="/Induction/">Induction</a></td>
+ </tr>
+ <tr>
+  <td>2</td>
+  <td><b>24 Sep</b> <a href="/Relations/">Relations</a> (Chad)</td>
+  <td><b>26 Sep</b> <a href="/Relations/">Relations</a> (Chad)</td>
+  <td><b>28 Sep</b> (no class)</td>
+ </tr>
+ <tr>
+  <td>3</td>
+  <td><b>1 Oct</b> <a href="/Equality/">Equality</a> &amp; <a href="/Isomorphism/">Isomorphism</a></td>
+  <td><b>3 Oct</b> <a href="/Connectives/">Connectives</a></td>
+  <td><b>5 Oct</b> <a href="/Negation/">Negation</a></td>
+ </tr>
+ <tr>
+  <td>4</td>
+  <td><b>8 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
+  <td><b>10 Oct</b> <a href="/Decidable/">Decidable</a></td>
+  <td><b>12 Oct</b> (tutorial only)</td>
+ </tr>
+ <tr>
+  <td>5</td>
+  <td><b>15 Oct</b> <a href="/Lists/">Lists</a></td>
+  <td><b>17 Oct</b> (tutorial only)</td>
+  <td><b>19 Oct</b> <a href="/Lists/">Lists</a></td>
+ </tr>
+ <tr>
+  <td>6</td>
+  <td><b>22 Oct</b> <a href="/Lambda/">Lambda</a></td>
+  <td><b>24 Oct</b> (no class)</td>
+  <td><b>26 Oct</b> <a href="/Properties/">Properties</a></td>
+ </tr>
+ <tr>
+  <td>7</td>
+  <td><b>29 Oct</b> <a href="/DeBruijn/">DeBruijn</a></td>
+  <td><b>31 Oct</b> <a href="/More/">More</a></td>
+  <td><b>2 Nov</b> <a href="/Inference/">Inference</a></td>
+ </tr>
+ <tr>
+  <td>8</td>
+  <td><b>5 Nov</b> (no class)</td>
+  <td><b>7 Nov</b> (tutorial only)</td>
+  <td><b>9 Nov</b> <a href="/Untyped/">Untyped</a></td>
+ </tr>
+ <tr>
+  <td>9</td>
+  <td><b>12 Nov</b> (no class)</td>
+  <td><b>14 Nov</b> (tutorial only)</td>
+  <td><b>16 Nov</b> (no class)</td>
+ </tr>
+ <tr>
+  <td>10</td>
+  <td><b>19 Nov</b> (no class)</td>
+  <td><b>21 Nov</b> Propositions as Types</td>
+  <td><b>23 Nov</b> (no class)</td>
+ </tr>
+ <tr>
+  <td>11</td>
+  <td><b>26 Nov</b> (no class)</td>
+  <td><b>28 Nov</b> Quantitative Type Theory (Wen)</td>
+  <td><b>30 Nov</b> (mock exam)</td>
+ </tr>
+</table>
+
+<h2 id="assignments">Assignments</h2>
+
+<p>For instructions on how to set up Agda for PLFA see <a href="/GettingStarted/">Getting Started</a>.</p>
+
+<ul>
+  <li><a href="/Assignment1/">Assignment 1</a> cw1 due 4pm Thursday 4 October (Week 3)</li>
+  <li><a href="/Assignment2/">Assignment 2</a> cw2 due 4pm Thursday 18 October (Week 5)</li>
+  <li><a href="/Assignment3/">Assignment 3</a> cw3 due 4pm Thursday 1 November (Week 7)</li>
+  <li><a href="/Assignment4/">Assignment 4</a> cw4 due 4pm Thursday 15 November (Week 9)</li>
+  <li><a href="/tspl/Assignment5.pdf">Assignment 5</a> cw5 due 4pm Thursday 22 November (Week 10)
+<br />
+Use file <a href="/Exam/">Exam</a>. Despite the rubric, do <strong>all three questions</strong>.</li>
+</ul>
+
+<p>Assignments are submitted by running</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>submit tspl cwN AssignmentN.lagda
+</code></pre></div></div>
+<p>where N is the number of the assignment.</p>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/tspl/TSPL.lagda">Source</a>
+    
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

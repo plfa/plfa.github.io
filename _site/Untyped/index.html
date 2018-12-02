@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Untyped: Untyped lambda calculus with full normalisation | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Untyped: Untyped lambda calculus with full normalisation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/Untyped/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/Untyped/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/Untyped/","headline":"Untyped: Untyped lambda calculus with full normalisation","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Untyped: Untyped lambda calculus with full normalisation</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/Inference/">Prev</a>
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Untyped.lagda">Source</a>
+    
+    
+    &bullet;
+    <a alt="Next chapter" href="/Acknowledgements/">Next</a>
+    
+</p>
+
+
+  <div class="post-content">
+    <pre class="Agda"><a id="188" class="Keyword">module</a> <a id="195" href="/Untyped/" class="Module">plfa.Untyped</a> <a id="208" class="Keyword">where</a></pre>
+
+<p>In this chapter we play with variations on a theme.</p>
+
+<ul>
+  <li>
+    <p>Previous chapters consider inherently-typed calculi;
+here we consider one that is untyped but inherently scoped.</p>
+  </li>
+  <li>
+    <p>Previous chapters consider call-by-value calculi;
+here we consider call-by-name.</p>
+  </li>
+  <li>
+    <p>Previous chapters consider <em>weak head normal form</em>,
+where reduction stops at a lambda abstraction;
+here we consider <em>full normalisation</em>,
+where reduction continues underneath a lambda.</p>
+  </li>
+  <li>
+    <p>Previous chapters consider reduction of <em>closed</em> terms,
+those with no free variables;
+here we consider <em>open</em> terms,
+those which may have free variables.</p>
+  </li>
+  <li>
+    <p>Previous chapters consider lambda calculus extended
+with natural numbers and fixpoints;
+here we consider a tiny calculus with just variables,
+abstraction, and application, in which the other
+constructs may be encoded.</p>
+  </li>
+</ul>
+
+<p>In general, one may mix and match these features,
+save that full normalisation requires open terms and
+encoding naturals and fixpoints requires being untyped.
+The aim of this chapter is to give some appreciation for
+the range of different lambda calculi one may encounter.</p>
+
+<h2 id="imports">Imports</h2>
+
+<pre class="Agda"><a id="1369" class="Keyword">import</a> <a id="1376" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="1414" class="Symbol">as</a> <a id="1417" class="Module">Eq</a>
+<a id="1420" class="Keyword">open</a> <a id="1425" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="1428" class="Keyword">using</a> <a id="1434" class="Symbol">(</a><a id="1435" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">_≡_</a><a id="1438" class="Symbol">;</a> <a id="1440" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="1444" class="Symbol">;</a> <a id="1446" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#838" class="Function">sym</a><a id="1449" class="Symbol">;</a> <a id="1451" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#887" class="Function">trans</a><a id="1456" class="Symbol">;</a> <a id="1458" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#1056" class="Function">cong</a><a id="1462" class="Symbol">)</a>
+<a id="1464" class="Keyword">open</a> <a id="1469" class="Keyword">import</a> <a id="1476" href="https://agda.github.io/agda-stdlib/Data.Empty.html" class="Module">Data.Empty</a> <a id="1487" class="Keyword">using</a> <a id="1493" class="Symbol">(</a><a id="1494" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a><a id="1495" class="Symbol">;</a> <a id="1497" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a><a id="1503" class="Symbol">)</a>
+<a id="1505" class="Keyword">open</a> <a id="1510" class="Keyword">import</a> <a id="1517" href="https://agda.github.io/agda-stdlib/Data.Nat.html" class="Module">Data.Nat</a> <a id="1526" class="Keyword">using</a> <a id="1532" class="Symbol">(</a><a id="1533" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="1534" class="Symbol">;</a> <a id="1536" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a><a id="1540" class="Symbol">;</a> <a id="1542" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a><a id="1545" class="Symbol">;</a> <a id="1547" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#230" class="Primitive Operator">_+_</a><a id="1550" class="Symbol">;</a> <a id="1552" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#320" class="Primitive Operator">_∸_</a><a id="1555" class="Symbol">)</a>
+<a id="1557" class="Keyword">open</a> <a id="1562" class="Keyword">import</a> <a id="1569" href="https://agda.github.io/agda-stdlib/Data.Product.html" class="Module">Data.Product</a> <a id="1582" class="Keyword">using</a> <a id="1588" class="Symbol">(</a><a id="1589" href="https://agda.github.io/agda-stdlib/Data.Product.html#1353" class="Function Operator">_×_</a><a id="1592" class="Symbol">)</a> <a id="1594" class="Keyword">renaming</a> <a id="1603" class="Symbol">(</a><a id="1604" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">_,_</a> <a id="1608" class="Symbol">to</a> <a id="1611" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="1616" class="Symbol">)</a>
+<a id="1618" class="Keyword">open</a> <a id="1623" class="Keyword">import</a> <a id="1630" href="https://agda.github.io/agda-stdlib/Data.Unit.html" class="Module">Data.Unit</a> <a id="1640" class="Keyword">using</a> <a id="1646" class="Symbol">(</a><a id="1647" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Unit.html#69" class="Record">⊤</a><a id="1648" class="Symbol">;</a> <a id="1650" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Unit.html#106" class="InductiveConstructor">tt</a><a id="1652" class="Symbol">)</a>
+<a id="1654" class="Keyword">open</a> <a id="1659" class="Keyword">import</a> <a id="1666" href="https://agda.github.io/agda-stdlib/Function.html" class="Module">Function</a> <a id="1675" class="Keyword">using</a> <a id="1681" class="Symbol">(</a><a id="1682" href="https://agda.github.io/agda-stdlib/Function.html#769" class="Function Operator">_∘_</a><a id="1685" class="Symbol">)</a>
+<a id="1687" class="Keyword">open</a> <a id="1692" class="Keyword">import</a> <a id="1699" href="https://agda.github.io/agda-stdlib/Function.Equivalence.html" class="Module">Function.Equivalence</a> <a id="1720" class="Keyword">using</a> <a id="1726" class="Symbol">(</a><a id="1727" href="https://agda.github.io/agda-stdlib/Function.Equivalence.html#935" class="Function Operator">_⇔_</a><a id="1730" class="Symbol">;</a> <a id="1732" href="https://agda.github.io/agda-stdlib/Function.Equivalence.html#1028" class="Function">equivalence</a><a id="1743" class="Symbol">)</a>
+<a id="1745" class="Keyword">open</a> <a id="1750" class="Keyword">import</a> <a id="1757" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="1774" class="Keyword">using</a> <a id="1780" class="Symbol">(</a><a id="1781" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a><a id="1783" class="Symbol">;</a> <a id="1785" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#534" class="Datatype">Dec</a><a id="1788" class="Symbol">;</a> <a id="1790" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#570" class="InductiveConstructor">yes</a><a id="1793" class="Symbol">;</a> <a id="1795" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#597" class="InductiveConstructor">no</a><a id="1797" class="Symbol">)</a>
+<a id="1799" class="Keyword">open</a> <a id="1804" class="Keyword">import</a> <a id="1811" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Decidable.html" class="Module">Relation.Nullary.Decidable</a> <a id="1838" class="Keyword">using</a> <a id="1844" class="Symbol">(</a><a id="1845" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Decidable.html#1632" class="Function">map</a><a id="1848" class="Symbol">)</a>
+<a id="1850" class="Keyword">open</a> <a id="1855" class="Keyword">import</a> <a id="1862" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Negation.html" class="Module">Relation.Nullary.Negation</a> <a id="1888" class="Keyword">using</a> <a id="1894" class="Symbol">(</a><a id="1895" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Negation.html#688" class="Function">contraposition</a><a id="1909" class="Symbol">)</a>
+<a id="1911" class="Keyword">open</a> <a id="1916" class="Keyword">import</a> <a id="1923" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Product.html" class="Module">Relation.Nullary.Product</a> <a id="1948" class="Keyword">using</a> <a id="1954" class="Symbol">(</a><a id="1955" href="https://agda.github.io/agda-stdlib/Relation.Nullary.Product.html#394" class="Function Operator">_×-dec_</a><a id="1962" class="Symbol">)</a></pre>
+
+<h2 id="untyped-is-uni-typed">Untyped is Uni-typed</h2>
+
+<p>Our development will be close to that in
+Chapter <a href="/DeBruijn/">DeBruijn</a>,
+save that every term will have exactly the same type, written <code class="highlighter-rouge">★</code>
+and pronounced “any”.
+This matches a slogan introduced by Dana Scott
+and echoed by Robert Harper: “Untyped is Uni-typed”.
+One consequence of this approach is that constructs which previously
+had to be given separately (such as natural numbers and fixpoints)
+can now be defined in the language itself.</p>
+
+<h2 id="syntax">Syntax</h2>
+
+<p>First, we get all our infix declarations out of the way.</p>
+
+<pre class="Agda"><a id="2529" class="Keyword">infix</a>  <a id="2536" class="Number">4</a>  <a id="2539" href="/Untyped/#4059" class="Datatype Operator">_⊢_</a>
+<a id="2543" class="Keyword">infix</a>  <a id="2550" class="Number">4</a>  <a id="2553" href="/Untyped/#3271" class="Datatype Operator">_∋_</a>
+<a id="2557" class="Keyword">infixl</a> <a id="2564" class="Number">5</a>  <a id="2567" href="/Untyped/#2970" class="InductiveConstructor Operator">_,_</a>
+
+<a id="2572" class="Keyword">infix</a>  <a id="2579" class="Number">6</a>  <a id="2582" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ_</a>
+<a id="2585" class="Keyword">infix</a>  <a id="2592" class="Number">6</a>  <a id="2595" href="/Untyped/#8416" class="InductiveConstructor Operator">′_</a>
+<a id="2598" class="Keyword">infixl</a> <a id="2605" class="Number">7</a>  <a id="2608" href="/Untyped/#4207" class="InductiveConstructor Operator">_·_</a></pre>
+
+<h2 id="types">Types</h2>
+
+<p>We have just one type.</p>
+<pre class="Agda"><a id="2670" class="Keyword">data</a> <a id="Type"></a><a id="2675" href="/Untyped/#2675" class="Datatype">Type</a> <a id="2680" class="Symbol">:</a> <a id="2682" class="PrimitiveType">Set</a> <a id="2686" class="Keyword">where</a>
+  <a id="Type.★"></a><a id="2694" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="2696" class="Symbol">:</a> <a id="2698" href="/Untyped/#2675" class="Datatype">Type</a></pre>
+
+<h4 id="exercise-type">Exercise (<code class="highlighter-rouge">Type≃⊤</code>)</h4>
+
+<p>Show that <code class="highlighter-rouge">Type</code> is isomorphic to <code class="highlighter-rouge">⊤</code>, the unit type.</p>
+
+<h2 id="contexts">Contexts</h2>
+
+<p>As before, a context is a list of types, with the type of the
+most recently bound variable on the right.</p>
+<pre class="Agda"><a id="2927" class="Keyword">data</a> <a id="Context"></a><a id="2932" href="/Untyped/#2932" class="Datatype">Context</a> <a id="2940" class="Symbol">:</a> <a id="2942" class="PrimitiveType">Set</a> <a id="2946" class="Keyword">where</a>
+  <a id="Context.∅"></a><a id="2954" href="/Untyped/#2954" class="InductiveConstructor">∅</a>   <a id="2958" class="Symbol">:</a> <a id="2960" href="/Untyped/#2932" class="Datatype">Context</a>
+  <a id="Context._,_"></a><a id="2970" href="/Untyped/#2970" class="InductiveConstructor Operator">_,_</a> <a id="2974" class="Symbol">:</a> <a id="2976" href="/Untyped/#2932" class="Datatype">Context</a> <a id="2984" class="Symbol">→</a> <a id="2986" href="/Untyped/#2675" class="Datatype">Type</a> <a id="2991" class="Symbol">→</a> <a id="2993" href="/Untyped/#2932" class="Datatype">Context</a></pre>
+<p>We let <code class="highlighter-rouge">Γ</code> and <code class="highlighter-rouge">Δ</code> range over contexts.</p>
+
+<h4 id="exercise-contextℕ">Exercise (<code class="highlighter-rouge">Context≃ℕ</code>)</h4>
+
+<p>Show that <code class="highlighter-rouge">Context</code> is isomorphic to <code class="highlighter-rouge">ℕ</code>.</p>
+
+<h2 id="variables-and-the-lookup-judgement">Variables and the lookup judgement</h2>
+
+<p>Inherently typed variables correspond to the lookup judgement.  The
+rules are as before.</p>
+<pre class="Agda"><a id="3266" class="Keyword">data</a> <a id="_∋_"></a><a id="3271" href="/Untyped/#3271" class="Datatype Operator">_∋_</a> <a id="3275" class="Symbol">:</a> <a id="3277" href="/Untyped/#2932" class="Datatype">Context</a> <a id="3285" class="Symbol">→</a> <a id="3287" href="/Untyped/#2675" class="Datatype">Type</a> <a id="3292" class="Symbol">→</a> <a id="3294" class="PrimitiveType">Set</a> <a id="3298" class="Keyword">where</a>
+
+  <a id="_∋_.Z"></a><a id="3307" href="/Untyped/#3307" class="InductiveConstructor">Z</a> <a id="3309" class="Symbol">:</a> <a id="3311" class="Symbol">∀</a> <a id="3313" class="Symbol">{</a><a id="3314" href="/Untyped/#3314" class="Bound">Γ</a> <a id="3316" href="/Untyped/#3316" class="Bound">A</a><a id="3317" class="Symbol">}</a>
+     <a id="3324" class="Comment">---------</a>
+   <a id="3337" class="Symbol">→</a> <a id="3339" href="/Untyped/#3314" class="Bound">Γ</a> <a id="3341" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="3343" href="/Untyped/#3316" class="Bound">A</a> <a id="3345" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="3347" href="/Untyped/#3316" class="Bound">A</a>
+
+  <a id="_∋_.S_"></a><a id="3352" href="/Untyped/#3352" class="InductiveConstructor Operator">S_</a> <a id="3355" class="Symbol">:</a> <a id="3357" class="Symbol">∀</a> <a id="3359" class="Symbol">{</a><a id="3360" href="/Untyped/#3360" class="Bound">Γ</a> <a id="3362" href="/Untyped/#3362" class="Bound">A</a> <a id="3364" href="/Untyped/#3364" class="Bound">B</a><a id="3365" class="Symbol">}</a>
+    <a id="3371" class="Symbol">→</a> <a id="3373" href="/Untyped/#3360" class="Bound">Γ</a> <a id="3375" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="3377" href="/Untyped/#3362" class="Bound">A</a>
+      <a id="3385" class="Comment">---------</a>
+    <a id="3399" class="Symbol">→</a> <a id="3401" href="/Untyped/#3360" class="Bound">Γ</a> <a id="3403" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="3405" href="/Untyped/#3364" class="Bound">B</a> <a id="3407" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="3409" href="/Untyped/#3362" class="Bound">A</a></pre>
+<p>We could write the rules with all instances of <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code>
+replaced by <code class="highlighter-rouge">★</code>, but arguably it is clearer not to do so.</p>
+
+<p>Because <code class="highlighter-rouge">★</code> is the only type, the judgement doesn’t guarantee anything
+useful about types.  But it does ensure that all variables are in
+scope.  For instance, we cannot use <code class="highlighter-rouge">S S Z</code> in a context that only
+binds two variables.</p>
+
+<h2 id="terms-and-the-scoping-judgement">Terms and the scoping judgement</h2>
+
+<p>Inherently typed terms correspond to the typing judgement, but with
+<code class="highlighter-rouge">★</code> as the only type.  The result is that we check that terms are
+well-scoped — that is, that all variables they mention are in scope —
+but not that they are well-typed.</p>
+<pre class="Agda"><a id="4054" class="Keyword">data</a> <a id="_⊢_"></a><a id="4059" href="/Untyped/#4059" class="Datatype Operator">_⊢_</a> <a id="4063" class="Symbol">:</a> <a id="4065" href="/Untyped/#2932" class="Datatype">Context</a> <a id="4073" class="Symbol">→</a> <a id="4075" href="/Untyped/#2675" class="Datatype">Type</a> <a id="4080" class="Symbol">→</a> <a id="4082" class="PrimitiveType">Set</a> <a id="4086" class="Keyword">where</a>
+
+  <a id="_⊢_.`_"></a><a id="4095" href="/Untyped/#4095" class="InductiveConstructor Operator">`_</a> <a id="4098" class="Symbol">:</a> <a id="4100" class="Symbol">∀</a> <a id="4102" class="Symbol">{</a><a id="4103" href="/Untyped/#4103" class="Bound">Γ</a> <a id="4105" href="/Untyped/#4105" class="Bound">A</a><a id="4106" class="Symbol">}</a>
+    <a id="4112" class="Symbol">→</a> <a id="4114" href="/Untyped/#4103" class="Bound">Γ</a> <a id="4116" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="4118" href="/Untyped/#4105" class="Bound">A</a>
+      <a id="4126" class="Comment">-----</a>
+    <a id="4136" class="Symbol">→</a> <a id="4138" href="/Untyped/#4103" class="Bound">Γ</a> <a id="4140" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4142" href="/Untyped/#4105" class="Bound">A</a>
+
+  <a id="_⊢_.ƛ_"></a><a id="4147" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ_</a>  <a id="4151" class="Symbol">:</a>  <a id="4154" class="Symbol">∀</a> <a id="4156" class="Symbol">{</a><a id="4157" href="/Untyped/#4157" class="Bound">Γ</a><a id="4158" class="Symbol">}</a>
+    <a id="4164" class="Symbol">→</a> <a id="4166" href="/Untyped/#4157" class="Bound">Γ</a> <a id="4168" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="4170" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="4172" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4174" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+      <a id="4182" class="Comment">---------</a>
+    <a id="4196" class="Symbol">→</a> <a id="4198" href="/Untyped/#4157" class="Bound">Γ</a> <a id="4200" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4202" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+
+  <a id="_⊢_._·_"></a><a id="4207" href="/Untyped/#4207" class="InductiveConstructor Operator">_·_</a> <a id="4211" class="Symbol">:</a> <a id="4213" class="Symbol">∀</a> <a id="4215" class="Symbol">{</a><a id="4216" href="/Untyped/#4216" class="Bound">Γ</a><a id="4217" class="Symbol">}</a>
+    <a id="4223" class="Symbol">→</a> <a id="4225" href="/Untyped/#4216" class="Bound">Γ</a> <a id="4227" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4229" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+    <a id="4235" class="Symbol">→</a> <a id="4237" href="/Untyped/#4216" class="Bound">Γ</a> <a id="4239" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4241" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+      <a id="4249" class="Comment">------</a>
+    <a id="4260" class="Symbol">→</a> <a id="4262" href="/Untyped/#4216" class="Bound">Γ</a> <a id="4264" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4266" href="/Untyped/#2694" class="InductiveConstructor">★</a></pre>
+<p>Now we have a tiny calculus, with only variables, abstraction, and
+application.  Below we will see how to encode naturals and
+fixpoints into this calculus.</p>
+
+<h2 id="writing-variables-as-numerals">Writing variables as numerals</h2>
+
+<p>As before, we can convert a natural to the corresponding de Bruijn
+index.  We no longer need to lookup the type in the context, since
+every variable has the same type.</p>
+<pre class="Agda"><a id="count"></a><a id="4651" href="/Untyped/#4651" class="Function">count</a> <a id="4657" class="Symbol">:</a> <a id="4659" class="Symbol">∀</a> <a id="4661" class="Symbol">{</a><a id="4662" href="/Untyped/#4662" class="Bound">Γ</a><a id="4663" class="Symbol">}</a> <a id="4665" class="Symbol">→</a> <a id="4667" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a> <a id="4669" class="Symbol">→</a> <a id="4671" href="/Untyped/#4662" class="Bound">Γ</a> <a id="4673" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="4675" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="4677" href="/Untyped/#4651" class="Function">count</a> <a id="4683" class="Symbol">{</a><a id="4684" href="/Untyped/#4684" class="Bound">Γ</a> <a id="4686" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="4688" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="4689" class="Symbol">}</a> <a id="4691" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a>     <a id="4700" class="Symbol">=</a>  <a id="4703" href="/Untyped/#3307" class="InductiveConstructor">Z</a>
+<a id="4705" href="/Untyped/#4651" class="Function">count</a> <a id="4711" class="Symbol">{</a><a id="4712" href="/Untyped/#4712" class="Bound">Γ</a> <a id="4714" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="4716" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="4717" class="Symbol">}</a> <a id="4719" class="Symbol">(</a><a id="4720" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a> <a id="4724" href="/Untyped/#4724" class="Bound">n</a><a id="4725" class="Symbol">)</a>  <a id="4728" class="Symbol">=</a>  <a id="4731" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="4733" class="Symbol">(</a><a id="4734" href="/Untyped/#4651" class="Function">count</a> <a id="4740" href="/Untyped/#4724" class="Bound">n</a><a id="4741" class="Symbol">)</a>
+<a id="4743" href="/Untyped/#4651" class="Function">count</a> <a id="4749" class="Symbol">{</a><a id="4750" href="/Untyped/#2954" class="InductiveConstructor">∅</a><a id="4751" class="Symbol">}</a>     <a id="4757" class="Symbol">_</a>        <a id="4766" class="Symbol">=</a>  <a id="4769" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a> <a id="4776" href="/Untyped/#4805" class="Postulate">impossible</a>
+  <a id="4789" class="Keyword">where</a> <a id="4795" class="Keyword">postulate</a> <a id="4805" href="/Untyped/#4805" class="Postulate">impossible</a> <a id="4816" class="Symbol">:</a> <a id="4818" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a></pre>
+
+<p>We can then introduce a convenient abbreviation for variables.</p>
+<pre class="Agda"><a id="#_"></a><a id="4908" href="/Untyped/#4908" class="Function Operator">#_</a> <a id="4911" class="Symbol">:</a> <a id="4913" class="Symbol">∀</a> <a id="4915" class="Symbol">{</a><a id="4916" href="/Untyped/#4916" class="Bound">Γ</a><a id="4917" class="Symbol">}</a> <a id="4919" class="Symbol">→</a> <a id="4921" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a> <a id="4923" class="Symbol">→</a> <a id="4925" href="/Untyped/#4916" class="Bound">Γ</a> <a id="4927" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="4929" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="4931" href="/Untyped/#4908" class="Function Operator">#</a> <a id="4933" href="/Untyped/#4933" class="Bound">n</a>  <a id="4936" class="Symbol">=</a>  <a id="4939" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="4941" href="/Untyped/#4651" class="Function">count</a> <a id="4947" href="/Untyped/#4933" class="Bound">n</a></pre>
+
+<h2 id="test-examples">Test examples</h2>
+
+<p>Our only example is computing two plus two on Church numerals.</p>
+<pre class="Agda"><a id="twoᶜ"></a><a id="5055" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="5060" class="Symbol">:</a> <a id="5062" class="Symbol">∀</a> <a id="5064" class="Symbol">{</a><a id="5065" href="/Untyped/#5065" class="Bound">Γ</a><a id="5066" class="Symbol">}</a> <a id="5068" class="Symbol">→</a> <a id="5070" href="/Untyped/#5065" class="Bound">Γ</a> <a id="5072" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="5074" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="5076" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="5081" class="Symbol">=</a> <a id="5083" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5085" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5087" class="Symbol">(</a><a id="5088" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5090" class="Number">1</a> <a id="5092" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5094" class="Symbol">(</a><a id="5095" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5097" class="Number">1</a> <a id="5099" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5101" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5103" class="Number">0</a><a id="5104" class="Symbol">))</a>
+
+<a id="fourᶜ"></a><a id="5108" href="/Untyped/#5108" class="Function">fourᶜ</a> <a id="5114" class="Symbol">:</a> <a id="5116" class="Symbol">∀</a> <a id="5118" class="Symbol">{</a><a id="5119" href="/Untyped/#5119" class="Bound">Γ</a><a id="5120" class="Symbol">}</a> <a id="5122" class="Symbol">→</a> <a id="5124" href="/Untyped/#5119" class="Bound">Γ</a> <a id="5126" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="5128" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="5130" href="/Untyped/#5108" class="Function">fourᶜ</a> <a id="5136" class="Symbol">=</a> <a id="5138" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5140" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5142" class="Symbol">(</a><a id="5143" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5145" class="Number">1</a> <a id="5147" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5149" class="Symbol">(</a><a id="5150" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5152" class="Number">1</a> <a id="5154" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5156" class="Symbol">(</a><a id="5157" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5159" class="Number">1</a> <a id="5161" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5163" class="Symbol">(</a><a id="5164" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5166" class="Number">1</a> <a id="5168" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5170" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5172" class="Number">0</a><a id="5173" class="Symbol">))))</a>
+
+<a id="plusᶜ"></a><a id="5179" href="/Untyped/#5179" class="Function">plusᶜ</a> <a id="5185" class="Symbol">:</a> <a id="5187" class="Symbol">∀</a> <a id="5189" class="Symbol">{</a><a id="5190" href="/Untyped/#5190" class="Bound">Γ</a><a id="5191" class="Symbol">}</a> <a id="5193" class="Symbol">→</a> <a id="5195" href="/Untyped/#5190" class="Bound">Γ</a> <a id="5197" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="5199" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="5201" href="/Untyped/#5179" class="Function">plusᶜ</a> <a id="5207" class="Symbol">=</a> <a id="5209" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5211" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5213" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5215" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="5217" class="Symbol">(</a><a id="5218" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5220" class="Number">3</a> <a id="5222" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5224" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5226" class="Number">1</a> <a id="5228" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5230" class="Symbol">(</a><a id="5231" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5233" class="Number">2</a> <a id="5235" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5237" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5239" class="Number">1</a> <a id="5241" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5243" href="/Untyped/#4908" class="Function Operator">#</a> <a id="5245" class="Number">0</a><a id="5246" class="Symbol">))</a>
+
+<a id="2+2ᶜ"></a><a id="5250" href="/Untyped/#5250" class="Function">2+2ᶜ</a> <a id="5255" class="Symbol">:</a> <a id="5257" href="/Untyped/#2954" class="InductiveConstructor">∅</a> <a id="5259" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="5261" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="5263" href="/Untyped/#5250" class="Function">2+2ᶜ</a> <a id="5268" class="Symbol">=</a> <a id="5270" href="/Untyped/#5179" class="Function">plusᶜ</a> <a id="5276" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5278" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="5283" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="5285" href="/Untyped/#5055" class="Function">twoᶜ</a></pre>
+<p>Before, reduction stopped when we reached a lambda term, so we had to
+compute <code class="highlighter-rouge">plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero</code> to ensure we reduced
+to a representation of the natural four.  Now, reduction continues
+under lambda, so we don’t need the extra arguments.  It is convenient
+to define a term to represent four as a Church numeral, as well as
+two.</p>
+
+<h2 id="renaming">Renaming</h2>
+
+<p>Our definition of renaming is as before.  First, we need an extension lemma.</p>
+<pre class="Agda"><a id="ext"></a><a id="5754" href="/Untyped/#5754" class="Function">ext</a> <a id="5758" class="Symbol">:</a> <a id="5760" class="Symbol">∀</a> <a id="5762" class="Symbol">{</a><a id="5763" href="/Untyped/#5763" class="Bound">Γ</a> <a id="5765" href="/Untyped/#5765" class="Bound">Δ</a><a id="5766" class="Symbol">}</a> <a id="5768" class="Symbol">→</a> <a id="5770" class="Symbol">(∀</a> <a id="5773" class="Symbol">{</a><a id="5774" href="/Untyped/#5774" class="Bound">A</a><a id="5775" class="Symbol">}</a> <a id="5777" class="Symbol">→</a> <a id="5779" href="/Untyped/#5763" class="Bound">Γ</a> <a id="5781" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="5783" href="/Untyped/#5774" class="Bound">A</a> <a id="5785" class="Symbol">→</a> <a id="5787" href="/Untyped/#5765" class="Bound">Δ</a> <a id="5789" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="5791" href="/Untyped/#5774" class="Bound">A</a><a id="5792" class="Symbol">)</a>
+    <a id="5798" class="Comment">-----------------------------------</a>
+  <a id="5836" class="Symbol">→</a> <a id="5838" class="Symbol">(∀</a> <a id="5841" class="Symbol">{</a><a id="5842" href="/Untyped/#5842" class="Bound">A</a> <a id="5844" href="/Untyped/#5844" class="Bound">B</a><a id="5845" class="Symbol">}</a> <a id="5847" class="Symbol">→</a> <a id="5849" href="/Untyped/#5763" class="Bound">Γ</a> <a id="5851" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="5853" href="/Untyped/#5844" class="Bound">B</a> <a id="5855" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="5857" href="/Untyped/#5842" class="Bound">A</a> <a id="5859" class="Symbol">→</a> <a id="5861" href="/Untyped/#5765" class="Bound">Δ</a> <a id="5863" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="5865" href="/Untyped/#5844" class="Bound">B</a> <a id="5867" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="5869" href="/Untyped/#5842" class="Bound">A</a><a id="5870" class="Symbol">)</a>
+<a id="5872" href="/Untyped/#5754" class="Function">ext</a> <a id="5876" href="/Untyped/#5876" class="Bound">ρ</a> <a id="5878" href="/Untyped/#3307" class="InductiveConstructor">Z</a>      <a id="5885" class="Symbol">=</a>  <a id="5888" href="/Untyped/#3307" class="InductiveConstructor">Z</a>
+<a id="5890" href="/Untyped/#5754" class="Function">ext</a> <a id="5894" href="/Untyped/#5894" class="Bound">ρ</a> <a id="5896" class="Symbol">(</a><a id="5897" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="5899" href="/Untyped/#5899" class="Bound">x</a><a id="5900" class="Symbol">)</a>  <a id="5903" class="Symbol">=</a>  <a id="5906" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="5908" class="Symbol">(</a><a id="5909" href="/Untyped/#5894" class="Bound">ρ</a> <a id="5911" href="/Untyped/#5899" class="Bound">x</a><a id="5912" class="Symbol">)</a></pre>
+<p>We could replace all instances of <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code> by <code class="highlighter-rouge">★</code>, but arguably it is
+clearer not to do so.</p>
+
+<p>Now it is straighforward to define renaming.</p>
+<pre class="Agda"><a id="rename"></a><a id="6079" href="/Untyped/#6079" class="Function">rename</a> <a id="6086" class="Symbol">:</a> <a id="6088" class="Symbol">∀</a> <a id="6090" class="Symbol">{</a><a id="6091" href="/Untyped/#6091" class="Bound">Γ</a> <a id="6093" href="/Untyped/#6093" class="Bound">Δ</a><a id="6094" class="Symbol">}</a>
+  <a id="6098" class="Symbol">→</a> <a id="6100" class="Symbol">(∀</a> <a id="6103" class="Symbol">{</a><a id="6104" href="/Untyped/#6104" class="Bound">A</a><a id="6105" class="Symbol">}</a> <a id="6107" class="Symbol">→</a> <a id="6109" href="/Untyped/#6091" class="Bound">Γ</a> <a id="6111" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="6113" href="/Untyped/#6104" class="Bound">A</a> <a id="6115" class="Symbol">→</a> <a id="6117" href="/Untyped/#6093" class="Bound">Δ</a> <a id="6119" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="6121" href="/Untyped/#6104" class="Bound">A</a><a id="6122" class="Symbol">)</a>
+    <a id="6128" class="Comment">------------------------</a>
+  <a id="6155" class="Symbol">→</a> <a id="6157" class="Symbol">(∀</a> <a id="6160" class="Symbol">{</a><a id="6161" href="/Untyped/#6161" class="Bound">A</a><a id="6162" class="Symbol">}</a> <a id="6164" class="Symbol">→</a> <a id="6166" href="/Untyped/#6091" class="Bound">Γ</a> <a id="6168" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6170" href="/Untyped/#6161" class="Bound">A</a> <a id="6172" class="Symbol">→</a> <a id="6174" href="/Untyped/#6093" class="Bound">Δ</a> <a id="6176" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6178" href="/Untyped/#6161" class="Bound">A</a><a id="6179" class="Symbol">)</a>
+<a id="6181" href="/Untyped/#6079" class="Function">rename</a> <a id="6188" href="/Untyped/#6188" class="Bound">ρ</a> <a id="6190" class="Symbol">(</a><a id="6191" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="6193" href="/Untyped/#6193" class="Bound">x</a><a id="6194" class="Symbol">)</a>          <a id="6205" class="Symbol">=</a>  <a id="6208" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="6210" class="Symbol">(</a><a id="6211" href="/Untyped/#6188" class="Bound">ρ</a> <a id="6213" href="/Untyped/#6193" class="Bound">x</a><a id="6214" class="Symbol">)</a>
+<a id="6216" href="/Untyped/#6079" class="Function">rename</a> <a id="6223" href="/Untyped/#6223" class="Bound">ρ</a> <a id="6225" class="Symbol">(</a><a id="6226" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="6228" href="/Untyped/#6228" class="Bound">N</a><a id="6229" class="Symbol">)</a>          <a id="6240" class="Symbol">=</a>  <a id="6243" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="6245" class="Symbol">(</a><a id="6246" href="/Untyped/#6079" class="Function">rename</a> <a id="6253" class="Symbol">(</a><a id="6254" href="/Untyped/#5754" class="Function">ext</a> <a id="6258" href="/Untyped/#6223" class="Bound">ρ</a><a id="6259" class="Symbol">)</a> <a id="6261" href="/Untyped/#6228" class="Bound">N</a><a id="6262" class="Symbol">)</a>
+<a id="6264" href="/Untyped/#6079" class="Function">rename</a> <a id="6271" href="/Untyped/#6271" class="Bound">ρ</a> <a id="6273" class="Symbol">(</a><a id="6274" href="/Untyped/#6274" class="Bound">L</a> <a id="6276" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="6278" href="/Untyped/#6278" class="Bound">M</a><a id="6279" class="Symbol">)</a>        <a id="6288" class="Symbol">=</a>  <a id="6291" class="Symbol">(</a><a id="6292" href="/Untyped/#6079" class="Function">rename</a> <a id="6299" href="/Untyped/#6271" class="Bound">ρ</a> <a id="6301" href="/Untyped/#6274" class="Bound">L</a><a id="6302" class="Symbol">)</a> <a id="6304" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="6306" class="Symbol">(</a><a id="6307" href="/Untyped/#6079" class="Function">rename</a> <a id="6314" href="/Untyped/#6271" class="Bound">ρ</a> <a id="6316" href="/Untyped/#6278" class="Bound">M</a><a id="6317" class="Symbol">)</a></pre>
+<p>This is exactly as before, save that there are fewer term forms.</p>
+
+<h2 id="simultaneous-substitution">Simultaneous substitution</h2>
+
+<p>Our definition of substitution is also exactly as before.
+First we need an extension lemma.</p>
+<pre class="Agda"><a id="exts"></a><a id="6531" href="/Untyped/#6531" class="Function">exts</a> <a id="6536" class="Symbol">:</a> <a id="6538" class="Symbol">∀</a> <a id="6540" class="Symbol">{</a><a id="6541" href="/Untyped/#6541" class="Bound">Γ</a> <a id="6543" href="/Untyped/#6543" class="Bound">Δ</a><a id="6544" class="Symbol">}</a> <a id="6546" class="Symbol">→</a> <a id="6548" class="Symbol">(∀</a> <a id="6551" class="Symbol">{</a><a id="6552" href="/Untyped/#6552" class="Bound">A</a><a id="6553" class="Symbol">}</a> <a id="6555" class="Symbol">→</a> <a id="6557" href="/Untyped/#6541" class="Bound">Γ</a> <a id="6559" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="6561" href="/Untyped/#6552" class="Bound">A</a> <a id="6563" class="Symbol">→</a> <a id="6565" href="/Untyped/#6543" class="Bound">Δ</a> <a id="6567" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6569" href="/Untyped/#6552" class="Bound">A</a><a id="6570" class="Symbol">)</a>
+    <a id="6576" class="Comment">----------------------------------</a>
+  <a id="6613" class="Symbol">→</a> <a id="6615" class="Symbol">(∀</a> <a id="6618" class="Symbol">{</a><a id="6619" href="/Untyped/#6619" class="Bound">A</a> <a id="6621" href="/Untyped/#6621" class="Bound">B</a><a id="6622" class="Symbol">}</a> <a id="6624" class="Symbol">→</a> <a id="6626" href="/Untyped/#6541" class="Bound">Γ</a> <a id="6628" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="6630" href="/Untyped/#6621" class="Bound">B</a> <a id="6632" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="6634" href="/Untyped/#6619" class="Bound">A</a> <a id="6636" class="Symbol">→</a> <a id="6638" href="/Untyped/#6543" class="Bound">Δ</a> <a id="6640" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="6642" href="/Untyped/#6621" class="Bound">B</a> <a id="6644" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6646" href="/Untyped/#6619" class="Bound">A</a><a id="6647" class="Symbol">)</a>
+<a id="6649" href="/Untyped/#6531" class="Function">exts</a> <a id="6654" href="/Untyped/#6654" class="Bound">σ</a> <a id="6656" href="/Untyped/#3307" class="InductiveConstructor">Z</a>      <a id="6663" class="Symbol">=</a>  <a id="6666" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="6668" href="/Untyped/#3307" class="InductiveConstructor">Z</a>
+<a id="6670" href="/Untyped/#6531" class="Function">exts</a> <a id="6675" href="/Untyped/#6675" class="Bound">σ</a> <a id="6677" class="Symbol">(</a><a id="6678" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="6680" href="/Untyped/#6680" class="Bound">x</a><a id="6681" class="Symbol">)</a>  <a id="6684" class="Symbol">=</a>  <a id="6687" href="/Untyped/#6079" class="Function">rename</a> <a id="6694" href="/Untyped/#3352" class="InductiveConstructor Operator">S_</a> <a id="6697" class="Symbol">(</a><a id="6698" href="/Untyped/#6675" class="Bound">σ</a> <a id="6700" href="/Untyped/#6680" class="Bound">x</a><a id="6701" class="Symbol">)</a></pre>
+<p>Again, we could replace all instances of <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code> by <code class="highlighter-rouge">★</code>.</p>
+
+<p>Now it is straighforward to define substitution.</p>
+<pre class="Agda"><a id="subst"></a><a id="6838" href="/Untyped/#6838" class="Function">subst</a> <a id="6844" class="Symbol">:</a> <a id="6846" class="Symbol">∀</a> <a id="6848" class="Symbol">{</a><a id="6849" href="/Untyped/#6849" class="Bound">Γ</a> <a id="6851" href="/Untyped/#6851" class="Bound">Δ</a><a id="6852" class="Symbol">}</a>
+  <a id="6856" class="Symbol">→</a> <a id="6858" class="Symbol">(∀</a> <a id="6861" class="Symbol">{</a><a id="6862" href="/Untyped/#6862" class="Bound">A</a><a id="6863" class="Symbol">}</a> <a id="6865" class="Symbol">→</a> <a id="6867" href="/Untyped/#6849" class="Bound">Γ</a> <a id="6869" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="6871" href="/Untyped/#6862" class="Bound">A</a> <a id="6873" class="Symbol">→</a> <a id="6875" href="/Untyped/#6851" class="Bound">Δ</a> <a id="6877" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6879" href="/Untyped/#6862" class="Bound">A</a><a id="6880" class="Symbol">)</a>
+    <a id="6886" class="Comment">------------------------</a>
+  <a id="6913" class="Symbol">→</a> <a id="6915" class="Symbol">(∀</a> <a id="6918" class="Symbol">{</a><a id="6919" href="/Untyped/#6919" class="Bound">A</a><a id="6920" class="Symbol">}</a> <a id="6922" class="Symbol">→</a> <a id="6924" href="/Untyped/#6849" class="Bound">Γ</a> <a id="6926" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6928" href="/Untyped/#6919" class="Bound">A</a> <a id="6930" class="Symbol">→</a> <a id="6932" href="/Untyped/#6851" class="Bound">Δ</a> <a id="6934" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="6936" href="/Untyped/#6919" class="Bound">A</a><a id="6937" class="Symbol">)</a>
+<a id="6939" href="/Untyped/#6838" class="Function">subst</a> <a id="6945" href="/Untyped/#6945" class="Bound">σ</a> <a id="6947" class="Symbol">(</a><a id="6948" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="6950" href="/Untyped/#6950" class="Bound">k</a><a id="6951" class="Symbol">)</a>          <a id="6962" class="Symbol">=</a>  <a id="6965" href="/Untyped/#6945" class="Bound">σ</a> <a id="6967" href="/Untyped/#6950" class="Bound">k</a>
+<a id="6969" href="/Untyped/#6838" class="Function">subst</a> <a id="6975" href="/Untyped/#6975" class="Bound">σ</a> <a id="6977" class="Symbol">(</a><a id="6978" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="6980" href="/Untyped/#6980" class="Bound">N</a><a id="6981" class="Symbol">)</a>          <a id="6992" class="Symbol">=</a>  <a id="6995" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="6997" class="Symbol">(</a><a id="6998" href="/Untyped/#6838" class="Function">subst</a> <a id="7004" class="Symbol">(</a><a id="7005" href="/Untyped/#6531" class="Function">exts</a> <a id="7010" href="/Untyped/#6975" class="Bound">σ</a><a id="7011" class="Symbol">)</a> <a id="7013" href="/Untyped/#6980" class="Bound">N</a><a id="7014" class="Symbol">)</a>
+<a id="7016" href="/Untyped/#6838" class="Function">subst</a> <a id="7022" href="/Untyped/#7022" class="Bound">σ</a> <a id="7024" class="Symbol">(</a><a id="7025" href="/Untyped/#7025" class="Bound">L</a> <a id="7027" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="7029" href="/Untyped/#7029" class="Bound">M</a><a id="7030" class="Symbol">)</a>        <a id="7039" class="Symbol">=</a>  <a id="7042" class="Symbol">(</a><a id="7043" href="/Untyped/#6838" class="Function">subst</a> <a id="7049" href="/Untyped/#7022" class="Bound">σ</a> <a id="7051" href="/Untyped/#7025" class="Bound">L</a><a id="7052" class="Symbol">)</a> <a id="7054" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="7056" class="Symbol">(</a><a id="7057" href="/Untyped/#6838" class="Function">subst</a> <a id="7063" href="/Untyped/#7022" class="Bound">σ</a> <a id="7065" href="/Untyped/#7029" class="Bound">M</a><a id="7066" class="Symbol">)</a></pre>
+<p>Again, this is exactly as before, save that there are fewer term forms.</p>
+
+<h2 id="single-substitution">Single substitution</h2>
+
+<p>It is easy to define the special case of substitution for one free variable.</p>
+<pre class="Agda"><a id="_[_]"></a><a id="7266" href="/Untyped/#7266" class="Function Operator">_[_]</a> <a id="7271" class="Symbol">:</a> <a id="7273" class="Symbol">∀</a> <a id="7275" class="Symbol">{</a><a id="7276" href="/Untyped/#7276" class="Bound">Γ</a> <a id="7278" href="/Untyped/#7278" class="Bound">A</a> <a id="7280" href="/Untyped/#7280" class="Bound">B</a><a id="7281" class="Symbol">}</a>
+        <a id="7291" class="Symbol">→</a> <a id="7293" href="/Untyped/#7276" class="Bound">Γ</a> <a id="7295" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="7297" href="/Untyped/#7280" class="Bound">B</a> <a id="7299" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="7301" href="/Untyped/#7278" class="Bound">A</a>
+        <a id="7311" class="Symbol">→</a> <a id="7313" href="/Untyped/#7276" class="Bound">Γ</a> <a id="7315" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="7317" href="/Untyped/#7280" class="Bound">B</a> 
+          <a id="7330" class="Comment">---------</a>
+        <a id="7348" class="Symbol">→</a> <a id="7350" href="/Untyped/#7276" class="Bound">Γ</a> <a id="7352" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="7354" href="/Untyped/#7278" class="Bound">A</a>
+<a id="7356" href="/Untyped/#7266" class="Function Operator">_[_]</a> <a id="7361" class="Symbol">{</a><a id="7362" href="/Untyped/#7362" class="Bound">Γ</a><a id="7363" class="Symbol">}</a> <a id="7365" class="Symbol">{</a><a id="7366" href="/Untyped/#7366" class="Bound">A</a><a id="7367" class="Symbol">}</a> <a id="7369" class="Symbol">{</a><a id="7370" href="/Untyped/#7370" class="Bound">B</a><a id="7371" class="Symbol">}</a> <a id="7373" href="/Untyped/#7373" class="Bound">N</a> <a id="7375" href="/Untyped/#7375" class="Bound">M</a> <a id="7377" class="Symbol">=</a>  <a id="7380" href="/Untyped/#6838" class="Function">subst</a> <a id="7386" class="Symbol">{</a><a id="7387" href="/Untyped/#7362" class="Bound">Γ</a> <a id="7389" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="7391" href="/Untyped/#7370" class="Bound">B</a><a id="7392" class="Symbol">}</a> <a id="7394" class="Symbol">{</a><a id="7395" href="/Untyped/#7362" class="Bound">Γ</a><a id="7396" class="Symbol">}</a> <a id="7398" href="/Untyped/#7416" class="Function">σ</a> <a id="7400" class="Symbol">{</a><a id="7401" href="/Untyped/#7366" class="Bound">A</a><a id="7402" class="Symbol">}</a> <a id="7404" href="/Untyped/#7373" class="Bound">N</a>
+  <a id="7408" class="Keyword">where</a>
+  <a id="7416" href="/Untyped/#7416" class="Function">σ</a> <a id="7418" class="Symbol">:</a> <a id="7420" class="Symbol">∀</a> <a id="7422" class="Symbol">{</a><a id="7423" href="/Untyped/#7423" class="Bound">A</a><a id="7424" class="Symbol">}</a> <a id="7426" class="Symbol">→</a> <a id="7428" href="/Untyped/#7362" class="Bound">Γ</a> <a id="7430" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="7432" href="/Untyped/#7370" class="Bound">B</a> <a id="7434" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="7436" href="/Untyped/#7423" class="Bound">A</a> <a id="7438" class="Symbol">→</a> <a id="7440" href="/Untyped/#7362" class="Bound">Γ</a> <a id="7442" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="7444" href="/Untyped/#7423" class="Bound">A</a>
+  <a id="7448" href="/Untyped/#7416" class="Function">σ</a> <a id="7450" href="/Untyped/#3307" class="InductiveConstructor">Z</a>      <a id="7457" class="Symbol">=</a>  <a id="7460" href="/Untyped/#7375" class="Bound">M</a>
+  <a id="7464" href="/Untyped/#7416" class="Function">σ</a> <a id="7466" class="Symbol">(</a><a id="7467" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="7469" href="/Untyped/#7469" class="Bound">x</a><a id="7470" class="Symbol">)</a>  <a id="7473" class="Symbol">=</a>  <a id="7476" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="7478" href="/Untyped/#7469" class="Bound">x</a></pre>
+
+<h2 id="neutral-and-normal-terms">Neutral and normal terms</h2>
+
+<p>Reduction continues until a term is fully normalised.  Hence, instead
+of values, we are now interested in <em>normal forms</em>.  Terms in normal
+form are defined by mutual recursion with <em>neutral</em> terms.</p>
+<pre class="Agda"><a id="7732" class="Keyword">data</a> <a id="Neutral"></a><a id="7737" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="7745" class="Symbol">:</a> <a id="7747" class="Symbol">∀</a> <a id="7749" class="Symbol">{</a><a id="7750" href="/Untyped/#7750" class="Bound">Γ</a> <a id="7752" href="/Untyped/#7752" class="Bound">A</a><a id="7753" class="Symbol">}</a> <a id="7755" class="Symbol">→</a> <a id="7757" href="/Untyped/#7750" class="Bound">Γ</a> <a id="7759" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="7761" href="/Untyped/#7752" class="Bound">A</a> <a id="7763" class="Symbol">→</a> <a id="7765" class="PrimitiveType">Set</a>
+<a id="7769" class="Keyword">data</a> <a id="Normal"></a><a id="7774" href="/Untyped/#7774" class="Datatype">Normal</a>  <a id="7782" class="Symbol">:</a> <a id="7784" class="Symbol">∀</a> <a id="7786" class="Symbol">{</a><a id="7787" href="/Untyped/#7787" class="Bound">Γ</a> <a id="7789" href="/Untyped/#7789" class="Bound">A</a><a id="7790" class="Symbol">}</a> <a id="7792" class="Symbol">→</a> <a id="7794" href="/Untyped/#7787" class="Bound">Γ</a> <a id="7796" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="7798" href="/Untyped/#7789" class="Bound">A</a> <a id="7800" class="Symbol">→</a> <a id="7802" class="PrimitiveType">Set</a></pre>
+<p>Neutral terms arise because we now consider reduction of open terms,
+which may contain free variables.  A term is neutral if it is a
+variable or a neutral term applied to a normal term.</p>
+<pre class="Agda"><a id="8016" class="Keyword">data</a> <a id="8021" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="8029" class="Keyword">where</a>
+
+  <a id="Neutral.`_"></a><a id="8038" href="/Untyped/#8038" class="InductiveConstructor Operator">`_</a>  <a id="8042" class="Symbol">:</a> <a id="8044" class="Symbol">∀</a> <a id="8046" class="Symbol">{</a><a id="8047" href="/Untyped/#8047" class="Bound">Γ</a> <a id="8049" href="/Untyped/#8049" class="Bound">A</a><a id="8050" class="Symbol">}</a> <a id="8052" class="Symbol">(</a><a id="8053" href="/Untyped/#8053" class="Bound">x</a> <a id="8055" class="Symbol">:</a> <a id="8057" href="/Untyped/#8047" class="Bound">Γ</a> <a id="8059" href="/Untyped/#3271" class="Datatype Operator">∋</a> <a id="8061" href="/Untyped/#8049" class="Bound">A</a><a id="8062" class="Symbol">)</a>
+      <a id="8070" class="Comment">-------------</a>
+    <a id="8088" class="Symbol">→</a> <a id="8090" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="8098" class="Symbol">(</a><a id="8099" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="8101" href="/Untyped/#8053" class="Bound">x</a><a id="8102" class="Symbol">)</a>
+
+  <a id="Neutral._·_"></a><a id="8107" href="/Untyped/#8107" class="InductiveConstructor Operator">_·_</a>  <a id="8112" class="Symbol">:</a> <a id="8114" class="Symbol">∀</a> <a id="8116" class="Symbol">{</a><a id="8117" href="/Untyped/#8117" class="Bound">Γ</a><a id="8118" class="Symbol">}</a> <a id="8120" class="Symbol">{</a><a id="8121" href="/Untyped/#8121" class="Bound">L</a> <a id="8123" href="/Untyped/#8123" class="Bound">M</a> <a id="8125" class="Symbol">:</a> <a id="8127" href="/Untyped/#8117" class="Bound">Γ</a> <a id="8129" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="8131" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="8132" class="Symbol">}</a>
+    <a id="8138" class="Symbol">→</a> <a id="8140" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="8148" href="/Untyped/#8121" class="Bound">L</a>
+    <a id="8154" class="Symbol">→</a> <a id="8156" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="8163" href="/Untyped/#8123" class="Bound">M</a>
+      <a id="8171" class="Comment">---------------</a>
+    <a id="8191" class="Symbol">→</a> <a id="8193" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="8201" class="Symbol">(</a><a id="8202" href="/Untyped/#8121" class="Bound">L</a> <a id="8204" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="8206" href="/Untyped/#8123" class="Bound">M</a><a id="8207" class="Symbol">)</a></pre>
+<p>A term is a normal form if it is neutral or an abstraction where the
+body is a normal form. We use <code class="highlighter-rouge">′_</code> to label neutral terms.
+Like <code class="highlighter-rouge">`_</code>, it is unobtrusive.</p>
+<pre class="Agda"><a id="8395" class="Keyword">data</a> <a id="8400" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="8407" class="Keyword">where</a>
+
+  <a id="Normal.′_"></a><a id="8416" href="/Untyped/#8416" class="InductiveConstructor Operator">′_</a> <a id="8419" class="Symbol">:</a> <a id="8421" class="Symbol">∀</a> <a id="8423" class="Symbol">{</a><a id="8424" href="/Untyped/#8424" class="Bound">Γ</a> <a id="8426" href="/Untyped/#8426" class="Bound">A</a><a id="8427" class="Symbol">}</a> <a id="8429" class="Symbol">{</a><a id="8430" href="/Untyped/#8430" class="Bound">M</a> <a id="8432" class="Symbol">:</a> <a id="8434" href="/Untyped/#8424" class="Bound">Γ</a> <a id="8436" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="8438" href="/Untyped/#8426" class="Bound">A</a><a id="8439" class="Symbol">}</a>
+    <a id="8445" class="Symbol">→</a> <a id="8447" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="8455" href="/Untyped/#8430" class="Bound">M</a>
+      <a id="8463" class="Comment">---------</a>
+    <a id="8477" class="Symbol">→</a> <a id="8479" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="8486" href="/Untyped/#8430" class="Bound">M</a>
+
+  <a id="Normal.ƛ_"></a><a id="8491" href="/Untyped/#8491" class="InductiveConstructor Operator">ƛ_</a>  <a id="8495" class="Symbol">:</a> <a id="8497" class="Symbol">∀</a> <a id="8499" class="Symbol">{</a><a id="8500" href="/Untyped/#8500" class="Bound">Γ</a><a id="8501" class="Symbol">}</a> <a id="8503" class="Symbol">{</a><a id="8504" href="/Untyped/#8504" class="Bound">N</a> <a id="8506" class="Symbol">:</a> <a id="8508" href="/Untyped/#8500" class="Bound">Γ</a> <a id="8510" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="8512" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="8514" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="8516" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="8517" class="Symbol">}</a>
+    <a id="8523" class="Symbol">→</a> <a id="8525" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="8532" href="/Untyped/#8504" class="Bound">N</a>
+      <a id="8540" class="Comment">------------</a>
+    <a id="8557" class="Symbol">→</a> <a id="8559" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="8566" class="Symbol">(</a><a id="8567" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="8569" href="/Untyped/#8504" class="Bound">N</a><a id="8570" class="Symbol">)</a></pre>
+
+<p>We introduce a convenient abbreviation for evidence that a variable is neutral.</p>
+<pre class="Agda"><a id="#′_"></a><a id="8677" href="/Untyped/#8677" class="Function Operator">#′_</a> <a id="8681" class="Symbol">:</a> <a id="8683" class="Symbol">∀</a> <a id="8685" class="Symbol">{</a><a id="8686" href="/Untyped/#8686" class="Bound">Γ</a><a id="8687" class="Symbol">}</a> <a id="8689" class="Symbol">(</a><a id="8690" href="/Untyped/#8690" class="Bound">n</a> <a id="8692" class="Symbol">:</a> <a id="8694" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="8695" class="Symbol">)</a> <a id="8697" class="Symbol">→</a> <a id="8699" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="8707" class="Symbol">{</a><a id="8708" href="/Untyped/#8686" class="Bound">Γ</a><a id="8709" class="Symbol">}</a> <a id="8711" class="Symbol">(</a><a id="8712" href="/Untyped/#4908" class="Function Operator">#</a> <a id="8714" href="/Untyped/#8690" class="Bound">n</a><a id="8715" class="Symbol">)</a>
+<a id="8717" href="/Untyped/#8677" class="Function Operator">#′</a> <a id="8720" href="/Untyped/#8720" class="Bound">n</a>  <a id="8723" class="Symbol">=</a>  <a id="8726" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="8728" href="/Untyped/#4651" class="Function">count</a> <a id="8734" href="/Untyped/#8720" class="Bound">n</a></pre>
+
+<p>For example, here is the evidence that the Church numeral two is in
+normal form.</p>
+<pre class="Agda"><a id="8842" href="/Untyped/#8842" class="Function">_</a> <a id="8844" class="Symbol">:</a> <a id="8846" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="8853" class="Symbol">(</a><a id="8854" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="8859" class="Symbol">{</a><a id="8860" href="/Untyped/#2954" class="InductiveConstructor">∅</a><a id="8861" class="Symbol">})</a>
+<a id="8864" class="Symbol">_</a> <a id="8866" class="Symbol">=</a> <a id="8868" href="/Untyped/#8491" class="InductiveConstructor Operator">ƛ</a> <a id="8870" href="/Untyped/#8491" class="InductiveConstructor Operator">ƛ</a> <a id="8872" class="Symbol">(</a><a id="8873" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="8875" href="/Untyped/#8677" class="Function Operator">#′</a> <a id="8878" class="Number">1</a> <a id="8880" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="8882" class="Symbol">(</a><a id="8883" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="8885" href="/Untyped/#8677" class="Function Operator">#′</a> <a id="8888" class="Number">1</a> <a id="8890" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="8892" class="Symbol">(</a><a id="8893" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="8895" href="/Untyped/#8677" class="Function Operator">#′</a> <a id="8898" class="Number">0</a><a id="8899" class="Symbol">)))</a></pre>
+<p>The evidence that a term is in normal form is almost identical to
+the term itself, decorated with some additional primes to indicate
+neutral terms, and using <code class="highlighter-rouge">#′</code> in place of <code class="highlighter-rouge">#</code></p>
+
+<p>We will also need to characterise terms that are applications.</p>
+<pre class="Agda"><a id="9170" class="Keyword">data</a> <a id="Application"></a><a id="9175" href="/Untyped/#9175" class="Datatype">Application</a> <a id="9187" class="Symbol">:</a> <a id="9189" class="Symbol">∀</a> <a id="9191" class="Symbol">{</a><a id="9192" href="/Untyped/#9192" class="Bound">Γ</a> <a id="9194" href="/Untyped/#9194" class="Bound">A</a><a id="9195" class="Symbol">}</a> <a id="9197" class="Symbol">→</a> <a id="9199" href="/Untyped/#9192" class="Bound">Γ</a> <a id="9201" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="9203" href="/Untyped/#9194" class="Bound">A</a> <a id="9205" class="Symbol">→</a> <a id="9207" class="PrimitiveType">Set</a> <a id="9211" class="Keyword">where</a>
+
+  <a id="Application.ap"></a><a id="9220" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="9223" class="Symbol">:</a> <a id="9225" class="Symbol">∀</a> <a id="9227" class="Symbol">{</a><a id="9228" href="/Untyped/#9228" class="Bound">Γ</a><a id="9229" class="Symbol">}</a> <a id="9231" class="Symbol">{</a><a id="9232" href="/Untyped/#9232" class="Bound">L</a> <a id="9234" href="/Untyped/#9234" class="Bound">M</a> <a id="9236" class="Symbol">:</a> <a id="9238" href="/Untyped/#9228" class="Bound">Γ</a> <a id="9240" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="9242" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="9243" class="Symbol">}</a>
+      <a id="9251" class="Comment">-------------------</a>
+    <a id="9275" class="Symbol">→</a> <a id="9277" href="/Untyped/#9175" class="Datatype">Application</a> <a id="9289" class="Symbol">(</a><a id="9290" href="/Untyped/#9232" class="Bound">L</a> <a id="9292" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="9294" href="/Untyped/#9234" class="Bound">M</a><a id="9295" class="Symbol">)</a></pre>
+
+<h2 id="reduction-step">Reduction step</h2>
+
+<p>The reduction rules are altered to switch from call-by-value to
+call-by-name and to enable full normalisation.</p>
+
+<ul>
+  <li>
+    <p>In rule <code class="highlighter-rouge">ξ₁</code>, the function term is required to be an application, 
+to avoid conflict with rule <code class="highlighter-rouge">β</code>.</p>
+  </li>
+  <li>
+    <p>In rule <code class="highlighter-rouge">ξ₂</code>, the function term is required to be neutral
+rather than a value; again, this avoids conflict with rule <code class="highlighter-rouge">β</code>.</p>
+  </li>
+  <li>
+    <p>In rule <code class="highlighter-rouge">β</code>, the requirement that the argument is a value
+is dropped, corresponding to call-by-name evaluation.</p>
+  </li>
+  <li>
+    <p>A new rule <code class="highlighter-rouge">ζ</code> is added, to enable reduction underneath a lambda.</p>
+  </li>
+</ul>
+
+<p>Here are the formalised rules.</p>
+<pre class="Agda"><a id="9903" class="Keyword">infix</a> <a id="9909" class="Number">2</a> <a id="9911" href="/Untyped/#9922" class="Datatype Operator">_—→_</a>
+
+<a id="9917" class="Keyword">data</a> <a id="_—→_"></a><a id="9922" href="/Untyped/#9922" class="Datatype Operator">_—→_</a> <a id="9927" class="Symbol">:</a> <a id="9929" class="Symbol">∀</a> <a id="9931" class="Symbol">{</a><a id="9932" href="/Untyped/#9932" class="Bound">Γ</a> <a id="9934" href="/Untyped/#9934" class="Bound">A</a><a id="9935" class="Symbol">}</a> <a id="9937" class="Symbol">→</a> <a id="9939" class="Symbol">(</a><a id="9940" href="/Untyped/#9932" class="Bound">Γ</a> <a id="9942" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="9944" href="/Untyped/#9934" class="Bound">A</a><a id="9945" class="Symbol">)</a> <a id="9947" class="Symbol">→</a> <a id="9949" class="Symbol">(</a><a id="9950" href="/Untyped/#9932" class="Bound">Γ</a> <a id="9952" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="9954" href="/Untyped/#9934" class="Bound">A</a><a id="9955" class="Symbol">)</a> <a id="9957" class="Symbol">→</a> <a id="9959" class="PrimitiveType">Set</a> <a id="9963" class="Keyword">where</a>
+
+  <a id="_—→_.ξ₁"></a><a id="9972" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="9975" class="Symbol">:</a> <a id="9977" class="Symbol">∀</a> <a id="9979" class="Symbol">{</a><a id="9980" href="/Untyped/#9980" class="Bound">Γ</a><a id="9981" class="Symbol">}</a> <a id="9983" class="Symbol">{</a><a id="9984" href="/Untyped/#9984" class="Bound">L</a> <a id="9986" href="/Untyped/#9986" class="Bound">L′</a> <a id="9989" href="/Untyped/#9989" class="Bound">M</a> <a id="9991" class="Symbol">:</a> <a id="9993" href="/Untyped/#9980" class="Bound">Γ</a> <a id="9995" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="9997" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="9998" class="Symbol">}</a>
+    <a id="10004" class="Symbol">→</a> <a id="10006" href="/Untyped/#9175" class="Datatype">Application</a> <a id="10018" href="/Untyped/#9984" class="Bound">L</a>
+    <a id="10024" class="Symbol">→</a> <a id="10026" href="/Untyped/#9984" class="Bound">L</a> <a id="10028" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10031" href="/Untyped/#9986" class="Bound">L′</a>
+      <a id="10040" class="Comment">----------------</a>
+    <a id="10061" class="Symbol">→</a> <a id="10063" href="/Untyped/#9984" class="Bound">L</a> <a id="10065" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="10067" href="/Untyped/#9989" class="Bound">M</a> <a id="10069" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10072" href="/Untyped/#9986" class="Bound">L′</a> <a id="10075" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="10077" href="/Untyped/#9989" class="Bound">M</a>
+
+  <a id="_—→_.ξ₂"></a><a id="10082" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="10085" class="Symbol">:</a> <a id="10087" class="Symbol">∀</a> <a id="10089" class="Symbol">{</a><a id="10090" href="/Untyped/#10090" class="Bound">Γ</a><a id="10091" class="Symbol">}</a> <a id="10093" class="Symbol">{</a><a id="10094" href="/Untyped/#10094" class="Bound">L</a> <a id="10096" href="/Untyped/#10096" class="Bound">M</a> <a id="10098" href="/Untyped/#10098" class="Bound">M′</a> <a id="10101" class="Symbol">:</a> <a id="10103" href="/Untyped/#10090" class="Bound">Γ</a> <a id="10105" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="10107" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="10108" class="Symbol">}</a>
+    <a id="10114" class="Symbol">→</a> <a id="10116" href="/Untyped/#7737" class="Datatype">Neutral</a> <a id="10124" href="/Untyped/#10094" class="Bound">L</a>
+    <a id="10130" class="Symbol">→</a> <a id="10132" href="/Untyped/#10096" class="Bound">M</a> <a id="10134" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10137" href="/Untyped/#10098" class="Bound">M′</a>
+      <a id="10146" class="Comment">----------------</a>
+    <a id="10167" class="Symbol">→</a> <a id="10169" href="/Untyped/#10094" class="Bound">L</a> <a id="10171" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="10173" href="/Untyped/#10096" class="Bound">M</a> <a id="10175" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10178" href="/Untyped/#10094" class="Bound">L</a> <a id="10180" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="10182" href="/Untyped/#10098" class="Bound">M′</a>
+
+  <a id="_—→_.β"></a><a id="10188" href="/Untyped/#10188" class="InductiveConstructor">β</a> <a id="10190" class="Symbol">:</a> <a id="10192" class="Symbol">∀</a> <a id="10194" class="Symbol">{</a><a id="10195" href="/Untyped/#10195" class="Bound">Γ</a><a id="10196" class="Symbol">}</a> <a id="10198" class="Symbol">{</a><a id="10199" href="/Untyped/#10199" class="Bound">N</a> <a id="10201" class="Symbol">:</a> <a id="10203" href="/Untyped/#10195" class="Bound">Γ</a> <a id="10205" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="10207" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="10209" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="10211" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="10212" class="Symbol">}</a> <a id="10214" class="Symbol">{</a><a id="10215" href="/Untyped/#10215" class="Bound">M</a> <a id="10217" class="Symbol">:</a> <a id="10219" href="/Untyped/#10195" class="Bound">Γ</a> <a id="10221" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="10223" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="10224" class="Symbol">}</a>
+      <a id="10232" class="Comment">---------------------------------</a>
+    <a id="10270" class="Symbol">→</a> <a id="10272" class="Symbol">(</a><a id="10273" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="10275" href="/Untyped/#10199" class="Bound">N</a><a id="10276" class="Symbol">)</a> <a id="10278" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="10280" href="/Untyped/#10215" class="Bound">M</a> <a id="10282" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10285" href="/Untyped/#10199" class="Bound">N</a> <a id="10287" href="/Untyped/#7266" class="Function Operator">[</a> <a id="10289" href="/Untyped/#10215" class="Bound">M</a> <a id="10291" href="/Untyped/#7266" class="Function Operator">]</a>
+
+  <a id="_—→_.ζ"></a><a id="10296" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="10298" class="Symbol">:</a> <a id="10300" class="Symbol">∀</a> <a id="10302" class="Symbol">{</a><a id="10303" href="/Untyped/#10303" class="Bound">Γ</a><a id="10304" class="Symbol">}</a> <a id="10306" class="Symbol">{</a><a id="10307" href="/Untyped/#10307" class="Bound">N</a> <a id="10309" href="/Untyped/#10309" class="Bound">N′</a> <a id="10312" class="Symbol">:</a> <a id="10314" href="/Untyped/#10303" class="Bound">Γ</a> <a id="10316" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="10318" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="10320" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="10322" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="10323" class="Symbol">}</a>
+    <a id="10329" class="Symbol">→</a> <a id="10331" href="/Untyped/#10307" class="Bound">N</a> <a id="10333" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10336" href="/Untyped/#10309" class="Bound">N′</a>
+      <a id="10345" class="Comment">-----------</a>
+    <a id="10361" class="Symbol">→</a> <a id="10363" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="10365" href="/Untyped/#10307" class="Bound">N</a> <a id="10367" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="10370" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="10372" href="/Untyped/#10309" class="Bound">N′</a></pre>
+
+<h4 id="exercise-variant-1">Exercise (<code class="highlighter-rouge">variant-1</code>)</h4>
+
+<p>How would the rules change if we want call-by-value where terms
+normalise completely?  Assume that <code class="highlighter-rouge">β</code> should not permit reduction
+unless both terms are in normal form.</p>
+
+<h4 id="exercise-variant-2">Exercise (<code class="highlighter-rouge">variant-2</code>)</h4>
+
+<p>How would the rules change if we want call-by-value where terms
+do not reduce underneath lambda?  Assume that <code class="highlighter-rouge">β</code>
+permits reduction when both terms are values (that is, lambda
+abstractions).  What would <code class="highlighter-rouge">2+2ᶜ</code> reduce to in this case?</p>
+
+<h2 id="reflexive-and-transitive-closure">Reflexive and transitive closure</h2>
+
+<p>We cut-and-paste the previous definition.</p>
+<pre class="Agda"><a id="10943" class="Keyword">infix</a>  <a id="10950" class="Number">2</a> <a id="10952" href="/Untyped/#11008" class="Datatype Operator">_—↠_</a>
+<a id="10957" class="Keyword">infix</a>  <a id="10964" class="Number">1</a> <a id="10966" href="/Untyped/#11214" class="Function Operator">begin_</a>
+<a id="10973" class="Keyword">infixr</a> <a id="10980" class="Number">2</a> <a id="10982" href="/Untyped/#11114" class="InductiveConstructor Operator">_—→⟨_⟩_</a>
+<a id="10990" class="Keyword">infix</a>  <a id="10997" class="Number">3</a> <a id="10999" href="/Untyped/#11058" class="InductiveConstructor Operator">_∎</a>
+
+<a id="11003" class="Keyword">data</a> <a id="_—↠_"></a><a id="11008" href="/Untyped/#11008" class="Datatype Operator">_—↠_</a> <a id="11013" class="Symbol">:</a> <a id="11015" class="Symbol">∀</a> <a id="11017" class="Symbol">{</a><a id="11018" href="/Untyped/#11018" class="Bound">Γ</a> <a id="11020" href="/Untyped/#11020" class="Bound">A</a><a id="11021" class="Symbol">}</a> <a id="11023" class="Symbol">→</a> <a id="11025" class="Symbol">(</a><a id="11026" href="/Untyped/#11018" class="Bound">Γ</a> <a id="11028" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="11030" href="/Untyped/#11020" class="Bound">A</a><a id="11031" class="Symbol">)</a> <a id="11033" class="Symbol">→</a> <a id="11035" class="Symbol">(</a><a id="11036" href="/Untyped/#11018" class="Bound">Γ</a> <a id="11038" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="11040" href="/Untyped/#11020" class="Bound">A</a><a id="11041" class="Symbol">)</a> <a id="11043" class="Symbol">→</a> <a id="11045" class="PrimitiveType">Set</a> <a id="11049" class="Keyword">where</a>
+
+  <a id="_—↠_._∎"></a><a id="11058" href="/Untyped/#11058" class="InductiveConstructor Operator">_∎</a> <a id="11061" class="Symbol">:</a> <a id="11063" class="Symbol">∀</a> <a id="11065" class="Symbol">{</a><a id="11066" href="/Untyped/#11066" class="Bound">Γ</a> <a id="11068" href="/Untyped/#11068" class="Bound">A</a><a id="11069" class="Symbol">}</a> <a id="11071" class="Symbol">(</a><a id="11072" href="/Untyped/#11072" class="Bound">M</a> <a id="11074" class="Symbol">:</a> <a id="11076" href="/Untyped/#11066" class="Bound">Γ</a> <a id="11078" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="11080" href="/Untyped/#11068" class="Bound">A</a><a id="11081" class="Symbol">)</a>
+      <a id="11089" class="Comment">--------</a>
+    <a id="11102" class="Symbol">→</a> <a id="11104" href="/Untyped/#11072" class="Bound">M</a> <a id="11106" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="11109" href="/Untyped/#11072" class="Bound">M</a>
+
+  <a id="_—↠_._—→⟨_⟩_"></a><a id="11114" href="/Untyped/#11114" class="InductiveConstructor Operator">_—→⟨_⟩_</a> <a id="11122" class="Symbol">:</a> <a id="11124" class="Symbol">∀</a> <a id="11126" class="Symbol">{</a><a id="11127" href="/Untyped/#11127" class="Bound">Γ</a> <a id="11129" href="/Untyped/#11129" class="Bound">A</a><a id="11130" class="Symbol">}</a> <a id="11132" class="Symbol">(</a><a id="11133" href="/Untyped/#11133" class="Bound">L</a> <a id="11135" class="Symbol">:</a> <a id="11137" href="/Untyped/#11127" class="Bound">Γ</a> <a id="11139" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="11141" href="/Untyped/#11129" class="Bound">A</a><a id="11142" class="Symbol">)</a> <a id="11144" class="Symbol">{</a><a id="11145" href="/Untyped/#11145" class="Bound">M</a> <a id="11147" href="/Untyped/#11147" class="Bound">N</a> <a id="11149" class="Symbol">:</a> <a id="11151" href="/Untyped/#11127" class="Bound">Γ</a> <a id="11153" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="11155" href="/Untyped/#11129" class="Bound">A</a><a id="11156" class="Symbol">}</a>
+    <a id="11162" class="Symbol">→</a> <a id="11164" href="/Untyped/#11133" class="Bound">L</a> <a id="11166" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="11169" href="/Untyped/#11145" class="Bound">M</a>
+    <a id="11175" class="Symbol">→</a> <a id="11177" href="/Untyped/#11145" class="Bound">M</a> <a id="11179" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="11182" href="/Untyped/#11147" class="Bound">N</a>
+      <a id="11190" class="Comment">---------</a>
+    <a id="11204" class="Symbol">→</a> <a id="11206" href="/Untyped/#11133" class="Bound">L</a> <a id="11208" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="11211" href="/Untyped/#11147" class="Bound">N</a>
+
+<a id="begin_"></a><a id="11214" href="/Untyped/#11214" class="Function Operator">begin_</a> <a id="11221" class="Symbol">:</a> <a id="11223" class="Symbol">∀</a> <a id="11225" class="Symbol">{</a><a id="11226" href="/Untyped/#11226" class="Bound">Γ</a><a id="11227" class="Symbol">}</a> <a id="11229" class="Symbol">{</a><a id="11230" href="/Untyped/#11230" class="Bound">A</a><a id="11231" class="Symbol">}</a> <a id="11233" class="Symbol">{</a><a id="11234" href="/Untyped/#11234" class="Bound">M</a> <a id="11236" href="/Untyped/#11236" class="Bound">N</a> <a id="11238" class="Symbol">:</a> <a id="11240" href="/Untyped/#11226" class="Bound">Γ</a> <a id="11242" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="11244" href="/Untyped/#11230" class="Bound">A</a><a id="11245" class="Symbol">}</a>
+  <a id="11249" class="Symbol">→</a> <a id="11251" href="/Untyped/#11234" class="Bound">M</a> <a id="11253" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="11256" href="/Untyped/#11236" class="Bound">N</a>
+    <a id="11262" class="Comment">------</a>
+  <a id="11271" class="Symbol">→</a> <a id="11273" href="/Untyped/#11234" class="Bound">M</a> <a id="11275" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="11278" href="/Untyped/#11236" class="Bound">N</a>
+<a id="11280" href="/Untyped/#11214" class="Function Operator">begin</a> <a id="11286" href="/Untyped/#11286" class="Bound">M—↠N</a> <a id="11291" class="Symbol">=</a> <a id="11293" href="/Untyped/#11286" class="Bound">M—↠N</a></pre>
+
+<h2 id="example-reduction-sequence">Example reduction sequence</h2>
+
+<p>Here is the demonstration that two plus two is four.</p>
+<pre class="Agda"><a id="11408" href="/Untyped/#11408" class="Function">_</a> <a id="11410" class="Symbol">:</a> <a id="11412" href="/Untyped/#5250" class="Function">2+2ᶜ</a> <a id="11417" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="11420" href="/Untyped/#5108" class="Function">fourᶜ</a>
+<a id="11426" class="Symbol">_</a> <a id="11428" class="Symbol">=</a>
+  <a id="11432" href="/Untyped/#11214" class="Function Operator">begin</a>
+    <a id="11442" href="/Untyped/#5179" class="Function">plusᶜ</a> <a id="11448" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11450" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="11455" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11457" href="/Untyped/#5055" class="Function">twoᶜ</a>
+  <a id="11464" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="11468" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="11471" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="11474" href="/Untyped/#10188" class="InductiveConstructor">β</a> <a id="11476" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="11482" class="Symbol">(</a><a id="11483" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11485" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11487" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11489" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="11494" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11496" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11498" class="Number">1</a> <a id="11500" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11502" class="Symbol">(</a><a id="11503" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11505" class="Number">2</a> <a id="11507" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11509" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11511" class="Number">1</a> <a id="11513" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11515" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11517" class="Number">0</a><a id="11518" class="Symbol">))</a> <a id="11521" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11523" href="/Untyped/#5055" class="Function">twoᶜ</a>
+  <a id="11530" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="11534" href="/Untyped/#10188" class="InductiveConstructor">β</a> <a id="11536" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="11542" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11544" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11546" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="11551" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11553" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11555" class="Number">1</a> <a id="11557" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11559" class="Symbol">(</a><a id="11560" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="11565" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11567" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11569" class="Number">1</a> <a id="11571" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11573" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11575" class="Number">0</a><a id="11576" class="Symbol">)</a>
+  <a id="11580" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="11584" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11586" class="Symbol">(</a><a id="11587" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11589" class="Symbol">(</a><a id="11590" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="11593" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="11596" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="11597" class="Symbol">))</a> <a id="11600" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="11606" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11608" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11610" class="Symbol">((</a><a id="11612" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11614" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11616" class="Number">2</a> <a id="11618" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11620" class="Symbol">(</a><a id="11621" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11623" class="Number">2</a> <a id="11625" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11627" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11629" class="Number">0</a><a id="11630" class="Symbol">))</a> <a id="11633" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11635" class="Symbol">(</a><a id="11636" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="11641" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11643" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11645" class="Number">1</a> <a id="11647" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11649" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11651" class="Number">0</a><a id="11652" class="Symbol">))</a>
+  <a id="11657" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="11661" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11663" class="Symbol">(</a><a id="11664" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11666" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="11667" class="Symbol">)</a> <a id="11669" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="11675" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11677" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11679" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11681" class="Number">1</a> <a id="11683" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11685" class="Symbol">(</a><a id="11686" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11688" class="Number">1</a> <a id="11690" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11692" class="Symbol">(</a><a id="11693" href="/Untyped/#5055" class="Function">twoᶜ</a> <a id="11698" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11700" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11702" class="Number">1</a> <a id="11704" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11706" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11708" class="Number">0</a><a id="11709" class="Symbol">))</a>
+  <a id="11714" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="11718" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11720" class="Symbol">(</a><a id="11721" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11723" class="Symbol">(</a><a id="11724" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="11727" class="Symbol">(</a><a id="11728" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="11730" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="11732" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="11733" class="Symbol">)</a> <a id="11735" class="Symbol">(</a><a id="11736" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="11739" class="Symbol">(</a><a id="11740" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="11742" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="11744" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="11745" class="Symbol">)</a> <a id="11747" class="Symbol">(</a><a id="11748" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="11751" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="11754" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="11755" class="Symbol">))))</a> <a id="11760" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="11766" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11768" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11770" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11772" class="Number">1</a> <a id="11774" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11776" class="Symbol">(</a><a id="11777" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11779" class="Number">1</a> <a id="11781" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11783" class="Symbol">((</a><a id="11785" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11787" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11789" class="Number">2</a> <a id="11791" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11793" class="Symbol">(</a><a id="11794" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11796" class="Number">2</a> <a id="11798" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11800" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11802" class="Number">0</a><a id="11803" class="Symbol">))</a> <a id="11806" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11808" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11810" class="Number">0</a><a id="11811" class="Symbol">))</a>
+  <a id="11816" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="11820" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11822" class="Symbol">(</a><a id="11823" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="11825" class="Symbol">(</a><a id="11826" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="11829" class="Symbol">(</a><a id="11830" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="11832" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="11834" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="11835" class="Symbol">)</a> <a id="11837" class="Symbol">(</a><a id="11838" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="11841" class="Symbol">(</a><a id="11842" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="11844" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="11846" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="11847" class="Symbol">)</a> <a id="11849" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="11850" class="Symbol">)))</a> <a id="11854" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+   <a id="11859" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11861" class="Symbol">(</a><a id="11862" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="11864" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11866" class="Number">1</a> <a id="11868" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11870" class="Symbol">(</a><a id="11871" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11873" class="Number">1</a> <a id="11875" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11877" class="Symbol">(</a><a id="11878" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11880" class="Number">1</a> <a id="11882" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11884" class="Symbol">(</a><a id="11885" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11887" class="Number">1</a> <a id="11889" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="11891" href="/Untyped/#4908" class="Function Operator">#</a> <a id="11893" class="Number">0</a><a id="11894" class="Symbol">))))</a>
+  <a id="11901" href="/Untyped/#11058" class="InductiveConstructor Operator">∎</a></pre>
+<p>After just two steps the top-level term is an abstraction,
+and <code class="highlighter-rouge">ζ</code> rules drive the rest of the normalisation.  In the
+applications of the <code class="highlighter-rouge">ξ₂</code> rule, the argument <code class="highlighter-rouge">(` S Z)</code> is
+a proof that <code class="highlighter-rouge"># 1</code> is a neutral term.</p>
+
+<h2 id="progress">Progress</h2>
+
+<p>Progress adapts.  Instead of claiming that every term either is a value
+or takes a reduction step, we claim that every term is either in normal
+form or takes a reduction step.</p>
+
+<p>Previously, progress only applied to closed, well-typed terms.  We had
+to rule out terms where we apply something other than a function (such
+as <code class="highlighter-rouge">`zero</code>) or terms with a free variable.  Now we can demonstrate
+it for open, well-scoped terms.  The definition of normal form permits
+free variables, and we have no terms that are not functions.</p>
+
+<p>A term makes progress if it can take a step or is in normal form.</p>
+<pre class="Agda"><a id="12746" class="Keyword">data</a> <a id="Progress"></a><a id="12751" href="/Untyped/#12751" class="Datatype">Progress</a> <a id="12760" class="Symbol">{</a><a id="12761" href="/Untyped/#12761" class="Bound">Γ</a> <a id="12763" href="/Untyped/#12763" class="Bound">A</a><a id="12764" class="Symbol">}</a> <a id="12766" class="Symbol">(</a><a id="12767" href="/Untyped/#12767" class="Bound">M</a> <a id="12769" class="Symbol">:</a> <a id="12771" href="/Untyped/#12761" class="Bound">Γ</a> <a id="12773" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="12775" href="/Untyped/#12763" class="Bound">A</a><a id="12776" class="Symbol">)</a> <a id="12778" class="Symbol">:</a> <a id="12780" class="PrimitiveType">Set</a> <a id="12784" class="Keyword">where</a>
+
+  <a id="Progress.step"></a><a id="12793" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="12798" class="Symbol">:</a> <a id="12800" class="Symbol">∀</a> <a id="12802" class="Symbol">{</a><a id="12803" href="/Untyped/#12803" class="Bound">N</a> <a id="12805" class="Symbol">:</a> <a id="12807" href="/Untyped/#12761" class="Bound">Γ</a> <a id="12809" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="12811" href="/Untyped/#12763" class="Bound">A</a><a id="12812" class="Symbol">}</a>
+    <a id="12818" class="Symbol">→</a> <a id="12820" href="/Untyped/#12767" class="Bound">M</a> <a id="12822" href="/Untyped/#9922" class="Datatype Operator">—→</a> <a id="12825" href="/Untyped/#12803" class="Bound">N</a>
+      <a id="12833" class="Comment">----------</a>
+    <a id="12848" class="Symbol">→</a> <a id="12850" href="/Untyped/#12751" class="Datatype">Progress</a> <a id="12859" href="/Untyped/#12767" class="Bound">M</a>
+
+  <a id="Progress.done"></a><a id="12864" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="12869" class="Symbol">:</a>
+      <a id="12877" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="12884" href="/Untyped/#12767" class="Bound">M</a>
+      <a id="12892" class="Comment">----------</a>
+    <a id="12907" class="Symbol">→</a> <a id="12909" href="/Untyped/#12751" class="Datatype">Progress</a> <a id="12918" href="/Untyped/#12767" class="Bound">M</a></pre>
+
+<p>If a term is well-scoped then it satisfies progress.</p>
+<pre class="Agda"><a id="progress"></a><a id="12998" href="/Untyped/#12998" class="Function">progress</a> <a id="13007" class="Symbol">:</a> <a id="13009" class="Symbol">∀</a> <a id="13011" class="Symbol">{</a><a id="13012" href="/Untyped/#13012" class="Bound">Γ</a> <a id="13014" href="/Untyped/#13014" class="Bound">A</a><a id="13015" class="Symbol">}</a> <a id="13017" class="Symbol">→</a> <a id="13019" class="Symbol">(</a><a id="13020" href="/Untyped/#13020" class="Bound">M</a> <a id="13022" class="Symbol">:</a> <a id="13024" href="/Untyped/#13012" class="Bound">Γ</a> <a id="13026" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="13028" href="/Untyped/#13014" class="Bound">A</a><a id="13029" class="Symbol">)</a> <a id="13031" class="Symbol">→</a> <a id="13033" href="/Untyped/#12751" class="Datatype">Progress</a> <a id="13042" href="/Untyped/#13020" class="Bound">M</a>
+<a id="13044" href="/Untyped/#12998" class="Function">progress</a> <a id="13053" class="Symbol">(</a><a id="13054" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="13056" href="/Untyped/#13056" class="Bound">x</a><a id="13057" class="Symbol">)</a>                                 <a id="13091" class="Symbol">=</a>  <a id="13094" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13099" class="Symbol">(</a><a id="13100" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="13102" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="13104" href="/Untyped/#13056" class="Bound">x</a><a id="13105" class="Symbol">)</a>
+<a id="13107" href="/Untyped/#12998" class="Function">progress</a> <a id="13116" class="Symbol">(</a><a id="13117" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="13119" href="/Untyped/#13119" class="Bound">N</a><a id="13120" class="Symbol">)</a>  <a id="13123" class="Keyword">with</a>  <a id="13129" href="/Untyped/#12998" class="Function">progress</a> <a id="13138" href="/Untyped/#13119" class="Bound">N</a>
+<a id="13140" class="Symbol">...</a> <a id="13144" class="Symbol">|</a> <a id="13146" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13151" href="/Untyped/#13151" class="Bound">N—→N′</a>                               <a id="13187" class="Symbol">=</a>  <a id="13190" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13195" class="Symbol">(</a><a id="13196" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="13198" href="/Untyped/#13151" class="Bound">N—→N′</a><a id="13203" class="Symbol">)</a>
+<a id="13205" class="Symbol">...</a> <a id="13209" class="Symbol">|</a> <a id="13211" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13216" href="/Untyped/#13216" class="Bound">NrmN</a>                                <a id="13252" class="Symbol">=</a>  <a id="13255" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13260" class="Symbol">(</a><a id="13261" href="/Untyped/#8491" class="InductiveConstructor Operator">ƛ</a> <a id="13263" href="/Untyped/#13216" class="Bound">NrmN</a><a id="13267" class="Symbol">)</a>
+<a id="13269" href="/Untyped/#12998" class="Function">progress</a> <a id="13278" class="Symbol">(</a><a id="13279" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="13281" href="/Untyped/#13281" class="Bound">x</a> <a id="13283" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="13285" href="/Untyped/#13285" class="Bound">M</a><a id="13286" class="Symbol">)</a> <a id="13288" class="Keyword">with</a> <a id="13293" href="/Untyped/#12998" class="Function">progress</a> <a id="13302" href="/Untyped/#13285" class="Bound">M</a>
+<a id="13304" class="Symbol">...</a> <a id="13308" class="Symbol">|</a> <a id="13310" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13315" href="/Untyped/#13315" class="Bound">M—→M′</a>                               <a id="13351" class="Symbol">=</a>  <a id="13354" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13359" class="Symbol">(</a><a id="13360" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="13363" class="Symbol">(</a><a id="13364" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="13366" class="Bound">x</a><a id="13367" class="Symbol">)</a> <a id="13369" href="/Untyped/#13315" class="Bound">M—→M′</a><a id="13374" class="Symbol">)</a>
+<a id="13376" class="Symbol">...</a> <a id="13380" class="Symbol">|</a> <a id="13382" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13387" href="/Untyped/#13387" class="Bound">NrmM</a>                                <a id="13423" class="Symbol">=</a>  <a id="13426" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13431" class="Symbol">(</a><a id="13432" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="13434" class="Symbol">(</a><a id="13435" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="13437" class="Bound">x</a><a id="13438" class="Symbol">)</a> <a id="13440" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="13442" href="/Untyped/#13387" class="Bound">NrmM</a><a id="13446" class="Symbol">)</a>
+<a id="13448" href="/Untyped/#12998" class="Function">progress</a> <a id="13457" class="Symbol">((</a><a id="13459" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="13461" href="/Untyped/#13461" class="Bound">N</a><a id="13462" class="Symbol">)</a> <a id="13464" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="13466" href="/Untyped/#13466" class="Bound">M</a><a id="13467" class="Symbol">)</a>                           <a id="13495" class="Symbol">=</a>  <a id="13498" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13503" href="/Untyped/#10188" class="InductiveConstructor">β</a>
+<a id="13505" href="/Untyped/#12998" class="Function">progress</a> <a id="13514" class="Symbol">(</a><a id="13515" href="/Untyped/#13515" class="Bound">L</a><a id="13516" class="Symbol">@(_</a> <a id="13520" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="13522" class="Symbol">_)</a> <a id="13525" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="13527" href="/Untyped/#13527" class="Bound">M</a><a id="13528" class="Symbol">)</a> <a id="13530" class="Keyword">with</a> <a id="13535" href="/Untyped/#12998" class="Function">progress</a> <a id="13544" href="/Untyped/#13515" class="Bound">L</a>
+<a id="13546" class="Symbol">...</a> <a id="13550" class="Symbol">|</a> <a id="13552" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13557" href="/Untyped/#13557" class="Bound">L—→L′</a>                               <a id="13593" class="Symbol">=</a>  <a id="13596" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13601" class="Symbol">(</a><a id="13602" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="13605" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="13608" href="/Untyped/#13557" class="Bound">L—→L′</a><a id="13613" class="Symbol">)</a>
+<a id="13615" class="Symbol">...</a> <a id="13619" class="Symbol">|</a> <a id="13621" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13626" class="Symbol">(</a><a id="13627" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="13629" href="/Untyped/#13629" class="Bound">NeuL</a><a id="13633" class="Symbol">)</a> <a id="13635" class="Keyword">with</a> <a id="13640" href="/Untyped/#12998" class="Function">progress</a> <a id="13649" class="Bound">M</a>
+<a id="13651" class="Symbol">...</a>    <a id="13658" class="Symbol">|</a> <a id="13660" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13665" href="/Untyped/#13665" class="Bound">M—→M′</a>                            <a id="13698" class="Symbol">=</a>  <a id="13701" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="13706" class="Symbol">(</a><a id="13707" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="13710" class="Bound">NeuL</a> <a id="13715" href="/Untyped/#13665" class="Bound">M—→M′</a><a id="13720" class="Symbol">)</a>
+<a id="13722" class="Symbol">...</a>    <a id="13729" class="Symbol">|</a> <a id="13731" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13736" href="/Untyped/#13736" class="Bound">NrmM</a>                             <a id="13769" class="Symbol">=</a>  <a id="13772" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="13777" class="Symbol">(</a><a id="13778" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="13780" class="Bound">NeuL</a> <a id="13785" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="13787" href="/Untyped/#13736" class="Bound">NrmM</a><a id="13791" class="Symbol">)</a></pre>
+<p>We induct on the evidence that the term is well-scoped.</p>
+
+<ul>
+  <li>If the term is a variable, then it is in normal form.
+(This contrasts with previous proofs, where the variable case was
+ruled out by the restriction to closed terms.)</li>
+  <li>If the term is an abstraction, recursively invoke progress on the body.
+(This contrast with previous proofs, where an abstraction is
+immediately a value.)
+    <ul>
+      <li>If it steps, then the whole term steps via <code class="highlighter-rouge">ζ</code>.</li>
+      <li>If it is in normal form, then so is the whole term.</li>
+    </ul>
+  </li>
+  <li>If the term is an application, consider the function subterm.
+    <ul>
+      <li>If it is a variable, recursively invoke progress on the argument.
+        <ul>
+          <li>If it steps, then the whole term steps via <code class="highlighter-rouge">ξ₂</code>;</li>
+          <li>If it is normal, then so is the whole term.</li>
+        </ul>
+      </li>
+      <li>If it is an abstraction, then the whole term steps via <code class="highlighter-rouge">β</code>.</li>
+      <li>If it is an application, recursively apply progress to the function subterm.
+        <ul>
+          <li>If it steps, then the whole term steps via <code class="highlighter-rouge">ξ₁</code>.</li>
+          <li>If it is normal, recursively apply progress to the argument subterm.
+            <ul>
+              <li>If it steps, then the whole term steps via <code class="highlighter-rouge">ξ₂</code>.</li>
+              <li>If it is normal, then so is the whole term.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>The final equation for progress uses an <em>at pattern</em> of the form <code class="highlighter-rouge">P@Q</code>,
+which matches only if both pattern <code class="highlighter-rouge">P</code> and pattern <code class="highlighter-rouge">Q</code> match.  Character
+<code class="highlighter-rouge">@</code> is one of the few that Agda doesn’t allow in names, so spaces are not
+required around it.  In this case, the pattern ensures that <code class="highlighter-rouge">L</code> is an
+application.</p>
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>As previously, progress immediately yields an evaluator.</p>
+
+<p>Gas is specified by a natural number.</p>
+<pre class="Agda"><a id="15354" class="Keyword">data</a> <a id="Gas"></a><a id="15359" href="/Untyped/#15359" class="Datatype">Gas</a> <a id="15363" class="Symbol">:</a> <a id="15365" class="PrimitiveType">Set</a> <a id="15369" class="Keyword">where</a>
+  <a id="Gas.gas"></a><a id="15377" href="/Untyped/#15377" class="InductiveConstructor">gas</a> <a id="15381" class="Symbol">:</a> <a id="15383" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a> <a id="15385" class="Symbol">→</a> <a id="15387" href="/Untyped/#15359" class="Datatype">Gas</a></pre>
+<p>When our evaluator returns a term <code class="highlighter-rouge">N</code>, it will either give evidence that
+<code class="highlighter-rouge">N</code> is normal or indicate that it ran out of gas.</p>
+<pre class="Agda"><a id="15538" class="Keyword">data</a> <a id="Finished"></a><a id="15543" href="/Untyped/#15543" class="Datatype">Finished</a> <a id="15552" class="Symbol">{</a><a id="15553" href="/Untyped/#15553" class="Bound">Γ</a> <a id="15555" href="/Untyped/#15555" class="Bound">A</a><a id="15556" class="Symbol">}</a> <a id="15558" class="Symbol">(</a><a id="15559" href="/Untyped/#15559" class="Bound">N</a> <a id="15561" class="Symbol">:</a> <a id="15563" href="/Untyped/#15553" class="Bound">Γ</a> <a id="15565" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="15567" href="/Untyped/#15555" class="Bound">A</a><a id="15568" class="Symbol">)</a> <a id="15570" class="Symbol">:</a> <a id="15572" class="PrimitiveType">Set</a> <a id="15576" class="Keyword">where</a>
+
+   <a id="Finished.done"></a><a id="15586" href="/Untyped/#15586" class="InductiveConstructor">done</a> <a id="15591" class="Symbol">:</a>
+       <a id="15600" href="/Untyped/#7774" class="Datatype">Normal</a> <a id="15607" href="/Untyped/#15559" class="Bound">N</a>
+       <a id="15616" class="Comment">----------</a>
+     <a id="15632" class="Symbol">→</a> <a id="15634" href="/Untyped/#15543" class="Datatype">Finished</a> <a id="15643" href="/Untyped/#15559" class="Bound">N</a>
+
+   <a id="Finished.out-of-gas"></a><a id="15649" href="/Untyped/#15649" class="InductiveConstructor">out-of-gas</a> <a id="15660" class="Symbol">:</a>
+       <a id="15669" class="Comment">----------</a>
+       <a id="15687" href="/Untyped/#15543" class="Datatype">Finished</a> <a id="15696" href="/Untyped/#15559" class="Bound">N</a></pre>
+<p>Given a term <code class="highlighter-rouge">L</code> of type <code class="highlighter-rouge">A</code>, the evaluator will, for some <code class="highlighter-rouge">N</code>, return
+a reduction sequence from <code class="highlighter-rouge">L</code> to <code class="highlighter-rouge">N</code> and an indication of whether
+reduction finished.</p>
+<pre class="Agda"><a id="15879" class="Keyword">data</a> <a id="Steps"></a><a id="15884" href="/Untyped/#15884" class="Datatype">Steps</a> <a id="15890" class="Symbol">:</a> <a id="15892" class="Symbol">∀</a> <a id="15894" class="Symbol">{</a><a id="15895" href="/Untyped/#15895" class="Bound">Γ</a> <a id="15897" href="/Untyped/#15897" class="Bound">A</a><a id="15898" class="Symbol">}</a> <a id="15900" class="Symbol">→</a> <a id="15902" href="/Untyped/#15895" class="Bound">Γ</a> <a id="15904" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="15906" href="/Untyped/#15897" class="Bound">A</a> <a id="15908" class="Symbol">→</a> <a id="15910" class="PrimitiveType">Set</a> <a id="15914" class="Keyword">where</a>
+
+  <a id="Steps.steps"></a><a id="15923" href="/Untyped/#15923" class="InductiveConstructor">steps</a> <a id="15929" class="Symbol">:</a> <a id="15931" class="Symbol">∀</a> <a id="15933" class="Symbol">{</a><a id="15934" href="/Untyped/#15934" class="Bound">Γ</a> <a id="15936" href="/Untyped/#15936" class="Bound">A</a><a id="15937" class="Symbol">}</a> <a id="15939" class="Symbol">{</a><a id="15940" href="/Untyped/#15940" class="Bound">L</a> <a id="15942" href="/Untyped/#15942" class="Bound">N</a> <a id="15944" class="Symbol">:</a> <a id="15946" href="/Untyped/#15934" class="Bound">Γ</a> <a id="15948" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="15950" href="/Untyped/#15936" class="Bound">A</a><a id="15951" class="Symbol">}</a>
+    <a id="15957" class="Symbol">→</a> <a id="15959" href="/Untyped/#15940" class="Bound">L</a> <a id="15961" href="/Untyped/#11008" class="Datatype Operator">—↠</a> <a id="15964" href="/Untyped/#15942" class="Bound">N</a>
+    <a id="15970" class="Symbol">→</a> <a id="15972" href="/Untyped/#15543" class="Datatype">Finished</a> <a id="15981" href="/Untyped/#15942" class="Bound">N</a>
+      <a id="15989" class="Comment">----------</a>
+    <a id="16004" class="Symbol">→</a> <a id="16006" href="/Untyped/#15884" class="Datatype">Steps</a> <a id="16012" href="/Untyped/#15940" class="Bound">L</a></pre>
+<p>The evaluator takes gas and a term and returns the corresponding steps.</p>
+<pre class="Agda"><a id="eval"></a><a id="16110" href="/Untyped/#16110" class="Function">eval</a> <a id="16115" class="Symbol">:</a> <a id="16117" class="Symbol">∀</a> <a id="16119" class="Symbol">{</a><a id="16120" href="/Untyped/#16120" class="Bound">Γ</a> <a id="16122" href="/Untyped/#16122" class="Bound">A</a><a id="16123" class="Symbol">}</a>
+  <a id="16127" class="Symbol">→</a> <a id="16129" href="/Untyped/#15359" class="Datatype">Gas</a>
+  <a id="16135" class="Symbol">→</a> <a id="16137" class="Symbol">(</a><a id="16138" href="/Untyped/#16138" class="Bound">L</a> <a id="16140" class="Symbol">:</a> <a id="16142" href="/Untyped/#16120" class="Bound">Γ</a> <a id="16144" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="16146" href="/Untyped/#16122" class="Bound">A</a><a id="16147" class="Symbol">)</a>
+    <a id="16153" class="Comment">-----------</a>
+  <a id="16167" class="Symbol">→</a> <a id="16169" href="/Untyped/#15884" class="Datatype">Steps</a> <a id="16175" href="/Untyped/#16138" class="Bound">L</a>
+<a id="16177" href="/Untyped/#16110" class="Function">eval</a> <a id="16182" class="Symbol">(</a><a id="16183" href="/Untyped/#15377" class="InductiveConstructor">gas</a> <a id="16187" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a><a id="16191" class="Symbol">)</a>    <a id="16196" href="/Untyped/#16196" class="Bound">L</a>                     <a id="16218" class="Symbol">=</a>  <a id="16221" href="/Untyped/#15923" class="InductiveConstructor">steps</a> <a id="16227" class="Symbol">(</a><a id="16228" href="/Untyped/#16196" class="Bound">L</a> <a id="16230" href="/Untyped/#11058" class="InductiveConstructor Operator">∎</a><a id="16231" class="Symbol">)</a> <a id="16233" href="/Untyped/#15649" class="InductiveConstructor">out-of-gas</a>
+<a id="16244" href="/Untyped/#16110" class="Function">eval</a> <a id="16249" class="Symbol">(</a><a id="16250" href="/Untyped/#15377" class="InductiveConstructor">gas</a> <a id="16254" class="Symbol">(</a><a id="16255" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a> <a id="16259" href="/Untyped/#16259" class="Bound">m</a><a id="16260" class="Symbol">))</a> <a id="16263" href="/Untyped/#16263" class="Bound">L</a> <a id="16265" class="Keyword">with</a> <a id="16270" href="/Untyped/#12998" class="Function">progress</a> <a id="16279" href="/Untyped/#16263" class="Bound">L</a>
+<a id="16281" class="Symbol">...</a> <a id="16285" class="Symbol">|</a> <a id="16287" href="/Untyped/#12864" class="InductiveConstructor">done</a> <a id="16292" href="/Untyped/#16292" class="Bound">NrmL</a>                          <a id="16322" class="Symbol">=</a>  <a id="16325" href="/Untyped/#15923" class="InductiveConstructor">steps</a> <a id="16331" class="Symbol">(</a><a id="16332" class="Bound">L</a> <a id="16334" href="/Untyped/#11058" class="InductiveConstructor Operator">∎</a><a id="16335" class="Symbol">)</a> <a id="16337" class="Symbol">(</a><a id="16338" href="/Untyped/#15586" class="InductiveConstructor">done</a> <a id="16343" href="/Untyped/#16292" class="Bound">NrmL</a><a id="16347" class="Symbol">)</a>
+<a id="16349" class="Symbol">...</a> <a id="16353" class="Symbol">|</a> <a id="16355" href="/Untyped/#12793" class="InductiveConstructor">step</a> <a id="16360" class="Symbol">{</a><a id="16361" href="/Untyped/#16361" class="Bound">M</a><a id="16362" class="Symbol">}</a> <a id="16364" href="/Untyped/#16364" class="Bound">L—→M</a> <a id="16369" class="Keyword">with</a> <a id="16374" href="/Untyped/#16110" class="Function">eval</a> <a id="16379" class="Symbol">(</a><a id="16380" href="/Untyped/#15377" class="InductiveConstructor">gas</a> <a id="16384" class="Bound">m</a><a id="16385" class="Symbol">)</a> <a id="16387" href="/Untyped/#16361" class="Bound">M</a>
+<a id="16389" class="Symbol">...</a>    <a id="16396" class="Symbol">|</a> <a id="16398" href="/Untyped/#15923" class="InductiveConstructor">steps</a> <a id="16404" href="/Untyped/#16404" class="Bound">M—↠N</a> <a id="16409" href="/Untyped/#16409" class="Bound">fin</a>                  <a id="16430" class="Symbol">=</a>  <a id="16433" href="/Untyped/#15923" class="InductiveConstructor">steps</a> <a id="16439" class="Symbol">(</a><a id="16440" class="Bound">L</a> <a id="16442" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="16446" class="Bound">L—→M</a> <a id="16451" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a> <a id="16453" href="/Untyped/#16404" class="Bound">M—↠N</a><a id="16457" class="Symbol">)</a> <a id="16459" href="/Untyped/#16409" class="Bound">fin</a></pre>
+<p>The definition is as before, save that the empty context <code class="highlighter-rouge">∅</code>
+generalises to an arbitrary context <code class="highlighter-rouge">Γ</code>.</p>
+
+<h2 id="example">Example</h2>
+
+<p>We reiterate our previous example. Two plus two is four, with Church numerals.</p>
+<pre class="Agda"><a id="16681" href="/Untyped/#16681" class="Function">_</a> <a id="16683" class="Symbol">:</a> <a id="16685" href="/Untyped/#16110" class="Function">eval</a> <a id="16690" class="Symbol">(</a><a id="16691" href="/Untyped/#15377" class="InductiveConstructor">gas</a> <a id="16695" class="Number">100</a><a id="16698" class="Symbol">)</a> <a id="16700" href="/Untyped/#5250" class="Function">2+2ᶜ</a> <a id="16705" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a>
+  <a id="16709" href="/Untyped/#15923" class="InductiveConstructor">steps</a>
+   <a id="16718" class="Symbol">((</a><a id="16720" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+     <a id="16727" class="Symbol">(</a><a id="16728" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+      <a id="16736" class="Symbol">(</a><a id="16737" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+       <a id="16746" class="Symbol">(</a><a id="16747" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+        <a id="16757" class="Symbol">(</a><a id="16758" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16760" class="Symbol">(</a><a id="16761" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16763" class="Symbol">(</a><a id="16764" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16766" class="Symbol">(</a><a id="16767" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16769" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16770" class="Symbol">))))</a> <a id="16775" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16777" class="Symbol">(</a><a id="16778" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16780" class="Symbol">(</a><a id="16781" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16783" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16784" class="Symbol">))</a> <a id="16787" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+        <a id="16797" class="Symbol">((</a><a id="16799" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16801" class="Symbol">(</a><a id="16802" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16804" class="Symbol">(</a><a id="16805" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16807" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16808" class="Symbol">)))</a> <a id="16812" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16814" class="Symbol">(</a><a id="16815" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16817" class="Symbol">(</a><a id="16818" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16820" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16821" class="Symbol">))</a> <a id="16824" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16826" class="Symbol">(</a><a id="16827" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16829" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16830" class="Symbol">))))))</a>
+    <a id="16841" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16843" class="Symbol">(</a><a id="16844" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="16846" class="Symbol">(</a><a id="16847" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="16849" class="Symbol">(</a><a id="16850" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16852" class="Symbol">(</a><a id="16853" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16855" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16856" class="Symbol">))</a> <a id="16859" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16861" class="Symbol">((</a><a id="16863" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16865" class="Symbol">(</a><a id="16866" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16868" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16869" class="Symbol">))</a> <a id="16872" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16874" class="Symbol">(</a><a id="16875" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16877" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16878" class="Symbol">))))</a>
+    <a id="16887" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16889" class="Symbol">(</a><a id="16890" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="16892" class="Symbol">(</a><a id="16893" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="16895" class="Symbol">(</a><a id="16896" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16898" class="Symbol">(</a><a id="16899" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16901" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16902" class="Symbol">))</a> <a id="16905" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16907" class="Symbol">((</a><a id="16909" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16911" class="Symbol">(</a><a id="16912" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16914" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16915" class="Symbol">))</a> <a id="16918" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16920" class="Symbol">(</a><a id="16921" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16923" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16924" class="Symbol">))))</a>
+   <a id="16932" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="16936" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="16939" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="16942" href="/Untyped/#10188" class="InductiveConstructor">β</a> <a id="16944" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="16950" class="Symbol">(</a><a id="16951" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+     <a id="16958" class="Symbol">(</a><a id="16959" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+      <a id="16967" class="Symbol">(</a><a id="16968" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+       <a id="16977" class="Symbol">(</a><a id="16978" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="16980" class="Symbol">(</a><a id="16981" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="16983" class="Symbol">(</a><a id="16984" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16986" class="Symbol">(</a><a id="16987" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="16989" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="16990" class="Symbol">))</a> <a id="16993" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="16995" class="Symbol">((</a><a id="16997" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="16999" class="Symbol">(</a><a id="17000" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17002" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17003" class="Symbol">))</a> <a id="17006" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17008" class="Symbol">(</a><a id="17009" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17011" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17012" class="Symbol">))))</a> <a id="17017" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17019" class="Symbol">(</a><a id="17020" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17022" class="Symbol">(</a><a id="17023" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17025" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17026" class="Symbol">))</a> <a id="17029" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+       <a id="17038" class="Symbol">((</a><a id="17040" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17042" class="Symbol">(</a><a id="17043" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17045" class="Symbol">(</a><a id="17046" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17048" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17049" class="Symbol">)))</a> <a id="17053" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17055" class="Symbol">(</a><a id="17056" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17058" class="Symbol">(</a><a id="17059" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17061" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17062" class="Symbol">))</a> <a id="17065" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17067" class="Symbol">(</a><a id="17068" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17070" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17071" class="Symbol">)))))</a>
+    <a id="17081" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17083" class="Symbol">(</a><a id="17084" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17086" class="Symbol">(</a><a id="17087" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17089" class="Symbol">(</a><a id="17090" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17092" class="Symbol">(</a><a id="17093" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17095" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17096" class="Symbol">))</a> <a id="17099" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17101" class="Symbol">((</a><a id="17103" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17105" class="Symbol">(</a><a id="17106" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17108" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17109" class="Symbol">))</a> <a id="17112" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17114" class="Symbol">(</a><a id="17115" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17117" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17118" class="Symbol">))))</a>
+   <a id="17126" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="17130" href="/Untyped/#10188" class="InductiveConstructor">β</a> <a id="17132" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="17138" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+    <a id="17144" class="Symbol">(</a><a id="17145" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+     <a id="17152" class="Symbol">(</a><a id="17153" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17155" class="Symbol">(</a><a id="17156" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17158" class="Symbol">(</a><a id="17159" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17161" class="Symbol">(</a><a id="17162" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17164" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17165" class="Symbol">))</a> <a id="17168" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17170" class="Symbol">((</a><a id="17172" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17174" class="Symbol">(</a><a id="17175" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17177" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17178" class="Symbol">))</a> <a id="17181" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17183" class="Symbol">(</a><a id="17184" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17186" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17187" class="Symbol">))))</a> <a id="17192" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17194" class="Symbol">(</a><a id="17195" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17197" class="Symbol">(</a><a id="17198" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17200" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17201" class="Symbol">))</a> <a id="17204" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+     <a id="17211" class="Symbol">((</a><a id="17213" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17215" class="Symbol">(</a><a id="17216" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17218" class="Symbol">(</a><a id="17219" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17221" class="Symbol">(</a><a id="17222" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17224" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17225" class="Symbol">))</a> <a id="17228" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17230" class="Symbol">((</a><a id="17232" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17234" class="Symbol">(</a><a id="17235" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17237" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17238" class="Symbol">))</a> <a id="17241" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17243" class="Symbol">(</a><a id="17244" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17246" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17247" class="Symbol">))))</a> <a id="17252" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17254" class="Symbol">(</a><a id="17255" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17257" class="Symbol">(</a><a id="17258" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17260" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17261" class="Symbol">))</a> <a id="17264" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17266" class="Symbol">(</a><a id="17267" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17269" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17270" class="Symbol">)))</a>
+   <a id="17277" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="17281" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17283" class="Symbol">(</a><a id="17284" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17286" class="Symbol">(</a><a id="17287" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="17290" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="17293" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="17294" class="Symbol">))</a> <a id="17297" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="17303" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+    <a id="17309" class="Symbol">(</a><a id="17310" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+     <a id="17317" class="Symbol">(</a><a id="17318" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17320" class="Symbol">(</a><a id="17321" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17323" class="Symbol">(</a><a id="17324" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17326" class="Symbol">(</a><a id="17327" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17329" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17330" class="Symbol">)))</a> <a id="17334" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17336" class="Symbol">((</a><a id="17338" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17340" class="Symbol">(</a><a id="17341" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17343" class="Symbol">(</a><a id="17344" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17346" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17347" class="Symbol">)))</a> <a id="17351" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17353" class="Symbol">(</a><a id="17354" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17356" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17357" class="Symbol">)))</a> <a id="17361" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+     <a id="17368" class="Symbol">((</a><a id="17370" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17372" class="Symbol">(</a><a id="17373" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17375" class="Symbol">(</a><a id="17376" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17378" class="Symbol">(</a><a id="17379" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17381" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17382" class="Symbol">))</a> <a id="17385" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17387" class="Symbol">((</a><a id="17389" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17391" class="Symbol">(</a><a id="17392" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17394" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17395" class="Symbol">))</a> <a id="17398" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17400" class="Symbol">(</a><a id="17401" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17403" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17404" class="Symbol">))))</a> <a id="17409" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17411" class="Symbol">(</a><a id="17412" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17414" class="Symbol">(</a><a id="17415" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17417" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17418" class="Symbol">))</a> <a id="17421" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17423" class="Symbol">(</a><a id="17424" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17426" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17427" class="Symbol">)))</a>
+   <a id="17434" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="17438" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17440" class="Symbol">(</a><a id="17441" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17443" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="17444" class="Symbol">)</a> <a id="17446" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="17452" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+    <a id="17458" class="Symbol">(</a><a id="17459" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+     <a id="17466" class="Symbol">(</a><a id="17467" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17469" class="Symbol">(</a><a id="17470" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17472" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17473" class="Symbol">))</a> <a id="17476" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+     <a id="17483" class="Symbol">((</a><a id="17485" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17487" class="Symbol">(</a><a id="17488" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17490" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17491" class="Symbol">))</a> <a id="17494" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+      <a id="17502" class="Symbol">((</a><a id="17504" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17506" class="Symbol">(</a><a id="17507" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17509" class="Symbol">(</a><a id="17510" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17512" class="Symbol">(</a><a id="17513" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17515" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17516" class="Symbol">))</a> <a id="17519" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17521" class="Symbol">((</a><a id="17523" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17525" class="Symbol">(</a><a id="17526" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17528" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17529" class="Symbol">))</a> <a id="17532" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17534" class="Symbol">(</a><a id="17535" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17537" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17538" class="Symbol">))))</a> <a id="17543" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17545" class="Symbol">(</a><a id="17546" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17548" class="Symbol">(</a><a id="17549" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17551" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17552" class="Symbol">))</a> <a id="17555" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17557" class="Symbol">(</a><a id="17558" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17560" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17561" class="Symbol">))))</a>
+   <a id="17569" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="17573" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17575" class="Symbol">(</a><a id="17576" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17578" class="Symbol">(</a><a id="17579" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="17582" class="Symbol">(</a><a id="17583" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17585" class="Symbol">(</a><a id="17586" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17588" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17589" class="Symbol">))</a> <a id="17592" class="Symbol">(</a><a id="17593" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="17596" class="Symbol">(</a><a id="17597" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17599" class="Symbol">(</a><a id="17600" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17602" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17603" class="Symbol">))</a> <a id="17606" class="Symbol">(</a><a id="17607" href="/Untyped/#9972" class="InductiveConstructor">ξ₁</a> <a id="17610" href="/Untyped/#9220" class="InductiveConstructor">ap</a> <a id="17613" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="17614" class="Symbol">))))</a> <a id="17619" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="17625" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+    <a id="17631" class="Symbol">(</a><a id="17632" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a>
+     <a id="17639" class="Symbol">(</a><a id="17640" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17642" class="Symbol">(</a><a id="17643" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17645" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17646" class="Symbol">))</a> <a id="17649" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+     <a id="17656" class="Symbol">((</a><a id="17658" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17660" class="Symbol">(</a><a id="17661" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17663" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17664" class="Symbol">))</a> <a id="17667" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a>
+      <a id="17675" class="Symbol">((</a><a id="17677" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17679" class="Symbol">(</a><a id="17680" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17682" class="Symbol">(</a><a id="17683" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17685" class="Symbol">(</a><a id="17686" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17688" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17689" class="Symbol">)))</a> <a id="17693" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17695" class="Symbol">((</a><a id="17697" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17699" class="Symbol">(</a><a id="17700" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17702" class="Symbol">(</a><a id="17703" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17705" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17706" class="Symbol">)))</a> <a id="17710" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17712" class="Symbol">(</a><a id="17713" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17715" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17716" class="Symbol">)))</a> <a id="17720" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17722" class="Symbol">(</a><a id="17723" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17725" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17726" class="Symbol">))))</a>
+   <a id="17734" href="/Untyped/#11114" class="InductiveConstructor Operator">—→⟨</a> <a id="17738" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17740" class="Symbol">(</a><a id="17741" href="/Untyped/#10296" class="InductiveConstructor">ζ</a> <a id="17743" class="Symbol">(</a><a id="17744" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="17747" class="Symbol">(</a><a id="17748" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17750" class="Symbol">(</a><a id="17751" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17753" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17754" class="Symbol">))</a> <a id="17757" class="Symbol">(</a><a id="17758" href="/Untyped/#10082" class="InductiveConstructor">ξ₂</a> <a id="17761" class="Symbol">(</a><a id="17762" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17764" class="Symbol">(</a><a id="17765" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17767" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17768" class="Symbol">))</a> <a id="17771" href="/Untyped/#10188" class="InductiveConstructor">β</a><a id="17772" class="Symbol">)))</a> <a id="17776" href="/Untyped/#11114" class="InductiveConstructor Operator">⟩</a>
+    <a id="17782" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17784" class="Symbol">(</a><a id="17785" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="17787" class="Symbol">(</a><a id="17788" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17790" class="Symbol">(</a><a id="17791" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17793" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17794" class="Symbol">))</a> <a id="17797" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17799" class="Symbol">((</a><a id="17801" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17803" class="Symbol">(</a><a id="17804" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17806" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17807" class="Symbol">))</a> <a id="17810" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17812" class="Symbol">((</a><a id="17814" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17816" class="Symbol">(</a><a id="17817" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17819" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17820" class="Symbol">))</a> <a id="17823" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17825" class="Symbol">((</a><a id="17827" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17829" class="Symbol">(</a><a id="17830" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17832" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17833" class="Symbol">))</a> <a id="17836" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="17838" class="Symbol">(</a><a id="17839" href="/Untyped/#4095" class="InductiveConstructor Operator">`</a> <a id="17841" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17842" class="Symbol">)))))</a>
+   <a id="17851" href="/Untyped/#11058" class="InductiveConstructor Operator">∎</a><a id="17852" class="Symbol">)</a>
+   <a id="17857" class="Symbol">(</a><a id="17858" href="/Untyped/#15586" class="InductiveConstructor">done</a>
+    <a id="17867" class="Symbol">(</a><a id="17868" href="/Untyped/#8491" class="InductiveConstructor Operator">ƛ</a>
+     <a id="17875" class="Symbol">(</a><a id="17876" href="/Untyped/#8491" class="InductiveConstructor Operator">ƛ</a>
+      <a id="17884" class="Symbol">(</a><a id="17885" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a>
+       <a id="17894" class="Symbol">(</a><a id="17895" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17897" class="Symbol">(</a><a id="17898" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17900" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17901" class="Symbol">))</a> <a id="17904" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a>
+       <a id="17913" class="Symbol">(</a><a id="17914" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="17916" class="Symbol">(</a><a id="17917" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17919" class="Symbol">(</a><a id="17920" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17922" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17923" class="Symbol">))</a> <a id="17926" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="17928" class="Symbol">(</a><a id="17929" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="17931" class="Symbol">(</a><a id="17932" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17934" class="Symbol">(</a><a id="17935" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17937" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17938" class="Symbol">))</a> <a id="17941" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="17943" class="Symbol">(</a><a id="17944" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="17946" class="Symbol">(</a><a id="17947" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17949" class="Symbol">(</a><a id="17950" href="/Untyped/#3352" class="InductiveConstructor Operator">S</a> <a id="17952" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17953" class="Symbol">))</a> <a id="17956" href="/Untyped/#8107" class="InductiveConstructor Operator">·</a> <a id="17958" class="Symbol">(</a><a id="17959" href="/Untyped/#8416" class="InductiveConstructor Operator">′</a> <a id="17961" class="Symbol">(</a><a id="17962" href="/Untyped/#8038" class="InductiveConstructor Operator">`</a> <a id="17964" href="/Untyped/#3307" class="InductiveConstructor">Z</a><a id="17965" class="Symbol">)))))))))</a>
+<a id="17975" class="Symbol">_</a> <a id="17977" class="Symbol">=</a> <a id="17979" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a></pre>
+
+<h2 id="naturals-and-fixpoint">Naturals and fixpoint</h2>
+
+<p>We could simulate naturals using Church numerals, but computing
+predecessor is tricky and expensive.  Instead, we use a different
+representation, called Scott numerals, where a number is essentially
+defined by the expression that corresponds to its own case statement.</p>
+
+<p>Recall that Church numerals apply a given function for the
+corresponding number of times.  Using named terms, we represent the
+first three Church numerals as follows.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zero  =  ƛ s ⇒ ƛ z ⇒ z
+one   =  ƛ s ⇒ ƛ z ⇒ s · z
+two   =  ƛ s ⇒ ƛ z ⇒ s · (s · z)
+</code></pre></div></div>
+
+<p>In contrast, for Scott numerals, we represent the first three naturals
+as follows:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zero = ƛ s ⇒ ƛ z ⇒ z
+one  = ƛ s ⇒ ƛ z ⇒ s · zero
+two  = ƛ s ⇒ ƛ z ⇒ s · one
+</code></pre></div></div>
+
+<p>Each represenation expects two arguments, one corresponding to
+the successor branch of the case (it expects an additional argument,
+the predecessor of the current argument) and one corresponding to the
+zero branch of the case.  (The cases could be in either order.
+We put the successor case first to ease comparison with Church numerals.)</p>
+
+<p>Here is the representation of naturals encoded with de Bruijn indexes.</p>
+<pre class="Agda"><a id="`zero"></a><a id="19153" href="/Untyped/#19153" class="Function">`zero</a> <a id="19159" class="Symbol">:</a> <a id="19161" class="Symbol">∀</a> <a id="19163" class="Symbol">{</a><a id="19164" href="/Untyped/#19164" class="Bound">Γ</a><a id="19165" class="Symbol">}</a> <a id="19167" class="Symbol">→</a> <a id="19169" class="Symbol">(</a><a id="19170" href="/Untyped/#19164" class="Bound">Γ</a> <a id="19172" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19174" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19175" class="Symbol">)</a>
+<a id="19177" href="/Untyped/#19153" class="Function">`zero</a> <a id="19183" class="Symbol">=</a> <a id="19185" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19187" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19189" class="Symbol">(</a><a id="19190" href="/Untyped/#4908" class="Function Operator">#</a> <a id="19192" class="Number">0</a><a id="19193" class="Symbol">)</a>
+
+<a id="`suc_"></a><a id="19196" href="/Untyped/#19196" class="Function Operator">`suc_</a> <a id="19202" class="Symbol">:</a> <a id="19204" class="Symbol">∀</a> <a id="19206" class="Symbol">{</a><a id="19207" href="/Untyped/#19207" class="Bound">Γ</a><a id="19208" class="Symbol">}</a> <a id="19210" class="Symbol">→</a> <a id="19212" class="Symbol">(</a><a id="19213" href="/Untyped/#19207" class="Bound">Γ</a> <a id="19215" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19217" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19218" class="Symbol">)</a> <a id="19220" class="Symbol">→</a> <a id="19222" class="Symbol">(</a><a id="19223" href="/Untyped/#19207" class="Bound">Γ</a> <a id="19225" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19227" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19228" class="Symbol">)</a>
+<a id="19230" href="/Untyped/#19196" class="Function Operator">`suc_</a> <a id="19236" href="/Untyped/#19236" class="Bound">M</a>  <a id="19239" class="Symbol">=</a> <a id="19241" class="Symbol">(</a><a id="19242" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19244" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19246" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19248" class="Symbol">(</a><a id="19249" href="/Untyped/#4908" class="Function Operator">#</a> <a id="19251" class="Number">1</a> <a id="19253" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="19255" href="/Untyped/#4908" class="Function Operator">#</a> <a id="19257" class="Number">2</a><a id="19258" class="Symbol">))</a> <a id="19261" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="19263" href="/Untyped/#19236" class="Bound">M</a>
+
+<a id="case"></a><a id="19266" href="/Untyped/#19266" class="Function">case</a> <a id="19271" class="Symbol">:</a> <a id="19273" class="Symbol">∀</a> <a id="19275" class="Symbol">{</a><a id="19276" href="/Untyped/#19276" class="Bound">Γ</a><a id="19277" class="Symbol">}</a> <a id="19279" class="Symbol">→</a> <a id="19281" class="Symbol">(</a><a id="19282" href="/Untyped/#19276" class="Bound">Γ</a> <a id="19284" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19286" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19287" class="Symbol">)</a> <a id="19289" class="Symbol">→</a> <a id="19291" class="Symbol">(</a><a id="19292" href="/Untyped/#19276" class="Bound">Γ</a> <a id="19294" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19296" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19297" class="Symbol">)</a> <a id="19299" class="Symbol">→</a> <a id="19301" class="Symbol">(</a><a id="19302" href="/Untyped/#19276" class="Bound">Γ</a> <a id="19304" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="19306" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="19308" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19310" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19311" class="Symbol">)</a>  <a id="19314" class="Symbol">→</a> <a id="19316" class="Symbol">(</a><a id="19317" href="/Untyped/#19276" class="Bound">Γ</a> <a id="19319" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19321" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19322" class="Symbol">)</a>
+<a id="19324" href="/Untyped/#19266" class="Function">case</a> <a id="19329" href="/Untyped/#19329" class="Bound">L</a> <a id="19331" href="/Untyped/#19331" class="Bound">M</a> <a id="19333" href="/Untyped/#19333" class="Bound">N</a> <a id="19335" class="Symbol">=</a> <a id="19337" href="/Untyped/#19329" class="Bound">L</a> <a id="19339" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="19341" class="Symbol">(</a><a id="19342" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19344" href="/Untyped/#19333" class="Bound">N</a><a id="19345" class="Symbol">)</a> <a id="19347" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="19349" href="/Untyped/#19331" class="Bound">M</a></pre>
+<p>Here we have been careful to retain the exact form of our previous
+definitions.  The successor branch expects an additional variable to
+be in scope (as indicated by its type), so it is converted to an
+ordinary term using lambda abstraction.</p>
+
+<p>We can also define fixpoint.  Using named terms, we define</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>μ f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+</code></pre></div></div>
+
+<p>This works because</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  μ f
+≡
+  (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
+—→
+  f · ((ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x)))
+≡
+  f · (μ f)
+</code></pre></div></div>
+
+<p>With de Bruijn indices, we have the following.</p>
+<pre class="Agda"><a id="μ_"></a><a id="19945" href="/Untyped/#19945" class="Function Operator">μ_</a> <a id="19948" class="Symbol">:</a> <a id="19950" class="Symbol">∀</a> <a id="19952" class="Symbol">{</a><a id="19953" href="/Untyped/#19953" class="Bound">Γ</a><a id="19954" class="Symbol">}</a> <a id="19956" class="Symbol">→</a> <a id="19958" class="Symbol">(</a><a id="19959" href="/Untyped/#19953" class="Bound">Γ</a> <a id="19961" href="/Untyped/#2970" class="InductiveConstructor Operator">,</a> <a id="19963" href="/Untyped/#2694" class="InductiveConstructor">★</a> <a id="19965" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19967" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19968" class="Symbol">)</a> <a id="19970" class="Symbol">→</a> <a id="19972" class="Symbol">(</a><a id="19973" href="/Untyped/#19953" class="Bound">Γ</a> <a id="19975" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="19977" href="/Untyped/#2694" class="InductiveConstructor">★</a><a id="19978" class="Symbol">)</a>
+<a id="19980" href="/Untyped/#19945" class="Function Operator">μ</a> <a id="19982" href="/Untyped/#19982" class="Bound">N</a>  <a id="19985" class="Symbol">=</a>  <a id="19988" class="Symbol">(</a><a id="19989" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19991" class="Symbol">((</a><a id="19993" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="19995" class="Symbol">(</a><a id="19996" href="/Untyped/#4908" class="Function Operator">#</a> <a id="19998" class="Number">1</a> <a id="20000" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20002" class="Symbol">(</a><a id="20003" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20005" class="Number">0</a> <a id="20007" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20009" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20011" class="Number">0</a><a id="20012" class="Symbol">)))</a> <a id="20016" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20018" class="Symbol">(</a><a id="20019" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="20021" class="Symbol">(</a><a id="20022" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20024" class="Number">1</a> <a id="20026" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20028" class="Symbol">(</a><a id="20029" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20031" class="Number">0</a> <a id="20033" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20035" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20037" class="Number">0</a><a id="20038" class="Symbol">)))))</a> <a id="20044" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20046" class="Symbol">(</a><a id="20047" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="20049" href="/Untyped/#19982" class="Bound">N</a><a id="20050" class="Symbol">)</a></pre>
+<p>The argument to fixpoint is treated similarly to the successor branch of case.</p>
+
+<p>We can now define two plus two exactly as before.</p>
+<pre class="Agda"><a id="20206" class="Keyword">infix</a> <a id="20212" class="Number">5</a> <a id="20214" href="/Untyped/#19945" class="Function Operator">μ_</a>
+
+<a id="two"></a><a id="20218" href="/Untyped/#20218" class="Function">two</a> <a id="20222" class="Symbol">:</a> <a id="20224" class="Symbol">∀</a> <a id="20226" class="Symbol">{</a><a id="20227" href="/Untyped/#20227" class="Bound">Γ</a><a id="20228" class="Symbol">}</a> <a id="20230" class="Symbol">→</a> <a id="20232" href="/Untyped/#20227" class="Bound">Γ</a> <a id="20234" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="20236" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="20238" href="/Untyped/#20218" class="Function">two</a> <a id="20242" class="Symbol">=</a> <a id="20244" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20249" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20254" href="/Untyped/#19153" class="Function">`zero</a>
+
+<a id="four"></a><a id="20261" href="/Untyped/#20261" class="Function">four</a> <a id="20266" class="Symbol">:</a> <a id="20268" class="Symbol">∀</a> <a id="20270" class="Symbol">{</a><a id="20271" href="/Untyped/#20271" class="Bound">Γ</a><a id="20272" class="Symbol">}</a> <a id="20274" class="Symbol">→</a> <a id="20276" href="/Untyped/#20271" class="Bound">Γ</a> <a id="20278" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="20280" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="20282" href="/Untyped/#20261" class="Function">four</a> <a id="20287" class="Symbol">=</a> <a id="20289" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20294" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20299" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20304" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20309" href="/Untyped/#19153" class="Function">`zero</a>
+
+<a id="plus"></a><a id="20316" href="/Untyped/#20316" class="Function">plus</a> <a id="20321" class="Symbol">:</a> <a id="20323" class="Symbol">∀</a> <a id="20325" class="Symbol">{</a><a id="20326" href="/Untyped/#20326" class="Bound">Γ</a><a id="20327" class="Symbol">}</a> <a id="20329" class="Symbol">→</a> <a id="20331" href="/Untyped/#20326" class="Bound">Γ</a> <a id="20333" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="20335" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="20337" href="/Untyped/#20316" class="Function">plus</a> <a id="20342" class="Symbol">=</a> <a id="20344" href="/Untyped/#19945" class="Function Operator">μ</a> <a id="20346" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="20348" href="/Untyped/#4147" class="InductiveConstructor Operator">ƛ</a> <a id="20350" class="Symbol">(</a><a id="20351" href="/Untyped/#19266" class="Function">case</a> <a id="20356" class="Symbol">(</a><a id="20357" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20359" class="Number">1</a><a id="20360" class="Symbol">)</a> <a id="20362" class="Symbol">(</a><a id="20363" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20365" class="Number">0</a><a id="20366" class="Symbol">)</a> <a id="20368" class="Symbol">(</a><a id="20369" href="/Untyped/#19196" class="Function Operator">`suc</a> <a id="20374" class="Symbol">(</a><a id="20375" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20377" class="Number">3</a> <a id="20379" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20381" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20383" class="Number">0</a> <a id="20385" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20387" href="/Untyped/#4908" class="Function Operator">#</a> <a id="20389" class="Number">1</a><a id="20390" class="Symbol">)))</a>
+
+<a id="2+2"></a><a id="20395" href="/Untyped/#20395" class="Function">2+2</a> <a id="20399" class="Symbol">:</a> <a id="20401" href="/Untyped/#2954" class="InductiveConstructor">∅</a> <a id="20403" href="/Untyped/#4059" class="Datatype Operator">⊢</a> <a id="20405" href="/Untyped/#2694" class="InductiveConstructor">★</a>
+<a id="20407" href="/Untyped/#20395" class="Function">2+2</a> <a id="20411" class="Symbol">=</a> <a id="20413" href="/Untyped/#20316" class="Function">plus</a> <a id="20418" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20420" href="/Untyped/#20218" class="Function">two</a> <a id="20424" href="/Untyped/#4207" class="InductiveConstructor Operator">·</a> <a id="20426" href="/Untyped/#20218" class="Function">two</a></pre>
+<p>Because <code class="highlighter-rouge">`suc</code> is now a defined term rather than primitive,
+it is no longer the case that <code class="highlighter-rouge">2+2</code> reduces to <code class="highlighter-rouge">four</code>, but they
+do both reduce to the same normal term.</p>
+
+<h4 id="exercise-22four">Exercise <code class="highlighter-rouge">2+2≡four</code></h4>
+
+<p>Use the evaluator to confirm that <code class="highlighter-rouge">2+2</code> and <code class="highlighter-rouge">four</code> normalise to
+the same term.</p>
+
+<h4 id="exercise-multiplication-untyped-recommended">Exercise <code class="highlighter-rouge">multiplication-untyped</code> (recommended)</h4>
+
+<p>Use the encodings above to translate your definition of
+multiplication from previous chapters with the Scott
+representation and the encoding of the fixpoint operator.
+Confirm that two times two is four.</p>
+
+<h4 id="exercise-encode-more-stretch">Exercise <code class="highlighter-rouge">encode-more</code> (stretch)</h4>
+
+<p>Along the lines above, encode all of the constructs of
+Chapter <a href="/More/">More</a>,
+save for primitive numbers, in the untyped lambda calculus.</p>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>This chapter uses the following unicode.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>★  U+2605  BLACK STAR (\st)
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">\st</code> command permits navigation among many different stars;
+the one we use is number 7.</p>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/Inference/">Prev</a>
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Untyped.lagda">Source</a>
+    
+    
+    &bullet;
+    <a alt="Next chapter" href="/Acknowledgements/">Next</a>
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modules: Modules and List Examples | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Modules: Modules and List Examples" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/Modules/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/Modules/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/Modules/","headline":"Modules: Modules and List Examples","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Modules: Modules and List Examples</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Modules.lagda">Source</a>
+    
+    
+</p>
+
+
+  <div class="post-content">
+    <p>** Turn this into a Setoid example. Copy equivalence relation and setoid
+from the standard library. **</p>
+
+<pre class="Agda"><a id="215" class="Keyword">module</a> <a id="222" href="/Modules/" class="Module">plfa.Modules</a> <a id="235" class="Keyword">where</a></pre>
+
+<p>This chapter introduces modules as a way of structuring proofs,
+and proves some general results which will be useful later.</p>
+
+<h2 id="imports">Imports</h2>
+
+<pre class="Agda"><a id="403" class="Keyword">import</a> <a id="410" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="448" class="Symbol">as</a> <a id="451" class="Module">Eq</a>
+<a id="454" class="Keyword">open</a> <a id="459" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="462" class="Keyword">using</a> <a id="468" class="Symbol">(</a><a id="469" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">_≡_</a><a id="472" class="Symbol">;</a> <a id="474" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="478" class="Symbol">;</a> <a id="480" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#838" class="Function">sym</a><a id="483" class="Symbol">;</a> <a id="485" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#887" class="Function">trans</a><a id="490" class="Symbol">;</a> <a id="492" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#1056" class="Function">cong</a><a id="496" class="Symbol">)</a>
+<a id="498" class="Keyword">open</a> <a id="503" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#3840" class="Module">Eq.≡-Reasoning</a>
+<a id="518" class="Keyword">open</a> <a id="523" class="Keyword">import</a> <a id="530" href="https://agda.github.io/agda-stdlib/Data.Nat.html" class="Module">Data.Nat</a> <a id="539" class="Keyword">using</a> <a id="545" class="Symbol">(</a><a id="546" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="547" class="Symbol">;</a> <a id="549" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a><a id="553" class="Symbol">;</a> <a id="555" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a><a id="558" class="Symbol">;</a> <a id="560" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#230" class="Primitive Operator">_+_</a><a id="563" class="Symbol">;</a> <a id="565" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#433" class="Primitive Operator">_*_</a><a id="568" class="Symbol">;</a> <a id="570" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#320" class="Primitive Operator">_∸_</a><a id="573" class="Symbol">;</a> <a id="575" href="https://agda.github.io/agda-stdlib/Data.Nat.Base.html#742" class="Datatype Operator">_≤_</a><a id="578" class="Symbol">;</a> <a id="580" href="https://agda.github.io/agda-stdlib/Data.Nat.Base.html#807" class="InductiveConstructor">s≤s</a><a id="583" class="Symbol">;</a> <a id="585" href="https://agda.github.io/agda-stdlib/Data.Nat.Base.html#765" class="InductiveConstructor">z≤n</a><a id="588" class="Symbol">)</a>
+<a id="590" class="Keyword">open</a> <a id="595" class="Keyword">import</a> <a id="602" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="619" class="Keyword">using</a> <a id="625" class="Symbol">(</a><a id="626" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a><a id="628" class="Symbol">)</a>
+<a id="630" class="Keyword">open</a> <a id="635" class="Keyword">import</a> <a id="642" href="https://agda.github.io/agda-stdlib/Data.Product.html" class="Module">Data.Product</a> <a id="655" class="Keyword">using</a> <a id="661" class="Symbol">(</a><a id="662" href="https://agda.github.io/agda-stdlib/Data.Product.html#1353" class="Function Operator">_×_</a><a id="665" class="Symbol">)</a> <a id="667" class="Keyword">renaming</a> <a id="676" class="Symbol">(</a><a id="677" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">_,_</a> <a id="681" class="Symbol">to</a> <a id="684" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="689" class="Symbol">)</a>
+<a id="691" class="Keyword">open</a> <a id="696" class="Keyword">import</a> <a id="703" href="https://agda.github.io/agda-stdlib/Function.html" class="Module">Function</a> <a id="712" class="Keyword">using</a> <a id="718" class="Symbol">(</a><a id="719" href="https://agda.github.io/agda-stdlib/Function.html#769" class="Function Operator">_∘_</a><a id="722" class="Symbol">)</a>
+<a id="724" class="Keyword">open</a> <a id="729" class="Keyword">import</a> <a id="736" href="https://agda.github.io/agda-stdlib/Level.html" class="Module">Level</a> <a id="742" class="Keyword">using</a> <a id="748" class="Symbol">(</a><a id="749" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="754" class="Symbol">)</a>
+<a id="756" class="Keyword">open</a> <a id="761" class="Keyword">import</a> <a id="768" href="https://agda.github.io/agda-stdlib/Data.Maybe.html" class="Module">Data.Maybe</a> <a id="779" class="Keyword">using</a> <a id="785" class="Symbol">(</a><a id="786" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#335" class="Datatype">Maybe</a><a id="791" class="Symbol">;</a> <a id="793" href="https://agda.github.io/agda-stdlib/Data.Maybe.html#705" class="InductiveConstructor">just</a><a id="797" class="Symbol">;</a> <a id="799" href="https://agda.github.io/agda-stdlib/Data.Maybe.html#766" class="InductiveConstructor">nothing</a><a id="806" class="Symbol">)</a>
+<a id="808" class="Keyword">open</a> <a id="813" class="Keyword">import</a> <a id="820" href="https://agda.github.io/agda-stdlib/Data.List.html" class="Module">Data.List</a> <a id="830" class="Keyword">using</a> <a id="836" class="Symbol">(</a><a id="837" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#80" class="Datatype">List</a><a id="841" class="Symbol">;</a> <a id="843" href="https://agda.github.io/agda-stdlib/Data.List.Base.html#8019" class="InductiveConstructor">[]</a><a id="845" class="Symbol">;</a> <a id="847" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#132" class="InductiveConstructor Operator">_∷_</a><a id="850" class="Symbol">;</a> <a id="852" href="https://agda.github.io/agda-stdlib/Data.List.Base.html#1391" class="Function Operator">_++_</a><a id="856" class="Symbol">;</a> <a id="858" href="https://agda.github.io/agda-stdlib/Data.List.Base.html#1057" class="Function">map</a><a id="861" class="Symbol">;</a> <a id="863" href="https://agda.github.io/agda-stdlib/Data.List.Base.html#2376" class="Function">foldr</a><a id="868" class="Symbol">;</a> <a id="870" href="https://agda.github.io/agda-stdlib/Data.List.Base.html#4942" class="Function">downFrom</a><a id="878" class="Symbol">)</a>
+<a id="880" class="Keyword">open</a> <a id="885" class="Keyword">import</a> <a id="892" href="https://agda.github.io/agda-stdlib/Data.List.All.html" class="Module">Data.List.All</a> <a id="906" class="Keyword">using</a> <a id="912" class="Symbol">(</a><a id="913" href="https://agda.github.io/agda-stdlib/Data.List.All.html#826" class="Datatype">All</a><a id="916" class="Symbol">;</a> <a id="918" href="https://agda.github.io/agda-stdlib/Data.List.All.html#904" class="InductiveConstructor">[]</a><a id="920" class="Symbol">;</a> <a id="922" href="https://agda.github.io/agda-stdlib/Data.List.All.html#921" class="InductiveConstructor Operator">_∷_</a><a id="925" class="Symbol">)</a>
+<a id="927" class="Keyword">open</a> <a id="932" class="Keyword">import</a> <a id="939" href="https://agda.github.io/agda-stdlib/Data.List.Any.html" class="Module">Data.List.Any</a> <a id="953" class="Keyword">using</a> <a id="959" class="Symbol">(</a><a id="960" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#744" class="Datatype">Any</a><a id="963" class="Symbol">;</a> <a id="965" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#799" class="InductiveConstructor">here</a><a id="969" class="Symbol">;</a> <a id="971" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#852" class="InductiveConstructor">there</a><a id="976" class="Symbol">)</a>
+<a id="978" class="Keyword">open</a> <a id="983" class="Keyword">import</a> <a id="990" href="/Isomorphism/" class="Module">plfa.Isomorphism</a> <a id="1007" class="Keyword">using</a> <a id="1013" class="Symbol">(</a><a id="1014" href="/Isomorphism/#4104" class="Record Operator">_≃_</a><a id="1017" class="Symbol">;</a> <a id="1019" href="/Isomorphism/#2748" class="Postulate">extensionality</a><a id="1033" class="Symbol">)</a></pre>
+
+<h2 id="modules">Modules</h2>
+
+<p>Let’s say we want to prove some standard results about collections of
+elements of a given type at a given universe level with a given
+equivalence relation for equality. One way to do so is to begin every
+signature with a suitable sequence of implicit parameters.  Here are
+some definitions, where we represent collections as lists.  (We would
+call collections <em>sets</em>, save that the name <code class="highlighter-rouge">Set</code> already plays a
+special role in Agda.)</p>
+
+<pre class="Agda"><a id="Coll′"></a><a id="1507" href="/Modules/#1507" class="Function">Coll′</a> <a id="1513" class="Symbol">:</a> <a id="1515" class="Symbol">∀</a> <a id="1517" class="Symbol">{</a><a id="1518" href="/Modules/#1518" class="Bound">ℓ</a> <a id="1520" class="Symbol">:</a> <a id="1522" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="1527" class="Symbol">}</a> <a id="1529" class="Symbol">→</a> <a id="1531" class="PrimitiveType">Set</a> <a id="1535" href="/Modules/#1518" class="Bound">ℓ</a> <a id="1537" class="Symbol">→</a> <a id="1539" class="PrimitiveType">Set</a> <a id="1543" href="/Modules/#1518" class="Bound">ℓ</a>
+<a id="1545" href="/Modules/#1507" class="Function">Coll′</a> <a id="1551" href="/Modules/#1551" class="Bound">A</a>  <a id="1554" class="Symbol">=</a>  <a id="1557" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#80" class="Datatype">List</a> <a id="1562" href="/Modules/#1551" class="Bound">A</a>
+
+<a id="_∈′_"></a><a id="1565" href="/Modules/#1565" class="Function Operator">_∈′_</a> <a id="1570" class="Symbol">:</a> <a id="1572" class="Symbol">∀</a> <a id="1574" class="Symbol">{</a><a id="1575" href="/Modules/#1575" class="Bound">ℓ</a> <a id="1577" class="Symbol">:</a> <a id="1579" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="1584" class="Symbol">}</a> <a id="1586" class="Symbol">{</a><a id="1587" href="/Modules/#1587" class="Bound">A</a> <a id="1589" class="Symbol">:</a> <a id="1591" class="PrimitiveType">Set</a> <a id="1595" href="/Modules/#1575" class="Bound">ℓ</a><a id="1596" class="Symbol">}</a> <a id="1598" class="Symbol">{</a><a id="1599" href="/Modules/#1599" class="Bound Operator">_≈_</a> <a id="1603" class="Symbol">:</a> <a id="1605" href="/Modules/#1587" class="Bound">A</a> <a id="1607" class="Symbol">→</a> <a id="1609" href="/Modules/#1587" class="Bound">A</a> <a id="1611" class="Symbol">→</a> <a id="1613" class="PrimitiveType">Set</a> <a id="1617" href="/Modules/#1575" class="Bound">ℓ</a><a id="1618" class="Symbol">}</a> <a id="1620" class="Symbol">→</a> <a id="1622" href="/Modules/#1587" class="Bound">A</a> <a id="1624" class="Symbol">→</a> <a id="1626" href="/Modules/#1507" class="Function">Coll′</a> <a id="1632" href="/Modules/#1587" class="Bound">A</a> <a id="1634" class="Symbol">→</a> <a id="1636" class="PrimitiveType">Set</a> <a id="1640" href="/Modules/#1575" class="Bound">ℓ</a>
+<a id="1642" href="/Modules/#1565" class="Function Operator">_∈′_</a> <a id="1647" class="Symbol">{</a><a id="1648" class="Argument">_≈_</a> <a id="1652" class="Symbol">=</a> <a id="1654" href="/Modules/#1654" class="Bound Operator">_≈_</a><a id="1657" class="Symbol">}</a> <a id="1659" href="/Modules/#1659" class="Bound">x</a> <a id="1661" href="/Modules/#1661" class="Bound">xs</a>  <a id="1665" class="Symbol">=</a>  <a id="1668" href="https://agda.github.io/agda-stdlib/Data.List.All.html#826" class="Datatype">All</a> <a id="1672" class="Symbol">(</a><a id="1673" href="/Modules/#1659" class="Bound">x</a> <a id="1675" href="/Modules/#1654" class="Bound Operator">≈_</a><a id="1677" class="Symbol">)</a> <a id="1679" href="/Modules/#1661" class="Bound">xs</a>
+
+<a id="_⊆′_"></a><a id="1683" href="/Modules/#1683" class="Function Operator">_⊆′_</a> <a id="1688" class="Symbol">:</a> <a id="1690" class="Symbol">∀</a> <a id="1692" class="Symbol">{</a><a id="1693" href="/Modules/#1693" class="Bound">ℓ</a> <a id="1695" class="Symbol">:</a> <a id="1697" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="1702" class="Symbol">}</a> <a id="1704" class="Symbol">{</a><a id="1705" href="/Modules/#1705" class="Bound">A</a> <a id="1707" class="Symbol">:</a> <a id="1709" class="PrimitiveType">Set</a> <a id="1713" href="/Modules/#1693" class="Bound">ℓ</a><a id="1714" class="Symbol">}</a> <a id="1716" class="Symbol">{</a><a id="1717" href="/Modules/#1717" class="Bound Operator">_≈_</a> <a id="1721" class="Symbol">:</a> <a id="1723" href="/Modules/#1705" class="Bound">A</a> <a id="1725" class="Symbol">→</a> <a id="1727" href="/Modules/#1705" class="Bound">A</a> <a id="1729" class="Symbol">→</a> <a id="1731" class="PrimitiveType">Set</a> <a id="1735" href="/Modules/#1693" class="Bound">ℓ</a><a id="1736" class="Symbol">}</a> <a id="1738" class="Symbol">→</a> <a id="1740" href="/Modules/#1507" class="Function">Coll′</a> <a id="1746" href="/Modules/#1705" class="Bound">A</a> <a id="1748" class="Symbol">→</a> <a id="1750" href="/Modules/#1507" class="Function">Coll′</a> <a id="1756" href="/Modules/#1705" class="Bound">A</a> <a id="1758" class="Symbol">→</a> <a id="1760" class="PrimitiveType">Set</a> <a id="1764" href="/Modules/#1693" class="Bound">ℓ</a>
+<a id="1766" href="/Modules/#1683" class="Function Operator">_⊆′_</a> <a id="1771" class="Symbol">{</a><a id="1772" class="Argument">_≈_</a> <a id="1776" class="Symbol">=</a> <a id="1778" href="/Modules/#1778" class="Bound Operator">_≈_</a><a id="1781" class="Symbol">}</a> <a id="1783" href="/Modules/#1783" class="Bound">xs</a> <a id="1786" href="/Modules/#1786" class="Bound">ys</a>  <a id="1790" class="Symbol">=</a>  <a id="1793" class="Symbol">∀</a> <a id="1795" class="Symbol">{</a><a id="1796" href="/Modules/#1796" class="Bound">w</a><a id="1797" class="Symbol">}</a> <a id="1799" class="Symbol">→</a> <a id="1801" href="/Modules/#1565" class="Function Operator">_∈′_</a>  <a id="1807" class="Symbol">{</a><a id="1808" class="Argument">_≈_</a> <a id="1812" class="Symbol">=</a> <a id="1814" href="/Modules/#1778" class="Bound Operator">_≈_</a><a id="1817" class="Symbol">}</a> <a id="1819" href="/Modules/#1796" class="Bound">w</a> <a id="1821" href="/Modules/#1783" class="Bound">xs</a> <a id="1824" class="Symbol">→</a> <a id="1826" href="/Modules/#1565" class="Function Operator">_∈′_</a> <a id="1831" class="Symbol">{</a><a id="1832" class="Argument">_≈_</a> <a id="1836" class="Symbol">=</a> <a id="1838" href="/Modules/#1778" class="Bound Operator">_≈_</a><a id="1841" class="Symbol">}</a> <a id="1843" href="/Modules/#1796" class="Bound">w</a> <a id="1845" href="/Modules/#1786" class="Bound">ys</a></pre>
+
+<p>This rapidly gets tired.  Passing around the equivalence relation <code class="highlighter-rouge">_≈_</code>
+takes a lot of space, hinders the use of infix notation, and obscures the
+essence of the definitions.</p>
+
+<p>Instead, we can define a module parameterised by the desired concepts,
+which are then available throughout.</p>
+<pre class="Agda"><a id="2156" class="Keyword">module</a> <a id="Collection"></a><a id="2163" href="/Modules/#2163" class="Module">Collection</a> <a id="2174" class="Symbol">{</a><a id="2175" href="/Modules/#2175" class="Bound">ℓ</a> <a id="2177" class="Symbol">:</a> <a id="2179" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="2184" class="Symbol">}</a> <a id="2186" class="Symbol">(</a><a id="2187" href="/Modules/#2187" class="Bound">A</a> <a id="2189" class="Symbol">:</a> <a id="2191" class="PrimitiveType">Set</a> <a id="2195" href="/Modules/#2175" class="Bound">ℓ</a><a id="2196" class="Symbol">)</a> <a id="2198" class="Symbol">(</a><a id="2199" href="/Modules/#2199" class="Bound Operator">_≈_</a> <a id="2203" class="Symbol">:</a> <a id="2205" href="/Modules/#2187" class="Bound">A</a> <a id="2207" class="Symbol">→</a> <a id="2209" href="/Modules/#2187" class="Bound">A</a> <a id="2211" class="Symbol">→</a> <a id="2213" class="PrimitiveType">Set</a> <a id="2217" href="/Modules/#2175" class="Bound">ℓ</a><a id="2218" class="Symbol">)</a> <a id="2220" class="Keyword">where</a>
+
+  <a id="Collection.Coll"></a><a id="2229" href="/Modules/#2229" class="Function">Coll</a> <a id="2234" class="Symbol">:</a> <a id="2236" class="Symbol">∀</a> <a id="2238" class="Symbol">{</a><a id="2239" href="/Modules/#2239" class="Bound">ℓ</a> <a id="2241" class="Symbol">:</a> <a id="2243" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="2248" class="Symbol">}</a> <a id="2250" class="Symbol">→</a> <a id="2252" class="PrimitiveType">Set</a> <a id="2256" href="/Modules/#2239" class="Bound">ℓ</a> <a id="2258" class="Symbol">→</a> <a id="2260" class="PrimitiveType">Set</a> <a id="2264" href="/Modules/#2239" class="Bound">ℓ</a>
+  <a id="2268" href="/Modules/#2229" class="Function">Coll</a> <a id="2273" href="/Modules/#2273" class="Bound">A</a>  <a id="2276" class="Symbol">=</a>  <a id="2279" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#80" class="Datatype">List</a> <a id="2284" href="/Modules/#2273" class="Bound">A</a>
+
+  <a id="Collection._∈_"></a><a id="2289" href="/Modules/#2289" class="Function Operator">_∈_</a> <a id="2293" class="Symbol">:</a> <a id="2295" href="/Modules/#2187" class="Bound">A</a> <a id="2297" class="Symbol">→</a> <a id="2299" href="/Modules/#2229" class="Function">Coll</a> <a id="2304" href="/Modules/#2187" class="Bound">A</a> <a id="2306" class="Symbol">→</a> <a id="2308" class="PrimitiveType">Set</a> <a id="2312" href="/Modules/#2175" class="Bound">ℓ</a>
+  <a id="2316" href="/Modules/#2316" class="Bound">x</a> <a id="2318" href="/Modules/#2289" class="Function Operator">∈</a> <a id="2320" href="/Modules/#2320" class="Bound">xs</a>  <a id="2324" class="Symbol">=</a>  <a id="2327" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#744" class="Datatype">Any</a> <a id="2331" class="Symbol">(</a><a id="2332" href="/Modules/#2316" class="Bound">x</a> <a id="2334" href="/Modules/#2199" class="Bound Operator">≈_</a><a id="2336" class="Symbol">)</a> <a id="2338" href="/Modules/#2320" class="Bound">xs</a>
+
+  <a id="Collection._⊆_"></a><a id="2344" href="/Modules/#2344" class="Function Operator">_⊆_</a> <a id="2348" class="Symbol">:</a> <a id="2350" href="/Modules/#2229" class="Function">Coll</a> <a id="2355" href="/Modules/#2187" class="Bound">A</a> <a id="2357" class="Symbol">→</a> <a id="2359" href="/Modules/#2229" class="Function">Coll</a> <a id="2364" href="/Modules/#2187" class="Bound">A</a> <a id="2366" class="Symbol">→</a> <a id="2368" class="PrimitiveType">Set</a> <a id="2372" href="/Modules/#2175" class="Bound">ℓ</a>
+  <a id="2376" href="/Modules/#2376" class="Bound">xs</a> <a id="2379" href="/Modules/#2344" class="Function Operator">⊆</a> <a id="2381" href="/Modules/#2381" class="Bound">ys</a>  <a id="2385" class="Symbol">=</a>  <a id="2388" class="Symbol">∀</a> <a id="2390" class="Symbol">{</a><a id="2391" href="/Modules/#2391" class="Bound">w</a><a id="2392" class="Symbol">}</a> <a id="2394" class="Symbol">→</a> <a id="2396" href="/Modules/#2391" class="Bound">w</a> <a id="2398" href="/Modules/#2289" class="Function Operator">∈</a> <a id="2400" href="/Modules/#2376" class="Bound">xs</a> <a id="2403" class="Symbol">→</a> <a id="2405" href="/Modules/#2391" class="Bound">w</a> <a id="2407" href="/Modules/#2289" class="Function Operator">∈</a> <a id="2409" href="/Modules/#2381" class="Bound">ys</a></pre>
+
+<p>Use of a module</p>
+<pre class="Agda"><a id="2453" class="Keyword">open</a> <a id="2458" href="/Modules/#2163" class="Module">Collection</a> <a id="2469" class="Symbol">(</a><a id="2470" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="2471" class="Symbol">)</a> <a id="2473" class="Symbol">(</a><a id="2474" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">_≡_</a><a id="2477" class="Symbol">)</a>
+
+<a id="2480" class="Keyword">pattern</a> <a id="[_]"></a><a id="2488" href="/Modules/#2488" class="InductiveConstructor Operator">[_]</a> <a id="2492" href="/Modules/#2498" class="Bound">x</a>  <a id="2495" class="Symbol">=</a>  <a id="2498" href="/Modules/#2498" class="Bound">x</a> <a id="2500" class="InductiveConstructor Operator">∷</a> <a id="2502" class="InductiveConstructor">[]</a>
+<a id="2505" class="Keyword">pattern</a> <a id="[_,_]"></a><a id="2513" href="/Modules/#2513" class="InductiveConstructor Operator">[_,_]</a> <a id="2519" href="/Modules/#2527" class="Bound">x</a> <a id="2521" href="/Modules/#2531" class="Bound">y</a>  <a id="2524" class="Symbol">=</a>  <a id="2527" href="/Modules/#2527" class="Bound">x</a> <a id="2529" class="InductiveConstructor Operator">∷</a> <a id="2531" href="/Modules/#2531" class="Bound">y</a> <a id="2533" class="InductiveConstructor Operator">∷</a> <a id="2535" class="InductiveConstructor">[]</a>
+<a id="2538" class="Keyword">pattern</a> <a id="[_,_,_]"></a><a id="2546" href="/Modules/#2546" class="InductiveConstructor Operator">[_,_,_]</a> <a id="2554" href="/Modules/#2564" class="Bound">x</a> <a id="2556" href="/Modules/#2568" class="Bound">y</a> <a id="2558" href="/Modules/#2572" class="Bound">z</a>  <a id="2561" class="Symbol">=</a>  <a id="2564" href="/Modules/#2564" class="Bound">x</a> <a id="2566" class="InductiveConstructor Operator">∷</a> <a id="2568" href="/Modules/#2568" class="Bound">y</a> <a id="2570" class="InductiveConstructor Operator">∷</a> <a id="2572" href="/Modules/#2572" class="Bound">z</a> <a id="2574" class="InductiveConstructor Operator">∷</a> <a id="2576" class="InductiveConstructor">[]</a>
+
+<a id="ex"></a><a id="2580" href="/Modules/#2580" class="Function">ex</a> <a id="2583" class="Symbol">:</a> <a id="2585" href="/Modules/#2513" class="InductiveConstructor Operator">[</a> <a id="2587" class="Number">1</a> <a id="2589" href="/Modules/#2513" class="InductiveConstructor Operator">,</a> <a id="2591" class="Number">3</a> <a id="2593" href="/Modules/#2513" class="InductiveConstructor Operator">]</a> <a id="2595" href="/Modules/#2344" class="Function Operator">⊆</a> <a id="2597" href="/Modules/#2546" class="InductiveConstructor Operator">[</a> <a id="2599" class="Number">1</a> <a id="2601" href="/Modules/#2546" class="InductiveConstructor Operator">,</a> <a id="2603" class="Number">2</a> <a id="2605" href="/Modules/#2546" class="InductiveConstructor Operator">,</a> <a id="2607" class="Number">3</a> <a id="2609" href="/Modules/#2546" class="InductiveConstructor Operator">]</a>
+<a id="2611" href="/Modules/#2580" class="Function">ex</a> <a id="2614" class="Symbol">(</a><a id="2615" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#799" class="InductiveConstructor">here</a> <a id="2620" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="2624" class="Symbol">)</a>          <a id="2635" class="Symbol">=</a>  <a id="2638" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#799" class="InductiveConstructor">here</a> <a id="2643" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a>
+<a id="2648" href="/Modules/#2580" class="Function">ex</a> <a id="2651" class="Symbol">(</a><a id="2652" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#852" class="InductiveConstructor">there</a> <a id="2658" class="Symbol">(</a><a id="2659" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#799" class="InductiveConstructor">here</a> <a id="2664" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="2668" class="Symbol">))</a>  <a id="2672" class="Symbol">=</a>  <a id="2675" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#852" class="InductiveConstructor">there</a> <a id="2681" class="Symbol">(</a><a id="2682" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#852" class="InductiveConstructor">there</a> <a id="2688" class="Symbol">(</a><a id="2689" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#799" class="InductiveConstructor">here</a> <a id="2694" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="2698" class="Symbol">))</a>
+<a id="2701" href="/Modules/#2580" class="Function">ex</a> <a id="2704" class="Symbol">(</a><a id="2705" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#852" class="InductiveConstructor">there</a> <a id="2711" class="Symbol">(</a><a id="2712" href="https://agda.github.io/agda-stdlib/Data.List.Any.html#852" class="InductiveConstructor">there</a> <a id="2718" class="Symbol">()))</a></pre>
+
+<h2 id="abstract-types">Abstract types</h2>
+
+<p>Say I want to define a type of stacks, with operations push and pop.
+I can define stacks in terms of lists, but hide the definitions from
+the rest of the program.</p>
+<pre class="Agda"><a id="2931" class="Keyword">abstract</a>
+
+  <a id="Stack"></a><a id="2943" href="/Modules/#2943" class="Function">Stack</a> <a id="2949" class="Symbol">:</a> <a id="2951" class="PrimitiveType">Set</a> <a id="2955" class="Symbol">→</a> <a id="2957" class="PrimitiveType">Set</a>
+  <a id="2963" href="/Modules/#2943" class="Function">Stack</a> <a id="2969" href="/Modules/#2969" class="Bound">A</a> <a id="2971" class="Symbol">=</a> <a id="2973" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#80" class="Datatype">List</a> <a id="2978" href="/Modules/#2969" class="Bound">A</a>
+
+  <a id="empty"></a><a id="2983" href="/Modules/#2983" class="Function">empty</a> <a id="2989" class="Symbol">:</a> <a id="2991" class="Symbol">∀</a> <a id="2993" class="Symbol">{</a><a id="2994" href="/Modules/#2994" class="Bound">A</a><a id="2995" class="Symbol">}</a> <a id="2997" class="Symbol">→</a> <a id="2999" href="/Modules/#2943" class="Function">Stack</a> <a id="3005" href="/Modules/#2994" class="Bound">A</a>
+  <a id="3009" href="/Modules/#2983" class="Function">empty</a> <a id="3015" class="Symbol">=</a> <a id="3017" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#117" class="InductiveConstructor">[]</a>
+
+  <a id="push"></a><a id="3023" href="/Modules/#3023" class="Function">push</a> <a id="3028" class="Symbol">:</a> <a id="3030" class="Symbol">∀</a> <a id="3032" class="Symbol">{</a><a id="3033" href="/Modules/#3033" class="Bound">A</a><a id="3034" class="Symbol">}</a> <a id="3036" class="Symbol">→</a> <a id="3038" href="/Modules/#3033" class="Bound">A</a> <a id="3040" class="Symbol">→</a> <a id="3042" href="/Modules/#2943" class="Function">Stack</a> <a id="3048" href="/Modules/#3033" class="Bound">A</a> <a id="3050" class="Symbol">→</a> <a id="3052" href="/Modules/#2943" class="Function">Stack</a> <a id="3058" href="/Modules/#3033" class="Bound">A</a>
+  <a id="3062" href="/Modules/#3023" class="Function">push</a> <a id="3067" href="/Modules/#3067" class="Bound">x</a> <a id="3069" href="/Modules/#3069" class="Bound">xs</a>  <a id="3073" class="Symbol">=</a>  <a id="3076" href="/Modules/#3067" class="Bound">x</a> <a id="3078" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#132" class="InductiveConstructor Operator">∷</a> <a id="3080" href="/Modules/#3069" class="Bound">xs</a>
+
+  <a id="pop"></a><a id="3086" href="/Modules/#3086" class="Function">pop</a> <a id="3090" class="Symbol">:</a> <a id="3092" class="Symbol">∀</a> <a id="3094" class="Symbol">{</a><a id="3095" href="/Modules/#3095" class="Bound">A</a><a id="3096" class="Symbol">}</a> <a id="3098" class="Symbol">→</a> <a id="3100" href="/Modules/#2943" class="Function">Stack</a> <a id="3106" href="/Modules/#3095" class="Bound">A</a> <a id="3108" class="Symbol">→</a> <a id="3110" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#335" class="Datatype">Maybe</a> <a id="3116" class="Symbol">(</a><a id="3117" href="/Modules/#3095" class="Bound">A</a> <a id="3119" href="https://agda.github.io/agda-stdlib/Data.Product.html#1353" class="Function Operator">×</a> <a id="3121" href="/Modules/#2943" class="Function">Stack</a> <a id="3127" href="/Modules/#3095" class="Bound">A</a><a id="3128" class="Symbol">)</a>
+  <a id="3132" href="/Modules/#3086" class="Function">pop</a> <a id="3136" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#117" class="InductiveConstructor">[]</a>        <a id="3146" class="Symbol">=</a>  <a id="3149" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor">nothing</a>
+  <a id="3159" href="/Modules/#3086" class="Function">pop</a> <a id="3163" class="Symbol">(</a><a id="3164" href="/Modules/#3164" class="Bound">x</a> <a id="3166" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#132" class="InductiveConstructor Operator">∷</a> <a id="3168" href="/Modules/#3168" class="Bound">xs</a><a id="3170" class="Symbol">)</a>  <a id="3173" class="Symbol">=</a>  <a id="3176" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor">just</a> <a id="3181" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟨</a> <a id="3183" href="/Modules/#3164" class="Bound">x</a> <a id="3185" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">,</a> <a id="3187" href="/Modules/#3168" class="Bound">xs</a> <a id="3190" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟩</a>
+
+  <a id="lemma-pop-push"></a><a id="3195" href="/Modules/#3195" class="Function">lemma-pop-push</a> <a id="3210" class="Symbol">:</a> <a id="3212" class="Symbol">∀</a> <a id="3214" class="Symbol">{</a><a id="3215" href="/Modules/#3215" class="Bound">A</a><a id="3216" class="Symbol">}</a> <a id="3218" class="Symbol">{</a><a id="3219" href="/Modules/#3219" class="Bound">x</a> <a id="3221" class="Symbol">:</a> <a id="3223" href="/Modules/#3215" class="Bound">A</a><a id="3224" class="Symbol">}</a> <a id="3226" class="Symbol">{</a><a id="3227" href="/Modules/#3227" class="Bound">xs</a><a id="3229" class="Symbol">}</a> <a id="3231" class="Symbol">→</a> <a id="3233" href="/Modules/#3086" class="Function">pop</a> <a id="3237" class="Symbol">(</a><a id="3238" href="/Modules/#3023" class="Function">push</a> <a id="3243" href="/Modules/#3219" class="Bound">x</a> <a id="3245" href="/Modules/#3227" class="Bound">xs</a><a id="3247" class="Symbol">)</a> <a id="3249" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="3251" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#373" class="InductiveConstructor">just</a> <a id="3256" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟨</a> <a id="3258" href="/Modules/#3219" class="Bound">x</a> <a id="3260" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">,</a> <a id="3262" href="/Modules/#3227" class="Bound">xs</a> <a id="3265" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟩</a>
+  <a id="3269" href="/Modules/#3195" class="Function">lemma-pop-push</a> <a id="3284" class="Symbol">=</a> <a id="3286" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a>
+
+  <a id="lemma-pop-empty"></a><a id="3294" href="/Modules/#3294" class="Function">lemma-pop-empty</a> <a id="3310" class="Symbol">:</a> <a id="3312" class="Symbol">∀</a> <a id="3314" class="Symbol">{</a><a id="3315" href="/Modules/#3315" class="Bound">A</a><a id="3316" class="Symbol">}</a> <a id="3318" class="Symbol">→</a> <a id="3320" href="/Modules/#3086" class="Function">pop</a> <a id="3324" class="Symbol">{</a><a id="3325" href="/Modules/#3315" class="Bound">A</a><a id="3326" class="Symbol">}</a> <a id="3328" href="/Modules/#2983" class="Function">empty</a> <a id="3334" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="3336" href="https://agda.github.io/agda-stdlib/Data.Maybe.Base.html#403" class="InductiveConstructor">nothing</a>
+  <a id="3346" href="/Modules/#3294" class="Function">lemma-pop-empty</a> <a id="3362" class="Symbol">=</a> <a id="3364" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a></pre>
+
+<h2 id="standard-library">Standard Library</h2>
+
+<p>Definitions similar to those in this chapter can be found in the standard library.</p>
+<pre class="Agda"><a id="3499" class="Comment">-- EDIT</a></pre>
+<p>The standard library version of <code class="highlighter-rouge">IsMonoid</code> differs from the
+one given here, in that it is also parameterised on an equivalence relation.</p>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>This chapter uses the following unicode.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>EDIT
+∷  U+2237  PROPORTION  (\::)
+⊗  U+2297  CIRCLED TIMES  (\otimes)
+∈  U+2208  ELEMENT OF  (\in)
+∉  U+2209  NOT AN ELEMENT OF  (\inn)
+</code></pre></div></div>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Modules.lagda">Source</a>
+    
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment3: TSPL Assignment 3 | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Assignment3: TSPL Assignment 3" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/Assignment3/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/Assignment3/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/Assignment3/","headline":"Assignment3: TSPL Assignment 3","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Assignment3: TSPL Assignment 3</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/tspl/Assignment3.lagda">Source</a>
+    
+    
+</p>
+
+
+  <div class="post-content">
+    <pre class="Agda"><a id="111" class="Keyword">module</a> <a id="118" href="/Assignment3/" class="Module">Assignment3</a> <a id="130" class="Keyword">where</a></pre>
+
+<h2 id="your-name-and-email-goes-here">YOUR NAME AND EMAIL GOES HERE</h2>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This assignment is due <strong>4pm Thursday 1 November</strong> (Week 7).</p>
+
+<p>You must do <em>all</em> the exercises labelled “(recommended)”.</p>
+
+<p>Exercises labelled “(stretch)” are there to provide an extra challenge.
+You don’t need to do all of these, but should attempt at least a few.</p>
+
+<p>Exercises without a label are optional, and may be done if you want
+some extra practice.</p>
+
+<p>Submit your homework using the “submit” command.
+Please ensure your files execute correctly under Agda!</p>
+
+<h2 id="imports">Imports</h2>
+
+<pre class="Agda"><a id="683" class="Keyword">import</a> <a id="690" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="728" class="Symbol">as</a> <a id="731" class="Module">Eq</a>
+<a id="734" class="Keyword">open</a> <a id="739" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="742" class="Keyword">using</a> <a id="748" class="Symbol">(</a><a id="749" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">_≡_</a><a id="752" class="Symbol">;</a> <a id="754" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a><a id="758" class="Symbol">;</a> <a id="760" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#1056" class="Function">cong</a><a id="764" class="Symbol">;</a> <a id="766" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.Core.html#838" class="Function">sym</a><a id="769" class="Symbol">)</a>
+<a id="771" class="Keyword">open</a> <a id="776" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#3840" class="Module">Eq.≡-Reasoning</a> <a id="791" class="Keyword">using</a> <a id="797" class="Symbol">(</a><a id="798" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#3941" class="Function Operator">begin_</a><a id="804" class="Symbol">;</a> <a id="806" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#3999" class="Function Operator">_≡⟨⟩_</a><a id="811" class="Symbol">;</a> <a id="813" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#4058" class="Function Operator">_≡⟨_⟩_</a><a id="819" class="Symbol">;</a> <a id="821" href="https://agda.github.io/agda-stdlib/Relation.Binary.PropositionalEquality.html#4239" class="Function Operator">_∎</a><a id="823" class="Symbol">)</a>
+<a id="825" class="Keyword">open</a> <a id="830" class="Keyword">import</a> <a id="837" href="https://agda.github.io/agda-stdlib/Data.Bool.Base.html" class="Module">Data.Bool.Base</a> <a id="852" class="Keyword">using</a> <a id="858" class="Symbol">(</a><a id="859" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#67" class="Datatype">Bool</a><a id="863" class="Symbol">;</a> <a id="865" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#92" class="InductiveConstructor">true</a><a id="869" class="Symbol">;</a> <a id="871" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Bool.html#86" class="InductiveConstructor">false</a><a id="876" class="Symbol">;</a> <a id="878" href="https://agda.github.io/agda-stdlib/Data.Bool.Base.html#864" class="Function">T</a><a id="879" class="Symbol">;</a> <a id="881" href="https://agda.github.io/agda-stdlib/Data.Bool.Base.html#1012" class="Function Operator">_∧_</a><a id="884" class="Symbol">;</a> <a id="886" href="https://agda.github.io/agda-stdlib/Data.Bool.Base.html#1070" class="Function Operator">_∨_</a><a id="889" class="Symbol">;</a> <a id="891" href="https://agda.github.io/agda-stdlib/Data.Bool.Base.html#730" class="Function">not</a><a id="894" class="Symbol">)</a>
+<a id="896" class="Keyword">open</a> <a id="901" class="Keyword">import</a> <a id="908" href="https://agda.github.io/agda-stdlib/Data.Nat.html" class="Module">Data.Nat</a> <a id="917" class="Keyword">using</a> <a id="923" class="Symbol">(</a><a id="924" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="925" class="Symbol">;</a> <a id="927" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a><a id="931" class="Symbol">;</a> <a id="933" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a><a id="936" class="Symbol">;</a> <a id="938" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#230" class="Primitive Operator">_+_</a><a id="941" class="Symbol">;</a> <a id="943" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#433" class="Primitive Operator">_*_</a><a id="946" class="Symbol">;</a> <a id="948" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#320" class="Primitive Operator">_∸_</a><a id="951" class="Symbol">;</a> <a id="953" href="https://agda.github.io/agda-stdlib/Data.Nat.Base.html#742" class="Datatype Operator">_≤_</a><a id="956" class="Symbol">;</a> <a id="958" href="https://agda.github.io/agda-stdlib/Data.Nat.Base.html#807" class="InductiveConstructor">s≤s</a><a id="961" class="Symbol">;</a> <a id="963" href="https://agda.github.io/agda-stdlib/Data.Nat.Base.html#765" class="InductiveConstructor">z≤n</a><a id="966" class="Symbol">)</a>
+<a id="968" class="Keyword">open</a> <a id="973" class="Keyword">import</a> <a id="980" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html" class="Module">Data.Nat.Properties</a> <a id="1000" class="Keyword">using</a>
+  <a id="1008" class="Symbol">(</a><a id="1009" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html#7678" class="Function">+-assoc</a><a id="1016" class="Symbol">;</a> <a id="1018" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html#7779" class="Function">+-identityˡ</a><a id="1029" class="Symbol">;</a> <a id="1031" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html#7834" class="Function">+-identityʳ</a><a id="1042" class="Symbol">;</a> <a id="1044" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html#13778" class="Function">*-assoc</a><a id="1051" class="Symbol">;</a> <a id="1053" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html#12682" class="Function">*-identityˡ</a><a id="1064" class="Symbol">;</a> <a id="1066" href="https://agda.github.io/agda-stdlib/Data.Nat.Properties.html#12746" class="Function">*-identityʳ</a><a id="1077" class="Symbol">)</a>
+<a id="1079" class="Keyword">open</a> <a id="1084" class="Keyword">import</a> <a id="1091" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="1108" class="Keyword">using</a> <a id="1114" class="Symbol">(</a><a id="1115" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a><a id="1117" class="Symbol">;</a> <a id="1119" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#534" class="Datatype">Dec</a><a id="1122" class="Symbol">;</a> <a id="1124" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#570" class="InductiveConstructor">yes</a><a id="1127" class="Symbol">;</a> <a id="1129" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#597" class="InductiveConstructor">no</a><a id="1131" class="Symbol">)</a>
+<a id="1133" class="Keyword">open</a> <a id="1138" class="Keyword">import</a> <a id="1145" href="https://agda.github.io/agda-stdlib/Data.Product.html" class="Module">Data.Product</a> <a id="1158" class="Keyword">using</a> <a id="1164" class="Symbol">(</a><a id="1165" href="https://agda.github.io/agda-stdlib/Data.Product.html#1353" class="Function Operator">_×_</a><a id="1168" class="Symbol">;</a> <a id="1170" href="https://agda.github.io/agda-stdlib/Data.Product.html#881" class="Function">∃</a><a id="1171" class="Symbol">;</a> <a id="1173" href="https://agda.github.io/agda-stdlib/Data.Product.html#942" class="Function">∃-syntax</a><a id="1181" class="Symbol">)</a> <a id="1183" class="Keyword">renaming</a> <a id="1192" class="Symbol">(</a><a id="1193" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">_,_</a> <a id="1197" class="Symbol">to</a> <a id="1200" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Sigma.html#139" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="1205" class="Symbol">)</a>
+<a id="1207" class="Keyword">open</a> <a id="1212" class="Keyword">import</a> <a id="1219" href="https://agda.github.io/agda-stdlib/Data.Empty.html" class="Module">Data.Empty</a> <a id="1230" class="Keyword">using</a> <a id="1236" class="Symbol">(</a><a id="1237" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a><a id="1238" class="Symbol">;</a> <a id="1240" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a><a id="1246" class="Symbol">)</a>
+<a id="1248" class="Keyword">open</a> <a id="1253" class="Keyword">import</a> <a id="1260" href="https://agda.github.io/agda-stdlib/Function.html" class="Module">Function</a> <a id="1269" class="Keyword">using</a> <a id="1275" class="Symbol">(</a><a id="1276" href="https://agda.github.io/agda-stdlib/Function.html#769" class="Function Operator">_∘_</a><a id="1279" class="Symbol">)</a>
+<a id="1281" class="Keyword">open</a> <a id="1286" class="Keyword">import</a> <a id="1293" href="https://agda.github.io/agda-stdlib/Algebra.Structures.html" class="Module">Algebra.Structures</a> <a id="1312" class="Keyword">using</a> <a id="1318" class="Symbol">(</a><a id="1319" href="https://agda.github.io/agda-stdlib/Algebra.Structures.html#1339" class="Record">IsMonoid</a><a id="1327" class="Symbol">)</a>
+<a id="1329" class="Keyword">open</a> <a id="1334" class="Keyword">import</a> <a id="1341" href="https://agda.github.io/agda-stdlib/Level.html" class="Module">Level</a> <a id="1347" class="Keyword">using</a> <a id="1353" class="Symbol">(</a><a id="1354" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="1359" class="Symbol">)</a>
+<a id="1361" class="Keyword">open</a> <a id="1366" class="Keyword">import</a> <a id="1373" href="https://agda.github.io/agda-stdlib/Relation.Unary.html" class="Module">Relation.Unary</a> <a id="1388" class="Keyword">using</a> <a id="1394" class="Symbol">(</a><a id="1395" href="https://agda.github.io/agda-stdlib/Relation.Unary.html#3198" class="Function">Decidable</a><a id="1404" class="Symbol">)</a>
+<a id="1406" class="Keyword">open</a> <a id="1411" class="Keyword">import</a> <a id="1418" href="plfa.Relations.html" class="Module">plfa.Relations</a> <a id="1433" class="Keyword">using</a> <a id="1439" class="Symbol">(</a><a id="1440" href="plfa.Relations.html#17608" class="Datatype Operator">_&lt;_</a><a id="1443" class="Symbol">;</a> <a id="1445" href="plfa.Relations.html#17635" class="InductiveConstructor">z&lt;s</a><a id="1448" class="Symbol">;</a> <a id="1450" href="plfa.Relations.html#17692" class="InductiveConstructor">s&lt;s</a><a id="1453" class="Symbol">)</a>
+<a id="1455" class="Keyword">open</a> <a id="1460" class="Keyword">import</a> <a id="1467" href="plfa.Isomorphism.html" class="Module">plfa.Isomorphism</a> <a id="1484" class="Keyword">using</a> <a id="1490" class="Symbol">(</a><a id="1491" href="plfa.Isomorphism.html#4104" class="Record Operator">_≃_</a><a id="1494" class="Symbol">;</a> <a id="1496" href="plfa.Isomorphism.html#6802" class="Function">≃-sym</a><a id="1501" class="Symbol">;</a> <a id="1503" href="plfa.Isomorphism.html#7143" class="Function">≃-trans</a><a id="1510" class="Symbol">;</a> <a id="1512" href="plfa.Isomorphism.html#9013" class="Record Operator">_≲_</a><a id="1515" class="Symbol">;</a> <a id="1517" href="plfa.Isomorphism.html#2748" class="Postulate">extensionality</a><a id="1531" class="Symbol">)</a>
+<a id="1533" class="Keyword">open</a> <a id="1538" href="plfa.Isomorphism.html#8231" class="Module">plfa.Isomorphism.≃-Reasoning</a>
+<a id="1567" class="Keyword">open</a> <a id="1572" class="Keyword">import</a> <a id="1579" href="plfa.Lists.html" class="Module">plfa.Lists</a> <a id="1590" class="Keyword">using</a> <a id="1596" class="Symbol">(</a><a id="1597" href="plfa.Lists.html#1096" class="Datatype">List</a><a id="1601" class="Symbol">;</a> <a id="1603" href="plfa.Lists.html#1125" class="InductiveConstructor">[]</a><a id="1605" class="Symbol">;</a> <a id="1607" href="plfa.Lists.html#1140" class="InductiveConstructor Operator">_∷_</a><a id="1610" class="Symbol">;</a> <a id="1612" href="plfa.Lists.html#2919" class="Operator">[_]</a><a id="1615" class="Symbol">;</a> <a id="1617" href="plfa.Lists.html#2942" class="Operator">[_,_]</a><a id="1622" class="Symbol">;</a> <a id="1624" href="plfa.Lists.html#2973" class="Operator">[_,_,_]</a><a id="1631" class="Symbol">;</a> <a id="1633" href="plfa.Lists.html#3012" class="Operator">[_,_,_,_]</a><a id="1642" class="Symbol">;</a>
+  <a id="1646" href="plfa.Lists.html#3575" class="Function Operator">_++_</a><a id="1650" class="Symbol">;</a> <a id="1652" href="plfa.Lists.html#8509" class="Function">reverse</a><a id="1659" class="Symbol">;</a> <a id="1661" href="plfa.Lists.html#13332" class="Function">map</a><a id="1664" class="Symbol">;</a> <a id="1666" href="plfa.Lists.html#15913" class="Function">foldr</a><a id="1671" class="Symbol">;</a> <a id="1673" href="plfa.Lists.html#16840" class="Function">sum</a><a id="1676" class="Symbol">;</a> <a id="1678" href="plfa.Lists.html#21555" class="Datatype">All</a><a id="1681" class="Symbol">;</a> <a id="1683" href="plfa.Lists.html#23040" class="Datatype">Any</a><a id="1686" class="Symbol">;</a> <a id="1688" href="plfa.Lists.html#23091" class="InductiveConstructor">here</a><a id="1692" class="Symbol">;</a> <a id="1694" href="plfa.Lists.html#23148" class="InductiveConstructor">there</a><a id="1699" class="Symbol">;</a> <a id="1701" href="plfa.Lists.html#23478" class="Function Operator">_∈_</a><a id="1704" class="Symbol">)</a>
+<a id="1706" class="Keyword">open</a> <a id="1711" class="Keyword">import</a> <a id="1718" href="plfa.Lambda.html" class="Module">plfa.Lambda</a> <a id="1730" class="Keyword">hiding</a> <a id="1737" class="Symbol">(</a><a id="1738" href="plfa.Lambda.html#7335" class="Function Operator">ƛ′_⇒_</a><a id="1743" class="Symbol">;</a> <a id="1745" href="plfa.Lambda.html#7456" class="Function Operator">case′_[zero⇒_|suc_⇒_]</a><a id="1766" class="Symbol">;</a> <a id="1768" href="plfa.Lambda.html#7670" class="Function Operator">μ′_⇒_</a><a id="1773" class="Symbol">;</a> <a id="1775" href="plfa.Lambda.html#7870" class="Function">plus′</a><a id="1780" class="Symbol">)</a>
+<a id="1782" class="Keyword">open</a> <a id="1787" class="Keyword">import</a> <a id="1794" href="plfa.Properties.html" class="Module">plfa.Properties</a> <a id="1810" class="Keyword">hiding</a> <a id="1817" class="Symbol">(</a><a id="1818" href="plfa.Properties.html#11865" class="Postulate">value?</a><a id="1824" class="Symbol">;</a> <a id="1826" href="plfa.Properties.html#41870" class="Postulate">unstuck</a><a id="1833" class="Symbol">;</a> <a id="1835" href="plfa.Properties.html#42086" class="Postulate">preserves</a><a id="1844" class="Symbol">;</a> <a id="1846" href="plfa.Properties.html#42339" class="Postulate">wttdgs</a><a id="1852" class="Symbol">)</a></pre>
+
+<h4 id="exercise-reverse--commute-recommended">Exercise <code class="highlighter-rouge">reverse-++-commute</code> (recommended)</h4>
+
+<p>Show that the reverse of one list appended to another is the
+reverse of the second appended to the reverse of the first.</p>
+<pre class="Agda"><a id="2050" class="Keyword">postulate</a>
+  <a id="reverse-++-commute"></a><a id="2062" href="/Assignment3/#2062" class="Postulate">reverse-++-commute</a> <a id="2081" class="Symbol">:</a> <a id="2083" class="Symbol">∀</a> <a id="2085" class="Symbol">{</a><a id="2086" href="/Assignment3/#2086" class="Bound">A</a> <a id="2088" class="Symbol">:</a> <a id="2090" class="PrimitiveType">Set</a><a id="2093" class="Symbol">}</a> <a id="2095" class="Symbol">{</a><a id="2096" href="/Assignment3/#2096" class="Bound">xs</a> <a id="2099" href="/Assignment3/#2099" class="Bound">ys</a> <a id="2102" class="Symbol">:</a> <a id="2104" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="2109" href="/Assignment3/#2086" class="Bound">A</a><a id="2110" class="Symbol">}</a>
+    <a id="2116" class="Symbol">→</a> <a id="2118" href="plfa.Lists.html#8509" class="Function">reverse</a> <a id="2126" class="Symbol">(</a><a id="2127" href="/Assignment3/#2096" class="Bound">xs</a> <a id="2130" href="plfa.Lists.html#3575" class="Function Operator">++</a> <a id="2133" href="/Assignment3/#2099" class="Bound">ys</a><a id="2135" class="Symbol">)</a> <a id="2137" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="2139" href="plfa.Lists.html#8509" class="Function">reverse</a> <a id="2147" href="/Assignment3/#2099" class="Bound">ys</a> <a id="2150" href="plfa.Lists.html#3575" class="Function Operator">++</a> <a id="2153" href="plfa.Lists.html#8509" class="Function">reverse</a> <a id="2161" href="/Assignment3/#2096" class="Bound">xs</a></pre>
+
+<h4 id="exercise-reverse-involutive-recommended">Exercise <code class="highlighter-rouge">reverse-involutive</code> (recommended)</h4>
+
+<p>A function is an <em>involution</em> if when applied twice it acts
+as the identity function.  Show that reverse is an involution.</p>
+<pre class="Agda"><a id="2362" class="Keyword">postulate</a>
+  <a id="reverse-involutive"></a><a id="2374" href="/Assignment3/#2374" class="Postulate">reverse-involutive</a> <a id="2393" class="Symbol">:</a> <a id="2395" class="Symbol">∀</a> <a id="2397" class="Symbol">{</a><a id="2398" href="/Assignment3/#2398" class="Bound">A</a> <a id="2400" class="Symbol">:</a> <a id="2402" class="PrimitiveType">Set</a><a id="2405" class="Symbol">}</a> <a id="2407" class="Symbol">{</a><a id="2408" href="/Assignment3/#2408" class="Bound">xs</a> <a id="2411" class="Symbol">:</a> <a id="2413" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="2418" href="/Assignment3/#2398" class="Bound">A</a><a id="2419" class="Symbol">}</a>
+    <a id="2425" class="Symbol">→</a> <a id="2427" href="plfa.Lists.html#8509" class="Function">reverse</a> <a id="2435" class="Symbol">(</a><a id="2436" href="plfa.Lists.html#8509" class="Function">reverse</a> <a id="2444" href="/Assignment3/#2408" class="Bound">xs</a><a id="2446" class="Symbol">)</a> <a id="2448" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="2450" href="/Assignment3/#2408" class="Bound">xs</a></pre>
+
+<h4 id="exercise-map-compose">Exercise <code class="highlighter-rouge">map-compose</code></h4>
+
+<p>Prove that the map of a composition is equal to the composition of two maps.</p>
+<pre class="Agda"><a id="2584" class="Keyword">postulate</a>
+  <a id="map-compose"></a><a id="2596" href="/Assignment3/#2596" class="Postulate">map-compose</a> <a id="2608" class="Symbol">:</a> <a id="2610" class="Symbol">∀</a> <a id="2612" class="Symbol">{</a><a id="2613" href="/Assignment3/#2613" class="Bound">A</a> <a id="2615" href="/Assignment3/#2615" class="Bound">B</a> <a id="2617" href="/Assignment3/#2617" class="Bound">C</a> <a id="2619" class="Symbol">:</a> <a id="2621" class="PrimitiveType">Set</a><a id="2624" class="Symbol">}</a> <a id="2626" class="Symbol">{</a><a id="2627" href="/Assignment3/#2627" class="Bound">f</a> <a id="2629" class="Symbol">:</a> <a id="2631" href="/Assignment3/#2613" class="Bound">A</a> <a id="2633" class="Symbol">→</a> <a id="2635" href="/Assignment3/#2615" class="Bound">B</a><a id="2636" class="Symbol">}</a> <a id="2638" class="Symbol">{</a><a id="2639" href="/Assignment3/#2639" class="Bound">g</a> <a id="2641" class="Symbol">:</a> <a id="2643" href="/Assignment3/#2615" class="Bound">B</a> <a id="2645" class="Symbol">→</a> <a id="2647" href="/Assignment3/#2617" class="Bound">C</a><a id="2648" class="Symbol">}</a>
+    <a id="2654" class="Symbol">→</a> <a id="2656" href="plfa.Lists.html#13332" class="Function">map</a> <a id="2660" class="Symbol">(</a><a id="2661" href="/Assignment3/#2639" class="Bound">g</a> <a id="2663" href="https://agda.github.io/agda-stdlib/Function.html#769" class="Function Operator">∘</a> <a id="2665" href="/Assignment3/#2627" class="Bound">f</a><a id="2666" class="Symbol">)</a> <a id="2668" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="2670" href="plfa.Lists.html#13332" class="Function">map</a> <a id="2674" href="/Assignment3/#2639" class="Bound">g</a> <a id="2676" href="https://agda.github.io/agda-stdlib/Function.html#769" class="Function Operator">∘</a> <a id="2678" href="plfa.Lists.html#13332" class="Function">map</a> <a id="2682" href="/Assignment3/#2627" class="Bound">f</a></pre>
+<p>The last step of the proof requires extensionality.</p>
+
+<h4 id="exercise-map--commute">Exercise <code class="highlighter-rouge">map-++-commute</code></h4>
+
+<p>Prove the following relationship between map and append.</p>
+<pre class="Agda"><a id="2850" class="Keyword">postulate</a>
+  <a id="map-++-commute"></a><a id="2862" href="/Assignment3/#2862" class="Postulate">map-++-commute</a> <a id="2877" class="Symbol">:</a> <a id="2879" class="Symbol">∀</a> <a id="2881" class="Symbol">{</a><a id="2882" href="/Assignment3/#2882" class="Bound">A</a> <a id="2884" href="/Assignment3/#2884" class="Bound">B</a> <a id="2886" class="Symbol">:</a> <a id="2888" class="PrimitiveType">Set</a><a id="2891" class="Symbol">}</a> <a id="2893" class="Symbol">{</a><a id="2894" href="/Assignment3/#2894" class="Bound">f</a> <a id="2896" class="Symbol">:</a> <a id="2898" href="/Assignment3/#2882" class="Bound">A</a> <a id="2900" class="Symbol">→</a> <a id="2902" href="/Assignment3/#2884" class="Bound">B</a><a id="2903" class="Symbol">}</a> <a id="2905" class="Symbol">{</a><a id="2906" href="/Assignment3/#2906" class="Bound">xs</a> <a id="2909" href="/Assignment3/#2909" class="Bound">ys</a> <a id="2912" class="Symbol">:</a> <a id="2914" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="2919" href="/Assignment3/#2882" class="Bound">A</a><a id="2920" class="Symbol">}</a>
+   <a id="2925" class="Symbol">→</a>  <a id="2928" href="plfa.Lists.html#13332" class="Function">map</a> <a id="2932" href="/Assignment3/#2894" class="Bound">f</a> <a id="2934" class="Symbol">(</a><a id="2935" href="/Assignment3/#2906" class="Bound">xs</a> <a id="2938" href="plfa.Lists.html#3575" class="Function Operator">++</a> <a id="2941" href="/Assignment3/#2909" class="Bound">ys</a><a id="2943" class="Symbol">)</a> <a id="2945" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="2947" href="plfa.Lists.html#13332" class="Function">map</a> <a id="2951" href="/Assignment3/#2894" class="Bound">f</a> <a id="2953" href="/Assignment3/#2906" class="Bound">xs</a> <a id="2956" href="plfa.Lists.html#3575" class="Function Operator">++</a> <a id="2959" href="plfa.Lists.html#13332" class="Function">map</a> <a id="2963" href="/Assignment3/#2894" class="Bound">f</a> <a id="2965" href="/Assignment3/#2909" class="Bound">ys</a></pre>
+
+<h4 id="exercise-map-tree">Exercise <code class="highlighter-rouge">map-Tree</code></h4>
+
+<p>Define a type of trees with leaves of type <code class="highlighter-rouge">A</code> and internal
+nodes of type <code class="highlighter-rouge">B</code>.</p>
+<pre class="Agda"><a id="3098" class="Keyword">data</a> <a id="Tree"></a><a id="3103" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3108" class="Symbol">(</a><a id="3109" href="/Assignment3/#3109" class="Bound">A</a> <a id="3111" href="/Assignment3/#3111" class="Bound">B</a> <a id="3113" class="Symbol">:</a> <a id="3115" class="PrimitiveType">Set</a><a id="3118" class="Symbol">)</a> <a id="3120" class="Symbol">:</a> <a id="3122" class="PrimitiveType">Set</a> <a id="3126" class="Keyword">where</a>
+  <a id="Tree.leaf"></a><a id="3134" href="/Assignment3/#3134" class="InductiveConstructor">leaf</a> <a id="3139" class="Symbol">:</a> <a id="3141" href="/Assignment3/#3109" class="Bound">A</a> <a id="3143" class="Symbol">→</a> <a id="3145" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3150" href="/Assignment3/#3109" class="Bound">A</a> <a id="3152" href="/Assignment3/#3111" class="Bound">B</a>
+  <a id="Tree.node"></a><a id="3156" href="/Assignment3/#3156" class="InductiveConstructor">node</a> <a id="3161" class="Symbol">:</a> <a id="3163" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3168" href="/Assignment3/#3109" class="Bound">A</a> <a id="3170" href="/Assignment3/#3111" class="Bound">B</a> <a id="3172" class="Symbol">→</a> <a id="3174" href="/Assignment3/#3111" class="Bound">B</a> <a id="3176" class="Symbol">→</a> <a id="3178" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3183" href="/Assignment3/#3109" class="Bound">A</a> <a id="3185" href="/Assignment3/#3111" class="Bound">B</a> <a id="3187" class="Symbol">→</a> <a id="3189" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3194" href="/Assignment3/#3109" class="Bound">A</a> <a id="3196" href="/Assignment3/#3111" class="Bound">B</a></pre>
+<p>Define a suitabve map operator over trees.</p>
+<pre class="Agda"><a id="3265" class="Keyword">postulate</a>
+  <a id="map-Tree"></a><a id="3277" href="/Assignment3/#3277" class="Postulate">map-Tree</a> <a id="3286" class="Symbol">:</a> <a id="3288" class="Symbol">∀</a> <a id="3290" class="Symbol">{</a><a id="3291" href="/Assignment3/#3291" class="Bound">A</a> <a id="3293" href="/Assignment3/#3293" class="Bound">B</a> <a id="3295" href="/Assignment3/#3295" class="Bound">C</a> <a id="3297" href="/Assignment3/#3297" class="Bound">D</a> <a id="3299" class="Symbol">:</a> <a id="3301" class="PrimitiveType">Set</a><a id="3304" class="Symbol">}</a>
+    <a id="3310" class="Symbol">→</a> <a id="3312" class="Symbol">(</a><a id="3313" href="/Assignment3/#3291" class="Bound">A</a> <a id="3315" class="Symbol">→</a> <a id="3317" href="/Assignment3/#3295" class="Bound">C</a><a id="3318" class="Symbol">)</a> <a id="3320" class="Symbol">→</a> <a id="3322" class="Symbol">(</a><a id="3323" href="/Assignment3/#3293" class="Bound">B</a> <a id="3325" class="Symbol">→</a> <a id="3327" href="/Assignment3/#3297" class="Bound">D</a><a id="3328" class="Symbol">)</a> <a id="3330" class="Symbol">→</a> <a id="3332" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3337" href="/Assignment3/#3291" class="Bound">A</a> <a id="3339" href="/Assignment3/#3293" class="Bound">B</a> <a id="3341" class="Symbol">→</a> <a id="3343" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="3348" href="/Assignment3/#3295" class="Bound">C</a> <a id="3350" href="/Assignment3/#3297" class="Bound">D</a></pre>
+
+<h4 id="exercise-product-recommended">Exercise <code class="highlighter-rouge">product</code> (recommended)</h4>
+
+<p>Use fold to define a function to find the product of a list of numbers.
+For example,</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>product [ 1 , 2 , 3 , 4 ] ≡ 24
+</code></pre></div></div>
+
+<h4 id="exercise-foldr--recommended">Exercise <code class="highlighter-rouge">foldr-++</code> (recommended)</h4>
+
+<p>Show that fold and append are related as follows.</p>
+<pre class="Agda"><a id="3628" class="Keyword">postulate</a>
+  <a id="foldr-++"></a><a id="3640" href="/Assignment3/#3640" class="Postulate">foldr-++</a> <a id="3649" class="Symbol">:</a> <a id="3651" class="Symbol">∀</a> <a id="3653" class="Symbol">{</a><a id="3654" href="/Assignment3/#3654" class="Bound">A</a> <a id="3656" href="/Assignment3/#3656" class="Bound">B</a> <a id="3658" class="Symbol">:</a> <a id="3660" class="PrimitiveType">Set</a><a id="3663" class="Symbol">}</a> <a id="3665" class="Symbol">(</a><a id="3666" href="/Assignment3/#3666" class="Bound Operator">_⊗_</a> <a id="3670" class="Symbol">:</a> <a id="3672" href="/Assignment3/#3654" class="Bound">A</a> <a id="3674" class="Symbol">→</a> <a id="3676" href="/Assignment3/#3656" class="Bound">B</a> <a id="3678" class="Symbol">→</a> <a id="3680" href="/Assignment3/#3656" class="Bound">B</a><a id="3681" class="Symbol">)</a> <a id="3683" class="Symbol">(</a><a id="3684" href="/Assignment3/#3684" class="Bound">e</a> <a id="3686" class="Symbol">:</a> <a id="3688" href="/Assignment3/#3656" class="Bound">B</a><a id="3689" class="Symbol">)</a> <a id="3691" class="Symbol">(</a><a id="3692" href="/Assignment3/#3692" class="Bound">xs</a> <a id="3695" href="/Assignment3/#3695" class="Bound">ys</a> <a id="3698" class="Symbol">:</a> <a id="3700" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="3705" href="/Assignment3/#3654" class="Bound">A</a><a id="3706" class="Symbol">)</a> <a id="3708" class="Symbol">→</a>
+    <a id="3714" href="plfa.Lists.html#15913" class="Function">foldr</a> <a id="3720" href="/Assignment3/#3666" class="Bound Operator">_⊗_</a> <a id="3724" href="/Assignment3/#3684" class="Bound">e</a> <a id="3726" class="Symbol">(</a><a id="3727" href="/Assignment3/#3692" class="Bound">xs</a> <a id="3730" href="plfa.Lists.html#3575" class="Function Operator">++</a> <a id="3733" href="/Assignment3/#3695" class="Bound">ys</a><a id="3735" class="Symbol">)</a> <a id="3737" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="3739" href="plfa.Lists.html#15913" class="Function">foldr</a> <a id="3745" href="/Assignment3/#3666" class="Bound Operator">_⊗_</a> <a id="3749" class="Symbol">(</a><a id="3750" href="plfa.Lists.html#15913" class="Function">foldr</a> <a id="3756" href="/Assignment3/#3666" class="Bound Operator">_⊗_</a> <a id="3760" href="/Assignment3/#3684" class="Bound">e</a> <a id="3762" href="/Assignment3/#3695" class="Bound">ys</a><a id="3764" class="Symbol">)</a> <a id="3766" href="/Assignment3/#3692" class="Bound">xs</a></pre>
+
+<h4 id="exercise-map-is-foldr">Exercise <code class="highlighter-rouge">map-is-foldr</code></h4>
+
+<p>Show that map can be defined using fold.</p>
+<pre class="Agda"><a id="3866" class="Keyword">postulate</a>
+  <a id="map-is-foldr"></a><a id="3878" href="/Assignment3/#3878" class="Postulate">map-is-foldr</a> <a id="3891" class="Symbol">:</a> <a id="3893" class="Symbol">∀</a> <a id="3895" class="Symbol">{</a><a id="3896" href="/Assignment3/#3896" class="Bound">A</a> <a id="3898" href="/Assignment3/#3898" class="Bound">B</a> <a id="3900" class="Symbol">:</a> <a id="3902" class="PrimitiveType">Set</a><a id="3905" class="Symbol">}</a> <a id="3907" class="Symbol">{</a><a id="3908" href="/Assignment3/#3908" class="Bound">f</a> <a id="3910" class="Symbol">:</a> <a id="3912" href="/Assignment3/#3896" class="Bound">A</a> <a id="3914" class="Symbol">→</a> <a id="3916" href="/Assignment3/#3898" class="Bound">B</a><a id="3917" class="Symbol">}</a> <a id="3919" class="Symbol">→</a>
+    <a id="3925" href="plfa.Lists.html#13332" class="Function">map</a> <a id="3929" href="/Assignment3/#3908" class="Bound">f</a> <a id="3931" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="3933" href="plfa.Lists.html#15913" class="Function">foldr</a> <a id="3939" class="Symbol">(λ</a> <a id="3942" href="/Assignment3/#3942" class="Bound">x</a> <a id="3944" href="/Assignment3/#3944" class="Bound">xs</a> <a id="3947" class="Symbol">→</a> <a id="3949" href="/Assignment3/#3908" class="Bound">f</a> <a id="3951" href="/Assignment3/#3942" class="Bound">x</a> <a id="3953" href="plfa.Lists.html#1140" class="InductiveConstructor Operator">∷</a> <a id="3955" href="/Assignment3/#3944" class="Bound">xs</a><a id="3957" class="Symbol">)</a> <a id="3959" href="plfa.Lists.html#1125" class="InductiveConstructor">[]</a></pre>
+<p>This requires extensionality.</p>
+
+<h4 id="exercise-fold-tree">Exercise <code class="highlighter-rouge">fold-Tree</code></h4>
+
+<p>Define a suitable fold function for the type of trees given earlier.</p>
+<pre class="Agda"><a id="4113" class="Keyword">postulate</a>
+  <a id="fold-Tree"></a><a id="4125" href="/Assignment3/#4125" class="Postulate">fold-Tree</a> <a id="4135" class="Symbol">:</a> <a id="4137" class="Symbol">∀</a> <a id="4139" class="Symbol">{</a><a id="4140" href="/Assignment3/#4140" class="Bound">A</a> <a id="4142" href="/Assignment3/#4142" class="Bound">B</a> <a id="4144" href="/Assignment3/#4144" class="Bound">C</a> <a id="4146" class="Symbol">:</a> <a id="4148" class="PrimitiveType">Set</a><a id="4151" class="Symbol">}</a>
+    <a id="4157" class="Symbol">→</a> <a id="4159" class="Symbol">(</a><a id="4160" href="/Assignment3/#4140" class="Bound">A</a> <a id="4162" class="Symbol">→</a> <a id="4164" href="/Assignment3/#4144" class="Bound">C</a><a id="4165" class="Symbol">)</a> <a id="4167" class="Symbol">→</a> <a id="4169" class="Symbol">(</a><a id="4170" href="/Assignment3/#4144" class="Bound">C</a> <a id="4172" class="Symbol">→</a> <a id="4174" href="/Assignment3/#4142" class="Bound">B</a> <a id="4176" class="Symbol">→</a> <a id="4178" href="/Assignment3/#4144" class="Bound">C</a> <a id="4180" class="Symbol">→</a> <a id="4182" href="/Assignment3/#4144" class="Bound">C</a><a id="4183" class="Symbol">)</a> <a id="4185" class="Symbol">→</a> <a id="4187" href="/Assignment3/#3103" class="Datatype">Tree</a> <a id="4192" href="/Assignment3/#4140" class="Bound">A</a> <a id="4194" href="/Assignment3/#4142" class="Bound">B</a> <a id="4196" class="Symbol">→</a> <a id="4198" href="/Assignment3/#4144" class="Bound">C</a></pre>
+
+<h4 id="exercise-map-is-fold-tree">Exercise <code class="highlighter-rouge">map-is-fold-Tree</code></h4>
+
+<p>Demonstrate an anologue of <code class="highlighter-rouge">map-is-foldr</code> for the type of trees.</p>
+
+<h4 id="exercise-sum-downfrom-stretch">Exercise <code class="highlighter-rouge">sum-downFrom</code> (stretch)</h4>
+
+<p>Define a function that counts down as follows.</p>
+<pre class="Agda"><a id="downFrom"></a><a id="4412" href="/Assignment3/#4412" class="Function">downFrom</a> <a id="4421" class="Symbol">:</a> <a id="4423" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a> <a id="4425" class="Symbol">→</a> <a id="4427" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="4432" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a>
+<a id="4434" href="/Assignment3/#4412" class="Function">downFrom</a> <a id="4443" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#115" class="InductiveConstructor">zero</a>     <a id="4452" class="Symbol">=</a>  <a id="4455" href="plfa.Lists.html#1125" class="InductiveConstructor">[]</a>
+<a id="4458" href="/Assignment3/#4412" class="Function">downFrom</a> <a id="4467" class="Symbol">(</a><a id="4468" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#128" class="InductiveConstructor">suc</a> <a id="4472" href="/Assignment3/#4472" class="Bound">n</a><a id="4473" class="Symbol">)</a>  <a id="4476" class="Symbol">=</a>  <a id="4479" href="/Assignment3/#4472" class="Bound">n</a> <a id="4481" href="plfa.Lists.html#1140" class="InductiveConstructor Operator">∷</a> <a id="4483" href="/Assignment3/#4412" class="Function">downFrom</a> <a id="4492" href="/Assignment3/#4472" class="Bound">n</a></pre>
+<p>For example,</p>
+<pre class="Agda"><a id="4531" href="/Assignment3/#4531" class="Function">_</a> <a id="4533" class="Symbol">:</a> <a id="4535" href="/Assignment3/#4412" class="Function">downFrom</a> <a id="4544" class="Number">3</a> <a id="4546" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="4548" href="plfa.Lists.html#2973" class="InductiveConstructor Operator">[</a> <a id="4550" class="Number">2</a> <a id="4552" href="plfa.Lists.html#2973" class="InductiveConstructor Operator">,</a> <a id="4554" class="Number">1</a> <a id="4556" href="plfa.Lists.html#2973" class="InductiveConstructor Operator">,</a> <a id="4558" class="Number">0</a> <a id="4560" href="plfa.Lists.html#2973" class="InductiveConstructor Operator">]</a>
+<a id="4562" class="Symbol">_</a> <a id="4564" class="Symbol">=</a> <a id="4566" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#140" class="InductiveConstructor">refl</a></pre>
+<p>Prove that the sum of the numbers <code class="highlighter-rouge">(n - 1) + ⋯ + 0</code> is
+equal to <code class="highlighter-rouge">n * (n ∸ 1) / 2</code>.</p>
+<pre class="Agda"><a id="4678" class="Keyword">postulate</a>
+  <a id="sum-downFrom"></a><a id="4690" href="/Assignment3/#4690" class="Postulate">sum-downFrom</a> <a id="4703" class="Symbol">:</a> <a id="4705" class="Symbol">∀</a> <a id="4707" class="Symbol">(</a><a id="4708" href="/Assignment3/#4708" class="Bound">n</a> <a id="4710" class="Symbol">:</a> <a id="4712" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#97" class="Datatype">ℕ</a><a id="4713" class="Symbol">)</a>
+    <a id="4719" class="Symbol">→</a> <a id="4721" href="plfa.Lists.html#16840" class="Function">sum</a> <a id="4725" class="Symbol">(</a><a id="4726" href="/Assignment3/#4412" class="Function">downFrom</a> <a id="4735" href="/Assignment3/#4708" class="Bound">n</a><a id="4736" class="Symbol">)</a> <a id="4738" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#433" class="Primitive Operator">*</a> <a id="4740" class="Number">2</a> <a id="4742" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Equality.html#83" class="Datatype Operator">≡</a> <a id="4744" href="/Assignment3/#4708" class="Bound">n</a> <a id="4746" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#433" class="Primitive Operator">*</a> <a id="4748" class="Symbol">(</a><a id="4749" href="/Assignment3/#4708" class="Bound">n</a> <a id="4751" href="https://agda.github.io/agda-stdlib/Agda.Builtin.Nat.html#320" class="Primitive Operator">∸</a> <a id="4753" class="Number">1</a><a id="4754" class="Symbol">)</a></pre>
+
+<h4 id="exercise-foldl">Exercise <code class="highlighter-rouge">foldl</code></h4>
+
+<p>Define a function <code class="highlighter-rouge">foldl</code> which is analogous to <code class="highlighter-rouge">foldr</code>, but where
+operations associate to the left rather than the right.  For example,</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
+foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
+</code></pre></div></div>
+
+<h4 id="exercise-foldr-monoid-foldl">Exercise <code class="highlighter-rouge">foldr-monoid-foldl</code></h4>
+
+<p>Show that if <code class="highlighter-rouge">_⊕_</code> and <code class="highlighter-rouge">e</code> form a monoid, then <code class="highlighter-rouge">foldr _⊗_ e</code> and
+<code class="highlighter-rouge">foldl _⊗_ e</code> always compute the same result.</p>
+
+<h4 id="exercise-any---recommended">Exercise <code class="highlighter-rouge">Any-++-⇔</code> (recommended)</h4>
+
+<p>Prove a result similar to <code class="highlighter-rouge">All-++-↔</code>, but with <code class="highlighter-rouge">Any</code> in place of <code class="highlighter-rouge">All</code>, and a suitable
+replacement for <code class="highlighter-rouge">_×_</code>.  As a consequence, demonstrate an equivalence relating
+<code class="highlighter-rouge">_∈_</code> and <code class="highlighter-rouge">_++_</code>.</p>
+
+<h4 id="exercise-all---stretch">Exercise <code class="highlighter-rouge">All-++-≃</code> (stretch)</h4>
+
+<p>Show that the equivalence <code class="highlighter-rouge">All-++-⇔</code> can be extended to an isomorphism.</p>
+
+<h4 id="exercise-anyall-stretch">Exercise <code class="highlighter-rouge">¬Any≃All¬</code> (stretch)</h4>
+
+<p>First generalise composition to arbitrary levels, using
+[universe polymorphism][plfa.Equality#unipoly].</p>
+<pre class="Agda"><a id="_∘′_"></a><a id="5674" href="/Assignment3/#5674" class="Function Operator">_∘′_</a> <a id="5679" class="Symbol">:</a> <a id="5681" class="Symbol">∀</a> <a id="5683" class="Symbol">{</a><a id="5684" href="/Assignment3/#5684" class="Bound">ℓ₁</a> <a id="5687" href="/Assignment3/#5687" class="Bound">ℓ₂</a> <a id="5690" href="/Assignment3/#5690" class="Bound">ℓ₃</a> <a id="5693" class="Symbol">:</a> <a id="5695" href="https://agda.github.io/agda-stdlib/Agda.Primitive.html#408" class="Postulate">Level</a><a id="5700" class="Symbol">}</a> <a id="5702" class="Symbol">{</a><a id="5703" href="/Assignment3/#5703" class="Bound">A</a> <a id="5705" class="Symbol">:</a> <a id="5707" class="PrimitiveType">Set</a> <a id="5711" href="/Assignment3/#5684" class="Bound">ℓ₁</a><a id="5713" class="Symbol">}</a> <a id="5715" class="Symbol">{</a><a id="5716" href="/Assignment3/#5716" class="Bound">B</a> <a id="5718" class="Symbol">:</a> <a id="5720" class="PrimitiveType">Set</a> <a id="5724" href="/Assignment3/#5687" class="Bound">ℓ₂</a><a id="5726" class="Symbol">}</a> <a id="5728" class="Symbol">{</a><a id="5729" href="/Assignment3/#5729" class="Bound">C</a> <a id="5731" class="Symbol">:</a> <a id="5733" class="PrimitiveType">Set</a> <a id="5737" href="/Assignment3/#5690" class="Bound">ℓ₃</a><a id="5739" class="Symbol">}</a>
+  <a id="5743" class="Symbol">→</a> <a id="5745" class="Symbol">(</a><a id="5746" href="/Assignment3/#5716" class="Bound">B</a> <a id="5748" class="Symbol">→</a> <a id="5750" href="/Assignment3/#5729" class="Bound">C</a><a id="5751" class="Symbol">)</a> <a id="5753" class="Symbol">→</a> <a id="5755" class="Symbol">(</a><a id="5756" href="/Assignment3/#5703" class="Bound">A</a> <a id="5758" class="Symbol">→</a> <a id="5760" href="/Assignment3/#5716" class="Bound">B</a><a id="5761" class="Symbol">)</a> <a id="5763" class="Symbol">→</a> <a id="5765" href="/Assignment3/#5703" class="Bound">A</a> <a id="5767" class="Symbol">→</a> <a id="5769" href="/Assignment3/#5729" class="Bound">C</a>
+<a id="5771" class="Symbol">(</a><a id="5772" href="/Assignment3/#5772" class="Bound">g</a> <a id="5774" href="/Assignment3/#5674" class="Function Operator">∘′</a> <a id="5777" href="/Assignment3/#5777" class="Bound">f</a><a id="5778" class="Symbol">)</a> <a id="5780" href="/Assignment3/#5780" class="Bound">x</a>  <a id="5783" class="Symbol">=</a>  <a id="5786" href="/Assignment3/#5772" class="Bound">g</a> <a id="5788" class="Symbol">(</a><a id="5789" href="/Assignment3/#5777" class="Bound">f</a> <a id="5791" href="/Assignment3/#5780" class="Bound">x</a><a id="5792" class="Symbol">)</a></pre>
+
+<p>Show that <code class="highlighter-rouge">Any</code> and <code class="highlighter-rouge">All</code> satisfy a version of De Morgan’s Law.</p>
+<pre class="Agda"><a id="5883" class="Keyword">postulate</a>
+  <a id="¬Any≃All¬"></a><a id="5895" href="/Assignment3/#5895" class="Postulate">¬Any≃All¬</a> <a id="5905" class="Symbol">:</a> <a id="5907" class="Symbol">∀</a> <a id="5909" class="Symbol">{</a><a id="5910" href="/Assignment3/#5910" class="Bound">A</a> <a id="5912" class="Symbol">:</a> <a id="5914" class="PrimitiveType">Set</a><a id="5917" class="Symbol">}</a> <a id="5919" class="Symbol">(</a><a id="5920" href="/Assignment3/#5920" class="Bound">P</a> <a id="5922" class="Symbol">:</a> <a id="5924" href="/Assignment3/#5910" class="Bound">A</a> <a id="5926" class="Symbol">→</a> <a id="5928" class="PrimitiveType">Set</a><a id="5931" class="Symbol">)</a> <a id="5933" class="Symbol">(</a><a id="5934" href="/Assignment3/#5934" class="Bound">xs</a> <a id="5937" class="Symbol">:</a> <a id="5939" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="5944" href="/Assignment3/#5910" class="Bound">A</a><a id="5945" class="Symbol">)</a>
+    <a id="5951" class="Symbol">→</a> <a id="5953" class="Symbol">(</a><a id="5954" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a> <a id="5957" href="/Assignment3/#5674" class="Function Operator">∘′</a> <a id="5960" href="plfa.Lists.html#23040" class="Datatype">Any</a> <a id="5964" href="/Assignment3/#5920" class="Bound">P</a><a id="5965" class="Symbol">)</a> <a id="5967" href="/Assignment3/#5934" class="Bound">xs</a> <a id="5970" href="plfa.Isomorphism.html#4104" class="Record Operator">≃</a> <a id="5972" href="plfa.Lists.html#21555" class="Datatype">All</a> <a id="5976" class="Symbol">(</a><a id="5977" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a> <a id="5980" href="/Assignment3/#5674" class="Function Operator">∘′</a> <a id="5983" href="/Assignment3/#5920" class="Bound">P</a><a id="5984" class="Symbol">)</a> <a id="5986" href="/Assignment3/#5934" class="Bound">xs</a></pre>
+
+<p>Do we also have the following?</p>
+<pre class="Agda"><a id="6045" class="Keyword">postulate</a>
+  <a id="¬All≃Any¬"></a><a id="6057" href="/Assignment3/#6057" class="Postulate">¬All≃Any¬</a> <a id="6067" class="Symbol">:</a> <a id="6069" class="Symbol">∀</a> <a id="6071" class="Symbol">{</a><a id="6072" href="/Assignment3/#6072" class="Bound">A</a> <a id="6074" class="Symbol">:</a> <a id="6076" class="PrimitiveType">Set</a><a id="6079" class="Symbol">}</a> <a id="6081" class="Symbol">(</a><a id="6082" href="/Assignment3/#6082" class="Bound">P</a> <a id="6084" class="Symbol">:</a> <a id="6086" href="/Assignment3/#6072" class="Bound">A</a> <a id="6088" class="Symbol">→</a> <a id="6090" class="PrimitiveType">Set</a><a id="6093" class="Symbol">)</a> <a id="6095" class="Symbol">(</a><a id="6096" href="/Assignment3/#6096" class="Bound">xs</a> <a id="6099" class="Symbol">:</a> <a id="6101" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="6106" href="/Assignment3/#6072" class="Bound">A</a><a id="6107" class="Symbol">)</a>
+    <a id="6113" class="Symbol">→</a> <a id="6115" class="Symbol">(</a><a id="6116" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a> <a id="6119" href="/Assignment3/#5674" class="Function Operator">∘′</a> <a id="6122" href="plfa.Lists.html#21555" class="Datatype">All</a> <a id="6126" href="/Assignment3/#6082" class="Bound">P</a><a id="6127" class="Symbol">)</a> <a id="6129" href="/Assignment3/#6096" class="Bound">xs</a> <a id="6132" href="plfa.Isomorphism.html#4104" class="Record Operator">≃</a> <a id="6134" href="plfa.Lists.html#23040" class="Datatype">Any</a> <a id="6138" class="Symbol">(</a><a id="6139" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#464" class="Function Operator">¬_</a> <a id="6142" href="/Assignment3/#5674" class="Function Operator">∘′</a> <a id="6145" href="/Assignment3/#6082" class="Bound">P</a><a id="6146" class="Symbol">)</a> <a id="6148" href="/Assignment3/#6096" class="Bound">xs</a></pre>
+<p>If so, prove; if not, explain why.</p>
+
+<h4 id="exercise-any-stretch">Exercise <code class="highlighter-rouge">any?</code> (stretch)</h4>
+
+<p>Just as <code class="highlighter-rouge">All</code> has analogues <code class="highlighter-rouge">all</code> and <code class="highlighter-rouge">all?</code> which determine whether a
+predicate holds for every element of a list, so does <code class="highlighter-rouge">Any</code> have
+analogues <code class="highlighter-rouge">any</code> and <code class="highlighter-rouge">any?</code> which determine whether a predicates holds
+for some element of a list.  Give their definitions.</p>
+
+<h4 id="exercise-filter-stretch">Exercise <code class="highlighter-rouge">filter?</code> (stretch)</h4>
+
+<p>Define the following variant of the traditional <code class="highlighter-rouge">filter</code> function on lists,
+which given a list and a decidable predicate returns all elements of the
+list satisfying the predicate.</p>
+<pre class="Agda"><a id="6719" class="Keyword">postulate</a>
+  <a id="filter?"></a><a id="6731" href="/Assignment3/#6731" class="Postulate">filter?</a> <a id="6739" class="Symbol">:</a> <a id="6741" class="Symbol">∀</a> <a id="6743" class="Symbol">{</a><a id="6744" href="/Assignment3/#6744" class="Bound">A</a> <a id="6746" class="Symbol">:</a> <a id="6748" class="PrimitiveType">Set</a><a id="6751" class="Symbol">}</a> <a id="6753" class="Symbol">{</a><a id="6754" href="/Assignment3/#6754" class="Bound">P</a> <a id="6756" class="Symbol">:</a> <a id="6758" href="/Assignment3/#6744" class="Bound">A</a> <a id="6760" class="Symbol">→</a> <a id="6762" class="PrimitiveType">Set</a><a id="6765" class="Symbol">}</a>
+    <a id="6771" class="Symbol">→</a> <a id="6773" class="Symbol">(</a><a id="6774" href="/Assignment3/#6774" class="Bound">P?</a> <a id="6777" class="Symbol">:</a> <a id="6779" href="https://agda.github.io/agda-stdlib/Relation.Unary.html#3198" class="Function">Decidable</a> <a id="6789" href="/Assignment3/#6754" class="Bound">P</a><a id="6790" class="Symbol">)</a> <a id="6792" class="Symbol">→</a> <a id="6794" href="plfa.Lists.html#1096" class="Datatype">List</a> <a id="6799" href="/Assignment3/#6744" class="Bound">A</a> <a id="6801" class="Symbol">→</a> <a id="6803" href="https://agda.github.io/agda-stdlib/Data.Product.html#942" class="Function">∃[</a> <a id="6806" href="/Assignment3/#6806" class="Bound">ys</a> <a id="6809" href="https://agda.github.io/agda-stdlib/Data.Product.html#942" class="Function">]</a><a id="6810" class="Symbol">(</a> <a id="6812" href="plfa.Lists.html#21555" class="Datatype">All</a> <a id="6816" href="/Assignment3/#6754" class="Bound">P</a> <a id="6818" href="/Assignment3/#6806" class="Bound">ys</a> <a id="6821" class="Symbol">)</a></pre>
+
+<h2 id="lambda">Lambda</h2>
+
+<h4 id="exercise-mul-recommended">Exercise <code class="highlighter-rouge">mul</code> (recommended)</h4>
+
+<p>Write out the definition of a lambda term that multiplies
+two natural numbers.</p>
+
+<h4 id="exercise-primed-stretch">Exercise <code class="highlighter-rouge">primed</code> (stretch)</h4>
+
+<p>We can make examples with lambda terms slighly easier to write
+by adding the following definitions.</p>
+<pre class="Agda"><a id="ƛ′_⇒_"></a><a id="7110" href="/Assignment3/#7110" class="Function Operator">ƛ′_⇒_</a> <a id="7116" class="Symbol">:</a> <a id="7118" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7123" class="Symbol">→</a> <a id="7125" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7130" class="Symbol">→</a> <a id="7132" href="plfa.Lambda.html#3781" class="Datatype">Term</a>
+<a id="7137" href="/Assignment3/#7110" class="Function Operator">ƛ′</a> <a id="7140" class="Symbol">(</a><a id="7141" href="plfa.Lambda.html#3800" class="InductiveConstructor Operator">`</a> <a id="7143" href="/Assignment3/#7143" class="Bound">x</a><a id="7144" class="Symbol">)</a> <a id="7146" href="/Assignment3/#7110" class="Function Operator">⇒</a> <a id="7148" href="/Assignment3/#7148" class="Bound">N</a>  <a id="7151" class="Symbol">=</a>  <a id="7154" href="plfa.Lambda.html#3839" class="InductiveConstructor Operator">ƛ</a> <a id="7156" href="/Assignment3/#7143" class="Bound">x</a> <a id="7158" href="plfa.Lambda.html#3839" class="InductiveConstructor Operator">⇒</a> <a id="7160" href="/Assignment3/#7148" class="Bound">N</a>
+<a id="7162" href="/Assignment3/#7110" class="CatchallClause Function Operator">ƛ′</a><a id="7164" class="CatchallClause"> </a><a id="7165" class="CatchallClause Symbol">_</a><a id="7166" class="CatchallClause"> </a><a id="7167" href="/Assignment3/#7110" class="CatchallClause Function Operator">⇒</a><a id="7168" class="CatchallClause"> </a><a id="7169" class="CatchallClause Symbol">_</a>      <a id="7176" class="Symbol">=</a>  <a id="7179" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a> <a id="7186" href="/Assignment3/#7215" class="Postulate">impossible</a>
+  <a id="7199" class="Keyword">where</a> <a id="7205" class="Keyword">postulate</a> <a id="7215" href="/Assignment3/#7215" class="Postulate">impossible</a> <a id="7226" class="Symbol">:</a> <a id="7228" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a>
+
+<a id="case′_[zero⇒_|suc_⇒_]"></a><a id="7231" href="/Assignment3/#7231" class="Function Operator">case′_[zero⇒_|suc_⇒_]</a> <a id="7253" class="Symbol">:</a> <a id="7255" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7260" class="Symbol">→</a> <a id="7262" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7267" class="Symbol">→</a> <a id="7269" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7274" class="Symbol">→</a> <a id="7276" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7281" class="Symbol">→</a> <a id="7283" href="plfa.Lambda.html#3781" class="Datatype">Term</a>
+<a id="7288" href="/Assignment3/#7231" class="Function Operator">case′</a> <a id="7294" href="/Assignment3/#7294" class="Bound">L</a> <a id="7296" href="/Assignment3/#7231" class="Function Operator">[zero⇒</a> <a id="7303" href="/Assignment3/#7303" class="Bound">M</a> <a id="7305" href="/Assignment3/#7231" class="Function Operator">|suc</a> <a id="7310" class="Symbol">(</a><a id="7311" href="plfa.Lambda.html#3800" class="InductiveConstructor Operator">`</a> <a id="7313" href="/Assignment3/#7313" class="Bound">x</a><a id="7314" class="Symbol">)</a> <a id="7316" href="/Assignment3/#7231" class="Function Operator">⇒</a> <a id="7318" href="/Assignment3/#7318" class="Bound">N</a> <a id="7320" href="/Assignment3/#7231" class="Function Operator">]</a>  <a id="7323" class="Symbol">=</a>  <a id="7326" href="plfa.Lambda.html#4008" class="InductiveConstructor Operator">case</a> <a id="7331" href="/Assignment3/#7294" class="Bound">L</a> <a id="7333" href="plfa.Lambda.html#4008" class="InductiveConstructor Operator">[zero⇒</a> <a id="7340" href="/Assignment3/#7303" class="Bound">M</a> <a id="7342" href="plfa.Lambda.html#4008" class="InductiveConstructor Operator">|suc</a> <a id="7347" href="/Assignment3/#7313" class="Bound">x</a> <a id="7349" href="plfa.Lambda.html#4008" class="InductiveConstructor Operator">⇒</a> <a id="7351" href="/Assignment3/#7318" class="Bound">N</a> <a id="7353" href="plfa.Lambda.html#4008" class="InductiveConstructor Operator">]</a>
+<a id="7355" href="/Assignment3/#7231" class="CatchallClause Function Operator">case′</a><a id="7360" class="CatchallClause"> </a><a id="7361" class="CatchallClause Symbol">_</a><a id="7362" class="CatchallClause"> </a><a id="7363" href="/Assignment3/#7231" class="CatchallClause Function Operator">[zero⇒</a><a id="7369" class="CatchallClause"> </a><a id="7370" class="CatchallClause Symbol">_</a><a id="7371" class="CatchallClause"> </a><a id="7372" href="/Assignment3/#7231" class="CatchallClause Function Operator">|suc</a><a id="7376" class="CatchallClause"> </a><a id="7377" class="CatchallClause Symbol">_</a><a id="7378" class="CatchallClause"> </a><a id="7379" href="/Assignment3/#7231" class="CatchallClause Function Operator">⇒</a><a id="7380" class="CatchallClause"> </a><a id="7381" class="CatchallClause Symbol">_</a><a id="7382" class="CatchallClause"> </a><a id="7383" href="/Assignment3/#7231" class="CatchallClause Function Operator">]</a>      <a id="7390" class="Symbol">=</a>  <a id="7393" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a> <a id="7400" href="/Assignment3/#7429" class="Postulate">impossible</a>
+  <a id="7413" class="Keyword">where</a> <a id="7419" class="Keyword">postulate</a> <a id="7429" href="/Assignment3/#7429" class="Postulate">impossible</a> <a id="7440" class="Symbol">:</a> <a id="7442" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a>
+
+<a id="μ′_⇒_"></a><a id="7445" href="/Assignment3/#7445" class="Function Operator">μ′_⇒_</a> <a id="7451" class="Symbol">:</a> <a id="7453" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7458" class="Symbol">→</a> <a id="7460" href="plfa.Lambda.html#3781" class="Datatype">Term</a> <a id="7465" class="Symbol">→</a> <a id="7467" href="plfa.Lambda.html#3781" class="Datatype">Term</a>
+<a id="7472" href="/Assignment3/#7445" class="Function Operator">μ′</a> <a id="7475" class="Symbol">(</a><a id="7476" href="plfa.Lambda.html#3800" class="InductiveConstructor Operator">`</a> <a id="7478" href="/Assignment3/#7478" class="Bound">x</a><a id="7479" class="Symbol">)</a> <a id="7481" href="/Assignment3/#7445" class="Function Operator">⇒</a> <a id="7483" href="/Assignment3/#7483" class="Bound">N</a>  <a id="7486" class="Symbol">=</a>  <a id="7489" href="plfa.Lambda.html#4068" class="InductiveConstructor Operator">μ</a> <a id="7491" href="/Assignment3/#7478" class="Bound">x</a> <a id="7493" href="plfa.Lambda.html#4068" class="InductiveConstructor Operator">⇒</a> <a id="7495" href="/Assignment3/#7483" class="Bound">N</a>
+<a id="7497" href="/Assignment3/#7445" class="CatchallClause Function Operator">μ′</a><a id="7499" class="CatchallClause"> </a><a id="7500" class="CatchallClause Symbol">_</a><a id="7501" class="CatchallClause"> </a><a id="7502" href="/Assignment3/#7445" class="CatchallClause Function Operator">⇒</a><a id="7503" class="CatchallClause"> </a><a id="7504" class="CatchallClause Symbol">_</a>      <a id="7511" class="Symbol">=</a>  <a id="7514" href="https://agda.github.io/agda-stdlib/Data.Empty.html#360" class="Function">⊥-elim</a> <a id="7521" href="/Assignment3/#7550" class="Postulate">impossible</a>
+  <a id="7534" class="Keyword">where</a> <a id="7540" class="Keyword">postulate</a> <a id="7550" href="/Assignment3/#7550" class="Postulate">impossible</a> <a id="7561" class="Symbol">:</a> <a id="7563" href="https://agda.github.io/agda-stdlib/Data.Empty.html#243" class="Datatype">⊥</a></pre>
+<p>The definition of <code class="highlighter-rouge">plus</code> can now be written as follows.</p>
+<pre class="Agda"><a id="plus′"></a><a id="7645" href="/Assignment3/#7645" class="Function">plus′</a> <a id="7651" class="Symbol">:</a> <a id="7653" href="plfa.Lambda.html#3781" class="Datatype">Term</a>
+<a id="7658" href="/Assignment3/#7645" class="Function">plus′</a> <a id="7664" class="Symbol">=</a> <a id="7666" href="/Assignment3/#7445" class="Function Operator">μ′</a> <a id="7669" href="/Assignment3/#7776" class="Function">+</a> <a id="7671" href="/Assignment3/#7445" class="Function Operator">⇒</a> <a id="7673" href="/Assignment3/#7110" class="Function Operator">ƛ′</a> <a id="7676" href="/Assignment3/#7790" class="Function">m</a> <a id="7678" href="/Assignment3/#7110" class="Function Operator">⇒</a> <a id="7680" href="/Assignment3/#7110" class="Function Operator">ƛ′</a> <a id="7683" href="/Assignment3/#7804" class="Function">n</a> <a id="7685" href="/Assignment3/#7110" class="Function Operator">⇒</a>
+          <a id="7697" href="/Assignment3/#7231" class="Function Operator">case′</a> <a id="7703" href="/Assignment3/#7790" class="Function">m</a>
+            <a id="7717" href="/Assignment3/#7231" class="Function Operator">[zero⇒</a> <a id="7724" href="/Assignment3/#7804" class="Function">n</a>
+            <a id="7738" href="/Assignment3/#7231" class="Function Operator">|suc</a> <a id="7743" href="/Assignment3/#7790" class="Function">m</a> <a id="7745" href="/Assignment3/#7231" class="Function Operator">⇒</a> <a id="7747" href="plfa.Lambda.html#3967" class="InductiveConstructor Operator">`suc</a> <a id="7752" class="Symbol">(</a><a id="7753" href="/Assignment3/#7776" class="Function">+</a> <a id="7755" href="plfa.Lambda.html#3885" class="InductiveConstructor Operator">·</a> <a id="7757" href="/Assignment3/#7790" class="Function">m</a> <a id="7759" href="plfa.Lambda.html#3885" class="InductiveConstructor Operator">·</a> <a id="7761" href="/Assignment3/#7804" class="Function">n</a><a id="7762" class="Symbol">)</a> <a id="7764" href="/Assignment3/#7231" class="Function Operator">]</a>
+  <a id="7768" class="Keyword">where</a>
+  <a id="7776" href="/Assignment3/#7776" class="Function">+</a>  <a id="7779" class="Symbol">=</a>  <a id="7782" href="plfa.Lambda.html#3800" class="InductiveConstructor Operator">`</a> <a id="7784" class="String">&quot;+&quot;</a>
+  <a id="7790" href="/Assignment3/#7790" class="Function">m</a>  <a id="7793" class="Symbol">=</a>  <a id="7796" href="plfa.Lambda.html#3800" class="InductiveConstructor Operator">`</a> <a id="7798" class="String">&quot;m&quot;</a>
+  <a id="7804" href="/Assignment3/#7804" class="Function">n</a>  <a id="7807" class="Symbol">=</a>  <a id="7810" href="plfa.Lambda.html#3800" class="InductiveConstructor Operator">`</a> <a id="7812" class="String">&quot;n&quot;</a></pre>
+<p>Write out the definition of multiplication in the same style.</p>
+
+<h4 id="exercise-___-stretch">Exercise <code class="highlighter-rouge">_[_:=_]′</code> (stretch)</h4>
+
+<p>The definition of substitution above has three clauses (<code class="highlighter-rouge">ƛ</code>, <code class="highlighter-rouge">case</code>,
+and <code class="highlighter-rouge">μ</code>) that invoke a with clause to deal with bound variables.
+Rewrite the definition to factor the common part of these three
+clauses into a single function, defined by mutual recursion with
+substitution.</p>
+
+<h4 id="exercise-">Exercise <code class="highlighter-rouge">—↠≃—↠′</code></h4>
+
+<p>Show that the two notions of reflexive and transitive closure
+above are isomorphic.</p>
+
+<h4 id="exercise-plus-example">Exercise <code class="highlighter-rouge">plus-example</code></h4>
+
+<p>Write out the reduction sequence demonstrating that one plus one is two.</p>
+
+<h4 id="exercise-mul-type-recommended">Exercise <code class="highlighter-rouge">mul-type</code> (recommended)</h4>
+
+<p>Using the term <code class="highlighter-rouge">mul</code> you defined earlier, write out the derivation
+showing that it is well-typed.</p>
+
+<h2 id="properties">Properties</h2>
+
+<h4 id="exercise-progress-">Exercise <code class="highlighter-rouge">Progress-≃</code></h4>
+
+<p>Show that <code class="highlighter-rouge">Progress M</code> is isomorphic to <code class="highlighter-rouge">Value M ⊎ ∃[ N ](M —→ N)</code>.</p>
+
+<h4 id="exercise-progress">Exercise <code class="highlighter-rouge">progress′</code></h4>
+
+<p>Write out the proof of <code class="highlighter-rouge">progress′</code> in full, and compare it to the
+proof of <code class="highlighter-rouge">progress</code> above.</p>
+
+<h4 id="exercise-value">Exercise <code class="highlighter-rouge">value?</code></h4>
+
+<p>Combine <code class="highlighter-rouge">progress</code> and <code class="highlighter-rouge">—→¬V</code> to write a program that decides
+whether a well-typed term is a value.</p>
+<pre class="Agda"><a id="8933" class="Keyword">postulate</a>
+  <a id="value?"></a><a id="8945" href="/Assignment3/#8945" class="Postulate">value?</a> <a id="8952" class="Symbol">:</a> <a id="8954" class="Symbol">∀</a> <a id="8956" class="Symbol">{</a><a id="8957" href="/Assignment3/#8957" class="Bound">A</a> <a id="8959" href="/Assignment3/#8959" class="Bound">M</a><a id="8960" class="Symbol">}</a> <a id="8962" class="Symbol">→</a> <a id="8964" href="plfa.Lambda.html#30371" class="InductiveConstructor">∅</a> <a id="8966" href="plfa.Lambda.html#32513" class="Datatype Operator">⊢</a> <a id="8968" href="/Assignment3/#8959" class="Bound">M</a> <a id="8970" href="plfa.Lambda.html#32513" class="Datatype Operator">⦂</a> <a id="8972" href="/Assignment3/#8957" class="Bound">A</a> <a id="8974" class="Symbol">→</a> <a id="8976" href="https://agda.github.io/agda-stdlib/Relation.Nullary.html#534" class="Datatype">Dec</a> <a id="8980" class="Symbol">(</a><a id="8981" href="plfa.Lambda.html#11586" class="Datatype">Value</a> <a id="8987" href="/Assignment3/#8959" class="Bound">M</a><a id="8988" class="Symbol">)</a></pre>
+
+<h4 id="exercise-subst-stretch">Exercise <code class="highlighter-rouge">subst′</code> (stretch)</h4>
+
+<p>Rewrite <code class="highlighter-rouge">subst</code> to work with the modified definition <code class="highlighter-rouge">_[_:=_]′</code>
+from the exercise in the previous chapter.  As before, this
+should factor dealing with bound variables into a single function,
+defined by mutual recursion with the proof that substitution
+preserves types.</p>
+
+<h4 id="exercise-mul-example-recommended">Exercise <code class="highlighter-rouge">mul-example</code> (recommended)</h4>
+
+<p>Using the evaluator, confirm that two times two is four.</p>
+
+<h4 id="exercise-progress-preservation">Exercise: <code class="highlighter-rouge">progress-preservation</code></h4>
+
+<p>Without peeking at their statements above, write down the progress
+and preservation theorems for the simply typed lambda-calculus.</p>
+
+<h4 id="exercise-subject-expansion">Exercise <code class="highlighter-rouge">subject-expansion</code></h4>
+
+<p>We say that <code class="highlighter-rouge">M</code> <em>reduces</em> to <code class="highlighter-rouge">N</code> if <code class="highlighter-rouge">M —→ N</code>,
+and conversely that <code class="highlighter-rouge">M</code> <em>expands</em> to <code class="highlighter-rouge">N</code> if <code class="highlighter-rouge">N —→ M</code>.
+The preservation property is sometimes called <em>subject reduction</em>.
+Its opposite is <em>subject expansion</em>, which holds if
+<code class="highlighter-rouge">M —→ N</code> and <code class="highlighter-rouge">∅ ⊢ N ⦂ A</code> imply <code class="highlighter-rouge">∅ ⊢ M ⦂ A</code>.
+Find two counter-examples to subject expansion, one
+with case expressions and one not involving case expressions.</p>
+
+<h4 id="exercise-stuck">Exercise <code class="highlighter-rouge">stuck</code></h4>
+
+<p>Give an example of an ill-typed term that does get stuck.</p>
+
+<h4 id="exercise-unstuck-recommended">Exercise <code class="highlighter-rouge">unstuck</code> (recommended)</h4>
+
+<p>Provide proofs of the three postulates, <code class="highlighter-rouge">unstuck</code>, <code class="highlighter-rouge">preserves</code>, and <code class="highlighter-rouge">wttdgs</code> above.</p>
+
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/tspl/Assignment3.lagda">Source</a>
+    
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

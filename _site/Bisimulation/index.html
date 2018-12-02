@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bisimulation: Relating reduction systems | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.5.0 -->
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Bisimulation: Relating reduction systems" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.ed.inf.ac.uk/Bisimulation/" />
+<meta property="og:url" content="https://plfa.ed.inf.ac.uk/Bisimulation/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","url":"https://plfa.ed.inf.ac.uk/Bisimulation/","headline":"Bisimulation: Relating reduction systems","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://plfa.ed.inf.ac.uk/feed.xml" title="Programming Language Foundations in Agda
+" /></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/">Table of Contents</a>
+                <a class="page-link" href="/GettingStarted/">Getting Started</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Bisimulation: Relating reduction systems</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/More/">Prev</a>
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Bisimulation.lagda">Source</a>
+    
+    
+    &bullet;
+    <a alt="Next chapter" href="/Inference/">Next</a>
+    
+</p>
+
+
+  <div class="post-content">
+    <pre class="Agda"><a id="165" class="Keyword">module</a> <a id="172" href="/Bisimulation/" class="Module">plfa.Bisimulation</a> <a id="190" class="Keyword">where</a></pre>
+
+<p>Some constructs can be defined in terms of other constructs.  In the
+previous chapter, we saw how <em>let</em> terms can be rewritten as an
+application of an abstraction, and how two alternative formulations of
+products — one with projections and one with case — can be formulated
+in terms of each other.  In this chapter, we look at how to formalise
+such claims.</p>
+
+<p>Given two different systems, with different terms and reduction rules,
+we define what it means to claim that one <em>simulates</em> the other.
+Let’s call our two systems <em>source</em> and <em>target</em>.  Let <code class="highlighter-rouge">M</code>, <code class="highlighter-rouge">N</code> range
+over terms of the source, and <code class="highlighter-rouge">M†</code>, <code class="highlighter-rouge">N†</code> range over terms of the
+target.  We define a relation</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M ~ M†
+</code></pre></div></div>
+
+<p>between corresponding terms of the two systems. We have a
+<em>simulation</em> of the source by the target if every reduction
+in the source has a corresponding reduction sequence
+in the target:</p>
+
+<p><em>Simulation</em>: For every <code class="highlighter-rouge">M</code>, <code class="highlighter-rouge">M†</code>, and <code class="highlighter-rouge">N</code>:
+If <code class="highlighter-rouge">M ~ M†</code> and <code class="highlighter-rouge">M —→ N</code>
+then <code class="highlighter-rouge">M† —↠ N†</code> and <code class="highlighter-rouge">N ~ N†</code>
+for some <code class="highlighter-rouge">N†</code>.</p>
+
+<p>Or, in a diagram:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M  --- —→ --- N
+|             |
+|             |
+~             ~
+|             |
+|             |
+M† --- —↠ --- N†
+</code></pre></div></div>
+
+<p>Sometimes we will have a stronger condition, where each reduction in the source
+corresponds to a reduction (rather than a reduction sequence)
+in the target:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M  --- —→ --- N
+|             |
+|             |
+~             ~
+|             |
+|             |
+M† --- —→ --- N†
+</code></pre></div></div>
+
+<p>This stronger condition is known as <em>lock-step</em> or <em>on the nose</em> simulation.</p>
+
+<p>We are particularly interested in the situation where there is also
+a simulation from the target to the source: every reduction in the
+target has a corresponding reduction sequence in the source.  This
+situation is called a <em>bisimulation</em>.</p>
+
+<p>Simulation is established by case analysis over all possible
+reductions and all possible terms to which they are related.  For each
+reduction step in the source we must show a corresponding reduction
+sequence in the target.</p>
+
+<p>For instance, the source might be lambda calculus with <em>let</em>
+added, and the target the same system with <code class="highlighter-rouge">let</code> translated out. 
+The key rule defining our relation will be:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M ~ M†
+N ~ N†
+--------------------------------
+let x = M in N ~ (ƛ x ⇒ N†) · M†
+</code></pre></div></div>
+
+<p>All the other rules are congruences: variables relate to
+themselves, and abstractions and applications relate if their
+components relate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-----
+x ~ x
+
+N ~ N†
+------------------
+ƛ x ⇒ N ~ ƛ x ⇒ N†
+
+L ~ L†
+M ~ M†
+---------------
+L · M ~ L† · M†
+</code></pre></div></div>
+
+<p>Covering the other constructs of our language — naturals,
+fixpoints, products, and so on — would add little save length.</p>
+
+<p>In this case, our relation can be specified by a function
+from source to target.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(x) †               =  x
+(ƛ x ⇒ N) †         =  ƛ x ⇒ (N †)
+(L · M) †           =  (L †) · (M †)
+(let x = M in N) †  =  (ƛ x ⇒ (N †)) · (M †)
+</code></pre></div></div>
+
+<p>And we have</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M † ≡ N
+-------
+M ~ N
+</code></pre></div></div>
+
+<p>and conversely. But in general we may have a relation without any
+corresponding function.</p>
+
+<p>This chapter formalises establishing that <code class="highlighter-rouge">~</code> as defined
+above is a simulation from source to target.  We leave
+establishing it in the reverse direction as an exercise.
+Another exercise is to show the alternative formulations
+of products in
+Chapter <a href="/More/">More</a>
+are in bisimulation.</p>
+
+<h2 id="imports">Imports</h2>
+
+<p>We import our source language from
+Chapter <a href="/More/">More</a>.</p>
+<pre class="Agda"><a id="3633" class="Keyword">open</a> <a id="3638" class="Keyword">import</a> <a id="3645" href="/More/" class="Module">plfa.More</a></pre>
+
+<h2 id="simulation">Simulation</h2>
+
+<p>The simulation is a straightforward formalisation of the rules
+in the introduction.</p>
+<pre class="Agda"><a id="3780" class="Keyword">infix</a>  <a id="3787" class="Number">4</a> <a id="3789" href="/Bisimulation/#3826" class="Datatype Operator">_~_</a>
+<a id="3793" class="Keyword">infix</a>  <a id="3800" class="Number">5</a> <a id="3802" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ_</a>
+<a id="3806" class="Keyword">infix</a>  <a id="3813" class="Number">7</a> <a id="3815" href="/Bisimulation/#4018" class="InductiveConstructor Operator">_~·_</a>
+
+<a id="3821" class="Keyword">data</a> <a id="_~_"></a><a id="3826" href="/Bisimulation/#3826" class="Datatype Operator">_~_</a> <a id="3830" class="Symbol">:</a> <a id="3832" class="Symbol">∀</a> <a id="3834" class="Symbol">{</a><a id="3835" href="/Bisimulation/#3835" class="Bound">Γ</a> <a id="3837" href="/Bisimulation/#3837" class="Bound">A</a><a id="3838" class="Symbol">}</a> <a id="3840" class="Symbol">→</a> <a id="3842" class="Symbol">(</a><a id="3843" href="/Bisimulation/#3835" class="Bound">Γ</a> <a id="3845" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="3847" href="/Bisimulation/#3837" class="Bound">A</a><a id="3848" class="Symbol">)</a> <a id="3850" class="Symbol">→</a> <a id="3852" class="Symbol">(</a><a id="3853" href="/Bisimulation/#3835" class="Bound">Γ</a> <a id="3855" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="3857" href="/Bisimulation/#3837" class="Bound">A</a><a id="3858" class="Symbol">)</a> <a id="3860" class="Symbol">→</a> <a id="3862" class="PrimitiveType">Set</a> <a id="3866" class="Keyword">where</a>
+
+  <a id="_~_.~`"></a><a id="3875" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a> <a id="3878" class="Symbol">:</a> <a id="3880" class="Symbol">∀</a> <a id="3882" class="Symbol">{</a><a id="3883" href="/Bisimulation/#3883" class="Bound">Γ</a> <a id="3885" href="/Bisimulation/#3885" class="Bound">A</a><a id="3886" class="Symbol">}</a> <a id="3888" class="Symbol">{</a><a id="3889" href="/Bisimulation/#3889" class="Bound">x</a> <a id="3891" class="Symbol">:</a> <a id="3893" href="/Bisimulation/#3883" class="Bound">Γ</a> <a id="3895" href="/More/#14817" class="Datatype Operator">∋</a> <a id="3897" href="/Bisimulation/#3885" class="Bound">A</a><a id="3898" class="Symbol">}</a>
+     <a id="3905" class="Comment">---------</a>
+   <a id="3918" class="Symbol">→</a> <a id="3920" href="/More/#15079" class="InductiveConstructor Operator">`</a> <a id="3922" href="/Bisimulation/#3889" class="Bound">x</a> <a id="3924" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="3926" href="/More/#15079" class="InductiveConstructor Operator">`</a> <a id="3928" href="/Bisimulation/#3889" class="Bound">x</a>
+
+  <a id="_~_.~ƛ_"></a><a id="3933" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ_</a> <a id="3937" class="Symbol">:</a> <a id="3939" class="Symbol">∀</a> <a id="3941" class="Symbol">{</a><a id="3942" href="/Bisimulation/#3942" class="Bound">Γ</a> <a id="3944" href="/Bisimulation/#3944" class="Bound">A</a> <a id="3946" href="/Bisimulation/#3946" class="Bound">B</a><a id="3947" class="Symbol">}</a> <a id="3949" class="Symbol">{</a><a id="3950" href="/Bisimulation/#3950" class="Bound">N</a> <a id="3952" href="/Bisimulation/#3952" class="Bound">N†</a> <a id="3955" class="Symbol">:</a> <a id="3957" href="/Bisimulation/#3942" class="Bound">Γ</a> <a id="3959" href="/More/#14716" class="InductiveConstructor Operator">,</a> <a id="3961" href="/Bisimulation/#3944" class="Bound">A</a> <a id="3963" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="3965" href="/Bisimulation/#3946" class="Bound">B</a><a id="3966" class="Symbol">}</a>
+    <a id="3972" class="Symbol">→</a> <a id="3974" href="/Bisimulation/#3950" class="Bound">N</a> <a id="3976" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="3978" href="/Bisimulation/#3952" class="Bound">N†</a>
+      <a id="3987" class="Comment">----------</a>
+    <a id="4002" class="Symbol">→</a> <a id="4004" href="/More/#15147" class="InductiveConstructor Operator">ƛ</a> <a id="4006" href="/Bisimulation/#3950" class="Bound">N</a> <a id="4008" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4010" href="/More/#15147" class="InductiveConstructor Operator">ƛ</a> <a id="4012" href="/Bisimulation/#3952" class="Bound">N†</a>
+
+  <a id="_~_._~·_"></a><a id="4018" href="/Bisimulation/#4018" class="InductiveConstructor Operator">_~·_</a> <a id="4023" class="Symbol">:</a> <a id="4025" class="Symbol">∀</a> <a id="4027" class="Symbol">{</a><a id="4028" href="/Bisimulation/#4028" class="Bound">Γ</a> <a id="4030" href="/Bisimulation/#4030" class="Bound">A</a> <a id="4032" href="/Bisimulation/#4032" class="Bound">B</a><a id="4033" class="Symbol">}</a> <a id="4035" class="Symbol">{</a><a id="4036" href="/Bisimulation/#4036" class="Bound">L</a> <a id="4038" href="/Bisimulation/#4038" class="Bound">L†</a> <a id="4041" class="Symbol">:</a> <a id="4043" href="/Bisimulation/#4028" class="Bound">Γ</a> <a id="4045" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="4047" href="/Bisimulation/#4030" class="Bound">A</a> <a id="4049" href="/More/#14563" class="InductiveConstructor Operator">⇒</a> <a id="4051" href="/Bisimulation/#4032" class="Bound">B</a><a id="4052" class="Symbol">}</a> <a id="4054" class="Symbol">{</a><a id="4055" href="/Bisimulation/#4055" class="Bound">M</a> <a id="4057" href="/Bisimulation/#4057" class="Bound">M†</a> <a id="4060" class="Symbol">:</a> <a id="4062" href="/Bisimulation/#4028" class="Bound">Γ</a> <a id="4064" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="4066" href="/Bisimulation/#4030" class="Bound">A</a><a id="4067" class="Symbol">}</a>
+    <a id="4073" class="Symbol">→</a> <a id="4075" href="/Bisimulation/#4036" class="Bound">L</a> <a id="4077" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4079" href="/Bisimulation/#4038" class="Bound">L†</a>
+    <a id="4086" class="Symbol">→</a> <a id="4088" href="/Bisimulation/#4055" class="Bound">M</a> <a id="4090" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4092" href="/Bisimulation/#4057" class="Bound">M†</a>
+      <a id="4101" class="Comment">---------------</a>
+    <a id="4121" class="Symbol">→</a> <a id="4123" href="/Bisimulation/#4036" class="Bound">L</a> <a id="4125" href="/More/#15215" class="InductiveConstructor Operator">·</a> <a id="4127" href="/Bisimulation/#4055" class="Bound">M</a> <a id="4129" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4131" href="/Bisimulation/#4038" class="Bound">L†</a> <a id="4134" href="/More/#15215" class="InductiveConstructor Operator">·</a> <a id="4136" href="/Bisimulation/#4057" class="Bound">M†</a>
+
+  <a id="_~_.~let"></a><a id="4142" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="4147" class="Symbol">:</a> <a id="4149" class="Symbol">∀</a> <a id="4151" class="Symbol">{</a><a id="4152" href="/Bisimulation/#4152" class="Bound">Γ</a> <a id="4154" href="/Bisimulation/#4154" class="Bound">A</a> <a id="4156" href="/Bisimulation/#4156" class="Bound">B</a><a id="4157" class="Symbol">}</a> <a id="4159" class="Symbol">{</a><a id="4160" href="/Bisimulation/#4160" class="Bound">M</a> <a id="4162" href="/Bisimulation/#4162" class="Bound">M†</a> <a id="4165" class="Symbol">:</a> <a id="4167" href="/Bisimulation/#4152" class="Bound">Γ</a> <a id="4169" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="4171" href="/Bisimulation/#4154" class="Bound">A</a><a id="4172" class="Symbol">}</a> <a id="4174" class="Symbol">{</a><a id="4175" href="/Bisimulation/#4175" class="Bound">N</a> <a id="4177" href="/Bisimulation/#4177" class="Bound">N†</a> <a id="4180" class="Symbol">:</a> <a id="4182" href="/Bisimulation/#4152" class="Bound">Γ</a> <a id="4184" href="/More/#14716" class="InductiveConstructor Operator">,</a> <a id="4186" href="/Bisimulation/#4154" class="Bound">A</a> <a id="4188" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="4190" href="/Bisimulation/#4156" class="Bound">B</a><a id="4191" class="Symbol">}</a>
+    <a id="4197" class="Symbol">→</a> <a id="4199" href="/Bisimulation/#4160" class="Bound">M</a> <a id="4201" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4203" href="/Bisimulation/#4162" class="Bound">M†</a>
+    <a id="4210" class="Symbol">→</a> <a id="4212" href="/Bisimulation/#4175" class="Bound">N</a> <a id="4214" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4216" href="/Bisimulation/#4177" class="Bound">N†</a>
+      <a id="4225" class="Comment">----------------------</a>
+    <a id="4252" class="Symbol">→</a> <a id="4254" href="/More/#15721" class="InductiveConstructor">`let</a> <a id="4259" href="/Bisimulation/#4160" class="Bound">M</a> <a id="4261" href="/Bisimulation/#4175" class="Bound">N</a> <a id="4263" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4265" class="Symbol">(</a><a id="4266" href="/More/#15147" class="InductiveConstructor Operator">ƛ</a> <a id="4268" href="/Bisimulation/#4177" class="Bound">N†</a><a id="4270" class="Symbol">)</a> <a id="4272" href="/More/#15215" class="InductiveConstructor Operator">·</a> <a id="4274" href="/Bisimulation/#4162" class="Bound">M†</a></pre>
+<p>The language in Chapter <a href="/More/">More</a> has more constructs, which we could easily add.
+However, leaving the simulation small let’s us focus on the essence.
+It’s a handy technical trick that we can have a large source language,
+but only bother to include in the simulation the terms of interest.</p>
+
+<h4 id="exercise-_">Exercise <code class="highlighter-rouge">_†</code></h4>
+
+<p>Formalise the translation from source to target given in the introduction.
+Show that <code class="highlighter-rouge">M † ≡ N</code> implies <code class="highlighter-rouge">M ~ N</code>, and conversely.</p>
+
+<h2 id="simulation-commutes-with-values">Simulation commutes with values</h2>
+
+<p>We need a number of technical results. The first is that simulation
+commutes with values.  That is, if <code class="highlighter-rouge">M ~ M†</code> and <code class="highlighter-rouge">M</code> is a value then
+<code class="highlighter-rouge">M†</code> is also a value.</p>
+<pre class="Agda"><a id="~val"></a><a id="4944" href="/Bisimulation/#4944" class="Function">~val</a> <a id="4949" class="Symbol">:</a> <a id="4951" class="Symbol">∀</a> <a id="4953" class="Symbol">{</a><a id="4954" href="/Bisimulation/#4954" class="Bound">Γ</a> <a id="4956" href="/Bisimulation/#4956" class="Bound">A</a><a id="4957" class="Symbol">}</a> <a id="4959" class="Symbol">{</a><a id="4960" href="/Bisimulation/#4960" class="Bound">M</a> <a id="4962" href="/Bisimulation/#4962" class="Bound">M†</a> <a id="4965" class="Symbol">:</a> <a id="4967" href="/Bisimulation/#4954" class="Bound">Γ</a> <a id="4969" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="4971" href="/Bisimulation/#4956" class="Bound">A</a><a id="4972" class="Symbol">}</a> 
+  <a id="4977" class="Symbol">→</a> <a id="4979" href="/Bisimulation/#4960" class="Bound">M</a> <a id="4981" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="4983" href="/Bisimulation/#4962" class="Bound">M†</a>
+  <a id="4988" class="Symbol">→</a> <a id="4990" href="/More/#19049" class="Datatype">Value</a> <a id="4996" href="/Bisimulation/#4960" class="Bound">M</a>
+    <a id="5002" class="Comment">--------</a>
+  <a id="5013" class="Symbol">→</a> <a id="5015" href="/More/#19049" class="Datatype">Value</a> <a id="5021" href="/Bisimulation/#4962" class="Bound">M†</a>
+<a id="5024" href="/Bisimulation/#4944" class="Function">~val</a> <a id="5029" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a>           <a id="5042" class="Symbol">()</a>
+<a id="5045" href="/Bisimulation/#4944" class="Function">~val</a> <a id="5050" class="Symbol">(</a><a id="5051" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="5054" href="/Bisimulation/#5054" class="Bound">~N</a><a id="5056" class="Symbol">)</a>      <a id="5063" href="/More/#19104" class="InductiveConstructor">V-ƛ</a>  <a id="5068" class="Symbol">=</a>  <a id="5071" href="/More/#19104" class="InductiveConstructor">V-ƛ</a>
+<a id="5075" href="/Bisimulation/#4944" class="Function">~val</a> <a id="5080" class="Symbol">(</a><a id="5081" href="/Bisimulation/#5081" class="Bound">~L</a> <a id="5084" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="5087" href="/Bisimulation/#5087" class="Bound">~M</a><a id="5089" class="Symbol">)</a>   <a id="5093" class="Symbol">()</a>
+<a id="5096" href="/Bisimulation/#4944" class="Function">~val</a> <a id="5101" class="Symbol">(</a><a id="5102" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="5107" href="/Bisimulation/#5107" class="Bound">~M</a> <a id="5110" href="/Bisimulation/#5110" class="Bound">~N</a><a id="5112" class="Symbol">)</a> <a id="5114" class="Symbol">()</a></pre>
+<p>It is a straightforward case analysis, where here the only value
+of interest is a lambda abstraction.</p>
+
+<h4 id="exercise-val">Exercise <code class="highlighter-rouge">~val⁻¹</code></h4>
+
+<p>Show that this also holds in the reverse direction: if <code class="highlighter-rouge">M ~ M†</code>
+and <code class="highlighter-rouge">Value M†</code> then <code class="highlighter-rouge">Value M</code>.</p>
+
+<h2 id="simulation-commutes-with-renaming">Simulation commutes with renaming</h2>
+
+<p>The next technical result is that simulation commutes with renaming.
+That is, if <code class="highlighter-rouge">ρ</code> maps any judgement <code class="highlighter-rouge">Γ ∋ A</code> to a judgement <code class="highlighter-rouge">Δ ∋ A</code>,
+and if <code class="highlighter-rouge">M ~ M†</code> then <code class="highlighter-rouge">rename ρ M ~ rename ρ M†</code>.</p>
+
+<pre class="Agda"><a id="~rename"></a><a id="5589" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5597" class="Symbol">:</a> <a id="5599" class="Symbol">∀</a> <a id="5601" class="Symbol">{</a><a id="5602" href="/Bisimulation/#5602" class="Bound">Γ</a> <a id="5604" href="/Bisimulation/#5604" class="Bound">Δ</a><a id="5605" class="Symbol">}</a>
+  <a id="5609" class="Symbol">→</a> <a id="5611" class="Symbol">(</a><a id="5612" href="/Bisimulation/#5612" class="Bound">ρ</a> <a id="5614" class="Symbol">:</a> <a id="5616" class="Symbol">∀</a> <a id="5618" class="Symbol">{</a><a id="5619" href="/Bisimulation/#5619" class="Bound">A</a><a id="5620" class="Symbol">}</a> <a id="5622" class="Symbol">→</a> <a id="5624" href="/Bisimulation/#5602" class="Bound">Γ</a> <a id="5626" href="/More/#14817" class="Datatype Operator">∋</a> <a id="5628" href="/Bisimulation/#5619" class="Bound">A</a> <a id="5630" class="Symbol">→</a> <a id="5632" href="/Bisimulation/#5604" class="Bound">Δ</a> <a id="5634" href="/More/#14817" class="Datatype Operator">∋</a> <a id="5636" href="/Bisimulation/#5619" class="Bound">A</a><a id="5637" class="Symbol">)</a>
+    <a id="5643" class="Comment">----------------------------------------------------------</a>
+  <a id="5704" class="Symbol">→</a> <a id="5706" class="Symbol">(∀</a> <a id="5709" class="Symbol">{</a><a id="5710" href="/Bisimulation/#5710" class="Bound">A</a><a id="5711" class="Symbol">}</a> <a id="5713" class="Symbol">{</a><a id="5714" href="/Bisimulation/#5714" class="Bound">M</a> <a id="5716" href="/Bisimulation/#5716" class="Bound">M†</a> <a id="5719" class="Symbol">:</a> <a id="5721" href="/Bisimulation/#5602" class="Bound">Γ</a> <a id="5723" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="5725" href="/Bisimulation/#5710" class="Bound">A</a><a id="5726" class="Symbol">}</a> <a id="5728" class="Symbol">→</a> <a id="5730" href="/Bisimulation/#5714" class="Bound">M</a> <a id="5732" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="5734" href="/Bisimulation/#5716" class="Bound">M†</a> <a id="5737" class="Symbol">→</a> <a id="5739" href="/More/#16798" class="Function">rename</a> <a id="5746" href="/Bisimulation/#5612" class="Bound">ρ</a> <a id="5748" href="/Bisimulation/#5714" class="Bound">M</a> <a id="5750" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="5752" href="/More/#16798" class="Function">rename</a> <a id="5759" href="/Bisimulation/#5612" class="Bound">ρ</a> <a id="5761" href="/Bisimulation/#5716" class="Bound">M†</a><a id="5763" class="Symbol">)</a>
+<a id="5765" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5773" href="/Bisimulation/#5773" class="Bound">ρ</a> <a id="5775" class="Symbol">(</a><a id="5776" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a><a id="5778" class="Symbol">)</a>          <a id="5789" class="Symbol">=</a>  <a id="5792" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a>
+<a id="5795" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5803" href="/Bisimulation/#5803" class="Bound">ρ</a> <a id="5805" class="Symbol">(</a><a id="5806" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="5809" href="/Bisimulation/#5809" class="Bound">~N</a><a id="5811" class="Symbol">)</a>       <a id="5819" class="Symbol">=</a>  <a id="5822" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="5825" class="Symbol">(</a><a id="5826" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5834" class="Symbol">(</a><a id="5835" href="/More/#16679" class="Function">ext</a> <a id="5839" href="/Bisimulation/#5803" class="Bound">ρ</a><a id="5840" class="Symbol">)</a> <a id="5842" href="/Bisimulation/#5809" class="Bound">~N</a><a id="5844" class="Symbol">)</a>
+<a id="5846" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5854" href="/Bisimulation/#5854" class="Bound">ρ</a> <a id="5856" class="Symbol">(</a><a id="5857" href="/Bisimulation/#5857" class="Bound">~L</a> <a id="5860" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="5863" href="/Bisimulation/#5863" class="Bound">~M</a><a id="5865" class="Symbol">)</a>    <a id="5870" class="Symbol">=</a>  <a id="5873" class="Symbol">(</a><a id="5874" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5882" href="/Bisimulation/#5854" class="Bound">ρ</a> <a id="5884" href="/Bisimulation/#5857" class="Bound">~L</a><a id="5886" class="Symbol">)</a> <a id="5888" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="5891" class="Symbol">(</a><a id="5892" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5900" href="/Bisimulation/#5854" class="Bound">ρ</a> <a id="5902" href="/Bisimulation/#5863" class="Bound">~M</a><a id="5904" class="Symbol">)</a>
+<a id="5906" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5914" href="/Bisimulation/#5914" class="Bound">ρ</a> <a id="5916" class="Symbol">(</a><a id="5917" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="5922" href="/Bisimulation/#5922" class="Bound">~M</a> <a id="5925" href="/Bisimulation/#5925" class="Bound">~N</a><a id="5927" class="Symbol">)</a>  <a id="5930" class="Symbol">=</a>  <a id="5933" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="5938" class="Symbol">(</a><a id="5939" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5947" href="/Bisimulation/#5914" class="Bound">ρ</a> <a id="5949" href="/Bisimulation/#5922" class="Bound">~M</a><a id="5951" class="Symbol">)</a> <a id="5953" class="Symbol">(</a><a id="5954" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="5962" class="Symbol">(</a><a id="5963" href="/More/#16679" class="Function">ext</a> <a id="5967" href="/Bisimulation/#5914" class="Bound">ρ</a><a id="5968" class="Symbol">)</a> <a id="5970" href="/Bisimulation/#5925" class="Bound">~N</a><a id="5972" class="Symbol">)</a></pre>
+<p>The structure of the proof is similar to the structure of renaming itself:
+reconstruct each term with recursive invocation, extending the environment
+where appropriate (in this case, only for the body of an abstraction).</p>
+
+<h2 id="simulation-commutes-with-substitution">Simulation commutes with substitution</h2>
+
+<p>The third technical result is that simulation commutes with substitution.
+It is more complex than substitution, because where we had one renaming map
+<code class="highlighter-rouge">ρ</code> here we need two substitution maps, <code class="highlighter-rouge">σ</code> and <code class="highlighter-rouge">σ†</code>.</p>
+
+<p>The proof first requires we establish an analogue of extension.
+If <code class="highlighter-rouge">σ</code> and <code class="highlighter-rouge">σ†</code> both map any judgement <code class="highlighter-rouge">Γ ∋ A</code> to a judgement <code class="highlighter-rouge">Δ ⊢ A</code>,
+such that for every <code class="highlighter-rouge">x</code> in <code class="highlighter-rouge">Γ ∋ A</code> we have <code class="highlighter-rouge">σ x ~ σ† x</code>,
+then for any <code class="highlighter-rouge">x</code> in <code class="highlighter-rouge">Γ , B ∋ A</code> we have <code class="highlighter-rouge">exts σ x ~ exts σ† x</code>.</p>
+<pre class="Agda"><a id="~exts"></a><a id="6724" href="/Bisimulation/#6724" class="Function">~exts</a> <a id="6730" class="Symbol">:</a> <a id="6732" class="Symbol">∀</a> <a id="6734" class="Symbol">{</a><a id="6735" href="/Bisimulation/#6735" class="Bound">Γ</a> <a id="6737" href="/Bisimulation/#6737" class="Bound">Δ</a><a id="6738" class="Symbol">}</a>
+  <a id="6742" class="Symbol">→</a> <a id="6744" class="Symbol">{</a><a id="6745" href="/Bisimulation/#6745" class="Bound">σ</a>  <a id="6748" class="Symbol">:</a> <a id="6750" class="Symbol">∀</a> <a id="6752" class="Symbol">{</a><a id="6753" href="/Bisimulation/#6753" class="Bound">A</a><a id="6754" class="Symbol">}</a> <a id="6756" class="Symbol">→</a> <a id="6758" href="/Bisimulation/#6735" class="Bound">Γ</a> <a id="6760" href="/More/#14817" class="Datatype Operator">∋</a> <a id="6762" href="/Bisimulation/#6753" class="Bound">A</a> <a id="6764" class="Symbol">→</a> <a id="6766" href="/Bisimulation/#6737" class="Bound">Δ</a> <a id="6768" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="6770" href="/Bisimulation/#6753" class="Bound">A</a><a id="6771" class="Symbol">}</a>
+  <a id="6775" class="Symbol">→</a> <a id="6777" class="Symbol">{</a><a id="6778" href="/Bisimulation/#6778" class="Bound">σ†</a> <a id="6781" class="Symbol">:</a> <a id="6783" class="Symbol">∀</a> <a id="6785" class="Symbol">{</a><a id="6786" href="/Bisimulation/#6786" class="Bound">A</a><a id="6787" class="Symbol">}</a> <a id="6789" class="Symbol">→</a> <a id="6791" href="/Bisimulation/#6735" class="Bound">Γ</a> <a id="6793" href="/More/#14817" class="Datatype Operator">∋</a> <a id="6795" href="/Bisimulation/#6786" class="Bound">A</a> <a id="6797" class="Symbol">→</a> <a id="6799" href="/Bisimulation/#6737" class="Bound">Δ</a> <a id="6801" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="6803" href="/Bisimulation/#6786" class="Bound">A</a><a id="6804" class="Symbol">}</a>
+  <a id="6808" class="Symbol">→</a> <a id="6810" class="Symbol">(∀</a> <a id="6813" class="Symbol">{</a><a id="6814" href="/Bisimulation/#6814" class="Bound">A</a><a id="6815" class="Symbol">}</a> <a id="6817" class="Symbol">→</a> <a id="6819" class="Symbol">(</a><a id="6820" href="/Bisimulation/#6820" class="Bound">x</a> <a id="6822" class="Symbol">:</a> <a id="6824" href="/Bisimulation/#6735" class="Bound">Γ</a> <a id="6826" href="/More/#14817" class="Datatype Operator">∋</a> <a id="6828" href="/Bisimulation/#6814" class="Bound">A</a><a id="6829" class="Symbol">)</a> <a id="6831" class="Symbol">→</a> <a id="6833" href="/Bisimulation/#6745" class="Bound">σ</a> <a id="6835" href="/Bisimulation/#6820" class="Bound">x</a> <a id="6837" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="6839" href="/Bisimulation/#6778" class="Bound">σ†</a> <a id="6842" href="/Bisimulation/#6820" class="Bound">x</a><a id="6843" class="Symbol">)</a>
+    <a id="6849" class="Comment">--------------------------------------------------</a>
+  <a id="6902" class="Symbol">→</a> <a id="6904" class="Symbol">(∀</a> <a id="6907" class="Symbol">{</a><a id="6908" href="/Bisimulation/#6908" class="Bound">A</a> <a id="6910" href="/Bisimulation/#6910" class="Bound">B</a><a id="6911" class="Symbol">}</a> <a id="6913" class="Symbol">→</a> <a id="6915" class="Symbol">(</a><a id="6916" href="/Bisimulation/#6916" class="Bound">x</a> <a id="6918" class="Symbol">:</a> <a id="6920" href="/Bisimulation/#6735" class="Bound">Γ</a> <a id="6922" href="/More/#14716" class="InductiveConstructor Operator">,</a> <a id="6924" href="/Bisimulation/#6910" class="Bound">B</a> <a id="6926" href="/More/#14817" class="Datatype Operator">∋</a> <a id="6928" href="/Bisimulation/#6908" class="Bound">A</a><a id="6929" class="Symbol">)</a> <a id="6931" class="Symbol">→</a> <a id="6933" href="/More/#17633" class="Function">exts</a> <a id="6938" href="/Bisimulation/#6745" class="Bound">σ</a> <a id="6940" href="/Bisimulation/#6916" class="Bound">x</a> <a id="6942" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="6944" href="/More/#17633" class="Function">exts</a> <a id="6949" href="/Bisimulation/#6778" class="Bound">σ†</a> <a id="6952" href="/Bisimulation/#6916" class="Bound">x</a><a id="6953" class="Symbol">)</a>
+<a id="6955" href="/Bisimulation/#6724" class="Function">~exts</a> <a id="6961" href="/Bisimulation/#6961" class="Bound">~σ</a> <a id="6964" href="/More/#14853" class="InductiveConstructor">Z</a>      <a id="6971" class="Symbol">=</a>  <a id="6974" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a>
+<a id="6977" href="/Bisimulation/#6724" class="Function">~exts</a> <a id="6983" href="/Bisimulation/#6983" class="Bound">~σ</a> <a id="6986" class="Symbol">(</a><a id="6987" href="/More/#14900" class="InductiveConstructor Operator">S</a> <a id="6989" href="/Bisimulation/#6989" class="Bound">x</a><a id="6990" class="Symbol">)</a>  <a id="6993" class="Symbol">=</a>  <a id="6996" href="/Bisimulation/#5589" class="Function">~rename</a> <a id="7004" href="/More/#14900" class="InductiveConstructor Operator">S_</a> <a id="7007" class="Symbol">(</a><a id="7008" href="/Bisimulation/#6983" class="Bound">~σ</a> <a id="7011" href="/Bisimulation/#6989" class="Bound">x</a><a id="7012" class="Symbol">)</a></pre>
+<p>The structure of the proof is similar to the structure of extension itself.
+The newly introduced variable trivially relates to itself, and otherwise
+we apply renaming to the hypothesis.</p>
+
+<p>With extension under our belts, it is straightforward to show
+substitution commutes.  If <code class="highlighter-rouge">σ</code> and <code class="highlighter-rouge">σ†</code> both map any judgement <code class="highlighter-rouge">Γ ∋ A</code>
+to a judgement <code class="highlighter-rouge">Δ ⊢ A</code>, such that for every <code class="highlighter-rouge">x</code> in <code class="highlighter-rouge">Γ ∋ A</code> we have <code class="highlighter-rouge">σ
+x ~ σ† x</code>, and if <code class="highlighter-rouge">M ~ M†</code>, then <code class="highlighter-rouge">subst σ M ~ subst σ† M†</code>.</p>
+<pre class="Agda"><a id="~subst"></a><a id="7488" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7495" class="Symbol">:</a> <a id="7497" class="Symbol">∀</a> <a id="7499" class="Symbol">{</a><a id="7500" href="/Bisimulation/#7500" class="Bound">Γ</a> <a id="7502" href="/Bisimulation/#7502" class="Bound">Δ</a><a id="7503" class="Symbol">}</a>
+  <a id="7507" class="Symbol">→</a> <a id="7509" class="Symbol">{</a><a id="7510" href="/Bisimulation/#7510" class="Bound">σ</a>  <a id="7513" class="Symbol">:</a> <a id="7515" class="Symbol">∀</a> <a id="7517" class="Symbol">{</a><a id="7518" href="/Bisimulation/#7518" class="Bound">A</a><a id="7519" class="Symbol">}</a> <a id="7521" class="Symbol">→</a> <a id="7523" href="/Bisimulation/#7500" class="Bound">Γ</a> <a id="7525" href="/More/#14817" class="Datatype Operator">∋</a> <a id="7527" href="/Bisimulation/#7518" class="Bound">A</a> <a id="7529" class="Symbol">→</a> <a id="7531" href="/Bisimulation/#7502" class="Bound">Δ</a> <a id="7533" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="7535" href="/Bisimulation/#7518" class="Bound">A</a><a id="7536" class="Symbol">}</a>
+  <a id="7540" class="Symbol">→</a> <a id="7542" class="Symbol">{</a><a id="7543" href="/Bisimulation/#7543" class="Bound">σ†</a> <a id="7546" class="Symbol">:</a> <a id="7548" class="Symbol">∀</a> <a id="7550" class="Symbol">{</a><a id="7551" href="/Bisimulation/#7551" class="Bound">A</a><a id="7552" class="Symbol">}</a> <a id="7554" class="Symbol">→</a> <a id="7556" href="/Bisimulation/#7500" class="Bound">Γ</a> <a id="7558" href="/More/#14817" class="Datatype Operator">∋</a> <a id="7560" href="/Bisimulation/#7551" class="Bound">A</a> <a id="7562" class="Symbol">→</a> <a id="7564" href="/Bisimulation/#7502" class="Bound">Δ</a> <a id="7566" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="7568" href="/Bisimulation/#7551" class="Bound">A</a><a id="7569" class="Symbol">}</a>
+  <a id="7573" class="Symbol">→</a> <a id="7575" class="Symbol">(∀</a> <a id="7578" class="Symbol">{</a><a id="7579" href="/Bisimulation/#7579" class="Bound">A</a><a id="7580" class="Symbol">}</a> <a id="7582" class="Symbol">→</a> <a id="7584" class="Symbol">(</a><a id="7585" href="/Bisimulation/#7585" class="Bound">x</a> <a id="7587" class="Symbol">:</a> <a id="7589" href="/Bisimulation/#7500" class="Bound">Γ</a> <a id="7591" href="/More/#14817" class="Datatype Operator">∋</a> <a id="7593" href="/Bisimulation/#7579" class="Bound">A</a><a id="7594" class="Symbol">)</a> <a id="7596" class="Symbol">→</a> <a id="7598" href="/Bisimulation/#7510" class="Bound">σ</a> <a id="7600" href="/Bisimulation/#7585" class="Bound">x</a> <a id="7602" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="7604" href="/Bisimulation/#7543" class="Bound">σ†</a> <a id="7607" href="/Bisimulation/#7585" class="Bound">x</a><a id="7608" class="Symbol">)</a>
+    <a id="7614" class="Comment">---------------------------------------------------------</a>
+  <a id="7674" class="Symbol">→</a> <a id="7676" class="Symbol">(∀</a> <a id="7679" class="Symbol">{</a><a id="7680" href="/Bisimulation/#7680" class="Bound">A</a><a id="7681" class="Symbol">}</a> <a id="7683" class="Symbol">{</a><a id="7684" href="/Bisimulation/#7684" class="Bound">M</a> <a id="7686" href="/Bisimulation/#7686" class="Bound">M†</a> <a id="7689" class="Symbol">:</a> <a id="7691" href="/Bisimulation/#7500" class="Bound">Γ</a> <a id="7693" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="7695" href="/Bisimulation/#7680" class="Bound">A</a><a id="7696" class="Symbol">}</a> <a id="7698" class="Symbol">→</a> <a id="7700" href="/Bisimulation/#7684" class="Bound">M</a> <a id="7702" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="7704" href="/Bisimulation/#7686" class="Bound">M†</a> <a id="7707" class="Symbol">→</a> <a id="7709" href="/More/#17765" class="Function">subst</a> <a id="7715" href="/Bisimulation/#7510" class="Bound">σ</a> <a id="7717" href="/Bisimulation/#7684" class="Bound">M</a> <a id="7719" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="7721" href="/More/#17765" class="Function">subst</a> <a id="7727" href="/Bisimulation/#7543" class="Bound">σ†</a> <a id="7730" href="/Bisimulation/#7686" class="Bound">M†</a><a id="7732" class="Symbol">)</a>
+<a id="7734" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7741" href="/Bisimulation/#7741" class="Bound">~σ</a> <a id="7744" class="Symbol">(</a><a id="7745" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a> <a id="7748" class="Symbol">{</a><a id="7749" class="Argument">x</a> <a id="7751" class="Symbol">=</a> <a id="7753" href="/Bisimulation/#7753" class="Bound">x</a><a id="7754" class="Symbol">})</a>  <a id="7758" class="Symbol">=</a>  <a id="7761" href="/Bisimulation/#7741" class="Bound">~σ</a> <a id="7764" href="/Bisimulation/#7753" class="Bound">x</a>
+<a id="7766" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7773" href="/Bisimulation/#7773" class="Bound">~σ</a> <a id="7776" class="Symbol">(</a><a id="7777" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="7780" href="/Bisimulation/#7780" class="Bound">~N</a><a id="7782" class="Symbol">)</a>       <a id="7790" class="Symbol">=</a>  <a id="7793" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="7796" class="Symbol">(</a><a id="7797" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7804" class="Symbol">(</a><a id="7805" href="/Bisimulation/#6724" class="Function">~exts</a> <a id="7811" href="/Bisimulation/#7773" class="Bound">~σ</a><a id="7813" class="Symbol">)</a> <a id="7815" href="/Bisimulation/#7780" class="Bound">~N</a><a id="7817" class="Symbol">)</a>
+<a id="7819" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7826" href="/Bisimulation/#7826" class="Bound">~σ</a> <a id="7829" class="Symbol">(</a><a id="7830" href="/Bisimulation/#7830" class="Bound">~L</a> <a id="7833" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="7836" href="/Bisimulation/#7836" class="Bound">~M</a><a id="7838" class="Symbol">)</a>    <a id="7843" class="Symbol">=</a>  <a id="7846" class="Symbol">(</a><a id="7847" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7854" href="/Bisimulation/#7826" class="Bound">~σ</a> <a id="7857" href="/Bisimulation/#7830" class="Bound">~L</a><a id="7859" class="Symbol">)</a> <a id="7861" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="7864" class="Symbol">(</a><a id="7865" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7872" href="/Bisimulation/#7826" class="Bound">~σ</a> <a id="7875" href="/Bisimulation/#7836" class="Bound">~M</a><a id="7877" class="Symbol">)</a>
+<a id="7879" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7886" href="/Bisimulation/#7886" class="Bound">~σ</a> <a id="7889" class="Symbol">(</a><a id="7890" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="7895" href="/Bisimulation/#7895" class="Bound">~M</a> <a id="7898" href="/Bisimulation/#7898" class="Bound">~N</a><a id="7900" class="Symbol">)</a>  <a id="7903" class="Symbol">=</a>  <a id="7906" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="7911" class="Symbol">(</a><a id="7912" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7919" href="/Bisimulation/#7886" class="Bound">~σ</a> <a id="7922" href="/Bisimulation/#7895" class="Bound">~M</a><a id="7924" class="Symbol">)</a> <a id="7926" class="Symbol">(</a><a id="7927" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="7934" class="Symbol">(</a><a id="7935" href="/Bisimulation/#6724" class="Function">~exts</a> <a id="7941" href="/Bisimulation/#7886" class="Bound">~σ</a><a id="7943" class="Symbol">)</a> <a id="7945" href="/Bisimulation/#7898" class="Bound">~N</a><a id="7947" class="Symbol">)</a></pre>
+<p>Again, the structure of the proof is similar to the structure of
+substitution itself: reconstruct each term with recursive invocation,
+extending the environment where appropriate (in this case, only for
+the body of an abstraction).</p>
+
+<p>From the general case of substitution, it is also easy to derive
+the required special case.  If <code class="highlighter-rouge">N ~ N†</code> and <code class="highlighter-rouge">M ~ M†</code>, then
+<code class="highlighter-rouge">N [ M ] ~ N† [ M† ]</code>.</p>
+<pre class="Agda"><a id="~sub"></a><a id="8353" href="/Bisimulation/#8353" class="Function">~sub</a> <a id="8358" class="Symbol">:</a> <a id="8360" class="Symbol">∀</a> <a id="8362" class="Symbol">{</a><a id="8363" href="/Bisimulation/#8363" class="Bound">Γ</a> <a id="8365" href="/Bisimulation/#8365" class="Bound">A</a> <a id="8367" href="/Bisimulation/#8367" class="Bound">B</a><a id="8368" class="Symbol">}</a> <a id="8370" class="Symbol">{</a><a id="8371" href="/Bisimulation/#8371" class="Bound">N</a> <a id="8373" href="/Bisimulation/#8373" class="Bound">N†</a> <a id="8376" class="Symbol">:</a> <a id="8378" href="/Bisimulation/#8363" class="Bound">Γ</a> <a id="8380" href="/More/#14716" class="InductiveConstructor Operator">,</a> <a id="8382" href="/Bisimulation/#8367" class="Bound">B</a> <a id="8384" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="8386" href="/Bisimulation/#8365" class="Bound">A</a><a id="8387" class="Symbol">}</a> <a id="8389" class="Symbol">{</a><a id="8390" href="/Bisimulation/#8390" class="Bound">M</a> <a id="8392" href="/Bisimulation/#8392" class="Bound">M†</a> <a id="8395" class="Symbol">:</a> <a id="8397" href="/Bisimulation/#8363" class="Bound">Γ</a> <a id="8399" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="8401" href="/Bisimulation/#8367" class="Bound">B</a><a id="8402" class="Symbol">}</a> 
+  <a id="8407" class="Symbol">→</a> <a id="8409" href="/Bisimulation/#8371" class="Bound">N</a> <a id="8411" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="8413" href="/Bisimulation/#8373" class="Bound">N†</a>
+  <a id="8418" class="Symbol">→</a> <a id="8420" href="/Bisimulation/#8390" class="Bound">M</a> <a id="8422" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="8424" href="/Bisimulation/#8392" class="Bound">M†</a>
+    <a id="8431" class="Comment">-----------------------</a>
+  <a id="8457" class="Symbol">→</a> <a id="8459" class="Symbol">(</a><a id="8460" href="/Bisimulation/#8371" class="Bound">N</a> <a id="8462" href="/More/#18574" class="Function Operator">[</a> <a id="8464" href="/Bisimulation/#8390" class="Bound">M</a> <a id="8466" href="/More/#18574" class="Function Operator">]</a><a id="8467" class="Symbol">)</a> <a id="8469" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="8471" class="Symbol">(</a><a id="8472" href="/Bisimulation/#8373" class="Bound">N†</a> <a id="8475" href="/More/#18574" class="Function Operator">[</a> <a id="8477" href="/Bisimulation/#8392" class="Bound">M†</a> <a id="8480" href="/More/#18574" class="Function Operator">]</a><a id="8481" class="Symbol">)</a>
+<a id="8483" href="/Bisimulation/#8353" class="Function">~sub</a> <a id="8488" class="Symbol">{</a><a id="8489" href="/Bisimulation/#8489" class="Bound">Γ</a><a id="8490" class="Symbol">}</a> <a id="8492" class="Symbol">{</a><a id="8493" href="/Bisimulation/#8493" class="Bound">A</a><a id="8494" class="Symbol">}</a> <a id="8496" class="Symbol">{</a><a id="8497" href="/Bisimulation/#8497" class="Bound">B</a><a id="8498" class="Symbol">}</a> <a id="8500" href="/Bisimulation/#8500" class="Bound">~N</a> <a id="8503" href="/Bisimulation/#8503" class="Bound">~M</a> <a id="8506" class="Symbol">=</a> <a id="8508" href="/Bisimulation/#7488" class="Function">~subst</a> <a id="8515" class="Symbol">{</a><a id="8516" href="/Bisimulation/#8489" class="Bound">Γ</a> <a id="8518" href="/More/#14716" class="InductiveConstructor Operator">,</a> <a id="8520" href="/Bisimulation/#8497" class="Bound">B</a><a id="8521" class="Symbol">}</a> <a id="8523" class="Symbol">{</a><a id="8524" href="/Bisimulation/#8489" class="Bound">Γ</a><a id="8525" class="Symbol">}</a> <a id="8527" href="/Bisimulation/#8547" class="Function">~σ</a> <a id="8530" class="Symbol">{</a><a id="8531" href="/Bisimulation/#8493" class="Bound">A</a><a id="8532" class="Symbol">}</a> <a id="8534" href="/Bisimulation/#8500" class="Bound">~N</a>
+  <a id="8539" class="Keyword">where</a>
+  <a id="8547" href="/Bisimulation/#8547" class="Function">~σ</a> <a id="8550" class="Symbol">:</a> <a id="8552" class="Symbol">∀</a> <a id="8554" class="Symbol">{</a><a id="8555" href="/Bisimulation/#8555" class="Bound">A</a><a id="8556" class="Symbol">}</a> <a id="8558" class="Symbol">→</a> <a id="8560" class="Symbol">(</a><a id="8561" href="/Bisimulation/#8561" class="Bound">x</a> <a id="8563" class="Symbol">:</a> <a id="8565" href="/Bisimulation/#8489" class="Bound">Γ</a> <a id="8567" href="/More/#14716" class="InductiveConstructor Operator">,</a> <a id="8569" href="/Bisimulation/#8497" class="Bound">B</a> <a id="8571" href="/More/#14817" class="Datatype Operator">∋</a> <a id="8573" href="/Bisimulation/#8555" class="Bound">A</a><a id="8574" class="Symbol">)</a> <a id="8576" class="Symbol">→</a> <a id="8578" class="Symbol">_</a> <a id="8580" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="8582" class="Symbol">_</a>
+  <a id="8586" href="/Bisimulation/#8547" class="Function">~σ</a> <a id="8589" href="/More/#14853" class="InductiveConstructor">Z</a>      <a id="8596" class="Symbol">=</a>  <a id="8599" href="/Bisimulation/#8503" class="Bound">~M</a>
+  <a id="8604" href="/Bisimulation/#8547" class="Function">~σ</a> <a id="8607" class="Symbol">(</a><a id="8608" href="/More/#14900" class="InductiveConstructor Operator">S</a> <a id="8610" href="/Bisimulation/#8610" class="Bound">x</a><a id="8611" class="Symbol">)</a>  <a id="8614" class="Symbol">=</a>  <a id="8617" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a></pre>
+<p>Once more, the structure of the proof resembles the original.</p>
+
+<h2 id="the-relation-is-a-simulation">The relation is a simulation</h2>
+
+<p>Finally, we can show that the relation actually is a simulation.
+In fact, we will show the stronger condition of a lock-step simulation.
+What we wish to show is:</p>
+
+<p><em>Lock-step simulation</em>: For every <code class="highlighter-rouge">M</code>, <code class="highlighter-rouge">M†</code>, and <code class="highlighter-rouge">N</code>:
+If <code class="highlighter-rouge">M ~ M†</code> and <code class="highlighter-rouge">M —→ N</code>
+then <code class="highlighter-rouge">M† —→ N†</code> and <code class="highlighter-rouge">N ~ N†</code>
+for some <code class="highlighter-rouge">N†</code>.</p>
+
+<p>Or, in a diagram:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M  --- —→ --- N
+|             |
+|             |
+~             ~
+|             |
+|             |
+M† --- —→ --- N†
+</code></pre></div></div>
+
+<p>We first formulate a concept corresponding to the lower leg
+of the diagram, that is, its right and bottom edges.</p>
+<pre class="Agda"><a id="9310" class="Keyword">data</a> <a id="Leg"></a><a id="9315" href="/Bisimulation/#9315" class="Datatype">Leg</a> <a id="9319" class="Symbol">{</a><a id="9320" href="/Bisimulation/#9320" class="Bound">Γ</a> <a id="9322" href="/Bisimulation/#9322" class="Bound">A</a><a id="9323" class="Symbol">}</a> <a id="9325" class="Symbol">(</a><a id="9326" href="/Bisimulation/#9326" class="Bound">M†</a> <a id="9329" href="/Bisimulation/#9329" class="Bound">N</a> <a id="9331" class="Symbol">:</a> <a id="9333" href="/Bisimulation/#9320" class="Bound">Γ</a> <a id="9335" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="9337" href="/Bisimulation/#9322" class="Bound">A</a><a id="9338" class="Symbol">)</a> <a id="9340" class="Symbol">:</a> <a id="9342" class="PrimitiveType">Set</a> <a id="9346" class="Keyword">where</a>
+
+  <a id="Leg.leg"></a><a id="9355" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="9359" class="Symbol">:</a> <a id="9361" class="Symbol">∀</a> <a id="9363" class="Symbol">{</a><a id="9364" href="/Bisimulation/#9364" class="Bound">N†</a> <a id="9367" class="Symbol">:</a> <a id="9369" href="/Bisimulation/#9320" class="Bound">Γ</a> <a id="9371" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="9373" href="/Bisimulation/#9322" class="Bound">A</a><a id="9374" class="Symbol">}</a>
+    <a id="9380" class="Symbol">→</a> <a id="9382" href="/Bisimulation/#9329" class="Bound">N</a> <a id="9384" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="9386" href="/Bisimulation/#9364" class="Bound">N†</a>
+    <a id="9393" class="Symbol">→</a> <a id="9395" href="/Bisimulation/#9326" class="Bound">M†</a> <a id="9398" href="/More/#19732" class="Datatype Operator">—→</a> <a id="9401" href="/Bisimulation/#9364" class="Bound">N†</a>
+      <a id="9410" class="Comment">--------</a>
+    <a id="9423" class="Symbol">→</a> <a id="9425" href="/Bisimulation/#9315" class="Datatype">Leg</a> <a id="9429" href="/Bisimulation/#9326" class="Bound">M†</a> <a id="9432" href="/Bisimulation/#9329" class="Bound">N</a></pre>
+<p>For our formalisation, in this case, we can use a stronger
+relation than <code class="highlighter-rouge">—↠</code>, replacing it by <code class="highlighter-rouge">—→</code>.</p>
+
+<p>We can now state and prove that the relation is a simulation.
+Again, in this case, we can use a stronger relation than
+<code class="highlighter-rouge">—↠</code>, replacing it by <code class="highlighter-rouge">—→</code>.</p>
+<pre class="Agda"><a id="sim"></a><a id="9707" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9711" class="Symbol">:</a> <a id="9713" class="Symbol">∀</a> <a id="9715" class="Symbol">{</a><a id="9716" href="/Bisimulation/#9716" class="Bound">Γ</a> <a id="9718" href="/Bisimulation/#9718" class="Bound">A</a><a id="9719" class="Symbol">}</a> <a id="9721" class="Symbol">{</a><a id="9722" href="/Bisimulation/#9722" class="Bound">M</a> <a id="9724" href="/Bisimulation/#9724" class="Bound">M†</a> <a id="9727" href="/Bisimulation/#9727" class="Bound">N</a> <a id="9729" class="Symbol">:</a> <a id="9731" href="/Bisimulation/#9716" class="Bound">Γ</a> <a id="9733" href="/More/#15027" class="Datatype Operator">⊢</a> <a id="9735" href="/Bisimulation/#9718" class="Bound">A</a><a id="9736" class="Symbol">}</a>
+  <a id="9740" class="Symbol">→</a> <a id="9742" href="/Bisimulation/#9722" class="Bound">M</a> <a id="9744" href="/Bisimulation/#3826" class="Datatype Operator">~</a> <a id="9746" href="/Bisimulation/#9724" class="Bound">M†</a>
+  <a id="9751" class="Symbol">→</a> <a id="9753" href="/Bisimulation/#9722" class="Bound">M</a> <a id="9755" href="/More/#19732" class="Datatype Operator">—→</a> <a id="9758" href="/Bisimulation/#9727" class="Bound">N</a>
+    <a id="9764" class="Comment">---------</a>
+  <a id="9776" class="Symbol">→</a> <a id="9778" href="/Bisimulation/#9315" class="Datatype">Leg</a>  <a id="9783" href="/Bisimulation/#9724" class="Bound">M†</a> <a id="9786" href="/Bisimulation/#9727" class="Bound">N</a>
+<a id="9788" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9792" href="/Bisimulation/#3875" class="InductiveConstructor">~`</a>              <a id="9808" class="Symbol">()</a>
+<a id="9811" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9815" class="Symbol">(</a><a id="9816" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="9819" href="/Bisimulation/#9819" class="Bound">~N</a><a id="9821" class="Symbol">)</a>         <a id="9831" class="Symbol">()</a>
+<a id="9834" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9838" class="Symbol">(</a><a id="9839" href="/Bisimulation/#9839" class="Bound">~L</a> <a id="9842" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="9845" href="/Bisimulation/#9845" class="Bound">~M</a><a id="9847" class="Symbol">)</a>      <a id="9854" class="Symbol">(</a><a id="9855" href="/More/#19798" class="InductiveConstructor">ξ-·₁</a> <a id="9860" href="/Bisimulation/#9860" class="Bound">L—→</a><a id="9863" class="Symbol">)</a>
+  <a id="9867" class="Keyword">with</a> <a id="9872" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9876" href="/Bisimulation/#9839" class="Bound">~L</a> <a id="9879" href="/Bisimulation/#9860" class="Bound">L—→</a>
+<a id="9883" class="Symbol">...</a>  <a id="9888" class="Symbol">|</a> <a id="9890" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="9894" href="/Bisimulation/#9894" class="Bound">~L′</a> <a id="9898" href="/Bisimulation/#9898" class="Bound">L†—→</a>                 <a id="9919" class="Symbol">=</a>  <a id="9922" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="9926" class="Symbol">(</a><a id="9927" href="/Bisimulation/#9894" class="Bound">~L′</a> <a id="9931" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="9934" class="Bound">~M</a><a id="9936" class="Symbol">)</a>   <a id="9940" class="Symbol">(</a><a id="9941" href="/More/#19798" class="InductiveConstructor">ξ-·₁</a> <a id="9946" href="/Bisimulation/#9898" class="Bound">L†—→</a><a id="9950" class="Symbol">)</a>
+<a id="9952" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9956" class="Symbol">(</a><a id="9957" href="/Bisimulation/#9957" class="Bound">~V</a> <a id="9960" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="9963" href="/Bisimulation/#9963" class="Bound">~M</a><a id="9965" class="Symbol">)</a>      <a id="9972" class="Symbol">(</a><a id="9973" href="/More/#19907" class="InductiveConstructor">ξ-·₂</a> <a id="9978" href="/Bisimulation/#9978" class="Bound">VV</a> <a id="9981" href="/Bisimulation/#9981" class="Bound">M—→</a><a id="9984" class="Symbol">)</a>
+  <a id="9988" class="Keyword">with</a> <a id="9993" href="/Bisimulation/#9707" class="Function">sim</a> <a id="9997" href="/Bisimulation/#9963" class="Bound">~M</a> <a id="10000" href="/Bisimulation/#9981" class="Bound">M—→</a>
+<a id="10004" class="Symbol">...</a>  <a id="10009" class="Symbol">|</a> <a id="10011" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="10015" href="/Bisimulation/#10015" class="Bound">~M′</a> <a id="10019" href="/Bisimulation/#10019" class="Bound">M†—→</a>                 <a id="10040" class="Symbol">=</a>  <a id="10043" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="10047" class="Symbol">(</a><a id="10048" class="Bound">~V</a> <a id="10051" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="10054" href="/Bisimulation/#10015" class="Bound">~M′</a><a id="10057" class="Symbol">)</a>   <a id="10061" class="Symbol">(</a><a id="10062" href="/More/#19907" class="InductiveConstructor">ξ-·₂</a> <a id="10067" class="Symbol">(</a><a id="10068" href="/Bisimulation/#4944" class="Function">~val</a> <a id="10073" class="Bound">~V</a> <a id="10076" class="Bound">VV</a><a id="10078" class="Symbol">)</a> <a id="10080" href="/Bisimulation/#10019" class="Bound">M†—→</a><a id="10084" class="Symbol">)</a>
+<a id="10086" href="/Bisimulation/#9707" class="Function">sim</a> <a id="10090" class="Symbol">((</a><a id="10092" href="/Bisimulation/#3933" class="InductiveConstructor Operator">~ƛ</a> <a id="10095" href="/Bisimulation/#10095" class="Bound">~N</a><a id="10097" class="Symbol">)</a> <a id="10099" href="/Bisimulation/#4018" class="InductiveConstructor Operator">~·</a> <a id="10102" href="/Bisimulation/#10102" class="Bound">~V</a><a id="10104" class="Symbol">)</a> <a id="10106" class="Symbol">(</a><a id="10107" href="/More/#20030" class="InductiveConstructor">β-ƛ</a> <a id="10111" href="/Bisimulation/#10111" class="Bound">VV</a><a id="10113" class="Symbol">)</a>        <a id="10122" class="Symbol">=</a>  <a id="10125" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="10129" class="Symbol">(</a><a id="10130" href="/Bisimulation/#8353" class="Function">~sub</a> <a id="10135" href="/Bisimulation/#10095" class="Bound">~N</a> <a id="10138" href="/Bisimulation/#10102" class="Bound">~V</a><a id="10140" class="Symbol">)</a>  <a id="10143" class="Symbol">(</a><a id="10144" href="/More/#20030" class="InductiveConstructor">β-ƛ</a> <a id="10148" class="Symbol">(</a><a id="10149" href="/Bisimulation/#4944" class="Function">~val</a> <a id="10154" href="/Bisimulation/#10102" class="Bound">~V</a> <a id="10157" href="/Bisimulation/#10111" class="Bound">VV</a><a id="10159" class="Symbol">))</a>
+<a id="10162" href="/Bisimulation/#9707" class="Function">sim</a> <a id="10166" class="Symbol">(</a><a id="10167" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="10172" href="/Bisimulation/#10172" class="Bound">~M</a> <a id="10175" href="/Bisimulation/#10175" class="Bound">~N</a><a id="10177" class="Symbol">)</a>    <a id="10182" class="Symbol">(</a><a id="10183" href="/More/#21088" class="InductiveConstructor">ξ-let</a> <a id="10189" href="/Bisimulation/#10189" class="Bound">M—→</a><a id="10192" class="Symbol">)</a>
+  <a id="10196" class="Keyword">with</a> <a id="10201" href="/Bisimulation/#9707" class="Function">sim</a> <a id="10205" href="/Bisimulation/#10172" class="Bound">~M</a> <a id="10208" href="/Bisimulation/#10189" class="Bound">M—→</a>
+<a id="10212" class="Symbol">...</a>  <a id="10217" class="Symbol">|</a> <a id="10219" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="10223" href="/Bisimulation/#10223" class="Bound">~M′</a> <a id="10227" href="/Bisimulation/#10227" class="Bound">M†—→</a>                 <a id="10248" class="Symbol">=</a>  <a id="10251" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="10255" class="Symbol">(</a><a id="10256" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="10261" href="/Bisimulation/#10223" class="Bound">~M′</a> <a id="10265" class="Bound">~N</a><a id="10267" class="Symbol">)</a> <a id="10269" class="Symbol">(</a><a id="10270" href="/More/#19907" class="InductiveConstructor">ξ-·₂</a> <a id="10275" href="/More/#19104" class="InductiveConstructor">V-ƛ</a> <a id="10279" href="/Bisimulation/#10227" class="Bound">M†—→</a><a id="10283" class="Symbol">)</a>
+<a id="10285" href="/Bisimulation/#9707" class="Function">sim</a> <a id="10289" class="Symbol">(</a><a id="10290" href="/Bisimulation/#4142" class="InductiveConstructor">~let</a> <a id="10295" href="/Bisimulation/#10295" class="Bound">~V</a> <a id="10298" href="/Bisimulation/#10298" class="Bound">~N</a><a id="10300" class="Symbol">)</a>    <a id="10305" class="Symbol">(</a><a id="10306" href="/More/#21210" class="InductiveConstructor">β-let</a> <a id="10312" href="/Bisimulation/#10312" class="Bound">VV</a><a id="10314" class="Symbol">)</a>      <a id="10321" class="Symbol">=</a>  <a id="10324" href="/Bisimulation/#9355" class="InductiveConstructor">leg</a> <a id="10328" class="Symbol">(</a><a id="10329" href="/Bisimulation/#8353" class="Function">~sub</a> <a id="10334" href="/Bisimulation/#10298" class="Bound">~N</a> <a id="10337" href="/Bisimulation/#10295" class="Bound">~V</a><a id="10339" class="Symbol">)</a>  <a id="10342" class="Symbol">(</a><a id="10343" href="/More/#20030" class="InductiveConstructor">β-ƛ</a> <a id="10347" class="Symbol">(</a><a id="10348" href="/Bisimulation/#4944" class="Function">~val</a> <a id="10353" href="/Bisimulation/#10295" class="Bound">~V</a> <a id="10356" href="/Bisimulation/#10312" class="Bound">VV</a><a id="10358" class="Symbol">))</a></pre>
+<p>The proof is by case analysis, examining each possible instance of <code class="highlighter-rouge">M ~ M†</code>
+and each possible instance of <code class="highlighter-rouge">M —→ M†</code>, using recursive invocation whenever
+the reduction is by a <code class="highlighter-rouge">ξ</code> rule, and hence contains another reduction.
+In its structure, it looks a little bit like a proof of progress.</p>
+
+<ul>
+  <li>If the related terms are variables, no reduction applies.</li>
+  <li>If the related terms are abstractions, no reduction applies.</li>
+  <li>If the related terms are applications, there are three subcases.
+    <ul>
+      <li>
+        <p>The source term reduces via <code class="highlighter-rouge">ξ-·₁</code>, in which case the target term does as well.
+Recursive invocation gives us</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L  --- —→ ---  L′
+|              |
+|              |
+~              ~
+|              |
+|              |
+L† --- —→ --- L′†
+</code></pre></div>        </div>
+
+        <p>from which follows</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> L · M  --- —→ ---  L′ · M
+   |                   |      
+   |                   |
+   ~                   ~
+   |                   |
+   |                   |
+L† · M† --- —→ --- L′† · M†
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>The source term reduces via <code class="highlighter-rouge">ξ-·₂</code>, in which case the target term does as well.
+Recursive invocation gives us</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M  --- —→ ---  M′
+|              |
+|              |
+~              ~
+|              |
+|              |
+M† --- —→ --- M′†
+</code></pre></div>        </div>
+
+        <p>from which follows</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> V · M  --- —→ ---  V · M′
+   |                  |      
+   |                  |
+   ~                  ~
+   |                  |
+   |                  |
+V† · M† --- —→ --- V† · M′†
+</code></pre></div>        </div>
+
+        <p>Since simulation commutes with values and <code class="highlighter-rouge">V</code> is a value, <code class="highlighter-rouge">V†</code> is also a value.</p>
+      </li>
+      <li>
+        <p>The source term reduces via <code class="highlighter-rouge">β-ƛ</code>, in which case the target term does as well.</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> (ƛ x ⇒ N) · V  --- —→ ---  N [ x := V ] 
+      |                           |      
+      |                           |
+      ~                           ~
+      |                           |
+      |                           |       
+(ƛ x ⇒ N†) · V† --- —→ --- N† [ x :=  V† ]
+</code></pre></div>        </div>
+
+        <p>Since simulation commutes with values and <code class="highlighter-rouge">V</code> is a value, <code class="highlighter-rouge">V†</code> is also a value.
+Since simulation commutes with substitution and <code class="highlighter-rouge">N ~ N†</code> and <code class="highlighter-rouge">V ~ V†</code>,
+we have <code class="highlighter-rouge">N [ x := V] ~ N† [ x := V† ]</code>.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>If the related terms are a let and an application of an abstraction,
+there are two subcases.</p>
+
+    <ul>
+      <li>
+        <p>The source term reduces via <code class="highlighter-rouge">ξ-let</code>, in which case the target term
+reduces via <code class="highlighter-rouge">ξ-·₂</code>.  Recursive invocation gives us</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M  --- —→ ---  M′
+|              |
+|              |
+~              ~
+|              |
+|              |
+M† --- —→ --- M′†
+</code></pre></div>        </div>
+
+        <p>from which follows</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let x = M in N --- —→ --- let x = M′ in N
+      |                         |
+      |                         |
+      ~                         ~
+      |                         |
+      |                         |
+(ƛ x ⇒ N) · M  --- —→ --- (ƛ x ⇒ N) · M′
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>The source term reduces via <code class="highlighter-rouge">β-let</code>, in which case the target
+term reduces via <code class="highlighter-rouge">β-ƛ</code>.</p>
+
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let x = V in N  --- —→ ---  N [ x := V ]
+      |                         |
+      |                         |
+      ~                         ~
+      |                         |
+      |                         |
+(ƛ x ⇒ N†) · V† --- —→ --- N† [ x := V ]
+</code></pre></div>        </div>
+
+        <p>Since simulation commutes with values and <code class="highlighter-rouge">V</code> is a value, <code class="highlighter-rouge">V†</code> is also a value.
+Since simulation commutes with substitution and <code class="highlighter-rouge">N ~ N†</code> and <code class="highlighter-rouge">V ~ V†</code>,
+we have <code class="highlighter-rouge">N [ x := V] ~ N† [ x := V† ]</code>.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="exercise-sim">Exercise <code class="highlighter-rouge">sim⁻¹</code></h4>
+
+<p>Show that we also have a simulation in the other direction, and hence that we have
+a bisimulation.</p>
+
+<h4 id="exercise-products">Exercise <code class="highlighter-rouge">products</code></h4>
+
+<p>Show that the two formulations of products in
+Chapter <a href="/More/">More</a>
+are in bisimulation.  The only constructs you need to include are
+variables, and those connected to functions and products.
+In this case, the simulation is <em>not</em> lock-step.</p>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>This chapter uses the following unicode.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>†  U+2020  DAGGER (\dag)
+⁻  U+207B  SUPERSCRIPT MINUS (\^-)
+¹  U+00B9  SUPERSCRIPT ONE (\^1)
+</code></pre></div></div>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/More/">Prev</a>
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Bisimulation.lagda">Source</a>
+    
+    
+    &bullet;
+    <a alt="Next chapter" href="/Inference/">Next</a>
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/assets/jquery.js"></script>
+
+<!-- Script which allows for foldable code blocks -->
+<script type="text/javascript">
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>
