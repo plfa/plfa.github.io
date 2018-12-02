@@ -56,6 +56,6 @@ Pull requests are encouraged.
     * John Leo, Google Seattle, 2018--2019
 
 [wen]: https://github.com/wenkokke
-[phil]: http://homepages.inf.ed.ac.uk/wadler/
+[phil]: https://homepages.inf.ed.ac.uk/wadler/
 [GitHub]: https://github.com/plfa/plfa.github.io/
-[sbmf]: http://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
+[sbmf]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf

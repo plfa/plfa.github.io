@@ -64,7 +64,7 @@ Get evidence!
 >      Manage Users and Edit
 > to the Google Analytics account `plfa (UA-125055580)` by `wen.kokke@gmail.com`.
 
-> [Google analytics](http://analytics.google.com/analytics/web/)
+> [Google analytics](https://analytics.google.com/analytics/web/)
 
 ## Where to put Lists?
 

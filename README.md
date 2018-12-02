@@ -127,7 +127,7 @@ Command to give when in a hole:
 	C-c C-.      Goal type, context, and inferred type
 
 See
-[the emacs-mode docs](http://agda.readthedocs.io/en/latest/tools/emacs-mode.html)
+[the emacs-mode docs](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html)
 for more details.
 
 If you want to see messages beside rather than below your Agda code,
@@ -173,4 +173,4 @@ The book is written in [Kramdown Markdown](https://kramdown.gettalong.org/syntax
 
 ## Travis Continuous Integration
 
-You can view the build history of PLFA at [travis-ci.org](http://travis-ci.org/plfa/plfa.github.io).
+You can view the build history of PLFA at [travis-ci.org](https://travis-ci.org/plfa/plfa.github.io).
