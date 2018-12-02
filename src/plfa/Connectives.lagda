@@ -252,7 +252,7 @@ can conclude.  Since truth always holds, knowing that it holds tells
 us nothing new.
 
 The nullary case of `η-×` is `η-⊤`, which asserts that any
-term of type `⊤` must be equal to `tt`.
+value of type `⊤` must be equal to `tt`.
 \begin{code}
 η-⊤ : ∀ (w : ⊤) → tt ≡ w
 η-⊤ tt = refl
