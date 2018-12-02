@@ -299,8 +299,8 @@ just a couple of lines.
 Here is the definition of addition in Agda:
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
-zero + n = n
-suc m + n = suc (m + n)
+zero  + n  =  n
+suc m + n  =  suc (m + n)
 \end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
@@ -431,8 +431,8 @@ Once we have defined addition, we can define multiplication
 as repeated addition.
 \begin{code}
 _*_ : ℕ → ℕ → ℕ
-zero * n     =  zero
-(suc m) * n  =  n + (m * n)
+zero  * n  =  zero
+suc m * n  =  n + (m * n)
 \end{code}
 
 Again, rewriting gives us two familiar equations.
