@@ -27,7 +27,9 @@ or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archi
 Finally, we need to let Agda know where to find the standard library.
 For this, you can follow the instructions [here](https://agda.readthedocs.io/en/latest/tools/package-system.html#example-using-the-standard-library).
 
-(PLFA is itself an Agda library, so if you wish to import modules from the book, you can set it up in a similar way.)
+It is possible to set up PLFA as an Agda library as well.
+If you are trying to complete the exerises found in the `tspl` folder, or otherwise want to import modules from the book, you need to do this.
+To do so, add the path to `plfa.agda-lib` to `~/.agda/libraries` and add `plfa` to `~/.agda/defaults`, both on lines of their own.
 
 
 # Building the book
