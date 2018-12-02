@@ -7,7 +7,7 @@ permalink : /TSPL/
 ## Staff
 
 * **Instructor**
-    [Philip Wadler](http://homepages.inf.ed.ac.uk/wadler)
+    [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
 * **Teaching assistants**
   - [Wen Kokke](mailto:wen.kokke@ed.ac.uk)
   - [Chad Nester](mailto:chad.nester@gmail.com)
