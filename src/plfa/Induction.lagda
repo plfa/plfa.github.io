@@ -47,7 +47,7 @@ on names for some of the most common properties.
   of parentheses does not matter: `(m + n) + p ≡ m + (n + p)`,
   for all `m`, `n`, and `p`.
 
-* _Commutatitivity_.   Operator `+` is commutative if order of
+* _Commutativity_.   Operator `+` is commutative if order of
   arguments does not matter: `m + n ≡ n + m`, for all `m` and `n`.
 
 * _Distributivity_.   Operator `*` distributes over operator `+` from the
