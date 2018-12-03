@@ -1,4 +1,12 @@
-# Notes
+---
+layout: page
+title: Notes
+permalink: /Notes/
+---
+
+## Google Analytics
+
+<https://analytics.google.com/analytics/web/>
 
 ## Suggestion from Conor for Inference
 

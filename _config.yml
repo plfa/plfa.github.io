@@ -35,7 +35,6 @@ exclude:
   - "src/"
   - "extra/"
   - "vendor/"
-  - "Notes.md"
   - "*.lagda"
   - "Gemfile"
   - "Gemfile.lock"

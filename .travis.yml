@@ -41,7 +41,7 @@ script:
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
 - make clean
-- rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile Notes.md
+- rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile
 
 deploy:
   provider: pages
