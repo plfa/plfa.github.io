@@ -88,10 +88,28 @@ _ : Precontext
 _ = ∅ , [ 1# ∙ `0 ]⊸ `0 , `0
 \end{code}
 
+
+# Variables and the lookup judgement
+
+\begin{code}
+data _∋_ : Precontext → Type → Set where
+
+  Z  : ∀ {γ} {A}
+
+      ---------
+    → γ , A ∋ A
+
+  S_ : ∀ {γ} {A B}
+
+    → γ ∋ A
+      ---------
+    → γ , B ∋ A
+\end{code}
+
 \begin{code}
 data Context : Precontext → Set where
-∅     : Context ∅
-_,_∙_ : ∀ {Γ} → Context Γ → Mult → (A : Type) → Context (Γ , A)
+  ∅     : Context ∅
+  _,_∙_ : ∀ {Γ} → Context Γ → Mult → (A : Type) → Context (Γ , A)
 \end{code}
 
 \begin{code}
@@ -149,24 +167,6 @@ Matrix-vector multiplication ΞᵀΓ.
 _⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
 ∅           ⊛ Ξ = 0s
 (Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
-\end{code}
-
-
-# Variables and the lookup judgement
-
-\begin{code}
-data _∋_ : Precontext → Type → Set where
-
-Z  : ∀ {γ} {A}
-
----------
-→ γ , A ∋ A
-
-S_ : ∀ {γ} {A B}
-
-→ γ ∋ A
----------
-→ γ , B ∋ A
 \end{code}
 
 
