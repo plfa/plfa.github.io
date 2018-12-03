@@ -111,3 +111,8 @@ Assignments are submitted by running
 submit tspl cwN AssignmentN.lagda
 ```
 where N is the number of the assignment.
+
+## Mock exam
+
+Here is the text of the [mock](/tspl/mock.pdf)
+and the exam [instructions](/tspl/instructions.pdf).
