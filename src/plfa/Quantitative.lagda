@@ -409,22 +409,22 @@ Adding a row of 0s to the end of the matrix and then multiplying by a vector pro
 Linear maps preserve scaling.
 
 \begin{code}
-⊛-preserves-** : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ) (π : Mult)
+⊛-assoc : ∀ {γ δ} (Γ : Context γ) (Ξ : Matrix γ δ) (π : Mult)
 
   -----------------------------------
   → (π ** Γ) ⊛ Ξ ≡ π ** (Γ ⊛ Ξ)
 
-⊛-preserves-** {γ} {δ} ∅ Ξ π =
+⊛-assoc {γ} {δ} ∅ Ξ π =
   begin
     0s
   ≡⟨ **-zeroʳ π ⟩
     π ** 0s
   ∎
 
-⊛-preserves-** {γ} {δ} (Γ , π′ ∙ A) Ξ π =
+⊛-assoc {γ} {δ} (Γ , π′ ∙ A) Ξ π =
   begin
     ((π * π′) ** Ξ Z) ⋈ ((π ** Γ) ⊛ (Ξ ∘ S_))
-  ≡⟨ ⊛-preserves-** Γ (Ξ ∘ S_) π |> cong ((π * π′) ** Ξ Z ⋈_) ⟩
+  ≡⟨ ⊛-assoc Γ (Ξ ∘ S_) π |> cong ((π * π′) ** Ξ Z ⋈_) ⟩
     ((π * π′) ** Ξ Z) ⋈ (π ** (Γ ⊛ (Ξ ∘ S_)))
   ≡⟨ **-assoc (Ξ Z) |> cong (_⋈ (π ** (Γ ⊛ (Ξ ∘ S_)))) ⟩
     (π ** (π′ ** Ξ Z)) ⋈ (π ** (Γ ⊛ (Ξ ∘ S_)))
@@ -582,7 +582,7 @@ lem-· : ∀ {γ δ} (Γ Δ : Context γ) {π} {Ξ : Matrix γ δ} → _
 lem-· {γ} {δ} Γ Δ {π} {Ξ} =
   begin
     Γ ⊛ Ξ ⋈ π ** (Δ ⊛ Ξ)
-  ≡⟨ ⊛-preserves-** Δ Ξ π |> cong (Γ ⊛ Ξ ⋈_) ∘ sym ⟩
+  ≡⟨ ⊛-assoc Δ Ξ π |> cong (Γ ⊛ Ξ ⋈_) ∘ sym ⟩
     Γ ⊛ Ξ ⋈ (π ** Δ) ⊛ Ξ
   ≡⟨ ⊛-distribʳ-⋈ Γ (π ** Δ) Ξ |> sym ⟩
     (Γ ⋈ π ** Δ) ⊛ Ξ
