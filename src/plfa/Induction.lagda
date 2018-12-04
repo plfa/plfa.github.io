@@ -129,7 +129,7 @@ which tells us that `zero` is a natural, and an _inductive case_
 which tells us that if `m` is a natural then `suc m` is also a natural.
 
 Proof by induction follows the structure of this definition.  To prove
-a property of natural numbers by induction, we need prove two cases.
+a property of natural numbers by induction, we need to prove two cases.
 First is the _base case_, where we show the property holds for `zero`.
 Second is the _inductive case_, where we assume the property holds for
 an arbitrary natural `m` (we call this the _inductive hypothesis_), and
@@ -254,7 +254,7 @@ proposition:
     ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 
 The upside down A is pronounced "for all", and the proposition
-asserts that for all natural numbers `m`, `n`, and `p` that
+asserts that for all natural numbers `m`, `n`, and `p`
 the equation `(m + n) + p ≡ m + (n + p)` holds.  Evidence for the proposition
 is a function that accepts three natural numbers, binds them to `m`, `n`, and `p`,
 and returns evidence for the corresponding instance of the equation.
@@ -501,7 +501,7 @@ Simplifying both sides with the base case of addition yields the equation:
 
     m + zero ≡ m
 
-The the remaining equation has the justification `⟨ +-identityʳ m ⟩`,
+The remaining equation has the justification `⟨ +-identityʳ m ⟩`,
 which invokes the first lemma.
 
 For the inductive case, we must show:
@@ -631,7 +631,7 @@ which is left as an exercise for the reader.
 
 Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
-[earlier][plfa.Naturals#finite-creation]
+[earlier][plfa.Naturals#finite-creation].
 
 ## Associativity with rewrite
 
