@@ -21,7 +21,7 @@ left over as you started with.
 
 ## The naturals are an inductive datatype
 
-Everyone is familiar with the natural numbers:
+Everyone is familiar with the natural numbers
 
     0
     1
@@ -61,7 +61,7 @@ Both definitions above tell us the same two things:
   natural number.
 
 Further, these two rules give the *only* ways of creating natural numbers.
-Hence, the possible natural numbers are
+Hence, the possible natural numbers are:
 
     zero
     suc zero
@@ -253,7 +253,7 @@ requires space proportional to the logarithm of _n_.
 Shortly we will want to write some equations that hold between
 terms involving natural numbers.  To support doing so, we import
 the definition of equality and notations for reasoning
-about it from the Agda standard library.
+about it from the Agda standard library:
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
@@ -319,7 +319,7 @@ We say we use _pattern matching_ when constructors appear on the
 left-hand side of an equation.
 
 If we write `zero` as `0` and `suc m` as `1 + m`, the definition turns
-into two familiar equations.
+into two familiar equations:
 
      0       + n  ≡  n
      (1 + m) + n  ≡  1 + (m + n)
@@ -341,7 +341,7 @@ naturals, the apparent circularity is not a problem.  It works because
 addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called _well founded_.
 
-For example, let's add two and three.
+For example, let's add two and three:
 \begin{code}
 _ : 2 + 3 ≡ 5
 _ =
@@ -360,7 +360,7 @@ _ =
   ∎
 \end{code}
 We can write the same derivation more compactly by only
-expanding shorthand as needed.
+expanding shorthand as needed:
 \begin{code}
 _ : 2 + 3 ≡ 5
 _ =
@@ -393,7 +393,7 @@ equations.  The chain starts with `begin` and finishes with `∎`
 consists of a series of terms separated by `≡⟨⟩`.
 
 In fact, both proofs are longer than need be, and Agda is satisfied
-with the following.
+with the following:
 \begin{code}
 _ : 2 + 3 ≡ 5
 _ = refl
@@ -428,14 +428,14 @@ Compute `3 + 4`, writing out your reasoning as a chain of equations.
 ## Multiplication
 
 Once we have defined addition, we can define multiplication
-as repeated addition.
+as repeated addition:
 \begin{code}
 _*_ : ℕ → ℕ → ℕ
 zero  * n  =  zero
 suc m * n  =  n + (m * n)
 \end{code}
 
-Again, rewriting gives us two familiar equations.
+Again, rewriting gives us two familiar equations:
 
     0       * n  ≡  0
     (1 + m) * n  ≡  n + (m * n)
@@ -454,7 +454,7 @@ identity for multiplication, so `1 * n ≡ n`.
 Again, the definition is well-founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
-For example, let's multiply two and three.
+For example, let's multiply two and three:
 \begin{code}
 _ =
   begin
@@ -483,7 +483,7 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 #### Exercise `_^_` (recommended) {#power}
 
-Define exponentiation, which is given by the following equations.
+Define exponentiation, which is given by the following equations:
 
     n ^ 0        =  1
     n ^ (1 + m)  =  n * (n ^ m)
@@ -499,7 +499,7 @@ number we will take the result to be zero.  This adaption of
 subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first use of a definition that uses pattern
-matching against both arguments.
+matching against both arguments:
 \begin{code}
 _∸_ : ℕ → ℕ → ℕ
 m       ∸ zero     =  m
@@ -518,7 +518,7 @@ Again, the recursive definition is well-founded because
 monus on bigger numbers is defined in terms of monus on
 smaller numbers.
 
-For example, let's subtract two from three.
+For example, let's subtract two from three:
 \begin{code}
 _ =
   begin
@@ -532,7 +532,7 @@ _ =
   ∎
 \end{code}
 We did not use the second equation at all, but it will be required
-if we try to subtract a larger number from a smaller one.
+if we try to subtract a larger number from a smaller one:
 \begin{code}
 _ =
   begin
@@ -562,7 +562,7 @@ We also sometimes say that addition _associates to the left_, and
 so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
-needs to be declared.
+needs to be declared:
 \begin{code}
 infixl 6  _+_  _∸_
 infixl 7  _*_
@@ -585,7 +585,7 @@ second argument.  This trick goes by the name _currying_.
 
 Agda, like other functional languages such as Haskell and ML,
 is designed to make currying easy to use.  Function
-arrows associate to the right and application associates to the left:
+arrows associate to the right and application associates to the left
 
 `ℕ → ℕ → ℕ` stands for `ℕ → (ℕ → ℕ)`
 
@@ -613,7 +613,7 @@ of addition.
 
 Again, it is possible to assign our definition a meaning without
 resorting to unpermitted circularities.  We do so by reducing our
-definition to equivalent inference rules for judgements about equality.
+definition to equivalent inference rules for judgements about equality:
 
     n : ℕ
     --------------
@@ -733,7 +733,7 @@ Agda is designed to be used with the Emacs text editor, and the two
 in combination provide features that help to create definitions
 and proofs interactively.
 
-Begin by typing
+Begin by typing:
 
     _+_ : ℕ → ℕ → ℕ
     m + n = ?
@@ -741,7 +741,7 @@ Begin by typing
 The question mark indicates that you would like Agda to help with
 filling in that part of the code. If you type `C-c C-l` (pressing
 the control key while hitting the `c` key followed by the `l` key)
-the question mark will be replaced.
+the question mark will be replaced:
 
     _+_ : ℕ → ℕ → ℕ
     m + n = { }0
@@ -762,34 +762,34 @@ the prompt:
     pattern variables to case (empty for split on result):
 
 Typing `m` will cause a split on that variable, resulting
-in an update to the code.
+in an update to the code:
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = { }0
     suc m + n = { }1
 
 There are now two holes, and the window at the bottom tells you the
-required type of each.
+required type of each:
 
     ?0 : ℕ
     ?1 : ℕ
 
 Going into hole 0 and type `C-c C-,` will display information on the
-required type of the hole, and what free variables are available.
+required type of the hole, and what free variables are available:
 
     Goal: ℕ
     ————————————————————————————————————————————————————————————
     n : ℕ
 
 This strongly suggests filling the hole with `n`.  After the hole is
-filled, you can type `C-c C-space`, which will remove the hole.
+filled, you can type `C-c C-space`, which will remove the hole:
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = n
     suc m + n = { }1
 
 Again, going into hole 1 and type `C-c C-,` will display information on the
-required type of the hole, and what free variables are available.
+required type of the hole, and what free variables are available:
 
     Goal: ℕ
     ————————————————————————————————————————————————————————————
@@ -798,24 +798,24 @@ required type of the hole, and what free variables are available.
 
 Going into the hole and type `C-c C-r` will fill it in with a constructor
 (if there is a unique choice) or tell you what constructors you might use,
-if there is a choice.  In this case, it displays the following.
+if there is a choice.  In this case, it displays the following:
 
     Don't know which constructor to introduce of zero or suc
 
-Filling the hole with `suc ?` and typing `C-c C-space` results in the following.
+Filling the hole with `suc ?` and typing `C-c C-space` results in the following:
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = n
     suc m + n = suc { }1
 
-Going into the new hole and typing `C-c C-,` gives similar information to before.
+Going into the new hole and typing `C-c C-,` gives similar information to before:
 
     Goal: ℕ
     ————————————————————————————————————————————————————————————
     n : ℕ
     m : ℕ
 
-We can fill the hole with `m + n` and type `C-c C-space` to complete the program.
+We can fill the hole with `m + n` and type `C-c C-space` to complete the program:
 
     _+_ : ℕ → ℕ → ℕ
     zero + n = n
@@ -850,7 +850,7 @@ _m_ and _n_.
 #### Exercise `Bin` (stretch) {#Bin}
 
 A more efficient representation of natural numbers uses a binary
-rather than a unary system.  We represent a number as a bitstring.
+rather than a unary system.  We represent a number as a bitstring:
 \begin{code}
 data Bin : Set where
   nil : Bin
@@ -866,7 +866,7 @@ standing for the number eleven is encoded, right to left, as
     x1 x1 x0 x1 nil
 
 Representations are not unique due to leading zeros.
-Hence, eleven is also represented by `001011`, encoded as
+Hence, eleven is also represented by `001011`, encoded as:
 
     x1 x1 x0 x1 x0 x0 nil
 
@@ -875,7 +875,7 @@ Define a function
     inc : Bin → Bin
 
 that converts a bitstring to the bitstring for the next higher
-number.  For example, since `1100` encodes twelve, we should have
+number.  For example, since `1100` encodes twelve, we should have:
 
     inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
 
@@ -899,7 +899,7 @@ Confirm that these both give the correct answer for zero through four.
 At the end of each chapter, we will show where to find relevant
 definitions in the standard library.  The naturals, constructors for
 them, and basic operators upon them, are defined in the standard
-library module `Data.Nat`.
+library module `Data.Nat`:
 
 \begin{code}
 -- import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
@@ -919,7 +919,7 @@ Information on pragmas can be found in the Agda documentation.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)
     →  U+2192  RIGHTWARDS ARROW (\to, \r, \->)
@@ -939,7 +939,7 @@ the left, right, up, and down keys to navigate.  The command remembers
 where you navigated to the last time, and starts with the same
 character next time.  The command `\l` works similarly for left arrows.
 
-In place of left, right, up, and down keys, one may also use control characters.
+In place of left, right, up, and down keys, one may also use control characters:
 
     C-b  left (backward one character)
     C-f  right (forward one character)
