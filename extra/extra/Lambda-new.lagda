@@ -904,9 +904,9 @@ data Context : Set where
   _,_⦂_ : Context → Id → Type → Context
 \end{code}
 
-### Lookup judgement
+### Lookup judgment
 
-We have two forms of _judgement_.  The first is written
+We have two forms of _judgment_.  The first is written
 
     Γ ∋ x ⦂ A
 
@@ -953,9 +953,9 @@ Constructor `S` takes an additional parameter, which ensures that
 when we look up a variable that it is not _shadowed_ by another
 variable with the same name earlier in the list.
 
-### Typing judgement
+### Typing judgment
 
-The second judgement is written
+The second judgment is written
 
     Γ ⊢ M ⦂ A
 
@@ -1127,8 +1127,8 @@ Here are the typings corresponding to computing two plus two.
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
 \end{code}
-Here the two lookup judgements `∋m` and `∋m′` refer to two different
-bindings of variables named `"m"`.  In contrast, the two judgements `∋n` and
+Here the two lookup judgments `∋m` and `∋m′` refer to two different
+bindings of variables named `"m"`.  In contrast, the two judgments `∋n` and
 `∋n′` both refer to the same binding of `"n"` but accessed in different
 contexts, the first where "n" is the last binding in the context, and
 the second after "m" is bound in the successor branch of the case.
@@ -1202,7 +1202,7 @@ will show how to use Agda to compute type derivations directly.
 ### Lookup is injective
 
 The lookup relation `Γ ∋ x ⦂ A` is injective, in that for each `Γ` and `x`
-there is at most one `A` such that the judgement holds.
+there is at most one `A` such that the judgment holds.
 \begin{code}
 ∋-injective : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-injective Z        Z          =  refl

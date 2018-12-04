@@ -621,7 +621,7 @@ consider terms with free variables.  To type a term,
 we must first type its subterms, and in particular in the
 body of an abstraction its bound variable may appear free.
 
-In general, we use typing _judgements_ of the form
+In general, we use typing _judgments_ of the form
 
     Γ ⊢ M ⦂ A
 

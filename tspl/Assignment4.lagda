@@ -133,7 +133,7 @@ Remember to indent all code by two spaces.
     _,_ : Context → Type → Context
 \end{code}
 
-### Variables and the lookup judgement
+### Variables and the lookup judgment
 
 \begin{code}
   data _∋_ : Context → Type → Set where

@@ -11,7 +11,7 @@ module plfa.SystemF where
 ## Fixity declarations
 
 To begin, we get all our infix declarations out of the way.
-We list separately operators for judgements, types, and terms.
+We list separately operators for judgments, types, and terms.
 \begin{code}
 infix  4 _∋⋆_
 infix  4 _∋_
