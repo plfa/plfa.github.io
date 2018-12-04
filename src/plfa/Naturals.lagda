@@ -139,43 +139,43 @@ while only working with _finite_ sets and never referring to the
 _infinite_ set of natural numbers.
 
 We will think of it as a creation story.  To start with, we know about
-no natural numbers at all.
+no natural numbers at all:
 
-    -- in the beginning, there are no natural numbers
+    -- In the beginning, there are no natural numbers.
 
 Now, we apply the rules to all the natural numbers we know about.  The
 base case tells us that `zero` is a natural number, so we add it to the set
 of known natural numbers.  The inductive case tells us that if `m` is a
 natural number (on the day before today) then `suc m` is also a
 natural number (today).  We didn't know about any natural numbers
-before today, so the inductive case doesn't apply.
+before today, so the inductive case doesn't apply:
 
-    -- on the first day, there is one natural number
+    -- On the first day, there is one natural number.
     zero : ℕ
 
 Then we repeat the process. On the next day we know about all the
 numbers from the day before, plus any numbers added by the rules.  The
 base case tells us that `zero` is a natural number, but we already knew
 that. But now the inductive case tells us that since `zero` was a natural
-number yesterday, then `suc zero` is a natural number today.
+number yesterday, then `suc zero` is a natural number today:
 
-    -- on the second day, there are two natural numbers
+    -- On the second day, there are two natural numbers.
     zero : ℕ
     suc zero : ℕ
 
 And we repeat the process again. Now the inductive case
 tells us that since `zero` and `suc zero` are both natural numbers, then
 `suc zero` and `suc (suc zero)` are natural numbers. We already knew about
-the first of these, but the second is new.
+the first of these, but the second is new:
 
-    -- on the third day, there are three natural numbers
+    -- On the third day, there are three natural numbers.
     zero : ℕ
     suc zero : ℕ
     suc (suc zero) : ℕ
 
-You've got the hang of it by now.
+You've got the hang of it by now:
 
-    -- on the fourth day, there are four natural numbers
+    -- On the fourth day, there are four natural numbers.
     zero : ℕ
     suc zero : ℕ
     suc (suc zero) : ℕ
@@ -502,9 +502,9 @@ Monus is our first use of a definition that uses pattern
 matching against both arguments:
 \begin{code}
 _∸_ : ℕ → ℕ → ℕ
-m       ∸ zero     =  m
-zero    ∸ (suc n)  =  zero
-(suc m) ∸ (suc n)  =  m ∸ n
+m     ∸ zero   =  m
+zero  ∸ suc n  =  zero
+suc m ∸ suc n  =  m ∸ n
 \end{code}
 We can do a simple analysis to show that all the cases are covered.
 
@@ -631,39 +631,39 @@ case. It asserts that if adding `m` and `n` gives `p`, then adding `suc m` and
 `n` gives `suc p`.
 
 Again we resort to a creation story, where this time we are
-concerned with judgements about addition.
+concerned with judgements about addition:
 
-    -- in the beginning, we know nothing about addition
+    -- In the beginning, we know nothing about addition.
 
 Now, we apply the rules to all the judgment we know about.
 The base case tells us that `zero + n = n` for every natural `n`,
 so we add all those equations.  The inductive case tells us that if
 `m + n = p` (on the day before today) then `suc m + n = suc p`
 (today).  We didn't know any equations about addition before today,
-so that rule doesn't give us any new equations.
+so that rule doesn't give us any new equations:
 
-    -- on the first day, we know about addition of 0
+    -- On the first day, we know about addition of 0.
     0 + 0 = 0     0 + 1 = 1    0 + 2 = 2     ...
 
 Then we repeat the process, so on the next day we know about all the
 equations from the day before, plus any equations added by the rules.
 The base case tells us nothing new, but now the inductive case adds
-more equations.
+more equations:
 
-    -- on the second day, we know about addition of 0 and 1
+    -- On the second day, we know about addition of 0 and 1.
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
     1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
 
-And we repeat the process again.
+And we repeat the process again:
 
-    -- on the third day, we know about addition of 0, 1, and 2
+    -- On the third day, we know about addition of 0, 1, and 2.
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
     1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
     2 + 0 = 2     2 + 1 = 3     2 + 2 = 4     2 + 3 = 5     ...
 
-You've got the hang of it by now.
+You've got the hang of it by now:
 
-    -- on the fourth day, we know about addition of 0, 1, 2, and 3
+    -- On the fourth day, we know about addition of 0, 1, 2, and 3.
     0 + 0 = 0     0 + 1 = 1     0 + 2 = 2     0 + 3 = 3     ...
     1 + 0 = 1     1 + 1 = 2     1 + 2 = 3     1 + 3 = 4     ...
     2 + 0 = 2     2 + 1 = 3     2 + 2 = 4     2 + 3 = 5     ...
@@ -686,42 +686,42 @@ infinite set of instances.
 
 Instead, we could choose to create both the naturals and the instances
 of addition at the same time. Then on any day there would be only
-a finite set of instances.
+a finite set of instances:
 
-    -- in the beginning, we know nothing
+    -- In the beginning, we know nothing.
 
 Now, we apply the rules to all the judgment we know about.  Only the
-base case for naturals applies.
+base case for naturals applies:
 
-    -- on the first day, we know zero
+    -- On the first day, we know zero.
     0 : ℕ
 
 Again, we apply all the rules we know.  This gives us a new natural,
 and our first equation about addition.
 
-    -- on the second day, we know one and all sums that yield zero
+    -- On the second day, we know one and all sums that yield zero.
     0 : ℕ
     1 : ℕ    0 + 0 = 0
 
 Then we repeat the process.  We get one more equation about addition
 from the base case, and also get an equation from the inductive case,
-applied to equation of the previous day.
+applied to equation of the previous day:
 
-    -- on the third day, we know two and all sums that yield one
+    -- On the third day, we know two and all sums that yield one.
     0 : ℕ
     1 : ℕ    0 + 0 = 0
     2 : ℕ    0 + 1 = 1   1 + 0 = 1
 
-You've got the hang of it by now.
+You've got the hang of it by now:
 
-    -- on the fourth day, we know three and all sums that yield two
+    -- On the fourth day, we know three and all sums that yield two.
     0 : ℕ
     1 : ℕ    0 + 0 = 0
     2 : ℕ    0 + 1 = 1   1 + 0 = 1
     3 : ℕ    0 + 2 = 2   1 + 1 = 2    2 + 0 = 2
 
-On the _n_'th day there will be _n_ distinct natural numbers, and _n ×
-(n-1) / 2_ equations about addition.  The number _n_ and all equations
+On the _n_'th day there will be _n_ distinct natural numbers, and
+_n × (n-1) / 2_ equations about addition.  The number _n_ and all equations
 for addition of numbers less than _n_ first appear by day _n+1_.
 This gives an entirely finitist view of infinite sets of data and
 equations relating the data.
