@@ -24,7 +24,7 @@ _induction_.
 
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also import a couple of new operations,
-`cong`, `sym`, and `_≡⟨_⟩_`, which are explained below.
+`cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
@@ -90,7 +90,7 @@ location of the parentheses does not matter:
 Here `m`, `n`, and `p` are variables that range over all natural numbers.
 
 We can test the proposition by choosing specific numbers for the three
-variables.
+variables:
 \begin{code}
 _ : (3 + 4) + 5 ≡ 3 + (4 + 5)
 _ =
@@ -152,43 +152,43 @@ inductive hypothesis---namely that `P` holds for `m`---then it follows that
 `P` also holds for `suc m`.
 
 Why does this work?  Again, it can be explained by a creation story.
-To start with, we know no properties.
+To start with, we know no properties:
 
-    -- in the beginning, no properties are known
+    -- In the beginning, no properties are known
 
 Now, we apply the two rules to all the properties we know about.  The
 base case tells us that `P zero` holds, so we add it to the set of
 known properties.  The inductive case tells us that if `P m` holds (on
 the day before today) then `P (suc m)` also holds (today).  We didn't
 know about any properties before today, so the inductive case doesn't
-apply.
+apply:
 
-    -- on the first day, one property is known
+    -- On the first day, one property is known
     P zero
 
 Then we repeat the process, so on the next day we know about all the
 properties from the day before, plus any properties added by the rules.
 The base case tells us that `P zero` holds, but we already
 knew that. But now the inductive case tells us that since `P zero`
-held yesterday, then `P (suc zero)` holds today.
+held yesterday, then `P (suc zero)` holds today:
 
-    -- on the second day, two properties are known
+    -- On the second day, two properties are known
     P zero
     P (suc zero)
 
 And we repeat the process again. Now the inductive case
 tells us that since `P zero` and `P (suc zero)` both hold, then
 `P (suc zero)` and `P (suc (suc zero))` also hold. We already knew about
-the first of these, but the second is new.
+the first of these, but the second is new:
 
-    -- on the third day, three properties are known
+    -- On the third day, three properties are known
     P zero
     P (suc zero)
     P (suc (suc zero))
 
-You've got the hang of it by now.
+You've got the hang of it by now:
 
-    -- on the fourth day, four properties are known
+    -- On the fourth day, four properties are known
     P zero
     P (suc zero)
     P (suc (suc zero))
@@ -202,7 +202,7 @@ day _n+1_.
 
 ## Our first proof: associativity
 
-To prove associativity, we take `P m` to be the property
+To prove associativity, we take `P m` to be the property:
 
     (m + n) + p ≡ m + (n + p)
 
@@ -220,7 +220,7 @@ The appropriate instances of the inference rules are:
 If we can demonstrate both of these, then associativity of addition
 follows by induction.
 
-Here is the proposition's statement and proof.
+Here is the proposition's statement and proof:
 \begin{code}
 +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc zero n p =
@@ -332,7 +332,7 @@ Our first lemma states that zero is also a right-identity:
 
     m + zero ≡ m
 
-Here is the lemma's statement and proof.
+Here is the lemma's statement and proof:
 \begin{code}
 +-identityʳ : ∀ (m : ℕ) → m + zero ≡ m
 +-identityʳ zero =
@@ -399,7 +399,7 @@ Our second lemma does the same for `suc` on the second argument:
 
     m + suc n ≡ suc (m + n)
 
-Here is the lemma's statement and proof.
+Here is the lemma's statement and proof:
 \begin{code}
 +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
 +-suc zero n =
@@ -461,7 +461,7 @@ yield the needed equation.  This completes the second lemma.
 
 ### The proposition
 
-Finally, here is our proposition's statement and proof.
+Finally, here is our proposition's statement and proof:
 \begin{code}
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
@@ -534,7 +534,7 @@ will suggest what lemmas to prove.
 ## Our first corollary: rearranging {#sections}
 
 We can apply associativity to rearrange parentheses however we like.
-Here is an example.
+Here is an example:
 \begin{code}
 +-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
 +-rearrange m n p q =
@@ -569,7 +569,7 @@ evidence for `y ≡ x`.
 Third, Agda supports a variant of the _section_ notation introduced by
 Richard Bird.  We write `(x +_)` for the function that applied to `y`
 returns `x + y`.  Thus, applying the congruence `cong (m +_)` takes
-the above equation into
+the above equation into:
 
     m + (n + (p + q)) ≡ m + ((n + p) + q)
 
@@ -582,9 +582,9 @@ returns `y + x`; the same works for any infix operator.
 
 Returning to the proof of associativity, it may be helpful to view the inductive
 proof (or, equivalently, the recursive definition) as a creation story.  This
-time we are concerned with judgements asserting associativity.
+time we are concerned with judgements asserting associativity:
 
-     -- in the beginning, we know nothing about associativity
+     -- In the beginning, we know nothing about associativity
 
 Now, we apply the rules to all the judgements we know about.  The base
 case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
@@ -592,30 +592,30 @@ case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
 (n + p)` (on the day before today) then
 `(suc m + n) + p ≡ suc m + (n + p)` (today).
 We didn't know any judgments about associativity before today, so that
-rule doesn't give us any new judgments.
+rule doesn't give us any new judgments:
 
-    -- on the first day, we know about associativity of 0
+    -- On the first day, we know about associativity of 0
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
 
 Then we repeat the process, so on the next day we know about all the
 judgements from the day before, plus any judgements added by the rules.
 The base case tells us nothing new, but now the inductive case adds
-more judgements.
+more judgements:
 
-    -- on the second day, we know about associativity of 0 and 1
+    -- On the second day, we know about associativity of 0 and 1
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
     (1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
 
-And we repeat the process again.
+And we repeat the process again:
 
-    -- on the third day, we know about associativity of 0, 1, and 2
+    -- On the third day, we know about associativity of 0, 1, and 2
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
     (1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
     (2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...
 
-You've got the hang of it by now.
+You've got the hang of it by now:
 
-    -- on the fourth day, we know about associativity of 0, 1, 2, and 3
+    -- On the fourth day, we know about associativity of 0, 1, 2, and 3
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
     (1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
     (2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...
@@ -637,7 +637,7 @@ days using a finite story of creation, as
 
 There is more than one way to skin a cat.  Here is a second proof of
 associativity of addition in Agda, using `rewrite` rather than chains of
-equations.
+equations:
 \begin{code}
 +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc′ zero    n p                          =  refl
@@ -671,7 +671,7 @@ not only chains of equations but also the need to invoke `cong`.
 ## Commutativity with rewrite
 
 Here is a second proof of commutativity of addition, using `rewrite` rather than
-chains of equations.
+chains of equations:
 \begin{code}
 +-identity′ : ∀ (n : ℕ) → n + zero ≡ n
 +-identity′ zero = refl
@@ -695,14 +695,14 @@ right.
 
 It is instructive to see how to build the alternative proof of
 associativity using the interactive features of Agda in Emacs.
-Begin by typing
+Begin by typing:
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ m n p = ?
 
 The question mark indicates that you would like Agda to help with
 filling in that part of the code.  If you type `C-c C-l` (control-c
-followed by control-l), the question mark will be replaced.
+followed by control-l), the question mark will be replaced:
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ m n p = { }0
@@ -710,7 +710,7 @@ followed by control-l), the question mark will be replaced.
 The empty braces are called a _hole_, and 0 is a number used for
 referring to the hole.  The hole may display highlighted in green.
 Emacs will also create a new window at the bottom of the screen
-displaying the text
+displaying the text:
 
     ?0 : ((m + n) + p) ≡ (m + (n + p))
 
@@ -724,7 +724,7 @@ the prompt:
     pattern variables to case (empty for split on result):
 
 Typing `m` will cause a split on that variable, resulting
-in an update to the code.
+in an update to the code:
 
     +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
     +-assoc′ zero n p = { }0
@@ -854,7 +854,7 @@ and asks you to define functions
     from  : Bin → ℕ
 
 Consider the following laws, where `n` ranges over naturals and `x`
-over bitstrings.
+over bitstrings:
 
     from (inc x) ≡ suc (from x)
     to (from x) ≡ x
@@ -865,14 +865,14 @@ For each law: if it holds, prove; if not, give a counterexample.
 
 ## Standard library
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 \end{code}
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ∀  U+2200  FOR ALL (\forall, \all)
     ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
