@@ -154,7 +154,7 @@ inductive hypothesis---namely that `P` holds for `m`---then it follows that
 Why does this work?  Again, it can be explained by a creation story.
 To start with, we know no properties:
 
-    -- In the beginning, no properties are known
+    -- In the beginning, no properties are known.
 
 Now, we apply the two rules to all the properties we know about.  The
 base case tells us that `P zero` holds, so we add it to the set of
@@ -163,7 +163,7 @@ the day before today) then `P (suc m)` also holds (today).  We didn't
 know about any properties before today, so the inductive case doesn't
 apply:
 
-    -- On the first day, one property is known
+    -- On the first day, one property is known.
     P zero
 
 Then we repeat the process, so on the next day we know about all the
@@ -172,7 +172,7 @@ The base case tells us that `P zero` holds, but we already
 knew that. But now the inductive case tells us that since `P zero`
 held yesterday, then `P (suc zero)` holds today:
 
-    -- On the second day, two properties are known
+    -- On the second day, two properties are known.
     P zero
     P (suc zero)
 
@@ -181,14 +181,14 @@ tells us that since `P zero` and `P (suc zero)` both hold, then
 `P (suc zero)` and `P (suc (suc zero))` also hold. We already knew about
 the first of these, but the second is new:
 
-    -- On the third day, three properties are known
+    -- On the third day, three properties are known.
     P zero
     P (suc zero)
     P (suc (suc zero))
 
 You've got the hang of it by now:
 
-    -- On the fourth day, four properties are known
+    -- On the fourth day, four properties are known.
     P zero
     P (suc zero)
     P (suc (suc zero))
@@ -584,7 +584,7 @@ Returning to the proof of associativity, it may be helpful to view the inductive
 proof (or, equivalently, the recursive definition) as a creation story.  This
 time we are concerned with judgements asserting associativity:
 
-     -- In the beginning, we know nothing about associativity
+     -- In the beginning, we know nothing about associativity.
 
 Now, we apply the rules to all the judgements we know about.  The base
 case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
@@ -594,7 +594,7 @@ case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
 We didn't know any judgments about associativity before today, so that
 rule doesn't give us any new judgments:
 
-    -- On the first day, we know about associativity of 0
+    -- On the first day, we know about associativity of 0.
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
 
 Then we repeat the process, so on the next day we know about all the
@@ -602,20 +602,20 @@ judgements from the day before, plus any judgements added by the rules.
 The base case tells us nothing new, but now the inductive case adds
 more judgements:
 
-    -- On the second day, we know about associativity of 0 and 1
+    -- On the second day, we know about associativity of 0 and 1.
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
     (1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
 
 And we repeat the process again:
 
-    -- On the third day, we know about associativity of 0, 1, and 2
+    -- On the third day, we know about associativity of 0, 1, and 2.
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
     (1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
     (2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...
 
 You've got the hang of it by now:
 
-    -- On the fourth day, we know about associativity of 0, 1, 2, and 3
+    -- On the fourth day, we know about associativity of 0, 1, 2, and 3.
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
     (1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
     (2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...
