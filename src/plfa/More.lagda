@@ -63,8 +63,8 @@ with multiplication as a primitive operation on numbers.
 ### Typing
 
 The hypothesis of the `con` rule is unusual, in that
-it refers to a typing judgement of Agda rather than a
-typing judgement of the defined calculus.
+it refers to a typing judgment of Agda rather than a
+typing judgment of the defined calculus.
 
     c : ℕ
     --------------- con
@@ -601,7 +601,7 @@ data Context : Set where
   _,_ : Context → Type → Context
 \end{code}
 
-### Variables and the lookup judgement
+### Variables and the lookup judgment
 
 \begin{code}
 data _∋_ : Context → Type → Set where

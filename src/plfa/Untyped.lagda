@@ -113,9 +113,9 @@ We let `Γ` and `Δ` range over contexts.
 
 Show that `Context` is isomorphic to `ℕ`.
 
-## Variables and the lookup judgement
+## Variables and the lookup judgment
 
-Inherently typed variables correspond to the lookup judgement.  The
+Inherently typed variables correspond to the lookup judgment.  The
 rules are as before.
 \begin{code}
 data _∋_ : Context → Type → Set where
@@ -132,15 +132,15 @@ data _∋_ : Context → Type → Set where
 We could write the rules with all instances of `A` and `B`
 replaced by `★`, but arguably it is clearer not to do so.
 
-Because `★` is the only type, the judgement doesn't guarantee anything
+Because `★` is the only type, the judgment doesn't guarantee anything
 useful about types.  But it does ensure that all variables are in
 scope.  For instance, we cannot use `S S Z` in a context that only
 binds two variables.
 
 
-## Terms and the scoping judgement
+## Terms and the scoping judgment
 
-Inherently typed terms correspond to the typing judgement, but with
+Inherently typed terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
 well-scoped — that is, that all variables they mention are in scope —
 but not that they are well-typed.

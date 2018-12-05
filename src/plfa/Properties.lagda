@@ -646,9 +646,9 @@ Now that naming is resolved, let's unpack the first three cases.
 
       Γ , y ⦂ B ∋ x ⦂ A
     
-  There are two subcases, depending on the evidence for this judgement.
+  There are two subcases, depending on the evidence for this judgment.
 
-  + The lookup judgement is evidenced by rule `Z`:
+  + The lookup judgment is evidenced by rule `Z`:
 
         -----------------
         Γ , x ⦂ A ⊢ x ⦂ A
@@ -668,7 +668,7 @@ Now that naming is resolved, let's unpack the first three cases.
 
     - If the variables are unequal we have a contradiction.
 
-  + The lookup judgement is evidenced by rule `S`:
+  + The lookup judgment is evidenced by rule `S`:
 
         x ≢ y
         Γ ∋ x ⦂ A
@@ -749,7 +749,7 @@ Now that naming is resolved, let's unpack the first three cases.
       --------------------------
       Γ ⊢ (L · M) [ y := V ] ⦂ B
 
-  where the second hypothesis follows from the two judgements
+  where the second hypothesis follows from the two judgments
 
       Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
       Γ , y ⦂ C ⊢ M ⦂ A
