@@ -85,7 +85,7 @@ In fact, they each give us a bit more detail:
   `suc m ≤ suc n` holds.
 
 For example, here in inference rule notation is the proof that
-`2 ≤ 4`.
+`2 ≤ 4`:
 
       z≤n -----
           0 ≤ 2
@@ -94,7 +94,7 @@ For example, here in inference rule notation is the proof that
     s≤s ---------
           2 ≤ 4
 
-And here is the corresponding Agda proof.
+And here is the corresponding Agda proof:
 \begin{code}
 _ : 2 ≤ 4
 _ = s≤s (s≤s z≤n)
@@ -123,17 +123,17 @@ and `n` implicit.
 If we wish, it is possible to provide implicit arguments explicitly by
 writing the arguments inside curly braces.  For instance, here is the
 Agda proof that `2 ≤ 4` repeated, with the implicit arguments made
-explicit.
+explicit:
 \begin{code}
 _ : 2 ≤ 4
 _ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
 \end{code}
-One may also identify implicit arguments by name.
+One may also identify implicit arguments by name:
 \begin{code}
 _ : 2 ≤ 4
 _ = s≤s {m = 1} {n = 3} (s≤s {m = 0} {n = 2} (z≤n {n = 2}))
 \end{code}
-In the latter format, you may only supply some implicit arguments.
+In the latter format, you may only supply some implicit arguments:
 \begin{code}
 _ : 2 ≤ 4
 _ = s≤s {n = 3} (s≤s {n = 2} z≤n)
@@ -143,7 +143,7 @@ It is not permitted to swap implicit arguments, even when named.
 
 ## Precedence
 
-We declare the precedence for comparison as follows.
+We declare the precedence for comparison as follows:
 \begin{code}
 infix 4 _≤_
 \end{code}
@@ -167,21 +167,21 @@ Chapter [Decidable][plfa.Decidable].
 Relations pop up all the time, and mathematicians have agreed
 on names for some of the most common properties.
 
-* _Reflexive_ For all `n`, the relation `n ≤ n` holds.
-* _Transitive_ For all `m`, `n`, and `p`, if `m ≤ n` and
+* _Reflexive_. For all `n`, the relation `n ≤ n` holds.
+* _Transitive_. For all `m`, `n`, and `p`, if `m ≤ n` and
 `n ≤ p` hold, then `m ≤ p` holds.
-* _Anti-symmetric_ For all `m` and `n`, if both `m ≤ n` and
+* _Anti-symmetric_. For all `m` and `n`, if both `m ≤ n` and
 `n ≤ m` hold, then `m ≡ n` holds.
-* _Total_ For all `m` and `n`, either `m ≤ n` or `n ≤ m`
+* _Total_. For all `m` and `n`, either `m ≤ n` or `n ≤ m`
 holds.
 
 The relation `_≤_` satisfies all four of these properties.
 
 There are also names for some combinations of these properties.
 
-* _Preorder_ Any relation that is reflexive and transitive.
-* _Partial order_ Any preorder that is also anti-symmetric.
-* _Total order_ Any partial order that is also total.
+* _Preorder_. Any relation that is reflexive and transitive.
+* _Partial order_. Any preorder that is also anti-symmetric.
+* _Total order_. Any partial order that is also total.
 
 If you ever bump into a relation at a party, you now know how
 to make small talk, by asking it whether it is reflexive, transitive,
@@ -208,7 +208,7 @@ Give an example of a partial order that is not a total order.
 The first property to prove about comparison is that it is reflexive:
 for any natural `n`, the relation `n ≤ n` holds.  We follow the
 convention in the standard library and make the argument implicit,
-as that will make it easier to invoke reflexivity.
+as that will make it easier to invoke reflexivity:
 \begin{code}
 ≤-refl : ∀ {n : ℕ}
     -----
@@ -229,7 +229,7 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 The second property to prove about comparison is that it is
 transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤ p`
-hold, then `m ≤ p` holds.  Again, `m`, `n`, and `p` are implicit.
+hold, then `m ≤ p` holds.  Again, `m`, `n`, and `p` are implicit:
 \begin{code}
 ≤-trans : ∀ {m n p : ℕ}
   → m ≤ n
@@ -256,7 +256,7 @@ inequality implies the middle value is `suc n` while the second
 inequality implies that it is `zero`.  Agda can determine that such a
 case cannot arise, and does not require (or permit) it to be listed.
 
-Alternatively, we could make the implicit parameters explicit.
+Alternatively, we could make the implicit parameters explicit:
 \begin{code}
 ≤-trans′ : ∀ (m n p : ℕ)
   → m ≤ n
@@ -283,7 +283,7 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 The third property to prove about comparison is that it is
 antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and `n ≤
-m` hold, then `m ≡ n` holds.
+m` hold, then `m ≡ n` holds:
 \begin{code}
 ≤-antisym : ∀ {m n : ℕ}
   → m ≤ n
@@ -319,7 +319,7 @@ The fourth property to prove about comparison is that it is total:
 for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 `m` and `n` are equal.
 
-We specify what it means for inequality to be total.
+We specify what it means for inequality to be total:
 \begin{code}
 data Total (m n : ℕ) : Set where
 
@@ -343,7 +343,7 @@ be introduced in Chapter [Connectives][plfa.Connectives].)
 
 This is our first use of a datatype with _parameters_,
 in this case `m` and `n`.  It is equivalent to the following
-indexed datatype.
+indexed datatype:
 \begin{code}
 data Total′ : ℕ → ℕ → Set where
 
@@ -365,7 +365,7 @@ Parameterised declarations are shorter, easier to read, and
 occcasionally aid Agda's termination checker, so we will use them in
 preference to indexed types when possible.
 
-With that preliminary out of the way, we specify and prove totality.
+With that preliminary out of the way, we specify and prove totality:
 \begin{code}
 ≤-total : ∀ (m n : ℕ) → Total m n
 ≤-total zero    n                         =  forward z≤n
@@ -404,7 +404,7 @@ followed by a pattern to be matched against the expression
 and the right-hand side of the equation.
 
 Every use of `with` is equivalent to defining a helper function.  For
-example, the definition above is equivalent to the following.
+example, the definition above is equivalent to the following:
 \begin{code}
 ≤-total′ : ∀ (m n : ℕ) → Total m n
 ≤-total′ zero    n        =  forward z≤n
@@ -424,7 +424,7 @@ of the preceding equation.
 
 If both arguments are equal, then both cases hold and we could return evidence
 of either.  In the code above we return the forward case, but there is a
-variant that returns the flipped case.
+variant that returns the flipped case:
 \begin{code}
 ≤-total″ : ∀ (m n : ℕ) → Total m n
 ≤-total″ m       zero                      =  flipped z≤n
@@ -441,13 +441,13 @@ matches on the second argument before the first argument.
 
 If one bumps into both an operator and an ordering at a party, one may ask if
 the operator is _monotonic_ with regard to the ordering.  For example, addition
-is monotonic with regard to inequality, meaning
+is monotonic with regard to inequality, meaning:
 
     ∀ {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
 
 The proof is straightforward using the techniques we have learned, and is best
 broken into three parts. First, we deal with the special case of showing
-addition is monotonic on the right.
+addition is monotonic on the right:
 \begin{code}
 +-monoʳ-≤ : ∀ (m p q : ℕ)
   → p ≤ q
@@ -469,7 +469,7 @@ The proof is by induction on the first argument.
 
 Second, we deal with the special case of showing addition is
 monotonic on the left. This follows from the previous
-result and the commutativity of addition.
+result and the commutativity of addition:
 \begin{code}
 +-monoˡ-≤ : ∀ (m n p : ℕ)
   → m ≤ n
@@ -480,7 +480,7 @@ result and the commutativity of addition.
 Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 `p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
 
-Third, we combine the two previous results.
+Third, we combine the two previous results:
 \begin{code}
 +-mono-≤ : ∀ (m n p q : ℕ)
   → m ≤ n
@@ -501,7 +501,7 @@ Show that multiplication is monotonic with regard to inequality.
 
 ## Strict inequality {#strict-inequality}
 
-We can define strict inequality similarly to inequality.
+We can define strict inequality similarly to inequality:
 \begin{code}
 infix 4 _<_
 
@@ -574,7 +574,7 @@ the fact that inequality is transitive.
 
 As a further example, let's specify even and odd numbers.  Inequality
 and strict inequality are _binary relations_, while even and odd are
-_unary relations_, sometimes called _predicates_.
+_unary relations_, sometimes called _predicates_:
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -629,7 +629,7 @@ but does allow overloading of constructors.  It is recommended that
 one restrict overloading to related meanings, as we have done here,
 but it is not required.
 
-We show that the sum of two even numbers is even.
+We show that the sum of two even numbers is even:
 \begin{code}
 e+e≡e : ∀ {m n : ℕ}
   → even m
@@ -678,7 +678,7 @@ Recall that
 Exercise [Bin][plfa.Naturals#Bin]
 defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
-Hence, eleven may be represented by both of the following
+Hence, eleven may be represented by both of the following:
 
     x1 x1 x0 x1 nil
     x1 x1 x0 x1 x0 x0 nil
@@ -698,20 +698,20 @@ that holds only if the bistring has a leading one.  A bitstring is
 canonical if it has a leading one (representing a positive number) or
 if it consists of a single zero (representing zero).
 
-Show that increment preserves canonical bitstrings.
+Show that increment preserves canonical bitstrings:
 
     Can x
     ------------
     Can (inc x)
 
 Show that converting a natural to a bitstring always yields a
-canonical bitstring.
+canonical bitstring:
 
     ----------
     Can (to n)
 
 Show that converting a canonical bitstring to a natural
-and back is the identity.
+and back is the identity:
 
     Can x
     ---------------
@@ -722,7 +722,7 @@ properties of `One`.)
 
 ## Standard prelude
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Data.Nat using (_≤_; z≤n; s≤s)
 import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
@@ -737,7 +737,7 @@ and more arguments are implicit.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
     ≥  U+2265  GREATER-THAN OR EQUAL TO (\>=, \ge)
