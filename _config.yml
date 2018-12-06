@@ -27,7 +27,7 @@ repository: plfa/plfa.github.io
 branch: dev
 
 baseurl: ""
-url: "https://plfa.ed.inf.ac.uk"
+url: "https://plfa.github.io"
 markdown: kramdown
 theme: minima
 exclude:

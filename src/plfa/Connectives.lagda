@@ -39,7 +39,7 @@ open plfa.Isomorphism.≃-Reasoning
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
-declaring a suitable inductive type.
+declaring a suitable inductive type:
 \begin{code}
 data _×_ (A : Set) (B : Set) : Set where
 
@@ -54,7 +54,7 @@ provides evidence that `A` holds and `N` provides evidence that `B`
 holds.
 
 Given evidence that `A × B` holds, we can conclude that either
-`A` holds or `B` holds.
+`A` holds or `B` holds:
 \begin{code}
 proj₁ : ∀ {A B : Set}
   → A × B
@@ -71,7 +71,7 @@ proj₂ ⟨ x , y ⟩ = y
 If `L` provides evidence that `A × B` holds, then `proj₁ L` provides evidence
 that `A` holds, and `proj₂ L` provides evidence that `B` holds.
 
-Equivalently, we could also declare conjunction as a record type.
+Equivalently, we could also declare conjunction as a record type:
 \begin{code}
 record _×′_ (A B : Set) : Set where
   field
@@ -115,7 +115,7 @@ holds---how to _use_ the connective.
 _Communications of the ACM_, December 2015.)
 
 In this case, applying each destructor and reassembling the results with the
-constructor is the identity over products.
+constructor is the identity over products:
 \begin{code}
 η-× : ∀ {A B : Set} (w : A × B) → ⟨ proj₁ w , proj₂ w ⟩ ≡ w
 η-× ⟨ x , y ⟩ = refl
@@ -125,7 +125,7 @@ replacing `w` by `⟨ x , y ⟩` allows both sides of the equation to
 simplify to the same term.
 
 We set the precedence of conjunction so that it binds less
-tightly than anything save disjunction.
+tightly than anything save disjunction:
 \begin{code}
 infixr 2 _×_
 \end{code}
@@ -139,7 +139,7 @@ calling it the product, note that if type `A` has `m`
 distinct members, and type `B` has `n` distinct members,
 then the type `A × B` has `m * n` distinct members.
 For instance, consider a type `Bool` with two members, and
-a type `Tri` with three members.
+a type `Tri` with three members:
 \begin{code}
 data Bool : Set where
   true  : Bool
@@ -176,7 +176,7 @@ For commutativity, the `to` function swaps a pair, taking `(x , y)` to
 `(y , x)`, and the `from` function does the same (up to renaming).
 Instantiating the patterns correctly in `from∘to` and `to∘from` is essential.
 Replacing the definition of `from∘to` by `λ w → refl` will not work;
-and similarly for `to∘from`.
+and similarly for `to∘from`:
 \begin{code}
 ×-comm : ∀ {A B : Set} → A × B ≃ B × A
 ×-comm =
@@ -204,7 +204,7 @@ former, corresponds to `(aa , true)`, which is a member of the latter.
 For associativity, the `to` function reassociates two uses of pairing,
 taking `((x , y) , z)` to `(x , (y , z))`, and the `from` function does
 the inverse.  Again, the evidence of left and right inverse requires
-matching against a suitable pattern to enable simplification.
+matching against a suitable pattern to enable simplification:
 \begin{code}
 ×-assoc : ∀ {A B C : Set} → (A × B) × C ≃ A × (B × C)
 ×-assoc =
@@ -236,7 +236,7 @@ is isomorphic to `(A → B) × (B → A)`.
 ## Truth is unit
 
 Truth `⊤` always holds. We formalise this idea by
-declaring a suitable inductive type.
+declaring a suitable inductive type:
 \begin{code}
 data ⊤ : Set where
 
@@ -252,7 +252,7 @@ can conclude.  Since truth always holds, knowing that it holds tells
 us nothing new.
 
 The nullary case of `η-×` is `η-⊤`, which asserts that any
-value of type `⊤` must be equal to `tt`.
+value of type `⊤` must be equal to `tt`:
 \begin{code}
 η-⊤ : ∀ (w : ⊤) → tt ≡ w
 η-⊤ tt = refl
@@ -273,7 +273,7 @@ For numbers, one is the identity of multiplication. Correspondingly,
 unit is the identity of product _up to isomorphism_.  For left
 identity, the `to` function takes `(tt , x)` to `x`, and the `from`
 function does the inverse.  The evidence of left inverse requires
-matching against a suitable pattern to enable simplification.
+matching against a suitable pattern to enable simplification:
 \begin{code}
 ⊤-identityˡ : ∀ {A : Set} → ⊤ × A ≃ A
 ⊤-identityˡ =
@@ -298,7 +298,7 @@ same as `Bool`.  But there is an isomorphism between the two types.
 For instance, `(tt, true)`, which is a member of the former,
 corresponds to `true`, which is a member of the latter.
 
-Right identity follows from commutativity of product and left identity.
+Right identity follows from commutativity of product and left identity:
 \begin{code}
 ⊤-identityʳ : ∀ {A : Set} → (A × ⊤) ≃ A
 ⊤-identityʳ {A} =
@@ -318,7 +318,7 @@ equality.
 
 Given two propositions `A` and `B`, the disjunction `A ⊎ B` holds
 if either `A` holds or `B` holds.  We formalise this idea by
-declaring a suitable inductive type.
+declaring a suitable inductive type:
 \begin{code}
 data _⊎_ : Set → Set → Set where
 
@@ -337,7 +337,7 @@ provides evidence that `A` holds, or `inj₂ N`, where `N` provides
 evidence that `B` holds.
 
 Given evidence that `A → C` and `B → C` both hold, then given
-evidence that `A ⊎ B` holds we can conclude that `C` holds.
+evidence that `A ⊎ B` holds we can conclude that `C` holds:
 \begin{code}
 case-⊎ : ∀ {A B C : Set}
   → (A → C)
@@ -360,13 +360,13 @@ disjunction, and to `case-⊎` as _eliminating_ a disjunction; indeed
 the former are sometimes given the names `⊎-I₁` and `⊎-I₂` and the
 latter the name `⊎-E`.
 
-Applying the destructor to each of the constructors is the identity.
+Applying the destructor to each of the constructors is the identity:
 \begin{code}
 η-⊎ : ∀ {A B : Set} (w : A ⊎ B) → case-⊎ inj₁ inj₂ w ≡ w
 η-⊎ (inj₁ x) = refl
 η-⊎ (inj₂ y) = refl
 \end{code}
-More generally, we can also throw in an arbitrary function from a disjunction.
+More generally, we can also throw in an arbitrary function from a disjunction:
 \begin{code}
 uniq-⊎ : ∀ {A B C : Set} (h : A ⊎ B → C) (w : A ⊎ B) →
   case-⊎ (h ∘ inj₁) (h ∘ inj₂) w ≡ h w
@@ -378,7 +378,7 @@ The pattern matching on the left-hand side is essential.  Replacing
 same term, and similarly for `inj₂ y`.
 
 We set the precedence of disjunction so that it binds less tightly
-than any other declared operator.
+than any other declared operator:
 \begin{code}
 infix 1 _⊎_
 \end{code}
@@ -425,7 +425,7 @@ Show sum is associative up to ismorphism.
 ## False is empty
 
 False `⊥` never holds.  We formalise this idea by declaring
-a suitable inductive type.
+a suitable inductive type:
 \begin{code}
 data ⊥ : Set where
   -- no clauses!
@@ -456,7 +456,7 @@ we might have called it `case-⊥`, but chose to stick with the name
 in the standard library.
 
 The nullary case of `uniq-⊎` is `uniq-⊥`, which asserts that `⊥-elim`
-is equal to any arbitrary function from `⊥`.
+is equal to any arbitrary function from `⊥`:
 \begin{code}
 uniq-⊥ : ∀ {C : Set} (h : ⊥ → C) (w : ⊥) → ⊥-elim w ≡ h w
 uniq-⊥ h ()
@@ -502,7 +502,7 @@ providing evidence that `A` holds, the term `L M` provides evidence that
 converts evidence that `A` holds into evidence that `B` holds.
 
 Put another way, if we know that `A → B` and `A` both hold,
-then we may conclude that `B` holds.
+then we may conclude that `B` holds:
 \begin{code}
 →-elim : ∀ {A B : Set}
   → (A → B)
@@ -518,7 +518,7 @@ Defining a function, with an named definition or a lambda abstraction,
 is referred to as _introducing_ a function,
 while applying a function is referred to as _eliminating_ the function.
 
-Elimination followed by introduction is the identity.
+Elimination followed by introduction is the identity:
 \begin{code}
 η-→ : ∀ {A B : Set} (f : A → B) → (λ (x : A) → f x) ≡ f
 η-→ f = refl
@@ -572,7 +572,7 @@ we have the isomorphism
 Both types can be viewed as functions that given evidence that `A` holds
 and evidence that `B` holds can return evidence that `C` holds.
 This isomorphism sometimes goes by the name *currying*.
-The proof of the right inverse requires extensionality.
+The proof of the right inverse requires extensionality:
 \begin{code}
 currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
 currying =
@@ -586,7 +586,7 @@ currying =
 
 Currying tells us that instead of a function that takes a pair of arguments,
 we can have a function that takes the first argument and returns a function that
-expects the second argument.  Thus, for instance, our way of writing addition:
+expects the second argument.  Thus, for instance, our way of writing addition
 
     _+_ : ℕ → ℕ → ℕ
 
@@ -602,13 +602,13 @@ Corresponding to the law
 
     p ^ (n + m) = (p ^ n) * (p ^ m)
 
-we have the isomorphism
+we have the isomorphism:
 
     (A ⊎ B) → C  ≃  (A → C) × (B → C)
 
 That is, the assertion that if either `A` holds or `B` holds then `C` holds
 is the same as the assertion that if `A` holds then `C` holds and if
-`B` holds then `C` holds.  The proof of the left inverse requires extensionality.
+`B` holds then `C` holds.  The proof of the left inverse requires extensionality:
 \begin{code}
 →-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
 →-distrib-⊎ =
@@ -624,14 +624,14 @@ Corresponding to the law
 
     (p * n) ^ m = (p ^ m) * (n ^ m)
 
-we have the isomorphism
+we have the isomorphism:
 
     A → B × C  ≃  (A → B) × (A → C)
 
 That is, the assertion that if `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.  The proof of left inverse requires both extensionality
-and the rule `η-×` for products.
+and the rule `η-×` for products:
 \begin{code}
 →-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ (A → B) × (A → C)
 →-distrib-× =
@@ -647,7 +647,7 @@ and the rule `η-×` for products.
 ## Distribution
 
 Products distribute over sum, up to isomorphism.  The code to validate
-this fact is similar in structure to our previous results.
+this fact is similar in structure to our previous results:
 \begin{code}
 ×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
 ×-distrib-⊎ =
@@ -667,7 +667,7 @@ this fact is similar in structure to our previous results.
     }
 \end{code}
 
-Sums do not distribute over products up to isomorphism, but it is an embedding.
+Sums do not distribute over products up to isomorphism, but it is an embedding:
 \begin{code}
 ⊎-distrib-× : ∀ {A B C : Set} → (A × B) ⊎ C ≲ (A ⊎ C) × (B ⊎ C)
 ⊎-distrib-× =
@@ -704,7 +704,7 @@ one of these laws is "more true" than the other.
 
 #### Exercise `⊎-weak-×` (recommended)
 
-Show that the following property holds.
+Show that the following property holds:
 \begin{code}
 postulate
   ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
@@ -715,7 +715,7 @@ distributive law, and explain how it relates to the weak version.
 
 #### Exercise `⊎×-implies-×⊎`
 
-Show that a disjunct of conjuncts implies a conjunct of disjuncts.
+Show that a disjunct of conjuncts implies a conjunct of disjuncts:
 \begin{code}
 postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
@@ -725,7 +725,7 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 
 ## Standard library
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Data.Unit using (⊤; tt)
@@ -747,7 +747,7 @@ respect to an arbitrary notion of equivalence.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ×  U+00D7  MULTIPLICATION SIGN (\x)
     ⊎  U+228E  MULTISET UNION (\u+)

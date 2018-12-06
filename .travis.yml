@@ -12,7 +12,7 @@ cache:
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
-  - $HOME/agda-master
+  - $HOME/agda-$AGDA_VERSION
   - $HOME/agda-stdlib-master
   - $HOME/agda2html-master
   - $HOME/acknowledgements-master
@@ -36,12 +36,19 @@ script:
 - agda --version
 - agda2html --version
 - acknowledgements --version
-- make test
+- make test-offline
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
 - make clean
 - rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile
+
+branches:
+  only:
+  - dev
+
+git:
+  depth: 1
 
 deploy:
   provider: pages
