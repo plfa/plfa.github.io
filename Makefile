@@ -148,7 +148,7 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-master/
 
 $(HOME)/agda-stdlib-master/src:
-	curl -L https://github.com/agda/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
+	curl -L https://github.com/plfa/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
 	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
 
