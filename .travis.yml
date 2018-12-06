@@ -12,7 +12,7 @@ cache:
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
-  - $HOME/agda-master
+  - $HOME/agda-$AGDA_VERSION
   - $HOME/agda-stdlib-master
   - $HOME/agda2html-master
   - $HOME/acknowledgements-master
