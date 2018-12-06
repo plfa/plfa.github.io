@@ -3,7 +3,7 @@ agdai := $(shell find src tspl -type f -name '*.agdai')
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
-AGDA_VERSION := 2.5.3
+AGDA_VERSION := 2.5.4.2
 
 test: build
 	ruby -S bundle exec htmlproofer _site
