@@ -69,14 +69,14 @@ reader to search for the definition in the code.
 
 ## Function composition
 
-In what follows, we will make use of function composition.
+In what follows, we will make use of function composition:
 \begin{code}
 _∘_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
 (g ∘ f) x  = g (f x)
 \end{code}
 Thus, `g ∘ f` is the function that first applies `f` and
 then applies `g`.  An equivalent definition, exploiting lambda
-expressions, is as follows.
+expressions, is as follows:
 \begin{code}
 _∘′_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
 g ∘′ f  =  λ x → g (f x)
@@ -91,7 +91,7 @@ yield the same result, then they are the same function.  It is the
 converse of `cong-app`, as introduced
 [earlier][plfa.Equality#cong].
 
-Agda does not presume extensionality, but we can postulate that it holds.
+Agda does not presume extensionality, but we can postulate that it holds:
 \begin{code}
 postulate
   extensionality : ∀ {A B : Set} {f g : A → B}
@@ -112,7 +112,7 @@ m +′ zero  = m
 m +′ suc n = suc (m +′ n)
 \end{code}
 Applying commutativity, it is easy to show that both operators always
-return the same result given the same arguments.
+return the same result given the same arguments:
 \begin{code}
 same-app : ∀ (m n : ℕ) → m +′ n ≡ m + n
 same-app m n rewrite +-comm m n = helper m n
@@ -123,7 +123,7 @@ same-app m n rewrite +-comm m n = helper m n
 \end{code}
 However, it might be convenient to assert that the two operators are
 actually indistinguishable. This we can do via two applications of
-extensionality.
+extensionality:
 \begin{code}
 same : _+′_ ≡ _+_
 same = extensionality (λ m → extensionality (λ n → same-app m n))
@@ -134,7 +134,7 @@ We occasionally need to postulate extensionality in what follows.
 ## Isomorphism
 
 Two sets are isomorphic if they are in one-to-one correspondence.
-Here is a formal definition of isomorphism.
+Here is a formal definition of isomorphism:
 \begin{code}
 infix 0 _≃_
 record _≃_ (A B : Set) : Set where
@@ -157,7 +157,7 @@ The declaration `open _≃_` makes available the names `to`, `from`,
 `from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
 The above is our first use of records. A record declaration is equivalent
-to a corresponding inductive data declaration.
+to a corresponding inductive data declaration:
 \begin{code}
 data _≃′_ (A B : Set): Set where
   mk-≃′ : ∀ (to : A → B) →
@@ -179,7 +179,7 @@ to∘from′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (y : B) → to�
 to∘from′ (mk-≃′ f g g∘f f∘g) = f∘g
 \end{code}
 
-We construct values of the record type with the syntax:
+We construct values of the record type with the syntax
 
     record
       { to    = f
@@ -189,7 +189,7 @@ We construct values of the record type with the syntax:
       }
 
 which corresponds to using the constructor of the corresponding
-inductive type:
+inductive type
 
     mk-≃′ f g g∘f f∘g
 
@@ -200,7 +200,7 @@ where `f`, `g`, `g∘f`, and `f∘g` are values of suitable types.
 
 Isomorphism is an equivalence, meaning that it is reflexive, symmetric,
 and transitive.  To show isomorphism is reflexive, we take both `to`
-and `from` to be the identity function.
+and `from` to be the identity function:
 \begin{code}
 ≃-refl : ∀ {A : Set}
     -----
@@ -220,7 +220,7 @@ adequate proof since for the left inverse, `to (from x)`
 simplifies to `x`, and similarly for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
-and `from`, and `from∘to` and `to∘from`.
+and `from`, and `from∘to` and `to∘from`:
 \begin{code}
 ≃-sym : ∀ {A B : Set}
   → A ≃ B
@@ -236,7 +236,7 @@ and `from`, and `from∘to` and `to∘from`.
 \end{code}
 
 To show isomorphism is transitive, we compose the `to` and `from`
-functions, and use equational reasoning to combine the inverses.
+functions, and use equational reasoning to combine the inverses:
 \begin{code}
 ≃-trans : ∀ {A B C : Set}
   → A ≃ B
@@ -276,7 +276,7 @@ functions, and use equational reasoning to combine the inverses.
 It is straightforward to support a variant of equational reasoning for
 isomorphism.  We essentially copy the previous definition for
 of equality.  We omit the form that corresponds to `_≡⟨⟩_`, since
-trivial isomorphisms arise far less often than trivial equalities.
+trivial isomorphisms arise far less often than trivial equalities:
 
 \begin{code}
 module ≃-Reasoning where
@@ -315,7 +315,7 @@ one-to-one correspondence, and embedding shows that the first type is
 included in the second; or, equivalently, that there is a many-to-one
 correspondence between the second type and the first.
 
-Here is the formal definition of embedding.
+Here is the formal definition of embedding:
 \begin{code}
 infix 0 _≲_
 record _≲_ (A B : Set) : Set where
@@ -330,7 +330,7 @@ Hence, we know that `from` is right-inverse to `to`, but not that `to`
 is left-inverse to `from`.
 
 Embedding is reflexive and transitive, but not symmetric.  The proofs
-are cut down versions of the similar proofs for isomorphism.
+are cut down versions of the similar proofs for isomorphism:
 \begin{code}
 ≲-refl : ∀ {A : Set} → A ≲ A
 ≲-refl =
@@ -358,7 +358,7 @@ are cut down versions of the similar proofs for isomorphism.
 
 It is also easy to see that if two types embed in each other, and the
 embedding functions correspond, then they are isomorphic.  This is a
-weak form of anti-symmetry.
+weak form of anti-symmetry:
 \begin{code}
 ≲-antisym : ∀ {A B : Set}
   → (A≲B : A ≲ B)
@@ -392,7 +392,7 @@ the right inverse of the isomorphism.
 ## Equational reasoning for embedding
 
 We can also support tabular reasoning for embedding,
-analogous to that used for isomorphism.
+analogous to that used for isomorphism:
 
 \begin{code}
 module ≲-Reasoning where
@@ -435,7 +435,7 @@ postulate
 
 #### Exercise `_⇔_` {#iff}
 
-Define equivalence of propositions (also known as "if and only if") as follows.
+Define equivalence of propositions (also known as "if and only if") as follows:
 \begin{code}
 record _⇔_ (A B : Set) : Set where
   field
@@ -449,14 +449,14 @@ Show that equivalence is reflexive, symmetric, and transitive.
 Recall that Exercises
 [Bin][plfa.Naturals#Bin] and
 [Bin-laws][plfa.Induction#Bin-laws]
-define a datatype of bitstrings representing natural numbers.
+define a datatype of bitstrings representing natural numbers:
 \begin{code}
 data Bin : Set where
   nil : Bin
   x0_ : Bin → Bin
   x1_ : Bin → Bin
 \end{code}
-And ask you to define the following functions:
+And ask you to define the following functions
 
     to : ℕ → Bin
     from : Bin → ℕ
@@ -471,7 +471,7 @@ Why is there not an isomorphism?
 
 ## Standard library
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Function using (_∘_)
 import Function.Inverse using (_↔_)
@@ -484,7 +484,7 @@ parameterised with regard to an arbitrary notion of equivalence.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ∘  U+2218  RING OPERATOR (\o, \circ, \comp)
     λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
