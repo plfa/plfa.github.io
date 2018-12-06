@@ -921,7 +921,7 @@ Information on pragmas can be found in the Agda documentation.
 
 This chapter uses the following unicode:
 
-    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)
+    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bn)
     →  U+2192  RIGHTWARDS ARROW (\to, \r, \->)
     ∸  U+2238  DOT MINUS (\.-)
     ≡  U+2261  IDENTICAL TO (\==)
