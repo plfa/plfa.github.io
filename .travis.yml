@@ -36,7 +36,7 @@ script:
 - agda --version
 - agda2html --version
 - acknowledgements --version
-- make test
+- make test-offline
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml

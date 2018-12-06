@@ -5,6 +5,9 @@ PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
 
 test: build
+	ruby -S bundle exec htmlproofer _site
+
+test-offline: build
 	ruby -S bundle exec htmlproofer _site --disable-external
 
 statistics:
@@ -70,7 +73,10 @@ macos-setup:
 
 .phony: serve build test clean clobber macos-setup
 
-# install agda, agda-stdlib, and agda2html
+
+
+# Travis Setup (install Agda, the Agda standard library, agda2html, acknowledgements, etc.)
+
 travis-setup:\
 	$(HOME)/.local/bin/agda\
 	$(HOME)/.local/bin/agda2html\
@@ -130,10 +136,10 @@ $(HOME)/.agda/libraries:
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/.local/bin/agda:
-	curl -L https://github.com/agda/agda/archive/master.zip -o $(HOME)/agda-master.zip
+	curl -L https://github.com/agda/agda/archive/v2.5.3.zip -o $(HOME)/agda-master.zip
 	unzip -qq $(HOME)/agda-master.zip -d $(HOME)
 	cd $(HOME)/agda-master;\
-		stack install --stack-yaml=stack-8.2.2.yaml
+		stack install --stack-yaml=stack-8.0.2.yaml
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-master/
@@ -158,10 +164,3 @@ travis-uninstall-agda-stdlib:
 travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
 
 .phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib
-
-
-# workaround for a bug in agda2html
-bugfix:
-	@mkdir -p out
-	@touch out/Nat.md
-.phony: bugfix
