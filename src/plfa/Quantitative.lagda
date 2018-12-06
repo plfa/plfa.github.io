@@ -4,6 +4,50 @@ layout    : page
 permalink : /Quantitative/
 ---
 
+# Introduction
+
+Identity and constant function.
+
+  - ``∅ , 1 ∙ "x" ⦂ A  ⊢ ` "x" ⦂ A``
+  - ``∅ ⊢ (ƛ "x" ⇒ ` "x") ⦂ [ 1 ∙ A ]⊸ A``
+  - ``∅ , 1 ∙ "x" ⦂ A , 0 ∙ "y" ⦂ B ⊢ ` "x" ⦂ A``
+  - ``∅ ⊢ (ƛ "x" ⇒ ƛ "y" ⇒ ` "x") ⦂ [ 1 ∙ A ]⊸ [ 0 ∙ B ]⊸ A``
+
+Some numbers.
+
+  - ``∅ , 1 ∙ "z" ⦂ ℕ , 0 ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ ` "z" ⦂ ℕ``
+  - ``∅ , 1 ∙ "z" ⦂ ℕ , 1 ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ (` "s" · ` "z") ⦂ ℕ``
+  - ``∅ , 1 ∙ "z" ⦂ ℕ , ω ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ (` "s" · (` "s" · ` "z")) ⦂ ℕ``
+
+
+Words.
+
+    data Mult : Set where
+      0# : Mult
+      1# : Mult
+      ω# : Mult
+
+Words.
+
+    0# + π   =  π
+    1# + 1#  =  ω#
+    ω# + π   =  ω#
+
+Words.
+
+    0# * π   =  0#
+    1# * π   =  π   if  π ≢ 0#
+    ω# * π   =  ω#  if  π ≢ 0#
+
+Words.
+
+    0#    1#
+      \  /
+       ω#
+
+
+# Module declaration
+
 \begin{code}
 open import Relation.Binary.PropositionalEquality as Eq using (_≡_)
 open import Algebra.Structures using (module IsSemiring; IsSemiring)
@@ -27,29 +71,6 @@ open Eq using (refl; sym; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
 open IsSemiring *-+-isSemiring hiding (refl; sym)
 \end{code}
-
-
-# Introduction
-
-Identity and constant function.
-
-  - ``∅ , 1 ∙ "x" ⦂ A  ⊢ ` "x" ⦂ A``
-  - ``∅ ⊢ (ƛ "x" ⇒ ` "x") ⦂ [ 1 ∙ A ]⊸ A``
-  - ``∅ , 1 ∙ "x" ⦂ A , 0 ∙ "y" ⦂ B ⊢ ` "x" ⦂ A``
-  - ``∅ ⊢ (ƛ "x" ⇒ ƛ "y" ⇒ ` "x") ⦂ [ 1 ∙ A ]⊸ [ 0 ∙ B ]⊸ A``
-
-Some numbers.
-
-  - ``∅ , 1 ∙ "z" ⦂ ℕ , 0 ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ ` "z" ⦂ ℕ``
-  - ``∅ , 1 ∙ "z" ⦂ ℕ , 1 ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ (` "s" · ` "z") ⦂ ℕ``
-  - ``∅ , 1 ∙ "z" ⦂ ℕ , ω ∙ "s" ⦂ [ 1 ∙ ℕ ]⊸ ℕ ⊢ (` "s" · (` "s" · ` "z")) ⦂ ℕ``
-
-Words.
-
-    data Mult : Set where
-      0# : Mult
-      1# : Mult
-      ω# : Mult
 
 
 # Syntax
@@ -118,7 +139,7 @@ _ = ∅ , 1# ∙ [ 1# ∙ `0 ]⊸ `0 , 0# ∙ `0
 \end{code}
 
 
-# Resources and Linear Algebra
+# Resources and linear algebra
 
 Scaling.
 
@@ -155,18 +176,15 @@ Matrix γ δ = ∀ {A} → γ ∋ A → Context δ
 
 The identity matrix.
 
+          "x"       "y"       "z"
+    "x"  1 ∙ A  ,  0 ∙ B  ,  0 ∙ C
+    "y"  0 ∙ A  ,  1 ∙ B  ,  0 ∙ C
+    "z"  0 ∙ A  ,  0 ∙ B  ,  1 ∙ C
+
 \begin{code}
 identity : ∀ {γ} → Matrix γ γ
 identity {γ , A} Z     = 0s , 1# ∙ A
 identity {γ , B} (S x) = identity x , 0# ∙ B
-\end{code}
-
-Matrix-vector multiplication ΞᵀΓ.
-
-\begin{code}
-_⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
-∅           ⊛ Ξ = 0s
-(Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
 \end{code}
 
 
@@ -196,18 +214,25 @@ data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
 \end{code}
 
 
-# Properties of Vector Operations
+# Properties of vector operations
 
 Unit scaling does nothing.
 
 \begin{code}
 **-identityˡ : ∀ {γ} (Γ : Context γ)
 
-  -------------
+    -----------
   → 1# ** Γ ≡ Γ
 
 **-identityˡ ∅ = refl
-**-identityˡ (Γ , π ∙ A) rewrite **-identityˡ Γ | *-identityˡ π = refl
+**-identityˡ (Γ , π ∙ A) =
+  begin
+    1# ** Γ , 1# * π ∙ A
+  ≡⟨ *-identityˡ π |> cong (1# ** Γ ,_∙ A) ⟩
+    1# ** Γ , π ∙ A
+  ≡⟨ **-identityˡ Γ |> cong (_, π ∙ A) ⟩
+    Γ , π ∙ A
+  ∎
 \end{code}
 
 Scaling by a product is the composition of scalings.
@@ -215,7 +240,7 @@ Scaling by a product is the composition of scalings.
 \begin{code}
 **-assoc : ∀ {γ} (Γ : Context γ) {π π′}
 
-  --------------------------------
+    ------------------------------
   → (π * π′) ** Γ ≡ π ** (π′ ** Γ)
 
 **-assoc ∅ = refl
@@ -234,7 +259,7 @@ Scaling the 0-vector gives the 0-vector.
 \begin{code}
 **-zeroʳ : ∀ {γ} π
 
-  --------------------
+    ----------------
   → 0s {γ} ≡ π ** 0s
 
 **-zeroʳ {∅} π = refl
@@ -253,11 +278,18 @@ Scaling by 0 gives the 0-vector.
 \begin{code}
 **-zeroˡ : ∀ {γ} (Γ : Context γ)
 
-  -----------------
+    ------------
   → 0# ** Γ ≡ 0s
 
 **-zeroˡ ∅ = refl
-**-zeroˡ (Γ , π ∙ A) rewrite **-zeroˡ Γ | zeroˡ π = refl
+**-zeroˡ (Γ , π ∙ A) =
+  begin
+    0# ** Γ , 0# * π ∙ A
+  ≡⟨ zeroˡ π |> cong (0# ** Γ ,_∙ A) ⟩
+    0# ** Γ , 0# ∙ A
+  ≡⟨ **-zeroˡ Γ |> cong (_, 0# ∙ A) ⟩
+    0s , 0# ∙ A
+  ∎
 \end{code}
 
 Adding the 0-vector does nothing.
@@ -265,21 +297,35 @@ Adding the 0-vector does nothing.
 \begin{code}
 ⋈-identityˡ : ∀ {γ} (Γ : Context γ)
 
-  ---------------
+    ----------
   → 0s ⋈ Γ ≡ Γ
 
 ⋈-identityˡ ∅ = refl
-⋈-identityˡ (Γ , π ∙ A) rewrite ⋈-identityˡ Γ | +-identityˡ π = refl
+⋈-identityˡ (Γ , π ∙ A) =
+  begin
+    0s ⋈ Γ , 0# + π ∙ A
+  ≡⟨ +-identityˡ π |> cong (0s ⋈ Γ ,_∙ A) ⟩
+    0s ⋈ Γ , π ∙ A
+  ≡⟨ ⋈-identityˡ Γ |> cong (_, π ∙ A) ⟩
+    Γ , π ∙ A
+  ∎
 \end{code}
 
 \begin{code}
 ⋈-identityʳ : ∀ {γ} (Γ : Context γ)
 
-  ---------------
+    ----------
   → Γ ⋈ 0s ≡ Γ
 
 ⋈-identityʳ ∅ = refl
-⋈-identityʳ (Γ , π ∙ A) rewrite ⋈-identityʳ Γ | +-identityʳ π = refl
+⋈-identityʳ (Γ , π ∙ A) =
+  begin
+    Γ ⋈ 0s , π + 0# ∙ A
+  ≡⟨ +-identityʳ π |> cong (Γ ⋈ 0s ,_∙ A) ⟩
+    Γ ⋈ 0s , π ∙ A
+  ≡⟨ ⋈-identityʳ Γ |> cong (_, π ∙ A) ⟩
+    Γ , π ∙ A
+  ∎
 \end{code}
 
 Vector addition is commutative.
@@ -287,7 +333,7 @@ Vector addition is commutative.
 \begin{code}
 ⋈-comm : ∀ {γ} (Γ₁ Γ₂ : Context γ)
 
-  ---------------------
+    -----------------
   → Γ₁ ⋈ Γ₂ ≡ Γ₂ ⋈ Γ₁
 
 ⋈-comm ∅ ∅ = refl
@@ -358,12 +404,24 @@ Scaling a sum gives the sum of the scalings.
   ∎
 \end{code}
 
+
+
+# Matrix-vector multiplication
+
+Matrix-vector multiplication ΞᵀΓ.
+
+\begin{code}
+_⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
+∅           ⊛ Ξ = 0s
+(Γ , π ∙ A) ⊛ Ξ = (π ** Ξ Z) ⋈ Γ ⊛ (Ξ ∘ S_)
+\end{code}
+
 Linear maps preserve the 0-vector.
 
 \begin{code}
 ⊛-zeroˡ : ∀ {γ δ} (Ξ : Matrix γ δ)
 
-  -----------------------------------
+  --------------
   → 0s ⊛ Ξ ≡ 0s
 
 ⊛-zeroˡ {∅}     {δ} Ξ = refl
