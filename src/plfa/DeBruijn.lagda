@@ -154,9 +154,9 @@ addition to the previous correspondences we have
   * `` case_[zero⇒_|suc_⇒_] `` corresponds to `⊢case`
   * `μ_⇒_` corresponds to `⊢μ`
 
-Note the two lookup judgements `∋m` and `∋m′` refer to two
+Note the two lookup judgments `∋m` and `∋m′` refer to two
 different bindings of variables named `"m"`.  In contrast, the
-two judgements `∋n` and `∋n′` both refer to the same binding
+two judgments `∋n` and `∋n′` both refer to the same binding
 of `"n"` but accessed in different contexts, the first where
 "n" is the last binding in the context, and the second after
 "m" is bound in the successor branch of the case.
@@ -206,7 +206,7 @@ incorporates preservation, which no longer requires a separate proof.
 We now begin our formal development.
 
 First, we get all our infix declarations out of the way.
-We list separately operators for judgements, types, and terms.
+We list separately operators for judgments, types, and terms.
 \begin{code}
 infix  4 _⊢_
 infix  4 _∋_
@@ -258,16 +258,16 @@ is a context with two variables in scope, where the outer
 bound one has type `` `ℕ → `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
 
-### Variables and the lookup judgement
+### Variables and the lookup judgment
 
-Inherently typed variables correspond to the lookup judgement.
+Inherently typed variables correspond to the lookup judgment.
 They are represented by de Bruijn indices, and hence also
 correspond to natural numbers.  We write
 
     Γ ∋ A
 
 for variables which in context `Γ` have type `A`.  Their
-formalisation looks exactly like the old lookup judgement, but
+formalisation looks exactly like the old lookup judgment, but
 with all variable names dropped.
 \begin{code}
 data _∋_ : Context → Type → Set where
@@ -289,7 +289,7 @@ constructors `here` and `there` for the element-of relation
 for natural numbers.
 
 For example, consider the following old-style lookup
-judgements:
+judgments:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
@@ -307,15 +307,15 @@ In the given context, `"z"` is represented by `Z`
 and `"s"` by `S Z`
 (as the next most recently bound variable).
 
-### Terms and the typing judgement
+### Terms and the typing judgment
 
-Inherently typed terms correspond to the typing judgement.
+Inherently typed terms correspond to the typing judgment.
 We write
 
     Γ ⊢ A
 
 for terms which in context `Γ` has type `A`.  Their
-formalisation looks exactly like the old typing judgement, but
+formalisation looks exactly like the old typing judgment, but
 with all terms and variable names dropped.
 \begin{code}
 data _⊢_ : Context → Type → Set where
@@ -364,7 +364,7 @@ term.  For example, consider the following three terms,
 building up the Church numeral two.
 
 For example, consider the following old-style typing
-judgements:
+judgments:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ ``

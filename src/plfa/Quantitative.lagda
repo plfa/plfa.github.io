@@ -89,7 +89,7 @@ _ = ∅ , [ 1# ∙ `0 ]⊸ `0 , `0
 \end{code}
 
 
-# Variables and the lookup judgement
+# Variables and the lookup judgment
 
 \begin{code}
 data _∋_ : Precontext → Type → Set where
@@ -170,7 +170,7 @@ _⊛_ : ∀ {γ δ} → Context γ → Matrix γ δ → Context δ
 \end{code}
 
 
-# Terms and the typing judgement
+# Terms and the typing judgment
 
 \begin{code}
 data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where

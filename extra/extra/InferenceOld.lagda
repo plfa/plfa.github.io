@@ -47,10 +47,10 @@ This gives us the grammar:
       L · M                               application
 
 Each of the associated type rules can be read as an algorithm for
-type checking.  For each typing judgement, we label each position
+type checking.  For each typing judgment, we label each position
 as either an _input_ or an _output_.
 
-For the judgement
+For the judgment
 
     Γ ∋ x ⦂ A
 
@@ -73,7 +73,7 @@ type in the input context. For the second rule, the inputs of the
 conclusion determine the inputs of the hypothesis, and the ouptut
 of the hypothesis determines the output of the conclusion.
 
-For the judgement
+For the judgment
 
     Γ ⊢ M ⦂ A
 
@@ -104,7 +104,7 @@ and argument type of the abstraction are carried into the context of
 the hypothesis, and this is why we added the argument type to the
 abstraction.  For the application rule, we add a third hypothesis to
 check whether domain of the function matches the type of the argument;
-this judgement is decidable when both types are given as inputs. The
+this judgment is decidable when both types are given as inputs. The
 inputs of the conclusion determine the inputs of the first two
 hypotheses, the outputs of the first two hypotheses determine the
 inputs of the third hypothesis, and the output of the first hypothesis
@@ -113,15 +113,15 @@ determines the output of the conclusion.
 Converting the above to an algorithm is straightforwart, as is adding
 naturals and fixpoint.  We omit the details.  Instead, we consider a
 detailed description of an approach that requires less obtrusive
-decoration.  The idea is to break the normal typing judgement into two
-judgements, one that produces the type as an output (as above), and
+decoration.  The idea is to break the normal typing judgment into two
+judgments, one that produces the type as an output (as above), and
 another that takes it as an input.
 
 
 ## Synthesising and inheriting types
 
-In addition to the lookup judgement for variables, which will remain
-as before, we now have two judgements for the type of the term.
+In addition to the lookup judgment for variables, which will remain
+as before, we now have two judgments for the type of the term.
 
     Γ ⊢ M ↑ A
     Γ ⊢ M ↓ A
@@ -161,7 +161,7 @@ For instance, we said above that the argument of an application is
 typed by inheritance and that variables are typed by synthesis, giving
 a mismatch if the argument of an application is a variable.  Hence, we
 need a way to treat a synthesized term as if it is inherited.  We
-introduce a new term form, `M ↑` for this purpose.  The typing judgement
+introduce a new term form, `M ↑` for this purpose.  The typing judgment
 checks that the inherited and synthesised types match.
 
 Similarly, we said above that the function of an application is typed
@@ -169,7 +169,7 @@ by synthesis and that abstractions are typed by inheritance, giving a
 mismatch if the function of an application is a variable.  Hence, we
 need a way to treat an inherited term as if it is synthesised.  We
 introduce a new term form `M ↓ A` for this purpose.  The typing
-judgement returns `A` as the synthesized type of the term as a whole,
+judgment returns `A` as the synthesized type of the term as a whole,
 as well as using it as the inherited type for `M`.
 
 The term form `M ↓ A` represents the only place terms need to
@@ -241,7 +241,7 @@ also be referred to as just `Type`.
 ## Syntax
 
 First, we get all our infix declarations out of the way.
-We list separately operators for judgements and terms.
+We list separately operators for judgments and terms.
 
 \begin{code}
 infix   4  _∋_⦂_
@@ -360,7 +360,7 @@ data _∋_⦂_ : Context → Id → Type → Set where
     → Γ , y ⦂ B ∋ x ⦂ A
 \end{code}
 
-As with syntax, the judgements for synthesizing
+As with syntax, the judgments for synthesizing
 and inheriting types are mutually recursive.
 \begin{code}
 data _⊢_↑_ : Context → Term⁺ → Type → Set
@@ -894,7 +894,7 @@ easy to extract the corresponding inherently typed term.  We use the
 name `DB` to refer to the code in
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %}).
 It is easy to define an _erasure_ function that takes evidence of a
-type judgement into the corresponding inherently typed term.
+type judgment into the corresponding inherently typed term.
 
 First, we give code to erase a context.
 \begin{code}
@@ -912,8 +912,8 @@ Next, we give code to erase a lookup judgment.
 \end{code}
 It just drops the evidence that variable names are distinct.
 
-Finally, we give the code to erase a typing judgement.
-Just as there are two mutually recursive typing judgements,
+Finally, we give the code to erase a typing judgment.
+Just as there are two mutually recursive typing judgments,
 there are two mutually recursive erasure functions.
 \begin{code}
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Γ DB.⊢ A
@@ -930,7 +930,7 @@ there are two mutually recursive erasure functions.
 ∥ ⊢μ ⊢M ∥⁻ =  DB.μ ∥ ⊢M ∥⁻
 ∥ ⊢↑ ⊢M refl ∥⁻ =  ∥ ⊢M ∥⁺
 \end{code}
-Erasure replaces constructors for each typing judgement
+Erasure replaces constructors for each typing judgment
 by the corresponding term constructor from `DB`.  The
 constructors that correspond to switching from synthesized
 to inherited or vice versa are dropped.

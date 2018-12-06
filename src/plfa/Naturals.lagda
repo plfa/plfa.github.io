@@ -613,7 +613,7 @@ of addition.
 
 Again, it is possible to assign our definition a meaning without
 resorting to unpermitted circularities.  We do so by reducing our
-definition to equivalent inference rules for judgements about equality:
+definition to equivalent inference rules for judgments about equality:
 
     n : ℕ
     --------------
@@ -631,7 +631,7 @@ case. It asserts that if adding `m` and `n` gives `p`, then adding `suc m` and
 `n` gives `suc p`.
 
 Again we resort to a creation story, where this time we are
-concerned with judgements about addition:
+concerned with judgments about addition:
 
     -- In the beginning, we know nothing about addition.
 

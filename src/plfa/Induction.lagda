@@ -582,11 +582,11 @@ returns `y + x`; the same works for any infix operator.
 
 Returning to the proof of associativity, it may be helpful to view the inductive
 proof (or, equivalently, the recursive definition) as a creation story.  This
-time we are concerned with judgements asserting associativity:
+time we are concerned with judgments asserting associativity:
 
      -- In the beginning, we know nothing about associativity.
 
-Now, we apply the rules to all the judgements we know about.  The base
+Now, we apply the rules to all the judgments we know about.  The base
 case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
 `n` and `p`.  The inductive case tells us that if `(m + n) + p ≡ m +
 (n + p)` (on the day before today) then
@@ -598,9 +598,9 @@ rule doesn't give us any new judgments:
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
 
 Then we repeat the process, so on the next day we know about all the
-judgements from the day before, plus any judgements added by the rules.
+judgments from the day before, plus any judgments added by the rules.
 The base case tells us nothing new, but now the inductive case adds
-more judgements:
+more judgments:
 
     -- On the second day, we know about associativity of 0 and 1.
     (0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
@@ -622,7 +622,7 @@ You've got the hang of it by now:
     (3 + 0) + 0 ≡ 3 + (0 + 0)   ...   (3 + 4) + 5 ≡ 3 + (4 + 5)   ...
 
 The process continues.  On the _m_'th day we will know all the
-judgements where the first number is less than _m_.
+judgments where the first number is less than _m_.
 
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
@@ -715,7 +715,7 @@ displaying the text:
     ?0 : ((m + n) + p) ≡ (m + (n + p))
 
 This indicates that hole 0 is to be filled in with a proof of
-the stated judgement.
+the stated judgment.
 
 We wish to prove the proposition by induction on `m`.  Move
 the cursor into the hole and type `C-c C-c`.  You will be given

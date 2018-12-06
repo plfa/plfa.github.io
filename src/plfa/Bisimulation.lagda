@@ -203,7 +203,7 @@ and `Value M†` then `Value M`.
 ## Simulation commutes with renaming
 
 The next technical result is that simulation commutes with renaming.
-That is, if `ρ` maps any judgement `Γ ∋ A` to a judgement `Δ ∋ A`,
+That is, if `ρ` maps any judgment `Γ ∋ A` to a judgment `Δ ∋ A`,
 and if `M ~ M†` then `rename ρ M ~ rename ρ M†`.
 
 \begin{code}
@@ -228,7 +228,7 @@ It is more complex than substitution, because where we had one renaming map
 `ρ` here we need two substitution maps, `σ` and `σ†`.
 
 The proof first requires we establish an analogue of extension.
-If `σ` and `σ†` both map any judgement `Γ ∋ A` to a judgement `Δ ⊢ A`,
+If `σ` and `σ†` both map any judgment `Γ ∋ A` to a judgment `Δ ⊢ A`,
 such that for every `x` in `Γ ∋ A` we have `σ x ~ σ† x`,
 then for any `x` in `Γ , B ∋ A` we have `exts σ x ~ exts σ† x`.
 \begin{code}
@@ -246,8 +246,8 @@ The newly introduced variable trivially relates to itself, and otherwise
 we apply renaming to the hypothesis.
 
 With extension under our belts, it is straightforward to show
-substitution commutes.  If `σ` and `σ†` both map any judgement `Γ ∋ A`
-to a judgement `Δ ⊢ A`, such that for every `x` in `Γ ∋ A` we have `σ
+substitution commutes.  If `σ` and `σ†` both map any judgment `Γ ∋ A`
+to a judgment `Δ ⊢ A`, such that for every `x` in `Γ ∋ A` we have `σ
 x ~ σ† x`, and if `M ~ M†`, then `subst σ M ~ subst σ† M†`.
 \begin{code}
 ~subst : ∀ {Γ Δ}

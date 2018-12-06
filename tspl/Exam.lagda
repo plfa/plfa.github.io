@@ -86,7 +86,7 @@ module Problem2 where
     _,_ : Context → Type → Context
 \end{code}
 
-### Variables and the lookup judgement
+### Variables and the lookup judgment
 
 \begin{code}
   data _∋_ : Context → Type → Set where
@@ -101,7 +101,7 @@ module Problem2 where
       → Γ , B ∋ A
 \end{code}
 
-### Terms and the typing judgement
+### Terms and the typing judgment
 
 \begin{code}
   data _⊢_ : Context → Type → Set where
