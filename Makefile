@@ -3,6 +3,7 @@ agdai := $(shell find src tspl -type f -name '*.agdai')
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
+AGDA_VERSION := v2.5.3
 
 test: build
 	ruby -S bundle exec htmlproofer _site
@@ -136,13 +137,13 @@ $(HOME)/.agda/libraries:
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/.local/bin/agda:
-	curl -L https://github.com/agda/agda/archive/v2.5.3.zip -o $(HOME)/agda-master.zip
-	unzip -qq $(HOME)/agda-master.zip -d $(HOME)
-	cd $(HOME)/agda-master;\
+	curl -L https://github.com/agda/agda/archive/$(AGDA_VERSION).zip -o $(HOME)/agda-$(AGDA_VERSION).zip
+	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
+	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
 
 travis-uninstall-agda:
-	rm -rf $(HOME)/agda-master/
+	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
 	rm -f $(HOME)/.local/bin/agda
 	rm -f $(HOME)/.local/bin/agda-mode
 
