@@ -137,8 +137,8 @@ $(HOME)/.local/bin/agda:
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-master/
-	rm $(HOME)/.local/bin/agda
-	rm $(HOME)/.local/bin/agda-mode
+	rm -f $(HOME)/.local/bin/agda
+	rm -f $(HOME)/.local/bin/agda-mode
 
 travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 
