@@ -53,7 +53,7 @@ M` provides evidence that `B M` holds.  In other words, evidence that
 `A` into evidence that `B M` holds.
 
 Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
-is a term of type `A` then we may conclude that `B M` holds.
+is a term of type `A` then we may conclude that `B M` holds:
 \begin{code}
 ∀-elim : ∀ {A : Set} {B : A → Set}
   → (L : ∀ (x : A) → B x)
@@ -86,7 +86,7 @@ dependent product is ambiguous.
 
 #### Exercise `∀-distrib-×` (recommended)
 
-Show that universals distribute over conjunction.
+Show that universals distribute over conjunction:
 \begin{code}
 postulate
   ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
@@ -97,7 +97,7 @@ Chapter [Connectives][plfa.Connectives].
 
 #### Exercise `⊎∀-implies-∀⊎`
 
-Show that a disjunction of universals implies a universal of disjunctions.
+Show that a disjunction of universals implies a universal of disjunctions:
 \begin{code}
 postulate
   ⊎∀-implies-∀⊎ : ∀ {A : Set} { B C : A → Set } →
@@ -117,12 +117,12 @@ the proposition `B x` with each free occurrence of `x` replaced by
 `Σ[ x ∈ A ] B x`.
 
 We formalise existential quantification by declaring a suitable
-inductive type.
+inductive type:
 \begin{code}
 data Σ (A : Set) (B : A → Set) : Set where
   ⟨_,_⟩ : (x : A) → B x → Σ A B
 \end{code}
-We define a convenient syntax for existentials as follows.
+We define a convenient syntax for existentials as follows:
 \begin{code}
 Σ-syntax = Σ
 infix 2 Σ-syntax
@@ -137,7 +137,7 @@ Evidence that `Σ[ x ∈ A ] B x` holds is of the form
 `⟨ M , N ⟩` where `M` is a term of type `A`, and `N` is evidence
 that `B M` holds.
 
-Equivalently, we could also declare existentials as a record type.
+Equivalently, we could also declare existentials as a record type:
 \begin{code}
 record Σ′ (A : Set) (B : A → Set) : Set where
   field
@@ -180,7 +180,7 @@ product and since existentials also have a claim to the name dependent sum.
 
 A common notation for existentials is `∃` (analogous to `∀` for universals).
 We follow the convention of the Agda standard library, and reserve this
-notation for the case where the domain of the bound variable is left implicit.
+notation for the case where the domain of the bound variable is left implicit:
 \begin{code}
 ∃ : ∀ {A : Set} (B : A → Set) → Set
 ∃ {A} B = Σ A B
@@ -193,7 +193,7 @@ We will tend to use this syntax, since it is shorter and more familiar.
 
 Given evidence that `∀ x → B x → C` holds, where `C` does not contain
 `x` as a free variable, and given evidence that `∃[ x ] B x` holds, we
-may conclude that `C` holds.
+may conclude that `C` holds:
 \begin{code}
 ∃-elim : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C)
@@ -209,7 +209,7 @@ instantiate that proof that `∀ x → B x → C` to any value `x` of type
 `A` and any `y` of type `B x`, and exactly such values are provided by
 the evidence for `∃[ x ] B x`.
 
-Indeed, the converse also holds, and the two together form an isomorphism.
+Indeed, the converse also holds, and the two together form an isomorphism:
 \begin{code}
 ∀∃-currying : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C) ≃ (∃[ x ] B x → C)
@@ -227,7 +227,7 @@ establish the isomorphism is identical to what we wrote when discussing
 
 #### Exercise `∃-distrib-⊎` (recommended)
 
-Show that existentials distribute over disjunction.
+Show that existentials distribute over disjunction:
 \begin{code}
 postulate
   ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
@@ -236,7 +236,7 @@ postulate
 
 #### Exercise `∃×-implies-×∃`
 
-Show that an existential of conjunctions implies a conjunction of existentials.
+Show that an existential of conjunctions implies a conjunction of existentials:
 \begin{code}
 postulate
   ∃×-implies-×∃ : ∀ {A : Set} { B C : A → Set } →
@@ -248,7 +248,7 @@ Does the converse hold? If so, prove; if not, explain why.
 ## An existential example
 
 Recall the definitions of `even` and `odd` from
-Chapter [Relations][plfa.Relations].
+Chapter [Relations][plfa.Relations]:
 \begin{code}
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -273,7 +273,7 @@ odd if it the successor of an even number.
 
 We will show that a number is even if and only if it is twice some
 other number, and odd if and only if it is one more than twice
-some other number.  In other words, we will show
+some other number.  In other words, we will show:
 
 `even n`   iff   `∃[ m ] (    m * 2 ≡ n)`
 
@@ -283,7 +283,7 @@ By convention, one tends to write constant factors first and to put
 the constant term in a sum last. Here we've reversed each of those
 conventions, because doing so eases the proof.
 
-Here is the proof in the forward direction.
+Here is the proof in the forward direction:
 \begin{code}
 even-∃ : ∀ {n : ℕ} → even n → ∃[ m ] (    m * 2 ≡ n)
 odd-∃  : ∀ {n : ℕ} →  odd n → ∃[ m ] (1 + m * 2 ≡ n)
@@ -298,7 +298,7 @@ odd-∃  (odd-suc e)  with even-∃ e
 We define two mutually recursive functions. Given
 evidence that `n` is even or odd, we return a
 number `m` and evidence that `m * 2 ≡ n` or `1 + m * 2 ≡ n`.
-We induct over the evidence that `n` is even or odd.
+We induct over the evidence that `n` is even or odd:
 
 * If the number is even because it is zero, then we return a pair
 consisting of zero and the evidence that twice zero is zero.
@@ -317,7 +317,7 @@ substituting for `n`.
 
 This completes the proof in the forward direction.
 
-Here is the proof in the reverse direction.
+Here is the proof in the reverse direction:
 \begin{code}
 ∃-even : ∀ {n : ℕ} → ∃[ m ] (    m * 2 ≡ n) → even n
 ∃-odd  : ∀ {n : ℕ} → ∃[ m ] (1 + m * 2 ≡ n) →  odd n
@@ -331,7 +331,7 @@ Given a number that is twice some other number we must show it is
 even, and a number that is one more than twice some other number we
 must show it is odd.  We induct over the evidence of the existential,
 and in the even case consider the two possibilities for the number
-that is doubled.
+that is doubled:
 
 - In the even case for `zero`, we must show `zero * 2` is even, which
 follows by `even-zero`.
@@ -364,7 +364,7 @@ Negation of an existential is isomorphic to the universal
 of a negation.  Considering that existentials are generalised
 disjunction and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
-of a disjunction is isomorphic to a conjunction of negations.
+of a disjunction is isomorphic to a conjunction of negations:
 \begin{code}
 ¬∃≃∀¬ : ∀ {A : Set} {B : A → Set}
   → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
@@ -395,7 +395,7 @@ requires extensionality.
 
 #### Exercise `∃¬-implies-¬∀` (recommended)
 
-Show that existential of a negation implies negation of a universal.
+Show that existential of a negation implies negation of a universal:
 \begin{code}
 postulate
   ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
@@ -412,20 +412,20 @@ Recall that Exercises
 [Bin][plfa.Naturals#Bin],
 [Bin-laws][plfa.Induction#Bin-laws], and
 [Bin-predicates][plfa.Relations#Bin-predicates]
-define a datatype of bitstrings representing natural numbers.
+define a datatype of bitstrings representing natural numbers:
 \begin{code}
 data Bin : Set where
   nil : Bin
   x0_ : Bin → Bin
   x1_ : Bin → Bin
 \end{code}
-And ask you to define the following functions and predicates.
+And ask you to define the following functions and predicates:
 
     to   : ℕ → Bin
     from : Bin → ℕ
     Can  : Bin → Set
 
-And to establish the following properties.
+And to establish the following properties:
 
     from (to n) ≡ n
 
@@ -442,7 +442,7 @@ Using the above, establish that there is an isomorphism between `ℕ` and
 
 ## Standard Prelude
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 \end{code}
@@ -450,7 +450,7 @@ import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     Π  U+03A0  GREEK CAPITAL LETTER PI (\Pi)
     Σ  U+03A3  GREEK CAPITAL LETTER SIGMA (\Sigma)
