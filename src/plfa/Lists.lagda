@@ -34,7 +34,7 @@ open import plfa.Isomorphism using (_≃_; _⇔_)
 
 ## Lists
 
-Lists are defined in Agda as follows.
+Lists are defined in Agda as follows:
 \begin{code}
 data List (A : Set) : Set where
   []  : List A
@@ -62,7 +62,7 @@ _tail_. A list is a strange beast: it has a head and a tail,
 nothing in between, and the tail is itself another list!
 
 As we've seen, parameterised types can be translated to
-indexed types. The definition above is equivalent to the following.
+indexed types. The definition above is equivalent to the following:
 \begin{code}
 data List′ : Set → Set where
   []′  : ∀ {A : Set} → List′ A
@@ -87,7 +87,7 @@ cons respectively, allowing a more efficient representation of lists.
 
 ## List syntax
 
-We can write lists more conveniently by introducing the following definitions.
+We can write lists more conveniently by introducing the following definitions:
 \begin{code}
 pattern [_] z = z ∷ []
 pattern [_,_] y z = y ∷ z ∷ []
@@ -106,7 +106,7 @@ on the right-hand side of an equation.
 ## Append
 
 Our first function on lists is written `_++_` and pronounced
-_append_.
+_append_:
 
 \begin{code}
 infixr 5 _++_
@@ -123,7 +123,7 @@ same as the head of the first list and tail the same as the tail of
 the first list appended to the second list.
 
 Here is an example, showing how to compute the result
-of appending two lists.
+of appending two lists:
 \begin{code}
 _ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
 _ =
@@ -146,7 +146,7 @@ number of elements in the first list.
 ## Reasoning about append
 
 We can reason about lists in much the same way that we reason
-about numbers.  Here is the proof that append is associative.
+about numbers.  Here is the proof that append is associative:
 \begin{code}
 ++-assoc : ∀ {A : Set} (xs ys zs : List A)
   → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
@@ -188,7 +188,7 @@ to the equality
 which is needed in the proof.
 
 It is also easy to show that `[]` is a left and right identity for `_++_`.
-That it is a left identity is immediate from the definition.
+That it is a left identity is immediate from the definition:
 \begin{code}
 ++-identityˡ : ∀ {A : Set} (xs : List A) → [] ++ xs ≡ xs
 ++-identityˡ xs =
@@ -198,7 +198,7 @@ That it is a left identity is immediate from the definition.
     xs
   ∎
 \end{code}
-That it is a right identity follows by simple induction.
+That it is a right identity follows by simple induction:
 \begin{code}
 ++-identityʳ : ∀ {A : Set} (xs : List A) → xs ++ [] ≡ xs
 ++-identityʳ [] =
@@ -222,7 +222,7 @@ a _monoid_ over lists.
 
 ## Length
 
-Our next function finds the length of a list.
+Our next function finds the length of a list:
 \begin{code}
 length : ∀ {A : Set} → List A → ℕ
 length []        =  zero
@@ -233,7 +233,7 @@ The length of the empty list is zero.
 The length of a non-empty list
 is one greater than the length of the tail of the list.
 
-Here is an example showing how to compute the length of a list.
+Here is an example showing how to compute the length of a list:
 \begin{code}
 _ : length [ 0 , 1 , 2 ] ≡ 3
 _ =
@@ -260,7 +260,7 @@ has insufficient information to infer the implicit parameter.
 ## Reasoning about length
 
 The length of one list appended to another is the
-sum of the lengths of the lists.
+sum of the lengths of the lists:
 \begin{code}
 length-++ : ∀ {A : Set} (xs ys : List A)
   → length (xs ++ ys) ≡ length xs + length ys
@@ -295,7 +295,7 @@ and it is promoted by the congruence `cong suc`.
 
 ## Reverse
 
-Using append, it is easy to formulate a function to reverse a list.
+Using append, it is easy to formulate a function to reverse a list:
 \begin{code}
 reverse : ∀ {A : Set} → List A → List A
 reverse []        =  []
@@ -306,7 +306,7 @@ The reverse of a non-empty list
 is the reverse of its tail appended to a unit list
 containing its head.
 
-Here is an example showing how to reverse a list.
+Here is an example showing how to reverse a list:
 \begin{code}
 _ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
 _ =
@@ -348,7 +348,7 @@ list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 #### Exercise `reverse-++-commute` (recommended)
 
 Show that the reverse of one list appended to another is the
-reverse of the second appended to the reverse of the first.
+reverse of the second appended to the reverse of the first:
 \begin{code}
 postulate
   reverse-++-commute : ∀ {A : Set} {xs ys : List A}
@@ -358,7 +358,7 @@ postulate
 #### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
-as the identity function.  Show that reverse is an involution.
+as the identity function.  Show that reverse is an involution:
 \begin{code}
 postulate
   reverse-involutive : ∀ {A : Set} {xs : List A}
@@ -370,7 +370,7 @@ postulate
 
 The definition above, while easy to reason about, is less efficient than
 one might expect since it takes time quadratic in the length of the list.
-The idea is that we generalise reverse to take an additional argument.
+The idea is that we generalise reverse to take an additional argument:
 \begin{code}
 shunt : ∀ {A : Set} → List A → List A → List A
 shunt [] ys = ys
@@ -380,7 +380,7 @@ The definition is by recursion on the first argument. The second argument
 actually becomes _larger_, but this is not a problem because the argument
 on which we recurse becomes _smaller_.
 
-Shunt is related to reverse as follows.
+Shunt is related to reverse as follows:
 \begin{code}
 shunt-reverse : ∀ {A : Set} (xs ys : List A)
   → shunt xs ys ≡ reverse xs ++ ys
@@ -419,14 +419,14 @@ which we recurse or induct becomes smaller, is a common trick. It belongs in
 your quiver of arrows, ready to slay the right problem.
 
 Having defined shunt be generalisation, it is now easy to respecialise to
-give a more efficient definition of reverse.
+give a more efficient definition of reverse:
 \begin{code}
 reverse′ : ∀ {A : Set} → List A → List A
 reverse′ xs = shunt xs []
 \end{code}
 
 Given our previous lemma, it is straightforward to show
-the two definitions equivalent.
+the two definitions equivalent:
 \begin{code}
 reverses : ∀ {A : Set} (xs : List A)
   → reverse′ xs ≡ reverse xs
@@ -442,7 +442,7 @@ reverses xs =
   ∎
 \end{code}
 
-Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`.
+Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`:
 \begin{code}
 _ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
 _ =
@@ -466,7 +466,7 @@ Now the time to reverse a list is linear in the length of the list.
 
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a _higher-order function_, one which takes a function as an
-argument and returns a function as a result.
+argument and returns a function as a result:
 \begin{code}
 map : ∀ {A B : Set} → (A → B) → List A → List B
 map f []        =  []
@@ -477,7 +477,7 @@ Map of a non-empty list yields a list
 with head the same as the function applied to the head of the given list,
 and tail the same as map of the function applied to the tail of the given list.
 
-Here is an example showing how to use map to increment every element of a list.
+Here is an example showing how to use map to increment every element of a list:
 \begin{code}
 _ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
 _ =
@@ -499,7 +499,7 @@ Map requires time linear in the length of the list.
 
 It is often convenient to exploit currying by applying
 map to a function to yield a new function, and at a later
-point applying the resulting function.
+point applying the resulting function:
 \begin{code}
 sucs : List ℕ → List ℕ
 sucs = map suc
@@ -525,7 +525,7 @@ _n_ functions.
 
 #### Exercise `map-compose`
 
-Prove that the map of a composition is equal to the composition of two maps.
+Prove that the map of a composition is equal to the composition of two maps:
 \begin{code}
 postulate
   map-compose : ∀ {A B C : Set} {f : A → B} {g : B → C}
@@ -535,7 +535,7 @@ The last step of the proof requires extensionality.
 
 #### Exercise `map-++-commute`
 
-Prove the following relationship between map and append.
+Prove the following relationship between map and append:
 \begin{code}
 postulate
   map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
@@ -545,13 +545,13 @@ postulate
 #### Exercise `map-Tree`
 
 Define a type of trees with leaves of type `A` and internal
-nodes of type `B`.
+nodes of type `B`:
 \begin{code}
 data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
 \end{code}
-Define a suitable map operator over trees.
+Define a suitable map operator over trees:
 \begin{code}
 postulate
   map-Tree : ∀ {A B C D : Set}
@@ -563,7 +563,7 @@ postulate
 
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
-for the empty list.
+for the empty list:
 \begin{code}
 foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
 foldr _⊗_ e []        =  e
@@ -573,7 +573,7 @@ Fold of the empty list is the given value.
 Fold of a non-empty list uses the operator to combine
 the head of the list and the fold of the tail of the list.
 
-Here is an example showing how to use fold to find the sum of a list.
+Here is an example showing how to use fold to find the sum of a list:
 \begin{code}
 _ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
 _ =
@@ -595,7 +595,7 @@ Fold requires time linear in the length of the list.
 
 It is often convenient to exploit currying by applying
 fold to an operator and a value to yield a new function,
-and at a later point applying the resulting function.
+and at a later point applying the resulting function:
 \begin{code}
 sum : List ℕ → ℕ
 sum = foldr _+_ 0
@@ -620,13 +620,13 @@ a corresponding fold function that takes _n_ arguments.
 #### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
-For example,
+For example:
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
 #### Exercise `foldr-++` (recommended)
 
-Show that fold and append are related as follows.
+Show that fold and append are related as follows:
 \begin{code}
 postulate
   foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
@@ -636,7 +636,7 @@ postulate
 
 #### Exercise `map-is-foldr`
 
-Show that map can be defined using fold.
+Show that map can be defined using fold:
 \begin{code}
 postulate
   map-is-foldr : ∀ {A B : Set} {f : A → B} →
@@ -646,7 +646,7 @@ This requires extensionality.
 
 #### Exercise `fold-Tree`
 
-Define a suitable fold function for the type of trees given earlier.
+Define a suitable fold function for the type of trees given earlier:
 \begin{code}
 postulate
   fold-Tree : ∀ {A B C : Set}
@@ -659,19 +659,19 @@ Demonstrate an anologue of `map-is-foldr` for the type of trees.
 
 #### Exercise `sum-downFrom` (stretch)
 
-Define a function that counts down as follows.
+Define a function that counts down as follows:
 \begin{code}
 downFrom : ℕ → List ℕ
 downFrom zero     =  []
 downFrom (suc n)  =  n ∷ downFrom n
 \end{code}
-For example,
+For example:
 \begin{code}
 _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
 _ = refl
 \end{code}
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
-equal to `n * (n ∸ 1) / 2`.
+equal to `n * (n ∸ 1) / 2`:
 \begin{code}
 postulate
   sum-downFrom : ∀ (n : ℕ)
@@ -685,7 +685,7 @@ Typically when we use a fold the operator is associative and the
 value is a left and right identity for the value, meaning that the
 operator and the value form a _monoid_.
 
-We can define a monoid as a suitable record type.
+We can define a monoid as a suitable record type:
 \begin{code}
 record IsMonoid {A : Set} (_⊗_ : A → A → A) (e : A) : Set where
   field
@@ -697,7 +697,7 @@ open IsMonoid
 \end{code}
 
 As examples, sum and zero, multiplication and one, and append and the empty
-list, are all examples of monoids.
+list, are all examples of monoids:
 \begin{code}
 +-monoid : IsMonoid _+_ 0
 +-monoid =
@@ -725,7 +725,7 @@ list, are all examples of monoids.
 \end{code}
 
 If `_⊗_` and `e` form a monoid, then we can re-express fold on the
-same operator and an arbitrary value.
+same operator and an arbitrary value:
 \begin{code}
 foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
   ∀ (xs : List A) (y : A) → foldr _⊗_ y xs ≡ foldr _⊗_ e xs ⊗ y
@@ -753,7 +753,7 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ∎
 \end{code}
 
-As a consequence, using a previous exercise, we have the following.
+As a consequence, using a previous exercise, we have the following:
 \begin{code}
 foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
   ∀ (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
@@ -770,7 +770,7 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
 #### Exercise `foldl`
 
 Define a function `foldl` which is analogous to `foldr`, but where
-operations associate to the left rather than the right.  For example,
+operations associate to the left rather than the right.  For example:
 
     foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
     foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
@@ -787,7 +787,7 @@ Show that if `_⊕_` and `e` form a monoid, then `foldr _⊗_ e` and
 We can also define predicates over lists. Two of the most important
 are `All` and `Any`.
 
-Predicate `All P` holds if predicate `P` is satisfied by every element of a list.
+Predicate `All P` holds if predicate `P` is satisfied by every element of a list:
 \begin{code}
 data All {A : Set} (P : A → Set) : List A → Set where
   []  : All P []
@@ -803,7 +803,7 @@ a list or evidence that `All P` holds.
 For example, `All (_≤ 2)` holds of a list where every element is less
 than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
 `n`, and that if `m≤n` proves `m ≤ n` then `s≤s m≤n` proves `suc m ≤
-suc n`, for any `m` and `n`.
+suc n`, for any `m` and `n`:
 \begin{code}
 _ : All (_≤ 2) [ 0 , 1 , 2 ]
 _ = z≤n ∷ s≤s z≤n ∷ s≤s (s≤s z≤n) ∷ []
@@ -820,7 +820,7 @@ scope when the pattern is declared.  That's not the case here, since
 
 ## Any
 
-Predicate `Any P` holds if predicate `P` is satisfied by some element of a list.
+Predicate `Any P` holds if predicate `P` is satisfied by some element of a list:
 \begin{code}
 data Any {A : Set} (P : A → Set) : List A → Set where
   here  : ∀ {x : A} {xs : List A} → P x → Any P (x ∷ xs)
@@ -829,7 +829,7 @@ data Any {A : Set} (P : A → Set) : List A → Set where
 The first constructor provides evidence that the head of the list
 satisfies `P`, while the second provides evidence that some element of
 the tail of the list satisfies `P`.  For example, we can define list
-membership as follows.
+membership as follows:
 \begin{code}
 infix 4 _∈_ _∉_
 
@@ -841,7 +841,7 @@ x ∉ xs = ¬ (x ∈ xs)
 \end{code}
 For example, zero is an element of the list `[ 0 , 1 , 0 , 2 ]`.  Indeed, we can demonstrate
 this fact in two different ways, corresponding to the two different
-occurrences of zero in the list, as the first element and as the third element.
+occurrences of zero in the list, as the first element and as the third element:
 \begin{code}
 _ : 0 ∈ [ 0 , 1 , 0 , 2 ]
 _ = here refl
@@ -850,7 +850,7 @@ _ : 0 ∈ [ 0 , 1 , 0 , 2 ]
 _ = there (there (here refl))
 \end{code}
 Further, we can demonstrate that three is not in the list, because
-any possible proof that it is in the list leads to contradiction.
+any possible proof that it is in the list leads to contradiction:
 \begin{code}
 not-in : 3 ∉ [ 0 , 1 , 0 , 2 ]
 not-in (here ())
@@ -866,7 +866,7 @@ possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 ## All and append
 
 A predicate holds for every element of one list appended to another if and
-only if it holds for every element of each list.
+only if it holds for every element of each list:
 \begin{code}
 All-++-⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
   All P (xs ++ ys) ⇔ (All P xs × All P ys)
@@ -902,14 +902,14 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 #### Exercise `¬Any≃All¬` (stretch)
 
 First generalise composition to arbitrary levels, using
-[universe polymorphism][plfa.Equality#unipoly].
+[universe polymorphism][plfa.Equality#unipoly]:
 \begin{code}
 _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
   → (B → C) → (A → B) → A → C
 (g ∘′ f) x  =  g (f x)
 \end{code}
 
-Show that `Any` and `All` satisfy a version of De Morgan's Law.
+Show that `Any` and `All` satisfy a version of De Morgan's Law:
 \begin{code}
 postulate
   ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
@@ -929,7 +929,7 @@ If so, prove; if not, explain why.
 
 If we consider a predicate as a function that yields a boolean,
 it is easy to define an analogue of `All`, which returns true if
-a given predicate returns true for every element of a list.
+a given predicate returns true for every element of a list:
 \begin{code}
 all : ∀ {A : Set} → (A → Bool) → List A → Bool
 all p  =  foldr _∧_ true ∘ map p
@@ -941,13 +941,13 @@ As one would hope, if we replace booleans by decidables there is again
 an analogue of `All`.  First, return to the notion of a predicate `P` as
 a function of type `A → Set`, taking a value `x` of type `A` into evidence
 `P x` that a property holds for `x`.  Say that a predicate `P` is _decidable_
-if we have a function that for a given `x` can decide `P x`.
+if we have a function that for a given `x` can decide `P x`:
 \begin{code}
 Decidable : ∀ {A : Set} → (A → Set) → Set
 Decidable {A} P  =  ∀ (x : A) → Dec (P x)
 \end{code}
 Then if predicate `P` is decidable, it is also decidable whether every
-element of a list satisfies the predicate.
+element of a list satisfies the predicate:
 \begin{code}
 All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
 All? P? []                                 =  yes []
@@ -975,7 +975,7 @@ for some element of a list.  Give their definitions.
 
 Define the following variant of the traditional `filter` function on lists,
 which given a list and a decidable predicate returns all elements of the
-list satisfying the predicate.
+list satisfying the predicate:
 \begin{code}
 postulate
   filter? : ∀ {A : Set} {P : A → Set}
@@ -985,7 +985,7 @@ postulate
 
 ## Standard Library
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
 import Data.List.All using (All; []; _∷_)
@@ -1008,7 +1008,7 @@ ranges over a binary relation).
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ∷  U+2237  PROPORTION  (\::)
     ⊗  U+2297  CIRCLED TIMES  (\otimes, \ox)
