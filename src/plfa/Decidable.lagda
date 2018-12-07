@@ -39,7 +39,7 @@ open import plfa.Isomorphism using (_⇔_)
 
 Recall that Chapter [Relations][plfa.Relations]
 defined comparison an inductive datatype, which provides _evidence_ that one number
-is less than or equal to another.
+is less than or equal to another:
 \begin{code}
 infix 4 _≤_
 
@@ -55,7 +55,7 @@ data _≤_ : ℕ → ℕ → Set where
     → suc m ≤ suc n
 \end{code}
 For example, we can provide evidence that `2 ≤ 4`,
-and show there is no possible evidence that `4 ≤ 2`.
+and show there is no possible evidence that `4 ≤ 2`:
 \begin{code}
 2≤4 : 2 ≤ 4
 2≤4 = s≤s (s≤s z≤n)
@@ -69,14 +69,14 @@ no possible evidence for `2 ≤ 0`, which `z≤n` cannot match
 (because `0` cannot match `suc n`).
 
 An alternative, which may seem more familiar, is to define a
-type of booleans.
+type of booleans:
 \begin{code}
 data Bool : Set where
   true  : Bool
   false : Bool
 \end{code}
 Given booleans, we can define a function of two numbers that
-_computes_ to `true` if the comparison holds and to `false` otherwise.
+_computes_ to `true` if the comparison holds and to `false` otherwise:
 \begin{code}
 infix 4 _≤ᵇ_
 
@@ -90,7 +90,7 @@ constructors of the corresponding inductive datatype, while the
 middle clause arises because there is no possible evidence that
 `suc m ≤ zero` for any `m`.
 For example, we can compute that `2 ≤ 4` holds,
-and we can compute that `4 ≤ 2` does not hold.
+and we can compute that `4 ≤ 2` does not hold:
 \begin{code}
 _ : (2 ≤ᵇ 4) ≡ true
 _ =
@@ -127,7 +127,7 @@ and the one use of `()` when showing there can be no evidence that `4 ≤ 2`.
 
 We would hope to be able to show these two approaches are related, and
 indeed we can.  First, we define a function that lets us map from the
-computation world to the evidence world.
+computation world to the evidence world:
 \begin{code}
 T : Bool → Set
 T true   =  ⊤
@@ -141,7 +141,7 @@ no possible evidence that `T b` holds if `b` is false.
 
 Another way to put this is that `T b` is inhabited exactly when `b ≡ true`
 is inhabited.
-In the forward direction, we need to do a case analysis on the boolean `b`.
+In the forward direction, we need to do a case analysis on the boolean `b`:
 \begin{code}
 T→≡ : ∀ (b : Bool) → T b → b ≡ true
 T→≡ true tt   =  refl
@@ -150,7 +150,7 @@ T→≡ false ()
 If `b` is true then `T b` is inhabited by `tt` and `b ≡ true` is inhabited
 by `refl`, while if `b` is false then `T b` in uninhabited.
 
-In the reverse direction, there is no need for a case analysis.
+In the reverse direction, there is no need for a case analysis:
 \begin{code}
 ≡→T : ∀ {b : Bool} → b ≡ true → T b
 ≡→T refl  =  tt
@@ -161,7 +161,7 @@ hence `T b` is inhabited by `tt`.
 Now we can show that `T (m ≤ᵇ n)` is inhabited exactly when `m ≤ n` is inhabited.
 
 In the forward direction, we consider the three clauses in the definition
-of `_≤ᵇ_`.
+of `_≤ᵇ_`:
 \begin{code}
 ≤ᵇ→≤ : ∀ (m n : ℕ) → T (m ≤ᵇ n) → m ≤ n
 ≤ᵇ→≤ zero    n       tt  =  z≤n
@@ -179,7 +179,7 @@ We recursively invoke the function to get evidence that `m ≤ n`, which
 `s≤s` converts to evidence that `suc m ≤ suc n`.
 
 In the reverse direction, we consider the possible forms of evidence
-that `m ≤ n`.
+that `m ≤ n`:
 \begin{code}
 ≤→≤ᵇ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ n)
 ≤→≤ᵇ z≤n        =  tt
@@ -211,7 +211,7 @@ A function that returns a boolean returns exactly a single bit of information:
 does the relation hold or does it not? Conversely, the evidence approach tells
 us exactly why the relation holds, but we are responsible for generating the
 evidence.  But it is easy to define a type that combines the benefits of
-both approaches.  It is called `Dec A`, where `Dec` is short for _decidable_.
+both approaches.  It is called `Dec A`, where `Dec` is short for _decidable_:
 \begin{code}
 data Dec (A : Set) : Set where
   yes :   A → Dec A
@@ -226,7 +226,7 @@ For example, we define a function `_≤?_` which given two numbers decides wheth
 is less than or equal to the other, and provides evidence to justify its conclusion.
 
 First, we introduce two functions useful for constructing evidence that
-an inequality does not hold.
+an inequality does not hold:
 \begin{code}
 ¬s≤z : ∀ {m : ℕ} → ¬ (suc m ≤ zero)
 ¬s≤z ()
@@ -242,7 +242,7 @@ of these takes evidence `¬m≤n` of `¬ (m ≤ n)` and returns a proof of
 form `s≤s m≤n` where `m≤n` is evidence that `m ≤ n`.  Hence, we have
 a contradiction, evidenced by `¬m≤n m≤n`.
 
-Using these, it is straightforward to decide an inequality.
+Using these, it is straightforward to decide an inequality:
 \begin{code}
 _≤?_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 zero  ≤? n                   =  yes z≤n
@@ -270,7 +270,7 @@ And, as we will later show, if you really want the latter three, it is easy
 to derive them from `_≤?_`.
 
 We can use our new function to _compute_ the _evidence_ that earlier we had to
-think up on our own.
+think up on our own:
 \begin{code}
 _ : 2 ≤? 4 ≡ yes (s≤s (s≤s z≤n))
 _ = refl
@@ -289,7 +289,7 @@ trouble normalising evidence of negation.)
 
 #### Exercise `_<?_` (recommended)
 
-Analogous to the function above, define a function to decide strict inequality.
+Analogous to the function above, define a function to decide strict inequality:
 \begin{code}
 postulate
   _<?_ : ∀ (m n : ℕ) → Dec (m < n)
@@ -297,7 +297,7 @@ postulate
 
 #### Exercise `_≡ℕ?_`
 
-Define a function to decide whether two naturals are equal.
+Define a function to decide whether two naturals are equal:
 \begin{code}
 postulate
   _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
@@ -308,7 +308,7 @@ postulate
 
 Curious readers might wonder if we could reuse the definition of
 `m ≤ᵇ n`, together with the proofs that it is equivalent to `m ≤ n`, to show
-decidability.  Indeed, we can do so as follows.
+decidability.  Indeed, we can do so as follows:
 \begin{code}
 _≤?′_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
@@ -342,20 +342,20 @@ However, overall it is simpler to just define `_≤?_` directly, as in the previ
 section.  If one really wants `_≤ᵇ_`, then it and its properties are easily derived
 from `_≤?_`, as we will now show.
 
-Erasure takes a decidable value to a boolean.
+Erasure takes a decidable value to a boolean:
 \begin{code}
 ⌊_⌋ : ∀ {A : Set} → Dec A → Bool
 ⌊ yes x ⌋  =  true
 ⌊ no ¬x ⌋  =  false
 \end{code}
-Using erasure, we can easily derive `_≤ᵇ_` from `_≤?_`.
+Using erasure, we can easily derive `_≤ᵇ_` from `_≤?_`:
 \begin{code}
 _≤ᵇ′_ : ℕ → ℕ → Bool
 m ≤ᵇ′ n  =  ⌊ m ≤? n ⌋
 \end{code}
 
 Further, if `D` is a value of type `Dec A`, then `T ⌊ D ⌋` is
-inhabited exactly when `A` is inhabited.
+inhabited exactly when `A` is inhabited:
 \begin{code}
 toWitness : ∀ {A : Set} {D : Dec A} → T ⌊ D ⌋ → A
 toWitness {A} {yes x} tt  =  x
@@ -366,7 +366,7 @@ fromWitness {A} {yes x} _  =  tt
 fromWitness {A} {no ¬x} x  =  ¬x x
 \end{code}
 Using these, we can easily derive that `T (m ≤ᵇ′ n)` is inhabited
-exactly when `m ≤ n` is inhabited.
+exactly when `m ≤ n` is inhabited:
 \begin{code}
 ≤ᵇ′→≤ : ∀ {m n : ℕ} → T (m ≤ᵇ′ n) → m ≤ n
 ≤ᵇ′→≤  =  toWitness
@@ -386,7 +386,7 @@ Most readers will be familiar with the logical connectives for booleans.
 Each of these extends to decidables.
 
 The conjunction of two booleans is true if both are true,
-and false is either is false.
+and false is either is false:
 \begin{code}
 infixr 6 _∧_
 
@@ -401,7 +401,7 @@ second or the third can match.  However, regardless of which matches
 the answer is the same.
 
 Correspondingly, given two decidable propositions, we can
-decide their conjunction.
+decide their conjunction:
 \begin{code}
 infixr 6 _×-dec_
 
@@ -423,7 +423,7 @@ on which matches; if both conjuncts fail to hold we pick the first to
 yield the contradiction, but it would be equally valid to pick the second.
 
 The disjunction of two booleans is true if either is true,
-and false if both are false.
+and false if both are false:
 \begin{code}
 infixr 5 _∨_
 
@@ -438,7 +438,7 @@ first or the second can match.  However, regardless of which matches
 the answer is the same.
 
 Correspondingly, given two decidable propositions, we can
-decide their disjunction.
+decide their disjunction:
 \begin{code}
 infixr 5 _⊎-dec_
 
@@ -460,14 +460,14 @@ on which matches; if both disjuncts hold we pick the first,
 but it would be equally valid to pick the second.
 
 The negation of a boolean is false if its argument is true,
-and vice versa.
+and vice versa:
 \begin{code}
 not : Bool → Bool
 not true  = false
 not false = true
 \end{code}
 Correspondingly, given a decidable proposition, we
-can decide its negation.
+can decide its negation:
 \begin{code}
 ¬? : ∀ {A : Set} → Dec A → Dec (¬ A)
 ¬? (yes x)  =  no (¬¬-intro x)
@@ -479,7 +479,7 @@ in other words, that `¬ ¬ A` holds, which is an easy consequence
 of the fact that `A` holds.
 
 There is also a slightly less familiar connective,
-corresponding to implication.
+corresponding to implication:
 \begin{code}
 _⊃_ : Bool → Bool → Bool
 _     ⊃ true   =  true
@@ -497,7 +497,7 @@ first or the second can match.  However, regardless of which matches
 the answer is the same.
 
 Correspondingly, given two decidable propositions,
-we can decide if the first implies the second.
+we can decide if the first implies the second:
 \begin{code}
 _→-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A → B)
 _     →-dec yes y  =  yes (λ _ → y)
@@ -525,7 +525,7 @@ on which matches; but either is equally valid.
 
 #### Exercise `erasure`
 
-Show that erasure relates corresponding boolean and decidable operations.
+Show that erasure relates corresponding boolean and decidable operations:
 \begin{code}
 postulate
   ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
@@ -537,7 +537,7 @@ postulate
 
 Give analogues of the `_⇔_` operation from 
 Chapter [Isomorphism][plfa.Isomorphism#iff],
-operation on booleans and decidables, and also show the corresponding erasure.
+operation on booleans and decidables, and also show the corresponding erasure:
 \begin{code}
 postulate
   _iff_ : Bool → Bool → Bool
