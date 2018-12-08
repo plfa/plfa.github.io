@@ -193,7 +193,7 @@ technical paper, this gives you a way to orient yourself, by checking
 whether or not it is a preorder, partial order, or total order.  A
 careful author will often call out these properties---or their
 lack---for instance by saying that a newly introduced relation is a
-a partial order but not a total order.
+partial order but not a total order.
 
 
 #### Exercise `orderings` {#orderings}
