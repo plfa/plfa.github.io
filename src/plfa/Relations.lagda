@@ -362,7 +362,7 @@ constructor.  Unlike an indexed datatype, where the indexes can vary
 (as in `zero ≤ n` and `suc m ≤ suc n`), in a parameterised datatype
 the parameters must always be the same (as in `Total m n`).
 Parameterised declarations are shorter, easier to read, and
-occcasionally aid Agda's termination checker, so we will use them in
+occasionally aid Agda's termination checker, so we will use them in
 preference to indexed types when possible.
 
 With that preliminary out of the way, we specify and prove totality:
