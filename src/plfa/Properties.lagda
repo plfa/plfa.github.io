@@ -90,7 +90,7 @@ types without needing to develop a separate inductive definition of the
 
 ## Values do not reduce
 
-We start with any easy observation. Values do not reduce.
+We start with any easy observation. Values do not reduce:
 \begin{code}
 V¬—→ : ∀ {M N}
   → Value M
@@ -100,7 +100,7 @@ V¬—→ V-ƛ        ()
 V¬—→ V-zero     ()
 V¬—→ (V-suc VM) (ξ-suc M—→N) = V¬—→ VM M—→N
 \end{code}
-We consider the three possibilities for values.
+We consider the three possibilities for values:
 
 * If it is an abstraction then no reduction applies
 
@@ -110,7 +110,7 @@ We consider the three possibilities for values.
   but in that case the successor is itself of a value
   that reduces, which by induction cannot occur.
 
-As a corollary, terms that reduce are not values.
+As a corollary, terms that reduce are not values:
 \begin{code}
 —→¬V : ∀ {M N}
   → M —→ N
@@ -134,7 +134,7 @@ to their types.  A lambda expression must have a function type,
 and a zero or successor expression must be a natural.
 Further, the body of a function must be well-typed in a context
 containing only its bound variable, and the argument of successor
-must itself be canonical.
+must itself be canonical:
 \begin{code}
 infix  4 Canonical_⦂_
 
@@ -155,7 +155,7 @@ data Canonical_⦂_ : Term → Type → Set where
     → Canonical `suc V ⦂ `ℕ
 \end{code}    
 
-Every closed, well-typed value is canonical.
+Every closed, well-typed value is canonical:
 \begin{code}
 canonical : ∀ {V A}
   → ∅ ⊢ V ⦂ A
@@ -170,7 +170,7 @@ canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
 \end{code}
-There are only three interesting cases to consider. 
+There are only three interesting cases to consider: 
 
 * If the term is a lambda abstraction, then well-typing of the term
   guarantees well-typing of the body.
@@ -187,7 +187,7 @@ application, zero, successor, and fixpoint are thrown out because they
 are not values.
 
 Conversely, if a term is canonical then it is a value
-and it is well-typed in the empty context.
+and it is well-typed in the empty context:
 \begin{code}
 value : ∀ {M A}
   → Canonical M ⦂ A
@@ -230,7 +230,7 @@ _Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` s
 that `M —→ N`.
 
 To formulate this property, we first introduce a relation that
-captures what it means for a term `M` to make progess.
+captures what it means for a term `M` to make progess:
 \begin{code}
 data Progress (M : Term) : Set where
 
@@ -248,7 +248,7 @@ A term `M` makes progress if either it can take a step, meaning there
 exists a term `N` such that `M —→ N`, or if it is done, meaning that
 `M` is a value.
 
-If a term is well-typed in the empty context then it satisfies progress.
+If a term is well-typed in the empty context then it satisfies progress:
 \begin{code}
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
@@ -274,7 +274,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 progress (⊢μ ⊢M)                            =  step β-μ
 \end{code}
 We induct on the evidence that the term is well-typed.
-Let's unpack the first three cases.  
+Let's unpack the first three cases:  
 
 * The term cannot be a variable, since no variable is well typed
   in the empty context.
@@ -282,7 +282,7 @@ Let's unpack the first three cases.
 * If the term is a lambda abstraction then it is a value.
 
 * If the term is an application `L · M`, recursively apply
-  progress to the derivation that `L` is well-typed.
+  progress to the derivation that `L` is well-typed:
 
   + If the term steps, we have evidence that `L —→ L′`,
     which by `ξ-·₁` means that our original term steps
@@ -290,7 +290,7 @@ Let's unpack the first three cases.
 
   + If the term is done, we have evidence that `L` is
     a value. Recursively apply progress to the derivation
-    that `M` is well-typed.
+    that `M` is well-typed:
 
     - If the term steps, we have evidence that `M —→ M′`,
       which by `ξ-·₂` means that our original term steps
@@ -345,7 +345,7 @@ proof of `progress` above.
 #### Exercise `value?`
 
 Combine `progress` and `—→¬V` to write a program that decides
-whether a well-typed term is a value.
+whether a well-typed term is a value:
 \begin{code}
 postulate
   value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
@@ -365,7 +365,7 @@ Let `Γ` and `Δ` be two context such that every variable that
 appears in `Γ` also appears with the same type in `Δ`.  Then
 if any term is typable under `Γ`, it has the same type under `Δ`.
 
-In symbols,
+In symbols:
 
     ∀ {x A} → Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
     ---------------------------------
@@ -391,7 +391,7 @@ assumption that `x` has type `A` the term `N` has type `B`.
 Then substituting `V` for `x` in `N` yields a term that
 also has type `B`.
 
-In symbols,
+In symbols:
 
     ∅ ⊢ V ⦂ A
     Γ , x ⦂ A ⊢ N ⦂ B
@@ -441,7 +441,7 @@ and `Γ , x ⦂ A` appears in a hypothesis.  Thus:
 for lambda expressions, and similarly for case and fixpoint.  To deal
 with this situation, we first prove a lemma showing that if one context maps to another, 
 this is still true after adding the same variable to
-both contexts.
+both contexts:
 \begin{code}
 ext : ∀ {Γ Δ}
   → (∀ {x A}     →         Γ ∋ x ⦂ A →         Δ ∋ x ⦂ A)
@@ -453,7 +453,7 @@ ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 Let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.
 The proof is by case analysis of the evidence that `x` appears
-in the extended map `Γ , y ⦂ B`.
+in the extended map `Γ , y ⦂ B`:
 
 * If `x` is the same as `y`, we used `Z` to access the last variable
 in the extended `Γ`; and can similarly use `Z` to access the last
@@ -466,7 +466,7 @@ similarly use `S` to skip over the last variable in the extended `Δ`,
 applying `ρ` to find the evidence that `w` appears in `Δ`.
 
 With the extension lemma under our belts, it is straightforward to
-prove renaming preserves types.
+prove renaming preserves types:
 \begin{code}
 rename : ∀ {Γ Δ}
         → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
@@ -483,7 +483,7 @@ rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (ext ρ) ⊢M)
 As before, let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.  We induct
 on the evidence that `M` is well-typed in `Γ`.  Let's unpack the
-first three cases.
+first three cases:
 
 * If the term is a variable, then applying `ρ` to the evidence
 that the variable appears in `Γ` yields the corresponding evidence that
@@ -507,7 +507,7 @@ always grows smaller, even though the first argument sometimes grows larger.
 We have three important corollaries, each proved by constructing
 a suitable map between contexts.
 
-First, a closed term can be weakened to any context.
+First, a closed term can be weakened to any context:
 \begin{code}
 weaken : ∀ {Γ M A}
   → ∅ ⊢ M ⦂ A
@@ -525,7 +525,7 @@ Here the map `ρ` is trivial, since there are no possible
 arguments in the empty context `∅`.
 
 Second, if the last two variables in a context are equal then we can
-drop the shadowed one.
+drop the shadowed one:
 \begin{code}
 drop : ∀ {Γ x M A B C}
   → Γ , x ⦂ A , x ⦂ B ⊢ M ⦂ C
@@ -548,7 +548,7 @@ first position can only happen if the variable looked for differs from
 found in the second position, which also contains `x`, this leads to a
 contradiction (evidenced by `x≢x refl`).
 
-Third, if the last two variables in a context differ then we can swap them.
+Third, if the last two variables in a context differ then we can swap them:
 \begin{code}
 swap : ∀ {Γ x y M A B C}
   → x ≢ y
@@ -590,7 +590,7 @@ is defined by recursion, and as we descend into terms with bound
 variables the context grows.  So for the induction to go through,
 we require an arbitrary context `Γ`, as in the statement of the lemma.
 
-Here is the formal statement and proof that substitution preserves types.
+Here is the formal statement and proof that substitution preserves types:
 \begin{code}
 subst : ∀ {Γ x N V A B}
   → ∅ ⊢ V ⦂ A
@@ -633,7 +633,7 @@ definition of substitution in the previous chapter.  The proof never
 mentions the types of `x`, `y`, `V`, or `N`, so in what follows we
 choose type name as convenient.
 
-Now that naming is resolved, let's unpack the first three cases.
+Now that naming is resolved, let's unpack the first three cases:
 
 * In the variable case, we must show
 
@@ -646,7 +646,7 @@ Now that naming is resolved, let's unpack the first three cases.
 
       Γ , y ⦂ B ∋ x ⦂ A
     
-  There are two subcases, depending on the evidence for this judgment.
+  There are two subcases, depending on the evidence for this judgment:
 
   + The lookup judgment is evidenced by rule `Z`:
 
@@ -655,7 +655,7 @@ Now that naming is resolved, let's unpack the first three cases.
 
     In this case, `x` and `y` are necessarily identical, as are `A`
     and `B`.  Nonetheless, we must evaluate `x ≟ y` in order to allow
-    the definition of substitution to simplify.
+    the definition of substitution to simplify:
 
     - If the variables are equal, then after simplification we
       must show
@@ -677,7 +677,7 @@ Now that naming is resolved, let's unpack the first three cases.
 
     In this case, `x` and `y` are necessarily distinct.
     Nonetheless, we must again evaluate `x ≟ y` in order to allow
-    the definition of substitution to simplify.
+    the definition of substitution to simplify:
 
     - If the variables are equal we have a contradiction.
 
@@ -703,16 +703,16 @@ Now that naming is resolved, let's unpack the first three cases.
 
       Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
 
-  We evaluate `x ≟ y` in order to allow the definition of substitution to simplify.
+  We evaluate `x ≟ y` in order to allow the definition of substitution to simplify:
 
-  + If the variables are equal then after simplification we must show
+  + If the variables are equal then after simplification we must show:
 
         ∅ ⊢ V ⦂ B
         Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
         -------------------------
         Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C
 
-    From the drop lemma, `drop`, we may conclude
+    From the drop lemma, `drop`, we may conclude:
 
         Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
         -------------------------
@@ -720,20 +720,20 @@ Now that naming is resolved, let's unpack the first three cases.
 
     The typing rule for abstractions then yields the required conclusion.    
 
-  + If the variables are distinct then after simplification we must show
+  + If the variables are distinct then after simplification we must show:
 
         ∅ ⊢ V ⦂ B
         Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
         --------------------------------
         Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C
 
-    From the swap lemma we may conclude
+    From the swap lemma we may conclude:
 
         Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
         -------------------------
         Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
 
-    The inductive hypothesis gives us
+    The inductive hypothesis gives us:
 
         ∅ ⊢ V ⦂ B
         Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C        
@@ -754,7 +754,7 @@ Now that naming is resolved, let's unpack the first three cases.
       Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
       Γ , y ⦂ C ⊢ M ⦂ A
 
-  By the definition of substitution, we must show
+  By the definition of substitution, we must show:
 
       ∅ ⊢ V ⦂ C
       Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
@@ -782,7 +782,7 @@ preserves types.
 ## Preservation
 
 Once we have shown that substitution preserves types, showing
-that reduction preserves types is straightforward.
+that reduction preserves types is straightforward:
 
 \begin{code}
 preserve : ∀ {M N A}
@@ -805,7 +805,7 @@ preserve (⊢μ ⊢M)                 (β-μ)            =  subst (⊢μ ⊢M) �
 The proof never mentions the types of `M` or `N`,
 so in what follows we choose type name as convenient.
 
-Let's unpack the cases for two of the reduction rules.
+Let's unpack the cases for two of the reduction rules:
 
 * Rule `ξ-·₁`.  We have
 
@@ -863,7 +863,7 @@ any well-typed term.  In this section, we will present an Agda
 function that computes the reduction sequence from any given closed,
 well-typed term to its value, if it has one.
 
-Some terms may reduce forever.  Here is a simple example.
+Some terms may reduce forever.  Here is a simple example:
 \begin{code}
 sucμ  =  μ "x" ⇒ `suc (` "x")
 
@@ -899,13 +899,13 @@ published rate: a given number of Ethers (the currency of Ethereum)
 per unit of gas.
 
 By analogy, we will use the name _gas_ for the parameter which puts a
-bound on the number of reduction steps.  Gas is specified by a natural number.
+bound on the number of reduction steps.  `Gas` is specified by a natural number:
 \begin{code}
 data Gas : Set where
   gas : ℕ → Gas
 \end{code}
 When our evaluator returns a term `N`, it will either give evidence that
-`N` is a value or indicate that it ran out of gas.
+`N` is a value or indicate that it ran out of gas:
 \begin{code}
 data Finished (N : Term) : Set where
 
@@ -920,7 +920,7 @@ data Finished (N : Term) : Set where
 \end{code}
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
-reduction finished.
+reduction finished:
 \begin{code}
 data Steps (L : Term) : Set where
 
@@ -931,7 +931,7 @@ data Steps (L : Term) : Set where
     → Steps L
 \end{code}
 The evaluator takes gas and evidence that a term is well-typed,
-and returns the corresponding steps.
+and returns the corresponding steps:
 \begin{code}
 eval : ∀ {L A}
   → Gas
@@ -946,7 +946,7 @@ eval {L} (gas (suc m)) ⊢L with progress ⊢L
 \end{code}
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well-typed.  We consider the amount of gas
-remaining.  There are two possibilities.
+remaining.  There are two possibilities:
 
 * It is zero, so we stop early.  We return the trivial reduction
   sequence `L —↠ L`, evidence that `L` is well-typed, and an
@@ -954,7 +954,7 @@ remaining.  There are two possibilities.
 
 * It is non-zero and after the next step we have `m` gas remaining.
   Apply progress to the evidence that term `L` is well-typed.  There
-  are two possibilities.
+  are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
     trivial reduction sequence `L —↠ L`, evidence that `L` is
@@ -973,7 +973,7 @@ remaining.  There are two possibilities.
 
 We can now use Agda to compute the non-terminating reduction
 sequence given earlier.  First, we show that the term `sucμ`
-is well-typed.
+is well-typed:
 \begin{code}
 ⊢sucμ : ∅ ⊢ μ "x" ⇒ `suc ` "x" ⦂ `ℕ
 ⊢sucμ = ⊢μ (⊢suc (⊢` ∋x))
@@ -981,7 +981,7 @@ is well-typed.
   ∋x = Z
 \end{code}
 To show the first three steps of the infinite reduction
-sequence, we evaluate with three steps worth of gas.
+sequence, we evaluate with three steps worth of gas:
 \begin{code}
 _ : eval (gas 3) ⊢sucμ ≡
   steps
@@ -999,7 +999,7 @@ _ = refl
 
 Similarly, we can use Agda to compute the reductions sequences given
 in the previous chapter.  We start with the Church numeral two
-applied to successor and zero.  Supplying 100 steps of gas is more than enough.
+applied to successor and zero.  Supplying 100 steps of gas is more than enough:
 \begin{code}
 _ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
   steps
@@ -1024,7 +1024,7 @@ right-hand side of the equation.  The example reduction of the
 previous chapter was derived from this result, reformatting and
 writing `twoᶜ` and `sucᶜ` in place of their expansions.
 
-Next, we show two plus two is four.
+Next, we show two plus two is four:
 \begin{code}
 _ : eval (gas 100) ⊢2+2 ≡
   steps
@@ -1189,7 +1189,7 @@ _ = refl
 Again, the derivation in the previous chapter was derived by
 editing the above.
 
-Similarly, can evaluate the corresponding term for Church numerals.
+Similarly, can evaluate the corresponding term for Church numerals:
 \begin{code}
 _ : eval (gas 100) ⊢2+2ᶜ ≡
   steps
@@ -1283,19 +1283,19 @@ with case expressions and one not involving case expressions.
 
 ## Well-typed terms don't get stuck
 
-A term is _normal_ if it cannot reduce.
+A term is _normal_ if it cannot reduce:
 \begin{code}
 Normal : Term → Set
 Normal M  =  ∀ {N} → ¬ (M —→ N)
 \end{code}
 
-A term is _stuck_ if it is normal yet not a value.
+A term is _stuck_ if it is normal yet not a value:
 \begin{code}
 Stuck : Term → Set
 Stuck M  =  Normal M × ¬ Value M
 \end{code}
 
-Using progress, it is easy to show that no well-typed term is stuck.
+Using progress, it is easy to show that no well-typed term is stuck:
 \begin{code}
 postulate
   unstuck : ∀ {M A}
@@ -1305,7 +1305,7 @@ postulate
 \end{code}
 
 Using preservation, it is easy to show that after any number of steps,
-a well-typed term remains well-typed.
+a well-typed term remains well-typed:
 \begin{code}
 postulate
   preserves : ∀ {M N A}
@@ -1316,7 +1316,7 @@ postulate
 \end{code}
 
 An easy consequence is that starting from a well-typed term, taking
-any number of reduction steps leads to a term that is not stuck.
+any number of reduction steps leads to a term that is not stuck:
 \begin{code}
 postulate
   wttdgs : ∀ {M N A}
@@ -1348,7 +1348,7 @@ For completeness, we present a formal proof here.
 A case term takes four arguments (three subterms and a bound
 variable), and our proof will need a variant
 of congruence to deal with functions of four arguments.  It
-is exactly analogous to `cong` and `cong₂` as defined previously.
+is exactly analogous to `cong` and `cong₂` as defined previously:
 \begin{code}
 cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
   {s w : A} {t x : B} {u y : C} {v z : D}
@@ -1356,7 +1356,7 @@ cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
 cong₄ f refl refl refl refl = refl
 \end{code}
 
-It is now straightforward to show that reduction is deterministic.
+It is now straightforward to show that reduction is deterministic:
 \begin{code}
 det : ∀ {M M′ M″}
   → (M —→ M′)
@@ -1384,9 +1384,9 @@ det (β-suc _)      (β-suc _)        =  refl
 det β-μ            β-μ              =  refl
 \end{code}
 The proof is by induction over possible reductions.  We consider
-three typical cases.
+three typical cases:
 
-* Two instances of `ξ-·₁`.
+* Two instances of `ξ-·₁`:
 
       L —→ L′                 L —→ L″
       --------------- ξ-·₁    --------------- ξ-·₁
@@ -1395,7 +1395,7 @@ three typical cases.
   By induction we have `L′ ≡ L″`, and hence by congruence
   `L′ · M ≡ L″ · M`.
   
-* An instance of `ξ-·₁` and an instance of `ξ-·₂`.
+* An instance of `ξ-·₁` and an instance of `ξ-·₂`:
 
                               Value L
       L —→ L′                 M —→ M″
@@ -1407,7 +1407,7 @@ three typical cases.
   not reduce.  If the value constraint was removed from `ξ-·₂`, or from
   one of the other reduction rules, then determinism would no longer hold.
 
-* Two instances of `β-ƛ`.
+* Two instances of `β-ƛ`:
 
       Value V                              Value V                         
       ----------------------------- β-ƛ    ----------------------------- β-ƛ
@@ -1444,7 +1444,7 @@ and the following typing rule:
 Which of the following properties remain true in
 the presence of these rules?  For each property, write either
 "remains true" or "becomes false." If a property becomes
-false, give a counterexample.
+false, give a counterexample:
 
   - Determinism of `step`
 
@@ -1467,7 +1467,7 @@ reduction rules:
 Which of the following properties remain true in
 the presence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
-false, give a counterexample.
+false, give a counterexample:
 
   - Determinism of `step`
 
@@ -1482,7 +1482,7 @@ Suppose instead that we remove the rule `ξ·₁` from the step
 relation. Which of the following properties remain
 true in the absence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
-false, give a counterexample.
+false, give a counterexample:
 
   - Determinism of `step`
 
@@ -1498,14 +1498,14 @@ naturals, by writing out all programs of type `` `ℕ ⇒ `ℕ`` in
 lexical order.  Write `fᵢ` for the `i`'th function in this list.
 
 Say we add a typing rule that applies the above enumeration
-to interpret a natural as a function from naturals to naturals.
+to interpret a natural as a function from naturals to naturals:
 
     Γ ⊢ L ⦂ `ℕ
     Γ ⊢ M ⦂ `ℕ
     -------------- _·ℕ_
     Γ ⊢ L · M ⦂ `ℕ
 
-And that we add the corresponding reduction rule.
+And that we add the corresponding reduction rule:
 
     fᵢ(m) —→ n
     ---------- δ
@@ -1514,7 +1514,7 @@ And that we add the corresponding reduction rule.
 Which of the following properties remain true in
 the presence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
-false, give a counterexample.
+false, give a counterexample:
 
   - Determinism of `step`
 

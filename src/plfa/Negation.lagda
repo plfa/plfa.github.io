@@ -30,7 +30,7 @@ open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensiona
 
 Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
-as implication of false.
+as implication of false:
 \begin{code}
 ¬_ : Set → Set
 ¬ A = A → ⊥
@@ -47,7 +47,7 @@ In other words, evidence that `¬ A` holds is a function that converts evidence
 that `A` holds into evidence that `⊥` holds.
 
 Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
-In other words, if both `¬ A` and `A` hold, then we have a contradiction.
+In other words, if both `¬ A` and `A` hold, then we have a contradiction:
 \begin{code}
 ¬-elim : ∀ {A : Set}
   → ¬ A
@@ -61,7 +61,7 @@ means that `¬x` must be a function of type `A → ⊥`, and hence the applicati
 `¬x x` must be of type `⊥`.  Note that this rule is just a special case of `→-elim`.
 
 We set the precedence of negation so that it binds more tightly
-than disjunction and conjunction, but less tightly than anything else.
+than disjunction and conjunction, but less tightly than anything else:
 \begin{code}
 infix 3 ¬_
 \end{code}
@@ -69,7 +69,7 @@ Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)` and `¬ m ≡ n` as `¬ (m ≡
 
 In _classical_ logic, we have that `A` is equivalent to `¬ ¬ A`.
 As we discuss below, in Agda we use _intuitionistic_ logic, where
-we have only half of this equivalence, namely that `A` implies `¬ ¬ A`.
+we have only half of this equivalence, namely that `A` implies `¬ ¬ A`:
 \begin{code}
 ¬¬-intro : ∀ {A : Set}
   → A
@@ -83,7 +83,7 @@ Let `¬x` be evidence of `¬ A`.  Then from `A` and `¬ A`
 we have a contradiction, evidenced by `¬x x`.  Hence, we have
 shown `¬ ¬ A`.
 
-An equivalent way to write the above is as follows.
+An equivalent way to write the above is as follows:
 \begin{code}
 ¬¬-intro′ : ∀ {A : Set}
   → A
@@ -96,7 +96,7 @@ to an additional argument of the function.  We will usually
 use this latter style, as it is more compact.
 
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
-`¬ ¬ ¬ A` implies `¬ A`.
+`¬ ¬ ¬ A` implies `¬ A`:
 \begin{code}
 ¬¬¬-elim : ∀ {A : Set}
   → ¬ ¬ ¬ A
@@ -113,7 +113,7 @@ can conclude `¬ ¬ A`, evidenced by `¬¬-intro x`.  Then from
 `¬¬¬x (¬¬-intro x)`.  Hence we have shown `¬ A`.
 
 Another law of logic is _contraposition_,
-stating that if `A` implies `B`, then `¬ B` implies `¬ A`.
+stating that if `A` implies `B`, then `¬ B` implies `¬ A`:
 \begin{code}
 contraposition : ∀ {A B : Set}
   → (A → B)
@@ -127,12 +127,12 @@ must hold. Let `x` be evidence of `A`.  Then from `A → B` and `A` we
 may conclude `B`, evidenced by `f x`, and from `B` and `¬ B` we may
 conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown `¬ A`.
 
-Using negation, it is straightforward to define inequality.
+Using negation, it is straightforward to define inequality:
 \begin{code}
 _≢_ : ∀ {A : Set} → A → A → Set
 x ≢ y  =  ¬ (x ≡ y)
 \end{code}
-It is trivial to show distinct numbers are not equal.
+It is trivial to show distinct numbers are not equal:
 \begin{code}
 _ : 1 ≢ 2
 _ = λ()
@@ -142,7 +142,7 @@ The type `M ≡ N` is occupied exactly when `M` and `N` simplify to
 identical terms. Since `1` and `2` simplify to distinct normal forms,
 Agda determines that there is no possible evidence that `1 ≡ 2`.
 As a second example, it is also easy to validate
-Peano's postulate that zero is not the successor of any number.
+Peano's postulate that zero is not the successor of any number:
 \begin{code}
 peano : ∀ {m : ℕ} → zero ≢ suc m
 peano = λ()
@@ -159,7 +159,7 @@ we know for arithmetic, where
            ≡  0,  if n ≢ 0
 
 Indeed, there is exactly one proof of `⊥ → ⊥`.  We can write
-this proof two different ways.
+this proof two different ways:
 \begin{code}
 id : ⊥ → ⊥
 id x = x
@@ -167,7 +167,7 @@ id x = x
 id′ : ⊥ → ⊥
 id′ ()
 \end{code}
-But, using extensionality, we can prove these equal.
+But, using extensionality, we can prove these equal:
 \begin{code}
 id≡id′ : id ≡ id′
 id≡id′ = extensionality (λ())
@@ -176,7 +176,7 @@ By extensionality, `id ≡ id′` holds if for every
 `x` in their domain we have `id x ≡ id′ x`. But there
 is no `x` in their domain, so the equality holds trivially.
 
-Indeed, we can show any two proofs of a negation are equal.
+Indeed, we can show any two proofs of a negation are equal:
 \begin{code}
 assimilation : ∀ {A : Set} (¬x ¬x′ : ¬ A) → ¬x ≡ ¬x′
 assimilation ¬x ¬x′ = extensionality (λ x → ⊥-elim (¬x x))
@@ -270,7 +270,7 @@ _Communications of the ACM_, December 2015.)
 
 ## Excluded middle is irrefutable
 
-The law of the excluded middle can be formulated as follows.
+The law of the excluded middle can be formulated as follows:
 \begin{code}
 postulate
   em : ∀ {A : Set} → A ⊎ ¬ A
@@ -278,12 +278,12 @@ postulate
 As we noted, the law of the excluded middle does not hold in
 intuitionistic logic.  However, we can show that it is _irrefutable_,
 meaning that the negation of its negation is provable (and hence that
-its negation is never provable).
+its negation is never provable):
 \begin{code}
 em-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
 em-irrefutable = λ k → k (inj₂ (λ x → k (inj₁ x)))
 \end{code}
-The best way to explain this code is to develop it interactively.
+The best way to explain this code is to develop it interactively:
 
     em-irrefutable k = ?
 
@@ -291,12 +291,12 @@ Given evidence `k` that `¬ (A ⊎ ¬ A)`, that is, a function that give a
 value of type `A ⊎ ¬ A` returns a value of the empty type, we must fill
 in `?` with a term that returns a value of the empty type.  The only way
 we can get a value of the empty type is by applying `k` itself, so let's
-expand the hole accordingly.
+expand the hole accordingly:
 
     em-irrefutable k = k ?
 
 We need to fill the new hole with a value of type `A ⊎ ¬ A`. We don't have
-a value of type `A` to hand, so let's pick the second disjunct.
+a value of type `A` to hand, so let's pick the second disjunct:
 
     em-irrefutable k = k (inj₂ λ{ x → ? })
 
@@ -305,12 +305,12 @@ that given a value of type `A` returns a value of the empty type.  We
 bind `x` to the value of type `A`, and now we need to fill in the hole
 with a value of the empty type.  Once again, the only way we can get a
 value of the empty type is by applying `k` itself, so let's expand the
-hole accordingly.
+hole accordingly:
 
     em-irrefutable k = k (inj₂ λ{ x → k ? })
 
 This time we do have a value of type `A` to hand, namely `x`, so we can
-pick the first disjunct.
+pick the first disjunct:
 
     em-irrefutable k = k (inj₂ λ{ x → k (inj₁ x) })
 
@@ -359,7 +359,7 @@ Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 #### Exercise `Classical` (stretch)
 
-Consider the following principles.
+Consider the following principles:
 
   * Excluded Middle: `A ⊎ ¬ A`, for all `A`
   * Double Negation Elimination: `¬ ¬ A → A`, for all `A`
@@ -372,7 +372,7 @@ Show that each of these implies all the others.
 
 #### Exercise `Stable` (stretch)
 
-Say that a formula is _stable_ if double negation elimination holds for it.
+Say that a formula is _stable_ if double negation elimination holds for it:
 \begin{code}
 Stable : Set → Set
 Stable A = ¬ ¬ A → A
@@ -382,7 +382,7 @@ of two stable formulas is stable.
 
 ## Standard Prelude
 
-Definitions similar to those in this chapter can be found in the standard library.
+Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
 import Relation.Nullary using (¬_)
 import Relation.Nullary.Negation using (contraposition)
@@ -390,7 +390,7 @@ import Relation.Nullary.Negation using (contraposition)
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ¬  U+00AC  NOT SIGN (\neg)
     ≢  U+2262  NOT IDENTICAL TO (\==n)

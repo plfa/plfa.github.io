@@ -89,14 +89,14 @@ case terms use naturals). We will see this again when we come
 to the rules for assigning types to terms, where constructors
 correspond to introduction rules and deconstructors to eliminators.
 
-Here is the syntax of terms in BNF.
+Here is the syntax of terms in BNF:
 
     L, M, N  ::=
       ` x  |  ƛ x ⇒ N  |  L · M  |
       `zero  |  `suc M  |  case L [zero⇒ M |suc x ⇒ N]  |
       μ x ⇒ M
 
-And here it is formalised in Agda.
+And here it is formalised in Agda:
 \begin{code}
 Id : Set
 Id = String
@@ -126,7 +126,7 @@ Case expressions are self-bracketing.
 
 Here are some example terms: the natural number two,
 a function that adds naturals,
-and a term that computes two plus two.
+and a term that computes two plus two:
 \begin{code}
 two : Term
 two = `suc `suc `zero
@@ -160,7 +160,7 @@ function that accepts two arguments and applies the first _n_ times to the
 second.  This is called the _Church representation_ of the
 naturals.  Here are some example terms: the Church numeral two, a
 function that adds Church numerals, a function to compute successor,
-and a term that computes two plus two.
+and a term that computes two plus two:
 \begin{code}
 twoᶜ : Term
 twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
@@ -210,7 +210,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 #### Exercise `primed` (stretch)
 
 We can make examples with lambda terms slighly easier to write
-by adding the following definitions.
+by adding the following definitions:
 \begin{code}
 ƛ′_⇒_ : Term → Term → Term
 ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
@@ -227,7 +227,7 @@ case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
 μ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
 \end{code}
-The definition of `plus` can now be written as follows.
+The definition of `plus` can now be written as follows:
 \begin{code}
 plus′ : Term
 plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
@@ -276,7 +276,7 @@ by Haskell Curry, who used the Greek letter `α` (_alpha_) to label such rules,
 this equivalence relation is called _alpha renaming_.
 
 As we descend from a term into its subterms, variables
-that are bound may become free.  Consider the following terms.
+that are bound may become free.  Consider the following terms:
 
 * `` ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ``
   has both `s` and `z` as bound variables.
@@ -335,7 +335,7 @@ while `` plus · two · two `` is not.
 Following convention, we treat all function abstractions
 as values; thus, `` plus `` by itself is considered a value.
 
-The predicate `Value M` holds if term `M` is a value.
+The predicate `Value M` holds if term `M` is a value:
 
 \begin{code}
 data Value : Term → Set where
@@ -425,7 +425,7 @@ of bound variables. For example:
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield <br/>
   `` (ƛ "x" ⇒ ` "x" · (` "x" · ` `zero)) ``
 
-Instead, we should rename the bound variable to avoid capture.
+Instead, we should rename the bound variable to avoid capture:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield <br/>
   `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``
@@ -435,7 +435,7 @@ Formal definition of substitution with suitable renaming is considerably
 more complex, so we avoid it by restricting to substitution by closed terms,
 which will be adequate for our purposes.
 
-Here is the formal definition of substitution by closed terms in Agda.
+Here is the formal definition of substitution by closed terms in Agda:
 
 \begin{code}
 infix 9 _[_:=_]
@@ -458,7 +458,7 @@ _[_:=_] : Term → Id → Term → Term
 ... | no  _          =  μ x ⇒ N [ y := V ]
 \end{code}
 
-Let's unpack the first three cases.
+Let's unpack the first three cases:
 
 * For variables, we compare `y`, the substituted variable,
 with `x`, the variable in the term. If they are the same,
@@ -478,7 +478,7 @@ simply push substitution recursively into the subterms.
 
 ### Examples
 
-Here is confirmation that the examples above are correct.
+Here is confirmation that the examples above are correct:
 
 \begin{code}
 _ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡  sucᶜ · (sucᶜ · `zero)
@@ -528,7 +528,7 @@ right-hand side until it becomes a value; and finally we substitute
 the argument for the variable in the abstraction.
 
 In an informal presentation of the operational semantics,
-the rules for reduction of applications are written as follows.
+the rules for reduction of applications are written as follows:
 
     L —→ L′
     -------------- ξ-·₁
@@ -564,7 +564,7 @@ the zero or successor branch as appropriate.  A fixpoint replaces
 the bound variable by the entire fixpoint term; this is the one
 case where we substitute by a term that is not a value.
 
-Here are the rules formalised in Agda.
+Here are the rules formalised in Agda:
 
 \begin{code}
 infix 4 _—→_
@@ -657,7 +657,7 @@ the reflexive and transitive closure `—↠` of the step relation `—→`.
 We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
 reasoning about chains of equalities
-Chapter [Equality][plfa.Equality].
+Chapter [Equality][plfa.Equality]:
 \begin{code}
 infix  2 _—↠_
 infix  1 begin_
@@ -681,7 +681,7 @@ begin_ : ∀ {M N}
   → M —↠ N
 begin M—↠N = M—↠N
 \end{code}
-We can read this as follows.
+We can read this as follows:
 
 * From term `M`, we can take no steps, giving a step of type `M —↠ M`.
   It is written `M ∎`.
@@ -696,7 +696,7 @@ appealing way, as we will see in the next section.
 
 As alternative is to define reflexive and transitive closure directly,
 as the smallest relation that includes `—→` and is also reflexive
-and transitive.  We could do so as follows.
+and transitive.  We could do so as follows:
 \begin{code}
 data _—↠′_ : Term → Term → Set where
 
@@ -729,7 +729,7 @@ above embeds into the second. Why are they not isomorphic?
 One important property a reduction relation might satisfy is
 to be _confluent_.  If term `L` reduces to two other terms,
 `M` and `N`, then both of these reduce to a common term `P`.
-It can be illustrated as follows.
+It can be illustrated as follows:
 
                L
               / \
@@ -776,7 +776,7 @@ systems studied in this text are trivially confluent.
 ## Examples
 
 We start with a simple example. The Church numeral two applied to the
-successor function and zero yields the natural number two.
+successor function and zero yields the natural number two:
 \begin{code}
 _ : twoᶜ · sucᶜ · `zero —↠ `suc `suc `zero
 _ =
@@ -793,7 +793,7 @@ _ =
   ∎
 \end{code}
 
-Here is a sample reduction demonstrating that two plus two is four.
+Here is a sample reduction demonstrating that two plus two is four:
 \begin{code}
 _ : plus · two · two —↠ `suc `suc `suc `suc `zero
 _ =
@@ -838,7 +838,7 @@ _ =
   ∎
 \end{code}
 
-And here is a similar sample reduction for Church numerals.
+And here is a similar sample reduction for Church numerals:
 \begin{code}
 _ : fourᶜ —↠ `suc `suc `suc `suc `zero
 _ =
@@ -890,11 +890,11 @@ We have just two types:
 
 As before, to avoid overlap we use variants of the names used by Agda.
 
-Here is the syntax of types in BNF.
+Here is the syntax of types in BNF:
 
     A, B, C  ::=  A ⇒ B | `ℕ
 
-And here it is formalised in Agda.
+And here it is formalised in Agda:
 
 \begin{code}
 infixr 7 _⇒_
@@ -909,7 +909,7 @@ data Type : Set where
 As in Agda, functions of two or more arguments are represented via
 currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
-Thus,
+Thus:
 
 * ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
 * `plus · two · two` stands for `(plus · two) · two`.
@@ -962,7 +962,7 @@ For example,
 is the context that associates variable ` "s" ` with type `` `ℕ ⇒ `ℕ ``,
 and variable ` "z" ` with type `` `ℕ ``.
 
-Contexts are formalised as follows.
+Contexts are formalised as follows:
 
 \begin{code}
 infixl 5  _,_⦂_
@@ -980,7 +980,7 @@ We have two forms of _judgment_.  The first is written
 
 and indicates in context `Γ` that variable `x` has type `A`.
 It is called _lookup_.
-For example
+For example,
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
@@ -998,7 +998,7 @@ the other variables.  For example,
 
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
-Lookup is formalised as follows.
+Lookup is formalised as follows:
 \begin{code}
 infix  4  _∋_⦂_
 
@@ -1029,7 +1029,7 @@ The second judgment is written
 
 and indicates in context `Γ` that term `M` has type `A`.
 Context `Γ` provides types for all the free variables in `M`.
-For example
+For example:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ ``
@@ -1038,7 +1038,7 @@ For example
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
-Typing is formalised as follows.
+Typing is formalised as follows:
 \begin{code}
 infix  4  _⊢_⦂_
 
@@ -1111,7 +1111,7 @@ The rules are deterministic, in that at most one rule applies to every term.
 
 ### Checking inequality and postulating the impossible {#impossible}
 
-The following function makes it convenient to assert an inequality.
+The following function makes it convenient to assert an inequality:
 \begin{code}
 _≠_ : ∀ (x y : Id) → x ≢ y
 x ≠ y  with x ≟ y
@@ -1139,7 +1139,7 @@ evidence of _any_ proposition whatsoever, regardless of its truth.
 ### Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
-is a type derivation for the Church numberal two:
+is a type derivation for the Church numberal two,
 
                             ∋s                     ∋z
                             ------------------ ⊢`  -------------- ⊢`
@@ -1153,7 +1153,7 @@ is a type derivation for the Church numberal two:
     ------------------------------------------------------------- ⊢ƛ
     Γ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂ (A ⇒ A) ⇒ A ⇒ A
 
-where `∋s` and `∋z` abbreviate the two derivations:
+where `∋s` and `∋z` abbreviate the two derivations,
 
                  ---------------- Z
     "s" ≢ "z"    Γ₁ ∋ "s" ⦂ A ⇒ A
@@ -1164,7 +1164,7 @@ and where `Γ₁ = Γ , s ⦂ A ⇒ A` and `Γ₂ = Γ , s ⦂ A ⇒ A , z ⦂ A
 The typing derivation is valid for any `Γ` and `A`, for instance,
 we might take `Γ` to be `∅` and `A` to be `` `ℕ ``.
 
-Here is the above typing derivation formalised in Agda.
+Here is the above typing derivation formalised in Agda:
 \begin{code}
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
@@ -1176,7 +1176,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
   ∋z = Z
 \end{code}
 
-Here are the typings corresponding to computing two plus two.
+Here are the typings corresponding to computing two plus two:
 \begin{code}
 ⊢two : ∀ {Γ} → Γ ⊢ two ⦂ `ℕ
 ⊢two = ⊢suc (⊢suc ⊢zero)
@@ -1203,7 +1203,7 @@ bindings of variables named `"m"`.  In contrast, the two judgments `∋n` and
 contexts, the first where "n" is the last binding in the context, and
 the second after "m" is bound in the successor branch of the case.
 
-And here are typings for the remainder of the Church example.
+And here are typings for the remainder of the Church example:
 \begin{code}
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
@@ -1230,24 +1230,24 @@ Start with the declaration:
     ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
     ⊢sucᶜ = ?
 
-Typing C-l causes Agda to create a hole and tell us its expected type.
+Typing C-l causes Agda to create a hole and tell us its expected type:
 
     ⊢sucᶜ = { }0
     ?0 : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
 
 Now we fill in the hole by typing C-c C-r. Agda observes that
 the outermost term in `sucᶜ` in `⊢ƛ`, which is typed using `ƛ`. The
-`ƛ` rule in turn takes one argument, which Agda leaves as a hole.
+`ƛ` rule in turn takes one argument, which Agda leaves as a hole:
 
     ⊢sucᶜ = ⊢ƛ { }1
     ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc ` "n" ⦂ `ℕ
 
-We can fill in the hole by type C-c C-r again.
+We can fill in the hole by type C-c C-r again:
 
     ⊢sucᶜ = ⊢ƛ (⊢suc { }2)
     ?2 : ∅ , "n" ⦂ `ℕ ⊢ ` "n" ⦂ `ℕ
 
-And again.
+And again:
 
     ⊢suc′ = ⊢ƛ (⊢suc (⊢` { }3))
     ?3 : ∅ , "n" ⦂ `ℕ ∋ "n" ⦂ `ℕ
@@ -1256,7 +1256,7 @@ A further attempt with C-c C-r yields the message:
 
     Don't know which constructor to introduce of Z or S
 
-We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are done.
+We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are done:
 
     ⊢suc′ = ⊢ƛ (⊢suc (⊢` Z))
 
@@ -1269,7 +1269,7 @@ will show how to use Agda to compute type derivations directly.
 ### Lookup is injective
 
 The lookup relation `Γ ∋ x ⦂ A` is injective, in that for each `Γ` and `x`
-there is at most one `A` such that the judgment holds.
+there is at most one `A` such that the judgment holds:
 \begin{code}
 ∋-injective : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-injective Z        Z          =  refl
@@ -1287,7 +1287,7 @@ We can also show that terms are _not_ typeable.  For example, here is
 a formal proof that it is not possible to type the term
 `` `zero · `suc `zero ``.  It cannot be typed, because doing so
 requires that the first term in the application is both a natural and
-a function.
+a function:
 
 \begin{code}
 nope₁ : ∀ {A} → ¬ (∅ ⊢ `zero · `suc `zero ⦂ A)
@@ -1296,7 +1296,7 @@ nope₁ (() · _)
 
 As a second example, here is a formal proof that it is not possible to
 type `` ƛ "x" ⇒ ` "x" · ` "x" `` It cannot be typed, because
-doing so requires types `A` and `B` such that `A ⇒ B ≡ A`.
+doing so requires types `A` and `B` such that `A ⇒ B ≡ A`:
 
 \begin{code}
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ` "x" · ` "x" ⦂ A)
@@ -1310,14 +1310,14 @@ nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-injective ∋
 #### Quiz
 
 For each of the following, given a type `A` for which it is derivable,
-or explain why there is no such `A`.
+or explain why there is no such `A`?
 
 1. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ ` "y" · ` "x" ⦂ A ``
 2. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ ` "x" · ` "y" ⦂ A ``
 3. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ ⊢ ƛ "x" ⇒ ` "y" · ` "x" ⦂ A ``
 
 For each of the following, give type `A`, `B`, and `C` for which it is derivable,
-or explain why there are no such types.
+or explain why there are no such types?
 
 1. `` ∅ , "x" ⦂ A ⊢ ` "x" · ` "x" ⦂ B ``
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
@@ -1337,7 +1337,7 @@ showing that it is well-typed.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
     ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
