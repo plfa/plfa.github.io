@@ -892,7 +892,7 @@ validating a transaction on Ethereum may require executing a program
 for the Ethereum Virtual Machine (EVM).  A long-running or
 non-terminating program might cause the miner to invest arbitary
 effort in validating a contract for little or no return.  To avoid
-this situation, each transaction is accompanied by an amount of `gas`
+this situation, each transaction is accompanied by an amount of _gas_
 available for computation.  Each step executed on the EVM is charged
 an advertised amount of gas, and the transaction pays for the gas at a
 published rate: a given number of Ethers (the currency of Ethereum)
