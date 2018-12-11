@@ -60,7 +60,7 @@ And here is its corresponding type derivation:
 and you can see the corresponding derivation tree written out
 in full
 [here][plfa.Lambda#derivation].)
-The two definitions are in close correspondence, where
+The two definitions are in close correspondence, where:
 
   * `` `_ `` corresponds to `` ⊢` ``
   * `ƛ_⇒_`   corresponds to `⊢ƛ`
@@ -78,7 +78,7 @@ outer abstraction (count outward past one abstraction).
 In this chapter, we are going to exploit this correspondence,
 and introduce a new notation for terms that simultaneously
 represents the term and its type derivation.  Now we will
-write the following.
+write the following:
 
     twoᶜ  :  ∅ ⊢ Ch `ℕ
     twoᶜ  =  ƛ ƛ (# 1 · (# 1 · # 0))
@@ -147,7 +147,7 @@ Here is its corresponding type derivation:
       ∋n′ = (S ("n" ≠ "m") Z)
 
 The two definitions are in close correspondence, where in
-addition to the previous correspondences we have
+addition to the previous correspondences we have:
 
   * `` `zero `` corresponds to `⊢zero`
   * `` `suc_ `` corresponds to `⊢suc`
@@ -161,7 +161,7 @@ of `"n"` but accessed in different contexts, the first where
 "n" is the last binding in the context, and the second after
 "m" is bound in the successor branch of the case.
 
-Here is the term and its type derivation in the notation of this chapter.
+Here is the term and its type derivation in the notation of this chapter:
 
     plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
     plus = μ ƛ ƛ case (# 1) (# 0) (`suc (# 3 · # 0 · # 1))
@@ -206,7 +206,7 @@ incorporates preservation, which no longer requires a separate proof.
 We now begin our formal development.
 
 First, we get all our infix declarations out of the way.
-We list separately operators for judgments, types, and terms.
+We list separately operators for judgments, types, and terms:
 \begin{code}
 infix  4 _⊢_
 infix  4 _∋_
@@ -229,7 +229,7 @@ contexts before terms.
 ### Types
 
 As before, we have just two types, functions and naturals.
-The formal definition is unchanged.
+The formal definition is unchanged:
 \begin{code}
 data Type : Set where
   _⇒_ : Type → Type → Type
@@ -239,7 +239,7 @@ data Type : Set where
 ### Contexts
 
 Contexts are as before, but we drop the names.
-Contexts are formalised as follows.
+Contexts are formalised as follows:
 \begin{code}
 data Context : Set where
   ∅   : Context
@@ -268,7 +268,7 @@ correspond to natural numbers.  We write
 
 for variables which in context `Γ` have type `A`.  Their
 formalisation looks exactly like the old lookup judgment, but
-with all variable names dropped.
+with all variable names dropped:
 \begin{code}
 data _∋_ : Context → Type → Set where
 
@@ -294,7 +294,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
-They correspond to the following inherently-typed variables.
+They correspond to the following inherently-typed variables:
 \begin{code}
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
@@ -316,7 +316,7 @@ We write
 
 for terms which in context `Γ` has type `A`.  Their
 formalisation looks exactly like the old typing judgment, but
-with all terms and variable names dropped.
+with all terms and variable names dropped:
 \begin{code}
 data _⊢_ : Context → Type → Set where
 
@@ -373,7 +373,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
-They correspond to the following inherently-typed terms.
+They correspond to the following inherently-typed terms:
 \begin{code}
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
 _ = ` Z
@@ -398,7 +398,7 @@ two.
 
 ### Abbreviating de Bruijn indices
 
-We can use a natural number to select a type from a context.
+We can use a natural number to select a type from a context:
 \begin{code}
 lookup : Context → ℕ → Type
 lookup (Γ , A) zero     =  A
@@ -412,7 +412,7 @@ postulating an `impossible` term, just as we did
 [here][plfa.Lambda#impossible].
 
 Given the above, we can convert a natural to a corresponding
-De Bruijn index, looking up its type in the context.
+De Bruijn index, looking up its type in the context:
 \begin{code}
 count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
 count {Γ , _} zero     =  Z
@@ -422,13 +422,13 @@ count {∅}     _        =  ⊥-elim impossible
 \end{code}
 This requires the same trick as before.
 
-We can then introduce a convenient abbreviation for variables.
+We can then introduce a convenient abbreviation for variables:
 \begin{code}
 #_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
 # n  =  ` count n
 \end{code}
 
-With this abbreviation, we can rewrite the Church numeral two more compactly.
+With this abbreviation, we can rewrite the Church numeral two more compactly:
 \begin{code}
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (# 1 · (# 1 · # 0))
@@ -443,7 +443,7 @@ You can find them
 [here][plfa.Lambda#derivation]
 for comparison.
 
-First, computing two plus two on naturals.
+First, computing two plus two on naturals:
 \begin{code}
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
@@ -459,7 +459,7 @@ rather than just the empty environment, because later we will give examples
 where they appear nested inside binders.  We need not do the same with `2+2`,
 which will only appear at the top-level of a term.
 
-Next, computing two plus two on Church numerals.
+Next, computing two plus two on Church numerals:
 \begin{code}
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
@@ -502,7 +502,7 @@ extend the context when we encounter a binder. Given a map
 from variables in one context to variables in another,
 extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
-old extension lemma, but with all names and terms dropped.
+old extension lemma, but with all names and terms dropped:
 \begin{code}
 ext : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
@@ -513,7 +513,7 @@ ext ρ (S x)  =  S (ρ x)
 \end{code}
 Let `ρ` be the name of the map that takes variables in `Γ`
 to variables in `Δ`.  Consider the de Bruijn index of the
-variable in `Γ , B`.
+variable in `Γ , B`:
 
 * If it is `Z`, which has type `B` in `Γ , B`,
   then we return `Z`, which also has type `B` in `Δ , B`.
@@ -525,7 +525,7 @@ variable in `Γ , B`.
 With extension under our belts, it is straightforward
 to define renaming.  If variables in one context map to
 variables in another, then terms in the first context map to
-terms in the second.
+terms in the second:
 \begin{code}
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -540,7 +540,7 @@ rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 \end{code}
 Let `ρ` be the name of the map that takes variables in `Γ`
-to variables in `Δ`.  Let's unpack the first three cases.
+to variables in `Δ`.  Let's unpack the first three cases:
 
 * If the term is a variable, simply apply `ρ`.
 
@@ -564,7 +564,7 @@ terms that are well-typed by the rules of simply-typed lambda
 calculus.
 
 Here is an example of renaming a term with one free
-and one bound variable.
+and one bound variable:
 \begin{code}
 M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₀ = ƛ (# 1 · (# 1 · # 0))
@@ -611,7 +611,7 @@ in one context to variables in another, substitution takes a
 map from variables in one context to _terms_ in another.
 Given a map from variables in one context map to terms over
 another, extension yields a map from the first context
-extended to the second context similarly extended.
+extended to the second context similarly extended:
 \begin{code}
 exts : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
@@ -622,7 +622,7 @@ exts σ (S x)  =  rename S_ (σ x)
 \end{code}
 Let `σ` be the name of the map that takes variables in `Γ`
 to terms over `Δ`.  Consider the de Bruijn index of the
-variable in `Γ , B`.
+variable in `Γ , B`:
 
 * If it is `Z`, which has type `B` in `Γ , B`,
   then we return the term `` ` Z``, which also has
@@ -639,7 +639,7 @@ to a term over the extended context `Δ , B`.
 With extension under our belts, it is straightforward
 to define substitution.  If variable in one context map
 to terms over another, then terms in the first context
-map to terms in the second.
+map to terms in the second:
 \begin{code}
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -654,7 +654,7 @@ subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
 \end{code}
 Let `σ` be the name of the map that takes variables in `Γ`
-to terms over `Δ`.  Let's unpack the first three cases.
+to terms over `Δ`.  Let's unpack the first three cases:
 
 * If the term is a variable, simply apply `σ`.
 
@@ -673,7 +673,7 @@ bound variable.
 
 From the general case of substitution for multiple free
 variables it is easy to define the special case of
-substitution for one free variable.
+substitution for one free variable:
 \begin{code}
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
@@ -692,12 +692,12 @@ To do so, we use a map from the context `Γ , B` to the context
 `Γ`, that maps the last variable in the context to the term of
 type `B` and every other free variable to itself.
 
-Consider the previous example.
+Consider the previous example:
 
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
      ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 
-Here is the example formalised.
+Here is the example formalised:
 \begin{code}
 M₂ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₂ = ƛ # 1 · (# 1 · # 0)
@@ -714,14 +714,14 @@ _ = refl
 
 Previously, we presented an example of substitution that we
 did not implement, since it needed to rename the bound
-variable to avoid capture.
+variable to avoid capture:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield
   `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
 
 Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
 `"y"` has type `` `ℕ ``, and the free `"x"` also has type ``
-`ℕ ⇒ `ℕ ``.  Here is the example formalised.
+`ℕ ⇒ `ℕ ``.  Here is the example formalised:
 \begin{code}
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
@@ -751,7 +751,7 @@ to sneak in.
 
 The definition of value is much as before, save that the
 added types incorporate the same information found in the
-Canonical Forms lemma.
+Canonical Forms lemma:
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -780,7 +780,7 @@ The reduction rules are the same as those given earlier, save
 that for each term we must specify its types.  As before, we
 have compatibility rules that reduce a part of a term,
 labelled with `ξ`, and rules that simplify a constructor
-combined with a destructor, labelled with `β`.
+combined with a destructor, labelled with `β`:
 
 \begin{code}
 infix 2 _—→_
@@ -840,7 +840,7 @@ definition of substitution.
 ## Reflexive and transitive closure
 
 The reflexive and transitive closure is exactly as before.
-We simply cut-and-paste the previous definition.
+We simply cut-and-paste the previous definition:
 \begin{code}
 infix  2 _—↠_
 infix  1 begin_
@@ -871,7 +871,7 @@ begin M—↠N = M—↠N
 
 We reiterate each of our previous examples.  First, the Church
 numeral two applied to the successor function and zero yields
-the natural number two.
+the natural number two:
 \begin{code}
 _ : twoᶜ · sucᶜ · `zero {∅} —↠ `suc `suc `zero
 _ =
@@ -889,7 +889,7 @@ _ =
 \end{code}
 As before, we need to supply an explicit context to `` `zero ``.
 
-Next, a sample reduction demonstrating that two plus two is four.
+Next, a sample reduction demonstrating that two plus two is four:
 \begin{code}
 _ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
@@ -923,7 +923,7 @@ _ =
   ∎
 \end{code}
 
-And finally, a similar sample reduction for Church numerals.
+And finally, a similar sample reduction for Church numerals:
 \begin{code}
 _ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero {∅}
 _ =
@@ -975,7 +975,7 @@ values.
 
 As before, every term that is well-typed and closed is either
 a value or takes a reduction step.  The formulation of progress
-is just as before, but annotated with types.
+is just as before, but annotated with types:
 \begin{code}
 data Progress {A} (M : ∅ ⊢ A) : Set where
 
@@ -993,7 +993,7 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
 The statement and proof of progress is much as before,
 appropriately annotated.  We no longer need
 to explicitly refer to the Canonical Forms lemma, since it
-is built-in to the definition of value.
+is built-in to the definition of value:
 \begin{code}
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
@@ -1021,13 +1021,13 @@ Before, we combined progress and preservation to evaluate a term.
 We can do much the same here, but we no longer need to explicitly
 refer to preservation, since it is built-in to the definition of reduction.
 
-As previously, gas is specified by a natural number.
+As previously, gas is specified by a natural number:
 \begin{code}
 data Gas : Set where
   gas : ℕ → Gas
 \end{code}
 When our evaluator returns a term `N`, it will either give evidence that
-`N` is a value or indicate that it ran out of gas.
+`N` is a value or indicate that it ran out of gas:
 \begin{code}
 data Finished {Γ A} (N : Γ ⊢ A) : Set where
 
@@ -1042,7 +1042,7 @@ data Finished {Γ A} (N : Γ ⊢ A) : Set where
 \end{code}
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
-reduction finished.
+reduction finished:
 \begin{code}
 data Steps : ∀ {A} → ∅ ⊢ A → Set where
 
@@ -1052,7 +1052,7 @@ data Steps : ∀ {A} → ∅ ⊢ A → Set where
       ----------
     → Steps L
 \end{code}
-The evaluator takes gas and a term and returns the corresponding steps.
+The evaluator takes gas and a term and returns the corresponding steps:
 \begin{code}
 eval : ∀ {A}
   → Gas
@@ -1071,13 +1071,13 @@ to invoke preservation.
 ## Examples
 
 We reiterate each of our previous examples.  We re-define the term
-`sucμ` that loops forever.
+`sucμ` that loops forever:
 \begin{code}
 sucμ : ∅ ⊢ `ℕ
 sucμ = μ (`suc (# 0))
 \end{code}
 To compute the first three steps of the infinite reduction sequence,
-we evaluate with three steps worth of gas.
+we evaluate with three steps worth of gas:
 \begin{code}
 _ : eval (gas 3) sucμ ≡
   steps
@@ -1093,7 +1093,7 @@ _ : eval (gas 3) sucμ ≡
 _ = refl
 \end{code}
 
-The Church numeral two applied to successor and zero.
+The Church numeral two applied to successor and zero:
 \begin{code}
 _ : eval (gas 100) (twoᶜ · sucᶜ · `zero) ≡
   steps
@@ -1111,7 +1111,7 @@ _ : eval (gas 100) (twoᶜ · sucᶜ · `zero) ≡
 _ = refl
 \end{code}
 
-Two plus two is four.
+Two plus two is four:
 \begin{code}
 _ : eval (gas 100) (plus · two · two) ≡
   steps
@@ -1253,7 +1253,7 @@ _ : eval (gas 100) (plus · two · two) ≡
 _ = refl
 \end{code}
 
-And the corresponding term for Church numerals.
+And the corresponding term for Church numerals:
 \begin{code}
 _ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
   steps
@@ -1329,7 +1329,7 @@ covers the same formal development as the previous two
 chapters, it has much less code.  Omitting all the examples,
 and all proofs that appear in Properties but not DeBruijn
 (such as the proof that reduction is deterministic), the
-number of lines of code is as follows.
+number of lines of code is as follows:
 
     Lambda                      216
     Properties                  235
