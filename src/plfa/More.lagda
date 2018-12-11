@@ -46,7 +46,7 @@ correctness of translations will be the subject of the next chapter.
 ## Primitive numbers
 
 We define a `Num` type equivalent to the built-in natural number type
-with multiplication as a primitive operation on numbers.
+with multiplication as a primitive operation on numbers:
 
 ### Syntax
 
@@ -64,7 +64,7 @@ with multiplication as a primitive operation on numbers.
 
 The hypothesis of the `con` rule is unusual, in that
 it refers to a typing judgment of Agda rather than a
-typing judgment of the defined calculus.
+typing judgment of the defined calculus:
 
     c : ℕ
     --------------- con
@@ -80,7 +80,7 @@ typing judgment of the defined calculus.
 A rule that defines a primitive directly, such as the last rule below,
 is called a δ rule.  Here the δ rule defines multiplication of
 primitive numbers in terms of multiplication of naturals as given
-by the Agda standard prelude.
+by the Agda standard prelude:
 
     L —→ L′
     ----------------- ξ-*₁
@@ -95,7 +95,7 @@ by the Agda standard prelude.
 
 ### Example
 
-Here is a function to cube a primitive number.
+Here is a function to cube a primitive number:
 
     cube : ∅ ⊢ Nat ⇒ Nat
     cube = ƛ x ⇒ x `* x `* x
@@ -104,7 +104,7 @@ Here is a function to cube a primitive number.
 ## Let bindings
 
 Let bindings affect only the syntax of terms; they introduce no new
-types or values.
+types or values:
 
 ### Syntax
 
@@ -129,7 +129,7 @@ types or values.
 
 ### Example
 
-Here is a function to raise a primitive number to the tenth power.
+Here is a function to raise a primitive number to the tenth power:
 
     exp10 : ∅ ⊢ Nat ⇒ Nat
     exp10 = ƛ x ⇒ `let x2  `= x  `* x  `in
@@ -139,7 +139,7 @@ Here is a function to raise a primitive number to the tenth power.
 
 ### Translation
 
-We can translate each _let_ term into an application of an abstraction.
+We can translate each _let_ term into an application of an abstraction:
 
     (`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
 
@@ -203,7 +203,7 @@ construct to a calculus without the construct.
 
 ### Example
 
-Here is a function to swap the components of a pair.
+Here is a function to swap the components of a pair:
 
     swap× : ∅ ⊢ A `× B ⇒ B `× A
     swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
@@ -214,7 +214,7 @@ Here is a function to swap the components of a pair.
 There is an alternative formulation of products, where in place of two
 ways to eliminate the type we have a case term that binds two
 variables.  We repeat the syntax in full, but only give the new type
-and reduction rules.
+and reduction rules:
 
 ### Syntax
 
@@ -246,7 +246,7 @@ and reduction rules.
 
 ### Example
 
-Here is a function to swap the components of a pair rewritten in the new notation.
+Here is a function to swap the components of a pair rewritten in the new notation:
 
     swap×-case : ∅ ⊢ A `× B ⇒ B `× A
     swap×-case = ƛ z ⇒ case× z 
@@ -254,7 +254,7 @@ Here is a function to swap the components of a pair rewritten in the new notatio
 
 ### Translation
 
-We can translate the alternative formulation into the one with projections.
+We can translate the alternative formulation into the one with projections:
 
       (case× L [⟨ x , y ⟩⇒ N ]) †
     =
@@ -266,7 +266,7 @@ We can translate the alternative formulation into the one with projections.
 Here `z` is a variable that does not appear free in `N`.  We refer
 to such a variable as _fresh_.
 
-One might think that we could instead use a more compact translation.
+One might think that we could instead use a more compact translation:
 
     -- WRONG
       (case× L [⟨ x , y ⟩⇒ N ]) †
@@ -280,7 +280,7 @@ depending on how many times and where `x` and `y` appear in `N`, it
 may reduce `L` many times or not at all, and it may compute `proj₁`
 and `proj₂` many times or not at all.
 
-We can also translate back the other way.
+We can also translate back the other way:
 
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
@@ -339,7 +339,7 @@ We can also translate back the other way.
 
 ### Example
 
-Here is a function to swap the components of a sum.
+Here is a function to swap the components of a sum:
 
     swap⊎ : ∅ ⊢ A `⊎ B ⇒ B `⊎ A
     swap⊎ = ƛ z ⇒ case⊎ z
@@ -375,7 +375,7 @@ There are no reduction rules.
 
 ### Example
 
-Here is the isomorphism between `A` and ``A `× `⊤``.
+Here is the isomorphism between `A` and ``A `× `⊤``:
 
     to×⊤ : ∅ ⊢ A ⇒ A `× `⊤
     to×⊤ = ƛ x ⇒ `⟨ x , `tt ⟩
@@ -388,7 +388,7 @@ Here is the isomorphism between `A` and ``A `× `⊤``.
 
 There is an alternative formulation of the unit type, where in place of 
 no way to eliminate the type we have a case term that binds zero variables.
-We repeat the syntax in full, but only give the new type and reduction rules.
+We repeat the syntax in full, but only give the new type and reduction rules:
 
 ### Syntax
 
@@ -420,7 +420,7 @@ We repeat the syntax in full, but only give the new type and reduction rules.
 
 ### Example
 
-Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new notation.
+Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new notation:
 
     from×⊤-case : ∅ ⊢ A `× `⊤ ⇒ A
     from×⊤-case = ƛ z ⇒ case× z
@@ -430,7 +430,7 @@ Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new
 
 ### Translation
 
-We can translate the alternative formulation into one without case.
+We can translate the alternative formulation into one without case:
 
     (case⊤ L [tt⇒ M ]) †  =  `let z `= (L †) `in (M †)
 
@@ -442,7 +442,7 @@ Here `z` is a variable that does not appear free in `M`.
 For the empty type, there is a way to eliminate values of
 the type but no way to introduce values of the type.  There are no
 values of the type and no β rule, but there is a ξ rule.  The `case⊥`
-construct plays a role similar to `⊥-elim` in Agda.
+construct plays a role similar to `⊥-elim` in Agda:
 
 ### Syntax
 
@@ -466,7 +466,7 @@ construct plays a role similar to `⊥-elim` in Agda.
 
 ### Example
 
-Here is the isomorphism between `A` and ``A `⊎ `⊥``.
+Here is the isomorphism between `A` and ``A `⊎ `⊥``:
 
     to⊎⊥ : ∅ ⊢ A ⇒ A `⊎ `⊥
     to⊎⊥ = ƛ x ⇒ `inj₁ x
@@ -531,7 +531,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``.
 
 ### Example
 
-Here is the map function for lists.
+Here is the map function for lists:
 
     mapL : ∅ ⊢ (A ⇒ B) ⇒ `List A ⇒ `List B
     mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
@@ -1203,7 +1203,7 @@ _ =
 
 Formalise the remaining constructs defined in this chapter.
 Evaluate each example, applied to data as needed,
-to confirm it returns the expected answer.
+to confirm it returns the expected answer:
 
   * sums (recommended)
   * unit type
