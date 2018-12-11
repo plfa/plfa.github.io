@@ -80,7 +80,7 @@ The key rule defining our relation will be:
 
 All the other rules are congruences: variables relate to
 themselves, and abstractions and applications relate if their
-components relate.
+components relate:
 
     -----
     x ~ x
@@ -98,7 +98,7 @@ Covering the other constructs of our language — naturals,
 fixpoints, products, and so on — would add little save length.
 
 In this case, our relation can be specified by a function
-from source to target.
+from source to target:
 
     (x) †               =  x
     (ƛ x ⇒ N) †         =  ƛ x ⇒ (N †)
@@ -126,7 +126,7 @@ are in bisimulation.
 ## Imports
 
 We import our source language from
-Chapter [More][plfa.More].
+Chapter [More][plfa.More]:
 \begin{code}
 open import plfa.More
 \end{code}
@@ -135,7 +135,7 @@ open import plfa.More
 ## Simulation
 
 The simulation is a straightforward formalisation of the rules
-in the introduction.
+in the introduction:
 \begin{code}
 infix  4 _~_
 infix  5 ~ƛ_
@@ -179,7 +179,7 @@ Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
 We need a number of technical results. The first is that simulation
 commutes with values.  That is, if `M ~ M†` and `M` is a value then
-`M†` is also a value.
+`M†` is also a value:
 \begin{code}
 ~val : ∀ {Γ A} {M M† : Γ ⊢ A} 
   → M ~ M†
@@ -204,7 +204,7 @@ and `Value M†` then `Value M`.
 
 The next technical result is that simulation commutes with renaming.
 That is, if `ρ` maps any judgment `Γ ∋ A` to a judgment `Δ ∋ A`,
-and if `M ~ M†` then `rename ρ M ~ rename ρ M†`.
+and if `M ~ M†` then `rename ρ M ~ rename ρ M†`:
 
 \begin{code}
 ~rename : ∀ {Γ Δ}
@@ -230,7 +230,7 @@ It is more complex than substitution, because where we had one renaming map
 The proof first requires we establish an analogue of extension.
 If `σ` and `σ†` both map any judgment `Γ ∋ A` to a judgment `Δ ⊢ A`,
 such that for every `x` in `Γ ∋ A` we have `σ x ~ σ† x`,
-then for any `x` in `Γ , B ∋ A` we have `exts σ x ~ exts σ† x`.
+then for any `x` in `Γ , B ∋ A` we have `exts σ x ~ exts σ† x`:
 \begin{code}
 ~exts : ∀ {Γ Δ}
   → {σ  : ∀ {A} → Γ ∋ A → Δ ⊢ A}
@@ -248,7 +248,7 @@ we apply renaming to the hypothesis.
 With extension under our belts, it is straightforward to show
 substitution commutes.  If `σ` and `σ†` both map any judgment `Γ ∋ A`
 to a judgment `Δ ⊢ A`, such that for every `x` in `Γ ∋ A` we have `σ
-x ~ σ† x`, and if `M ~ M†`, then `subst σ M ~ subst σ† M†`.
+x ~ σ† x`, and if `M ~ M†`, then `subst σ M ~ subst σ† M†`:
 \begin{code}
 ~subst : ∀ {Γ Δ}
   → {σ  : ∀ {A} → Γ ∋ A → Δ ⊢ A}
@@ -268,7 +268,7 @@ the body of an abstraction).
 
 From the general case of substitution, it is also easy to derive
 the required special case.  If `N ~ N†` and `M ~ M†`, then
-`N [ M ] ~ N† [ M† ]`.
+`N [ M ] ~ N† [ M† ]`:
 \begin{code}
 ~sub : ∀ {Γ A B} {N N† : Γ , B ⊢ A} {M M† : Γ ⊢ B} 
   → N ~ N†
@@ -306,7 +306,7 @@ Or, in a diagram:
     M† --- —→ --- N†
 
 We first formulate a concept corresponding to the lower leg
-of the diagram, that is, its right and bottom edges.
+of the diagram, that is, its right and bottom edges:
 \begin{code}
 data Leg {Γ A} (M† N : Γ ⊢ A) : Set where
 
@@ -321,7 +321,7 @@ relation than `—↠`, replacing it by `—→`.
 
 We can now state and prove that the relation is a simulation.
 Again, in this case, we can use a stronger relation than
-`—↠`, replacing it by `—→`.
+`—↠`, replacing it by `—→`:
 \begin{code}
 sim : ∀ {Γ A} {M M† N : Γ ⊢ A}
   → M ~ M†
@@ -345,11 +345,11 @@ sim (~let ~V ~N)    (β-let VV)      =  leg (~sub ~N ~V)  (β-ƛ (~val ~V VV))
 The proof is by case analysis, examining each possible instance of `M ~ M†`
 and each possible instance of `M —→ M†`, using recursive invocation whenever
 the reduction is by a `ξ` rule, and hence contains another reduction.
-In its structure, it looks a little bit like a proof of progress.
+In its structure, it looks a little bit like a proof of progress:
 
 * If the related terms are variables, no reduction applies.
 * If the related terms are abstractions, no reduction applies.
-* If the related terms are applications, there are three subcases.
+* If the related terms are applications, there are three subcases:
   - The source term reduces via `ξ-·₁`, in which case the target term does as well.
     Recursive invocation gives us
 
@@ -361,7 +361,7 @@ In its structure, it looks a little bit like a proof of progress.
         |              |
         L† --- —→ --- L′†
 
-    from which follows
+    from which follows:
 
          L · M  --- —→ ---  L′ · M
            |                   |      
@@ -382,7 +382,7 @@ In its structure, it looks a little bit like a proof of progress.
         |              |
         M† --- —→ --- M′†
 
-    from which follows
+    from which follows:
 
          V · M  --- —→ ---  V · M′
            |                  |      
@@ -394,7 +394,7 @@ In its structure, it looks a little bit like a proof of progress.
 
     Since simulation commutes with values and `V` is a value, `V†` is also a value.
 
-  - The source term reduces via `β-ƛ`, in which case the target term does as well.
+  - The source term reduces via `β-ƛ`, in which case the target term does as well:
 
          (ƛ x ⇒ N) · V  --- —→ ---  N [ x := V ] 
               |                           |      
@@ -409,7 +409,7 @@ In its structure, it looks a little bit like a proof of progress.
     we have `N [ x := V] ~ N† [ x := V† ]`.
 
 * If the related terms are a let and an application of an abstraction,
-  there are two subcases.
+  there are two subcases:
 
   - The source term reduces via `ξ-let`, in which case the target term
     reduces via `ξ-·₂`.  Recursive invocation gives us
@@ -422,7 +422,7 @@ In its structure, it looks a little bit like a proof of progress.
         |              |
         M† --- —→ --- M′†
 
-    from which follows
+    from which follows:
 
         let x = M in N --- —→ --- let x = M′ in N
               |                         |
@@ -433,7 +433,7 @@ In its structure, it looks a little bit like a proof of progress.
         (ƛ x ⇒ N) · M  --- —→ --- (ƛ x ⇒ N) · M′
 
   - The source term reduces via `β-let`, in which case the target
-    term reduces via `β-ƛ`.
+    term reduces via `β-ƛ`:
 
         let x = V in N  --- —→ ---  N [ x := V ]
               |                         |
@@ -463,7 +463,7 @@ In this case, the simulation is _not_ lock-step.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     †  U+2020  DAGGER (\dag)
     ⁻  U+207B  SUPERSCRIPT MINUS (\^-)
