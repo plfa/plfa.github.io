@@ -17,6 +17,7 @@ There are several tools you need to work with PLFA:
 For most of the tools, you can simply follow their respective build instructions.
 We aim to maintain compatibility with the latest release of Agda and the standard library, 
 but we maintain [a copy of the standard library which is guaranteed to work with the book](https://github.com/plfa/agda-stdlib).
+If you use this copy, make sure to clone `plfa/agda-stdlib` instead of `agda/agda-stdlib`.
 
 You can get the latest version of Programming Language Foundations in Agda from Github, 
 either by cloning the repository, 
@@ -30,6 +31,8 @@ For this, you can follow the instructions [here](https://agda.readthedocs.io/en/
 It is possible to set up PLFA as an Agda library as well.
 If you are trying to complete the exercises found in the `tspl` folder, or otherwise want to import modules from the book, you need to do this.
 To do so, add the path to `plfa.agda-lib` to `~/.agda/libraries` and add `plfa` to `~/.agda/defaults`, both on lines of their own.
+
+(Note: Currently, `make build` also builds the exercises in the `tspl` folder, so this is not an optional step.)
 
 
 # Building the book
