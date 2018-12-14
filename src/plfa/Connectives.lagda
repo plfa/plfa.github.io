@@ -98,7 +98,7 @@ the left-hand side of an equation we refer to it as a _destructor_.
 We may also refer to `proj₁` and `proj₂` as destructors, since they
 play a similar role.
 
-Other terminology refers to `⟨_,_⟩` as the _introducing_ a conjunction, and
+Other terminology refers to `⟨_,_⟩` as _introducing_ a conjunction, and
 to `proj₁` and `proj₂` as _eliminating_ a conjunction; indeed, the
 former is sometimes given the name `×-I` and the latter two the names
 `×-E₁` and `×-E₂`.  As we read the rules from top to bottom,
