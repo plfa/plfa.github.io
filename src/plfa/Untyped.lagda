@@ -10,7 +10,7 @@ next      : /Acknowledgements/
 module plfa.Untyped where
 \end{code}
 
-In this chapter we play with variations on a theme.
+In this chapter we play with variations on a theme:
 
 * Previous chapters consider inherently-typed calculi;
   here we consider one that is untyped but inherently scoped.
@@ -74,7 +74,7 @@ can now be defined in the language itself.
 
 ## Syntax
 
-First, we get all our infix declarations out of the way.
+First, we get all our infix declarations out of the way:
 
 \begin{code}
 infix  4  _⊢_
@@ -88,7 +88,7 @@ infixl 7  _·_
 
 ## Types
 
-We have just one type.
+We have just one type:
 \begin{code}
 data Type : Set where
   ★ : Type
@@ -101,7 +101,7 @@ Show that `Type` is isomorphic to `⊤`, the unit type.
 ## Contexts
 
 As before, a context is a list of types, with the type of the
-most recently bound variable on the right.
+most recently bound variable on the right:
 \begin{code}
 data Context : Set where
   ∅   : Context
@@ -116,7 +116,7 @@ Show that `Context` is isomorphic to `ℕ`.
 ## Variables and the lookup judgment
 
 Inherently typed variables correspond to the lookup judgment.  The
-rules are as before.
+rules are as before:
 \begin{code}
 data _∋_ : Context → Type → Set where
 
@@ -143,7 +143,7 @@ binds two variables.
 Inherently typed terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
 well-scoped — that is, that all variables they mention are in scope —
-but not that they are well-typed.
+but not that they are well-typed:
 \begin{code}
 data _⊢_ : Context → Type → Set where
 
@@ -171,7 +171,7 @@ fixpoints into this calculus.
 
 As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
-every variable has the same type.
+every variable has the same type:
 \begin{code}
 count : ∀ {Γ} → ℕ → Γ ∋ ★
 count {Γ , ★} zero     =  Z
@@ -180,7 +180,7 @@ count {∅}     _        =  ⊥-elim impossible
   where postulate impossible : ⊥
 \end{code}
 
-We can then introduce a convenient abbreviation for variables.
+We can then introduce a convenient abbreviation for variables:
 \begin{code}
 #_ : ∀ {Γ} → ℕ → Γ ⊢ ★
 # n  =  ` count n
@@ -188,7 +188,7 @@ We can then introduce a convenient abbreviation for variables.
 
 ## Test examples
 
-Our only example is computing two plus two on Church numerals.
+Our only example is computing two plus two on Church numerals:
 \begin{code}
 twoᶜ : ∀ {Γ} → Γ ⊢ ★
 twoᶜ = ƛ ƛ (# 1 · (# 1 · # 0))
@@ -211,7 +211,7 @@ two.
 
 ## Renaming
 
-Our definition of renaming is as before.  First, we need an extension lemma.
+Our definition of renaming is as before.  First, we need an extension lemma:
 \begin{code}
 ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
     -----------------------------------
@@ -222,7 +222,7 @@ ext ρ (S x)  =  S (ρ x)
 We could replace all instances of `A` and `B` by `★`, but arguably it is
 clearer not to do so.
 
-Now it is straighforward to define renaming.
+Now it is straighforward to define renaming:
 \begin{code}
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -237,7 +237,7 @@ This is exactly as before, save that there are fewer term forms.
 ## Simultaneous substitution
 
 Our definition of substitution is also exactly as before.
-First we need an extension lemma.
+First we need an extension lemma:
 \begin{code}
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ----------------------------------
@@ -247,7 +247,7 @@ exts σ (S x)  =  rename S_ (σ x)
 \end{code}
 Again, we could replace all instances of `A` and `B` by `★`.
 
-Now it is straighforward to define substitution.
+Now it is straighforward to define substitution:
 \begin{code}
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -261,7 +261,7 @@ Again, this is exactly as before, save that there are fewer term forms.
 
 ## Single substitution
 
-It is easy to define the special case of substitution for one free variable.
+It is easy to define the special case of substitution for one free variable:
 \begin{code}
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
@@ -279,14 +279,14 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
 
 Reduction continues until a term is fully normalised.  Hence, instead
 of values, we are now interested in _normal forms_.  Terms in normal
-form are defined by mutual recursion with _neutral_ terms.
+form are defined by mutual recursion with _neutral_ terms:
 \begin{code}
 data Neutral : ∀ {Γ A} → Γ ⊢ A → Set
 data Normal  : ∀ {Γ A} → Γ ⊢ A → Set
 \end{code}
 Neutral terms arise because we now consider reduction of open terms,
 which may contain free variables.  A term is neutral if it is a
-variable or a neutral term applied to a normal term.
+variable or a neutral term applied to a normal term:
 \begin{code}
 data Neutral where
 
@@ -302,7 +302,7 @@ data Neutral where
 \end{code}
 A term is a normal form if it is neutral or an abstraction where the
 body is a normal form. We use `′_` to label neutral terms.
-Like `` `_ ``, it is unobtrusive.
+Like `` `_ ``, it is unobtrusive:
 \begin{code}
 data Normal where
 
@@ -317,14 +317,14 @@ data Normal where
     → Normal (ƛ N)
 \end{code}
 
-We introduce a convenient abbreviation for evidence that a variable is neutral.
+We introduce a convenient abbreviation for evidence that a variable is neutral:
 \begin{code}
 #′_ : ∀ {Γ} (n : ℕ) → Neutral {Γ} (# n)
 #′ n  =  ` count n
 \end{code}
 
 For example, here is the evidence that the Church numeral two is in
-normal form.
+normal form:
 \begin{code}
 _ : Normal (twoᶜ {∅})
 _ = ƛ ƛ (′ #′ 1 · (′ #′ 1 · (′ #′ 0)))
@@ -333,7 +333,7 @@ The evidence that a term is in normal form is almost identical to
 the term itself, decorated with some additional primes to indicate
 neutral terms, and using `#′` in place of `#`
 
-We will also need to characterise terms that are applications.
+We will also need to characterise terms that are applications:
 \begin{code}
 data Application : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -346,7 +346,7 @@ data Application : ∀ {Γ A} → Γ ⊢ A → Set where
 ## Reduction step
 
 The reduction rules are altered to switch from call-by-value to
-call-by-name and to enable full normalisation.
+call-by-name and to enable full normalisation:
 
 * In rule `ξ₁`, the function term is required to be an application, 
   to avoid conflict with rule `β`.
@@ -359,7 +359,7 @@ call-by-name and to enable full normalisation.
 
 * A new rule `ζ` is added, to enable reduction underneath a lambda.
 
-Here are the formalised rules.
+Here are the formalised rules:
 \begin{code}
 infix 2 _—→_
 
@@ -403,7 +403,7 @@ abstractions).  What would `2+2ᶜ` reduce to in this case?
 
 ## Reflexive and transitive closure
 
-We cut-and-paste the previous definition.
+We cut-and-paste the previous definition:
 \begin{code}
 infix  2 _—↠_
 infix  1 begin_
@@ -432,7 +432,7 @@ begin M—↠N = M—↠N
 
 ## Example reduction sequence
 
-Here is the demonstration that two plus two is four.
+Here is the demonstration that two plus two is four:
 \begin{code}
 _ : 2+2ᶜ —↠ fourᶜ
 _ =
@@ -470,7 +470,7 @@ as `` `zero ``) or terms with a free variable.  Now we can demonstrate
 it for open, well-scoped terms.  The definition of normal form permits
 free variables, and we have no terms that are not functions.
 
-A term makes progress if it can take a step or is in normal form.
+A term makes progress if it can take a step or is in normal form:
 \begin{code}
 data Progress {Γ A} (M : Γ ⊢ A) : Set where
 
@@ -485,7 +485,7 @@ data Progress {Γ A} (M : Γ ⊢ A) : Set where
     → Progress M
 \end{code}
 
-If a term is well-scoped then it satisfies progress.
+If a term is well-scoped then it satisfies progress:
 \begin{code}
 progress : ∀ {Γ A} → (M : Γ ⊢ A) → Progress M
 progress (` x)                                 =  done (′ ` x)
@@ -502,24 +502,24 @@ progress (L@(_ · _) · M) with progress L
 ...    | step M—→M′                            =  step (ξ₂ NeuL M—→M′)
 ...    | done NrmM                             =  done (′ NeuL · NrmM)
 \end{code}
-We induct on the evidence that the term is well-scoped.
+We induct on the evidence that the term is well-scoped:
 
 * If the term is a variable, then it is in normal form.
   (This contrasts with previous proofs, where the variable case was
   ruled out by the restriction to closed terms.)
 * If the term is an abstraction, recursively invoke progress on the body.
   (This contrast with previous proofs, where an abstraction is
-  immediately a value.)
+  immediately a value.):
   + If it steps, then the whole term steps via `ζ`.
   + If it is in normal form, then so is the whole term.
-* If the term is an application, consider the function subterm.
-  + If it is a variable, recursively invoke progress on the argument.
+* If the term is an application, consider the function subterm:
+  + If it is a variable, recursively invoke progress on the argument:
     - If it steps, then the whole term steps via `ξ₂`;
     - If it is normal, then so is the whole term.
   + If it is an abstraction, then the whole term steps via `β`.
-  + If it is an application, recursively apply progress to the function subterm.
+  + If it is an application, recursively apply progress to the function subterm:
     - If it steps, then the whole term steps via `ξ₁`.
-    - If it is normal, recursively apply progress to the argument subterm.
+    - If it is normal, recursively apply progress to the argument subterm:
       * If it steps, then the whole term steps via `ξ₂`.
       * If it is normal, then so is the whole term.
 
@@ -533,13 +533,13 @@ application.
 
 As previously, progress immediately yields an evaluator.
 
-Gas is specified by a natural number.
+Gas is specified by a natural number:
 \begin{code}
 data Gas : Set where
   gas : ℕ → Gas
 \end{code}
 When our evaluator returns a term `N`, it will either give evidence that
-`N` is normal or indicate that it ran out of gas.
+`N` is normal or indicate that it ran out of gas:
 \begin{code}
 data Finished {Γ A} (N : Γ ⊢ A) : Set where
 
@@ -554,7 +554,7 @@ data Finished {Γ A} (N : Γ ⊢ A) : Set where
 \end{code}
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
-reduction finished.
+reduction finished:
 \begin{code}
 data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -564,7 +564,7 @@ data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
       ----------
     → Steps L
 \end{code}
-The evaluator takes gas and a term and returns the corresponding steps.
+The evaluator takes gas and a term and returns the corresponding steps:
 \begin{code}
 eval : ∀ {Γ A}
   → Gas
@@ -582,7 +582,7 @@ generalises to an arbitrary context `Γ`.
 
 ## Example
 
-We reiterate our previous example. Two plus two is four, with Church numerals.
+We reiterate our previous example. Two plus two is four, with Church numerals:
 \begin{code}
 _ : eval (gas 100) 2+2ᶜ ≡
   steps
@@ -644,7 +644,7 @@ defined by the expression that corresponds to its own case statement.
 
 Recall that Church numerals apply a given function for the
 corresponding number of times.  Using named terms, we represent the
-first three Church numerals as follows.
+first three Church numerals as follows:
 
     zero  =  ƛ s ⇒ ƛ z ⇒ z
     one   =  ƛ s ⇒ ƛ z ⇒ s · z
@@ -663,7 +663,7 @@ the predecessor of the current argument) and one corresponding to the
 zero branch of the case.  (The cases could be in either order.
 We put the successor case first to ease comparison with Church numerals.)
 
-Here is the representation of naturals encoded with de Bruijn indexes.
+Here is the representation of naturals encoded with de Bruijn indexes:
 \begin{code}
 `zero : ∀ {Γ} → (Γ ⊢ ★)
 `zero = ƛ ƛ (# 0)
@@ -679,11 +679,11 @@ definitions.  The successor branch expects an additional variable to
 be in scope (as indicated by its type), so it is converted to an
 ordinary term using lambda abstraction.
 
-We can also define fixpoint.  Using named terms, we define
+We can also define fixpoint.  Using named terms, we define:
 
     μ f = (ƛ x ⇒ f · (x · x)) · (ƛ x ⇒ f · (x · x))
 
-This works because
+This works because:
 
       μ f
     ≡
@@ -693,14 +693,14 @@ This works because
     ≡
       f · (μ f)
 
-With de Bruijn indices, we have the following.
+With de Bruijn indices, we have the following:
 \begin{code}
 μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
 μ N  =  (ƛ ((ƛ (# 1 · (# 0 · # 0))) · (ƛ (# 1 · (# 0 · # 0))))) · (ƛ N)
 \end{code}
 The argument to fixpoint is treated similarly to the successor branch of case.
 
-We can now define two plus two exactly as before.
+We can now define two plus two exactly as before:
 \begin{code}
 infix 5 μ_
 
@@ -741,7 +741,7 @@ save for primitive numbers, in the untyped lambda calculus.
 
 ## Unicode
 
-This chapter uses the following unicode.
+This chapter uses the following unicode:
 
     ★  U+2605  BLACK STAR (\st)
 
