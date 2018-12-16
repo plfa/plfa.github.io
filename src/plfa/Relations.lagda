@@ -721,7 +721,7 @@ and back is the identity:
 (Hint: For each of these, you may first need to prove related
 properties of `One`.)
 
-## Standard prelude
+## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
