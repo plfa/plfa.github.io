@@ -72,7 +72,7 @@ corresponding inference rules, a trick we will use often from now on.
 
 Both definitions above tell us the same two things:
 
-* _Base case_: for all naturals `n`, the proposition `zero ≤ n` holds
+* _Base case_: for all naturals `n`, the proposition `zero ≤ n` holds.
 * _Inductive case_: for all naturals `m` and `n`, if the proposition
   `m ≤ n` holds, then the proposition `suc m ≤ suc n` holds.
 
@@ -547,7 +547,8 @@ Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
   * `m < n`,
   * `m ≡ n`, or
-  * `m > n`
+  * `m > n`.
+
 Define `m > n` to be the same as `n < m`.
 You will need a suitable data declaration,
 similar to that used for totality.
