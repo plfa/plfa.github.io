@@ -96,7 +96,7 @@ data Type : Set where
 \end{code}
 
 
-# Precontexts and Contexts
+# Precontexts
 
 \begin{code}
 data Precontext : Set where
@@ -126,6 +126,9 @@ data _∋_ : Precontext → Type → Set where
       ---------
     → γ , B ∋ A
 \end{code}
+
+
+# Contexts
 
 \begin{code}
 data Context : Precontext → Set where

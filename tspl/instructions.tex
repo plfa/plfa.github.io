@@ -37,28 +37,30 @@
   \begin{center}
     \texttt{getpapers}
   \end{center}
-  This will create a subdirectory \texttt{tspl-mpe} in your home directory,
+  This will create a subdirectory \texttt{tspl-pe} in your home directory,
   containing the following files.
   \begin{center}
     \begin{tabular}{ll}
-      \texttt{tspl-mpe/papers/exam.pdf}                & the exam \\
-      \texttt{tspl-mpe/papers/instructions.pdf}        & these instructions \\
-      \texttt{tspl-mpe/templates/Exam.lagda}           & exam template to edit \\
-      \texttt{tspl-mpe/original\_templates/Exam.lagda} & backup of exam template
+      \texttt{tspl-pe/papers/exam.pdf}                & the exam \\
+      \texttt{tspl-pe/papers/instructions.pdf}        & these instructions \\
+      \texttt{tspl-pe/templates/Exam.lagda}           & exam template to edit \\
+      \texttt{tspl-pe/original\_templates/Exam.lagda} & backup of exam template
     \end{tabular}
   \end{center}
-  The directories \texttt{tspl-mpe/papers}, \texttt{tspl-mpe/original\_templates}
-  are read only, but you may read and write \texttt{tspl-mpe/templates}.
+  The directories \texttt{tspl-pe/papers} and
+  \texttt{tspl-pe/original\_templates}
+  are read only, but you may read and write \texttt{tspl-pe/templates}.
 
 \item
-  To setup the Agda environment, open a terminal window and type:
-  and type:
+  To setup the Agda environment, open a second terminal window and type:
   \begin{center}
     \texttt{tspl-setup}
   \end{center}
-  This will also open a browser, with three tabs which contain the textbook
+  This will open a browser, with three tabs which contain the textbook
   \emph{Programming Language Foundations in Agda}, the documentation for the
-  Agda standard library, and the documentation for Agda are available.
+  Agda standard library, and the documentation for Agda.  (The browser may
+  also attempt to link to the internet, which brings up a tab labeled
+  ``Problem loading page''; this is expected and not a problem.)
 
 {\it (Note that internet access has been disabled.)}
 
@@ -71,13 +73,13 @@
 
 \item When the start of the exam is announced, open the exam paper
 \begin{center}
-  \texttt{tspl-mpe/papers/exam.pdf}
+  \texttt{tspl-pe/papers/exam.pdf}
 \end{center}
 with the standard PDF viewer.
 
 \item Change to the template directory
 \begin{center}
-  \texttt{cd tspl-mpe/templates}
+  \texttt{cd tspl-pe/templates}
 \end{center}
 and edit the file
 \begin{center}

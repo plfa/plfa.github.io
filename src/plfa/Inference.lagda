@@ -123,7 +123,7 @@ another that takes it as an input.
 ## Synthesising and inheriting types
 
 In addition to the lookup judgment for variables, which will remain
-as before, we now have two judgments for the type of the term.
+as before, we now have two judgments for the type of the term:
 
     Γ ⊢ M ↑ A
     Γ ⊢ M ↓ A
@@ -203,7 +203,7 @@ We will formalise the above shortly.
 ## Soundness and completeness
 
 What we intend to show is that the typing judgments are
-_decidable_.
+_decidable_:
 
     synthesize : ∀ (Γ : Context) (M : Term⁺)
         -----------------------
@@ -260,7 +260,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 Once we have a type derivation, it will be easy to construct
 from it the inherently typed representation.  In order that we
 can compare with our previous development, we import
-module `pfla.DeBruijn`.  
+module `pfla.DeBruijn`:  
 
 \begin{code}
 import plfa.DeBruijn as DB
@@ -277,7 +277,7 @@ also be referred to as just `Type`.
 ## Syntax
 
 First, we get all our infix declarations out of the way.
-We list separately operators for judgments and terms.
+We list separately operators for judgments and terms:
 
 \begin{code}
 infix   4  _∋_⦂_
@@ -296,7 +296,7 @@ infix   8  `suc_
 infix   9  `_
 \end{code}
 
-Identifiers, types, and contexts are as before.
+Identifiers, types, and contexts are as before:
 \begin{code}
 Id : Set
 Id = String
@@ -314,7 +314,7 @@ The syntax of terms is defined by mutual recursion.
 We use `Term⁺` and `Term⁻`
 for terms with synthesized and inherited types, respectively.
 Note the inclusion of the switching forms,
-`M ↓ A` and `M ↑`.
+`M ↓ A` and `M ↑`:
 \begin{code}
 data Term⁺ : Set
 data Term⁻ : Set
@@ -341,7 +341,7 @@ in deconstructors inherit.
 ## Example terms
 
 We can recreate the examples from preceding chapters.
-First, computing two plus two on naturals.
+First, computing two plus two on naturals:
 \begin{code}
 two : Term⁻
 two = `suc (`suc `zero)
@@ -358,7 +358,7 @@ plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
 The only change is to decorate with down and up arrows as required.
 The only type decoration required is for `plus`.
 
-Next, computing two plus two with Church numerals.
+Next, computing two plus two with Church numerals:
 \begin{code}
 Ch : Type
 Ch = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
@@ -383,7 +383,7 @@ required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
 ## Bidirectional type checking
 
 The typing rules for variables are as in
-[Lambda][plfa.Lambda].
+[Lambda][plfa.Lambda]:
 \begin{code}
 data _∋_⦂_ : Context → Id → Type → Set where
 
@@ -399,7 +399,7 @@ data _∋_⦂_ : Context → Id → Type → Set where
 \end{code}
 
 As with syntax, the judgments for synthesizing
-and inheriting types are mutually recursive.
+and inheriting types are mutually recursive:
 \begin{code}
 data _⊢_↑_ : Context → Term⁺ → Type → Set
 data _⊢_↓_ : Context → Term⁻ → Type → Set
@@ -493,7 +493,7 @@ Chapter [More][plfa.More].
 ## Prerequisites
 
 The rule for `M ↑` requires the ability to decide whether two types
-are equal.  It is straightforward to code.
+are equal.  It is straightforward to code:
 \begin{code}
 _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 `ℕ      ≟Tp `ℕ              =  yes refl
@@ -506,8 +506,8 @@ _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 ...  | yes refl | yes refl  =  yes refl
 \end{code}
 
-We will also need a couple of obvious lemmas: the domain
-and range of equal function types are equal.
+We will also need a couple of obvious lemmas; the domain
+and range of equal function types are equal:
 \begin{code}
 dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
 dom≡ refl = refl
@@ -517,7 +517,7 @@ rng≡ refl = refl
 \end{code}
 
 We will also need to know that the types `` `ℕ ``
-and `A ⇒ B` are not equal.
+and `A ⇒ B` are not equal:
 \begin{code}
 ℕ≢⇒ : ∀ {A B} → `ℕ ≢ A ⇒ B
 ℕ≢⇒ ()
@@ -528,7 +528,7 @@ and `A ⇒ B` are not equal.
 
 Looking up a type in the context is unique.  Given two derivations,
 one showing `Γ ∋ x ⦂ A` and one showing `Γ ∋ x ⦂ B`, it follows that
-`A` and `B` must be identical.
+`A` and `B` must be identical:
 \begin{code}
 uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 uniq-∋ Z Z                 =  refl
@@ -547,7 +547,7 @@ it is not.
 
 Synthesizing a type is also unique.  Given two derivations,
 one showing `Γ ⊢ M ↑ A` and one showing `Γ ⊢ M ↑ B`, it follows
-that `A` and `B` must be identical.
+that `A` and `B` must be identical:
 \begin{code}
 uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
 uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
@@ -566,7 +566,7 @@ follows since both terms are decorated with the same type.
 
 Given `Γ` and two distinct variables `x` and `y`, if there is no type `A`
 such that `Γ ∋ x ⦂ A` holds, then there is also no type `A` such that
-`Γ , y ⦂ B ∋ x ⦂ A` holds.
+`Γ , y ⦂ B ∋ x ⦂ A` holds:
 \begin{code}
 ext∋ : ∀ {Γ B x y}
   → x ≢ y
@@ -584,7 +584,7 @@ evidence that `Γ ∋ x ⦂ A`, which contradicts the second assumption.
 
 Given a context `Γ` and a variable `x`, we decide whether
 there exists a type `A` such that `Γ ∋ x ⦂ A` holds, or its
-negation.
+negation:
 \begin{code}
 lookup : ∀ (Γ : Context) (x : Id)
     -----------------------
@@ -596,17 +596,17 @@ lookup (Γ , y ⦂ B) x with x ≟ y
 ...             | no  ¬∃          =  no  (ext∋ x≢y ¬∃)
 ...             | yes ⟨ A , ⊢x ⟩  =  yes ⟨ A , S x≢y ⊢x ⟩
 \end{code}
-Consider the context.
+Consider the context:
 
 * If it is empty, then trivially there is no possible derivation.
 
 * If it is non-empty, compare the given variable to the most
-  recent binding.
+  recent binding:
 
   + If they are identical, we have succeeded, with `Z` as
     the appropriate derivation.
 
-  + If they differ, we recurse.
+  + If they differ, we recurse:
 
     - If lookup fails, we apply `ext∋` to conver the proof
       there is no derivation from the contained context
@@ -623,7 +623,7 @@ these results are easy to demonstrate inline, but we provide
 auxiliary functions for a couple of the trickier cases.
 
 If `Γ ⊢ L ↑ A ⇒ B` holds but `Γ ⊢ M ↓ A` does not hold, then
-there is no term `B′` such that `Γ ⊢ L · M ↑ B′` holds.
+there is no term `B′` such that `Γ ⊢ L · M ↑ B′` holds:
 \begin{code}
 ¬arg : ∀ {Γ A B L M}
   → Γ ⊢ L ↑ A ⇒ B
@@ -644,7 +644,7 @@ to derive a contradiction between `¬⊢M` and `⊢M′`, since one concerns
 type `A` and the other type `A′`.
 
 
-If `Γ ⊢ M ↑ A` holds and `A ≢ B`, then `Γ ⊢ (M ↑) ↓ B` does not hold.
+If `Γ ⊢ M ↑ A` holds and `A ≢ B`, then `Γ ⊢ (M ↑) ↓ B` does not hold:
 \begin{code}
 ¬switch : ∀ {Γ M A B}
   → Γ ⊢ M ↑ A
@@ -673,7 +673,7 @@ a context `Γ` and a synthesis term `M` and either
 returns a type `A` and evidence that `Γ ⊢ M ↑ A`, or its negation.
 Inheritance is given a context `Γ`, an inheritance term `M`,
 and a type `A` and either returns evidence that `Γ ⊢ M ↓ A`,
-or its negation.
+or its negation:
 \begin{code}
 synthesize : ∀ (Γ : Context) (M : Term⁺)
     -----------------------
@@ -684,7 +684,7 @@ inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
   → Dec (Γ ⊢ M ↓ A)
 \end{code}
 
-We first consider the code for synthesis.
+We first consider the code for synthesis:
 \begin{code}
 synthesize Γ (` x) with lookup Γ x
 ... | no  ¬∃              =  no  (λ{ ⟨ A , ⊢` ∋x ⟩ → ¬∃ ⟨ A , ∋x ⟩ })
@@ -699,9 +699,9 @@ synthesize Γ (M ↓ A) with inherit Γ M A
 ... | no  ¬⊢M             =  no  (λ{ ⟨ _ , ⊢↓ ⊢M ⟩  →  ¬⊢M ⊢M })
 ... | yes ⊢M              =  yes ⟨ A , ⊢↓ ⊢M ⟩
 \end{code}
-There are three cases.
+There are three cases:
 
-* If the term is a variable `` ` x ``, we use lookup as defined above.
+* If the term is a variable `` ` x ``, we use lookup as defined above:
 
   + If it fails, then `¬∃` is evidence that there is no `A` such
     that `Γ ∋ x ⦂ A` holds.  Evidence that `` Γ ⊢ ` x ↑ A `` holds must
@@ -711,14 +711,14 @@ There are three cases.
   + If it succeeds, then `∋x` is evidence that `Γ ∋ x ⦂ A`, and
     hence `` ⊢′ ∋x `` is evidence that `` Γ ⊢ ` x ↑ A ``.
 
-* If the term is an application `L · M`, we recurse on the function `L`.
+* If the term is an application `L · M`, we recurse on the function `L`:
 
   + If it fails, then `¬∃` is evidence that there is no type such
     that `Γ ⊢ L ↑ _` holds.  Evidence that `Γ ⊢ L · M ↑ _` holds
     must have the form `⊢L · _`, where `⊢L` is evidence that
     `Γ ⊢ L ↑ _`, which yields a contradiction.
 
-  + If it succeeds, there are two possibilities.
+  + If it succeeds, there are two possibilities:
 
     - One is that `⊢L` is evidence that `` Γ ⊢ L ⦂ `ℕ ``.  Evidence
       that `Γ ⊢ L · M ↑ _` holds must have the form `⊢L′ · _` where
@@ -727,7 +727,7 @@ There are three cases.
       contradiction, since `` `ℕ `` cannot equal `A ⇒ B`.
 
     - The other is that `⊢L` is evidence that `Γ ⊢ L ↑ A ⇒ B`, in
-      which case we recurse on the argument `M`.
+      which case we recurse on the argument `M`:
 
       * If it fails, then `¬⊢M` is evidence that `Γ ⊢ M ↓ A` does
         not hold.  By `¬arg` applied to `⊢L` and `¬⊢M`, it follows
@@ -737,7 +737,7 @@ There are three cases.
         and `⊢L · ⊢M` provides evidence that `Γ ⊢ L · M ↑ B`.
 
 * If the term is a switch `M ↓ A` from synthesised to inherited,
-  we recurse on the subterm `M`, supplying type `A` by inheritance.
+  we recurse on the subterm `M`, supplying type `A` by inheritance:
 
   + If it fails, then `¬⊢M` is evidence that `Γ ⊢ M ↓ A` does not
     hold.  Evidence that `Γ ⊢ (M ↓ A) ↑ A` holds must have the
@@ -747,7 +747,7 @@ There are three cases.
   + If it succeeds, then `⊢M` is evidence that `Γ ⊢ M ↓ A`,
     and `⊢↓ ⊢M` provides evidence that `Γ ⊢ (M ↓ A) ↑ A`.
 
-We next consider the code for inheritance.
+We next consider the code for inheritance:
 \begin{code}
 inherit Γ (ƛ x ⇒ N) `ℕ      =  no  (λ())
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
@@ -777,7 +777,7 @@ inherit Γ (M ↑) B with synthesize Γ M
 ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
 \end{code}
 We consider only the cases for abstraction and
-and for switching from inherited to synthesized.
+and for switching from inherited to synthesized:
 
 * If the term is an abstraction `ƛ x ⇒ N` and the inherited type
   is `` `ℕ ``, then it is trivial that `` Γ ⊢ (ƛ x ⇒ N) ↓ `ℕ ``
@@ -785,7 +785,7 @@ and for switching from inherited to synthesized.
 
 * If the term is an abstraction `ƛ x ⇒ N` and the inherited type
   is `A ⇒ B`, then we recurse with context `Γ , x ⦂ A` on subterm
-  `N` inheriting type `B`.
+  `N` inheriting type `B`:
 
   + If it fails, then `¬⊢N` is evidence that `Γ , x ⦂ A ⊢ N ↓ B`
     does not hold.  Evidence that `Γ ⊢ (ƛ x ⇒ N) ↓ A ⇒ B` holds
@@ -796,7 +796,7 @@ and for switching from inherited to synthesized.
     holds, and `⊢ƛ ⊢N` provides evidence that `Γ ⊢ (ƛ x ⇒ N) ↓ A ⇒ B`.
 
 * If the term is a switch `M ↑` from inherited to synthesised,
-  we recurse on the subterm `M`.
+  we recurse on the subterm `M`:
 
   + If it fails, then `¬∃` is evidence there is no `A` such
     that `Γ ⊢ M ↑ A` holds.  Evidence that `Γ ⊢ (M ↑) ↓ B` holds
@@ -804,7 +804,7 @@ and for switching from inherited to synthesized.
     `Γ ⊢ M ↑ _`, which yields a contradiction.
 
   + If it succeeds, then `⊢M` is evidence that `Γ ⊢ M ↑ A` holds.
-    We apply `_≟Tp_` do decide whether `A` and `B` are equal.
+    We apply `_≟Tp_` do decide whether `A` and `B` are equal:
 
     - If it fails, then `A≢B` is evidence that `A ≢ B`.
       By `¬switch` applied to `⊢M` and `A≢B` it follow that
@@ -819,7 +819,7 @@ read directly from the corresponding typing rules.
 ## Testing the example terms
 
 First, we copy a function introduced ealier that makes it easy to
-compute the evidence that two variable names are distinct.
+compute the evidence that two variable names are distinct:
 \begin{code}
 _≠_ : ∀ (x y : Id) → x ≢ y
 x ≠ y  with x ≟ y
@@ -828,7 +828,7 @@ x ≠ y  with x ≟ y
   where postulate impossible : ⊥
 \end{code}
 
-Here is the result of typing two plus two on naturals.
+Here is the result of typing two plus two on naturals:
 \begin{code}
 ⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
 ⊢2+2 =
@@ -850,7 +850,7 @@ Here is the result of typing two plus two on naturals.
    · ⊢suc (⊢suc ⊢zero))
 \end{code}
 We confirm that synthesis on the relevant term returns
-natural as the type and the above derivation.
+natural as the type and the above derivation:
 \begin{code}
 _ : synthesize ∅ 2+2 ≡ yes ⟨ `ℕ , ⊢2+2 ⟩
 _ = refl
@@ -861,7 +861,7 @@ was to replace Agda's representation of the evidence that two strings
 are unequal (which it cannot print nor read) by equivalent calls to
 `_≠_`.
 
-Here is the result of typing two plus two with Church numerals.
+Here is the result of typing two plus two with Church numerals:
 \begin{code}
 ⊢2+2ᶜ : ∅ ⊢ 2+2ᶜ ↑ `ℕ
 ⊢2+2ᶜ =
@@ -905,7 +905,7 @@ Here is the result of typing two plus two with Church numerals.
   · ⊢zero
 \end{code}
 We confirm that synthesis on the relevant term returns
-natural as the type and the above derivation.
+natural as the type and the above derivation:
 \begin{code}
 _ : synthesize ∅ 2+2ᶜ ≡ yes ⟨ `ℕ , ⊢2+2ᶜ ⟩
 _ = refl
@@ -917,71 +917,71 @@ term on the left and editing.
 
 It is important not just to check that code works as intended,
 but also that it fails as intended.  Here are checks for
-several possible errors.
+several possible errors:
 
-Unbound variable.
+Unbound variable:
 \begin{code}
 _ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡ no _
 _ = refl
 \end{code}
 
-Argument in application is ill-typed.
+Argument in application is ill-typed:
 \begin{code}
 _ : synthesize ∅ (plus · sucᶜ) ≡ no _
 _ = refl
 \end{code}
 
-Function in application is ill-typed.
+Function in application is ill-typed:
 \begin{code}
 _ : synthesize ∅ (plus · sucᶜ · two) ≡ no _
 _ = refl
 \end{code}
 
-Function in application has type natural.
+Function in application has type natural:
 \begin{code}
 _ : synthesize ∅ ((two ↓ `ℕ) · two) ≡ no _
 _ = refl
 \end{code}
 
-Abstraction inherits type natural.
+Abstraction inherits type natural:
 \begin{code}
 _ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡ no _
 _ = refl
 \end{code}
 
-Zero inherits a function type.
+Zero inherits a function type:
 \begin{code}
 _ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡ no _
 _ = refl
 \end{code}
 
-Successor inherits a function type.
+Successor inherits a function type:
 \begin{code}
 _ : synthesize ∅ (two ↓ `ℕ ⇒ `ℕ) ≡ no _
 _ = refl
 \end{code}
 
-Successor of an ill-typed term.
+Successor of an ill-typed term:
 \begin{code}
 _ : synthesize ∅ (`suc twoᶜ ↓ `ℕ) ≡ no _
 _ = refl
 \end{code}
 
-Case of a term with a function type.
+Case of a term with a function type:
 \begin{code}
 _ : synthesize ∅
       ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
 _ = refl
 \end{code}
 
-Case of an ill-typed term.
+Case of an ill-typed term:
 \begin{code}
 _ : synthesize ∅
       ((`case (twoᶜ ↓ `ℕ) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
 _ = refl
 \end{code}
 
-Inherited and synthesised types disagree in a switch.
+Inherited and synthesised types disagree in a switch:
 \begin{code}
 _ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡ no _
 _ = refl
@@ -997,7 +997,7 @@ Chapter [DeBruijn][plfa.DeBruijn].
 It is easy to define an _erasure_ function that takes evidence of a
 type judgment into the corresponding inherently typed term.
 
-First, we give code to erase a type.
+First, we give code to erase a type:
 \begin{code}
 ∥_∥Tp : Type → DB.Type
 ∥ `ℕ ∥Tp             =  DB.`ℕ
@@ -1005,7 +1005,7 @@ First, we give code to erase a type.
 \end{code}
 It simply renames to the corresponding constructors in module `DB`.
 
-Next, we give the code to erase a context.
+Next, we give the code to erase a context:
 \begin{code}
 ∥_∥Cx : Context → DB.Context
 ∥ ∅ ∥Cx              =  DB.∅
@@ -1013,7 +1013,7 @@ Next, we give the code to erase a context.
 \end{code}
 It simply drops the variable names.
 
-Next, we give the code to erase a lookup judgment.
+Next, we give the code to erase a lookup judgment:
 \begin{code}
 ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Cx DB.∋ ∥ A ∥Tp
 ∥ Z ∥∋               =  DB.Z
@@ -1023,7 +1023,7 @@ It simply drops the evidence that variable names are distinct.
 
 Finally, we give the code to erase a typing judgment.
 Just as there are two mutually recursive typing judgments,
-there are two mutually recursive erasure functions.
+there are two mutually recursive erasure functions:
 \begin{code}
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
@@ -1046,7 +1046,7 @@ to inherited or vice versa are dropped.
 
 We confirm that the erasure of the type derivations in
 this chapter yield the corresponding inherently typed terms
-from the earlier chapter.
+from the earlier chapter:
 \begin{code}
 _ : ∥ ⊢2+2 ∥⁺ ≡ DB.2+2
 _ = refl
@@ -1093,7 +1093,7 @@ variable must have a unique type.
 
 ## Unicode
 
-This chapter uses the following unicode
+This chapter uses the following unicode:
 
     ↓  U+2193:  DOWNWARDS ARROW (\d)
     ↑  U+2191:  UPWARDS ARROW (\u)
