@@ -88,7 +88,7 @@ _hypotheses_, and a single judgment written below, called the
 _conclusion_.  The first rule is the base case. It has no hypotheses,
 and the conclusion asserts that `zero` is a natural.  The second rule
 is the inductive case. It has one hypothesis, which assumes that `m`
-is a natural, and in that case the conclusion asserts that `suc m`
+is a natural, and the conclusion asserts that `suc m`
 is a also a natural.
 
 
