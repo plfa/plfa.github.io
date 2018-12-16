@@ -534,7 +534,7 @@ Chapter [Negation][plfa.Negation].
 
 It is straightforward to show that `suc m ≤ n` implies `m < n`,
 and conversely.  One can then give an alternative derivation of the
-properties of strict inequality, such as transitivity, by directly
+properties of strict inequality, such as transitivity, by
 exploiting the corresponding properties of inequality.
 
 #### Exercise `<-trans` (recommended) {#less-trans}
