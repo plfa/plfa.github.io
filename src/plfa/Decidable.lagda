@@ -14,6 +14,10 @@ We have a choice as to how to represent relations:
 as an inductive data type of _evidence_ that the relation holds,
 or as a function that _computes_ whether the relation holds.
 Here we explore the relation between these choices.
+We first explore the familiar notion of _booleans_,
+but later discover that these are best avoided in favour
+of a new notion of _decidable_.
+
 
 ## Imports
 
@@ -38,7 +42,8 @@ open import plfa.Isomorphism using (_⇔_)
 ## Evidence vs Computation
 
 Recall that Chapter [Relations][plfa.Relations]
-defined comparison an inductive datatype, which provides _evidence_ that one number
+defined comparison as an inductive datatype,
+which provides _evidence_ that one number
 is less than or equal to another:
 \begin{code}
 infix 4 _≤_
@@ -173,8 +178,9 @@ true, so `T (m ≤ᵇ n)` is evidenced by `tt`, and correspondingly `m ≤ n` is
 evidenced by `z≤n`. In the middle clause, we immediately have that
 `suc m ≤ᵇ zero` is false, and hence `T (m ≤ᵇ n)` is empty, so we need
 not provide evidence that `m ≤ n`, which is just as well since there is no
-such evidence.  In the last clause, we have the `suc m ≤ suc n` recurses
-to `m ≤ n` and we let `t` be the evidence of `T (m ≤ᵇ n)` if it exists.
+such evidence.  In the last clause, we have that `suc m ≤ᵇ suc n` recurses
+to `m ≤ᵇ n`.  We let `t` be the evidence of `T (suc m ≤ᵇ suc n)` if it exists,
+which, by definition of `_≤ᵇ_`, will also be evidence of `T (m ≤ᵇ n)`.
 We recursively invoke the function to get evidence that `m ≤ n`, which
 `s≤s` converts to evidence that `suc m ≤ suc n`.
 
@@ -266,7 +272,7 @@ When we wrote `_≤ᵇ_`, we had to write two other functions, `≤ᵇ→≤` an
 in order to show that it was correct.  In contrast, the definition of `_≤?_`
 proves itself correct, as attested to by its type.  The code of `_≤?_`
 is far more compact than the combined code of `_≤ᵇ_`, `≤ᵇ→≤`, and `≤→≤ᵇ`.
-And, as we will later show, if you really want the latter three, it is easy
+As we will later show, if you really want the latter three, it is easy
 to derive them from `_≤?_`.
 
 We can use our new function to _compute_ the _evidence_ that earlier we had to
@@ -375,7 +381,7 @@ exactly when `m ≤ n` is inhabited:
 ≤→≤ᵇ′  =  fromWitness
 \end{code}
 
-In summary, it is usually best to eschew booleans and rely on decidables instead.
+In summary, it is usually best to eschew booleans and rely on decidables.
 If you need booleans, they and their properties are easily derived from the
 corresponding decidables.
 
