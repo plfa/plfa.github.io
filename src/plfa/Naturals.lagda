@@ -339,7 +339,7 @@ The definition is _recursive_, in that the last line defines addition
 in terms of addition.  As with the inductive definition of the
 naturals, the apparent circularity is not a problem.  It works because
 addition of larger numbers is defined in terms of addition of smaller
-numbers.  Such a definition is called _well founded_.
+numbers.  Such a definition is called _well-founded_.
 
 For example, let's add two and three:
 \begin{code}
