@@ -415,9 +415,9 @@ example, the definition above is equivalent to the following:
   helper (forward m≤n)  =  forward (s≤s m≤n)
   helper (flipped n≤m)  =  flipped (s≤s n≤m)
 \end{code}
-This is also our first use of a `where` clause in Agda.  The keyword `where` is
-followed by one or more definitions, which must be indented.  Any variables
-bound of the left-hand side of the preceding equation (in this case, `m` and
+This is also our first use of the `where` clause in Agda.  The keyword `where`
+is followed by one or more definitions, which must be indented.  Any variables
+bound on the left-hand side of the preceding equation (in this case, `m` and
 `n`) are in scope within the nested definition, and any identifiers bound in the
 nested definition (in this case, `helper`) are in scope in the right-hand side
 of the preceding equation.
