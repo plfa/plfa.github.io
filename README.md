@@ -5,6 +5,8 @@ permalink: /GettingStarted/
 ---
 
 [![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
+[![Agda](https://img.shields.io/badge/agda-2.5.4.2-brightgreen.svg)](https://github.com/agda/agda/releases/tag/v2.5.4.2)
+[![agda-stdlib](https://img.shields.io/badge/agda--stdlib-0.17-brightgreen.svg)](https://github.com/agda/agda-stdlib/releases/tag/v0.17)
 
 
 # Getting Started with PLFA
