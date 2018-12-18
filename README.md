@@ -18,9 +18,7 @@ There are several tools you need to work with PLFA:
   - [Agda standard library](https://github.com/agda/agda-stdlib)
 
 For most of the tools, you can simply follow their respective build instructions.
-We aim to maintain compatibility with the latest release of Agda and the standard library, 
-but we maintain [a copy of the standard library which is guaranteed to work with the book](https://github.com/plfa/agda-stdlib).
-If you use this copy, make sure to clone `plfa/agda-stdlib` instead of `agda/agda-stdlib`.
+We list the versions of our dependencies on the badges above.
 
 You can get the latest version of Programming Language Foundations in Agda from Github, 
 either by cloning the repository, 
@@ -63,10 +61,12 @@ You can host your copy of the book locally by running
     
 The Makefile offers more than just these options:
 
-    make                      (builds lagda->markdown)
+    make                      (see make test)
     make build                (builds lagda->markdown and the website)
+    make build-offline        (builds lagda->markdown and the website offline)
     make build-incremental    (builds lagda->markdown and the website incrementally)
     make test                 (checks all links are valid)
+    make test-offline         (checks all links are valid offline)
     make serve                (starts the server)
     make server-start         (starts the server in detached mode)
     make server-stop          (stops the server, uses pkill)

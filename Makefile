@@ -4,65 +4,87 @@ markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
 
+
+# Build PLFA and test hyperlinks
 test: build
 	ruby -S bundle exec htmlproofer _site
 
+
+# Build PLFA and test hyperlinks offline
 test-offline: build
 	ruby -S bundle exec htmlproofer _site --disable-external
+
 
 statistics:
 	hs/agda-count
 
+
 out/:
 	mkdir -p out/
 
+
+# Build PLFA pages
 out/%.md: src/%.lagda | out/
 	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
+
+# Build TSPL pages
 out/%.md: tspl/%.lagda | out/
 	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
+
+# Start server
 serve:
 	ruby -S bundle exec jekyll serve --incremental
 
-# start server
+
+# Start background server
 server-start:
 	ruby -S bundle exec jekyll serve --no-watch --detach
 
-# stop server
+
+# Stop background server
 server-stop:
 	pkill -f jekyll
 
-# build website using jekyll (offline)
-build-offline: $(markdown)
-	ruby -S bundle exec jekyll build
 
-# build website using jekyll
+# Build website using jekyll
 build: AGDA2HTML_FLAGS += --link-to-agda-stdlib
 build: $(markdown)
 	ruby -S bundle exec jekyll build
 
-# build website using jekyll incrementally
+
+# Build website using jekyll offline
+build-offline: $(markdown)
+	ruby -S bundle exec jekyll build
+
+
+# Build website using jekyll incrementally
 build-incremental: AGDA2HTML_FLAGS += --link-to-agda-stdlib
 build-incremental: $(markdown)
 	ruby -S bundle exec jekyll build --incremental
 
-# remove all auxiliary files
+
+# Remove all auxiliary files
 clean:
 ifneq ($(strip $(agdai)),)
 	rm $(agdai)
 endif
 
-# remove all generated files
+
+# Remove all generated files
 clobber: clean
 	ruby -S bundle exec jekyll clean
 	rm -rf out/
 
-# install bundler, and gem dependencies
+.phony: clobber
+
+
+# MacOS Setup (install Bundler)
 macos-setup:
 	brew install libxml2
 	ruby -S gem install bundler --no-ri --no-rdoc
@@ -70,12 +92,10 @@ macos-setup:
 	ruby -S bundle config build.nokogiri --use-system-libraries
 	ruby -S bundle install
 
-.phony: serve build test clean clobber macos-setup
-
+.phony: macos-setup
 
 
 # Travis Setup (install Agda, the Agda standard library, agda2html, acknowledgements, etc.)
-
 travis-setup:\
 	$(HOME)/.local/bin/agda\
 	$(HOME)/.local/bin/agda2html\
