@@ -21,9 +21,8 @@ out/%.md: src/%.lagda | out/
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
-# should fix this -- it's the same as above
 out/%.md: tspl/%.lagda | out/
-	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
+	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1 \
 		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
@@ -154,7 +153,7 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
 $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src:
-	curl -L https://github.com/plfa/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
+	curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
 	unzip -qq $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
 
