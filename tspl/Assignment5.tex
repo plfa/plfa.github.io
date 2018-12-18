@@ -1,0 +1,422 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% I N F O R M A T I C S
+%  Honours Exam LaTeX Template for Exam Authors
+%
+%  Created: 12-Oct-2009 by G.O.Passmore.
+%  Last Updated: 10-Sep-2018 by I. Murray
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% The following define the status of the exam papers in the order
+%%% required.  Simply remove the comment (i.e., the % symbol) just
+%%% before the appropriate one and comment the others out.
+
+%\newcommand\status{\internal}
+%\newcommand\status{\external}
+\newcommand\status{\final}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% The following three lines are always required.  You may add
+%%% custom packages to the one already defined if necessary.
+
+\documentclass{examhons2018}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{semantic}
+\usepackage{stix}
+
+%%% Uncomment the \checkmarksfalse line if the macros that check the
+%%% mark totals cause problems. However, please do not make your
+%%% questions add up to a non-standard number of marks without
+%%% permission of the convenor.
+%\checkmarksfalse
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Replace {ad} below with the ITO code for your course.  This will
+%  be used by the ITO LaTeX installation to install course-specific
+%  data into the exam versions it produces from this document.
+% 
+% Your choices are (in course title order):
+%
+%   {anlp}     - Acc. Natural Language Processing	            (MSc)
+%   {aleone}   - Adaptive Learning Environments 1              (Inf4)
+%   {adbs}     - Advanced Databases                            (Inf4)
+%   {av}       - Advanced Vision                               (Inf4)
+%   {av-dl}    - Advanced Vision - distance learning            (MSc)
+%   {apl}      - Advances in Programming Languages             (Inf4)
+%   {abs}      - Agent Based Systems [L10]                     (Inf3)
+%   {afds}     - Algorithmic Foundations of Data Science        (MSc)
+%   {agta}     - Algorithmic Game Theory and its Apps.          (MSc)
+%   {ads}      - Algorithms and Data Structures                (Inf3)
+%   {ad}       - Applied Databases                              (MSc)
+%   {aipf}     - Artificial Intelligence Present and Future     (MSc)
+%   {ar}       - Automated Reasoning 	                       (Inf3)
+%   {asr}      - Automatic Speech Recognition                  (Inf4)
+%   {bioone}   - Bioinformatics 1                               (MSc)
+%   {biotwo}   - Bioinformatics 2                               (MSc)
+%	{bdl}      - Blockchains and Distributed Ledgers		   (Inf4)
+%   {cqi}      - Categories and Quantum Informatics             (MSc)
+%   {copt}     - Compiler Opimisation [L11]                    (Inf4)
+%   {ct}       - Compiling Techniques                          (Inf3)
+%   {ccs}      - Computational Cognitive Science               (Inf3)
+%   {cmc}      - Computational Complexity                      (Inf4)
+%   {ca}       - Computer Algebra                              (Inf4)
+%   {cav}      - Computer Animation and Visualisation          (Inf4)
+%   {car}      - Computer Architecture                         (Inf3)
+%   {comn}     - Computer Comms. and Networks                  (Inf3)
+%   {cd}       - Computer Design                               (Inf3)
+%   {cg}       - Computer Graphics [L11]                       (Inf4)
+%   {cn}       - Computer Networking [L11]                     (Inf4)
+%   {cp}       - Computer Prog. Skills and Concepts         (nonhons)
+%   {cs}       - Computer Security                             (Inf3)
+%   {dds}      - Data, Design and Society                   (nonhons)
+%   {dme}      - Data Mining and Exploration                   (Msc)
+%   {dbs}      - Database Systems                              (Inf3)
+%   {dmr}      - Decision Making in Robots and Autonomous Agents(MSc)
+%   {dmmr}     - Discrete Maths. and Math. Reasoning        (nonhons)
+%   {ds}       - Distributed Systems [L11]                     (Inf4)
+%   {epl}      - Elements of Programming Languages             (Inf3)
+%   {es}       - Embedded Software                             (Inf4)
+%   {exc}      - Extreme Computing                             (Inf4)
+%   {fv}       - Formal Verification                           (Inf4)
+%   {fnlp}     - Foundations of Natural Language Processing    (Inf3)
+%   {hci}      - Human-Computer Interaction [L11]              (Inf4)
+%   {infonea}  - Informatics 1 - Introduction to Computation(nonhons)
+%   different sittings for INF1A programming exams
+%   {infoneapone}  - Informatics 1 - Introduction to Computation(nonhons)
+%   {infoneaptwo}  - Informatics 1 - Introduction to Computation(nonhons)
+%   {infoneapthree}  - Informatics 1 - Introduction to Computation(nonhons)
+%   {infonecg} - Informatics 1 - Cognitive Science          (nonhons)
+%   {infonecl} - Informatics 1 - Computation and Logic      (nonhons)
+%   {infoneda} - Informatics 1 - Data and Analysis          (nonhons)
+%   {infonefp} - Informatics 1 - Functional Programming     (nonhons)
+%   If there are two sittings of FP, use infonefpam for the first
+%   paper and infonefppm for the second sitting.
+%   {infoneop} - Informatics 1 - Object-Oriented Programming(nonhons)
+%   If there are two sittings of OOP, use infoneopam for the first
+%   paper and infoneoppm for the second sitting.
+%   {inftwoa}  - Informatics 2A: Proc. F&N Languages        (nonhons)
+%   {inftwob}  - Informatics 2B: Algs., D.Structs., Learning(nonhons)
+%   {inftwoccs}- Informatics 2C-CS: Computer Systems        (nonhons)
+%   {inftwocse}- Informatics 2C: Software Engineering       (nonhons)
+%   {inftwod}  - Informatics 2D: Reasoning and Agents       (nonhons)
+%   {iar}      - Intelligent Autonomous Robotics               (Inf4)
+%   {it}       - Information Theory                             (MSc)
+%   {imc}      - Introduction to Modern Cryptography           (Inf4)
+%   {iotssc}   - Internet of Things, Systems, Security and the Cloud   (Inf4)
+%   (iqc)      - Introduction to Quantum Computing             (Inf4)
+%   (itcs)     - Introduction to Theoretical Computer Science  (Inf3)
+%   {ivc}      - Image and Vision Computing			           (MSc)
+%   {ivr}      - Introduction to Vision and Robotics           (Inf3)
+%   {ivr-dl}   - Introduction to Vision and Robotics - distance learning (Msc)
+%   {iaml}     - Introductory Applied Machine Learning         (MSc)
+%   {iaml-dl}  - Introductory Applied Machine Learning - distance learning (MSc)
+%   {lpt}      - Logic Programming - Theory                    (Inf3)
+%   {lpp}      - Logic Programming - Programming               (Inf3)
+%   {mlpr}     - Machine Learning & Pattern Recognition        (Inf4)
+%   {mt}       - Machine Translation                           (Inf4)    
+%   {mi}       - Music Informatics                              (MSc)
+%   {nlu}      - Natural Language Understanding [L11]          (Inf4)
+%   {nc}       - Neural Computation                             (MSc)
+%   {nat}      - Natural Computing                              (MSc)
+%   {nluplus}  - Natural Language Understanding, Generation, and Machine Translation(MSc)
+%   {nip}      - Neural Information Processing                  (MSc)
+%   {os}       - Operating Systems                             (Inf3)
+%   {pa}       - Parallel Architectures [L11]                  (Inf4)
+%   {pdiot}    - Principles and Design of IoT Systems          (Inf4)
+%   {ppls}     - Parallel Prog. Langs. and Sys. [L11]          (Inf4)
+%   {pm}       - Performance Modelling                         (Inf4)  
+%   {pmr}      - Probabilistic Modelling and Reasoning          (MSc)
+%   {pi}       - Professional Issues                           (Inf3)
+%   {rc}       - Randomness and Computation                    (Inf4)
+%   {rl}       - Reinforcement Learning                         (MSc)
+%   {rlsc}     - Robot Learning and Sensorimotor Control        (MSc)
+%   {rss}      - Robotics: Science and Systems                  (MSc)
+%   {sp}       - Secure Programming                            (Inf4)
+%   {sws}      - Semantic Web Systems                          (Inf4)
+%   {stn}      - Social and Technological Networks             (Inf4)
+%   {sapm}     - Software Arch., Proc. and Mgmt. [L11]         (Inf4)
+%   {sdm}      - Software Design and Modelling                 (Inf3)
+%   {st}       - Software Testing                              (Inf3)
+%   {ttds}     - Text Technologies for Data Science            (Inf4)
+%   {tspl}     - Types and Semantics for Programming Langs.    (Inf4)
+%   {usec}     - Usable Security and Privacy                   (Inf4)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setcourse{tspl}
+\initcoursedata
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Set your exam rubric type.
+% 
+% Most courses in the School have exams that add up to 50 marks,
+% and your choices are:
+%    {qu1_and_either_qu2_or_qu3, any_two_of_three, do_exam}
+% (which include the "CALCULATORS MAY NOT BE USED..." text), or
+%    {qu1_and_either_qu2_or_qu3_calc, any_two_of_three_calc, do_exam_calc}
+% (which DO NOT include the "CALCULATORS MAY NOT BE USED..." text), or
+%    {custom}.
+%
+% Note, if you opt to create a custom rubric, you must: 
+%    
+%   (i) **have permission** from the appropriate authority, and 
+%  (ii) execute:
+%
+%        \setrubrictype{} to specify the custom rubric information.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setrubric{qu1_and_either_qu2_or_qu3}
+
+\examtitlepage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Manual override for total page number computation.
+%
+% As long as you run latex upon this document three times in a row,
+%  the right number of `total pages' should be computed and placed
+%  in the footer of all pages except the title page.  
+%
+% But, if this fails, you can set that number yourself with the 
+%  following command:
+%
+%    \settotalpages{n} with n a natural number.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Beginning of your exam text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{enumerate}
+ 
+\item \rubricqA
+
+\newcommand{\Tree}{\texttt{Tree}}
+\newcommand{\AllT}{\texttt{AllT}}
+\newcommand{\AnyT}{\texttt{AnyT}}
+\newcommand{\leaf}{\texttt{leaf}}
+\newcommand{\branch}{\texttt{branch}}  
+\newcommand{\here}{\texttt{here}}
+\renewcommand{\left}{\texttt{left}}
+\renewcommand{\right}{\texttt{right}}
+\newcommand{\ubar}{\texttt{\underline{~}}}
+
+Consider a type of trees defined as follows.
+\begin{gather*}
+%
+  \inference[\leaf]
+    {A}
+    {Tree~A}
+%
+\quad
+%    
+  \inference[\ubar\branch\ubar]
+    {Tree~A \\
+     Tree~A}
+   {Tree~A}
+%
+\end{gather*}
+
+Given a predicate $P$ over $A$, we define predicates $\AllT$ and
+$\AnyT$ which hold when $P$ holds for \emph{every} leaf in the tree
+and when $P$ holds for \emph{some} leaf in the tree, respectively.
+\begin{gather*}
+%
+  \inference[\leaf]
+    {P~x}
+    {\AllT~P~(\leaf~x)}
+%
+\quad
+%    
+  \inference[\ubar\branch\ubar]
+    {\AllT~P~xt \\   
+     \AllT~P~yt}
+    {\AllT~P~(xt~\branch~yt)}
+%  
+\\~\\  
+%
+  \inference[\leaf]
+    {P~x}
+    {\AnyT~P~(\leaf~x)}
+%
+\quad
+%    
+  \inference[\left]
+    {\AnyT~P~xt}  
+    {\AnyT~P~(xt~\branch~yt)}
+%
+\quad
+%    
+  \inference[\right]
+    {\AnyT~P~yt}  
+    {\AnyT~P~(xt~\branch~yt)}
+%
+\end{gather*}    
+
+\begin{itemize}
+
+\item[(a)] Formalise the definitions above.
+
+\marks{12}
+
+\item[(b)] Prove $\AllT~({\neg\ubar}~\circ~P)~xt$
+  implies $\neg~(\AnyT~P~xt)$, for all trees $xt$.
+
+\marks{13}
+
+\end{itemize}
+
+\newpage
+
+\item \rubricqB
+
+\newcommand{\COMP}{\texttt{Comp}}
+\newcommand{\OK}{\texttt{ok}}
+\newcommand{\ERROR}{\texttt{error}}
+\newcommand{\LETC}{\texttt{letc}}
+\newcommand{\IN}{\texttt{in}}  
+
+\newcommand{\Comp}[1]{\COMP~#1}
+\newcommand{\error}[1]{\ERROR~#1}
+\newcommand{\ok}[1]{\OK~#1}
+\newcommand{\letc}[3]{\LETC~#1\leftarrow#2~\IN~#3}
+
+\newcommand{\comma}{\,,\,}
+\newcommand{\V}{\texttt{V}}
+\newcommand{\dash}{\texttt{-}}
+\newcommand{\Value}{\texttt{Value}}
+\newcommand{\becomes}{\longrightarrow}
+\newcommand{\subst}[3]{#1~\texttt{[}~#2~\texttt{:=}~#3~\texttt{]}}
+
+You will be provided with a definition of intrinsically-typed lambda
+calculus in Agda. Consider constructs satisfying the following rules,
+written in extrinsically-typed style.
+
+A computation of type $\Comp{A}$ returns either an error with a
+message $msg$ which is a string, or an ok value of a term $M$ of type $A$.
+Consider constructs satisfying the following rules:
+
+Typing:
+\begin{gather*}
+\inference[$\ERROR$]
+  {}
+  {\Gamma \vdash \error{msg} \typecolon \Comp{A}}
+\qquad
+\inference[$\OK$]
+  {\Gamma \vdash M \typecolon A}
+  {\Gamma \vdash \ok{M} \typecolon \Comp{A}}
+\\~\\
+\inference[$\LETC$]
+  {\Gamma \vdash M \typecolon \Comp{A} \\
+   \Gamma \comma x \typecolon A \vdash N \typecolon \Comp{B}}
+  {\Gamma \vdash \letc{x}{M}{N} \typecolon \Comp{B}}
+\end{gather*}
+
+Values:
+\begin{gather*}
+\inference[\V\dash\ERROR]
+  {}
+  {\Value~(\error{msg})}
+\qquad
+\inference[\V\dash\OK]
+  {\Value~V}
+  {\Value~(\ok{V})}
+\end{gather*}
+
+Reduction:
+\begin{gather*}
+\inference[$\xi\dash\OK$]
+  {M \becomes M'}
+  {\ok{M} \becomes \ok{M'}}
+\qquad
+\inference[$\xi\dash\LETC$]
+  {M \becomes M'}
+  {\letc{x}{M}{N} \becomes \letc{x}{M'}{N}}
+\\~\\
+\inference[$\beta\dash\ERROR$]
+  {}
+  {\letc{x}{(\error{msg})}{t} \becomes \error{msg}}
+\\~\\
+\inference[$\beta\dash\OK$]
+  {\Value{V}}
+  {\letc{x}{(\ok{V})}{N} \becomes \subst{N}{x}{V}}
+\end{gather*}
+
+\begin{enumerate}
+\item[(a)] Extend the given definition to formalise the evaluation
+           and typing rules, including any other required definitions.
+      \marks{12}
+
+\item[(b)] Prove progress. You will be provided with a proof of progress for
+           the simply-typed lambda calculus that you may extend.
+      \marks{13}
+\end{enumerate}
+
+Please delimit any code you add as follows.
+\begin{verbatim}
+-- begin
+-- end
+\end{verbatim}
+
+\newpage
+
+\item \rubricqC
+
+\newcommand{\TT}{\texttt{tt}}
+\newcommand{\CASETOP}{{\texttt{case}\top}}
+\newcommand{\casetop}[2]{\CASETOP~#1~{\texttt{[tt}\!\Rightarrow}~#2~\texttt{]}}
+\newcommand{\up}{\uparrow}
+\newcommand{\dn}{\downarrow}
+
+You will be provided with a definition of inference for extrinsically-typed lambda
+calculus in Agda. Consider constructs satisfying the following rules,
+written in extrinsically-typed style that support bidirectional inference.
+
+Typing:
+\begin{gather*}
+\inference[$\TT$]
+  {}
+  {\Gamma \vdash \TT \dn \top}
+\\~\\
+\inference[$\CASETOP$]
+  {\Gamma \vdash L \up \top \\
+   \Gamma \vdash M \dn A}
+  {\Gamma \vdash \casetop{L}{M} \dn A} 
+\end{gather*}
+
+\begin{enumerate}
+\item[(a)] Extend the given definition to formalise the typing rules,
+      and update the definition of equality on types.
+      \marks{10}
+
+\item[(b)] Extend the code to support type inference for the new features.
+      \marks{15}
+\end{enumerate}
+
+Please delimit any code you add as follows.
+\begin{verbatim}
+-- begin
+-- end
+\end{verbatim}
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% End of your exam text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
