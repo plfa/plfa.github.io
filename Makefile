@@ -151,7 +151,7 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 .phony: travis-install-agda travis-uninstall-agda travis-reinstall-agda
 
 
-travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/
+travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
 $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src:
 	curl -L https://github.com/plfa/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
