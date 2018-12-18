@@ -81,7 +81,7 @@ travis-setup:\
 	$(HOME)/.local/bin/agda\
 	$(HOME)/.local/bin/agda2html\
 	$(HOME)/.local/bin/acknowledgements\
-	$(HOME)/agda-stdlib-master/src\
+	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries
 
@@ -132,7 +132,7 @@ $(HOME)/.agda/defaults:
 	echo "plfa" >> $(HOME)/.agda/defaults
 
 $(HOME)/.agda/libraries:
-	echo "$(HOME)/agda-stdlib-master/standard-library.agda-lib" >> $(HOME)/.agda/libraries
+	echo "$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/standard-library.agda-lib" >> $(HOME)/.agda/libraries
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/.local/bin/agda:
@@ -151,15 +151,17 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 .phony: travis-install-agda travis-uninstall-agda travis-reinstall-agda
 
 
-travis-install-agda-stdlib: $(HOME)/agda-stdlib-master/
+travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/
 
-$(HOME)/agda-stdlib-master/src:
-	curl -L https://github.com/plfa/agda-stdlib/archive/master.zip -o $(HOME)/agda-stdlib-master.zip
-	unzip -qq $(HOME)/agda-stdlib-master.zip -d $(HOME)
+$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src:
+	curl -L https://github.com/plfa/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
+	unzip -qq $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
 
 travis-uninstall-agda-stdlib:
-	rm -rf $(HOME)/agda-stdlib-master/
+	rm $(HOME)/.agda/defaults
+	rm $(HOME)/.agda/libraries
+	rm -rf $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/
 
 travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
 

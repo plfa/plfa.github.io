@@ -556,7 +556,7 @@ postulate
 
 \begin{code}
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
-import Data.Nat.Base using (_≤?_)
+import Data.Nat using (_≤?_)
 import Data.List.All using (All; []; _∷_) renaming (all to All?)
 import Relation.Nullary using (Dec; yes; no)
 import Relation.Nullary.Decidable using (⌊_⌋; toWitness; fromWitness)

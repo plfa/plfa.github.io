@@ -13,7 +13,7 @@ cache:
   - $HOME/.agda
   - $HOME/.local
   - $HOME/agda-$AGDA_VERSION
-  - $HOME/agda-stdlib-master
+  - $HOME/agda-stdlib-$AGDA_STDLIB_VERSION
   - $HOME/agda2html-master
   - $HOME/acknowledgements-master
 
