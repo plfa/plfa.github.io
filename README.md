@@ -55,7 +55,7 @@ Once you have installed these tools, you can build the book from source:
 
     make build
     
-You can host your copy of the book locally by running
+You can host your copy of the book locally by running:
 
     make serve
     
@@ -116,18 +116,18 @@ chapter. For a full list of supported characters, see
 
 ## Using `agda-mode`
 
-    ?            create hole
-    {!...!}      create hole
+    ?            hole
+    {!...!}      hole with contents
     C-c C-l      load buffer
 
 Command to give when in a hole:
 
     C-c C-c x    split on variable x
     C-c C-space  fill in hole
-	C-c C-r      refine with constructor
-	C-c C-a      automatically fill in hole
-	C-c C-,      Goal type and context
-	C-c C-.      Goal type, context, and inferred type
+    C-c C-r      refine with constructor
+    C-c C-a      automatically fill in hole
+    C-c C-,      Goal type and context
+    C-c C-.      Goal type, context, and inferred type
 
 See
 [the emacs-mode docs](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html)
@@ -149,7 +149,7 @@ squished beneath it.
 ## Fonts in Emacs
 
 It is recommended that you add the following to the end of your emacs
-configuration file at `~/.emacs`, if you have the named fonts available.
+configuration file at `~/.emacs`, if you have the mentioned fonts available:
 
 ``` elisp
 ;; Setting up Fonts for use with Agda/PLFA
