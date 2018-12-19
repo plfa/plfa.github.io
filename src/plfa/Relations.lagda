@@ -417,7 +417,7 @@ example, the definition above is equivalent to the following:
 \end{code}
 This is also our first use of a `where` clause in Agda.  The keyword `where` is
 followed by one or more definitions, which must be indented.  Any variables
-bound of the left-hand side of the preceding equation (in this case, `m` and
+bound on the left-hand side of the preceding equation (in this case, `m` and
 `n`) are in scope within the nested definition, and any identifiers bound in the
 nested definition (in this case, `helper`) are in scope in the right-hand side
 of the preceding equation.
