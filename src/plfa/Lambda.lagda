@@ -84,7 +84,7 @@ from which the calculus takes its name.
 
 With the exception of variables and fixpoints, each term
 form either constructs a value of a given type (abstractions yield functions,
-zero and successor yield booleans) or deconstructs it (applications use functions,
+zero and successor yield natural numbers) or deconstructs it (applications use functions,
 case terms use naturals). We will see this again when we come
 to the rules for assigning types to terms, where constructors
 correspond to introduction rules and deconstructors to eliminators.
