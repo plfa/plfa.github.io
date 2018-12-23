@@ -918,7 +918,7 @@ Thus:
 
 * What is the type of the following term?
 
-    ƛ "s" ⇒ ` "s" · (` "s"  · `zero)
+    `` ƛ "s" ⇒ ` "s" · (` "s"  · `zero) ``
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
@@ -931,7 +931,7 @@ Thus:
 
 * What is the type of the following term?
 
-    (ƛ "s" ⇒ ` "s" · (` "s"  · `zero)) · sucᵐ
+    `` (ƛ "s" ⇒ ` "s" · (` "s"  · `zero)) · sucᵐ ``
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
