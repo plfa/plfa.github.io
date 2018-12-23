@@ -369,7 +369,7 @@ In symbols:
 
     ∀ {x A} → Γ ∋ x ⦂ A  →  Δ ∋ x ⦂ A
     ---------------------------------
-    ∀ {M A} → Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
+    ∀ {M A} → Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A
 
 Three important corollaries follow.  The _weaken_ lemma asserts a term
 well-typed in the empty context is also well-typed in an arbitary
