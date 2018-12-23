@@ -694,7 +694,7 @@ We can read this as follows:
 The notation is chosen to allow us to lay out example reductions in an
 appealing way, as we will see in the next section.
 
-As alternative is to define reflexive and transitive closure directly,
+An alternative is to define reflexive and transitive closure directly,
 as the smallest relation that includes `—→` and is also reflexive
 and transitive.  We could do so as follows:
 \begin{code}
@@ -931,7 +931,7 @@ Thus:
 
 * What is the type of the following term?
 
-    `` (ƛ "s" ⇒ ` "s" · (` "s"  · `zero)) · sucᵐ ``
+    `` (ƛ "s" ⇒ ` "s" · (` "s"  · `zero)) · sucᶜ ``
 
   1. `` (`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ) ``
   2. `` (`ℕ ⇒ `ℕ) ⇒ `ℕ ``
@@ -1123,7 +1123,7 @@ Here `_≟_` is the function that tests two identifiers for equality.
 We intend to apply the function only when the
 two arguments are indeed unequal, and indicate that the second
 case should never arise by postulating a term `impossible` of
-with the empty type `⊥`.  If we use `C `N to normalise the term
+with the empty type `⊥`.  If we use C-c C-n to normalise the term
 
     "a" ≠ "a"
 
@@ -1230,14 +1230,14 @@ Start with the declaration:
     ⊢sucᶜ : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
     ⊢sucᶜ = ?
 
-Typing C-l causes Agda to create a hole and tell us its expected type:
+Typing C-c C-l causes Agda to create a hole and tell us its expected type:
 
     ⊢sucᶜ = { }0
     ?0 : ∅ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
 
 Now we fill in the hole by typing C-c C-r. Agda observes that
-the outermost term in `sucᶜ` in `⊢ƛ`, which is typed using `ƛ`. The
-`ƛ` rule in turn takes one argument, which Agda leaves as a hole:
+the outermost term in `sucᶜ` is `ƛ`, which is typed using `⊢ƛ`. The
+`⊢ƛ` rule in turn takes one argument, which Agda leaves as a hole:
 
     ⊢sucᶜ = ⊢ƛ { }1
     ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc ` "n" ⦂ `ℕ
@@ -1309,15 +1309,15 @@ nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-injective ∋
 
 #### Quiz
 
-For each of the following, given a type `A` for which it is derivable,
-or explain why there is no such `A`?
+For each of the following, give a type `A` for which it is derivable,
+or explain why there is no such `A`.
 
 1. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ ` "y" · ` "x" ⦂ A ``
 2. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ⊢ ` "x" · ` "y" ⦂ A ``
 3. `` ∅ , "y" ⦂ `ℕ ⇒ `ℕ ⊢ ƛ "x" ⇒ ` "y" · ` "x" ⦂ A ``
 
-For each of the following, give type `A`, `B`, and `C` for which it is derivable,
-or explain why there are no such types?
+For each of the following, give types `A`, `B`, and `C` for which it is derivable,
+or explain why there are no such types.
 
 1. `` ∅ , "x" ⦂ A ⊢ ` "x" · ` "x" ⦂ B ``
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
