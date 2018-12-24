@@ -330,7 +330,7 @@ names, `x` and `x′`.
 ## Values
 
 A _value_ is a term that corresponds to an answer.
-Thus, `` `suc `suc `suc `suc `zero` `` is a value,
+Thus, `` `suc `suc `suc `suc `zero `` is a value,
 while `` plus · two · two `` is not.
 Following convention, we treat all function abstractions
 as values; thus, `` plus `` by itself is considered a value.
