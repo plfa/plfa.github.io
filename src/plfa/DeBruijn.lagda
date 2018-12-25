@@ -17,8 +17,8 @@ is traditional, but it is not the one we recommend.  This
 chapter presents an alternative approach, where named
 variables are replaced by de Bruijn indices and terms are
 inherently typed.  Our new presentation is more compact, using
-less than half the lines of code required previously to do
-cover the same ground.
+less than half the lines of code required previously to cover
+the same ground.
 
 The inherently typed representation was first proposed by
 Thorsten Altenkirch and Bernhard Reus.
