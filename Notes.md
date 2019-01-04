@@ -196,7 +196,6 @@ The following comments were collected on the Agda mailing list.
 	"Typed Jigger in vanilla Agda"
     It points to the following solution.
     - https://github.com/effectfully/random-stuff/blob/master/TypedJigger.agda
-  
 
 * András Kovács <kovacsahun@hotmail.com>
   + applies unary parametricity
@@ -219,6 +218,18 @@ The following comments were collected on the Agda mailing list.
   + https://gist.github.com/gallais/303cfcfe053fbc63eb61
 * lambda calculus
   + https://github.com/pi8027/lambda-calculus/tree/master/agda/Lambda
+
+## Relevant papers
+
+* Kenichi Asai, Extracting a Call-by-Name Partial Evaluator from a Proof of
+  Termination, PEPM 2019
+  + http://pllab.is.ocha.ac.jp/~asai/papers/pepm19.pdf
+  + http://pllab.is.ocha.ac.jp/~asai/papers/pepm2019/
+* Kenichi Asai, Certifying CPS Transformation of Let-Polymorphic
+  Calculus Using PHOAS, APLAS 2018
+  + https://link.springer.com/chapter/10.1007/978-3-030-02768-1_20
+  + http://pllab.is.ocha.ac.jp/~asai/papers/aplas18.agda
+
 
 ## Agda resources
 * Chalmers class
