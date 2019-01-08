@@ -434,8 +434,9 @@ _*_ : ℕ → ℕ → ℕ
 zero  * n  =  zero
 suc m * n  =  n + (m * n)
 \end{code}
+Computing `m * n` returns the sum of `m` copies of `n`.
 
-Again, rewriting gives us two familiar equations:
+Again, rewriting turns the definition into two familiar equations:
 
     0       * n  ≡  0
     (1 + m) * n  ≡  n + (m * n)
