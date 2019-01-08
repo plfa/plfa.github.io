@@ -464,7 +464,7 @@ Let's unpack the first three cases:
 with `x`, the variable in the term. If they are the same,
 we yield `V`, otherwise we yield `x` unchanged.
 
-* For abstractions, we compare `w`, the variable we are substituting for,
+* For abstractions, we compare `y`, the variable we are substituting for,
 with `x`, the variable bound in the abstraction. If they are the same,
 we yield the abstraction unchanged, otherwise we subsititute inside the body.
 
