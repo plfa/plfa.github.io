@@ -259,7 +259,7 @@ suc m ≤? suc n with m ≤? n
 \end{code}
 As with `_≤ᵇ_`, the definition has three clauses.  In the first
 clause, it is immediate that `zero ≤ n` holds, and it is evidenced by
-`z≤n`.  In the second clause, it is immediate that `suc m ≤ n` does
+`z≤n`.  In the second clause, it is immediate that `suc m ≤ zero` does
 not hold, and it is evidenced by `¬s≤z`.
 In the third clause, to decide whether `suc m ≤ suc n` holds we
 recursively invoke `m ≤? n`.  There are two possibilities.  In the
