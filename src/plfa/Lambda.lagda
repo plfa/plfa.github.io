@@ -464,7 +464,7 @@ Let's unpack the first three cases:
 with `x`, the variable in the term. If they are the same,
 we yield `V`, otherwise we yield `x` unchanged.
 
-* For abstractions, we compare `y`, the variable we are substituting for,
+* For abstractions, we compare `y`, the substituted variable,
 with `x`, the variable bound in the abstraction. If they are the same,
 we yield the abstraction unchanged, otherwise we subsititute inside the body.
 
@@ -531,14 +531,14 @@ In an informal presentation of the operational semantics,
 the rules for reduction of applications are written as follows:
 
     L —→ L′
-    -------------- ξ-·₁
+    --------------- ξ-·₁
     L · M —→ L′ · M
 
     M —→ M′
     -------------- ξ-·₂
     V · M —→ V · M′
 
-    ---------------------------- β-ƛ
+    ----------------------------- β-ƛ
     (ƛ x ⇒ N) · V —→ N [ x := V ] 
 
 The Agda version of the rules below will be similar, except that universal

@@ -1,5 +1,5 @@
-agda := $(shell find src tspl -type f -name '*.lagda')
-agdai := $(shell find src tspl -type f -name '*.agdai')
+agda := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.lagda')
+agdai := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.agdai')
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
@@ -82,6 +82,13 @@ clobber: clean
 	rm -rf out/
 
 .phony: clobber
+
+
+# List all .lagda files
+ls:
+	@echo $(agda)
+
+.phony: ls
 
 
 # MacOS Setup (install Bundler)
