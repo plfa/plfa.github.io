@@ -171,7 +171,8 @@ configuration file at `~/.emacs`, if you have the mentioned fonts available:
 
 ## Markdown
 
-The book is written in [Kramdown Markdown](https://kramdown.gettalong.org/syntax.html).
+The book is written in
+[Kramdown Markdown](https://kramdown.gettalong.org/syntax.html).
 
 
 ## Travis Continuous Integration
