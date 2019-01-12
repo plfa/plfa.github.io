@@ -399,7 +399,7 @@ even-comm : ∀ (m n : ℕ)
 even-comm m n ev  rewrite +-comm n m  =  ev
 \end{code}
 Here `ev` ranges over evidence that `even (m + n)` holds, and we show
-that it is also provides evidence that `even (n + m)` holds.  In
+that it also provides evidence that `even (n + m)` holds.  In
 general, the keyword `rewrite` is followed by evidence of an
 equality, and that equality is used to rewrite the type of the
 goal and of any variable in scope.
