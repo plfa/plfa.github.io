@@ -348,7 +348,7 @@ an order that will make sense to the reader.
 
 The proof of monotonicity from
 Chapter [Relations][plfa.Relations]
-can be written in a more readable form by using an anologue of our
+can be written in a more readable form by using an analogue of our
 notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
