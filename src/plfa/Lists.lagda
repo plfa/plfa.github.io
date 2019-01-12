@@ -778,7 +778,7 @@ operations associate to the left rather than the right.  For example:
 
 #### Exercise `foldr-monoid-foldl`
 
-Show that if `_⊕_` and `e` form a monoid, then `foldr _⊗_ e` and
+Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
 
 
