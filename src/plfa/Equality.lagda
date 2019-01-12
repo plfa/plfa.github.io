@@ -466,7 +466,7 @@ when feasible.
 
 ## Rewriting expanded
 
-The `rewrite` notation is in fact shorthand for an appropriate use of `with`
+The `rewrite` notation is in fact a shorthand for an appropriate use of `with`
 abstraction:
 \begin{code}
 even-comm′ : ∀ (m n : ℕ)
