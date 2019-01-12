@@ -452,8 +452,8 @@ here is a second proof that addition is commutative, relying on rewrites rather
 than chains of equalities:
 \begin{code}
 +-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
-+-comm′ zero    n  rewrite +-identity n            =  refl
-+-comm′ (suc m) n  rewrite +-suc n m | +-comm m n  =  refl
++-comm′ zero    n  rewrite +-identity n             =  refl
++-comm′ (suc m) n  rewrite +-suc n m | +-comm′ m n  =  refl
 \end{code}
 This is far more compact.  Among other things, whereas the previous
 proof required `cong suc (+-comm m n)` as the justification to invoke
