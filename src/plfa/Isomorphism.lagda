@@ -274,8 +274,8 @@ functions, and use equational reasoning to combine the inverses:
 ## Equational reasoning for isomorphism
 
 It is straightforward to support a variant of equational reasoning for
-isomorphism.  We essentially copy the previous definition for
-of equality.  We omit the form that corresponds to `_≡⟨⟩_`, since
+isomorphism.  We essentially copy the previous definition
+of equality for isomorphism.  We omit the form that corresponds to `_≡⟨⟩_`, since
 trivial isomorphisms arise far less often than trivial equalities:
 
 \begin{code}
