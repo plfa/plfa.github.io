@@ -216,8 +216,8 @@ and `from` to be the identity function:
 In the above, `to` and `from` are both bound to identity functions,
 and `from∘to` and `to∘from` are both bound to functions that discard
 their argument and return `refl`.  In this case, `refl` alone is an
-adequate proof since for the left inverse, `to (from x)`
-simplifies to `x`, and similarly for the right inverse.
+adequate proof since for the left inverse, `to (from y)`
+simplifies to `y`, and similarly for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
 and `from`, and `from∘to` and `to∘from`:
