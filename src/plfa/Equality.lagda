@@ -348,7 +348,7 @@ an order that will make sense to the reader.
 
 The proof of monotonicity from
 Chapter [Relations][plfa.Relations]
-can be written in a more readable form by using an anologue of our
+can be written in a more readable form by using an analogue of our
 notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
@@ -399,7 +399,7 @@ even-comm : ∀ (m n : ℕ)
 even-comm m n ev  rewrite +-comm n m  =  ev
 \end{code}
 Here `ev` ranges over evidence that `even (m + n)` holds, and we show
-that it is also provides evidence that `even (n + m)` holds.  In
+that it also provides evidence that `even (n + m)` holds.  In
 general, the keyword `rewrite` is followed by evidence of an
 equality, and that equality is used to rewrite the type of the
 goal and of any variable in scope.
@@ -452,8 +452,8 @@ here is a second proof that addition is commutative, relying on rewrites rather
 than chains of equalities:
 \begin{code}
 +-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
-+-comm′ zero    n  rewrite +-identity n            =  refl
-+-comm′ (suc m) n  rewrite +-suc n m | +-comm m n  =  refl
++-comm′ zero    n  rewrite +-identity n             =  refl
++-comm′ (suc m) n  rewrite +-suc n m | +-comm′ m n  =  refl
 \end{code}
 This is far more compact.  Among other things, whereas the previous
 proof required `cong suc (+-comm m n)` as the justification to invoke
