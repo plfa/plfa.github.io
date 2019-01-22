@@ -41,9 +41,9 @@ naming them.  A term of the form
 
 is equivalent to a function `f` defined by the equations
 
-    f P₁ = e₁
+    f P₁ = N₁
     ⋯
-    f Pₙ = eₙ
+    f Pₙ = Nₙ
 
 where the `Pₙ` are patterns (left-hand sides of an equation) and the
 `Nₙ` are expressions (right-hand side of an equation).
