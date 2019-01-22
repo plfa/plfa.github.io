@@ -151,6 +151,7 @@ of four things:
 + A function `from` from `B` back to `A`,
 + Evidence `from∘to` asserting that `from` is a *left-inverse* for `to`,
 + Evidence `to∘from` asserting that `from` is a *right-inverse* for `to`.
+
 In particular, the third asserts that `from ∘ to` is the identity, and
 the fourth that `to ∘ from` is the identity, hence the names.
 The declaration `open _≃_` makes available the names `to`, `from`,
