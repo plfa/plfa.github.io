@@ -149,8 +149,8 @@ Let's unpack the definition. An isomorphism between sets `A` and `B` consists
 of four things:
 + A function `to` from `A` to `B`,
 + A function `from` from `B` back to `A`,
-+ Evidence `from∘to` asserting that `from` is a *right-identity* for `to`,
-+ Evidence `to∘from` asserting that `to` is a *left-identity* for `from`.
++ Evidence `from∘to` asserting that `from` is a *left-inverse* for `to`,
++ Evidence `to∘from` asserting that `from` is a *right-inverse* for `to`.
 In particular, the third asserts that `from ∘ to` is the identity, and
 the fourth that `to ∘ from` is the identity, hence the names.
 The declaration `open _≃_` makes available the names `to`, `from`,
@@ -216,7 +216,7 @@ and `from` to be the identity function:
 In the above, `to` and `from` are both bound to identity functions,
 and `from∘to` and `to∘from` are both bound to functions that discard
 their argument and return `refl`.  In this case, `refl` alone is an
-adequate proof since for the left inverse, `to (from x)`
+adequate proof since for the left inverse, `from (to x)`
 simplifies to `x`, and similarly for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
@@ -326,8 +326,8 @@ record _≲_ (A B : Set) : Set where
 open _≲_
 \end{code}
 It is the same as an isomorphism, save that it lacks the `to∘from` field.
-Hence, we know that `from` is right-inverse to `to`, but not that `to`
-is left-inverse to `from`.
+Hence, we know that `from` is left-inverse to `to`, but not that `from`
+is right-inverse to `to`.
 
 Embedding is reflexive and transitive, but not symmetric.  The proofs
 are cut down versions of the similar proofs for isomorphism:
