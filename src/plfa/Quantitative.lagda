@@ -1,5 +1,5 @@
 ---
-title     : "Quantitative: Resources and Types"
+title     : "Quantitative: Counting Resources in Types"
 layout    : page
 permalink : /Quantitative/
 ---
@@ -607,6 +607,8 @@ ext : ∀ {γ δ}
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 \end{code}
+
+
 
 \begin{code}
 lem-` : ∀ {γ δ} {A} {Ξ : Matrix γ δ} (x : γ ∋ A) → _
