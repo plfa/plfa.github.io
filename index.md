@@ -52,7 +52,7 @@ Pull requests are encouraged.
     * Philip Wadler, University of Edinburgh,
       [2018](http://plfa.inf.ed.ac.uk/TSPL/)
     * David Darais, University of Vermont,
-      [2018](http://david.darais.com/courses/uvm-cs295A-fa2018/)
+      [2018](http://david.darais.com/courses/fa2018-cs295A/)
     * John Leo, Google Seattle, 2018--2019
 
 [wen]: https://github.com/wenkokke
