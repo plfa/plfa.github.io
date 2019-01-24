@@ -460,7 +460,7 @@ we yield `V`, otherwise we yield `x` unchanged.
 
 * For abstractions, we compare `w`, the variable we are substituting for,
 with `x`, the variable bound in the abstraction. If they are the same,
-we yield the abstraction unchanged, otherwise we subsititute inside the body.
+we yield the abstraction unchanged, otherwise we substitute inside the body.
 
 * For application, we recursively substitute in the function
 and the argument.
@@ -919,7 +919,7 @@ For example
 
 give us the types associated with variables ` "z" ` and ` "s" `, respectively.
 The symbol `∋` (pronounced "ni", for "in" backwards) is chosen because
-checking that `Γ ∋ x ⦂ A` is anologous to checking whether `x ⦂ A` appears
+checking that `Γ ∋ x ⦂ A` is analogous to checking whether `x ⦂ A` appears
 in a list corresponding to `Γ`.
 
 If two variables in a context have the same name, then lookup

@@ -209,7 +209,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 
 #### Exercise `primed` (stretch)
 
-We can make examples with lambda terms slighly easier to write
+We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
 \begin{code}
 ƛ′_⇒_ : Term → Term → Term
@@ -466,7 +466,7 @@ we yield `V`, otherwise we yield `x` unchanged.
 
 * For abstractions, we compare `y`, the substituted variable,
 with `x`, the variable bound in the abstraction. If they are the same,
-we yield the abstraction unchanged, otherwise we subsititute inside the body.
+we yield the abstraction unchanged, otherwise we substitute inside the body.
 
 * For application, we recursively substitute in the function
 and the argument.
@@ -758,7 +758,7 @@ steps it is called the diamond property. In symbols:
         --------------------
       → ((M —↠ P) × (N —↠ P)) )
 
-All of the reduction systems studied in this text are determistic.
+All of the reduction systems studied in this text are deterministic.
 In symbols:
 
     deterministic : ∀ {L M N}
@@ -987,7 +987,7 @@ For example,
 
 give us the types associated with variables `` "z" `` and `` "s" ``,
 respectively.  The symbol `∋` (pronounced "ni", for "in"
-backwards) is chosen because checking that `Γ ∋ x ⦂ A` is anologous to
+backwards) is chosen because checking that `Γ ∋ x ⦂ A` is analogous to
 checking whether `x ⦂ A` appears in a list corresponding to `Γ`.
 
 If two variables in a context have the same name, then lookup
