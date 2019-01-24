@@ -23,7 +23,7 @@ inferred from this.  The style of inference used is descended from an
 algorithm called _bidirectional_ type inference, which will be
 presented in this chapter.
 
-This chapter ties our previous developements together. We begin with
+This chapter ties our previous developments together. We begin with
 a term with some type annotations, quite close to the raw terms of
 Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %}),
 and from it we compute a term with inherent types, in the style of
@@ -751,7 +751,7 @@ read directly from the corresponding typing rules.
 
 ## Testing the example terms
 
-First, we copy a function introduced ealier that makes it easy to
+First, we copy a function introduced earlier that makes it easy to
 compute the evidence that two variable names are distinct.
 \begin{code}
 _≠_ : ∀ (x y : Id) → x ≢ y
