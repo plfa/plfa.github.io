@@ -283,7 +283,7 @@ length-++ (x ∷ xs) ys =
     length (x ∷ xs) + length ys
   ∎
 \end{code}
-The proof is by induction on the first arugment. The base case
+The proof is by induction on the first argument. The base case
 instantiates to `[]`, and follows by straightforward computation.  As
 before, Agda cannot infer the implicit type parameter to `length`, and
 it must be given explicitly.  The inductive case instantiates to
@@ -655,7 +655,7 @@ postulate
 
 #### Exercise `map-is-fold-Tree`
 
-Demonstrate an anologue of `map-is-foldr` for the type of trees.
+Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
 #### Exercise `sum-downFrom` (stretch)
 
@@ -958,7 +958,7 @@ All? P? (x ∷ xs) with P? x   | All? P? xs
 \end{code}
 If the list is empty, then trivially `P` holds for every element of
 the list.  Otherwise, the structure of the proof is similar to that
-showing that the conjuction of two decidable propositions is itself
+showing that the conjunction of two decidable propositions is itself
 decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 

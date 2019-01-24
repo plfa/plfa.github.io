@@ -284,7 +284,7 @@ length-++ (x ∷ xs) ys =
     length (x ∷ xs) + length ys
   ∎
 \end{code}
-The proof is by induction on the first arugment. The base case instantiates
+The proof is by induction on the first argument. The base case instantiates
 to `[]`, and follows by straightforward computation.
 As before, Agda cannot infer the implicit type parameter to `length`,
 and it must be given explicitly.
