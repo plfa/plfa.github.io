@@ -312,7 +312,7 @@ open ≃-Reasoning
 
 We also need the notion of _embedding_, which is a weakening of
 isomorphism.  While an isomorphism shows that two types are in
-one-to-one correspondence, and embedding shows that the first type is
+one-to-one correspondence, an embedding shows that the first type is
 included in the second; or, equivalently, that there is a many-to-one
 correspondence between the second type and the first.
 
