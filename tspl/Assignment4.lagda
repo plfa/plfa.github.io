@@ -66,7 +66,7 @@ Remember to indent all code by two spaces.
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the inherently typed
-DeBruijn represenation.
+DeBruijn representation.
 
 
 #### Exercise `V¬—→`
