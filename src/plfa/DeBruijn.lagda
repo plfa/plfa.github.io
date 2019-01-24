@@ -178,7 +178,7 @@ to a lookup derivation:
 The de Bruijn index counts the number of `S` constructs in the
 corresponding lookup derivation.  Variable "n" bound in the
 inner abstraction is referred to as `# 0` in the zero branch
-of the case but as `# 1` in the successor banch of the case,
+of the case but as `# 1` in the successor branch of the case,
 because of the intervening binding.  Variable "m" bound in the
 lambda abstraction is referred to by the first `# 1` in the
 code, while variable "m" bound in the successor branch of the
@@ -476,7 +476,7 @@ sucᶜ = ƛ `suc (# 0)
 2+2ᶜ : ∅ ⊢ `ℕ
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
-As before we generalise everything save `2+2ᶜ` to arbitary
+As before we generalise everything save `2+2ᶜ` to arbitrary
 contexts.  While we are at it, we also generalise `twoᶜ` and
 `plusᶜ` to Church numerals over arbitrary types.
 
@@ -486,7 +486,7 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the inherently typed
-DeBruijn represenation.
+DeBruijn representation.
 
 
 ## Renaming
