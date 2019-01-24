@@ -46,7 +46,7 @@ reducing one term to another, and well-typed terms.
 
 Ultimately, we would like to show that we can keep reducing a term
 until we reach a value.  For instance, in the last chapter we showed
-that two plust two is four,
+that two plus two is four,
 
     plus · two · two  —↠  `suc `suc `suc `suc `zero
 
@@ -231,7 +231,7 @@ _Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` s
 that `M —→ N`.
 
 To formulate this property, we first introduce a relation that
-captures what it means for a term `M` to make progess.
+captures what it means for a term `M` to make progress.
 \begin{code}
 data Progress (M : Term) : Set where
 
@@ -327,7 +327,7 @@ have formulated progress using disjunction and existentials:
 postulate
   progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Value M ⊎ ∃[ N ](M —→ N)
 \end{code}
-This leads to a less perspicous proof.  Instead of the mnemonic `done`
+This leads to a less perspicuous proof.  Instead of the mnemonic `done`
 and `step` we use `inj₁` and `inj₂`, and the term `N` is no longer
 implicit and so must be written out in full.  In the case for `β-ƛ`
 this requires that we match against the lambda expression `L` to
@@ -365,7 +365,7 @@ The first step is to show that types are preserved by _renaming_.
 _Renaming_:
 Let `Γ` and `Δ` be two context such that every variable that
 appears in `Γ` also appears with the same type in `Δ`.  Then
-if a term is typable under `Γ`, it has the same type under `Δ`.
+if a term is typeable under `Γ`, it has the same type under `Δ`.
 
 In symbols,
 
@@ -374,7 +374,7 @@ In symbols,
     Γ ⊢ M ⦂ A  →  Δ ∋ M ⦂ A
 
 Three important corollaries follow.  The _weaken_ lemma asserts a term
-well-typed in the empty context is also well-typed in an arbitary
+well-typed in the empty context is also well-typed in an arbitrary
 context.  The _drop_ lemma asserts a term well-typed in a context where the
 same variable appears twice remains well-typed if we drop the shadowed
 occurrence.  The _swap_ lemma asserts a term well-typed in a context
@@ -543,8 +543,8 @@ drop {Γ} {x} {M} {A} {B} {C} ⊢M = rename ρ ⊢M
   ρ (S x≢x Z)         =  ⊥-elim (x≢x refl)
   ρ (S z≢x (S _ ∋z))  =  S z≢x ∋z
 \end{code}
-Here map `ρ` can never be invoked on the inner occurence of `x` since
-it is masked by the outer occurence.  Skipping over the `x` in the
+Here map `ρ` can never be invoked on the inner occurrence of `x` since
+it is masked by the outer occurrence.  Skipping over the `x` in the
 first position can only happen if the variable looked for differs from
 `x` (the evidence for which is `x≢x` or `z≢x`) but if the variable is
 found in the second position, which also contains `x`, this leads to a
@@ -857,7 +857,7 @@ Let's unpack the cases for two of the reduction rules.
 
   from which the typing of the right-hand side follows immediately.
 
-The remaining cases are similar.  Each `ξ` rule follws by induction,
+The remaining cases are similar.  Each `ξ` rule follows by induction,
 and each `β` rule follows by the substitution lemma.
 
 
@@ -895,7 +895,7 @@ smart contracts require the miners that maintain the blockchain to
 evaluate the program which embodies the contract.  For instance,
 validating a transaction on Ethereum may require executing a program
 for the Ethereum Virtual Machine (EVM).  A long-running or
-non-terminating program might cause the miner to invest arbitary
+non-terminating program might cause the miner to invest arbitrary
 effort in validating a contract for little or no return.  To avoid
 this situation, each transaction is accompanied by an amount of `gas`
 available for computation.  Each step executed on the EVM is charged
