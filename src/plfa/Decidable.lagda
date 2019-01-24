@@ -511,7 +511,7 @@ no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
 yes x →-dec no ¬y  =  no (λ f → ¬y (f x))
 \end{code}
 The implication holds if either the second holds or
-the negatioin of the first holds, and its negation
+the negation of the first holds, and its negation
 holds if the first holds and the negation of the second holds.
 Evidence for the implication is a function from evidence
 of the first to evidence of the second.
