@@ -222,7 +222,7 @@ ext ρ (S x)  =  S (ρ x)
 We could replace all instances of `A` and `B` by `★`, but arguably it is
 clearer not to do so.
 
-Now it is straighforward to define renaming:
+Now it is straightforward to define renaming:
 \begin{code}
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -247,7 +247,7 @@ exts σ (S x)  =  rename S_ (σ x)
 \end{code}
 Again, we could replace all instances of `A` and `B` by `★`.
 
-Now it is straighforward to define substitution:
+Now it is straightforward to define substitution:
 \begin{code}
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -657,7 +657,7 @@ as follows:
     one  = ƛ s ⇒ ƛ z ⇒ s · zero
     two  = ƛ s ⇒ ƛ z ⇒ s · one
 
-Each represenation expects two arguments, one corresponding to
+Each representation expects two arguments, one corresponding to
 the successor branch of the case (it expects an additional argument,
 the predecessor of the current argument) and one corresponding to the
 zero branch of the case.  (The cases could be in either order.
