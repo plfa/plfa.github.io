@@ -25,7 +25,7 @@ else is inferred from what has been given.  The style of inference
 used is based on a technique called _bidirectional_ type
 inference, which will be presented in this chapter.
 
-This chapter ties our previous developements together. We begin with
+This chapter ties our previous developments together. We begin with
 a term with some type annotations, quite close to the raw terms of
 Chapter [Lambda][plfa.Lambda],
 and from it we compute a term with inherent types, in the style of
@@ -577,7 +577,7 @@ ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
 ext∋ _   ¬∃ ⟨ A , S _ ⊢x ⟩  =  ¬∃ ⟨ A , ⊢x ⟩
 \end{code}
 Given a type `A` and evidence that `Γ , y ⦂ B ∋ x ⦂ A` holds, we must
-demonstrate a contractiction.  If the judgment holds by `Z`, then we
+demonstrate a contradiction.  If the judgment holds by `Z`, then we
 must have that `x` and `y` are the same, which contradicts the first
 assumption. If the judgment holds by `S _ ⊢x` then `⊢x` provides
 evidence that `Γ ∋ x ⦂ A`, which contradicts the second assumption.
@@ -818,7 +818,7 @@ read directly from the corresponding typing rules.
 
 ## Testing the example terms
 
-First, we copy a function introduced ealier that makes it easy to
+First, we copy a function introduced earlier that makes it easy to
 compute the evidence that two variable names are distinct:
 \begin{code}
 _≠_ : ∀ (x y : Id) → x ≢ y
