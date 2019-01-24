@@ -420,7 +420,7 @@ Show sum is commutative up to isomorphism.
 
 #### Exercise `⊎-assoc`
 
-Show sum is associative up to ismorphism. 
+Show sum is associative up to isomorphism.
 
 ## False is empty
 
@@ -436,7 +436,7 @@ Dual to `⊤`, for `⊥` there is no introduction rule but an elimination rule.
 Since false never holds, knowing that it holds tells us we are in a
 paradoxical situation.  Given evidence that `⊥` holds, we might
 conclude anything!  This is a basic principle of logic, known in
-medieval times by the latin phrase _ex falso_, and known to children
+medieval times by the Latin phrase _ex falso_, and known to children
 through phrases such as "if pigs had wings, then I'd be the Queen of
 Sheba".  We formalise it as follows.
 \begin{code}
