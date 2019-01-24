@@ -251,7 +251,7 @@ two natural numbers.
 
 #### Exercise `primed` (stretch)
 
-We can make examples with lambda terms slighly easier to write
+We can make examples with lambda terms slightly easier to write
 by adding the following definitions.
 \begin{code}
 ƛ′_⇒_ : Term → Term → Term
