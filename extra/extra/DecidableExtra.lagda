@@ -193,7 +193,7 @@ The forward proof has one more clause than the reverse proof,
 precisely because in the forward proof we need clauses corresponding to
 the comparison yielding both true and false, while in the reverse proof
 we only need clauses corresponding to the case where there is evidence
-that the comparision holds.  This is exactly why we tend to prefer the
+that the comparison holds.  This is exactly why we tend to prefer the
 evidence formulation to the computation formulation, because it allows
 us to do less work: we consider only cases where the relation holds,
 and can ignore those where it does not.
