@@ -514,7 +514,7 @@ then we may conclude that `B` holds:
 In medieval times, this rule was known by the name _modus ponens_.
 It corresponds to function application.
 
-Defining a function, with an named definition or a lambda abstraction,
+Defining a function, with a named definition or a lambda abstraction,
 is referred to as _introducing_ a function,
 while applying a function is referred to as _eliminating_ the function.
 
