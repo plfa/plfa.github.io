@@ -198,6 +198,10 @@ Write out the definition of a lambda term that multiplies
 two natural numbers.  Your definition may use `plus` as
 defined earlier.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `mulᶜ`
 
@@ -205,6 +209,10 @@ Write out the definition of a lambda term that multiplies
 two natural numbers represented as Church numerals. Your
 definition may use `plusᶜ` as defined earlier (or may not
 — there are nice definitions both ways).
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 #### Exercise `primed` (stretch)
@@ -216,6 +224,10 @@ by adding the following definitions:
 ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
 ƛ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 case′_[zero⇒_|suc_⇒_] : Term → Term → Term → Term → Term
 case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
@@ -518,6 +530,10 @@ Rewrite the definition to factor the common part of these three
 clauses into a single function, defined by mutual recursion with
 substitution.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Reduction
 
@@ -724,6 +740,10 @@ the two definitions are equivalent (indeed, one embeds in the other).
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 ## Confluence
 
 One important property a reduction relation might satisfy is
@@ -879,6 +899,10 @@ In the next chapter, we will see how to compute such reduction sequences.
 #### Exercise `plus-example`
 
 Write out the reduction sequence demonstrating that one plus one is two.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Syntax of types
@@ -1328,11 +1352,19 @@ or explain why there are no such types.
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well-typed.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `mulᶜ-type`
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well-typed.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Unicode

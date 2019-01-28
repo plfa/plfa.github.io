@@ -232,6 +232,10 @@ corresponds to `(1 , (true , aa))`, which is a member of the latter.
 Show that `A ⇔ B` as defined [earlier][plfa.Isomorphism#iff]
 is isomorphic to `(A → B) × (B → A)`.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Truth is unit
 
@@ -418,9 +422,17 @@ commutative and associative _up to isomorphism_.
 
 Show sum is commutative up to isomorphism.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `⊎-assoc`
 
 Show sum is associative up to isomorphism.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## False is empty
 
@@ -481,9 +493,17 @@ is the identity of sums _up to isomorphism_.
 
 Show zero is the left identity of addition.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `⊥-identityʳ`
 
 Show zero is the right identity of addition. 
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Implication is function {#implication}
 
@@ -712,6 +732,10 @@ postulate
 This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `⊎×-implies-×⊎`
 
@@ -721,6 +745,10 @@ postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 \end{code}
 Does the converse hold? If so, prove; if not, give a counterexample.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Standard library

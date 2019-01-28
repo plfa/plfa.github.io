@@ -488,6 +488,10 @@ Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the inherently typed
 DeBruijn representation.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Renaming
 
@@ -971,6 +975,10 @@ Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
 values.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 ## Progress
 
 As before, every term that is well-typed and closed is either
@@ -1320,6 +1328,10 @@ tedious and almost identical to the previous proof.
 #### Exercise `mul-example` (recommended)
 
 Using the evaluator, confirm that two times two is four.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Inherently-typed is golden

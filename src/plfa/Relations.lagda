@@ -200,6 +200,10 @@ partial order but not a total order.
 
 Give an example of a preorder that is not a partial order.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 Give an example of a partial order that is not a total order.
 
 
@@ -311,6 +315,10 @@ follows by congruence.
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Total
@@ -498,6 +506,10 @@ transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 Show that multiplication is monotonic with regard to inequality.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Strict inequality {#strict-inequality}
 
@@ -541,6 +553,10 @@ exploiting the corresponding properties of inequality.
 
 Show that strict inequality is transitive.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `trichotomy` {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
@@ -548,6 +564,10 @@ the sense that for any `m` and `n` that one of the following holds:
   * `m < n`,
   * `m ≡ n`, or
   * `m > n`.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 Define `m > n` to be the same as `n < m`.
 You will need a suitable data declaration,
@@ -560,15 +580,27 @@ similar to that used for totality.
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 #### Exercise `<-trans-revisited` {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relating between strict inequality and inequality and
 the fact that inequality is transitive.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Even and odd
@@ -673,6 +705,10 @@ successor of the sum of two even numbers, which is even.
 
 Show that the sum of two odd numbers is even.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that 
@@ -680,6 +716,10 @@ Exercise [Bin][plfa.Naturals#Bin]
 defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following:
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     x1 x1 x0 x1 nil
     x1 x1 x0 x1 x0 x0 nil

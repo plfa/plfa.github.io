@@ -434,6 +434,10 @@ postulate
     → A ≲ B  
 \end{code}
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `_⇔_` {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
@@ -444,6 +448,10 @@ record _⇔_ (A B : Set) : Set where
     from : B → A
 \end{code}
 Show that equivalence is reflexive, symmetric, and transitive.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
@@ -458,6 +466,10 @@ data Bin : Set where
   x1_ : Bin → Bin
 \end{code}
 And ask you to define the following functions
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     to : ℕ → Bin
     from : Bin → ℕ

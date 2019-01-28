@@ -353,6 +353,10 @@ notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 
 ## Rewriting

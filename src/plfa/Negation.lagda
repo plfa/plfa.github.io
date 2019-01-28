@@ -194,12 +194,20 @@ Using negation, show that
 [strict inequality][plfa.Relations#strict-inequality]
 is irreflexive, that is, `n < n` holds for no `n`.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `trichotomy`
 
 Show that strict inequality satisfies
 [trichotomy][plfa.Relations#trichotomy],
 that is, for any naturals `m` and `n` exactly one of the following holds:
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 * `m < n`
 * `m ≡ n`
@@ -212,6 +220,10 @@ but that when one holds the negation of the other two must also hold.
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
 
@@ -361,6 +373,10 @@ Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 Consider the following principles:
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
   * Excluded Middle: `A ⊎ ¬ A`, for all `A`
   * Double Negation Elimination: `¬ ¬ A → A`, for all `A`
   * Peirce's Law: `((A → B) → A) → A`, for all `A` and `B`.
@@ -379,6 +395,10 @@ Stable A = ¬ ¬ A → A
 \end{code}
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Standard Prelude
 

@@ -1205,6 +1205,10 @@ Formalise the remaining constructs defined in this chapter.
 Evaluate each example, applied to data as needed,
 to confirm it returns the expected answer:
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
   * sums (recommended)
   * unit type
   * an alternative formulation of unit type

@@ -174,6 +174,10 @@ but only bother to include in the simulation the terms of interest.
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Simulation commutes with values
 
@@ -198,6 +202,10 @@ of interest is a lambda abstraction.
 
 Show that this also holds in the reverse direction: if `M ~ M†`
 and `Value M†` then `Value M`.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Simulation commutes with renaming
@@ -453,6 +461,10 @@ In its structure, it looks a little bit like a proof of progress:
 Show that we also have a simulation in the other direction, and hence that we have
 a bisimulation.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `products`
 
 Show that the two formulations of products in
@@ -460,6 +472,10 @@ Chapter [More][plfa.More]
 are in bisimulation.  The only constructs you need to include are
 variables, and those connected to functions and products.
 In this case, the simulation is _not_ lock-step.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Unicode
 

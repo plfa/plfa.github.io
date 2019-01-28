@@ -477,17 +477,29 @@ the equality test in the application rule in the first
 Rewrite your definition of multiplication from
 Chapter [Lambda][plfa.Lambda], decorated to support inference.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `bidirectional-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More][plfa.More].
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Prerequisites
@@ -1068,16 +1080,28 @@ exercise [`bidirectional-mul`][plfa.Inference#bidirectional-mul], and show that
 erasure of the inferred typing yields your definition of
 multiplication from Chapter [DeBruijn][plfa.DeBruijn].
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `inference-products` (recommended)
 
 Using your rules from exercise
 [`bidirectional-products`][plfa.Inference#bidirectional-products], extend
 bidirectional inference to include products.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `inference-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More][plfa.More].
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Bidirectional inference in Agda

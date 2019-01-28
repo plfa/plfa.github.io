@@ -95,6 +95,10 @@ postulate
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives][plfa.Connectives].
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `⊎∀-implies-∀⊎`
 
 Show that a disjunction of universals implies a universal of disjunctions:
@@ -104,6 +108,10 @@ postulate
     (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Existentials
@@ -234,6 +242,10 @@ postulate
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 \end{code}
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `∃×-implies-×∃`
 
 Show that an existential of conjunctions implies a conjunction of existentials:
@@ -243,6 +255,10 @@ postulate
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## An existential example
@@ -352,10 +368,18 @@ How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `∃-+-≤`
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Existentials, Universals, and Negation
@@ -405,6 +429,10 @@ postulate
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
@@ -420,6 +448,10 @@ data Bin : Set where
   x1_ : Bin → Bin
 \end{code}
 And ask you to define the following functions and predicates:
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     to   : ℕ → Bin
     from : Bin → ℕ

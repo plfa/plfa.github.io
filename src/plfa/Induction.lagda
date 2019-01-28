@@ -76,6 +76,10 @@ that a newly introduced operator is associative but not commutative.
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 Give an example of an operator that has an identity and is
 associative but is not commutative.
 
@@ -633,6 +637,10 @@ Write out what is known about associativity of addition on each of the first fou
 days using a finite story of creation, as
 [earlier][plfa.Naturals#finite-creation].
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 ## Associativity with rewrite
 
 There is more than one way to skin a cat.  Here is a second proof of
@@ -789,6 +797,10 @@ typing `C-c C-r` will fill it in, completing the proof:
 
 Show
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
     m + (n + p) ≡ n + (m + p)
 
 for all naturals `m`, `n`, and `p`. No induction is needed,
@@ -799,6 +811,10 @@ is associative and commutative.
 
 Show multiplication distributes over addition, that is,
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
     (m + n) * p ≡ m * p + n * p
 
 for all naturals `m`, `n`, and `p`.
@@ -807,6 +823,10 @@ for all naturals `m`, `n`, and `p`.
 
 Show multiplication is associative, that is,
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
     (m * n) * p ≡ m * (n * p)
 
 for all naturals `m`, `n`, and `p`.
@@ -814,6 +834,10 @@ for all naturals `m`, `n`, and `p`.
 #### Exercise `*-comm` {#times-comm}
 
 Show multiplication is commutative, that is,
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     m * n ≡ n * m
 
@@ -824,6 +848,10 @@ you will need to formulate and prove suitable lemmas.
 
 Show
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
     zero ∸ n ≡ zero
 
 for all naturals `n`. Did your proof require induction?
@@ -831,6 +859,10 @@ for all naturals `n`. Did your proof require induction?
 #### Exercise `∸-+-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     m ∸ n ∸ p ≡ m ∸ (n + p)
 
@@ -848,6 +880,10 @@ data Bin : Set where
   x1_ : Bin → Bin
 \end{code}
 and asks you to define functions
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     inc   : Bin → Bin
     to    : ℕ → Bin
