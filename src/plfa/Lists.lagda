@@ -355,10 +355,6 @@ postulate
     → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 \end{code}
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 #### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
@@ -367,10 +363,6 @@ as the identity function.  Show that reverse is an involution:
 postulate
   reverse-involutive : ∀ {A : Set} {xs : List A}
     → reverse (reverse xs) ≡ xs
-\end{code}
-
-\begin{code}
--- Your code goes here
 \end{code}
 
 
@@ -541,10 +533,6 @@ postulate
 \end{code}
 The last step of the proof requires extensionality.
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 #### Exercise `map-++-commute`
 
 Prove the following relationship between map and append:
@@ -552,10 +540,6 @@ Prove the following relationship between map and append:
 postulate
   map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
    →  map f (xs ++ ys) ≡ map f xs ++ map f ys
-\end{code}
-
-\begin{code}
--- Your code goes here
 \end{code}
 
 #### Exercise `map-Tree`
@@ -572,10 +556,6 @@ Define a suitable map operator over trees:
 postulate
   map-Tree : ∀ {A B C D : Set}
     → (A → C) → (B → D) → Tree A B → Tree C D
-\end{code}
-
-\begin{code}
--- Your code goes here
 \end{code}
 
 
@@ -642,11 +622,11 @@ a corresponding fold function that takes _n_ arguments.
 Use fold to define a function to find the product of a list of numbers.
 For example:
 
+    product [ 1 , 2 , 3 , 4 ] ≡ 24
+
 \begin{code}
 -- Your code goes here
 \end{code}
-
-    product [ 1 , 2 , 3 , 4 ] ≡ 24
 
 #### Exercise `foldr-++` (recommended)
 
@@ -655,10 +635,6 @@ Show that fold and append are related as follows:
 postulate
   foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
-\end{code}
-
-\begin{code}
--- Your code goes here
 \end{code}
 
 
@@ -671,10 +647,6 @@ postulate
     map f ≡ foldr (λ x xs → f x ∷ xs) []
 \end{code}
 This requires extensionality.
-
-\begin{code}
--- Your code goes here
-\end{code}
 
 #### Exercise `fold-Tree`
 
@@ -716,10 +688,6 @@ equal to `n * (n ∸ 1) / 2`:
 postulate
   sum-downFrom : ∀ (n : ℕ)
     → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
-\end{code}
-
-\begin{code}
--- Your code goes here
 \end{code}
 
 
@@ -816,12 +784,12 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
 Define a function `foldl` which is analogous to `foldr`, but where
 operations associate to the left rather than the right.  For example:
 
+    foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
+    foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
+
 \begin{code}
 -- Your code goes here
 \end{code}
-
-    foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
-    foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
 
 
 #### Exercise `foldr-monoid-foldl`
@@ -1048,10 +1016,6 @@ list satisfying the predicate:
 postulate
   filter? : ∀ {A : Set} {P : A → Set}
     → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
-\end{code}
-
-\begin{code}
--- Your code goes here
 \end{code}
 
 

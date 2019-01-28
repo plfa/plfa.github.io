@@ -206,6 +206,9 @@ Give an example of a preorder that is not a partial order.
 
 Give an example of a partial order that is not a total order.
 
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Reflexivity
 
@@ -565,15 +568,15 @@ the sense that for any `m` and `n` that one of the following holds:
   * `m ≡ n`, or
   * `m > n`.
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 Define `m > n` to be the same as `n < m`.
 You will need a suitable data declaration,
 similar to that used for totality.
 (We will show that the three cases are exclusive after we introduce
 [negation][plfa.Negation].)
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 #### Exercise `+-mono-<` {#plus-mono-less}
 
@@ -717,10 +720,6 @@ defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following:
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     x1 x1 x0 x1 nil
     x1 x1 x0 x1 x0 x0 nil
 
@@ -760,6 +759,10 @@ and back is the identity:
 
 (Hint: For each of these, you may first need to prove related
 properties of `One`.)
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Standard library
 
