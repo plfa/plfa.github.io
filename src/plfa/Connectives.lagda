@@ -121,8 +121,8 @@ constructor is the identity over products:
 η-× ⟨ x , y ⟩ = refl
 \end{code}
 The pattern matching on the left-hand side is essential, since
-replacing `w` by `⟨ x , y ⟩` allows both sides of the equation to
-simplify to the same term.
+replacing `w` by `⟨ x , y ⟩` allows both sides of the
+propositional equality to simplify to the same term.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction:
