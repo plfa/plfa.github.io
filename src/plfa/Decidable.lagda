@@ -301,12 +301,20 @@ postulate
   _<?_ : ∀ (m n : ℕ) → Dec (m < n)
 \end{code}
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `_≡ℕ?_`
 
 Define a function to decide whether two naturals are equal:
 \begin{code}
 postulate
   _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 
@@ -540,6 +548,10 @@ postulate
 \end{code}
   
 #### Exercise `iff-erasure` (recommended)
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 Give analogues of the `_⇔_` operation from 
 Chapter [Isomorphism][plfa.Isomorphism#iff],

@@ -98,6 +98,10 @@ data Type : Set where
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 ## Contexts
 
 As before, a context is a list of types, with the type of the
@@ -112,6 +116,10 @@ We let `Γ` and `Δ` range over contexts.
 #### Exercise (`Context≃ℕ`)
 
 Show that `Context` is isomorphic to `ℕ`.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Variables and the lookup judgment
 
@@ -393,12 +401,20 @@ How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
 unless both terms are in normal form.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise (`variant-2`)
 
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
 permits reduction when both terms are values (that is, lambda
 abstractions).  What would `2+2ᶜ` reduce to in this case?
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Reflexive and transitive closure
@@ -725,6 +741,10 @@ do both reduce to the same normal term.
 Use the evaluator to confirm that `2+2` and `four` normalise to
 the same term.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `multiplication-untyped` (recommended)
 
 Use the encodings above to translate your definition of
@@ -732,11 +752,19 @@ multiplication from previous chapters with the Scott
 representation and the encoding of the fixpoint operator.
 Confirm that two times two is four.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
 Chapter [More][plfa.More],
 save for primitive numbers, in the untyped lambda calculus.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Unicode

@@ -355,6 +355,10 @@ postulate
     → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 \end{code}
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
@@ -363,6 +367,10 @@ as the identity function.  Show that reverse is an involution:
 postulate
   reverse-involutive : ∀ {A : Set} {xs : List A}
     → reverse (reverse xs) ≡ xs
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 
@@ -533,6 +541,10 @@ postulate
 \end{code}
 The last step of the proof requires extensionality.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `map-++-commute`
 
 Prove the following relationship between map and append:
@@ -540,6 +552,10 @@ Prove the following relationship between map and append:
 postulate
   map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
    →  map f (xs ++ ys) ≡ map f xs ++ map f ys
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 #### Exercise `map-Tree`
@@ -556,6 +572,10 @@ Define a suitable map operator over trees:
 postulate
   map-Tree : ∀ {A B C D : Set}
     → (A → C) → (B → D) → Tree A B → Tree C D
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 
@@ -622,6 +642,10 @@ a corresponding fold function that takes _n_ arguments.
 Use fold to define a function to find the product of a list of numbers.
 For example:
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
 #### Exercise `foldr-++` (recommended)
@@ -631,6 +655,10 @@ Show that fold and append are related as follows:
 postulate
   foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 
@@ -644,6 +672,10 @@ postulate
 \end{code}
 This requires extensionality.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `fold-Tree`
 
 Define a suitable fold function for the type of trees given earlier:
@@ -653,9 +685,17 @@ postulate
     → (A → C) → (C → B → C → C) → Tree A B → C
 \end{code}
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `map-is-fold-Tree`
 
 Demonstrate an analogue of `map-is-foldr` for the type of trees.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 #### Exercise `sum-downFrom` (stretch)
 
@@ -676,6 +716,10 @@ equal to `n * (n ∸ 1) / 2`:
 postulate
   sum-downFrom : ∀ (n : ℕ)
     → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 
@@ -772,6 +816,10 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
 Define a function `foldl` which is analogous to `foldr`, but where
 operations associate to the left rather than the right.  For example:
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
     foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
     foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
 
@@ -780,6 +828,10 @@ operations associate to the left rather than the right.  For example:
 
 Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## All {#All}
@@ -895,9 +947,17 @@ Prove a result similar to `All-++-↔`, but with `Any` in place of `All`, and a 
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 #### Exercise `¬Any≃All¬` (stretch)
 
@@ -907,6 +967,10 @@ First generalise composition to arbitrary levels, using
 _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
   → (B → C) → (A → B) → A → C
 (g ∘′ f) x  =  g (f x)
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
@@ -970,6 +1034,10 @@ predicate holds for every element of a list, so does `Any` have
 analogues `any` and `any?` which determine whether a predicates holds
 for some element of a list.  Give their definitions.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `filter?` (stretch)
 
@@ -980,6 +1048,10 @@ list satisfying the predicate:
 postulate
   filter? : ∀ {A : Set} {P : A → Set}
     → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
+\end{code}
+
+\begin{code}
+-- Your code goes here
 \end{code}
 
 

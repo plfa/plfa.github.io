@@ -79,6 +79,10 @@ successor of two; and so on.
 
 Write out `7` in longhand.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Unpacking the inference rules
 
@@ -424,6 +428,10 @@ other word for evidence, which we will use interchangeably, is _proof_.
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 ## Multiplication
 
@@ -481,10 +489,18 @@ it can easily be inferred from the corresponding term.
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 #### Exercise `_^_` (recommended) {#power}
 
 Define exponentiation, which is given by the following equations:
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     n ^ 0        =  1
     n ^ (1 + m)  =  n * (n ^ m)
@@ -550,6 +566,10 @@ _ =
 #### Exercise `∸-examples` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Precedence
@@ -859,6 +879,10 @@ data Bin : Set where
   x1_ : Bin → Bin
 \end{code}
 For instance, the bitstring
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
     1011
 
