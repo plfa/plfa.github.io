@@ -549,10 +549,6 @@ postulate
   
 #### Exercise `iff-erasure` (recommended)
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 Give analogues of the `_⇔_` operation from 
 Chapter [Isomorphism][plfa.Isomorphism#iff],
 operation on booleans and decidables, and also show the corresponding erasure:
@@ -563,6 +559,9 @@ postulate
   iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋  
 \end{code}
 
+\begin{code}
+-- Your code goes here
+\end{code}
 
 ## Standard Library
 

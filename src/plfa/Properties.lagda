@@ -359,11 +359,6 @@ postulate
   value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
 \end{code}
 
-\begin{code}
--- Your code goes here
-\end{code}
-
-
 ## Prelude to preservation
 
 The other property we wish to prove, preservation of typing under

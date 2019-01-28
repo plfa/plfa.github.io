@@ -467,10 +467,6 @@ data Bin : Set where
 \end{code}
 And ask you to define the following functions
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     to : ℕ → Bin
     from : Bin → ℕ
 
@@ -479,7 +475,12 @@ which satisfy the following property:
     from (to n) ≡ n
 
 Using the above, establish that there is an embedding of `ℕ` into `Bin`.
+\begin{code}
+-- Your code goes here
+\end{code}
+
 Why is there not an isomorphism?
+
 
 
 ## Standard library

@@ -498,14 +498,15 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 Define exponentiation, which is given by the following equations:
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     n ^ 0        =  1
     n ^ (1 + m)  =  n * (n ^ m)
 
 Check that `3 ^ 4` is `81`.
+
+\begin{code}
+-- Your code goes here
+\end{code}
+
 
 
 ## Monus
@@ -880,10 +881,6 @@ data Bin : Set where
 \end{code}
 For instance, the bitstring
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     1011
 
 standing for the number eleven is encoded, right to left, as
@@ -917,6 +914,9 @@ For the former, choose the bitstring to have no leading zeros if it
 represents a positive natural, and represent zero by `x0 nil`.
 Confirm that these both give the correct answer for zero through four.
 
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 ## Standard library

@@ -205,10 +205,6 @@ Show that strict inequality satisfies
 [trichotomy][plfa.Relations#trichotomy],
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 * `m < n`
 * `m ≡ n`
 * `m > n`
@@ -216,18 +212,23 @@ that is, for any naturals `m` and `n` exactly one of the following holds:
 Here "exactly one" means that not only one of the three must hold,
 but that when one holds the negation of the other two must also hold.
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 #### Exercise `⊎-dual-×` (recommended)
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
 
+    ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+
+This result is an easy consequence of something we've proved previously.
+
 \begin{code}
 -- Your code goes here
 \end{code}
 
-    ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
-
-This result is an easy consequence of something we've proved previously.
 
 Do we also have the following?
 
@@ -373,10 +374,6 @@ Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 Consider the following principles:
 
-\begin{code}
--- Your code goes here
-\end{code}
-
   * Excluded Middle: `A ⊎ ¬ A`, for all `A`
   * Double Negation Elimination: `¬ ¬ A → A`, for all `A`
   * Peirce's Law: `((A → B) → A) → A`, for all `A` and `B`.
@@ -384,6 +381,10 @@ Consider the following principles:
   * De Morgan: `¬ (¬ A × ¬ B) → A ⊎ B`, for all `A` and `B`.
 
 Show that each of these implies all the others.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 
 #### Exercise `Stable` (stretch)

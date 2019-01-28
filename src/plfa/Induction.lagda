@@ -835,38 +835,41 @@ for all naturals `m`, `n`, and `p`.
 
 Show multiplication is commutative, that is,
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     m * n ≡ n * m
 
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-#### Exercise `0∸n≡0` {#zero-monus}
-
-Show
-
 \begin{code}
 -- Your code goes here
 \end{code}
+
+
+#### Exercise `0∸n≡0` {#zero-monus}
+
+Show
 
     zero ∸ n ≡ zero
 
 for all naturals `n`. Did your proof require induction?
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
+
 #### Exercise `∸-+-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
+
+    m ∸ n ∸ p ≡ m ∸ (n + p)
+
+for all naturals `m`, `n`, and `p`.
 
 \begin{code}
 -- Your code goes here
 \end{code}
 
-    m ∸ n ∸ p ≡ m ∸ (n + p)
-
-for all naturals `m`, `n`, and `p`.
 
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
@@ -881,10 +884,6 @@ data Bin : Set where
 \end{code}
 and asks you to define functions
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     inc   : Bin → Bin
     to    : ℕ → Bin
     from  : Bin → ℕ
@@ -896,7 +895,12 @@ over bitstrings:
     to (from x) ≡ x
     from (to n) ≡ n
 
+\begin{code}
+-- Your code goes here
+\end{code}
+
 For each law: if it holds, prove; if not, give a counterexample.
+
 
 
 ## Standard library
