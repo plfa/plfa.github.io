@@ -262,7 +262,7 @@ The pattern matching on the left-hand side is essential.  Replacing
 same term.
 
 We refer to `⊤` as the _unit_ type. And, indeed,
-type `⊤` has exactly once member, `tt`.  For example, the following
+type `⊤` has exactly one member, `tt`.  For example, the following
 function enumerates all possible arguments of type `⊤`:
 \begin{code}
 ⊤-count : ⊤ → ℕ
