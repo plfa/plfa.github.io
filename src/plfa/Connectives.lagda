@@ -262,8 +262,8 @@ value of type `⊤` must be equal to `tt`:
 η-⊤ tt = refl
 \end{code}
 The pattern matching on the left-hand side is essential.  Replacing
-`w` by `tt` allows both sides of the equation to simplify to the
-same term.
+`w` by `tt` allows both sides of the propositional equality to
+simplify to the same term.
 
 We refer to `⊤` as the _unit_ type. And, indeed,
 type `⊤` has exactly one member, `tt`.  For example, the following
