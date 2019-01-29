@@ -4,6 +4,9 @@ layout    : page
 permalink : /Quantitative/
 ---
 
+In previous chapters, we introduced the lambda calculus, with [a formalisation based on named variables][plfa.Lambda] and [an inherently-typed version][plfa.DeBruijn].  This chapter presents a refinement of those approaches, in which we not only care about the types of variables, but also about *how often they're used*.
+
+
 # Introduction
 
 Identity and constant function.
