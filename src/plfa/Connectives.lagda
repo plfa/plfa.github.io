@@ -121,8 +121,8 @@ constructor is the identity over products:
 η-× ⟨ x , y ⟩ = refl
 \end{code}
 The pattern matching on the left-hand side is essential, since
-replacing `w` by `⟨ x , y ⟩` allows both sides of the equation to
-simplify to the same term.
+replacing `w` by `⟨ x , y ⟩` allows both sides of the
+propositional equality to simplify to the same term.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction:
@@ -262,11 +262,11 @@ value of type `⊤` must be equal to `tt`:
 η-⊤ tt = refl
 \end{code}
 The pattern matching on the left-hand side is essential.  Replacing
-`w` by `tt` allows both sides of the equation to simplify to the
-same term.
+`w` by `tt` allows both sides of the propositional equality to
+simplify to the same term.
 
 We refer to `⊤` as the _unit_ type. And, indeed,
-type `⊤` has exactly once member, `tt`.  For example, the following
+type `⊤` has exactly one member, `tt`.  For example, the following
 function enumerates all possible arguments of type `⊤`:
 \begin{code}
 ⊤-count : ⊤ → ℕ
@@ -534,7 +534,7 @@ then we may conclude that `B` holds:
 In medieval times, this rule was known by the name _modus ponens_.
 It corresponds to function application.
 
-Defining a function, with an named definition or a lambda abstraction,
+Defining a function, with a named definition or a lambda abstraction,
 is referred to as _introducing_ a function,
 while applying a function is referred to as _eliminating_ the function.
 
