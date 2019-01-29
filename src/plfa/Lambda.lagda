@@ -225,10 +225,6 @@ by adding the following definitions:
 ƛ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 case′_[zero⇒_|suc_⇒_] : Term → Term → Term → Term → Term
 case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
 case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
