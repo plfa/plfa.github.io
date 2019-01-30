@@ -356,7 +356,7 @@ Pattern matching against `inj₁` and `inj₂` is typical of how we exploit
 evidence that a disjunction holds.
 
 When `inj₁` and `inj₂` appear on the right-hand side of an equation we
-refer to them as _constructors_, and when they appears on the
+refer to them as _constructors_, and when they appear on the
 left-hand side we refer to them as _destructors_.  We also refer to
 `case-⊎` as a destructor, since it plays a similar role.  Other
 terminology refers to `inj₁` and `inj₂` as _introducing_ a
