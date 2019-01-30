@@ -450,7 +450,7 @@ paradoxical situation.  Given evidence that `⊥` holds, we might
 conclude anything!  This is a basic principle of logic, known in
 medieval times by the Latin phrase _ex falso_, and known to children
 through phrases such as "if pigs had wings, then I'd be the Queen of
-Sheba".  We formalise it as follows.
+Sheba".  We formalise it as follows:
 \begin{code}
 ⊥-elim : ∀ {A : Set}
   → ⊥
