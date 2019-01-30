@@ -378,8 +378,8 @@ uniq-⊎ h (inj₁ x) = refl
 uniq-⊎ h (inj₂ y) = refl
 \end{code}
 The pattern matching on the left-hand side is essential.  Replacing
-`w` by `inj₁ x` allows both sides of the equation to simplify to the
-same term, and similarly for `inj₂ y`.
+`w` by `inj₁ x` allows both sides of the propositional equality to
+simplify to the same term, and similarly for `inj₂ y`.
 
 We set the precedence of disjunction so that it binds less tightly
 than any other declared operator:
