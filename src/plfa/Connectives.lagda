@@ -491,7 +491,7 @@ is the identity of sums _up to isomorphism_.
 
 #### Exercise `⊥-identityˡ` (recommended)
 
-Show zero is the left identity of addition.
+Show empty is the left identity of sums up to isomorphism.
 
 \begin{code}
 -- Your code goes here
@@ -499,7 +499,7 @@ Show zero is the left identity of addition.
 
 #### Exercise `⊥-identityʳ`
 
-Show zero is the right identity of addition. 
+Show empty is the right identity of sums up to isomorphism.
 
 \begin{code}
 -- Your code goes here
