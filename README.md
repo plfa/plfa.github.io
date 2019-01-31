@@ -27,7 +27,7 @@ or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archi
     git clone https://github.com/plfa/plfa.github.io 
 
 Finally, we need to let Agda know where to find the standard library.
-For this, you can follow the instructions [here](https://agda.readthedocs.io/en/latest/tools/package-system.html#example-using-the-standard-library).
+For this, you can follow the instructions [here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html#example-using-the-standard-library).
 
 It is possible to set up PLFA as an Agda library as well.
 If you are trying to complete the exercises found in the `tspl` folder, or otherwise want to import modules from the book, you need to do this.
