@@ -14,8 +14,8 @@ permalink: /GettingStarted/
 
 There are several tools you need to work with PLFA:
 
-  - [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html)
-  - [Agda standard library](https://github.com/agda/agda-stdlib)
+  - [Agda](https://agda.readthedocs.io/en/v2.5.4.2/getting-started/installation.html)
+  - [Agda standard library](https://github.com/agda/agda-stdlib/tree/5819a4dd9c965296224944f05b1481805649bdc2)
 
 For most of the tools, you can simply follow their respective build instructions.
 We list the versions of our dependencies on the badges above.
