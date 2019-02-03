@@ -479,9 +479,7 @@ Using the above, establish that there is an embedding of `ℕ` into `Bin`.
 -- Your code goes here
 \end{code}
 
-Why is there not an isomorphism?
-
-
+Why do `to` and `from` not form an isomorphism?
 
 ## Standard library
 
