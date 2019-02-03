@@ -174,7 +174,6 @@ sucᶜ = ƛ "n" ⇒ `suc (` "n")
 
 fourᶜ : Term
 fourᶜ = plusᶜ · twoᶜ · twoᶜ
-
 \end{code}
 The Church numeral for two takes two arguments `s` and `z`
 and applies `s` twice to `z`.
