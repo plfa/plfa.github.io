@@ -173,7 +173,8 @@ sucᶜ : Term
 sucᶜ = ƛ "n" ⇒ `suc (` "n")
 
 fourᶜ : Term
-fourᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
+fourᶜ = plusᶜ · twoᶜ · twoᶜ
+
 \end{code}
 The Church numeral for two takes two arguments `s` and `z`
 and applies `s` twice to `z`.
@@ -856,7 +857,7 @@ _ =
 
 And here is a similar sample reduction for Church numerals:
 \begin{code}
-_ : fourᶜ —↠ `suc `suc `suc `suc `zero
+_ : fourᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero
 _ =
   begin
     (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ ` "m" · ` "s" · (` "n" · ` "s" · ` "z"))
