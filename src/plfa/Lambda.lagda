@@ -560,7 +560,7 @@ which terms are values.
 The rules break into two sorts. Compatibility rules direct us to
 reduce some part of a term.  We give them names starting with the
 Greek letter `ξ` (_xi_).  Once a term is sufficiently reduced, it will
-consist of a constructor and a deconstructor, in our case `λ` and `·`,
+consist of a constructor and a deconstructor, in our case `ƛ` and `·`,
 which reduces directly.  We give them names starting with the Greek
 letter `β` (_beta_) and such rules are traditionally called _beta rules_.
 
