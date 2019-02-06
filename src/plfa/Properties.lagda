@@ -175,7 +175,7 @@ There are only three interesting cases to consider:
 * If the term is a lambda abstraction, then well-typing of the term
   guarantees well-typing of the body.
 
-* If the term is zero than it is canonical trivially.
+* If the term is zero then it is canonical trivially.
 
 * If the term is a successor then since it is well-typed its argument
   is well-typed, and since it is a value its argument is a value.
