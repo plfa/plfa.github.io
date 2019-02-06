@@ -79,7 +79,7 @@ Agda code that can compute for us the reduction sequence of `plus ·
 two · two`, and its Church numeral variant.
 
 (The development in this chapter was inspired by the corresponding
-development in in _Software Foundations, volume _Programming Language
+development in _Software Foundations, volume _Programming Language
 Foundations_, chapter _StlcProp_.  It will turn out that one of our technical choices
 — to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
 treating a context as a function from identifiers to types —
