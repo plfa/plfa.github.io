@@ -300,7 +300,7 @@ The best way to explain this code is to develop it interactively:
 
     em-irrefutable k = ?
 
-Given evidence `k` that `¬ (A ⊎ ¬ A)`, that is, a function that give a
+Given evidence `k` that `¬ (A ⊎ ¬ A)`, that is, a function that given a
 value of type `A ⊎ ¬ A` returns a value of the empty type, we must fill
 in `?` with a term that returns a value of the empty type.  The only way
 we can get a value of the empty type is by applying `k` itself, so let's
