@@ -1375,6 +1375,7 @@ This chapter uses the following unicode:
     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
     β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
     ∋  U+220B  CONTAINS AS MEMBER (\ni)
+    ∅  U+2205  EMPTY SET (\0)
     ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
     ⦂  U+2982  Z NOTATION TYPE COLON (\:)
     😇  U+1F607  SMILING FACE WITH HALO
