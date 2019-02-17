@@ -616,7 +616,7 @@ subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
 ... | no  x≢y         =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
 subst ⊢V (⊢L · ⊢M)    =  (subst ⊢V ⊢L) · (subst ⊢V ⊢M)
 subst ⊢V ⊢zero        =  ⊢zero
-subst ⊢V(⊢suc ⊢M)     =  ⊢suc (subst ⊢V ⊢M)
+subst ⊢V (⊢suc ⊢M)    =  ⊢suc (subst ⊢V ⊢M)
 subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
 ... | yes refl        =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
 ... | no  x≢y         =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
