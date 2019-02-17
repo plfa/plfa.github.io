@@ -470,7 +470,7 @@ variable in the extended `Δ`.
 variable in the extended `Γ`, where `x≢y` is evidence that `x` and `y`
 differ, and `∋x` is the evidence that `x` appears in `Γ`; and we can
 similarly use `S` to skip over the last variable in the extended `Δ`,
-applying `ρ` to find the evidence that `w` appears in `Δ`.
+applying `ρ` to find the evidence that `x` appears in `Δ`.
 
 With the extension lemma under our belts, it is straightforward to
 prove renaming preserves types:
