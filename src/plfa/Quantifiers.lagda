@@ -100,7 +100,7 @@ Chapter [Connectives][plfa.Connectives].
 Show that a disjunction of universals implies a universal of disjunctions:
 \begin{code}
 postulate
-  ⊎∀-implies-∀⊎ : ∀ {A : Set} { B C : A → Set } →
+  ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
@@ -170,7 +170,7 @@ of a type and evidence of a proposition are indistinguishable.
 Existentials are sometimes referred to as dependent sums,
 because if `A` is a finite type with values `x₁ , ⋯ , xₙ`, and if
 each of the types `B x₁ , ⋯ B xₙ` has `m₁ , ⋯ , mₙ` distinct members,
-then `Σ[ x ∈ A] B x` has `m₁ + ⋯ + mₙ` members, which explains the
+then `Σ[ x ∈ A ] B x` has `m₁ + ⋯ + mₙ` members, which explains the
 choice of notation for existentials, since `Σ` stands for sum.
 
 Existentials are sometimes referred to as dependent products, since
