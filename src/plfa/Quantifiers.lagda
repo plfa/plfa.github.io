@@ -157,7 +157,7 @@ corresponds to the term
 
 where `M` is a term of type `A` and `N` is a term of type `B M`.
 
-Products arise a special case of existentials, where the second
+Products arise as a special case of existentials, where the second
 component does not depend on a variable drawn from the first
 component.  When a product is viewed as evidence of a conjunction,
 both of its components are viewed as evidence, whereas when it is
