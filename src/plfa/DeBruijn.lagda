@@ -610,7 +610,7 @@ an arbitrary context, and need not be closed.
 The structure of the definition and the proof is remarkably
 close to that for renaming.  Again, we first need an extension
 lemma that allows us to extend the context when we encounter a
-binder.  Whereas renaming concerned a map from from variables
+binder.  Whereas renaming concerned a map from variables
 in one context to variables in another, substitution takes a
 map from variables in one context to _terms_ in another.
 Given a map from variables in one context map to terms over
