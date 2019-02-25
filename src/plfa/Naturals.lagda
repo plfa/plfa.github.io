@@ -241,7 +241,7 @@ is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.  The
 declaration is not permitted unless the type given has exactly two
 constructors, one with no arguments (corresponding to zero) and
-one with a single argument the same as the type being defined
+one with a single argument of the same type given in the pragma
 (corresponding to successor).
 
 As well as enabling the above shorthand, the pragma also enables a
