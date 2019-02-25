@@ -306,7 +306,7 @@ consisting of zero and the evidence that twice zero is zero.
 * If the number is even because it is one more than an odd number,
 then we apply the induction hypothesis to give a number `m` and
 evidence that `1 + m * 2 ≡ n`. We return a pair consisting of `suc m`
-and evidence that `suc m * 2` ≡ suc n`, which is immediate after
+and evidence that `suc m * 2 ≡ suc n`, which is immediate after
 substituting for `n`.
 
 * If the number is odd because it is the successor of an even number,
