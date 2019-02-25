@@ -553,7 +553,7 @@ to variables in `Δ`.  Let's unpack the first three cases:
   the body of the abstraction.
 
 * If the term is an application, recursively rename both
-  both the function and the argument.
+  the function and the argument.
 
 The remaining cases are similar, recursing on each subterm,
 and extending the map whenever the construct introduces a
