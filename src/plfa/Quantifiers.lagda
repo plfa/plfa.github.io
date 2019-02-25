@@ -388,7 +388,7 @@ In the `to` direction, we are given a value `¬∃xy` of type
 `¬ ∃[ x ] B x`, and need to show that given a value
 `x` that `¬ B x` follows, in other words, from
 a value `y` of type `B x` we can derive false.  Combining
-`x` and `y` gives us a value `(x , y)` of type `∃[ x ] B x`,
+`x` and `y` gives us a value `⟨ x , y ⟩` of type `∃[ x ] B x`,
 and applying `¬∃xy` to that yields a contradiction.
 
 In the `from` direction, we are given a value `∀¬xy` of type
