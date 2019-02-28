@@ -159,7 +159,7 @@ we know for arithmetic, where
            ≡  0,  if n ≢ 0
 
 Indeed, there is exactly one proof of `⊥ → ⊥`.  We can write
-this proof two different ways:
+this proof in two different ways:
 \begin{code}
 id : ⊥ → ⊥
 id x = x
