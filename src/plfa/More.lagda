@@ -295,7 +295,7 @@ We can also translate back the other way:
     L, M, N ::= ...                     Terms
       `inj₁ M                             inject first component
       `inj₂ N                             inject second component
-      case L [inj₁ x ⇒ M |inj₂ y ⇒ N ]    case
+      case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ]    case
 
     V, W ::= ...                        Values
       `inj₁ V                             inject first component
@@ -329,7 +329,7 @@ We can also translate back the other way:
 
     L —→ L′
     ---------------------------------------------------------------------- ξ-case⊎
-    case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ case⊎ L′[inj₁ x ⇒ M |inj₂ y ⇒ N ]
+    case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ case⊎ L′ [inj₁ x ⇒ M |inj₂ y ⇒ N ]
 
     --------------------------------------------------------- β-inj₁
     case⊎ (`inj₁ V) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ M [ x := V ]
