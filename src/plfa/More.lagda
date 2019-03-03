@@ -1210,8 +1210,3 @@ to confirm it returns the expected answer:
   * an alternative formulation of unit type
   * empty type (recommended)
   * lists
-
-\begin{code}
--- Your code goes here
-\end{code}
-
