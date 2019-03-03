@@ -1351,3 +1351,16 @@ The relation between the two approaches approximates the
 golden ratio: raw terms with a separate typing relation
 require about 1.6 times as much code as inherently-typed terms
 with de Bruijn indices.
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
+    ₀  U+2080  SUBSCRIPT ZERO (\_0)
+    ₃  U+20B3  SUBSCRIPT THREE (\_3)
+    ₄  U+2084  SUBSCRIPT FOUR (\_4)
+    ₅  U+2085  SUBSCRIPT FIVE (\_5)
+    ₆  U+2086  SUBSCRIPT SIX (\_6)
+    ₇  U+2087  SUBSCRIPT SEVEN (\_7)
+    ≠  U+2260  NOT EQUAL TO (\=n)

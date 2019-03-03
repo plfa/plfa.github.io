@@ -1555,3 +1555,26 @@ false, give a counterexample:
 
 Are all properties preserved in this case? Are there any
 other alterations we would wish to make to the system?
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+    Δ  U+0394  GREEK CAPITAL LETTER DELTA (\GD or \Delta)
+    β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
+    δ  U+03B4  GREEK SMALL LETTER DELTA (\Gd or \delta)
+    μ  U+03BC  GREEK SMALL LETTER MU (\Gm or \mu)
+    ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
+    ρ  U+03B4  GREEK SMALL LETTER RHO (\Gr or \rho)
+    ᵢ  U+1D62  LATIN SUBSCRIPT SMALL LETTER I (\_i)
+    ᶜ  U+1D9C  MODIFIER LETTER SMALL C (̂\^c)
+    –  U+2013  EM DASH (\em)
+    ₄  U+2084  SUBSCRIPT FOUR (\_4)
+    ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
+    ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
+    ∅  U+2205  EMPTY SET (\0)
+    ∋  U+220B  CONTAINS AS MEMBER (\ni)
+    ≟  U+225F  QUESTIONED EQUAL TO (\?=)
+    ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
+    ⦂  U+2982  Z NOTATION TYPE COLON (\:)

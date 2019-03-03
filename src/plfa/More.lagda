@@ -1215,3 +1215,10 @@ to confirm it returns the expected answer:
 -- Your code goes here
 \end{code}
 
+## Unicode
+
+This chapter uses the following unicode:
+
+    σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
+    †  U+2020  DAGGER (\dag)
+    ‡  U+2021  DOUBLE DAGGER (\ddag)
