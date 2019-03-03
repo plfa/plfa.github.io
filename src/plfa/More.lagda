@@ -1210,3 +1210,11 @@ to confirm it returns the expected answer:
   * an alternative formulation of unit type
   * empty type (recommended)
   * lists
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
+    †  U+2020  DAGGER (\dag)
+    ‡  U+2021  DOUBLE DAGGER (\ddag)
