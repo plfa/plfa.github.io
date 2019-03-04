@@ -1568,7 +1568,7 @@ This chapter uses the following unicode:
     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
     ρ  U+03B4  GREEK SMALL LETTER RHO (\Gr or \rho)
     ᵢ  U+1D62  LATIN SUBSCRIPT SMALL LETTER I (\_i)
-    ᶜ  U+1D9C  MODIFIER LETTER SMALL C (̂\^c)
+    ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
     –  U+2013  EM DASH (\em)
     ₄  U+2084  SUBSCRIPT FOUR (\_4)
     ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
