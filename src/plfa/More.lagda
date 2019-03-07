@@ -1202,6 +1202,7 @@ _ =
 #### Exercise `More`
 
 Formalise the remaining constructs defined in this chapter.
+Make your changes in this file.
 Evaluate each example, applied to data as needed,
 to confirm it returns the expected answer:
 
@@ -1211,9 +1212,6 @@ to confirm it returns the expected answer:
   * empty type (recommended)
   * lists
 
-\begin{code}
--- Your code goes here
-\end{code}
 
 ## Unicode
 
