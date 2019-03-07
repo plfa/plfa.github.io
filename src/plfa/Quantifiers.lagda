@@ -239,7 +239,7 @@ postulate
 Show that an existential of conjunctions implies a conjunction of existentials:
 \begin{code}
 postulate
-  ∃×-implies-×∃ : ∀ {A : Set} { B C : A → Set } →
+  ∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
