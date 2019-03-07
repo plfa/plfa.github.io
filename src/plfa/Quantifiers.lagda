@@ -269,7 +269,7 @@ data odd where
     → odd (suc n)
 \end{code}
 A number is even if it is zero or the successor of an odd number, and
-odd if it the successor of an even number.
+odd if it is the successor of an even number.
 
 We will show that a number is even if and only if it is twice some
 other number, and odd if and only if it is one more than twice
