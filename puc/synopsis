@@ -1,0 +1,38 @@
+Programming Language Foundation in Agda
+Philip Wadler
+University of Edinburgh
+
+PUC, spring 2019
+
+The most profound connection between logic and computation is a
+pun. The doctrine of Propositions as Types asserts that a certain kind
+of formal structure may be read in two ways: either as a proposition
+in logic or as a type in computing. Further, a related structure may
+be read as either the proof of the proposition or as a programme of
+the corresponding type. Further still, simplification of proofs
+corresponds to evaluation of programs.
+
+Accordingly, the title of this course also has two readings. It may be
+parsed as “(Programming Language) Foundations in Agda” or “Programming
+(Language Foundations) in Agda” — the specifications we will write in
+the proof assistant Agda both describe programming languages and are
+themselves programmes.  Agda is a dependently-typed programming language;
+think of it as Haskell on steroids.
+
+The course aims to teach the fundamentals of programming languages,
+with simply-typed lambda calculus as the central example. The textbook
+is written as a literate script in Agda, and is freely available
+online plfa.inf.ed.ac.uk.
+
+The course is suited to undergraduate and graduate students with a
+good knowledge of how to program.  Previous exposure to functional
+programming is not required but will be helpful.  The hope is that
+using a proof assistant will make the development more concrete and
+accessible to students, and give them rapid feedback to find and
+correct misapprehensions.  The course will cover how to use Agda, the
+requisite logical foundations, and an introduction to basic methods of
+operational semantics.  Students completing it should be able to read
+and contribute to research in foundations of programming languages.
+
+The class will meet for one three-hour session each week, which will
+consist half of lecture and half of practical work coding in Agda.
