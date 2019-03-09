@@ -155,7 +155,7 @@ T→≡ false ()
 If `b` is true then `T b` is inhabited by `tt` and `b ≡ true` is inhabited
 by `refl`, while if `b` is false then `T b` in uninhabited.
 
-In the reverse direction, there is no need for a case analysis:
+In the reverse direction, there is no need for a case analysis on the boolean `b`:
 \begin{code}
 ≡→T : ∀ {b : Bool} → b ≡ true → T b
 ≡→T refl  =  tt
