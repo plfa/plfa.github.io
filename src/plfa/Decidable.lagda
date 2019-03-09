@@ -92,8 +92,8 @@ The first and last clauses of this definition resemble the two
 constructors of the corresponding inductive datatype, while the
 middle clause arises because there is no possible evidence that
 `suc m ≤ zero` for any `m`.
-For example, we can compute that `2 ≤ 4` holds,
-and we can compute that `4 ≤ 2` does not hold:
+For example, we can compute that `2 ≤ᵇ 4` holds,
+and we can compute that `4 ≤ᵇ 2` does not hold:
 \begin{code}
 _ : (2 ≤ᵇ 4) ≡ true
 _ =
