@@ -15,7 +15,7 @@ open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
 
 \begin{code}
-module plfa.Quantitative
+module qtt.Quantitative
   {Mult : Set}
   (_+_ _*_ : Mult → Mult → Mult)
   (0# 1# : Mult)
@@ -52,8 +52,10 @@ infix  9 _*⟩_
 \begin{code}
 data Type : Set where
   `0      : Type
-  _⊗_     : Type → Type → Type
   [_∙_]⊸_ : Mult → Type → Type → Type
+  `1      : Type
+  _⊗_     : Type → Type → Type
+  _⊕_     : Type → Type → Type
 
 variable A B C : Type
 \end{code}
@@ -178,6 +180,13 @@ data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
           ----------------
         → Γ +̇ π *̇ Δ ⊢ B
 
+  ⟨⟩    : 0s {γ} ⊢ `1
+
+  case1 : Γ ⊢ `1
+        → Δ ⊢ A
+          ---------
+        → Γ +̇ Δ ⊢ A
+
   ⟨_,_⟩ : Γ ⊢ A
         → Δ ⊢ B
           -------------
@@ -186,6 +195,20 @@ data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
   case⊗ : Γ ⊢ A ⊗ B
         → Δ , 1# ∙ A , 1# ∙ B ⊢ C
           -----------------------
+        → Γ +̇ Δ ⊢ C
+
+  inj₁  : Γ ⊢ A
+          ---------
+        → Γ ⊢ A ⊕ B
+
+  inj₂  : Γ ⊢ B
+          ---------
+        → Γ ⊢ A ⊕ B
+
+  case⊕ : Γ ⊢ A ⊕ B
+        → Δ , 1# ∙ A ⊢ C
+        → Δ , 1# ∙ B ⊢ C
+          --------------
         → Γ +̇ Δ ⊢ C
 \end{code}
 
@@ -704,6 +727,16 @@ exts {Ξ = Ξ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
 \end{code}
 
 \begin{code}
+lem-⟨⟩ : ∀ {γ δ} {Ξ : Matrix δ γ} → _
+lem-⟨⟩ {γ} {δ} {Ξ} =
+  begin
+    0s {γ}
+  ≡⟨ *⟩-zeroˡ Ξ |> sym ⟩
+    0s {δ} *⟩ Ξ
+  ∎
+\end{code}
+
+\begin{code}
 subst : ∀ {γ δ} {Γ : Context γ} {Ξ : Matrix γ δ} {B}
 
   → (σ : ∀ {A} → (x : γ ∋ A) → Ξ x ⊢ A)
@@ -717,10 +750,20 @@ subst {Ξ = Ξ} σ (ƛ_  {Γ = Γ} N) =
   ƛ (Eq.subst (_⊢ _) (lem-ƛ Γ) (subst (exts σ) N))
 subst {Ξ = Ξ} σ (_·_ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-· Γ Δ)(subst σ L · subst σ M)
+subst {Ξ = Ξ} σ ⟨⟩ =
+  Eq.subst (_⊢ _) (lem-⟨⟩ {Ξ = Ξ}) ⟨⟩
+subst {Ξ = Ξ} σ (case1 {Γ = Γ} {Δ = Δ} L N) =
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case1 (subst σ L) (subst σ N))
 subst {Ξ = Ξ} σ (⟨_,_⟩ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-, Γ Δ) ⟨ subst σ L , subst σ M ⟩
 subst {Ξ = Ξ} σ (case⊗ {Γ = Γ} {Δ = Δ} L N) =
   Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊗ (subst σ L) (Eq.subst (_⊢ _) (lem-⊗ Δ) (subst (exts (exts σ)) N)))
+subst {Ξ = Ξ} σ (inj₁ {Γ = Γ} L) =
+  Eq.subst (_⊢ _) {!!} (inj₁ (subst σ L))
+subst {Ξ = Ξ} σ (inj₂ {Γ = Γ} L) =
+  Eq.subst (_⊢ _) {!!} (inj₂ (subst σ L))
+subst {Ξ = Ξ} σ (case⊕ {Γ = Γ} {Δ = Δ} L M N) =
+  {!Eq.subst (_⊢ _) ? (case⊕ (subst σ L) (subst (exts σ) M) (subst (exts σ) N))!}
 \end{code}
 
 

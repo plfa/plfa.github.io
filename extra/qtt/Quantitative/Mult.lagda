@@ -5,7 +5,7 @@ permalink : /Quantitative/Mult/
 ---
 
 \begin{code}
-module plfa.Quantitative.Mult where
+module qtt.Quantitative.Mult where
 \end{code}
 
 \begin{code}

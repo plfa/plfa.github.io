@@ -5,7 +5,7 @@ permalink : /Quantitative/LinAlg/
 ---
 
 \begin{code}
-module plfa.Quantitative.LinAlg where
+module qtt.Quantitative.LinAlg where
 \end{code}
 
 
