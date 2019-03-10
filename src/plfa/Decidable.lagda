@@ -400,7 +400,7 @@ Most readers will be familiar with the logical connectives for booleans.
 Each of these extends to decidables.
 
 The conjunction of two booleans is true if both are true,
-and false is either is false:
+and false if either is false:
 \begin{code}
 infixr 6 _∧_
 
