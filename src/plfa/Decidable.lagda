@@ -330,7 +330,7 @@ m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
 ...        | false  | _        | ¬p           = no ¬p
 \end{code}
 If `m ≤ᵇ n` is true then `≤ᵇ→≤` yields a proof that `m ≤ n` holds,
-while if it is false then `≤→≤ᵇ` takes a proof the `m ≤ n` holds into a contradiction.
+while if it is false then `≤→≤ᵇ` takes a proof that `m ≤ n` holds into a contradiction.
 
 The triple binding of the `with` clause in this proof is essential.
 If instead we wrote:
