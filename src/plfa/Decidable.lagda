@@ -333,14 +333,14 @@ If `m ≤ᵇ n` is true then `≤ᵇ→≤` yields a proof that `m ≤ n` holds,
 while if it is false then `≤→≤ᵇ` takes a proof the `m ≤ n` holds into a contradiction.
 
 The triple binding of the `with` clause in this proof is essential.
-If instead we wrote
+If instead we wrote:
 
     _≤?″_ : ∀ (m n : ℕ) → Dec (m ≤ n)
     m ≤?″ n with m ≤ᵇ n
     ... | true   =  yes (≤ᵇ→≤ m n tt)
     ... | false  =  no (≤→≤ᵇ {m} {n})
 
-then Agda would make two complaints, one for each clause
+then Agda would make two complaints, one for each clause:
 
     ⊤ !=< (T (m ≤ᵇ n)) of type Set
     when checking that the expression tt has type T (m ≤ᵇ n)
