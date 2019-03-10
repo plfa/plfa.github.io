@@ -23,18 +23,16 @@ of a new notion of _decidable_.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using (contraposition)
+open import Relation.Nullary.Negation using ()
   renaming (contradiction to ¬¬-intro)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; foldr; map)
-open import Function using (_∘_)
 open import plfa.Relations using (_<_; z<s; s<s)
 open import plfa.Isomorphism using (_⇔_)
 \end{code}
@@ -568,7 +566,6 @@ postulate
 \begin{code}
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 import Data.Nat using (_≤?_)
-import Data.List.All using (All; []; _∷_) renaming (all to All?)
 import Relation.Nullary using (Dec; yes; no)
 import Relation.Nullary.Decidable using (⌊_⌋; toWitness; fromWitness)
 import Relation.Nullary.Negation using (¬?)
