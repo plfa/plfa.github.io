@@ -69,14 +69,14 @@ data List′ : Set → Set where
   _∷′_ : ∀ {A : Set} → A → List′ A → List′ A
 \end{code}
 Each constructor takes the parameter as an implicit argument.
-Thus, our example list could also be written
+Thus, our example list could also be written:
 \begin{code}
 _ : List ℕ
 _ = _∷_ {ℕ} 0 (_∷_ {ℕ} 1 (_∷_ {ℕ} 2 ([] {ℕ})))
 \end{code}
 where here we have provided the implicit parameters explicitly.
 
-Including the pragma
+Including the pragma:
 
     {-# BUILTIN LIST List #-}
 
