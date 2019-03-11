@@ -162,6 +162,8 @@ about numbers.  Here is the proof that append is associative:
   begin
     (x ∷ xs ++ ys) ++ zs
   ≡⟨⟩
+    x ∷ (xs ++ ys) ++ zs
+  ≡⟨⟩
     x ∷ ((xs ++ ys) ++ zs)
   ≡⟨ cong (x ∷_) (++-assoc xs ys zs) ⟩
     x ∷ (xs ++ (ys ++ zs))
