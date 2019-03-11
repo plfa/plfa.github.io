@@ -54,7 +54,7 @@ For example,
 _ : List ℕ
 _ = 0 ∷ 1 ∷ 2 ∷ []
 \end{code}
-denotes the list of the first three natural numbers.  Since `_::_`
+denotes the list of the first three natural numbers.  Since `_∷_`
 associates to the right, the term parses as `0 ∷ (1 ∷ (2 ∷ []))`.
 Here `0` is the first element of the list, called the _head_,
 and `1 ∷ (2 ∷ [])` is a list of the remaining elements, called the
