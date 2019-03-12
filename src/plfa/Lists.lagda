@@ -177,11 +177,11 @@ inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recu
 invocation of the proof, in this case `++-assoc xs ys zs`.
 
 Recall that Agda supports [sections][plfa.Induction#sections].
-Applying `cong (x ∷_)` promotes the inductive hypothesis
+Applying `cong (x ∷_)` promotes the inductive hypothesis:
 
     xs ++ (ys ++ zs) ≡ (xs ++ ys) ++ zs
 
-to the equality
+to the equality:
 
     x ∷ (xs ++ (ys ++ zs)) ≡ x ∷ ((xs ++ ys) ++ zs)
 
