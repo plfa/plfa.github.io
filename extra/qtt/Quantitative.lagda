@@ -21,8 +21,6 @@ module qtt.Quantitative
   (0# 1# : Mult)
   (*-+-isSemiring : IsSemiring _≡_ _+_ _*_ 0# 1#)
   where
-
-variable π : Mult
 \end{code}
 
 \begin{code}
@@ -41,9 +39,9 @@ infix  1 _∋_
 infixl 5 _,_
 infixl 5 _,_∙_
 infixr 6 [_∙_]⊸_
-infixr 7 _+̇_
+infixl 7 _+̇_
 infixl 8 _*̇_
-infix  9 _*⟩_
+infixl 8 _*⟩_
 \end{code}
 
 
@@ -56,8 +54,6 @@ data Type : Set where
   `1      : Type
   _⊗_     : Type → Type → Type
   _⊕_     : Type → Type → Type
-
-variable A B C : Type
 \end{code}
 
 \begin{code}
@@ -86,10 +82,14 @@ _ = ∅ , `0 ⊸ `0 , `0
 \begin{code}
 data _∋_ : Precontext → Type → Set where
 
-  Z  : ---------
-       γ , A ∋ A
+  Z  : ∀ {γ} {A}
 
-  S_ : γ ∋ A
+       ---------
+     → γ , A ∋ A
+
+  S_ : ∀ {γ} {A B}
+
+     → γ ∋ A
        ---------
      → γ , B ∋ A
 \end{code}
@@ -167,45 +167,66 @@ identity {γ , B} (S x) = identity x , 0# ∙ B
 \begin{code}
 data _⊢_ : ∀ {γ} (Γ : Context γ) (A : Type) → Set where
 
-  `_    : (x : γ ∋ A)
+  `_    : ∀ {γ} {A}
+
+        → (x : γ ∋ A)
           --------------
         → identity x ⊢ A
 
-  ƛ_    : Γ , π ∙ A ⊢ B
+  ƛ_    : ∀ {γ} {Γ : Context γ} {A B} {π}
+
+        → Γ , π ∙ A ⊢ B
           ----------------
         → Γ ⊢ [ π ∙ A ]⊸ B
 
-  _·_   : Γ ⊢ [ π ∙ A ]⊸ B
+  _·_   : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
+
+        → Γ ⊢ [ π ∙ A ]⊸ B
         → Δ ⊢ A
           ----------------
         → Γ +̇ π *̇ Δ ⊢ B
 
-  ⟨⟩    : 0s {γ} ⊢ `1
+  ⟨⟩    : ∀ {γ}
 
-  case1 : Γ ⊢ `1
+          -----------
+        → 0s {γ} ⊢ `1
+
+  case1 : ∀ {γ} {Γ Δ : Context γ} {A}
+
+        → Γ ⊢ `1
         → Δ ⊢ A
           ---------
         → Γ +̇ Δ ⊢ A
 
-  ⟨_,_⟩ : Γ ⊢ A
+  ⟨_,_⟩ : ∀ {γ} {Γ Δ : Context γ} {A B}
+
+        → Γ ⊢ A
         → Δ ⊢ B
           -------------
         → Γ +̇ Δ ⊢ A ⊗ B
 
-  case⊗ : Γ ⊢ A ⊗ B
+  case⊗ : ∀ {γ} {Γ Δ : Context γ} {A B C}
+
+        → Γ ⊢ A ⊗ B
         → Δ , 1# ∙ A , 1# ∙ B ⊢ C
           -----------------------
         → Γ +̇ Δ ⊢ C
 
-  inj₁  : Γ ⊢ A
+  inj₁  : ∀ {γ} {Γ : Context γ} {A B}
+
+        → Γ ⊢ A
           ---------
         → Γ ⊢ A ⊕ B
 
-  inj₂  : Γ ⊢ B
+  inj₂  : ∀ {γ} {Γ : Context γ} {A B}
+
+        → Γ ⊢ B
           ---------
         → Γ ⊢ A ⊕ B
 
-  case⊕ : Γ ⊢ A ⊕ B
+  case⊕ : ∀ {γ} {Γ Δ : Context γ} {A B C}
+
+        → Γ ⊢ A ⊕ B
         → Δ , 1# ∙ A ⊢ C
         → Δ , 1# ∙ B ⊢ C
           --------------
@@ -510,7 +531,7 @@ Linear maps distribute over sums.
     (π₁ + π₂) *̇ Ξ Z +̇ (Γ₁ +̇ Γ₂) *⟩ (Ξ ∘ S_)
   ≡⟨ *⟩-distribʳ-+̇ Γ₁ Γ₂ (Ξ ∘ S_) |> cong ((π₁ + π₂) *̇ Ξ Z +̇_) ⟩
     (π₁ + π₂) *̇ Ξ Z +̇ (Γ₁ *⟩ (Ξ ∘ S_) +̇ Γ₂ *⟩ (Ξ ∘ S_))
-  ≡⟨ *̇-distribʳ-+̇ (Ξ Z) π₁ π₂ |> cong (_+̇ Γ₁ *⟩ (Ξ ∘ S_) +̇ Γ₂ *⟩ (Ξ ∘ S_)) ⟩
+  ≡⟨ *̇-distribʳ-+̇ (Ξ Z) π₁ π₂ |> cong (_+̇ (Γ₁ *⟩ (Ξ ∘ S_) +̇ Γ₂ *⟩ (Ξ ∘ S_))) ⟩
     (π₁ *̇ Ξ Z +̇ π₂ *̇ Ξ Z) +̇ (Γ₁ *⟩ (Ξ ∘ S_) +̇ Γ₂ *⟩ (Ξ ∘ S_))
   ≡⟨ +̇-assoc (π₁ *̇ Ξ Z +̇ π₂ *̇ Ξ Z) (Γ₁ *⟩ (Ξ ∘ S_)) (Γ₂ *⟩ (Ξ ∘ S_)) |> sym ⟩
     ((π₁ *̇ Ξ Z +̇ π₂ *̇ Ξ Z) +̇ Γ₁ *⟩ (Ξ ∘ S_)) +̇ Γ₂ *⟩ (Ξ ∘ S_)
@@ -604,8 +625,6 @@ ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 \end{code}
 
-
-
 \begin{code}
 lem-` : ∀ {γ δ} {A} {Ξ : Matrix γ δ} (x : γ ∋ A) → _
 lem-` {γ} {δ} {A} {Ξ} x =
@@ -660,12 +679,31 @@ lem-, {γ} {δ} Γ Δ {Ξ} =
 
 \begin{code}
 postulate
-  lem-⊗ : ∀ {γ δ} (Δ : Context γ) {A B} {Ξ : Matrix γ δ} →
+  lem-case⊗ : ∀ {γ δ} (Δ : Context γ) {A B} {Ξ : Matrix γ δ} →
       (1# *̇ 0s , 1# * 0# ∙ A , 1# * 1# ∙ B) +̇
-      (1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇
-      Δ *⟩ (λ x → Ξ x , 0# ∙ A , 0# ∙ B)
+      ((1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇
+      Δ *⟩ (λ x → Ξ x , 0# ∙ A , 0# ∙ B))
     ≡
       Δ *⟩ Ξ , 1# ∙ A , 1# ∙ B
+\end{code}
+
+
+\begin{code}
+lem-⟨⟩ : ∀ {γ δ} {Ξ : Matrix δ γ} → _
+lem-⟨⟩ {γ} {δ} {Ξ} =
+  begin
+    0s {γ}
+  ≡⟨ *⟩-zeroˡ Ξ |> sym ⟩
+    0s {δ} *⟩ Ξ
+  ∎
+\end{code}
+
+\begin{code}
+postulate
+  lem-⊕ : ∀ {γ δ} (Γ : Context γ) {A : Type} {Ξ : Matrix γ δ} →
+      (1# *̇ 0s , 1# * 1# ∙ A) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)
+    ≡
+      Γ *⟩ Ξ , 1# ∙ A
 \end{code}
 
 \begin{code}
@@ -682,10 +720,20 @@ rename ρ (ƛ_  {Γ = Γ} N) =
   ƛ (Eq.subst (_⊢ _) (lem-ƛ Γ) (rename (ext ρ) N))
 rename ρ (_·_ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-· Γ Δ) (rename ρ L · rename ρ M)
+rename ρ ⟨⟩ =
+  Eq.subst (_⊢ _) (lem-⟨⟩ {Ξ = identity ∘ ρ}) ⟨⟩
+rename ρ (case1 {Γ = Γ} {Δ = Δ} L N) =
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case1 (rename ρ L) (rename ρ N))
 rename ρ (⟨_,_⟩ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-, Γ Δ) ⟨ rename ρ L , rename ρ M ⟩
 rename ρ (case⊗ {Γ = Γ} {Δ = Δ} L N) =
-  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊗ (rename ρ L) (Eq.subst (_⊢ _) (lem-⊗ Δ) (rename (ext (ext ρ)) N)))
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊗ (rename ρ L) (Eq.subst (_⊢ _) (lem-case⊗ Δ) (rename (ext (ext ρ)) N)))
+rename ρ (inj₁ {Γ = Γ} L) =
+  inj₁ (rename ρ L)
+rename ρ (inj₂ {Γ = Γ} L) =
+  inj₂ (rename ρ L)
+rename ρ (case⊕ {Γ = Γ} {Δ = Δ} L M N) =
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊕ (rename ρ L) (Eq.subst (_⊢ _) (lem-⊕ Δ) (rename (ext ρ) M)) (Eq.subst (_⊢ _) (lem-⊕ Δ) (rename (ext ρ) N)))
 \end{code}
 
 
@@ -727,16 +775,6 @@ exts {Ξ = Ξ} σ {A} {B} (S x) = Eq.subst (_⊢ A) lem (rename S_ (σ x))
 \end{code}
 
 \begin{code}
-lem-⟨⟩ : ∀ {γ δ} {Ξ : Matrix δ γ} → _
-lem-⟨⟩ {γ} {δ} {Ξ} =
-  begin
-    0s {γ}
-  ≡⟨ *⟩-zeroˡ Ξ |> sym ⟩
-    0s {δ} *⟩ Ξ
-  ∎
-\end{code}
-
-\begin{code}
 subst : ∀ {γ δ} {Γ : Context γ} {Ξ : Matrix γ δ} {B}
 
   → (σ : ∀ {A} → (x : γ ∋ A) → Ξ x ⊢ A)
@@ -757,39 +795,63 @@ subst {Ξ = Ξ} σ (case1 {Γ = Γ} {Δ = Δ} L N) =
 subst {Ξ = Ξ} σ (⟨_,_⟩ {Γ = Γ} {Δ = Δ} L M) =
   Eq.subst (_⊢ _) (lem-, Γ Δ) ⟨ subst σ L , subst σ M ⟩
 subst {Ξ = Ξ} σ (case⊗ {Γ = Γ} {Δ = Δ} L N) =
-  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊗ (subst σ L) (Eq.subst (_⊢ _) (lem-⊗ Δ) (subst (exts (exts σ)) N)))
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊗ (subst σ L) (Eq.subst (_⊢ _) (lem-case⊗ Δ) (subst (exts (exts σ)) N)))
 subst {Ξ = Ξ} σ (inj₁ {Γ = Γ} L) =
-  Eq.subst (_⊢ _) {!!} (inj₁ (subst σ L))
+  inj₁ (subst σ L)
 subst {Ξ = Ξ} σ (inj₂ {Γ = Γ} L) =
-  Eq.subst (_⊢ _) {!!} (inj₂ (subst σ L))
+  inj₂ (subst σ L)
 subst {Ξ = Ξ} σ (case⊕ {Γ = Γ} {Δ = Δ} L M N) =
-  {!Eq.subst (_⊢ _) ? (case⊕ (subst σ L) (subst (exts σ) M) (subst (exts σ) N))!}
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊕ (subst σ L) (Eq.subst (_⊢ _) (lem-⊕ Δ) (subst (exts σ) M)) (Eq.subst (_⊢ _) (lem-⊕ Δ) (subst (exts σ) N)))
+\end{code}
+
+
+# Values
+
+\begin{code}
+data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
+
+  V-ƛ    : ∀ {γ} {Γ : Context γ} {A B} {π} {N : Γ , π ∙ A ⊢ B}
+
+      -----------
+    → Value (ƛ N)
+
+  V-⟨⟩   : ∀ {γ}
+
+      --------------
+    → Value (⟨⟩ {γ})
+
+  V-,    : ∀ {γ} {Γ Δ : Context γ} {A B} {L : Γ ⊢ A} {M : Δ ⊢ B}
+
+    → Value L
+    → Value M
+      ---------------
+    → Value ⟨ L , M ⟩
+
+  V-inj₁ : ∀ {γ} {Γ : Context γ} {A B} {L : Γ ⊢ A}
+
+    → Value L
+      --------------
+    → Value (inj₁ {B = B} L)
+
+  V-inj₂ : ∀ {γ} {Γ : Context γ} {A B} {L : Γ ⊢ B}
+
+    → Value L
+      --------------
+    → Value (inj₂ {A = A} L)
 \end{code}
 
 
 # Single Substitution
 
 \begin{code}
-lem-[] : ∀ {γ} (Γ Δ : Context γ) {π} → _
-lem-[] {γ} Γ Δ {π} =
-  begin
-    π *̇ Δ +̇ Γ *⟩ identity
-  ≡⟨ +̇-comm (π *̇ Δ) (Γ *⟩ identity) ⟩
-    Γ *⟩ identity +̇ π *̇ Δ
-  ≡⟨ *⟩-identityʳ Γ |> cong (_+̇ π *̇ Δ) ⟩
-    Γ +̇ π *̇ Δ
-  ∎
-\end{code}
-
-\begin{code}
-_[_] : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
+_⊸[_] : ∀ {γ} {Γ Δ : Context γ} {A B} {π}
 
   → Γ , π ∙ B ⊢ A
   → Δ ⊢ B
     --------------
   → Γ +̇ π *̇ Δ ⊢ A
 
-_[_] {γ} {Γ} {Δ} {A} {B} {π} N M = Eq.subst (_⊢ _) (lem-[] Γ Δ) (subst σ′ N)
+_⊸[_] {γ} {Γ} {Δ} {A} {B} {π} N M = Eq.subst (_⊢ _) lem (subst σ′ N)
   where
     Ξ′ : Matrix (γ , B) γ
     Ξ′ Z     = Δ
@@ -797,27 +859,45 @@ _[_] {γ} {Γ} {Δ} {A} {B} {π} N M = Eq.subst (_⊢ _) (lem-[] Γ Δ) (subst �
     σ′ : ∀ {A} → (x : γ , B ∋ A) → Ξ′ x ⊢ A
     σ′ Z     = M
     σ′ (S x) = ` x
+
+    lem =
+      begin
+        π *̇ Δ +̇ Γ *⟩ identity
+      ≡⟨ +̇-comm (π *̇ Δ) (Γ *⟩ identity) ⟩
+        Γ *⟩ identity +̇ π *̇ Δ
+      ≡⟨ *⟩-identityʳ Γ |> cong (_+̇ π *̇ Δ) ⟩
+       Γ +̇ π *̇ Δ
+      ∎
 \end{code}
 
 \begin{code}
-postulate
-  lem-[][] : ∀ {γ} (Γ Δ Θ : Context γ) →
-      1# *̇ Δ +̇ 1# *̇ Γ +̇ Θ *⟩ identity
-    ≡
-      (Γ +̇ Δ) +̇ Θ
+_1[_] : ∀ {γ} {Γ Δ : Context γ} {A} {V : Γ ⊢ `1}
+
+  → Δ ⊢ A
+  → Value V
+    ---------
+  → Γ +̇ Δ ⊢ A
+
+_1[_] {Δ = Δ}  N V-⟨⟩ = Eq.subst (_⊢ _) lem N
+  where
+    lem =
+      begin
+        Δ
+      ≡⟨ +̇-identityˡ Δ |> sym ⟩
+        0s +̇ Δ
+      ∎
 \end{code}
 
-
 \begin{code}
-_[_][_] : ∀ {γ} {Γ Δ Θ : Context γ} {A B C}
+_⊗[_][_] : ∀ {γ} {Γ Δ Θ : Context γ} {A B C}
 
   → Θ , 1# ∙ A , 1# ∙ B ⊢ C
   → Γ ⊢ A
   → Δ ⊢ B
     ---------------
-  → (Γ +̇ Δ) +̇ Θ ⊢ C
+  → Γ +̇ Δ +̇ Θ ⊢ C
 
-_[_][_] {γ} {Γ} {Δ} {Θ} {A} {B} {C} N L M = Eq.subst (_⊢ _) (lem-[][] Γ Δ Θ) (subst σ′ N)
+_⊗[_][_] {γ} {Γ} {Δ} {Θ} {A} {B} {C} N L M = Eq.subst (_⊢ _) lem (subst σ′ N)
   where
     Ξ′ : Matrix (γ , A , B) γ
     Ξ′ Z         = Δ
@@ -827,27 +907,43 @@ _[_][_] {γ} {Γ} {Δ} {Θ} {A} {B} {C} N L M = Eq.subst (_⊢ _) (lem-[][] Γ �
     σ′ Z         = M
     σ′ (S Z)     = L
     σ′ (S (S x)) = ` x
+
+    lem =
+      begin
+        1# *̇ Δ +̇ (1# *̇ Γ +̇ Θ *⟩ identity)
+      ≡⟨ *⟩-identityʳ Θ |> cong ((1# *̇ Δ +̇_) ∘ (1# *̇ Γ +̇_)) ⟩
+        1# *̇ Δ +̇ (1# *̇ Γ +̇ Θ)
+      ≡⟨ *̇-identityˡ Γ |> cong ((1# *̇ Δ +̇_) ∘ (_+̇ Θ)) ⟩
+        1# *̇ Δ +̇ (Γ +̇ Θ)
+      ≡⟨ *̇-identityˡ Δ |> cong (_+̇ (Γ +̇ Θ)) ⟩
+        Δ +̇ (Γ +̇ Θ)
+      ≡⟨ +̇-assoc Δ Γ Θ |> sym ⟩
+        (Δ +̇ Γ) +̇ Θ
+      ≡⟨ +̇-comm Δ Γ |> cong (_+̇ Θ) ⟩
+        (Γ +̇ Δ) +̇ Θ
+      ∎
 \end{code}
-
-
-# Values
 
 \begin{code}
-data Value : ∀ {γ} {Γ : Context γ} {A} → Γ ⊢ A → Set where
+_⊕[_] : ∀ {γ} {Γ Δ : Context γ} {A B}
 
-  V-ƛ : {N : Γ , π ∙ A ⊢ B}
+  → Δ , 1# ∙ B ⊢ A
+  → Γ ⊢ B
+    --------------
+  → Γ +̇ Δ ⊢ A
 
-        -----------
-      → Value (ƛ N)
-
-  V-, : {L : Γ ⊢ A} {M : Δ ⊢ B}
-
-
-      → Value L
-      → Value M
-        ---------------
-      → Value ⟨ L , M ⟩
+_⊕[_] {γ} {Γ} {Δ} {A} {B} N M = Eq.subst (_⊢ _) lem (N ⊸[ M ])
+  where
+    lem =
+      begin
+        Δ +̇ 1# *̇ Γ
+      ≡⟨ *̇-identityˡ Γ |> cong (Δ +̇_) ⟩
+        Δ +̇ Γ
+      ≡⟨ +̇-comm Δ Γ ⟩
+        Γ +̇ Δ
+      ∎
 \end{code}
+
 
 # Reduction
 
@@ -856,50 +952,93 @@ infix 2 _—→_
 
 data _—→_ : ∀ {γ} {Γ : Context γ} {A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  ξ-·₁ : {L L′ : Γ ⊢ [ π ∙ A ]⊸ B} {M : Δ ⊢ A}
+  ξ-·₁ : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {L L′ : Γ ⊢ [ π ∙ A ]⊸ B} {M : Δ ⊢ A}
 
        → L —→ L′
         -----------------
        → L · M —→ L′ · M
 
-  ξ-·₂ : {V : Γ ⊢ [ π ∙ A ]⊸ B} {M M′ : Δ ⊢ A}
+  ξ-·₂ : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {V : Γ ⊢ [ π ∙ A ]⊸ B} {M M′ : Δ ⊢ A}
 
        → Value V
        → M —→ M′
          --------------
        → V · M —→ V · M′
 
-  ξ-,₁ : {L L′ : Γ ⊢ A} {M : Δ ⊢ B}
+  ξ-case1 : ∀ {γ} {Γ Δ : Context γ} {A} {L L′ : Γ ⊢ `1} {M : Δ ⊢ A}
+
+       → L —→ L′
+         -----------------------
+       → case1 L M —→ case1 L′ M
+
+  ξ-,₁ : ∀ {γ} {Γ Δ : Context γ} {A B} {L L′ : Γ ⊢ A} {M : Δ ⊢ B}
 
        → L —→ L′
          -----------------------
        → ⟨ L , M ⟩ —→ ⟨ L′ , M ⟩
 
-  ξ-,₂ : {V : Γ ⊢ A} {M M′ : Δ ⊢ B}
+  ξ-,₂ : ∀ {γ} {Γ Δ : Context γ} {A B} {V : Γ ⊢ A} {M M′ : Δ ⊢ B}
 
        → Value V
        → M —→ M′
          -----------------------
        → ⟨ V , M ⟩ —→ ⟨ V , M′ ⟩
 
-  ξ-⊗  : {L L′ : Γ ⊢ A ⊗ B} {N : Δ , 1# ∙ A , 1# ∙ B ⊢ C}
+  ξ-case⊗ : ∀ {γ} {Γ Δ : Context γ} {A B C} {L L′ : Γ ⊢ A ⊗ B} {N : Δ , 1# ∙ A , 1# ∙ B ⊢ C}
 
        → L —→ L′
          ------------------------
        → case⊗ L N —→ case⊗ L′ N
 
-  β-ƛ  : {N : Γ , π ∙ A ⊢ B} {W : Δ ⊢ A}
+  ξ-inj₁ : ∀ {γ} {Γ : Context γ} {A B} {L L′ : Γ ⊢ A}
 
-       → Value W
-         --------------------
-       → (ƛ N) · W —→ N [ W ]
-
-  β-⊗  :  {V : Γ ⊢ A} {W : Δ ⊢ B} {N : Θ , 1# ∙ A , 1# ∙ B ⊢ C}
-
-       → Value V
-       → Value W
+       → L —→ L′
          ---------------------------------
-       → case⊗ ⟨ V , W ⟩ N —→ N [ V ][ W ]
+       → inj₁ {B = B} L —→ inj₁ {B = B} L′
+
+  ξ-inj₂ : ∀ {γ} {Γ : Context γ} {A B} {L L′ : Γ ⊢ B}
+
+       → L —→ L′
+         ---------------------------------
+       → inj₂ {A = A} L —→ inj₂ {A = A} L′
+
+  ξ-case⊕ : ∀ {γ} {Γ Δ : Context γ} {A B C} {L L′ : Γ ⊢ A ⊕ B} {M : Δ , 1# ∙ A ⊢ C} {N : Δ , 1# ∙ B ⊢ C}
+
+       → L —→ L′
+         ---------------------------
+       → case⊕ L M N —→ case⊕ L′ M N
+
+  β-⊸  : ∀ {γ} {Γ Δ : Context γ} {A B} {π} {N : Γ , π ∙ A ⊢ B} {W : Δ ⊢ A}
+
+       → (VW : Value W)
+         --------------------
+       → (ƛ N) · W —→ N ⊸[ W ]
+
+  β-1  : ∀ {γ} {Γ Δ : Context γ} {A} {V : Γ ⊢ `1} {N : Δ ⊢ A}
+
+       → (VV : Value V)
+         ----------------------
+       → case1 V N —→ N 1[ VV ]
+
+  β-⊗  : ∀ {γ} {Γ Δ Θ : Context γ} {A B C} {V : Γ ⊢ A} {W : Δ ⊢ B} {N : Θ , 1# ∙ A , 1# ∙ B ⊢ C}
+
+       → (VV : Value V)
+       → (VW : Value W)
+         ---------------------------------
+       → case⊗ ⟨ V , W ⟩ N —→ N ⊗[ V ][ W ]
+
+  β-⊕₁ : ∀ {γ} {Γ Δ : Context γ} {A B C} {V : Γ ⊢ A} {M : Δ , 1# ∙ A ⊢ C} {N : Δ , 1# ∙ B ⊢ C}
+
+       → (VV : Value V)
+         -----------------------------
+       → case⊕ (inj₁ V) M N —→ M ⊕[ V ]
+
+
+  β-⊕₂ : ∀ {γ} {Γ Δ : Context γ} {A B C} {V : Γ ⊢ B} {M : Δ , 1# ∙ A ⊢ C} {N : Δ , 1# ∙ B ⊢ C}
+
+       → (VV : Value V)
+         -----------------------------
+       → case⊕ (inj₂ V) M N —→ N ⊕[ V ]
 \end{code}
 
 
@@ -928,17 +1067,31 @@ progress M = go refl M
     go : ∀ {γ} {Γ : Context γ} {A} → γ ≡ ∅ → (M : Γ ⊢ A) → Progress M
     go refl (` ())
     go refl (ƛ N)               = done V-ƛ
-    go refl (L · M)     with go refl L
+    go refl (L · M)       with go refl L
     ...    | step L—→L′         = step (ξ-·₁ L—→L′)
-    ...    | done V-ƛ   with go refl M
+    ...    | done V-ƛ     with go refl M
     ...        | step M—→M′     = step (ξ-·₂ V-ƛ M—→M′)
-    ...        | done V-M       = step (β-ƛ V-M)
-    go refl ⟨ L , M ⟩   with go refl L
+    ...        | done V-M       = step (β-⊸ V-M)
+    go refl ⟨⟩                  = done V-⟨⟩
+    go refl (case1 L N)   with go refl L
+    ...    | step L—→L′         = step (ξ-case1 L—→L′)
+    ...    | done V-L           = step (β-1 V-L)
+    go refl ⟨ L , M ⟩     with go refl L
     ...    | step L—→L′         = step (ξ-,₁ L—→L′)
-    ...    | done V-L   with go refl M
+    ...    | done V-L     with go refl M
     ...        | step M—→M′     = step (ξ-,₂ V-L M—→M′)
     ...        | done V-M       = done (V-, V-L V-M)
-    go refl (case⊗ L N) with go refl L
-    ...    | step L—→L′         = step (ξ-⊗ L—→L′)
+    go refl (case⊗ L N)   with go refl L
+    ...    | step L—→L′         = step (ξ-case⊗ L—→L′)
     ...    | done (V-, V-L V-M) = step (β-⊗ V-L V-M)
+    go refl (inj₁ L)      with go refl L
+    ...    | step L—→L′         = step (ξ-inj₁ L—→L′)
+    ...    | done V-L           = done (V-inj₁ V-L)
+    go refl (inj₂ L)      with go refl L
+    ...    | step L—→L′         = step (ξ-inj₂ L—→L′)
+    ...    | done V-L           = done (V-inj₂ V-L)
+    go refl (case⊕ L M N) with go refl L
+    ...    | step L—→L′         = step (ξ-case⊕ L—→L′)
+    ...    | done (V-inj₁ V-L)  = step (β-⊕₁ V-L)
+    ...    | done (V-inj₂ V-L)  = step (β-⊕₂ V-L)
 \end{code}
