@@ -373,8 +373,8 @@ one might expect since it takes time quadratic in the length of the list.
 The idea is that we generalise reverse to take an additional argument:
 \begin{code}
 shunt : ∀ {A : Set} → List A → List A → List A
-shunt [] ys = ys
-shunt (x ∷ xs) ys =  shunt xs (x ∷ ys)
+shunt []       ys  =  ys
+shunt (x ∷ xs) ys  =  shunt xs (x ∷ ys)
 \end{code}
 The definition is by recursion on the first argument. The second argument
 actually becomes _larger_, but this is not a problem because the argument
