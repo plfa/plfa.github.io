@@ -468,7 +468,7 @@ Now the time to reverse a list is linear in the length of the list.
 
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a _higher-order function_, one which takes a function as an
-argument and returns a function as a result:
+argument or returns a function as a result:
 \begin{code}
 map : ∀ {A B : Set} → (A → B) → List A → List B
 map f []        =  []
