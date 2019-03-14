@@ -10,6 +10,7 @@ In previous chapters, we introduced the lambda calculus, with [a formalisation b
 # Imports & Module declaration
 
 \begin{code}
+open import Relation.Nullary using (Dec)
 open import Relation.Binary.PropositionalEquality as Eq using (_≡_)
 open import Algebra.Structures using (module IsSemiring; IsSemiring)
 \end{code}
@@ -25,9 +26,9 @@ module qtt.Quantitative
 
 \begin{code}
 open import Function using (_∘_; _|>_)
-open Eq using (refl; sym; cong)
+open Eq using (refl; sym; trans; cong)
 open Eq.≡-Reasoning using (begin_; _≡⟨_⟩_; _≡⟨⟩_; _∎)
-open IsSemiring *-+-isSemiring hiding (refl; sym)
+open IsSemiring *-+-isSemiring hiding (refl; sym; trans)
 \end{code}
 
 
@@ -663,8 +664,7 @@ lem-· {γ} {δ} Γ Δ {π} {Ξ} =
   ≡⟨ *⟩-assoc Δ Ξ π |> cong (Γ *⟩ Ξ +̇_) ∘ sym ⟩
     Γ *⟩ Ξ +̇ (π *̇ Δ) *⟩ Ξ
   ≡⟨ *⟩-distribʳ-+̇ Γ (π *̇ Δ) Ξ |> sym ⟩
-    (Γ +̇ π *̇ Δ) *⟩ Ξ
-  ∎
+    (Γ +̇ π *̇ Δ) *⟩ Ξ ∎
 \end{code}
 
 \begin{code}
@@ -678,15 +678,49 @@ lem-, {γ} {δ} Γ Δ {Ξ} =
 \end{code}
 
 \begin{code}
-postulate
-  lem-case⊗ : ∀ {γ δ} (Δ : Context γ) {A B} {Ξ : Matrix γ δ} →
-      (1# *̇ 0s , 1# * 0# ∙ A , 1# * 1# ∙ B) +̇
-      ((1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇
-      Δ *⟩ (λ x → Ξ x , 0# ∙ A , 0# ∙ B))
-    ≡
-      Δ *⟩ Ξ , 1# ∙ A , 1# ∙ B
-\end{code}
+lem-case⊗ : ∀ {γ δ} (Γ : Context γ) {A B} {Ξ : Matrix γ δ} → _
+lem-case⊗ {γ} {δ} Γ {A} {B} {Ξ} =
+  let
+    lem1 : ∀ {γ} (Γ : Context γ) → _
+    lem1 {γ} Γ =
+      begin
+        (1# *̇ 0s) +̇ Γ
+      ≡⟨ *̇-identityˡ 0s |> cong (_+̇ Γ) ⟩
+        0s +̇ Γ
+      ≡⟨ +̇-identityˡ Γ ⟩
+        Γ
+      ∎
+  in
+    begin
 
+      (1# *̇ 0s , 1# * 0# ∙ A , 1# * 1# ∙ B) +̇ ((1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A , 0# ∙ B))
+
+    -- Step 1. Move the three occurences of A and B to the top-level.
+    ≡⟨ trans (*⟩-zeroʳ Γ (λ x → Ξ x , 0# ∙ A)) (*⟩-zeroʳ Γ Ξ |> cong (_, 0# ∙ B))
+      |> cong (((1# *̇ 0s , 1# * 0# ∙ A , 1# * 1# ∙ B) +̇_) ∘ ((1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇_)) ⟩
+
+      (1# *̇ 0s) +̇ ((1# *̇ 0s) +̇ (Γ *⟩ Ξ)) , (1# * 0#) + ((1# * 1#) + 0#) ∙ A , (1# * 1#) + ((1# * 0#) + 0#) ∙ B
+
+    -- Step 2. Remove the empty environments (1# *̇ 0s).
+    ≡⟨ trans (lem1 (Γ *⟩ Ξ) |> cong (1# *̇ 0s +̇_)) (lem1 (Γ *⟩ Ξ))
+      |> cong ((_, (1# * 1#) + ((1# * 0#) + 0#) ∙ B) ∘ (_, (1# * 0#) + ((1# * 1#) + 0#) ∙ A)) ⟩
+
+      Γ *⟩ Ξ , (1# * 0#) + ((1# * 1#) + 0#) ∙ A , (1# * 1#) + ((1# * 0#) + 0#) ∙ B
+
+    -- Step 3. Reduce the complex sum for the usage of B to 1#.
+    ≡⟨ trans (trans (+-identityʳ (1# * 0#)) (*-identityˡ 0#) |> cong ((1# * 1#) +_)) (trans (+-identityʳ (1# * 1#)) (*-identityˡ 1#))
+      |> cong (Γ *⟩ Ξ , (1# * 0#) + ((1# * 1#) + 0#) ∙ A ,_∙ B) ⟩
+
+      Γ *⟩ Ξ , (1# * 0#) + ((1# * 1#) + 0#) ∙ A , 1# ∙ B
+
+    -- Step 4. Reduce the complex sum for the usage of A to 1#.
+    ≡⟨ trans (*-identityˡ 0# |> cong (_+ ((1# * 1#) + 0#))) (trans (+-identityˡ ((1# * 1#) + 0#)) (trans (+-identityʳ (1# * 1#)) (*-identityʳ 1#)))
+      |> cong ((_, 1# ∙ B) ∘ (Γ *⟩ Ξ ,_∙ A)) ⟩
+
+      Γ *⟩ Ξ , 1# ∙ A , 1# ∙ B
+
+    ∎
+\end{code}
 
 \begin{code}
 lem-⟨⟩ : ∀ {γ δ} {Ξ : Matrix δ γ} → _
@@ -699,11 +733,23 @@ lem-⟨⟩ {γ} {δ} {Ξ} =
 \end{code}
 
 \begin{code}
-postulate
-  lem-⊕ : ∀ {γ δ} (Γ : Context γ) {A : Type} {Ξ : Matrix γ δ} →
-      (1# *̇ 0s , 1# * 1# ∙ A) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)
-    ≡
-      Γ *⟩ Ξ , 1# ∙ A
+lem-case⊕ : ∀ {γ δ} (Γ : Context γ) {A : Type} {Ξ : Matrix γ δ} → _
+lem-case⊕ {γ} {δ} Γ {A} {Ξ} =
+  begin
+    (1# *̇ 0s , 1# * 1# ∙ A) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)
+  ≡⟨ *̇-identityˡ 0s |> cong ((_+̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)) ∘ (_, 1# * 1# ∙ A)) ⟩
+    (0s , 1# * 1# ∙ A) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)
+  ≡⟨ *-identityˡ 1# |> cong ((_+̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)) ∘ (0s ,_∙ A)) ⟩
+    (0s , 1# ∙ A) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A)
+  ≡⟨ *⟩-zeroʳ Γ Ξ |> cong (( 0s , 1# ∙ A) +̇_) ⟩
+    (0s , 1# ∙ A) +̇ (Γ *⟩ Ξ , 0# ∙ A)
+  ≡⟨⟩
+    (0s +̇ Γ *⟩ Ξ) , 1# + 0# ∙ A
+  ≡⟨ +̇-identityˡ (Γ *⟩ Ξ) |> cong (_, 1# + 0# ∙ A) ⟩
+    Γ *⟩ Ξ , 1# + 0# ∙ A
+  ≡⟨ +-identityʳ 1# |> cong (Γ *⟩ Ξ ,_∙ A) ⟩
+    Γ *⟩ Ξ , 1# ∙ A
+  ∎
 \end{code}
 
 \begin{code}
@@ -733,7 +779,7 @@ rename ρ (inj₁ {Γ = Γ} L) =
 rename ρ (inj₂ {Γ = Γ} L) =
   inj₂ (rename ρ L)
 rename ρ (case⊕ {Γ = Γ} {Δ = Δ} L M N) =
-  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊕ (rename ρ L) (Eq.subst (_⊢ _) (lem-⊕ Δ) (rename (ext ρ) M)) (Eq.subst (_⊢ _) (lem-⊕ Δ) (rename (ext ρ) N)))
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊕ (rename ρ L) (Eq.subst (_⊢ _) (lem-case⊕ Δ) (rename (ext ρ) M)) (Eq.subst (_⊢ _) (lem-case⊕ Δ) (rename (ext ρ) N)))
 \end{code}
 
 
@@ -801,7 +847,7 @@ subst {Ξ = Ξ} σ (inj₁ {Γ = Γ} L) =
 subst {Ξ = Ξ} σ (inj₂ {Γ = Γ} L) =
   inj₂ (subst σ L)
 subst {Ξ = Ξ} σ (case⊕ {Γ = Γ} {Δ = Δ} L M N) =
-  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊕ (subst σ L) (Eq.subst (_⊢ _) (lem-⊕ Δ) (subst (exts σ) M)) (Eq.subst (_⊢ _) (lem-⊕ Δ) (subst (exts σ) N)))
+  Eq.subst (_⊢ _) (lem-, Γ Δ) (case⊕ (subst σ L) (Eq.subst (_⊢ _) (lem-case⊕ Δ) (subst (exts σ) M)) (Eq.subst (_⊢ _) (lem-case⊕ Δ) (subst (exts σ) N)))
 \end{code}
 
 
