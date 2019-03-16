@@ -8,8 +8,8 @@ Isomorphism
 Connectives
 Negation
 Quantifiers
-Lists
 Decidable
+Lists
 --
 Lambda
 Properties
