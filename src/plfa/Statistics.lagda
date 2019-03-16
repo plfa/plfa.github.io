@@ -6,31 +6,31 @@ permalink : /Statistics/
 ---
 
 Total number of lines and number of lines of Agda code in each chapter
-(as of 16 October 2018).
+(as of 16 March 2019).
 
                                 total   code
                                 -----   ----
     Preface                      110       0
 
-    Naturals                     949      90
-    Induction                    886     122
-    Relations                    744     164
-    Equality                     703     197
-    Isomorphism                  493     221
-    Connectives                  759     218
-    Negation                     395      61
-    Quantifiers                  457     110
-    Lists                       1002     449
-    Decidable                    570     178
+    Naturals                     975      96
+    Induction                    926     129
+    Relations                    792     158
+    Equality                     722     189
+    Isomorphism                  505     209
+    Connectives                  787     219
+    Negation                     417      65
+    Quantifiers                  469     104
+    Decidable                    587     167
+    Lists                       1052     448
 
-    Lambda                      1341     408
-    Properties                  1522     548
-    DeBruijn                    1336     632
-    More                        1220     560
-    Bisimulation                 470      98
-    Inference                   1084     353
-    Untyped                      741     326
+    Lambda                      1385     362
+    Properties                  1580     544
+    DeBruijn                    1366     587
+    More                        1222     464
+    Bisimulation                 486      96
+    Inference                   1124     333
+    Untyped                      777     299
 
-    Acknowledgements              56       0
-    Fonts                         82      65
+    Acknowledgements              55       0
+    Fonts                         82      64
     Statistics                    36       0
