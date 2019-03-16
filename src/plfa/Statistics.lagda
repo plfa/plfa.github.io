@@ -20,8 +20,8 @@ Total number of lines and number of lines of Agda code in each chapter
     Connectives                  759     218
     Negation                     395      61
     Quantifiers                  457     110
-    Lists                       1002     449
     Decidable                    570     178
+    Lists                       1002     449
 
     Lambda                      1341     408
     Properties                  1522     548
