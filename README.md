@@ -41,6 +41,7 @@ To build and host a local copy of the book, there are several tools you need *in
   - [agda2html](https://github.com/wenkokke/agda2html)
   - [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
   - [Bundler](https://bundler.io/#getting-started)
+  - [Jekyll](https://jekyllrb.com/)
   
 For most of the tools, you can simply follow their respective build instructions.
 Most recent versions of Ruby should work.
