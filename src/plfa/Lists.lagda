@@ -939,10 +939,6 @@ _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} 
 (g ∘′ f) x  =  g (f x)
 \end{code}
 
-\begin{code}
--- Your code goes here
-\end{code}
-
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
 \begin{code}
 postulate
