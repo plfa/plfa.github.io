@@ -16,13 +16,12 @@ and classical logic.
 ## Imports
 
 \begin{code}
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
-open import Function using (_∘_)
-open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open import Data.Product using (_×_)
+open import plfa.Isomorphism using (_≃_; extensionality)
 \end{code}
 
 
