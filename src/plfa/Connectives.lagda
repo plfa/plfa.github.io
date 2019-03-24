@@ -25,12 +25,11 @@ principle known as _Propositions as Types_:
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Nat.Properties using (+-suc)
+open import Data.Nat using (ℕ)
 open import Function using (_∘_)
-open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open import plfa.Isomorphism using (_≃_; _≲_; extensionality)
 open plfa.Isomorphism.≃-Reasoning
 \end{code}
 
