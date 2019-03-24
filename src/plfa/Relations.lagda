@@ -17,13 +17,9 @@ the next step is to define relations, such as _less than or equal_.
 
 \begin{code}
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; cong; sym)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Data.Nat.Properties using (+-comm; +-suc)
-open import Data.List using (List; []; _∷_)
-open import Function using (id; _∘_)
-open import Relation.Nullary using (¬_)
-open import Data.Empty using (⊥; ⊥-elim)
+open Eq using (_≡_; refl; cong)
+open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat.Properties using (+-comm)
 \end{code}
 
 
