@@ -995,9 +995,9 @@ the head and tail of the list.
 
 #### Exercise `any?` (stretch)
 
-Just as `All` has analogues `all` and `all?` which determine whether a
+Just as `All` has analogues `all` and `All?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
-analogues `any` and `any?` which determine whether a predicates holds
+analogues `any` and `Any?` which determine whether a predicate holds
 for some element of a list.  Give their definitions.
 
 \begin{code}
