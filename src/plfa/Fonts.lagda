@@ -78,7 +78,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 ∎∎∎∎|
 ⦂⦂⦂⦂|
 ∥∥∥∥|
-★ ★ ★ ★ |
+★★★★|
 ∌∌∉∉|
 ----|
 -}
