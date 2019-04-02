@@ -84,6 +84,19 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ|
 -}
 \end{code}
 
+In the book we use the em-dash to make big arrows.
+
+\begin{code}
+{-
+----|
+—→—→|
+←—←—|
+↞—↞—|
+—↠—↠|
+----|
+-}
+\end{code}
+
 Here are some characters that are often not monospaced.
 
 \begin{code}
