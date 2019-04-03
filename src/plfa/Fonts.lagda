@@ -1,6 +1,3 @@
-\begin{code}
-module plfa.Fonts where
-\end{code}
 ---
 title     : "Fonts"
 layout    : page
@@ -8,6 +5,10 @@ prev      : /Acknowledgements/
 permalink : /Fonts/
 next      : /Statistics/
 ---
+
+\begin{code}
+module plfa.Fonts where
+\end{code}
 
 Test page for fonts. Preferably, all vertical bars should line up.
 
