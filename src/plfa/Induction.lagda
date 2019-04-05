@@ -76,12 +76,12 @@ that a newly introduced operator is associative but not commutative.
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
 
+Give an example of an operator that has an identity and is
+associative but is not commutative.
+
 \begin{code}
 -- Your code goes here
 \end{code}
-
-Give an example of an operator that has an identity and is
-associative but is not commutative.
 
 
 ## Associativity
@@ -633,8 +633,8 @@ which is left as an exercise for the reader.
 
 #### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
 
-Write out what is known about associativity of addition on each of the first four
-days using a finite story of creation, as
+Write out what is known about associativity of addition on each of the
+first four days using a finite story of creation, as
 [earlier][plfa.Naturals#finite-creation].
 
 \begin{code}
@@ -797,39 +797,39 @@ typing `C-c C-r` will fill it in, completing the proof:
 
 Show
 
-\begin{code}
--- Your code goes here
-\end{code}
-
     m + (n + p) ≡ n + (m + p)
 
 for all naturals `m`, `n`, and `p`. No induction is needed,
 just apply the previous results which show addition
 is associative and commutative.
 
-#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
-
-Show multiplication distributes over addition, that is,
-
 \begin{code}
 -- Your code goes here
 \end{code}
+
+#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
+
+Show multiplication distributes over addition, that is,
 
     (m + n) * p ≡ m * p + n * p
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise `*-assoc` (recommended) {#times-assoc}
-
-Show multiplication is associative, that is,
-
 \begin{code}
 -- Your code goes here
 \end{code}
 
+#### Exercise `*-assoc` (recommended) {#times-assoc}
+
+Show multiplication is associative, that is,
+
     (m * n) * p ≡ m * (n * p)
 
 for all naturals `m`, `n`, and `p`.
+
+\begin{code}
+-- Your code goes here
+\end{code}
 
 #### Exercise `*-comm` {#times-comm}
 
@@ -895,12 +895,11 @@ over bitstrings:
     to (from x) ≡ x
     from (to n) ≡ n
 
+For each law: if it holds, prove; if not, give a counterexample.
+
 \begin{code}
 -- Your code goes here
 \end{code}
-
-For each law: if it holds, prove; if not, give a counterexample.
-
 
 
 ## Standard library

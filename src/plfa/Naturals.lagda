@@ -50,6 +50,7 @@ data ℕ : Set where
   zero : ℕ
   suc  : ℕ → ℕ
 \end{code}
+
 Here `ℕ` is the name of the *datatype* we are defining,
 and `zero` and `suc` (short for *successor*) are the
 *constructors* of the datatype.
@@ -303,7 +304,8 @@ just a couple of lines.
 Here is the definition of addition in Agda:
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
-
+zero + n = n
+suc m + n = suc (m + n)
 \end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is

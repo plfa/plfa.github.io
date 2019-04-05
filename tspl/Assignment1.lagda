@@ -1,5 +1,5 @@
 ---
-title     : "Assignment1: TSPL Assignment 1"
+title     : "Assignment1: PUC Assignment 1"
 layout    : page
 permalink : /Assignment1/
 ---
@@ -12,7 +12,7 @@ module Assignment1 where
 
 ## Introduction
 
-This assignment is due **4pm Thursday 4 October** (Week 3).
+This assignment is due **1pm Friday 26 April**.
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -145,10 +145,6 @@ the following function from the standard library:
 
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
-\begin{code}
-swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
-swap m n p rewrite sym (+-assoc m n p) | +-comm m n | +-assoc n m p = {!!}
-\end{code}
 
 #### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
