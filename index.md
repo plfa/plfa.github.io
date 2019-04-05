@@ -53,7 +53,9 @@ Pull requests are encouraged.
       [2018](http://plfa.inf.ed.ac.uk/TSPL/)
     * David Darais, University of Vermont,
       [2018](http://david.darais.com/courses/fa2018-cs295A/)
-    * John Leo, Google Seattle, 2018--2019
+    * John Leo, Google Seattle, 2018--2019 
+    * Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
+      [2019](http://plfa.inf.ed.ac.uk/PUC/)
 
 [wen]: https://github.com/wenkokke
 [phil]: https://homepages.inf.ed.ac.uk/wadler/

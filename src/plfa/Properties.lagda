@@ -10,6 +10,12 @@ next      : /DeBruijn/
 module plfa.Properties where
 \end{code}
 
+[PLW:
+  Perhaps break this into three chapters:
+  The denotational semantics.
+  The proof that the semantics is compositional.
+  The proof that reduction preserves and reflects the semantics.]
+
 This chapter covers properties of the simply-typed lambda calculus, as
 introduced in the previous chapter.  The most important of these
 properties are progress and preservation.  We introduce these below,

@@ -303,8 +303,7 @@ just a couple of lines.
 Here is the definition of addition in Agda:
 \begin{code}
 _+_ : ℕ → ℕ → ℕ
-zero  + n  =  n
-suc m + n  =  suc (m + n)
+
 \end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
@@ -402,7 +401,8 @@ with the following:
 _ : 2 + 3 ≡ 5
 _ = refl
 \end{code}
-Agda knows how to compute the value of `2 + 3`, and so can immediately
+Agda knows how to
+compute the value of `2 + 3`, and so can immediately
 check it is the same as `5`.  A binary relation is said to be _reflexive_
 if every value relates to itself.  Evidence that a value is equal to
 itself is written `refl`.
@@ -973,3 +973,4 @@ In place of left, right, up, and down keys, one may also use control characters:
 
 We write `C-b` to stand for control-b, and similarly.  One can also navigate
 left and right by typing the digits that appear in the displayed list.
+
