@@ -362,7 +362,7 @@ data Value : Term → Set where
     → Value (`suc V)
 \end{code}
 
-We let `V` and `W` range over values.
+We let `V` range over values.
 
 
 ### Formal vs informal
