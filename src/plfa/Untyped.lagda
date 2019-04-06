@@ -271,16 +271,16 @@ Again, this is exactly as before, save that there are fewer term forms.
 
 It is easy to define the special case of substitution for one free variable:
 \begin{code}
+subst-zero : ∀ {Γ B} → (Γ ⊢ B) → ∀ {A} → (Γ , B ∋ A) → (Γ ⊢ A)
+subst-zero M Z      =  M
+subst-zero M (S x)  =  ` x
+
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
         → Γ ⊢ B 
           ---------
         → Γ ⊢ A
-_[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
-  where
-  σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
-  σ Z      =  M
-  σ (S x)  =  ` x
+_[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} (subst-zero M) {A} N
 \end{code}
 
 ## Neutral and normal terms
