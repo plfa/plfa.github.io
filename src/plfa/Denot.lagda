@@ -7,22 +7,27 @@ next      : /Acknowledgements/
 ---
 
 \begin{code}
-module plfa.Denot where
+module Denot where
 \end{code}
 
+[PLW:
+  Perhaps break this chapter into three chapters:
+    - The denotational semantics.
+    - The proof that the semantics is compositional.
+    - The proof that reduction preserves and reflects the semantics.]
+
 The lambda calculus is a language about _functions_, that is, mappings
-from input to output. In Computer Science we often think of such
-mappings as being carried out by computation, by a sequence of
-operations that transform an input into an output, such as the
-reduction relations defined in previous chapters.  But it is well
-known that functions can also be represented as data. For example, one
+from input to output. In computing we often think of such
+mappings as being carried out by a sequence of
+operations that transform an input into an output.  But 
+functions can also be represented as data. For example, one
 can tabulate a function, that is, create a table where each row has
 two entries, an input and the corresponding output for the function.
-Function application is then the processing of looking up the row for
+Function application is then the process of looking up the row for
 a given input and reading off the output.
 
 We shall create a semantics for the untyped lambda calculus based on
-this idea of functions-as-data. However, there are two difficulties
+this idea of functions-as-tables. However, there are two difficulties
 that arise. First, functions often have an infinite domain, so it
 would seem that we would need infinitely long tables to represent
 functions. Second, in the lambda calculus, functions can be applied to
@@ -45,9 +50,10 @@ entry exactly matches the argument. In the case of self-application,
 this would require the table to contain a copy of itself. Impossible!
 (At least, it is impossible if we want to build tables using inductive
 data type definitions, which indeed we do.)  Instead it is sufficient
-to require the argument to contain everything in the input entry (but
-the argument may contain more). In the case of self-application, the
-table only needs to contain a smaller copy of itself, which is fine.
+to find an input such that every row of the input appears as a row of
+the argument (that is, the input is a subset of the argument).  In the
+case of self-application, the table only needs to contain a smaller
+copy of itself, which is fine.
 
 With these two observations in hand, it is straightforward to write
 down a denotational semantics of the lambda calculus.
@@ -56,34 +62,43 @@ down a denotational semantics of the lambda calculus.
 
 \begin{code}
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl; sym; cong; cong₂)
+  using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum
 open import Agda.Primitive using (lzero)
-open import plfa.Untyped
+open import Untyped  -- was plfa.Untyped
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
 open import Data.Unit
 open import Relation.Nullary using (Dec; yes; no)
+open import Function using (_∘_)
+-- open import plfa.Isomorphism using (extensionality)
 \end{code}
 
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} {f g : A → B}
+    → (∀ (x : A) → f x ≡ g x)
+      -----------------------
+    → f ≡ g
+\end{code}
 ## Values
 
-The Value data type represents a finite portion of a function.  We
+The `Value` data type represents a finite portion of a function.  We
 think of a value as a finite set of pairs that represent input-output
-mappings. The Value data type represents the set as a binary tree
+mappings. The `Value` data type represents the set as a binary tree
 whose internal nodes are the union operator and whose leaves represent
 either a single mapping or the empty set.
 
   * The ⊥ value is an empty function. We think of this value as
     providing no information about the computation.
 
-  * A value of the form v ↦ v' is a single input-output mapping, from
-    input v to output v'.
+  * A value of the form `v ↦ v′` is a single input-output mapping, from
+    input `v` to output `v′`.
 
-  * A value of the form v₁ ⊔ v₂ is a function that maps inputs to
-    outputs according to both v₁ and v₂.  Think of ⊔ as taking the
+  * A value of the form `v₁ ⊔ v₂` is a function that maps inputs to
+    outputs according to both `v₁` and `v₂`.  Think of it as taking the
     union of the two sets.
 
 \begin{code}
@@ -105,43 +120,62 @@ which we discuss below.
 infix 4 _⊑_
 
 data _⊑_ : Value → Value → Set where
+
   Bot⊑ : ∀ {v} → ⊥ ⊑ v
+
   ConjL⊑ : ∀ {v v₁ v₂}
-      → v₁ ⊑ v  →  v₂ ⊑ v
+      → v₁ ⊑ v
+      → v₂ ⊑ v
         -----------------
       → (v₁ ⊔ v₂) ⊑ v
+
   ConjR1⊑ : ∀ {v v₁ v₂}
      → v ⊑ v₁
        -------------
      → v ⊑ (v₁ ⊔ v₂)
+
   ConjR2⊑ : ∀ {v v₁ v₂}
      → v ⊑ v₂
        -------------
      → v ⊑ (v₁ ⊔ v₂)
+
   Trans⊑ : ∀ {v₁ v₂ v₃}
-     → v₁ ⊑ v₂ → v₂ ⊑ v₃
-       -----------------
+     → v₁ ⊑ v₂
+     → v₂ ⊑ v₃
+       --------
      → v₁ ⊑ v₃
+
   Fun⊑ : ∀ {v₁ v₂ v₃ v₄}
-       → v₃ ⊑ v₁  →  v₂ ⊑ v₄
-         -----------------------
+       → v₃ ⊑ v₁
+       → v₂ ⊑ v₄
+         ---------------------
        → (v₁ ↦ v₂) ⊑ (v₃ ↦ v₄)
+
   Dist⊑ : ∀{v₁ v₂ v₃}
          --------------------------------------
        → v₁ ↦ (v₂ ⊔ v₃) ⊑ (v₁ ↦ v₂) ⊔ (v₁ ↦ v₃)
 \end{code}
 
-The rule Fun⊑ captures when it is OK to match a higher-order argument
-(v₃ ↦ v₄) to a table entry whose input is (v₁ ↦ v₂).  Considering a
-call to the higher-order argument. It is OK to pass a larger argument
-than expected, so can v₁ to be larger than v₃. Also, it is OK to
-disregard some of the output, so v₂ can be smaller than v₄.
+[PLW: If we reformulate Dist⊑, perhaps Trans⊑ becomes a theorem.
 
-The rule Dist⊑ says that if you have two entries for the same input,
+  Dist⊑ : ∀{v₁ v₂ v₃ v}
+         v₁ ↦ v₂ ⊑ v
+         v₁ ↦ v₃ ⊑ v
+         ------------------
+       → v₁ ↦ (v₂ ⊔ v₃) ⊑ v
+]
+
+The first five rules are straightforward.
+The rule `Fun⊑` captures when it is OK to match a higher-order argument
+`v₃ ↦ v₄` to a table entry whose input is `v₁ ↦ v₂`.  Considering a
+call to the higher-order argument. It is OK to pass a larger argument
+than expected, so `v₁` can be larger than `v₃`. Also, it is OK to
+disregard some of the output, so `v₂` can be smaller than `v₄`.
+The rule `Dist⊑` says that if you have two entries for the same input,
 then you can combine them into a single entry and joins the two
 outputs.
 
-The ⊑ relation is reflexive.
+The `⊑` relation is reflexive.
 
 \begin{code}
 Refl⊑ : ∀ {v} → v ⊑ v
@@ -150,7 +184,7 @@ Refl⊑ {v ↦ v'} = Fun⊑ Refl⊑ Refl⊑
 Refl⊑ {v₁ ⊔ v₂} = ConjL⊑ (ConjR1⊑ Refl⊑) (ConjR2⊑ Refl⊑)
 \end{code}
 
-The ⊔ operation is monotonic with respect to ⊑, that is, given two
+The `⊔` operation is monotonic with respect to `⊑`, that is, given two
 larger values it produces a larger value.
 
 \begin{code}
@@ -175,6 +209,8 @@ Dist⊔↦⊔{v₁}{v₁'}{v₂}{v₂'} =
                       (Fun⊑ (ConjR2⊑ Refl⊑) Refl⊑))
 \end{code}
 
+<!-- above might read more nicely if we introduce inequational reasoning -->
+
 
 ## Environments
 
@@ -183,9 +219,35 @@ variables are represented as de Bruijn indices, they are numbers, so
 an environment can be represented simply as a sequence of values.
 
 \begin{code}
-data Env : (Γ : Context) → Set where
-  ∅ : Env ∅
-  _,_ : ∀ { Γ } → Env Γ → Value → Env (Γ , ★)
+Env : Context → Set
+Env Γ = ∀ (x : Γ ∋ ★) → Value
+\end{code}
+
+We have the empty environment, and we can extend an environment.
+\begin{code}
+`∅ : Env ∅
+`∅ ()
+
+_`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
+(γ `, v) Z = v
+(γ `, v) (S x) = γ x
+\end{code}
+
+We can recover the initial environment from an extended environment,
+and the last value. Putting them back together again takes us where we started.
+\begin{code}
+init : ∀ {Γ} → Env (Γ , ★) → Env Γ
+init γ x = γ (S x)
+
+last : ∀ {Γ} → Env (Γ , ★) → Value
+last γ = γ Z
+
+init-last : ∀ {Γ} → (γ : Env (Γ , ★)) → γ ≡ (init γ `, last γ)
+init-last {Γ} γ = extensionality lemma
+  where
+  lemma : ∀ (x : Γ , ★ ∋ ★) → γ x ≡ (init γ `, last γ) x
+  lemma Z      =  refl
+  lemma (S x)  =  refl
 \end{code}
 
 The nth function takes a De Bruijn index and finds the corresponding
@@ -193,83 +255,71 @@ value in the environment.
 
 \begin{code}
 nth : ∀{Γ} → (Γ ∋ ★) → Env Γ → Value
-nth () ∅
-nth Z (ρ , v) = v
-nth (S x) (ρ , v) = nth x ρ
+nth x ρ = ρ x
 \end{code}
 
-We extend the ⊑ relation point-wise to environments with the
+We extend the `⊑` relation point-wise to environments with the
 following definition.
 
 \begin{code}
-_`⊑_ : ∀{Γ} → (γ : Env Γ) → (δ : Env Γ) → Set
-_`⊑_ {Γ} γ δ = ∀{k : Γ ∋ ★} → nth k γ ⊑ nth k δ
+_`⊑_ : ∀ {Γ} → Env Γ → Env Γ → Set
+_`⊑_ {Γ} γ δ = ∀ (x : Γ ∋ ★) → γ x ⊑ δ x
 \end{code}
 
-We define a join operator on environments, which takes the point-wise
-join of their values.
+We define a bottom environment and a join operator on environments,
+which takes the point-wise join of their values.
 
 \begin{code}
-_`⊔_ : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → Env Γ
-∅ `⊔ ∅ = ∅
-(γ , v) `⊔ (δ , v') = (γ `⊔ δ) , (v ⊔ v')
+`⊥ : ∀ {Γ} → Env Γ
+`⊥ x = ⊥
+
+_`⊔_ : ∀ {Γ} → Env Γ → Env Γ → Env Γ
+(γ `⊔ δ) x = γ x ⊔ δ x
 \end{code}
 
-The nth element of the join is the join of the nth elements.
+The Refl⊑, ConjR1⊑, and ConjR2⊑ rules lift to environments.  So the join of
+two environments γ and δ is greater than the first environment γ
+or the second environment δ.
 
 \begin{code}
-nth-join-env : ∀ {Γ} → {γ₁ : Env Γ} → {γ₂ : Env Γ}
-  → ∀ {k} → nth k (γ₁ `⊔ γ₂) ≡ (nth k γ₁) ⊔ (nth k γ₂)
-nth-join-env {∅} {∅} {∅} {()}
-nth-join-env {Γ , ★} {γ₁ , v₁} {γ₂ , v₂} {Z} = refl
-nth-join-env {Γ , ★} {γ₁ , v₁} {γ₂ , v₂} {S k} = nth-join-env {Γ}{γ₁}{γ₂}{k}
-\end{code}
+`Refl⊑ : ∀ {Γ} {γ : Env Γ} → γ `⊑ γ
+`Refl⊑ {Γ} {γ} x = Refl⊑ {γ x}
 
-The ConjR1⊑ and ConjR2⊑ rules lift to environments.  So the join of
-two environments γ and δ is greater than the first environment γ.
-
-\begin{code}
 EnvConjR1⊑ : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → γ `⊑ (γ `⊔ δ)
-EnvConjR1⊑ ∅ ∅ {()}
-EnvConjR1⊑ (γ , v) (δ , v') {Z} = ConjR1⊑ Refl⊑
-EnvConjR1⊑ (γ , v) (δ , v') {S k} = EnvConjR1⊑ γ δ {k}
-\end{code}
+EnvConjR1⊑ γ δ x = ConjR1⊑ Refl⊑
 
-The join of two environments γ and δ is also greater than the second
-environment.
-
-\begin{code}
 EnvConjR2⊑ : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → δ `⊑ (γ `⊔ δ)
-EnvConjR2⊑ ∅ ∅ {()}
-EnvConjR2⊑ (γ , v) (δ , v') {Z} = ConjR2⊑ Refl⊑
-EnvConjR2⊑ (γ , v) (δ , v') {S k} = EnvConjR2⊑ γ δ {k}
+EnvConjR2⊑ γ δ x = ConjR2⊑ Refl⊑
 \end{code}
-
 
 ## Denotational Semantics
 
-We define the semantics with a judgment of the form ρ ⊢ M ↓ v,
-where ρ is the environment, M the program, and v is a result value.
+We define the semantics with a judgment of the form `ρ ⊢ M ↓ v`,
+where `ρ` is the environment, `M` the program, and `v` is a result value.
 For readers familiar with big-step semantics, this notation will feel
 quite natural, but don't let the similarity fool you.  There are
 subtle but important differences! So here is the definition of the
 semantics, which we discuss in detail in the following paragraphs.
 
+[PLW: PLFA doesn't mention big-step semantics. But perhaps it should!]
+
 \begin{code}
 infix 3 _⊢_↓_
 
 data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
+
   var : ∀ {Γ} {γ : Env Γ} {x}
         -------------------
-      → γ ⊢ (` x) ↓ nth x γ
+      → γ ⊢ (` x) ↓ γ x
 
   ↦-elim : ∀ {Γ} {γ : Env Γ} {M₁ M₂ v₁ v₂}
-        → γ ⊢ M₁ ↓ (v₁ ↦ v₂)  →  γ ⊢ M₂ ↓ v₁
-          ----------------------------------
+        → γ ⊢ M₁ ↓ (v₁ ↦ v₂)
+        → γ ⊢ M₂ ↓ v₁
+          ------------------
         → γ ⊢ (M₁ · M₂) ↓ v₂
 
   ↦-intro : ∀ {Γ} {γ : Env Γ} {M v₁ v₂}
-        → (γ , v₁) ⊢ M ↓ v₂
+        → γ `, v₁ ⊢ M ↓ v₂
           ---------------------
         → γ ⊢ (ƛ M) ↓ (v₁ ↦ v₂)
 
@@ -278,40 +328,43 @@ data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
         → γ ⊢ M ↓ ⊥
 
   ⊔-intro : ∀ {Γ} {γ : Env Γ} {M v₁ v₂}
-        → γ ⊢ M ↓ v₁  →  γ ⊢ M ↓ v₂
-          -------------------------
+        → γ ⊢ M ↓ v₁
+        → γ ⊢ M ↓ v₂
+          -----------------
         → γ ⊢ M ↓ (v₁ ⊔ v₂)
-        
+     
   sub : ∀ {Γ} {γ : Env Γ} {M v₁ v₂}
-        → γ ⊢ M ↓ v₁  →  v₂ ⊑ v₁
+        → γ ⊢ M ↓ v₁
+        → v₂ ⊑ v₁
           ----------
         → γ ⊢ M ↓ v₂
 \end{code}
 
-Consider the rule for lambda abstractions (↦-intro).  It says that a
+[PLW: Say we redefine:
+  var : ∀ {Γ} {γ : Env Γ} {x}
+      → v ⊑ γ x
+        -------------
+      → γ ⊢ (` x) ↓ v
+Then does sub (downward closure) follow from the other rules?]
+
+Consider the rule for lambda abstractions, `↦-intro`.  It says that a
 lambda abstraction results in a single-entry table that maps the input
-v₁ to the output v₂, provided that evaluating the body in an
-environment with v₁ bound to its parameter produces the output v₂.  As
-a simple example of this rule, we can see that the identity function
-maps ⊥ to ⊥. 
+`v₁` to the output `v₂`, provided that evaluating the body in an
+environment with `v₁` bound to its parameter produces the output `v₂`.
+As a simple example of this rule, we can see that the identity function
+maps `⊥` to `⊥`. 
 
 \begin{code}
 id : ∅ ⊢ ★
 id = ƛ # 0
-
-denot-id1 : ∅ ⊢ id ↓ (⊥ ↦ ⊥)
-denot-id1 = ↦-intro var
 \end{code}
 
-The above example also demonstrates the (var) rule, which says that we
-evaluate a variable by looking it up in the environment.
-
-The identity function also maps the value ⊥ ↦ ⊥ to itself, by the same
-line of reasoning.
-
 \begin{code}
-denot-id2 : ∅ ⊢ id ↓ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
-denot-id2 = ↦-intro var
+denot-id : ∀ {γ v} → γ ⊢ id ↓ v ↦ v
+denot-id = ↦-intro var
+
+denot-id-two : ∀ {γ v w} → γ ⊢ id ↓ (v ↦ v) ⊔ (w ↦ w)
+denot-id-two = ⊔-intro denot-id denot-id
 \end{code}
 
 Of course, we will need tables with many rows for our lambda
@@ -327,8 +380,8 @@ In the following we show that the identity function produces a table
 containing both of the previous results, ⊥ ↦ ⊥ and (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥).
 
 \begin{code}
-denot-id3 : ∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
-denot-id3 = ⊔-intro (↦-intro var) (↦-intro var)
+denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
+denot-id3 = denot-id-two
 \end{code}
 
 We most often think of the judgment γ ⊢ M ↓ v as taking the
@@ -353,7 +406,7 @@ the identity function to itself.  Indeed, we have both that ∅ ⊢ id
 apply the rule (↦-elim).
 
 \begin{code}
-id-app-id : ∀ {v' : Value} → ∅ ⊢ id · id ↓ (v' ↦ v')
+id-app-id : ∀ {v' : Value} → `∅ ⊢ id · id ↓ (v' ↦ v')
 id-app-id {v'} = ↦-elim (↦-intro var) (↦-intro var)
 \end{code}
 
@@ -370,12 +423,12 @@ twoᶜ is that it takes this table and parameter v₁, and it returns v₃.
 Indeed we derive this as follows.
 
 \begin{code}
-denot-twoᶜ : ∀{v₁ v₂ v₃ : Value} → ∅ ⊢ twoᶜ ↓ ((v₁ ↦ v₂ ⊔ v₂ ↦ v₃) ↦ (v₁ ↦ v₃))
+denot-twoᶜ : ∀{v₁ v₂ v₃ : Value} → `∅ ⊢ twoᶜ ↓ ((v₁ ↦ v₂ ⊔ v₂ ↦ v₃) ↦ (v₁ ↦ v₃))
 denot-twoᶜ {v₁}{v₂}{v₃} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
   where lt1 : v₂ ↦ v₃ ⊑ v₁ ↦ v₂ ⊔ v₂ ↦ v₃
         lt1 = ConjR2⊑ (Fun⊑ Refl⊑ Refl⊑)
-        
+     
         lt2 : v₁ ↦ v₂ ⊑ v₁ ↦ v₂ ⊔ v₂ ↦ v₃
         lt2 = (ConjR1⊑ (Fun⊑ Refl⊑ Refl⊑))
 \end{code}
@@ -393,7 +446,7 @@ and then the result of the application is v₂.
 Δ : ∅ ⊢ ★
 Δ = (ƛ (# 0) · (# 0))
 
-denot-Δ : ∀ {v₁ v₂} → ∅ ⊢ Δ ↓ ((v₁ ↦ v₂ ⊔ v₁) ↦ v₂)
+denot-Δ : ∀ {v₁ v₂} → `∅ ⊢ Δ ↓ ((v₁ ↦ v₂ ⊔ v₁) ↦ v₂)
 denot-Δ {v₁}{v₂} = ↦-intro (↦-elim (sub var (ConjR1⊑ Refl⊑))
                                    (sub var (ConjR2⊑ Refl⊑)))
 \end{code}
@@ -417,7 +470,7 @@ of the application is ⊥.
 Ω : ∅ ⊢ ★
 Ω = Δ · Δ
 
-denot-Ω : ∅ ⊢ Ω ↓ ⊥
+denot-Ω : `∅ ⊢ Ω ↓ ⊥
 denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro) 
 \end{code}
 
@@ -425,11 +478,11 @@ A shorter derivation of the same result is by just one use of the
 (⊥-intro) rule.
 
 \begin{code}
-denot-Ω' : ∅ ⊢ Ω ↓ ⊥
+denot-Ω' : `∅ ⊢ Ω ↓ ⊥
 denot-Ω' = ⊥-intro
 \end{code}
 
-Just because one can derive ∅ ⊢ M : ⊥ for some term M doesn't mean
+Just because one can derive `∅ ⊢ M ↓ ⊥ for some closed term M doesn't mean
 that M necessarily diverges. There may be other derivations that
 conclude with M producing some more informative value.  However, if
 the only thing that a term evaluates to is ⊥, then it indeed it
@@ -445,10 +498,12 @@ because of the (sub) rule, application really does allow larger
 arguments.
 
 \begin{code}
-↦-elim2 : ∀ {Γ} {ρ : Env Γ} {M₁ M₂ v₁ v₂ v₃}
-        → ρ ⊢ M₁ ↓ (v₁ ↦ v₃)  →  ρ ⊢ M₂ ↓ v₂  → v₁ ⊑ v₂
-          ----------------------------------
-        → ρ ⊢ (M₁ · M₂) ↓ v₃
+↦-elim2 : ∀ {Γ} {γ : Env Γ} {M₁ M₂ v₁ v₂ v₃}
+        → γ ⊢ M₁ ↓ (v₁ ↦ v₃)
+        → γ ⊢ M₂ ↓ v₂
+        → v₁ ⊑ v₂
+          ------------------
+        → γ ⊢ (M₁ · M₂) ↓ v₃
 ↦-elim2 d₁ d₂ lt = ↦-elim d₁ (sub d₂ lt)
 \end{code}
 
@@ -488,7 +543,7 @@ values in the same environment.
 infix 3 _≃_
 
 _≃_ : ∀ {Γ} → (Denotation Γ) → (Denotation Γ) → Set
-_≃_ {Γ} D₁ D₂ = ∀{γ : Env Γ} {v} → D₁ γ v iff D₂ γ v
+D₁ ≃ D₂ = ∀ {γ} {v} → D₁ γ v iff D₂ γ v
 \end{code}
 
 Denotational equality is an equivalence relation.
@@ -505,11 +560,12 @@ Denotational equality is an equivalence relation.
 ≃-sym eq = ⟨ proj₂ eq , proj₁ eq ⟩
 
 ≃-trans : ∀ {Γ : Context} → {M₁ M₂ M₃ : Denotation Γ}
-  → M₁ ≃ M₂ → M₂ ≃ M₃
-    -----------------
+  → M₁ ≃ M₂
+  → M₂ ≃ M₃
+    -------
   → M₁ ≃ M₃
-≃-trans eq1 eq3 =
-  ⟨ (λ z → proj₁ eq3 (proj₁ eq1 z)) , (λ z → proj₂ eq1 (proj₂ eq3 z)) ⟩
+≃-trans eq1 eq2 =
+  ⟨ (λ z → proj₁ eq2 (proj₁ eq1 z)) , (λ z → proj₂ eq1 (proj₂ eq2 z)) ⟩
 \end{code}
 
 Two terms M and N are denotational equal when their denotations are
@@ -523,7 +579,7 @@ subterms. To do this we shall prove equations of the following shape.
     ℰ (ƛ M) ≃ ... ℰ M ...
     ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
 
-The compositionality property is not entirely trivial because the
+The compositionality property is not trivial because the
 semantics we have defined includes three rules that are not syntax
 directed: ⊥-intro, ⊔-intro, and sub.
 
@@ -548,19 +604,22 @@ proceed underneath a lambda abstraction. Here, the nth function
 performs lookup in the environment, analogous to Γ ∋ A.  Now suppose
 that ρ is a renaming that maps variables in γ into variables with
 equal or larger values in δ. This lemmas says that extending the
-renaming producing a renaming (ext r) that maps (γ , v) to (δ # v).
+renaming producing a renaming (ext r) that maps (γ , v) to (δ , v).
 
 \begin{code}
 Rename : Context → Context → Set
 Rename Γ Δ = ∀{A} → Γ ∋ A → Δ ∋ A
+\end{code}
 
+
+\begin{code}
 ext-nth : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
-  → (∀ {n : Γ ∋ ★} → nth n γ ⊑ nth (ρ n) δ)
-    -----------------------------------------------------------------
-  → (∀ {n : Γ , ★ ∋ ★} → nth n (γ , v) ⊑ nth ((ext ρ) n) (δ , v))
-ext-nth ρ lt {Z} = Refl⊑
-ext-nth ρ lt {S n'} = lt
+  → γ `⊑ (δ ∘ ρ)
+    ------------------------------
+  → (γ `, v) `⊑ ((δ `, v) ∘ ext ρ)
+ext-nth ρ lt Z = Refl⊑
+ext-nth ρ lt (S x) = lt x
 \end{code}
 
 We proceed by cases on the de Bruijn index n.
@@ -579,20 +638,20 @@ evaluated in δ.
 \begin{code}
 rename-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
   → (ρ : Rename Γ Δ)
-  → (∀ {n : Γ ∋ ★} → nth n γ ⊑ nth (ρ n) δ)
+  → γ `⊑ (δ ∘ ρ)
   → γ ⊢ M ↓ v
-    ----------------------------------------
+    ---------------------
   → δ ⊢ (rename ρ M) ↓ v
-rename-pres ρ nth-eq (var{x = x}) = sub var (nth-eq {x})
-rename-pres ρ nth-eq (↦-elim d d₁) =
-   ↦-elim (rename-pres ρ nth-eq d) (rename-pres ρ nth-eq d₁) 
-rename-pres ρ nth-eq (↦-intro d) =
-   ↦-intro (rename-pres (ext ρ) (λ {n} → ext-nth ρ nth-eq {n}) d)
-rename-pres ρ nth-eq ⊥-intro = ⊥-intro
-rename-pres ρ nth-eq (⊔-intro d d₁) =
-   ⊔-intro (rename-pres ρ nth-eq d) (rename-pres ρ nth-eq d₁)
-rename-pres ρ nth-eq (sub d lt) =
-   sub (rename-pres ρ nth-eq d) lt
+rename-pres ρ lt (var {x = x}) = sub var (lt x)
+rename-pres ρ lt (↦-elim d d₁) =
+   ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁) 
+rename-pres ρ lt (↦-intro d) =
+   ↦-intro (rename-pres (ext ρ) (ext-nth ρ lt) d)
+rename-pres ρ lt ⊥-intro = ⊥-intro
+rename-pres ρ lt (⊔-intro d d₁) =
+   ⊔-intro (rename-pres ρ lt d) (rename-pres ρ lt d₁)
+rename-pres ρ lt (sub d lt′) =
+   sub (rename-pres ρ lt d) lt′
 \end{code}
 
 The proof is by induction on the semantics of M.  As you can see, all
@@ -657,8 +716,9 @@ v, and then we apply the rename-id lemma to obtain δ ⊢ M ↓ v.
 
 \begin{code}
 Env⊑ : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
-  → γ ⊢ M ↓ v  →  γ `⊑ δ
-    --------------------
+  → γ ⊢ M ↓ v
+  → γ `⊑ δ
+    ----------
   → δ ⊢ M ↓ v
 Env⊑{Γ}{γ}{δ}{M}{v} d lt
       with rename-pres var-id lt d
@@ -671,14 +731,22 @@ the last element of the environment gets larger.
 
 \begin{code}
 up-env : ∀ {Γ} {γ : Env Γ} {M v u₁ u₂}
-  → (γ , u₁) ⊢ M ↓ v  →  u₁ ⊑ u₂
-    ----------------------------
-  → (γ , u₂) ⊢ M ↓ v
-up-env{Γ}{γ}{M}{v}{u₁}{u₂} d lt = Env⊑ d (λ {k} → nth-le lt {k})
+  → (γ `, u₁) ⊢ M ↓ v
+  → u₁ ⊑ u₂
+    -----------------
+  → (γ `, u₂) ⊢ M ↓ v
+up-env d lt = Env⊑ d (nth-le lt)
   where
-  nth-le : u₁ ⊑ u₂ → (γ , u₁) `⊑ (γ , u₂)
-  nth-le lt {Z} = lt
-  nth-le lt {S n} = Refl⊑
+  nth-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
+  nth-le lt Z = lt
+  nth-le lt (S n) = Refl⊑
+
+up-env-all : ∀ {Γ} {γ δ : Env Γ} {M : Γ ⊢ ★} {v}
+  → γ ⊢ M ↓ v
+  → γ `⊑ δ
+    ---------
+  → δ ⊢ M ↓ v
+up-env-all d ineq = {!!}
 \end{code}
 
 
@@ -702,7 +770,7 @@ with the three rules (↦-intro), (⊥-intro), and (⊔-intro).
 
 \begin{code}
 ℱ : ∀{Γ} → Denotation (Γ , ★) → Denotation Γ
-ℱ D γ (v₁ ↦ v₂) = D (γ , v₁) v₂
+ℱ D γ (v₁ ↦ v₂) = D (γ `, v₁) v₂
 ℱ D γ ⊥ = ⊤
 ℱ D γ (v₁ ⊔ v₂) = (ℱ D γ v₁) × (ℱ D γ v₂)
 \end{code}
@@ -718,8 +786,9 @@ derivation of v' ⊑ v, using the up-env lemma in the case for the
 
 \begin{code}
 sub-ℱ : ∀{Γ}{M : Γ , ★ ⊢ ★}{γ v v'}
-      → ℱ (ℰ M) γ v → v' ⊑ v
-        ----------------------
+      → ℱ (ℰ M) γ v
+      → v' ⊑ v
+        ------------
       → ℱ (ℰ M) γ v'
 sub-ℱ d Bot⊑ = tt
 sub-ℱ d (Fun⊑ lt lt') = sub (up-env d lt) lt'
@@ -731,6 +800,10 @@ sub-ℱ {v = v₁ ↦ v₂ ⊔ v₁ ↦ v₃} {v₁ ↦ (v₂ ⊔ v₃)} ⟨ M2 
 sub-ℱ d (Trans⊑ x₁ x₂) = sub-ℱ (sub-ℱ d x₂) x₁
 \end{code}
 
+[PLW:
+  If denotations were strengthened to be downward closed,
+  we could rewrite the signature replacing (ℰ M) by d : Denotation (Γ , ★)]
+  
 With this subsumption property in hand, we can prove the forward
 direction of the semantic equation for lambda.  The proof is by
 induction on the semantics, using sub-ℱ in the case for the (sub)
@@ -753,8 +826,9 @@ preserved by reduction.
 
 \begin{code}
 lambda-inversion : ∀{Γ}{γ : Env Γ}{M : Γ , ★ ⊢ ★}{v₁ v₂ : Value}
-                 → γ ⊢ ƛ M ↓ v₁ ↦ v₂
-                 → (γ , v₁) ⊢ M ↓ v₂
+  → γ ⊢ ƛ M ↓ v₁ ↦ v₂
+    -----------------
+  → (γ `, v₁) ⊢ M ↓ v₂
 lambda-inversion{v₁ = v₁}{v₂ = v₂} d = ℰƛ→ℱℰ{v = v₁ ↦ v₂} d
 \end{code}
 
@@ -778,7 +852,7 @@ to lambda abstraction, as witnessed by the function ℱ.
 \begin{code}
 lam-equiv : ∀{Γ}{γ : Env Γ}{M : Γ , ★ ⊢ ★}
           → ℰ (ƛ M) ≃ ℱ (ℰ M)
-lam-equiv {Γ}{γ}{M}{v} = ⟨ ℰƛ→ℱℰ , ℱℰ→ℰƛ ⟩
+lam-equiv = ⟨ ℰƛ→ℱℰ , ℱℰ→ℰƛ ⟩
 \end{code}
 
 Next we consider function application. For this we need to define a
@@ -801,13 +875,13 @@ input v is in D₂, for the (↦-elim) rule.
 infixl 7 _●_
 
 _●_ : ∀{Γ} → Denotation Γ → Denotation Γ → Denotation Γ
-(D₁ ● D₂) γ v' = v' ⊑ ⊥ ⊎ Σ[ v ∈ Value ] D₁ γ (v ↦ v') × D₂ γ v
+(D₁ ● D₂) γ v' = v' ⊑ ⊥ ⊎ Σ[ v ∈ Value ]( D₁ γ (v ↦ v') × D₂ γ v )
 \end{code}
 
 Next we consider the inversion lemma for application, which is also
 the forward direction of the semantic equation for application.  We
 describe the proof below.
- 
+
 \begin{code}
 ℰ·→●ℰ : ∀{Γ}{γ : Env Γ}{M N : Γ ⊢ ★}{v : Value}
         → ℰ (M · N) γ v
@@ -869,9 +943,9 @@ We proceed by induction on the semantics.
       γ ⊢ M ↓ (v₁' ⊔ v₁'') ↦ (v₁ ⊔ v₂),
       using the Dist⊔→⊔ lemma (thanks to the Dist⊑ rule) to
       show that
-      
+   
             (v₁' ⊔ v₁'') ↦ (v₁ ⊔ v₂) ⊑ (v₁' ↦ v₂) ⊔ (v₁'' ↦ v₁)
-      
+   
       So we have proved what is needed for this case.
 
 * In case (sub) we have Γ ⊢ M · N ↓ v₁ and v ⊑ v₁.
@@ -903,7 +977,7 @@ function application, as witnessed by the ● function.
 \begin{code}
 app-equiv : ∀{Γ}{γ : Env Γ}{M N : Γ ⊢ ★}
           → ℰ (M · N) ≃ (ℰ M) ● (ℰ N)
-app-equiv{Γ}{γ}{M}{N} = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
+app-equiv = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
 \end{code}
 
 We also need an inversion lemma for variables.
@@ -914,7 +988,7 @@ induction on the semantics.
 var-inv : ∀ {Γ v x} {γ : Env Γ}
   → ℰ (` x) γ v
     -------------------
-  → v ⊑ nth x γ
+  → v ⊑ γ x
 var-inv (var) = Refl⊑
 var-inv (⊔-intro d₁ d₂) = ConjL⊑ (var-inv d₁) (var-inv d₂)
 var-inv (sub d lt) = Trans⊑ lt (var-inv d)
@@ -938,6 +1012,13 @@ denotationally equal. We shall prove each direction of the
 if-and-only-if separately. One direction will look just like a type
 preservation proof. The other direction is like proving type
 preservation for reduction going in reverse.
+
+[PLW:
+  "type preservation for reduction going in reverse"
+  is a well-known property called _subject expansion_.
+  It is also well-known that subject expansion is
+  false for most typed lambda calculi!]
+
 
 ### Forward reduction preserves denotations
 
@@ -967,11 +1048,11 @@ meaning.  That is, if M results in v in environment γ, then applying a
 substitution σ to M gives us a program that also results in v, but in
 an environment δ in which, for every variable x, σ x results in the
 same value as the one for x in the original environment γ.
-We write δ ⊨ σ ↓ γ for this condition.
+We write δ `⊢ σ ↓ γ for this condition.
 
 \begin{code}
-_⊨_↓_ : ∀{Δ Γ} → Env Δ → Subst Γ Δ → Env Γ → Set
-_⊨_↓_ {Δ}{Γ} δ σ γ = (∀{k : Γ ∋ ★} → δ ⊢ σ k ↓ nth k γ)
+_`⊢_↓_ : ∀{Δ Γ} → Env Δ → Subst Γ Δ → Env Γ → Set
+_`⊢_↓_ {Δ}{Γ} δ σ γ = (∀ (x : Γ ∋ ★) → δ ⊢ σ x ↓ γ x)
 \end{code}
 
 As usual, to prepare for lambda abstraction, we prove an extension
@@ -981,12 +1062,12 @@ evaluated in (δ , v) produce the values in (γ , v).
 
 \begin{code}
 subst-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
-  → (σ : Subst Γ Δ)  →  δ ⊨ σ ↓ γ
+  → (σ : Subst Γ Δ)
+  → δ `⊢ σ ↓ γ
    ------------------------------
-  → (δ , v) ⊨ exts σ ↓ (γ , v)
-subst-ext{v = v} σ d {Z} = var
-subst-ext{Γ}{Δ}{v}{γ}{δ} σ d {S x'} =
-  rename-pres (λ {A} → S_) (λ {n} → Refl⊑) (d {x'})
+  → (δ `, v) `⊢ exts σ ↓ (γ `, v)
+subst-ext σ d Z = var
+subst-ext σ d (S x) = rename-pres S_ (λ _ → Refl⊑) (d x)
 \end{code}
 
 The proof is by cases on the de Bruijn index x.
@@ -1003,14 +1084,16 @@ substitution preserves meaning is straightforward.  Let's dive in!
 
 \begin{code}
 subst-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
-  → (σ : Subst Γ Δ)  →  δ ⊨ σ ↓ γ  →  γ ⊢ M ↓ v
-    -------------------------------------------
+  → (σ : Subst Γ Δ)
+  → δ `⊢ σ ↓ γ
+  → γ ⊢ M ↓ v
+    ------------------
   → δ ⊢ subst σ M ↓ v
-subst-pres σ s (var {x = x}) = (s {x})
+subst-pres σ s (var {x = x}) = (s x)
 subst-pres σ s (↦-elim d₁ d₂) =
   ↦-elim (subst-pres σ s d₁) (subst-pres σ s d₂) 
 subst-pres σ s (↦-intro d) =
-  ↦-intro (subst-pres (λ {A} → exts σ) (λ {x} → subst-ext σ s {x}) d)
+  ↦-intro (subst-pres (λ {A} → exts σ) (subst-ext σ s) d)
 subst-pres σ s ⊥-intro = ⊥-intro
 subst-pres σ s (⊔-intro d₁ d₂) =
   ⊔-intro (subst-pres σ s d₁) (subst-pres σ s d₂)
@@ -1041,15 +1124,16 @@ that γ ⊢ subst (subst-zero N) M ↓ v₂.
 
 \begin{code}
 substitution : ∀ {Γ} {γ : Env Γ} {M N v₁ v₂}
-   → γ , v₁ ⊢ M ↓ v₂  →  γ ⊢ N ↓ v₁
-     ------------------------------
+   → γ `, v₁ ⊢ M ↓ v₂
+   → γ ⊢ N ↓ v₁
+     -----------------
    → γ ⊢ M [ N ] ↓ v₂   
 substitution{Γ}{γ}{M}{N}{v₁}{v₂} dm dn =
   subst-pres (subst-zero N) sub-z-ok dm
   where
-  sub-z-ok : (∀ {y : Γ , ★ ∋ ★} → γ ⊢ (subst-zero N) y ↓ nth y (γ , v₁))
-  sub-z-ok {Z} = dn
-  sub-z-ok {S y'} = var
+  sub-z-ok : γ `⊢ subst-zero N ↓ (γ `, v₁)
+  sub-z-ok Z = dn
+  sub-z-ok (S x) = var
 \end{code}
 
 This result is a corollary of the lemma for simultaneous substitution.
@@ -1059,7 +1143,7 @@ Let y be an arbitrary variable (de Bruijn index).
 
 * If it is Z, then (subst-zero N) y = N and nth y (γ , v₁) = v₁.
   By the premise we conclude that γ ⊢ N ↓ v₁.
-  
+
 * If it is (S y'), then (subst-zero N) (S y') = y' and
   nth (S y') (γ , v₁) = nth y' γ.  So we conclude that
   γ ⊢ y' ↓ nth y' γ by rule (var).
@@ -1072,8 +1156,9 @@ that reduction preserves denotations.
 
 \begin{code}
 preserve : ∀ {Γ} {γ : Env Γ} {M N v}
-  → γ ⊢ M ↓ v  →  M —→ N
-    --------------------
+  → γ ⊢ M ↓ v
+  → M —→ N
+    ----------
   → γ ⊢ N ↓ v
 preserve (var) ()
 preserve (↦-elim d₁ d₂) (ξ₁ x r) = ↦-elim (preserve d₁ r) d₂ 
@@ -1122,30 +1207,36 @@ using ⊔. If M₂ occured 0 times, then we can use ⊥ for the value of M₂.
 
 Previously we showed that renaming variables preserves meaning.  Now
 we prove the opposite, that it reflects meaning. That is,
-if δ ⊢ rename ρ M ↓ v, then γ ⊢ M ↓ v.
+if δ ⊢ rename ρ M ↓ v, then γ ⊢ M ↓ v, where (δ ∘ ρ) `⊑ γ.
 
+First, we need a variant of a lemma given earlier.
+\begin{code}
+nth-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
+  → (ρ : Rename Γ Δ)
+  → (δ ∘ ρ) `⊑ γ
+    ------------------------------
+  → ((δ `, v) ∘ ext ρ) `⊑ (γ `, v)
+nth-ext ρ lt Z = Refl⊑
+nth-ext ρ lt (S x) = lt x
+\end{code}
+
+The proof is then as follows.
 \begin{code}
 rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
   → {ρ : Rename Γ Δ}
-  → (∀ {n : Γ ∋ ★} → nth (ρ n) δ ≡ nth n γ)
+  → (δ ∘ ρ) `⊑ γ
   → δ ⊢ rename ρ M ↓ v
     ------------------------------------
   → γ ⊢ M ↓ v
 rename-reflect {M = ` x} all-n d with var-inv d
-... | lt rewrite all-n {x} = sub var lt
-
+... | lt =  sub var (Trans⊑ lt (all-n x))
 rename-reflect {Γ}{Δ}{v₁ ↦ v₂}{γ}{δ}{ƛ M'}{ρ} all-n (↦-intro d) =
-   ↦-intro (rename-reflect (λ {n} → nth-ext {n}) d)
-   where
-   nth-ext : {n : Γ , ★ ∋ ★} → nth (ext ρ n) (δ , v₁) ≡ nth n (γ , v₁) 
-   nth-ext {Z} = refl
-   nth-ext {S n} = all-n
+   ↦-intro (rename-reflect (nth-ext ρ all-n) d)
 rename-reflect {M = ƛ M'} all-n ⊥-intro = ⊥-intro
 rename-reflect {M = ƛ M'} all-n (⊔-intro d₁ d₂) =
    ⊔-intro (rename-reflect all-n d₁) (rename-reflect all-n d₂)
-rename-reflect {M = ƛ M'} all-n (sub d₁ lt) =
+rename-reflect {M = ƛ M'} all-n (sub d₁ lt) =   -- [PLW: why is this line in gray?]
    sub (rename-reflect all-n d₁) lt
-
 rename-reflect {M = M₁ · M₂} all-n (↦-elim d₁ d₂) =
    ↦-elim (rename-reflect all-n d₁) (rename-reflect all-n d₂) 
 rename-reflect {M = M₁ · M₂} all-n ⊥-intro = ⊥-intro
@@ -1169,28 +1260,28 @@ We cannot prove this lemma by induction on the derivation of
   * Rule (↦-intro): To satisfy the premise of the induction
     hypothesis, we prove that the renaming can be extended to be a
     mapping from γ , v₁ to δ , v₁.
-  
+
   * Rule (⊥-intro): We simply apply (⊥-intro).
-  
+
   * Rule (⊔-intro): We apply the induction hypotheses and (⊔-intro).
+
+  * Rule (sub): [PLW: this case is also in the code!]
 
 * If it is an application M₁ · M₂, we have
   rename ρ (M₁ · M₂) = (rename ρ M₁) · (rename ρ M₂).
   We proceed by cases on δ ⊢ (rename ρ M₁) · (rename ρ M₂) ↓ v
   and all the cases are straightforward.
 
-
 In the upcoming uses of rename-reflect, the renaming will always be
 the increment function. So we prove a corollary for that special case.
 
 \begin{code}
 rename-inc-reflect : ∀ {Γ v' v} {γ : Env Γ} { M : Γ ⊢ ★}
-  → (γ , v') ⊢ rename (λ {A} → S_) M ↓ v
-    ------------------------------------
+  → (γ `, v') ⊢ rename S_ M ↓ v
+    ----------------------------
   → γ ⊢ M ↓ v
-rename-inc-reflect d = rename-reflect (λ {n} → refl) d
+rename-inc-reflect d = rename-reflect `Refl⊑ d
 \end{code}
-
 
 
 #### Substitution reflects denotations, the variable case
@@ -1203,79 +1294,77 @@ v and we need to show that δ ⊢ ` x ↓ v for some δ. The δ that we
 choose shall be the environment that maps x to v and every other
 variable to ⊥.
 
-We start by defining the environment that maps every variable to ⊥. Of
-course, the nth element of this environment is always ⊥.
-
+The nth element of the `⊥ environment is always ⊥.
+[PLW: Probably can omit]
 \begin{code}
-empty-env : ∀ {Γ} → Env Γ
-empty-env {∅} = ∅
-empty-env {Γ , ★} = (empty-env {Γ}) , ⊥
-
-nth-empty-env : ∀{Γ} {x : Γ ∋ ★} → nth x empty-env ≡ ⊥
-nth-empty-env {x = Z} = refl
-nth-empty-env {Γ , ★} {S x} = nth-empty-env {Γ} {x}
+nth-`⊥ : ∀{Γ} {x : Γ ∋ ★} → `⊥ x ≡ ⊥
+nth-`⊥ {x = Z} = refl
+nth-`⊥ {Γ , ★} {S x} = nth-`⊥ {Γ} {x}
 \end{code}
 
 Next we define the environment that maps x to v and every other
 variable to ⊥, that is (const-env x v).
 
 \begin{code}
+{-
+inv-S : ∀ {Γ A B} {x y : Γ ∋ A}
+  → _≡_ {_} {Γ , B ∋ A} (S x) (S y)
+  → S x ≡ S y
+    -------------------------------
+  → x ≡ y
+inv-S refl = refl
+-}
+
+_var≟_ : ∀ {Γ} → (x y : Γ ∋ ★) → Dec (x ≡ y)
+Z var≟ Z  =  yes refl
+Z var≟ (S _)  =  no λ()
+(S _) var≟ Z  =  no λ()
+(S x) var≟ (S y) with  x var≟ y
+...                 |  yes refl =  yes refl
+...                 |  no neq   =  no λ{refl → neq refl}
+
+var≟-refl : ∀ {Γ} (x : Γ ∋ ★) → (x var≟ x) ≡ yes refl
+var≟-refl Z = refl
+var≟-refl (S x) rewrite var≟-refl x = refl
+
 const-env : ∀{Γ} → (x : Γ ∋ ★) → Value → Env Γ
-const-env {∅} x v = ∅
-const-env {Γ , ★} Z v = empty-env {Γ} , v
-const-env {Γ , ★} (S x) v = (const-env {Γ} x v) , ⊥
+const-env x v y with x var≟ y
+...             | yes _       = v
+...             | no _        = ⊥
 \end{code}
 
 Of course, the nth element of (const-env n v) is the value v.
 
 \begin{code}
-nth-const-env : ∀{Γ} {n : Γ ∋ ★} {v}
-                 → nth n (const-env n v) ≡ v
-nth-const-env {Γ , ★} {Z} = refl
-nth-const-env {Γ , ★} {S n} = nth-const-env {Γ} {n}
+nth-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
+nth-const-env {x = x} rewrite var≟-refl x = refl
 \end{code}
 
 The nth element of (const-env n' v) is the value ⊥, so long as n ≢ n'.
 
 \begin{code}
-diff-nth-const-env : ∀{Γ} {n : Γ ∋ ★} {n' : Γ ∋ ★} {v}
-    → n ≢ n' → nth n (const-env n' v) ≡ ⊥
-diff-nth-const-env {Γ , ★} {n} {Z} {v} neq with n
-... | Z = ⊥-elim (neq refl)
-... | S n₁ = nth-empty-env {Γ}
-diff-nth-const-env {Γ , ★} {n} {S n'} neq with n
-... | Z = refl
-... | S n₁ = diff-nth-const-env (λ n → neq (cong S_ n))
+diff-nth-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
+  → x ≢ y
+    -------------------
+  → const-env x v y ≡ ⊥
+diff-nth-const-env {Γ} {x} {y} neq with x var≟ y
+...  | yes eq  =  ⊥-elim (neq eq)
+...  | no _    =  refl
 \end{code}
 
 So we choose (const-env x v) for δ and obtain δ ⊢ ` x ↓ v
 with the (var) rule.
 
-It remains to prove that nth k δ and δ ⊢ M ↓ v for any k, given that
+It remains to prove that γ `⊢ σ ↓ δ and δ ⊢ M ↓ v for any k, given that
 we have chosen (const-env x v) for δ .  We shall have two cases to
-consider, k ≡ x or k ≢ x. To setup these two cases constructively, we
-define the following function for deciding the equality of two
-variables.
-
-\begin{code}
-var-eq? : ∀ {Γ} → (x y : Γ ∋ ★) → Dec (x ≡ y)
-var-eq? Z Z = yes refl
-var-eq? Z (S y) = no (λ ())
-var-eq? (S x) Z = no (λ ())
-var-eq? {Γ , ★} (S x) (S y) with var-eq? {Γ} x y
-... | yes eq = yes (cong S_ eq)
-... | no neq = no g
-  where
-  g : (S_ {B = ★} x) ≢ (S y)
-  g refl = neq refl 
-\end{code}
+consider, x ≡ y or x ≢ y.
 
 Now to finish the two cases of the proof.
 
-* In the case where k ≡ x, we need to show
-  that γ ⊢ σ x ↓ v, but that's just our premise.
-* In the case where k ≢ x, we need to show
-  that γ ⊢ σ x ↓ ⊥, which we do via rule (⊥-intro).
+* In the case where x ≡ y, we need to show
+  that γ ⊢ σ y ↓ v, but that's just our premise.
+* In the case where x ≢ y, we need to show
+  that γ ⊢ σ y ↓ ⊥, which we do via rule (⊥-intro).
 
 Thus, we have completed the variable case of the proof that
 simultaneous substitution reflects denotations.  Here is the proof
@@ -1285,15 +1374,15 @@ again, formally.
 subst-reflect-var : ∀ {Γ Δ} {γ : Env Δ} {x : Γ ∋ ★} {v} {σ : Subst Γ Δ}
   → γ ⊢ σ x ↓ v
     ----------------------------------------
-  → Σ[ δ ∈ Env Γ ] γ ⊨ σ ↓ δ  ×  δ ⊢ ` x ↓ v
-subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} sx
+  → Σ[ δ ∈ Env Γ ] γ `⊢ σ ↓ δ  ×  δ ⊢ ` x ↓ v
+subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
   rewrite sym (nth-const-env {Γ}{x}{v}) =
     ⟨ const-env x v , ⟨ const-env-ok , var ⟩ ⟩
   where
-  const-env-ok : γ ⊨ σ ↓ const-env x v
-  const-env-ok {k} with var-eq? k x
-  ... | yes k≡x rewrite k≡x | nth-const-env {Γ}{x}{v} = sx
-  ... | no k≢x rewrite diff-nth-const-env {Γ}{k}{x}{v} k≢x = ⊥-intro
+  const-env-ok : γ `⊢ σ ↓ const-env x v
+  const-env-ok y with x var≟ y
+  ... | yes x≡y rewrite sym x≡y | nth-const-env {Γ}{x}{v} = xv
+  ... | no x≢y rewrite diff-nth-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
 \end{code}
 
 
@@ -1302,8 +1391,10 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} sx
 Every substitution produces terms that can evaluate to ⊥.
 
 \begin{code}
-subst-empty : ∀{Γ Δ}{γ : Env Δ}{σ : Subst Γ Δ} → γ ⊨ σ ↓ empty-env
-subst-empty {k = k} rewrite nth-empty-env {x = k} = ⊥-intro
+subst-⊥ : ∀{Γ Δ}{γ : Env Δ}{σ : Subst Γ Δ}
+    -----------------
+  → γ `⊢ σ ↓ `⊥
+subst-⊥ x = ⊥-intro
 \end{code}
 
 If a substitution produces terms that evaluate to the values in
@@ -1312,41 +1403,48 @@ both γ₁ and γ₂, then those terms also evaluate to the values in
 
 \begin{code}
 subst-⊔ : ∀{Γ Δ}{γ : Env Δ}{γ₁ γ₂ : Env Γ}{σ : Subst Γ Δ}
-           → γ ⊨ σ ↓ γ₁  →  γ ⊨ σ ↓ γ₂
+           → γ `⊢ σ ↓ γ₁
+           → γ `⊢ σ ↓ γ₂
              -------------------------
-           → γ ⊨ σ ↓ (γ₁ `⊔ γ₂)
-subst-⊔{Γ}{Δ}{γ}{γ₁}{γ₂} γ₁-ok γ₂-ok {k}
-  rewrite nth-join-env{Γ}{γ₁}{γ₂}{k} = ⊔-intro γ₁-ok γ₂-ok
+           → γ `⊢ σ ↓ (γ₁ `⊔ γ₂)
+subst-⊔ γ₁-ok γ₂-ok x = ⊔-intro (γ₁-ok x) (γ₂-ok x)
 \end{code}
 
 #### The Lambda constructor is injective
 
 \begin{code}
-lambda-inj : ∀ {Γ} {M : Γ , ★ ⊢ ★ } {N : Γ , ★ ⊢ ★ }
-  → _≡_ {lzero} {Γ ⊢ ★} (ƛ M) (ƛ N)
-    -------------------------------
-  → (M ≡ N)
+lambda-inj : ∀ {Γ} {M N : Γ , ★ ⊢ ★ }
+  → _≡_ {A = Γ ⊢ ★} (ƛ M) (ƛ N)
+    ---------------------------
+  → M ≡ N
 lambda-inj refl = refl
 \end{code}
 
 #### Simultaneous substitution reflects denotations
 
-In this section we prove the central lemma of this chapter, that
+In this section we prove a central lemma, that
 substitution reflects denotations. That is, if γ ⊢ subst σ M ↓ v, then
-δ ⊢ M ↓ v and γ ⊨ σ ↓ δ for some δ. We shall proceed by induction on
-the derivation of γ ⊢ (subst σ M) ↓ v. This requires a minor
+δ ⊢ M ↓ v and γ `⊢ σ ↓ δ for some δ. We shall proceed by induction on
+the derivation of γ ⊢ subst σ M ↓ v. This requires a minor
 restatement of the lemma, changing the premise to γ ⊢ L ↓ v and
 L ≡ subst σ M.
 
 \begin{code}
+split : ∀ {Γ} {M : Γ , ★ ⊢ ★} {δ : Env (Γ , ★)} {v}
+  → δ ⊢ M ↓ v
+    --------------------------
+  → (init δ `, last δ) ⊢ M ↓ v
+split {δ = δ} δMv rewrite init-last δ = δMv
+
 subst-reflect : ∀ {Γ Δ} {δ : Env Δ} {M : Γ ⊢ ★} {v} {L : Δ ⊢ ★} {σ : Subst Γ Δ}
-  → δ ⊢ L ↓ v  →  (subst σ M) ≡ L
-    --------------------------------------
-  → Σ[ γ ∈ Env Γ ] δ ⊨ σ ↓ γ  ×  γ ⊢ M ↓ v
+  → δ ⊢ L ↓ v
+  → subst σ M ≡ L
+    ---------------------------------------
+  → Σ[ γ ∈ Env Γ ] δ `⊢ σ ↓ γ  ×  γ ⊢ M ↓ v
 
 subst-reflect {M = M}{σ = σ} (var {x = y}) eqL with M 
-... | ` x  with (var{x = y} )
-... | yv  rewrite sym eqL = subst-reflect-var {σ = σ} yv
+... | ` x  with var {x = y}
+...           | yv  rewrite sym eqL = subst-reflect-var {σ = σ} yv
 subst-reflect {M = M} (var {x = y}) () | M₁ · M₂
 subst-reflect {M = M} (var {x = y}) () | ƛ M'
 
@@ -1365,17 +1463,17 @@ subst-reflect{Γ}{Δ}{γ}{σ = σ} (↦-elim d₁ d₂)
 
 subst-reflect {M = M}{σ = σ} (↦-intro d) eqL with M
 ...    | ` x with (↦-intro d)
-...    | d' rewrite sym eqL = subst-reflect-var {σ = σ} d'
+...             | d' rewrite sym eqL = subst-reflect-var {σ = σ} d'
 subst-reflect {σ = σ} (↦-intro d) eq | ƛ M'
-      with subst-reflect{σ = exts σ} d (lambda-inj eq)
-... | ⟨ (δ' , v') , ⟨ exts-σ-δ'v' , m' ⟩ ⟩ = 
-    ⟨ δ' , ⟨ ((λ {k} → rename-inc-reflect (exts-σ-δ'v' {S k}))) ,
-             ↦-intro (up-env m' (var-inv (exts-σ-δ'v' {Z} ))) ⟩ ⟩
+      with subst-reflect {σ = exts σ} d (lambda-inj eq)
+... | ⟨ δ′ , ⟨ exts-σ-δ′ , m′ ⟩ ⟩ = 
+    ⟨ init δ′ , ⟨ ((λ x → rename-inc-reflect (exts-σ-δ′ (S x)))) ,
+             ↦-intro (up-env (split m′) (var-inv (exts-σ-δ′ Z))) ⟩ ⟩
 subst-reflect (↦-intro d) () | M₁ · M₂ 
 
 subst-reflect {σ = σ} ⊥-intro eq =
-    ⟨ empty-env , ⟨ subst-empty{σ = σ} , ⊥-intro ⟩ ⟩
-  
+    ⟨ `⊥ , ⟨ subst-⊥ {σ = σ} , ⊥-intro ⟩ ⟩
+
 subst-reflect {σ = σ} (⊔-intro d₁ d₂) eq
   with subst-reflect {σ = σ} d₁ eq | subst-reflect {σ = σ} d₂ eq
 ... | ⟨ δ₁ , ⟨ subst-δ₁ , m1 ⟩ ⟩ | ⟨ δ₂ , ⟨ subst-δ₂ , m2 ⟩ ⟩ =
@@ -1392,38 +1490,38 @@ subst-reflect (sub d lt) eq
 
 * Case (↦-elim): We have subst σ M ≡ L₁ · L₂. We proceed by cases on M.
   * Case M ≡ ` x: We apply the subst-reflect-var lemma again to conclude.
-  
+
   * Case M ≡ M₁ · M₂: By the induction hypothesis, we have
-    some δ₁ and δ₂ such that δ₁ ⊢ M₁ ↓ v₁ ↦ v₃ and γ ⊨ σ ↓ δ₁,
-    as well as δ₂ ⊢ M₂ ↓ v₁ and γ ⊨ σ ↓ δ₂.
+    some δ₁ and δ₂ such that δ₁ ⊢ M₁ ↓ v₁ ↦ v₃ and γ `⊢ σ ↓ δ₁,
+    as well as δ₂ ⊢ M₂ ↓ v₁ and γ `⊢ σ ↓ δ₂.
     By Env⊑ we have  δ₁ ⊔ δ₂ ⊢ M₁ ↓ v₁ ↦ v₃ and δ₁ ⊔ δ₂ ⊢ M₂ ↓ v₁
     (using EnvConjR1⊑ and EnvConjR2⊑), and therefore δ₁ ⊔ δ₂ ⊢ M₁ · M₂ ↓ v₃.
-    We conclude this case by obtaining γ ⊨ σ ↓ δ₁ ⊔ δ₂
+    We conclude this case by obtaining γ `⊢ σ ↓ δ₁ ⊔ δ₂
     by the subst-⊔ lemma.
 
 * Case (↦-intro): We have subst σ M ≡ ƛ L'. We proceed by cases on M.
   * Case M ≡ ` x: We apply the subst-reflect-var lemma.
-  
+
   * Case M ≡ ƛ M': By the induction hypothesis, we have
-    (δ' , v') ⊢ M' ↓ v₂ and (δ , v₁) ⊨ exts σ ↓ (δ' , v').
+    (δ' , v') ⊢ M' ↓ v₂ and (δ , v₁) `⊢ exts σ ↓ (δ' , v').
     From the later we have (δ , v₁) ⊢ # 0 ↓ v'.
     By the lemma var-inv we have v' ⊑ v₁, so by the up-env lemma we
     have (δ' , v₁) ⊢ M' ↓ v₂ and therefore δ' ⊢ ƛ M' ↓ v₁ → v₂.  We
-    also need to show that δ ⊨ σ ↓ δ'.  Fix k. We have (δ , v₁) ⊢
+    also need to show that δ `⊢ σ ↓ δ'.  Fix k. We have (δ , v₁) ⊢
     rename S_ σ k ↓ nth k δ'.  We then apply the lemma
     rename-inc-reflect to obtain δ ⊢ σ k ↓ nth k δ', so this case is
     complete.
 
-* Case (⊥-intro): We choose empty-env for δ.
-  We have empty-env ⊢ M ↓ ⊥ by (⊥-intro).
-  We have δ ⊨ σ ↓ empty-env by the lemma subst-empty.
+* Case (⊥-intro): We choose `⊥ for δ.
+  We have `⊥ ⊢ M ↓ ⊥ by (⊥-intro).
+  We have δ `⊢ σ ↓ `⊥ by the lemma subst-empty.
 
 * Case (⊔-intro): By the induction hypothesis we have
-  δ₁ ⊢ M ↓ v₁, δ₂ ⊢ M ↓ v₂, δ ⊨ σ ↓ δ₁, and δ ⊨ σ ↓ δ₂.
+  δ₁ ⊢ M ↓ v₁, δ₂ ⊢ M ↓ v₂, δ `⊢ σ ↓ δ₁, and δ `⊢ σ ↓ δ₂.
   We have δ₁ ⊔ δ₂ ⊢ M ↓ v₁ and δ₁ ⊔ δ₂ ⊢ M ↓ v₂
   by Env⊑ with EnvConjR1⊑ and EnvConjR2⊑.
   So by (⊔-intro) we have δ₁ ⊔ δ₂ ⊢ M ↓ v₁ ⊔ v₂.
-  By subst-⊔ we conclude that δ ⊨ σ ↓ δ₁ ⊔ δ₂.
+  By subst-⊔ we conclude that δ `⊢ σ ↓ δ₁ ⊔ δ₂.
    
 
 #### Single substitution reflects denotations
@@ -1436,10 +1534,10 @@ give terms M : (Γ , ★ ⊢ ★) and N : (Γ ⊢ ★,)
 if γ ⊢ M [ N ] ↓ v, then γ ⊢ N ↓ v₂ and (γ , v₂) ⊢ M ↓ v
 for some value v₂. We have M [ N ] = subst (subst-zero N) M.
 We apply the subst-reflect lemma to obtain
-γ ⊨ subst-zero N ↓ (δ' , v') and (δ' , v') ⊢ M ↓ v
+γ `⊢ subst-zero N ↓ (δ' , v') and (δ' , v') ⊢ M ↓ v
 for some δ' and v'.
 
-Instantiating γ ⊨ subst-zero N ↓ (δ' , v') at k = 0
+Instantiating γ `⊢ subst-zero N ↓ (δ' , v') at k = 0
 gives us γ ⊢ N ↓ v'. We choose v₂ = v', so the first
 part of our conclusion is complete.
 
@@ -1450,15 +1548,15 @@ applied to (δ' , v') ⊢ M ↓ v, with the var-id renaming,
 we need to show that 
 nth n (δ' , v') ⊑ nth (var-id n) (γ , v') for any n.
 This is accomplished by the following lemma, which
-makes use of γ ⊨ subst-zero N ↓ (δ' , v').
+makes use of γ `⊢ subst-zero N ↓ (δ' , v').
 
 \begin{code}
 nth-id-le : ∀{Γ}{δ'}{v'}{γ}{N}
-      → γ ⊨ subst-zero N ↓ (δ' , v')
-        -----------------------------------------------------------
-      → {n : Γ , ★ ∋ ★} → nth n (δ' , v') ⊑ nth (var-id n) (γ , v')
-nth-id-le γ-sz-δ'v' {Z} = Refl⊑
-nth-id-le γ-sz-δ'v' {S n'} = var-inv (γ-sz-δ'v' {S n'})
+      → γ `⊢ subst-zero N ↓ (δ' `, v')
+        -----------------------------------------------------
+      → (x : Γ , ★ ∋ ★) → (δ' `, v') x ⊑ (γ `, v') (var-id x) 
+nth-id-le γ-sz-δ'v' Z = Refl⊑
+nth-id-le γ-sz-δ'v' (S n') = var-inv (γ-sz-δ'v' (S n'))
 \end{code}
 
 The above lemma proceeds by induction on n.
@@ -1471,176 +1569,202 @@ The above lemma proceeds by induction on n.
 
 Returning to the proof that single substitution reflects
 denotations, we have just proved that
-(γ , v') ⊢ rename var-id M ↓ v
-but we need to show (γ , v') ⊢ M ↓ v. 
+
+  (γ `, v') ⊢ rename var-id M ↓ v
+
+but we need to show (γ `, v') ⊢ M ↓ v. 
 So we apply the rename-id lemma to obtain
 rename var-id M ≡ M.
 
 The following is the formal version of this proof.
 
 \begin{code}
+subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {N : Δ ⊢ ★}
+  → δ `⊢ subst-zero N ↓ γ
+    ---------------------------------------
+  → Σ[ w ∈ Value ] γ `⊑ (δ `, w) × δ ⊢ N ↓ w
+subst-zero-reflect {Δ} {δ} {γ} {N} δσγ with δσγ Z
+... | δNw = ⟨ last γ , ⟨ lemma , δNw ⟩ ⟩
+  where
+  lemma : ∀ (x : Δ , ★ ∋ ★) → γ x ⊑ (δ `, last γ) x
+  lemma Z  =  Refl⊑
+  lemma (S x) = var-inv (δσγ (S x))
+  
+substitution-reflect : ∀ {Δ} {δ : Env Δ} {M : Δ , ★ ⊢ ★} {N : Δ ⊢ ★} {v}
+  → δ ⊢ M [ N ] ↓ v
+    ------------------------------------------------
+  → Σ[ w ∈ Value ] δ ⊢ N ↓ w  ×  (δ `, w) ⊢ M ↓ v
+substitution-reflect {Δ} {δ} {M} {N} {v} d
+  with subst-reflect {Δ , ★} {Δ} {δ} {M} {v} {subst (subst-zero N) M} {subst-zero N} d refl
+...  | ⟨ γ , ⟨ δσγ , γMv ⟩ ⟩ with subst-zero-reflect {Δ} {δ} {γ} {N} δσγ
+...    | ⟨ w , ⟨ ineq , δNw ⟩ ⟩ = ⟨ w , ⟨ δNw , up-env-all γMv ineq ⟩ ⟩
+
+{-
 substitution-reflect : ∀ {Γ} {γ : Env Γ} {M N v}
   → γ ⊢ M [ N ] ↓ v
-    -----------------------------------------------
-  → Σ[ v₂ ∈ Value ] γ ⊢ N ↓ v₂  ×  (γ , v₂) ⊢ M ↓ v
+    ------------------------------------------------
+  → Σ[ v₂ ∈ Value ] γ ⊢ N ↓ v₂  ×  (γ `, v₂) ⊢ M ↓ v
 substitution-reflect {Γ}{γ}{M}{N} d
       with subst-reflect {M = M}{σ = subst-zero N} d refl
-... | ⟨ (δ' , v') , ⟨ γ-sz-δ'v' , mn ⟩ ⟩
-      with rename-pres var-id (λ {n} → nth-id-le γ-sz-δ'v' {n}) mn
-... | mn' rewrite rename-id {Γ , ★}{M}{var-id} var-id-id =
-      ⟨ v' , ⟨ γ-sz-δ'v' {Z} , mn' ⟩ ⟩
+... | ⟨ (δ'v') , ⟨ γ-sz-δ'v' , mn ⟩ ⟩
+      with rename-pres var-id (λ n → nth-id-le ? n) ?  -- γ-sz-δ'v'
+...      | mn' rewrite rename-id {Γ , ★}{M}{var-id} var-id-id =
+            ⟨ last δ'v' , ⟨ γ-sz-δ'v' Z , ? ⟩ ⟩  -- mn'
+-}
 \end{code}
 
 
-#### Reduction reflects denotations
+-- #### Reduction reflects denotations
 
-Now that we have proved that substitution reflects denotations, we can
-easily prove that reduction does too.
+-- Now that we have proved that substitution reflects denotations, we can
+-- easily prove that reduction does too.
 
-\begin{code}
-reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
-    → γ ⊢ (N [ M ]) ↓ v
-    → γ ⊢ (ƛ N) · M ↓ v
-reflect-beta d 
-    with substitution-reflect d
-... | ⟨ v₂' , ⟨ d₁' , d₂' ⟩ ⟩ = ↦-elim (↦-intro d₂') d₁' 
-
-
-reflect : ∀ {Γ} {γ : Env Γ} {M M' N v}
-  → γ ⊢ N ↓ v  →  M —→ M'  →   M' ≡ N
-    ---------------------------------
-  → γ ⊢ M ↓ v
-reflect (var) (ξ₁ x₁ r) ()
-reflect (var) (ξ₂ x₁ r) ()
-reflect{γ = γ} (var{x = x}) β mn
-    with var{γ = γ}{x = x}
-... | d' rewrite sym mn = reflect-beta d' 
-reflect (var) (ζ r) ()
-reflect (↦-elim d₁ d₂) (ξ₁ x r) refl = ↦-elim (reflect d₁ r refl) d₂ 
-reflect (↦-elim d₁ d₂) (ξ₂ x r) refl = ↦-elim d₁ (reflect d₂ r refl) 
-reflect (↦-elim d₁ d₂) β mn
-    with ↦-elim d₁ d₂
-... | d' rewrite sym mn = reflect-beta d'
-reflect (↦-elim d₁ d₂) (ζ r) ()
-reflect (↦-intro d) (ξ₁ x r) ()
-reflect (↦-intro d) (ξ₂ x r) ()
-reflect (↦-intro d) β mn
-    with ↦-intro d
-... | d' rewrite sym mn = reflect-beta d'
-reflect (↦-intro d) (ζ r) refl = ↦-intro (reflect d r refl)
-reflect ⊥-intro r mn = ⊥-intro
-reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
-   ⊔-intro (reflect d₁ r refl) (reflect d₂ r refl)
-reflect (sub d lt) r mn = sub (reflect d r mn) lt 
-\end{code}
-
-### Finale: reduction implies denotational equality
-
-We have proved that reduction both preserves and reflects
-denotations. Thus, reduction implies denotational equality.
-
-\begin{code}
-reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
-  → M —→ N
-    ---------
-  → ℰ M ≃ ℰ N
-reduce-equal {Γ}{M}{N} r = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
-\end{code}
+-- \begin{code}
+-- reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
+--     → γ ⊢ (N [ M ]) ↓ v
+--     → γ ⊢ (ƛ N) · M ↓ v
+-- reflect-beta d 
+--     with substitution-reflect d
+-- ... | ⟨ v₂' , ⟨ d₁' , d₂' ⟩ ⟩ = ↦-elim (↦-intro d₂') d₁' 
 
 
-## Notes
+-- reflect : ∀ {Γ} {γ : Env Γ} {M M' N v}
+--   → γ ⊢ N ↓ v  →  M —→ M'  →   M' ≡ N
+--     ---------------------------------
+--   → γ ⊢ M ↓ v
+-- reflect (var) (ξ₁ x₁ r) ()
+-- reflect (var) (ξ₂ x₁ r) ()
+-- reflect{γ = γ} (var{x = x}) β mn
+--     with var{γ = γ}{x = x}
+-- ... | d' rewrite sym mn = reflect-beta d' 
+-- reflect (var) (ζ r) ()
+-- reflect (↦-elim d₁ d₂) (ξ₁ x r) refl = ↦-elim (reflect d₁ r refl) d₂ 
+-- reflect (↦-elim d₁ d₂) (ξ₂ x r) refl = ↦-elim d₁ (reflect d₂ r refl) 
+-- reflect (↦-elim d₁ d₂) β mn
+--     with ↦-elim d₁ d₂
+-- ... | d' rewrite sym mn = reflect-beta d'
+-- reflect (↦-elim d₁ d₂) (ζ r) ()
+-- reflect (↦-intro d) (ξ₁ x r) ()
+-- reflect (↦-intro d) (ξ₂ x r) ()
+-- reflect (↦-intro d) β mn
+--     with ↦-intro d
+-- ... | d' rewrite sym mn = reflect-beta d'
+-- reflect (↦-intro d) (ζ r) refl = ↦-intro (reflect d r refl)
+-- reflect ⊥-intro r mn = ⊥-intro
+-- reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
+--    ⊔-intro (reflect d₁ r refl) (reflect d₂ r refl)
+-- reflect (sub d lt) r mn = sub (reflect d r mn) lt 
+-- \end{code}
 
-The denotational semantics presented in this chapter is an example of
-a *filter model* (Barendregt, Coppo, Dezani-Ciancaglini, 1983). Filter
-models use type systems with intersection types to precisely
-characterize runtime behavior (Coppo, Dezani-Ciancaglini, and Salle,
-1979). The notation that we use in this chapter is not that of type
-systems and intersection types, but the Value data type is isomorphic
-to types (↦ is →, ⊔ is ∧, ⊥ is ⊤), the ⊑ relation is the inverse of
-subtyping <:, and the evaluation relation ρ ⊢ M ↓ v is isomorphic to a
-type system. Write Γ instead of ρ, A instead of v, and replace ↓ with : and
-one has Γ ⊢ M : A.  By varying the definition of subtyping and
-using different choices of type atoms, intersection type systems can
-provide semantics for many different untyped λ calculi, from full beta
-to the lazy and call-by-value calculi (Alessi, Barbanera, and
-Dezani-Ciancaglini, 2006) (Rocca and Paolini, 2004).  The denotational
-semantics in this chapter corresponds to the BCD system (Barendregt,
-Coppo, Dezani-Ciancaglini, 1983).  Part 3 of the book _Lambda Calculus
-with Types_ describes a framework for intersection type systems that
-enables results similar to the ones in this chapter, but for the
-entire family of intersection type systems (Barendregt, Dekkers, and
-Statman, 2013).
+-- ### Finale: reduction implies denotational equality
+
+-- We have proved that reduction both preserves and reflects
+-- denotations. Thus, reduction implies denotational equality.
+
+-- \begin{code}
+-- reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
+--   → M —→ N
+--     ---------
+--   → ℰ M ≃ ℰ N
+-- reduce-equal {Γ}{M}{N} r = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
+-- \end{code}
+
+
+-- ## Notes
+
+-- The denotational semantics presented in this chapter is an example of
+-- a *filter model* (Barendregt, Coppo, Dezani-Ciancaglini, 1983). Filter
+-- models use type systems with intersection types to precisely
+-- characterize runtime behavior (Coppo, Dezani-Ciancaglini, and Salle,
+-- 1979). The notation that we use in this chapter is not that of type
+-- systems and intersection types, but the Value data type is isomorphic
+-- to types (↦ is →, ⊔ is ∧, ⊥ is ⊤), the ⊑ relation is the inverse of
+-- subtyping <:, and the evaluation relation ρ ⊢ M ↓ v is isomorphic to a
+-- type system. Write Γ instead of ρ, A instead of v, and replace ↓ with : and
+-- one has Γ ⊢ M : A.  By varying the definition of subtyping and
+-- using different choices of type atoms, intersection type systems can
+-- provide semantics for many different untyped λ calculi, from full beta
+-- to the lazy and call-by-value calculi (Alessi, Barbanera, and
+-- Dezani-Ciancaglini, 2006) (Rocca and Paolini, 2004).  The denotational
+-- semantics in this chapter corresponds to the BCD system (Barendregt,
+-- Coppo, Dezani-Ciancaglini, 1983).  Part 3 of the book _Lambda Calculus
+-- with Types_ describes a framework for intersection type systems that
+-- enables results similar to the ones in this chapter, but for the
+-- entire family of intersection type systems (Barendregt, Dekkers, and
+-- Statman, 2013).
   
-The two ideas of using finite tables to represent functions and of
-relaxing table lookup to enable self application first appeared in a
-technical report by Gordon Plotkin (1972) and are later described in
-an article in Theoretical Computer Science (Plotkin 1993).  In that
-work, the inductive definition of Value is a bit different than the
-one we use:
+-- The two ideas of using finite tables to represent functions and of
+-- relaxing table lookup to enable self application first appeared in a
+-- technical report by Gordon Plotkin (1972) and are later described in
+-- an article in Theoretical Computer Science (Plotkin 1993).  In that
+-- work, the inductive definition of Value is a bit different than the
+-- one we use:
     
-    Value = C + ℘f(Value) × ℘f(Value)
+--     Value = C + ℘f(Value) × ℘f(Value)
     
-where C is a set of constants and ℘f means finite powerset.  The pairs
-in ℘f(Value) × ℘f(Value) represent input-output mappings, just as in
-this chapter. The finite powersets are used to enable a function table
-to appear in the input and in the output. These differences amount to
-changing where the recursion appears in the definition of Value.
-Plotkin's model is an example of a _graph model_ of the untyped lambda
-calculus (Barendregt, 1984). In a graph model, the semantics is
-presented as a function from programs and environments to (possibly
-infinite) sets of values. The semantics in this chapter is instead
-defined as a relation, but set-valued functions are isomorphic to
-relations. We choose to present the semantics as a relation because
-the functional approach requires a kind of existential quantifier that
-is not present in Agda.
+-- where C is a set of constants and ℘f means finite powerset.  The pairs
+-- in ℘f(Value) × ℘f(Value) represent input-output mappings, just as in
+-- this chapter. The finite powersets are used to enable a function table
+-- to appear in the input and in the output. These differences amount to
+-- changing where the recursion appears in the definition of Value.
+-- Plotkin's model is an example of a _graph model_ of the untyped lambda
+-- calculus (Barendregt, 1984). In a graph model, the semantics is
+-- presented as a function from programs and environments to (possibly
+-- infinite) sets of values. The semantics in this chapter is instead
+-- defined as a relation, but set-valued functions are isomorphic to
+-- relations. We choose to present the semantics as a relation because
+-- the functional approach requires a kind of existential quantifier that
+-- is not present in Agda.
 
-Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
-examples of graph models. Both use the following inductive definition
-of Value.
+-- [PLW: What kind of existential is required?]
+
+-- Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
+-- examples of graph models. Both use the following inductive definition
+-- of Value.
     
-    Value = C + ℘f(Value) × Value
+--     Value = C + ℘f(Value) × Value
     
-The use of Value instead of ℘f(Value) in the output does not restrict
-expressiveness compared to Plotkin's model because the semantics use
-sets of values and a pair of sets (V, V') can be represented as a set
-of pairs { (V, v') | v' ∈ V' }.  In Scott's ℘(ω), the above values are
-mapped to and from the natural numbers using a kind of Godel encoding.
+-- The use of Value instead of ℘f(Value) in the output does not restrict
+-- expressiveness compared to Plotkin's model because the semantics use
+-- sets of values and a pair of sets (V, V') can be represented as a set
+-- of pairs { (V, v') | v' ∈ V' }.  In Scott's ℘(ω), the above values are
+-- mapped to and from the natural numbers using a kind of Godel encoding.
 
 
-## References
+-- ## References
 
-* Intersection Types and Lambda Models.  Fabio Alessi, Franco
-  Barbanera, and Mariangiola Dezani-Ciancaglini, Theoretical
-  Compututer Science, vol. 355, pages 108-126, 2006.
+-- * Intersection Types and Lambda Models.  Fabio Alessi, Franco
+--   Barbanera, and Mariangiola Dezani-Ciancaglini, Theoretical
+--   Compututer Science, vol. 355, pages 108-126, 2006.
 
-* The Lambda Calculus. H.P. Barendregt, 1984.
+-- * The Lambda Calculus. H.P. Barendregt, 1984.
 
-* A filter lambda model and the completeness of type assignment.  Henk
-  Barendregt, Mario Coppo, and Mariangiola Dezani-Ciancaglini, Journal
-  of Symbolic Logic, vol. 48, pages 931-940, 1983.
+-- * A filter lambda model and the completeness of type assignment.  Henk
+--   Barendregt, Mario Coppo, and Mariangiola Dezani-Ciancaglini, Journal
+--   of Symbolic Logic, vol. 48, pages 931-940, 1983.
 
-* Lambda Calculus with Types. Henk Barendregt, Wil Dekkers, and
-  Richard Statman, Cambridge University Press, Perspectives in Logic,
-  2013.
+-- * Lambda Calculus with Types. Henk Barendregt, Wil Dekkers, and
+--   Richard Statman, Cambridge University Press, Perspectives in Logic,
+--   2013.
 
-* Functional characterization of some semantic equalities inside
-  λ-calculus. Mario Coppo, Mariangiola Dezani-Ciancaglini, and Patrick
-  Salle, in Sixth Colloquium on Automata, Languages and Programming.
-  Springer, pages 133--146, 1979.
+-- * Functional characterization of some semantic equalities inside
+--   λ-calculus. Mario Coppo, Mariangiola Dezani-Ciancaglini, and Patrick
+--   Salle, in Sixth Colloquium on Automata, Languages and Programming.
+--   Springer, pages 133--146, 1979.
 
-* Algebras and combinators. Erwin Engeler, Algebra Universalis,
-  vol. 13, pages 389-392, 1981.
+-- * Algebras and combinators. Erwin Engeler, Algebra Universalis,
+--   vol. 13, pages 389-392, 1981.
 
-* A Set-Theoretical Definition of Application. Gordon D. Plotkin,
-  University of Edinburgh, Technical Report MIP-R-95, 1972.
+-- * A Set-Theoretical Definition of Application. Gordon D. Plotkin,
+--   University of Edinburgh, Technical Report MIP-R-95, 1972.
 
-* Set-theoretical and other elementary models of the λ-calculus.
-  Gordon D. Plotkin, Theoretical Computer Science, vol. 121,
-  pages 351-409, 1993.
+-- * Set-theoretical and other elementary models of the λ-calculus.
+--   Gordon D. Plotkin, Theoretical Computer Science, vol. 121,
+--   pages 351-409, 1993.
 
-* The Parametric Lambda Calculus. Simona Ronchi Della Rocca and Luca
-  Paolini, Springer, 2004.
+-- * The Parametric Lambda Calculus. Simona Ronchi Della Rocca and Luca
+--   Paolini, Springer, 2004.
 
-* Data Types as Lattices. Dana Scott, SIAM Journal on Computing,
-  vol. 5, pages 522-587, 1976.
+-- * Data Types as Lattices. Dana Scott, SIAM Journal on Computing,
+--   vol. 5, pages 522-587, 1976.
 
