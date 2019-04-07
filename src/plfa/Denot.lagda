@@ -7,7 +7,7 @@ next      : /Acknowledgements/
 ---
 
 \begin{code}
-module Denot where
+module plfa.Denot where
 \end{code}
 
 [PLW:
@@ -66,14 +66,14 @@ open import Relation.Binary.PropositionalEquality
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum
 open import Agda.Primitive using (lzero)
-open import Untyped  -- was plfa.Untyped
+open import plfa.Untyped
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
 open import Data.Unit
 open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
--- open import plfa.Isomorphism using (extensionality)
+-- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
 \end{code}
 
 \begin{code}
@@ -83,6 +83,7 @@ postulate
       -----------------------
     → f ≡ g
 \end{code}
+
 ## Values
 
 The `Value` data type represents a finite portion of a function.  We
@@ -154,8 +155,15 @@ data _⊑_ : Value → Value → Set where
   Dist⊑ : ∀{v₁ v₂ v₃}
          --------------------------------------
        → v₁ ↦ (v₂ ⊔ v₃) ⊑ (v₁ ↦ v₂) ⊔ (v₁ ↦ v₃)
-\end{code}
 
+{-
+  Dist⊑ : ∀{v₁ v₂ v₃ w}
+       → v₁ ↦ v₂ ⊑ w
+       → v₁ ↦ v₃ ⊑ w
+         --------------------------------------
+       → v₁ ↦ (v₂ ⊔ v₃) ⊑ w
+-}
+\end{code}
 [PLW: If we reformulate Dist⊑, perhaps Trans⊑ becomes a theorem.
 
   Dist⊑ : ∀{v₁ v₂ v₃ v}
@@ -184,6 +192,18 @@ Refl⊑ {v ↦ v'} = Fun⊑ Refl⊑ Refl⊑
 Refl⊑ {v₁ ⊔ v₂} = ConjL⊑ (ConjR1⊑ Refl⊑) (ConjR2⊑ Refl⊑)
 \end{code}
 
+With reflexivity in hand, the old distributivity rule is a consequence of the new.
+\begin{code}
+{-
+dist⊑ : ∀{v₁ v₂ v₃}
+         --------------------------------------
+       → v₁ ↦ (v₂ ⊔ v₃) ⊑ (v₁ ↦ v₂) ⊔ (v₁ ↦ v₃)
+dist⊑ {v₁} {v₂} {v₃} =
+  Dist⊑ (ConjR1⊑ Refl⊑)
+        (ConjR2⊑ Refl⊑)
+-}
+\end{code}
+
 The `⊔` operation is monotonic with respect to `⊑`, that is, given two
 larger values it produces a larger value.
 
@@ -204,7 +224,7 @@ property.
 Dist⊔↦⊔ : ∀{v₁ v₁' v₂ v₂' : Value}
         → (v₁ ⊔ v₁') ↦ (v₂ ⊔ v₂') ⊑ (v₁ ↦ v₂) ⊔ (v₁' ↦ v₂')
 Dist⊔↦⊔{v₁}{v₁'}{v₂}{v₂'} =
-    Trans⊑ (Dist⊑{v₁ = v₁ ⊔ v₁'}{v₂ = v₂}{v₃ = v₂'})
+    Trans⊑ (Dist⊑ {v₁ = v₁ ⊔ v₁'}{v₂ = v₂}{v₃ = v₂'})
            (⊔⊑⊔ (Fun⊑ (ConjR1⊑ Refl⊑) Refl⊑)
                       (Fun⊑ (ConjR2⊑ Refl⊑) Refl⊑))
 \end{code}
@@ -740,13 +760,6 @@ up-env d lt = Env⊑ d (nth-le lt)
   nth-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
   nth-le lt Z = lt
   nth-le lt (S n) = Refl⊑
-
-up-env-all : ∀ {Γ} {γ δ : Env Γ} {M : Γ ⊢ ★} {v}
-  → γ ⊢ M ↓ v
-  → γ `⊑ δ
-    ---------
-  → δ ⊢ M ↓ v
-up-env-all d ineq = {!!}
 \end{code}
 
 
@@ -1581,12 +1594,11 @@ The following is the formal version of this proof.
 \begin{code}
 subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {N : Δ ⊢ ★}
   → δ `⊢ subst-zero N ↓ γ
-    ---------------------------------------
+    ----------------------------------------
   → Σ[ w ∈ Value ] γ `⊑ (δ `, w) × δ ⊢ N ↓ w
-subst-zero-reflect {Δ} {δ} {γ} {N} δσγ with δσγ Z
-... | δNw = ⟨ last γ , ⟨ lemma , δNw ⟩ ⟩
+subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ Z ⟩ ⟩   
   where
-  lemma : ∀ (x : Δ , ★ ∋ ★) → γ x ⊑ (δ `, last γ) x
+  lemma : γ `⊑ (δ `, last γ)
   lemma Z  =  Refl⊑
   lemma (S x) = var-inv (δσγ (S x))
   
@@ -1594,177 +1606,163 @@ substitution-reflect : ∀ {Δ} {δ : Env Δ} {M : Δ , ★ ⊢ ★} {N : Δ ⊢
   → δ ⊢ M [ N ] ↓ v
     ------------------------------------------------
   → Σ[ w ∈ Value ] δ ⊢ N ↓ w  ×  (δ `, w) ⊢ M ↓ v
-substitution-reflect {Δ} {δ} {M} {N} {v} d
-  with subst-reflect {Δ , ★} {Δ} {δ} {M} {v} {subst (subst-zero N) M} {subst-zero N} d refl
-...  | ⟨ γ , ⟨ δσγ , γMv ⟩ ⟩ with subst-zero-reflect {Δ} {δ} {γ} {N} δσγ
-...    | ⟨ w , ⟨ ineq , δNw ⟩ ⟩ = ⟨ w , ⟨ δNw , up-env-all γMv ineq ⟩ ⟩
-
-{-
-substitution-reflect : ∀ {Γ} {γ : Env Γ} {M N v}
-  → γ ⊢ M [ N ] ↓ v
-    ------------------------------------------------
-  → Σ[ v₂ ∈ Value ] γ ⊢ N ↓ v₂  ×  (γ `, v₂) ⊢ M ↓ v
-substitution-reflect {Γ}{γ}{M}{N} d
-      with subst-reflect {M = M}{σ = subst-zero N} d refl
-... | ⟨ (δ'v') , ⟨ γ-sz-δ'v' , mn ⟩ ⟩
-      with rename-pres var-id (λ n → nth-id-le ? n) ?  -- γ-sz-δ'v'
-...      | mn' rewrite rename-id {Γ , ★}{M}{var-id} var-id-id =
-            ⟨ last δ'v' , ⟨ γ-sz-δ'v' Z , ? ⟩ ⟩  -- mn'
--}
+substitution-reflect d with subst-reflect d refl
+...  | ⟨ γ , ⟨ δσγ , γMv ⟩ ⟩ with subst-zero-reflect δσγ
+...    | ⟨ w , ⟨ ineq , δNw ⟩ ⟩ = ⟨ w , ⟨ δNw , Env⊑ γMv ineq ⟩ ⟩
 \end{code}
 
 
--- #### Reduction reflects denotations
+#### Reduction reflects denotations
 
--- Now that we have proved that substitution reflects denotations, we can
--- easily prove that reduction does too.
+Now that we have proved that substitution reflects denotations, we can
+easily prove that reduction does too.
 
--- \begin{code}
--- reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
---     → γ ⊢ (N [ M ]) ↓ v
---     → γ ⊢ (ƛ N) · M ↓ v
--- reflect-beta d 
---     with substitution-reflect d
--- ... | ⟨ v₂' , ⟨ d₁' , d₂' ⟩ ⟩ = ↦-elim (↦-intro d₂') d₁' 
-
-
--- reflect : ∀ {Γ} {γ : Env Γ} {M M' N v}
---   → γ ⊢ N ↓ v  →  M —→ M'  →   M' ≡ N
---     ---------------------------------
---   → γ ⊢ M ↓ v
--- reflect (var) (ξ₁ x₁ r) ()
--- reflect (var) (ξ₂ x₁ r) ()
--- reflect{γ = γ} (var{x = x}) β mn
---     with var{γ = γ}{x = x}
--- ... | d' rewrite sym mn = reflect-beta d' 
--- reflect (var) (ζ r) ()
--- reflect (↦-elim d₁ d₂) (ξ₁ x r) refl = ↦-elim (reflect d₁ r refl) d₂ 
--- reflect (↦-elim d₁ d₂) (ξ₂ x r) refl = ↦-elim d₁ (reflect d₂ r refl) 
--- reflect (↦-elim d₁ d₂) β mn
---     with ↦-elim d₁ d₂
--- ... | d' rewrite sym mn = reflect-beta d'
--- reflect (↦-elim d₁ d₂) (ζ r) ()
--- reflect (↦-intro d) (ξ₁ x r) ()
--- reflect (↦-intro d) (ξ₂ x r) ()
--- reflect (↦-intro d) β mn
---     with ↦-intro d
--- ... | d' rewrite sym mn = reflect-beta d'
--- reflect (↦-intro d) (ζ r) refl = ↦-intro (reflect d r refl)
--- reflect ⊥-intro r mn = ⊥-intro
--- reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
---    ⊔-intro (reflect d₁ r refl) (reflect d₂ r refl)
--- reflect (sub d lt) r mn = sub (reflect d r mn) lt 
--- \end{code}
-
--- ### Finale: reduction implies denotational equality
-
--- We have proved that reduction both preserves and reflects
--- denotations. Thus, reduction implies denotational equality.
-
--- \begin{code}
--- reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
---   → M —→ N
---     ---------
---   → ℰ M ≃ ℰ N
--- reduce-equal {Γ}{M}{N} r = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
--- \end{code}
+\begin{code}
+reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
+    → γ ⊢ (N [ M ]) ↓ v
+    → γ ⊢ (ƛ N) · M ↓ v
+reflect-beta d 
+    with substitution-reflect d
+... | ⟨ v₂' , ⟨ d₁' , d₂' ⟩ ⟩ = ↦-elim (↦-intro d₂') d₁' 
 
 
--- ## Notes
+reflect : ∀ {Γ} {γ : Env Γ} {M M' N v}
+  → γ ⊢ N ↓ v  →  M —→ M'  →   M' ≡ N
+    ---------------------------------
+  → γ ⊢ M ↓ v
+reflect (var) (ξ₁ x₁ r) ()
+reflect (var) (ξ₂ x₁ r) ()
+reflect{γ = γ} (var{x = x}) β mn
+    with var{γ = γ}{x = x}
+... | d' rewrite sym mn = reflect-beta d' 
+reflect (var) (ζ r) ()
+reflect (↦-elim d₁ d₂) (ξ₁ x r) refl = ↦-elim (reflect d₁ r refl) d₂ 
+reflect (↦-elim d₁ d₂) (ξ₂ x r) refl = ↦-elim d₁ (reflect d₂ r refl) 
+reflect (↦-elim d₁ d₂) β mn
+    with ↦-elim d₁ d₂
+... | d' rewrite sym mn = reflect-beta d'
+reflect (↦-elim d₁ d₂) (ζ r) ()
+reflect (↦-intro d) (ξ₁ x r) ()
+reflect (↦-intro d) (ξ₂ x r) ()
+reflect (↦-intro d) β mn
+    with ↦-intro d
+... | d' rewrite sym mn = reflect-beta d'
+reflect (↦-intro d) (ζ r) refl = ↦-intro (reflect d r refl)
+reflect ⊥-intro r mn = ⊥-intro
+reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
+   ⊔-intro (reflect d₁ r refl) (reflect d₂ r refl)
+reflect (sub d lt) r mn = sub (reflect d r mn) lt 
+\end{code}
 
--- The denotational semantics presented in this chapter is an example of
--- a *filter model* (Barendregt, Coppo, Dezani-Ciancaglini, 1983). Filter
--- models use type systems with intersection types to precisely
--- characterize runtime behavior (Coppo, Dezani-Ciancaglini, and Salle,
--- 1979). The notation that we use in this chapter is not that of type
--- systems and intersection types, but the Value data type is isomorphic
--- to types (↦ is →, ⊔ is ∧, ⊥ is ⊤), the ⊑ relation is the inverse of
--- subtyping <:, and the evaluation relation ρ ⊢ M ↓ v is isomorphic to a
--- type system. Write Γ instead of ρ, A instead of v, and replace ↓ with : and
--- one has Γ ⊢ M : A.  By varying the definition of subtyping and
--- using different choices of type atoms, intersection type systems can
--- provide semantics for many different untyped λ calculi, from full beta
--- to the lazy and call-by-value calculi (Alessi, Barbanera, and
--- Dezani-Ciancaglini, 2006) (Rocca and Paolini, 2004).  The denotational
--- semantics in this chapter corresponds to the BCD system (Barendregt,
--- Coppo, Dezani-Ciancaglini, 1983).  Part 3 of the book _Lambda Calculus
--- with Types_ describes a framework for intersection type systems that
--- enables results similar to the ones in this chapter, but for the
--- entire family of intersection type systems (Barendregt, Dekkers, and
--- Statman, 2013).
-  
--- The two ideas of using finite tables to represent functions and of
--- relaxing table lookup to enable self application first appeared in a
--- technical report by Gordon Plotkin (1972) and are later described in
--- an article in Theoretical Computer Science (Plotkin 1993).  In that
--- work, the inductive definition of Value is a bit different than the
--- one we use:
-    
---     Value = C + ℘f(Value) × ℘f(Value)
-    
--- where C is a set of constants and ℘f means finite powerset.  The pairs
--- in ℘f(Value) × ℘f(Value) represent input-output mappings, just as in
--- this chapter. The finite powersets are used to enable a function table
--- to appear in the input and in the output. These differences amount to
--- changing where the recursion appears in the definition of Value.
--- Plotkin's model is an example of a _graph model_ of the untyped lambda
--- calculus (Barendregt, 1984). In a graph model, the semantics is
--- presented as a function from programs and environments to (possibly
--- infinite) sets of values. The semantics in this chapter is instead
--- defined as a relation, but set-valued functions are isomorphic to
--- relations. We choose to present the semantics as a relation because
--- the functional approach requires a kind of existential quantifier that
--- is not present in Agda.
+### Finale: reduction implies denotational equality
 
--- [PLW: What kind of existential is required?]
+We have proved that reduction both preserves and reflects
+denotations. Thus, reduction implies denotational equality.
 
--- Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
--- examples of graph models. Both use the following inductive definition
--- of Value.
-    
---     Value = C + ℘f(Value) × Value
-    
--- The use of Value instead of ℘f(Value) in the output does not restrict
--- expressiveness compared to Plotkin's model because the semantics use
--- sets of values and a pair of sets (V, V') can be represented as a set
--- of pairs { (V, v') | v' ∈ V' }.  In Scott's ℘(ω), the above values are
--- mapped to and from the natural numbers using a kind of Godel encoding.
+\begin{code}
+reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
+  → M —→ N
+    ---------
+  → ℰ M ≃ ℰ N
+reduce-equal {Γ}{M}{N} r = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
+\end{code}
 
 
--- ## References
+## Notes
 
--- * Intersection Types and Lambda Models.  Fabio Alessi, Franco
---   Barbanera, and Mariangiola Dezani-Ciancaglini, Theoretical
---   Compututer Science, vol. 355, pages 108-126, 2006.
+The denotational semantics presented in this chapter is an example of
+a *filter model* (Barendregt, Coppo, Dezani-Ciancaglini, 1983). Filter
+models use type systems with intersection types to precisely
+characterize runtime behavior (Coppo, Dezani-Ciancaglini, and Salle,
+1979). The notation that we use in this chapter is not that of type
+systems and intersection types, but the Value data type is isomorphic
+to types (↦ is →, ⊔ is ∧, ⊥ is ⊤), the ⊑ relation is the inverse of
+subtyping <:, and the evaluation relation ρ ⊢ M ↓ v is isomorphic to a
+type system. Write Γ instead of ρ, A instead of v, and replace ↓ with : and
+one has Γ ⊢ M : A.  By varying the definition of subtyping and
+using different choices of type atoms, intersection type systems can
+provide semantics for many different untyped λ calculi, from full beta
+to the lazy and call-by-value calculi (Alessi, Barbanera, and
+Dezani-Ciancaglini, 2006) (Rocca and Paolini, 2004).  The denotational
+semantics in this chapter corresponds to the BCD system (Barendregt,
+Coppo, Dezani-Ciancaglini, 1983).  Part 3 of the book _Lambda Calculus
+with Types_ describes a framework for intersection type systems that
+enables results similar to the ones in this chapter, but for the
+entire family of intersection type systems (Barendregt, Dekkers, and
+Statman, 2013).
 
--- * The Lambda Calculus. H.P. Barendregt, 1984.
+The two ideas of using finite tables to represent functions and of
+relaxing table lookup to enable self application first appeared in a
+technical report by Gordon Plotkin (1972) and are later described in
+an article in Theoretical Computer Science (Plotkin 1993).  In that
+work, the inductive definition of Value is a bit different than the
+one we use:
+ 
+    Value = C + ℘f(Value) × ℘f(Value)
+ 
+where C is a set of constants and ℘f means finite powerset.  The pairs
+in ℘f(Value) × ℘f(Value) represent input-output mappings, just as in
+this chapter. The finite powersets are used to enable a function table
+to appear in the input and in the output. These differences amount to
+changing where the recursion appears in the definition of Value.
+Plotkin's model is an example of a _graph model_ of the untyped lambda
+calculus (Barendregt, 1984). In a graph model, the semantics is
+presented as a function from programs and environments to (possibly
+infinite) sets of values. The semantics in this chapter is instead
+defined as a relation, but set-valued functions are isomorphic to
+relations. We choose to present the semantics as a relation because
+the functional approach requires a kind of existential quantifier that
+is not present in Agda.
 
--- * A filter lambda model and the completeness of type assignment.  Henk
---   Barendregt, Mario Coppo, and Mariangiola Dezani-Ciancaglini, Journal
---   of Symbolic Logic, vol. 48, pages 931-940, 1983.
+[PLW: What kind of existential is required?]
 
--- * Lambda Calculus with Types. Henk Barendregt, Wil Dekkers, and
---   Richard Statman, Cambridge University Press, Perspectives in Logic,
---   2013.
+Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
+examples of graph models. Both use the following inductive definition
+of Value.
+ 
+    Value = C + ℘f(Value) × Value
+ 
+The use of Value instead of ℘f(Value) in the output does not restrict
+expressiveness compared to Plotkin's model because the semantics use
+sets of values and a pair of sets (V, V') can be represented as a set
+of pairs { (V, v') | v' ∈ V' }.  In Scott's ℘(ω), the above values are
+mapped to and from the natural numbers using a kind of Godel encoding.
 
--- * Functional characterization of some semantic equalities inside
---   λ-calculus. Mario Coppo, Mariangiola Dezani-Ciancaglini, and Patrick
---   Salle, in Sixth Colloquium on Automata, Languages and Programming.
---   Springer, pages 133--146, 1979.
 
--- * Algebras and combinators. Erwin Engeler, Algebra Universalis,
---   vol. 13, pages 389-392, 1981.
+## References
 
--- * A Set-Theoretical Definition of Application. Gordon D. Plotkin,
---   University of Edinburgh, Technical Report MIP-R-95, 1972.
+* Intersection Types and Lambda Models.  Fabio Alessi, Franco
+  Barbanera, and Mariangiola Dezani-Ciancaglini, Theoretical
+  Compututer Science, vol. 355, pages 108-126, 2006.
 
--- * Set-theoretical and other elementary models of the λ-calculus.
---   Gordon D. Plotkin, Theoretical Computer Science, vol. 121,
---   pages 351-409, 1993.
+* The Lambda Calculus. H.P. Barendregt, 1984.
 
--- * The Parametric Lambda Calculus. Simona Ronchi Della Rocca and Luca
---   Paolini, Springer, 2004.
+* A filter lambda model and the completeness of type assignment.  Henk
+  Barendregt, Mario Coppo, and Mariangiola Dezani-Ciancaglini, Journal
+  of Symbolic Logic, vol. 48, pages 931-940, 1983.
 
--- * Data Types as Lattices. Dana Scott, SIAM Journal on Computing,
---   vol. 5, pages 522-587, 1976.
+* Lambda Calculus with Types. Henk Barendregt, Wil Dekkers, and
+  Richard Statman, Cambridge University Press, Perspectives in Logic,
+  2013.
+
+* Functional characterization of some semantic equalities inside
+  λ-calculus. Mario Coppo, Mariangiola Dezani-Ciancaglini, and Patrick
+  Salle, in Sixth Colloquium on Automata, Languages and Programming.
+  Springer, pages 133--146, 1979.
+
+* Algebras and combinators. Erwin Engeler, Algebra Universalis,
+  vol. 13, pages 389-392, 1981.
+
+* A Set-Theoretical Definition of Application. Gordon D. Plotkin,
+  University of Edinburgh, Technical Report MIP-R-95, 1972.
+
+* Set-theoretical and other elementary models of the λ-calculus.
+  Gordon D. Plotkin, Theoretical Computer Science, vol. 121,
+  pages 351-409, 1993.
+
+* The Parametric Lambda Calculus. Simona Ronchi Della Rocca and Luca
+  Paolini, Springer, 2004.
+
+* Data Types as Lattices. Dana Scott, SIAM Journal on Computing,
+  vol. 5, pages 522-587, 1976.
 
