@@ -35,7 +35,7 @@ Pull requests are encouraged.
   - [Properties](/Properties/): Progress and Preservation
   - [DeBruijn](/DeBruijn/): Inherently typed De Bruijn representation
   - [More](/More/): Additional constructs of simply-typed lambda calculus
-  - [Bisimulation](/Bisimulation/) : Relating reductions systems
+  - [Bisimulation](/Bisimulation/): Relating reductions systems
   - [Inference](/Inference/): Bidirectional type inference
   - [Untyped](/Untyped/): Untyped lambda calculus with full normalisation
 
