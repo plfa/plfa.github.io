@@ -88,7 +88,7 @@ Lectures take place Monday, Wednesday, and Friday in AT 7.02. (Moved from AT 5.0
  <tr>
   <td>11</td>
   <td><b>26 Nov</b> (no class)</td>
-  <td><b>28 Nov</b> <a href="/Quantitative/">Quantitative</a> (Wen)</td>
+  <td><b>28 Nov</b> Quantitative (Wen)</td>
   <td><b>30 Nov</b> (mock exam)</td>
  </tr>
 </table>
