@@ -94,6 +94,7 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
 * [Assignment 1][Assignment1] due Friday 19 April
+
 <!--
 * [Assignment 2][Assignment2] due Friday 17 May
 * [Assignment 3][Assignment3] due Friday 
