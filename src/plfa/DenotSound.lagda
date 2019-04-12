@@ -34,17 +34,17 @@ open import Function using (_∘_)
 
 ## Reduction implies denotational equality
 
+[JGS: todo: add a corollary regarding multi-step reduction to WHNF.]
+
 We prove that if a term M reduces to N, then M and N are
 denotationally equal. We shall prove each direction of the
 if-and-only-if separately. One direction will look just like a type
 preservation proof. The other direction is like proving type
-preservation for reduction going in reverse.
-
-[PLW:
-  "type preservation for reduction going in reverse"
-  is a well-known property called _subject expansion_.
-  It is also well-known that subject expansion is
-  false for most typed lambda calculi!]
+preservation for reduction going in reverse.  Recall that type
+preservation is sometimes called subject reduction. Preservation in
+reverse is a well-known property and is called _subject expansion_. It
+is also well-known that subject expansion is false for most typed
+lambda calculi!
 
 
 ### Forward reduction preserves denotations
@@ -523,14 +523,14 @@ subst-reflect (sub d lt) eq
     as well as δ₂ ⊢ M₂ ↓ v₁ and γ `⊢ σ ↓ δ₂.
     By Env⊑ we have  δ₁ ⊔ δ₂ ⊢ M₁ ↓ v₁ ↦ v₃ and δ₁ ⊔ δ₂ ⊢ M₂ ↓ v₁
     (using EnvConjR1⊑ and EnvConjR2⊑), and therefore δ₁ ⊔ δ₂ ⊢ M₁ · M₂ ↓ v₃.
-    We conclude this case by obtaining γ `⊢ σ ↓ δ₁ ⊔ δ₂
+    We conclude this case by obtaining γ ⊢ σ ↓ δ₁ ⊔ δ₂
     by the subst-⊔ lemma.
 
 * Case (↦-intro): We have subst σ M ≡ ƛ L'. We proceed by cases on M.
   * Case M ≡ ` x: We apply the subst-reflect-var lemma.
 
   * Case M ≡ ƛ M': By the induction hypothesis, we have
-    (δ' , v') ⊢ M' ↓ v₂ and (δ , v₁) `⊢ exts σ ↓ (δ' , v').
+    (δ' , v') ⊢ M' ↓ v₂ and (δ , v₁) ⊢ exts σ ↓ (δ' , v').
     From the later we have (δ , v₁) ⊢ # 0 ↓ v'.
     By the lemma var-inv we have v' ⊑ v₁, so by the up-env lemma we
     have (δ' , v₁) ⊢ M' ↓ v₂ and therefore δ' ⊢ ƛ M' ↓ v₁ → v₂.  We
@@ -539,16 +539,16 @@ subst-reflect (sub d lt) eq
     rename-inc-reflect to obtain δ ⊢ σ k ↓ nth k δ', so this case is
     complete.
 
-* Case (⊥-intro): We choose `⊥ for δ.
-  We have `⊥ ⊢ M ↓ ⊥ by (⊥-intro).
-  We have δ `⊢ σ ↓ `⊥ by the lemma subst-empty.
+* Case (⊥-intro): We choose ⊥ for δ.
+  We have ⊥ ⊢ M ↓ ⊥ by (⊥-intro).
+  We have δ ⊢ σ ↓ ⊥ by the lemma subst-empty.
 
 * Case (⊔-intro): By the induction hypothesis we have
-  δ₁ ⊢ M ↓ v₁, δ₂ ⊢ M ↓ v₂, δ `⊢ σ ↓ δ₁, and δ `⊢ σ ↓ δ₂.
+  δ₁ ⊢ M ↓ v₁, δ₂ ⊢ M ↓ v₂, δ ⊢ σ ↓ δ₁, and δ ⊢ σ ↓ δ₂.
   We have δ₁ ⊔ δ₂ ⊢ M ↓ v₁ and δ₁ ⊔ δ₂ ⊢ M ↓ v₂
   by Env⊑ with EnvConjR1⊑ and EnvConjR2⊑.
   So by (⊔-intro) we have δ₁ ⊔ δ₂ ⊢ M ↓ v₁ ⊔ v₂.
-  By subst-⊔ we conclude that δ `⊢ σ ↓ δ₁ ⊔ δ₂.
+  By subst-⊔ we conclude that δ ⊢ σ ↓ δ₁ ⊔ δ₂.
    
 
 #### Single substitution reflects denotations

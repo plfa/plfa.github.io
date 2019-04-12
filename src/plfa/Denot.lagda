@@ -3,18 +3,12 @@ title     : "Denot: Denotational semantics for the untyped lambda calculus"
 layout    : page
 prev      : /Untyped/
 permalink : /Denot/
-next      : /Acknowledgements/
+next      : /DenotCompositional/
 ---
 
 \begin{code}
 module plfa.Denot where
 \end{code}
-
-[PLW:
-  Perhaps break this chapter into three chapters:
-    - The denotational semantics.
-    - The proof that the semantics is compositional.
-    - The proof that reduction preserves and reflects the semantics.]
 
 The lambda calculus is a language about _functions_, that is, mappings
 from input to output. In computing we often think of such
@@ -155,23 +149,8 @@ data _⊑_ : Value → Value → Set where
   Dist⊑ : ∀{v₁ v₂ v₃}
          --------------------------------------
        → v₁ ↦ (v₂ ⊔ v₃) ⊑ (v₁ ↦ v₂) ⊔ (v₁ ↦ v₃)
-
-{-
-  Dist⊑ : ∀{v₁ v₂ v₃ w}
-       → v₁ ↦ v₂ ⊑ w
-       → v₁ ↦ v₃ ⊑ w
-         --------------------------------------
-       → v₁ ↦ (v₂ ⊔ v₃) ⊑ w
--}
 \end{code}
-[PLW: If we reformulate Dist⊑, perhaps Trans⊑ becomes a theorem.
 
-  Dist⊑ : ∀{v₁ v₂ v₃ v}
-         v₁ ↦ v₂ ⊑ v
-         v₁ ↦ v₃ ⊑ v
-         ------------------
-       → v₁ ↦ (v₂ ⊔ v₃) ⊑ v
-]
 
 The first five rules are straightforward.
 The rule `Fun⊑` captures when it is OK to match a higher-order argument
@@ -190,18 +169,6 @@ Refl⊑ : ∀ {v} → v ⊑ v
 Refl⊑ {⊥} = Bot⊑
 Refl⊑ {v ↦ v'} = Fun⊑ Refl⊑ Refl⊑
 Refl⊑ {v₁ ⊔ v₂} = ConjL⊑ (ConjR1⊑ Refl⊑) (ConjR2⊑ Refl⊑)
-\end{code}
-
-With reflexivity in hand, the old distributivity rule is a consequence of the new.
-\begin{code}
-{-
-dist⊑ : ∀{v₁ v₂ v₃}
-         --------------------------------------
-       → v₁ ↦ (v₂ ⊔ v₃) ⊑ (v₁ ↦ v₂) ⊔ (v₁ ↦ v₃)
-dist⊑ {v₁} {v₂} {v₃} =
-  Dist⊑ (ConjR1⊑ Refl⊑)
-        (ConjR2⊑ Refl⊑)
--}
 \end{code}
 
 The `⊔` operation is monotonic with respect to `⊑`, that is, given two

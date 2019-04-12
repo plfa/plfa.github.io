@@ -31,22 +31,22 @@ open import Function using (_∘_)
 -- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
 \end{code}
 
-## Compositionality and inversion lemmas 
+## Compositionality
 
-As mentioned above, we want to fill in the ellipses in the following
-equations to show that the semantics is compositional.
+To prove that the semantics is compositional, we need to fill in the
+ellipses in the following equations.
 
     ℰ (ƛ M) ≃ ... ℰ M ...
     ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
 
 Regarding the first equation, we need a function that maps a
 Denotation (Γ , ★) to a Denotation Γ. This function, let us name it ℱ,
-needs to mimic the non-recursive part of the semantics when applied to
-a lambda term.  In particular, we need to consider the rules
-(↦-intro), (⊥-intro), and (⊔-intro). So ℱ has three parameters, the
-denotation D of the subterm M, an environment γ, and a value v.  If we
-define ℱ by recursion on the value v, then it will match up nicely
-with the three rules (↦-intro), (⊥-intro), and (⊔-intro).
+should mimic the non-recursive part of the semantics when applied to a
+lambda term.  In particular, we need to consider the rules (↦-intro),
+(⊥-intro), and (⊔-intro). So ℱ has three parameters, the denotation D
+of the subterm M, an environment γ, and a value v.  If we define ℱ by
+recursion on the value v, then it will match up nicely with the three
+rules (↦-intro), (⊥-intro), and (⊔-intro).
 
 \begin{code}
 ℱ : ∀{Γ} → Denotation (Γ , ★) → Denotation Γ
