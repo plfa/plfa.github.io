@@ -29,34 +29,39 @@ open import Relation.Nullary using (Dec; yes; no)
 \end{code}
 
 
-In this chapter we prove that the denotational semantics is adequate.
-Adequacy states that if a term M is denotationally equal to another
-term in normal form, then M reduces to normal form.  In particular, we
-shall be concerned with is call-by-name reduction, which reduces terms
-to weak-head normal forms (WHNF) or diverges. Recall that a term in
-WHNF is simply a lambda abstraction.
+In this chapter we prove that the denotational semantics is adequate,
+that is, if a term M is denotationally equal to another term in normal
+form, then M reduces to normal form. For the lambda calculus there are
+may choices of normal forms: normal form, head normal form, and weak
+head normal form. We shall focus on reduction to weak-head normal form
+(WHNF), that is, to lambda abstraction.  It is well known that if a
+term can reduce to WHNF using full β reduction, then it can also
+reduce to WHNF using the call-by-name reduction strategy.  So in this
+chapter we shallow narrow our focus to call-by-name.
 
-In our case, denotational equality is defined in terms of the semantic
-judgement γ ⊢ M ↓ v. Suppose M is denotationally equal to some lambda
-abstraction, that is, ℰ M ≃ ℰ (ƛ N).  For any γ, we have γ ⊢ ƛ N ↓ ⊥ ↦
-⊥, so then we must also have γ ⊢ M ↓ (⊥ ↦ ⊥). We will show that γ ⊢ M
-↓ (⊥ ↦ ⊥) implies that M reduces to WHNF.  In other words, whenever
-the semantic judgement says M results in a function, then M is a
-terminating program, i.e., it reduces to a lambda via call-by-name.
+Recall that we have defined denotational equality by means of the
+semantic judgement γ ⊢ M ↓ v. Suppose M is denotationally equal to
+some lambda abstraction, that is, ℰ M ≃ ℰ (ƛ N).  For any γ, we have γ
+⊢ ƛ N ↓ ⊥ ↦ ⊥, so then we must also have γ ⊢ M ↓ (⊥ ↦ ⊥). We will show
+that γ ⊢ M ↓ (⊥ ↦ ⊥) implies that M reduces to WHNF.  In other words,
+whenever the semantic judgement says M results in a function, then M
+is a terminating program, i.e., it reduces to a lambda via
+call-by-name.
 
 The proof will relate the semantic judgment γ ⊢ M ↓ v to a
-call-by-name big-step semantics , written γ' ⊢ M ⇓ c, where c is a
+call-by-name big-step semantics, written γ' ⊢ M ⇓ c, where c is a
 closure (a term paired with an environment) and γ' is an environment
 that maps variables to closures. The proof will be an induction on the
 derivation of γ ⊢ M ↓ v, and to strengthen the induction hypothesis,
-we will relate semantic values to closures using a _logical relation_ 𝕍.
+we will relate semantic values to closures using a _logical relation_
+𝕍.
 
 The rest of this chapter is organized as follows.
 
-* We loosen the requirement that M result in a function value such as
-  (⊥ ↦ ⊥) to instead require that M result in a value that is greater
-  than a function value. We establish several properties about
-  being ``above a function''.
+* We loosen the requirement that M result in a function value to
+  instead require that M result in a value that is greater than or
+  equal to a function value. We establish several properties about
+  being ``greater than a function''.
 
 * We define the call-by-name big-step semantics of the lambda calculus
   and prove that it is deterministic.
@@ -70,13 +75,18 @@ The rest of this chapter is organized as follows.
 * We prove adequacy as a corollary to the main lemma.
 
 
-## The property of being above a function
+## The property of being greater or equal to a function
 
+We define the following short-hand for saying that a value is
+greather-than or equal to a function value.
 
 \begin{code}
 AboveFun : Value → Set
 AboveFun v = Σ[ v₁ ∈ Value ] Σ[ v₂ ∈ Value ] v₁ ↦ v₂ ⊑ v
 \end{code}
+
+If a value v is greater than a function, then an even greater value v'
+is too.
 
 \begin{code}
 AboveFun-⊑ : ∀{v v' : Value}
@@ -86,18 +96,7 @@ AboveFun-⊑ : ∀{v v' : Value}
 AboveFun-⊑ ⟨ v₁ , ⟨ v₂ , lt' ⟩ ⟩ lt = ⟨ v₁ , ⟨ v₂ , Trans⊑ lt' lt ⟩ ⟩
 \end{code}
 
-\begin{code}
-not-AboveFun-⊔-inv : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂)
-              → ¬ AboveFun v₁ × ¬ AboveFun v₂
-not-AboveFun-⊔-inv af = ⟨ f af , g af ⟩
-  where
-    f : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂) → ¬ AboveFun v₁
-    f{v₁}{v₂} af12 ⟨ v , ⟨ v' , lt ⟩ ⟩ =
-        contradiction ⟨ v , ⟨ v' , ConjR1⊑ lt ⟩ ⟩ af12
-    g : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂) → ¬ AboveFun v₂
-    g{v₁}{v₂} af12 ⟨ v , ⟨ v' , lt ⟩ ⟩ =
-        contradiction ⟨ v , ⟨ v' , ConjR2⊑ lt ⟩ ⟩ af12
-\end{code}
+The bottom value ⊥ is not greater than a function.
 
 \begin{code}
 AboveFun⊥ : ¬ AboveFun ⊥
@@ -110,6 +109,8 @@ AboveFun⊥ ⟨ v₁ , ⟨ v₂ , lt ⟩ ⟩
 ... | ()
 \end{code}
 
+If the join of two values v₁ and v₂ is greater than a function, then
+at least one of them is too.
 
 \begin{code}
 AboveFun-⊔ : ∀{v₁ v₂}
@@ -125,6 +126,8 @@ AboveFun-⊔{v₁}{v₂} ⟨ v , ⟨ v' , v↦v'⊑v₁⊔v₂ ⟩ ⟩
 ... | inj₂ x = inj₂ ⟨ A , ⟨ B , (∈→⊑ x) ⟩ ⟩
 \end{code}
 
+On the other hand, if neither of v₁ and v₂ is greater than a function,
+then their join is also not greater than a function.
 
 \begin{code}
 not-AboveFun-⊔ : ∀{v₁ v₂ : Value}
@@ -136,6 +139,24 @@ not-AboveFun-⊔ af1 af2 af12
 ... | inj₂ x = contradiction x af2
 \end{code}
 
+The converse is also true. If the join of two values is not above a
+function, then neither of them is individually.
+
+\begin{code}
+not-AboveFun-⊔-inv : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂)
+              → ¬ AboveFun v₁ × ¬ AboveFun v₂
+not-AboveFun-⊔-inv af = ⟨ f af , g af ⟩
+  where
+    f : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂) → ¬ AboveFun v₁
+    f{v₁}{v₂} af12 ⟨ v , ⟨ v' , lt ⟩ ⟩ =
+        contradiction ⟨ v , ⟨ v' , ConjR1⊑ lt ⟩ ⟩ af12
+    g : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂) → ¬ AboveFun v₂
+    g{v₁}{v₂} af12 ⟨ v , ⟨ v' , lt ⟩ ⟩ =
+        contradiction ⟨ v , ⟨ v' , ConjR2⊑ lt ⟩ ⟩ af12
+\end{code}
+
+The property of being greater than a function value is decidable, as
+exhibited by the following function.
 
 \begin{code}
 AboveFun? : (v : Value) → Dec (AboveFun v)
@@ -151,6 +172,12 @@ AboveFun? (v₁ ⊔ v₂)
 
 ## Big-step semantics for call-by-name lambda calculus
 
+To better align with the denotational semantics, we shall use an
+environment-passing big-step semantics. Because this is call-by-name,
+an environment maps each variable to a closure, that is, to a term
+paired with its environment. (Environments and closures are mutually
+recursive.) We define environments and closures as follows.
+
 \begin{code}
 ClosEnv : Context → Set
 
@@ -160,8 +187,8 @@ data Clos : Set where
 ClosEnv Γ = ∀ (x : Γ ∋ ★) → Clos
 \end{code}
 
-
-We have the empty environment, and we can extend an environment.
+As usual, we have the empty environment, and we can extend an
+environment.
 \begin{code}
 ∅' : ClosEnv ∅
 ∅' ()
@@ -171,18 +198,14 @@ _,'_ : ∀ {Γ} → ClosEnv Γ → Clos → ClosEnv (Γ , ★)
 (γ ,' c) (S x) = γ x
 \end{code}
 
-[JGS: todo: remove kth]
-
-\begin{code}
-kth : ∀{Γ} → (Γ ∋ ★) → ClosEnv Γ → Clos
-kth x γ = γ x
-\end{code}
+The following is the big-step semantics for call-by-name evaluation,
+which we describe below.
 
 \begin{code}
 data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
 
   ⇓-var : ∀{Γ}{γ : ClosEnv Γ}{x : Γ ∋ ★}{Δ}{δ : ClosEnv Δ}{M : Δ ⊢ ★}{c}
-        → kth x γ ≡ clos M δ
+        → γ x ≡ clos M δ
         → δ ⊢ M ⇓ c
           -----------
         → γ ⊢ ` x ⇓ c
@@ -196,6 +219,23 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
        → γ ⊢ L · M ⇓ c
 \end{code}
 
+* The (⇓-var) rule evaluates a variable by finding the associated
+  closure in the environment and then evaluating the closure.
+
+* The (⇓-lam) rule turns a lambda abstraction into a closure
+  by packaging it up with its environment.
+
+* The (⇓-app) rule performs function application by first evaluating
+  the term L in operator position. If that produces a closure containing
+  a lambda abstraction (ƛ L'), then we evaluate the body L' in an
+  environment extended with the argument M. Note that M is not
+  evaluated in rule (⇓-app) because this is call-by-name and not
+  call-by-value.
+
+
+If big-step semantics says that a term M evaluates to both c and c',
+then in fact c and c' are identical. So this big-step relation is a
+function in the mathematical sense.
 
 \begin{code}
 ⇓-determ : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{c c' : Clos}
@@ -352,18 +392,11 @@ sub-𝔼 {clos M x} {v} {v'} evc lt fv
       ⟨ c , ⟨ Mc , sub-𝕍 vvc lt ⟩ ⟩
 \end{code}
 
-[JGS: todo: remove this]
-\begin{code}
-𝔾-nth : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
-         → 𝔾 γ γ' → 𝔼 (nth x γ) (kth x γ')
-𝔾-nth {Γ}{γ}{γ'}{x} g = g {x}
-\end{code}
-
 \begin{code}
 kth-x : ∀{Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
      → Σ[ Δ ∈ Context ] Σ[ δ ∈ ClosEnv Δ ] Σ[ M ∈ Δ ⊢ ★ ]
-                 kth x γ' ≡ clos M δ
-kth-x{γ' = γ'}{x = x} with kth x γ'
+                 γ' x ≡ clos M δ
+kth-x{γ' = γ'}{x = x} with γ' x
 ... | clos{Γ = Δ} M δ = ⟨ Δ , ⟨ δ , ⟨ M , refl ⟩ ⟩ ⟩
 \end{code}
 
