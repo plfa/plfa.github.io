@@ -3,7 +3,7 @@ title     : "DenotSound: Soundness of reduction with respect to denotational sem
 layout    : page
 prev      : /DenotCompositional/
 permalink : /DenotSound/
-next      : /Acknowledgements/
+next      : /DenotAdequate/
 ---
 
 \begin{code}

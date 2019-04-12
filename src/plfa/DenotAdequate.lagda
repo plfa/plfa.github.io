@@ -1,0 +1,438 @@
+---
+title     : "DenotAdequacy: Adequacy of denotational semantics with respect to operational semantics"
+layout    : page
+prev      : /DenotSound/
+permalink : /DenotAdequate/
+next      : /Acknowledgements/
+---
+
+\begin{code}
+module plfa.DenotAdequate where
+\end{code}
+
+## Imports
+
+\begin{code}
+open import plfa.Untyped
+open import plfa.Denot
+
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; _≢_; refl; sym; trans; cong; cong₂; cong-app)
+open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+  renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum
+open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Negation using (contradiction)
+open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
+open import Data.Unit
+open import Relation.Nullary using (Dec; yes; no)
+\end{code}
+
+
+In this chapter we prove that the denotational semantics is adequate.
+Adequacy states that if a term M is denotationally equal to another
+term in normal form, then M reduces to normal form.  In particular, we
+shall be concerned with is call-by-name reduction, which reduces terms
+to weak-head normal forms (WHNF) or diverges. Recall that a term in
+WHNF is simply a lambda abstraction.
+
+In our case, denotational equality is defined in terms of the semantic
+judgement γ ⊢ M ↓ v. Suppose M is denotationally equal to some lambda
+abstraction, that is, ℰ M ≃ ℰ (ƛ N).  For any γ, we have γ ⊢ ƛ N ↓ ⊥ ↦
+⊥, so then we must also have γ ⊢ M ↓ (⊥ ↦ ⊥). We will show that γ ⊢ M
+↓ (⊥ ↦ ⊥) implies that M reduces to WHNF.  In other words, whenever
+the semantic judgement says M results in a function, then M is a
+terminating program, i.e., it reduces to a lambda via call-by-name.
+
+The proof will relate the semantic judgment γ ⊢ M ↓ v to a
+call-by-name big-step semantics , written γ' ⊢ M ⇓ c, where c is a
+closure (a term paired with an environment) and γ' is an environment
+that maps variables to closures. The proof will be an induction on the
+derivation of γ ⊢ M ↓ v, and to strengthen the induction hypothesis,
+we will relate semantic values to closures using a _logical relation_ 𝕍.
+
+The rest of this chapter is organized as follows.
+
+* We loosen the requirement that M result in a function value such as
+  (⊥ ↦ ⊥) to instead require that M result in a value that is greater
+  than a function value. We establish several properties about
+  being ``above a function''.
+
+* We define the call-by-name big-step semantics of the lambda calculus
+  and prove that it is deterministic.
+
+* We define the logical relation 𝕍 that relates values and closures,
+  and extend it to a relation on terms 𝔼 and environments 𝔾.
+
+* We prove the main lemma,
+  that if 𝔾 γ γ' and γ ⊢ M ↓ v, then 𝔼 v (clos M γ').
+
+* We prove adequacy as a corollary to the main lemma.
+
+
+## The property of being above a function
+
+
+\begin{code}
+AboveFun : Value → Set
+AboveFun v = Σ[ v₁ ∈ Value ] Σ[ v₂ ∈ Value ] v₁ ↦ v₂ ⊑ v
+\end{code}
+
+\begin{code}
+AboveFun-⊑ : ∀{v v' : Value}
+      → AboveFun v → v ⊑ v'
+        -------------------
+      → AboveFun v'
+AboveFun-⊑ ⟨ v₁ , ⟨ v₂ , lt' ⟩ ⟩ lt = ⟨ v₁ , ⟨ v₂ , Trans⊑ lt' lt ⟩ ⟩
+\end{code}
+
+\begin{code}
+not-AboveFun-⊔-inv : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂)
+              → ¬ AboveFun v₁ × ¬ AboveFun v₂
+not-AboveFun-⊔-inv af = ⟨ f af , g af ⟩
+  where
+    f : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂) → ¬ AboveFun v₁
+    f{v₁}{v₂} af12 ⟨ v , ⟨ v' , lt ⟩ ⟩ =
+        contradiction ⟨ v , ⟨ v' , ConjR1⊑ lt ⟩ ⟩ af12
+    g : ∀{v₁ v₂ : Value} → ¬ AboveFun (v₁ ⊔ v₂) → ¬ AboveFun v₂
+    g{v₁}{v₂} af12 ⟨ v , ⟨ v' , lt ⟩ ⟩ =
+        contradiction ⟨ v , ⟨ v' , ConjR2⊑ lt ⟩ ⟩ af12
+\end{code}
+
+\begin{code}
+AboveFun⊥ : ¬ AboveFun ⊥
+AboveFun⊥ ⟨ v₁ , ⟨ v₂ , lt ⟩ ⟩
+    with sub-inv-fun lt
+... | ⟨ Γ , ⟨ f , ⟨ Γ⊆⊥ , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
+    with Funs∈ f
+... | ⟨ A , ⟨ B , m ⟩ ⟩
+    with Γ⊆⊥ m
+... | ()
+\end{code}
+
+
+\begin{code}
+AboveFun-⊔ : ∀{v₁ v₂}
+           → AboveFun (v₁ ⊔ v₂)
+           → AboveFun v₁ ⊎ AboveFun v₂
+AboveFun-⊔{v₁}{v₂} ⟨ v , ⟨ v' , v↦v'⊑v₁⊔v₂ ⟩ ⟩ 
+    with sub-inv-fun v↦v'⊑v₁⊔v₂
+... | ⟨ Γ , ⟨ f , ⟨ Γ⊆v₁⊔v₂ , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
+    with Funs∈ f
+... | ⟨ A , ⟨ B , m ⟩ ⟩
+    with Γ⊆v₁⊔v₂ m
+... | inj₁ x = inj₁ ⟨ A , ⟨ B , (∈→⊑ x) ⟩ ⟩
+... | inj₂ x = inj₂ ⟨ A , ⟨ B , (∈→⊑ x) ⟩ ⟩
+\end{code}
+
+
+\begin{code}
+not-AboveFun-⊔ : ∀{v₁ v₂ : Value}
+               → ¬ AboveFun v₁ → ¬ AboveFun v₂
+               → ¬ AboveFun (v₁ ⊔ v₂)
+not-AboveFun-⊔ af1 af2 af12
+    with AboveFun-⊔ af12
+... | inj₁ x = contradiction x af1
+... | inj₂ x = contradiction x af2
+\end{code}
+
+
+\begin{code}
+AboveFun? : (v : Value) → Dec (AboveFun v)
+AboveFun? ⊥ = no AboveFun⊥
+AboveFun? (v ↦ v') = yes ⟨ v , ⟨ v' , Refl⊑ ⟩ ⟩
+AboveFun? (v₁ ⊔ v₂)
+    with AboveFun? v₁ | AboveFun? v₂
+... | yes ⟨ v , ⟨ v' , lt ⟩ ⟩ | _ = yes ⟨ v , ⟨ v' , (ConjR1⊑ lt) ⟩ ⟩
+... | no _ | yes ⟨ v , ⟨ v' , lt ⟩ ⟩ = yes ⟨ v , ⟨ v' , (ConjR2⊑ lt) ⟩ ⟩
+... | no x | no y = no (not-AboveFun-⊔ x y)
+\end{code}
+
+
+## Big-step semantics for call-by-name lambda calculus
+
+\begin{code}
+ClosEnv : Context → Set
+
+data Clos : Set where
+  clos : ∀{Γ} → (M : Γ ⊢ ★) → ClosEnv Γ → Clos
+
+ClosEnv Γ = ∀ (x : Γ ∋ ★) → Clos
+\end{code}
+
+
+We have the empty environment, and we can extend an environment.
+\begin{code}
+∅' : ClosEnv ∅
+∅' ()
+
+_,'_ : ∀ {Γ} → ClosEnv Γ → Clos → ClosEnv (Γ , ★)
+(γ ,' c) Z = c
+(γ ,' c) (S x) = γ x
+\end{code}
+
+[JGS: todo: remove kth]
+
+\begin{code}
+kth : ∀{Γ} → (Γ ∋ ★) → ClosEnv Γ → Clos
+kth x γ = γ x
+\end{code}
+
+\begin{code}
+data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
+
+  ⇓-var : ∀{Γ}{γ : ClosEnv Γ}{x : Γ ∋ ★}{Δ}{δ : ClosEnv Δ}{M : Δ ⊢ ★}{c}
+        → kth x γ ≡ clos M δ
+        → δ ⊢ M ⇓ c
+          -----------
+        → γ ⊢ ` x ⇓ c
+
+  ⇓-lam : ∀{Γ}{γ : ClosEnv Γ}{M : Γ , ★ ⊢ ★}
+        → γ ⊢ ƛ M ⇓ clos (ƛ M) γ
+
+  ⇓-app : ∀{Γ}{γ : ClosEnv Γ}{L M : Γ ⊢ ★}{Δ}{δ : ClosEnv Δ}{L' : Δ , ★ ⊢ ★}{c}
+       → γ ⊢ L ⇓ clos (ƛ L') δ   →   (δ ,' clos M γ) ⊢ L' ⇓ c
+         ----------------------------------------------------
+       → γ ⊢ L · M ⇓ c
+\end{code}
+
+
+\begin{code}
+⇓-determ : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{c c' : Clos}
+         → γ ⊢ M ⇓ c → γ ⊢ M ⇓ c'
+         → c ≡ c'
+⇓-determ (⇓-var eq1 mc) (⇓-var eq2 mc')
+      with trans (sym eq1) eq2
+... | refl = ⇓-determ mc mc'
+⇓-determ ⇓-lam ⇓-lam = refl
+⇓-determ (⇓-app mc mc₁) (⇓-app mc' mc'') 
+    with ⇓-determ mc mc'
+... | refl = ⇓-determ mc₁ mc''
+\end{code}
+
+
+## Relating values to closures
+
+\begin{code}
+𝔼 : Value → Clos → Set
+𝕍 : Value → Clos → Set
+\end{code}
+
+\begin{code}
+𝕍 v (clos (` x₁) γ) = Bot
+𝕍 v (clos (M · M₁) γ) = Bot
+𝕍 ⊥ (clos (ƛ M) γ) = ⊤
+𝕍 (v ↦ v') (clos (ƛ M) γ) =
+     (∀{c : Clos} → 𝔼 v c → AboveFun v' → Σ[ c' ∈ Clos ]
+           (γ ,' c) ⊢ M ⇓ c'  ×  𝕍 v' c')
+𝕍 (v₁ ⊔ v₂) (clos (ƛ M) γ) = 𝕍 v₁ (clos (ƛ M) γ) × 𝕍 v₂ (clos (ƛ M) γ)
+\end{code}
+
+\begin{code}
+𝔼 v (clos M γ) = AboveFun v → Σ[ c ∈ Clos ] γ ⊢ M ⇓ c × 𝕍 v c
+\end{code}
+
+\begin{code}
+𝔾 : ∀{Γ} → Env Γ → ClosEnv Γ → Set
+𝔾 {Γ} γ γ' = ∀{x : Γ ∋ ★} → 𝔼 (γ x) (γ' x)
+
+𝔾-∅ : 𝔾 `∅ ∅'
+𝔾-∅ {()}
+
+𝔾-ext : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{v c}
+      → 𝔾 γ γ' → 𝔼 v c → 𝔾 (γ `, v) (γ' ,' c)
+𝔾-ext {Γ} {γ} {γ'} g e {Z} = e
+𝔾-ext {Γ} {γ} {γ'} g e {S x} = g
+\end{code}
+
+
+\begin{code}
+data WHNF : ∀ {Γ A} → Γ ⊢ A → Set where
+
+  ƛ_ : ∀ {Γ} {N : Γ , ★ ⊢ ★}
+     → WHNF (ƛ N)
+
+𝕍→WHNF : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{v} → 𝕍 v (clos M γ) → WHNF M
+𝕍→WHNF {M = ` x} {v} ()
+𝕍→WHNF {M = ƛ M} {v} vc = ƛ_
+𝕍→WHNF {M = M · M₁} {v} ()
+\end{code}
+
+\begin{code}
+𝕍→lam : ∀{c v} → 𝕍 v c → Σ[ Γ ∈ Context ] Σ[ γ ∈ ClosEnv Γ ] Σ[ M ∈ Γ , ★ ⊢ ★ ]
+                 c ≡ clos (ƛ M) γ
+𝕍→lam {clos (` x₁) x} ()
+𝕍→lam {clos {Γ} (ƛ M) x} vc = ⟨ Γ , ⟨ x , ⟨ M , refl ⟩ ⟩ ⟩
+𝕍→lam {clos (M · M₁) x} ()
+\end{code}
+
+
+\begin{code}
+𝕍⊔-intro : ∀{c v₁ v₂} → 𝕍 v₁ c → 𝕍 v₂ c → 𝕍 (v₁ ⊔ v₂) c
+𝕍⊔-intro {clos (` x₁) x} () v2c
+𝕍⊔-intro {clos (ƛ M) x} v1c v2c = ⟨ v1c , v2c ⟩
+𝕍⊔-intro {clos (M · M₁) x} () v2c
+\end{code}
+
+\begin{code}
+not-AboveFun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{M : Γ , ★ ⊢ ★ }
+               → ¬ AboveFun v → 𝕍 v (clos (ƛ M) γ')
+not-AboveFun-𝕍 {⊥} af = tt
+not-AboveFun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , Refl⊑ ⟩ ⟩ af)
+not-AboveFun-𝕍 {v₁ ⊔ v₂} af
+    with not-AboveFun-⊔-inv af
+... | ⟨ af1 , af2 ⟩ =
+    ⟨ not-AboveFun-𝕍 af1 , not-AboveFun-𝕍 af2 ⟩
+\end{code}
+
+
+\begin{code}
+sub-𝕍 : ∀{c : Clos}{v v'} → 𝕍 v c → v' ⊑ v → 𝕍 v' c
+sub-𝔼 : ∀{c : Clos}{v v'} → 𝔼 v c → v' ⊑ v → 𝔼 v' c
+\end{code}
+
+\begin{code}
+sub-𝕍 {clos (` x₁) x} {v} vc Bot⊑ = vc
+sub-𝕍 {clos (ƛ M) x} {v} vc Bot⊑ = tt
+sub-𝕍 {clos (M · M₁) x} {v} vc Bot⊑ = vc
+sub-𝕍 {clos (` x₁) x} {v} () (ConjL⊑ lt lt₁)
+sub-𝕍 {clos (ƛ M) x} {v} vc (ConjL⊑ lt₁ lt₂) = ⟨ (sub-𝕍 vc lt₁) , sub-𝕍 vc lt₂ ⟩
+sub-𝕍 {clos (M · M₁) x} {v} () (ConjL⊑ lt lt₁)
+sub-𝕍 {clos (` x₁) x} {.(_ ⊔ _)} () (ConjR1⊑ lt)
+sub-𝕍 {clos (ƛ M) x} {.(_ ⊔ _)} ⟨ vv1 , vv2 ⟩ (ConjR1⊑ lt) = sub-𝕍 vv1 lt
+sub-𝕍 {clos (M · M₁) x} {.(_ ⊔ _)} () (ConjR1⊑ lt)
+sub-𝕍 {clos (` x₁) x} {.(_ ⊔ _)} () (ConjR2⊑ lt)
+sub-𝕍 {clos (ƛ M) x} {.(_ ⊔ _)} ⟨ vv1 , vv2 ⟩ (ConjR2⊑ lt) = sub-𝕍 vv2 lt
+sub-𝕍 {clos (M · M₁) x} {.(_ ⊔ _)} () (ConjR2⊑ lt)
+sub-𝕍 {c} {v} vc (Trans⊑{v₂ = v₂} lt lt₁) =
+    sub-𝕍 {c} {v₂} (sub-𝕍 {c}{v} vc lt₁) lt
+sub-𝕍 {clos (` x₁) x} {.(_ ↦ _)} () (Fun⊑ lt lt₁)
+sub-𝕍 {clos (ƛ M) x} {.(_ ↦ _)} vc (Fun⊑ lt lt₁) ev1 sf
+    with vc (sub-𝔼 ev1 lt) (AboveFun-⊑ sf lt₁)
+... | ⟨ c , ⟨ Mc , v4 ⟩ ⟩ = ⟨ c , ⟨ Mc , sub-𝕍 v4 lt₁ ⟩ ⟩
+sub-𝕍 {clos (M · M₁) x} {.(_ ↦ _)} () (Fun⊑ lt lt₁)
+sub-𝕍 {clos (` x₁) x} {.(_ ↦ _ ⊔ _ ↦ _)} () Dist⊑
+sub-𝕍 {clos (ƛ M) γ} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩
+    Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+    with AboveFun? v₂ | AboveFun? v₃
+... | yes af2 | no naf3
+    with vc12 ev1c af2
+... | ⟨ c2 , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩ 
+    with 𝕍→lam 𝕍2c
+... | ⟨ Γ' , ⟨ δ , ⟨ N , eq ⟩ ⟩ ⟩ rewrite eq =
+      let 𝕍3c = not-AboveFun-𝕍{v₃}{Γ'}{δ}{N} naf3 in
+      ⟨ clos (ƛ N) δ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
+sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+    | no naf2 | yes af3
+    with vc13 ev1c af3
+... | ⟨ c3 , ⟨ M⇓c3 , 𝕍3c ⟩ ⟩ 
+    with 𝕍→lam 𝕍3c
+... | ⟨ Γ' , ⟨ δ , ⟨ N , eq ⟩ ⟩ ⟩ rewrite eq =
+      let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ'}{δ}{N} naf2 in
+      ⟨ clos (ƛ N) δ , ⟨ M⇓c3 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
+sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+    | no naf2 | no naf3
+    with AboveFun-⊔ ⟨ v , ⟨ v' , lt ⟩ ⟩
+... | inj₁ af2 = ⊥-elim (contradiction af2 naf2)
+... | inj₂ af3 = ⊥-elim (contradiction af3 naf3)
+sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+    | yes af2 | yes af3
+    with vc12 ev1c af2 | vc13 ev1c af3
+... | ⟨ clos N δ , ⟨ Mc1 , v4 ⟩ ⟩
+    | ⟨ c2 , ⟨ Mc2 , v5 ⟩ ⟩ rewrite ⇓-determ Mc2 Mc1 with 𝕍→WHNF v4
+... | ƛ_ =
+      ⟨ clos N δ , ⟨ Mc1 , ⟨ v4 , v5 ⟩ ⟩ ⟩
+sub-𝕍 {clos (M · M₁) x} {.(_ ↦ _ ⊔ _ ↦ _)} () Dist⊑ 
+\end{code}
+
+\begin{code}
+sub-𝔼 {clos M x} {v} {v'} evc lt fv
+    with evc (AboveFun-⊑ fv lt)
+... | ⟨ c , ⟨ Mc , vvc ⟩ ⟩ =
+      ⟨ c , ⟨ Mc , sub-𝕍 vvc lt ⟩ ⟩
+\end{code}
+
+[JGS: todo: remove this]
+\begin{code}
+𝔾-nth : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
+         → 𝔾 γ γ' → 𝔼 (nth x γ) (kth x γ')
+𝔾-nth {Γ}{γ}{γ'}{x} g = g {x}
+\end{code}
+
+\begin{code}
+kth-x : ∀{Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
+     → Σ[ Δ ∈ Context ] Σ[ δ ∈ ClosEnv Δ ] Σ[ M ∈ Δ ⊢ ★ ]
+                 kth x γ' ≡ clos M δ
+kth-x{γ' = γ'}{x = x} with kth x γ'
+... | clos{Γ = Δ} M δ = ⟨ Δ , ⟨ δ , ⟨ M , refl ⟩ ⟩ ⟩
+\end{code}
+
+
+## Programs with function denotation terminate via call-by-name
+
+
+\begin{code}
+↓→𝔼 : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{M : Γ ⊢ ★ }{v}
+            → 𝔾 γ γ' → γ ⊢ M ↓ v → 𝔼 v (clos M γ')
+↓→𝔼 {Γ} {γ} {γ'} {`_ x} {v} g var sf 
+    with kth-x{Γ}{γ'}{x} | g{x = x}
+... | ⟨ Δ , ⟨ δ , ⟨ M , eq ⟩ ⟩ ⟩ | g' rewrite eq
+    with g' sf
+... | ⟨ c , ⟨ L⇓c , Vnc ⟩ ⟩ =
+      ⟨ c , ⟨ (⇓-var eq L⇓c) , Vnc ⟩ ⟩
+↓→𝔼 {Γ} {γ} {γ'} {L · M} {v} g (↦-elim{v₁ = v₁} d₁ d₂) sf
+    with ↓→𝔼 g d₁ ⟨ v₁ , ⟨ v , Refl⊑ ⟩ ⟩
+... | ⟨ clos (` x) δ , ⟨ L⇓c , () ⟩ ⟩
+... | ⟨ clos (L' · M') δ , ⟨ L⇓c , () ⟩ ⟩ 
+... | ⟨ clos (ƛ L') δ , ⟨ L⇓c , Vc ⟩ ⟩
+    with Vc {clos M γ'} (↓→𝔼 g d₂) sf
+... | ⟨ c' , ⟨ L'⇓c' , Vc' ⟩ ⟩ =
+    ⟨ c' , ⟨ ⇓-app L⇓c L'⇓c' , Vc' ⟩ ⟩
+↓→𝔼 {Γ} {γ} {γ'} {ƛ M} {v ↦ v'} g (↦-intro d) sf =
+  ⟨ (clos (ƛ M) γ') , ⟨ ⇓-lam , G ⟩ ⟩
+  where G : {c : Clos} → 𝔼 v c → AboveFun v'
+          → Σ-syntax Clos (λ c' → ((γ' ,' c) ⊢ M ⇓ c') × 𝕍 v' c')
+        G {c} evc sfv' = ↓→𝔼 (λ {x} → 𝔾-ext{Γ}{γ}{γ'} g evc {x}) d sfv'
+↓→𝔼 {Γ} {γ} {γ'} {M} {⊥} g ⊥-intro sf = ⊥-elim (AboveFun⊥ sf)
+↓→𝔼 {Γ} {γ} {γ'} {M} {v₁ ⊔ v₂} g (⊔-intro d₁ d₂) af12
+    with AboveFun? v₁ | AboveFun? v₂
+↓→𝔼 g (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) af12 | yes af1 | no naf2
+    with ↓→𝔼 g d₁ af1 
+... | ⟨ c1 , ⟨ M⇓c1 , 𝕍1c ⟩ ⟩
+    with 𝕍→lam 𝕍1c
+... | ⟨ Γ , ⟨ γ , ⟨ M , eq ⟩ ⟩ ⟩ rewrite eq =     
+    let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ}{γ}{M} naf2 in
+    ⟨ clos (ƛ M) γ , ⟨ M⇓c1 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
+↓→𝔼 g (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) af12 | no naf1  | yes af2
+    with ↓→𝔼 g d₂ af2
+... | ⟨ c2 , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
+    with 𝕍→lam 𝕍2c
+... | ⟨ Γ , ⟨ γ , ⟨ M , eq ⟩ ⟩ ⟩ rewrite eq =     
+    let 𝕍1c = not-AboveFun-𝕍{v₁}{Γ}{γ}{M} naf1 in
+    ⟨ clos (ƛ M) γ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
+↓→𝔼 g (⊔-intro d₁ d₂) af12 | no naf1  | no naf2
+    with AboveFun-⊔ af12
+... | inj₁ af1 = ⊥-elim (contradiction af1 naf1)
+... | inj₂ af2 = ⊥-elim (contradiction af2 naf2)
+↓→𝔼 g (⊔-intro d₁ d₂) af12 | yes af1 | yes af2
+    with ↓→𝔼 g d₁ af1 | ↓→𝔼 g d₂ af2 
+... | ⟨ c1 , ⟨ M⇓c1 , 𝕍1c ⟩ ⟩ | ⟨ c2 , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
+    rewrite ⇓-determ M⇓c2 M⇓c1 =
+      ⟨ c1 , ⟨ M⇓c1 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
+↓→𝔼 {Γ} {γ} {γ'} {M} {v} g (sub d lt) sf 
+    with ↓→𝔼 {Γ} {γ} {γ'} {M} g d (AboveFun-⊑ sf lt)
+... | ⟨ c , ⟨ M⇓c , 𝕍c ⟩ ⟩ =
+      ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍c lt ⟩ ⟩
+\end{code}
+
+
+## Proof of denotational adequacy
+
+
+\begin{code}
+adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
+         →  Σ[ c ∈ Clos ] ∅' ⊢ M ⇓ c
+adequacy{M}{N} eq 
+    with ↓→𝔼 𝔾-∅ ((proj₂ eq) (↦-intro ⊥-intro)) ⟨ ⊥ , ⟨ ⊥ , Refl⊑ ⟩ ⟩
+... | ⟨ c , ⟨ M⇓c , Vc ⟩ ⟩ = ⟨ c , M⇓c ⟩
+\end{code}
