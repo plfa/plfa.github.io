@@ -232,10 +232,9 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
   evaluated in rule (⇓-app) because this is call-by-name and not
   call-by-value.
 
-
-If big-step semantics says that a term M evaluates to both c and c',
-then in fact c and c' are identical. So this big-step relation is a
-function in the mathematical sense.
+If the big-step semantics says that a term M evaluates to both c and
+c', then c and c' are identical. In other words, the big-step relation
+is a partial function.
 
 \begin{code}
 ⇓-determ : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{c c' : Clos}
@@ -253,24 +252,55 @@ function in the mathematical sense.
 
 ## Relating values to closures
 
+Next we relate semantic values to closures.  The relation 𝕍 is for
+closures whose term is a lambda abstraction (i.e. in WHNF), whereas
+the relation 𝔼 is for any closure. Roughly speaking, 𝔼 v c will hold
+if, when v is greater than a function value, c evaluates to a closure
+c' in WHNF and 𝕍 v c'. Regarding 𝕍 v c, it will hold when c is in
+WHNF, and if v is a function, the body of c evaluates according to v.
+
 \begin{code}
-𝔼 : Value → Clos → Set
 𝕍 : Value → Clos → Set
+𝔼 : Value → Clos → Set
 \end{code}
+
+We define 𝕍 as a function from values and closures to Set and not as a
+data type because it is mutually recursive with 𝔼 in a negative
+position (to the left of an implication).  We first perform case
+analysis on the term in the closure. If the term is a variable or
+application, then 𝕍 is false (Bot). If the term is a lambda
+abstraction, we define 𝕍 by recursion on the value, which we
+describe below.
 
 \begin{code}
 𝕍 v (clos (` x₁) γ) = Bot
 𝕍 v (clos (M · M₁) γ) = Bot
 𝕍 ⊥ (clos (ƛ M) γ) = ⊤
 𝕍 (v ↦ v') (clos (ƛ M) γ) =
-     (∀{c : Clos} → 𝔼 v c → AboveFun v' → Σ[ c' ∈ Clos ]
-           (γ ,' c) ⊢ M ⇓ c'  ×  𝕍 v' c')
+    (∀{c : Clos} → 𝔼 v c → AboveFun v' → Σ[ c' ∈ Clos ]
+        (γ ,' c) ⊢ M ⇓ c'  ×  𝕍 v' c')
 𝕍 (v₁ ⊔ v₂) (clos (ƛ M) γ) = 𝕍 v₁ (clos (ƛ M) γ) × 𝕍 v₂ (clos (ƛ M) γ)
 \end{code}
+
+* If the value is ⊥, then the result is true (⊤).
+
+* If the value is a join (v₁ ⊔ v₂), then the result is the pair
+  (conjunction) of 𝕍 is true for both v₁ and v₂.
+
+* The important case is for a function value (v ↦ v') and closure
+  (clos (ƛ M) γ). Given any closure c such that 𝔼 v c, if v' is
+  greater than a function, then M evaluates (with γ extended with c)
+  to some closure c' and we have 𝕍 v' c'.
+
+
+The definition of 𝔼 is straightforward. If v is a greater than a
+function, then M evaluates to a closure related to v.
 
 \begin{code}
 𝔼 v (clos M γ) = AboveFun v → Σ[ c ∈ Clos ] γ ⊢ M ⇓ c × 𝕍 v c
 \end{code}
+
+
 
 \begin{code}
 𝔾 : ∀{Γ} → Env Γ → ClosEnv Γ → Set
