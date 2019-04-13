@@ -297,10 +297,15 @@ The definition of 𝔼 is straightforward. If v is a greater than a
 function, then M evaluates to a closure related to v.
 
 \begin{code}
-𝔼 v (clos M γ) = AboveFun v → Σ[ c ∈ Clos ] γ ⊢ M ⇓ c × 𝕍 v c
+𝔼 v (clos M γ') = AboveFun v → Σ[ c ∈ Clos ] γ' ⊢ M ⇓ c × 𝕍 v c
 \end{code}
 
-
+The proof of the main lemma is by induction on γ ⊢ M ↓ v, so it goes
+underneath lambda abstractions and must therefore reason about open
+terms (terms with variables). Thus, we also need to relate
+environments of semantic values to environments of closures.
+In the following, 𝔾 relates γ to γ' if the corresponding
+values and closures are related by 𝔼.
 
 \begin{code}
 𝔾 : ∀{Γ} → Env Γ → ClosEnv Γ → Set
@@ -314,6 +319,7 @@ function, then M evaluates to a closure related to v.
 𝔾-ext {Γ} {γ} {γ'} g e {Z} = e
 𝔾-ext {Γ} {γ} {γ'} g e {S x} = g
 \end{code}
+
 
 
 \begin{code}
