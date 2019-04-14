@@ -321,30 +321,35 @@ values and closures are related by 𝔼.
 \end{code}
 
 
+We shall need a few properties of the 𝕍 and 𝔼 relations.  The first is
+that a closure in the 𝕍 relation must be in weak-head normal form.  We
+define WHNF has follows.
 
 \begin{code}
 data WHNF : ∀ {Γ A} → Γ ⊢ A → Set where
-
   ƛ_ : ∀ {Γ} {N : Γ , ★ ⊢ ★}
      → WHNF (ƛ N)
+\end{code}
 
-𝕍→WHNF : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{v} → 𝕍 v (clos M γ) → WHNF M
+The proof goes by cases on the term in the closure.
+
+\begin{code}
+𝕍→WHNF : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{v}
+       → 𝕍 v (clos M γ) → WHNF M
 𝕍→WHNF {M = ` x} {v} ()
 𝕍→WHNF {M = ƛ M} {v} vc = ƛ_
 𝕍→WHNF {M = M · M₁} {v} ()
 \end{code}
 
-\begin{code}
-𝕍→lam : ∀{c v} → 𝕍 v c → Σ[ Γ ∈ Context ] Σ[ γ ∈ ClosEnv Γ ] Σ[ M ∈ Γ , ★ ⊢ ★ ]
-                 c ≡ clos (ƛ M) γ
-𝕍→lam {clos (` x₁) x} ()
-𝕍→lam {clos {Γ} (ƛ M) x} vc = ⟨ Γ , ⟨ x , ⟨ M , refl ⟩ ⟩ ⟩
-𝕍→lam {clos (M · M₁) x} ()
-\end{code}
-
+Next we have an introduction rule for 𝕍 that mimics the (⊔-intro)
+rule. If both v₁ and v₂ are related to a closure c, then their join is
+too.
 
 \begin{code}
-𝕍⊔-intro : ∀{c v₁ v₂} → 𝕍 v₁ c → 𝕍 v₂ c → 𝕍 (v₁ ⊔ v₂) c
+𝕍⊔-intro : ∀{c v₁ v₂}
+         → 𝕍 v₁ c → 𝕍 v₂ c
+           ---------------
+         → 𝕍 (v₁ ⊔ v₂) c
 𝕍⊔-intro {clos (` x₁) x} () v2c
 𝕍⊔-intro {clos (ƛ M) x} v1c v2c = ⟨ v1c , v2c ⟩
 𝕍⊔-intro {clos (M · M₁) x} () v2c
@@ -352,7 +357,9 @@ data WHNF : ∀ {Γ A} → Γ ⊢ A → Set where
 
 \begin{code}
 not-AboveFun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{M : Γ , ★ ⊢ ★ }
-               → ¬ AboveFun v → 𝕍 v (clos (ƛ M) γ')
+               → ¬ AboveFun v
+                 -------------------
+               → 𝕍 v (clos (ƛ M) γ')
 not-AboveFun-𝕍 {⊥} af = tt
 not-AboveFun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , Refl⊑ ⟩ ⟩ af)
 not-AboveFun-𝕍 {v₁ ⊔ v₂} af
@@ -368,57 +375,45 @@ sub-𝔼 : ∀{c : Clos}{v v'} → 𝔼 v c → v' ⊑ v → 𝔼 v' c
 \end{code}
 
 \begin{code}
-sub-𝕍 {clos (` x₁) x} {v} vc Bot⊑ = vc
-sub-𝕍 {clos (ƛ M) x} {v} vc Bot⊑ = tt
-sub-𝕍 {clos (M · M₁) x} {v} vc Bot⊑ = vc
-sub-𝕍 {clos (` x₁) x} {v} () (ConjL⊑ lt lt₁)
-sub-𝕍 {clos (ƛ M) x} {v} vc (ConjL⊑ lt₁ lt₂) = ⟨ (sub-𝕍 vc lt₁) , sub-𝕍 vc lt₂ ⟩
-sub-𝕍 {clos (M · M₁) x} {v} () (ConjL⊑ lt lt₁)
-sub-𝕍 {clos (` x₁) x} {.(_ ⊔ _)} () (ConjR1⊑ lt)
-sub-𝕍 {clos (ƛ M) x} {.(_ ⊔ _)} ⟨ vv1 , vv2 ⟩ (ConjR1⊑ lt) = sub-𝕍 vv1 lt
-sub-𝕍 {clos (M · M₁) x} {.(_ ⊔ _)} () (ConjR1⊑ lt)
-sub-𝕍 {clos (` x₁) x} {.(_ ⊔ _)} () (ConjR2⊑ lt)
-sub-𝕍 {clos (ƛ M) x} {.(_ ⊔ _)} ⟨ vv1 , vv2 ⟩ (ConjR2⊑ lt) = sub-𝕍 vv2 lt
-sub-𝕍 {clos (M · M₁) x} {.(_ ⊔ _)} () (ConjR2⊑ lt)
-sub-𝕍 {c} {v} vc (Trans⊑{v₂ = v₂} lt lt₁) =
-    sub-𝕍 {c} {v₂} (sub-𝕍 {c}{v} vc lt₁) lt
-sub-𝕍 {clos (` x₁) x} {.(_ ↦ _)} () (Fun⊑ lt lt₁)
-sub-𝕍 {clos (ƛ M) x} {.(_ ↦ _)} vc (Fun⊑ lt lt₁) ev1 sf
-    with vc (sub-𝔼 ev1 lt) (AboveFun-⊑ sf lt₁)
-... | ⟨ c , ⟨ Mc , v4 ⟩ ⟩ = ⟨ c , ⟨ Mc , sub-𝕍 v4 lt₁ ⟩ ⟩
-sub-𝕍 {clos (M · M₁) x} {.(_ ↦ _)} () (Fun⊑ lt lt₁)
-sub-𝕍 {clos (` x₁) x} {.(_ ↦ _ ⊔ _ ↦ _)} () Dist⊑
-sub-𝕍 {clos (ƛ M) γ} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩
-    Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+sub-𝕍 {clos (` x) γ} {v} () lt
+sub-𝕍 {clos (M₁ · M₂) γ} () lt
+sub-𝕍 {clos (ƛ M) γ} vc Bot⊑ = tt
+sub-𝕍 {clos (ƛ M) γ} vc (ConjL⊑ lt1 lt2) = ⟨ (sub-𝕍 vc lt1) , sub-𝕍 vc lt2 ⟩
+sub-𝕍 {clos (ƛ M) γ} ⟨ vv1 , vv2 ⟩ (ConjR1⊑ lt) = sub-𝕍 vv1 lt
+sub-𝕍 {clos (ƛ M) γ} ⟨ vv1 , vv2 ⟩ (ConjR2⊑ lt) = sub-𝕍 vv2 lt
+sub-𝕍 {clos (ƛ M) γ} vc (Trans⊑{v₂ = v₂} lt1 lt2) = sub-𝕍 (sub-𝕍 vc lt2) lt1
+sub-𝕍 {clos (ƛ M) γ} vc (Fun⊑ lt1 lt2) ev1 sf
+    with vc (sub-𝔼 ev1 lt1) (AboveFun-⊑ sf lt2)
+... | ⟨ c , ⟨ Mc , v4 ⟩ ⟩ = ⟨ c , ⟨ Mc , sub-𝕍 v4 lt2 ⟩ ⟩
+sub-𝕍 {clos (ƛ M) γ} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩ Dist⊑ ev1c sf
     with AboveFun? v₂ | AboveFun? v₃
 ... | yes af2 | no naf3
     with vc12 ev1c af2
-... | ⟨ c2 , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩ 
-    with 𝕍→lam 𝕍2c
-... | ⟨ Γ' , ⟨ δ , ⟨ N , eq ⟩ ⟩ ⟩ rewrite eq =
-      let 𝕍3c = not-AboveFun-𝕍{v₃}{Γ'}{δ}{N} naf3 in
-      ⟨ clos (ƛ N) δ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
-sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+... | ⟨ clos {Γ'} N γ₁ , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
+    with 𝕍→WHNF 𝕍2c
+... | ƛ_ {N = N'} =
+      let 𝕍3c = not-AboveFun-𝕍{v₃}{Γ'}{γ₁}{N'} naf3 in
+      ⟨ clos (ƛ N') γ₁ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
+sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩ Dist⊑ ev1c sf
     | no naf2 | yes af3
     with vc13 ev1c af3
-... | ⟨ c3 , ⟨ M⇓c3 , 𝕍3c ⟩ ⟩ 
-    with 𝕍→lam 𝕍3c
-... | ⟨ Γ' , ⟨ δ , ⟨ N , eq ⟩ ⟩ ⟩ rewrite eq =
-      let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ'}{δ}{N} naf2 in
-      ⟨ clos (ƛ N) δ , ⟨ M⇓c3 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
+... | ⟨ clos {Γ'} N γ₁ , ⟨ M⇓c3 , 𝕍3c ⟩ ⟩ 
+    with 𝕍→WHNF 𝕍3c
+... | ƛ_ {N = N'} =
+      let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ'}{γ₁}{N'} naf2 in
+      ⟨ clos (ƛ N') γ₁ , ⟨ M⇓c3 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
 sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
     | no naf2 | no naf3
     with AboveFun-⊔ ⟨ v , ⟨ v' , lt ⟩ ⟩
 ... | inj₁ af2 = ⊥-elim (contradiction af2 naf2)
 ... | inj₂ af3 = ⊥-elim (contradiction af3 naf3)
-sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c ⟨ v , ⟨ v' , lt ⟩ ⟩
+sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c sf
     | yes af2 | yes af3
     with vc12 ev1c af2 | vc13 ev1c af3
 ... | ⟨ clos N δ , ⟨ Mc1 , v4 ⟩ ⟩
     | ⟨ c2 , ⟨ Mc2 , v5 ⟩ ⟩ rewrite ⇓-determ Mc2 Mc1 with 𝕍→WHNF v4
 ... | ƛ_ =
       ⟨ clos N δ , ⟨ Mc1 , ⟨ v4 , v5 ⟩ ⟩ ⟩
-sub-𝕍 {clos (M · M₁) x} {.(_ ↦ _ ⊔ _ ↦ _)} () Dist⊑ 
 \end{code}
 
 \begin{code}
@@ -467,18 +462,18 @@ kth-x{γ' = γ'}{x = x} with γ' x
     with AboveFun? v₁ | AboveFun? v₂
 ↓→𝔼 g (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) af12 | yes af1 | no naf2
     with ↓→𝔼 g d₁ af1 
-... | ⟨ c1 , ⟨ M⇓c1 , 𝕍1c ⟩ ⟩
-    with 𝕍→lam 𝕍1c
-... | ⟨ Γ , ⟨ γ , ⟨ M , eq ⟩ ⟩ ⟩ rewrite eq =     
-    let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ}{γ}{M} naf2 in
-    ⟨ clos (ƛ M) γ , ⟨ M⇓c1 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
+... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c1 , 𝕍1c ⟩ ⟩
+    with 𝕍→WHNF 𝕍1c
+... | ƛ_ {N = M} =
+    let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ'}{γ₁}{M} naf2 in
+    ⟨ clos (ƛ M) γ₁ , ⟨ M⇓c1 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
 ↓→𝔼 g (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) af12 | no naf1  | yes af2
     with ↓→𝔼 g d₂ af2
-... | ⟨ c2 , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
-    with 𝕍→lam 𝕍2c
-... | ⟨ Γ , ⟨ γ , ⟨ M , eq ⟩ ⟩ ⟩ rewrite eq =     
-    let 𝕍1c = not-AboveFun-𝕍{v₁}{Γ}{γ}{M} naf1 in
-    ⟨ clos (ƛ M) γ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
+... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
+    with 𝕍→WHNF 𝕍2c
+... | ƛ_ {N = M} =
+    let 𝕍1c = not-AboveFun-𝕍{v₁}{Γ'}{γ₁}{M} naf1 in
+    ⟨ clos (ƛ M) γ₁ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
 ↓→𝔼 g (⊔-intro d₁ d₂) af12 | no naf1  | no naf2
     with AboveFun-⊔ af12
 ... | inj₁ af1 = ⊥-elim (contradiction af1 naf1)
