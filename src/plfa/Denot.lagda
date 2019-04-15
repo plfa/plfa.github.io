@@ -582,27 +582,70 @@ Two terms M and N are denotational equal when their denotations are
 equal, that is, ℰ M ≃ ℰ N.
 
 
-[JGS: todo: update this road map, talk about adequacy and
-  inversion of ⊑ for functions.]
+## Road map for the following chapters
 
-The rest of this chapter proves two properties of the denotational
-semantics. First, we prove that the semantics is compositional, i.e.,
-that the denotation of a term is a function of the denotations of its
-subterms. To do this we shall prove equations of the following shape.
+The subsequent chapters prove that the denotational semantics has
+several desirable. First, we prove that the semantics is
+compositional, i.e., that the denotation of a term is a function of
+the denotations of its subterms. To do this we shall prove equations
+of the following shape.
 
     ℰ (ƛ M) ≃ ... ℰ M ...
     ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
 
-The compositionality property is not trivial because the
-semantics we have defined includes three rules that are not syntax
-directed: ⊥-intro, ⊔-intro, and sub.
+The compositionality property is not trivial because the semantics we
+have defined includes three rules that are not syntax directed:
+(⊥-intro), (⊔-intro), and (sub).
 
-The second property we prove about the denotational semantics is that
-reduction implies denotational equality.
+Next we investigate whether the denotational semantics and the
+reduction semantics are equivalent. Recall that the job of a language
+semantics is to describe the observable behavior of a given program
+M. For the lambda calculus there are several choices that one can
+make, but they usually boil down to just one bit:
 
-The proofs of both of these properties relies on some basic results
-about renaming, which are quite similar to the renaming lemmas that we
-have seen in previous chapters.
+  * divergence: the program M executes forever.
+  * termination: the program M halts.
+
+A semantics can be formulated in terms of reduction.
+
+  * divergence: ¬ (M —↠ ƛ N) for any term N.
+  * termination: M —↠ ƛ N for some term N.
+
+A semantics can also be formulated using denotations.
+
+  * divergence: ¬ (∅ ⊢ M ↓ v ↦ v') for any v and v'.
+  * termination: ∅ ⊢ M ↓ v ↦ v' for some v and v'.
+
+Alternatively, observations can be formulated with the denotation
+function ℰ. 
+
+  * divergence: ¬ (ℰ M ≃ ℰ (ƛ N)) for any term N.
+  * termination: ℰ M ≃ ℰ (ƛ N) for some term N.
+
+So the question is whether the two semantics are equivalent.
+
+    (∃ N. M —↠ ƛ N)  iff  (∃ N. ℰ M ≃ ℰ (ƛ N))
+
+We address each direction of the equivalence in the second and third
+chapters. In the second chapter we prove that reduction to a lambda
+abstraction implies denotational equality to a lambda
+abstraction. This property is called the _soundness_ in the
+literature.
+
+    M —↠ ƛ N  implies  ℰ M ≃ ℰ (ƛ N)
+
+In the third chapter we prove that denotational equality to a lambda
+abstraction implies reduction to a lambda abstraction. This property
+is called _adequacy_ in the literature.
+
+    ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N' for some N'
+
+The proofs of these properties rely on some basic results about the
+denotational semantics, which we establish in the rest of this
+chapter.  We start with some lemmas about renaming, which are quite
+similar to the renaming lemmas that we have seen in previous chapters.
+We conclude with a proof of an important inversion lemma for the
+less-than relation regarding function values.
 
 
 ## Renaming preserves denotations
@@ -758,10 +801,6 @@ up-env d lt = Env⊑ d (nth-le lt)
 
 
 ## Inversion of the less-than relation for functions
-
-[JGS: Not sure if this section should go here. It's kinda big.
- It is used in the proof of adequacy, and it plays an important
- role in the literature.]
 
 What can we deduce from knowing that a function v₁ ↦ v₁' is less than
 some value v₂?  What can we deduce about v₂? The answer to this

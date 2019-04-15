@@ -30,31 +30,25 @@ open import Relation.Nullary using (Dec; yes; no)
 
 
 In this chapter we prove that the denotational semantics is adequate,
-that is, if a term M is denotationally equal to another term in normal
-form, then M reduces to normal form. For the lambda calculus there are
-may choices of normal forms: normal form, head normal form, and weak
-head normal form. We shall focus on reduction to weak-head normal form
-(WHNF), that is, to lambda abstraction.  It is well known that if a
-term can reduce to WHNF using full β reduction, then it can also
-reduce to WHNF using the call-by-name reduction strategy.  So in this
-chapter we shallow narrow our focus to call-by-name.
+that is, if a term M is denotationally equal to a lambda abstraction,
+then M reduces to a lambda abstraction.
 
-Recall that we have defined denotational equality by means of the
-semantic judgement γ ⊢ M ↓ v. Suppose M is denotationally equal to
-some lambda abstraction, that is, ℰ M ≃ ℰ (ƛ N).  For any γ, we have γ
-⊢ ƛ N ↓ ⊥ ↦ ⊥, so then we must also have γ ⊢ M ↓ (⊥ ↦ ⊥). We will show
-that γ ⊢ M ↓ (⊥ ↦ ⊥) implies that M reduces to WHNF.  In other words,
-whenever the semantic judgement says M results in a function, then M
-is a terminating program, i.e., it reduces to a lambda via
-call-by-name.
+    ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N' for some N'
 
-The proof will relate the semantic judgment γ ⊢ M ↓ v to a
-call-by-name big-step semantics, written γ' ⊢ M ⇓ c, where c is a
+It is well known that a term can reduce to a lambda abstraction using
+full β reduction if and only if it can reduce to a lambda abstraction
+using the call-by-name reduction strategy. So we shall prove that ℰ M
+≃ ℰ (ƛ N) implies that M halts under call-by-name evaluation, which we
+define with a big-step semantics written γ' ⊢ M ⇓ c, where c is a
 closure (a term paired with an environment) and γ' is an environment
-that maps variables to closures. The proof will be an induction on the
-derivation of γ ⊢ M ↓ v, and to strengthen the induction hypothesis,
-we will relate semantic values to closures using a _logical relation_
-𝕍.
+that maps variables to closures
+
+Recall that ℰ M ≃ ℰ (ƛ N) is equivalent to saying that γ ⊢ M ↓ (v ↦
+v') for some v and v'.  We will show that γ ⊢ M ↓ (v ↦ v') implies
+that M halts under call-by-name.  The proof will be an induction on
+the derivation of γ ⊢ M ↓ v, and to strengthen the induction
+hypothesis, we will relate semantic values to closures using a
+_logical relation_ 𝕍.
 
 The rest of this chapter is organized as follows.
 
