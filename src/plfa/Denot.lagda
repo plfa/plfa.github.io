@@ -86,8 +86,7 @@ mappings. The `Value` data type represents the set as a binary tree
 whose internal nodes are the union operator and whose leaves represent
 either a single mapping or the empty set.
 
-  * The ⊥ value is an empty function. We think of this value as
-    providing no information about the computation.
+  * The ⊥ value provides no information about the computation.
 
   * A value of the form `v ↦ v′` is a single input-output mapping, from
     input `v` to output `v′`.
@@ -204,7 +203,7 @@ then both v₁ and v₂ are less than v₃.
 \begin{code}
 ⊔⊑-invL : ∀{v₁ v₂ v₃ : Value}
         → v₁ ⊔ v₂ ⊑ v₃
-          ---------
+          ------------
         → v₁ ⊑ v₃
 ⊔⊑-invL (ConjL⊑ lt1 lt2) = lt1
 ⊔⊑-invL (ConjR1⊑ lt) = ConjR1⊑ (⊔⊑-invL lt)
@@ -213,7 +212,7 @@ then both v₁ and v₂ are less than v₃.
 
 ⊔⊑-invR : ∀{v₁ v₂ v₃ : Value}
        → v₁ ⊔ v₂ ⊑ v₃
-         ---------
+         ------------
        → v₂ ⊑ v₃
 ⊔⊑-invR (ConjL⊑ lt lt₁) = lt₁
 ⊔⊑-invR (ConjR1⊑ lt) = ConjR1⊑ (⊔⊑-invR lt)
@@ -224,9 +223,8 @@ then both v₁ and v₂ are less than v₃.
 
 ## Environments
 
-An environment gives meaning to the free variables in a term.  Because
-variables are represented as de Bruijn indices, they are numbers, so
-an environment can be represented simply as a sequence of values.
+An environment gives meaning to the free variables in a term by
+mapping variables to values.
 
 \begin{code}
 Env : Context → Set
@@ -312,6 +310,9 @@ subtle but important differences! So here is the definition of the
 semantics, which we discuss in detail in the following paragraphs.
 
 [PLW: PLFA doesn't mention big-step semantics. But perhaps it should!]
+[JGS: It does now in the chapter on Adequacy! Though perhaps
+  the big-step semantics should be introduced in an earlier
+  and proved equivalent to the reduction semantics.]
 
 \begin{code}
 infix 3 _⊢_↓_
@@ -356,6 +357,9 @@ data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
         -------------
       → γ ⊢ (` x) ↓ v
 Then does sub (downward closure) follow from the other rules?]
+[JGS: Good question. I'll look into it. In the past I've
+ used the above var rule in addition to using ⊑ in ↦-elim.
+ But perhaps it is now possible to only use it in var.]
 
 Consider the rule for lambda abstractions, `↦-intro`.  It says that a
 lambda abstraction results in a single-entry table that maps the input
@@ -585,7 +589,7 @@ equal, that is, ℰ M ≃ ℰ N.
 ## Road map for the following chapters
 
 The subsequent chapters prove that the denotational semantics has
-several desirable. First, we prove that the semantics is
+several desirable properties. First, we prove that the semantics is
 compositional, i.e., that the denotation of a term is a function of
 the denotations of its subterms. To do this we shall prove equations
 of the following shape.
@@ -601,28 +605,28 @@ Next we investigate whether the denotational semantics and the
 reduction semantics are equivalent. Recall that the job of a language
 semantics is to describe the observable behavior of a given program
 M. For the lambda calculus there are several choices that one can
-make, but they usually boil down to just one bit:
+make, but they usually boil down to a single bit of information:
 
   * divergence: the program M executes forever.
   * termination: the program M halts.
 
-A semantics can be formulated in terms of reduction.
+We can characterize divergence and termination in terms of reduction.
 
   * divergence: ¬ (M —↠ ƛ N) for any term N.
   * termination: M —↠ ƛ N for some term N.
 
-A semantics can also be formulated using denotations.
+We can also characterize divergence and termination using denotations.
 
   * divergence: ¬ (∅ ⊢ M ↓ v ↦ v') for any v and v'.
   * termination: ∅ ⊢ M ↓ v ↦ v' for some v and v'.
 
-Alternatively, observations can be formulated with the denotation
-function ℰ. 
+Alternatively, we can use the denotation function ℰ. 
 
   * divergence: ¬ (ℰ M ≃ ℰ (ƛ N)) for any term N.
   * termination: ℰ M ≃ ℰ (ƛ N) for some term N.
 
-So the question is whether the two semantics are equivalent.
+So the question is whether the reduction semantics and denotational
+semantics are equivalent.
 
     (∃ N. M —↠ ƛ N)  iff  (∃ N. ℰ M ≃ ℰ (ƛ N))
 
