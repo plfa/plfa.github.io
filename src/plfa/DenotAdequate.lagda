@@ -31,7 +31,7 @@ open import Relation.Nullary using (Dec; yes; no)
 
 In this chapter we prove that the denotational semantics is adequate,
 that is, if a term M is denotationally equal to a lambda abstraction,
-then M reduces to a lambda abstraction.
+then M multi-step reduces to a lambda abstraction.
 
     ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N' for some N'
 

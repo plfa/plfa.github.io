@@ -34,20 +34,20 @@ open import Function using (_∘_)
 
 
 In this chapter we prove that the reduction semantics is sound with
-respect to the operational semantics, i.e.,
+respect to the denotational semantics, i.e.,
 
     M —↠ ƛ N  implies  ℰ M ≃ ℰ (ƛ N)
 
 The proof is by induction on the reduction sequence, so the main lemma
-concerns a single reduction. We prove that if a term M reduces to N,
-then M and N are denotationally equal. We shall prove each direction
-of this if-and-only-if separately. One direction will look just like a
-type preservation proof. The other direction is like proving type
-preservation for reduction going in reverse.  Recall that type
-preservation is sometimes called subject reduction. Preservation in
-reverse is a well-known property and is called _subject expansion_. It
-is also well-known that subject expansion is false for most typed
-lambda calculi!
+concerns a single reduction step. We prove that if a term M steps to
+N, then M and N are denotationally equal. We shall prove each
+direction of this if-and-only-if separately. One direction will look
+just like a type preservation proof. The other direction is like
+proving type preservation for reduction going in reverse.  Recall that
+type preservation is sometimes called subject reduction. Preservation
+in reverse is a well-known property and is called _subject
+expansion_. It is also well-known that subject expansion is false for
+most typed lambda calculi!
 
 
 ## Forward reduction preserves denotations
