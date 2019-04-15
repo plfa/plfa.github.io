@@ -302,10 +302,10 @@ function, then M evaluates to a closure related to v.
 
 The proof of the main lemma is by induction on γ ⊢ M ↓ v, so it goes
 underneath lambda abstractions and must therefore reason about open
-terms (terms with variables). Thus, we also need to relate
-environments of semantic values to environments of closures.
-In the following, 𝔾 relates γ to γ' if the corresponding
-values and closures are related by 𝔼.
+terms (terms with variables). Thus, we must relate environments of
+semantic values to environments of closures.  In the following, 𝔾
+relates γ to γ' if the corresponding values and closures are related
+by 𝔼.
 
 \begin{code}
 𝔾 : ∀{Γ} → Env Γ → ClosEnv Γ → Set
@@ -321,8 +321,8 @@ values and closures are related by 𝔼.
 \end{code}
 
 
-We shall need a few properties of the 𝕍 and 𝔼 relations.  The first is
-that a closure in the 𝕍 relation must be in weak-head normal form.  We
+We need a few properties of the 𝕍 and 𝔼 relations.  The first is that
+a closure in the 𝕍 relation must be in weak-head normal form.  We
 define WHNF has follows.
 
 \begin{code}
@@ -355,24 +355,37 @@ too.
 𝕍⊔-intro {clos (M · M₁) x} () v2c
 \end{code}
 
+In a moment we prove that 𝕍 is preserved when going from a greater
+value to a lesser value: if 𝕍 v c and v' ⊑ v, then 𝕍 v' c.
+This property, named 𝕍-sub, is needed by the main lemma in
+the case for the (sub) rule.
+
+To prove 𝕍-sub, we in turn need the following property concerning
+values that are not greater than a function, that is, values that are
+equivalent to ⊥. In such cases, 𝕍 v (clos (ƛ M) γ') is trivially true.
+
 \begin{code}
 not-AboveFun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{M : Γ , ★ ⊢ ★ }
-               → ¬ AboveFun v
-                 -------------------
-               → 𝕍 v (clos (ƛ M) γ')
+    → ¬ AboveFun v
+      -------------------
+    → 𝕍 v (clos (ƛ M) γ')
 not-AboveFun-𝕍 {⊥} af = tt
 not-AboveFun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , Refl⊑ ⟩ ⟩ af)
 not-AboveFun-𝕍 {v₁ ⊔ v₂} af
     with not-AboveFun-⊔-inv af
-... | ⟨ af1 , af2 ⟩ =
-    ⟨ not-AboveFun-𝕍 af1 , not-AboveFun-𝕍 af2 ⟩
+... | ⟨ af1 , af2 ⟩ = ⟨ not-AboveFun-𝕍 af1 , not-AboveFun-𝕍 af2 ⟩
 \end{code}
 
+The proofs of 𝕍-sub and 𝔼-sub are intertwined.
 
 \begin{code}
 sub-𝕍 : ∀{c : Clos}{v v'} → 𝕍 v c → v' ⊑ v → 𝕍 v' c
 sub-𝔼 : ∀{c : Clos}{v v'} → 𝔼 v c → v' ⊑ v → 𝔼 v' c
 \end{code}
+
+We prove 𝕍-sub by case analysis on the closure's term, to dispatch the
+cases for variables and application. We then proceed by induction on
+v' ⊑ v. We describe each case below.
 
 \begin{code}
 sub-𝕍 {clos (` x) γ} {v} () lt
@@ -387,13 +400,20 @@ sub-𝕍 {clos (ƛ M) γ} vc (Fun⊑ lt1 lt2) ev1 sf
 ... | ⟨ c , ⟨ Mc , v4 ⟩ ⟩ = ⟨ c , ⟨ Mc , sub-𝕍 v4 lt2 ⟩ ⟩
 sub-𝕍 {clos (ƛ M) γ} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩ Dist⊑ ev1c sf
     with AboveFun? v₂ | AboveFun? v₃
-... | yes af2 | no naf3
+... | yes af2 | yes af3
+    with vc12 ev1c af2 | vc13 ev1c af3
+... | ⟨ clos N δ , ⟨ M⇓c₂ , 𝕍v₂ ⟩ ⟩
+    | ⟨ c₃ , ⟨ M⇓c₃ , 𝕍v₃ ⟩ ⟩ rewrite ⇓-determ M⇓c₃ M⇓c₂ with 𝕍→WHNF 𝕍v₂
+... | ƛ_ =
+      ⟨ clos N δ , ⟨ M⇓c₂ , ⟨ 𝕍v₂ , 𝕍v₃ ⟩ ⟩ ⟩
+sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c sf
+    | yes af2 | no naf3
     with vc12 ev1c af2
-... | ⟨ clos {Γ'} N γ₁ , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
-    with 𝕍→WHNF 𝕍2c
+... | ⟨ clos {Γ'} N γ₁ , ⟨ M⇓c2 , 𝕍v₂ ⟩ ⟩
+    with 𝕍→WHNF 𝕍v₂
 ... | ƛ_ {N = N'} =
-      let 𝕍3c = not-AboveFun-𝕍{v₃}{Γ'}{γ₁}{N'} naf3 in
-      ⟨ clos (ƛ N') γ₁ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍2c 𝕍3c ⟩ ⟩
+      let 𝕍v₃ = not-AboveFun-𝕍{v₃}{Γ'}{γ₁}{N'} naf3 in
+      ⟨ clos (ƛ N') γ₁ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍v₂ 𝕍v₃ ⟩ ⟩
 sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩ Dist⊑ ev1c sf
     | no naf2 | yes af3
     with vc13 ev1c af3
@@ -407,21 +427,96 @@ sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c
     with AboveFun-⊔ ⟨ v , ⟨ v' , lt ⟩ ⟩
 ... | inj₁ af2 = ⊥-elim (contradiction af2 naf2)
 ... | inj₂ af3 = ⊥-elim (contradiction af3 naf3)
-sub-𝕍 {c} {v₁ ↦ v₂ ⊔ v₁ ↦ v₃} ⟨ vc12 , vc13 ⟩  Dist⊑ ev1c sf
-    | yes af2 | yes af3
-    with vc12 ev1c af2 | vc13 ev1c af3
-... | ⟨ clos N δ , ⟨ Mc1 , v4 ⟩ ⟩
-    | ⟨ c2 , ⟨ Mc2 , v5 ⟩ ⟩ rewrite ⇓-determ Mc2 Mc1 with 𝕍→WHNF v4
-... | ƛ_ =
-      ⟨ clos N δ , ⟨ Mc1 , ⟨ v4 , v5 ⟩ ⟩ ⟩
 \end{code}
 
+* Case (Bot⊑). We immediately have 𝕍 ⊥ (clos (ƛ M) γ).
+
+* Case (ConjL⊑).
+
+        v₁' ⊑ v     v₂' ⊑ v
+        -------------------
+        (v₁' ⊔ v₂') ⊑ v
+
+  The induction hypotheses gives us 𝕍 v₁' (clos (ƛ M) γ)
+  and 𝕍 v₂' (clos (ƛ M) γ), which is all we need for this case. 
+
+* Case (ConjR1⊑).
+
+        v' ⊑ v₁
+        -------------
+        v' ⊑ (v₁ ⊔ v₂)
+
+  The induction hypothesis gives us 𝕍 v' (clos (ƛ M) γ).
+
+* Case (ConjR2⊑).
+
+        v' ⊑ v₂
+        -------------
+        v' ⊑ (v₁ ⊔ v₂)
+
+  Again, the induction hypothesis gives us 𝕍 v' (clos (ƛ M) γ).
+
+* Case (Trans⊑).
+
+        v' ⊑ v₂   v₂ ⊑ v
+        -----------------
+             v' ⊑ v
+
+  The induction hypothesis for v₂ ⊑ v gives us
+  𝕍 v₂ (clos (ƛ M) γ). We apply the induction hypothesis
+  for v' ⊑ v₂ to conclude that 𝕍 v' (clos (ƛ M) γ).
+
+* Case (Dist⊑). This case  is the most difficult. We have
+
+        𝕍 (v₁ ↦ v₂) (clos (ƛ M) γ)
+        𝕍 (v₁ ↦ v₃) (clos (ƛ M) γ)
+
+  and need to show that 
+
+        𝕍 (v₁ ↦ (v₂ ⊔ v₃)) (clos (ƛ M) γ)
+  
+  Let c be an arbtrary closure such that 𝔼 v₁ c.
+  Assume (v₂ ⊔ v₃) is greater than a function.
+  Unfortunately, this does not mean that both v₂ and v₃
+  are above functions. But thanks to the lemma AboveFun-⊔,
+  we know that at least one of them is greater than a function.
+  
+  * Suppose both of them are greater than a function.  Then we have
+    γ ⊢ M ⇓ clos N δ and 𝕍 v₂ (clos N δ).  We also have γ ⊢ M ⇓ c₃ and
+    𝕍 v₃ c₃.  Because the big-step semantics is deterministic, we have
+    c₃ ≡ clos N δ. Also, from 𝕍 v₂ (clos N δ) we know that N ≡ ƛ N'
+    for some N'. We conclude that 𝕍 (v₂ ⊔ v₃) (clos (ƛ N') δ).
+
+  * Suppose one of them is greater than a function and the other is
+    not: say AboveFun v₂ and ¬ AboveFun v₃. Then from 𝕍 (v₁ ↦ v₂) (clos (ƛ M) γ)
+    we have γ ⊢ M ⇓ clos N γ₁ and 𝕍 v₂ (clos N γ₁). From this we have
+    N ≡ ƛ N' for some N'. Meanwhile, from ¬ AboveFun v₃ we have
+    𝕍 v₃ (clos N γ₁). We conclude that We conclude that
+    𝕍 (v₂ ⊔ v₃) (clos (ƛ N') γ₁).
+    
+
+The proof of sub-𝔼 is direct.
+
 \begin{code}
-sub-𝔼 {clos M x} {v} {v'} evc lt fv
-    with evc (AboveFun-⊑ fv lt)
-... | ⟨ c , ⟨ Mc , vvc ⟩ ⟩ =
-      ⟨ c , ⟨ Mc , sub-𝕍 vvc lt ⟩ ⟩
+sub-𝔼 {clos M γ} {v} {v'} 𝔼v v'⊑v fv'
+    with 𝔼v (AboveFun-⊑ fv' v'⊑v)
+... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
+      ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍v v'⊑v ⟩ ⟩
 \end{code}
+
+From AboveFun v' and v' ⊑ v we have AboveFun v.  Then with 𝔼 v c we
+obtain a closure c such that γ ⊢ M ⇓ c and 𝕍 v c. We conclude with an
+application of sub-𝕍 with v' ⊑ v to show 𝕍 v' c.
+
+
+## Programs with function denotation terminate via call-by-name
+
+The main lemma proves that if a term has a denotation that is above a
+function, then it terminates via call-by-name. In more detail, if γ ⊢
+M ↓ v and 𝔾 γ γ', then 𝔼 v (clos M γ'). The proof is by induction on
+the derivation of γ ⊢ M ↓ v we discuss each case below.
+
+The following lemma, kth-x, is used in the case for the (var) rule.
 
 \begin{code}
 kth-x : ∀{Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
@@ -431,67 +526,118 @@ kth-x{γ' = γ'}{x = x} with γ' x
 ... | clos{Γ = Δ} M δ = ⟨ Δ , ⟨ δ , ⟨ M , refl ⟩ ⟩ ⟩
 \end{code}
 
-
-## Programs with function denotation terminate via call-by-name
-
-
 \begin{code}
 ↓→𝔼 : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{M : Γ ⊢ ★ }{v}
             → 𝔾 γ γ' → γ ⊢ M ↓ v → 𝔼 v (clos M γ')
-↓→𝔼 {Γ} {γ} {γ'} {`_ x} {v} g var sf 
-    with kth-x{Γ}{γ'}{x} | g{x = x}
-... | ⟨ Δ , ⟨ δ , ⟨ M , eq ⟩ ⟩ ⟩ | g' rewrite eq
-    with g' sf
-... | ⟨ c , ⟨ L⇓c , Vnc ⟩ ⟩ =
-      ⟨ c , ⟨ (⇓-var eq L⇓c) , Vnc ⟩ ⟩
-↓→𝔼 {Γ} {γ} {γ'} {L · M} {v} g (↦-elim{v₁ = v₁} d₁ d₂) sf
-    with ↓→𝔼 g d₁ ⟨ v₁ , ⟨ v , Refl⊑ ⟩ ⟩
-... | ⟨ clos (` x) δ , ⟨ L⇓c , () ⟩ ⟩
-... | ⟨ clos (L' · M') δ , ⟨ L⇓c , () ⟩ ⟩ 
-... | ⟨ clos (ƛ L') δ , ⟨ L⇓c , Vc ⟩ ⟩
-    with Vc {clos M γ'} (↓→𝔼 g d₂) sf
-... | ⟨ c' , ⟨ L'⇓c' , Vc' ⟩ ⟩ =
-    ⟨ c' , ⟨ ⇓-app L⇓c L'⇓c' , Vc' ⟩ ⟩
-↓→𝔼 {Γ} {γ} {γ'} {ƛ M} {v ↦ v'} g (↦-intro d) sf =
-  ⟨ (clos (ƛ M) γ') , ⟨ ⇓-lam , G ⟩ ⟩
-  where G : {c : Clos} → 𝔼 v c → AboveFun v'
-          → Σ-syntax Clos (λ c' → ((γ' ,' c) ⊢ M ⇓ c') × 𝕍 v' c')
-        G {c} evc sfv' = ↓→𝔼 (λ {x} → 𝔾-ext{Γ}{γ}{γ'} g evc {x}) d sfv'
-↓→𝔼 {Γ} {γ} {γ'} {M} {⊥} g ⊥-intro sf = ⊥-elim (AboveFun⊥ sf)
-↓→𝔼 {Γ} {γ} {γ'} {M} {v₁ ⊔ v₂} g (⊔-intro d₁ d₂) af12
+↓→𝔼 {Γ} {γ} {γ'} {`_ x} {v} 𝔾γγ' var fγx
+    with kth-x{Γ}{γ'}{x} | 𝔾γγ'{x = x}
+... | ⟨ Δ , ⟨ δ , ⟨ L , eq ⟩ ⟩ ⟩ | 𝔾γγ'x rewrite eq
+    with 𝔾γγ'x fγx
+... | ⟨ c , ⟨ L⇓c , 𝕍γx ⟩ ⟩ =
+      ⟨ c , ⟨ (⇓-var eq L⇓c) , 𝕍γx ⟩ ⟩
+↓→𝔼 {Γ} {γ} {γ'} {L · M} {v} 𝔾γγ' (↦-elim{v₁ = v₁} d₁ d₂) fv
+    with ↓→𝔼 𝔾γγ' d₁ ⟨ v₁ , ⟨ v , Refl⊑ ⟩ ⟩
+... | ⟨ clos L' δ , ⟨ L⇓L' , 𝕍v₁↦v ⟩ ⟩ 
+    with 𝕍→WHNF 𝕍v₁↦v
+... | ƛ_ {N = L''} 
+    with 𝕍v₁↦v {clos M γ'} (↓→𝔼 𝔾γγ' d₂) fv
+... | ⟨ c' , ⟨ L''⇓c' , 𝕍v ⟩ ⟩ =
+    ⟨ c' , ⟨ ⇓-app L⇓L' L''⇓c' , 𝕍v ⟩ ⟩
+↓→𝔼 {Γ} {γ} {γ'} {ƛ M} {v ↦ v'} 𝔾γγ' (↦-intro d) fv↦v' =
+    ⟨ (clos (ƛ M) γ') , ⟨ ⇓-lam , E ⟩ ⟩
+    where E : {c : Clos} → 𝔼 v c → AboveFun v'
+            → Σ[ c' ∈ Clos ] (γ' ,' c) ⊢ M ⇓ c'  ×  𝕍 v' c'
+          E {c} 𝔼vc fv' = ↓→𝔼 (λ {x} → 𝔾-ext{Γ}{γ}{γ'} 𝔾γγ' 𝔼vc {x}) d fv'
+↓→𝔼 {Γ} {γ} {γ'} {M} {⊥} 𝔾γγ' ⊥-intro f⊥ = ⊥-elim (AboveFun⊥ f⊥)
+↓→𝔼 {Γ} {γ} {γ'} {M} {v₁ ⊔ v₂} 𝔾γγ' (⊔-intro d₁ d₂) fv12
     with AboveFun? v₁ | AboveFun? v₂
-↓→𝔼 g (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) af12 | yes af1 | no naf2
-    with ↓→𝔼 g d₁ af1 
-... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c1 , 𝕍1c ⟩ ⟩
-    with 𝕍→WHNF 𝕍1c
-... | ƛ_ {N = M} =
-    let 𝕍2c = not-AboveFun-𝕍{v₂}{Γ'}{γ₁}{M} naf2 in
-    ⟨ clos (ƛ M) γ₁ , ⟨ M⇓c1 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
-↓→𝔼 g (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) af12 | no naf1  | yes af2
-    with ↓→𝔼 g d₂ af2
-... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
+... | yes fv1 | yes fv2
+    with ↓→𝔼 𝔾γγ' d₁ fv1 | ↓→𝔼 𝔾γγ' d₂ fv2 
+... | ⟨ c₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩ | ⟨ c₂ , ⟨ M⇓c₂ , 𝕍v₂ ⟩ ⟩
+    rewrite ⇓-determ M⇓c₂ M⇓c₁ =
+    ⟨ c₁ , ⟨ M⇓c₁ , 𝕍⊔-intro 𝕍v₁ 𝕍v₂ ⟩ ⟩
+↓→𝔼 𝔾γγ' (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) fv12 | yes fv1 | no nfv2
+    with ↓→𝔼 𝔾γγ' d₁ fv1 
+... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩
+    with 𝕍→WHNF 𝕍v₁
+... | ƛ_ {N = M''} =
+    let 𝕍v₂ = not-AboveFun-𝕍{v₂}{Γ'}{γ₁}{M''} nfv2 in
+    ⟨ clos (ƛ M'') γ₁ , ⟨ M⇓c₁ , 𝕍⊔-intro 𝕍v₁ 𝕍v₂ ⟩ ⟩
+↓→𝔼 𝔾γγ' (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) fv12 | no nfv1  | yes fv2
+    with ↓→𝔼 𝔾γγ' d₂ fv2
+... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c₂ , 𝕍2c ⟩ ⟩
     with 𝕍→WHNF 𝕍2c
 ... | ƛ_ {N = M} =
-    let 𝕍1c = not-AboveFun-𝕍{v₁}{Γ'}{γ₁}{M} naf1 in
-    ⟨ clos (ƛ M) γ₁ , ⟨ M⇓c2 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
-↓→𝔼 g (⊔-intro d₁ d₂) af12 | no naf1  | no naf2
-    with AboveFun-⊔ af12
-... | inj₁ af1 = ⊥-elim (contradiction af1 naf1)
-... | inj₂ af2 = ⊥-elim (contradiction af2 naf2)
-↓→𝔼 g (⊔-intro d₁ d₂) af12 | yes af1 | yes af2
-    with ↓→𝔼 g d₁ af1 | ↓→𝔼 g d₂ af2 
-... | ⟨ c1 , ⟨ M⇓c1 , 𝕍1c ⟩ ⟩ | ⟨ c2 , ⟨ M⇓c2 , 𝕍2c ⟩ ⟩
-    rewrite ⇓-determ M⇓c2 M⇓c1 =
-      ⟨ c1 , ⟨ M⇓c1 , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
-↓→𝔼 {Γ} {γ} {γ'} {M} {v} g (sub d lt) sf 
-    with ↓→𝔼 {Γ} {γ} {γ'} {M} g d (AboveFun-⊑ sf lt)
-... | ⟨ c , ⟨ M⇓c , 𝕍c ⟩ ⟩ =
-      ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍c lt ⟩ ⟩
+    let 𝕍1c = not-AboveFun-𝕍{v₁}{Γ'}{γ₁}{M} nfv1 in
+    ⟨ clos (ƛ M) γ₁ , ⟨ M⇓c₂ , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
+↓→𝔼 𝔾γγ' (⊔-intro d₁ d₂) fv12 | no nfv1  | no nfv2
+    with AboveFun-⊔ fv12
+... | inj₁ fv1 = ⊥-elim (contradiction fv1 nfv1)
+... | inj₂ fv2 = ⊥-elim (contradiction fv2 nfv2)
+↓→𝔼 {Γ} {γ} {γ'} {M} {v'} 𝔾γγ' (sub{v₁ = v} d v'⊑v) fv'
+    with ↓→𝔼 {Γ} {γ} {γ'} {M} 𝔾γγ' d (AboveFun-⊑ fv' v'⊑v)
+... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
+      ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍v v'⊑v ⟩ ⟩
 \end{code}
+
+* Case (var). Looking up x in γ' yields some closure, clos L δ,
+  and from 𝔾 γ γ' we have 𝔼 (γ x) (clos L δ). With the premise
+  AboveFun (γ x), we obtain a closure c such that δ ⊢ L ⇓ c
+  and 𝕍 (γ x) c. To conclude γ' ⊢ ` x ⇓ c via (⇓-var), we 
+  need γ' x ≡ clos L δ, which is obvious, but it requires some
+  Agda shananigans via the kth-x lemma to get our hands on it.
+
+* Case (↦-elim). We have γ ⊢ L · M ↓ v.
+  The induction hypothesis for γ ⊢ L ↓ v₁ ↦ v
+  gives us γ' ⊢ L ⇓ clos L' δ and 𝕍 v (clos L' δ).
+  Of course, L' ≡ ƛ L'' for some L''.
+  By the induction hypothesis for γ ⊢ M ↓ v₁,
+  we have 𝔼 v₁ (clos M γ').
+  Together with the premise AboveFun v and 𝕍 v (clos L' δ),
+  we obtain a closure c' such that δ ⊢ L'' ⇓ c' and 𝕍 v c'.
+  We conclude that γ' ⊢ L · M ⇓ c' by rule (⇓-app).
+
+* Case (↦-intro). We have γ ⊢ ƛ M ↓ v ↦ v'.
+  We immediately have γ' ⊢ ƛ M ⇓ clos (ƛ M) γ' by rule (⇓-lam).
+  But we also need to prove 𝕍 (v ↦ v') (clos (ƛ M) γ').
+  Let c by an arbitrary closure such that 𝔼 v c.
+  Suppose v' is greater than a function value.
+  We need to show that γ' , c ⊢ M ⇓ c' and 𝕍 v' c' for some c'.
+  We prove this by the induction hypothesis for γ , v ⊢ M ↓ v'
+  but we must first show that 𝔾 (γ , v) (γ' , c). We prove
+  that by the lemma 𝔾-ext, using facts 𝔾 γ γ' and 𝔼 v c.
+
+* Case (⊥-intro). We have the premise AboveFun ⊥, but that's impossible.
+
+* Case (⊔-intro). We have γ ⊢ M ↓ (v₁ ⊔ v₂) and AboveFun (v₁ ⊔ v₂)
+  and need to show γ' ⊢ M ↓ c and 𝕍 (v₁ ⊔ v₂) c for some c.
+  Again, by AboveFun-⊔, at least one of v₁ or v₂ is greater than a function.
+
+  * Suppose both v₁ and v₂ are greater than a function value.
+    By the induction hypotheses for γ ⊢ M ↓ v₁ and γ ⊢ M ↓ v₂
+    we have γ' ⊢ M ⇓ c₁, 𝕍 v₁ c₁, γ' ⊢ M ⇓ c₂, and 𝕍 v₂ c₂ for some c₁ and c₂.
+    Because ⇓ is deterministic, we have c₂ ≡ c₁.
+    Then by 𝕍⊔-intro we conclude that 𝕍 (v₁ ⊔ v₂) c₁.
+
+  * Without loss of generality, suppose v₁ is greater than a function
+    value but v₂ is not.  By the induction hypotheses for γ ⊢ M ↓ v₁,
+    and using 𝕍→WHNF, we have γ' ⊢ M ⇓ clos (ƛ M'') γ₁
+    and 𝕍 v₁ (clos (ƛ M'') γ₁).
+    Then because v₂ is not greater than a function, we also have
+    𝕍 v₂ (clos (ƛ M'') γ₁). We conclude that 𝕍 (v₁ ⊔ v₂) (clos (ƛ M'') γ₁).
+    
+* Case (sub). We have γ ⊢ M ↓ v, v' ⊑ v, and AboveFun v'.
+  We need to show that γ' ⊢ M ⇓ c and 𝕍 v' c for some c.
+  We have AboveFun v by AboveFun-⊑,
+  so the induction hypothesis for γ ⊢ M ↓ v gives us a closure c
+  such that γ' ⊢ M ⇓ c and 𝕍 v c. We conclude that 𝕍 v' c by sub-𝕍.
 
 
 ## Proof of denotational adequacy
 
+The adequacy property is a corollary of the main lemma.
+We have ∅ ⊢ ƛ N ↓ ⊥ ↦ ⊥, so ℰ M ≃ ℰ (ƛ N)
+gives us ∅ ⊢ M ↓ ⊥ ↦ ⊥. Then the main lemma gives us ∅ ⊢ M ⇓ c for some c.
 
 \begin{code}
 adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
