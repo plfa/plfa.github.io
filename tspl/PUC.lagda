@@ -32,7 +32,6 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
   <td><b>19 Apr</b></td>
   <td>(Miami)</td>
  </tr>
- <!--
  <tr>
   <td><b>26 Apr</b></td>
   <td><a href="/Equality/">Equality</a> &amp;
@@ -42,7 +41,9 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
  <tr>
   <td><b>3 May</b></td>
   <td><a href="/Negation/">Negation</a> &amp;
-      <a href="/Quantifiers/">Quantifiers</a></td>
+      <a href="/Quantifiers/">Quantifiers</a> &amp;
+      <a href="/Decidable/">Decidable</a> &amp;
+      <a href="/Lists/">Lists</a>
  </tr>
  <tr>
   <td><b>10 May</b></td>
@@ -54,8 +55,8 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
  </tr>
  <tr>
   <td><b>24 May</b></td>
-  <td><a href="/Decidable/">Decidable</a> &amp;
-      <a href="/Lists/">Lists</a>
+  <td><a href="/Lambda/">Lambda</a> &amp;
+      <a href="/Properties/">Properties</a></td>
  </tr>
  <tr>
   <td><b>31 May</b></td>
@@ -63,8 +64,8 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
  </tr>
  <tr>
   <td><b>7 June</b></td>
-  <td><a href="/Lambda/">Lambda</a> &amp;
-      <a href="/Properties/">Properties</a></td>
+  <td><a href="/DeBruijn/">DeBruijn</a> &amp;
+      <a href="/More/">More</a></td>
  </tr>
  <tr>
   <td><b>14 June</b></td>
@@ -72,20 +73,18 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
  </tr>
  <tr>
   <td><b>21 June</b></td>
-  <td><a href="/DeBruijn/">DeBruijn</a> &amp;
-      <a href="/More/">More</a></td>
+  <td><a href="/Inference/">Inference</a> &amp;</td>
+      <a href="/Untyped/">Untyped</a>
 </td>
  </tr>
  <tr>
   <td><b>28 June</b></td>
-  <td><a href="/Inference/">Inference</a> &amp;</td>
-      <a href="/Untyped/">Untyped</a>
+  <td>Propositions as Types &amp; mock exam</td>
  </tr>
  <tr>
   <td><b>5 July</b></td>
-  <td>Propositions as Types; mock exam</td>
+  <td>exam</td>
  </tr>
- -->
 </table>
 
 
@@ -93,12 +92,14 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
-* [Assignment 1][Assignment1] due Friday 19 April
-
-<!--
-* [Assignment 2][Assignment2] due Friday 17 May
-* [Assignment 3][Assignment3] due Friday 
-* [Assignment 4][Assignment4] due Friday
-* [Assignment 5](/tspl/Assignment5.pdf) due Friday 
+* [Assignment 1][Assignment1] due Friday 26 April
+* [Assignment 2][Assignment2] due Friday 10 May
+* [Assignment 3][Assignment3] due Friday 14 June
+* [Assignment 4][Assignment4] due Friday 28 June
+* [Assignment 5](/tspl/Assignment5.pdf) due Friday  28 June
   Use file [Exam][Exam]. Despite the rubric, do **all three questions**.
--->
+
+Submit assignments by email to [wadler@inf.ed.ac.uk](mailto:wadler@inf.ed.ac.uk).
+Attach a single file named Assignment1.lagda or the like.  Include
+your name and email in the submitted file.  Ignore instructions to use
+"submit".

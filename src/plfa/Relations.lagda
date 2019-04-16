@@ -158,6 +158,37 @@ doing so here, but will return to this point in
 Chapter [Decidable][plfa.Decidable].
 
 
+## Inversion
+
+In our defintions, we go from smaller things to larger things.
+For instance, form `m ≤ n` we can conclude `suc m ≤ suc n`,
+where `suc m` is bigger than `m` (that is, the former contains
+the latter), and `suc n` is bigger than `n`. But sometimes we
+want to go from bigger things to smaller things.
+
+There is only one way to prove that `suc m ≤ suc n`, for any `m`
+and `n`.  This lets us invert our previous rule.
+\begin{code}
+inv-s≤s : ∀ {m n : ℕ}
+  → suc m ≤ suc n
+    -------------
+  → m ≤ n
+inv-s≤s (s≤s m≤n) = m≤n
+\end{code}
+Not every rule is invertible; indeed, the rule for `z≤n` has
+no non-implicit hypotheses, so there is nothing to invert.
+But often inversions of this kind hold.
+
+Another example of inversion is showing that there is
+only one way a number can be less than or equal to zero.
+\begin{code}
+inv-z≤n : ∀ {m : ℕ}
+  → m ≤ zero
+    --------
+  → m ≡ zero
+inv-z≤n z≤n = refl
+\end{code}
+
 ## Properties of ordering relations
 
 Relations pop up all the time, and mathematicians have agreed
@@ -216,8 +247,8 @@ as that will make it easier to invoke reflexivity:
 ≤-refl : ∀ {n : ℕ}
     -----
   → n ≤ n
-≤-refl {zero}   =  z≤n
-≤-refl {suc n}  =  s≤s (≤-refl {n})
+≤-refl {zero} = z≤n
+≤-refl {suc n} = s≤s (≤-refl {n})
 \end{code}
 The proof is a straightforward induction on the implicit argument `n`.
 In the base case, `zero ≤ zero` holds by `z≤n`.  In the inductive
