@@ -1004,7 +1004,9 @@ included in v₂.
 With the dom and cod functions in hand, we can make precise the
 conclusion of the inversion principle for functions, which we package
 into the following predicate named factor. We say that v₁ ↦ v₁'
-_factors_ v₂ into v₂'.
+_factors_ v₂ into v₂' if v₂' is a included in v₂, if v₂' contains only
+functions, its domain is less than v₁, and its codomain is greater
+than v₁'.
 
 \begin{code}
 factor : (v₂ : Value) → (v₂' : Value) → (v₁ : Value) → (v₁' : Value) → Set
