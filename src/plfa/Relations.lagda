@@ -487,12 +487,12 @@ The proof is straightforward using the techniques we have learned, and is best
 broken into three parts. First, we deal with the special case of showing
 addition is monotonic on the right:
 \begin{code}
-+-monoʳ-≤ : ∀ (m p q : ℕ)
++-monoʳ-≤ : ∀ (n p q : ℕ)
   → p ≤ q
     -------------
-  → m + p ≤ m + q
+  → n + p ≤ n + q
 +-monoʳ-≤ zero    p q p≤q  =  p≤q
-+-monoʳ-≤ (suc m) p q p≤q  =  s≤s (+-monoʳ-≤ m p q p≤q)
++-monoʳ-≤ (suc n) p q p≤q  =  s≤s (+-monoʳ-≤ n p q p≤q)
 \end{code}
 The proof is by induction on the first argument.
 
@@ -500,10 +500,10 @@ The proof is by induction on the first argument.
   `zero + p ≤ zero + q` simplifies to `p ≤ q`, the evidence
   for which is given by the argument `p≤q`.
 
-* _Inductive case_: The first argument is `suc m`, in which case
-  `suc m + p ≤ suc m + q` simplifies to `suc (m + p) ≤ suc (m + q)`.
-  The inductive hypothesis `+-monoʳ-≤ m p q p≤q` establishes that
-  `m + p ≤ m + q`, and our goal follows by applying `s≤s`.
+* _Inductive case_: The first argument is `suc n`, in which case
+  `suc n + p ≤ suc n + q` simplifies to `suc (n + p) ≤ suc (n + q)`.
+  The inductive hypothesis `+-monoʳ-≤ n p q p≤q` establishes that
+  `n + p ≤ n + q`, and our goal follows by applying `s≤s`.
 
 Second, we deal with the special case of showing addition is
 monotonic on the left. This follows from the previous
