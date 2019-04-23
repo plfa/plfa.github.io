@@ -464,7 +464,7 @@ denot-Δ = ↦-intro (↦-elim (sub var (ConjR1⊑ Refl⊑))
 \end{code}
 
 One might worry whether this semantics can deal with diverging
-programs.  The ⊥ value and the (⊥-intro) rule provide a way to handle
+programs.  The `⊥` value and the (⊥-intro) rule provide a way to handle
 them. (The (⊥-intro) rule is also what enables β reduction on
 non-terminating arguments.)  The classic Ω program is a particularly
 simple program that diverges. It applies Δ to itself. The semantics
