@@ -388,7 +388,7 @@ sub-𝕍 {clos (ƛ M) γ} vc Bot⊑ = tt
 sub-𝕍 {clos (ƛ M) γ} vc (ConjL⊑ lt1 lt2) = ⟨ (sub-𝕍 vc lt1) , sub-𝕍 vc lt2 ⟩
 sub-𝕍 {clos (ƛ M) γ} ⟨ vv1 , vv2 ⟩ (ConjR1⊑ lt) = sub-𝕍 vv1 lt
 sub-𝕍 {clos (ƛ M) γ} ⟨ vv1 , vv2 ⟩ (ConjR2⊑ lt) = sub-𝕍 vv2 lt
-sub-𝕍 {clos (ƛ M) γ} vc (Trans⊑{v₂ = v₂} lt1 lt2) = sub-𝕍 (sub-𝕍 vc lt2) lt1
+sub-𝕍 {clos (ƛ M) γ} vc (Trans⊑{v = v₂} lt1 lt2) = sub-𝕍 (sub-𝕍 vc lt2) lt1
 sub-𝕍 {clos (ƛ M) γ} vc (Fun⊑ lt1 lt2) ev1 sf
     with vc (sub-𝔼 ev1 lt1) (AboveFun-⊑ sf lt2)
 ... | ⟨ c , ⟨ Mc , v4 ⟩ ⟩ = ⟨ c , ⟨ Mc , sub-𝕍 v4 lt2 ⟩ ⟩
@@ -529,7 +529,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
     with 𝔾γγ'x fγx
 ... | ⟨ c , ⟨ L⇓c , 𝕍γx ⟩ ⟩ =
       ⟨ c , ⟨ (⇓-var eq L⇓c) , 𝕍γx ⟩ ⟩
-↓→𝔼 {Γ} {γ} {γ'} {L · M} {v} 𝔾γγ' (↦-elim{v₁ = v₁} d₁ d₂) fv
+↓→𝔼 {Γ} {γ} {γ'} {L · M} {v} 𝔾γγ' (↦-elim{v = v₁} d₁ d₂) fv
     with ↓→𝔼 𝔾γγ' d₁ ⟨ v₁ , ⟨ v , Refl⊑ ⟩ ⟩
 ... | ⟨ clos L' δ , ⟨ L⇓L' , 𝕍v₁↦v ⟩ ⟩ 
     with 𝕍→WHNF 𝕍v₁↦v
@@ -550,14 +550,14 @@ kth-x{γ' = γ'}{x = x} with γ' x
 ... | ⟨ c₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩ | ⟨ c₂ , ⟨ M⇓c₂ , 𝕍v₂ ⟩ ⟩
     rewrite ⇓-determ M⇓c₂ M⇓c₁ =
     ⟨ c₁ , ⟨ M⇓c₁ , 𝕍⊔-intro 𝕍v₁ 𝕍v₂ ⟩ ⟩
-↓→𝔼 𝔾γγ' (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) fv12 | yes fv1 | no nfv2
+↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12 | yes fv1 | no nfv2
     with ↓→𝔼 𝔾γγ' d₁ fv1 
 ... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩
     with 𝕍→WHNF 𝕍v₁
 ... | ƛ_ {N = M''} =
     let 𝕍v₂ = not-AboveFun-𝕍{v₂}{Γ'}{γ₁}{M''} nfv2 in
     ⟨ clos (ƛ M'') γ₁ , ⟨ M⇓c₁ , 𝕍⊔-intro 𝕍v₁ 𝕍v₂ ⟩ ⟩
-↓→𝔼 𝔾γγ' (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) fv12 | no nfv1  | yes fv2
+↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12 | no nfv1  | yes fv2
     with ↓→𝔼 𝔾γγ' d₂ fv2
 ... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c₂ , 𝕍2c ⟩ ⟩
     with 𝕍→WHNF 𝕍2c
@@ -568,7 +568,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
     with AboveFun-⊔ fv12
 ... | inj₁ fv1 = ⊥-elim (contradiction fv1 nfv1)
 ... | inj₂ fv2 = ⊥-elim (contradiction fv2 nfv2)
-↓→𝔼 {Γ} {γ} {γ'} {M} {v'} 𝔾γγ' (sub{v₁ = v} d v'⊑v) fv'
+↓→𝔼 {Γ} {γ} {γ'} {M} {v'} 𝔾γγ' (sub{v = v} d v'⊑v) fv'
     with ↓→𝔼 {Γ} {γ} {γ'} {M} 𝔾γγ' d (AboveFun-⊑ fv' v'⊑v)
 ... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
       ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍v v'⊑v ⟩ ⟩

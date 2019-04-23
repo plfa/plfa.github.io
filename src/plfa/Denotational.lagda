@@ -88,11 +88,11 @@ either a single mapping or the empty set.
 
   * The ⊥ value provides no information about the computation.
 
-  * A value of the form `v ↦ v′` is a single input-output mapping, from
-    input `v` to output `v′`.
+  * A value of the form `v ↦ w` is a single input-output mapping, from
+    input `v` to output `w`.
 
-  * A value of the form `v₁ ⊔ v₂` is a function that maps inputs to
-    outputs according to both `v₁` and `v₂`.  Think of it as taking the
+  * A value of the form `v ⊔ w` is a function that maps inputs to
+    outputs according to both `v` and `w`.  Think of it as taking the
     union of the two sets.
 
 \begin{code}
@@ -117,46 +117,46 @@ data _⊑_ : Value → Value → Set where
 
   Bot⊑ : ∀ {v} → ⊥ ⊑ v
 
-  ConjL⊑ : ∀ {v v₁ v₂}
-      → v₁ ⊑ v
-      → v₂ ⊑ v
-        -----------------
-      → (v₁ ⊔ v₂) ⊑ v
+  ConjL⊑ : ∀ {u v w}
+      → v ⊑ u
+      → w ⊑ u
+        -----------
+      → (v ⊔ w) ⊑ u
 
-  ConjR1⊑ : ∀ {v v₁ v₂}
-     → v ⊑ v₁
-       -------------
-     → v ⊑ (v₁ ⊔ v₂)
+  ConjR1⊑ : ∀ {u v w}
+     → u ⊑ v
+       -----------
+     → u ⊑ (v ⊔ w)
 
-  ConjR2⊑ : ∀ {v v₁ v₂}
-     → v ⊑ v₂
-       -------------
-     → v ⊑ (v₁ ⊔ v₂)
+  ConjR2⊑ : ∀ {u v w}
+     → u ⊑ w
+       -----------
+     → u ⊑ (v ⊔ w)
 
-  Trans⊑ : ∀ {v₁ v₂ v₃}
-     → v₁ ⊑ v₂
-     → v₂ ⊑ v₃
-       --------
-     → v₁ ⊑ v₃
+  Trans⊑ : ∀ {u v w}
+     → u ⊑ v
+     → v ⊑ w
+       -----
+     → u ⊑ w
 
-  Fun⊑ : ∀ {v₁ v₂ v₃ v₄}
-       → v₃ ⊑ v₁
-       → v₂ ⊑ v₄
-         ---------------------
-       → (v₁ ↦ v₂) ⊑ (v₃ ↦ v₄)
+  Fun⊑ : ∀ {v w v' w'}
+       → v' ⊑ v
+       → w ⊑ w'
+         -------------------
+       → (v ↦ w) ⊑ (v' ↦ w')
 
-  Dist⊑ : ∀{v₁ v₂ v₃}
-         --------------------------------------
-       → v₁ ↦ (v₂ ⊔ v₃) ⊑ (v₁ ↦ v₂) ⊔ (v₁ ↦ v₃)
+  Dist⊑ : ∀{v w w'}
+         ---------------------------------
+       → v ↦ (w ⊔ w') ⊑ (v ↦ w) ⊔ (v ↦ w')
 \end{code}
 
 
 The first five rules are straightforward.
 The rule `Fun⊑` captures when it is OK to match a higher-order argument
-`v₃ ↦ v₄` to a table entry whose input is `v₁ ↦ v₂`.  Considering a
+`v' ↦ w'` to a table entry whose input is `v ↦ w`.  Considering a
 call to the higher-order argument. It is OK to pass a larger argument
-than expected, so `v₁` can be larger than `v₃`. Also, it is OK to
-disregard some of the output, so `v₂` can be smaller than `v₄`.
+than expected, so `v` can be larger than `v'`. Also, it is OK to
+disregard some of the output, so `w` can be smaller than `w'`.
 The rule `Dist⊑` says that if you have two entries for the same input,
 then you can combine them into a single entry and joins the two
 outputs.
@@ -174,10 +174,10 @@ The `⊔` operation is monotonic with respect to `⊑`, that is, given two
 larger values it produces a larger value.
 
 \begin{code}
-⊔⊑⊔ : ∀ {v₁ v₂ v₃ v₄}
-      → v₁ ⊑ v₃  →  v₂ ⊑ v₄
+⊔⊑⊔ : ∀ {v w v' w'}
+      → v ⊑ v'  →  w ⊑ w'
         -----------------------
-      → (v₁ ⊔ v₂) ⊑ (v₃ ⊔ v₄)
+      → (v ⊔ w) ⊑ (v' ⊔ w')
 ⊔⊑⊔ d₁ d₂ = ConjL⊑ (ConjR1⊑ d₁) (ConjR2⊑ d₂)
 \end{code}
 
@@ -187,12 +187,10 @@ using ⊔ and then apply the (Dist⊑) rule to obtain the following
 property.
 
 \begin{code}
-Dist⊔↦⊔ : ∀{v₁ v₁' v₂ v₂' : Value}
-        → (v₁ ⊔ v₁') ↦ (v₂ ⊔ v₂') ⊑ (v₁ ↦ v₂) ⊔ (v₁' ↦ v₂')
-Dist⊔↦⊔{v₁}{v₁'}{v₂}{v₂'} =
-    Trans⊑ (Dist⊑ {v₁ = v₁ ⊔ v₁'}{v₂ = v₂}{v₃ = v₂'})
-           (⊔⊑⊔ (Fun⊑ (ConjR1⊑ Refl⊑) Refl⊑)
-                      (Fun⊑ (ConjR2⊑ Refl⊑) Refl⊑))
+Dist⊔↦⊔ : ∀{v v' w w' : Value}
+        → (v ⊔ v') ↦ (w ⊔ w') ⊑ (v ↦ w) ⊔ (v' ↦ w')
+Dist⊔↦⊔ = Trans⊑ Dist⊑ (⊔⊑⊔ (Fun⊑ (ConjR1⊑ Refl⊑) Refl⊑)
+                            (Fun⊑ (ConjR2⊑ Refl⊑) Refl⊑))
 \end{code}
 
 <!-- above might read more nicely if we introduce inequational reasoning -->
@@ -201,23 +199,23 @@ If the join v₁ ⊔ v₂ is less than another value v₃,
 then both v₁ and v₂ are less than v₃.
 
 \begin{code}
-⊔⊑-invL : ∀{v₁ v₂ v₃ : Value}
-        → v₁ ⊔ v₂ ⊑ v₃
-          ------------
-        → v₁ ⊑ v₃
+⊔⊑-invL : ∀{u v w : Value}
+        → u ⊔ v ⊑ w
+          ---------
+        → u ⊑ w
 ⊔⊑-invL (ConjL⊑ lt1 lt2) = lt1
 ⊔⊑-invL (ConjR1⊑ lt) = ConjR1⊑ (⊔⊑-invL lt)
 ⊔⊑-invL (ConjR2⊑ lt) = ConjR2⊑ (⊔⊑-invL lt)
 ⊔⊑-invL (Trans⊑ lt1 lt2) = Trans⊑ (⊔⊑-invL lt1) lt2
 
-⊔⊑-invR : ∀{v₁ v₂ v₃ : Value}
-       → v₁ ⊔ v₂ ⊑ v₃
-         ------------
-       → v₂ ⊑ v₃
-⊔⊑-invR (ConjL⊑ lt lt₁) = lt₁
+⊔⊑-invR : ∀{u v w : Value}
+       → u ⊔ v ⊑ w
+         ---------
+       → v ⊑ w
+⊔⊑-invR (ConjL⊑ lt1 lt2) = lt2
 ⊔⊑-invR (ConjR1⊑ lt) = ConjR1⊑ (⊔⊑-invR lt)
 ⊔⊑-invR (ConjR2⊑ lt) = ConjR2⊑ (⊔⊑-invR lt)
-⊔⊑-invR (Trans⊑ lt lt₁) = Trans⊑ (⊔⊑-invR lt) lt₁
+⊔⊑-invR (Trans⊑ lt1 lt2) = Trans⊑ (⊔⊑-invR lt1) lt2
 \end{code}
 
 
@@ -311,7 +309,7 @@ semantics, which we discuss in detail in the following paragraphs.
 
 [PLW: PLFA doesn't mention big-step semantics. But perhaps it should!]
 [JGS: It does now in the chapter on Adequacy! Though perhaps
-  the big-step semantics should be introduced in an earlier
+  the big-step semantics should be introduced in an earlier chapter
   and proved equivalent to the reduction semantics.]
 
 \begin{code}
@@ -320,35 +318,35 @@ infix 3 _⊢_↓_
 data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
 
   var : ∀ {Γ} {γ : Env Γ} {x}
-        -------------------
+        ---------------
       → γ ⊢ (` x) ↓ γ x
 
-  ↦-elim : ∀ {Γ} {γ : Env Γ} {M₁ M₂ v₁ v₂}
-        → γ ⊢ M₁ ↓ (v₁ ↦ v₂)
-        → γ ⊢ M₂ ↓ v₁
-          ------------------
-        → γ ⊢ (M₁ · M₂) ↓ v₂
+  ↦-elim : ∀ {Γ} {γ : Env Γ} {L M v w}
+        → γ ⊢ L ↓ (v ↦ w)
+        → γ ⊢ M ↓ v
+          ---------------
+        → γ ⊢ (L · M) ↓ w
 
-  ↦-intro : ∀ {Γ} {γ : Env Γ} {M v₁ v₂}
-        → γ `, v₁ ⊢ M ↓ v₂
-          ---------------------
-        → γ ⊢ (ƛ M) ↓ (v₁ ↦ v₂)
+  ↦-intro : ∀ {Γ} {γ : Env Γ} {N v w}
+        → γ `, v ⊢ N ↓ w
+          -------------------
+        → γ ⊢ (ƛ N) ↓ (v ↦ w)
 
   ⊥-intro : ∀ {Γ} {γ : Env Γ} {M}
           ---------
         → γ ⊢ M ↓ ⊥
 
-  ⊔-intro : ∀ {Γ} {γ : Env Γ} {M v₁ v₂}
-        → γ ⊢ M ↓ v₁
-        → γ ⊢ M ↓ v₂
-          -----------------
-        → γ ⊢ M ↓ (v₁ ⊔ v₂)
+  ⊔-intro : ∀ {Γ} {γ : Env Γ} {M v w}
+        → γ ⊢ M ↓ v
+        → γ ⊢ M ↓ w
+          ---------------
+        → γ ⊢ M ↓ (v ⊔ w)
      
-  sub : ∀ {Γ} {γ : Env Γ} {M v₁ v₂}
-        → γ ⊢ M ↓ v₁
-        → v₂ ⊑ v₁
-          ----------
-        → γ ⊢ M ↓ v₂
+  sub : ∀ {Γ} {γ : Env Γ} {M v w}
+        → γ ⊢ M ↓ v
+        → w ⊑ v
+          ---------
+        → γ ⊢ M ↓ w
 \end{code}
 
 [PLW: Say we redefine:
@@ -363,8 +361,8 @@ Then does sub (downward closure) follow from the other rules?]
 
 Consider the rule for lambda abstractions, `↦-intro`.  It says that a
 lambda abstraction results in a single-entry table that maps the input
-`v₁` to the output `v₂`, provided that evaluating the body in an
-environment with `v₁` bound to its parameter produces the output `v₂`.
+`v` to the output `w`, provided that evaluating the body in an
+environment with `v` bound to its parameter produces the output `w`.
 As a simple example of this rule, we can see that the identity function
 maps `⊥` to `⊥`. 
 
@@ -383,86 +381,86 @@ denot-id-two = ⊔-intro denot-id denot-id
 
 Of course, we will need tables with many rows for our lambda
 abstractions. These can be constructed using the (⊔-intro) rule.  If
-term M (typically a lambda abstraction) can produce both tables v₁ and
-v₂, then it produces the combined table v₁ ⊔ v₂. One can take an
+term M (typically a lambda abstraction) can produce both tables `v` and
+`w`, then it produces the combined table `v ⊔ w`. One can take an
 operational view of the rules (↦-intro) and (⊔-intro) by 
 imagining that when an interpreter first comes to a lambda
 abstraction, it pre-evaluates the function on a bunch of randomly
 chosen arguments, using many instances of the rule (↦-intro), and then
 joins them into one table using many instances of the rule (⊔-intro).
 In the following we show that the identity function produces a table
-containing both of the previous results, ⊥ ↦ ⊥ and (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥).
+containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)`.
 
 \begin{code}
 denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
 denot-id3 = denot-id-two
 \end{code}
 
-We most often think of the judgment γ ⊢ M ↓ v as taking the
-environment γ and term M as input, producing the result v.  However,
+We most often think of the judgment `γ ⊢ M ↓ v` as taking the
+environment `γ` and term `M` as input, producing the result `v`.  However,
 it is worth emphasizing that the semantics is a _relation_.  The above
 results for the identity function show that the same environment and
 term can be mapped to different results. However, the results for a
-given γ and M are not _too_ different, they are all finite
+given `γ` and `M` are not _too_ different, they are all finite
 approximations of the same function. Perhaps a better way of thinking
-about the judgment γ ⊢ M ↓ v is that the γ, M, and v are all inputs
-and the semantics either confirms or denies whether v is an accurate
-partial description of the result of M in environment γ.
+about the judgment `γ ⊢ M ↓ v` is that the `γ`, `M`, and `v` are all inputs
+and the semantics either confirms or denies whether `v` is an accurate
+partial description of the result of `M` in environment `γ`.
 
 Next we consider the meaning of function application as given by the
-(↦-elim) rule. In the premise of the rule we have that M₁ maps v₁ to
-v₂. So if M₂ produces v₁, then the application of M₁ to M₂ produces
-v₂.
+(↦-elim) rule. In the premise of the rule we have that `L` maps `v` to
+`w`. So if `M` produces `v`, then the application of `L` to `M`
+produces `w`.
 
 As an example of function application and the (↦-elim) rule, we apply
 the identity function to itself.  Indeed, we have both that ∅ ⊢ id
-↓ (v' ↦ v') ↦ (v' ↦ v') and also ∅ ⊢ id ↓ (v' ↦ v'), so we can
+↓ (u ↦ u) ↦ (u ↦ u) and also ∅ ⊢ id ↓ (u ↦ u), so we can
 apply the rule (↦-elim).
 
 \begin{code}
-id-app-id : ∀ {v' : Value} → `∅ ⊢ id · id ↓ (v' ↦ v')
-id-app-id {v'} = ↦-elim (↦-intro var) (↦-intro var)
+id-app-id : ∀ {u : Value} → `∅ ⊢ id · id ↓ (u ↦ u)
+id-app-id {u} = ↦-elim (↦-intro var) (↦-intro var)
 \end{code}
 
 Next we revisit the Church numeral two.  This function has two
-parameters: a function and an arbitrary value v₁, and it applies the
-function twice. So the function must map v₁ to some value, which we'll
-name v₂. Then for the second application, it must map v₂ to some
-value. Let's name it v₃. So the parameter's table must contain two
-entries, both v₁ ↦ v₂ and v₂ ↦ v₃. For each application of the table,
-we extract the appropriate entry from it using the (sub) rule.  In
-particular, we use the ConjR1⊑ and ConjR2⊑ to select v₁ ↦ v₂ and v₂ ↦
-v₃, respectively, from the table v₁ ↦ v₂ ⊔ v₂ ↦ v₃. So the meaning of
-twoᶜ is that it takes this table and parameter v₁, and it returns v₃.
+parameters: a function and an arbitrary value `u`, and it applies the
+function twice. So the function must map `u` to some value, which
+we'll name `v`. Then for the second application, it must map `v` to
+some value. Let's name it `w`. So the parameter's table must contain
+two entries, both `u ↦ v` and `v ↦ w`. For each application of the
+table, we extract the appropriate entry from it using the (sub) rule.
+In particular, we use the ConjR1⊑ and ConjR2⊑ to select `u ↦ v` and `v
+↦ w`, respectively, from the table `u ↦ v ⊔ v ↦ w`. So the meaning of
+twoᶜ is that it takes this table and parameter `u`, and it returns `w`.
 Indeed we derive this as follows.
 
 \begin{code}
-denot-twoᶜ : ∀{v₁ v₂ v₃ : Value} → `∅ ⊢ twoᶜ ↓ ((v₁ ↦ v₂ ⊔ v₂ ↦ v₃) ↦ (v₁ ↦ v₃))
-denot-twoᶜ {v₁}{v₂}{v₃} =
+denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w) ↦ (u ↦ w))
+denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
-  where lt1 : v₂ ↦ v₃ ⊑ v₁ ↦ v₂ ⊔ v₂ ↦ v₃
+  where lt1 : v ↦ w ⊑ u ↦ v ⊔ v ↦ w
         lt1 = ConjR2⊑ (Fun⊑ Refl⊑ Refl⊑)
      
-        lt2 : v₁ ↦ v₂ ⊑ v₁ ↦ v₂ ⊔ v₂ ↦ v₃
+        lt2 : u ↦ v ⊑ u ↦ v ⊔ v ↦ w
         lt2 = (ConjR1⊑ (Fun⊑ Refl⊑ Refl⊑))
 \end{code}
 
 
-Next we have a classic example of self application: Δ = λx. (x x).
-The input value for x needs to be a table, and it needs to have an
-entry that maps a smaller version of itself, call it v₁, to some value
-v₂. So the input value looks like v₁ ↦ v₂ ⊔ v₁. Of course, then the
-output of Δ is v₂. The derivation is given below.  The first occurrences
-of x evaluates to v₁ ↦ v₂, the second occurrence of x evaluates to v₁,
-and then the result of the application is v₂.
+Next we have a classic example of self application: `Δ = λx. (x x)`.
+The input value for `x` needs to be a table, and it needs to have an
+entry that maps a smaller version of itself, call it `v`, to some value
+`w`. So the input value looks like `v ↦ w ⊔ v`. Of course, then the
+output of `Δ` is `w`. The derivation is given below.  The first occurrences
+of `x` evaluates to `v ↦ w`, the second occurrence of `x` evaluates to `v`,
+and then the result of the application is `w`.
 
 \begin{code}
 Δ : ∅ ⊢ ★
 Δ = (ƛ (# 0) · (# 0))
 
-denot-Δ : ∀ {v₁ v₂} → `∅ ⊢ Δ ↓ ((v₁ ↦ v₂ ⊔ v₁) ↦ v₂)
-denot-Δ {v₁}{v₂} = ↦-intro (↦-elim (sub var (ConjR1⊑ Refl⊑))
-                                   (sub var (ConjR2⊑ Refl⊑)))
+denot-Δ : ∀ {v w} → `∅ ⊢ Δ ↓ ((v ↦ w ⊔ v) ↦ w)
+denot-Δ = ↦-intro (↦-elim (sub var (ConjR1⊑ Refl⊑))
+                          (sub var (ConjR2⊑ Refl⊑)))
 \end{code}
 
 One might worry whether this semantics can deal with diverging
@@ -1113,7 +1111,7 @@ sub-inv {v₁} {v₂₁ ⊔ v₂₂} (ConjR2⊑ lt) {w₁} {w₁'} m
 ... | ⟨ v₂₂' , ⟨ fv₂₂' , ⟨ v₂₂'⊆v₂₂ , ⟨ domv₂₂'⊑w₁ , w₁'⊑codv₂₂' ⟩ ⟩ ⟩ ⟩ =
       ⟨ v₂₂' , ⟨ fv₂₂' , ⟨ (λ {C} z → inj₂ (v₂₂'⊆v₂₂ z)) ,
                                    ⟨ domv₂₂'⊑w₁ , w₁'⊑codv₂₂' ⟩ ⟩ ⟩ ⟩
-sub-inv {v₁} {v₂} (Trans⊑{v₂ = u} v₁⊑u u⊑v₂) {w₁} {w₁'} w₁↦w₁'∈v₁
+sub-inv {v₁} {v₂} (Trans⊑{v = u} v₁⊑u u⊑v₂) {w₁} {w₁'} w₁↦w₁'∈v₁
     with sub-inv v₁⊑u w₁↦w₁'∈v₁
 ... | ⟨ u' , ⟨ fu' , ⟨ u'⊆u , ⟨ domu'⊑w₁ , w₁'⊑codu' ⟩ ⟩ ⟩ ⟩ 
     with sub-inv-trans {u'} fu' u'⊆u (sub-inv u⊑v₂) 

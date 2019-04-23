@@ -167,9 +167,9 @@ describe the proof below.
         → ℰ (M · N) γ v
           ----------------
         → (ℰ M ● ℰ N) γ v
-ℰ·→●ℰ (↦-elim{v₁ = v₁} d₁ d₂) = inj₂ ⟨ v₁ , ⟨ d₁ , d₂ ⟩ ⟩
+ℰ·→●ℰ (↦-elim{v = v₁} d₁ d₂) = inj₂ ⟨ v₁ , ⟨ d₁ , d₂ ⟩ ⟩
 ℰ·→●ℰ {v = ⊥} (⊥-intro) = inj₁ Bot⊑
-ℰ·→●ℰ {Γ}{γ}{M}{N}{v} (⊔-intro{v₁ = v₁}{v₂ = v₂} d₁ d₂) 
+ℰ·→●ℰ {Γ}{γ}{M}{N}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂) 
     with ℰ·→●ℰ d₁ | ℰ·→●ℰ d₂
 ... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)    
 ... | inj₁ lt1 | inj₂ ⟨ v₁' , ⟨ M↓v12 , N↓v3 ⟩ ⟩ =
