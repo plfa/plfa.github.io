@@ -264,7 +264,7 @@ After simplification, the body is equivalent to the term:
 We could replace any use of a chain of equations by a chain of
 applications of `trans`; the result would be more compact but harder
 to read.  The trick behind `∎` means that a chain of equalities
-simplifies to a chain of applications of `trans` than ends in `trans e
+simplifies to a chain of applications of `trans` that ends in `trans e
 refl`, where `e` is a term that proves some equality, even though `e`
 alone would do.
 
@@ -344,14 +344,14 @@ by `≡⟨⟩` have the same simplified form; it's up to us to write them in
 an order that will make sense to the reader.
 
 
-#### Exercise `≤-reasoning` (stretch)
+#### Exercise `≤-Reasoning` (stretch)
 
 The proof of monotonicity from
 Chapter [Relations][plfa.Relations]
 can be written in a more readable form by using an analogue of our
-notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
+notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
-regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
+regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-monoʳ-≤`.
 
 \begin{code}
 -- Your code goes here
