@@ -1,20 +1,20 @@
 ---
-title     : "DenotAdequacy: Adequacy of denotational semantics with respect to operational semantics"
+title     : "Adequacy: of denotational semantics with respect to operational semantics"
 layout    : page
-prev      : /DenotSound/
-permalink : /DenotAdequate/
+prev      : /Soundness/
+permalink : /Adequacy/
 next      : /Acknowledgements/
 ---
 
 \begin{code}
-module plfa.DenotAdequate where
+module plfa.Adequacy where
 \end{code}
 
 ## Imports
 
 \begin{code}
 open import plfa.Untyped
-open import plfa.Denot
+open import plfa.Denotational
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; trans; cong; cong₂; cong-app)

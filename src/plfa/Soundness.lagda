@@ -1,21 +1,21 @@
 ---
-title     : "DenotSound: Soundness of reduction with respect to denotational semantics"
+title     : "Soundness: of reduction with respect to denotational semantics"
 layout    : page
-prev      : /DenotCompositional/
-permalink : /DenotSound/
-next      : /DenotAdequate/
+prev      : /Compositional/
+permalink : /Soundness/
+next      : /Adequacy/
 ---
 
 \begin{code}
-module plfa.DenotSound where
+module plfa.Soundness where
 \end{code}
 
 ## Imports
 
 \begin{code}
 open import plfa.Untyped
-open import plfa.Denot
-open import plfa.DenotCompositional
+open import plfa.Denotational
+open import plfa.Compositional
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)

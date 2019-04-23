@@ -1,13 +1,13 @@
 ---
-title     : "Denot: Denotational semantics for the untyped lambda calculus"
+title     : "Denotational: semantics of the untyped lambda calculus"
 layout    : page
 prev      : /Untyped/
-permalink : /Denot/
-next      : /DenotCompositional/
+permalink : /Denotational/
+next      : /Compositional/
 ---
 
 \begin{code}
-module plfa.Denot where
+module plfa.Denotational where
 \end{code}
 
 The lambda calculus is a language about _functions_, that is, mappings

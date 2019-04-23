@@ -1,20 +1,20 @@
 ---
-title     : "DenotCompositional: The denotational semantics is compositional"
+title     : Compositional: The denotational semantics is compositional"
 layout    : page
-prev      : /Denot/
-permalink : /DenotCompositional/
-next      : /DenotSound/
+prev      : /Denotational/
+permalink : /Compositional/
+next      : /Soundness/
 ---
 
 \begin{code}
-module plfa.DenotCompositional where
+module plfa.Compositional where
 \end{code}
 
 ## Imports
 
 \begin{code}
 open import plfa.Untyped
-open import plfa.Denot
+open import plfa.Denotational
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
