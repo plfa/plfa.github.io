@@ -36,7 +36,7 @@ open import Function using (_∘_)
 In this chapter we prove that the reduction semantics is sound with
 respect to the denotational semantics, i.e.,
 
-    M —↠ ƛ N  implies  ℰ M ≃ ℰ (ƛ N)
+    L —↠ ƛ N  implies  ℰ L ≃ ℰ (ƛ N)
 
 The proof is by induction on the reduction sequence, so the main lemma
 concerns a single reduction step. We prove that if a term M steps to
@@ -148,34 +148,34 @@ cases are for variables and lambda abstractions.
 For β reduction, (ƛ M) · N —→ M [ N ], we need to show that the
 semantics is preserved when substituting N for de Bruijn index 0 in
 term M. By inversion on the rules (↦-elim) and (↦-intro),
-we have that γ , v₁ ⊢ M ↓ v₂ and γ ⊢ N ↓ v₁.
-So we need to show that γ ⊢ M [ N ] ↓ v₂, or equivalently,
-that γ ⊢ subst (subst-zero N) M ↓ v₂.
+we have that γ , v ⊢ M ↓ w and γ ⊢ N ↓ v.
+So we need to show that γ ⊢ M [ N ] ↓ w, or equivalently,
+that γ ⊢ subst (subst-zero N) M ↓ w.
 
 \begin{code}
-substitution : ∀ {Γ} {γ : Env Γ} {M N v₁ v₂}
-   → γ `, v₁ ⊢ M ↓ v₂
-   → γ ⊢ N ↓ v₁
+substitution : ∀ {Γ} {γ : Env Γ} {M N v w}
+   → γ `, v ⊢ M ↓ w
+   → γ ⊢ N ↓ v
      -----------------
-   → γ ⊢ M [ N ] ↓ v₂   
-substitution{Γ}{γ}{M}{N}{v₁}{v₂} dm dn =
+   → γ ⊢ M [ N ] ↓ w   
+substitution{Γ}{γ}{M}{N}{v}{w} dm dn =
   subst-pres (subst-zero N) sub-z-ok dm
   where
-  sub-z-ok : γ `⊢ subst-zero N ↓ (γ `, v₁)
+  sub-z-ok : γ `⊢ subst-zero N ↓ (γ `, v)
   sub-z-ok Z = dn
   sub-z-ok (S x) = var
 \end{code}
 
 This result is a corollary of the lemma for simultaneous substitution.
 To use the lemma, we just need to show that (subst-zero N) maps
-variables to terms that produces the same values as those in γ , v₁.
+variables to terms that produces the same values as those in γ , v.
 Let y be an arbitrary variable (de Bruijn index).
 
-* If it is Z, then (subst-zero N) y = N and nth y (γ , v₁) = v₁.
-  By the premise we conclude that γ ⊢ N ↓ v₁.
+* If it is Z, then (subst-zero N) y = N and nth y (γ , v) = v.
+  By the premise we conclude that γ ⊢ N ↓ v.
 
 * If it is (S y'), then (subst-zero N) (S y') = y' and
-  nth (S y') (γ , v₁) = nth y' γ.  So we conclude that
+  nth (S y') (γ , v) = nth y' γ.  So we conclude that
   γ ⊢ y' ↓ nth y' γ by rule (var).
 
 
@@ -671,7 +671,7 @@ reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
 reflect (sub d lt) r mn = sub (reflect d r mn) lt 
 \end{code}
 
-## Finale: reduction implies denotational equality
+## Reduction implies denotational equality
 
 We have proved that reduction both preserves and reflects
 denotations. Thus, reduction implies denotational equality.
@@ -681,21 +681,22 @@ reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
   → M —→ N
     ---------
   → ℰ M ≃ ℰ N
-reduce-equal {Γ}{M}{N} r γ v = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
+reduce-equal {Γ}{M}{N} r γ v =
+    ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
 \end{code}
 
 We conclude that multi-step reduction to a lambda abstraction implies
 denotational equivalence to a lambda abstraction.
 
 \begin{code}
-denot-sound : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
+soundness : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
   → M —↠ ƛ N
     -----------------
   → ℰ M ≃ ℰ (ƛ N)
-denot-sound (.(ƛ _) ∎) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
-denot-sound {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
-  let ih = denot-sound M—↠N in
-  let e = reduce-equal r in
-  ≃-trans {Γ} e ih γ v
+soundness (.(ƛ _) ∎) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
+soundness {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
+   let ih = soundness M—↠N in
+   let e = reduce-equal r in
+   ≃-trans {Γ} e ih γ v
 \end{code}
 
