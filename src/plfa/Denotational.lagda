@@ -555,7 +555,7 @@ values in the same environment.
 infix 3 _≃_
 
 _≃_ : ∀ {Γ} → (Denotation Γ) → (Denotation Γ) → Set
-D₁ ≃ D₂ = ∀ {γ} {v} → D₁ γ v iff D₂ γ v
+(_≃_ {Γ} D₁ D₂) = (γ : Env Γ) → (v : Value) → D₁ γ v iff D₂ γ v
 \end{code}
 
 Denotational equality is an equivalence relation.
@@ -563,26 +563,60 @@ Denotational equality is an equivalence relation.
 \begin{code}
 ≃-refl : ∀ {Γ : Context} → {M : Denotation Γ}
   → M ≃ M
-≃-refl = ⟨ (λ x → x) , (λ x → x) ⟩
+≃-refl γ v = ⟨ (λ x → x) , (λ x → x) ⟩
 
 ≃-sym : ∀ {Γ : Context} → {M N : Denotation Γ}
   → M ≃ N
     -----
   → N ≃ M
-≃-sym eq = ⟨ proj₂ eq , proj₁ eq ⟩
+≃-sym eq γ v = ⟨ (proj₂ (eq γ v)) , (proj₁ (eq γ v)) ⟩
 
 ≃-trans : ∀ {Γ : Context} → {M₁ M₂ M₃ : Denotation Γ}
   → M₁ ≃ M₂
   → M₂ ≃ M₃
     -------
   → M₁ ≃ M₃
-≃-trans eq1 eq2 =
-  ⟨ (λ z → proj₁ eq2 (proj₁ eq1 z)) , (λ z → proj₂ eq1 (proj₂ eq2 z)) ⟩
+≃-trans eq1 eq2 γ v = ⟨ (λ z → proj₁ (eq2 γ v) (proj₁ (eq1 γ v) z)) ,
+                        (λ z → proj₂ (eq1 γ v) (proj₂ (eq2 γ v) z)) ⟩
 \end{code}
 
 Two terms `M` and `N` are denotational equal when their denotations are
 equal, that is, `ℰ M ≃ ℰ N`.
 
+The following submodule introduces equational reasoning for the `≃`
+relation.
+
+\begin{code}
+module ≃-Reasoning {Γ : Context} where
+
+  infix  1 start_
+  infixr 2 _≃⟨⟩_ _≃⟨_⟩_
+  infix  3 _☐
+
+  start_ : ∀ {x y : Denotation Γ}
+    → x ≃ y
+      -----
+    → x ≃ y
+  start x≃y  =  x≃y
+
+  _≃⟨⟩_ : ∀ (x : Denotation Γ) {y : Denotation Γ}
+    → x ≃ y
+      -----
+    → x ≃ y
+  x ≃⟨⟩ x≃y  =  x≃y
+
+  _≃⟨_⟩_ : ∀ (x : Denotation Γ) {y z : Denotation Γ}
+    → x ≃ y
+    → y ≃ z
+      -----
+    → x ≃ z
+  (x ≃⟨ x≃y ⟩ y≃z) =  ≃-trans x≃y y≃z
+
+  _☐ : ∀ (x : Denotation Γ)
+      -----
+    → x ≃ x
+  (x ☐)  =  ≃-refl
+\end{code}
 
 ## Road map for the following chapters
 
