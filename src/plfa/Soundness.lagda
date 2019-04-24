@@ -681,7 +681,7 @@ reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
   → M —→ N
     ---------
   → ℰ M ≃ ℰ N
-reduce-equal {Γ}{M}{N} r = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
+reduce-equal {Γ}{M}{N} r γ v = ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
 \end{code}
 
 We conclude that multi-step reduction to a lambda abstraction implies
@@ -692,10 +692,10 @@ denot-sound : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
   → M —↠ ƛ N
     -----------------
   → ℰ M ≃ ℰ (ƛ N)
-denot-sound (.(ƛ _) ∎) = ⟨ (λ x → x) , (λ x → x) ⟩
-denot-sound {Γ} (L —→⟨ r ⟩ M—↠N) {γ} {v} =
+denot-sound (.(ƛ _) ∎) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
+denot-sound {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
   let ih = denot-sound M—↠N in
-  let e = reduce-equal r {γ} {v} in
-  ≃-trans {Γ} e ih {γ} {v}
+  let e = reduce-equal r in
+  ≃-trans {Γ} e ih γ v
 \end{code}
 

@@ -636,7 +636,8 @@ gives us ∅ ⊢ M ↓ ⊥ ↦ ⊥. Then the main lemma gives us ∅ ⊢ M ⇓ c
 \begin{code}
 adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
          →  Σ[ c ∈ Clos ] ∅' ⊢ M ⇓ c
-adequacy{M}{N} eq 
-    with ↓→𝔼 𝔾-∅ ((proj₂ eq) (↦-intro ⊥-intro)) ⟨ ⊥ , ⟨ ⊥ , Refl⊑ ⟩ ⟩
+adequacy{M}{N} eq
+    with ↓→𝔼 𝔾-∅ ((proj₂ (eq `∅ (⊥ ↦ ⊥))) (↦-intro ⊥-intro))
+                 ⟨ ⊥ , ⟨ ⊥ , Refl⊑ ⟩ ⟩
 ... | ⟨ c , ⟨ M⇓c , Vc ⟩ ⟩ = ⟨ c , M⇓c ⟩
 \end{code}
