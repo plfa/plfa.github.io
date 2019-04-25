@@ -234,6 +234,8 @@ We have the empty environment, and we can extend an environment.
 `∅ : Env ∅
 `∅ ()
 
+infixl 5 _`,_
+
 _`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
 (γ `, v) Z = v
 (γ `, v) (S x) = γ x
