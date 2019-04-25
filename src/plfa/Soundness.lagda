@@ -34,20 +34,20 @@ open import Function using (_∘_)
 
 
 In this chapter we prove that the reduction semantics is sound with
-respect to the denotational semantics, i.e.,
+respect to the denotational semantics, i.e., for any term L
 
     L —↠ ƛ N  implies  ℰ L ≃ ℰ (ƛ N)
 
 The proof is by induction on the reduction sequence, so the main lemma
-concerns a single reduction step. We prove that if a term `M` steps to
-`N`, then `M` and `N` are denotationally equal. We shall prove each
-direction of this if-and-only-if separately. One direction will look
-just like a type preservation proof. The other direction is like
-proving type preservation for reduction going in reverse.  Recall that
-type preservation is sometimes called subject reduction. Preservation
-in reverse is a well-known property and is called _subject
-expansion_. It is also well-known that subject expansion is false for
-most typed lambda calculi!
+concerns a single reduction step. We prove that if any term `M` steps
+to a term `N`, then `M` and `N` are denotationally equal. We shall
+prove each direction of this if-and-only-if separately. One direction
+will look just like a type preservation proof. The other direction is
+like proving type preservation for reduction going in reverse.  Recall
+that type preservation is sometimes called subject
+reduction. Preservation in reverse is a well-known property and is
+called _subject expansion_. It is also well-known that subject
+expansion is false for most typed lambda calculi!
 
 
 ## Forward reduction preserves denotations
@@ -154,30 +154,30 @@ So we need to show that `γ ⊢ M [ N ] ↓ w`, or equivalently,
 that `γ ⊢ subst (subst-zero N) M ↓ w`.
 
 \begin{code}
-substitution : ∀ {Γ} {γ : Env Γ} {M N v w}
-   → γ `, v ⊢ M ↓ w
-   → γ ⊢ N ↓ v
+substitution : ∀ {Γ} {γ : Env Γ} {N M v w}
+   → γ `, v ⊢ N ↓ w
+   → γ ⊢ M ↓ v
      ---------------
-   → γ ⊢ M [ N ] ↓ w   
-substitution{Γ}{γ}{M}{N}{v}{w} dm dn =
-  subst-pres (subst-zero N) sub-z-ok dm
+   → γ ⊢ N [ M ] ↓ w   
+substitution{Γ}{γ}{N}{M}{v}{w} dn dm =
+  subst-pres (subst-zero M) sub-z-ok dn
   where
-  sub-z-ok : γ `⊢ subst-zero N ↓ (γ `, v)
-  sub-z-ok Z = dn
+  sub-z-ok : γ `⊢ subst-zero M ↓ (γ `, v)
+  sub-z-ok Z = dm
   sub-z-ok (S x) = var
 \end{code}
 
 This result is a corollary of the lemma for simultaneous substitution.
-To use the lemma, we just need to show that `subst-zero N` maps
+To use the lemma, we just need to show that `subst-zero M` maps
 variables to terms that produces the same values as those in `γ , v`.
 Let `y` be an arbitrary variable (de Bruijn index).
 
-* If it is `Z`, then `(subst-zero N) y = N` and `nth y (γ , v) = v`.
-  By the premise we conclude that `γ ⊢ N ↓ v`.
+* If it is `Z`, then `(subst-zero M) y = M` and `nth y (γ , v) = v`.
+  By the premise we conclude that `γ ⊢ M ↓ v`.
 
-* If it is `S y'`, then `(subst-zero N) (S y') = y'` and
-  `nth (S y') (γ , v) = nth y' γ`.  So we conclude that
-  `γ ⊢ y' ↓ nth y' γ` by rule `var`.
+* If it is `S x`, then `(subst-zero M) (S x) = x` and
+  `nth (S x) (γ , v) = nth x γ`.  So we conclude that
+  `γ ⊢ x ↓ nth x γ` by rule `var`.
 
 
 ### Reduction preserves denotations
@@ -563,29 +563,29 @@ Most of the work is now behind us. We have proved that simultaneous
 substitution reflects denotations. Of course, β reduction uses single
 substitution, so we need a corollary that proves that single
 substitution reflects denotations. That is,
-give terms `M : (Γ , ★ ⊢ ★)` and `N : (Γ ⊢ ★)`,
-if `γ ⊢ M [ N ] ↓ v`, then `γ ⊢ N ↓ v₂` and `(γ , v₂) ⊢ M ↓ v`
-for some value `v₂`. We have `M [ N ] = subst (subst-zero N) M`.
+give terms `N : (Γ , ★ ⊢ ★)` and `M : (Γ ⊢ ★)`,
+if `γ ⊢ N [ M ] ↓ w`, then `γ ⊢ M ↓ v` and `(γ , v) ⊢ N ↓ w`
+for some value `v`. We have `N [ M ] = subst (subst-zero M) N`.
 We apply the `subst-reflect` lemma to obtain
-`γ ⊢ subst-zero N ↓ (δ' , v')` and `(δ' , v') ⊢ M ↓ v`
+`γ ⊢ subst-zero M ↓ (δ' , v')` and `(δ' , v') ⊢ N ↓ w`
 for some `δ'` and `v'`.
 
-Instantiating `γ ⊢ subst-zero N ↓ (δ' , v')` at `k = 0`
-gives us `γ ⊢ N ↓ v'`. We choose `v₂ = v'`, so the first
+Instantiating `γ ⊢ subst-zero M ↓ (δ' , v')` at `k = 0`
+gives us `γ ⊢ M ↓ v'`. We choose `w = v'`, so the first
 part of our conclusion is complete.
 
-It remains to prove `(γ , v') ⊢ M ↓ v`. First, we obtain 
-`(γ , v') ⊢ rename var-id M ↓ v` by the `rename-pres` lemma
-applied to `(δ' , v') ⊢ M ↓ v`, with the `var-id` renaming,
+It remains to prove `(γ , v') ⊢ N ↓ v`. First, we obtain 
+`(γ , v') ⊢ rename var-id N ↓ v` by the `rename-pres` lemma
+applied to `(δ' , v') ⊢ N ↓ v`, with the `var-id` renaming,
 `γ = (δ' , v')`, and `δ = (γ , v')`. To apply this lemma,
 we need to show that 
 `nth n (δ' , v') ⊑ nth (var-id n) (γ , v')` for any `n`.
 This is accomplished by the following lemma, which
-makes use of `γ ⊢ subst-zero N ↓ (δ' , v')`.
+makes use of `γ ⊢ subst-zero M ↓ (δ' , v')`.
 
 \begin{code}
-nth-id-le : ∀{Γ}{δ'}{v'}{γ}{N}
-      → γ `⊢ subst-zero N ↓ (δ' `, v')
+nth-id-le : ∀{Γ}{δ'}{v'}{γ}{M}
+      → γ `⊢ subst-zero M ↓ (δ' `, v')
         -----------------------------------------------------
       → (x : Γ , ★ ∋ ★) → (δ' `, v') x ⊑ (γ `, v') (var-id x) 
 nth-id-le γ-sz-δ'v' Z = Refl⊑
@@ -603,32 +603,32 @@ The above lemma proceeds by induction on `n`.
 Returning to the proof that single substitution reflects
 denotations, we have just proved that
 
-  (γ `, v') ⊢ rename var-id M ↓ v
+  (γ `, v') ⊢ rename var-id N ↓ v
 
-but we need to show `(γ `, v') ⊢ M ↓ v`.
+but we need to show `(γ `, v') ⊢ N ↓ v`.
 So we apply the `rename-id` lemma to obtain
-`rename var-id M ≡ M`.
+`rename var-id N ≡ N`.
 
 The following is the formal version of this proof.
 
 \begin{code}
-subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {N : Δ ⊢ ★}
-  → δ `⊢ subst-zero N ↓ γ
+subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {M : Δ ⊢ ★}
+  → δ `⊢ subst-zero M ↓ γ
     ----------------------------------------
-  → Σ[ w ∈ Value ] γ `⊑ (δ `, w) × δ ⊢ N ↓ w
+  → Σ[ w ∈ Value ] γ `⊑ (δ `, w) × δ ⊢ M ↓ w
 subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ Z ⟩ ⟩   
   where
   lemma : γ `⊑ (δ `, last γ)
   lemma Z  =  Refl⊑
   lemma (S x) = var-inv (δσγ (S x))
   
-substitution-reflect : ∀ {Δ} {δ : Env Δ} {M : Δ , ★ ⊢ ★} {N : Δ ⊢ ★} {v}
-  → δ ⊢ M [ N ] ↓ v
+substitution-reflect : ∀ {Δ} {δ : Env Δ} {N : Δ , ★ ⊢ ★} {M : Δ ⊢ ★} {v}
+  → δ ⊢ N [ M ] ↓ v
     ------------------------------------------------
-  → Σ[ w ∈ Value ] δ ⊢ N ↓ w  ×  (δ `, w) ⊢ M ↓ v
+  → Σ[ w ∈ Value ] δ ⊢ M ↓ w  ×  (δ `, w) ⊢ N ↓ v
 substitution-reflect d with subst-reflect d refl
-...  | ⟨ γ , ⟨ δσγ , γMv ⟩ ⟩ with subst-zero-reflect δσγ
-...    | ⟨ w , ⟨ ineq , δNw ⟩ ⟩ = ⟨ w , ⟨ δNw , Env⊑ γMv ineq ⟩ ⟩
+...  | ⟨ γ , ⟨ δσγ , γNv ⟩ ⟩ with subst-zero-reflect δσγ
+...    | ⟨ w , ⟨ ineq , δMw ⟩ ⟩ = ⟨ w , ⟨ δMw , Env⊑ γNv ineq ⟩ ⟩
 \end{code}
 
 
@@ -688,8 +688,9 @@ reduce-equal {Γ}{M}{N} r γ v =
     ⟨ (λ m → preserve m r) , (λ n → reflect n r refl) ⟩
 \end{code}
 
-We conclude that multi-step reduction to a lambda abstraction implies
-denotational equivalence to a lambda abstraction.
+We conclude with the _soundness property_, that multi-step reduction
+to a lambda abstraction implies denotational equivalence with a lambda
+abstraction.
 
 \begin{code}
 soundness : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
