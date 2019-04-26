@@ -563,7 +563,7 @@ Proposition `+-assoc n p q` shifts parentheses from right to left:
 
     (n + p) + q ≡ n + (p + q)
 
-To shift them the other way, we use `sym (+-assoc m n p)`:
+To shift them the other way, we use `sym (+-assoc n p q)`:
 
     n + (p + q) ≡ (n + p) + q
 
@@ -793,7 +793,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise `+-swap` (recommended) {#plus-swap} 
+#### Exercise `+-swap` (recommended) {#plus-swap}
 
 Show
 
@@ -873,7 +873,7 @@ for all naturals `m`, `n`, and `p`.
 
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
-Recall that 
+Recall that
 Exercise [Bin][plfa.Naturals#Bin]
 defines a datatype of bitstrings representing natural numbers
 \begin{code}
