@@ -569,7 +569,7 @@ sym-≐ : ∀ {A : Set} {x y : A}
   → x ≐ y
     -----
   → y ≐ x
-sym-≐ {A} {x} {y} x≐y P  =  Qy
+sym-≐ {A} {x} {y} x≐y P Px  =  Qy Px
   where
     Q : A → Set
     Q z = P z → P x

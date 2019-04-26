@@ -171,8 +171,8 @@ that there is a sense in which it is commutative and associative.  In
 particular, product is commutative and associative _up to
 isomorphism_.
 
-For commutativity, the `to` function swaps a pair, taking `(x , y)` to
-`(y , x)`, and the `from` function does the same (up to renaming).
+For commutativity, the `to` function swaps a pair, taking `⟨ x , y ⟩` to
+`⟨ y , x ⟩`, and the `from` function does the same (up to renaming).
 Instantiating the patterns correctly in `from∘to` and `to∘from` is essential.
 Replacing the definition of `from∘to` by `λ w → refl` will not work;
 and similarly for `to∘from`:
@@ -197,11 +197,11 @@ In the first case, we might have that `m` is `2` and `n` is `3`, and
 both `m * n` and `n * m` are equal to `6`.  In the second case, we
 might have that `A` is `Bool` and `B` is `Tri`, and `Bool × Tri` is
 _not_ the same as `Tri × Bool`.  But there is an isomorphism between
-the two types.  For instance, `(true , aa)`, which is a member of the
-former, corresponds to `(aa , true)`, which is a member of the latter.
+the two types.  For instance, `⟨ true , aa ⟩`, which is a member of the
+former, corresponds to `⟨ aa , true ⟩`, which is a member of the latter.
 
 For associativity, the `to` function reassociates two uses of pairing,
-taking `((x , y) , z)` to `(x , (y , z))`, and the `from` function does
+taking `⟨ ⟨ x , y ⟩ , z ⟩` to `⟨ x , ⟨ y , z ⟩ ⟩`, and the `from` function does
 the inverse.  Again, the evidence of left and right inverse requires
 matching against a suitable pattern to enable simplification:
 \begin{code}
@@ -223,8 +223,8 @@ up to isomorphism_.  Compare the two statements:
 
 For example, the type `(ℕ × Bool) × Tri` is _not_ the same as `ℕ ×
 (Bool × Tri)`. But there is an isomorphism between the two types. For
-instance `((1 , true) , aa)`, which is a member of the former,
-corresponds to `(1 , (true , aa))`, which is a member of the latter.
+instance `⟨ ⟨ 1 , true ⟩ , aa ⟩`, which is a member of the former,
+corresponds to `⟨ 1 , ⟨ true , aa ⟩ ⟩`, which is a member of the latter.
 
 #### Exercise `⇔≃×` (recommended)
 
@@ -274,7 +274,7 @@ function enumerates all possible arguments of type `⊤`:
 
 For numbers, one is the identity of multiplication. Correspondingly,
 unit is the identity of product _up to isomorphism_.  For left
-identity, the `to` function takes `(tt , x)` to `x`, and the `from`
+identity, the `to` function takes `⟨ tt , x ⟩` to `x`, and the `from`
 function does the inverse.  The evidence of left inverse requires
 matching against a suitable pattern to enable simplification:
 \begin{code}
@@ -298,7 +298,7 @@ In the first case, we might have that `m` is `2`, and both
 `1 * m` and `m` are equal to `2`.  In the second
 case, we might have that `A` is `Bool`, and `⊤ × Bool` is _not_ the
 same as `Bool`.  But there is an isomorphism between the two types.
-For instance, `(tt, true)`, which is a member of the former,
+For instance, `⟨ tt , true ⟩`, which is a member of the former,
 corresponds to `true`, which is a member of the latter.
 
 Right identity follows from commutativity of product and left identity:
