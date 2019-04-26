@@ -13,7 +13,7 @@ module Assignment4 where
 
 ## Introduction
 
-This assignment is due **4pm Thursday 15 November** (Week 9).
+<!-- This assignment is due **4pm Thursday 15 November** (Week 9). -->
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -23,13 +23,13 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises without a label are optional, and may be done if you want
 some extra practice.
 
-Submit your homework using the "submit" command.
+<!-- Submit your homework using the "submit" command. -->
 Please ensure your files execute correctly under Agda!
 
-_IMPORTANT_ For ease of marking, when modifying the given code please write
+**IMPORTANT** For ease of marking, when modifying the given code please write
 
-  -- begin
-  -- end
+    -- begin
+    -- end
 
 before and after code you add, to indicate your changes.
 
