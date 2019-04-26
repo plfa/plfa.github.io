@@ -40,7 +40,7 @@ Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
 declaring a suitable inductive type:
 \begin{code}
-data _×_ (A : Set) (B : Set) : Set where
+data _×_ (A B : Set) : Set where
 
   ⟨_,_⟩ : 
       A
@@ -323,15 +323,15 @@ Given two propositions `A` and `B`, the disjunction `A ⊎ B` holds
 if either `A` holds or `B` holds.  We formalise this idea by
 declaring a suitable inductive type:
 \begin{code}
-data _⊎_ : Set → Set → Set where
+data _⊎_ (A B : Set) : Set where
 
-  inj₁ : ∀ {A B : Set}
-    → A
+  inj₁ :
+      A
       -----
     → A ⊎ B
 
-  inj₂ : ∀ {A B : Set}
-    → B
+  inj₂ :
+      B
       -----
     → A ⊎ B
 \end{code}
