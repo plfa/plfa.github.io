@@ -14,10 +14,15 @@ module plfa.Adequacy where
 
 \begin{code}
 open import plfa.Untyped
+  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
+         _—↠_; _—→⟨_⟩_; _—→_; ξ₁; ξ₂; β; ζ; ap; ext; exts; _[_]; subst-zero)
+  renaming (_∎ to _[])
 open import plfa.Denotational
+open import plfa.Soundness
 
-open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl; sym; trans; cong; cong₂; cong-app)
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum
@@ -26,6 +31,7 @@ open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
 open import Data.Unit
 open import Relation.Nullary using (Dec; yes; no)
+open import Function using (_∘_)
 \end{code}
 
 Having proved a preservation property in the last chapter, a natural
