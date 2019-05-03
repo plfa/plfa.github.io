@@ -12,7 +12,7 @@ module Assignment2 where
 
 ## Introduction
 
-This assignment is due **4pm Thursday 18 October** (Week 5).
+<!-- This assignment is due **4pm Thursday 18 October** (Week 5). -->
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -22,7 +22,7 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises without a label are optional, and may be done if you want
 some extra practice.
 
-Submit your homework using the "submit" command.
+<!-- Submit your homework using the "submit" command. -->
 Please ensure your files execute correctly under Agda!
 
 ## Imports

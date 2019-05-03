@@ -578,12 +578,12 @@ sym-≐ {A} {x} {y} x≐y P  =  Qy
     Qy : Q y
     Qy = x≐y Q Qx
 \end{code}
-Given `x ≐ y`, a specific `P`, and a proof of `P y`, we have to
-construct a proof of `P x`.  To do so, we instantiate the equality
-with a predicate `Q` such that `Q z` holds if `P z` implies `P x`.
-The property `Q x` is trivial by reflexivity, and hence `Q y` follows
-from `x ≐ y`.  But `Q y` is exactly a proof of what we require, that
-`P y` implies `P x`.
+
+Given `x ≐ y`, a specific `P`, we have to construct a proof that `P y`
+implies `P x`.  To do so, we instantiate the equality with a predicate
+`Q` such that `Q z` holds if `P z` implies `P x`.  The property `Q x`
+is trivial by reflexivity, and hence `Q y` follows from `x ≐ y`.  But
+`Q y` is exactly a proof of what we require, that `P y` implies `P x`.
 
 We now show that Martin Löf equality implies
 Leibniz equality, and vice versa.  In the forward direction, if we know
