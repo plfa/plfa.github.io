@@ -668,7 +668,7 @@ the reflexive and transitive closure `—↠` of the step relation `—→`.
 
 We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
-reasoning about chains of equalities
+reasoning about chains of equalities in
 Chapter [Equality][plfa.Equality]:
 \begin{code}
 infix  2 _—↠_
