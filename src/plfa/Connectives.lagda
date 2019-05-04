@@ -10,6 +10,12 @@ next      : /Negation/
 module plfa.Connectives where
 \end{code}
 
+<!-- The ⊥ ⊎ A ≅ A exercise requires a (inj₁ ()) pattern,
+     which the reader will not have seen. Restore this
+     exercise, and possibly also associativity? Take the
+     exercises from the final sections on distributivity
+     and exponentials? -->
+
 This chapter introduces the basic logical connectives, by observing a
 correspondence between connectives of logic and data types, a
 principle known as _Propositions as Types_:

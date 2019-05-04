@@ -1,5 +1,5 @@
 ---
-title     : "Assignment1: PUC Assignment 1"
+title     : "Assignment1: TSPL Assignment 1"
 layout    : page
 permalink : /Assignment1/
 ---

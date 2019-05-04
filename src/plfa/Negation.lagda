@@ -16,7 +16,7 @@ and classical logic.
 ## Imports
 
 \begin{code}
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -102,7 +102,6 @@ We cannot show that `¬ ¬ A` implies `A`, but we can show that
     -------
   → ¬ A
 ¬¬¬-elim ¬¬¬x  =  λ x → ¬¬¬x (¬¬-intro x)
--- ¬¬¬-elim ¬¬¬x x = ¬¬¬x (¬¬-intro x)
 \end{code}
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 `A` leads to a contradiction, and hence `¬ A` must hold.
