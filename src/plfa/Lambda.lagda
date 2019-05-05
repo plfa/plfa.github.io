@@ -653,7 +653,7 @@ What does the following term step to?
 
 What does the following term step to?  (Where `two` and `sucᶜ` are as defined above.)
 
-    two · sucᶜ · `zero  —→  ???
+    twoᶜ · sucᶜ · `zero  —→  ???
 
 1.  `` sucᶜ · (sucᶜ · `zero) ``
 2.  `` (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero ``
