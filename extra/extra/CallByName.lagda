@@ -48,7 +48,9 @@ rename-equal {M = ` x} s = cong `_ s
 rename-equal {ρ = ρ}{ρ' = ρ'}{M = ƛ N} s =
    cong ƛ_ (rename-equal {ρ = ext ρ}{ρ' = ext ρ'}{M = N} (same-rename-ext s))
 rename-equal {M = L · M} s = cong₂ _·_ (rename-equal s) (rename-equal s)
+\end{code}
 
+\begin{code}
 same-subst : ∀{Γ Δ} → Subst Γ Δ → Subst Γ Δ → Set
 same-subst{Γ}{Δ} σ σ' = ∀{A}{x : Γ ∋ A} → σ x ≡ σ' x
 
@@ -78,14 +80,6 @@ compose-ext : ∀{Γ Δ Σ}{ρ : Rename Δ Σ} {ρ' : Rename Γ Δ} {A B} {x : �
             → ((ext ρ) ∘ (ext ρ')) x ≡ ext (ρ ∘ ρ') x
 compose-ext {x = Z} = refl
 compose-ext {x = S x} = refl
-
-compose-exts : ∀{Γ Δ Δ'}{ρ : Rename Γ Δ}{σ : Subst Δ Δ'}
-             → (exts σ) ∘ (ext ρ) ≡ exts (σ ∘ ρ)
-compose-exts{Γ}{Δ}{Δ'}{ρ}{σ} = extensionality lemma
-  where lemma : (x : Γ , ★ ∋ ★)
-              → ((exts σ) ∘ (ext ρ)) x ≡ exts (σ ∘ ρ) x
-        lemma Z = refl
-        lemma (S x) = refl
 \end{code}
 
 \begin{code}
@@ -198,8 +192,6 @@ rename-subst {Γ}{Δ}{Δ'}{M = ƛ M}{ρ}{σ} =
       ih = rename-subst {M = M}{ρ = ext ρ}{σ = exts σ} in
   cong ƛ_ g
   where
-        e : (exts σ) ∘ (ext ρ) ≡ exts (σ ∘ ρ) 
-        e = compose-exts{Γ}{Δ}{Δ'}{ρ}{σ}
         ss : same-subst ((exts σ) ∘ (ext ρ)) (exts (σ ∘ ρ))
         ss {A} {Z} = refl
         ss {A} {S x} = refl
