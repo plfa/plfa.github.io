@@ -175,7 +175,7 @@ subst-subst {Γ}{Δ}{Σ}{ƛ N}{σ₁}{σ₂} = G
       ƛ ((subst (exts σ₂)) ∘ (subst (exts σ₁))) N
      ≡⟨ cong ƛ_ (subst-subst{M = N}{σ₁ = exts σ₁}{σ₂ = exts σ₂}) ⟩
       ƛ subst ((subst (exts σ₂)) ∘ (exts σ₁)) N
-     ≡⟨ cong ƛ_ (subst-equal{M = N} (λ {A}{x} → subst-exts{Γ}{Δ}{Σ}{A}{x})) ⟩
+     ≡⟨ cong ƛ_ (subst-equal{M = N} (λ {A}{x} → subst-exts{x = x})) ⟩
       (ƛ subst (exts ((subst σ₂) ∘ σ₁)) N)
      ∎
 subst-subst {M = L · M} = cong₂ _·_ (subst-subst{M = L}) (subst-subst{M = M})
