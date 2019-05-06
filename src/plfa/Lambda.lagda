@@ -651,7 +651,8 @@ What does the following term step to?
 2.  `` (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") ``
 3.  `` (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") ``
 
-What does the following term step to?  (Where `two` and `sucᶜ` are as defined above.)
+What does the following term step to?  (Where `twoᶜ` and `sucᶜ` are as
+defined above.)
 
     twoᶜ · sucᶜ · `zero  —→  ???
 
