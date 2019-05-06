@@ -122,8 +122,7 @@ commute-subst-rename{Γ}{Δ}{ƛ N}{σ}{ρ} r = cong ƛ_ IH
    ρ' {∅} = λ ()
    ρ' {Γ , ★} = ext ρ
 
-   H : {x : Γ , ★ ∋ ★} →
-       exts (exts σ) (ext ρ x) ≡ rename (ext ρ) (exts σ x)
+   H : {x : Γ , ★ ∋ ★} → exts (exts σ) (ext ρ x) ≡ rename (ext ρ) (exts σ x)
    H {Z} = refl
    H {S x} =
      begin
