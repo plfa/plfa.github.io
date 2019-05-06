@@ -103,6 +103,19 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
+#### Exercise `∀-×`
+
+Consider the following type.
+\begin{code}
+data Tri : Set where
+  aa : Tri
+  bb : Tri
+  cc : Tri
+\end{code}
+Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
+Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
+
+
 ## Existentials
 
 Given a variable `x` of type `A` and a proposition `B x` which
@@ -240,6 +253,11 @@ postulate
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 \end{code}
 Does the converse hold? If so, prove; if not, explain why.
+
+#### Exercise `∃-⊎`
+
+Let `Tri` and `B` be as in Exercise `∀-×`.
+Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 
 
 ## An existential example

@@ -651,9 +651,10 @@ What does the following term step to?
 2.  `` (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") ``
 3.  `` (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") ``
 
-What does the following term step to?  (Where `two` and `sucᶜ` are as defined above.)
+What does the following term step to?  (Where `twoᶜ` and `sucᶜ` are as
+defined above.)
 
-    two · sucᶜ · `zero  —→  ???
+    twoᶜ · sucᶜ · `zero  —→  ???
 
 1.  `` sucᶜ · (sucᶜ · `zero) ``
 2.  `` (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero ``
@@ -668,7 +669,7 @@ the reflexive and transitive closure `—↠` of the step relation `—→`.
 
 We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
-reasoning about chains of equalities
+reasoning about chains of equalities in
 Chapter [Equality][plfa.Equality]:
 \begin{code}
 infix  2 _—↠_
