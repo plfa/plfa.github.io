@@ -136,7 +136,7 @@ infixr 2 _×_
 \end{code}
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
 
-Given two types `A` and `B`, we refer to `A x B` as the
+Given two types `A` and `B`, we refer to `A × B` as the
 _product_ of `A` and `B`.  In set theory, it is also sometimes
 called the _Cartesian product_, and in computing it corresponds
 to a _record_ type. Among other reasons for
