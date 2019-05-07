@@ -6,7 +6,7 @@ module extra.Substitution where
 
 \begin{code}
 open import plfa.Untyped
-  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
+  using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
          ext; exts; _[_]; subst-zero)
   renaming (_∎ to _[])
 open import plfa.Denotational using (Rename)
@@ -152,10 +152,10 @@ subst-exts {A = ★}{x = S x}{σ₁}{σ₂} = G
 
 
 \begin{code}
-subst-subst : ∀{Γ Δ Σ}{M : Γ ⊢ ★} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ} 
+subst-subst : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ} 
             → ((subst σ₂) ∘ (subst σ₁)) M ≡ subst (subst σ₂ ∘ σ₁) M
 subst-subst {M = ` x} = refl
-subst-subst {Γ}{Δ}{Σ}{ƛ N}{σ₁}{σ₂} = G
+subst-subst {Γ}{Δ}{Σ}{A}{ƛ N}{σ₁}{σ₂} = G
   where
   G : ((subst σ₂) ∘ subst σ₁) (ƛ N) ≡ (ƛ subst (exts ((subst σ₂) ∘ σ₁)) N)
   G =
@@ -205,15 +205,15 @@ rename-subst {M = L · M} =
 
 \begin{code}
 is-id-subst : ∀{Γ} → Subst Γ Γ → Set
-is-id-subst {Γ} σ = ∀{x : Γ ∋ ★} → σ x ≡ ` x
+is-id-subst {Γ} σ = ∀{A}{x : Γ ∋ A} → σ x ≡ ` x
 
 is-id-exts : ∀{Γ} {σ : Subst Γ Γ}
            → is-id-subst σ
            → is-id-subst (exts σ {B = ★})
-is-id-exts id {Z} = refl
-is-id-exts{Γ}{σ} id {S x} rewrite id {x} = refl
+is-id-exts id {x = Z} = refl
+is-id-exts{Γ}{σ} id {x = S x} rewrite id {x = x} = refl
 
-subst-id : ∀{Γ} {M : Γ ⊢ ★} {σ : Subst Γ Γ}
+subst-id : ∀{Γ : Context}{A : Type} {M : Γ ⊢ A} {σ : Subst Γ Γ}
          → is-id-subst σ
          → subst σ M ≡ M
 subst-id {M = ` x} {σ} id = id

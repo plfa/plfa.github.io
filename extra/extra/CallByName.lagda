@@ -12,6 +12,7 @@ open import plfa.Untyped
 open import plfa.Adequacy
 open import plfa.Denotational
 open import plfa.Soundness
+open import extra.Substitution
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
@@ -27,8 +28,6 @@ open import Data.Unit
 open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
 \end{code}
-
-
 
 ## Logical Relation between CBN Closures and Terms
 
