@@ -10,7 +10,6 @@ open import extra.LambdaReduction
 open import plfa.Denotational using (Rename)
 open import plfa.Soundness using (Subst)
 open import plfa.Untyped hiding (_—→_; _—↠_; begin_; _∎)
---  renaming (_—→_ to _——→_; _—↠_ to _——↠_; begin_ to commence_; _∎ to _fini)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
 open import Function using (_∘_)
@@ -20,10 +19,11 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 
 ## Introduction
 
-In this chapter we prove that beta reduction is _confluent_.  That is,
-if there is a reduction sequence from any term `L` to two different
-terms `M₁` and `M₂`, then there exist reduction sequences from those
-two terms to some common term `N`.  In pictures:
+In this chapter we prove that beta reduction is _confluent_, a
+property also known as _Church-Rosser_. That is, if there is a
+reduction sequence from any term `L` to two different terms `M₁` and
+`M₂`, then there exist reduction sequences from those two terms to
+some common term `N`. In pictures:
 
         L
        / \
@@ -45,13 +45,7 @@ diamond property if whenever `L ⇛ M₁` and `L ⇛ M₂`, then there exists
 an `N` such that `M₁ ⇛ N` and `M₂ ⇛ N`. This is just an instance of
 the same picture above, where downward lines are now instance of `⇛`.
 If we write `⇛*` for the reflexive and transitive closure of `⇛`, then
-confluence of `⇛*` follows immediately from the diamon property.
-
-<!-- Let `⇛*` stand for sequences of `⇛` reductions. 
-The proof of confluence requires one easy lemma, that if
-`M ⇛ N` and `M ⇛* N'`, then there exists an `L` such that `N ⇛* L` and
-`N' ⇛ L.  With this lemma in hand, confluence is proved by induction
-on the reduction sequence `M ⇛* N`. -->
+confluence of `⇛*` follows immediately from the diamond property.
 
 Unfortunately, reduction in the lambda calculus does not satisfy the
 diamond property. Here is a counter example.
@@ -65,10 +59,10 @@ to get there, not one.
 To side-step this problem, we'll define an auxilliary reduction
 relation, called _parallel reduction_, that can perform many
 reductions simultaneously and thereby satisfy the diamond property.
-Furthermore, we will show that a parallel reduction sequence exists
-between any two terms if and only if a reduction sequence exists
-between them.  Thus, confluence for reduction will fall out as a
-corollary to confluence for parallel reduction.
+Furthermore, we show that a parallel reduction sequence exists between
+any two terms if and only if a reduction sequence exists between them.
+Thus, we can reduce the proof of confluence for reduction to
+confluence for parallel reduction.
 
 
 ## Parallel Reduction
@@ -454,23 +448,23 @@ The proof is by induction on both premises.
 
 As promised at the beginning, the proof that parallel reduction is
 confluent is easy now that we know it satisfies the diamond property.
-We just need one more lemma which states that
-if `M ⇛ N` and `M ⇛* N'`, then 
-`N ⇛* L` and `N' ⇛ L` for some `L`.
-The proof is a straightforward induction on `M ⇛* N'`,
+We just need to prove the strip lemma, which states that
+if `M ⇒ N` and `M ⇒* N'`, then 
+`N ⇒* L` and `N' ⇒ L` for some `L`.
+The proof is a straightforward induction on `M ⇒* N'`,
 using the diamond property in the induction step.
 
 \begin{code}
-par-confR : ∀{Γ A} {L M₁ M₂ : Γ ⊢ A}
-  → L ⇛ M₁
-  → L ⇛* M₂
-    -----------------------------------
-  → Σ[ N ∈ Γ ⊢ A ] (M₁ ⇛* N) × (M₂ ⇛ N)
-par-confR{Γ}{A}{M}{N}{N'} mn (M ∎) = ⟨ N , ⟨ N ∎ , mn ⟩ ⟩
-par-confR{Γ}{A}{M}{N}{N'} mn (_⇛⟨_⟩_ M {M'} mm' mn')
+strip : ∀{Γ A} {M N N' : Γ ⊢ A}
+  → M ⇛ N
+  → M ⇛* N'
+    ------------------------------------
+  → Σ[ L ∈ Γ ⊢ A ] (N ⇛* L)  ×  (N' ⇛ L)
+strip{Γ}{A}{M}{N}{N'} mn (M ∎) = ⟨ N , ⟨ N ∎ , mn ⟩ ⟩
+strip{Γ}{A}{M}{N}{N'} mn (M ⇛⟨ mm' ⟩ m'n')
     with par-diamond mn mm'
 ... | ⟨ L , ⟨ nl , m'l ⟩ ⟩
-    with par-confR m'l mn'
+    with strip m'l m'n'
 ... | ⟨ L' , ⟨ ll' , n'l' ⟩ ⟩ =
     ⟨ L' , ⟨ (N ⇛⟨ nl ⟩ ll') , n'l' ⟩ ⟩
 \end{code}
@@ -487,7 +481,7 @@ par-confluence : ∀{Γ A} {L M₁ M₂ : Γ ⊢ A}
   → Σ[ N ∈ Γ ⊢ A ] (M₁ ⇛* N) × (M₂ ⇛* N)
 par-confluence {Γ}{A}{L}{.L}{N} (L ∎) L⇛*N = ⟨ N , ⟨ L⇛*N , N ∎ ⟩ ⟩
 par-confluence {Γ}{A}{L}{M₁′}{M₂} (L ⇛⟨ L⇛M₁ ⟩ M₁⇛*M₁′) L⇛*M₂
-    with par-confR L⇛M₁ L⇛*M₂
+    with strip L⇛M₁ L⇛*M₂
 ...    | ⟨ N , ⟨ M₁⇛*N , M₂⇛N ⟩ ⟩
          with par-confluence M₁⇛*M₁′ M₁⇛*N
 ...         | ⟨ N′ , ⟨ M₁′⇛*N′ , N⇛*N′ ⟩ ⟩ =
@@ -540,4 +534,17 @@ confluence L↠M₁ L↠M₂
 
 ## Notes
 
-UNDER CONSTRUCTION
+Broadly speaking, this proof of confluence, based on parallel
+reduction, is due to W. Tait and P. Martin-Lof (see Barendredgt 1984,
+Section 3.2).  Details of the mechanization come from several sources.
+The `subst-par` lemma is the "strong substitutivity" lemma of Shafer,
+Tebbi, and Smolka (ITP 2015). The proofs of `par-diamond`, `strip`,
+and `par-confluence` are based on Pfenning's 1992 technical report
+about the Church-Rosser theorem. In addition, we consulted Nipkow and
+Berghofer's mechanization in Isabelle, which is based on an earlier
+article by Nipkow (JAR 1996).  We opted not to use the "complete
+developments" approach of Takahashi (1995) because we felt that the
+proof was simple enough based solely on parallel reduction.  There are
+many more mechanizations of the Church-Rosser theorem that we have not
+yet had the time to read, including Shankar's (J. ACM 1988) and
+Homeier's (TPHOLs 2001).

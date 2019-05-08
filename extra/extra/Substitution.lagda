@@ -477,3 +477,10 @@ subst-commute {Γ}{Δ}{N}{M}{σ} =
        subst σ (N [ M ])
      ∎
 \end{code}
+
+## Notes
+
+Most of the properties and proofs in this file are based on the paper
+_Autosubst: Reasoning with de Bruijn Terms and Parallel Substitution_
+by Schafer, Tebbi, and Smolka (ITP 2015).
+
