@@ -50,18 +50,18 @@ same-subst-ext : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{B}
 same-subst-ext ss {x = Z} = refl
 same-subst-ext ss {x = S x} = cong (rename (λ {A} → S_)) ss
 
-subst-equal : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{M : Γ ⊢ ★}
+subst-equal : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{A}{M : Γ ⊢ A}
             → same-subst σ σ' 
             → subst σ M ≡ subst σ' M
-subst-equal {Γ} {Δ} {σ} {σ'} {` x} ss = ss
-subst-equal {Γ} {Δ} {σ} {σ'} {ƛ M} ss =
+subst-equal {Γ} {Δ} {σ} {σ'} {A} {` x} ss = ss
+subst-equal {Γ} {Δ} {σ} {σ'} {A} {ƛ M} ss =
    let ih = subst-equal {Γ = Γ , ★} {Δ = Δ , ★}
             {σ = exts σ}{σ' = exts σ'} {M = M}
             (λ {x}{A} → same-subst-ext {Γ}{Δ}{σ}{σ'} ss {x}{A}) in
    cong ƛ_ ih
-subst-equal {Γ} {Δ} {σ} {σ'} {L · M} ss =
-   let ih1 = subst-equal {Γ} {Δ} {σ} {σ'} {L} ss in
-   let ih2 = subst-equal {Γ} {Δ} {σ} {σ'} {M} ss in
+subst-equal {Γ} {Δ} {σ} {σ'} {A} {L · M} ss =
+   let ih1 = subst-equal {Γ} {Δ} {σ} {σ'} {A} {L} ss in
+   let ih2 = subst-equal {Γ} {Δ} {σ} {σ'} {A} {M} ss in
    cong₂ _·_ ih1 ih2
 \end{code}
 
@@ -221,3 +221,259 @@ subst-id {M = ƛ M} {σ} id = cong ƛ_ (subst-id (is-id-exts id))
 subst-id {M = L · M} {σ} id = cong₂ _·_ (subst-id id) (subst-id id)
 \end{code}
 
+\begin{code}
+ids : ∀{Γ} → Subst Γ Γ
+ids {A} x = ` x
+
+cons : ∀{Γ Δ A} → (Δ ⊢ A) → Subst Γ Δ → Subst (Γ , A) Δ
+cons {Γ} {Δ} {A} M σ {B} Z = M
+cons {Γ} {Δ} {A} M σ {B} (S x) = σ x
+
+seq : ∀{Γ Δ Σ} → Subst Γ Δ → Subst Δ Σ → Subst Γ Σ
+seq σ τ = (subst τ) ∘ σ
+
+ren : ∀{Γ Δ} → Rename Γ Δ → Subst Γ Δ
+ren ρ = ids ∘ ρ
+
+ren-ext : ∀ {Γ Δ}{B C : Type} {ρ : Rename Γ Δ} {x : Γ , B ∋ C}
+        → (ren (ext ρ)) x ≡ exts (ren ρ) x
+ren-ext {x = Z} = refl
+ren-ext {x = S x} = refl
+
+rename-seq-ren : ∀ {Γ Δ}{A} {ρ : Rename Γ Δ}{M : Γ ⊢ A}
+               → rename ρ M ≡ subst (ren ρ) M
+rename-seq-ren {M = ` x} = refl
+rename-seq-ren {ρ = ρ}{M = ƛ N} =
+  cong ƛ_ G
+  where IH : rename (ext ρ) N ≡ subst (ren (ext ρ)) N
+        IH = rename-seq-ren {ρ = ext ρ}{M = N} 
+
+        G : rename (ext ρ) N ≡ subst (exts (ren ρ)) N
+        G =
+          begin
+            rename (ext ρ) N
+          ≡⟨ IH ⟩
+            subst (ren (ext ρ)) N
+          ≡⟨ subst-equal {M = N} ren-ext ⟩
+            subst (exts (ren ρ)) N
+          ∎
+rename-seq-ren {M = L · M} = cong₂ _·_ rename-seq-ren rename-seq-ren
+
+
+exts-cons-shift : ∀{Γ Δ : Context} {A : Type}{B : Type} {σ : Subst Γ Δ}{x}
+    → exts σ {A}{B} x ≡ cons (` Z) (seq σ (ren S_)) x
+exts-cons-shift {x = Z} = refl
+exts-cons-shift {x = S x} = rename-seq-ren
+
+ren-ext-cons-shift : ∀ {Γ Δ}{B C : Type} {ρ : Rename Γ Δ} {x : Γ , B ∋ C}
+  → ren (ext ρ) x ≡ cons (` Z) (seq (ren ρ) (ren S_)) x
+ren-ext-cons-shift{Γ}{Δ}{B}{C}{ρ}{x} =
+   begin
+       ren (ext ρ) x
+     ≡⟨ ren-ext ⟩
+       exts (ren ρ) x
+     ≡⟨ exts-cons-shift{x = x} ⟩
+       cons (` Z) (seq (ren ρ) (ren S_)) x
+   ∎
+
+subst-cons-Z : ∀{Γ Δ : Context}{A : Type}{M : Δ ⊢ A}{σ : Subst Γ Δ}
+             → subst (cons M σ) (` Z) ≡ M
+subst-cons-Z = refl
+
+seq-inc-cons : ∀{Γ Δ : Context} {A B : Type} {M : Δ ⊢ A} {σ : Subst Γ Δ}
+                {x : Γ ∋ B}
+         → seq (ren S_) (cons M σ) x ≡ σ x
+seq-inc-cons = refl
+
+ids-id : ∀{Γ : Context}{A : Type} {M : Γ ⊢ A}
+         → subst ids M ≡ M
+ids-id = subst-id λ {A} {x} → refl
+
+cons-ext : ∀{Γ Δ : Context} {A B : Type} {σ : Subst (Γ , A) Δ} {x : Γ , A ∋ B}
+         → cons (subst σ (` Z)) (seq (ren S_) σ) x ≡ σ x
+cons-ext {x = Z} = refl
+cons-ext {x = S x} = refl
+
+id-seq : ∀{Γ Δ : Context} {B : Type} {σ : Subst Γ Δ} {x : Γ ∋ B}
+       → (seq ids σ) x ≡ σ x
+id-seq = refl
+
+seq-id : ∀{Γ Δ : Context} {B : Type} {σ : Subst Γ Δ} {x : Γ ∋ B}
+       → (seq σ ids) x ≡ σ x
+seq-id {Γ}{σ = σ}{x = x} =
+          begin
+            (seq σ ids) x
+          ≡⟨⟩
+            subst ids (σ x)
+          ≡⟨ ids-id ⟩
+            σ x
+          ∎
+
+seq-assoc : ∀{Γ Δ Σ Ψ : Context}{B} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
+             {θ : Subst Σ Ψ} {x : Γ ∋ B}
+          → seq (seq σ τ) θ x ≡ seq σ (seq τ θ) x
+seq-assoc{Γ}{Δ}{Σ}{Ψ}{B}{σ}{τ}{θ}{x} =
+          begin
+            seq (seq σ τ) θ x
+          ≡⟨⟩
+            subst θ (subst τ (σ x))
+          ≡⟨ subst-subst{M = σ x} ⟩
+            (subst ((subst θ) ∘ τ)) (σ x)
+          ≡⟨⟩
+            seq σ (seq τ θ) x
+          ∎
+
+seq-cons :  ∀{Γ Δ Σ : Context} {A B} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
+              {M : Δ ⊢ A} {x : Γ , A ∋ B}
+         → seq (cons M σ) τ x ≡ cons (subst τ M) (seq σ τ) x
+seq-cons {x = Z} = refl
+seq-cons {x = S x} = refl
+
+cons-zero-S : ∀{Γ}{A B}{x : Γ , A ∋ B} → cons (` Z) (ren S_) x ≡ ids x
+cons-zero-S {x = Z} = refl
+cons-zero-S {x = S x} = refl
+\end{code}
+
+\begin{code}
+seq-congL : ∀{Γ Δ Σ : Context} {B} {σ σ' : Subst Γ Δ} {τ : Subst Δ Σ}
+            {x : Γ ∋ B}
+          → (∀{x : Γ ∋ B} → σ x ≡ σ' x)
+          → seq σ τ x ≡ seq σ' τ x
+seq-congL {τ = τ}{x = x} s = cong (subst τ) s
+
+seq-congR : ∀{Γ Δ Σ : Context} {B} {σ : Subst Γ Δ} {τ τ' : Subst Δ Σ}
+            {x : Γ ∋ B}
+          → (∀{A}{x : Δ ∋ A} → τ x ≡ τ' x)
+          → seq σ τ x ≡ seq σ τ' x
+seq-congR {Γ}{Δ}{Σ}{B}{σ}{τ}{τ'}{x} s =
+     begin
+       seq σ τ x
+     ≡⟨⟩
+       subst τ (σ x)
+     ≡⟨ subst-equal{M = σ x} s ⟩
+       subst τ' (σ x)
+     ≡⟨⟩
+       seq σ τ' x
+     ∎
+
+cons-congL : ∀{Γ Δ : Context} {A B} {σ : Subst Γ Δ} {M M' : Δ ⊢ A}
+            {x : Γ , A ∋ B}
+           → M ≡ M'
+           → cons M σ x ≡ cons M' σ x
+cons-congL{σ = σ}{x = x} s = cong (λ z → cons z σ x) s
+
+cons-congR : ∀{Γ Δ : Context} {A B} {σ τ : Subst Γ Δ} {M : Δ ⊢ A}
+            {x : Γ , A ∋ B}
+           → (∀{x : Γ ∋ B} → σ x ≡ τ x)
+           → cons M σ x ≡ cons M τ x
+cons-congR {x = Z} s = refl
+cons-congR {x = S x} s = s
+\end{code}
+
+\begin{code}
+subst-zero-cons-ids : ∀{Γ}{A B : Type}{M : Γ ⊢ B}{x : Γ , B ∋ A}
+                    → subst-zero M x ≡ cons M ids x
+subst-zero-cons-ids {x = Z} = refl
+subst-zero-cons-ids {x = S x} = refl
+\end{code}
+
+\begin{code}
+rename-subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{ρ : Rename Γ Δ }
+    → (rename (ext ρ) N) [ rename ρ M ] ≡ rename ρ (N [ M ])
+rename-subst-commute {Γ}{Δ}{N}{M}{ρ} =
+     begin
+       (rename (ext ρ) N) [ rename ρ M ]
+     ≡⟨⟩
+       subst (subst-zero (rename ρ M)) (rename (ext ρ) N)
+     ≡⟨ subst-equal{M = rename (ext ρ) N}
+           (λ {A}{x} → subst-zero-cons-ids{x = x}) ⟩
+       subst (cons (rename ρ M) ids) (rename (ext ρ) N)
+     ≡⟨ (subst-equal{M = rename (ext ρ) N}
+             λ{A}{x} → cons-congL {σ = ids}{x = x} rename-seq-ren) ⟩
+       subst (cons (subst (ren ρ) M) ids) (rename (ext ρ) N)
+     ≡⟨ cong (subst (cons (subst (ren ρ) M) ids))
+           (rename-seq-ren{ρ = ext ρ}{M = N}) ⟩
+       subst (cons (subst (ren ρ) M) ids) (subst (ren (ext ρ)) N)
+     ≡⟨ subst-subst {M = N} ⟩
+       subst (seq (ren (ext ρ)) (cons (subst (ren ρ) M) ids)) N
+     ≡⟨ (subst-equal{M = N}
+             λ{A}{x} → seq-congL{σ = ren (ext ρ)}
+                         {σ' = (cons (` Z) (seq (ren ρ) (ren S_)))}{x = x}
+             λ{x} → ren-ext-cons-shift{ρ = ρ}{x = x} ) ⟩
+       subst (seq (cons (` Z) (seq (ren ρ) (ren S_)))
+                  (cons (subst (ren ρ) M) ids)) N
+     ≡⟨ (subst-equal{M = N} λ{A}{x} → seq-cons{x = x} ) ⟩
+       subst (cons (subst (cons (subst (ren ρ) M) ids) (` Z))
+           (seq (seq (ren ρ) (ren S_)) (cons (subst (ren ρ) M) ids))) N
+     ≡⟨ subst-equal{M = N} (λ{A}{x} → cons-congL{x = x}
+                (subst-cons-Z{σ = ids})) ⟩
+       subst (cons (subst (ren ρ) M)
+                   (seq (seq (ren ρ) (ren S_)) (cons (subst (ren ρ) M) ids))) N
+     ≡⟨ subst-equal{M = N} (λ{A}{x} → cons-congR{x = x}
+         (λ{x} → seq-assoc{σ = ren ρ}{τ = ren S_}{θ = (cons (subst (ren ρ) M) ids)}{x = x})) ⟩
+       subst (cons (subst (ren ρ) M)
+                   (seq (ren ρ) (seq (ren S_) (cons (subst (ren ρ) M) ids)))) N
+     ≡⟨ (subst-equal{M = N}λ{A}{x} → cons-congR{x = x}
+            λ{x} → seq-congR{σ = ren ρ}
+                     {τ = (seq (ren S_) (cons (subst (ren ρ) M) ids))}
+                     {τ' = ids}{x = x}
+            λ{A}{x} → seq-inc-cons{M = (subst (ren ρ) M)}{σ = ids}{x = x} ) ⟩
+       subst (cons (subst (ren ρ) M) (seq (ren ρ) ids)) N
+     ≡⟨ (subst-equal{M = N}λ{A}{x} → sym (seq-cons{x = x}) ) ⟩
+       subst (seq (cons M ids) (ren ρ)) N
+     ≡⟨ sym (subst-subst {M = N}) ⟩
+       subst (ren ρ) (subst (cons M ids) N)
+     ≡⟨ sym (rename-seq-ren) ⟩
+       rename ρ (subst (cons M ids) N)
+     ≡⟨ cong (rename ρ) (subst-equal{M = N}
+           (λ {A}{x} → sym (subst-zero-cons-ids{x = x}))) ⟩
+       rename ρ (subst (subst-zero M) N)
+     ≡⟨⟩
+       rename ρ (N [ M ])
+     ∎
+\end{code}
+
+\begin{code}
+subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
+    → (subst (exts σ) N) [ subst σ M ] ≡ subst σ (N [ M ])
+subst-commute {Γ}{Δ}{N}{M}{σ} =
+     begin
+       (subst (exts σ) N) [ subst σ M ]
+     ≡⟨⟩
+       subst (subst-zero (subst σ M)) (subst (exts σ) N)
+     ≡⟨ subst-equal{M = subst (exts σ) N}
+            (λ {A}{x} → subst-zero-cons-ids{A = A}{x = x}) ⟩
+       subst (cons (subst σ M) ids) (subst (exts σ) N)
+     ≡⟨ subst-subst{M = N} ⟩
+       subst (seq (exts σ) (cons (subst σ M) ids)) N
+     ≡⟨ subst-equal{M = N}
+         (λ {A}{x} → seq-congL{σ = exts σ}{σ' = (cons (` Z) (seq σ (ren S_)))}
+            {x = x} (λ {x} → exts-cons-shift{x = x}) ) ⟩
+       subst (seq (cons (` Z) (seq σ (ren S_))) (cons (subst σ M) ids)) N
+     ≡⟨ subst-equal{M = N} (λ {A}{x} → seq-cons{M = ` Z}{x = x}) ⟩
+       subst (cons (subst (cons (subst σ M) ids) (` Z))
+                   (seq (seq σ (ren S_)) (cons (subst σ M) ids))) N
+     ≡⟨⟩
+       subst (cons (subst σ M)
+                   (seq (seq σ (ren S_)) (cons (subst σ M) ids))) N
+     ≡⟨ subst-equal{M = N} (λ {A} {x} → cons-congR {x = x}
+           λ {x} → seq-assoc{σ = σ}) ⟩
+       subst (cons (subst σ M)
+                   (seq σ (seq (ren S_) (cons (subst σ M) ids)))) N
+     ≡⟨ (subst-equal{M = N} λ {A} {x} → cons-congR {x = x}
+          λ {x} → seq-congR {σ = σ}
+          λ {A}{x} → seq-inc-cons{M = subst σ M}{σ = ids}) ⟩
+       subst (cons (subst σ M) (seq σ ids)) N
+     ≡⟨ (subst-equal{M = N} λ {A} {x} → cons-congR{x = x} (seq-id{σ = σ})) ⟩
+       subst (cons (subst σ M) σ) N
+     ≡⟨ subst-equal{M = N} (λ {A}{x} → cons-congR{x = x} (id-seq{σ = σ})) ⟩
+       subst (cons (subst σ M) (seq ids σ)) N
+     ≡⟨ (subst-equal{M = N} λ {A}{x} → sym (seq-cons{x = x})) ⟩
+       subst (seq (cons M ids) σ) N
+     ≡⟨ sym (subst-subst{M = N}) ⟩
+       subst σ (subst (cons M ids) N)
+     ≡⟨ cong (subst σ) (sym (subst-equal{M = N}
+          λ {A}{x} → subst-zero-cons-ids{x = x})) ⟩
+       subst σ (N [ M ])
+     ∎
+\end{code}
