@@ -6,12 +6,16 @@ module extra.Confluence where
 
 \begin{code}
 open import extra.Substitution
+open import plfa.Denotational using (Rename)
+open import plfa.Soundness using (Subst)
 open import plfa.Untyped
    renaming (_—→_ to _——→_; _—↠_ to _——↠_; begin_ to commence_; _∎ to _fini)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Function using (_∘_)
+open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+     renaming (_,_ to ⟨_,_⟩)
 \end{code}
 
 ## Reduction without the restrictions
@@ -67,7 +71,7 @@ start M—↠N = M—↠N
 \end{code}
 
 \begin{code}
-—↠-trans : ∀{Γ}{L M N : Γ ⊢ ★}
+—↠-trans : ∀{Γ}{A}{L M N : Γ ⊢ A}
          → L —↠ M
          → M —↠ N
          → L —↠ N
@@ -127,6 +131,31 @@ data _⇒_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
        → (ƛ N) · M  ⇒  N' [ M' ]
 \end{code}
 
+\begin{code}
+infix  2 _⇛_
+infix  1 init_
+infixr 2 _⇒⟨_⟩_
+infix  3 _□
+
+data _⇛_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+
+  _□ : ∀ {Γ A} (M : Γ ⊢ A)
+      --------
+    → M ⇛ M
+
+  _⇒⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
+    → L ⇒ M
+    → M ⇛ N
+      ---------
+    → L ⇛ N
+
+init_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
+  → M ⇛ N
+    ------
+  → M ⇛ N
+init M⇛N = M⇛N
+\end{code}
+
 ## Proof of Confluence
 
 \begin{code}
@@ -173,25 +202,9 @@ par-beta {Γ} {★} {(ƛ N) · M} (pbeta{N' = N'}{M' = M'} p₁ p₂) =
 \end{code}
 
 \begin{code}
-Rename : Context → Context → Set
-Rename Γ Δ = ∀{A} → Γ ∋ A → Δ ∋ A
-\end{code}
-
-\begin{code}
-Subst : Context → Context → Set
-Subst Γ Δ = ∀{A} → Γ ∋ A → Δ ⊢ A
-\end{code}
-
-\begin{code}
 par-subst : ∀{Γ Δ} → Subst Γ Δ → Subst Γ Δ → Set
 par-subst {Γ}{Δ} σ₁ σ₂ = ∀{A}{x : Γ ∋ A} → σ₁ x ⇒ σ₂ x
 \end{code}
-
-
-
-
-
-
 
 
 \begin{code}
@@ -232,4 +245,111 @@ subst-par {Γ} {Δ} {★} {σ} {τ} {(ƛ N) · M} s (pbeta{N' = N'}{M' = M'} p�
                (subst-par (λ {A}{x} → s{A}{x}) p₂)
 ... | G rewrite subst-commute{N = N'}{M = M'}{σ = τ} =
     G
+
+par-subst-zero : ∀{Γ}{A}{M M' : Γ ⊢ A}
+       → M ⇒ M'
+       → par-subst (subst-zero M) (subst-zero M')
+par-subst-zero {M} {M'} p {A} {Z} = p
+par-subst-zero {M} {M'} p {A} {S x} = pvar
+
+sub-par : ∀{Γ A B} {N N' : Γ , A ⊢ B} {M M' : Γ ⊢ A}
+   → N ⇒ N' →  M ⇒ M'
+     --------------------------
+   → N [ M ] ⇒ N' [ M' ]
+sub-par pn pm = subst-par (par-subst-zero pm) pn
+\end{code}
+
+
+\begin{code}
+par-diamond : ∀{Γ A} {M N N' : Γ ⊢ A}
+  → M ⇒ N  →  M ⇒ N'
+  → Σ[ L ∈ Γ ⊢ A ] (N ⇒ L)  ×  (N' ⇒ L)
+par-diamond (pvar{x = x}) pvar = ⟨ ` x , ⟨ pvar , pvar ⟩ ⟩
+par-diamond (pabs p1) (pabs p2)
+    with par-diamond p1 p2
+... | ⟨ L' , ⟨ p3 , p4 ⟩ ⟩ =
+      ⟨ ƛ L' , ⟨ pabs p3 , pabs p4 ⟩ ⟩
+par-diamond{Γ}{A}{M · L}{N}{N'} (papp{Γ}{M}{M₁}{L}{L₁} p1 p3)
+                                (papp{Γ}{M}{M₂}{L}{L₂} p2 p4)
+    with par-diamond p1 p2
+... | ⟨ M₃ , ⟨ p5 , p6 ⟩ ⟩ 
+    with par-diamond p3 p4
+... | ⟨ L₃ , ⟨ p7 , p8 ⟩ ⟩ =
+      ⟨ (M₃ · L₃) , ⟨ (papp p5 p7) , (papp p6 p8) ⟩ ⟩
+par-diamond (papp (pabs p1) p3) (pbeta p2 p4)
+    with par-diamond p1 p2
+... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩ 
+    with par-diamond p3 p4
+... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+    ⟨ N₃ [ M₃ ] , ⟨ pbeta p5 p7 , sub-par p6 p8 ⟩ ⟩
+par-diamond (pbeta p1 p3) (papp (pabs p2) p4)
+    with par-diamond p1 p2
+... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩ 
+    with par-diamond p3 p4
+... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+    ⟨ (N₃ [ M₃ ]) , ⟨ sub-par p5  p7 , pbeta p6 p8 ⟩ ⟩
+par-diamond {Γ}{A} (pbeta p1 p3) (pbeta p2 p4)
+    with par-diamond p1 p2
+... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩ 
+    with par-diamond p3 p4
+... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+      ⟨ N₃ [ M₃ ] , ⟨ sub-par p5 p7 , sub-par p6 p8 ⟩ ⟩
+\end{code}
+
+\begin{code}
+par-confR : ∀{Γ A} {M N N' : Γ ⊢ A}
+  → M ⇒ N  →  M ⇛ N'
+  → Σ[ L ∈ Γ ⊢ A ] (N ⇛ L)  ×  (N' ⇒ L)
+par-confR{Γ}{A}{M}{N}{N'} mn (M □) = ⟨ N , ⟨ N □ , mn ⟩ ⟩
+par-confR{Γ}{A}{M}{N}{N'} mn (_⇒⟨_⟩_ M {M'} mm' mn')
+    with par-diamond mn mm'
+... | ⟨ L , ⟨ nl , m'l ⟩ ⟩
+    with par-confR m'l mn'
+... | ⟨ L' , ⟨ ll' , n'l' ⟩ ⟩ =
+    ⟨ L' , ⟨ (N ⇒⟨ nl ⟩ ll') , n'l' ⟩ ⟩
+\end{code}
+
+\begin{code}
+par-confluence : ∀{Γ A} {M N N' : Γ ⊢ A}
+  → M ⇛ N  →  M ⇛ N'
+  → Σ[ L ∈ Γ ⊢ A ] (N ⇛ L)  ×  (N' ⇛ L)
+par-confluence {Γ}{A}{M}{N}{N'} (M □) m→n' = ⟨ N' , ⟨ m→n' , N' □ ⟩ ⟩
+par-confluence {Γ}{A}{M}{N}{N'} (_⇒⟨_⟩_ M {M'} m→m' m'→n) m→n'
+    with par-confR m→m' m→n'
+... | ⟨ L , ⟨ m'→l , n'→l ⟩ ⟩
+    with par-confluence m'→n m'→l
+... | ⟨ L' , ⟨ n→l' , l→l' ⟩ ⟩ =
+    ⟨ L' , ⟨ n→l' , (N' ⇒⟨ n'→l ⟩ l→l') ⟩ ⟩
+\end{code}
+
+\begin{code}
+betas-pars : ∀{Γ A} {M N : Γ ⊢ A}
+           → M —↠ N
+             ------
+           → M ⇛ N
+betas-pars {Γ} {A} {M₁} {.M₁} (M₁ []) = M₁ □
+betas-pars {Γ} {A} {.L} {N} (L —→⟨ b ⟩ bs) =
+   L ⇒⟨ beta-par b ⟩ betas-pars bs
+\end{code}
+
+\begin{code}
+pars-betas : ∀{Γ A} {M N : Γ ⊢ A}
+           → M ⇛ N
+             ------
+           → M —↠ N
+pars-betas {Γ} {A} {M₁} {.M₁} (M₁ □) = M₁ []
+pars-betas {Γ} {A} {.L} {N} (L ⇒⟨ p ⟩ ps) =
+  let bs = par-beta p in
+  let ih = pars-betas ps in
+  —↠-trans bs ih
+\end{code}
+
+\begin{code}
+confluence : ∀{Γ A} {M N N' : Γ ⊢ A}
+  → M —↠ N  →  M —↠ N'
+  → Σ[ L ∈ Γ ⊢ A ] (N —↠ L)  ×  (N' —↠ L)
+confluence m→n m→n'
+    with par-confluence (betas-pars m→n) (betas-pars m→n')
+... |  ⟨ L , ⟨ n→l , n'→l ⟩ ⟩ =
+    ⟨ L , ⟨ pars-betas n→l , pars-betas n'→l ⟩ ⟩
 \end{code}
