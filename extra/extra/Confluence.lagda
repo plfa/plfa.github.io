@@ -436,6 +436,14 @@ The proof is by induction on both premises.
 
 ## Proof of confluence for parallel reduction
 
+As promised at the beginning, the proof that parallel reduction is
+confluent is easy now that we know it satisfies the diamond property.
+We just need one more lemma which states that
+if `M ⇒ N` and `M ⇒* N'`, then 
+`N ⇒* L` and `N' ⇒ L` for some `L`.
+The proof is a straightforward induction on `M ⇒* N'`,
+using the diamond property in the induction step.
+
 \begin{code}
 par-confR : ∀{Γ A} {M N N' : Γ ⊢ A}
   → M ⇒ N  →  M ⇒* N'
@@ -448,6 +456,10 @@ par-confR{Γ}{A}{M}{N}{N'} mn (_⇒⟨_⟩_ M {M'} mm' mn')
 ... | ⟨ L' , ⟨ ll' , n'l' ⟩ ⟩ =
     ⟨ L' , ⟨ (N ⇒⟨ nl ⟩ ll') , n'l' ⟩ ⟩
 \end{code}
+
+The proof of confluence for parallel reduction is now proved by
+induction on the sequence `M ⇒* N`, using the above lemma in the
+induction step.
 
 \begin{code}
 par-confluence : ∀{Γ A} {M N N' : Γ ⊢ A}
@@ -463,6 +475,14 @@ par-confluence {Γ}{A}{M}{N}{N'} (_⇒⟨_⟩_ M {M'} m→m' m'→n) m→n'
 \end{code}
 
 ## Proof of confluence for reduction
+
+Confluence of reduction is a corollary of confluence for parallel
+reduction. From 
+`M —↠ N` and `M —↠ N'` we have
+`M ⇒* N` and `M ⇒* N'` by `betas-pars`.
+Then by confluence we obtain some `L` such that 
+`N ⇒* L` and `N' ⇒* L`, from which we conclude that
+`N —↠ L` and `N' —↠ L` by `pars-betas`.
 
 \begin{code}
 confluence : ∀{Γ A} {M N N' : Γ ⊢ A}
