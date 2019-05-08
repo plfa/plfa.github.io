@@ -30,12 +30,12 @@ Confluence is studied in many other kinds of rewrite systems besides
 the lambda calculus, and it is well known how to prove confluence in
 rewrite systems that enjoy the _diamond property_, a single-step
 version of confluence. Let `⇒` be a relation.  Then `⇒` has the
-diamond property if `M ⇒ N` and `M ⇒ N'`, then there exists an `L`
-such that `N ⇒ L` and `N' ⇒ L`. Let `⇒*` stand for sequences of `⇒`
-reductions. The proof of confluence requires one easy lemma, that if
-`M ⇒ N` and `M ⇒* N'`, then there exists an `L` such that `N ⇒* L` and
-`N' ⇒ L.  With this lemma in hand, confluence is proved by induction
-on the reduction sequence `M ⇒* N`.
+diamond property if `M ⇒ N` and `M ⇒ N'` implies that there exists an
+`L` such that `N ⇒ L` and `N' ⇒ L`. Let `⇒*` stand for sequences of
+`⇒` reductions. The proof of confluence requires one easy lemma:
+`M ⇒ N` and `M ⇒* N'` implies `N ⇒* L` and `N' ⇒ L` for some `L`.
+Confluence then follows by induction on the reduction
+sequence `M ⇒* N`.
 
 Unfortunately, reduction in the lambda calculus does not satisfy the
 diamond property. Here is a counter example.
@@ -49,10 +49,10 @@ to get there, not one.
 To side-step this problem, we'll define an auxilliary reduction
 relation, called _parallel reduction_, that can perform many
 reductions simultaneously and thereby satisfy the diamond property.
-Furthermore, we will show that a parallel reduction sequence exists
-between any two terms if and only if a reduction sequence exists
-between them.  Thus, confluence for reduction will fall out as a
-corollary to confluence for parallel reduction.
+Furthermore, we show that a parallel reduction sequence exists between
+any two terms if and only if a reduction sequence exists between them.
+Thus, we can reduce the proof of confluence for reduction to
+confluence for parallel reduction.
 
 
 ## Parallel Reduction
