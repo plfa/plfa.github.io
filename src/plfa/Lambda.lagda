@@ -699,7 +699,7 @@ We can read this as follows:
 * From term `M`, we can take no steps, giving a step of type `M —↠ M`.
   It is written `M ∎`.
 
-* From term `L` we can take a single of type `L —→ M` followed by zero
+* From term `L` we can take a single step of type `L —→ M` followed by zero
   or more steps of type `M —↠ N`, giving a step of type `L —↠ N`. It is
   written `L —→⟨ L—→M ⟩ M—↠N`, where `L—→M` and `M—↠N` are steps of the
   appropriate type.
