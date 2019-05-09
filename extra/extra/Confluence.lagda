@@ -60,8 +60,8 @@ To side-step this problem, we'll define an auxilliary reduction
 relation, called _parallel reduction_, that can perform many
 reductions simultaneously and thereby satisfy the diamond property.
 Furthermore, we show that a parallel reduction sequence exists between
-any two terms if and only if a reduction sequence exists between them.
-Thus, we can reduce the proof of confluence for reduction to
+any two terms if and only if a beta reduction sequence exists between them.
+Thus, we can reduce the proof of confluence for beta reduction to
 confluence for parallel reduction.
 
 
@@ -78,22 +78,22 @@ data _⇛_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
          ---------
        → (` x) ⇛ (` x)
 
-  pabs : ∀{Γ}{N N' : Γ , ★ ⊢ ★}
-       → N ⇛ N'
+  pabs : ∀{Γ}{N N′ : Γ , ★ ⊢ ★}
+       → N ⇛ N′
          ----------
-       → ƛ N ⇛ ƛ N'
+       → ƛ N ⇛ ƛ N′
 
-  papp : ∀{Γ}{L L' M M' : Γ ⊢ ★}
-       → L ⇛ L'
-       → M ⇛ M'
+  papp : ∀{Γ}{L L′ M M′ : Γ ⊢ ★}
+       → L ⇛ L′
+       → M ⇛ M′
          -----------------
-       → L · M ⇛ L' · M'
+       → L · M ⇛ L′ · M′
 
-  pbeta : ∀{Γ}{N N'  : Γ , ★ ⊢ ★}{M M' : Γ ⊢ ★}
-       → N ⇛ N'
-       → M ⇛ M'
+  pbeta : ∀{Γ}{N N′  : Γ , ★ ⊢ ★}{M M′ : Γ ⊢ ★}
+       → N ⇛ N′
+       → M ⇛ M′
          -----------------------
-       → (ƛ N) · M  ⇛  N' [ M' ]
+       → (ƛ N) · M  ⇛  N′ [ M′ ]
 \end{code}
 The first three rules are congruences that reduce each of their
 parts simultaneously. The last rule reduces a lambda term and
@@ -177,14 +177,14 @@ par-betas {Γ} {A} {.(` _)} (pvar{x = x}) = (` x) []
 par-betas {Γ} {★} {ƛ N} (pabs p) = abs-cong (par-betas p)
 par-betas {Γ} {★} {L · M} (papp p₁ p₂) =
    —↠-trans (appL-cong{M = M} (par-betas p₁)) (appR-cong (par-betas p₂))
-par-betas {Γ} {★} {(ƛ N) · M} (pbeta{N' = N'}{M' = M'} p₁ p₂) =
+par-betas {Γ} {★} {(ƛ N) · M} (pbeta{N′ = N′}{M′ = M′} p₁ p₂) =
   let ih₁ = par-betas p₁ in
   let ih₂ = par-betas p₂ in
-  let a : (ƛ N) · M —↠ (ƛ N') · M
+  let a : (ƛ N) · M —↠ (ƛ N′) · M
       a = appL-cong{M = M} (abs-cong ih₁) in
-  let b : (ƛ N') · M —↠ (ƛ N') · M'
-      b = appR-cong{L = ƛ N'} ih₂ in
-  let c = (ƛ N') · M' —→⟨ β ⟩ N' [ M' ] [] in
+  let b : (ƛ N′) · M —↠ (ƛ N′) · M′
+      b = appR-cong{L = ƛ N′} ih₂ in
+  let c = (ƛ N′) · M′ —→⟨ β ⟩ N′ [ M′ ] [] in
   —↠-trans (—↠-trans a b) c
 \end{code}
 
@@ -192,23 +192,23 @@ The proof is by induction on `M ⇛ N`.
 
 * Suppose `x ⇛ x`. We immediately have `x —↠ x`.
 
-* Suppose `ƛ N ⇛ ƛ N'` because `N ⇛ N'`. By the induction hypothesis
-  we have `N —↠ N'`. We conclude that `ƛ N —↠ ƛ N'` because
+* Suppose `ƛ N ⇛ ƛ N′` because `N ⇛ N′`. By the induction hypothesis
+  we have `N —↠ N′`. We conclude that `ƛ N —↠ ƛ N′` because
   `—↠` is a congruence.
 
-* Suppose `L · M ⇛ L' · M'` because `L ⇛ L'` and `M ⇛ M'`.
-  By the induction hypothesis, we have `L —↠ L'` and `M —↠ M'`.
-  So `L · M —↠ L' · M` and then `L' · M  —↠ L' · M'`
+* Suppose `L · M ⇛ L′ · M′` because `L ⇛ L′` and `M ⇛ M′`.
+  By the induction hypothesis, we have `L —↠ L′` and `M —↠ M′`.
+  So `L · M —↠ L′ · M` and then `L′ · M  —↠ L′ · M′`
   because `—↠` is a congruence. We conclude using the transitity
   of `—↠`.
   
-* Suppose `(ƛ N) · M  ⇛  N' [ M' ]` because `N ⇛ N'` and `M ⇛ M'`.
+* Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By similar reasoning, we have
-  `(ƛ N) · M —↠ (ƛ N') · M'`.
-  Of course, `(ƛ N') · M' —→ N' [ M' ]`, so we can conclude
+  `(ƛ N) · M —↠ (ƛ N′) · M′`.
+  Of course, `(ƛ N′) · M′ —→ N′ [ M′ ]`, so we can conclude
   using the transitivity of `—↠`.
   
-With this lemma in handle, we complete the proof that `M ⇛* N` implies
+With this lemma in hand, we complete the proof that `M ⇛* N` implies
 `M —↠ N` with a simple induction on `M ⇛* N`.
 
 \begin{code}
@@ -226,11 +226,11 @@ pars-betas (L ⇛⟨ p ⟩ ps) = —↠-trans (par-betas p) (pars-betas ps)
 Our next goal is the prove the diamond property for parallel
 reduction. But to do that, we need to prove that substitution
 respects parallel reduction. That is, if
-`N ⇛ N'` and `M ⇛ M'`, then `N [ M ] ⇛ N' [ M' ]`.
+`N ⇛ N′` and `M ⇛ M′`, then `N [ M ] ⇛ N′ [ M′ ]`.
 We cannot prove this directly by induction, so we
-generalize it to: if `N ⇛ N'` and
+generalize it to: if `N ⇛ N′` and
 the substitution `σ` pointwise parallel reduces to `τ`,
-then `subst σ N ⇛ subst τ N'`. We define the notion
+then `subst σ N ⇛ subst τ N′`. We define the notion
 of pointwise parallel reduction as follows.
 
 \begin{code}
@@ -243,25 +243,25 @@ in turn relies on `rename`, we start with a version of the
 substitution lemma specialized to renamings.
 
 \begin{code}
-par-rename : ∀{Γ Δ A} {ρ : Rename Γ Δ} {M M' : Γ ⊢ A}
-  → M ⇛ M'
+par-rename : ∀{Γ Δ A} {ρ : Rename Γ Δ} {M M′ : Γ ⊢ A}
+  → M ⇛ M′
     ------------------------
-  → rename ρ M ⇛ rename ρ M'
+  → rename ρ M ⇛ rename ρ M′
 par-rename pvar = pvar
 par-rename (pabs p) = pabs (par-rename p)
 par-rename (papp p₁ p₂) = papp (par-rename p₁) (par-rename p₂)
-par-rename {Γ}{Δ}{A}{ρ} (pbeta{Γ}{N}{N'}{M}{M'} p₁ p₂)
+par-rename {Γ}{Δ}{A}{ρ} (pbeta{Γ}{N}{N′}{M}{M′} p₁ p₂)
      with pbeta (par-rename{ρ = ext ρ} p₁) (par-rename{ρ = ρ} p₂)
-... | G rewrite rename-subst-commute{Γ}{Δ}{N'}{M'}{ρ} = G
+... | G rewrite rename-subst-commute{Γ}{Δ}{N′}{M′}{ρ} = G
 \end{code}
 
-The proof is by induction on `M ⇛ M'`. The first four cases
+The proof is by induction on `M ⇛ M′`. The first four cases
 are straightforward so we just consider the last one for `pbeta`.
 
-* Suppose `(ƛ N) · M  ⇛  N' [ M' ]` because `N ⇛ N'` and `M ⇛ M'`.
+* Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By the induction hypothesis, we have
-  `rename (ext ρ) N ⇛ rename (ext ρ) N'` and
-  `rename ρ M ⇛ rename ρ M'`.
+  `rename (ext ρ) N ⇛ rename (ext ρ) N′` and
+  `rename ρ M ⇛ rename ρ M′`.
   So by `pbeta` we have
   `(ƛ rename (ext ρ) N) · (rename ρ M) ⇛ (rename (ext ρ) N) [ rename ρ M ]`.
   However, to conclude we instead need parallel reduction to
@@ -286,97 +286,98 @@ We are ready to prove the main lemma regarding substitution and
 parallel reduction.
 
 \begin{code}
-subst-par : ∀{Γ Δ A} {σ τ : Subst Γ Δ} {M M' : Γ ⊢ A}
-   → par-subst σ τ  →  M ⇛ M'
+subst-par : ∀{Γ Δ A} {σ τ : Subst Γ Δ} {M M′ : Γ ⊢ A}
+   → par-subst σ τ  →  M ⇛ M′
      --------------------------
-   → subst σ M ⇛ subst τ M'
+   → subst σ M ⇛ subst τ M′
 subst-par {Γ} {Δ} {A} {σ} {τ} {` x} s pvar = s
 subst-par {Γ} {Δ} {★} {σ} {τ} {ƛ N} s (pabs p) =
    pabs (subst-par {σ = exts σ} {τ = exts τ}
             (λ {A}{x} → par-subst-exts s {A}{x}) p)
 subst-par {Γ} {Δ} {★} {σ} {τ} {L · M} s (papp p₁ p₂) =
    papp (subst-par s p₁) (subst-par s p₂)
-subst-par {Γ} {Δ} {★} {σ} {τ} {(ƛ N) · M} s (pbeta{N' = N'}{M' = M'} p₁ p₂)
+subst-par {Γ} {Δ} {★} {σ} {τ} {(ƛ N) · M} s (pbeta{N′ = N′}{M′ = M′} p₁ p₂)
     with pbeta (subst-par{σ = exts σ}{τ = exts τ}{M = N}
                         (λ{A}{x} → par-subst-exts s{A}{x}) p₁)
                (subst-par (λ{A}{x} → s{A}{x}) p₂)
-... | G rewrite subst-commute{N = N'}{M = M'}{σ = τ} =
+... | G rewrite subst-commute{N = N′}{M = M′}{σ = τ} =
     G
 \end{code}
 
-We proceed by induction on `M ⇛ M'`.
+We proceed by induction on `M ⇛ M′`.
 
 * Suppose `x ⇛ x`. We conclude that `σ x ⇛ τ x` using
   the premise `par-subst σ τ`.
 
-* Suppose `ƛ N ⇛ ƛ N'` because `N ⇛ N'`.
+* Suppose `ƛ N ⇛ ƛ N′` because `N ⇛ N′`.
   To use the induction hypothesis, we need `par-subst (exts σ) (exts τ)`,
   which we obtain by `par-subst-exts`.
-  So then we have `subst (exts σ) N ⇛ subst (exts τ) N'`
+  So we have `subst (exts σ) N ⇛ subst (exts τ) N′`
   and conclude by rule `pabs`.
   
-* Suppose `L · M ⇛ L' · M'` because `L ⇛ L'` and `M ⇛ M'`.
+* Suppose `L · M ⇛ L′ · M′` because `L ⇛ L′` and `M ⇛ M′`.
   By the induction hypothesis we have
-  `subst σ L ⇛ subst τ L'` and `subst σ M ⇛ subst τ M'`, so
+  `subst σ L ⇛ subst τ L′` and `subst σ M ⇛ subst τ M′`, so
   we conclude by rule `papp`.
 
-* Suppose `(ƛ N) · M  ⇛  N' [ M' ]` because `N ⇛ N'` and `M ⇛ M'`.
+* Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   Again we obtain `par-subst (exts σ) (exts τ)` by `par-subst-exts`.
   So by the induction hypothesis, we have
-  `subst (exts σ) N ⇛ subst (exts τ) N'` and
-  `subst σ M ⇛ subst τ M'`. So by rule `pbeta`, we have parallel reduction
-  to `subst (exts τ) N' [ subst τ M' ]`.
+  `subst (exts σ) N ⇛ subst (exts τ) N′` and
+  `subst σ M ⇛ subst τ M′`. Then by rule `pbeta`, we have parallel reduction
+  to `subst (exts τ) N′ [ subst τ M′ ]`.
   Substitution commutes with itself in the following sense.
   For any σ, N, and M, we have
   
         (subst (exts σ) N) [ subst σ M ] ≡ subst σ (N [ M ])
 
-  So we have parallel reduction to `subst τ (N' [ M' ])`.
+  So we have parallel reduction to `subst τ (N′ [ M′ ])`.
 
 
-Of course, if `M ⇛ M'`, then `subst-zero M` pointwise parallel reduces
-to `subst-zero M'`.
+Of course, if `M ⇛ M′`, then `subst-zero M` pointwise parallel reduces
+to `subst-zero M′`.
 
 \begin{code}
-par-subst-zero : ∀{Γ}{A}{M M' : Γ ⊢ A}
-       → M ⇛ M'
-       → par-subst (subst-zero M) (subst-zero M')
-par-subst-zero {M} {M'} p {A} {Z} = p
-par-subst-zero {M} {M'} p {A} {S x} = pvar
+par-subst-zero : ∀{Γ}{A}{M M′ : Γ ⊢ A}
+       → M ⇛ M′
+       → par-subst (subst-zero M) (subst-zero M′)
+par-subst-zero {M} {M′} p {A} {Z} = p
+par-subst-zero {M} {M′} p {A} {S x} = pvar
 \end{code}
 
 We conclude this section with the desired corollary, that substitution
 respects parallel reduction.
 
 \begin{code}
-sub-par : ∀{Γ A B} {N N' : Γ , A ⊢ B} {M M' : Γ ⊢ A}
-   → N ⇛ N'
-   → M ⇛ M'
+sub-par : ∀{Γ A B} {N N′ : Γ , A ⊢ B} {M M′ : Γ ⊢ A}
+   → N ⇛ N′
+   → M ⇛ M′
      --------------------------
-   → N [ M ] ⇛ N' [ M' ]
+   → N [ M ] ⇛ N′ [ M′ ]
 sub-par pn pm = subst-par (par-subst-zero pm) pn
 \end{code}
 
 
 ## Parallel reduction satisfies the diamond property
 
-The heart of this proof is made of stone, or rather, of diamond!  We
-show that parallel reduction satisfies the diamond property: that if
-`M ⇛ N` and `M ⇛ N'`, then `N ⇛ L` and `N' ⇛ L` for some `L`.  The
-proof is relatively easy; it is parallel reduction's _raison d'etre_.
+The heart of the confluence proof is made of stone, or rather, of
+diamond!  We show that parallel reduction satisfies the diamond
+property: that if `M ⇛ N` and `M ⇛ N′`, then `N ⇛ L` and `N′ ⇛ L` for
+some `L`.  The proof is relatively easy; it is parallel reduction's
+_raison d'etre_.
   
 \begin{code}
-par-diamond : ∀{Γ A} {M N N' : Γ ⊢ A}
+par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N
-  → M ⇛ N'
+  → M ⇛ N′
     ---------------------------------
-  → Σ[ L ∈ Γ ⊢ A ] (N ⇛ L) × (N' ⇛ L)
+  → Σ[ L ∈ Γ ⊢ A ] (N ⇛ L) × (N′ ⇛ L)
 par-diamond (pvar{x = x}) pvar = ⟨ ` x , ⟨ pvar , pvar ⟩ ⟩
 par-diamond (pabs p1) (pabs p2)
     with par-diamond p1 p2
-... | ⟨ L' , ⟨ p3 , p4 ⟩ ⟩ =
-      ⟨ ƛ L' , ⟨ pabs p3 , pabs p4 ⟩ ⟩
-par-diamond{Γ}{A}{L · M}{N}{N'} (papp{Γ}{L}{L₁}{M}{M₁} p1 p3)
+... | ⟨ L′ , ⟨ p3 , p4 ⟩ ⟩ =
+      ⟨ ƛ L′ , ⟨ pabs p3 , pabs p4 ⟩ ⟩
+par-diamond{Γ}{A}{L · M}{N}{N′} (papp{Γ}{L}{L₁}{M}{M₁} p1 p3)
                                 (papp{Γ}{L}{L₂}{M}{M₂} p2 p4)
     with par-diamond p1 p2
 ... | ⟨ L₃ , ⟨ p5 , p6 ⟩ ⟩ 
@@ -408,10 +409,10 @@ The proof is by induction on both premises.
 * Suppose `x ⇛ x` and `x ⇛ x`.
   We choose `L = x` and immediately have `x ⇛ x` and `x ⇛ x`.
 
-* Suppose `ƛ N ⇛ ƛ N'` and `ƛ N ⇛ ƛ N''`.
-  By the induction hypothesis, there exists `L'` such that
-  `N' ⇛ L'` and `N'' ⇛ L'`. We choose `L = ƛ L'` and
-  by `pabs` conclude that `ƛ N' ⇛ ƛ L'` and `ƛ N'' ⇛ ƛ L'.
+* Suppose `ƛ N ⇛ ƛ N′` and `ƛ N ⇛ ƛ N′′`.
+  By the induction hypothesis, there exists `L′` such that
+  `N′ ⇛ L′` and `N′′ ⇛ L′`. We choose `L = ƛ L′` and
+  by `pabs` conclude that `ƛ N′ ⇛ ƛ L′` and `ƛ N′′ ⇛ ƛ L′.
 
 * Suppose that `L · M ⇛ L₁ · M₁` and `L · M ⇛ L₂ · M₂`.
   By the induction hypothesis we have
@@ -449,24 +450,24 @@ The proof is by induction on both premises.
 As promised at the beginning, the proof that parallel reduction is
 confluent is easy now that we know it satisfies the diamond property.
 We just need to prove the strip lemma, which states that
-if `M ⇒ N` and `M ⇒* N'`, then 
-`N ⇒* L` and `N' ⇒ L` for some `L`.
-The proof is a straightforward induction on `M ⇒* N'`,
+if `M ⇒ N` and `M ⇒* N′`, then 
+`N ⇒* L` and `N′ ⇒ L` for some `L`.
+The proof is a straightforward induction on `M ⇒* N′`,
 using the diamond property in the induction step.
 
 \begin{code}
-strip : ∀{Γ A} {M N N' : Γ ⊢ A}
+strip : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N
-  → M ⇛* N'
+  → M ⇛* N′
     ------------------------------------
-  → Σ[ L ∈ Γ ⊢ A ] (N ⇛* L)  ×  (N' ⇛ L)
-strip{Γ}{A}{M}{N}{N'} mn (M ∎) = ⟨ N , ⟨ N ∎ , mn ⟩ ⟩
-strip{Γ}{A}{M}{N}{N'} mn (M ⇛⟨ mm' ⟩ m'n')
+  → Σ[ L ∈ Γ ⊢ A ] (N ⇛* L)  ×  (N′ ⇛ L)
+strip{Γ}{A}{M}{N}{N′} mn (M ∎) = ⟨ N , ⟨ N ∎ , mn ⟩ ⟩
+strip{Γ}{A}{M}{N}{N′} mn (M ⇛⟨ mm' ⟩ m'n')
     with par-diamond mn mm'
 ... | ⟨ L , ⟨ nl , m'l ⟩ ⟩
     with strip m'l m'n'
-... | ⟨ L' , ⟨ ll' , n'l' ⟩ ⟩ =
-    ⟨ L' , ⟨ (N ⇛⟨ nl ⟩ ll') , n'l' ⟩ ⟩
+... | ⟨ L′ , ⟨ ll' , n'l' ⟩ ⟩ =
+    ⟨ L′ , ⟨ (N ⇛⟨ nl ⟩ ll') , n'l' ⟩ ⟩
 \end{code}
 
 The proof of confluence for parallel reduction is now proved by
@@ -505,7 +506,7 @@ The step case may be illustrated as follows:
         N′
 
 where downward lines are instances of `⇛` or `⇛*`, depending on how
-they are marked. Here `(a)` holds by `par-confR` and `(b)` holds by
+they are marked. Here `(a)` holds by `strip` and `(b)` holds by
 induction.
         
 
