@@ -277,7 +277,7 @@ substitutions preserves the pointwise parallel reduction relation.
 \begin{code}
 par-subst-exts : ∀{Γ Δ} {σ τ : Subst Γ Δ}
    → par-subst σ τ
-   → par-subst (exts σ {B = ★}) (exts τ)
+   → ∀{B} → par-subst (exts σ {B = B}) (exts τ)
 par-subst-exts s {x = Z} = pvar
 par-subst-exts s {x = S x} = par-rename s
 \end{code}
@@ -291,15 +291,15 @@ subst-par : ∀{Γ Δ A} {σ τ : Subst Γ Δ} {M M′ : Γ ⊢ A}
      --------------------------
    → subst σ M ⇛ subst τ M′
 subst-par {Γ} {Δ} {A} {σ} {τ} {` x} s pvar = s
-subst-par {Γ} {Δ} {★} {σ} {τ} {ƛ N} s (pabs p) =
+subst-par {Γ} {Δ} {A} {σ} {τ} {ƛ N} s (pabs p) =
    pabs (subst-par {σ = exts σ} {τ = exts τ}
-            (λ {A}{x} → par-subst-exts s {A}{x}) p)
+            (λ {A}{x} → par-subst-exts s {x = x}) p)
 subst-par {Γ} {Δ} {★} {σ} {τ} {L · M} s (papp p₁ p₂) =
    papp (subst-par s p₁) (subst-par s p₂)
 subst-par {Γ} {Δ} {★} {σ} {τ} {(ƛ N) · M} s (pbeta{N′ = N′}{M′ = M′} p₁ p₂)
     with pbeta (subst-par{σ = exts σ}{τ = exts τ}{M = N}
-                        (λ{A}{x} → par-subst-exts s{A}{x}) p₁)
-               (subst-par (λ{A}{x} → s{A}{x}) p₂)
+                        (λ{A}{x} → par-subst-exts s {x = x}) p₁)
+               (subst-par {σ = σ} s p₂)
 ... | G rewrite subst-commute{N = N′}{M = M′}{σ = τ} =
     G
 \end{code}
