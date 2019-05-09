@@ -17,6 +17,45 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Function using (_∘_)
 \end{code}
 
+## Overview 
+
+The primary purpose of this chapter is to prove that substitution
+commutes with itself. Barendgredt (1984) refers to this
+as the substitution lemma:
+  
+    M[x:=N][y:=L] = M [y:=L] [x:= N[y:=L] ]
+
+In our setting, with de Bruijn indices for variables, the statement of
+the lemma becomes:
+
+    M [ N ] [ L ] ≡  M〔 L 〕[ N [ L ] ]
+
+where the notation M 〔 L 〕 is for subsituting L for index 1 inside M.
+
+
+Also, because our substitution is based on parallel substitution,
+we have the following generalization, replacing the substitution
+of L with an arbitrary parallel substitution σ.
+
+    subst σ (M [ N ]) ≡ (subst (exts σ) M) [ subst σ N ]
+
+The special case for renamings is also useful.
+
+    rename ρ (M [ N ]) ≡ (rename (ext ρ) M) [ rename ρ N ]
+
+
+The secondary purpose of this chapter is to define an algebra of
+parallel substitution due to Abadi, Cardelli, Curien, and Levy
+(1991). Not only do the equations of this algebra help us prove the
+substitution lemma, but when applied from left to right, they form a
+rewrite system that _decides_ whether two substitutions are equal.
+
+
+
+
+
+
+
 ## Properties of renaming and substitution
 
 
@@ -477,6 +516,24 @@ subst-commute {Γ}{Δ}{N}{M}{σ} =
        subst σ (N [ M ])
      ∎
 \end{code}
+
+\begin{code}
+_〔_〕 : ∀ {Γ A B C}
+        → Γ , B , C ⊢ A
+        → Γ ⊢ B
+          ---------
+        → Γ , C ⊢ A
+_〔_〕 {Γ} {A} {B} {C} N M =
+   subst {Γ , B , C} {Γ , C} (exts (subst-zero M)) {A} N
+\end{code}
+
+\begin{code}
+substitution : ∀{Γ}{M : Γ , ★ , ★ ⊢ ★}{N : Γ , ★ ⊢ ★}{L : Γ ⊢ ★}
+    → (M [ N ]) [ L ] ≡ (M 〔 L 〕) [ (N [ L ]) ]
+substitution{M = M}{N = N}{L = L} =
+   sym (subst-commute{N = M}{M = N}{σ = subst-zero L})
+\end{code}
+
 
 ## Notes
 
