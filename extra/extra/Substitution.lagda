@@ -8,7 +8,6 @@ module extra.Substitution where
 open import plfa.Untyped
   using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
          ext; exts; _[_]; subst-zero)
-  renaming (_∎ to _[])
 open import plfa.Denotational using (Rename)
 open import plfa.Soundness using (Subst)
 
@@ -35,7 +34,7 @@ rename-equal : ∀{Γ Δ}{ρ ρ' : Rename Γ Δ}{M : Γ ⊢ ★}
         → same-rename ρ ρ'
         → rename ρ M ≡ rename ρ' M
 rename-equal {M = ` x} s = cong `_ s
-rename-equal {ρ = ρ}{ρ' = ρ'}{M = ƛ N} s =
+rename-equal {ρ = ρ} {ρ' = ρ'} {M = ƛ N} s =
    cong ƛ_ (rename-equal {ρ = ext ρ}{ρ' = ext ρ'}{M = N} (same-rename-ext s))
 rename-equal {M = L · M} s = cong₂ _·_ (rename-equal s) (rename-equal s)
 \end{code}
@@ -410,14 +409,15 @@ rename-subst-commute {Γ}{Δ}{N}{M}{ρ} =
        subst (cons (subst (ren ρ) M)
                    (seq (seq (ren ρ) (ren S_)) (cons (subst (ren ρ) M) ids))) N
      ≡⟨ subst-equal{M = N} (λ{A}{x} → cons-congR{x = x}
-         (λ{x} → seq-assoc{σ = ren ρ}{τ = ren S_}{θ = (cons (subst (ren ρ) M) ids)}{x = x})) ⟩
+         (λ{x} → seq-assoc {σ = ren ρ} {τ = ren S_}
+                           {θ = (cons (subst (ren ρ) M) ids)} {x = x})) ⟩
        subst (cons (subst (ren ρ) M)
                    (seq (ren ρ) (seq (ren S_) (cons (subst (ren ρ) M) ids)))) N
      ≡⟨ (subst-equal{M = N}λ{A}{x} → cons-congR{x = x}
-            λ{x} → seq-congR{σ = ren ρ}
-                     {τ = (seq (ren S_) (cons (subst (ren ρ) M) ids))}
-                     {τ' = ids}{x = x}
-            λ{A}{x} → seq-inc-cons{M = (subst (ren ρ) M)}{σ = ids}{x = x} ) ⟩
+            λ{x} → seq-congR {σ = ren ρ}
+                             {τ = (seq (ren S_) (cons (subst (ren ρ) M) ids))}
+                             {τ' = ids} {x = x}
+            λ{A}{x} → seq-inc-cons {M = (subst (ren ρ) M)} {σ = ids} {x = x} ) ⟩
        subst (cons (subst (ren ρ) M) (seq (ren ρ) ids)) N
      ≡⟨ (subst-equal{M = N}λ{A}{x} → sym (seq-cons{x = x}) ) ⟩
        subst (seq (cons M ids) (ren ρ)) N
