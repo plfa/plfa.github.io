@@ -5,10 +5,11 @@ module extra.CallByName where
 ## Imports
 
 \begin{code}
+open import extra.LambdaReduction
+  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
 open import plfa.Untyped
   using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
-         _—↠_; _—→⟨_⟩_; _—→_; ξ₁; ξ₂; β; ζ; ap; ext; exts; _[_]; subst-zero)
-  renaming (_∎ to _[])
+         ext; exts; _[_]; subst-zero)
 open import plfa.Adequacy
 open import plfa.Denotational
 open import plfa.Soundness
@@ -57,7 +58,7 @@ ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
           ((subst (subst-zero N)) ∘ (rename S_)) (σ x)
         ≡⟨ rename-subst{M = σ x} ⟩
           (subst ((subst-zero N) ∘ S_)) (σ x)        
-        ≡⟨ subst-id (λ {x₁} → refl) ⟩
+        ≡⟨ sub-id ⟩
           σ x
         ∎
       G : 𝔹 (γ x) (σ x) → 𝔹 (γ x) (ext-subst σ N (S x))
@@ -77,10 +78,10 @@ ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
 —→-app-cong : ∀{Γ}{L L' M : Γ ⊢ ★}
             → L —→ L'
             → L · M —→ L' · M
-—→-app-cong (ξ₁ ap ll') = ξ₁ ap (—→-app-cong ll')
-—→-app-cong (ξ₂ ne ll') = ξ₁ ap (ξ₂ ne ll')
-—→-app-cong β = ξ₁ ap β
-—→-app-cong (ζ ll') = {!!} {- JGS: problem with ξ₁! -}
+—→-app-cong (ξ₁ ll') = ξ₁ (—→-app-cong ll')
+—→-app-cong (ξ₂ ll') = ξ₁ (ξ₂ ll')
+—→-app-cong β = ξ₁ β
+—→-app-cong (ζ ll') = ξ₁ (ζ ll')
 
 —↠-app-cong : ∀{Γ}{L L' M : Γ ⊢ ★}
             → L —↠ L'
@@ -110,7 +111,7 @@ cbn-soundness {Γ} {γ} {σ} {.(_ · _)} {c}
            (λ {x} → ℍ-ext{Δ}{σ = σ₁} Hδσ₁ (⟨ σ , ⟨ h , refl ⟩ ⟩){x})
        | β{∅}{subst (exts σ₁) N}{subst σ M}
 ... | ⟨ N' , ⟨ r' , bl ⟩ ⟩ | r 
-    rewrite subst-subst{M = N}{σ₁ = exts σ₁}{σ₂ = subst-zero (subst σ M)} =
+    rewrite sub-sub{M = N}{σ₁ = exts σ₁}{σ₂ = subst-zero (subst σ M)} =
     let rs = (ƛ subst (exts σ₁) N) · subst σ M —→⟨ r ⟩ r' in
     ⟨ N' , ⟨ —↠-trans (—↠-app-cong σL—↠L') rs , bl ⟩ ⟩
 \end{code}
