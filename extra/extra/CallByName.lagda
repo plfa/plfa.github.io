@@ -6,14 +6,16 @@ module extra.CallByName where
 
 \begin{code}
 open import extra.LambdaReduction
-  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
+  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[]; appL-cong)
 open import plfa.Untyped
   using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
          ext; exts; _[_]; subst-zero)
 open import plfa.Adequacy
-open import plfa.Denotational
+   using (Clos; ClosEnv; clos; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app)
 open import plfa.Soundness
+   using (Subst)
 open import extra.Substitution
+   using (rename-subst; sub-id; sub-sub)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
@@ -74,22 +76,6 @@ ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
 —↠-trans (L —→⟨ r ⟩ lm) mn = L —→⟨ r ⟩ (—↠-trans lm mn)
 \end{code}
 
-\begin{code}
-—→-app-cong : ∀{Γ}{L L' M : Γ ⊢ ★}
-            → L —→ L'
-            → L · M —→ L' · M
-—→-app-cong (ξ₁ ll') = ξ₁ (—→-app-cong ll')
-—→-app-cong (ξ₂ ll') = ξ₁ (ξ₂ ll')
-—→-app-cong β = ξ₁ β
-—→-app-cong (ζ ll') = ξ₁ (ζ ll')
-
-—↠-app-cong : ∀{Γ}{L L' M : Γ ⊢ ★}
-            → L —↠ L'
-            → L · M —↠ L' · M
-—↠-app-cong {Γ}{L}{L'}{M} (L []) = (L · M) []
-—↠-app-cong {Γ}{L}{L'}{M} (L —→⟨ r ⟩ ll') =
-    L · M —→⟨ —→-app-cong r ⟩ (—↠-app-cong ll')
-\end{code}
 
 \begin{code}
 cbn-soundness : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
@@ -113,5 +99,5 @@ cbn-soundness {Γ} {γ} {σ} {.(_ · _)} {c}
 ... | ⟨ N' , ⟨ r' , bl ⟩ ⟩ | r 
     rewrite sub-sub{M = N}{σ₁ = exts σ₁}{σ₂ = subst-zero (subst σ M)} =
     let rs = (ƛ subst (exts σ₁) N) · subst σ M —→⟨ r ⟩ r' in
-    ⟨ N' , ⟨ —↠-trans (—↠-app-cong σL—↠L') rs , bl ⟩ ⟩
+    ⟨ N' , ⟨ —↠-trans (appL-cong σL—↠L') rs , bl ⟩ ⟩
 \end{code}

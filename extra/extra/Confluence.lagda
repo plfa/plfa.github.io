@@ -6,12 +6,18 @@ module extra.Confluence where
 
 \begin{code}
 open import extra.Substitution
+    using (subst-commute; rename-subst-commute)
 open import extra.LambdaReduction
+    using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _[];
+           abs-cong; appL-cong; appR-cong;
+           —↠-trans)
 open import plfa.Denotational using (Rename)
 open import plfa.Soundness using (Subst)
-open import plfa.Untyped hiding (_—→_; _—↠_; begin_; _∎)
+open import plfa.Untyped
+    using (_⊢_; _∋_; `_; _,_; ★; ƛ_; _·_; _[_];
+           rename; ext; exts; Z; S_; subst; subst-zero)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
+open Eq using (_≡_; refl)
 open import Function using (_∘_)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
      renaming (_,_ to ⟨_,_⟩)

@@ -5,12 +5,7 @@ module extra.LambdaReduction where
 ## Imports
 
 \begin{code}
-open import extra.Substitution
-open import plfa.Untyped
-   renaming (_—→_ to _——→_; _—↠_ to _——↠_; begin_ to commence_; _∎ to _fini)
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+open import plfa.Untyped using (_⊢_; ★; _·_; ƛ_; _,_; _[_])
 \end{code}
 
 ## Full beta reduction
@@ -74,6 +69,20 @@ start M—↠N = M—↠N
 —↠-trans (L —→⟨ r ⟩ lm) mn = L —→⟨ r ⟩ (—↠-trans lm mn)
 \end{code}
 
+## Reduction is a congruence
+
+\begin{code}
+—→-app-cong : ∀{Γ}{L L' M : Γ ⊢ ★}
+            → L —→ L'
+            → L · M —→ L' · M
+—→-app-cong (ξ₁ ll') = ξ₁ (—→-app-cong ll')
+—→-app-cong (ξ₂ ll') = ξ₁ (ξ₂ ll')
+—→-app-cong β = ξ₁ β
+—→-app-cong (ζ ll') = ξ₁ (ζ ll')
+\end{code}
+
+
+
 ## Multi-step reduction is a congruence
 
 \begin{code}
@@ -83,14 +92,18 @@ abs-cong : ∀ {Γ} {N N' : Γ , ★ ⊢ ★}
          → ƛ N —↠ ƛ N'
 abs-cong (M []) = ƛ M []
 abs-cong (L —→⟨ r ⟩ rs) = ƛ L —→⟨ ζ r ⟩ abs-cong rs
+\end{code}
 
+\begin{code}
 appL-cong : ∀ {Γ} {L L' M : Γ ⊢ ★}
          → L —↠ L'
            ---------------
          → L · M —↠ L' · M
 appL-cong {Γ}{L}{L'}{M} (L []) = L · M []
 appL-cong {Γ}{L}{L'}{M} (L —→⟨ r ⟩ rs) = L · M —→⟨ ξ₁ r ⟩ appL-cong rs
+\end{code}
 
+\begin{code}
 appR-cong : ∀ {Γ} {L M M' : Γ ⊢ ★}
          → M —↠ M'
            ---------------
@@ -98,3 +111,4 @@ appR-cong : ∀ {Γ} {L M M' : Γ ⊢ ★}
 appR-cong {Γ}{L}{M}{M'} (M []) = L · M []
 appR-cong {Γ}{L}{M}{M'} (M —→⟨ r ⟩ rs) = L · M —→⟨ ξ₂ r ⟩ appR-cong rs
 \end{code}
+
