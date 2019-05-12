@@ -467,7 +467,7 @@ Using the above, establish that there is an isomorphism between `ℕ` and
 \end{code}
 
 
-## Standard Prelude
+## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 \begin{code}
