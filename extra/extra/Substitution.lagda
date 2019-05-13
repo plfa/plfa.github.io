@@ -1,5 +1,5 @@
 \begin{code}
-module extra.Substitution where
+module plfa.Substitution where
 \end{code}
 
 ## Imports

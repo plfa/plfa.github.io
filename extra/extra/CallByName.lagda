@@ -1,21 +1,25 @@
 \begin{code}
-module extra.CallByName where
+module plfa.CallByName where
 \end{code}
 
 ## Imports
 
 \begin{code}
-open import extra.LambdaReduction
-  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[]; appL-cong)
 open import plfa.Untyped
   using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
          ext; exts; _[_]; subst-zero)
-open import plfa.Adequacy
-   using (Clos; ClosEnv; clos; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app)
+open import plfa.Substitution
+   using (rename-subst; sub-id; sub-sub; ids)
+open import plfa.LambdaReduction
+  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[]; appL-cong)
+open import plfa.Denotational
+   using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
+open import plfa.Compositional   
+   using (Ctx; plug; compositionality)
 open import plfa.Soundness
-   using (Subst)
-open import extra.Substitution
-   using (rename-subst; sub-id; sub-sub)
+   using (Subst; soundness)
+open import plfa.Adequacy
+   using (Clos; ClosEnv; ∅'; clos; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; adequacy)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
@@ -100,4 +104,51 @@ cbn-soundness {Γ} {γ} {σ} {.(_ · _)} {c}
     rewrite sub-sub{M = N}{σ₁ = exts σ₁}{σ₂ = subst-zero (subst σ M)} =
     let rs = (ƛ subst (exts σ₁) N) · subst σ M —→⟨ r ⟩ r' in
     ⟨ N' , ⟨ —↠-trans (appL-cong σL—↠L') rs , bl ⟩ ⟩
+\end{code}
+
+
+## Denotational Equivalence Implies Contextual Equivalence
+
+\begin{code}
+terminates : ∀{Γ} → (M : Γ ⊢ ★) → Set
+terminates {Γ} M = Σ[ N ∈ (Γ , ★ ⊢ ★) ] (M —↠ ƛ N)
+\end{code}
+
+\begin{code}
+_≅_ : ∀{Γ} → (M N : Γ ⊢ ★) → Set
+(_≅_ {Γ} M N) = ∀ {C : Ctx Γ ∅}
+                → (terminates (plug C M)) iff (terminates (plug C N))
+\end{code}
+
+\begin{code}
+denot-equal-terminates : ∀{Γ} {M N : Γ ⊢ ★} {C : Ctx Γ ∅}
+  → ℰ M ≃ ℰ N
+  → terminates (plug C M)
+  → terminates (plug C N)
+denot-equal-terminates {Γ}{M}{N}{C} eq ⟨ N' , CM—↠CƛN' ⟩ =
+  let ℰCM≃ℰCƛN' = soundness CM—↠CƛN' in
+  let ℰCM≃ℰCN = compositionality{Γ = Γ}{Δ = ∅}{C = C} eq in
+  let ℰCN≃ℰCƛN' = ≃-trans (≃-sym ℰCM≃ℰCN) ℰCM≃ℰCƛN' in
+    G (adequacy ℰCN≃ℰCƛN')
+  where
+  H-id : ℍ ∅' ids
+  H-id {()}
+
+  G : (Σ[ Δ ∈ Context ] Σ[ M' ∈ (Δ , ★ ⊢ ★) ] Σ[ γ ∈ ClosEnv Δ ]
+         ∅' ⊢ (plug C N) ⇓ clos (ƛ M') γ)
+    → terminates (plug C N)
+  G ⟨ Δ , ⟨ M' , ⟨ γ , CN⇓ƛM'γ ⟩ ⟩ ⟩
+      with cbn-soundness{σ = ids} CN⇓ƛM'γ H-id
+  ... | ⟨ N'' , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
+      rewrite sub-id{M = plug C N} | eq2 =
+      ⟨ subst (λ {A} → exts σ) M' , rs ⟩
+\end{code}
+
+\begin{code}
+denot-equal-contex-equal : ∀{Γ} {M N : Γ ⊢ ★}
+  → ℰ M ≃ ℰ N
+  → M ≅ N
+denot-equal-contex-equal{Γ}{M}{N} eq {C} =
+   ⟨ (λ tm → denot-equal-terminates eq tm) ,
+     (λ tn → denot-equal-terminates (≃-sym eq) tn) ⟩
 \end{code}

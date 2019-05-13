@@ -14,6 +14,10 @@ module plfa.Soundness where
 
 \begin{code}
 open import plfa.Untyped
+  using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
+         subst; _[_]; subst-zero; ext; rename; exts)
+open import extra.LambdaReduction
+  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
 open import plfa.Denotational
 open import plfa.Compositional
 
@@ -192,8 +196,8 @@ preserve : ∀ {Γ} {γ : Env Γ} {M N v}
     ----------
   → γ ⊢ N ↓ v
 preserve (var) ()
-preserve (↦-elim d₁ d₂) (ξ₁ x r) = ↦-elim (preserve d₁ r) d₂ 
-preserve (↦-elim d₁ d₂) (ξ₂ x r) = ↦-elim d₁ (preserve d₂ r) 
+preserve (↦-elim d₁ d₂) (ξ₁ r) = ↦-elim (preserve d₁ r) d₂ 
+preserve (↦-elim d₁ d₂) (ξ₂ r) = ↦-elim d₁ (preserve d₂ r) 
 preserve (↦-elim d₁ d₂) β = substitution (lambda-inversion d₁) d₂
 preserve (↦-intro d) (ζ r) = ↦-intro (preserve d r)
 preserve ⊥-intro r = ⊥-intro
@@ -650,20 +654,20 @@ reflect : ∀ {Γ} {γ : Env Γ} {M M' N v}
   → γ ⊢ N ↓ v  →  M —→ M'  →   M' ≡ N
     ---------------------------------
   → γ ⊢ M ↓ v
-reflect var (ξ₁ x₁ r) ()
-reflect var (ξ₂ x₁ r) ()
+reflect var (ξ₁ r) ()
+reflect var (ξ₂ r) ()
 reflect{γ = γ} (var{x = x}) β mn
     with var{γ = γ}{x = x}
 ... | d' rewrite sym mn = reflect-beta d' 
 reflect var (ζ r) ()
-reflect (↦-elim d₁ d₂) (ξ₁ x r) refl = ↦-elim (reflect d₁ r refl) d₂ 
-reflect (↦-elim d₁ d₂) (ξ₂ x r) refl = ↦-elim d₁ (reflect d₂ r refl) 
+reflect (↦-elim d₁ d₂) (ξ₁ r) refl = ↦-elim (reflect d₁ r refl) d₂ 
+reflect (↦-elim d₁ d₂) (ξ₂ r) refl = ↦-elim d₁ (reflect d₂ r refl) 
 reflect (↦-elim d₁ d₂) β mn
     with ↦-elim d₁ d₂
 ... | d' rewrite sym mn = reflect-beta d'
 reflect (↦-elim d₁ d₂) (ζ r) ()
-reflect (↦-intro d) (ξ₁ x r) ()
-reflect (↦-intro d) (ξ₂ x r) ()
+reflect (↦-intro d) (ξ₁ r) ()
+reflect (↦-intro d) (ξ₂ r) ()
 reflect (↦-intro d) β mn
     with ↦-intro d
 ... | d' rewrite sym mn = reflect-beta d'
@@ -697,7 +701,7 @@ soundness : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
   → M —↠ ƛ N
     -----------------
   → ℰ M ≃ ℰ (ƛ N)
-soundness (.(ƛ _) ∎) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
+soundness (.(ƛ _) []) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
 soundness {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
    let ih = soundness M—↠N in
    let e = reduce-equal r in

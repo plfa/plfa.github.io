@@ -1,5 +1,5 @@
 \begin{code}
-module extra.LambdaReduction where
+module plfa.LambdaReduction where
 \end{code}
 
 ## Imports
