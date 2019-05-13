@@ -655,17 +655,17 @@ kth-x{γ' = γ'}{x = x} with γ' x
 The adequacy property is a corollary of the main lemma.
 We have `∅ ⊢ ƛ N ↓ ⊥ ↦ ⊥`, so `ℰ M ≃ ℰ (ƛ N)`
 gives us `∅ ⊢ M ↓ ⊥ ↦ ⊥`. Then the main lemma gives us
-`∅ ⊢ M ⇓ c` for some `c`.
+`∅ ⊢ M ⇓ clos (ƛ N′) γ` for some `N′` and `γ`.
 
 \begin{code}
 adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
-         →  Σ[ Γ ∈ Context ] Σ[ N ∈ (Γ , ★ ⊢ ★) ] Σ[ γ ∈ ClosEnv Γ ]
-            ∅' ⊢ M ⇓ clos (ƛ N) γ
+         →  Σ[ Γ ∈ Context ] Σ[ N′ ∈ (Γ , ★ ⊢ ★) ] Σ[ γ ∈ ClosEnv Γ ]
+            ∅' ⊢ M ⇓ clos (ƛ N′) γ
 adequacy{M}{N} eq
     with ↓→𝔼 𝔾-∅ ((proj₂ (eq `∅ (⊥ ↦ ⊥))) (↦-intro ⊥-intro))
                  ⟨ ⊥ , ⟨ ⊥ , Refl⊑ ⟩ ⟩
-... | ⟨ clos {Γ} M' γ , ⟨ M⇓c , Vc ⟩ ⟩
+... | ⟨ clos {Γ} M′ γ , ⟨ M⇓c , Vc ⟩ ⟩
     with 𝕍→WHNF Vc
-... | ƛ_ {N = N'} = 
-    ⟨ Γ , ⟨ N' , ⟨ γ , M⇓c ⟩  ⟩ ⟩
+... | ƛ_ {N = N′} = 
+    ⟨ Γ , ⟨ N′ , ⟨ γ , M⇓c ⟩  ⟩ ⟩
 \end{code}
