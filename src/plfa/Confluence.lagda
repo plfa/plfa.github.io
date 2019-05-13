@@ -1,7 +1,7 @@
 ---
-title     : "Substitution in the untyped lambda calculus"
+title     : "Confluence of the untyped lambda calculus"
 layout    : page
-prev      : /Substitution/
+prev      : /LambdaReduction/
 permalink : /Confluence/
 next      : /Denotational/
 ---

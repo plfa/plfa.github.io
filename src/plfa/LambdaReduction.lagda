@@ -1,3 +1,11 @@
+---
+title     : "Full beta reduction of the untyped lambda calculus"
+layout    : page
+prev      : /Substitution/
+permalink : /LambdaReduction/
+next      : /Confluence/
+---
+
 \begin{code}
 module plfa.LambdaReduction where
 \end{code}

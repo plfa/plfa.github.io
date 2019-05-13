@@ -3,7 +3,7 @@ title     : "Substitution in the untyped lambda calculus"
 layout    : page
 prev      : /Untyped/
 permalink : /Substitution/
-next      : /Confluence/
+next      : /LambdaReduction/
 ---
 
 
@@ -32,7 +32,7 @@ The primary purpose of this chapter is to prove that substitution
 commutes with itself. Barendgredt (1984) refers to this
 as the substitution lemma:
   
-    M[x:=N][y:=L] = M [y:=L] [x:= N[y:=L] ]
+    M [x:=N] [y:=L] = M [y:=L] [x:= N[y:=L] ]
 
 In our setting, with de Bruijn indices for variables, the statement of
 the lemma becomes:
@@ -67,7 +67,7 @@ We use the following more succinct notation the `subst` function.
 \end{code}
 
 
-## The σ Algebra of Substitution
+## The σ algebra of substitution
 
 Substitutions map de Bruijn indices (natural numbers) to terms, so we
 can view a substitution simply as a sequence of terms, or more
@@ -118,7 +118,7 @@ before `τ`, which is the opposite of standard mathematical
 practice. We instead write `σ ⨟ τ`, because the semicolon has become
 the standard notation for forward function composition.
 
-## The Equations
+## The σ algebra equations
 
 The σ algebra includes the following equations.
 
