@@ -1,13 +1,13 @@
 ---
-title     : "Call by name reduction of the untyped lambda calculus"
+title     : "Denotational equality implies contextual equivalence"
 layout    : page
 prev      : /Adequacy/
-permalink : /CallByName/
+permalink : /ContextualEquivalence/
 next      : /Acknowledgements/
 ---
 
 \begin{code}
-module plfa.CallByName where
+module plfa.ContextualEquivalence where
 \end{code}
 
 ## Imports
@@ -19,7 +19,7 @@ open import plfa.Untyped
 open import plfa.Substitution
    using (rename-subst; sub-id; sub-sub; ids)
 open import plfa.LambdaReduction
-  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[]; appL-cong)
+  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[]; appL-cong; —↠-trans)
 open import plfa.Denotational
    using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
 open import plfa.Compositional   
@@ -44,7 +44,7 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
 \end{code}
 
-## Logical Relation between CBN Closures and Terms
+## A logical relation between call-by-name closures and terms
 
 \begin{code}
 𝔹 : Clos → (∅ ⊢ ★) → Set
@@ -79,15 +79,7 @@ ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
       G b rewrite eq = b
 \end{code}
 
-\begin{code}
-—↠-trans : ∀{Γ}{L M N : Γ ⊢ ★}
-         → L —↠ M
-         → M —↠ N
-         → L —↠ N
-—↠-trans (M []) mn = mn
-—↠-trans (L —→⟨ r ⟩ lm) mn = L —→⟨ r ⟩ (—↠-trans lm mn)
-\end{code}
-
+## Soundness of call-by-name wrt. beta reduction
 
 \begin{code}
 cbn-soundness : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
@@ -115,7 +107,7 @@ cbn-soundness {Γ} {γ} {σ} {.(_ · _)} {c}
 \end{code}
 
 
-## Denotational Equivalence Implies Contextual Equivalence
+## Denotational equivalence implies contextual equivalence
 
 \begin{code}
 terminates : ∀{Γ} → (M : Γ ⊢ ★) → Set
