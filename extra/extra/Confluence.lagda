@@ -1,13 +1,21 @@
+---
+title     : "Substitution in the untyped lambda calculus"
+layout    : page
+prev      : /Substitution/
+permalink : /Confluence/
+next      : /Denotational/
+---
+
 \begin{code}
-module extra.Confluence where
+module plfa.Confluence where
 \end{code}
 
 ## Imports
 
 \begin{code}
-open import extra.Substitution
+open import plfa.Substitution
     using (subst-commute; rename-subst-commute)
-open import extra.LambdaReduction
+open import plfa.LambdaReduction
     using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _[];
            abs-cong; appL-cong; appR-cong;
            —↠-trans)

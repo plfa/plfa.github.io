@@ -1,3 +1,12 @@
+---
+title     : "Substitution in the untyped lambda calculus"
+layout    : page
+prev      : /Untyped/
+permalink : /Substitution/
+next      : /Confluence/
+---
+
+
 \begin{code}
 module plfa.Substitution where
 \end{code}

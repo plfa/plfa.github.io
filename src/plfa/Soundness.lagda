@@ -16,7 +16,7 @@ module plfa.Soundness where
 open import plfa.Untyped
   using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
          subst; _[_]; subst-zero; ext; rename; exts)
-open import extra.LambdaReduction
+open import plfa.LambdaReduction
   using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
 open import plfa.Denotational
 open import plfa.Compositional

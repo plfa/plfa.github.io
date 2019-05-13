@@ -3,7 +3,7 @@ title     : "Adequacy: of denotational semantics with respect to operational sem
 layout    : page
 prev      : /Soundness/
 permalink : /Adequacy/
-next      : /Acknowledgements/
+next      : /CallByName/
 ---
 
 \begin{code}

@@ -1,3 +1,11 @@
+---
+title     : "Call by name reduction of the untyped lambda calculus"
+layout    : page
+prev      : /Adequacy/
+permalink : /CallByName/
+next      : /Acknowledgements/
+---
+
 \begin{code}
 module plfa.CallByName where
 \end{code}
