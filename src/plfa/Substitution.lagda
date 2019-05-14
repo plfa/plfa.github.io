@@ -44,8 +44,7 @@ M.  In addition, because we define substitution in terms of parallel
 substitution, we have the following generalization, replacing the
 substitution of L with an arbitrary parallel substitution σ.
 
-    subst σ (M [ N ]) ≡ (subst (exts σ) M) [ subst σ N ]
-                                                            (subst-commute)
+    subst σ (M [ N ]) ≡ (subst (exts σ) M) [ subst σ N ]    (subst-commute)
 
 The special case for renamings is also useful.
 
