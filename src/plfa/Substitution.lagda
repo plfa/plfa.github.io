@@ -268,11 +268,16 @@ sub-idL-x = refl
 \end{code}
 
 \begin{code}
-sub-dist :  ∀{Γ Δ Σ : Context} {A B} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
+sub-dist-x :  ∀{Γ Δ Σ : Context} {A B} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
               {M : Δ ⊢ A} {x : Γ , A ∋ B}
          → ((M • σ) ⨟ τ) x ≡ ((subst τ M) • (σ ⨟ τ)) x
-sub-dist {x = Z} = refl
-sub-dist {x = S x} = refl
+sub-dist-x {x = Z} = refl
+sub-dist-x {x = S x} = refl
+
+sub-dist :  ∀{Γ Δ Σ : Context} {A B} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
+              {M : Δ ⊢ A}
+         → ((M • σ) ⨟ τ) ≡ ((subst τ M) • (σ ⨟ τ)) {B}
+sub-dist = extensionality λ x → sub-dist-x {x = x}
 \end{code}
 
 \begin{code}
@@ -290,7 +295,8 @@ reasononing.
 
 \begin{code}
 cong-cons : ∀{Γ Δ}{A}{M N : Δ ⊢ A}{σ τ : Subst Γ Δ}
-  → M ≡ N → (∀{A} → σ {A} ≡ τ {A})
+  → M ≡ N  →  (∀{A} → σ {A} ≡ τ {A})
+    --------------------------------
   → ∀{A} → (M • σ) {A} ≡ (N • τ) {A}
 cong-cons{Γ}{Δ}{A}{M}{N}{σ}{τ} refl st {A'} = extensionality lemma
   where
@@ -300,58 +306,25 @@ cong-cons{Γ}{Δ}{A}{M}{N}{σ}{τ} refl st {A'} = extensionality lemma
 \end{code}
 
 \begin{code}
-cons-congL : ∀{Γ Δ : Context} {A B} {σ : Subst Γ Δ} {M M' : Δ ⊢ A}
-            {x : Γ , A ∋ B}
-           → M ≡ M'
-           → (M • σ) x ≡ (M' • σ) x
-cons-congL{σ = σ}{x = x} s = cong (λ z → (z • σ) x) s
-
-cons-congR : ∀{Γ Δ : Context} {A B} {σ τ : Subst Γ Δ} {M : Δ ⊢ A}
-            {x : Γ , A ∋ B}
-           → (∀{x : Γ ∋ B} → σ x ≡ τ x)
-           → (M • σ) x ≡ (M • τ) x
-cons-congR {x = Z} s = refl
-cons-congR {x = S x} s = s
+cong-exts : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{B}
+   → (∀{A} → σ ≡ σ' {A})
+   → ∀{A} → exts σ {B = B} ≡ (exts σ') {A}
+cong-exts{Γ}{Δ}{σ}{σ'}{B} ss {A} = extensionality λ x → lemma {x}
+   where
+   lemma : ∀{x} → exts σ x ≡ exts σ' x
+   lemma {Z} = refl
+   lemma {S x} = cong (rename S_) (cong-app (ss {A}) x)
 \end{code}
 
-The following same-subst business is an ugly workaround :(
-
-I'm having trouble with equalities involving the subst function.
-
 \begin{code}
-same-subst : ∀{Γ Δ} → Subst Γ Δ → Subst Γ Δ → Set
-same-subst{Γ}{Δ} σ σ' = ∀{A}{x : Γ ∋ A} → σ x ≡ σ' x
-
-same-subst-ext : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{B}
-   → same-subst σ σ'
-   → same-subst (exts σ {B = B}) (exts σ' )
-same-subst-ext ss {x = Z} = refl
-same-subst-ext ss {x = S x} = cong (rename (λ {A} → S_)) ss
-
 cong-sub : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{A}{M M' : Γ ⊢ A}
-            → same-subst σ σ' → M ≡ M'
+            → (∀{A} → σ ≡ σ' {A})  →  M ≡ M'
             → subst σ M ≡ subst σ' M'
-cong-sub {Γ} {Δ} {σ} {σ'} {A} {` x} ss refl = ss
+cong-sub {Γ} {Δ} {σ} {σ'} {A} {` x} ss refl = cong-app ss x
 cong-sub {Γ} {Δ} {σ} {σ'} {A} {ƛ M} ss refl =
-   let ih = cong-sub {Γ = Γ , ★} {Δ = Δ , ★}
-            {σ = exts σ}{σ' = exts σ'} {M = M}
-            (λ {x}{A} → same-subst-ext {Γ}{Δ}{σ}{σ'} ss {x}{A}) refl in
-   cong ƛ_ ih
+   cong ƛ_ (cong-sub {σ = exts σ}{σ' = exts σ'} {M = M} (cong-exts ss) refl)
 cong-sub {Γ} {Δ} {σ} {σ'} {A} {L · M} ss refl = 
-   let ih1 = cong-sub {Γ} {Δ} {σ} {σ'} {A} {L} ss refl in
-   let ih2 = cong-sub {Γ} {Δ} {σ} {σ'} {A} {M} ss refl in
-   cong₂ _·_ ih1 ih2
-
-subst-equal : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{A}{M : Γ ⊢ A}
-            → same-subst σ σ' 
-            → subst σ M ≡ subst σ' M
-subst-equal{M = M} ss = cong-sub{M = M} ss refl
-
-subst-equal2 : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{A}{M : Γ ⊢ A}
-            → (∀{A} → σ {A} ≡ σ' {A})
-            → subst σ M ≡ subst σ' M
-subst-equal2{Γ}{Δ}{σ}{σ'}{A}{M} s =
-   subst-equal{M = M} λ {A}{x} → cong-app {f = σ {A}} {g = σ' {A}} (s{A}) x
+   cong₂ _·_ (cong-sub {M = L} ss refl) (cong-sub {M = M} ss refl)
 \end{code}
 
 
@@ -389,7 +362,7 @@ cong-seq {Γ}{Δ}{Σ}{σ}{σ'}{τ}{τ'} ss' tt' {A} = extensionality lemma
        subst τ (σ x)
      ≡⟨ cong (subst τ) (cong-app ss' x) ⟩
        subst τ (σ' x)
-     ≡⟨ subst-equal2{M = σ' x} tt' ⟩
+     ≡⟨ cong-sub{M = σ' x} tt' refl ⟩
        subst τ' (σ' x)
      ≡⟨⟩
        (σ' ⨟ τ') x  
@@ -418,10 +391,11 @@ cong-seqR {Γ}{Δ}{Σ}{B}{σ}{τ}{τ'}{x} tt' =
 
 
 \begin{code}
-cong-subst-zero : ∀{Γ}{A B : Type}{M M' : Γ ⊢ B}{x : Γ , B ∋ A}
+cong-sub-zero : ∀{Γ}{B : Type}{M M' : Γ ⊢ B}
   → M ≡ M'
-  → subst-zero M x ≡ subst-zero M' x
-cong-subst-zero {x = x} mm' = cong (λ z → subst-zero z x) mm'
+  → ∀{A} → subst-zero M ≡ (subst-zero M') {A}
+cong-sub-zero {Γ}{B}{M}{M'} mm' {A} =
+   extensionality λ x → cong (λ z → subst-zero z x) mm'
 \end{code}
 
 
@@ -445,7 +419,7 @@ ren-ext-x : ∀ {Γ Δ}{B C : Type} {ρ : Rename Γ Δ} {x : Γ , B ∋ C}
 ren-ext-x {x = Z} = refl
 ren-ext-x {x = S x} = refl
 
-ren-ext : ∀ {Γ Δ}{B C : Type} {ρ : Rename Γ Δ} {x : Γ , B ∋ C}
+ren-ext : ∀ {Γ Δ}{B C : Type} {ρ : Rename Γ Δ}
         → ren (ext ρ {B = B}) ≡ exts (ren ρ) {C}
 ren-ext = extensionality λ x → ren-ext-x {x = x}
 \end{code}
@@ -464,7 +438,7 @@ rename-subst-ren {ρ = ρ}{M = ƛ N} =
       ƛ rename (ext ρ) N
     ≡⟨ cong ƛ_ (rename-subst-ren {ρ = ext ρ}{M = N}) ⟩
       ƛ ⧼ ren (ext ρ) ⧽ N
-    ≡⟨ cong ƛ_ (subst-equal {M = N} ren-ext-x) ⟩
+    ≡⟨ cong ƛ_ (cong-sub {M = N} ren-ext refl) ⟩
       ƛ ⧼ exts (ren ρ) ⧽  N
     ≡⟨⟩
       ⧼ ren ρ ⧽ (ƛ N)
@@ -475,10 +449,14 @@ rename-subst-ren {M = L · M} = cong₂ _·_ rename-subst-ren rename-subst-ren
 The substitution `ren S_` is equivalent to `↑`.
 
 \begin{code}
-ren-shift : ∀{Γ}{A}{B} {x : Γ ∋ A}
+ren-shift-x : ∀{Γ}{A}{B} {x : Γ ∋ A}
           → ren (S_{B = B}) x ≡ ↑ {A = B} x
-ren-shift {x = Z} = refl
-ren-shift {x = S x} = refl
+ren-shift-x {x = Z} = refl
+ren-shift-x {x = S x} = refl
+
+ren-shift : ∀{Γ}{A}{B}
+          → ren {Γ} (S_{B = B}) ≡ ↑ {A = B} {A}
+ren-shift = extensionality λ x → ren-shift-x {x = x}
 \end{code}
 
 The substitution `rename S_` is equivalent to shifting: `⧼ ↑ ⧽`.
@@ -491,7 +469,7 @@ rename-shift{Γ}{A}{B}{M} =
     rename S_ M
   ≡⟨ rename-subst-ren ⟩
     ⧼ ren S_ ⧽ M
-  ≡⟨ subst-equal{M = M} ren-shift ⟩
+  ≡⟨ cong-sub{M = M} ren-shift refl ⟩
     ⧼ ↑ ⧽ M
   ∎
 \end{code}
@@ -556,7 +534,7 @@ sub-abs {σ = σ}{N = N} =
      ⧼ σ ⧽ (ƛ N)
    ≡⟨⟩
      ƛ ⧼ exts σ ⧽ N
-   ≡⟨ cong ƛ_ (subst-equal2{M = N} exts-cons-shift) ⟩
+   ≡⟨ cong ƛ_ (cong-sub{M = N} exts-cons-shift refl) ⟩
      ƛ ⧼ (` Z) • (σ ⨟ ↑) ⧽ N
    ∎
 \end{code}
@@ -586,7 +564,7 @@ sub-id {M = ƛ N} =
      ⧼ ids ⧽ (ƛ N)
    ≡⟨⟩
      ƛ ⧼ exts ids ⧽ N
-   ≡⟨ cong ƛ_ (subst-equal2{M = N} exts-ids)  ⟩
+   ≡⟨ cong ƛ_ (cong-sub{M = N} exts-ids refl)  ⟩
      ƛ ⧼ ids ⧽ N
    ≡⟨ cong ƛ_ sub-id ⟩
      ƛ N
@@ -735,19 +713,23 @@ function distributes with sequencing. It is a corollary of
 `commute-subst-rename`. We describe the proof below.
 
 \begin{code}
-subst-exts : ∀{Γ Δ Δ'}{A}{x : Γ , ★ ∋ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Δ'}
-   → (exts σ₁ ⨟ exts σ₂) x ≡ exts (σ₁ ⨟ σ₂) x
-subst-exts {x = Z} = refl
-subst-exts {A = ★}{x = S x}{σ₁}{σ₂} =
-   begin
-     (exts σ₁ ⨟ exts σ₂) (S x)
-   ≡⟨⟩
-     subst (exts σ₂) (rename S_ (σ₁ x))
-   ≡⟨ commute-subst-rename{M = σ₁ x}{σ = σ₂}{ρ = S_} (λ {x₁} → refl) ⟩
-     rename S_ (subst σ₂ (σ₁ x))
-   ≡⟨⟩
-     rename S_ ((σ₁ ⨟ σ₂) x)
-   ∎
+exts-seq : ∀{Γ Δ Δ'} {σ₁ : Subst Γ Δ} {σ₂ : Subst Δ Δ'}
+   → ∀ {A} → (exts σ₁ ⨟ exts σ₂) {A} ≡ exts (σ₁ ⨟ σ₂)
+exts-seq = extensionality λ x → lemma {x = x}
+  where
+  lemma : ∀{Γ Δ Δ'}{A}{x : Γ , ★ ∋ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Δ'}
+     → (exts σ₁ ⨟ exts σ₂) x ≡ exts (σ₁ ⨟ σ₂) x
+  lemma {x = Z} = refl
+  lemma {A = ★}{x = S x}{σ₁}{σ₂} =
+     begin
+       (exts σ₁ ⨟ exts σ₂) (S x)
+     ≡⟨⟩
+       subst (exts σ₂) (rename S_ (σ₁ x))
+     ≡⟨ commute-subst-rename{M = σ₁ x}{σ = σ₂}{ρ = S_} (λ {x₁} → refl) ⟩
+       rename S_ (subst σ₂ (σ₁ x))
+     ≡⟨⟩
+       rename S_ ((σ₁ ⨟ σ₂) x)
+     ∎
 \end{code}
 
 The proof proceed by cases on `x`.
@@ -773,7 +755,7 @@ sub-sub {Γ}{Δ}{Σ}{A}{ƛ N}{σ₁}{σ₂} =
      ƛ ⧼ exts σ₂ ⧽ (⧼ exts σ₁ ⧽ N)
    ≡⟨ cong ƛ_ (sub-sub{M = N}{σ₁ = exts σ₁}{σ₂ = exts σ₂}) ⟩
      ƛ ⧼ exts σ₁ ⨟ exts σ₂ ⧽ N
-   ≡⟨ cong ƛ_ (subst-equal{M = N} (λ {A}{x} → subst-exts{x = x})) ⟩
+   ≡⟨ cong ƛ_ (cong-sub{M = N} (λ {A} → exts-seq) refl) ⟩
      ƛ ⧼ exts ( σ₁ ⨟ σ₂) ⧽ N
    ∎
 sub-sub {M = L · M} = cong₂ _·_ (sub-sub{M = L}) (sub-sub{M = M})
@@ -787,7 +769,7 @@ We proceed by induction on the term `M`.
 
      ƛ ⧼ exts σ₂ ⧽ (⧼ exts σ₁ ⧽ N) ≡ ƛ ⧼ exts σ₁ ⨟ exts σ₂ ⧽ N
 
-  and then use the lemma `subst-exts` to show
+  and then use the lemma `exts-seq` to show
 
     ƛ ⧼ exts σ₁ ⨟ exts σ₂ ⧽ N ≡ ƛ ⧼ exts ( σ₁ ⨟ σ₂) ⧽ N
 
@@ -814,9 +796,9 @@ rename-subst {Γ}{Δ}{Δ'}{M}{ρ}{σ} =
 \end{code}
 
 
-## Proof of seq-assoc
+## Proof of sub-assoc
 
-The proof of `seq-assoc` follows directly from `sub-sub` and the
+The proof of `sub-assoc` follows directly from `sub-sub` and the
 definition of sequencing.
 
 \begin{code}
@@ -833,6 +815,11 @@ seq-assoc{Γ}{Δ}{Σ}{Ψ}{B}{σ}{τ}{θ}{x} =
     ≡⟨⟩
       (σ ⨟ τ ⨟ θ) x
     ∎
+
+sub-assoc : ∀{Γ Δ Σ Ψ : Context} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
+             {θ : Subst Σ Ψ}
+          → ∀{A} → (σ ⨟ τ) ⨟ θ ≡ (σ ⨟ τ ⨟ θ) {A}
+sub-assoc {σ = σ} = extensionality λ x → seq-assoc {σ = σ}{x = x}
 \end{code}
 
 
@@ -862,34 +849,29 @@ subst-commute {Γ}{Δ}{N}{M}{σ} =
        ⧼ exts σ ⧽ N [ ⧼ σ ⧽ M ]
      ≡⟨⟩
        ⧼ subst-zero (⧼ σ ⧽ M) ⧽ (⧼ exts σ ⧽ N)
-     ≡⟨ subst-equal{M = ⧼ exts σ ⧽ N}
-          (λ {A}{x} → subst-Z-cons-ids-x{A = A}{x = x}) ⟩
+     ≡⟨ cong-sub {M = ⧼ exts σ ⧽ N} subst-Z-cons-ids refl ⟩
        ⧼ ⧼ σ ⧽ M • ids ⧽ (⧼ exts σ ⧽ N)
-     ≡⟨ sub-sub{M = N} ⟩
+     ≡⟨ sub-sub {M = N} ⟩
        ⧼ (exts σ) ⨟ ((⧼ σ ⧽ M) • ids) ⧽ N
-     ≡⟨ subst-equal{M = N}
-         (λ {A}{x} → cong-seqL{σ = exts σ}{σ' = ((` Z) • (σ ⨟ ↑))}
-            {x = x} (λ {x} → exts-cons-shift-x{x = x}) ) ⟩
+     ≡⟨ cong-sub {M = N} (cong-seq exts-cons-shift refl) refl ⟩
        ⧼ (` Z • (σ ⨟ ↑)) ⨟ (⧼ σ ⧽ M • ids) ⧽ N
-     ≡⟨ subst-equal{M = N} (λ {A}{x} → sub-dist{M = ` Z}{x = x}) ⟩
+     ≡⟨ cong-sub {M = N} (sub-dist {M = ` Z}) refl ⟩
        ⧼ ⧼ ⧼ σ ⧽ M • ids ⧽ (` Z) • ((σ ⨟ ↑) ⨟ (⧼ σ ⧽ M • ids)) ⧽ N
      ≡⟨⟩
        ⧼ ⧼ σ ⧽ M • ((σ ⨟ ↑) ⨟ (⧼ σ ⧽ M • ids)) ⧽ N
-     ≡⟨ subst-equal{M = N} (λ {A} {x} → cons-congR {x = x}
-                                        λ {x} → seq-assoc{σ = σ}) ⟩
+     ≡⟨ cong-sub{M = N} (cong-cons refl (sub-assoc{σ = σ})) refl ⟩
        ⧼ ⧼ σ ⧽ M • (σ ⨟ ↑ ⨟ ⧼ σ ⧽ M • ids) ⧽ N
-     ≡⟨ (subst-equal{M = N} λ {A} {x} → cons-congR {x = x}
-                              λ {x} → cong-seqR {σ = σ} λ {A}{x} → refl) ⟩
+     ≡⟨ cong-sub{M = N} refl refl ⟩
        ⧼ ⧼ σ ⧽ M • (σ ⨟ ids) ⧽ N
-     ≡⟨ (subst-equal{M = N} λ {A} {x} → cons-congR{x = x} (sub-idR-x{σ = σ})) ⟩
+     ≡⟨ cong-sub{M = N} (cong-cons refl (sub-idR{σ = σ})) refl ⟩
        ⧼ ⧼ σ ⧽ M • σ ⧽ N
-     ≡⟨ subst-equal{M = N} (λ {A}{x} → cons-congR{x = x} (sub-idL-x{σ = σ})) ⟩
+     ≡⟨ cong-sub{M = N} (cong-cons refl (sub-idL{σ = σ})) refl ⟩
        ⧼ ⧼ σ ⧽ M • (ids ⨟ σ) ⧽ N
-     ≡⟨ (subst-equal{M = N} λ {A}{x} → sym (sub-dist{x = x})) ⟩
+     ≡⟨ cong-sub{M = N} (sym sub-dist) refl ⟩
        ⧼ M • ids ⨟ σ ⧽ N
      ≡⟨ sym (sub-sub{M = N}) ⟩
        ⧼ σ ⧽ (⧼ M • ids ⧽ N)
-     ≡⟨ cong ⧼ σ ⧽ (sym (subst-equal{M = N}λ{A}{x} → subst-Z-cons-ids-x{x = x})) ⟩
+     ≡⟨ cong ⧼ σ ⧽ (sym (cong-sub{M = N} subst-Z-cons-ids refl)) ⟩
        ⧼ σ ⧽ (N [ M ])
      ∎
 \end{code}
@@ -905,10 +887,10 @@ rename-subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{ρ : Ren
 rename-subst-commute {Γ}{Δ}{N}{M}{ρ} =
      begin
        (rename (ext ρ) N) [ rename ρ M ]
-     ≡⟨ cong-sub (λ{A}{x} → cong-subst-zero (rename-subst-ren{M = M}))
+     ≡⟨ cong-sub (cong-sub-zero (rename-subst-ren{M = M}))
                  (rename-subst-ren{M = N}) ⟩
        (⧼ ren (ext ρ) ⧽ N) [ ⧼ ren ρ ⧽ M ]
-     ≡⟨ cong-sub ((λ {A}{x} → refl)) (subst-equal{M = N} ren-ext-x) ⟩
+     ≡⟨ cong-sub refl (cong-sub{M = N} ren-ext refl) ⟩
        (⧼ exts (ren ρ) ⧽ N) [ ⧼ ren ρ ⧽ M ]
      ≡⟨ subst-commute{N = N} ⟩
        subst (ren ρ) (N [ M ])
