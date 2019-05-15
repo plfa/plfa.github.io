@@ -380,11 +380,11 @@ cong-sub-zero {Γ}{B}{M}{M'} mm' {A} =
 
 ## Relating `rename`, `exts`, `ext`, and `subst-zero` to the σ algebra
 
-In this section we prove the equations that relate the functions
-involved with defining substution (`rename`, `exts`, `ext`, and
-`subst-zero`) to terms in the σ algebra.
+In this section we establish equations that relate `subst` and its
+helper functions (`rename`, `exts`, `ext`, and `subst-zero`) to terms
+in the σ algebra.
 
-The first equation we shall prove is
+The first equation we prove is
 
     rename ρ M ≡ ⧼ ren ρ ⧽ M              (rename-subst-ren)
                
