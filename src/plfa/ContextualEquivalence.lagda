@@ -53,13 +53,19 @@ open import Function using (_∘_)
 𝔹 (clos {Γ} M γ) N = Σ[ σ ∈ Subst Γ ∅ ] ℍ γ σ × (N ≡ subst σ M)
 
 ℍ γ σ = ∀{x} → 𝔹 (γ x) (σ x)
+\end{code}
 
+\begin{code}
 ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
 ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
+\end{code}
 
+\begin{code}
 H-id : ℍ ∅' ids
 H-id {()}
+\end{code}
 
+\begin{code}
 ℍ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {c} {N : ∅ ⊢ ★}
       → ℍ γ σ  →  𝔹 c N
         --------------------------------
@@ -82,7 +88,8 @@ H-id {()}
       G b rewrite eq = b
 \end{code}
 
-## Call-by-name equivalent to beta reduction
+
+## Call-by-name equivalent to full beta reduction
 
 \begin{code}
 cbn→reduce : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
@@ -109,6 +116,10 @@ cbn→reduce {Γ} {γ} {σ} {.(_ · _)} {c}
     ⟨ N' , ⟨ —↠-trans (appL-cong σL—↠L') rs , bl ⟩ ⟩
 \end{code}
 
+We obtain the other direction through the denotational semantics.
+By the soundness result we have `ℰ M ≃ ℰ (ƛ N)`.
+Then by adequacy we conclude that `∅' ⊢ M ⇓ clos (ƛ N′) δ`
+for some `N′` and `δ`.
 
 \begin{code}
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
@@ -117,6 +128,10 @@ reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
              ∅' ⊢ M ⇓ clos (ƛ N′) δ
 reduce→cbn M—↠ƛN = adequacy (soundness M—↠ƛN)
 \end{code}
+
+Putting the two directions of the proof together, we show that
+call-by-name evaluation is equivalent to β reduction with respect
+to finding weak head normal forms.
 
 \begin{code}
 cbn↔reduce : ∀ {M : ∅ ⊢ ★}
