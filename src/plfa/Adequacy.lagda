@@ -631,20 +631,7 @@ cbn↔reduce : ∀ {M : ∅ ⊢ ★}
              iff
              (Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
                ∅' ⊢ M ⇓ clos (ƛ N′) δ)
-cbn↔reduce {M} = ⟨ to , from ⟩
-  where
-  to : (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
-     → (Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
-               ∅' ⊢ M ⇓ clos (ƛ N′) δ)
-  to ⟨ N , rs ⟩ = reduce→cbn rs
-
-  from : (Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
-               ∅' ⊢ M ⇓ clos (ƛ N′) δ)
-       → (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
-  from ⟨ Δ , ⟨ N′ , ⟨ δ , M⇓c ⟩ ⟩ ⟩
-      with cbn→reduce{σ = ids} M⇓c H-id
-  ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
-      rewrite sub-id{M = M} | eq2 =
-      ⟨ subst (λ {A} → exts σ) N′ , rs ⟩
+cbn↔reduce {M} = ⟨ (λ x → reduce→cbn (proj₂ x)) ,
+                   (λ x → cbn→reduce (proj₂ (proj₂ (proj₂ x)))) ⟩
 \end{code}
 
