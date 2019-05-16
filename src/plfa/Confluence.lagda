@@ -3,7 +3,7 @@ title     : "Confluence of the untyped lambda calculus"
 layout    : page
 prev      : /LambdaReduction/
 permalink : /Confluence/
-next      : /Denotational/
+next      : /CallByName/
 ---
 
 \begin{code}

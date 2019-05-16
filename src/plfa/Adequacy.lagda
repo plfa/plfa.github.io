@@ -14,11 +14,22 @@ module plfa.Adequacy where
 
 \begin{code}
 open import plfa.Untyped
-  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; rename; subst;
-         _—↠_; _—→⟨_⟩_; _—→_; ξ₁; ξ₂; β; ζ; ap; ext; exts; _[_]; subst-zero)
-  renaming (_∎ to _[])
+  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
+         rename; subst; ext; exts; _[_]; subst-zero)
+open import plfa.LambdaReduction
+  using (_—↠_; _—→⟨_⟩_; _[]; _—→_; ξ₁; ξ₂; β; ζ)
+open import plfa.CallByName
+  using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
+         H-id; cbn→reduce)
 open import plfa.Denotational
+  using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
+         var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
+         Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
+         sub-inv-fun)
 open import plfa.Soundness
+  using (soundness)
+open import plfa.Substitution
+  using (ids; sub-id)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
@@ -181,86 +192,6 @@ AboveFun? (u ⊔ u')
 ... | yes ⟨ v , ⟨ w , lt ⟩ ⟩ | _ = yes ⟨ v , ⟨ w , (ConjR1⊑ lt) ⟩ ⟩
 ... | no _ | yes ⟨ v , ⟨ w , lt ⟩ ⟩ = yes ⟨ v , ⟨ w , (ConjR2⊑ lt) ⟩ ⟩
 ... | no x | no y = no (not-AboveFun-⊔ x y)
-\end{code}
-
-
-## Big-step semantics for call-by-name lambda calculus
-
-To better align with the denotational semantics, we shall use an
-environment-passing big-step semantics. Because this is call-by-name,
-an environment maps each variable to a closure, that is, to a term
-paired with its environment. (Environments and closures are mutually
-recursive.) We define environments and closures as follows.
-
-\begin{code}
-ClosEnv : Context → Set
-
-data Clos : Set where
-  clos : ∀{Γ} → (M : Γ ⊢ ★) → ClosEnv Γ → Clos
-
-ClosEnv Γ = ∀ (x : Γ ∋ ★) → Clos
-\end{code}
-
-As usual, we have the empty environment, and we can extend an
-environment.
-\begin{code}
-∅' : ClosEnv ∅
-∅' ()
-
-_,'_ : ∀ {Γ} → ClosEnv Γ → Clos → ClosEnv (Γ , ★)
-(γ ,' c) Z = c
-(γ ,' c) (S x) = γ x
-\end{code}
-
-The following is the big-step semantics for call-by-name evaluation,
-which we describe below.
-
-\begin{code}
-data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
-
-  ⇓-var : ∀{Γ}{γ : ClosEnv Γ}{x : Γ ∋ ★}{Δ}{δ : ClosEnv Δ}{M : Δ ⊢ ★}{c}
-        → γ x ≡ clos M δ
-        → δ ⊢ M ⇓ c
-          -----------
-        → γ ⊢ ` x ⇓ c
-
-  ⇓-lam : ∀{Γ}{γ : ClosEnv Γ}{M : Γ , ★ ⊢ ★}
-        → γ ⊢ ƛ M ⇓ clos (ƛ M) γ
-
-  ⇓-app : ∀{Γ}{γ : ClosEnv Γ}{L M : Γ ⊢ ★}{Δ}{δ : ClosEnv Δ}{N : Δ , ★ ⊢ ★}{c}
-       → γ ⊢ L ⇓ clos (ƛ N) δ   →   (δ ,' clos M γ) ⊢ N ⇓ c
-         ----------------------------------------------------
-       → γ ⊢ L · M ⇓ c
-\end{code}
-
-* The `⇓-var` rule evaluates a variable by finding the associated
-  closure in the environment and then evaluating the closure.
-
-* The `⇓-lam` rule turns a lambda abstraction into a closure
-  by packaging it up with its environment.
-
-* The `⇓-app` rule performs function application by first evaluating
-  the term `L` in operator position. If that produces a closure containing
-  a lambda abstraction `ƛ N`, then we evaluate the body `N` in an
-  environment extended with the argument `M`. Note that `M` is not
-  evaluated in rule `⇓-app` because this is call-by-name and not
-  call-by-value.
-
-If the big-step semantics says that a term `M` evaluates to both `c` and
-`c'`, then `c` and `c'` are identical. In other words, the big-step relation
-is a partial function.
-
-\begin{code}
-⇓-determ : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{c c' : Clos}
-         → γ ⊢ M ⇓ c → γ ⊢ M ⇓ c'
-         → c ≡ c'
-⇓-determ (⇓-var eq1 mc) (⇓-var eq2 mc')
-      with trans (sym eq1) eq2
-... | refl = ⇓-determ mc mc'
-⇓-determ ⇓-lam ⇓-lam = refl
-⇓-determ (⇓-app mc mc₁) (⇓-app mc' mc'') 
-    with ⇓-determ mc mc'
-... | refl = ⇓-determ mc₁ mc''
 \end{code}
 
 
@@ -669,3 +600,51 @@ adequacy{M}{N} eq
 ... | ƛ_ {N = N′} = 
     ⟨ Γ , ⟨ N′ , ⟨ γ , M⇓c ⟩  ⟩ ⟩
 \end{code}
+
+
+## Call-by-name equivalent to full beta reduction
+
+
+[JGS: to do: update this text]
+
+
+We obtain the other direction through the denotational semantics.
+By the soundness result we have `ℰ M ≃ ℰ (ƛ N)`.
+Then by adequacy we conclude that `∅' ⊢ M ⇓ clos (ƛ N′) δ`
+for some `N′` and `δ`.
+
+\begin{code}
+reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
+           → M —↠ ƛ N
+           → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ] 
+             ∅' ⊢ M ⇓ clos (ƛ N′) δ
+reduce→cbn M—↠ƛN = adequacy (soundness M—↠ƛN)
+\end{code}
+
+Putting the two directions of the proof together, we show that
+call-by-name evaluation is equivalent to β reduction with respect
+to finding weak head normal forms.
+
+\begin{code}
+cbn↔reduce : ∀ {M : ∅ ⊢ ★}
+           → (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
+             iff
+             (Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
+               ∅' ⊢ M ⇓ clos (ƛ N′) δ)
+cbn↔reduce {M} = ⟨ to , from ⟩
+  where
+  to : (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
+     → (Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
+               ∅' ⊢ M ⇓ clos (ƛ N′) δ)
+  to ⟨ N , rs ⟩ = reduce→cbn rs
+
+  from : (Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
+               ∅' ⊢ M ⇓ clos (ƛ N′) δ)
+       → (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
+  from ⟨ Δ , ⟨ N′ , ⟨ δ , M⇓c ⟩ ⟩ ⟩
+      with cbn→reduce{σ = ids} M⇓c H-id
+  ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
+      rewrite sub-id{M = M} | eq2 =
+      ⟨ subst (λ {A} → exts σ) N′ , rs ⟩
+\end{code}
+
