@@ -20,7 +20,7 @@ open import plfa.LambdaReduction
   using (_—↠_; _—→⟨_⟩_; _[]; _—→_; ξ₁; ξ₂; β; ζ)
 open import plfa.CallByName
   using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
-         H-id; cbn→reduce)
+         cbn→reduce)
 open import plfa.Denotational
   using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
          var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;

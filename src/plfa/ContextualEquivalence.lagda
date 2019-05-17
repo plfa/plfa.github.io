@@ -21,7 +21,7 @@ open import plfa.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
 open import plfa.Compositional using (Ctx; plug; compositionality)
 open import plfa.Soundness using (soundness)
 open import plfa.Adequacy using (adequacy)
-open import plfa.CallByName using ( ClosEnv; ∅'; clos; _⊢_⇓_; H-id; cbn→reduce)
+open import plfa.CallByName using ( ClosEnv; ∅'; clos; _⊢_⇓_; cbn→reduce)
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
@@ -43,28 +43,20 @@ _≅_ : ∀{Γ} → (M N : Γ ⊢ ★) → Set
 
 \begin{code}
 denot-equal-terminates : ∀{Γ} {M N : Γ ⊢ ★} {C : Ctx Γ ∅}
-  → ℰ M ≃ ℰ N
-  → terminates (plug C M)
+  → ℰ M ≃ ℰ N  →  terminates (plug C M)
+    -----------------------------------
   → terminates (plug C N)
 denot-equal-terminates {Γ}{M}{N}{C} eq ⟨ N' , CM—↠CƛN' ⟩ =
   let ℰCM≃ℰCƛN' = soundness CM—↠CƛN' in
   let ℰCM≃ℰCN = compositionality{Γ = Γ}{Δ = ∅}{C = C} eq in
   let ℰCN≃ℰCƛN' = ≃-trans (≃-sym ℰCM≃ℰCN) ℰCM≃ℰCƛN' in
-    G (adequacy ℰCN≃ℰCƛN')
-  where
-  G : (Σ[ Δ ∈ Context ] Σ[ M' ∈ (Δ , ★ ⊢ ★) ] Σ[ γ ∈ ClosEnv Δ ]
-         ∅' ⊢ (plug C N) ⇓ clos (ƛ M') γ)
-    → terminates (plug C N)
-  G ⟨ Δ , ⟨ M' , ⟨ γ , CN⇓ƛM'γ ⟩ ⟩ ⟩
-      with cbn→reduce{σ = ids} CN⇓ƛM'γ H-id
-  ... | ⟨ N'' , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
-      rewrite sub-id{M = plug C N} | eq2 =
-      ⟨ subst (λ {A} → exts σ) M' , rs ⟩
+    cbn→reduce (proj₂ (proj₂ (proj₂ (adequacy ℰCN≃ℰCƛN'))))
 \end{code}
 
 \begin{code}
 denot-equal-contex-equal : ∀{Γ} {M N : Γ ⊢ ★}
   → ℰ M ≃ ℰ N
+    ---------
   → M ≅ N
 denot-equal-contex-equal{Γ}{M}{N} eq {C} =
    ⟨ (λ tm → denot-equal-terminates eq tm) ,
