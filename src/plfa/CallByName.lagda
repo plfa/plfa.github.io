@@ -147,10 +147,10 @@ We postpone the backward direction to the chapter Adequacy, where
 the result will be an easy corollary of properties of a denotational
 semantics.
 
-We shall prove the forward direction by induction on the call-by-name
+We prove the forward direction by induction on the call-by-name
 derivation. As is often necessary, one must generalize the statement
 to get the induction to go through. In the case for `⇓-app` (function
-application), we insert the argument into the environment, so the
+application), we add the argument to the environment, so the
 environment becomes non-empty. The corresponding β reduction will
 substitute the argument into the body of the lambda abstraction.  So
 we generalize the statement to allow an arbitrary environment `γ` and
@@ -161,13 +161,12 @@ The case for `⇓-app` also requires that we strengthen the conclusion
 of the statement. We have `γ ⊢ L ⇓ clos (λ N) δ` and the induction
 hypothesis tells us that `L —↠ ƛ N′`, but we need to know that `N` and
 `N′` are equivalent. In particular, that `N ≡ subst τ N′` where `τ` is
-the substitution corresponding to `δ`. Therefore we add to the
+the substitution that is equivalent to `δ`. Therefore we add to the
 conclusion of the statement, stating that the two results are
 equivalent.
 
-We make these two notions of equivalence precise by defing the
-following two mutually-recursive predicates `c ≈ M` and `γ ≃ σ`,
-defined as follows.
+We make the two notions of equivalence precise by defining the
+following two mutually-recursive predicates `c ≈ M` and `γ ≃ σ`.
 
 \begin{code}
 _≈_ : Clos → (∅ ⊢ ★) → Set
@@ -177,6 +176,14 @@ _≃_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
 γ ≃ σ = ∀{x} → (γ x) ≈ (σ x)
 \end{code}
+
+We can now give the generalized statement:
+
+    If γ ⊢ M ⇓ c  and  γ ≃ σ,
+    then subst σ M —↠ N and c ≈ N for some N.
+
+But before starting the proof, we establish a couple lemmas
+about equivalent environments and substitutions.
 
 The empty environment is equivalent to the identity substitution.
 
@@ -192,7 +199,7 @@ ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
 ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
 \end{code}
 
-The following lemma says that if one starts with an equivalent
+The next lemma states that if you start with an equivalent
 environment and substitution `γ ≃ σ`, extending them with
 an equivalent closure and term `c ≈ N` produces
 an equivalent environment and substitution:
@@ -235,17 +242,19 @@ The proof proceeds by case analysis on the input variable.
   Substitution chapter `rename-subst` and `sub-id`. The premise
   that `γ ≃ σ` then allows us to conclude this case.
 
-[JGS: to do: write explanation]
+Now we come to the main lemma: if a term `M` evaluates under call-by-name
+to a closure `c` in environment `γ`, and if `γ ≃ σ`, then `subst σ M`
+reduces to some term `N` that is equivalent to `c`.
 
 \begin{code}
 ⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
-              → γ ⊢ M ⇓ c → γ ≃ σ
-              → Σ[ N ∈ ∅ ⊢ ★ ] (subst σ M —↠ N) × c ≈ N
+       → γ ⊢ M ⇓ c → γ ≃ σ
+       → Σ[ N ∈ ∅ ⊢ ★ ] (subst σ M —↠ N) × c ≈ N
 ⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} eq d) h
     with γ x | h {x} | eq
-... | clos M' γ' | ⟨ σ' , ⟨ h' , r ⟩ ⟩ | refl
+... | clos M' γ' | ⟨ σ' , ⟨ h' , eq' ⟩ ⟩ | refl
     with ⇓→—↠×𝔹{σ = σ'} d h'
-... | ⟨ N , ⟨ r' , bn ⟩ ⟩ rewrite r =    
+... | ⟨ N , ⟨ r' , bn ⟩ ⟩ rewrite eq' =    
       ⟨ N , ⟨ r' , bn ⟩ ⟩
 ⇓→—↠×𝔹 {σ = σ} {c = clos (ƛ N) γ} ⇓-lam h =
     ⟨ subst σ (ƛ N) , ⟨ subst σ (ƛ N) [] , ⟨ σ , ⟨ h , refl ⟩ ⟩ ⟩ ⟩
@@ -260,6 +269,25 @@ The proof proceeds by case analysis on the input variable.
     let rs = (ƛ subst (exts σ₁) N) · subst σ M —→⟨ r ⟩ r' in
     ⟨ N' , ⟨ —↠-trans (appL-cong σL—↠L') rs , bl ⟩ ⟩
 \end{code}
+
+The proof is by induction on `γ ⊢ M ⇓ c`. We have three cases
+to consider.
+
+* Case `⇓-var`.
+  So we have `γ x ≡ clos M' γ'` and `γ' ⊢ M' ⇓ c`.
+  We need to show that `subst σ x —↠ N` and `c ≈ N` for some `N`.
+  
+
+  The premise `γ ≃ σ` tells us that `clos M' γ' ≈ σ x`,
+  so there exists a `σ'` such that `γ' ≃ σ'` and `σ x ≡ subst σ' M' `.
+  The induction hypothesis for `γ' ⊢ M' ⇓ c` then gives us
+  `subst σ M' —↠ N` and `clos M' γ' ≈ N` for some `N`.
+  
+
+* Case `⇓-lam`.
+
+* Case `⇓-app`.
+
 
 [JGS: to do: write explanation]
 
