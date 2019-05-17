@@ -1,7 +1,7 @@
 ---
 title     : "Denotational: semantics of the untyped lambda calculus"
 layout    : page
-prev      : /Untyped/
+prev      : /CallByName/
 permalink : /Denotational/
 next      : /Compositional/
 ---

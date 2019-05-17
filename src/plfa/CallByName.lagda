@@ -18,12 +18,11 @@ open import plfa.Untyped
          exts; rename)
 open import plfa.LambdaReduction
   using (β; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
-open import plfa.Soundness
-  using (Subst)
+open import plfa.Soundness using (Subst)
 open import plfa.Substitution
-  using (ids; rename-subst; sub-id; sub-sub)
+  using (⧼_⧽; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
+open Eq using (_≡_; refl; trans; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -31,12 +30,17 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 open import Function using (_∘_)
 \end{code}
 
-## Call-by-name evaluation strategy for the lambda calculus
+## Call-by-name evaluation
 
 The call-by-name evaluation strategy is a deterministic method for
-computing the value of a program in the lambda calculus. We shall
-prove that the call-by-name strategy produces a value if and only if
-beta reduction can reduce the program to a lambda abstraction.
+computing the value of a program in the lambda calculus.  That is,
+call-by-name produces a value if and only if beta reduction can reduce
+the program to a lambda abstraction. In this chapter we define
+call-by-name evaluation and prove the forward direction of this
+if-and-only-if. We postpone the backward direction until after we have
+developed a denotational semantics for the lambda calculus, at which
+point the proof will be an easy corollary of properties of the
+denotational semantics.
 
 We present the call-by-name strategy as a relation between an an input
 term and an output value. Such a relation is often called a _big-step
@@ -46,10 +50,11 @@ to another term in which a single sub-computation has been completed.
 
 To handle variables and function application, there is the choice
 between using substitution, as in `—→`, or to use an _environment_.
-An environment in for call-by-name is a map from variables to closures,
+An environment in call-by-name is a map from variables to closures,
 that is, to terms paired with their environments. We choose to use
-environments instead of substitution because the point of the call-by-name
-strategy is to be closer to an implementation of the language.
+environments instead of substitution because the point of the
+call-by-name strategy is to be closer to an implementation of the
+language.
 
 We define environments and closures as follows.
 
@@ -132,37 +137,30 @@ straightforward induction on the two call-by-name derivations.
 \end{code}
 
 
-## Call-by-name evaluation implies beta reduction to an abstraction
+## Call-by-name evaluation implies beta reduction to a lambda
 
-Call-by-name evaluation of a term produces a value if and only if the
-term can reduce to a lambda abstraction by beta reduction. Here
-we prove the forward direction, that call-by-name evaluation implies
-beta reduction to a lambda.
+If call-by-name evaluation produces a value, then the input term can
+reduce to a lambda abstraction by beta reduction:
 
       ∅' ⊢ M ⇓ clos (ƛ N′) δ
       -----------------------------
     → Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N)
 
-We postpone the backward direction to the chapter Adequacy, where
-the result will be an easy corollary of properties of a denotational
-semantics.
+The proof is by induction on the call-by-name derivation. As is often
+necessary, one must generalize the statement to get the induction to
+go through. In the case for `⇓-app` (function application), the
+argument is added to the environment, so the environment becomes
+non-empty. The corresponding β reduction substitutes the argument into
+the body of the lambda abstraction.  So we generalize the lemma to
+allow an arbitrary environment `γ` and we add a premise that relates
+the environment `γ` to an equivalent substitution `σ`.
 
-We prove the forward direction by induction on the call-by-name
-derivation. As is often necessary, one must generalize the statement
-to get the induction to go through. In the case for `⇓-app` (function
-application), we add the argument to the environment, so the
-environment becomes non-empty. The corresponding β reduction will
-substitute the argument into the body of the lambda abstraction.  So
-we generalize the statement to allow an arbitrary environment `γ` and
-we add a premise that relates the environment `γ` to an equivalent
-substitution `σ`.
-
-The case for `⇓-app` also requires that we strengthen the conclusion
-of the statement. We have `γ ⊢ L ⇓ clos (λ N) δ` and the induction
-hypothesis tells us that `L —↠ ƛ N′`, but we need to know that `N` and
-`N′` are equivalent. In particular, that `N ≡ subst τ N′` where `τ` is
-the substitution that is equivalent to `δ`. Therefore we add to the
-conclusion of the statement, stating that the two results are
+The case for `⇓-app` also requires that we strengthen the
+conclusion. In the case for `⇓-app` we have `γ ⊢ L ⇓ clos (λ N) δ` and
+the induction hypothesis gives us `L —↠ ƛ N′`, but we need to know
+that `N` and `N′` are equivalent. In particular, that `N ≡ subst τ N′`
+where `τ` is the substitution that is equivalent to `δ`. Therefore we
+expand the conclusion of the statement, stating that the results are
 equivalent.
 
 We make the two notions of equivalence precise by defining the
@@ -172,17 +170,17 @@ following two mutually-recursive predicates `c ≈ M` and `γ ≃ σ`.
 _≈_ : Clos → (∅ ⊢ ★) → Set
 _≃_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
-(clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≃ σ × (N ≡ subst σ M)
+(clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≃ σ × (N ≡ ⧼ σ ⧽ M)
 
 γ ≃ σ = ∀{x} → (γ x) ≈ (σ x)
 \end{code}
 
-We can now give the generalized statement:
+We can now state the main lemma:
 
     If γ ⊢ M ⇓ c  and  γ ≃ σ,
-    then subst σ M —↠ N and c ≈ N for some N.
+    then  ⧼ σ ⧽ M —↠ N  and  c ≈ N  for some N.
 
-But before starting the proof, we establish a couple lemmas
+Before starting the proof, we establish a couple lemmas
 about equivalent environments and substitutions.
 
 The empty environment is equivalent to the identity substitution.
@@ -196,110 +194,161 @@ We define an auxilliary function for extending a substitution.
 
 \begin{code}
 ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
-ext-subst{Γ}{Δ} σ N {A} = (subst (subst-zero N)) ∘ (exts σ)
+ext-subst{Γ}{Δ} σ N {A} = ⧼ subst-zero N ⧽ ∘ exts σ
 \end{code}
 
 The next lemma states that if you start with an equivalent
 environment and substitution `γ ≃ σ`, extending them with
 an equivalent closure and term `c ≈ N` produces
 an equivalent environment and substitution:
-`(γ ,' c) ≃ (ext-subst σ N)`.
+`(γ ,' c) ≃ (ext-subst σ N)`. 
 
 \begin{code}
 ≃-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {c} {N : ∅ ⊢ ★}
       → γ ≃ σ  →  c ≈ N
         --------------------------
       → (γ ,' c) ≃ (ext-subst σ N)
-≃-ext {Γ} {γ} {σ} γ≃σ e {Z} = e
-≃-ext {Γ} {γ} {σ}{c}{N} γ≃σ e {S x} = G γ≃σ
-  where
-      eq : ext-subst σ N (S x) ≡ σ x
-      eq =
-        begin
-          (subst (subst-zero N)) (exts σ (S x))
-        ≡⟨⟩
-          ((subst (subst-zero N)) ∘ (rename S_)) (σ x)
-        ≡⟨ rename-subst{M = σ x} ⟩
-          (subst ((subst-zero N) ∘ S_)) (σ x)        
-        ≡⟨ sub-id ⟩
-          σ x
-        ∎
-      G : (γ x) ≈ (σ x) → (γ x) ≈ (ext-subst σ N (S x))
-      G b rewrite eq = b
+≃-ext {Γ} {γ} {σ} {c} {N} γ≃σ c≈N {x} = goal
+   where
+   ext-cons : (γ ,' c) ≃ (N • σ)
+   ext-cons {Z} = c≈N
+   ext-cons {S x} = γ≃σ
+
+   goal : (γ ,' c) x ≈ ext-subst σ N x
+   goal
+       with ext-cons {x}
+   ... | a rewrite sym (subst-zero-exts-cons{Γ}{∅}{σ}{★}{N}{★}) = a
 \end{code}
 
-The proof proceeds by case analysis on the input variable.
+To prove `≃-ext`, we make use of the fact that `ext-subst σ N` is
+equivalent to `N • σ` (by `subst-zero-exts-cons`). So we just
+need to prove that `(γ ,' c) ≃ (N • σ)`, which is easy.
+We proceed by cases on the input variable.
 
 * If it is `Z`, then we immediately conclude using the
   premise `c ≈ N`.
 
-* If it is `S x`, then we need to show that
+* If it is `S x`, then we immediately conclude using
+  premise `γ ≃ σ`.
 
-        (γ ,' c) (S x) ≃ ext-subst σ N (S x)
-        
-  The left-hand side is equal to `γ x`.  The right-hand side is equal
-  to `σ x`, which we prove using two propositions from the
-  Substitution chapter `rename-subst` and `sub-id`. The premise
-  that `γ ≃ σ` then allows us to conclude this case.
 
-Now we come to the main lemma: if a term `M` evaluates under call-by-name
-to a closure `c` in environment `γ`, and if `γ ≃ σ`, then `subst σ M`
-reduces to some term `N` that is equivalent to `c`.
+We arive at the main lemma: if `M` evaluates under call-by-name to a
+closure `c` in environment `γ`, and if `γ ≃ σ`, then `⧼ σ ⧽ M` reduces
+to some term `N` that is equivalent to `c`. We describe the proof
+below.
 
 \begin{code}
 ⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
-       → γ ⊢ M ⇓ c → γ ≃ σ
-       → Σ[ N ∈ ∅ ⊢ ★ ] (subst σ M —↠ N) × c ≈ N
-⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} eq d) h
-    with γ x | h {x} | eq
-... | clos M' γ' | ⟨ σ' , ⟨ h' , eq' ⟩ ⟩ | refl
-    with ⇓→—↠×𝔹{σ = σ'} d h'
-... | ⟨ N , ⟨ r' , bn ⟩ ⟩ rewrite eq' =    
-      ⟨ N , ⟨ r' , bn ⟩ ⟩
-⇓→—↠×𝔹 {σ = σ} {c = clos (ƛ N) γ} ⇓-lam h =
-    ⟨ subst σ (ƛ N) , ⟨ subst σ (ƛ N) [] , ⟨ σ , ⟨ h , refl ⟩ ⟩ ⟩ ⟩
-⇓→—↠×𝔹 {σ = σ} {L · M} {c} (⇓-app {N = N} d₁ d₂) h
-    with ⇓→—↠×𝔹{σ = σ} d₁ h
-... | ⟨ L' , ⟨ σL—↠L' , ⟨ σ₁ , ⟨ Hδσ₁ , eq ⟩ ⟩ ⟩ ⟩ rewrite eq
-    with ⇓→—↠×𝔹{σ = ext-subst σ₁ (subst σ M)} d₂
-           (λ {x} → ≃-ext{σ = σ₁} Hδσ₁ ⟨ σ , ⟨ h , refl ⟩ ⟩ {x})
-       | β{∅}{subst (exts σ₁) N}{subst σ M}
-... | ⟨ N' , ⟨ r' , bl ⟩ ⟩ | r 
-    rewrite sub-sub{M = N}{σ₁ = exts σ₁}{σ₂ = subst-zero (subst σ M)} =
-    let rs = (ƛ subst (exts σ₁) N) · subst σ M —→⟨ r ⟩ r' in
-    ⟨ N' , ⟨ —↠-trans (appL-cong σL—↠L') rs , bl ⟩ ⟩
+       → γ ⊢ M ⇓ c  →  γ ≃ σ
+         ---------------------------------------
+       → Σ[ N ∈ ∅ ⊢ ★ ] (⧼ σ ⧽ M —↠ N) × c ≈ N
+⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓c) γ≃σ
+    with γ x | γ≃σ {x} | γx≡Lδ
+... | clos L δ | ⟨ τ , ⟨ δ≃τ , σx≡τL ⟩ ⟩ | refl
+    with ⇓→—↠×𝔹{σ = τ} δ⊢L⇓c δ≃τ
+... | ⟨ N , ⟨ τL—↠N , c≈N ⟩ ⟩ rewrite σx≡τL =
+      ⟨ N , ⟨ τL—↠N , c≈N ⟩ ⟩
+⇓→—↠×𝔹 {σ = σ} {c = clos (ƛ N) γ} ⇓-lam γ≃σ =
+    ⟨ ⧼ σ ⧽ (ƛ N) , ⟨ ⧼ σ ⧽ (ƛ N) [] , ⟨ σ , ⟨ γ≃σ , refl ⟩ ⟩ ⟩ ⟩
+⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {c} (⇓-app {N = N} L⇓ƛNδ N⇓c) γ≃σ
+    with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≃σ
+... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≃τ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
+    with ⇓→—↠×𝔹 {σ = ext-subst τ (⧼ σ ⧽ M)} N⇓c
+           (λ {x} → ≃-ext{σ = τ} δ≃τ ⟨ σ , ⟨ γ≃σ , refl ⟩ ⟩ {x})
+       | β{∅}{⧼ exts τ ⧽ N}{⧼ σ ⧽ M}
+... | ⟨ N' , ⟨ —↠N' , c≈N' ⟩ ⟩ | ƛτN·σM—→
+    rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (⧼ σ ⧽ M)} =
+    let rs = (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
+    let g = —↠-trans (appL-cong σL—↠ƛτN) rs in
+    ⟨ N' , ⟨ g , c≈N' ⟩ ⟩
 \end{code}
 
 The proof is by induction on `γ ⊢ M ⇓ c`. We have three cases
 to consider.
 
 * Case `⇓-var`.
-  So we have `γ x ≡ clos M' γ'` and `γ' ⊢ M' ⇓ c`.
-  We need to show that `subst σ x —↠ N` and `c ≈ N` for some `N`.
-  
-
-  The premise `γ ≃ σ` tells us that `clos M' γ' ≈ σ x`,
-  so there exists a `σ'` such that `γ' ≃ σ'` and `σ x ≡ subst σ' M' `.
-  The induction hypothesis for `γ' ⊢ M' ⇓ c` then gives us
-  `subst σ M' —↠ N` and `clos M' γ' ≈ N` for some `N`.
-  
+  So we have `γ x ≡ clos L δ` and `δ ⊢ L ⇓ c`.
+  We need to show that `⧼ σ ⧽ x —↠ N` and `c ≈ N` for some `N`.
+  The premise `γ ≃ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
+  By the definition of `≈`, there exists a `τ` such that
+  `δ ≃ τ` and `σ x ≡ ⧼ τ ⧽ L `.
+  Using `δ ⊢ L ⇓ c` and `δ ≃ τ`, 
+  the induction hypothesis gives us
+  `⧼ τ ⧽ L —↠ N` and `c ≈ N` for some `N`.
+  So we have shown that `⧼ σ ⧽ x —↠ N` and `c ≈ N` for some `N`.
 
 * Case `⇓-lam`.
+  We immediately have `⧼ σ ⧽ (ƛ N) —↠ ⧼ σ ⧽ (ƛ N)`
+  and `clos (⧼ σ ⧽ (ƛ N)) γ ≈ ⧼ σ ⧽ (ƛ N)`.
 
 * Case `⇓-app`.
+  Using `γ ⊢ L ⇓ clos N δ` and `γ ≃ σ`, 
+  the induction hypothesis gives us
+  
+        ⧼ σ ⧽ L —↠ ƛ ⧼ exts τ ⧽ N                                             (1)
+  
+  and `δ ≃ τ` for some `τ`.
+  From `γ≃σ` we have `clos M γ ≈ ⧼ σ ⧽ M`.
+  Then with `(δ ,' clos M γ) ⊢ N ⇓ c`,
+  the induction hypothesis gives us `c ≈ N'` and
+  
+        ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽ N —↠ N'                             (2)
+  
+  Meanwhile, by `β`, we have
+
+        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→ ⧼ subst-zero (⧼ σ ⧽ M) ⧽ (⧼ exts τ ⧽ N)
+
+  which is the same as the following, by `sub-sub`.
+  
+        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→ ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽  N     (3)
+
+  Using (3) and (2) we have
+  
+        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —↠ N'                                      (4)
+
+  From (1) we have
+
+        ⧼ σ ⧽ L · ⧼ σ ⧽ M —↠ (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M
+
+  which we combine with (4) to conclude that
+
+        ⧼ σ ⧽ L · ⧼ σ ⧽ M —↠ N'
 
 
-[JGS: to do: write explanation]
+With the main lemma complete, we establish the forward direction
+of the equivalence between call-by-name and beta reduction.
 
 \begin{code}
 cbn→reduce :  ∀{M : ∅ ⊢ ★}{Δ}{δ : ClosEnv Δ}{N′ : Δ , ★ ⊢ ★}
      → ∅' ⊢ M ⇓ clos (ƛ N′) δ
+       -----------------------------
      → Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N)
 cbn→reduce {M}{Δ}{δ}{N′} M⇓c
     with ⇓→—↠×𝔹{σ = ids} M⇓c ≃-id
 ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
     rewrite sub-id{M = M} | eq2 =
-    ⟨ subst (λ {A} → exts σ) N′ , rs ⟩
+    ⟨ ⧼ exts σ ⧽ N′ , rs ⟩
 \end{code}
 
+The proof of the backward direction, that beta reduction to a lambda
+implies that call-by-name produces a result, will leverage the
+denotational semantics defined in the next chapter, and appears in the
+chapter on Adequacy.
 
+
+## Notes
+
+In the seminal paper _Call-by-name, call-by-value, and the
+λ-calculus_, Plotkin defined a call-by-name evaluator similar to the
+one in this chapter, except that it used substitution instead
+of environments. Corollary 2 (page 146) states that a term `M` beta
+reduces to a lambda abstraction if and only if call-by-name produces a
+value. His proof is quite different from ours in that it relies on two
+auxilliary reduction relations called _left reduction_ and _standard
+reduction_. Theorem 1 (Standardisation) states that `M —↠ L` if and
+only if `M` goes to `L` via standard reductions.  Corollary 1 then
+establishes that `M —↠ ƛ N` if and only if `M` goes to `ƛ N′`, for
+some `N′`, by left reduction. Theorem 2 then connects call-by-name
+evaluation to left reduction.  Finally, Corollary 2 combines these
+results to show that `M —↠ ƛ N` if and only if call-by-name produces a
+value.

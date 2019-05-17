@@ -222,10 +222,16 @@ algebra to the situation where the first substitution is a renaming.
 
     ⧼ σ ⧽ (rename ρ M) ≡ ⧼ σ ∘ ρ ⧽ M       (rename-subst)
 
-Finally, the `subst-zero M` substitution is equivalent to cons'ing
+The `subst-zero M` substitution is equivalent to cons'ing
 `M` onto the identity substitution.
 
     subst-zero M ≡ M • ids                (subst-Z-cons-ids)
+
+
+Finally, sequencing `exts σ` with `subst-zero M` is equivalent to
+cons'ing `M` onto `σ`.
+
+    exts σ ⨟ subst-zero M ≡ (M • σ)       (subst-zero-exts-cons)
 
 
 ## Proofs of sub-head, sub-tail, sub-η, Z-shift, sub-idL, sub-dist, and sub-app
@@ -808,6 +814,34 @@ sub-assoc {Γ}{Δ}{Σ}{Ψ}{σ}{τ}{θ}{A} = extensionality λ x → lemma{x = x}
       ∎
 \end{code}
 
+## Proof of subst-zero-exts-cons
+
+The last equation we needed to prove `subst-zero-exts-cons` was
+`sub-assoc`, so we can now go ahead with its proof.  We simply apply
+the equations for `exts` and `subst-zero` and then apply the σ algebra
+equation to arrive at the normal form `M • σ`.
+
+\begin{code}
+subst-zero-exts-cons : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{A}
+                     → exts σ ⨟ subst-zero M ≡ (M • σ) {A}
+subst-zero-exts-cons {Γ}{Δ}{σ}{B}{M}{A} =
+    begin
+      exts σ ⨟ subst-zero M
+    ≡⟨ cong-seq exts-cons-shift subst-Z-cons-ids ⟩
+      (` Z • (σ ⨟ ↑)) ⨟ (M • ids)
+    ≡⟨ sub-dist ⟩
+      (⧼ M • ids ⧽ (` Z)) • ((σ ⨟ ↑) ⨟ (M • ids))
+    ≡⟨ cong-cons (sub-head{σ = ids}) refl ⟩
+      M • ((σ ⨟ ↑) ⨟ (M • ids))
+    ≡⟨ cong-cons refl (sub-assoc{σ = σ}) ⟩
+      M • (σ ⨟ (↑ ⨟ (M • ids)))
+    ≡⟨ cong-cons refl (cong-seq{σ = σ} refl (sub-tail{M = M}{σ = ids})) ⟩
+      M • (σ ⨟ ids)
+    ≡⟨ cong-cons refl (sub-idR{σ = σ}) ⟩
+      M • σ
+    ∎
+\end{code}
+
 
 ## Proof of the substitution lemma
 
@@ -916,4 +950,5 @@ _Autosubst: Reasoning with de Bruijn Terms and Parallel Substitution_
 by Schafer, Tebbi, and Smolka (ITP 2015). That paper, in turn, is
 based on the paper of Abadi, Cardelli, Curien, and Levy (1991) that
 defines the σ algebra.
+
 

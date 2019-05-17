@@ -26,10 +26,8 @@ open import plfa.Denotational
          var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
          Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
          sub-inv-fun)
-open import plfa.Soundness
-  using (soundness)
-open import plfa.Substitution
-  using (ids; sub-id)
+open import plfa.Soundness using (soundness)
+open import plfa.Substitution using (ids; sub-id)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
@@ -602,16 +600,14 @@ adequacy{M}{N} eq
 \end{code}
 
 
-## Call-by-name equivalent to full beta reduction
+## Call-by-name is equivalent to beta reduction
 
-
-[JGS: to do: update this text]
-
-
-We obtain the other direction through the denotational semantics.
-By the soundness result we have `ℰ M ≃ ℰ (ƛ N)`.
-Then by adequacy we conclude that `∅' ⊢ M ⇓ clos (ƛ N′) δ`
-for some `N′` and `δ`.
+As promised, we return to the question of whether call-by-name
+evaluation is equivalent to beta reduction. In the chapter CallByName
+we established the forward direction: that if call-by-name produces a
+result, then the program beta reduces to a lambda abstraction.  We now
+prove the backward direction of the if-and-only-if, leveraging our
+results about the denotational semantics.
 
 \begin{code}
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
@@ -621,9 +617,13 @@ reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
 reduce→cbn M—↠ƛN = adequacy (soundness M—↠ƛN)
 \end{code}
 
-Putting the two directions of the proof together, we show that
-call-by-name evaluation is equivalent to β reduction with respect
-to finding weak head normal forms.
+Suppose `M —↠ ƛ N`. Soundness of the denotational semantics gives us
+`ℰ M ≃ ℰ (ƛ N)`. Then by adequacy we conclude that
+`∅' ⊢ M ⇓ clos (ƛ N′) δ` for some `N′` and `δ`.
+
+Putting the two directions of the if-and-only-if together, we
+establish that call-by-name evaluation is equivalent to beta reduction
+in the following sense.
 
 \begin{code}
 cbn↔reduce : ∀ {M : ∅ ⊢ ★}
