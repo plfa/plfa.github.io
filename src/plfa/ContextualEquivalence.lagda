@@ -13,27 +13,35 @@ module plfa.ContextualEquivalence where
 ## Imports
 
 \begin{code}
-open import plfa.Untyped
-  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_; subst; exts)
-open import plfa.Substitution using (sub-id; ids)
+open import plfa.Untyped using (_⊢_; ★; ∅; _,_; ƛ_)
 open import plfa.LambdaReduction using (_—↠_)
 open import plfa.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
 open import plfa.Compositional using (Ctx; plug; compositionality)
 open import plfa.Soundness using (soundness)
 open import plfa.Adequacy using (adequacy)
-open import plfa.CallByName using ( ClosEnv; ∅'; clos; _⊢_⇓_; cbn→reduce)
+open import plfa.CallByName using (_⊢_⇓_; cbn→reduce)
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 \end{code}
 
+## Contextual Equivalence
 
-## Denotational equivalence implies contextual equivalence
+The notion of _contextual equivalence_ is an important one for
+programming languages because it is the sufficient condition for
+changing a subterms of a program while maintaining the program's
+overall behavior. Two terms `M` and `N` are contextually equivalent
+if they can plugged into any context `C` and produce equivalent
+results. As discuss in the Denotational chapter, the result of
+a program in the lambda calculus is to terminate or not.
+We characterize termination with the reduction semantics as follows.
 
 \begin{code}
 terminates : ∀{Γ} → (M : Γ ⊢ ★) → Set
 terminates {Γ} M = Σ[ N ∈ (Γ , ★ ⊢ ★) ] (M —↠ ƛ N)
 \end{code}
+
+We define contextual equivalence as follows.
 
 \begin{code}
 _≅_ : ∀{Γ} → (M N : Γ ⊢ ★) → Set
@@ -41,17 +49,62 @@ _≅_ : ∀{Γ} → (M N : Γ ⊢ ★) → Set
                 → (terminates (plug C M)) iff (terminates (plug C N))
 \end{code}
 
+The contextual equivalence of two terms is difficult to prove directly
+based on the above definition because of the universal quantification
+of the context `C`. One of the main motivations for developing
+denotational semantics is to have an alternative way to prove
+contextual equivalence that instead only requires reasoning about the
+two terms.
+
+
+## Denotational equivalence implies contextual equivalence
+
+Thankfully, the proof that denotational equality implies contextual
+equivalence is an easy corollary of the results that we have already
+established. Furthermore, the two directions of the if-and-only-if are
+symmetric, so we can prove one lemma and then use it twice in the
+theorem.
+
+The lemma states that if `M` and `N` are denotationally equal
+and if `M` plugged into `C` terminates, then so does
+`N` plugged into `C`.
+
 \begin{code}
 denot-equal-terminates : ∀{Γ} {M N : Γ ⊢ ★} {C : Ctx Γ ∅}
   → ℰ M ≃ ℰ N  →  terminates (plug C M)
     -----------------------------------
   → terminates (plug C N)
-denot-equal-terminates {Γ}{M}{N}{C} eq ⟨ N' , CM—↠CƛN' ⟩ =
-  let ℰCM≃ℰCƛN' = soundness CM—↠CƛN' in
-  let ℰCM≃ℰCN = compositionality{Γ = Γ}{Δ = ∅}{C = C} eq in
-  let ℰCN≃ℰCƛN' = ≃-trans (≃-sym ℰCM≃ℰCN) ℰCM≃ℰCƛN' in
-    cbn→reduce (proj₂ (proj₂ (proj₂ (adequacy ℰCN≃ℰCƛN'))))
+denot-equal-terminates {Γ}{M}{N}{C} ℰM≃ℰN ⟨ N′ , CM—↠ƛN′ ⟩ =
+  let ℰCM≃ℰƛN′ = soundness CM—↠ƛN′ in
+  let ℰCM≃ℰCN = compositionality{Γ = Γ}{Δ = ∅}{C = C} ℰM≃ℰN in
+  let ℰCN≃ℰƛN′ = ≃-trans (≃-sym ℰCM≃ℰCN) ℰCM≃ℰƛN′ in
+    cbn→reduce (proj₂ (proj₂ (proj₂ (adequacy ℰCN≃ℰƛN′))))
 \end{code}
+
+The proof is direct. Because `plug C —↠ plug C (ƛN′)`,
+we can apply soundness to obtain
+
+    ℰ (plug C M) ≃ ℰ (ƛN′)
+
+From `ℰ M ≃ ℰ N`, compositionality gives us
+
+    ℰ (plug C M) ≃ ℰ (plug C N).
+
+Putting these two facts together gives us 
+
+    ℰ (plug C N) ≃ ℰ (ƛN′).
+
+We then apply adequacy to deduce
+
+    ∅' ⊢ plug C N ⇓ clos (ƛ N′′) δ).
+
+Call-by-name evaluation implies reduction to a lambda abstraction,
+so we conclude that
+
+    terminates (plug C N).
+
+
+The main theorem follows by two applications of the lemma.
 
 \begin{code}
 denot-equal-contex-equal : ∀{Γ} {M N : Γ ⊢ ★}
