@@ -63,7 +63,7 @@ sub-ℱ : ∀{Γ}{N : Γ , ★ ⊢ ★}{γ v u}
         ------------
       → ℱ (ℰ N) γ u
 sub-ℱ d Bot⊑ = tt
-sub-ℱ d (Fun⊑ lt lt') = sub (up-env d lt) lt'
+sub-ℱ d (Fun⊑ lt lt′) = sub (up-env d lt) lt′
 sub-ℱ d (ConjL⊑ lt lt₁) = ⟨ sub-ℱ d lt , sub-ℱ d lt₁ ⟩
 sub-ℱ d (ConjR1⊑ lt) = sub-ℱ (proj₁ d) lt
 sub-ℱ d (ConjR2⊑ lt) = sub-ℱ (proj₂ d) lt
@@ -159,23 +159,23 @@ describe the proof below.
         → ℰ (L · M) γ v
           ----------------
         → (ℰ L ● ℰ M) γ v
-ℰ·→●ℰ (↦-elim{v = v'} d₁ d₂) = inj₂ ⟨ v' , ⟨ d₁ , d₂ ⟩ ⟩
+ℰ·→●ℰ (↦-elim{v = v′} d₁ d₂) = inj₂ ⟨ v′ , ⟨ d₁ , d₂ ⟩ ⟩
 ℰ·→●ℰ {v = ⊥} ⊥-intro = inj₁ Bot⊑
 ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂) 
     with ℰ·→●ℰ d₁ | ℰ·→●ℰ d₂
 ... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)    
-... | inj₁ lt1 | inj₂ ⟨ v₁' , ⟨ L↓v12 , M↓v3 ⟩ ⟩ =
-      inj₂ ⟨ v₁' , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
-      where lt : v₁' ↦ (v₁ ⊔ v₂) ⊑ v₁' ↦ v₂
+... | inj₁ lt1 | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ =
+      inj₂ ⟨ v₁′ , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
+      where lt : v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₂
             lt = (Fun⊑ Refl⊑ (ConjL⊑ (Trans⊑ lt1 Bot⊑) Refl⊑))
-... | inj₂ ⟨ v₁' , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₁ lt2 =
-      inj₂ ⟨ v₁' , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
-      where lt : v₁' ↦ (v₁ ⊔ v₂) ⊑ v₁' ↦ v₁
+... | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₁ lt2 =
+      inj₂ ⟨ v₁′ , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
+      where lt : v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₁
             lt = (Fun⊑ Refl⊑ (ConjL⊑ Refl⊑ (Trans⊑ lt2 Bot⊑)))
-... | inj₂ ⟨ v₁' , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₂ ⟨ v₁'' , ⟨ L↓v12' , M↓v3' ⟩ ⟩ =
-      let L↓⊔ = ⊔-intro L↓v12 L↓v12' in
-      let M↓⊔ = ⊔-intro M↓v3 M↓v3' in
-      let x = inj₂ ⟨ v₁' ⊔ v₁'' , ⟨ sub L↓⊔ Dist⊔↦⊔ , M↓⊔ ⟩ ⟩ in
+... | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₂ ⟨ v₁′′ , ⟨ L↓v12′ , M↓v3′ ⟩ ⟩ =
+      let L↓⊔ = ⊔-intro L↓v12 L↓v12′ in
+      let M↓⊔ = ⊔-intro M↓v3 M↓v3′ in
+      let x = inj₂ ⟨ v₁′ ⊔ v₁′′ , ⟨ sub L↓⊔ Dist⊔↦⊔ , M↓⊔ ⟩ ⟩ in
       x
 ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (sub d lt)
     with ℰ·→●ℰ d
@@ -186,7 +186,7 @@ describe the proof below.
 
 We proceed by induction on the semantics.
 
-* In case `↦-elim` we have `γ ⊢ L ↓ (v' ↦ v)` and `γ ⊢ M ↓ v'`,
+* In case `↦-elim` we have `γ ⊢ L ↓ (v′ ↦ v)` and `γ ⊢ M ↓ v′`,
   which is all we need to show `(ℰ L ● ℰ M) γ v`.
 
 * In case `⊥-intro` we have `v = ⊥`. We conclude that `v ⊑ ⊥`.
@@ -197,26 +197,26 @@ We proceed by induction on the semantics.
   We have four subcases to consider.
 
     * Suppose `v₁ ⊑ ⊥` and `v₂ ⊑ ⊥`. Then `v₁ ⊔ v₂ ⊑ ⊥`.
-    * Suppose `v₁ ⊑ ⊥`, `γ ⊢ L ↓ v₁' ↦ v₂`, and `γ ⊢ M ↓ v₁'`.
-      We have `γ ⊢ L ↓ v₁' ↦ (v₁ ⊔ v₂)` by rule `sub`
-      because `v₁' ↦ (v₁ ⊔ v₂) ⊑ v₁' ↦ v₂`.
-    * Suppose `γ ⊢ L ↓ v₁' ↦ v₁`, `γ ⊢ M ↓ v₁'`, and `v₂ ⊑ ⊥`.
-      We have `γ ⊢ L ↓ v₁' ↦ (v₁ ⊔ v₂)` by rule `sub`
-      because `v₁' ↦ (v₁ ⊔ v₂) ⊑ v₁' ↦ v₁`.
-    * Suppose `γ ⊢ L ↓ v₁'' ↦ v₁, γ ⊢ M ↓ v₁''`,
-      `γ ⊢ L ↓ v₁' ↦ v₂`, and `γ ⊢ M ↓ v₁'`.
+    * Suppose `v₁ ⊑ ⊥`, `γ ⊢ L ↓ v₁′ ↦ v₂`, and `γ ⊢ M ↓ v₁′`.
+      We have `γ ⊢ L ↓ v₁′ ↦ (v₁ ⊔ v₂)` by rule `sub`
+      because `v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₂`.
+    * Suppose `γ ⊢ L ↓ v₁′ ↦ v₁`, `γ ⊢ M ↓ v₁′`, and `v₂ ⊑ ⊥`.
+      We have `γ ⊢ L ↓ v₁′ ↦ (v₁ ⊔ v₂)` by rule `sub`
+      because `v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₁`.
+    * Suppose `γ ⊢ L ↓ v₁′′ ↦ v₁, γ ⊢ M ↓ v₁′′`,
+      `γ ⊢ L ↓ v₁′ ↦ v₂`, and `γ ⊢ M ↓ v₁′`.
       This case is the most interesting.
       By two uses of the rule `⊔-intro` we have
-      `γ ⊢ L ↓ (v₁' ↦ v₂) ⊔ (v₁'' ↦ v₁)` and
-      `γ ⊢ M ↓ (v₁' ⊔ v₁'')`. But this does not yet match
+      `γ ⊢ L ↓ (v₁′ ↦ v₂) ⊔ (v₁′′ ↦ v₁)` and
+      `γ ⊢ M ↓ (v₁′ ⊔ v₁′′)`. But this does not yet match
       what we need for `ℰ L ● ℰ M` because the result of
-      `L` must be an `↦` whose input entry is `v₁' ⊔ v₁''`.
+      `L` must be an `↦` whose input entry is `v₁′ ⊔ v₁′′`.
       So we use the `sub` rule to obtain 
-      `γ ⊢ L ↓ (v₁' ⊔ v₁'') ↦ (v₁ ⊔ v₂)`,
+      `γ ⊢ L ↓ (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂)`,
       using the `Dist⊔→⊔` lemma (thanks to the `Dist⊑` rule) to
       show that
    
-            (v₁' ⊔ v₁'') ↦ (v₁ ⊔ v₂) ⊑ (v₁' ↦ v₂) ⊔ (v₁'' ↦ v₁)
+            (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂) ⊑ (v₁′ ↦ v₂) ⊔ (v₁′′ ↦ v₁)
    
       So we have proved what is needed for this case.
 
@@ -225,9 +225,9 @@ We proceed by induction on the semantics.
   We have two subcases to consider.
 
     * Suppose `v₁ ⊑ ⊥`. We conclude that `v ⊑ ⊥`.
-    * Suppose `Γ ⊢ L ↓ v' → v₁` and `Γ ⊢ M ↓ v'`.
-      We conclude with `Γ ⊢ L ↓ v' → v` by rule `sub`, because
-      `v' → v ⊑ v' → v₁`. 
+    * Suppose `Γ ⊢ L ↓ v′ → v₁` and `Γ ⊢ M ↓ v′`.
+      We conclude with `Γ ⊢ L ↓ v′ → v` by rule `sub`, because
+      `v′ → v ⊑ v′ → v₁`. 
 
 
 The forward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
@@ -288,23 +288,23 @@ that surrounding two denotationally-equal terms in the same context
 produces two programs that are denotationally equal.
 
 We begin by showing that denotational equality is a congruence with
-respect to lambda abstraction: that `ℰ N ≃ ℰ N'` implies `ℰ (ƛ N) ≃ ℰ
-(ƛ N')`. We shall use the `lam-equiv` equation to reduce this question to
+respect to lambda abstraction: that `ℰ N ≃ ℰ N′` implies `ℰ (ƛ N) ≃ ℰ
+(ƛ N′)`. We shall use the `lam-equiv` equation to reduce this question to
 whether `ℱ` is a congruence.
 
 \begin{code}
-ℱ-cong : ∀{Γ}{D D' : Denotation (Γ , ★)}
-       → D ≃ D'
+ℱ-cong : ∀{Γ}{D D′ : Denotation (Γ , ★)}
+       → D ≃ D′
          -----------
-       → ℱ D ≃ ℱ D'
-ℱ-cong{Γ} D≃D' γ v =
-   ⟨ (λ x → ℱ≃{γ}{v} x D≃D') , (λ x → ℱ≃{γ}{v} x (≃-sym D≃D')) ⟩
+       → ℱ D ≃ ℱ D′
+ℱ-cong{Γ} D≃D′ γ v =
+   ⟨ (λ x → ℱ≃{γ}{v} x D≃D′) , (λ x → ℱ≃{γ}{v} x (≃-sym D≃D′)) ⟩
    where 
-   ℱ≃ : ∀{γ : Env Γ}{v}{D D' : Denotation (Γ , ★)}
-      → ℱ D γ v  →  D ≃ D' → ℱ D' γ v
-   ℱ≃ {v = ⊥} fd dd' = tt
-   ℱ≃ {γ}{v ↦ w} fd dd' = proj₁ (dd' (γ `, v) w) fd
-   ℱ≃ {γ}{u ⊔ w} fd dd' = ⟨ ℱ≃{γ}{u} (proj₁ fd) dd' , ℱ≃{γ}{w} (proj₂ fd) dd' ⟩
+   ℱ≃ : ∀{γ : Env Γ}{v}{D D′ : Denotation (Γ , ★)}
+      → ℱ D γ v  →  D ≃ D′ → ℱ D′ γ v
+   ℱ≃ {v = ⊥} fd dd′ = tt
+   ℱ≃ {γ}{v ↦ w} fd dd′ = proj₁ (dd′ (γ `, v) w) fd
+   ℱ≃ {γ}{u ⊔ w} fd dd′ = ⟨ ℱ≃{γ}{u} (proj₁ fd) dd′ , ℱ≃{γ}{w} (proj₂ fd) dd′ ⟩
 \end{code}
 
 The proof of `ℱ-cong` uses the lemma `ℱ≃` to handle both directions of
@@ -315,38 +315,38 @@ We now prove that lambda abstraction is a congruence by direct
 equational reasoning.
 
 \begin{code}
-lam-cong : ∀{Γ}{N N' : Γ , ★ ⊢ ★}
-         → ℰ N ≃ ℰ N'
+lam-cong : ∀{Γ}{N N′ : Γ , ★ ⊢ ★}
+         → ℰ N ≃ ℰ N′
            -----------------
-         → ℰ (ƛ N) ≃ ℰ (ƛ N')
-lam-cong {Γ}{N}{N'} N≃N' =
+         → ℰ (ƛ N) ≃ ℰ (ƛ N′)
+lam-cong {Γ}{N}{N′} N≃N′ =
   start
   ℰ (ƛ N)
   ≃⟨ lam-equiv ⟩
   ℱ (ℰ N)
-  ≃⟨ ℱ-cong N≃N' ⟩
-  ℱ (ℰ N')
+  ≃⟨ ℱ-cong N≃N′ ⟩
+  ℱ (ℰ N′)
   ≃⟨ ≃-sym lam-equiv ⟩
-  ℰ (ƛ N')
+  ℰ (ƛ N′)
   ☐
 \end{code}
 
 Next we prove that denotational equality is a congruence for
-application: that `ℰ L ≃ ℰ L'` and `ℰ M ≃ ℰ M'` imply
-`ℰ (L · M) ≃ ℰ (L' · M')`. The `app-equiv` equation
+application: that `ℰ L ≃ ℰ L′` and `ℰ M ≃ ℰ M′` imply
+`ℰ (L · M) ≃ ℰ (L′ · M′)`. The `app-equiv` equation
 reduces this to the question of whether the `●` operator
 is a congruence.
 
 \begin{code}
-●-cong : ∀{Γ}{D₁ D₁' D₂ D₂' : Denotation Γ}
-   → D₁ ≃ D₁' → D₂ ≃ D₂'
-   → (D₁ ● D₂) ≃ (D₁' ● D₂')
+●-cong : ∀{Γ}{D₁ D₁′ D₂ D₂′ : Denotation Γ}
+   → D₁ ≃ D₁′ → D₂ ≃ D₂′
+   → (D₁ ● D₂) ≃ (D₁′ ● D₂′)
 ●-cong {Γ} d1 d2 γ v = ⟨ (λ x → ●≃ x d1 d2) ,
                          (λ x → ●≃ x (≃-sym d1) (≃-sym d2)) ⟩
    where
-   ●≃ : ∀{γ : Env Γ}{v}{D₁ D₁' D₂ D₂' : Denotation Γ}
-      → (D₁ ● D₂) γ v  →  D₁ ≃ D₁'  →  D₂ ≃ D₂'
-      → (D₁' ● D₂') γ v
+   ●≃ : ∀{γ : Env Γ}{v}{D₁ D₁′ D₂ D₂′ : Denotation Γ}
+      → (D₁ ● D₂) γ v  →  D₁ ≃ D₁′  →  D₂ ≃ D₂′
+      → (D₁′ ● D₂′) γ v
    ●≃ (inj₁ v⊑⊥) eq₁ eq₂ = inj₁ v⊑⊥
    ●≃ {γ} {w} (inj₂ ⟨ v , ⟨ Dv↦w , Dv ⟩ ⟩) eq₁ eq₂ =
       inj₂ ⟨ v , ⟨ proj₁ (eq₁ γ (v ↦ w)) Dv↦w , proj₁ (eq₂ γ v) Dv ⟩ ⟩
@@ -359,20 +359,20 @@ With the congruence of `●`, we can prove that application is a
 congruence by direct equational reasoning.
 
 \begin{code}
-app-cong : ∀{Γ}{L L' M M' : Γ ⊢ ★}
-         → ℰ L ≃ ℰ L'
-         → ℰ M ≃ ℰ M'
+app-cong : ∀{Γ}{L L′ M M′ : Γ ⊢ ★}
+         → ℰ L ≃ ℰ L′
+         → ℰ M ≃ ℰ M′
            -------------------------
-         → ℰ (L · M) ≃ ℰ (L' · M')
-app-cong {Γ}{L}{L'}{M}{M'} L≅L' M≅M' =
+         → ℰ (L · M) ≃ ℰ (L′ · M′)
+app-cong {Γ}{L}{L′}{M}{M′} L≅L′ M≅M′ =
   start
   ℰ (L · M)
   ≃⟨ app-equiv ⟩
   ℰ L ● ℰ M
-  ≃⟨ ●-cong L≅L' M≅M' ⟩
-  ℰ L' ● ℰ M'
+  ≃⟨ ●-cong L≅L′ M≅M′ ⟩
+  ℰ L′ ● ℰ M′
   ≃⟨ ≃-sym app-equiv ⟩  
-  ℰ (L' · M')
+  ℰ (L′ · M′)
   ☐
 \end{code}
 
@@ -434,15 +434,23 @@ compositionality : ∀{Γ Δ}{C : Ctx Γ Δ} {M N : Γ ⊢ ★}
                 ---------------------------
               → ℰ (plug C M) ≃ ℰ (plug C N)
 compositionality {C = CHole} M≃N =
-   M≃N
-compositionality {C = CLam C'} M≃N =
-   lam-cong (compositionality {C = C'} M≃N)
-compositionality {C = CAppL C' L} M≃N =
-   app-cong (compositionality {C = C'} M≃N) λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩
-compositionality {C = CAppR L C'} M≃N =
-   app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C'} M≃N) 
+  M≃N
+compositionality {C = CLam C′} M≃N =
+  lam-cong (compositionality {C = C′} M≃N)
+compositionality {C = CAppL C′ L} M≃N =
+  app-cong (compositionality {C = C′} M≃N) λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩
+compositionality {C = CAppR L C′} M≃N =
+  app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N) 
 \end{code}
 
 The proof is a straightforward induction on the context `C`, using the
 congruence properties `lam-cong` and `app-cong` that we established
 above.
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ℱ  U+2131  SCRIPT CAPITAL F (\McF)
+    ●  U+2131  BLACK CIRCLE (\cib)
+    

@@ -115,3 +115,10 @@ denot-equal-contex-equal{Γ}{M}{N} eq {C} =
    ⟨ (λ tm → denot-equal-terminates eq tm) ,
      (λ tn → denot-equal-terminates (≃-sym eq) tn) ⟩
 \end{code}
+
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ≅  U+2245  APPROXIMATELY EQUAL TO (\~= or \cong)

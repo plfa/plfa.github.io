@@ -102,7 +102,7 @@ subst-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
    --------------------------
   → δ `, v `⊢ exts σ ↓ γ `, v
 subst-ext σ d Z = var
-subst-ext σ d (S x) = rename-pres S_ (λ _ → Refl⊑) (d x)
+subst-ext σ d (S x′) = rename-pres S_ (λ _ → Refl⊑) (d x′)
 \end{code}
 
 The proof is by cases on the de Bruijn index `x`.
@@ -110,8 +110,8 @@ The proof is by cases on the de Bruijn index `x`.
 * If it is `Z`, then we need to show that `δ , v ⊢ # 0 ↓ v`,
   which we have by rule `var`.
 
-* If it is `S x'`,then we need to show that 
-  `δ , v ⊢ rename S_ (σ x') ↓ nth x' γ`,
+* If it is `S x′`,then we need to show that 
+  `δ , v ⊢ rename S_ (σ x′) ↓ nth x′ γ`,
   which we obtain by the `rename-pres` lemma.
 
 With the extension lemma in hand, the proof that simultaneous
@@ -312,8 +312,8 @@ In the upcoming uses of `rename-reflect`, the renaming will always be
 the increment function. So we prove a corollary for that special case.
 
 \begin{code}
-rename-inc-reflect : ∀ {Γ v' v} {γ : Env Γ} { M : Γ ⊢ ★}
-  → (γ `, v') ⊢ rename S_ M ↓ v
+rename-inc-reflect : ∀ {Γ v′ v} {γ : Env Γ} { M : Γ ⊢ ★}
+  → (γ `, v′) ⊢ rename S_ M ↓ v
     ----------------------------
   → γ ⊢ M ↓ v
 rename-inc-reflect d = rename-reflect `Refl⊑ d
@@ -376,7 +376,7 @@ nth-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
 nth-const-env {x = x} rewrite var≟-refl x = refl
 \end{code}
 
-The nth element of `const-env n' v` is the value `⊥, so long as `n ≢ n'`.
+The nth element of `const-env n′ v` is the value `⊥, so long as `n ≢ n′`.
 
 \begin{code}
 diff-nth-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
@@ -482,13 +482,13 @@ subst-reflect {M = M}{σ = σ} (var {x = y}) eqL with M
 ... | ` x  with var {x = y}
 ...           | yv  rewrite sym eqL = subst-reflect-var {σ = σ} yv
 subst-reflect {M = M} (var {x = y}) () | M₁ · M₂
-subst-reflect {M = M} (var {x = y}) () | ƛ M'
+subst-reflect {M = M} (var {x = y}) () | ƛ M′
 
 subst-reflect {M = M}{σ = σ} (↦-elim d₁ d₂) eqL
          with M 
 ...    | ` x with ↦-elim d₁ d₂ 
-...    | d' rewrite sym eqL = subst-reflect-var {σ = σ} d'
-subst-reflect (↦-elim d₁ d₂) () | ƛ M'
+...    | d′ rewrite sym eqL = subst-reflect-var {σ = σ} d′
+subst-reflect (↦-elim d₁ d₂) () | ƛ M′
 subst-reflect{Γ}{Δ}{γ}{σ = σ} (↦-elim d₁ d₂)
    refl | M₁ · M₂
      with subst-reflect {M = M₁} d₁ refl | subst-reflect {M = M₂} d₂ refl
@@ -499,8 +499,8 @@ subst-reflect{Γ}{Δ}{γ}{σ = σ} (↦-elim d₁ d₂)
 
 subst-reflect {M = M}{σ = σ} (↦-intro d) eqL with M
 ...    | ` x with (↦-intro d)
-...             | d' rewrite sym eqL = subst-reflect-var {σ = σ} d'
-subst-reflect {σ = σ} (↦-intro d) eq | ƛ M'
+...             | d′ rewrite sym eqL = subst-reflect-var {σ = σ} d′
+subst-reflect {σ = σ} (↦-intro d) eq | ƛ M′
       with subst-reflect {σ = exts σ} d (lambda-inj eq)
 ... | ⟨ δ′ , ⟨ exts-σ-δ′ , m′ ⟩ ⟩ = 
     ⟨ init δ′ , ⟨ ((λ x → rename-inc-reflect (exts-σ-δ′ (S x)))) ,
@@ -536,17 +536,17 @@ subst-reflect (sub d lt) eq
     We conclude this case by obtaining `γ ⊢ σ ↓ δ₁ ⊔ δ₂`
     by the `subst-⊔` lemma.
 
-* Case `↦-intro`: We have `subst σ M ≡ ƛ L'`. We proceed by cases on `M`.
+* Case `↦-intro`: We have `subst σ M ≡ ƛ L′`. We proceed by cases on `M`.
   * Case `M ≡ x`: We apply the `subst-reflect-var` lemma.
 
-  * Case `M ≡ ƛ M'`: By the induction hypothesis, we have
-    `(δ' , v') ⊢ M' ↓ v₂` and `(δ , v₁) ⊢ exts σ ↓ (δ' , v')`.
-    From the later we have `(δ , v₁) ⊢ # 0 ↓ v'`.
-    By the lemma `var-inv` we have `v' ⊑ v₁`, so by the `up-env` lemma we
-    have `(δ' , v₁) ⊢ M' ↓ v₂` and therefore `δ' ⊢ ƛ M' ↓ v₁ → v₂`.  We
-    also need to show that `δ `⊢ σ ↓ δ'`.  Fix `k`. We have
-    `(δ , v₁) ⊢ rename S_ σ k ↓ nth k δ'`.  We then apply the lemma
-    `rename-inc-reflect` to obtain `δ ⊢ σ k ↓ nth k δ'`, so this case is
+  * Case `M ≡ ƛ M′`: By the induction hypothesis, we have
+    `(δ′ , v′) ⊢ M′ ↓ v₂` and `(δ , v₁) ⊢ exts σ ↓ (δ′ , v′)`.
+    From the later we have `(δ , v₁) ⊢ # 0 ↓ v′`.
+    By the lemma `var-inv` we have `v′ ⊑ v₁`, so by the `up-env` lemma we
+    have `(δ′ , v₁) ⊢ M′ ↓ v₂` and therefore `δ′ ⊢ ƛ M′ ↓ v₁ → v₂`.  We
+    also need to show that `δ `⊢ σ ↓ δ′`.  Fix `k`. We have
+    `(δ , v₁) ⊢ rename S_ σ k ↓ nth k δ′`.  We then apply the lemma
+    `rename-inc-reflect` to obtain `δ ⊢ σ k ↓ nth k δ′`, so this case is
     complete.
 
 * Case `⊥-intro`: We choose `⊥` for `δ`.
@@ -571,45 +571,45 @@ give terms `N : (Γ , ★ ⊢ ★)` and `M : (Γ ⊢ ★)`,
 if `γ ⊢ N [ M ] ↓ w`, then `γ ⊢ M ↓ v` and `(γ , v) ⊢ N ↓ w`
 for some value `v`. We have `N [ M ] = subst (subst-zero M) N`.
 We apply the `subst-reflect` lemma to obtain
-`γ ⊢ subst-zero M ↓ (δ' , v')` and `(δ' , v') ⊢ N ↓ w`
-for some `δ'` and `v'`.
+`γ ⊢ subst-zero M ↓ (δ′ , v′)` and `(δ′ , v′) ⊢ N ↓ w`
+for some `δ′` and `v′`.
 
-Instantiating `γ ⊢ subst-zero M ↓ (δ' , v')` at `k = 0`
-gives us `γ ⊢ M ↓ v'`. We choose `w = v'`, so the first
+Instantiating `γ ⊢ subst-zero M ↓ (δ′ , v′)` at `k = 0`
+gives us `γ ⊢ M ↓ v′`. We choose `w = v′`, so the first
 part of our conclusion is complete.
 
-It remains to prove `(γ , v') ⊢ N ↓ v`. First, we obtain 
-`(γ , v') ⊢ rename var-id N ↓ v` by the `rename-pres` lemma
-applied to `(δ' , v') ⊢ N ↓ v`, with the `var-id` renaming,
-`γ = (δ' , v')`, and `δ = (γ , v')`. To apply this lemma,
+It remains to prove `(γ , v′) ⊢ N ↓ v`. First, we obtain 
+`(γ , v′) ⊢ rename var-id N ↓ v` by the `rename-pres` lemma
+applied to `(δ′ , v′) ⊢ N ↓ v`, with the `var-id` renaming,
+`γ = (δ′ , v′)`, and `δ = (γ , v′)`. To apply this lemma,
 we need to show that 
-`nth n (δ' , v') ⊑ nth (var-id n) (γ , v')` for any `n`.
+`nth n (δ′ , v′) ⊑ nth (var-id n) (γ , v′)` for any `n`.
 This is accomplished by the following lemma, which
-makes use of `γ ⊢ subst-zero M ↓ (δ' , v')`.
+makes use of `γ ⊢ subst-zero M ↓ (δ′ , v′)`.
 
 \begin{code}
-nth-id-le : ∀{Γ}{δ'}{v'}{γ}{M}
-      → γ `⊢ subst-zero M ↓ (δ' `, v')
+nth-id-le : ∀{Γ}{δ′}{v′}{γ}{M}
+      → γ `⊢ subst-zero M ↓ (δ′ `, v′)
         -----------------------------------------------------
-      → (x : Γ , ★ ∋ ★) → (δ' `, v') x ⊑ (γ `, v') (var-id x) 
-nth-id-le γ-sz-δ'v' Z = Refl⊑
-nth-id-le γ-sz-δ'v' (S n') = var-inv (γ-sz-δ'v' (S n'))
+      → (x : Γ , ★ ∋ ★) → (δ′ `, v′) x ⊑ (γ `, v′) (var-id x) 
+nth-id-le γ-sz-δ′v′ Z = Refl⊑
+nth-id-le γ-sz-δ′v′ (S n′) = var-inv (γ-sz-δ′v′ (S n′))
 \end{code}
 
 The above lemma proceeds by induction on `n`.
 
-* If it is `Z`, then we show that `v' ⊑ v'` by `Refl⊑`.
-* If it is `S n'`, then from the premise we obtain
-  `γ ⊢ # n' ↓ nth n' δ'`. By `var-inv` we have
-  `nth n' δ' ⊑ nth n' γ` from which we conclude that
-  `nth (S n') (δ' , v') ⊑ nth (var-id (S n')) (γ , v')`.
+* If it is `Z`, then we show that `v′ ⊑ v′` by `Refl⊑`.
+* If it is `S n′`, then from the premise we obtain
+  `γ ⊢ # n′ ↓ nth n′ δ′`. By `var-inv` we have
+  `nth n′ δ′ ⊑ nth n′ γ` from which we conclude that
+  `nth (S n′) (δ′ , v′) ⊑ nth (var-id (S n′)) (γ , v′)`.
 
 Returning to the proof that single substitution reflects
 denotations, we have just proved that
 
-  (γ `, v') ⊢ rename var-id N ↓ v
+  (γ `, v′) ⊢ rename var-id N ↓ v
 
-but we need to show `(γ `, v') ⊢ N ↓ v`.
+but we need to show `(γ `, v′) ⊢ N ↓ v`.
 So we apply the `rename-id` lemma to obtain
 `rename var-id N ≡ N`.
 
@@ -647,30 +647,30 @@ reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
     → γ ⊢ (ƛ N) · M ↓ v
 reflect-beta d 
     with substitution-reflect d
-... | ⟨ v₂' , ⟨ d₁' , d₂' ⟩ ⟩ = ↦-elim (↦-intro d₂') d₁' 
+... | ⟨ v₂′ , ⟨ d₁′ , d₂′ ⟩ ⟩ = ↦-elim (↦-intro d₂′) d₁′ 
 
 
-reflect : ∀ {Γ} {γ : Env Γ} {M M' N v}
-  → γ ⊢ N ↓ v  →  M —→ M'  →   M' ≡ N
+reflect : ∀ {Γ} {γ : Env Γ} {M M′ N v}
+  → γ ⊢ N ↓ v  →  M —→ M′  →   M′ ≡ N
     ---------------------------------
   → γ ⊢ M ↓ v
 reflect var (ξ₁ r) ()
 reflect var (ξ₂ r) ()
 reflect{γ = γ} (var{x = x}) β mn
     with var{γ = γ}{x = x}
-... | d' rewrite sym mn = reflect-beta d' 
+... | d′ rewrite sym mn = reflect-beta d′ 
 reflect var (ζ r) ()
 reflect (↦-elim d₁ d₂) (ξ₁ r) refl = ↦-elim (reflect d₁ r refl) d₂ 
 reflect (↦-elim d₁ d₂) (ξ₂ r) refl = ↦-elim d₁ (reflect d₂ r refl) 
 reflect (↦-elim d₁ d₂) β mn
     with ↦-elim d₁ d₂
-... | d' rewrite sym mn = reflect-beta d'
+... | d′ rewrite sym mn = reflect-beta d′
 reflect (↦-elim d₁ d₂) (ζ r) ()
 reflect (↦-intro d) (ξ₁ r) ()
 reflect (↦-intro d) (ξ₂ r) ()
 reflect (↦-intro d) β mn
     with ↦-intro d
-... | d' rewrite sym mn = reflect-beta d'
+... | d′ rewrite sym mn = reflect-beta d′
 reflect (↦-intro d) (ζ r) refl = ↦-intro (reflect d r refl)
 reflect ⊥-intro r mn = ⊥-intro
 reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
@@ -708,3 +708,9 @@ soundness {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
    ≃-trans {Γ} e ih γ v
 \end{code}
 
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ≟  U+225F  QUESTIONED EQUAL TO (\?=)

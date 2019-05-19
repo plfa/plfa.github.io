@@ -635,3 +635,12 @@ cbn↔reduce {M} = ⟨ (λ x → reduce→cbn (proj₂ x)) ,
                    (λ x → cbn→reduce (proj₂ (proj₂ (proj₂ x)))) ⟩
 \end{code}
 
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    𝔼  U+1D53C  MATHEMATICAL DOUBLE-STRUCK CAPITAL E (\bE)
+    𝔾  U+1D53E  MATHEMATICAL DOUBLE-STRUCK CAPITAL G (\bG)
+    𝕍  U+1D53E  MATHEMATICAL DOUBLE-STRUCK CAPITAL V (\bV)
+    
