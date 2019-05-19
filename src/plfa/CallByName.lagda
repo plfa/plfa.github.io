@@ -1,5 +1,5 @@
 ---
-title     : "The call-by-name evaluation strategy"
+title     : "Call-by-name big-step evaluation"
 layout    : page
 prev      : /Confluence/
 permalink : /CallByName/
@@ -30,7 +30,7 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 open import Function using (_∘_)
 \end{code}
 
-## Call-by-name evaluation
+## Call-by-name as big-step evaluation
 
 The call-by-name evaluation strategy is a deterministic method for
 computing the value of a program in the lambda calculus.  That is,
@@ -54,7 +54,9 @@ An environment in call-by-name is a map from variables to closures,
 that is, to terms paired with their environments. We choose to use
 environments instead of substitution because the point of the
 call-by-name strategy is to be closer to an implementation of the
-language.
+language. Also, the denotational semantics introduced in later
+chapters uses environments and the proof of adequacy
+is made easier by aligning these choices.
 
 We define environments and closures as follows.
 
@@ -79,7 +81,7 @@ _,'_ : ∀ {Γ} → ClosEnv Γ → Clos → ClosEnv (Γ , ★)
 (γ ,' c) (S x) = γ x
 \end{code}
 
-The call-by-name strategy is represented as a ternary relation,
+The big-step semantics is represented as a ternary relation,
 written `γ ⊢ M ⇓ V`, where `γ` is the environment, `M` is the input
 term, and `V` is the result value.  A _value_ is a closure whose term
 is a lambda abstraction.
@@ -116,12 +118,12 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
   call-by-value.
 
 
-## Call-by-name is deterministic
+## The big-step semantics is deterministic
 
-If the call-by-name relation evaluates a term `M` to both `V` and
+If the big-step relation evaluates a term `M` to both `V` and
 `V′`, then `V` and `V′` must be identical. In other words, the
 call-by-name relation is a partial function. The proof is a
-straightforward induction on the two call-by-name derivations.
+straightforward induction on the two big-step derivations.
 
 \begin{code}
 ⇓-determ : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{V V' : Clos}
@@ -137,16 +139,16 @@ straightforward induction on the two call-by-name derivations.
 \end{code}
 
 
-## Call-by-name evaluation implies beta reduction to a lambda
+## Big-step evaluation implies beta reduction to a lambda
 
-If call-by-name evaluation produces a value, then the input term can
+If big-step evaluation produces a value, then the input term can
 reduce to a lambda abstraction by beta reduction:
 
       ∅' ⊢ M ⇓ clos (ƛ N′) δ
       -----------------------------
     → Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N)
 
-The proof is by induction on the call-by-name derivation. As is often
+The proof is by induction on the big-step derivation. As is often
 necessary, one must generalize the statement to get the induction to
 go through. In the case for `⇓-app` (function application), the
 argument is added to the environment, so the environment becomes
@@ -232,7 +234,7 @@ We proceed by cases on the input variable.
   premise `γ ≃ σ`.
 
 
-We arive at the main lemma: if `M` evaluates under call-by-name to a
+We arive at the main lemma: if `M` big steps to a
 closure `c` in environment `γ`, and if `γ ≃ σ`, then `⧼ σ ⧽ M` reduces
 to some term `N` that is equivalent to `c`. We describe the proof
 below.
@@ -285,14 +287,14 @@ to consider.
   Using `γ ⊢ L ⇓ clos N δ` and `γ ≃ σ`, 
   the induction hypothesis gives us
   
-        ⧼ σ ⧽ L —↠ ƛ ⧼ exts τ ⧽ N                                             (1)
+        ⧼ σ ⧽ L —↠ ƛ ⧼ exts τ ⧽ N                                           (1)
   
   and `δ ≃ τ` for some `τ`.
   From `γ≃σ` we have `clos M γ ≈ ⧼ σ ⧽ M`.
   Then with `(δ ,' clos M γ) ⊢ N ⇓ c`,
   the induction hypothesis gives us `c ≈ N'` and
   
-        ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽ N —↠ N'                             (2)
+        ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽ N —↠ N'                           (2)
   
   Meanwhile, by `β`, we have
 
@@ -300,11 +302,11 @@ to consider.
 
   which is the same as the following, by `sub-sub`.
   
-        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→ ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽  N     (3)
+        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→ ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽  N  (3)
 
   Using (3) and (2) we have
   
-        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —↠ N'                                      (4)
+        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —↠ N'                                    (4)
 
   From (1) we have
 
@@ -316,7 +318,7 @@ to consider.
 
 
 With the main lemma complete, we establish the forward direction
-of the equivalence between call-by-name and beta reduction.
+of the equivalence between the big-step semantics and beta reduction.
 
 \begin{code}
 cbn→reduce :  ∀{M : ∅ ⊢ ★}{Δ}{δ : ClosEnv Δ}{N′ : Δ , ★ ⊢ ★}
@@ -331,24 +333,32 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
 \end{code}
 
 The proof of the backward direction, that beta reduction to a lambda
-implies that call-by-name produces a result, will leverage the
+implies that the big-step semantics produces a result, will leverage the
 denotational semantics defined in the next chapter, and appears in the
 chapter on Adequacy.
+
+[PLW: to do: a direct proof as in Software Foundations.]
 
 
 ## Notes
 
-In the seminal paper _Call-by-name, call-by-value, and the
-λ-calculus_, Plotkin defined a call-by-name evaluator similar to the
-one in this chapter, except that it used substitution instead
-of environments. Corollary 2 (page 146) states that a term `M` beta
-reduces to a lambda abstraction if and only if call-by-name produces a
-value. His proof is quite different from ours in that it relies on two
-auxilliary reduction relations called _left reduction_ and _standard
-reduction_. Theorem 1 (Standardisation) states that `M —↠ L` if and
-only if `M` goes to `L` via standard reductions.  Corollary 1 then
-establishes that `M —↠ ƛ N` if and only if `M` goes to `ƛ N′`, for
-some `N′`, by left reduction. Theorem 2 then connects call-by-name
-evaluation to left reduction.  Finally, Corollary 2 combines these
-results to show that `M —↠ ƛ N` if and only if call-by-name produces a
-value.
+In the seminal article _Call-by-name, call-by-value, and the
+λ-calculus_, Plotkin defined a call-by-name partial function similar
+to the big-step semantics in this chapter, except that it used
+substitution instead of environments. Corollary 2 (page 146) of his
+article states that a term `M` beta reduces to a lambda abstraction if
+and only if call-by-name produces a value. His proof is quite
+different from ours in that it relies on two auxilliary reduction
+relations called _left reduction_ and _standard reduction_. Theorem 1
+(Standardisation) states that `M —↠ L` if and only if `M` goes to `L`
+via standard reductions.  Corollary 1 then establishes that `M —↠ ƛ N`
+if and only if `M` goes to `ƛ N′`, for some `N′`, by left
+reduction. Theorem 2 then connects call-by-name evaluation to left
+reduction.  Finally, Corollary 2 combines these results to show that
+`M —↠ ƛ N` if and only if call-by-name produces a value.
+
+
+## Unicode
+
+    ⇓  U+21DB  DOWNWARDS DOUBLE ARROW (\d= or \Downarrow)
+    

@@ -563,3 +563,10 @@ proof was simple enough based solely on parallel reduction.  There are
 many more mechanizations of the Church-Rosser theorem that we have not
 yet had the time to read, including Shankar's (J. ACM 1988) and
 Homeier's (TPHOLs 2001).
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ⇛  U+3015  RIGHTWARDS TRIPLE ARROW (\r== or \Rrightarrow)
+    
