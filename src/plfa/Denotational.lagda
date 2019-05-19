@@ -139,24 +139,24 @@ data _⊑_ : Value → Value → Set where
        -----
      → u ⊑ w
 
-  Fun⊑ : ∀ {v w v' w'}
-       → v' ⊑ v
-       → w ⊑ w'
+  Fun⊑ : ∀ {v w v′ w′}
+       → v′ ⊑ v
+       → w ⊑ w′
          -------------------
-       → (v ↦ w) ⊑ (v' ↦ w')
+       → (v ↦ w) ⊑ (v′ ↦ w′)
 
-  Dist⊑ : ∀{v w w'}
+  Dist⊑ : ∀{v w w′}
          ---------------------------------
-       → v ↦ (w ⊔ w') ⊑ (v ↦ w) ⊔ (v ↦ w')
+       → v ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v ↦ w′)
 \end{code}
 
 
 The first five rules are straightforward.
 The rule `Fun⊑` captures when it is OK to match a higher-order argument
-`v' ↦ w'` to a table entry whose input is `v ↦ w`.  Considering a
+`v′ ↦ w′` to a table entry whose input is `v ↦ w`.  Considering a
 call to the higher-order argument. It is OK to pass a larger argument
-than expected, so `v` can be larger than `v'`. Also, it is OK to
-disregard some of the output, so `w` can be smaller than `w'`.
+than expected, so `v` can be larger than `v′`. Also, it is OK to
+disregard some of the output, so `w` can be smaller than `w′`.
 The rule `Dist⊑` says that if you have two entries for the same input,
 then you can combine them into a single entry and joins the two
 outputs.
@@ -166,7 +166,7 @@ The `⊑` relation is reflexive.
 \begin{code}
 Refl⊑ : ∀ {v} → v ⊑ v
 Refl⊑ {⊥} = Bot⊑
-Refl⊑ {v ↦ v'} = Fun⊑ Refl⊑ Refl⊑
+Refl⊑ {v ↦ v′} = Fun⊑ Refl⊑ Refl⊑
 Refl⊑ {v₁ ⊔ v₂} = ConjL⊑ (ConjR1⊑ Refl⊑) (ConjR2⊑ Refl⊑)
 \end{code}
 
@@ -174,10 +174,10 @@ The `⊔` operation is monotonic with respect to `⊑`, that is, given two
 larger values it produces a larger value.
 
 \begin{code}
-⊔⊑⊔ : ∀ {v w v' w'}
-      → v ⊑ v'  →  w ⊑ w'
+⊔⊑⊔ : ∀ {v w v′ w′}
+      → v ⊑ v′  →  w ⊑ w′
         -----------------------
-      → (v ⊔ w) ⊑ (v' ⊔ w')
+      → (v ⊔ w) ⊑ (v′ ⊔ w′)
 ⊔⊑⊔ d₁ d₂ = ConjL⊑ (ConjR1⊑ d₁) (ConjR2⊑ d₂)
 \end{code}
 
@@ -187,8 +187,8 @@ using ⊔ and then apply the `Dist⊑` rule to obtain the following
 property.
 
 \begin{code}
-Dist⊔↦⊔ : ∀{v v' w w' : Value}
-        → (v ⊔ v') ↦ (w ⊔ w') ⊑ (v ↦ w) ⊔ (v' ↦ w')
+Dist⊔↦⊔ : ∀{v v′ w w′ : Value}
+        → (v ⊔ v′) ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v′ ↦ w′)
 Dist⊔↦⊔ = Trans⊑ Dist⊑ (⊔⊑⊔ (Fun⊑ (ConjR1⊑ Refl⊑) Refl⊑)
                             (Fun⊑ (ConjR2⊑ Refl⊑) Refl⊑))
 \end{code}
@@ -308,11 +308,6 @@ For readers familiar with big-step semantics, this notation will feel
 quite natural, but don't let the similarity fool you.  There are
 subtle but important differences! So here is the definition of the
 semantics, which we discuss in detail in the following paragraphs.
-
-[PLW: PLFA doesn't mention big-step semantics. But perhaps it should!]
-[JGS: It does now in the chapter on Adequacy! Though perhaps
-  the big-step semantics should be introduced in an earlier chapter
-  and proved equivalent to the reduction semantics.]
 
 \begin{code}
 infix 3 _⊢_↓_
@@ -676,7 +671,7 @@ In the third chapter we prove that denotational equality to a lambda
 abstraction implies reduction to a lambda abstraction. This property
 is called _adequacy_ in the literature.
 
-    ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N' for some N'
+    ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N′ for some N′
 
 The proofs of these properties rely on some basic results about the
 denotational semantics, which we establish in the rest of this
@@ -714,14 +709,14 @@ ext-nth : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
     ------------------------------
   → (γ `, v) `⊑ ((δ `, v) ∘ ext ρ)
 ext-nth ρ lt Z = Refl⊑
-ext-nth ρ lt (S x) = lt x
+ext-nth ρ lt (S n′) = lt n′
 \end{code}
 
 We proceed by cases on the de Bruijn index `n`.
 
 * If it is `Z`, then we just need to show that `v ≡ v`, which we have by `refl`.
 
-* If it is `S n'`, then the goal simplifies to `nth n' γ ≡ nth (ρ n') δ`,
+* If it is `S n′`, then the goal simplifies to `nth n′ γ ≡ nth (ρ n′) δ`,
   which is an instance of the premise.
 
 Now for the renaming lemma. Suppose we have a renaming that maps
@@ -820,7 +815,7 @@ Env⊑ : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
   → δ ⊢ M ↓ v
 Env⊑{Γ}{γ}{δ}{M}{v} d lt
       with rename-pres var-id lt d
-... | d' rewrite rename-id {Γ}{M}{var-id} (var-id-id {Γ}) = d'
+... | d′ rewrite rename-id {Γ}{M}{var-id} (var-id-id {Γ}) = d′
 \end{code}
 
 In the proof that substitution reflects denotations, in the case for
@@ -909,9 +904,9 @@ imply the less-than relation but not the other way around.
     → u ⊑ v
 ⊆→⊑ {⊥} s with s {⊥} refl
 ... | x = Bot⊑
-⊆→⊑ {u ↦ u'} s with s {u ↦ u'} refl
+⊆→⊑ {u ↦ u′} s with s {u ↦ u′} refl
 ... | x = ∈→⊑ x
-⊆→⊑ {u ⊔ u'} s = ConjL⊑ (⊆→⊑ (λ z → s (inj₁ z))) (⊆→⊑ (λ z → s (inj₂ z)))
+⊆→⊑ {u ⊔ u′} s = ConjL⊑ (⊆→⊑ (λ z → s (inj₁ z))) (⊆→⊑ (λ z → s (inj₂ z)))
 \end{code}
 
 We shall also need some inversion principles for value inclusion.  If
@@ -972,7 +967,7 @@ Funs∈ : ∀{u}
 Funs∈ {⊥} f with f {⊥} refl
 ... | fun ()
 Funs∈ {v ↦ w} f = ⟨ v , ⟨ w , refl ⟩ ⟩
-Funs∈ {u ⊔ u'} f
+Funs∈ {u ⊔ u′} f
     with Funs∈ λ z → f (inj₁ z)
 ... | ⟨ v , ⟨ w , m ⟩ ⟩ = ⟨ v , ⟨ w , (inj₁ m) ⟩ ⟩
 \end{code}
@@ -993,12 +988,12 @@ their domains and `cod u` returns the join of their codomains.
 dom : (u : Value) → Value
 dom ⊥  = ⊥
 dom (v ↦ w) = v
-dom (u ⊔ u') = dom u ⊔ dom u'
+dom (u ⊔ u′) = dom u ⊔ dom u′
 
 cod : (u : Value) → Value
 cod ⊥  = ⊥
 cod (v ↦ w) = w
-cod (u ⊔ u') = cod u ⊔ cod u'
+cod (u ⊔ u′) = cod u ⊔ cod u′
 \end{code}
 
 We need just one property each for `dom` and `cod`.  Given a collection of
@@ -1012,11 +1007,11 @@ that `v` is included in the domain of `v`.
           → v ⊆ dom u
 ↦∈→⊆dom {⊥} fg () u∈v
 ↦∈→⊆dom {v ↦ w} fg refl u∈v = u∈v
-↦∈→⊆dom {u ⊔ u'} fg (inj₁ v↦w∈u) u∈v =
+↦∈→⊆dom {u ⊔ u′} fg (inj₁ v↦w∈u) u∈v =
    let ih = ↦∈→⊆dom (λ z → fg (inj₁ z)) v↦w∈u in
    inj₁ (ih u∈v)
-↦∈→⊆dom {u ⊔ u'} fg (inj₂ v↦w∈u') u∈v =
-   let ih = ↦∈→⊆dom (λ z → fg (inj₂ z)) v↦w∈u' in
+↦∈→⊆dom {u ⊔ u′} fg (inj₂ v↦w∈u′) u∈v =
+   let ih = ↦∈→⊆dom (λ z → fg (inj₂ z)) v↦w∈u′ in
    inj₂ (ih u∈v)
 \end{code}
 
@@ -1031,22 +1026,22 @@ included in `w`.
         → cod u ⊆ w
 ⊆↦→cod⊆ {⊥} s refl with s {⊥} refl
 ... | ()
-⊆↦→cod⊆ {C ↦ C'} s m with s {C ↦ C'} refl
+⊆↦→cod⊆ {C ↦ C′} s m with s {C ↦ C′} refl
 ... | refl = m
-⊆↦→cod⊆ {u ⊔ u'} s (inj₁ x) = ⊆↦→cod⊆ (λ {C} z → s (inj₁ z)) x
-⊆↦→cod⊆ {u ⊔ u'} s (inj₂ y) = ⊆↦→cod⊆ (λ {C} z → s (inj₂ z)) y
+⊆↦→cod⊆ {u ⊔ u′} s (inj₁ x) = ⊆↦→cod⊆ (λ {C} z → s (inj₁ z)) x
+⊆↦→cod⊆ {u ⊔ u′} s (inj₂ y) = ⊆↦→cod⊆ (λ {C} z → s (inj₂ z)) y
 \end{code}
 
 With the `dom` and `cod` functions in hand, we can make precise the
 conclusion of the inversion principle for functions, which we package
 into the following predicate named `factor`. We say that `v ↦ w`
-_factors_ `u` into `u'` if `u'` is a included in `u`, if `u'` contains only
+_factors_ `u` into `u′` if `u′` is a included in `u`, if `u′` contains only
 functions, its domain is less than `v`, and its codomain is greater
 than `w`.
 
 \begin{code}
-factor : (u : Value) → (u' : Value) → (v : Value) → (w : Value) → Set
-factor u u' v w = Funs u' × u' ⊆ u × dom u' ⊑ v × w ⊑ cod u'
+factor : (u : Value) → (u′ : Value) → (v : Value) → (w : Value) → Set
+factor u u′ v w = Funs u′ × u′ ⊆ u × dom u′ ⊑ v × w ⊑ cod u′
 \end{code}
 
 We prove the inversion principle for functions by induction on the
@@ -1065,59 +1060,59 @@ The crux of the proof is the case for `Trans⊑`.
         u₁ ⊑ u₂
 
 By the induction hypothesis for `u₁ ⊑ u`, we know
-that `v ↦ w factors u into u'`, for some value `u'`,
-so we have `Funs u'` and `u' ⊆ u`.
+that `v ↦ w factors u into u′`, for some value `u′`,
+so we have `Funs u′` and `u′ ⊆ u`.
 By the induction hypothesis for `u ⊑ u₂`, we know
-that for any `v' ↦ w' ∈ u`, `v' ↦ w'` factors `u₂` into `u₃`.
-With these facts in hand, we proceed by induction on `u'`
-to prove that `(dom u') ↦ (cod u')` factors `u₂` into `u₃`.
+that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂` into `u₃`.
+With these facts in hand, we proceed by induction on `u′`
+to prove that `(dom u′) ↦ (cod u′)` factors `u₂` into `u₃`.
 We discuss each case of the proof in the text below.
 
 \begin{code}
-sub-inv-trans : ∀{u' u₂ u : Value}
-    → Funs u'  →  u' ⊆ u
-    → (∀{v' w'} → v' ↦ w' ∈ u → Σ[ u₃ ∈ Value ] factor u₂ u₃ v' w')
+sub-inv-trans : ∀{u′ u₂ u : Value}
+    → Funs u′  →  u′ ⊆ u
+    → (∀{v′ w′} → v′ ↦ w′ ∈ u → Σ[ u₃ ∈ Value ] factor u₂ u₃ v′ w′)
       ---------------------------------------------------------------
-    → Σ[ u₃ ∈ Value ] factor u₂ u₃ (dom u') (cod u')
-sub-inv-trans {⊥} {u₂} {u} fu' u'⊆u IH =
-   ⊥-elim (contradiction (fu' refl) ¬Fun⊥)
-sub-inv-trans {u₁' ↦ u₂'} {u₂} {u} fg u'⊆u IH = IH (↦⊆→∈ u'⊆u)
-sub-inv-trans {u₁' ⊔ u₂'} {u₂} {u} fg u'⊆u IH
-    with ⊔⊆-inv u'⊆u
-... | ⟨ u₁'⊆u , u₂'⊆u ⟩
-    with sub-inv-trans {u₁'} {u₂} {u} (λ {v'} z → fg (inj₁ z)) u₁'⊆u IH
-       | sub-inv-trans {u₂'} {u₂} {u} (λ {v'} z → fg (inj₂ z)) u₂'⊆u IH
-... | ⟨ u₃₁ , ⟨ fu21' , ⟨ u₃₁⊆u₂ , ⟨ du₃₁⊑du₁' , cu₁'⊑cu₃₁ ⟩ ⟩ ⟩ ⟩
-    | ⟨ u₃₂ , ⟨ fu22' , ⟨ u₃₂⊆u₂ , ⟨ du₃₂⊑du₂' , cu₁'⊑cu₃₂ ⟩ ⟩ ⟩ ⟩ =
-      ⟨ (u₃₁ ⊔ u₃₂) , ⟨ fu₂' , ⟨ u₂'⊆u₂ ,
-      ⟨ ⊔⊑⊔ du₃₁⊑du₁' du₃₂⊑du₂' ,
-        ⊔⊑⊔ cu₁'⊑cu₃₁ cu₁'⊑cu₃₂ ⟩ ⟩ ⟩ ⟩
-    where fu₂' : {v' : Value} → v' ∈ u₃₁ ⊎ v' ∈ u₃₂ → Fun v'
-          fu₂' {v'} (inj₁ x) = fu21' x
-          fu₂' {v'} (inj₂ y) = fu22' y
-          u₂'⊆u₂ : {C : Value} → C ∈ u₃₁ ⊎ C ∈ u₃₂ → C ∈ u₂
-          u₂'⊆u₂ {C} (inj₁ x) = u₃₁⊆u₂ x
-          u₂'⊆u₂ {C} (inj₂ y) = u₃₂⊆u₂ y
+    → Σ[ u₃ ∈ Value ] factor u₂ u₃ (dom u′) (cod u′)
+sub-inv-trans {⊥} {u₂} {u} fu′ u′⊆u IH =
+   ⊥-elim (contradiction (fu′ refl) ¬Fun⊥)
+sub-inv-trans {u₁′ ↦ u₂′} {u₂} {u} fg u′⊆u IH = IH (↦⊆→∈ u′⊆u)
+sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
+    with ⊔⊆-inv u′⊆u
+... | ⟨ u₁′⊆u , u₂′⊆u ⟩
+    with sub-inv-trans {u₁′} {u₂} {u} (λ {v′} z → fg (inj₁ z)) u₁′⊆u IH
+       | sub-inv-trans {u₂′} {u₂} {u} (λ {v′} z → fg (inj₂ z)) u₂′⊆u IH
+... | ⟨ u₃₁ , ⟨ fu21' , ⟨ u₃₁⊆u₂ , ⟨ du₃₁⊑du₁′ , cu₁′⊑cu₃₁ ⟩ ⟩ ⟩ ⟩
+    | ⟨ u₃₂ , ⟨ fu22' , ⟨ u₃₂⊆u₂ , ⟨ du₃₂⊑du₂′ , cu₁′⊑cu₃₂ ⟩ ⟩ ⟩ ⟩ =
+      ⟨ (u₃₁ ⊔ u₃₂) , ⟨ fu₂′ , ⟨ u₂′⊆u₂ ,
+      ⟨ ⊔⊑⊔ du₃₁⊑du₁′ du₃₂⊑du₂′ ,
+        ⊔⊑⊔ cu₁′⊑cu₃₁ cu₁′⊑cu₃₂ ⟩ ⟩ ⟩ ⟩
+    where fu₂′ : {v′ : Value} → v′ ∈ u₃₁ ⊎ v′ ∈ u₃₂ → Fun v′
+          fu₂′ {v′} (inj₁ x) = fu21' x
+          fu₂′ {v′} (inj₂ y) = fu22' y
+          u₂′⊆u₂ : {C : Value} → C ∈ u₃₁ ⊎ C ∈ u₃₂ → C ∈ u₂
+          u₂′⊆u₂ {C} (inj₁ x) = u₃₁⊆u₂ x
+          u₂′⊆u₂ {C} (inj₂ y) = u₃₂⊆u₂ y
 \end{code}
 
-* Suppose `u' ≡ ⊥`. Then we have a contradiction because
+* Suppose `u′ ≡ ⊥`. Then we have a contradiction because
   it is not the case that `Fun ⊥`.
 
-* Suppose `u' ≡ u₁' ↦ u₂'`. Then `u₁' ↦ u₂' ∈ u` and we can apply the
+* Suppose `u′ ≡ u₁′ ↦ u₂′`. Then `u₁′ ↦ u₂′ ∈ u` and we can apply the
   premise (the induction hypothesis from `u ⊑ u₂`) to obtain that
-  `u₁' ↦ u₂'` factors of `u₂ into u₂'`. This case is complete because
-  `dom u' ≡ u₁'` and `cod u' ≡ u₂'`.
+  `u₁′ ↦ u₂′` factors of `u₂ into u₂′`. This case is complete because
+  `dom u′ ≡ u₁′` and `cod u′ ≡ u₂′`.
   
-* Suppose `u' ≡ u₁' ⊔ u₂'`. Then we have `u₁' ⊆ u` and `u₂' ⊆ u`. We also  
-  have `Funs u₁'` and `Funs u₂'`, so we can apply the induction hypothesis
-  for both `u₁'` and `u₂'`. So there exists values `u₃₁` and `u₃₂` such that
-  `(dom u₁') ↦ (cod u₁')` factors `u` into `u₃₁` and
-  `(dom u₂') ↦ (cod u₂')` factors `u` into `u₃₂`.
+* Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also  
+  have `Funs u₁′` and `Funs u₂′`, so we can apply the induction hypothesis
+  for both `u₁′` and `u₂′`. So there exists values `u₃₁` and `u₃₂` such that
+  `(dom u₁′) ↦ (cod u₁′)` factors `u` into `u₃₁` and
+  `(dom u₂′) ↦ (cod u₂′)` factors `u` into `u₃₂`.
   We will show that `(dom u) ↦ (cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
   So we need to show that
   
-        dom (u₃₁ ⊔ u₃₂) ⊑ dom (u₁' ⊔ u₂')
-        cod (u₁' ⊔ u₂') ⊑ cod (u₃₁ ⊔ u₃₂)
+        dom (u₃₁ ⊔ u₃₂) ⊑ dom (u₁′ ⊔ u₂′)
+        cod (u₁′ ⊔ u₂′) ⊑ cod (u₃₁ ⊔ u₃₂)
   
   But those both follow directly from the factoring of
   `u` into `u₃₁` and `u₃₂`, using the monotonicity of `⊔` with respect to `⊑`.
@@ -1152,11 +1147,11 @@ sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR2⊑ lt) {v} {w} m
                                    ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩
 sub-inv {u₁} {u₂} (Trans⊑{v = u} u₁⊑u u⊑u₂) {v} {w} v↦w∈u₁
     with sub-inv u₁⊑u v↦w∈u₁
-... | ⟨ u' , ⟨ fu' , ⟨ u'⊆u , ⟨ domu'⊑v , w⊑codu' ⟩ ⟩ ⟩ ⟩ 
-    with sub-inv-trans {u'} fu' u'⊆u (sub-inv u⊑u₂) 
-... | ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ domu₃⊑domu' , codu'⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
-      ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ Trans⊑ domu₃⊑domu' domu'⊑v ,
-                                    Trans⊑ w⊑codu' codu'⊑codu₃ ⟩ ⟩ ⟩ ⟩
+... | ⟨ u′ , ⟨ fu′ , ⟨ u′⊆u , ⟨ domu′⊑v , w⊑codu′ ⟩ ⟩ ⟩ ⟩ 
+    with sub-inv-trans {u′} fu′ u′⊆u (sub-inv u⊑u₂) 
+... | ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ domu₃⊑domu′ , codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
+      ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ Trans⊑ domu₃⊑domu′ domu′⊑v ,
+                                    Trans⊑ w⊑codu′ codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩
 sub-inv {u₁₁ ↦ u₁₂} {u₂₁ ↦ u₂₂} (Fun⊑ lt1 lt2) refl =
     ⟨ u₂₁ ↦ u₂₂ , ⟨ (λ {w} → fun) , ⟨ (λ {C} z → z) , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
 sub-inv {u₂₁ ↦ (u₂₂ ⊔ u₂₃)} {u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃} Dist⊑
@@ -1210,15 +1205,15 @@ Let `v` and `w` be arbitrary values.
             u₁ ⊑ u₂
         
   By the induction hypothesis for `u₁ ⊑ u`, we know
-  that `v ↦ w` factors `u` into `u'`, for some value `u'`,
-  so we have `Funs u'` and `u' ⊆ u`.
+  that `v ↦ w` factors `u` into `u′`, for some value `u′`,
+  so we have `Funs u′` and `u′ ⊆ u`.
   By the induction hypothesis for `u ⊑ u₂`, we know
-  that for any `v' ↦ w' ∈ u`, `v' ↦ w'` factors `u₂`.
+  that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂`.
   Now we apply the lemma sub-inv-trans, which gives us
-  some `u₃` such that `(dom u') ↦ (cod u')` factors `u₂` into `u₃`.
+  some `u₃` such that `(dom u′) ↦ (cod u′)` factors `u₂` into `u₃`.
   We show that `v ↦ w` also factors `u₂` into `u₃`.
-  From `dom u₃ ⊑ dom u'` and `dom u' ⊑ v`, we have `dom u₃ ⊑ v`.
-  From `w ⊑ cod u'` and `cod u' ⊑ cod u₃`, we have `w ⊑ cod u₃`,
+  From `dom u₃ ⊑ dom u′` and `dom u′ ⊑ v`, we have `dom u₃ ⊑ v`.
+  From `w ⊑ cod u′` and `cod u′ ⊑ cod u₃`, we have `w ⊑ cod u₃`,
   and this case is complete.
 
 * Case `Fun⊑`.
@@ -1248,14 +1243,14 @@ We conclude this section with two corollaries of the sub-inv lemma.
 First, we have the following property that is convenient to use in
 later proofs. We specialize the premise to just `v ↦ w ⊑ u₁`
 and we modify the conclusion to say that for every
-`v' ↦ w' ∈ u₂`, we have `v' ⊑ v`.
+`v′ ↦ w′ ∈ u₂`, we have `v′ ⊑ v`.
 
 \begin{code}
 sub-inv-fun : ∀{v w u₁ : Value}
     → (v ↦ w) ⊑ u₁
       -----------------------------------------------------
     → Σ[ u₂ ∈ Value ] Funs u₂ × u₂ ⊆ u₁
-        × (∀{v' w'} → (v' ↦ w') ∈ u₂ → v' ⊑ v) × w ⊑ cod u₂
+        × (∀{v′ w′} → (v′ ↦ w′) ∈ u₂ → v′ ⊑ v) × w ⊑ cod u₂
 sub-inv-fun{v}{w}{u₁} abc
     with sub-inv abc {v}{w} refl
 ... | ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ db , cc ⟩ ⟩ ⟩ ⟩ =
@@ -1268,19 +1263,19 @@ The second corollary is the inversion rule that one would expect for
 less-than with functions on the left and right-hand sides.
 
 \begin{code}
-↦⊑↦-inv : ∀{v w v' w'}
-        → v ↦ w ⊑ v' ↦ w'
+↦⊑↦-inv : ∀{v w v′ w′}
+        → v ↦ w ⊑ v′ ↦ w′
           -----------------
-        → v' ⊑ v × w ⊑ w'
-↦⊑↦-inv{v}{w}{v'}{w'} lt
+        → v′ ⊑ v × w ⊑ w′
+↦⊑↦-inv{v}{w}{v′}{w′} lt
     with sub-inv-fun lt  
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆v34 , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
     with Funs∈ f
-... | ⟨ u , ⟨ u' , u↦u'∈Γ ⟩ ⟩
-    with Γ⊆v34 u↦u'∈Γ
+... | ⟨ u , ⟨ u′ , u↦u′∈Γ ⟩ ⟩
+    with Γ⊆v34 u↦u′∈Γ
 ... | refl =    
-  let codΓ⊆w' = ⊆↦→cod⊆ Γ⊆v34 in
-  ⟨ lt1 u↦u'∈Γ , Trans⊑ lt2 (⊆→⊑ codΓ⊆w') ⟩
+  let codΓ⊆w′ = ⊆↦→cod⊆ Γ⊆v34 in
+  ⟨ lt1 u↦u′∈Γ , Trans⊑ lt2 (⊆→⊑ codΓ⊆w′) ⟩
 \end{code}
 
 
@@ -1340,8 +1335,8 @@ of `Value`.
  
 The use of `Value` instead of `℘f(Value)` in the output does not restrict
 expressiveness compared to Plotkin's model because the semantics use
-sets of values and a pair of sets `(V, V')` can be represented as a set
-of pairs `{ (V, v') | v' ∈ V' }`.  In Scott's ℘(ω), the above values are
+sets of values and a pair of sets `(V, V′)` can be represented as a set
+of pairs `{ (V, v′) | v′ ∈ V′ }`.  In Scott's ℘(ω), the above values are
 mapped to and from the natural numbers using a kind of Godel encoding.
 
 
@@ -1382,3 +1377,18 @@ mapped to and from the natural numbers using a kind of Godel encoding.
 * Data Types as Lattices. Dana Scott, SIAM Journal on Computing,
   vol. 5, pages 522-587, 1976.
 
+## Unicode
+
+This chapter uses the following unicode:
+
+    ⊥  U+22A5  UP TACK (\bot)
+    ↦  U+21A6  RIGHTWARDS ARROW FROM BAR (\mapsto)
+    ⊔  U+2294  SQUARE CUP (\lub)
+    ⊑  U+2291  SQUARE IMAGE OF OR EQUAL TO (\sqsubseteq)
+    ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
+    ↓  U+2193  DOWNWARDS ARROW (\d) 
+    ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
+    ℰ  U+2130  SCRIPT CAPITAL E (\McE)
+    ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~- or \simeq)
+    ∈  U+2208  ELEMENT OF (\in)
+    ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub= or \subseteq)
