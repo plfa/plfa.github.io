@@ -20,7 +20,7 @@ open import plfa.LambdaReduction
   using (β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
 open import plfa.Soundness using (Subst)
 open import plfa.Substitution
-  using (⧼_⧽; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
+  using (⟪_⟫; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; trans; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
@@ -166,21 +166,21 @@ expand the conclusion of the statement, stating that the results are
 equivalent.
 
 We make the two notions of equivalence precise by defining the
-following two mutually-recursive predicates `c ≈ M` and `γ ≃ σ`.
+following two mutually-recursive predicates `c ≈ M` and `γ ≈ₑ σ`.
 
 \begin{code}
 _≈_ : Clos → (∅ ⊢ ★) → Set
-_≃_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
+_≈ₑ_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
-(clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≃ σ × (N ≡ ⧼ σ ⧽ M)
+(clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≈ₑ σ × (N ≡ ⟪ σ ⟫ M)
 
-γ ≃ σ = ∀{x} → (γ x) ≈ (σ x)
+γ ≈ₑ σ = ∀{x} → (γ x) ≈ (σ x)
 \end{code}
 
 We can now state the main lemma:
 
-    If γ ⊢ M ⇓ c  and  γ ≃ σ,
-    then  ⧼ σ ⧽ M —↠ N  and  c ≈ N  for some N.
+    If γ ⊢ M ⇓ c  and  γ ≈ₑ σ,
+    then  ⟪ σ ⟫ M —↠ N  and  c ≈ N  for some N.
 
 Before starting the proof, we establish a couple lemmas
 about equivalent environments and substitutions.
@@ -188,33 +188,33 @@ about equivalent environments and substitutions.
 The empty environment is equivalent to the identity substitution.
 
 \begin{code}
-≃-id : ∅' ≃ ids
-≃-id {()}
+≈ₑ-id : ∅' ≈ₑ ids
+≈ₑ-id {()}
 \end{code}
 
 We define an auxilliary function for extending a substitution.
 
 \begin{code}
 ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
-ext-subst{Γ}{Δ} σ N {A} = ⧼ subst-zero N ⧽ ∘ exts σ
+ext-subst{Γ}{Δ} σ N {A} = ⟪ subst-zero N ⟫ ∘ exts σ
 \end{code}
 
 The next lemma states that if you start with an equivalent
-environment and substitution `γ ≃ σ`, extending them with
+environment and substitution `γ ≈ₑ σ`, extending them with
 an equivalent closure and term `c ≈ N` produces
 an equivalent environment and substitution:
-`(γ ,' c) ≃ (ext-subst σ N)`. 
+`(γ ,' c) ≈ₑ (ext-subst σ N)`. 
 
 \begin{code}
-≃-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {c} {N : ∅ ⊢ ★}
-      → γ ≃ σ  →  c ≈ N
+≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {c} {N : ∅ ⊢ ★}
+      → γ ≈ₑ σ  →  c ≈ N
         --------------------------
-      → (γ ,' c) ≃ (ext-subst σ N)
-≃-ext {Γ} {γ} {σ} {c} {N} γ≃σ c≈N {x} = goal
+      → (γ ,' c) ≈ₑ (ext-subst σ N)
+≈ₑ-ext {Γ} {γ} {σ} {c} {N} γ≈ₑσ c≈N {x} = goal
    where
-   ext-cons : (γ ,' c) ≃ (N • σ)
+   ext-cons : (γ ,' c) ≈ₑ (N • σ)
    ext-cons {Z} = c≈N
-   ext-cons {S x} = γ≃σ
+   ext-cons {S x} = γ≈ₑσ
 
    goal : (γ ,' c) x ≈ ext-subst σ N x
    goal
@@ -222,45 +222,45 @@ an equivalent environment and substitution:
    ... | a rewrite sym (subst-zero-exts-cons{Γ}{∅}{σ}{★}{N}{★}) = a
 \end{code}
 
-To prove `≃-ext`, we make use of the fact that `ext-subst σ N` is
+To prove `≈ₑ-ext`, we make use of the fact that `ext-subst σ N` is
 equivalent to `N • σ` (by `subst-zero-exts-cons`). So we just
-need to prove that `(γ ,' c) ≃ (N • σ)`, which is easy.
+need to prove that `(γ ,' c) ≈ₑ (N • σ)`, which is easy.
 We proceed by cases on the input variable.
 
 * If it is `Z`, then we immediately conclude using the
   premise `c ≈ N`.
 
 * If it is `S x`, then we immediately conclude using
-  premise `γ ≃ σ`.
+  premise `γ ≈ₑ σ`.
 
 
 We arive at the main lemma: if `M` big steps to a
-closure `c` in environment `γ`, and if `γ ≃ σ`, then `⧼ σ ⧽ M` reduces
+closure `c` in environment `γ`, and if `γ ≈ₑ σ`, then `⟪ σ ⟫ M` reduces
 to some term `N` that is equivalent to `c`. We describe the proof
 below.
 
 \begin{code}
 ⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
-       → γ ⊢ M ⇓ c  →  γ ≃ σ
+       → γ ⊢ M ⇓ c  →  γ ≈ₑ σ
          ---------------------------------------
-       → Σ[ N ∈ ∅ ⊢ ★ ] (⧼ σ ⧽ M —↠ N) × c ≈ N
-⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓c) γ≃σ
-    with γ x | γ≃σ {x} | γx≡Lδ
-... | clos L δ | ⟨ τ , ⟨ δ≃τ , σx≡τL ⟩ ⟩ | refl
-    with ⇓→—↠×𝔹{σ = τ} δ⊢L⇓c δ≃τ
+       → Σ[ N ∈ ∅ ⊢ ★ ] (⟪ σ ⟫ M —↠ N) × c ≈ N
+⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓c) γ≈ₑσ
+    with γ x | γ≈ₑσ {x} | γx≡Lδ
+... | clos L δ | ⟨ τ , ⟨ δ≈ₑτ , σx≡τL ⟩ ⟩ | refl
+    with ⇓→—↠×𝔹{σ = τ} δ⊢L⇓c δ≈ₑτ
 ... | ⟨ N , ⟨ τL—↠N , c≈N ⟩ ⟩ rewrite σx≡τL =
       ⟨ N , ⟨ τL—↠N , c≈N ⟩ ⟩
-⇓→—↠×𝔹 {σ = σ} {c = clos (ƛ N) γ} ⇓-lam γ≃σ =
-    ⟨ ⧼ σ ⧽ (ƛ N) , ⟨ ⧼ σ ⧽ (ƛ N) [] , ⟨ σ , ⟨ γ≃σ , refl ⟩ ⟩ ⟩ ⟩
-⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {c} (⇓-app {N = N} L⇓ƛNδ N⇓c) γ≃σ
-    with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≃σ
-... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≃τ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
-    with ⇓→—↠×𝔹 {σ = ext-subst τ (⧼ σ ⧽ M)} N⇓c
-           (λ {x} → ≃-ext{σ = τ} δ≃τ ⟨ σ , ⟨ γ≃σ , refl ⟩ ⟩ {x})
-       | β{∅}{⧼ exts τ ⧽ N}{⧼ σ ⧽ M}
+⇓→—↠×𝔹 {σ = σ} {c = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
+    ⟨ ⟪ σ ⟫ (ƛ N) , ⟨ ⟪ σ ⟫ (ƛ N) [] , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
+⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {c} (⇓-app {N = N} L⇓ƛNδ N⇓c) γ≈ₑσ
+    with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≈ₑσ
+... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
+    with ⇓→—↠×𝔹 {σ = ext-subst τ (⟪ σ ⟫ M)} N⇓c
+           (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
+       | β{∅}{⟪ exts τ ⟫ N}{⟪ σ ⟫ M}
 ... | ⟨ N' , ⟨ —↠N' , c≈N' ⟩ ⟩ | ƛτN·σM—→
-    rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (⧼ σ ⧽ M)} =
-    let rs = (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
+    rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (⟪ σ ⟫ M)} =
+    let rs = (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
     let g = —↠-trans (appL-cong σL—↠ƛτN) rs in
     ⟨ N' , ⟨ g , c≈N' ⟩ ⟩
 \end{code}
@@ -270,51 +270,51 @@ to consider.
 
 * Case `⇓-var`.
   So we have `γ x ≡ clos L δ` and `δ ⊢ L ⇓ c`.
-  We need to show that `⧼ σ ⧽ x —↠ N` and `c ≈ N` for some `N`.
-  The premise `γ ≃ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
+  We need to show that `⟪ σ ⟫ x —↠ N` and `c ≈ N` for some `N`.
+  The premise `γ ≈ₑ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
   By the definition of `≈`, there exists a `τ` such that
-  `δ ≃ τ` and `σ x ≡ ⧼ τ ⧽ L `.
-  Using `δ ⊢ L ⇓ c` and `δ ≃ τ`, 
+  `δ ≈ₑ τ` and `σ x ≡ ⟪ τ ⟫ L `.
+  Using `δ ⊢ L ⇓ c` and `δ ≈ₑ τ`, 
   the induction hypothesis gives us
-  `⧼ τ ⧽ L —↠ N` and `c ≈ N` for some `N`.
-  So we have shown that `⧼ σ ⧽ x —↠ N` and `c ≈ N` for some `N`.
+  `⟪ τ ⟫ L —↠ N` and `c ≈ N` for some `N`.
+  So we have shown that `⟪ σ ⟫ x —↠ N` and `c ≈ N` for some `N`.
 
 * Case `⇓-lam`.
-  We immediately have `⧼ σ ⧽ (ƛ N) —↠ ⧼ σ ⧽ (ƛ N)`
-  and `clos (⧼ σ ⧽ (ƛ N)) γ ≈ ⧼ σ ⧽ (ƛ N)`.
+  We immediately have `⟪ σ ⟫ (ƛ N) —↠ ⟪ σ ⟫ (ƛ N)`
+  and `clos (⟪ σ ⟫ (ƛ N)) γ ≈ ⟪ σ ⟫ (ƛ N)`.
 
 * Case `⇓-app`.
-  Using `γ ⊢ L ⇓ clos N δ` and `γ ≃ σ`, 
+  Using `γ ⊢ L ⇓ clos N δ` and `γ ≈ₑ σ`, 
   the induction hypothesis gives us
   
-        ⧼ σ ⧽ L —↠ ƛ ⧼ exts τ ⧽ N                                           (1)
+        ⟪ σ ⟫ L —↠ ƛ ⟪ exts τ ⟫ N                                           (1)
   
-  and `δ ≃ τ` for some `τ`.
-  From `γ≃σ` we have `clos M γ ≈ ⧼ σ ⧽ M`.
+  and `δ ≈ₑ τ` for some `τ`.
+  From `γ≈ₑσ` we have `clos M γ ≈ ⟪ σ ⟫ M`.
   Then with `(δ ,' clos M γ) ⊢ N ⇓ c`,
   the induction hypothesis gives us `c ≈ N'` and
   
-        ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽ N —↠ N'                           (2)
+        ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫ N —↠ N'                           (2)
   
   Meanwhile, by `β`, we have
 
-        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→ ⧼ subst-zero (⧼ σ ⧽ M) ⧽ (⧼ exts τ ⧽ N)
+        (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→ ⟪ subst-zero (⟪ σ ⟫ M) ⟫ (⟪ exts τ ⟫ N)
 
   which is the same as the following, by `sub-sub`.
   
-        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —→ ⧼ exts τ ⨟ subst-zero (⧼ σ ⧽ M) ⧽  N  (3)
+        (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→ ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫  N  (3)
 
   Using (3) and (2) we have
   
-        (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M —↠ N'                                    (4)
+        (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —↠ N'                                    (4)
 
   From (1) we have
 
-        ⧼ σ ⧽ L · ⧼ σ ⧽ M —↠ (ƛ ⧼ exts τ ⧽ N) · ⧼ σ ⧽ M
+        ⟪ σ ⟫ L · ⟪ σ ⟫ M —↠ (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M
 
   which we combine with (4) to conclude that
 
-        ⧼ σ ⧽ L · ⧼ σ ⧽ M —↠ N'
+        ⟪ σ ⟫ L · ⟪ σ ⟫ M —↠ N'
 
 
 With the main lemma complete, we establish the forward direction
@@ -326,10 +326,10 @@ cbn→reduce :  ∀{M : ∅ ⊢ ★}{Δ}{δ : ClosEnv Δ}{N′ : Δ , ★ ⊢ �
        -----------------------------
      → Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N)
 cbn→reduce {M}{Δ}{δ}{N′} M⇓c
-    with ⇓→—↠×𝔹{σ = ids} M⇓c ≃-id
+    with ⇓→—↠×𝔹{σ = ids} M⇓c ≈ₑ-id
 ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
     rewrite sub-id{M = M} | eq2 =
-    ⟨ ⧼ exts σ ⧽ N′ , rs ⟩
+    ⟨ ⟪ exts σ ⟫ N′ , rs ⟩
 \end{code}
 
 The proof of the backward direction, that beta reduction to a lambda
@@ -359,5 +359,10 @@ reduction.  Finally, Corollary 2 combines these results to show that
 
 ## Unicode
 
+This chapter uses the following unicode:
+
+    ≈  U+2248  ALMOST EQUAL TO (\~~ or \approx)
+    ₑ  U+2091  LATIN SUBSCRIPT SMALL LETTER E (\_e)
+    ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
     ⇓  U+21DB  DOWNWARDS DOUBLE ARROW (\d= or \Downarrow)
     

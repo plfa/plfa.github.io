@@ -61,8 +61,8 @@ system that _decides_ whether any two substitutions are equal.
 We use the following more succinct notation the `subst` function.
 
 \begin{code}
-⧼_⧽ : ∀{Γ Δ A} → Subst Γ Δ → Γ ⊢ A → Δ ⊢ A
-⧼ σ ⧽ = λ M → subst σ M
+⟪_⟫ : ∀{Γ Δ A} → Subst Γ Δ → Γ ⊢ A → Δ ⊢ A
+⟪ σ ⟫ = λ M → subst σ M
 \end{code}
 
 
@@ -109,7 +109,7 @@ _•_ : ∀{Γ Δ A} → (Δ ⊢ A) → Subst Γ Δ → Subst (Γ , A) Δ
 Given two substitutions `σ` and `τ`, the sequencing operation `σ ⨟ τ`
 produces the sequence
 
-    ⧼τ⧽(σ 0), ⧼τ⧽(σ 1), ⧼τ⧽(σ 2), ...
+    ⟪τ⟫(σ 0), ⟪τ⟫(σ 1), ⟪τ⟫(σ 2), ...
     
 That is, it composes the two substitutions by first applying
 `σ` and then applying `τ`.
@@ -118,7 +118,7 @@ That is, it composes the two substitutions by first applying
 infixr 5 _⨟_
 
 _⨟_ : ∀{Γ Δ Σ} → Subst Γ Δ → Subst Δ Σ → Subst Γ Σ
-σ ⨟ τ = ⧼ τ ⧽ ∘ σ
+σ ⨟ τ = ⟪ τ ⟫ ∘ σ
 \end{code}
 
 For the sequencing operation, Abadi et al. use the notation of
@@ -131,20 +131,20 @@ the standard notation for forward function composition.
 
 The σ algebra includes the following equations.
 
-    (sub-head)  ⧼ M • σ ⧽ (` Z) ≡ M
+    (sub-head)  ⟪ M • σ ⟫ (` Z) ≡ M
     (sub-tail)  ↑ ⨟ (M • σ)    ≡ σ
-    (sub-η)     (⧼ σ ⧽ (` Z)) • (↑ ⨟ σ) ≡ σ
+    (sub-η)     (⟪ σ ⟫ (` Z)) • (↑ ⨟ σ) ≡ σ
     (Z-shift)   (` Z) • ↑      ≡ ids
     
-    (sub-id)    ⧼ ids ⧽ M      ≡ M
-    (sub-app)   ⧼ σ ⧽ (L · M)  ≡ (⧼ σ ⧽ L) · (⧼ σ ⧽ M)
-    (sub-abs)   ⧼ σ ⧽ (ƛ N)    ≡ ƛ ⧼ σ ⧽ N
-    (sub-sub)   ⧼ τ ⧽ ⧼ σ ⧽ M  ≡ ⧼ σ ⨟ τ ⧽ M
+    (sub-id)    ⟪ ids ⟫ M      ≡ M
+    (sub-app)   ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
+    (sub-abs)   ⟪ σ ⟫ (ƛ N)    ≡ ƛ ⟪ σ ⟫ N
+    (sub-sub)   ⟪ τ ⟫ ⟪ σ ⟫ M  ≡ ⟪ σ ⨟ τ ⟫ M
 
     (sub-idL)   ids ⨟ σ        ≡ σ
     (sub-idR)   σ ⨟ ids        ≡ σ
     (sub-assoc) (σ ⨟ τ) ⨟ θ    ≡ σ ⨟ (τ ⨟ θ)
-    (sub-dist)  (M • σ) ⨟ τ    ≡ (⧼ τ ⧽ M) • (σ ⨟ τ)
+    (sub-dist)  (M • σ) ⨟ τ    ≡ (⟪ τ ⟫ M) • (σ ⨟ τ)
 
 The first group of equations describe how the `•` operator acts like cons.
 The equation `sub-head` says that the variable zero `Z` returns the
@@ -179,7 +179,7 @@ the σ algebra.
 To begin with, renaming can be expressed in terms of substitution.
 We have
 
-    rename ρ M ≡ ⧼ ren ρ ⧽ M               (rename-subst-ren)
+    rename ρ M ≡ ⟪ ren ρ ⟫ M               (rename-subst-ren)
 
 where `ren` turns a renaming `ρ` into a substitution by post-composing
 `ρ` with the identity substitution.
@@ -194,7 +194,7 @@ shift.
 
     ren S_ ≡ ↑                           (ren-shift)
     
-    rename S_ M ≡ ⧼ ↑ ⧽ M                 (rename-shift)
+    rename S_ M ≡ ⟪ ↑ ⟫ M                 (rename-shift)
 
 Next we relate the `exts` function to the σ algebra.  Recall that the
 `exts` function extends a substitution as follows:
@@ -220,7 +220,7 @@ renamings.
 It is also useful to specialize the `sub-sub` equation of the σ
 algebra to the situation where the first substitution is a renaming.
 
-    ⧼ σ ⧽ (rename ρ M) ≡ ⧼ σ ∘ ρ ⧽ M       (rename-subst)
+    ⟪ σ ⟫ (rename ρ M) ≡ ⟪ σ ∘ ρ ⟫ M       (rename-subst)
 
 The `subst-zero M` substitution is equivalent to cons'ing
 `M` onto the identity substitution.
@@ -241,7 +241,7 @@ the operators.
 
 \begin{code}
 sub-head : ∀ {Γ Δ} {A} {M : Δ ⊢ A}{σ : Subst Γ Δ}
-         → ⧼ M • σ ⧽ (` Z) ≡ M
+         → ⟪ M • σ ⟫ (` Z) ≡ M
 sub-head = refl
 \end{code}
 
@@ -253,10 +253,10 @@ sub-tail = extensionality λ x → refl
 
 \begin{code}
 sub-η : ∀{Γ Δ} {A B} {σ : Subst (Γ , A) Δ} 
-      → (⧼ σ ⧽ (` Z) • (↑ ⨟ σ)) {A = B} ≡ σ
+      → (⟪ σ ⟫ (` Z) • (↑ ⨟ σ)) {A = B} ≡ σ
 sub-η {Γ}{Δ}{A}{B}{σ} = extensionality λ x → lemma
    where 
-   lemma : ∀ {x} → ((⧼ σ ⧽ (` Z)) • (↑ ⨟ σ)) x ≡ σ x
+   lemma : ∀ {x} → ((⟪ σ ⟫ (` Z)) • (↑ ⨟ σ)) x ≡ σ x
    lemma {x = Z} = refl
    lemma {x = S x} = refl
 \end{code}
@@ -290,7 +290,7 @@ sub-dist {Γ}{Δ}{Σ}{A}{B}{σ}{τ}{M} = extensionality λ x → lemma {x = x}
 
 \begin{code}
 sub-app : ∀{Γ Δ} {σ : Subst Γ Δ} {L : Γ ⊢ ★}{M : Γ ⊢ ★}
-        → ⧼ σ ⧽ (L · M)  ≡ (⧼ σ ⧽ L) · (⧼ σ ⧽ M)
+        → ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
 sub-app = refl        
 \end{code}
 
@@ -405,7 +405,7 @@ in the σ algebra.
 
 The first equation we prove is
 
-    rename ρ M ≡ ⧼ ren ρ ⧽ M              (rename-subst-ren)
+    rename ρ M ≡ ⟪ ren ρ ⟫ M              (rename-subst-ren)
                
 Because `subst` uses the `exts` function, we need the following lemma
 which says that `exts` and `ext` do the same thing except that `ext`
@@ -426,7 +426,7 @@ the term `M`.
 
 \begin{code}
 rename-subst-ren : ∀ {Γ Δ}{A} {ρ : Rename Γ Δ}{M : Γ ⊢ A}
-                 → rename ρ M ≡ ⧼ ren ρ ⧽ M
+                 → rename ρ M ≡ ⟪ ren ρ ⟫ M
 rename-subst-ren {M = ` x} = refl
 rename-subst-ren {ρ = ρ}{M = ƛ N} =
   begin
@@ -434,11 +434,11 @@ rename-subst-ren {ρ = ρ}{M = ƛ N} =
     ≡⟨⟩
       ƛ rename (ext ρ) N
     ≡⟨ cong ƛ_ (rename-subst-ren {ρ = ext ρ}{M = N}) ⟩
-      ƛ ⧼ ren (ext ρ) ⧽ N
+      ƛ ⟪ ren (ext ρ) ⟫ N
     ≡⟨ cong ƛ_ (cong-sub {M = N} ren-ext refl) ⟩
-      ƛ ⧼ exts (ren ρ) ⧽  N
+      ƛ ⟪ exts (ren ρ) ⟫  N
     ≡⟨⟩
-      ⧼ ren ρ ⧽ (ƛ N)
+      ⟪ ren ρ ⟫ (ƛ N)
   ∎
 rename-subst-ren {M = L · M} = cong₂ _·_ rename-subst-ren rename-subst-ren
 \end{code}
@@ -455,18 +455,18 @@ ren-shift {Γ}{A}{B} = extensionality λ x → lemma {x = x}
   lemma {x = S x} = refl
 \end{code}
 
-The substitution `rename S_ M` is equivalent to shifting: `⧼ ↑ ⧽ M`.
+The substitution `rename S_ M` is equivalent to shifting: `⟪ ↑ ⟫ M`.
 
 \begin{code}
 rename-shift : ∀{Γ} {A} {B} {M : Γ ⊢ A}
-             → rename (S_{B = B}) M ≡ ⧼ ↑ ⧽ M
+             → rename (S_{B = B}) M ≡ ⟪ ↑ ⟫ M
 rename-shift{Γ}{A}{B}{M} =
   begin
     rename S_ M
   ≡⟨ rename-subst-ren ⟩
-    ⧼ ren S_ ⧽ M
+    ⟪ ren S_ ⟫ M
   ≡⟨ cong-sub{M = M} ren-shift refl ⟩
-    ⧼ ↑ ⧽ M
+    ⟪ ↑ ⟫ M
   ∎
 \end{code}
 
@@ -523,14 +523,14 @@ The equation `sub-abs` follows immediately from the equation
 
 \begin{code}
 sub-abs : ∀{Γ Δ} {σ : Subst Γ Δ} {N : Γ , ★ ⊢ ★}
-        → ⧼ σ ⧽ (ƛ N) ≡ ƛ ⧼ (` Z) • (σ ⨟ ↑) ⧽ N
+        → ⟪ σ ⟫ (ƛ N) ≡ ƛ ⟪ (` Z) • (σ ⨟ ↑) ⟫ N
 sub-abs {σ = σ}{N = N} =
    begin
-     ⧼ σ ⧽ (ƛ N)
+     ⟪ σ ⟫ (ƛ N)
    ≡⟨⟩
-     ƛ ⧼ exts σ ⧽ N
+     ƛ ⟪ exts σ ⟫ N
    ≡⟨ cong ƛ_ (cong-sub{M = N} exts-cons-shift refl) ⟩
-     ƛ ⧼ (` Z) • (σ ⨟ ↑) ⧽ N
+     ƛ ⟪ (` Z) • (σ ⨟ ↑) ⟫ N
    ∎
 \end{code}
 
@@ -547,20 +547,20 @@ exts-ids {Γ}{A}{B} = extensionality lemma
         lemma (S x) = refl
 \end{code}
 
-The proof of `⧼ ids ⧽ M ≡ M` now follows easily by induction on `M`,
+The proof of `⟪ ids ⟫ M ≡ M` now follows easily by induction on `M`,
 using `exts-ids` in the case for `M ≡ ƛ N`.
 
 \begin{code}
 sub-id : ∀{Γ} {A} {M : Γ ⊢ A}
-         → ⧼ ids ⧽ M ≡ M
+         → ⟪ ids ⟫ M ≡ M
 sub-id {M = ` x} = refl
 sub-id {M = ƛ N} = 
    begin
-     ⧼ ids ⧽ (ƛ N)
+     ⟪ ids ⟫ (ƛ N)
    ≡⟨⟩
-     ƛ ⧼ exts ids ⧽ N
+     ƛ ⟪ exts ids ⟫ N
    ≡⟨ cong ƛ_ (cong-sub{M = N} exts-ids refl)  ⟩
-     ƛ ⧼ ids ⧽ N
+     ƛ ⟪ ids ⟫ N
    ≡⟨ cong ƛ_ sub-id ⟩
      ƛ N
    ∎
@@ -591,7 +591,7 @@ sub-idR {Γ}{σ = σ}{A} =
 The `sub-sub` equation states that sequenced substitutions `σ ⨟ τ`
 are equivalent to first applying `σ` then applying `τ`.
 
-    ⧼ τ ⧽ ⧼ σ ⧽ M  ≡ ⧼ σ ⨟ τ ⧽ M
+    ⟪ τ ⟫ ⟪ σ ⟫ M  ≡ ⟪ σ ⨟ τ ⟫ M
 
 The proof requires several lemmas. First, we need to prove the
 specialization for renaming.
@@ -718,9 +718,9 @@ exts-seq = extensionality λ x → lemma {x = x}
      begin
        (exts σ₁ ⨟ exts σ₂) (S x)
      ≡⟨⟩
-       ⧼ exts σ₂ ⧽ (rename S_ (σ₁ x))
+       ⟪ exts σ₂ ⟫ (rename S_ (σ₁ x))
      ≡⟨ commute-subst-rename{M = σ₁ x}{σ = σ₂}{ρ = S_} refl ⟩
-       rename S_ (⧼ σ₂ ⧽ (σ₁ x))
+       rename S_ (⟪ σ₂ ⟫ (σ₁ x))
      ≡⟨⟩
        rename S_ ((σ₁ ⨟ σ₂) x)
      ∎
@@ -740,17 +740,17 @@ Now we come to the proof of `sub-sub`, which we explain below.
 
 \begin{code}
 sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ} 
-            → ⧼ σ₂ ⧽ (⧼ σ₁ ⧽ M) ≡ ⧼ σ₁ ⨟ σ₂ ⧽ M
+            → ⟪ σ₂ ⟫ (⟪ σ₁ ⟫ M) ≡ ⟪ σ₁ ⨟ σ₂ ⟫ M
 sub-sub {M = ` x} = refl
 sub-sub {Γ}{Δ}{Σ}{A}{ƛ N}{σ₁}{σ₂} =
    begin
-     ⧼ σ₂ ⧽ (⧼ σ₁ ⧽ (ƛ N))
+     ⟪ σ₂ ⟫ (⟪ σ₁ ⟫ (ƛ N))
    ≡⟨⟩
-     ƛ ⧼ exts σ₂ ⧽ (⧼ exts σ₁ ⧽ N)
+     ƛ ⟪ exts σ₂ ⟫ (⟪ exts σ₁ ⟫ N)
    ≡⟨ cong ƛ_ (sub-sub{M = N}{σ₁ = exts σ₁}{σ₂ = exts σ₂}) ⟩
-     ƛ ⧼ exts σ₁ ⨟ exts σ₂ ⧽ N
+     ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N
    ≡⟨ cong ƛ_ (cong-sub{M = N} (λ {A} → exts-seq) refl) ⟩
-     ƛ ⧼ exts ( σ₁ ⨟ σ₂) ⧽ N
+     ƛ ⟪ exts ( σ₁ ⨟ σ₂) ⟫ N
    ∎
 sub-sub {M = L · M} = cong₂ _·_ (sub-sub{M = L}) (sub-sub{M = M})
 \end{code}
@@ -761,11 +761,11 @@ We proceed by induction on the term `M`.
 
 * If `M = ƛ N`, we first use the induction hypothesis to show that 
 
-     ƛ ⧼ exts σ₂ ⧽ (⧼ exts σ₁ ⧽ N) ≡ ƛ ⧼ exts σ₁ ⨟ exts σ₂ ⧽ N
+     ƛ ⟪ exts σ₂ ⟫ (⟪ exts σ₁ ⟫ N) ≡ ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N
 
   and then use the lemma `exts-seq` to show
 
-    ƛ ⧼ exts σ₁ ⨟ exts σ₂ ⧽ N ≡ ƛ ⧼ exts ( σ₁ ⨟ σ₂) ⧽ N
+    ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N ≡ ƛ ⟪ exts ( σ₁ ⨟ σ₂) ⟫ N
 
 * If `M` is an application, we use the induction hypothesis
   for both subterms.
@@ -776,16 +776,16 @@ substitution to a renaming.
 
 \begin{code}
 rename-subst : ∀{Γ Δ Δ′}{M : Γ ⊢ ★}{ρ : Rename Γ Δ}{σ : Subst Δ Δ′}
-             → ⧼ σ ⧽ (rename ρ M) ≡ ⧼ σ ∘ ρ ⧽ M
+             → ⟪ σ ⟫ (rename ρ M) ≡ ⟪ σ ∘ ρ ⟫ M
 rename-subst {Γ}{Δ}{Δ′}{M}{ρ}{σ} =
    begin
-     ⧼ σ ⧽ (rename ρ M)
-   ≡⟨ cong ⧼ σ ⧽ (rename-subst-ren{M = M}) ⟩
-     ⧼ σ ⧽ (⧼ ren ρ ⧽ M)
+     ⟪ σ ⟫ (rename ρ M)
+   ≡⟨ cong ⟪ σ ⟫ (rename-subst-ren{M = M}) ⟩
+     ⟪ σ ⟫ (⟪ ren ρ ⟫ M)
    ≡⟨ sub-sub{M = M} ⟩
-     ⧼ ren ρ ⨟ σ ⧽ M
+     ⟪ ren ρ ⨟ σ ⟫ M
    ≡⟨⟩
-     ⧼ σ ∘ ρ ⧽ M
+     ⟪ σ ∘ ρ ⟫ M
    ∎
 \end{code}
 
@@ -806,9 +806,9 @@ sub-assoc {Γ}{Δ}{Σ}{Ψ}{σ}{τ}{θ}{A} = extensionality λ x → lemma{x = x}
       begin
         ((σ ⨟ τ) ⨟ θ) x
       ≡⟨⟩
-        ⧼ θ ⧽ (⧼ τ ⧽ (σ x))
+        ⟪ θ ⟫ (⟪ τ ⟫ (σ x))
       ≡⟨ sub-sub{M = σ x} ⟩
-        ⧼ τ ⨟ θ ⧽ (σ x)
+        ⟪ τ ⨟ θ ⟫ (σ x)
       ≡⟨⟩
         (σ ⨟ τ ⨟ θ) x
       ∎
@@ -830,7 +830,7 @@ subst-zero-exts-cons {Γ}{Δ}{σ}{B}{M}{A} =
     ≡⟨ cong-seq exts-cons-shift subst-Z-cons-ids ⟩
       (` Z • (σ ⨟ ↑)) ⨟ (M • ids)
     ≡⟨ sub-dist ⟩
-      (⧼ M • ids ⧽ (` Z)) • ((σ ⨟ ↑) ⨟ (M • ids))
+      (⟪ M • ids ⟫ (` Z)) • ((σ ⨟ ↑) ⨟ (M • ids))
     ≡⟨ cong-cons (sub-head{σ = ids}) refl ⟩
       M • ((σ ⨟ ↑) ⨟ (M • ids))
     ≡⟨ cong-cons refl (sub-assoc{σ = σ}) ⟩
@@ -849,56 +849,56 @@ We first prove the generalized form of the substitution lemma, showing
 that a substitution `σ` commutes with the subusitution of `M` into
 `N`.
 
-    ⧼ exts σ ⧽ N [ ⧼ σ ⧽ M ] ≡ ⧼ σ ⧽ (N [ M ])
+    ⟪ exts σ ⟫ N [ ⟪ σ ⟫ M ] ≡ ⟪ σ ⟫ (N [ M ])
 
 This proof is where the σ algebra pays off.  The proof is by direct
 equational reasoning. Starting with the left-hand side, we apply σ
 algebra equations, oriented left-to-right, until we arive at the
 normal form
 
-    ⧼ ⧼ σ ⧽ M • σ ⧽ N
+    ⟪ ⟪ σ ⟫ M • σ ⟫ N
 
 We then do the same with the right-hand side, arriving at the same
 normal form. 
 
 \begin{code}
 subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
-    → ⧼ exts σ ⧽ N [ ⧼ σ ⧽ M ] ≡ ⧼ σ ⧽ (N [ M ])
+    → ⟪ exts σ ⟫ N [ ⟪ σ ⟫ M ] ≡ ⟪ σ ⟫ (N [ M ])
 subst-commute {Γ}{Δ}{N}{M}{σ} =
      begin
-       ⧼ exts σ ⧽ N [ ⧼ σ ⧽ M ]
+       ⟪ exts σ ⟫ N [ ⟪ σ ⟫ M ]
      ≡⟨⟩
-       ⧼ subst-zero (⧼ σ ⧽ M) ⧽ (⧼ exts σ ⧽ N)
-     ≡⟨ cong-sub {M = ⧼ exts σ ⧽ N} subst-Z-cons-ids refl ⟩
-       ⧼ ⧼ σ ⧽ M • ids ⧽ (⧼ exts σ ⧽ N)
+       ⟪ subst-zero (⟪ σ ⟫ M) ⟫ (⟪ exts σ ⟫ N)
+     ≡⟨ cong-sub {M = ⟪ exts σ ⟫ N} subst-Z-cons-ids refl ⟩
+       ⟪ ⟪ σ ⟫ M • ids ⟫ (⟪ exts σ ⟫ N)
      ≡⟨ sub-sub {M = N} ⟩
-       ⧼ (exts σ) ⨟ ((⧼ σ ⧽ M) • ids) ⧽ N
+       ⟪ (exts σ) ⨟ ((⟪ σ ⟫ M) • ids) ⟫ N
      ≡⟨ cong-sub {M = N} (cong-seq exts-cons-shift refl) refl ⟩
-       ⧼ (` Z • (σ ⨟ ↑)) ⨟ (⧼ σ ⧽ M • ids) ⧽ N
+       ⟪ (` Z • (σ ⨟ ↑)) ⨟ (⟪ σ ⟫ M • ids) ⟫ N
      ≡⟨ cong-sub {M = N} (sub-dist {M = ` Z}) refl ⟩
-       ⧼ ⧼ ⧼ σ ⧽ M • ids ⧽ (` Z) • ((σ ⨟ ↑) ⨟ (⧼ σ ⧽ M • ids)) ⧽ N
+       ⟪ ⟪ ⟪ σ ⟫ M • ids ⟫ (` Z) • ((σ ⨟ ↑) ⨟ (⟪ σ ⟫ M • ids)) ⟫ N
      ≡⟨⟩
-       ⧼ ⧼ σ ⧽ M • ((σ ⨟ ↑) ⨟ (⧼ σ ⧽ M • ids)) ⧽ N
+       ⟪ ⟪ σ ⟫ M • ((σ ⨟ ↑) ⨟ (⟪ σ ⟫ M • ids)) ⟫ N
      ≡⟨ cong-sub{M = N} (cong-cons refl (sub-assoc{σ = σ})) refl ⟩
-       ⧼ ⧼ σ ⧽ M • (σ ⨟ ↑ ⨟ ⧼ σ ⧽ M • ids) ⧽ N
+       ⟪ ⟪ σ ⟫ M • (σ ⨟ ↑ ⨟ ⟪ σ ⟫ M • ids) ⟫ N
      ≡⟨ cong-sub{M = N} refl refl ⟩
-       ⧼ ⧼ σ ⧽ M • (σ ⨟ ids) ⧽ N
+       ⟪ ⟪ σ ⟫ M • (σ ⨟ ids) ⟫ N
      ≡⟨ cong-sub{M = N} (cong-cons refl (sub-idR{σ = σ})) refl ⟩
-       ⧼ ⧼ σ ⧽ M • σ ⧽ N
+       ⟪ ⟪ σ ⟫ M • σ ⟫ N
      ≡⟨ cong-sub{M = N} (cong-cons refl (sub-idL{σ = σ})) refl ⟩
-       ⧼ ⧼ σ ⧽ M • (ids ⨟ σ) ⧽ N
+       ⟪ ⟪ σ ⟫ M • (ids ⨟ σ) ⟫ N
      ≡⟨ cong-sub{M = N} (sym sub-dist) refl ⟩
-       ⧼ M • ids ⨟ σ ⧽ N
+       ⟪ M • ids ⨟ σ ⟫ N
      ≡⟨ sym (sub-sub{M = N}) ⟩
-       ⧼ σ ⧽ (⧼ M • ids ⧽ N)
-     ≡⟨ cong ⧼ σ ⧽ (sym (cong-sub{M = N} subst-Z-cons-ids refl)) ⟩
-       ⧼ σ ⧽ (N [ M ])
+       ⟪ σ ⟫ (⟪ M • ids ⟫ N)
+     ≡⟨ cong ⟪ σ ⟫ (sym (cong-sub{M = N} subst-Z-cons-ids refl)) ⟩
+       ⟪ σ ⟫ (N [ M ])
      ∎
 \end{code}
 
 A corollary of `subst-commute` is that `rename` also commutes with
 substitution. In the proof below, we first exchange `rename ρ` for
-the substitution `⧼ ren ρ ⧽`, and apply `subst-commute`, and
+the substitution `⟪ ren ρ ⟫`, and apply `subst-commute`, and
 then convert back to `rename ρ`.
 
 \begin{code}
@@ -909,9 +909,9 @@ rename-subst-commute {Γ}{Δ}{N}{M}{ρ} =
        (rename (ext ρ) N) [ rename ρ M ]
      ≡⟨ cong-sub (cong-sub-zero (rename-subst-ren{M = M}))
                  (rename-subst-ren{M = N}) ⟩
-       (⧼ ren (ext ρ) ⧽ N) [ ⧼ ren ρ ⧽ M ]
+       (⟪ ren (ext ρ) ⟫ N) [ ⟪ ren ρ ⟫ M ]
      ≡⟨ cong-sub refl (cong-sub{M = N} ren-ext refl) ⟩
-       (⧼ exts (ren ρ) ⧽ N) [ ⧼ ren ρ ⧽ M ]
+       (⟪ exts (ren ρ) ⟫ N) [ ⟪ ren ρ ⟫ M ]
      ≡⟨ subst-commute{N = N} ⟩
        subst (ren ρ) (N [ M ])
      ≡⟨ sym (rename-subst-ren) ⟩
@@ -955,9 +955,8 @@ defines the σ algebra.
 ## Unicode
 
 This chapter uses the following unicode:
-
-    ⧼  U+29FC  LEFT-POINTING CURVED ANGLE BRACKET (C-x 8 RET LEFT-POINTING CURVED ANGLE BRACKET)
-    ⧽  U+29FD  RIGHT-POINTING CURVED ANGLE BRACKET (C-x 8 RET RIGHT-POINTING CURVED ANGLE BRACKET)
+    ⟪  U+27EA  MATHEMATICAL LEFT DOUBLE ANGLE BRACKET (\<<)
+    ⟫  U+27EA  MATHEMATICAL RIGHT DOUBLE ANGLE BRACKET (\>>)
     ↑  U+2191  UPWARDS ARROW (\u)
     •  U+2022  BULLET (\bub)
     ⨟  U+2A1F  Z NOTATION SCHEMA COMPOSITION (C-x 8 RET Z NOTATION SCHEMA COMPOSITION)
