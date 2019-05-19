@@ -17,7 +17,7 @@ open import plfa.Untyped
   using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; ƛ_; _·_; subst; subst-zero;
          exts; rename)
 open import plfa.LambdaReduction
-  using (β; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
+  using (β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
 open import plfa.Soundness using (Subst)
 open import plfa.Substitution
   using (⧼_⧽; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
@@ -337,8 +337,7 @@ implies that the big-step semantics produces a result, will leverage the
 denotational semantics defined in the next chapter, and appears in the
 chapter on Adequacy.
 
-[PLW: to do: a direct proof as in Software Foundations.]
-
+[PLW: can we do a direct proof of the backward direction?]
 
 ## Notes
 
