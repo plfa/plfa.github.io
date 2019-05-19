@@ -39,7 +39,7 @@ the lemma becomes:
 
     M [ N ] [ L ] ≡  M〔 L 〕[ N [ L ] ]                     (substitution)
 
-where the notation M 〔 L 〕 is for subsituting L for index 1 inside
+where the notation `M 〔 L 〕` is for subsituting L for index 1 inside
 M.  In addition, because we define substitution in terms of parallel
 substitution, we have the following generalization, replacing the
 substitution of L with an arbitrary parallel substitution σ.
@@ -307,59 +307,59 @@ the equational reasoning in the later sections of this chapter.
  various implicit parameters get in the way.]
 
 \begin{code}
-cong-ext : ∀{Γ Δ}{ρ ρ' : Rename Γ Δ}{B}
-   → (∀{A} → ρ ≡ ρ' {A})
+cong-ext : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}
+   → (∀{A} → ρ ≡ ρ′ {A})
      ---------------------------------
-   → ∀{A} → ext ρ {B = B} ≡ ext ρ' {A}
-cong-ext{Γ}{Δ}{ρ}{ρ'}{B} rr {A} = extensionality λ x → lemma {x}
+   → ∀{A} → ext ρ {B = B} ≡ ext ρ′ {A}
+cong-ext{Γ}{Δ}{ρ}{ρ′}{B} rr {A} = extensionality λ x → lemma {x}
   where
-  lemma : ∀{x : Γ , B ∋ A} → ext ρ x ≡ ext ρ' x
+  lemma : ∀{x : Γ , B ∋ A} → ext ρ x ≡ ext ρ′ x
   lemma {Z} = refl
   lemma {S y} = cong S_ (cong-app rr y)
 \end{code}
 
 \begin{code}
-cong-rename : ∀{Γ Δ}{ρ ρ' : Rename Γ Δ}{B}{M M' : Γ ⊢ B}
-        → (∀{A} → ρ ≡ ρ' {A})  →  M ≡ M'
+cong-rename : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}{M M′ : Γ ⊢ B}
+        → (∀{A} → ρ ≡ ρ′ {A})  →  M ≡ M′
           ------------------------------
-        → rename ρ M ≡ rename ρ' M
+        → rename ρ M ≡ rename ρ′ M
 cong-rename {M = ` x} rr refl = cong `_ (cong-app rr x)
-cong-rename {ρ = ρ} {ρ' = ρ'} {M = ƛ N} rr refl =
-   cong ƛ_ (cong-rename {ρ = ext ρ}{ρ' = ext ρ'}{M = N} (cong-ext rr) refl)
+cong-rename {ρ = ρ} {ρ′ = ρ′} {M = ƛ N} rr refl =
+   cong ƛ_ (cong-rename {ρ = ext ρ}{ρ′ = ext ρ′}{M = N} (cong-ext rr) refl)
 cong-rename {M = L · M} rr refl =
    cong₂ _·_ (cong-rename rr refl) (cong-rename rr refl)
 \end{code}
 
 \begin{code}
-cong-exts : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{B}
-   → (∀{A} → σ ≡ σ' {A})
+cong-exts : ∀{Γ Δ}{σ σ′ : Subst Γ Δ}{B}
+   → (∀{A} → σ ≡ σ′ {A})
      -----------------------------------
-   → ∀{A} → exts σ {B = B} ≡ exts σ' {A}
-cong-exts{Γ}{Δ}{σ}{σ'}{B} ss {A} = extensionality λ x → lemma {x}
+   → ∀{A} → exts σ {B = B} ≡ exts σ′ {A}
+cong-exts{Γ}{Δ}{σ}{σ′}{B} ss {A} = extensionality λ x → lemma {x}
    where
-   lemma : ∀{x} → exts σ x ≡ exts σ' x
+   lemma : ∀{x} → exts σ x ≡ exts σ′ x
    lemma {Z} = refl
    lemma {S x} = cong (rename S_) (cong-app (ss {A}) x)
 \end{code}
 
 \begin{code}
-cong-sub : ∀{Γ Δ}{σ σ' : Subst Γ Δ}{A}{M M' : Γ ⊢ A}
-            → (∀{A} → σ ≡ σ' {A})  →  M ≡ M'
+cong-sub : ∀{Γ Δ}{σ σ′ : Subst Γ Δ}{A}{M M′ : Γ ⊢ A}
+            → (∀{A} → σ ≡ σ′ {A})  →  M ≡ M′
               ------------------------------
-            → subst σ M ≡ subst σ' M'
-cong-sub {Γ} {Δ} {σ} {σ'} {A} {` x} ss refl = cong-app ss x
-cong-sub {Γ} {Δ} {σ} {σ'} {A} {ƛ M} ss refl =
-   cong ƛ_ (cong-sub {σ = exts σ}{σ' = exts σ'} {M = M} (cong-exts ss) refl)
-cong-sub {Γ} {Δ} {σ} {σ'} {A} {L · M} ss refl = 
+            → subst σ M ≡ subst σ′ M′
+cong-sub {Γ} {Δ} {σ} {σ′} {A} {` x} ss refl = cong-app ss x
+cong-sub {Γ} {Δ} {σ} {σ′} {A} {ƛ M} ss refl =
+   cong ƛ_ (cong-sub {σ = exts σ}{σ′ = exts σ′} {M = M} (cong-exts ss) refl)
+cong-sub {Γ} {Δ} {σ} {σ′} {A} {L · M} ss refl = 
    cong₂ _·_ (cong-sub {M = L} ss refl) (cong-sub {M = M} ss refl)
 \end{code}
 
 \begin{code}
-cong-sub-zero : ∀{Γ}{B : Type}{M M' : Γ ⊢ B}
-  → M ≡ M'
+cong-sub-zero : ∀{Γ}{B : Type}{M M′ : Γ ⊢ B}
+  → M ≡ M′
     -----------------------------------------
-  → ∀{A} → subst-zero M ≡ (subst-zero M') {A}
-cong-sub-zero {Γ}{B}{M}{M'} mm' {A} =
+  → ∀{A} → subst-zero M ≡ (subst-zero M′) {A}
+cong-sub-zero {Γ}{B}{M}{M′} mm' {A} =
    extensionality λ x → cong (λ z → subst-zero z x) mm'
 \end{code}
 
@@ -368,31 +368,31 @@ cong-cons : ∀{Γ Δ}{A}{M N : Δ ⊢ A}{σ τ : Subst Γ Δ}
   → M ≡ N  →  (∀{A} → σ {A} ≡ τ {A})
     --------------------------------
   → ∀{A} → (M • σ) {A} ≡ (N • τ) {A}
-cong-cons{Γ}{Δ}{A}{M}{N}{σ}{τ} refl st {A'} = extensionality lemma
+cong-cons{Γ}{Δ}{A}{M}{N}{σ}{τ} refl st {A′} = extensionality lemma
   where
-  lemma : (x : Γ , A ∋ A') → (M • σ) x ≡ (M • τ) x
+  lemma : (x : Γ , A ∋ A′) → (M • σ) x ≡ (M • τ) x
   lemma Z = refl
   lemma (S x) = cong-app st x
 \end{code}
 
 \begin{code}
-cong-seq : ∀{Γ Δ Σ}{σ σ' : Subst Γ Δ}{τ τ' : Subst Δ Σ}
-  → (∀{A} → σ {A} ≡ σ' {A}) → (∀{A} → τ {A} ≡ τ' {A})
-  → ∀{A} → (σ ⨟ τ) {A} ≡ (σ' ⨟ τ') {A}
-cong-seq {Γ}{Δ}{Σ}{σ}{σ'}{τ}{τ'} ss' tt' {A} = extensionality lemma
+cong-seq : ∀{Γ Δ Σ}{σ σ′ : Subst Γ Δ}{τ τ′ : Subst Δ Σ}
+  → (∀{A} → σ {A} ≡ σ′ {A}) → (∀{A} → τ {A} ≡ τ′ {A})
+  → ∀{A} → (σ ⨟ τ) {A} ≡ (σ′ ⨟ τ′) {A}
+cong-seq {Γ}{Δ}{Σ}{σ}{σ′}{τ}{τ′} ss' tt' {A} = extensionality lemma
   where
-  lemma : (x : Γ ∋ A) → (σ ⨟ τ) x ≡ (σ' ⨟ τ') x
+  lemma : (x : Γ ∋ A) → (σ ⨟ τ) x ≡ (σ′ ⨟ τ′) x
   lemma x =
      begin
        (σ ⨟ τ) x 
      ≡⟨⟩
        subst τ (σ x)
      ≡⟨ cong (subst τ) (cong-app ss' x) ⟩
-       subst τ (σ' x)
-     ≡⟨ cong-sub{M = σ' x} tt' refl ⟩
-       subst τ' (σ' x)
+       subst τ (σ′ x)
+     ≡⟨ cong-sub{M = σ′ x} tt' refl ⟩
+       subst τ′ (σ′ x)
      ≡⟨⟩
-       (σ' ⨟ τ') x  
+       (σ′ ⨟ τ′) x  
      ∎
 \end{code}
 
@@ -596,17 +596,17 @@ are equivalent to first applying `σ` then applying `τ`.
 The proof requires several lemmas. First, we need to prove the
 specialization for renaming.
 
-    rename ρ (rename ρ' M) ≡ rename (ρ ∘ ρ') M
+    rename ρ (rename ρ′ M) ≡ rename (ρ ∘ ρ′) M
 
 This in turn requires the following lemma about `ext`.
 
 \begin{code}
-compose-ext : ∀{Γ Δ Σ}{ρ : Rename Δ Σ} {ρ' : Rename Γ Δ} {A B}
-            → ((ext ρ) ∘ (ext ρ')) ≡ ext (ρ ∘ ρ') {B} {A}
+compose-ext : ∀{Γ Δ Σ}{ρ : Rename Δ Σ} {ρ′ : Rename Γ Δ} {A B}
+            → ((ext ρ) ∘ (ext ρ′)) ≡ ext (ρ ∘ ρ′) {B} {A}
 compose-ext = extensionality λ x → lemma {x = x}
   where
-  lemma : ∀{Γ Δ Σ}{ρ : Rename Δ Σ} {ρ' : Rename Γ Δ} {A B} {x : Γ , B ∋ A}
-              → ((ext ρ) ∘ (ext ρ')) x ≡ ext (ρ ∘ ρ') x
+  lemma : ∀{Γ Δ Σ}{ρ : Rename Δ Σ} {ρ′ : Rename Γ Δ} {A B} {x : Γ , B ∋ A}
+              → ((ext ρ) ∘ (ext ρ′)) x ≡ ext (ρ ∘ ρ′) x
   lemma {x = Z} = refl
   lemma {x = S x} = refl
 \end{code}
@@ -616,19 +616,19 @@ the other using `rename`, we proceed by induction on the term `M`,
 using the `compose-ext` lemma in the case for `M ≡ ƛ N`.
 
 \begin{code}
-compose-rename : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A}{ρ : Rename Δ Σ}{ρ' : Rename Γ Δ} 
-  → rename ρ (rename ρ' M) ≡ rename (ρ ∘ ρ') M
+compose-rename : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A}{ρ : Rename Δ Σ}{ρ′ : Rename Γ Δ} 
+  → rename ρ (rename ρ′ M) ≡ rename (ρ ∘ ρ′) M
 compose-rename {M = ` x} = refl
-compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ'} = cong ƛ_ G
+compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ′} = cong ƛ_ G
   where
-  G : rename (ext ρ) (rename (ext ρ') N) ≡ rename (ext (ρ ∘ ρ')) N
+  G : rename (ext ρ) (rename (ext ρ′) N) ≡ rename (ext (ρ ∘ ρ′)) N
   G =
       begin
-        rename (ext ρ) (rename (ext ρ') N)
-      ≡⟨ compose-rename{ρ = ext ρ}{ρ' = ext ρ'} ⟩
-        rename ((ext ρ) ∘ (ext ρ')) N
+        rename (ext ρ) (rename (ext ρ′) N)
+      ≡⟨ compose-rename{ρ = ext ρ}{ρ′ = ext ρ′} ⟩
+        rename ((ext ρ) ∘ (ext ρ′)) N
       ≡⟨ cong-rename compose-ext refl ⟩
-        rename (ext (ρ ∘ ρ')) N
+        rename (ext (ρ ∘ ρ′)) N
       ∎        
 compose-rename {M = L · M} = cong₂ _·_ compose-rename compose-rename
 \end{code}
@@ -645,11 +645,11 @@ commute-subst-rename : ∀{Γ Δ}{M : Γ ⊢ ★}{σ : Subst Γ Δ}
 commute-subst-rename {M = ` x} r = r
 commute-subst-rename{Γ}{Δ}{ƛ N}{σ}{ρ} r =
    cong ƛ_ (commute-subst-rename{Γ , ★}{Δ , ★}{N}
-               {exts σ}{ρ = ρ'} (λ {x} → H {x}))
+               {exts σ}{ρ = ρ′} (λ {x} → H {x}))
    where
-   ρ' : ∀ {Γ} → Rename Γ (Γ , ★)
-   ρ' {∅} = λ ()
-   ρ' {Γ , ★} = ext ρ
+   ρ′ : ∀ {Γ} → Rename Γ (Γ , ★)
+   ρ′ {∅} = λ ()
+   ρ′ {Γ , ★} = ext ρ
 
    H : {x : Γ , ★ ∋ ★} → exts (exts σ) (ext ρ x) ≡ rename (ext ρ) (exts σ x)
    H {Z} = refl
@@ -707,11 +707,11 @@ function distributes with sequencing. It is a corollary of
 `commute-subst-rename`. We describe the proof below.
 
 \begin{code}
-exts-seq : ∀{Γ Δ Δ'} {σ₁ : Subst Γ Δ} {σ₂ : Subst Δ Δ'}
+exts-seq : ∀{Γ Δ Δ′} {σ₁ : Subst Γ Δ} {σ₂ : Subst Δ Δ′}
    → ∀ {A} → (exts σ₁ ⨟ exts σ₂) {A} ≡ exts (σ₁ ⨟ σ₂)
 exts-seq = extensionality λ x → lemma {x = x}
   where
-  lemma : ∀{Γ Δ Δ'}{A}{x : Γ , ★ ∋ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Δ'}
+  lemma : ∀{Γ Δ Δ′}{A}{x : Γ , ★ ∋ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Δ′}
      → (exts σ₁ ⨟ exts σ₂) x ≡ exts (σ₁ ⨟ σ₂) x
   lemma {x = Z} = refl
   lemma {A = ★}{x = S x}{σ₁}{σ₂} =
@@ -775,9 +775,9 @@ The following corollary of `sub-sub` specializes the first
 substitution to a renaming.
 
 \begin{code}
-rename-subst : ∀{Γ Δ Δ'}{M : Γ ⊢ ★}{ρ : Rename Γ Δ}{σ : Subst Δ Δ'}
+rename-subst : ∀{Γ Δ Δ′}{M : Γ ⊢ ★}{ρ : Rename Γ Δ}{σ : Subst Δ Δ′}
              → ⧼ σ ⧽ (rename ρ M) ≡ ⧼ σ ∘ ρ ⧽ M
-rename-subst {Γ}{Δ}{Δ'}{M}{ρ}{σ} =
+rename-subst {Γ}{Δ}{Δ′}{M}{ρ}{σ} =
    begin
      ⧼ σ ⧽ (rename ρ M)
    ≡⟨ cong ⧼ σ ⧽ (rename-subst-ren{M = M}) ⟩
@@ -952,3 +952,14 @@ based on the paper of Abadi, Cardelli, Curien, and Levy (1991) that
 defines the σ algebra.
 
 
+## Unicode
+
+This chapter uses the following unicode:
+
+    ⧼  LEFT-POINTING CURVED ANGLE BRACKET (C-x 8 RET LEFT-POINTING CURVED ANGLE BRACKET)
+    ⧽  RIGHT-POINTING CURVED ANGLE BRACKET (C-x 8 RET RIGHT-POINTING CURVED ANGLE BRACKET)
+    ↑  UPWARDS ARROW (\u)
+    •  BULLET (\bub)
+    ⨟  Z NOTATION SCHEMA COMPOSITION (C-x 8 RET Z NOTATION SCHEMA COMPOSITION)
+    〔  LEFT TORTOISE SHELL BRACKET (\( option 9 on page 2)
+    〕  RIGHT TORTOISE SHELL BRACKET (\) option 9 on page 2)
