@@ -44,14 +44,17 @@ To build and host a local copy of the book, there are several tools you need *in
   
 For most of the tools, you can simply follow their respective build instructions.
 Most recent versions of Ruby should work.
-
 We advise installing agda2html using [Stack](https://docs.haskellstack.org/en/stable/README/):
 
     git clone https://github.com/wenkokke/agda2html.git
     cd agda2html
     stack install 
 
-Once you have installed these tools, you can build the book from source:
+Finally, you must install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proofer](https://github.com/gjtorikian/html-proofer), *etc.*---using Bundler:
+
+    bundle install
+
+Once you have installed all of the dependencies, you can build a copy of the book by running:
 
     make build
     
