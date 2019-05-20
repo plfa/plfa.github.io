@@ -337,8 +337,6 @@ implies that the big-step semantics produces a result, will leverage the
 denotational semantics defined in the next chapter, and appears in the
 chapter on Adequacy.
 
-[PLW: can we do a direct proof of the backward direction?]
-
 ## Notes
 
 In the seminal article _Call-by-name, call-by-value, and the
