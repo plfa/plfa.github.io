@@ -704,11 +704,14 @@ The proof is by induction on the term `M`.
 
 The last lemma needed to prove `sub-sub` states that the `exts`
 function distributes with sequencing. It is a corollary of
-`commute-subst-rename`. We describe the proof below.
+`commute-subst-rename` as described below.  (It would have been nicer
+to prove this directly by equational reasoning in the σ algebra, but
+that would require the `sub-assoc` equation, whose proof depends on
+`sub-sub`, which in turn depends on this lemma.)
 
 \begin{code}
 exts-seq : ∀{Γ Δ Δ′} {σ₁ : Subst Γ Δ} {σ₂ : Subst Δ Δ′}
-   → ∀ {A} → (exts σ₁ ⨟ exts σ₂) {A} ≡ exts (σ₁ ⨟ σ₂)
+         → ∀ {A} → (exts σ₁ ⨟ exts σ₂) {A} ≡ exts (σ₁ ⨟ σ₂)
 exts-seq = extensionality λ x → lemma {x = x}
   where
   lemma : ∀{Γ Δ Δ′}{A}{x : Γ , ★ ∋ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Δ′}
