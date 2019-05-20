@@ -579,7 +579,7 @@ sub-idR {Γ}{σ = σ}{A} =
           begin
             σ ⨟ ids
           ≡⟨⟩
-            (subst ids) ∘ σ
+            ⟪ ids ⟫ ∘ σ
           ≡⟨ extensionality (λ x → sub-id) ⟩
             σ
           ∎

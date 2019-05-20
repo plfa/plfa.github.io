@@ -61,11 +61,11 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 open import Data.Sum
 open import Agda.Primitive using (lzero)
 open import plfa.Untyped
+    using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
+           #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
-open import Data.Unit
-open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
 -- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
 \end{code}
