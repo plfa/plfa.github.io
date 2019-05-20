@@ -4,6 +4,11 @@ markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
 
+ifeq ($(AGDA_STDLIB_VERSION),)
+AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
+else
+AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/v$(AGDA_STDLIB_VERSION)/
+endif
 
 # Build PLFA and test hyperlinks
 test: build
@@ -53,7 +58,7 @@ server-stop:
 
 
 # Build website using jekyll
-build: AGDA2HTML_FLAGS += --link-to-agda-stdlib
+build: AGDA2HTML_FLAGS += --link-to-agda-stdlib=$(AGDA_STDLIB_URL)
 build: $(markdown)
 	ruby -S bundle exec jekyll build
 
