@@ -18,9 +18,8 @@ open import plfa.Untyped
          exts; rename)
 open import plfa.LambdaReduction
   using (β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
-open import plfa.Soundness using (Subst)
 open import plfa.Substitution
-  using (⟪_⟫; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
+  using (Subst; ⟪_⟫; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; trans; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)

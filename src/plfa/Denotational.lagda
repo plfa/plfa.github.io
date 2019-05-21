@@ -63,20 +63,13 @@ open import Agda.Primitive using (lzero)
 open import plfa.Untyped
     using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
            #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
+open import plfa.Substitution using (Rename; extensionality)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
 open import Function using (_∘_)
--- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
 \end{code}
 
-\begin{code}
-postulate
-  extensionality : ∀ {A B : Set} {f g : A → B}
-    → (∀ (x : A) → f x ≡ g x)
-      -----------------------
-    → f ≡ g
-\end{code}
 
 ## Values
 
@@ -695,12 +688,6 @@ performs lookup in the environment, analogous to `Γ ∋ A`.  Now suppose
 that `ρ` is a renaming that maps variables in `γ` into variables with
 equal or larger values in `δ`. This lemmas says that extending the
 renaming producing a renaming `ext r` that maps `γ , v` to `δ , v`.
-
-\begin{code}
-Rename : Context → Context → Set
-Rename Γ Δ = ∀{A} → Γ ∋ A → Δ ∋ A
-\end{code}
-
 
 \begin{code}
 ext-nth : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}

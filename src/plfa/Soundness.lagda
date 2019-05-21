@@ -18,11 +18,12 @@ open import plfa.Untyped
          subst; _[_]; subst-zero; ext; rename; exts)
 open import plfa.LambdaReduction
   using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
+open import plfa.Substitution using (Rename; Subst)  
 open import plfa.Denotational
   using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
          Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
          var; ↦-elim; ↦-intro; ⊥-intro; ⊔-intro; sub;
-         Rename; rename-pres; var-id; ℰ; _≃_; ≃-trans)
+         rename-pres; var-id; ℰ; _≃_; ≃-trans)
 open import plfa.Compositional using (lambda-inversion; var-inv)
 
 open import Relation.Binary.PropositionalEquality
@@ -70,14 +71,6 @@ relation: substitution, renaming, and extension.
 
 
 ### Simultaneous substitution preserves denotations
-
-We introduce the following shorthand for the type of a substitution
-from variables in context `Γ` to terms in context `Δ`.
-
-\begin{code}
-Subst : Context → Context → Set
-Subst Γ Δ = ∀{A} → Γ ∋ A → Δ ⊢ A
-\end{code}
 
 Our next goal is to prove that simultaneous substitution preserves
 meaning.  That is, if `M` results in `v` in environment `γ`, then applying a

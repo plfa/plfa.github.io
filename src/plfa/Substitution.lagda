@@ -17,13 +17,19 @@ module plfa.Substitution where
 open import plfa.Untyped
   using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
          rename; subst; ext; exts; _[_]; subst-zero)
-open import plfa.Denotational using (Rename; extensionality)
-open import plfa.Soundness using (Subst)
-
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong; cong₂; cong-app)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Function using (_∘_)
+-- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
+\end{code}
+
+\begin{code}
+postulate
+  extensionality : ∀ {A B : Set} {f g : A → B}
+    → (∀ (x : A) → f x ≡ g x)
+      -----------------------
+    → f ≡ g
 \end{code}
 
 ## Overview 
@@ -57,6 +63,22 @@ parallel substitution due to Abadi, Cardelli, Curien, and Levy
 substitution lemma, but they are generally useful. Futhermore, when
 the equations are applied from left to right, they form a rewrite
 system that _decides_ whether any two substitutions are equal.
+
+We introduce the following shorthand for the type of a _renaming_ from
+variables in context `Γ` to variables in context `Δ`.
+
+\begin{code}
+Rename : Context → Context → Set
+Rename Γ Δ = ∀{A} → Γ ∋ A → Δ ∋ A
+\end{code}
+
+Similarly, we introduce the following shorthand for the type of a
+_substitution_ from variables in context `Γ` to terms in context `Δ`.
+
+\begin{code}
+Subst : Context → Context → Set
+Subst Γ Δ = ∀{A} → Γ ∋ A → Δ ⊢ A
+\end{code}
 
 We use the following more succinct notation the `subst` function.
 
