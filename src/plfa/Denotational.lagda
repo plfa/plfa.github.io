@@ -63,7 +63,7 @@ open import Agda.Primitive using (lzero)
 open import plfa.Untyped
     using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
            #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
-open import plfa.Substitution using (Rename; extensionality)
+open import plfa.Substitution using (Rename; extensionality; rename-id)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
@@ -747,52 +747,12 @@ of the cases are trivial except the cases for variables and lambda.
 
 We shall need a corollary of the renaming lemma that says that if `M`
 results in `v`, then we can replace a value in the environment with a
-larger one (a stronger one), and `M` still results in `v`. In particular,
-if `γ ⊢ M ↓ v` and `γ ⊑ δ`, then `δ ⊢ M ↓ v`.  What does this have to do
-with renaming?  It's renaming with the identity function.
-
-The next lemma shows that renaming with an identity function is indeed
-an identity function on terms. In the case of lambda abstraction, the
-identity function gets extended, becoming another identity function,
-but not the same one (Agda lacks extensionality).  To work around this
-issue, we parameterize the proof over any function that is an
-identity.
-
-[JGS: todo: use extensionality]
-
-\begin{code}
-is-identity : ∀ {Γ} (id : ∀{A} → Γ ∋ A → Γ ∋ A) → Set
-is-identity {Γ} id = (∀ {x : Γ ∋ ★} → id {★} x ≡ x)
-\end{code}
-
-\begin{code}
-rename-id : ∀ {Γ} {M : Γ ⊢ ★} {id : ∀{A} → Γ ∋ A → Γ ∋ A}
-  → is-identity id
-    ---------------
-  → rename id M ≡ M
-rename-id {M = ` x} eq = cong `_ (eq {x})
-rename-id {M = ƛ N}{id = id} eq = cong ƛ_ (rename-id {M = N} ext-id)
-  where
-  ext-id : is-identity (ext id)
-  ext-id {Z} = refl
-  ext-id {S x} = cong S_ eq
-rename-id {M = L · M} eq = cong₂ _·_ (rename-id eq) (rename-id eq)
-\end{code}
-
-The identity function on variables, `var-id`, is an identity function.
-
-\begin{code}
-var-id : ∀ {Γ A} → (Γ ∋ A) → (Γ ∋ A)
-var-id {A} x = x
-
-var-id-id : ∀ {Γ} → is-identity {Γ} var-id
-var-id-id = refl
-\end{code}
-
-We can now prove environment strengthening by applying the renaming
-lemma with the identity renaming, which gives us
-`δ ⊢ rename var-id M ↓ v`, and then we apply the `rename-id` lemma
-to obtain `δ ⊢ M ↓ v`.
+larger one (a stronger one), and `M` still results in `v`. In
+particular, if `γ ⊢ M ↓ v` and `γ ⊑ δ`, then `δ ⊢ M ↓ v`.  What does
+this have to do with renaming?  It's renaming with the identity
+function.  So we apply the renaming lemma with the identity renaming,
+which gives us `δ ⊢ rename var-id M ↓ v`, and then we apply the
+`rename-id` lemma to obtain `δ ⊢ M ↓ v`.
 
 \begin{code}
 Env⊑ : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
@@ -801,8 +761,9 @@ Env⊑ : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
     ----------
   → δ ⊢ M ↓ v
 Env⊑{Γ}{γ}{δ}{M}{v} d lt
-      with rename-pres var-id lt d
-... | d′ rewrite rename-id {Γ}{M}{var-id} (var-id-id {Γ}) = d′
+      with rename-pres{Γ}{Γ}{v}{γ}{δ}{M} (λ {A} x → x) lt d
+... | d′ rewrite rename-id {Γ}{★}{M} =
+      d′
 \end{code}
 
 In the proof that substitution reflects denotations, in the case for

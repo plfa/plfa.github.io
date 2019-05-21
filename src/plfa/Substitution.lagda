@@ -214,9 +214,13 @@ ren ρ = ids ∘ ρ
 When the renaming is the increment function, then it is equivalent to
 shift.
 
-    ren S_ ≡ ↑                           (ren-shift)
+    ren S_ ≡ ↑                             (ren-shift)
     
-    rename S_ M ≡ ⟪ ↑ ⟫ M                 (rename-shift)
+    rename S_ M ≡ ⟪ ↑ ⟫ M                  (rename-shift)
+
+Renaming with the identity renaming leaves the term unchanged.
+
+    rename (λ {A} x → x) M ≡ M             (rename-id)
 
 Next we relate the `exts` function to the σ algebra.  Recall that the
 `exts` function extends a substitution as follows:
@@ -538,7 +542,7 @@ subst-Z-cons-ids = extensionality λ x → lemma {x = x}
 \end{code}
 
 
-## Proofs of sub-abs and sub-id
+## Proofs of sub-abs, sub-id, and rename-id
 
 The equation `sub-abs` follows immediately from the equation
 `exts-cons-shift`.
@@ -589,6 +593,22 @@ sub-id {M = ƛ N} =
 sub-id {M = L · M} = cong₂ _·_ sub-id sub-id
 \end{code}
 
+The `rename-id` equation is a corollary is `sub-id`.
+
+\begin{code}
+rename-id : ∀ {Γ}{A} {M : Γ ⊢ A} 
+  → rename (λ {A} x → x) M ≡ M
+rename-id {M = M} =
+   begin
+     rename (λ {A} x → x) M
+   ≡⟨ rename-subst-ren  ⟩
+     ⟪ ren (λ {A} x → x) ⟫ M
+   ≡⟨⟩
+     ⟪ ids ⟫ M
+   ≡⟨ sub-id  ⟩
+     M
+   ∎
+\end{code}
 
 ## Proof of sub-idR
 
