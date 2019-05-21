@@ -19,18 +19,20 @@ open import plfa.Untyped
 open import plfa.LambdaReduction
   using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
 open import plfa.Denotational
-open import plfa.Compositional
+  using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
+         Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
+         var; ↦-elim; ↦-intro; ⊥-intro; ⊔-intro; sub;
+         Rename; rename-pres; var-id; ℰ; _≃_; ≃-trans)
+open import plfa.Compositional using (lambda-inversion; var-inv)
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum
 open import Agda.Primitive using (lzero)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
-open import Data.Unit
 open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
 -- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
