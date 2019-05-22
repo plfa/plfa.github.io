@@ -759,7 +759,7 @@ It can be illustrated as follows:
                P
 
 Here `L`, `M`, `N` are universally quantified while `P`
-is existentially quantified.  If each line stand for zero
+is existentially quantified.  If each line stands for zero
 or more reduction steps, this is called confluence,
 while if the top two lines stand for a single reduction
 step and the bottom two stand for zero or more reduction
