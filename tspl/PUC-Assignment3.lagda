@@ -12,8 +12,6 @@ module PUC-Assignment3 where
 
 ## Introduction
 
-<!-- This assignment is due **4pm Thursday 1 November** (Week 7). -->
-
 You must do _all_ the exercises labelled "(recommended)".
 
 Exercises labelled "(stretch)" are there to provide an extra challenge.
@@ -22,7 +20,6 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises without a label are optional, and may be done if you want
 some extra practice.
 
-<!-- Submit your homework using the "submit" command. -->
 Please ensure your files execute correctly under Agda!
 
 ## Imports

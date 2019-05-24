@@ -662,7 +662,7 @@ and the rule `η-×` for products:
 →-distrib-× =
   record
     { to      = λ{ f → ⟨ proj₁ ∘ f , proj₂ ∘ f ⟩ }
-    ; from    = λ{ ⟨ g , h ⟩ → λ{ x → ⟨ g x , h x ⟩ } }
+    ; from    = λ{ ⟨ g , h ⟩ → λ x → ⟨ g x , h x ⟩ }
     ; from∘to = λ{ f → extensionality λ{ x → η-× (f x) } }
     ; to∘from = λ{ ⟨ g , h ⟩ → refl }
     }
