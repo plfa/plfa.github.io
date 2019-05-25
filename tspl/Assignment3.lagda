@@ -342,7 +342,7 @@ defined by mutual recursion with the proof that substitution
 preserves types.
 
 
-#### Exercise `mul-example` (recommended)
+#### Exercise `mul-eval` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 

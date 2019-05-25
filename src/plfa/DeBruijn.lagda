@@ -102,8 +102,8 @@ The other important feature of our chosen representation is
 that it is _inherently typed_.  In the previous two chapters,
 the definition of terms and the definition of types are
 completely separate.  All terms have type `Term`, and nothing
-in Agda prevents one from writing a nonsense term such as ``
-`zero · `suc `zero `` which has no type.  Such terms that
+in Agda prevents one from writing a nonsense term such as
+`` `zero · `suc `zero `` which has no type.  Such terms that
 exist independent of types are sometimes called _preterms_ or
 _raw terms_.  Here we are going to replace the type `Term` of
 raw terms by the more sophisticated type `Γ ⊢ A` of inherently
@@ -158,8 +158,8 @@ Note the two lookup judgments `∋m` and `∋m′` refer to two
 different bindings of variables named `"m"`.  In contrast, the
 two judgments `∋n` and `∋n′` both refer to the same binding
 of `"n"` but accessed in different contexts, the first where
-"n" is the last binding in the context, and the second after
-"m" is bound in the successor branch of the case.
+`"n"` is the last binding in the context, and the second after
+`"m"` is bound in the successor branch of the case.
 
 Here is the term and its type derivation in the notation of this chapter:
 
@@ -450,14 +450,10 @@ two = `suc `suc `zero
 
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
 plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
-
-2+2 : ∅ ⊢ `ℕ
-2+2 = plus · two · two
 \end{code}
 We specify that `two` and `plus` can be typed in an arbitrary environment,
 rather than just the empty environment, because later we will give examples
-where they appear nested inside binders.  We need not do the same with `2+2`,
-which will only appear at the top-level of a term.
+where they appear nested inside binders.
 
 Next, computing two plus two on Church numerals:
 \begin{code}
@@ -472,11 +468,8 @@ plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
 
 sucᶜ : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ
 sucᶜ = ƛ `suc (# 0)
-
-2+2ᶜ : ∅ ⊢ `ℕ
-2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
-As before we generalise everything save `2+2ᶜ` to arbitrary
+As before we generalise everything to arbitrary
 contexts.  While we are at it, we also generalise `twoᶜ` and
 `plusᶜ` to Church numerals over arbitrary types.
 

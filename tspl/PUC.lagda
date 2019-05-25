@@ -91,14 +91,15 @@ Lectures and tutorials take place Fridays and some Thursdays in 548L.
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
-* [PUC-Assignment 1](/PUC-Assignment1/) due Friday 26 April.
-* [PUC-Assignment 2](/PUC-Assignment2/) due Wednesday 22 May.
-* [PUC-Assignment 3](/PUC-Assignment3/) due Wednesday 12 June.
-* [PUC-Assignment 4](/PUC-Assignment4/) due Tuesday 25 June.
-* [Assignment 5](/tspl/Assignment5.pdf) due Tuesday 25 June.
+* [PUC Assignment 1][PUC-Assignment1] due Friday 26 April.
+* [PUC Assignment 2][PUC-Assignment2] due Wednesday 22 May.
+* [PUC Assignment 3][PUC-Assignment3] due Wednesday 5 June.
+* [PUC Assignment 4][PUC-Assignment4] due Wednesday 19 June.
+* [PUC Assignment 5][PUC-Assignment5] due Tuesday 25 June.
+* [PUC Assignment 6](/tspl/first-mock.pdf) due Tuesday 25 June.
   Use file [Exam][Exam]. Despite the rubric, do **all three questions**.
 
 Submit assignments by email to [wadler@inf.ed.ac.uk](mailto:wadler@inf.ed.ac.uk).
 Attach a single file named Assignment1.lagda or the like.  Include
-your name and email in the submitted file.  Ignore instructions to use
-"submit".
+your name and email in the submitted file.
+

@@ -76,7 +76,7 @@ not reduce, and its corollary, terms that reduce are not
 values.
 
 
-#### Exercise `mul-example` (recommended)
+#### Exercise `mul-eval` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
@@ -839,9 +839,6 @@ Remember to indent all code by two spaces.
             `case (` "m") [zero⇒ ` "n" ↑
                           |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
               ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
-
-  2+2 : Term⁺
-  2+2 = plus · two · two
 \end{code}
 
 ### Lookup 
@@ -1148,12 +1145,12 @@ unless both terms are in normal form.
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
 permits reduction when both terms are values (that is, lambda
-abstractions).  What would `2+2ᶜ` reduce to in this case?
+abstractions).  What would `plusᶜ · twoᶜ · twoᶜ` reduce to in this case?
 
-#### Exercise `2+2≡four`
+#### Exercise `plus-eval`
 
-Use the evaluator to confirm that `2+2` and `four` normalise to
-the same term.
+Use the evaluator to confirm that `plus · two · two` and `four`
+normalise to the same term.
 
 #### Exercise `multiplication-untyped` (recommended)
 

@@ -728,18 +728,15 @@ four = `suc `suc `suc `suc `zero
 
 plus : ∀ {Γ} → Γ ⊢ ★
 plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
-
-2+2 : ∅ ⊢ ★
-2+2 = plus · two · two
 \end{code}
 Because `` `suc `` is now a defined term rather than primitive,
-it is no longer the case that `2+2` reduces to `four`, but they
-do both reduce to the same normal term. 
+it is no longer the case that `plus · two · two` reduces to `four`,
+but they do both reduce to the same normal term. 
 
-#### Exercise `2+2≡four`
+#### Exercise `plus-eval`
 
-Use the evaluator to confirm that `2+2` and `four` normalise to
-the same term.
+Use the evaluator to confirm that `plus · two · two` and `four`
+normalise to the same term.
 
 \begin{code}
 -- Your code goes here
