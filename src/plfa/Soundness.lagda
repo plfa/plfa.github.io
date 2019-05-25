@@ -10,6 +10,26 @@ next      : /Adequacy/
 module plfa.Soundness where
 \end{code}
 
+
+## Introduction
+
+In this chapter we prove that the reduction semantics is sound with
+respect to the denotational semantics, i.e., for any term L
+
+    L —↠ ƛ N  implies  ℰ L ≃ ℰ (ƛ N)
+
+The proof is by induction on the reduction sequence, so the main lemma
+concerns a single reduction step. We prove that if any term `M` steps
+to a term `N`, then `M` and `N` are denotationally equal. We shall
+prove each direction of this if-and-only-if separately. One direction
+will look just like a type preservation proof. The other direction is
+like proving type preservation for reduction going in reverse.  Recall
+that type preservation is sometimes called subject
+reduction. Preservation in reverse is a well-known property and is
+called _subject expansion_. It is also well-known that subject
+expansion is false for most typed lambda calculi!
+
+
 ## Imports
 
 \begin{code}
@@ -38,24 +58,6 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
 -- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
 \end{code}
-
-
-In this chapter we prove that the reduction semantics is sound with
-respect to the denotational semantics, i.e., for any term L
-
-    L —↠ ƛ N  implies  ℰ L ≃ ℰ (ƛ N)
-
-The proof is by induction on the reduction sequence, so the main lemma
-concerns a single reduction step. We prove that if any term `M` steps
-to a term `N`, then `M` and `N` are denotationally equal. We shall
-prove each direction of this if-and-only-if separately. One direction
-will look just like a type preservation proof. The other direction is
-like proving type preservation for reduction going in reverse.  Recall
-that type preservation is sometimes called subject
-reduction. Preservation in reverse is a well-known property and is
-called _subject expansion_. It is also well-known that subject
-expansion is false for most typed lambda calculi!
-
 
 ## Forward reduction preserves denotations
 

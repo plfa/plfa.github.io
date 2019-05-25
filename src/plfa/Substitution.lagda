@@ -11,7 +11,7 @@ next      : /LambdaReduction/
 module plfa.Substitution where
 \end{code}
 
-## Overview 
+## Introduction
 
 The primary purpose of this chapter is to prove that substitution
 commutes with itself. Barendgredt (1984) refers to this

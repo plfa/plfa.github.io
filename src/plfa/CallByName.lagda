@@ -10,6 +10,24 @@ next      : /Denotational/
 module plfa.CallByName where
 \end{code}
 
+## Introduction
+
+The call-by-name evaluation strategy is a deterministic method for
+computing the value of a program in the lambda calculus.  That is,
+call-by-name produces a value if and only if beta reduction can reduce
+the program to a lambda abstraction. In this chapter we define
+call-by-name evaluation and prove the forward direction of this
+if-and-only-if. We postpone the backward direction until after we have
+developed a denotational semantics for the lambda calculus, at which
+point the proof will be an easy corollary of properties of the
+denotational semantics.
+
+We present the call-by-name strategy as a relation between an an input
+term and an output value. Such a relation is often called a _big-step
+semantics_, as it relates the input term directly to the final result,
+in contrast to the small-step reduction relation `—→` that maps a term
+to another term in which a single sub-computation has been completed.
+
 ## Imports
 
 \begin{code}
@@ -29,23 +47,7 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 open import Function using (_∘_)
 \end{code}
 
-## Call-by-name as big-step evaluation
-
-The call-by-name evaluation strategy is a deterministic method for
-computing the value of a program in the lambda calculus.  That is,
-call-by-name produces a value if and only if beta reduction can reduce
-the program to a lambda abstraction. In this chapter we define
-call-by-name evaluation and prove the forward direction of this
-if-and-only-if. We postpone the backward direction until after we have
-developed a denotational semantics for the lambda calculus, at which
-point the proof will be an easy corollary of properties of the
-denotational semantics.
-
-We present the call-by-name strategy as a relation between an an input
-term and an output value. Such a relation is often called a _big-step
-semantics_, as it relates the input term directly to the final result,
-in contrast to the small-step reduction relation `—→` that maps a term
-to another term in which a single sub-computation has been completed.
+## Environments
 
 To handle variables and function application, there is the choice
 between using substitution, as in `—→`, or to use an _environment_.
@@ -79,6 +81,8 @@ _,'_ : ∀ {Γ} → ClosEnv Γ → Clos → ClosEnv (Γ , ★)
 (γ ,' c) Z = c
 (γ ,' c) (S x) = γ x
 \end{code}
+
+## Big-step evaluation
 
 The big-step semantics is represented as a ternary relation,
 written `γ ⊢ M ⇓ V`, where `γ` is the environment, `M` is the input

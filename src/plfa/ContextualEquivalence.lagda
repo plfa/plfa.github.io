@@ -41,7 +41,9 @@ terminates : ∀{Γ} → (M : Γ ⊢ ★) → Set
 terminates {Γ} M = Σ[ N ∈ (Γ , ★ ⊢ ★) ] (M —↠ ƛ N)
 \end{code}
 
-We define contextual equivalence as follows.
+So two terms are contextually equivalent if plugging them into the
+same context produces two programs that either terminate or diverge
+together.
 
 \begin{code}
 _≅_ : ∀{Γ} → (M N : Γ ⊢ ★) → Set

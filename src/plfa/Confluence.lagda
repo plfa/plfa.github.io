@@ -10,24 +10,6 @@ next      : /CallByName/
 module plfa.Confluence where
 \end{code}
 
-## Imports
-
-\begin{code}
-open import plfa.Substitution
-   using (subst-commute; rename-subst-commute; Rename; Subst)
-open import plfa.LambdaReduction
-    using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _[];
-           abs-cong; appL-cong; appR-cong; —↠-trans)
-open import plfa.Untyped
-    using (_⊢_; _∋_; `_; _,_; ★; ƛ_; _·_; _[_];
-           rename; ext; exts; Z; S_; subst; subst-zero)
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
-open import Function using (_∘_)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
-     renaming (_,_ to ⟨_,_⟩)
-\end{code}
-
 ## Introduction
 
 In this chapter we prove that beta reduction is _confluent_, a
@@ -75,6 +57,24 @@ any two terms if and only if a beta reduction sequence exists between them.
 Thus, we can reduce the proof of confluence for beta reduction to
 confluence for parallel reduction.
 
+
+## Imports
+
+\begin{code}
+open import plfa.Substitution
+   using (subst-commute; rename-subst-commute; Rename; Subst)
+open import plfa.LambdaReduction
+    using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _[];
+           abs-cong; appL-cong; appR-cong; —↠-trans)
+open import plfa.Untyped
+    using (_⊢_; _∋_; `_; _,_; ★; ƛ_; _·_; _[_];
+           rename; ext; exts; Z; S_; subst; subst-zero)
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl)
+open import Function using (_∘_)
+open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+     renaming (_,_ to ⟨_,_⟩)
+\end{code}
 
 ## Parallel Reduction
 
