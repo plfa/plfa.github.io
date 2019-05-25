@@ -8,7 +8,7 @@ next      : /LambdaReduction/
 
 
 \begin{code}
-module plfa.Substitution where
+module denotational.Substitution where
 \end{code}
 
 ## Imports

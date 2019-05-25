@@ -7,7 +7,7 @@ next      : /Confluence/
 ---
 
 \begin{code}
-module plfa.LambdaReduction where
+module denotational.LambdaReduction where
 \end{code}
 
 ## Imports

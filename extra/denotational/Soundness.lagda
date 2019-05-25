@@ -7,7 +7,7 @@ next      : /Adequacy/
 ---
 
 \begin{code}
-module plfa.Soundness where
+module denotational.Soundness where
 \end{code}
 
 ## Imports
@@ -16,15 +16,15 @@ module plfa.Soundness where
 open import plfa.Untyped
   using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
          subst; _[_]; subst-zero; ext; rename; exts)
-open import plfa.LambdaReduction
+open import denotational.LambdaReduction
   using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
-open import plfa.Substitution using (Rename; Subst)  
-open import plfa.Denotational
+open import denotational.Substitution using (Rename; Subst; ids)  
+open import denotational.Denotational
   using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
          Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
          var; ↦-elim; ↦-intro; ⊥-intro; ⊔-intro; sub;
-         rename-pres; var-id; ℰ; _≃_; ≃-trans)
-open import plfa.Compositional using (lambda-inversion; var-inv)
+         rename-pres; ℰ; _≃_; ≃-trans)
+open import denotational.Compositional using (lambda-inversion; var-inv)
 
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
@@ -562,53 +562,13 @@ Most of the work is now behind us. We have proved that simultaneous
 substitution reflects denotations. Of course, β reduction uses single
 substitution, so we need a corollary that proves that single
 substitution reflects denotations. That is,
-give terms `N : (Γ , ★ ⊢ ★)` and `M : (Γ ⊢ ★)`,
+given terms `N : (Γ , ★ ⊢ ★)` and `M : (Γ ⊢ ★)`,
 if `γ ⊢ N [ M ] ↓ w`, then `γ ⊢ M ↓ v` and `(γ , v) ⊢ N ↓ w`
 for some value `v`. We have `N [ M ] = subst (subst-zero M) N`.
-We apply the `subst-reflect` lemma to obtain
-`γ ⊢ subst-zero M ↓ (δ′ , v′)` and `(δ′ , v′) ⊢ N ↓ w`
-for some `δ′` and `v′`.
 
-Instantiating `γ ⊢ subst-zero M ↓ (δ′ , v′)` at `k = 0`
-gives us `γ ⊢ M ↓ v′`. We choose `w = v′`, so the first
-part of our conclusion is complete.
-
-It remains to prove `(γ , v′) ⊢ N ↓ v`. First, we obtain 
-`(γ , v′) ⊢ rename var-id N ↓ v` by the `rename-pres` lemma
-applied to `(δ′ , v′) ⊢ N ↓ v`, with the `var-id` renaming,
-`γ = (δ′ , v′)`, and `δ = (γ , v′)`. To apply this lemma,
-we need to show that 
-`nth n (δ′ , v′) ⊑ nth (var-id n) (γ , v′)` for any `n`.
-This is accomplished by the following lemma, which
-makes use of `γ ⊢ subst-zero M ↓ (δ′ , v′)`.
-
-\begin{code}
-nth-id-le : ∀{Γ}{δ′}{v′}{γ}{M}
-      → γ `⊢ subst-zero M ↓ (δ′ `, v′)
-        -----------------------------------------------------
-      → (x : Γ , ★ ∋ ★) → (δ′ `, v′) x ⊑ (γ `, v′) (var-id x) 
-nth-id-le γ-sz-δ′v′ Z = Refl⊑
-nth-id-le γ-sz-δ′v′ (S n′) = var-inv (γ-sz-δ′v′ (S n′))
-\end{code}
-
-The above lemma proceeds by induction on `n`.
-
-* If it is `Z`, then we show that `v′ ⊑ v′` by `Refl⊑`.
-* If it is `S n′`, then from the premise we obtain
-  `γ ⊢ # n′ ↓ nth n′ δ′`. By `var-inv` we have
-  `nth n′ δ′ ⊑ nth n′ γ` from which we conclude that
-  `nth (S n′) (δ′ , v′) ⊑ nth (var-id (S n′)) (γ , v′)`.
-
-Returning to the proof that single substitution reflects
-denotations, we have just proved that
-
-  (γ `, v′) ⊢ rename var-id N ↓ v
-
-but we need to show `(γ `, v′) ⊢ N ↓ v`.
-So we apply the `rename-id` lemma to obtain
-`rename var-id N ≡ N`.
-
-The following is the formal version of this proof.
+We first prove a lemma about `subst-zero`, that if
+`δ ⊢ subst-zero M ↓ γ`, then
+`γ ⊑ (δ , w) × δ ⊢ M ↓ w` for some `w`.
 
 \begin{code}
 subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {M : Δ ⊢ ★}
@@ -620,7 +580,19 @@ subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ
   lemma : γ `⊑ (δ `, last γ)
   lemma Z  =  Refl⊑
   lemma (S x) = var-inv (δσγ (S x))
-  
+\end{code}
+
+We choose `w` to be the last value in `γ` and we obtain `δ ⊢ M ↓ w`
+by applying the premise to variable `Z`. Finally, to prove
+`γ ⊑ (δ , w)`, we prove a lemma by induction in the input variable.
+The base case is trivial because of our choice of `w`.
+In the induction case, `S x`, the premise
+`δ ⊢ subst-zero M ↓ γ` gives us `δ ⊢ x ↓ γ (S x)` and then
+using `var-inv` we conclude that `γ (S x) ⊑ (δ `, w) (S x)`.
+
+Now to prove that substitution reflects denotations.
+
+\begin{code}
 substitution-reflect : ∀ {Δ} {δ : Env Δ} {N : Δ , ★ ⊢ ★} {M : Δ ⊢ ★} {v}
   → δ ⊢ N [ M ] ↓ v
     ------------------------------------------------
@@ -629,6 +601,13 @@ substitution-reflect d with subst-reflect d refl
 ...  | ⟨ γ , ⟨ δσγ , γNv ⟩ ⟩ with subst-zero-reflect δσγ
 ...    | ⟨ w , ⟨ ineq , δMw ⟩ ⟩ = ⟨ w , ⟨ δMw , Env⊑ γNv ineq ⟩ ⟩
 \end{code}
+
+We apply the `subst-reflect` lemma to obtain
+`δ ⊢ subst-zero M ↓ γ` and `γ ⊢ N ↓ v` for some `γ`.
+Using the former, the `subst-zero-reflect` lemma gives
+us `γ ⊑ (δ , w)` and `δ ⊢ M ↓ w`. We conclude that
+`δ , w ⊢ N ↓ v` by applying the `Env⊑` lemma, using
+`γ ⊢ N ↓ v` and `γ ⊑ (δ , w)`.
 
 
 ### Reduction reflects denotations

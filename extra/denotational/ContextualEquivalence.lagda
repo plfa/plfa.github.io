@@ -7,19 +7,19 @@ next      : /Acknowledgements/
 ---
 
 \begin{code}
-module plfa.ContextualEquivalence where
+module denotational.ContextualEquivalence where
 \end{code}
 
 ## Imports
 
 \begin{code}
 open import plfa.Untyped using (_⊢_; ★; ∅; _,_; ƛ_)
-open import plfa.LambdaReduction using (_—↠_)
-open import plfa.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
-open import plfa.Compositional using (Ctx; plug; compositionality)
-open import plfa.Soundness using (soundness)
-open import plfa.Adequacy using (adequacy)
-open import plfa.CallByName using (_⊢_⇓_; cbn→reduce)
+open import denotational.LambdaReduction using (_—↠_)
+open import denotational.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
+open import denotational.Compositional using (Ctx; plug; compositionality)
+open import denotational.Soundness using (soundness)
+open import denotational.Adequacy using (adequacy)
+open import denotational.CallByName using (_⊢_⇓_; cbn→reduce)
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
