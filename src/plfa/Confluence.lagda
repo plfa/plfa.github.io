@@ -13,12 +13,11 @@ module plfa.Confluence where
 ## Imports
 
 \begin{code}
-open import plfa.Substitution using (subst-commute; rename-subst-commute)
+open import plfa.Substitution
+   using (subst-commute; rename-subst-commute; Rename; Subst)
 open import plfa.LambdaReduction
     using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _[];
            abs-cong; appL-cong; appR-cong; —↠-trans)
-open import plfa.Denotational using (Rename)
-open import plfa.Soundness using (Subst)
 open import plfa.Untyped
     using (_⊢_; _∋_; `_; _,_; ★; ƛ_; _·_; _[_];
            rename; ext; exts; Z; S_; subst; subst-zero)

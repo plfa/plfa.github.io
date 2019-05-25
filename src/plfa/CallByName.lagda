@@ -7,7 +7,7 @@ next      : /Denotational/
 ---
 
 \begin{code}
-module denotational.CallByName where
+module plfa.CallByName where
 \end{code}
 
 ## Imports
@@ -16,9 +16,9 @@ module denotational.CallByName where
 open import plfa.Untyped
   using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; ƛ_; _·_; subst; subst-zero;
          exts; rename)
-open import denotational.LambdaReduction
+open import plfa.LambdaReduction
   using (β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
-open import denotational.Substitution
+open import plfa.Substitution
   using (Subst; ⟪_⟫; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; trans; sym)

@@ -7,7 +7,7 @@ next      : /Soundness/
 ---
 
 \begin{code}
-module denotational.Compositional where
+module plfa.Compositional where
 \end{code}
 
 ## Imports
@@ -15,12 +15,12 @@ module denotational.Compositional where
 \begin{code}
 open import plfa.Untyped
   using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
-open import denotational.Denotational
+open import plfa.Denotational
   using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_; nth;
          Bot⊑; Fun⊑; ConjL⊑; ConjR1⊑; ConjR2⊑; Dist⊑; Refl⊑; Trans⊑; Dist⊔↦⊔;
          var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
          up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
-open denotational.Denotational.≃-Reasoning
+open plfa.Denotational.≃-Reasoning
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)

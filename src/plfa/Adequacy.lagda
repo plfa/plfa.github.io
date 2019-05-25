@@ -7,7 +7,7 @@ next      : /ContextualEquivalence/
 ---
 
 \begin{code}
-module denotational.Adequacy where
+module plfa.Adequacy where
 \end{code}
 
 ## Imports
@@ -16,18 +16,18 @@ module denotational.Adequacy where
 open import plfa.Untyped
   using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
          rename; subst; ext; exts; _[_]; subst-zero)
-open import denotational.LambdaReduction
+open import plfa.LambdaReduction
   using (_—↠_; _—→⟨_⟩_; _[]; _—→_; ξ₁; ξ₂; β; ζ)
-open import denotational.CallByName
+open import plfa.CallByName
   using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
          cbn→reduce)
-open import denotational.Denotational
+open import plfa.Denotational
   using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
          var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
          Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
          sub-inv-fun)
-open import denotational.Soundness using (soundness)
-open import denotational.Substitution using (ids; sub-id)
+open import plfa.Soundness using (soundness)
+open import plfa.Substitution using (ids; sub-id)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
