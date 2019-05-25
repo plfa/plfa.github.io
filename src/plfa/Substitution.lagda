@@ -11,6 +11,38 @@ next      : /LambdaReduction/
 module plfa.Substitution where
 \end{code}
 
+## Overview 
+
+The primary purpose of this chapter is to prove that substitution
+commutes with itself. Barendgredt (1984) refers to this
+as the substitution lemma:
+  
+    M [x:=N] [y:=L] = M [y:=L] [x:= N[y:=L] ]
+
+In our setting, with de Bruijn indices for variables, the statement of
+the lemma becomes:
+
+    M [ N ] [ L ] ≡  M〔 L 〕[ N [ L ] ]                     (substitution)
+
+where the notation `M 〔 L 〕` is for substituting L for index 1 inside
+M.  In addition, because we define substitution in terms of parallel
+substitution, we have the following generalization, replacing the
+substitution of L with an arbitrary parallel substitution σ.
+
+    subst σ (M [ N ]) ≡ (subst (exts σ) M) [ subst σ N ]    (subst-commute)
+
+The special case for renamings is also useful.
+
+    rename ρ (M [ N ]) ≡ (rename (ext ρ) M) [ rename ρ N ]
+                                                     (rename-subst-commute)
+
+The secondary purpose of this chapter is to define the σ algebra of
+parallel substitution due to Abadi, Cardelli, Curien, and Levy
+(1991). The equations of this algebra not only help us prove the
+substitution lemma, but they are generally useful. Furthermore, when
+the equations are applied from left to right, they form a rewrite
+system that _decides_ whether any two substitutions are equal.
+
 ## Imports
 
 \begin{code}
@@ -32,37 +64,7 @@ postulate
     → f ≡ g
 \end{code}
 
-## Overview 
-
-The primary purpose of this chapter is to prove that substitution
-commutes with itself. Barendgredt (1984) refers to this
-as the substitution lemma:
-  
-    M [x:=N] [y:=L] = M [y:=L] [x:= N[y:=L] ]
-
-In our setting, with de Bruijn indices for variables, the statement of
-the lemma becomes:
-
-    M [ N ] [ L ] ≡  M〔 L 〕[ N [ L ] ]                     (substitution)
-
-where the notation `M 〔 L 〕` is for subsituting L for index 1 inside
-M.  In addition, because we define substitution in terms of parallel
-substitution, we have the following generalization, replacing the
-substitution of L with an arbitrary parallel substitution σ.
-
-    subst σ (M [ N ]) ≡ (subst (exts σ) M) [ subst σ N ]    (subst-commute)
-
-The special case for renamings is also useful.
-
-    rename ρ (M [ N ]) ≡ (rename (ext ρ) M) [ rename ρ N ]
-                                                     (rename-subst-commute)
-
-The secondary purpose of this chapter is to define the σ algebra of
-parallel substitution due to Abadi, Cardelli, Curien, and Levy
-(1991). The equations of this algebra not only help us prove the
-substitution lemma, but they are generally useful. Futhermore, when
-the equations are applied from left to right, they form a rewrite
-system that _decides_ whether any two substitutions are equal.
+## Notation
 
 We introduce the following shorthand for the type of a _renaming_ from
 variables in context `Γ` to variables in context `Δ`.
@@ -95,7 +97,7 @@ can view a substitution simply as a sequence of terms, or more
 precisely, as an infinite sequence of terms. The σ algebra consists of
 four operations for building such sequences: identity `ids`, shift
 `↑`, cons `M • σ`, and sequencing `σ ⨟ τ`.  The sequence `0, 1, 2, ...`
-is constructed by the identity subsitution.
+is constructed by the identity substitution.
 
 \begin{code}
 ids : ∀{Γ} → Subst Γ Γ
@@ -144,7 +146,7 @@ _⨟_ : ∀{Γ Δ Σ} → Subst Γ Δ → Subst Δ Σ → Subst Γ Σ
 \end{code}
 
 For the sequencing operation, Abadi et al. use the notation of
-function composition, writting `σ ∘ τ`, but still with `σ` applied
+function composition, writing `σ ∘ τ`, but still with `σ` applied
 before `τ`, which is the opposite of standard mathematical
 practice. We instead write `σ ⨟ τ`, because semicolon is
 the standard notation for forward function composition.
@@ -190,9 +192,9 @@ The first two equations, `sub-idL` and `sub-idR`, say that
 The `sub-assoc` equation says that sequencing is associative.
 Finally, `sub-dist` says that post-sequencing distributes through cons.
 
-## Relating the σ algebra and subsitution functions
+## Relating the σ algebra and substitution functions
 
-The definitions of substitution `N [ M ]` and parallel subsitution
+The definitions of substitution `N [ M ]` and parallel substitution
 `subst σ N` depend on several auxiliary functions: `rename`, `exts`,
 `ext`, and `subst-zero`. We shall relate those functions to terms in
 the σ algebra.
@@ -653,7 +655,7 @@ compose-ext = extensionality λ x → lemma {x = x}
   lemma {x = S x} = refl
 \end{code}
 
-To prove that composing renamings is equivalent to appying one after
+To prove that composing renamings is equivalent to applying one after
 the other using `rename`, we proceed by induction on the term `M`,
 using the `compose-ext` lemma in the case for `M ≡ ƛ N`.
 
@@ -675,7 +677,7 @@ compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ′} = cong ƛ_ G
 compose-rename {M = L · M} = cong₂ _·_ compose-rename compose-rename
 \end{code}
 
-The next lemma states that if a renaming and subtitution commute on
+The next lemma states that if a renaming and substitution commute on
 variables, then they also commute on terms. We explain the proof in
 detail below.
 
@@ -891,14 +893,14 @@ subst-zero-exts-cons {Γ}{Δ}{σ}{B}{M}{A} =
 ## Proof of the substitution lemma
 
 We first prove the generalized form of the substitution lemma, showing
-that a substitution `σ` commutes with the subusitution of `M` into
+that a substitution `σ` commutes with the substitution of `M` into
 `N`.
 
     ⟪ exts σ ⟫ N [ ⟪ σ ⟫ M ] ≡ ⟪ σ ⟫ (N [ M ])
 
 This proof is where the σ algebra pays off.  The proof is by direct
 equational reasoning. Starting with the left-hand side, we apply σ
-algebra equations, oriented left-to-right, until we arive at the
+algebra equations, oriented left-to-right, until we arrive at the
 normal form
 
     ⟪ ⟪ σ ⟫ M • σ ⟫ N
@@ -1007,3 +1009,5 @@ This chapter uses the following unicode:
     ⨟  U+2A1F  Z NOTATION SCHEMA COMPOSITION (C-x 8 RET Z NOTATION SCHEMA COMPOSITION)
     〔  U+3014  LEFT TORTOISE SHELL BRACKET (\( option 9 on page 2)
     〕  U+3015  RIGHT TORTOISE SHELL BRACKET (\) option 9 on page 2)
+
+
