@@ -450,10 +450,12 @@ two = `suc `suc `zero
 
 plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
 plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+
+2+2 : ∀ {Γ} → Γ ⊢ `ℕ
+2+2 = plus · two · two
 \end{code}
-We specify that `two` and `plus` can be typed in an arbitrary environment,
-rather than just the empty environment, because later we will give examples
-where they appear nested inside binders.
+We generalise to arbitrary contexts because later we will give examples
+where `two` appears nested inside binders.
 
 Next, computing two plus two on Church numerals:
 \begin{code}
@@ -468,6 +470,9 @@ plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
 
 sucᶜ : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ
 sucᶜ = ƛ `suc (# 0)
+
+2+2ᶜ : ∀ {Γ} → Γ ⊢ `ℕ
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 \end{code}
 As before we generalise everything to arbitrary
 contexts.  While we are at it, we also generalise `twoᶜ` and

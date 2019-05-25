@@ -100,6 +100,6 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
   Use file [Exam][Exam]. Despite the rubric, do **all three questions**.
 
 Submit assignments by email to [wadler@inf.ed.ac.uk](mailto:wadler@inf.ed.ac.uk).
-Attach a single file named Assignment1.lagda or the like.  Include
+Attach a single file named `PUC-Assignment1.lagda` or the like.  Include
 your name and email in the submitted file.
 
