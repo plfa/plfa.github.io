@@ -10,6 +10,14 @@ next      : /Soundness/
 module plfa.Compositional where
 \end{code}
 
+## Introduction
+
+In this chapter we prove that the denotational semantics is compositional,
+which means we fill in the ellipses in the following equations.
+
+    ℰ (ƛ M) ≃ ... ℰ M ...
+    ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
+
 ## Imports
 
 \begin{code}
@@ -28,20 +36,18 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Unit using (⊤; tt)
 \end{code}
 
-## Semantic Equations
+## Equation for lambda abstraction
 
-To prove that the denotational semantics is compositional, we need to
-fill in the ellipses in the following equations.
+Regarding the first equation
 
     ℰ (ƛ M) ≃ ... ℰ M ...
-    ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
-
-Regarding the first equation, we need a function that maps a
-`Denotation (Γ , ★)` to a `Denotation Γ`. This function, let us name it `ℱ`,
-should mimic the non-recursive part of the semantics when applied to a
-lambda term.  In particular, we need to consider the rules `↦-intro`,
-`⊥-intro`, and `⊔-intro`. So `ℱ` has three parameters, the denotation `D`
-of the subterm `M`, an environment `γ`, and a value `v`.  If we define `ℱ` by
+    
+we need to define a function that maps a `Denotation (Γ , ★)` to a
+`Denotation Γ`. This function, let us name it `ℱ`, should mimic the
+non-recursive part of the semantics when applied to a lambda term.  In
+particular, we need to consider the rules `↦-intro`, `⊥-intro`, and
+`⊔-intro`. So `ℱ` has three parameters, the denotation `D` of the
+subterm `M`, an environment `γ`, and a value `v`.  If we define `ℱ` by
 recursion on the value `v`, then it matches up nicely with the three
 rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 
@@ -132,16 +138,24 @@ lam-equiv : ∀{Γ}{N : Γ , ★ ⊢ ★}
 lam-equiv γ v = ⟨ ℰƛ→ℱℰ , ℱℰ→ℰƛ ⟩
 \end{code}
 
-Next we consider function application. For this we need to define a
-function that takes two denotations, both in context `Γ`, and produces
-another one in context `Γ`. This function, let us name it `●`, needs to
-mimic the non-recursive aspects of the semantics of an application `L · M`.
-We cannot proceed as easily as for `ℱ` and define the function by
-recursion on value `v` because, for example, the rule `↦-elim` applies
-to any value. Instead we shall define `●` in a way that directly deals
-with the `↦-elim` and `⊥-intro` rules but ignores `⊔-intro`. This
-makes the forward direction of the proof more difficult, and the case
-for `⊔-intro` demonstrates why the `Dist⊑` rule is important.
+
+## Equation for function application
+
+Next we fill in the ellipses for the equation concerning function
+application.
+
+    ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
+
+For this we need to define a function that takes two denotations, both
+in context `Γ`, and produces another one in context `Γ`. This
+function, let us name it `●`, needs to mimic the non-recursive aspects
+of the semantics of an application `L · M`.  We cannot proceed as
+easily as for `ℱ` and define the function by recursion on value `v`
+because, for example, the rule `↦-elim` applies to any value. Instead
+we shall define `●` in a way that directly deals with the `↦-elim` and
+`⊥-intro` rules but ignores `⊔-intro`. This makes the forward
+direction of the proof more difficult, and the case for `⊔-intro`
+demonstrates why the `Dist⊑` rule is important.
 
 So we define the application of `D₁` to `D₂`, written `D₁ ● D₂`, to include
 any value `w` equivalent to `⊥`, for the `⊥-intro` rule, and to include any

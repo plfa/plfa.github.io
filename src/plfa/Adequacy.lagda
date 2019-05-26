@@ -10,38 +10,7 @@ next      : /ContextualEquivalence/
 module plfa.Adequacy where
 \end{code}
 
-## Imports
-
-\begin{code}
-open import plfa.Untyped
-  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
-         rename; subst; ext; exts; _[_]; subst-zero)
-open import plfa.LambdaReduction
-  using (_—↠_; _—→⟨_⟩_; _[]; _—→_; ξ₁; ξ₂; β; ζ)
-open import plfa.CallByName
-  using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
-         cbn→reduce)
-open import plfa.Denotational
-  using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
-         var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
-         Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
-         sub-inv-fun)
-open import plfa.Soundness using (soundness)
-open import plfa.Substitution using (ids; sub-id)
-
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
-  renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using (contradiction)
-open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
-open import Data.Unit
-open import Relation.Nullary using (Dec; yes; no)
-open import Function using (_∘_)
-\end{code}
+## Introduction
 
 Having proved a preservation property in the last chapter, a natural
 next step would be to prove progress. That is, to prove a property
@@ -96,6 +65,40 @@ The rest of this chapter is organized as follows.
   that if `𝔾 γ γ'` and `γ ⊢ M ↓ v`, then `𝔼 v (clos M γ')`.
 
 * We prove adequacy as a corollary to the main lemma.
+
+
+## Imports
+
+\begin{code}
+open import plfa.Untyped
+  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
+         rename; subst; ext; exts; _[_]; subst-zero)
+open import plfa.LambdaReduction
+  using (_—↠_; _—→⟨_⟩_; _[]; _—→_; ξ₁; ξ₂; β; ζ)
+open import plfa.CallByName
+  using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
+         cbn→reduce)
+open import plfa.Denotational
+  using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
+         var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
+         Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
+         sub-inv-fun)
+open import plfa.Soundness using (soundness)
+open import plfa.Substitution using (ids; sub-id)
+
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+  renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum
+open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Negation using (contradiction)
+open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
+open import Data.Unit
+open import Relation.Nullary using (Dec; yes; no)
+open import Function using (_∘_)
+\end{code}
 
 
 ## The property of being greater or equal to a function
