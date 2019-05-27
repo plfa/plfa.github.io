@@ -24,6 +24,10 @@ addons:
       - libgmp-dev
       - libicu-dev
 
+# Ensure we run BASH and not SH
+env:
+  - SH=bash
+
 before_install:
 # Download and unpack the stack executable
 - mkdir -p ~/.local/bin
