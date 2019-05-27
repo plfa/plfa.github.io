@@ -1,4 +1,4 @@
-SHELL := bash
+SHELL := /bin/bash
 agda := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.lagda')
 agdai := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.agdai')
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
