@@ -30,15 +30,13 @@ out/:
 
 # Build PLFA pages
 out/%.md: src/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
+	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
 
 # Build TSPL pages
 out/%.md: tspl/%.lagda | out/
-	set -o pipefail; agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
+	agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1
 	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
 
 
