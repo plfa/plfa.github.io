@@ -99,10 +99,10 @@ clauses into a single function, defined by mutual recursion with
 substitution.
 
 
-#### Exercise `—↠≃—↠′`
+#### Exercise `—↠≲—↠′`
 
-Show that the two notions of reflexive and transitive closure
-above are isomorphic.
+Show that the first notion of reflexive and transitive closure
+above embeds into the second. Why are they not isomorphic?
 
 
 #### Exercise `plus-example`
