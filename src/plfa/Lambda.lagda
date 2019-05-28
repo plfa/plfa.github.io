@@ -562,7 +562,7 @@ letter `β` (_beta_) and such rules are traditionally called _beta rules_.
 
 A bit of terminology: A term that matches the left-hand side of a
 reduction rule is called a _redex_. In the redex `(ƛ x ⇒ N) · V`, we
-may refer to `x` as the _formal parameter_` of the function, and `V`
+may refer to `x` as the _formal parameter_ of the function, and `V`
 as the _actual parameter_ of the function application.  Beta reduction
 replaces the formal parameter by the actual parameter.
 
