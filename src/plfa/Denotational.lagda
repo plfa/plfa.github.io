@@ -751,7 +751,7 @@ larger one (a stronger one), and `M` still results in `v`. In
 particular, if `γ ⊢ M ↓ v` and `γ ⊑ δ`, then `δ ⊢ M ↓ v`.  What does
 this have to do with renaming?  It's renaming with the identity
 function.  So we apply the renaming lemma with the identity renaming,
-which gives us `δ ⊢ rename var-id M ↓ v`, and then we apply the
+which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
 `rename-id` lemma to obtain `δ ⊢ M ↓ v`.
 
 \begin{code}
