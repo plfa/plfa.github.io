@@ -1,7 +1,7 @@
 ---
 title     : "Assignment1: TSPL Assignment 1"
 layout    : page
-permalink : /Assignment1/
+permalink : /TSPL/2018/Assignment1/
 ---
 
 \begin{code}

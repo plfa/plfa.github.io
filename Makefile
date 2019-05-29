@@ -1,7 +1,7 @@
 SHELL := /bin/bash
-agda := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.lagda')
-agdai := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.agdai')
-markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
+AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda')
+AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
+MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
 
@@ -28,20 +28,25 @@ statistics:
 out/:
 	mkdir -p out/
 
+# Convert literal Agda to Markdown
+define AGDA_template
+in := $(1)
+out := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda,.md,$(1))))
+$$(out) : in  = $(1)
+$$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda,.md,$(1))))
+$$(out) : $$(in) | out/
+	@echo "Processing $$(subst ./,,$$(in))..."
+	@set -o pipefail && \
+		agda2html $$(AGDA2HTML_FLAGS) -i $$(in) -o $$(out) -- --include-path=$$(realpath src/) 2>&1 | \
+		sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$$$/d'
+	@sed -i '1 s|---|---\nsrc       : $$(subst ./,,$$(in))|' $$(out)
+ifneq (,$$(findstring courses/,$$(in)))
+# Fix links to the file itself (out/<filename> to out/<filepath>)
+	@sed -i 's|out/$$(notdir $$(out))|$$(subst ./,,$$(out))|g' $$(out)
+endif
+endef
 
-# Build PLFA pages
-out/%.md: src/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
-	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
-
-
-# Build TSPL pages
-out/%.md: tspl/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
-	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
-
+$(foreach agda,$(AGDA),$(eval $(call AGDA_template,$(agda))))
 
 # Start server
 serve:
@@ -60,25 +65,25 @@ server-stop:
 
 # Build website using jekyll
 build: AGDA2HTML_FLAGS += --link-to-agda-stdlib=$(AGDA_STDLIB_URL)
-build: $(markdown)
+build: $(MARKDOWN)
 	ruby -S bundle exec jekyll build
 
 
 # Build website using jekyll offline
-build-offline: $(markdown)
+build-offline: $(MARKDOWN)
 	ruby -S bundle exec jekyll build
 
 
 # Build website using jekyll incrementally
 build-incremental: AGDA2HTML_FLAGS += --link-to-agda-stdlib
-build-incremental: $(markdown)
+build-incremental: $(MARKDOWN)
 	ruby -S bundle exec jekyll build --incremental
 
 
 # Remove all auxiliary files
 clean:
-ifneq ($(strip $(agdai)),)
-	rm $(agdai)
+ifneq ($(strip $(AGDAI)),)
+	rm $(AGDAI)
 endif
 
 
@@ -92,7 +97,7 @@ clobber: clean
 
 # List all .lagda files
 ls:
-	@echo $(agda)
+	@echo $(AGDA)
 
 .phony: ls
 

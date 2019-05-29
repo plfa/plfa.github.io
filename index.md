@@ -50,14 +50,14 @@ Pull requests are encouraged.
   - A paper describing the book appeared in [SBMF][sbmf].
   - Courses taught from the textbook:
     * Philip Wadler, University of Edinburgh,
-      [2018](/TSPL/)
+      [2018](/TSPL/2018/)
     * David Darais, University of Vermont,
       [2018](http://david.darais.com/courses/fa2018-cs295A/)
     * John Leo, Google Seattle, 2018--2019 
     * Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
-      [2019](/PUC/)
+      [2019](/PUC/2019/)
   - Translations:
-	* [Chinese](https://agda-zh.github.io/PLFA-zh/), ongoing
+	* [Chinese](https://agda-zh.github.io/PLFA-zh/), ongoing.
 
 [wen]: https://github.com/wenkokke
 [phil]: https://homepages.inf.ed.ac.uk/wadler/

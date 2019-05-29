@@ -33,8 +33,12 @@ theme: minima
 exclude:
   - "hs/"
   - "src/"
+  - "slides/"
   - "extra/"
   - "vendor/"
   - "*.lagda"
+  - "Makefile"
   - "Gemfile"
   - "Gemfile.lock"
+  - "Guardfile"
+  - "LICENSE"
