@@ -57,7 +57,7 @@ Pull requests are encouraged.
     * Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
       [2019](/PUC/)
   - Translations:
-  * [Chinese](https://agda-zh.github.io/PLFA-zh/), ongoing
+    * [Chinese](https://agda-zh.github.io/PLFA-zh/) (ongoing)
 
 ## Citation
 
