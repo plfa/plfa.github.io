@@ -47,7 +47,7 @@ Pull requests are encouraged.
 
 ## Related
 
-  - A paper describing the book appeared in [SBMF][sbmf].
+  - [How to cite this book](/Citing/)
   - Courses taught from the textbook:
     * Philip Wadler, University of Edinburgh,
       [2018](/TSPL/)
@@ -58,7 +58,7 @@ Pull requests are encouraged.
       [2019](/PUC/)
   - Translations:
     * [Chinese](https://agda-zh.github.io/PLFA-zh/) (ongoing)
-  - [How to cite this book](/Citing/)
+  - A paper describing the book appeared in [SBMF][sbmf]
 
 [wen]: https://github.com/wenkokke
 [phil]: https://homepages.inf.ed.ac.uk/wadler/
