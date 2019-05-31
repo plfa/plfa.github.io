@@ -58,10 +58,7 @@ Pull requests are encouraged.
       [2019](/PUC/)
   - Translations:
     * [Chinese](https://agda-zh.github.io/PLFA-zh/) (ongoing)
-
-## Citation
-
-[How to Cite this Book](cite.md)
+  - [How to cite this book](/Citing/)
 
 [wen]: https://github.com/wenkokke
 [phil]: https://homepages.inf.ed.ac.uk/wadler/
