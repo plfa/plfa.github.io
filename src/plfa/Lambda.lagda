@@ -60,6 +60,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Relation.Nullary.Negation using (¬?)
 open import Data.List using (List; _∷_; [])
+open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
 \end{code}
 
 ## Syntax of terms
