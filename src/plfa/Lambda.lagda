@@ -982,8 +982,8 @@ For example,
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
 
-is the context that associates variable ` "s" ` with type `` `ℕ ⇒ `ℕ ``,
-and variable ` "z" ` with type `` `ℕ ``.
+is the context that associates variable `` "s" `` with type `` `ℕ ⇒ `ℕ ``,
+and variable `` "z" `` with type `` `ℕ ``.
 
 Contexts are formalised as follows:
 
@@ -1001,11 +1001,11 @@ data Context : Set where
 Show that `Context` is isomorphic to `List (Id × Type)`.
 For instance, the isomorphism relates the context
 
-    `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
+    ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ
 
 to the list
 
-    `` [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ] ``.
+    [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ]
 
 \begin{code}
 -- Your code goes here
