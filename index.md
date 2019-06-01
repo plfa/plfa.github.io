@@ -47,7 +47,6 @@ Pull requests are encouraged.
 
 ## Related
 
-  - [How to cite this book](/Citing/)
   - Courses taught from the textbook:
     * Philip Wadler, University of Edinburgh,
       [2018](/TSPL/)
@@ -56,8 +55,6 @@ Pull requests are encouraged.
     * John Leo, Google Seattle, 2018--2019 
     * Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
       [2019](/PUC/)
-  - Translations:
-    * [Chinese](https://agda-zh.github.io/PLFA-zh/) (ongoing)
   - A paper describing the book appeared in [SBMF][sbmf]
 
 [wen]: https://github.com/wenkokke
