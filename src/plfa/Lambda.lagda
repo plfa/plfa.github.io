@@ -1301,7 +1301,7 @@ We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are don
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
-Chapter [Inference][plfa.DeBruijn]
+Chapter [Inference][plfa.Inference]
 will show how to use Agda to compute type derivations directly.
 
 
@@ -1393,6 +1393,7 @@ This chapter uses the following unicode:
     ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
     β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
+    Γ  U+0393  GREEK CAPITAL LETTER GAMMA (\GG or \Gamma)
     ∋  U+220B  CONTAINS AS MEMBER (\ni)
     ∅  U+2205  EMPTY SET (\0)
     ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
