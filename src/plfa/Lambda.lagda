@@ -1033,7 +1033,7 @@ If two variables in a context have the same name, then lookup
 should return the most recently bound variable, which _shadows_
 the other variables.  For example,
 
-* `` ∅ , "x" : `ℕ ⇒ `ℕ , "x" : `ℕ ∋ "x" ⦂ `ℕ ``
+* `` ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ∋ "x" ⦂ `ℕ ``
 
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
