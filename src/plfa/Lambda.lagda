@@ -1394,6 +1394,7 @@ This chapter uses the following unicode:
     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
     β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
     Γ  U+0393  GREEK CAPITAL LETTER GAMMA (\GG or \Gamma)
+    ≠  U+2260  NOT EQUAL TO (\=n or \ne)
     ∋  U+220B  CONTAINS AS MEMBER (\ni)
     ∅  U+2205  EMPTY SET (\0)
     ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
