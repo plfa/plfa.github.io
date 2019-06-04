@@ -1021,7 +1021,7 @@ and indicates in context `Γ` that variable `x` has type `A`.
 It is called _lookup_.
 For example,
 
-* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ `` and
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
 give us the types associated with variables `` "z" `` and `` "s" ``,
