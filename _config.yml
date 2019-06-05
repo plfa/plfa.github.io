@@ -32,9 +32,9 @@ markdown: kramdown
 theme: minima
 exclude:
   - "hs/"
-  - "src/"
   - "extra/"
+  - "depr/"
   - "vendor/"
-  - "*.lagda"
+  - "*.lagda.md"
   - "Gemfile"
   - "Gemfile.lock"
