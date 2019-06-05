@@ -90,7 +90,7 @@ types without needing to develop a separate inductive definition of the
 
 ## Values do not reduce
 
-We start with any easy observation. Values do not reduce:
+We start with an easy observation. Values do not reduce:
 \begin{code}
 V¬—→ : ∀ {M N}
   → Value M
