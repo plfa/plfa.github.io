@@ -212,6 +212,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 
 #### Exercise `primed` (stretch)
 
+Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
 \begin{code}
