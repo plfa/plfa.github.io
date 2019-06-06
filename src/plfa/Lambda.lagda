@@ -1131,20 +1131,23 @@ data _⊢_⦂_ : Context → Term → Type → Set where
 Each type rule is named after the constructor for the
 corresponding term.
 
-Most of the rules have a second name,
-derived from a convention in logic, whereby the rule is
-named after the type connective that it concerns;
-rules to introduce and to
-eliminate each connective are labeled `-I` and `-E`, respectively. As we
-read the rules from top to bottom, introduction and elimination rules
-do what they say on the tin: the first _introduces_ a formula for the
-connective, which appears in the conclusion but not in the premises;
-while the second _eliminates_ a formula for the connective, which appears in
-a premise but not in the conclusion. An introduction rule describes
-how to construct a value of the type (abstractions yield functions,
-`` `suc `` and `` `zero `` yield naturals), while an elimination rule describes
-how to deconstruct a value of the given type (applications use
-functions, case expressions use naturals).
+Most of the rules have a second name, derived from a convention in
+logic, whereby the rule is named after the type connective that it
+concerns; rules to introduce and to eliminate each connective are
+labeled `-I` and `-E`, respectively. As we read the rules from top to
+bottom, introduction and elimination rules do what they say on the
+tin: the first _introduces_ a formula for the connective, which
+appears in the conclusion but not in the premises; while the second
+_eliminates_ a formula for the connective, which appears in a premise
+but not in the conclusion. An introduction rule describes how to
+construct a value of the type (abstractions yield functions, successor
+and zero yield naturals), while an elimination rule describes how to
+deconstruct a value of the given type (applications use functions,
+case expressions use naturals).
+
+Note also the three places (in `⊢ƛ`, `⊢case`, and `⊢μ`) where the
+context is extended with `x` and an appropriate type, corresponding to
+the three places where a bound variable is introduced.
 
 The rules are deterministic, in that at most one rule applies to every term.
 
