@@ -10,7 +10,7 @@ permalink : /Padova/
     [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
 
 * **Host**
-    [Maria Emilia (Milly) Maietti](https://www.math.unipd.it/~maietti/)
+    [Maria Emilia Maietti](https://www.math.unipd.it/~maietti/)
 
 ## Schedule
 
