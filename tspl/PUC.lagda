@@ -9,6 +9,9 @@ permalink : /PUC/
 * **Instructor**
     [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
 
+* **Host**
+    [Roberto Ierusalimschy](http://www.inf.puc-rio.br/~roberto/)
+
 ## Schedule
 
 Lectures and tutorials take place Fridays and some Thursdays in 548L.
