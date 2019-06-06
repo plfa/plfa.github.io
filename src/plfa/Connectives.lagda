@@ -559,7 +559,7 @@ it the exponential, note that if type `A` has `m` distinct
 members, and type `B` has `n` distinct members, then the type
 `A → B` has `nᵐ` distinct members.  For instance, consider a
 type `Bool` with two members and a type `Tri` with three members,
-as defined earlier. The the type `Bool → Tri` has nine (that is,
+as defined earlier. Then the type `Bool → Tri` has nine (that is,
 three squared) members:
 
     λ{true → aa; false → aa}  λ{true → aa; false → bb}  λ{true → aa; false → cc}
