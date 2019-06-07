@@ -124,8 +124,8 @@ types or values:
     --------------------------------------- ξ-let
     `let x `= M `in N —→ `let x `= M′ `in N
 
-    ---------------------------- β-let
-    `let x `= V `in N —→ N [ V ]
+    --------------------------------- β-let
+    `let x `= V `in N —→ N [ x := V ]
 
 ### Example
 
@@ -241,8 +241,8 @@ and reduction rules:
     --------------------------------------------------- ξ-case×
     case× L [⟨ x , y ⟩⇒ N ] —→ case× L′ [⟨ x , y ⟩⇒ N ]
 
-    ---------------------------------------------------------- β-case×
-    case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒  N —→ N [ x := V ] [ y := W ]
+    --------------------------------------------------------- β-case×
+    case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒  N —→ N [ x := V ][ y := W ]
 
 ### Example
 
@@ -271,7 +271,7 @@ One might think that we could instead use a more compact translation:
     -- WRONG
       (case× L [⟨ x , y ⟩⇒ N ]) †
     =
-      (N †) [ x := proj₁ (L †) ] [ y := proj₂ (L †) ]
+      (N †) [ x := proj₁ (L †) ][ y := proj₂ (L †) ]
 
 But this behaves differently.  The first term always reduces `L`
 before `N`, and it computes `proj₁` and `proj₂` exactly once.  The
@@ -526,8 +526,8 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
     ------------------------------------ β-[]
     caseL `[] [[]⇒ M | x ∷ xs ⇒ N ] —→ M
 
-    ---------------------------------------------------------------- β-∷
-    caseL (V `∷ W) [[]⇒ M | x ∷ xs ⇒ N ] —→ N [ x := V ] [ xs := W ]
+    --------------------------------------------------------------- β-∷
+    caseL (V `∷ W) [[]⇒ M | x ∷ xs ⇒ N ] —→ N [ x := V ][ xs := W ]
 
 ### Example
 
@@ -1211,6 +1211,21 @@ to confirm it returns the expected answer:
   * an alternative formulation of unit type
   * empty type (recommended)
   * lists
+
+
+#### Exercise `double-subst` (stretch)
+
+Show that a double substitution is equivalent to two single
+substitutions.
+\begin{code}
+postulate
+  double-subst :
+    ∀ {Γ} {A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
+      N [ V ][ W ] ≡ (N [ rename S_ W ]) [ V ]
+\end{code}
+Note the arguments need to be swapped and `W` needs to have
+its context adjusted via renaming in order for the right-hand
+side to be well-typed.
 
 
 ## Unicode
