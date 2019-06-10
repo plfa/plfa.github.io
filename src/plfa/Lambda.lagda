@@ -1166,7 +1166,7 @@ Here `_≟_` is the function that tests two identifiers for equality.
 We intend to apply the function only when the
 two arguments are indeed unequal, and indicate that the second
 case should never arise by postulating a term `impossible` of
-with the empty type `⊥`.  If we use C-c C-n to normalise the term
+the empty type `⊥`.  If we use C-c C-n to normalise the term
 
     "a" ≠ "a"
 
