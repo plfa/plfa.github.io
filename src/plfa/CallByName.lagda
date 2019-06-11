@@ -17,16 +17,19 @@ computing the value of a program in the lambda calculus.  That is,
 call-by-name produces a value if and only if beta reduction can reduce
 the program to a lambda abstraction. In this chapter we define
 call-by-name evaluation and prove the forward direction of this
-if-and-only-if. We postpone the backward direction until after we have
-developed a denotational semantics for the lambda calculus, at which
-point the proof will be an easy corollary of properties of the
-denotational semantics.
+if-and-only-if. The backward direction is traditionally proved via
+Curry-Feys standardisation, which is quite complex.  We give a sketch
+of that proof, due to Plotkin, but postpone the proof in Agda until
+after we have developed a denotational semantics for the lambda
+calculus, at which point the proof is an easy corollary of properties
+of the denotational semantics.
 
 We present the call-by-name strategy as a relation between an an input
 term and an output value. Such a relation is often called a _big-step
-semantics_, as it relates the input term directly to the final result,
-in contrast to the small-step reduction relation `—→` that maps a term
-to another term in which a single sub-computation has been completed.
+semantics_, written `M ⇓ V`, as it relates the input term `M` directly
+to the final result `V`, in contrast to the small-step reduction
+relation, `M —→ M′`, that maps `M` to another term `M′` in which a
+single sub-computation has been completed.
 
 ## Imports
 
@@ -169,7 +172,7 @@ expand the conclusion of the statement, stating that the results are
 equivalent.
 
 We make the two notions of equivalence precise by defining the
-following two mutually-recursive predicates `c ≈ M` and `γ ≈ₑ σ`.
+following two mutually-recursive predicates `V ≈ M` and `γ ≈ₑ σ`.
 
 \begin{code}
 _≈_ : Clos → (∅ ⊢ ★) → Set
@@ -182,8 +185,8 @@ _≈ₑ_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
 We can now state the main lemma:
 
-    If γ ⊢ M ⇓ c  and  γ ≈ₑ σ,
-    then  ⟪ σ ⟫ M —↠ N  and  c ≈ N  for some N.
+    If γ ⊢ M ⇓ V  and  γ ≈ₑ σ,
+    then  ⟪ σ ⟫ M —↠ N  and  V ≈ N  for some N.
 
 Before starting the proof, we establish a couple lemmas
 about equivalent environments and substitutions.
@@ -206,20 +209,20 @@ The next lemma states that if you start with an equivalent
 environment and substitution `γ ≈ₑ σ`, extending them with
 an equivalent closure and term `c ≈ N` produces
 an equivalent environment and substitution:
-`(γ ,' c) ≈ₑ (ext-subst σ N)`. 
+`(γ ,' V) ≈ₑ (ext-subst σ N)`. 
 
 \begin{code}
-≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {c} {N : ∅ ⊢ ★}
-      → γ ≈ₑ σ  →  c ≈ N
+≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {V} {N : ∅ ⊢ ★}
+      → γ ≈ₑ σ  →  V ≈ N
         --------------------------
-      → (γ ,' c) ≈ₑ (ext-subst σ N)
-≈ₑ-ext {Γ} {γ} {σ} {c} {N} γ≈ₑσ c≈N {x} = goal
+      → (γ ,' V) ≈ₑ (ext-subst σ N)
+≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N {x} = goal
    where
-   ext-cons : (γ ,' c) ≈ₑ (N • σ)
-   ext-cons {Z} = c≈N
+   ext-cons : (γ ,' V) ≈ₑ (N • σ)
+   ext-cons {Z} = V≈N
    ext-cons {S x} = γ≈ₑσ
 
-   goal : (γ ,' c) x ≈ ext-subst σ N x
+   goal : (γ ,' V) x ≈ ext-subst σ N x
    goal
        with ext-cons {x}
    ... | a rewrite sym (subst-zero-exts-cons{Γ}{∅}{σ}{★}{N}{★}) = a
@@ -227,60 +230,60 @@ an equivalent environment and substitution:
 
 To prove `≈ₑ-ext`, we make use of the fact that `ext-subst σ N` is
 equivalent to `N • σ` (by `subst-zero-exts-cons`). So we just
-need to prove that `(γ ,' c) ≈ₑ (N • σ)`, which is easy.
+need to prove that `(γ ,' V) ≈ₑ (N • σ)`, which is easy.
 We proceed by cases on the input variable.
 
 * If it is `Z`, then we immediately conclude using the
-  premise `c ≈ N`.
+  premise `V ≈ N`.
 
 * If it is `S x`, then we immediately conclude using
   premise `γ ≈ₑ σ`.
 
 
 We arive at the main lemma: if `M` big steps to a
-closure `c` in environment `γ`, and if `γ ≈ₑ σ`, then `⟪ σ ⟫ M` reduces
-to some term `N` that is equivalent to `c`. We describe the proof
+closure `V` in environment `γ`, and if `γ ≈ₑ σ`, then `⟪ σ ⟫ M` reduces
+to some term `N` that is equivalent to `V`. We describe the proof
 below.
 
 \begin{code}
-⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{c : Clos}
-       → γ ⊢ M ⇓ c  →  γ ≈ₑ σ
+⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{V : Clos}
+       → γ ⊢ M ⇓ V  →  γ ≈ₑ σ
          ---------------------------------------
-       → Σ[ N ∈ ∅ ⊢ ★ ] (⟪ σ ⟫ M —↠ N) × c ≈ N
-⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓c) γ≈ₑσ
+       → Σ[ N ∈ ∅ ⊢ ★ ] (⟪ σ ⟫ M —↠ N) × V ≈ N
+⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓V) γ≈ₑσ
     with γ x | γ≈ₑσ {x} | γx≡Lδ
 ... | clos L δ | ⟨ τ , ⟨ δ≈ₑτ , σx≡τL ⟩ ⟩ | refl
-    with ⇓→—↠×𝔹{σ = τ} δ⊢L⇓c δ≈ₑτ
-... | ⟨ N , ⟨ τL—↠N , c≈N ⟩ ⟩ rewrite σx≡τL =
-      ⟨ N , ⟨ τL—↠N , c≈N ⟩ ⟩
-⇓→—↠×𝔹 {σ = σ} {c = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
+    with ⇓→—↠×𝔹{σ = τ} δ⊢L⇓V δ≈ₑτ
+... | ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩ rewrite σx≡τL =
+      ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩
+⇓→—↠×𝔹 {σ = σ} {V = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
     ⟨ ⟪ σ ⟫ (ƛ N) , ⟨ ⟪ σ ⟫ (ƛ N) [] , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
-⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {c} (⇓-app {N = N} L⇓ƛNδ N⇓c) γ≈ₑσ
+⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
     with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≈ₑσ
 ... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
-    with ⇓→—↠×𝔹 {σ = ext-subst τ (⟪ σ ⟫ M)} N⇓c
+    with ⇓→—↠×𝔹 {σ = ext-subst τ (⟪ σ ⟫ M)} N⇓V
            (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
        | β{∅}{⟪ exts τ ⟫ N}{⟪ σ ⟫ M}
-... | ⟨ N' , ⟨ —↠N' , c≈N' ⟩ ⟩ | ƛτN·σM—→
+... | ⟨ N' , ⟨ —↠N' , V≈N' ⟩ ⟩ | ƛτN·σM—→
     rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (⟪ σ ⟫ M)} =
     let rs = (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
     let g = —↠-trans (appL-cong σL—↠ƛτN) rs in
-    ⟨ N' , ⟨ g , c≈N' ⟩ ⟩
+    ⟨ N' , ⟨ g , V≈N' ⟩ ⟩
 \end{code}
 
-The proof is by induction on `γ ⊢ M ⇓ c`. We have three cases
+The proof is by induction on `γ ⊢ M ⇓ V`. We have three cases
 to consider.
 
 * Case `⇓-var`.
-  So we have `γ x ≡ clos L δ` and `δ ⊢ L ⇓ c`.
-  We need to show that `⟪ σ ⟫ x —↠ N` and `c ≈ N` for some `N`.
+  So we have `γ x ≡ clos L δ` and `δ ⊢ L ⇓ V`.
+  We need to show that `⟪ σ ⟫ x —↠ N` and `V ≈ N` for some `N`.
   The premise `γ ≈ₑ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
   By the definition of `≈`, there exists a `τ` such that
   `δ ≈ₑ τ` and `σ x ≡ ⟪ τ ⟫ L `.
-  Using `δ ⊢ L ⇓ c` and `δ ≈ₑ τ`, 
+  Using `δ ⊢ L ⇓ V` and `δ ≈ₑ τ`, 
   the induction hypothesis gives us
-  `⟪ τ ⟫ L —↠ N` and `c ≈ N` for some `N`.
-  So we have shown that `⟪ σ ⟫ x —↠ N` and `c ≈ N` for some `N`.
+  `⟪ τ ⟫ L —↠ N` and `V ≈ N` for some `N`.
+  So we have shown that `⟪ σ ⟫ x —↠ N` and `V ≈ N` for some `N`.
 
 * Case `⇓-lam`.
   We immediately have `⟪ σ ⟫ (ƛ N) —↠ ⟪ σ ⟫ (ƛ N)`
@@ -294,8 +297,8 @@ to consider.
   
   and `δ ≈ₑ τ` for some `τ`.
   From `γ≈ₑσ` we have `clos M γ ≈ ⟪ σ ⟫ M`.
-  Then with `(δ ,' clos M γ) ⊢ N ⇓ c`,
-  the induction hypothesis gives us `c ≈ N'` and
+  Then with `(δ ,' clos M γ) ⊢ N ⇓ V`,
+  the induction hypothesis gives us `V ≈ N'` and
   
         ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫ N —↠ N'                           (2)
   
@@ -335,27 +338,59 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
     ⟨ ⟪ exts σ ⟫ N′ , rs ⟩
 \end{code}
 
+## Beta reduction to a lambda implies big-step evaluation  
+
 The proof of the backward direction, that beta reduction to a lambda
-implies that the big-step semantics produces a result, will leverage the
-denotational semantics defined in the next chapter, and appears in the
-chapter on Adequacy.
+implies that the call-by-name semantics produces a result, is more
+difficult to prove. The difficulty stems from reduction proceeding
+underneath lambda abstractions via the `ζ` rule. The call-by-name
+semantics does not reduce under lambda, so a straightforward proof by
+induction on the reduction sequence is impossible.  In the article
+_Call-by-name, call-by-value, and the λ-calculus_, Plotkin proves the
+theorem in two steps, using two auxilliary reduction relations. The
+first step uses a classic technique called Curry-Feys standardisation.
+It relies on the notion of _standard reduction sequence_, which acts
+as a half-way point between full beta reduction and call-by-name by
+expanding call-by-name to also include reduction underneath
+lambda. Plotkin proves that `M` reduces to `L` if and only if `M` is
+related to `L` by a standard reduction sequence.
 
-## Notes
+    Theorem 1 (Standardisation)
+    `M —↠ L` if and only if `M` goes to `L` via a standard reduction sequence.
 
-In the seminal article _Call-by-name, call-by-value, and the
-λ-calculus_, Plotkin defined a call-by-name partial function similar
-to the big-step semantics in this chapter, except that it used
-substitution instead of environments. Corollary 2 (page 146) of his
-article states that a term `M` beta reduces to a lambda abstraction if
-and only if call-by-name produces a value. His proof is quite
-different from ours in that it relies on two auxilliary reduction
-relations called _left reduction_ and _standard reduction_. Theorem 1
-(Standardisation) states that `M —↠ L` if and only if `M` goes to `L`
-via standard reductions.  Corollary 1 then establishes that `M —↠ ƛ N`
-if and only if `M` goes to `ƛ N′`, for some `N′`, by left
-reduction. Theorem 2 then connects call-by-name evaluation to left
-reduction.  Finally, Corollary 2 combines these results to show that
-`M —↠ ƛ N` if and only if call-by-name produces a value.
+Plotkin then introduces _left reduction_, a small-step version of
+call-by-name and uses the above theorem to prove that beta reduction
+and left reduction are equivalent in the following sense.
+
+    Corollary 1
+    `M —↠ ƛ N` if and only if `M` goes to `ƛ N′`, for some `N′`, by left reduction.
+
+The second step of the proof connects left reduction to call-by-name
+evaluation.
+
+    Theorem 2
+    `M` left reduces to `ƛ N` if and only if `⊢ M ⇓ ƛ N`.
+
+(Plotkin's call-by-name evaluator uses substitution instead of
+environments, which explains why the environment is omitted in `⊢ M ⇓
+ƛ N` in the above theorem statement.)
+
+Putting Corollary 1 and Theorem 2 together, Plotkin proves that
+call-by-name evaluation is equivalent to beta reduction.
+
+    Corollary 2
+    `M —↠ ƛ N` if and only if `⊢ M ⇓ ƛ N′` for some `N′`.
+
+Plotkin also proves an analogous result for the λᵥ calculus, relating
+it to call-by-value evaluation. For a nice exposition of that proof,
+we recommend Chapter 5 of _Semantics Engineering with PLT Redex_ by
+Felleisen, Findler, and Flatt.
+
+Instead of proving the backwards direction via standardisation, as
+sketched above, we defer the proof until after we define a
+denotational semantics for the lambda calculus, at which point the
+proof of the backwards direction will fall out as a corollary to the
+soundness and adequacy of the denotational semantics.
 
 
 ## Unicode

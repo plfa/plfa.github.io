@@ -64,6 +64,9 @@ rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 ℱ D γ (u ⊔ v) = (ℱ D γ u) × (ℱ D γ v)
 \end{code}
 
+[JGS: add comment about how ℱ can be viewed as curry.]
+
+
 Using this `ℱ`, we hope to prove that
 
     ℰ (ƛ N) ≃ ℱ (ℰ N)
@@ -175,6 +178,8 @@ infixl 7 _●_
 _●_ : ∀{Γ} → Denotation Γ → Denotation Γ → Denotation Γ
 (D₁ ● D₂) γ w = w ⊑ ⊥ ⊎ Σ[ v ∈ Value ]( D₁ γ (v ↦ w) × D₂ γ v )
 \end{code}
+
+[JGS: add comment about how ● can be viewed as apply.]
 
 Next we consider the inversion lemma for application, which is also
 the forward direction of the semantic equation for application.  We
