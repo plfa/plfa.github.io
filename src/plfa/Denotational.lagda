@@ -339,16 +339,6 @@ data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
         → γ ⊢ M ↓ w
 \end{code}
 
-[PLW: Say we redefine:
-  var : ∀ {Γ} {γ : Env Γ} {x}
-      → v ⊑ γ x
-        -------------
-      → γ ⊢ (` x) ↓ v
-Then does sub (downward closure) follow from the other rules?]
-[JGS: Good question. I'll look into it. In the past I've
- used the above var rule in addition to using ⊑ in ↦-elim.
- But perhaps it is now possible to only use it in var.]
-
 Consider the rule for lambda abstractions, `↦-intro`.  It says that a
 lambda abstraction results in a single-entry table that maps the input
 `v` to the output `w`, provided that evaluating the body in an
@@ -369,17 +359,18 @@ denot-id-two : ∀ {γ v w} → γ ⊢ id ↓ (v ↦ v) ⊔ (w ↦ w)
 denot-id-two = ⊔-intro denot-id denot-id
 \end{code}
 
-Of course, we will need tables with many rows for our lambda
-abstractions. These can be constructed using the `⊔-intro` rule.  If
-term M (typically a lambda abstraction) can produce both tables `v` and
-`w`, then it produces the combined table `v ⊔ w`. One can take an
-operational view of the rules `↦-intro` and `⊔-intro` by 
+Of course, we will need tables with many rows to capture the meaning
+of lambda abstractions. These can be constructed using the `⊔-intro`
+rule.  If term M (typically a lambda abstraction) can produce both
+tables `v` and `w`, then it produces the combined table `v ⊔ w`. One
+can take an operational view of the rules `↦-intro` and `⊔-intro` by
 imagining that when an interpreter first comes to a lambda
 abstraction, it pre-evaluates the function on a bunch of randomly
 chosen arguments, using many instances of the rule `↦-intro`, and then
-joins them into one table using many instances of the rule `⊔-intro`.
+joins them into a big table using many instances of the rule `⊔-intro`.
 In the following we show that the identity function produces a table
-containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)`.
+containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦
+⊥)`.
 
 \begin{code}
 denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
@@ -487,8 +478,7 @@ denot-Ω' = ⊥-intro
 Just because one can derive `∅ ⊢ M ↓ ⊥` for some closed term `M` doesn't mean
 that `M` necessarily diverges. There may be other derivations that
 conclude with `M` producing some more informative value.  However, if
-the only thing that a term evaluates to is `⊥`, then it indeed it
-diverges.
+the only thing that a term evaluates to is `⊥`, then it indeed diverges.
 
 An attentive reader may have noticed a disconnect earlier in the way
 we planned to solve the self-application problem and the actual
@@ -616,12 +606,16 @@ compositional, i.e., that the denotation of a term is a function of
 the denotations of its subterms. To do this we shall prove equations
 of the following shape.
 
+    ℰ (` x) ≃ ...
     ℰ (ƛ M) ≃ ... ℰ M ...
     ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
 
 The compositionality property is not trivial because the semantics we
 have defined includes three rules that are not syntax directed:
-`⊥-intro`, `⊔-intro`, and `sub`.
+`⊥-intro`, `⊔-intro`, and `sub`. The above equations suggest that the
+dentoational semantics can be defined as a recursive function, and
+indeed, we give such a definition and prove that it is equivalent to
+ℰ.
 
 Next we investigate whether the denotational semantics and the
 reduction semantics are equivalent. Recall that the job of a language
@@ -666,8 +660,15 @@ is called _adequacy_ in the literature.
 
     ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N′ for some N′
 
-The proofs of these properties rely on some basic results about the
-denotational semantics, which we establish in the rest of this
+The fourth chapter applies the results of the three preceeding
+chapters (compositionality, soundness, and adequacy) to prove that
+denotational equality implies a property called _contextual
+equivalence_. This property is important because it justifies the use
+of denotational equality in proving the correctness of program
+transformations such as performance optimizations.
+
+The proofs of all of these properties rely on some basic results about
+the denotational semantics, which we establish in the rest of this
 chapter.  We start with some lemmas about renaming, which are quite
 similar to the renaming lemmas that we have seen in previous chapters.
 We conclude with a proof of an important inversion lemma for the
@@ -1259,21 +1260,19 @@ one we use:
  
     Value = C + ℘f(Value) × ℘f(Value)
  
-where `C` is a set of constants and `℘f` means finite powerset.  The pairs
-in `℘f(Value) × ℘f(Value)` represent input-output mappings, just as in
-this chapter. The finite powersets are used to enable a function table
-to appear in the input and in the output. These differences amount to
-changing where the recursion appears in the definition of `Value`.
-Plotkin's model is an example of a _graph model_ of the untyped lambda
-calculus (Barendregt, 1984). In a graph model, the semantics is
-presented as a function from programs and environments to (possibly
-infinite) sets of values. The semantics in this chapter is instead
-defined as a relation, but set-valued functions are isomorphic to
-relations. We choose to present the semantics as a relation because
-the functional approach requires a kind of existential quantifier that
-is not present in Agda.
-
-[PLW: What kind of existential is required?]
+where `C` is a set of constants and `℘f` means finite powerset.  The
+pairs in `℘f(Value) × ℘f(Value)` represent input-output mappings, just
+as in this chapter. The finite powersets are used to enable a function
+table to appear in the input and in the output. These differences
+amount to changing where the recursion appears in the definition of
+`Value`.  Plotkin's model is an example of a _graph model_ of the
+untyped lambda calculus (Barendregt, 1984). In a graph model, the
+semantics is presented as a function from programs and environments to
+(possibly infinite) sets of values. The semantics in this chapter is
+instead defined as a relation, but set-valued functions are isomorphic
+to relations. Indeed, we present the semantics as a function in the
+next chapter and prove that it is equivalent to the relational
+version.
 
 Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
 examples of graph models. Both use the following inductive definition
