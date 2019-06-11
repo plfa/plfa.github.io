@@ -1182,7 +1182,7 @@ evidence of _any_ proposition whatsoever, regardless of its truth.
 ### Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
-is a type derivation for the Church numberal two,
+is a type derivation for the Church numeral two,
 
                             ∋s                     ∋z
                             ------------------ ⊢`  -------------- ⊢`
