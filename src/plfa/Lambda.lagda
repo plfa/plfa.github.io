@@ -1285,7 +1285,7 @@ the outermost term in `sucᶜ` is `ƛ`, which is typed using `⊢ƛ`. The
     ⊢sucᶜ = ⊢ƛ { }1
     ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc ` "n" ⦂ `ℕ
 
-We can fill in the hole by type C-c C-r again:
+We can fill in the hole by typing C-c C-r again:
 
     ⊢sucᶜ = ⊢ƛ (⊢suc { }2)
     ?2 : ∅ , "n" ⦂ `ℕ ⊢ ` "n" ⦂ `ℕ
