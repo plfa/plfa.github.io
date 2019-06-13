@@ -1338,7 +1338,7 @@ nope₁ (() · _)
 \end{code}
 
 As a second example, here is a formal proof that it is not possible to
-type `` ƛ "x" ⇒ ` "x" · ` "x" `` It cannot be typed, because
+type `` ƛ "x" ⇒ ` "x" · ` "x" ``. It cannot be typed, because
 doing so requires types `A` and `B` such that `A ⇒ B ≡ A`:
 
 \begin{code}
