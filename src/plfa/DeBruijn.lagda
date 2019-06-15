@@ -110,10 +110,10 @@ raw terms by the more sophisticated type `Γ ⊢ A` of inherently
 typed terms, which in context `Γ` have type `A`.
 
 While these two choices fit well, they are independent.  One
-can use De Bruijn indices in raw terms, or (with more
+can use de Bruijn indices in raw terms, or (with more
 difficulty) have inherently typed terms with names.  In
 Chapter [Untyped][plfa.Untyped],
-we will introduce terms with De Bruijn indices that
+we will introduce terms with de Bruijn indices that
 are inherently scoped but not typed.
 
 
@@ -412,7 +412,7 @@ postulating an `impossible` term, just as we did
 [here][plfa.Lambda#impossible].
 
 Given the above, we can convert a natural to a corresponding
-De Bruijn index, looking up its type in the context:
+de Bruijn index, looking up its type in the context:
 \begin{code}
 count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
 count {Γ , _} zero     =  Z
