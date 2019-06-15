@@ -71,8 +71,8 @@ the lookup derivation for each variable corresponds to a
 number which tells us how many enclosing binding terms to
 count to find the binding of that variable.  Here `"z"`
 corresponds to `Z` or zero and `"s"` corresponds to `S Z` or
-one.  And, indeed, "z" is bound by the inner abstraction
-(count outward past zero abstractions) and "s" is bound by the
+one.  And, indeed, `"z"` is bound by the inner abstraction
+(count outward past zero abstractions) and `"s"` is bound by the
 outer abstraction (count outward past one abstraction).
 
 In this chapter, we are going to exploit this correspondence,
@@ -124,21 +124,21 @@ proceeding further let's consider a second example.  Here is
 the term that adds two naturals:
 
     plus : Term
-    plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+    plus = μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
              case ` "m"
                [zero⇒ ` "n"
                |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
   
-Note variable "m" is bound twice, once in a lambda abstraction
+Note variable `"m"` is bound twice, once in a lambda abstraction
 and once in the successor branch of the case.  Any appearance
-of "m" in the successor branch must refer to the latter
+of `"m"` in the successor branch must refer to the latter
 binding, due to shadowing.
 
 Here is its corresponding type derivation:
 
     ⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (Ax ∋m) (Ax ∋n)
-             (⊢suc (Ax ∋+ · Ax ∋m′ · Ax ∋n′)))))
+    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
+             (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
       where
       ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
       ∋m  = (S ("m" ≠ "n") Z)
@@ -176,12 +176,12 @@ to a lookup derivation:
   * `# 1` corresponds to `∋n′`
 
 The de Bruijn index counts the number of `S` constructs in the
-corresponding lookup derivation.  Variable "n" bound in the
+corresponding lookup derivation.  Variable `"n"` bound in the
 inner abstraction is referred to as `# 0` in the zero branch
 of the case but as `# 1` in the successor branch of the case,
-because of the intervening binding.  Variable "m" bound in the
+because of the intervening binding.  Variable `"m"` bound in the
 lambda abstraction is referred to by the first `# 1` in the
-code, while variable "m" bound in the successor branch of the
+code, while variable `"m"` bound in the successor branch of the
 case is referred to by the second `# 0`.  There is no
 shadowing: with variable names, there is no way to refer to
 the former binding in the scope of the latter, but with de
