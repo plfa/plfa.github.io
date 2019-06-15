@@ -697,7 +697,7 @@ type `B` and every other free variable to itself.
 Consider the previous example:
 
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
-     ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 
 Here is the example formalised:
 \begin{code}
