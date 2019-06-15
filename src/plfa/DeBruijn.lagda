@@ -44,16 +44,16 @@ term and the structure of the derivation showing that it is
 well-typed.  For example, here is the term for the Church
 numeral two:
 
-    twoᶜ  : Term
-    twoᶜ  = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
+    twoᶜ : Term
+    twoᶜ = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
 
 And here is its corresponding type derivation:
 
-    ⊢twoᶜ  :  ∀ {A} ⇒ ∅ ⊢ two ⦂ Ch A
-    ⊢twoᶜ  =  ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
-               where    
-               ∋s = S ("s" ≠ "z") Z
-               ∋z = Z
+    ⊢twoᶜ : ∀ {A} → ∅ ⊢ twoᶜ ⦂ Ch A
+    ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
+      where
+      ∋s = S ("s" ≠ "z") Z
+      ∋z = Z
 
 (These are both taken from Chapter
 [Lambda][plfa.Lambda]
