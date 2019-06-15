@@ -251,7 +251,7 @@ init-last {Γ} γ = extensionality lemma
   lemma (S x)  =  refl
 \end{code}
 
-The nth function takes a De Bruijn index and finds the corresponding
+The nth function takes a de Bruijn index and finds the corresponding
 value in the environment.
 
 \begin{code}
