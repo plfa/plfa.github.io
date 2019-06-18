@@ -935,7 +935,7 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus:
 
-* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
+* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``.
 * `plus · two · two` stands for `(plus · two) · two`.
 
 ### Quiz
@@ -1034,7 +1034,7 @@ If two variables in a context have the same name, then lookup
 should return the most recently bound variable, which _shadows_
 the other variables.  For example,
 
-* `` ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ∋ "x" ⦂ `ℕ ``
+* `` ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ∋ "x" ⦂ `ℕ ``.
 
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
