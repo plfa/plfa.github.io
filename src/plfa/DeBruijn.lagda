@@ -360,8 +360,7 @@ data _⊢_ : Context → Type → Set where
 The definition exploits the close correspondence between the
 structure of terms and the structure of a derivation showing
 that it is well-typed: now we use the derivation _as_ the
-term.  For example, consider the following three terms,
-building up the Church numeral two.
+term.
 
 For example, consider the following old-style typing
 judgments:
