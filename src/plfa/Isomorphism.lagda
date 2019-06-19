@@ -431,7 +431,7 @@ postulate
   ≃-implies-≲ : ∀ {A B : Set}
     → A ≃ B
       -----
-    → A ≲ B  
+    → A ≲ B
 \end{code}
 
 \begin{code}
