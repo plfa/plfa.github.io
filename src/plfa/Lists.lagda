@@ -439,7 +439,7 @@ reverses xs =
     shunt xs []
   ≡⟨ shunt-reverse xs [] ⟩
     reverse xs ++ []
-  ≡⟨ ++-identityʳ (reverse xs) ⟩  
+  ≡⟨ ++-identityʳ (reverse xs) ⟩
     reverse xs
   ∎
 \end{code}

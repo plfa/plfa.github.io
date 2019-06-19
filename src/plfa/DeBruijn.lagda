@@ -128,7 +128,7 @@ the term that adds two naturals:
              case ` "m"
                [zero⇒ ` "n"
                |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
-  
+
 Note variable `"m"` is bound twice, once in a lambda abstraction
 and once in the successor branch of the case.  Any appearance
 of `"m"` in the successor branch must refer to the latter
@@ -220,7 +220,7 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infix  9 S_
-infix  9 #_ 
+infix  9 #_
 \end{code}
 
 Since terms are inherently typed, we must define types and
@@ -679,7 +679,7 @@ substitution for one free variable:
 \begin{code}
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
-        → Γ ⊢ B 
+        → Γ ⊢ B
           ---------
         → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N

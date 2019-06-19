@@ -160,7 +160,7 @@ construct to a calculus without the construct.
       `proj₂ L                            project second component
 
     V, W ::= ...                        Values
-      `⟨ V , W ⟩                          pair  
+      `⟨ V , W ⟩                          pair
 
 ### Typing
 
@@ -226,7 +226,7 @@ and reduction rules:
       case× L [⟨ x , y ⟩=> M ]            case
 
     V, W ::=                            Values
-      `⟨ V , W ⟩                          pair  
+      `⟨ V , W ⟩                          pair
 
 ### Typing
 
@@ -249,7 +249,7 @@ and reduction rules:
 Here is a function to swap the components of a pair rewritten in the new notation:
 
     swap×-case : ∅ ⊢ A `× B ⇒ B `× A
-    swap×-case = ƛ z ⇒ case× z 
+    swap×-case = ƛ z ⇒ case× z
                          [⟨ x , y ⟩⇒ `⟨ y , x ⟩ ]
 
 ### Translation
@@ -386,7 +386,7 @@ Here is the isomorphism between `A` and ``A `× `⊤``:
 
 ## Alternative formulation of unit type
 
-There is an alternative formulation of the unit type, where in place of 
+There is an alternative formulation of the unit type, where in place of
 no way to eliminate the type we have a case term that binds zero variables.
 We repeat the syntax in full, but only give the new type and reduction rules:
 
@@ -614,7 +614,7 @@ data _∋_ : Context → Type → Set where
     → Γ ∋ B
       ---------
     → Γ , A ∋ B
-\end{code}   
+\end{code}
 
 ### Terms and the typing judgment
 
@@ -1131,7 +1131,7 @@ cube : ∅ ⊢ Nat ⇒ Nat
 cube = ƛ (# 0 `* # 0 `* # 0)
 
 _ : cube · con 2 —↠ con 8
-_ = 
+_ =
   begin
     cube · con 2
   —→⟨ β-ƛ V-con ⟩

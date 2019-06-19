@@ -11,7 +11,7 @@ module plfa.Inference where
 \end{code}
 
 So far in our development, type derivations for the corresponding
-term have been provided by fiat.  
+term have been provided by fiat.
 In Chapter [Lambda][plfa.Lambda]
 type derivations were given separately from the term, while
 in Chapter [DeBruijn][plfa.DeBruijn]
@@ -87,7 +87,7 @@ as output. Consider the rules:
     Γ ⊢ ` x ⦂ A
 
     Γ , x ⦂ A ⊢ N ⦂ B
-    --------------------------- 
+    ---------------------------
     Γ ⊢ (ƛ x ⦂ A ⇒ N) ⦂ (A ⇒ B)
 
     Γ ⊢ L ⦂ A ⇒ B
@@ -260,7 +260,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 Once we have a type derivation, it will be easy to construct
 from it the inherently typed representation.  In order that we
 can compare with our previous development, we import
-module `pfla.DeBruijn`:  
+module `pfla.DeBruijn`:
 
 \begin{code}
 import plfa.DeBruijn as DB
@@ -564,7 +564,7 @@ that `A` and `B` must be identical:
 uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
 uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
 uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
-uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl 
+uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
 \end{code}
 There are three possibilities for the term. If it is a variable,
 uniqueness of synthesis follows from uniqueness of lookup.
@@ -706,7 +706,7 @@ synthesize Γ (L · M) with synthesize Γ L
 ... | yes ⟨ `ℕ ,    ⊢L ⟩  =  no  (λ{ ⟨ _ , ⊢L′ · _  ⟩  →  ℕ≢⇒ (uniq-↑ ⊢L ⊢L′) })
 ... | yes ⟨ A ⇒ B , ⊢L ⟩ with inherit Γ M A
 ...    | no  ¬⊢M          =  no  (¬arg ⊢L ¬⊢M)
-...    | yes ⊢M           =  yes ⟨ B , ⊢L · ⊢M ⟩  
+...    | yes ⊢M           =  yes ⟨ B , ⊢L · ⊢M ⟩
 synthesize Γ (M ↓ A) with inherit Γ M A
 ... | no  ¬⊢M             =  no  (λ{ ⟨ _ , ⊢↓ ⊢M ⟩  →  ¬⊢M ⊢M })
 ... | yes ⊢M              =  yes ⟨ A , ⊢↓ ⊢M ⟩
@@ -773,7 +773,7 @@ inherit Γ (`suc M) `ℕ with inherit Γ M `ℕ
 inherit Γ (`suc M) (A ⇒ B)  =  no  (λ())
 inherit Γ (`case L [zero⇒ M |suc x ⇒ N ]) A with synthesize Γ L
 ... | no ¬∃                 =  no  (λ{ (⊢case ⊢L  _ _) → ¬∃ ⟨ `ℕ , ⊢L ⟩})
-... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })   
+... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })
 ... | yes ⟨ `ℕ ,    ⊢L ⟩ with inherit Γ M A
 ...    | no ¬⊢M             =  no  (λ{ (⊢case _ ⊢M _) → ¬⊢M ⊢M })
 ...    | yes ⊢M with inherit (Γ , x ⦂ `ℕ) N A
