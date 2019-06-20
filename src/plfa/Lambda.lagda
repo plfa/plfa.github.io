@@ -428,12 +428,12 @@ substitution by terms that are _not_ closed may require renaming
 of bound variables. For example:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield <br/>
-  `` (ƛ "x" ⇒ ` "x" · (` "x" · `zero)) ``
+  `` (ƛ "x" ⇒ ` "x" · (` "x" · `zero)) ``.
 
 Instead, we should rename the bound variable to avoid capture:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield <br/>
-  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``
+  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``.
 
 Here `x′` is a fresh variable distinct from `x`.
 Formal definition of substitution with suitable renaming is considerably
