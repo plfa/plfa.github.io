@@ -1,4 +1,5 @@
 _site/
 .sass-cache/
+.agda-stdlib.sed
 .jekyll-metadata
 *.agdai
