@@ -5,6 +5,7 @@
 ## Jekyll files
 _site/
 .sass-cache/
+.agda-stdlib.sed
 .jekyll-metadata
 Gemfile.lock
 

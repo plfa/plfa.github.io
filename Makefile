@@ -4,6 +4,7 @@ agdai := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) 
 markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
+AGDA_STDLIB_SED := ".agda-stdlib.sed"
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -73,6 +74,7 @@ build-incremental: $(markdown)
 
 # Remove all auxiliary files
 clean:
+	rm -f $(AGDA_STDLIB_SED)
 ifneq ($(strip $(agdai)),)
 	rm $(agdai)
 endif
