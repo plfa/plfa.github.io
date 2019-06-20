@@ -90,7 +90,7 @@ case terms use naturals). We will see this again when we come
 to the rules for assigning types to terms, where constructors
 correspond to introduction rules and deconstructors to eliminators.
 
-Here is the syntax of terms in BNF:
+Here is the syntax of terms in the Backus-Naur form (BNF):
 
     L, M, N  ::=
       ` x  |  ƛ x ⇒ N  |  L · M  |
