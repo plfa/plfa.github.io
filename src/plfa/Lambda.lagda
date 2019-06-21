@@ -406,12 +406,12 @@ usually substitute values.
 Here are some examples:
 
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
-  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``.
 * `` (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] `` yields
-  `` sucᶜ · (sucᶜ · `zero) ``
-* `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``
-* `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``
-* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``
+  `` sucᶜ · (sucᶜ · `zero) ``.
+* `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``.
+* `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``.
+* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``.
 
 In the last but one example, substituting `` `zero `` for `x` in
 `` ƛ "x" ⇒ ` "x" `` does _not_ yield `` ƛ "x" ⇒ `zero ``,
