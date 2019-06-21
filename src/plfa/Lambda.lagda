@@ -554,12 +554,13 @@ The Agda version of the rules below will be similar, except that universal
 quantifications are made explicit, and so are the predicates that indicate
 which terms are values.
 
-The rules break into two sorts. Compatibility rules direct us to
-reduce some part of a term.  We give them names starting with the
-Greek letter `ξ` (_xi_).  Once a term is sufficiently reduced, it will
-consist of a constructor and a deconstructor, in our case `ƛ` and `·`,
-which reduces directly.  We give them names starting with the Greek
-letter `β` (_beta_) and such rules are traditionally called _beta rules_.
+The rules break into two sorts. The first are compatibility rules that
+direct us to reduce some part of a term.  We give them names starting
+with the Greek letter `ξ` (_xi_).  Once a term is sufficiently
+reduced, it will consist of a constructor and a deconstructor, in our
+case `ƛ` and `·`, which reduces directly.  This is the second sort and
+we give these rules names starting with the Greek letter `β` (_beta_).
+Such rules are traditionally called _beta rules_.
 
 A bit of terminology: A term that matches the left-hand side of a
 reduction rule is called a _redex_. In the redex `(ƛ x ⇒ N) · V`, we
