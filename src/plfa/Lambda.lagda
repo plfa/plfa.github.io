@@ -544,7 +544,7 @@ the rules for reduction of applications are written as follows:
     L · M —→ L′ · M
 
     M —→ M′
-    -------------- ξ-·₂
+    --------------- ξ-·₂
     V · M —→ V · M′
 
     ----------------------------- β-ƛ
