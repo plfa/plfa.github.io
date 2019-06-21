@@ -176,9 +176,9 @@ Addition takes two numerals `m` and `n`, a
 function `s` and an argument `z`, and it uses `m` to apply `s` to the
 result of using `n` to apply `s` to `z`; hence `s` is applied `m` plus
 `n` times to `z`, yielding the Church numeral for the sum of `m` and
-`n`.  For convenience, we define a function that computes successor;
-to convert a Church numeral to the corresponding natural, we apply
-it to this function and the natural number zero.
+`n`.  For convenience, we define a function that computes successor.
+To convert a Church numeral to the corresponding natural, we apply
+it to the `sucᶜ` function and the natural number zero.
 Again, later we will confirm that two plus two is four,
 in other words that the term
 
