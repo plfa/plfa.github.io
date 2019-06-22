@@ -635,6 +635,13 @@ left-to-right order.  This means that reduction is _deterministic_:
 for any term, there is at most one other term to which it reduces.
 Put another way, our reduction relation `—→` is in fact a function.
 
+The reduction rules given above form an operational semantics called
+small-step semantics. To apply one of the rules is to make a step in
+reducing a term. Note that compatibility rules cannot step without
+beta rules. Unlike beta rules, each compatibility rule has another
+reduction rule in a premise, which means that every step inevitably
+comprises at least one beta rule.
+
 
 #### Quiz
 
