@@ -976,7 +976,7 @@ consider terms with free variables.  To type a term,
 we must first type its subterms, and in particular in the
 body of an abstraction its bound variable may appear free.
 
-A _context_ associates variables with types.  We let `Γ` and `Δ` range
+A _context_ associates variables with types.  We let `Γ` range
 over contexts.  We write `∅` for the empty context, and `Γ , x ⦂ A`
 for the context that extends `Γ` by mapping variable `x` to type `A`.
 For example,
