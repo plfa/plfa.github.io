@@ -187,7 +187,7 @@ in other words that the term
 reduces to `` `suc `suc `suc `suc `zero ``.
 
 
-#### Exercise `mul` (recommended)
+### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers.  Your definition may use `plus` as
@@ -198,7 +198,7 @@ defined earlier.
 \end{code}
 
 
-#### Exercise `mulᶜ`
+### Exercise `mulᶜ`
 
 Write out the definition of a lambda term that multiplies
 two natural numbers represented as Church numerals. Your
@@ -210,7 +210,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 \end{code}
 
 
-#### Exercise `primed` (stretch)
+### Exercise `primed` (stretch)
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
@@ -503,7 +503,7 @@ _ = refl
 \end{code}
 
 
-#### Quiz
+### Quiz
 
 What is the result of the following substitution?
 
@@ -515,7 +515,7 @@ What is the result of the following substitution?
 4. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ `zero)) ``
 
 
-#### Exercise `_[_:=_]′` (stretch)
+### Exercise `_[_:=_]′` (stretch)
 
 The definition of substitution above has three clauses (`ƛ`, `case`,
 and `μ`) that invoke a `with` clause to deal with bound variables.
@@ -636,7 +636,7 @@ for any term, there is at most one other term to which it reduces.
 Put another way, our reduction relation `—→` is in fact a function.
 
 
-#### Quiz
+### Quiz
 
 What does the following term step to?
 
@@ -735,7 +735,7 @@ The three constructors specify, respectively, that `—↠′` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
 the two definitions are equivalent (indeed, one embeds in the other).
 
-#### Exercise `—↠≲—↠′`
+### Exercise `—↠≲—↠′`
 
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
@@ -896,7 +896,7 @@ _ =
 In the next chapter, we will see how to compute such reduction sequences.
 
 
-#### Exercise `plus-example`
+## Exercise `plus-example`
 
 Write out the reduction sequence demonstrating that one plus one is two.
 
@@ -1350,7 +1350,7 @@ nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-injective ∋
 \end{code}
 
 
-#### Quiz
+### Quiz
 
 For each of the following, give a type `A` for which it is derivable,
 or explain why there is no such `A`.
@@ -1366,7 +1366,7 @@ or explain why there are no such types.
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
 
 
-#### Exercise `mul-type` (recommended)
+### Exercise `mul-type` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well-typed.
@@ -1376,7 +1376,7 @@ showing that it is well-typed.
 \end{code}
 
 
-#### Exercise `mulᶜ-type`
+### Exercise `mulᶜ-type`
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well-typed.
