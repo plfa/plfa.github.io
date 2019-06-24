@@ -1151,6 +1151,9 @@ the three places where a bound variable is introduced.
 
 The rules are deterministic, in that at most one rule applies to every term.
 
+The syntax, operational semantics and typing rules as given by `Term`,
+`_—→_` and `_⊢_⦂_`, respectively, formalise the simply-typed lambda
+calculus.
 
 ### Checking inequality and postulating the impossible {#impossible}
 
