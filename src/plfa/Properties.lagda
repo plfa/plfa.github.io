@@ -183,7 +183,7 @@ There are only three interesting cases to consider:
 
 The variable case is thrown out because a closed term has no free
 variables and because a variable is not a value.  The cases for
-application, zero, successor, and fixpoint are thrown out because they
+application, case expression, and fixpoint are thrown out because they
 are not values.
 
 Conversely, if a term is canonical then it is a value
