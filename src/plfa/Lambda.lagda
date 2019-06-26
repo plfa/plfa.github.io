@@ -1087,7 +1087,7 @@ data _⊢_⦂_ : Context → Term → Type → Set where
   -- Axiom
   ⊢` : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
-       -------------
+      -----------
     → Γ ⊢ ` x ⦂ A
 
   -- ⇒-I
