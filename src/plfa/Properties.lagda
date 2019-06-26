@@ -368,7 +368,7 @@ three key steps.
 The first step is to show that types are preserved by _renaming_.
 
 _Renaming_:
-Let `Γ` and `Δ` be two context such that every variable that
+Let `Γ` and `Δ` be two contexts such that every variable that
 appears in `Γ` also appears with the same type in `Δ`.  Then
 if any term is typeable under `Γ`, it has the same type under `Δ`.
 
