@@ -139,7 +139,7 @@ straightforward induction on the two big-step derivations.
       with trans (sym eq1) eq2
 ... | refl = ⇓-determ mc mc'
 ⇓-determ ⇓-lam ⇓-lam = refl
-⇓-determ (⇓-app mc mc₁) (⇓-app mc' mc'') 
+⇓-determ (⇓-app mc mc₁) (⇓-app mc' mc'')
     with ⇓-determ mc mc'
 ... | refl = ⇓-determ mc₁ mc''
 \end{code}
@@ -209,7 +209,7 @@ The next lemma states that if you start with an equivalent
 environment and substitution `γ ≈ₑ σ`, extending them with
 an equivalent closure and term `c ≈ N` produces
 an equivalent environment and substitution:
-`(γ ,' V) ≈ₑ (ext-subst σ N)`. 
+`(γ ,' V) ≈ₑ (ext-subst σ N)`.
 
 \begin{code}
 ≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {V} {N : ∅ ⊢ ★}
@@ -280,7 +280,7 @@ to consider.
   The premise `γ ≈ₑ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
   By the definition of `≈`, there exists a `τ` such that
   `δ ≈ₑ τ` and `σ x ≡ ⟪ τ ⟫ L `.
-  Using `δ ⊢ L ⇓ V` and `δ ≈ₑ τ`, 
+  Using `δ ⊢ L ⇓ V` and `δ ≈ₑ τ`,
   the induction hypothesis gives us
   `⟪ τ ⟫ L —↠ N` and `V ≈ N` for some `N`.
   So we have shown that `⟪ σ ⟫ x —↠ N` and `V ≈ N` for some `N`.
@@ -290,28 +290,28 @@ to consider.
   and `clos (⟪ σ ⟫ (ƛ N)) γ ≈ ⟪ σ ⟫ (ƛ N)`.
 
 * Case `⇓-app`.
-  Using `γ ⊢ L ⇓ clos N δ` and `γ ≈ₑ σ`, 
+  Using `γ ⊢ L ⇓ clos N δ` and `γ ≈ₑ σ`,
   the induction hypothesis gives us
-  
+
         ⟪ σ ⟫ L —↠ ƛ ⟪ exts τ ⟫ N                                           (1)
-  
+
   and `δ ≈ₑ τ` for some `τ`.
   From `γ≈ₑσ` we have `clos M γ ≈ ⟪ σ ⟫ M`.
   Then with `(δ ,' clos M γ) ⊢ N ⇓ V`,
   the induction hypothesis gives us `V ≈ N'` and
-  
+
         ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫ N —↠ N'                           (2)
-  
+
   Meanwhile, by `β`, we have
 
         (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→ ⟪ subst-zero (⟪ σ ⟫ M) ⟫ (⟪ exts τ ⟫ N)
 
   which is the same as the following, by `sub-sub`.
-  
+
         (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→ ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫  N  (3)
 
   Using (3) and (2) we have
-  
+
         (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —↠ N'                                    (4)
 
   From (1) we have
@@ -338,7 +338,7 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
     ⟨ ⟪ exts σ ⟫ N′ , rs ⟩
 \end{code}
 
-## Beta reduction to a lambda implies big-step evaluation  
+## Beta reduction to a lambda implies big-step evaluation
 
 The proof of the backward direction, that beta reduction to a lambda
 implies that the call-by-name semantics produces a result, is more
@@ -401,4 +401,4 @@ This chapter uses the following unicode:
     ₑ  U+2091  LATIN SUBSCRIPT SMALL LETTER E (\_e)
     ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
     ⇓  U+21DB  DOWNWARDS DOUBLE ARROW (\d= or \Downarrow)
-    
+

@@ -39,7 +39,7 @@ variables, partly because such terms are easier to read and partly
 because the development is more traditional.
 
 The development in this chapter was inspired by the corresponding
-development in Chapter _Stlc_ of _Software Foundations_ 
+development in Chapter _Stlc_ of _Software Foundations_
 (_Programming Language Foundations_).  We differ by
 representing contexts explicitly (as lists pairing identifiers with
 types) rather than as partial maps (which take identifiers to types),
@@ -90,7 +90,7 @@ case terms use naturals). We will see this again when we come
 to the rules for assigning types to terms, where constructors
 correspond to introduction rules and deconstructors to eliminators.
 
-Here is the syntax of terms in BNF:
+Here is the syntax of terms in Backus-Naur Form (BNF):
 
     L, M, N  ::=
       ` x  |  ƛ x ⇒ N  |  L · M  |
@@ -176,9 +176,9 @@ Addition takes two numerals `m` and `n`, a
 function `s` and an argument `z`, and it uses `m` to apply `s` to the
 result of using `n` to apply `s` to `z`; hence `s` is applied `m` plus
 `n` times to `z`, yielding the Church numeral for the sum of `m` and
-`n`.  For convenience, we define a function that computes successor;
-to convert a Church numeral to the corresponding natural, we apply
-it to this function and the natural number zero.
+`n`.  For convenience, we define a function that computes successor.
+To convert a Church numeral to the corresponding natural, we apply
+it to the `sucᶜ` function and the natural number zero.
 Again, later we will confirm that two plus two is four,
 in other words that the term
 
@@ -406,12 +406,12 @@ usually substitute values.
 Here are some examples:
 
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
-  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``.
 * `` (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] `` yields
-  `` sucᶜ · (sucᶜ · `zero) ``
-* `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``
-* `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``
-* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``
+  `` sucᶜ · (sucᶜ · `zero) ``.
+* `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``.
+* `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``.
+* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``.
 
 In the last but one example, substituting `` `zero `` for `x` in
 `` ƛ "x" ⇒ ` "x" `` does _not_ yield `` ƛ "x" ⇒ `zero ``,
@@ -428,12 +428,12 @@ substitution by terms that are _not_ closed may require renaming
 of bound variables. For example:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield <br/>
-  `` (ƛ "x" ⇒ ` "x" · (` "x" · `zero)) ``
+  `` (ƛ "x" ⇒ ` "x" · (` "x" · `zero)) ``.
 
 Instead, we should rename the bound variable to avoid capture:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield <br/>
-  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``
+  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``.
 
 Here `x′` is a fresh variable distinct from `x`.
 Formal definition of substitution with suitable renaming is considerably
@@ -486,10 +486,10 @@ simply push substitution recursively into the subterms.
 Here is confirmation that the examples above are correct:
 
 \begin{code}
-_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
+_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
 _ = refl
 
-_ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡  sucᶜ · (sucᶜ · `zero)
+_ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡ sucᶜ · (sucᶜ · `zero)
 _ = refl
 
 _ : (ƛ "x" ⇒ ` "y") [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
@@ -544,11 +544,11 @@ the rules for reduction of applications are written as follows:
     L · M —→ L′ · M
 
     M —→ M′
-    -------------- ξ-·₂
+    --------------- ξ-·₂
     V · M —→ V · M′
 
     ----------------------------- β-ƛ
-    (ƛ x ⇒ N) · V —→ N [ x := V ] 
+    (ƛ x ⇒ N) · V —→ N [ x := V ]
 
 The Agda version of the rules below will be similar, except that universal
 quantifications are made explicit, and so are the predicates that indicate
@@ -935,7 +935,7 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus:
 
-* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
+* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``.
 * `plus · two · two` stands for `(plus · two) · two`.
 
 ### Quiz
@@ -1034,7 +1034,7 @@ If two variables in a context have the same name, then lookup
 should return the most recently bound variable, which _shadows_
 the other variables.  For example,
 
-* `` ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ∋ "x" ⦂ `ℕ ``
+* `` ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ∋ "x" ⦂ `ℕ ``.
 
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
@@ -1087,7 +1087,7 @@ data _⊢_⦂_ : Context → Term → Type → Set where
   -- Axiom
   ⊢` : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
-       -------------
+      -----------
     → Γ ⊢ ` x ⦂ A
 
   -- ⇒-I

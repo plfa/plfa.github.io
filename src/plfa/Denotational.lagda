@@ -13,7 +13,7 @@ module plfa.Denotational where
 The lambda calculus is a language about _functions_, that is, mappings
 from input to output. In computing we often think of such
 mappings as being carried out by a sequence of
-operations that transform an input into an output.  But 
+operations that transform an input into an output.  But
 functions can also be represented as data. For example, one
 can tabulate a function, that is, create a table where each row has
 two entries, an input and the corresponding output for the function.
@@ -331,7 +331,7 @@ data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
         → γ ⊢ M ↓ w
           ---------------
         → γ ⊢ M ↓ (v ⊔ w)
-     
+
   sub : ∀ {Γ} {γ : Env Γ} {M v w}
         → γ ⊢ M ↓ v
         → w ⊑ v
@@ -344,7 +344,7 @@ lambda abstraction results in a single-entry table that maps the input
 `v` to the output `w`, provided that evaluating the body in an
 environment with `v` bound to its parameter produces the output `w`.
 As a simple example of this rule, we can see that the identity function
-maps `⊥` to `⊥`. 
+maps `⊥` to `⊥`.
 
 \begin{code}
 id : ∅ ⊢ ★
@@ -421,7 +421,7 @@ denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
   where lt1 : v ↦ w ⊑ u ↦ v ⊔ v ↦ w
         lt1 = ConjR2⊑ (Fun⊑ Refl⊑ Refl⊑)
-     
+
         lt2 : u ↦ v ⊑ u ↦ v ⊔ v ↦ w
         lt2 = (ConjR1⊑ (Fun⊑ Refl⊑ Refl⊑))
 \end{code}
@@ -464,7 +464,7 @@ the result of the application is `⊥`.
 Ω = Δ · Δ
 
 denot-Ω : `∅ ⊢ Ω ↓ ⊥
-denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro) 
+denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro)
 \end{code}
 
 A shorter derivation of the same result is by just one use of the
@@ -636,7 +636,7 @@ We can also characterize divergence and termination using denotations.
   * divergence: `¬ (∅ ⊢ M ↓ v ↦ w)` for any `v` and `w`.
   * termination: `∅ ⊢ M ↓ v ↦ w` for some `v` and `w`.
 
-Alternatively, we can use the denotation function `ℰ`. 
+Alternatively, we can use the denotation function `ℰ`.
 
   * divergence: `¬ (ℰ M ≃ ℰ (ƛ N))` for any term `N`.
   * termination: `ℰ M ≃ ℰ (ƛ N)` for some term `N`.
@@ -722,7 +722,7 @@ rename-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
   → δ ⊢ (rename ρ M) ↓ v
 rename-pres ρ lt (var {x = x}) = sub var (lt x)
 rename-pres ρ lt (↦-elim d d₁) =
-   ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁) 
+   ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁)
 rename-pres ρ lt (↦-intro d) =
    ↦-intro (rename-pres (ext ρ) (ext-nth ρ lt) d)
 rename-pres ρ lt ⊥-intro = ⊥-intro
@@ -879,7 +879,7 @@ then `v ↦ w` must be a member of `u`.
      → v ↦ w ⊆ u
        ---------
      → v ↦ w ∈ u
-↦⊆→∈ incl = incl refl 
+↦⊆→∈ incl = incl refl
 \end{code}
 
 
@@ -1051,21 +1051,21 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
   premise (the induction hypothesis from `u ⊑ u₂`) to obtain that
   `u₁′ ↦ u₂′` factors of `u₂ into u₂′`. This case is complete because
   `dom u′ ≡ u₁′` and `cod u′ ≡ u₂′`.
-  
-* Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also  
+
+* Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also
   have `Funs u₁′` and `Funs u₂′`, so we can apply the induction hypothesis
   for both `u₁′` and `u₂′`. So there exists values `u₃₁` and `u₃₂` such that
   `(dom u₁′) ↦ (cod u₁′)` factors `u` into `u₃₁` and
   `(dom u₂′) ↦ (cod u₂′)` factors `u` into `u₃₂`.
   We will show that `(dom u) ↦ (cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
   So we need to show that
-  
+
         dom (u₃₁ ⊔ u₃₂) ⊑ dom (u₁′ ⊔ u₂′)
         cod (u₁′ ⊔ u₂′) ⊑ cod (u₃₁ ⊔ u₃₂)
-  
+
   But those both follow directly from the factoring of
   `u` into `u₃₁` and `u₃₂`, using the monotonicity of `⊔` with respect to `⊑`.
-  
+
 
 ### Inversion of less-than for functions
 
@@ -1085,19 +1085,19 @@ sub-inv {⊥} {u₂} Bot⊑ {v} {w} ()
 sub-inv {u₁₁ ⊔ u₁₂} {u₂} (ConjL⊑ lt1 lt2) {v} {w} (inj₁ x) = sub-inv lt1 x
 sub-inv {u₁₁ ⊔ u₁₂} {u₂} (ConjL⊑ lt1 lt2) {v} {w} (inj₂ y) = sub-inv lt2 y
 sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR1⊑ lt) {v} {w} m
-    with sub-inv lt m  
+    with sub-inv lt m
 ... | ⟨ u₃₁ , ⟨ fu₃₁ , ⟨ u₃₁⊆u₂₁ , ⟨ domu₃₁⊑v , w⊑codu₃₁ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃₁ , ⟨ fu₃₁ , ⟨ (λ {w} z → inj₁ (u₃₁⊆u₂₁ z)) ,
                                    ⟨ domu₃₁⊑v , w⊑codu₃₁ ⟩ ⟩ ⟩ ⟩
 sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR2⊑ lt) {v} {w} m
-    with sub-inv lt m  
+    with sub-inv lt m
 ... | ⟨ u₃₂ , ⟨ fu₃₂ , ⟨ u₃₂⊆u₂₂ , ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃₂ , ⟨ fu₃₂ , ⟨ (λ {C} z → inj₂ (u₃₂⊆u₂₂ z)) ,
                                    ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩
 sub-inv {u₁} {u₂} (Trans⊑{v = u} u₁⊑u u⊑u₂) {v} {w} v↦w∈u₁
     with sub-inv u₁⊑u v↦w∈u₁
-... | ⟨ u′ , ⟨ fu′ , ⟨ u′⊆u , ⟨ domu′⊑v , w⊑codu′ ⟩ ⟩ ⟩ ⟩ 
-    with sub-inv-trans {u′} fu′ u′⊆u (sub-inv u⊑u₂) 
+... | ⟨ u′ , ⟨ fu′ , ⟨ u′⊆u , ⟨ domu′⊑v , w⊑codu′ ⟩ ⟩ ⟩ ⟩
+    with sub-inv-trans {u′} fu′ u′⊆u (sub-inv u⊑u₂)
 ... | ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ domu₃⊑domu′ , codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ Trans⊑ domu₃⊑domu′ domu′⊑v ,
                                     Trans⊑ w⊑codu′ codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩
@@ -1128,7 +1128,7 @@ Let `v` and `w` be arbitrary values.
 
   * Subcase `v ↦ w ∈ u₁₁`. We conclude by the induction
     hypothesis for `u₁₁ ⊑ u₂`.
-  
+
   * Subcase `v ↦ w ∈ u₁₂`. We conclude by the induction hypothesis
     for `u₁₂ ⊑ u₂`.
 
@@ -1147,12 +1147,12 @@ Let `v` and `w` be arbitrary values.
 * Case `ConjR2⊑`. This case follows by reasoning similar to
   the case for `ConjR1⊑`.
 
-* Case `Trans⊑`. 
+* Case `Trans⊑`.
 
         u₁ ⊑ u   u ⊑ u₂
         ---------------
             u₁ ⊑ u₂
-        
+
   By the induction hypothesis for `u₁ ⊑ u`, we know
   that `v ↦ w` factors `u` into `u′`, for some value `u′`,
   so we have `Funs u′` and `u′ ⊆ u`.
@@ -1217,12 +1217,12 @@ less-than with functions on the left and right-hand sides.
           -----------------
         → v′ ⊑ v × w ⊑ w′
 ↦⊑↦-inv{v}{w}{v′}{w′} lt
-    with sub-inv-fun lt  
+    with sub-inv-fun lt
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆v34 , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
     with Funs∈ f
 ... | ⟨ u , ⟨ u′ , u↦u′∈Γ ⟩ ⟩
     with Γ⊆v34 u↦u′∈Γ
-... | refl =    
+... | refl =
   let codΓ⊆w′ = ⊆↦→cod⊆ Γ⊆v34 in
   ⟨ lt1 u↦u′∈Γ , Trans⊑ lt2 (⊆→⊑ codΓ⊆w′) ⟩
 \end{code}
@@ -1257,9 +1257,9 @@ technical report by Gordon Plotkin (1972) and are later described in
 an article in Theoretical Computer Science (Plotkin 1993).  In that
 work, the inductive definition of `Value` is a bit different than the
 one we use:
- 
+
     Value = C + ℘f(Value) × ℘f(Value)
- 
+
 where `C` is a set of constants and `℘f` means finite powerset.  The
 pairs in `℘f(Value) × ℘f(Value)` represent input-output mappings, just
 as in this chapter. The finite powersets are used to enable a function
@@ -1277,9 +1277,9 @@ version.
 Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
 examples of graph models. Both use the following inductive definition
 of `Value`.
- 
+
     Value = C + ℘f(Value) × Value
- 
+
 The use of `Value` instead of `℘f(Value)` in the output does not restrict
 expressiveness compared to Plotkin's model because the semantics use
 sets of values and a pair of sets `(V, V′)` can be represented as a set
@@ -1333,7 +1333,7 @@ This chapter uses the following unicode:
     ⊔  U+2294  SQUARE CUP (\lub)
     ⊑  U+2291  SQUARE IMAGE OF OR EQUAL TO (\sqsubseteq)
     ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
-    ↓  U+2193  DOWNWARDS ARROW (\d) 
+    ↓  U+2193  DOWNWARDS ARROW (\d)
     ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
     ℰ  U+2130  SCRIPT CAPITAL E (\McE)
     ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~- or \simeq)

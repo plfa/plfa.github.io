@@ -48,7 +48,7 @@ declaring a suitable inductive type:
 \begin{code}
 data _×_ (A B : Set) : Set where
 
-  ⟨_,_⟩ : 
+  ⟨_,_⟩ :
       A
     → B
       -----
@@ -718,7 +718,7 @@ an embedding rather than an isomorphism because the
 In the usual approach to logic, both of the distribution laws
 are given as equivalences, where each side implies the other:
 
-    A × (B ⊎ C) ⇔ (A × B) ⊎ (A × C)  
+    A × (B ⊎ C) ⇔ (A × B) ⊎ (A × C)
     A ⊎ (B × C) ⇔ (A ⊎ B) × (A ⊎ C)
 
 But when we consider the functions that provide evidence for these

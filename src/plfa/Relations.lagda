@@ -305,7 +305,7 @@ length obscures the essence of the proof.  We will usually opt for
 shorter proofs.
 
 The technique of induction on evidence that a property holds (e.g.,
-inducting on evidence that `m ≤ n`)---rather than induction on 
+inducting on evidence that `m ≤ n`)---rather than induction on
 values of which the property holds (e.g., inducting on `m`)---will turn
 out to be immensely valuable, and one that we use often.
 
@@ -341,7 +341,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-#### Exercise `≤-antisym-cases` {#leq-antisym-cases} 
+#### Exercise `≤-antisym-cases` {#leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -741,7 +741,7 @@ Show that the sum of two odd numbers is even.
 
 #### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
-Recall that 
+Recall that
 Exercise [Bin][plfa.Naturals#Bin]
 defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.

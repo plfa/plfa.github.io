@@ -142,7 +142,7 @@ at least one of them is too.
 AboveFun-⊔ : ∀{u u'}
            → AboveFun (u ⊔ u')
            → AboveFun u ⊎ AboveFun u'
-AboveFun-⊔{u}{u'} ⟨ v , ⟨ w , v↦w⊑u⊔u' ⟩ ⟩ 
+AboveFun-⊔{u}{u'} ⟨ v , ⟨ w , v↦w⊑u⊔u' ⟩ ⟩
     with sub-inv-fun v↦w⊑u⊔u'
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆u⊔u' , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
     with Funs∈ f
@@ -364,7 +364,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩  Dist⊑ ev1c sf
 sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c sf
     | no naf2 | yes af3
     with vcw' ev1c af3
-... | ⟨ clos {Γ'} L γ₁ , ⟨ L⇓c3 , 𝕍w'c ⟩ ⟩ 
+... | ⟨ clos {Γ'} L γ₁ , ⟨ L⇓c3 , 𝕍w'c ⟩ ⟩
     with 𝕍→WHNF 𝕍w'c
 ... | ƛ_ {N = N'} =
       let 𝕍wc = not-AboveFun-𝕍{w}{Γ'}{γ₁}{N'} naf2 in
@@ -385,7 +385,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
         (v₁' ⊔ v₂') ⊑ v
 
   The induction hypotheses gives us `𝕍 v₁' (clos (ƛ N) γ)`
-  and `𝕍 v₂' (clos (ƛ N) γ)`, which is all we need for this case. 
+  and `𝕍 v₂' (clos (ƛ N) γ)`, which is all we need for this case.
 
 * Case `ConjR1⊑`.
 
@@ -418,16 +418,16 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
         𝕍 (v ↦ w) (clos (ƛ N) γ)
         𝕍 (v ↦ w') (clos (ƛ N) γ)
 
-  and need to show that 
+  and need to show that
 
         𝕍 (v ↦ (w ⊔ w')) (clos (ƛ N) γ)
-  
+
   Let `c` be an arbtrary closure such that `𝔼 v c`.
   Assume `w ⊔ w'` is greater than a function.
   Unfortunately, this does not mean that both `w` and `w'`
   are above functions. But thanks to the lemma `AboveFun-⊔`,
   we know that at least one of them is greater than a function.
-  
+
   * Suppose both of them are greater than a function.  Then we have
     `γ ⊢ N ⇓ clos L δ` and `𝕍 w (clos L δ)`.  We also have `γ ⊢ N ⇓ c₃` and
     `𝕍 w' c₃`.  Because the big-step semantics is deterministic, we have
@@ -441,7 +441,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
     `L ≡ ƛ N'` for some `N'`. Meanwhile, from `¬ AboveFun w'` we have
     `𝕍 w' (clos L γ₁)`. We conclude that
     `𝕍 (w ⊔ w') (clos (ƛ N') γ₁)`.
-    
+
 
 The proof of `sub-𝔼` is direct and explained below.
 
@@ -485,9 +485,9 @@ kth-x{γ' = γ'}{x = x} with γ' x
       ⟨ c , ⟨ (⇓-var eq M'⇓c) , 𝕍γx ⟩ ⟩
 ↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (↦-elim{L = L}{M = M}{v = v₁}{w = v} d₁ d₂) fv
     with ↓→𝔼 𝔾γγ' d₁ ⟨ v₁ , ⟨ v , Refl⊑ ⟩ ⟩
-... | ⟨ clos L' δ , ⟨ L⇓L' , 𝕍v₁↦v ⟩ ⟩ 
+... | ⟨ clos L' δ , ⟨ L⇓L' , 𝕍v₁↦v ⟩ ⟩
     with 𝕍→WHNF 𝕍v₁↦v
-... | ƛ_ {N = N} 
+... | ƛ_ {N = N}
     with 𝕍v₁↦v {clos M γ'} (↓→𝔼 𝔾γγ' d₂) fv
 ... | ⟨ c' , ⟨ N⇓c' , 𝕍v ⟩ ⟩ =
     ⟨ c' , ⟨ ⇓-app L⇓L' N⇓c' , 𝕍v ⟩ ⟩
@@ -500,12 +500,12 @@ kth-x{γ' = γ'}{x = x} with γ' x
 ↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12
     with AboveFun? v₁ | AboveFun? v₂
 ... | yes fv1 | yes fv2
-    with ↓→𝔼 𝔾γγ' d₁ fv1 | ↓→𝔼 𝔾γγ' d₂ fv2 
+    with ↓→𝔼 𝔾γγ' d₁ fv1 | ↓→𝔼 𝔾γγ' d₂ fv2
 ... | ⟨ c₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩ | ⟨ c₂ , ⟨ M⇓c₂ , 𝕍v₂ ⟩ ⟩
     rewrite ⇓-determ M⇓c₂ M⇓c₁ =
     ⟨ c₁ , ⟨ M⇓c₁ , 𝕍⊔-intro 𝕍v₁ 𝕍v₂ ⟩ ⟩
 ↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12 | yes fv1 | no nfv2
-    with ↓→𝔼 𝔾γγ' d₁ fv1 
+    with ↓→𝔼 𝔾γγ' d₁ fv1
 ... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩
     with 𝕍→WHNF 𝕍v₁
 ... | ƛ_ {N = N} =
@@ -531,7 +531,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
 * Case `var`. Looking up `x` in `γ'` yields some closure, `clos M' δ`,
   and from `𝔾 γ γ'` we have `𝔼 (γ x) (clos M' δ)`. With the premise
   `AboveFun (γ x)`, we obtain a closure `c` such that `δ ⊢ M' ⇓ c`
-  and `𝕍 (γ x) c`. To conclude `γ' ⊢ x ⇓ c` via `⇓-var`, we 
+  and `𝕍 (γ x) c`. To conclude `γ' ⊢ x ⇓ c` via `⇓-var`, we
   need `γ' x ≡ clos M' δ`, which is obvious, but it requires some
   Agda shananigans via the `kth-x` lemma to get our hands on it.
 
@@ -574,7 +574,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
     and `𝕍 v₁ (clos (ƛ N) γ₁)`.
     Then because `v₂` is not greater than a function, we also have
     `𝕍 v₂ (clos (ƛ N) γ₁)`. We conclude that `𝕍 (v₁ ⊔ v₂) (clos (ƛ N) γ₁)`.
-    
+
 * Case `sub`. We have `γ ⊢ M ↓ v`, `v' ⊑ v`, and `AboveFun v'`.
   We need to show that `γ' ⊢ M ⇓ c` and `𝕍 v' c` for some `c`.
   We have `AboveFun v` by `AboveFun-⊑`,
@@ -598,7 +598,7 @@ adequacy{M}{N} eq
                  ⟨ ⊥ , ⟨ ⊥ , Refl⊑ ⟩ ⟩
 ... | ⟨ clos {Γ} M′ γ , ⟨ M⇓c , Vc ⟩ ⟩
     with 𝕍→WHNF Vc
-... | ƛ_ {N = N′} = 
+... | ƛ_ {N = N′} =
     ⟨ Γ , ⟨ N′ , ⟨ γ , M⇓c ⟩  ⟩ ⟩
 \end{code}
 
@@ -615,7 +615,7 @@ results about the denotational semantics.
 \begin{code}
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
            → M —↠ ƛ N
-           → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ] 
+           → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
              ∅' ⊢ M ⇓ clos (ƛ N′) δ
 reduce→cbn M—↠ƛN = adequacy (soundness M—↠ƛN)
 \end{code}
@@ -646,4 +646,4 @@ This chapter uses the following unicode:
     𝔼  U+1D53C  MATHEMATICAL DOUBLE-STRUCK CAPITAL E (\bE)
     𝔾  U+1D53E  MATHEMATICAL DOUBLE-STRUCK CAPITAL G (\bG)
     𝕍  U+1D53E  MATHEMATICAL DOUBLE-STRUCK CAPITAL V (\bV)
-    
+

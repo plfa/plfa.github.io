@@ -15,7 +15,7 @@ previous chapter, we saw how _let_ terms can be rewritten as an
 application of an abstraction, and how two alternative formulations of
 products — one with projections and one with case — can be formulated
 in terms of each other.  In this chapter, we look at how to formalise
-such claims.  
+such claims.
 
 Given two different systems, with different terms and reduction rules,
 we define what it means to claim that one _simulates_ the other.
@@ -34,7 +34,7 @@ _Simulation_: For every `M`, `M†`, and `N`:
 If `M ~ M†` and `M —→ N`
 then `M† —↠ N†` and `N ~ N†`
 for some `N†`.
-        
+
 Or, in a diagram:
 
     M  --- —→ --- N
@@ -70,7 +70,7 @@ reduction step in the source we must show a corresponding reduction
 sequence in the target.
 
 For instance, the source might be lambda calculus with _let_
-added, and the target the same system with `let` translated out. 
+added, and the target the same system with `let` translated out.
 The key rule defining our relation will be:
 
     M ~ M†
@@ -121,8 +121,8 @@ Another exercise is to show the alternative formulations
 of products in
 Chapter [More][plfa.More]
 are in bisimulation.
-    
-    
+
+
 ## Imports
 
 We import our source language from
@@ -185,7 +185,7 @@ We need a number of technical results. The first is that simulation
 commutes with values.  That is, if `M ~ M†` and `M` is a value then
 `M†` is also a value:
 \begin{code}
-~val : ∀ {Γ A} {M M† : Γ ⊢ A} 
+~val : ∀ {Γ A} {M M† : Γ ⊢ A}
   → M ~ M†
   → Value M
     --------
@@ -278,7 +278,7 @@ From the general case of substitution, it is also easy to derive
 the required special case.  If `N ~ N†` and `M ~ M†`, then
 `N [ M ] ~ N† [ M† ]`:
 \begin{code}
-~sub : ∀ {Γ A B} {N N† : Γ , B ⊢ A} {M M† : Γ ⊢ B} 
+~sub : ∀ {Γ A B} {N N† : Γ , B ⊢ A} {M M† : Γ ⊢ B}
   → N ~ N†
   → M ~ M†
     -----------------------
@@ -302,7 +302,7 @@ _Lock-step simulation_: For every `M`, `M†`, and `N`:
 If `M ~ M†` and `M —→ N`
 then `M† —→ N†` and `N ~ N†`
 for some `N†`.
-        
+
 Or, in a diagram:
 
     M  --- —→ --- N
@@ -372,13 +372,13 @@ In its structure, it looks a little bit like a proof of progress:
     from which follows:
 
          L · M  --- —→ ---  L′ · M
-           |                   |      
+           |                   |
            |                   |
            ~                   ~
            |                   |
            |                   |
         L† · M† --- —→ --- L′† · M†
-                  
+
   - The source term reduces via `ξ-·₂`, in which case the target term does as well.
     Recursive invocation gives us
 
@@ -393,7 +393,7 @@ In its structure, it looks a little bit like a proof of progress:
     from which follows:
 
          V · M  --- —→ ---  V · M′
-           |                  |      
+           |                  |
            |                  |
            ~                  ~
            |                  |
@@ -404,12 +404,12 @@ In its structure, it looks a little bit like a proof of progress:
 
   - The source term reduces via `β-ƛ`, in which case the target term does as well:
 
-         (ƛ x ⇒ N) · V  --- —→ ---  N [ x := V ] 
-              |                           |      
+         (ƛ x ⇒ N) · V  --- —→ ---  N [ x := V ]
+              |                           |
               |                           |
               ~                           ~
               |                           |
-              |                           |       
+              |                           |
         (ƛ x ⇒ N†) · V† --- —→ --- N† [ x :=  V† ]
 
     Since simulation commutes with values and `V` is a value, `V†` is also a value.

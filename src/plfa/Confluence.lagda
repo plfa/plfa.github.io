@@ -45,7 +45,7 @@ diamond property. Here is a counter example.
 
     (λ x. x x)((λ x. x) a) —→ (λ x. x x) a
     (λ x. x x)((λ x. x) a) —→ ((λ x. x) a) ((λ x. x) a)
-    
+
 Both terms can reduce to `a a`, but the second term requires two steps
 to get there, not one.
 
@@ -144,7 +144,7 @@ data _⇛*_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
 ## Equivalence between parallel reduction and reduction
 
-Here we prove that for any `M` and `N`, `M ⇛* N` if and only if `M —↠ N`. 
+Here we prove that for any `M` and `N`, `M ⇛* N` if and only if `M —↠ N`.
 The only-if direction is particularly easy. We start by showing
 that if `M —→ N`, then `M ⇛ N`. The proof is by induction on
 the reduction `M —→ N`.
@@ -155,7 +155,7 @@ beta-par : ∀{Γ A}{M N : Γ ⊢ A}
            ------
          → M ⇛ N
 beta-par {Γ} {★} {L · M} (ξ₁ r) = papp (beta-par {M = L} r) par-refl
-beta-par {Γ} {★} {L · M} (ξ₂ r) = papp par-refl (beta-par {M = M} r) 
+beta-par {Γ} {★} {L · M} (ξ₂ r) = papp par-refl (beta-par {M = M} r)
 beta-par {Γ} {★} {(ƛ N) · M} β = pbeta par-refl par-refl
 beta-par {Γ} {★} {ƛ N} (ζ r) = pabs (beta-par r)
 \end{code}
@@ -212,13 +212,13 @@ The proof is by induction on `M ⇛ N`.
   So `L · M —↠ L′ · M` and then `L′ · M  —↠ L′ · M′`
   because `—↠` is a congruence. We conclude using the transitity
   of `—↠`.
-  
+
 * Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By similar reasoning, we have
   `(ƛ N) · M —↠ (ƛ N′) · M′`.
   Of course, `(ƛ N′) · M′ —→ N′ [ M′ ]`, so we can conclude
   using the transitivity of `—↠`.
-  
+
 With this lemma in hand, we complete the proof that `M ⇛* N` implies
 `M —↠ N` with a simple induction on `M ⇛* N`.
 
@@ -325,7 +325,7 @@ We proceed by induction on `M ⇛ M′`.
   which we obtain by `par-subst-exts`.
   So we have `subst (exts σ) N ⇛ subst (exts τ) N′`
   and conclude by rule `pabs`.
-  
+
 * Suppose `L · M ⇛ L′ · M′` because `L ⇛ L′` and `M ⇛ M′`.
   By the induction hypothesis we have
   `subst σ L ⇛ subst τ L′` and `subst σ M ⇛ subst τ M′`, so
@@ -339,7 +339,7 @@ We proceed by induction on `M ⇛ M′`.
   to `subst (exts τ) N′ [ subst τ M′ ]`.
   Substitution commutes with itself in the following sense.
   For any σ, N, and M, we have
-  
+
         (subst (exts σ) N) [ subst σ M ] ≡ subst σ (N [ M ])
 
   So we have parallel reduction to `subst τ (N′ [ M′ ])`.
@@ -376,7 +376,7 @@ diamond!  We show that parallel reduction satisfies the diamond
 property: that if `M ⇛ N` and `M ⇛ N′`, then `N ⇛ L` and `N′ ⇛ L` for
 some `L`.  The proof is relatively easy; it is parallel reduction's
 _raison d'etre_.
-  
+
 \begin{code}
 par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N
@@ -391,25 +391,25 @@ par-diamond (pabs p1) (pabs p2)
 par-diamond{Γ}{A}{L · M}{N}{N′} (papp{Γ}{L}{L₁}{M}{M₁} p1 p3)
                                 (papp{Γ}{L}{L₂}{M}{M₂} p2 p4)
     with par-diamond p1 p2
-... | ⟨ L₃ , ⟨ p5 , p6 ⟩ ⟩ 
+... | ⟨ L₃ , ⟨ p5 , p6 ⟩ ⟩
     with par-diamond p3 p4
 ... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
       ⟨ (L₃ · M₃) , ⟨ (papp p5 p7) , (papp p6 p8) ⟩ ⟩
 par-diamond (papp (pabs p1) p3) (pbeta p2 p4)
     with par-diamond p1 p2
-... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩ 
+... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
     with par-diamond p3 p4
 ... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
     ⟨ N₃ [ M₃ ] , ⟨ pbeta p5 p7 , sub-par p6 p8 ⟩ ⟩
 par-diamond (pbeta p1 p3) (papp (pabs p2) p4)
     with par-diamond p1 p2
-... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩ 
+... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
     with par-diamond p3 p4
 ... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
     ⟨ (N₃ [ M₃ ]) , ⟨ sub-par p5  p7 , pbeta p6 p8 ⟩ ⟩
 par-diamond {Γ}{A} (pbeta p1 p3) (pbeta p2 p4)
     with par-diamond p1 p2
-... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩ 
+... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
     with par-diamond p3 p4
 ... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
       ⟨ N₃ [ M₃ ] , ⟨ sub-par p5 p7 , sub-par p6 p8 ⟩ ⟩
@@ -454,14 +454,14 @@ The proof is by induction on both premises.
   We have both `(ƛ N₁) · M₁ ⇛ N₃ [ M₃ ]`
   and `(ƛ N₂) · M₂ ⇛ N₃ [ M₃ ]`
   by rule `pbeta`
-  
+
 
 ## Proof of confluence for parallel reduction
 
 As promised at the beginning, the proof that parallel reduction is
 confluent is easy now that we know it satisfies the diamond property.
 We just need to prove the strip lemma, which states that
-if `M ⇒ N` and `M ⇒* N′`, then 
+if `M ⇒ N` and `M ⇒* N′`, then
 `N ⇒* L` and `N′ ⇒ L` for some `L`.
 The proof is a straightforward induction on `M ⇒* N′`,
 using the diamond property in the induction step.
@@ -504,11 +504,11 @@ The step case may be illustrated as follows:
 
             L
            / \
-          1   *     
+          1   *
          /     \
         M₁ (a)  M₂
        / \     /
-      *   *   1   
+      *   *   1
      /     \ /
     M₁′(b)  N
      \     /
@@ -519,15 +519,15 @@ The step case may be illustrated as follows:
 where downward lines are instances of `⇛` or `⇛*`, depending on how
 they are marked. Here `(a)` holds by `strip` and `(b)` holds by
 induction.
-        
+
 
 ## Proof of confluence for reduction
 
 Confluence of reduction is a corollary of confluence for parallel
-reduction. From 
+reduction. From
 `L —↠ M₁` and `L —↠ M₂` we have
 `L ⇛* M₁` and `L ⇛* M₂` by `betas-pars`.
-Then by confluence we obtain some `L` such that 
+Then by confluence we obtain some `L` such that
 `M₁ ⇛* N` and `M₂ ⇛* N`, from which we conclude that
 `M₁ —↠ N` and `M₂ —↠ N` by `pars-betas`.
 
@@ -566,4 +566,4 @@ Homeier's (TPHOLs 2001).
 This chapter uses the following unicode:
 
     ⇛  U+3015  RIGHTWARDS TRIPLE ARROW (\r== or \Rrightarrow)
-    
+

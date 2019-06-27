@@ -277,7 +277,7 @@ subst-zero M (S x)  =  ` x
 
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
-        → Γ ⊢ B 
+        → Γ ⊢ B
           ---------
         → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} (subst-zero M) {A} N
@@ -356,7 +356,7 @@ data Application : ∀ {Γ A} → Γ ⊢ A → Set where
 The reduction rules are altered to switch from call-by-value to
 call-by-name and to enable full normalisation:
 
-* In rule `ξ₁`, the function term is required to be an application, 
+* In rule `ξ₁`, the function term is required to be an application,
   to avoid conflict with rule `β`.
 
 * In rule `ξ₂`, the function term is required to be neutral
@@ -731,7 +731,7 @@ plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 \end{code}
 Because `` `suc `` is now a defined term rather than primitive,
 it is no longer the case that `plus · two · two` reduces to `four`,
-but they do both reduce to the same normal term. 
+but they do both reduce to the same normal term.
 
 #### Exercise `plus-eval`
 

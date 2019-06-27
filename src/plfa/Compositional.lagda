@@ -47,7 +47,7 @@ open import Data.Unit using (⊤; tt)
 Regarding the first equation
 
     ℰ (ƛ M) ≃ ... ℰ M ...
-    
+
 we need to define a function that maps a `Denotation (Γ , ★)` to a
 `Denotation Γ`. This function, let us name it `ℱ`, should mimic the
 non-recursive part of the semantics when applied to a lambda term.  In
@@ -192,9 +192,9 @@ describe the proof below.
         → (ℰ L ● ℰ M) γ v
 ℰ·→●ℰ (↦-elim{v = v′} d₁ d₂) = inj₂ ⟨ v′ , ⟨ d₁ , d₂ ⟩ ⟩
 ℰ·→●ℰ {v = ⊥} ⊥-intro = inj₁ Bot⊑
-ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂) 
+ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂)
     with ℰ·→●ℰ d₁ | ℰ·→●ℰ d₂
-... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)    
+... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)
 ... | inj₁ lt1 | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ =
       inj₂ ⟨ v₁′ , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
       where lt : v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₂
@@ -242,13 +242,13 @@ We proceed by induction on the semantics.
       `γ ⊢ M ↓ (v₁′ ⊔ v₁′′)`. But this does not yet match
       what we need for `ℰ L ● ℰ M` because the result of
       `L` must be an `↦` whose input entry is `v₁′ ⊔ v₁′′`.
-      So we use the `sub` rule to obtain 
+      So we use the `sub` rule to obtain
       `γ ⊢ L ↓ (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂)`,
       using the `Dist⊔→⊔` lemma (thanks to the `Dist⊑` rule) to
       show that
-   
+
             (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂) ⊑ (v₁′ ↦ v₂) ⊔ (v₁′′ ↦ v₁)
-   
+
       So we have proved what is needed for this case.
 
 * In case `sub` we have `Γ ⊢ L · M ↓ v₁` and `v ⊑ v₁`.
@@ -258,7 +258,7 @@ We proceed by induction on the semantics.
     * Suppose `v₁ ⊑ ⊥`. We conclude that `v ⊑ ⊥`.
     * Suppose `Γ ⊢ L ↓ v′ → v₁` and `Γ ⊢ M ↓ v′`.
       We conclude with `Γ ⊢ L ↓ v′ → v` by rule `sub`, because
-      `v′ → v ⊑ v′ → v₁`. 
+      `v′ → v ⊑ v′ → v₁`.
 
 
 The forward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
@@ -280,7 +280,7 @@ function application, as witnessed by the `●` function.
 \begin{code}
 app-equiv : ∀{Γ}{L M : Γ ⊢ ★}
           → ℰ (L · M) ≃ (ℰ L) ● (ℰ M)
-app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩ 
+app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
 \end{code}
 
 We also need an inversion lemma for variables.
@@ -331,7 +331,7 @@ whether `ℱ` is a congruence.
        → ℱ D ≃ ℱ D′
 ℱ-cong{Γ} D≃D′ γ v =
    ⟨ (λ x → ℱ≃{γ}{v} x D≃D′) , (λ x → ℱ≃{γ}{v} x (≃-sym D≃D′)) ⟩
-   where 
+   where
    ℱ≃ : ∀{γ : Env Γ}{v}{D D′ : Denotation (Γ , ★)}
       → ℱ D γ v  →  D ≃ D′ → ℱ D′ γ v
    ℱ≃ {v = ⊥} fd dd′ = tt
@@ -403,7 +403,7 @@ app-cong {Γ}{L}{L′}{M}{M′} L≅L′ M≅M′ =
   ℰ L ● ℰ M
   ≃⟨ ●-cong L≅L′ M≅M′ ⟩
   ℰ L′ ● ℰ M′
-  ≃⟨ ≃-sym app-equiv ⟩  
+  ≃⟨ ≃-sym app-equiv ⟩
   ℰ (L′ · M′)
   ☐
 \end{code}
@@ -443,7 +443,7 @@ data Ctx : Context → Context → Set where
   `CAppR`. The `CAppL` is for when the hole is inside the left-hand
   term (the operator) and the later is when the hole is inside the
   right-hand term (the operand).
-  
+
 The action of surrounding a term with a context is defined by the
 following `plug` function. It is defined by recursion on the context.
 
@@ -472,7 +472,7 @@ compositionality {C = CLam C′} M≃N =
 compositionality {C = CAppL C′ L} M≃N =
   app-cong (compositionality {C = C′} M≃N) λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩
 compositionality {C = CAppR L C′} M≃N =
-  app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N) 
+  app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N)
 \end{code}
 
 The proof is a straightforward induction on the context `C`, using the
@@ -502,7 +502,7 @@ with the congruence lemmas for `ℱ` and `●`.
 
 \begin{code}
 ℰ≃⟦⟧ : ∀ {Γ} {M : Γ ⊢ ★}
-    → ℰ M ≃ ⟦ M ⟧ 
+    → ℰ M ≃ ⟦ M ⟧
 ℰ≃⟦⟧ {Γ} {` x} = var-equiv
 ℰ≃⟦⟧ {Γ} {ƛ N} =
     let ih = ℰ≃⟦⟧ {M = N} in
@@ -532,4 +532,4 @@ This chapter uses the following unicode:
 
     ℱ  U+2131  SCRIPT CAPITAL F (\McF)
     ●  U+2131  BLACK CIRCLE (\cib)
-    
+

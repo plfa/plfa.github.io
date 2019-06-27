@@ -92,7 +92,7 @@ From `ℰ M ≃ ℰ N`, compositionality gives us
 
     ℰ (plug C M) ≃ ℰ (plug C N).
 
-Putting these two facts together gives us 
+Putting these two facts together gives us
 
     ℰ (plug C N) ≃ ℰ (ƛN′).
 
