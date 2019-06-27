@@ -498,7 +498,7 @@ the variable appears in `Δ`.
 
 * If the term is a lambda abstraction, use the previous lemma to
 extend the map `ρ` suitably and use induction to rename the body of the
-abstraction
+abstraction.
 
 * If the term is an application, use induction to rename both the
 function and the argument.
