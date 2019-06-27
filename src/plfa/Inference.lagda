@@ -250,7 +250,7 @@ We are now ready to begin the formal development.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.String using (String)
 open import Data.String.Unsafe using (_≟_)
 open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
@@ -1107,12 +1107,21 @@ Chapter [More][plfa.More].
 ## Bidirectional inference in Agda
 
 Agda itself uses bidirectional inference.  This explains why
-constructors can be overloaded while other defined names cannot --- here
-by _overloaded_ we mean that the same name can be used for
+constructors can be overloaded while other defined names cannot ---
+here by _overloaded_ we mean that the same name can be used for
 constructors of different types.  Constructors are typed by
 inheritance, and so the name is available when resolving the
 constructor, whereas variables are typed by synthesis, and so each
 variable must have a unique type.
+
+Most top-level definitions in Agda are of functions, which are typed
+by inheritance, which is why Agda requires a type declaration for
+those definitions.  A definition with a right-hand side that is a term
+typed by synthesis, such as an application, does not require a type
+declaration.
+\begin{code}
+answer = 6 * 7
+\end{code}
 
 
 ## Unicode

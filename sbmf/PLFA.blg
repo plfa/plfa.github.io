@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: PLFA.aux
+The style file: plainnat.bst
+Database file #1: PLFA.bib
+Warning--entry type for "Kiselyov-2009" isn't style-file defined
+--line 154 of file PLFA.bib
+Warning--entry type for "McBride-2005" isn't style-file defined
+--line 181 of file PLFA.bib
+Warning--empty publisher in Pierce-et-al-2010
+You've used 29 entries,
+            2773 wiz_defined-function locations,
+            773 strings with 10089 characters,
+and the built_in function-call counts, 15076 in all, are:
+= -- 1358
+> -- 881
+< -- 32
++ -- 302
+- -- 273
+* -- 1109
+:= -- 2247
+add.period$ -- 100
+call.type$ -- 29
+change.case$ -- 170
+chr.to.int$ -- 29
+cite$ -- 59
+duplicate$ -- 727
+empty$ -- 1221
+format.name$ -- 316
+if$ -- 3269
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 30
+newline$ -- 154
+num.names$ -- 116
+pop$ -- 413
+preamble$ -- 1
+purify$ -- 146
+quote$ -- 0
+skip$ -- 586
+stack$ -- 0
+substring$ -- 522
+swap$ -- 154
+text.length$ -- 14
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 294
+warning$ -- 1
+while$ -- 132
+width$ -- 0
+write$ -- 389
+(There were 3 warnings)

@@ -571,6 +571,7 @@ import Relation.Nullary.Decidable using (⌊_⌋; toWitness; fromWitness)
 import Relation.Nullary.Negation using (¬?)
 import Relation.Nullary.Product using (_×-dec_)
 import Relation.Nullary.Sum using (_⊎-dec_)
+import Relation.Binary using (Decidable)
 \end{code}
 
 

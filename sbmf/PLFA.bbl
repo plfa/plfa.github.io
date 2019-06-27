@@ -1,0 +1,191 @@
+\begin{thebibliography}{29}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Allais et~al.(2017)Allais, Chapman, McBride, and
+  McKinna]{Allais-et-al-2017}
+Guillaume Allais, James Chapman, Conor McBride, and James McKinna.
+\newblock Type-and-scope safe programs and their proofs.
+\newblock In \emph{Proceedings of the 6th ACM SIGPLAN Conference on Certified
+  Programs and Proofs}, pages 195--207. ACM, 2017.
+
+\bibitem[Altenkirch and Reus(1999)]{Altenkirch-and-Reus-1999}
+Thorsten Altenkirch and Bernhard Reus.
+\newblock Monadic presentations of lambda terms using generalized inductive
+  types.
+\newblock In \emph{International Workshop on Computer Science Logic}, pages
+  453--468. Springer, 1999.
+
+\bibitem[Berger(1993)]{Berger-1993}
+Ulrich Berger.
+\newblock Program extraction from normalization proofs.
+\newblock In \emph{International Conference on Typed Lambda Calculi and
+  Applications}, pages 91--106. Springer, 1993.
+
+\bibitem[Bove and Capretta(2001)]{Bove-and-Capretta-2001}
+Ana Bove and Venanzio Capretta.
+\newblock Nested general recursion and partiality in type theory.
+\newblock In \emph{International Conference on Theorem Proving in Higher Order
+  Logics}, pages 121--125. Springer, 2001.
+
+\bibitem[Bove et~al.(2009)Bove, Dybjer, and Norell]{Bove-et-al-2009}
+Ana Bove, Peter Dybjer, and Ulf Norell.
+\newblock A brief overview of agda--a functional language with dependent types.
+\newblock In \emph{International Conference on Theorem Proving in Higher Order
+  Logics}, pages 73--78. Springer, 2009.
+
+\bibitem[Capretta(2005)]{Capretta-2005}
+Venanzio Capretta.
+\newblock General recursion via coinductive types.
+\newblock \emph{Logical Methods in Computer Science}, 1\penalty0 (2), 2005.
+
+\bibitem[Chapman(2009)]{Chapman-2009}
+James~Maitland Chapman.
+\newblock \emph{Type checking and normalisation}.
+\newblock PhD thesis, University of Nottingham, 2009.
+
+\bibitem[Dagand and Scherer(2015)]{Dagand-and-Scherer-2015}
+Pierre-{\'E}variste Dagand and Gabriel Scherer.
+\newblock Normalization by realizability also evaluates.
+\newblock In \emph{Vingt-sixi{\`e}mes Journ{\'e}es Francophones des Langages
+  Applicatifs (JFLA 2015)}, 2015.
+
+\bibitem[Danas et~al.(2017)Danas, Nelson, Harrison, Krishnamurthi, and
+  Dougherty]{Danas-et-al-2017}
+Natasha Danas, Tim Nelson, Lane Harrison, Shriram Krishnamurthi, and Daniel~J
+  Dougherty.
+\newblock User studies of principled model finder output.
+\newblock In \emph{International Conference on Software Engineering and Formal
+  Methods}, pages 168--184. Springer, 2017.
+
+\bibitem[Felleisen et~al.(2009)Felleisen, Findler, and
+  Flatt]{Felleisen-et-al-2009}
+Matthias Felleisen, Robert~Bruce Findler, and Matthew Flatt.
+\newblock \emph{Semantics engineering with PLT Redex}.
+\newblock By Press, 2009.
+
+\bibitem[Goguen and McKinna(1997)]{Goguen-and-McKinna-1997}
+Healfdene Goguen and James McKinna.
+\newblock Candidates for substitution.
+\newblock Technical report, Laboratory for Foundations of Computer Science,
+  University of Edinburgh, 1997.
+
+\bibitem[Gonthier(2008)]{Gonthier-2008}
+Georges Gonthier.
+\newblock The four colour theorem: Engineering of a formal proof.
+\newblock In \emph{Computer mathematics}, pages 333--333. Springer, 2008.
+
+\bibitem[Gonthier et~al.(2013)Gonthier, Asperti, Avigad,
+  et~al.]{Gonthier-et-al-2013}
+Georges Gonthier, Andrea Asperti, Jeremy Avigad, et~al.
+\newblock A machine-checked proof of the odd order theorem.
+\newblock In \emph{International Conference on Interactive Theorem Proving},
+  pages 163--179. Springer, 2013.
+
+\bibitem[Hales et~al.(2017)Hales, Adams, Bauer, Dang, Harrison, Le~Truong,
+  Kaliszyk, Magron, McLaughlin, Nguyen, et~al.]{Hales-et-al-2017}
+Thomas Hales, Mark Adams, Gertrud Bauer, Tat~Dat Dang, John Harrison, Hoang
+  Le~Truong, Cezary Kaliszyk, Victor Magron, Sean McLaughlin, Tat~Thang Nguyen,
+  et~al.
+\newblock A formal proof of the {K}epler conjecture.
+\newblock In \emph{Forum of Mathematics, Pi}, volume~5. Cambridge University
+  Press, 2017.
+
+\bibitem[Harper(2016)]{Harper-2016}
+Robert Harper.
+\newblock \emph{Practical foundations for programming languages}.
+\newblock Cambridge University Press, 2016.
+
+\bibitem[Huet et~al.(1997)Huet, Kahn, and Paulin-Mohring]{Huet-et-al-1997}
+G{\'e}rard Huet, Gilles Kahn, and Christine Paulin-Mohring.
+\newblock The {C}oq proof assistant a tutorial.
+\newblock \emph{Rapport Technique}, 178, 1997.
+
+\bibitem[K{\"a}stner et~al.(2017)K{\"a}stner, Leroy, Blazy, Schommer, Schmidt,
+  and Ferdinand]{Kastner-et-al-2017}
+Daniel K{\"a}stner, Xavier Leroy, Sandrine Blazy, Bernhard Schommer, Michael
+  Schmidt, and Christian Ferdinand.
+\newblock Closing the gap--the formally verified optimizing compiler compcert.
+\newblock In \emph{SSS'17: Safety-critical Systems Symposium 2017}, pages
+  163--180. CreateSpace, 2017.
+
+\bibitem[Kiselyov(2009)]{Kiselyov-2009}
+Oleg Kiselyov.
+\newblock Formalizing languages, mechanizing type-soundess and other
+  meta-theoretic proofs, 2009.
+\newblock URL \url{http://okmij.org/ftp/formalizations/index.html}.
+
+\bibitem[Klein et~al.(2009)Klein, Elphinstone, Heiser, Andronick, Cock, Derrin,
+  Elkaduwe, Engelhardt, Kolanski, Norrish, et~al.]{Klein-2009}
+Gerwin Klein, Kevin Elphinstone, Gernot Heiser, June Andronick, David Cock,
+  Philip Derrin, Dhammika Elkaduwe, Kai Engelhardt, Rafal Kolanski, Michael
+  Norrish, et~al.
+\newblock sel4: Formal verification of an os kernel.
+\newblock In \emph{Proceedings of the ACM SIGOPS 22nd symposium on Operating
+  systems principles}, pages 207--220. ACM, 2009.
+
+\bibitem[Leroy(2009)]{Leroy-2009}
+Xavier Leroy.
+\newblock Formal verification of a realistic compiler.
+\newblock \emph{Communications of the ACM}, 52\penalty0 (7):\penalty0 107--115,
+  2009.
+
+\bibitem[McBride(2005)]{McBride-2005}
+Conor McBride.
+\newblock Type-preserving renaming and substitution, 2005.
+\newblock unpublished manuscript.
+
+\bibitem[McBride(2015)]{McBride-2015}
+Conor McBride.
+\newblock Turing-completeness totally free.
+\newblock In \emph{International Conference on Mathematics of Program
+  Construction}, pages 257--275. Springer, 2015.
+
+\bibitem[O'Connor et~al.(2016)O'Connor, Chen, Rizkallah, Amani, Lim, Murray,
+  Nagashima, Sewell, and Klein]{O'Connor-2016}
+Liam O'Connor, Zilin Chen, Christine Rizkallah, Sidney Amani, Japheth Lim, Toby
+  Murray, Yutaka Nagashima, Thomas Sewell, and Gerwin Klein.
+\newblock Refinement through restraint: Bringing down the cost of verification.
+\newblock In \emph{ICFP}, pages 89--102, 2016.
+
+\bibitem[Pierce(2009)]{Pierce-2009}
+Benjamin~C Pierce.
+\newblock Lambda, {T}he {U}ltimate {TA}.
+\newblock In \emph{ICFP}, pages 121--22, 2009.
+
+\bibitem[Pierce and Benjamin(2002)]{Pierce-2002}
+Benjamin~C Pierce and C~Benjamin.
+\newblock \emph{Types and programming languages}.
+\newblock MIT press, 2002.
+
+\bibitem[Pierce et~al.(2010)Pierce, Casinghino, Gaboardi, Greenberg,
+  Hri{\c{t}}cu, Sj{\"o}berg, and Yorgey]{Pierce-et-al-2010}
+Benjamin~C Pierce, Chris Casinghino, Marco Gaboardi, Michael Greenberg,
+  C{\u{a}}t{\u{a}}lin Hri{\c{t}}cu, Vilhelm Sj{\"o}berg, and Brent Yorgey.
+\newblock \emph{Software foundations}.
+\newblock 2010.
+\newblock URL
+  \url{\url{http://www.cis.upenn.edu/bcpierce/sf/current/index.html}}.
+
+\bibitem[Ro{\c s}u and {\c S}erb{\u a}nu{\c t}{\u
+  a}(2010)]{Rosu-Serbanuta-2010}
+Grigore Ro{\c s}u and Traian~Florin {\c S}erb{\u a}nu{\c t}{\u a}.
+\newblock An overview of the {K} semantic framework.
+\newblock \emph{Journal of Logic and Algebraic Programming}, 79\penalty0
+  (6):\penalty0 397--434, 2010.
+
+\bibitem[Stump(2016)]{Stump-2016}
+Aaron Stump.
+\newblock \emph{Verified functional programming in Agda}.
+\newblock Morgan \& Claypool, 2016.
+
+\bibitem[Wright and Felleisen(1994)]{Wright-and-Felleisen-1994}
+Andrew~K Wright and Matthias Felleisen.
+\newblock A syntactic approach to type soundness.
+\newblock \emph{Information and computation}, 115\penalty0 (1):\penalty0
+  38--94, 1994.
+
+\end{thebibliography}

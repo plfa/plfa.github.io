@@ -1220,7 +1220,7 @@ substitutions.
 \begin{code}
 postulate
   double-subst :
-    ∀ {Γ} {A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
+    ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
       N [ V ][ W ] ≡ (N [ rename S_ W ]) [ V ]
 \end{code}
 Note the arguments need to be swapped and `W` needs to have

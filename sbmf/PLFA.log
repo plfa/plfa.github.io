@@ -1,0 +1,707 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.2.3)  19 JUL 2018 16:14
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**latex/PLFA.tex
+(./latex/PLFA.tex
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
+(./llncs.cls
+Document Class: llncs 2018/03/10 v2.20 
+ LaTeX document class for Lecture Notes in Computer Science
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/Users/wadler/Library/texmf/tex/latex/size10.clo
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2016/04/07 v1.8p multicolumn formatting (FMi)
+\c@tracingmulticols=\count87
+\mult@box=\box26
+\multicol@leftmargin=\dimen103
+\c@unbalance=\count88
+\c@collectmore=\count89
+\doublecol@number=\count90
+\multicoltolerance=\count91
+\multicolpretolerance=\count92
+\full@width=\dimen104
+\page@free=\dimen105
+\premulticols=\dimen106
+\postmulticols=\dimen107
+\multicolsep=\skip43
+\multicolbaselineskip=\skip44
+\partial@page=\box27
+\last@line=\box28
+\maxbalancingoverflow=\dimen108
+\mult@rightbox=\box29
+\mult@grightbox=\box30
+\mult@gfirstbox=\box31
+\mult@firstbox=\box32
+\@tempa=\box33
+\@tempa=\box34
+\@tempa=\box35
+\@tempa=\box36
+\@tempa=\box37
+\@tempa=\box38
+\@tempa=\box39
+\@tempa=\box40
+\@tempa=\box41
+\@tempa=\box42
+\@tempa=\box43
+\@tempa=\box44
+\@tempa=\box45
+\@tempa=\box46
+\@tempa=\box47
+\@tempa=\box48
+\@tempa=\box49
+\c@columnbadness=\count93
+\c@finalcolumnbadness=\count94
+\last@try=\dimen109
+\multicolovershoot=\dimen110
+\multicolundershoot=\dimen111
+\mult@nat@firstbox=\box50
+\colbreak@box=\box51
+\mc@col@check@num=\count95
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/aliascnt.sty
+Package: aliascnt 2016/05/16 v1.4 Alias counters (HO)
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/carlisle/remreset.sty))
+\c@chapter=\count96
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 362.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 363.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 364.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 365.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 366.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 367.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 368.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 369.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 370.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 371.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
+\tocchpnum=\dimen112
+\tocsecnum=\dimen113
+\tocsectotal=\dimen114
+\tocsubsecnum=\dimen115
+\tocsubsectotal=\dimen116
+\tocsubsubsecnum=\dimen117
+\tocsubsubsectotal=\dimen118
+\tocparanum=\dimen119
+\tocparatotal=\dimen120
+\tocsubparanum=\dimen121
+\@tempcntc=\count97
+\fnindent=\dimen122
+\c@@inst=\count98
+\c@@auth=\count99
+\c@auco=\count100
+\instindent=\dimen123
+\authrun=\box52
+\authorrunning=\toks14
+\tocauthor=\toks15
+\titrun=\box53
+\titlerunning=\toks16
+\toctitle=\toks17
+\c@theorem=\count101
+\c@case=\count102
+\c@conjecture=\count103
+\c@corollary=\count104
+\c@definition=\count105
+\c@example=\count106
+\c@exercise=\count107
+\c@lemma=\count108
+\c@note=\count109
+\c@problem=\count110
+\c@property=\count111
+\c@proposition=\count112
+\c@question=\count113
+\c@solution=\count114
+\c@remark=\count115
+\headlineindent=\dimen124
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip45
+\bibsep=\skip46
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count116
+) (./agda.sty
+Package: agda 
+
+(/usr/local/texlive/2016/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/xifthen/xifthen.sty
+Package: xifthen 2015/11/05 v1.4.0 Extended ifthen features
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count117
+\calc@Bcount=\count118
+\calc@Adimen=\dimen125
+\calc@Bdimen=\dimen126
+\calc@Askip=\skip47
+\calc@Bskip=\skip48
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count119
+\calc@Cskip=\skip49
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty
+Package: ifmtarg 2009/09/02 v1.2a check for an empty argument
+))
+(/usr/local/texlive/2016/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+
+(/Users/wadler/Library/texmf/tex/latex/pdftex.def
+File: pdftex.def 2007/01/08 v0.04d Graphics/color for pdfTeX
+\Gread@gobject=\count120
+)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/polytable/polytable.sty
+Package: polytable 2013/07/18 v0.8.5 `polytable' package (Andres Loeh)
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/lazylist/lazylist.sty)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/tools/array.sty
+Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen127
+\extrarowheight=\dimen128
+\NC@list=\toks18
+\extratabsurround=\skip50
+\backup@length=\skip51
+)
+\PT@colwidth=\dimen129
+\PT@cols=\count121
+\PT@table=\count122
+\PT@toks=\toks19
+\PT@in=\read1
+\PT@out=\write3
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2015/08/02 v2.2a e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count123
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+)
+\@envbody=\toks20
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/ucs/ucs.sty
+Package: ucs 2013/05/11 v2.2 UCS: Unicode input support
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/ucs/data/uni-global.def
+File: uni-global.def 2013/05/13 UCS: Unicode global data
+)
+\uc@secondtry=\count124
+\uc@combtoks=\toks21
+\uc@combtoksb=\toks22
+\uc@temptokena=\toks23
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2015/03/17 v1.2c Input encoding file
+\inpenc@prehook=\toks24
+\inpenc@posthook=\toks25
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/ucs/utf8x.def
+File: utf8x.def 2004/10/17 UCS: Input encoding UTF-8
+))
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+))
+(/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks26
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/tipa/tipa.sty
+Package: tipa 2002/08/08 TIPA version 1.1
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/tipa/t3enc.def
+File: t3enc.def 2001/12/31 T3 encoding
+LaTeX Font Info:    Try loading font information for T1+cmss on input line 357.
+
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/t1cmss.fd
+File: t1cmss.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+))
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+)))
+\mathindent=\dimen130
+\c@Agda@Current=\count125
+\c@Agda@Previous=\count126
+\c@Agda@AlignStart=\count127
+\c@Agda@SuppressStart=\count128
+\AgdaEmptySkip=\skip52
+\AgdaEmptyExtraSkip=\skip53
+)
+(/Users/wadler/Library/texmf/tex/latex/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/Users/wadler/Library/texmf/tex/latex/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks27
+)
+(/Users/wadler/Library/texmf/tex/latex/graphics.sty
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/Users/wadler/Library/texmf/tex/latex/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/Users/wadler/Library/texmf/tex/latex/graphics.cfg
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 90.
+)
+\Gin@req@height=\dimen131
+\Gin@req@width=\dimen132
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/stix.sty
+Package: stix 2015/04/17 v1.1.2-latex STIX fonts support package
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
+Package textcomp Info: Changing ? sub-encoding to TS1/0 on input line 80.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+)
+LaTeX Info: Redefining \oldstylenums on input line 334.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 349.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 350.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 351.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 352.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 353.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 354.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 355.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 356.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 357.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 358.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 359.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 360.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 361.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 362.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 363.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 364.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 365.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 366.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 367.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 368.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 369.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 370.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 371.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 372.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 373.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 374.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 375.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 376.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 377.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 378.
+Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 379.
+Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 380.
+Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 381.
+Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 382.
+Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 383.
+Package textcomp Info: Setting lmtt sub-encoding to TS1/0 on input line 384.
+Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 385.
+Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 386.
+Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 387.
+Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 388.
+Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 389.
+Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 390.
+Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 391.
+Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 392.
+Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 393.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 394.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 395.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 396.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 397.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 398.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 399.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 400.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 401.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 402.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 403.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 404.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 405.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
+)
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 76.
+LaTeX Font Info:    Encoding `OML' has changed to `LS1' for symbol font
+(Font)              `letters' in the math version `normal' on input line 76.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> LS1/stix/m/it on input line 76.
+LaTeX Font Info:    Encoding `OML' has changed to `LS1' for symbol font
+(Font)              `letters' in the math version `bold' on input line 76.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> LS1/stix/m/it on input line 76.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 77.
+LaTeX Font Info:    Encoding `OT1' has changed to `LS1' for symbol font
+(Font)              `operators' in the math version `normal' on input line 77.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> LS1/stix/m/n on input line 77.
+LaTeX Font Info:    Encoding `OT1' has changed to `LS1' for symbol font
+(Font)              `operators' in the math version `bold' on input line 77.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> LS1/stix/m/n on input line 77.
+\symbold-operators=\mathgroup6
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 79.
+LaTeX Font Info:    Encoding `OMS' has changed to `LS1' for symbol font
+(Font)              `symbols' in the math version `normal' on input line 79.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> LS1/stixscr/m/n on input line 79.
+LaTeX Font Info:    Encoding `OMS' has changed to `LS1' for symbol font
+(Font)              `symbols' in the math version `bold' on input line 79.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> LS1/stixscr/m/n on input line 79.
+\symsymbols2=\mathgroup7
+\symsymbols3=\mathgroup8
+\symsymbols4=\mathgroup9
+\symintegrals=\mathgroup10
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 84.
+LaTeX Font Info:    Encoding `OMX' has changed to `LS2' for symbol font
+(Font)              `largesymbols' in the math version `normal' on input line 8
+4.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> LS2/stixex/m/n on input line 84.
+LaTeX Font Info:    Encoding `OMX' has changed to `LS2' for symbol font
+(Font)              `largesymbols' in the math version `bold' on input line 84.
+
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> LS2/stixex/m/n on input line 84.
+\symarrows1=\mathgroup11
+\symarrows2=\mathgroup12
+\symarrows3=\mathgroup13
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  LS1/stix/m/it --> LS1/stix/b/it on input line 88.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  LS1/stix/m/n --> LS1/stix/b/n on input line 89.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  LS1/stixscr/m/n --> LS1/stixscr/b/n on input line 90.
+LaTeX Font Info:    Overwriting symbol font `symbols2' in version `bold'
+(Font)                  LS1/stixfrak/m/n --> LS1/stixfrak/b/n on input line 91.
+
+LaTeX Font Info:    Overwriting symbol font `symbols3' in version `bold'
+(Font)                  LS1/stixbb/m/n --> LS1/stixbb/b/n on input line 92.
+LaTeX Font Info:    Overwriting symbol font `symbols4' in version `bold'
+(Font)                  LS1/stixbb/m/it --> LS1/stixbb/b/it on input line 93.
+LaTeX Font Info:    Overwriting symbol font `integrals' in version `bold'
+(Font)                  LS2/stixcal/m/n --> LS2/stixcal/b/n on input line 94.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  LS2/stixex/m/n --> LS2/stixex/b/n on input line 95.
+LaTeX Font Info:    Overwriting symbol font `arrows1' in version `bold'
+(Font)                  LS1/stixsf/m/n --> LS1/stixsf/b/n on input line 96.
+LaTeX Font Info:    Overwriting symbol font `arrows2' in version `bold'
+(Font)                  LS1/stixsf/m/it --> LS1/stixsf/b/it on input line 97.
+LaTeX Font Info:    Overwriting symbol font `arrows3' in version `bold'
+(Font)                  LS2/stixtt/m/n --> LS2/stixtt/b/n on input line 98.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 99.
+LaTeX Font Info:    Redeclaring math alphabet \mathfrak on input line 102.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 106.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 108.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 109.
+LaTeX Info: Redefining \yen on input line 456.
+LaTeX Info: Redefining \circledR on input line 458.
+LaTeX Info: Redefining \checkmark on input line 460.
+LaTeX Info: Redefining \maltese on input line 461.
+LaTeX Info: Redefining \vdots on input line 1518.
+LaTeX Info: Redefining \cdots on input line 1522.
+LaTeX Info: Redefining \not on input line 2144.
+) (./PLFA.aux)
+\openout1 = `PLFA.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for T3/cmr/m/n on input line 24.
+LaTeX Font Info:    Try loading font information for T3+cmr on input line 24.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/tipa/t3cmr.fd
+File: t3cmr.fd 2001/12/31 TIPA font definitions
+)
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 24.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for LS1/stix/m/n on input line 24.
+LaTeX Font Info:    Try loading font information for LS1+stix on input line 24.
+
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls1stix.fd
+File: ls1stix.fd 2015/04/17 v1.1.2-latex STIX LS1 font definitions
+)
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for LS2/stix/m/n on input line 24.
+LaTeX Font Info:    Try loading font information for LS2+stix on input line 24.
+
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls2stix.fd
+File: ls2stix.fd 2015/04/17 v1.1.2-latex STIX LS2 font definitions
+)
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Try loading font information for T1+stix on input line 24.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/t1stix.fd
+File: t1stix.fd 2015/04/17 v1.1.2-latex STIX T1 font definitions
+)
+(/Users/wadler/Library/texmf/tex/latex/supp-pdf.tex
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count129
+\scratchdimen=\dimen133
+\scratchbox=\box54
+\nofMPsegments=\count130
+\nofMParguments=\count131
+\MPscratchCnt=\count132
+\MPscratchDim=\dimen134
+\MPnumerator=\count133
+\everyMPtoPDFconversion=\toks28
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/ucs/ucsencs.def
+File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
+T3\textscriptg already defined.
+
+fontencoding T3 patched
+)
+LaTeX Font Info:    Font shape `T1/stix/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/stix/b/n' tried instead on input line 30.
+LaTeX Font Info:    Try loading font information for LS1+stixscr on input line 
+30.
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls1stixscr.fd
+File: ls1stixscr.fd 2015/04/17 v1.1.2-latex STIX script LS1 font definitions
+)
+LaTeX Font Info:    Try loading font information for LS2+stixex on input line 3
+0.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls2stixex.fd
+File: ls2stixex.fd 2015/04/17 v1.1.2-latex STIX extentions LS2 font definitions
+
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 30.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 30.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for LS1+stixfrak on input line
+ 30.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls1stixfrak.fd
+File: ls1stixfrak.fd 2015/04/17 v1.1.2-latex STIX fraktur LS1 font definitions
+)
+LaTeX Font Info:    Try loading font information for LS1+stixbb on input line 3
+0.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls1stixbb.fd
+File: ls1stixbb.fd 2015/04/17 v1.1.2-latex STIX blackboard LS1 font definitions
+
+)
+LaTeX Font Info:    Try loading font information for LS2+stixcal on input line 
+30.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls2stixcal.fd
+File: ls2stixcal.fd 2015/04/17 v1.1.2-latex STIX calligraphic LS2 font definiti
+ons
+)
+LaTeX Font Info:    Try loading font information for LS1+stixsf on input line 3
+0.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls1stixsf.fd
+File: ls1stixsf.fd 2015/04/17 v1.1.2-latex STIX sans-serif LS1 font definitions
+
+)
+LaTeX Font Info:    Try loading font information for LS2+stixtt on input line 3
+0.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ls2stixtt.fd
+File: ls2stixtt.fd 2015/04/17 v1.1.2-latex STIX typewriter LS2 font definitions
+
+)
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 30.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `T1/stix/bx/n' in size <9> not available
+(Font)              Font shape `T1/stix/b/n' tried instead on input line 32.
+
+Overfull \hbox (1.0718pt too wide) in paragraph at lines 33--42
+[]\T1/stix/m/n/9 The lead-ing text-book for for-mal meth-ods is \T1/stix/m/it/9
+ Soft-ware Foun-da-tions \T1/stix/m/n/9 (SF),
+ []
+
+LaTeX Font Info:    Try loading font information for TS1+stix on input line 61.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/stix/ts1stix.fd
+File: ts1stix.fd 2015/04/17 v1.1.2-latex STIX TS1 font definitions
+)
+LaTeX Font Info:    Font shape `T1/stix/bx/n' in size <12> not available
+(Font)              Font shape `T1/stix/b/n' tried instead on input line 64.
+ [1
+
+{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \vbox (badness 3601) has occurred while \output is active []
+
+ [2]
+LaTeX Font Info:    Font shape `T1/stix/bx/n' in size <10> not available
+(Font)              Font shape `T1/stix/b/n' tried instead on input line 203.
+
+[3]
+Overfull \hbox (5.29643pt too wide) in paragraph at lines 230--233
+\T1/stix/m/n/10 im-por-tant role in the sub-se-quent de-vel-op-ment. Also in-tr
+o-duces de-pen-dent records, lambda
+ []
+
+[4] <figures/plfa-progress-1.png, id=21, 784.9325pt x 753.81625pt>
+File: figures/plfa-progress-1.png Graphic file (type png)
+
+<use figures/plfa-progress-1.png> [5]
+<figures/plfa-progress-2.png, id=26, 783.92876pt x 509.905pt>
+File: figures/plfa-progress-2.png Graphic file (type png)
+
+<use figures/plfa-progress-2.png>
+<figures/plfa-progress-3a.png, id=27, 784.9325pt x 590.205pt>
+File: figures/plfa-progress-3a.png Graphic file (type png)
+
+<use figures/plfa-progress-3a.png>
+<figures/sf-progress-1.png, id=28, 809.0225pt x 753.81625pt>
+File: figures/sf-progress-1.png Graphic file (type png)
+
+<use figures/sf-progress-1.png>
+<figures/sf-progress-2.png, id=29, 679.53876pt x 687.56876pt>
+File: figures/sf-progress-2.png Graphic file (type png)
+
+<use figures/sf-progress-2.png> [6 <./figures/plfa-progress-1.png>] [7 <./figur
+es/plfa-progress-2.png> <./figures/plfa-progress-3a.png>] [8 <./figures/sf-prog
+ress-1.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [9 <./figures/sf-progress-2.png>]
+Underfull \vbox (badness 1102) has occurred while \output is active []
+
+ [10]
+(/usr/local/texlive/2016/texmf-dist/tex/latex/ucs/data/uni-32.def
+File: uni-32.def 2013/05/13 UCS: Unicode data U+2000..U+20FF
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/ucs/data/uni-33.def
+File: uni-33.def 2013/05/13 UCS: Unicode data U+2100..U+21FF
+)
+<figures/plfa-eval.png, id=51, 623.32875pt x 753.81625pt>
+File: figures/plfa-eval.png Graphic file (type png)
+
+<use figures/plfa-eval.png> [11] [12 <./figures/plfa-eval.png>] [13]
+(./PLFA.bbl [14] [15
+
+]) [16] (./PLFA.aux) ) 
+Here is how much of TeX's memory you used:
+ 7316 strings out of 493014
+ 94897 string characters out of 6133352
+ 148843 words of memory out of 5000000
+ 10698 multiletter control sequences out of 15000+600000
+ 70168 words of font info for 102 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 42i,7n,37p,797b,384s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/cm-su
+per/cm-super-t1.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/stix/st
+ix-ts1.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/stix/stix-t1.enc
+}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/STIXGeneral-Bold.p
+fb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/STIXGeneral-Ital
+ic.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/STIXGeneral-
+Regular.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/cm-super/sft
+t0900.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/cm-super/sftt1
+000.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/stix-mathfr
+ak.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/stix-mathit.
+pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/stix-mathrm.pfb
+></usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/stix-mathsf.pfb></
+usr/local/texlive/2016/texmf-dist/fonts/type1/public/stix/stix-mathtt.pfb>
+Output written on PLFA.pdf (16 pages, 1193220 bytes).
+PDF statistics:
+ 114 PDF objects out of 1000 (max. 8388607)
+ 73 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+
