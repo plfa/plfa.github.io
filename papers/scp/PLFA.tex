@@ -1,16 +1,5 @@
-%\documentclass[runningheads,oribibl]{llncs}
-\documentclass[runningheads]{llncs}
-\usepackage{natbib}
-% \usepackage{stmaryrd}
-% \usepackage{proof}
-% \usepackage{amsmath}
-% \usepackage{amssymb}
-% \usepackage{color}
-% \usepackage{bbm}
-% \usepackage[greek,english]{babel}
-% \usepackage{ucs}
-% \usepackage[utf8x]{inputenc}
-% \usepackage{autofe}
+\documentclass[preprint,authoryear]{elsarticle}
+%\usepackage{natbib}
 \usepackage{agda}
 \usepackage{revsymb}
 \usepackage{semantic}
@@ -18,48 +7,42 @@
 \usepackage{url}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 \usepackage{stix}
-\setcitestyle{round,aysep={}}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\usepackage{mathpazo}
+\usepackage[mathpazo]{flexisym}
 
 \begin{document}
+
 \title{Programming Language Foundations in Agda}
-\author{Philip Wadler}
-\authorrunning{P. Wadler}
-\institute{University of Edinburgh\\
-  \email{wadler@inf.ed.ac.uk}}
-\maketitle
-%
+
+\author[adr1]{Wen Kokke}
+\ead{wen.kokke@ed.ac.uk}
+\author[adr2]{Jeremy Siek}
+\ead{jsiek@indiana.edu}
+\author[adr1]{Philip Wadler\corref{cor1}}
+\ead{wadler@inf.ed.ac.uk}
+\cortext[cor1]{Corresponding author}
+
+\address[adr1]{University of Edinburgh, 10 Crichton Street, EH8 9AB, Edinburgh}
+\address[adr2]{Indiana University, 700 N Woodlawn Ave, Bloomington, IN 47408, USA}
+
 \begin{abstract}
-One of the leading textbooks for formal methods is
-\emph{Software Foundations} (SF), written by Benjamin Pierce in
-collaboration with others, and based on Coq. After five years using SF
-in the classroom, I have come to the conclusion that Coq is not the
-best vehicle for this purpose, as too much of the course needs to
-focus on learning tactics for proof derivation, to the cost of
-learning programming language theory.  Accordingly, I have written a
-new textbook, \emph{Programming Language Foundations in Agda} (PLFA).
-PLFA covers much of the same ground as SF, although it is not a
-slavish imitation.
+  One of the leading textbooks for formal methods is \emph{Software Foundations} (SF), written by Benjamin Pierce in collaboration with others, and based on Coq. After five years using SF in the classroom, I have come to the conclusion that Coq is not the best vehicle for this purpose, as too much of the course needs to focus on learning tactics for proof derivation, to the cost of learning programming language theory.  Accordingly, I have written a new textbook, \emph{Programming Language Foundations in Agda} (PLFA). PLFA covers much of the same ground as SF, although it is not a slavish imitation.
 
-What did I learn from writing PLFA? First, that it is possible. One
-might expect that without proof tactics that the proofs become too
-long, but in fact proofs in PLFA are about the same length as those in
-SF. Proofs in Coq require an interactive environment to be understood,
-while proofs in Agda can be read on the page.  Second, that
-constructive proofs of preservation and progress give immediate rise
-to a prototype evaluator. This fact is obvious in retrospect but it is
-not exploited in SF (which instead provides a separate normalise
-tactic) nor can I find it in the literature.  Third, that using raw
-terms with a separate typing relation is far less perspicuous than
-using inherently-typed terms. SF uses the former presentation, while
-PLFA presents both; the former uses about 1.6 as many lines of Agda
-code as the latter, roughly the golden ratio.
+  What did I learn from writing PLFA? First, that it is possible. One might expect that without proof tactics that the proofs become too long, but in fact proofs in PLFA are about the same length as those in SF. Proofs in Coq require an interactive environment to be understood, while proofs in Agda can be read on the page.  Second, that constructive proofs of preservation and progress give immediate rise to a prototype evaluator. This fact is obvious in retrospect but it is not exploited in SF (which instead provides a separate normalise tactic) nor can I find it in the literature.  Third, that using raw terms with a separate typing relation is far less perspicuous than using inherently-typed terms. SF uses the former presentation, while PLFA presents both; the former uses about 1.6 as many lines of Agda code as the latter, roughly the golden ratio.
 
-The textbook is written as a literate Agda script, and can be found here:
-\begin{center}
-\url{http://plfa.inf.ed.ac.uk}
-\end{center}
-\keywords{Agda \and Coq \and lambda calculus \and dependent types.}
+  The textbook is written as a literate Agda script, and can be found here:
+  \begin{center}
+    \url{http://plfa.inf.ed.ac.uk}
+  \end{center}
 \end{abstract}
+
+\begin{keyword}
+  Agda \sep Coq \sep lambda calculus \sep dependent types.  
+\end{keyword}
+
+\maketitle
 
 \section{Introduction}
 
@@ -531,7 +514,7 @@ Neat layout of definitions such as that in
 Figure~\ref{fig:plfa-progress-2} in Emacs requires a monospaced font
 supporting all the necessary characters.  Securing one has proved
 tricky. As of this writing, we use FreeMono, but it lacks a few
-characters ($\typecolon$ and $\qed$) which are loaded from fonts with a different
+characters ($\typecolon$ and $\qedsymbol$) which are loaded from fonts with a different
 width.  Long arrows are necessarily more than a single character wide.
 Instead, we compose reduction —→ from an em dash — and an arrow →.
 Similarly for reflexive and transitive closure —↠.
@@ -729,11 +712,10 @@ Benjamin Pierce. This research was supported by EPSRC Programme Grant
 EP/K034413/1.
 
 
-\bibliographystyle{plainnat}
-%\bibliographystyle{splncsnat.bst}
+\section*{References}
+
+\bibliographystyle{elsarticle-harv}
 \bibliography{PLFA}
-
-
 
 \end{document}
 
