@@ -476,9 +476,9 @@ With the extension lemma under our belts, it is straightforward to
 prove renaming preserves types:
 \begin{code}
 rename : ∀ {Γ Δ}
-        → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
-          ----------------------------------
-        → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
+  → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
+    ----------------------------------
+  → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
 rename ρ (⊢` ∋w)           =  ⊢` (ρ ∋w)
 rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext ρ) ⊢N)
 rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)
@@ -498,7 +498,7 @@ the variable appears in `Δ`.
 
 * If the term is a lambda abstraction, use the previous lemma to
 extend the map `ρ` suitably and use induction to rename the body of the
-abstraction
+abstraction.
 
 * If the term is an application, use induction to rename both the
 function and the argument.
