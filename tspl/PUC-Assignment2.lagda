@@ -60,7 +60,7 @@ open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
 
 The proof of monotonicity from
 Chapter [Relations][plfa.Relations]
-can be written in a more readable form by using an anologue of our
+can be written in a more readable form by using an analogue of our
 notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
@@ -131,7 +131,7 @@ Show sum is commutative up to isomorphism.
 
 #### Exercise `⊎-assoc`
 
-Show sum is associative up to ismorphism. 
+Show sum is associative up to isomorphism.
 
 #### Exercise `⊥-identityˡ` (recommended)
 
@@ -415,7 +415,7 @@ data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
 \end{code}
-Define a suitabve map operator over trees.
+Define a suitable map operator over trees.
 \begin{code}
 postulate
   map-Tree : ∀ {A B C D : Set}
@@ -460,7 +460,7 @@ postulate
 
 #### Exercise `map-is-fold-Tree`
 
-Demonstrate an anologue of `map-is-foldr` for the type of trees.
+Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
 #### Exercise `sum-downFrom` (stretch)
 
