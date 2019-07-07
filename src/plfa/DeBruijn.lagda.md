@@ -221,7 +221,7 @@ infix  8 `suc_
 infix  9 `_
 infix  9 S_
 infix  9 #_
-\end{code}
+```
 
 Since terms are inherently typed, we must define types and
 contexts before terms.
@@ -412,7 +412,7 @@ postulating an `impossible` term, just as we did
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
-\begin{code}
+```
 count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
 count {Γ , _} zero     =  Z
 count {Γ , _} (suc n)  =  S (count n)

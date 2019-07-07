@@ -432,7 +432,7 @@ postulate
     → A ≃ B
       -----
     → A ≲ B
-\end{code}
+```
 
 ```
 -- Your code goes here

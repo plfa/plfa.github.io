@@ -251,8 +251,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.String using (String)
-open import Data.String.Unsafe using (_≟_)
+open import Data.String using (String; _≟_)
 open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 ```
@@ -565,7 +564,7 @@ uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
 uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
 uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
 uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
-\end{code}
+```
 There are three possibilities for the term. If it is a variable,
 uniqueness of synthesis follows from uniqueness of lookup.
 If it is an application, uniqueness follows by induction on
@@ -1119,9 +1118,9 @@ by inheritance, which is why Agda requires a type declaration for
 those definitions.  A definition with a right-hand side that is a term
 typed by synthesis, such as an application, does not require a type
 declaration.
-\begin{code}
+```
 answer = 6 * 7
-\end{code}
+```
 
 
 ## Unicode

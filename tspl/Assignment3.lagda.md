@@ -98,9 +98,9 @@ nodes of type `B`.
 data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
-\end{code}
+```
 Define a suitable map operator over trees.
-\begin{code}
+```
 postulate
   map-Tree : ∀ {A B C D : Set}
     → (A → C) → (B → D) → Tree A B → Tree C D

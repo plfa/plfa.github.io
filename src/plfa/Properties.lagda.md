@@ -90,7 +90,7 @@ types without needing to develop a separate inductive definition of the
 ## Values do not reduce
 
 We start with an easy observation. Values do not reduce:
-\begin{code}
+```
 V¬—→ : ∀ {M N}
   → Value M
     ----------
@@ -152,7 +152,7 @@ data Canonical_⦂_ : Term → Type → Set where
     → Canonical V ⦂ `ℕ
       ---------------------
     → Canonical `suc V ⦂ `ℕ
-\end{code}
+```
 
 Every closed, well-typed value is canonical:
 ```
@@ -168,7 +168,7 @@ canonical ⊢zero            V-zero      =  C-zero
 canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
-\end{code}
+```
 There are only three interesting cases to consider:
 
 * If the term is a lambda abstraction, then well-typing of the term
@@ -1200,7 +1200,7 @@ Again, the derivation in the previous chapter was derived by
 editing the above.
 
 Similarly, we can evaluate the corresponding term for Church numerals:
-\begin{code}
+```
 _ : eval (gas 100) ⊢2+2ᶜ ≡
   steps
    ((ƛ "m" ⇒

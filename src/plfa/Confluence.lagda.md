@@ -377,7 +377,7 @@ property: that if `M ⇛ N` and `M ⇛ N′`, then `N ⇛ L` and `N′ ⇛ L` fo
 some `L`.  The proof is relatively easy; it is parallel reduction's
 _raison d'etre_.
 
-\begin{code}
+```
 par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N
   → M ⇛ N′

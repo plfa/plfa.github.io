@@ -281,7 +281,7 @@ function application, as witnessed by the `●` function.
 app-equiv : ∀{Γ}{L M : Γ ⊢ ★}
           → ℰ (L · M) ≃ (ℰ L) ● (ℰ M)
 app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
-\end{code}
+```
 
 We also need an inversion lemma for variables.
 If `Γ ⊢ x ↓ v`, then `v ⊑ γ x`. The proof is a straightforward
@@ -301,7 +301,7 @@ var-inv ⊥-intro = Bot⊑
 To round-out the semantic equations, we establish the following one
 for variables.
 
-\begin{code}
+```
 var-equiv : ∀{Γ}{x : Γ ∋ ★}
           → ℰ (` x) ≃ (λ γ v → v ⊑ γ x)
 var-equiv γ v = ⟨ var-inv , (λ lt → sub var lt) ⟩
@@ -473,7 +473,7 @@ compositionality {C = CAppL C′ L} M≃N =
   app-cong (compositionality {C = C′} M≃N) λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩
 compositionality {C = CAppR L C′} M≃N =
   app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N)
-\end{code}
+```
 
 The proof is a straightforward induction on the context `C`, using the
 congruence properties `lam-cong` and `app-cong` that we established
@@ -488,19 +488,19 @@ following function `⟦ M ⟧` that maps terms to denotations, using the
 auxiliary curry `ℱ` and apply `●` functions in the cases for lambda
 and application, respectively.
 
-\begin{code}
+```
 ⟦_⟧ : ∀{Γ} → (M : Γ ⊢ ★) → Denotation Γ
 ⟦ ` x ⟧ γ v = v ⊑ γ x
 ⟦ ƛ N ⟧ = ℱ ⟦ N ⟧
 ⟦ L · M ⟧ = ⟦ L ⟧ ● ⟦ M ⟧
-\end{code}
+```
 
 The proof that `ℰ M` is denotationally equal to `⟦ M ⟧` is a
 straightforward induction, using the three equations
 `var-equiv`, `lam-equiv`, and `app-equiv` together
 with the congruence lemmas for `ℱ` and `●`.
 
-\begin{code}
+```
 ℰ≃⟦⟧ : ∀ {Γ} {M : Γ ⊢ ★}
     → ℰ M ≃ ⟦ M ⟧
 ℰ≃⟦⟧ {Γ} {` x} = var-equiv
@@ -523,7 +523,7 @@ with the congruence lemmas for `ℱ` and `●`.
     ≃⟨⟩
       ⟦ L · M ⟧
     ☐
-\end{code}
+```
 
 
 ## Unicode

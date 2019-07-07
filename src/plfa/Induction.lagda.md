@@ -321,7 +321,7 @@ As a concrete example of how induction corresponds to recursion, here
 is the computation that occurs when instantiating `m` to `2` in the
 proof of associativity.
 
-\begin{code}
+```
 +-assoc-2 : ∀ (n p : ℕ) → (2 + n) + p ≡ 2 + (n + p)
 +-assoc-2 n p =
   begin
@@ -359,7 +359,7 @@ proof of associativity.
       ≡⟨⟩
         0 + (n + p)
       ∎
-\end{code}
+```
 
 
 ## Terminology and notation

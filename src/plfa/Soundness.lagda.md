@@ -331,7 +331,7 @@ Next we define the environment that maps `x` to `v` and every other
 variable to `⊥`, that is `const-env x v`. To tell variables apart, we
 define the following function for deciding equality of variables.
 
-\begin{code}
+```
 _var≟_ : ∀ {Γ} → (x y : Γ ∋ ★) → Dec (x ≡ y)
 Z var≟ Z  =  yes refl
 Z var≟ (S _)  =  no λ()
@@ -343,11 +343,11 @@ Z var≟ (S _)  =  no λ()
 var≟-refl : ∀ {Γ} (x : Γ ∋ ★) → (x var≟ x) ≡ yes refl
 var≟-refl Z = refl
 var≟-refl (S x) rewrite var≟-refl x = refl
-\end{code}
+```
 
 Now we use `var≟` to define `const-env`.
 
-\begin{code}
+```
 const-env : ∀{Γ} → (x : Γ ∋ ★) → Value → Env Γ
 const-env x v y with x var≟ y
 ...             | yes _       = v
@@ -356,10 +356,10 @@ const-env x v y with x var≟ y
 
 Of course, `const-env x v` maps `x` to value `v`
 
-\begin{code}
+```
 same-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
 same-const-env {x = x} rewrite var≟-refl x = refl
-\end{code}
+```
 
 and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
 
@@ -640,7 +640,7 @@ reflect ⊥-intro r mn = ⊥-intro
 reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
    ⊔-intro (reflect d₁ r refl) (reflect d₂ r refl)
 reflect (sub d lt) r mn = sub (reflect d r mn) lt
-\end{code}
+```
 
 ## Reduction implies denotational equality
 

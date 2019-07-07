@@ -279,7 +279,7 @@ sub-tail : ∀{Γ Δ} {A B} {M : Δ ⊢ A} {σ : Subst Γ Δ}
 sub-tail = extensionality λ x → refl
 ```
 
-\begin{code}
+```
 sub-η : ∀{Γ Δ} {A B} {σ : Subst (Γ , A) Δ}
       → (⟪ σ ⟫ (` Z) • (↑ ⨟ σ)) {A = B} ≡ σ
 sub-η {Γ}{Δ}{A}{B}{σ} = extensionality λ x → lemma
@@ -320,7 +320,7 @@ sub-dist {Γ}{Δ}{Σ}{A}{B}{σ}{τ}{M} = extensionality λ x → lemma {x = x}
 sub-app : ∀{Γ Δ} {σ : Subst Γ Δ} {L : Γ ⊢ ★}{M : Γ ⊢ ★}
         → ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
 sub-app = refl
-\end{code}
+```
 
 
 ## Interlude: congruences
@@ -516,7 +516,7 @@ exts-cons-shift = extensionality λ x → lemma{x = x}
 
 As a corollary, we have a similar correspondence for `ren (ext ρ)`.
 
-\begin{code}
+```
 ext-cons-Z-shift : ∀{Γ Δ} {ρ : Rename Γ Δ}{A}{B}
                  → ren (ext ρ {B = B}) ≡ (` Z • (ren ρ ⨟ ↑)) {A}
 ext-cons-Z-shift {Γ}{Δ}{ρ}{A}{B} =
@@ -597,7 +597,7 @@ sub-id {M = L · M} = cong₂ _·_ sub-id sub-id
 
 The `rename-id` equation is a corollary is `sub-id`.
 
-\begin{code}
+```
 rename-id : ∀ {Γ}{A} {M : Γ ⊢ A}
   → rename (λ {A} x → x) M ≡ M
 rename-id {M = M} =
@@ -659,7 +659,7 @@ To prove that composing renamings is equivalent to applying one after
 the other using `rename`, we proceed by induction on the term `M`,
 using the `compose-ext` lemma in the case for `M ≡ ƛ N`.
 
-\begin{code}
+```
 compose-rename : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A}{ρ : Rename Δ Σ}{ρ′ : Rename Γ Δ}
   → rename ρ (rename ρ′ M) ≡ rename (ρ ∘ ρ′) M
 compose-rename {M = ` x} = refl
@@ -785,7 +785,7 @@ The proof proceed by cases on `x`.
 
 Now we come to the proof of `sub-sub`, which we explain below.
 
-\begin{code}
+```
 sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ}
             → ⟪ σ₂ ⟫ (⟪ σ₁ ⟫ M) ≡ ⟪ σ₁ ⨟ σ₂ ⟫ M
 sub-sub {M = ` x} = refl

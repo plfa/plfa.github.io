@@ -249,7 +249,7 @@ as that will make it easier to invoke reflexivity:
   → n ≤ n
 ≤-refl {zero} = z≤n
 ≤-refl {suc n} = s≤s ≤-refl
-\end{code}
+```
 The proof is a straightforward induction on the implicit argument `n`.
 In the base case, `zero ≤ zero` holds by `z≤n`.  In the inductive
 case, the inductive hypothesis `≤-refl {n}` gives us a proof of `n ≤

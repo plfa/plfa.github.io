@@ -184,7 +184,7 @@ Show that `M † ≡ N` implies `M ~ N`, and conversely.
 We need a number of technical results. The first is that simulation
 commutes with values.  That is, if `M ~ M†` and `M` is a value then
 `M†` is also a value:
-\begin{code}
+```
 ~val : ∀ {Γ A} {M M† : Γ ⊢ A}
   → M ~ M†
   → Value M
@@ -277,7 +277,7 @@ the body of an abstraction).
 From the general case of substitution, it is also easy to derive
 the required special case.  If `N ~ N†` and `M ~ M†`, then
 `N [ M ] ~ N† [ M† ]`:
-\begin{code}
+```
 ~sub : ∀ {Γ A B} {N N† : Γ , B ⊢ A} {M M† : Γ ⊢ B}
   → N ~ N†
   → M ~ M†

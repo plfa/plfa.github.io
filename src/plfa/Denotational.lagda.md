@@ -465,7 +465,7 @@ the result of the application is `⊥`.
 
 denot-Ω : `∅ ⊢ Ω ↓ ⊥
 denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro)
-\end{code}
+```
 
 A shorter derivation of the same result is by just one use of the
 `⊥-intro` rule.
@@ -880,7 +880,7 @@ then `v ↦ w` must be a member of `u`.
        ---------
      → v ↦ w ∈ u
 ↦⊆→∈ incl = incl refl
-\end{code}
+```
 
 
 ### Function values

@@ -306,7 +306,7 @@ Here is the definition of addition in Agda:
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
 suc m + n = suc (m + n)
-\end{code}
+```
 
 Let's unpack this definition.  Addition is an infix operator.  It is
 written with underbars where the argument go, hence its name is
@@ -443,7 +443,7 @@ as repeated addition:
 _*_ : ℕ → ℕ → ℕ
 zero    * n  =  zero
 (suc m) * n  =  n + (m * n)
-\end{code}
+```
 Computing `m * n` returns the sum of `m` copies of `n`.
 
 Again, rewriting turns the definition into two familiar equations:

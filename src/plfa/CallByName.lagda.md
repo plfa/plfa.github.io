@@ -211,7 +211,7 @@ an equivalent closure and term `c ≈ N` produces
 an equivalent environment and substitution:
 `(γ ,' V) ≈ₑ (ext-subst σ N)`.
 
-\begin{code}
+```
 ≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {V} {N : ∅ ⊢ ★}
       → γ ≈ₑ σ  →  V ≈ N
         --------------------------
@@ -245,7 +245,7 @@ closure `V` in environment `γ`, and if `γ ≈ₑ σ`, then `⟪ σ ⟫ M` redu
 to some term `N` that is equivalent to `V`. We describe the proof
 below.
 
-\begin{code}
+```
 ⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{V : Clos}
        → γ ⊢ M ⇓ V  →  γ ≈ₑ σ
          ---------------------------------------
@@ -269,7 +269,7 @@ below.
     let rs = (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
     let g = —↠-trans (appL-cong σL—↠ƛτN) rs in
     ⟨ N' , ⟨ g , V≈N' ⟩ ⟩
-\end{code}
+```
 
 The proof is by induction on `γ ⊢ M ⇓ V`. We have three cases
 to consider.

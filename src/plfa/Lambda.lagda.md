@@ -484,7 +484,7 @@ simply push substitution recursively into the subterms.
 
 Here is confirmation that the examples above are correct:
 
-\begin{code}
+```
 _ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
 _ = refl
 
