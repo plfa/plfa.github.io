@@ -98,9 +98,9 @@ nodes of type `B`.
 data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
-```
-Define a suitabve map operator over trees.
-```
+\end{code}
+Define a suitable map operator over trees.
+\begin{code}
 postulate
   map-Tree : ∀ {A B C D : Set}
     → (A → C) → (B → D) → Tree A B → Tree C D
@@ -144,7 +144,7 @@ postulate
 
 #### Exercise `map-is-fold-Tree`
 
-Demonstrate an anologue of `map-is-foldr` for the type of trees.
+Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
 #### Exercise `sum-downFrom` (stretch)
 

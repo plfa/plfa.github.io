@@ -38,7 +38,7 @@ progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
 
 Be aware that the approach we take here is _not_ our recommended
-approach to formalisation.  Using De Bruijn indices and
+approach to formalisation.  Using de Bruijn indices and
 inherently-typed terms, as we will do in
 Chapter [DeBruijn]({{ site.baseurl }}{% link out/plta/DeBruijn.md %}),
 leads to a more compact formulation.  Nonetheless, we begin with named

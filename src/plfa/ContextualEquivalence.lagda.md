@@ -29,7 +29,7 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 
 The notion of _contextual equivalence_ is an important one for
 programming languages because it is the sufficient condition for
-changing a subterms of a program while maintaining the program's
+changing a subterm of a program while maintaining the program's
 overall behavior. Two terms `M` and `N` are contextually equivalent
 if they can plugged into any context `C` and produce equivalent
 results. As discuss in the Denotational chapter, the result of
@@ -92,7 +92,7 @@ From `ℰ M ≃ ℰ N`, compositionality gives us
 
     ℰ (plug C M) ≃ ℰ (plug C N).
 
-Putting these two facts together gives us 
+Putting these two facts together gives us
 
     ℰ (plug C N) ≃ ℰ (ƛN′).
 

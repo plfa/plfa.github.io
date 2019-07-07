@@ -48,7 +48,7 @@ declaring a suitable inductive type:
 ```
 data _×_ (A B : Set) : Set where
 
-  ⟨_,_⟩ : 
+  ⟨_,_⟩ :
       A
     → B
       -----
@@ -559,7 +559,7 @@ it the exponential, note that if type `A` has `m` distinct
 members, and type `B` has `n` distinct members, then the type
 `A → B` has `nᵐ` distinct members.  For instance, consider a
 type `Bool` with two members and a type `Tri` with three members,
-as defined earlier. The the type `Bool → Tri` has nine (that is,
+as defined earlier. Then the type `Bool → Tri` has nine (that is,
 three squared) members:
 
     λ{true → aa; false → aa}  λ{true → aa; false → bb}  λ{true → aa; false → cc}
@@ -718,7 +718,7 @@ an embedding rather than an isomorphism because the
 In the usual approach to logic, both of the distribution laws
 are given as equivalences, where each side implies the other:
 
-    A × (B ⊎ C) ⇔ (A × B) ⊎ (A × C)  
+    A × (B ⊎ C) ⇔ (A × B) ⊎ (A × C)
     A ⊎ (B × C) ⇔ (A ⊎ B) × (A ⊎ C)
 
 But when we consider the functions that provide evidence for these

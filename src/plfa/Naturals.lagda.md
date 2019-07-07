@@ -305,8 +305,8 @@ Here is the definition of addition in Agda:
 ```
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
-(suc m) + n = suc (m + n)
-```
+suc m + n = suc (m + n)
+\end{code}
 
 Let's unpack this definition.  Addition is an infix operator.  It is
 written with underbars where the argument go, hence its name is
@@ -441,9 +441,9 @@ Once we have defined addition, we can define multiplication
 as repeated addition:
 ```
 _*_ : ℕ → ℕ → ℕ
-zero  * n  =  zero
-suc m * n  =  n + (m * n)
-```
+zero    * n  =  zero
+(suc m) * n  =  n + (m * n)
+\end{code}
 Computing `m * n` returns the sum of `m` copies of `n`.
 
 Again, rewriting turns the definition into two familiar equations:
@@ -500,8 +500,8 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
 Define exponentiation, which is given by the following equations:
 
-    n ^ 0        =  1
-    n ^ (1 + m)  =  n * (n ^ m)
+    m ^ 0        =  1
+    m ^ (1 + n)  =  m * (m ^ n)
 
 Check that `3 ^ 4` is `81`.
 

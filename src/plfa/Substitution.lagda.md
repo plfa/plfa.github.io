@@ -16,7 +16,7 @@ module plfa.Substitution where
 The primary purpose of this chapter is to prove that substitution
 commutes with itself. Barendgredt (1984) refers to this
 as the substitution lemma:
-  
+
     M [x:=N] [y:=L] = M [y:=L] [x:= N[y:=L] ]
 
 In our setting, with de Bruijn indices for variables, the statement of
@@ -134,7 +134,7 @@ Given two substitutions `σ` and `τ`, the sequencing operation `σ ⨟ τ`
 produces the sequence
 
     ⟪τ⟫(σ 0), ⟪τ⟫(σ 1), ⟪τ⟫(σ 2), ...
-    
+
 That is, it composes the two substitutions by first applying
 `σ` and then applying `τ`.
 
@@ -159,7 +159,7 @@ The σ algebra includes the following equations.
     (sub-tail)  ↑ ⨟ (M • σ)    ≡ σ
     (sub-η)     (⟪ σ ⟫ (` Z)) • (↑ ⨟ σ) ≡ σ
     (Z-shift)   (` Z) • ↑      ≡ ids
-    
+
     (sub-id)    ⟪ ids ⟫ M      ≡ M
     (sub-app)   ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
     (sub-abs)   ⟪ σ ⟫ (ƛ N)    ≡ ƛ ⟪ σ ⟫ N
@@ -217,7 +217,7 @@ When the renaming is the increment function, then it is equivalent to
 shift.
 
     ren S_ ≡ ↑                             (ren-shift)
-    
+
     rename S_ M ≡ ⟪ ↑ ⟫ M                  (rename-shift)
 
 Renaming with the identity renaming leaves the term unchanged.
@@ -279,11 +279,11 @@ sub-tail : ∀{Γ Δ} {A B} {M : Δ ⊢ A} {σ : Subst Γ Δ}
 sub-tail = extensionality λ x → refl
 ```
 
-```
-sub-η : ∀{Γ Δ} {A B} {σ : Subst (Γ , A) Δ} 
+\begin{code}
+sub-η : ∀{Γ Δ} {A B} {σ : Subst (Γ , A) Δ}
       → (⟪ σ ⟫ (` Z) • (↑ ⨟ σ)) {A = B} ≡ σ
 sub-η {Γ}{Δ}{A}{B}{σ} = extensionality λ x → lemma
-   where 
+   where
    lemma : ∀ {x} → ((⟪ σ ⟫ (` Z)) • (↑ ⨟ σ)) x ≡ σ x
    lemma {x = Z} = refl
    lemma {x = S x} = refl
@@ -292,7 +292,7 @@ sub-η {Γ}{Δ}{A}{B}{σ} = extensionality λ x → lemma
 ```
 Z-shift : ∀{Γ}{A B}
         → ((` Z) • ↑) ≡ ids {Γ , A} {B}
-Z-shift {Γ}{A}{B} = extensionality lemma 
+Z-shift {Γ}{A}{B} = extensionality lemma
    where
    lemma : (x : Γ , A ∋ B) → ((` Z) • ↑) x ≡ ids x
    lemma Z = refl
@@ -319,8 +319,8 @@ sub-dist {Γ}{Δ}{Σ}{A}{B}{σ}{τ}{M} = extensionality λ x → lemma {x = x}
 ```
 sub-app : ∀{Γ Δ} {σ : Subst Γ Δ} {L : Γ ⊢ ★}{M : Γ ⊢ ★}
         → ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
-sub-app = refl        
-```
+sub-app = refl
+\end{code}
 
 
 ## Interlude: congruences
@@ -378,7 +378,7 @@ cong-sub : ∀{Γ Δ}{σ σ′ : Subst Γ Δ}{A}{M M′ : Γ ⊢ A}
 cong-sub {Γ} {Δ} {σ} {σ′} {A} {` x} ss refl = cong-app ss x
 cong-sub {Γ} {Δ} {σ} {σ′} {A} {ƛ M} ss refl =
    cong ƛ_ (cong-sub {σ = exts σ}{σ′ = exts σ′} {M = M} (cong-exts ss) refl)
-cong-sub {Γ} {Δ} {σ} {σ′} {A} {L · M} ss refl = 
+cong-sub {Γ} {Δ} {σ} {σ′} {A} {L · M} ss refl =
    cong₂ _·_ (cong-sub {M = L} ss refl) (cong-sub {M = M} ss refl)
 ```
 
@@ -412,7 +412,7 @@ cong-seq {Γ}{Δ}{Σ}{σ}{σ′}{τ}{τ′} ss' tt' {A} = extensionality lemma
   lemma : (x : Γ ∋ A) → (σ ⨟ τ) x ≡ (σ′ ⨟ τ′) x
   lemma x =
      begin
-       (σ ⨟ τ) x 
+       (σ ⨟ τ) x
      ≡⟨⟩
        subst τ (σ x)
      ≡⟨ cong (subst τ) (cong-app ss' x) ⟩
@@ -420,7 +420,7 @@ cong-seq {Γ}{Δ}{Σ}{σ}{σ′}{τ}{τ′} ss' tt' {A} = extensionality lemma
      ≡⟨ cong-sub{M = σ′ x} tt' refl ⟩
        subst τ′ (σ′ x)
      ≡⟨⟩
-       (σ′ ⨟ τ′) x  
+       (σ′ ⨟ τ′) x
      ∎
 ```
 
@@ -434,7 +434,7 @@ in the σ algebra.
 The first equation we prove is
 
     rename ρ M ≡ ⟪ ren ρ ⟫ M              (rename-subst-ren)
-               
+
 Because `subst` uses the `exts` function, we need the following lemma
 which says that `exts` and `ext` do the same thing except that `ext`
 works on renamings and `exts` works on substitutions.
@@ -516,8 +516,8 @@ exts-cons-shift = extensionality λ x → lemma{x = x}
 
 As a corollary, we have a similar correspondence for `ren (ext ρ)`.
 
-```
-ext-cons-Z-shift : ∀{Γ Δ} {ρ : Rename Γ Δ}{A}{B} 
+\begin{code}
+ext-cons-Z-shift : ∀{Γ Δ} {ρ : Rename Γ Δ}{A}{B}
                  → ren (ext ρ {B = B}) ≡ (` Z • (ren ρ ⨟ ↑)) {A}
 ext-cons-Z-shift {Γ}{Δ}{ρ}{A}{B} =
   begin
@@ -582,7 +582,7 @@ using `exts-ids` in the case for `M ≡ ƛ N`.
 sub-id : ∀{Γ} {A} {M : Γ ⊢ A}
          → ⟪ ids ⟫ M ≡ M
 sub-id {M = ` x} = refl
-sub-id {M = ƛ N} = 
+sub-id {M = ƛ N} =
    begin
      ⟪ ids ⟫ (ƛ N)
    ≡⟨⟩
@@ -597,8 +597,8 @@ sub-id {M = L · M} = cong₂ _·_ sub-id sub-id
 
 The `rename-id` equation is a corollary is `sub-id`.
 
-```
-rename-id : ∀ {Γ}{A} {M : Γ ⊢ A} 
+\begin{code}
+rename-id : ∀ {Γ}{A} {M : Γ ⊢ A}
   → rename (λ {A} x → x) M ≡ M
 rename-id {M = M} =
    begin
@@ -659,8 +659,8 @@ To prove that composing renamings is equivalent to applying one after
 the other using `rename`, we proceed by induction on the term `M`,
 using the `compose-ext` lemma in the case for `M ≡ ƛ N`.
 
-```
-compose-rename : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A}{ρ : Rename Δ Σ}{ρ′ : Rename Γ Δ} 
+\begin{code}
+compose-rename : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A}{ρ : Rename Δ Σ}{ρ′ : Rename Γ Δ}
   → rename ρ (rename ρ′ M) ≡ rename (ρ ∘ ρ′) M
 compose-rename {M = ` x} = refl
 compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ′} = cong ƛ_ G
@@ -673,7 +673,7 @@ compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ′} = cong ƛ_ G
         rename ((ext ρ) ∘ (ext ρ′)) N
       ≡⟨ cong-rename compose-ext refl ⟩
         rename (ext (ρ ∘ ρ′)) N
-      ∎        
+      ∎
 compose-rename {M = L · M} = cong₂ _·_ compose-rename compose-rename
 ```
 
@@ -701,7 +701,7 @@ commute-subst-rename{Γ}{Δ}{ƛ N}{σ}{ρ} r =
      begin
        exts (exts σ) (ext ρ (S y))
      ≡⟨⟩
-       rename S_ (exts σ (ρ y)) 
+       rename S_ (exts σ (ρ y))
      ≡⟨ cong (rename S_) r ⟩
        rename S_ (rename ρ (σ y))
      ≡⟨ compose-rename ⟩
@@ -735,7 +735,7 @@ The proof is by induction on the term `M`.
     * If `x = S y`, we obtain the goal by the following equational reasoning.
 
           exts (exts σ) (ext ρ (S y))
-        ≡ rename S_ (exts σ (ρ y)) 
+        ≡ rename S_ (exts σ (ρ y))
         ≡ rename S_ (rename S_ (σ (ρ y)      (by the premise)
         ≡ rename (ext ρ) (exts σ (S y))      (by compose-rename)
         ≡ rename ((ext ρ) ∘ S_) (σ y)
@@ -785,8 +785,8 @@ The proof proceed by cases on `x`.
 
 Now we come to the proof of `sub-sub`, which we explain below.
 
-```
-sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ} 
+\begin{code}
+sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ}
             → ⟪ σ₂ ⟫ (⟪ σ₁ ⟫ M) ≡ ⟪ σ₁ ⨟ σ₂ ⟫ M
 sub-sub {M = ` x} = refl
 sub-sub {Γ}{Δ}{Σ}{A}{ƛ N}{σ₁}{σ₂} =
@@ -806,7 +806,7 @@ We proceed by induction on the term `M`.
 
 * If `M = x`, then both sides are equal to `σ₂ (σ₁ x)`.
 
-* If `M = ƛ N`, we first use the induction hypothesis to show that 
+* If `M = ƛ N`, we first use the induction hypothesis to show that
 
      ƛ ⟪ exts σ₂ ⟫ (⟪ exts σ₁ ⟫ N) ≡ ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N
 
@@ -906,7 +906,7 @@ normal form
     ⟪ ⟪ σ ⟫ M • σ ⟫ N
 
 We then do the same with the right-hand side, arriving at the same
-normal form. 
+normal form.
 
 ```
 subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
@@ -1009,5 +1009,4 @@ This chapter uses the following unicode:
     ⨟  U+2A1F  Z NOTATION SCHEMA COMPOSITION (C-x 8 RET Z NOTATION SCHEMA COMPOSITION)
     〔  U+3014  LEFT TORTOISE SHELL BRACKET (\( option 9 on page 2)
     〕  U+3015  RIGHT TORTOISE SHELL BRACKET (\) option 9 on page 2)
-
 

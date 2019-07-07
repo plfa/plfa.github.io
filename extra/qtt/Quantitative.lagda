@@ -695,7 +695,7 @@ lem-case⊗ {γ} {δ} Γ {A} {B} {Ξ} =
 
       (1# *̇ 0s , 1# * 0# ∙ A , 1# * 1# ∙ B) +̇ ((1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇ Γ *⟩ (λ x → Ξ x , 0# ∙ A , 0# ∙ B))
 
-    -- Step 1. Move the three occurences of A and B to the top-level.
+    -- Step 1. Move the three occurrences of A and B to the top-level.
     ≡⟨ trans (*⟩-zeroʳ Γ (λ x → Ξ x , 0# ∙ A)) (*⟩-zeroʳ Γ Ξ |> cong (_, 0# ∙ B))
       |> cong (((1# *̇ 0s , 1# * 0# ∙ A , 1# * 1# ∙ B) +̇_) ∘ ((1# *̇ 0s , 1# * 1# ∙ A , 1# * 0# ∙ B) +̇_)) ⟩
 

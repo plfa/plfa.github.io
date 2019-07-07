@@ -15,8 +15,14 @@ module plfa.Compositional where
 In this chapter we prove that the denotational semantics is compositional,
 which means we fill in the ellipses in the following equations.
 
+    ℰ (` x) ≃ ...
     ℰ (ƛ M) ≃ ... ℰ M ...
     ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
+
+Such equations would imply that the denotational semantics could be
+instead defined as a recursive function. Indeed, we end this chapter
+with such a definition and prove that it is equivalent to ℰ.
+
 
 ## Imports
 
@@ -24,7 +30,7 @@ which means we fill in the ellipses in the following equations.
 open import plfa.Untyped
   using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
 open import plfa.Denotational
-  using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_; nth;
+  using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_;
          Bot⊑; Fun⊑; ConjL⊑; ConjR1⊑; ConjR2⊑; Dist⊑; Refl⊑; Trans⊑; Dist⊔↦⊔;
          var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
          up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
@@ -41,7 +47,7 @@ open import Data.Unit using (⊤; tt)
 Regarding the first equation
 
     ℰ (ƛ M) ≃ ... ℰ M ...
-    
+
 we need to define a function that maps a `Denotation (Γ , ★)` to a
 `Denotation Γ`. This function, let us name it `ℱ`, should mimic the
 non-recursive part of the semantics when applied to a lambda term.  In
@@ -57,6 +63,9 @@ rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 ℱ D γ ⊥ = ⊤
 ℱ D γ (u ⊔ v) = (ℱ D γ u) × (ℱ D γ v)
 ```
+
+[JGS: add comment about how ℱ can be viewed as curry.]
+
 
 Using this `ℱ`, we hope to prove that
 
@@ -86,7 +95,8 @@ sub-ℱ d (Trans⊑ x₁ x₂) = sub-ℱ (sub-ℱ d x₂) x₁
 [PLW:
   If denotations were strengthened to be downward closed,
   we could rewrite the signature replacing (ℰ N) by d : Denotation (Γ , ★)]
-  
+[JGS: I'll look into this.]
+
 With this subsumption property in hand, we can prove the forward
 direction of the semantic equation for lambda.  The proof is by
 induction on the semantics, using `sub-ℱ` in the case for the `sub`
@@ -169,6 +179,8 @@ _●_ : ∀{Γ} → Denotation Γ → Denotation Γ → Denotation Γ
 (D₁ ● D₂) γ w = w ⊑ ⊥ ⊎ Σ[ v ∈ Value ]( D₁ γ (v ↦ w) × D₂ γ v )
 ```
 
+[JGS: add comment about how ● can be viewed as apply.]
+
 Next we consider the inversion lemma for application, which is also
 the forward direction of the semantic equation for application.  We
 describe the proof below.
@@ -180,9 +192,9 @@ describe the proof below.
         → (ℰ L ● ℰ M) γ v
 ℰ·→●ℰ (↦-elim{v = v′} d₁ d₂) = inj₂ ⟨ v′ , ⟨ d₁ , d₂ ⟩ ⟩
 ℰ·→●ℰ {v = ⊥} ⊥-intro = inj₁ Bot⊑
-ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂) 
+ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂)
     with ℰ·→●ℰ d₁ | ℰ·→●ℰ d₂
-... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)    
+... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)
 ... | inj₁ lt1 | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ =
       inj₂ ⟨ v₁′ , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
       where lt : v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₂
@@ -230,13 +242,13 @@ We proceed by induction on the semantics.
       `γ ⊢ M ↓ (v₁′ ⊔ v₁′′)`. But this does not yet match
       what we need for `ℰ L ● ℰ M` because the result of
       `L` must be an `↦` whose input entry is `v₁′ ⊔ v₁′′`.
-      So we use the `sub` rule to obtain 
+      So we use the `sub` rule to obtain
       `γ ⊢ L ↓ (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂)`,
       using the `Dist⊔→⊔` lemma (thanks to the `Dist⊑` rule) to
       show that
-   
+
             (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂) ⊑ (v₁′ ↦ v₂) ⊔ (v₁′′ ↦ v₁)
-   
+
       So we have proved what is needed for this case.
 
 * In case `sub` we have `Γ ⊢ L · M ↓ v₁` and `v ⊑ v₁`.
@@ -246,7 +258,7 @@ We proceed by induction on the semantics.
     * Suppose `v₁ ⊑ ⊥`. We conclude that `v ⊑ ⊥`.
     * Suppose `Γ ⊢ L ↓ v′ → v₁` and `Γ ⊢ M ↓ v′`.
       We conclude with `Γ ⊢ L ↓ v′ → v` by rule `sub`, because
-      `v′ → v ⊑ v′ → v₁`. 
+      `v′ → v ⊑ v′ → v₁`.
 
 
 The forward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
@@ -268,11 +280,11 @@ function application, as witnessed by the `●` function.
 ```
 app-equiv : ∀{Γ}{L M : Γ ⊢ ★}
           → ℰ (L · M) ≃ (ℰ L) ● (ℰ M)
-app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩ 
-```
+app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
+\end{code}
 
 We also need an inversion lemma for variables.
-If `Γ ⊢ x ↓ v`, then `v ⊑ nth x γ`. The proof is a straightforward
+If `Γ ⊢ x ↓ v`, then `v ⊑ γ x`. The proof is a straightforward
 induction on the semantics.
 
 ```
@@ -289,11 +301,12 @@ var-inv ⊥-intro = Bot⊑
 To round-out the semantic equations, we establish the following one
 for variables.
 
-```
-var-equiv : ∀{Γ}{γ : Env Γ}{x : Γ ∋ ★}
-          → ℰ (` x) ≃ (λ γ v → v ⊑ nth x γ)
+\begin{code}
+var-equiv : ∀{Γ}{x : Γ ∋ ★}
+          → ℰ (` x) ≃ (λ γ v → v ⊑ γ x)
 var-equiv γ v = ⟨ var-inv , (λ lt → sub var lt) ⟩
 ```
+
 
 
 ## Congruence
@@ -318,7 +331,7 @@ whether `ℱ` is a congruence.
        → ℱ D ≃ ℱ D′
 ℱ-cong{Γ} D≃D′ γ v =
    ⟨ (λ x → ℱ≃{γ}{v} x D≃D′) , (λ x → ℱ≃{γ}{v} x (≃-sym D≃D′)) ⟩
-   where 
+   where
    ℱ≃ : ∀{γ : Env Γ}{v}{D D′ : Denotation (Γ , ★)}
       → ℱ D γ v  →  D ≃ D′ → ℱ D′ γ v
    ℱ≃ {v = ⊥} fd dd′ = tt
@@ -390,7 +403,7 @@ app-cong {Γ}{L}{L′}{M}{M′} L≅L′ M≅M′ =
   ℰ L ● ℰ M
   ≃⟨ ●-cong L≅L′ M≅M′ ⟩
   ℰ L′ ● ℰ M′
-  ≃⟨ ≃-sym app-equiv ⟩  
+  ≃⟨ ≃-sym app-equiv ⟩
   ℰ (L′ · M′)
   ☐
 ```
@@ -430,7 +443,7 @@ data Ctx : Context → Context → Set where
   `CAppR`. The `CAppL` is for when the hole is inside the left-hand
   term (the operator) and the later is when the hole is inside the
   right-hand term (the operand).
-  
+
 The action of surrounding a term with a context is defined by the
 following `plug` function. It is defined by recursion on the context.
 
@@ -459,12 +472,59 @@ compositionality {C = CLam C′} M≃N =
 compositionality {C = CAppL C′ L} M≃N =
   app-cong (compositionality {C = C′} M≃N) λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩
 compositionality {C = CAppR L C′} M≃N =
-  app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N) 
-```
+  app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N)
+\end{code}
 
 The proof is a straightforward induction on the context `C`, using the
 congruence properties `lam-cong` and `app-cong` that we established
 above.
+
+## The denotational semantics defined as a function
+
+Having established the three equations `var-equiv`, `lam-equiv`, and
+`app-equiv`, one should be able to define the denotational semantics
+as a recursive function over the input term `M`. Indeed, we define the
+following function `⟦ M ⟧` that maps terms to denotations, using the
+auxiliary curry `ℱ` and apply `●` functions in the cases for lambda
+and application, respectively.
+
+\begin{code}
+⟦_⟧ : ∀{Γ} → (M : Γ ⊢ ★) → Denotation Γ
+⟦ ` x ⟧ γ v = v ⊑ γ x
+⟦ ƛ N ⟧ = ℱ ⟦ N ⟧
+⟦ L · M ⟧ = ⟦ L ⟧ ● ⟦ M ⟧
+\end{code}
+
+The proof that `ℰ M` is denotationally equal to `⟦ M ⟧` is a
+straightforward induction, using the three equations
+`var-equiv`, `lam-equiv`, and `app-equiv` together
+with the congruence lemmas for `ℱ` and `●`.
+
+\begin{code}
+ℰ≃⟦⟧ : ∀ {Γ} {M : Γ ⊢ ★}
+    → ℰ M ≃ ⟦ M ⟧
+ℰ≃⟦⟧ {Γ} {` x} = var-equiv
+ℰ≃⟦⟧ {Γ} {ƛ N} =
+    let ih = ℰ≃⟦⟧ {M = N} in
+      ℰ (ƛ N)
+    ≃⟨ lam-equiv ⟩
+      ℱ (ℰ N)
+    ≃⟨ ℱ-cong (ℰ≃⟦⟧ {M = N}) ⟩
+      ℱ ⟦ N ⟧
+    ≃⟨⟩
+      ⟦ ƛ N ⟧
+    ☐
+ℰ≃⟦⟧ {Γ} {L · M} =
+     ℰ (L · M)
+    ≃⟨ app-equiv ⟩
+     ℰ L ● ℰ M
+    ≃⟨ ●-cong (ℰ≃⟦⟧ {M = L}) (ℰ≃⟦⟧ {M = M}) ⟩
+     ⟦ L ⟧ ● ⟦ M ⟧
+    ≃⟨⟩
+      ⟦ L · M ⟧
+    ☐
+\end{code}
+
 
 ## Unicode
 
@@ -472,4 +532,4 @@ This chapter uses the following unicode:
 
     ℱ  U+2131  SCRIPT CAPITAL F (\McF)
     ●  U+2131  BLACK CIRCLE (\cib)
-    
+

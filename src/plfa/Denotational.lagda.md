@@ -13,7 +13,7 @@ module plfa.Denotational where
 The lambda calculus is a language about _functions_, that is, mappings
 from input to output. In computing we often think of such
 mappings as being carried out by a sequence of
-operations that transform an input into an output.  But 
+operations that transform an input into an output.  But
 functions can also be represented as data. For example, one
 can tabulate a function, that is, create a table where each row has
 two entries, an input and the corresponding output for the function.
@@ -251,7 +251,7 @@ init-last {Γ} γ = extensionality lemma
   lemma (S x)  =  refl
 ```
 
-The nth function takes a De Bruijn index and finds the corresponding
+The nth function takes a de Bruijn index and finds the corresponding
 value in the environment.
 
 ```
@@ -331,7 +331,7 @@ data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
         → γ ⊢ M ↓ w
           ---------------
         → γ ⊢ M ↓ (v ⊔ w)
-     
+
   sub : ∀ {Γ} {γ : Env Γ} {M v w}
         → γ ⊢ M ↓ v
         → w ⊑ v
@@ -339,22 +339,12 @@ data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
         → γ ⊢ M ↓ w
 ```
 
-[PLW: Say we redefine:
-  var : ∀ {Γ} {γ : Env Γ} {x}
-      → v ⊑ γ x
-        -------------
-      → γ ⊢ (` x) ↓ v
-Then does sub (downward closure) follow from the other rules?]
-[JGS: Good question. I'll look into it. In the past I've
- used the above var rule in addition to using ⊑ in ↦-elim.
- But perhaps it is now possible to only use it in var.]
-
 Consider the rule for lambda abstractions, `↦-intro`.  It says that a
 lambda abstraction results in a single-entry table that maps the input
 `v` to the output `w`, provided that evaluating the body in an
 environment with `v` bound to its parameter produces the output `w`.
 As a simple example of this rule, we can see that the identity function
-maps `⊥` to `⊥`. 
+maps `⊥` to `⊥`.
 
 ```
 id : ∅ ⊢ ★
@@ -369,17 +359,18 @@ denot-id-two : ∀ {γ v w} → γ ⊢ id ↓ (v ↦ v) ⊔ (w ↦ w)
 denot-id-two = ⊔-intro denot-id denot-id
 ```
 
-Of course, we will need tables with many rows for our lambda
-abstractions. These can be constructed using the `⊔-intro` rule.  If
-term M (typically a lambda abstraction) can produce both tables `v` and
-`w`, then it produces the combined table `v ⊔ w`. One can take an
-operational view of the rules `↦-intro` and `⊔-intro` by 
+Of course, we will need tables with many rows to capture the meaning
+of lambda abstractions. These can be constructed using the `⊔-intro`
+rule.  If term M (typically a lambda abstraction) can produce both
+tables `v` and `w`, then it produces the combined table `v ⊔ w`. One
+can take an operational view of the rules `↦-intro` and `⊔-intro` by
 imagining that when an interpreter first comes to a lambda
 abstraction, it pre-evaluates the function on a bunch of randomly
 chosen arguments, using many instances of the rule `↦-intro`, and then
-joins them into one table using many instances of the rule `⊔-intro`.
+joins them into a big table using many instances of the rule `⊔-intro`.
 In the following we show that the identity function produces a table
-containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)`.
+containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦
+⊥)`.
 
 ```
 denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
@@ -430,7 +421,7 @@ denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
   where lt1 : v ↦ w ⊑ u ↦ v ⊔ v ↦ w
         lt1 = ConjR2⊑ (Fun⊑ Refl⊑ Refl⊑)
-     
+
         lt2 : u ↦ v ⊑ u ↦ v ⊔ v ↦ w
         lt2 = (ConjR1⊑ (Fun⊑ Refl⊑ Refl⊑))
 ```
@@ -473,8 +464,8 @@ the result of the application is `⊥`.
 Ω = Δ · Δ
 
 denot-Ω : `∅ ⊢ Ω ↓ ⊥
-denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro) 
-```
+denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro)
+\end{code}
 
 A shorter derivation of the same result is by just one use of the
 `⊥-intro` rule.
@@ -487,8 +478,7 @@ denot-Ω' = ⊥-intro
 Just because one can derive `∅ ⊢ M ↓ ⊥` for some closed term `M` doesn't mean
 that `M` necessarily diverges. There may be other derivations that
 conclude with `M` producing some more informative value.  However, if
-the only thing that a term evaluates to is `⊥`, then it indeed it
-diverges.
+the only thing that a term evaluates to is `⊥`, then it indeed diverges.
 
 An attentive reader may have noticed a disconnect earlier in the way
 we planned to solve the self-application problem and the actual
@@ -616,12 +606,16 @@ compositional, i.e., that the denotation of a term is a function of
 the denotations of its subterms. To do this we shall prove equations
 of the following shape.
 
+    ℰ (` x) ≃ ...
     ℰ (ƛ M) ≃ ... ℰ M ...
     ℰ (M · N) ≃ ... ℰ M ... ℰ N ...
 
 The compositionality property is not trivial because the semantics we
 have defined includes three rules that are not syntax directed:
-`⊥-intro`, `⊔-intro`, and `sub`.
+`⊥-intro`, `⊔-intro`, and `sub`. The above equations suggest that the
+dentoational semantics can be defined as a recursive function, and
+indeed, we give such a definition and prove that it is equivalent to
+ℰ.
 
 Next we investigate whether the denotational semantics and the
 reduction semantics are equivalent. Recall that the job of a language
@@ -642,7 +636,7 @@ We can also characterize divergence and termination using denotations.
   * divergence: `¬ (∅ ⊢ M ↓ v ↦ w)` for any `v` and `w`.
   * termination: `∅ ⊢ M ↓ v ↦ w` for some `v` and `w`.
 
-Alternatively, we can use the denotation function `ℰ`. 
+Alternatively, we can use the denotation function `ℰ`.
 
   * divergence: `¬ (ℰ M ≃ ℰ (ƛ N))` for any term `N`.
   * termination: `ℰ M ≃ ℰ (ƛ N)` for some term `N`.
@@ -666,8 +660,15 @@ is called _adequacy_ in the literature.
 
     ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N′ for some N′
 
-The proofs of these properties rely on some basic results about the
-denotational semantics, which we establish in the rest of this
+The fourth chapter applies the results of the three preceeding
+chapters (compositionality, soundness, and adequacy) to prove that
+denotational equality implies a property called _contextual
+equivalence_. This property is important because it justifies the use
+of denotational equality in proving the correctness of program
+transformations such as performance optimizations.
+
+The proofs of all of these properties rely on some basic results about
+the denotational semantics, which we establish in the rest of this
 chapter.  We start with some lemmas about renaming, which are quite
 similar to the renaming lemmas that we have seen in previous chapters.
 We conclude with a proof of an important inversion lemma for the
@@ -721,7 +722,7 @@ rename-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
   → δ ⊢ (rename ρ M) ↓ v
 rename-pres ρ lt (var {x = x}) = sub var (lt x)
 rename-pres ρ lt (↦-elim d d₁) =
-   ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁) 
+   ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁)
 rename-pres ρ lt (↦-intro d) =
    ↦-intro (rename-pres (ext ρ) (ext-nth ρ lt) d)
 rename-pres ρ lt ⊥-intro = ⊥-intro
@@ -878,8 +879,8 @@ then `v ↦ w` must be a member of `u`.
      → v ↦ w ⊆ u
        ---------
      → v ↦ w ∈ u
-↦⊆→∈ incl = incl refl 
-```
+↦⊆→∈ incl = incl refl
+\end{code}
 
 
 ### Function values
@@ -1050,21 +1051,21 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
   premise (the induction hypothesis from `u ⊑ u₂`) to obtain that
   `u₁′ ↦ u₂′` factors of `u₂ into u₂′`. This case is complete because
   `dom u′ ≡ u₁′` and `cod u′ ≡ u₂′`.
-  
-* Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also  
+
+* Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also
   have `Funs u₁′` and `Funs u₂′`, so we can apply the induction hypothesis
   for both `u₁′` and `u₂′`. So there exists values `u₃₁` and `u₃₂` such that
   `(dom u₁′) ↦ (cod u₁′)` factors `u` into `u₃₁` and
   `(dom u₂′) ↦ (cod u₂′)` factors `u` into `u₃₂`.
   We will show that `(dom u) ↦ (cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
   So we need to show that
-  
+
         dom (u₃₁ ⊔ u₃₂) ⊑ dom (u₁′ ⊔ u₂′)
         cod (u₁′ ⊔ u₂′) ⊑ cod (u₃₁ ⊔ u₃₂)
-  
+
   But those both follow directly from the factoring of
   `u` into `u₃₁` and `u₃₂`, using the monotonicity of `⊔` with respect to `⊑`.
-  
+
 
 ### Inversion of less-than for functions
 
@@ -1084,19 +1085,19 @@ sub-inv {⊥} {u₂} Bot⊑ {v} {w} ()
 sub-inv {u₁₁ ⊔ u₁₂} {u₂} (ConjL⊑ lt1 lt2) {v} {w} (inj₁ x) = sub-inv lt1 x
 sub-inv {u₁₁ ⊔ u₁₂} {u₂} (ConjL⊑ lt1 lt2) {v} {w} (inj₂ y) = sub-inv lt2 y
 sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR1⊑ lt) {v} {w} m
-    with sub-inv lt m  
+    with sub-inv lt m
 ... | ⟨ u₃₁ , ⟨ fu₃₁ , ⟨ u₃₁⊆u₂₁ , ⟨ domu₃₁⊑v , w⊑codu₃₁ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃₁ , ⟨ fu₃₁ , ⟨ (λ {w} z → inj₁ (u₃₁⊆u₂₁ z)) ,
                                    ⟨ domu₃₁⊑v , w⊑codu₃₁ ⟩ ⟩ ⟩ ⟩
 sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR2⊑ lt) {v} {w} m
-    with sub-inv lt m  
+    with sub-inv lt m
 ... | ⟨ u₃₂ , ⟨ fu₃₂ , ⟨ u₃₂⊆u₂₂ , ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃₂ , ⟨ fu₃₂ , ⟨ (λ {C} z → inj₂ (u₃₂⊆u₂₂ z)) ,
                                    ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩
 sub-inv {u₁} {u₂} (Trans⊑{v = u} u₁⊑u u⊑u₂) {v} {w} v↦w∈u₁
     with sub-inv u₁⊑u v↦w∈u₁
-... | ⟨ u′ , ⟨ fu′ , ⟨ u′⊆u , ⟨ domu′⊑v , w⊑codu′ ⟩ ⟩ ⟩ ⟩ 
-    with sub-inv-trans {u′} fu′ u′⊆u (sub-inv u⊑u₂) 
+... | ⟨ u′ , ⟨ fu′ , ⟨ u′⊆u , ⟨ domu′⊑v , w⊑codu′ ⟩ ⟩ ⟩ ⟩
+    with sub-inv-trans {u′} fu′ u′⊆u (sub-inv u⊑u₂)
 ... | ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ domu₃⊑domu′ , codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ Trans⊑ domu₃⊑domu′ domu′⊑v ,
                                     Trans⊑ w⊑codu′ codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩
@@ -1127,7 +1128,7 @@ Let `v` and `w` be arbitrary values.
 
   * Subcase `v ↦ w ∈ u₁₁`. We conclude by the induction
     hypothesis for `u₁₁ ⊑ u₂`.
-  
+
   * Subcase `v ↦ w ∈ u₁₂`. We conclude by the induction hypothesis
     for `u₁₂ ⊑ u₂`.
 
@@ -1146,12 +1147,12 @@ Let `v` and `w` be arbitrary values.
 * Case `ConjR2⊑`. This case follows by reasoning similar to
   the case for `ConjR1⊑`.
 
-* Case `Trans⊑`. 
+* Case `Trans⊑`.
 
         u₁ ⊑ u   u ⊑ u₂
         ---------------
             u₁ ⊑ u₂
-        
+
   By the induction hypothesis for `u₁ ⊑ u`, we know
   that `v ↦ w` factors `u` into `u′`, for some value `u′`,
   so we have `Funs u′` and `u′ ⊆ u`.
@@ -1216,12 +1217,12 @@ less-than with functions on the left and right-hand sides.
           -----------------
         → v′ ⊑ v × w ⊑ w′
 ↦⊑↦-inv{v}{w}{v′}{w′} lt
-    with sub-inv-fun lt  
+    with sub-inv-fun lt
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆v34 , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
     with Funs∈ f
 ... | ⟨ u , ⟨ u′ , u↦u′∈Γ ⟩ ⟩
     with Γ⊆v34 u↦u′∈Γ
-... | refl =    
+... | refl =
   let codΓ⊆w′ = ⊆↦→cod⊆ Γ⊆v34 in
   ⟨ lt1 u↦u′∈Γ , Trans⊑ lt2 (⊆→⊑ codΓ⊆w′) ⟩
 ```
@@ -1256,31 +1257,29 @@ technical report by Gordon Plotkin (1972) and are later described in
 an article in Theoretical Computer Science (Plotkin 1993).  In that
 work, the inductive definition of `Value` is a bit different than the
 one we use:
- 
-    Value = C + ℘f(Value) × ℘f(Value)
- 
-where `C` is a set of constants and `℘f` means finite powerset.  The pairs
-in `℘f(Value) × ℘f(Value)` represent input-output mappings, just as in
-this chapter. The finite powersets are used to enable a function table
-to appear in the input and in the output. These differences amount to
-changing where the recursion appears in the definition of `Value`.
-Plotkin's model is an example of a _graph model_ of the untyped lambda
-calculus (Barendregt, 1984). In a graph model, the semantics is
-presented as a function from programs and environments to (possibly
-infinite) sets of values. The semantics in this chapter is instead
-defined as a relation, but set-valued functions are isomorphic to
-relations. We choose to present the semantics as a relation because
-the functional approach requires a kind of existential quantifier that
-is not present in Agda.
 
-[PLW: What kind of existential is required?]
+    Value = C + ℘f(Value) × ℘f(Value)
+
+where `C` is a set of constants and `℘f` means finite powerset.  The
+pairs in `℘f(Value) × ℘f(Value)` represent input-output mappings, just
+as in this chapter. The finite powersets are used to enable a function
+table to appear in the input and in the output. These differences
+amount to changing where the recursion appears in the definition of
+`Value`.  Plotkin's model is an example of a _graph model_ of the
+untyped lambda calculus (Barendregt, 1984). In a graph model, the
+semantics is presented as a function from programs and environments to
+(possibly infinite) sets of values. The semantics in this chapter is
+instead defined as a relation, but set-valued functions are isomorphic
+to relations. Indeed, we present the semantics as a function in the
+next chapter and prove that it is equivalent to the relational
+version.
 
 Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
 examples of graph models. Both use the following inductive definition
 of `Value`.
- 
+
     Value = C + ℘f(Value) × Value
- 
+
 The use of `Value` instead of `℘f(Value)` in the output does not restrict
 expressiveness compared to Plotkin's model because the semantics use
 sets of values and a pair of sets `(V, V′)` can be represented as a set
@@ -1334,7 +1333,7 @@ This chapter uses the following unicode:
     ⊔  U+2294  SQUARE CUP (\lub)
     ⊑  U+2291  SQUARE IMAGE OF OR EQUAL TO (\sqsubseteq)
     ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
-    ↓  U+2193  DOWNWARDS ARROW (\d) 
+    ↓  U+2193  DOWNWARDS ARROW (\d)
     ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
     ℰ  U+2130  SCRIPT CAPITAL E (\McE)
     ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~- or \simeq)

@@ -1,0 +1,245 @@
+
+
+
+Dear Philip,
+
+Thank you very much for having submitted to SBMF 2018.
+
+We are glad to inform you that the paper "Programming Language
+Foundations in Agda" has been accepted for presentation and inclusion
+in the LNCS proceedings of SBMF 2018.
+
+We have received 30 submissions to this edition of the conference,
+accepting 14 submissions among them; each submission received a
+minimum of three and a maximum of five review reports. Once again
+congratulations for being among a select few!
+
+We enclose below the review reports of your submission, provided by
+our international program committee. Please consider them carefully
+when preparing your camera-ready paper.
+
+Please note that the camera-ready paper is due on September 11th, and
+the deadline is strict. You will be invited to submit your final
+manuscript via the EasyChair system. Please make sure that you use the
+LNCS style file (without any manual modifications) for preparing the
+camera-ready version and also include a signed copy of the LNCS
+copyright form in your camera-ready submission.
+
+Thank you very much again for having submitted your paper, and we are
+looking forward to meeting you and listening to you at SBMF 2018.
+
+Best regards -- Tiago Massoni and Mohammad Mousavi
+
+PC Chairs of SBMF 2018
+
+
+----------------------- REVIEW 1 ---------------------
+PAPER: 14
+TITLE: Programming Language Foundations in Agda
+AUTHORS: Philip Wadler
+
+Overall evaluation: 3 (strong accept)
+
+----------- Overall evaluation -----------
+This paper is an experience report about using the proof assistant
+Agda to teach some basic topics in programming language theory,
+following the lines of the book Software Foundations (SF) which uses
+Coq.  The Agda development discussed in the paper is part of a larger
+development comprising a new textbook that uses Agda and covers some
+of the topics of SF.  There are three main contributions as I see
+them.  First, Agda is compared with Coq for suitability of teaching
+this sort of material.  Second, the paper spells out how constructive
+proofs of progress and subject reduction can be composed in a simple
+way to define an evaluator.  Third, some arguments are given in favor
+of using an inherently-typed representation of terms rather than raw
+terms.
+
+The comparison with Agda and Coq has no surprises for experts, but is
+clearly written and should serve as a valuable guide to educators.
+Key aspects of the two systems are explained, from the point of view
+of teaching core PL concepts at an introductory level, and the paper
+is likely to make a broad community aware of the newly developed
+alternative to SF.  The comparisons are interesting points, phrased
+fairly and succinctly, and are based on substantial teaching
+experience.
+
+The direct use of progress plus subject reduction as the components of
+an evaluator seems so obvious that it is surprising that, as the
+author explains, it does not seem to be very widely known (and not
+previously published).  This part of the paper therefore provides
+novel scientific content.
+
+The discussion of inherently-typed term representation, and de Bruin
+notation, is somewhat high level, less clear and less accessible to
+non-experts than the other topics, but still interesting.
+
+Details
+
+The writing is excellent and I have only a few minor issues to point
+out.
+
+Given that the author aims to improve on SF, not merely reproduce it
+in Agda, I suggest not settling for progress and preservation, but
+also include some semantic type soundness result.  The significance of
+such results is well argued in Dreyer's invited talk at POPL 2018.
+
+Perhaps the biggest contribution of the work reported here is the
+possibility to do empirical studies of learning with two different
+forms of interactive proving, as remarked near the top of page 11.  I
+encourage the author to pursue that.
+
+
+- The first line of the abstract refers to SF as "the leading textbook
+  for formal methods".  If there is evidence for that, it should be
+  mentioned in the paper; otherwise it should be watered down.  Formal
+  methods is a broader field than the topics covered in SF, and SF is
+  not the only widely used textbook on those topics or others in
+  formal methods. [done]
+
+- page 2 "Pierce and Benjamin" should be just Pierce [done]
+
+- page 6 the first term in Fig 1 uses dot for application, which is
+  sufficiently nonstandard to deserve mention by the time the figure
+  is discussed; it doesn't become obvious until fig 2
+
+- fig 2 could benefit with a bit more explanation of the formal
+  notation, for readers (like this reviewer) not familiar with Agda.
+  For example, on first glance it's surprising to see the identifier
+  progress re-defined, and back-tick empty-parens isn't obviously the
+  variable case. [done]
+
+- page 13 comments about formatting, "All of the example ... output."
+  are not so interesting and could be omitted. [disagree]
+
+- section 5 please consider showing some notation and explaining
+  inherently-typed terms in more detail
+
+- page 13 "any proofs that appear in one..." is ambiguous.  It could
+  refer to results that are only relevant to one but not the other, in
+  which case stripping them out could be an unfair comparison.
+  Perhaps you mean results that simply happen not to be stated and
+  proved in one of the two developments. [done]
+
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 14
+TITLE: Programming Language Foundations in Agda
+AUTHORS: Philip Wadler
+
+Overall evaluation: 2 (accept)
+
+----------- Overall evaluation -----------
+This paper reports an alternative to the Software Foundations book
+(SF) by Pierce et al. The author claims that the language Agda is a
+better vehicle to teaching the foundations of programming languages in
+comparison to Coq. According to his experience using SF, much of the
+learning effort goes to tactics. His textbook, Programming Language
+Foundations in Agda, also provides an elegant way to get from
+constructive proofs of preservation and progress to a prototype
+evaluator.
+
+As part of the "Experience reports regarding teaching formal methods"
+of our Call for Paper, I think this work will introduce to the
+audience a relevant alterantive to SF and an important new way to
+teaching formal methods and programming languages.
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 14
+TITLE: Programming Language Foundations in Agda
+AUTHORS: Philip Wadler
+
+Overall evaluation: 2 (accept)
+
+----------- Overall evaluation -----------
+In this paper the author presents his personal experience on writing a
+textbook covering the same material as the famous “Software
+Foundations” in Agda instead of Coq. The main motivation to use Agda
+is pedagogical. For understanding a Coq proof a student will typically
+need to run the proof in an interactive prover. However, it should be
+possible for a student to read an Agda proof without running it in a
+prover. For the modest size proofs that the textbook uses the lengths
+of the proofs are quite comparable. The author has given some
+comparisons between the the two textbooks in Section 3. Sections 4 and
+5 present some of the decisions that the author has made in writing
+the book (prototype evaluator and inherent typing).  The paper in
+general is a pleasant read and the comparisons between the books are
+interesting. I tend to agree with Nate Foster that it is certainly
+interesting to empirically evaluate the reluctance of the students to
+use theorem provers. Such an evaluation can quite a strong case for
+writing the new book.
+
+-------------------------------------------------------
+
+Paper:   14
+Authors: Philip Wadler
+Title:   Programming Language Foundations in Agda
+
+-------------------------------------------------------
+
+Dear Philip,
+
+You have already received the comments by the reviewers in a
+previous email. Please take them carefully into account when
+preparing your camera-ready paper for the proceedings. The final
+paper and the signed copyright form are due on
+
+September 11, 2018
+
+This is a firm deadline for the production of the proceedings.
+You should submit your paper using your EasyChair proceedings
+author role for SBMF 2018.
+
+1. FINAL PAPER: Please submit the files belonging to your
+camera-ready paper using your EasyChair author account. Follow
+the instructions after the login for uploading two files:
+
+  (1) either a zipped file containing all your LaTeX sources or
+  a Word file in the RTF format, and
+
+  (2) the PDF version of your camera-ready paper
+
+Please follow strictly
+the author instructions of Springer-Verlag when preparing the
+final version:
+
+  http://www.springer.de/comp/lncs/authors.html
+
+Our publisher has recently introduced an extra control loop: once
+data processing is finished, they will contact all corresponding
+authors and ask them to check their papers. We expect this to
+happen shortly before the printing of the proceedings. At that
+time your quick interaction with Springer-Verlag will be greatly
+appreciated.
+
+2. COPYRIGHT: Please upload a signed and completed copyright form
+to us as soon as possible. The Springer copyright forms can be
+found at
+
+https://resource-cms.springernature.com/springer-cms/rest/v1/content/15433008/data/Contract_Book_Contributor_Consent_to_Publish_LNCS_SIP
+
+
+It is sufficient for one of the authors to sign the copyright
+form. You can scan the form into PDF or any other standard image
+format.
+
+We greatly appreciate your cooperation in these matters. Thank
+you again for your contribution to SBMF 2018.
+
+All questions about papers should be sent to the volume editors
+Tiago Massoni <massoni@computacao.ufcg.edu.br> and
+Mohammadreza Mousavi <mm789@leicester.ac.uk>.
+
+Sincerely,
+-- Tiago Massoni and
+   Mohammad Mousavi
+
+
+
+
+The LNCS edition will allow papers to present up to two (2) extra
+pages in their final version, so you may use this to better
+accommodate changes required by the reviews.
+
+Regards,
+Tiago and Mohammad.

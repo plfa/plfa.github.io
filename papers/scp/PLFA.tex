@@ -1,0 +1,722 @@
+\documentclass[preprint,authoryear]{elsarticle}
+%\usepackage{natbib}
+\usepackage{agda}
+\usepackage{revsymb}
+\usepackage{semantic}
+\usepackage{graphicx}
+\usepackage{url}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\usepackage{stix}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\usepackage{mathpazo}
+\usepackage[mathpazo]{flexisym}
+
+\begin{document}
+
+\title{Programming Language Foundations in Agda}
+
+\author[adr1]{Wen Kokke}
+\ead{wen.kokke@ed.ac.uk}
+\author[adr2]{Jeremy Siek}
+\ead{jsiek@indiana.edu}
+\author[adr1]{Philip Wadler\corref{cor1}}
+\ead{wadler@inf.ed.ac.uk}
+\cortext[cor1]{Corresponding author}
+
+\address[adr1]{University of Edinburgh, 10 Crichton Street, EH8 9AB, Edinburgh}
+\address[adr2]{Indiana University, 700 N Woodlawn Ave, Bloomington, IN 47408, USA}
+
+\begin{abstract}
+  One of the leading textbooks for formal methods is \emph{Software Foundations} (SF), written by Benjamin Pierce in collaboration with others, and based on Coq. After five years using SF in the classroom, I have come to the conclusion that Coq is not the best vehicle for this purpose, as too much of the course needs to focus on learning tactics for proof derivation, to the cost of learning programming language theory.  Accordingly, I have written a new textbook, \emph{Programming Language Foundations in Agda} (PLFA). PLFA covers much of the same ground as SF, although it is not a slavish imitation.
+
+  What did I learn from writing PLFA? First, that it is possible. One might expect that without proof tactics that the proofs become too long, but in fact proofs in PLFA are about the same length as those in SF. Proofs in Coq require an interactive environment to be understood, while proofs in Agda can be read on the page.  Second, that constructive proofs of preservation and progress give immediate rise to a prototype evaluator. This fact is obvious in retrospect but it is not exploited in SF (which instead provides a separate normalise tactic) nor can I find it in the literature.  Third, that using raw terms with a separate typing relation is far less perspicuous than using inherently-typed terms. SF uses the former presentation, while PLFA presents both; the former uses about 1.6 as many lines of Agda code as the latter, roughly the golden ratio.
+
+  The textbook is written as a literate Agda script, and can be found here:
+  \begin{center}
+    \url{http://plfa.inf.ed.ac.uk}
+  \end{center}
+\end{abstract}
+
+\begin{keyword}
+  Agda \sep Coq \sep lambda calculus \sep dependent types.  
+\end{keyword}
+
+\maketitle
+
+\section{Introduction}
+
+The most profound connection between logic and computation is a pun.
+The doctrine of Propositions as Types asserts that a certain kind of formal
+structure may be read in two ways: either as a proposition in logic or
+as a type in computing.  Further, a related structure may be read as
+either the proof of the proposition or as a programme of the
+corresponding type.  Further still, simplification of proofs
+corresponds to evaluation of programs.
+
+Accordingly, the title of this paper, and the corresponding textbook,
+\emph{Programming Language Foundations in Agda} (hence, PLFA)
+also has two readings.  It may be parsed as ``(Programming Language)
+Foundations in Agda'' or ``Programming (Language Foundations) in
+Agda''---specifications in the proof assistant Agda both describe
+programming languages and are themselves programmes.
+
+Since 2013, I have taught a course on Types and Semantics for
+Programming Languages to fourth-year undergraduates and masters
+students at the University of Edinburgh.  An earlier version of that
+course was based on \emph{Types and Programming Languages} by
+\citet{Pierce-2002}, but my version was taught from its successor,
+\emph{Software Foundations} (hence, SF) by \citet{Pierce-et-al-2010},
+which is based on the proof assistance Coq \citep{Huet-et-al-1997}.
+I am convinced by the claim of \citet{Pierce-2009}, made in his ICFP
+Keynote \emph{Lambda, The Ultimate TA}, that basing a course around a
+proof assistant aids learning.
+
+However, after five years of experience, I have come to the conclusion
+that Coq is not the best vehicle.  Too much of the course needs to
+focus on learning tactics for proof derivation, to the cost of
+learning the fundamentals of programming language theory.  Every
+concept has to be learned twice: e.g., both the product data type, and
+the corresponding tactics for introduction and elimination of
+conjunctions.  The rules Coq applies to generate induction hypotheses
+can sometimes seem mysterious.  While the \texttt{notation} construct
+permits pleasingly flexible syntax, it can be confusing that the same
+concept must always be given two names, e.g., both
+\texttt{subst~N~x~M} and \texttt{N~[x~:=~M]}.  Names of tactics are
+sometimes short and sometimes long; naming conventions in the standard
+library can be wildly inconsistent.  \emph{Propositions as types} as a
+foundation of proof is present but hidden.
+
+I found myself keen to recast the course in Agda \citep{Bove-et-al-2009}.
+In Agda, there is
+no longer any need to learn about tactics: there is just
+dependently-typed programming, plain and simple. Introduction is
+always by a constructor, elimination is always by pattern
+matching. Induction is no longer a mysterious separate concept, but
+corresponds to the familiar notion of recursion. Mixfix syntax is
+flexible while using just one name for each concept, e.g.,
+substitution is \texttt{\_[\_:=\_]}. The standard library is not perfect, but
+there is a fair attempt at consistency. \emph{Propositions as types} as a
+foundation of proof is on proud display.
+
+Alas, there is no textbook for programming language theory in
+Agda.  \emph{Verified Functional Programming in Agda} by \citep{Stump-2016}
+covers related ground, but focusses more on programming with dependent
+types than on the theory of programming languages.
+
+The original goal was to simply adapt \emph{Software Foundations},
+maintaining the same text but transposing the code from Coq to Agda.
+But it quickly became clear to me that after five years in the
+classroom I had my own ideas about how to present the material.  They
+say you should never write a book unless you cannot \emph{not} write the
+book, and I soon found that this was a book I could not not write.
+
+I am fortunate that my student, Wen Kokke, was keen to help.  She
+guided me as a newbie to Agda and provided an infrastructure that is
+easy to use and produces pages that are a pleasure to view.
+The bulk of the book was written January--June 2018, while on
+sabbatical in Rio de Janeiro.
+
+This paper is a personal reflection, summarising what I learned in the
+course of writing the textbook. Some of it reiterates advice that is
+well-known to some members of the dependently-typed programming
+community, but which deserves to be better known.  The paper is
+organised as follows.
+
+Section~2 outlines the
+topics covered in PLFA, and notes what is omitted.  
+
+Section~3 compares Agda and Coq as vehicles for pedagogy.  Before
+writing the book, it was not obvious that it was even possible;
+conceivably, without tactics some of the proofs might
+balloon in size. In fact, it turns out that for the results in PLFA
+and SF, the proofs are of roughly comparable size, and (in my opinion)
+the proofs in PLFA are more readable and have a pleasing visual
+structure.
+
+Section~4 observes that constructive proofs of progress and
+preservation combine trivially to produce a constructive evaluator for
+terms.  This idea is obvious once you have seen it, yet I cannot
+find it described in the literature.  For instance, SF separately
+implements a \texttt{normalise} tactic that has nothing to do with
+progress and preservation.
+
+Section~5 claims that raw terms should be avoided in favour of
+inherently-typed terms.  PLFA develops lambda calculus with both raw
+and inherently-typed terms, permitting a comparison.  It turns out the
+former is less powerful---it supports substitution only for closed
+terms---but significantly longer---about 1.6 times as many lines of code,
+roughly the golden ratio.
+
+I will argue that Agda has advantages over Coq for
+pedagogic purposes.  My focus is purely on the case of a proof assistant
+as an aid to \emph{learning} formal semantics using examples of
+\emph{modest} size.  I admit up front that
+there are many tasks for which Coq is better suited than Agda.
+A proof assistant that supports tactics, such as Coq or Isabelle,
+is essential for formalising serious mathematics,
+such as the Four-Colour Theorem \citep{Gonthier-2008},
+the Odd-Order Theorem \citep{Gonthier-et-al-2013},
+or Kepler's Conjecture \citep{Hales-et-al-2017},
+or for establishing correctness of software at scale,
+as with the CompCert compiler \citep{Leroy-2009,Kastner-et-al-2017}
+or the SEL4 operating system \citep{Klein-2009,O'Connor-2016}.
+
+\section{Scope}
+
+PLFA is aimed at students in the last year of an undergraduate
+honours programme or the first year of a master or doctorate degree.
+It aims to teach the fundamentals of operational semantics of
+programming languages, with simply-typed lambda calculus as the
+central example.  The textbook is written as a literate script in Agda.
+As with SF, the hope is that using
+a proof assistant will make the development more concrete
+and accessible to students, and give them rapid feedback to find
+and correct misaprehensions.
+
+The book is broken into two parts. The first part, Logical Foundations,
+develops the needed formalisms.  The second part, Programming Language
+Foundations, introduces basic methods of operational semantics.
+(SF is divided into books, the first two of which have the same names
+as the two parts of PLFA, and cover similar material.)
+
+Each chapter has both a one-word name and a title, the one-word name
+being both its module name and its file name.
+
+\subsection*{Part I, Logical Foundations}
+
+\paragraph{Naturals: Natural numbers}
+Introduces the inductive definition of natural numbers in terms of
+zero and successor, and recursive definitions of addition,
+multiplication, and monus. Emphasis is put on how a tiny description
+can specify an infinite domain.
+
+\paragraph{Induction: Proof by induction}
+Introduces induction to prove properties
+such as associativity and commutativity of addition.
+Also introduces dependent functions to express universal quantification.
+Emphasis is put on the correspondence between induction and recursion.
+
+\paragraph{Relations: Inductive definitions of relations}
+Introduces inductive definitions of less than or equal on natural numbers,
+and odd and even natural numbers.
+Proves properties such as reflexivity, transitivity, and
+anti-symmetry, and that the sum of two odd numbers is even.
+Emphasis is put on proof by induction over evidence that a relation holds.
+
+\paragraph{Equality: Equality and equational reasoning}
+Gives Martin L\"of's and Leibniz's definitions of equality, and proves
+them equivalent, and defines the notation for equational reasoning used
+throughout the book.
+
+\paragraph{Isomorphism: Isomorphism and embedding}
+Introduces isomorphism, which plays an important role in the
+subsequent development.  Also introduces dependent records, lambda
+terms, and extensionality.
+
+\paragraph{Connectives: Conjunction, disjunction, and implication}
+Introduces product, sum, unit, empty, and function types, and their
+interpretations as connectives of logic under Propositions as Types.
+Emphasis is put on the analogy between these types and product, sum,
+unit, zero, and exponential on naturals; e.g., product of numbers is
+commutative and product of types is commutative up to isomorphism.
+
+\paragraph{Negation: Negation, with intuitionistic and classical logic}
+Introduces logical negation as a function into the empty
+type, and explains the difference between classical and intuitionistic
+logic.
+
+\paragraph{Quantifiers: Universals and existentials}
+Recaps universal quantifiers and their correspondence to dependent
+functions, and introduces existential quantifiers and their
+correspondence to dependent products.
+
+\paragraph{Decidable: Booleans and decision procedures}
+Introduces booleans and decidable types, and why the latter is to be
+preferred to the former.
+
+\paragraph{Lists: Lists and higher-order functions}
+Gives two different definitions of reverse and proves them equivalent.
+Introduces map and fold and their properties, including that fold left
+and right are equivalent in a monoid.  Introduces predicates that hold
+for all or any member of a list, with membership as a specialisation
+of the latter.
+
+\subsection*{Part II, Programming Language Foundations}
+
+\paragraph{Lambda: Introduction to lambda calculus}
+Introduces lambda calculus, using a representation with named
+variables and a separate typing relation. The language used is PCF
+\citep{Plotkin-1977}, with variables, lambda abstraction, application,
+zero, successor, case over naturals, and fixpoint. Reduction is
+call-by-value and restricted to closed terms.
+
+\paragraph{Properties: Progress and preservation}
+Proves key properties of simply-typed
+lambda calculus, including progress and preservation.  Progress and
+preservation are combined to yield an evaluator.
+
+\paragraph{DeBruijn: Inherently typed de Bruijn representation}
+Introduces de Bruijn indices and the inherently-typed representation.
+Emphasis is put on the structural similarity between a term and its
+corresponding type derivation; in particular, de Bruijn indices
+correspond to the judgment that a variable is well-typed under a given
+environment.
+
+\paragraph{More: More constructs of simply-typed lambda calculus}
+Introduces product, sum, unit, and empty types as well as lists and let bindings
+are explained.  Typing and reduction rules are given informally; a few
+are then give formally, and the rest are left as exercises for the reader.
+The inherently typed representation is used.
+
+\paragraph{Bisimulation: Relating reduction systems}
+Shows how to translate the language with ``let'' terms
+to the language without, representing a let as an application of an abstraction,
+and shows how to relate the source and target languages with a bisimulation.
+
+\paragraph{Inference: Bidirectional type inference}
+Introduces bidirectional type inference, and applies it to convert from
+a representation with named variables and a separate typing relation
+to a representation de Bruijn indices with inherent types. Bidirectional
+type inference is shown to be both sound and complete.
+
+\paragraph{Untyped: Untyped calculus with full normalisation}
+As a variation on earlier themes, discusses an untyped (but inherently
+scoped) lambda calculus.  Reduction is call-by-name over open terms,
+with full normalisation (including reduction under lambda terms).  Emphasis
+is put on the correspondence between the structure of a term and
+evidence that it is in normal form.
+
+\subsection*{Discussion}
+
+PLFA and SF differ in several particulars.  PLFA begins with a computationally
+complete language, PCF, while SF begins with a minimal language, simply-typed
+lambda calculus with booleans.  PLFA does not include type annotations in terms,
+and uses bidirectional type inference, while SF has terms with unique types and
+uses type checking.  SF also covers a simple imperative language with Hoare logic,
+and for lambda calculus covers subtyping, record types, mutable references, and normalisation
+---none of which are treated by PLFA.  PLFA covers an inherently-typed de Bruijn
+representation, bidirectional type inference, bisimulation, and an
+untyped call-by-name language with full normalisation---none of which
+are treated by SF.
+
+SF has a third volume, written by Andrew Appel, on Verified Functional
+Algorithms. I'm not sufficiently familiar with that volume to have a view
+on whether it would be easy or hard to cover that material in Agda.
+And SF recently added a fourth volume on random testing of Coq specifications
+using QuickChick.  There is currently no tool equivalent to QuickChick
+available for Agda.
+
+There is more material that would be desirable to include in PLFA
+which was not due to limits of time.  In future years, PLFA may be
+extended to cover additional material, including mutable references,
+normalisation, System F, pure type systems, and denotational
+semantics.  I'd especially like to include pure type systems as they
+provide the readers with a formal model close to the dependent types
+used in the book.  My attempts so far to formalise pure type systems
+have proved challenging, to say the least.
+
+\section{Proofs in Agda and Coq}
+
+\begin{figure}[t]
+  \includegraphics[width=\textwidth]{figures/plfa-progress-1.png}
+  \caption{PLFA, Progress (1/2)}
+  \label{fig:plfa-progress-1}
+\end{figure}  
+
+\begin{figure}[p]
+  \includegraphics[width=\textwidth]{figures/plfa-progress-2.png}
+  \includegraphics[width=\textwidth]{figures/plfa-progress-3a.png}
+  \caption{PLFA, Progress (2/2)}
+  \label{fig:plfa-progress-2}
+\end{figure}  
+
+\begin{figure}[t]
+  \includegraphics[width=\textwidth]{figures/sf-progress-1.png}
+  \caption{SF, Progress (1/2)}
+  \label{fig:sf-progress-1}
+\end{figure}  
+
+\begin{figure}[t]
+  \includegraphics[width=\textwidth]{figures/sf-progress-2.png}
+  \caption{SF, Progress (2/2)}
+  \label{fig:sf-progress-2}
+\end{figure}  
+
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{figures/sf-progress-3.png}
+%   \caption{SF, Progress (3/3)}
+%   \label{fig:sf-progress-3}
+% \end{figure}  
+
+The introduction listed several reasons for preferring Agda over Coq.
+But Coq tactics enable more compact proofs. Would it be possible for
+PLFA to cover the same material as SF, or would the proofs
+balloon to unmanageable size?
+
+As an experiment, I first rewrote SF's development of simply-typed
+lambda calculus (SF, Chapters Stlc and StlcProp) in Agda.  I was a
+newbie to Agda, and translating the entire development, sticking as
+closely as possible to the development in SF, took me about two days.
+I was pleased to discover that the proofs remained about the same
+size.
+
+There was also a pleasing surprise regarding the structure of the
+proofs. While most proofs in both SF and PLFA are carried out by
+induction over the evidence that a term is well typed, in SF the
+central proof, that substitution preserves types, is carried out by
+induction on terms for a technical reason
+(the context is extended by a variable binding, and hence not
+sufficiently ``generic'' to work well with Coq's induction tactic). In
+Agda, I had no trouble formulating the same proof over evidence that
+the term is well typed, and didn't even notice SF's description of the
+issue until I was done.
+
+The rest of the book was relatively easy to complete.  The closest to
+an issue with proof size arose when proving that reduction is
+deterministic.  There are 18 cases, one case per line.  Ten of the
+cases deal with the situation where there are potentially two
+different reductions; each case is trivially shown to be
+impossible.  Five of the ten cases are redundant, as they just involve
+switching the order of the arguments.  I had to copy the cases
+suitably permuted. It would be preferable to reinvoke the proof on
+switched arguments, but this would not pass Agda's termination checker
+since swapping the arguments doesn't yield a recursive call on
+structurally smaller arguments.  I suspect tactics could cut down the
+proof significantly. I tried to compare with SF's proof that reduction
+is deterministic, but failed to find that proof.
+
+SF covers an imperative language with Hoare logic, culminating in
+code that takes an imperative programme suitably decorated with preconditions
+and postconditions and generates the necessary
+verification conditions. The conditions are then verified by a custom
+tactic, where any questions of arithmetic are resolved by the
+``omega'' tactic invoking a decision procedure.  The entire
+exercise would be easy to repeat in Agda, save for the last step: I
+suspect Agda's automation would not be up to verifying the generated
+conditions, requiring tedious proofs by hand.  However, I had already
+decided to omit Hoare logic in order to focus on lambda calculus.
+
+To give a flavour of how the texts compare, I show the
+proof of progress for simply-typed lambda calculus from both texts.
+Figures~\ref{fig:plfa-progress-1} and \ref{fig:plfa-progress-2}
+are taken from PLFA, Chapter Properties,
+while Figures~\ref{fig:sf-progress-1} and \ref{fig:sf-progress-2}
+are taken from SF, Chapter StlcProp.
+Both texts are intended to be read online,
+and the figures were taken by grabbing bitmaps of the text as
+displayed in a browser.
+
+PLFA puts the formal statements first, followed by informal explanation.
+PLFA introduces an auxiliary relation \texttt{Progress} to capture
+progress; an exercise (not shown) asks the reader to show it isomorphic
+to the usual formulation with a disjunction and an existential.
+Layout is used to present the auxiliary relation in inference rule form.
+In Agda, any line beginning with two dashes is treated as a comment, making
+it easy to use a line of dashes to separate hypotheses from conclusion
+in inference rules.  The proof of proposition \texttt{progress} (the different
+case making it a distinct name) is layed out carefully. The neat
+indented structure emphasises the case analysis, and all right-hand
+sides line-up in the same column.  My hope as an author is that students
+will read the formal proof first, and use it as a tabular guide
+to the informal explanation that follows.
+
+SF puts the informal explanation first, followed by the formal proof.
+The text hides the formal proof script under an icon;
+the figure shows what appears when the icon is expanded.
+As a teacher I was aware that
+students might skip it on a first reading, and I would have to hope the
+students would return to it and step through it with an interactive
+tool in order to make it intelligible.  I expect the students skipped over
+many such proofs.  This particular proof forms the basis for a question
+of the mock exam and the past exams, so I expect most students will actually
+look at this one if not all the others.
+
+\newcommand{\ex}{\texttt{x}}
+\newcommand{\why}{\texttt{y}}
+\newcommand{\EL}{\texttt{L}}
+\newcommand{\EM}{\texttt{M}}
+\newcommand{\EN}{\texttt{N}}
+\newcommand{\tee}{\texttt{t}}
+\newcommand{\tick}{\texttt{\lq}}
+\newcommand{\GG}{\Gamma}
+\newcommand{\AY}{\texttt{A}}
+\newcommand{\BE}{\texttt{B}}
+
+(For those wanting more detail: In PLFA, variables and abstractions and
+applications in the object language are written $\tick\;\ex$ and
+$\lambdabar\;\ex\;{\Rightarrow}\;\EN$ and $\EL\;{\cdot}\;\EM$.  The
+corresponding typing rules are referred to by ${\vdash}\tick\;()$
+and ${\vdash}\lambdabar\;{\vdash}\EN$ and ${\vdash}\EL\;{\cdot}\;{\vdash}\EM$, where
+${\vdash}\EL$, ${\vdash}\EM$, ${\vdash}\EN$ are the proofs that terms
+$\EL$, $\EM$, $\EN$ are well typed, and `()` denotes that there cannot
+be evidence that a free variable is well typed in the empty context.
+It was decided to overload infix dot for readability, but not other
+symbols. In Agda, as in Lisp, almost any sequence of characters is a
+name, with spaces essential for separation.)
+
+(In SF, variables and abstractions and applications in
+the object language are written $\texttt{tvar}~\ex$ and
+$\texttt{tabs}~\ex~\tee$ and $\texttt{tapp}~\tee_1~\tee_2$.
+The corresponding typing rules are referred to as
+$\texttt{T\_Var}$ and $\texttt{T\_Abs}$ and $\texttt{T\_App}$.)
+
+Both Coq and Agda support interactive proof.  Interaction in Coq is
+supported by Proof General, based on Emacs, or by CoqIDE, which
+provides an interactive development environment of a sort familiar to
+most students.  Interaction in Agda is supported by an Emacs mode.
+
+In Coq, interaction consists of stepping through a proof script, at
+each point examining the current goal and the variables currently in
+scope, and executing a new command in the script.  Tactics are a whole
+sublanguage, which must be learned in addition to the language for
+expressing specifications.  There are many tactics one can invoke in
+the script at each point; one menu in CoqIDE lists about one hundred
+tactics one might invoke, some in alphabetic submenus.  A Coq
+script presents the specification proved and the tactics executed.
+Interaction is recorded in a script, which the students
+may step through at their leisure.  SF contains some prose descriptions
+of stepping through scripts, but mainly contains scripts that students
+are encouraged to step through on their own.
+
+In Agda, interaction consists of writing code with holes, at each
+point examining the current goal and the variables in scope, and
+typing code or executing an Emacs command.  The number of commands
+available is much smaller than with Coq, the most important ones being
+to show the type of the hole and the types of the variables in scope;
+to check the code; to do a case analysis on a given variable; or to
+guess how to fill in the hole with constructors or variables in scope.
+An Agda proof consists of typed code.  The interaction is \emph{not}
+recorded.  Students may recreate it by commenting out bits of code and
+introducing a hole in their place.   PLFA contains some prose descriptions
+of interactively building code, but mainly contains code that students
+can read.  They may also introduce holes to interact with the code, but
+I expect this will be rarer than with SF.
+
+SF encourages students to interact with all the scripts in the text.
+Trying to understand a Coq proof script without running it
+interactively is a bit like understanding a chess game by reading
+through the moves without benefit of a board, keeping it all in your
+head.  In contrast, PLFA provides code that students can read.
+Understanding the code often requires working out the types, but
+(unlike executing a Coq proof script) this is often easy to do in your
+head; when it is not easy, students still have the option of
+interaction.
+
+While students are keen to interact to create code, I have found they
+are reluctant to interact to understand code created by others. For
+this reason, I suspect this may make Agda a more suitable vehicle for
+teaching.  Nate Foster suggests this hypothesis is ripe to be tested
+empirically, perhaps using techniques similar to those of
+\citet{Danas-et-al-2017}.
+
+Neat layout of definitions such as that in
+Figure~\ref{fig:plfa-progress-2} in Emacs requires a monospaced font
+supporting all the necessary characters.  Securing one has proved
+tricky. As of this writing, we use FreeMono, but it lacks a few
+characters ($\typecolon$ and $\qedsymbol$) which are loaded from fonts with a different
+width.  Long arrows are necessarily more than a single character wide.
+Instead, we compose reduction —→ from an em dash — and an arrow →.
+Similarly for reflexive and transitive closure —↠.
+
+\section{Progress + Preservation = Evaluation}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figures/plfa-eval.png}
+  \caption{PLFA, Evaluation}
+  \label{fig:plfa-eval}
+\end{figure}  
+
+A standard approach to type soundness used by many texts,
+including SF and PLFA, is to prove progress and preservation,
+as first suggested by \citet{Wright-and-Felleisen-1994}.
+
+\begin{theorem}[Progress] Given term $M$ and type $A$ such that
+$\emptyset \vdash M : A$ then either $M$ is a value or
+$M \longrightarrow N$ for some term $N$.
+\end{theorem}
+
+\begin{theorem}[Preservation] Given terms $M$ and $N$ and type $A$
+such that $\emptyset \vdash M : A$ and $M \longrightarrow N$, then
+$\emptyset \vdash N : A$.  \end{theorem}
+
+A consequence is that when a term reduces to a value it retains
+the same type.  Further, well-typed terms don't get stuck:
+that is, unable to reduce further but not yet reduced to a value.
+The formulation neatly accommodates the case of non-terminating
+reductions that never reach a value.
+
+One useful by-product of the formal specification of a programming
+language may be a prototype implementation of that language.  For
+instance, given a language specified by a reduction relation, such
+as lambda calculus, the prototype might accept a term and apply reductions
+to reduce it to a value.  Typically, one might go to some extra work to
+create such a prototype.  For instance, SF introduces a \texttt{normalize}
+tactic for this purpose.  Some formal methods frameworks, such as
+Redex \citep{Felleisen-et-al-2009} and K \citep{Rosu-Serbanuta-2010},
+advertise as one of their advantages that they can generate
+a prototype from descriptions of the reduction rules.
+
+I was therefore surprised to realise that any constructive proof of
+progress and preservation \emph{automatically} gives rise to such a
+prototype.  The input is a term together with evidence the term is
+well-typed.  (In the inherently-typed case, these are the same thing.)
+Progress determines whether we are done, or should take another step;
+preservation provides evidence that the new term is well-typed, so we
+may iterate. In a language with guaranteed termination, we cannot
+iterate forever, but there are a number of well-known techniques to
+address that issue; see, e.g., \citet{Bove-and-Capretta-2001},
+\citet{Capretta-2005}, or \citet{McBride-2015}.
+We use the simplest, similar to McBride's \emph{petrol-driven} (or
+\emph{step-indexed}) semantics: provide a maximum number of steps to
+execute; if that number proves insufficient, the evaluator returns the
+term it reached, and one can resume execution by providing a new
+number.
+
+Such an evaluator from PLFA is shown in Figure~\ref{fig:plfa-eval},
+where (inspired by cryptocurrencies) the number of steps
+to execute is referred to as \emph{gas}. All of the example reduction
+sequences in PLFA were computed by the evaluator and then edited to
+improve readability; in addition, the text includes examples of
+running the evaluator with its unedited output.
+
+It is immediately obvious that progress and preservation make it
+trivial to construct a prototype evaluator, and yet I cannot find such
+an observation in the literature nor mentioned in an introductory
+text.  It does not appear in SF, nor in \citet{Harper-2016}.  A plea
+to the Agda mailing list failed to turn up any prior mentions.
+The closest related observation I have seen in the published
+literature is that evaluators can be extracted from proofs of
+normalisation \citep{Berger-1993,Dagand-and-Scherer-2015}.
+
+(Late addition: My plea to the Agda list eventually bore fruit.  Oleg
+Kiselyov directed me to unpublished remarks on his web page where he
+uses the name \texttt{eval} for a proof of progress and notes ``the
+very proof of type soundness can be used to evaluate sample
+expressions'' \citep{Kiselyov-2009}.)
+
+
+\section{Inherent typing is golden}
+
+\begin{figure}[p]
+  \includegraphics[width=\textwidth]{figures/raw.png}
+  \caption{Raw approach in PLFA}
+  \label{fig:raw}
+\end{figure}  
+
+\begin{figure}[t]
+  \includegraphics[width=\textwidth]{figures/inherent.png}
+  \caption{Inherent approach in PLFA}
+  \label{fig:inherent}
+\end{figure}  
+
+The second part of PLFA first discusses two different approaches to
+modelling simply-typed lambda calculus.  It first presents raw
+terms with named variables and a separate typing relation and
+then shifts to inherently-typed terms with de Bruijn indices.
+Before writing the text, I had thought the two approaches
+complementary, with no clear winner.  Now I am convinced that the
+inherently-typed approach is superior.
+
+Figure~\ref{fig:raw} presents the raw approach.
+It first defines $\texttt{Id}$, $\texttt{Term}$,
+$\texttt{Type}$, and $\texttt{Context}$, the abstract syntax
+of identifiers, raw terms, types, and contexts.
+It then defines two judgements,
+$\GG\:{\ni}\:\ex\:{\typecolon}\:\AY$ and
+$\GG\:{\vdash}\:\EM\:{\typecolon}\:\AY$,
+which hold when under context $\GG$ the variable $\ex$
+and the term $\EM$ have type $\AY$, respectively.
+
+Figure~\ref{fig:inherent} presents the inherent approach.
+It first defines $\texttt{Type}$ and $\texttt{Context}$, the abstract syntax
+of types and contexts, of which the first is as before and the second is
+as before with identifiers dropped.  In place of the two judgements,
+the types of variables and terms are indexed by a context and a type,
+so that $\GG\:{\ni}\:\AY$ and $\GG\:{\vdash}\:\AY$ denote
+variables and terms, respectively, that under context $\GG$ hae type $\AY$.
+The indexed types closely resemble the previous judgements:
+we now represent a variable or a term by the proof that it is well-typed.
+In particular, the proof that a variable is well-typed in the raw approach
+corresponds to a de Bruijn index in the inherent approach.
+
+The raw approach requires more lines of code than
+the inherent approach.  The separate definition of raw
+terms is not needed in the inherent
+approach; and one judgement in the raw approach needs to check that
+$\ex \not\equiv \why$, while the corresponding judgement in the
+inherent approach does not.  The difference becomes more pronounced
+when including the code for substitution, reductions, and proofs of
+progress and preservation.  In particular, where the raw approach
+requires one first define substitution and reduction and then prove
+they preserve types, the inherent approach establishes substitution at
+the same time it defines substitution and reduction.
+
+Stripping
+out examples and any proofs that appear in one but not the other (but
+could have appeared in both), the full development in PLFA for the raw approach takes 451
+lines (216 lines of definitions and 235 lines for the proofs) and the
+development for the inherent approach takes 275 lines (with
+definitions and proofs interleaved).  We have 451 / 235 = 1.64,
+close to the golden ratio.
+
+The inherent approach also has more expressive power.  The raw
+approach is restricted to substitution of one variable by a closed
+term, while the inherent approach supports simultaneous substitution
+of all variables by open terms, using a pleasing formulation due to
+\citet{McBride-2005}, inspired by \citet{Goguen-and-McKinna-1997} and
+\citet{Altenkirch-and-Reus-1999} and described in
+\citet{Allais-et-al-2017}. In fact, I did manage to write a variant of
+the raw approach with simultaneous open substitution along the lines
+of McBride, but the result was too complex for use in an introductory
+text, requiring 695 lines of code---more than the total for the other
+two approaches combined.
+
+The text develops both approaches because the raw approach is more
+familiar, and because placing the inherent approach first would
+lead to a steep learning curve.  By presenting the more long-winded
+but less powerful approach first, students can see for themselves the
+advantages of de Bruijn indices and inherent types.
+
+There are actually four possible designs, as the choice of named
+variables vs de Bruijn indices, and the choice of raw vs
+inherently-typed terms may be made independently.  There are synergies
+beween the two.  Manipulation of de Bruijn indices can be notoriously
+error-prone without inherent-typing to give assurance of correctness.
+In inherent typing with named variables, simultaneous substitution by
+open terms remains difficult.
+
+The benefits of the inherent approach 
+are well known to some. The technique was introduced by
+\citet{Altenkirch-and-Reus-1999}, and widely used elsewhere,
+notably by \citet{Chapman-2009} and \citet{Allais-et-al-2017}.
+I'm grateful to David Darais for bringing it to my attention.
+
+
+\section{Conclusion}
+
+I look forward to experience teaching from the new text,
+and encourage others to use it too.  Please comment!
+
+
+\paragraph{Acknowledgements}
+
+A special thank you to my coauthor, Wen Kokke.  For inventing ideas on
+which PLFA is based, and for hand-holding, many thanks to Conor
+McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing me
+how much more compact it is to avoid raw terms, thanks to David
+Darais.  For inspiring my work by writing SF, thanks to Benjamin
+Pierce and his coauthors.  For comments on a draft of this paper, an
+extra thank you to James McKinna, Ulf Norell, Andreas Abel, and
+Benjamin Pierce. This research was supported by EPSRC Programme Grant
+EP/K034413/1.
+
+
+\section*{References}
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{PLFA}
+
+\end{document}
+
+

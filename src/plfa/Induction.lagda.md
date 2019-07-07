@@ -315,6 +315,72 @@ In this case, `assoc (suc m) n p` is proved using `assoc m n p`.
 The correspondence between proof by induction and definition by
 recursion is one of the most appealing aspects of Agda.
 
+## Induction as recursion
+
+As a concrete example of how induction corresponds to recursion, here
+is the computation that occurs when instantiating `m` to `2` in the
+proof of associativity.
+
+\begin{code}
++-assoc-2 : ∀ (n p : ℕ) → (2 + n) + p ≡ 2 + (n + p)
++-assoc-2 n p =
+  begin
+    (2 + n) + p
+  ≡⟨⟩
+    suc (1 + n) + p
+  ≡⟨⟩
+    suc ((1 + n) + p)
+  ≡⟨ cong suc (+-assoc-1 n p) ⟩
+    suc (1 + (n + p))
+  ≡⟨⟩
+    2 + (n + p)
+  ∎
+  where
+  +-assoc-1 : ∀ (n p : ℕ) → (1 + n) + p ≡ 1 + (n + p)
+  +-assoc-1 n p =
+    begin
+      (1 + n) + p
+    ≡⟨⟩
+      suc (0 + n) + p
+    ≡⟨⟩
+      suc ((0 + n) + p)
+    ≡⟨ cong suc (+-assoc-0 n p) ⟩
+      suc (0 + (n + p))
+    ≡⟨⟩
+      1 + (n + p)
+    ∎
+    where
+    +-assoc-0 : ∀ (n p : ℕ) → (0 + n) + p ≡ 0 + (n + p)
+    +-assoc-0 n p =
+      begin
+        (0 + n) + p
+      ≡⟨⟩
+        n + p
+      ≡⟨⟩
+        0 + (n + p)
+      ∎
+\end{code}
+
+
+## Terminology and notation
+
+The symbol `∀` appears in the statement of associativity to indicate that
+it holds for all numbers `m`, `n`, and `p`.  We refer to `∀` as the _universal
+quantifier_, and it is discussed further in Chapter [Quantifiers][plfa.Quantifiers].
+
+Evidence for a universal quantifier is a function.  The notations
+
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+
+and
+
+    +-assoc : ∀ (m : ℕ) → ∀ (n : ℕ) → ∀ (p : ℕ) → (m + n) + p ≡ m + (n + p)
+
+are equivalent. They differ from a function type such as `ℕ → ℕ → ℕ`
+in that variables are associated with the each argument type, and the
+result type may mention (or depend upon) these variables; hence they
+are called _dependent functions_.
+
 
 ## Our second proof: commutativity
 
@@ -807,6 +873,7 @@ is associative and commutative.
 -- Your code goes here
 ```
 
+
 #### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
@@ -819,6 +886,7 @@ for all naturals `m`, `n`, and `p`.
 -- Your code goes here
 ```
 
+
 #### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
@@ -830,6 +898,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 -- Your code goes here
 ```
+
 
 #### Exercise `*-comm` {#times-comm}
 
@@ -869,6 +938,17 @@ for all naturals `m`, `n`, and `p`.
 ```
 -- Your code goes here
 ```
+
+
+#### Exercise `+*^` (stretch)
+
+Show the following three laws
+
+    m ^ (n + p) ≡ (m ^ n) * (m ^ p)
+    (m * n) ^ p ≡ (m ^ p) * (n ^ p)
+    m ^ (n * p) ≡ (m ^ n) ^ p
+
+for all `m`, `n`, and `p`.
 
 
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}

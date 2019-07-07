@@ -31,7 +31,7 @@ progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
 
 Be aware that the approach we take here is _not_ our recommended
-approach to formalisation.  Using De Bruijn indices and
+approach to formalisation.  Using de Bruijn indices and
 inherently-typed terms, as we will do in
 Chapter [DeBruijn][plfa.DeBruijn],
 leads to a more compact formulation.  Nonetheless, we begin with named
@@ -39,7 +39,7 @@ variables, partly because such terms are easier to read and partly
 because the development is more traditional.
 
 The development in this chapter was inspired by the corresponding
-development in Chapter _Stlc_ of _Software Foundations_ 
+development in Chapter _Stlc_ of _Software Foundations_
 (_Programming Language Foundations_).  We differ by
 representing contexts explicitly (as lists pairing identifiers with
 types) rather than as partial maps (which take identifiers to types),
@@ -89,7 +89,7 @@ case terms use naturals). We will see this again when we come
 to the rules for assigning types to terms, where constructors
 correspond to introduction rules and deconstructors to eliminators.
 
-Here is the syntax of terms in BNF:
+Here is the syntax of terms in Backus-Naur Form (BNF):
 
     L, M, N  ::=
       ` x  |  ƛ x ⇒ N  |  L · M  |
@@ -175,9 +175,9 @@ Addition takes two numerals `m` and `n`, a
 function `s` and an argument `z`, and it uses `m` to apply `s` to the
 result of using `n` to apply `s` to `z`; hence `s` is applied `m` plus
 `n` times to `z`, yielding the Church numeral for the sum of `m` and
-`n`.  For convenience, we define a function that computes successor;
-to convert a Church numeral to the corresponding natural, we apply
-it to this function and the natural number zero.
+`n`.  For convenience, we define a function that computes successor.
+To convert a Church numeral to the corresponding natural, we apply
+it to the `sucᶜ` function and the natural number zero.
 Again, later we will confirm that two plus two is four,
 in other words that the term
 
@@ -211,6 +211,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 
 #### Exercise `primed` (stretch)
 
+Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
 ```
@@ -404,12 +405,12 @@ usually substitute values.
 Here are some examples:
 
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
-  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``.
 * `` (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] `` yields
-  `` sucᶜ · (sucᶜ · `zero) ``
-* `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``
-* `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``
-* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``
+  `` sucᶜ · (sucᶜ · `zero) ``.
+* `` (ƛ "x" ⇒ ` "y") [ "y" := `zero ] `` yields `` ƛ "x" ⇒ `zero ``.
+* `` (ƛ "x" ⇒ ` "x") [ "x" := `zero ] `` yields `` ƛ "x" ⇒ ` "x" ``.
+* `` (ƛ "y" ⇒ ` "y") [ "x" := `zero ] `` yields `` ƛ "y" ⇒ ` "y" ``.
 
 In the last but one example, substituting `` `zero `` for `x` in
 `` ƛ "x" ⇒ ` "x" `` does _not_ yield `` ƛ "x" ⇒ `zero ``,
@@ -426,12 +427,12 @@ substitution by terms that are _not_ closed may require renaming
 of bound variables. For example:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero] `` should not yield <br/>
-  `` (ƛ "x" ⇒ ` "x" · (` "x" · `zero)) ``
+  `` (ƛ "x" ⇒ ` "x" · (` "x" · `zero)) ``.
 
 Instead, we should rename the bound variable to avoid capture:
 
 * `` (ƛ "x" ⇒ ` "x" · ` "y") [ "y" := ` "x" · `zero ] `` should yield <br/>
-  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``
+  `` ƛ "x′" ⇒ ` "x′" · (` "x" · `zero) ``.
 
 Here `x′` is a fresh variable distinct from `x`.
 Formal definition of substitution with suitable renaming is considerably
@@ -483,11 +484,11 @@ simply push substitution recursively into the subterms.
 
 Here is confirmation that the examples above are correct:
 
-```
-_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡  ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
+\begin{code}
+_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
 _ = refl
 
-_ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡  sucᶜ · (sucᶜ · `zero)
+_ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡ sucᶜ · (sucᶜ · `zero)
 _ = refl
 
 _ : (ƛ "x" ⇒ ` "y") [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
@@ -542,11 +543,11 @@ the rules for reduction of applications are written as follows:
     L · M —→ L′ · M
 
     M —→ M′
-    -------------- ξ-·₂
+    --------------- ξ-·₂
     V · M —→ V · M′
 
     ----------------------------- β-ƛ
-    (ƛ x ⇒ N) · V —→ N [ x := V ] 
+    (ƛ x ⇒ N) · V —→ N [ x := V ]
 
 The Agda version of the rules below will be similar, except that universal
 quantifications are made explicit, and so are the predicates that indicate
@@ -933,7 +934,7 @@ currying. This is made more convenient by declaring `_⇒_` to
 associate to the right and `_·_` to associate to the left.
 Thus:
 
-* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``
+* ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``.
 * `plus · two · two` stands for `(plus · two) · two`.
 
 ### Quiz
@@ -981,8 +982,8 @@ For example,
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
 
-is the context that associates variable ` "s" ` with type `` `ℕ ⇒ `ℕ ``,
-and variable ` "z" ` with type `` `ℕ ``.
+is the context that associates variable `` "s" `` with type `` `ℕ ⇒ `ℕ ``,
+and variable `` "z" `` with type `` `ℕ ``.
 
 Contexts are formalised as follows:
 
@@ -1000,11 +1001,11 @@ data Context : Set where
 Show that `Context` is isomorphic to `List (Id × Type)`.
 For instance, the isomorphism relates the context
 
-    `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``
+    ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ
 
 to the list
 
-    `` [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ] ``.
+    [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ]
 
 ```
 -- Your code goes here
@@ -1032,7 +1033,7 @@ If two variables in a context have the same name, then lookup
 should return the most recently bound variable, which _shadows_
 the other variables.  For example,
 
-* `` ∅ , "x" : `ℕ ⇒ `ℕ , "x" : `ℕ ∋ "x" ⦂ `ℕ ``
+* `` ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "x" ⦂ `ℕ ∋ "x" ⦂ `ℕ ``.
 
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
@@ -1071,10 +1072,10 @@ For example:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ ``
-* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` ` "s" · ` "z" ⦂  `ℕ ``
+* `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" · ` "z" ⦂  `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" · (` "s" · ` "z") ⦂  `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
-* `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
+* `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 Typing is formalised as follows:
 ```
@@ -1085,7 +1086,7 @@ data _⊢_⦂_ : Context → Term → Type → Set where
   -- Axiom
   ⊢` : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
-       -------------
+      -----------
     → Γ ⊢ ` x ⦂ A
 
   -- ⇒-I
@@ -1129,20 +1130,23 @@ data _⊢_⦂_ : Context → Term → Type → Set where
 Each type rule is named after the constructor for the
 corresponding term.
 
-Most of the rules have a second name,
-derived from a convention in logic, whereby the rule is
-named after the type connective that it concerns;
-rules to introduce and to
-eliminate each connective are labeled `-I` and `-E`, respectively. As we
-read the rules from top to bottom, introduction and elimination rules
-do what they say on the tin: the first _introduces_ a formula for the
-connective, which appears in the conclusion but not in the premises;
-while the second _eliminates_ a formula for the connective, which appears in
-a premise but not in the conclusion. An introduction rule describes
-how to construct a value of the type (abstractions yield functions,
-`` `suc `` and `` `zero `` yield naturals), while an elimination rule describes
-how to deconstruct a value of the given type (applications use
-functions, case expressions use naturals).
+Most of the rules have a second name, derived from a convention in
+logic, whereby the rule is named after the type connective that it
+concerns; rules to introduce and to eliminate each connective are
+labeled `-I` and `-E`, respectively. As we read the rules from top to
+bottom, introduction and elimination rules do what they say on the
+tin: the first _introduces_ a formula for the connective, which
+appears in the conclusion but not in the premises; while the second
+_eliminates_ a formula for the connective, which appears in a premise
+but not in the conclusion. An introduction rule describes how to
+construct a value of the type (abstractions yield functions, successor
+and zero yield naturals), while an elimination rule describes how to
+deconstruct a value of the given type (applications use functions,
+case expressions use naturals).
+
+Note also the three places (in `⊢ƛ`, `⊢case`, and `⊢μ`) where the
+context is extended with `x` and an appropriate type, corresponding to
+the three places where a bound variable is introduced.
 
 The rules are deterministic, in that at most one rule applies to every term.
 
@@ -1161,7 +1165,7 @@ Here `_≟_` is the function that tests two identifiers for equality.
 We intend to apply the function only when the
 two arguments are indeed unequal, and indicate that the second
 case should never arise by postulating a term `impossible` of
-with the empty type `⊥`.  If we use C-c C-n to normalise the term
+the empty type `⊥`.  If we use C-c C-n to normalise the term
 
     "a" ≠ "a"
 
@@ -1177,7 +1181,7 @@ evidence of _any_ proposition whatsoever, regardless of its truth.
 ### Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
-is a type derivation for the Church numberal two,
+is a type derivation for the Church numeral two,
 
                             ∋s                     ∋z
                             ------------------ ⊢`  -------------- ⊢`
@@ -1280,7 +1284,7 @@ the outermost term in `sucᶜ` is `ƛ`, which is typed using `⊢ƛ`. The
     ⊢sucᶜ = ⊢ƛ { }1
     ?1 : ∅ , "n" ⦂ `ℕ ⊢ `suc ` "n" ⦂ `ℕ
 
-We can fill in the hole by type C-c C-r again:
+We can fill in the hole by typing C-c C-r again:
 
     ⊢sucᶜ = ⊢ƛ (⊢suc { }2)
     ?2 : ∅ , "n" ⦂ `ℕ ⊢ ` "n" ⦂ `ℕ
@@ -1300,7 +1304,7 @@ We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are don
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
-Chapter [Inference][plfa.DeBruijn]
+Chapter [Inference][plfa.Inference]
 will show how to use Agda to compute type derivations directly.
 
 
@@ -1333,7 +1337,7 @@ nope₁ (() · _)
 ```
 
 As a second example, here is a formal proof that it is not possible to
-type `` ƛ "x" ⇒ ` "x" · ` "x" `` It cannot be typed, because
+type `` ƛ "x" ⇒ ` "x" · ` "x" ``. It cannot be typed, because
 doing so requires types `A` and `B` such that `A ⇒ B ≡ A`:
 
 ```
@@ -1392,6 +1396,8 @@ This chapter uses the following unicode:
     ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
     β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
+    Γ  U+0393  GREEK CAPITAL LETTER GAMMA (\GG or \Gamma)
+    ≠  U+2260  NOT EQUAL TO (\=n or \ne)
     ∋  U+220B  CONTAINS AS MEMBER (\ni)
     ∅  U+2205  EMPTY SET (\0)
     ⊢  U+22A2  RIGHT TACK (\vdash or \|-)

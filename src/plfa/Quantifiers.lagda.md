@@ -36,7 +36,7 @@ proposition `∀ (x : A) → B x` holds if for every term `M` of type
 `A` the proposition `B M` holds.  Here `B M` stands for
 the proposition `B x` with each free occurrence of `x` replaced by
 `M`.  Variable `x` appears free in `B x` but bound in
-`∀ (x : A) → B x`.  
+`∀ (x : A) → B x`.
 
 Evidence that `∀ (x : A) → B x` holds is of the form
 

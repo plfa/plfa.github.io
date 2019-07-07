@@ -38,7 +38,7 @@ open import plfa.Untyped
          subst; _[_]; subst-zero; ext; rename; exts)
 open import plfa.LambdaReduction
   using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
-open import plfa.Substitution using (Rename; Subst; ids)  
+open import plfa.Substitution using (Rename; Subst; ids)
 open import plfa.Denotational
   using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
          Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
@@ -107,7 +107,7 @@ The proof is by cases on the de Bruijn index `x`.
 * If it is `Z`, then we need to show that `δ , v ⊢ # 0 ↓ v`,
   which we have by rule `var`.
 
-* If it is `S x′`,then we need to show that 
+* If it is `S x′`,then we need to show that
   `δ , v ⊢ rename S_ (σ x′) ↓ nth x′ γ`,
   which we obtain by the `rename-pres` lemma.
 
@@ -123,7 +123,7 @@ subst-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
   → δ ⊢ subst σ M ↓ v
 subst-pres σ s (var {x = x}) = (s x)
 subst-pres σ s (↦-elim d₁ d₂) =
-  ↦-elim (subst-pres σ s d₁) (subst-pres σ s d₂) 
+  ↦-elim (subst-pres σ s d₁) (subst-pres σ s d₂)
 subst-pres σ s (↦-intro d) =
   ↦-intro (subst-pres (λ {A} → exts σ) (subst-ext σ s) d)
 subst-pres σ s ⊥-intro = ⊥-intro
@@ -159,7 +159,7 @@ substitution : ∀ {Γ} {γ : Env Γ} {N M v w}
    → γ `, v ⊢ N ↓ w
    → γ ⊢ M ↓ v
      ---------------
-   → γ ⊢ N [ M ] ↓ w   
+   → γ ⊢ N [ M ] ↓ w
 substitution{Γ}{γ}{N}{M}{v}{w} dn dm =
   subst-pres (subst-zero M) sub-z-ok dn
   where
@@ -193,8 +193,8 @@ preserve : ∀ {Γ} {γ : Env Γ} {M N v}
     ----------
   → γ ⊢ N ↓ v
 preserve (var) ()
-preserve (↦-elim d₁ d₂) (ξ₁ r) = ↦-elim (preserve d₁ r) d₂ 
-preserve (↦-elim d₁ d₂) (ξ₂ r) = ↦-elim d₁ (preserve d₂ r) 
+preserve (↦-elim d₁ d₂) (ξ₁ r) = ↦-elim (preserve d₁ r) d₂
+preserve (↦-elim d₁ d₂) (ξ₂ r) = ↦-elim d₁ (preserve d₂ r)
 preserve (↦-elim d₁ d₂) β = substitution (lambda-inversion d₁) d₂
 preserve (↦-intro d) (ζ r) = ↦-intro (preserve d r)
 preserve ⊥-intro r = ⊥-intro
@@ -271,7 +271,7 @@ rename-reflect {M = ƛ N} all-n (⊔-intro d₁ d₂) =
 rename-reflect {M = ƛ N} all-n (sub d₁ lt) =
    sub (rename-reflect all-n d₁) lt
 rename-reflect {M = L · M} all-n (↦-elim d₁ d₂) =
-   ↦-elim (rename-reflect all-n d₁) (rename-reflect all-n d₂) 
+   ↦-elim (rename-reflect all-n d₁) (rename-reflect all-n d₂)
 rename-reflect {M = L · M} all-n ⊥-intro = ⊥-intro
 rename-reflect {M = L · M} all-n (⊔-intro d₁ d₂) =
    ⊔-intro (rename-reflect all-n d₁) (rename-reflect all-n d₂)
@@ -327,27 +327,11 @@ So instead the premise is `γ ⊢ σ x ↓ v` and we need to show that
 `δ ⊢ x ↓ v` for some `δ`. The `δ` that we choose shall be the
 environment that maps `x` to `v` and every other variable to `⊥`.
 
-The nth element of the `⊥ environment is always ⊥.
-[PLW: Probably can omit]
-```
-nth-`⊥ : ∀{Γ} {x : Γ ∋ ★} → `⊥ x ≡ ⊥
-nth-`⊥ {x = Z} = refl
-nth-`⊥ {Γ , ★} {S x} = nth-`⊥ {Γ} {x}
-```
-
 Next we define the environment that maps `x` to `v` and every other
-variable to `⊥`, that is `const-env x v`.
+variable to `⊥`, that is `const-env x v`. To tell variables apart, we
+define the following function for deciding equality of variables.
 
-```
-{-
-inv-S : ∀ {Γ A B} {x y : Γ ∋ A}
-  → _≡_ {_} {Γ , B ∋ A} (S x) (S y)
-  → S x ≡ S y
-    -------------------------------
-  → x ≡ y
-inv-S refl = refl
--}
-
+\begin{code}
 _var≟_ : ∀ {Γ} → (x y : Γ ∋ ★) → Dec (x ≡ y)
 Z var≟ Z  =  yes refl
 Z var≟ (S _)  =  no λ()
@@ -359,21 +343,25 @@ Z var≟ (S _)  =  no λ()
 var≟-refl : ∀ {Γ} (x : Γ ∋ ★) → (x var≟ x) ≡ yes refl
 var≟-refl Z = refl
 var≟-refl (S x) rewrite var≟-refl x = refl
+\end{code}
 
+Now we use `var≟` to define `const-env`.
+
+\begin{code}
 const-env : ∀{Γ} → (x : Γ ∋ ★) → Value → Env Γ
 const-env x v y with x var≟ y
 ...             | yes _       = v
 ...             | no _        = ⊥
 ```
 
-Of course, the nth element of `const-env n v` is the value `v`.
+Of course, `const-env x v` maps `x` to value `v`
 
-```
-nth-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
-nth-const-env {x = x} rewrite var≟-refl x = refl
-```
+\begin{code}
+same-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
+same-const-env {x = x} rewrite var≟-refl x = refl
+\end{code}
 
-The nth element of `const-env n′ v` is the value `⊥, so long as `n ≢ n′`.
+and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
 
 ```
 diff-nth-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
@@ -409,12 +397,12 @@ subst-reflect-var : ∀ {Γ Δ} {γ : Env Δ} {x : Γ ∋ ★} {v} {σ : Subst �
     -----------------------------------------
   → Σ[ δ ∈ Env Γ ] γ `⊢ σ ↓ δ  ×  δ ⊢ ` x ↓ v
 subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
-  rewrite sym (nth-const-env {Γ}{x}{v}) =
+  rewrite sym (same-const-env {Γ}{x}{v}) =
     ⟨ const-env x v , ⟨ const-env-ok , var ⟩ ⟩
   where
   const-env-ok : γ `⊢ σ ↓ const-env x v
   const-env-ok y with x var≟ y
-  ... | yes x≡y rewrite sym x≡y | nth-const-env {Γ}{x}{v} = xv
+  ... | yes x≡y rewrite sym x≡y | same-const-env {Γ}{x}{v} = xv
   ... | no x≢y rewrite diff-nth-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
 ```
 
@@ -431,7 +419,7 @@ subst-⊥ x = ⊥-intro
 ```
 
 If a substitution produces terms that evaluate to the values in
-both `γ₁` and `γ₂`, then those terms also evaluate to the values in 
+both `γ₁` and `γ₂`, then those terms also evaluate to the values in
 `γ₁ ⊔ γ₂`.
 
 ```
@@ -475,15 +463,15 @@ subst-reflect : ∀ {Γ Δ} {δ : Env Δ} {M : Γ ⊢ ★} {v} {L : Δ ⊢ ★} 
     ---------------------------------------
   → Σ[ γ ∈ Env Γ ] δ `⊢ σ ↓ γ  ×  γ ⊢ M ↓ v
 
-subst-reflect {M = M}{σ = σ} (var {x = y}) eqL with M 
+subst-reflect {M = M}{σ = σ} (var {x = y}) eqL with M
 ... | ` x  with var {x = y}
 ...           | yv  rewrite sym eqL = subst-reflect-var {σ = σ} yv
 subst-reflect {M = M} (var {x = y}) () | M₁ · M₂
 subst-reflect {M = M} (var {x = y}) () | ƛ M′
 
 subst-reflect {M = M}{σ = σ} (↦-elim d₁ d₂) eqL
-         with M 
-...    | ` x with ↦-elim d₁ d₂ 
+         with M
+...    | ` x with ↦-elim d₁ d₂
 ...    | d′ rewrite sym eqL = subst-reflect-var {σ = σ} d′
 subst-reflect (↦-elim d₁ d₂) () | ƛ M′
 subst-reflect{Γ}{Δ}{γ}{σ = σ} (↦-elim d₁ d₂)
@@ -499,10 +487,10 @@ subst-reflect {M = M}{σ = σ} (↦-intro d) eqL with M
 ...             | d′ rewrite sym eqL = subst-reflect-var {σ = σ} d′
 subst-reflect {σ = σ} (↦-intro d) eq | ƛ M′
       with subst-reflect {σ = exts σ} d (lambda-inj eq)
-... | ⟨ δ′ , ⟨ exts-σ-δ′ , m′ ⟩ ⟩ = 
+... | ⟨ δ′ , ⟨ exts-σ-δ′ , m′ ⟩ ⟩ =
     ⟨ init δ′ , ⟨ ((λ x → rename-inc-reflect (exts-σ-δ′ (S x)))) ,
              ↦-intro (up-env (split m′) (var-inv (exts-σ-δ′ Z))) ⟩ ⟩
-subst-reflect (↦-intro d) () | M₁ · M₂ 
+subst-reflect (↦-intro d) () | M₁ · M₂
 
 subst-reflect {σ = σ} ⊥-intro eq =
     ⟨ `⊥ , ⟨ subst-⊥ {σ = σ} , ⊥-intro ⟩ ⟩
@@ -513,7 +501,7 @@ subst-reflect {σ = σ} (⊔-intro d₁ d₂) eq
      ⟨ δ₁ `⊔ δ₂ , ⟨ subst-⊔ {γ₁ = δ₁}{γ₂ = δ₂}{σ = σ} subst-δ₁ subst-δ₂ ,
                     ⊔-intro (Env⊑ m1 (EnvConjR1⊑ δ₁ δ₂))
                             (Env⊑ m2 (EnvConjR2⊑ δ₁ δ₂)) ⟩ ⟩
-subst-reflect (sub d lt) eq 
+subst-reflect (sub d lt) eq
     with subst-reflect d eq
 ... | ⟨ δ , ⟨ subst-δ , m ⟩ ⟩ = ⟨ δ , ⟨ subst-δ , sub m lt ⟩ ⟩
 ```
@@ -556,7 +544,7 @@ subst-reflect (sub d lt) eq
   by `Env⊑` with `EnvConjR1⊑` and `EnvConjR2⊑`.
   So by `⊔-intro` we have `δ₁ ⊔ δ₂ ⊢ M ↓ v₁ ⊔ v₂`.
   By `subst-⊔` we conclude that `δ ⊢ σ ↓ δ₁ ⊔ δ₂`.
-   
+
 
 ### Single substitution reflects denotations
 
@@ -577,7 +565,7 @@ subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {M : Δ ⊢ �
   → δ `⊢ subst-zero M ↓ γ
     ----------------------------------------
   → Σ[ w ∈ Value ] γ `⊑ (δ `, w) × δ ⊢ M ↓ w
-subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ Z ⟩ ⟩   
+subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ Z ⟩ ⟩
   where
   lemma : γ `⊑ (δ `, last γ)
   lemma Z  =  Refl⊑
@@ -621,9 +609,9 @@ easily prove that reduction does too.
 reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
     → γ ⊢ (N [ M ]) ↓ v
     → γ ⊢ (ƛ N) · M ↓ v
-reflect-beta d 
+reflect-beta d
     with substitution-reflect d
-... | ⟨ v₂′ , ⟨ d₁′ , d₂′ ⟩ ⟩ = ↦-elim (↦-intro d₂′) d₁′ 
+... | ⟨ v₂′ , ⟨ d₁′ , d₂′ ⟩ ⟩ = ↦-elim (↦-intro d₂′) d₁′
 
 
 reflect : ∀ {Γ} {γ : Env Γ} {M M′ N v}
@@ -634,10 +622,10 @@ reflect var (ξ₁ r) ()
 reflect var (ξ₂ r) ()
 reflect{γ = γ} (var{x = x}) β mn
     with var{γ = γ}{x = x}
-... | d′ rewrite sym mn = reflect-beta d′ 
+... | d′ rewrite sym mn = reflect-beta d′
 reflect var (ζ r) ()
-reflect (↦-elim d₁ d₂) (ξ₁ r) refl = ↦-elim (reflect d₁ r refl) d₂ 
-reflect (↦-elim d₁ d₂) (ξ₂ r) refl = ↦-elim d₁ (reflect d₂ r refl) 
+reflect (↦-elim d₁ d₂) (ξ₁ r) refl = ↦-elim (reflect d₁ r refl) d₂
+reflect (↦-elim d₁ d₂) (ξ₂ r) refl = ↦-elim d₁ (reflect d₂ r refl)
 reflect (↦-elim d₁ d₂) β mn
     with ↦-elim d₁ d₂
 ... | d′ rewrite sym mn = reflect-beta d′
@@ -651,8 +639,8 @@ reflect (↦-intro d) (ζ r) refl = ↦-intro (reflect d r refl)
 reflect ⊥-intro r mn = ⊥-intro
 reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
    ⊔-intro (reflect d₁ r refl) (reflect d₂ r refl)
-reflect (sub d lt) r mn = sub (reflect d r mn) lt 
-```
+reflect (sub d lt) r mn = sub (reflect d r mn) lt
+\end{code}
 
 ## Reduction implies denotational equality
 

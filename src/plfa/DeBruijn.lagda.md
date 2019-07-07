@@ -44,16 +44,16 @@ term and the structure of the derivation showing that it is
 well-typed.  For example, here is the term for the Church
 numeral two:
 
-    twoᶜ  : Term
-    twoᶜ  = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
+    twoᶜ : Term
+    twoᶜ = ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
 
 And here is its corresponding type derivation:
 
-    ⊢twoᶜ  :  ∀ {A} ⇒ ∅ ⊢ two ⦂ Ch A
-    ⊢twoᶜ  =  ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
-               where    
-               ∋s = S ("s" ≠ "z") Z
-               ∋z = Z
+    ⊢twoᶜ : ∀ {A} → ∅ ⊢ twoᶜ ⦂ Ch A
+    ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
+      where
+      ∋s = S ("s" ≠ "z") Z
+      ∋z = Z
 
 (These are both taken from Chapter
 [Lambda][plfa.Lambda]
@@ -71,8 +71,8 @@ the lookup derivation for each variable corresponds to a
 number which tells us how many enclosing binding terms to
 count to find the binding of that variable.  Here `"z"`
 corresponds to `Z` or zero and `"s"` corresponds to `S Z` or
-one.  And, indeed, "z" is bound by the inner abstraction
-(count outward past zero abstractions) and "s" is bound by the
+one.  And, indeed, `"z"` is bound by the inner abstraction
+(count outward past zero abstractions) and `"s"` is bound by the
 outer abstraction (count outward past one abstraction).
 
 In this chapter, we are going to exploit this correspondence,
@@ -110,10 +110,10 @@ raw terms by the more sophisticated type `Γ ⊢ A` of inherently
 typed terms, which in context `Γ` have type `A`.
 
 While these two choices fit well, they are independent.  One
-can use De Bruijn indices in raw terms, or (with more
+can use de Bruijn indices in raw terms, or (with more
 difficulty) have inherently typed terms with names.  In
 Chapter [Untyped][plfa.Untyped],
-we will introduce terms with De Bruijn indices that
+we will introduce terms with de Bruijn indices that
 are inherently scoped but not typed.
 
 
@@ -124,21 +124,21 @@ proceeding further let's consider a second example.  Here is
 the term that adds two naturals:
 
     plus : Term
-    plus =  μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+    plus = μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
              case ` "m"
                [zero⇒ ` "n"
                |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
-  
-Note variable "m" is bound twice, once in a lambda abstraction
+
+Note variable `"m"` is bound twice, once in a lambda abstraction
 and once in the successor branch of the case.  Any appearance
-of "m" in the successor branch must refer to the latter
+of `"m"` in the successor branch must refer to the latter
 binding, due to shadowing.
 
 Here is its corresponding type derivation:
 
     ⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (Ax ∋m) (Ax ∋n)
-             (⊢suc (Ax ∋+ · Ax ∋m′ · Ax ∋n′)))))
+    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
+             (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
       where
       ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
       ∋m  = (S ("m" ≠ "n") Z)
@@ -176,12 +176,12 @@ to a lookup derivation:
   * `# 1` corresponds to `∋n′`
 
 The de Bruijn index counts the number of `S` constructs in the
-corresponding lookup derivation.  Variable "n" bound in the
+corresponding lookup derivation.  Variable `"n"` bound in the
 inner abstraction is referred to as `# 0` in the zero branch
 of the case but as `# 1` in the successor branch of the case,
-because of the intervening binding.  Variable "m" bound in the
+because of the intervening binding.  Variable `"m"` bound in the
 lambda abstraction is referred to by the first `# 1` in the
-code, while variable "m" bound in the successor branch of the
+code, while variable `"m"` bound in the successor branch of the
 case is referred to by the second `# 0`.  There is no
 shadowing: with variable names, there is no way to refer to
 the former binding in the scope of the latter, but with de
@@ -220,8 +220,8 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infix  9 S_
-infix  9 #_ 
-```
+infix  9 #_
+\end{code}
 
 Since terms are inherently typed, we must define types and
 contexts before terms.
@@ -360,8 +360,7 @@ data _⊢_ : Context → Type → Set where
 The definition exploits the close correspondence between the
 structure of terms and the structure of a derivation showing
 that it is well-typed: now we use the derivation _as_ the
-term.  For example, consider the following three terms,
-building up the Church numeral two.
+term.
 
 For example, consider the following old-style typing
 judgments:
@@ -412,8 +411,8 @@ postulating an `impossible` term, just as we did
 [here][plfa.Lambda#impossible].
 
 Given the above, we can convert a natural to a corresponding
-De Bruijn index, looking up its type in the context:
-```
+de Bruijn index, looking up its type in the context:
+\begin{code}
 count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
 count {Γ , _} zero     =  Z
 count {Γ , _} (suc n)  =  S (count n)
@@ -679,7 +678,7 @@ substitution for one free variable:
 ```
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
-        → Γ ⊢ B 
+        → Γ ⊢ B
           ---------
         → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
@@ -697,7 +696,7 @@ type `B` and every other free variable to itself.
 Consider the previous example:
 
 * `` (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] `` yields
-     ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
+  `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 
 Here is the example formalised:
 ```
