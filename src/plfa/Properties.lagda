@@ -268,9 +268,9 @@ progress (⊢suc ⊢M) with progress ⊢M
 ...  | done VM                              =  done (V-suc VM)
 progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | step L—→L′                            =  step (ξ-case L—→L′)
-... | done VL with canonical ⊢L VL
-...   | C-zero                              =  step β-zero
-...   | C-suc CL                            =  step (β-suc (value CL))
+... | done VL with VL
+...   | V-zero                              =  step β-zero
+...   | V-suc VS                            =  step (β-suc VS)
 progress (⊢μ ⊢M)                            =  step β-μ
 \end{code}
 We induct on the evidence that the term is well-typed.
