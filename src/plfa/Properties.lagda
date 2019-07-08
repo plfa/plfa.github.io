@@ -264,8 +264,8 @@ progress (⊢L · ⊢M) with progress ⊢L
 ...     | C-ƛ _                             =  step (β-ƛ VM)
 progress ⊢zero                              =  done V-zero
 progress (⊢suc ⊢M) with progress ⊢M
-...  | step M—→M′                           =  step (ξ-suc M—→M′)
-...  | done VM                              =  done (V-suc VM)
+... | step M—→M′                            =  step (ξ-suc M—→M′)
+... | done VM                               =  done (V-suc VM)
 progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | step L—→L′                            =  step (ξ-case L—→L′)
 ... | done VL with VL
