@@ -590,7 +590,7 @@ but it is captured by our lemma to assert that substitution
 preserves typing.
 
 Our concern is with reducing closed terms, which means that when
-we apply `β` reduction, the term substituted in contains a single
+we apply a `β` reduction, the term substituted in contains a single
 free variable (the bound variable of the lambda abstraction, or
 similarly for case or fixpoint). However, substitution
 is defined by recursion, and as we descend into terms with bound
