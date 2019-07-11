@@ -1,9 +1,10 @@
 SHELL := /bin/bash
-agda := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.lagda')
+agda := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.lagda.md')
 agdai := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.agdai')
-markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
+markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,,$(agda))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
+AGDA_STDLIB_SED := ".agda-stdlib.sed"
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -30,17 +31,13 @@ out/:
 
 
 # Build PLFA pages
-out/%.md: src/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
-	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
+out/%.md: src/%.lagda.md | out/
+	./highlight.sh $< $@
 
 
 # Build TSPL pages
-out/%.md: tspl/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
-	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
+out/%.md: tspl/%.lagda.md | out/
+	./highlight.sh $< $@ --include-path $(realpath src) --include-path $(realpath tspl)
 
 
 # Start server
@@ -77,6 +74,7 @@ build-incremental: $(markdown)
 
 # Remove all auxiliary files
 clean:
+	rm -f $(AGDA_STDLIB_SED)
 ifneq ($(strip $(agdai)),)
 	rm $(agdai)
 endif
