@@ -638,7 +638,7 @@ relevant variable in the patterns for `` ⊢` ``, `⊢ƛ`, `⊢case`, and `⊢μ
 Using the name `y` here is consistent with the naming in the original
 definition of substitution in the previous chapter.  The proof never
 mentions the types of `x`, `y`, `V`, or `N`, so in what follows we
-choose type name as convenient.
+choose type names as convenient.
 
 Now that naming is resolved, let's unpack the first three cases:
 
