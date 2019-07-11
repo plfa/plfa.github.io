@@ -18,7 +18,7 @@
 
 \author[adr1]{Wen Kokke}
 \ead{wen.kokke@ed.ac.uk}
-\author[adr2]{Jeremy Siek}
+\author[adr2]{Jeremy G. Siek}
 \ead{jsiek@indiana.edu}
 \author[adr1]{Philip Wadler\corref{cor1}}
 \ead{wadler@inf.ed.ac.uk}
@@ -286,6 +286,49 @@ scoped) lambda calculus.  Reduction is call-by-name over open terms,
 with full normalisation (including reduction under lambda terms).  Emphasis
 is put on the correspondence between the structure of a term and
 evidence that it is in normal form.
+
+\paragraph{Substitution: in the untyped lambda calculus}
+Delves deeper into the properties of simultaneous substitution,
+establishing the equations of the $\sigma$ algebra of
+\citet{Abadi-1991}. These equations enable a straightforward proof of
+the Substitution Lemma~\citep{Barendregt-1984}, which is needed in the
+next chapter.
+
+\paragraph{Confluence: of the untyped lambda calculus}
+Presents a proof of the Church-Rosser theorem based on the classic
+idea of parallel reduction due to Tait and Martin-L\"of. The proof in
+Agda is streamlined by the use of ideas from
+\citet{Schafer-Tebbi-Smolka-2015} and \citet{Pfenning-1992}.
+
+\paragraph{Big-step: evaluation for call-by-name}
+Introduces the notion of big-step evaluation to develop a
+deterministic call-by-name reduction strategy. The main result of this
+chapter is a proof that big-step evaluation implies the existence of a
+reduction sequence that terminates with a lambda abstraction.
+
+\subsection*{Part III, Denotational Semantics}
+
+\paragraph{Denotational: semantics of the untyped lambda calculus}
+The early denotational semantics of the lambda calculus based on graph
+models~\citep{Scott-1976,Engeler-1981,Plotkin-1993} and filter
+models~\citep{Barendregt-1983} were particularly simple and elegant.
+This chapter presents such a semantics in a big-step style that is
+approachable to readers familiar with operational semantics.
+
+\paragraph{Compositional: the denotational semantics is compositional}
+TODO
+
+\paragraph{Soundness: of reduction with respect to denotational semantics}
+TODO
+
+\paragraph{Adequacy: of denotational semantics with respect to reduction}
+TODO
+
+
+\paragraph{Contextual Equivalence: is implied by denotational equality}
+TODO
+
+
 
 \subsection*{Discussion}
 
