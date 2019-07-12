@@ -39,7 +39,7 @@ before_install:
 script:
 - agda --version
 - acknowledgements --version
-# - make test-offline # disable to only build cache
+- make test-offline # disable to only build cache
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
