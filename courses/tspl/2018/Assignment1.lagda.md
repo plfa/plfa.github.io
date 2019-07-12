@@ -1,7 +1,7 @@
 ---
 title     : "Assignment1: TSPL Assignment 1"
 layout    : page
-permalink : /Assignment1/
+permalink : /TSPL/2018/Assignment1/
 ---
 
 ```
@@ -125,7 +125,7 @@ Give an example of an operator that has an identity and is
 associative but is not commutative.
 
 
-#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
+#### Exercise `finite-|-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
@@ -179,7 +179,7 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-#### Exercise `∸-+-assoc` {#monus-plus-assoc}
+#### Exercise `∸-|-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 

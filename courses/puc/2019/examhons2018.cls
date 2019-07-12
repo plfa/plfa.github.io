@@ -9,7 +9,7 @@
 %  Note: We are changing the file and package name of this style
 %   from year to year, so as to make people aware of the version
 %   they are using.  The format is `examhons<YYYY>.sty' with <YYYY>
-%   replaced appropriately. 
+%   replaced appropriately.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -20,14 +20,14 @@
 %
 % Set the ITO path for status.tex.
 %
-% * Note that course organisers / exam preparers do not need 
-%    status.tex.  When building their exam on their own machines, 
+% * Note that course organisers / exam preparers do not need
+%    status.tex.  When building their exam on their own machines,
 %    the exam title / date / etc. information will be automatically
-%    filled-in with dummy values for mock-up purposes. 
-% 
-%    Once the exam document is processed on the ITO machines, 
-%    however, the mock-up exam title / date / etc. data will be 
-%    overwritten with the officially sanctioned data held in 
+%    filled-in with dummy values for mock-up purposes.
+%
+%    Once the exam document is processed on the ITO machines,
+%    however, the mock-up exam title / date / etc. data will be
+%    overwritten with the officially sanctioned data held in
 %    the ITO's master status.tex file.
 %
 %  This file resides in the relative path below.
@@ -45,10 +45,10 @@
 \LoadClass[12pt,a4paper]{article}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% Take care of `page x of y' the proper way, based on a combination 
+%
+% Take care of `page x of y' the proper way, based on a combination
 %  of the J. Goldberg (lastpage) method, the C. Huggins (using fh)
-%  code, woven together with some use of the ifthen package for 
+%  code, woven together with some use of the ifthen package for
 %  branching on p0 (the exam title page, which shouldn't be num'd).
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,7 +63,7 @@
    \addtocounter{page}{1}}
 
 \AtEndDocument{%
-   \message{*** Setting LastPage: Make sure you 
+   \message{*** Setting LastPage: Make sure you
      run LaTeX upon your exam file at least 3
      times to get this right.}%
    \clearpage\lastpage@putlabel}%
@@ -77,7 +77,7 @@
           {{\scriptsize{Page \thepage{} of \@forcedtotalpages}}}}}
 
 
-\renewcommand\headrulewidth{0pt}  
+\renewcommand\headrulewidth{0pt}
 
 \newcommand{\settotalpages}[1]{
  \def\@forcedtotalpages{#1}
@@ -168,7 +168,7 @@
 %   We have a sticky problem here:  TeX doesn't do floating point arithmetic!
 %   Our goal is to compute y = rx/t. The following loop does this reasonably
 %   fast, with an error of at most about 16 sp (about 1/4000 pt).
-% 
+%
      \else\epsftmp=\epsftsize \divide\epsftmp\epsfrsize
        \epsfxsize=\epsfysize \multiply\epsfxsize\epsftmp
        \multiply\epsftmp\epsfrsize \advance\epsftsize-\epsftmp
@@ -182,7 +182,7 @@
      \fi
    \else \ifnum\epsfysize=0
      \epsftmp=\epsfrsize \divide\epsftmp\epsftsize
-     \epsfysize=\epsfxsize \multiply\epsfysize\epsftmp   
+     \epsfysize=\epsfxsize \multiply\epsfysize\epsftmp
      \multiply\epsftmp\epsftsize \advance\epsfrsize-\epsftmp
      \epsftmp=\epsfxsize
      \loop \advance\epsfrsize\epsfrsize \divide\epsftmp 2
@@ -255,14 +255,14 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\def\@cent{\count0 }                      
-\def\@diy{\count1 }                        
-\def\@dow{\count2 }                        
-\def\@epact{\count3 }                      
-\def\@golden{\count4 }                     
-\def\@leap{\count5 }                       
-\def\@x{\count6 }                          
-\def\@y{\count7 }                          
+\def\@cent{\count0 }
+\def\@diy{\count1 }
+\def\@dow{\count2 }
+\def\@epact{\count3 }
+\def\@golden{\count4 }
+\def\@leap{\count5 }
+\def\@x{\count6 }
+\def\@y{\count7 }
 
 \def\@up#1{{\@savestyle\thinspace$^{\underline{\hbox{%
   \scriptsize\@setstyle#1\fam=-1 }}}$}}
@@ -288,7 +288,7 @@
   \advance\@leap by \year
   \@dow=\month \advance\@dow by 10
   \@y=\@dow \divide\@y by 13 \multiply\@y by 12
-  \advance\@dow by -\@y \multiply\@dow by 13 
+  \advance\@dow by -\@y \multiply\@dow by 13
   \advance\@dow by -1 \divide\@dow by 5
   \advance\@dow by \day \advance\@dow by 77
   \@x=\@leap \@y=\@x \divide\@y by 100 \multiply\@y by 100 \advance\@x by -\@y
@@ -299,25 +299,25 @@
   \ifcase\@dow Sunday\or Monday\or Tuesday\or Wednesday\or
       Thursday\or Friday\or Saturday\fi}}
 \def\phaseofmoon{{%
-  \@diy=\day \advance\@diy by \ifcase\month            
-      -1\or -1\or 30\or 58\or 89\or 119\or 150\or      
-      180\or 211\or 241\or 272\or 303\or 333\fi        
+  \@diy=\day \advance\@diy by \ifcase\month
+      -1\or -1\or 30\or 58\or 89\or 119\or 150\or
+      180\or 211\or 241\or 272\or 303\or 333\fi
   \ifnum \month>2
     \@x=\year \@y=\@x \divide\@y by 4 \multiply\@y by 4 \advance\@x by -\@y
-    \ifnum \@x=0                    
-      \@x=\year \@y=\@x \divide\@y by 400 
+    \ifnum \@x=0
+      \@x=\year \@y=\@x \divide\@y by 400
       \multiply\@y by 400 \advance\@x by -\@y
-      \ifnum \@x=0                  
-      \advance\@diy by 1            
-      \else                         
-      \@x=\year \@y=\@x \divide\@y by 100 
+      \ifnum \@x=0
+      \advance\@diy by 1
+      \else
+      \@x=\year \@y=\@x \divide\@y by 100
       \multiply\@y by 100 \advance\@x by -\@y
-      \ifnum \@x>0                  
-          \advance\@diy by 1        
-      \fi                           
-      \fi                           
-    \fi                             
-  \fi                               
+      \ifnum \@x>0
+          \advance\@diy by 1
+      \fi
+      \fi
+    \fi
+  \fi
   \@cent=\year \divide\@cent by 100 \advance\@cent by 1
   \@golden=\year
   \@y=\year \divide\@y by 19 \multiply\@y by 19 \advance\@golden by -\@y
@@ -356,13 +356,13 @@
 %  and so on, *but* we want to provide hard-coded dummy values
 %  for exam preparers who are working on their own machines.
 %  This is so that status.tex does not need to be ever copied from
-%  the ITO installation; it is only for ITO.  
+%  the ITO installation; it is only for ITO.
 %
 % The logic here is simple.  If we find \itostatuspath status.tex
 %  to exist, then we populate the values of exam title, time, and
 %  so on using those it contains corresponding to \courseid, which
 %  is set by the exam preparer using the \setcourse command.
-%  This is done internally by executing a command named 
+%  This is done internally by executing a command named
 %  \<courseid>details, with <courseid> replaced by their courseid.
 %
 % Otherwise, we use dummy values, but we've gone to the effort to
@@ -428,7 +428,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Display the exam status (for `internal'/`external' scrutiny, or 
+% Display the exam status (for `internal'/`external' scrutiny, or
 %  `final' which will print no corresponding notice).
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -445,11 +445,11 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\def\Marks#1#2{\marginpar{\raisebox{#2\baselineskip}{[{\it #1 
+\def\Marks#1#2{\marginpar{\raisebox{#2\baselineskip}{[{\it #1
   \ifnum #1=1 mark\else marks\fi\/}]}}}
 %Version for most situations.
 \def\marks#1{\Marks{#1}{0}}
-% The next version is to get around the problem that you cannot put a 
+% The next version is to get around the problem that you cannot put a
 % marginpar in maths display.  Put \marksl just before the display line.
 \def\marksd#1{\Marks{#1}{-2}}
 % As above but raises the box.
@@ -461,10 +461,10 @@
 %
 % EPS macros by KK.
 %
-% The first argument is the filename and the second the size (of the 
-%  x-axis or the y-axis respectively.  
+% The first argument is the filename and the second the size (of the
+%  x-axis or the y-axis respectively.
 %
-% For example \psfigx{graph1.epsf}{5in} will input your first graph 
+% For example \psfigx{graph1.epsf}{5in} will input your first graph
 %  and make the x-axis equal to 4.5in, with the y-axis appropriately
 %  scaled.
 %
@@ -476,7 +476,7 @@
      \epsfxsize=#2
      \epsffile{#1}
    \end{center}}
-   
+
 \def\psfigy#1#2{
   \begin{center}
      \leavevmode
@@ -492,7 +492,7 @@
 %  and otherwise will source the master ITO status.tex if it exists
 %  (e.g., when we are compiling on an ITO machine).
 %
-% Also, the papertype.inc files and rubric.inc files will be 
+% Also, the papertype.inc files and rubric.inc files will be
 %  loaded if we are on an ITO machine.  Otherwise, we will provide
 %  dummy mock-up values for those as well.
 %
@@ -501,7 +501,7 @@
 \newcommand\papertitle[1]{\global\def\nameofpaper{\uppercase{#1}}}
 \newcommand\papertype[1]{\global\def\typeofpaper{
  \InputIfFileExists{\itostatuspath #1}{}
-  { 
+  {
     %
     % If we're here, then this is running on exam preparer's
     % machine.  So, we will use mock-up values for the exam
@@ -556,11 +556,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Now, we first see if we're on an ITO machine and can load the 
+% Now, we first see if we're on an ITO machine and can load the
 %  proper status.tex.  If so, we do it and execute the corresponding
-%  \coursestatusfcn.  
+%  \coursestatusfcn.
 %
-% Otherwise, based upon the value of courseid, we need to populate  
+% Otherwise, based upon the value of courseid, we need to populate
 %  the title and type with basic mock-up data.
 %
 % This command must be called in the top-level exam document, after
@@ -586,9 +586,9 @@
 
     \ifthenelse{\equal{\courseid}{anlp}}
       {\anlpdetails}{}
-    \ifthenelse{\equal{\courseid}{aleone}} 
+    \ifthenelse{\equal{\courseid}{aleone}}
       {\aleonedetails}{}
-	\ifthenelse{\equal{\courseid}{adbs}} 
+	\ifthenelse{\equal{\courseid}{adbs}}
       {\adbsdetails}{}
     \ifthenelse{\equal{\courseid}{av}}
       {\avdetails}{}
@@ -649,7 +649,7 @@
     \ifthenelse{\equal{\courseid}{dmmr}}
       {\dmmrdetails}{}
     \ifthenelse{\equal{\courseid}{dmr}}
-      {\dmrdetails}{}	  
+      {\dmrdetails}{}
     \ifthenelse{\equal{\courseid}{ds}}
       {\dsdetails}{}
 	\ifthenelse{\equal{\courseid}{epl}}
@@ -697,13 +697,13 @@
     \ifthenelse{\equal{\courseid}{imc}}
       {\imcdetails}{}
     \ifthenelse{\equal{\courseid}{iotssc}}
-      {\iotsscdetails}{}	  
+      {\iotsscdetails}{}
     \ifthenelse{\equal{\courseid}{iqc}}
       {\iqcdetails}{}
     \ifthenelse{\equal{\courseid}{itcs}}
       {\itcsdetails}{}
     \ifthenelse{\equal{\courseid}{ivc}}
-      {\ivcdetails}{}	  
+      {\ivcdetails}{}
     \ifthenelse{\equal{\courseid}{ivr}}
       {\ivrdetails}{}
     \ifthenelse{\equal{\courseid}{iaml}}
@@ -718,9 +718,9 @@
       {\mtdetails}{}
 	\ifthenelse{\equal{\courseid}{mi}}
 	  {\midetails}{}
-    \ifthenelse{\equal{\courseid}{nlu}} 
+    \ifthenelse{\equal{\courseid}{nlu}}
       {\nludetails}{}
-    \ifthenelse{\equal{\courseid}{nc}} 
+    \ifthenelse{\equal{\courseid}{nc}}
       {\ncdetails}{}
     \ifthenelse{\equal{\courseid}{nip}}
       {\nipdetails}{}
@@ -729,7 +729,7 @@
     \ifthenelse{\equal{\courseid}{pa}}
       {\padetails}{}
     \ifthenelse{\equal{\courseid}{pdiot}}
-      {\pdiotdetails}{}	  
+      {\pdiotdetails}{}
     \ifthenelse{\equal{\courseid}{ppls}}
       {\pplsdetails}{}
     \ifthenelse{\equal{\courseid}{pm}}
@@ -764,13 +764,13 @@
       {\tspldetails}{}
 
   }
-  { 
+  {
    %
    % If we're here, then we're on an exam preparer's machine.
    % So, we're going to use their set \courseid to give some
    %  nice mock-up values to the title and type text.
    %
-  
+
     \ifthenelse{\equal{\courseid}{anlp}}
       {\papertitle{INFR 11125 Accelerated Natural Language Processing}
        \papertype{msc.inc}}{}
@@ -866,7 +866,7 @@
        \papertype{inf3.inc}}{}
     \ifthenelse{\equal{\courseid}{dmr}}
       {\papertitle{Decision Making in Robots and Autonomous Agents}
-       \papertype{nonhons.inc}}{}	   
+       \papertype{nonhons.inc}}{}
     \ifthenelse{\equal{\courseid}{dmmr}}
       {\papertitle{Discrete Mathematics and Mathematical Reasoning}
        \papertype{nonhons.inc}}{}
@@ -950,7 +950,7 @@
         \papertype{inf3.inc}}{}
     \ifthenelse{\equal{\courseid}{ivc}}
       {\papertitle{Image and Vision Computing}
-       \papertype{msc.inc}}{}		
+       \papertype{msc.inc}}{}
     \ifthenelse{\equal{\courseid}{ivr}}
       {\papertitle{Introduction to Vision and Robotics}
        \papertype{inf3.inc}}{}
@@ -971,7 +971,7 @@
        \papertype{inf4.inc}}{}
     \ifthenelse{\equal{\courseid}{mi}}
       {\papertitle{INFR11079 Music Informatics}
-       \papertype{msc.inc}}{}	  
+       \papertype{msc.inc}}{}
     \ifthenelse{\equal{\courseid}{nlu}}
       {\papertitle{Natural Language Understanding (Level 11)}
        \papertype{inf4.inc}}{}
@@ -1046,7 +1046,7 @@
  % Let's also do a mock-up date/time to make the exam preparer happy:
  % (Aren't we sweet?)
  %
-  
+
     \paperdate{1}{4}{2017}
     \papertimes{00:00}{00:00}
 
@@ -1092,7 +1092,7 @@
  \ifthenelse{\equal{\rubricid}{custom}}{}
  {
      %% HONS RUBRICS
-     
+
      \ifthenelse{\equal{\rubricid}{qu1_and_either_qu2_or_qu3}}{
      \setrubrictype{
          Answer QUESTION 1 and ONE other question. \\
@@ -1103,7 +1103,7 @@
 	      \bigskip
 	     CALCULATORS MAY NOT BE USED IN THIS EXAMINATION \\
          }
-         
+
          %% Additional command to be used for question 1.
          \def\rubricqA{THIS QUESTION IS COMPULSORY}
 		 \def\rubricqB{ANSWER EITHER THIS QUESTION OR QUESTION 3}
@@ -1121,7 +1121,7 @@
 
          CALCULATORS MAY BE USED IN THIS EXAMINATION \\
          }
-         
+
          %% Additional command to be used for question 1.
          \def\rubricqA{THIS QUESTION IS COMPULSORY}
 		 \def\rubricqB{ANSWER EITHER THIS QUESTION OR QUESTION 3}
@@ -1147,7 +1147,7 @@
          CALCULATORS MAY BE USED IN THIS EXAMINATION \\
          }
      }{}
-       
+
      \ifthenelse{\equal{\rubricid}{infone}}{
      \setrubrictype{
 	     \begin{enumerate}
@@ -1181,7 +1181,7 @@
          \end{enumerate}
          }
      }{}
-	
+
  }
 }
 
@@ -1191,7 +1191,7 @@
 % Now, we can build the title page.  This command must be called
 %  from the top-level exam document.
 %
-% To do so: \examtitlepage 
+% To do so: \examtitlepage
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1244,5 +1244,3 @@ THIS EXAMINATION WILL BE MARKED ANONYMOUSLY
 
 \status
 }
-
-

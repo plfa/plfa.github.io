@@ -9,17 +9,26 @@ OUT="$1"
 OUT_DIR="$(dirname $OUT)"
 shift
 
+# Extract the module name from the Agda file
+# NOTE: this fails if there is more than a single space after 'module'
+MOD_NAME=`grep -oP -m 1 "(?<=^module )(\\S+)(?=\\s+(\\S+\\s+)*where)" "$SRC"`
+
 # Create temporary directory and compute path to output of `agda --html`
-# NOTE: this assumes $OUT is equivalent to out/ plus the module path
 HTML_DIR="$(mktemp -d)"
-HTML="${OUT#out/}"
-HTML="/${HTML//\//.}"
-HTML="$HTML_DIR/$HTML"
+SRC_EXT="$(basename $SRC)"
+SRC_EXT="${SRC_EXT##*.}"
+HTML="$HTML_DIR/$MOD_NAME.$SRC_EXT"
 
 # Highlight Syntax using Agda
 set -o pipefail \
    && agda --html --html-highlight=code --html-dir="$HTML_DIR" "$SRC" "$@" \
     | sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$/d'
+
+# Check if the highlighted file was successfully generated
+if [[ ! -f "$HTML" ]]; then
+    echo "File not generated: $FILE"
+    exit 1
+fi
 
 # Add source file to the Jekyll metadata
 sed -i "1 s|---|---\nsrc: $SRC|" "$HTML"

@@ -1,16 +1,18 @@
 ---
-title     : "PUC-Assignment2: PUC Assignment 2"
+title     : "Assignment2: TSPL Assignment 2"
 layout    : page
-permalink : /PUC-Assignment2/
+permalink : /TSPL/2018/Assignment2/
 ---
 
 ```
-module PUC-Assignment2 where
+module Assignment2 where
 ```
 
 ## YOUR NAME AND EMAIL GOES HERE
 
 ## Introduction
+
+<!-- This assignment is due **4pm Thursday 18 October** (Week 5). -->
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -20,6 +22,7 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises without a label are optional, and may be done if you want
 some extra practice.
 
+<!-- Submit your homework using the "submit" command. -->
 Please ensure your files execute correctly under Agda!
 
 ## Imports
@@ -33,7 +36,6 @@ open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 open import plfa.Relations using (_<_; z<s; s<s)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
-open import Data.Product using (Σ; ∃; Σ-syntax; ∃-syntax)
 open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -44,14 +46,10 @@ open import Relation.Nullary.Negation using (¬?)
 open import Relation.Nullary.Product using (_×-dec_)
 open import Relation.Nullary.Sum using (_⊎-dec_)
 open import Relation.Nullary.Negation using (contraposition)
-open import Relation.Unary using (Decidable)
-open import Function using (_∘_)
-open import Level using (Level)
+open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 open import plfa.Relations using (_<_; z<s; s<s)
 open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
 open plfa.Isomorphism.≃-Reasoning
-open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
-  _++_; reverse; map; foldr; sum; All; Any; here; there; _∈_)
 ```
 
 ## Equality
@@ -60,7 +58,7 @@ open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
 
 The proof of monotonicity from
 Chapter [Relations][plfa.Relations]
-can be written in a more readable form by using an analogue of our
+can be written in a more readable form by using an anologue of our
 notation for `≡-reasoning`.  Define `≤-reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite both `+-monoˡ-≤` and `+-mono-≤`.
@@ -131,7 +129,7 @@ Show sum is commutative up to isomorphism.
 
 #### Exercise `⊎-assoc`
 
-Show sum is associative up to isomorphism.
+Show sum is associative up to ismorphism.
 
 #### Exercise `⊥-identityˡ` (recommended)
 
@@ -272,7 +270,7 @@ How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
-#### Exercise `∃-|-≤`
+#### Exercise `∃-+-≤`
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
@@ -363,195 +361,4 @@ postulate
   _iff_ : Bool → Bool → Bool
   _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
   iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
-```
-
-## Lists
-
-#### Exercise `reverse-++-commute` (recommended)
-
-Show that the reverse of one list appended to another is the
-reverse of the second appended to the reverse of the first.
-```
-postulate
-  reverse-++-commute : ∀ {A : Set} {xs ys : List A}
-    → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
-```
-
-#### Exercise `reverse-involutive` (recommended)
-
-A function is an _involution_ if when applied twice it acts
-as the identity function.  Show that reverse is an involution.
-```
-postulate
-  reverse-involutive : ∀ {A : Set} {xs : List A}
-    → reverse (reverse xs) ≡ xs
-```
-
-#### Exercise `map-compose`
-
-Prove that the map of a composition is equal to the composition of two maps.
-```
-postulate
-  map-compose : ∀ {A B C : Set} {f : A → B} {g : B → C}
-    → map (g ∘ f) ≡ map g ∘ map f
-```
-The last step of the proof requires extensionality.
-
-#### Exercise `map-++-commute`
-
-Prove the following relationship between map and append.
-```
-postulate
-  map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
-   →  map f (xs ++ ys) ≡ map f xs ++ map f ys
-```
-
-#### Exercise `map-Tree`
-
-Define a type of trees with leaves of type `A` and internal
-nodes of type `B`.
-```
-data Tree (A B : Set) : Set where
-  leaf : A → Tree A B
-  node : Tree A B → B → Tree A B → Tree A B
-```
-Define a suitable map operator over trees.
-```
-postulate
-  map-Tree : ∀ {A B C D : Set}
-    → (A → C) → (B → D) → Tree A B → Tree C D
-```
-
-#### Exercise `product` (recommended)
-
-Use fold to define a function to find the product of a list of numbers.
-For example,
-
-    product [ 1 , 2 , 3 , 4 ] ≡ 24
-
-#### Exercise `foldr-++` (recommended)
-
-Show that fold and append are related as follows.
-```
-postulate
-  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
-    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
-```
-
-
-#### Exercise `map-is-foldr`
-
-Show that map can be defined using fold.
-```
-postulate
-  map-is-foldr : ∀ {A B : Set} {f : A → B} →
-    map f ≡ foldr (λ x xs → f x ∷ xs) []
-```
-This requires extensionality.
-
-#### Exercise `fold-Tree`
-
-Define a suitable fold function for the type of trees given earlier.
-```
-postulate
-  fold-Tree : ∀ {A B C : Set}
-    → (A → C) → (C → B → C → C) → Tree A B → C
-```
-
-#### Exercise `map-is-fold-Tree`
-
-Demonstrate an analogue of `map-is-foldr` for the type of trees.
-
-#### Exercise `sum-downFrom` (stretch)
-
-Define a function that counts down as follows.
-```
-downFrom : ℕ → List ℕ
-downFrom zero     =  []
-downFrom (suc n)  =  n ∷ downFrom n
-```
-For example,
-```
-_ : downFrom 3 ≡ [ 2 , 1 , 0 ]
-_ = refl
-```
-Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
-equal to `n * (n ∸ 1) / 2`.
-```
-postulate
-  sum-downFrom : ∀ (n : ℕ)
-    → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
-```
-
-
-#### Exercise `foldl`
-
-Define a function `foldl` which is analogous to `foldr`, but where
-operations associate to the left rather than the right.  For example,
-
-    foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
-    foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
-
-
-#### Exercise `foldr-monoid-foldl`
-
-Show that if `_⊕_` and `e` form a monoid, then `foldr _⊗_ e` and
-`foldl _⊗_ e` always compute the same result.
-
-
-#### Exercise `Any-++-⇔` (recommended)
-
-Prove a result similar to `All-++-⇔`, but with `Any` in place of `All`, and a suitable
-replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
-`_∈_` and `_++_`.
-
-
-#### Exercise `All-++-≃` (stretch)
-
-Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
-
-
-#### Exercise `¬Any≃All¬` (stretch)
-
-First generalise composition to arbitrary levels, using
-[universe polymorphism][plfa.Equality#unipoly].
-```
-_∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
-  → (B → C) → (A → B) → A → C
-(g ∘′ f) x  =  g (f x)
-```
-
-Show that `Any` and `All` satisfy a version of De Morgan's Law.
-```
-postulate
-  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
-    → (¬_ ∘′ Any P) xs ≃ All (¬_ ∘′ P) xs
-```
-
-Do we also have the following?
-```
-postulate
-  ¬All≃Any¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
-    → (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
-```
-If so, prove; if not, explain why.
-
-
-#### Exercise `any?` (stretch)
-
-Just as `All` has analogues `all` and `all?` which determine whether a
-predicate holds for every element of a list, so does `Any` have
-analogues `any` and `any?` which determine whether a predicates holds
-for some element of a list.  Give their definitions.
-
-
-#### Exercise `filter?` (stretch)
-
-Define the following variant of the traditional `filter` function on lists,
-which given a list and a decidable predicate returns all elements of the
-list satisfying the predicate.
-```
-postulate
-  filter? : ∀ {A : Set} {P : A → Set}
-    → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
 ```

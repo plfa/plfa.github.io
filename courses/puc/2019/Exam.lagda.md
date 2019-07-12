@@ -1,7 +1,7 @@
 ---
 title     : "Exam: TSPL Mock Exam file"
 layout    : page
-permalink : /Exam/
+permalink : /PUC/2019/Exam/
 ---
 
 

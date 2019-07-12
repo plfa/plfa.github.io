@@ -1,11 +1,11 @@
 ---
-title     : "PUC-Assignment4: PUC Assignment 4"
+title     : "Assignment4: PUC Assignment 4"
 layout    : page
-permalink : /PUC-Assignment4/
+permalink : /PUC/2019/Assignment4/
 ---
 
 ```
-module PUC-Assignment4 where
+module Assignment4 where
 ```
 
 ## YOUR NAME AND EMAIL GOES HERE
