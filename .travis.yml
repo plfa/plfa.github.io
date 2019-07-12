@@ -44,7 +44,7 @@ script:
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
 - make clean
-- rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile
+- rm -rf hs/ extra/ depr/ papers/ slides/ vendor/ *.agdai *.agda-lib *.lagda.md Guardfile Gemfile Gemfile.lock Makefile highlight.sh .gitignore .travis.yml
 
 branches:
   only:
