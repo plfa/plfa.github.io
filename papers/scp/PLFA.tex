@@ -101,7 +101,7 @@ foundation of proof is on proud display.
 
 Alas, there is no textbook for programming language theory in
 Agda.  \emph{Verified Functional Programming in Agda} by \citep{Stump-2016}
-covers related ground, but focusses more on programming with dependent
+covers related ground, but focuses more on programming with dependent
 types than on the theory of programming languages.
 
 The original goal was to simply adapt \emph{Software Foundations},
@@ -172,7 +172,7 @@ central example.  The textbook is written as a literate script in Agda.
 As with SF, the hope is that using
 a proof assistant will make the development more concrete
 and accessible to students, and give them rapid feedback to find
-and correct misaprehensions.
+and correct misapprehensions.
 
 The book is broken into two parts. The first part, Logical Foundations,
 develops the needed formalisms.  The second part, Programming Language
@@ -301,33 +301,68 @@ Agda is streamlined by the use of ideas from
 \citet{Schafer-Tebbi-Smolka-2015} and \citet{Pfenning-1992}.
 
 \paragraph{Big-step: evaluation for call-by-name}
-Introduces the notion of big-step evaluation to develop a
-deterministic call-by-name reduction strategy. The main result of this
-chapter is a proof that big-step evaluation implies the existence of a
-reduction sequence that terminates with a lambda abstraction.
+Introduces the notion of big-step evaluation, written $\gamma \vdash M
+\Downarrow V$, to develop a deterministic call-by-name reduction
+strategy. The main result of this chapter is a proof that big-step
+evaluation implies the existence of a reduction sequence that
+terminates with a lambda abstraction.
 
 \subsection*{Part III, Denotational Semantics}
 
 \paragraph{Denotational: semantics of the untyped lambda calculus}
 The early denotational semantics of the lambda calculus based on graph
 models~\citep{Scott-1976,Engeler-1981,Plotkin-1993} and filter
-models~\citep{Barendregt-1983} were particularly simple and elegant.
-This chapter presents such a semantics in a big-step style that is
-approachable to readers familiar with operational semantics.
+models~\citep{Barendregt-1983} were particularly simple and elegant: a
+function is modeled as a lookup table.  This chapter presents such a
+semantics using a big-step notation that is approachable to readers
+familiar with operational semantics, writing $\gamma \vdash M
+\downarrow d$ for the evaluation of a term $M$ to denotation $d$ in
+environment $\gamma$.
 
 \paragraph{Compositional: the denotational semantics is compositional}
-TODO
+The hallmark of denotational semantics is that they are compositional:
+the meaning of each language form is a function of the meanings of its
+parts.
+%
+We define two functions, named \texttt{curry} and \texttt{apply} that
+serve this purpose for lambda abstraction and application.
+%
+The results in this chapter include congruences for \texttt{curry} and
+\texttt{apply} and the compositionality property for the denotational
+semantics.
+%
+The chapter concludes with a functional definition of the denotational
+semantics and a proof that it is equivalent to the big-step version.
 
 \paragraph{Soundness: of reduction with respect to denotational semantics}
-TODO
+Reduction implies denotational equality. We prove each direction of
+the equality, first showing the reduction preserves denotations
+(subject reduction), and then showing that reduction reflects
+denotations (subject expansion). The first proof is similar to the
+type preservation proofs in Part II. The second goes in reverse,
+showing that if $M \longrightarrow N$ and $\gamma \vdash N
+\downarrow d$, then $\gamma \vdash M \downarrow d$ .
 
 \paragraph{Adequacy: of denotational semantics with respect to reduction}
-TODO
-
+If a term is denotationally equal to a lambda expression, then it
+reduces to a lambda expression. The main lemma shows that if a term's
+denotation is functional, i.e., $\gamma \vdash M \downarrow (d \mapsto
+d')$, then $M$ terminates according to the call-by-name big-step
+semantics, i.e., $\gamma' \vdash M \Downarrow V$. A logical relation
+$\mathbb{V}$ is used to relate denotations and values (i.e. closures).
+The implication from the big-step semantics to reduction is proved in
+the Big-step chapter of Part II.
 
 \paragraph{Contextual Equivalence: is implied by denotational equality}
-TODO
-
+The main criteria for behavior-preserving code transformation (such as
+compiler optimization or programmer refactoring) is contextual
+equivalence. Two terms are contextually equivalent when they can both
+be placed into an arbitrary context (a program with a hole) and the
+resulting programs behave the same (e.g., they both terminate or they
+both diverge). This chapter ties together the previous results
+(Compositionality, Soundness, and Adequacy) to show that denotational
+equality implies contextual equivalence. Thus, it is safe to use
+denotational equality to justify code transformations.
 
 
 \subsection*{Discussion}
@@ -654,7 +689,7 @@ expressions'' \citep{Kiselyov-2009}.)
 \end{figure}  
 
 The second part of PLFA first discusses two different approaches to
-modelling simply-typed lambda calculus.  It first presents raw
+modeling simply-typed lambda calculus.  It first presents raw
 terms with named variables and a separate typing relation and
 then shifts to inherently-typed terms with de Bruijn indices.
 Before writing the text, I had thought the two approaches
@@ -665,7 +700,7 @@ Figure~\ref{fig:raw} presents the raw approach.
 It first defines $\texttt{Id}$, $\texttt{Term}$,
 $\texttt{Type}$, and $\texttt{Context}$, the abstract syntax
 of identifiers, raw terms, types, and contexts.
-It then defines two judgements,
+It then defines two judgments,
 $\GG\:{\ni}\:\ex\:{\typecolon}\:\AY$ and
 $\GG\:{\vdash}\:\EM\:{\typecolon}\:\AY$,
 which hold when under context $\GG$ the variable $\ex$
@@ -674,11 +709,11 @@ and the term $\EM$ have type $\AY$, respectively.
 Figure~\ref{fig:inherent} presents the inherent approach.
 It first defines $\texttt{Type}$ and $\texttt{Context}$, the abstract syntax
 of types and contexts, of which the first is as before and the second is
-as before with identifiers dropped.  In place of the two judgements,
+as before with identifiers dropped.  In place of the two judgments,
 the types of variables and terms are indexed by a context and a type,
 so that $\GG\:{\ni}\:\AY$ and $\GG\:{\vdash}\:\AY$ denote
-variables and terms, respectively, that under context $\GG$ hae type $\AY$.
-The indexed types closely resemble the previous judgements:
+variables and terms, respectively, that under context $\GG$ have type $\AY$.
+The indexed types closely resemble the previous judgments:
 we now represent a variable or a term by the proof that it is well-typed.
 In particular, the proof that a variable is well-typed in the raw approach
 corresponds to a de Bruijn index in the inherent approach.
@@ -686,8 +721,8 @@ corresponds to a de Bruijn index in the inherent approach.
 The raw approach requires more lines of code than
 the inherent approach.  The separate definition of raw
 terms is not needed in the inherent
-approach; and one judgement in the raw approach needs to check that
-$\ex \not\equiv \why$, while the corresponding judgement in the
+approach; and one judgment in the raw approach needs to check that
+$\ex \not\equiv \why$, while the corresponding judgment in the
 inherent approach does not.  The difference becomes more pronounced
 when including the code for substitution, reductions, and proofs of
 progress and preservation.  In particular, where the raw approach
@@ -724,7 +759,7 @@ advantages of de Bruijn indices and inherent types.
 There are actually four possible designs, as the choice of named
 variables vs de Bruijn indices, and the choice of raw vs
 inherently-typed terms may be made independently.  There are synergies
-beween the two.  Manipulation of de Bruijn indices can be notoriously
+between the two.  Manipulation of de Bruijn indices can be notoriously
 error-prone without inherent-typing to give assurance of correctness.
 In inherent typing with named variables, simultaneous substitution by
 open terms remains difficult.
@@ -742,7 +777,7 @@ I look forward to experience teaching from the new text,
 and encourage others to use it too.  Please comment!
 
 
-\paragraph{Acknowledgements}
+\paragraph{Acknowledgments}
 
 A special thank you to my coauthor, Wen Kokke.  For inventing ideas on
 which PLFA is based, and for hand-holding, many thanks to Conor
@@ -763,3 +798,25 @@ EP/K034413/1.
 \end{document}
 
 
+
+% LocalWords:  Agda adr Kokke Siek Wadler Woodlawn Bloomington Coq et
+% LocalWords:  PLFA evaluator normalise programme programmes al Huet
+% LocalWords:  ICFP subst Bove Mixfix de Janeiro summarising favour
+% LocalWords:  organised formalising Colour Gonthier CompCert Kastner
+% LocalWords:  SEL honours formalisms monus associativity reflexivity
+% LocalWords:  commutativity equational of's Isomorphism isomorphism
+% LocalWords:  extensionality disjunction intuitionistic existentials
+% LocalWords:  Booleans booleans monoid specialisation PCF Plotkin EP
+% LocalWords:  fixpoint DeBruijn Bruijn indices Bisimulation Untyped
+% LocalWords:  bisimulation normalisation untyped Abadi Barendregt
+% LocalWords:  Rosser Tait Schafer Tebbi Smolka Pfenning Denotational
+% LocalWords:  denotational Engeler lookup Compositional congruences
+% LocalWords:  compositional compositionality denotationally Hoare
+% LocalWords:  refactoring subtyping Appel QuickChick formalise SF's
+% LocalWords:  Stlc StlcProp Coq's reinvoke Agda's postconditions Ulf
+% LocalWords:  flavour layed emphasises tvar tapp CoqIDE sublanguage
+% LocalWords:  submenus Danas monospaced FreeMono Felleisen Redex
+% LocalWords:  Rosu Serbanuta realise Capretta cryptocurrencies Oleg
+% LocalWords:  evaluators Dagand Scherer Kiselyov eval Goguen McKinna
+% LocalWords:  Altenkirch Reus Allais Darais Conor Norell Andreas
+% LocalWords:  EPSRC
