@@ -109,7 +109,6 @@ macos-setup:
 # Travis Setup (install Agda, the Agda standard library, agda2html, acknowledgements, etc.)
 travis-setup:\
 	$(HOME)/.local/bin/agda\
-	$(HOME)/.local/bin/agda2html\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
