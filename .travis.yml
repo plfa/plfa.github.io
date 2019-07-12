@@ -38,9 +38,8 @@ before_install:
 
 script:
 - agda --version
-- agda2html --version
 - acknowledgements --version
-- make test-offline
+# - make test-offline # disable to only build cache
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
