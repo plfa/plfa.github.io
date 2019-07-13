@@ -64,6 +64,14 @@ fi
 
 sed -i -f "$AGDA_STDLIB_SED" "$HTML"
 
+# Fix links to local modules
+# TODO:
+#   1) gather source files from the dirname and --include-path arguments, e.g., src/ and courses/tspl/2018/
+#   2) compute module filenames for these files and compute their HTML output names (as above)
+#   3) compute output filenames for these files (requires output names to be computable)
+#   4) create sed script which matches and replaces the HTML filenames with Jekyll links to the output filenames
+#   5) run sed script
+
 # Copy over the temporary file to the output path
 mkdir -p "$OUT_DIR"
 cp "$HTML" "$OUT"
