@@ -5,17 +5,16 @@ permalink: /GettingStarted/
 ---
 
 [![Build Status](https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev)](https://travis-ci.org/plfa/plfa.github.io)
-[![Agda](https://img.shields.io/badge/agda-2.5.4.2-blue.svg)](https://github.com/agda/agda/releases/tag/v2.5.4.2)
-[![agda-stdlib](https://img.shields.io/badge/agda--stdlib-0.17-blue.svg)](https://github.com/agda/agda-stdlib/releases/tag/v0.17)
-[![agda2html](https://img.shields.io/badge/agda2html-0.2.4.0-blue.svg)](https://github.com/wenkokke/agda2html/releases/tag/v0.2.4.0)
+[![Agda](https://img.shields.io/badge/agda-2.6.0.1-blue.svg)](https://github.com/agda/agda/releases/tag/v2.6.0.1)
+[![agda-stdlib](https://img.shields.io/badge/agda--stdlib-1.1-blue.svg)](https://github.com/agda/agda-stdlib/releases/tag/v1.1)
 
 
 # Getting Started with PLFA
 
 There are several tools you need to work with PLFA:
 
-  - [Agda](https://agda.readthedocs.io/en/v2.5.4.2/getting-started/installation.html)
-  - [Agda standard library](https://github.com/agda/agda-stdlib/tree/5819a4dd9c965296224944f05b1481805649bdc2)
+  - [Agda](https://agda.readthedocs.io/en/v2.6.0.1/getting-started/installation.html)
+  - [Agda standard library](https://github.com/agda/agda-stdlib/releases/tag/v1.1)
 
 For most of the tools, you can simply follow their respective build instructions.
 We list the versions of our dependencies on the badges above.
@@ -27,7 +26,7 @@ or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archi
     git clone https://github.com/plfa/plfa.github.io 
 
 Finally, we need to let Agda know where to find the standard library.
-For this, you can follow the instructions [here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html#example-using-the-standard-library).
+For this, you can follow the instructions [here](https://agda.readthedocs.io/en/v2.6.0.1/tools/package-system.html#example-using-the-standard-library).
 
 It is possible to set up PLFA as an Agda library as well.
 If you are trying to complete the exercises found in the `tspl` folder, or otherwise want to import modules from the book, you need to do this.
@@ -38,19 +37,12 @@ To do so, add the path to `plfa.agda-lib` to `~/.agda/libraries` and add `plfa` 
 
 To build and host a local copy of the book, there are several tools you need *in addition to those listed above*:
 
-  - [agda2html](https://github.com/wenkokke/agda2html)
   - [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
   - [Bundler](https://bundler.io/#getting-started)
   
 For most of the tools, you can simply follow their respective build instructions.
 Most recent versions of Ruby should work.
-We advise installing agda2html using [Stack](https://docs.haskellstack.org/en/stable/README/):
-
-    git clone https://github.com/wenkokke/agda2html.git
-    cd agda2html
-    stack install 
-
-Finally, you must install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proofer](https://github.com/gjtorikian/html-proofer), *etc.*---using Bundler:
+You install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proofer](https://github.com/gjtorikian/html-proofer), *etc.*---using Bundler:
 
     bundle install
 
@@ -87,6 +79,7 @@ unzip, and from within the directory run
     bundle install
     bundle exec jekyll serve
 
+
 ## GNU sed and macOS
 
 The version of sed that ships with macOS is not fully compatible with the GNU sed.
@@ -98,15 +91,6 @@ You can fix this error by installing a GNU compatible version of sed, e.g. using
 ```
 brew install gnu-sed --with-default-names
 ```
-
-## Updating `agda2html`
-
-Sometimes we have to update agda2html. 
-To update your local copy, run the following commands from your clone of the
-agda2html repository, or simply follow the installation instructions again:
-
-    git pull
-    stack install
 
 
 ## Unicode characters

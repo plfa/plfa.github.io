@@ -1,15 +1,17 @@
 SHELL := /bin/bash
-agda := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.lagda')
-agdai := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/tspl/*' \) -and -name '*.agdai')
-markdown := $(subst tspl/,out/,$(subst src/,out/,$(subst .lagda,.md,$(agda))))
+AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
+AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
+MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
+AGDA_STDLIB_SED := ".agda-stdlib.sed"
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
 else
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/v$(AGDA_STDLIB_VERSION)/
 endif
+
 
 # Build PLFA and test hyperlinks
 test: build
@@ -29,18 +31,24 @@ out/:
 	mkdir -p out/
 
 
-# Build PLFA pages
-out/%.md: src/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
-	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
+# Convert literal Agda to Markdown
+define AGDA_template
+in := $(1)
+out := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
+$$(out) : in  = $(1)
+$$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
+$$(out) : $$(in) | out/
+	@echo "Processing $$(subst ./,,$$(in))"
+ifeq (,$$(findstring courses/,$$(in)))
+	./highlight.sh $$(in)
+else
+# Fix links to the file itself (out/<filename> to out/<filepath>)
+	./highlight.sh $$(in) --include-path $(realpath src) --include-path $$(realpath $$(dir $$(in)))
+	@sed -i 's|out/$$(notdir $$(out))|$$(subst ./,,$$(out))|g' $$(out)
+endif
+endef
 
-
-# Build TSPL pages
-out/%.md: tspl/%.lagda | out/
-	set -o pipefail && agda2html $(AGDA2HTML_FLAGS) -i $< -o $@ -- --include-path=$(realpath src) 2>&1 \
-		| sed '/^Generating.*/d; /^Warning\: HTML.*/d; /^reached from the.*/d; /^\s*$$/d'
-	@sed -i '1 s|---|---\nsrc       : $(<)|' $@
+$(foreach agda,$(AGDA),$(eval $(call AGDA_template,$(agda))))
 
 
 # Start server
@@ -60,25 +68,26 @@ server-stop:
 
 # Build website using jekyll
 build: AGDA2HTML_FLAGS += --link-to-agda-stdlib=$(AGDA_STDLIB_URL)
-build: $(markdown)
+build: $(MARKDOWN)
 	ruby -S bundle exec jekyll build
 
 
 # Build website using jekyll offline
-build-offline: $(markdown)
+build-offline: $(MARKDOWN)
 	ruby -S bundle exec jekyll build
 
 
 # Build website using jekyll incrementally
 build-incremental: AGDA2HTML_FLAGS += --link-to-agda-stdlib
-build-incremental: $(markdown)
+build-incremental: $(MARKDOWN)
 	ruby -S bundle exec jekyll build --incremental
 
 
 # Remove all auxiliary files
 clean:
-ifneq ($(strip $(agdai)),)
-	rm $(agdai)
+	rm -f $(AGDA_STDLIB_SED)
+ifneq ($(strip $(AGDAI)),)
+	rm $(AGDAI)
 endif
 
 
@@ -92,7 +101,7 @@ clobber: clean
 
 # List all .lagda files
 ls:
-	@echo $(agda)
+	@echo $(AGDA)
 
 .phony: ls
 
@@ -111,7 +120,6 @@ macos-setup:
 # Travis Setup (install Agda, the Agda standard library, agda2html, acknowledgements, etc.)
 travis-setup:\
 	$(HOME)/.local/bin/agda\
-	$(HOME)/.local/bin/agda2html\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
