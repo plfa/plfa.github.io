@@ -40,10 +40,10 @@ $$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(
 $$(out) : $$(in) | out/
 	@echo "Processing $$(subst ./,,$$(in))"
 ifeq (,$$(findstring courses/,$$(in)))
-	./highlight.sh $$(in) $$(out)
+	./highlight.sh $$(in)
 else
 # Fix links to the file itself (out/<filename> to out/<filepath>)
-	./highlight.sh $$(in) $$(out) --include-path $(realpath src) --include-path $$(realpath $$(dir $$(in)))
+	./highlight.sh $$(in) --include-path $(realpath src) --include-path $$(realpath $$(dir $$(in)))
 	@sed -i 's|out/$$(notdir $$(out))|$$(subst ./,,$$(out))|g' $$(out)
 endif
 endef

@@ -5,9 +5,14 @@ AGDA_STDLIB_SED=".agda-stdlib.sed"
 SRC="$1"
 shift
 
-OUT="$1"
+function out_path {
+    OUT="$1"
+    OUT=$(eval "echo \"$OUT\" | sed -e \"s|/src/|/out/|; s|/courses/|/out/|; s|\.lagda\.md|\.md|;\"")
+    echo "$OUT"
+}
+
+OUT="$(out_path $SRC)"
 OUT_DIR="$(dirname $OUT)"
-shift
 
 # Extract the module name from the Agda file
 # NOTE: this fails if there is more than a single space after 'module'
