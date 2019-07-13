@@ -53,7 +53,9 @@ else
     AGDA_STDLIB_URL="https://agda.github.io/agda-stdlib/v$AGDA_STDLIB_VERSION/"
 fi
 
+# Create a sed script which matches and replaces all Agda standard library links
 if [ ! -f "$AGDA_STDLIB_SED" ]; then
+    echo "s|\\(Agda\\.[A-Za-z\\.]*\\)|$AGDA_STDLIB_URL\\1|;" > "$AGDA_STDLIB_SED"
     find "$STDLIB_PATH" -name "*.agda" -print0 | while read -d $'\0' AGDA_MODULE_PATH; do
         AGDA_MODULE=$(eval "echo \"$AGDA_MODULE_PATH\" | sed -e \"s|$STDLIB_PATH/||g; s|/|\\\.|g; s|\.agda|\\\.html|g\"")
         echo "s|$AGDA_MODULE|$AGDA_STDLIB_URL$AGDA_MODULE|g;" >> "$AGDA_STDLIB_SED"
