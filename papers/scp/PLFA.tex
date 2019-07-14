@@ -371,28 +371,27 @@ PLFA and SF differ in several particulars.  PLFA begins with a computationally
 complete language, PCF, while SF begins with a minimal language, simply-typed
 lambda calculus with booleans.  PLFA does not include type annotations in terms,
 and uses bidirectional type inference, while SF has terms with unique types and
-uses type checking.  SF also covers a simple imperative language with Hoare logic,
-and for lambda calculus covers subtyping, record types, mutable references, and normalisation
----none of which are treated by PLFA.  PLFA covers an inherently-typed de Bruijn
-representation, bidirectional type inference, bisimulation, and an
-untyped call-by-name language with full normalisation---none of which
-are treated by SF.
+uses type checking.  SF also covers a simple imperative language with Hoare
+logic, and for lambda calculus covers subtyping, record types, mutable
+references, and normalisation---none of which are treated by PLFA.  PLFA covers
+an inherently-typed de Bruijn representation, bidirectional type inference,
+bisimulation, and an untyped call-by-name language with full
+normalisation---none of which are treated by SF. 
 
 SF has a third volume, written by Andrew Appel, on Verified Functional
-Algorithms. I'm not sufficiently familiar with that volume to have a view
-on whether it would be easy or hard to cover that material in Agda.
-And SF recently added a fourth volume on random testing of Coq specifications
-using QuickChick.  There is currently no tool equivalent to QuickChick
-available for Agda.
+Algorithms. I'm not sufficiently familiar with that volume to have a view on
+whether it would be easy or hard to cover that material in Agda. And SF recently
+added a fourth volume on random testing of Coq specifications using QuickChick.
+There is currently no tool equivalent to QuickChick available for Agda.
 
-There is more material that would be desirable to include in PLFA
-which was not due to limits of time.  In future years, PLFA may be
-extended to cover additional material, including mutable references,
-normalisation, System F, and pure type systems.
-We'd especially like to include pure type systems as they
-provide the readers with a formal model close to the dependent types
-used in the book.  Our attempts so far to formalise pure type systems
-have proved challenging, to say the least.
+
+There is more material that would be desirable to include in PLFA which was not
+due to limits of time.  In future years, PLFA may be extended to cover
+additional material, including mutable references, normalisation, System F, and
+pure type systems. We'd especially like to include pure type systems as they
+provide the readers with a formal model close to the dependent types used in the
+book.  Our attempts so far to formalise pure type systems have proved
+challenging, to say the least.
 
 \section{Proofs in Agda and Coq}
 
@@ -457,16 +456,25 @@ structurally smaller arguments.  We suspect tactics could cut down the
 proof significantly. We tried to compare with SF's proof that reduction
 is deterministic, but failed to find that proof.
 
-SF covers an imperative language with Hoare logic, culminating in
-code that takes an imperative programme suitably decorated with preconditions
-and postconditions and generates the necessary
-verification conditions. The conditions are then verified by a custom
-tactic, where any questions of arithmetic are resolved by the
-``omega'' tactic invoking a decision procedure.  The entire
-exercise would be easy to repeat in Agda, save for the last step: we
-suspect Agda's automation would not be up to verifying the generated
-conditions, requiring tedious proofs by hand.  However, we had already
-decided to omit Hoare logic in order to focus on lambda calculus.
+SF covers an imperative language with Hoare logic, culminating in code that
+takes an imperative programme suitably decorated with preconditions and
+postconditions and generates the necessary verification conditions. The
+conditions are then verified by a custom tactic, where any questions of
+arithmetic are resolved by the ``omega'' tactic invoking a decision procedure.
+The entire exercise would be easy to repeat in Agda, save for the last step, as
+Agda does not offer support for proof automation out of the box. It is 
+certainly possible to implement proof automation in Agda---see, e.g., the auto
+tactic by \citet{Kokke-2015}, and the collection of tactics in Ulf Norell's
+\texttt{agda-prelude}\footnote{\url{https://github.com/UlfNorell/agda-prelude}}.
+The standard library comes equipped with solvers for equations on monoids and
+rings\footnote{\url{https://agda.github.io/agda-stdlib/Algebra.Solver.Ring.html}},
+and a much improved solver for equalities on rings was recently contributed by
+\citet{Kidney-2019}.
+We suspect that, while Agda's automation would be up to verifying the generated
+conditions, some effort would be require to implement the required custom
+tactic, and a section would need to be added to the book to cover proof
+automation. For the time being, we have decided to omit Hoare logic in order to
+focus on lambda calculus.
 
 To give a flavour of how the texts compare, we show the
 proof of progress for simply-typed lambda calculus from both texts.
@@ -770,15 +778,13 @@ and encourage others to use it too.  Please comment!
 
 \paragraph{Acknowledgments}
 
-A special thank you to my coauthor, Wen Kokke.  For inventing ideas on
-which PLFA is based, and for hand-holding, many thanks to Conor
-McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing me
-how much more compact it is to avoid raw terms, thanks to David
-Darais.  For inspiring my work by writing SF, thanks to Benjamin
-Pierce and his coauthors.  For comments on a draft of this paper, an
-extra thank you to James McKinna, Ulf Norell, Andreas Abel, and
-Benjamin Pierce. This research was supported by EPSRC Programme Grant
-EP/K034413/1.
+For inventing ideas on which PLFA is based, and for hand-holding, many thanks to
+Conor McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing me how
+much more compact it is to avoid raw terms, thanks to David Darais.  For
+inspiring my work by writing SF, thanks to Benjamin Pierce and his coauthors.
+For comments on a draft of this paper, an extra thank you to James McKinna, Ulf
+Norell, Andreas Abel, and Benjamin Pierce. This research was supported by EPSRC
+Programme Grant EP/K034413/1.
 
 
 \section*{References}
