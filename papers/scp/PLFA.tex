@@ -635,6 +635,12 @@ Redex \citep{Felleisen-et-al-2009} and K \citep{Rosu-Serbanuta-2010},
 advertise as one of their advantages that they can generate
 a prototype from descriptions of the reduction rules.
 
+% new
+Philip had been exposed to the work of the K team, as both consulted
+for IOHK, a cryptocurrency firm.  This put us keenly in mind of the
+need for animation; Philip sometime referred to this as ``K-envy'' or
+``Redex-envy''.
+
 % TODO: rewrite use of 'Philip' to reflect all authors?
 Philip was therefore surprised to realise that any constructive proof of
 progress and preservation \emph{automatically} gives rise to such a
@@ -662,17 +668,44 @@ running the evaluator with its unedited output.
 It is immediately obvious that progress and preservation make it
 trivial to construct a prototype evaluator, and yet we cannot find such
 an observation in the literature nor mentioned in an introductory
-text.  It does not appear in SF, nor in \citet{Harper-2016}.  A plea
+text.  It does not appear in SF, which introduces a specialised
+\texttt{normalise} tactic instead.  A plea
 to the Agda mailing list failed to turn up any prior mentions.
-The closest related observation I have seen in the published
+The closest related observation we have seen in the published
 literature is that evaluators can be extracted from proofs of
 normalisation \citep{Berger-1993,Dagand-and-Scherer-2015}.
 
-(Late addition: Our plea to the Agda list eventually bore fruit.  Oleg
-Kiselyov directed me to unpublished remarks on his web page where he
-uses the name \texttt{eval} for a proof of progress and notes ``the
-very proof of type soundness can be used to evaluate sample
-expressions'' \citep{Kiselyov-2009}.)
+% NEW
+Some researchers are clearly familiar with the connection between
+progress and preservation and animation.  In private correspondence,
+Bob Harper referred to it as the \emph{pas de deux}, a dance between
+progress, which takes well-typing to a step, and preservation, which
+takes a step back to well-typing.  Nonetheless, neither the technique
+nor the appealing terminology, appears in \citet{Harper-2016}.  The
+appeal to the Agda mailing list bore late fruit: Oleg Kiselyov
+directed me to unpublished remarks on his web page where he uses the
+name \texttt{eval} for a proof of progress and notes ``the very proof
+of type soundness can be used to evaluate sample expressions''
+\citep{Kiselyov-2009}.  Nonetheless, as of this writing, we still have
+not located a mention in the published literature.
+
+% NEW
+There are places in the literature where one might expect a remark on
+the relation between progress and preservation and animation---but no
+such remark appears.  In the PoplMark Challenge
+\citep{Ayedemir-et-al-2005}, Challenge~2A is to prove progress and
+preservation for System F$_{<:}$, while Challenge~3 is to prove
+animation for the same system. Nowhere do the authors indicate that in
+an intuitionistic logic these are essentially the same problem.
+\cite{Owens-et-al-2016}, when discussing extraction of animators for
+small-step semantics, mention Redex and K, but no other possibilities.
+We hope the stress in PLFA on the fact that in an intuitionistic
+setting progress and preservation imply animation will mean that the
+connection becomes more widely known.
+
+
+
+
 
 
 \section{Inherent typing is golden}
