@@ -1057,7 +1057,7 @@ The constructors `Z` and `S` correspond roughly to the constructors
 `here` and `there` for the element-of relation `_∈_` on lists.
 Constructor `S` takes an additional parameter, which ensures that
 when we look up a variable that it is not _shadowed_ by another
-variable with the same name earlier in the list.
+variable with the same name to its left in the list.
 
 ### Typing judgment
 
