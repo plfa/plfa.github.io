@@ -61,7 +61,7 @@ that `M —→ N`.
 
 So, either we have a value, and we are done, or we can take a reduction step.
 In the latter case, we would like to apply progress again. But to do so we need
-to know that the term yielded by the reduction is itself closed and well-typed.
+to know that the term yielded by the reduction is itself closed and well typed.
 It turns out that this property holds whenever we start with a closed,
 well-typed term.
 
@@ -70,7 +70,7 @@ _Preservation_: If `∅ ⊢ M ⦂ A` and `M —→ N` then `∅ ⊢ N ⦂ A`.
 This gives us a recipe for automating evaluation. Start with a closed
 and well-typed term.  By progress, it is either a value, in which case
 we are done, or it reduces to some other term.  By preservation, that
-other term will itself be closed and well-typed.  Repeat.  We will
+other term will itself be closed and well typed.  Repeat.  We will
 either loop forever, in which case evaluation does not terminate, or
 we will eventually reach a value, which is guaranteed to be closed and
 of the same type as the original term.  We will turn this recipe into
@@ -78,8 +78,8 @@ Agda code that can compute for us the reduction sequence of `plus ·
 two · two`, and its Church numeral variant.
 
 (The development in this chapter was inspired by the corresponding
-development in _Software Foundations, volume _Programming Language
-Foundations_, chapter _StlcProp_.  It will turn out that one of our technical choices
+development in _Software Foundations_, Volume _Programming Language
+Foundations_, Chapter _StlcProp_.  It will turn out that one of our technical choices
 — to introduce an explicit judgment `Γ ∋ x ⦂ A` in place of
 treating a context as a function from identifiers to types —
 permits a simpler development. In particular, we can prove substitution preserves
@@ -131,7 +131,7 @@ Well-typed values must take one of a small number of _canonical forms_.
 We provide an analogue of the `Value` relation that relates values
 to their types.  A lambda expression must have a function type,
 and a zero or successor expression must be a natural.
-Further, the body of a function must be well-typed in a context
+Further, the body of a function must be well typed in a context
 containing only its bound variable, and the argument of successor
 must itself be canonical:
 ```
@@ -176,8 +176,8 @@ There are only three interesting cases to consider:
 
 * If the term is zero then it is canonical trivially.
 
-* If the term is a successor then since it is well-typed its argument
-  is well-typed, and since it is a value its argument is a value.
+* If the term is a successor then since it is well typed its argument
+  is well typed, and since it is a value its argument is a value.
   Hence, by induction its argument is also canonical.
 
 The variable case is thrown out because a closed term has no free
@@ -186,7 +186,7 @@ application, case expression, and fixpoint are thrown out because they
 are not values.
 
 Conversely, if a term is canonical then it is a value
-and it is well-typed in the empty context:
+and it is well typed in the empty context:
 ```
 value : ∀ {M A}
   → Canonical M ⦂ A
@@ -221,8 +221,8 @@ then the term
      s · `zero
 
 cannot reduce because we do not know which function is bound to the
-free variable `s`.  The first of those terms is ill-typed, and the
-second has a free variable.  Every term that is well-typed and closed
+free variable `s`.  The first of those terms is ill typed, and the
+second has a free variable.  Every term that is well typed and closed
 has the desired property.
 
 _Progress_: If `∅ ⊢ M ⦂ A` then either `M` is a value or there is an `N` such
@@ -247,7 +247,7 @@ A term `M` makes progress if either it can take a step, meaning there
 exists a term `N` such that `M —→ N`, or if it is done, meaning that
 `M` is a value.
 
-If a term is well-typed in the empty context then it satisfies progress:
+If a term is well typed in the empty context then it satisfies progress:
 ```
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
@@ -272,7 +272,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-suc CL                            =  step (β-suc (value CL))
 progress (⊢μ ⊢M)                            =  step β-μ
 ```
-We induct on the evidence that the term is well-typed.
+We induct on the evidence that the term is well typed.
 Let's unpack the first three cases:
 
 * The term cannot be a variable, since no variable is well typed
@@ -281,7 +281,7 @@ Let's unpack the first three cases:
 * If the term is a lambda abstraction then it is a value.
 
 * If the term is an application `L · M`, recursively apply
-  progress to the derivation that `L` is well-typed:
+  progress to the derivation that `L` is well typed:
 
   + If the term steps, we have evidence that `L —→ L′`,
     which by `ξ-·₁` means that our original term steps
@@ -289,7 +289,7 @@ Let's unpack the first three cases:
 
   + If the term is done, we have evidence that `L` is
     a value. Recursively apply progress to the derivation
-    that `M` is well-typed:
+    that `M` is well typed:
 
     - If the term steps, we have evidence that `M —→ M′`,
       which by `ξ-·₂` means that our original term steps
@@ -377,12 +377,12 @@ In symbols:
     ---------------------------------
     ∀ {M A} → Γ ⊢ M ⦂ A  →  Δ ⊢ M ⦂ A
 
-Three important corollaries follow.  The _weaken_ lemma asserts a term
-well-typed in the empty context is also well-typed in an arbitrary
-context.  The _drop_ lemma asserts a term well-typed in a context where the
-same variable appears twice remains well-typed if we drop the shadowed
-occurrence.  The _swap_ lemma asserts a term well-typed in a context
-remains well-typed if we swap two variables.
+Three important corollaries follow.  The _weaken_ lemma asserts that a term
+which is well typed in the empty context is also well typed in an arbitrary
+context.  The _drop_ lemma asserts that a term which is well typed in a context
+where the same variable appears twice remains well typed if we drop the shadowed
+occurrence. The _swap_ lemma asserts that a term which is well typed in a
+context remains well typed if we swap two variables. 
 
 (Renaming is similar to the _context invariance_ lemma in _Software
 Foundations_, but it does not require the definition of
@@ -488,7 +488,7 @@ rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (ext ρ) ⊢M)
 ```
 As before, let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.  We induct
-on the evidence that `M` is well-typed in `Γ`.  Let's unpack the
+on the evidence that `M` is well typed in `Γ`.  Let's unpack the
 first three cases:
 
 * If the term is a variable, then applying `ρ` to the evidence
@@ -505,7 +505,7 @@ function and the argument.
 The remaining cases are similar, using induction for each subterm, and
 extending the map whenever the construct introduces a bound variable.
 
-The induction is over the derivation that the term is well-typed,
+The induction is over the derivation that the term is well typed,
 so extending the context doesn't invalidate the inductive hypothesis.
 Equivalently, the recursion terminates because the second argument
 always grows smaller, even though the first argument sometimes grows larger.
@@ -623,7 +623,7 @@ subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
 ... | yes refl        =  ⊢μ (drop ⊢M)
 ... | no  x≢y         =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
 ```
-We induct on the evidence that `N` is well-typed in the
+We induct on the evidence that `N` is well typed in the
 context `Γ` extended by `x`.
 
 First, we note a wee issue with naming.  In the lemma
@@ -940,7 +940,7 @@ data Steps (L : Term) : Set where
       ----------
     → Steps L
 ```
-The evaluator takes gas and evidence that a term is well-typed,
+The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```
 eval : ∀ {L A}
@@ -955,15 +955,15 @@ eval {L} (gas (suc m)) ⊢L with progress ⊢L
 ...    | steps M—↠N fin                               =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
-evidence that `L` is well-typed.  We consider the amount of gas
+evidence that `L` is well typed.  We consider the amount of gas
 remaining.  There are two possibilities:
 
 * It is zero, so we stop early.  We return the trivial reduction
-  sequence `L —↠ L`, evidence that `L` is well-typed, and an
+  sequence `L —↠ L`, evidence that `L` is well typed, and an
   indication that we are out of gas.
 
 * It is non-zero and after the next step we have `m` gas remaining.
-  Apply progress to the evidence that term `L` is well-typed.  There
+  Apply progress to the evidence that term `L` is well typed.  There
   are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
@@ -971,9 +971,9 @@ remaining.  There are two possibilities:
     well-typed, and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
-    evidence that `M` is also well-typed, and we recursively invoke
+    evidence that `M` is also well typed, and we recursively invoke
     `eval` on the remaining gas.  The result is evidence that
-    `M —↠ N`, together with evidence that `N` is well-typed and an
+    `M —↠ N`, together with evidence that `N` is well typed and an
     indication of whether reduction finished.  We combine the evidence
     that `L —→ M` and `M —↠ N` to return evidence that `L —↠ N`,
     together with the other relevant evidence.
@@ -983,7 +983,7 @@ remaining.  There are two possibilities:
 
 We can now use Agda to compute the non-terminating reduction
 sequence given earlier.  First, we show that the term `sucμ`
-is well-typed:
+is well typed:
 ```
 ⊢sucμ : ∅ ⊢ μ "x" ⇒ `suc ` "x" ⦂ `ℕ
 ⊢sucμ = ⊢μ (⊢suc (⊢` ∋x))
@@ -1327,7 +1327,7 @@ postulate
 ```
 
 Using preservation, it is easy to show that after any number of steps,
-a well-typed term remains well-typed:
+a well-typed term remains well typed:
 ```
 postulate
   preserves : ∀ {M N A}

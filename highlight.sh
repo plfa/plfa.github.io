@@ -7,22 +7,31 @@ shift
 
 function out_path {
     OUT="$1"
-    OUT=$(eval "echo \"$OUT\" | sed -e \"s|/src/|/out/|; s|/courses/|/out/|; s|\.lagda\.md|\.md|;\"")
+    OUT=`echo "$OUT" | sed -e "s|src/|out/|; s|courses/|out/|; s|\.lagda\.md|\.md|;"`
     echo "$OUT"
 }
 
 OUT="$(out_path $SRC)"
 OUT_DIR="$(dirname $OUT)"
 
-# Extract the module name from the Agda file
-# NOTE: this fails if there is more than a single space after 'module'
-MOD_NAME=`grep -oP -m 1 "(?<=^module )(\\S+)(?=\\s+(\\S+\\s+)*where)" "$SRC"`
+function html_path {
+    SRC="$1"
+    HTML_DIR="$2"
 
-# Create temporary directory and compute path to output of `agda --html`
+    # Extract the module name from the Agda file
+    # NOTE: this fails if there is more than a single space after 'module'
+    MOD_NAME=`grep -oP -m 1 "(?<=^module )(\\S+)(?=\\s+(\\S+\\s+)*where)" "$SRC"`
+
+    # Extract the extension from the Agda file
+    SRC_EXT="$(basename $SRC)"
+    SRC_EXT="${SRC_EXT##*.}"
+
+    HTML="$HTML_DIR/$MOD_NAME.$SRC_EXT"
+    echo "$HTML"
+}
+
 HTML_DIR="$(mktemp -d)"
-SRC_EXT="$(basename $SRC)"
-SRC_EXT="${SRC_EXT##*.}"
-HTML="$HTML_DIR/$MOD_NAME.$SRC_EXT"
+HTML="$(html_path $SRC $HTML_DIR)"
 
 # Highlight Syntax using Agda
 set -o pipefail \
@@ -69,13 +78,26 @@ fi
 
 sed -i -f "$AGDA_STDLIB_SED" "$HTML"
 
-# Fix links to local modules
-# TODO:
-#   1) gather source files from the dirname and --include-path arguments, e.g., src/ and courses/tspl/2018/
-#   2) compute module filenames for these files and compute their HTML output names (as above)
-#   3) compute output filenames for these files (requires output names to be computable)
-#   4) create sed script which matches and replaces the HTML filenames with Jekyll links to the output filenames
-#   5) run sed script
+# Create a sed script which matches and repairs all local links
+for INCLUDE_PATH in "$@"; do
+    if [[ "$INCLUDE_PATH" = --include-path=* ]]; then
+        INCLUDE_PATH="${INCLUDE_PATH:15}"
+        INCLUDE_PATH="${INCLUDE_PATH%/}"
+        INCLUDE_PATH="${INCLUDE_PATH#./}"
+        LOCAL_LINKS_SED=`echo ".links-${INCLUDE_PATH}.sed" | sed -e "s|/|-|g;"`
+
+        if [ ! -f "$LOCAL_LINKS_SED" ]; then
+            find "$INCLUDE_PATH" -name "*.lagda.md" -print0 | while read -d $'\0' AGDA_MODULE_SRC; do
+                AGDA_MODULE_SRC="${AGDA_MODULE_SRC#./}"
+                AGDA_MODULE_OUT="$(out_path "$AGDA_MODULE_SRC")"
+                AGDA_MODULE_HTML="$(basename "$(html_path "$AGDA_MODULE_SRC" "$HTML_DIR")" .md).html"
+                echo "s|$AGDA_MODULE_HTML|{% endraw %}{{ site.baseurl }}{% link $AGDA_MODULE_OUT %}{% raw %}|;" >> "$LOCAL_LINKS_SED"
+            done
+        fi
+
+        sed -i -f "$LOCAL_LINKS_SED" "$HTML"
+    fi
+done
 
 # Copy over the temporary file to the output path
 mkdir -p "$OUT_DIR"

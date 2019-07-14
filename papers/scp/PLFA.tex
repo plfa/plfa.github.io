@@ -371,28 +371,27 @@ PLFA and SF differ in several particulars.  PLFA begins with a computationally
 complete language, PCF, while SF begins with a minimal language, simply-typed
 lambda calculus with booleans.  PLFA does not include type annotations in terms,
 and uses bidirectional type inference, while SF has terms with unique types and
-uses type checking.  SF also covers a simple imperative language with Hoare logic,
-and for lambda calculus covers subtyping, record types, mutable references, and normalisation
----none of which are treated by PLFA.  PLFA covers an inherently-typed de Bruijn
-representation, bidirectional type inference, bisimulation, and an
-untyped call-by-name language with full normalisation---none of which
-are treated by SF.
+uses type checking.  SF also covers a simple imperative language with Hoare
+logic, and for lambda calculus covers subtyping, record types, mutable
+references, and normalisation---none of which are treated by PLFA.  PLFA covers
+an inherently-typed de Bruijn representation, bidirectional type inference,
+bisimulation, and an untyped call-by-name language with full
+normalisation---none of which are treated by SF. 
 
 SF has a third volume, written by Andrew Appel, on Verified Functional
-Algorithms. I'm not sufficiently familiar with that volume to have a view
-on whether it would be easy or hard to cover that material in Agda.
-And SF recently added a fourth volume on random testing of Coq specifications
-using QuickChick.  There is currently no tool equivalent to QuickChick
-available for Agda.
+Algorithms. I'm not sufficiently familiar with that volume to have a view on
+whether it would be easy or hard to cover that material in Agda. And SF recently
+added a fourth volume on random testing of Coq specifications using QuickChick.
+There is currently no tool equivalent to QuickChick available for Agda.
 
-There is more material that would be desirable to include in PLFA
-which was not due to limits of time.  In future years, PLFA may be
-extended to cover additional material, including mutable references,
-normalisation, System F, pure type systems, and denotational
-semantics.  I'd especially like to include pure type systems as they
-provide the readers with a formal model close to the dependent types
-used in the book.  My attempts so far to formalise pure type systems
-have proved challenging, to say the least.
+
+There is more material that would be desirable to include in PLFA which was not
+due to limits of time.  In future years, PLFA may be extended to cover
+additional material, including mutable references, normalisation, System F, and
+pure type systems. We'd especially like to include pure type systems as they
+provide the readers with a formal model close to the dependent types used in the
+book.  Our attempts so far to formalise pure type systems have proved
+challenging, to say the least.
 
 \section{Proofs in Agda and Coq}
 
@@ -421,23 +420,16 @@ have proved challenging, to say the least.
   \label{fig:sf-progress-2}
 \end{figure}  
 
-% \begin{figure}[t]
-%   \includegraphics[width=\textwidth]{figures/sf-progress-3.png}
-%   \caption{SF, Progress (3/3)}
-%   \label{fig:sf-progress-3}
-% \end{figure}  
-
 The introduction listed several reasons for preferring Agda over Coq.
 But Coq tactics enable more compact proofs. Would it be possible for
 PLFA to cover the same material as SF, or would the proofs
 balloon to unmanageable size?
 
-As an experiment, I first rewrote SF's development of simply-typed
-lambda calculus (SF, Chapters Stlc and StlcProp) in Agda.  I was a
-newbie to Agda, and translating the entire development, sticking as
-closely as possible to the development in SF, took me about two days.
-I was pleased to discover that the proofs remained about the same
-size.
+As an experiment, Philip first rewrote SF's development of simply-typed lambda
+calculus (SF, Chapters Stlc and StlcProp) in Agda.  He was a newbie to Agda, and
+translating the entire development, sticking as closely as possible to the
+development in SF, took about two days.  We were pleased to discover that the
+proofs remained about the same size.
 
 There was also a pleasing surprise regarding the structure of the
 proofs. While most proofs in both SF and PLFA are carried out by
@@ -446,7 +438,7 @@ central proof, that substitution preserves types, is carried out by
 induction on terms for a technical reason
 (the context is extended by a variable binding, and hence not
 sufficiently ``generic'' to work well with Coq's induction tactic). In
-Agda, I had no trouble formulating the same proof over evidence that
+Agda, we had no trouble formulating the same proof over evidence that
 the term is well typed, and didn't even notice SF's description of the
 issue until I was done.
 
@@ -456,26 +448,35 @@ deterministic.  There are 18 cases, one case per line.  Ten of the
 cases deal with the situation where there are potentially two
 different reductions; each case is trivially shown to be
 impossible.  Five of the ten cases are redundant, as they just involve
-switching the order of the arguments.  I had to copy the cases
+switching the order of the arguments.  We had to copy the cases
 suitably permuted. It would be preferable to reinvoke the proof on
 switched arguments, but this would not pass Agda's termination checker
 since swapping the arguments doesn't yield a recursive call on
-structurally smaller arguments.  I suspect tactics could cut down the
-proof significantly. I tried to compare with SF's proof that reduction
+structurally smaller arguments.  We suspect tactics could cut down the
+proof significantly. We tried to compare with SF's proof that reduction
 is deterministic, but failed to find that proof.
 
-SF covers an imperative language with Hoare logic, culminating in
-code that takes an imperative programme suitably decorated with preconditions
-and postconditions and generates the necessary
-verification conditions. The conditions are then verified by a custom
-tactic, where any questions of arithmetic are resolved by the
-``omega'' tactic invoking a decision procedure.  The entire
-exercise would be easy to repeat in Agda, save for the last step: I
-suspect Agda's automation would not be up to verifying the generated
-conditions, requiring tedious proofs by hand.  However, I had already
-decided to omit Hoare logic in order to focus on lambda calculus.
+SF covers an imperative language with Hoare logic, culminating in code that
+takes an imperative programme suitably decorated with preconditions and
+postconditions and generates the necessary verification conditions. The
+conditions are then verified by a custom tactic, where any questions of
+arithmetic are resolved by the ``omega'' tactic invoking a decision procedure.
+The entire exercise would be easy to repeat in Agda, save for the last step, as
+Agda does not offer support for proof automation out of the box. It is 
+certainly possible to implement proof automation in Agda---see, e.g., the auto
+tactic by \citet{Kokke-2015}, and the collection of tactics in Ulf Norell's
+\texttt{agda-prelude}\footnote{\url{https://github.com/UlfNorell/agda-prelude}}.
+The standard library comes equipped with solvers for equations on monoids and
+rings\footnote{\url{https://agda.github.io/agda-stdlib/Algebra.Solver.Ring.html}},
+and a much improved solver for equalities on rings was recently contributed by
+\citet{Kidney-2019}.
+We suspect that, while Agda's automation would be up to verifying the generated
+conditions, some effort would be require to implement the required custom
+tactic, and a section would need to be added to the book to cover proof
+automation. For the time being, we have decided to omit Hoare logic in order to
+focus on lambda calculus.
 
-To give a flavour of how the texts compare, I show the
+To give a flavour of how the texts compare, we show the
 proof of progress for simply-typed lambda calculus from both texts.
 Figures~\ref{fig:plfa-progress-1} and \ref{fig:plfa-progress-2}
 are taken from PLFA, Chapter Properties,
@@ -495,20 +496,19 @@ it easy to use a line of dashes to separate hypotheses from conclusion
 in inference rules.  The proof of proposition \texttt{progress} (the different
 case making it a distinct name) is layed out carefully. The neat
 indented structure emphasises the case analysis, and all right-hand
-sides line-up in the same column.  My hope as an author is that students
+sides line-up in the same column.  Our hope as authors is that students
 will read the formal proof first, and use it as a tabular guide
 to the informal explanation that follows.
 
-SF puts the informal explanation first, followed by the formal proof.
-The text hides the formal proof script under an icon;
-the figure shows what appears when the icon is expanded.
-As a teacher I was aware that
-students might skip it on a first reading, and I would have to hope the
-students would return to it and step through it with an interactive
-tool in order to make it intelligible.  I expect the students skipped over
-many such proofs.  This particular proof forms the basis for a question
-of the mock exam and the past exams, so I expect most students will actually
-look at this one if not all the others.
+SF puts the informal explanation first, followed by the formal proof. The text
+hides the formal proof script under an icon; the figure shows what appears when
+the icon is expanded. As teachers, we were aware that students might skip the
+formal proof on a first reading, and we would have to hope the students would
+return to it and step through it with an interactive tool in order to make it
+intelligible.  We expect the students skipped over many such proofs.  This
+particular proof forms the basis for a question of the mock exam and the past
+exams, so we expect most students will actually look at this one if not all the
+others.
 
 \newcommand{\ex}{\texttt{x}}
 \newcommand{\why}{\texttt{y}}
@@ -569,7 +569,7 @@ recorded.  Students may recreate it by commenting out bits of code and
 introducing a hole in their place.   PLFA contains some prose descriptions
 of interactively building code, but mainly contains code that students
 can read.  They may also introduce holes to interact with the code, but
-I expect this will be rarer than with SF.
+we expect this will be rarer than with SF.
 
 SF encourages students to interact with all the scripts in the text.
 Trying to understand a Coq proof script without running it
@@ -581,9 +581,9 @@ Understanding the code often requires working out the types, but
 head; when it is not easy, students still have the option of
 interaction.
 
-While students are keen to interact to create code, I have found they
+While students are keen to interact to create code, we have found they
 are reluctant to interact to understand code created by others. For
-this reason, I suspect this may make Agda a more suitable vehicle for
+this reason, we suspect this may make Agda a more suitable vehicle for
 teaching.  Nate Foster suggests this hypothesis is ripe to be tested
 empirically, perhaps using techniques similar to those of
 \citet{Danas-et-al-2017}.
@@ -635,7 +635,8 @@ Redex \citep{Felleisen-et-al-2009} and K \citep{Rosu-Serbanuta-2010},
 advertise as one of their advantages that they can generate
 a prototype from descriptions of the reduction rules.
 
-I was therefore surprised to realise that any constructive proof of
+% TODO: rewrite use of 'Philip' to reflect all authors?
+Philip was therefore surprised to realise that any constructive proof of
 progress and preservation \emph{automatically} gives rise to such a
 prototype.  The input is a term together with evidence the term is
 well-typed.  (In the inherently-typed case, these are the same thing.)
@@ -659,7 +660,7 @@ improve readability; in addition, the text includes examples of
 running the evaluator with its unedited output.
 
 It is immediately obvious that progress and preservation make it
-trivial to construct a prototype evaluator, and yet I cannot find such
+trivial to construct a prototype evaluator, and yet we cannot find such
 an observation in the literature nor mentioned in an introductory
 text.  It does not appear in SF, nor in \citet{Harper-2016}.  A plea
 to the Agda mailing list failed to turn up any prior mentions.
@@ -667,7 +668,7 @@ The closest related observation I have seen in the published
 literature is that evaluators can be extracted from proofs of
 normalisation \citep{Berger-1993,Dagand-and-Scherer-2015}.
 
-(Late addition: My plea to the Agda list eventually bore fruit.  Oleg
+(Late addition: Our plea to the Agda list eventually bore fruit.  Oleg
 Kiselyov directed me to unpublished remarks on his web page where he
 uses the name \texttt{eval} for a proof of progress and notes ``the
 very proof of type soundness can be used to evaluate sample
@@ -688,12 +689,13 @@ expressions'' \citep{Kiselyov-2009}.)
   \label{fig:inherent}
 \end{figure}  
 
+% TODO: consider rewriting this?
 The second part of PLFA first discusses two different approaches to
 modeling simply-typed lambda calculus.  It first presents raw
 terms with named variables and a separate typing relation and
 then shifts to inherently-typed terms with de Bruijn indices.
-Before writing the text, I had thought the two approaches
-complementary, with no clear winner.  Now I am convinced that the
+Before writing the text, Philip had thought the two approaches
+complementary, with no clear winner.  Now he is convinced that the
 inherently-typed approach is superior.
 
 Figure~\ref{fig:raw} presents the raw approach.
@@ -714,29 +716,25 @@ the types of variables and terms are indexed by a context and a type,
 so that $\GG\:{\ni}\:\AY$ and $\GG\:{\vdash}\:\AY$ denote
 variables and terms, respectively, that under context $\GG$ have type $\AY$.
 The indexed types closely resemble the previous judgments:
-we now represent a variable or a term by the proof that it is well-typed.
-In particular, the proof that a variable is well-typed in the raw approach
+we now represent a variable or a term by the proof that it is well typed.
+In particular, the proof that a variable is well typed in the raw approach
 corresponds to a de Bruijn index in the inherent approach.
 
-The raw approach requires more lines of code than
-the inherent approach.  The separate definition of raw
-terms is not needed in the inherent
-approach; and one judgment in the raw approach needs to check that
-$\ex \not\equiv \why$, while the corresponding judgment in the
-inherent approach does not.  The difference becomes more pronounced
-when including the code for substitution, reductions, and proofs of
-progress and preservation.  In particular, where the raw approach
-requires one first define substitution and reduction and then prove
-they preserve types, the inherent approach establishes substitution at
-the same time it defines substitution and reduction.
+The raw approach requires more lines of code than the inherent approach.  The
+separate definition of raw terms is not needed in the inherent approach; and one
+judgment in the raw approach needs to check that $\ex \not\equiv \why$, while
+the corresponding judgment in the inherent approach does not.  The difference
+becomes more pronounced when including the code for substitution, reductions,
+and proofs of progress and preservation.  In particular, where the raw approach
+requires one first define substitution and reduction and then prove they
+preserve types, the inherent approach establishes substitution at the same time
+it defines substitution and reduction.
 
-Stripping
-out examples and any proofs that appear in one but not the other (but
-could have appeared in both), the full development in PLFA for the raw approach takes 451
-lines (216 lines of definitions and 235 lines for the proofs) and the
-development for the inherent approach takes 275 lines (with
-definitions and proofs interleaved).  We have 451 / 235 = 1.64,
-close to the golden ratio.
+Stripping out examples and any proofs that appear in one but not the other (but
+could have appeared in both), the full development in PLFA for the raw approach
+takes 451 lines (216 lines of definitions and 235 lines for the proofs) and the
+development for the inherent approach takes 275 lines (with definitions and
+proofs interleaved).  We have 451 / 235 = 1.64, close to the golden ratio.
 
 The inherent approach also has more expressive power.  The raw
 approach is restricted to substitution of one variable by a closed
@@ -744,11 +742,12 @@ term, while the inherent approach supports simultaneous substitution
 of all variables by open terms, using a pleasing formulation due to
 \citet{McBride-2005}, inspired by \citet{Goguen-and-McKinna-1997} and
 \citet{Altenkirch-and-Reus-1999} and described in
-\citet{Allais-et-al-2017}. In fact, I did manage to write a variant of
+\citet{Allais-et-al-2017}. In fact, we did manage to write a variant of
 the raw approach with simultaneous open substitution along the lines
 of McBride, but the result was too complex for use in an introductory
 text, requiring 695 lines of code---more than the total for the other
 two approaches combined.
+% TODO: is this still available somewhere in extra/?
 
 The text develops both approaches because the raw approach is more
 familiar, and because placing the inherent approach first would
@@ -768,26 +767,24 @@ The benefits of the inherent approach
 are well known to some. The technique was introduced by
 \citet{Altenkirch-and-Reus-1999}, and widely used elsewhere,
 notably by \citet{Chapman-2009} and \citet{Allais-et-al-2017}.
-I'm grateful to David Darais for bringing it to my attention.
+Philip is grateful to David Darais for bringing it to his attention.
 
 
 \section{Conclusion}
 
-I look forward to experience teaching from the new text,
+We look forward to experience teaching from the new text,
 and encourage others to use it too.  Please comment!
 
 
 \paragraph{Acknowledgments}
 
-A special thank you to my coauthor, Wen Kokke.  For inventing ideas on
-which PLFA is based, and for hand-holding, many thanks to Conor
-McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing me
-how much more compact it is to avoid raw terms, thanks to David
-Darais.  For inspiring my work by writing SF, thanks to Benjamin
-Pierce and his coauthors.  For comments on a draft of this paper, an
-extra thank you to James McKinna, Ulf Norell, Andreas Abel, and
-Benjamin Pierce. This research was supported by EPSRC Programme Grant
-EP/K034413/1.
+For inventing ideas on which PLFA is based, and for hand-holding, many thanks to
+Conor McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing me how
+much more compact it is to avoid raw terms, thanks to David Darais.  For
+inspiring my work by writing SF, thanks to Benjamin Pierce and his coauthors.
+For comments on a draft of this paper, an extra thank you to James McKinna, Ulf
+Norell, Andreas Abel, and Benjamin Pierce. This research was supported by EPSRC
+Programme Grant EP/K034413/1.
 
 
 \section*{References}
