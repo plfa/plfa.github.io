@@ -28,11 +28,34 @@
 \address[adr2]{Indiana University, 700 N Woodlawn Ave, Bloomington, IN 47408, USA}
 
 \begin{abstract}
-  One of the leading textbooks for formal methods is \emph{Software Foundations} (SF), written by Benjamin Pierce in collaboration with others, and based on Coq. After five years using SF in the classroom, I have come to the conclusion that Coq is not the best vehicle for this purpose, as too much of the course needs to focus on learning tactics for proof derivation, to the cost of learning programming language theory.  Accordingly, I have written a new textbook, \emph{Programming Language Foundations in Agda} (PLFA). PLFA covers much of the same ground as SF, although it is not a slavish imitation.
 
-  What did I learn from writing PLFA? First, that it is possible. One might expect that without proof tactics that the proofs become too long, but in fact proofs in PLFA are about the same length as those in SF. Proofs in Coq require an interactive environment to be understood, while proofs in Agda can be read on the page.  Second, that constructive proofs of preservation and progress give immediate rise to a prototype evaluator. This fact is obvious in retrospect but it is not exploited in SF (which instead provides a separate normalise tactic) nor can I find it in the literature.  Third, that using raw terms with a separate typing relation is far less perspicuous than using inherently-typed terms. SF uses the former presentation, while PLFA presents both; the former uses about 1.6 as many lines of Agda code as the latter, roughly the golden ratio.
+  One of the leading textbooks for formal methods is \emph{Software
+    Foundations} (SF), written by Benjamin Pierce in collaboration
+  with others, and based on Coq. After five years using SF in the
+  classroom, we came to the conclusion that Coq is not the best
+  vehicle for this purpose, as too much of the course needs to focus
+  on learning tactics for proof derivation, to the cost of learning
+  programming language theory.  Accordingly, we have written a new
+  textbook, \emph{Programming Language Foundations in Agda}
+  (PLFA). PLFA covers much of the same ground as SF, although it is
+  not a slavish imitation.
 
-  The textbook is written as a literate Agda script, and can be found here:
+  What did we learn from writing PLFA? First, that it is possible. One
+  might expect that without proof tactics that the proofs become too
+  long, but in fact proofs in PLFA are about the same length as those
+  in SF. Proofs in Coq require an interactive environment to be
+  understood, while proofs in Agda can be read on the page.  Second,
+  that constructive proofs of preservation and progress give immediate
+  rise to a prototype evaluator. This fact is obvious in retrospect
+  but it is not exploited in SF (which instead provides a separate
+  normalise tactic) nor can I find it in the literature.  Third, that
+  using raw terms with a separate typing relation is far less
+  perspicuous than using inherently-typed terms. SF uses the former
+  presentation, while PLFA presents both; the former uses about 1.6 as
+  many lines of Agda code as the latter, roughly the golden ratio.
+
+  The textbook is written as a literate Agda script, and can be found
+  here:
   \begin{center}
     \url{http://plfa.inf.ed.ac.uk}
   \end{center}
@@ -61,18 +84,18 @@ Foundations in Agda'' or ``Programming (Language Foundations) in
 Agda''---specifications in the proof assistant Agda both describe
 programming languages and are themselves programmes.
 
-Since 2013, I have taught a course on Types and Semantics for
+Since 2013, one of us (Philip) has taught a course on Types and Semantics for
 Programming Languages to fourth-year undergraduates and masters
 students at the University of Edinburgh.  An earlier version of that
 course was based on \emph{Types and Programming Languages} by
-\citet{Pierce-2002}, but my version was taught from its successor,
+\citet{Pierce-2002}, but this version was taught from its successor,
 \emph{Software Foundations} (hence, SF) by \citet{Pierce-et-al-2010},
 which is based on the proof assistance Coq \citep{Huet-et-al-1997}.
-I am convinced by the claim of \citet{Pierce-2009}, made in his ICFP
+We are convinced by the claim of \citet{Pierce-2009}, made in his ICFP
 Keynote \emph{Lambda, The Ultimate TA}, that basing a course around a
 proof assistant aids learning.
 
-However, after five years of experience, I have come to the conclusion
+However, after five years of experience, Phil came to the conclusion
 that Coq is not the best vehicle.  Too much of the course needs to
 focus on learning tactics for proof derivation, to the cost of
 learning the fundamentals of programming language theory.  Every
@@ -87,7 +110,7 @@ sometimes short and sometimes long; naming conventions in the standard
 library can be wildly inconsistent.  \emph{Propositions as types} as a
 foundation of proof is present but hidden.
 
-I found myself keen to recast the course in Agda \citep{Bove-et-al-2009}.
+We found ourselves keen to recast the course in Agda \citep{Bove-et-al-2009}.
 In Agda, there is
 no longer any need to learn about tactics: there is just
 dependently-typed programming, plain and simple. Introduction is
@@ -106,18 +129,24 @@ types than on the theory of programming languages.
 
 The original goal was to simply adapt \emph{Software Foundations},
 maintaining the same text but transposing the code from Coq to Agda.
-But it quickly became clear to me that after five years in the
-classroom I had my own ideas about how to present the material.  They
+But it quickly became clear that after five years in the
+classroom Philip had his own ideas about how to present the material.  They
 say you should never write a book unless you cannot \emph{not} write the
-book, and I soon found that this was a book I could not not write.
+book, and Philip soon found that this was a book he could not not
+write.
 
-I am fortunate that my student, Wen Kokke, was keen to help.  She
-guided me as a newbie to Agda and provided an infrastructure that is
-easy to use and produces pages that are a pleasure to view.
-The bulk of the book was written January--June 2018, while on
-sabbatical in Rio de Janeiro.
+Philip considered himself fortunate that his student, Wen, was
+keen to help.  She guided Philip as a newbie to Agda and provided an
+infrastructure for the book that we found easy to use and produces
+pages that are a pleasure to view.  The bulk of the first draft of the
+book was written January--June 2018, while Philip was on sabbatical in
+Rio de Janeiro.  After the first draft was published, Jeremy wrote
+two further parts.  One explains a new and simple approach
+to denotational semantics, developed as part of his research.  The
+other develops important precursors to the semantics, including
+confluence and big-step semantics.
 
-This paper is a personal reflection, summarising what I learned in the
+This paper is a personal reflection, summarising what was learned in the
 course of writing the textbook. Some of it reiterates advice that is
 well-known to some members of the dependently-typed programming
 community, but which deserves to be better known.  The paper is
@@ -130,16 +159,14 @@ Section~3 compares Agda and Coq as vehicles for pedagogy.  Before
 writing the book, it was not obvious that it was even possible;
 conceivably, without tactics some of the proofs might
 balloon in size. In fact, it turns out that for the results in PLFA
-and SF, the proofs are of roughly comparable size, and (in my opinion)
+and SF, the proofs are of roughly comparable size, and (in our opinion)
 the proofs in PLFA are more readable and have a pleasing visual
 structure.
 
 Section~4 observes that constructive proofs of progress and
 preservation combine trivially to produce a constructive evaluator for
-terms.  This idea is obvious once you have seen it, yet I cannot
-find it described in the literature.  For instance, SF separately
-implements a \texttt{normalise} tactic that has nothing to do with
-progress and preservation.
+terms.  This idea is obvious once you have seen it, yet we cannot
+find it described in the literature.
 
 Section~5 claims that raw terms should be avoided in favour of
 inherently-typed terms.  PLFA develops lambda calculus with both raw
@@ -148,10 +175,20 @@ former is less powerful---it supports substitution only for closed
 terms---but significantly longer---about 1.6 times as many lines of code,
 roughly the golden ratio.
 
-I will argue that Agda has advantages over Coq for
-pedagogic purposes.  My focus is purely on the case of a proof assistant
+Section~6 describes experience teaching from the textbook.  The point
+of proof is perfection, and it turns out that an online final
+examination with access to a proof assistant can lead to flawless
+student performance.
+
+Section~7 outlines our experience publishing the book as open source
+in Github.  We were surprised at how effective this was at eliciting
+community participation.  A large number of people have submitted pull
+requests to improve the book.
+
+We argue that Agda has advantages over Coq for
+pedagogic purposes.  Our focus is purely on the case of a proof assistant
 as an aid to \emph{learning} formal semantics using examples of
-\emph{modest} size.  I admit up front that
+\emph{modest} size.  We admit up front that
 there are many tasks for which Coq is better suited than Agda.
 A proof assistant that supports tactics, such as Coq or Isabelle,
 is essential for formalising serious mathematics,
@@ -174,11 +211,14 @@ a proof assistant will make the development more concrete
 and accessible to students, and give them rapid feedback to find
 and correct misapprehensions.
 
-The book is broken into two parts. The first part, Logical Foundations,
+The book is broken into three parts. The first part, Logical Foundations,
 develops the needed formalisms.  The second part, Programming Language
 Foundations, introduces basic methods of operational semantics.
+The third part, Denotational Semantics, introduces a simple
+model of semantics, and shows it is compositional, sound, adequate, 
+and implies contextual equivalence.
 (SF is divided into books, the first two of which have the same names
-as the two parts of PLFA, and cover similar material.)
+as the first two parts of PLFA, and cover similar material.)
 
 Each chapter has both a one-word name and a title, the one-word name
 being both its module name and its file name.
@@ -376,7 +416,8 @@ logic, and for lambda calculus covers subtyping, record types, mutable
 references, and normalisation---none of which are treated by PLFA.  PLFA covers
 an inherently-typed de Bruijn representation, bidirectional type inference,
 bisimulation, and an untyped call-by-name language with full
-normalisation---none of which are treated by SF. 
+normalisation---none of which are treated by SF.  The new part on
+Denotational Semantics also covers material not treated by SF.
 
 SF has a third volume, written by Andrew Appel, on Verified Functional
 Algorithms. I'm not sufficiently familiar with that volume to have a view on
@@ -384,10 +425,8 @@ whether it would be easy or hard to cover that material in Agda. And SF recently
 added a fourth volume on random testing of Coq specifications using QuickChick.
 There is currently no tool equivalent to QuickChick available for Agda.
 
-
 There is more material that would be desirable to include in PLFA which was not
-due to limits of time.  In future years, PLFA may be extended to cover
-additional material, including mutable references, normalisation, System F, and
+due to limits of time, including mutable references, logical relations, System F, and
 pure type systems. We'd especially like to include pure type systems as they
 provide the readers with a formal model close to the dependent types used in the
 book.  Our attempts so far to formalise pure type systems have proved
@@ -440,7 +479,7 @@ induction on terms for a technical reason
 sufficiently ``generic'' to work well with Coq's induction tactic). In
 Agda, we had no trouble formulating the same proof over evidence that
 the term is well typed, and didn't even notice SF's description of the
-issue until I was done.
+issue until we were done.
 
 The rest of the book was relatively easy to complete.  The closest to
 an issue with proof size arose when proving that reduction is
@@ -803,10 +842,10 @@ notably by \citet{Chapman-2009} and \citet{Allais-et-al-2017}.
 Philip is grateful to David Darais for bringing it to his attention.
 
 
-\section{Experience}
+\section{Teaching experience}
 
 Philip now has five years of experience teaching from SF and one year
-teaching from PLFA.  He taught three courses from PLFA.
+teaching from PLFA.  To date, he has taught three courses from PLFA.
 \begin{itemize}
 \item
   University of Edinburgh, September--December 2018 (with teaching
@@ -927,16 +966,30 @@ students' ability to study and learn.
 
 \section{Conclusion}
 
-We look forward to experience teaching from the new text,
-and encourage others to use it too.  Please comment!
+The book is published as open-source on Github, under a
+Creative Commons CC-BY license.  As the book is an executable
+Agda script, it was considered essential that anyone could
+download and execute it.
 
+One sign of a successful publication is that it will attract a few
+letters from readers who have noticed typos or other problems.  An
+unexpected benefit of publishing on Github is that to date forty
+readers have sent pull requests.  Most of these fix typos, but a fair
+number make more substantial improvements.  Wen wrote a script that
+automatically adds the name of any contributor of an accepted pull
+request to the list of acknowledgements, sorted by the number of
+accepted requests.  Arguably, a different metric, such as total
+number of affected lines, might be more appropriate.
+
+There is much left to do!  We hope others may be inspired to join us
+and expand the book.
 
 \paragraph{Acknowledgments}
 
 For inventing ideas on which PLFA is based, and for hand-holding, many thanks to
-Conor McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing me how
+Conor McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing how
 much more compact it is to avoid raw terms, thanks to David Darais.  For
-inspiring my work by writing SF, thanks to Benjamin Pierce and his coauthors.
+inspiring our work by writing SF, thanks to Benjamin Pierce and his coauthors.
 For comments on a draft of this paper, an extra thank you to James McKinna, Ulf
 Norell, Andreas Abel, and Benjamin Pierce. This research was supported by EPSRC
 Programme Grant EP/K034413/1.
