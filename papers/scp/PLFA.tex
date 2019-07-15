@@ -179,7 +179,7 @@ examination with access to a proof assistant can lead to flawless
 student performance.
 
 Section~7 outlines our experience publishing the book as open source
-in Github.  We were surprised at how effective this was at eliciting
+in GitHub.  We were surprised at how effective this was at eliciting
 community participation.  A large number of people have submitted pull
 requests to improve the book.
 
@@ -963,25 +963,60 @@ students' ability to study and learn.
 \label{tab:exam}
 \end{table}
 
+\section{Software}
+
+The book is written using a combination of literate Agda and Markdown.  At the
+time of writing, the book is published using GitHub Pages and the Jekyll static
+site generator.  The book is open source---the source is currently also hosted
+on GitHub, under a Creative Commons CC-BY license.  The open-source aspect is
+important---as the book is written in literate Agda, it is essential that anyone
+can download and execute the source.
+
+We maintain a number of tools, which play various roles in rendering the book in
+all its ``glorious clickable HTML''. We render the literate Agda to highlighted
+HTML using Agda's HTML backend. In addition to highlighting, this inserts
+clickable links, linking each constructor and function to the site of its
+definition.  However, the links Agda inserts are local and don't match the
+structure of the book.  We maintain a script, \texttt{highlight.sh}, which fixes
+these links, rerouting links to the standard library to the online version, and
+correcting links to local modules.
+
+(Before the release of Agda 2.6, Agda did not support highlighting embedded
+literate code using HTML.  To address this, we wrote \texttt{agda2html}, a tool
+which rewrote the output of Agda's HTML highlighter to accomplish this. This
+tool had much more functionality, including the fixing of links as outlined
+above, the stripping of implicit arguments to achieve a Haskell-like look, and
+the support for new Markdown constructs for linking to Agda names. However,
+Agda 2.6 has incorporated almost all of this functionality.)
+
+The book is built, tested, and published after each commit, using Travis CI, a
+web service for continuous integration.  The means that the book is constantly
+changing.  To accommodate those who want a more stable version, e.g., for
+teaching, we maintain a stable version of the book at
+\begin{center}
+  \url{http://plfa.inf.ed.ac.uk/stable}
+\end{center}
+The stable version of the book is only updated much less frequently, and updates
+are announced.
+
+We maintain a tool called, simply, \texttt{acknowledgements}, which uses
+the GitHub API to automatically extract a list of contributors to the book, and
+add them to the Acknowledgements page, each time the book is published.  We
+consider anyone who has sent a successful pull requests a contributor, and sort
+contributors in the acknowledgments by the number of accepted requests.
+Arguably, a different metric, such as total number of affected lines, might be
+more appropriate, though any solution may have its flaws.
+
 \section{Conclusion}
 
-The book is published as open-source on Github, under a
-Creative Commons CC-BY license.  As the book is an executable
-Agda script, it was considered essential that anyone could
-download and execute it.
+One sign of a successful publication is that it will attract a few letters from
+readers who have noticed typos or other problems.  An unexpected benefit of
+publishing on GitHub is that to date forty-one readers have sent a total of
+\emph{two hundred seventy-five} pull requests.  Most of these fix typos, but a
+fair number make more substantial improvements.
 
-One sign of a successful publication is that it will attract a few
-letters from readers who have noticed typos or other problems.  An
-unexpected benefit of publishing on Github is that to date forty
-readers have sent pull requests.  Most of these fix typos, but a fair
-number make more substantial improvements.  Wen wrote a script that
-automatically adds the name of any contributor of an accepted pull
-request to the list of acknowledgements, sorted by the number of
-accepted requests.  Arguably, a different metric, such as total
-number of affected lines, might be more appropriate.
-
-There is much left to do!  We hope others may be inspired to join us
-and expand the book.
+There is much left to do!  We hope others may be inspired to join us and expand
+the book.
 
 \paragraph{Acknowledgments}
 
