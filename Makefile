@@ -14,12 +14,19 @@ endif
 
 # Build PLFA and test hyperlinks
 test: build
-	ruby -S bundle exec htmlproofer _site
+	ruby -S bundle exec htmlproofer '_site'
 
 
 # Build PLFA and test hyperlinks offline
 test-offline: build
-	ruby -S bundle exec htmlproofer _site --disable-external
+	ruby -S bundle exec htmlproofer '_site' --disable-external
+
+
+# Build PLFA and test hyperlinks for stable
+test-stable-offline: $(MARKDOWN)
+	ruby -S bundle exec jekyll clean
+	ruby -S bundle exec jekyll build --destination '_site/stable' --baseurl '/stable'
+	ruby -S bundle exec htmlproofer '_site' --disable-external
 
 
 statistics:
@@ -66,18 +73,11 @@ server-stop:
 
 
 # Build website using jekyll
-build: AGDA2HTML_FLAGS += --link-to-agda-stdlib=$(AGDA_STDLIB_URL)
 build: $(MARKDOWN)
 	ruby -S bundle exec jekyll build
 
 
-# Build website using jekyll offline
-build-offline: $(MARKDOWN)
-	ruby -S bundle exec jekyll build
-
-
 # Build website using jekyll incrementally
-build-incremental: AGDA2HTML_FLAGS += --link-to-agda-stdlib
 build-incremental: $(MARKDOWN)
 	ruby -S bundle exec jekyll build --incremental
 

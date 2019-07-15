@@ -58,7 +58,6 @@ The Makefile offers more than just these options:
 
     make                      (see make test)
     make build                (builds lagda->markdown and the website)
-    make build-offline        (builds lagda->markdown and the website offline)
     make build-incremental    (builds lagda->markdown and the website incrementally)
     make test                 (checks all links are valid)
     make test-offline         (checks all links are valid offline)

@@ -1,7 +1,7 @@
 ---
 title     : "Padova: Course notes"
 layout    : page
-permalink : /Padova/
+permalink : /Padova/2019/
 ---
 
 ## Staff
@@ -20,20 +20,20 @@ permalink : /Padova/
 <table>
  <tr>
   <td><b>Wed 28 May</b></td>
-  <td><a href="/Naturals/">Naturals</a>,
-      <a href="/Induction/">Induction</a> &amp; <a href="/Relations/">Relations</a></td>
+  <td><a href="{{ site.baseurl }}/Naturals/">Naturals</a>,
+      <a href="{{ site.baseurl }}/Induction/">Induction</a> &amp; <a href="{{ site.baseurl }}/Relations/">Relations</a></td>
  </tr>
  <tr>
   <td><b>Thu 29 May</b></td>
-  <td><a href="/Lambda/">Lambda</a> &amp;
-      <a href="/Properties/">Properties</a></td>
+  <td><a href="{{ site.baseurl }}/Lambda/">Lambda</a> &amp;
+      <a href="{{ site.baseurl }}/Properties/">Properties</a></td>
  </tr>
 </table>
 
 
 ## Assignments
 
-For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
+For instructions on how to set up Agda for PLFA see [Getting Started]({{ site.baseurl }}/GettingStarted/).
 
 * Wed 28 May
    - Naturals (`_^_`)
