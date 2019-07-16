@@ -255,7 +255,7 @@ _ : Context
 _ = ∅ , `ℕ ⇒ `ℕ , `ℕ
 ```
 is a context with two variables in scope, where the outer
-bound one has type `` `ℕ → `ℕ ``, and the inner bound one has
+bound one has type `` `ℕ ⇒ `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
 
 ### Variables and the lookup judgment
@@ -320,17 +320,17 @@ with all terms and variable names dropped:
 ```
 data _⊢_ : Context → Type → Set where
 
-  `_ : ∀ {Γ} {A}
+  `_ : ∀ {Γ A}
     → Γ ∋ A
       ------
     → Γ ⊢ A
 
-  ƛ_  :  ∀ {Γ} {A B}
+  ƛ_  : ∀ {Γ A B}
     → Γ , A ⊢ B
       ----------
     → Γ ⊢ A ⇒ B
 
-  _·_ : ∀ {Γ} {A B}
+  _·_ : ∀ {Γ A B}
     → Γ ⊢ A ⇒ B
     → Γ ⊢ A
       ----------
