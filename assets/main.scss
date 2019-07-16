@@ -5,9 +5,7 @@
 @import "minima";
 @import "agda";
 
-# recreate variables from minima
-$on-palm:   600px !default;
-$on-medium: $on-palm !default;
+$on-medium: 600px !default;
 
 .trigger { display: none; }
 
