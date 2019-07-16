@@ -4,3 +4,13 @@
 @import "katex";
 @import "minima";
 @import "agda";
+
+# recreate variables from minima
+$on-palm:   600px !default;
+$on-medium: $on-palm !default;
+
+.trigger { display: none; }
+
+@media screen and (min-width: $on-medium) {
+  .trigger { display: block; }
+}
