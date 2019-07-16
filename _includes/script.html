@@ -1,8 +1,14 @@
 <!-- Import jQuery -->
 <script type="text/javascript" src="{{ "/assets/jquery.js" | prepend: site.baseurl }}"></script>
 
-<!-- Script which allows for foldable code blocks -->
 <script type="text/javascript">
+
+ // Makes sandwhich menu works
+ $('.menu-icon').click(function(){
+   $('.trigger').toggle();
+ });
+
+ // Script which allows for foldable code blocks
  $('div.foldable pre').each(function(){
      var autoHeight = $(this).height();
      var lineHeight = parseFloat($(this).css('line-height'));
