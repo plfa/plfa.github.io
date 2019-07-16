@@ -955,12 +955,13 @@ these links, rerouting links to the standard library to the online version, and
 correcting links to local modules.
 
 (Before the release of Agda 2.6, Agda did not support highlighting embedded
-literate code using HTML.  To address this, we wrote \texttt{agda2html}, a tool
-which rewrote the output of Agda's HTML highlighter to accomplish this. This
-tool had much more functionality, including the fixing of links as outlined
-above, the stripping of implicit arguments to achieve a Haskell-like look, and
-the support for new Markdown constructs for linking to Agda names. However,
-Agda 2.6 has incorporated almost all of this functionality.)
+literate code in HTML.  We maintained \texttt{agda2html}, a tool which rewrites
+the output of Agda's HTML highlighter to highlight embedded code. The tool had
+much more functionality, including the fixing of links as outlined above, the
+stripping of implicit arguments to achieve a Haskell-like look, and the support
+for new Markdown constructs for linking to Agda names. However, Agda 2.6 has
+incorporated almost all of this functionality, and \texttt{agda2html} is now
+deprecated.)
 
 The book is built, tested, and published after each commit, using Travis CI, a
 web service for continuous integration.  The means that the book is constantly
