@@ -49,7 +49,14 @@ if [[ ! -f "$HTML" ]]; then
 fi
 
 # Add source file to the Jekyll metadata
-sedi "1 s|---|---\nsrc: $SRC|" "$HTML"
+#sedi "1 s|---|---\nsrc: $SRC|" "$HTML"
+ed "$HTML" <<EOF >/dev/null 2>&1
+2i
+src       : "$SRC"
+.
+w
+q
+EOF
 
 # Add raw tags around Agda code blocks
 sedi "s|<pre class=\"Agda\">|{% raw %}<pre class=\"Agda\">|" "$HTML"
@@ -87,12 +94,10 @@ for INCLUDE_PATH in "$@"; do
     if [[ "$INCLUDE_PATH" = --include-path=* ]]; then
         INCLUDE_PATH="${INCLUDE_PATH:15}"
         INCLUDE_PATH="${INCLUDE_PATH%/}"
-        INCLUDE_PATH="${INCLUDE_PATH#./}"
         LOCAL_LINKS_SED=`echo ".links-${INCLUDE_PATH}.sed" | sed -e "s|/|-|g;"`
 
         if [ ! -f "$LOCAL_LINKS_SED" ]; then
             find "$INCLUDE_PATH" -name "*.lagda.md" -print0 | while read -d $'\0' AGDA_MODULE_SRC; do
-                AGDA_MODULE_SRC="${AGDA_MODULE_SRC#./}"
                 AGDA_MODULE_OUT="$(out_path "$AGDA_MODULE_SRC")"
                 AGDA_MODULE_HTML="$(basename "$(html_path "$AGDA_MODULE_SRC" "$HTML_DIR")" .md).html"
                 echo "s|$AGDA_MODULE_HTML|{% endraw %}{{ site.baseurl }}{% link $AGDA_MODULE_OUT %}{% raw %}|;" >> "$LOCAL_LINKS_SED"

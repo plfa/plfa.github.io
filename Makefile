@@ -46,10 +46,10 @@ $$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(
 $$(out) : $$(in) | out/
 	@echo "Processing $$(subst ./,,$$(in))"
 ifeq (,$$(findstring courses/,$$(in)))
-	./highlight.sh $$(in) --include-path=src/
+	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/
 else
 # Fix links to the file itself (out/<filename> to out/<filepath>)
-	./highlight.sh $$(in) --include-path=src/ --include-path=$$(subst ./,,$$(dir $$(in)))
+	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/ --include-path=$$(subst ./,,$$(dir $$(in)))
 endif
 endef
 
@@ -83,8 +83,7 @@ build-incremental: $(MARKDOWN)
 
 # Remove all auxiliary files
 clean:
-	rm -f .agda-stdlib.sed
-	rm -f .links-*.sed
+	rm -f .agda-stdlib.sed .links-*.sed
 ifneq ($(strip $(AGDAI)),)
 	rm $(AGDAI)
 endif
