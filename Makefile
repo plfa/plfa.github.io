@@ -49,8 +49,7 @@ ifeq (,$$(findstring courses/,$$(in)))
 	./highlight.sh $$(in) --include-path=src/
 else
 # Fix links to the file itself (out/<filename> to out/<filepath>)
-	./highlight.sh $$(in) --include-path=src/ --include-path=$$(dir $$(in))
-	@sed -i 's|out/$$(notdir $$(out))|$$(subst ./,,$$(out))|g' $$(out)
+	./highlight.sh $$(in) --include-path=src/ --include-path=$$(subst ./,,$$(dir $$(in)))
 endif
 endef
 

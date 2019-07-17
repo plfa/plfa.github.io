@@ -2,6 +2,10 @@
 
 AGDA_STDLIB_SED=".agda-stdlib.sed"
 
+function sedi {
+    sed --version >/dev/null 2>&1 && sed -i -- "$@" || sed -i "" "$@"
+}
+
 SRC="$1"
 shift
 
@@ -45,11 +49,11 @@ if [[ ! -f "$HTML" ]]; then
 fi
 
 # Add source file to the Jekyll metadata
-sed -i "1 s|---|---\nsrc: $SRC|" "$HTML"
+sedi "1 s|---|---\nsrc: $SRC|" "$HTML"
 
 # Add raw tags around Agda code blocks
-sed -i "s|<pre class=\"Agda\">|{% raw %}<pre class=\"Agda\">|" "$HTML"
-sed -i "s|</pre>|</pre>{% endraw %}|" "$HTML"
+sedi "s|<pre class=\"Agda\">|{% raw %}<pre class=\"Agda\">|" "$HTML"
+sedi "s|</pre>|</pre>{% endraw %}|" "$HTML"
 
 # Fix links to the Agda standard library
 STDLIB_AGDALIB=`grep -m 1 "standard-library" $HOME/.agda/libraries`
@@ -76,7 +80,7 @@ if [ ! -f "$AGDA_STDLIB_SED" ]; then
     done
 fi
 
-sed -i -f "$AGDA_STDLIB_SED" "$HTML"
+sedi -f "$AGDA_STDLIB_SED" "$HTML"
 
 # Create a sed script which matches and repairs all local links
 for INCLUDE_PATH in "$@"; do
@@ -95,7 +99,7 @@ for INCLUDE_PATH in "$@"; do
             done
         fi
 
-        sed -i -f "$LOCAL_LINKS_SED" "$HTML"
+        sedi -f "$LOCAL_LINKS_SED" "$HTML"
     fi
 done
 
