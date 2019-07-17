@@ -3,7 +3,7 @@
 AGDA_STDLIB_SED=".agda-stdlib.sed"
 
 function sedi {
-    sed --version >/dev/null 2>&1 && sed -i -- "$@" || sed -i "" "$@"
+    sed --version >/dev/null 2>&1 && sed -i "$@" || sed -i "" "$@"
 }
 
 SRC="$1"
