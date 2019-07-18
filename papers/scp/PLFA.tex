@@ -1,3 +1,8 @@
+% WRITE TO JEREMY RE: DIFFERENCE IN STYLE OF CHAPTER TITLES
+% NEED TO CITE SBMF PAPER AND DESCRIBE DIFFERENCES
+% STRIP OUT EXAM RESULTS
+% CHANGE INHERENT --> INTRINSIC, CITE REYNOLDS
+
 \documentclass[preprint,authoryear]{elsarticle}
 %\usepackage{natbib}
 \usepackage{agda}
@@ -11,6 +16,8 @@
 \newtheorem{theorem}{Theorem}
 \usepackage{mathpazo}
 \usepackage[mathpazo]{flexisym}
+
+\hyphenation{coq-IDE}
 
 \begin{document}
 
@@ -95,7 +102,7 @@ We are convinced by the claim of \citet{Pierce-2009}, made in his ICFP
 Keynote \emph{Lambda, The Ultimate TA}, that basing a course around a
 proof assistant aids learning.
 
-However, after five years of experience, Phil came to the conclusion
+However, after five years of experience, Philip came to the conclusion
 that Coq is not the best vehicle.  Too much of the course needs to
 focus on learning tactics for proof derivation, to the cost of
 learning the fundamentals of programming language theory.  Every
@@ -143,6 +150,12 @@ book was written January--June 2018, while Philip was on sabbatical in
 Rio de Janeiro.  After the first draft was published, Jeremy wrote
 eight additional chapters, covering aspects of operational and
 denotational semantics.
+
+This paper is the journal version of \citet{Wadler-2018}.
+It adds two new authors, summaries of Jeremy's new chapters,
+and sections on experience with teaching and software
+used to publish the book.  The original text often used
+first person, which here is replaced by reference to Philip.
 
 This paper is a personal reflection, summarising what was learned in the
 course of writing the textbook. Some of it reiterates advice that is
@@ -216,7 +229,7 @@ The third part, Denotational Semantics, introduces a simple
 model of semantics and its properties.
 (SF is divided into books, the first two of which have the same names
 as the first two parts of PLFA, and cover similar material.)
-Part~I and Part~II up to Untyped were written by Phil,
+Part~I and Part~II up to Untyped were written by Philip,
 Part~II from Substitution and Part~III were written by Jeremy.
 
 Each chapter has both a one-word name and a title, the one-word name
@@ -303,8 +316,8 @@ correspond to the judgment that a variable is well-typed under a given
 environment.
 
 \paragraph{More: More constructs of simply-typed lambda calculus}
-Introduces product, sum, unit, and empty types as well as lists and let bindings
-are explained.  Typing and reduction rules are given informally; a few
+Introduces product, sum, unit, and empty types; and explains lists and let bindings.
+Typing and reduction rules are given informally; a few
 are then give formally, and the rest are left as exercises for the reader.
 The inherently typed representation is used.
 
@@ -419,7 +432,7 @@ normalisation---none of which are treated by SF.  The new part on
 Denotational Semantics also covers material not treated by SF.
 
 SF has a third volume, written by Andrew Appel, on Verified Functional
-Algorithms. I'm not sufficiently familiar with that volume to have a view on
+Algorithms. We are not sufficiently familiar with that volume to have a view on
 whether it would be easy or hard to cover that material in Agda. And SF recently
 added a fourth volume on random testing of Coq specifications using QuickChick.
 There is currently no tool equivalent to QuickChick available for Agda.
@@ -521,7 +534,7 @@ are taken from PLFA, Chapter Properties,
 while Figures~\ref{fig:sf-progress-1} and \ref{fig:sf-progress-2}
 are taken from SF, Chapter StlcProp.
 Both texts are intended to be read online,
-and the figures were taken by grabbing bitmaps of the text as
+and the figures show screengrabs of the text as
 displayed in a browser.
 
 PLFA puts the formal statements first, followed by informal explanation.
@@ -600,14 +613,14 @@ point examining the current goal and the variables in scope, and
 typing code or executing an Emacs command.  The number of commands
 available is much smaller than with Coq, the most important ones being
 to show the type of the hole and the types of the variables in scope;
-to check the code; to do a case analysis on a given variable; or to
-guess how to fill in the hole with constructors or variables in scope.
+to typecheck the code; to do a case analysis on a given variable; or to
+search for a way to fill in the hole with constructors or variables in scope.
 An Agda proof consists of typed code.  The interaction is \emph{not}
 recorded.  Students may recreate it by commenting out bits of code and
 introducing a hole in their place.   PLFA contains some prose descriptions
 of interactively building code, but mainly contains code that students
 can read.  They may also introduce holes to interact with the code, but
-we expect this will be rarer than with SF.
+we expect this will be rare.
 
 SF encourages students to interact with all the scripts in the text.
 Trying to understand a Coq proof script without running it
@@ -719,7 +732,7 @@ progress and preservation and animation.  In private correspondence,
 Bob Harper referred to it as the \emph{pas de deux}, a dance between
 progress, which takes well-typing to a step, and preservation, which
 takes a step back to well-typing.  Nonetheless, neither the technique
-nor the appealing terminology, appears in \citet{Harper-2016}.  The
+nor the appealing terminology appears in \citet{Harper-2016}.  The
 appeal to the Agda mailing list bore late fruit: Oleg Kiselyov
 directed me to unpublished remarks on his web page where he uses the
 name \texttt{eval} for a proof of progress and notes ``the very proof
@@ -731,7 +744,7 @@ not located a mention in the published literature.
 There are places in the literature where one might expect a remark on
 the relation between progress and preservation and animation---but no
 such remark appears.  In the PoplMark Challenge
-\citep{Ayedemir-et-al-2005}, Challenge~2A is to prove progress and
+\citep{Aydemir-et-al-2005}, Challenge~2A is to prove progress and
 preservation for System F$_{<:}$, while Challenge~3 is to prove
 animation for the same system. Nowhere do the authors indicate that in
 an intuitionistic logic these are essentially the same problem.
@@ -848,14 +861,14 @@ teaching from PLFA.  To date, he has taught three courses from PLFA.
 \begin{itemize}
 \item
   University of Edinburgh, September--December 2018 (with teaching
-  assistance from Wen and Chad Nester); twenty two-hour slots,
+  assistance from Wen and Chad Nester); twenty 2-hour slots,
   comprising one hour of lecture followed by one hour of lab. Ten
   students completed the course, fourth-year undergraduates and
   masters.  The course covered Parts~I and~II of PLFA.
 
 \item
   Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
-  March--July 2019, hosted by Roberto Ieuramalischy; ten three-hour
+  March--July 2019, hosted by Roberto Ieuramalischy; ten 3-hour
   slots, comprising two hours of lecture followed by one hour of lab.
   Ten students completed the course, mostly doctoral students.  The
   course covered Parts~I and~II of PLFA, save students read chapter
@@ -863,7 +876,7 @@ teaching from PLFA.  To date, he has taught three courses from PLFA.
 
 \item
   University of Padova, June 2018, hosted by Maria Emilia Maietti; two
-  three-hour slots, comprising two hours of lecture followed by one
+  3-hour slots, comprising two hours of lecture followed by one
   hour of lab.  Thirty undergraduate students sat the course, which
   covered chapters Naturals, Induction, and Relations.
     
@@ -905,13 +918,13 @@ to the internet.  Students are given access to the text of PLFA,
 the Agda standard libraries, and the Agda language reference manual,
 but no other materials.
 
-Students must answer question 1 on the exam, and one of questions 2 or
-3.  Question 1 gives predicates over a data structure, such lists or
+Students must answer question~1 on the exam, and one of questions~2
+or~3.  Question~1 gives predicates over a data structure, such lists or
 trees, to be formalised in Agda, and a theorem relating the
-predicates, to be formalised and proved in Agda.  Question 2 gives the
-students the intrinsic formulation of lambda calculus from chapter
+predicates, to be formalised and proved in Agda.  Question~2 gives the
+students the inherent formulation of lambda calculus from chapter
 DeBruijn, which they must extend with a described language feature.
-Question 3 give the students the the bidirectional type inferencer
+Question~3 give the students the the bidirectional type inferencer
 from chapter Inference, which they must extend with a described
 language feature.
 
@@ -923,18 +936,49 @@ Given that the goal of formal methods is to avoid error, we believe a
 pedagogical purpose is served by telling the students that they are
 expected to achieve perfection and making it possible for them to do
 so.  Students are given two opportunities to practice in the run up to
-the exam, a `mock' exam given in class under exam conditions (two
-hours online), and before that a `mock mock' exam as coursework (in
+the exam, a ``mock'' exam given in class under exam conditions (two
+hours online), and before that a ``mock mock'' exam as coursework (in
 their own time, encouraged to ask questions, tasked to do all three
 questions rather than two of three).
 
+
+% Table~\ref{tab:exams} shows performance on the mock exam and the final
+% exam for the courses run at Edinburgh and PUC-Rio.  While scores vary
+% widely on the mock, all students achieve perfection on the
 For the courses run at Edinburgh and PUC-Rio, the scores vary
-widely on the mock, but all students achieve perfection on the
+widely on the mock: minimum <20%, maximum 100%, mean
+77.8, standard deviation 27.6. But all students achieve perfection on the
 exam.  (The one exception was a PUC-Rio student who did not attend
 classes or sit the mock.)  Similar results were achieved at Edinburgh
 over the previous five years, using SF as the course textbook and Coq
 as the proof assistant.  We consider these results a tribute to the
 students' ability to study and learn.
+
+% \begin{table}
+% \begin{center}
+%   \begin{tabular}{|cc|cc|}
+%     \hline
+%     \multicolumn{2}{|c|}{Edinburgh} &
+%     \multicolumn{2}{c|}{PUC-Rio} \\
+%     \hline
+%     Mock & Exam & Mock & Exam \\
+%     \hline
+%      15  &  50  &  --  &  40  \\
+%      29  &  50  &  ~6  &  50  \\
+%      33  &  50  &  20  &  50  \\
+%      35  &  50  &  28  &  50  \\
+%      36  &  50  &  41  &  50  \\
+%      48  &  50  &  49  &  50  \\
+%      49  &  50  &  50  &  50  \\
+%      50  &  50  &  50  &  50  \\
+%      50  &  50  &  50  &  50  \\
+%      50  &  50  &  50  &  50  \\
+%     \hline
+%   \end{tabular}
+% \end{center}
+% \caption{Exam marks}
+% \label{tab:exams}
+% \end{table}
 
 
 \section{Software}
@@ -964,22 +1008,22 @@ the support for new Markdown constructs for linking to Agda names. However,
 Agda 2.6 has incorporated almost all of this functionality.)
 
 The book is built, tested, and published after each commit, using Travis CI, a
-web service for continuous integration.  The means that the book is constantly
+web service for continuous integration.  This means that the book is constantly
 changing.  To accommodate those who want a more stable version, e.g., for
 teaching, we maintain a stable version of the book at
 \begin{center}
   \url{http://plfa.inf.ed.ac.uk/stable}
 \end{center}
-The stable version of the book is only updated much less frequently, and updates
+The stable version of the book is updated much less frequently, and updates
 are announced.
 
 We maintain a tool called, simply, \texttt{acknowledgements}, which uses
 the GitHub API to automatically extract a list of contributors to the book, and
 add them to the Acknowledgements page, each time the book is published.  We
-consider anyone who has sent a successful pull requests a contributor, and sort
+consider anyone who has sent a successful pull request a contributor, and sort
 contributors in the acknowledgments by the number of accepted requests.
 Arguably, a different metric, such as total number of affected lines, might be
-more appropriate, though any solution may have its flaws.
+more appropriate, though any solution will have its flaws.
 
 \section{Conclusion}
 
@@ -989,8 +1033,8 @@ publishing on GitHub is that to date forty-one readers have sent a total of
 \emph{two hundred seventy-five} pull requests.  Most of these fix typos, but a
 fair number make more substantial improvements.
 
-There is much left to do!  We hope others may be inspired to join us and expand
-the book.
+There is much left to do!  We hope others may be inspired to join us
+to expand and improve the book.
 
 \paragraph{Acknowledgments}
 
