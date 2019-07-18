@@ -119,14 +119,14 @@ above is a simulation from source to target.  We leave
 establishing it in the reverse direction as an exercise.
 Another exercise is to show the alternative formulations
 of products in
-Chapter [More][plfa.More]
+Chapter [More]({{ site.baseurl }}/More/)
 are in bisimulation.
 
 
 ## Imports
 
 We import our source language from
-Chapter [More][plfa.More]:
+Chapter [More]({{ site.baseurl }}/More/):
 ```
 open import plfa.More
 ```
@@ -164,7 +164,7 @@ data _~_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------------
     → `let M N ~ (ƛ N†) · M†
 ```
-The language in Chapter [More][plfa.More] has more constructs, which we could easily add.
+The language in Chapter [More]({{ site.baseurl }}/More/) has more constructs, which we could easily add.
 However, leaving the simulation small let's us focus on the essence.
 It's a handy technical trick that we can have a large source language,
 but only bother to include in the simulation the terms of interest.
@@ -468,7 +468,7 @@ a bisimulation.
 #### Exercise `products`
 
 Show that the two formulations of products in
-Chapter [More][plfa.More]
+Chapter [More]({{ site.baseurl }}/More/)
 are in bisimulation.  The only constructs you need to include are
 variables, and those connected to functions and products.
 In this case, the simulation is _not_ lock-step.

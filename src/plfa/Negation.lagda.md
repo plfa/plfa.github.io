@@ -189,7 +189,7 @@ again causing the equality to hold trivially.
 #### Exercise `<-irreflexive` (recommended)
 
 Using negation, show that
-[strict inequality][plfa.Relations#strict-inequality]
+[strict inequality]({{ site.baseurl }}/Relations/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 ```
@@ -200,7 +200,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 #### Exercise `trichotomy`
 
 Show that strict inequality satisfies
-[trichotomy][plfa.Relations#trichotomy],
+[trichotomy]({{ site.baseurl }}/Relations/#trichotomy),
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
 * `m < n`

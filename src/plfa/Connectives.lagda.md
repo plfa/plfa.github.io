@@ -234,7 +234,7 @@ corresponds to `⟨ 1 , ⟨ true , aa ⟩ ⟩`, which is a member of the latter.
 
 #### Exercise `⇔≃×` (recommended)
 
-Show that `A ⇔ B` as defined [earlier][plfa.Isomorphism#iff]
+Show that `A ⇔ B` as defined [earlier]({{ site.baseurl }}/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
 
 ```
@@ -770,9 +770,9 @@ The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to build triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
 other useful notations, such as `[_,_]` to construct a list of two elements in
-Chapter [Lists][plfa.Lists]
+Chapter [Lists]({{ site.baseurl }}/Lists/)
 and `Γ , A` to extend environments in
-Chapter [DeBruijn][plfa.DeBruijn].
+Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
 The standard library `_⇔_` is similar to ours, but the one in the
 standard library is less convenient, since it is parameterised with
 respect to an arbitrary notion of equivalence.

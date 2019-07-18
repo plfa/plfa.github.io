@@ -155,7 +155,7 @@ either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 Given two numbers, it is straightforward to compute whether or not the
 first is less than or equal to the second.  We don't give the code for
 doing so here, but will return to this point in
-Chapter [Decidable][plfa.Decidable].
+Chapter [Decidable]({{ site.baseurl }}/Decidable/).
 
 
 ## Inversion
@@ -377,7 +377,7 @@ evidence of `m ≤ n` and `n ≤ m` respectively.
 
 (For those familiar with logic, the above definition
 could also be written as a disjunction. Disjunctions will
-be introduced in Chapter [Connectives][plfa.Connectives].)
+be introduced in Chapter [Connectives]({{ site.baseurl }}/Connectives/).)
 
 This is our first use of a datatype with _parameters_,
 in this case `m` and `n`.  It is equivalent to the following
@@ -572,7 +572,7 @@ It is also monotonic with regards to addition and multiplication.
 Most of the above are considered in exercises below.  Irreflexivity
 requires negation, as does the fact that the three cases in
 trichotomy are mutually exclusive, so those points are deferred to
-Chapter [Negation][plfa.Negation].
+Chapter [Negation]({{ site.baseurl }}/Negation/).
 
 It is straightforward to show that `suc m ≤ n` implies `m < n`,
 and conversely.  One can then give an alternative derivation of the
@@ -599,7 +599,7 @@ Define `m > n` to be the same as `n < m`.
 You will need a suitable data declaration,
 similar to that used for totality.
 (We will show that the three cases are exclusive after we introduce
-[negation][plfa.Negation].)
+[negation]({{ site.baseurl }}/Negation/).)
 
 ```
 -- Your code goes here
@@ -742,7 +742,7 @@ Show that the sum of two odd numbers is even.
 #### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that
-Exercise [Bin][plfa.Naturals#Bin]
+Exercise [Bin]({{ site.baseurl }}/Naturals/#Bin)
 defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following:
@@ -801,7 +801,7 @@ import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
 ```
 In the standard library, `≤-total` is formalised in terms of
 disjunction (which we define in
-Chapter [Connectives][plfa.Connectives]),
+Chapter [Connectives]({{ site.baseurl }}/Connectives/)),
 and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than here,
 and more arguments are implicit.
 

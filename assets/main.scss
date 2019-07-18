@@ -4,3 +4,11 @@
 @import "katex";
 @import "minima";
 @import "agda";
+
+$on-medium: 600px !default;
+
+.trigger { display: none; }
+
+@media screen and (min-width: $on-medium) {
+  .trigger { display: block; }
+}

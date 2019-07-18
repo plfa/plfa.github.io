@@ -178,7 +178,7 @@ and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `++-assoc xs ys zs`.
 
-Recall that Agda supports [sections][plfa.Induction#sections].
+Recall that Agda supports [sections]({{ site.baseurl }}/Induction/#sections).
 Applying `cong (x ∷_)` promotes the inductive hypothesis:
 
     (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
@@ -932,7 +932,7 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 #### Exercise `¬Any≃All¬` (stretch)
 
 First generalise composition to arbitrary levels, using
-[universe polymorphism][plfa.Equality#unipoly]:
+[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly):
 ```
 _∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
   → (B → C) → (A → B) → A → C

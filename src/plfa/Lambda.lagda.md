@@ -25,7 +25,7 @@ recursive function definitions.
 
 This chapter formalises the simply-typed lambda calculus, giving its
 syntax, small-step semantics, and typing rules.  The next chapter
-[Properties][plfa.Properties]
+[Properties]({{ site.baseurl }}/Properties/)
 proves its main properties, including
 progress and preservation.  Following chapters will look at a number
 of variants of lambda calculus.
@@ -33,7 +33,7 @@ of variants of lambda calculus.
 Be aware that the approach we take here is _not_ our recommended
 approach to formalisation.  Using de Bruijn indices and
 inherently-typed terms, as we will do in
-Chapter [DeBruijn][plfa.DeBruijn],
+Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
 leads to a more compact formulation.  Nonetheless, we begin with named
 variables, partly because such terms are easier to read and partly
 because the development is more traditional.
@@ -138,7 +138,7 @@ plus = μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
 ```
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in
-Chapter [Naturals][plfa.Naturals#plus].
+Chapter [Naturals]({{ site.baseurl }}/Naturals/#plus).
 Here variable "m" is bound twice, once in a lambda abstraction and once in
 the successor branch of the case; the first use of "m" refers to
 the former and the second to the latter.  Any use of "m" in the successor branch
@@ -373,7 +373,7 @@ to treat variables as values, and to treat
 `ƛ x ⇒ N` as a value only if `N` is a value.
 Indeed, this is how Agda normalises terms.
 We consider this approach in
-Chapter [Untyped][plfa.Untyped].
+Chapter [Untyped]({{ site.baseurl }}/Untyped/).
 
 
 ## Substitution
@@ -678,7 +678,7 @@ the reflexive and transitive closure `—↠` of the step relation `—→`.
 We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
 reasoning about chains of equalities in
-Chapter [Equality][plfa.Equality]:
+Chapter [Equality]({{ site.baseurl }}/Equality/):
 ```
 infix  2 _—↠_
 infix  1 begin_
@@ -1310,7 +1310,7 @@ We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are don
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
-Chapter [Inference][plfa.Inference]
+Chapter [Inference]({{ site.baseurl }}/Inference/)
 will show how to use Agda to compute type derivations directly.
 
 

@@ -5,7 +5,7 @@ title  : "Changes to PLFA – Migration to Agda 2.6"
 
 Today, we made several major changes to the PLFA infrastructure!
 
-We upgraded to [Agda 2.6.0.1](https://github.com/agda/agda/releases/tag/v2.6.0.1) and [version 1.1 of the standard library](https://github.com/agda/agda-stdlib/releases/tag/v1.1). If you want to continue working with the book, you'll have to update your versions locally. Please follow the instructions in [Getting Started](/GettingStarted/) to reinstall Agda and the standard library.
+We upgraded to [Agda 2.6.0.1](https://github.com/agda/agda/releases/tag/v2.6.0.1) and [version 1.1 of the standard library](https://github.com/agda/agda-stdlib/releases/tag/v1.1). If you want to continue working with the book, you'll have to update your versions locally. Please follow the instructions in [Getting Started]({{ site.baseurl }}/GettingStarted/) to reinstall Agda and the standard library.
 
 We deprecated [agda2html](https://github.com/wenkokke/agda2html). In version 2.6, Agda has added support for the `--html-highlight` flag. Using this command, Agda will highlight only the code in a file, and leave the rest untouched:
 ```bash

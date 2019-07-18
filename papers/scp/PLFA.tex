@@ -214,9 +214,9 @@ or the SEL4 operating system \citep{Klein-2009,O'Connor-2016}.
 
 PLFA is aimed at students in the last year of an undergraduate
 honours programme or the first year of a master or doctorate degree.
-It aims to teach the fundamentals of operational semantics of
-programming languages, with simply-typed lambda calculus as the
-central example.  The textbook is written as a literate script in Agda.
+It aims to teach the fundamentals of semantics of
+programming languages, with simply-typed and untyped lambda calculi as the
+central examples.  The textbook is written as a literate script in Agda.
 As with SF, the hope is that using
 a proof assistant will make the development more concrete
 and accessible to students, and give them rapid feedback to find
@@ -226,7 +226,7 @@ The book is broken into three parts. The first part, Logical Foundations,
 develops the needed formalisms.  The second part, Programming Language
 Foundations, introduces basic methods of operational semantics.
 The third part, Denotational Semantics, introduces a simple
-model of semantics and its properties.
+model of the lambda calculus and its properties.
 (SF is divided into books, the first two of which have the same names
 as the first two parts of PLFA, and cover similar material.)
 Part~I and Part~II up to Untyped were written by Philip,
@@ -435,7 +435,7 @@ SF has a third volume, written by Andrew Appel, on Verified Functional
 Algorithms. We are not sufficiently familiar with that volume to have a view on
 whether it would be easy or hard to cover that material in Agda. And SF recently
 added a fourth volume on random testing of Coq specifications using QuickChick.
-There is currently no tool equivalent to QuickChick available for Agda.
+There is currently no tool equivalent to QuickChick for Agda.
 
 There is more material that would be desirable to include in PLFA which was not
 due to limits of time, including mutable references, logical relations, System F, and
@@ -548,17 +548,17 @@ in inference rules.  The proof of proposition \texttt{progress} (the different
 case making it a distinct name) is layed out carefully. The neat
 indented structure emphasises the case analysis, and all right-hand
 sides line-up in the same column.  Our hope as authors is that students
-will read the formal proof first, and use it as a tabular guide
+read the formal proof first, and use it as a tabular guide
 to the informal explanation that follows.
 
 SF puts the informal explanation first, followed by the formal proof. The text
 hides the formal proof script under an icon; the figure shows what appears when
 the icon is expanded. As teachers, we were aware that students might skip the
-formal proof on a first reading, and we would have to hope the students would
+formal proof on a first reading, and we have to hope the students 
 return to it and step through it with an interactive tool in order to make it
 intelligible.  We expect the students skipped over many such proofs.  This
 particular proof forms the basis for a question of the mock exam and the past
-exams, so we expect most students will actually look at this one if not all the
+exams, so we expect most students will look at this one if not all the
 others.
 
 \newcommand{\ex}{\texttt{x}}
@@ -596,7 +596,7 @@ provides an interactive development environment of a sort familiar to
 most students.  Interaction in Agda is supported by an Emacs mode.
 
 In Coq, interaction consists of stepping through a proof script, at
-each point examining the current goal and the variables currently in
+each point examining the current goal and the variables in
 scope, and executing a new command in the script.  Tactics are a whole
 sublanguage, which must be learned in addition to the language for
 expressing specifications.  There are many tactics one can invoke in
@@ -619,8 +619,8 @@ An Agda proof consists of typed code.  The interaction is \emph{not}
 recorded.  Students may recreate it by commenting out bits of code and
 introducing a hole in their place.   PLFA contains some prose descriptions
 of interactively building code, but mainly contains code that students
-can read.  They may also introduce holes to interact with the code, but
-we expect this will be rare.
+can read.  They may introduce holes to interact with the code, but
+we expect that will be rare.
 
 SF encourages students to interact with all the scripts in the text.
 Trying to understand a Coq proof script without running it
@@ -931,7 +931,7 @@ language feature.
 Because the course is taught using a proof assistant, it is important
 that students have access to a proof assistant during the exam.
 Students are told in advance that they are expected to get perfect on
-the exam, and that they will have to study hard to achieve this level.
+the exam, and that they will have to study hard to achieve it.
 Given that the goal of formal methods is to avoid error, we believe a
 pedagogical purpose is served by telling the students that they are
 expected to achieve perfection and making it possible for them to do
@@ -1000,12 +1000,13 @@ these links, rerouting links to the standard library to the online version, and
 correcting links to local modules.
 
 (Before the release of Agda 2.6, Agda did not support highlighting embedded
-literate code using HTML.  To address this, we wrote \texttt{agda2html}, a tool
-which rewrote the output of Agda's HTML highlighter to accomplish this. This
-tool had much more functionality, including the fixing of links as outlined
-above, the stripping of implicit arguments to achieve a Haskell-like look, and
-the support for new Markdown constructs for linking to Agda names. However,
-Agda 2.6 has incorporated almost all of this functionality.)
+literate code in HTML.  We maintained \texttt{agda2html}, a tool which rewrites
+the output of Agda's HTML highlighter to highlight embedded code. The tool had
+much more functionality, including the fixing of links as outlined above, the
+stripping of implicit arguments to achieve a Haskell-like look, and the support
+for new Markdown constructs for linking to Agda names. However, Agda 2.6 has
+incorporated almost all of this functionality, and \texttt{agda2html} is now
+deprecated.)
 
 The book is built, tested, and published after each commit, using Travis CI, a
 web service for continuous integration.  This means that the book is constantly

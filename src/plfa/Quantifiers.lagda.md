@@ -90,7 +90,7 @@ postulate
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 ```
 Compare this with the result (`→-distrib-×`) in
-Chapter [Connectives][plfa.Connectives].
+Chapter [Connectives]({{ site.baseurl }}/Connectives/).
 
 #### Exercise `⊎∀-implies-∀⊎`
 
@@ -233,7 +233,7 @@ Indeed, the converse also holds, and the two together form an isomorphism:
 ```
 The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
-[implication][plfa.Connectives#implication].
+[implication]({{ site.baseurl }}/Connectives/#implication).
 
 #### Exercise `∃-distrib-⊎` (recommended)
 
@@ -263,7 +263,7 @@ Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 ## An existential example
 
 Recall the definitions of `even` and `odd` from
-Chapter [Relations][plfa.Relations]:
+Chapter [Relations]({{ site.baseurl }}/Relations/):
 ```
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -371,7 +371,7 @@ restated in this way.
 -- Your code goes here
 ```
 
-#### Exercise `∃-+-≤`
+#### Exercise `∃-|-≤`
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
@@ -432,9 +432,9 @@ Does the converse hold? If so, prove; if not, explain why.
 #### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
-[Bin][plfa.Naturals#Bin],
-[Bin-laws][plfa.Induction#Bin-laws], and
-[Bin-predicates][plfa.Relations#Bin-predicates]
+[Bin]({{ site.baseurl }}/Naturals/#Bin),
+[Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws), and
+[Bin-predicates]({{ site.baseurl }}/Relations/#Bin-predicates)
 define a datatype of bitstrings representing natural numbers:
 ```
 data Bin : Set where
