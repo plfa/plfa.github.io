@@ -89,7 +89,7 @@ Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
 yield the same result, then they are the same function.  It is the
 converse of `cong-app`, as introduced
-[earlier][plfa.Equality#cong].
+[earlier]({{ site.baseurl }}/Equality/#cong).
 
 Agda does not presume extensionality, but we can postulate that it holds:
 ```
@@ -104,7 +104,7 @@ known to be consistent with the theory that underlies Agda.
 
 As an example, consider that we need results from two libraries,
 one where addition is defined, as in
-Chapter [Naturals][plfa.Naturals],
+Chapter [Naturals]({{ site.baseurl }}/Naturals/),
 and one where it is defined the other way around.
 ```
 _+′_ : ℕ → ℕ → ℕ
@@ -456,8 +456,8 @@ Show that equivalence is reflexive, symmetric, and transitive.
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
-[Bin][plfa.Naturals#Bin] and
-[Bin-laws][plfa.Induction#Bin-laws]
+[Bin]({{ site.baseurl }}/Naturals/#Bin) and
+[Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws)
 define a datatype of bitstrings representing natural numbers:
 ```
 data Bin : Set where

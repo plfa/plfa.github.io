@@ -39,7 +39,7 @@ open import plfa.Isomorphism using (_⇔_)
 
 ## Evidence vs Computation
 
-Recall that Chapter [Relations][plfa.Relations]
+Recall that Chapter [Relations]({{ site.baseurl }}/Relations/)
 defined comparison as an inductive datatype,
 which provides _evidence_ that one number
 is less than or equal to another:
@@ -548,7 +548,7 @@ postulate
 #### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
-Chapter [Isomorphism][plfa.Isomorphism#iff],
+Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
 postulate

@@ -62,7 +62,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 ## Untyped is Uni-typed
 
 Our development will be close to that in
-Chapter [DeBruijn][plfa.DeBruijn],
+Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
 save that every term will have exactly the same type, written `★`
 and pronounced "any".
 This matches a slogan introduced by Dana Scott
@@ -756,7 +756,7 @@ Confirm that two times two is four.
 #### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
-Chapter [More][plfa.More],
+Chapter [More]({{ site.baseurl }}/More/),
 save for primitive numbers, in the untyped lambda calculus.
 
 ```

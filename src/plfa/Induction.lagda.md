@@ -366,7 +366,7 @@ proof of associativity.
 
 The symbol `∀` appears in the statement of associativity to indicate that
 it holds for all numbers `m`, `n`, and `p`.  We refer to `∀` as the _universal
-quantifier_, and it is discussed further in Chapter [Quantifiers][plfa.Quantifiers].
+quantifier_, and it is discussed further in Chapter [Quantifiers]({{ site.baseurl }}/Quantifiers/).
 
 Evidence for a universal quantifier is a function.  The notations
 
@@ -697,11 +697,11 @@ judgments where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
+#### Exercise `finite-|-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
-[earlier][plfa.Naturals#finite-creation].
+[earlier]({{ site.baseurl }}/Naturals/#finite-creation).
 
 ```
 -- Your code goes here
@@ -927,7 +927,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-#### Exercise `∸-+-assoc` {#monus-plus-assoc}
+#### Exercise `∸-|-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -954,7 +954,7 @@ for all `m`, `n`, and `p`.
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that
-Exercise [Bin][plfa.Naturals#Bin]
+Exercise [Bin]({{ site.baseurl }}/Naturals/#Bin)
 defines a datatype of bitstrings representing natural numbers
 ```
 data Bin : Set where
