@@ -79,18 +79,27 @@ unzip, and from within the directory run
     bundle exec jekyll serve
 
 
-## GNU sed and macOS
+## GNU tools and macOS
 
-The version of sed that ships with macOS is not fully compatible with the GNU sed.
+The version of sed and grep that ships with macOS is not fully compatible with the GNU counterparts.
 Therefore, you may get errors such as:
 ```
 sed: 1: "out/plfa/Bisimulation.md": invalid command code o
 ```
-You can fix this error by installing a GNU compatible version of sed, e.g. using [Homebrew](https://brew.sh/):
+or
+```
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+```
+You can fix this error by installing a GNU compatible version of sed and grep, e.g. using [Homebrew](https://brew.sh/):
 ```
 brew install gnu-sed --with-default-names
+brew install grep
 ```
 
+You need to add the correct directory to your `PATH` environment variable according to the Homebrew output message.
 
 ## Unicode characters
 
