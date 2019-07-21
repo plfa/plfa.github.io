@@ -656,8 +656,8 @@ Now that naming is resolved, let's unpack the first three cases:
 
   + The lookup judgment is evidenced by rule `Z`:
 
-        -----------------
-        Γ , x ⦂ A ⊢ x ⦂ A
+        ----------------
+        Γ , x ⦂ A ∋ x ⦂ A
 
     In this case, `x` and `y` are necessarily identical, as are `A`
     and `B`.  Nonetheless, we must evaluate `x ≟ y` in order to allow
