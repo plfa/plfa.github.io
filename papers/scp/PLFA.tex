@@ -1,8 +1,3 @@
-% WRITE TO JEREMY RE: DIFFERENCE IN STYLE OF CHAPTER TITLES
-% NEED TO CITE SBMF PAPER AND DESCRIBE DIFFERENCES
-% STRIP OUT EXAM RESULTS
-% CHANGE INHERENT --> INTRINSIC, CITE REYNOLDS
-
 \documentclass[preprint,authoryear]{elsarticle}
 %\usepackage{natbib}
 \usepackage{agda}
@@ -56,8 +51,8 @@
   rise to a prototype evaluator. This fact is obvious in retrospect
   but it is not exploited in SF (which instead provides a separate
   normalise tactic) nor can I find it in the literature.  Third, that
-  using raw terms with a separate typing relation is far less
-  perspicuous than using inherently-typed terms. SF uses the former
+  using extrinsicly-typed terms is far less
+  perspicuous than using intrinsicly-typed terms. SF uses the former
   presentation, while PLFA presents both; the former uses about 1.6 as
   many lines of Agda code as the latter, roughly the golden ratio.
 
@@ -179,9 +174,9 @@ preservation combine trivially to produce a constructive evaluator for
 terms.  This idea is obvious once you have seen it, yet we cannot
 find it described in the literature.
 
-Section~5 claims that raw terms should be avoided in favour of
-inherently-typed terms.  PLFA develops lambda calculus with both raw
-and inherently-typed terms, permitting a comparison.  It turns out the
+Section~5 claims that extrinsicly-typed terms should be avoided in favour of
+intrisicly-typed terms.  PLFA develops lambda calculus with both,
+permitting a comparison.  It turns out the
 former is less powerful---it supports substitution only for closed
 terms---but significantly longer---about 1.6 times as many lines of code,
 roughly the golden ratio.
@@ -298,7 +293,7 @@ of the latter.
 
 \paragraph{Lambda: Introduction to lambda calculus}
 Introduces lambda calculus, using a representation with named
-variables and a separate typing relation. The language used is PCF
+variables and extrinsicly typed. The language used is PCF
 \citep{Plotkin-1977}, with variables, lambda abstraction, application,
 zero, successor, case over naturals, and fixpoint. Reduction is
 call-by-value and restricted to closed terms.
@@ -308,8 +303,8 @@ Proves key properties of simply-typed
 lambda calculus, including progress and preservation.  Progress and
 preservation are combined to yield an evaluator.
 
-\paragraph{DeBruijn: Inherently typed de Bruijn representation}
-Introduces de Bruijn indices and the inherently-typed representation.
+\paragraph{DeBruijn: Intrinsicly-typed de Bruijn representation}
+Introduces de Bruijn indices and the intrinsicly-typed representation.
 Emphasis is put on the structural similarity between a term and its
 corresponding type derivation; in particular, de Bruijn indices
 correspond to the judgment that a variable is well-typed under a given
@@ -319,7 +314,7 @@ environment.
 Introduces product, sum, unit, and empty types; and explains lists and let bindings.
 Typing and reduction rules are given informally; a few
 are then give formally, and the rest are left as exercises for the reader.
-The inherently typed representation is used.
+The intrinsicly-typed representation is used.
 
 \paragraph{Bisimulation: Relating reduction systems}
 Shows how to translate the language with ``let'' terms
@@ -328,12 +323,12 @@ and shows how to relate the source and target languages with a bisimulation.
 
 \paragraph{Inference: Bidirectional type inference}
 Introduces bidirectional type inference, and applies it to convert from
-a representation with named variables and a separate typing relation
-to a representation de Bruijn indices with inherent types. Bidirectional
+a representation with named variables and extrinsicly typed
+to a representation with de Bruijn indices and intrinsicly typed. Bidirectional
 type inference is shown to be both sound and complete.
 
 \paragraph{Untyped: Untyped calculus with full normalisation}
-As a variation on earlier themes, discusses an untyped (but inherently
+As a variation on earlier themes, discusses an untyped (but intrinsicly
 scoped) lambda calculus.  Reduction is call-by-name over open terms,
 with full normalisation (including reduction under lambda terms).  Emphasis
 is put on the correspondence between the structure of a term and
@@ -426,7 +421,7 @@ and uses bidirectional type inference, while SF has terms with unique types and
 uses type checking.  SF also covers a simple imperative language with Hoare
 logic, and for lambda calculus covers subtyping, record types, mutable
 references, and normalisation---none of which are treated by PLFA.  PLFA covers
-an inherently-typed de Bruijn representation, bidirectional type inference,
+an intrinsicly-typed de Bruijn representation, bidirectional type inference,
 bisimulation, and an untyped call-by-name language with full
 normalisation---none of which are treated by SF.  The new part on
 Denotational Semantics also covers material not treated by SF.
@@ -438,7 +433,7 @@ added a fourth volume on random testing of Coq specifications using QuickChick.
 There is currently no tool equivalent to QuickChick for Agda.
 
 There is more material that would be desirable to include in PLFA which was not
-due to limits of time, including mutable references, logical relations, System F, and
+due to limits of time, including mutable references, logical relations, System~F, and
 pure type systems. We'd especially like to include pure type systems as they
 provide the readers with a formal model close to the dependent types used in the
 book.  Our attempts so far to formalise pure type systems have proved
@@ -696,10 +691,10 @@ need for animation; Philip sometime referred to this as ``K-envy'' or
 Philip was therefore surprised to realise that any constructive proof of
 progress and preservation \emph{automatically} gives rise to such a
 prototype.  The input is a term together with evidence the term is
-well-typed.  (In the inherently-typed case, these are the same thing.)
+well-typed.  (In the intrinsicly-typed case, these are the same thing.)
 Progress determines whether we are done, or should take another step;
 preservation provides evidence that the new term is well-typed, so we
-may iterate. In a language with guaranteed termination, we cannot
+may iterate. In a language with guaranteed termination such as Agda, we cannot
 iterate forever, but there are a number of well-known techniques to
 address that issue; see, e.g., \citet{Bove-and-Capretta-2001},
 \citet{Capretta-2005}, or \citet{McBride-2015}.
@@ -759,30 +754,32 @@ connection becomes more widely known.
 
 
 
-\section{Inherent typing is golden}
+\section{Intrinsic typing is golden}
 
 \begin{figure}[p]
   \includegraphics[width=\textwidth]{figures/raw.png}
-  \caption{Raw approach in PLFA}
-  \label{fig:raw}
+  \caption{Extrinsic approach in PLFA}
+  \label{fig:extrinsic}
 \end{figure}  
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/inherent.png}
-  \caption{Inherent approach in PLFA}
-  \label{fig:inherent}
+  \caption{Intrinsic approach in PLFA}
+  \label{fig:intrinsic}
 \end{figure}  
 
 % TODO: consider rewriting this?
 The second part of PLFA first discusses two different approaches to
-modeling simply-typed lambda calculus.  It first presents raw
-terms with named variables and a separate typing relation and
-then shifts to inherently-typed terms with de Bruijn indices.
+modeling simply-typed lambda calculus.  It first presents
+terms with named variables and and extrinsic typing relation and
+then shifts to terms with de Bruijn indices that are intrinsicly
+typed.  The names \emph{extrinsic} and \emph{intrinsic} for these
+two approaches are taken from \citet{Reynolds-2003}.
 Before writing the text, Philip had thought the two approaches
 complementary, with no clear winner.  Now he is convinced that the
-inherently-typed approach is superior.
+intrinsicly-typed approach is superior.
 
-Figure~\ref{fig:raw} presents the raw approach.
+Figure~\ref{fig:extrinsic} presents the extrinsic approach.
 It first defines $\texttt{Id}$, $\texttt{Term}$,
 $\texttt{Type}$, and $\texttt{Context}$, the abstract syntax
 of identifiers, raw terms, types, and contexts.
@@ -792,7 +789,7 @@ $\GG\:{\vdash}\:\EM\:{\typecolon}\:\AY$,
 which hold when under context $\GG$ the variable $\ex$
 and the term $\EM$ have type $\AY$, respectively.
 
-Figure~\ref{fig:inherent} presents the inherent approach.
+Figure~\ref{fig:intrinsic} presents the intrinsic approach.
 It first defines $\texttt{Type}$ and $\texttt{Context}$, the abstract syntax
 of types and contexts, of which the first is as before and the second is
 as before with identifiers dropped.  In place of the two judgments,
@@ -801,53 +798,53 @@ so that $\GG\:{\ni}\:\AY$ and $\GG\:{\vdash}\:\AY$ denote
 variables and terms, respectively, that under context $\GG$ have type $\AY$.
 The indexed types closely resemble the previous judgments:
 we now represent a variable or a term by the proof that it is well typed.
-In particular, the proof that a variable is well typed in the raw approach
-corresponds to a de Bruijn index in the inherent approach.
+In particular, the proof that a variable is well typed in the extrinsic approach
+corresponds to a de Bruijn index in the intrinsic approach.
 
-The raw approach requires more lines of code than the inherent approach.  The
-separate definition of raw terms is not needed in the inherent approach; and one
-judgment in the raw approach needs to check that $\ex \not\equiv \why$, while
-the corresponding judgment in the inherent approach does not.  The difference
+The extrinsic approach requires more lines of code than the intrinsic approach.  The
+separate definition of raw terms is not needed in the intrinsic approach; and one
+judgment in the extrinsic approach needs to check that $\ex \not\equiv \why$, while
+the corresponding judgment in the intrinsic approach does not.  The difference
 becomes more pronounced when including the code for substitution, reductions,
-and proofs of progress and preservation.  In particular, where the raw approach
+and proofs of progress and preservation.  In particular, where the extrinsic approach
 requires one first define substitution and reduction and then prove they
-preserve types, the inherent approach establishes substitution at the same time
+preserve types, the intrinsic approach establishes substitution at the same time
 it defines substitution and reduction.
 
 Stripping out examples and any proofs that appear in one but not the other (but
-could have appeared in both), the full development in PLFA for the raw approach
+could have appeared in both), the full development in PLFA for the extrinsic approach
 takes 451 lines (216 lines of definitions and 235 lines for the proofs) and the
-development for the inherent approach takes 275 lines (with definitions and
+development for the intrinsic approach takes 275 lines (with definitions and
 proofs interleaved).  We have 451 / 235 = 1.64, close to the golden ratio.
 
-The inherent approach also has more expressive power.  The raw
+The intrinsic approach also has more expressive power.  The extrinsic
 approach is restricted to substitution of one variable by a closed
-term, while the inherent approach supports simultaneous substitution
+term, while the intrinsic approach supports simultaneous substitution
 of all variables by open terms, using a pleasing formulation due to
 \citet{McBride-2005}, inspired by \citet{Goguen-and-McKinna-1997} and
 \citet{Altenkirch-and-Reus-1999} and described in
 \citet{Allais-et-al-2017}. In fact, we did manage to write a variant of
-the raw approach with simultaneous open substitution along the lines
+the extrinsic approach with simultaneous open substitution along the lines
 of McBride, but the result was too complex for use in an introductory
 text, requiring 695 lines of code---more than the total for the other
 two approaches combined.
 % TODO: is this still available somewhere in extra/?
 
-The text develops both approaches because the raw approach is more
-familiar, and because placing the inherent approach first would
+The text develops both approaches because the extrinsic approach is more
+familiar, and because placing the intrinsic approach first would
 lead to a steep learning curve.  By presenting the more long-winded
 but less powerful approach first, students can see for themselves the
-advantages of de Bruijn indices and inherent types.
+advantages of de Bruijn indices and intrinsic types.
 
 There are actually four possible designs, as the choice of named
-variables vs de Bruijn indices, and the choice of raw vs
-inherently-typed terms may be made independently.  There are synergies
+variables vs de Bruijn indices, and the choice of extrinsic vs
+intrinsic typing may be made independently.  There are synergies
 between the two.  Manipulation of de Bruijn indices can be notoriously
-error-prone without inherent-typing to give assurance of correctness.
-In inherent typing with named variables, simultaneous substitution by
+error-prone without intrinsic types to give assurance of correctness.
+For instrinsic typing with named variables, simultaneous substitution by
 open terms remains difficult.
 
-The benefits of the inherent approach 
+The benefits of the intrinsic approach 
 are well known to some. The technique was introduced by
 \citet{Altenkirch-and-Reus-1999}, and widely used elsewhere,
 notably by \citet{Chapman-2009} and \citet{Allais-et-al-2017}.
@@ -922,7 +919,7 @@ Students must answer question~1 on the exam, and one of questions~2
 or~3.  Question~1 gives predicates over a data structure, such lists or
 trees, to be formalised in Agda, and a theorem relating the
 predicates, to be formalised and proved in Agda.  Question~2 gives the
-students the inherent formulation of lambda calculus from chapter
+students the intrinsic formulation of lambda calculus from chapter
 DeBruijn, which they must extend with a described language feature.
 Question~3 give the students the the bidirectional type inferencer
 from chapter Inference, which they must extend with a described
@@ -1041,7 +1038,7 @@ to expand and improve the book.
 
 For inventing ideas on which PLFA is based, and for hand-holding, many thanks to
 Conor McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing how
-much more compact it is to avoid raw terms, thanks to David Darais.  For
+much more compact it is to use intrinsicly-typed terms, thanks to David Darais.  For
 inspiring our work by writing SF, thanks to Benjamin Pierce and his coauthors.
 For comments on a draft of this paper, an extra thank you to James McKinna, Ulf
 Norell, Andreas Abel, and Benjamin Pierce. This research was supported by EPSRC
