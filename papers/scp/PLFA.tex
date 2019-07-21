@@ -51,8 +51,8 @@
   rise to a prototype evaluator. This fact is obvious in retrospect
   but it is not exploited in SF (which instead provides a separate
   normalise tactic) nor can I find it in the literature.  Third, that
-  using extrinsicly-typed terms is far less
-  perspicuous than using intrinsicly-typed terms. SF uses the former
+  using extrinsically-typed terms is far less
+  perspicuous than using intrinsically-typed terms. SF uses the former
   presentation, while PLFA presents both; the former uses about 1.6 as
   many lines of Agda code as the latter, roughly the golden ratio.
 
@@ -174,7 +174,7 @@ preservation combine trivially to produce a constructive evaluator for
 terms.  This idea is obvious once you have seen it, yet we cannot
 find it described in the literature.
 
-Section~5 claims that extrinsicly-typed terms should be avoided in favour of
+Section~5 claims that extrinsically-typed terms should be avoided in favour of
 intrisicly-typed terms.  PLFA develops lambda calculus with both,
 permitting a comparison.  It turns out the
 former is less powerful---it supports substitution only for closed
@@ -293,7 +293,7 @@ of the latter.
 
 \paragraph{Lambda: Introduction to lambda calculus}
 Introduces lambda calculus, using a representation with named
-variables and extrinsicly typed. The language used is PCF
+variables and extrinsically typed. The language used is PCF
 \citep{Plotkin-1977}, with variables, lambda abstraction, application,
 zero, successor, case over naturals, and fixpoint. Reduction is
 call-by-value and restricted to closed terms.
@@ -303,8 +303,8 @@ Proves key properties of simply-typed
 lambda calculus, including progress and preservation.  Progress and
 preservation are combined to yield an evaluator.
 
-\paragraph{DeBruijn: Intrinsicly-typed de Bruijn representation}
-Introduces de Bruijn indices and the intrinsicly-typed representation.
+\paragraph{DeBruijn: Intrinsically-typed de Bruijn representation}
+Introduces de Bruijn indices and the intrinsically-typed representation.
 Emphasis is put on the structural similarity between a term and its
 corresponding type derivation; in particular, de Bruijn indices
 correspond to the judgment that a variable is well-typed under a given
@@ -314,7 +314,7 @@ environment.
 Introduces product, sum, unit, and empty types; and explains lists and let bindings.
 Typing and reduction rules are given informally; a few
 are then give formally, and the rest are left as exercises for the reader.
-The intrinsicly-typed representation is used.
+The intrinsically-typed representation is used.
 
 \paragraph{Bisimulation: Relating reduction systems}
 Shows how to translate the language with ``let'' terms
@@ -323,12 +323,12 @@ and shows how to relate the source and target languages with a bisimulation.
 
 \paragraph{Inference: Bidirectional type inference}
 Introduces bidirectional type inference, and applies it to convert from
-a representation with named variables and extrinsicly typed
-to a representation with de Bruijn indices and intrinsicly typed. Bidirectional
+a representation with named variables and extrinsically typed
+to a representation with de Bruijn indices and intrinsically typed. Bidirectional
 type inference is shown to be both sound and complete.
 
 \paragraph{Untyped: Untyped calculus with full normalisation}
-As a variation on earlier themes, discusses an untyped (but intrinsicly
+As a variation on earlier themes, discusses an untyped (but intrinsically
 scoped) lambda calculus.  Reduction is call-by-name over open terms,
 with full normalisation (including reduction under lambda terms).  Emphasis
 is put on the correspondence between the structure of a term and
@@ -421,7 +421,7 @@ and uses bidirectional type inference, while SF has terms with unique types and
 uses type checking.  SF also covers a simple imperative language with Hoare
 logic, and for lambda calculus covers subtyping, record types, mutable
 references, and normalisation---none of which are treated by PLFA.  PLFA covers
-an intrinsicly-typed de Bruijn representation, bidirectional type inference,
+an intrinsically-typed de Bruijn representation, bidirectional type inference,
 bisimulation, and an untyped call-by-name language with full
 normalisation---none of which are treated by SF.  The new part on
 Denotational Semantics also covers material not treated by SF.
@@ -691,7 +691,7 @@ need for animation; Philip sometime referred to this as ``K-envy'' or
 Philip was therefore surprised to realise that any constructive proof of
 progress and preservation \emph{automatically} gives rise to such a
 prototype.  The input is a term together with evidence the term is
-well-typed.  (In the intrinsicly-typed case, these are the same thing.)
+well-typed.  (In the intrinsically-typed case, these are the same thing.)
 Progress determines whether we are done, or should take another step;
 preservation provides evidence that the new term is well-typed, so we
 may iterate. In a language with guaranteed termination such as Agda, we cannot
@@ -772,12 +772,12 @@ connection becomes more widely known.
 The second part of PLFA first discusses two different approaches to
 modeling simply-typed lambda calculus.  It first presents
 terms with named variables and and extrinsic typing relation and
-then shifts to terms with de Bruijn indices that are intrinsicly
+then shifts to terms with de Bruijn indices that are intrinsically
 typed.  The names \emph{extrinsic} and \emph{intrinsic} for these
 two approaches are taken from \citet{Reynolds-2003}.
 Before writing the text, Philip had thought the two approaches
 complementary, with no clear winner.  Now he is convinced that the
-intrinsicly-typed approach is superior.
+intrinsically-typed approach is superior.
 
 Figure~\ref{fig:extrinsic} presents the extrinsic approach.
 It first defines $\texttt{Id}$, $\texttt{Term}$,
@@ -1038,7 +1038,7 @@ to expand and improve the book.
 
 For inventing ideas on which PLFA is based, and for hand-holding, many thanks to
 Conor McBride, James McKinna, Ulf Norell, and Andreas Abel.  For showing how
-much more compact it is to use intrinsicly-typed terms, thanks to David Darais.  For
+much more compact it is to use intrinsically-typed terms, thanks to David Darais.  For
 inspiring our work by writing SF, thanks to Benjamin Pierce and his coauthors.
 For comments on a draft of this paper, an extra thank you to James McKinna, Ulf
 Norell, Andreas Abel, and Benjamin Pierce. This research was supported by EPSRC
