@@ -1,4 +1,25 @@
+## Agda files
+*.agdai
+.agda-stdlib.sed
+.links-*.sed
+
+## Jekyll files
 _site/
 .sass-cache/
+.agda-stdlib.sed
 .jekyll-metadata
-*.agdai
+Gemfile.lock
+
+## LaTeX files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
+*.spl
+*.synctex.gz
+
+## Emacs files
+auto/

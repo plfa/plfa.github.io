@@ -32,9 +32,15 @@ markdown: kramdown
 theme: minima
 exclude:
   - "hs/"
-  - "src/"
   - "extra/"
+  - "depr/"
+  - "papers/"
+  - "slides/"
   - "vendor/"
-  - "*.lagda"
+  - "*.agdai"
+  - "*.agda-lib"
+  - "*.lagda.md"
+  - "Guardfile"
   - "Gemfile"
   - "Gemfile.lock"
+  - "highlight.sh"

@@ -14,7 +14,6 @@ cache:
   - $HOME/.local
   - $HOME/agda-$AGDA_VERSION
   - $HOME/agda-stdlib-$AGDA_STDLIB_VERSION
-  - $HOME/agda2html-master
   - $HOME/acknowledgements-master
 
 # Ensure necessary system libraries are present
@@ -23,6 +22,10 @@ addons:
     packages:
       - libgmp-dev
       - libicu-dev
+
+# Ensure we run BASH and not SH
+env:
+  - SH=bash
 
 before_install:
 # Download and unpack the stack executable
@@ -33,15 +36,15 @@ before_install:
 - make travis-setup
 
 script:
+- curl -L https://raw.githubusercontent.com/MestreLion/git-tools/master/git-restore-mtime | python
 - agda --version
-- agda2html --version
 - acknowledgements --version
-- make test-offline
+- make test-offline # disable to only build cache
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
 - make clean
-- rm -rf .bundle/ vendor/ hs/ src/ extra/ .gitignore .travis.yml Gemfile Gemfile.lock Makefile
+- rm -rf hs/ extra/ depr/ papers/ slides/ .bundle/ vendor/ *.agdai *.agda-lib *.lagda.md Guardfile Gemfile Gemfile.lock Makefile highlight.sh .gitignore .travis.yml
 
 branches:
   only:
