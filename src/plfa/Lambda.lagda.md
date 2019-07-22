@@ -1374,7 +1374,7 @@ or explain why there are no such types.
 #### Exercise `mul-type` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
-showing that it is well-typed.
+showing that it is well typed.
 
 ```
 -- Your code goes here
@@ -1384,7 +1384,7 @@ showing that it is well-typed.
 #### Exercise `mulᶜ-type`
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
-showing that it is well-typed.
+showing that it is well typed.
 
 ```
 -- Your code goes here
