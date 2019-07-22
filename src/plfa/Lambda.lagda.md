@@ -92,7 +92,7 @@ Here is the syntax of terms in Backus-Naur Form (BNF):
 
     L, M, N  ::=
       ` x  |  ƛ x ⇒ N  |  L · M  |
-      `zero  |  `suc M  |  case L [zero⇒ M |suc x ⇒ N]  |
+      `zero  |  `suc M  |  case L [zero⇒ M |suc x ⇒ N ]  |
       μ x ⇒ M
 
 And here it is formalised in Agda:
