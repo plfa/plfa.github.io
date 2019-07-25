@@ -24,11 +24,23 @@ For a note showing how much more compact it is to avoid raw terms:
 
 
 <span class="force-end-of-list"></span>
-{%- if site.contributors -%}
+{%- if site.contributors or site.extra_contributors -%}
 For pull requests big and small:
 <ul>
 {%- for contributor in site.contributors -%}
   <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
+{%- endfor -%}
+{%- for contributor in site.extra_contributors -%}
+  {%- if contributor.name and contributor.github_username -%}
+  <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
+  {%- else -%}
+    {%- if contributor.name -%}
+    <li>{{ contributor.name }}</li>
+    {%- endif -%}
+    {%- if contributor.github_username -%}
+    <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.github_username }}</a></li>
+    {%- endif -%}
+  {%- endif -%}
 {%- endfor -%}
 <li>[Your name goes here]</li>
 </ul>

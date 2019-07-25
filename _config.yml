@@ -21,6 +21,12 @@ authors:
     github_username: wenkokke
     twitter_username: wenkokke
 
+extra_contributors:
+  - name: Vikraman Choudhury
+  - name: Ben Darwin
+  - github_username: koo5
+  - name: Anish Tondwalkar
+
 google_analytics: "UA-125055580-1"
 
 repository: plfa/plfa.github.io
