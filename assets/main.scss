@@ -12,3 +12,13 @@ $on-medium: 600px !default;
 @media screen and (min-width: $on-medium) {
   .trigger { display: block; }
 }
+
+ul.list-of-contributors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: calc(100% - 2rem);
+}
+
+ul.list-of-contributors li {
+    margin-right: 2rem;
+}
