@@ -936,13 +936,13 @@ _ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡ no _
 _ = refl
 ```
 
-Argument in application is ill-typed:
+Argument in application is ill typed:
 ```
 _ : synthesize ∅ (plus · sucᶜ) ≡ no _
 _ = refl
 ```
 
-Function in application is ill-typed:
+Function in application is ill typed:
 ```
 _ : synthesize ∅ (plus · sucᶜ · two) ≡ no _
 _ = refl
