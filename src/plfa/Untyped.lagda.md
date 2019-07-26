@@ -150,8 +150,8 @@ binds two variables.
 
 Inherently typed terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
-well-scoped — that is, that all variables they mention are in scope —
-but not that they are well-typed:
+well scoped — that is, that all variables they mention are in scope —
+but not that they are well typed:
 ```
 data _⊢_ : Context → Type → Set where
 
@@ -501,7 +501,7 @@ data Progress {Γ A} (M : Γ ⊢ A) : Set where
     → Progress M
 ```
 
-If a term is well-scoped then it satisfies progress:
+If a term is well scoped then it satisfies progress:
 ```
 progress : ∀ {Γ A} → (M : Γ ⊢ A) → Progress M
 progress (` x)                                 =  done (′ ` x)
@@ -518,7 +518,7 @@ progress (L@(_ · _) · M) with progress L
 ...    | step M—→M′                            =  step (ξ₂ NeuL M—→M′)
 ...    | done NrmM                             =  done (′ NeuL · NrmM)
 ```
-We induct on the evidence that the term is well-scoped:
+We induct on the evidence that the term is well scoped:
 
 * If the term is a variable, then it is in normal form.
   (This contrasts with previous proofs, where the variable case was
