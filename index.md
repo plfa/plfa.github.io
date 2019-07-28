@@ -55,7 +55,9 @@ Pull requests are encouraged.
     * John Leo, Google Seattle, 2018--2019 
     * Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
       [2019]({{ site.baseurl }}/PUC/2019/)
-  - A paper describing the book appeared in [SBMF][sbmf]
+    * Prabhakar Ragde, University of Waterloo,
+	  [2019](https://cs.uwaterloo.ca/~plragde/842/)
+  - A paper describing the book appeared in [SBMF][sbmf].
 
 [wen]: https://github.com/wenkokke
 [phil]: https://homepages.inf.ed.ac.uk/wadler/
