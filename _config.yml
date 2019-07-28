@@ -21,6 +21,24 @@ authors:
     github_username: wenkokke
     twitter_username: wenkokke
 
+extra_contributors:
+  - github_username: cyberglot
+  - name: Vikraman Choudhury
+  - name: Ben Darwin
+  - github_username: koo5
+  - name: Anish Tondwalkar
+  - name: Nils Anders Danielsson
+  - name: Miëtek Bak
+  - name: Gergő Érdi
+  - name: Adam Sandberg Eriksson
+  - name: David Janin
+  - name: András Kovács
+  - name: Ulf Norell
+  - name: Liam O'Connor
+  - name: N. Raghavendra
+  - name: Roman Kireev
+  - name: Amr Sabry
+
 google_analytics: "UA-125055580-1"
 
 repository: plfa/plfa.github.io

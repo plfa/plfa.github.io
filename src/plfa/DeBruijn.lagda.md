@@ -41,7 +41,7 @@ open import Relation.Nullary using (¬_)
 
 There is a close correspondence between the structure of a
 term and the structure of the derivation showing that it is
-well-typed.  For example, here is the term for the Church
+well typed.  For example, here is the term for the Church
 numeral two:
 
     twoᶜ : Term
@@ -359,7 +359,7 @@ data _⊢_ : Context → Type → Set where
 ```
 The definition exploits the close correspondence between the
 structure of terms and the structure of a derivation showing
-that it is well-typed: now we use the derivation _as_ the
+that it is well typed: now we use the derivation _as_ the
 term.
 
 For example, consider the following old-style typing
@@ -557,11 +557,11 @@ and extending the map whenever the construct introduces a
 bound variable.
 
 Whereas before renaming was a result that carried evidence
-that a term is well-typed in one context to evidence that it
-is well-typed in another context, now it actually transforms
+that a term is well typed in one context to evidence that it
+is well typed in another context, now it actually transforms
 the term, suitably altering the bound variables. Typechecking
 the code in Agda ensures that it is only passed and returns
-terms that are well-typed by the rules of simply-typed lambda
+terms that are well typed by the rules of simply-typed lambda
 calculus.
 
 Here is an example of renaming a term with one free
@@ -978,7 +978,7 @@ values.
 
 ## Progress
 
-As before, every term that is well-typed and closed is either
+As before, every term that is well typed and closed is either
 a value or takes a reduction step.  The formulation of progress
 is just as before, but annotated with types:
 ```

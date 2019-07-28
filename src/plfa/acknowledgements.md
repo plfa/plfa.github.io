@@ -24,31 +24,28 @@ For a note showing how much more compact it is to avoid raw terms:
 
 
 <span class="force-end-of-list"></span>
-{%- if site.contributors -%}
-For pull requests big and small:
-<ul>
+{%- if site.contributors or site.extra_contributors -%}
+For pull requests big and small, and for answering questions on the Agda mailing list:
+<ul class="list-of-contributors">
 {%- for contributor in site.contributors -%}
   <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
+{%- endfor -%}
+{%- for contributor in site.extra_contributors -%}
+  {%- if contributor.name and contributor.github_username -%}
+  <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.name }}</a></li>
+  {%- else -%}
+  {%- if contributor.name -%}
+  <li>{{ contributor.name }}</li>
+  {%- endif -%}
+  {%- if contributor.github_username -%}
+  <li><a href="https://github.com/{{ contributor.github_username }}">{{ contributor.github_username }}</a></li>
+  {%- endif -%}
+  {%- endif -%}
 {%- endfor -%}
 <li>[Your name goes here]</li>
 </ul>
 {%- else -%}
 {%- endif -%}
-
-
-For answering questions on the Agda mailing list:
-  * Guillaume Allais
-  * Nils Anders Danielsson
-  * Miëtek Bak
-  * Gergő Érdi
-  * Adam Sandberg Eriksson
-  * David Janin
-  * András Kovács
-  * Ulf Norell
-  * Liam O'Connor
-  * N. Raghavendra
-  * Roman Kireev
-  * Amr Sabry
 
 
 For support:

@@ -3,7 +3,6 @@ AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \
 AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-AGDA2HTML_FLAGS := --verbose --link-to-local-agda-names --use-jekyll=out/
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -115,7 +114,7 @@ macos-setup:
 .phony: macos-setup
 
 
-# Travis Setup (install Agda, the Agda standard library, agda2html, acknowledgements, etc.)
+# Travis Setup (install Agda, the Agda standard library, acknowledgements, etc.)
 travis-setup:\
 	$(HOME)/.local/bin/agda\
 	$(HOME)/.local/bin/acknowledgements\
@@ -124,23 +123,6 @@ travis-setup:\
 	$(HOME)/.agda/libraries
 
 .phony: travis-setup
-
-
-travis-install-agda2html: $(HOME)/.local/bin/agda2html
-
-$(HOME)/.local/bin/agda2html:
-	curl -L https://github.com/wenkokke/agda2html/archive/master.zip -o $(HOME)/agda2html-master.zip
-	unzip -qq $(HOME)/agda2html-master.zip -d $(HOME)
-	cd $(HOME)/agda2html-master;\
-		stack install
-
-travis-uninstall-agda2html:
-	rm -rf $(HOME)/agda2html-master/
-	rm $(HOME)/.local/bin/agda2html
-
-travis-reinstall-agda2html: travis-uninstall-agda2html travis-install-agda2html
-
-.phony: travis-install-agda2html travis-uninstall-agda2html travis-reinstall-agda2html
 
 
 travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements

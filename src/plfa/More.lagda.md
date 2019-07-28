@@ -1225,7 +1225,7 @@ postulate
 ```
 Note the arguments need to be swapped and `W` needs to have
 its context adjusted via renaming in order for the right-hand
-side to be well-typed.
+side to be well typed.
 
 
 ## Unicode
