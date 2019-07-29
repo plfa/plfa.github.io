@@ -175,6 +175,12 @@ inv-s≤s : ∀ {m n : ℕ}
   → m ≤ n
 inv-s≤s (s≤s m≤n) = m≤n
 ```
+Here `m≤n` (with no spaces) is a variable name while
+`m ≤ n` (with spaces) is a type, and the latter
+is the type of the former.  It is a common convention
+in Agda to choose derive a variable name by removing
+spaces from its type.
+
 Not every rule is invertible; indeed, the rule for `z≤n` has
 no non-implicit hypotheses, so there is nothing to invert.
 But often inversions of this kind hold.
