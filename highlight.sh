@@ -24,7 +24,7 @@ function html_path {
 
     # Extract the module name from the Agda file
     # NOTE: this fails if there is more than a single space after 'module'
-    MOD_NAME=`grep -oP -m 1 "(?<=^module )(\\S+)(?=\\s+(\\S+\\s+)*where)" "$SRC"`
+    MOD_NAME=`grep -o -m 1 "module\\s*\\(\\S\\S*\\)\\s.*where$" "$SRC" | cut -d ' ' -f 2`
 
     # Extract the extension from the Agda file
     SRC_EXT="$(basename $SRC)"
@@ -64,6 +64,7 @@ sedi "s|</pre>|</pre>{% endraw %}|" "$HTML"
 
 # Fix links to the Agda standard library
 STDLIB_AGDALIB=`grep -m 1 "standard-library" $HOME/.agda/libraries`
+STDLIB_AGDALIB="${STDLIB_AGDALIB/#\~/$HOME}" # see https://stackoverflow.com/q/3963716/312692
 STDLIB_AGDALIB="$(eval "echo -e \"$STDLIB_AGDALIB\"")"
 
 STDLIB_INCLUDE=`grep -m 1 "include:" "$STDLIB_AGDALIB"`
