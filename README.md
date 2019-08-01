@@ -33,52 +33,6 @@ If you are trying to complete the exercises found in the `tspl` folder, or other
 To do so, add the path to `plfa.agda-lib` to `~/.agda/libraries` and add `plfa` to `~/.agda/defaults`, both on lines of their own.
 
 
-# Building the book
-
-To build and host a local copy of the book, there are several tools you need *in addition to those listed above*:
-
-  - [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
-  - [Bundler](https://bundler.io/#getting-started)
-  
-For most of the tools, you can simply follow their respective build instructions.
-Most recent versions of Ruby should work.
-You install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proofer](https://github.com/gjtorikian/html-proofer), *etc.*---using Bundler:
-
-    bundle install
-
-Once you have installed all of the dependencies, you can build a copy of the book by running:
-
-    make build
-    
-You can host your copy of the book locally by running:
-
-    make serve
-    
-The Makefile offers more than just these options:
-
-    make                      (see make test)
-    make build                (builds lagda->markdown and the website)
-    make build-incremental    (builds lagda->markdown and the website incrementally)
-    make test                 (checks all links are valid)
-    make test-offline         (checks all links are valid offline)
-    make serve                (starts the server)
-    make server-start         (starts the server in detached mode)
-    make server-stop          (stops the server, uses pkill)
-    make clean                (removes all ~unnecessary~ generated files)
-    make clobber              (removes all generated files)
-
-If you simply wish to have a local copy of the book, e.g. for offline reading,
-but don't care about editing and rebuilding the book, you can grab a copy of the
-[master branch](https://github.com/plfa/plfa.github.io/archive/master.zip),
-which is automatically built using Travis. You will still need Ruby and Bundler
-to host the book (see above). To host the book this way, download a copy of the
-[master branch](https://github.com/plfa/plfa.github.io/archive/master.zip),
-unzip, and from within the directory run
-
-    bundle install
-    bundle exec jekyll serve
-
-
 ## Unicode characters
 
 If you're having trouble typing the Unicode characters into Emacs, the end of
@@ -140,6 +94,52 @@ configuration file at `~/.emacs`, if you have the mentioned fonts available:
 			(decode-char 'ucs #x2982))
 		  "STIX")
 ```
+
+
+# Building the book
+
+To build and host a local copy of the book, there are several tools you need *in addition to those listed above*:
+
+  - [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+  - [Bundler](https://bundler.io/#getting-started)
+  
+For most of the tools, you can simply follow their respective build instructions.
+Most recent versions of Ruby should work.
+You install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proofer](https://github.com/gjtorikian/html-proofer), *etc.*---using Bundler:
+
+    bundle install
+
+Once you have installed all of the dependencies, you can build a copy of the book by running:
+
+    make build
+    
+You can host your copy of the book locally by running:
+
+    make serve
+    
+The Makefile offers more than just these options:
+
+    make                      (see make test)
+    make build                (builds lagda->markdown and the website)
+    make build-incremental    (builds lagda->markdown and the website incrementally)
+    make test                 (checks all links are valid)
+    make test-offline         (checks all links are valid offline)
+    make serve                (starts the server)
+    make server-start         (starts the server in detached mode)
+    make server-stop          (stops the server, uses pkill)
+    make clean                (removes all ~unnecessary~ generated files)
+    make clobber              (removes all generated files)
+
+If you simply wish to have a local copy of the book, e.g. for offline reading,
+but don't care about editing and rebuilding the book, you can grab a copy of the
+[master branch](https://github.com/plfa/plfa.github.io/archive/master.zip),
+which is automatically built using Travis. You will still need Ruby and Bundler
+to host the book (see above). To host the book this way, download a copy of the
+[master branch](https://github.com/plfa/plfa.github.io/archive/master.zip),
+unzip, and from within the directory run
+
+    bundle install
+    bundle exec jekyll serve
 
 
 ## Markdown
