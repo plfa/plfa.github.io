@@ -462,7 +462,7 @@ We get the second equation from the third by taking `m` to be `1`, `n`
 to be `m`, and `p` to be `n`, and then using the fact that one is an
 identity for multiplication, so `1 * n ≡ n`.
 
-Again, the definition is well-founded in that multiplication of
+Again, the definition is well founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
 For example, let's multiply two and three:
@@ -534,7 +534,7 @@ We can do a simple analysis to show that all the cases are covered.
       - If it is `zero`, then the second equation applies.
       - If it is `suc m`, then the third equation applies.
 
-Again, the recursive definition is well-founded because
+Again, the recursive definition is well founded because
 monus on bigger numbers is defined in terms of monus on
 smaller numbers.
 
