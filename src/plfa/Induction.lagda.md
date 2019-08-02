@@ -309,7 +309,7 @@ then `cong f e` is evidence that `f x ≡ f y`, for any function `f`.
 
 Here the inductive hypothesis is not assumed, but instead proved by a
 recursive invocation of the function we are defining, `+-assoc m n p`.
-As with addition, this is well-founded because associativity of
+As with addition, this is well founded because associativity of
 larger numbers is proved in terms of associativity of smaller numbers.
 In this case, `assoc (suc m) n p` is proved using `assoc m n p`.
 The correspondence between proof by induction and definition by
