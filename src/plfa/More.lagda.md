@@ -45,7 +45,7 @@ correctness of translations will be the subject of the next chapter.
 
 ## Primitive numbers
 
-We define a `Num` type equivalent to the built-in natural number type
+We define a `Nat` type equivalent to the built-in natural number type
 with multiplication as a primitive operation on numbers:
 
 ### Syntax
