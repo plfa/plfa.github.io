@@ -223,7 +223,7 @@ and reduction rules:
 
     L, M, N ::= ...                     Terms
       `⟨ M , N ⟩                          pair
-      case× L [⟨ x , y ⟩=> M ]            case
+      case× L [⟨ x , y ⟩⇒ M ]             case
 
     V, W ::=                            Values
       `⟨ V , W ⟩                          pair
@@ -242,7 +242,7 @@ and reduction rules:
     case× L [⟨ x , y ⟩⇒ N ] —→ case× L′ [⟨ x , y ⟩⇒ N ]
 
     --------------------------------------------------------- β-case×
-    case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒  N —→ N [ x := V ][ y := W ]
+    case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒ N ] —→ N [ x := V ][ y := W ]
 
 ### Example
 
@@ -487,7 +487,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
     L, M, N ::= ...                     Terms
       `[]                                 nil
       M `∷ N                              cons
-      caseL L [nil=> M | x ∷ y ⇒ N ]      case
+      caseL L [nil⇒ M | x ∷ y ⇒ N ]      case
 
     V, W ::= ...                        Values
       `[]                                 nil
@@ -507,7 +507,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
     Γ ⊢ M ⦂ B
     Γ , x ⦂ A , xs ⦂ `List A ⊢ N ⦂ B
     -------------------------------------- caseL or List-E
-    Γ ⊢ caseL L [[]=> M | x ∷ xs ⇒ N ] ⦂ B
+    Γ ⊢ caseL L [[]⇒ M | x ∷ xs ⇒ N ] ⦂ B
 
 ### Reduction
 
