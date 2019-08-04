@@ -61,8 +61,7 @@ confluence for parallel reduction.
 ## Imports
 
 ```
-open import plfa.Substitution
-   using (subst-commute; rename-subst-commute; Rename; Subst)
+open import plfa.Substitution using (Rename; Subst)
 open import plfa.LambdaReduction
     using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _[];
            abs-cong; appL-cong; appR-cong; —↠-trans)
@@ -251,7 +250,18 @@ par-subst {Γ}{Δ} σ σ′ = ∀{A}{x : Γ ∋ A} → σ x ⇛ σ′ x
 
 Because substitution depends on the extension function `exts`, which
 in turn relies on `rename`, we start with a version of the
-substitution lemma specialized to renamings.
+substitution lemma, called `par-rename`, that is specialized to
+renamings.  The proof of `par-rename` relies on the fact that renaming
+and substitution commute with one another, which is a lemma that we
+import from the Substitution chapter and restate here.
+
+```
+rename-subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{ρ : Rename Γ Δ }
+    → (rename (ext ρ) N) [ rename ρ M ] ≡ rename ρ (N [ M ])
+rename-subst-commute {N = N} = plfa.Substitution.rename-subst-commute {N = N}
+```
+
+Now for the `par-rename` lemma.
 
 ```
 par-rename : ∀{Γ Δ A} {ρ : Rename Γ Δ} {M M′ : Γ ⊢ A}
@@ -264,6 +274,7 @@ par-rename (papp p₁ p₂) = papp (par-rename p₁) (par-rename p₂)
 par-rename {Γ}{Δ}{A}{ρ} (pbeta{Γ}{N}{N′}{M}{M′} p₁ p₂)
      with pbeta (par-rename{ρ = ext ρ} p₁) (par-rename{ρ = ρ} p₂)
 ... | G rewrite rename-subst-commute{Γ}{Δ}{N′}{M′}{ρ} = G
+
 ```
 
 The proof is by induction on `M ⇛ M′`. The first four cases
@@ -277,13 +288,12 @@ are straightforward so we just consider the last one for `pbeta`.
   `(ƛ rename (ext ρ) N) · (rename ρ M) ⇛ (rename (ext ρ) N) [ rename ρ M ]`.
   However, to conclude we instead need parallel reduction to
   `rename ρ (N [ M ])`. But thankfully, renaming and substitution
-  commute with one another, that is,
-
-        (rename (ext ρ) N) [ rename ρ M ] ≡ rename ρ (N [ M ])
+  commute with one another.
 
 
-With this lemma in hand, it is straightforward to show that extending
-substitutions preserves the pointwise parallel reduction relation.
+With the `par-rename` lemma in hand, it is straightforward to show
+that extending substitutions preserves the pointwise parallel
+reduction relation.
 
 ```
 par-subst-exts : ∀{Γ Δ} {σ τ : Subst Γ Δ}
@@ -291,6 +301,17 @@ par-subst-exts : ∀{Γ Δ} {σ τ : Subst Γ Δ}
    → ∀{B} → par-subst (exts σ {B = B}) (exts τ)
 par-subst-exts s {x = Z} = pvar
 par-subst-exts s {x = S x} = par-rename s
+```
+
+The next lemma that we need to prove that substitution respects
+parallel reduction is the following one, which states that
+simultaneoous substitution commutes with substitution. We import this
+lemma from the Substitution chapter and restate it here.
+
+```
+subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
+    → subst (exts σ) N [ subst σ M ] ≡ subst σ (N [ M ])
+subst-commute {N = N} = plfa.Substitution.subst-commute {N = N}
 ```
 
 We are ready to prove the main lemma regarding substitution and
