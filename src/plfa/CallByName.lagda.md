@@ -38,10 +38,9 @@ open import plfa.Untyped
   using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; #_; ƛ_; _·_;
          subst; subst-zero; exts; rename; β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _∎;
          —↠-trans; appL-cong)
-open import plfa.Substitution
-  using (Subst; ⟪_⟫; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
+open import plfa.Substitution using (Subst; ids)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; trans; sym)
+open Eq using (_≡_; refl; trans; sym; cong-app)
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
@@ -186,7 +185,7 @@ following two mutually-recursive predicates `V ≈ M` and `γ ≈ₑ σ`.
 _≈_ : Clos → (∅ ⊢ ★) → Set
 _≈ₑ_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
-(clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≈ₑ σ × (N ≡ ⟪ σ ⟫ M)
+(clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≈ₑ σ × (N ≡ subst σ M)
 
 γ ≈ₑ σ = ∀{x} → (γ x) ≈ (σ x)
 ```
@@ -194,62 +193,90 @@ _≈ₑ_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 We can now state the main lemma:
 
     If γ ⊢ M ⇓ V  and  γ ≈ₑ σ,
-    then  ⟪ σ ⟫ M —↠ N  and  V ≈ N  for some N.
+    then  subst σ M —↠ N  and  V ≈ N  for some N.
 
 Before starting the proof, we establish a couple lemmas
 about equivalent environments and substitutions.
 
-The empty environment is equivalent to the identity substitution.
+The empty environment is equivalent to the identity substitution
+`ids`, which we import from Chapter [Substitution]({{ site.baseurl
+}}/Substitution/).
 
 ```
 ≈ₑ-id : ∅' ≈ₑ ids
 ≈ₑ-id {()}
 ```
 
+Of course, applying the identity substitution to a term returns
+the same term.
+
+```
+sub-id : ∀{Γ} {A} {M : Γ ⊢ A}
+         → subst ids M ≡ M
+sub-id = plfa.Substitution.sub-id
+```
+
+
 We define an auxilliary function for extending a substitution.
 
 ```
 ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
-ext-subst{Γ}{Δ} σ N {A} = ⟪ subst-zero N ⟫ ∘ exts σ
+ext-subst{Γ}{Δ} σ N {A} = subst (subst-zero N) ∘ exts σ
 ```
 
-The next lemma states that if you start with an equivalent
-environment and substitution `γ ≈ₑ σ`, extending them with
-an equivalent closure and term `c ≈ N` produces
-an equivalent environment and substitution:
-`(γ ,' V) ≈ₑ (ext-subst σ N)`.
+The next lemma we need to prove states that if you start with an
+equivalent environment and substitution `γ ≈ₑ σ`, extending them with
+an equivalent closure and term `c ≈ N` produces an equivalent
+environment and substitution: `(γ ,' V) ≈ₑ (ext-subst σ N)`,
+or equivalently, `(γ ,' V) x ≈ₑ (ext-subst σ N) x` for any
+variable `x`. The proof will be by induction on `x` and
+for the induction step we need the following lemma,
+which states that applying the composition of `exts σ`
+and `subst-zero` to `S x` is the same as just `σ x`,
+which is a corollary of a theorem in
+Chapter [Substitution]({{ site.baseurl }}/Substitution/).
+
+```
+subst-zero-exts : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{x : Γ ∋ ★}
+                → (subst (subst-zero M) ∘ exts σ) (S x) ≡ σ x
+subst-zero-exts {Γ}{Δ}{σ}{B}{M}{x} =
+   cong-app (plfa.Substitution.subst-zero-exts-cons{σ = σ}) (S x)
+```
+
+So the proof of `≈ₑ-ext` is as follows.
 
 ```
 ≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {V} {N : ∅ ⊢ ★}
       → γ ≈ₑ σ  →  V ≈ N
         --------------------------
       → (γ ,' V) ≈ₑ (ext-subst σ N)
-≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N {x} = goal
-   where
-   ext-cons : (γ ,' V) ≈ₑ (N • σ)
-   ext-cons {Z} = V≈N
-   ext-cons {S x} = γ≈ₑσ
-
-   goal : (γ ,' V) x ≈ ext-subst σ N x
-   goal
-       with ext-cons {x}
-   ... | a rewrite sym (subst-zero-exts-cons{Γ}{∅}{σ}{★}{N}{★}) = a
+≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N {Z} = V≈N
+≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N {S x}
+  rewrite subst-zero-exts {σ = σ}{M = N}{x} = γ≈ₑσ
 ```
 
-To prove `≈ₑ-ext`, we make use of the fact that `ext-subst σ N` is
-equivalent to `N • σ` (by `subst-zero-exts-cons`). So we just
-need to prove that `(γ ,' V) ≈ₑ (N • σ)`, which is easy.
-We proceed by cases on the input variable.
+We proceed by induction on the input variable.
 
 * If it is `Z`, then we immediately conclude using the
   premise `V ≈ N`.
 
-* If it is `S x`, then we immediately conclude using
-  premise `γ ≈ₑ σ`.
+* If it is `S x`, then we rewrite using the
+  `subst-zero-exts` lemma and use the premise `γ ≈ₑ σ`
+  to conclude.
 
+
+To prove the main lemma, we need another technical lemma about
+substitution. Applying one substitution after another is the same as
+composing the two substitutions and then applying them.
+
+```
+sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ}
+            → subst σ₂ (subst σ₁ M) ≡ subst (subst σ₂ ∘ σ₁) M
+sub-sub {M = M} = plfa.Substitution.sub-sub {M = M}
+```
 
 We arive at the main lemma: if `M` big steps to a
-closure `V` in environment `γ`, and if `γ ≈ₑ σ`, then `⟪ σ ⟫ M` reduces
+closure `V` in environment `γ`, and if `γ ≈ₑ σ`, then `subst σ M` reduces
 to some term `N` that is equivalent to `V`. We describe the proof
 below.
 
@@ -257,7 +284,7 @@ below.
 ⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{V : Clos}
        → γ ⊢ M ⇓ V  →  γ ≈ₑ σ
          ---------------------------------------
-       → Σ[ N ∈ ∅ ⊢ ★ ] (⟪ σ ⟫ M —↠ N) × V ≈ N
+       → Σ[ N ∈ ∅ ⊢ ★ ] (subst σ M —↠ N) × V ≈ N
 ⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓V) γ≈ₑσ
     with γ x | γ≈ₑσ {x} | γx≡Lδ
 ... | clos L δ | ⟨ τ , ⟨ δ≈ₑτ , σx≡τL ⟩ ⟩ | refl
@@ -265,16 +292,16 @@ below.
 ... | ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩ rewrite σx≡τL =
       ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩
 ⇓→—↠×𝔹 {σ = σ} {V = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
-    ⟨ ⟪ σ ⟫ (ƛ N) , ⟨ ⟪ σ ⟫ (ƛ N) ∎ , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
+    ⟨ subst σ (ƛ N) , ⟨ subst σ (ƛ N) ∎ , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
 ⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
     with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≈ₑσ
 ... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
-    with ⇓→—↠×𝔹 {σ = ext-subst τ (⟪ σ ⟫ M)} N⇓V
+    with ⇓→—↠×𝔹 {σ = ext-subst τ (subst σ M)} N⇓V
            (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
-       | β{∅}{⟪ exts τ ⟫ N}{⟪ σ ⟫ M}
+       | β{∅}{subst (exts τ) N}{subst σ M}
 ... | ⟨ N' , ⟨ —↠N' , V≈N' ⟩ ⟩ | ƛτN·σM—→
-    rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (⟪ σ ⟫ M)} =
-    let rs = (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
+    rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (subst σ M)} =
+    let rs = (ƛ subst (exts τ) N) · subst σ M —→⟨ ƛτN·σM—→ ⟩ —↠N' in
     let g = —↠-trans (appL-cong σL—↠ƛτN) rs in
     ⟨ N' , ⟨ g , V≈N' ⟩ ⟩
 ```
@@ -284,51 +311,53 @@ to consider.
 
 * Case `⇓-var`.
   So we have `γ x ≡ clos L δ` and `δ ⊢ L ⇓ V`.
-  We need to show that `⟪ σ ⟫ x —↠ N` and `V ≈ N` for some `N`.
+  We need to show that `subst σ x —↠ N` and `V ≈ N` for some `N`.
   The premise `γ ≈ₑ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
   By the definition of `≈`, there exists a `τ` such that
-  `δ ≈ₑ τ` and `σ x ≡ ⟪ τ ⟫ L `.
+  `δ ≈ₑ τ` and `σ x ≡ subst τ L `.
   Using `δ ⊢ L ⇓ V` and `δ ≈ₑ τ`,
   the induction hypothesis gives us
-  `⟪ τ ⟫ L —↠ N` and `V ≈ N` for some `N`.
-  So we have shown that `⟪ σ ⟫ x —↠ N` and `V ≈ N` for some `N`.
+  `subst τ L —↠ N` and `V ≈ N` for some `N`.
+  So we have shown that `subst σ x —↠ N` and `V ≈ N` for some `N`.
 
 * Case `⇓-lam`.
-  We immediately have `⟪ σ ⟫ (ƛ N) —↠ ⟪ σ ⟫ (ƛ N)`
-  and `clos (⟪ σ ⟫ (ƛ N)) γ ≈ ⟪ σ ⟫ (ƛ N)`.
+  We immediately have `subst σ (ƛ N) —↠ subst σ (ƛ N)`
+  and `clos (subst σ (ƛ N)) γ ≈ subst σ (ƛ N)`.
 
 * Case `⇓-app`.
   Using `γ ⊢ L ⇓ clos N δ` and `γ ≈ₑ σ`,
   the induction hypothesis gives us
 
-        ⟪ σ ⟫ L —↠ ƛ ⟪ exts τ ⟫ N                                           (1)
+        subst σ L —↠ ƛ subst (exts τ) N                                     (1)
 
   and `δ ≈ₑ τ` for some `τ`.
-  From `γ≈ₑσ` we have `clos M γ ≈ ⟪ σ ⟫ M`.
+  From `γ≈ₑσ` we have `clos M γ ≈ subst σ M`.
   Then with `(δ ,' clos M γ) ⊢ N ⇓ V`,
   the induction hypothesis gives us `V ≈ N'` and
 
-        ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫ N —↠ N'                           (2)
+        subst (subst (subst-zero (subst σ M)) ∘ (exts τ)) N —↠ N'         (2)
 
   Meanwhile, by `β`, we have
 
-        (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→ ⟪ subst-zero (⟪ σ ⟫ M) ⟫ (⟪ exts τ ⟫ N)
+        (ƛ subst (exts τ) N) · subst σ M
+        —→ subst (subst-zero (subst σ M)) (subst (exts τ) N)
 
   which is the same as the following, by `sub-sub`.
 
-        (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —→ ⟪ exts τ ⨟ subst-zero (⟪ σ ⟫ M) ⟫  N  (3)
+        (ƛ subst (exts τ) N) · subst σ M
+        —→ subst (subst (subst-zero (subst σ M)) ∘ exts τ) N              (3)
 
   Using (3) and (2) we have
 
-        (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M —↠ N'                                    (4)
+        (ƛ subst (exts τ) N) · subst σ M —↠ N'                             (4)
 
   From (1) we have
 
-        ⟪ σ ⟫ L · ⟪ σ ⟫ M —↠ (ƛ ⟪ exts τ ⟫ N) · ⟪ σ ⟫ M
+        subst σ L · subst σ M —↠ (ƛ subst (exts τ) N) · subst σ M
 
   which we combine with (4) to conclude that
 
-        ⟪ σ ⟫ L · ⟪ σ ⟫ M —↠ N'
+        subst σ L · subst σ M —↠ N'
 
 
 With the main lemma complete, we establish the forward direction
@@ -343,7 +372,7 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
     with ⇓→—↠×𝔹{σ = ids} M⇓c ≈ₑ-id
 ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
     rewrite sub-id{M = M} | eq2 =
-    ⟨ ⟪ exts σ ⟫ N′ , rs ⟩
+    ⟨ subst (exts σ) N′ , rs ⟩
 ```
 
 #### Exercise `big-step-alt` (stretch)
