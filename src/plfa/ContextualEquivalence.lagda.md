@@ -3,7 +3,7 @@ title     : "Denotational equality implies contextual equivalence"
 layout    : page
 prev      : /Adequacy/
 permalink : /ContextualEquivalence/
-next      : /Acknowledgements/
+next      : /Substitution/
 ---
 
 ```
