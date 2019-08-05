@@ -35,15 +35,13 @@ single sub-computation has been completed.
 
 ```
 open import plfa.Untyped
-  using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; ƛ_; _·_; subst; subst-zero;
-         exts; rename)
-open import plfa.LambdaReduction
-  using (β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _[]; —↠-trans; appL-cong)
+  using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; #_; ƛ_; _·_;
+         subst; subst-zero; exts; rename; β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _∎;
+         —↠-trans; appL-cong)
 open import plfa.Substitution
   using (Subst; ⟪_⟫; _•_; _⨟_; ids; sub-id; sub-sub; subst-zero-exts-cons)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; trans; sym)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
@@ -122,6 +120,16 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
   environment extended with the argument `M`. Note that `M` is not
   evaluated in rule `⇓-app` because this is call-by-name and not
   call-by-value.
+
+
+#### Exercise `big-step-eg`
+
+Show that `(ƛ ƛ # 1) · ((ƛ # 0 · # 0) · (ƛ # 0 · # 0))`
+terminates under big-step call-by-name evaluation.
+
+```
+-- Your code goes here
+```
 
 
 ## The big-step semantics is deterministic
@@ -257,7 +265,7 @@ below.
 ... | ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩ rewrite σx≡τL =
       ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩
 ⇓→—↠×𝔹 {σ = σ} {V = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
-    ⟨ ⟪ σ ⟫ (ƛ N) , ⟨ ⟪ σ ⟫ (ƛ N) [] , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
+    ⟨ ⟪ σ ⟫ (ƛ N) , ⟨ ⟪ σ ⟫ (ƛ N) ∎ , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
 ⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
     with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≈ₑσ
 ... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
@@ -336,6 +344,16 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
 ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩
     rewrite sub-id{M = M} | eq2 =
     ⟨ ⟪ exts σ ⟫ N′ , rs ⟩
+```
+
+#### Exercise `big-step-alt` (stretch)
+
+Formulate an alternative big-step semantics for call-by-name that uses
+substitution instead of environments. Prove that the alternative
+semantics is equivalent to the one with environements.
+
+```
+-- Your code goes here
 ```
 
 ## Beta reduction to a lambda implies big-step evaluation

@@ -72,9 +72,8 @@ The rest of this chapter is organized as follows.
 ```
 open import plfa.Untyped
   using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
-         rename; subst; ext; exts; _[_]; subst-zero)
-open import plfa.LambdaReduction
-  using (_—↠_; _—→⟨_⟩_; _[]; _—→_; ξ₁; ξ₂; β; ζ)
+         rename; subst; ext; exts; _[_]; subst-zero;
+         _—↠_; _—→⟨_⟩_; _∎; _—→_; ξ₁; ξ₂; β; ζ)
 open import plfa.CallByName
   using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
          cbn→reduce)
@@ -88,7 +87,6 @@ open import plfa.Substitution using (ids; sub-id)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum

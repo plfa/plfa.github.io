@@ -783,7 +783,7 @@ steps it is called the diamond property. In symbols:
         --------------------
       → ((M —↠ P) × (N —↠ P)) )
 
-All of the reduction systems studied in this text are deterministic.
+The reduction system studied in this chapter is deterministic.
 In symbols:
 
     deterministic : ∀ {L M N}

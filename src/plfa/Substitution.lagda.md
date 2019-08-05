@@ -1,9 +1,9 @@
 ---
 title     : "Substitution in the untyped lambda calculus"
 layout    : page
-prev      : /Untyped/
+prev      : /ContextualEquivalence/
 permalink : /Substitution/
-next      : /LambdaReduction/
+next      : /Acknowledgements/
 ---
 
 
