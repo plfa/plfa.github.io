@@ -233,7 +233,7 @@ Here is the proposition's statement and proof:
   ≡⟨⟩
     n + p
   ≡⟨⟩
-   zero + (n + p)
+    zero + (n + p)
   ∎
 +-assoc (suc m) n p =
   begin
