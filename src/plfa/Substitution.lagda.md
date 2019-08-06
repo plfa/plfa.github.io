@@ -1,9 +1,9 @@
 ---
 title     : "Substitution in the untyped lambda calculus"
 layout    : page
-prev      : /Untyped/
+prev      : /ContextualEquivalence/
 permalink : /Substitution/
-next      : /LambdaReduction/
+next      : /Acknowledgements/
 ---
 
 
@@ -1002,6 +1002,7 @@ defines the σ algebra.
 ## Unicode
 
 This chapter uses the following unicode:
+
     ⟪  U+27EA  MATHEMATICAL LEFT DOUBLE ANGLE BRACKET (\<<)
     ⟫  U+27EA  MATHEMATICAL RIGHT DOUBLE ANGLE BRACKET (\>>)
     ↑  U+2191  UPWARDS ARROW (\u)

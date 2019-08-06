@@ -3,7 +3,7 @@ title     : "Untyped: Untyped lambda calculus with full normalisation"
 layout    : page
 prev      : /Inference/
 permalink : /Untyped/
-next      : /Acknowledgements/
+next      : /Confluence/
 ---
 
 ```
@@ -22,6 +22,11 @@ In this chapter we play with variations on a theme:
   where reduction stops at a lambda abstraction;
   here we consider _full normalisation_,
   where reduction continues underneath a lambda.
+
+* Previous chapters consider _deterministic_ reduction,
+  where there is at most one redex in a given term;
+  here we consider _non-deterministic_ reduction
+  where a term may contain many redexes and any one of them may reduce.
 
 * Previous chapters consider reduction of _closed_ terms,
   those with no free variables;
@@ -356,14 +361,18 @@ data Application : ∀ {Γ A} → Γ ⊢ A → Set where
 The reduction rules are altered to switch from call-by-value to
 call-by-name and to enable full normalisation:
 
-* In rule `ξ₁`, the function term is required to be an application,
-  to avoid conflict with rule `β`.
+* The rule `ξ₁` remains the same as it was for the simply-typed
+  lambda calculus.
 
-* In rule `ξ₂`, the function term is required to be neutral
-  rather than a value; again, this avoids conflict with rule `β`.
+* In rule `ξ₂`, the requirement that the term `L` is a value
+  is dropped. So this rule can overlap with `ξ₁` and
+  reduction is _non-deterministic_. One can choose to reduce
+  a term inside either `L` or `M`.
 
 * In rule `β`, the requirement that the argument is a value
   is dropped, corresponding to call-by-name evaluation.
+  This introduces further non-determinism, as `β` overlaps
+  with `ξ₂` when there are redexes in the argument.
 
 * A new rule `ζ` is added, to enable reduction underneath a lambda.
 
@@ -374,13 +383,11 @@ infix 2 _—→_
 data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   ξ₁ : ∀ {Γ} {L L′ M : Γ ⊢ ★}
-    → Application L
     → L —→ L′
       ----------------
     → L · M —→ L′ · M
 
   ξ₂ : ∀ {Γ} {L M M′ : Γ ⊢ ★}
-    → Neutral L
     → M —→ M′
       ----------------
     → L · M —→ L · M′
@@ -454,24 +461,22 @@ _ : 2+2ᶜ —↠ fourᶜ
 _ =
   begin
     plusᶜ · twoᶜ · twoᶜ
-  —→⟨ ξ₁ ap β ⟩
+  —→⟨ ξ₁ β ⟩
     (ƛ ƛ ƛ twoᶜ · # 1 · (# 2 · # 1 · # 0)) · twoᶜ
   —→⟨ β ⟩
     ƛ ƛ twoᶜ · # 1 · (twoᶜ · # 1 · # 0)
-  —→⟨ ζ (ζ (ξ₁ ap β)) ⟩
+  —→⟨ ζ (ζ (ξ₁ β)) ⟩
     ƛ ƛ ((ƛ # 2 · (# 2 · # 0)) · (twoᶜ · # 1 · # 0))
   —→⟨ ζ (ζ β) ⟩
     ƛ ƛ # 1 · (# 1 · (twoᶜ · # 1 · # 0))
-  —→⟨ ζ (ζ (ξ₂ (` S Z) (ξ₂ (` S Z) (ξ₁ ap β)))) ⟩
+  —→⟨ ζ (ζ (ξ₂ (ξ₂ (ξ₁ β)))) ⟩
     ƛ ƛ # 1 · (# 1 · ((ƛ # 2 · (# 2 · # 0)) · # 0))
-  —→⟨ ζ (ζ (ξ₂ (` S Z) (ξ₂ (` S Z) β))) ⟩
+  —→⟨ ζ (ζ (ξ₂ (ξ₂ β))) ⟩
    ƛ (ƛ # 1 · (# 1 · (# 1 · (# 1 · # 0))))
   ∎
 ```
 After just two steps the top-level term is an abstraction,
-and `ζ` rules drive the rest of the normalisation.  In the
-applications of the `ξ₂` rule, the argument ``(` S Z)`` is
-a proof that `# 1` is a neutral term.
+and `ζ` rules drive the rest of the normalisation. 
 
 
 ## Progress
@@ -509,13 +514,13 @@ progress (ƛ N)  with  progress N
 ... | step N—→N′                               =  step (ζ N—→N′)
 ... | done NrmN                                =  done (ƛ NrmN)
 progress (` x · M) with progress M
-... | step M—→M′                               =  step (ξ₂ (` x) M—→M′)
+... | step M—→M′                               =  step (ξ₂ M—→M′)
 ... | done NrmM                                =  done (′ (` x) · NrmM)
 progress ((ƛ N) · M)                           =  step β
 progress (L@(_ · _) · M) with progress L
-... | step L—→L′                               =  step (ξ₁ ap L—→L′)
+... | step L—→L′                               =  step (ξ₁ L—→L′)
 ... | done (′ NeuL) with progress M
-...    | step M—→M′                            =  step (ξ₂ NeuL M—→M′)
+...    | step M—→M′                            =  step (ξ₂ M—→M′)
 ...    | done NrmM                             =  done (′ NeuL · NrmM)
 ```
 We induct on the evidence that the term is well scoped:
@@ -610,7 +615,7 @@ _ : eval (gas 100) 2+2ᶜ ≡
         ((` (S (S Z))) · (` (S Z)) · (` Z))))))
     · (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z))))
     · (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z))))
-   —→⟨ ξ₁ ap β ⟩
+   —→⟨ ξ₁ β ⟩
     (ƛ
      (ƛ
       (ƛ
@@ -622,7 +627,7 @@ _ : eval (gas 100) 2+2ᶜ ≡
     (ƛ
      (ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) ·
      ((ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) · (` Z)))
-   —→⟨ ζ (ζ (ξ₁ ap β)) ⟩
+   —→⟨ ζ (ζ (ξ₁ β)) ⟩
     ƛ
     (ƛ
      (ƛ (` (S (S Z))) · ((` (S (S Z))) · (` Z))) ·
@@ -633,13 +638,13 @@ _ : eval (gas 100) 2+2ᶜ ≡
      (` (S Z)) ·
      ((` (S Z)) ·
       ((ƛ (ƛ (` (S Z)) · ((` (S Z)) · (` Z)))) · (` (S Z)) · (` Z))))
-   —→⟨ ζ (ζ (ξ₂ (` (S Z)) (ξ₂ (` (S Z)) (ξ₁ ap β)))) ⟩
+   —→⟨ ζ (ζ (ξ₂ (ξ₂ (ξ₁ β)))) ⟩
     ƛ
     (ƛ
      (` (S Z)) ·
      ((` (S Z)) ·
       ((ƛ (` (S (S Z))) · ((` (S (S Z))) · (` Z))) · (` Z))))
-   —→⟨ ζ (ζ (ξ₂ (` (S Z)) (ξ₂ (` (S Z)) β))) ⟩
+   —→⟨ ζ (ζ (ξ₂ (ξ₂ β))) ⟩
     ƛ (ƛ (` (S Z)) · ((` (S Z)) · ((` (S Z)) · ((` (S Z)) · (` Z)))))
    ∎)
    (done
@@ -763,6 +768,81 @@ save for primitive numbers, in the untyped lambda calculus.
 -- Your code goes here
 ```
 
+
+## Multi-step reduction is transitive
+
+In our formulation of the reflexive transitive closure of reduction,
+i.e., the `—↠` relation, there is not an explicit rule for
+transitivity. Instead the relation mimics the structure of lists by
+providing a case for an empty reduction sequence and a case for adding
+one reduction to the front of a reduction sequence.  The following is
+the proof of transitivity, which has the same structure as the append
+function `_++_` on lists.
+
+```
+—↠-trans : ∀{Γ}{A}{L M N : Γ ⊢ A}
+         → L —↠ M
+         → M —↠ N
+         → L —↠ N
+—↠-trans (M ∎) mn = mn
+—↠-trans (L —→⟨ r ⟩ lm) mn = L —→⟨ r ⟩ (—↠-trans lm mn)
+```
+
+## Multi-step reduction is a congruence
+
+Recall from Chapter [Induction]({{ site.baseurl }}/Induction/) that a
+relation `R` is a _congruence_ for a given function `f` if it is
+preserved by that function, i.e., if `R x y` then `R (f x) (f y)`.
+The term constructors `ƛ_` and `_·_` are functions, and so
+the notion of congruence applies to them as well. Furthermore, when a
+relation is a congruence for all of the term constructors, we
+say that the relation is a congruence for the language in question, in
+this case the untyped lambda calculus.
+
+The rules `ξ₁`, `ξ₂`, and `ζ` ensure that the reduction relation is a
+congruence for the untyped lambda calculus. The multi-step reduction
+relation `—↠` is also a congruence, which we prove in the following
+three lemmas.
+
+```
+appL-cong : ∀ {Γ} {L L' M : Γ ⊢ ★}
+         → L —↠ L'
+           ---------------
+         → L · M —↠ L' · M
+appL-cong {Γ}{L}{L'}{M} (L ∎) = L · M ∎
+appL-cong {Γ}{L}{L'}{M} (L —→⟨ r ⟩ rs) = L · M —→⟨ ξ₁ r ⟩ appL-cong rs
+```
+
+The proof of `appL-cong` is by induction on the reduction sequence `L —↠ L'`.
+* Suppose `L —↠ L` by `L ∎`. Then we have
+  `L · M —↠ L · M` by `L · M ∎`.
+* Suppose `L —↠ L''` by `L —→⟨ r ⟩ rs`, so
+  `L —→ L'` by `r` and `L' —↠ L''` by `rs`.
+  We have `L · M —→ L' · M` by `ξ₁ r` and
+  `L' · M —↠ L'' · M` by the induction hypothesis applied to `rs`.
+  We conclude that ``L · M —↠ L'' · M`` by putting these two
+  facts together using `_—→⟨_⟩_`.
+
+The proofs of `appR-cong` and `abs-cong` follow the same pattern as
+the proof for `appL-cong`.
+
+```
+appR-cong : ∀ {Γ} {L M M' : Γ ⊢ ★}
+         → M —↠ M'
+           ---------------
+         → L · M —↠ L · M'
+appR-cong {Γ}{L}{M}{M'} (M ∎) = L · M ∎
+appR-cong {Γ}{L}{M}{M'} (M —→⟨ r ⟩ rs) = L · M —→⟨ ξ₂ r ⟩ appR-cong rs
+```
+
+```
+abs-cong : ∀ {Γ} {N N' : Γ , ★ ⊢ ★}
+         → N —↠ N'
+           ----------
+         → ƛ N —↠ ƛ N'
+abs-cong (M ∎) = ƛ M ∎
+abs-cong (L —→⟨ r ⟩ rs) = ƛ L —→⟨ ζ r ⟩ abs-cong rs
+```
 
 ## Unicode
 

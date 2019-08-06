@@ -35,9 +35,8 @@ expansion is false for most typed lambda calculi!
 ```
 open import plfa.Untyped
   using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
-         subst; _[_]; subst-zero; ext; rename; exts)
-open import plfa.LambdaReduction
-  using (_—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _[])
+         subst; _[_]; subst-zero; ext; rename; exts;
+         _—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _∎)
 open import plfa.Substitution using (Rename; Subst; ids)
 open import plfa.Denotational
   using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
@@ -665,7 +664,7 @@ soundness : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
   → M —↠ ƛ N
     -----------------
   → ℰ M ≃ ℰ (ƛ N)
-soundness (.(ƛ _) []) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
+soundness (.(ƛ _) ∎) γ v = ⟨ (λ x → x) , (λ x → x) ⟩
 soundness {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
    let ih = soundness M—↠N in
    let e = reduce-equal r in

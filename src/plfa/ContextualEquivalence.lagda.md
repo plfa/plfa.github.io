@@ -3,7 +3,7 @@ title     : "Denotational equality implies contextual equivalence"
 layout    : page
 prev      : /Adequacy/
 permalink : /ContextualEquivalence/
-next      : /Acknowledgements/
+next      : /Substitution/
 ---
 
 ```
@@ -13,8 +13,7 @@ module plfa.ContextualEquivalence where
 ## Imports
 
 ```
-open import plfa.Untyped using (_⊢_; ★; ∅; _,_; ƛ_)
-open import plfa.LambdaReduction using (_—↠_)
+open import plfa.Untyped using (_⊢_; ★; ∅; _,_; ƛ_; _—↠_)
 open import plfa.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
 open import plfa.Compositional using (Ctx; plug; compositionality)
 open import plfa.Soundness using (soundness)

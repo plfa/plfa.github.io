@@ -834,7 +834,7 @@ definition that reduction preserves types.  There is no
 separate Preservation theorem to prove.  The Agda type-checker
 validates that each term preserves types.  In the case of `β`
 rules, preservation depends on the fact that substitution
-preserves types, which we previously is built-in to our
+preserves types, which is built-in to our
 definition of substitution.
 
 
