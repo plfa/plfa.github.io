@@ -375,11 +375,11 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
     ⟨ subst (exts σ) N′ , rs ⟩
 ```
 
-#### Exercise `big-step-alt` (stretch)
+#### Exercise `big-alt-implies-multi`
 
-Formulate an alternative big-step semantics for call-by-name that uses
-substitution instead of environments. Prove that the alternative
-semantics is equivalent to the one with environements.
+Formulate an alternative big-step semantics, of the form `M ↓ N`,
+for call-by-name that uses substitution instead of environments.
+Prove that `M ↓ N` implies `M —↠ N`.
 
 ```
 -- Your code goes here
