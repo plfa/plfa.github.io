@@ -192,6 +192,13 @@ Tradeoffs:
     (as opposed to failing to compute it in one day).
 
 
+## STLC
+
+* Russel O'Connor
+  + STLC with recursive types, intrinsic representation
+    - https://hub.darcs.net/roconnor/STLC/browse/src/STLC
+
+
 ## PHOAS
 
 The following comments were collected on the Agda mailing list.

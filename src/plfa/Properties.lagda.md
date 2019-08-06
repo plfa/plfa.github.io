@@ -603,9 +603,8 @@ subst : ∀ {Γ x N V A B}
   → Γ , x ⦂ A ⊢ N ⦂ B
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
-
 subst {x = y} ⊢V (⊢` {x = x} Z) with x ≟ y
-... | yes refl        =  weaken ⊢V
+... | yes _           =  weaken ⊢V
 ... | no  x≢y         =  ⊥-elim (x≢y refl)
 subst {x = y} ⊢V (⊢` {x = x} (S x≢y ∋x)) with x ≟ y
 ... | yes refl        =  ⊥-elim (x≢y refl)
