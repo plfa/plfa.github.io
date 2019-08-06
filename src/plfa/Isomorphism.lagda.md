@@ -130,6 +130,19 @@ same = extensionality (λ m → extensionality (λ n → same-app m n))
 ```
 We occasionally need to postulate extensionality in what follows.
 
+More generally, we may wish to postulate extensionality for
+dependent functions.
+```
+postulate
+  ∀-extensionality : ∀ {A : Set} {B : A → Set} {f g : ∀(x : A) → B x}
+    → (∀ (x : A) → f x ≡ g x)
+      -----------------------
+    → f ≡ g
+```
+Here the type of `f` and `g` has changed from `A → B` to
+`∀ (x : A) → B x`, generalising ordinary functions to
+dependent functions.
+
 
 ## Isomorphism
 

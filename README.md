@@ -17,20 +17,25 @@ There are several tools you need to work with PLFA:
   - [Agda standard library](https://github.com/agda/agda-stdlib/releases/tag/v1.1)
 
 For most of the tools, you can simply follow their respective build instructions.
-We list the versions of our dependencies on the badges above.
+We list the versions of our dependencies on the badges above.  We have
+tested with the versions listed; either earlier or later versions may
+cause problems.
 
-You can get the latest version of Programming Language Foundations in Agda from Github, 
+You can get the appropriate version of Programming Language Foundations in Agda from Github, 
 either by cloning the repository, 
 or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archive/dev.zip):
 
     git clone https://github.com/plfa/plfa.github.io 
 
 Finally, we need to let Agda know where to find the standard library.
-For this, you can follow the instructions [here](https://agda.readthedocs.io/en/v2.6.0.1/tools/package-system.html#example-using-the-standard-library).
+For this, you can follow the instructions
+[here](https://agda.readthedocs.io/en/v2.6.0.1/tools/package-system.html#example-using-the-standard-library).
 
-It is possible to set up PLFA as an Agda library as well.
-If you are trying to complete the exercises found in the `tspl` folder, or otherwise want to import modules from the book, you need to do this.
-To do so, add the path to `plfa.agda-lib` to `~/.agda/libraries` and add `plfa` to `~/.agda/defaults`, both on lines of their own.
+It is possible to set up PLFA as an Agda library as well.  If you want
+to complete the exercises found in the `courses` folder, or to import
+modules from the book, you need to do this.  To do so, add the path to
+`plfa.agda-lib` to `~/.agda/libraries` and add `plfa` to
+`~/.agda/defaults`, both on lines of their own.
 
 
 ## Unicode characters
