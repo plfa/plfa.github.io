@@ -57,7 +57,8 @@ down a denotational semantics of the lambda calculus.
 ```
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+    renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum
 open import Agda.Primitive using (lzero)
 open import plfa.Untyped
@@ -499,6 +500,15 @@ arguments.
 ↦-elim2 d₁ d₂ lt = ↦-elim d₁ (sub d₂ lt)
 ```
 
+#### Exercise `denot-plusᶜ`
+
+What is a denotation for `plusᶜ`? That is, find a value `v`
+such that `∅ ⊢ plusᶜ ↓ v`. Also, give the proof of `∅ ⊢ plusᶜ ↓ v`
+for your choice of `v`.
+
+```
+-- Your code goes here
+```
 
 ## Denotations and denotational equality
 
