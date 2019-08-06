@@ -788,6 +788,20 @@ function `_++_` on lists.
 —↠-trans (L —→⟨ r ⟩ lm) mn = L —→⟨ r ⟩ (—↠-trans lm mn)
 ```
 
+The following notation makes it convenient to employ
+transitivity of `—↠`.
+
+```
+infixr 2 _—↠⟨_⟩_
+
+_—↠⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
+    → L —↠ M
+    → M —↠ N
+      ---------
+    → L —↠ N
+L —↠⟨ L—↠M ⟩ M—↠N = —↠-trans L—↠M M—↠N
+```
+
 ## Multi-step reduction is a congruence
 
 Recall from Chapter [Induction]({{ site.baseurl }}/Induction/) that a

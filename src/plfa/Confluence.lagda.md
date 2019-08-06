@@ -453,10 +453,10 @@ The proof is by induction on both premises.
 * Suppose `x ⇛ x` and `x ⇛ x`.
   We choose `L = x` and immediately have `x ⇛ x` and `x ⇛ x`.
 
-* Suppose `ƛ N ⇛ ƛ N′` and `ƛ N ⇛ ƛ N′′`.
+* Suppose `ƛ N ⇛ ƛ N₁` and `ƛ N ⇛ ƛ N₂`.
   By the induction hypothesis, there exists `L′` such that
-  `N′ ⇛ L′` and `N′′ ⇛ L′`. We choose `L = ƛ L′` and
-  by `pabs` conclude that `ƛ N′ ⇛ ƛ L′` and `ƛ N′′ ⇛ ƛ L′.
+  `N₁ ⇛ L′` and `N₂ ⇛ L′`. We choose `L = ƛ L′` and
+  by `pabs` conclude that `ƛ N₁ ⇛ ƛ L′` and `ƛ N₂ ⇛ ƛ L′.
 
 * Suppose that `L · M ⇛ L₁ · M₁` and `L · M ⇛ L₂ · M₂`.
   By the induction hypothesis we have
@@ -490,8 +490,10 @@ The proof is by induction on both premises.
 
 #### Exercise
 
-Draw pictures that represent the proofs of each of the six
-cases in the above proof of `par-diamond`.
+Draw pictures that represent the proofs of each of the six cases in
+the above proof of `par-diamond`. The pictures should consist of nodes
+and directed edges, where each node is labeled with a term and each
+edge represents parallel reduction.
 
 
 ## Proof of confluence for parallel reduction
