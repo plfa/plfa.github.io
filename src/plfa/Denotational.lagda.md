@@ -502,7 +502,7 @@ arguments.
 
 #### Exercise `denot-plusᶜ`
 
-What is a denotation for `plusᶜ`? That is, find a value `v`
+What is a denotation for `plusᶜ`? That is, find a value `v` (other than `⊥`)
 such that `∅ ⊢ plusᶜ ↓ v`. Also, give the proof of `∅ ⊢ plusᶜ ↓ v`
 for your choice of `v`.
 
