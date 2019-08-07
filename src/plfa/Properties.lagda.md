@@ -128,6 +128,8 @@ which are the same function with the arguments swapped.
 ## Canonical Forms
 
 Well-typed values must take one of a small number of _canonical forms_.
+A canonical form of a term is the end result of its underlying
+computation.
 We provide an analogue of the `Value` relation that relates values
 to their types.  A lambda expression must have a function type,
 and a zero or successor expression must be a natural.
