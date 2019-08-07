@@ -127,8 +127,8 @@ which are the same function with the arguments swapped.
 
 ## Canonical Forms
 
-Well-typed values must take one of a small number of _canonical forms_.
-We provide an analogue of the `Value` relation that relates values
+Well-typed values must take one of a small number of _canonical forms_,
+which provide an analogue of the `Value` relation that relates values
 to their types.  A lambda expression must have a function type,
 and a zero or successor expression must be a natural.
 Further, the body of a function must be well typed in a context
