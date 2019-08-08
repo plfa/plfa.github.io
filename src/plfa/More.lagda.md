@@ -835,8 +835,8 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
   -- primitives
 
   V-con : ∀ {Γ n}
-      ---------------------
-    → Value {Γ = Γ} (con n)
+      -----------------
+    → Value (con {Γ} n)
 
   -- products
 
@@ -916,8 +916,8 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → V `* M —→ V `* M′
 
   δ-* : ∀ {Γ c d}
-      -------------------------------------
-    → con {Γ = Γ} c `* con d —→ con (c * d)
+      ---------------------------------
+    → con {Γ} c `* con d —→ con (c * d)
 
   -- let
 
@@ -1001,7 +1001,7 @@ data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ------
     → L —↠ N
 
-begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
+begin_ : ∀ {Γ A} {M N : Γ ⊢ A}
   → M —↠ N
     ------
   → M —↠ N

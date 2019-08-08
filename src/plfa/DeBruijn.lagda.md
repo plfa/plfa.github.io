@@ -860,7 +860,7 @@ data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------
     → L —↠ N
 
-begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
+begin_ : ∀ {Γ A} {M N : Γ ⊢ A}
   → M —↠ N
     ------
   → M —↠ N
