@@ -273,7 +273,7 @@ with all variable names dropped:
 data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ A}
-      ----------
+      ---------
     → Γ , A ∋ A
 
   S_ : ∀ {Γ A B}
@@ -322,39 +322,39 @@ data _⊢_ : Context → Type → Set where
 
   `_ : ∀ {Γ A}
     → Γ ∋ A
-      ------
+      -----
     → Γ ⊢ A
 
   ƛ_  : ∀ {Γ A B}
     → Γ , A ⊢ B
-      ----------
+      ---------
     → Γ ⊢ A ⇒ B
 
   _·_ : ∀ {Γ A B}
     → Γ ⊢ A ⇒ B
     → Γ ⊢ A
-      ----------
+      ---------
     → Γ ⊢ B
 
   `zero : ∀ {Γ}
-      ----------
+      ---------
     → Γ ⊢ `ℕ
 
   `suc_ : ∀ {Γ}
     → Γ ⊢ `ℕ
-      -------
+      ------
     → Γ ⊢ `ℕ
 
   case : ∀ {Γ A}
     → Γ ⊢ `ℕ
     → Γ ⊢ A
     → Γ , `ℕ ⊢ A
-      -----------
+      ----------
     → Γ ⊢ A
 
   μ_ : ∀ {Γ A}
     → Γ , A ⊢ A
-      ----------
+      ---------
     → Γ ⊢ A
 ```
 The definition exploits the close correspondence between the
@@ -507,7 +507,7 @@ old extension lemma, but with all names and terms dropped:
 ```
 ext : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
-    -----------------------------------
+    ---------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
@@ -530,7 +530,7 @@ terms in the second:
 ```
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
-    ------------------------
+    -----------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
 rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
@@ -616,7 +616,7 @@ extended to the second context similarly extended:
 ```
 exts : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
-    ----------------------------------
+    ---------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
@@ -644,7 +644,7 @@ map to terms in the second:
 ```
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
-    ------------------------
+    -----------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
 subst σ (` k)          =  σ k
 subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
@@ -790,28 +790,28 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   ξ-·₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
     → L —→ L′
-      -----------------
+      ---------------
     → L · M —→ L′ · M
 
   ξ-·₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
     → Value V
     → M —→ M′
-      --------------
+      ---------------
     → V · M —→ V · M′
 
   β-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
     → Value W
-      -------------------
+      --------------------
     → (ƛ N) · W —→ N [ W ]
 
   ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
     → M —→ M′
-      ----------------
+      -----------------
     → `suc M —→ `suc M′
 
   ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → L —→ L′
-      --------------------------
+      -------------------------
     → case L M N —→ case L′ M N
 
   β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
@@ -820,11 +820,11 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
     → Value V
-      -----------------------------
+      ----------------------------
     → case (`suc V) M N —→ N [ V ]
 
   β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
-      ---------------
+      ----------------
     → μ N —→ N [ μ N ]
 ```
 The definition states that `M —→ N` can only hold of terms `M`
@@ -851,13 +851,13 @@ infix  3 _∎
 data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   _∎ : ∀ {Γ A} (M : Γ ⊢ A)
-      --------
+      ------
     → M —↠ M
 
   _—→⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
     → L —→ M
     → M —↠ N
-      ---------
+      ------
     → L —↠ N
 
 begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
@@ -986,7 +986,7 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
 
   step : ∀ {N : ∅ ⊢ A}
     → M —→ N
-      -------------
+      ----------
     → Progress M
 
   done :
