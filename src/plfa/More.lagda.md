@@ -487,7 +487,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
     L, M, N ::= ...                     Terms
       `[]                                 nil
       M `∷ N                              cons
-      caseL L [nil⇒ M | x ∷ y ⇒ N ]      case
+      caseL L [[]⇒ M | x ∷ y ⇒ N ]        case
 
     V, W ::= ...                        Values
       `[]                                 nil
@@ -537,7 +537,7 @@ Here is the map function for lists:
     mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
              caseL xs
                [[]⇒ `[]
-               | x ∷ xs ⇒ f · x `∷ ml · f · xs ]
+               | x ∷ xs ⇒ f · x `∷ mL · f · xs ]
 
 
 ## Formalisation
@@ -788,7 +788,7 @@ subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 _[_] : ∀ {Γ A B}
   → Γ , A ⊢ B
   → Γ ⊢ A
-  ------------
+    ---------
   → Γ ⊢ B
 _[_] {Γ} {A} N V =  subst {Γ , A} {Γ} σ N
   where
@@ -800,7 +800,7 @@ _[_][_] : ∀ {Γ A B C}
   → Γ , A , B ⊢ C
   → Γ ⊢ A
   → Γ ⊢ B
-    ---------------
+    -------------
   → Γ ⊢ C
 _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   where
@@ -823,9 +823,9 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
   -- naturals
 
-  V-zero : ∀ {Γ} →
+  V-zero : ∀ {Γ}
       -----------------
-      Value (`zero {Γ})
+    → Value (`zero {Γ})
 
   V-suc_ : ∀ {Γ} {V : Γ ⊢ `ℕ}
     → Value V
@@ -992,7 +992,7 @@ infix  3 _∎
 data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   _∎ : ∀ {Γ A} (M : Γ ⊢ A)
-      --------
+      ------
     → M —↠ M
 
   _—→⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
