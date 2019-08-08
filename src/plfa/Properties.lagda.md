@@ -105,8 +105,8 @@ We consider the three possibilities for values:
 
 * If it is zero then no reduction applies
 
-* If it is a successor then rule `ξ-suc` may apply,
-  but in that case the successor is itself of a value
+* If it is a successor of `VM` then rule `ξ-suc` may apply,
+  but in that case `VM` is itself of a value
   that reduces, which by induction cannot occur.
 
 As a corollary, terms that reduce are not values:
