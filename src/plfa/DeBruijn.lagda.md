@@ -610,7 +610,7 @@ lemma that allows us to extend the context when we encounter a
 binder.  Whereas renaming concerned a map from variables
 in one context to variables in another, substitution takes a
 map from variables in one context to _terms_ in another.
-Given a map from variables in one context map to terms over
+Given a map from variables in one context to terms over
 another, extension yields a map from the first context
 extended to the second context similarly extended:
 ```
@@ -638,7 +638,7 @@ we require it to convert a term over context `Δ`
 to a term over the extended context `Δ , B`.
 
 With extension under our belts, it is straightforward
-to define substitution.  If variable in one context map
+to define substitution.  If variables in one context map
 to terms over another, then terms in the first context
 map to terms in the second:
 ```
