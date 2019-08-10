@@ -232,7 +232,7 @@ where appropriate (in this case, only for the body of an abstraction).
 ## Simulation commutes with substitution
 
 The third technical result is that simulation commutes with substitution.
-It is more complex than substitution, because where we had one renaming map
+It is more complex than renaming, because where we had one renaming map
 `ρ` here we need two substitution maps, `σ` and `σ†`.
 
 The proof first requires we establish an analogue of extension.
