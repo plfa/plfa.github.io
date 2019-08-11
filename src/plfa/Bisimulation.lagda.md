@@ -414,7 +414,7 @@ In its structure, it looks a little bit like a proof of progress:
 
     Since simulation commutes with values and `V` is a value, `V†` is also a value.
     Since simulation commutes with substitution and `N ~ N†` and `V ~ V†`,
-    we have `N [ x := V] ~ N† [ x := V† ]`.
+    we have `N [ x := V ] ~ N† [ x := V† ]`.
 
 * If the related terms are a let and an application of an abstraction,
   there are two subcases:
@@ -453,7 +453,7 @@ In its structure, it looks a little bit like a proof of progress:
 
     Since simulation commutes with values and `V` is a value, `V†` is also a value.
     Since simulation commutes with substitution and `N ~ N†` and `V ~ V†`,
-    we have `N [ x := V] ~ N† [ x := V† ]`.
+    we have `N [ x := V ] ~ N† [ x := V† ]`.
 
 
 #### Exercise `sim⁻¹`
