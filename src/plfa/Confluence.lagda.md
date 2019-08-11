@@ -1,5 +1,5 @@
 ---
-title     : "Confluence of the untyped lambda calculus"
+title     : "Confluence: Confluence of untyped lambda calculus"
 layout    : page
 prev      : /Untyped/
 permalink : /Confluence/

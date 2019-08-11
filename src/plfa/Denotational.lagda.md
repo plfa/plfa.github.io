@@ -1,5 +1,5 @@
 ---
-title     : "Denotational: semantics of the untyped lambda calculus"
+title     : "Denotational: Denotational semantics of untyped lambda calculus"
 layout    : page
 prev      : /CallByName/
 permalink : /Denotational/

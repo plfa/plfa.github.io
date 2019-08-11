@@ -39,6 +39,20 @@ Pull requests are encouraged.
   - [Bisimulation]({{ site.baseurl }}/Bisimulation/): Relating reductions systems
   - [Inference]({{ site.baseurl }}/Inference/): Bidirectional type inference
   - [Untyped]({{ site.baseurl }}/Untyped/): Untyped lambda calculus with full normalisation
+  - [Confluence]({{ site.baseurl }}/Confluence/): Confluence of untyped lambda calculus
+  - [CallByName]({{ site.baseurl }}/CallByName/): Big-step semantics for call-by-name evaluation
+
+## Part 3: Denotational Semantics of Lambda Calculus
+
+  - [Denotational]({{ site.baseurl }}/Denotational/): Denotational semantics of untyped lambda calculus
+  - [Compositional]({{ site.baseurl }}/Compositional/): The denotational semantics is compositional
+  - [Soundness]({{ site.baseurl }}/Soundness/): Soundness of reduction with respect to denotational semantics
+  - [Adequacy]({{ site.baseurl }}/Adequacy/): Adequacy of denotational semantics with respect to operational semantics
+  - [ContextualEquivalence]({{ site.baseurl }}/ContextualEquivalence/): Denotational equality implies contextual equivalence
+
+## Appendix
+
+  - [Substitution]({{ site.baseurl }}/Substitution/): Substitution in untyped lambda calculus
 
 ## Backmatter
 

@@ -1,5 +1,5 @@
 ---
-title     : "Call-by-name big-step evaluation"
+title     : "CallByName: Big-step semantics for call-by-name evaluation"
 layout    : page
 prev      : /Confluence/
 permalink : /CallByName/
