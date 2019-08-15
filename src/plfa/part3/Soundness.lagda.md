@@ -1,5 +1,5 @@
 ---
-title     : "Soundness: Soundness of reduction with respect to denotational semantics"
+title     : "Soundness: Soundness of reduction with respect to denotational semantics 🚧"
 layout    : page
 prev      : /Compositional/
 permalink : /Soundness/
@@ -7,7 +7,7 @@ next      : /Adequacy/
 ---
 
 ```
-module plfa.Soundness where
+module plfa.part3.Soundness where
 ```
 
 
@@ -33,18 +33,6 @@ expansion is false for most typed lambda calculi!
 ## Imports
 
 ```
-open import plfa.Untyped
-  using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
-         subst; _[_]; subst-zero; ext; rename; exts;
-         _—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _∎)
-open import plfa.Substitution using (Rename; Subst; ids)
-open import plfa.Denotational
-  using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
-         Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
-         var; ↦-elim; ↦-intro; ⊥-intro; ⊔-intro; sub;
-         rename-pres; ℰ; _≃_; ≃-trans)
-open import plfa.Compositional using (lambda-inversion; var-inv)
-
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -55,7 +43,17 @@ open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
 open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
--- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
+open import plfa.part2.Untyped
+     using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
+            subst; _[_]; subst-zero; ext; rename; exts;
+            _—→_; ξ₁; ξ₂; β; ζ; _—↠_; _—→⟨_⟩_; _∎)
+open import plfa.part2.Substitution using (Rename; Subst; ids)
+open import plfa.part3.Denotational
+     using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
+            Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
+            var; ↦-elim; ↦-intro; ⊥-intro; ⊔-intro; sub;
+            rename-pres; ℰ; _≃_; ≃-trans)
+open import plfa.part3.Compositional using (lambda-inversion; var-inv)
 ```
 
 ## Forward reduction preserves denotations

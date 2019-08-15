@@ -1,5 +1,5 @@
 ---
-title     : "Compositional: The denotational semantics is compositional"
+title     : "Compositional: The denotational semantics is compositional 🚧"
 layout    : page
 prev      : /Denotational/
 permalink : /Compositional/
@@ -7,7 +7,7 @@ next      : /Soundness/
 ---
 
 ```
-module plfa.Compositional where
+module plfa.part3.Compositional where
 ```
 
 ## Introduction
@@ -27,19 +27,18 @@ with such a definition and prove that it is equivalent to ℰ.
 ## Imports
 
 ```
-open import plfa.Untyped
-  using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
-open import plfa.Denotational
-  using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_;
-         Bot⊑; Fun⊑; ConjL⊑; ConjR1⊑; ConjR2⊑; Dist⊑; Refl⊑; Trans⊑; Dist⊔↦⊔;
-         var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
-         up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
-open plfa.Denotational.≃-Reasoning
-
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Unit using (⊤; tt)
+open import plfa.part2.Untyped
+     using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
+open import plfa.part3.Denotational
+     using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_;
+           Bot⊑; Fun⊑; ConjL⊑; ConjR1⊑; ConjR2⊑; Dist⊑; Refl⊑; Trans⊑; Dist⊔↦⊔;
+           var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
+           up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
+open plfa.part3.Denotational.≃-Reasoning
 ```
 
 ## Equation for lambda abstraction

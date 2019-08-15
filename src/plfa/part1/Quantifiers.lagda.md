@@ -7,7 +7,7 @@ next      : /Decidable/
 ---
 
 ```
-module plfa.Quantifiers where
+module plfa.part1.Quantifiers where
 ```
 
 This chapter introduces universal and existential quantification.
@@ -21,7 +21,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; proj₁) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_)
-open import plfa.Isomorphism using (_≃_; extensionality)
+open import plfa.part1.Isomorphism using (_≃_; extensionality)
 ```
 
 

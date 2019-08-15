@@ -1,13 +1,13 @@
 ---
-title     : "Denotational: Denotational semantics of untyped lambda calculus"
+title     : "Denotational: Denotational semantics of untyped lambda calculus 🚧"
 layout    : page
-prev      : /CallByName/
+prev      : /BigStep/
 permalink : /Denotational/
 next      : /Compositional/
 ---
 
 ```
-module plfa.Denotational where
+module plfa.part3.Denotational where
 ```
 
 The lambda calculus is a language about _functions_, that is, mappings
@@ -61,14 +61,14 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
     renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum
 open import Agda.Primitive using (lzero)
-open import plfa.Untyped
-    using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
-           #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
-open import plfa.Substitution using (Rename; extensionality; rename-id)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Data.Empty using (⊥-elim)
 open import Function using (_∘_)
+open import plfa.part2.Untyped
+     using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
+            #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
+open import plfa.part2.Substitution using (Rename; extensionality; rename-id)
 ```
 
 

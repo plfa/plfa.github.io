@@ -1,5 +1,5 @@
 ---
-title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics"
+title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics 🚧"
 layout    : page
 prev      : /Soundness/
 permalink : /Adequacy/
@@ -7,7 +7,7 @@ next      : /ContextualEquivalence/
 ---
 
 ```
-module plfa.Adequacy where
+module plfa.part3.Adequacy where
 ```
 
 ## Introduction
@@ -70,21 +70,6 @@ The rest of this chapter is organized as follows.
 ## Imports
 
 ```
-open import plfa.Untyped
-  using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
-         rename; subst; ext; exts; _[_]; subst-zero;
-         _—↠_; _—→⟨_⟩_; _∎; _—→_; ξ₁; ξ₂; β; ζ)
-open import plfa.CallByName
-  using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
-         cbn→reduce)
-open import plfa.Denotational
-  using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
-         var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
-         Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
-         sub-inv-fun)
-open import plfa.Soundness using (soundness)
-open import plfa.Substitution using (ids; sub-id)
-
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -96,6 +81,21 @@ open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
 open import Data.Unit
 open import Relation.Nullary using (Dec; yes; no)
 open import Function using (_∘_)
+open import plfa.part2.Untyped
+     using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
+            rename; subst; ext; exts; _[_]; subst-zero;
+            _—↠_; _—→⟨_⟩_; _∎; _—→_; ξ₁; ξ₂; β; ζ)
+open import plfa.part2.Substitution using (ids; sub-id)
+open import plfa.part2.BigStep
+     using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
+            cbn→reduce)
+open import plfa.part3.Denotational
+     using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
+            var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
+            Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
+            sub-inv-fun)
+open import plfa.part3.Soundness using (soundness)
+
 ```
 
 

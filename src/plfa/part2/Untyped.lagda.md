@@ -7,7 +7,7 @@ next      : /Confluence/
 ---
 
 ```
-module plfa.Untyped where
+module plfa.part2.Untyped where
 ```
 
 In this chapter we play with variations on a theme:
