@@ -1,5 +1,5 @@
 ---
-title     : "ContextualEquivalence: Denotational equality implies contextual equivalence"
+title     : "ContextualEquivalence: Denotational equality implies contextual equivalence 🚧"
 layout    : page
 prev      : /Adequacy/
 permalink : /ContextualEquivalence/
@@ -7,21 +7,20 @@ next      : /Substitution/
 ---
 
 ```
-module plfa.ContextualEquivalence where
+module plfa.part3.ContextualEquivalence where
 ```
 
 ## Imports
 
 ```
-open import plfa.Untyped using (_⊢_; ★; ∅; _,_; ƛ_; _—↠_)
-open import plfa.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
-open import plfa.Compositional using (Ctx; plug; compositionality)
-open import plfa.Soundness using (soundness)
-open import plfa.Adequacy using (adequacy)
-open import plfa.CallByName using (_⊢_⇓_; cbn→reduce)
-
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
-  renaming (_,_ to ⟨_,_⟩)
+     renaming (_,_ to ⟨_,_⟩)
+open import plfa.part2.Untyped using (_⊢_; ★; ∅; _,_; ƛ_; _—↠_)
+open import plfa.part2.BigStep using (_⊢_⇓_; cbn→reduce)
+open import plfa.part3.Denotational using (ℰ; _≃_; ≃-sym; ≃-trans; _iff_)
+open import plfa.part3.Compositional using (Ctx; plug; compositionality)
+open import plfa.part3.Soundness using (soundness)
+open import plfa.part3.Adequacy using (adequacy)
 ```
 
 ## Contextual Equivalence

@@ -7,7 +7,7 @@ next      : /Bisimulation/
 ---
 
 ```
-module plfa.More where
+module plfa.part2.More where
 ```
 
 So far, we have focussed on a relatively minimal language, based on

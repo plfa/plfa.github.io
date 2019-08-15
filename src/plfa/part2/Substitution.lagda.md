@@ -8,7 +8,7 @@ next      : /Acknowledgements/
 
 
 ```
-module plfa.Substitution where
+module plfa.part2.Substitution where
 ```
 
 ## Introduction
@@ -46,14 +46,13 @@ system that _decides_ whether any two substitutions are equal.
 ## Imports
 
 ```
-open import plfa.Untyped
-  using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
-         rename; subst; ext; exts; _[_]; subst-zero)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong; cong₂; cong-app)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Function using (_∘_)
--- open import plfa.Isomorphism using (extensionality)  -- causes a bug!
+open import plfa.part2.Untyped
+     using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
+            rename; subst; ext; exts; _[_]; subst-zero)
 ```
 
 ```

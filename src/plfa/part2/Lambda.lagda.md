@@ -7,7 +7,7 @@ next      : /Properties/
 ---
 
 ```
-module plfa.Lambda where
+module plfa.part2.Lambda where
 ```
 
 The _lambda-calculus_, first published by the logician Alonzo Church in

@@ -7,7 +7,7 @@ next      : /Untyped/
 ---
 
 ```
-module plfa.Inference where
+module plfa.part2.Inference where
 ```
 
 So far in our development, type derivations for the corresponding
@@ -262,7 +262,7 @@ can compare with our previous development, we import
 module `pfla.DeBruijn`:
 
 ```
-import plfa.DeBruijn as DB
+import plfa.part2.DeBruijn as DB
 ```
 
 The phrase `as DB` allows us to refer to definitions

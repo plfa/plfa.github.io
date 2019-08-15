@@ -1,13 +1,13 @@
 ---
-title     : "Confluence: Confluence of untyped lambda calculus"
+title     : "Confluence: Confluence of untyped lambda calculus 🚧"
 layout    : page
 prev      : /Untyped/
 permalink : /Confluence/
-next      : /CallByName/
+next      : /BigStep/
 ---
 
 ```
-module plfa.Confluence where
+module plfa.part2.Confluence where
 ```
 
 ## Introduction
@@ -61,17 +61,17 @@ confluence for parallel reduction.
 ## Imports
 
 ```
-open import plfa.Substitution using (Rename; Subst)
-open import plfa.Untyped
-    using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _∎;
-           abs-cong; appL-cong; appR-cong; —↠-trans;
-           _⊢_; _∋_; `_; #_; _,_; ★; ƛ_; _·_; _[_];
-           rename; ext; exts; Z; S_; subst; subst-zero)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Function using (_∘_)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
      renaming (_,_ to ⟨_,_⟩)
+open import plfa.part2.Substitution using (Rename; Subst)
+open import plfa.part2.Untyped
+     using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _∎;
+     abs-cong; appL-cong; appR-cong; —↠-trans;
+     _⊢_; _∋_; `_; #_; _,_; ★; ƛ_; _·_; _[_];
+     rename; ext; exts; Z; S_; subst; subst-zero)
 ```
 
 ## Parallel Reduction
@@ -270,7 +270,7 @@ and restate here.
 ```
 rename-subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{ρ : Rename Γ Δ }
     → (rename (ext ρ) N) [ rename ρ M ] ≡ rename ρ (N [ M ])
-rename-subst-commute {N = N} = plfa.Substitution.rename-subst-commute {N = N}
+rename-subst-commute {N = N} = plfa.part2.Substitution.rename-subst-commute {N = N}
 ```
 
 Now for the `par-rename` lemma.
@@ -324,7 +324,7 @@ and restate it below.
 ```
 subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
     → subst (exts σ) N [ subst σ M ] ≡ subst σ (N [ M ])
-subst-commute {N = N} = plfa.Substitution.subst-commute {N = N}
+subst-commute {N = N} = plfa.part2.Substitution.subst-commute {N = N}
 ```
 
 We are ready to prove that substitution respects parallel reduction.

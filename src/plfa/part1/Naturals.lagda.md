@@ -7,7 +7,7 @@ next      : /Induction/
 ---
 
 ```
-module plfa.Naturals where
+module plfa.part1.Naturals where
 ```
 
 The night sky holds more stars than I can count, though fewer than five

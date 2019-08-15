@@ -1,13 +1,13 @@
 ---
-title     : "CallByName: Big-step semantics for call-by-name evaluation"
+title     : "BigStep: Big-step semantics of untyped lambda calculus 🚧"
 layout    : page
 prev      : /Confluence/
-permalink : /CallByName/
+permalink : /BigStep/
 next      : /Denotational/
 ---
 
 ```
-module plfa.CallByName where
+module plfa.part2.BigStep where
 ```
 
 ## Introduction
@@ -34,17 +34,16 @@ single sub-computation has been completed.
 ## Imports
 
 ```
-open import plfa.Untyped
-  using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; #_; ƛ_; _·_;
-         subst; subst-zero; exts; rename; β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _∎;
-         —↠-trans; appL-cong)
-open import plfa.Substitution using (Subst; ids)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; trans; sym; cong-app)
-
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Function using (_∘_)
+open import plfa.part2.Untyped
+     using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; #_; ƛ_; _·_;
+            subst; subst-zero; exts; rename; β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _∎;
+            —↠-trans; appL-cong)
+open import plfa.part2.Substitution using (Subst; ids)
 ```
 
 ## Environments
@@ -213,7 +212,7 @@ the same term.
 ```
 sub-id : ∀{Γ} {A} {M : Γ ⊢ A}
          → subst ids M ≡ M
-sub-id = plfa.Substitution.sub-id
+sub-id = plfa.part2.Substitution.sub-id
 ```
 
 
@@ -240,7 +239,7 @@ Chapter [Substitution]({{ site.baseurl }}/Substitution/).
 subst-zero-exts : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{x : Γ ∋ ★}
                 → (subst (subst-zero M) ∘ exts σ) (S x) ≡ σ x
 subst-zero-exts {Γ}{Δ}{σ}{B}{M}{x} =
-   cong-app (plfa.Substitution.subst-zero-exts-cons{σ = σ}) (S x)
+   cong-app (plfa.part2.Substitution.subst-zero-exts-cons{σ = σ}) (S x)
 ```
 
 So the proof of `≈ₑ-ext` is as follows.
@@ -272,7 +271,7 @@ composing the two substitutions and then applying them.
 ```
 sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ}
             → subst σ₂ (subst σ₁ M) ≡ subst (subst σ₂ ∘ σ₁) M
-sub-sub {M = M} = plfa.Substitution.sub-sub {M = M}
+sub-sub {M = M} = plfa.part2.Substitution.sub-sub {M = M}
 ```
 
 We arive at the main lemma: if `M` big steps to a
