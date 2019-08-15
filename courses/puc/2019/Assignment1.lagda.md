@@ -31,7 +31,7 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
-open import plfa.Relations using (_<_; z<s; s<s; zero; suc; even; odd)
+open import plfa.part1.Relations using (_<_; z<s; s<s; zero; suc; even; odd)
 ```
 
 ## Naturals

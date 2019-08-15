@@ -31,7 +31,6 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
-open import plfa.Relations using (_<_; z<s; s<s)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Product using (Σ; ∃; Σ-syntax; ∃-syntax)
 open import Data.Unit using (⊤; tt)
@@ -47,10 +46,10 @@ open import Relation.Nullary.Negation using (contraposition)
 open import Relation.Unary using (Decidable)
 open import Function using (_∘_)
 open import Level using (Level)
-open import plfa.Relations using (_<_; z<s; s<s)
-open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
-open plfa.Isomorphism.≃-Reasoning
-open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
+open import plfa.part1.Relations using (_<_; z<s; s<s)
+open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open plfa.part1.Isomorphism.≃-Reasoning
+open import plfa.part1.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
   _++_; reverse; map; foldr; sum; All; Any; here; there; _∈_)
 ```
 

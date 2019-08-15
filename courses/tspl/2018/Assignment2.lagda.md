@@ -34,7 +34,6 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
-open import plfa.Relations using (_<_; z<s; s<s)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
@@ -47,9 +46,9 @@ open import Relation.Nullary.Product using (_×-dec_)
 open import Relation.Nullary.Sum using (_⊎-dec_)
 open import Relation.Nullary.Negation using (contraposition)
 open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
-open import plfa.Relations using (_<_; z<s; s<s)
-open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
-open plfa.Isomorphism.≃-Reasoning
+open import plfa.part1.Relations using (_<_; z<s; s<s)
+open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open plfa.part1.Isomorphism.≃-Reasoning
 ```
 
 ## Equality

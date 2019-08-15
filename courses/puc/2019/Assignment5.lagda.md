@@ -55,7 +55,7 @@ Remember to indent all code by two spaces.
 ### Imports
 
 ```
-  import plfa.More as DB
+  import plfa.part2.More as DB
 ```
 
 ### Syntax

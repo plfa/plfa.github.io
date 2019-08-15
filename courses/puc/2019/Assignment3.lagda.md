@@ -39,13 +39,13 @@ open import Function using (_∘_)
 open import Algebra.Structures using (IsMonoid)
 open import Level using (Level)
 open import Relation.Unary using (Decidable)
-open import plfa.Relations using (_<_; z<s; s<s)
-open import plfa.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
-open plfa.Isomorphism.≃-Reasoning
-open import plfa.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
+open import plfa.part1.Relations using (_<_; z<s; s<s)
+open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open plfa.part1.Isomorphism.≃-Reasoning
+open import plfa.part1.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
   _++_; reverse; map; foldr; sum; All; Any; here; there; _∈_)
-open import plfa.Lambda hiding (ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
-open import plfa.Properties hiding (value?; unstuck; preserves; wttdgs)
+open import plfa.part2.Lambda hiding (ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
+open import plfa.part2.Properties hiding (value?; unstuck; preserves; wttdgs)
 ```
 
 ## Lambda

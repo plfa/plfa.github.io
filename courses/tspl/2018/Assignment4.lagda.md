@@ -57,7 +57,7 @@ module DeBruijn where
 Remember to indent all code by two spaces.
 
 ```
-  open import plfa.DeBruijn
+  open import plfa.part2.DeBruijn
 ```
 
 
@@ -770,7 +770,7 @@ Remember to indent all code by two spaces.
 ### Imports
 
 ```
-  import plfa.More as DB
+  import plfa.part2.More as DB
 ```
 
 ### Syntax
