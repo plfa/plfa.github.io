@@ -197,7 +197,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 ```
 
 
-#### Exercise `trichotomy`
+#### Exercise `trichotomy` (practice)
 
 Show that strict inequality satisfies
 [trichotomy]({{ site.baseurl }}/Relations/#trichotomy),

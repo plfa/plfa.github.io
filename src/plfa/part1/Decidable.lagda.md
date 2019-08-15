@@ -303,7 +303,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `_≡ℕ?_`
+#### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
 ```
@@ -535,7 +535,7 @@ indicating that the order of the equations determines which of the
 first or the second can match.  This time the answer is different depending
 on which matches; but either is equally valid.
 
-#### Exercise `erasure`
+#### Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
 ```

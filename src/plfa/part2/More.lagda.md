@@ -1199,7 +1199,7 @@ _ =
    ∎
 ```
 
-#### Exercise `More`
+#### Exercise `More` (practice)
 
 Formalise the remaining constructs defined in this chapter.
 Make your changes in this file.

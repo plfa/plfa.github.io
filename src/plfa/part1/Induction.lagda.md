@@ -71,7 +71,7 @@ distributes over another operator.  A careful author will often call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-#### Exercise `operators` {#operators}
+#### Exercise `operators` (practice) {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -900,7 +900,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-comm` {#times-comm}
+#### Exercise `*-comm` (practice) {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -914,7 +914,7 @@ you will need to formulate and prove suitable lemmas.
 ```
 
 
-#### Exercise `0∸n≡0` {#zero-monus}
+#### Exercise `0∸n≡0` (practice) {#zero-monus}
 
 Show
 
@@ -927,7 +927,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-#### Exercise `∸-|-assoc` {#monus-plus-assoc}
+#### Exercise `∸-|-assoc` (practice) {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 

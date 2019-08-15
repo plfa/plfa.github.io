@@ -120,7 +120,7 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
   call-by-value.
 
 
-#### Exercise `big-step-eg`
+#### Exercise `big-step-eg` (practice)
 
 Show that `(ƛ ƛ # 1) · ((ƛ # 0 · # 0) · (ƛ # 0 · # 0))`
 terminates under big-step call-by-name evaluation.
@@ -374,7 +374,7 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
     ⟨ subst (exts σ) N′ , rs ⟩
 ```
 
-#### Exercise `big-alt-implies-multi`
+#### Exercise `big-alt-implies-multi` (practice)
 
 Formulate an alternative big-step semantics, of the form `M ↓ N`,
 for call-by-name that uses substitution instead of environments.
