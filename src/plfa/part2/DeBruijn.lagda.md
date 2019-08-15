@@ -479,7 +479,7 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 
 
 
-#### Exercise (`mul`) (recommended)
+#### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the inherently typed
