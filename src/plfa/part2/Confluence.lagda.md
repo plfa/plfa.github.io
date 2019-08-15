@@ -488,7 +488,7 @@ The proof is by induction on both premises.
   and `(ƛ N₂) · M₂ ⇛ N₃ [ M₃ ]`
   by rule `pbeta`
 
-#### Exercise
+#### Exercise (practice)
 
 Draw pictures that represent the proofs of each of the six cases in
 the above proof of `par-diamond`. The pictures should consist of nodes
