@@ -525,7 +525,7 @@ parameterised on _n_ types will have a map that is parameterised on
 _n_ functions.
 
 
-#### Exercise `map-compose`
+#### Exercise `map-compose` (practice)
 
 Prove that the map of a composition is equal to the composition of two maps:
 ```
@@ -535,7 +535,7 @@ postulate
 ```
 The last step of the proof requires extensionality.
 
-#### Exercise `map-++-commute`
+#### Exercise `map-++-commute` (practice)
 
 Prove the following relationship between map and append:
 ```
@@ -544,7 +544,7 @@ postulate
    →  map f (xs ++ ys) ≡ map f xs ++ map f ys
 ```
 
-#### Exercise `map-Tree`
+#### Exercise `map-Tree` (practice)
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
@@ -640,7 +640,7 @@ postulate
 ```
 
 
-#### Exercise `map-is-foldr`
+#### Exercise `map-is-foldr` (practice)
 
 Show that map can be defined using fold:
 ```
@@ -650,7 +650,7 @@ postulate
 ```
 This requires extensionality.
 
-#### Exercise `fold-Tree`
+#### Exercise `fold-Tree` (practice)
 
 Define a suitable fold function for the type of trees given earlier:
 ```
@@ -663,7 +663,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `map-is-fold-Tree`
+#### Exercise `map-is-fold-Tree` (practice)
 
 Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
@@ -781,7 +781,7 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
   ∎
 ```
 
-#### Exercise `foldl`
+#### Exercise `foldl` (practice)
 
 Define a function `foldl` which is analogous to `foldr`, but where
 operations associate to the left rather than the right.  For example:
@@ -794,7 +794,7 @@ operations associate to the left rather than the right.  For example:
 ```
 
 
-#### Exercise `foldr-monoid-foldl`
+#### Exercise `foldr-monoid-foldl` (practice)
 
 Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
@@ -1005,7 +1005,7 @@ for some element of a list.  Give their definitions.
 ```
 
 
-#### Exercise `All-∀`
+#### Exercise `All-∀` (practice)
 
 Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
 
@@ -1014,7 +1014,7 @@ Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
 ```
 
 
-#### Exercise `Any-∃`
+#### Exercise `Any-∃` (practice)
 
 Show that `Any P xs` is isomorphic to `∃[ x ∈ xs ] P x`.
 

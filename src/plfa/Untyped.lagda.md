@@ -99,7 +99,7 @@ data Type : Set where
   ★ : Type
 ```
 
-#### Exercise (`Type≃⊤`)
+#### Exercise (`Type≃⊤`) (practice)
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
@@ -118,7 +118,7 @@ data Context : Set where
 ```
 We let `Γ` and `Δ` range over contexts.
 
-#### Exercise (`Context≃ℕ`)
+#### Exercise (`Context≃ℕ`) (practice)
 
 Show that `Context` is isomorphic to `ℕ`.
 
@@ -402,7 +402,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → ƛ N —→ ƛ N′
 ```
 
-#### Exercise (`variant-1`)
+#### Exercise (`variant-1`) (practice)
 
 How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
@@ -412,7 +412,7 @@ unless both terms are in normal form.
 -- Your code goes here
 ```
 
-#### Exercise (`variant-2`)
+#### Exercise (`variant-2`) (practice)
 
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
@@ -738,7 +738,7 @@ Because `` `suc `` is now a defined term rather than primitive,
 it is no longer the case that `plus · two · two` reduces to `four`,
 but they do both reduce to the same normal term.
 
-#### Exercise `plus-eval`
+#### Exercise `plus-eval` (practice)
 
 Use the evaluator to confirm that `plus · two · two` and `four`
 normalise to the same term.

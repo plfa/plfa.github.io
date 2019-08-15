@@ -92,7 +92,7 @@ postulate
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives]({{ site.baseurl }}/Connectives/).
 
-#### Exercise `⊎∀-implies-∀⊎`
+#### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
 ```
@@ -103,7 +103,7 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise `∀-×`
+#### Exercise `∀-×` (practice)
 
 Consider the following type.
 ```
@@ -244,7 +244,7 @@ postulate
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 ```
 
-#### Exercise `∃×-implies-×∃`
+#### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
 ```
@@ -254,7 +254,7 @@ postulate
 ```
 Does the converse hold? If so, prove; if not, explain why.
 
-#### Exercise `∃-⊎`
+#### Exercise `∃-⊎` (practice)
 
 Let `Tri` and `B` be as in Exercise `∀-×`.
 Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
@@ -361,7 +361,7 @@ follows by `odd-suc`.
 
 This completes the proof in the backward direction.
 
-#### Exercise `∃-even-odd`
+#### Exercise `∃-even-odd` (practice)
 
 How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
@@ -371,7 +371,7 @@ restated in this way.
 -- Your code goes here
 ```
 
-#### Exercise `∃-|-≤`
+#### Exercise `∃-|-≤` (practice)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.

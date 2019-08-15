@@ -332,7 +332,7 @@ this requires that we match against the lambda expression `L` to
 determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 `L · M` reduces to `N [ x := M ]`.
 
-#### Exercise `Progress-≃`
+#### Exercise `Progress-≃` (practice)
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
@@ -340,7 +340,7 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 -- Your code goes here
 ```
 
-#### Exercise `progress′`
+#### Exercise `progress′` (practice)
 
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
@@ -349,7 +349,7 @@ proof of `progress` above.
 -- Your code goes here
 ```
 
-#### Exercise `value?`
+#### Exercise `value?` (practice)
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
@@ -1276,7 +1276,7 @@ Using the evaluator, confirm that two times two is four.
 ```
 
 
-#### Exercise: `progress-preservation`
+#### Exercise: `progress-preservation` (practice)
 
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
@@ -1286,7 +1286,7 @@ and preservation theorems for the simply typed lambda-calculus.
 ```
 
 
-#### Exercise `subject_expansion`
+#### Exercise `subject_expansion` (practice)
 
 We say that `M` _reduces_ to `N` if `M —→ N`,
 but we can also describe the same situation by saying
@@ -1353,7 +1353,7 @@ Milner, who used denotational rather than operational semantics. He
 introduced `wrong` as the denotation of a term with a type error, and
 showed _well-typed terms don't go wrong_.)
 
-#### Exercise `stuck`
+#### Exercise `stuck` (practice)
 
 Give an example of an ill-typed term that does get stuck.
 

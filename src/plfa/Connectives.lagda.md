@@ -431,7 +431,7 @@ Show sum is commutative up to isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `⊎-assoc`
+#### Exercise `⊎-assoc` (practice)
 
 Show sum is associative up to isomorphism.
 
@@ -502,7 +502,7 @@ Show empty is the left identity of sums up to isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `⊥-identityʳ`
+#### Exercise `⊥-identityʳ` (practice)
 
 Show empty is the right identity of sums up to isomorphism.
 
@@ -742,7 +742,7 @@ distributive law, and explain how it relates to the weak version.
 ```
 
 
-#### Exercise `⊎×-implies-×⊎`
+#### Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
 ```

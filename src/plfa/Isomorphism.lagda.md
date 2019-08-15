@@ -436,7 +436,7 @@ module ≲-Reasoning where
 open ≲-Reasoning
 ```
 
-#### Exercise `≃-implies-≲`
+#### Exercise `≃-implies-≲` (practice)
 
 Show that every isomorphism implies an embedding.
 ```
@@ -451,7 +451,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `_⇔_` {#iff}
+#### Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
 ```

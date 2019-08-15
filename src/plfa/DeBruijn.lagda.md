@@ -966,7 +966,7 @@ Substitution preserves types, and Preservation.
 We now turn to proving the remaining results from the
 previous development.
 
-#### Exercise `V¬—→`
+#### Exercise `V¬—→` (practice)
 
 Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not

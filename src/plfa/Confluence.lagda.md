@@ -141,7 +141,7 @@ data _⇛*_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 ```
 
 
-#### Exercise `par-diamond-eg`
+#### Exercise `par-diamond-eg` (practice)
 
 Revisit the counter example to the diamond property for reduction by
 showing that the diamond property holds for parallel reduction in that

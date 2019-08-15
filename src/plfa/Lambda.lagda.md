@@ -196,7 +196,7 @@ defined earlier.
 ```
 
 
-#### Exercise `mulᶜ`
+#### Exercise `mulᶜ` (practice)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers represented as Church numerals. Your
@@ -740,7 +740,7 @@ The three constructors specify, respectively, that `—↠′` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
 the two definitions are equivalent (indeed, one embeds in the other).
 
-#### Exercise `—↠≲—↠′`
+#### Exercise `—↠≲—↠′` (practice)
 
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
@@ -901,7 +901,7 @@ _ =
 In the next chapter, we will see how to compute such reduction sequences.
 
 
-#### Exercise `plus-example`
+#### Exercise `plus-example` (practice)
 
 Write out the reduction sequence demonstrating that one plus one is two.
 
@@ -1002,7 +1002,7 @@ data Context : Set where
 ```
 
 
-#### Exercise `Context-≃`
+#### Exercise `Context-≃` (practice)
 
 Show that `Context` is isomorphic to `List (Id × Type)`.
 For instance, the isomorphism relates the context
@@ -1381,7 +1381,7 @@ showing that it is well typed.
 ```
 
 
-#### Exercise `mulᶜ-type`
+#### Exercise `mulᶜ-type` (practice)
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well typed.

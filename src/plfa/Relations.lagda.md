@@ -229,7 +229,7 @@ lack---for instance by saying that a newly introduced relation is a
 partial order but not a total order.
 
 
-#### Exercise `orderings` {#orderings}
+#### Exercise `orderings` (practice) {#orderings}
 
 Give an example of a preorder that is not a partial order.
 
@@ -347,7 +347,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-#### Exercise `≤-antisym-cases` {#leq-antisym-cases}
+#### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -593,7 +593,7 @@ Show that strict inequality is transitive.
 -- Your code goes here
 ```
 
-#### Exercise `trichotomy` {#trichotomy}
+#### Exercise `trichotomy` (practice) {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -611,7 +611,7 @@ similar to that used for totality.
 -- Your code goes here
 ```
 
-#### Exercise `+-mono-<` {#plus-mono-less}
+#### Exercise `+-mono-<` (practice) {#plus-mono-less}
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
@@ -628,7 +628,7 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
 -- Your code goes here
 ```
 
-#### Exercise `<-trans-revisited` {#less-trans-revisited}
+#### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relation between strict inequality and inequality and
