@@ -90,9 +90,9 @@ open import plfa.part2.BigStep
      using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
             cbn→reduce)
 open import plfa.part3.Denotational
-     using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; Funs∈; _⊔_; ∈→⊑;
+     using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; all-funs∈; _⊔_; ∈→⊑;
             var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
-            Trans⊑; ConjR1⊑; ConjR2⊑; ConjL⊑; Refl⊑; Fun⊑; Bot⊑; Dist⊑;
+            ⊑-trans; ⊑-conj-R1; ⊑-conj-R2; ⊑-conj-L; ⊑-refl; ⊑-fun; ⊑-bot; ⊑-dist;
             sub-inv-fun)
 open import plfa.part3.Soundness using (soundness)
 
@@ -105,29 +105,29 @@ We define the following short-hand for saying that a value is
 greather-than or equal to a function value.
 
 ```
-AboveFun : Value → Set
-AboveFun u = Σ[ v ∈ Value ] Σ[ w ∈ Value ] v ↦ w ⊑ u
+above-fun : Value → Set
+above-fun u = Σ[ v ∈ Value ] Σ[ w ∈ Value ] v ↦ w ⊑ u
 ```
 
 If a value `u` is greater than a function, then an even greater value `u'`
 is too.
 
 ```
-AboveFun-⊑ : ∀{u u' : Value}
-      → AboveFun u → u ⊑ u'
+above-fun-⊑ : ∀{u u' : Value}
+      → above-fun u → u ⊑ u'
         -------------------
-      → AboveFun u'
-AboveFun-⊑ ⟨ v , ⟨ w , lt' ⟩ ⟩ lt = ⟨ v , ⟨ w , Trans⊑ lt' lt ⟩ ⟩
+      → above-fun u'
+above-fun-⊑ ⟨ v , ⟨ w , lt' ⟩ ⟩ lt = ⟨ v , ⟨ w , ⊑-trans lt' lt ⟩ ⟩
 ```
 
 The bottom value `⊥` is not greater than a function.
 
 ```
-AboveFun⊥ : ¬ AboveFun ⊥
-AboveFun⊥ ⟨ v , ⟨ w , lt ⟩ ⟩
+above-fun⊥ : ¬ above-fun ⊥
+above-fun⊥ ⟨ v , ⟨ w , lt ⟩ ⟩
     with sub-inv-fun lt
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆⊥ , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
-    with Funs∈ f
+    with all-funs∈ f
 ... | ⟨ A , ⟨ B , m ⟩ ⟩
     with Γ⊆⊥ m
 ... | ()
@@ -137,13 +137,13 @@ If the join of two values `u` and `u'` is greater than a function, then
 at least one of them is too.
 
 ```
-AboveFun-⊔ : ∀{u u'}
-           → AboveFun (u ⊔ u')
-           → AboveFun u ⊎ AboveFun u'
-AboveFun-⊔{u}{u'} ⟨ v , ⟨ w , v↦w⊑u⊔u' ⟩ ⟩
+above-fun-⊔ : ∀{u u'}
+           → above-fun (u ⊔ u')
+           → above-fun u ⊎ above-fun u'
+above-fun-⊔{u}{u'} ⟨ v , ⟨ w , v↦w⊑u⊔u' ⟩ ⟩
     with sub-inv-fun v↦w⊑u⊔u'
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆u⊔u' , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
-    with Funs∈ f
+    with all-funs∈ f
 ... | ⟨ A , ⟨ B , m ⟩ ⟩
     with Γ⊆u⊔u' m
 ... | inj₁ x = inj₁ ⟨ A , ⟨ B , (∈→⊑ x) ⟩ ⟩
@@ -154,11 +154,11 @@ On the other hand, if neither of `u` and `u'` is greater than a function,
 then their join is also not greater than a function.
 
 ```
-not-AboveFun-⊔ : ∀{u u' : Value}
-               → ¬ AboveFun u → ¬ AboveFun u'
-               → ¬ AboveFun (u ⊔ u')
-not-AboveFun-⊔ naf1 naf2 af12
-    with AboveFun-⊔ af12
+not-above-fun-⊔ : ∀{u u' : Value}
+               → ¬ above-fun u → ¬ above-fun u'
+               → ¬ above-fun (u ⊔ u')
+not-above-fun-⊔ naf1 naf2 af12
+    with above-fun-⊔ af12
 ... | inj₁ af1 = contradiction af1 naf1
 ... | inj₂ af2 = contradiction af2 naf2
 ```
@@ -167,30 +167,30 @@ The converse is also true. If the join of two values is not above a
 function, then neither of them is individually.
 
 ```
-not-AboveFun-⊔-inv : ∀{u u' : Value} → ¬ AboveFun (u ⊔ u')
-              → ¬ AboveFun u × ¬ AboveFun u'
-not-AboveFun-⊔-inv af = ⟨ f af , g af ⟩
+not-above-fun-⊔-inv : ∀{u u' : Value} → ¬ above-fun (u ⊔ u')
+              → ¬ above-fun u × ¬ above-fun u'
+not-above-fun-⊔-inv af = ⟨ f af , g af ⟩
   where
-    f : ∀{u u' : Value} → ¬ AboveFun (u ⊔ u') → ¬ AboveFun u
+    f : ∀{u u' : Value} → ¬ above-fun (u ⊔ u') → ¬ above-fun u
     f{u}{u'} af12 ⟨ v , ⟨ w , lt ⟩ ⟩ =
-        contradiction ⟨ v , ⟨ w , ConjR1⊑ lt ⟩ ⟩ af12
-    g : ∀{u u' : Value} → ¬ AboveFun (u ⊔ u') → ¬ AboveFun u'
+        contradiction ⟨ v , ⟨ w , ⊑-conj-R1 lt ⟩ ⟩ af12
+    g : ∀{u u' : Value} → ¬ above-fun (u ⊔ u') → ¬ above-fun u'
     g{u}{u'} af12 ⟨ v , ⟨ w , lt ⟩ ⟩ =
-        contradiction ⟨ v , ⟨ w , ConjR2⊑ lt ⟩ ⟩ af12
+        contradiction ⟨ v , ⟨ w , ⊑-conj-R2 lt ⟩ ⟩ af12
 ```
 
 The property of being greater than a function value is decidable, as
 exhibited by the following function.
 
 ```
-AboveFun? : (v : Value) → Dec (AboveFun v)
-AboveFun? ⊥ = no AboveFun⊥
-AboveFun? (v ↦ w) = yes ⟨ v , ⟨ w , Refl⊑ ⟩ ⟩
-AboveFun? (u ⊔ u')
-    with AboveFun? u | AboveFun? u'
-... | yes ⟨ v , ⟨ w , lt ⟩ ⟩ | _ = yes ⟨ v , ⟨ w , (ConjR1⊑ lt) ⟩ ⟩
-... | no _ | yes ⟨ v , ⟨ w , lt ⟩ ⟩ = yes ⟨ v , ⟨ w , (ConjR2⊑ lt) ⟩ ⟩
-... | no x | no y = no (not-AboveFun-⊔ x y)
+above-fun? : (v : Value) → Dec (above-fun v)
+above-fun? ⊥ = no above-fun⊥
+above-fun? (v ↦ w) = yes ⟨ v , ⟨ w , ⊑-refl ⟩ ⟩
+above-fun? (u ⊔ u')
+    with above-fun? u | above-fun? u'
+... | yes ⟨ v , ⟨ w , lt ⟩ ⟩ | _ = yes ⟨ v , ⟨ w , (⊑-conj-R1 lt) ⟩ ⟩
+... | no _ | yes ⟨ v , ⟨ w , lt ⟩ ⟩ = yes ⟨ v , ⟨ w , (⊑-conj-R2 lt) ⟩ ⟩
+... | no x | no y = no (not-above-fun-⊔ x y)
 ```
 
 
@@ -222,7 +222,7 @@ describe below.
 𝕍 v (clos (M · M₁) γ) = Bot
 𝕍 ⊥ (clos (ƛ M) γ) = ⊤
 𝕍 (v ↦ w) (clos (ƛ N) γ) =
-    (∀{c : Clos} → 𝔼 v c → AboveFun w → Σ[ c' ∈ Clos ]
+    (∀{c : Clos} → 𝔼 v c → above-fun w → Σ[ c' ∈ Clos ]
         (γ ,' c) ⊢ N ⇓ c'  ×  𝕍 w c')
 𝕍 (u ⊔ v) (clos (ƛ N) γ) = 𝕍 u (clos (ƛ N) γ) × 𝕍 v (clos (ƛ N) γ)
 ```
@@ -242,7 +242,7 @@ The definition of `𝔼` is straightforward. If `v` is a greater than a
 function, then `M` evaluates to a closure related to `v`.
 
 ```
-𝔼 v (clos M γ') = AboveFun v → Σ[ c ∈ Clos ] γ' ⊢ M ⇓ c × 𝕍 v c
+𝔼 v (clos M γ') = above-fun v → Σ[ c ∈ Clos ] γ' ⊢ M ⇓ c × 𝕍 v c
 ```
 
 The proof of the main lemma is by induction on `γ ⊢ M ↓ v`, so it goes
@@ -310,15 +310,15 @@ values that are not greater than a function, that is, values that are
 equivalent to `⊥`. In such cases, `𝕍 v (clos (ƛ N) γ')` is trivially true.
 
 ```
-not-AboveFun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{N : Γ , ★ ⊢ ★ }
-    → ¬ AboveFun v
+not-above-fun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{N : Γ , ★ ⊢ ★ }
+    → ¬ above-fun v
       -------------------
     → 𝕍 v (clos (ƛ N) γ')
-not-AboveFun-𝕍 {⊥} af = tt
-not-AboveFun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , Refl⊑ ⟩ ⟩ af)
-not-AboveFun-𝕍 {v₁ ⊔ v₂} af
-    with not-AboveFun-⊔-inv af
-... | ⟨ af1 , af2 ⟩ = ⟨ not-AboveFun-𝕍 af1 , not-AboveFun-𝕍 af2 ⟩
+not-above-fun-𝕍 {⊥} af = tt
+not-above-fun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , ⊑-refl ⟩ ⟩ af)
+not-above-fun-𝕍 {v₁ ⊔ v₂} af
+    with not-above-fun-⊔-inv af
+... | ⟨ af1 , af2 ⟩ = ⟨ not-above-fun-𝕍 af1 , not-above-fun-𝕍 af2 ⟩
 ```
 
 The proofs of `𝕍-sub` and `𝔼-sub` are intertwined.
@@ -335,48 +335,48 @@ cases for variables and application. We then proceed by induction on
 ```
 sub-𝕍 {clos (` x) γ} {v} () lt
 sub-𝕍 {clos (L · M) γ} () lt
-sub-𝕍 {clos (ƛ N) γ} vc Bot⊑ = tt
-sub-𝕍 {clos (ƛ N) γ} vc (ConjL⊑ lt1 lt2) = ⟨ (sub-𝕍 vc lt1) , sub-𝕍 vc lt2 ⟩
-sub-𝕍 {clos (ƛ N) γ} ⟨ vv1 , vv2 ⟩ (ConjR1⊑ lt) = sub-𝕍 vv1 lt
-sub-𝕍 {clos (ƛ N) γ} ⟨ vv1 , vv2 ⟩ (ConjR2⊑ lt) = sub-𝕍 vv2 lt
-sub-𝕍 {clos (ƛ N) γ} vc (Trans⊑{v = v₂} lt1 lt2) = sub-𝕍 (sub-𝕍 vc lt2) lt1
-sub-𝕍 {clos (ƛ N) γ} vc (Fun⊑ lt1 lt2) ev1 sf
-    with vc (sub-𝔼 ev1 lt1) (AboveFun-⊑ sf lt2)
+sub-𝕍 {clos (ƛ N) γ} vc ⊑-bot = tt
+sub-𝕍 {clos (ƛ N) γ} vc (⊑-conj-L lt1 lt2) = ⟨ (sub-𝕍 vc lt1) , sub-𝕍 vc lt2 ⟩
+sub-𝕍 {clos (ƛ N) γ} ⟨ vv1 , vv2 ⟩ (⊑-conj-R1 lt) = sub-𝕍 vv1 lt
+sub-𝕍 {clos (ƛ N) γ} ⟨ vv1 , vv2 ⟩ (⊑-conj-R2 lt) = sub-𝕍 vv2 lt
+sub-𝕍 {clos (ƛ N) γ} vc (⊑-trans{v = v₂} lt1 lt2) = sub-𝕍 (sub-𝕍 vc lt2) lt1
+sub-𝕍 {clos (ƛ N) γ} vc (⊑-fun lt1 lt2) ev1 sf
+    with vc (sub-𝔼 ev1 lt1) (above-fun-⊑ sf lt2)
 ... | ⟨ c , ⟨ Nc , v4 ⟩ ⟩ = ⟨ c , ⟨ Nc , sub-𝕍 v4 lt2 ⟩ ⟩
-sub-𝕍 {clos (ƛ N) γ} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c sf
-    with AboveFun? w | AboveFun? w'
+sub-𝕍 {clos (ƛ N) γ} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c sf
+    with above-fun? w | above-fun? w'
 ... | yes af2 | yes af3
     with vcw ev1c af2 | vcw' ev1c af3
 ... | ⟨ clos L δ , ⟨ L⇓c₂ , 𝕍w ⟩ ⟩
     | ⟨ c₃ , ⟨ L⇓c₃ , 𝕍w' ⟩ ⟩ rewrite ⇓-determ L⇓c₃ L⇓c₂ with 𝕍→WHNF 𝕍w
 ... | ƛ_ =
       ⟨ clos L δ , ⟨ L⇓c₂ , ⟨ 𝕍w , 𝕍w' ⟩ ⟩ ⟩
-sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩  Dist⊑ ev1c sf
+sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩  ⊑-dist ev1c sf
     | yes af2 | no naf3
     with vcw ev1c af2
 ... | ⟨ clos {Γ'} L γ₁ , ⟨ L⇓c2 , 𝕍w ⟩ ⟩
     with 𝕍→WHNF 𝕍w
 ... | ƛ_ {N = N'} =
-      let 𝕍w' = not-AboveFun-𝕍{w'}{Γ'}{γ₁}{N'} naf3 in
+      let 𝕍w' = not-above-fun-𝕍{w'}{Γ'}{γ₁}{N'} naf3 in
       ⟨ clos (ƛ N') γ₁ , ⟨ L⇓c2 , 𝕍⊔-intro 𝕍w 𝕍w' ⟩ ⟩
-sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c sf
+sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c sf
     | no naf2 | yes af3
     with vcw' ev1c af3
 ... | ⟨ clos {Γ'} L γ₁ , ⟨ L⇓c3 , 𝕍w'c ⟩ ⟩
     with 𝕍→WHNF 𝕍w'c
 ... | ƛ_ {N = N'} =
-      let 𝕍wc = not-AboveFun-𝕍{w}{Γ'}{γ₁}{N'} naf2 in
+      let 𝕍wc = not-above-fun-𝕍{w}{Γ'}{γ₁}{N'} naf2 in
       ⟨ clos (ƛ N') γ₁ , ⟨ L⇓c3 , 𝕍⊔-intro 𝕍wc 𝕍w'c ⟩ ⟩
-sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨ w'' , lt ⟩ ⟩
+sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c ⟨ v' , ⟨ w'' , lt ⟩ ⟩
     | no naf2 | no naf3
-    with AboveFun-⊔ ⟨ v' , ⟨ w'' , lt ⟩ ⟩
+    with above-fun-⊔ ⟨ v' , ⟨ w'' , lt ⟩ ⟩
 ... | inj₁ af2 = ⊥-elim (contradiction af2 naf2)
 ... | inj₂ af3 = ⊥-elim (contradiction af3 naf3)
 ```
 
-* Case `Bot⊑`. We immediately have `𝕍 ⊥ (clos (ƛ N) γ)`.
+* Case `⊑-bot`. We immediately have `𝕍 ⊥ (clos (ƛ N) γ)`.
 
-* Case `ConjL⊑`.
+* Case `⊑-conj-L`.
 
         v₁' ⊑ v     v₂' ⊑ v
         -------------------
@@ -385,7 +385,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
   The induction hypotheses gives us `𝕍 v₁' (clos (ƛ N) γ)`
   and `𝕍 v₂' (clos (ƛ N) γ)`, which is all we need for this case.
 
-* Case `ConjR1⊑`.
+* Case `⊑-conj-R1`.
 
         v' ⊑ v₁
         -------------
@@ -393,7 +393,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
 
   The induction hypothesis gives us `𝕍 v' (clos (ƛ N) γ)`.
 
-* Case `ConjR2⊑`.
+* Case `⊑-conj-R2`.
 
         v' ⊑ v₂
         -------------
@@ -401,7 +401,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
 
   Again, the induction hypothesis gives us `𝕍 v' (clos (ƛ N) γ)`.
 
-* Case `Trans⊑`.
+* Case `⊑-trans`.
 
         v' ⊑ v₂   v₂ ⊑ v
         -----------------
@@ -411,7 +411,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
   `𝕍 v₂ (clos (ƛ N) γ)`. We apply the induction hypothesis
   for `v' ⊑ v₂` to conclude that `𝕍 v' (clos (ƛ N) γ)`.
 
-* Case `Dist⊑`. This case  is the most difficult. We have
+* Case `⊑-dist`. This case  is the most difficult. We have
 
         𝕍 (v ↦ w) (clos (ƛ N) γ)
         𝕍 (v ↦ w') (clos (ƛ N) γ)
@@ -423,7 +423,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
   Let `c` be an arbtrary closure such that `𝔼 v c`.
   Assume `w ⊔ w'` is greater than a function.
   Unfortunately, this does not mean that both `w` and `w'`
-  are above functions. But thanks to the lemma `AboveFun-⊔`,
+  are above functions. But thanks to the lemma `above-fun-⊔`,
   we know that at least one of them is greater than a function.
 
   * Suppose both of them are greater than a function.  Then we have
@@ -433,10 +433,10 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ Dist⊑ ev1c ⟨ v' , ⟨
     for some `N'`. We conclude that `𝕍 (w ⊔ w') (clos (ƛ N') δ)`.
 
   * Suppose one of them is greater than a function and the other is
-    not: say `AboveFun w` and `¬ AboveFun w'`. Then from
+    not: say `above-fun w` and `¬ above-fun w'`. Then from
     `𝕍 (v ↦ w) (clos (ƛ N) γ)`
     we have `γ ⊢ N ⇓ clos L γ₁` and `𝕍 w (clos L γ₁)`. From this we have
-    `L ≡ ƛ N'` for some `N'`. Meanwhile, from `¬ AboveFun w'` we have
+    `L ≡ ƛ N'` for some `N'`. Meanwhile, from `¬ above-fun w'` we have
     `𝕍 w' (clos L γ₁)`. We conclude that
     `𝕍 (w ⊔ w') (clos (ƛ N') γ₁)`.
 
@@ -445,12 +445,12 @@ The proof of `sub-𝔼` is direct and explained below.
 
 ```
 sub-𝔼 {clos M γ} {v} {v'} 𝔼v v'⊑v fv'
-    with 𝔼v (AboveFun-⊑ fv' v'⊑v)
+    with 𝔼v (above-fun-⊑ fv' v'⊑v)
 ... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
       ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍v v'⊑v ⟩ ⟩
 ```
 
-From `AboveFun v'` and `v' ⊑ v` we have `AboveFun v`.  Then with `𝔼 v c` we
+From `above-fun v'` and `v' ⊑ v` we have `above-fun v`.  Then with `𝔼 v c` we
 obtain a closure `c` such that `γ ⊢ M ⇓ c` and `𝕍 v c`. We conclude with an
 application of `sub-𝕍` with `v' ⊑ v` to show `𝕍 v' c`.
 
@@ -482,7 +482,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
 ... | ⟨ c , ⟨ M'⇓c , 𝕍γx ⟩ ⟩ =
       ⟨ c , ⟨ (⇓-var eq M'⇓c) , 𝕍γx ⟩ ⟩
 ↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (↦-elim{L = L}{M = M}{v = v₁}{w = v} d₁ d₂) fv
-    with ↓→𝔼 𝔾γγ' d₁ ⟨ v₁ , ⟨ v , Refl⊑ ⟩ ⟩
+    with ↓→𝔼 𝔾γγ' d₁ ⟨ v₁ , ⟨ v , ⊑-refl ⟩ ⟩
 ... | ⟨ clos L' δ , ⟨ L⇓L' , 𝕍v₁↦v ⟩ ⟩
     with 𝕍→WHNF 𝕍v₁↦v
 ... | ƛ_ {N = N}
@@ -491,12 +491,12 @@ kth-x{γ' = γ'}{x = x} with γ' x
     ⟨ c' , ⟨ ⇓-app L⇓L' N⇓c' , 𝕍v ⟩ ⟩
 ↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (↦-intro{N = N}{v = v}{w = w} d) fv↦w =
     ⟨ clos (ƛ N) γ' , ⟨ ⇓-lam , E ⟩ ⟩
-    where E : {c : Clos} → 𝔼 v c → AboveFun w
+    where E : {c : Clos} → 𝔼 v c → above-fun w
             → Σ[ c' ∈ Clos ] (γ' ,' c) ⊢ N ⇓ c'  ×  𝕍 w c'
           E {c} 𝔼vc fw = ↓→𝔼 (λ {x} → 𝔾-ext{Γ}{γ}{γ'} 𝔾γγ' 𝔼vc {x}) d fw
-↓→𝔼 𝔾γγ' ⊥-intro f⊥ = ⊥-elim (AboveFun⊥ f⊥)
+↓→𝔼 𝔾γγ' ⊥-intro f⊥ = ⊥-elim (above-fun⊥ f⊥)
 ↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12
-    with AboveFun? v₁ | AboveFun? v₂
+    with above-fun? v₁ | above-fun? v₂
 ... | yes fv1 | yes fv2
     with ↓→𝔼 𝔾γγ' d₁ fv1 | ↓→𝔼 𝔾γγ' d₂ fv2
 ... | ⟨ c₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩ | ⟨ c₂ , ⟨ M⇓c₂ , 𝕍v₂ ⟩ ⟩
@@ -507,28 +507,28 @@ kth-x{γ' = γ'}{x = x} with γ' x
 ... | ⟨ clos {Γ'} M' γ₁ , ⟨ M⇓c₁ , 𝕍v₁ ⟩ ⟩
     with 𝕍→WHNF 𝕍v₁
 ... | ƛ_ {N = N} =
-    let 𝕍v₂ = not-AboveFun-𝕍{v₂}{Γ'}{γ₁}{N} nfv2 in
+    let 𝕍v₂ = not-above-fun-𝕍{v₂}{Γ'}{γ₁}{N} nfv2 in
     ⟨ clos (ƛ N) γ₁ , ⟨ M⇓c₁ , 𝕍⊔-intro 𝕍v₁ 𝕍v₂ ⟩ ⟩
 ↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12 | no nfv1  | yes fv2
     with ↓→𝔼 𝔾γγ' d₂ fv2
 ... | ⟨ clos {Γ'} M' γ₁ , ⟨ M'⇓c₂ , 𝕍2c ⟩ ⟩
     with 𝕍→WHNF 𝕍2c
 ... | ƛ_ {N = N} =
-    let 𝕍1c = not-AboveFun-𝕍{v₁}{Γ'}{γ₁}{N} nfv1 in
+    let 𝕍1c = not-above-fun-𝕍{v₁}{Γ'}{γ₁}{N} nfv1 in
     ⟨ clos (ƛ N) γ₁ , ⟨ M'⇓c₂ , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
 ↓→𝔼 𝔾γγ' (⊔-intro d₁ d₂) fv12 | no nfv1  | no nfv2
-    with AboveFun-⊔ fv12
+    with above-fun-⊔ fv12
 ... | inj₁ fv1 = ⊥-elim (contradiction fv1 nfv1)
 ... | inj₂ fv2 = ⊥-elim (contradiction fv2 nfv2)
 ↓→𝔼 {Γ} {γ} {γ'} {M} {v'} 𝔾γγ' (sub{v = v} d v'⊑v) fv'
-    with ↓→𝔼 {Γ} {γ} {γ'} {M} 𝔾γγ' d (AboveFun-⊑ fv' v'⊑v)
+    with ↓→𝔼 {Γ} {γ} {γ'} {M} 𝔾γγ' d (above-fun-⊑ fv' v'⊑v)
 ... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
       ⟨ c , ⟨ M⇓c , sub-𝕍 𝕍v v'⊑v ⟩ ⟩
 ```
 
 * Case `var`. Looking up `x` in `γ'` yields some closure, `clos M' δ`,
   and from `𝔾 γ γ'` we have `𝔼 (γ x) (clos M' δ)`. With the premise
-  `AboveFun (γ x)`, we obtain a closure `c` such that `δ ⊢ M' ⇓ c`
+  `above-fun (γ x)`, we obtain a closure `c` such that `δ ⊢ M' ⇓ c`
   and `𝕍 (γ x) c`. To conclude `γ' ⊢ x ⇓ c` via `⇓-var`, we
   need `γ' x ≡ clos M' δ`, which is obvious, but it requires some
   Agda shananigans via the `kth-x` lemma to get our hands on it.
@@ -539,7 +539,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
   Of course, `L' ≡ ƛ N` for some `N`.
   By the induction hypothesis for `γ ⊢ M ↓ v₁`,
   we have `𝔼 v₁ (clos M γ')`.
-  Together with the premise `AboveFun v` and `𝕍 v (clos L' δ)`,
+  Together with the premise `above-fun v` and `𝕍 v (clos L' δ)`,
   we obtain a closure `c'` such that `δ ⊢ N ⇓ c'` and `𝕍 v c'`.
   We conclude that `γ' ⊢ L · M ⇓ c'` by rule `⇓-app`.
 
@@ -553,11 +553,11 @@ kth-x{γ' = γ'}{x = x} with γ' x
   but we must first show that `𝔾 (γ , v) (γ' , c)`. We prove
   that by the lemma `𝔾-ext`, using facts `𝔾 γ γ'` and `𝔼 v c`.
 
-* Case `⊥-intro`. We have the premise `AboveFun ⊥`, but that's impossible.
+* Case `⊥-intro`. We have the premise `above-fun ⊥`, but that's impossible.
 
-* Case `⊔-intro`. We have `γ ⊢ M ↓ (v₁ ⊔ v₂)` and `AboveFun (v₁ ⊔ v₂)`
+* Case `⊔-intro`. We have `γ ⊢ M ↓ (v₁ ⊔ v₂)` and `above-fun (v₁ ⊔ v₂)`
   and need to show `γ' ⊢ M ↓ c` and `𝕍 (v₁ ⊔ v₂) c` for some `c`.
-  Again, by `AboveFun-⊔`, at least one of `v₁` or `v₂` is greater than
+  Again, by `above-fun-⊔`, at least one of `v₁` or `v₂` is greater than
   a function.
 
   * Suppose both `v₁` and `v₂` are greater than a function value.
@@ -573,9 +573,9 @@ kth-x{γ' = γ'}{x = x} with γ' x
     Then because `v₂` is not greater than a function, we also have
     `𝕍 v₂ (clos (ƛ N) γ₁)`. We conclude that `𝕍 (v₁ ⊔ v₂) (clos (ƛ N) γ₁)`.
 
-* Case `sub`. We have `γ ⊢ M ↓ v`, `v' ⊑ v`, and `AboveFun v'`.
+* Case `sub`. We have `γ ⊢ M ↓ v`, `v' ⊑ v`, and `above-fun v'`.
   We need to show that `γ' ⊢ M ⇓ c` and `𝕍 v' c` for some `c`.
-  We have `AboveFun v` by `AboveFun-⊑`,
+  We have `above-fun v` by `above-fun-⊑`,
   so the induction hypothesis for `γ ⊢ M ↓ v` gives us a closure `c`
   such that `γ' ⊢ M ⇓ c` and `𝕍 v c`. We conclude that `𝕍 v' c` by `sub-𝕍`.
 
@@ -593,7 +593,7 @@ adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N
             ∅' ⊢ M ⇓ clos (ƛ N′) γ
 adequacy{M}{N} eq
     with ↓→𝔼 𝔾-∅ ((proj₂ (eq `∅ (⊥ ↦ ⊥))) (↦-intro ⊥-intro))
-                 ⟨ ⊥ , ⟨ ⊥ , Refl⊑ ⟩ ⟩
+                 ⟨ ⊥ , ⟨ ⊥ , ⊑-refl ⟩ ⟩
 ... | ⟨ clos {Γ} M′ γ , ⟨ M⇓c , Vc ⟩ ⟩
     with 𝕍→WHNF Vc
 ... | ƛ_ {N = N′} =

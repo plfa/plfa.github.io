@@ -101,7 +101,7 @@ data Value : Set where
 
 The `⊑` relation adapts the familiar notion of subset to the Value data
 type. This relation plays the key role in enabling self-application.
-There are two rules that are specific to functions, `Fun⊑` and `Dist⊑`,
+There are two rules that are specific to functions, `⊑-fun` and `⊑-dist`,
 which we discuss below.
 
 ```
@@ -109,59 +109,59 @@ infix 4 _⊑_
 
 data _⊑_ : Value → Value → Set where
 
-  Bot⊑ : ∀ {v} → ⊥ ⊑ v
+  ⊑-bot : ∀ {v} → ⊥ ⊑ v
 
-  ConjL⊑ : ∀ {u v w}
+  ⊑-conj-L : ∀ {u v w}
       → v ⊑ u
       → w ⊑ u
         -----------
       → (v ⊔ w) ⊑ u
 
-  ConjR1⊑ : ∀ {u v w}
+  ⊑-conj-R1 : ∀ {u v w}
      → u ⊑ v
        -----------
      → u ⊑ (v ⊔ w)
 
-  ConjR2⊑ : ∀ {u v w}
+  ⊑-conj-R2 : ∀ {u v w}
      → u ⊑ w
        -----------
      → u ⊑ (v ⊔ w)
 
-  Trans⊑ : ∀ {u v w}
+  ⊑-trans : ∀ {u v w}
      → u ⊑ v
      → v ⊑ w
        -----
      → u ⊑ w
 
-  Fun⊑ : ∀ {v w v′ w′}
+  ⊑-fun : ∀ {v w v′ w′}
        → v′ ⊑ v
        → w ⊑ w′
          -------------------
        → (v ↦ w) ⊑ (v′ ↦ w′)
 
-  Dist⊑ : ∀{v w w′}
+  ⊑-dist : ∀{v w w′}
          ---------------------------------
        → v ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v ↦ w′)
 ```
 
 
 The first five rules are straightforward.
-The rule `Fun⊑` captures when it is OK to match a higher-order argument
+The rule `⊑-fun` captures when it is OK to match a higher-order argument
 `v′ ↦ w′` to a table entry whose input is `v ↦ w`.  Considering a
 call to the higher-order argument. It is OK to pass a larger argument
 than expected, so `v` can be larger than `v′`. Also, it is OK to
 disregard some of the output, so `w` can be smaller than `w′`.
-The rule `Dist⊑` says that if you have two entries for the same input,
+The rule `⊑-dist` says that if you have two entries for the same input,
 then you can combine them into a single entry and joins the two
 outputs.
 
 The `⊑` relation is reflexive.
 
 ```
-Refl⊑ : ∀ {v} → v ⊑ v
-Refl⊑ {⊥} = Bot⊑
-Refl⊑ {v ↦ v′} = Fun⊑ Refl⊑ Refl⊑
-Refl⊑ {v₁ ⊔ v₂} = ConjL⊑ (ConjR1⊑ Refl⊑) (ConjR2⊑ Refl⊑)
+⊑-refl : ∀ {v} → v ⊑ v
+⊑-refl {⊥} = ⊑-bot
+⊑-refl {v ↦ v′} = ⊑-fun ⊑-refl ⊑-refl
+⊑-refl {v₁ ⊔ v₂} = ⊑-conj-L (⊑-conj-R1 ⊑-refl) (⊑-conj-R2 ⊑-refl)
 ```
 
 The `⊔` operation is monotonic with respect to `⊑`, that is, given two
@@ -172,19 +172,19 @@ larger values it produces a larger value.
       → v ⊑ v′  →  w ⊑ w′
         -----------------------
       → (v ⊔ w) ⊑ (v′ ⊔ w′)
-⊔⊑⊔ d₁ d₂ = ConjL⊑ (ConjR1⊑ d₁) (ConjR2⊑ d₂)
+⊔⊑⊔ d₁ d₂ = ⊑-conj-L (⊑-conj-R1 d₁) (⊑-conj-R2 d₂)
 ```
 
-The `Dist⊑` rule can be used to combine two entries even when the
+The `⊑-dist` rule can be used to combine two entries even when the
 input values are not identical. One can first combine the two inputs
-using ⊔ and then apply the `Dist⊑` rule to obtain the following
+using ⊔ and then apply the `⊑-dist` rule to obtain the following
 property.
 
 ```
-Dist⊔↦⊔ : ∀{v v′ w w′ : Value}
+⊔↦⊔-dist : ∀{v v′ w w′ : Value}
         → (v ⊔ v′) ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v′ ↦ w′)
-Dist⊔↦⊔ = Trans⊑ Dist⊑ (⊔⊑⊔ (Fun⊑ (ConjR1⊑ Refl⊑) Refl⊑)
-                            (Fun⊑ (ConjR2⊑ Refl⊑) Refl⊑))
+⊔↦⊔-dist = ⊑-trans ⊑-dist (⊔⊑⊔ (⊑-fun (⊑-conj-R1 ⊑-refl) ⊑-refl)
+                            (⊑-fun (⊑-conj-R2 ⊑-refl) ⊑-refl))
 ```
 
 <!-- above might read more nicely if we introduce inequational reasoning -->
@@ -197,19 +197,19 @@ then both `u` and `v` are less than `w`.
         → u ⊔ v ⊑ w
           ---------
         → u ⊑ w
-⊔⊑-invL (ConjL⊑ lt1 lt2) = lt1
-⊔⊑-invL (ConjR1⊑ lt) = ConjR1⊑ (⊔⊑-invL lt)
-⊔⊑-invL (ConjR2⊑ lt) = ConjR2⊑ (⊔⊑-invL lt)
-⊔⊑-invL (Trans⊑ lt1 lt2) = Trans⊑ (⊔⊑-invL lt1) lt2
+⊔⊑-invL (⊑-conj-L lt1 lt2) = lt1
+⊔⊑-invL (⊑-conj-R1 lt) = ⊑-conj-R1 (⊔⊑-invL lt)
+⊔⊑-invL (⊑-conj-R2 lt) = ⊑-conj-R2 (⊔⊑-invL lt)
+⊔⊑-invL (⊑-trans lt1 lt2) = ⊑-trans (⊔⊑-invL lt1) lt2
 
 ⊔⊑-invR : ∀{u v w : Value}
        → u ⊔ v ⊑ w
          ---------
        → v ⊑ w
-⊔⊑-invR (ConjL⊑ lt1 lt2) = lt2
-⊔⊑-invR (ConjR1⊑ lt) = ConjR1⊑ (⊔⊑-invR lt)
-⊔⊑-invR (ConjR2⊑ lt) = ConjR2⊑ (⊔⊑-invR lt)
-⊔⊑-invR (Trans⊑ lt1 lt2) = Trans⊑ (⊔⊑-invR lt1) lt2
+⊔⊑-invR (⊑-conj-L lt1 lt2) = lt2
+⊔⊑-invR (⊑-conj-R1 lt) = ⊑-conj-R1 (⊔⊑-invR lt)
+⊔⊑-invR (⊑-conj-R2 lt) = ⊑-conj-R2 (⊔⊑-invR lt)
+⊔⊑-invR (⊑-trans lt1 lt2) = ⊑-trans (⊔⊑-invR lt1) lt2
 ```
 
 
@@ -279,19 +279,19 @@ _`⊔_ : ∀ {Γ} → Env Γ → Env Γ → Env Γ
 (γ `⊔ δ) x = γ x ⊔ δ x
 ```
 
-The `Refl⊑`, `ConjR1⊑`, and `ConjR2⊑` rules lift to environments.  So
+The `⊑-refl`, `⊑-conj-R1`, and `⊑-conj-R2` rules lift to environments.  So
 the join of two environments `γ` and `δ` is greater than the first
 environment `γ` or the second environment `δ`.
 
 ```
-`Refl⊑ : ∀ {Γ} {γ : Env Γ} → γ `⊑ γ
-`Refl⊑ {Γ} {γ} x = Refl⊑ {γ x}
+`⊑-refl : ∀ {Γ} {γ : Env Γ} → γ `⊑ γ
+`⊑-refl {Γ} {γ} x = ⊑-refl {γ x}
 
-EnvConjR1⊑ : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → γ `⊑ (γ `⊔ δ)
-EnvConjR1⊑ γ δ x = ConjR1⊑ Refl⊑
+⊑-env-conj-R1 : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → γ `⊑ (γ `⊔ δ)
+⊑-env-conj-R1 γ δ x = ⊑-conj-R1 ⊑-refl
 
-EnvConjR2⊑ : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → δ `⊑ (γ `⊔ δ)
-EnvConjR2⊑ γ δ x = ConjR2⊑ Refl⊑
+⊑-env-conj-R2 : ∀ {Γ} → (γ : Env Γ) → (δ : Env Γ) → δ `⊑ (γ `⊔ δ)
+⊑-env-conj-R2 γ δ x = ⊑-conj-R2 ⊑-refl
 ```
 
 ## Denotational Semantics
@@ -411,7 +411,7 @@ we'll name `v`. Then for the second application, it must map `v` to
 some value. Let's name it `w`. So the parameter's table must contain
 two entries, both `u ↦ v` and `v ↦ w`. For each application of the
 table, we extract the appropriate entry from it using the `sub` rule.
-In particular, we use the ConjR1⊑ and ConjR2⊑ to select `u ↦ v` and `v
+In particular, we use the ⊑-conj-R1 and ⊑-conj-R2 to select `u ↦ v` and `v
 ↦ w`, respectively, from the table `u ↦ v ⊔ v ↦ w`. So the meaning of
 twoᶜ is that it takes this table and parameter `u`, and it returns `w`.
 Indeed we derive this as follows.
@@ -421,10 +421,10 @@ denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w)
 denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
   where lt1 : v ↦ w ⊑ u ↦ v ⊔ v ↦ w
-        lt1 = ConjR2⊑ (Fun⊑ Refl⊑ Refl⊑)
+        lt1 = ⊑-conj-R2 (⊑-fun ⊑-refl ⊑-refl)
 
         lt2 : u ↦ v ⊑ u ↦ v ⊔ v ↦ w
-        lt2 = (ConjR1⊑ (Fun⊑ Refl⊑ Refl⊑))
+        lt2 = (⊑-conj-R1 (⊑-fun ⊑-refl ⊑-refl))
 ```
 
 
@@ -441,8 +441,8 @@ and then the result of the application is `w`.
 Δ = (ƛ (# 0) · (# 0))
 
 denot-Δ : ∀ {v w} → `∅ ⊢ Δ ↓ ((v ↦ w ⊔ v) ↦ w)
-denot-Δ = ↦-intro (↦-elim (sub var (ConjR1⊑ Refl⊑))
-                          (sub var (ConjR2⊑ Refl⊑)))
+denot-Δ = ↦-intro (↦-elim (sub var (⊑-conj-R1 ⊑-refl))
+                          (sub var (⊑-conj-R2 ⊑-refl)))
 ```
 
 One might worry whether this semantics can deal with diverging
@@ -492,11 +492,11 @@ arguments.
 
 ```
 ↦-elim2 : ∀ {Γ} {γ : Env Γ} {M₁ M₂ v₁ v₂ v₃}
-        → γ ⊢ M₁ ↓ (v₁ ↦ v₃)
-        → γ ⊢ M₂ ↓ v₂
-        → v₁ ⊑ v₂
-          ------------------
-        → γ ⊢ (M₁ · M₂) ↓ v₃
+  → γ ⊢ M₁ ↓ (v₁ ↦ v₃)
+  → γ ⊢ M₂ ↓ v₂
+  → v₁ ⊑ v₂
+    ------------------
+  → γ ⊢ (M₁ · M₂) ↓ v₃
 ↦-elim2 d₁ d₂ lt = ↦-elim d₁ (sub d₂ lt)
 ```
 
@@ -706,7 +706,7 @@ ext-nth : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → γ `⊑ (δ ∘ ρ)
     ------------------------------
   → (γ `, v) `⊑ ((δ `, v) ∘ ext ρ)
-ext-nth ρ lt Z = Refl⊑
+ext-nth ρ lt Z = ⊑-refl
 ext-nth ρ lt (S n′) = lt n′
 ```
 
@@ -766,19 +766,19 @@ which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
 `rename-id` lemma to obtain `δ ⊢ M ↓ v`.
 
 ```
-Env⊑ : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
+⊑-env : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
   → γ ⊢ M ↓ v
   → γ `⊑ δ
     ----------
   → δ ⊢ M ↓ v
-Env⊑{Γ}{γ}{δ}{M}{v} d lt
+⊑-env{Γ}{γ}{δ}{M}{v} d lt
       with rename-pres{Γ}{Γ}{v}{γ}{δ}{M} (λ {A} x → x) lt d
 ... | d′ rewrite rename-id {Γ}{★}{M} =
       d′
 ```
 
 In the proof that substitution reflects denotations, in the case for
-lambda abstraction, we use a minor variation of `Env⊑`, in which just
+lambda abstraction, we use a minor variation of `⊑-env`, in which just
 the last element of the environment gets larger.
 
 ```
@@ -787,11 +787,11 @@ up-env : ∀ {Γ} {γ : Env Γ} {M v u₁ u₂}
   → u₁ ⊑ u₂
     -----------------
   → (γ `, u₂) ⊢ M ↓ v
-up-env d lt = Env⊑ d (nth-le lt)
+up-env d lt = ⊑-env d (nth-le lt)
   where
   nth-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
   nth-le lt Z = lt
-  nth-le lt (S n) = Refl⊑
+  nth-le lt (S n) = ⊑-refl
 ```
 
 
@@ -800,10 +800,10 @@ up-env d lt = Env⊑ d (nth-le lt)
 What can we deduce from knowing that a function `v ↦ w` is less than
 some value `u`?  What can we deduce about `u`? The answer to this
 question is called the inversion property of less-than for functions.
-This question is not easy to answer because of the `Dist⊑` rule, which
+This question is not easy to answer because of the `⊑-dist` rule, which
 relates a function on the left to a pair of functions on the right.
 So `u` may include several functions that, as a group, relate to
-`v ↦ w`. Furthermore, because of the rules `ConjR1⊑` and `ConjR2⊑`,
+`v ↦ w`. Furthermore, because of the rules `⊑-conj-R1` and `⊑-conj-R2`,
 there may be other values inside `u`, such as `⊥`, that have nothing
 to do with `v ↦ w`. But in general, we can deduce that `u` includes
 a collection of functions where the join of their domains is less
@@ -852,20 +852,20 @@ imply the less-than relation but not the other way around.
     → u ∈ v
       -----
     → u ⊑ v
-∈→⊑ {.⊥} {⊥} refl = Bot⊑
-∈→⊑ {v ↦ w} {v ↦ w} refl = Refl⊑
-∈→⊑ {u} {v ⊔ w} (inj₁ x) = ConjR1⊑ (∈→⊑ x)
-∈→⊑ {u} {v ⊔ w} (inj₂ y) = ConjR2⊑ (∈→⊑ y)
+∈→⊑ {.⊥} {⊥} refl = ⊑-bot
+∈→⊑ {v ↦ w} {v ↦ w} refl = ⊑-refl
+∈→⊑ {u} {v ⊔ w} (inj₁ x) = ⊑-conj-R1 (∈→⊑ x)
+∈→⊑ {u} {v ⊔ w} (inj₂ y) = ⊑-conj-R2 (∈→⊑ y)
 
 ⊆→⊑ : ∀{u v : Value}
     → u ⊆ v
       -----
     → u ⊑ v
 ⊆→⊑ {⊥} s with s {⊥} refl
-... | x = Bot⊑
+... | x = ⊑-bot
 ⊆→⊑ {u ↦ u′} s with s {u ↦ u′} refl
 ... | x = ∈→⊑ x
-⊆→⊑ {u ⊔ u′} s = ConjL⊑ (⊆→⊑ (λ z → s (inj₁ z))) (⊆→⊑ (λ z → s (inj₂ z)))
+⊆→⊑ {u ⊔ u′} s = ⊑-conj-L (⊆→⊑ (λ z → s (inj₁ z))) (⊆→⊑ (λ z → s (inj₂ z)))
 ```
 
 We shall also need some inversion principles for value inclusion.  If
@@ -897,15 +897,15 @@ then `v ↦ w` must be a member of `u`.
 
 To identify collections of functions, we define the following two
 predicates. We write `Fun u` if `u` is a function value, that is, if
-`u ≡ v ↦ w` for some values `v` and `w`. We write `Funs v` if all the elements
+`u ≡ v ↦ w` for some values `v` and `w`. We write `all-funs v` if all the elements
 of `v` are functions.
 
 ```
 data Fun : Value → Set where
   fun : ∀{u v w} → u ≡ (v ↦ w) → Fun u
 
-Funs : Value → Set
-Funs v = ∀{u} → u ∈ v → Fun u
+all-funs : Value → Set
+all-funs v = ∀{u} → u ∈ v → Fun u
 ```
 
 The value `⊥` is not a function.
@@ -920,14 +920,14 @@ one element. Thus, if all the elements are functions, there is at
 least one that is a function.
 
 ```
-Funs∈ : ∀{u}
-      → Funs u
+all-funs∈ : ∀{u}
+      → all-funs u
       → Σ[ v ∈ Value ] Σ[ w ∈ Value ] v ↦ w ∈ u
-Funs∈ {⊥} f with f {⊥} refl
+all-funs∈ {⊥} f with f {⊥} refl
 ... | fun ()
-Funs∈ {v ↦ w} f = ⟨ v , ⟨ w , refl ⟩ ⟩
-Funs∈ {u ⊔ u′} f
-    with Funs∈ λ z → f (inj₁ z)
+all-funs∈ {v ↦ w} f = ⟨ v , ⟨ w , refl ⟩ ⟩
+all-funs∈ {u ⊔ u′} f
+    with all-funs∈ λ z → f (inj₁ z)
 ... | ⟨ v , ⟨ w , m ⟩ ⟩ = ⟨ v , ⟨ w , (inj₁ m) ⟩ ⟩
 ```
 
@@ -961,7 +961,7 @@ that `v` is included in the domain of `v`.
 
 ```
 ↦∈→⊆dom : ∀{u v w : Value}
-          → Funs u  →  (v ↦ w) ∈ u
+          → all-funs u  →  (v ↦ w) ∈ u
             ----------------------
           → v ⊆ dom u
 ↦∈→⊆dom {⊥} fg () u∈v
@@ -1000,7 +1000,7 @@ than `w`.
 
 ```
 factor : (u : Value) → (u′ : Value) → (v : Value) → (w : Value) → Set
-factor u u′ v w = Funs u′ × u′ ⊆ u × dom u′ ⊑ v × w ⊑ cod u′
+factor u u′ v w = all-funs u′ × u′ ⊆ u × dom u′ ⊑ v × w ⊑ cod u′
 ```
 
 We prove the inversion principle for functions by induction on the
@@ -1010,17 +1010,17 @@ u`), and strengthen the conclusion to say that for _every_ function
 value `v ↦ w ∈ u₁`, we have that `v ↦ w` factors `u₂` into some
 value `u₃`.
 
-### Inversion of less-than for functions, the case for Trans⊑
+### Inversion of less-than for functions, the case for ⊑-trans
 
-The crux of the proof is the case for `Trans⊑`.
+The crux of the proof is the case for `⊑-trans`.
 
     u₁ ⊑ u   u ⊑ u₂
-    --------------- (Trans⊑)
+    --------------- (⊑-trans)
         u₁ ⊑ u₂
 
 By the induction hypothesis for `u₁ ⊑ u`, we know
 that `v ↦ w factors u into u′`, for some value `u′`,
-so we have `Funs u′` and `u′ ⊆ u`.
+so we have `all-funs u′` and `u′ ⊆ u`.
 By the induction hypothesis for `u ⊑ u₂`, we know
 that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂` into `u₃`.
 With these facts in hand, we proceed by induction on `u′`
@@ -1029,7 +1029,7 @@ We discuss each case of the proof in the text below.
 
 ```
 sub-inv-trans : ∀{u′ u₂ u : Value}
-    → Funs u′  →  u′ ⊆ u
+    → all-funs u′  →  u′ ⊆ u
     → (∀{v′ w′} → v′ ↦ w′ ∈ u → Σ[ u₃ ∈ Value ] factor u₂ u₃ v′ w′)
       ---------------------------------------------------------------
     → Σ[ u₃ ∈ Value ] factor u₂ u₃ (dom u′) (cod u′)
@@ -1063,7 +1063,7 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
   `dom u′ ≡ u₁′` and `cod u′ ≡ u₂′`.
 
 * Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also
-  have `Funs u₁′` and `Funs u₂′`, so we can apply the induction hypothesis
+  have `all-funs u₁′` and `all-funs u₂′`, so we can apply the induction hypothesis
   for both `u₁′` and `u₂′`. So there exists values `u₃₁` and `u₃₂` such that
   `(dom u₁′) ↦ (cod u₁′)` factors `u` into `u₃₁` and
   `(dom u₂′) ↦ (cod u₂′)` factors `u` into `u₃₂`.
@@ -1091,32 +1091,32 @@ sub-inv : ∀{u₁ u₂ : Value}
         → ∀{v w} → v ↦ w ∈ u₁
           -------------------------------------
         → Σ[ u₃ ∈ Value ] factor u₂ u₃ v w
-sub-inv {⊥} {u₂} Bot⊑ {v} {w} ()
-sub-inv {u₁₁ ⊔ u₁₂} {u₂} (ConjL⊑ lt1 lt2) {v} {w} (inj₁ x) = sub-inv lt1 x
-sub-inv {u₁₁ ⊔ u₁₂} {u₂} (ConjL⊑ lt1 lt2) {v} {w} (inj₂ y) = sub-inv lt2 y
-sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR1⊑ lt) {v} {w} m
+sub-inv {⊥} {u₂} ⊑-bot {v} {w} ()
+sub-inv {u₁₁ ⊔ u₁₂} {u₂} (⊑-conj-L lt1 lt2) {v} {w} (inj₁ x) = sub-inv lt1 x
+sub-inv {u₁₁ ⊔ u₁₂} {u₂} (⊑-conj-L lt1 lt2) {v} {w} (inj₂ y) = sub-inv lt2 y
+sub-inv {u₁} {u₂₁ ⊔ u₂₂} (⊑-conj-R1 lt) {v} {w} m
     with sub-inv lt m
 ... | ⟨ u₃₁ , ⟨ fu₃₁ , ⟨ u₃₁⊆u₂₁ , ⟨ domu₃₁⊑v , w⊑codu₃₁ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃₁ , ⟨ fu₃₁ , ⟨ (λ {w} z → inj₁ (u₃₁⊆u₂₁ z)) ,
                                    ⟨ domu₃₁⊑v , w⊑codu₃₁ ⟩ ⟩ ⟩ ⟩
-sub-inv {u₁} {u₂₁ ⊔ u₂₂} (ConjR2⊑ lt) {v} {w} m
+sub-inv {u₁} {u₂₁ ⊔ u₂₂} (⊑-conj-R2 lt) {v} {w} m
     with sub-inv lt m
 ... | ⟨ u₃₂ , ⟨ fu₃₂ , ⟨ u₃₂⊆u₂₂ , ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₃₂ , ⟨ fu₃₂ , ⟨ (λ {C} z → inj₂ (u₃₂⊆u₂₂ z)) ,
                                    ⟨ domu₃₂⊑v , w⊑codu₃₂ ⟩ ⟩ ⟩ ⟩
-sub-inv {u₁} {u₂} (Trans⊑{v = u} u₁⊑u u⊑u₂) {v} {w} v↦w∈u₁
+sub-inv {u₁} {u₂} (⊑-trans{v = u} u₁⊑u u⊑u₂) {v} {w} v↦w∈u₁
     with sub-inv u₁⊑u v↦w∈u₁
 ... | ⟨ u′ , ⟨ fu′ , ⟨ u′⊆u , ⟨ domu′⊑v , w⊑codu′ ⟩ ⟩ ⟩ ⟩
     with sub-inv-trans {u′} fu′ u′⊆u (sub-inv u⊑u₂)
 ... | ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ domu₃⊑domu′ , codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
-      ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ Trans⊑ domu₃⊑domu′ domu′⊑v ,
-                                    Trans⊑ w⊑codu′ codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩
-sub-inv {u₁₁ ↦ u₁₂} {u₂₁ ↦ u₂₂} (Fun⊑ lt1 lt2) refl =
+      ⟨ u₃ , ⟨ fu₃ , ⟨ u₃⊆u₂ , ⟨ ⊑-trans domu₃⊑domu′ domu′⊑v ,
+                                    ⊑-trans w⊑codu′ codu′⊑codu₃ ⟩ ⟩ ⟩ ⟩
+sub-inv {u₁₁ ↦ u₁₂} {u₂₁ ↦ u₂₂} (⊑-fun lt1 lt2) refl =
     ⟨ u₂₁ ↦ u₂₂ , ⟨ (λ {w} → fun) , ⟨ (λ {C} z → z) , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
-sub-inv {u₂₁ ↦ (u₂₂ ⊔ u₂₃)} {u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃} Dist⊑
+sub-inv {u₂₁ ↦ (u₂₂ ⊔ u₂₃)} {u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃} ⊑-dist
     {.u₂₁} {.(u₂₂ ⊔ u₂₃)} refl =
-    ⟨ u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃ , ⟨ f , ⟨ g , ⟨ ConjL⊑ Refl⊑ Refl⊑ , Refl⊑ ⟩ ⟩ ⟩ ⟩
-  where f : Funs (u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃)
+    ⟨ u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃ , ⟨ f , ⟨ g , ⟨ ⊑-conj-L ⊑-refl ⊑-refl , ⊑-refl ⟩ ⟩ ⟩ ⟩
+  where f : all-funs (u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃)
         f (inj₁ x) = fun x
         f (inj₂ y) = fun y
         g : (u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃) ⊆ (u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦ u₂₃)
@@ -1126,9 +1126,9 @@ sub-inv {u₂₁ ↦ (u₂₂ ⊔ u₂₃)} {u₂₁ ↦ u₂₂ ⊔ u₂₁ ↦
 
 Let `v` and `w` be arbitrary values.
 
-* Case `Bot⊑`. So `u₁ ≡ ⊥`. We have `v ↦ w ∈ ⊥`, but that is impossible.
+* Case `⊑-bot`. So `u₁ ≡ ⊥`. We have `v ↦ w ∈ ⊥`, but that is impossible.
 
-* Case `ConjL⊑`.
+* Case `⊑-conj-L`.
 
         u₁₁ ⊑ u₂   u₁₂ ⊑ u₂
         -------------------
@@ -1142,7 +1142,7 @@ Let `v` and `w` be arbitrary values.
   * Subcase `v ↦ w ∈ u₁₂`. We conclude by the induction hypothesis
     for `u₁₂ ⊑ u₂`.
 
-* Case `ConjR1⊑`.
+* Case `⊑-conj-R1`.
 
         u₁ ⊑ u₂₁
         --------------
@@ -1154,10 +1154,10 @@ Let `v` and `w` be arbitrary values.
   we just need to show that `u₃₁ ⊆ u₂₁ ⊔ u₂₂`, but that follows
   directly from `u₃₁ ⊆ u₂₁`.
 
-* Case `ConjR2⊑`. This case follows by reasoning similar to
-  the case for `ConjR1⊑`.
+* Case `⊑-conj-R2`. This case follows by reasoning similar to
+  the case for `⊑-conj-R1`.
 
-* Case `Trans⊑`.
+* Case `⊑-trans`.
 
         u₁ ⊑ u   u ⊑ u₂
         ---------------
@@ -1165,7 +1165,7 @@ Let `v` and `w` be arbitrary values.
 
   By the induction hypothesis for `u₁ ⊑ u`, we know
   that `v ↦ w` factors `u` into `u′`, for some value `u′`,
-  so we have `Funs u′` and `u′ ⊆ u`.
+  so we have `all-funs u′` and `u′ ⊆ u`.
   By the induction hypothesis for `u ⊑ u₂`, we know
   that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂`.
   Now we apply the lemma sub-inv-trans, which gives us
@@ -1175,7 +1175,7 @@ Let `v` and `w` be arbitrary values.
   From `w ⊑ cod u′` and `cod u′ ⊑ cod u₃`, we have `w ⊑ cod u₃`,
   and this case is complete.
 
-* Case `Fun⊑`.
+* Case `⊑-fun`.
 
         u₂₁ ⊑ u₁₁  u₁₂ ⊑ u₂₂
         ---------------------
@@ -1186,7 +1186,7 @@ Let `v` and `w` be arbitrary values.
   We need to show that `dom (u₂₁ ↦ u₂₂) ⊑ u₁₁` and `u₁₂ ⊑ cod (u₂₁ ↦ u₂₂)`,
   but that is equivalent to our premises `u₂₁ ⊑ u₁₁` and `u₁₂ ⊑ u₂₂`.
 
-* Case `Dist⊑`.
+* Case `⊑-dist`.
 
         ---------------------------------------------
         u₂₁ ↦ (u₂₂ ⊔ u₂₃) ⊑ (u₂₁ ↦ u₂₂) ⊔ (u₂₁ ↦ u₂₃)
@@ -1208,14 +1208,14 @@ and we modify the conclusion to say that for every
 sub-inv-fun : ∀{v w u₁ : Value}
     → (v ↦ w) ⊑ u₁
       -----------------------------------------------------
-    → Σ[ u₂ ∈ Value ] Funs u₂ × u₂ ⊆ u₁
+    → Σ[ u₂ ∈ Value ] all-funs u₂ × u₂ ⊆ u₁
         × (∀{v′ w′} → (v′ ↦ w′) ∈ u₂ → v′ ⊑ v) × w ⊑ cod u₂
 sub-inv-fun{v}{w}{u₁} abc
     with sub-inv abc {v}{w} refl
 ... | ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ db , cc ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ G , cc ⟩ ⟩ ⟩ ⟩
    where G : ∀{D E} → (D ↦ E) ∈ u₂ → D ⊑ v
-         G{D}{E} m = Trans⊑ (⊆→⊑ (↦∈→⊆dom f m)) db
+         G{D}{E} m = ⊑-trans (⊆→⊑ (↦∈→⊆dom f m)) db
 ```
 
 The second corollary is the inversion rule that one would expect for
@@ -1229,12 +1229,12 @@ less-than with functions on the left and right-hand sides.
 ↦⊑↦-inv{v}{w}{v′}{w′} lt
     with sub-inv-fun lt
 ... | ⟨ Γ , ⟨ f , ⟨ Γ⊆v34 , ⟨ lt1 , lt2 ⟩ ⟩ ⟩ ⟩
-    with Funs∈ f
+    with all-funs∈ f
 ... | ⟨ u , ⟨ u′ , u↦u′∈Γ ⟩ ⟩
     with Γ⊆v34 u↦u′∈Γ
 ... | refl =
   let codΓ⊆w′ = ⊆↦→cod⊆ Γ⊆v34 in
-  ⟨ lt1 u↦u′∈Γ , Trans⊑ lt2 (⊆→⊑ codΓ⊆w′) ⟩
+  ⟨ lt1 u↦u′∈Γ , ⊑-trans lt2 (⊆→⊑ codΓ⊆w′) ⟩
 ```
 
 

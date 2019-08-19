@@ -50,7 +50,7 @@ open import plfa.part2.Untyped
 open import plfa.part2.Substitution using (Rename; Subst; ids)
 open import plfa.part3.Denotational
      using (Value; ⊥; Env; _⊢_↓_; _`,_; _⊑_; _`⊑_; `⊥; _`⊔_; init; last; init-last;
-            Refl⊑; Trans⊑; `Refl⊑; Env⊑; EnvConjR1⊑; EnvConjR2⊑; up-env;
+            ⊑-refl; ⊑-trans; `⊑-refl; ⊑-env; ⊑-env-conj-R1; ⊑-env-conj-R2; up-env;
             var; ↦-elim; ↦-intro; ⊥-intro; ⊔-intro; sub;
             rename-pres; ℰ; _≃_; ≃-trans)
 open import plfa.part3.Compositional using (lambda-inversion; var-inv)
@@ -96,7 +96,7 @@ subst-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
    --------------------------
   → δ `, v `⊢ exts σ ↓ γ `, v
 subst-ext σ d Z = var
-subst-ext σ d (S x′) = rename-pres S_ (λ _ → Refl⊑) (d x′)
+subst-ext σ d (S x′) = rename-pres S_ (λ _ → ⊑-refl) (d x′)
 ```
 
 The proof is by cases on the de Bruijn index `x`.
@@ -246,7 +246,7 @@ nth-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (δ ∘ ρ) `⊑ γ
     ------------------------------
   → ((δ `, v) ∘ ext ρ) `⊑ (γ `, v)
-nth-ext ρ lt Z = Refl⊑
+nth-ext ρ lt Z = ⊑-refl
 nth-ext ρ lt (S x) = lt x
 ```
 
@@ -259,7 +259,7 @@ rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
     ------------------------------------
   → γ ⊢ M ↓ v
 rename-reflect {M = ` x} all-n d with var-inv d
-... | lt =  sub var (Trans⊑ lt (all-n x))
+... | lt =  sub var (⊑-trans lt (all-n x))
 rename-reflect {M = ƛ N}{ρ = ρ} all-n (↦-intro d) =
    ↦-intro (rename-reflect (nth-ext ρ all-n) d)
 rename-reflect {M = ƛ N} all-n ⊥-intro = ⊥-intro
@@ -310,7 +310,7 @@ rename-inc-reflect : ∀ {Γ v′ v} {γ : Env Γ} { M : Γ ⊢ ★}
   → (γ `, v′) ⊢ rename S_ M ↓ v
     ----------------------------
   → γ ⊢ M ↓ v
-rename-inc-reflect d = rename-reflect `Refl⊑ d
+rename-inc-reflect d = rename-reflect `⊑-refl d
 ```
 
 
@@ -476,8 +476,8 @@ subst-reflect{Γ}{Δ}{γ}{σ = σ} (↦-elim d₁ d₂)
      with subst-reflect {M = M₁} d₁ refl | subst-reflect {M = M₂} d₂ refl
 ...     | ⟨ δ₁ , ⟨ subst-δ₁ , m1 ⟩ ⟩ | ⟨ δ₂ , ⟨ subst-δ₂ , m2 ⟩ ⟩ =
      ⟨ δ₁ `⊔ δ₂ , ⟨ subst-⊔ {γ₁ = δ₁}{γ₂ = δ₂}{σ = σ} subst-δ₁ subst-δ₂ ,
-                    ↦-elim (Env⊑ m1 (EnvConjR1⊑ δ₁ δ₂))
-                           (Env⊑ m2 (EnvConjR2⊑ δ₁ δ₂)) ⟩ ⟩
+                    ↦-elim (⊑-env m1 (⊑-env-conj-R1 δ₁ δ₂))
+                           (⊑-env m2 (⊑-env-conj-R2 δ₁ δ₂)) ⟩ ⟩
 
 subst-reflect {M = M}{σ = σ} (↦-intro d) eqL with M
 ...    | ` x with (↦-intro d)
@@ -496,8 +496,8 @@ subst-reflect {σ = σ} (⊔-intro d₁ d₂) eq
   with subst-reflect {σ = σ} d₁ eq | subst-reflect {σ = σ} d₂ eq
 ... | ⟨ δ₁ , ⟨ subst-δ₁ , m1 ⟩ ⟩ | ⟨ δ₂ , ⟨ subst-δ₂ , m2 ⟩ ⟩ =
      ⟨ δ₁ `⊔ δ₂ , ⟨ subst-⊔ {γ₁ = δ₁}{γ₂ = δ₂}{σ = σ} subst-δ₁ subst-δ₂ ,
-                    ⊔-intro (Env⊑ m1 (EnvConjR1⊑ δ₁ δ₂))
-                            (Env⊑ m2 (EnvConjR2⊑ δ₁ δ₂)) ⟩ ⟩
+                    ⊔-intro (⊑-env m1 (⊑-env-conj-R1 δ₁ δ₂))
+                            (⊑-env m2 (⊑-env-conj-R2 δ₁ δ₂)) ⟩ ⟩
 subst-reflect (sub d lt) eq
     with subst-reflect d eq
 ... | ⟨ δ , ⟨ subst-δ , m ⟩ ⟩ = ⟨ δ , ⟨ subst-δ , sub m lt ⟩ ⟩
@@ -512,8 +512,8 @@ subst-reflect (sub d lt) eq
   * Case `M ≡ M₁ · M₂`: By the induction hypothesis, we have
     some `δ₁` and `δ₂` such that `δ₁ ⊢ M₁ ↓ v₁ ↦ v₃` and `γ ⊢ σ ↓ δ₁`,
     as well as `δ₂ ⊢ M₂ ↓ v₁` and `γ ⊢ σ ↓ δ₂`.
-    By `Env⊑` we have `δ₁ ⊔ δ₂ ⊢ M₁ ↓ v₁ ↦ v₃` and `δ₁ ⊔ δ₂ ⊢ M₂ ↓ v₁`
-    (using `EnvConjR1⊑` and `EnvConjR2⊑`), and therefore
+    By `⊑-env` we have `δ₁ ⊔ δ₂ ⊢ M₁ ↓ v₁ ↦ v₃` and `δ₁ ⊔ δ₂ ⊢ M₂ ↓ v₁`
+    (using `⊑-env-conj-R1` and `⊑-env-conj-R2`), and therefore
     `δ₁ ⊔ δ₂ ⊢ M₁ · M₂ ↓ v₃`.
     We conclude this case by obtaining `γ ⊢ σ ↓ δ₁ ⊔ δ₂`
     by the `subst-⊔` lemma.
@@ -538,7 +538,7 @@ subst-reflect (sub d lt) eq
 * Case `⊔-intro`: By the induction hypothesis we have
   `δ₁ ⊢ M ↓ v₁`, `δ₂ ⊢ M ↓ v₂`, `δ ⊢ σ ↓ δ₁`, and `δ ⊢ σ ↓ δ₂`.
   We have `δ₁ ⊔ δ₂ ⊢ M ↓ v₁` and `δ₁ ⊔ δ₂ ⊢ M ↓ v₂`
-  by `Env⊑` with `EnvConjR1⊑` and `EnvConjR2⊑`.
+  by `⊑-env` with `⊑-env-conj-R1` and `⊑-env-conj-R2`.
   So by `⊔-intro` we have `δ₁ ⊔ δ₂ ⊢ M ↓ v₁ ⊔ v₂`.
   By `subst-⊔` we conclude that `δ ⊢ σ ↓ δ₁ ⊔ δ₂`.
 
@@ -565,7 +565,7 @@ subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {M : Δ ⊢ �
 subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ Z ⟩ ⟩
   where
   lemma : γ `⊑ (δ `, last γ)
-  lemma Z  =  Refl⊑
+  lemma Z  =  ⊑-refl
   lemma (S x) = var-inv (δσγ (S x))
 ```
 
@@ -586,14 +586,14 @@ substitution-reflect : ∀ {Δ} {δ : Env Δ} {N : Δ , ★ ⊢ ★} {M : Δ ⊢
   → Σ[ w ∈ Value ] δ ⊢ M ↓ w  ×  (δ `, w) ⊢ N ↓ v
 substitution-reflect d with subst-reflect d refl
 ...  | ⟨ γ , ⟨ δσγ , γNv ⟩ ⟩ with subst-zero-reflect δσγ
-...    | ⟨ w , ⟨ ineq , δMw ⟩ ⟩ = ⟨ w , ⟨ δMw , Env⊑ γNv ineq ⟩ ⟩
+...    | ⟨ w , ⟨ ineq , δMw ⟩ ⟩ = ⟨ w , ⟨ δMw , ⊑-env γNv ineq ⟩ ⟩
 ```
 
 We apply the `subst-reflect` lemma to obtain
 `δ ⊢ subst-zero M ↓ γ` and `γ ⊢ N ↓ v` for some `γ`.
 Using the former, the `subst-zero-reflect` lemma gives
 us `γ ⊑ (δ , w)` and `δ ⊢ M ↓ w`. We conclude that
-`δ , w ⊢ N ↓ v` by applying the `Env⊑` lemma, using
+`δ , w ⊢ N ↓ v` by applying the `⊑-env` lemma, using
 `γ ⊢ N ↓ v` and `γ ⊑ (δ , w)`.
 
 

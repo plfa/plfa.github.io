@@ -13,8 +13,8 @@ module plfa.part2.Confluence where
 ## Introduction
 
 In this chapter we prove that beta reduction is _confluent_, a
-property also known as _Church-Rosser_. That is, if there is a
-reduction sequence from any term `L` to two different terms `M₁` and
+property also known as _Church-Rosser_. That is, if there are
+reduction sequences from any term `L` to two different terms `M₁` and
 `M₂`, then there exist reduction sequences from those two terms to
 some common term `N`. In pictures:
 
@@ -315,8 +315,8 @@ par-subst-exts s {x = Z} = pvar
 par-subst-exts s {x = S x} = par-rename s
 ```
 
-The next lemma that we need to prove that substitution respects
-parallel reduction is the following one, which states that
+The next lemma that we need for proving that substitution respects
+parallel reduction is the following which states that
 simultaneoous substitution commutes with single substitution. We import this
 lemma from Chapter [Substitution]({{ site.baseurl }}/Substitution/)
 and restate it below.

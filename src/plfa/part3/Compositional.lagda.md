@@ -35,7 +35,7 @@ open import plfa.part2.Untyped
      using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
 open import plfa.part3.Denotational
      using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_;
-           Bot⊑; Fun⊑; ConjL⊑; ConjR1⊑; ConjR2⊑; Dist⊑; Refl⊑; Trans⊑; Dist⊔↦⊔;
+           ⊑-bot; ⊑-fun; ⊑-conj-L; ⊑-conj-R1; ⊑-conj-R2; ⊑-dist; ⊑-refl; ⊑-trans; ⊔↦⊔-dist;
            var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
            up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
 open plfa.part3.Denotational.≃-Reasoning
@@ -63,8 +63,11 @@ rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 ℱ D γ (u ⊔ v) = (ℱ D γ u) × (ℱ D γ v)
 ```
 
-[JGS: add comment about how ℱ can be viewed as curry.]
-
+If one squints hard enough, the `ℱ` function starts to look like the
+`curry` operation familar to functional programmers. It turns a
+function that expects a tuple of length `n + 1` (the environment `Γ ,
+★`) into a function that expects a tuple of length `n` and returns a
+function of one parameter.
 
 Using this `ℱ`, we hope to prove that
 
@@ -73,7 +76,7 @@ Using this `ℱ`, we hope to prove that
 The function `ℱ` is preserved when going from a larger value `v` to a
 smaller value `u`. The proof is a straightforward induction on the
 derivation of `u ⊑ v`, using the `up-env` lemma in the case for the
-`Fun⊑` rule.
+`⊑-fun` rule.
 
 ```
 sub-ℱ : ∀{Γ}{N : Γ , ★ ⊢ ★}{γ v u}
@@ -81,14 +84,14 @@ sub-ℱ : ∀{Γ}{N : Γ , ★ ⊢ ★}{γ v u}
       → u ⊑ v
         ------------
       → ℱ (ℰ N) γ u
-sub-ℱ d Bot⊑ = tt
-sub-ℱ d (Fun⊑ lt lt′) = sub (up-env d lt) lt′
-sub-ℱ d (ConjL⊑ lt lt₁) = ⟨ sub-ℱ d lt , sub-ℱ d lt₁ ⟩
-sub-ℱ d (ConjR1⊑ lt) = sub-ℱ (proj₁ d) lt
-sub-ℱ d (ConjR2⊑ lt) = sub-ℱ (proj₂ d) lt
-sub-ℱ {v = v₁ ↦ v₂ ⊔ v₁ ↦ v₃} {v₁ ↦ (v₂ ⊔ v₃)} ⟨ N2 , N3 ⟩ Dist⊑ =
+sub-ℱ d ⊑-bot = tt
+sub-ℱ d (⊑-fun lt lt′) = sub (up-env d lt) lt′
+sub-ℱ d (⊑-conj-L lt lt₁) = ⟨ sub-ℱ d lt , sub-ℱ d lt₁ ⟩
+sub-ℱ d (⊑-conj-R1 lt) = sub-ℱ (proj₁ d) lt
+sub-ℱ d (⊑-conj-R2 lt) = sub-ℱ (proj₂ d) lt
+sub-ℱ {v = v₁ ↦ v₂ ⊔ v₁ ↦ v₃} {v₁ ↦ (v₂ ⊔ v₃)} ⟨ N2 , N3 ⟩ ⊑-dist =
    ⊔-intro N2 N3
-sub-ℱ d (Trans⊑ x₁ x₂) = sub-ℱ (sub-ℱ d x₂) x₁
+sub-ℱ d (⊑-trans x₁ x₂) = sub-ℱ (sub-ℱ d x₂) x₁
 ```
 
 [PLW:
@@ -164,7 +167,7 @@ because, for example, the rule `↦-elim` applies to any value. Instead
 we shall define `●` in a way that directly deals with the `↦-elim` and
 `⊥-intro` rules but ignores `⊔-intro`. This makes the forward
 direction of the proof more difficult, and the case for `⊔-intro`
-demonstrates why the `Dist⊑` rule is important.
+demonstrates why the `⊑-dist` rule is important.
 
 So we define the application of `D₁` to `D₂`, written `D₁ ● D₂`, to include
 any value `w` equivalent to `⊥`, for the `⊥-intro` rule, and to include any
@@ -178,7 +181,9 @@ _●_ : ∀{Γ} → Denotation Γ → Denotation Γ → Denotation Γ
 (D₁ ● D₂) γ w = w ⊑ ⊥ ⊎ Σ[ v ∈ Value ]( D₁ γ (v ↦ w) × D₂ γ v )
 ```
 
-[JGS: add comment about how ● can be viewed as apply.]
+If one squints hard enough, the `_●_` operator starts to look
+like the `apply` operation familiar to functional programmers.
+It takes two parameters and applies the first to the second.
 
 Next we consider the inversion lemma for application, which is also
 the forward direction of the semantic equation for application.  We
@@ -190,28 +195,28 @@ describe the proof below.
           ----------------
         → (ℰ L ● ℰ M) γ v
 ℰ·→●ℰ (↦-elim{v = v′} d₁ d₂) = inj₂ ⟨ v′ , ⟨ d₁ , d₂ ⟩ ⟩
-ℰ·→●ℰ {v = ⊥} ⊥-intro = inj₁ Bot⊑
+ℰ·→●ℰ {v = ⊥} ⊥-intro = inj₁ ⊑-bot
 ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂)
     with ℰ·→●ℰ d₁ | ℰ·→●ℰ d₂
-... | inj₁ lt1 | inj₁ lt2 = inj₁ (ConjL⊑ lt1 lt2)
+... | inj₁ lt1 | inj₁ lt2 = inj₁ (⊑-conj-L lt1 lt2)
 ... | inj₁ lt1 | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ =
       inj₂ ⟨ v₁′ , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
       where lt : v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₂
-            lt = (Fun⊑ Refl⊑ (ConjL⊑ (Trans⊑ lt1 Bot⊑) Refl⊑))
+            lt = (⊑-fun ⊑-refl (⊑-conj-L (⊑-trans lt1 ⊑-bot) ⊑-refl))
 ... | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₁ lt2 =
       inj₂ ⟨ v₁′ , ⟨ sub L↓v12 lt , M↓v3 ⟩ ⟩
       where lt : v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₁
-            lt = (Fun⊑ Refl⊑ (ConjL⊑ Refl⊑ (Trans⊑ lt2 Bot⊑)))
+            lt = (⊑-fun ⊑-refl (⊑-conj-L ⊑-refl (⊑-trans lt2 ⊑-bot)))
 ... | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₂ ⟨ v₁′′ , ⟨ L↓v12′ , M↓v3′ ⟩ ⟩ =
       let L↓⊔ = ⊔-intro L↓v12 L↓v12′ in
       let M↓⊔ = ⊔-intro M↓v3 M↓v3′ in
-      let x = inj₂ ⟨ v₁′ ⊔ v₁′′ , ⟨ sub L↓⊔ Dist⊔↦⊔ , M↓⊔ ⟩ ⟩ in
+      let x = inj₂ ⟨ v₁′ ⊔ v₁′′ , ⟨ sub L↓⊔ ⊔↦⊔-dist , M↓⊔ ⟩ ⟩ in
       x
 ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (sub d lt)
     with ℰ·→●ℰ d
-... | inj₁ lt2 = inj₁ (Trans⊑ lt lt2)
+... | inj₁ lt2 = inj₁ (⊑-trans lt lt2)
 ... | inj₂ ⟨ v₁ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ =
-      inj₂ ⟨ v₁ , ⟨ sub L↓v12 (Fun⊑ Refl⊑ lt) , M↓v3 ⟩ ⟩
+      inj₂ ⟨ v₁ , ⟨ sub L↓v12 (⊑-fun ⊑-refl lt) , M↓v3 ⟩ ⟩
 ```
 
 We proceed by induction on the semantics.
@@ -243,7 +248,7 @@ We proceed by induction on the semantics.
       `L` must be an `↦` whose input entry is `v₁′ ⊔ v₁′′`.
       So we use the `sub` rule to obtain
       `γ ⊢ L ↓ (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂)`,
-      using the `Dist⊔→⊔` lemma (thanks to the `Dist⊑` rule) to
+      using the `⊔↦⊔-dist` lemma (thanks to the `⊑-dist` rule) to
       show that
 
             (v₁′ ⊔ v₁′′) ↦ (v₁ ⊔ v₂) ⊑ (v₁′ ↦ v₂) ⊔ (v₁′′ ↦ v₁)
@@ -291,10 +296,10 @@ var-inv : ∀ {Γ v x} {γ : Env Γ}
   → ℰ (` x) γ v
     -------------------
   → v ⊑ γ x
-var-inv (var) = Refl⊑
-var-inv (⊔-intro d₁ d₂) = ConjL⊑ (var-inv d₁) (var-inv d₂)
-var-inv (sub d lt) = Trans⊑ lt (var-inv d)
-var-inv ⊥-intro = Bot⊑
+var-inv (var) = ⊑-refl
+var-inv (⊔-intro d₁ d₂) = ⊑-conj-L (var-inv d₁) (var-inv d₂)
+var-inv (sub d lt) = ⊑-trans lt (var-inv d)
+var-inv ⊥-intro = ⊑-bot
 ```
 
 To round-out the semantic equations, we establish the following one
@@ -422,24 +427,24 @@ terms that result from filling the hole.
 
 ```
 data Ctx : Context → Context → Set where
-  CHole : ∀{Γ} → Ctx Γ Γ
-  CLam :  ∀{Γ Δ} → Ctx (Γ , ★) (Δ , ★) → Ctx (Γ , ★) Δ
-  CAppL : ∀{Γ Δ} → Ctx Γ Δ → Δ ⊢ ★ → Ctx Γ Δ
-  CAppR : ∀{Γ Δ} → Δ ⊢ ★ → Ctx Γ Δ → Ctx Γ Δ
+  ctx-hole : ∀{Γ} → Ctx Γ Γ
+  ctx-lam :  ∀{Γ Δ} → Ctx (Γ , ★) (Δ , ★) → Ctx (Γ , ★) Δ
+  ctx-app-L : ∀{Γ Δ} → Ctx Γ Δ → Δ ⊢ ★ → Ctx Γ Δ
+  ctx-app-R : ∀{Γ Δ} → Δ ⊢ ★ → Ctx Γ Δ → Ctx Γ Δ
 ```
 
-* The constructor `CHole` represents the hole, and in this case the
+* The constructor `ctx-hole` represents the hole, and in this case the
   variable context for the hole is the same as the variable context
   for the term that results from filling the hole.
 
-* The constructor `CLam` takes a `Ctx` and produces a larger one that
+* The constructor `ctx-lam` takes a `Ctx` and produces a larger one that
   adds a lambda abstraction at the top. The variable context of the
   hole stays the same, whereas we remove one variable from the context
   of the resulting term because it is bound by this lambda
   abstraction.
 
-* There are two constructions for application, `CAppL` and
-  `CAppR`. The `CAppL` is for when the hole is inside the left-hand
+* There are two constructions for application, `ctx-app-L` and
+  `ctx-app-R`. The `ctx-app-L` is for when the hole is inside the left-hand
   term (the operator) and the later is when the hole is inside the
   right-hand term (the operand).
 
@@ -448,10 +453,10 @@ following `plug` function. It is defined by recursion on the context.
 
 ```
 plug : ∀{Γ}{Δ} → Ctx Γ Δ → Γ ⊢ ★ → Δ ⊢ ★
-plug CHole M = M
-plug (CLam C) N = ƛ plug C N
-plug (CAppL C N) L = (plug C L) · N
-plug (CAppR L C) M = L · (plug C M)
+plug ctx-hole M = M
+plug (ctx-lam C) N = ƛ plug C N
+plug (ctx-app-L C N) L = (plug C L) · N
+plug (ctx-app-R L C) M = L · (plug C M)
 ```
 
 We are ready to state and prove the compositionality principle.  Given
@@ -464,13 +469,13 @@ compositionality : ∀{Γ Δ}{C : Ctx Γ Δ} {M N : Γ ⊢ ★}
               → ℰ M ≃ ℰ N
                 ---------------------------
               → ℰ (plug C M) ≃ ℰ (plug C N)
-compositionality {C = CHole} M≃N =
+compositionality {C = ctx-hole} M≃N =
   M≃N
-compositionality {C = CLam C′} M≃N =
+compositionality {C = ctx-lam C′} M≃N =
   lam-cong (compositionality {C = C′} M≃N)
-compositionality {C = CAppL C′ L} M≃N =
+compositionality {C = ctx-app-L C′ L} M≃N =
   app-cong (compositionality {C = C′} M≃N) λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩
-compositionality {C = CAppR L C′} M≃N =
+compositionality {C = ctx-app-R L C′} M≃N =
   app-cong (λ γ v → ⟨ (λ x → x) , (λ x → x) ⟩) (compositionality {C = C′} M≃N)
 ```
 
