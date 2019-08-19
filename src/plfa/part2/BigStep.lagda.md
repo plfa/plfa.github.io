@@ -1,5 +1,5 @@
 ---
-title     : "BigStep: Big-step semantics of untyped lambda calculus 🚧"
+title     : "BigStep: Big-step semantics of untyped lambda calculus"
 layout    : page
 prev      : /Confluence/
 permalink : /BigStep/

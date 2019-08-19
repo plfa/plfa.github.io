@@ -30,7 +30,7 @@ Pull requests are encouraged.
   - [Decidable]({{ site.baseurl }}/Decidable/): Booleans and decision procedures
   - [Lists]({{ site.baseurl }}/Lists/): Lists and higher-order functions
 
-## Part 2: Programming Language Foundations
+## Part 2: Operational Semantics
 
   - [Lambda]({{ site.baseurl }}/Lambda/): Introduction to Lambda Calculus
   - [Properties]({{ site.baseurl }}/Properties/): Progress and Preservation
@@ -42,7 +42,7 @@ Pull requests are encouraged.
   - [Confluence]({{ site.baseurl }}/Confluence/): Confluence of untyped lambda calculus 🚧
   - [BigStep]({{ site.baseurl }}/BigStep/): Big-step semantics of untyped lambda calculus 🚧
 
-## Part 3: Denotational Semantics of Lambda Calculus
+## Part 3: Denotational Semantics
 
   - [Denotational]({{ site.baseurl }}/Denotational/): Denotational semantics of untyped lambda calculus 🚧
   - [Compositional]({{ site.baseurl }}/Compositional/): The denotational semantics is compositional 🚧
