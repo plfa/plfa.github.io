@@ -61,17 +61,16 @@ confluence for parallel reduction.
 ## Imports
 
 ```
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Function using (_∘_)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
-     renaming (_,_ to ⟨_,_⟩)
+  renaming (_,_ to ⟨_,_⟩)
 open import plfa.part2.Substitution using (Rename; Subst)
 open import plfa.part2.Untyped
-     using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _∎;
-     abs-cong; appL-cong; appR-cong; —↠-trans;
-     _⊢_; _∋_; `_; #_; _,_; ★; ƛ_; _·_; _[_];
-     rename; ext; exts; Z; S_; subst; subst-zero)
+  using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _∎;
+  abs-cong; appL-cong; appR-cong; —↠-trans;
+  _⊢_; _∋_; `_; #_; _,_; ★; ƛ_; _·_; _[_];
+  rename; ext; exts; Z; S_; subst; subst-zero)
 ```
 
 ## Parallel Reduction
@@ -84,25 +83,25 @@ infix 2 _⇛_
 data _⇛_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   pvar : ∀{Γ A}{x : Γ ∋ A}
-         ---------
-       → (` x) ⇛ (` x)
+      ---------
+    → (` x) ⇛ (` x)
 
   pabs : ∀{Γ}{N N′ : Γ , ★ ⊢ ★}
-       → N ⇛ N′
-         ----------
-       → ƛ N ⇛ ƛ N′
+    → N ⇛ N′
+      ----------
+    → ƛ N ⇛ ƛ N′
 
   papp : ∀{Γ}{L L′ M M′ : Γ ⊢ ★}
-       → L ⇛ L′
-       → M ⇛ M′
-         -----------------
-       → L · M ⇛ L′ · M′
+    → L ⇛ L′
+    → M ⇛ M′
+      -----------------
+    → L · M ⇛ L′ · M′
 
   pbeta : ∀{Γ}{N N′  : Γ , ★ ⊢ ★}{M M′ : Γ ⊢ ★}
-       → N ⇛ N′
-       → M ⇛ M′
-         -----------------------
-       → (ƛ N) · M  ⇛  N′ [ M′ ]
+    → N ⇛ N′
+    → M ⇛ M′
+      -----------------------
+    → (ƛ N) · M  ⇛  N′ [ M′ ]
 ```
 The first three rules are congruences that reduce each of their
 parts simultaneously. The last rule reduces a lambda term and
@@ -161,9 +160,9 @@ the reduction `M —→ N`.
 
 ```
 beta-par : ∀{Γ A}{M N : Γ ⊢ A}
-         → M —→ N
-           ------
-         → M ⇛ N
+  → M —→ N
+    ------
+  → M ⇛ N
 beta-par {Γ} {★} {L · M} (ξ₁ r) = papp (beta-par {M = L} r) par-refl
 beta-par {Γ} {★} {L · M} (ξ₂ r) = papp par-refl (beta-par {M = M} r)
 beta-par {Γ} {★} {(ƛ N) · M} β = pbeta par-refl par-refl
@@ -176,9 +175,9 @@ induction on the reduction sequence `M —↠ N`.
 
 ```
 betas-pars : ∀{Γ A} {M N : Γ ⊢ A}
-           → M —↠ N
-             ------
-           → M ⇛* N
+  → M —↠ N
+    ------
+  → M ⇛* N
 betas-pars {Γ} {A} {M₁} {.M₁} (M₁ ∎) = M₁ ∎
 betas-pars {Γ} {A} {.L} {N} (L —→⟨ b ⟩ bs) =
    L ⇛⟨ beta-par b ⟩ betas-pars bs
@@ -191,9 +190,9 @@ reductions. So instead we shall prove that `M ⇛ N` implies `M —↠ N`.
 
 ```
 par-betas : ∀{Γ A}{M N : Γ ⊢ A}
-         → M ⇛ N
-           ------
-         → M —↠ N
+  → M ⇛ N
+    ------
+  → M —↠ N
 par-betas {Γ} {A} {.(` _)} (pvar{x = x}) = (` x) ∎
 par-betas {Γ} {★} {ƛ N} (pabs p) = abs-cong (par-betas p)
 par-betas {Γ} {★} {L · M} (papp p₁ p₂) =
@@ -234,9 +233,9 @@ With this lemma in hand, we complete the proof that `M ⇛* N` implies
 
 ```
 pars-betas : ∀{Γ A} {M N : Γ ⊢ A}
-           → M ⇛* N
-             ------
-           → M —↠ N
+  → M ⇛* N
+    ------
+  → M —↠ N
 pars-betas (M₁ ∎) = M₁ ∎
 pars-betas (L ⇛⟨ p ⟩ ps) = —↠-trans (par-betas p) (pars-betas ps)
 ```
@@ -284,7 +283,7 @@ par-rename pvar = pvar
 par-rename (pabs p) = pabs (par-rename p)
 par-rename (papp p₁ p₂) = papp (par-rename p₁) (par-rename p₂)
 par-rename {Γ}{Δ}{A}{ρ} (pbeta{Γ}{N}{N′}{M}{M′} p₁ p₂)
-     with pbeta (par-rename{ρ = ext ρ} p₁) (par-rename{ρ = ρ} p₂)
+    with pbeta (par-rename{ρ = ext ρ} p₁) (par-rename{ρ = ρ} p₂)
 ... | G rewrite rename-subst-commute{Γ}{Δ}{N′}{M′}{ρ} = G
 
 ```
@@ -309,8 +308,9 @@ reduction relation.
 
 ```
 par-subst-exts : ∀{Γ Δ} {σ τ : Subst Γ Δ}
-   → par-subst σ τ
-   → ∀{B} → par-subst (exts σ {B = B}) (exts τ)
+  → par-subst σ τ
+    ------------------------------------------
+  → ∀{B} → par-subst (exts σ {B = B}) (exts τ)
 par-subst-exts s {x = Z} = pvar
 par-subst-exts s {x = S x} = par-rename s
 ```
@@ -323,7 +323,7 @@ and restate it below.
 
 ```
 subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
-    → subst (exts σ) N [ subst σ M ] ≡ subst σ (N [ M ])
+  → subst (exts σ) N [ subst σ M ] ≡ subst σ (N [ M ])
 subst-commute {N = N} = plfa.part2.Substitution.subst-commute {N = N}
 ```
 
@@ -331,21 +331,20 @@ We are ready to prove that substitution respects parallel reduction.
 
 ```
 subst-par : ∀{Γ Δ A} {σ τ : Subst Γ Δ} {M M′ : Γ ⊢ A}
-   → par-subst σ τ  →  M ⇛ M′
-     --------------------------
-   → subst σ M ⇛ subst τ M′
+  → par-subst σ τ  →  M ⇛ M′
+    --------------------------
+  → subst σ M ⇛ subst τ M′
 subst-par {Γ} {Δ} {A} {σ} {τ} {` x} s pvar = s
 subst-par {Γ} {Δ} {A} {σ} {τ} {ƛ N} s (pabs p) =
-   pabs (subst-par {σ = exts σ} {τ = exts τ}
-            (λ {A}{x} → par-subst-exts s {x = x}) p)
+  pabs (subst-par {σ = exts σ} {τ = exts τ}
+        (λ {A}{x} → par-subst-exts s {x = x}) p)
 subst-par {Γ} {Δ} {★} {σ} {τ} {L · M} s (papp p₁ p₂) =
-   papp (subst-par s p₁) (subst-par s p₂)
+  papp (subst-par s p₁) (subst-par s p₂)
 subst-par {Γ} {Δ} {★} {σ} {τ} {(ƛ N) · M} s (pbeta{N′ = N′}{M′ = M′} p₁ p₂)
     with pbeta (subst-par{σ = exts σ}{τ = exts τ}{M = N}
                         (λ{A}{x} → par-subst-exts s {x = x}) p₁)
                (subst-par {σ = σ} s p₂)
-... | G rewrite subst-commute{N = N′}{M = M′}{σ = τ} =
-    G
+... | G rewrite subst-commute{N = N′}{M = M′}{σ = τ} = G
 ```
 
 We proceed by induction on `M ⇛ M′`.
@@ -394,10 +393,10 @@ respects parallel reduction.
 
 ```
 sub-par : ∀{Γ A B} {N N′ : Γ , A ⊢ B} {M M′ : Γ ⊢ A}
-   → N ⇛ N′
-   → M ⇛ M′
-     --------------------------
-   → N [ M ] ⇛ N′ [ M′ ]
+  → N ⇛ N′
+  → M ⇛ M′
+    --------------------------
+  → N [ M ] ⇛ N′ [ M′ ]
 sub-par pn pm = subst-par (par-subst-zero pm) pn
 ```
 
@@ -425,27 +424,27 @@ par-diamond{Γ}{A}{L · M}{N}{N′} (papp{Γ}{L}{L₁}{M}{M₁} p1 p3)
                                 (papp{Γ}{L}{L₂}{M}{M₂} p2 p4)
     with par-diamond p1 p2
 ... | ⟨ L₃ , ⟨ p5 , p6 ⟩ ⟩
-    with par-diamond p3 p4
-... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-      ⟨ (L₃ · M₃) , ⟨ (papp p5 p7) , (papp p6 p8) ⟩ ⟩
+      with par-diamond p3 p4
+...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+        ⟨ (L₃ · M₃) , ⟨ (papp p5 p7) , (papp p6 p8) ⟩ ⟩
 par-diamond (papp (pabs p1) p3) (pbeta p2 p4)
     with par-diamond p1 p2
 ... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
-    with par-diamond p3 p4
-... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-    ⟨ N₃ [ M₃ ] , ⟨ pbeta p5 p7 , sub-par p6 p8 ⟩ ⟩
+      with par-diamond p3 p4
+...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+        ⟨ N₃ [ M₃ ] , ⟨ pbeta p5 p7 , sub-par p6 p8 ⟩ ⟩
 par-diamond (pbeta p1 p3) (papp (pabs p2) p4)
     with par-diamond p1 p2
 ... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
-    with par-diamond p3 p4
-... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-    ⟨ (N₃ [ M₃ ]) , ⟨ sub-par p5  p7 , pbeta p6 p8 ⟩ ⟩
+      with par-diamond p3 p4
+...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+        ⟨ (N₃ [ M₃ ]) , ⟨ sub-par p5  p7 , pbeta p6 p8 ⟩ ⟩
 par-diamond {Γ}{A} (pbeta p1 p3) (pbeta p2 p4)
     with par-diamond p1 p2
 ... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
-    with par-diamond p3 p4
-... | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-      ⟨ N₃ [ M₃ ] , ⟨ sub-par p5 p7 , sub-par p6 p8 ⟩ ⟩
+      with par-diamond p3 p4
+...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
+        ⟨ N₃ [ M₃ ] , ⟨ sub-par p5 p7 , sub-par p6 p8 ⟩ ⟩
 ```
 
 The proof is by induction on both premises.
@@ -531,9 +530,9 @@ strip{Γ}{A}{M}{N}{N′} mn (M ∎) = ⟨ N , ⟨ N ∎ , mn ⟩ ⟩
 strip{Γ}{A}{M}{N}{N′} mn (M ⇛⟨ mm' ⟩ m'n')
     with par-diamond mn mm'
 ... | ⟨ L , ⟨ nl , m'l ⟩ ⟩
-    with strip m'l m'n'
-... | ⟨ L′ , ⟨ ll' , n'l' ⟩ ⟩ =
-    ⟨ L′ , ⟨ (N ⇛⟨ nl ⟩ ll') , n'l' ⟩ ⟩
+      with strip m'l m'n'
+...   | ⟨ L′ , ⟨ ll' , n'l' ⟩ ⟩ =
+        ⟨ L′ , ⟨ (N ⇛⟨ nl ⟩ ll') , n'l' ⟩ ⟩
 ```
 
 The proof of confluence for parallel reduction is now proved by
@@ -549,10 +548,10 @@ par-confluence : ∀{Γ A} {L M₁ M₂ : Γ ⊢ A}
 par-confluence {Γ}{A}{L}{.L}{N} (L ∎) L⇛*N = ⟨ N , ⟨ L⇛*N , N ∎ ⟩ ⟩
 par-confluence {Γ}{A}{L}{M₁′}{M₂} (L ⇛⟨ L⇛M₁ ⟩ M₁⇛*M₁′) L⇛*M₂
     with strip L⇛M₁ L⇛*M₂
-...    | ⟨ N , ⟨ M₁⇛*N , M₂⇛N ⟩ ⟩
-         with par-confluence M₁⇛*M₁′ M₁⇛*N
-...         | ⟨ N′ , ⟨ M₁′⇛*N′ , N⇛*N′ ⟩ ⟩ =
-              ⟨ N′ , ⟨ M₁′⇛*N′ , (M₂ ⇛⟨ M₂⇛N ⟩ N⇛*N′) ⟩ ⟩
+... | ⟨ N , ⟨ M₁⇛*N , M₂⇛N ⟩ ⟩
+      with par-confluence M₁⇛*M₁′ M₁⇛*N
+...   | ⟨ N′ , ⟨ M₁′⇛*N′ , N⇛*N′ ⟩ ⟩ =
+        ⟨ N′ , ⟨ M₁′⇛*N′ , (M₂ ⇛⟨ M₂⇛N ⟩ N⇛*N′) ⟩ ⟩
 ```
 
 The step case may be illustrated as follows:
@@ -594,8 +593,8 @@ confluence : ∀{Γ A} {L M₁ M₂ : Γ ⊢ A}
   → Σ[ N ∈ Γ ⊢ A ] (M₁ —↠ N) × (M₂ —↠ N)
 confluence L↠M₁ L↠M₂
     with par-confluence (betas-pars L↠M₁) (betas-pars L↠M₂)
-...    | ⟨ N , ⟨ M₁⇛N , M₂⇛N ⟩ ⟩ =
-         ⟨ N , ⟨ pars-betas M₁⇛N , pars-betas M₂⇛N ⟩ ⟩
+... | ⟨ N , ⟨ M₁⇛N , M₂⇛N ⟩ ⟩ =
+      ⟨ N , ⟨ pars-betas M₁⇛N , pars-betas M₂⇛N ⟩ ⟩
 ```
 
 

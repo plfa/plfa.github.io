@@ -76,5 +76,6 @@ Pull requests are encouraged.
 
 [wen]: https://wenkokke.github.io
 [phil]: https://homepages.inf.ed.ac.uk/wadler/
+[jeremy]: http://homes.sice.indiana.edu/jsiek/
 [GitHub]: https://github.com/plfa/plfa.github.io/
 [sbmf]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf

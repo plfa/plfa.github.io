@@ -20,6 +20,11 @@ authors:
     corresponding: true
     github_username: wenkokke
     twitter_username: wenkokke
+  - name: Jeremy Siek
+    email: jsiek@indiana.edu
+    corresponding: true
+    github_username: jsiek
+    twitter_username: jeremysiek
 
 extra_contributors:
   - github_username: cyberglot
