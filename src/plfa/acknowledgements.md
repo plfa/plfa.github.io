@@ -50,3 +50,6 @@ For pull requests big and small, and for answering questions on the Agda mailing
 
 For support:
   * EPSRC Programme Grant EP/K034413/1
+  * NSF Grant No. 1814460 
+  * Foundation Sciences Mathematiques de Paris (FSMP)
+    Distinguised Professor Fellowship
