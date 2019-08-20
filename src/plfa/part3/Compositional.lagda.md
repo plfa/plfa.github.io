@@ -94,10 +94,12 @@ sub-ℱ {v = v₁ ↦ v₂ ⊔ v₁ ↦ v₃} {v₁ ↦ (v₂ ⊔ v₃)} ⟨ N2 
 sub-ℱ d (⊑-trans x₁ x₂) = sub-ℱ (sub-ℱ d x₂) x₁
 ```
 
+<!--
 [PLW:
   If denotations were strengthened to be downward closed,
   we could rewrite the signature replacing (ℰ N) by d : Denotation (Γ , ★)]
 [JGS: I'll look into this.]
+-->
 
 With this subsumption property in hand, we can prove the forward
 direction of the semantic equation for lambda.  The proof is by
@@ -357,13 +359,13 @@ lam-cong : ∀{Γ}{N N′ : Γ , ★ ⊢ ★}
          → ℰ (ƛ N) ≃ ℰ (ƛ N′)
 lam-cong {Γ}{N}{N′} N≃N′ =
   start
-  ℰ (ƛ N)
+    ℰ (ƛ N)
   ≃⟨ lam-equiv ⟩
-  ℱ (ℰ N)
+    ℱ (ℰ N)
   ≃⟨ ℱ-cong N≃N′ ⟩
-  ℱ (ℰ N′)
+    ℱ (ℰ N′)
   ≃⟨ ≃-sym lam-equiv ⟩
-  ℰ (ƛ N′)
+    ℰ (ƛ N′)
   ☐
 ```
 
@@ -402,13 +404,13 @@ app-cong : ∀{Γ}{L L′ M M′ : Γ ⊢ ★}
          → ℰ (L · M) ≃ ℰ (L′ · M′)
 app-cong {Γ}{L}{L′}{M}{M′} L≅L′ M≅M′ =
   start
-  ℰ (L · M)
+    ℰ (L · M)
   ≃⟨ app-equiv ⟩
-  ℰ L ● ℰ M
+    ℰ L ● ℰ M
   ≃⟨ ●-cong L≅L′ M≅M′ ⟩
-  ℰ L′ ● ℰ M′
+    ℰ L′ ● ℰ M′
   ≃⟨ ≃-sym app-equiv ⟩
-  ℰ (L′ · M′)
+    ℰ (L′ · M′)
   ☐
 ```
 

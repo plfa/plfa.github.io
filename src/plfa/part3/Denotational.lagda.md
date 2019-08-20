@@ -54,20 +54,23 @@ down a denotational semantics of the lambda calculus.
 
 ## Imports
 
+<!-- JGS: for equational reasoning
+open import Relation.Binary using (Setoid)
+-->
 ```
+open import Agda.Primitive using (lzero; lsuc)
+open import Data.Empty using (⊥-elim)
+open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+  renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
-    renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum
-open import Agda.Primitive using (lzero)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary.Negation using (contradiction)
-open import Data.Empty using (⊥-elim)
 open import Function using (_∘_)
 open import plfa.part2.Untyped
-     using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
-            #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
+  using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
+         #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
 open import plfa.part2.Substitution using (Rename; extensionality; rename-id)
 ```
 
@@ -112,36 +115,36 @@ data _⊑_ : Value → Value → Set where
   ⊑-bot : ∀ {v} → ⊥ ⊑ v
 
   ⊑-conj-L : ∀ {u v w}
-      → v ⊑ u
-      → w ⊑ u
-        -----------
-      → (v ⊔ w) ⊑ u
+    → v ⊑ u
+    → w ⊑ u
+      -----------
+    → (v ⊔ w) ⊑ u
 
   ⊑-conj-R1 : ∀ {u v w}
-     → u ⊑ v
-       -----------
-     → u ⊑ (v ⊔ w)
+    → u ⊑ v
+      -----------
+    → u ⊑ (v ⊔ w)
 
   ⊑-conj-R2 : ∀ {u v w}
-     → u ⊑ w
-       -----------
-     → u ⊑ (v ⊔ w)
+    → u ⊑ w
+      -----------
+    → u ⊑ (v ⊔ w)
 
   ⊑-trans : ∀ {u v w}
-     → u ⊑ v
-     → v ⊑ w
-       -----
-     → u ⊑ w
+    → u ⊑ v
+    → v ⊑ w
+      -----
+    → u ⊑ w
 
   ⊑-fun : ∀ {v w v′ w′}
-       → v′ ⊑ v
-       → w ⊑ w′
-         -------------------
-       → (v ↦ w) ⊑ (v′ ↦ w′)
+    → v′ ⊑ v
+    → w ⊑ w′
+      -------------------
+    → (v ↦ w) ⊑ (v′ ↦ w′)
 
   ⊑-dist : ∀{v w w′}
-         ---------------------------------
-       → v ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v ↦ w′)
+      ---------------------------------
+    → v ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v ↦ w′)
 ```
 
 
@@ -169,9 +172,9 @@ larger values it produces a larger value.
 
 ```
 ⊔⊑⊔ : ∀ {v w v′ w′}
-      → v ⊑ v′  →  w ⊑ w′
-        -----------------------
-      → (v ⊔ w) ⊑ (v′ ⊔ w′)
+  → v ⊑ v′  →  w ⊑ w′
+    -----------------------
+  → (v ⊔ w) ⊑ (v′ ⊔ w′)
 ⊔⊑⊔ d₁ d₂ = ⊑-conj-L (⊑-conj-R1 d₁) (⊑-conj-R2 d₂)
 ```
 
@@ -182,30 +185,32 @@ property.
 
 ```
 ⊔↦⊔-dist : ∀{v v′ w w′ : Value}
-        → (v ⊔ v′) ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v′ ↦ w′)
+  → (v ⊔ v′) ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v′ ↦ w′)
 ⊔↦⊔-dist = ⊑-trans ⊑-dist (⊔⊑⊔ (⊑-fun (⊑-conj-R1 ⊑-refl) ⊑-refl)
                             (⊑-fun (⊑-conj-R2 ⊑-refl) ⊑-refl))
 ```
 
-<!-- above might read more nicely if we introduce inequational reasoning -->
+<!--
+ [PLW: above might read more nicely if we introduce inequational reasoning.]
+ -->
 
 If the join `u ⊔ v` is less than another value `w`,
 then both `u` and `v` are less than `w`.
 
 ```
 ⊔⊑-invL : ∀{u v w : Value}
-        → u ⊔ v ⊑ w
-          ---------
-        → u ⊑ w
+  → u ⊔ v ⊑ w
+    ---------
+  → u ⊑ w
 ⊔⊑-invL (⊑-conj-L lt1 lt2) = lt1
 ⊔⊑-invL (⊑-conj-R1 lt) = ⊑-conj-R1 (⊔⊑-invL lt)
 ⊔⊑-invL (⊑-conj-R2 lt) = ⊑-conj-R2 (⊔⊑-invL lt)
 ⊔⊑-invL (⊑-trans lt1 lt2) = ⊑-trans (⊔⊑-invL lt1) lt2
 
 ⊔⊑-invR : ∀{u v w : Value}
-       → u ⊔ v ⊑ w
-         ---------
-       → v ⊑ w
+  → u ⊔ v ⊑ w
+    ---------
+  → v ⊑ w
 ⊔⊑-invR (⊑-conj-L lt1 lt2) = lt2
 ⊔⊑-invR (⊑-conj-R1 lt) = ⊑-conj-R1 (⊔⊑-invR lt)
 ⊔⊑-invR (⊑-conj-R2 lt) = ⊑-conj-R2 (⊔⊑-invR lt)
@@ -246,10 +251,9 @@ last γ = γ Z
 
 init-last : ∀ {Γ} → (γ : Env (Γ , ★)) → γ ≡ (init γ `, last γ)
 init-last {Γ} γ = extensionality lemma
-  where
-  lemma : ∀ (x : Γ , ★ ∋ ★) → γ x ≡ (init γ `, last γ) x
-  lemma Z      =  refl
-  lemma (S x)  =  refl
+  where lemma : ∀ (x : Γ , ★ ∋ ★) → γ x ≡ (init γ `, last γ) x
+        lemma Z      =  refl
+        lemma (S x)  =  refl
 ```
 
 The nth function takes a de Bruijn index and finds the corresponding
@@ -309,35 +313,35 @@ infix 3 _⊢_↓_
 data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
 
   var : ∀ {Γ} {γ : Env Γ} {x}
-        ---------------
-      → γ ⊢ (` x) ↓ γ x
+      ---------------
+    → γ ⊢ (` x) ↓ γ x
 
   ↦-elim : ∀ {Γ} {γ : Env Γ} {L M v w}
-        → γ ⊢ L ↓ (v ↦ w)
-        → γ ⊢ M ↓ v
-          ---------------
-        → γ ⊢ (L · M) ↓ w
+    → γ ⊢ L ↓ (v ↦ w)
+    → γ ⊢ M ↓ v
+      ---------------
+    → γ ⊢ (L · M) ↓ w
 
   ↦-intro : ∀ {Γ} {γ : Env Γ} {N v w}
-        → γ `, v ⊢ N ↓ w
-          -------------------
-        → γ ⊢ (ƛ N) ↓ (v ↦ w)
+    → γ `, v ⊢ N ↓ w
+      -------------------
+    → γ ⊢ (ƛ N) ↓ (v ↦ w)
 
   ⊥-intro : ∀ {Γ} {γ : Env Γ} {M}
-          ---------
-        → γ ⊢ M ↓ ⊥
+      ---------
+    → γ ⊢ M ↓ ⊥
 
   ⊔-intro : ∀ {Γ} {γ : Env Γ} {M v w}
-        → γ ⊢ M ↓ v
-        → γ ⊢ M ↓ w
-          ---------------
-        → γ ⊢ M ↓ (v ⊔ w)
+    → γ ⊢ M ↓ v
+    → γ ⊢ M ↓ w
+      ---------------
+    → γ ⊢ M ↓ (v ⊔ w)
 
   sub : ∀ {Γ} {γ : Env Γ} {M v w}
-        → γ ⊢ M ↓ v
-        → w ⊑ v
-          ---------
-        → γ ⊢ M ↓ w
+    → γ ⊢ M ↓ v
+    → w ⊑ v
+      ---------
+    → γ ⊢ M ↓ w
 ```
 
 Consider the rule for lambda abstractions, `↦-intro`.  It says that a
@@ -576,7 +580,25 @@ equal, that is, `ℰ M ≃ ℰ N`.
 The following submodule introduces equational reasoning for the `≃`
 relation.
 
+<!--
+
+JGS: I couldn't get this to work. The definitions here were accepted
+by Agda, but then the uses in the Compositional chapter got rejected.
+
+denotation-setoid : Context → Setoid (lsuc lzero) lzero
+denotation-setoid Γ = record
+  { Carrier = Denotation Γ
+  ; _≈_ = _≃_
+  ; isEquivalence = record { refl = ≃-refl ; sym = ≃-sym ; trans = ≃-trans } }
+-->
+<!--
+  The following went inside the module ≃-Reasoning:
+  
+  open import Relation.Binary.Reasoning.Setoid (denotation-setoid Γ)
+    renaming (begin_ to start_; _≈⟨_⟩_ to _≃⟨_⟩_; _∎ to _☐) public
+-->
 ```
+
 module ≃-Reasoning {Γ : Context} where
 
   infix  1 start_
@@ -589,18 +611,18 @@ module ≃-Reasoning {Γ : Context} where
     → x ≃ y
   start x≃y  =  x≃y
 
-  _≃⟨⟩_ : ∀ (x : Denotation Γ) {y : Denotation Γ}
-    → x ≃ y
-      -----
-    → x ≃ y
-  x ≃⟨⟩ x≃y  =  x≃y
-
   _≃⟨_⟩_ : ∀ (x : Denotation Γ) {y z : Denotation Γ}
     → x ≃ y
     → y ≃ z
       -----
     → x ≃ z
   (x ≃⟨ x≃y ⟩ y≃z) =  ≃-trans x≃y y≃z
+
+  _≃⟨⟩_ : ∀ (x : Denotation Γ) {y : Denotation Γ}
+    → x ≃ y
+      -----
+    → x ≃ y
+  x ≃⟨⟩ x≃y  =  x≃y
 
   _☐ : ∀ (x : Denotation Γ)
       -----
