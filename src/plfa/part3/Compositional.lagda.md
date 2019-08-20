@@ -32,12 +32,13 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Unit using (⊤; tt)
 open import plfa.part2.Untyped
-     using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
+  using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
 open import plfa.part3.Denotational
-     using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_;
-           ⊑-bot; ⊑-fun; ⊑-conj-L; ⊑-conj-R1; ⊑-conj-R2; ⊑-dist; ⊑-refl; ⊑-trans; ⊔↦⊔-dist;
-           var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
-           up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
+  using (Value; _↦_; _`,_; _⊔_; ⊥; _⊑_; _⊢_↓_;
+         ⊑-bot; ⊑-fun; ⊑-conj-L; ⊑-conj-R1; ⊑-conj-R2;
+         ⊑-dist; ⊑-refl; ⊑-trans; ⊔↦⊔-dist;
+         var; ↦-intro; ↦-elim; ⊔-intro; ⊥-intro; sub;
+         up-env; ℰ; _≃_; ≃-sym; Denotation; Env)
 open plfa.part3.Denotational.≃-Reasoning
 ```
 
@@ -80,10 +81,10 @@ derivation of `u ⊑ v`, using the `up-env` lemma in the case for the
 
 ```
 sub-ℱ : ∀{Γ}{N : Γ , ★ ⊢ ★}{γ v u}
-      → ℱ (ℰ N) γ v
-      → u ⊑ v
-        ------------
-      → ℱ (ℰ N) γ u
+  → ℱ (ℰ N) γ v
+  → u ⊑ v
+    ------------
+  → ℱ (ℰ N) γ u
 sub-ℱ d ⊑-bot = tt
 sub-ℱ d (⊑-fun lt lt′) = sub (up-env d lt) lt′
 sub-ℱ d (⊑-conj-L lt lt₁) = ⟨ sub-ℱ d lt , sub-ℱ d lt₁ ⟩
@@ -108,9 +109,9 @@ rule.
 
 ```
 ℰƛ→ℱℰ : ∀{Γ}{γ : Env Γ}{N : Γ , ★ ⊢ ★}{v : Value}
-        → ℰ (ƛ N) γ v
-          ------------
-        → ℱ (ℰ N) γ v
+  → ℰ (ƛ N) γ v
+    ------------
+  → ℱ (ℰ N) γ v
 ℰƛ→ℱℰ (↦-intro d) = d
 ℰƛ→ℱℰ ⊥-intro = tt
 ℰƛ→ℱℰ (⊔-intro d₁ d₂) = ⟨ ℰƛ→ℱℰ d₁ , ℰƛ→ℱℰ d₂ ⟩
@@ -135,9 +136,9 @@ the value v.
 
 ```
 ℱℰ→ℰƛ : ∀{Γ}{γ : Env Γ}{N : Γ , ★ ⊢ ★}{v : Value}
-        → ℱ (ℰ N) γ v
-          ------------
-        → ℰ (ƛ N) γ v
+  → ℱ (ℰ N) γ v
+    ------------
+  → ℰ (ƛ N) γ v
 ℱℰ→ℰƛ {v = ⊥} d = ⊥-intro
 ℱℰ→ℰƛ {v = v₁ ↦ v₂} d = ↦-intro d
 ℱℰ→ℰƛ {v = v₁ ⊔ v₂} ⟨ d1 , d2 ⟩ = ⊔-intro (ℱℰ→ℰƛ d1) (ℱℰ→ℰƛ d2)
@@ -148,7 +149,7 @@ to lambda abstraction, as witnessed by the function `ℱ`.
 
 ```
 lam-equiv : ∀{Γ}{N : Γ , ★ ⊢ ★}
-          → ℰ (ƛ N) ≃ ℱ (ℰ N)
+  → ℰ (ƛ N) ≃ ℱ (ℰ N)
 lam-equiv γ v = ⟨ ℰƛ→ℱℰ , ℱℰ→ℰƛ ⟩
 ```
 
@@ -193,9 +194,9 @@ describe the proof below.
 
 ```
 ℰ·→●ℰ : ∀{Γ}{γ : Env Γ}{L M : Γ ⊢ ★}{v : Value}
-        → ℰ (L · M) γ v
-          ----------------
-        → (ℰ L ● ℰ M) γ v
+  → ℰ (L · M) γ v
+    ----------------
+  → (ℰ L ● ℰ M) γ v
 ℰ·→●ℰ (↦-elim{v = v′} d₁ d₂) = inj₂ ⟨ v′ , ⟨ d₁ , d₂ ⟩ ⟩
 ℰ·→●ℰ {v = ⊥} ⊥-intro = inj₁ ⊑-bot
 ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (⊔-intro{v = v₁}{w = v₂} d₁ d₂)
@@ -273,9 +274,9 @@ Otherwise, we conclude immediately by rule `↦-elim`.
 
 ```
 ●ℰ→ℰ· : ∀{Γ}{γ : Env Γ}{L M : Γ ⊢ ★}{v}
-      → (ℰ L ● ℰ M) γ v
-        ----------------
-      → ℰ (L · M) γ v
+  → (ℰ L ● ℰ M) γ v
+    ----------------
+  → ℰ (L · M) γ v
 ●ℰ→ℰ· {γ}{v} (inj₁ lt) = sub ⊥-intro lt
 ●ℰ→ℰ· {γ}{v} (inj₂ ⟨ v₁ , ⟨ d1 , d2 ⟩ ⟩) = ↦-elim d1 d2
 ```
@@ -285,7 +286,7 @@ function application, as witnessed by the `●` function.
 
 ```
 app-equiv : ∀{Γ}{L M : Γ ⊢ ★}
-          → ℰ (L · M) ≃ (ℰ L) ● (ℰ M)
+  → ℰ (L · M) ≃ (ℰ L) ● (ℰ M)
 app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
 ```
 
@@ -308,8 +309,7 @@ To round-out the semantic equations, we establish the following one
 for variables.
 
 ```
-var-equiv : ∀{Γ}{x : Γ ∋ ★}
-          → ℰ (` x) ≃ (λ γ v → v ⊑ γ x)
+var-equiv : ∀{Γ}{x : Γ ∋ ★} → ℰ (` x) ≃ (λ γ v → v ⊑ γ x)
 var-equiv γ v = ⟨ var-inv , (λ lt → sub var lt) ⟩
 ```
 
@@ -332,17 +332,17 @@ whether `ℱ` is a congruence.
 
 ```
 ℱ-cong : ∀{Γ}{D D′ : Denotation (Γ , ★)}
-       → D ≃ D′
-         -----------
-       → ℱ D ≃ ℱ D′
+  → D ≃ D′
+    -----------
+  → ℱ D ≃ ℱ D′
 ℱ-cong{Γ} D≃D′ γ v =
-   ⟨ (λ x → ℱ≃{γ}{v} x D≃D′) , (λ x → ℱ≃{γ}{v} x (≃-sym D≃D′)) ⟩
-   where
-   ℱ≃ : ∀{γ : Env Γ}{v}{D D′ : Denotation (Γ , ★)}
-      → ℱ D γ v  →  D ≃ D′ → ℱ D′ γ v
-   ℱ≃ {v = ⊥} fd dd′ = tt
-   ℱ≃ {γ}{v ↦ w} fd dd′ = proj₁ (dd′ (γ `, v) w) fd
-   ℱ≃ {γ}{u ⊔ w} fd dd′ = ⟨ ℱ≃{γ}{u} (proj₁ fd) dd′ , ℱ≃{γ}{w} (proj₂ fd) dd′ ⟩
+  ⟨ (λ x → ℱ≃{γ}{v} x D≃D′) , (λ x → ℱ≃{γ}{v} x (≃-sym D≃D′)) ⟩
+  where
+  ℱ≃ : ∀{γ : Env Γ}{v}{D D′ : Denotation (Γ , ★)}
+    → ℱ D γ v  →  D ≃ D′ → ℱ D′ γ v
+  ℱ≃ {v = ⊥} fd dd′ = tt
+  ℱ≃ {γ}{v ↦ w} fd dd′ = proj₁ (dd′ (γ `, v) w) fd
+  ℱ≃ {γ}{u ⊔ w} fd dd′ = ⟨ ℱ≃{γ}{u} (proj₁ fd) dd′ , ℱ≃{γ}{w} (proj₂ fd) dd′ ⟩
 ```
 
 The proof of `ℱ-cong` uses the lemma `ℱ≃` to handle both directions of
@@ -354,9 +354,9 @@ equational reasoning.
 
 ```
 lam-cong : ∀{Γ}{N N′ : Γ , ★ ⊢ ★}
-         → ℰ N ≃ ℰ N′
-           -----------------
-         → ℰ (ƛ N) ≃ ℰ (ƛ N′)
+  → ℰ N ≃ ℰ N′
+    -----------------
+  → ℰ (ƛ N) ≃ ℰ (ƛ N′)
 lam-cong {Γ}{N}{N′} N≃N′ =
   start
     ℰ (ƛ N)
@@ -377,17 +377,17 @@ is a congruence.
 
 ```
 ●-cong : ∀{Γ}{D₁ D₁′ D₂ D₂′ : Denotation Γ}
-   → D₁ ≃ D₁′ → D₂ ≃ D₂′
-   → (D₁ ● D₂) ≃ (D₁′ ● D₂′)
+  → D₁ ≃ D₁′ → D₂ ≃ D₂′
+  → (D₁ ● D₂) ≃ (D₁′ ● D₂′)
 ●-cong {Γ} d1 d2 γ v = ⟨ (λ x → ●≃ x d1 d2) ,
                          (λ x → ●≃ x (≃-sym d1) (≃-sym d2)) ⟩
-   where
-   ●≃ : ∀{γ : Env Γ}{v}{D₁ D₁′ D₂ D₂′ : Denotation Γ}
-      → (D₁ ● D₂) γ v  →  D₁ ≃ D₁′  →  D₂ ≃ D₂′
-      → (D₁′ ● D₂′) γ v
-   ●≃ (inj₁ v⊑⊥) eq₁ eq₂ = inj₁ v⊑⊥
-   ●≃ {γ} {w} (inj₂ ⟨ v , ⟨ Dv↦w , Dv ⟩ ⟩) eq₁ eq₂ =
-      inj₂ ⟨ v , ⟨ proj₁ (eq₁ γ (v ↦ w)) Dv↦w , proj₁ (eq₂ γ v) Dv ⟩ ⟩
+  where
+  ●≃ : ∀{γ : Env Γ}{v}{D₁ D₁′ D₂ D₂′ : Denotation Γ}
+    → (D₁ ● D₂) γ v  →  D₁ ≃ D₁′  →  D₂ ≃ D₂′
+    → (D₁′ ● D₂′) γ v
+  ●≃ (inj₁ v⊑⊥) eq₁ eq₂ = inj₁ v⊑⊥
+  ●≃ {γ} {w} (inj₂ ⟨ v , ⟨ Dv↦w , Dv ⟩ ⟩) eq₁ eq₂ =
+    inj₂ ⟨ v , ⟨ proj₁ (eq₁ γ (v ↦ w)) Dv↦w , proj₁ (eq₂ γ v) Dv ⟩ ⟩
 ```
 
 Again, both directions of the if-and-only-if are proved via a lemma.
@@ -398,10 +398,10 @@ congruence by direct equational reasoning.
 
 ```
 app-cong : ∀{Γ}{L L′ M M′ : Γ ⊢ ★}
-         → ℰ L ≃ ℰ L′
-         → ℰ M ≃ ℰ M′
-           -------------------------
-         → ℰ (L · M) ≃ ℰ (L′ · M′)
+  → ℰ L ≃ ℰ L′
+  → ℰ M ≃ ℰ M′
+    -------------------------
+  → ℰ (L · M) ≃ ℰ (L′ · M′)
 app-cong {Γ}{L}{L′}{M}{M′} L≅L′ M≅M′ =
   start
     ℰ (L · M)
@@ -468,9 +468,9 @@ denotationally equal.
 
 ```
 compositionality : ∀{Γ Δ}{C : Ctx Γ Δ} {M N : Γ ⊢ ★}
-              → ℰ M ≃ ℰ N
-                ---------------------------
-              → ℰ (plug C M) ≃ ℰ (plug C N)
+  → ℰ M ≃ ℰ N
+    ---------------------------
+  → ℰ (plug C M) ≃ ℰ (plug C N)
 compositionality {C = ctx-hole} M≃N =
   M≃N
 compositionality {C = ctx-lam C′} M≃N =
@@ -507,28 +507,27 @@ straightforward induction, using the three equations
 with the congruence lemmas for `ℱ` and `●`.
 
 ```
-ℰ≃⟦⟧ : ∀ {Γ} {M : Γ ⊢ ★}
-    → ℰ M ≃ ⟦ M ⟧
+ℰ≃⟦⟧ : ∀ {Γ} {M : Γ ⊢ ★} → ℰ M ≃ ⟦ M ⟧
 ℰ≃⟦⟧ {Γ} {` x} = var-equiv
 ℰ≃⟦⟧ {Γ} {ƛ N} =
-    let ih = ℰ≃⟦⟧ {M = N} in
-      ℰ (ƛ N)
-    ≃⟨ lam-equiv ⟩
-      ℱ (ℰ N)
-    ≃⟨ ℱ-cong (ℰ≃⟦⟧ {M = N}) ⟩
-      ℱ ⟦ N ⟧
-    ≃⟨⟩
-      ⟦ ƛ N ⟧
-    ☐
+  let ih = ℰ≃⟦⟧ {M = N} in
+    ℰ (ƛ N)
+  ≃⟨ lam-equiv ⟩
+    ℱ (ℰ N)
+  ≃⟨ ℱ-cong (ℰ≃⟦⟧ {M = N}) ⟩
+    ℱ ⟦ N ⟧
+  ≃⟨⟩
+    ⟦ ƛ N ⟧
+  ☐
 ℰ≃⟦⟧ {Γ} {L · M} =
-     ℰ (L · M)
-    ≃⟨ app-equiv ⟩
-     ℰ L ● ℰ M
-    ≃⟨ ●-cong (ℰ≃⟦⟧ {M = L}) (ℰ≃⟦⟧ {M = M}) ⟩
-     ⟦ L ⟧ ● ⟦ M ⟧
-    ≃⟨⟩
-      ⟦ L · M ⟧
-    ☐
+   ℰ (L · M)
+  ≃⟨ app-equiv ⟩
+   ℰ L ● ℰ M
+  ≃⟨ ●-cong (ℰ≃⟦⟧ {M = L}) (ℰ≃⟦⟧ {M = M}) ⟩
+   ⟦ L ⟧ ● ⟦ M ⟧
+  ≃⟨⟩
+    ⟦ L · M ⟧
+  ☐
 ```
 
 
