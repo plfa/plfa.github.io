@@ -18,7 +18,7 @@ the next step is to define relations, such as _less than or equal_.
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong)
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties using (+-comm)
 ```
 
@@ -161,7 +161,7 @@ Chapter [Decidable]({{ site.baseurl }}/Decidable/).
 ## Inversion
 
 In our defintions, we go from smaller things to larger things.
-For instance, form `m ≤ n` we can conclude `suc m ≤ suc n`,
+For instance, from `m ≤ n` we can conclude `suc m ≤ suc n`,
 where `suc m` is bigger than `m` (that is, the former contains
 the latter), and `suc n` is bigger than `n`. But sometimes we
 want to go from bigger things to smaller things.
