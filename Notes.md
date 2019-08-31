@@ -18,7 +18,6 @@ Git commands to create a branch and pull request
     git checkout <name>         -- make <name> the current branch
     git merge <name>            -- merge branch <name> into current branch 
     git push origin <name>      -- make local branch <name> into remote
-    git rebase <base>           -- merge branch <base> into current branch
 
 On website, use pulldown menu to swith branch and then
 click "new pull request" button.
