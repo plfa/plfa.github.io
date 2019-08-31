@@ -32,11 +32,12 @@ of variants of lambda calculus.
 
 Be aware that the approach we take here is _not_ our recommended
 approach to formalisation.  Using de Bruijn indices and
-inherently-typed terms, as we will do in
+intrinsically-typed terms, as we will do in
 Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
 leads to a more compact formulation.  Nonetheless, we begin with named
-variables, partly because such terms are easier to read and partly
-because the development is more traditional.
+variables and extrinsically-typed terms,
+partly because names are easier than indices to read,
+and partly because the development is more traditional.
 
 The development in this chapter was inspired by the corresponding
 development in Chapter _Stlc_ of _Software Foundations_

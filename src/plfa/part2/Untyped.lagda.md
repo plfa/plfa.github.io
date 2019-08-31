@@ -12,8 +12,8 @@ module plfa.part2.Untyped where
 
 In this chapter we play with variations on a theme:
 
-* Previous chapters consider inherently-typed calculi;
-  here we consider one that is untyped but inherently scoped.
+* Previous chapters consider intrinsically-typed calculi;
+  here we consider one that is untyped but intrinsically scoped.
 
 * Previous chapters consider call-by-value calculi;
   here we consider call-by-name.
@@ -128,7 +128,7 @@ Show that `Context` is isomorphic to `ℕ`.
 
 ## Variables and the lookup judgment
 
-Inherently typed variables correspond to the lookup judgment.  The
+Intrinsically-scoped variables correspond to the lookup judgment.  The
 rules are as before:
 ```
 data _∋_ : Context → Type → Set where
@@ -153,7 +153,7 @@ binds two variables.
 
 ## Terms and the scoping judgment
 
-Inherently typed terms correspond to the typing judgment, but with
+Intrinsically-scoped terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
 well scoped — that is, that all variables they mention are in scope —
 but not that they are well typed:

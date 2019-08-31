@@ -1,5 +1,5 @@
 ---
-title     : "DeBruijn: Inherently typed de Bruijn representation"
+title     : "DeBruijn: Intrinsically-typed de Bruijn representation"
 layout    : page
 prev      : /Properties/
 permalink : /DeBruijn/
@@ -16,16 +16,29 @@ separately from types.  We began with that approach because it
 is traditional, but it is not the one we recommend.  This
 chapter presents an alternative approach, where named
 variables are replaced by de Bruijn indices and terms are
-inherently typed.  Our new presentation is more compact, using
-less than half the lines of code required previously to cover
-the same ground.
+indexed by their types.  Our new presentation is more compact, using
+substantially fewer lines of code to cover the same ground.
 
-The inherently typed representation was first proposed by
+There are two fundamental approaches to typed lambda calculi.
+One approach, followed in the last two chapters,
+is to first define terms and then define types.
+Terms exist independent of types, and may have types assigned to them
+by separate typing rules.
+Another approach, followed in this chapter,
+is to first define types and then define terms.
+Terms and type rules are intertwined, and it makes no sense to talk
+of a term without a type.
+The two approaches are sometimes called _Curry style_ and _Church style_.
+Following Reynolds, we will refer to them as _extrinsic_ and _intrinsic_.
+
+The particular representation described here
+was first proposed by
 Thorsten Altenkirch and Bernhard Reus.
 The formalisation of renaming and substitution
 we use is due to Conor McBride.
 Related work has been carried out by
 James Chapman, James McKinna, and many others.
+
 
 ## Imports
 
@@ -99,22 +112,22 @@ unique representation, rather than being represented by the
 equivalence class of terms under alpha renaming.
 
 The other important feature of our chosen representation is
-that it is _inherently typed_.  In the previous two chapters,
+that it is _intrinsically typed_.  In the previous two chapters,
 the definition of terms and the definition of types are
 completely separate.  All terms have type `Term`, and nothing
 in Agda prevents one from writing a nonsense term such as
 `` `zero · `suc `zero `` which has no type.  Such terms that
 exist independent of types are sometimes called _preterms_ or
 _raw terms_.  Here we are going to replace the type `Term` of
-raw terms by the more sophisticated type `Γ ⊢ A` of inherently
-typed terms, which in context `Γ` have type `A`.
+raw terms by the type `Γ ⊢ A` of intrinsically-typed terms
+which in context `Γ` have type `A`.
 
 While these two choices fit well, they are independent.  One
-can use de Bruijn indices in raw terms, or (with more
-difficulty) have inherently typed terms with names.  In
+can use de Bruijn indices in raw terms, or
+have intrinsically-typed terms with names.  In
 Chapter [Untyped]({{ site.baseurl }}/Untyped/),
 we will introduce terms with de Bruijn indices that
-are inherently scoped but not typed.
+are intrinsically scoped but not typed.
 
 
 ## A second example
@@ -189,7 +202,7 @@ Bruijn indices it could be referred to as `# 2`.
 
 ## Order of presentation
 
-In the current chapter, the use of inherently-typed terms
+In the current chapter, the use of intrinsically-typed terms
 necessitates that we cannot introduce operations such as
 substitution or reduction without also showing that they
 preserve types.  Hence, the order of presentation must change.
@@ -223,7 +236,7 @@ infix  9 S_
 infix  9 #_
 ```
 
-Since terms are inherently typed, we must define types and
+Since terms are intrinsically typed, we must define types and
 contexts before terms.
 
 ### Types
@@ -260,14 +273,16 @@ type `` `ℕ ``.
 
 ### Variables and the lookup judgment
 
-Inherently typed variables correspond to the lookup judgment.
+Intrinsically-typed variables correspond to the lookup judgment.
 They are represented by de Bruijn indices, and hence also
 correspond to natural numbers.  We write
 
     Γ ∋ A
 
-for variables which in context `Γ` have type `A`.  Their
-formalisation looks exactly like the old lookup judgment, but
+for variables which in context `Γ` have type `A`.
+The lookup judgement is formalised by a datatype indexed
+by a context and a type.
+It looks exactly like the old lookup judgment, but
 with all variable names dropped:
 ```
 data _∋_ : Context → Type → Set where
@@ -294,7 +309,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
-They correspond to the following inherently-typed variables:
+They correspond to the following intrinsically-typed variables:
 ```
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
@@ -309,13 +324,15 @@ and `"s"` by `S Z`
 
 ### Terms and the typing judgment
 
-Inherently typed terms correspond to the typing judgment.
+Intrinsically-typed terms correspond to the typing judgment.
 We write
 
     Γ ⊢ A
 
-for terms which in context `Γ` has type `A`.  Their
-formalisation looks exactly like the old typing judgment, but
+for terms which in context `Γ` has type `A`.
+The judgement is formalised by a datatype indexed
+by a context and a type.
+It looks exactly like the old typing judgment, but
 with all terms and variable names dropped:
 ```
 data _⊢_ : Context → Type → Set where
@@ -362,8 +379,7 @@ structure of terms and the structure of a derivation showing
 that it is well typed: now we use the derivation _as_ the
 term.
 
-For example, consider the following old-style typing
-judgments:
+For example, consider the following old-style typing judgments:
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "z" ⦂ `ℕ ``
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ⊢ ` "s" ⦂ `ℕ ⇒ `ℕ ``
@@ -372,7 +388,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ ⊢ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  `ℕ ⇒ `ℕ ``
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
-They correspond to the following inherently-typed terms:
+They correspond to the following intrinsically-typed terms:
 ```
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
 _ = ` Z
@@ -392,8 +408,7 @@ _ = ƛ (` S Z · (` S Z · ` Z))
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (` S Z · (` S Z · ` Z))
 ```
-The final inherently-typed term represents the Church numeral
-two.
+The final term represents the Church numeral two.
 
 ### Abbreviating de Bruijn indices
 
@@ -482,7 +497,7 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 #### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
-two natural numbers, now adapted to the inherently typed
+two natural numbers, now adapted to the intrinsically-typed
 DeBruijn representation.
 
 ```
@@ -585,13 +600,13 @@ unchanged.
 
 We will see below that renaming by `S_` plays a key role in
 substitution.  For traditional uses of de Bruijn indices
-without inherent typing, this is a little tricky. The code
+without intrinsic typing, this is a little tricky. The code
 keeps count of a number where all greater indexes are free and
 all smaller indexes bound, and increment only indexes greater
 than the number. It's easy to have off-by-one errors.  But
 it's hard to imagine an off-by-one error that preserves
-typing, and hence the Agda code for inherently-typed de Bruijn
-terms is inherently reliable.
+typing, and hence the Agda code for intrinsically-typed de Bruijn
+terms is intrinsically reliable.
 
 
 ## Simultaneous Substitution
@@ -1331,7 +1346,7 @@ Using the evaluator, confirm that two times two is four.
 ```
 
 
-## Inherently-typed is golden
+## Intrinsic typing is golden
 
 Counting the lines of code is instructive.  While this chapter
 covers the same formal development as the previous two
@@ -1345,9 +1360,8 @@ number of lines of code is as follows:
     DeBruijn                    275
 
 The relation between the two approaches approximates the
-golden ratio: raw terms with a separate typing relation
-require about 1.6 times as much code as inherently-typed terms
-with de Bruijn indices.
+golden ratio: extrinsically-typed terms
+require about 1.6 times as much code as intrinsicaly-typed.
 
 ## Unicode
 
