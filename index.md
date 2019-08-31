@@ -33,7 +33,7 @@ Pull requests are encouraged.
 
   - [Lambda]({{ site.baseurl }}/Lambda/): Introduction to Lambda Calculus
   - [Properties]({{ site.baseurl }}/Properties/): Progress and Preservation
-  - [DeBruijn]({{ site.baseurl }}/DeBruijn/): Inherently typed de Bruijn representation
+  - [DeBruijn]({{ site.baseurl }}/DeBruijn/): Intrinsically-typed de Bruijn representation
   - [More]({{ site.baseurl }}/More/): Additional constructs of simply-typed lambda calculus
   - [Bisimulation]({{ site.baseurl }}/Bisimulation/): Relating reductions systems
   - [Inference]({{ site.baseurl }}/Inference/): Bidirectional type inference
