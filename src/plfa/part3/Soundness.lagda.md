@@ -61,7 +61,7 @@ open import plfa.part3.Compositional using (lambda-inversion; var-inv)
 The proof of preservation in this section mixes techniques from
 previous chapters. Like the proof of preservation for the STLC, we are
 preserving a relation defined separately from the syntax, in contrast
-to the inherently typed terms. On the other hand, we are using de
+to the intrinsically-typed terms. On the other hand, we are using de
 Bruijn indices for variables.
 
 The outline of the proof remains the same in that we must prove lemmas
