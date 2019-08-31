@@ -13,22 +13,23 @@ module plfa.part2.Inference where
 So far in our development, type derivations for the corresponding
 term have been provided by fiat.
 In Chapter [Lambda]({{ site.baseurl }}/Lambda/)
-type derivations were given separately from the term, while
+type derivations are extrinsic to the term, while
 in Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/)
-the type derivation was inherently part of the term.
+type derivations are intrinsic to the term,
+but in both we have written out the type derivations in full.
 
 In practice, one often writes down a term with a few decorations and
 applies an algorithm to _infer_ the corresponding type derivation.
 Indeed, this is exactly what happens in Agda: we specify the types for
 top-level function declarations, and type information for everything
 else is inferred from what has been given.  The style of inference
-used is based on a technique called _bidirectional_ type
+Agda uses is based on a technique called _bidirectional_ type
 inference, which will be presented in this chapter.
 
 This chapter ties our previous developments together. We begin with
-a term with some type annotations, quite close to the raw terms of
+a term with some type annotations, close to the raw terms of
 Chapter [Lambda]({{ site.baseurl }}/Lambda/),
-and from it we compute a term with inherent types, in the style of
+and from it we compute an intrinsically-typed term, in the style of
 Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
 
 ## Introduction: Inference rules as algorithms {#algorithms}
@@ -257,7 +258,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 ```
 
 Once we have a type derivation, it will be easy to construct
-from it the inherently typed representation.  In order that we
+from it the intrinsically-typed representation.  In order that we
 can compare with our previous development, we import
 module `pfla.DeBruijn`:
 
@@ -268,9 +269,7 @@ import plfa.part2.DeBruijn as DB
 The phrase `as DB` allows us to refer to definitions
 from that module as, for instance, `DB._⊢_`, which is
 invoked as `Γ DB.⊢ A`, where `Γ` has type
-`DB.Context` and `A` has type `DB.Type`.  We also import
-`Type` and its constructors directly, so the latter may
-also be referred to as just `Type`.
+`DB.Context` and `A` has type `DB.Type`.
 
 
 ## Syntax
@@ -1002,11 +1001,11 @@ _ = refl
 ## Erasure
 
 From the evidence that a decorated term has the correct type it is
-easy to extract the corresponding inherently typed term.  We use the
+easy to extract the corresponding intrinsically-typed term.  We use the
 name `DB` to refer to the code in
 Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
-It is easy to define an _erasure_ function that takes evidence of a
-type judgment into the corresponding inherently typed term.
+It is easy to define an _erasure_ function that takes an extrinsic
+type judgment into the corresponding intrinsically-typed term.
 
 First, we give code to erase a type:
 ```
@@ -1056,7 +1055,7 @@ constructors that correspond to switching from synthesized
 to inherited or vice versa are dropped.
 
 We confirm that the erasure of the type derivations in
-this chapter yield the corresponding inherently typed terms
+this chapter yield the corresponding intrinsically-typed terms
 from the earlier chapter:
 ```
 _ : ∥ ⊢2+2 ∥⁺ ≡ DB.2+2
@@ -1068,7 +1067,7 @@ _ = refl
 Thus, we have confirmed that bidirectional type inference
 converts decorated versions of the lambda terms from
 Chapter [Lambda]({{ site.baseurl }}/Lambda/)
-to the inherently typed terms of
+to the intrinsically-typed terms of
 Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
 
 
