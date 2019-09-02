@@ -260,7 +260,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 Once we have a type derivation, it will be easy to construct
 from it the intrinsically-typed representation.  In order that we
 can compare with our previous development, we import
-module `pfla.DeBruijn`:
+module `plfa.part2.DeBruijn`:
 
 ```
 import plfa.part2.DeBruijn as DB

@@ -1178,7 +1178,7 @@ the empty type `⊥`.  If we use C-c C-n to normalise the term
 
 Agda will return an answer warning us that the impossible has occurred:
 
-    ⊥-elim (.plfa.Lambda.impossible "a" "a" refl)
+    ⊥-elim (plfa.part2.Lambda.impossible "a" "a" refl)
 
 While postulating the impossible is a useful technique, it must be
 used with care, since such postulation could allow us to provide
