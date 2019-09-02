@@ -107,4 +107,4 @@ required to do in the class taught at Edinburgh from this textbook.
 Exercises labelled "(stretch)" are there to provide an extra challenge.
 Few students do all of these, but most attempt at least a few.
 
-Exercises without a label are included for those who want extra practice.
+Exercises labelled "(practice)" are included for those who want extra practice.
