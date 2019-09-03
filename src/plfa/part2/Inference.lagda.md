@@ -192,8 +192,8 @@ We can extract the grammar for terms from the above:
 
     L⁻, M⁻, N⁻ ::=                      terms with inherited type
       ƛ x ⇒ N                             abstraction
-      zero                                zero
-      suc M⁻                              successor
+      `zero                               zero
+      `suc M⁻                             successor
       case L⁺ [zero⇒ M⁻ |suc x ⇒ N⁻ ]     case
       μ x ⇒ N                             fixpoint
       M ↑                                 switch to synthesized
@@ -290,6 +290,7 @@ infix   5  μ_⇒_
 infix   6  _↑
 infix   6  _↓_
 infixl  7  _·_
+infix   8  `suc_
 infix   9  `_
 ```
 
@@ -323,8 +324,8 @@ data Term⁺ where
 
 data Term⁻ where
   ƛ_⇒_                     : Id → Term⁻ → Term⁻
-  zero                     : Term⁻
-  suc                      : Term⁻ → Term⁻
+  `zero                    : Term⁻
+  `suc_                    : Term⁻ → Term⁻
   `case_[zero⇒_|suc_⇒_]    : Term⁺ → Term⁻ → Id → Term⁻ → Term⁻
   μ_⇒_                     : Id → Term⁻ → Term⁻
   _↑                       : Term⁺ → Term⁻
@@ -341,12 +342,12 @@ We can recreate the examples from preceding chapters.
 First, computing two plus two on naturals:
 ```
 two : Term⁻
-two = suc (suc zero)
+two = `suc (`suc `zero)
 
 plus : Term⁺
 plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
           `case (` "m") [zero⇒ ` "n" ↑
-                        |suc "m" ⇒ suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
+                        |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
             ↓ (`ℕ ⇒ `ℕ ⇒ `ℕ)
 
 2+2 : Term⁺
@@ -369,10 +370,10 @@ plusᶜ = (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
              ↓ (Ch ⇒ Ch ⇒ Ch)
 
 sucᶜ : Term⁻
-sucᶜ = ƛ "x" ⇒ suc (` "x" ↑)
+sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
 
 2+2ᶜ : Term⁺
-2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · zero
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 ```
 The only type decoration required is for `plusᶜ`.  One is not even
 required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
@@ -428,12 +429,12 @@ data _⊢_↓_ where
 
   ⊢zero : ∀ {Γ}
       --------------
-    → Γ ⊢ zero ↓ `ℕ
+    → Γ ⊢ `zero ↓ `ℕ
 
   ⊢suc : ∀ {Γ M}
     → Γ ⊢ M ↓ `ℕ
       ---------------
-    → Γ ⊢ suc M ↓ `ℕ
+    → Γ ⊢ `suc M ↓ `ℕ
 
   ⊢case : ∀ {Γ L M x N A}
     → Γ ⊢ L ↑ `ℕ
@@ -762,12 +763,12 @@ inherit Γ (ƛ x ⇒ N) `ℕ      =  no  (λ())
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
 ... | no ¬⊢N                =  no  (λ{ (⊢ƛ ⊢N)  →  ¬⊢N ⊢N })
 ... | yes ⊢N                =  yes (⊢ƛ ⊢N)
-inherit Γ zero `ℕ           =  yes ⊢zero
-inherit Γ zero (A ⇒ B)      =  no  (λ())
-inherit Γ (suc M) `ℕ with inherit Γ M `ℕ
+inherit Γ `zero `ℕ          =  yes ⊢zero
+inherit Γ `zero (A ⇒ B)     =  no  (λ())
+inherit Γ (`suc M) `ℕ with inherit Γ M `ℕ
 ... | no ¬⊢M                =  no  (λ{ (⊢suc ⊢M)  →  ¬⊢M ⊢M })
 ... | yes ⊢M                =  yes (⊢suc ⊢M)
-inherit Γ (suc M) (A ⇒ B)  =  no  (λ())
+inherit Γ (`suc M) (A ⇒ B)  =  no  (λ())
 inherit Γ (`case L [zero⇒ M |suc x ⇒ N ]) A with synthesize Γ L
 ... | no ¬∃                 =  no  (λ{ (⊢case ⊢L  _ _) → ¬∃ ⟨ `ℕ , ⊢L ⟩})
 ... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })
@@ -960,7 +961,7 @@ _ = refl
 
 Zero inherits a function type:
 ```
-_ : synthesize ∅ (zero ↓ `ℕ ⇒ `ℕ) ≡ no _
+_ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡ no _
 _ = refl
 ```
 
@@ -972,21 +973,21 @@ _ = refl
 
 Successor of an ill-typed term:
 ```
-_ : synthesize ∅ (suc twoᶜ ↓ `ℕ) ≡ no _
+_ : synthesize ∅ (`suc twoᶜ ↓ `ℕ) ≡ no _
 _ = refl
 ```
 
 Case of a term with a function type:
 ```
 _ : synthesize ∅
-      ((`case (twoᶜ ↓ Ch) [zero⇒ zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
+      ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
 _ = refl
 ```
 
 Case of an ill-typed term:
 ```
 _ : synthesize ∅
-      ((`case (twoᶜ ↓ `ℕ) [zero⇒ zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
+      ((`case (twoᶜ ↓ `ℕ) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
 _ = refl
 ```
 
@@ -1042,8 +1043,8 @@ there are two mutually recursive erasure functions:
 ∥ ⊢↓ ⊢M ∥⁺           =  ∥ ⊢M ∥⁻
 
 ∥ ⊢ƛ ⊢N ∥⁻           =  DB.ƛ ∥ ⊢N ∥⁻
-∥ ⊢zero ∥⁻           =  DB.zero
-∥ ⊢suc ⊢M ∥⁻         =  DB.suc ∥ ⊢M ∥⁻
+∥ ⊢zero ∥⁻           =  DB.`zero
+∥ ⊢suc ⊢M ∥⁻         =  DB.`suc ∥ ⊢M ∥⁻
 ∥ ⊢case ⊢L ⊢M ⊢N ∥⁻  =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
 ∥ ⊢μ ⊢M ∥⁻           =  DB.μ ∥ ⊢M ∥⁻
 ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺

@@ -216,7 +216,7 @@ plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ
 ```
 Before, reduction stopped when we reached a lambda term, so we had to
-compute `` plusᶜ · twoᶜ · twoᶜ · sucᶜ · zero `` to ensure we reduced
+compute `` plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero `` to ensure we reduced
 to a representation of the natural four.  Now, reduction continues
 under lambda, so we don't need the extra arguments.  It is convenient
 to define a term to represent four as a Church numeral, as well as
@@ -487,7 +487,7 @@ form or takes a reduction step.
 
 Previously, progress only applied to closed, well-typed terms.  We had
 to rule out terms where we apply something other than a function (such
-as `` zero ``) or terms with a free variable.  Now we can demonstrate
+as `` `zero ``) or terms with a free variable.  Now we can demonstrate
 it for open, well-scoped terms.  The definition of normal form permits
 free variables, and we have no terms that are not functions.
 
@@ -698,8 +698,7 @@ case L M N = L · (ƛ N) · M
 Here we have been careful to retain the exact form of our previous
 definitions.  The successor branch expects an additional variable to
 be in scope (as indicated by its type), so it is converted to an
-ordinary term using lambda abstraction. We use names `` `zero `` and
-`` `suc ``, since we are defining terms rather than constructors.
+ordinary term using lambda abstraction.
 
 We can also define fixpoint.  Using named terms, we define:
 
