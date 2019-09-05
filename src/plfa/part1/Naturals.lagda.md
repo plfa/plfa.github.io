@@ -305,7 +305,7 @@ Here is the definition of addition in Agda:
 ```
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
-suc m + n = suc (m + n)
+(suc m) + n = suc (m + n)
 ```
 
 Let's unpack this definition.  Addition is an infix operator.  It is
