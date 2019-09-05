@@ -104,7 +104,6 @@ Remember to indent all code by two spaces.
   infix  5 μ_
   infixl 7 _·_
   infixl 8 _`*_
-  infix  8 `suc_
   infix  9 `_
   infix  9 S_
   infix  9 #_
@@ -174,11 +173,11 @@ Remember to indent all code by two spaces.
 
     -- naturals
 
-    `zero : ∀ {Γ}
+    zero : ∀ {Γ}
         ------
       → Γ ⊢ `ℕ
 
-    `suc_ : ∀ {Γ}
+    suc : ∀ {Γ}
       → Γ ⊢ `ℕ
         ------
       → Γ ⊢ `ℕ
@@ -220,7 +219,7 @@ Remember to indent all code by two spaces.
 
     -- products
 
-    `⟨_,_⟩ : ∀ {Γ A B}
+    ⟨_,_⟩ : ∀ {Γ A B}
       → Γ ⊢ A
       → Γ ⊢ B
         -----------
@@ -276,14 +275,14 @@ Remember to indent all code by two spaces.
   rename ρ (` x)          =  ` (ρ x)
   rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
   rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
-  rename ρ (`zero)        =  `zero
-  rename ρ (`suc M)       =  `suc (rename ρ M)
+  rename ρ (zero)         =  zero
+  rename ρ (suc M)        =  suc (rename ρ M)
   rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
   rename ρ (μ N)          =  μ (rename (ext ρ) N)
   rename ρ (con n)        =  con n
   rename ρ (M `* N)       =  rename ρ M `* rename ρ N
   rename ρ (`let M N)     =  `let (rename ρ M) (rename (ext ρ) N)
-  rename ρ `⟨ M , N ⟩     =  `⟨ rename ρ M , rename ρ N ⟩
+  rename ρ ⟨ M , N ⟩      =  ⟨ rename ρ M , rename ρ N ⟩
   rename ρ (`proj₁ L)     =  `proj₁ (rename ρ L)
   rename ρ (`proj₂ L)     =  `proj₂ (rename ρ L)
   rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
@@ -300,14 +299,14 @@ Remember to indent all code by two spaces.
   subst σ (` k)          =  σ k
   subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
   subst σ (L · M)        =  (subst σ L) · (subst σ M)
-  subst σ (`zero)        =  `zero
-  subst σ (`suc M)       =  `suc (subst σ M)
+  subst σ (zero)         =  zero
+  subst σ (suc M)        =  suc (subst σ M)
   subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
   subst σ (μ N)          =  μ (subst (exts σ) N)
   subst σ (con n)        =  con n
   subst σ (M `* N)       =  subst σ M `* subst σ N
   subst σ (`let M N)     =  `let (subst σ M) (subst (exts σ) N)
-  subst σ `⟨ M , N ⟩     =  `⟨ subst σ M , subst σ N ⟩
+  subst σ ⟨ M , N ⟩      =  ⟨ subst σ M , subst σ N ⟩
   subst σ (`proj₁ L)     =  `proj₁ (subst σ L)
   subst σ (`proj₂ L)     =  `proj₂ (subst σ L)
   subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
@@ -356,12 +355,12 @@ Remember to indent all code by two spaces.
 
     V-zero : ∀ {Γ} →
         -----------------
-        Value (`zero {Γ})
+        Value (zero {Γ})
 
-    V-suc_ : ∀ {Γ} {V : Γ ⊢ `ℕ}
+    V-suc : ∀ {Γ} {V : Γ ⊢ `ℕ}
       → Value V
         --------------
-      → Value (`suc V)
+      → Value (suc V)
 
     -- primitives
 
@@ -375,7 +374,7 @@ Remember to indent all code by two spaces.
       → Value V
       → Value W
         ----------------
-      → Value `⟨ V , W ⟩
+      → Value ⟨ V , W ⟩
 ```
 
 Implicit arguments need to be supplied when they are
@@ -411,7 +410,7 @@ not fixed by the given arguments.
     ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
       → M —→ M′
         -----------------
-      → `suc M —→ `suc M′
+      → suc M —→ suc M′
 
     ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
       → L —→ L′
@@ -420,12 +419,12 @@ not fixed by the given arguments.
 
     β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
         -------------------
-      → case `zero M N —→ M
+      → case zero M N —→ M
 
     β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
       → Value V
         ----------------------------
-      → case (`suc V) M N —→ N [ V ]
+      → case (suc V) M N —→ N [ V ]
 
     -- fixpoint
 
@@ -467,13 +466,13 @@ not fixed by the given arguments.
     ξ-⟨,⟩₁ : ∀ {Γ A B} {M M′ : Γ ⊢ A} {N : Γ ⊢ B}
       → M —→ M′
         -------------------------
-      → `⟨ M , N ⟩ —→ `⟨ M′ , N ⟩
+      → ⟨ M , N ⟩ —→ ⟨ M′ , N ⟩
 
     ξ-⟨,⟩₂ : ∀ {Γ A B} {V : Γ ⊢ A} {N N′ : Γ ⊢ B}
       → Value V
       → N —→ N′
         -------------------------
-      → `⟨ V , N ⟩ —→ `⟨ V , N′ ⟩
+      → ⟨ V , N ⟩ —→ ⟨ V , N′ ⟩
 
     ξ-proj₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A `× B}
       → L —→ L′
@@ -489,13 +488,13 @@ not fixed by the given arguments.
       → Value V
       → Value W
         ----------------------
-      → `proj₁ `⟨ V , W ⟩ —→ V
+      → `proj₁ ⟨ V , W ⟩ —→ V
 
     β-proj₂ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
       → Value V
       → Value W
         ----------------------
-      → `proj₂ `⟨ V , W ⟩ —→ W
+      → `proj₂ ⟨ V , W ⟩ —→ W
 
     -- alternative formulation of products
 
@@ -508,7 +507,7 @@ not fixed by the given arguments.
       → Value V
       → Value W
         ----------------------------------
-      → case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
+      → case× ⟨ V , W ⟩ M —→ M [ V ][ W ]
 ```
 
 ## Reflexive and transitive closure
@@ -581,8 +580,8 @@ not fixed by the given arguments.
   ...    | done V-ƛ with progress M
   ...        | step M—→M′                     =  step (ξ-·₂ V-ƛ M—→M′)
   ...        | done VM                        =  step (β-ƛ VM)
-  progress (`zero)                            =  done V-zero
-  progress (`suc M) with progress M
+  progress (zero)                             =  done V-zero
+  progress (suc M) with progress M
   ...    | step M—→M′                         =  step (ξ-suc M—→M′)
   ...    | done VM                            =  done (V-suc VM)
   progress (case L M N) with progress L
@@ -599,7 +598,7 @@ not fixed by the given arguments.
   progress (`let M N) with progress M
   ...    | step M—→M′                         =  step (ξ-let M—→M′)
   ...    | done VM                            =  step (β-let VM)
-  progress `⟨ M , N ⟩ with progress M
+  progress ⟨ M , N ⟩ with progress M
   ...    | step M—→M′                         =  step (ξ-⟨,⟩₁ M—→M′)
   ...    | done VM with progress N
   ...        | step N—→N′                     =  step (ξ-⟨,⟩₂ VM N—→N′)
@@ -700,31 +699,31 @@ not fixed by the given arguments.
     ∎
 
   swap× : ∀ {A B} → ∅ ⊢ A `× B ⇒ B `× A
-  swap× = ƛ `⟨ `proj₂ (# 0) , `proj₁ (# 0) ⟩
+  swap× = ƛ ⟨ `proj₂ (# 0) , `proj₁ (# 0) ⟩
 
-  _ : swap× · `⟨ con 42 , `zero ⟩ —↠ `⟨ `zero , con 42 ⟩
+  _ : swap× · ⟨ con 42 , zero ⟩ —↠ ⟨ zero , con 42 ⟩
   _ =
     begin
-      swap× · `⟨ con 42 , `zero ⟩
+      swap× · ⟨ con 42 , zero ⟩
     —→⟨ β-ƛ V-⟨ V-con , V-zero ⟩ ⟩
-      `⟨ `proj₂ `⟨ con 42 , `zero ⟩ , `proj₁ `⟨ con 42 , `zero ⟩ ⟩
+      ⟨ `proj₂ ⟨ con 42 , zero ⟩ , `proj₁ ⟨ con 42 , zero ⟩ ⟩
     —→⟨ ξ-⟨,⟩₁ (β-proj₂ V-con V-zero) ⟩
-      `⟨ `zero , `proj₁ `⟨ con 42 , `zero ⟩ ⟩
+      ⟨ zero , `proj₁ ⟨ con 42 , zero ⟩ ⟩
     —→⟨ ξ-⟨,⟩₂ V-zero (β-proj₁ V-con V-zero) ⟩
-      `⟨ `zero , con 42 ⟩
+      ⟨ zero , con 42 ⟩
     ∎
 
   swap×-case : ∀ {A B} → ∅ ⊢ A `× B ⇒ B `× A
-  swap×-case = ƛ case× (# 0) `⟨ # 0 , # 1 ⟩
+  swap×-case = ƛ case× (# 0) ⟨ # 0 , # 1 ⟩
 
-  _ : swap×-case · `⟨ con 42 , `zero ⟩ —↠ `⟨ `zero , con 42 ⟩
+  _ : swap×-case · ⟨ con 42 , zero ⟩ —↠ ⟨ zero , con 42 ⟩
   _ =
     begin
-       swap×-case · `⟨ con 42 , `zero ⟩
+       swap×-case · ⟨ con 42 , zero ⟩
      —→⟨ β-ƛ V-⟨ V-con , V-zero ⟩ ⟩
-       case× `⟨ con 42 , `zero ⟩ `⟨ # 0 , # 1 ⟩
+       case× ⟨ con 42 , zero ⟩ ⟨ # 0 , # 1 ⟩
      —→⟨ β-case× V-con V-zero ⟩
-       `⟨ `zero , con 42 ⟩
+       ⟨ zero , con 42 ⟩
      ∎
 ```
 
@@ -788,7 +787,6 @@ Remember to indent all code by two spaces.
   infix   6  _↑
   infix   6  _↓_
   infixl  7  _·_
-  infix   8  `suc_
   infix   9  `_
 ```
 
@@ -820,9 +818,9 @@ Remember to indent all code by two spaces.
 
   data Term⁻ where
     ƛ_⇒_                     : Id → Term⁻ → Term⁻
-    `zero                    : Term⁻
-    `suc_                    : Term⁻ → Term⁻
-    `case_[zero⇒_|suc_⇒_]    : Term⁺ → Term⁻ → Id → Term⁻ → Term⁻
+    zero                     : Term⁻
+    suc                      : Term⁻ → Term⁻
+    case_[zero⇒_|suc_⇒_]     : Term⁺ → Term⁻ → Id → Term⁻ → Term⁻
     μ_⇒_                     : Id → Term⁻ → Term⁻
     _↑                       : Term⁺ → Term⁻
 ```
@@ -831,12 +829,12 @@ Remember to indent all code by two spaces.
 
 ```
   two : Term⁻
-  two = `suc (`suc `zero)
+  two = suc (suc zero)
 
   plus : Term⁺
   plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
-            `case (` "m") [zero⇒ ` "n" ↑
-                          |suc "m" ⇒ `suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
+            case (` "m") [zero⇒ ` "n" ↑
+                          |suc "m" ⇒ suc (` "p" · (` "m" ↑) · (` "n" ↑) ↑) ])
               ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
 ```
 
@@ -889,19 +887,19 @@ Remember to indent all code by two spaces.
 
     ⊢zero : ∀ {Γ}
         --------------
-      → Γ ⊢ `zero ↓ `ℕ
+      → Γ ⊢ zero ↓ `ℕ
 
     ⊢suc : ∀ {Γ M}
       → Γ ⊢ M ↓ `ℕ
         ---------------
-      → Γ ⊢ `suc M ↓ `ℕ
+      → Γ ⊢ suc M ↓ `ℕ
 
     ⊢case : ∀ {Γ L M x N A}
       → Γ ⊢ L ↑ `ℕ
       → Γ ⊢ M ↓ A
       → Γ , x ⦂ `ℕ ⊢ N ↓ A
         -------------------------------------
-      → Γ ⊢ `case L [zero⇒ M |suc x ⇒ N ] ↓ A
+      → Γ ⊢ case L [zero⇒ M |suc x ⇒ N ] ↓ A
 
     ⊢μ : ∀ {Γ x N A}
       → Γ , x ⦂ A ⊢ N ↓ A
@@ -1032,13 +1030,13 @@ Remember to indent all code by two spaces.
   inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
   ... | no ¬⊢N                =  no  (λ{ (⊢ƛ ⊢N)  →  ¬⊢N ⊢N })
   ... | yes ⊢N                =  yes (⊢ƛ ⊢N)
-  inherit Γ `zero `ℕ          =  yes ⊢zero
-  inherit Γ `zero (A ⇒ B)     =  no  (λ())
-  inherit Γ (`suc M) `ℕ with inherit Γ M `ℕ
+  inherit Γ zero `ℕ           =  yes ⊢zero
+  inherit Γ zero (A ⇒ B)      =  no  (λ())
+  inherit Γ (suc M) `ℕ with inherit Γ M `ℕ
   ... | no ¬⊢M                =  no  (λ{ (⊢suc ⊢M)  →  ¬⊢M ⊢M })
   ... | yes ⊢M                =  yes (⊢suc ⊢M)
-  inherit Γ (`suc M) (A ⇒ B)  =  no  (λ())
-  inherit Γ (`case L [zero⇒ M |suc x ⇒ N ]) A with synthesize Γ L
+  inherit Γ (suc M) (A ⇒ B)   =  no  (λ())
+  inherit Γ (case L [zero⇒ M |suc x ⇒ N ]) A with synthesize Γ L
   ... | no ¬∃                 =  no  (λ{ (⊢case ⊢L  _ _) → ¬∃ ⟨ `ℕ , ⊢L ⟩})
   ... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })
   ... | yes ⟨ `ℕ ,    ⊢L ⟩ with inherit Γ M A
@@ -1079,8 +1077,8 @@ Remember to indent all code by two spaces.
   ∥ ⊢↓ ⊢M ∥⁺           =  ∥ ⊢M ∥⁻
 
   ∥ ⊢ƛ ⊢N ∥⁻           =  DB.ƛ ∥ ⊢N ∥⁻
-  ∥ ⊢zero ∥⁻           =  DB.`zero
-  ∥ ⊢suc ⊢M ∥⁻         =  DB.`suc ∥ ⊢M ∥⁻
+  ∥ ⊢zero ∥⁻           =  DB.zero
+  ∥ ⊢suc ⊢M ∥⁻         =  DB.suc ∥ ⊢M ∥⁻
   ∥ ⊢case ⊢L ⊢M ⊢N ∥⁻  =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
   ∥ ⊢μ ⊢M ∥⁻           =  DB.μ ∥ ⊢M ∥⁻
   ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
