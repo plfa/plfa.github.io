@@ -1,5 +1,10 @@
 // Define variables for code formatting
 @font-face {
+    font-family: 'mononoki';
+    src: url('fonts/mononoki.woff2') format('woff2'),
+         url('fonts/mononoki.woff')  format('woff');
+}
+@font-face {
     font-family: 'DejaVu Sans Mono';
     src: url('fonts/DejaVuSansMono.woff2') format('woff2'),
          url('fonts/DejaVuSansMono.woff') format('woff');
@@ -16,7 +21,7 @@
 }
 
 @mixin code-font {
-    font-family: 'DejaVu Sans Mono', 'Source Code Pro', 'Bitstream Vera Sans Mono', 'FreeMono', 'Courier New', 'Monaco', 'Menlo', monospace, serif;
+    font-family: 'mononoki', 'DejaVu Sans Mono', 'Source Code Pro', 'Bitstream Vera Sans Mono', 'FreeMono', 'Courier New', 'Monaco', 'Menlo', monospace, serif;
     font-size: .85em;
 }
 @mixin code-container {
