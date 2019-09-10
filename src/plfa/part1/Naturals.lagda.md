@@ -99,9 +99,15 @@ is a also a natural.
 
 ## Unpacking the Agda definition
 
-Let's unpack the Agda definition. The keyword `data` tells us this is an
-inductive definition, that is, that we are defining a new datatype
-with constructors.  The phrase
+Let's unpack the Agda definition, copied below.
+
+    data ℕ : Set where
+      zero : ℕ
+      suc  : ℕ → ℕ
+
+The keyword `data` tells us this is an inductive definition,
+that is, that we are defining a new datatype with constructors.
+The phrase
 
     ℕ : Set
 
