@@ -21,7 +21,7 @@ We list the versions of our dependencies on the badges above.  We have
 tested with the versions listed; either earlier or later versions may
 cause problems.
 
-You can get the appropriate version of Programming Language Foundations in Agda from Github, 
+You can get the appropriate version of Programming Language Foundations in Agda from GitHub, 
 either by cloning the repository, 
 or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archive/dev.zip):
 
