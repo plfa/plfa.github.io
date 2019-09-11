@@ -123,8 +123,8 @@
         const toolbar = tools.querySelector("#tools-bar");
         const referenceBtn = tools.querySelector('button[data-target="#tool-show-reference"]');
 
+        // Toggle reference section when you click the button
         let referenceShowing = false;
-        console.log("ref btn", referenceBtn)
         referenceBtn.addEventListener("click", () => {
             referenceShowing = !referenceShowing;
             referenceDiv.style.display = referenceShowing ? null : "none";
