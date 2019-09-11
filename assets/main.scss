@@ -4,6 +4,7 @@
 @import "katex";
 @import "minima";
 @import "agda";
+@import "tools";
 
 $on-medium: 600px !default;
 
@@ -21,4 +22,8 @@ ul.list-of-contributors {
 
 ul.list-of-contributors li {
     margin-right: 2rem;
+}
+
+.page-content {
+  flex-direction: row;
 }

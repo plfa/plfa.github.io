@@ -8,6 +8,14 @@
     {%- include header.html -%}
 
     <main class="page-content" aria-label="Content">
+      <div id="tools-sidebar" style="display: none;">
+        <div id="tools-bar">
+          <button data-target="#tool-show-reference">Show reference</button>
+        </div>
+        <div id="tools-reference" class="highlighter-rouge" style="display: none;">
+          Hello, world
+        </div>
+      </div>
       <div class="wrapper">
         {{ content }}
       </div>

@@ -1,0 +1,35 @@
+#tools-sidebar {
+    // Give me some space
+    padding-left: 1em;
+
+    // Don't waste too much vertical space
+    margin-top: -.5em;
+
+    // Stick 1em off the top of the screen (when scrolled)
+    position: sticky;
+    top: 1.5em;
+
+    // Don't push the rest of the website down
+    float: left;
+}
+
+#tools-bar {
+    margin-bottom: 1em;
+
+    button {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+        cursor: pointer;
+
+        background-color: rgba(0, 128, 128, 0.2);
+        border: solid 1px rgba(0, 128, 128, 0.4);
+
+        &:hover {
+            background-color: rgba(0, 128, 128, 0.3);
+            border-color: rgba(0, 128, 128, 1);
+
+            text-decoration: none;
+            color: black;
+        }
+    }
+}

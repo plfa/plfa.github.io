@@ -1,3 +1,6 @@
+---
+---
+
 <!-- Import jQuery -->
 <script type="text/javascript" src="{{ "/assets/jquery.js" | prepend: site.baseurl }}"></script>
 
@@ -74,3 +77,67 @@
                 "</div>";
      });
 </script>
+
+{% if page.layout == "page" %}
+<script>
+    window.addEventListener("load", () => {
+        // Tools wrapper
+        const tools = document.getElementById("tools-sidebar");
+
+        // First try to find a Unicode section
+        let node = document.getElementById("unicode");
+
+        // Cancel if this node doesn't exist
+        if (node === null) {
+            return;
+        }
+
+        // Check the three adjacent nodes for a div.highlighter-rouge
+        let foundUnicodeBlock = false;
+        for (let i = 0; i < 2; i++) {
+            node = node.nextElementSibling;
+
+            // Cancel if this node doesn't exist
+            if (node === null) {
+                break;
+            }
+
+            if (node.nodeName === "DIV" && node.className === "highlighter-rouge") {
+                foundUnicodeBlock = true;
+                break;
+            }
+        }
+
+        if (!foundUnicodeBlock) {
+            console.info("Failed to find Unicode block on page that has a Unicode header");
+            return;
+        }
+
+        const referenceDiv = tools.querySelector("#tools-reference");
+        referenceDiv.innerHTML = node.innerHTML;
+
+        // Show the entire sidebar by removing the default "display: none;"
+        tools.style.display = null;
+
+        // Find toolbar & buttons
+        const toolbar = tools.querySelector("#tools-bar");
+        const referenceBtn = tools.querySelector('button[data-target="#tool-show-reference"]');
+
+        let referenceShowing = false;
+        console.log("ref btn", referenceBtn)
+        referenceBtn.addEventListener("click", () => {
+            referenceShowing = !referenceShowing;
+            referenceDiv.style.display = referenceShowing ? null : "none";
+            referenceBtn.textContent = `${referenceShowing ? "Hide": "Show"} reference`;
+            localStorage.setItem("reference-visible", referenceShowing);
+        })
+
+        // If the reference is visible, we will show it straight away.
+        if (localStorage.getItem("reference-visible") === "true") {
+            referenceShowing = true;
+            referenceDiv.style.display = null;
+            referenceBtn.textContent = "Hide reference";
+        }
+    });
+</script>
+{% endif %}
