@@ -309,7 +309,7 @@ zero + n = n
 ```
 
 Let's unpack this definition.  Addition is an infix operator.  It is
-written with underbars where the argument go, hence its name is
+written with underbars where the arguments go, hence its name is
 `_+_`.  The first line is a signature specifying the type of the operator.
 The type `ℕ → ℕ → ℕ`, indicates that addition accepts two naturals
 and returns a natural.  Infix notation is just a shorthand for application;
