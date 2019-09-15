@@ -1,7 +1,7 @@
 ---
 title     : "Assignment1: TSPL Assignment 1"
 layout    : page
-permalink : /TSPL/2018/Assignment1/
+permalink : /TSPL/2019/Assignment1/
 ---
 
 ```
@@ -12,15 +12,12 @@ module Assignment1 where
 
 ## Introduction
 
-<!-- This assignment is due **1pm Friday 26 April**. -->
-
 You must do _all_ the exercises labelled "(recommended)".
 
 Exercises labelled "(stretch)" are there to provide an extra challenge.
 You don't need to do all of these, but should attempt at least a few.
 
-Exercises without a label are optional, and may be done if you want
-some extra practice.
+Exercises labelled "(practice)" are included for those who want extra practice.
 
 <!-- Submit your homework using the "submit" command. -->
 Please ensure your files execute correctly under Agda!
@@ -39,17 +36,17 @@ open import plfa.part1.Relations using (_<_; z<s; s<s; zero; suc; even; odd)
 
 ## Naturals
 
-#### Exercise `seven` {#seven}
+#### Exercise `seven` (practice) {#seven}
 
 Write out `7` in longhand.
 
 
-#### Exercise `+-example` {#plus-example}
+#### Exercise `+-example` (practice) {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
 
 
-#### Exercise `*-example` {#times-example}
+#### Exercise `*-example` (practice) {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
@@ -116,7 +113,7 @@ Confirm that these both give the correct answer for zero through four.
 
 ## Induction
 
-#### Exercise `operators` {#operators}
+#### Exercise `operators` (practice) {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -125,7 +122,7 @@ Give an example of an operator that has an identity and is
 associative but is not commutative.
 
 
-#### Exercise `finite-|-assoc` (stretch) {#finite-plus-assoc}
+#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
@@ -162,7 +159,7 @@ Show multiplication is associative, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-#### Exercise `*-comm` {#times-comm}
+#### Exercise `*-comm` (practice) {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -171,7 +168,7 @@ Show multiplication is commutative, that is,
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-#### Exercise `0∸n≡0` {#zero-monus}
+#### Exercise `0∸n≡0` (practice) {#zero-monus}
 
 Show
 
@@ -179,7 +176,7 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-#### Exercise `∸-|-assoc` {#monus-plus-assoc}
+#### Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -211,14 +208,14 @@ For each law: if it holds, prove; if not, give a counterexample.
 ## Relations
 
 
-#### Exercise `orderings` {#orderings}
+#### Exercise `orderings` (practice) {#orderings}
 
 Give an example of a preorder that is not a partial order.
 
 Give an example of a partial order that is not a preorder.
 
 
-#### Exercise `≤-antisym-cases` {#leq-antisym-cases}
+#### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -233,7 +230,7 @@ Show that multiplication is monotonic with regard to inequality.
 
 Show that strict inequality is transitive.
 
-#### Exercise `trichotomy` {#trichotomy}
+#### Exercise `trichotomy` (practice) {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -255,7 +252,7 @@ As with inequality, some additional definitions may be required.
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
-#### Exercise `<-trans-revisited` {#less-trans-revisited}
+#### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relating between strict inequality and inequality and
