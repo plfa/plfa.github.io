@@ -1077,8 +1077,8 @@ Remember to indent all code by two spaces.
   ∥ ⊢↓ ⊢M ∥⁺           =  ∥ ⊢M ∥⁻
 
   ∥ ⊢ƛ ⊢N ∥⁻           =  DB.ƛ ∥ ⊢N ∥⁻
-  ∥ ⊢zero ∥⁻           =  DB.zero
-  ∥ ⊢suc ⊢M ∥⁻         =  DB.suc ∥ ⊢M ∥⁻
+  ∥ ⊢zero ∥⁻           =  DB.`zero
+  ∥ ⊢suc ⊢M ∥⁻         =  DB.`suc ∥ ⊢M ∥⁻
   ∥ ⊢case ⊢L ⊢M ⊢N ∥⁻  =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
   ∥ ⊢μ ⊢M ∥⁻           =  DB.μ ∥ ⊢M ∥⁻
   ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺

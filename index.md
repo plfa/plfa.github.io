@@ -49,7 +49,8 @@ Pull requests are encouraged.
 
   - Courses taught from the textbook:
     * Philip Wadler, University of Edinburgh,
-      [2018]({{ site.baseurl }}/TSPL/2018/)
+      [2018]({{ site.baseurl }}/TSPL/2018/),
+	  [2019]({{ site.baseurl }}/TSPL/2019/)
     * David Darais, University of Vermont,
       [2018](http://david.darais.com/courses/fa2018-cs295A/)
     * John Leo, Google Seattle, 2018--2019 

@@ -275,7 +275,7 @@ plus′ : Term
 plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
           case′ m
             [zero⇒ n
-            |suc m ⇒ suc (+ · m · n) ]
+            |suc m ⇒ `suc (+ · m · n) ]
   where
   +  =  ` "+"
   m  =  ` "m"
