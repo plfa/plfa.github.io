@@ -54,10 +54,13 @@ four.
 
 ```
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Data.Bool using (T; not)
 open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
+open import Relation.Nullary.Decidable using (⌊_⌋; False; toWitnessFalse)
+open import Relation.Nullary.Negation using (¬?)
 open import Data.List using (List; _∷_; [])
 ```
 
@@ -1067,6 +1070,32 @@ Constructor `S` takes an additional parameter, which ensures that
 when we look up a variable that it is not _shadowed_ by another
 variable with the same name to its left in the list.
 
+It can be rather tedious to use the `S` constructor, as you have to provide
+proofs that `x ≢ y` each time. For example:
+
+```
+_ : ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "y" ⦂ `ℕ , "z" ⦂ `ℕ ∋ "x" ⦂ `ℕ ⇒ `ℕ
+_ = S (λ()) (S (λ()) Z)
+```
+
+Instead, we'll use a "smart constructor", which checks the inequality at compile
+time, and inserts the appropriate proofs. A requirement for this is that we know
+the names at compile time:
+
+```
+S′ : ∀ {Γ x y A B}
+   → {x≢y : False (x ≟ y)}
+   → Γ ∋ x ⦂ A
+     ------------------
+   → Γ , y ⦂ B ∋ x ⦂ A
+
+S′ {x≢y = x≢y} x = S (toWitnessFalse x≢y) x
+```
+
+The type `T ⌊ ¬? (x ≟ y) ⌋` looks a bit daunting. The first part, `x ≟ y`,
+computes whether or not `x` and `y` are equal. Then, `¬?` negates the proof,
+giving us whether or not `x` and `y` are *un*equal. `⌊_⌋` turn the 
+
 ### Typing judgment
 
 The second judgment is written
@@ -1221,7 +1250,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ⊢twoᶜ : ∀ {Γ A} → Γ ⊢ twoᶜ ⦂ Ch A
 ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
   where
-  ∋s = S ("s" ≠ "z") Z
+  ∋s = S′ Z
   ∋z = Z
 ```
 
@@ -1234,11 +1263,11 @@ Here are the typings corresponding to computing two plus two:
 ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
          (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
   where
-  ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
-  ∋m  = (S ("m" ≠ "n") Z)
+  ∋+  = S′ (S′ (S′ Z))
+  ∋m  = S′ Z
   ∋n  = Z
   ∋m′ = Z
-  ∋n′ = (S ("n" ≠ "m") Z)
+  ∋n′ = S′ Z
 
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
@@ -1257,9 +1286,9 @@ And here are typings for the remainder of the Church example:
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
-  ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
-  ∋n = S ("n" ≠ "z") (S ("n" ≠ "s") Z)
-  ∋s = S ("s" ≠ "z") Z
+  ∋m = S′ (S′ (S′ Z))
+  ∋n = S′ (S′ Z)
+  ∋s = S′ Z
   ∋z = Z
 
 ⊢sucᶜ : ∀ {Γ} → Γ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
