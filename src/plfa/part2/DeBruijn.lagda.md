@@ -420,10 +420,19 @@ lookup (Γ , _) (suc n)  =  lookup Γ n
 lookup ∅       _        =  ⊥-elim impossible
   where postulate impossible : ⊥
 ```
-We intend to apply the function only when the natural is
-shorter than the length of the context, which we indicate by
-postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}/Lambda/#impossible).
+We intend to apply the function only when the natural is shorter than the length
+of the context, which we indicate by postulating a term `impossible` of the
+empty type `⊥`.  If we use C-c C-n to normalise the term 
+
+    lookup (∅ , `ℕ ⇒ `ℕ , `ℕ) 3
+
+Agda will return an answer warning us that the impossible has occurred:
+
+    ⊥-elim (plfa.part2.DeBruijn.impossible 1)
+
+While postulating the impossible is a useful technique, it must be
+used with care, since such postulation could allow us to provide
+evidence of _any_ proposition whatsoever, regardless of its truth.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
