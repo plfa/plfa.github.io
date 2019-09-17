@@ -1078,9 +1078,7 @@ _ : ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "y" ⦂ `ℕ , "z" ⦂ `ℕ ∋ "x" ⦂ `ℕ �
 _ = S (λ()) (S (λ()) Z)
 ```
 
-Instead, we'll use a "smart constructor", which checks the inequality at compile
-time, and inserts the appropriate proofs. A requirement for this is that we know
-the names at compile time:
+Instead, we'll use a "smart constructor", uses [proof by reflection]({{ site.baseurl }}/Decidable/#proof-by-reflection) to check the inequality while type checking:
 
 ```
 S′ : ∀ {Γ x y A B}
@@ -1091,10 +1089,6 @@ S′ : ∀ {Γ x y A B}
 
 S′ {x≢y = x≢y} x = S (toWitnessFalse x≢y) x
 ```
-
-The type `T ⌊ ¬? (x ≟ y) ⌋` looks a bit daunting. The first part, `x ≟ y`,
-computes whether or not `x` and `y` are equal. Then, `¬?` negates the proof,
-giving us whether or not `x` and `y` are *un*equal. `⌊_⌋` turn the 
 
 ### Typing judgment
 

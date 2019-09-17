@@ -559,7 +559,7 @@ postulate
 -- Your code goes here
 ```
 
-## Proof by reflection
+## Proof by reflection {#proof-by-reflection}
 
 Let's revisit our definition of monus from [Naturals]({{ site.baseurl
 }}/Naturals/). If we subtract a larger number from a smaller number, we take the
