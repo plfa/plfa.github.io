@@ -58,6 +58,7 @@ open import Data.String using (String; _≟_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
+open import Relation.Nullary.Decidable using (False; toWitnessFalse)
 open import Data.List using (List; _∷_; [])
 ```
 
@@ -1021,10 +1022,13 @@ data _∋_⦂_ : Context → Id → Type → Set where
     → Γ , x ⦂ A ∋ x ⦂ A
 
   S : ∀ {Γ x y A B}
-    → x ≢ y
+    → {x≢y : False (x ≟ y)}
     → Γ ∋ x ⦂ A
       ------------------
     → Γ , y ⦂ B ∋ x ⦂ A
+```
+
+```
 ```
 
 The constructors `Z` and `S` correspond roughly to the constructors
@@ -1160,7 +1164,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ⊢twoᶜ : ∀ {Γ A} → Γ ⊢ twoᶜ ⦂ Ch A
 ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
   where
-  ∋s = S (λ()) Z
+  ∋s = S Z
   ∋z = Z
 ```
 
@@ -1173,11 +1177,11 @@ Here are the typings corresponding to computing two plus two:
 ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
          (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
   where
-  ∋+  = (S (λ()) (S (λ()) (S (λ()) Z)))
-  ∋m  = (S (λ()) Z)
+  ∋+  = S (S (S Z))
+  ∋m  = S Z
   ∋n  = Z
   ∋m′ = Z
-  ∋n′ = (S (λ()) Z)
+  ∋n′ = S Z
 
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
@@ -1196,9 +1200,9 @@ And here are typings for the remainder of the Church example:
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
-  ∋m = S (λ()) (S (λ()) (S (λ()) Z))
-  ∋n = S (λ()) (S (λ()) Z)
-  ∋s = S (λ()) Z
+  ∋m = S (S (S Z))
+  ∋n = S (S Z)
+  ∋s = S Z
   ∋z = Z
 
 ⊢sucᶜ : ∀ {Γ} → Γ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
@@ -1260,10 +1264,10 @@ The lookup relation `Γ ∋ x ⦂ A` is injective, in that for each `Γ` and `x`
 there is at most one `A` such that the judgment holds:
 ```
 ∋-injective : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
-∋-injective Z        Z          =  refl
-∋-injective Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
-∋-injective (S x≢ _) Z          =  ⊥-elim (x≢ refl)
-∋-injective (S _ ∋x) (S _ ∋x′)  =  ∋-injective ∋x ∋x′
+∋-injective Z                 Z                  =  refl
+∋-injective Z                 (S {x≢y = x≢x} _)  =  ⊥-elim (toWitnessFalse x≢x refl)
+∋-injective (S {x≢y = x≢x} _) Z                  =  ⊥-elim (toWitnessFalse x≢x refl)
+∋-injective (S ∋x)            (S ∋x′)            =  ∋-injective ∋x ∋x′
 ```
 
 The typing relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
