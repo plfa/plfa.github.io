@@ -1078,7 +1078,7 @@ _ : ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "y" ⦂ `ℕ , "z" ⦂ `ℕ ∋ "x" ⦂ `ℕ �
 _ = S (λ()) (S (λ()) Z)
 ```
 
-Instead, we'll use a "smart constructor", uses [proof by reflection]({{ site.baseurl }}/Decidable/#proof-by-reflection) to check the inequality while type checking:
+Instead, we'll use a "smart constructor", which uses [proof by reflection]({{ site.baseurl }}/Decidable/#proof-by-reflection) to check the inequality while type checking:
 
 ```
 S′ : ∀ {Γ x y A B}
