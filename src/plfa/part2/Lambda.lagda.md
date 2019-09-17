@@ -209,40 +209,6 @@ definition may use `plusᶜ` as defined earlier (or may not
 ```
 
 
-#### Exercise `primed` (stretch)
-
-Some people find it annoying to write `` ` "x" `` instead of `x`.
-We can make examples with lambda terms slightly easier to write
-by adding the following definitions:
-```
-ƛ′_⇒_ : Term → Term → Term
-ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
-ƛ′ _ ⇒ _      =  ⊥-elim impossible
-  where postulate impossible : ⊥
-
-case′_[zero⇒_|suc_⇒_] : Term → Term → Term → Term → Term
-case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
-case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
-  where postulate impossible : ⊥
-
-μ′_⇒_ : Term → Term → Term
-μ′ (` x) ⇒ N  =  μ x ⇒ N
-μ′ _ ⇒ _      =  ⊥-elim impossible
-  where postulate impossible : ⊥
-```
-The definition of `plus` can now be written as follows:
-```
-plus′ : Term
-plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
-          case′ m
-            [zero⇒ n
-            |suc m ⇒ `suc (+ · m · n) ]
-  where
-  +  =  ` "+"
-  m  =  ` "m"
-  n  =  ` "n"
-```
-Write out the definition of multiplication in the same style.
 
 
 ### Formal vs informal
