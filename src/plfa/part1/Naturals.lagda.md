@@ -542,13 +542,13 @@ For example, let's subtract two from three:
 ```
 _ =
   begin
-     3 ∸ 2
+    3 ∸ 2
   ≡⟨⟩
-     2 ∸ 1
+    2 ∸ 1
   ≡⟨⟩
-     1 ∸ 0
+    1 ∸ 0
   ≡⟨⟩
-     1
+    1
   ∎
 ```
 We did not use the second equation at all, but it will be required
@@ -556,13 +556,13 @@ if we try to subtract a larger number from a smaller one:
 ```
 _ =
   begin
-     2 ∸ 3
+    2 ∸ 3
   ≡⟨⟩
-     1 ∸ 2
+    1 ∸ 2
   ≡⟨⟩
-     0 ∸ 1
+    0 ∸ 1
   ≡⟨⟩
-     0
+    0
   ∎
 ```
 
