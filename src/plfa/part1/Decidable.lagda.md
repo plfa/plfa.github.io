@@ -547,7 +547,9 @@ postulate
 
 #### Exercise `iff-erasure` (recommended)
 
-Give analogues of the `_⇔_` operation from Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff), operation on booleans and decidables, and also show the corresponding erasure:
+Give analogues of the `_⇔_` operation from
+Chapter [Isomorphism]({{ site.baseurl}}/Isomorphism/#iff),
+operation on booleans and decidables, and also show the corresponding erasure:
 ```
 postulate
   _iff_ : Bool → Bool → Bool
@@ -561,11 +563,12 @@ postulate
 
 ## Proof by reflection {#proof-by-reflection}
 
-Let's revisit our definition of monus from [Naturals]({{ site.baseurl
-}}/Naturals/). If we subtract a larger number from a smaller number, we take the
-result to be zero. We had to do something, after all. What could we have done
-differently? We could have defined a *guarded* version of minus, a function
-which subtracts `n` from `m` only if `n ≤ m`:
+Let's revisit our definition of monus from
+Chapter [Naturals]({{ site.baseurl}}/Naturals/).
+If we subtract a larger number from a smaller number, we take the result to be
+zero. We had to do something, after all. What could we have done differently? We
+could have defined a *guarded* version of minus, a function which subtracts `n`
+from `m` only if `n ≤ m`:
 
 ```
 minus : (m n : ℕ) (n≤m : n ≤ m) → ℕ
@@ -592,7 +595,8 @@ fill in an implicit of an *empty* record type, since there aren't any fields
 after all. This is why `⊤` is defined as an empty record.
 
 The trick is to have an implicit argument of the type `T ⌊ n ≤? m ⌋`. This type
-runs the decision procedure, `n ≤? m`, erases it to a boolean, and finally uses `T` to map that to the world of evidence.
+runs the decision procedure, `n ≤? m`, erases it to a boolean, and finally uses
+`T` to map that to the world of evidence.
 
 - If `n ≤ m` holds, the type of the implicit value reduces to `⊤`. Agda then
   happily provides the implicit value.
