@@ -423,7 +423,7 @@ lookup ∅       _        =  ⊥-elim impossible
 We intend to apply the function only when the natural is
 shorter than the length of the context, which we indicate by
 postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}/Lambda/#impossible).
+[here]({{ site.baseurl }}/Lambda/#primed).
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:

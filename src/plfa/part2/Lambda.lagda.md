@@ -209,7 +209,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 ```
 
 
-#### Exercise `primed` (stretch)
+#### Exercise `primed` (stretch) {#primed}
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
@@ -230,6 +230,20 @@ case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
 μ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
 ```
+We intend to apply the function only when the first term is a variable, which we
+indicate by postulating a term `impossible` of the empty type `⊥`.  If we use
+C-c C-n to normalise the term
+
+  ƛ′ two ⇒ two
+
+Agda will return an answer warning us that the impossible has occurred:
+
+  ⊥-elim (plfa.part2.Lambda.impossible (`suc (`suc `zero)) (`suc (`suc `zero)))
+
+While postulating the impossible is a useful technique, it must be
+used with care, since such postulation could allow us to provide
+evidence of _any_ proposition whatsoever, regardless of its truth.
+
 The definition of `plus` can now be written as follows:
 ```
 plus′ : Term
