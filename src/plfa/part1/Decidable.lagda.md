@@ -596,7 +596,7 @@ after all. This is why `⊤` is defined as an empty record.
 
 The trick is to have an implicit argument of the type `T ⌊ n ≤? m ⌋`. This type
 runs the decision procedure, `n ≤? m`, erases it to a boolean, and finally uses
-`T` to map that to the world of evidence.
+`T` to map that to the world of evidence. 
 
 - If `n ≤ m` holds, the type of the implicit value reduces to `⊤`. Agda then
   happily provides the implicit value.

@@ -44,7 +44,7 @@ open plfa.part1.Isomorphism.≃-Reasoning
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
-declaring a suitable inductive type:
+declaring a suitable record type:
 ```
 data _×_ (A B : Set) : Set where
 
@@ -75,27 +75,6 @@ proj₂ ⟨ x , y ⟩ = y
 ```
 If `L` provides evidence that `A × B` holds, then `proj₁ L` provides evidence
 that `A` holds, and `proj₂ L` provides evidence that `B` holds.
-
-Equivalently, we could also declare conjunction as a record type:
-```
-record _×′_ (A B : Set) : Set where
-  field
-    proj₁′ : A
-    proj₂′ : B
-open _×′_
-```
-Here record construction
-
-    record
-      { proj₁′ = M
-      ; proj₂′ = N
-      }
-
-corresponds to the term
-
-    ⟨ M , N ⟩
-
-where `M` is a term of type `A` and `N` is a term of type `B`.
 
 When `⟨_,_⟩` appears in a term on the right-hand side of an equation
 we refer to it as a _constructor_, and when it appears in a pattern on
@@ -135,6 +114,35 @@ tightly than anything save disjunction:
 infixr 2 _×_
 ```
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
+
+We could also declare conjunction as a record type:
+```
+record _×′_ (A B : Set) : Set where
+  constructor ⟨_,_⟩′
+  field
+    proj₁′ : A
+    proj₂′ : B
+open _×′_
+```
+Here record construction
+
+    record
+      { proj₁′ = M
+      ; proj₂′ = N
+      }
+
+corresponds to the term
+
+    ⟨ M , N ⟩
+
+where `M` is a term of type `A` and `N` is a term of type `B`.
+
+The constructor declaration allows us to write
+
+   ⟨ M , N ⟩′
+
+in place of the record construction.
+
 
 Given two types `A` and `B`, we refer to `A × B` as the
 _product_ of `A` and `B`.  In set theory, it is also sometimes
