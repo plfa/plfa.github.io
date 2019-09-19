@@ -753,8 +753,8 @@ defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following:
 
-    x1 x1 x0 x1 nil
-    x1 x1 x0 x1 x0 x0 nil
+    ⟨⟩ I O I I
+    ⟨⟩ O O I O I I
 
 Define a predicate
 
@@ -775,7 +775,7 @@ Show that increment preserves canonical bitstrings:
 
     Can x
     ------------
-    Can (inc x)
+    Can (inc b)
 
 Show that converting a natural to a bitstring always yields a
 canonical bitstring:
@@ -786,9 +786,9 @@ canonical bitstring:
 Show that converting a canonical bitstring to a natural
 and back is the identity:
 
-    Can x
+    Can b
     ---------------
-    to (from x) ≡ x
+    to (from b) ≡ b
 
 (Hint: For each of these, you may first need to prove related
 properties of `One`.)

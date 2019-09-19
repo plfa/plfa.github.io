@@ -435,14 +435,8 @@ Recall that Exercises
 [Bin]({{ site.baseurl }}/Naturals/#Bin),
 [Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws), and
 [Bin-predicates]({{ site.baseurl }}/Relations/#Bin-predicates)
-define a datatype of bitstrings representing natural numbers:
-```
-data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
-```
-And ask you to define the following functions and predicates:
+define a datatype `Bin` of bitstrings representing natural numbers,
+and asks you to define the following functions and predicates:
 
     to   : ℕ → Bin
     from : Bin → ℕ
@@ -455,12 +449,12 @@ And to establish the following properties:
     ----------
     Can (to n)
 
-    Can x
+    Can b
     ---------------
-    to (from x) ≡ x
+    to (from b) ≡ b
 
 Using the above, establish that there is an isomorphism between `ℕ` and
-`∃[ x ](Can x)`.
+`∃[ b ](Can b)`.
 
 ```
 -- Your code goes here

@@ -877,22 +877,22 @@ A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
 ```
 data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
 ```
 For instance, the bitstring
 
     1011
 
-standing for the number eleven is encoded, right to left, as
+standing for the number eleven is encoded as
 
-    x1 x1 x0 x1 nil
+    ⟨⟩ I O I I
 
 Representations are not unique due to leading zeros.
 Hence, eleven is also represented by `001011`, encoded as:
 
-    x1 x1 x0 x1 x0 x0 nil
+    ⟨⟩ O I O I I
 
 Define a function
 
@@ -901,7 +901,7 @@ Define a function
 that converts a bitstring to the bitstring for the next higher
 number.  For example, since `1100` encodes twelve, we should have:
 
-    inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
+    inc (⟨⟩ I O I I) ≡ ⟨⟩ I I O O
 
 Confirm that this gives the correct answer for the bitstrings
 encoding zero through four.
