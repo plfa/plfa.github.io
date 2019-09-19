@@ -4,6 +4,10 @@ title: Notes
 permalink: /Notes/
 ---
 
+## Downloading older versions
+
+<https://github.com/plfa/plfa.github.io/releases>
+
 ## Google Analytics
 
 <https://analytics.google.com/analytics/web/>
