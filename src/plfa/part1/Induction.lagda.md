@@ -955,24 +955,18 @@ for all `m`, `n`, and `p`.
 
 Recall that
 Exercise [Bin]({{ site.baseurl }}/Naturals/#Bin)
-defines a datatype of bitstrings representing natural numbers
-```
-data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
-```
+defines a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define functions
 
     inc   : Bin → Bin
     to    : ℕ → Bin
     from  : Bin → ℕ
 
-Consider the following laws, where `n` ranges over naturals and `x`
+Consider the following laws, where `n` ranges over naturals and `b`
 over bitstrings:
 
-    from (inc x) ≡ suc (from x)
-    to (from x) ≡ x
+    from (inc b) ≡ suc (from b)
+    to (from b) ≡ b
     from (to n) ≡ n
 
 For each law: if it holds, prove; if not, give a counterexample.
