@@ -80,24 +80,15 @@ squished beneath it.
 
 ## Fonts in Emacs
 
-It is recommended that you add the following to the end of your emacs
-configuration file at `~/.emacs`, if you have the mentioned fonts available:
+It is recommended that you install the font [mononoki](https://madmalik.github.io/mononoki/), and add the following to the end of your emacs configuration file at `~/.emacs`:
 
 ``` elisp
-;; Setting up Fonts for use with Agda/PLFA
-;;
-;; default to DejaVu Sans Mono, 
+;; default to mononoki
 (set-face-attribute 'default nil
-		    :family "DejaVu Sans Mono"
+		    :family "mononoki"
 		    :height 120
 		    :weight 'normal
 		    :width  'normal)
-
-;; fix \:
-(set-fontset-font "fontset-default"
-		  (cons (decode-char 'ucs #x2982)
-			(decode-char 'ucs #x2982))
-		  "STIX")
 ```
 
 
