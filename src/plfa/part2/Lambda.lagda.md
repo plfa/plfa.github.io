@@ -209,7 +209,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 ```
 
 
-#### Exercise `primed` (stretch)
+#### Exercise `primed` (stretch) {#primed}
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
@@ -230,6 +230,20 @@ case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
 μ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
 ```
+We intend to apply the function only when the first term is a variable, which we
+indicate by postulating a term `impossible` of the empty type `⊥`.  If we use
+C-c C-n to normalise the term
+
+  ƛ′ two ⇒ two
+
+Agda will return an answer warning us that the impossible has occurred:
+
+  ⊥-elim (plfa.part2.Lambda.impossible (`suc (`suc `zero)) (`suc (`suc `zero)))
+
+While postulating the impossible is a useful technique, it must be
+used with care, since such postulation could allow us to provide
+evidence of _any_ proposition whatsoever, regardless of its truth.
+
 The definition of `plus` can now be written as follows:
 ```
 plus′ : Term
@@ -1158,33 +1172,6 @@ the three places where a bound variable is introduced.
 The rules are deterministic, in that at most one rule applies to every term.
 
 
-### Checking inequality and postulating the impossible {#impossible}
-
-The following function makes it convenient to assert an inequality:
-```
-_≠_ : ∀ (x y : Id) → x ≢ y
-x ≠ y  with x ≟ y
-...       | no  x≢y  =  x≢y
-...       | yes _    =  ⊥-elim impossible
-  where postulate impossible : ⊥
-```
-Here `_≟_` is the function that tests two identifiers for equality.
-We intend to apply the function only when the
-two arguments are indeed unequal, and indicate that the second
-case should never arise by postulating a term `impossible` of
-the empty type `⊥`.  If we use C-c C-n to normalise the term
-
-    "a" ≠ "a"
-
-Agda will return an answer warning us that the impossible has occurred:
-
-    ⊥-elim (plfa.part2.Lambda.impossible "a" "a" refl)
-
-While postulating the impossible is a useful technique, it must be
-used with care, since such postulation could allow us to provide
-evidence of _any_ proposition whatsoever, regardless of its truth.
-
-
 ### Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
@@ -1221,7 +1208,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ⊢twoᶜ : ∀ {Γ A} → Γ ⊢ twoᶜ ⦂ Ch A
 ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
   where
-  ∋s = S ("s" ≠ "z") Z
+  ∋s = S (λ()) Z
   ∋z = Z
 ```
 
@@ -1234,11 +1221,11 @@ Here are the typings corresponding to computing two plus two:
 ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
          (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
   where
-  ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
-  ∋m  = (S ("m" ≠ "n") Z)
+  ∋+  = (S (λ()) (S (λ()) (S (λ()) Z)))
+  ∋m  = (S (λ()) Z)
   ∋n  = Z
   ∋m′ = Z
-  ∋n′ = (S ("n" ≠ "m") Z)
+  ∋n′ = (S (λ()) Z)
 
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
@@ -1257,9 +1244,9 @@ And here are typings for the remainder of the Church example:
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
-  ∋m = S ("m" ≠ "z") (S ("m" ≠ "s") (S ("m" ≠ "n") Z))
-  ∋n = S ("n" ≠ "z") (S ("n" ≠ "s") Z)
-  ∋s = S ("s" ≠ "z") Z
+  ∋m = S (λ()) (S (λ()) (S (λ()) Z))
+  ∋n = S (λ()) (S (λ()) Z)
+  ∋s = S (λ()) Z
   ∋z = Z
 
 ⊢sucᶜ : ∀ {Γ} → Γ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
