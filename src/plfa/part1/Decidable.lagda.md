@@ -576,7 +576,7 @@ minus m       zero    _         = m
 minus (suc m) (suc n) (s≤s m≤n) = minus m n m≤n
 ```
 
-Unfortunately, it is very painful to use, since we have to explicitly provide
+Unfortunately, it is painful to use, since we have to explicitly provide
 the proof that `n ≤ m`:
 
 ```
@@ -594,14 +594,18 @@ record type if it can fill in all its fields. So Agda will *always* manage to
 fill in an implicit of an *empty* record type, since there aren't any fields
 after all. This is why `⊤` is defined as an empty record.
 
-The trick is to have an implicit argument of the type `T ⌊ n ≤? m ⌋`. This type
-runs the decision procedure, `n ≤? m`, erases it to a boolean, and finally uses
-`T` to map that to the world of evidence. 
+The trick is to have an implicit argument of the type `T ⌊ n ≤? m ⌋`. Let's go
+through what this means step-by-step. First, we run the decision procedure, `n
+≤? m`. This provides us with evidence whether `n ≤ m` holds or not. We erase the
+evidence to a boolean. Finally, we apply `T`. Recall that `T` maps booleans into
+the world of evidence: `true` becomes the unit type `⊤`, and `false` becomes the
+empty type `⊥`. Operationally, an implicit argument of this type works as a
+guard.
 
 - If `n ≤ m` holds, the type of the implicit value reduces to `⊤`. Agda then
   happily provides the implicit value.
 - Otherwise, the type reduces to `⊥`, which Agda has no chance of providing, so
-  it will throw an error. For instance, `_n≤m_254 : ⊥`.
+  it will throw an error. For instance, if we call `3 - 5` we get `_n≤m_254 : ⊥`.
 
 We obtain the witness for `n ≤ m` using `toWitness`, which we defined earlier:
 
