@@ -347,13 +347,13 @@ reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 (We will validate that last fact in an exercise later in this chapter.)
 
-#### Exercise `reverse-++-commute` (recommended)
+#### Exercise `reverse-++-distrib` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
 ```
 postulate
-  reverse-++-commute : ∀ {A : Set} {xs ys : List A}
+  reverse-++-distrib : ∀ {A : Set} (xs ys : List A)
     → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 ```
 
