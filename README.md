@@ -21,11 +21,11 @@ We list the versions of our dependencies on the badges above.  We have
 tested with the versions listed; either earlier or later versions may
 cause problems.
 
-You can get the appropriate version of Programming Language Foundations in Agda from GitHub, 
-either by cloning the repository, 
+You can get the appropriate version of Programming Language Foundations in Agda from GitHub,
+either by cloning the repository,
 or by downloading [the zip archive](https://github.com/plfa/plfa.github.io/archive/dev.zip):
 
-    git clone https://github.com/plfa/plfa.github.io 
+    git clone https://github.com/plfa/plfa.github.io
 
 Finally, we need to let Agda know where to find the standard library.
 For this, you can follow the instructions
@@ -37,6 +37,22 @@ modules from the book, you need to do this.  To do so, add the path to
 `plfa.agda-lib` to `~/.agda/libraries` and add `plfa` to
 `~/.agda/defaults`, both on lines of their own.
 
+## Auto-loading `agda-mode` in Emacs
+
+In order to have `agda-mode` automatically loaded whenever you open a file ending
+with `.agda` or `.lagda.md`, put the following on your Emacs configuration file:
+
+``` elisp
+(setq auto-mode-alist
+   (append
+     '(("\\.agda\\'" . agda2-mode)
+       ("\\.lagda.md\\'" . agda2-mode))
+     auto-mode-alist))
+```
+
+The configuration file for Emacs is normally located in `~/.emacs` or `~/.emacs.d/init.el`,
+but Aquamacs users might need to move their startup settings to the Preferences.el file in
+`~/Library/Preferences/Aquamacs Emacs/Preferences`.
 
 ## Unicode characters
 
@@ -66,14 +82,14 @@ See
 for more details.
 
 If you want to see messages beside rather than below your Agda code,
-you can do the following: 
+you can do the following:
 
   - Load your Agda file and do `C-c C-l`;
-  - type `C-x 1` to get only your Agda file showing; 
+  - type `C-x 1` to get only your Agda file showing;
   - type `C-x 3` to split the window horizontally;
-  - move your cursor to the right-hand half of your frame; 
+  - move your cursor to the right-hand half of your frame;
   - type `C-x b` and switch to the buffer called "Agda information"
-  
+
 Now, error messages from Agda will appear next to your file, rather than
 squished beneath it.
 
@@ -98,7 +114,7 @@ To build and host a local copy of the book, there are several tools you need *in
 
   - [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
   - [Bundler](https://bundler.io/#getting-started)
-  
+
 For most of the tools, you can simply follow their respective build instructions.
 Most recent versions of Ruby should work.
 You install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proofer](https://github.com/gjtorikian/html-proofer), *etc.*---using Bundler:
@@ -108,11 +124,11 @@ You install the Ruby dependencies---[Jekyll](https://jekyllrb.com/), [html-proof
 Once you have installed all of the dependencies, you can build a copy of the book by running:
 
     make build
-    
+
 You can host your copy of the book locally by running:
 
     make serve
-    
+
 The Makefile offers more than just these options:
 
     make                      (see make test)
