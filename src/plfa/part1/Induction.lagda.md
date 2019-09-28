@@ -377,7 +377,7 @@ and
     +-assoc : ∀ (m : ℕ) → ∀ (n : ℕ) → ∀ (p : ℕ) → (m + n) + p ≡ m + (n + p)
 
 are equivalent. They differ from a function type such as `ℕ → ℕ → ℕ`
-in that variables are associated with the each argument type, and the
+in that variables are associated with each argument type, and the
 result type may mention (or depend upon) these variables; hence they
 are called _dependent functions_.
 
