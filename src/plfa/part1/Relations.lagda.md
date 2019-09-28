@@ -160,7 +160,7 @@ Chapter [Decidable]({{ site.baseurl }}/Decidable/).
 
 ## Inversion
 
-In our defintions, we go from smaller things to larger things.
+In our definitions, we go from smaller things to larger things.
 For instance, from `m ≤ n` we can conclude `suc m ≤ suc n`,
 where `suc m` is bigger than `m` (that is, the former contains
 the latter), and `suc n` is bigger than `n`. But sometimes we
