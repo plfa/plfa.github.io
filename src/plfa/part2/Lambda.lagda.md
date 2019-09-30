@@ -238,7 +238,7 @@ C-c C-n to normalise the term
 
 Agda will return an answer warning us that the impossible has occurred:
 
-  ⊥-elim (plfa.part2.Lambda.impossible (`suc (`suc `zero)) (`suc (`suc `zero)))
+  ⊥-elim (plfa.part2.Lambda.impossible (`` `suc (`suc `zero)) (`suc (`suc `zero)) ``)
 
 While postulating the impossible is a useful technique, it must be
 used with care, since such postulation could allow us to provide
