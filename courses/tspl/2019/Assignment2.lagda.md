@@ -1,11 +1,11 @@
 ---
-title     : "Assignment1: TSPL Assignment 1"
+title     : "Assignment2: TSPL Assignment 2"
 layout    : page
-permalink : /TSPL/2019/Assignment1/
+permalink : /TSPL/2019/Assignment2/
 ---
 
 ```
-module Assignment1 where
+module Assignment2 where
 ```
 
 ## YOUR NAME AND EMAIL GOES HERE
