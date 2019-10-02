@@ -59,7 +59,7 @@ open import Relation.Nullary.Sum using (_⊎-dec_)
 open import Relation.Nullary.Negation using (contraposition)
 open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 open import plfa.part1.Relations using (_<_; z<s; s<s)
-open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
+open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality; _∘_)
 open plfa.part1.Isomorphism.≃-Reasoning
 ```
 
