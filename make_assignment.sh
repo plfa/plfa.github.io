@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# This script can be used to automatically generate assignment files from PLFA source files.
+# It takes a course abbreviation, e.g. TSPL, a year, and the number of the assignment.
+# At the moment, it outputs the University of Edinburgh guidelines for good scholarly practice,
+# making it somewhat specific to courses run there, but the header should be easy to edit.
+#
+# Usage:
+#
+#   ./make_assignment.sh [COURSE_NAME] [COURSE_YEAR] [ASSIGNMENT_NUMBER] [PLFA_SOURCE_FILE...]
+
 COURSE="$1"
 shift
 
