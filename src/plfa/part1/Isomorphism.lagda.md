@@ -174,10 +174,10 @@ The above is our first use of records. A record declaration is equivalent
 to a corresponding inductive data declaration:
 ```
 data _≃′_ (A B : Set): Set where
-  mk-≃′ : ∀ (to : A → B) →
-          ∀ (from : B → A) →
-          ∀ (from∘to : (∀ (x : A) → from (to x) ≡ x)) →
-          ∀ (to∘from : (∀ (y : B) → to (from y) ≡ y)) →
+  mk-≃′ : ∀ (to′ : A → B) →
+          ∀ (from′ : B → A) →
+          ∀ (from∘to′ : (∀ (x : A) → from′ (to′ x) ≡ x)) →
+          ∀ (to∘from′ : (∀ (y : B) → to′ (from′ y) ≡ y)) →
           A ≃′ B
 
 to′ : ∀ {A B : Set} → (A ≃′ B) → (A → B)
