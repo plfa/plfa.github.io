@@ -528,20 +528,23 @@ _n_ functions.
 #### Exercise `map-compose` (practice)
 
 Prove that the map of a composition is equal to the composition of two maps:
-```
-postulate
-  map-compose : ∀ {A B C : Set} {f : A → B} {g : B → C}
-    → map (g ∘ f) ≡ map g ∘ map f
-```
+
+    map (g ∘ f) ≡ map g ∘ map f
+
 The last step of the proof requires extensionality.
 
-#### Exercise `map-++-commute` (practice)
+```
+-- Your code goes here
+```
+
+#### Exercise `map-++-distribute` (practice)
 
 Prove the following relationship between map and append:
+
+    map f (xs ++ ys) ≡ map f xs ++ map f ys
+
 ```
-postulate
-  map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
-   →  map f (xs ++ ys) ≡ map f xs ++ map f ys
+-- Your code goes here
 ```
 
 #### Exercise `map-Tree` (practice)
@@ -554,11 +557,8 @@ data Tree (A B : Set) : Set where
   node : Tree A B → B → Tree A B → Tree A B
 ```
 Define a suitable map operator over trees:
-```
-postulate
-  map-Tree : ∀ {A B C D : Set}
-    → (A → C) → (B → D) → Tree A B → Tree C D
-```
+
+  map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
 
 
 ## Fold {#Fold}
@@ -593,6 +593,7 @@ _ =
     1 + (2 + (3 + (4 + 0)))
   ∎
 ```
+Here we have an instance of `foldr` where `A` and `B` are both `ℕ`.
 Fold requires time linear in the length of the list.
 
 It is often convenient to exploit currying by applying
@@ -619,6 +620,29 @@ so the fold function takes two arguments, `e` and `_⊗_`
 In general, a data type with _n_ constructors will have
 a corresponding fold function that takes _n_ arguments.
 
+As another example, observe that
+
+    foldr _∷_ [] xs ≡ xs
+
+Here, if `xs` is of type `List A`, then we see we have an instance of
+`foldr` where `A` is `A` and `B` is `List A`.  Demonstrating the
+identity is left as an exercise.  It follows from another exercise
+below that
+
+    xs ++ ys ≡ foldr _∷_ ys xs
+
+
+#### Exercise `foldr-∷` (practice) {#foldr-∷}
+
+Show
+
+    foldr _∷_ [] xs ≡ xs
+
+
+```
+-- Your code goes here
+```
+
 #### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
@@ -633,31 +657,31 @@ For example:
 #### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
-```
-postulate
-  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
-    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
-```
 
+    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+
+```
+-- Your code goes here
+```
 
 #### Exercise `map-is-foldr` (practice)
 
 Show that map can be defined using fold:
-```
-postulate
-  map-is-foldr : ∀ {A B : Set} {f : A → B} →
+
     map f ≡ foldr (λ x xs → f x ∷ xs) []
+
+The proof requires extensionality.
+
 ```
-This requires extensionality.
+-- Your code goes here
+```
 
 #### Exercise `fold-Tree` (practice)
 
 Define a suitable fold function for the type of trees given earlier:
-```
-postulate
-  fold-Tree : ∀ {A B C : Set}
-    → (A → C) → (C → B → C → C) → Tree A B → C
-```
+
+    fold-Tree : ∀ {A B C : Set} → (A → C) → (C → B → C → C) → Tree A B → C
+
 
 ```
 -- Your code goes here
@@ -686,11 +710,8 @@ _ = refl
 ```
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
-```
-postulate
-  sum-downFrom : ∀ (n : ℕ)
-    → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
-```
+
+    sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 
 
 ## Monoids
