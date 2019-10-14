@@ -27,16 +27,23 @@ open import plfa.part1.Isomorphism using (_≃_; extensionality)
 
 ## Universals
 
-We formalise universal quantification using the
-dependent function type, which has appeared throughout this book.
+We formalise universal quantification using the dependent function
+type, which has appeared throughout this book.  For instance, in
+Chapter Induction we showed addition is associative:
 
-Given a variable `x` of type `A` and a proposition `B x` which
-contains `x` as a free variable, the universally quantified
-proposition `∀ (x : A) → B x` holds if for every term `M` of type
-`A` the proposition `B M` holds.  Here `B M` stands for
-the proposition `B x` with each free occurrence of `x` replaced by
-`M`.  Variable `x` appears free in `B x` but bound in
-`∀ (x : A) → B x`.
+    +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+
+which asserts for all natural numbers `m`, `n`, and `p`
+that `(m + n) + p ≡ m + (n + p)` holds.  It is a dependent
+function, which given values for `m`, `n`, and `p` returns
+evidence for the corresponding equation.
+
+In general, given a variable `x` of type `A` and a proposition `B x`
+which contains `x` as a free variable, the universally quantified
+proposition `∀ (x : A) → B x` holds if for every term `M` of type `A`
+the proposition `B M` holds.  Here `B M` stands for the proposition
+`B x` with each free occurrence of `x` replaced by `M`.  Variable `x`
+appears free in `B x` but bound in `∀ (x : A) → B x`.
 
 Evidence that `∀ (x : A) → B x` holds is of the form
 
@@ -371,7 +378,7 @@ restated in this way.
 -- Your code goes here
 ```
 
-#### Exercise `∃-|-≤` (practice)
+#### Exercise `∃-+-≤` (practice)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.

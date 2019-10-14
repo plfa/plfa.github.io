@@ -20,6 +20,9 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises labelled "(practice)" are included for those who want extra practice.
 
 Submit your homework using the "submit" command.
+```bash
+submit tspl cw2 Assignment2.lagda.md
+```
 Please ensure your files execute correctly under Agda!
 
 
