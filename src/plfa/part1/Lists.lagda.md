@@ -351,21 +351,15 @@ list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
-```
-postulate
-  reverse-++-distrib : ∀ {A : Set} (xs ys : List A)
-    → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
-```
+
+    reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
 #### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution:
-```
-postulate
-  reverse-involutive : ∀ {A : Set} {xs : List A}
-    → reverse (reverse xs) ≡ xs
-```
+
+    reverse (reverse xs) ≡ xs
 
 
 ## Faster reverse
@@ -528,21 +522,17 @@ _n_ functions.
 #### Exercise `map-compose` (practice)
 
 Prove that the map of a composition is equal to the composition of two maps:
-```
-postulate
-  map-compose : ∀ {A B C : Set} {f : A → B} {g : B → C}
-    → map (g ∘ f) ≡ map g ∘ map f
-```
+
+    map (g ∘ f) ≡ map g ∘ map f
+
 The last step of the proof requires extensionality.
 
-#### Exercise `map-++-commute` (practice)
+#### Exercise `map-++-distribute` (practice)
 
 Prove the following relationship between map and append:
-```
-postulate
-  map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
-   →  map f (xs ++ ys) ≡ map f xs ++ map f ys
-```
+
+    map f (xs ++ ys) ≡ map f xs ++ map f ys
+
 
 #### Exercise `map-Tree` (practice)
 
@@ -929,30 +919,39 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `¬Any≃All¬` (stretch)
-
-First generalise composition to arbitrary levels, using
-[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly):
-```
-_∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
-  → (B → C) → (A → B) → A → C
-(g ∘′ f) x  =  g (f x)
-```
+#### Exercise `¬Any≃All¬` (recommended)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
-```
-postulate
-  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
-    → (¬_ ∘′ Any P) xs ≃ All (¬_ ∘′ P) xs
-```
+
+    (¬_ ∘ Any P) xs ≃ All (¬_ ∘ P) xs
+
+(Can you see why it is important that here `_∘_` is generalised
+to arbitrary levels, as described in the section on
+[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly)?)
 
 Do we also have the following?
-```
-postulate
-  ¬All≃Any¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
-    → (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
-```
+
+    (¬_ ∘ All P) xs ≃ Any (¬_ ∘ P) xs
+
 If so, prove; if not, explain why.
+
+
+#### Exercise `All-∀` (practice)
+
+Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
+
+```
+-- You code goes here
+```
+
+
+#### Exercise `Any-∃` (practice)
+
+Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
+
+```
+-- You code goes here
+```
 
 
 ## Decidability of All
@@ -1002,24 +1001,6 @@ for some element of a list.  Give their definitions.
 
 ```
 -- Your code goes here
-```
-
-
-#### Exercise `All-∀` (practice)
-
-Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
-
-```
--- You code goes here
-```
-
-
-#### Exercise `Any-∃` (practice)
-
-Show that `Any P xs` is isomorphic to `∃[ x ∈ xs ] P x`.
-
-```
--- You code goes here
 ```
 
 
