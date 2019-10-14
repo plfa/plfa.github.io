@@ -552,8 +552,11 @@ data Tree (A B : Set) : Set where
 ```
 Define a suitable map operator over trees:
 
-  map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
+    map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
 
+```
+-- Your code goes here
+```
 
 ## Fold {#Fold}
 
@@ -619,23 +622,12 @@ As another example, observe that
     foldr _∷_ [] xs ≡ xs
 
 Here, if `xs` is of type `List A`, then we see we have an instance of
-`foldr` where `A` is `A` and `B` is `List A`.  Demonstrating the
-identity is left as an exercise.  It follows from another exercise
-below that
+`foldr` where `A` is `A` and `B` is `List A`.  It follows that
 
     xs ++ ys ≡ foldr _∷_ ys xs
 
+Demonstrating both these equations is left as an exercise.
 
-#### Exercise `foldr-∷` (practice) {#foldr-∷}
-
-Show
-
-    foldr _∷_ [] xs ≡ xs
-
-
-```
--- Your code goes here
-```
 
 #### Exercise `product` (recommended)
 
@@ -653,6 +645,21 @@ For example:
 Show that fold and append are related as follows:
 
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+
+```
+-- Your code goes here
+```
+
+#### Exercise `foldr-∷` (practice)
+
+Show
+
+    foldr _∷_ [] xs ≡ xs
+
+Show as a consequence of `foldr-++ above that
+
+    xs ++ ys ≡ foldr _∷_ ys xs    
+
 
 ```
 -- Your code goes here
@@ -780,6 +787,13 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ≡⟨⟩
     foldr _⊗_ e (x ∷ xs) ⊗ y
   ∎
+```
+
+In a previous exercise we showed the following.
+```
+postulate
+  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) → 
+    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 ```
 
 As a consequence, using a previous exercise, we have the following:
@@ -1029,17 +1043,49 @@ for some element of a list.  Give their definitions.
 ```
 
 
-#### Exercise `filter?` (stretch)
+#### Exercise `split` (stretch)
+
+The relation `merge` holds when two lists merge to give a third list.
+```
+data merge {A : Set} : (xs ys zs : List A) → Set where
+
+  [] :
+      --------------
+      merge [] [] []
+
+  left-∷ : ∀ {x xs ys zs}
+    → merge xs ys zs
+      --------------------------
+    → merge (x ∷ xs) ys (x ∷ zs)
+
+  right-∷ : ∀ {y xs ys zs}
+    → merge xs ys zs
+      --------------------------
+    → merge xs (y ∷ ys) (y ∷ zs)
+```    
+
+For example,
+```
+_ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
+_ = left-∷ (right-∷ (right-∷ (left-∷ [])))
+
+```
+
+Given a decidable predicate and a list, we can split the list
+into two lists that merge to give the original list, where all
+elements of one list satisfy the predicate, and all elements of
+the other do not satisfy the predicate.
 
 Define the following variant of the traditional `filter` function on lists,
 which given a decidable predicate and a list returns all elements of the
 list satisfying the predicate:
-```
-postulate
-  filter? : ∀ {A : Set} {P : A → Set}
-    → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
-```
 
+    split : ∀ {A : Set} {P : A → Set} (P? : Decidable P) (xs : List A)
+      → ∃[ ys ] ∃[ zs ] ( merge xs ys zs × All P ys × All (¬_ ∘ P) zs )
+
+```
+-- Your code goes here
+```
 
 ## Standard Library
 
