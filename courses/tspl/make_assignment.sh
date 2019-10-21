@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script can be used to automatically generate assignment files from PLFA source files.
 # It takes a course abbreviation, e.g. TSPL, a year, and the number of the assignment.
