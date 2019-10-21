@@ -169,7 +169,7 @@ checks that the inherited and synthesised types match.
 
 Similarly, we said above that the function of an application is typed
 by synthesis and that abstractions are typed by inheritance, giving a
-mismatch if the function of an application is a variable.  Hence, we
+mismatch if the function of an application is an abstraction.  Hence, we
 need a way to treat an inherited term as if it is synthesised.  We
 introduce a new term form `M ↓ A` for this purpose.  The typing
 judgment returns `A` as the synthesized type of the term as a whole,
