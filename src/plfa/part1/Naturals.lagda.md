@@ -913,7 +913,7 @@ between the two representations.
     from : Bin → ℕ
 
 For the former, choose the bitstring to have no leading zeros if it
-represents a positive natural, and represent zero by `x0 nil`.
+represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
 ```
