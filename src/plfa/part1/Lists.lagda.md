@@ -656,7 +656,7 @@ Show
 
     foldr _∷_ [] xs ≡ xs
 
-Show as a consequence of `foldr-++ above that
+Show as a consequence of `foldr-++` above that
 
     xs ++ ys ≡ foldr _∷_ ys xs    
 
