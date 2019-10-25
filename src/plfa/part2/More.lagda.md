@@ -1199,7 +1199,7 @@ _ =
    ∎
 ```
 
-#### Exercise `More` (practice)
+#### Exercise `More` (recommended and practice)
 
 Formalise the remaining constructs defined in this chapter.
 Make your changes in this file.
@@ -1207,10 +1207,15 @@ Evaluate each example, applied to data as needed,
 to confirm it returns the expected answer:
 
   * sums (recommended)
-  * unit type
-  * an alternative formulation of unit type
+  * unit type (practice)
+  * an alternative formulation of unit type (practice)
   * empty type (recommended)
-  * lists
+  * lists (practice)
+
+Please delimit any code you add as follows:
+
+    -- begin
+    -- end
 
 
 #### Exercise `double-subst` (stretch)
