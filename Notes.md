@@ -4,6 +4,16 @@ title: Notes
 permalink: /Notes/
 ---
 
+## To Do
+
+Changes I would like to make to the book:
+- Relations, exercise `o+o≡e` --> (recommended)
+- Relations, exercise `≤-iff-<` --> `≤→<`, `<→≤`
+- Relations, exercise `Bin-predicates` --> `Bin-predicate`
+  change canonical form of zero to be empty string, `<>`.
+  Similar change to subsequent exercise.
+
+
 ## Downloading older versions
 
 <https://github.com/plfa/plfa.github.io/releases>
