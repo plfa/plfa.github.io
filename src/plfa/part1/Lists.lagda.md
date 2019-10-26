@@ -1031,7 +1031,7 @@ decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
 
-#### Exercise `any?` (stretch)
+#### Exercise `Any?` (stretch)
 
 Just as `All` has analogues `all` and `All?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
