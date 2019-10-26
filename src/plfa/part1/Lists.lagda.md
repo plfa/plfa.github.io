@@ -1080,8 +1080,8 @@ Define the following variant of the traditional `filter` function on lists,
 which given a decidable predicate and a list returns all elements of the
 list satisfying the predicate:
 
-    split : ∀ {A : Set} {P : A → Set} (P? : Decidable P) (xs : List A)
-      → ∃[ ys ] ∃[ zs ] ( merge xs ys zs × All P ys × All (¬_ ∘ P) zs )
+    split : ∀ {A : Set} {P : A → Set} (P? : Decidable P) (zs : List A)
+      → ∃[ xs ] ∃[ ys ] ( merge xs ys zs × All P xs × All (¬_ ∘ P) ys )
 
 ```
 -- Your code goes here
