@@ -449,7 +449,7 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
 
 
-### Test examples
+### Test examples {#examples}
 
 We repeat the test examples from
 Chapter [Lambda]({{ site.baseurl }}/Lambda/).
