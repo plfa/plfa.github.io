@@ -220,6 +220,7 @@ replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 -- Your code goes here
 ```
 
+
 #### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
@@ -228,11 +229,12 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `¬Any≃All¬` (recommended)
+
+#### Exercise `¬Any⇔All¬` (recommended)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
 
-    (¬_ ∘ Any P) xs ≃ All (¬_ ∘ P) xs
+    (¬_ ∘ Any P) xs ⇔ All (¬_ ∘ P) xs
 
 (Can you see why it is important that here `_∘_` is generalised
 to arbitrary levels, as described in the section on
@@ -240,9 +242,24 @@ to arbitrary levels, as described in the section on
 
 Do we also have the following?
 
-    (¬_ ∘ All P) xs ≃ Any (¬_ ∘ P) xs
+    (¬_ ∘ All P) xs ⇔ Any (¬_ ∘ P) xs
 
 If so, prove; if not, explain why.
+
+
+```
+-- Your code goes here
+```
+
+
+#### Exercise `¬Any≃All¬` (stretch)
+
+Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
+You will need to use extensionality.
+
+```
+-- Your code goes here
+```
 
 
 #### Exercise `All-∀` (practice)

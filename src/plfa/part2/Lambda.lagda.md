@@ -1359,7 +1359,7 @@ or explain why there are no such types.
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
 
 
-#### Exercise `mul-type` (recommended)
+#### Exercise `⊢mul` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well typed.
@@ -1369,7 +1369,7 @@ showing that it is well typed.
 ```
 
 
-#### Exercise `mulᶜ-type` (practice)
+#### Exercise `⊢mulᶜ` (practice)
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well typed.
