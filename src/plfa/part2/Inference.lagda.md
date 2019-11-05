@@ -263,7 +263,7 @@ can compare with our previous development, we import
 module `plfa.part2.DeBruijn`:
 
 ```
-import plfa.part2.DeBruijn as DB
+import plfa.part2.More as DB
 ```
 
 The phrase `as DB` allows us to refer to definitions
