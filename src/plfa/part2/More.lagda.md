@@ -1232,6 +1232,35 @@ Note the arguments need to be swapped and `W` needs to have
 its context adjusted via renaming in order for the right-hand
 side to be well typed.
 
+## Test examples
+
+We repeat the [test examples]({{ site.baseurl }}/DeBruijn/#examples) from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn),
+in order to make sure we have not broken anything in the process of extending our base calculus.
+```
+two : ∀ {Γ} → Γ ⊢ `ℕ
+two = `suc `suc `zero
+
+plus : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
+plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+
+2+2 : ∀ {Γ} → Γ ⊢ `ℕ
+2+2 = plus · two · two
+
+Ch : Type → Type
+Ch A  =  (A ⇒ A) ⇒ A ⇒ A
+
+twoᶜ : ∀ {Γ A} → Γ ⊢ Ch A
+twoᶜ = ƛ ƛ (# 1 · (# 1 · # 0))
+
+plusᶜ : ∀ {Γ A} → Γ ⊢ Ch A ⇒ Ch A ⇒ Ch A
+plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
+
+sucᶜ : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ
+sucᶜ = ƛ `suc (# 0)
+
+2+2ᶜ : ∀ {Γ} → Γ ⊢ `ℕ
+2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
+```
 
 ## Unicode
 

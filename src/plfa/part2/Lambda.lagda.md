@@ -401,7 +401,7 @@ For instance, we have
 
       (ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) · sucᶜ · `zero
     —→
-      (ƛ "z" ⇒ sucᶜ · (sucᶜ · "z")) · `zero
+      (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero
     —→
       sucᶜ · (sucᶜ · `zero)
 
