@@ -215,10 +215,11 @@ That is, if `ρ` maps any judgment `Γ ∋ A` to a judgment `Δ ∋ A`,
 and if `M ~ M†` then `rename ρ M ~ rename ρ M†`:
 
 ```
-~rename : ∀ {Γ Δ}
-  → (ρ : ∀ {A} → Γ ∋ A → Δ ∋ A)
-    ----------------------------------------------------------
-  → (∀ {A} {M M† : Γ ⊢ A} → M ~ M† → rename ρ M ~ rename ρ M†)
+~rename : ∀ {Γ Δ A} {M M† : Γ ⊢ A}
+  → (ρ : Γ ⊆ Δ)
+  → M ~ M†
+    ------------------------
+  → rename ρ M ~ rename ρ M†
 ~rename ρ (~`)          =  ~`
 ~rename ρ (~ƛ ~N)       =  ~ƛ (~rename (ext ρ) ~N)
 ~rename ρ (~L ~· ~M)    =  (~rename ρ ~L) ~· (~rename ρ ~M)

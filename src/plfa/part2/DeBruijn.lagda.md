@@ -520,10 +520,15 @@ extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped:
 ```
-ext : ∀ {Γ Δ}
-  → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
-    ---------------------------------
-  → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
+infix 4 _⊆_
+
+_⊆_ : Context → Context → Set
+Γ ⊆ Δ = ∀ {A} → Γ ∋ A → Δ ∋ A
+
+ext : ∀ {Γ Δ A}
+  → Γ ⊆ Δ
+    -------------
+  → Γ , A ⊆ Δ , A
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 ```
@@ -543,10 +548,11 @@ to define renaming.  If variables in one context map to
 variables in another, then terms in the first context map to
 terms in the second:
 ```
-rename : ∀ {Γ Δ}
-  → (∀ {A} → Γ ∋ A → Δ ∋ A)
-    -----------------------
-  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+rename : ∀ {Γ Δ A}
+  → Γ ⊆ Δ
+  → Γ ⊢ A
+    -----
+  → Δ ⊢ A
 rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)

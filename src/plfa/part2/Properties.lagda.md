@@ -433,7 +433,14 @@ We now proceed with our three-step programme.
 We often need to "rebase" a type derivation, replacing a derivation
 `Γ ⊢ M ⦂ A` by a related derivation `Δ ⊢ M ⦂ A`.  We may do so as long
 as every variable that appears in `Γ` also appears in `Δ`, and with
-the same type.
+the same type. Or, in other words, `Γ` is contained in `Δ`:
+
+```
+infix 4 _⊆_
+
+_⊆_ : Context → Context → Set
+Γ ⊆ Δ = ∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A
+```
 
 Three of the rules for typing (lambda abstraction, case on naturals,
 and fixpoint) have hypotheses that extend the context to include a
@@ -449,10 +456,10 @@ with this situation, we first prove a lemma showing that if one context maps to 
 this is still true after adding the same variable to
 both contexts:
 ```
-ext : ∀ {Γ Δ}
-  → (∀ {x A}     →         Γ ∋ x ⦂ A →         Δ ∋ x ⦂ A)
-    -----------------------------------------------------
-  → (∀ {x y A B} → Γ , y ⦂ B ∋ x ⦂ A → Δ , y ⦂ B ∋ x ⦂ A)
+ext : ∀ {Γ Δ x A}
+  → Γ ⊆ Δ
+    ---------------------
+  → Γ , x ⦂ A ⊆ Δ , x ⦂ A
 ext ρ Z           =  Z
 ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 ```
@@ -474,10 +481,11 @@ applying `ρ` to find the evidence that `x` appears in `Δ`.
 With the extension lemma under our belts, it is straightforward to
 prove renaming preserves types:
 ```
-rename : ∀ {Γ Δ}
-  → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
-    ----------------------------------
-  → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
+rename : ∀ {Γ Δ M A}
+  → Γ ⊆ Δ
+  → Γ ⊢ M ⦂ A
+    ---------
+  → Δ ⊢ M ⦂ A
 rename ρ (⊢` ∋w)           =  ⊢` (ρ ∋w)
 rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext ρ) ⊢N)
 rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)

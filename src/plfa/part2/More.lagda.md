@@ -737,11 +737,16 @@ count {∅}     _        =  ⊥-elim impossible
 ## Renaming
 
 ```
-ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
+infix 4 _⊆_
+
+_⊆_ : Context → Context → Set
+Γ ⊆ Δ = ∀ {A} → Γ ∋ A → Δ ∋ A
+
+ext : ∀ {Γ Δ A} → Γ ⊆ Δ → Γ , A ⊆ Δ , A
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 
-rename : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+rename : ∀ {Γ Δ A} → Γ ⊆ Δ → Γ ⊢ A → Δ ⊢ A
 rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
