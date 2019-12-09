@@ -1,5 +1,5 @@
 ---
-title     : "Exam: TSPL Mock Exam file"
+title     : "Exam: TSPL Exam file"
 layout    : page
 permalink : /TSPL/2019/Exam/
 ---
@@ -43,8 +43,6 @@ Remember to indent all code by two spaces.
 ### (a)
 
 ### (b)
-
-### (c)
 
 
 ## Problem 2
