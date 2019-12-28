@@ -72,7 +72,7 @@ Terms have seven constructs. Three are for the core lambda calculus:
 Three are for the naturals:
 
   * Zero `` `zero ``
-  * Successor `` `suc ``
+  * Successor `` `suc M ``
   * Case `` case L [zero⇒ M |suc x ⇒ N ] ``
 
 And one is for recursion:
