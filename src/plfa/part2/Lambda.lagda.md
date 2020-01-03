@@ -1315,7 +1315,7 @@ there is at most one `A` such that the judgment holds:
 ```
 
 The typing relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
-the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
+the term `` ƛ "x" ⇒ ` "x" `` has type `A ⇒ A` for any type `A`.
 
 ### Non-examples
 
