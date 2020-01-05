@@ -36,7 +36,7 @@ before_install:
 - make travis-setup
 
 script:
-- curl -L https://raw.githubusercontent.com/MestreLion/git-tools/master/git-restore-mtime | python
+- travis_retry curl -L https://raw.githubusercontent.com/plfa/git-tools/master/git-restore-mtime | python
 - agda --version
 - acknowledgements --version
 - make test-offline # disable to only build cache
