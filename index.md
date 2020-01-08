@@ -58,6 +58,8 @@ Pull requests are encouraged.
       [2019]({{ site.baseurl }}/PUC/2019/)
     * Prabhakar Ragde, University of Waterloo,
 	  [2019](https://cs.uwaterloo.ca/~plragde/842/)
+    * Jeremy Siek, Indiana University,
+	  [2020](https://jsiek.github.io/B522-PL-Foundations/)
   - A paper describing the book appeared in [SBMF][sbmf].
 
 [wen]: https://github.com/wenkokke
