@@ -115,12 +115,11 @@ _++_ : ∀ {A : Set} → List A → List A → List A
 []       ++ ys  =  ys
 (x ∷ xs) ++ ys  =  x ∷ (xs ++ ys)
 ```
-The type `A` is an implicit argument to append, making it a
-_polymorphic_ function (one that can be used at many types).  The
-empty list appended to another list yields the other list.  A
-non-empty list appended to another list yields a list with head the
-same as the head of the first list and tail the same as the tail of
-the first list appended to the second list.
+The type `A` is an implicit argument to append, making it a _polymorphic_
+function (one that can be used at many types). A list appended to the empty list
+yields the list itself. A list appended to a non-empty list yields a list with
+the head the same as the head of the non-empty list, and a tail the same as the
+other list appended to tail of the non-empty list.
 
 Here is an example, showing how to compute the result
 of appending two lists:
@@ -682,7 +681,7 @@ Show
 
 Show as a consequence of `foldr-++` above that
 
-    xs ++ ys ≡ foldr _∷_ ys xs    
+    xs ++ ys ≡ foldr _∷_ ys xs
 
 
 ```
@@ -816,7 +815,7 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
 In a previous exercise we showed the following.
 ```
 postulate
-  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) → 
+  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 ```
 
@@ -1099,7 +1098,7 @@ data merge {A : Set} : (xs ys zs : List A) → Set where
     → merge xs ys zs
       --------------------------
     → merge xs (y ∷ ys) (y ∷ zs)
-```    
+```
 
 For example,
 ```

@@ -389,7 +389,7 @@ simplify to the same term, and similarly for `inj₂ y`.
 We set the precedence of disjunction so that it binds less tightly
 than any other declared operator:
 ```
-infix 1 _⊎_
+infixr 1 _⊎_
 ```
 Thus, `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
 

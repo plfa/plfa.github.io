@@ -568,7 +568,7 @@ swap {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
       --------------------------
     → Γ , x ⦂ A , y ⦂ B ∋ z ⦂ C
   ρ Z                   =  S x≢y Z
-  ρ (S y≢x Z)           =  Z
+  ρ (S z≢x Z)           =  Z
   ρ (S z≢x (S z≢y ∋z))  =  S z≢y (S z≢x ∋z)
 ```
 Here the renaming map takes a variable at the end into a variable one
