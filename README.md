@@ -58,8 +58,23 @@ but Aquamacs users might need to move their startup settings to the Preferences.
 
 If you're having trouble typing the Unicode characters into Emacs, the end of
 each chapter should provide a list of the unicode characters introduced in that
-chapter. For a full list of supported characters, see
-[agda-input.el](https://github.com/agda/agda/blob/master/src/data/emacs-mode/agda-input.el#L194).
+chapter.
+
+`agda-mode` and emacs have a number of useful commands.
+Two of them are especially useful when you solve exercises.
+
+For a full list of supported characters, use `agda-input-show-translations` with:
+
+    M-x agda-input-show-translations
+
+All the supported characters in `agda-mode` are shown.
+
+If you want to know how you input a specific Unicode character in agda file,
+move the cursor onto the character and type the following command:
+
+    M-x quail-show-key
+
+You'll see the key sequence of the character in mini buffer.
 
 
 ## Using `agda-mode`
