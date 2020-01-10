@@ -990,6 +990,3 @@ move the cursor onto the character and use `quail-show-key` with:
 
 You'll see a key sequence of the character in mini buffer.
 If you run `M-x qualy-show-key` on say `∸`, you will see `\.-` for the character.
-
-We write `C-b` to stand for control-b, and similarly.  One can also navigate
-left and right by typing the digits that appear in the displayed list.
