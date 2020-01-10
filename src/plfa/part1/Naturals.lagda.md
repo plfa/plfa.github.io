@@ -966,7 +966,28 @@ the left, right, up, and down keys to navigate.  The command remembers
 where you navigated to the last time, and starts with the same
 character next time.  The command `\l` works similarly for left arrows.
 
-In place of left, right, up, and down keys, one may also use control characters:
+For a full list of supported characters, use `agda-input-show-translations` with:
+
+    M-x agda-input-show-translations
+
+All the characters supported by `agda-mode` are shown.
+
+
+If you want to know how you input a specific Unicode character in an agda file,
+move the cursor onto the character and use `quail-show-key` with:
+
+    M-x quail-show-key
+
+You'll see a key sequence of the character in mini buffer.
+If you run `M-x qualy-show-key` on say `∸`, you will see `\.-` for the character.
+
+How you input the above commands varies according to system and configuration.
+The most portable way would be to type `ESC`,  `x` and then type
+`agda-input-show-translations` or `quail-show-key` literally.
+
+It is important to be familiar with moving cursor in `agda-mode`.  In
+place of left, right, up, and down keys, one may also use control
+characters:
 
     C-b  left (backward one character)
     C-f  right (forward one character)
