@@ -354,29 +354,6 @@ reverse of the second appended to the reverse of the first:
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
 
-```
-reverse-++-distrib : ∀ xs ys → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
-reverse-++-distrib [] ys = 
-  begin
-    reverse ([] ++ ys)
-  ≡⟨⟩
-    reverse ys
-  ≡⟨ sym (++-identityʳ (reverse ys)) ⟩
-    reverse ys ++ reverse []
-  ∎
-reverse-++-distrib (x ∷ xs) ys =
-  begin
-    reverse ((x ∷ xs) ++ ys)
-  ≡⟨⟩
-    reverse (xs ++ ys) ++ [ x ]
-  ≡⟨ cong (_++ [ x ]) (reverse-++-distrib xs ys) ⟩
-    (reverse ys ++ reverse xs) ++ [ x ]
-  ≡⟨ ++-assoc (reverse ys) (reverse xs) [ x ] ⟩
-    reverse ys ++ (reverse xs ++ [ x ])
-  ∎
-```
-
-
 #### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
