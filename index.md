@@ -59,8 +59,12 @@ Pull requests are encouraged.
     * Prabhakar Ragde, University of Waterloo,
 	  [2019](https://cs.uwaterloo.ca/~plragde/842/)
   - A paper describing the book appeared in [SBMF][sbmf].
-
+  - A notebook version of the textbook
+    is available at [NextJournal][nextjournal].
+    It lets you edit and execute the book via a web interface.
+	
 [wen]: https://github.com/wenkokke
 [phil]: https://homepages.inf.ed.ac.uk/wadler/
 [GitHub]: https://github.com/plfa/plfa.github.io/
 [sbmf]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
+[nextjournal]: https://nextjournal.com/plfa/ToC
