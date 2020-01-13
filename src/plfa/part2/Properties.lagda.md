@@ -742,8 +742,8 @@ Now that naming is resolved, let's unpack the first three cases:
 
         ∅ ⊢ V ⦂ B
         Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
-        ------------------------------------
-        Γ , x ⦂ A , y ⦂ B ⊢ N [ y := V ] ⦂ C
+        ----------------------------
+        Γ , x ⦂ A ⊢ N [ y := V ] ⦂ C
 
     The typing rule for abstractions then yields the required conclusion.
 
