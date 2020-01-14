@@ -568,7 +568,7 @@ swap {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
       --------------------------
     → Γ , x ⦂ A , y ⦂ B ∋ z ⦂ C
   ρ Z                   =  S x≢y Z
-  ρ (S y≢x Z)           =  Z
+  ρ (S z≢x Z)           =  Z
   ρ (S z≢x (S z≢y ∋z))  =  S z≢y (S z≢x ∋z)
 ```
 Here the renaming map takes a variable at the end into a variable one
@@ -742,8 +742,8 @@ Now that naming is resolved, let's unpack the first three cases:
 
         ∅ ⊢ V ⦂ B
         Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
-        ------------------------------------
-        Γ , x ⦂ A , y ⦂ B ⊢ N [ y := V ] ⦂ C
+        ----------------------------
+        Γ , x ⦂ A ⊢ N [ y := V ] ⦂ C
 
     The typing rule for abstractions then yields the required conclusion.
 

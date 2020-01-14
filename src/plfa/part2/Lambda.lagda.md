@@ -72,7 +72,7 @@ Terms have seven constructs. Three are for the core lambda calculus:
 Three are for the naturals:
 
   * Zero `` `zero ``
-  * Successor `` `suc ``
+  * Successor `` `suc M ``
   * Case `` case L [zero⇒ M |suc x ⇒ N ] ``
 
 And one is for recursion:
@@ -234,11 +234,11 @@ We intend to apply the function only when the first term is a variable, which we
 indicate by postulating a term `impossible` of the empty type `⊥`.  If we use
 C-c C-n to normalise the term
 
-  ƛ′ two ⇒ two
+    ƛ′ two ⇒ two
 
 Agda will return an answer warning us that the impossible has occurred:
 
-  ⊥-elim (plfa.part2.Lambda.impossible (`` `suc (`suc `zero)) (`suc (`suc `zero)) ``)
+    ⊥-elim (plfa.part2.Lambda.impossible (`` `suc (`suc `zero)) (`suc (`suc `zero)) ``)
 
 While postulating the impossible is a useful technique, it must be
 used with care, since such postulation could allow us to provide
@@ -1315,7 +1315,7 @@ there is at most one `A` such that the judgment holds:
 ```
 
 The typing relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
-the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
+the term `` ƛ "x" ⇒ ` "x" `` has type `A ⇒ A` for any type `A`.
 
 ### Non-examples
 

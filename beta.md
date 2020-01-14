@@ -64,7 +64,8 @@ Pull requests are encouraged.
 
   - Courses taught from the textbook:
     * Philip Wadler, University of Edinburgh,
-      [2018]({{ site.baseurl }}/TSPL/2018/)
+      [2018]({{ site.baseurl }}/TSPL/2018/),
+	  [2019]({{ site.baseurl }}/TSPL/2019/)
     * David Darais, University of Vermont,
       [2018](http://david.darais.com/courses/fa2018-cs295A/)
     * John Leo, Google Seattle, 2018--2019
@@ -72,6 +73,8 @@ Pull requests are encouraged.
       [2019]({{ site.baseurl }}/PUC/2019/)
     * Prabhakar Ragde, University of Waterloo,
       [2019](https://cs.uwaterloo.ca/~plragde/842/)
+    * Jeremy Siek, Indiana University,
+	  [2020](https://jsiek.github.io/B522-PL-Foundations/)
   - A paper describing the book appeared in [SBMF][sbmf].
 
 [wen]: https://wenkokke.github.io
