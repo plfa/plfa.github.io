@@ -58,6 +58,9 @@ Pull requests are encouraged.
       [2019]({{ site.baseurl }}/PUC/2019/)
     * Prabhakar Ragde, University of Waterloo,
 	  [2019](https://cs.uwaterloo.ca/~plragde/842/)
+    * Adrian King,
+      San Francisco Types, Theorems, and Programming Languages Meetup
+      [2019-20](http://meet.meetup.com/wf/click?upn=ZDzXt-2B-2BZmzYir6Bq5X7vEQ2iNYdgjN9-2FU9nWKp99AU8rZjrncUsSYODqOGn6kV-2BqW71oirCo-2Bk8O1q2FtDFhYZR-2B737CPhNWBjt58LuSRC-2BWTj61VZCHquysW8z7dVtQWxB5Sorl3chjZLDptP70L7aBZL14FTERnKJcRQdrMtc-3D_IqHN4t3hH47BvE1Cz0BakIxV4odHudhr6IVs-2Fzslmv-2FBuORsh-2FwQmOxMBdyMHsSBndQDQmt47hobqsLp-2Bm04Y9LwgV66MGyucsd0I9EgDEUB-2FjzdtSgRv-2Fxng8Pgsa3AZIEYILOhLpQ5ige5VFYTEHVN1pEqnujCHovmTxJkqAK9H-2BIL15-2FPxx97RfHcz7M30YNyqp6TOYfgTxyUHc6lufYKFA75Y7MV6MeDJMxw9-2FYUxR6CEjdoagQBmaGkBVzN)	  
   - A paper describing the book appeared in [SBMF][sbmf].
 
 [wen]: https://github.com/wenkokke
