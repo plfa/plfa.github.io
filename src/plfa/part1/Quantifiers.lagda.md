@@ -121,6 +121,8 @@ data Tri : Set where
 ```
 Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
 Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
+Hint: you will need to postulate a version of extensionality that
+works for dependent functions.
 
 
 ## Existentials
