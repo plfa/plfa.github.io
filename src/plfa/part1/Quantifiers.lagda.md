@@ -463,6 +463,24 @@ And to establish the following properties:
 Using the above, establish that there is an isomorphism between `ℕ` and
 `∃[ b ](Can b)`.
 
+We recommend proving following lemmas which show that, for a given
+binary number `b`, there is only one proof of `One b` and similarly
+for `Can b`.
+
+    ≡One : ∀{b : Bin} (o o' : One b) → o ≡ o'
+    
+    ≡Can : ∀{b : Bin} (cb : Can b) (cb' : Can b) → cb ≡ cb'
+
+The proof of `to∘from` is tricky. We recommend proving the following lemma
+
+    to∘from-aux : ∀ (b : Bin) (cb : Can b) → to (from b) ≡ b
+                → _≡_ {_} {∃[ b ](Can b)} ⟨ to (from b) , canon-to (from b) ⟩ ⟨ b , cb ⟩
+
+You cannot immediately use `≡Can` to equate `canon-to (from b)` and
+`cb` because they have different types: `Can (to (from b))` and `Can b`
+respectively.  You must first get their types to be equal, which
+can be done by changing the type of `cb` using `rewrite`.
+
 ```
 -- Your code goes here
 ```
