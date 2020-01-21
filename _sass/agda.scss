@@ -38,6 +38,7 @@ pre.highlight {
 }
 code {
     @include code-font;
+    white-space: pre;
 }
 
 /* Agda. */
