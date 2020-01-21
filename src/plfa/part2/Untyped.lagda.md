@@ -346,15 +346,6 @@ The evidence that a term is in normal form is almost identical to
 the term itself, decorated with some additional primes to indicate
 neutral terms, and using `#′` in place of `#`
 
-We will also need to characterise terms that are applications:
-```
-data Application : ∀ {Γ A} → Γ ⊢ A → Set where
-
-  ap : ∀ {Γ} {L M : Γ ⊢ ★}
-      -------------------
-    → Application (L · M)
-```
-
 
 ## Reduction step
 

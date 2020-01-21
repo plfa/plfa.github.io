@@ -115,12 +115,11 @@ _++_ : ∀ {A : Set} → List A → List A → List A
 []       ++ ys  =  ys
 (x ∷ xs) ++ ys  =  x ∷ (xs ++ ys)
 ```
-The type `A` is an implicit argument to append, making it a
-_polymorphic_ function (one that can be used at many types).  The
-empty list appended to another list yields the other list.  A
-non-empty list appended to another list yields a list with head the
-same as the head of the first list and tail the same as the tail of
-the first list appended to the second list.
+The type `A` is an implicit argument to append, making it a _polymorphic_
+function (one that can be used at many types). A list appended to the empty list
+yields the list itself. A list appended to a non-empty list yields a list with
+the head the same as the head of the non-empty list, and a tail the same as the
+other list appended to tail of the non-empty list.
 
 Here is an example, showing how to compute the result
 of appending two lists:
@@ -347,25 +346,20 @@ reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 (We will validate that last fact in an exercise later in this chapter.)
 
-#### Exercise `reverse-++-commute` (recommended)
+#### Exercise `reverse-++-distrib` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
-```
-postulate
-  reverse-++-commute : ∀ {A : Set} {xs ys : List A}
-    → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
-```
+
+    reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+
 
 #### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution:
-```
-postulate
-  reverse-involutive : ∀ {A : Set} {xs : List A}
-    → reverse (reverse xs) ≡ xs
-```
+
+    reverse (reverse xs) ≡ xs
 
 
 ## Faster reverse
@@ -528,20 +522,23 @@ _n_ functions.
 #### Exercise `map-compose` (practice)
 
 Prove that the map of a composition is equal to the composition of two maps:
-```
-postulate
-  map-compose : ∀ {A B C : Set} {f : A → B} {g : B → C}
-    → map (g ∘ f) ≡ map g ∘ map f
-```
+
+    map (g ∘ f) ≡ map g ∘ map f
+
 The last step of the proof requires extensionality.
 
-#### Exercise `map-++-commute` (practice)
+```
+-- Your code goes here
+```
+
+#### Exercise `map-++-distribute` (practice)
 
 Prove the following relationship between map and append:
+
+    map f (xs ++ ys) ≡ map f xs ++ map f ys
+
 ```
-postulate
-  map-++-commute : ∀ {A B : Set} {f : A → B} {xs ys : List A}
-   →  map f (xs ++ ys) ≡ map f xs ++ map f ys
+-- Your code goes here
 ```
 
 #### Exercise `map-Tree` (practice)
@@ -554,12 +551,12 @@ data Tree (A B : Set) : Set where
   node : Tree A B → B → Tree A B → Tree A B
 ```
 Define a suitable map operator over trees:
-```
-postulate
-  map-Tree : ∀ {A B C D : Set}
-    → (A → C) → (B → D) → Tree A B → Tree C D
-```
 
+    map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
+
+```
+-- Your code goes here
+```
 
 ## Fold {#Fold}
 
@@ -593,6 +590,7 @@ _ =
     1 + (2 + (3 + (4 + 0)))
   ∎
 ```
+Here we have an instance of `foldr` where `A` and `B` are both `ℕ`.
 Fold requires time linear in the length of the list.
 
 It is often convenient to exploit currying by applying
@@ -619,6 +617,18 @@ so the fold function takes two arguments, `e` and `_⊗_`
 In general, a data type with _n_ constructors will have
 a corresponding fold function that takes _n_ arguments.
 
+As another example, observe that
+
+    foldr _∷_ [] xs ≡ xs
+
+Here, if `xs` is of type `List A`, then we see we have an instance of
+`foldr` where `A` is `A` and `B` is `List A`.  It follows that
+
+    xs ++ ys ≡ foldr _∷_ ys xs
+
+Demonstrating both these equations is left as an exercise.
+
+
 #### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
@@ -633,31 +643,46 @@ For example:
 #### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
-```
-postulate
-  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
+
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+
+```
+-- Your code goes here
 ```
 
+#### Exercise `foldr-∷` (practice)
+
+Show
+
+    foldr _∷_ [] xs ≡ xs
+
+Show as a consequence of `foldr-++` above that
+
+    xs ++ ys ≡ foldr _∷_ ys xs
+
+
+```
+-- Your code goes here
+```
 
 #### Exercise `map-is-foldr` (practice)
 
 Show that map can be defined using fold:
-```
-postulate
-  map-is-foldr : ∀ {A B : Set} {f : A → B} →
+
     map f ≡ foldr (λ x xs → f x ∷ xs) []
+
+The proof requires extensionality.
+
 ```
-This requires extensionality.
+-- Your code goes here
+```
 
 #### Exercise `fold-Tree` (practice)
 
 Define a suitable fold function for the type of trees given earlier:
-```
-postulate
-  fold-Tree : ∀ {A B C : Set}
-    → (A → C) → (C → B → C → C) → Tree A B → C
-```
+
+    fold-Tree : ∀ {A B C : Set} → (A → C) → (C → B → C → C) → Tree A B → C
+
 
 ```
 -- Your code goes here
@@ -686,11 +711,8 @@ _ = refl
 ```
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
-```
-postulate
-  sum-downFrom : ∀ (n : ℕ)
-    → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
-```
+
+    sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 
 
 ## Monoids
@@ -765,6 +787,13 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ≡⟨⟩
     foldr _⊗_ e (x ∷ xs) ⊗ y
   ∎
+```
+
+In a previous exercise we showed the following.
+```
+postulate
+  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) →
+    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 ```
 
 As a consequence, using a previous exercise, we have the following:
@@ -929,30 +958,52 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `¬Any≃All¬` (stretch)
-
-First generalise composition to arbitrary levels, using
-[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly):
-```
-_∘′_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
-  → (B → C) → (A → B) → A → C
-(g ∘′ f) x  =  g (f x)
-```
+#### Exercise `¬Any⇔All¬` (recommended)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
-```
-postulate
-  ¬Any≃All¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
-    → (¬_ ∘′ Any P) xs ≃ All (¬_ ∘′ P) xs
-```
+
+    (¬_ ∘ Any P) xs ⇔ All (¬_ ∘ P) xs
+
+(Can you see why it is important that here `_∘_` is generalised
+to arbitrary levels, as described in the section on
+[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly)?)
 
 Do we also have the following?
-```
-postulate
-  ¬All≃Any¬ : ∀ {A : Set} (P : A → Set) (xs : List A)
-    → (¬_ ∘′ All P) xs ≃ Any (¬_ ∘′ P) xs
-```
+
+    (¬_ ∘ All P) xs ⇔ Any (¬_ ∘ P) xs
+
 If so, prove; if not, explain why.
+
+
+```
+-- Your code goes here
+```
+
+#### Exercise `¬Any≃All¬` (stretch)
+
+Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
+You will need to use extensionality.
+
+```
+-- Your code goes here
+```
+
+#### Exercise `All-∀` (practice)
+
+Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
+
+```
+-- You code goes here
+```
+
+
+#### Exercise `Any-∃` (practice)
+
+Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
+
+```
+-- You code goes here
+```
 
 
 ## Decidability of All
@@ -993,7 +1044,7 @@ decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
 
-#### Exercise `any?` (stretch)
+#### Exercise `Any?` (stretch)
 
 Just as `All` has analogues `all` and `All?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
@@ -1005,35 +1056,50 @@ for some element of a list.  Give their definitions.
 ```
 
 
-#### Exercise `All-∀` (practice)
+#### Exercise `split` (stretch)
 
-Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
-
+The relation `merge` holds when two lists merge to give a third list.
 ```
--- You code goes here
-```
+data merge {A : Set} : (xs ys zs : List A) → Set where
 
+  [] :
+      --------------
+      merge [] [] []
 
-#### Exercise `Any-∃` (practice)
+  left-∷ : ∀ {x xs ys zs}
+    → merge xs ys zs
+      --------------------------
+    → merge (x ∷ xs) ys (x ∷ zs)
 
-Show that `Any P xs` is isomorphic to `∃[ x ∈ xs ] P x`.
-
-```
--- You code goes here
-```
-
-
-#### Exercise `filter?` (stretch)
-
-Define the following variant of the traditional `filter` function on lists,
-which given a decidable predicate and a list returns all elements of the
-list satisfying the predicate:
-```
-postulate
-  filter? : ∀ {A : Set} {P : A → Set}
-    → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
+  right-∷ : ∀ {y xs ys zs}
+    → merge xs ys zs
+      --------------------------
+    → merge xs (y ∷ ys) (y ∷ zs)
 ```
 
+For example,
+```
+_ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
+_ = left-∷ (right-∷ (right-∷ (left-∷ [])))
+
+```
+
+Given a decidable predicate and a list, we can split the list
+into two lists that merge to give the original list, where all
+elements of one list satisfy the predicate, and all elements of
+the other do not satisfy the predicate.
+
+Define the following variant of the traditional `filter` function on
+lists, which given a decidable predicate and a list returns a list of
+elements that satisfy the predicate and a list of elements that don't,
+with their corresponding proofs.
+
+    split : ∀ {A : Set} {P : A → Set} (P? : Decidable P) (zs : List A)
+      → ∃[ xs ] ∃[ ys ] ( merge xs ys zs × All P xs × All (¬_ ∘ P) ys )
+
+```
+-- Your code goes here
+```
 
 ## Standard Library
 

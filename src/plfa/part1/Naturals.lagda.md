@@ -428,7 +428,7 @@ other word for evidence, which we will use interchangeably, is _proof_.
 
 #### Exercise `+-example` (practice) {#plus-example}
 
-Compute `3 + 4`, writing out your reasoning as a chain of equations.
+Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
 ```
 -- Your code goes here
@@ -489,7 +489,8 @@ it can easily be inferred from the corresponding term.
 
 #### Exercise `*-example` (practice) {#times-example}
 
-Compute `3 * 4`, writing out your reasoning as a chain of equations.
+Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
+(You do not need to step through the evaluation of `+`.)
 
 ```
 -- Your code goes here
@@ -542,13 +543,13 @@ For example, let's subtract two from three:
 ```
 _ =
   begin
-     3 ∸ 2
+    3 ∸ 2
   ≡⟨⟩
-     2 ∸ 1
+    2 ∸ 1
   ≡⟨⟩
-     1 ∸ 0
+    1 ∸ 0
   ≡⟨⟩
-     1
+    1
   ∎
 ```
 We did not use the second equation at all, but it will be required
@@ -556,17 +557,17 @@ if we try to subtract a larger number from a smaller one:
 ```
 _ =
   begin
-     2 ∸ 3
+    2 ∸ 3
   ≡⟨⟩
-     1 ∸ 2
+    1 ∸ 2
   ≡⟨⟩
-     0 ∸ 1
+    0 ∸ 1
   ≡⟨⟩
-     0
+    0
   ∎
 ```
 
-#### Exercise `∸-examples` (recommended) {#monus-examples}
+#### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -877,22 +878,22 @@ A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
 ```
 data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
 ```
 For instance, the bitstring
 
     1011
 
-standing for the number eleven is encoded, right to left, as
+standing for the number eleven is encoded as
 
-    x1 x1 x0 x1 nil
+    ⟨⟩ I O I I
 
 Representations are not unique due to leading zeros.
 Hence, eleven is also represented by `001011`, encoded as:
 
-    x1 x1 x0 x1 x0 x0 nil
+    ⟨⟩ O I O I I
 
 Define a function
 
@@ -901,7 +902,7 @@ Define a function
 that converts a bitstring to the bitstring for the next higher
 number.  For example, since `1100` encodes twelve, we should have:
 
-    inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
+    inc (⟨⟩ I O I I) ≡ ⟨⟩ I I O O
 
 Confirm that this gives the correct answer for the bitstrings
 encoding zero through four.
@@ -913,7 +914,7 @@ between the two representations.
     from : Bin → ℕ
 
 For the former, choose the bitstring to have no leading zeros if it
-represents a positive natural, and represent zero by `x0 nil`.
+represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
 ```
@@ -965,8 +966,8 @@ After typing `\r`, one can access the many available arrows by using
 the left, right, up, and down keys to navigate.  The command remembers
 where you navigated to the last time, and starts with the same
 character next time.  The command `\l` works similarly for left arrows.
-
-In place of left, right, up, and down keys, one may also use control characters:
+In place of left, right, up, and down keys, one may also use control
+characters:
 
     C-b  left (backward one character)
     C-f  right (forward one character)
@@ -975,3 +976,18 @@ In place of left, right, up, and down keys, one may also use control characters:
 
 We write `C-b` to stand for control-b, and similarly.  One can also navigate
 left and right by typing the digits that appear in the displayed list.
+
+For a full list of supported characters, use `agda-input-show-translations` with:
+
+    M-x agda-input-show-translations
+
+All the characters supported by `agda-mode` are shown. We write M-x to stand for
+typing `ESC` followed by `x`.
+
+If you want to know how you input a specific Unicode character in an agda file,
+move the cursor onto the character and use `quail-show-key` with:
+
+    M-x quail-show-key
+
+You'll see a key sequence of the character in mini buffer.
+If you run `M-x qualy-show-key` on say `∸`, you will see `\.-` for the character.

@@ -19,8 +19,28 @@ You don't need to do all of these, but should attempt at least a few.
 
 Exercises labelled "(practice)" are included for those who want extra practice.
 
-<!-- Submit your homework using the "submit" command. -->
+Submit your homework using the "submit" command.
+```bash
+submit tspl cw1 Assignment1.lagda.md
+```
 Please ensure your files execute correctly under Agda!
+
+
+
+## Good Scholarly Practice.
+
+Please remember the University requirement as
+regards all assessed work. Details about this can be found at:
+
+> [http://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct](http://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct)
+
+Furthermore, you are required to take reasonable measures to protect
+your assessed work from unauthorised access. For example, if you put
+any such work on a public repository then you must set access
+permissions appropriately (generally permitting access only to
+yourself, or your group in the case of group practicals).
+
+
 
 ## Imports
 

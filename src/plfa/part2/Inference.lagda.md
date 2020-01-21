@@ -169,7 +169,7 @@ checks that the inherited and synthesised types match.
 
 Similarly, we said above that the function of an application is typed
 by synthesis and that abstractions are typed by inheritance, giving a
-mismatch if the function of an application is a variable.  Hence, we
+mismatch if the function of an application is an abstraction.  Hence, we
 need a way to treat an inherited term as if it is synthesised.  We
 introduce a new term form `M ↓ A` for this purpose.  The typing
 judgment returns `A` as the synthesized type of the term as a whole,
@@ -263,7 +263,7 @@ can compare with our previous development, we import
 module `plfa.part2.DeBruijn`:
 
 ```
-import plfa.part2.DeBruijn as DB
+import plfa.part2.More as DB
 ```
 
 The phrase `as DB` allows us to refer to definitions
@@ -584,7 +584,7 @@ ext∋ : ∀ {Γ B x y}
     -----------------------------
   → ¬ ∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A )
 ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
-ext∋ _   ¬∃ ⟨ A , S _ ⊢x ⟩  =  ¬∃ ⟨ A , ⊢x ⟩
+ext∋ _   ¬∃ ⟨ A , S _ ∋x ⟩  =  ¬∃ ⟨ A , ∋x ⟩
 ```
 Given a type `A` and evidence that `Γ , y ⦂ B ∋ x ⦂ A` holds, we must
 demonstrate a contradiction.  If the judgment holds by `Z`, then we
@@ -604,7 +604,7 @@ lookup (Γ , y ⦂ B) x with x ≟ y
 ... | yes refl                    =  yes ⟨ B , Z ⟩
 ... | no x≢y with lookup Γ x
 ...             | no  ¬∃          =  no  (ext∋ x≢y ¬∃)
-...             | yes ⟨ A , ⊢x ⟩  =  yes ⟨ A , S x≢y ⊢x ⟩
+...             | yes ⟨ A , ∋x ⟩  =  yes ⟨ A , S x≢y ∋x ⟩
 ```
 Consider the context:
 
@@ -1027,7 +1027,7 @@ Next, we give the code to erase a lookup judgment:
 ```
 ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Cx DB.∋ ∥ A ∥Tp
 ∥ Z ∥∋               =  DB.Z
-∥ S x≢ ⊢x ∥∋         =  DB.S ∥ ⊢x ∥∋
+∥ S x≢ ∋x ∥∋         =  DB.S ∥ ∋x ∥∋
 ```
 It simply drops the evidence that variable names are distinct.
 

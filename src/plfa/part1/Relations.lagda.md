@@ -18,7 +18,7 @@ the next step is to define relations, such as _less than or equal_.
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-comm)
 ```
 
@@ -160,7 +160,7 @@ Chapter [Decidable]({{ site.baseurl }}/Decidable/).
 
 ## Inversion
 
-In our defintions, we go from smaller things to larger things.
+In our definitions, we go from smaller things to larger things.
 For instance, from `m ≤ n` we can conclude `suc m ≤ suc n`,
 where `suc m` is bigger than `m` (that is, the former contains
 the latter), and `suc n` is bigger than `n`. But sometimes we
@@ -178,7 +178,7 @@ inv-s≤s (s≤s m≤n) = m≤n
 Here `m≤n` (with no spaces) is a variable name while
 `m ≤ n` (with spaces) is a type, and the latter
 is the type of the former.  It is a common convention
-in Agda to choose derive a variable name by removing
+in Agda to derive a variable name by removing
 spaces from its type.
 
 Not every rule is invertible; indeed, the rule for `z≤n` has
@@ -753,8 +753,8 @@ defines a datatype `Bin` of bitstrings representing natural numbers.
 Representations are not unique due to leading zeros.
 Hence, eleven may be represented by both of the following:
 
-    x1 x1 x0 x1 nil
-    x1 x1 x0 x1 x0 x0 nil
+    ⟨⟩ I O I I
+    ⟨⟩ O O I O I I
 
 Define a predicate
 
@@ -773,9 +773,9 @@ if it consists of a single zero (representing zero).
 
 Show that increment preserves canonical bitstrings:
 
-    Can x
+    Can b
     ------------
-    Can (inc x)
+    Can (inc b)
 
 Show that converting a natural to a bitstring always yields a
 canonical bitstring:
@@ -786,9 +786,9 @@ canonical bitstring:
 Show that converting a canonical bitstring to a natural
 and back is the identity:
 
-    Can x
+    Can b
     ---------------
-    to (from x) ≡ x
+    to (from b) ≡ b
 
 (Hint: For each of these, you may first need to prove related
 properties of `One`.)

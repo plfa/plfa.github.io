@@ -301,7 +301,7 @@ evidence that a disjunction holds.
 We set the precedence of disjunction so that it binds less tightly
 than any other declared operator.
 \begin{code}
-infix 1 _⊎_
+infixr 1 _⊎_
 \end{code}
 Thus, `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
 

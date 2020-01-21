@@ -471,14 +471,8 @@ Show that equivalence is reflexive, symmetric, and transitive.
 Recall that Exercises
 [Bin]({{ site.baseurl }}/Naturals/#Bin) and
 [Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws)
-define a datatype of bitstrings representing natural numbers:
-```
-data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
-```
-And ask you to define the following functions
+define a datatype `Bin` of bitstrings representing natural numbers,
+and asks you to define the following functions and predicates:
 
     to : ℕ → Bin
     from : Bin → ℕ

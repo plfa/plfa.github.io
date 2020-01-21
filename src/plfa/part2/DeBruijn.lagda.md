@@ -423,7 +423,7 @@ lookup ∅       _        =  ⊥-elim impossible
 We intend to apply the function only when the natural is
 shorter than the length of the context, which we indicate by
 postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}/Lambda/#impossible).
+[here]({{ site.baseurl }}/Lambda/#primed).
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
@@ -449,7 +449,7 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
 
 
-### Test examples
+### Test examples {#examples}
 
 We repeat the test examples from
 Chapter [Lambda]({{ site.baseurl }}/Lambda/).
@@ -1375,3 +1375,4 @@ This chapter uses the following unicode:
     ₆  U+2086  SUBSCRIPT SIX (\_6)
     ₇  U+2087  SUBSCRIPT SEVEN (\_7)
     ≠  U+2260  NOT EQUAL TO (\=n)
+

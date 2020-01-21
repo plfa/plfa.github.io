@@ -75,13 +75,11 @@ that a newly introduced operator is associative but not commutative.
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
+(You do not have to prove these properties.)
 
 Give an example of an operator that has an identity and is
 associative but is not commutative.
-
-```
--- Your code goes here
-```
+(You do not have to prove these properties.)
 
 
 ## Associativity
@@ -377,7 +375,7 @@ and
     +-assoc : ∀ (m : ℕ) → ∀ (n : ℕ) → ∀ (p : ℕ) → (m + n) + p ≡ m + (n + p)
 
 are equivalent. They differ from a function type such as `ℕ → ℕ → ℕ`
-in that variables are associated with the each argument type, and the
+in that variables are associated with each argument type, and the
 result type may mention (or depend upon) these variables; hence they
 are called _dependent functions_.
 
@@ -944,9 +942,9 @@ for all naturals `m`, `n`, and `p`.
 
 Show the following three laws
 
-    m ^ (n + p) ≡ (m ^ n) * (m ^ p)
-    (m * n) ^ p ≡ (m ^ p) * (n ^ p)
-    m ^ (n * p) ≡ (m ^ n) ^ p
+     m ^ (n + p) ≡ (m ^ n) * (m ^ p)  (^-distribˡ-+-*)
+     (m * n) ^ p ≡ (m ^ p) * (n ^ p)  (^-distribʳ-*)
+     (m ^ n) ^ p ≡ m ^ (n * p)        (^-*-assoc)
 
 for all `m`, `n`, and `p`.
 
@@ -955,24 +953,18 @@ for all `m`, `n`, and `p`.
 
 Recall that
 Exercise [Bin]({{ site.baseurl }}/Naturals/#Bin)
-defines a datatype of bitstrings representing natural numbers
-```
-data Bin : Set where
-  nil : Bin
-  x0_ : Bin → Bin
-  x1_ : Bin → Bin
-```
+defines a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define functions
 
     inc   : Bin → Bin
     to    : ℕ → Bin
     from  : Bin → ℕ
 
-Consider the following laws, where `n` ranges over naturals and `x`
+Consider the following laws, where `n` ranges over naturals and `b`
 over bitstrings:
 
-    from (inc x) ≡ suc (from x)
-    to (from x) ≡ x
+    from (inc b) ≡ suc (from b)
+    to (from b) ≡ b
     from (to n) ≡ n
 
 For each law: if it holds, prove; if not, give a counterexample.

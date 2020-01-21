@@ -688,6 +688,14 @@ Before the signature used `Set₁` as the type of a term that includes
 `Set`, whereas here the signature uses `Set (lsuc ℓ)` as the type of a
 term that includes `Set ℓ`.
 
+Most other functions in the standard library are also generalised to
+arbitrary levels. For instance, here is the definition of composition.
+```
+_∘_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
+  → (B → C) → (A → B) → A → C
+(g ∘ f) x  =  g (f x)
+```
+
 Further information on levels can be found in the [Agda Wiki][wiki].
 
 [wiki]: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.UniversePolymorphism
