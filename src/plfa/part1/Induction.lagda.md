@@ -75,13 +75,11 @@ that a newly introduced operator is associative but not commutative.
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
+(You do not have to prove these properties.)
 
 Give an example of an operator that has an identity and is
 associative but is not commutative.
-
-```
--- Your code goes here
-```
+(You do not have to prove these properties.)
 
 
 ## Associativity
@@ -944,9 +942,9 @@ for all naturals `m`, `n`, and `p`.
 
 Show the following three laws
 
-    m ^ (n + p) ≡ (m ^ n) * (m ^ p)
-    (m * n) ^ p ≡ (m ^ p) * (n ^ p)
-    m ^ (n * p) ≡ (m ^ n) ^ p
+     m ^ (n + p) ≡ (m ^ n) * (m ^ p)  (^-distribˡ-+-*)
+     (m * n) ^ p ≡ (m ^ p) * (n ^ p)  (^-distribʳ-*)
+     (m ^ n) ^ p ≡ m ^ (n * p)        (^-*-assoc)
 
 for all `m`, `n`, and `p`.
 

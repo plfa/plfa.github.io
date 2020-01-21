@@ -428,7 +428,7 @@ other word for evidence, which we will use interchangeably, is _proof_.
 
 #### Exercise `+-example` (practice) {#plus-example}
 
-Compute `3 + 4`, writing out your reasoning as a chain of equations.
+Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
 ```
 -- Your code goes here
@@ -489,7 +489,8 @@ it can easily be inferred from the corresponding term.
 
 #### Exercise `*-example` (practice) {#times-example}
 
-Compute `3 * 4`, writing out your reasoning as a chain of equations.
+Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
+(You do not need to step through the evaluation of `+`.)
 
 ```
 -- Your code goes here
@@ -566,7 +567,7 @@ _ =
   ∎
 ```
 
-#### Exercise `∸-examples` (recommended) {#monus-examples}
+#### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
