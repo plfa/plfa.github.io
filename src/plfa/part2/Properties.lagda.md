@@ -841,8 +841,8 @@ Let's unpack the cases for two of the reduction rules:
 * Rule `β-ƛ`.  We have
 
       Value V
-      ----------------------------
-      (ƛ x ⇒ N) · V ⊢ N [ x := V ]
+      -----------------------------
+      (ƛ x ⇒ N) · V —→ N [ x := V ]
 
   where the left-hand side is typed by
 
