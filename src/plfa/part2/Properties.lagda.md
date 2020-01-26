@@ -967,7 +967,7 @@ remaining.  There are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
     trivial reduction sequence `L —↠ L`, evidence that `L` is
-    well-typed, and the evidence that `L` is a value.
+    well typed, and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well typed, and we recursively invoke
