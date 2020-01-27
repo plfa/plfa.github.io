@@ -465,7 +465,7 @@ And to establish the following properties:
 Using the above, establish that there is an isomorphism between `ℕ` and
 `∃[ b ](Can b)`.
 
-We recommend proving following lemmas which show that, for a given
+We recommend proving the following lemmas which show that, for a given
 binary number `b`, there is only one proof of `One b` and similarly
 for `Can b`.
 
