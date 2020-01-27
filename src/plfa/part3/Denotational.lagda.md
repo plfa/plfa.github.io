@@ -27,7 +27,7 @@ would seem that we would need infinitely long tables to represent
 functions. Second, in the lambda calculus, functions can be applied to
 functions. They can even be applied to themselves! So it would seem
 that the tables would contain cycles. One might start to worry that
-advanced techniques are necessary to to address these issues, but
+advanced techniques are necessary to address these issues, but
 fortunately this is not the case!
 
 The first problem, of functions with infinite domains, is solved by
