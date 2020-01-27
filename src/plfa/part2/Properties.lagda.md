@@ -1006,7 +1006,7 @@ _ : eval (gas 3) ⊢sucμ ≡
 _ = refl
 ```
 
-Similarly, we can use Agda to compute the reductions sequences given
+Similarly, we can use Agda to compute the reduction sequences given
 in the previous chapter.  We start with the Church numeral two
 applied to successor and zero.  Supplying 100 steps of gas is more than enough:
 ```
