@@ -931,27 +931,27 @@ Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
 ```
-data Steps (L : Term) : Set where
+data Steps {L A} : ∅ ⊢ L ⦂ A → Set where
 
-  steps : ∀ {N}
+  steps : ∀ {N} {⊢N : ∅ ⊢ N ⦂ A} {⊢L : ∅ ⊢ L ⦂ A}
     → L —↠ N
     → Finished N
       ----------
-    → Steps L
+    → Steps ⊢L
 ```
 The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```
 eval : ∀ {L A}
   → Gas
-  → ∅ ⊢ L ⦂ A
-    ---------
-  → Steps L
-eval {L} (gas zero)    ⊢L                             =  steps (L ∎) out-of-gas
+  → (⊢L : ∅ ⊢ L ⦂ A)
+    ----------------
+  → Steps ⊢L
+eval {L} (gas zero)    ⊢L                                 =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                                         =  steps (L ∎) (done VL)
-... | step L—→M with eval (gas m) (preserve ⊢L L—→M)
-...    | steps M—↠N fin                               =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+... | done VL                                             =  steps (L ∎) (done VL)
+... | step {M} L—→M with eval (gas m) (preserve ⊢L L—→M)
+...    | steps M—↠N fin                                   =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well typed.  We consider the amount of gas
