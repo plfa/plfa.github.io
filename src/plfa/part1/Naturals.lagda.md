@@ -252,6 +252,20 @@ with `zero` and `suc` requires space proportional to _n_, whereas
 representing it as an arbitrary-precision integer in Haskell only
 requires space proportional to the logarithm of _n_.
 
+Note that the data declaration must come _before_ the `BUILTIN` pragma,
+as Agda will attempt to bind the given built-in to whatever name is given
+in the pragma statement. As such, that name must be in scope relative to
+the pragma. If you encounter a "Not in scope" error after adding the
+pragma, this is likely the cause.
+
+Complete definition with pragma:
+```
+data ℕ : Set where
+  zero : ℕ
+  suc  : ℕ → ℕ
+{-# BUILTIN NATURAL ℕ #-}
+```
+
 
 ## Imports
 
