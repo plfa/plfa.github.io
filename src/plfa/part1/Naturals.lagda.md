@@ -239,11 +239,10 @@ Including the line
 ```
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
-`suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.  The
-declaration is not permitted unless the type given has exactly two
-constructors, one with no arguments (corresponding to zero) and
-one with a single argument of the same type given in the pragma
-(corresponding to successor).
+`suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
+must be given a previously declared type (in this case `ℕ`) with
+precisely two constructors, one with no arguments (in this case `zero`),
+and one with a single argument of the given type (in this case `succ`).
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals using the Haskell
@@ -251,20 +250,6 @@ type for arbitrary-precision integers.  Representing the natural _n_
 with `zero` and `suc` requires space proportional to _n_, whereas
 representing it as an arbitrary-precision integer in Haskell only
 requires space proportional to the logarithm of _n_.
-
-Note that the data declaration must come _before_ the `BUILTIN` pragma,
-as Agda will attempt to bind the given built-in to whatever name is given
-in the pragma statement. As such, that name must be in scope relative to
-the pragma. If you encounter a "Not in scope" error after adding the
-pragma, this is likely the cause.
-
-Complete definition with pragma:
-```
-data ℕ : Set where
-  zero : ℕ
-  suc  : ℕ → ℕ
-{-# BUILTIN NATURAL ℕ #-}
-```
 
 
 ## Imports
