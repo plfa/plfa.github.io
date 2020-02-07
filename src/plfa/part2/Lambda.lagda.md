@@ -719,7 +719,7 @@ begin M—↠N = M—↠N
 ```
 We can read this as follows:
 
-* From term `M`, we can take no steps, giving a step of type `M —↠ M`.
+* From term `M`, we can take no steps, giving the type `M —↠ M`.
   It is written `M ∎`.
 
 * From term `L` we can take a single step of type `L —→ M` followed by zero
