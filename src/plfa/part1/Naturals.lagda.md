@@ -242,7 +242,7 @@ is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
 must be given a previously declared type (in this case `ℕ`) with
 precisely two constructors, one with no arguments (in this case `zero`),
-and one with a single argument of the given type (in this case `succ`).
+and one with a single argument of the given type (in this case `suc`).
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals using the Haskell
