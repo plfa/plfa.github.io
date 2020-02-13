@@ -627,7 +627,7 @@ since the same idea was previously proposed by Moses Schönfinkel in
 the 1920's.  I was told a joke: "It should be called schönfinkeling,
 but currying is tastier". Only later did I learn that the explanation
 of the misattribution was itself a misattribution.  The idea actually
-appears in the _Begriffschrift_ of Gottlob Frege, published in 1879.
+appears in the _Begriffsschrift_ of Gottlob Frege, published in 1879.
 
 ## The story of creation, revisited
 
