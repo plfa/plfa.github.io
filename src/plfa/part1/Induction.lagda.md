@@ -656,8 +656,8 @@ time we are concerned with judgments asserting associativity:
 
 Now, we apply the rules to all the judgments we know about.  The base
 case tells us that `(zero + n) + p ≡ zero + (n + p)` for every natural
-`n` and `p`.  The inductive case tells us that if `(m + n) + p ≡ m +
-(n + p)` (on the day before today) then
+`n` and `p`.  The inductive case tells us that if 
+`(m + n) + p ≡ m + (n + p)` (on the day before today) then
 `(suc m + n) + p ≡ suc m + (n + p)` (today).
 We didn't know any judgments about associativity before today, so that
 rule doesn't give us any new judgments:

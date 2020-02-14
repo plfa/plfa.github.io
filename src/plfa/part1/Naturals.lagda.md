@@ -239,11 +239,10 @@ Including the line
 ```
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
-`suc zero`, `2` as shorthand for `suc (suc zero)`, and so on.  The
-declaration is not permitted unless the type given has exactly two
-constructors, one with no arguments (corresponding to zero) and
-one with a single argument of the same type given in the pragma
-(corresponding to successor).
+`suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
+must be given a previously declared type (in this case `ℕ`) with
+precisely two constructors, one with no arguments (in this case `zero`),
+and one with a single argument of the given type (in this case `suc`).
 
 As well as enabling the above shorthand, the pragma also enables a
 more efficient internal representation of naturals using the Haskell
@@ -628,7 +627,7 @@ since the same idea was previously proposed by Moses Schönfinkel in
 the 1920's.  I was told a joke: "It should be called schönfinkeling,
 but currying is tastier". Only later did I learn that the explanation
 of the misattribution was itself a misattribution.  The idea actually
-appears in the _Begriffschrift_ of Gottlob Frege, published in 1879.
+appears in the _Begriffsschrift_ of Gottlob Frege, published in 1879.
 
 ## The story of creation, revisited
 

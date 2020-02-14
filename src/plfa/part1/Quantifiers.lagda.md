@@ -473,15 +473,11 @@ for `Can b`.
     
     ≡Can : ∀{b : Bin} (cb : Can b) (cb' : Can b) → cb ≡ cb'
 
-The proof of `to∘from` is tricky. We recommend proving the following lemma
+Many of the alternatives for proving `to∘from` turn out to be tricky.
+However, the proof can be straightforward if you use the following lemma,
+which is a corollary of `≡Can`.
 
-    to∘from-aux : ∀ (b : Bin) (cb : Can b) → to (from b) ≡ b
-                → _≡_ {_} {∃[ b ](Can b)} ⟨ to (from b) , canon-to (from b) ⟩ ⟨ b , cb ⟩
-
-You cannot immediately use `≡Can` to equate `canon-to (from b)` and
-`cb` because they have different types: `Can (to (from b))` and `Can b`
-respectively.  You must first get their types to be equal, which
-can be done by changing the type of `cb` using `rewrite`.
+    proj₁≡→Can≡ : {cb cb′ : ∃[ b ](Can b)} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
 
 ```
 -- Your code goes here
