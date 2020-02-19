@@ -449,7 +449,7 @@ In its structure, it looks a little bit like a proof of progress:
               ~                         ~
               |                         |
               |                         |
-        (ƛ x ⇒ N†) · V† --- —→ --- N† [ x := V ]
+        (ƛ x ⇒ N†) · V† --- —→ --- N† [ x := V† ]
 
     Since simulation commutes with values and `V` is a value, `V†` is also a value.
     Since simulation commutes with substitution and `N ~ N†` and `V ~ V†`,
