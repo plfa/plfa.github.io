@@ -24,7 +24,7 @@ after we have developed a denotational semantics for the lambda
 calculus, at which point the proof is an easy corollary of properties
 of the denotational semantics.
 
-We present the call-by-name strategy as a relation between an an input
+We present the call-by-name strategy as a relation between an input
 term and an output value. Such a relation is often called a _big-step
 semantics_, written `M ⇓ V`, as it relates the input term `M` directly
 to the final result `V`, in contrast to the small-step reduction
