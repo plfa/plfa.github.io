@@ -1,0 +1,437 @@
+[We thank the reviewers for their comments. Responses interleaved in
+brackets. The revision includes a few other improvements, in
+particular consistently using standard terms "extrinsic"/"intrinsic"
+in place of "raw"/"inherent".]
+
+Ms. Ref. No.: SCICO-D-19-00172 Title: Programming Language Foundations
+in Agda Science of Computer Programming
+
+Dear Professor Philip Wadler,
+
+Thank you very much for having submitted to the Science of Computer
+Programming Journal.
+
+We have now received reviewers' reports and a recommendation by the
+handling editor; based upon the recommendation and the reviews, we
+would like to ask you prepare a minor revision taking the comments of
+the reviewers into account.
+
+The due date for revision is Feb 14, 2020.  If this deadline is out of
+sync with other due dates communicated to you outside EES, then please
+contact the handling editor to settle this.
+
+If you decide to revise the work, please submit a list of changes or a
+rebuttal against each point which is being raised when you submit the
+revised manuscript.
+
+To submit a revision, please go to https://ees.elsevier.com/scico/ and
+login as an Author.  Your username is: wadler@inf.ed.ac.uk If you need
+to retrieve password details, please go to:
+http://ees.elsevier.com/scico/automail_query.asp
+
+On your Main Menu page is a folder entitled "Submissions Needing
+Revision". You will find your submission record there.
+
+Once again, thank you very much for having given us the opportunity to
+consider your manuscript.
+
+Mohammad Reza Mousavi, Ph.D.  Editor-in-Chief Science of Computer
+Programming
+
+
+Reviewers' comments:
+
+
+The reviewers have been unanimous in accepting the article for
+publication. There are a few remarks to be considered by the authors
+for the final version, as pointed out in the reviews.
+
+Reviewer #1: This article reports on experience teaching basic results
+in lambda calculus using a proof assistant based on type theory.  The
+first finding is that the proof style supported by Agda,
+i.e. dependently typed programming, need not be more verbose than the
+tactic-based style supported by Coq.  The second finding is a
+functional pearl: constructive proof of progress and preservation
+directly yield an interpreter.  The third finding is that
+formalization of typed lambda calculus based on inherently typed terms
+is significantly more succinct than formalization in terms of a
+separate typing judgment.  Finally, the authors report on flawless
+student performance on an exam using the proof assistant.
+
+The last point may not seem surprising to readers with experience
+teaching this material as presented in the book Software Foundations
+(SF) by Pierce et al, specifically the volume title Programming
+Language Foundations.  (Or for that matter, teaching related topics
+using a proof assistant, e.g., based on the book Concrete Semantics by
+Nipkow and Klein.)  The authors have written a book, PLFA, drawing on
+corresponding chapters of the book by Pierce et al which develops a
+more extensive range of programming language theory using Coq.
+Section 2 of the article describes PLFA with reference to SF, and
+Section 7 describes experience with open source publishing.
+
+At first glance I was concerned that this article might be little more
+than a promotion for the book.  But in fact the article offers
+insightful comparisons between tactical proving and dependently typed
+programming style, based on extensive classroom teaching experience.
+
+The book SF introduces quite a few proof tactics and it was not at all
+obvious that the same material could be covered perspicuously and
+succinctly in Agda.  The examples and discussion in Section 3 make a
+convincing case for the pedagogical effectiveness of Agda for the
+toptics covered.  The article acknowledges that this does not
+contradict the effectiveness of tactic-based proof assistants for
+larger scale developments.
+
+As for the second finding, the authors acknowledge that the idea seems
+obvious and can to some extent be discerned in prior publications and
+online documents.  But it does not seem to have been explicitly
+presented in the research literature or textbooks, and it clearly
+should be.
+
+The third finding addresses alternatives dubbed extrinsic/intrinsic
+typing by Reynolds, which to my knowledge have been viewed as each
+having advantages and disadvantages -- thus tradeoffs to be considered
+afresh in each situation.  The authors make a convincing case for
+intrinsic typing by comparing well informed formalizations in both
+styles and observing that intrinsic is in some sense more expressive
+and also significantly more succinct.
+
+The article is very well written and easy to read.  While the
+experience report style is somewhat unusual for this particular
+journal, there is substantial scientific content and the writing style
+is effective in conveying that content.  Indeed, it conveys the
+authors' enthusiasm for Agda and my review was delayed because I was
+keen to get experience with PLFA.  A previous version of the paper
+appeared in a conference; this article adds substantial material on
+additional chapters of the book and on teaching experiences.
+
+Judgment
+
+This is an excellent article worthy of publication in SCP.  Below I
+mention minor points that could be addressed, but significant revision
+is not necessary as the article is already well polished.
+
+
+Further thoughts
+
+Apropos the volume Verified Functional Algorithms of SF, it makes
+heavy use of tactical automation to handle large case analyses
+(hundreds of cases, for red-black trees).  It would be quite
+interesting to see whether at least the simpler algorithms can be
+handled well in Agda.
+
+[NOT DONE. Interesting, but we don't have time to do this work.]
+
+page 8 lists logical relations as one of the topics not currently
+included in PLFA, but on page 8 under Adequacy a logical relation is
+used.
+
+[Clarified by changing "logical relations" to "logical relations
+for parametricity"]
+
+page 11 mentions not finding a proof of determinacy of reduction.  The
+chapter on Normalization of SF, by Tolmach (Norm.v) does so.
+
+[Thanks! Text updated.]
+
+page 12 near the bottom of the page it explains some notations that
+occur on previous pages
+
+[Not sure what change is requested here.]
+
+
+
+
+
+Reviewer #2: Title: Programming Language Foundations in Agda.
+
+Review:
+
+This paper has an interesting structure: it focus on the overall
+structure of the book "Programming Language Foundations in Agda", the
+choices made and the advantages and difficulties of using Agda to
+construct this material (with respect to other tools, in particular
+Coq). The technical details are mostly about choices and style of
+formalization, and initial results of the application of the material
+in a few courses. Let me start by saying that the article is very
+pleasant to read: the style is rather informal, but very clear and
+provides the reader a good idea of the mindset of the authors that
+lead to the choices they made, and also the influences they had along
+the way.
+
+A little context regarding my backgroung, to contextualize my
+comments: I have been using Coq for roughly three years. During this
+time, I have made several exercises of formalization, including the
+untyped lambda-calculus (with explicit variable names and with
+deBruijn indices), including the Church-Rosser theorem (based on
+parallel reductions) and normalisation of left-most reductions. My
+experience with Agda is very brief.
+
+In general, I liked the article very much, and I would agree with the
+majority of the claims made. The appointed topics below are mostly
+comments, suggestions and some comments on a few claims that I found
+slightly exaggerated.
+
+
+Section 2 ---------
+
+There is not much to say about this section, since it is an overview
+of the topics that are introduced and proved in each section of the
+book. In general, I liked very much the choice of topics and their
+sequence.
+
+Page 4, paragraph "Part I, Logical Foundations": suggestion: (briefly
+explain monus: the operation is known, but the name 'monus' may not be
+as common)
+
+[Not done. It is a standard term, easily looked up. Explaining
+it would expand the text more than warranted.]
+
+Page 7, "Discussion": it is mentioned that SF starts with STLC, while
+PLFA starts with PCF. It was not discussed the reason to skip a more
+restricte, normalizing language (STLC) rather than a more powerful
+language (PCF). Could you comment on the motivations for this choice?
+It would be very nice to be able to speak about termination proofs and
+logical relations at some place (as mentioned in future work).
+
+[Added the requested comment.]
+
+Page 8, "Discussion": It seems that the author claim's that the
+substitution in PCF is weaker because it is only applied to closed
+terms. However, this is a choice, since it is possible to define
+substitution for open terms (only it is usually not worth the effort,
+since it is more complex and involves alpha-renaming).
+
+[The choice with substitution of open terms is described later
+in the paper, pointing out that the code was too long to include
+in the textbook.]
+
+Page 8, "We'd" => "We would" (suggestion: the contraction felt way too
+informal...)
+
+[Fixed.]
+
+Section 3 ---------
+
+Regarding the comparison between Agda and Coq, some remarks:
+
+
+I believe it is clear that Agda's syntax is nicer than Coq's syntax,
+in particular very familiar to Haskell programmers. I found it very
+interesting the usage of "--" coments to replicate the shape of rules,
+mixfix notation and better Unicode support. However, I although I
+believe that it was not clear to me that there is a huge advantage of
+Agda over Coq in the following two aspects:
+
+-> notation: Coq's notation system, although not as flexible as Agda,
+   is quite similar in terms of effectiveness: duplication of names
+   seems like a minor inconvenience, and would not affect the
+   formalization effort in such a negative way, as claimed by the
+   authors.
+
+-> style of proof: it seems to me that proving theorems in Agda feels
+   like programming more than proving in Coq (due to the distinction
+   between the languages). This does not seem to me as good or bad per
+   se: it depends on your objectives.
+
+Although it is possible to construct the proof term directly in Coq,
+it is not encouraged: the tactic language, although intimidating for
+beginners, feels very comprehensive and powerful. Although I agree
+that Coq requires an interactive process to be understood, I was not
+convinced (by the arguments given in the paper and looking at some
+more complex proofs in PLFA) that they are more readable than Coq's:
+it seems more a question of preference of style, and desire to use the
+same mechanics for programming and proving. Moreover, Coq seems to
+"hide" a little better than Adga questions regarding the definition of
+equality (you coud hide this at the beginning, and introduce it
+later). I agree with the authors that Agda exposes more directly
+Propositions as Types and avoid some duplications of Coq.
+
+[The reviewer doesn't ask for specific changes.]
+
+
+Section 4 ---------
+
+Nice idea. (no problems here)
+
+
+
+Section 5 ---------
+
+Page 16, line 45 : "and and" => "and"
+
+[Fixed.]
+
+Page 19, line 34 : it seems that the comparison between intrinsically
+ and extrinsically-typed lambda terms is not completely fair, in the
+ sense that there are two main modifications involved: => explicit
+ names vs deBruijn indices => intrisicly typed vs extrinsicly typed
+ terms The authors comment that there are actually four possibilities
+ and comment on some difficulties with the other options. Did you
+ consider introducing and contrasting each dimension at the time,
+ rather than making two choices at the same time (in the book)?
+
+[Rephrased to clarify that we think only the two options
+we presented work well. The following sentences explain why
+the other options are problematic.]
+
+Section 6 ---------
+
+Page 21, line 21: "Similar results were achieved at Edinburgh over the
+previous five years".
+
+The presented data seems to suggest that the distinction between the
+two systems seems more a question of style, evidencing that it is
+possible to substitute Coq for Agda in this scenario. However, I does
+not point towards a clear advantage in either way. Maybe an
+interesting experiment would be to expose some introduction to both
+systems, and try to measure the effort of doing similar tasks in both
+platforms.
+
+[The paper includes a suggestion from Nate Foster on similar lines.]
+
+------------------------
+
+
+
+
+
+
+Reviewer #3: The paper proposes an alternative to the textbook
+Software Foundations (SF) by Pierce et. al. SF uses Coq, while the
+authors propose the usage of Agda. The authors claim that, with Coq,
+too much effort is spent on learning tactics for proof derivation
+instead of learning programming language theory. In contrast, Agda
+makes use of no tactics, but its proofs are not much longer than those
+in Coq. As a result, the new textbook Programming Language Foundations
+in Agda (PLFA) has been written and applied to 3 courses so far
+(Edinburgh, Rio de Janeiro, and Padova). In addition to this
+contribution to education, the authors mention two other
+contributions: the insight that a constructive proof of preservation
+and progress automatically produces a prototype evaluator of the
+language; and that an intrinsic type relation requires fewer lines of
+code and is more expressive than an extrinsic type relation.
+
+The paper reports the development of a solid contribution to the
+education of programming language theory and an alternative to the
+Software Foundations textbook. On a more scientific note, the usage of
+a constructive proof of preservation and progress to produce a
+prototype evaluator is a nice insight not clearly described in the
+literature.
+
+As suggestions for improvement, I would like to see few comments on
+design decisions taken on PLFA: (i) SF begins with a minimal language,
+while PLFA begins with a computationally complete language. Why is
+that? Apparently, I would regard a minimal language more pedagogical.
+(ii) Why lambda calculus instead of Hoare Logic? Was that decision
+solely based on the proof automation limitations of Agda or is there a
+pedagogical advantage on doing that?
+
+The text is very well written.
+
+Minor fixes: Page 14, line 41. Introduce a line break over the word
+"progress."  Page 16, line 45. "and and" → "and" Page 20, line
+50. "Question 3 give the students the the" → "Question 3 gives the
+students the" Overall, I would like to see the text using only the
+British spelling or the American spelling (but not both: e.g. flavour,
+behavior).
+
+
+
+
+________________
+
+Data in Brief (optional):
+
+We invite you to convert your supplementary data (or a part of it)
+into an additional journal publication in Data in Brief, a
+multi-disciplinary open access journal. Data in Brief articles are a
+fantastic way to describe supplementary data and associated metadata,
+or full raw datasets deposited in an external repository, which are
+otherwise unnoticed. A Data in Brief article (which will be reviewed,
+formatted, indexed, and given a DOI) will make your data easier to
+find, reproduce, and cite.
+
+You can submit to Data in Brief via the Science of Computer
+Programming submission system when you upload your revised Science of
+Computer Programming manuscript. To do so, complete the template and
+follow the co-submission instructions found here:
+www.elsevier.com/dib-template. If your Science of Computer Programming
+manuscript is accepted, your Data in Brief submission will
+automatically be transferred to Data in Brief for editorial review and
+publication.
+
+Please note: an open access Article Publication Charge (APC) is
+payable by the author or research funder to cover the costs associated
+with publication in Data in Brief and ensure your data article is
+immediately and permanently free to access by all. For the current APC
+see:
+www.elsevier.com/journals/data-in-brief/2352-3409/open-access-journal
+
+Please contact the Data in Brief editorial office at
+dib-me@elsevier.com or visit the Data in Brief homepage
+(www.journals.elsevier.com/data-in-brief/) if you have questions or
+need further information.
+
+Note: While submitting the revised manuscript, please double check the
+author names provided in the submission so that authorship related
+changes are made in the revision stage. If your manuscript is
+accepted, any authorship change will involve approval from co-authors
+and respective editor handling the submission and this may cause a
+significant delay in publishing your manuscript.
+
+
+METHODSX CO-SUBMISSION (OPTIONAL)
+
+If you have customized (a) research method(s) for the project
+presented in your Science of Computer Programming article, you are
+invited to submit this part of your work as MethodsX article alongside
+your revised research article. MethodsX is an independent journal that
+publishes the work you have done to develop research methods to your
+specific needs or setting. This is an opportunity to get full credit
+for the time and money you may have spent on developing research
+methods, and to increase the visibility and impact of your work.
+
+How does it work?  1) Fill in the MethodsX article template:
+https://www.elsevier.com/MethodsX-template 2) Place all MethodsX files
+(including graphical abstract, figures and other relevant files) into
+a .zip file and upload this as a 'Method Details (MethodsX) ' item
+alongside your revised Science of Computer Programming
+manuscript. Please ensure all of your relevant MethodsX documents are
+zipped into a single file.  3) If your Science of Computer Programming
+research article is accepted, your MethodsX article will automatically
+be transferred to MethodsX, where it will be reviewed and published as
+a separate article upon acceptance.  MethodsX is a fully Open Access
+journal, the publication fee is only 520 US$.
+
+Questions?  Please contact the MethodsX team at methodsx@elsevier.com.
+Example MethodsX articles can be found here:
+http://www.sciencedirect.com/science/journal/22150161 Yours sincerely,
+
+INTERACTIVE PLOT VIEWER (OPTIONAL)
+
+Science of Computer Programming features the Interactive Plot Viewer,
+see: http://www.elsevier.com/interactiveplots. Interactive Plots
+provide easy access to the data behind plots. To include one with your
+article, please prepare a .csv file with your plot data and test it
+online at
+http://authortools.elsevier.com/interactiveplots/verification before
+submission as supplementary material.  PLEASE NOTE: Science of
+Computer Programming would like to enrich online articles by
+displaying interactive figures that help the reader to visualize and
+explore your research results. For this purpose, we would like to
+invite you to upload figures in the MATLAB .FIG file format as
+supplementary material to our online submission system. Elsevier will
+generate interactive figures from these files and include them with
+the online article on SciVerse ScienceDirect. If you wish, you can
+submit .FIG files along with your revised submission.
+
+________________
+
+For further assistance, please visit our customer support site at
+http://help.elsevier.com/app/answers/list/p/7923. Here you can search
+for solutions on a range of topics, find answers to frequently asked
+questions and learn more about EES via interactive tutorials. You will
+also find our 24/7 support contact details should you need any further
+assistance from one of our customer support representatives.
+
