@@ -67,7 +67,7 @@ open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; p
   renaming (_,_ to ⟨_,_⟩)
 open import plfa.part2.Substitution using (Rename; Subst)
 open import plfa.part2.Untyped
-  using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; _—→⟨_⟩_; _∎;
+  using (_—→_; β; ξ₁; ξ₂; ζ; _—↠_; begin_; _—→⟨_⟩_; _—↠⟨_⟩_; _∎;
   abs-cong; appL-cong; appR-cong; —↠-trans;
   _⊢_; _∋_; `_; #_; _,_; ★; ƛ_; _·_; _[_];
   rename; ext; exts; Z; S_; subst; subst-zero)
@@ -195,17 +195,19 @@ par-betas : ∀{Γ A}{M N : Γ ⊢ A}
   → M —↠ N
 par-betas {Γ} {A} {.(` _)} (pvar{x = x}) = (` x) ∎
 par-betas {Γ} {★} {ƛ N} (pabs p) = abs-cong (par-betas p)
-par-betas {Γ} {★} {L · M} (papp p₁ p₂) =
-   —↠-trans (appL-cong{M = M} (par-betas p₁)) (appR-cong (par-betas p₂))
+par-betas {Γ} {★} {L · M} (papp {L = L}{L′}{M}{M′} p₁ p₂) =
+    begin
+    L · M   —↠⟨ appL-cong{M = M} (par-betas p₁) ⟩
+    L′ · M  —↠⟨ appR-cong (par-betas p₂) ⟩
+    L′ · M′
+    ∎
 par-betas {Γ} {★} {(ƛ N) · M} (pbeta{N′ = N′}{M′ = M′} p₁ p₂) =
-  let ih₁ = par-betas p₁ in
-  let ih₂ = par-betas p₂ in
-  let a : (ƛ N) · M —↠ (ƛ N′) · M
-      a = appL-cong{M = M} (abs-cong ih₁) in
-  let b : (ƛ N′) · M —↠ (ƛ N′) · M′
-      b = appR-cong{L = ƛ N′} ih₂ in
-  let c = (ƛ N′) · M′ —→⟨ β ⟩ N′ [ M′ ] ∎ in
-  —↠-trans (—↠-trans a b) c
+    begin
+    (ƛ N) · M                    —↠⟨ appL-cong{M = M} (abs-cong (par-betas p₁)) ⟩
+    (ƛ N′) · M                   —↠⟨ appR-cong{L = ƛ N′} (par-betas p₂)  ⟩
+    (ƛ N′) · M′                  —→⟨ β ⟩
+     N′ [ M′ ]
+    ∎
 ```
 
 The proof is by induction on `M ⇛ N`.
@@ -219,14 +221,13 @@ The proof is by induction on `M ⇛ N`.
 * Suppose `L · M ⇛ L′ · M′` because `L ⇛ L′` and `M ⇛ M′`.
   By the induction hypothesis, we have `L —↠ L′` and `M —↠ M′`.
   So `L · M —↠ L′ · M` and then `L′ · M  —↠ L′ · M′`
-  because `—↠` is a congruence. We conclude using the transitity
-  of `—↠`.
+  because `—↠` is a congruence. 
 
 * Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By similar reasoning, we have
-  `(ƛ N) · M —↠ (ƛ N′) · M′`.
-  Of course, `(ƛ N′) · M′ —→ N′ [ M′ ]`, so we can conclude
-  using the transitivity of `—↠`.
+  `(ƛ N) · M —↠ (ƛ N′) · M′`
+  which we can following with the β reduction
+  `(ƛ N′) · M′ —→ N′ [ M′ ]`.
 
 With this lemma in hand, we complete the proof that `M ⇛* N` implies
 `M —↠ N` with a simple induction on `M ⇛* N`.

@@ -172,7 +172,7 @@ the environment `γ` to an equivalent substitution `σ`.
 The case for `⇓-app` also requires that we strengthen the
 conclusion. In the case for `⇓-app` we have `γ ⊢ L ⇓ clos (λ N) δ` and
 the induction hypothesis gives us `L —↠ ƛ N′`, but we need to know
-that `N` and `N′` are equivalent. In particular, that `N ≡ subst τ N′`
+that `N` and `N′` are equivalent. In particular, that `N′ ≡ subst τ N`
 where `τ` is the substitution that is equivalent to `δ`. Therefore we
 expand the conclusion of the statement, stating that the results are
 equivalent.
@@ -289,11 +289,11 @@ below.
       with ⇓→—↠×≈{σ = τ} δ⊢L⇓V δ≈ₑτ
 ...   | ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩ rewrite σx≡τL =
         ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩
-⇓→—↠×≈ {σ = σ} {V = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
+⇓→—↠×≈ {σ = σ} {V = clos (ƛ N) γ} (⇓-lam) γ≈ₑσ =
     ⟨ subst σ (ƛ N) , ⟨ subst σ (ƛ N) ∎ , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
 ⇓→—↠×≈{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
     with ⇓→—↠×≈{σ = σ} L⇓ƛNδ γ≈ₑσ
-... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
+... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN 
       with ⇓→—↠×≈ {σ = ext-subst τ (subst σ M)} N⇓V
              (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
            | β{∅}{subst (exts τ) N}{subst σ M}
