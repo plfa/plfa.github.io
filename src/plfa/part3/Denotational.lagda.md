@@ -400,14 +400,11 @@ id-app-id : ∀ {u : Value} → `∅ ⊢ id · id ↓ (u ↦ u)
 id-app-id {u} = ↦-elim (↦-intro var) (↦-intro var)
 ```
 
-Next we revisit the Church numeral two.
-
-    ƛ ƛ (# 1 · (# 1 · # 0))
-
-This function has two parameters: a function and an arbitrary value
-`u`, and it applies the function twice. So the function must map `u`
-to some value, which we'll name `v`. Then for the second application,
-it must map `v` to some value. Let's name it `w`. So the function's
+Next we revisit the Church numeral two: `λ f. λ u. (f (f u))`.
+This function has two parameters: a function `f` and an arbitrary value
+`u`, and it applies `f` twice. So `f` must map `u` to some value, which
+we'll name `v`. Then for the second application,
+`f` must map `v` to some value. Let's name it `w`. So the function's
 table must include two entries, both `u ↦ v` and `v ↦ w`. For each
 application of the table, we extract the appropriate entry from it
 using the `sub` rule.  In particular, we use the ⊑-conj-R1 and
