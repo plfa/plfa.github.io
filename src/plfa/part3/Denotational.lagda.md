@@ -953,59 +953,59 @@ function, we want to show that `v ↦ w ⊑ u` implies that `u` includes
 a set of function values such that the join of their domains is less
 than `v` and the join of their codomains is greater than `w`.
 
-To this end we define the following dom and cod functions.  Given some
-value `u` (that represents a set of entries), `dom u` returns the join of
-their domains and `cod u` returns the join of their codomains.
+To this end we define the following `⨆dom` and `⨆cod` functions.  Given some
+value `u` (that represents a set of entries), `⨆dom u` returns the join of
+their domains and `⨆cod u` returns the join of their codomains.
 
 ```
-dom : (u : Value) → Value
-dom ⊥  = ⊥
-dom (v ↦ w) = v
-dom (u ⊔ u′) = dom u ⊔ dom u′
+⨆dom : (u : Value) → Value
+⨆dom ⊥  = ⊥
+⨆dom (v ↦ w) = v
+⨆dom (u ⊔ u′) = ⨆dom u ⊔ ⨆dom u′
 
-cod : (u : Value) → Value
-cod ⊥  = ⊥
-cod (v ↦ w) = w
-cod (u ⊔ u′) = cod u ⊔ cod u′
+⨆cod : (u : Value) → Value
+⨆cod ⊥  = ⊥
+⨆cod (v ↦ w) = w
+⨆cod (u ⊔ u′) = ⨆cod u ⊔ ⨆cod u′
 ```
 
-We need just one property each for `dom` and `cod`.  Given a collection of
+We need just one property each for `⨆dom` and `⨆cod`.  Given a collection of
 functions represented by value `u`, and an entry `v ↦ w ∈ u`, we know
 that `v` is included in the domain of `v`.
 
 ```
-↦∈→⊆dom : ∀{u v w : Value}
+↦∈→⊆⨆dom : ∀{u v w : Value}
           → all-funs u  →  (v ↦ w) ∈ u
             ----------------------
-          → v ⊆ dom u
-↦∈→⊆dom {⊥} fg () u∈v
-↦∈→⊆dom {v ↦ w} fg refl u∈v = u∈v
-↦∈→⊆dom {u ⊔ u′} fg (inj₁ v↦w∈u) u∈v =
-   let ih = ↦∈→⊆dom (λ z → fg (inj₁ z)) v↦w∈u in
+          → v ⊆ ⨆dom u
+↦∈→⊆⨆dom {⊥} fg () u∈v
+↦∈→⊆⨆dom {v ↦ w} fg refl u∈v = u∈v
+↦∈→⊆⨆dom {u ⊔ u′} fg (inj₁ v↦w∈u) u∈v =
+   let ih = ↦∈→⊆⨆dom (λ z → fg (inj₁ z)) v↦w∈u in
    inj₁ (ih u∈v)
-↦∈→⊆dom {u ⊔ u′} fg (inj₂ v↦w∈u′) u∈v =
-   let ih = ↦∈→⊆dom (λ z → fg (inj₂ z)) v↦w∈u′ in
+↦∈→⊆⨆dom {u ⊔ u′} fg (inj₂ v↦w∈u′) u∈v =
+   let ih = ↦∈→⊆⨆dom (λ z → fg (inj₂ z)) v↦w∈u′ in
    inj₂ (ih u∈v)
 ```
 
-Regarding `cod`, suppose we have a collection of functions represented
-by `u`, but all of them are just copies of `v ↦ w`.  Then the `cod u` is
+Regarding `⨆cod`, suppose we have a collection of functions represented
+by `u`, but all of them are just copies of `v ↦ w`.  Then the `⨆cod u` is
 included in `w`.
 
 ```
-⊆↦→cod⊆ : ∀{u v w : Value}
+⊆↦→⨆cod⊆ : ∀{u v w : Value}
         → u ⊆ v ↦ w
           ---------
-        → cod u ⊆ w
-⊆↦→cod⊆ {⊥} s refl with s {⊥} refl
+        → ⨆cod u ⊆ w
+⊆↦→⨆cod⊆ {⊥} s refl with s {⊥} refl
 ... | ()
-⊆↦→cod⊆ {C ↦ C′} s m with s {C ↦ C′} refl
+⊆↦→⨆cod⊆ {C ↦ C′} s m with s {C ↦ C′} refl
 ... | refl = m
-⊆↦→cod⊆ {u ⊔ u′} s (inj₁ x) = ⊆↦→cod⊆ (λ {C} z → s (inj₁ z)) x
-⊆↦→cod⊆ {u ⊔ u′} s (inj₂ y) = ⊆↦→cod⊆ (λ {C} z → s (inj₂ z)) y
+⊆↦→⨆cod⊆ {u ⊔ u′} s (inj₁ x) = ⊆↦→⨆cod⊆ (λ {C} z → s (inj₁ z)) x
+⊆↦→⨆cod⊆ {u ⊔ u′} s (inj₂ y) = ⊆↦→⨆cod⊆ (λ {C} z → s (inj₂ z)) y
 ```
 
-With the `dom` and `cod` functions in hand, we can make precise the
+With the `⨆dom` and `⨆cod` functions in hand, we can make precise the
 conclusion of the inversion principle for functions, which we package
 into the following predicate named `factor`. We say that `v ↦ w`
 _factors_ `u` into `u′` if `u′` is a included in `u`, if `u′` contains only
@@ -1014,7 +1014,7 @@ than `w`.
 
 ```
 factor : (u : Value) → (u′ : Value) → (v : Value) → (w : Value) → Set
-factor u u′ v w = all-funs u′ × u′ ⊆ u × dom u′ ⊑ v × w ⊑ cod u′
+factor u u′ v w = all-funs u′ × u′ ⊆ u × ⨆dom u′ ⊑ v × w ⊑ ⨆cod u′
 ```
 
 We prove the inversion principle for functions by induction on the
@@ -1038,7 +1038,7 @@ so we have `all-funs u′` and `u′ ⊆ u`.
 By the induction hypothesis for `u ⊑ u₂`, we know
 that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂` into `u₃`.
 With these facts in hand, we proceed by induction on `u′`
-to prove that `(dom u′) ↦ (cod u′)` factors `u₂` into `u₃`.
+to prove that `(⨆dom u′) ↦ (⨆cod u′)` factors `u₂` into `u₃`.
 We discuss each case of the proof in the text below.
 
 ```
@@ -1046,7 +1046,7 @@ sub-inv-trans : ∀{u′ u₂ u : Value}
     → all-funs u′  →  u′ ⊆ u
     → (∀{v′ w′} → v′ ↦ w′ ∈ u → Σ[ u₃ ∈ Value ] factor u₂ u₃ v′ w′)
       ---------------------------------------------------------------
-    → Σ[ u₃ ∈ Value ] factor u₂ u₃ (dom u′) (cod u′)
+    → Σ[ u₃ ∈ Value ] factor u₂ u₃ (⨆dom u′) (⨆cod u′)
 sub-inv-trans {⊥} {u₂} {u} fu′ u′⊆u IH =
    ⊥-elim (contradiction (fu′ refl) ¬Fun⊥)
 sub-inv-trans {u₁′ ↦ u₂′} {u₂} {u} fg u′⊆u IH = IH (↦⊆→∈ u′⊆u)
@@ -1074,18 +1074,18 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
 * Suppose `u′ ≡ u₁′ ↦ u₂′`. Then `u₁′ ↦ u₂′ ∈ u` and we can apply the
   premise (the induction hypothesis from `u ⊑ u₂`) to obtain that
   `u₁′ ↦ u₂′` factors of `u₂ into u₂′`. This case is complete because
-  `dom u′ ≡ u₁′` and `cod u′ ≡ u₂′`.
+  `⨆dom u′ ≡ u₁′` and `⨆cod u′ ≡ u₂′`.
 
 * Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also
   have `all-funs u₁′` and `all-funs u₂′`, so we can apply the induction hypothesis
   for both `u₁′` and `u₂′`. So there exists values `u₃₁` and `u₃₂` such that
-  `(dom u₁′) ↦ (cod u₁′)` factors `u` into `u₃₁` and
-  `(dom u₂′) ↦ (cod u₂′)` factors `u` into `u₃₂`.
-  We will show that `(dom u) ↦ (cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
+  `(⨆dom u₁′) ↦ (⨆cod u₁′)` factors `u` into `u₃₁` and
+  `(⨆dom u₂′) ↦ (⨆cod u₂′)` factors `u` into `u₃₂`.
+  We will show that `(⨆dom u) ↦ (⨆cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
   So we need to show that
 
-        dom (u₃₁ ⊔ u₃₂) ⊑ dom (u₁′ ⊔ u₂′)
-        cod (u₁′ ⊔ u₂′) ⊑ cod (u₃₁ ⊔ u₃₂)
+        ⨆dom (u₃₁ ⊔ u₃₂) ⊑ ⨆dom (u₁′ ⊔ u₂′)
+        ⨆cod (u₁′ ⊔ u₂′) ⊑ ⨆cod (u₃₁ ⊔ u₃₂)
 
   But those both follow directly from the factoring of
   `u` into `u₃₁` and `u₃₂`, using the monotonicity of `⊔` with respect to `⊑`.
@@ -1183,10 +1183,10 @@ Let `v` and `w` be arbitrary values.
   By the induction hypothesis for `u ⊑ u₂`, we know
   that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂`.
   Now we apply the lemma sub-inv-trans, which gives us
-  some `u₃` such that `(dom u′) ↦ (cod u′)` factors `u₂` into `u₃`.
+  some `u₃` such that `(⨆dom u′) ↦ (⨆cod u′)` factors `u₂` into `u₃`.
   We show that `v ↦ w` also factors `u₂` into `u₃`.
-  From `dom u₃ ⊑ dom u′` and `dom u′ ⊑ v`, we have `dom u₃ ⊑ v`.
-  From `w ⊑ cod u′` and `cod u′ ⊑ cod u₃`, we have `w ⊑ cod u₃`,
+  From `⨆dom u₃ ⊑ ⨆dom u′` and `⨆dom u′ ⊑ v`, we have `⨆dom u₃ ⊑ v`.
+  From `w ⊑ ⨆cod u′` and `⨆cod u′ ⊑ ⨆cod u₃`, we have `w ⊑ ⨆cod u₃`,
   and this case is complete.
 
 * Case `⊑-fun`.
@@ -1197,7 +1197,7 @@ Let `v` and `w` be arbitrary values.
 
   Given that `v ↦ w ∈ u₁₁ ↦ u₁₂`, we have `v ≡ u₁₁` and `w ≡ u₁₂`.
   We show that `u₁₁ ↦ u₁₂` factors `u₂₁ ↦ u₂₂` into itself.
-  We need to show that `dom (u₂₁ ↦ u₂₂) ⊑ u₁₁` and `u₁₂ ⊑ cod (u₂₁ ↦ u₂₂)`,
+  We need to show that `⨆dom (u₂₁ ↦ u₂₂) ⊑ u₁₁` and `u₁₂ ⊑ ⨆cod (u₂₁ ↦ u₂₂)`,
   but that is equivalent to our premises `u₂₁ ⊑ u₁₁` and `u₁₂ ⊑ u₂₂`.
 
 * Case `⊑-dist`.
@@ -1223,13 +1223,13 @@ sub-inv-fun : ∀{v w u₁ : Value}
     → (v ↦ w) ⊑ u₁
       -----------------------------------------------------
     → Σ[ u₂ ∈ Value ] all-funs u₂ × u₂ ⊆ u₁
-        × (∀{v′ w′} → (v′ ↦ w′) ∈ u₂ → v′ ⊑ v) × w ⊑ cod u₂
+        × (∀{v′ w′} → (v′ ↦ w′) ∈ u₂ → v′ ⊑ v) × w ⊑ ⨆cod u₂
 sub-inv-fun{v}{w}{u₁} abc
     with sub-inv abc {v}{w} refl
 ... | ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ db , cc ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ G , cc ⟩ ⟩ ⟩ ⟩
    where G : ∀{D E} → (D ↦ E) ∈ u₂ → D ⊑ v
-         G{D}{E} m = ⊑-trans (⊆→⊑ (↦∈→⊆dom f m)) db
+         G{D}{E} m = ⊑-trans (⊆→⊑ (↦∈→⊆⨆dom f m)) db
 ```
 
 The second corollary is the inversion rule that one would expect for
@@ -1247,8 +1247,8 @@ less-than with functions on the left and right-hand sides.
 ... | ⟨ u , ⟨ u′ , u↦u′∈Γ ⟩ ⟩
     with Γ⊆v34 u↦u′∈Γ
 ... | refl =
-  let codΓ⊆w′ = ⊆↦→cod⊆ Γ⊆v34 in
-  ⟨ lt1 u↦u′∈Γ , ⊑-trans lt2 (⊆→⊑ codΓ⊆w′) ⟩
+  let ⨆codΓ⊆w′ = ⊆↦→⨆cod⊆ Γ⊆v34 in
+  ⟨ lt1 u↦u′∈Γ , ⊑-trans lt2 (⊆→⊑ ⨆codΓ⊆w′) ⟩
 ```
 
 
@@ -1356,6 +1356,7 @@ This chapter uses the following unicode:
     ↦  U+21A6  RIGHTWARDS ARROW FROM BAR (\mapsto)
     ⊔  U+2294  SQUARE CUP (\lub)
     ⊑  U+2291  SQUARE IMAGE OF OR EQUAL TO (\sqsubseteq)
+    ⨆ U+2A06  N-ARY SQUARE UNION OPERATOR (\Lub)
     ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
     ↓  U+2193  DOWNWARDS ARROW (\d)
     ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
