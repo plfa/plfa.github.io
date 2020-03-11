@@ -400,20 +400,24 @@ id-app-id : ∀ {u : Value} → `∅ ⊢ id · id ↓ (u ↦ u)
 id-app-id {u} = ↦-elim (↦-intro var) (↦-intro var)
 ```
 
-Next we revisit the Church numeral two.  This function has two
-parameters: a function and an arbitrary value `u`, and it applies the
-function twice. So the function must map `u` to some value, which
-we'll name `v`. Then for the second application, it must map `v` to
-some value. Let's name it `w`. So the parameter's table must contain
-two entries, both `u ↦ v` and `v ↦ w`. For each application of the
-table, we extract the appropriate entry from it using the `sub` rule.
-In particular, we use the ⊑-conj-R1 and ⊑-conj-R2 to select `u ↦ v` and `v
-↦ w`, respectively, from the table `u ↦ v ⊔ v ↦ w`. So the meaning of
-twoᶜ is that it takes this table and parameter `u`, and it returns `w`.
-Indeed we derive this as follows.
+Next we revisit the Church numeral two.
+
+    ƛ ƛ (# 1 · (# 1 · # 0))
+
+This function has two parameters: a function and an arbitrary value
+`u`, and it applies the function twice. So the function must map `u`
+to some value, which we'll name `v`. Then for the second application,
+it must map `v` to some value. Let's name it `w`. So the function's
+table must include two entries, both `u ↦ v` and `v ↦ w`. For each
+application of the table, we extract the appropriate entry from it
+using the `sub` rule.  In particular, we use the ⊑-conj-R1 and
+⊑-conj-R2 to select `u ↦ v` and `v ↦ w`, respectively, from the table
+`u ↦ v ⊔ v ↦ w`. So the meaning of twoᶜ is that it takes this table
+and parameter `u`, and it returns `w`.  Indeed we derive this as
+follows.
 
 ```
-denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w) ↦ (u ↦ w))
+denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w) ↦ u ↦ w)
 denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
   where lt1 : v ↦ w ⊑ u ↦ v ⊔ v ↦ w
