@@ -768,14 +768,14 @@ of the cases are trivial except the cases for variables and lambda.
   values.
 
 
-## Identity renamings and environment strengthening
+## Environment strengthening and identity renaming
 
-We shall need a corollary of the renaming lemma that says that if `M`
-results in `v`, then we can replace a value in the environment with a
-larger one (a stronger one), and `M` still results in `v`. In
+We shall need a corollary of the renaming lemma that says that
+replacing the environment with a larger one (a stronger one) does not
+change whether a term `M` results in particular value `v`. In
 particular, if `γ ⊢ M ↓ v` and `γ ⊑ δ`, then `δ ⊢ M ↓ v`.  What does
 this have to do with renaming?  It's renaming with the identity
-function.  So we apply the renaming lemma with the identity renaming,
+function.  We apply the renaming lemma with the identity renaming,
 which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
 `rename-id` lemma to obtain `δ ⊢ M ↓ v`.
 
@@ -787,8 +787,8 @@ which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
   → δ ⊢ M ↓ v
 ⊑-env{Γ}{γ}{δ}{M}{v} d lt
       with rename-pres{Γ}{Γ}{v}{γ}{δ}{M} (λ {A} x → x) lt d
-... | d′ rewrite rename-id {Γ}{★}{M} =
-      d′
+... | δ⊢id[M]↓v rewrite rename-id {Γ}{★}{M} =
+      δ⊢id[M]↓v
 ```
 
 In the proof that substitution reflects denotations, in the case for
