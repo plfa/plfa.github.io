@@ -1014,15 +1014,25 @@ than `w`.
 
 ```
 factor : (u : Value) → (u′ : Value) → (v : Value) → (w : Value) → Set
-factor u u′ v w = all-funs u′ × u′ ⊆ u × ⨆dom u′ ⊑ v × w ⊑ ⨆cod u′
+factor u u′ v w = all-funs u′  ×  u′ ⊆ u  ×  ⨆dom u′ ⊑ v  ×  w ⊑ ⨆cod u′
 ```
+
+So the inversion principle for functions can be stated as
+
+      v ↦ w ⊑ u
+      ---------------
+    → factor u u′ v w
 
 We prove the inversion principle for functions by induction on the
 derivation of the less-than relation. To make the induction hypothesis
-stronger, we broaden the premise to `u₁ ⊑ u₂` (instead of `v ↦ w ⊑
-u`), and strengthen the conclusion to say that for _every_ function
-value `v ↦ w ∈ u₁`, we have that `v ↦ w` factors `u₂` into some
-value `u₃`.
+stronger, we broaden the premise `v ↦ w ⊑ u` to `u₁ ⊑ u₂`, and
+strengthen the conclusion to say that for _every_ function value
+`v ↦ w ∈ u₁`, we have that `v ↦ w` factors `u₂` into some value `u₃`.
+
+    → u₁ ⊑ u₂
+      ------------------------------------------------------
+    → ∀{v w} → v ↦ w ∈ u₁ → Σ[ u₃ ∈ Value ] factor u₂ u₃ v w
+
 
 ### Inversion of less-than for functions, the case for ⊑-trans
 
