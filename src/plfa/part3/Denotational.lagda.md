@@ -240,8 +240,8 @@ _`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
 (γ `, v) (S x) = γ x
 ```
 
-We can recover the initial environment from an extended environment,
-and the last value. Putting them back together again takes us where we started.
+We can recover the previous environment from an extended environment,
+and the last value. Putting them together again takes us back to where we started.
 ```
 init : ∀ {Γ} → Env (Γ , ★) → Env Γ
 init γ x = γ (S x)
@@ -254,14 +254,6 @@ init-last {Γ} γ = extensionality lemma
   where lemma : ∀ (x : Γ , ★ ∋ ★) → γ x ≡ (init γ `, last γ) x
         lemma Z      =  refl
         lemma (S x)  =  refl
-```
-
-The nth function takes a de Bruijn index and finds the corresponding
-value in the environment.
-
-```
-nth : ∀{Γ} → (Γ ∋ ★) → Env Γ → Value
-nth x ρ = ρ x
 ```
 
 We extend the `⊑` relation point-wise to environments with the
@@ -716,27 +708,26 @@ same or larger than the original values. This generalization is useful
 in proving that reduction implies denotational equality.
 
 As before, we need an extension lemma to handle the case where we
-proceed underneath a lambda abstraction. Here, the nth function
-performs lookup in the environment, analogous to `Γ ∋ A`.  Now suppose
-that `ρ` is a renaming that maps variables in `γ` into variables with
-equal or larger values in `δ`. This lemmas says that extending the
-renaming producing a renaming `ext r` that maps `γ , v` to `δ , v`.
+proceed underneath a lambda abstraction. Suppose that `ρ` is a
+renaming that maps variables in `γ` into variables with equal or
+larger values in `δ`. This lemmas says that extending the renaming
+producing a renaming `ext r` that maps `γ , v` to `δ , v`.
 
 ```
-ext-nth : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
+ext-⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
   → γ `⊑ (δ ∘ ρ)
     ------------------------------
   → (γ `, v) `⊑ ((δ `, v) ∘ ext ρ)
-ext-nth ρ lt Z = ⊑-refl
-ext-nth ρ lt (S n′) = lt n′
+ext-⊑ ρ lt Z = ⊑-refl
+ext-⊑ ρ lt (S n′) = lt n′
 ```
 
 We proceed by cases on the de Bruijn index `n`.
 
 * If it is `Z`, then we just need to show that `v ≡ v`, which we have by `refl`.
 
-* If it is `S n′`, then the goal simplifies to `nth n′ γ ≡ nth (ρ n′) δ`,
+* If it is `S n′`, then the goal simplifies to `γ n′ ≡ δ (ρ n′)`,
   which is an instance of the premise.
 
 Now for the renaming lemma. Suppose we have a renaming that maps
@@ -756,7 +747,7 @@ rename-pres ρ lt (var {x = x}) = sub var (lt x)
 rename-pres ρ lt (↦-elim d d₁) =
    ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁)
 rename-pres ρ lt (↦-intro d) =
-   ↦-intro (rename-pres (ext ρ) (ext-nth ρ lt) d)
+   ↦-intro (rename-pres (ext ρ) (ext-⊑ ρ lt) d)
 rename-pres ρ lt ⊥-intro = ⊥-intro
 rename-pres ρ lt (⊔-intro d d₁) =
    ⊔-intro (rename-pres ρ lt d) (rename-pres ρ lt d₁)
@@ -767,11 +758,11 @@ rename-pres ρ lt (sub d lt′) =
 The proof is by induction on the semantics of `M`.  As you can see, all
 of the cases are trivial except the cases for variables and lambda.
 
-* For a variable `x`, we make use of the premise to
-  show that `nth x γ ≡ nth (ρ x) δ`.
+* For a variable `x`, we make use of the premise to show that
+  `γ x ≡ δ (ρ x)`.
 
 * For a lambda abstraction, the induction hypothesis requires us to
-  extend the renaming. We do so, and use the `ext-nth` lemma to show
+  extend the renaming. We do so, and use the `ext-⊑` lemma to show
   that the extended renaming maps variables to ones with equivalent
   values.
 
@@ -809,11 +800,11 @@ up-env : ∀ {Γ} {γ : Env Γ} {M v u₁ u₂}
   → u₁ ⊑ u₂
     -----------------
   → (γ `, u₂) ⊢ M ↓ v
-up-env d lt = ⊑-env d (nth-le lt)
+up-env d lt = ⊑-env d (ext-le lt)
   where
-  nth-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
-  nth-le lt Z = lt
-  nth-le lt (S n) = ⊑-refl
+  ext-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
+  ext-le lt Z = lt
+  ext-le lt (S n) = ⊑-refl
 ```
 
 
