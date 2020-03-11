@@ -341,7 +341,7 @@ lambda abstraction results in a single-entry table that maps the input
 `v` to the output `w`, provided that evaluating the body in an
 environment with `v` bound to its parameter produces the output `w`.
 As a simple example of this rule, we can see that the identity function
-maps `⊥` to `⊥`.
+maps `⊥` to `⊥` and also that it maps `⊥ ↦ ⊥` to `⊥ ↦ ⊥`.
 
 ```
 id : ∅ ⊢ ★
@@ -349,11 +349,11 @@ id = ƛ # 0
 ```
 
 ```
-denot-id : ∀ {γ v} → γ ⊢ id ↓ v ↦ v
-denot-id = ↦-intro var
+denot-id1 : ∀ {γ} → γ ⊢ id ↓ ⊥ ↦ ⊥
+denot-id1 = ↦-intro var
 
-denot-id-two : ∀ {γ v w} → γ ⊢ id ↓ (v ↦ v) ⊔ (w ↦ w)
-denot-id-two = ⊔-intro denot-id denot-id
+denot-id2 : ∀ {γ} → γ ⊢ id ↓ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
+denot-id2 = ↦-intro var
 ```
 
 Of course, we will need tables with many rows to capture the meaning
@@ -366,12 +366,12 @@ abstraction, it pre-evaluates the function on a bunch of randomly
 chosen arguments, using many instances of the rule `↦-intro`, and then
 joins them into a big table using many instances of the rule `⊔-intro`.
 In the following we show that the identity function produces a table
-containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦
-⊥)`.
+containing both of the previous results, `⊥ ↦ ⊥` and
+`(⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)`.
 
 ```
 denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
-denot-id3 = denot-id-two
+denot-id3 = ⊔-intro denot-id1 denot-id2
 ```
 
 We most often think of the judgment `γ ⊢ M ↓ v` as taking the
