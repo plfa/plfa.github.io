@@ -240,8 +240,8 @@ _`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
 (γ `, v) (S x) = γ x
 ```
 
-We can recover the initial environment from an extended environment,
-and the last value. Putting them back together again takes us where we started.
+We can recover the previous environment from an extended environment,
+and the last value. Putting them together again takes us back to where we started.
 ```
 init : ∀ {Γ} → Env (Γ , ★) → Env Γ
 init γ x = γ (S x)
@@ -254,14 +254,6 @@ init-last {Γ} γ = extensionality lemma
   where lemma : ∀ (x : Γ , ★ ∋ ★) → γ x ≡ (init γ `, last γ) x
         lemma Z      =  refl
         lemma (S x)  =  refl
-```
-
-The nth function takes a de Bruijn index and finds the corresponding
-value in the environment.
-
-```
-nth : ∀{Γ} → (Γ ∋ ★) → Env Γ → Value
-nth x ρ = ρ x
 ```
 
 We extend the `⊑` relation point-wise to environments with the
@@ -349,7 +341,7 @@ lambda abstraction results in a single-entry table that maps the input
 `v` to the output `w`, provided that evaluating the body in an
 environment with `v` bound to its parameter produces the output `w`.
 As a simple example of this rule, we can see that the identity function
-maps `⊥` to `⊥`.
+maps `⊥` to `⊥` and also that it maps `⊥ ↦ ⊥` to `⊥ ↦ ⊥`.
 
 ```
 id : ∅ ⊢ ★
@@ -357,11 +349,11 @@ id = ƛ # 0
 ```
 
 ```
-denot-id : ∀ {γ v} → γ ⊢ id ↓ v ↦ v
-denot-id = ↦-intro var
+denot-id1 : ∀ {γ} → γ ⊢ id ↓ ⊥ ↦ ⊥
+denot-id1 = ↦-intro var
 
-denot-id-two : ∀ {γ v w} → γ ⊢ id ↓ (v ↦ v) ⊔ (w ↦ w)
-denot-id-two = ⊔-intro denot-id denot-id
+denot-id2 : ∀ {γ} → γ ⊢ id ↓ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
+denot-id2 = ↦-intro var
 ```
 
 Of course, we will need tables with many rows to capture the meaning
@@ -374,12 +366,12 @@ abstraction, it pre-evaluates the function on a bunch of randomly
 chosen arguments, using many instances of the rule `↦-intro`, and then
 joins them into a big table using many instances of the rule `⊔-intro`.
 In the following we show that the identity function produces a table
-containing both of the previous results, `⊥ ↦ ⊥` and `(⊥ ↦ ⊥) ↦ (⊥ ↦
-⊥)`.
+containing both of the previous results, `⊥ ↦ ⊥` and
+`(⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)`.
 
 ```
 denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
-denot-id3 = denot-id-two
+denot-id3 = ⊔-intro denot-id1 denot-id2
 ```
 
 We most often think of the judgment `γ ⊢ M ↓ v` as taking the
@@ -408,20 +400,21 @@ id-app-id : ∀ {u : Value} → `∅ ⊢ id · id ↓ (u ↦ u)
 id-app-id {u} = ↦-elim (↦-intro var) (↦-intro var)
 ```
 
-Next we revisit the Church numeral two.  This function has two
-parameters: a function and an arbitrary value `u`, and it applies the
-function twice. So the function must map `u` to some value, which
-we'll name `v`. Then for the second application, it must map `v` to
-some value. Let's name it `w`. So the parameter's table must contain
-two entries, both `u ↦ v` and `v ↦ w`. For each application of the
-table, we extract the appropriate entry from it using the `sub` rule.
-In particular, we use the ⊑-conj-R1 and ⊑-conj-R2 to select `u ↦ v` and `v
-↦ w`, respectively, from the table `u ↦ v ⊔ v ↦ w`. So the meaning of
-twoᶜ is that it takes this table and parameter `u`, and it returns `w`.
-Indeed we derive this as follows.
+Next we revisit the Church numeral two: `λ f. λ u. (f (f u))`.
+This function has two parameters: a function `f` and an arbitrary value
+`u`, and it applies `f` twice. So `f` must map `u` to some value, which
+we'll name `v`. Then for the second application,
+`f` must map `v` to some value. Let's name it `w`. So the function's
+table must include two entries, both `u ↦ v` and `v ↦ w`. For each
+application of the table, we extract the appropriate entry from it
+using the `sub` rule.  In particular, we use the ⊑-conj-R1 and
+⊑-conj-R2 to select `u ↦ v` and `v ↦ w`, respectively, from the table
+`u ↦ v ⊔ v ↦ w`. So the meaning of twoᶜ is that it takes this table
+and parameter `u`, and it returns `w`.  Indeed we derive this as
+follows.
 
 ```
-denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w) ↦ (u ↦ w))
+denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w) ↦ u ↦ w)
 denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
   where lt1 : v ↦ w ⊑ u ↦ v ⊔ v ↦ w
@@ -716,27 +709,26 @@ same or larger than the original values. This generalization is useful
 in proving that reduction implies denotational equality.
 
 As before, we need an extension lemma to handle the case where we
-proceed underneath a lambda abstraction. Here, the nth function
-performs lookup in the environment, analogous to `Γ ∋ A`.  Now suppose
-that `ρ` is a renaming that maps variables in `γ` into variables with
-equal or larger values in `δ`. This lemmas says that extending the
-renaming producing a renaming `ext r` that maps `γ , v` to `δ , v`.
+proceed underneath a lambda abstraction. Suppose that `ρ` is a
+renaming that maps variables in `γ` into variables with equal or
+larger values in `δ`. This lemmas says that extending the renaming
+producing a renaming `ext r` that maps `γ , v` to `δ , v`.
 
 ```
-ext-nth : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
+ext-⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
   → γ `⊑ (δ ∘ ρ)
     ------------------------------
   → (γ `, v) `⊑ ((δ `, v) ∘ ext ρ)
-ext-nth ρ lt Z = ⊑-refl
-ext-nth ρ lt (S n′) = lt n′
+ext-⊑ ρ lt Z = ⊑-refl
+ext-⊑ ρ lt (S n′) = lt n′
 ```
 
 We proceed by cases on the de Bruijn index `n`.
 
 * If it is `Z`, then we just need to show that `v ≡ v`, which we have by `refl`.
 
-* If it is `S n′`, then the goal simplifies to `nth n′ γ ≡ nth (ρ n′) δ`,
+* If it is `S n′`, then the goal simplifies to `γ n′ ≡ δ (ρ n′)`,
   which is an instance of the premise.
 
 Now for the renaming lemma. Suppose we have a renaming that maps
@@ -756,7 +748,7 @@ rename-pres ρ lt (var {x = x}) = sub var (lt x)
 rename-pres ρ lt (↦-elim d d₁) =
    ↦-elim (rename-pres ρ lt d) (rename-pres ρ lt d₁)
 rename-pres ρ lt (↦-intro d) =
-   ↦-intro (rename-pres (ext ρ) (ext-nth ρ lt) d)
+   ↦-intro (rename-pres (ext ρ) (ext-⊑ ρ lt) d)
 rename-pres ρ lt ⊥-intro = ⊥-intro
 rename-pres ρ lt (⊔-intro d d₁) =
    ⊔-intro (rename-pres ρ lt d) (rename-pres ρ lt d₁)
@@ -767,23 +759,23 @@ rename-pres ρ lt (sub d lt′) =
 The proof is by induction on the semantics of `M`.  As you can see, all
 of the cases are trivial except the cases for variables and lambda.
 
-* For a variable `x`, we make use of the premise to
-  show that `nth x γ ≡ nth (ρ x) δ`.
+* For a variable `x`, we make use of the premise to show that
+  `γ x ≡ δ (ρ x)`.
 
 * For a lambda abstraction, the induction hypothesis requires us to
-  extend the renaming. We do so, and use the `ext-nth` lemma to show
+  extend the renaming. We do so, and use the `ext-⊑` lemma to show
   that the extended renaming maps variables to ones with equivalent
   values.
 
 
-## Identity renamings and environment strengthening
+## Environment strengthening and identity renaming
 
-We shall need a corollary of the renaming lemma that says that if `M`
-results in `v`, then we can replace a value in the environment with a
-larger one (a stronger one), and `M` still results in `v`. In
+We shall need a corollary of the renaming lemma that says that
+replacing the environment with a larger one (a stronger one) does not
+change whether a term `M` results in particular value `v`. In
 particular, if `γ ⊢ M ↓ v` and `γ ⊑ δ`, then `δ ⊢ M ↓ v`.  What does
 this have to do with renaming?  It's renaming with the identity
-function.  So we apply the renaming lemma with the identity renaming,
+function.  We apply the renaming lemma with the identity renaming,
 which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
 `rename-id` lemma to obtain `δ ⊢ M ↓ v`.
 
@@ -795,8 +787,8 @@ which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
   → δ ⊢ M ↓ v
 ⊑-env{Γ}{γ}{δ}{M}{v} d lt
       with rename-pres{Γ}{Γ}{v}{γ}{δ}{M} (λ {A} x → x) lt d
-... | d′ rewrite rename-id {Γ}{★}{M} =
-      d′
+... | δ⊢id[M]↓v rewrite rename-id {Γ}{★}{M} =
+      δ⊢id[M]↓v
 ```
 
 In the proof that substitution reflects denotations, in the case for
@@ -809,11 +801,11 @@ up-env : ∀ {Γ} {γ : Env Γ} {M v u₁ u₂}
   → u₁ ⊑ u₂
     -----------------
   → (γ `, u₂) ⊢ M ↓ v
-up-env d lt = ⊑-env d (nth-le lt)
+up-env d lt = ⊑-env d (ext-le lt)
   where
-  nth-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
-  nth-le lt Z = lt
-  nth-le lt (S n) = ⊑-refl
+  ext-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
+  ext-le lt Z = lt
+  ext-le lt (S n) = ⊑-refl
 ```
 
 
@@ -961,59 +953,59 @@ function, we want to show that `v ↦ w ⊑ u` implies that `u` includes
 a set of function values such that the join of their domains is less
 than `v` and the join of their codomains is greater than `w`.
 
-To this end we define the following dom and cod functions.  Given some
-value `u` (that represents a set of entries), `dom u` returns the join of
-their domains and `cod u` returns the join of their codomains.
+To this end we define the following `⨆dom` and `⨆cod` functions.  Given some
+value `u` (that represents a set of entries), `⨆dom u` returns the join of
+their domains and `⨆cod u` returns the join of their codomains.
 
 ```
-dom : (u : Value) → Value
-dom ⊥  = ⊥
-dom (v ↦ w) = v
-dom (u ⊔ u′) = dom u ⊔ dom u′
+⨆dom : (u : Value) → Value
+⨆dom ⊥  = ⊥
+⨆dom (v ↦ w) = v
+⨆dom (u ⊔ u′) = ⨆dom u ⊔ ⨆dom u′
 
-cod : (u : Value) → Value
-cod ⊥  = ⊥
-cod (v ↦ w) = w
-cod (u ⊔ u′) = cod u ⊔ cod u′
+⨆cod : (u : Value) → Value
+⨆cod ⊥  = ⊥
+⨆cod (v ↦ w) = w
+⨆cod (u ⊔ u′) = ⨆cod u ⊔ ⨆cod u′
 ```
 
-We need just one property each for `dom` and `cod`.  Given a collection of
+We need just one property each for `⨆dom` and `⨆cod`.  Given a collection of
 functions represented by value `u`, and an entry `v ↦ w ∈ u`, we know
 that `v` is included in the domain of `v`.
 
 ```
-↦∈→⊆dom : ∀{u v w : Value}
+↦∈→⊆⨆dom : ∀{u v w : Value}
           → all-funs u  →  (v ↦ w) ∈ u
             ----------------------
-          → v ⊆ dom u
-↦∈→⊆dom {⊥} fg () u∈v
-↦∈→⊆dom {v ↦ w} fg refl u∈v = u∈v
-↦∈→⊆dom {u ⊔ u′} fg (inj₁ v↦w∈u) u∈v =
-   let ih = ↦∈→⊆dom (λ z → fg (inj₁ z)) v↦w∈u in
+          → v ⊆ ⨆dom u
+↦∈→⊆⨆dom {⊥} fg () u∈v
+↦∈→⊆⨆dom {v ↦ w} fg refl u∈v = u∈v
+↦∈→⊆⨆dom {u ⊔ u′} fg (inj₁ v↦w∈u) u∈v =
+   let ih = ↦∈→⊆⨆dom (λ z → fg (inj₁ z)) v↦w∈u in
    inj₁ (ih u∈v)
-↦∈→⊆dom {u ⊔ u′} fg (inj₂ v↦w∈u′) u∈v =
-   let ih = ↦∈→⊆dom (λ z → fg (inj₂ z)) v↦w∈u′ in
+↦∈→⊆⨆dom {u ⊔ u′} fg (inj₂ v↦w∈u′) u∈v =
+   let ih = ↦∈→⊆⨆dom (λ z → fg (inj₂ z)) v↦w∈u′ in
    inj₂ (ih u∈v)
 ```
 
-Regarding `cod`, suppose we have a collection of functions represented
-by `u`, but all of them are just copies of `v ↦ w`.  Then the `cod u` is
+Regarding `⨆cod`, suppose we have a collection of functions represented
+by `u`, but all of them are just copies of `v ↦ w`.  Then the `⨆cod u` is
 included in `w`.
 
 ```
-⊆↦→cod⊆ : ∀{u v w : Value}
+⊆↦→⨆cod⊆ : ∀{u v w : Value}
         → u ⊆ v ↦ w
           ---------
-        → cod u ⊆ w
-⊆↦→cod⊆ {⊥} s refl with s {⊥} refl
+        → ⨆cod u ⊆ w
+⊆↦→⨆cod⊆ {⊥} s refl with s {⊥} refl
 ... | ()
-⊆↦→cod⊆ {C ↦ C′} s m with s {C ↦ C′} refl
+⊆↦→⨆cod⊆ {C ↦ C′} s m with s {C ↦ C′} refl
 ... | refl = m
-⊆↦→cod⊆ {u ⊔ u′} s (inj₁ x) = ⊆↦→cod⊆ (λ {C} z → s (inj₁ z)) x
-⊆↦→cod⊆ {u ⊔ u′} s (inj₂ y) = ⊆↦→cod⊆ (λ {C} z → s (inj₂ z)) y
+⊆↦→⨆cod⊆ {u ⊔ u′} s (inj₁ x) = ⊆↦→⨆cod⊆ (λ {C} z → s (inj₁ z)) x
+⊆↦→⨆cod⊆ {u ⊔ u′} s (inj₂ y) = ⊆↦→⨆cod⊆ (λ {C} z → s (inj₂ z)) y
 ```
 
-With the `dom` and `cod` functions in hand, we can make precise the
+With the `⨆dom` and `⨆cod` functions in hand, we can make precise the
 conclusion of the inversion principle for functions, which we package
 into the following predicate named `factor`. We say that `v ↦ w`
 _factors_ `u` into `u′` if `u′` is a included in `u`, if `u′` contains only
@@ -1022,15 +1014,25 @@ than `w`.
 
 ```
 factor : (u : Value) → (u′ : Value) → (v : Value) → (w : Value) → Set
-factor u u′ v w = all-funs u′ × u′ ⊆ u × dom u′ ⊑ v × w ⊑ cod u′
+factor u u′ v w = all-funs u′  ×  u′ ⊆ u  ×  ⨆dom u′ ⊑ v  ×  w ⊑ ⨆cod u′
 ```
+
+So the inversion principle for functions can be stated as
+
+      v ↦ w ⊑ u
+      ---------------
+    → factor u u′ v w
 
 We prove the inversion principle for functions by induction on the
 derivation of the less-than relation. To make the induction hypothesis
-stronger, we broaden the premise to `u₁ ⊑ u₂` (instead of `v ↦ w ⊑
-u`), and strengthen the conclusion to say that for _every_ function
-value `v ↦ w ∈ u₁`, we have that `v ↦ w` factors `u₂` into some
-value `u₃`.
+stronger, we broaden the premise `v ↦ w ⊑ u` to `u₁ ⊑ u₂`, and
+strengthen the conclusion to say that for _every_ function value
+`v ↦ w ∈ u₁`, we have that `v ↦ w` factors `u₂` into some value `u₃`.
+
+    → u₁ ⊑ u₂
+      ------------------------------------------------------
+    → ∀{v w} → v ↦ w ∈ u₁ → Σ[ u₃ ∈ Value ] factor u₂ u₃ v w
+
 
 ### Inversion of less-than for functions, the case for ⊑-trans
 
@@ -1046,7 +1048,7 @@ so we have `all-funs u′` and `u′ ⊆ u`.
 By the induction hypothesis for `u ⊑ u₂`, we know
 that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂` into `u₃`.
 With these facts in hand, we proceed by induction on `u′`
-to prove that `(dom u′) ↦ (cod u′)` factors `u₂` into `u₃`.
+to prove that `(⨆dom u′) ↦ (⨆cod u′)` factors `u₂` into `u₃`.
 We discuss each case of the proof in the text below.
 
 ```
@@ -1054,7 +1056,7 @@ sub-inv-trans : ∀{u′ u₂ u : Value}
     → all-funs u′  →  u′ ⊆ u
     → (∀{v′ w′} → v′ ↦ w′ ∈ u → Σ[ u₃ ∈ Value ] factor u₂ u₃ v′ w′)
       ---------------------------------------------------------------
-    → Σ[ u₃ ∈ Value ] factor u₂ u₃ (dom u′) (cod u′)
+    → Σ[ u₃ ∈ Value ] factor u₂ u₃ (⨆dom u′) (⨆cod u′)
 sub-inv-trans {⊥} {u₂} {u} fu′ u′⊆u IH =
    ⊥-elim (contradiction (fu′ refl) ¬Fun⊥)
 sub-inv-trans {u₁′ ↦ u₂′} {u₂} {u} fg u′⊆u IH = IH (↦⊆→∈ u′⊆u)
@@ -1082,18 +1084,18 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
 * Suppose `u′ ≡ u₁′ ↦ u₂′`. Then `u₁′ ↦ u₂′ ∈ u` and we can apply the
   premise (the induction hypothesis from `u ⊑ u₂`) to obtain that
   `u₁′ ↦ u₂′` factors of `u₂ into u₂′`. This case is complete because
-  `dom u′ ≡ u₁′` and `cod u′ ≡ u₂′`.
+  `⨆dom u′ ≡ u₁′` and `⨆cod u′ ≡ u₂′`.
 
 * Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also
   have `all-funs u₁′` and `all-funs u₂′`, so we can apply the induction hypothesis
   for both `u₁′` and `u₂′`. So there exists values `u₃₁` and `u₃₂` such that
-  `(dom u₁′) ↦ (cod u₁′)` factors `u` into `u₃₁` and
-  `(dom u₂′) ↦ (cod u₂′)` factors `u` into `u₃₂`.
-  We will show that `(dom u) ↦ (cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
+  `(⨆dom u₁′) ↦ (⨆cod u₁′)` factors `u` into `u₃₁` and
+  `(⨆dom u₂′) ↦ (⨆cod u₂′)` factors `u` into `u₃₂`.
+  We will show that `(⨆dom u) ↦ (⨆cod u)` factors `u` into `u₃₁ ⊔ u₃₂`.
   So we need to show that
 
-        dom (u₃₁ ⊔ u₃₂) ⊑ dom (u₁′ ⊔ u₂′)
-        cod (u₁′ ⊔ u₂′) ⊑ cod (u₃₁ ⊔ u₃₂)
+        ⨆dom (u₃₁ ⊔ u₃₂) ⊑ ⨆dom (u₁′ ⊔ u₂′)
+        ⨆cod (u₁′ ⊔ u₂′) ⊑ ⨆cod (u₃₁ ⊔ u₃₂)
 
   But those both follow directly from the factoring of
   `u` into `u₃₁` and `u₃₂`, using the monotonicity of `⊔` with respect to `⊑`.
@@ -1191,10 +1193,10 @@ Let `v` and `w` be arbitrary values.
   By the induction hypothesis for `u ⊑ u₂`, we know
   that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂`.
   Now we apply the lemma sub-inv-trans, which gives us
-  some `u₃` such that `(dom u′) ↦ (cod u′)` factors `u₂` into `u₃`.
+  some `u₃` such that `(⨆dom u′) ↦ (⨆cod u′)` factors `u₂` into `u₃`.
   We show that `v ↦ w` also factors `u₂` into `u₃`.
-  From `dom u₃ ⊑ dom u′` and `dom u′ ⊑ v`, we have `dom u₃ ⊑ v`.
-  From `w ⊑ cod u′` and `cod u′ ⊑ cod u₃`, we have `w ⊑ cod u₃`,
+  From `⨆dom u₃ ⊑ ⨆dom u′` and `⨆dom u′ ⊑ v`, we have `⨆dom u₃ ⊑ v`.
+  From `w ⊑ ⨆cod u′` and `⨆cod u′ ⊑ ⨆cod u₃`, we have `w ⊑ ⨆cod u₃`,
   and this case is complete.
 
 * Case `⊑-fun`.
@@ -1205,7 +1207,7 @@ Let `v` and `w` be arbitrary values.
 
   Given that `v ↦ w ∈ u₁₁ ↦ u₁₂`, we have `v ≡ u₁₁` and `w ≡ u₁₂`.
   We show that `u₁₁ ↦ u₁₂` factors `u₂₁ ↦ u₂₂` into itself.
-  We need to show that `dom (u₂₁ ↦ u₂₂) ⊑ u₁₁` and `u₁₂ ⊑ cod (u₂₁ ↦ u₂₂)`,
+  We need to show that `⨆dom (u₂₁ ↦ u₂₂) ⊑ u₁₁` and `u₁₂ ⊑ ⨆cod (u₂₁ ↦ u₂₂)`,
   but that is equivalent to our premises `u₂₁ ⊑ u₁₁` and `u₁₂ ⊑ u₂₂`.
 
 * Case `⊑-dist`.
@@ -1231,13 +1233,13 @@ sub-inv-fun : ∀{v w u₁ : Value}
     → (v ↦ w) ⊑ u₁
       -----------------------------------------------------
     → Σ[ u₂ ∈ Value ] all-funs u₂ × u₂ ⊆ u₁
-        × (∀{v′ w′} → (v′ ↦ w′) ∈ u₂ → v′ ⊑ v) × w ⊑ cod u₂
+        × (∀{v′ w′} → (v′ ↦ w′) ∈ u₂ → v′ ⊑ v) × w ⊑ ⨆cod u₂
 sub-inv-fun{v}{w}{u₁} abc
     with sub-inv abc {v}{w} refl
 ... | ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ db , cc ⟩ ⟩ ⟩ ⟩ =
       ⟨ u₂ , ⟨ f , ⟨ u₂⊆u₁ , ⟨ G , cc ⟩ ⟩ ⟩ ⟩
    where G : ∀{D E} → (D ↦ E) ∈ u₂ → D ⊑ v
-         G{D}{E} m = ⊑-trans (⊆→⊑ (↦∈→⊆dom f m)) db
+         G{D}{E} m = ⊑-trans (⊆→⊑ (↦∈→⊆⨆dom f m)) db
 ```
 
 The second corollary is the inversion rule that one would expect for
@@ -1255,8 +1257,8 @@ less-than with functions on the left and right-hand sides.
 ... | ⟨ u , ⟨ u′ , u↦u′∈Γ ⟩ ⟩
     with Γ⊆v34 u↦u′∈Γ
 ... | refl =
-  let codΓ⊆w′ = ⊆↦→cod⊆ Γ⊆v34 in
-  ⟨ lt1 u↦u′∈Γ , ⊑-trans lt2 (⊆→⊑ codΓ⊆w′) ⟩
+  let ⨆codΓ⊆w′ = ⊆↦→⨆cod⊆ Γ⊆v34 in
+  ⟨ lt1 u↦u′∈Γ , ⊑-trans lt2 (⊆→⊑ ⨆codΓ⊆w′) ⟩
 ```
 
 
@@ -1364,6 +1366,7 @@ This chapter uses the following unicode:
     ↦  U+21A6  RIGHTWARDS ARROW FROM BAR (\mapsto)
     ⊔  U+2294  SQUARE CUP (\lub)
     ⊑  U+2291  SQUARE IMAGE OF OR EQUAL TO (\sqsubseteq)
+    ⨆ U+2A06  N-ARY SQUARE UNION OPERATOR (\Lub)
     ⊢  U+22A2  RIGHT TACK (\|- or \vdash)
     ↓  U+2193  DOWNWARDS ARROW (\d)
     ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
