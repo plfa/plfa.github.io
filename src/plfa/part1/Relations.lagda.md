@@ -791,8 +791,8 @@ and back is the identity:
     to (from b) ≡ b
 
 (Hint: For each of these, you may first need to prove related
-properties of `One`. Also, you may need to prove that `1` is
-less or equal to the result of `from b`.)
+properties of `One`. Also, you may need to prove that
+if `One b` then `1` is less or equal to the result of `from b`.)
 
 ```
 -- Your code goes here
