@@ -785,16 +785,16 @@ subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 ## Single and double substitution
 
 ```
+substZero : ∀ {Γ}{A B} → Γ ⊢ A → Γ , A ∋ B → Γ ⊢ B
+substZero V Z      =  V
+substZero V (S x)  =  ` x
+
 _[_] : ∀ {Γ A B}
   → Γ , A ⊢ B
   → Γ ⊢ A
     ---------
   → Γ ⊢ B
-_[_] {Γ} {A} N V =  subst {Γ , A} {Γ} σ N
-  where
-  σ : ∀ {B} → Γ , A ∋ B → Γ ⊢ B
-  σ Z      =  V
-  σ (S x)  =  ` x
+_[_] {Γ} {A} N V =  subst {Γ , A} {Γ} (substZero V) N
 
 _[_][_] : ∀ {Γ A B C}
   → Γ , A , B ⊢ C
