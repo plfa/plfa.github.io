@@ -675,7 +675,7 @@ the predecessor of the current argument) and one corresponding to the
 zero branch of the case.  (The cases could be in either order.
 We put the successor case first to ease comparison with Church numerals.)
 
-Here is the representation of naturals encoded with de Bruijn indexes:
+Here is the Scott representation of naturals encoded with de Bruijn indexes:
 ```
 `zero : ∀ {Γ} → (Γ ⊢ ★)
 `zero = ƛ ƛ (# 0)
