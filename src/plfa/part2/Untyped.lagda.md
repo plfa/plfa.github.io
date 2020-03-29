@@ -681,7 +681,7 @@ Here is the representation of naturals encoded with de Bruijn indexes:
 `zero = ƛ ƛ (# 0)
 
 `suc_ : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★)
-`suc_ M  = (ƛ ƛ ƛ (# 1 · (# 2 · # 1 · # 0))) · M
+`suc_ M  = (ƛ ƛ ƛ (# 1 · # 2)) · M
 
 case : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★) → (Γ , ★ ⊢ ★)  → (Γ ⊢ ★)
 case L M N = L · (ƛ N) · M
@@ -691,21 +691,17 @@ definitions.  The successor branch expects an additional variable to
 be in scope (as indicated by its type), so it is converted to an
 ordinary term using lambda abstraction.
 
-Applying successor to the zero indeed reduces to the Church numeral
+Applying successor to the zero indeed reduces to the Scott numeral
 for one.
 
 ```
 _ : eval (gas 100) (`suc_ {∅} `zero) ≡
     steps
-        ((ƛ (ƛ (ƛ (` (S Z)) · ((` (S (S Z))) · (` (S Z)) · (` Z))))) · (ƛ (ƛ (` Z)))
-      —→⟨ β ⟩
-        ƛ (ƛ (` (S Z)) · ((ƛ (ƛ (` Z))) · (` (S Z)) · (` Z)))
-      —→⟨ ζ (ζ (ξ₂ (ξ₁ β))) ⟩
-        ƛ (ƛ (` (S Z)) · ((ƛ (` Z)) · (` Z)))
-      —→⟨ ζ (ζ (ξ₂ β)) ⟩
-        ƛ (ƛ (` (S Z)) · (` Z))
-      ∎)
-    (done (ƛ (ƛ (′ (` (S Z)) · (′ (` Z))))))
+        ((ƛ (ƛ (ƛ # 1 · # 2))) · (ƛ (ƛ # 0))
+    —→⟨ β ⟩
+         ƛ (ƛ # 1 · (ƛ (ƛ # 0)))
+    ∎)
+    (done (ƛ (ƛ (′ (` (S Z)) · (ƛ (ƛ (′ (` Z))))))))
 _ = refl
 ```
 
