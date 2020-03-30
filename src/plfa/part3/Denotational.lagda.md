@@ -527,7 +527,7 @@ data Path : (n : ℕ) → Value → Set where
 * A singleton path is of the form `f ↦ a ↦ a`.
 
 * If there is a path from `a` to `b` and
-  an edge from `b` to `c` in graph of `f`,
+  an edge from `b` to `c` in the graph of `f`,
   then there is a path from `a` to `c`.
 
 This exercise is to prove that if `f ↦ a ↦ b` is a path of length `n`,
