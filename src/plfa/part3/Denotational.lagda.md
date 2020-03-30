@@ -60,6 +60,7 @@ open import Relation.Binary using (Setoid)
 ```
 open import Agda.Primitive using (lzero; lsuc)
 open import Data.Empty using (⊥-elim)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum
@@ -502,6 +503,55 @@ arguments.
 What is a denotation for `plusᶜ`? That is, find a value `v` (other than `⊥`)
 such that `∅ ⊢ plusᶜ ↓ v`. Also, give the proof of `∅ ⊢ plusᶜ ↓ v`
 for your choice of `v`.
+
+```
+-- Your code goes here
+```
+
+#### Exercise `denot-church` (recommended)
+
+Church numerals are more general than natural numbers in that they
+represent paths in a graph. The following `Path` predicate specifies
+when a value of the form `f ↦ a ↦ b` represents a path from the
+starting point `a` to the end point `b` in the graph of the function `f`.
+
+```
+data Path : (n : ℕ) → Value → Set where
+  singleton : ∀{f a} → Path 0 (f ↦ a ↦ a)
+  edge : ∀{n f a b c}
+     → Path n (f ↦ a ↦ b)
+     → b ↦ c ⊑ f
+     → Path (suc n) (f ↦ a ↦ c)
+```
+
+* A singleton path is of the form `f ↦ a ↦ a`.
+
+* If there is a path from `a` to `b` and
+  an edge from `b` to `c` in graph of `f`,
+  then there is a path from `a` to `c`.
+
+This exercise is to prove that if `f ↦ a ↦ b` is a path of length `n`,
+then `f ↦ a ↦ b` is a meaning of the Church numeral `n`.
+
+To fascilitate talking about arbitrary Church numerals, the following
+`church` function builds the term for the nth Church numeral,
+using the auxilliary function `apply-n`.
+
+```
+apply-n : (n : ℕ) → ∅ , ★ , ★ ⊢ ★
+apply-n zero = # 0
+apply-n (suc n) = # 1 · apply-n n
+
+church : (n : ℕ) → ∅ ⊢ ★
+church n = ƛ ƛ apply-n n 
+```
+
+Prove the following theorem.
+
+    denot-church : ∀{n v}
+       → Path n v
+         -----------------
+       → `∅ ⊢ church n ↓ v
 
 ```
 -- Your code goes here
