@@ -66,8 +66,8 @@ rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 
 If one squints hard enough, the `ℱ` function starts to look like the
 `curry` operation familar to functional programmers. It turns a
-function that expects a tuple of length `n + 1` (the environment `Γ ,
-★`) into a function that expects a tuple of length `n` and returns a
+function that expects a tuple of length `n + 1` (the environment `Γ , ★`)
+into a function that expects a tuple of length `n` and returns a
 function of one parameter.
 
 Using this `ℱ`, we hope to prove that
