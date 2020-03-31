@@ -989,4 +989,4 @@ move the cursor onto the character and use `quail-show-key` with:
     M-x quail-show-key
 
 You'll see a key sequence of the character in mini buffer.
-If you run `M-x qualy-show-key` on say `∸`, you will see `\.-` for the character.
+If you run `M-x quail-show-key` on say `∸`, you will see `\.-` for the character.
