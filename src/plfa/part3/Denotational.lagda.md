@@ -515,13 +515,13 @@ Church numerals are more general than natural numbers in that they
 represent paths. A path consists of `n` edges and `n + 1` vertices.
 We store the vertices in a vector of length `n + 1` in reverse
 order. The edges in the path map the ith vertex to the `i + 1` vertex.
-The following function `Dˢᵘᶜ` (for denotation of successor) constructs
+The following function `D^suc` (for denotation of successor) constructs
 a table whose entries are all the edges in the path.
 
 ```
-Dˢᵘᶜ : (n : ℕ) → Vec Value (suc n) → Value
-Dˢᵘᶜ zero (a[0] ∷ []) = ⊥
-Dˢᵘᶜ (suc i) (a[i+1] ∷ a[i] ∷ ls) =  a[i] ↦ a[i+1]  ⊔  Dˢᵘᶜ i (a[i] ∷ ls)
+D^suc : (n : ℕ) → Vec Value (suc n) → Value
+D^suc zero (a[0] ∷ []) = ⊥
+D^suc (suc i) (a[i+1] ∷ a[i] ∷ ls) =  a[i] ↦ a[i+1]  ⊔  D^suc i (a[i] ∷ ls)
 ```
 
 We use the following auxilliary function to obtain the last element of
@@ -541,7 +541,7 @@ for a given path.
 Dᶜ : (n : ℕ) → Vec Value (suc n) → Value
 Dᶜ zero (a[0] ∷ []) = ⊥ ↦ a[0] ↦ a[0]
 Dᶜ (suc n) (a[n+1] ∷ a[n] ∷ ls) =
-  (Dˢᵘᶜ (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
+  (D^suc (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
 ```
 
 * The Church numeral for 0 ignores its first argument and returns
@@ -551,11 +551,11 @@ Dᶜ (suc n) (a[n+1] ∷ a[n] ∷ ls) =
         ⊥ ↦ a[0] ↦ a[0]
 
 * The Church numeral for `suc n` takes two arguments:
-  a successor function whose denotation is given by `Dˢᵘᶜ`,
+  a successor function whose denotation is given by `D^suc`,
   and the start of the path (last of the vector).
   It returns the `n + 1` vertex in the path.
   
-        (Dˢᵘᶜ (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
+        (D^suc (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
 
 The exercise is to prove that for any path `ls`, the meaning of the
 Church numeral `n` is `Dᶜ n ls`.
