@@ -539,9 +539,7 @@ for a given path.
 
 ```
 Dᶜ : (n : ℕ) → Vec Value (suc n) → Value
-Dᶜ zero (a[0] ∷ []) = ⊥ ↦ a[0] ↦ a[0]
-Dᶜ (suc n) (a[n+1] ∷ a[n] ∷ ls) =
-  (D^suc (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
+Dᶜ n (a[n] ∷ ls) = (D^suc n (a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n]
 ```
 
 * The Church numeral for 0 ignores its first argument and returns
