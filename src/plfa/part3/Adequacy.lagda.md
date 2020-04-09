@@ -36,7 +36,7 @@ multi-step reduction a lambda abstraction.  The recursive structure of
 the derivations for `γ ⊢ M ↓ (v ↦ w)` are completely different from
 the structure of multi-step reductions, so a direct proof would be
 challenging. However, The structure of `γ ⊢ M ↓ (v ↦ w)` closer to
-that of the [BigStep](../part2/BigStep.lagda.md) call-by-name
+that of [BigStep]({{ site.baseurl }}/BigStep/) call-by-name
 evaluation. Further, we already proved that big-step evaluation
 implies multi-step reduction to a lambda (`cbn→reduce`). So we shall
 prove that `γ ⊢ M ↓ (v ↦ w)` implies that `γ' ⊢ M ⇓ c`, where `c` is a
@@ -48,13 +48,16 @@ semantic values to closures using a _logical relation_ `𝕍`.
 
 The rest of this chapter is organized as follows.
 
-* We loosen the requirement that `M` result in a function value and
+* To make the `𝕍` relation down-closed with respect to `⊑`,
+  we must loosen the requirement that `M` result in a function value and
   instead require that `M` result in a value that is greater than or
   equal to a function value. We establish several properties about
   being ``greater than a function''.
 
 * We define the logical relation `𝕍` that relates values and closures,
   and extend it to a relation on terms `𝔼` and environments `𝔾`.
+  We prove several lemmas that culminate in the property that
+  if `𝕍 v c` and `v′ ⊑ v`, then `𝕍 v′ c`.
 
 * We prove the main lemma,
   that if `𝔾 γ γ'` and `γ ⊢ M ↓ v`, then `𝔼 v (clos M γ')`.
@@ -616,7 +619,7 @@ adequacy{M}{N} eq
 
 As promised, we return to the question of whether call-by-name
 evaluation is equivalent to beta reduction. In chapter
-[BigStep](../part2/BigStep.lagda.md) we established the forward
+[BigStep]({{ site.baseurl }}/BigStep/) we established the forward
 direction: that if call-by-name produces a result, then the program
 beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backward
 direction of the if-and-only-if, leveraging our results about the
