@@ -509,76 +509,6 @@ for your choice of `v`.
 -- Your code goes here
 ```
 
-#### Exercise `denot-church` (recommended)
-
-Church numerals are more general than natural numbers in that they
-represent paths. A path consists of `n` edges and `n + 1` vertices.
-We store the vertices in a vector of length `n + 1` in reverse
-order. The edges in the path map the ith vertex to the `i + 1` vertex.
-The following function `D^suc` (for denotation of successor) constructs
-a table whose entries are all the edges in the path.
-
-```
-D^suc : (n : ℕ) → Vec Value (suc n) → Value
-D^suc zero (a[0] ∷ []) = ⊥
-D^suc (suc i) (a[i+1] ∷ a[i] ∷ ls) =  a[i] ↦ a[i+1]  ⊔  D^suc i (a[i] ∷ ls)
-```
-
-We use the following auxilliary function to obtain the last element of
-a non-empty vector. (This formulation is more convenient for our
-purposes than the one in the Agda standard library.)
-
-```
-vec-last : ∀{n : ℕ} → Vec Value (suc n) → Value
-vec-last {0} (a ∷ []) = a
-vec-last {suc n} (a ∷ b ∷ ls) = vec-last (b ∷ ls)
-```
-
-The function `Dᶜ` computes the denotation of the nth Church numeral
-for a given path.
-
-```
-Dᶜ : (n : ℕ) → Vec Value (suc n) → Value
-Dᶜ n (a[n] ∷ ls) = (D^suc n (a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n]
-```
-
-* The Church numeral for 0 ignores its first argument and returns
-  its second argument, so for the singleton path consisting of
-  just `a[0]`, its denotation is
-
-        ⊥ ↦ a[0] ↦ a[0]
-
-* The Church numeral for `suc n` takes two arguments:
-  a successor function whose denotation is given by `D^suc`,
-  and the start of the path (last of the vector).
-  It returns the `n + 1` vertex in the path.
-  
-        (D^suc (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
-
-The exercise is to prove that for any path `ls`, the meaning of the
-Church numeral `n` is `Dᶜ n ls`.
-
-To fascilitate talking about arbitrary Church numerals, the following
-`church` function builds the term for the nth Church numeral,
-using the auxilliary function `apply-n`.
-
-```
-apply-n : (n : ℕ) → ∅ , ★ , ★ ⊢ ★
-apply-n zero = # 0
-apply-n (suc n) = # 1 · apply-n n
-
-church : (n : ℕ) → ∅ ⊢ ★
-church n = ƛ ƛ apply-n n 
-```
-
-Prove the following theorem.
-
-    denot-church : ∀{n : ℕ}{ls : Vec Value (suc n)}
-       → `∅ ⊢ church n ↓ Dᶜ n ls
-
-```
--- Your code goes here
-```
 
 ## Denotations and denotational equality
 
@@ -879,6 +809,77 @@ up-env d lt = ⊑-env d (ext-le lt)
   ext-le : ∀ {γ u₁ u₂} → u₁ ⊑ u₂ → (γ `, u₁) `⊑ (γ `, u₂)
   ext-le lt Z = lt
   ext-le lt (S n) = ⊑-refl
+```
+
+#### Exercise `denot-church` (recommended)
+
+Church numerals are more general than natural numbers in that they
+represent paths. A path consists of `n` edges and `n + 1` vertices.
+We store the vertices in a vector of length `n + 1` in reverse
+order. The edges in the path map the ith vertex to the `i + 1` vertex.
+The following function `D^suc` (for denotation of successor) constructs
+a table whose entries are all the edges in the path.
+
+```
+D^suc : (n : ℕ) → Vec Value (suc n) → Value
+D^suc zero (a[0] ∷ []) = ⊥
+D^suc (suc i) (a[i+1] ∷ a[i] ∷ ls) =  a[i] ↦ a[i+1]  ⊔  D^suc i (a[i] ∷ ls)
+```
+
+We use the following auxilliary function to obtain the last element of
+a non-empty vector. (This formulation is more convenient for our
+purposes than the one in the Agda standard library.)
+
+```
+vec-last : ∀{n : ℕ} → Vec Value (suc n) → Value
+vec-last {0} (a ∷ []) = a
+vec-last {suc n} (a ∷ b ∷ ls) = vec-last (b ∷ ls)
+```
+
+The function `Dᶜ` computes the denotation of the nth Church numeral
+for a given path.
+
+```
+Dᶜ : (n : ℕ) → Vec Value (suc n) → Value
+Dᶜ n (a[n] ∷ ls) = (D^suc n (a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n]
+```
+
+* The Church numeral for 0 ignores its first argument and returns
+  its second argument, so for the singleton path consisting of
+  just `a[0]`, its denotation is
+
+        ⊥ ↦ a[0] ↦ a[0]
+
+* The Church numeral for `suc n` takes two arguments:
+  a successor function whose denotation is given by `D^suc`,
+  and the start of the path (last of the vector).
+  It returns the `n + 1` vertex in the path.
+  
+        (D^suc (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
+
+The exercise is to prove that for any path `ls`, the meaning of the
+Church numeral `n` is `Dᶜ n ls`.
+
+To fascilitate talking about arbitrary Church numerals, the following
+`church` function builds the term for the nth Church numeral,
+using the auxilliary function `apply-n`.
+
+```
+apply-n : (n : ℕ) → ∅ , ★ , ★ ⊢ ★
+apply-n zero = # 0
+apply-n (suc n) = # 1 · apply-n n
+
+church : (n : ℕ) → ∅ ⊢ ★
+church n = ƛ ƛ apply-n n 
+```
+
+Prove the following theorem.
+
+    denot-church : ∀{n : ℕ}{ls : Vec Value (suc n)}
+       → `∅ ⊢ church n ↓ Dᶜ n ls
+
+```
+-- Your code goes here
 ```
 
 
