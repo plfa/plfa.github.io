@@ -775,13 +775,13 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
-Testing variable names for equality using the `_≟_` operator has a
-catch. For Agda it makes a difference whether we write `x ≟ y` or 
-`y ≟ x`. If the test matches the constraint that Agda expects, then the
-proof goes through as demonstrated. Otherwise, Agda produces a message
-that reveals the low-level implementation of string equality. To avoid
-this problem, the guideline is to always match literally on the expression
-on which Agda's evaluation is currently stuck.
+Note that for Agda it makes a difference whether we write `x ≟ y` or 
+`y ≟ x`. In an interactive proof, Agda will show which residual `with`
+clauses in the definition of `_[_:=_]` need to be simplified, and the
+`with` clauses in `subst` need to match these exactly. The guideline is
+that Agda knows nothing about symmetry or commutativity, which require
+invoking appropriate lemmas, so it is important to think about order of
+arguments and to be consistent.
 
 #### Exercise `subst′` (stretch)
 
