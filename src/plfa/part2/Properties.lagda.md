@@ -942,6 +942,7 @@ data Steps (L : Term) : Set where
 The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```
+{-# TERMINATING #-}
 eval : ∀ {L A}
   → Gas
   → ∅ ⊢ L ⦂ A
