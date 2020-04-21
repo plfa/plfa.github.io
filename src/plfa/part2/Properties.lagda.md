@@ -775,7 +775,7 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
-Note that for Agda it makes a difference whether we write `x ≟ y` or 
+For Agda it makes a difference whether we write `x ≟ y` or 
 `y ≟ x`. In an interactive proof, Agda will show which residual `with`
 clauses in the definition of `_[_:=_]` need to be simplified, and the
 `with` clauses in `subst` need to match these exactly. The guideline is
