@@ -374,9 +374,11 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
 
 #### Exercise `big-alt-implies-multi` (practice)
 
-Formulate an alternative big-step semantics, of the form `M ↓ N`,
-for call-by-name that uses substitution instead of environments.
-Prove that `M ↓ N` implies `M —↠ N`.
+Formulate an alternative big-step semantics, of the form `M ↓ N`, for
+call-by-name that uses substitution instead of environments.  That is,
+the analogue of the application rule `⇓-app` should perform
+substitution, as in `N [ M ]`, instead of extending the environment
+with `M`. Prove that `M ↓ N` implies `M —↠ N`.
 
 ```
 -- Your code goes here
