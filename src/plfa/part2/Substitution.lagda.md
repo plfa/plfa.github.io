@@ -346,15 +346,15 @@ cong-ext{Γ}{Δ}{ρ}{ρ′}{B} rr {A} = extensionality λ x → lemma {x}
 ```
 
 ```
-cong-rename : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}{M M′ : Γ ⊢ B}
-        → (∀{A} → ρ ≡ ρ′ {A})  →  M ≡ M′
-          ------------------------------
-        → rename ρ M ≡ rename ρ′ M′
-cong-rename {M = ` x} rr refl = cong `_ (cong-app rr x)
-cong-rename {ρ = ρ} {ρ′ = ρ′} {M = ƛ N} rr refl =
-   cong ƛ_ (cong-rename {ρ = ext ρ}{ρ′ = ext ρ′}{M = N} (cong-ext rr) refl)
-cong-rename {M = L · M} rr refl =
-   cong₂ _·_ (cong-rename rr refl) (cong-rename rr refl)
+cong-rename : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}{M : Γ ⊢ B}
+        → (∀{A} → ρ ≡ ρ′ {A})
+          ------------------------
+        → rename ρ M ≡ rename ρ′ M
+cong-rename {M = ` x} rr = cong `_ (cong-app rr x)
+cong-rename {ρ = ρ} {ρ′ = ρ′} {M = ƛ N} rr =
+   cong ƛ_ (cong-rename {ρ = ext ρ}{ρ′ = ext ρ′}{M = N} (cong-ext rr))
+cong-rename {M = L · M} rr =
+   cong₂ _·_ (cong-rename rr) (cong-rename rr)
 ```
 
 ```
@@ -670,7 +670,7 @@ compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ′} = cong ƛ_ G
         rename (ext ρ) (rename (ext ρ′) N)
       ≡⟨ compose-rename{ρ = ext ρ}{ρ′ = ext ρ′} ⟩
         rename ((ext ρ) ∘ (ext ρ′)) N
-      ≡⟨ cong-rename compose-ext refl ⟩
+      ≡⟨ cong-rename compose-ext ⟩
         rename (ext (ρ ∘ ρ′)) N
       ∎
 compose-rename {M = L · M} = cong₂ _·_ compose-rename compose-rename
@@ -705,7 +705,7 @@ commute-subst-rename{Γ}{Δ}{ƛ N}{σ}{ρ} r =
        rename S_ (rename ρ (σ y))
      ≡⟨ compose-rename ⟩
        rename (S_ ∘ ρ) (σ y)
-     ≡⟨ cong-rename refl refl ⟩
+     ≡⟨ cong-rename refl ⟩
        rename ((ext ρ) ∘ S_) (σ y)
      ≡⟨ sym compose-rename ⟩
        rename (ext ρ) (rename S_ (σ y))
