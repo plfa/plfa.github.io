@@ -349,7 +349,7 @@ cong-ext{Γ}{Δ}{ρ}{ρ′}{B} rr {A} = extensionality λ x → lemma {x}
 cong-rename : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}{M M′ : Γ ⊢ B}
         → (∀{A} → ρ ≡ ρ′ {A})  →  M ≡ M′
           ------------------------------
-        → rename ρ M ≡ rename ρ′ M
+        → rename ρ M ≡ rename ρ′ M′
 cong-rename {M = ` x} rr refl = cong `_ (cong-app rr x)
 cong-rename {ρ = ρ} {ρ′ = ρ′} {M = ƛ N} rr refl =
    cong ƛ_ (cong-rename {ρ = ext ρ}{ρ′ = ext ρ′}{M = N} (cong-ext rr) refl)
