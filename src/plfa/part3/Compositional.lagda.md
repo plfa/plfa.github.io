@@ -213,8 +213,7 @@ describe the proof below.
 ... | inj₂ ⟨ v₁′ , ⟨ L↓v12 , M↓v3 ⟩ ⟩ | inj₂ ⟨ v₁′′ , ⟨ L↓v12′ , M↓v3′ ⟩ ⟩ =
       let L↓⊔ = ⊔-intro L↓v12 L↓v12′ in
       let M↓⊔ = ⊔-intro M↓v3 M↓v3′ in
-      let x = inj₂ ⟨ v₁′ ⊔ v₁′′ , ⟨ sub L↓⊔ ⊔↦⊔-dist , M↓⊔ ⟩ ⟩ in
-      x
+      inj₂ ⟨ v₁′ ⊔ v₁′′ , ⟨ sub L↓⊔ ⊔↦⊔-dist , M↓⊔ ⟩ ⟩
 ℰ·→●ℰ {Γ}{γ}{L}{M}{v} (sub d lt)
     with ℰ·→●ℰ d
 ... | inj₁ lt2 = inj₁ (⊑-trans lt lt2)
