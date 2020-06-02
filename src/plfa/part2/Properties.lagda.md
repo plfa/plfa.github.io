@@ -775,6 +775,14 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
+For Agda it makes a difference whether we write `x ≟ y` or 
+`y ≟ x`. In an interactive proof, Agda will show which residual `with`
+clauses in the definition of `_[_:=_]` need to be simplified, and the
+`with` clauses in `subst` need to match these exactly. The guideline is
+that Agda knows nothing about symmetry or commutativity, which require
+invoking appropriate lemmas, so it is important to think about order of
+arguments and to be consistent.
+
 #### Exercise `subst′` (stretch)
 
 Rewrite `subst` to work with the modified definition `_[_:=_]′`
@@ -942,6 +950,7 @@ data Steps (L : Term) : Set where
 The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```
+{-# TERMINATING #-}
 eval : ∀ {L A}
   → Gas
   → ∅ ⊢ L ⦂ A
