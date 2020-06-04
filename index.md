@@ -29,7 +29,7 @@ Pull requests are encouraged.
   - [Decidable]({{ site.baseurl }}/Decidable/): Booleans and decision procedures
   - [Lists]({{ site.baseurl }}/Lists/): Lists and higher-order functions
 
-## Part 2: Programming Language Foundations
+## Part 2: Operational Semantics
 
   - [Lambda]({{ site.baseurl }}/Lambda/): Introduction to Lambda Calculus
   - [Properties]({{ site.baseurl }}/Properties/): Progress and Preservation
@@ -38,6 +38,20 @@ Pull requests are encouraged.
   - [Bisimulation]({{ site.baseurl }}/Bisimulation/): Relating reductions systems
   - [Inference]({{ site.baseurl }}/Inference/): Bidirectional type inference
   - [Untyped]({{ site.baseurl }}/Untyped/): Untyped lambda calculus with full normalisation
+  - [Confluence]({{ site.baseurl }}/Confluence/): Confluence of untyped lambda calculus 🚧
+  - [BigStep]({{ site.baseurl }}/BigStep/): Big-step semantics of untyped lambda calculus 🚧
+
+## Part 3: Denotational Semantics
+
+  - [Denotational]({{ site.baseurl }}/Denotational/): Denotational semantics of untyped lambda calculus 🚧
+  - [Compositional]({{ site.baseurl }}/Compositional/): The denotational semantics is compositional 🚧
+  - [Soundness]({{ site.baseurl }}/Soundness/): Soundness of reduction with respect to denotational semantics 🚧
+  - [Adequacy]({{ site.baseurl }}/Adequacy/): Adequacy of denotational semantics with respect to operational semantics 🚧
+  - [ContextualEquivalence]({{ site.baseurl }}/ContextualEquivalence/): Denotational equality implies contextual equivalence 🚧
+
+## Appendix
+
+  - [Substitution]({{ site.baseurl }}/Substitution/): Substitution in untyped lambda calculus
 
 ## Backmatter
 
@@ -59,39 +73,24 @@ Pull requests are encouraged.
       [2018]({{ site.baseurl }}/TSPL/2018/),
 	  [2019]({{ site.baseurl }}/TSPL/2019/)
     * David Darais, University of Vermont,
-      [2018][UVM-2018]
+      [2018][UVM-CS-295A-2018]
     * John Leo, Google Seattle, 2018--2019
     * Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio),
       [2019]({{ site.baseurl }}/PUC/2019/)
     * Prabhakar Ragde, University of Waterloo,
-	  [2019][UW-2019]
+	  [2019][UW-CS-842-2019]
     * Adrian King,
       San Francisco Types, Theorems, and Programming Languages Meetup
       [2019--2020][SFPL-Meetup-2020]
     * Jeremy Siek, Indiana University,
-	  [2020][IU-2020]
-    * William Cook, University of Texas,
-	  [2020][UT-2020]
-  - Shortlisted for Outstanding Course by Edinburgh University Student
-    Association (second place) [2020][EUSA-2020]
-    * "Types and Semantics for Programming Languages was the single
-      best course I took throughout my time at the University of
-      Edinburgh. Philip Wadler clearly poured his heart into teaching
-      it, including writing a whole textbook including exercises
-      specifically for the course."
-    * "One of the most inspiring courses. Philip designed a course
-      that is both very theoretical and very practical."
-  - A paper describing the book appeared in [SBMF][SBMF].
+	  [2020][IU-B522-2020]
+  - A paper describing the book appeared in [SBMF][SMBF].
   - [NextJournal][NextJournal] has built a notebook version of PLFA, which lets you edit and execute the book via a web interface.
 
 [GitHub]: https://github.com/plfa/plfa.github.io/
-[SBMF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
+[SMBF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
 [NextJournal]: https://nextjournal.com/plfa/ToC
-[UVM-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/
-[IU-2020]: https://jsiek.github.io/B522-PL-Foundations/
+[UVM-CS-295A-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/
+[IU-B522-2020]: https://jsiek.github.io/B522-PL-Foundations/
 [SFPL-Meetup-2020]: http://meet.meetup.com/wf/click?upn=ZDzXt-2B-2BZmzYir6Bq5X7vEQ2iNYdgjN9-2FU9nWKp99AU8rZjrncUsSYODqOGn6kV-2BqW71oirCo-2Bk8O1q2FtDFhYZR-2B737CPhNWBjt58LuSRC-2BWTj61VZCHquysW8z7dVtQWxB5Sorl3chjZLDptP70L7aBZL14FTERnKJcRQdrMtc-3D_IqHN4t3hH47BvE1Cz0BakIxV4odHudhr6IVs-2Fzslmv-2FBuORsh-2FwQmOxMBdyMHsSBndQDQmt47hobqsLp-2Bm04Y9LwgV66MGyucsd0I9EgDEUB-2FjzdtSgRv-2Fxng8Pgsa3AZIEYILOhLpQ5ige5VFYTEHVN1pEqnujCHovmTxJkqAK9H-2BIL15-2FPxx97RfHcz7M30YNyqp6TOYfgTxyUHc6lufYKFA75Y7MV6MeDJMxw9-2FYUxR6CEjdoagQBmaGkBVzN
-[UT-2020]: https://www.cs.utexas.edu/~wcook/Courses/386L/Sp2020-GradPL.pdf
-[UW-2019]: https://cs.uwaterloo.ca/~plragde/842/
-[EUSA-2020]: https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/
-
-
+[UW-CS-842-2019]: https://cs.uwaterloo.ca/~plragde/842/
