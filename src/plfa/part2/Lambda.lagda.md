@@ -1236,8 +1236,8 @@ to use them inside other binding contexts as well as at the top level.
 Here the two lookup judgments `∋m` and `∋m′` refer to two different
 bindings of variables named `"m"`.  In contrast, the two judgments `∋n` and
 `∋n′` both refer to the same binding of `"n"` but accessed in different
-contexts, the first where "n" is the last binding in the context, and
-the second after "m" is bound in the successor branch of the case.
+contexts, the first where `"n"` is the last binding in the context, and
+the second after `"m"` is bound in the successor branch of the case.
 
 And here are typings for the remainder of the Church example:
 ```
