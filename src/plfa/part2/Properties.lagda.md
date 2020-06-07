@@ -74,8 +74,8 @@ other term will itself be closed and well typed.  Repeat.  We will
 either loop forever, in which case evaluation does not terminate, or
 we will eventually reach a value, which is guaranteed to be closed and
 of the same type as the original term.  We will turn this recipe into
-Agda code that can compute for us the reduction sequence of `plus ·
-two · two`, and its Church numeral variant.
+Agda code that can compute for us the reduction sequence of `plus · two · two`,
+and its Church numeral variant.
 
 (The development in this chapter was inspired by the corresponding
 development in _Software Foundations_, Volume _Programming Language
