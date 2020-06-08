@@ -1,0 +1,51 @@
+/* This is Pandoc's default ebook CSS, modified slightly. */
+/* https://github.com/jgm/pandoc/blob/master/data/epub.css */
+@font-face {
+    font-family: 'mononoki';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/mononoki-Regular.ttf');
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/DejaVuSansMono.ttf');
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/SourceCodePro-Regular.ttf');
+}
+/* TODO: add freemono font from agda.css */
+body { margin: 5%; text-align: justify; font-size: medium; }
+code { font-family: 'mononoki', 'DejaVu Sans Mono', 'Source Code Pro', monospace; }
+h1 { text-align: left; }
+h2 { text-align: left; }
+h3 { text-align: left; }
+h4 { text-align: left; }
+h5 { text-align: left; }
+h6 { text-align: left; }
+h1.title { }
+h2.author { }
+h3.date { }
+nav#toc ol,
+nav#landmarks ol { padding: 0; margin-left: 1em; }
+nav#toc ol li,
+nav#landmarks ol li { list-style-type: none; margin: 0; padding: 0; }
+a.footnote-ref { vertical-align: super; }
+em, em em em, em em em em em { font-style: italic;}
+em em, em em em em { font-style: normal; }
+code{ white-space: pre-wrap; }
+span.smallcaps{ font-variant: small-caps; }
+span.underline{ text-decoration: underline; }
+q { quotes: "“" "”" "‘" "’"; }
+div.column{ display: inline-block; vertical-align: top; width: 50%; }
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+@media screen { /* Workaround for iBooks issue; see #6242 */
+  .sourceCode {
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+  }
+}

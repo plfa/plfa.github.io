@@ -35,6 +35,35 @@ statistics:
 out/:
 	mkdir -p out/
 
+# EPUB generation notes
+#
+# - The "Apple Books" app on Mac does not show syntax highlighting.
+#   The Thorium app on Mac, however, does.
+#
+# - Regarding --epub-chapter-level, from the docs (https://pandoc.org/MANUAL.html):
+#
+#       "Specify the heading level at which to split the EPUB into separate “chapter”
+#       files. The default is to split into chapters at level-1 headings. This option
+#       only affects the internal composition of the EPUB, not the way chapters and
+#       sections are displayed to users. Some readers may be slow if the chapter
+#       files are too large, so for large documents with few level-1 headings, one
+#       might want to use a chapter level of 2 or 3."
+#
+#TODO: embedded fonts not working (path problem?)
+epub: out/
+	pandoc --strip-comments \
+		--css=epub.css \
+		--epub-embed-font=DejaVuSansMono.ttf \
+		--lua-filter include-files.lua \
+		--lua-filter default-code-class.lua -M default-code-class=agda \
+		--standalone \
+		--toc --toc-depth=2 \
+		--epub-chapter-level=2 \
+		-o out/plfa.epub \
+		index_epub.md
+
+
+
 
 # Convert literal Agda to Markdown
 define AGDA_template
@@ -82,7 +111,7 @@ build-incremental: $(MARKDOWN)
 
 # Remove all auxiliary files
 clean:
-	rm -f .agda-stdlib.sed .links-*.sed
+	rm -f .agda-stdlib.sed .links-*.sed out/plfa.epub
 ifneq ($(strip $(AGDAI)),)
 	rm $(AGDAI)
 endif
@@ -185,4 +214,4 @@ travis-uninstall-agda-stdlib:
 
 travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
 
-.phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib
+.phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib epub
