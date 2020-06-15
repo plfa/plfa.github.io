@@ -59,6 +59,7 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub.css fonts/*.ttf
 		--css=epub.css \
 		--epub-embed-font='fonts/*.ttf' \
 		--lua-filter include-files.lua \
+		--lua-filter check-internal-links.lua \
 		--lua-filter default-code-class.lua -M default-code-class=agda \
 		--standalone \
 		--toc --toc-depth=2 \
