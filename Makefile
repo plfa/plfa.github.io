@@ -1,6 +1,7 @@
 SHELL := /usr/bin/env bash
 AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
 AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
+LUA := $(shell find . -name '*.lua')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
@@ -50,7 +51,10 @@ out/:
 #       might want to use a chapter level of 2 or 3."
 #
 #TODO: embedded fonts not working (path problem?)
-epub: out/
+
+epub: out/plfa.epub
+
+out/plfa.epub: out/ $(AGDA) $(LUA) epub.css fonts/*.ttf
 	pandoc --strip-comments \
 		--css=epub.css \
 		--epub-embed-font='fonts/*.ttf' \
@@ -59,7 +63,7 @@ epub: out/
 		--standalone \
 		--toc --toc-depth=2 \
 		--epub-chapter-level=2 \
-		-o out/plfa.epub \
+		-o "$@" \
 		index_epub.md
 
 
