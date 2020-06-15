@@ -53,7 +53,7 @@ out/:
 epub: out/
 	pandoc --strip-comments \
 		--css=epub.css \
-		--epub-embed-font=DejaVuSansMono.ttf \
+		--epub-embed-font='fonts/*.ttf' \
 		--lua-filter include-files.lua \
 		--lua-filter default-code-class.lua -M default-code-class=agda \
 		--standalone \
