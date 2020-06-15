@@ -13,7 +13,7 @@ endif
 
 
 # Build PLFA and test hyperlinks
-test: build
+test: build epub
 	ruby -S bundle exec htmlproofer '_site'
 
 
@@ -154,7 +154,8 @@ travis-setup:\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries
+	$(HOME)/.agda/libraries\
+	/usr/bin/pandoc
 
 .phony: travis-setup
 
@@ -166,6 +167,11 @@ $(HOME)/.local/bin/acknowledgements:
 	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
 	cd $(HOME)/acknowledgements-master;\
 		stack install
+
+# The version of pandoc on Xenial is too old.
+/usr/bin/pandoc:
+	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $(HOME)/pandoc.deb
+	dpkg -i $(HOME)/pandoc.deb
 
 travis-uninstall-acknowledgements:
 	rm -rf $(HOME)/acknowledgements-master/

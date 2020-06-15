@@ -39,6 +39,7 @@ script:
 - travis_retry curl -L https://raw.githubusercontent.com/plfa/git-tools/master/git-restore-mtime | python
 - agda --version
 - acknowledgements --version
+- pandoc --version
 - make test-offline # disable to only build cache
 
 before_deploy:
