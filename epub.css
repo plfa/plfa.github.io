@@ -1,3 +1,9 @@
+/*
+ * For why the format must be 'application/font-sfnt', see the following:
+ *   https://idpf.github.io/epub-cmt/v3/#cmt-grp-content-documents
+ *   https://github.com/w3c/epubcheck/issues/339
+ * TODO: commit that stuff to pandoc
+ */
 /* This is Pandoc's default ebook CSS, modified slightly. */
 /* https://github.com/jgm/pandoc/blob/master/data/epub.css */
 @font-face {
@@ -27,9 +33,6 @@ h3 { text-align: left; }
 h4 { text-align: left; }
 h5 { text-align: left; }
 h6 { text-align: left; }
-h1.title { }
-h2.author { }
-h3.date { }
 nav#toc ol,
 nav#landmarks ol { padding: 0; margin-left: 1em; }
 nav#toc ol li,
