@@ -4,23 +4,10 @@
     font-family: 'mononoki';
     font-weight: normal;
     font-style: normal;
-    src: url('../fonts/mononoki-Regular.ttf');
+    src: url('mononoki.woff2');
 }
-@font-face {
-    font-family: 'DejaVu Sans Mono';
-    font-weight: normal;
-    font-style: normal;
-    src: url('../fonts/DejaVuSansMono.ttf');
-}
-@font-face {
-    font-family: 'Source Code Pro';
-    font-weight: normal;
-    font-style: normal;
-    src: url('../fonts/SourceCodePro-Regular.ttf');
-}
-/* TODO: add freemono font from agda.css */
 body { margin: 5%; text-align: justify; font-size: medium; }
-code { font-family: 'mononoki', 'DejaVu Sans Mono', 'Source Code Pro', monospace; }
+code { font-family: 'mononoki', monospace; }
 h1 { text-align: left; }
 h2 { text-align: left; }
 h3 { text-align: left; }
