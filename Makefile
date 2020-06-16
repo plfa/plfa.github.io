@@ -171,7 +171,7 @@ $(HOME)/.local/bin/acknowledgements:
 # The version of pandoc on Xenial is too old.
 /usr/bin/pandoc:
 	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $(HOME)/pandoc.deb
-	dpkg -i $(HOME)/pandoc.deb
+	sudo dpkg -i $(HOME)/pandoc.deb
 
 travis-uninstall-acknowledgements:
 	rm -rf $(HOME)/acknowledgements-master/
