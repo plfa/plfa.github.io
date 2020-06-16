@@ -21,5 +21,8 @@ Gemfile.lock
 *.spl
 *.synctex.gz
 
+## EPUB files
+*.epub
+
 ## Emacs files
 auto/
