@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash
 AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
 AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
-LUA := $(shell find . -name '*.lua')
+LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
@@ -54,18 +54,20 @@ out/:
 
 epub: out/plfa.epub
 
-out/plfa.epub: out/ $(AGDA) $(LUA) epub.css
+out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
 	pandoc --strip-comments \
-		--css=epub.css \
+		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
-		--lua-filter include-files.lua \
-		--lua-filter default-code-class.lua -M default-code-class=agda \
+		--epub-embed-font='assets/fonts/FreeMono.woff' \
+		--epub-embed-font='assets/fonts/DejaVuSansMono.woff' \
+		--lua-filter epub/include-files.lua \
+		--lua-filter epub/default-code-class.lua -M default-code-class=agda \
 		--standalone \
 		--fail-if-warnings \
 		--toc --toc-depth=2 \
 		--epub-chapter-level=2 \
 		-o "$@" \
-		index_epub.md
+		epub/index.md
 
 
 
