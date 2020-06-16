@@ -57,7 +57,7 @@ epub: out/plfa.epub
 out/plfa.epub: out/ $(AGDA) $(LUA) epub.css
 	pandoc --strip-comments \
 		--css=epub.css \
-		--epub-embed-font='assets/fonts/mononoki.woff2' \
+		--epub-embed-font='assets/fonts/mononoki.woff' \
 		--lua-filter include-files.lua \
 		--lua-filter default-code-class.lua -M default-code-class=agda \
 		--standalone \
