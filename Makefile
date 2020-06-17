@@ -61,6 +61,7 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
 		--epub-embed-font='assets/fonts/FreeMono.woff' \
 		--epub-embed-font='assets/fonts/DejaVuSansMono.woff' \
 		--lua-filter epub/include-files.lua \
+		--lua-filter epub/rewrite-links.lua \
 		--lua-filter epub/default-code-class.lua -M default-code-class=agda \
 		--standalone \
 		--fail-if-warnings \
