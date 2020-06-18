@@ -24,19 +24,19 @@ end
 --         [text]({{ site.baseurl }}/chapter/#more-stuff) -> [text](#chapter-more-stuff)
 --
 --     Case 2:
---         [text]({{ site.baseurl }}/chapter/)            -> [text](#stuff)
+--         [text]({{ site.baseurl }}/chapter/)            -> [text](#chapter)
 --
 -- All other Links are ignored.
 function Link (el)
     local n
     -- When parsing a markdown link such as "[stuff]({{ site.baseurl }}/Naturals",
     -- pandoc encodes the link's URL with percent-encoding, resulting in the
-    -- link "[stuff](%7B%7B+site.baseurl+%7D%7D%2FNaturals)". This is why the
-    -- pattern begins with ".*site%.baseurl.*" and not "{{ site%.baseurl }}".
-    el.target, n = el.target:gsub("^.*site%.baseurl.*/(%w+)/#([%w-]+)$",  -- case 1
+    -- link "[stuff](%7B%7B%20site.baseurl%20%7D%7D/Naturals)".
+    local baseurl = "%%7B%%7B%%20site%.baseurl%%20%%7D%%7D"
+    el.target, n = el.target:gsub("^" .. baseurl .. "/(%w+)/#([%w-]+)$",  -- case 1
                                   "#%1-%2")
     if n == 0 then
-        el.target = el.target:gsub("^.*site%.baseurl.*/(%w+)/$",          -- case 2
+        el.target = el.target:gsub("^" .. baseurl .. "/(%w+)/$",          -- case 2
                                 "#%1")
     end
     return el
