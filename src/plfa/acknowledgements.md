@@ -17,6 +17,7 @@ this book is based, and for hand-holding:
 <li>Andreas Abel</li>
 <li>Catarina Coquand</li>
 <li>Thierry Coquand</li>
+<li>David Darais</li>
 <li>Per Martin-Löf</li>
 <li>Lena Magnusson</li>
 <li>Conor McBride</li>
@@ -24,12 +25,6 @@ this book is based, and for hand-holding:
 <li>Ulf Norell</li>
 </ul>
 
-
-For a note showing how much more compact it is to avoid raw terms:
-  * David Darais
-
-
-<span class="force-end-of-list"></span>
 {%- if site.contributors or site.extra_contributors -%}
 For pull requests big and small, and for answering questions on the Agda mailing list:
 <ul class="list-of-contributors">
