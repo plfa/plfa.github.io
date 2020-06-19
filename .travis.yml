@@ -22,6 +22,7 @@ addons:
     packages:
       - libgmp-dev
       - libicu-dev
+      - luarocks
 
 # Ensure we run BASH and not SH
 env:

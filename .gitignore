@@ -26,3 +26,7 @@ Gemfile.lock
 
 ## Emacs files
 auto/
+
+## Misc build files
+out/
+src/plfa/acknowledgements_epub.md

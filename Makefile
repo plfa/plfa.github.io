@@ -49,12 +49,10 @@ out/:
 #       sections are displayed to users. Some readers may be slow if the chapter
 #       files are too large, so for large documents with few level-1 headings, one
 #       might want to use a chapter level of 2 or 3."
-#
-#TODO: embedded fonts not working (path problem?)
 
 epub: out/plfa.epub
 
-out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
+out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css src/plfa/acknowledgements_epub.md
 	pandoc --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
@@ -62,6 +60,7 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
 		--epub-embed-font='assets/fonts/DejaVuSansMono.woff' \
 		--lua-filter epub/include-files.lua \
 		--lua-filter epub/rewrite-links.lua \
+		--lua-filter epub/rewrite-html-ul.lua \
 		--lua-filter epub/default-code-class.lua -M default-code-class=agda \
 		--standalone \
 		--fail-if-warnings \
@@ -70,7 +69,8 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
 		-o "$@" \
 		epub/index.md
 
-
+src/plfa/acknowledgements_epub.md: src/plfa/acknowledgements.md _config.yml 
+	lua epub/run-liquid.lua _config.yml $< > $@
 
 
 # Convert literal Agda to Markdown
@@ -119,7 +119,7 @@ build-incremental: $(MARKDOWN)
 
 # Remove all auxiliary files
 clean:
-	rm -f .agda-stdlib.sed .links-*.sed
+	rm -f .agda-stdlib.sed .links-*.sed src/plfa/acknowledgements_epub.md
 ifneq ($(strip $(AGDAI)),)
 	rm $(AGDAI)
 endif
@@ -158,6 +158,9 @@ travis-setup:\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries\
+	$(HOME)/.local/share/lua/5.1/tinyyaml.lua\
+	$(HOME)/.local/share/lua/5.1/liquid.lua\
+	$(HOME)/.local/share/lua/5.1/cjson\
 	/usr/bin/pandoc
 
 .phony: travis-setup
@@ -203,6 +206,17 @@ $(HOME)/.local/bin/agda:
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
+
+$(HOME)/.local/share/lua/5.1/tinyyaml.lua:
+	luarocks install lua-tinyyaml
+
+$(HOME)/.local/share/lua/5.1/liquid.lua:
+	luarocks install liquid
+
+$(HOME)/.local/share/lua/5.1/cjson:
+	# Only this particular version works:
+	# https://github.com/mpx/lua-cjson/issues/56:
+	luarocks install lua-cjson 2.1.0-1
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
