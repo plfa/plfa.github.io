@@ -54,7 +54,7 @@ Pull requests are encouraged.
     * [plfa-dev@inf.ed.ac.uk](http://lists.inf.ed.ac.uk/mailman/listinfo/plfa-dev): <br />
       A mailing list for contributors. <br />
       This is the place to discuss changes and new additions to the book in excruciating detail.
-  - Courses taught from the textbook:
+  - Courses taught from the textbook (please tell us of others):
     * Philip Wadler, University of Edinburgh,
       [2018]({{ site.baseurl }}/TSPL/2018/),
 	  [2019]({{ site.baseurl }}/TSPL/2019/)
@@ -68,6 +68,8 @@ Pull requests are encouraged.
     * Adrian King,
       San Francisco Types, Theorems, and Programming Languages Meetup
       [2019--2020][SFPL-Meetup-2020]
+    * Dan Ghica, University of Birmingham
+	  [2019][BHAM-2019]
     * Jeremy Siek, Indiana University,
 	  [2020][IU-2020]
     * William Cook, University of Texas,
@@ -81,11 +83,13 @@ Pull requests are encouraged.
       specifically for the course."
     * "One of the most inspiring courses. Philip designed a course
       that is both very theoretical and very practical."
-  - A paper describing the book appeared in [SBMF][SBMF].
+  - A paper describing the book appeared in [SBMF][SBMF] and [SCP][SCP].
   - [NextJournal][NextJournal] has built a notebook version of PLFA, which lets you edit and execute the book via a web interface.
 
+[BHAM-2019]: https://www.cs.bham.ac.uk/internal/modules/2019/06-26943/
 [GitHub]: https://github.com/plfa/plfa.github.io/
 [SBMF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
+[SCP]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#scp
 [NextJournal]: https://nextjournal.com/plfa/ToC
 [UVM-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/
 [IU-2020]: https://jsiek.github.io/B522-PL-Foundations/
