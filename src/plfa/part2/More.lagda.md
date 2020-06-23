@@ -1234,7 +1234,7 @@ side to be well typed.
 
 ## Test examples
 
-We repeat the [test examples]({{ site.baseurl }}/DeBruijn/#examples) from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn),
+We repeat the [test examples]({{ site.baseurl }}/DeBruijn/#examples) from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
 ```
 two : ∀ {Γ} → Γ ⊢ `ℕ

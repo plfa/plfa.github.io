@@ -1,6 +1,7 @@
 SHELL := /usr/bin/env bash
 AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
 AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
+LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
@@ -12,7 +13,7 @@ endif
 
 
 # Build PLFA and test hyperlinks
-test: build
+test: build epub
 	ruby -S bundle exec htmlproofer '_site'
 
 
@@ -34,6 +35,42 @@ statistics:
 
 out/:
 	mkdir -p out/
+
+# EPUB generation notes
+#
+# - The "Apple Books" app on Mac does not show syntax highlighting.
+#   The Thorium app on Mac, however, does.
+#
+# - Regarding --epub-chapter-level, from the docs (https://pandoc.org/MANUAL.html):
+#
+#       "Specify the heading level at which to split the EPUB into separate “chapter”
+#       files. The default is to split into chapters at level-1 headings. This option
+#       only affects the internal composition of the EPUB, not the way chapters and
+#       sections are displayed to users. Some readers may be slow if the chapter
+#       files are too large, so for large documents with few level-1 headings, one
+#       might want to use a chapter level of 2 or 3."
+#
+#TODO: embedded fonts not working (path problem?)
+
+epub: out/plfa.epub
+
+out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
+	pandoc --strip-comments \
+		--css=epub/main.css \
+		--epub-embed-font='assets/fonts/mononoki.woff' \
+		--epub-embed-font='assets/fonts/FreeMono.woff' \
+		--epub-embed-font='assets/fonts/DejaVuSansMono.woff' \
+		--lua-filter epub/include-files.lua \
+		--lua-filter epub/rewrite-links.lua \
+		--lua-filter epub/default-code-class.lua -M default-code-class=agda \
+		--standalone \
+		--fail-if-warnings \
+		--toc --toc-depth=2 \
+		--epub-chapter-level=2 \
+		-o "$@" \
+		epub/index.md
+
+
 
 
 # Convert literal Agda to Markdown
@@ -120,7 +157,8 @@ travis-setup:\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries
+	$(HOME)/.agda/libraries\
+	/usr/bin/pandoc
 
 .phony: travis-setup
 
@@ -132,6 +170,11 @@ $(HOME)/.local/bin/acknowledgements:
 	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
 	cd $(HOME)/acknowledgements-master;\
 		stack install
+
+# The version of pandoc on Xenial is too old.
+/usr/bin/pandoc:
+	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $(HOME)/pandoc.deb
+	sudo dpkg -i $(HOME)/pandoc.deb
 
 travis-uninstall-acknowledgements:
 	rm -rf $(HOME)/acknowledgements-master/
@@ -185,4 +228,4 @@ travis-uninstall-agda-stdlib:
 
 travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
 
-.phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib
+.phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib epub
