@@ -13,7 +13,7 @@ endif
 
 
 # Build PLFA and test hyperlinks
-test: build epub
+test: build
 	ruby -S bundle exec htmlproofer '_site'
 
 
