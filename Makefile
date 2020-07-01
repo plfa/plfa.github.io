@@ -70,7 +70,7 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css src/plfa/acknowledgements_epub.
 		epub/index.md
 
 src/plfa/acknowledgements_epub.md: src/plfa/acknowledgements.md _config.yml 
-	lua epub/run-liquid.lua _config.yml $< > $@
+	lua epub/run-liquid.lua _config.yml $< $@
 
 
 # Convert literal Agda to Markdown
