@@ -38,7 +38,8 @@ before_install:
 # Install Pandoc
 - travis_retry curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $HOME/pandoc.deb && sudo dpkg -i $HOME/pandoc.deb
 # Install Lua
-- travis_retry curl -R -O http://www.lua.org/ftp/lua-5.4.0.tar.gz | tar zxf && cd lua-5.4.0 && sudo make all test
+- travis_retry curl -L http://www.lua.org/ftp/lua-5.4.0.tar.gz | tar zx && cd lua-5.4.0 && make linux test && sudo make install
+- travis_retry curl -L https://luarocks.org/releases/luarocks-3.3.1.tar.gz | tar zx && cd luarocks-3.3.1 && ./configure && make && sudo make install
 # Download and install agda, agda-stdlib, and agda2html
 - make travis-setup
 
