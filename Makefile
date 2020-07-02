@@ -4,6 +4,11 @@ AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' 
 LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+LUA_MODULES := lua_modules/
+
+ifneq ($(wildcard $(LUA_MODULES)),)
+	LUA_FLAGS += -l epub/set_paths
+endif
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -69,7 +74,7 @@ out/epub/plfa.epub: out/epub/ | $(AGDA) $(LUA) epub/main.css out/epub/acknowledg
 		epub/index.md
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
-	lua epub/render-liquid-template.lua _config.yml $< $@
+	lua $(LUA_FLAGS) epub/render-liquid-template.lua _config.yml $< $@
 
 
 # Convert literal Agda to Markdown

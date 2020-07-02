@@ -21,6 +21,7 @@ cache:
 addons:
   apt:
     packages:
+      - epubcheck
       - libgmp-dev
       - libicu-dev
       - luarocks
