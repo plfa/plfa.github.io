@@ -229,11 +229,7 @@ bundle exec jekyll serve
 
 ### Building the EPUB
 
-The EPUB version of the book is built using Pandoc,
-with Lua filters,
-and the script `run-liquid.lua`,
-which wraps the library [`liquid.lua`][liquid-lua].
-Here's how to build the EPUB:
+The EPUB version of the book is built using Pandoc, with Lua filters, and the script `epub/render-liquid-template.lua`, which wraps the library [`liquid.lua`][liquid-lua]. Here's how to build the EPUB:
 
 1. Install a recent version of Pandoc, [available here][pandoc].
    We recommend their official installer (on the linked page),
@@ -243,7 +239,7 @@ Here's how to build the EPUB:
    Other versions have not been tested.
 
 1. Install luarocks, [available here][luarocks],
-   which we will use to install the dependencies of `run-liquid.lua`.
+   which we will use to install the dependencies of `render-liquid-template.lua`.
 
 1. Install the dependencies of `run-liquid.lua` by running:
    ```bash
@@ -251,11 +247,10 @@ Here's how to build the EPUB:
    luarocks install lua-tinyyaml
    luarocks install liquid
    ```
-   Be sure to install `lua-cjson` version `2.1.0-1` as specified above:
-   [newer version are broken][lua-cjson-broken].
+   Be sure to install `lua-cjson` version `2.1.0-1` as specified above, as [newer version are broken][lua-cjson-broken].
 
 1. Finally build the EPUB by running:
    ```bash
    make epub
    ```
-   Pandoc will write the EPUB to `out/plfa.epub`.
+   Pandoc will write the EPUB to `out/epub/plfa.epub`.
