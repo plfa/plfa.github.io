@@ -43,11 +43,11 @@ script:
 - agda --version
 - acknowledgements --version
 - pandoc --version
-- make build test-offline # disable to only build cache
-- make epub epubcheck
+- make test-offline # build and test website
+- acknowledgements -i _config.yml >> _config.yml
+- make epubcheck # build and test EPUB
 
 before_deploy:
-- acknowledgements -i _config.yml >> _config.yml
 - make clean
 - rm -rf hs/ extra/ depr/ papers/ slides/ .bundle/ vendor/ *.agdai *.agda-lib *.lagda.md Guardfile Gemfile Gemfile.lock Makefile highlight.sh .gitignore .travis.yml
 
