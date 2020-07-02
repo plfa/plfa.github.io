@@ -3,22 +3,12 @@ AGDA_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/course
 AGDAI_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
 MARKDOWN_FILES := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA_FILES))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
 RUBY := ruby
 GEM := $(RUBY) -S gem
 BUNDLE := $(RUBY) -S bundle
 JEKYLL := $(BUNDLE) exec jekyll
 HTML_PROOFER := $(BUNDLE) exec htmlproofer
-
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
-LUA := lua
-LUAROCKS := luarocks --lua-version=$(LUA_VERSION)
-LUA_MODULES := lua_modules
-PANDOC := /usr/bin/pandoc
-
-ifneq ($(wildcard $(LUA_MODULES)),)
-	LUA_FLAGS += -l epub/set_paths
-endif
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -67,7 +57,7 @@ out/epub/:
 	mkdir -p out/epub/
 
 out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
-	$(PANDOC) --strip-comments \
+	pandoc --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
 		--epub-embed-font='assets/fonts/FreeMono.woff' \
@@ -84,7 +74,7 @@ out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epu
 		epub/index.md
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
-	 $(LUA) $(LUA_FLAGS) epub/render-liquid-template.lua _config.yml $< $@
+	 $(RUBY) epub/render-liquid-template.rb _config.yml $< $@
 
 
 # Convert literal Agda to Markdown
@@ -171,10 +161,7 @@ travis-setup:\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua
+	$(HOME)/.agda/libraries
 
 .phony: travis-setup
 
@@ -249,22 +236,3 @@ travis-uninstall-acknowledgements:
 travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-reinstall-acknowledgements
 
 .phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements
-
-
-# Lua
-
-travis-install-lua:\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua
-
-$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson:
-# Only this particular version works:
-# https://github.com/mpx/lua-cjson/issues/56:
-	$(LUAROCKS) install --tree=$(LUA_MODULES) lua-cjson 2.1.0-1
-
-$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua:
-	$(LUAROCKS) install --tree=$(LUA_MODULES) lua-tinyyaml
-
-$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua:
-	$(LUAROCKS) install --tree=$(LUA_MODULES) liquid
