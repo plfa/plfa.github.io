@@ -216,14 +216,13 @@ $(HOME)/.local/bin/agda:
 lua_modules/share/lua/$(LUA_VERSION)/cjson:
 # Only this particular version works:
 # https://github.com/mpx/lua-cjson/issues/56:
-	luarocks install --tree lua_modules lua-cjson 2.1.0-1
-	luarocks install --tree lua_modules liquid
+	luarocks install --tree=lua_modules/ lua-cjson 2.1.0-1
 
 lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua:
-	luarocks install --tree lua_modules lua-tinyyaml
+	luarocks install --tree=lua_modules/ lua-tinyyaml
 
 lua_modules/share/lua/$(LUA_VERSION)/liquid.lua:
-	luarocks install --tree lua_modules liquid
+	luarocks install --tree lua_modules/ liquid
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
