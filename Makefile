@@ -7,7 +7,7 @@ PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 RUBY := ruby
 GEM := $(RUBY) -S gem
 BUNDLE := $(RUBY) -S bundle
-JEKYLL := $(JEKYLL)
+JEKYLL := $(BUNDLE) exec jekyll
 HTML_PROOFER := $(BUNDLE) exec htmlproofer
 
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
