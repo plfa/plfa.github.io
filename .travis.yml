@@ -12,6 +12,7 @@ cache:
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
+  - $HOME/.luarocks
   - $HOME/agda-$AGDA_VERSION
   - $HOME/agda-stdlib-$AGDA_STDLIB_VERSION
   - $HOME/acknowledgements-master

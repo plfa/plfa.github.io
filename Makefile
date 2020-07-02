@@ -29,10 +29,6 @@ test-stable-offline: $(MARKDOWN)
 	ruby -S bundle exec htmlproofer '_site' --disable-external
 
 
-statistics:
-	hs/agda-count
-
-
 out/:
 	mkdir -p out/
 
@@ -211,15 +207,15 @@ $(HOME)/.local/bin/agda:
 		stack install --stack-yaml=stack-8.0.2.yaml
 
 $(HOME)/.local/share/lua/5.1/tinyyaml.lua:
-	luarocks install lua-tinyyaml
+	luarocks install --local lua-tinyyaml
 
 $(HOME)/.local/share/lua/5.1/liquid.lua:
-	luarocks install liquid
+	luarocks install --local liquid
 
 $(HOME)/.local/share/lua/5.1/cjson:
 	# Only this particular version works:
 	# https://github.com/mpx/lua-cjson/issues/56:
-	luarocks install lua-cjson 2.1.0-1
+	luarocks install --local lua-cjson 2.1.0-1
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
