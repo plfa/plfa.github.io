@@ -9,6 +9,7 @@ cache:
   timeout: 1500
   directories:
   - out/
+  - lua_modules/
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local

@@ -222,7 +222,7 @@ lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua:
 	luarocks install --tree=lua_modules/ lua-tinyyaml
 
 lua_modules/share/lua/$(LUA_VERSION)/liquid.lua:
-	luarocks install --tree lua_modules/ liquid
+	luarocks install --tree=lua_modules/ liquid
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
