@@ -25,19 +25,22 @@ addons:
       - epubcheck
       - libgmp-dev
       - libicu-dev
-      - luarocks
 
 # Ensure we run BASH and not SH
 env:
   - SH=bash
 
 before_install:
-# Download and unpack the stack executable
+# Install Stack
 - mkdir -p ~/.local/bin
 - export PATH=$HOME/.local/bin:$PATH
 - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 # Download and install agda, agda-stdlib, and agda2html
 - make travis-setup
+# Install Pandoc
+- travis_retry curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $HOME/pandoc.deb && sudo dpkg -i $HOME/pandoc.deb
+# Install Lua
+- travis_retry curl -R -O http://www.lua.org/ftp/lua-5.4.0.tar.gz | tar zxf && cd lua-5.4.0 && sudo make all test
 
 script:
 - travis_retry curl -L https://raw.githubusercontent.com/plfa/git-tools/master/git-restore-mtime | python

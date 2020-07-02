@@ -11,9 +11,8 @@ JEKYLL := $(JEKYLL)
 HTML_PROOFER := $(BUNDLE) exec htmlproofer
 
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
-LUA_HOME := $(HOME)/.local
-LUA := $(LUA_HOME)/bin/lua
-LUAROCKS := luarocks --lua-dir=$(LUA_HOME) --lua-version=$(LUA_VERSION)
+LUA := lua
+LUAROCKS := luarocks --lua-version=$(LUA_VERSION)
 LUA_MODULES := lua_modules
 PANDOC := /usr/bin/pandoc
 
@@ -173,11 +172,9 @@ travis-setup:\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries\
-	$(LUA)\
 	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson\
 	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua\
-	/usr/bin/pandoc
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua
 
 .phony: travis-setup
 
@@ -198,7 +195,8 @@ $(HOME)/.agda/libraries:
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/.local/bin/agda:
-	curl -L https://github.com/agda/agda/archive/v$(AGDA_VERSION).zip -o $(HOME)/agda-$(AGDA_VERSION).zip
+	travis_retry curl -L https://github.com/agda/agda/archive/v$(AGDA_VERSION).zip\
+	                  -o $(HOME)/agda-$(AGDA_VERSION).zip
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
@@ -218,7 +216,8 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
 $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src:
-	curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
+	travis_retry curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip\
+	                  -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
 	unzip -qq $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
 
@@ -237,7 +236,8 @@ travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-s
 travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
 
 $(HOME)/.local/bin/acknowledgements:
-	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
+	travis_retry curl -L https://github.com/plfa/acknowledgements/archive/master.zip\
+	                  -o $(HOME)/acknowledgements-master.zip
 	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
 	cd $(HOME)/acknowledgements-master;\
 		stack install
@@ -251,28 +251,12 @@ travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-rein
 .phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements
 
 
-# Pandoc
-# The version of Pandoc on Xenial is too old.
-
-$(PANDOC):
-	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb\
-	     -o $(HOME)/pandoc.deb
-	sudo dpkg -i $(HOME)/pandoc.deb
-
-
 # Lua
-# The version of Lua on Xenial is too old.
 
 travis-install-lua:\
-	$(LUA)\
 	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson\
 	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua\
-	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua\
-
-$(LUA):
-  curl http://www.lua.org/ftp/lua-$(LUA_VERSION).$(LUA_FILES_PATCH_VERSION).tar.gz | tar xz
-	make linux
-	make INSTALL_TOP=$(LUA_HOME) install
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua
 
 $(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson:
 # Only this particular version works:
