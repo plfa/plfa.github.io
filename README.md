@@ -33,11 +33,7 @@ permalink: /GettingStarted/
 
 [kramdown]: https://kramdown.gettalong.org/syntax.html
 [pandoc]: https://pandoc.org/installing.html
-
-[lua]: https://www.lua.org/download.html
-[luarocks]: https://luarocks.org/
-[liquid-lua]: https://luarocks.org/modules/3scale/liquid
-[lua-cjson-broken]: https://github.com/mpx/lua-cjson/issues/56
+[epubcheck]: https://github.com/w3c/epubcheck
 
 
 <!-- Status & Version Badges -->
@@ -229,28 +225,14 @@ bundle exec jekyll serve
 
 ### Building the EPUB
 
-The EPUB version of the book is built using Pandoc, with Lua filters, and the script `epub/render-liquid-template.lua`, which wraps the library [`liquid.lua`][liquid-lua]. Here's how to build the EPUB:
+The EPUB version of the book is built using Pandoc. Here's how to build the EPUB:
 
 1. Install a recent version of Pandoc, [available here][pandoc].
    We recommend their official installer (on the linked page),
    which is much faster than compiling Pandoc from source with Haskell Stack.
 
-1. Install Lua version 5.3, [available here][lua].
-   Other versions have not been tested.
-
-1. Install luarocks, [available here][luarocks],
-   which we will use to install the dependencies of `render-liquid-template.lua`.
-
-1. Install the dependencies of `run-liquid.lua` by running:
-   ```bash
-   luarocks install lua-cjson 2.1.0-1
-   luarocks install lua-tinyyaml
-   luarocks install liquid
-   ```
-   Be sure to install `lua-cjson` version `2.1.0-1` as specified above, as [newer version are broken][lua-cjson-broken].
-
-1. Finally build the EPUB by running:
+2. Build the EPUB by running:
    ```bash
    make epub
    ```
-   Pandoc will write the EPUB to `out/epub/plfa.epub`.
+   The EPUB is written to `out/epub/plfa.epub`.
