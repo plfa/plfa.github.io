@@ -9,7 +9,7 @@ RUBY := ruby
 GEM := $(RUBY) -S gem
 BUNDLE := $(RUBY) -S bundle
 JEKYLL := $(BUNDLE) exec jekyll
-HTML_PROOFER := $(BUNDLE) exec htmlproofer
+HTMLPROOFER := $(BUNDLE) exec htmlproofer
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 
 ifeq ($(AGDA_STDLIB_VERSION),)
