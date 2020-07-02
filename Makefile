@@ -3,6 +3,8 @@ AGDA_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/course
 AGDAI_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
 MARKDOWN_FILES := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA_FILES))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+PANDOC := pandoc
+EPUBCHECK := epubcheck
 RUBY := ruby
 GEM := $(RUBY) -S gem
 BUNDLE := $(RUBY) -S bundle
@@ -53,11 +55,14 @@ out/:
 
 epub: out/epub/plfa.epub
 
+epubcheck: out/epub/plfa.epub
+	$(EPUBCHECK) out/epub/plfa.epub
+
 out/epub/:
 	mkdir -p out/epub/
 
 out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
-	pandoc --strip-comments \
+	$(PANDOC) --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
 		--epub-embed-font='assets/fonts/FreeMono.woff' \
@@ -75,6 +80,8 @@ out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epu
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
 	 $(RUBY) epub/render-liquid-template.rb _config.yml $< $@
+
+.phony: epub epubcheck
 
 
 # Convert literal Agda to Markdown

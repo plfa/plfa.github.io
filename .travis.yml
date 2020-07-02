@@ -9,11 +9,9 @@ cache:
   timeout: 1500
   directories:
   - out/
-  - lua_modules/
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
-  - $HOME/.luarocks
   - $HOME/agda-$AGDA_VERSION
   - $HOME/agda-stdlib-$AGDA_STDLIB_VERSION
   - $HOME/acknowledgements-master
@@ -45,11 +43,10 @@ script:
 - agda --version
 - acknowledgements --version
 - pandoc --version
-- lua -v
-- luarocks --version
 - make build
 - make test-offline # disable to only build cache
 - make epub
+- make epubcheck
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
