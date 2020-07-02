@@ -65,7 +65,7 @@ src/plfa/part2/Substitution.lagda.md
 # Backmatter
 
 ``` {.include shift-heading-level-by=1}
-src/plfa/acknowledgements_epub.md
+out/epub/acknowledgements.md
 src/plfa/Fonts.lagda.md
 src/plfa/statistics.md
 ```

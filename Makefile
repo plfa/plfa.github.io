@@ -50,9 +50,12 @@ out/:
 #       files are too large, so for large documents with few level-1 headings, one
 #       might want to use a chapter level of 2 or 3."
 
-epub: out/plfa.epub
+epub: out/epub/plfa.epub
 
-out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css src/plfa/acknowledgements_epub.md
+out/epub/:
+	mkdir -p out/epub/
+
+out/epub/plfa.epub: out/epub/ | $(AGDA) $(LUA) epub/main.css out/epub/acknowledgements.md
 	pandoc --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
@@ -69,8 +72,8 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css src/plfa/acknowledgements_epub.
 		-o "$@" \
 		epub/index.md
 
-src/plfa/acknowledgements_epub.md: src/plfa/acknowledgements.md _config.yml 
-	lua epub/run-liquid.lua _config.yml $< $@
+out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
+	lua epub/render-liquid-template.lua _config.yml $< $@
 
 
 # Convert literal Agda to Markdown
