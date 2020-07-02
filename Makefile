@@ -4,6 +4,7 @@ AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' 
 LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+LUA_VERSION := $(lua -e "print(string.sub(_VERSION,5))")
 LUA_MODULES := lua_modules/
 
 ifneq ($(wildcard $(LUA_MODULES)),)
@@ -162,9 +163,9 @@ travis-setup:\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries\
-	$(HOME)/.local/share/lua/5.1/tinyyaml.lua\
-	$(HOME)/.local/share/lua/5.1/liquid.lua\
-	$(HOME)/.local/share/lua/5.1/cjson\
+	lua_modules/share/lua/$(LUA_VERSION)/cjson\
+	lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua\
+	lua_modules/share/lua/$(LUA_VERSION)/liquid.lua\
 	/usr/bin/pandoc
 
 .phony: travis-setup
@@ -180,7 +181,8 @@ $(HOME)/.local/bin/acknowledgements:
 
 # The version of pandoc on Xenial is too old.
 /usr/bin/pandoc:
-	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $(HOME)/pandoc.deb
+	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb\
+	     -o $(HOME)/pandoc.deb
 	sudo dpkg -i $(HOME)/pandoc.deb
 
 travis-uninstall-acknowledgements:
@@ -211,16 +213,17 @@ $(HOME)/.local/bin/agda:
 	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
 
-$(HOME)/.local/share/lua/5.1/tinyyaml.lua:
-	luarocks install --local lua-tinyyaml
+lua_modules/share/lua/$(LUA_VERSION)/cjson:
+# Only this particular version works:
+# https://github.com/mpx/lua-cjson/issues/56:
+	luarocks install --tree lua_modules lua-cjson 2.1.0-1
+	luarocks install --tree lua_modules liquid
 
-$(HOME)/.local/share/lua/5.1/liquid.lua:
-	luarocks install --local liquid
+lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua:
+	luarocks install --tree lua_modules lua-tinyyaml
 
-$(HOME)/.local/share/lua/5.1/cjson:
-	# Only this particular version works:
-	# https://github.com/mpx/lua-cjson/issues/56:
-	luarocks install --local lua-cjson 2.1.0-1
+lua_modules/share/lua/$(LUA_VERSION)/liquid.lua:
+	luarocks install --tree lua_modules liquid
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
