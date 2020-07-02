@@ -1,10 +1,21 @@
 SHELL := /usr/bin/env bash
-AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
-AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
-LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
-MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
+AGDA_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
+AGDAI_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
+MARKDOWN_FILES := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA_FILES))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LUA_MODULES := lua_modules/
+
+RUBY := ruby
+GEM := $(RUBY) -S gem
+BUNDLE := $(RUBY) -S bundle
+JEKYLL := $(JEKYLL)
+HTML_PROOFER := $(BUNDLE) exec htmlproofer
+
+LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
+LUA_HOME := $(HOME)/.local
+LUA := $(LUA_HOME)/bin/lua
+LUAROCKS := luarocks --lua-dir=$(LUA_HOME) --lua-version=$(LUA_VERSION)
+LUA_MODULES := lua_modules
+PANDOC := /usr/bin/pandoc
 
 ifneq ($(wildcard $(LUA_MODULES)),)
 	LUA_FLAGS += -l epub/set_paths
@@ -19,19 +30,19 @@ endif
 
 # Build PLFA and test hyperlinks
 test: build
-	ruby -S bundle exec htmlproofer '_site'
+	$(HTMLPROOFER) '_site'
 
 
 # Build PLFA and test hyperlinks offline
 test-offline: build
-	ruby -S bundle exec htmlproofer '_site' --disable-external
+	$(HTMLPROOFER) '_site' --disable-external
 
 
 # Build PLFA and test hyperlinks for stable
-test-stable-offline: $(MARKDOWN)
-	ruby -S bundle exec jekyll clean
-	ruby -S bundle exec jekyll build --destination '_site/stable' --baseurl '/stable'
-	ruby -S bundle exec htmlproofer '_site' --disable-external
+test-stable-offline: $(MARKDOWN_FILES)
+	$(JEKYLL) clean
+	$(JEKYLL) build --destination '_site/stable' --baseurl '/stable'
+	$(HTMLPROOFER) '_site' --disable-external
 
 
 out/:
@@ -56,8 +67,8 @@ epub: out/epub/plfa.epub
 out/epub/:
 	mkdir -p out/epub/
 
-out/epub/plfa.epub: out/epub/ | $(AGDA) $(LUA) epub/main.css out/epub/acknowledgements.md
-	pandoc --strip-comments \
+out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
+	$(PANDOC) --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
 		--epub-embed-font='assets/fonts/FreeMono.woff' \
@@ -74,7 +85,7 @@ out/epub/plfa.epub: out/epub/ | $(AGDA) $(LUA) epub/main.css out/epub/acknowledg
 		epub/index.md
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
-	 $(HOME)/.local/bin/lua $(LUA_FLAGS) epub/render-liquid-template.lua _config.yml $< $@
+	 $(LUA) $(LUA_FLAGS) epub/render-liquid-template.lua _config.yml $< $@
 
 
 # Convert literal Agda to Markdown
@@ -93,17 +104,17 @@ else
 endif
 endef
 
-$(foreach agda,$(AGDA),$(eval $(call AGDA_template,$(agda))))
+$(foreach agda,$(AGDA_FILES),$(eval $(call AGDA_template,$(agda))))
 
 
 # Start server
 serve:
-	ruby -S bundle exec jekyll serve --incremental
+	$(JEKYLL) serve --incremental
 
 
 # Start background server
 server-start:
-	ruby -S bundle exec jekyll serve --no-watch --detach
+	$(JEKYLL) serve --no-watch --detach
 
 
 # Stop background server
@@ -112,26 +123,26 @@ server-stop:
 
 
 # Build website using jekyll
-build: $(MARKDOWN)
-	ruby -S bundle exec jekyll build
+build: $(MARKDOWN_FILES)
+	$(JEKYLL) build
 
 
 # Build website using jekyll incrementally
-build-incremental: $(MARKDOWN)
-	ruby -S bundle exec jekyll build --incremental
+build-incremental: $(MARKDOWN_FILES)
+	$(JEKYLL) build --incremental
 
 
 # Remove all auxiliary files
 clean:
 	rm -f .agda-stdlib.sed .links-*.sed out/epub/acknowledgements.md
-ifneq ($(strip $(AGDAI)),)
-	rm $(AGDAI)
+ifneq ($(strip $(AGDAI_FILES)),)
+	rm $(AGDAI_FILES)
 endif
 
 
 # Remove all generated files
 clobber: clean
-	ruby -S bundle exec jekyll clean
+	$(JEKYLL) clean
 	rm -rf out/
 
 .phony: clobber
@@ -139,7 +150,7 @@ clobber: clean
 
 # List all .lagda files
 ls:
-	@echo $(AGDA)
+	@echo $(AGDA_FILES)
 
 .phony: ls
 
@@ -147,10 +158,10 @@ ls:
 # MacOS Setup (install Bundler)
 macos-setup:
 	brew install libxml2
-	ruby -S gem install bundler --no-ri --no-rdoc
-	ruby -S gem install pkg-config --no-ri --no-rdoc -v "~> 1.1"
-	ruby -S bundle config build.nokogiri --use-system-libraries
-	ruby -S bundle install
+	$(GEM) install bundler --no-ri --no-rdoc
+	$(GEM) install pkg-config --no-ri --no-rdoc -v "~> 1.1"
+	$(BUNDLE) config build.nokogiri --use-system-libraries
+	$(BUNDLE) install
 
 .phony: macos-setup
 
@@ -162,37 +173,16 @@ travis-setup:\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries\
-	$(HOME)/.local/bin/lua\
-	lua_modules/share/lua/$(LUA_VERSION)/cjson\
-	lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua\
-	lua_modules/share/lua/$(LUA_VERSION)/liquid.lua\
+	$(LUA)\
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson\
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua\
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua\
 	/usr/bin/pandoc
 
 .phony: travis-setup
 
 
-travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
-
-$(HOME)/.local/bin/acknowledgements:
-	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
-	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
-	cd $(HOME)/acknowledgements-master;\
-		stack install
-
-# The version of pandoc on Xenial is too old.
-/usr/bin/pandoc:
-	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb\
-	     -o $(HOME)/pandoc.deb
-	sudo dpkg -i $(HOME)/pandoc.deb
-
-travis-uninstall-acknowledgements:
-	rm -rf $(HOME)/acknowledgements-master/
-	rm $(HOME)/.local/bin/acknowledgements
-
-travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-reinstall-acknowledgements
-
-.phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements
-
+# Agda
 
 travis-install-agda:\
 	$(HOME)/.local/bin/agda\
@@ -213,22 +203,6 @@ $(HOME)/.local/bin/agda:
 	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
 
-$(HOME)/.local/bin/lua:
-  curl http://www.lua.org/ftp/lua-$(LUA_VERSION).$(LUA_PATCH_VERSION).tar.gz | tar xz
-	make linux
-	make INSTALL_TOP=$(HOME)/.local install
-
-lua_modules/share/lua/$(LUA_VERSION)/cjson:
-# Only this particular version works:
-# https://github.com/mpx/lua-cjson/issues/56:
-	luarocks install --lua-dir=$(HOME)/.local --lua-version=$(LUA_VERSION) --tree=lua_modules/ lua-cjson 2.1.0-1
-
-lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua:
-	luarocks install --lua-dir=$(HOME)/.local --lua-version=$(LUA_VERSION) --tree=lua_modules/ lua-tinyyaml
-
-lua_modules/share/lua/$(LUA_VERSION)/liquid.lua:
-	luarocks install --lua-dir=$(HOME)/.local --lua-version=$(LUA_VERSION) --tree=lua_modules/ liquid
-
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
 	rm -f $(HOME)/.local/bin/agda
@@ -238,6 +212,8 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 
 .phony: travis-install-agda travis-uninstall-agda travis-reinstall-agda
 
+
+# Agda Standard Library
 
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
@@ -254,3 +230,57 @@ travis-uninstall-agda-stdlib:
 travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
 
 .phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib epub
+
+
+# Acknowledgements
+
+travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
+
+$(HOME)/.local/bin/acknowledgements:
+	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
+	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
+	cd $(HOME)/acknowledgements-master;\
+		stack install
+
+travis-uninstall-acknowledgements:
+	rm -rf $(HOME)/acknowledgements-master/
+	rm $(HOME)/.local/bin/acknowledgements
+
+travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-reinstall-acknowledgements
+
+.phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements
+
+
+# Pandoc
+# The version of Pandoc on Xenial is too old.
+
+$(PANDOC):
+	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb\
+	     -o $(HOME)/pandoc.deb
+	sudo dpkg -i $(HOME)/pandoc.deb
+
+
+# Lua
+# The version of Lua on Xenial is too old.
+
+travis-install-lua:\
+	$(LUA)\
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson\
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua\
+	$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua\
+
+$(LUA):
+  curl http://www.lua.org/ftp/lua-$(LUA_VERSION).$(LUA_FILES_PATCH_VERSION).tar.gz | tar xz
+	make linux
+	make INSTALL_TOP=$(LUA_HOME) install
+
+$(LUA_MODULES)/share/lua/$(LUA_VERSION)/cjson:
+# Only this particular version works:
+# https://github.com/mpx/lua-cjson/issues/56:
+	$(LUAROCKS) install --tree=$(LUA_MODULES) lua-cjson 2.1.0-1
+
+$(LUA_MODULES)/share/lua/$(LUA_VERSION)/tinyyaml.lua:
+	$(LUAROCKS) install --tree=$(LUA_MODULES) lua-tinyyaml
+
+$(LUA_MODULES)/share/lua/$(LUA_VERSION)/liquid.lua:
+	$(LUAROCKS) install --tree=$(LUA_MODULES) liquid
