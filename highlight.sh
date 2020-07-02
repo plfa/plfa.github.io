@@ -110,7 +110,7 @@ for INCLUDE_PATH in "$@"; do
             find "$INCLUDE_PATH" -name "*.lagda.md" -print0 | while read -d $'\0' AGDA_MODULE_SRC; do
                 AGDA_MODULE_OUT="$(out_path "$AGDA_MODULE_SRC")"
                 AGDA_MODULE_HTML="$(basename "$(html_path "$AGDA_MODULE_SRC" "$HTML_DIR")" .md).html"
-                echo "s|$AGDA_MODULE_HTML|{% endraw %}{{ site.baseurl }}{% link $AGDA_MODULE_OUT %}{% raw %}|;" >> "$LOCAL_LINKS_SED"
+                echo "s|$AGDA_MODULE_HTML|{% endraw %}{{ site.baseurl }}{% link $AGDA_MODULE_OUT %}{% raw %}|g;" >> "$LOCAL_LINKS_SED"
             done
         fi
 
