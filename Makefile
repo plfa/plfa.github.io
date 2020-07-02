@@ -4,7 +4,6 @@ AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' 
 LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LUA_VERSION := $(lua -e "print(string.sub(_VERSION,5))")
 LUA_MODULES := lua_modules/
 
 ifneq ($(wildcard $(LUA_MODULES)),)
@@ -163,6 +162,7 @@ travis-setup:\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
 	$(HOME)/.agda/libraries\
+	$(HOME)/.local/bin/lua\
 	lua_modules/share/lua/$(LUA_VERSION)/cjson\
 	lua_modules/share/lua/$(LUA_VERSION)/tinyyaml.lua\
 	lua_modules/share/lua/$(LUA_VERSION)/liquid.lua\
@@ -212,6 +212,11 @@ $(HOME)/.local/bin/agda:
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
+
+$(HOME)/.local/bin/lua:
+  curl http://www.lua.org/ftp/lua-5.3.5.tar.gz | tar xz
+	make linux
+	make INSTALL_TOP=$(HOME)/.local install
 
 lua_modules/share/lua/$(LUA_VERSION)/cjson:
 # Only this particular version works:
