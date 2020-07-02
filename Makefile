@@ -118,7 +118,7 @@ build-incremental: $(MARKDOWN)
 
 # Remove all auxiliary files
 clean:
-	rm -f .agda-stdlib.sed .links-*.sed src/plfa/acknowledgements_epub.md
+	rm -f .agda-stdlib.sed .links-*.sed out/epub/acknowledgements.md
 ifneq ($(strip $(AGDAI)),)
 	rm $(AGDAI)
 endif
