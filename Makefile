@@ -79,7 +79,7 @@ out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epu
 		epub/index.md
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
-	 $(RUBY) epub/render-liquid-template.rb _config.yml $< $@
+	 $(BUNDLE) $(RUBY) epub/render-liquid-template.rb _config.yml $< $@
 
 .phony: epub epubcheck
 
