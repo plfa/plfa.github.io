@@ -32,6 +32,12 @@ permalink: /GettingStarted/
 [ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
 
 [kramdown]: https://kramdown.gettalong.org/syntax.html
+[pandoc]: https://pandoc.org/installing.html
+
+[lua]: https://www.lua.org/download.html
+[luarocks]: https://luarocks.org/
+[liquid-lua]: https://luarocks.org/modules/3scale/liquid
+[lua-cjson-broken]: https://github.com/mpx/lua-cjson/issues/56
 
 
 <!-- Status & Version Badges -->
@@ -172,9 +178,13 @@ You'll see the key sequence of the character in mini buffer.
 
 ## Dependencies for developers
 
-Building PLFA is currently supported on Linux and macOS.
+PLFA is available as both a website and an EPUB e-book,
+both of which can be built on Linux and macOS.
 PLFA is written in literate Agda with [Kramdown Markdown][kramdown].
-The book is built in three stages:
+
+### Building the website
+
+The website version of the book is built in three stages:
 
  1. The `.lagda.md` files are compiled to Markdown using Agda’s highlighter.
     (This requires several POSIX tools, such as `bash`, `sed`, and `grep`.)
@@ -216,3 +226,36 @@ If you simply wish to have a local copy of the book, e.g. for offline reading, b
 bundle install
 bundle exec jekyll serve
 ```
+
+### Building the EPUB
+
+The EPUB version of the book is built using Pandoc,
+with Lua filters,
+and the script `run-liquid.lua`,
+which wraps the library [`liquid.lua`][liquid-lua].
+Here's how to build the EPUB:
+
+1. Install a recent version of Pandoc, [available here][pandoc].
+   We recommend their official installer (on the linked page),
+   which is much faster than compiling Pandoc from source with Haskell Stack.
+
+1. Install Lua version 5.3, [available here][lua].
+   Other versions have not been tested.
+
+1. Install luarocks, [available here][luarocks],
+   which we will use to install the dependencies of `run-liquid.lua`.
+
+1. Install the dependencies of `run-liquid.lua` by running:
+   ```bash
+   luarocks install lua-cjson 2.1.0-1
+   luarocks install lua-tinyyaml
+   luarocks install liquid
+   ```
+   Be sure to install `lua-cjson` version `2.1.0-1` as specified above:
+   [newer version are broken][lua-cjson-broken].
+
+1. Finally build the EPUB by running:
+   ```bash
+   make epub
+   ```
+   Pandoc will write the EPUB to `out/plfa.epub`.
