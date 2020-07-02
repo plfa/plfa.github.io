@@ -42,7 +42,9 @@ script:
 - agda --version
 - acknowledgements --version
 - pandoc --version
+- make build
 - make test-offline # disable to only build cache
+- make epub
 
 before_deploy:
 - acknowledgements -i _config.yml >> _config.yml
