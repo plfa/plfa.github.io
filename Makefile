@@ -214,7 +214,7 @@ $(HOME)/.local/bin/agda:
 		stack install --stack-yaml=stack-8.0.2.yaml
 
 $(HOME)/.local/bin/lua:
-  curl http://www.lua.org/ftp/lua-5.3.5.tar.gz | tar xz
+  curl http://www.lua.org/ftp/lua-$(LUA_VERSION).$(LUA_PATCH_VERSION).tar.gz | tar xz
 	make linux
 	make INSTALL_TOP=$(HOME)/.local install
 
