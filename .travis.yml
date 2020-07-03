@@ -8,7 +8,6 @@ cache:
   bundler: true
   timeout: 1500
   directories:
-  - out/
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
@@ -29,17 +28,16 @@ env:
   - SH=bash
 
 before_install:
-# Install Stack
+# Install Stack:
 - mkdir -p ~/.local/bin
 - export PATH=$HOME/.local/bin:$PATH
 - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-# Install Pandoc
+# Install Pandoc:
 - travis_retry curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $HOME/pandoc.deb && sudo dpkg -i $HOME/pandoc.deb
-# Download and install agda, agda-stdlib, and agda2html
+# Install agda, agda-stdlib, and agda2html:
 - make travis-setup
 
 script:
-- travis_retry curl -L https://raw.githubusercontent.com/plfa/git-tools/master/git-restore-mtime | python
 - agda --version
 - acknowledgements --version
 - pandoc --version
