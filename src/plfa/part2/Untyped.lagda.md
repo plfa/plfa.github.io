@@ -467,7 +467,7 @@ _ =
   ∎
 ```
 After just two steps the top-level term is an abstraction,
-and `ζ` rules drive the rest of the normalisation. 
+and `ζ` rules drive the rest of the normalisation.
 
 
 ## Progress
@@ -578,6 +578,7 @@ data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
 ```
 The evaluator takes gas and a term and returns the corresponding steps:
 ```
+{-# TERMINATING #-}
 eval : ∀ {Γ A}
   → Gas
   → (L : Γ ⊢ A)

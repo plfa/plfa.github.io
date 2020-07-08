@@ -1111,6 +1111,7 @@ data Steps : ∀ {A} → ∅ ⊢ A → Set where
       ----------
     → Steps L
 
+{-# TERMINATING #-}
 eval : ∀ {A}
   → Gas
   → (L : ∅ ⊢ A)
