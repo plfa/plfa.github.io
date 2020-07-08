@@ -1,9 +1,16 @@
 SHELL := /usr/bin/env bash
-AGDA := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
-AGDAI := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
-LUA := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
-MARKDOWN := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA))))
+AGDA_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.lagda.md')
+AGDAI_FILES := $(shell find . -type f -and \( -path '*/src/*' -or -path '*/courses/*' \) -and -name '*.agdai')
+MARKDOWN_FILES := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(AGDA_FILES))))
 PLFA_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+PANDOC := pandoc
+EPUBCHECK := epubcheck
+RUBY := ruby
+GEM := $(RUBY) -S gem
+BUNDLE := $(RUBY) -S bundle
+JEKYLL := $(BUNDLE) exec jekyll
+HTMLPROOFER := $(BUNDLE) exec htmlproofer
+LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -13,24 +20,20 @@ endif
 
 
 # Build PLFA and test hyperlinks
-test: build epub
-	ruby -S bundle exec htmlproofer '_site'
+test: build
+	$(HTMLPROOFER) '_site'
 
 
 # Build PLFA and test hyperlinks offline
 test-offline: build
-	ruby -S bundle exec htmlproofer '_site' --disable-external
+	$(HTMLPROOFER) '_site' --disable-external
 
 
 # Build PLFA and test hyperlinks for stable
-test-stable-offline: $(MARKDOWN)
-	ruby -S bundle exec jekyll clean
-	ruby -S bundle exec jekyll build --destination '_site/stable' --baseurl '/stable'
-	ruby -S bundle exec htmlproofer '_site' --disable-external
-
-
-statistics:
-	hs/agda-count
+test-stable-offline: $(MARKDOWN_FILES)
+	$(JEKYLL) clean
+	$(JEKYLL) build --destination '_site/stable' --baseurl '/stable'
+	$(HTMLPROOFER) '_site' --disable-external
 
 
 out/:
@@ -49,19 +52,24 @@ out/:
 #       sections are displayed to users. Some readers may be slow if the chapter
 #       files are too large, so for large documents with few level-1 headings, one
 #       might want to use a chapter level of 2 or 3."
-#
-#TODO: embedded fonts not working (path problem?)
 
-epub: out/plfa.epub
+epub: out/epub/plfa.epub
 
-out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
-	pandoc --strip-comments \
+epubcheck: out/epub/plfa.epub
+	$(EPUBCHECK) out/epub/plfa.epub
+
+out/epub/:
+	mkdir -p out/epub/
+
+out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
+	$(PANDOC) --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
 		--epub-embed-font='assets/fonts/FreeMono.woff' \
 		--epub-embed-font='assets/fonts/DejaVuSansMono.woff' \
 		--lua-filter epub/include-files.lua \
 		--lua-filter epub/rewrite-links.lua \
+		--lua-filter epub/rewrite-html-ul.lua \
 		--lua-filter epub/default-code-class.lua -M default-code-class=agda \
 		--standalone \
 		--fail-if-warnings \
@@ -70,7 +78,10 @@ out/plfa.epub: out/ $(AGDA) $(LUA) epub/main.css
 		-o "$@" \
 		epub/index.md
 
+out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
+	 $(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
 
+.phony: epub epubcheck
 
 
 # Convert literal Agda to Markdown
@@ -89,17 +100,17 @@ else
 endif
 endef
 
-$(foreach agda,$(AGDA),$(eval $(call AGDA_template,$(agda))))
+$(foreach agda,$(AGDA_FILES),$(eval $(call AGDA_template,$(agda))))
 
 
 # Start server
 serve:
-	ruby -S bundle exec jekyll serve --incremental
+	$(JEKYLL) serve --incremental
 
 
 # Start background server
 server-start:
-	ruby -S bundle exec jekyll serve --no-watch --detach
+	$(JEKYLL) serve --no-watch --detach
 
 
 # Stop background server
@@ -108,26 +119,26 @@ server-stop:
 
 
 # Build website using jekyll
-build: $(MARKDOWN)
-	ruby -S bundle exec jekyll build
+build: $(MARKDOWN_FILES)
+	$(JEKYLL) build
 
 
 # Build website using jekyll incrementally
-build-incremental: $(MARKDOWN)
-	ruby -S bundle exec jekyll build --incremental
+build-incremental: $(MARKDOWN_FILES)
+	$(JEKYLL) build --incremental
 
 
 # Remove all auxiliary files
 clean:
-	rm -f .agda-stdlib.sed .links-*.sed
-ifneq ($(strip $(AGDAI)),)
-	rm $(AGDAI)
+	rm -f .agda-stdlib.sed .links-*.sed out/epub/acknowledgements.md
+ifneq ($(strip $(AGDAI_FILES)),)
+	rm $(AGDAI_FILES)
 endif
 
 
 # Remove all generated files
 clobber: clean
-	ruby -S bundle exec jekyll clean
+	$(JEKYLL) clean
 	rm -rf out/
 
 .phony: clobber
@@ -135,7 +146,7 @@ clobber: clean
 
 # List all .lagda files
 ls:
-	@echo $(AGDA)
+	@echo $(AGDA_FILES)
 
 .phony: ls
 
@@ -143,10 +154,10 @@ ls:
 # MacOS Setup (install Bundler)
 macos-setup:
 	brew install libxml2
-	ruby -S gem install bundler --no-ri --no-rdoc
-	ruby -S gem install pkg-config --no-ri --no-rdoc -v "~> 1.1"
-	ruby -S bundle config build.nokogiri --use-system-libraries
-	ruby -S bundle install
+	$(GEM) install bundler --no-ri --no-rdoc
+	$(GEM) install pkg-config --no-ri --no-rdoc -v "~> 1.1"
+	$(BUNDLE) config build.nokogiri --use-system-libraries
+	$(BUNDLE) install
 
 .phony: macos-setup
 
@@ -157,33 +168,12 @@ travis-setup:\
 	$(HOME)/.local/bin/acknowledgements\
 	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
 	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries\
-	/usr/bin/pandoc
+	$(HOME)/.agda/libraries
 
 .phony: travis-setup
 
 
-travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
-
-$(HOME)/.local/bin/acknowledgements:
-	curl -L https://github.com/plfa/acknowledgements/archive/master.zip -o $(HOME)/acknowledgements-master.zip
-	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
-	cd $(HOME)/acknowledgements-master;\
-		stack install
-
-# The version of pandoc on Xenial is too old.
-/usr/bin/pandoc:
-	curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $(HOME)/pandoc.deb
-	sudo dpkg -i $(HOME)/pandoc.deb
-
-travis-uninstall-acknowledgements:
-	rm -rf $(HOME)/acknowledgements-master/
-	rm $(HOME)/.local/bin/acknowledgements
-
-travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-reinstall-acknowledgements
-
-.phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements
-
+# Agda
 
 travis-install-agda:\
 	$(HOME)/.local/bin/agda\
@@ -199,7 +189,8 @@ $(HOME)/.agda/libraries:
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/.local/bin/agda:
-	curl -L https://github.com/agda/agda/archive/v$(AGDA_VERSION).zip -o $(HOME)/agda-$(AGDA_VERSION).zip
+	travis_retry curl -L https://github.com/agda/agda/archive/v$(AGDA_VERSION).zip\
+	                  -o $(HOME)/agda-$(AGDA_VERSION).zip
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
 		stack install --stack-yaml=stack-8.0.2.yaml
@@ -214,10 +205,13 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 .phony: travis-install-agda travis-uninstall-agda travis-reinstall-agda
 
 
+# Agda Standard Library
+
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
 $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src:
-	curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
+	travis_retry curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip\
+	                  -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
 	unzip -qq $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
 
@@ -229,3 +223,23 @@ travis-uninstall-agda-stdlib:
 travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-stdlib
 
 .phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib epub
+
+
+# Acknowledgements
+
+travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
+
+$(HOME)/.local/bin/acknowledgements:
+	travis_retry curl -L https://github.com/plfa/acknowledgements/archive/master.zip\
+	                  -o $(HOME)/acknowledgements-master.zip
+	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
+	cd $(HOME)/acknowledgements-master;\
+		stack install
+
+travis-uninstall-acknowledgements:
+	rm -rf $(HOME)/acknowledgements-master/
+	rm $(HOME)/.local/bin/acknowledgements
+
+travis-reinstall-acknowledgements: travis-uninstall-acknowledgements travis-reinstall-acknowledgements
+
+.phony: travis-install-acknowledgements travis-uninstall-acknowledgements travis-reinstall-acknowledgements

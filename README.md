@@ -32,6 +32,8 @@ permalink: /GettingStarted/
 [ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
 
 [kramdown]: https://kramdown.gettalong.org/syntax.html
+[pandoc]: https://pandoc.org/installing.html
+[epubcheck]: https://github.com/w3c/epubcheck
 
 
 <!-- Status & Version Badges -->
@@ -172,9 +174,13 @@ You'll see the key sequence of the character in mini buffer.
 
 ## Dependencies for developers
 
-Building PLFA is currently supported on Linux and macOS.
+PLFA is available as both a website and an EPUB e-book,
+both of which can be built on Linux and macOS.
 PLFA is written in literate Agda with [Kramdown Markdown][kramdown].
-The book is built in three stages:
+
+### Building the website
+
+The website version of the book is built in three stages:
 
  1. The `.lagda.md` files are compiled to Markdown using Agda’s highlighter.
     (This requires several POSIX tools, such as `bash`, `sed`, and `grep`.)
@@ -216,3 +222,17 @@ If you simply wish to have a local copy of the book, e.g. for offline reading, b
 bundle install
 bundle exec jekyll serve
 ```
+
+### Building the EPUB
+
+The EPUB version of the book is built using Pandoc. Here's how to build the EPUB:
+
+1. Install a recent version of Pandoc, [available here][pandoc].
+   We recommend their official installer (on the linked page),
+   which is much faster than compiling Pandoc from source with Haskell Stack.
+
+2. Build the EPUB by running:
+   ```bash
+   make epub
+   ```
+   The EPUB is written to `out/epub/plfa.epub`.

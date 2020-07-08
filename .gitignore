@@ -21,8 +21,11 @@ Gemfile.lock
 *.spl
 *.synctex.gz
 
-## EPUB files
-*.epub
+## Lua files
+lua_modules/
 
 ## Emacs files
 auto/
+
+## Misc build files
+out/

@@ -67,3 +67,4 @@ exclude:
   - "Gemfile"
   - "Gemfile.lock"
   - "highlight.sh"
+  - "out/epub/acknowledgements.md"
