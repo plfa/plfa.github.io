@@ -382,7 +382,7 @@ which is well typed in the empty context is also well typed in an arbitrary
 context.  The _drop_ lemma asserts that a term which is well typed in a context
 where the same variable appears twice remains well typed if we drop the shadowed
 occurrence. The _swap_ lemma asserts that a term which is well typed in a
-context remains well typed if we swap two variables. 
+context remains well typed if we swap two variables.
 
 (Renaming is similar to the _context invariance_ lemma in _Software
 Foundations_, but it does not require the definition of
@@ -775,7 +775,7 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
-For Agda it makes a difference whether we write `x ≟ y` or 
+For Agda it makes a difference whether we write `x ≟ y` or
 `y ≟ x`. In an interactive proof, Agda will show which residual `with`
 clauses in the definition of `_[_:=_]` need to be simplified, and the
 `with` clauses in `subst` need to match these exactly. The guideline is
@@ -918,8 +918,10 @@ per unit of gas.
 By analogy, we will use the name _gas_ for the parameter which puts a
 bound on the number of reduction steps.  `Gas` is specified by a natural number:
 ```
-data Gas : Set where
-  gas : ℕ → Gas
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value or indicate that it ran out of gas:
@@ -950,7 +952,6 @@ data Steps (L : Term) : Set where
 The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```
-{-# TERMINATING #-}
 eval : ∀ {L A}
   → Gas
   → ∅ ⊢ L ⦂ A

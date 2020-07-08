@@ -547,8 +547,10 @@ As previously, progress immediately yields an evaluator.
 
 Gas is specified by a natural number:
 ```
-data Gas : Set where
-  gas : ℕ → Gas
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is normal or indicate that it ran out of gas:
@@ -578,7 +580,6 @@ data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
 ```
 The evaluator takes gas and a term and returns the corresponding steps:
 ```
-{-# TERMINATING #-}
 eval : ∀ {Γ A}
   → Gas
   → (L : Γ ⊢ A)

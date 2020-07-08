@@ -1043,8 +1043,10 @@ refer to preservation, since it is built-in to the definition of reduction.
 
 As previously, gas is specified by a natural number:
 ```
-data Gas : Set where
-  gas : ℕ → Gas
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value or indicate that it ran out of gas:
@@ -1074,7 +1076,6 @@ data Steps : ∀ {A} → ∅ ⊢ A → Set where
 ```
 The evaluator takes gas and a term and returns the corresponding steps:
 ```
-{-# TERMINATING #-}
 eval : ∀ {A}
   → Gas
   → (L : ∅ ⊢ A)

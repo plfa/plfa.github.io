@@ -582,7 +582,7 @@ replaces the formal parameter by the actual parameter.
 
 If a term is a value, then no reduction applies; conversely,
 if a reduction applies to a term then it is not a value.
-We will show in the next chapter that 
+We will show in the next chapter that
 this exhausts the possibilities: every well-typed term
 either reduces or is a value.
 
@@ -1104,13 +1104,13 @@ infix  4  _⊢_⦂_
 
 data _⊢_⦂_ : Context → Term → Type → Set where
 
-  -- Axiom 
+  -- Axiom
   ⊢` : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
       -----------
     → Γ ⊢ ` x ⦂ A
 
-  -- ⇒-I 
+  -- ⇒-I
   ⊢ƛ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       -------------------
