@@ -1383,9 +1383,9 @@ Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` abo
 When we introduced reduction, we claimed it was deterministic.
 For completeness, we present a formal proof here.
 
-A case term takes four arguments (three subterms and a bound
-variable), and our proof will need a variant
-of congruence to deal with functions of four arguments.  It
+Our proof will need a variant
+of congruence to deal with functions of four arguments
+(to deal with `case_[zero⇒_|suc_⇒_]`).  It
 is exactly analogous to `cong` and `cong₂` as defined previously:
 ```
 cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
