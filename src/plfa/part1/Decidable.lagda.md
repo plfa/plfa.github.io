@@ -548,7 +548,7 @@ postulate
 #### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
-Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff),
+Chapter [Isomorphism]({{ site.baseurl}}/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
 postulate
@@ -561,13 +561,86 @@ postulate
 -- Your code goes here
 ```
 
+## Proof by reflection {#proof-by-reflection}
+
+Let's revisit our definition of monus from
+Chapter [Naturals]({{ site.baseurl}}/Naturals/).
+If we subtract a larger number from a smaller number, we take the result to be
+zero. We had to do something, after all. What could we have done differently? We
+could have defined a *guarded* version of minus, a function which subtracts `n`
+from `m` only if `n ≤ m`:
+
+```
+minus : (m n : ℕ) (n≤m : n ≤ m) → ℕ
+minus m       zero    _         = m
+minus (suc m) (suc n) (s≤s m≤n) = minus m n m≤n
+```
+
+Unfortunately, it is painful to use, since we have to explicitly provide
+the proof that `n ≤ m`:
+
+```
+_ : minus 5 3 (s≤s (s≤s (s≤s z≤n))) ≡ 2
+_ = refl
+```
+
+We cannot solve this problem in general, but in the scenario above, we happen to
+know the two numbers *statically*. In that case, we can use a technique called
+*proof by reflection*. Essentially, we can ask Agda to run the decidable
+equality `n ≤? m` while type checking, and make sure that `n ≤ m`!
+
+We do this by using a feature of implicits. Agda will fill in an implicit of a
+record type if it can fill in all its fields. So Agda will *always* manage to
+fill in an implicit of an *empty* record type, since there aren't any fields
+after all. This is why `⊤` is defined as an empty record.
+
+The trick is to have an implicit argument of the type `T ⌊ n ≤? m ⌋`. Let's go
+through what this means step-by-step. First, we run the decision procedure, `n
+≤? m`. This provides us with evidence whether `n ≤ m` holds or not. We erase the
+evidence to a boolean. Finally, we apply `T`. Recall that `T` maps booleans into
+the world of evidence: `true` becomes the unit type `⊤`, and `false` becomes the
+empty type `⊥`. Operationally, an implicit argument of this type works as a
+guard.
+
+- If `n ≤ m` holds, the type of the implicit value reduces to `⊤`. Agda then
+  happily provides the implicit value.
+- Otherwise, the type reduces to `⊥`, which Agda has no chance of providing, so
+  it will throw an error. For instance, if we call `3 - 5` we get `_n≤m_254 : ⊥`.
+
+We obtain the witness for `n ≤ m` using `toWitness`, which we defined earlier:
+
+```
+_-_ : (m n : ℕ) {n≤m : T ⌊ n ≤? m ⌋} → ℕ
+_-_ m n {n≤m} = minus m n (toWitness n≤m)
+```
+
+We can safely use `_-_` as long as we statically know the two numbers:
+
+```
+_ : 5 - 3 ≡ 2
+_ = refl
+```
+
+It turns out that this idiom is very common. The standard library defines a
+synonym for `T ⌊ ? ⌋` called `True`:
+
+```
+True : ∀ {Q} → Dec Q → Set
+True Q = T ⌊ Q ⌋
+```
+
+#### Exercise `False`
+
+Give analogues of `True`, `toWitness`, and `fromWitness` which work with *negated* properties. Call these `False`, `toWitnessFalse`, and `fromWitnessFalse`.
+
+
 ## Standard Library
 
 ```
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 import Data.Nat using (_≤?_)
 import Relation.Nullary using (Dec; yes; no)
-import Relation.Nullary.Decidable using (⌊_⌋; toWitness; fromWitness)
+import Relation.Nullary.Decidable using (⌊_⌋; True; toWitness; fromWitness)
 import Relation.Nullary.Negation using (¬?)
 import Relation.Nullary.Product using (_×-dec_)
 import Relation.Nullary.Sum using (_⊎-dec_)

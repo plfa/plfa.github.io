@@ -44,7 +44,7 @@ open plfa.part1.Isomorphism.≃-Reasoning
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
-declaring a suitable inductive type:
+declaring a suitable record type:
 ```
 data _×_ (A B : Set) : Set where
 
@@ -76,27 +76,6 @@ proj₂ ⟨ x , y ⟩ = y
 If `L` provides evidence that `A × B` holds, then `proj₁ L` provides evidence
 that `A` holds, and `proj₂ L` provides evidence that `B` holds.
 
-Equivalently, we could also declare conjunction as a record type:
-```
-record _×′_ (A B : Set) : Set where
-  field
-    proj₁′ : A
-    proj₂′ : B
-open _×′_
-```
-Here record construction
-
-    record
-      { proj₁′ = M
-      ; proj₂′ = N
-      }
-
-corresponds to the term
-
-    ⟨ M , N ⟩
-
-where `M` is a term of type `A` and `N` is a term of type `B`.
-
 When `⟨_,_⟩` appears in a term on the right-hand side of an equation
 we refer to it as a _constructor_, and when it appears in a pattern on
 the left-hand side of an equation we refer to it as a _destructor_.
@@ -114,10 +93,7 @@ formula for the connective, which appears in a hypothesis but not in
 the conclusion. An introduction rule describes under what conditions
 we say the connective holds---how to _define_ the connective. An
 elimination rule describes what we may conclude when the connective
-holds---how to _use_ the connective.
-
-(The paragraph above was adopted from "Propositions as Types", Philip Wadler,
-_Communications of the ACM_, December 2015.)
+holds---how to _use_ the connective.[^from-wadler-2015]
 
 In this case, applying each destructor and reassembling the results with the
 constructor is the identity over products:
@@ -135,6 +111,33 @@ tightly than anything save disjunction:
 infixr 2 _×_
 ```
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
+
+Alternatively, we can declare conjunction as a record type:
+```
+record _×′_ (A B : Set) : Set where
+  constructor ⟨_,_⟩′
+  field
+    proj₁′ : A
+    proj₂′ : B
+open _×′_
+```
+The record construction `record { proj₁′ = M ; proj₂′ = N }` corresponds to the
+term `⟨ M , N ⟩` where `M` is a term of type `A` and `N` is a term of type `B`.
+The constructor declaration allows us to write `⟨ M , N ⟩′` in place of the
+record construction.
+
+The data type `_x_` and the record type `_×′_` behave similarly. One
+difference is that for data types we have to prove η-equality, but for record
+types, η-equality holds *by definition*. While proving `η-×′`, we do not have to
+pattern match on `w` to know that η-equality holds:
+```
+η-×′ : ∀ {A B : Set} (w : A ×′ B) → ⟨ proj₁′ w , proj₂′ w ⟩′ ≡ w
+η-×′ w = refl
+```
+It can be very convenient to have η-equality *definitionally*, and so the
+standard library defines `_×_` as a record type. We use the definition from the
+standard library in later chapters.
+
 
 Given two types `A` and `B`, we refer to `A × B` as the
 _product_ of `A` and `B`.  In set theory, it is also sometimes
@@ -245,7 +248,7 @@ is isomorphic to `(A → B) × (B → A)`.
 ## Truth is unit
 
 Truth `⊤` always holds. We formalise this idea by
-declaring a suitable inductive type:
+declaring a suitable record type:
 ```
 data ⊤ : Set where
 
@@ -266,9 +269,32 @@ value of type `⊤` must be equal to `tt`:
 η-⊤ : ∀ (w : ⊤) → tt ≡ w
 η-⊤ tt = refl
 ```
-The pattern matching on the left-hand side is essential.  Replacing
+The pattern matching on the left-hand side is essential. Replacing
 `w` by `tt` allows both sides of the propositional equality to
 simplify to the same term.
+
+Alternatively, we can declare truth as an empty record:
+```
+record ⊤′ : Set where
+  constructor tt′
+```
+The record construction `record {}` corresponds to the term `tt`. The
+constructor declaration allows us to write `tt′`.
+
+As with the product, the data type `⊤` and the record type `⊤′` behave
+similarly, but η-equality holds *by definition* for the record type. While
+proving `η-⊤′`, we do not have to pattern match on `w`---Agda *knows* it is
+equal to `tt′`:
+```
+η-⊤′ : ∀ (w : ⊤′) → tt′ ≡ w
+η-⊤′ w = refl
+```
+Agda knows that *any* value of type `⊤′` must be `tt′`, so any time we need a
+value of type `⊤′`, we can tell Agda to figure it out:
+```
+truth′ : ⊤′
+truth′ = _
+```
 
 We refer to `⊤` as the _unit_ type. And, indeed,
 type `⊤` has exactly one member, `tt`.  For example, the following
@@ -790,3 +816,6 @@ This chapter uses the following unicode:
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
     ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>)
+
+
+[^from-wadler-2015]: This paragraph was adopted from "Propositions as Types", Philip Wadler, _Communications of the ACM_, December 2015.

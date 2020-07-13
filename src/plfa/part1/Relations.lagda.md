@@ -19,7 +19,7 @@ the next step is to define relations, such as _less than or equal_.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong)
 open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Nat.Properties using (+-comm)
+open import Data.Nat.Properties using (+-comm; +-identityʳ)
 ```
 
 
@@ -129,12 +129,24 @@ One may also identify implicit arguments by name:
 _ : 2 ≤ 4
 _ = s≤s {m = 1} {n = 3} (s≤s {m = 0} {n = 2} (z≤n {n = 2}))
 ```
-In the latter format, you may only supply some implicit arguments:
+In the latter format, you can choose to only supply some implicit arguments:
 ```
 _ : 2 ≤ 4
 _ = s≤s {n = 3} (s≤s {n = 2} z≤n)
 ```
 It is not permitted to swap implicit arguments, even when named.
+
+We can ask Agda to use the same inference to try and infer an _explicit_ term,
+by writing `_`. For instance, we can define a variant of the proposition
+`+-identityʳ` with implicit arguments:
+```
++-identityʳ′ : ∀ {m : ℕ} → m + zero ≡ m
++-identityʳ′ = +-identityʳ _
+```
+We use `_` to ask Agda to infer the value of the _explicit_ argument from
+context. There is only one value which gives us the correct proof, `m`, so Agda
+happily fills it in.
+If Agda fails to infer the value, it reports an error.
 
 
 ## Precedence

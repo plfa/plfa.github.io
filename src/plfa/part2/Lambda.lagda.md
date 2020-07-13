@@ -53,12 +53,15 @@ four.
 ## Imports
 
 ```
+open import Data.Bool using (T; not)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; _∷_; [])
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (∃-syntax; _×_)
 open import Data.String using (String; _≟_)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
+open import Relation.Nullary.Decidable using (⌊_⌋; False; toWitnessFalse)
+open import Relation.Nullary.Negation using (¬?)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
@@ -1087,6 +1090,26 @@ Constructor `S` takes an additional parameter, which ensures that
 when we look up a variable that it is not _shadowed_ by another
 variable with the same name to its left in the list.
 
+It can be rather tedious to use the `S` constructor, as you have to provide
+proofs that `x ≢ y` each time. For example:
+
+```
+_ : ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "y" ⦂ `ℕ , "z" ⦂ `ℕ ∋ "x" ⦂ `ℕ ⇒ `ℕ
+_ = S (λ()) (S (λ()) Z)
+```
+
+Instead, we'll use a "smart constructor", which uses [proof by reflection]({{ site.baseurl }}/Decidable/#proof-by-reflection) to check the inequality while type checking:
+
+```
+S′ : ∀ {Γ x y A B}
+   → {x≢y : False (x ≟ y)}
+   → Γ ∋ x ⦂ A
+     ------------------
+   → Γ , y ⦂ B ∋ x ⦂ A
+
+S′ {x≢y = x≢y} x = S (toWitnessFalse x≢y) x
+```
+
 ### Typing judgment
 
 The second judgment is written
@@ -1214,7 +1237,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ⊢twoᶜ : ∀ {Γ A} → Γ ⊢ twoᶜ ⦂ Ch A
 ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
   where
-  ∋s = S (λ()) Z
+  ∋s = S′ Z
   ∋z = Z
 ```
 
@@ -1227,11 +1250,11 @@ Here are the typings corresponding to computing two plus two:
 ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
          (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
   where
-  ∋+  = (S (λ()) (S (λ()) (S (λ()) Z)))
-  ∋m  = (S (λ()) Z)
+  ∋+  = S′ (S′ (S′ Z))
+  ∋m  = S′ Z
   ∋n  = Z
   ∋m′ = Z
-  ∋n′ = (S (λ()) Z)
+  ∋n′ = S′ Z
 
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
@@ -1250,9 +1273,9 @@ And here are typings for the remainder of the Church example:
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
-  ∋m = S (λ()) (S (λ()) (S (λ()) Z))
-  ∋n = S (λ()) (S (λ()) Z)
-  ∋s = S (λ()) Z
+  ∋m = S′ (S′ (S′ Z))
+  ∋n = S′ (S′ Z)
+  ∋s = S′ Z
   ∋z = Z
 
 ⊢sucᶜ : ∀ {Γ} → Γ ⊢ sucᶜ ⦂ `ℕ ⇒ `ℕ
