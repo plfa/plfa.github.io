@@ -815,8 +815,7 @@ postulate
 ```
 
 It is easy to show that every deterministic relation satisfies
-the diamond property, and that every relation that satisfies
-the diamond property is confluent.  Hence, all the reduction
+the diamond and confluence properties. Hence, all the reduction
 systems studied in this text are trivially confluent.
 
 
