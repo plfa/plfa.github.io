@@ -53,12 +53,13 @@ four.
 ## Imports
 
 ```
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
-open import Data.String using (String; _≟_)
-open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Data.List using (List; _∷_; [])
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Product using (∃-syntax; _×_)
+open import Data.String using (String; _≟_)
+open import Relation.Nullary using (Dec; yes; no; ¬_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
 ## Syntax of terms
@@ -582,7 +583,7 @@ replaces the formal parameter by the actual parameter.
 
 If a term is a value, then no reduction applies; conversely,
 if a reduction applies to a term then it is not a value.
-We will show in the next chapter that 
+We will show in the next chapter that
 this exhausts the possibilities: every well-typed term
 either reduces or is a value.
 
@@ -788,28 +789,33 @@ while if the top two lines stand for a single reduction
 step and the bottom two stand for zero or more reduction
 steps it is called the diamond property. In symbols:
 
-    confluence : ∀ {L M N} → ∃[ P ]
-      ( ((L —↠ M) × (L —↠ N))
-        --------------------
-      → ((M —↠ P) × (N —↠ P)) )
+```
+postulate
+  confluence : ∀ {L M N}
+    → ((L —↠ M) × (L —↠ N))
+      --------------------
+    → ∃[ P ] ((M —↠ P) × (N —↠ P))
 
-    diamond : ∀ {L M N} → ∃[ P ]
-      ( ((L —→ M) × (L —→ N))
-        --------------------
-      → ((M —↠ P) × (N —↠ P)) )
+  diamond : ∀ {L M N}
+    → ((L —→ M) × (L —→ N))
+      --------------------
+    → ∃[ P ] ((M —↠ P) × (N —↠ P))
+```
 
 The reduction system studied in this chapter is deterministic.
 In symbols:
 
-    deterministic : ∀ {L M N}
-      → L —→ M
-      → L —→ N
-        ------
-      → M ≡ N
+```
+postulate
+  deterministic : ∀ {L M N}
+    → L —→ M
+    → L —→ N
+      ------
+    → M ≡ N
+```
 
 It is easy to show that every deterministic relation satisfies
-the diamond property, and that every relation that satisfies
-the diamond property is confluent.  Hence, all the reduction
+the diamond and confluence properties. Hence, all the reduction
 systems studied in this text are trivially confluent.
 
 
@@ -1104,13 +1110,13 @@ infix  4  _⊢_⦂_
 
 data _⊢_⦂_ : Context → Term → Type → Set where
 
-  -- Axiom 
+  -- Axiom
   ⊢` : ∀ {Γ x A}
     → Γ ∋ x ⦂ A
       -----------
     → Γ ⊢ ` x ⦂ A
 
-  -- ⇒-I 
+  -- ⇒-I
   ⊢ƛ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       -------------------
