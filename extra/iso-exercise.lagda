@@ -1,4 +1,3 @@
-\begin{code}
 module iso-exercise where
 
 import Relation.Binary.PropositionalEquality as Eq
@@ -7,6 +6,8 @@ open Eq.≡-Reasoning
 open import plfa.Isomorphism using (_≃_)
 open import Data.List using (List; []; _∷_)
 open import Data.List.All using (All; []; _∷_)
+
+\begin{code}
 open import Data.List.Any using (Any; here; there)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Function using (_∘_)

@@ -74,8 +74,8 @@ other term will itself be closed and well typed.  Repeat.  We will
 either loop forever, in which case evaluation does not terminate, or
 we will eventually reach a value, which is guaranteed to be closed and
 of the same type as the original term.  We will turn this recipe into
-Agda code that can compute for us the reduction sequence of `plus ·
-two · two`, and its Church numeral variant.
+Agda code that can compute for us the reduction sequence of `plus · two · two`,
+and its Church numeral variant.
 
 (The development in this chapter was inspired by the corresponding
 development in _Software Foundations_, Volume _Programming Language
@@ -775,6 +775,14 @@ Where the construct introduces a bound variable we need to compare it
 with the substituted variable, applying the drop lemma if they are
 equal and the swap lemma if they are distinct.
 
+For Agda it makes a difference whether we write `x ≟ y` or 
+`y ≟ x`. In an interactive proof, Agda will show which residual `with`
+clauses in the definition of `_[_:=_]` need to be simplified, and the
+`with` clauses in `subst` need to match these exactly. The guideline is
+that Agda knows nothing about symmetry or commutativity, which require
+invoking appropriate lemmas, so it is important to think about order of
+arguments and to be consistent.
+
 #### Exercise `subst′` (stretch)
 
 Rewrite `subst` to work with the modified definition `_[_:=_]′`
@@ -807,7 +815,7 @@ preserve ((⊢ƛ ⊢N) · ⊢V)          (β-ƛ VV)         =  subst ⊢V ⊢N
 preserve ⊢zero                   ()
 preserve (⊢suc ⊢M)               (ξ-suc M—→M′)    =  ⊢suc (preserve ⊢M M—→M′)
 preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L—→L′)   =  ⊢case (preserve ⊢L L—→L′) ⊢M ⊢N
-preserve (⊢case ⊢zero ⊢M ⊢N)     β-zero           =  ⊢M
+preserve (⊢case ⊢zero ⊢M ⊢N)     (β-zero)         =  ⊢M
 preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-suc VV)       =  subst ⊢V ⊢N
 preserve (⊢μ ⊢M)                 (β-μ)            =  subst (⊢μ ⊢M) ⊢M
 ```
@@ -841,8 +849,8 @@ Let's unpack the cases for two of the reduction rules:
 * Rule `β-ƛ`.  We have
 
       Value V
-      ----------------------------
-      (ƛ x ⇒ N) · V ⊢ N [ x := V ]
+      -----------------------------
+      (ƛ x ⇒ N) · V —→ N [ x := V ]
 
   where the left-hand side is typed by
 
@@ -942,6 +950,7 @@ data Steps (L : Term) : Set where
 The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```
+{-# TERMINATING #-}
 eval : ∀ {L A}
   → Gas
   → ∅ ⊢ L ⦂ A
@@ -967,7 +976,7 @@ remaining.  There are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
     trivial reduction sequence `L —↠ L`, evidence that `L` is
-    well-typed, and the evidence that `L` is a value.
+    well typed, and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well typed, and we recursively invoke
@@ -1006,7 +1015,7 @@ _ : eval (gas 3) ⊢sucμ ≡
 _ = refl
 ```
 
-Similarly, we can use Agda to compute the reductions sequences given
+Similarly, we can use Agda to compute the reduction sequences given
 in the previous chapter.  We start with the Church numeral two
 applied to successor and zero.  Supplying 100 steps of gas is more than enough:
 ```
@@ -1374,9 +1383,9 @@ Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` abo
 When we introduced reduction, we claimed it was deterministic.
 For completeness, we present a formal proof here.
 
-A case term takes four arguments (three subterms and a bound
-variable), and our proof will need a variant
-of congruence to deal with functions of four arguments.  It
+Our proof will need a variant
+of congruence to deal with functions of four arguments
+(to deal with `case_[zero⇒_|suc_⇒_]`).  It
 is exactly analogous to `cong` and `cong₂` as defined previously:
 ```
 cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)

@@ -24,7 +24,7 @@ after we have developed a denotational semantics for the lambda
 calculus, at which point the proof is an easy corollary of properties
 of the denotational semantics.
 
-We present the call-by-name strategy as a relation between an an input
+We present the call-by-name strategy as a relation between an input
 term and an output value. Such a relation is often called a _big-step
 semantics_, written `M ⇓ V`, as it relates the input term `M` directly
 to the final result `V`, in contrast to the small-step reduction
@@ -172,7 +172,7 @@ the environment `γ` to an equivalent substitution `σ`.
 The case for `⇓-app` also requires that we strengthen the
 conclusion. In the case for `⇓-app` we have `γ ⊢ L ⇓ clos (λ N) δ` and
 the induction hypothesis gives us `L —↠ ƛ N′`, but we need to know
-that `N` and `N′` are equivalent. In particular, that `N ≡ subst τ N′`
+that `N` and `N′` are equivalent. In particular, that `N′ ≡ subst τ N`
 where `τ` is the substitution that is equivalent to `δ`. Therefore we
 expand the conclusion of the statement, stating that the results are
 equivalent.
@@ -279,22 +279,22 @@ to some term `N` that is equivalent to `V`. We describe the proof
 below.
 
 ```
-⇓→—↠×𝔹 : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{V : Clos}
+⇓→—↠×≈ : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{V : Clos}
        → γ ⊢ M ⇓ V  →  γ ≈ₑ σ
          ---------------------------------------
        → Σ[ N ∈ ∅ ⊢ ★ ] (subst σ M —↠ N) × V ≈ N
-⇓→—↠×𝔹 {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓V) γ≈ₑσ
+⇓→—↠×≈ {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓V) γ≈ₑσ
     with γ x | γ≈ₑσ {x} | γx≡Lδ
 ... | clos L δ | ⟨ τ , ⟨ δ≈ₑτ , σx≡τL ⟩ ⟩ | refl
-      with ⇓→—↠×𝔹{σ = τ} δ⊢L⇓V δ≈ₑτ
+      with ⇓→—↠×≈{σ = τ} δ⊢L⇓V δ≈ₑτ
 ...   | ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩ rewrite σx≡τL =
         ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩
-⇓→—↠×𝔹 {σ = σ} {V = clos (ƛ N) γ} ⇓-lam γ≈ₑσ =
+⇓→—↠×≈ {σ = σ} {V = clos (ƛ N) γ} (⇓-lam) γ≈ₑσ =
     ⟨ subst σ (ƛ N) , ⟨ subst σ (ƛ N) ∎ , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
-⇓→—↠×𝔹{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
-    with ⇓→—↠×𝔹{σ = σ} L⇓ƛNδ γ≈ₑσ
-... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
-      with ⇓→—↠×𝔹 {σ = ext-subst τ (subst σ M)} N⇓V
+⇓→—↠×≈{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
+    with ⇓→—↠×≈{σ = σ} L⇓ƛNδ γ≈ₑσ
+... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN 
+      with ⇓→—↠×≈ {σ = ext-subst τ (subst σ M)} N⇓V
              (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
            | β{∅}{subst (exts τ) N}{subst σ M}
 ...   | ⟨ N' , ⟨ —↠N' , V≈N' ⟩ ⟩ | ƛτN·σM—→
@@ -367,16 +367,18 @@ cbn→reduce :  ∀{M : ∅ ⊢ ★}{Δ}{δ : ClosEnv Δ}{N′ : Δ , ★ ⊢ �
     -----------------------------
   → Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N)
 cbn→reduce {M}{Δ}{δ}{N′} M⇓c
-    with ⇓→—↠×𝔹{σ = ids} M⇓c ≈ₑ-id
+    with ⇓→—↠×≈{σ = ids} M⇓c ≈ₑ-id
 ... | ⟨ N , ⟨ rs , ⟨ σ , ⟨ h , eq2 ⟩ ⟩ ⟩ ⟩ rewrite sub-id{M = M} | eq2 =
       ⟨ subst (exts σ) N′ , rs ⟩
 ```
 
 #### Exercise `big-alt-implies-multi` (practice)
 
-Formulate an alternative big-step semantics, of the form `M ↓ N`,
-for call-by-name that uses substitution instead of environments.
-Prove that `M ↓ N` implies `M —↠ N`.
+Formulate an alternative big-step semantics, of the form `M ↓ N`, for
+call-by-name that uses substitution instead of environments.  That is,
+the analogue of the application rule `⇓-app` should perform
+substitution, as in `N [ M ]`, instead of extending the environment
+with `M`. Prove that `M ↓ N` implies `M —↠ N`.
 
 ```
 -- Your code goes here

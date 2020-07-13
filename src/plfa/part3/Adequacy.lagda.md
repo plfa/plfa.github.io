@@ -22,7 +22,7 @@ Such a property would tell us that having a denotation implies either
 reduction to normal form or divergence. This is indeed true, but we
 can prove a much stronger property! In fact, having a denotation that
 is a function value (not `⊥`) implies reduction to a lambda
-abstraction (no divergence).
+abstraction.
 
 This stronger property, reformulated a bit, is known as _adequacy_.
 That is, if a term `M` is denotationally equal to a lambda abstraction,
@@ -30,36 +30,34 @@ then `M` reduces to a lambda abstraction.
 
     ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N' for some N'
 
-Recall that `ℰ M ≃ ℰ (ƛ N)` is equivalent to saying that
-`γ ⊢ M ↓ (v ↦ w)` for some `v` and `w`. We will show that
-`γ ⊢ M ↓ (v ↦ w)` implies reduction a lambda abstraction.
-
-It is well known that a term can reduce to a lambda abstraction using
-full β reduction if and only if it can reduce to a lambda abstraction
-using the call-by-name reduction strategy. So we shall prove that
-`γ ⊢ M ↓ (v ↦ w)` implies that `M` halts under call-by-name evaluation,
-which we define with a big-step semantics written `γ' ⊢ M ⇓ c`, where
-`c` is a closure (a term paired with an environment) and `γ'` is an
-environment that maps variables to closures
-
-So we will show that `γ ⊢ M ↓ (v ↦ w)` implies `γ' ⊢ M ⇓ c`,
-provided `γ` and `γ'` are appropriate related.  The proof will
-be an induction on the derivation of `γ ⊢ M ↓ v`, and to
-strengthen the induction hypothesis, we will relate semantic values to
-closures using a _logical relation_ `𝕍`.
+Recall that `ℰ M ≃ ℰ (ƛ N)` is equivalent to saying that `γ ⊢ M ↓ (v ↦
+w)` for some `v` and `w`. We will show that `γ ⊢ M ↓ (v ↦ w)` implies
+multi-step reduction a lambda abstraction.  The recursive structure of
+the derivations for `γ ⊢ M ↓ (v ↦ w)` are completely different from
+the structure of multi-step reductions, so a direct proof would be
+challenging. However, The structure of `γ ⊢ M ↓ (v ↦ w)` closer to
+that of [BigStep]({{ site.baseurl }}/BigStep/) call-by-name
+evaluation. Further, we already proved that big-step evaluation
+implies multi-step reduction to a lambda (`cbn→reduce`). So we shall
+prove that `γ ⊢ M ↓ (v ↦ w)` implies that `γ' ⊢ M ⇓ c`, where `c` is a
+closure (a term paired with an environment), `γ'` is an environment
+that maps variables to closures, and `γ` and `γ'` are appropriate
+related.  The proof will be an induction on the derivation of
+`γ ⊢ M ↓ v`, and to strengthen the induction hypothesis, we will relate
+semantic values to closures using a _logical relation_ `𝕍`.
 
 The rest of this chapter is organized as follows.
 
-* We loosen the requirement that `M` result in a function value and
+* To make the `𝕍` relation down-closed with respect to `⊑`,
+  we must loosen the requirement that `M` result in a function value and
   instead require that `M` result in a value that is greater than or
   equal to a function value. We establish several properties about
   being ``greater than a function''.
 
-* We define the call-by-name big-step semantics of the lambda calculus
-  and prove that it is deterministic.
-
 * We define the logical relation `𝕍` that relates values and closures,
   and extend it to a relation on terms `𝔼` and environments `𝔾`.
+  We prove several lemmas that culminate in the property that
+  if `𝕍 v c` and `v′ ⊑ v`, then `𝕍 v′ c`.
 
 * We prove the main lemma,
   that if `𝔾 γ γ'` and `γ ⊢ M ↓ v`, then `𝔼 v (clos M γ')`.
@@ -264,7 +262,6 @@ by `𝔼`.
 𝔾-ext {Γ} {γ} {γ'} g e {Z} = e
 𝔾-ext {Γ} {γ} {γ'} g e {S x} = g
 ```
-
 
 We need a few properties of the `𝕍` and `𝔼` relations.  The first is that
 a closure in the `𝕍` relation must be in weak-head normal form.  We
@@ -582,16 +579,14 @@ kth-x{γ' = γ'}{x = x} with γ' x
 
 ## Proof of denotational adequacy
 
-The adequacy property is a corollary of the main lemma.
-We have `∅ ⊢ ƛ N ↓ ⊥ ↦ ⊥`, so `ℰ M ≃ ℰ (ƛ N)`
-gives us `∅ ⊢ M ↓ ⊥ ↦ ⊥`. Then the main lemma gives us
-`∅ ⊢ M ⇓ clos (ƛ N′) γ` for some `N′` and `γ`.
+From the main lemma we can directly show that `ℰ M ≃ ℰ (ƛ N)` implies
+that `M` big-steps to a lambda, i.e., `∅ ⊢ M ⇓ clos (ƛ N′) γ`.
 
 ```
-adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
+↓→⇓ : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
          →  Σ[ Γ ∈ Context ] Σ[ N′ ∈ (Γ , ★ ⊢ ★) ] Σ[ γ ∈ ClosEnv Γ ]
             ∅' ⊢ M ⇓ clos (ƛ N′) γ
-adequacy{M}{N} eq
+↓→⇓{M}{N} eq
     with ↓→𝔼 𝔾-∅ ((proj₂ (eq `∅ (⊥ ↦ ⊥))) (↦-intro ⊥-intro))
                  ⟨ ⊥ , ⟨ ⊥ , ⊑-refl ⟩ ⟩
 ... | ⟨ clos {Γ} M′ γ , ⟨ M⇓c , Vc ⟩ ⟩
@@ -600,26 +595,46 @@ adequacy{M}{N} eq
     ⟨ Γ , ⟨ N′ , ⟨ γ , M⇓c ⟩  ⟩ ⟩
 ```
 
+The proof goes as follows. We derive `∅ ⊢ ƛ N ↓ ⊥ ↦ ⊥` and
+then `ℰ M ≃ ℰ (ƛ N)` gives us `∅ ⊢ M ↓ ⊥ ↦ ⊥`. We conclude
+by applying the main lemma to obtain `∅ ⊢ M ⇓ clos (ƛ N′) γ`
+for some `N′` and `γ`.
+
+Now to prove the adequacy property. We apply the above
+lemma to obtain `∅ ⊢ M ⇓ clos (ƛ N′) γ` and then
+apply `cbn→reduce` to conclude.
+
+```
+adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}
+   →  ℰ M ≃ ℰ (ƛ N)
+   → Σ[ N′ ∈ (∅ , ★ ⊢ ★) ]
+     (M —↠ ƛ N′)
+adequacy{M}{N} eq
+    with ↓→⇓ eq
+... | ⟨ Γ , ⟨ N′ , ⟨ γ , M⇓ ⟩ ⟩ ⟩ =
+    cbn→reduce M⇓
+```
 
 ## Call-by-name is equivalent to beta reduction
 
 As promised, we return to the question of whether call-by-name
-evaluation is equivalent to beta reduction. In the chapter CallByName
-we established the forward direction: that if call-by-name produces a
-result, then the program beta reduces to a lambda abstraction.  We now
-prove the backward direction of the if-and-only-if, leveraging our
-results about the denotational semantics.
+evaluation is equivalent to beta reduction. In chapter
+[BigStep]({{ site.baseurl }}/BigStep/) we established the forward
+direction: that if call-by-name produces a result, then the program
+beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backward
+direction of the if-and-only-if, leveraging our results about the
+denotational semantics.
 
 ```
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
            → M —↠ ƛ N
            → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
              ∅' ⊢ M ⇓ clos (ƛ N′) δ
-reduce→cbn M—↠ƛN = adequacy (soundness M—↠ƛN)
+reduce→cbn M—↠ƛN = ↓→⇓ (soundness M—↠ƛN)
 ```
 
 Suppose `M —↠ ƛ N`. Soundness of the denotational semantics gives us
-`ℰ M ≃ ℰ (ƛ N)`. Then by adequacy we conclude that
+`ℰ M ≃ ℰ (ƛ N)`. Then by `↓→⇓` we conclude that
 `∅' ⊢ M ⇓ clos (ƛ N′) δ` for some `N′` and `δ`.
 
 Putting the two directions of the if-and-only-if together, we

@@ -11,9 +11,9 @@ Highlights for Review
 * Constructive proofs of preservation and
   progress give rise to a prototype evaluator.
 
-* Using raw terms with a separate typing
-  relation is far less perspicuous than using
-  inherently-typed terms.
+* Using raw, extrinsically-typed terms
+  is less perspicuous than using
+  intrinsically-typed terms.
 
 * An online final examination with access to a
   proof assistant can lead to flawless student

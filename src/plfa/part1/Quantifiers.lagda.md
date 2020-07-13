@@ -19,8 +19,8 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Nullary using (¬_)
-open import Data.Product using (_×_; proj₁) renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum using (_⊎_)
+open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import plfa.part1.Isomorphism using (_≃_; extensionality)
 ```
 
@@ -465,7 +465,7 @@ And to establish the following properties:
 Using the above, establish that there is an isomorphism between `ℕ` and
 `∃[ b ](Can b)`.
 
-We recommend proving following lemmas which show that, for a given
+We recommend proving the following lemmas which show that, for a given
 binary number `b`, there is only one proof of `One b` and similarly
 for `Can b`.
 
@@ -473,15 +473,11 @@ for `Can b`.
     
     ≡Can : ∀{b : Bin} (cb : Can b) (cb' : Can b) → cb ≡ cb'
 
-The proof of `to∘from` is tricky. We recommend proving the following lemma
+Many of the alternatives for proving `to∘from` turn out to be tricky.
+However, the proof can be straightforward if you use the following lemma,
+which is a corollary of `≡Can`.
 
-    to∘from-aux : ∀ (b : Bin) (cb : Can b) → to (from b) ≡ b
-                → _≡_ {_} {∃[ b ](Can b)} ⟨ to (from b) , canon-to (from b) ⟩ ⟨ b , cb ⟩
-
-You cannot immediately use `≡Can` to equate `canon-to (from b)` and
-`cb` because they have different types: `Can (to (from b))` and `Can b`
-respectively.  You must first get their types to be equal, which
-can be done by changing the type of `cb` using `rewrite`.
+    proj₁≡→Can≡ : {cb cb′ : ∃[ b ](Can b)} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
 
 ```
 -- Your code goes here

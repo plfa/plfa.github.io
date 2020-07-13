@@ -292,8 +292,8 @@ hold, then `m ≤ p` holds.  Again, `m`, `n`, and `p` are implicit:
 ≤-trans (s≤s m≤n) (s≤s n≤p)  =  s≤s (≤-trans m≤n n≤p)
 ```
 Here the proof is by induction on the _evidence_ that `m ≤ n`.  In the
-base case, the first inequality holds by `z≤n` and must show `zero ≤
-p`, which follows immediately by `z≤n`.  In this case, the fact that
+base case, the first inequality holds by `z≤n` and must show `zero ≤ p`,
+which follows immediately by `z≤n`.  In this case, the fact that
 `n ≤ p` is irrelevant, and we write `_` as the pattern to indicate
 that the corresponding evidence is unused.
 
@@ -803,7 +803,8 @@ and back is the identity:
     to (from b) ≡ b
 
 (Hint: For each of these, you may first need to prove related
-properties of `One`.)
+properties of `One`. Also, you may need to prove that
+if `One b` then `1` is less or equal to the result of `from b`.)
 
 ```
 -- Your code goes here

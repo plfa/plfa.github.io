@@ -105,7 +105,7 @@ The proof is by cases on the de Bruijn index `x`.
   which we have by rule `var`.
 
 * If it is `S x′`,then we need to show that
-  `δ , v ⊢ rename S_ (σ x′) ↓ nth x′ γ`,
+  `δ , v ⊢ rename S_ (σ x′) ↓ γ x′`,
   which we obtain by the `rename-pres` lemma.
 
 With the extension lemma in hand, the proof that simultaneous
@@ -132,9 +132,9 @@ subst-pres σ s (sub d lt) = sub (subst-pres σ s d) lt
 The proof is by induction on the semantics of `M`.  The two interesting
 cases are for variables and lambda abstractions.
 
-* For a variable `x`, we have that `v ⊑ nth x γ` and we need to show that
+* For a variable `x`, we have that `v ⊑ γ x` and we need to show that
   `δ ⊢ σ x ↓ v`.  From the premise applied to `x`, we have that
-  `δ ⊢ σ x ↓ nth x γ`, so we conclude by the `sub` rule.
+  `δ ⊢ σ x ↓ γ x`, so we conclude by the `sub` rule.
 
 * For a lambda abstraction, we must extend the substitution
   for the induction hypothesis. We apply the `subst-ext` lemma
@@ -170,12 +170,12 @@ To use the lemma, we just need to show that `subst-zero M` maps
 variables to terms that produces the same values as those in `γ , v`.
 Let `y` be an arbitrary variable (de Bruijn index).
 
-* If it is `Z`, then `(subst-zero M) y = M` and `nth y (γ , v) = v`.
+* If it is `Z`, then `(subst-zero M) y = M` and `(γ , v) y = v`.
   By the premise we conclude that `γ ⊢ M ↓ v`.
 
 * If it is `S x`, then `(subst-zero M) (S x) = x` and
-  `nth (S x) (γ , v) = nth x γ`.  So we conclude that
-  `γ ⊢ x ↓ nth x γ` by rule `var`.
+  `(γ , v) (S x) = γ x`.  So we conclude that
+  `γ ⊢ x ↓ γ x` by rule `var`.
 
 
 ### Reduction preserves denotations
@@ -241,13 +241,13 @@ if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where `(δ ∘ ρ) `⊑ γ
 
 First, we need a variant of a lemma given earlier.
 ```
-nth-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
+ext-⊑′ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
   → (δ ∘ ρ) `⊑ γ
     ------------------------------
   → ((δ `, v) ∘ ext ρ) `⊑ (γ `, v)
-nth-ext ρ lt Z = ⊑-refl
-nth-ext ρ lt (S x) = lt x
+ext-⊑′ ρ lt Z = ⊑-refl
+ext-⊑′ ρ lt (S x) = lt x
 ```
 
 The proof is then as follows.
@@ -261,7 +261,7 @@ rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
 rename-reflect {M = ` x} all-n d with var-inv d
 ... | lt =  sub var (⊑-trans lt (all-n x))
 rename-reflect {M = ƛ N}{ρ = ρ} all-n (↦-intro d) =
-   ↦-intro (rename-reflect (nth-ext ρ all-n) d)
+   ↦-intro (rename-reflect (ext-⊑′ ρ all-n) d)
 rename-reflect {M = ƛ N} all-n ⊥-intro = ⊥-intro
 rename-reflect {M = ƛ N} all-n (⊔-intro d₁ d₂) =
    ⊔-intro (rename-reflect all-n d₁) (rename-reflect all-n d₂)
@@ -280,8 +280,8 @@ We cannot prove this lemma by induction on the derivation of
 `δ ⊢ rename ρ M ↓ v`, so instead we proceed by induction on `M`.
 
 * If it is a variable, we apply the inversion lemma to obtain
-  that `v ⊑ nth (ρ x) δ`. Instantiating the premise to `x` we have
-  `nth (ρ x) δ = nth x γ`, so we conclude by the `var` rule.
+  that `v ⊑ δ (ρ x)`. Instantiating the premise to `x` we have
+  `δ (ρ x) = γ x`, so we conclude by the `var` rule.
 
 * If it is a lambda abstraction `ƛ N`, we have
   rename `ρ (ƛ N) = ƛ (rename (ext ρ) N)`.
@@ -318,7 +318,7 @@ rename-inc-reflect d = rename-reflect `⊑-refl d
 
 We are almost ready to begin proving that simultaneous substitution
 reflects denotations. That is, if `γ ⊢ (subst σ M) ↓ v`, then
-`γ ⊢ σ k ↓ nth k δ` and `δ ⊢ M ↓ v` for any `k` and some `δ`.
+`γ ⊢ σ k ↓ δ k` and `δ ⊢ M ↓ v` for any `k` and some `δ`.
 We shall start with the case in which `M` is a variable `x`.
 So instead the premise is `γ ⊢ σ x ↓ v` and we need to show that
 `δ ⊢ x ↓ v` for some `δ`. The `δ` that we choose shall be the
@@ -361,11 +361,11 @@ same-const-env {x = x} rewrite var≟-refl x = refl
 and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
 
 ```
-diff-nth-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
+diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
   → x ≢ y
     -------------------
   → const-env x v y ≡ ⊥
-diff-nth-const-env {Γ} {x} {y} neq with x var≟ y
+diff-const-env {Γ} {x} {y} neq with x var≟ y
 ...  | yes eq  =  ⊥-elim (neq eq)
 ...  | no _    =  refl
 ```
@@ -400,7 +400,7 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
   const-env-ok : γ `⊢ σ ↓ const-env x v
   const-env-ok y with x var≟ y
   ... | yes x≡y rewrite sym x≡y | same-const-env {Γ}{x}{v} = xv
-  ... | no x≢y rewrite diff-nth-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
+  ... | no x≢y rewrite diff-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
 ```
 
 
@@ -527,8 +527,8 @@ subst-reflect (sub d lt) eq
     By the lemma `var-inv` we have `v′ ⊑ v₁`, so by the `up-env` lemma we
     have `(δ′ , v₁) ⊢ M′ ↓ v₂` and therefore `δ′ ⊢ ƛ M′ ↓ v₁ → v₂`.  We
     also need to show that `δ `⊢ σ ↓ δ′`.  Fix `k`. We have
-    `(δ , v₁) ⊢ rename S_ σ k ↓ nth k δ′`.  We then apply the lemma
-    `rename-inc-reflect` to obtain `δ ⊢ σ k ↓ nth k δ′`, so this case is
+    `(δ , v₁) ⊢ rename S_ σ k ↓ δ k′`.  We then apply the lemma
+    `rename-inc-reflect` to obtain `δ ⊢ σ k ↓ δ k′`, so this case is
     complete.
 
 * Case `⊥-intro`: We choose `⊥` for `δ`.

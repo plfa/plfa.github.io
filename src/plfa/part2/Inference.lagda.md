@@ -260,7 +260,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 Once we have a type derivation, it will be easy to construct
 from it the intrinsically-typed representation.  In order that we
 can compare with our previous development, we import
-module `plfa.part2.DeBruijn`:
+module `plfa.part2.More`:
 
 ```
 import plfa.part2.More as DB
@@ -462,7 +462,7 @@ corresponding type rule.
 The rules are similar to those in
 Chapter [Lambda]({{ site.baseurl }}/Lambda/),
 modified to support synthesised and inherited types.
-The two new rules are those for `⊢↑` and `⊢↓`.
+The two new rules are those for `⊢↓` and `⊢↑`.
 The former both passes the type decoration as the inherited type and returns
 it as the synthesised type.  The latter takes the synthesised type and the
 inherited type and confirms they are identical --- it should remind you of

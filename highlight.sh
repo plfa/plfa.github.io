@@ -23,8 +23,17 @@ function html_path {
     HTML_DIR="$2"
 
     # Extract the module name from the Agda file
-    # NOTE: this fails if there is more than a single space after 'module'
+    #
+    # NOTE: This fails when there is no module statement,
+    #       or when there is more than one space after 'module'.
+    #
     MOD_NAME=`grep -o -m 1 "module\\s*\\(\\S\\S*\\)\\s.*where$" "$SRC" | cut -d ' ' -f 2`
+
+    if [ -z "$MOD_NAME" ]
+    then
+        echo "Error: No module header detected in '$SRC'" 1>&2
+        exit 1
+    fi
 
     # Extract the extension from the Agda file
     SRC_EXT="$(basename $SRC)"
@@ -44,7 +53,7 @@ set -o pipefail \
 
 # Check if the highlighted file was successfully generated
 if [[ ! -f "$HTML" ]]; then
-    echo "File not generated: $FILE"
+    echo "Error: File not generated: '$FILE'" 1>&2
     exit 1
 fi
 
@@ -101,7 +110,7 @@ for INCLUDE_PATH in "$@"; do
             find "$INCLUDE_PATH" -name "*.lagda.md" -print0 | while read -d $'\0' AGDA_MODULE_SRC; do
                 AGDA_MODULE_OUT="$(out_path "$AGDA_MODULE_SRC")"
                 AGDA_MODULE_HTML="$(basename "$(html_path "$AGDA_MODULE_SRC" "$HTML_DIR")" .md).html"
-                echo "s|$AGDA_MODULE_HTML|{% endraw %}{{ site.baseurl }}{% link $AGDA_MODULE_OUT %}{% raw %}|;" >> "$LOCAL_LINKS_SED"
+                echo "s|$AGDA_MODULE_HTML|{% endraw %}{{ site.baseurl }}{% link $AGDA_MODULE_OUT %}{% raw %}|g;" >> "$LOCAL_LINKS_SED"
             done
         fi
 

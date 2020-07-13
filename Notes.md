@@ -281,3 +281,75 @@ The following comments were collected on the Agda mailing list.
 * ƛ \Gl-
 * ∙ \.
 
+## Adrian's comments from MeetUp
+
+Adrian King
+I think we've finally gone through the whole book now up through chapter Properties, and we've come up with just three places where we thought the book could have done a better job of preparing us for the exercises.
+
+Starting from the end of the book:
+
+* Chapter Quantifiers, exercise Bin-isomorphism:
+
+In the to∘from case, we want to show that:
+
+    ⟨ to (from x) , toCan {from x} ⟩ ≡ ⟨ x , canX ⟩
+
+I found myself wanting to use a general lemma like:
+
+```
+exEq :
+∀ {A : Set} {x y : A} {p : A → Set} {px : p x} {py : p y} →
+x ≡ y →
+px ≡ py →
+⟨ x , px ⟩ ≡ ⟨ y , py ⟩
+exEq refl refl = refl
+```
+
+which is in some sense true, but in Agda it doesn't typecheck, because Agda can't see that px's type and py's type are the same. My solution made explicit use of heterogeneous equality.
+
+I realize there are ways to solve this that don't explicitly use heterogeneous equality, but the surprise factor of the exercise might have been lower if heterogeneous equality had been mentioned by that point, perhaps in the Equality chapter.
+
+* Chapter Quantifiers, exercise ∀-×:
+
+I assume the intended solution looks something like:
+
+```
+∀-× : ∀ {B : Tri → Set} → ((x : Tri) → B x) ≃ (B aa × B bb × B cc)
+∀-× = record {
+to = λ f → ⟨ f aa , ⟨ f bb , f cc ⟩ ⟩ ;
+from = λ{ ⟨ baa , ⟨ bbb , bcc ⟩ ⟩ → λ{ aa → baa ; bb → bbb ; cc → bcc } } ;
+from∘to = λ f → extensionality λ{ aa → refl ; bb → refl ; cc → refl } ;
+to∘from = λ{ y → refl } }
+```
+
+but it doesn't typecheck; in the extensionality presented earlier (in chapter Isomorphism), type B is not dependent on type A, but it needs to be here. Agda's error message is sufficiently baffling here that you might want to warn people that they need a dependent version of extensionality, something like:
+
+```
+Extensionality : (a b : Level) → Set _
+Extensionality a b =
+{A : Set a} {B : A → Set b} {f g : (x : A) → B x} →
+(∀ x → f x ≡ g x) → f ≡ g
+
+postulate
+exten : ∀ {a b} → Extensionality a b
+```
+
+* Chapter Relations, exercise Bin-predicates:
+
+I made use here of the inspect idiom, in Aaron Stump's variant, which is syntactically more convenient:
+
+```
+keep : ∀ {ℓa} → {a : Set ℓa} → (x : a) → Σ a (λ y → y ≡ x)
+keep x = x , refl
+```
+
+Pattern matching on keep m, where m is some complicated term, lets you keep around an equality between the original term and the pattern matched, which is often convenient, as in:
+
+```
+roundTripTwice {x} onex with keep (from x)
+roundTripTwice {x} onex | zero , eq with oneIsMoreThanZero onex
+roundTripTwice {x} onex | zero , eq | 0<fromx rewrite sym eq =
+⊥-elim (not0<0 0<fromx)
+roundTripTwice {x} onex | suc n , eq rewrite sym eq | toTwiceSuc {n} |
+cong x0_ (sym (roundTrip (one onex))) | sym eq = refl
+```

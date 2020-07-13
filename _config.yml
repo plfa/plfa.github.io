@@ -20,7 +20,7 @@ authors:
     corresponding: true
     github_username: wenkokke
     twitter_username: wenkokke
-  - name: Jeremy Siek
+  - name: Jeremy G. Siek
     email: jsiek@indiana.edu
     corresponding: true
     github_username: jsiek
@@ -67,3 +67,4 @@ exclude:
   - "Gemfile"
   - "Gemfile.lock"
   - "highlight.sh"
+  - "out/epub/acknowledgements.md"

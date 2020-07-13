@@ -53,15 +53,16 @@ four.
 ## Imports
 
 ```
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Data.Bool using (T; not)
-open import Data.String using (String; _≟_)
-open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.List using (List; _∷_; [])
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Product using (∃-syntax; _×_)
+open import Data.String using (String; _≟_)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
 open import Relation.Nullary.Decidable using (⌊_⌋; False; toWitnessFalse)
 open import Relation.Nullary.Negation using (¬?)
-open import Data.List using (List; _∷_; [])
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
 ## Syntax of terms
@@ -791,28 +792,33 @@ while if the top two lines stand for a single reduction
 step and the bottom two stand for zero or more reduction
 steps it is called the diamond property. In symbols:
 
-    confluence : ∀ {L M N} → ∃[ P ]
-      ( ((L —↠ M) × (L —↠ N))
-        --------------------
-      → ((M —↠ P) × (N —↠ P)) )
+```
+postulate
+  confluence : ∀ {L M N}
+    → ((L —↠ M) × (L —↠ N))
+      --------------------
+    → ∃[ P ] ((M —↠ P) × (N —↠ P))
 
-    diamond : ∀ {L M N} → ∃[ P ]
-      ( ((L —→ M) × (L —→ N))
-        --------------------
-      → ((M —↠ P) × (N —↠ P)) )
+  diamond : ∀ {L M N}
+    → ((L —→ M) × (L —→ N))
+      --------------------
+    → ∃[ P ] ((M —↠ P) × (N —↠ P))
+```
 
 The reduction system studied in this chapter is deterministic.
 In symbols:
 
-    deterministic : ∀ {L M N}
-      → L —→ M
-      → L —→ N
-        ------
-      → M ≡ N
+```
+postulate
+  deterministic : ∀ {L M N}
+    → L —→ M
+    → L —→ N
+      ------
+    → M ≡ N
+```
 
 It is easy to show that every deterministic relation satisfies
-the diamond property, and that every relation that satisfies
-the diamond property is confluent.  Hence, all the reduction
+the diamond and confluence properties. Hence, all the reduction
 systems studied in this text are trivially confluent.
 
 
@@ -1259,8 +1265,8 @@ to use them inside other binding contexts as well as at the top level.
 Here the two lookup judgments `∋m` and `∋m′` refer to two different
 bindings of variables named `"m"`.  In contrast, the two judgments `∋n` and
 `∋n′` both refer to the same binding of `"n"` but accessed in different
-contexts, the first where "n" is the last binding in the context, and
-the second after "m" is bound in the successor branch of the case.
+contexts, the first where `"n"` is the last binding in the context, and
+the second after `"m"` is bound in the successor branch of the case.
 
 And here are typings for the remainder of the Church example:
 ```

@@ -416,7 +416,10 @@ denotational equality to justify code transformations.
 
 PLFA and SF differ in several particulars.  PLFA begins with a computationally
 complete language, PCF, while SF begins with a minimal language, simply-typed
-lambda calculus with booleans.  PLFA does not include type annotations in terms,
+lambda calculus with booleans.  We chose PCF because it lets us use
+the same examples, based on addition and multiplication, for the early
+chapters of both Part I and Part II.
+PLFA does not include type annotations in terms,
 and uses bidirectional type inference, while SF has terms with unique types and
 uses type checking.  SF also covers a simple imperative language with Hoare
 logic, and for lambda calculus covers subtyping, record types, mutable
@@ -433,8 +436,9 @@ added a fourth volume on random testing of Coq specifications using QuickChick.
 There is currently no tool equivalent to QuickChick for Agda.
 
 There is more material that would be desirable to include in PLFA which was not
-due to limits of time, including mutable references, logical relations, System~F, and
-pure type systems. We'd especially like to include pure type systems as they
+due to limits of time, including mutable references, System~F, logical
+relations for parametricity, and pure type systems.
+We would especially like to include pure type systems as they
 provide the readers with a formal model close to the dependent types used in the
 book.  Our attempts so far to formalise pure type systems have proved
 challenging, to say the least.
@@ -495,12 +499,17 @@ cases deal with the situation where there are potentially two
 different reductions; each case is trivially shown to be
 impossible.  Five of the ten cases are redundant, as they just involve
 switching the order of the arguments.  We had to copy the cases
-suitably permuted. It would be preferable to reinvoke the proof on
+nsuitably permuted. It would be preferable to reinvoke the proof on
 switched arguments, but this would not pass Agda's termination checker
 since swapping the arguments doesn't yield a recursive call on
-structurally smaller arguments.  We suspect tactics could cut down the
-proof significantly. We tried to compare with SF's proof that reduction
-is deterministic, but failed to find that proof.
+structurally smaller arguments.  The proof of determinism in SF
+(Chapter Norm) is for a different language of comparable size,
+and has a comparable size.
+
+% We suspect tactics could cut down the
+% proof significantly. 
+% We tried to compare with SF's proof that reduction
+% is deterministic, but failed to find that proof.
 
 SF covers an imperative language with Hoare logic, culminating in code that
 takes an imperative programme suitably decorated with preconditions and
@@ -552,9 +561,8 @@ the icon is expanded. As teachers, we were aware that students might skip the
 formal proof on a first reading, and we have to hope the students 
 return to it and step through it with an interactive tool in order to make it
 intelligible.  We expect the students skipped over many such proofs.  This
-particular proof forms the basis for a question of the mock exam and the past
-exams, so we expect most students will look at this one if not all the
-others.
+particular proof forms the basis for a question on several exams,
+so we expect most students will look at this one if not all the others.
 
 \newcommand{\ex}{\texttt{x}}
 \newcommand{\why}{\texttt{y}}
@@ -640,7 +648,8 @@ supporting all the necessary characters.  Securing one has proved
 tricky. As of this writing, we use FreeMono, but it lacks a few
 characters ($\typecolon$ and $\qedsymbol$) which are loaded from fonts with a different
 width.  Long arrows are necessarily more than a single character wide.
-Instead, we compose reduction —→ from an em dash — and an arrow →.
+Instead of the unicode long arrow,
+we compose reduction —→ from an em dash — and an ordinary arrow →.
 Similarly for reflexive and transitive closure —↠.
 
 \section{Progress + Preservation = Evaluation}
@@ -768,7 +777,7 @@ connection becomes more widely known.
 % TODO: consider rewriting this?
 The second part of PLFA first discusses two different approaches to
 modeling simply-typed lambda calculus.  It first presents
-terms with named variables and and extrinsic typing relation and
+terms with named variables and extrinsic typing relation and
 then shifts to terms with de Bruijn indices that are intrinsically
 typed.  The names \emph{extrinsic} and \emph{intrinsic} for these
 two approaches are taken from \citet{Reynolds-2003}.
@@ -805,8 +814,8 @@ the corresponding judgment in the intrinsic approach does not.  The difference
 becomes more pronounced when including the code for substitution, reductions,
 and proofs of progress and preservation.  In particular, where the extrinsic approach
 requires one first define substitution and reduction and then prove they
-preserve types, the intrinsic approach establishes substitution at the same time
-it defines substitution and reduction.
+preserve types, the intrinsic approach establishes substitution
+preserves types at the same time it defines substitution and reduction.
 
 Stripping out examples and any proofs that appear in one but not the other (but
 could have appeared in both), the full development in PLFA for the extrinsic approach
@@ -835,8 +844,9 @@ advantages of de Bruijn indices and intrinsic types.
 
 There are actually four possible designs, as the choice of named
 variables vs de Bruijn indices, and the choice of extrinsic vs
-intrinsic typing may be made independently.  There are synergies
-between the two.  Manipulation of de Bruijn indices can be notoriously
+intrinsic typing may be made independently.  But the two designs
+we chose work well, while the other two are problematic.
+Manipulation of de Bruijn indices can be notoriously
 error-prone without intrinsic types to give assurance of correctness.
 For instrinsic typing with named variables, simultaneous substitution by
 open terms remains difficult.
