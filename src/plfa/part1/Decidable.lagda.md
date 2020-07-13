@@ -548,7 +548,7 @@ postulate
 #### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
-Chapter [Isomorphism]({{ site.baseurl}}/Isomorphism/#iff),
+Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
 postulate
@@ -564,7 +564,7 @@ postulate
 ## Proof by reflection {#proof-by-reflection}
 
 Let's revisit our definition of monus from
-Chapter [Naturals]({{ site.baseurl}}/Naturals/).
+Chapter [Naturals]({{ site.baseurl }}/Naturals/).
 If we subtract a larger number from a smaller number, we take the result to be
 zero. We had to do something, after all. What could we have done differently? We
 could have defined a *guarded* version of minus, a function which subtracts `n`
