@@ -704,10 +704,10 @@ Further information on levels can be found in the [Agda docs][docs].
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard
-library. The Agda standard library defines `_≡⟨_⟩_` as `step-≡`, which is the
-same definition, but with the argument order flipped. However, it includes a
-syntax macro, which is automatically imported whenever you import `step-≡`,
-which recovers the original argument order:
+library. The Agda standard library defines `_≡⟨_⟩_` as `step-≡`, [which reverses
+the order of the arguments][step-≡]. The standard library also defines a syntax
+macro, which is automatically imported whenever you import `step-≡`, which
+recovers the original argument order:
 ```
 -- import Relation.Binary.PropositionalEquality as Eq
 -- open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
@@ -716,6 +716,7 @@ which recovers the original argument order:
 Here the imports are shown as comments rather than code to avoid
 collisions, as mentioned in the introduction.
 
+[step-≡]: https://github.com/agda/agda-stdlib/blob/master/CHANGELOG/v1.3.md#changes-to-how-equational-reasoning-is-implemented
 
 ## Unicode
 
