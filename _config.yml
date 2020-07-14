@@ -60,7 +60,7 @@ exclude:
   - "papers/"
   - "slides/"
   - "vendor/"
-  - "versions/"
+  - ".versions/"
   - "*.agdai"
   - "*.agda-lib"
   - "*.lagda.md"
