@@ -52,8 +52,8 @@ build-incremental: $(MARKDOWN_FILES)
 # Download PLFA web releases
 build-history: latest/ $(RELEASES)
 
-latest/: $(addprefix plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION)))
-	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../latest' --baseurl '/latest'
+latest/: $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION))) | .versions/
+	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../../latest' --baseurl '/latest'
 
 # Download PLFA web release and build it under the relevant folder
 define build_release
@@ -63,7 +63,7 @@ tmp_zip := $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
 tmp_dir := $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 baseurl := $(addprefix /,$(1))
 
-$$(tmp_zip): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
 $$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
 $$(tmp_zip):
 	wget -c $$(url) -O $$(tmp_zip)
@@ -71,21 +71,24 @@ $$(tmp_zip):
 $$(tmp_dir): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(tmp_dir): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
 $$(tmp_dir): $$(tmp_zip) | .versions/
-	unzip -qq $$(tmp_zip)
+	unzip -qq $$(tmp_zip) -d .versions/
 
 $$(out): out = $(addsuffix /,$(1))
 $$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
 $$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(out): baseurl = $(addprefix /,$(1))
 $$(out): $$(tmp_dir)
-	cd $$(tmp_dir) && $(JEKYLL) clean && $(JEKYLL) build --destination '../../$$(out)' --baseurl '$$(baseurl)'
+	cd $$(tmp_dir) \
+		&& rm -rf _posts \
+		&& $(JEKYLL) clean \
+		&& $(JEKYLL) build --destination '../../$$(out)' --baseurl '$$(baseurl)'
 endef
 
 # Incorporate previous releases of PLFA web version
 $(foreach release_version,$(RELEASE_VERSIONS),$(eval $(call build_release,$(release_version))))
 
 .versions/:
-	mkdir -p .versions
+	mkdir -p .versions/
 
 
 # Convert literal Agda to Markdown using highlight.sh

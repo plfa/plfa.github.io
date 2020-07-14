@@ -1,6 +1,6 @@
 ---
-    title          : Table of Contents
-layout         : page
+title  : Table of Contents
+layout : page
 ---
 
 This book is an introduction to programming language theory using the
@@ -61,7 +61,8 @@ Pull requests are encouraged.
 
 ## Related
 
-Mailing lists for PLFA:
+### Mailing lists
+
   * [plfa-interest@inf.ed.ac.uk](http://lists.inf.ed.ac.uk/mailman/listinfo/plfa-interest): <br />
     A mailing list for users of the book. <br />
     This is the place to ask and answer questions, or comment on the content of the book.
@@ -69,28 +70,25 @@ Mailing lists for PLFA:
     A mailing list for contributors. <br />
     This is the place to discuss changes and new additions to the book in excruciating detail.
 
-Courses taught from the textbook (please tell us of others):
-  - 2020:
+### Courses taught from the textbook
+
+#### 2020
   * [William Cook, University of Texas][UT-2020]
   * [Jeremy Siek, Indiana University][IU-2020]
-  - 2019:
+
+#### 2019
   * [Dan Ghica, University of Birmingham][BHAM-2019]
   * [Adrian King, San Francisco Types, Theorems, and Programming Languages Meetup][SFPL-Meetup-2020]
   * [Prabhakar Ragde, University of Waterloo][UW-2019]
   * [Philip Wadler, University of Edinburgh]({{ site.baseurl }}/TSPL/2019/)
   * [Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro]({{ site.baseurl }}/PUC/2019/)
-  - 2018:
+
+#### 2018
   * [Philip Wadler, University of Edinburgh]({{ site.baseurl }}/TSPL/2018/)
   * [David Darais, University of Vermont][UVM-2018]
   * John Leo, Google Seattle
 
-Shortlisted for Outstanding Course by Edinburgh University Student Association (second place) [2020][EUSA-2020]:
-  * "Types and Semantics for Programming Languages was the single best course I took throughout my time at the University of Edinburgh. Philip Wadler clearly poured his heart into teaching it, including writing a whole textbook including exercises specifically for the course."
-  * "One of the most inspiring courses. Philip designed a course that is both very theoretical and very practical."
-
-A paper describing the book appeared in [SBMF][SBMF] and [SCP][SCP].
-
-[NextJournal][NextJournal] has built a notebook version of PLFA, which lets you edit and execute the book via a web interface.
+Please tell us of others!
 
 [GitHub]: https://github.com/plfa/plfa.github.io/
 [UVM-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/

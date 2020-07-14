@@ -21,11 +21,9 @@ Gemfile.lock
 *.spl
 *.synctex.gz
 
-## Lua files
-lua_modules/
-
 ## Emacs files
 auto/
 
 ## Misc build files
 out/
+.versions/
