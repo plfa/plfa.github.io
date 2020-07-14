@@ -80,16 +80,19 @@ Pull requests are encouraged.
   * [Dan Ghica, University of Birmingham][BHAM-2019]
   * [Adrian King, San Francisco Types, Theorems, and Programming Languages Meetup][SFPL-Meetup-2020]
   * [Prabhakar Ragde, University of Waterloo][UW-2019]
-  * [Philip Wadler, University of Edinburgh]({{ site.baseurl }}/TSPL/2019/)
-  * [Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro]({{ site.baseurl }}/PUC/2019/)
+  * [Philip Wadler, University of Edinburgh][TSPL-2019]
+  * [Philip Wadler, Pontifícia Universidade Católica do Rio de Janeiro][PUC-2019]
 
 #### 2018
-  * [Philip Wadler, University of Edinburgh]({{ site.baseurl }}/TSPL/2018/)
+  * [Philip Wadler, University of Edinburgh][TSPL-2018]
   * [David Darais, University of Vermont][UVM-2018]
   * John Leo, Google Seattle
 
 Please tell us of others!
 
+[TSPL-2018]: https://plfa.github.io/19.08/TSPL/2018/
+[PUC-2019]: https://plfa.github.io/20.07/PUC/2019/
+[TSPL-2019]: https://plfa.github.io/20.07/TSPL/2019/
 [GitHub]: https://github.com/plfa/plfa.github.io/
 [UVM-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/
 [IU-2020]: https://jsiek.github.io/B522-PL-Foundations/
