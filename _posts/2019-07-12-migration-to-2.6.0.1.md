@@ -1,6 +1,6 @@
 ---
 layout : post
-title  : "Migration to Agda 2.6"
+title  : "Migration to Agda 2.6.0.1"
 ---
 
 Today, we made several major changes to the PLFA infrastructure!
