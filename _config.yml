@@ -60,6 +60,7 @@ exclude:
   - "papers/"
   - "slides/"
   - "vendor/"
+  - "plfa.github.io-web-*/"
   - "*.agdai"
   - "*.agda-lib"
   - "*.lagda.md"
