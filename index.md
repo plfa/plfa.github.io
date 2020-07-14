@@ -58,7 +58,6 @@ Pull requests are encouraged.
 
   - [Acknowledgements]({{ site.baseurl }}/Acknowledgements/)
   - [Fonts]({{ site.baseurl }}/Fonts/): Test page for fonts
-  - [Statistics]({{ site.baseurl }}/Statistics/): Line counts for each chapter
 
 ## Related
 

@@ -3,14 +3,13 @@ title     : "Fonts"
 layout    : page
 prev      : /Acknowledgements/
 permalink : /Fonts/
-next      : /Statistics/
 ---
 
 ```
 module plfa.Fonts where
 ```
 
-Test page for fonts. Preferably, all vertical bars should line up.
+Preferably, all vertical bars should line up.
 
 ```
 {-
