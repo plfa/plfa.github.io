@@ -71,7 +71,7 @@ $$(tmp_dir): $$(tmp_zip)
 
 $$(out): out = $(addsuffix /,$(1))
 $$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-$$(out): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(out): tmp_dir = $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(out): baseurl = $(addprefix /,$(1))
 $$(out): $$(tmp_dir)
 	cd $$(tmp_dir) && $(JEKYLL) clean && $(JEKYLL) build --destination '../$$(out)' --baseurl '$$(baseurl)'
