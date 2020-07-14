@@ -55,7 +55,7 @@ build-history: latest/ $(RELEASES)
 latest/: $(addprefix plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION)))
 	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../latest' --baseurl '/latest'
 
-# Download
+# Download PLFA web release and build it under the relevant folder
 define build_release
 out := $(addsuffix /,$(1))
 url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
