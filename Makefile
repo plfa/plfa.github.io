@@ -59,8 +59,8 @@ latest/: $(addprefix plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION)))
 define build_release
 out := $(addsuffix /,$(1))
 url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-tmp_zip := $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
-tmp_dir := $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
+tmp_zip := $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+tmp_dir := $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 baseurl := $(addprefix /,$(1))
 
 $$(tmp_zip): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
@@ -68,21 +68,25 @@ $$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/we
 $$(tmp_zip):
 	wget -c $$(url) -O $$(tmp_zip)
 
-$$(tmp_dir): tmp_dir = $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
-$$(tmp_dir): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
-$$(tmp_dir): $$(tmp_zip)
+$$(tmp_dir): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+$$(tmp_dir): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_dir): $$(tmp_zip) | .versions/
 	unzip -qq $$(tmp_zip)
 
 $$(out): out = $(addsuffix /,$(1))
 $$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-$$(out): tmp_dir = $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
+$$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(out): baseurl = $(addprefix /,$(1))
 $$(out): $$(tmp_dir)
-	cd $$(tmp_dir) && $(JEKYLL) clean && $(JEKYLL) build --destination '../$$(out)' --baseurl '$$(baseurl)'
+	cd $$(tmp_dir) && $(JEKYLL) clean && $(JEKYLL) build --destination '../../$$(out)' --baseurl '$$(baseurl)'
 endef
 
 # Incorporate previous releases of PLFA web version
 $(foreach release_version,$(RELEASE_VERSIONS),$(eval $(call build_release,$(release_version))))
+
+.versions/:
+	mkdir -p .versions
+
 
 # Convert literal Agda to Markdown using highlight.sh
 define AGDA_template
