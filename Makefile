@@ -13,7 +13,7 @@ HTMLPROOFER := $(BUNDLE) exec htmlproofer
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
 RELEASE_VERSIONS := 2019-08-31 2020-07-14
 RELEASES := $(addsuffix /,$(RELEASE_VERSIONS))
-STABLE_VERSION := $(word $(words $(RELEASE_VERSIONS)),$(RELEASE_VERSIONS))
+LATEST_VERSION := $(word $(words $(RELEASE_VERSIONS)),$(RELEASE_VERSIONS))
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -50,10 +50,10 @@ build-incremental: $(MARKDOWN_FILES)
 	$(JEKYLL) build --incremental
 
 # Download PLFA web releases
-build-history: stable/ $(RELEASES)
+build-history: latest/ $(RELEASES)
 
-stable/: $(addprefix plfa.github.io-web-,$(addsuffix /,$(STABLE_VERSION)))
-	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../stable' --baseurl '/stable'
+latest/: $(addprefix plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION)))
+	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../latest' --baseurl '/latest'
 
 # Download
 define build_release
