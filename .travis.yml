@@ -51,7 +51,7 @@ script:
 
 before_deploy:
 - make clean
-- rm -rf hs/ epub/ extra/ papers/ .bundle/ vendor/ *.agda-lib **/*.lagda.md **/*.sh Guardfile Gemfile Gemfile.lock Makefile .gitignore .travis.yml
+- rm -rf hs/ epub/ extra/ papers/ .bundle/ vendor/ .versions/ *.agda-lib **/*.lagda.md **/*.sh Guardfile Gemfile Gemfile.lock Makefile .gitignore .travis.yml
 
 branches:
   only:
