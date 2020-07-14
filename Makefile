@@ -11,6 +11,8 @@ BUNDLE := $(RUBY) -S bundle
 JEKYLL := $(BUNDLE) exec jekyll
 HTMLPROOFER := $(BUNDLE) exec htmlproofer
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
+RELEASE_VERSIONS := 2020-07-14
+RELEASES := $(addsuffix /,$(RELEASE_VERSIONS))
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -19,47 +21,112 @@ AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/v$(AGDA_STDLIB_VERSION)/
 endif
 
 
-# Build PLFA and test hyperlinks
+# Build PLFA web version and test links
+default: test
+
+
+# Start Jekyll server with --incremental
+serve:
+	$(JEKYLL) serve --incremental
+
+# Start detached Jekyll server
+server-start:
+	$(JEKYLL) serve --no-watch --detach
+
+# Stop detached Jekyll server
+server-stop:
+	pkill -f jekyll
+
+.phony: serve server-start server-stop
+
+
+# Build PLFA web version using Jekyll
+build: $(MARKDOWN_FILES)
+	$(JEKYLL) build
+
+# Build PLFA web version using Jekyll with --incremental
+build-incremental: $(MARKDOWN_FILES)
+	$(JEKYLL) build --incremental
+
+# Download PLFA web releases
+build-history: $(RELEASES)
+
+# Download
+define build_release
+out := $(addsuffix /,$(1))
+url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+tmp_zip := $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+tmp_dir := $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
+baseurl := $(addprefix /,$(1))
+
+$$(tmp_zip): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip):
+	wget -c $$(url) -O $$(tmp_zip)
+
+$$(tmp_dir): tmp_dir = $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
+$$(tmp_dir): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_dir): $$(tmp_zip)
+	unzip -qq $$(tmp_zip)
+
+$$(out): out = $(addsuffix /,$(1))
+$$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+$$(out): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(out): baseurl = $(addprefix /,$(1))
+$$(out): $$(tmp_dir)
+	cd $$(tmp_dir) && $(JEKYLL) clean && $(JEKYLL) build --destination '../$$(out)' --baseurl '$$(baseurl)'
+endef
+
+# Incorporate previous releases of PLFA web version
+$(foreach release_version,$(RELEASE_VERSIONS),$(eval $(call build_release,$(release_version))))
+
+# Convert literal Agda to Markdown using highlight.sh
+define AGDA_template
+in := $(1)
+out := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
+$$(out) : in  = $(1)
+$$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
+$$(out) : $$(in) | out/
+	@echo "Processing $$(subst ./,,$$(in))"
+ifeq (,$$(findstring courses/,$$(in)))
+	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/
+else
+# Fix links to the file itself (out/<filename> to out/<filepath>)
+	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/ --include-path=$$(subst ./,,$$(dir $$(in)))
+endif
+endef
+
+$(foreach agda,$(AGDA_FILES),$(eval $(call AGDA_template,$(agda))))
+
+.phony: build build-incremental
+
+
+# Test links using htmlproofer
 test: build
 	$(HTMLPROOFER) '_site'
 
-
-# Build PLFA and test hyperlinks offline
+# Test local links using htmlproofer
 test-offline: build
 	$(HTMLPROOFER) '_site' --disable-external
 
-
-# Build PLFA and test hyperlinks for stable
+# Test local links for stability under different base URLs
 test-stable-offline: $(MARKDOWN_FILES)
 	$(JEKYLL) clean
 	$(JEKYLL) build --destination '_site/stable' --baseurl '/stable'
 	$(HTMLPROOFER) '_site' --disable-external
 
-
 out/:
 	mkdir -p out/
 
-# EPUB generation notes
-#
-# - The "Apple Books" app on Mac does not show syntax highlighting.
-#   The Thorium app on Mac, however, does.
-#
-# - Regarding --epub-chapter-level, from the docs (https://pandoc.org/MANUAL.html):
-#
-#       "Specify the heading level at which to split the EPUB into separate “chapter”
-#       files. The default is to split into chapters at level-1 headings. This option
-#       only affects the internal composition of the EPUB, not the way chapters and
-#       sections are displayed to users. Some readers may be slow if the chapter
-#       files are too large, so for large documents with few level-1 headings, one
-#       might want to use a chapter level of 2 or 3."
+.phony: test test-offline test-stable-offline
 
+
+# Build EPUB using Pandoc
 epub: out/epub/plfa.epub
 
+# Test EPUB using EPUBCheck
 epubcheck: out/epub/plfa.epub
 	$(EPUBCHECK) out/epub/plfa.epub
-
-out/epub/:
-	mkdir -p out/epub/
 
 out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
 	$(PANDOC) --strip-comments \
@@ -81,88 +148,31 @@ out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epu
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
 	 $(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
 
+out/epub/:
+	mkdir -p out/epub/
+
 .phony: epub epubcheck
 
 
-# Convert literal Agda to Markdown
-define AGDA_template
-in := $(1)
-out := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
-$$(out) : in  = $(1)
-$$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
-$$(out) : $$(in) | out/
-	@echo "Processing $$(subst ./,,$$(in))"
-ifeq (,$$(findstring courses/,$$(in)))
-	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/
-else
-# Fix links to the file itself (out/<filename> to out/<filepath>)
-	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/ --include-path=$$(subst ./,,$$(dir $$(in)))
-endif
-endef
-
-$(foreach agda,$(AGDA_FILES),$(eval $(call AGDA_template,$(agda))))
-
-
-# Start server
-serve:
-	$(JEKYLL) serve --incremental
-
-
-# Start background server
-server-start:
-	$(JEKYLL) serve --no-watch --detach
-
-
-# Stop background server
-server-stop:
-	pkill -f jekyll
-
-
-# Build website using jekyll
-build: $(MARKDOWN_FILES)
-	$(JEKYLL) build
-
-
-# Build website using jekyll incrementally
-build-incremental: $(MARKDOWN_FILES)
-	$(JEKYLL) build --incremental
-
-
-# Remove all auxiliary files
+# Clean auxiliary files
 clean:
 	rm -f .agda-stdlib.sed .links-*.sed out/epub/acknowledgements.md
+	rm -f plfa.github.io-web-*.zip
+	rm -rf plfa.github.io-web-*/
 ifneq ($(strip $(AGDAI_FILES)),)
 	rm $(AGDAI_FILES)
 endif
 
-
-# Remove all generated files
+# Clean generated files
 clobber: clean
 	$(JEKYLL) clean
 	rm -rf out/
 
-.phony: clobber
+.phony: clean clobber
 
 
-# List all .lagda files
-ls:
-	@echo $(AGDA_FILES)
 
-.phony: ls
-
-
-# MacOS Setup (install Bundler)
-macos-setup:
-	brew install libxml2
-	$(GEM) install bundler --no-ri --no-rdoc
-	$(GEM) install pkg-config --no-ri --no-rdoc -v "~> 1.1"
-	$(BUNDLE) config build.nokogiri --use-system-libraries
-	$(BUNDLE) install
-
-.phony: macos-setup
-
-
-# Travis Setup (install Agda, the Agda standard library, acknowledgements, etc.)
+# Setup Travis
 travis-setup:\
 	$(HOME)/.local/bin/agda\
 	$(HOME)/.local/bin/acknowledgements\
@@ -173,7 +183,7 @@ travis-setup:\
 .phony: travis-setup
 
 
-# Agda
+# Setup Agda
 
 travis-install-agda:\
 	$(HOME)/.local/bin/agda\
@@ -205,7 +215,7 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 .phony: travis-install-agda travis-uninstall-agda travis-reinstall-agda
 
 
-# Agda Standard Library
+# Setup Agda Standard Library
 
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
@@ -225,7 +235,7 @@ travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-s
 .phony: travis-install-agda-stdlib travis-uninstall-agda-stdlib travis-reinstall-agda-stdlib epub
 
 
-# Acknowledgements
+# Setup Acknowledgements
 
 travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
 
