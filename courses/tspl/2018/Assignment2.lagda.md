@@ -30,7 +30,7 @@ Please ensure your files execute correctly under Agda!
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
@@ -269,7 +269,7 @@ How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
-#### Exercise `∃-+-≤`
+#### Exercise `∃-|-≤`
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.

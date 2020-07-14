@@ -30,7 +30,7 @@ Please ensure your files execute correctly under Agda!
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
 open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm;
   ≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
@@ -125,7 +125,7 @@ Give an example of an operator that has an identity and is
 associative but is not commutative.
 
 
-#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
+#### Exercise `finite-|-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the first four
 days using a finite story of creation, as
@@ -179,7 +179,7 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-#### Exercise `∸-+-assoc` {#monus-plus-assoc}
+#### Exercise `∸-|-assoc` {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
