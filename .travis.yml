@@ -44,6 +44,7 @@ script:
 - acknowledgements -i _config.yml >> _config.yml
 - make build # build website
 - make build-history # build previous releases
+- make clean # clean auxiliary files
 - make test-offline # test website
 - make epub # build EPUB
 - make epubcheck # test EPUB
