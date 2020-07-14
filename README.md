@@ -10,6 +10,8 @@ permalink: /GettingStarted/
 [plfa-dev]: https://github.com/plfa/plfa.github.io/archive/dev.zip
 [plfa-status]: https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev
 [plfa-travis]: https://travis-ci.org/plfa/plfa.github.io
+[plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
+[plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
 
 [agda]: https://github.com/agda/agda/releases/tag/v2.6.0.1
@@ -37,7 +39,7 @@ permalink: /GettingStarted/
 
 
 <!-- Status & Version Badges -->
-
+[![Calendar Version][plfa-calver]][plfa-latest]
 [![Build Status][plfa-status]][plfa-travis]
 [![Agda][agda-version]][agda]
 [![agda-stdlib][agda-stdlib-version]][agda-stdlib]

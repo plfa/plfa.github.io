@@ -11,7 +11,7 @@ BUNDLE := $(RUBY) -S bundle
 JEKYLL := $(BUNDLE) exec jekyll
 HTMLPROOFER := $(BUNDLE) exec htmlproofer
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
-RELEASE_VERSIONS := 2019-08-31 2020-07-14
+RELEASE_VERSIONS := 19.08 20.07
 RELEASES := $(addsuffix /,$(RELEASE_VERSIONS))
 LATEST_VERSION := $(word $(words $(RELEASE_VERSIONS)),$(RELEASE_VERSIONS))
 
