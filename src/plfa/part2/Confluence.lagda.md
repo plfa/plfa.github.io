@@ -447,9 +447,10 @@ par-triangle pvar          = pvar
 par-triangle (pabs p)      = pabs (par-triangle p)
 par-triangle (pbeta p1 p2) =
   sub-par (par-triangle p1) (par-triangle p2)
-par-triangle {M = (ƛ _) · _} (papp (pabs p1) p2) = pbeta (par-triangle p1) (par-triangle p2)
-par-triangle {M = ` _ · _}   (papp p1 p2) = papp (par-triangle p1) (par-triangle p2)
-par-triangle {M = _ · _ · _} (papp p1 p2) = papp (par-triangle p1) (par-triangle p2)
+par-triangle (papp {L = ƛ _ } (pabs p1) p2) =
+  pbeta (par-triangle p1) (par-triangle p2)
+par-triangle (papp {L = ` _}   p1 p2) = papp (par-triangle p1) (par-triangle p2)
+par-triangle (papp {L = _ · _} p1 p2) = papp (par-triangle p1) (par-triangle p2)
 ```
 
 The proof goes as follows.
