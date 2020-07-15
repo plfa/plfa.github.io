@@ -59,7 +59,6 @@ build-incremental: $(MARKDOWN_FILES)
 build-history: latest/ $(RELEASES)
 
 latest/: $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION)))
-	$(SEDI) "s/branch: dev/branch: dev-$(LATEST_VERSION)/" $(addsuffix _config.yml,$<)
 	cd $< \
 		&& $(JEKYLL) clean \
 		&& $(JEKYLL) build --destination '../../latest' --baseurl '/latest'
@@ -79,18 +78,18 @@ $$(tmp_zip):
 	@mkdir -p .versions/
 	wget -c $$(url) -O $$(tmp_zip)
 
+$$(tmp_dir): version = $(1)
 $$(tmp_dir): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(tmp_dir): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
 $$(tmp_dir): $$(tmp_zip)
 	yes | unzip -qq $$(tmp_zip) -d .versions/
+	$(SEDI) "s/branch: dev/branch: dev-$$(version)/" $$(addsuffix _config.yml,$$(tmp_dir))
 
-$$(out): version = $(1)
 $$(out): out = $(addsuffix /,$(1))
 $$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
 $$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(out): baseurl = $(addprefix /,$(1))
 $$(out): $$(tmp_dir)
-	$(SEDI) "s/branch: dev/branch: dev-$$(version)/" $$(addsuffix _config.yml,$$(tmp_dir))
 	cd $$(tmp_dir) \
 		&& rm -rf _posts \
 		&& $(JEKYLL) clean \
