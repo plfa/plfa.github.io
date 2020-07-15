@@ -610,9 +610,7 @@ and `par-confluence` are based on the notion of complete development
 by Takahashi (1995) and Pfenning's 1992 technical report about the
 Church-Rosser theorem. In addition, we consulted Nipkow and
 Berghofer's mechanization in Isabelle, which is based on an earlier
-article by Nipkow (JAR 1996).  There are many more mechanizations of
-the Church-Rosser theorem that we have not yet had the time to read,
-including Shankar's (J. ACM 1988) and Homeier's (TPHOLs 2001).
+article by Nipkow (JAR 1996).  
 
 ## Unicode
 
