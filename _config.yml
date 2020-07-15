@@ -55,16 +55,15 @@ markdown: kramdown
 theme: minima
 excerpt_separator: <!--more-->
 exclude:
-  - "hs/"
-  - "extra/"
-  - "depr/"
-  - "papers/"
-  - "slides/"
-  - "vendor/"
-  - ".versions/"
+  - "*.lagda.md"
   - "*.agdai"
   - "*.agda-lib"
-  - "*.lagda.md"
+  - "extra/"
+  - "papers/"
+  - "vendor/"
+  - "epub/"
+  - ".versions/"
+  - "_build/"
   - "Guardfile"
   - "Gemfile"
   - "Gemfile.lock"
