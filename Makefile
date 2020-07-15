@@ -27,9 +27,6 @@ else
 SEDI := sed -i
 endif
 
-bla:
-	@echo $(AGDA_FILES)
-
 
 # Build PLFA web version and test links
 default: test
@@ -109,7 +106,7 @@ in := $(1)
 out := $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
 $$(out) : in  = $(1)
 $$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
-$$(out) : $$(in) | out/
+$$(out) : $$(in)
 	@echo "Processing $$(subst ./,,$$(in))"
 	@mkdir -p out/
 ifeq (,$$(findstring courses/,$$(in)))
@@ -149,7 +146,7 @@ epub: out/epub/plfa.epub
 epubcheck: out/epub/plfa.epub
 	$(EPUBCHECK) out/epub/plfa.epub
 
-out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
+out/epub/plfa.epub: $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
 	@mkdir -p out/epub/
 	$(PANDOC) --strip-comments \
 		--css=epub/main.css \
