@@ -488,7 +488,7 @@ par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
 par-diamond {M = M} p1 p2 = ⟨ M ⁺ , ⟨ par-triangle p1 , par-triangle p2 ⟩ ⟩
 ```
 
-This step is optional, though, in the presence of triangle proeprty.
+This step is optional, though, in the presence of triangle property.
 
 #### Exercise (practice)
 
