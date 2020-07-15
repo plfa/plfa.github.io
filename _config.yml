@@ -54,7 +54,6 @@ url: "https://plfa.github.io"
 markdown: kramdown
 theme: minima
 excerpt_separator: <!--more-->
-show_excerpts: true
 exclude:
   - "hs/"
   - "extra/"
