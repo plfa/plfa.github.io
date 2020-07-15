@@ -1,3 +1,0 @@
-name: tspl2018
-depend: standard-library plfa
-include: .

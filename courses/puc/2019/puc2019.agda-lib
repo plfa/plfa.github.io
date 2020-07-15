@@ -1,3 +1,0 @@
-name: puc2019
-depend: standard-library plfa
-include: .
