@@ -21,6 +21,12 @@ else
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/v$(AGDA_STDLIB_VERSION)/
 endif
 
+ifeq ($(shell sed --version >/dev/null 2>&1; echo $$?),1)
+SEDI := sed -i ""
+else
+SEDI := sed -i
+endif
+
 
 # Build PLFA web version and test links
 default: test
@@ -52,11 +58,15 @@ build-incremental: $(MARKDOWN_FILES)
 # Download PLFA web releases
 build-history: latest/ $(RELEASES)
 
-latest/: $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION))) | .versions/
-	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../../latest' --baseurl '/latest'
+latest/: $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(LATEST_VERSION)))
+	$(SEDI) "s/branch: dev/branch: dev-$(LATEST_VERSION)/" $(addsuffix _config.yml,$<)
+	cd $< \
+		&& $(JEKYLL) clean \
+		&& $(JEKYLL) build --destination '../../latest' --baseurl '/latest'
 
 # Download PLFA web release and build it under the relevant folder
 define build_release
+version := $(1)
 out := $(addsuffix /,$(1))
 url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
 tmp_zip := $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
@@ -66,18 +76,21 @@ baseurl := $(addprefix /,$(1))
 $$(tmp_zip): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
 $$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
 $$(tmp_zip):
+	@mkdir -p .versions/
 	wget -c $$(url) -O $$(tmp_zip)
 
 $$(tmp_dir): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(tmp_dir): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
-$$(tmp_dir): $$(tmp_zip) | .versions/
-	unzip -qq $$(tmp_zip) -d .versions/
+$$(tmp_dir): $$(tmp_zip)
+	yes | unzip -qq $$(tmp_zip) -d .versions/
 
+$$(out): version = $(1)
 $$(out): out = $(addsuffix /,$(1))
 $$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
 $$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(out): baseurl = $(addprefix /,$(1))
 $$(out): $$(tmp_dir)
+	$(SEDI) "s/branch: dev/branch: dev-$$(version)/" $$(addsuffix _config.yml,$$(tmp_dir))
 	cd $$(tmp_dir) \
 		&& rm -rf _posts \
 		&& $(JEKYLL) clean \
@@ -87,10 +100,6 @@ endef
 # Incorporate previous releases of PLFA web version
 $(foreach release_version,$(RELEASE_VERSIONS),$(eval $(call build_release,$(release_version))))
 
-.versions/:
-	mkdir -p .versions/
-
-
 # Convert literal Agda to Markdown using highlight.sh
 define AGDA_template
 in := $(1)
@@ -99,6 +108,7 @@ $$(out) : in  = $(1)
 $$(out) : out = $(subst courses/,out/,$(subst src/,out/,$(subst .lagda.md,.md,$(1))))
 $$(out) : $$(in) | out/
 	@echo "Processing $$(subst ./,,$$(in))"
+	@mkdir -p out/
 ifeq (,$$(findstring courses/,$$(in)))
 	./highlight.sh $$(subst ./,,$$(in)) --include-path=src/
 else
@@ -126,9 +136,6 @@ test-stable-offline: $(MARKDOWN_FILES)
 	$(JEKYLL) build --destination '_site/stable' --baseurl '/stable'
 	$(HTMLPROOFER) '_site' --disable-external
 
-out/:
-	mkdir -p out/
-
 .phony: test test-offline test-stable-offline
 
 
@@ -140,6 +147,7 @@ epubcheck: out/epub/plfa.epub
 	$(EPUBCHECK) out/epub/plfa.epub
 
 out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
+	@mkdir -p out/epub/
 	$(PANDOC) --strip-comments \
 		--css=epub/main.css \
 		--epub-embed-font='assets/fonts/mononoki.woff' \
@@ -157,10 +165,8 @@ out/epub/plfa.epub: out/epub/ | $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epu
 		epub/index.md
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
+	@mkdir -p out/epub/
 	 $(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
-
-out/epub/:
-	mkdir -p out/epub/
 
 .phony: epub epubcheck
 
@@ -168,8 +174,7 @@ out/epub/:
 # Clean auxiliary files
 clean:
 	rm -f .agda-stdlib.sed .links-*.sed out/epub/acknowledgements.md
-	rm -f plfa.github.io-web-*.zip
-	rm -rf plfa.github.io-web-*/
+	rm -rf .versions
 ifneq ($(strip $(AGDAI_FILES)),)
 	rm $(AGDAI_FILES)
 endif
@@ -178,6 +183,7 @@ endif
 clobber: clean
 	$(JEKYLL) clean
 	rm -rf out/
+	rm -rf latest/ $(RELEASES)
 
 .phony: clean clobber
 
