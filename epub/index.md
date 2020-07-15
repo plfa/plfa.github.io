@@ -67,7 +67,6 @@ src/plfa/part2/Substitution.lagda.md
 ``` {.include shift-heading-level-by=1}
 out/epub/acknowledgements.md
 src/plfa/Fonts.lagda.md
-src/plfa/statistics.md
 ```
 
 <!-- TODO: include the rest of the stuff on https://plfa.github.io/ -->

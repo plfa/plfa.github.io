@@ -170,8 +170,7 @@ the fourth that `to ∘ from` is the identity, hence the names.
 The declaration `open _≃_` makes available the names `to`, `from`,
 `from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
-The above is our first use of records. A record declaration is equivalent
-to a corresponding inductive data declaration:
+The above is our first use of records. A record declaration behaves similar to a single-constructor data declaration (there are minor differences, which we discuss in [Connectives]({{ site.baseurl }}/Connectives/)):
 ```
 data _≃′_ (A B : Set): Set where
   mk-≃′ : ∀ (to : A → B) →

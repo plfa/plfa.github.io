@@ -8,6 +8,7 @@ cache:
   bundler: true
   timeout: 1500
   directories:
+  - .versions
   - $HOME/.stack
   - $HOME/.agda
   - $HOME/.local
@@ -42,12 +43,15 @@ script:
 - acknowledgements --version
 - pandoc --version
 - acknowledgements -i _config.yml >> _config.yml
-- make test-offline # build and test website
-- make epubcheck # build and test EPUB
+- make build # build website
+- make build-history # build previous releases
+- make test-offline # test website
+- make epub # build EPUB
+- make epubcheck # test EPUB
 
 before_deploy:
 - make clean
-- rm -rf hs/ extra/ depr/ papers/ slides/ .bundle/ vendor/ *.agdai *.agda-lib *.lagda.md Guardfile Gemfile Gemfile.lock Makefile highlight.sh .gitignore .travis.yml
+- rm -rf hs/ epub/ extra/ papers/ .bundle/ vendor/ .versions/ *.agda-lib **/*.lagda.md **/*.sh Guardfile Gemfile Gemfile.lock Makefile .gitignore .travis.yml
 
 branches:
   only:
