@@ -8,3 +8,5 @@ We published a paper about PLFA, which describes our experiences writing the boo
 [SBMF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
 [SCP]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#scp
 [SF]: https://softwarefoundations.cis.upenn.edu/
+
+<!--more-->

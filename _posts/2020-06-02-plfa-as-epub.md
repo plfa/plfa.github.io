@@ -12,3 +12,5 @@ Thanks to hard work by [Michael Reed][mreed20], and a little elbow grease on our
 [EPUB]: https://plfa.github.io/out/epub/plfa.epub
 [issue112]: https://github.com/plfa/plfa.github.io/issues/112
 [mreed20]: https://github.com/mreed20
+
+<!--more-->

@@ -5,6 +5,8 @@ title  : "Introducing Part 3: Denotational Semantics"
 
 We’re pleased to announce an entirely new part of the book, contributed by Jeremy G. Siek! You may have noticed his name appearing on the list of authors some months ago, or the chapters that make up Part 3 slowly making their appearance. Well, that’s all Jeremy’s work!
 
+<!--more-->
+
 Part 3 introduces denotational semantics, presenting the denotational semantics of the untyped lambda calculus. Our development is unusual in that emphasizes the use of intersection type systems as denotational models instead of the more traditional domain theory, but this choice allows us to build upon the simple type systems studied in Part 2.
 Part 3 also proves the basic properties of the denotational semantics using techniques and variations of the techniques introduced in Part 2. We prove the *soundness* of reduction with respect to the denotational semantics by showing that reduction preserves and reflects denotations. We prove *adequacy* of the denotational semantics using a logical-relations style proof with respect to a big-step semantics of the untyped calculus. Finally, with these results in hand, we prove a standardisation theorem, that reduction to weak-head normal form implies the termination of call-by-name evaluation.
 

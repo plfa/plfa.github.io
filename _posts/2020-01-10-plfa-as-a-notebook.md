@@ -9,3 +9,5 @@ The notebook is based on [PLFA version 19.08][PLFA-19.08], with some minor chang
 
 [PLFA-19.08]: https://plfa.github.io/19.08/
 [NextJournal-PLFA]: https://nextjournal.com/plfa/ToC
+
+<!--more-->

@@ -11,3 +11,5 @@ title  : "Praise for PLFA!"
 
 [TSPL-2019]: https://plfa.github.io/20.07/TSPL/2019/
 [EUSA-2020]: https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/
+
+<!--more-->
