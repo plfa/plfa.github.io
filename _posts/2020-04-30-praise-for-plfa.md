@@ -1,6 +1,6 @@
 ---
 layout : post
-title  : "Praise for PLFA!"
+title  : "Praise for PLFA"
 short  : true
 ---
 
