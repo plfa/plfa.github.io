@@ -12,7 +12,7 @@ module plfa.part2.Subtyping where
 
 This chapter introduces *subtyping*, a concept that plays an important
 role in object-oriented languages. Subtyping enables code to be more
-reusable by allowing code work on objects of many different
+reusable by allowing it to work on objects of many different
 types. Thus, subtyping provides a kind of polymorphism. In general, a
 type `A` can be a subtype of another type `B`, written `A <: B`, when
 an object of type `A` has all the capabilities expected of something
@@ -40,7 +40,7 @@ cartesian plane with the following record.
     { x = 4, y = 1 }
 
 A *record type* gives a type for each field. In the following, we
-specify that the fields `x` and `y` both have type ``ℕ`.
+specify that the fields `x` and `y` both have type `ℕ`.
 
     { x : `ℕ,  y : `ℕ }
 
@@ -51,7 +51,7 @@ three dimensions is a subtype of a point in two dimensions.
 
     { x : `ℕ,  y : `ℕ, z : `ℕ } <: { x : `ℕ,  y : `ℕ }
 
-The elimination for for records is field access (aka. projection),
+The elimination form for records is field access (aka. projection),
 written `M # l`, and whose dynamic semantics is defined by the
 following reduction rule, which says that accessing the field `lⱼ`
 returns the value stored at that field.
@@ -68,8 +68,8 @@ directed.  A standard alternative to the subsumption rule is to
 instead use subtyping in the typing rules for the elimination forms,
 an approach called algorithmic typing. Here we choose to include the
 subsumption rule and use extrinsic typing, but we give an exercise at
-the end for the reader to explore algorithmic typing with intrinsic
-terms.
+the end of the chapter so the reader cahn explore algorithmic typing
+with intrinsic terms.
 
 
 ## Imports
@@ -79,7 +79,8 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elimi)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_; _+_)
-open import Data.Nat.Properties using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl)
+open import Data.Nat.Properties
+    using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n; n≤m+n)
 open import Data.Product using (_×_; proj₁; proj₂; Σ-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.String using (String; _≟_)
 open import Data.Unit using (⊤; tt)
@@ -139,8 +140,8 @@ vectors (Agda's `Vec` type), one vector of fields and one vector of terms:
     l₁, ..., lᵢ
     M₁, ..., Mᵢ
     
-This representation has the advantage that the subscript notation `lᵢ`
-corresponds to indexing into a vector.
+This representation has the advantage that the traditional subscript
+notation `lᵢ` corresponds to indexing into a vector.
 
 Likewise, a record type, traditionally written as
 
@@ -254,7 +255,7 @@ data Type : Set where
   ｛_⦂_｝ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type 
 ```
 
-In addition to function types `A ⇒ B` and natural numbers ``ℕ`, we
+In addition to function types `A ⇒ B` and natural numbers `ℕ`, we
 have the record type `｛ ls ⦂ As ｝`, where `ls` is a vector of field
 names and `As` is a vector of types, as discussed above.  We require
 that the field names be distinct, but we do not want the details of
@@ -285,15 +286,14 @@ data _<:_ : Type → Type → Set where
     → ｛ ks ⦂ Ss ｝ {d1} <: ｛ ls ⦂ Ts ｝ {d2}
 ```
 
-The rule `<:-nat` simply states that ``ℕ` is a subtype of itself.
+The rule `<:-nat` simply states that `ℕ` is a subtype of itself.
 
 The rule `<:-fun` is the traditional rule for function types, which is
 best understood with the following diagram. It answers the question,
 when can a function of type `A ⇒ B` be used in place of a function of
-type `C ⇒ D`. It shall be called with an argument of type `C`, so
-we'll need to convert from `C` to `A`. We can then call the function
-to get the result of type `B`. Finally, we need to convert from `B` to
-`D`.
+type `C ⇒ D`. It is called with an argument of type `C`, so we need to
+convert from `C` to `A`. We then call the function to get the result
+of type `B`. Finally, we need to convert from `B` to `D`.
 
     C <: A
     ⇓    ⇓
@@ -330,7 +330,6 @@ vec-ty-size : ∀ {n : ℕ} → (As : Vec Type n) → ℕ
 ty-size (A ⇒ B) = suc (ty-size A + ty-size B)
 ty-size `ℕ = 1
 ty-size ｛ ls ⦂ As ｝ = suc (vec-ty-size As)
-
 vec-ty-size {n} [] = 0
 vec-ty-size {n} (x ∷ xs) = ty-size x + vec-ty-size xs
 ```
@@ -343,15 +342,12 @@ ty-size-pos {`ℕ} = s≤s z≤n
 ty-size-pos {｛ fs ⦂ As ｝ } = s≤s z≤n
 ```
 
-If a vector of types has a size smaller than `n`, then so is any type
-in the vector.
+The size of a type in a vector is less-or-equal in size to the entire vector.
 ```
-lookup-vec-ty-size : ∀{n}{k} {As : Vec Type k} {j}
-   → vec-ty-size As ≤ n
-   → ty-size (lookup As j) ≤ n
-lookup-vec-ty-size {n} {suc k} {A ∷ As} {zero} As≤n = m+n≤o⇒m≤o (ty-size A) As≤n
-lookup-vec-ty-size {n} {suc k} {A ∷ As} {suc j} As≤n =
-    lookup-vec-ty-size {n} {k} {As} (m+n≤o⇒n≤o (ty-size A) As≤n)
+lookup-vec-ty-size : ∀{k} {As : Vec Type k} {j}
+   → ty-size (lookup As j) ≤ vec-ty-size As
+lookup-vec-ty-size {suc k} {A ∷ As} {zero} = m≤m+n _ _
+lookup-vec-ty-size {suc k} {A ∷ As} {suc j} = ≤-trans (lookup-vec-ty-size {k} {As}) (n≤m+n _ _)
 ```
 
 Here is the proof of reflexivity, by induction on the size of the type.
@@ -371,7 +367,7 @@ Here is the proof of reflexivity, by induction on the size of the type.
     where
     G : ls ⦂ As <: ls ⦂ As
     G {i}{j} lij rewrite distinct-lookup-inj (distinct-relevant d) lij =
-        let As[i]≤n = lookup-vec-ty-size {As = As}{i} (≤-pred m) in 
+        let As[i]≤n = ≤-trans (lookup-vec-ty-size {As = As}{i}) (≤-pred m) in 
         <:-refl-aux {n}{lookup As i}{As[i]≤n}
 ```
 The theorem statement uses `n` as an upper bound on the size of the type `A`
@@ -381,7 +377,7 @@ and proceeds by induction on `n`.
 
 * If it is `suc n`, we proceed by cases on the type `A`.
 
-  * If it is ``ℕ`, then we have ``ℕ <: `ℕ` by rule `<:-nat`.
+  * If it is `ℕ`, then we have `ℕ <: ℕ` by rule `<:-nat`.
   * If it is `A ⇒ B`, then by induction we have `A <: A` and `B <: B`.
     We conclude that `A ⇒ B <: A ⇒ B` by rule `<:-fun`.
   * If it is `｛ ls ⦂ As ｝`, then it suffices to prove that
@@ -402,32 +398,55 @@ The following corollary packages up reflexivity for ease of use.
 
 ## Subtyping is transitive
 
-The proof of transitivity is straightforward, given that we've
-already proved the two lemmas needed in the case for `<:-rcd`:
-`⊆-trans` and `lookup-⊆`.
-
 ```
 <:-trans : ∀{A B C}
     → A <: B   →   B <: C
       -------------------
     → A <: C
-<:-trans {A₁ ⇒ A₂} {B₁ ⇒ B₂} {C₁ ⇒ C₂} (<:-fun A<:B A<:B₁) (<:-fun B<:C B<:C₁) =
-    <:-fun (<:-trans B<:C A<:B) (<:-trans A<:B₁ B<:C₁)
+<:-trans {A₁ ⇒ A₂} {B₁ ⇒ B₂} {C₁ ⇒ C₂} (<:-fun A₁<:B₁ A₂<:B₂) (<:-fun B₁<:C₁ B₂<:C₂) =
+    <:-fun (<:-trans B₁<:C₁ A₁<:B₁) (<:-trans A₂<:B₂ B₂<:C₂)
 <:-trans {.`ℕ} {`ℕ} {.`ℕ} <:-nat <:-nat = <:-nat
 <:-trans {｛ ls ⦂ As ｝{d1} } {｛ ms ⦂ Bs ｝ {d2} } {｛ ns ⦂ Cs ｝ {d3} }
     (<:-rcd ms⊆ls As<:Bs) (<:-rcd ns⊆ms Bs<:Cs) =
     <:-rcd (⊆-trans ns⊆ms ms⊆ls) As<:Cs
     where
     As<:Cs : ls ⦂ As <: ns ⦂ Cs
-    As<:Cs {i}{j} lij
+    As<:Cs {i}{j} ls[j]=ns[i]
         with lookup-⊆ {i = i} ns⊆ms 
-    ... | ⟨ k , lik ⟩
-        with lookup-⊆ {i = k} ms⊆ls
-    ... | ⟨ j' , lkj' ⟩ rewrite sym lkj' | lij | sym lik  =
-        let ab = As<:Bs {k}{j} (trans lij lik) in
-        let bc = Bs<:Cs {i}{k} (sym lik) in
-        <:-trans ab bc
+    ... | ⟨ k , ns[i]=ms[k] ⟩ =
+        let As[j]<:Bs[k] = As<:Bs {k}{j} (trans ls[j]=ns[i] ns[i]=ms[k]) in
+        let Bs[k]<:Cs[i] = Bs<:Cs {i}{k} (sym ns[i]=ms[k]) in
+        <:-trans As[j]<:Bs[k] Bs[k]<:Cs[i]
 ```
+
+The proof is by induction on the derivations of `A <: B` and `B <: C`.
+
+* If both derivations end with `<:-nat`: then we immediately conclude that `ℕ <: ℕ`.
+
+* If both derivations end with `<:-fun`:
+  we have `A₁ ⇒ A₂ <: B₁ ⇒ B₂` and  `B₁ ⇒ B₂ <: C₁ ⇒ C₂`.
+  So `A₁ <: B₁` and `B₁ <: C₁`, thus `A₁ <: C₁` by the induction hypothesis.
+  We also have `A₂ <: B₂` and `B₂ <: C₂`, so by the induction hypothesis
+  we have `A₂ <: C₂`. We conclude that `A₁ ⇒ A₂ <: C₁ ⇒ C₂` by rule `<:-fun`.
+
+* If both derivations end with `<:-rcd`, so we have
+  `｛ ls ⦂ As ｝ <: ｛ ms ⦂ Bs ｝` and `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
+  From `ls ⊆ ms` and `ms ⊆ ns` we have `ls ⊆ ns` because `⊆` is transitive.
+  Next we need to prove that `ls ⦂ As <: ns ⦂ Cs`.
+  Suppose `lookup ls j ≡ lookup ns i` for an arbitrary `i` and `j`.
+  We need to prove that `lookup As j <: lookup Cs i`.
+  By the induction hypothesis, it suffices to show
+  that `lookup As j <: lookup Bs k` and `lookup Bs k <: lookup Cs i` for some `k`.
+  We can obtain the former from `｛ ls ⦂ As ｝ <: ｛ ms ⦂ Bs ｝`
+  if we can prove that `lookup ls j ≡ lookup ms k`.
+  We already have `lookup ls j ≡ lookup ns i` and we
+  obtain `lookup ns i ≡ lookup ms k` by use of the lemma `lookup-⊆`,
+  noting that `ns ⊆ ms`. 
+  We can obtain the later, that `lookup Bs k <: lookup Cs i`,
+  from `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
+  It suffices to show that `lookup ms k ≡ lookup ns i`,
+  which we have by symmetry.
+
 
 ## Contexts
 
