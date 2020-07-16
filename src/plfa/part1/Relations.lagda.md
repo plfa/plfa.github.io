@@ -673,7 +673,7 @@ data even where
 
 data odd where
 
-  suc   : ∀ {n : ℕ}
+  suc  : ∀ {n : ℕ}
     → even n
       -----------
     → odd (suc n)
