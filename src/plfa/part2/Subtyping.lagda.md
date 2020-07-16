@@ -450,6 +450,9 @@ The proof is by induction on the derivations of `A <: B` and `B <: C`.
 
 ## Contexts
 
+We choose to represent variables with de Bruijn indices, so contexts
+are sequences of types.
+
 ```
 data Context : Set where
   ∅   : Context
@@ -457,6 +460,9 @@ data Context : Set where
 ```
 
 ## Variables and the lookup judgment
+
+The lookup judgement is a three-place relation, with a context, a de
+Bruijn index, and a type.
 
 ```
 data _∋_⦂_ : Context → ℕ → Type → Set where
@@ -471,12 +477,26 @@ data _∋_⦂_ : Context → ℕ → Type → Set where
     → Γ , B ∋ (suc x) ⦂ A
 ```
 
+* The index `0` has the type at the front of the context.
+
+* For the index `suc x`, we recursively look up its type in the
+  remaining context `Γ`.
+
+
 ## Terms and the typing judgment
+
+As mentioned above, variables are de Bruijn indices, which we
+represent with natural numbers.
 
 ```
 Id : Set
 Id = ℕ
 ```
+
+Our terms are extrinsic, so we define a `Term` data type similar to
+the one in the [Lambda](./Lambda.lagda.md) chapter, but adapted for de
+Bruijn indices.  The two new term constructors are for record creation
+and field access.
 
 ```
 data Term : Set where
@@ -490,6 +510,12 @@ data Term : Set where
   ｛_:=_｝                 : {n : ℕ} (ls : Vec Name n) (Ms : Vec Term n) → Term
   _#_                     : Term → Name → Term
 ```
+
+In a record `｛ ls := Ms ｝`, we refer to the vector of terms `Ms` as
+the *field initializers*.
+
+The typing judgment takes the form `Γ ⊢ M ⦂ A` and relies on an
+auxiliary judgement `Γ ⊢* Ms ⦂ As` for typing a vector of terms.
 
 ```
 data _⊢*_⦂_ : Context → ∀ {n} → Vec Term n → Vec Type n → Set 
@@ -559,15 +585,39 @@ data _⊢*_⦂_ where
      → Γ ⊢* (M ∷ Ms) ⦂ (A ∷ As)
 ```
 
+Most of the typing rules are adapted from those in the [Lambda](./Lambda.lagda.md)
+chapter. Here we discuss the three new rules.
+
+* Rule `⊢rcd`: A record is well-typed if the field initializers `Ms`
+  have types `As`, to match the record type. Also, the vector of field
+  names is required to be distinct.
+
+* Rule `⊢#`: A field access is well-typed if the term `M` has record type,
+  the field `l` is at some index `i` in the record type's vector of field names,
+  and the result type `A` is at index `i` in the vector of field types.
+
+* Rule `⊢<:`: (Subsumption) If a term `M` has type `A`, and `A <: B`,
+  then term `M` also has type `B`.
+  
 
 ## Renaming and Substitution
 
+In preparation of defining the reduction rules for this language, we
+define simultaneous substitution using the same recipe as in the
+[DeBruijn](./DeBruijn.lagda.md) chapter, but adapted to extrinsic
+terms. Thus, the `subst` function is split into two parts: a raw
+`subst` function that operators on terms and a `subst-pres` lemma that
+proves that substitution preserves types. Likewise for `rename`.
+
+We begin by defining the `ext` function on renamings.
 ```
 ext : (Id → Id) → (Id → Id)
 ext ρ 0      =  0
 ext ρ (suc x)  =  suc (ρ x)
 ```
 
+The `rename` function is defined mutually with the auxiliary
+`rename-vec` function, which is needed in the case for records.
 ```
 rename-vec : (Id → Id) → ∀{n} → Vec Term n → Vec Term n
 
@@ -587,12 +637,16 @@ rename-vec ρ [] = []
 rename-vec ρ (M ∷ Ms) = rename ρ M ∷ rename-vec ρ Ms
 ```
 
+With the `rename` function in hand, we can define the `exts` function
+on substitutions.
 ```
 exts : (Id → Term) → (Id → Term)
 exts σ 0      =  ` 0
 exts σ (suc x)  =  rename suc (σ x)
 ```
 
+We define `subst` mutually with the auxilliary `subst-vec` function,
+which is needed in the case for records.
 ```
 subst-vec : (Id → Term) → ∀{n} → Vec Term n → Vec Term n
 
@@ -612,6 +666,8 @@ subst-vec σ [] = []
 subst-vec σ (M ∷ Ms) = (subst σ M) ∷ (subst-vec σ Ms)
 ```
 
+As usuual, we implement single substitution using simultaneous
+substitution.
 ```
 subst-zero : Term → Id → Term
 subst-zero M 0       =  M
@@ -623,6 +679,11 @@ _[_] N M =  subst (subst-zero M) N
 
 ## Values
 
+We extend the definition of `Value` to include a clause for records.
+In a call-by-value language, a record is usually only considered a
+value if all its field initializers are values. Here we instead treat
+records in a lazy fashion, declaring any record to be a value, to save
+on some extra bookkeeping.
 ```
 data Value : Term → Set where
 
@@ -693,15 +754,28 @@ data _—→_ : Term → Term → Set where
     → M —→ M′
     → M # l —→ M′ # l
 
-  β-# : ∀ {n}{ls : Vec Name n}{vs : Vec Term n} {lⱼ}{j : Fin n}
+  β-# : ∀ {n}{ls : Vec Name n}{Ms : Vec Term n} {lⱼ}{j : Fin n}
     → lookup ls j ≡ lⱼ
       ---------------------------------
-    → ｛ ls := vs ｝ # lⱼ —→  lookup vs j
-
-
+    → ｛ ls := Ms ｝ # lⱼ —→  lookup Ms j
 ```
 
+We have just two new reduction rules:
+* Rule `ξ-#`: A field access expression `M # l` reduces to `M′ # l`
+   provided that `M` reduces to `M′`.
+
+* Rule `β-#`: When field access is applied to a record,
+   and if the label is at position `j` in the vector of field names,
+   then result is the term at position `j` in the field initializers.
+
+
 ## Canonical Forms
+
+As in the [Properties](./Properties.lagda.md) chapter, we define a
+`Canonical V ⦂ A` relation that characterizes the well-typed values.
+The presence of subtyping and the subsumption rule impacts its
+definition because we must allow the type of the value `V` to be a
+subtype of `A`.
 
 ```
 infix  4 Canonical_⦂_
@@ -745,16 +819,34 @@ canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
 canonical (⊢rcd ⊢Ms d) VV = C-rcd {dls = d} ⊢Ms d <:-refl 
-canonical (⊢<: ⊢M <:-nat) VV = canonical ⊢M VV
-canonical (⊢<: ⊢M (<:-fun A<:B A<:B₁)) VV 
-    with canonical ⊢M VV 
-... | C-ƛ ⊢N  AB<:CD = C-ƛ ⊢N (<:-trans AB<:CD (<:-fun A<:B A<:B₁))
-canonical (⊢<: ⊢M (<:-rcd {d2 = dls} ls⊆ks ls⦂Ss<:ks⦂Ts)) VV
-    with canonical ⊢M VV
-... | C-rcd {dls = d} ⊢Ms dks As<:Ss =
-      C-rcd {dls = distinct-relevant dls} ⊢Ms dks (<:-trans As<:Ss (<:-rcd ls⊆ks ls⦂Ss<:ks⦂Ts))
+canonical (⊢<: ⊢V <:-nat) VV = canonical ⊢V VV
+canonical (⊢<: ⊢V (<:-fun {A}{B}{C}{D} C<:A B<:D)) VV 
+    with canonical ⊢V VV 
+... | C-ƛ {N}{A′}{B′}{A}{B} ⊢N  AB′<:AB = C-ƛ ⊢N (<:-trans AB′<:AB (<:-fun C<:A B<:D))
+canonical (⊢<: ⊢V (<:-rcd {ks = ks}{ls = ls}{d2 = dls} ls⊆ks ls⦂Ss<:ks⦂Ts)) VV
+    with canonical ⊢V VV
+... | C-rcd {ks = ks′} ⊢Ms dks′ As<:Ss =
+      C-rcd {dls = distinct-relevant dls} ⊢Ms dks′ (<:-trans As<:Ss (<:-rcd ls⊆ks ls⦂Ss<:ks⦂Ts))
 ```
+The case for subsumption (`⊢<:`) is interesting. We proceed by
+cases on the derivation of subtyping.
 
+* If the last rule is `<:-nat`, then we have `∅ ⊢ V ⦂ ℕ`
+  and the induction hypothesis gives us `Canonical V ⦂ ℕ`.
+
+* If the last rule is `<:-fun`, then we have `A ⇒ B <: C ⇒ D`
+  and `∅ ⊢ ƛ N ⦂ A ⇒ B`. By the induction hypothesis,
+  we have `∅ , A′ ⊢ N ⦂ B′` and `A′ ⇒ B′ <: A ⇒ B` for some `A′` and `B′`.
+  We conclude that `Canonical (ƛ N) ⦂ C ⇒ D` by rule `C-ƛ` and the transitivity of subtyping.
+
+* If the last rule is `<:-rcd`, then we have `｛ ls ⦂ Ss ｝ <: ｛ ks ⦂ Ts ｝`
+  and `∅ ⊢ ｛ ks′ := Ms ｝ ⦂ ｛ ks ⦂ Ss ｝`. By the induction hypothesis,
+  we have `∅ ⊢* Ms ⦂ As`, `distinct ks′`, and `｛ ks′ ⦂ As ｝ <: ｛ ks ⦂ Ss ｝`.
+  We conclude that `Canonical ｛ ks′ := Ms ｝ ⦂ ｛ ks ⦂ Ts ｝`
+  by rule `C-rcd` and the transitivity of subtyping.
+
+
+If a term is canonical, then it is also a value.
 ```
 value : ∀ {M A}
   → Canonical M ⦂ A
@@ -766,11 +858,12 @@ value (C-suc CM)    = V-suc (value CM)
 value (C-rcd _ _ _) = V-rcd
 ```
 
+A canonical value is a well-typed value.
 ```
-typed : ∀ {M A}
-  → Canonical M ⦂ A
+typed : ∀ {V A}
+  → Canonical V ⦂ A
     ---------------
-  → ∅ ⊢ M ⦂ A
+  → ∅ ⊢ V ⦂ A
 typed (C-ƛ ⊢N AB<:CD) = ⊢<: (⊢ƛ ⊢N) AB<:CD
 typed C-zero = ⊢zero
 typed (C-suc c) = ⊢suc (typed c)
@@ -778,6 +871,12 @@ typed (C-rcd ⊢Ms dks As<:Bs) = ⊢<: (⊢rcd ⊢Ms dks) As<:Bs
 ```
 
 ## Progress
+
+The Progress theorem states that a well-typed term may either take a
+reduction step or it is already a value. The proof of Progress is like
+the one in the [Properties](./Properties.lagda.md); it proceeds by
+induction on the typing derivation and most of the cases remain the
+same. Below we discuss the new cases for records and subsumption.
 
 ```
 data Progress (M : Term) : Set where
@@ -819,18 +918,30 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ...   | C-zero                              =  step β-zero
 ...   | C-suc CL                            =  step (β-suc (value CL))
 progress (⊢μ ⊢M)                          = step β-μ
-progress (⊢# {Γ}{A}{M}{n}{ls}{As}{d}{i}{f} ⊢R lif liA)
-    with progress ⊢R
-... | step R—→R′                          = step (ξ-# R—→R′)
-... | done VR
-    with canonical ⊢R VR
-... | C-rcd ⊢Ms dks (<:-rcd ls⊆ls' _)
-    with lookup-⊆ {i = i} ls⊆ls'
-... | ⟨ k , eq ⟩ rewrite eq = step (β-# {j = k} lif)
+progress (⊢# {n}{Γ}{A}{M}{l}{ls}{As}{i}{d} ⊢M ls[i]=l As[i]=A)
+    with progress ⊢M
+... | step M—→M′                          = step (ξ-# M—→M′)
+... | done VM
+    with canonical ⊢M VM
+... | C-rcd {ks = ms}{As = Bs} ⊢Ms _ (<:-rcd ls⊆ms _)
+    with lookup-⊆ {i = i} ls⊆ms
+... | ⟨ k , ls[i]=ms[k] ⟩ = step (β-# {j = k} (trans (sym ls[i]=ms[k]) ls[i]=l))
 progress (⊢rcd x d)                       = done V-rcd
 progress (⊢<: {A = A}{B} ⊢M A<:B)         = progress ⊢M
 ```
 
+* Case `⊢#`: We have `Γ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
+  By the induction hypothesis, either `M —→ M′` or `M` is a value. In the later case we
+  conclude that `M # l —→ M′ # l` by rule `ξ-#`. On the other hand, if `M` is a value,
+  we invoke the canonical forms lemma to show that `M` has the form `｛ ms := Ms ｝`
+  where `∅ ⊢* Ms ⦂ Bs` and `ls ⊆ ms`. By lemma `lookup-⊆`, we have
+  `lookup ls i ≡ lookup ms k` for some `k`. Thus, we have `lookup ms k ≡ l`
+  and we conclude `｛ ms := Ms ｝ # l —→ lookup Ms k` by rule `β-#`.
+
+* Case `⊢rcd`: we immediately characterize the record as a value.
+
+* Case `⊢<:`: we invoke the induction hypothesis on subderivation of `Γ ⊢ M ⦂ A`.
+  
 
 ## Preservation
 
@@ -866,7 +977,7 @@ rename-pres {ρ = ρ} ρ⦂ (⊢ƛ ⊢N)   =  ⊢ƛ (rename-pres {ρ = ext ρ} (
 rename-pres {ρ = ρ} ρ⦂ (⊢· ⊢L ⊢M)=  ⊢· (rename-pres {ρ = ρ} ρ⦂ ⊢L) (rename-pres {ρ = ρ} ρ⦂ ⊢M)
 rename-pres {ρ = ρ} ρ⦂ (⊢μ ⊢M)   =  ⊢μ (rename-pres {ρ = ext ρ} (ext-pres {ρ = ρ} ρ⦂) ⊢M)
 rename-pres ρ⦂ (⊢rcd ⊢Ms dls)    = ⊢rcd (ren-vec-pres ρ⦂ ⊢Ms ) dls
-rename-pres {ρ = ρ} ρ⦂ (⊢# {d = d} ⊢R lif liA) = ⊢# {d = d}(rename-pres {ρ = ρ} ρ⦂ ⊢R) lif liA
+rename-pres {ρ = ρ} ρ⦂ (⊢# {d = d} ⊢M lif liA) = ⊢# {d = d}(rename-pres {ρ = ρ} ρ⦂ ⊢M) lif liA
 rename-pres {ρ = ρ} ρ⦂ (⊢<: ⊢M lt) = ⊢<: (rename-pres {ρ = ρ} ρ⦂ ⊢M) lt
 rename-pres ρ⦂ ⊢zero               = ⊢zero
 rename-pres ρ⦂ (⊢suc ⊢M)           = ⊢suc (rename-pres ρ⦂ ⊢M)
@@ -911,8 +1022,8 @@ subst-pres {σ = σ} σ⦂ (⊢ƛ ⊢N)    = ⊢ƛ (subst-pres{σ = exts σ}(ext
 subst-pres {σ = σ} σ⦂ (⊢· ⊢L ⊢M) = ⊢· (subst-pres{σ = σ} σ⦂ ⊢L) (subst-pres{σ = σ} σ⦂ ⊢M) 
 subst-pres {σ = σ} σ⦂ (⊢μ ⊢M)    = ⊢μ (subst-pres{σ = exts σ} (exts-pres{σ = σ} σ⦂) ⊢M) 
 subst-pres σ⦂ (⊢rcd ⊢Ms dls) = ⊢rcd (subst-vec-pres σ⦂ ⊢Ms ) dls
-subst-pres {σ = σ} σ⦂ (⊢# {d = d} ⊢R lif liA) =
-    ⊢# {d = d} (subst-pres {σ = σ} σ⦂ ⊢R) lif liA
+subst-pres {σ = σ} σ⦂ (⊢# {d = d} ⊢M lif liA) =
+    ⊢# {d = d} (subst-pres {σ = σ} σ⦂ ⊢M) lif liA
 subst-pres {σ = σ} σ⦂ (⊢<: ⊢N lt) = ⊢<: (subst-pres {σ = σ} σ⦂ ⊢N) lt
 subst-pres σ⦂ ⊢zero = ⊢zero
 subst-pres σ⦂ (⊢suc ⊢M) = ⊢suc (subst-pres σ⦂ ⊢M)
