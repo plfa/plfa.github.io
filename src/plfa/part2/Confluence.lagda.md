@@ -410,11 +410,24 @@ some `L`.  The typical proof is an induction on `M ⇛ N` and `M ⇛ N′`
 so that every possible pair gives rise to a witeness `L` given by
 performing enough beta reductions in parallel.
 
-Will it be even nicer if we simply perform as many beta reductions in
-parallel as possible on `M`, say `M ⁺`, so that `N ⇛ M ⁺` holds
-independent of another `N′`? This is exactly the idea of Takahashi's
-complete development.
- 
+However, a simpler approach is to perform as many beta reductions in
+parallel as possible on `M`, say `M ⁺`, and then show that `N` also
+parallel reduces to `M ⁺`. This is the idea of Takahashi's _complete
+development_. The desired property may be illustrated as
+
+        M
+       /|
+      / |
+     /  |
+    N   2
+     \  |
+      \ |
+       \|
+        M⁺
+
+where downward lines are instances of `⇛`, so we call it the _triangle
+property_.
+
 ```
 _⁺ : ∀ {Γ A}
   → Γ ⊢ A → Γ ⊢ A
@@ -422,38 +435,21 @@ _⁺ : ∀ {Γ A}
 (ƛ M) ⁺       = ƛ (M ⁺)
 ((ƛ N) · M) ⁺ = N ⁺ [ M ⁺ ]
 (L · M) ⁺     = L ⁺ · (M ⁺)
-```
 
-The desired property may be illustrated as 
-
-    M
-    ︲\
-    ︲ \
-    ︲  \
-    ︲   N
-    ︲  /
-    ︲ /
-    ︲/
-    M⁺
-
-so that we call it the _triangle property_ which is proved by induction on `M ⇛ N` only. 
-
-```
 par-triangle : ∀ {Γ A} {M N : Γ ⊢ A}
   → M ⇛ N
     -------
   → N ⇛ M ⁺
 par-triangle pvar          = pvar
 par-triangle (pabs p)      = pabs (par-triangle p)
-par-triangle (pbeta p1 p2) =
-  sub-par (par-triangle p1) (par-triangle p2)
+par-triangle (pbeta p1 p2) = sub-par (par-triangle p1) (par-triangle p2)
 par-triangle (papp {L = ƛ _ } (pabs p1) p2) =
   pbeta (par-triangle p1) (par-triangle p2)
 par-triangle (papp {L = ` _}   p1 p2) = papp (par-triangle p1) (par-triangle p2)
 par-triangle (papp {L = _ · _} p1 p2) = papp (par-triangle p1) (par-triangle p2)
 ```
 
-The proof goes as follows.
+The proof of the triangle property is an induction on `M ⇛ N`.
 
 * Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`. 
 
@@ -478,6 +474,19 @@ The proof goes as follows.
   we have to write down the remaining case explicitly.)
 
 The diamond property then follows by halving the diamond into two triangles.
+
+        M
+       /|\
+      / | \
+     /  |  \
+    N   2   N′
+     \  |  /
+      \ | /
+       \|/
+        M⁺
+
+That is, the diamond property is proved by applying the
+triangle property on each side with the same confluent term `M ⁺`.
 
 ```
 par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
