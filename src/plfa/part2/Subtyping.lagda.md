@@ -616,7 +616,7 @@ terms. Thus, the `subst` function is split into two parts: a raw
 `subst` function that operators on terms and a `subst-pres` lemma that
 proves that substitution preserves types. We define `subst` in this
 section and postpone `subst-pres` to the
-[Preservation](#subtyping-pres) section.  Likewise for `rename`.
+[Preservation](#subtyping-preservation) section.  Likewise for `rename`.
 
 We begin by defining the `ext` function on renamings.
 ```
@@ -877,13 +877,14 @@ typed (C-suc c) = ⊢suc (typed c)
 typed (C-rcd ⊢Ms dks As<:Bs) = ⊢<: (⊢rcd ⊢Ms dks) As<:Bs
 ```
 
-## Progress
+## Progress <a name="subtyping-progress"></a>
 
 The Progress theorem states that a well-typed term may either take a
 reduction step or it is already a value. The proof of Progress is like
-the one in the [Properties](./Properties.lagda.md); it proceeds by
-induction on the typing derivation and most of the cases remain the
-same. Below we discuss the new cases for records and subsumption.
+the one in the [Properties]({{ site.baseurl }}/Properties/); it
+proceeds by induction on the typing derivation and most of the cases
+remain the same. Below we discuss the new cases for records and
+subsumption.
 
 ```
 data Progress (M : Term) : Set where
@@ -924,19 +925,18 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | done VL with canonical ⊢L VL
 ...   | C-zero                              =  step β-zero
 ...   | C-suc CL                            =  step (β-suc (value CL))
-progress (⊢μ ⊢M)                          = step β-μ
+progress (⊢μ ⊢M)                            =  step β-μ
 progress (⊢# {n}{Γ}{A}{M}{l}{ls}{As}{i}{d} ⊢M ls[i]=l As[i]=A)
     with progress ⊢M
-... | step M—→M′                          = step (ξ-# M—→M′)
+... | step M—→M′                            =  step (ξ-# M—→M′)
 ... | done VM
     with canonical ⊢M VM
 ... | C-rcd {ks = ms}{As = Bs} ⊢Ms _ (<:-rcd ls⊆ms _)
     with lookup-⊆ {i = i} ls⊆ms
-... | ⟨ k , ls[i]=ms[k] ⟩ = step (β-# {j = k} (trans (sym ls[i]=ms[k]) ls[i]=l))
-progress (⊢rcd x d)                       = done V-rcd
-progress (⊢<: {A = A}{B} ⊢M A<:B)         = progress ⊢M
+... | ⟨ k , ls[i]=ms[k] ⟩                   =  step (β-# {j = k}(trans (sym ls[i]=ms[k]) ls[i]=l))
+progress (⊢rcd x d)                         =  done V-rcd
+progress (⊢<: {A = A}{B} ⊢M A<:B)           =  progress ⊢M
 ```
-
 * Case `⊢#`: We have `Γ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
   By the induction hypothesis, either `M —→ M′` or `M` is a value. In the later case we
   conclude that `M # l —→ M′ # l` by rule `ξ-#`. On the other hand, if `M` is a value,
@@ -950,7 +950,7 @@ progress (⊢<: {A = A}{B} ⊢M A<:B)         = progress ⊢M
 * Case `⊢<:`: we invoke the induction hypothesis on sub-derivation of `Γ ⊢ M ⦂ A`.
   
 
-## Preservation <a name="subtyping-pres"></a>
+## Preservation <a name="subtyping-preservation"></a>
 
 In this section we prove that when a well-typed term takes a reduction
 step, the result is another well-typed term with the same type.
