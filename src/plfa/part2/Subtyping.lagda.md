@@ -1257,10 +1257,15 @@ of the form:
 
 ## References
 
-* Reynolds 1980
+* John C. Reynolds. Using Category Theory to Design Implicit
+  Conversions and Generic Operators.
+  In Semantics-Directed Compiler Generation, 1980.
+  LNCS Volume 94.
 
-* Cardelli 1984
+* Luca Cardelli. A semantics of multiple inheritance.  In Semantics of
+  Data Types, 1984. Springer.
 
-* Liskov
-
+* Barbara H. Liskov and Jeannette M. Wing.  A Behavioral Notion of
+  Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
+  
 * Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
