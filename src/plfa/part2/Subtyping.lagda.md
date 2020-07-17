@@ -35,7 +35,7 @@ can also have type `B` if `A` is a subtype of `B`.
 In this chapter we study subtyping in the relatively simple context of
 records and record types.  A *record* is a grouping of named values,
 called *fields*. For example, one could represent a point on the
-cartesian plane with the following record.
+Cartesian plane with the following record.
 
     { x = 4, y = 1 }
 
@@ -59,17 +59,18 @@ returns the value stored at that field.
     {l₁=v₁, ..., lⱼ=vⱼ, ..., lᵢ=vᵢ} # lⱼ —→  vⱼ 
 
 In this chapter we add records and record types to the simply typed
-lambda calculus (STLC) and prove type safety. The choice between
-extrinsic and intrinsic typing is made more interesting by the
-presense of subtyping. If we wish to include the subsumption rule,
-then we cannot use intrinsicly typed terms, as intrinsic terms only
-allow for syntax-directed rules, and subsumption is not syntax
+lambda calculus (STLC) and prove type safety. It is instructive to see
+how the proof of type safety changes to handle subtyping.  Also, the
+presence of subtyping makes the choice between extrinsic and intrinsic
+typing more interesting by. If we wish to include the subsumption
+rule, then we cannot use intrinsically typed terms, as intrinsic terms
+only allow for syntax-directed rules, and subsumption is not syntax
 directed.  A standard alternative to the subsumption rule is to
 instead use subtyping in the typing rules for the elimination forms,
 an approach called algorithmic typing. Here we choose to include the
-subsumption rule and use extrinsic typing, but we give an exercise at
-the end of the chapter so the reader cahn explore algorithmic typing
-with intrinsic terms.
+subsumption rule and extrinsic typing, but we give an exercise at the
+end of the chapter so the reader can explore algorithmic typing with
+intrinsic terms.
 
 
 ## Imports
@@ -175,7 +176,7 @@ distinct-lookup-inj {ls = x ∷ ls} {suc i} {suc j} ⟨ x∉ls , dls ⟩ lsij =
     cong suc (distinct-lookup-inj dls lsij)
 ```
 
-We shall need to convert from an irrelevent proof of distinctness to a
+We shall need to convert from an irrelevant proof of distinctness to a
 relevant one. In general, the laundering of irrelevant proofs into
 relevant ones is easy to do when the predicate in question is
 decidable. The following is a decision procedure for whether a vector
@@ -461,7 +462,7 @@ data Context : Set where
 
 ## Variables and the lookup judgment
 
-The lookup judgement is a three-place relation, with a context, a de
+The lookup judgment is a three-place relation, with a context, a de
 Bruijn index, and a type.
 
 ```
@@ -515,7 +516,7 @@ In a record `｛ ls := Ms ｝`, we refer to the vector of terms `Ms` as
 the *field initializers*.
 
 The typing judgment takes the form `Γ ⊢ M ⦂ A` and relies on an
-auxiliary judgement `Γ ⊢* Ms ⦂ As` for typing a vector of terms.
+auxiliary judgment `Γ ⊢* Ms ⦂ As` for typing a vector of terms.
 
 ```
 data _⊢*_⦂_ : Context → ∀ {n} → Vec Term n → Vec Type n → Set 
@@ -647,7 +648,7 @@ exts σ 0      =  ` 0
 exts σ (suc x)  =  rename suc (σ x)
 ```
 
-We define `subst` mutually with the auxilliary `subst-vec` function,
+We define `subst` mutually with the auxiliary `subst-vec` function,
 which is needed in the case for records.
 ```
 subst-vec : (Id → Term) → ∀{n} → Vec Term n → Vec Term n
@@ -668,7 +669,7 @@ subst-vec σ [] = []
 subst-vec σ (M ∷ Ms) = (subst σ M) ∷ (subst-vec σ Ms)
 ```
 
-As usuual, we implement single substitution using simultaneous
+As usual, we implement single substitution using simultaneous
 substitution.
 ```
 subst-zero : Term → Id → Term
@@ -942,7 +943,7 @@ progress (⊢<: {A = A}{B} ⊢M A<:B)         = progress ⊢M
 
 * Case `⊢rcd`: we immediately characterize the record as a value.
 
-* Case `⊢<:`: we invoke the induction hypothesis on subderivation of `Γ ⊢ M ⦂ A`.
+* Case `⊢<:`: we invoke the induction hypothesis on sub-derivation of `Γ ⊢ M ⦂ A`.
   
 
 ## Preservation <a name="subtyping-pres"></a>
@@ -1156,7 +1157,7 @@ with cases on `M —→ N`.
 #### Exercise `intrinsic-records` (stretch)
 
 Formulate the language of this chapter, STLC with records, using
-intrinsicaly typed terms. This requires taking an algorithmic approach
+intrinsically typed terms. This requires taking an algorithmic approach
 to the type system, which means that there is no subsumption rule and
 instead subtyping is used in the elimination rules. For example,
 the rule for function application would be:
@@ -1175,12 +1176,12 @@ is a typing derivation for that term, if one exists.
 
     type-check : (M : Term) → (Γ : Context) → Maybe (Σ[ A ∈ Type ] Γ ⊢ M ⦂ A)
 
-### Exercise `variants` (recommended)
+#### Exercise `variants` (recommended)
 
 Add variants to the language of this Chapter and update the proofs of
 progress and preservation. The variant type is a generalization of a
 sum type, similar to the way the record type is a generalization of
-product. The following summarizes the treatement of variants in the
+product. The following summarizes the treatment of variants in the
 book Types and Programming Languages. A variant type is traditionally
 written:
 
@@ -1226,7 +1227,7 @@ The non-algorithmic subtyping rules for variants are
     
 Come up with an algorithmic subtyping rule for variant types.
 
-### Exercise `<:-alternative` (stretch)
+#### Exercise `<:-alternative` (stretch)
 
 Revise this formalization of records with subtyping (including proofs
 of progress and preservation) to use the non-algorithmic subtyping
@@ -1269,3 +1270,4 @@ of the form:
   Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
   
 * Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
+
