@@ -18,18 +18,20 @@ type `A` can be a subtype of another type `B`, written `A <: B`, when
 an object of type `A` has all the capabilities expected of something
 of type `B`. Or put another way, a type `A` can be a subtype of type
 `B` when it is safe to substitute something of type `A` into code that
-is expected something of type `B`.  This is know as the *Liskov
+expects something of type `B`.  This is know as the *Liskov
 Substitution Principle*. Given this semantic meaning of subtyping, a
-subtype relation should always be reflexive and transitive. Given a
-subtype relation `A <: B`, we refer to `B` as the supertype of `A`.
+subtype relation should always be reflexive and transitive. When
+`A` is a subtype of `B`, that is, `A <: B`, we may also refer to
+`B` as a supertype of `A`.
 
 To formulate a type system for a language with subtyping, one simply
 adds the *subsumption rule*, which states that a term of type `A`
 can also have type `B` if `A` is a subtype of `B`.
 
     ⊢<: : ∀{Γ M A B}
-      → Γ ⊢ M ⦂ A  →  A <: B
-        --------------------
+      → Γ ⊢ M ⦂ A
+	  → A <: B
+        -----------
       → Γ ⊢ M ⦂ B
 
 In this chapter we study subtyping in the relatively simple context of
