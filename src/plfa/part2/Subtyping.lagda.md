@@ -607,7 +607,9 @@ define simultaneous substitution using the same recipe as in the
 [DeBruijn](./DeBruijn.lagda.md) chapter, but adapted to extrinsic
 terms. Thus, the `subst` function is split into two parts: a raw
 `subst` function that operators on terms and a `subst-pres` lemma that
-proves that substitution preserves types. Likewise for `rename`.
+proves that substitution preserves types. We define `subst` in the
+section and postpone `subst-pres` to the
+[Preservation](#subtyping-pres) section.  Likewise for `rename`.
 
 We begin by defining the `ext` function on renamings.
 ```
@@ -943,14 +945,27 @@ progress (⊢<: {A = A}{B} ⊢M A<:B)         = progress ⊢M
 * Case `⊢<:`: we invoke the induction hypothesis on subderivation of `Γ ⊢ M ⦂ A`.
   
 
-## Preservation
+## Preservation <a name="subtyping-pres"></a>
 
+In this section we prove that when a well-typed term takes a reduction
+step, the result is another well-typed term with the same type.
 
+As mentioned earlier, we need to prove that substitution preserve
+types, which in turn requires that renaming preserves types.  The
+proofs of these lemmas are adapted from the intrinsic versions of the
+`ext`, `rename`, `exts`, and `subst` functions in the
+[DeBruijn](./DeBruijn.lagda.md) chapter.
+
+We define the following abbreviation for a *well-typed renaming* from Γ
+to Δ, that is, a renaming that sends variables in Γ to variables in Δ
+with the same type.
 ```
 _⦂ᵣ_⇒_ : (Id → Id) → Context → Context → Set
 ρ ⦂ᵣ Γ ⇒ Δ = ∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ ρ x ⦂ A
 ```
 
+The `ext` function takes a well-typed renaming from Γ to Δ
+and extends it to become a renaming from (Γ , B) to (Δ , B).
 ```
 ext-pres : ∀ {Γ Δ ρ B}
   → ρ ⦂ᵣ Γ ⇒ Δ
@@ -960,12 +975,12 @@ ext-pres {ρ = ρ } ρ⦂ Z = Z
 ext-pres {ρ = ρ } ρ⦂ (S {x = x} ∋x) =  S (ρ⦂ ∋x)
 ```
 
+Next we prove that both `rename` and `rename-vec` preserve types.  We
+use the `ext-pres` lemma in each of the cases with a variable binding: `⊢ƛ`,
+`⊢μ`, and `⊢case`.
 ```
 ren-vec-pres : ∀ {Γ Δ ρ}{n}{Ms : Vec Term n}{As : Vec Type n}
-  → ρ ⦂ᵣ Γ ⇒ Δ
-  → Γ ⊢* Ms ⦂ As
-    ---------------------
-  → Δ ⊢* rename-vec ρ Ms ⦂ As
+  → ρ ⦂ᵣ Γ ⇒ Δ  →  Γ ⊢* Ms ⦂ As  →  Δ ⊢* rename-vec ρ Ms ⦂ As
 
 rename-pres : ∀ {Γ Δ ρ M A}
   → ρ ⦂ᵣ Γ ⇒ Δ
@@ -990,10 +1005,18 @@ ren-vec-pres {ρ = ρ} ρ⦂ (⊢*-∷ ⊢M ⊢Ms) =
   ⊢*-∷ (rename-pres {ρ = ρ} ρ⦂ ⊢M) IH
 ```
 
+A *well-typed substitution* from Γ to Δ sends variables in Γ to terms
+of the same type in the context Δ.
 ```
 _⦂_⇒_ : (Id → Term) → Context → Context → Set
 σ ⦂ Γ ⇒ Δ = ∀ {A x} → Γ ∋ x ⦂ A → Δ ⊢ subst σ (` x) ⦂ A
 ```
+
+The `exts` function sends well-typed substitutions from Γ to Δ to
+well-typed substitutions from (Γ , B) to (Δ , B). In the case for `S`,
+we note that `exts σ (suc x) ≡ rename sub (σ x)`, so we need to prove
+`Δ , B ⊢ rename suc (σ x) ⦂ A`, which we obtain by the `rename-pres`
+lemma.
 
 ```
 exts-pres : ∀ {Γ Δ σ B}
@@ -1004,13 +1027,12 @@ exts-pres {σ = σ} σ⦂ Z = ⊢` Z
 exts-pres {σ = σ} σ⦂ (S {x = x} ∋x) = rename-pres {ρ = suc} S (σ⦂ ∋x)
 ```
 
-
+Now we prove that both `subst` and `subst-vec` preserve types.  We use
+the `exts-pres` lemma in each of the cases with a variable binding:
+`⊢ƛ`, `⊢μ`, and `⊢case`.
 ```
 subst-vec-pres : ∀ {Γ Δ σ}{n}{Ms : Vec Term n}{A}
-  → σ ⦂ Γ ⇒ Δ
-  → Γ ⊢* Ms ⦂ A
-    -----------------
-  → Δ ⊢* subst-vec σ Ms ⦂ A
+  → σ ⦂ Γ ⇒ Δ  →  Γ ⊢* Ms ⦂ A  →  Δ ⊢* subst-vec σ Ms ⦂ A
 
 subst-pres : ∀ {Γ Δ σ N A}
   → σ ⦂ Γ ⇒ Δ
@@ -1035,6 +1057,8 @@ subst-vec-pres {σ = σ} σ⦂ (⊢*-∷ ⊢M ⊢Ms) =
     ⊢*-∷ (subst-pres {σ = σ} σ⦂ ⊢M) (subst-vec-pres σ⦂ ⊢Ms)
 ```
 
+The fact that single substitution preserves types is a corollary
+of `subst-pres`.
 ```
 substitution : ∀{Γ A B M N}
    → Γ ⊢ M ⦂ A
@@ -1049,6 +1073,8 @@ substitution {Γ}{A}{B}{M}{N} ⊢M ⊢N = subst-pres {σ = subst-zero M} G ⊢N
     G {C} {suc x} (S ∋x) = ⊢` ∋x
 ```
 
+We require just one last lemma before we get to the proof of preservation.
+The following lemma establishes that field access preserves types.
 ```
 field-pres : ∀{n}{As : Vec Type n}{A}{Ms : Vec Term n}{i : Fin n}
          → ∅ ⊢* Ms ⦂ As
@@ -1056,9 +1082,21 @@ field-pres : ∀{n}{As : Vec Type n}{A}{Ms : Vec Term n}{i : Fin n}
          → ∅ ⊢ lookup Ms i ⦂ A
 field-pres {i = zero} (⊢*-∷ ⊢M ⊢Ms) refl = ⊢M
 field-pres {i = suc i} (⊢*-∷ ⊢M ⊢Ms) As[i]=A = field-pres ⊢Ms As[i]=A
-
 ```
+The proof is by induction on the typing derivation.
 
+* Case `⊢-*-[]`: This case yields a contradiction because `Fin 0` is uninhabitable.
+
+* Case `⊢-*-∷`: So we have `∅ ⊢ M ⦂ B` and `∅ ⊢* Ms ⦂ As`. We proceed by cases on `i`.
+
+    * If it is `0`, then lookup yields term `M` and `A ≡ B`, so we conclude that `∅ ⊢ M ⦂ A`.
+    
+    * If it is `suc i`, then we conclude by the induction hypothesis.
+
+
+We conclude this chapter with the proof of preservation. We discuss
+the cases particular to records and subtyping in the paragraph
+following the Agda proof.
 ```
 preserve : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
@@ -1078,20 +1116,42 @@ preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L—→L′)   =  ⊢case (pre
 preserve (⊢case ⊢L ⊢M ⊢N)        (β-zero)         =  ⊢M
 preserve (⊢case ⊢L ⊢M ⊢N)        (β-suc VV)
     with canonical ⊢L (V-suc VV)
-... | C-suc CV                                    = substitution (typed CV) ⊢N
+... | C-suc CV                                    =  substitution (typed CV) ⊢N
 preserve (⊢μ ⊢M)                 (β-μ)            =  substitution (⊢μ ⊢M) ⊢M
-preserve (⊢# {d = d} ⊢M lsi Asi) (ξ-# M—→M′)      = ⊢# {d = d} (preserve ⊢M M—→M′) lsi Asi
-preserve (⊢# {ls = ls′}{i = i} ⊢M refl refl) (β-# {ls = ks}{Ms}{j = j} ks[j]=l)
+preserve (⊢# {d = d} ⊢M lsi Asi) (ξ-# M—→M′)      =  ⊢# {d = d} (preserve ⊢M M—→M′) lsi Asi
+preserve (⊢# {ls = ls}{i = i} ⊢M refl refl) (β-# {ls = ks}{Ms}{j = j} ks[j]=l)
     with canonical ⊢M V-rcd
-... | C-rcd ⊢Ms dks (<:-rcd {ks = ks}{ls} ls⊆ks As<:Bs)
+... | C-rcd {As = Bs} ⊢Ms dks (<:-rcd {ks = ks} ls⊆ks Bs<:As)
     with lookup-⊆ {i = i} ls⊆ks
-... | ⟨ k , ls′[i]=ks[k] ⟩
+... | ⟨ k , ls[i]=ks[k] ⟩
     with field-pres {i = k} ⊢Ms refl
-... | ⊢Ms[k]
-    rewrite distinct-lookup-inj dks (trans ks[j]=l ls′[i]=ks[k]) =
-    ⊢<: ⊢Ms[k] (As<:Bs (sym ls′[i]=ks[k]))
-preserve (⊢<: ⊢M A<:B) M—→N                       =  ⊢<: (preserve ⊢M M—→N) A<:B
+... | ⊢Ms[k]⦂Bs[k]
+    rewrite distinct-lookup-inj dks (trans ks[j]=l ls[i]=ks[k]) =
+    let Ms[k]⦂As[i] = ⊢<: ⊢Ms[k]⦂Bs[k] (Bs<:As (sym ls[i]=ks[k])) in
+    Ms[k]⦂As[i]
+preserve (⊢<: ⊢M B<:A) M—→N                       =  ⊢<: (preserve ⊢M M—→N) B<:A
 ```
+Recall that the proof is by induction on the derivation of `∅ ⊢ M ⦂ A`
+with cases on `M —→ N`.
+
+* Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
+  and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ｛ ls ⦂ As ｝`
+  and then conclude by rule `⊢#`.
+  
+* Case `⊢#` and `β-#`. We have `∅ ⊢ ｛ ks := Ms ｝ ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`,
+  `lookup As i ≡ A`, `lookup ks j ≡ l`, and `｛ ks := Ms ｝ # l —→ lookup Ms j`.
+  By the canonical forms lemma, we have `∅ ⊢* Ms ⦂ Bs`, `ls ⊆ ks` and `ks ⦂ Bs <: ls ⦂ As`.
+  By lemma `lookup-⊆` we have `lookup ls i ≡ lookup ks k` for some `k`.
+  Also, we have `∅ ⊢ lookup Ms k ⦂ lookup Bs k` by lemma `field-pres`.
+  Then because `ks ⦂ Bs <: ls ⦂ As` and `lookup ks k ≡ lookup ls i`, we have
+  `lookup Bs k <: lookup As i`. So by rule `⊢<:` we have
+  `∅ ⊢ lookup Ms k ⦂ lookup As i`.
+  Finally, because `lookup` is injective and `lookup ks j ≡ lookup ks k`,
+  we have `j ≡ k` and conclude that `∅ ⊢ lookup Ms j ⦂ lookup As i`.
+
+* Case `⊢<:`. We have `∅ ⊢ M ⦂ B`, `B <: A`, and `M —→ N`. We apply the induction hypothesis
+  to obtain `∅ ⊢ N ⦂ B` and then subsumption to conclude that `∅ ⊢ N ⦂ A`.
+
 
 #### Exercise `intrinsic-records` (stretch)
 
