@@ -193,7 +193,7 @@ distinct? (x ∷ xs)
 ... | no ¬dxs = no λ x₁ → ¬dxs (proj₂ x₁)
 ```
 
-With this decision procedure in hand, the define the following
+With this decision procedure in hand, we define the following
 function for laundering irrelevant proofs of distinctness into
 relevant ones.
 ```
@@ -267,6 +267,11 @@ in front of it.
 
 ## Subtyping
 
+The subtyping relation, written `A <: B`, defines when an implicit
+cast is allowed, via the subsumption rule. The following data type
+definition specifies the subtyping rules for natural numbers,
+functions, and record types. We discuss each rule below.
+
 ```
 infix 5 _<:_
 
@@ -287,19 +292,20 @@ data _<:_ : Type → Type → Set where
     → ｛ ks ⦂ Ss ｝ {d1} <: ｛ ls ⦂ Ts ｝ {d2}
 ```
 
-The rule `<:-nat` simply states that `ℕ` is a subtype of itself.
+The rule `<:-nat` says that `ℕ` is a subtype of itself.
 
 The rule `<:-fun` is the traditional rule for function types, which is
-best understood with the following diagram. It answers the question,
-when can a function of type `A ⇒ B` be used in place of a function of
-type `C ⇒ D`. It is called with an argument of type `C`, so we need to
+best understood with the below diagram. It answers the question, when
+can a function of type `A ⇒ B` be used in place of a function of type
+`C ⇒ D`. It will be called with an argument of type `C`, so we need to
 convert from `C` to `A`. We then call the function to get the result
-of type `B`. Finally, we need to convert from `B` to `D`.
+of type `B`. Finally, we need to convert from `B` to `D`. Note that
+the direction of subtyping for the parameters is swapped (`C <: A`), a
+phenomenon named contra-variance.
 
     C <: A
     ⇓    ⇓
     D :> B
-
 
 The record subtyping rule (`<:-rcd`) characterizes when a record of
 one type can safely be used in place of another record type.  The
@@ -310,7 +316,6 @@ The second premise of the record subtyping rule (`<:-rcd`) expresses
 _depth subtyping_, that is, it allows the types of the fields to
 change according to subtyping. The following is an abbreviation for
 this premise.
-
 ```
 _⦂_<:_⦂_ : ∀ {m n} → Vec Name m → Vec Type m → Vec Name n → Vec Type n → Set
 _⦂_<:_⦂_ {m}{n} ks Ss ls Ts = (∀{i : Fin n}{j : Fin m}
