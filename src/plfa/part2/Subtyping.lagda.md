@@ -268,7 +268,7 @@ in front of it.
 ## Subtyping
 
 The subtyping relation, written `A <: B`, defines when an implicit
-cast is allowed, via the subsumption rule. The following data type
+cast is allowed via the subsumption rule. The following data type
 definition specifies the subtyping rules for natural numbers,
 functions, and record types. We discuss each rule below.
 
@@ -500,7 +500,7 @@ Id = ℕ
 ```
 
 Our terms are extrinsic, so we define a `Term` data type similar to
-the one in the [Lambda](./Lambda.lagda.md) chapter, but adapted for de
+the one in the [Lambda]({{ site.baseurl }}/Lambda/) chapter, but adapted for de
 Bruijn indices.  The two new term constructors are for record creation
 and field access.
 
@@ -591,7 +591,7 @@ data _⊢*_⦂_ where
      → Γ ⊢* (M ∷ Ms) ⦂ (A ∷ As)
 ```
 
-Most of the typing rules are adapted from those in the [Lambda](./Lambda.lagda.md)
+Most of the typing rules are adapted from those in the [Lambda]({{ site.baseurl }}/Lambda/)
 chapter. Here we discuss the three new rules.
 
 * Rule `⊢rcd`: A record is well-typed if the field initializers `Ms`
@@ -610,7 +610,7 @@ chapter. Here we discuss the three new rules.
 
 In preparation of defining the reduction rules for this language, we
 define simultaneous substitution using the same recipe as in the
-[DeBruijn](./DeBruijn.lagda.md) chapter, but adapted to extrinsic
+[DeBruijn]({{ site.baseurl }}/DeBruijn/) chapter, but adapted to extrinsic
 terms. Thus, the `subst` function is split into two parts: a raw
 `subst` function that operators on terms and a `subst-pres` lemma that
 proves that substitution preserves types. We define `subst` in the
@@ -779,7 +779,7 @@ We have just two new reduction rules:
 
 ## Canonical Forms
 
-As in the [Properties](./Properties.lagda.md) chapter, we define a
+As in the [Properties]({{ site.baseurl }}/Properties/) chapter, we define a
 `Canonical V ⦂ A` relation that characterizes the well-typed values.
 The presence of subtyping and the subsumption rule impacts its
 definition because we must allow the type of the value `V` to be a
@@ -960,7 +960,7 @@ As mentioned earlier, we need to prove that substitution preserve
 types, which in turn requires that renaming preserves types.  The
 proofs of these lemmas are adapted from the intrinsic versions of the
 `ext`, `rename`, `exts`, and `subst` functions in the
-[DeBruijn](./DeBruijn.lagda.md) chapter.
+[DeBruijn]({{ site.baseurl }}/DeBruijn/) chapter.
 
 We define the following abbreviation for a *well-typed renaming* from Γ
 to Δ, that is, a renaming that sends variables in Γ to variables in Δ
@@ -1183,7 +1183,7 @@ is a typing derivation for that term, if one exists.
 
 #### Exercise `variants` (recommended)
 
-Add variants to the language of this Chapter and update the proofs of
+Add variants to the language of this chapter and update the proofs of
 progress and preservation. The variant type is a generalization of a
 sum type, similar to the way the record type is a generalization of
 product. The following summarizes the treatment of variants in the
@@ -1236,7 +1236,7 @@ Come up with an algorithmic subtyping rule for variant types.
 
 Revise this formalization of records with subtyping (including proofs
 of progress and preservation) to use the non-algorithmic subtyping
-rules for Chapter 15 of TAPL, which we list here:
+rules for Chapter 15 of Types and Programming Languages, which we list here:
 
     (S-RcdWidth)
     --------------------------------------------------------------
