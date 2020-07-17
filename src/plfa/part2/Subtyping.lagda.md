@@ -101,11 +101,13 @@ The syntax includes that of the STLC with a few additions regarding
 records that we explain in the following sections.
 
 ```
+infixl 5 _,_
+infix 4 _⊆_
+infix 5 _<:_
 infix  4 _⊢_⦂_
 infix 4 _⊢*_⦂_
 infix  4 _∋_⦂_
-infixl 5 _,_
-infix 5 _[_]
+infix  4 Canonical_⦂_
 
 infixr 7 _⇒_
 
@@ -115,10 +117,11 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infixl 7 _#_
-
-infix 4 _⊆_
 infix 5 ｛_⦂_｝
 infix 5 ｛_:=_｝
+
+infix 5 _[_]
+infix 2 _—→_
 ```
 
 ## Record Fields and their Properties
@@ -273,8 +276,6 @@ definition specifies the subtyping rules for natural numbers,
 functions, and record types. We discuss each rule below.
 
 ```
-infix 5 _<:_
-
 data _<:_ : Type → Type → Set where
   <:-nat : `ℕ <: `ℕ
 
@@ -613,7 +614,7 @@ define simultaneous substitution using the same recipe as in the
 [DeBruijn]({{ site.baseurl }}/DeBruijn/) chapter, but adapted to extrinsic
 terms. Thus, the `subst` function is split into two parts: a raw
 `subst` function that operators on terms and a `subst-pres` lemma that
-proves that substitution preserves types. We define `subst` in the
+proves that substitution preserves types. We define `subst` in this
 section and postpone `subst-pres` to the
 [Preservation](#subtyping-pres) section.  Likewise for `rename`.
 
@@ -714,9 +715,11 @@ data Value : Term → Set where
 
 ## Reduction
 
-```
-infix 2 _—→_
+The following datatype `_—→_` defines the reduction relation for the
+STLC with records. We discuss the two new rules for records in the
+following paragraph.
 
+```
 data _—→_ : Term → Term → Set where
 
   ξ-·₁ : ∀ {L L′ M : Term}
@@ -762,10 +765,10 @@ data _—→_ : Term → Term → Set where
     → M —→ M′
     → M # l —→ M′ # l
 
-  β-# : ∀ {n}{ls : Vec Name n}{Ms : Vec Term n} {lⱼ}{j : Fin n}
-    → lookup ls j ≡ lⱼ
+  β-# : ∀ {n}{ls : Vec Name n}{Ms : Vec Term n} {l}{j : Fin n}
+    → lookup ls j ≡ l
       ---------------------------------
-    → ｛ ls := Ms ｝ # lⱼ —→  lookup Ms j
+    → ｛ ls := Ms ｝ # l —→  lookup Ms j
 ```
 
 We have just two new reduction rules:
@@ -773,21 +776,17 @@ We have just two new reduction rules:
    provided that `M` reduces to `M′`.
 
 * Rule `β-#`: When field access is applied to a record,
-   and if the label is at position `j` in the vector of field names,
+   and if the label `l` is at position `j` in the vector of field names,
    then result is the term at position `j` in the field initializers.
 
 
 ## Canonical Forms
 
-As in the [Properties]({{ site.baseurl }}/Properties/) chapter, we define a
-`Canonical V ⦂ A` relation that characterizes the well-typed values.
-The presence of subtyping and the subsumption rule impacts its
-definition because we must allow the type of the value `V` to be a
-subtype of `A`.
-
+As in the [Properties]({{ site.baseurl }}/Properties/) chapter, we
+define a `Canonical V ⦂ A` relation that characterizes the well-typed
+values.  The presence of the subsumption rule impacts its definition
+because we must allow the type of the value `V` to be a subtype of `A`.
 ```
-infix  4 Canonical_⦂_
-
 data Canonical_⦂_ : Term → Type → Set where
 
   C-ƛ : ∀ {N A B C D}
