@@ -1,5 +1,5 @@
 ---
-title     : "Subtyping: records"
+title     : "Subtyping: Records"
 layout    : page
 prev      : /More/
 permalink : /Subtyping/
@@ -30,7 +30,7 @@ can also have type `B` if `A` is a subtype of `B`.
 
     ⊢<: : ∀{Γ M A B}
       → Γ ⊢ M ⦂ A
-	  → A <: B
+    → A <: B
         -----------
       → Γ ⊢ M ⦂ B
 
@@ -58,7 +58,7 @@ written `M # l`, and whose dynamic semantics is defined by the
 following reduction rule, which says that accessing the field `lⱼ`
 returns the value stored at that field.
 
-    {l₁=v₁, ..., lⱼ=vⱼ, ..., lᵢ=vᵢ} # lⱼ —→  vⱼ 
+    {l₁=v₁, ..., lⱼ=vⱼ, ..., lᵢ=vᵢ} # lⱼ —→  vⱼ
 
 In this chapter we add records and record types to the simply typed
 lambda calculus (STLC) and prove type safety. It is instructive to see
@@ -138,14 +138,14 @@ Name = String
 A record is traditionally written as follows
 
     { l₁ = M₁, ..., lᵢ = Mᵢ }
-    
+
 so a natural representation is a list of label-term pairs.
 However, we find it more convenient to represent records as a pair of
 vectors (Agda's `Vec` type), one vector of fields and one vector of terms:
 
     l₁, ..., lᵢ
     M₁, ..., Mᵢ
-    
+
 This representation has the advantage that the traditional subscript
 notation `lᵢ` corresponds to indexing into a vector.
 
@@ -244,9 +244,9 @@ If one vector `ns` is a subset of another `ms`, then for any element
 lookup-⊆ : ∀{n m : ℕ}{ns : Vec Name n}{ms : Vec Name m}{i : Fin n}
    → ns ⊆ ms
    → Σ[ k ∈ Fin m ] lookup ns i ≡ lookup ms k
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {zero} ns⊆ms 
+lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {zero} ns⊆ms
     with lookup-∈ (ns⊆ms x (here refl))
-... | ⟨ k , ms[k]=x ⟩ =     
+... | ⟨ k , ms[k]=x ⟩ =
       ⟨ k , (sym ms[k]=x) ⟩
 lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
     lookup-⊆ {n} {m} {ns} {ms} {i} (λ x z → x∷ns⊆ms x (there z))
@@ -258,7 +258,7 @@ lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
 data Type : Set where
   _⇒_   : Type → Type → Type
   `ℕ    : Type
-  ｛_⦂_｝ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type 
+  ｛_⦂_｝ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type
 ```
 
 In addition to function types `A ⇒ B` and natural numbers `ℕ`, we
@@ -366,7 +366,7 @@ Here is the proof of reflexivity, by induction on the size of the type.
     with ty-size-pos {A}
 ... | pos rewrite n≤0⇒n≡0 m
     with pos
-... | ()    
+... | ()
 <:-refl-aux {suc n}{`ℕ}{m} = <:-nat
 <:-refl-aux {suc n}{A ⇒ B}{m} =
   let A<:A = <:-refl-aux {n}{A}{m+n≤o⇒m≤o _ (≤-pred m) } in
@@ -376,7 +376,7 @@ Here is the proof of reflexivity, by induction on the size of the type.
     where
     G : ls ⦂ As <: ls ⦂ As
     G {i}{j} lij rewrite distinct-lookup-inj (distinct-relevant d) lij =
-        let As[i]≤n = ≤-trans (lookup-vec-ty-size {As = As}{i}) (≤-pred m) in 
+        let As[i]≤n = ≤-trans (lookup-vec-ty-size {As = As}{i}) (≤-pred m) in
         <:-refl-aux {n}{lookup As i}{As[i]≤n}
 ```
 The theorem statement uses `n` as an upper bound on the size of the type `A`
@@ -394,7 +394,7 @@ and proceeds by induction on `n`.
     Regarding the latter, we need to show that for any `i` and `j`,
     `lookup ls j ≡ lookup ls i` implies `lookup As j <: lookup As i`.
     Because `lookup` is injective on distinct vectors, we have `i ≡ j`.
-    We then use the induction hypothesis to show that 
+    We then use the induction hypothesis to show that
     `lookup As i <: lookup As i`, noting that the size of
     `lookup As i` is less-than-or-equal to the size of `As`, which
     is one smaller than the size of `｛ ls ⦂ As ｝`.
@@ -421,7 +421,7 @@ The following corollary packages up reflexivity for ease of use.
     where
     As<:Cs : ls ⦂ As <: ns ⦂ Cs
     As<:Cs {i}{j} ls[j]=ns[i]
-        with lookup-⊆ {i = i} ns⊆ms 
+        with lookup-⊆ {i = i} ns⊆ms
     ... | ⟨ k , ns[i]=ms[k] ⟩ =
         let As[j]<:Bs[k] = As<:Bs {k}{j} (trans ls[j]=ns[i] ns[i]=ms[k]) in
         let Bs[k]<:Cs[i] = Bs<:Cs {i}{k} (sym ns[i]=ms[k]) in
@@ -450,7 +450,7 @@ The proof is by induction on the derivations of `A <: B` and `B <: C`.
   if we can prove that `lookup ls j ≡ lookup ms k`.
   We already have `lookup ls j ≡ lookup ns i` and we
   obtain `lookup ns i ≡ lookup ms k` by use of the lemma `lookup-⊆`,
-  noting that `ns ⊆ ms`. 
+  noting that `ns ⊆ ms`.
   We can obtain the later, that `lookup Bs k <: lookup Cs i`,
   from `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
   It suffices to show that `lookup ms k ≡ lookup ns i`,
@@ -527,7 +527,7 @@ The typing judgment takes the form `Γ ⊢ M ⦂ A` and relies on an
 auxiliary judgment `Γ ⊢* Ms ⦂ As` for typing a vector of terms.
 
 ```
-data _⊢*_⦂_ : Context → ∀ {n} → Vec Term n → Vec Type n → Set 
+data _⊢*_⦂_ : Context → ∀ {n} → Vec Term n → Vec Type n → Set
 
 data _⊢_⦂_ : Context → Term → Type → Set where
 
@@ -607,7 +607,7 @@ chapter. Here we discuss the three new rules.
 
 * Rule `⊢<:`: (Subsumption) If a term `M` has type `A`, and `A <: B`,
   then term `M` also has type `B`.
-  
+
 
 ## Renaming and Substitution
 
@@ -712,7 +712,7 @@ data Value : Term → Set where
     → Value (`suc V)
 
   V-rcd : ∀{n}{ls : Vec Name n}{Ms : Vec Term n}
-    → Value ｛ ls := Ms ｝ 
+    → Value ｛ ls := Ms ｝
 ```
 
 ## Reduction
@@ -827,10 +827,10 @@ canonical ⊢zero            V-zero      =  C-zero
 canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
-canonical (⊢rcd ⊢Ms d) VV = C-rcd {dls = d} ⊢Ms d <:-refl 
+canonical (⊢rcd ⊢Ms d) VV = C-rcd {dls = d} ⊢Ms d <:-refl
 canonical (⊢<: ⊢V <:-nat) VV = canonical ⊢V VV
-canonical (⊢<: ⊢V (<:-fun {A}{B}{C}{D} C<:A B<:D)) VV 
-    with canonical ⊢V VV 
+canonical (⊢<: ⊢V (<:-fun {A}{B}{C}{D} C<:A B<:D)) VV
+    with canonical ⊢V VV
 ... | C-ƛ {N}{A′}{B′}{A}{B} ⊢N  AB′<:AB = C-ƛ ⊢N (<:-trans AB′<:AB (<:-fun C<:A B<:D))
 canonical (⊢<: ⊢V (<:-rcd {ks = ks}{ls = ls}{d2 = dls} ls⊆ks ls⦂Ss<:ks⦂Ts)) VV
     with canonical ⊢V VV
@@ -915,8 +915,8 @@ progress (⊢· ⊢L ⊢M)
 ... | done VL
         with progress ⊢M
 ...     | step M—→M′                        = step (ξ-·₂ VL M—→M′)
-...     | done VM 
-        with canonical ⊢L VL 
+...     | done VM
+        with canonical ⊢L VL
 ...     | C-ƛ ⊢N _                          = step (β-ƛ VM)
 progress ⊢zero                              =  done V-zero
 progress (⊢suc ⊢M) with progress ⊢M
@@ -950,7 +950,7 @@ progress (⊢<: {A = A}{B} ⊢M A<:B)           =  progress ⊢M
 * Case `⊢rcd`: we immediately characterize the record as a value.
 
 * Case `⊢<:`: we invoke the induction hypothesis on sub-derivation of `Γ ⊢ M ⦂ A`.
-  
+
 
 ## Preservation <a name="subtyping-preservation"></a>
 
@@ -1047,9 +1047,9 @@ subst-pres : ∀ {Γ Δ σ N A}
     -----------------
   → Δ ⊢ subst σ N ⦂ A
 subst-pres σ⦂ (⊢` eq)            = σ⦂ eq
-subst-pres {σ = σ} σ⦂ (⊢ƛ ⊢N)    = ⊢ƛ (subst-pres{σ = exts σ}(exts-pres {σ = σ} σ⦂) ⊢N) 
-subst-pres {σ = σ} σ⦂ (⊢· ⊢L ⊢M) = ⊢· (subst-pres{σ = σ} σ⦂ ⊢L) (subst-pres{σ = σ} σ⦂ ⊢M) 
-subst-pres {σ = σ} σ⦂ (⊢μ ⊢M)    = ⊢μ (subst-pres{σ = exts σ} (exts-pres{σ = σ} σ⦂) ⊢M) 
+subst-pres {σ = σ} σ⦂ (⊢ƛ ⊢N)    = ⊢ƛ (subst-pres{σ = exts σ}(exts-pres {σ = σ} σ⦂) ⊢N)
+subst-pres {σ = σ} σ⦂ (⊢· ⊢L ⊢M) = ⊢· (subst-pres{σ = σ} σ⦂ ⊢L) (subst-pres{σ = σ} σ⦂ ⊢M)
+subst-pres {σ = σ} σ⦂ (⊢μ ⊢M)    = ⊢μ (subst-pres{σ = exts σ} (exts-pres{σ = σ} σ⦂) ⊢M)
 subst-pres σ⦂ (⊢rcd ⊢Ms dls) = ⊢rcd (subst-vec-pres σ⦂ ⊢Ms ) dls
 subst-pres {σ = σ} σ⦂ (⊢# {d = d} ⊢M lif liA) =
     ⊢# {d = d} (subst-pres {σ = σ} σ⦂ ⊢M) lif liA
@@ -1097,7 +1097,7 @@ The proof is by induction on the typing derivation.
 * Case `⊢-*-∷`: So we have `∅ ⊢ M ⦂ B` and `∅ ⊢* Ms ⦂ As`. We proceed by cases on `i`.
 
     * If it is `0`, then lookup yields term `M` and `A ≡ B`, so we conclude that `∅ ⊢ M ⦂ A`.
-    
+
     * If it is `suc i`, then we conclude by the induction hypothesis.
 
 
@@ -1144,7 +1144,7 @@ with cases on `M —→ N`.
 * Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
   and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ｛ ls ⦂ As ｝`
   and then conclude by rule `⊢#`.
-  
+
 * Case `⊢#` and `β-#`. We have `∅ ⊢ ｛ ks := Ms ｝ ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`,
   `lookup As i ≡ A`, `lookup ks j ≡ l`, and `｛ ks := Ms ｝ # l —→ lookup Ms j`.
   By the canonical forms lemma, we have `∅ ⊢* Ms ⦂ Bs`, `ls ⊆ ks` and `ks ⦂ Bs <: ls ⦂ As`.
@@ -1230,7 +1230,7 @@ The non-algorithmic subtyping rules for variants are
     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
     ----------------------------------------------
     〈k₁=A₁, ..., kᵤ=Aᵤ〉   <:   〈l₁=B₁, ..., lᵤ=Bᵤ〉
-    
+
 Come up with an algorithmic subtyping rule for variant types.
 
 #### Exercise `<:-alternative` (stretch)
@@ -1260,7 +1260,7 @@ of the form:
 
     If S <: { lᵢ : Tᵢ | i ∈ 1..n }, then S ≡ { kⱼ : Sⱼ | j ∈ 1..m }
     and { lᵢ | i ∈ 1..n } ⊆ { kⱼ | j ∈ 1..m }
-    and Sⱼ <: Tᵢ for every i and j such that lᵢ = kⱼ. 
+    and Sⱼ <: Tᵢ for every i and j such that lᵢ = kⱼ.
 
 ## References
 
@@ -1274,6 +1274,5 @@ of the form:
 
 * Barbara H. Liskov and Jeannette M. Wing.  A Behavioral Notion of
   Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
-  
-* Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
 
+* Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
