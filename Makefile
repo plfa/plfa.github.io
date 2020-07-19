@@ -190,11 +190,9 @@ clobber: clean
 
 # Setup Travis
 travis-setup:\
-	$(HOME)/.local/bin/agda\
-	$(HOME)/.local/bin/acknowledgements\
-	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
-	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries
+	travis-install-agda\
+	travis-install-agda-stdlib\
+	travis-install-acknowledgements
 
 .phony: travis-setup
 
@@ -219,7 +217,7 @@ $(HOME)/.local/bin/agda:
 	                  -o $(HOME)/agda-$(AGDA_VERSION).zip
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
-		stack install --stack-yaml=stack-8.0.2.yaml
+		stack install --stack-yaml=stack-8.3.3.yaml
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
