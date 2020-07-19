@@ -217,7 +217,7 @@ $(HOME)/.local/bin/agda:
 	                  -o $(HOME)/agda-$(AGDA_VERSION).zip
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
-		stack install --stack-yaml=stack-8.3.3.yaml
+		stack install --stack-yaml=stack-$(GHC_VERSION).yaml
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
