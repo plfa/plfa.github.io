@@ -42,7 +42,7 @@ yourself, or your group in the case of group practicals).
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
 open import Data.Nat.Properties using
@@ -538,4 +538,3 @@ Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` abo
 ```
 -- Your code goes here
 ```
-

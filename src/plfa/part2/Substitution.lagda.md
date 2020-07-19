@@ -48,7 +48,7 @@ system that _decides_ whether any two substitutions are equal.
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong; cong₂; cong-app)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Function using (_∘_)
 open import plfa.part2.Untyped
      using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;

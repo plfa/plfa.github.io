@@ -6,6 +6,7 @@ permalink: /GettingStarted/
 
 <!-- Links -->
 
+[epub]: https://plfa.github.io/out/epub/plfa.epub
 [plfa]: http://plfa.inf.ed.ac.uk
 [plfa-dev]: https://github.com/plfa/plfa.github.io/archive/dev.zip
 [plfa-status]: https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev
@@ -14,14 +15,14 @@ permalink: /GettingStarted/
 [plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
 
-[agda]: https://github.com/agda/agda/releases/tag/v2.6.0.1
-[agda-version]: https://img.shields.io/badge/agda-v2.6.0.1-blue.svg
-[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.0.1/tools/emacs-mode.html
-[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.0.1/tools/emacs-mode.html#notation-for-key-combinations
-[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.0.1/tools/package-system.html#example-using-the-standard-library
+[agda]: https://github.com/agda/agda/releases/tag/v2.6.1
+[agda-version]: https://img.shields.io/badge/agda-v2.6.1-blue.svg
+[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html
+[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html#notation-for-key-combinations
+[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1/tools/package-system.html#example-using-the-standard-library
 
-[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.1-blue.svg
-[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.1
+[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg
+[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.3
 
 [haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
 [haskell-ghc]: https://www.haskell.org/ghc/
@@ -64,11 +65,11 @@ The easiest way to install any specific version of Agda is using [Stack][haskell
 ```bash
 git clone https://github.com/agda/agda.git
 cd agda
-git checkout v2.6.0.1
+git checkout v2.6.1
 ```
 To install Agda, run Stack from the Agda source directory:
 ```bash
-stack install --stack-yaml stack-8.6.5.yaml
+stack install --stack-yaml stack-8.8.3.yaml
 ```
 If you want Stack to use you system installation of GHC, you can pass the `--system-ghc` flag and select the appropriate `stack-*.yaml` file. For instance, if you have GHC 8.2.2 installed, run:
 ```bash
@@ -81,7 +82,7 @@ You can get the required version of the Agda standard library from GitHub, eithe
 ```bash
 git clone https://github.com/agda/agda-stdlib.git
 cd agda-stdlib
-git checkout v1.1
+git checkout v1.3
 ```
 You can get the latest version of Programming Language Foundations in Agda from GitHub, either by cloning the repository, or by downloading [the zip archive][plfa-dev]:
 ```bash
@@ -227,7 +228,7 @@ bundle exec jekyll serve
 
 ### Building the EPUB
 
-The EPUB version of the book is built using Pandoc. Here's how to build the EPUB:
+The [EPUB version][epub] of the book is built using Pandoc. Here's how to build the EPUB:
 
 1. Install a recent version of Pandoc, [available here][pandoc].
    We recommend their official installer (on the linked page),

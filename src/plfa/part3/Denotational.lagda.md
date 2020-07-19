@@ -54,9 +54,6 @@ down a denotational semantics of the lambda calculus.
 
 ## Imports
 
-<!-- JGS: for equational reasoning
-open import Relation.Binary using (Setoid)
--->
 ```
 open import Agda.Primitive using (lzero; lsuc)
 open import Data.Empty using (⊥-elim)
@@ -589,7 +586,7 @@ denotation-setoid Γ = record
 -->
 <!--
   The following went inside the module ≃-Reasoning:
-  
+
   open import Relation.Binary.Reasoning.Setoid (denotation-setoid Γ)
     renaming (begin_ to start_; _≈⟨_⟩_ to _≃⟨_⟩_; _∎ to _☐) public
 -->
@@ -854,7 +851,7 @@ Dᶜ n (a[n] ∷ ls) = (D^suc n (a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ 
   a successor function whose denotation is given by `D^suc`,
   and the start of the path (last of the vector).
   It returns the `n + 1` vertex in the path.
-  
+
         (D^suc (suc n) (a[n+1] ∷ a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n+1]
 
 The exercise is to prove that for any path `ls`, the meaning of the
@@ -870,7 +867,7 @@ apply-n zero = # 0
 apply-n (suc n) = # 1 · apply-n n
 
 church : (n : ℕ) → ∅ ⊢ ★
-church n = ƛ ƛ apply-n n 
+church n = ƛ ƛ apply-n n
 ```
 
 Prove the following theorem.
