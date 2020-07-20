@@ -36,9 +36,9 @@ install:
 # Install Pandoc:
 - travis_retry curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $HOME/pandoc.deb && sudo dpkg -i $HOME/pandoc.deb
 # Install agda, agda-stdlib, and acknowledgements:
-- travis_wait make travis-install-agda
-- travis_wait make travis-install-agda-stdlib
-- travis_wait make travis-install-acknowledgements
+- travis_wait 60 make travis-install-agda
+- make travis-install-agda-stdlib
+- make travis-install-acknowledgements
 
 script:
 - agda --version
