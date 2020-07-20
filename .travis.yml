@@ -39,6 +39,7 @@ install:
 - travis_wait 60 make travis-install-agda
 - make travis-install-agda-stdlib
 - make travis-install-acknowledgements
+- ruby -S bundle install
 
 script:
 - agda --version
