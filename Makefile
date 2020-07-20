@@ -165,7 +165,7 @@ out/epub/plfa.epub: $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledg
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
 	@mkdir -p out/epub/
-	 $(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
+	$(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
 
 .phony: epub epubcheck
 
@@ -185,7 +185,6 @@ clobber: clean
 	rm -rf latest/ $(RELEASES)
 
 .phony: clean clobber
-
 
 
 # Setup Travis

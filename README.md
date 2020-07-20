@@ -45,9 +45,6 @@ permalink: /GettingStarted/
 [![Agda][agda-version]][agda]
 [![agda-stdlib][agda-stdlib-version]][agda-stdlib]
 
-
-# Getting Started with PLFA
-
 ## Dependencies for users
 
 You can read PLFA [online][plfa] without installing anything.
