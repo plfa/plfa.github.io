@@ -573,7 +573,7 @@ from `m` only if `n ≤ m`:
 ```
 minus : (m n : ℕ) (n≤m : n ≤ m) → ℕ
 minus m       zero    _         = m
-minus (suc m) (suc n) (s≤s m≤n) = minus m n m≤n
+minus (suc m) (suc n) (s≤s n≤m) = minus m n n≤m
 ```
 
 Unfortunately, it is painful to use, since we have to explicitly provide
