@@ -34,8 +34,8 @@ as implication of false:
 ¬_ : Set → Set
 ¬ A = A → ⊥
 ```
-This is a form of _proof by contradiction_: if assuming `A` leads
-to the conclusion `⊥` (a contradiction), then we must have `¬ A`.
+This is a form of _reductio ad absurdum_: if assuming `A` leads
+to the conclusion `⊥` (an absurdity), then we must have `¬ A`.
 
 Evidence that `¬ A` holds is of the form
 
