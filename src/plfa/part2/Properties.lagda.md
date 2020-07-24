@@ -957,11 +957,11 @@ eval : ∀ {L A}
   → ∅ ⊢ L ⦂ A
     ---------
   → Steps L
-eval {L} (gas zero)    ⊢L                             =  steps (L ∎) out-of-gas
+eval {L} (gas zero)    ⊢L                                =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                                         =  steps (L ∎) (done VL)
-... | step L—→M with eval (gas m) (preserve ⊢L L—→M)
-...    | steps M—↠N fin                               =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+... | done VL                                            =  steps (L ∎) (done VL)
+... | step {M} L—→M with eval (gas m) (preserve ⊢L L—→M)
+...    | steps M—↠N fin                                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well typed.  We consider the amount of gas
