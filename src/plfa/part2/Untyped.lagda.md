@@ -467,7 +467,7 @@ _ =
   ∎
 ```
 After just two steps the top-level term is an abstraction,
-and `ζ` rules drive the rest of the normalisation. 
+and `ζ` rules drive the rest of the normalisation.
 
 
 ## Progress
@@ -547,8 +547,10 @@ As previously, progress immediately yields an evaluator.
 
 Gas is specified by a natural number:
 ```
-data Gas : Set where
-  gas : ℕ → Gas
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is normal or indicate that it ran out of gas:

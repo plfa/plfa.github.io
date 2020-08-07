@@ -573,7 +573,7 @@ from `m` only if `n ≤ m`:
 ```
 minus : (m n : ℕ) (n≤m : n ≤ m) → ℕ
 minus m       zero    _         = m
-minus (suc m) (suc n) (s≤s m≤n) = minus m n m≤n
+minus (suc m) (suc n) (s≤s n≤m) = minus m n n≤m
 ```
 
 Unfortunately, it is painful to use, since we have to explicitly provide
@@ -595,8 +595,8 @@ fill in an implicit of an *empty* record type, since there aren't any fields
 after all. This is why `⊤` is defined as an empty record.
 
 The trick is to have an implicit argument of the type `T ⌊ n ≤? m ⌋`. Let's go
-through what this means step-by-step. First, we run the decision procedure, `n
-≤? m`. This provides us with evidence whether `n ≤ m` holds or not. We erase the
+through what this means step-by-step. First, we run the decision procedure,
+`n ≤? m`. This provides us with evidence whether `n ≤ m` holds or not. We erase the
 evidence to a boolean. Finally, we apply `T`. Recall that `T` maps booleans into
 the world of evidence: `true` becomes the unit type `⊤`, and `false` becomes the
 empty type `⊥`. Operationally, an implicit argument of this type works as a

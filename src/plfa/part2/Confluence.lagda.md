@@ -401,14 +401,92 @@ sub-par : ∀{Γ A B} {N N′ : Γ , A ⊢ B} {M M′ : Γ ⊢ A}
 sub-par pn pm = subst-par (par-subst-zero pm) pn
 ```
 
-
 ## Parallel reduction satisfies the diamond property
 
 The heart of the confluence proof is made of stone, or rather, of
 diamond!  We show that parallel reduction satisfies the diamond
 property: that if `M ⇛ N` and `M ⇛ N′`, then `N ⇛ L` and `N′ ⇛ L` for
-some `L`.  The proof is relatively easy; it is parallel reduction's
-_raison d'etre_.
+some `L`.  The typical proof is an induction on `M ⇛ N` and `M ⇛ N′`
+so that every possible pair gives rise to a witeness `L` given by
+performing enough beta reductions in parallel.
+
+However, a simpler approach is to perform as many beta reductions in
+parallel as possible on `M`, say `M ⁺`, and then show that `N` also
+parallel reduces to `M ⁺`. This is the idea of Takahashi's _complete
+development_. The desired property may be illustrated as
+
+        M
+       /|
+      / |
+     /  |
+    N   2
+     \  |
+      \ |
+       \|
+        M⁺
+
+where downward lines are instances of `⇛`, so we call it the _triangle
+property_.
+
+```
+_⁺ : ∀ {Γ A}
+  → Γ ⊢ A → Γ ⊢ A
+(` x) ⁺       =  ` x
+(ƛ M) ⁺       = ƛ (M ⁺)
+((ƛ N) · M) ⁺ = N ⁺ [ M ⁺ ]
+(L · M) ⁺     = L ⁺ · (M ⁺)
+
+par-triangle : ∀ {Γ A} {M N : Γ ⊢ A}
+  → M ⇛ N
+    -------
+  → N ⇛ M ⁺
+par-triangle pvar          = pvar
+par-triangle (pabs p)      = pabs (par-triangle p)
+par-triangle (pbeta p1 p2) = sub-par (par-triangle p1) (par-triangle p2)
+par-triangle (papp {L = ƛ _ } (pabs p1) p2) =
+  pbeta (par-triangle p1) (par-triangle p2)
+par-triangle (papp {L = ` _}   p1 p2) = papp (par-triangle p1) (par-triangle p2)
+par-triangle (papp {L = _ · _} p1 p2) = papp (par-triangle p1) (par-triangle p2)
+```
+
+The proof of the triangle property is an induction on `M ⇛ N`.
+
+* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`. 
+
+* Suppose `ƛ M ⇛ ƛ N`. By the induction hypothesis we have `N ⇛ M ⁺`
+  and by definition `(λ M) ⁺ = λ (M ⁺)`, so we conclude that `λ N ⇛ λ
+  (M ⁺)`.
+
+* Suppose `(λ N) · M ⇛ N′ [ M′ ]`. By the induction hypothesis, we have
+  `N′ ⇛ N ⁺` and `M′ ⇛ M ⁺`. Since substitution respects parallel reduction,
+  it follows that `N′ [ M′ ] ⇛ N ⁺ [ M ⁺ ]`, but the right hand side
+  is exactly `((λ N) · M) ⁺`, hence `N′ [ M′ ] ⇛ ((λ N) · M) ⁺`.
+
+* Suppose `(λ L) · M ⇛ (λ L′) · M′`. By the induction hypothesis
+  we have `L′ ⇛ L ⁺` and `M′ ⇛ M ⁺`; by definition `((λ L) · M) ⁺ = L ⁺ [ M ⁺ ]`.
+  It follows `(λ L′) · M′ ⇛ L ⁺ [ M ⁺ ]`.
+
+* Suppose `x · M ⇛ x · M′`. By the induction hypothesis we have `M′ ⇛ M ⁺`
+  and `x ⇛ x ⁺` so that `x · M′ ⇛ x · M ⁺`.
+  The remaining case is proved in the same way, so we ignore it.  (As
+  there is currently no way in Agda to expand the catch-all pattern in
+  the definition of `_⁺` for us before checking the right-hand side,
+  we have to write down the remaining case explicitly.)
+
+The diamond property then follows by halving the diamond into two triangles.
+
+        M
+       /|\
+      / | \
+     /  |  \
+    N   2   N′
+     \  |  /
+      \ | /
+       \|/
+        M⁺
+
+That is, the diamond property is proved by applying the
+triangle property on each side with the same confluent term `M ⁺`.
 
 ```
 par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
@@ -416,90 +494,24 @@ par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N′
     ---------------------------------
   → Σ[ L ∈ Γ ⊢ A ] (N ⇛ L) × (N′ ⇛ L)
-par-diamond (pvar{x = x}) pvar = ⟨ ` x , ⟨ pvar , pvar ⟩ ⟩
-par-diamond (pabs p1) (pabs p2)
-    with par-diamond p1 p2
-... | ⟨ L′ , ⟨ p3 , p4 ⟩ ⟩ =
-      ⟨ ƛ L′ , ⟨ pabs p3 , pabs p4 ⟩ ⟩
-par-diamond{Γ}{A}{L · M}{N}{N′} (papp{Γ}{L}{L₁}{M}{M₁} p1 p3)
-                                (papp{Γ}{L}{L₂}{M}{M₂} p2 p4)
-    with par-diamond p1 p2
-... | ⟨ L₃ , ⟨ p5 , p6 ⟩ ⟩
-      with par-diamond p3 p4
-...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-        ⟨ (L₃ · M₃) , ⟨ (papp p5 p7) , (papp p6 p8) ⟩ ⟩
-par-diamond (papp (pabs p1) p3) (pbeta p2 p4)
-    with par-diamond p1 p2
-... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
-      with par-diamond p3 p4
-...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-        ⟨ N₃ [ M₃ ] , ⟨ pbeta p5 p7 , sub-par p6 p8 ⟩ ⟩
-par-diamond (pbeta p1 p3) (papp (pabs p2) p4)
-    with par-diamond p1 p2
-... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
-      with par-diamond p3 p4
-...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-        ⟨ (N₃ [ M₃ ]) , ⟨ sub-par p5  p7 , pbeta p6 p8 ⟩ ⟩
-par-diamond {Γ}{A} (pbeta p1 p3) (pbeta p2 p4)
-    with par-diamond p1 p2
-... | ⟨ N₃ , ⟨ p5 , p6 ⟩ ⟩
-      with par-diamond p3 p4
-...   | ⟨ M₃ , ⟨ p7 , p8 ⟩ ⟩ =
-        ⟨ N₃ [ M₃ ] , ⟨ sub-par p5 p7 , sub-par p6 p8 ⟩ ⟩
+par-diamond {M = M} p1 p2 = ⟨ M ⁺ , ⟨ par-triangle p1 , par-triangle p2 ⟩ ⟩
 ```
 
-The proof is by induction on both premises.
-
-* Suppose `x ⇛ x` and `x ⇛ x`.
-  We choose `L = x` and immediately have `x ⇛ x` and `x ⇛ x`.
-
-* Suppose `ƛ N ⇛ ƛ N₁` and `ƛ N ⇛ ƛ N₂`.
-  By the induction hypothesis, there exists `L′` such that
-  `N₁ ⇛ L′` and `N₂ ⇛ L′`. We choose `L = ƛ L′` and
-  by `pabs` conclude that `ƛ N₁ ⇛ ƛ L′` and `ƛ N₂ ⇛ ƛ L′.
-
-* Suppose that `L · M ⇛ L₁ · M₁` and `L · M ⇛ L₂ · M₂`.
-  By the induction hypothesis we have
-  `L₁ ⇛ L₃` and `L₂ ⇛ L₃` for some `L₃`.
-  Likewise, we have
-  `M₁ ⇛ M₃` and `M₂ ⇛ M₃` for some `M₃`.
-  We choose `L = L₃ · M₃` and conclude with two uses of `papp`.
-
-* Suppose that `(ƛ N) · M ⇛ (ƛ N₁) · M₁` and `(ƛ N) · M ⇛ N₂ [ M₂ ]`
-  By the induction hypothesis we have
-  `N₁ ⇛ N₃` and `N₂ ⇛ N₃` for some `N₃`.
-  Likewise, we have
-  `M₁ ⇛ M₃` and `M₂ ⇛ M₃` for some `M₃`.
-  We choose `L = N₃ [ M₃ ]`.
-  We have `(ƛ N₁) · M₁ ⇛ N₃ [ M₃ ]` by rule `pbeta`
-  and conclude that `N₂ [ M₂ ] ⇛ N₃ [ M₃ ]` because
-  substitution respects parallel reduction.
-
-* Suppose that `(ƛ N) · M ⇛ N₁ [ M₁ ]` and `(ƛ N) · M ⇛ (ƛ N₂) · M₂`.
-  The proof of this case is the mirror image of the last one.
-
-* Suppose that `(ƛ N) · M ⇛ N₁ [ M₁ ]` and `(ƛ N) · M ⇛ N₂ [ M₂ ]`.
-  By the induction hypothesis we have
-  `N₁ ⇛ N₃` and `N₂ ⇛ N₃` for some `N₃`.
-  Likewise, we have
-  `M₁ ⇛ M₃` and `M₂ ⇛ M₃` for some `M₃`.
-  We choose `L = N₃ [ M₃ ]`.
-  We have both `(ƛ N₁) · M₁ ⇛ N₃ [ M₃ ]`
-  and `(ƛ N₂) · M₂ ⇛ N₃ [ M₃ ]`
-  by rule `pbeta`
+This step is optional, though, in the presence of triangle property.
 
 #### Exercise (practice)
 
-Draw pictures that represent the proofs of each of the six cases in
-the above proof of `par-diamond`. The pictures should consist of nodes
-and directed edges, where each node is labeled with a term and each
-edge represents parallel reduction.
+* Prove the diamond property `par-diamond` directly by induction on `M ⇛ N` and `M ⇛ N′`.
 
+* Draw pictures that represent the proofs of each of the six cases in
+  the direct proof of `par-diamond`. The pictures should consist of nodes
+  and directed edges, where each node is labeled with a term and each
+  edge represents parallel reduction.
 
 ## Proof of confluence for parallel reduction
 
 As promised at the beginning, the proof that parallel reduction is
-confluent is easy now that we know it satisfies the diamond property.
+confluent is easy now that we know it satisfies the triangle property.
 We just need to prove the strip lemma, which states that
 if `M ⇛ N` and `M ⇛* N′`, then
 `N ⇛* L` and `N′ ⇛ L` for some `L`.
@@ -519,7 +531,7 @@ where downward lines are instances of `⇛` or `⇛*`, depending on how
 they are marked.
 
 The proof of the strip lemma is a straightforward induction on `M ⇛* N′`,
-using the diamond property in the induction step.
+using the triangle property in the induction step.
 
 ```
 strip : ∀{Γ A} {M N N′ : Γ ⊢ A}
@@ -529,11 +541,8 @@ strip : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → Σ[ L ∈ Γ ⊢ A ] (N ⇛* L)  ×  (N′ ⇛ L)
 strip{Γ}{A}{M}{N}{N′} mn (M ∎) = ⟨ N , ⟨ N ∎ , mn ⟩ ⟩
 strip{Γ}{A}{M}{N}{N′} mn (M ⇛⟨ mm' ⟩ m'n')
-    with par-diamond mn mm'
-... | ⟨ L , ⟨ nl , m'l ⟩ ⟩
-      with strip m'l m'n'
-...   | ⟨ L′ , ⟨ ll' , n'l' ⟩ ⟩ =
-        ⟨ L′ , ⟨ (N ⇛⟨ nl ⟩ ll') , n'l' ⟩ ⟩
+  with strip (par-triangle mm') m'n'
+... | ⟨ L , ⟨ ll' , n'l' ⟩ ⟩ = ⟨ L , ⟨ N ⇛⟨ par-triangle mn ⟩ ll' , n'l' ⟩ ⟩
 ```
 
 The proof of confluence for parallel reduction is now proved by
@@ -605,19 +614,16 @@ Broadly speaking, this proof of confluence, based on parallel
 reduction, is due to W. Tait and P. Martin-Lof (see Barendredgt 1984,
 Section 3.2).  Details of the mechanization come from several sources.
 The `subst-par` lemma is the "strong substitutivity" lemma of Shafer,
-Tebbi, and Smolka (ITP 2015). The proofs of `par-diamond`, `strip`,
-and `par-confluence` are based on Pfenning's 1992 technical report
-about the Church-Rosser theorem. In addition, we consulted Nipkow and
+Tebbi, and Smolka (ITP 2015). The proofs of `par-triangle`, `strip`,
+and `par-confluence` are based on the notion of complete development
+by Takahashi (1995) and Pfenning's 1992 technical report about the
+Church-Rosser theorem. In addition, we consulted Nipkow and
 Berghofer's mechanization in Isabelle, which is based on an earlier
-article by Nipkow (JAR 1996).  We opted not to use the "complete
-developments" approach of Takahashi (1995) because we felt that the
-proof was simple enough based solely on parallel reduction.  There are
-many more mechanizations of the Church-Rosser theorem that we have not
-yet had the time to read, including Shankar's (J. ACM 1988) and
-Homeier's (TPHOLs 2001).
+article by Nipkow (JAR 1996).  
 
 ## Unicode
 
 This chapter uses the following unicode:
 
-    ⇛  U+3015  RIGHTWARDS TRIPLE ARROW (\r== or \Rrightarrow)
+    ⇛  U+21DB  RIGHTWARDS TRIPLE ARROW (\r== or \Rrightarrow)
+    ⁺  U+207A  SUPERSCRIPT PLUS SIGN   (\^+)

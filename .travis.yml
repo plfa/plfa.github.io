@@ -28,26 +28,29 @@ addons:
 env:
   - SH=bash
 
-before_install:
+install:
 # Install Stack:
 - mkdir -p ~/.local/bin
 - export PATH=$HOME/.local/bin:$PATH
 - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 # Install Pandoc:
 - travis_retry curl -L https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb -o $HOME/pandoc.deb && sudo dpkg -i $HOME/pandoc.deb
-# Install agda, agda-stdlib, and agda2html:
-- make travis-setup
+# Install agda, agda-stdlib, and acknowledgements:
+- travis_wait 60 make travis-install-agda
+- make travis-install-agda-stdlib
+- make travis-install-acknowledgements
+- ruby -S bundle install
 
 script:
 - agda --version
 - acknowledgements --version
 - pandoc --version
 - acknowledgements -i _config.yml >> _config.yml
-- make build # build website
+- make build         # build website
 - make build-history # build previous releases
-- make test-offline # test website
-- make epub # build EPUB
-- make epubcheck # test EPUB
+- make test-offline  # test website
+- make epub          # build EPUB
+- make epubcheck     # test EPUB
 
 before_deploy:
 - make clean

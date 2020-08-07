@@ -165,7 +165,7 @@ out/epub/plfa.epub: $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledg
 
 out/epub/acknowledgements.md: src/plfa/acknowledgements.md _config.yml
 	@mkdir -p out/epub/
-	 $(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
+	$(BUNDLE) exec ruby epub/render-liquid-template.rb _config.yml $< $@
 
 .phony: epub epubcheck
 
@@ -187,14 +187,11 @@ clobber: clean
 .phony: clean clobber
 
 
-
 # Setup Travis
 travis-setup:\
-	$(HOME)/.local/bin/agda\
-	$(HOME)/.local/bin/acknowledgements\
-	$(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src\
-	$(HOME)/.agda/defaults\
-	$(HOME)/.agda/libraries
+	travis-install-agda\
+	travis-install-agda-stdlib\
+	travis-install-acknowledgements
 
 .phony: travis-setup
 
@@ -215,11 +212,11 @@ $(HOME)/.agda/libraries:
 	echo "$(PLFA_DIR)/plfa.agda-lib" >> $(HOME)/.agda/libraries
 
 $(HOME)/.local/bin/agda:
-	travis_retry curl -L https://github.com/agda/agda/archive/v$(AGDA_VERSION).zip\
+	curl -L https://github.com/agda/agda/archive/v$(AGDA_VERSION).zip\
 	                  -o $(HOME)/agda-$(AGDA_VERSION).zip
 	unzip -qq $(HOME)/agda-$(AGDA_VERSION).zip -d $(HOME)
 	cd $(HOME)/agda-$(AGDA_VERSION);\
-		stack install --stack-yaml=stack-8.0.2.yaml
+		stack install --stack-yaml=stack-$(GHC_VERSION).yaml
 
 travis-uninstall-agda:
 	rm -rf $(HOME)/agda-$(AGDA_VERSION)/
@@ -236,7 +233,7 @@ travis-reinstall-agda: travis-uninstall-agda travis-install-agda
 travis-install-agda-stdlib: $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src
 
 $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION)/src:
-	travis_retry curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip\
+	curl -L https://github.com/agda/agda-stdlib/archive/v$(AGDA_STDLIB_VERSION).zip\
 	                  -o $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip
 	unzip -qq $(HOME)/agda-stdlib-$(AGDA_STDLIB_VERSION).zip -d $(HOME)
 	mkdir -p $(HOME)/.agda
@@ -256,7 +253,7 @@ travis-reinstall-agda-stdlib: travis-uninstall-agda-stdlib travis-install-agda-s
 travis-install-acknowledgements: $(HOME)/.local/bin/acknowledgements
 
 $(HOME)/.local/bin/acknowledgements:
-	travis_retry curl -L https://github.com/plfa/acknowledgements/archive/master.zip\
+	curl -L https://github.com/plfa/acknowledgements/archive/master.zip\
 	                  -o $(HOME)/acknowledgements-master.zip
 	unzip -qq $(HOME)/acknowledgements-master.zip -d $(HOME)
 	cd $(HOME)/acknowledgements-master;\

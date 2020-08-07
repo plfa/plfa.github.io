@@ -632,8 +632,10 @@ not fixed by the given arguments.
 ## Evaluation
 
 ```
-  data Gas : Set where
-    gas : ℕ → Gas
+  record Gas : Set where
+    constructor gas
+    field
+      amount : ℕ
 
   data Finished {Γ A} (N : Γ ⊢ A) : Set where
 

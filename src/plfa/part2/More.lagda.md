@@ -1089,8 +1089,10 @@ progress (case× L M) with progress L
 ## Evaluation
 
 ```
-data Gas : Set where
-  gas : ℕ → Gas
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
 
 data Finished {Γ A} (N : Γ ⊢ A) : Set where
 

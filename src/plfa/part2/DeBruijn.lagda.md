@@ -1043,8 +1043,10 @@ refer to preservation, since it is built-in to the definition of reduction.
 
 As previously, gas is specified by a natural number:
 ```
-data Gas : Set where
-  gas : ℕ → Gas
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value or indicate that it ran out of gas:
@@ -1375,4 +1377,3 @@ This chapter uses the following unicode:
     ₆  U+2086  SUBSCRIPT SIX (\_6)
     ₇  U+2087  SUBSCRIPT SEVEN (\_7)
     ≠  U+2260  NOT EQUAL TO (\=n)
-
