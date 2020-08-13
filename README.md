@@ -225,14 +225,12 @@ bundle exec jekyll serve
 
 ### Building the EPUB
 
-The [EPUB version][epub] of the book is built using Pandoc. Here's how to build the EPUB:
+The [EPUB version][epub] of the book is built using Pandoc.
 
-1. Install a recent version of Pandoc, [available here][pandoc].
-   We recommend their official installer (on the linked page),
-   which is much faster than compiling Pandoc from source with Haskell Stack.
+Install a recent version of Pandoc, [available here][pandoc]. The easiest way to install Pandoc is using their official installer, which is much faster than compiling Pandoc from source with Haskell Stack.
 
-2. Build the EPUB by running:
-   ```bash
-   make epub
-   ```
-   The EPUB is written to `out/epub/plfa.epub`.
+Once you’ve installed Pandoc, you can build the EPUB by running:
+```bash
+make epub
+```
+The EPUB is written to `out/epub/plfa.epub`.
