@@ -892,7 +892,7 @@ standing for the number eleven is encoded as
 Representations are not unique due to leading zeros.
 Hence, eleven is also represented by `001011`, encoded as:
 
-    ⟨⟩ O I O I I
+    ⟨⟩ O O I O I I
 
 Define a function
 
