@@ -65,7 +65,7 @@ rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 ```
 
 If one squints hard enough, the `ℱ` function starts to look like the
-`curry` operation familar to functional programmers. It turns a
+`curry` operation familiar to functional programmers. It turns a
 function that expects a tuple of length `n + 1` (the environment `Γ , ★`)
 into a function that expects a tuple of length `n` and returns a
 function of one parameter.
@@ -423,7 +423,7 @@ mean by "context" and "surround".
 
 A _context_ is a program with one hole in it. The following data
 definition `Ctx` makes this idea explicit. We index the `Ctx` data
-type with two contexts for variables: one for the the hole and one for
+type with two contexts for variables: one for the hole and one for
 terms that result from filling the hole.
 
 ```
