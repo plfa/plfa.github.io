@@ -102,7 +102,7 @@ In order to have `agda-mode` automatically loaded whenever you open a file endin
      auto-mode-alist))
 ```
 
-The configuration file for Emacs is normally located in `~/.emacs` or `~/.emacs.d/init.el`, but Aquamacs users might need to move their startup settings to the `Preferences.el` file in `~/Library/Preferences/Aquamacs Emacs/Preferences`.
+(The configuration file for Emacs is normally located in `~/.emacs` or `~/.emacs.d/init.el`, but Aquamacs users might need to move their startup settings to the `Preferences.el` file in `~/Library/Preferences/Aquamacs Emacs/Preferences`.)
 
 
 ### Using mononoki in Emacs

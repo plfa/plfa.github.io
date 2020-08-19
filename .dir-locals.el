@@ -3,3 +3,4 @@
 
 ;; Disable auto-fill-mode for PLFA
 (turn-off-auto-fill)
+(remove-hook 'text-mode-hook #'turn-on-auto-fill)
