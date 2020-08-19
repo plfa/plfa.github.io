@@ -28,6 +28,11 @@ SEDI := sed -i
 endif
 
 
+# Configure the repository to use .githooks
+init:
+	git config core.hooksPath .githooks
+
+
 # Build PLFA web version and test links
 default: test
 

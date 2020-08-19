@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Check if fix-whitespace is installed, and if so, run it.
+#
+
+if ! command -v fix-whitespace &> /dev/null
+then
+  echo "fix-whitespace could not be found"
+  exit
+else
+  fix-whitespace --check
+fi

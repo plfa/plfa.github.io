@@ -143,15 +143,17 @@ You'll see the key sequence of the character in mini buffer.
 PLFA is available as both a website and an EPUB e-book, both of which can be built on Linux and macOS.
 PLFA is written in literate Agda with [Kramdown Markdown][kramdown].
 
+
 ### Git hooks
 
-The repository comes with several pre-commit Git hooks installed:
+The repository comes with several Git hooks:
 
  1. The [fix-whitespace][fix-whitespace] program is run to check for whitespace violations.
  
  2. The test suite is run to check if everything type checks.
 
-If you don’t have [fix-whitespace][fix-whitespace] installed, you can circumvent the pre-commit Git hooks by passing `--no-verify`.
+You can install these Git hooks by calling `make init`.
+
 
 ### Building the website
 
@@ -197,6 +199,7 @@ If you simply wish to have a local copy of the book, e.g. for offline reading, b
 bundle install
 bundle exec jekyll serve
 ```
+
 
 ### Building the EPUB
 
