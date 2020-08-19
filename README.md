@@ -143,6 +143,16 @@ You'll see the key sequence of the character in mini buffer.
 PLFA is available as both a website and an EPUB e-book, both of which can be built on Linux and macOS.
 PLFA is written in literate Agda with [Kramdown Markdown][kramdown].
 
+### Git hooks
+
+The repository comes with several pre-commit Git hooks installed:
+
+ 1. The [fix-whitespace][fix-whitespace] program is run to check for whitespace violations.
+ 
+ 2. The test suite is run to check if everything type checks.
+
+If you don’t have [fix-whitespace][fix-whitespace] installed, you can circumvent the pre-commit Git hooks by passing `--no-verify`.
+
 ### Building the website
 
 The website version of the book is built in three stages:
@@ -222,6 +232,8 @@ The EPUB is written to `out/epub/plfa.epub`.
 
 [haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
 [haskell-ghc]: https://www.haskell.org/ghc/
+
+[fix-whitespace]: https://github.com/agda/fix-whitespace
 
 [mononoki]: https://madmalik.github.io/mononoki/
 
