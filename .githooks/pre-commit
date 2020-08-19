@@ -1,12 +1,15 @@
 #!/bin/sh
-#
-# Check if fix-whitespace is installed, and if so, run it.
-#
 
+# Check if fix-whitespace is installed, and if so, run it.
 if ! command -v fix-whitespace &> /dev/null
 then
-  echo "fix-whitespace could not be found"
+  echo "Please install fix-whitespace (see README.md)"
   exit
 else
+  echo "Checking for whitespace violations..."
   fix-whitespace --check
 fi
+
+# Run the test suite.
+echo "Running the test suite..."
+make test
