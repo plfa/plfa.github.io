@@ -149,10 +149,17 @@ PLFA is written in literate Agda with [Kramdown Markdown][kramdown].
 The repository comes with several Git hooks:
 
  1. The [fix-whitespace][fix-whitespace] program is run to check for whitespace violations.
- 
+
  2. The test suite is run to check if everything type checks.
 
 You can install these Git hooks by calling `make init`.
+You can install [fix-whitespace][fix-whitespace] by running:
+```bash
+git clone https://github.com/agda/fix-whitespace
+cd fix-whitespace/
+stack install --stack-yaml stack-8.8.3.yaml
+```
+If you want Stack to use your system installation of GHC, you can pass the `--system-ghc` flag and select the appropriate `stack-*.yaml` file, like when installing [Agda](#installing-agda-using-stack).
 
 
 ### Building the website
