@@ -51,8 +51,8 @@ Evidence that `∀ (x : A) → B x` holds is of the form
 
 where `N x` is a term of type `B x`, and `N x` and `B x` both contain
 a free variable `x` of type `A`.  Given a term `L` providing evidence
-that `∀ (x : A) → B x` holds, and a term `M` of type `A`, the term `L
-M` provides evidence that `B M` holds.  In other words, evidence that
+that `∀ (x : A) → B x` holds, and a term `M` of type `A`, the term `L M`
+provides evidence that `B M` holds.  In other words, evidence that
 `∀ (x : A) → B x` holds is a function that converts a term `M` of type
 `A` into evidence that `B M` holds.
 
