@@ -11,13 +11,13 @@
 #
 # For directories,
 #
-# 1) excluded-dirs is a black-list of directories,
-# 2) included-dirs is a white-list of excluded-dirs
+# 1) excluded-dirs is a block-list of directories,
+# 2) included-dirs is a allow-list of excluded-dirs
 #
 # For files,
 #
-# 3) included-files is a white-list of files,
-# 4) excluded-files is a black-list of included-files.
+# 3) included-files is a allow-list of files,
+# 4) excluded-files is a block-list of included-files.
 #
 # The extended glob pattern can be used to specify file/direcotory names.
 # For details, see http://hackage.haskell.org/package/filemanip-0.3.6.3/docs/System-FilePath-GlobPattern.html
