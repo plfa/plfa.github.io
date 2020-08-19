@@ -2,7 +2,7 @@ Style guide for PLFA
 ============================
 
 This is based on [the style guide for the Agda standard library](https://github.com/agda/agda-stdlib/blob/master/notes/style-guide.md).
-Like it, this is very much a work-in-progress and is not exhaustive. 
+Like it, this is very much a work-in-progress and is not exhaustive.
 
 ## File structure
 
@@ -44,14 +44,14 @@ Like it, this is very much a work-in-progress and is not exhaustive.
 * If the type of a term does not fit on one line then the subsequent
   lines of the type should all be indented by two spaces, e.g.
   ```agda
-  map-cong₂ : ∀ {a b} {A : Set a} {B : Set b} 
-    → ∀ {f g : A → B} {xs} 
+  map-cong₂ : ∀ {a b} {A : Set a} {B : Set b}
+    → ∀ {f g : A → B} {xs}
     → All (λ x → f x ≡ g x) xs → map f xs ≡ map g xs
   ```
 
 * As can be seen in the example above, function arrows at line breaks
-  should always go at the beginning of the next line rather than the 
-  end of the line. 
+  should always go at the beginning of the next line rather than the
+  end of the line.
 
 #### Module parameters
 
@@ -85,7 +85,7 @@ Like it, this is very much a work-in-progress and is not exhaustive.
   ```agda
   +-comm : Commutative _+_
   +-comm zero    n = sym (+-identityʳ n)
-  +-comm (suc m) n = 
+  +-comm (suc m) n =
     begin
       suc m + n
     ≡⟨⟩

@@ -4,46 +4,12 @@ title: Getting Started
 permalink: /GettingStarted/
 ---
 
-<!-- Links -->
-
-[epub]: https://plfa.github.io/out/epub/plfa.epub
-[plfa]: http://plfa.inf.ed.ac.uk
-[plfa-dev]: https://github.com/plfa/plfa.github.io/archive/dev.zip
-[plfa-status]: https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev
-[plfa-travis]: https://travis-ci.org/plfa/plfa.github.io
-[plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
-[plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
-[plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
-
-[agda]: https://github.com/agda/agda/releases/tag/v2.6.1
-[agda-version]: https://img.shields.io/badge/agda-v2.6.1-blue.svg
-[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html
-[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html#notation-for-key-combinations
-[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1/tools/package-system.html#example-using-the-standard-library
-
-[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg
-[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.3
-
-[haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
-[haskell-ghc]: https://www.haskell.org/ghc/
-
-[mononoki]: https://madmalik.github.io/mononoki/
-
-[ruby]: https://www.ruby-lang.org/en/documentation/installation/
-[ruby-bundler]: https://bundler.io/#getting-started
-[ruby-jekyll]: https://jekyllrb.com/
-[ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
-
-[kramdown]: https://kramdown.gettalong.org/syntax.html
-[pandoc]: https://pandoc.org/installing.html
-[epubcheck]: https://github.com/w3c/epubcheck
-
-
 <!-- Status & Version Badges -->
 [![Calendar Version][plfa-calver]][plfa-latest]
 [![Build Status][plfa-status]][plfa-travis]
 [![Agda][agda-version]][agda]
 [![agda-stdlib][agda-stdlib-version]][agda-stdlib]
+
 
 ## Dependencies for users
 
@@ -146,10 +112,10 @@ It is recommended that you install the font [mononoki][mononoki], and add the fo
 ``` elisp
 ;; default to mononoki
 (set-face-attribute 'default nil
-		    :family "mononoki"
-		    :height 120
-		    :weight 'normal
-		    :width  'normal)
+                    :family "mononoki"
+                    :height 120
+                    :weight 'normal
+                    :width  'normal)
 ```
 
 
@@ -174,8 +140,7 @@ You'll see the key sequence of the character in mini buffer.
 
 ## Dependencies for developers
 
-PLFA is available as both a website and an EPUB e-book,
-both of which can be built on Linux and macOS.
+PLFA is available as both a website and an EPUB e-book, both of which can be built on Linux and macOS.
 PLFA is written in literate Agda with [Kramdown Markdown][kramdown].
 
 ### Building the website
@@ -195,7 +160,7 @@ Most recent versions of [Ruby][ruby] should work. The easiest way to install [Je
 ```bash
 gem install bundler
 ```
-You can install the remainder of the dependencies---[Jekyll][ruby-jekyll], [html-proofer][ruby-html-proofer], *etc.*---by running:
+You can install the remainder of the dependencies—[Jekyll][ruby-jekyll], [html-proofer][ruby-html-proofer], *etc.*—by running:
 ```bash
 bundle install
 ```
@@ -234,3 +199,37 @@ Once you’ve installed Pandoc, you can build the EPUB by running:
 make epub
 ```
 The EPUB is written to `out/epub/plfa.epub`.
+
+<!-- Links -->
+
+[epub]: https://plfa.github.io/out/epub/plfa.epub
+[plfa]: http://plfa.inf.ed.ac.uk
+[plfa-dev]: https://github.com/plfa/plfa.github.io/archive/dev.zip
+[plfa-status]: https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev
+[plfa-travis]: https://travis-ci.org/plfa/plfa.github.io
+[plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
+[plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
+[plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
+
+[agda]: https://github.com/agda/agda/releases/tag/v2.6.1
+[agda-version]: https://img.shields.io/badge/agda-v2.6.1-blue.svg
+[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html
+[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html#notation-for-key-combinations
+[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1/tools/package-system.html#example-using-the-standard-library
+
+[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg
+[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.3
+
+[haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
+[haskell-ghc]: https://www.haskell.org/ghc/
+
+[mononoki]: https://madmalik.github.io/mononoki/
+
+[ruby]: https://www.ruby-lang.org/en/documentation/installation/
+[ruby-bundler]: https://bundler.io/#getting-started
+[ruby-jekyll]: https://jekyllrb.com/
+[ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
+
+[kramdown]: https://kramdown.gettalong.org/syntax.html
+[pandoc]: https://pandoc.org/installing.html
+[epubcheck]: https://github.com/w3c/epubcheck

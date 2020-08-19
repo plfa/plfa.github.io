@@ -1,0 +1,60 @@
+# This file contains the project-specific settings for `fix-whitespace` a tiny
+# but useful tool to
+#
+# * Removes trailing whitespace.
+# * Removes trailing lines containing nothing but whitespace.
+# * Ensures that the file ends in a newline character.
+#
+# By default, fix-whitespace checks every directory under the current working
+# directory but no files. This program should be placed under a text-based
+# project.
+#
+# For directories,
+#
+# 1) excluded-dirs is a black-list of directories,
+# 2) included-dirs is a white-list of excluded-dirs
+#
+# For files,
+#
+# 3) included-files is a white-list of files,
+# 4) excluded-files is a black-list of included-files.
+#
+# The extended glob pattern can be used to specify file/direcotory names.
+# For details, see http://hackage.haskell.org/package/filemanip-0.3.6.3/docs/System-FilePath-GlobPattern.html
+#
+included-dirs:
+  - "src"
+  - "epub"
+  - "_includes"
+  - "_layouts"
+  - "_posts"
+  - "_sass"
+  - "_assets"
+  - "courses"
+  - "papers"
+
+excluded-dirs:
+  - ".stack-work"
+  - ".git"
+  - "_build"
+  - "_site"
+  - "extra"
+  - "tmp"
+
+# Every matched filename is included unless it is matched by excluded-files.
+included-files:
+  - "*.md"
+  - "*.sh"
+  - "*.html"
+  - "*.yml"
+  - "*.yaml"
+  - "*.agda-lib"
+  - "Gemfile"
+  - "Guardfile"
+  - "LICENSE"
+
+excluded-files:
+  - "*.sed"
+  - ".DS_Store"
+  - "Gemfile.lock"
+  - "Makefile"

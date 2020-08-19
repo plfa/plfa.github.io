@@ -221,7 +221,7 @@ The proof is by induction on `M ⇛ N`.
 * Suppose `L · M ⇛ L′ · M′` because `L ⇛ L′` and `M ⇛ M′`.
   By the induction hypothesis, we have `L —↠ L′` and `M —↠ M′`.
   So `L · M —↠ L′ · M` and then `L′ · M  —↠ L′ · M′`
-  because `—↠` is a congruence. 
+  because `—↠` is a congruence.
 
 * Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By similar reasoning, we have
@@ -451,7 +451,7 @@ par-triangle (papp {L = _ · _} p1 p2) = papp (par-triangle p1) (par-triangle p2
 
 The proof of the triangle property is an induction on `M ⇛ N`.
 
-* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`. 
+* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`.
 
 * Suppose `ƛ M ⇛ ƛ N`. By the induction hypothesis we have `N ⇛ M ⁺`
   and by definition `(λ M) ⁺ = λ (M ⁺)`, so we conclude that `λ N ⇛ λ
@@ -619,7 +619,7 @@ and `par-confluence` are based on the notion of complete development
 by Takahashi (1995) and Pfenning's 1992 technical report about the
 Church-Rosser theorem. In addition, we consulted Nipkow and
 Berghofer's mechanization in Isabelle, which is based on an earlier
-article by Nipkow (JAR 1996).  
+article by Nipkow (JAR 1996).
 
 ## Unicode
 

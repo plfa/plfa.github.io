@@ -30,7 +30,7 @@ Git commands to create a branch and pull request
     git branch                  -- list all branches
     git branch <name>           -- create new local branch <name>
     git checkout <name>         -- make <name> the current branch
-    git merge <name>            -- merge branch <name> into current branch 
+    git merge <name>            -- merge branch <name> into current branch
     git push origin <name>      -- make local branch <name> into remote
 
 On website, use pulldown menu to swith branch and then
@@ -39,9 +39,9 @@ click "new pull request" button.
 ## Suggestion from Conor for Inference
 
 Conor McBride <conor.mcbride@strath.ac.uk>
-	
+
 29 Oct 2018, 09:34
-	
+
 Hi Phil
 
 In a rush, but...
@@ -108,11 +108,11 @@ Three possible orders:
   + (a) As current
   + (b) Put Lists immediately after Induction.
     - requires moving composition & extensionality earlier
-	- requires moving parameterised modules earlier for monoids
+        - requires moving parameterised modules earlier for monoids
     - add material to relations:
-	  lexical ordering, subtype ordering, All, Any, All-++ iff
+          lexical ordering, subtype ordering, All, Any, All-++ iff
     - add material to isomorphism: All-++ isomorphism
-	- retain material on decidability of All, Any in Decidable
+        - retain material on decidability of All, Any in Decidable
   + (c) Put Lists after Decidable
     - requires moving Any-decidable from Decidable to Lists
   + (d) As (b) but put parameterised modules in a separate chapter
@@ -121,7 +121,7 @@ Tradeoffs:
   + (b) Distribution of exercises near where material is taught
   + (b) Additional reinforcement for simple proofs by induction
   + (a,c) Can drop material if there is lack of time
-  + (a,c) Earlier emphasis on induction over evidence	
+  + (a,c) Earlier emphasis on induction over evidence
   + (c) More consistent structuring principle
 
 ## Set up lists of exercises to do
@@ -188,9 +188,9 @@ Tradeoffs:
   + defined break, make to extract a prefix
     and count primes at end of an id.  But hard
     to do corresponding proofs.  Need to figure out
-	how to exploit abstraction to make terms readable.
+        how to exploit abstraction to make terms readable.
   + Conversion of raw to scoped and scoped to raw
-	is easy if I use impossible 
+        is easy if I use impossible
   + Added conversion of TypedDB to PHOAS in
     extra/DeBruijn-agda-list-4.lagda
   + Next: try adding bidirectional typing to
@@ -200,7 +200,7 @@ Tradeoffs:
   + updated Agda from:
       Agda version 2.6.0-4654bfb-dirty
     to:
-      Agda version 2.6.0-2f2f4f5 
+      Agda version 2.6.0-2f2f4f5
     Now TypedFresh.lagda computes 2+2 in milliseconds
     (as opposed to failing to compute it in one day).
 
@@ -218,7 +218,7 @@ The following comments were collected on the Agda mailing list.
 
 * Nils Anders Danielsson <nad@cse.gu.se>
   + cites Chlipala, who uses binary parametricity
-    - http://adam.chlipala.net/cpdt/html/Cpdt.ProgLang.html 
+    - http://adam.chlipala.net/cpdt/html/Cpdt.ProgLang.html
     - http://adam.chlipala.net/cpdt/html/Intensional.html
 
 * Roman <effectfully@gmail.com>
@@ -228,7 +228,7 @@ The following comments were collected on the Agda mailing list.
   + also cites Abel's habilitation
     -  http://www.cse.chalmers.se/~abela/habil.pdf
   + See his note to the Agda mailing list of 26 June,
-	"Typed Jigger in vanilla Agda"
+        "Typed Jigger in vanilla Agda"
     It points to the following solution.
     - https://github.com/effectfully/random-stuff/blob/master/TypedJigger.agda
 

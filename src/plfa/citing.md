@@ -15,13 +15,13 @@ permalink      : /Citing/
 
 ### BibTeX
 
-	@Book{plfa2020,
-	  author = {Philip Wadler and Wen Kokke and Jeremy G. Siek},
-	  title  = {Programming Language Foundations in {A}gda},
-	  note   = {Available at \url{http://plfa.inf.ed.ac.uk/20.07/}},
-	  year   = 2020,
+        @Book{plfa2020,
+          author = {Philip Wadler and Wen Kokke and Jeremy G. Siek},
+          title  = {Programming Language Foundations in {A}gda},
+          note   = {Available at \url{http://plfa.inf.ed.ac.uk/20.07/}},
+          year   = 2020,
       month  = jul,
-	}
+        }
 
 
 ## PLFA version 19.08
@@ -35,10 +35,10 @@ permalink      : /Citing/
 
 ### BibTeX
 
-	@Book{plfa2019,
-	  author = {Philip Wadler and Wen Kokke},
-	  title  = {Programming Language Foundations in {A}gda},
-	  note   = {Available at \url{http://plfa.inf.ed.ac.uk/19.08/}},
-	  year   = 2019,
+        @Book{plfa2019,
+          author = {Philip Wadler and Wen Kokke},
+          title  = {Programming Language Foundations in {A}gda},
+          note   = {Available at \url{http://plfa.inf.ed.ac.uk/19.08/}},
+          year   = 2019,
       month  = aug,
-	}
+        }

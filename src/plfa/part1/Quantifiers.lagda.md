@@ -470,7 +470,7 @@ binary number `b`, there is only one proof of `One b` and similarly
 for `Can b`.
 
     ≡One : ∀{b : Bin} (o o' : One b) → o ≡ o'
-    
+
     ≡Can : ∀{b : Bin} (cb : Can b) (cb' : Can b) → cb ≡ cb'
 
 Many of the alternatives for proving `to∘from` turn out to be tricky.
