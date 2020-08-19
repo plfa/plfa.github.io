@@ -12,4 +12,4 @@ fi
 
 # Run the test suite.
 echo "Running the test suite..."
-make test
+make test-offline
