@@ -15,6 +15,7 @@ Pull requests are encouraged.
 
   - [Dedication]({{ site.baseurl }}/Dedication/)
   - [Preface]({{ site.baseurl }}/Preface/)
+  - [Getting Started]({{ site.baseurl }}/GettingStarted/)
 
 ## Part 1: Logical Foundations
 
