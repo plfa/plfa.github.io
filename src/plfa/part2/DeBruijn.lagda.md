@@ -329,7 +329,7 @@ We write
 
     Γ ⊢ A
 
-for terms which in context `Γ` has type `A`.
+for terms which in context `Γ` have type `A`.
 The judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old typing judgment, but
