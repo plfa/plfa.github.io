@@ -46,8 +46,9 @@ James Chapman, James McKinna, and many others.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _<_; _≤?_; z≤n; s≤s)
 open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 ## Introduction
@@ -271,6 +272,16 @@ is a context with two variables in scope, where the outer
 bound one has type `` `ℕ ⇒ `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
 
+We define a helper function that computes the length of a context,
+which will be useful later in making sure an index is within context
+bounds:
+
+```
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
+```
+
 ### Variables and the lookup judgment
 
 Intrinsically-typed variables correspond to the lookup judgment.
@@ -414,33 +425,42 @@ The final term represents the Church numeral two.
 
 We can use a natural number to select a type from a context:
 ```
-lookup : Context → ℕ → Type
-lookup (Γ , A) zero     =  A
-lookup (Γ , _) (suc n)  =  lookup Γ n
-lookup ∅       _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+lookup : (Γ : Context) → (n : ℕ) → (p : n < length Γ) → Type
+lookup (_ , A) zero    (s≤s z≤n)  =  A
+lookup (Γ , _) (suc n) (s≤s p)    =  lookup Γ n p
 ```
-We intend to apply the function only when the natural is
-shorter than the length of the context, which we indicate by
-postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}/Lambda/#primed).
+The function takes a proof `p` that the natural number is within the
+context's bounds. This guarantees we will never try to select a type
+at a non-existing position within the context. Strict inequality `n <
+length Γ` holds whenever inequality `suc n ≤ length Γ` holds.  When
+recursing, proof `p` is pattern-matched via the `s≤s` constructor to a
+proof for a context with the rightmost type removed.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
 ```
-count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
-count {Γ , _} zero     =  Z
-count {Γ , _} (suc n)  =  S (count n)
-count {∅}     _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+count : ∀ {Γ} → (n : ℕ) → (p : n < length Γ) → Γ ∋ lookup Γ n p
+count {_ , _} zero    (s≤s z≤n)  =  Z
+count {Γ , _} (suc n) (s≤s p)    =  S (count n p)
 ```
-This requires the same trick as before.
 
 We can then introduce a convenient abbreviation for variables:
 ```
-#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
-# n  =  ` count n
+#_ : ∀ {Γ}
+   → (n : ℕ)
+   → {p : True (suc n ≤? length Γ)}
+     --------------------------------
+   → Γ ⊢ lookup Γ n (toWitness p)
+#_ n {p}  =  ` count n (toWitness p)
 ```
+The type of function `#_` asks for clarification. The function takes
+an implicit argument `p` that signals if there is evidence for `n`
+to be within the context's bounds. If `n` is within the bounds, `p`'s
+type `True (suc n ≤? length Γ)` will compute to `⊤`, the familiar unit
+type with only one value. If `n` is not within the bounds, the type
+will compute to `⊥`, which is an inhabited type and the call to `#_`
+for such an `n` will fail to type-check. Finally, in the return type
+`p` is converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
