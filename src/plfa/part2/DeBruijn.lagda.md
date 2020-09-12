@@ -272,16 +272,6 @@ is a context with two variables in scope, where the outer
 bound one has type `` `ℕ ⇒ `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
 
-We define a helper function that computes the length of a context,
-which will be useful later in making sure an index is within context
-bounds:
-
-```
-length : Context → ℕ
-length ∅        =  zero
-length (Γ , _)  =  suc (length Γ)
-```
-
 ### Variables and the lookup judgment
 
 Intrinsically-typed variables correspond to the lookup judgment.
@@ -423,11 +413,19 @@ The final term represents the Church numeral two.
 
 ### Abbreviating de Bruijn indices
 
+We define a helper function that computes the length of a context,
+which will be useful in making sure an index is within context bounds:
+```
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
+```
+
 We can use a natural number to select a type from a context:
 ```
-lookup : (Γ : Context) → (n : ℕ) → (p : n < length Γ) → Type
-lookup (_ , A) zero    (s≤s z≤n)  =  A
-lookup (Γ , _) (suc n) (s≤s p)    =  lookup Γ n p
+lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
+lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 ```
 The function takes a proof `p` that the natural number is within the
 context's bounds. This guarantees we will never try to select a type
@@ -439,28 +437,27 @@ proof for a context with the rightmost type removed.
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
 ```
-count : ∀ {Γ} → (n : ℕ) → (p : n < length Γ) → Γ ∋ lookup Γ n p
-count {_ , _} zero    (s≤s z≤n)  =  Z
-count {Γ , _} (suc n) (s≤s p)    =  S (count n p)
+count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count {_ , _} {zero}    (s≤s z≤n)  =  Z
+count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 ```
 
 We can then introduce a convenient abbreviation for variables:
 ```
 #_ : ∀ {Γ}
    → (n : ℕ)
-   → {p : True (suc n ≤? length Γ)}
+   → {n<?length : True (suc n ≤? length Γ)}
      --------------------------------
-   → Γ ⊢ lookup Γ n (toWitness p)
-#_ n {p}  =  ` count n (toWitness p)
+   → Γ ⊢ lookup (toWitness n<?length)
+#_ n {n<?length}  =  ` count (toWitness n<?length)
 ```
 The type of function `#_` asks for clarification. The function takes
-an implicit argument `p` that signals if there is evidence for `n`
-to be within the context's bounds. If `n` is within the bounds, `p`'s
-type `True (suc n ≤? length Γ)` will compute to `⊤`, the familiar unit
-type with only one value. If `n` is not within the bounds, the type
-will compute to `⊥`, which is an inhabited type and the call to `#_`
-for such an `n` will fail to type-check. Finally, in the return type
-`p` is converted to a witness that `n` is within the bounds.
+an implicit argument `n<?length` that signals if there is evidence for
+`n` to be within the context's bounds. Both `True` and `_≤?_` are
+defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/. The type
+of `n<?length` guards against invoking `#_` on an `n` that is out of
+context bounds. Finally, in the return type `n<?length` is converted
+to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
