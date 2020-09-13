@@ -510,7 +510,7 @@ DeBruijn representation.
 Renaming is a necessary prelude to substitution, enabling us
 to "rebase" a term from one context to another.  It
 corresponds directly to the renaming result from the previous
-chapter, but here the theorem that ensures renaming preserves
+chapter, but here the theorem that ensures that renaming preserves
 typing also acts as code that performs renaming.
 
 As before, we first need an extension lemma that allows us to
