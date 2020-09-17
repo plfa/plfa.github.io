@@ -100,7 +100,7 @@ open import plfa.part3.Soundness using (soundness)
 ## The property of being greater or equal to a function
 
 We define the following short-hand for saying that a value is
-greather-than or equal to a function value.
+greater-than or equal to a function value.
 
 ```
 above-fun : Value → Set
@@ -417,7 +417,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c ⟨ v' , �
 
         𝕍 (v ↦ (w ⊔ w')) (clos (ƛ N) γ)
 
-  Let `c` be an arbtrary closure such that `𝔼 v c`.
+  Let `c` be an arbitrary closure such that `𝔼 v c`.
   Assume `w ⊔ w'` is greater than a function.
   Unfortunately, this does not mean that both `w` and `w'`
   are above functions. But thanks to the lemma `above-fun-⊔`,
