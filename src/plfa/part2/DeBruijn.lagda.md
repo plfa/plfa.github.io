@@ -574,7 +574,7 @@ bound variable.
 Whereas before renaming was a result that carried evidence
 that a term is well typed in one context to evidence that it
 is well typed in another context, now it actually transforms
-the term, suitably altering the bound variables. Typechecking
+the term, suitably altering the bound variables. Type checking
 the code in Agda ensures that it is only passed and returns
 terms that are well typed by the rules of simply-typed lambda
 calculus.

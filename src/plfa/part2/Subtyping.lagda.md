@@ -1235,7 +1235,7 @@ Come up with an algorithmic subtyping rule for variant types.
 
 #### Exercise `<:-alternative` (stretch)
 
-Revise this formalization of records with subtyping (including proofs
+Revise this formalisation of records with subtyping (including proofs
 of progress and preservation) to use the non-algorithmic subtyping
 rules for Chapter 15 of Types and Programming Languages, which we list here:
 
