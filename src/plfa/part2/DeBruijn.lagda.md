@@ -1376,7 +1376,7 @@ number of lines of code is as follows:
 
     Lambda                      216
     Properties                  235
-    DeBruijn                    275
+    DeBruijn                    276
 
 The relation between the two approaches approximates the
 golden ratio: extrinsically-typed terms
