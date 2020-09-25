@@ -49,7 +49,7 @@ diamond property. Here is a counter example.
 Both terms can reduce to `a a`, but the second term requires two steps
 to get there, not one.
 
-To side-step this problem, we'll define an auxilliary reduction
+To side-step this problem, we'll define an auxiliary reduction
 relation, called _parallel reduction_, that can perform many
 reductions simultaneously and thereby satisfy the diamond property.
 Furthermore, we show that a parallel reduction sequence exists between
@@ -407,7 +407,7 @@ The heart of the confluence proof is made of stone, or rather, of
 diamond!  We show that parallel reduction satisfies the diamond
 property: that if `M ⇛ N` and `M ⇛ N′`, then `N ⇛ L` and `N′ ⇛ L` for
 some `L`.  The typical proof is an induction on `M ⇛ N` and `M ⇛ N′`
-so that every possible pair gives rise to a witeness `L` given by
+so that every possible pair gives rise to a witness `L` given by
 performing enough beta reductions in parallel.
 
 However, a simpler approach is to perform as many beta reductions in
@@ -611,7 +611,7 @@ confluence L↠M₁ L↠M₂
 ## Notes
 
 Broadly speaking, this proof of confluence, based on parallel
-reduction, is due to W. Tait and P. Martin-Lof (see Barendredgt 1984,
+reduction, is due to W. Tait and P. Martin-Löf (see Barendredgt 1984,
 Section 3.2).  Details of the mechanization come from several sources.
 The `subst-par` lemma is the "strong substitutivity" lemma of Shafer,
 Tebbi, and Smolka (ITP 2015). The proofs of `par-triangle`, `strip`,

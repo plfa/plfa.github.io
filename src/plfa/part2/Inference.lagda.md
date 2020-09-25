@@ -618,7 +618,7 @@ Consider the context:
 
   + If they differ, we recurse:
 
-    - If lookup fails, we apply `ext∋` to conver the proof
+    - If lookup fails, we apply `ext∋` to convert the proof
       there is no derivation from the contained context
       to the extended context.
 
