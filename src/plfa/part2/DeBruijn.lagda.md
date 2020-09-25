@@ -454,7 +454,7 @@ We can then introduce a convenient abbreviation for variables:
 The type of function `#_` asks for clarification. The function takes
 an implicit argument `n<?length` that signals if there is evidence for
 `n` to be within the context's bounds. Both `True` and `_≤?_` are
-defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/. The type
+defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The type
 of `n<?length` guards against invoking `#_` on an `n` that is out of
 context bounds. Finally, in the return type `n<?length` is converted
 to a witness that `n` is within the bounds.
