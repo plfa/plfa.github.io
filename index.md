@@ -76,6 +76,7 @@ Pull requests are encouraged.
 #### 2020
   * [William Cook, University of Texas][UT-2020]
   * [Jeremy Siek, Indiana University][IU-2020]
+  * [John Maraist, University of Wisconsin-La Crosse][UWL-2020]
 
 #### 2019
   * [Dan Ghica, University of Birmingham][BHAM-2019]
@@ -105,3 +106,4 @@ Please tell us of others!
 [SBMF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
 [SCP]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#scf
 [NextJournal]: https://nextjournal.com/plfa/ToC
+[UWL-2020]: https://github.com/jphmrst/PLC/tree/fall2020
