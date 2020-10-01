@@ -21,11 +21,11 @@ The goals in the second milestone are optional, but nice.
 - adjust `acknowledgements` code to populate a contributors directory:
   + see `authors` directory
   + see https://github.com/plfa/acknowledgements/blob/master/app/Main.hs
-  
+
 - fix acknowledgements page to be rendered with contributors
   + see `authorContext` in `site.hs`
-  
-- fix links to stdlib: 
+
+- fix links to stdlib:
   + should construct a regular expression which matches all standard library modules,
     by assuming that the standard library used is in the `standard-library` submodule
   + see https://github.com/wenkokke/agda2html/blob/master/src/Lib.hs#L236-L242

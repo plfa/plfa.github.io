@@ -8,6 +8,7 @@ _site/
 _cache/
 stack.yaml.lock
 .stack-work/
+dist-newstyle
 
 ## Jekyll files
 _site/
