@@ -1,7 +1,6 @@
 ---
 layout : post
 title  : "Versions and Releases"
-short  : false
 ---
 
 We’re adding stable releases to PLFA, which you can find [on GitHub][releases]!

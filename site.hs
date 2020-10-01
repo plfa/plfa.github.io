@@ -6,45 +6,17 @@ import qualified Agda.Interaction.Options as Agda
 import qualified Agda.Interaction.Highlighting.HTML as Agda (generateHTML)
 import qualified Agda.Utils.Trie as Trie (singleton)
 import           Control.Exception (catchJust)
+import           Control.Monad (void)
 import           Data.List (stripPrefix)
 import           Data.Maybe (fromMaybe)
 import           Hakyll
+import           Text.Pandoc.Options (WriterOptions(..), HTMLMathMethod(..))
 import           Text.Regex.TDFA ((=~))
 import           Text.Sass (SassOptions(..), defaultSassOptions)
 import qualified Text.Sass as Sass
 import           System.Exit (ExitCode(..))
 import           System.Directory (createDirectoryIfMissing)
 import           System.FilePath ((</>), (<.>), dropExtension)
-
---------------------------------------------------------------------------------
--- Configuration
---------------------------------------------------------------------------------
-siteCtx :: Context String
-siteCtx = constField "site_title" "Programming Foundations in Agda"
-       <> defaultContext
-
---------------------------------------------------------------------------------
-pageCtx :: Context String
-pageCtx = siteCtx
-
---------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx = dateField "date" "%B %e, %Y"
-       <> siteCtx
-
---------------------------------------------------------------------------------
-permalinkRoute :: Routes
-permalinkRoute = metadataRoute $ \metadata ->
-  maybe idRoute (constRoute . mk) (lookupString "permalink" metadata)
-  where
-    -- By a quirk of history, permalinks for PLFA are written as, e.g., /DeBruijn/.
-    -- We convert these to links by:
-    --
-    --   1. stripping the / prefix
-    --   2. adding the index.html suffix
-    --
-    mk :: FilePath -> FilePath
-    mk permalink = fromMaybe permalink (stripPrefix "/" permalink) </> "index.html"
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -57,67 +29,125 @@ main = hakyll $ do
 
     -- Compile CSS
     match "css/*.css" $ compile compressCssCompiler
-    match "css/*.scss" $ compile $ sassCompiler sassOptions
+
+    scss <- makePatternDependency "css/minima/**.scss"
+    rulesExtraDependencies [scss] $
+      match "css/minima.scss" $
+        compile (sassCompiler sassOptions)
+
     create ["public/css/style.css"] $ do
       route idRoute
       compile $ do
         csses <- loadAll ("css/*.css" .||. "css/*.scss")
         makeItem $ unlines $ map itemBody csses
 
-    -- Compile Table of Contents
-    match "index.md" $ do
-      route $ setExtension "html"
+    -- Compile authors
+    match "authors/*.metadata" $ compile getResourceBody
+
+    -- Compile Announcements
+    match "posts/*" $ do
+        route $ setExtension "html"
+        compile $ pandocCompiler
+            >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/post.html"    postContext
+            >>= loadAndApplyTemplate "templates/default.html" siteContext
+            >>= relativizeUrls
+
+    match "announcements.md" $ do
+      route $ permalinkRoute (setExtension "html")
       compile $ pandocCompiler
-          >>= loadAndApplyTemplate "templates/page.html"    pageCtx
-          >>= loadAndApplyTemplate "templates/default.html" siteCtx
+          >>= loadAndApplyTemplate "templates/post-list.html" postListContext
+          >>= loadAndApplyTemplate "templates/default.html"   siteContext
           >>= relativizeUrls
 
     -- Compile Book
-    match ("src/**.md" .&&. complement "**.lagda.md") $ do
-      route permalinkRoute
+    match ("index.md" .||. "README.md" .||. "src/**.md" .&&. complement "**.lagda.md") $ do
+      route $ permalinkRoute (setExtension "html")
       compile $ pandocCompiler
-        >>= loadAndApplyTemplate "templates/page.html"    pageCtx
-        >>= loadAndApplyTemplate "templates/default.html" siteCtx
-        >>= relativizeUrls
+          >>= loadAndApplyTemplate "templates/page.html"    siteContext
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
+          >>= relativizeUrls
 
     match "src/**.lagda.md" $ do
-      route permalinkRoute
+      route $ permalinkRoute (setExtension "html")
       compile $ agdaCompiler
-        >>= renderPandoc
-        >>= loadAndApplyTemplate "templates/page.html"    pageCtx
-        >>= loadAndApplyTemplate "templates/default.html" siteCtx
-        >>= relativizeUrls
+          >>= renderPandoc
+          >>= loadAndApplyTemplate "templates/page.html"    siteContext
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
+          >>= relativizeUrls
 
     -- Compile 404 page
     match "404.html" $ do
       route idRoute
       compile $ pandocCompiler
-        >>= loadAndApplyTemplate "templates/default.html" siteCtx
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
 
     match "templates/*" $ compile templateBodyCompiler
 
+
+--------------------------------------------------------------------------------
+-- Configuration
+--------------------------------------------------------------------------------
+siteContext :: Context String
+siteContext = mconcat
+  [ listField "authors" defaultContext (loadAll "authors/*.metadata")
+  , constField "site_title" "Programming Foundations in Agda"
+  , defaultContext
+  ]
+
+postContext :: Context String
+postContext = mconcat
+  [ dateField "date" "%B %e, %Y"
+  , siteContext
+  ]
+
+postListContext :: Context String
+postListContext = mconcat
+  [ listField "posts" postItemContext (recentFirst =<< loadAll "posts/*")
+  , siteContext
+  ]
+  where
+    postItemContext :: Context String
+    postItemContext = mconcat
+      [ teaserField "teaser" "content"
+      , contentField "content" "content"
+      , postContext
+      ]
+    contentField :: String -> Snapshot -> Context String
+    contentField key snapshot = field key $ \item ->
+      itemBody <$> loadSnapshot (itemIdentifier item) snapshot
+
+
+--------------------------------------------------------------------------------
+-- Create a route based on the 'permalink' metadata field
+--------------------------------------------------------------------------------
+permalinkRoute :: Routes -> Routes
+permalinkRoute def = metadataRoute $ \metadata ->
+  maybe def (constRoute . conv) (lookupString "permalink" metadata)
+  where
+    -- By a quirk of history, permalinks for PLFA are written as, e.g., "/DeBruijn/".
+    -- We convert these to links by stripping the "/" prefix, and adding "index.html".
+    conv :: FilePath -> FilePath
+    conv permalink = fromMaybe permalink (stripPrefix "/" permalink) </> "index.html"
 
 
 --------------------------------------------------------------------------------
 -- Compile Literate Agda
 --------------------------------------------------------------------------------
 agdaCompiler :: Compiler (Item String)
-agdaCompiler = cached "agda" $ do
-
+agdaCompiler = do
   item <- getResourceBody
   let agdaPath = toFilePath (itemIdentifier item)
   let moduleName = agdaModuleName (itemBody item)
   TmpFile tmpPath <- newTmpFile ".lock"
   let tmpDir = init (dropExtension tmpPath)
   let mdPath = tmpDir </> moduleName <.> "md"
-
   md <- unsafeCompiler $ do
     createDirectoryIfMissing True tmpDir
     agdaGenerateHTML agdaPath tmpDir
     md <- readFile mdPath
     removeDirectory tmpDir
     return md
-
   return $ itemSetBody md item
 
 agdaModuleName :: String -> String
@@ -128,12 +158,11 @@ agdaModuleName code = case regexResult of
     moduleRegex = "module ([^ ]*) where" :: String
     regexResult = code =~ moduleRegex :: (String, String, String, [String])
 
+-- |Generate HTML using Agda
 agdaGenerateHTML :: FilePath -> FilePath -> IO ()
 agdaGenerateHTML inputFile htmlDir = do
   let opts = agdaOptions inputFile htmlDir
-  let tcm = do
-        _ <- Agda.runAgdaWithOptions [] Agda.generateHTML (Agda.defaultInteraction opts) "agda" opts
-        return ()
+  let tcm = void $ Agda.runAgdaWithOptions [] Agda.generateHTML (Agda.defaultInteraction opts) "agda" opts
   catchJust
     (\case {e@ExitSuccess -> Just e; _ -> Nothing})
     (Agda.runTCMPrettyErrors tcm)
@@ -166,7 +195,6 @@ sassCompiler opts = cached "sass" $ getResourceBody >>= withItemBody renderSass
         Right css -> return (compressCss css)
 
 --------------------------------------------------------------------------------
-
 sassOptions :: SassOptions
 sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]

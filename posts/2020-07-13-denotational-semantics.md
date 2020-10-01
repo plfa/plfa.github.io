@@ -1,7 +1,7 @@
 ---
 layout : post
 title  : "Introducing Part 3: Denotational Semantics"
-short  : false
+long   : true
 ---
 
 We’re pleased to announce an entirely new part of the book, contributed by Jeremy G. Siek! You may have noticed his name appearing on the list of authors some months ago, or the chapters that make up Part 3 slowly making their appearance. Well, that’s all Jeremy’s work!
