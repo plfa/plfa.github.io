@@ -3,6 +3,12 @@
 .agda-stdlib.sed
 .links-*.sed
 
+## Haskell files
+_site/
+_cache/
+stack.yaml.lock
+.stack-work/
+
 ## Jekyll files
 _site/
 .sass-cache/

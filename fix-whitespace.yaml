@@ -25,36 +25,32 @@
 included-dirs:
   - "src"
   - "epub"
-  - "_includes"
-  - "_layouts"
-  - "_posts"
-  - "_sass"
-  - "_assets"
+  - "posts"
   - "courses"
-  - "papers"
+  - "templates"
+  - "css"
+  - "public"
 
 excluded-dirs:
   - ".stack-work"
   - ".git"
-  - "_build"
   - "_site"
+  - "_cache"
   - "extra"
-  - "tmp"
+  - "standard-library"
 
-# Every matched filename is included unless it is matched by excluded-files.
 included-files:
+  - "*.hs"
+  - "*.cabal"
   - "*.md"
   - "*.sh"
   - "*.html"
   - "*.yml"
   - "*.yaml"
   - "*.agda-lib"
-  - "Gemfile"
-  - "Guardfile"
   - "LICENSE"
 
 excluded-files:
-  - "*.sed"
   - ".DS_Store"
-  - "Gemfile.lock"
-  - "Makefile"
+  - "*.sed"
+  - "*.lock"

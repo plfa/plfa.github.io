@@ -1,0 +1,35 @@
+<footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+    <div class="wrapper">
+        <h2 class="footer-heading">$site_title$</h2>
+        This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+        <!--
+             {%- for author in site.authors -%}
+             {%- if author.corresponding -%}
+             <div class="footer-col-wrapper">
+             <div class="footer-col footer-col-1">
+             <ul class="contact-list">
+             <li class="p-name">{{ author.name | escape }}</li>
+             <li>
+             {%- if author.email -%}
+             <a class="u-email" href="mailto:{{ author.email }}">{{ author.email }}</a>
+             {%- endif -%}
+             </li>
+             </ul>
+             </div>
+
+             <div class="footer-col footer-col-2">
+             {%- include social.html -%}
+             </div>
+
+             <div class="footer-col footer-col-3">
+             {%- if author.blurb -%}
+             <p>{{- author.blurb | escape -}}</p>
+             {%- endif -%}
+             </div>
+             </div>
+             {%- endif -%}
+             {%- endfor -%}
+        -->
+    </div>
+</footer>

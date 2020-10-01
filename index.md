@@ -1,6 +1,5 @@
 ---
 title  : Table of Contents
-layout : page
 ---
 
 This book is an introduction to programming language theory using the
@@ -13,52 +12,52 @@ Pull requests are encouraged.
 
 ## Front matter
 
-  - [Dedication]({{ site.baseurl }}/Dedication/)
-  - [Preface]({{ site.baseurl }}/Preface/)
-  - [Getting Started]({{ site.baseurl }}/GettingStarted/)
+  - [Dedication](/Dedication/)
+  - [Preface](/Preface/)
+  - [Getting Started](/GettingStarted/)
 
 ## Part 1: Logical Foundations
 
-  - [Naturals]({{ site.baseurl }}/Naturals/): Natural numbers
-  - [Induction]({{ site.baseurl }}/Induction/): Proof by induction
-  - [Relations]({{ site.baseurl }}/Relations/): Inductive definition of relations
-  - [Equality]({{ site.baseurl }}/Equality/): Equality and equational reasoning
-  - [Isomorphism]({{ site.baseurl }}/Isomorphism/): Isomorphism and embedding
-  - [Connectives]({{ site.baseurl }}/Connectives/): Conjunction, disjunction, and implication
-  - [Negation]({{ site.baseurl }}/Negation/): Negation, with intuitionistic and classical logic
-  - [Quantifiers]({{ site.baseurl }}/Quantifiers/): Universals and existentials
-  - [Decidable]({{ site.baseurl }}/Decidable/): Booleans and decision procedures
-  - [Lists]({{ site.baseurl }}/Lists/): Lists and higher-order functions
+  - [Naturals](/Naturals/): Natural numbers
+  - [Induction](/Induction/): Proof by induction
+  - [Relations](/Relations/): Inductive definition of relations
+  - [Equality](/Equality/): Equality and equational reasoning
+  - [Isomorphism](/Isomorphism/): Isomorphism and embedding
+  - [Connectives](/Connectives/): Conjunction, disjunction, and implication
+  - [Negation](/Negation/): Negation, with intuitionistic and classical logic
+  - [Quantifiers](/Quantifiers/): Universals and existentials
+  - [Decidable](/Decidable/): Booleans and decision procedures
+  - [Lists](/Lists/): Lists and higher-order functions
 
 ## Part 2: Programming Language Foundations
 
-  - [Lambda]({{ site.baseurl }}/Lambda/): Introduction to Lambda Calculus
-  - [Properties]({{ site.baseurl }}/Properties/): Progress and Preservation
-  - [DeBruijn]({{ site.baseurl }}/DeBruijn/): Intrinsically-typed de Bruijn representation
-  - [More]({{ site.baseurl }}/More/): Additional constructs of simply-typed lambda calculus
-  - [Bisimulation]({{ site.baseurl }}/Bisimulation/): Relating reductions systems
-  - [Inference]({{ site.baseurl }}/Inference/): Bidirectional type inference
-  - [Untyped]({{ site.baseurl }}/Untyped/): Untyped lambda calculus with full normalisation
-  - [Confluence]({{ site.baseurl }}/Confluence/): Confluence of untyped lambda calculus
-  - [BigStep]({{ site.baseurl }}/BigStep/): Big-step semantics of untyped lambda calculus
+  - [Lambda](/Lambda/): Introduction to Lambda Calculus
+  - [Properties](/Properties/): Progress and Preservation
+  - [DeBruijn](/DeBruijn/): Intrinsically-typed de Bruijn representation
+  - [More](/More/): Additional constructs of simply-typed lambda calculus
+  - [Bisimulation](/Bisimulation/): Relating reductions systems
+  - [Inference](/Inference/): Bidirectional type inference
+  - [Untyped](/Untyped/): Untyped lambda calculus with full normalisation
+  - [Confluence](/Confluence/): Confluence of untyped lambda calculus
+  - [BigStep](/BigStep/): Big-step semantics of untyped lambda calculus
 
 ## Part 3: Denotational Semantics
 
-  - [Denotational]({{ site.baseurl }}/Denotational/): Denotational semantics of untyped lambda calculus
-  - [Compositional]({{ site.baseurl }}/Compositional/): The denotational semantics is compositional
-  - [Soundness]({{ site.baseurl }}/Soundness/): Soundness of reduction with respect to denotational semantics
-  - [Adequacy]({{ site.baseurl }}/Adequacy/): Adequacy of denotational semantics with respect to operational semantics
-  - [ContextualEquivalence]({{ site.baseurl }}/ContextualEquivalence/): Denotational equality implies contextual equivalence
+  - [Denotational](/Denotational/): Denotational semantics of untyped lambda calculus
+  - [Compositional](/Compositional/): The denotational semantics is compositional
+  - [Soundness](/Soundness/): Soundness of reduction with respect to denotational semantics
+  - [Adequacy](/Adequacy/): Adequacy of denotational semantics with respect to operational semantics
+  - [ContextualEquivalence](/ContextualEquivalence/): Denotational equality implies contextual equivalence
 
 ## Appendix
 
-  - [Substitution]({{ site.baseurl }}/Substitution/): Substitution in untyped lambda calculus
+  - [Substitution](/Substitution/): Substitution in untyped lambda calculus
 
 
 ## Backmatter
 
-  - [Acknowledgements]({{ site.baseurl }}/Acknowledgements/)
-  - [Fonts]({{ site.baseurl }}/Fonts/): Test page for fonts
+  - [Acknowledgements](/Acknowledgements/)
+  - [Fonts](/Fonts/): Test page for fonts
 
 ## Related
 
