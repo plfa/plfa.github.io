@@ -451,13 +451,16 @@ We can then introduce a convenient abbreviation for variables:
    → Γ ⊢ lookup (toWitness n<?length)
 #_ n {n<?length}  =  ` count (toWitness n<?length)
 ```
-The type of function `#_` asks for clarification. The function takes
-an implicit argument `n<?length` that signals if there is evidence for
-`n` to be within the context's bounds. Both `True` and `_≤?_` are
-defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The type
-of `n<?length` guards against invoking `#_` on an `n` that is out of
-context bounds. Finally, in the return type `n<?length` is converted
-to a witness that `n` is within the bounds.
+The type of function `#_` asks for clarification. Function `#_` takes
+an implicit argument `n<?length` that provides evidence for `n` to be
+within the context's bounds. Recall that
+[`True`]({{ site.baseurl }}/Decidable/#proof-by-reflection),
+[`_≤?_`]({{ site.baseurl }}/Decidable/#the-best-of-both-worlds) and
+[`toWitness`]({{ site.baseurl }}/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
+are defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The
+type of `n<?length` guards against invoking `#_` on an `n` that is out
+of context bounds. Finally, in the return type `n<?length` is
+converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
