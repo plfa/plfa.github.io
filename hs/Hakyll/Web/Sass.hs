@@ -2,14 +2,15 @@
 -- Compile SASS and SCSS
 --------------------------------------------------------------------------------
 
-module PLFA.Sass (sassCompiler, sassCompilerWith, defaultSassOptions) where
+module Hakyll.Web.Sass
+  ( sassCompilerWith
+  , SassOptions(..)
+  , defaultSassOptions
+  ) where
 
 import           Hakyll
-import           Text.Sass (SassOptions(..))
+import           Text.Sass (SassOptions(..), defaultSassOptions)
 import qualified Text.Sass as Sass
-
-sassCompiler :: Compiler (Item String)
-sassCompiler = sassCompilerWith defaultSassOptions
 
 sassCompilerWith :: SassOptions -> Compiler (Item String)
 sassCompilerWith opts = cached "sass" $ getResourceBody >>= withItemBody renderSass
@@ -21,7 +22,3 @@ sassCompilerWith opts = cached "sass" $ getResourceBody >>= withItemBody renderS
         Left  err -> Sass.errorMessage err
         Right css -> return (compressCss css)
 
-defaultSassOptions :: SassOptions
-defaultSassOptions = Sass.defaultSassOptions
-  { sassIncludePaths = Just ["css"]
-  }

@@ -2,7 +2,7 @@
 -- Create a route based on the 'permalink' metadata field
 --------------------------------------------------------------------------------
 
-module PLFA.Permalink (permalinkRoute) where
+module Hakyll.Web.Routes.Permalink (permalinkRoute) where
 
 import           Hakyll
 import           Data.List (stripPrefix)

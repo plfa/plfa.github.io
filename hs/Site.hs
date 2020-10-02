@@ -1,9 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import PLFA.Agda (agdaCompiler)
-import PLFA.Sass (sassCompiler)
-import PLFA.Permalink (permalinkRoute)
 import Hakyll
+import Hakyll.Web.Agda
+import Hakyll.Web.Sass
+import Hakyll.Web.Routes.Permalink
 
 --------------------------------------------------------------------------------
 -- Configuration
@@ -38,6 +38,22 @@ postListContext = mconcat
       itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
 --------------------------------------------------------------------------------
+agdaOptions :: CommandLineOptions
+agdaOptions = defaultAgdaOptions
+  { optUseLibs       = False
+  , optIncludePaths  = ["standard-library/src", "src"]
+  , optPragmaOptions = defaultAgdaPragmaOptions
+    { optVerbose     = agdaVerbosityQuiet
+    }
+  }
+
+--------------------------------------------------------------------------------
+sassOptions :: SassOptions
+sassOptions = defaultSassOptions
+  { sassIncludePaths = Just ["css"]
+  }
+
+--------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
 
@@ -52,7 +68,7 @@ main = hakyll $ do
     scss <- makePatternDependency "css/minima/**.scss"
     rulesExtraDependencies [scss] $
       match "css/minima.scss" $
-        compile sassCompiler
+        compile $ sassCompilerWith sassOptions
 
     create ["public/css/style.css"] $ do
       route idRoute
@@ -89,7 +105,7 @@ main = hakyll $ do
 
     match "src/**.lagda.md" $ do
       route $ permalinkRoute (setExtension "html")
-      compile $ agdaCompiler
+      compile $ agdaCompilerWith agdaOptions
           >>= renderPandoc
           >>= loadAndApplyTemplate "templates/page.html"    siteContext
           >>= loadAndApplyTemplate "templates/default.html" siteContext

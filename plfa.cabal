@@ -12,9 +12,9 @@ cabal-version:      >= 2.0
 library
   hs-source-dirs:   hs
   ghc-options:      -Wall
-  exposed-modules:  PLFA.Agda
-                  , PLFA.Sass
-                  , PLFA.Permalink
+  exposed-modules:  Hakyll.Web.Agda
+                  , Hakyll.Web.Sass
+                  , Hakyll.Web.Routes.Permalink
   build-depends:    Agda            >= 2.6.1.1 && < 2.6.2
                   , base            >= 4.6     && < 5
                   , directory       >= 1.2     && < 1.4
@@ -27,7 +27,7 @@ library
   default-language: Haskell2010
 
 executable site
-  main-is:          hs/Main.hs
+  main-is:          hs/Site.hs
   ghc-options:      -Wall
   build-depends:    plfa
                   , base            >= 4.6     && < 5
