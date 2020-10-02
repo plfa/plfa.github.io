@@ -692,10 +692,10 @@ variables it is easy to define the special case of
 substitution for one free variable:
 ```
 _[_] : ∀ {Γ A B}
-        → Γ , B ⊢ A
-        → Γ ⊢ B
-          ---------
-        → Γ ⊢ A
+  → Γ , B ⊢ A
+  → Γ ⊢ B
+    ---------
+  → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   where
   σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
