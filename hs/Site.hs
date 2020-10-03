@@ -76,8 +76,9 @@ main = hakyll $ do
         csses <- loadAll ("css/*.css" .||. "css/*.scss")
         makeItem $ unlines $ map itemBody csses
 
-    -- Compile authors
+    -- Compile authors and contributor
     match "authors/*.metadata" $ compile getResourceBody
+    match "contributors/*.metadata" $ compile getResourceBody
 
     -- Compile Announcements
     match "posts/*" $ do

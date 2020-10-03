@@ -3,10 +3,7 @@
 
 module Main where
 
-import           Control.Arrow (second)
 import           Control.Monad (forM, forM_)
-import           Control.Monad.Catch (throwM)
-import           Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import           Data.Frontmatter (parseYamlFrontmatterEither)
@@ -20,10 +17,10 @@ import qualified Data.Vector as V
 import           Data.Yaml (FromJSON(..), ToJSON(..), (.:), (.:?), (.=))
 import qualified Data.Yaml as Y
 import qualified GitHub as GH
-import           System.Exit (exitSuccess, exitFailure)
-import           System.FilePath ((</>), (<.>), dropExtension)
+import           System.Directory (createDirectoryIfMissing)
+import           System.Exit (exitFailure)
+import           System.FilePath ((</>), (<.>))
 import           System.FilePath.Glob (glob)
-import           System.IO (hPutStrLn, stderr)
 import           System.Environment (lookupEnv)
 import           Text.Printf (printf)
 
@@ -79,9 +76,10 @@ main = do
       contributorMap = M.unionWith (<>) localContributorMap remoteContributorMap
 
   -- Write contributor files
+  createDirectoryIfMissing True contributorDir
   forM_ (M.toList contributorMap) $ \(github, contributor) -> do
     let contributorFile = contributorDir </> T.unpack github <.> "metadata"
-    let contributorBS = "---\n" <> Y.encode contributor <> "\n---\n"
+    let contributorBS = "---\n" <> Y.encode contributor <> "---\n"
     BC.writeFile contributorFile contributorBS
 
 
