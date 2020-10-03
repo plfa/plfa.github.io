@@ -18,13 +18,6 @@ The goals in the second milestone are optional, but nice.
 - render courses
   + requires adding PLFA to the Agda calls
 
-- adjust `acknowledgements` code to populate a contributors directory:
-  + see `authors` directory
-  + see https://github.com/plfa/acknowledgements/blob/master/app/Main.hs
-
-- fix acknowledgements page to be rendered with contributors
-  + see `authorContext` in `site.hs`
-
 - fix links to stdlib:
   + should construct a regular expression which matches all standard library modules,
     by assuming that the standard library used is in the `standard-library` submodule
