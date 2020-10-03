@@ -4,7 +4,7 @@ import Hakyll
 import Hakyll.Web.Agda
 import Hakyll.Web.Sass
 import Hakyll.Web.Routes.Permalink
-import System.FilePath (takeDirectory)
+import System.FilePath ((</>), takeDirectory)
 
 
 --------------------------------------------------------------------------------
@@ -52,16 +52,16 @@ postListContext = mconcat
     contentField key snapshot = field key $ \item ->
       itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
-agdaOptions :: AgdaOptions
+agdaStdlibPath :: FilePath
+agdaStdlibPath = "standard-library"
+
+agdaOptions :: CommandLineOptions
 agdaOptions = defaultAgdaOptions
-  { agdaCommandLineOptions = defaultAgdaCommandLineOptions
-    { optUseLibs       = False
-    , optIncludePaths  = ["standard-library/src", "src"]
-    , optPragmaOptions = defaultAgdaPragmaOptions
-      { optVerbose     = agdaVerbosityQuiet
-      }
+  { optUseLibs       = False
+  , optIncludePaths  = [agdaStdlibPath </> "src", "src"]
+  , optPragmaOptions = defaultAgdaPragmaOptions
+    { optVerbose     = agdaVerbosityQuiet
     }
-  , agdaStandardLibraryDir = Just "standard-library"
   }
 
 sassOptions :: SassOptions
@@ -75,7 +75,26 @@ sassOptions = defaultSassOptions
 --------------------------------------------------------------------------------
 
 main :: IO ()
-main = hakyll $ do
+main = do
+  -- Build the code to fix standard library URLs
+  fixStdlibLink <- mkFixStdlibLink agdaStdlibPath
+
+  let pageCompiler :: Compiler (Item String)
+      pageCompiler = pandocCompiler
+        >>= loadAndApplyTemplate "templates/page.html"    siteContext
+        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= relativizeUrls
+
+  let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
+      pageWithAgdaCompiler opts = agdaCompilerWith opts
+        >>= withItemBody (return . withUrls fixStdlibLink)
+        >>= renderPandoc
+        >>= loadAndApplyTemplate "templates/page.html"    siteContext
+        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= relativizeUrls
+
+  -- Run Hakyll
+  hakyll $ do
 
     -- Copy resources
     match "public/**" $ do
@@ -146,12 +165,8 @@ main = hakyll $ do
       compile $ do
         courseDir <- takeDirectory . toFilePath <$> getUnderlying
         -- We need lenses :'(
-        let commandLineOptions = agdaCommandLineOptions agdaOptions
-        let includePaths = optIncludePaths commandLineOptions
         let courseOptions = agdaOptions
-              { agdaCommandLineOptions = commandLineOptions
-                { optIncludePaths = courseDir : includePaths
-                }
+              { optIncludePaths = courseDir : optIncludePaths agdaOptions
               }
         pageWithAgdaCompiler courseOptions
 
@@ -169,16 +184,3 @@ main = hakyll $ do
 
 
 --------------------------------------------------------------------------------
-pageCompiler :: Compiler (Item String)
-pageCompiler = pandocCompiler
-  >>= loadAndApplyTemplate "templates/page.html"    siteContext
-  >>= loadAndApplyTemplate "templates/default.html" siteContext
-  >>= relativizeUrls
-
-pageWithAgdaCompiler :: AgdaOptions -> Compiler (Item String)
-pageWithAgdaCompiler opts = agdaCompilerWith opts
-  >>= renderPandoc
-  >>= loadAndApplyTemplate "templates/page.html"    siteContext
-  >>= loadAndApplyTemplate "templates/default.html" siteContext
-  >>= relativizeUrls
-

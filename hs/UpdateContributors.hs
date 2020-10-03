@@ -20,7 +20,7 @@ import qualified GitHub as GH
 import           System.Directory (createDirectoryIfMissing)
 import           System.Exit (exitFailure)
 import           System.FilePath ((</>), (<.>))
-import           System.FilePath.Glob (glob)
+import           System.FilePath.Glob (namesMatching)
 import           System.Environment (lookupEnv)
 import           Text.Printf (printf)
 
@@ -95,8 +95,8 @@ data Author = Author
   deriving (Show)
 
 readAuthors :: FilePath -> IO [Author]
-readAuthors authorDir = do
-  authorFiles <- glob (authorDir </> "*.metadata")
+readAuthors dir = do
+  authorFiles <- namesMatching (dir </> "*.metadata")
   forM authorFiles $ \authorFile -> do
     authorOrError <- parseYamlFrontmatterEither <$> B.readFile authorFile
     case authorOrError of
@@ -152,8 +152,8 @@ instance ToJSON Contributor where
              ]
 
 readContributors :: FilePath -> IO [Contributor]
-readContributors contributorDir = do
-  contributorFiles <- glob (contributorDir </> "*.metadata")
+readContributors dir = do
+  contributorFiles <- namesMatching (dir </> "*.metadata")
   forM contributorFiles $ \contributorFile -> do
     contributorOrError <- parseYamlFrontmatterEither <$> B.readFile contributorFile
     case contributorOrError of
