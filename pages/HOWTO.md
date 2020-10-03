@@ -1,9 +1,9 @@
 ---
-title     : "Instructions"
+title     : "Checklists for various tasks"
 permalink : /HOWTO/
 ---
 
-# Announcements
+# Publishing an announcement
 
 PLFA announcements are files with names of the form `YYYY-0M-0D-SLUG.md`, where `YYYY` is the long year, `0M` is the zero-padded month, `0D` is the zero-padded day, and `SLUG` is the URL slug for the post, usually an URL-safe version of the title.
 
@@ -13,10 +13,10 @@ There are several steps to writing an announcement for PLFA:
 - [ ] Add the metadata block, setting at least the `title` field.
 - [ ] Write the announcement in the remainder of the file.
 
-If the announcement is short, i.e., a few sentences at most, then you can leave it as it is. Otherwise, insert a `&lt;!--more--&gt;` tag after the first paragraph. Everything before this tag will be displayed on the announcements page, followed by a link `(more)` which links to the complete announcement.
+If the announcement is short, it will be displayed inline in on the announcements page. If the announcement is long, insert a `<!--more-->` tag after the first paragraph. Everything before this tag will be displayed on the announcements page, as a “teaser” followed by a link to the full text.
 
 
-# Releases
+# Publishing a release
 
 For a project such as PLFA, [Semantic Versioning][SemVer] doesn’t make a huge amount of sense. Instead, we’ve adopted [Calendar Versioning][CalVer], following, e.g., [Ubuntu][Ubuntu]. PLFA versions are of the form `YY.0M`, where `YY` is the short year, and `0M` is the zero-padded month. For each release, there are two tags in the repository:
 

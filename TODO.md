@@ -12,11 +12,6 @@ The goals in the second milestone are optional, but nice.
   + prev and next are set in the metadata
   + see: https://github.com/plfa/plfa.github.io/blob/dev/_includes/next.html
 
-- fix links to stdlib:
-  + should construct a regular expression which matches all standard library modules,
-    by assuming that the standard library used is in the `standard-library` submodule
-  + see https://github.com/wenkokke/agda2html/blob/master/src/Lib.hs#L236-L242
-
 - fix links to plfa:
   + should construct a regular expression which matches all PLFA modules,
     by assuming that PLFA is in the `src` folder
