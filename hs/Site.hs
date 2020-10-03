@@ -10,8 +10,14 @@ import Hakyll.Web.Routes.Permalink
 --------------------------------------------------------------------------------
 siteContext :: Context String
 siteContext = mconcat
-  [ listField "authors" defaultContext (loadAll "authors/*.metadata")
-  , constField "site_title" "Programming Foundations in Agda"
+  [ constField "site_title" "Programming Foundations in Agda"
+  , constField "site_url" "https://plfa.github.io"
+  , constField "license" "Creative Commons Attribution 4.0 International License"
+  , constField "license_url" "https://creativecommons.org/licenses/by/4.0/"
+  , constField "repository" "plfa/plfa.github.io"
+  , constField "branch" "dev"
+  , listField "authors" defaultContext (loadAll "authors/*.metadata")
+  , constField "google_analytics" "UA-125055580-1"
   , defaultContext
   ]
 
