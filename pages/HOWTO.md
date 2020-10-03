@@ -1,4 +1,22 @@
-# How to create a new release
+---
+title     : "Instructions"
+permalink : /HOWTO/
+---
+
+# Announcements
+
+PLFA announcements are files with names of the form `YYYY-0M-0D-SLUG.md`, where `YYYY` is the long year, `0M` is the zero-padded month, `0D` is the zero-padded day, and `SLUG` is the URL slug for the post, usually an URL-safe version of the title.
+
+There are several steps to writing an announcement for PLFA:
+
+- [ ] Create a new file in `posts` with the name `YYYY-0M-0D-SLUG.md`.
+- [ ] Add the metadata block, setting at least the `title` field.
+- [ ] Write the announcement in the remainder of the file.
+
+If the announcement is short, i.e., a few sentences at most, then you can leave it as it is. Otherwise, insert a `&lt;!--more--&gt;` tag after the first paragraph. Everything before this tag will be displayed on the announcements page, followed by a link `(more)` which links to the complete announcement.
+
+
+# Releases
 
 For a project such as PLFA, [Semantic Versioning][SemVer] doesn’t make a huge amount of sense. Instead, we’ve adopted [Calendar Versioning][CalVer], following, e.g., [Ubuntu][Ubuntu]. PLFA versions are of the form `YY.0M`, where `YY` is the short year, and `0M` is the zero-padded month. For each release, there are two tags in the repository:
 
@@ -9,6 +27,7 @@ The former contains everything you’d need to work with that version of PLFA, w
 
 There are several steps to creating a new release for PLFA:
 
+- [ ] Update the version in `plfa.cabal` to `YY.M` (no zero padding).
 - [ ] Create a new tag `dev-YY.0M` of the `dev` branch.
 - [ ] Create a new tag `web-YY.0M` of the `master` branch.
 - [ ] Push the new tags.

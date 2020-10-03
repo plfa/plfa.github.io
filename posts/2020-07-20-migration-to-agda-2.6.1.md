@@ -1,5 +1,4 @@
 ---
-layout : post
 title  : "Migration to Agda 2.6.1"
 ---
 

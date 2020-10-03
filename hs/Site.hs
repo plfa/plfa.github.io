@@ -52,13 +52,16 @@ postListContext = mconcat
     contentField key snapshot = field key $ \item ->
       itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
-agdaOptions :: CommandLineOptions
+agdaOptions :: AgdaOptions
 agdaOptions = defaultAgdaOptions
-  { optUseLibs       = False
-  , optIncludePaths  = ["standard-library/src", "src"]
-  , optPragmaOptions = defaultAgdaPragmaOptions
-    { optVerbose     = agdaVerbosityQuiet
+  { agdaCommandLineOptions = defaultAgdaCommandLineOptions
+    { optUseLibs       = False
+    , optIncludePaths  = ["standard-library/src", "src"]
+    , optPragmaOptions = defaultAgdaPragmaOptions
+      { optVerbose     = agdaVerbosityQuiet
+      }
     }
+  , agdaStandardLibraryDir = Just "standard-library"
   }
 
 sassOptions :: SassOptions
@@ -142,8 +145,13 @@ main = hakyll $ do
       route permalinkRoute
       compile $ do
         courseDir <- takeDirectory . toFilePath <$> getUnderlying
+        -- We need lenses :'(
+        let commandLineOptions = agdaCommandLineOptions agdaOptions
+        let includePaths = optIncludePaths commandLineOptions
         let courseOptions = agdaOptions
-              { optIncludePaths = courseDir : optIncludePaths agdaOptions
+              { agdaCommandLineOptions = commandLineOptions
+                { optIncludePaths = courseDir : includePaths
+                }
               }
         pageWithAgdaCompiler courseOptions
 
@@ -167,8 +175,8 @@ pageCompiler = pandocCompiler
   >>= loadAndApplyTemplate "templates/default.html" siteContext
   >>= relativizeUrls
 
-pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
-pageWithAgdaCompiler agdaOptions = agdaCompilerWith agdaOptions
+pageWithAgdaCompiler :: AgdaOptions -> Compiler (Item String)
+pageWithAgdaCompiler opts = agdaCompilerWith opts
   >>= renderPandoc
   >>= loadAndApplyTemplate "templates/page.html"    siteContext
   >>= loadAndApplyTemplate "templates/default.html" siteContext

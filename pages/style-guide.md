@@ -1,8 +1,9 @@
-Style guide for PLFA
-============================
+---
+title     : "Style guide for PLFA"
+permalink : /StyleGuide/
+---
 
-This is based on [the style guide for the Agda standard library](https://github.com/agda/agda-stdlib/blob/master/notes/style-guide.md).
-Like it, this is very much a work-in-progress and is not exhaustive.
+This is based on [the style guide for the Agda standard library](https://github.com/agda/agda-stdlib/blob/master/notes/style-guide.md). Like it, this is very much a work-in-progress and is not exhaustive.
 
 ## File structure
 
