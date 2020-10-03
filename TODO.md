@@ -12,9 +12,6 @@ The goals in the second milestone are optional, but nice.
   + prev and next are set in the metadata
   + see: https://github.com/plfa/plfa.github.io/blob/dev/_includes/next.html
 
-- render courses
-  + requires adding PLFA to the Agda calls
-
 - fix links to stdlib:
   + should construct a regular expression which matches all standard library modules,
     by assuming that the standard library used is in the `standard-library` submodule

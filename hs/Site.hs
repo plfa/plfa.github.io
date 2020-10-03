@@ -4,10 +4,13 @@ import Hakyll
 import Hakyll.Web.Agda
 import Hakyll.Web.Sass
 import Hakyll.Web.Routes.Permalink
+import System.FilePath (takeDirectory)
+
 
 --------------------------------------------------------------------------------
 -- Configuration
 --------------------------------------------------------------------------------
+
 siteContext :: Context String
 siteContext = mconcat
   [ constField "site_title" "Programming Foundations in Agda"
@@ -49,7 +52,6 @@ postListContext = mconcat
     contentField key snapshot = field key $ \item ->
       itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
---------------------------------------------------------------------------------
 agdaOptions :: CommandLineOptions
 agdaOptions = defaultAgdaOptions
   { optUseLibs       = False
@@ -59,13 +61,16 @@ agdaOptions = defaultAgdaOptions
     }
   }
 
---------------------------------------------------------------------------------
 sassOptions :: SassOptions
 sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
 
+
 --------------------------------------------------------------------------------
+-- Build site
+--------------------------------------------------------------------------------
+
 main :: IO ()
 main = hakyll $ do
 
@@ -88,9 +93,18 @@ main = hakyll $ do
         csses <- loadAll ("css/*.css" .||. "css/*.scss")
         makeItem $ unlines $ map itemBody csses
 
-    -- Compile authors and contributor
+    -- Compile author and contributor metadata
     match "authors/*.metadata" $ compile getResourceBody
     match "contributors/*.metadata" $ compile getResourceBody
+
+    -- Compile Acknowledgements
+    match "pages/acknowledgements.html" $ do
+      route permalinkRoute
+      compile $ getResourceBody
+          >>= applyAsTemplate acknowledgementsContext
+          >>= loadAndApplyTemplate "templates/page.html"    siteContext
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
+          >>= relativizeUrls
 
     -- Compile Announcements
     match "posts/*" $ do
@@ -102,38 +116,40 @@ main = hakyll $ do
             >>= relativizeUrls
 
     match "pages/announcements.html" $ do
-      route $ permalinkRoute idRoute
+      route permalinkRoute
       compile $ getResourceBody
           >>= applyAsTemplate postListContext
           >>= loadAndApplyTemplate "templates/page.html"      siteContext
           >>= loadAndApplyTemplate "templates/default.html"   siteContext
           >>= relativizeUrls
 
-    -- Compile Acknowledgements
-    match "pages/acknowledgements.html" $ do
-      route $ permalinkRoute idRoute
-      compile $ getResourceBody
-          >>= applyAsTemplate acknowledgementsContext
-          >>= loadAndApplyTemplate "templates/page.html"    siteContext
-          >>= loadAndApplyTemplate "templates/default.html" siteContext
-          >>= relativizeUrls
-
     -- Compile other pages
     match ("README.md" .||. "pages/*.md") $ do
-      route $ permalinkRoute (setExtension "html")
-      compile $ pandocCompiler
-          >>= loadAndApplyTemplate "templates/page.html"    siteContext
-          >>= loadAndApplyTemplate "templates/default.html" siteContext
-          >>= relativizeUrls
+      route permalinkRoute
+      compile pageCompiler
 
     -- Compile chapters (using literate Agda)
     match "src/**.lagda.md" $ do
-      route $ permalinkRoute (setExtension "html")
-      compile $ agdaCompilerWith agdaOptions
-          >>= renderPandoc
-          >>= loadAndApplyTemplate "templates/page.html"    siteContext
-          >>= loadAndApplyTemplate "templates/default.html" siteContext
-          >>= relativizeUrls
+      route permalinkRoute
+      compile $ pageWithAgdaCompiler agdaOptions
+
+    -- Compile course pages
+    match ("courses/**.md" .&&. complement "courses/**.lagda.md") $ do
+      route permalinkRoute
+      compile pageCompiler
+
+    match "courses/**.lagda.md" $ do
+      route permalinkRoute
+      compile $ do
+        courseDir <- takeDirectory . toFilePath <$> getUnderlying
+        let courseOptions = agdaOptions
+              { optIncludePaths = courseDir : optIncludePaths agdaOptions
+              }
+        pageWithAgdaCompiler courseOptions
+
+    match "courses/**.pdf" $ do
+      route idRoute
+      compile copyFileCompiler
 
     -- Compile 404 page
     match "404.html" $ do
@@ -142,4 +158,19 @@ main = hakyll $ do
           >>= loadAndApplyTemplate "templates/default.html" siteContext
 
     match "templates/*" $ compile templateBodyCompiler
+
+
+--------------------------------------------------------------------------------
+pageCompiler :: Compiler (Item String)
+pageCompiler = pandocCompiler
+  >>= loadAndApplyTemplate "templates/page.html"    siteContext
+  >>= loadAndApplyTemplate "templates/default.html" siteContext
+  >>= relativizeUrls
+
+pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
+pageWithAgdaCompiler agdaOptions = agdaCompilerWith agdaOptions
+  >>= renderPandoc
+  >>= loadAndApplyTemplate "templates/page.html"    siteContext
+  >>= loadAndApplyTemplate "templates/default.html" siteContext
+  >>= relativizeUrls
 
