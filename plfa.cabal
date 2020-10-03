@@ -15,39 +15,43 @@ library
   exposed-modules:  Hakyll.Web.Agda
                   , Hakyll.Web.Sass
                   , Hakyll.Web.Routes.Permalink
-  build-depends:    Agda            == 2.6.1.1
-                  , base            >= 4.6  && < 5
-                  , directory       >= 1.2  && < 1.4
-                  , filepath        >= 1.3  && < 1.5
-                  , hakyll          >= 4.10 && < 4.15
-                  , hsass           >= 0.8  && < 0.9
-                  , pandoc-types    >= 1.20 && < 1.21
-                  , pandoc-citeproc >= 0.17 && < 0.18
-                  , regex-tdfa      >= 1.3  && < 1.4
+  build-depends:    Agda               == 2.6.1.1
+                  , base               >= 4.6  && < 5
+                  , directory          >= 1.2  && < 1.4
+                  , filepath           >= 1.3  && < 1.5
+                  , hakyll             >= 4.10 && < 4.15
+                  , hsass              >= 0.8  && < 0.9
+                  , Glob               >= 0.10 && < 0.11
+                  , pandoc-types       >= 1.20 && < 1.21
+                  , pandoc-citeproc    >= 0.17 && < 0.18
+                  , regex-tdfa         >= 1.3  && < 1.4
+                  , text               >= 1.2  && < 1.3
+                  , text-icu           >= 0.7  && < 0.8
+                  , text-regex-replace >= 0.1  && < 0.2
   default-language: Haskell2010
 
 executable site
   main-is:          hs/Site.hs
   ghc-options:      -Wall
   build-depends:    plfa
-                  , base            >= 4.6  && < 5
-                  , hakyll          >= 4.10 && < 4.15
+                  , base               >= 4.6  && < 5
+                  , hakyll             >= 4.10 && < 4.15
   ghc-options:      -threaded
   default-language: Haskell2010
 
 executable update-contributors
   main-is:          hs/UpdateContributors.hs
   ghc-options:      -threaded
-  build-depends:    base            >= 4.6  && < 5
-                  , bytestring      >= 0.10 && < 0.11
-                  , containers      >= 0.6  && < 0.7
-                  , directory       >= 1.2  && < 1.4
-                  , exceptions      >= 0.10 && < 0.11
-                  , filepath        >= 1.3  && < 1.5
-                  , frontmatter     >= 0.1  && < 0.2
-                  , github          >= 0.26 && < 0.27
-                  , Glob            >= 0.10 && < 0.11
-                  , text            >= 1.2  && < 1.3
-                  , vector          >= 0.12 && < 0.13
-                  , yaml            >= 0.11 && < 0.12
+  build-depends:    base               >= 4.6  && < 5
+                  , bytestring         >= 0.10 && < 0.11
+                  , containers         >= 0.6  && < 0.7
+                  , directory          >= 1.2  && < 1.4
+                  , exceptions         >= 0.10 && < 0.11
+                  , filepath           >= 1.3  && < 1.5
+                  , frontmatter        >= 0.1  && < 0.2
+                  , github             >= 0.26 && < 0.27
+                  , Glob               >= 0.10 && < 0.11
+                  , text               >= 1.2  && < 1.3
+                  , vector             >= 0.12 && < 0.13
+                  , yaml               >= 0.11 && < 0.12
   default-language: Haskell2010

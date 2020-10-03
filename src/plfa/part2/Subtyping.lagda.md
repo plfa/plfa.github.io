@@ -503,7 +503,7 @@ Id = ℕ
 ```
 
 Our terms are extrinsic, so we define a `Term` data type similar to
-the one in the [Lambda]({{ site.baseurl }}/Lambda/) chapter, but adapted for de
+the one in the [Lambda](/Lambda/) chapter, but adapted for de
 Bruijn indices.  The two new term constructors are for record creation
 and field access.
 
@@ -594,7 +594,7 @@ data _⊢*_⦂_ where
      → Γ ⊢* (M ∷ Ms) ⦂ (A ∷ As)
 ```
 
-Most of the typing rules are adapted from those in the [Lambda]({{ site.baseurl }}/Lambda/)
+Most of the typing rules are adapted from those in the [Lambda](/Lambda/)
 chapter. Here we discuss the three new rules.
 
 * Rule `⊢rcd`: A record is well-typed if the field initializers `Ms`
@@ -613,7 +613,7 @@ chapter. Here we discuss the three new rules.
 
 In preparation of defining the reduction rules for this language, we
 define simultaneous substitution using the same recipe as in the
-[DeBruijn]({{ site.baseurl }}/DeBruijn/) chapter, but adapted to extrinsic
+[DeBruijn](/DeBruijn/) chapter, but adapted to extrinsic
 terms. Thus, the `subst` function is split into two parts: a raw
 `subst` function that operators on terms and a `subst-pres` lemma that
 proves that substitution preserves types. We define `subst` in this
@@ -784,7 +784,7 @@ We have just two new reduction rules:
 
 ## Canonical Forms
 
-As in the [Properties]({{ site.baseurl }}/Properties/) chapter, we
+As in the [Properties](/Properties/) chapter, we
 define a `Canonical V ⦂ A` relation that characterizes the well-typed
 values.  The presence of the subsumption rule impacts its definition
 because we must allow the type of the value `V` to be a subtype of `A`.
@@ -883,7 +883,7 @@ typed (C-rcd ⊢Ms dks As<:Bs) = ⊢<: (⊢rcd ⊢Ms dks) As<:Bs
 
 The Progress theorem states that a well-typed term may either take a
 reduction step or it is already a value. The proof of Progress is like
-the one in the [Properties]({{ site.baseurl }}/Properties/); it
+the one in the [Properties](/Properties/); it
 proceeds by induction on the typing derivation and most of the cases
 remain the same. Below we discuss the new cases for records and
 subsumption.
@@ -961,7 +961,7 @@ As mentioned earlier, we need to prove that substitution preserve
 types, which in turn requires that renaming preserves types.  The
 proofs of these lemmas are adapted from the intrinsic versions of the
 `ext`, `rename`, `exts`, and `subst` functions in the
-[DeBruijn]({{ site.baseurl }}/DeBruijn/) chapter.
+[DeBruijn](/DeBruijn/) chapter.
 
 We define the following abbreviation for a *well-typed renaming* from Γ
 to Δ, that is, a renaming that sends variables in Γ to variables in Δ

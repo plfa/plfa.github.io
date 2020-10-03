@@ -347,7 +347,7 @@ an order that will make sense to the reader.
 #### Exercise `≤-Reasoning` (stretch)
 
 The proof of monotonicity from
-Chapter [Relations]({{ site.baseurl }}/Relations/)
+Chapter [Relations](/Relations/)
 can be written in a more readable form by using an analogue of our
 notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with

@@ -21,6 +21,12 @@ siteContext = mconcat
   , defaultContext
   ]
 
+acknowledgementsContext :: Context String
+acknowledgementsContext = mconcat
+  [ listField "contributors" defaultContext (loadAll "contributors/*.metadata")
+  , siteContext
+  ]
+
 postContext :: Context String
 postContext = mconcat
   [ dateField "date" "%B %e, %Y"
@@ -95,21 +101,32 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/default.html" siteContext
             >>= relativizeUrls
 
-    match "announcements.md" $ do
-      route $ permalinkRoute (setExtension "html")
-      compile $ pandocCompiler
-          >>= loadAndApplyTemplate "templates/post-list.html" postListContext
+    match "pages/announcements.html" $ do
+      route $ permalinkRoute idRoute
+      compile $ getResourceBody
+          >>= applyAsTemplate postListContext
+          >>= loadAndApplyTemplate "templates/page.html"      siteContext
           >>= loadAndApplyTemplate "templates/default.html"   siteContext
           >>= relativizeUrls
 
-    -- Compile Book
-    match ("index.md" .||. "README.md" .||. "src/**.md" .&&. complement "**.lagda.md") $ do
+    -- Compile Acknowledgements
+    match "pages/acknowledgements.html" $ do
+      route $ permalinkRoute idRoute
+      compile $ getResourceBody
+          >>= applyAsTemplate acknowledgementsContext
+          >>= loadAndApplyTemplate "templates/page.html"    siteContext
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
+          >>= relativizeUrls
+
+    -- Compile other pages
+    match ("README.md" .||. "pages/*.md") $ do
       route $ permalinkRoute (setExtension "html")
       compile $ pandocCompiler
           >>= loadAndApplyTemplate "templates/page.html"    siteContext
           >>= loadAndApplyTemplate "templates/default.html" siteContext
           >>= relativizeUrls
 
+    -- Compile chapters (using literate Agda)
     match "src/**.lagda.md" $ do
       route $ permalinkRoute (setExtension "html")
       compile $ agdaCompilerWith agdaOptions

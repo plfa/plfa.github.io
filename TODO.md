@@ -7,9 +7,6 @@ The goals in the second milestone are optional, but nice.
 
 ## Milestone 1
 
-- convert Jekyll links to absolute links
-  + e.g., `{{ site.baseurl }}/More/ -> /More/`
-
 - render prev, next, and source links
   + requires populating the context with a link to the source file
   + prev and next are set in the metadata
@@ -27,8 +24,6 @@ The goals in the second milestone are optional, but nice.
   + should construct a regular expression which matches all PLFA modules,
     by assuming that PLFA is in the `src` folder
   + see https://github.com/wenkokke/agda2html/blob/master/src/Lib.hs#L213-L230
-
-- fix Makefile to build site using Stack and Hakyll
 
 - fix Makefile to reuse html-proofer
   + that still leaves us with a Ruby dependency

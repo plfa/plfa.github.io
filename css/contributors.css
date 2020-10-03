@@ -1,0 +1,8 @@
+ul.list-of-contributors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: calc(100% - 2rem);
+}
+ul.list-of-contributors li {
+    margin-right: 2rem;
+}

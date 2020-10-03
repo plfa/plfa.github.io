@@ -31,6 +31,9 @@
 }
 
 /* Code. */
+pre {
+    break-inside: avoid;
+}
 pre.highlight {
     @include code-container;
     border-style: dashed !important;

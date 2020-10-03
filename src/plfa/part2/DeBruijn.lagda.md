@@ -69,10 +69,10 @@ And here is its corresponding type derivation:
       ∋z = Z
 
 (These are both taken from Chapter
-[Lambda]({{ site.baseurl }}/Lambda/)
+[Lambda](/Lambda/)
 and you can see the corresponding derivation tree written out
 in full
-[here]({{ site.baseurl }}/Lambda/#derivation).)
+[here](/Lambda/#derivation).)
 The two definitions are in close correspondence, where:
 
   * `` `_ `` corresponds to `` ⊢` ``
@@ -125,7 +125,7 @@ which in context `Γ` have type `A`.
 While these two choices fit well, they are independent.  One
 can use de Bruijn indices in raw terms, or
 have intrinsically-typed terms with names.  In
-Chapter [Untyped]({{ site.baseurl }}/Untyped/),
+Chapter [Untyped](/Untyped/),
 we will introduce terms with de Bruijn indices that
 are intrinsically scoped but not typed.
 
@@ -423,7 +423,7 @@ lookup ∅       _        =  ⊥-elim impossible
 We intend to apply the function only when the natural is
 shorter than the length of the context, which we indicate by
 postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}/Lambda/#primed).
+[here](/Lambda/#primed).
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
@@ -452,9 +452,9 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ### Test examples {#examples}
 
 We repeat the test examples from
-Chapter [Lambda]({{ site.baseurl }}/Lambda/).
+Chapter [Lambda](/Lambda/).
 You can find them
-[here]({{ site.baseurl }}/Lambda/#derivation)
+[here](/Lambda/#derivation)
 for comparison.
 
 First, computing two plus two on naturals:
@@ -787,7 +787,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
 Here `zero` requires an implicit parameter to aid inference,
 much in the same way that `[]` did in
-[Lists]({{ site.baseurl }}/Lists/).
+[Lists](/Lists/).
 
 
 ## Reduction

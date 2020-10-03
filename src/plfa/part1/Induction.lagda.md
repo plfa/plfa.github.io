@@ -364,7 +364,7 @@ proof of associativity.
 
 The symbol `∀` appears in the statement of associativity to indicate that
 it holds for all numbers `m`, `n`, and `p`.  We refer to `∀` as the _universal
-quantifier_, and it is discussed further in Chapter [Quantifiers]({{ site.baseurl }}/Quantifiers/).
+quantifier_, and it is discussed further in Chapter [Quantifiers](/Quantifiers/).
 
 Evidence for a universal quantifier is a function.  The notations
 
@@ -699,7 +699,7 @@ which is left as an exercise for the reader.
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
-[earlier]({{ site.baseurl }}/Naturals/#finite-creation).
+[earlier](/Naturals/#finite-creation).
 
 ```
 -- Your code goes here
@@ -952,7 +952,7 @@ for all `m`, `n`, and `p`.
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that
-Exercise [Bin]({{ site.baseurl }}/Naturals/#Bin)
+Exercise [Bin](/Naturals/#Bin)
 defines a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define functions
 

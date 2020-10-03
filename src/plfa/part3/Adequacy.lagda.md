@@ -36,7 +36,7 @@ multi-step reduction a lambda abstraction.  The recursive structure of
 the derivations for `γ ⊢ M ↓ (v ↦ w)` are completely different from
 the structure of multi-step reductions, so a direct proof would be
 challenging. However, The structure of `γ ⊢ M ↓ (v ↦ w)` closer to
-that of [BigStep]({{ site.baseurl }}/BigStep/) call-by-name
+that of [BigStep](/BigStep/) call-by-name
 evaluation. Further, we already proved that big-step evaluation
 implies multi-step reduction to a lambda (`cbn→reduce`). So we shall
 prove that `γ ⊢ M ↓ (v ↦ w)` implies that `γ' ⊢ M ⇓ c`, where `c` is a
@@ -619,7 +619,7 @@ adequacy{M}{N} eq
 
 As promised, we return to the question of whether call-by-name
 evaluation is equivalent to beta reduction. In chapter
-[BigStep]({{ site.baseurl }}/BigStep/) we established the forward
+[BigStep](/BigStep/) we established the forward
 direction: that if call-by-name produces a result, then the program
 beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backward
 direction of the if-and-only-if, leveraging our results about the
