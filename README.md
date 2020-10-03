@@ -67,12 +67,12 @@ To load and type-check the file, use [`C-c C-l`][agda-docs-emacs-notation].
 
 Agda is edited interactively, using [“holes”][agda-docs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using `C-c C-l`, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
 
-    C-c C-c x    split on variable x
-    C-c C-space  fill in hole
-    C-c C-r      refine with constructor
-    C-c C-a      automatically fill in hole
-    C-c C-,      goal type and context
-    C-c C-.      goal type, context, and inferred type
+- `C-c C-c x`: **c**ase split on variable x
+- `C-c C-space`: fill in hole
+- `C-c C-r`: **r**efine with constructor
+- `C-c C-a`: **a**utomatically fill in hole
+- `C-c C-,`: goal type and context
+- `C-c C-.`: goal type, context, and inferred type
 
 See [the emacs-mode docs][agda-docs-emacs-mode] for more details.
 
