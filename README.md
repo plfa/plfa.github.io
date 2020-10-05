@@ -1,7 +1,9 @@
 ---
-layout: page
-title: Getting Started
-permalink: /GettingStarted/
+layout    : page
+title     : Getting Started
+prev      : /Preface/
+permalink : /GettingStarted/
+next      : /Naturals/
 ---
 
 <!-- Status & Version Badges -->

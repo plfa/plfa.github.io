@@ -19,6 +19,7 @@ siteContext = mconcat
   , constField "license_url" "https://creativecommons.org/licenses/by/4.0/"
   , constField "repository" "plfa/plfa.github.io"
   , constField "branch" "dev"
+  , field "source" (return . toFilePath . itemIdentifier)
   , listField "authors" defaultContext (loadAll "authors/*.metadata")
   , constField "google_analytics" "UA-125055580-1"
   , defaultContext

@@ -1,7 +1,7 @@
 ---
 title     : "Naturals: Natural numbers"
 layout    : page
-prev      : /Preface/
+prev      : /GettingStarted/
 permalink : /Naturals/
 next      : /Induction/
 ---

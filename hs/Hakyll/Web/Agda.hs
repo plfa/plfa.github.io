@@ -41,7 +41,7 @@ defaultAgdaPragmaOptions = defaultPragmaOptions
 
 -- |Compile literate Agda to HTML
 agdaCompilerWith :: CommandLineOptions -> Compiler (Item String)
-agdaCompilerWith agdaOptions = do
+agdaCompilerWith agdaOptions = cached "agda" $ do
   item <- getResourceBody
   let agdaPath = toFilePath (itemIdentifier item)
   let moduleName = agdaModuleName (itemBody item)

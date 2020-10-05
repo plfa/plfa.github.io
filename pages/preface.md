@@ -3,7 +3,7 @@ title     : "Preface"
 layout    : page
 prev      : /Dedication/
 permalink : /Preface/
-next      : /Naturals/
+next      : /GettingStarted/
 ---
 
 The most profound connection between logic and computation is a pun.

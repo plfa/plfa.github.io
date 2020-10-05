@@ -13,7 +13,7 @@ import           Text.Sass (SassOptions(..), defaultSassOptions)
 import qualified Text.Sass as Sass
 
 sassCompilerWith :: SassOptions -> Compiler (Item String)
-sassCompilerWith opts = cached "sass" $ getResourceBody >>= withItemBody renderSass
+sassCompilerWith opts = getResourceBody >>= withItemBody renderSass
   where
     renderSass :: String -> Compiler String
     renderSass sass = unsafeCompiler $ do

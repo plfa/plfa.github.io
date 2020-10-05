@@ -307,26 +307,21 @@
 /**
  * Pagination navbar
  */
-.pagination {
-  margin-bottom: $spacing-unit;
-  @extend .social-media-list;
-  li {
-    a, div {
-      min-width: 41px;
-      text-align: center;
-      box-sizing: border-box;
+.pager {
+    .pagination {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        li {
+            margin: 5px 10px 5px 0;
+        }
+        li.page-link:last-of-type {
+            margin-right: 0;
+        }
+        li.separator:last-of-type {
+            display: none;
+        }
     }
-    div {
-      display: block;
-      padding: $spacing-unit / 4;
-      border: 1px solid transparent;
-
-      &.pager-edge {
-        color: $border-color-01;
-        border: 1px dashed;
-      }
-    }
-  }
 }
 
 
@@ -339,3 +334,4 @@
     width: calc(50% - (#{$spacing-unit} / 2));
   }
 }
+

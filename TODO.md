@@ -7,11 +7,6 @@ The goals in the second milestone are optional, but nice.
 
 ## Milestone 1
 
-- render prev, next, and source links
-  + requires populating the context with a link to the source file
-  + prev and next are set in the metadata
-  + see: https://github.com/plfa/plfa.github.io/blob/dev/_includes/next.html
-
 - fix links to plfa:
   + should construct a regular expression which matches all PLFA modules,
     by assuming that PLFA is in the `src` folder
