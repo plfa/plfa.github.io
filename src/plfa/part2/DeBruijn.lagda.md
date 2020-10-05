@@ -756,7 +756,7 @@ The logician Haskell Curry observed that getting the
 definition of substitution right can be a tricky business.  It
 can be even trickier when using de Bruijn indices, which can
 often be hard to decipher.  Under the current approach, any
-definition of substitution must, of necessity, preserves
+definition of substitution must, of necessity, preserve
 types.  While this makes the definition more involved, it
 means that once it is done the hardest work is out of the way.
 And combining definition with proof makes it harder for errors
