@@ -736,8 +736,8 @@ variable to avoid capture:
   `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
 
 Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
-`"y"` has type `` `ℕ ``, and the free `"x"` also has type ``
-`ℕ ⇒ `ℕ ``.  Here is the example formalised:
+`"y"` has type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
+Here is the example formalised:
 ```
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
