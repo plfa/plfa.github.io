@@ -13,7 +13,16 @@ common shared-properties
   ghc-options:      -Wall
   default-language: Haskell2010
   build-depends:    base               >=4.6  && <5
+                  , bytestring         >=0.10 && <0.11
+                  , containers         >=0.6  && <0.7
+                  , directory          >=1.2  && <1.4
+                  , extra              >=1.7  && <1.8
+                  , filemanip          >=0.3  && <0.4
                   , filepath           >=1.3  && <1.5
+                  , frontmatter        >=0.1  && <0.2
+                  , hakyll             >=4.10 && <4.15
+                  , text               >=1.2  && <1.3
+                  , yaml               >=0.11 && <0.12
 
 library
   import:           shared-properties
@@ -22,35 +31,22 @@ library
                   , Hakyll.Web.Sass
                   , Hakyll.Web.Routes.Permalink
   build-depends:    Agda               ==2.6.1.1
-                  , directory          >=1.2  && <1.4
-                  , extra              >=1.7  && <1.8
-                  , hakyll             >=4.10 && <4.15
                   , hsass              >=0.8  && <0.9
-                  , filemanip          >=0.3  && <0.4
                   , pandoc-types       >=1.20 && <1.21
                   , pandoc-citeproc    >=0.17 && <0.18
                   , regex-tdfa         >=1.3  && <1.4
-                  , text               >=1.2  && <1.3
                   , text-icu           >=0.7  && <0.8
                   , text-regex-replace >=0.1  && <0.2
 
 executable site
   import:           shared-properties
-  main-is:          hs/Site.hs
+  main-is:          hs/Main.hs
   build-depends:    plfa
-                  , hakyll             >=4.10 && <4.15
   ghc-options:      -threaded
 
 executable update-contributors
   import:           shared-properties
   main-is:          hs/UpdateContributors.hs
-  build-depends:    bytestring         >=0.10 && <0.11
-                  , containers         >=0.6  && <0.7
-                  , directory          >=1.2  && <1.4
-                  , exceptions         >=0.10 && <0.11
-                  , frontmatter        >=0.1  && <0.2
+  build-depends:    exceptions         >=0.10 && <0.11
                   , github             >=0.26 && <0.27
-                  , filemanip          >=0.3  && <0.4
-                  , text               >=1.2  && <1.3
                   , vector             >=0.12 && <0.13
-                  , yaml               >=0.11 && <0.12

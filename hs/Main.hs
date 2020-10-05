@@ -1,11 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
-import Hakyll
-import Hakyll.Web.Agda
-import Hakyll.Web.Sass
-import Hakyll.Web.Routes.Permalink
-import System.FilePath ((</>), takeDirectory)
-
+import           Control.Monad (forM)
+import qualified Data.ByteString as B
+import           Data.Frontmatter (parseYamlFrontmatterEither)
+import           Data.List.Extra (stripInfix)
+import qualified Data.Map as M
+import           Data.Maybe (fromMaybe)
+import           Data.Yaml (FromJSON(..), ToJSON(..), (.:), (.=))
+import qualified Data.Yaml as Y
+import           Hakyll
+import           Hakyll.Web.Agda
+import           Hakyll.Web.Sass
+import           Hakyll.Web.Routes.Permalink
+import           System.Exit (exitFailure)
+import           System.FilePath ((</>), takeDirectory)
+import           System.FilePath.Find ((~~?), always, fileName, find)
+import           Text.Printf (printf)
 
 --------------------------------------------------------------------------------
 -- Configuration
@@ -77,8 +88,11 @@ sassOptions = defaultSassOptions
 
 main :: IO ()
 main = do
-  -- Build the code to fix standard library URLs
+  -- Build function to fix standard library URLs
   fixStdlibLink <- mkFixStdlibLink agdaStdlibPath
+
+  -- Build function to fix local URLs
+  fixLocalLink <- mkFixLocalLink "src"
 
   let pageCompiler :: Compiler (Item String)
       pageCompiler = pandocCompiler
@@ -89,6 +103,7 @@ main = do
   let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
       pageWithAgdaCompiler opts = agdaCompilerWith opts
         >>= withItemBody (return . withUrls fixStdlibLink)
+        >>= withItemBody (return . withUrls fixLocalLink)
         >>= renderPandoc
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
@@ -165,7 +180,6 @@ main = do
       route permalinkRoute
       compile $ do
         courseDir <- takeDirectory . toFilePath <$> getUnderlying
-        -- We need lenses :'(
         let courseOptions = agdaOptions
               { optIncludePaths = courseDir : optIncludePaths agdaOptions
               }
@@ -184,4 +198,45 @@ main = do
     match "templates/*" $ compile templateBodyCompiler
 
 
+
 --------------------------------------------------------------------------------
+-- Fix references to local Agda modules
+--------------------------------------------------------------------------------
+
+newtype Frontmatter = Frontmatter
+  { frontmatterPermalink :: FilePath
+  }
+
+instance FromJSON Frontmatter where
+  parseJSON = Y.withObject "Frontmatter" $ \v -> Frontmatter
+    <$> v .: "permalink"
+
+instance ToJSON Frontmatter where
+  toJSON Frontmatter{..} =
+    Y.object [ "permalink" .= frontmatterPermalink
+             ]
+
+-- |Create a function to fix URL references output by Agda HTML highlighter.
+mkFixLocalLink :: FilePath -> IO (String -> String)
+mkFixLocalLink rootDir = do
+  -- Get all Agda files in `rootDir`.
+  agdaFiles <- find always (fileName ~~? "*.lagda.md") rootDir
+
+  -- Get all permalinks and Agda module names from these files.
+  localLinkList <- forM agdaFiles $ \agdaFile -> do
+    frontmatterOrError <- parseYamlFrontmatterEither <$> B.readFile agdaFile
+    case frontmatterOrError of
+      Left errmsg -> do
+        printf "Parse error in '%s': %s\n" agdaFile errmsg
+        exitFailure
+      Right Frontmatter{..} ->
+        return (agdaModuleFromPath rootDir agdaFile, frontmatterPermalink)
+
+  -- Construct a Map from the local link list.
+  let localLinkMap = M.fromList localLinkList
+
+  -- Construct a function which looks up the URL in the map.
+  return $ \url -> fromMaybe url $ do
+    (oldPath, anchor) <- stripInfix ".html" url
+    newPath <- M.lookup oldPath localLinkMap
+    return $ newPath <> anchor

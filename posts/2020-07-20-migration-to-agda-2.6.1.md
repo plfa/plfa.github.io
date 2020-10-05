@@ -2,7 +2,7 @@
 title  : "Migration to Agda 2.6.1"
 ---
 
-We upgraded to [Agda 2.6.1](https://github.com/agda/agda/releases/tag/v2.6.1) and [version 1.3 of the standard library](https://github.com/agda/agda-stdlib/releases/tag/v1.3). If you want to continue working with the latest version of the book, you'll have to update your versions locally. Please follow the instructions in [Getting Started]({{ site.baseurl }}/GettingStarted/) to reinstall Agda and the standard library.
+We upgraded to [Agda 2.6.1](https://github.com/agda/agda/releases/tag/v2.6.1) and [version 1.3 of the standard library](https://github.com/agda/agda-stdlib/releases/tag/v1.3). If you want to continue working with the latest version of the book, you'll have to update your versions locally. Please follow the instructions in [Getting Started](/GettingStarted/) to reinstall Agda and the standard library.
 
 <!--more-->
 

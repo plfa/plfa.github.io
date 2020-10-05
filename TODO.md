@@ -7,15 +7,6 @@ The goals in the second milestone are optional, but nice.
 
 ## Milestone 1
 
-- fix links to plfa:
-  + should construct a regular expression which matches all PLFA modules,
-    by assuming that PLFA is in the `src` folder
-  + see https://github.com/wenkokke/agda2html/blob/master/src/Lib.hs#L213-L230
-
-- fix Makefile to reuse html-proofer
-  + that still leaves us with a Ruby dependency
-  + only for testing
-
 - migrate EPUB generation over to site.hs
 
 

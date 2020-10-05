@@ -1,6 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Hakyll.Web.Agda
   ( agdaCompilerWith
@@ -10,6 +9,8 @@ module Hakyll.Web.Agda
   , defaultAgdaOptions
   , defaultAgdaPragmaOptions
   , mkFixStdlibLink
+  , agdaModule
+  , agdaModuleFromPath
   ) where
 
 import qualified Agda.Main as Agda
@@ -29,7 +30,7 @@ import           Text.Regex.TDFA ((=~))
 import           System.Directory (createDirectoryIfMissing)
 import           System.Exit (ExitCode(..))
 import           System.FilePath.Find ((==?), always, extension, find)
-import           System.FilePath ((</>), (<.>), dropExtension, makeRelative, pathSeparator)
+import           System.FilePath ((</>), (<.>), dropExtension, dropExtensions, makeRelative, pathSeparator)
 
 -- |Default Agda command-line options. Rename of `defaultOptions`.
 defaultAgdaOptions :: CommandLineOptions
@@ -44,7 +45,7 @@ agdaCompilerWith :: CommandLineOptions -> Compiler (Item String)
 agdaCompilerWith agdaOptions = cached "agda" $ do
   item <- getResourceBody
   let agdaPath = toFilePath (itemIdentifier item)
-  let moduleName = agdaModuleName (itemBody item)
+  let moduleName = agdaModule (itemBody item)
   TmpFile tmpPath <- newTmpFile ".lock"
   let tmpDir = init (dropExtension tmpPath)
   let mdPath = tmpDir </> moduleName <.> "md"
@@ -77,20 +78,29 @@ agdaCompilerWith agdaOptions = cached "agda" $ do
   return $ itemSetBody md item
 
 -- |Get Agda module name from code
-agdaModuleName :: String -> String
-agdaModuleName code = case regexResult of
+agdaModule :: String -> String
+agdaModule code = case regexResult of
   (_, _, _, [moduleName]) -> moduleName
   _                       -> "Main"
   where
     moduleRegex = "module ([^ ]*) where" :: String
     regexResult = code =~ moduleRegex :: (String, String, String, [String])
 
+-- |Get Agda module from a path and a root directory
+agdaModuleFromPath :: FilePath -> FilePath -> String
+agdaModuleFromPath rootDir = map slashToDot . makeRelative rootDir . dropExtensions
+  where
+    slashToDot c = if c == '/' then '.' else c
+
+
 -- |Suppress non-error output
 agdaVerbosityQuiet :: Verbosity
 agdaVerbosityQuiet = Trie.singleton [] 0
 
 
--- * Fix references to Agda standard library
+--------------------------------------------------------------------------------
+-- Fix references to Agda standard library
+--------------------------------------------------------------------------------
 
 -- |Default URL for the Agda standard library.
 defaultStdlibUrl :: String
