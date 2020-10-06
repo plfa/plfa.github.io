@@ -5,10 +5,10 @@ import           Control.Monad (forM)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import           Data.Frontmatter (parseYamlFrontmatterEither)
+import           Data.Functor ((<&>))
 import           Data.List.Extra (stripInfix)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
-import qualified Data.Text as T
 import           Data.Yaml (FromJSON(..), ToJSON(..), (.:), (.=))
 import qualified Data.Yaml as Y
 import           Hakyll
@@ -111,26 +111,6 @@ applyPandocFilters :: ReaderOptions -> [Filter] -> [String] -> Item Pandoc -> Co
 applyPandocFilters ropt filters args = withItemBody $ \doc ->
   unsafeCompiler $ runIOorExplode $ applyFilters ropt filters args doc
 
-{-
-  out/epub/plfa.epub: $(AGDA_FILES) $(LUA_FILES) epub/main.css out/epub/acknowledgements.md
-        @mkdir -p out/epub/
-        $(PANDOC) --strip-comments \
-                --css=epub/main.css \
-                --epub-embed-font='assets/fonts/mononoki.woff' \
-                --epub-embed-font='assets/fonts/FreeMono.woff' \
-                --epub-embed-font='assets/fonts/DejaVuSansMono.woff' \
-                --lua-filter epub/include-files.lua \
-                --lua-filter epub/rewrite-links.lua \
-                --lua-filter epub/rewrite-html-ul.lua \
-                --lua-filter epub/default-code-class.lua -M default-code-class=agda \
-                --standalone \
-                --fail-if-warnings \
-                --toc --toc-depth=2 \
-                --epub-chapter-level=2 \
-                -o "$@" \
-                epub/index.md
--}
-
 writeEPUB3With :: WriterOptions -> Item Pandoc -> Item BL.ByteString
 writeEPUB3With wopt (Item itemi doc) =
   case runPure $ writeEPUB3 wopt doc of
@@ -172,7 +152,8 @@ main = do
       route $ constRoute "plfa.epub"
       compile $ getResourceBody
         >>= readPandocWith epubReaderOptions
-        >>= return . writeEPUB3With epubWriterOptions
+        >>= applyPandocFilters epubReaderOptions epubFilters ["epub3"]
+        <&> writeEPUB3With epubWriterOptions
 
     -- Copy resources
     match "public/**" $ do

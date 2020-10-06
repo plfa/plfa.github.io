@@ -8,13 +8,14 @@ description: This book is an introduction to programming language theory using t
 rights: Creative Commons Attribution 4.0 International License
 language: en-US
 default-code-class: agda
+css: epub/main.css
 ---
 
 # Front matter
 
 ``` {.include shift-heading-level-by=1}
-src/plfa/dedication.md
-src/plfa/preface.md
+pages/dedication.md
+pages/preface.md
 ```
 
 # Part 1: Logical Foundations
@@ -66,7 +67,6 @@ src/plfa/part2/Substitution.lagda.md
 # Backmatter
 
 ``` {.include shift-heading-level-by=1}
-out/epub/acknowledgements.md
 src/plfa/Fonts.lagda.md
 ```
 
