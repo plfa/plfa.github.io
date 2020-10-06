@@ -7,6 +7,7 @@ author:
 description: This book is an introduction to programming language theory using the proof assistant Agda.
 rights: Creative Commons Attribution 4.0 International License
 language: en-US
+default-code-class: agda
 ---
 
 # Front matter

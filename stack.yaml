@@ -1,6 +1,10 @@
 resolver: lts-16.16
 compiler: ghc-8.8.4
 
+flags:
+  pandoc:
+    embed_data_files: true
+
 packages:
 - .
 

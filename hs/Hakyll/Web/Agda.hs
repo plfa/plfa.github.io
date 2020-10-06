@@ -42,7 +42,7 @@ defaultAgdaPragmaOptions = defaultPragmaOptions
 
 -- |Compile literate Agda to HTML
 agdaCompilerWith :: CommandLineOptions -> Compiler (Item String)
-agdaCompilerWith agdaOptions = cached "agda" $ do
+agdaCompilerWith agdaOptions = cached "Hakyll.Web.Agda.agdaCompilerWith" $ do
   item <- getResourceBody
   let agdaPath = toFilePath (itemIdentifier item)
   let moduleName = agdaModule (itemBody item)
