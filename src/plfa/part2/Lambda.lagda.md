@@ -233,16 +233,22 @@ case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
 μ′_⇒_ : (t : Term) → {_ : T (var? t)} → Term → Term
 μ′ (` x) ⇒ N  =  μ x ⇒ N
 ```
-We ensure to apply the function only when the first term is a
-variable, which we do by providing implicit evidence.  If we tried to
-define an abstraction term that binds anything but a variable:
+
+Recall that `T` is a function that maps from the computation world to
+the evidence world, as
+[defined]({{ site.baseurl }}/Decidable/#relating-evidence-and-computation)
+in Chapter [Decidable]({{ site.baseurl }}/Decidable/).  We ensure to
+use the primed functions only when the respective term argument is a
+variable, which we do by providing implicit evidence.  For example, if
+we tried to define an abstraction term that binds anything but a
+variable:
 
     _ : Term
     _ = ƛ′ two ⇒ two
 
 Agda would complain it cannot find a value of the bottom type for the
 implicit argument. Note the implicit argument's type reduces to `⊥`
-when `t` is anything but a variable.
+when term `t` is anything but a variable.
 
 The definition of `plus` can now be written as follows:
 ```
