@@ -1066,9 +1066,9 @@ Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
 ```
-data Steps : ∀ {A} → ∅ ⊢ A → Set where
+data Steps {A} : ∅ ⊢ A → Set where
 
-  steps : ∀ {A} {L N : ∅ ⊢ A}
+  steps : {L N : ∅ ⊢ A}
     → L —↠ N
     → Finished N
       ----------
