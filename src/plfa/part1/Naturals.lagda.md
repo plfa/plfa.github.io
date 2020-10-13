@@ -764,8 +764,9 @@ Begin by typing:
 
 The question mark indicates that you would like Agda to help with
 filling in that part of the code. If you type `C-c C-l` (pressing
-the control key while hitting the `c` key followed by the `l` key)
-the question mark will be replaced:
+the control key while hitting the `c` key followed by the `l` key),
+which stands for **l**oad, the question mark will be
+replaced:
 
     _+_ : ℕ → ℕ → ℕ
     m + n = { }0
@@ -777,11 +778,11 @@ Emacs will also create a window displaying the text
     ?0 : ℕ
 
 to indicate that hole 0 is to be filled in with a term of type `ℕ`.
-Typing `C-c C-f` will move you into the next hole.
+Typing `C-c C-f` (for **f**orward) will move you into the next hole.
 
 We wish to define addition by recursion on the first argument.
-Move the cursor into the hole and type `C-c C-c`.   You will be given
-the prompt:
+Move the cursor into the hole and type `C-c C-c` (for **c**ase).
+You will be given the prompt:
 
     pattern variables to case (empty for split on result):
 
@@ -820,9 +821,9 @@ required type of the hole, and what free variables are available:
     n : ℕ
     m : ℕ
 
-Going into the hole and type `C-c C-r` will fill it in with a constructor
-(if there is a unique choice) or tell you what constructors you might use,
-if there is a choice.  In this case, it displays the following:
+Going into the hole and type `C-c C-r` (for **r**efine) will fill it in
+with a constructor (if there is a unique choice) or tell you what constructors
+you might use, if there is a choice.  In this case, it displays the following:
 
     Don't know which constructor to introduce of zero or suc
 
