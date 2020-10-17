@@ -46,8 +46,9 @@ James Chapman, James McKinna, and many others.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _<_; _≤?_; z≤n; s≤s)
 open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 ## Introduction
@@ -412,35 +413,53 @@ The final term represents the Church numeral two.
 
 ### Abbreviating de Bruijn indices
 
+We define a helper function that computes the length of a context,
+which will be useful in making sure an index is within context bounds:
+```
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
+```
+
 We can use a natural number to select a type from a context:
 ```
-lookup : Context → ℕ → Type
-lookup (Γ , A) zero     =  A
-lookup (Γ , _) (suc n)  =  lookup Γ n
-lookup ∅       _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
+lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 ```
-We intend to apply the function only when the natural is
-shorter than the length of the context, which we indicate by
-postulating an `impossible` term, just as we did
-[here]({{ site.baseurl }}/Lambda/#primed).
+The function takes a proof `p` that the natural number is within the
+context's bounds. This guarantees we will never try to select a type
+at a non-existing position within the context. Strict inequality `n <
+length Γ` holds whenever inequality `suc n ≤ length Γ` holds.  When
+recursing, proof `p` is pattern-matched via the `s≤s` constructor to a
+proof for a context with the rightmost type removed.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
 ```
-count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
-count {Γ , _} zero     =  Z
-count {Γ , _} (suc n)  =  S (count n)
-count {∅}     _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count {_ , _} {zero}    (s≤s z≤n)  =  Z
+count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 ```
-This requires the same trick as before.
 
 We can then introduce a convenient abbreviation for variables:
 ```
-#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
-# n  =  ` count n
+#_ : ∀ {Γ}
+   → (n : ℕ)
+   → {n<?length : True (suc n ≤? length Γ)}
+     --------------------------------
+   → Γ ⊢ lookup (toWitness n<?length)
+#_ n {n<?length}  =  ` count (toWitness n<?length)
 ```
+Function `#_` takes an implicit argument `n<?length` that provides
+evidence for `n` to be within the context's bounds. Recall that
+[`True`]({{ site.baseurl }}/Decidable/#proof-by-reflection),
+[`_≤?_`]({{ site.baseurl }}/Decidable/#the-best-of-both-worlds) and
+[`toWitness`]({{ site.baseurl }}/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
+are defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The
+type of `n<?length` guards against invoking `#_` on an `n` that is out
+of context bounds. Finally, in the return type `n<?length` is
+converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
@@ -1359,7 +1378,7 @@ number of lines of code is as follows:
 
     Lambda                      216
     Properties                  235
-    DeBruijn                    275
+    DeBruijn                    276
 
 The relation between the two approaches approximates the
 golden ratio: extrinsically-typed terms
