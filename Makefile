@@ -106,7 +106,7 @@ $$(tmp_dir): $$(tmp_zip)
 .versions/$$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
 .versions/$$(out): baseurl = $(addprefix /,$(1))
 .versions/$$(out): $$(tmp_dir)
-	@cp Gemfile $$(tmp_dir)
+	@echo "source \"https://rubygems.org\"\n\ngroup :jekyll_plugins do\n  gem 'github-pages'\nend" > $$(tmp_dir)/Gemfile
 	@cd $$(tmp_dir) \
 		&& rm -rf _posts \
 		&& bundle install \

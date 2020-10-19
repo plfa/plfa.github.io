@@ -54,11 +54,11 @@
   </header>
 
   <p style="text-align:center;">
-    
-    
-    
-    
-    
+
+
+
+
+
 </p>
 
 
@@ -115,13 +115,13 @@ should be aligned with the <code class="language-plaintext highlighter-rouge">wh
   </li>
   <li>If the type of a term does not fit on one line then the subsequent
 lines of the type should all be indented by two spaces, e.g.
-    <pre><code class="language-agda">map-cong₂ : ∀ {a b} {A : Set a} {B : Set b} 
-  → ∀ {f g : A → B} {xs} 
+    <pre><code class="language-agda">map-cong₂ : ∀ {a b} {A : Set a} {B : Set b}
+  → ∀ {f g : A → B} {xs}
   → All (λ x → f x ≡ g x) xs → map f xs ≡ map g xs
 </code></pre>
   </li>
   <li>As can be seen in the example above, function arrows at line breaks
-should always go at the beginning of the next line rather than the 
+should always go at the beginning of the next line rather than the
 end of the line.</li>
 </ul>
 
@@ -166,7 +166,7 @@ with the intermediate terms on their own line, indented by two spaces.</p>
   <li>For example:
     <pre><code class="language-agda">+-comm : Commutative _+_
 +-comm zero    n = sym (+-identityʳ n)
-+-comm (suc m) n = 
++-comm (suc m) n =
   begin
     suc m + n
   ≡⟨⟩
@@ -389,11 +389,11 @@ function superscripted with either a <code class="language-plaintext highlighter
   </div>
 
   <p style="text-align:center;">
-    
-    
-    
-    
-    
+
+
+
+
+
 </p>
 
 
