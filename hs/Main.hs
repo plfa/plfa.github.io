@@ -14,7 +14,7 @@ import           Hakyll.Web.Agda
 import           Hakyll.Web.Sass
 import           Hakyll.Web.Routes.Permalink
 import           System.Exit (exitFailure)
-import           System.FilePath ((</>), takeDirectory, splitPath, joinPath)
+import           System.FilePath ((</>), takeDirectory)
 import           System.FilePath.Find ((~~?), always, fileName, find)
 import           Text.Printf (printf)
 
@@ -115,8 +115,8 @@ main = do
     -- Copy versions
     let versions = ["19.08", "20.07"]
     forM_ versions $ \v ->
-      match (fromGlob (".versions" </> v </> "**")) $ do
-        route $ customRoute (joinPath . tail . splitPath . toFilePath)
+      match (fromGlob $ "versions" </> v </> "**") $ do
+        route $ gsubRoute ".versions/" (const "")
         compile copyFileCompiler
 
     -- Copy resources

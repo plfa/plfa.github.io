@@ -34,4 +34,4 @@ auto/
 ## Misc build files
 out/
 *.zip
-.versions/plfa.github.io-web-*/
+versions/plfa.github.io-web-*/

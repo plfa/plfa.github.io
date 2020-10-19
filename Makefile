@@ -66,58 +66,6 @@ update-contributors:
 
 
 #################################################################################
-# Build legacy versions of website using Jekyll
-#################################################################################
-
-LEGACY_VERSIONS := 19.08 20.07
-LEGACY_VERSION_DIRS := $(addprefix .versions/,$(addsuffix /,$(LEGACY_VERSIONS)))
-
-legacy-versions: setup-install-bundle $(LEGACY_VERSION_DIRS)
-
-ifeq ($(shell sed --version >/dev/null 2>&1; echo $$?),1)
-SEDI := sed -i ""
-else
-SEDI := sed -i
-endif
-
-define build_legacy_version
-version := $(1)
-out := $(addsuffix /,$(1))
-url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-tmp_zip := $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
-tmp_dir := $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
-baseurl := $(addprefix /,$(1))
-
-$$(tmp_zip): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
-$$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-$$(tmp_zip):
-	@mkdir -p .versions/
-	@wget -c $$(url) -O $$(tmp_zip)
-
-$$(tmp_dir): version = $(1)
-$$(tmp_dir): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
-$$(tmp_dir): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
-$$(tmp_dir): $$(tmp_zip)
-	@yes | unzip -qq $$(tmp_zip) -d .versions/
-	@$(SEDI) "s/branch: dev/branch: dev-$$(version)/" $$(addsuffix _config.yml,$$(tmp_dir))
-
-.versions/$$(out): out = $(addsuffix /,$(1))
-.versions/$$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-.versions/$$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
-.versions/$$(out): baseurl = $(addprefix /,$(1))
-.versions/$$(out): $$(tmp_dir)
-	@echo "source \"https://rubygems.org\"\n\ngroup :jekyll_plugins do\n  gem 'github-pages'\nend" > $$(tmp_dir)/Gemfile
-	@cd $$(tmp_dir) \
-		&& rm -rf _posts \
-		&& bundle install \
-		&& bundle exec jekyll clean \
-		&& bundle exec jekyll build --destination '../$$(out)' --baseurl '$$(baseurl)'
-endef
-
-$(foreach legacy_version,$(LEGACY_VERSIONS),$(eval $(call build_legacy_version,$(legacy_version))))
-
-
-#################################################################################
 # Clean up and remove the cache
 #################################################################################
 
@@ -172,16 +120,61 @@ ifeq (,$(wildcard $(shell which htmlproofer)))
 	gem install html-proofer
 endif
 
-.PHONY: setup-install-jekyll
-setup-install-html-proofer: setup-check-gem
-ifeq (,$(wildcard $(shell which jekyll)))
-	@echo "Installing Jekyll..."
-	gem install jekyll
-endif
-
 .PHONY: setup-install-bundle
 setup-install-html-proofer: setup-check-gem
 ifeq (,$(wildcard $(shell which bundle)))
-	@echo "Installing Bundler..."
+	@echo "Installing Ruby Bundler..."
 	gem install bundle
 endif
+
+
+#################################################################################
+# Build legacy versions of website using Jekyll
+#################################################################################
+
+LEGACY_VERSIONS := 19.08 20.07
+LEGACY_VERSION_DIRS := $(addprefix versions/,$(addsuffix /,$(LEGACY_VERSIONS)))
+
+legacy-versions: setup-install-bundle $(LEGACY_VERSION_DIRS)
+
+ifeq ($(shell sed --version >/dev/null 2>&1; echo $$?),1)
+SEDI := sed -i ""
+else
+SEDI := sed -i
+endif
+
+define build_legacy_version
+version := $(1)
+out := $(addsuffix /,$(1))
+url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+tmp_zip := $(addprefix versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+tmp_dir := $(addprefix versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+baseurl := $(addprefix /,$(1))
+
+$$(tmp_zip): tmp_zip = $(addprefix versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip):
+	@mkdir -p versions/
+	@wget -c $$(url) -O $$(tmp_zip)
+
+$$(tmp_dir): version = $(1)
+$$(tmp_dir): tmp_dir = $(addprefix versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+$$(tmp_dir): tmp_zip = $(addprefix versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_dir): $$(tmp_zip)
+	@yes | unzip -qq $$(tmp_zip) -d versions/
+	@$(SEDI) "s/branch: dev/branch: dev-$$(version)/" $$(addsuffix _config.yml,$$(tmp_dir))
+
+versions/$$(out): out = $(addsuffix /,$(1))
+versions/$$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+versions/$$(out): tmp_dir = $(addprefix versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+versions/$$(out): baseurl = $(addprefix /,$(1))
+versions/$$(out): $$(tmp_dir)
+	@echo "source \"https://rubygems.org\"\n\ngroup :jekyll_plugins do\n  gem 'github-pages'\nend" > $$(tmp_dir)/Gemfile
+	@cd $$(tmp_dir) \
+		&& rm -rf _posts \
+		&& bundle install \
+		&& bundle exec jekyll clean \
+		&& bundle exec jekyll build --destination '../$$(out)' --baseurl '$$(baseurl)'
+endef
+
+$(foreach legacy_version,$(LEGACY_VERSIONS),$(eval $(call build_legacy_version,$(legacy_version))))
