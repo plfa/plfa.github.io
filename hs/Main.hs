@@ -1,11 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-import           Control.Monad (forM)
+import           Control.Monad (forM, forM_)
 import qualified Data.ByteString as B
-import qualified Data.ByteString.Lazy as BL
 import           Data.Frontmatter (parseYamlFrontmatterEither)
-import           Data.Functor ((<&>))
 import           Data.List.Extra (stripInfix)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
@@ -16,10 +14,8 @@ import           Hakyll.Web.Agda
 import           Hakyll.Web.Sass
 import           Hakyll.Web.Routes.Permalink
 import           System.Exit (exitFailure)
-import           System.FilePath ((</>), takeDirectory)
+import           System.FilePath ((</>), takeDirectory, splitPath, joinPath)
 import           System.FilePath.Find ((~~?), always, fileName, find)
-import           Text.Pandoc
-import           Text.Pandoc.Filter
 import           Text.Printf (printf)
 
 --------------------------------------------------------------------------------
@@ -85,44 +81,13 @@ sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
 
-epubReaderOptions :: ReaderOptions
-epubReaderOptions = defaultHakyllReaderOptions
-  { readerStandalone    = True
-  , readerStripComments = True
-  }
-
-epubWriterOptions :: WriterOptions
-epubWriterOptions = def
-  { writerTableOfContents  = True
-  , writerTOCDepth         = 2
-  , writerEpubFonts        = [ "public/webfonts/mononoki.woff" ]
-  , writerEpubChapterLevel = 2
-  }
-
-epubFilters :: [Filter]
-epubFilters =
-  [ LuaFilter "epub/include-files.lua"
-  , LuaFilter "epub/rewrite-links.lua"
-  , LuaFilter "epub/rewrite-html-ul.lua"
-  , LuaFilter "epub/default-code-class.lua"
-  ]
-
-applyPandocFilters :: ReaderOptions -> [Filter] -> [String] -> Item Pandoc -> Compiler (Item Pandoc)
-applyPandocFilters ropt filters args = withItemBody $ \doc ->
-  unsafeCompiler $ runIOorExplode $ applyFilters ropt filters args doc
-
-writeEPUB3With :: WriterOptions -> Item Pandoc -> Item BL.ByteString
-writeEPUB3With wopt (Item itemi doc) =
-  case runPure $ writeEPUB3 wopt doc of
-    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
-    Right doc' -> Item itemi doc'
-
 --------------------------------------------------------------------------------
 -- Build site
 --------------------------------------------------------------------------------
 
 main :: IO ()
 main = do
+
   -- Build function to fix standard library URLs
   fixStdlibLink <- mkFixStdlibLink agdaStdlibPath
 
@@ -147,13 +112,12 @@ main = do
   -- Run Hakyll
   hakyll $ do
 
-    -- Compile EPUB
-    match "epub/index.md" $ do
-      route $ constRoute "plfa.epub"
-      compile $ getResourceBody
-        >>= readPandocWith epubReaderOptions
-        >>= applyPandocFilters epubReaderOptions epubFilters ["epub3"]
-        <&> writeEPUB3With epubWriterOptions
+    -- Copy versions
+    let versions = ["19.08", "20.07"]
+    forM_ versions $ \v ->
+      match (fromGlob (".versions" </> v </> "**")) $ do
+        route $ customRoute (joinPath . tail . splitPath . toFilePath)
+        compile copyFileCompiler
 
     -- Copy resources
     match "public/**" $ do

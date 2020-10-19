@@ -6,6 +6,7 @@ SITE_DIR := _site
 CACHE_DIR := _cache
 TMP_DIR := $(CACHE_DIR)/tmp
 
+
 #################################################################################
 # Setup Git Hooks
 #################################################################################
@@ -13,6 +14,7 @@ TMP_DIR := $(CACHE_DIR)/tmp
 .PHONY: init
 init:
 	git config core.hooksPath .githooks
+
 
 #################################################################################
 # Build PLFA site
@@ -23,6 +25,7 @@ build: $(SITE_DIR)
 
 $(SITE_DIR): authors contributors css courses hs pages posts public src templates
 	stack build && stack exec site build
+
 
 #################################################################################
 # Test generated site with HTMLProofer
@@ -43,6 +46,7 @@ test: $(SITE_DIR)
 		--check-opengraph \
 		.
 
+
 #################################################################################
 # Automatically rebuild the site on changes, and start a preview server
 #################################################################################
@@ -50,15 +54,6 @@ test: $(SITE_DIR)
 .PHONY: watch
 watch:
 	stack build && stack exec site watch
-
-
-#################################################################################
-# Clean up and remove the cache
-#################################################################################
-
-.PHONY: clean
-clean:
-	stack build && stack exec site clean
 
 
 #################################################################################
@@ -71,12 +66,74 @@ update-contributors:
 
 
 #################################################################################
+# Build legacy versions of website using Jekyll
+#################################################################################
+
+LEGACY_VERSIONS := 19.08 20.07
+LEGACY_VERSION_DIRS := $(addprefix .versions/,$(addsuffix /,$(LEGACY_VERSIONS)))
+
+legacy-versions: setup-install-bundle $(LEGACY_VERSION_DIRS)
+
+ifeq ($(shell sed --version >/dev/null 2>&1; echo $$?),1)
+SEDI := sed -i ""
+else
+SEDI := sed -i
+endif
+
+define build_legacy_version
+version := $(1)
+out := $(addsuffix /,$(1))
+url := $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+tmp_zip := $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+tmp_dir := $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+baseurl := $(addprefix /,$(1))
+
+$$(tmp_zip): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+$$(tmp_zip):
+	@mkdir -p .versions/
+	@wget -c $$(url) -O $$(tmp_zip)
+
+$$(tmp_dir): version = $(1)
+$$(tmp_dir): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+$$(tmp_dir): tmp_zip = $(addprefix .versions/plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(tmp_dir): $$(tmp_zip)
+	@yes | unzip -qq $$(tmp_zip) -d .versions/
+	@$(SEDI) "s/branch: dev/branch: dev-$$(version)/" $$(addsuffix _config.yml,$$(tmp_dir))
+
+.versions/$$(out): out = $(addsuffix /,$(1))
+.versions/$$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
+.versions/$$(out): tmp_dir = $(addprefix .versions/plfa.github.io-web-,$(addsuffix /,$(1)))
+.versions/$$(out): baseurl = $(addprefix /,$(1))
+.versions/$$(out): $$(tmp_dir)
+	@cp Gemfile $$(tmp_dir)
+	@cd $$(tmp_dir) \
+		&& rm -rf _posts \
+		&& bundle install \
+		&& bundle exec jekyll clean \
+		&& bundle exec jekyll build --destination '../$$(out)' --baseurl '$$(baseurl)'
+endef
+
+$(foreach legacy_version,$(LEGACY_VERSIONS),$(eval $(call build_legacy_version,$(legacy_version))))
+
+
+#################################################################################
+# Clean up and remove the cache
+#################################################################################
+
+.PHONY: clean
+clean:
+	stack build && stack exec site clean
+
+
+#################################################################################
 # List targets in Makefile
 #################################################################################
 
 .PHONY: list
 list:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+
 
 #################################################################################
 # Setup dependencies
@@ -113,4 +170,18 @@ setup-install-html-proofer: setup-check-npm
 ifeq (,$(wildcard $(shell which htmlproofer)))
 	@echo "Installing HTMLProofer..."
 	gem install html-proofer
+endif
+
+.PHONY: setup-install-jekyll
+setup-install-html-proofer: setup-check-gem
+ifeq (,$(wildcard $(shell which jekyll)))
+	@echo "Installing Jekyll..."
+	gem install jekyll
+endif
+
+.PHONY: setup-install-bundle
+setup-install-html-proofer: setup-check-gem
+ifeq (,$(wildcard $(shell which bundle)))
+	@echo "Installing Bundler..."
+	gem install bundle
 endif
