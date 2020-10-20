@@ -381,7 +381,7 @@ Here is the isomorphism between `A` and ``A `× `⊤``:
     to×⊤ = ƛ x ⇒ `⟨ x , `tt ⟩
 
     from×⊤ : ∅ ⊢ A `× `⊤ ⇒ A
-    from×⊤ = ƛ z ⇒ proj₁ z
+    from×⊤ = ƛ z ⇒ `proj₁ z
 
 
 ## Alternative formulation of unit type
