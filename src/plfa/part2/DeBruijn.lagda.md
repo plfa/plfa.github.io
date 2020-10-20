@@ -445,10 +445,10 @@ count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 We can then introduce a convenient abbreviation for variables:
 ```
 #_ : ∀ {Γ}
-   → (n : ℕ)
-   → {n<?length : True (suc n ≤? length Γ)}
-     --------------------------------
-   → Γ ⊢ lookup (toWitness n<?length)
+  → (n : ℕ)
+  → {n<?length : True (suc n ≤? length Γ)}
+    --------------------------------------
+  → Γ ⊢ lookup (toWitness n<?length)
 #_ n {n<?length}  =  ` count (toWitness n<?length)
 ```
 Function `#_` takes an implicit argument `n<?length` that provides
