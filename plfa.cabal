@@ -12,25 +12,29 @@ build-type:         Simple
 common shared-properties
   ghc-options:      -Wall
   default-language: Haskell2010
-  build-depends:    base               >=4.6  && <5
-                  , bytestring         >=0.10 && <0.11
-                  , containers         >=0.6  && <0.7
-                  , directory          >=1.2  && <1.4
-                  , extra              >=1.7  && <1.8
-                  , filemanip          >=0.3  && <0.4
-                  , filepath           >=1.3  && <1.5
-                  , frontmatter        >=0.1  && <0.2
-                  , hakyll             >=4.10 && <4.15
-                  , pandoc             >=2.1  && <2.11
-                  , pandoc-types       >=1.20 && <1.21
-                  , pandoc-citeproc    >=0.17 && <0.18
-                  , text               >=1.2  && <1.3
-                  , yaml               >=0.11 && <0.12
+  build-depends:    aeson                >=1.4  && <1.5
+                  , base                 >=4.6  && <5
+                  , bytestring           >=0.10 && <0.11
+                  , containers           >=0.6  && <0.7
+                  , directory            >=1.2  && <1.4
+                  , extra                >=1.7  && <1.8
+                  , filemanip            >=0.3  && <0.4
+                  , filepath             >=1.3  && <1.5
+                  , frontmatter          >=0.1  && <0.2
+                  , hakyll               >=4.10 && <4.15
+                  , pandoc               >=2.1  && <2.11
+                  , pandoc-types         >=1.20 && <1.21
+                  , pandoc-citeproc      >=0.17 && <0.18
+                  , text                 >=1.2  && <1.3
+                  , unordered-containers >=0.2  && <0.3
+                  , vector               >=0.12 && <0.13
+                  , yaml                 >=0.11 && <0.12
 
 library
   import:           shared-properties
   hs-source-dirs:   hs
   exposed-modules:  Hakyll.Web.Agda
+                  , Hakyll.Web.Template.Context.Metadata
                   , Hakyll.Web.Sass
                   , Hakyll.Web.Routes.Permalink
   build-depends:    Agda               ==2.6.1.1

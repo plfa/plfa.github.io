@@ -1,8 +1,8 @@
-ul.list-of-contributors {
+.list-of-contributors ul {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: calc(100% - 2rem);
 }
-ul.list-of-contributors li {
+.list-of-contributors ul li {
     margin-right: 2rem;
 }

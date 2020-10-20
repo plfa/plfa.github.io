@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-import           Control.Monad (forM, forM_)
+import           Control.Monad ((<=<), forM, forM_)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import           Data.Frontmatter (parseYamlFrontmatterEither)
@@ -13,6 +13,7 @@ import           Data.Yaml (FromJSON(..), ToJSON(..), (.:), (.=))
 import qualified Data.Yaml as Y
 import           Hakyll
 import           Hakyll.Web.Agda
+import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Sass
 import           Hakyll.Web.Routes.Permalink
 import           System.Exit (exitFailure)
@@ -25,6 +26,10 @@ import           Text.Printf (printf)
 --------------------------------------------------------------------------------
 -- Configuration
 --------------------------------------------------------------------------------
+
+tocContext :: Context String
+tocContext = Context $ \k a _ -> do
+  unContext (objectContext defaultContext) k a <=< makeItem <=< getMetadata $ "toc.metadata"
 
 siteContext :: Context String
 siteContext = mconcat
@@ -132,6 +137,7 @@ main = do
 
   let pageCompiler :: Compiler (Item String)
       pageCompiler = pandocCompiler
+        >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= relativizeUrls
@@ -141,6 +147,7 @@ main = do
         >>= withItemBody (return . withUrls fixStdlibLink)
         >>= withItemBody (return . withUrls fixLocalLink)
         >>= renderPandoc
+        >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= relativizeUrls
@@ -148,47 +155,7 @@ main = do
   -- Run Hakyll
   hakyll $ do
 
-    -- Copy resources
-    match "public/**" $ do
-      route idRoute
-      compile copyFileCompiler
-
-    -- Compile CSS
-    match "css/*.css" $ compile compressCssCompiler
-
-    scss <- makePatternDependency "css/minima/**.scss"
-    rulesExtraDependencies [scss] $
-      match "css/minima.scss" $
-        compile $ sassCompilerWith sassOptions
-
-    create ["public/css/style.css"] $ do
-      route idRoute
-      compile $ do
-        csses <- loadAll ("css/*.css" .||. "css/*.scss")
-        makeItem $ unlines $ map itemBody csses
-
-    -- Compile author and contributor metadata
-    match "authors/*.metadata" $ compile getResourceBody
-    match "contributors/*.metadata" $ compile getResourceBody
-
-    -- Compile Acknowledgements
-    match "pages/acknowledgements.html" $ do
-      route permalinkRoute
-      compile $ getResourceBody
-          >>= applyAsTemplate acknowledgementsContext
-          >>= loadAndApplyTemplate "templates/page.html"    siteContext
-          >>= loadAndApplyTemplate "templates/default.html" siteContext
-          >>= relativizeUrls
-
     -- Compile Announcements
-    match "posts/*" $ do
-        route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/post.html"    postContext
-            >>= loadAndApplyTemplate "templates/default.html" siteContext
-            >>= relativizeUrls
-
     match "pages/announcements.html" $ do
       route permalinkRoute
       compile $ getResourceBody
@@ -197,8 +164,35 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html"   siteContext
           >>= relativizeUrls
 
+    match "posts/*" $ do
+        route $ setExtension "html"
+        compile $ pandocCompiler
+            >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/post.html"    postContext
+            >>= loadAndApplyTemplate "templates/default.html" siteContext
+            >>= relativizeUrls
+
+    -- Compile Acknowledgements
+    match "pages/acknowledgements.md" $ do
+      route permalinkRoute
+      compile $ getResourceBody
+          >>= applyAsTemplate acknowledgementsContext
+          >>= renderPandoc
+          >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/page.html"    siteContext
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
+          >>= relativizeUrls
+
+    match "authors/*.metadata" $
+      compile getResourceBody
+
+    match "contributors/*.metadata" $
+      compile getResourceBody
+
     -- Compile other pages
-    match ("README.md" .||. "pages/*.md") $ do
+    let include = "README.md" .||. "pages/*.md"
+    let exclude = "pages/index.md" .||. "pages/acknowledgements.md"
+    match (include .&&. complement exclude) $ do
       route permalinkRoute
       compile pageCompiler
 
@@ -206,6 +200,19 @@ main = do
     match "src/**.lagda.md" $ do
       route permalinkRoute
       compile $ pageWithAgdaCompiler agdaOptions
+
+    -- Compile Table of Contents
+    match "pages/index.md" $ do
+      route permalinkRoute
+      compile $ getResourceBody
+        >>= applyAsTemplate tocContext
+        >>= renderPandoc
+        >>= loadAndApplyTemplate "templates/page.html"    siteContext
+        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= relativizeUrls
+
+    match "pages/*.metadata" $
+      compile getResourceBody
 
     -- Compile course pages
     match ("courses/**.md" .&&. complement "courses/**.lagda.md") $ do
@@ -231,7 +238,27 @@ main = do
       compile $ pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" siteContext
 
+    -- Compile templates
     match "templates/*" $ compile templateBodyCompiler
+
+    -- Copy resources
+    match "public/**" $ do
+      route idRoute
+      compile copyFileCompiler
+
+    -- Compile CSS
+    match "css/*.css" $ compile compressCssCompiler
+
+    scss <- makePatternDependency "css/minima/**.scss"
+    rulesExtraDependencies [scss] $
+      match "css/minima.scss" $
+        compile $ sassCompilerWith sassOptions
+
+    create ["public/css/style.css"] $ do
+      route idRoute
+      compile $ do
+        csses <- loadAll ("css/*.css" .||. "css/*.scss")
+        makeItem $ unlines $ map itemBody csses
 
     -- Compile EPUB
     match "epub/index.md" $ do

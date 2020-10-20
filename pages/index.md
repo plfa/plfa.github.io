@@ -11,54 +11,12 @@ remove, parts that require better explanation, good exercises, errors,
 and typos---are welcome.  The book repository is on [GitHub].
 Pull requests are encouraged.
 
-## Front matter
-
-  - [Dedication](/Dedication/)
-  - [Preface](/Preface/)
-  - [Getting Started](/GettingStarted/)
-
-## Part 1: Logical Foundations
-
-  - [Naturals](/Naturals/): Natural numbers
-  - [Induction](/Induction/): Proof by induction
-  - [Relations](/Relations/): Inductive definition of relations
-  - [Equality](/Equality/): Equality and equational reasoning
-  - [Isomorphism](/Isomorphism/): Isomorphism and embedding
-  - [Connectives](/Connectives/): Conjunction, disjunction, and implication
-  - [Negation](/Negation/): Negation, with intuitionistic and classical logic
-  - [Quantifiers](/Quantifiers/): Universals and existentials
-  - [Decidable](/Decidable/): Booleans and decision procedures
-  - [Lists](/Lists/): Lists and higher-order functions
-
-## Part 2: Programming Language Foundations
-
-  - [Lambda](/Lambda/): Introduction to Lambda Calculus
-  - [Properties](/Properties/): Progress and Preservation
-  - [DeBruijn](/DeBruijn/): Intrinsically-typed de Bruijn representation
-  - [More](/More/): Additional constructs of simply-typed lambda calculus
-  - [Bisimulation](/Bisimulation/): Relating reductions systems
-  - [Inference](/Inference/): Bidirectional type inference
-  - [Untyped](/Untyped/): Untyped lambda calculus with full normalisation
-  - [Confluence](/Confluence/): Confluence of untyped lambda calculus
-  - [BigStep](/BigStep/): Big-step semantics of untyped lambda calculus
-
-## Part 3: Denotational Semantics
-
-  - [Denotational](/Denotational/): Denotational semantics of untyped lambda calculus
-  - [Compositional](/Compositional/): The denotational semantics is compositional
-  - [Soundness](/Soundness/): Soundness of reduction with respect to denotational semantics
-  - [Adequacy](/Adequacy/): Adequacy of denotational semantics with respect to operational semantics
-  - [ContextualEquivalence](/ContextualEquivalence/): Denotational equality implies contextual equivalence
-
-## Appendix
-
-  - [Substitution](/Substitution/): Substitution in untyped lambda calculus
-
-
-## Backmatter
-
-  - [Acknowledgements](/Acknowledgements/)
-  - [Fonts](/Fonts/): Test page for fonts
+$for(parts)$
+## $title$
+$for(sections)$
+  - [$title$]($permalink$)
+$endfor$
+$endfor$
 
 ## Related
 

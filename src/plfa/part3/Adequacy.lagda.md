@@ -1,5 +1,5 @@
 ---
-title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics 🚧"
+title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics"
 layout    : page
 prev      : /Soundness/
 permalink : /Adequacy/
