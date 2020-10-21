@@ -334,8 +334,8 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 ## Anti-symmetry
 
 The third property to prove about comparison is that it is
-antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and `n ≤
-m` hold, then `m ≡ n` holds:
+antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and
+`n ≤ m` hold, then `m ≡ n` holds:
 ```
 ≤-antisym : ∀ {m n : ℕ}
   → m ≤ n
