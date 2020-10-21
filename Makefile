@@ -23,7 +23,7 @@ init:
 .PHONY: build
 build: $(SITE_DIR)
 
-$(SITE_DIR): authors contributors css courses hs pages posts public src templates
+$(SITE_DIR): authors contributors css courses hs posts public src templates
 	stack build && stack exec site build
 
 

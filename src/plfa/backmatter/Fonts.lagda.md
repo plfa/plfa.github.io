@@ -6,7 +6,7 @@ permalink : /Fonts/
 ---
 
 ```
-module plfa.Fonts where
+module plfa.backmatter.Fonts where
 ```
 
 Preferably, all vertical bars should line up.

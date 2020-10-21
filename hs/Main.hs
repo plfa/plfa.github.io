@@ -1,27 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TupleSections #-}
 
-import           Control.Monad ((<=<), forM, forM_)
-import qualified Data.ByteString as B
+import           Control.Monad ((<=<), forM_, liftM)
 import qualified Data.ByteString.Lazy as BL
-import           Data.Frontmatter (parseYamlFrontmatterEither)
 import           Data.Functor ((<&>))
-import           Data.List.Extra (stripInfix)
-import qualified Data.Map as M
+import           Data.List (sortBy)
 import           Data.Maybe (fromMaybe)
-import           Data.Yaml (FromJSON(..), ToJSON(..), (.:), (.=))
-import qualified Data.Yaml as Y
+import           Data.Ord (comparing)
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Sass
 import           Hakyll.Web.Routes.Permalink
-import           System.Exit (exitFailure)
 import           System.FilePath ((</>), takeDirectory)
-import           System.FilePath.Find ((~~?), always, fileName, find)
 import           Text.Pandoc
 import           Text.Pandoc.Filter
 import           Text.Printf (printf)
+import           Text.Read (readMaybe)
 
 --------------------------------------------------------------------------------
 -- Configuration
@@ -29,7 +24,8 @@ import           Text.Printf (printf)
 
 tocContext :: Context String
 tocContext = Context $ \k a _ -> do
-  unContext (objectContext defaultContext) k a <=< makeItem <=< getMetadata $ "toc.metadata"
+  m <- makeItem <=< getMetadata $ "src/plfa/toc.metadata"
+  unContext (objectContext defaultContext) k a m
 
 siteContext :: Context String
 siteContext = mconcat
@@ -47,7 +43,7 @@ siteContext = mconcat
 
 acknowledgementsContext :: Context String
 acknowledgementsContext = mconcat
-  [ listField "contributors" defaultContext (loadAll "contributors/*.metadata")
+  [ listField "contributors" defaultContext (byNumericFieldDesc "count" =<< loadAll "contributors/*.metadata")
   , siteContext
   ]
 
@@ -69,9 +65,6 @@ postListContext = mconcat
       , contentField "content" "content"
       , postContext
       ]
-    contentField :: String -> Snapshot -> Context String
-    contentField key snapshot = field key $ \item ->
-      itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
 agdaStdlibPath :: FilePath
 agdaStdlibPath = "standard-library"
@@ -89,38 +82,6 @@ sassOptions :: SassOptions
 sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
-
-epubReaderOptions :: ReaderOptions
-epubReaderOptions = defaultHakyllReaderOptions
-  { readerStandalone    = True
-  , readerStripComments = True
-  }
-
-epubWriterOptions :: WriterOptions
-epubWriterOptions = def
-  { writerTableOfContents  = True
-  , writerTOCDepth         = 2
-  , writerEpubFonts        = [ "public/webfonts/mononoki.woff" ]
-  , writerEpubChapterLevel = 2
-  }
-
-epubFilters :: [Filter]
-epubFilters =
-  [ LuaFilter "epub/include-files.lua"
-  , LuaFilter "epub/rewrite-links.lua"
-  , LuaFilter "epub/rewrite-html-ul.lua"
-  , LuaFilter "epub/default-code-class.lua"
-  ]
-
-applyPandocFilters :: ReaderOptions -> [Filter] -> [String] -> Item Pandoc -> Compiler (Item Pandoc)
-applyPandocFilters ropt filters args = withItemBody $ \doc ->
-  unsafeCompiler $ runIOorExplode $ applyFilters ropt filters args doc
-
-writeEPUB3With :: WriterOptions -> Item Pandoc -> Item BL.ByteString
-writeEPUB3With wopt (Item itemi doc) =
-  case runPure $ writeEPUB3 wopt doc of
-    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
-    Right doc' -> Item itemi doc'
 
 --------------------------------------------------------------------------------
 -- Build site
@@ -155,25 +116,21 @@ main = do
   -- Run Hakyll
   hakyll $ do
 
-    -- Compile Announcements
-    match "pages/announcements.html" $ do
+    -- Compile Table of Contents
+    match "src/plfa/index.md" $ do
       route permalinkRoute
       compile $ getResourceBody
-          >>= applyAsTemplate postListContext
-          >>= loadAndApplyTemplate "templates/page.html"      siteContext
-          >>= loadAndApplyTemplate "templates/default.html"   siteContext
-          >>= relativizeUrls
+        >>= applyAsTemplate tocContext
+        >>= renderPandoc
+        >>= loadAndApplyTemplate "templates/page.html"    siteContext
+        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= relativizeUrls
 
-    match "posts/*" $ do
-        route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/post.html"    postContext
-            >>= loadAndApplyTemplate "templates/default.html" siteContext
-            >>= relativizeUrls
+    match "src/**.metadata" $
+      compile getResourceBody
 
     -- Compile Acknowledgements
-    match "pages/acknowledgements.md" $ do
+    match "src/plfa/backmatter/acknowledgements.md" $ do
       route permalinkRoute
       compile $ getResourceBody
           >>= applyAsTemplate acknowledgementsContext
@@ -189,36 +146,34 @@ main = do
     match "contributors/*.metadata" $
       compile getResourceBody
 
-    -- Compile other pages
-    let include = "README.md" .||. "pages/*.md"
-    let exclude = "pages/index.md" .||. "pages/acknowledgements.md"
-    match (include .&&. complement exclude) $ do
+    -- Compile Announcements
+    match "src/pages/announcements.html" $ do
       route permalinkRoute
-      compile pageCompiler
+      compile $ getResourceBody
+          >>= applyAsTemplate postListContext
+          >>= loadAndApplyTemplate "templates/page.html"      siteContext
+          >>= loadAndApplyTemplate "templates/default.html"   siteContext
+          >>= relativizeUrls
 
-    -- Compile chapters (using literate Agda)
+    match "posts/*" $ do
+        route $ setExtension "html"
+        compile $ pandocCompiler
+            >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/post.html"    postContext
+            >>= loadAndApplyTemplate "templates/default.html" siteContext
+            >>= relativizeUrls
+
+    -- Compile sections using literate Agda
     match "src/**.lagda.md" $ do
       route permalinkRoute
       compile $ pageWithAgdaCompiler agdaOptions
 
-    -- Compile Table of Contents
-    match "pages/index.md" $ do
-      route permalinkRoute
-      compile $ getResourceBody
-        >>= applyAsTemplate tocContext
-        >>= renderPandoc
-        >>= loadAndApplyTemplate "templates/page.html"    siteContext
-        >>= loadAndApplyTemplate "templates/default.html" siteContext
-        >>= relativizeUrls
-
-    match "pages/*.metadata" $
-      compile getResourceBody
-
-    -- Compile course pages
-    match ("courses/**.md" .&&. complement "courses/**.lagda.md") $ do
+    -- Compile other sections and pages
+    match ("README.md" .||. "src/**.md") $ do
       route permalinkRoute
       compile pageCompiler
 
+    -- Compile course pages
     match "courses/**.lagda.md" $ do
       route permalinkRoute
       compile $ do
@@ -227,6 +182,10 @@ main = do
               { optIncludePaths = courseDir : optIncludePaths agdaOptions
               }
         pageWithAgdaCompiler courseOptions
+
+    match "courses/**.md" $ do
+      route permalinkRoute
+      compile pageCompiler
 
     match "courses/**.pdf" $ do
       route idRoute
@@ -261,12 +220,12 @@ main = do
         makeItem $ unlines $ map itemBody csses
 
     -- Compile EPUB
-    match "epub/index.md" $ do
-      route $ constRoute "plfa.epub"
-      compile $ getResourceBody
-        >>= readPandocWith epubReaderOptions
-        >>= applyPandocFilters epubReaderOptions epubFilters ["epub3"]
-        <&> writeEPUB3With epubWriterOptions
+    -- match "epub/index.md" $ do
+    --   route $ constRoute "plfa.epub"
+    --   compile $ getResourceBody
+    --     >>= readPandocWith epubReaderOptions
+    --     >>= applyPandocFilters epubReaderOptions epubFilters ["epub3"]
+    --     <&> writeEPUB3With epubWriterOptions
 
     -- Copy versions
     let versions = ["19.08", "20.07"]
@@ -275,46 +234,57 @@ main = do
         route $ gsubRoute ".versions/" (const "")
         compile copyFileCompiler
 
-
-
 --------------------------------------------------------------------------------
--- Fix references to local Agda modules
+-- EPUB generation
 --------------------------------------------------------------------------------
 
-newtype Frontmatter = Frontmatter
-  { frontmatterPermalink :: FilePath
+epubReaderOptions :: ReaderOptions
+epubReaderOptions = defaultHakyllReaderOptions
+  { readerStandalone    = True
+  , readerStripComments = True
   }
 
-instance FromJSON Frontmatter where
-  parseJSON = Y.withObject "Frontmatter" $ \v -> Frontmatter
-    <$> v .: "permalink"
+epubWriterOptions :: WriterOptions
+epubWriterOptions = def
+  { writerTableOfContents  = True
+  , writerTOCDepth         = 2
+  , writerEpubFonts        = [ "public/webfonts/mononoki.woff" ]
+  , writerEpubChapterLevel = 2
+  }
 
-instance ToJSON Frontmatter where
-  toJSON Frontmatter{..} =
-    Y.object [ "permalink" .= frontmatterPermalink
-             ]
+epubFilters :: [Filter]
+epubFilters =
+  [ LuaFilter "epub/include-files.lua"
+  , LuaFilter "epub/rewrite-links.lua"
+  , LuaFilter "epub/rewrite-html-ul.lua"
+  , LuaFilter "epub/default-code-class.lua"
+  ]
 
--- |Create a function to fix URL references output by Agda HTML highlighter.
-mkFixLocalLink :: FilePath -> IO (String -> String)
-mkFixLocalLink rootDir = do
-  -- Get all Agda files in `rootDir`.
-  agdaFiles <- find always (fileName ~~? "*.lagda.md") rootDir
+applyPandocFilters :: ReaderOptions -> [Filter] -> [String] -> Item Pandoc -> Compiler (Item Pandoc)
+applyPandocFilters ropt filters args = withItemBody $ \doc ->
+  unsafeCompiler $ runIOorExplode $ applyFilters ropt filters args doc
 
-  -- Get all permalinks and Agda module names from these files.
-  localLinkList <- forM agdaFiles $ \agdaFile -> do
-    frontmatterOrError <- parseYamlFrontmatterEither <$> B.readFile agdaFile
-    case frontmatterOrError of
-      Left errmsg -> do
-        printf "Parse error in '%s': %s\n" agdaFile errmsg
-        exitFailure
-      Right Frontmatter{..} ->
-        return (agdaModuleFromPath rootDir agdaFile, frontmatterPermalink)
+writeEPUB3With :: WriterOptions -> Item Pandoc -> Item BL.ByteString
+writeEPUB3With wopt (Item itemi doc) =
+  case runPure $ writeEPUB3 wopt doc of
+    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
+    Right doc' -> Item itemi doc'
 
-  -- Construct a Map from the local link list.
-  let localLinkMap = M.fromList localLinkList
+--------------------------------------------------------------------------------
+-- Supply snapshot as a field to the template
+--------------------------------------------------------------------------------
 
-  -- Construct a function which looks up the URL in the map.
-  return $ \url -> fromMaybe url $ do
-    (oldPath, anchor) <- stripInfix ".html" url
-    newPath <- M.lookup oldPath localLinkMap
-    return $ newPath <> anchor
+contentField :: String -> Snapshot -> Context String
+contentField key snapshot = field key $ \item ->
+  itemBody <$> loadSnapshot (itemIdentifier item) snapshot
+
+byNumericFieldAsc :: MonadMetadata m => String -> [Item a] -> m [Item a]
+byNumericFieldAsc key = sortOnM $ \i -> do
+  maybeInt <- getMetadataField (itemIdentifier i) key
+  return $ fromMaybe (0 :: Int) (readMaybe =<< maybeInt)
+
+byNumericFieldDesc :: MonadMetadata m => String -> [Item a] -> m [Item a]
+byNumericFieldDesc key is = reverse <$> byNumericFieldAsc key is
+
+sortOnM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
+sortOnM f xs = map fst . sortBy (comparing snd) <$> mapM (\ x -> (x,) <$> f x) xs

@@ -13,9 +13,11 @@ Pull requests are encouraged.
 
 $for(parts)$
 ## $title$
+<ul>
 $for(sections)$
-  - [$title$]($permalink$)
+<li><a href="$url$">$title$</a></li>
 $endfor$
+</ul>
 $endfor$
 
 ## Related

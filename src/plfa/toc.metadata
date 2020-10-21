@@ -2,8 +2,8 @@
 parts:
 - title: "Front matter"
   sections:
-  - pages/dedication.md
-  - pages/preface.md
+  - src/plfa/frontmatter/dedication.md
+  - src/plfa/frontmatter/preface.md
   - README.md
 - title: "Part 1: Logical Foundations"
   sections:
@@ -40,6 +40,6 @@ parts:
   - src/plfa/part2/Substitution.lagda.md
 - title: "Back matter"
   sections:
-  - pages/acknowledgements.md
-  - src/plfa/Fonts.lagda.md
+  - src/plfa/backmatter/acknowledgements.md
+  - src/plfa/backmatter/Fonts.lagda.md
 ---

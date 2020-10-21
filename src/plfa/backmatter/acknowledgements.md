@@ -27,10 +27,12 @@ A special thank you, for inventing ideas on which this book is based, and for ha
 $if(contributors)$
 For pull requests big and small, and for answering questions on the Agda mailing list:
 <div class="list-of-contributors">
-    $for(contributors)$
-  - [$name$](https://github.com/$github$)
-    $endfor$
-  - [Your name goes here]
+<ul>
+$for(contributors)$
+<li><a href="https://github.com/$github$">$name$</a></li>
+$endfor$
+<li>[Your name goes here]</li>
+</ul>
 </div>
 $endif$
 
