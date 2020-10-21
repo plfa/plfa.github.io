@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
-import           Control.Monad ((<=<), forM_, liftM)
+import           Control.Monad ((<=<), forM_)
 import qualified Data.ByteString.Lazy as BL
 import           Data.Functor ((<&>))
 import           Data.List (sortBy)
@@ -15,35 +15,42 @@ import           Hakyll.Web.Routes.Permalink
 import           System.FilePath ((</>), takeDirectory)
 import           Text.Pandoc
 import           Text.Pandoc.Filter
-import           Text.Printf (printf)
 import           Text.Read (readMaybe)
 
 --------------------------------------------------------------------------------
 -- Configuration
 --------------------------------------------------------------------------------
 
-tocContext :: Context String
-tocContext = Context $ \k a _ -> do
+tocContext :: Context String -> Context String
+tocContext ctx = Context $ \k a _ -> do
   m <- makeItem <=< getMetadata $ "src/plfa/toc.metadata"
-  unContext (objectContext defaultContext) k a m
+  unContext (objectContext ctx) k a m
 
 siteContext :: Context String
 siteContext = mconcat
-  [ constField "site_title" "Programming Foundations in Agda"
-  , constField "site_url" "https://plfa.github.io"
-  , constField "license" "Creative Commons Attribution 4.0 International License"
-  , constField "license_url" "https://creativecommons.org/licenses/by/4.0/"
+  [ constField "pagetitle" "Programming Foundations in Agda"
+  , constField "pageurl" "https://plfa.github.io"
+  , constField "description"
+    "This book is an introduction to programming language theory using the proof assistant Agda."
+  , constField "language" "en-US"
+  , constField "rights" "Creative Commons Attribution 4.0 International License"
+  , constField "rights_url" "https://creativecommons.org/licenses/by/4.0/"
   , constField "repository" "plfa/plfa.github.io"
   , constField "branch" "dev"
   , field "source" (return . toFilePath . itemIdentifier)
-  , listField "authors" defaultContext (loadAll "authors/*.metadata")
+  , listField "authors" defaultContext $ mapM load
+      [ "authors/wadler.metadata"
+      , "authors/wenkokke.metadata"
+      , "authors/jsiek.metadata"
+      ]
   , constField "google_analytics" "UA-125055580-1"
   , defaultContext
   ]
 
 acknowledgementsContext :: Context String
 acknowledgementsContext = mconcat
-  [ listField "contributors" defaultContext (byNumericFieldDesc "count" =<< loadAll "contributors/*.metadata")
+  [ listField "contributors" defaultContext $
+      byNumericFieldDesc "count" =<< loadAll "contributors/*.metadata"
   , siteContext
   ]
 
@@ -55,7 +62,8 @@ postContext = mconcat
 
 postListContext :: Context String
 postListContext = mconcat
-  [ listField "posts" postItemContext (recentFirst =<< loadAll "posts/*")
+  [ listField "posts" postItemContext $
+      recentFirst =<< loadAll "posts/*"
   , siteContext
   ]
   where
@@ -96,6 +104,7 @@ main = do
   -- Build function to fix local URLs
   fixLocalLink <- mkFixLocalLink "src"
 
+  -- Build compiler for Markdown pages
   let pageCompiler :: Compiler (Item String)
       pageCompiler = pandocCompiler
         >>= saveSnapshot "content"
@@ -103,6 +112,7 @@ main = do
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= relativizeUrls
 
+  -- Build compiler for literate Agda pages
   let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
       pageWithAgdaCompiler opts = agdaCompilerWith opts
         >>= withItemBody (return . withUrls fixStdlibLink)
@@ -114,13 +124,31 @@ main = do
         >>= relativizeUrls
 
   -- Run Hakyll
+  --
+  -- NOTE: The order of the various match expressions is important:
+  --       Special-case compilation instructions for files such as
+  --       "src/plfa/epub.md" and "src/plfa/index.md" would be overwritten
+  --       by the general purpose compilers for "src/**.md", which would
+  --       cause them to render incorrectly. It is possible to explicitly
+  --       exclude such files using `complement` patterns, but this vastly
+  --       complicates the match patterns.
+  --
   hakyll $ do
+
+    -- Compile EPUB
+    match "src/plfa/epub.md" $ do
+      route $ constRoute "plfa.epub"
+      compile $ getResourceBody
+        >>= applyAsTemplate (tocContext epubSectionContext)
+        >>= loadAndApplyTemplate "templates/epub.html" epubContext
+        >>= readPandocWith epubReaderOptions
+        <&> writeEPUB3With epubWriterOptions
 
     -- Compile Table of Contents
     match "src/plfa/index.md" $ do
       route permalinkRoute
       compile $ getResourceBody
-        >>= applyAsTemplate tocContext
+        >>= applyAsTemplate (tocContext defaultContext)
         >>= renderPandoc
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
@@ -216,16 +244,8 @@ main = do
     create ["public/css/style.css"] $ do
       route idRoute
       compile $ do
-        csses <- loadAll ("css/*.css" .||. "css/*.scss")
+        csses <- loadAll ("css/*.css" .||. "css/*.scss" .&&. complement "css/epub.css")
         makeItem $ unlines $ map itemBody csses
-
-    -- Compile EPUB
-    -- match "epub/index.md" $ do
-    --   route $ constRoute "plfa.epub"
-    --   compile $ getResourceBody
-    --     >>= readPandocWith epubReaderOptions
-    --     >>= applyPandocFilters epubReaderOptions epubFilters ["epub3"]
-    --     <&> writeEPUB3With epubWriterOptions
 
     -- Copy versions
     let versions = ["19.08", "20.07"]
@@ -238,6 +258,17 @@ main = do
 -- EPUB generation
 --------------------------------------------------------------------------------
 
+epubContext :: Context String
+epubContext = mconcat
+  [ metadataContext defaultContext
+  , siteContext
+  ]
+
+epubSectionContext :: Context String
+epubSectionContext = mconcat
+  [ contentField "content" "content"
+  ]
+
 epubReaderOptions :: ReaderOptions
 epubReaderOptions = defaultHakyllReaderOptions
   { readerStandalone    = True
@@ -248,7 +279,10 @@ epubWriterOptions :: WriterOptions
 epubWriterOptions = def
   { writerTableOfContents  = True
   , writerTOCDepth         = 2
-  , writerEpubFonts        = [ "public/webfonts/mononoki.woff" ]
+  , writerEpubFonts        = [ "public/webfonts/DejaVuSansMono.woff"
+                             , "public/webfonts/FreeMono.woff"
+                             , "public/webfonts/mononoki.woff"
+                             ]
   , writerEpubChapterLevel = 2
   }
 
