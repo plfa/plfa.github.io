@@ -7,15 +7,15 @@ import           Data.List as L
 import           Data.List.Extra as L
 import           Data.Maybe (fromMaybe)
 import           Data.Ord (comparing)
+import qualified Data.Text as T
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Sass
 import           Hakyll.Web.Routes.Permalink
 import           System.FilePath ((</>), takeDirectory)
-import           Text.Pandoc
+import           Text.Pandoc as Pandoc
 import           Text.Pandoc.Filter
-import           Text.DocTemplates (compileTemplateFile)
 import           Text.Printf (printf)
 import           Text.Read (readMaybe)
 
@@ -30,15 +30,15 @@ tocContext ctx = Context $ \k a _ -> do
 
 siteContext :: Context String
 siteContext = mconcat
-  [ constField "pagetitle" "Programming Foundations in Agda"
+  [ constField "pagetitle" "Programming Language Foundations in Agda"
   , constField "pageurl" "https://plfa.github.io"
-  , constField "description"
-    "This book is an introduction to programming language theory using the proof assistant Agda."
+  , constField "description" "An introduction to programming language theory using the proof assistant Agda."
   , constField "language" "en-US"
   , constField "rights" "Creative Commons Attribution 4.0 International License"
   , constField "rights_url" "https://creativecommons.org/licenses/by/4.0/"
   , constField "repository" "plfa/plfa.github.io"
   , constField "branch" "dev"
+  , modificationTimeField "modified" "%0Y-%m-%dT%H:%M:%SZ"
   , field "source" (return . toFilePath . itemIdentifier)
   , listField "authors" defaultContext $ mapM load
       [ "authors/wadler.metadata"
@@ -147,12 +147,28 @@ main = do
     -- Compile EPUB
     match "src/plfa/epub.md" $ do
       route $ constRoute "plfa.epub"
+      compile $ do
+        epubTemplate <- load "templates/epub.html"
+            >>= compilePandocTemplate
+        epubMetadata <- load "src/plfa/meta.xml"
+        let ropt = epubReaderOptions
+        let wopt = epubWriterOptions
+              { writerTemplate     = Just . itemBody $ epubTemplate
+              , writerEpubMetadata = Just . T.pack . itemBody $ epubMetadata
+              }
+        getResourceBody
+          >>= applyAsTemplate (tocContext epubSectionContext)
+          >>= readPandocWith ropt
+          >>= applyPandocFilters ropt [] "epub3"
+          >>= writeEPUB3With wopt
+
+    match "templates/epub.html" $
       compile $ getResourceBody
-        >>= applyAsTemplate (tocContext epubSectionContext)
-        >>= loadAndApplyTemplate "templates/epub.html" epubContext
-        >>= readPandocWith epubReaderOptions
-        >>= applyPandocFilters epubReaderOptions [LuaFilter "epub/rewrite-html-ul.lua"] ["epub3"]
-        >>= writeEPUB3With "templates/epub.html" epubWriterOptions
+        >>= applyAsTemplate siteContext
+
+    match "src/plfa/meta.xml" $
+      compile $ getResourceBody
+        >>= applyAsTemplate siteContext
 
     -- Compile Table of Contents
     match "src/plfa/index.md" $ do
@@ -276,12 +292,6 @@ main = do
 -- EPUB generation
 --------------------------------------------------------------------------------
 
-epubContext :: Context String
-epubContext = mconcat
-  [ metadataContext defaultContext
-  , siteContext
-  ]
-
 epubSectionContext :: Context String
 epubSectionContext = mconcat
   [ contentField "content" "content"
@@ -296,7 +306,7 @@ epubReaderOptions = defaultHakyllReaderOptions
   }
 
 epubWriterOptions :: WriterOptions
-epubWriterOptions = def
+epubWriterOptions = defaultHakyllWriterOptions
   { writerTableOfContents  = True
   , writerTOCDepth         = 2
   , writerEpubFonts        = [ "public/webfonts/DejaVuSansMono.woff"
@@ -306,14 +316,21 @@ epubWriterOptions = def
   , writerEpubChapterLevel = 2
   }
 
-applyPandocFilters :: ReaderOptions -> [Filter] -> [String] -> Item Pandoc -> Compiler (Item Pandoc)
-applyPandocFilters ropt filters args = withItemBody $ \doc ->
-  unsafeCompiler $ runIOorExplode $ applyFilters ropt filters args doc
+applyPandocFilters :: ReaderOptions -> [Filter] -> String -> Item Pandoc -> Compiler (Item Pandoc)
+applyPandocFilters ropt filters fmt = withItemBody $
+  unsafeCompiler . runIOorExplode . applyFilters ropt filters [fmt]
 
-writeEPUB3With :: FilePath -> WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
-writeEPUB3With templatePath wopt (Item itemi doc) = do
-  template <- either fail return =<< unsafeCompiler (compileTemplateFile templatePath)
-  return $ case runPure $ writeEPUB3 (wopt { writerTemplate = Just template }) doc of
+compilePandocTemplate :: Item String -> Compiler (Item (Pandoc.Template T.Text))
+compilePandocTemplate i = do
+  let templatePath = toFilePath $ itemIdentifier i
+  let templateBody = T.pack $ itemBody i
+  templateOrError <- unsafeCompiler $ Pandoc.compileTemplate templatePath templateBody
+  template <- either fail return templateOrError
+  makeItem template
+
+writeEPUB3With :: WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
+writeEPUB3With wopt (Item itemi doc) = do
+  return $ case runPure $ writeEPUB3 wopt doc of
     Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
     Right doc' -> Item itemi doc'
 
