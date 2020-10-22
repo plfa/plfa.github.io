@@ -3,7 +3,6 @@
 
 import           Control.Monad ((<=<), forM_)
 import qualified Data.ByteString.Lazy as BL
-import           Data.Functor ((<&>))
 import           Data.List as L
 import           Data.List.Extra as L
 import           Data.Maybe (fromMaybe)
@@ -16,6 +15,7 @@ import           Hakyll.Web.Routes.Permalink
 import           System.FilePath ((</>), takeDirectory)
 import           Text.Pandoc
 import           Text.Pandoc.Filter
+import           Text.DocTemplates (compileTemplateFile)
 import           Text.Printf (printf)
 import           Text.Read (readMaybe)
 
@@ -151,7 +151,8 @@ main = do
         >>= applyAsTemplate (tocContext epubSectionContext)
         >>= loadAndApplyTemplate "templates/epub.html" epubContext
         >>= readPandocWith epubReaderOptions
-        <&> writeEPUB3With epubWriterOptions
+        >>= applyPandocFilters epubReaderOptions [LuaFilter "epub/rewrite-html-ul.lua"] ["epub3"]
+        >>= writeEPUB3With "templates/epub.html" epubWriterOptions
 
     -- Compile Table of Contents
     match "src/plfa/index.md" $ do
@@ -258,11 +259,18 @@ main = do
 
     -- Copy versions
     let versions = ["19.08", "20.07"]
-    forM_ versions $ \v ->
-      match (fromGlob $ "versions" </> v </> "**") $ do
+    forM_ versions $ \v -> do
+
+      -- Relativise URLs in HTML files
+      match (fromGlob $ "versions" </> v </> "**.html") $ do
         route $ gsubRoute ".versions/" (const "")
         compile $ getResourceBody
             >>= relativizeUrls
+
+      -- Copy other files
+      match (fromGlob $ "versions" </> v </> "**") $ do
+        route $ gsubRoute ".versions/" (const "")
+        compile copyFileCompiler
 
 --------------------------------------------------------------------------------
 -- EPUB generation
@@ -298,23 +306,17 @@ epubWriterOptions = def
   , writerEpubChapterLevel = 2
   }
 
-epubFilters :: [Filter]
-epubFilters =
-  [ LuaFilter "epub/include-files.lua"
-  , LuaFilter "epub/rewrite-links.lua"
-  , LuaFilter "epub/rewrite-html-ul.lua"
-  , LuaFilter "epub/default-code-class.lua"
-  ]
-
 applyPandocFilters :: ReaderOptions -> [Filter] -> [String] -> Item Pandoc -> Compiler (Item Pandoc)
 applyPandocFilters ropt filters args = withItemBody $ \doc ->
   unsafeCompiler $ runIOorExplode $ applyFilters ropt filters args doc
 
-writeEPUB3With :: WriterOptions -> Item Pandoc -> Item BL.ByteString
-writeEPUB3With wopt (Item itemi doc) =
-  case runPure $ writeEPUB3 wopt doc of
+writeEPUB3With :: FilePath -> WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
+writeEPUB3With templatePath wopt (Item itemi doc) = do
+  template <- either fail return =<< unsafeCompiler (compileTemplateFile templatePath)
+  return $ case runPure $ writeEPUB3 (wopt { writerTemplate = Just template }) doc of
     Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
     Right doc' -> Item itemi doc'
+
 
 --------------------------------------------------------------------------------
 -- Supply snapshot as a field to the template

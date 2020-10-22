@@ -21,10 +21,10 @@ end
 -- Performs the following transformations on Link targets:
 --
 --     Case 1:
---         [text]({{ site.baseurl }}/chapter/#more-stuff) -> [text](#chapter-more-stuff)
+--         [text](/chapter/#more-stuff) -> [text](#chapter-more-stuff)
 --
 --     Case 2:
---         [text]({{ site.baseurl }}/chapter/)            -> [text](#chapter)
+--         [text](/chapter/)            -> [text](#chapter)
 --
 -- All other Links are ignored.
 function Link (el)
