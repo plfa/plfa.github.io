@@ -12,7 +12,7 @@ TMP_DIR := $(CACHE_DIR)/tmp
 #################################################################################
 
 .PHONY: init
-init:
+init: setup-check-fix-whitespace setup-check-htmlproofer
 	git config core.hooksPath .githooks
 
 
@@ -32,7 +32,7 @@ $(SITE_DIR): authors contributors css courses hs posts public src templates
 #################################################################################
 
 .PHONY: test
-test: $(SITE_DIR)
+test: setup-install-htmlproofer $(SITE_DIR)
 	cd $(SITE_DIR) && htmlproofer \
 		--check-html \
 		--disable-external \
@@ -45,6 +45,14 @@ test: $(SITE_DIR)
 		--check-img-http \
 		--check-opengraph \
 		.
+
+#################################################################################
+# Test generated EPUB with EPUBCheck
+#################################################################################
+
+.PHONY: test-epub
+test-epub: setup-check-epubcheck $(SITE_DIR)/plfa.epub
+	epubcheck $(SITE_DIR)/plfa.epub
 
 
 #################################################################################
@@ -87,41 +95,55 @@ list:
 # Setup dependencies
 #################################################################################
 
-.PHONY: setup
-setup: setup-check-stack setup-check-npm setup-check-gem
-
 .PHONY: setup-check-stack
-check-stack:
+setup-check-stack:
 ifeq (,$(wildcard $(shell which stack)))
-	@echo "Setup requires the Haskell Tool Stack"
+	@echo "The command you called requires the Haskell Tool Stack"
 	@echo "See: https://docs.haskellstack.org/en/stable/install_and_upgrade/"
 	@exit 1
 endif
 
 .PHONY: setup-check-npm
+setup-check-npm:
 ifeq (,$(wildcard $(shell which npm)))
-	@echo "Setup requires the Node Package Manager"
+	@echo "The command you called requires the Node Package Manager"
 	@echo "See: https://www.npmjs.com/get-npm"
 	@exit 1
 endif
 
 .PHONY: setup-check-gem
-check-gem:
+setup-check-gem:
 ifeq (,$(wildcard $(shell which gem)))
-	@echo "Setup requires the RubyGems Package Manager"
+	@echo "The command you called requires the RubyGems Package Manager"
 	@echo "See: https://www.ruby-lang.org/en/documentation/installation/"
 	@exit 1
 endif
 
-.PHONY: setup-install-html-proofer
-setup-install-html-proofer: setup-check-npm
+.PHONY: setup-check-fix-whitespace
+setup-check-fix-whitespace: setup-check-stack
+ifeq (,$(wildcard $(shell which fix-whitespace)))
+	@echo "The command you called requires fix-whitespace"
+	@echo "Run: git clone https://github.com/agda/fix-whitespace"
+	@echo "     cd fix-whitespace/"
+	@echo "     stack install --stack-yaml stack-8.8.3.yaml"
+endif
+
+.PHONY: setup-check-epubcheck
+setup-check-epubcheck:
+ifeq (,$(wildcard $(shell which epubcheck)))
+	@echo "The command you called requires EPUBCheck"
+	@echo "See: https://github.com/w3c/epubcheck"
+endif
+
+.PHONY: setup-install-htmlproofer
+setup-install-htmlproofer: setup-check-gem
 ifeq (,$(wildcard $(shell which htmlproofer)))
 	@echo "Installing HTMLProofer..."
 	gem install html-proofer
 endif
 
-.PHONY: setup-install-bundle
-setup-install-html-proofer: setup-check-gem
+.PHONY: setup-install-bundler
+setup-install-bundler: setup-check-gem
 ifeq (,$(wildcard $(shell which bundle)))
 	@echo "Installing Ruby Bundler..."
 	gem install bundle

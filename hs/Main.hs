@@ -4,7 +4,8 @@
 import           Control.Monad ((<=<), forM_)
 import qualified Data.ByteString.Lazy as BL
 import           Data.Functor ((<&>))
-import           Data.List (sortBy)
+import           Data.List as L
+import           Data.List.Extra as L
 import           Data.Maybe (fromMaybe)
 import           Data.Ord (comparing)
 import           Hakyll
@@ -15,6 +16,7 @@ import           Hakyll.Web.Routes.Permalink
 import           System.FilePath ((</>), takeDirectory)
 import           Text.Pandoc
 import           Text.Pandoc.Filter
+import           Text.Printf (printf)
 import           Text.Read (readMaybe)
 
 --------------------------------------------------------------------------------
@@ -45,6 +47,13 @@ siteContext = mconcat
       ]
   , constField "google_analytics" "UA-125055580-1"
   , defaultContext
+  ]
+
+siteSectionContext :: Context String
+siteSectionContext = mconcat
+  [ titlerunningField
+  , subtitleField
+  , siteContext
   ]
 
 acknowledgementsContext :: Context String
@@ -148,7 +157,7 @@ main = do
     match "src/plfa/index.md" $ do
       route permalinkRoute
       compile $ getResourceBody
-        >>= applyAsTemplate (tocContext defaultContext)
+        >>= applyAsTemplate (tocContext siteSectionContext)
         >>= renderPandoc
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
@@ -252,7 +261,8 @@ main = do
     forM_ versions $ \v ->
       match (fromGlob $ "versions" </> v </> "**") $ do
         route $ gsubRoute ".versions/" (const "")
-        compile copyFileCompiler
+        compile $ getResourceBody
+            >>= relativizeUrls
 
 --------------------------------------------------------------------------------
 -- EPUB generation
@@ -267,6 +277,8 @@ epubContext = mconcat
 epubSectionContext :: Context String
 epubSectionContext = mconcat
   [ contentField "content" "content"
+  , titlerunningField
+  , subtitleField
   ]
 
 epubReaderOptions :: ReaderOptions
@@ -308,6 +320,26 @@ writeEPUB3With wopt (Item itemi doc) =
 -- Supply snapshot as a field to the template
 --------------------------------------------------------------------------------
 
+subtitleField :: Context String
+subtitleField = Context go
+  where
+    go "subtitle" _ i = do
+      title <- maybe (fail "No title") return =<< getMetadataField (itemIdentifier i) "title"
+      case L.stripInfix ":" title of
+        Nothing -> fail "No titlerunning/subtitle distinction"
+        Just (_, subtitle) -> return . StringField $ L.trim subtitle
+    go k          _ i = fail $ printf "Missing field %s in context for item %s" k (show (itemIdentifier i))
+
+titlerunningField :: Context String
+titlerunningField = Context go
+  where
+    go "titlerunning" _ i = do
+      title <- maybe (fail "No title") return =<< getMetadataField (itemIdentifier i) "title"
+      case L.stripInfix ":" title of
+        Nothing -> fail "No titlerunning/subtitle distinction"
+        Just (titlerunning, _) -> return . StringField $ titlerunning
+    go k              _ i = fail $ printf "Missing field %s in context for item %s" k (show (itemIdentifier i))
+
 contentField :: String -> Snapshot -> Context String
 contentField key snapshot = field key $ \item ->
   itemBody <$> loadSnapshot (itemIdentifier item) snapshot
@@ -321,4 +353,4 @@ byNumericFieldDesc :: MonadMetadata m => String -> [Item a] -> m [Item a]
 byNumericFieldDesc key is = reverse <$> byNumericFieldAsc key is
 
 sortOnM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
-sortOnM f xs = map fst . sortBy (comparing snd) <$> mapM (\ x -> (x,) <$> f x) xs
+sortOnM f xs = map fst . L.sortBy (comparing snd) <$> mapM (\ x -> (x,) <$> f x) xs

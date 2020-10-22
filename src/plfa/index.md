@@ -15,7 +15,11 @@ $for(parts)$
 ## $title$
 <ul>
 $for(sections)$
+$if(titlerunning)$
+<li><a href="$url$">$titlerunning$</a>: $subtitle$</li>
+$else$
 <li><a href="$url$">$title$</a></li>
+$endif$
 $endfor$
 </ul>
 $endfor$
