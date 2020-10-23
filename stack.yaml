@@ -1,0 +1,25 @@
+resolver: lts-16.16
+compiler: ghc-8.8.4
+
+flags:
+  pandoc:
+    embed_data_files: true
+
+packages:
+- .
+
+extra-deps:
+# Sass dependencies:
+- hsass-0.8.0@sha256:05fb3d435dbdf9f66a98db4e1ee57a313170a677e52ab3a5a05ced1fc42b0834,2899
+- hlibsass-0.1.10.1@sha256:08db56c633e9a83a642d8ea57dffa93112b092d05bf8f3b07491cfee9ee0dfa5,2565
+# Agda dependencies:
+- Agda-2.6.1.1@sha256:d0f5051ae56de8417dc202cd7a8e23c9f21a75c69b44afb856b66b87ca8d54c4,32315
+- data-hash-0.2.0.1@sha256:0277d99cb8b535ecc375c59e55f1c91faab966d9167a946ef18445dd468ba727,1135
+- equivalence-0.3.5@sha256:aedbd070b7ab5e58dd1678cd85607bc33cb9ff62331c1fa098ca45063b3072db,1626
+- geniplate-mirror-0.7.7@sha256:6a698c1bcec25f4866999001c4de30049d4f8f00ec83f8930cda2f767489c637,1106
+- STMonadTrans-0.4.4@sha256:437eec4fdf5f56e9cd4360e08ed7f8f9f5f02ff3f1d634a14dbc71e890035387,1946
+# GitHub API dependencies:
+- github-0.26@sha256:a9d4046325c3eb28cdc7bef2c3f5bb213328caeae0b7dce6f51de655f0bffaa1,7162
+- binary-instances-1.0.0.1@sha256:e234be994da675479a3661f050d4a1d53565c9ed7786d9a68b7a29ba8b54b5a7,2659
+# Regex dependencies:
+- text-regex-replace-0.1.1.3@sha256:e7f612df671c93ced54a3d26528db37852069884e5cb67d5afbb49d3defb5eb9,1627

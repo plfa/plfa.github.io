@@ -89,7 +89,7 @@ Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
 yield the same result, then they are the same function.  It is the
 converse of `cong-app`, as introduced
-[earlier]({{ site.baseurl }}/Equality/#cong).
+[earlier](/Equality/#cong).
 
 Agda does not presume extensionality, but we can postulate that it holds:
 ```
@@ -104,7 +104,7 @@ known to be consistent with the theory that underlies Agda.
 
 As an example, consider that we need results from two libraries,
 one where addition is defined, as in
-Chapter [Naturals]({{ site.baseurl }}/Naturals/),
+Chapter [Naturals](/Naturals/),
 and one where it is defined the other way around.
 ```
 _+′_ : ℕ → ℕ → ℕ
@@ -170,7 +170,7 @@ the fourth that `to ∘ from` is the identity, hence the names.
 The declaration `open _≃_` makes available the names `to`, `from`,
 `from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
-The above is our first use of records. A record declaration behaves similar to a single-constructor data declaration (there are minor differences, which we discuss in [Connectives]({{ site.baseurl }}/Connectives/)):
+The above is our first use of records. A record declaration behaves similar to a single-constructor data declaration (there are minor differences, which we discuss in [Connectives](/Connectives/)):
 ```
 data _≃′_ (A B : Set): Set where
   mk-≃′ : ∀ (to : A → B) →
@@ -468,8 +468,8 @@ Show that equivalence is reflexive, symmetric, and transitive.
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
-[Bin]({{ site.baseurl }}/Naturals/#Bin) and
-[Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws)
+[Bin](/Naturals/#Bin) and
+[Bin-laws](/Induction/#Bin-laws)
 define a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define the following functions and predicates:
 

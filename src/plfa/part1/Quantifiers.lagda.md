@@ -97,7 +97,7 @@ postulate
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 ```
 Compare this with the result (`→-distrib-×`) in
-Chapter [Connectives]({{ site.baseurl }}/Connectives/).
+Chapter [Connectives](/Connectives/).
 
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
@@ -242,7 +242,7 @@ Indeed, the converse also holds, and the two together form an isomorphism:
 ```
 The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
-[implication]({{ site.baseurl }}/Connectives/#implication).
+[implication](/Connectives/#implication).
 
 #### Exercise `∃-distrib-⊎` (recommended)
 
@@ -272,7 +272,7 @@ Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 ## An existential example
 
 Recall the definitions of `even` and `odd` from
-Chapter [Relations]({{ site.baseurl }}/Relations/):
+Chapter [Relations](/Relations/):
 ```
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -441,9 +441,9 @@ Does the converse hold? If so, prove; if not, explain why.
 #### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
-[Bin]({{ site.baseurl }}/Naturals/#Bin),
-[Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws), and
-[Bin-predicates]({{ site.baseurl }}/Relations/#Bin-predicates)
+[Bin](/Naturals/#Bin),
+[Bin-laws](/Induction/#Bin-laws), and
+[Bin-predicates](/Relations/#Bin-predicates)
 define a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define the following functions and predicates:
 

@@ -9,7 +9,3 @@ else
   echo "Checking for whitespace violations..."
   fix-whitespace --check
 fi
-
-# Run the test suite.
-echo "Running the test suite..."
-make test-offline

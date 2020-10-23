@@ -1,5 +1,5 @@
 ---
-title     : "Compositional: The denotational semantics is compositional 🚧"
+title     : "Compositional: The denotational semantics is compositional"
 layout    : page
 prev      : /Denotational/
 permalink : /Compositional/

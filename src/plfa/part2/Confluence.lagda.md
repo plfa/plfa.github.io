@@ -1,5 +1,5 @@
 ---
-title     : "Confluence: Confluence of untyped lambda calculus 🚧"
+title     : "Confluence: Confluence of untyped lambda calculus"
 layout    : page
 prev      : /Untyped/
 permalink : /Confluence/
@@ -264,7 +264,7 @@ in turn relies on `rename`, we start with a version of the
 substitution lemma, called `par-rename`, that is specialized to
 renamings.  The proof of `par-rename` relies on the fact that renaming
 and substitution commute with one another, which is a lemma that we
-import from Chapter [Substitution]({{ site.baseurl }}/Substitution/)
+import from Chapter [Substitution](/Substitution/)
 and restate here.
 
 ```
@@ -319,7 +319,7 @@ par-subst-exts s {x = S x} = par-rename s
 The next lemma that we need for proving that substitution respects
 parallel reduction is the following which states that
 simultaneoous substitution commutes with single substitution. We import this
-lemma from Chapter [Substitution]({{ site.baseurl }}/Substitution/)
+lemma from Chapter [Substitution](/Substitution/)
 and restate it below.
 
 ```

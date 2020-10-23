@@ -177,7 +177,7 @@ and follows by straightforward computation combined with the
 inductive hypothesis.  As usual, the inductive hypothesis is indicated by a recursive
 invocation of the proof, in this case `++-assoc xs ys zs`.
 
-Recall that Agda supports [sections]({{ site.baseurl }}/Induction/#sections).
+Recall that Agda supports [sections](/Induction/#sections).
 Applying `cong (x ∷_)` promotes the inductive hypothesis:
 
     (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
@@ -966,7 +966,7 @@ Show that `Any` and `All` satisfy a version of De Morgan's Law:
 
 (Can you see why it is important that here `_∘_` is generalised
 to arbitrary levels, as described in the section on
-[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly)?)
+[universe polymorphism](/Equality/#unipoly)?)
 
 Do we also have the following?
 
