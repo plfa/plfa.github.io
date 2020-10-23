@@ -13,15 +13,17 @@ Thank you to:
 
 A special thank you, for inventing ideas on which this book is based, and for hand-holding:
 <div class="list-of-contributors">
-  - Andreas Abel
-  - Catarina Coquand
-  - Thierry Coquand
-  - David Darais
-  - Per Martin-Löf
-  - Lena Magnusson
-  - Conor McBride
-  - James McKinna
-  - Ulf Norell
+<ul>
+<li>Andreas Abel</li>
+<li>Catarina Coquand</li>
+<li>Thierry Coquand</li>
+<li>David Darais</li>
+<li>Per Martin-Löf</li>
+<li>Lena Magnusson</li>
+<li>Conor McBride</li>
+<li>James McKinna</li>
+<li>Ulf Norell</li>
+</ul>
 </div>
 
 $if(contributors)$
