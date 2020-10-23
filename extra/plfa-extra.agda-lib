@@ -1,3 +1,0 @@
-name: plfa-extra
-depend: standard-library plfa
-include: .

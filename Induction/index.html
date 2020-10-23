@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../public/css/style.css">
+  
+  <title>Programming Language Foundations in Agda – Induction</title>
+  
+  
+  
+</head>
+
+    <body>
+        <header class="site-header">
+    <div class="wrapper">
+        <a class="site-title" href="../">Programming Language Foundations in Agda</a>
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="../">The Book</a>
+                <a class="page-link" href="../Announcements/">Announcements</a>
+                <a class="page-link" href="../GettingStarted/">Getting Started</a>
+                <a class="page-link" href="../Citing/">Citing</a>
+                <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper">
+                <article class="post">
+    <nav class="pager">
+    <ul class="pagination">
+        
+        <li><a class="pagelink" href="../Naturals/">Prev</a></li>
+        <li class="separator">&bullet;</li>
+        
+        
+        <li><a class="pagelink" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/part1/Induction.lagda.md">Source</a></li>
+        <li class="separator">&bullet;</li>
+        
+        
+        <li><a class="pagelink" href="../Relations/">Next</a></li>
+        <li class="separator">&bullet;</li>
+        
+    </ul>
+</nav>
+
+    <header class="post-header">
+        <h1 class="post-title">Induction: Proof by Induction</h1>
+    </header>
+    <div class="post-content">
+        <pre class="Agda"><a id="146" class="Keyword">module</a> <a id="153" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html" class="Module">plfa.part1.Induction</a> <a id="174" class="Keyword">where</a>
+</pre>
+<blockquote>
+<p>Induction makes you feel guilty for getting something out of nothing … but it is one of the greatest ideas of civilization. – Herbert Wilf</p>
+</blockquote>
+<p>Now that we’ve defined the naturals and operations upon them, our next step is to learn how to prove properties that they satisfy. As hinted by their name, properties of <em>inductive datatypes</em> are proved by <em>induction</em>.</p>
+<h2 id="imports">Imports</h2>
+We require equality as in the previous chapter, plus the naturals and some operations upon them. We also import a couple of new operations, <code>cong</code>, <code>sym</code>, and <code>_≡⟨_⟩_</code>, which are explained below:
+<pre class="Agda"><a id="769" class="Keyword">import</a> <a id="776" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="814" class="Symbol">as</a> <a id="817" class="Module">Eq</a>
+<a id="820" class="Keyword">open</a> <a id="825" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="828" class="Keyword">using</a> <a id="834" class="Symbol">(</a><a id="835" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">_≡_</a><a id="838" class="Symbol">;</a> <a id="840" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a><a id="844" class="Symbol">;</a> <a id="846" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a><a id="850" class="Symbol">;</a> <a id="852" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#980" class="Function">sym</a><a id="855" class="Symbol">)</a>
+<a id="857" class="Keyword">open</a> <a id="862" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2419" class="Module">Eq.≡-Reasoning</a> <a id="877" class="Keyword">using</a> <a id="883" class="Symbol">(</a><a id="884" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin_</a><a id="890" class="Symbol">;</a> <a id="892" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">_≡⟨⟩_</a><a id="897" class="Symbol">;</a> <a id="899" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">step-≡</a><a id="905" class="Symbol">;</a> <a id="907" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">_∎</a><a id="909" class="Symbol">)</a>
+<a id="911" class="Keyword">open</a> <a id="916" class="Keyword">import</a> <a id="923" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.html" class="Module">Data.Nat</a> <a id="932" class="Keyword">using</a> <a id="938" class="Symbol">(</a><a id="939" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="940" class="Symbol">;</a> <a id="942" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a><a id="946" class="Symbol">;</a> <a id="948" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a><a id="951" class="Symbol">;</a> <a id="953" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">_+_</a><a id="956" class="Symbol">;</a> <a id="958" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#528" class="Primitive Operator">_*_</a><a id="961" class="Symbol">;</a> <a id="963" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Base.html#1429" class="Primitive Operator">_∸_</a><a id="966" class="Symbol">)</a>
+</pre>
+<h2 id="properties-of-operators">Properties of operators</h2>
+<p>Operators pop up all the time, and mathematicians have agreed on names for some of the most common properties.</p>
+<ul>
+<li><p><em>Identity</em>. Operator <code>+</code> has left identity <code>0</code> if <code>0 + n ≡ n</code>, and right identity <code>0</code> if <code>n + 0 ≡ n</code>, for all <code>n</code>. A value that is both a left and right identity is just called an identity. Identity is also sometimes called <em>unit</em>.</p></li>
+<li><p><em>Associativity</em>. Operator <code>+</code> is associative if the location of parentheses does not matter: <code>(m + n) + p ≡ m + (n + p)</code>, for all <code>m</code>, <code>n</code>, and <code>p</code>.</p></li>
+<li><p><em>Commutativity</em>. Operator <code>+</code> is commutative if order of arguments does not matter: <code>m + n ≡ n + m</code>, for all <code>m</code> and <code>n</code>.</p></li>
+<li><p><em>Distributivity</em>. Operator <code>*</code> distributes over operator <code>+</code> from the left if <code>(m + n) * p ≡ (m * p) + (n * p)</code>, for all <code>m</code>, <code>n</code>, and <code>p</code>, and from the right if <code>m * (p + q) ≡ (m * p) + (m * q)</code>, for all <code>m</code>, <code>p</code>, and <code>q</code>.</p></li>
+</ul>
+<p>Addition has identity <code>0</code> and multiplication has identity <code>1</code>; addition and multiplication are both associative and commutative; and multiplication distributes over addition.</p>
+<p>If you ever bump into an operator at a party, you now know how to make small talk, by asking whether it has a unit and is associative or commutative. If you bump into two operators, you might ask them if one distributes over the other.</p>
+<p>Less frivolously, if you ever bump into an operator while reading a technical paper, this gives you a way to orient yourself, by checking whether or not it has an identity, is associative or commutative, or distributes over another operator. A careful author will often call out these properties—or their lack—for instance by pointing out that a newly introduced operator is associative but not commutative.</p>
+<h4 name="operators" id="exercise-operators-practice">Exercise <code>operators</code> (practice)</h4>
+<p>Give another example of a pair of operators that have an identity and are associative, commutative, and distribute over one another. (You do not have to prove these properties.)</p>
+<p>Give an example of an operator that has an identity and is associative but is not commutative. (You do not have to prove these properties.)</p>
+<h2 id="associativity">Associativity</h2>
+<p>One property of addition is that it is <em>associative</em>, that is, that the location of the parentheses does not matter:</p>
+<pre><code>(m + n) + p ≡ m + (n + p)</code></pre>
+<p>Here <code>m</code>, <code>n</code>, and <code>p</code> are variables that range over all natural numbers.</p>
+We can test the proposition by choosing specific numbers for the three variables:
+<pre class="Agda"><a id="3411" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#3411" class="Function">_</a> <a id="3413" class="Symbol">:</a> <a id="3415" class="Symbol">(</a><a id="3416" class="Number">3</a> <a id="3418" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3420" class="Number">4</a><a id="3421" class="Symbol">)</a> <a id="3423" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3425" class="Number">5</a> <a id="3427" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="3429" class="Number">3</a> <a id="3431" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3433" class="Symbol">(</a><a id="3434" class="Number">4</a> <a id="3436" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3438" class="Number">5</a><a id="3439" class="Symbol">)</a>
+<a id="3441" class="Symbol">_</a> <a id="3443" class="Symbol">=</a>
+  <a id="3447" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="3457" class="Symbol">(</a><a id="3458" class="Number">3</a> <a id="3460" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3462" class="Number">4</a><a id="3463" class="Symbol">)</a> <a id="3465" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3467" class="Number">5</a>
+  <a id="3471" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="3479" class="Number">7</a> <a id="3481" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3483" class="Number">5</a>
+  <a id="3487" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="3495" class="Number">12</a>
+  <a id="3500" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="3508" class="Number">3</a> <a id="3510" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3512" class="Number">9</a>
+  <a id="3516" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="3524" class="Number">3</a> <a id="3526" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3528" class="Symbol">(</a><a id="3529" class="Number">4</a> <a id="3531" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="3533" class="Number">5</a><a id="3534" class="Symbol">)</a>
+  <a id="3538" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<p>Here we have displayed the computation as a chain of equations, one term to a line. It is often easiest to read such chains from the top down until one reaches the simplest term (in this case, <code>12</code>), and then from the bottom up until one reaches the same term.</p>
+<p>The test reveals that associativity is perhaps not as obvious as first it appears. Why should <code>7 + 5</code> be the same as <code>3 + 9</code>? We might want to gather more evidence, testing the proposition by choosing other numbers. But—since there are an infinite number of naturals—testing can never be complete. Is there any way we can be sure that associativity holds for <em>all</em> the natural numbers?</p>
+<p>The answer is yes! We can prove a property holds for all naturals using <em>proof by induction</em>.</p>
+<h2 id="proof-by-induction">Proof by induction</h2>
+<p>Recall the definition of natural numbers consists of a <em>base case</em> which tells us that <code>zero</code> is a natural, and an <em>inductive case</em> which tells us that if <code>m</code> is a natural then <code>suc m</code> is also a natural.</p>
+<p>Proof by induction follows the structure of this definition. To prove a property of natural numbers by induction, we need to prove two cases. First is the <em>base case</em>, where we show the property holds for <code>zero</code>. Second is the <em>inductive case</em>, where we assume the property holds for an arbitrary natural <code>m</code> (we call this the <em>inductive hypothesis</em>), and then show that the property must also hold for <code>suc m</code>.</p>
+<p>If we write <code>P m</code> for a property of <code>m</code>, then what we need to demonstrate are the following two inference rules:</p>
+<pre><code>------
+P zero
+
+P m
+---------
+P (suc m)</code></pre>
+<p>Let’s unpack these rules. The first rule is the base case, and requires we show that property <code>P</code> holds for <code>zero</code>. The second rule is the inductive case, and requires we show that if we assume the inductive hypothesis—namely that <code>P</code> holds for <code>m</code>—then it follows that <code>P</code> also holds for <code>suc m</code>.</p>
+<p>Why does this work? Again, it can be explained by a creation story. To start with, we know no properties:</p>
+<pre><code>-- In the beginning, no properties are known.</code></pre>
+<p>Now, we apply the two rules to all the properties we know about. The base case tells us that <code>P zero</code> holds, so we add it to the set of known properties. The inductive case tells us that if <code>P m</code> holds (on the day before today) then <code>P (suc m)</code> also holds (today). We didn’t know about any properties before today, so the inductive case doesn’t apply:</p>
+<pre><code>-- On the first day, one property is known.
+P zero</code></pre>
+<p>Then we repeat the process, so on the next day we know about all the properties from the day before, plus any properties added by the rules. The base case tells us that <code>P zero</code> holds, but we already knew that. But now the inductive case tells us that since <code>P zero</code> held yesterday, then <code>P (suc zero)</code> holds today:</p>
+<pre><code>-- On the second day, two properties are known.
+P zero
+P (suc zero)</code></pre>
+<p>And we repeat the process again. Now the inductive case tells us that since <code>P zero</code> and <code>P (suc zero)</code> both hold, then <code>P (suc zero)</code> and <code>P (suc (suc zero))</code> also hold. We already knew about the first of these, but the second is new:</p>
+<pre><code>-- On the third day, three properties are known.
+P zero
+P (suc zero)
+P (suc (suc zero))</code></pre>
+<p>You’ve got the hang of it by now:</p>
+<pre><code>-- On the fourth day, four properties are known.
+P zero
+P (suc zero)
+P (suc (suc zero))
+P (suc (suc (suc zero)))</code></pre>
+<p>The process continues. On the <em>n</em>’th day there will be <em>n</em> distinct properties that hold. The property of every natural number will appear on some given day. In particular, the property <code>P n</code> first appears on day <em>n+1</em>.</p>
+<h2 id="our-first-proof-associativity">Our first proof: associativity</h2>
+<p>To prove associativity, we take <code>P m</code> to be the property:</p>
+<pre><code>(m + n) + p ≡ m + (n + p)</code></pre>
+<p>Here <code>n</code> and <code>p</code> are arbitrary natural numbers, so if we can show the equation holds for all <code>m</code> it will also hold for all <code>n</code> and <code>p</code>. The appropriate instances of the inference rules are:</p>
+<pre><code>-------------------------------
+(zero + n) + p ≡ zero + (n + p)
+
+(m + n) + p ≡ m + (n + p)
+---------------------------------
+(suc m + n) + p ≡ suc m + (n + p)</code></pre>
+<p>If we can demonstrate both of these, then associativity of addition follows by induction.</p>
+Here is the proposition’s statement and proof:
+<pre class="Agda"><a id="+-assoc"></a><a id="7766" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="7774" class="Symbol">:</a> <a id="7776" class="Symbol">∀</a> <a id="7778" class="Symbol">(</a><a id="7779" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7779" class="Bound">m</a> <a id="7781" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7781" class="Bound">n</a> <a id="7783" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7783" class="Bound">p</a> <a id="7785" class="Symbol">:</a> <a id="7787" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="7788" class="Symbol">)</a> <a id="7790" class="Symbol">→</a> <a id="7792" class="Symbol">(</a><a id="7793" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7779" class="Bound">m</a> <a id="7795" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7797" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7781" class="Bound">n</a><a id="7798" class="Symbol">)</a> <a id="7800" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7802" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7783" class="Bound">p</a> <a id="7804" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="7806" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7779" class="Bound">m</a> <a id="7808" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7810" class="Symbol">(</a><a id="7811" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7781" class="Bound">n</a> <a id="7813" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7815" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7783" class="Bound">p</a><a id="7816" class="Symbol">)</a>
+<a id="7818" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="7826" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="7831" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7831" class="Bound">n</a> <a id="7833" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7833" class="Bound">p</a> <a id="7835" class="Symbol">=</a>
+  <a id="7839" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="7849" class="Symbol">(</a><a id="7850" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="7855" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7857" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7831" class="Bound">n</a><a id="7858" class="Symbol">)</a> <a id="7860" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7862" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7833" class="Bound">p</a>
+  <a id="7866" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="7874" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7831" class="Bound">n</a> <a id="7876" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7878" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7833" class="Bound">p</a>
+  <a id="7882" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="7890" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="7895" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7897" class="Symbol">(</a><a id="7898" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7831" class="Bound">n</a> <a id="7900" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7902" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7833" class="Bound">p</a><a id="7903" class="Symbol">)</a>
+  <a id="7907" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+<a id="7909" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="7917" class="Symbol">(</a><a id="7918" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="7922" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a><a id="7923" class="Symbol">)</a> <a id="7925" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a> <a id="7927" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a> <a id="7929" class="Symbol">=</a>
+  <a id="7933" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="7943" class="Symbol">(</a><a id="7944" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="7948" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a> <a id="7950" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7952" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a><a id="7953" class="Symbol">)</a> <a id="7955" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7957" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a>
+  <a id="7961" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="7969" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="7973" class="Symbol">(</a><a id="7974" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a> <a id="7976" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7978" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a><a id="7979" class="Symbol">)</a> <a id="7981" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="7983" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a>
+  <a id="7987" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="7995" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="7999" class="Symbol">((</a><a id="8001" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a> <a id="8003" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="8005" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a><a id="8006" class="Symbol">)</a> <a id="8008" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="8010" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a><a id="8011" class="Symbol">)</a>
+  <a id="8015" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="8018" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="8023" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="8027" class="Symbol">(</a><a id="8028" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="8036" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a> <a id="8038" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a> <a id="8040" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a><a id="8041" class="Symbol">)</a> <a id="8043" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="8049" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="8053" class="Symbol">(</a><a id="8054" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a> <a id="8056" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="8058" class="Symbol">(</a><a id="8059" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a> <a id="8061" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="8063" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a><a id="8064" class="Symbol">))</a>
+  <a id="8069" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="8077" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="8081" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7922" class="Bound">m</a> <a id="8083" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="8085" class="Symbol">(</a><a id="8086" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7925" class="Bound">n</a> <a id="8088" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="8090" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7927" class="Bound">p</a><a id="8091" class="Symbol">)</a>
+  <a id="8095" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<p>We have named the proof <code>+-assoc</code>. In Agda, identifiers can consist of any sequence of characters not including spaces or the characters <code>@.(){};_</code>.</p>
+<p>Let’s unpack this code. The signature states that we are defining the identifier <code>+-assoc</code> which provides evidence for the proposition:</p>
+<pre><code>∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)</code></pre>
+<p>The upside down A is pronounced “for all”, and the proposition asserts that for all natural numbers <code>m</code>, <code>n</code>, and <code>p</code> the equation <code>(m + n) + p ≡ m + (n + p)</code> holds. Evidence for the proposition is a function that accepts three natural numbers, binds them to <code>m</code>, <code>n</code>, and <code>p</code>, and returns evidence for the corresponding instance of the equation.</p>
+<p>For the base case, we must show:</p>
+<pre><code>(zero + n) + p ≡ zero + (n + p)</code></pre>
+<p>Simplifying both sides with the base case of addition yields the equation:</p>
+<pre><code>n + p ≡ n + p</code></pre>
+<p>This holds trivially. Reading the chain of equations in the base case of the proof, the top and bottom of the chain match the two sides of the equation to be shown, and reading down from the top and up from the bottom takes us to <code>n + p</code> in the middle. No justification other than simplification is required.</p>
+<p>For the inductive case, we must show:</p>
+<pre><code>(suc m + n) + p ≡ suc m + (n + p)</code></pre>
+<p>Simplifying both sides with the inductive case of addition yields the equation:</p>
+<pre><code>suc ((m + n) + p) ≡ suc (m + (n + p))</code></pre>
+<p>This in turn follows by prefacing <code>suc</code> to both sides of the induction hypothesis:</p>
+<pre><code>(m + n) + p ≡ m + (n + p)</code></pre>
+<p>Reading the chain of equations in the inductive case of the proof, the top and bottom of the chain match the two sides of the equation to be shown, and reading down from the top and up from the bottom takes us to the simplified equation above. The remaining equation, does not follow from simplification alone, so we use an additional operator for chain reasoning, <code>_≡⟨_⟩_</code>, where a justification for the equation appears within angle brackets. The justification given is:</p>
+<pre><code>⟨ cong suc (+-assoc m n p) ⟩</code></pre>
+<p>Here, the recursive invocation <code>+-assoc m n p</code> has as its type the induction hypothesis, and <code>cong suc</code> prefaces <code>suc</code> to each side to yield the needed equation.</p>
+<p>A relation is said to be a <em>congruence</em> for a given function if it is preserved by applying that function. If <code>e</code> is evidence that <code>x ≡ y</code>, then <code>cong f e</code> is evidence that <code>f x ≡ f y</code>, for any function <code>f</code>.</p>
+<p>Here the inductive hypothesis is not assumed, but instead proved by a recursive invocation of the function we are defining, <code>+-assoc m n p</code>. As with addition, this is well founded because associativity of larger numbers is proved in terms of associativity of smaller numbers. In this case, <code>assoc (suc m) n p</code> is proved using <code>assoc m n p</code>. The correspondence between proof by induction and definition by recursion is one of the most appealing aspects of Agda.</p>
+<h2 id="induction-as-recursion">Induction as recursion</h2>
+<p>As a concrete example of how induction corresponds to recursion, here is the computation that occurs when instantiating <code>m</code> to <code>2</code> in the proof of associativity.</p>
+<pre class="Agda"><a id="+-assoc-2"></a><a id="11119" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11119" class="Function">+-assoc-2</a> <a id="11129" class="Symbol">:</a> <a id="11131" class="Symbol">∀</a> <a id="11133" class="Symbol">(</a><a id="11134" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11134" class="Bound">n</a> <a id="11136" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11136" class="Bound">p</a> <a id="11138" class="Symbol">:</a> <a id="11140" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="11141" class="Symbol">)</a> <a id="11143" class="Symbol">→</a> <a id="11145" class="Symbol">(</a><a id="11146" class="Number">2</a> <a id="11148" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11150" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11134" class="Bound">n</a><a id="11151" class="Symbol">)</a> <a id="11153" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11155" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11136" class="Bound">p</a> <a id="11157" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="11159" class="Number">2</a> <a id="11161" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11163" class="Symbol">(</a><a id="11164" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11134" class="Bound">n</a> <a id="11166" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11168" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11136" class="Bound">p</a><a id="11169" class="Symbol">)</a>
+<a id="11171" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11119" class="Function">+-assoc-2</a> <a id="11181" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a> <a id="11183" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a> <a id="11185" class="Symbol">=</a>
+  <a id="11189" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="11199" class="Symbol">(</a><a id="11200" class="Number">2</a> <a id="11202" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11204" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a><a id="11205" class="Symbol">)</a> <a id="11207" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11209" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a>
+  <a id="11213" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="11221" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11225" class="Symbol">(</a><a id="11226" class="Number">1</a> <a id="11228" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11230" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a><a id="11231" class="Symbol">)</a> <a id="11233" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11235" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a>
+  <a id="11239" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="11247" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11251" class="Symbol">((</a><a id="11253" class="Number">1</a> <a id="11255" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11257" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a><a id="11258" class="Symbol">)</a> <a id="11260" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11262" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a><a id="11263" class="Symbol">)</a>
+  <a id="11267" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="11270" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="11275" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11279" class="Symbol">(</a><a id="11280" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11355" class="Function">+-assoc-1</a> <a id="11290" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a> <a id="11292" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a><a id="11293" class="Symbol">)</a> <a id="11295" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="11301" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11305" class="Symbol">(</a><a id="11306" class="Number">1</a> <a id="11308" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11310" class="Symbol">(</a><a id="11311" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a> <a id="11313" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11315" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a><a id="11316" class="Symbol">))</a>
+  <a id="11321" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="11329" class="Number">2</a> <a id="11331" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11333" class="Symbol">(</a><a id="11334" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11181" class="Bound">n</a> <a id="11336" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11338" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11183" class="Bound">p</a><a id="11339" class="Symbol">)</a>
+  <a id="11343" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+  <a id="11347" class="Keyword">where</a>
+  <a id="11355" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11355" class="Function">+-assoc-1</a> <a id="11365" class="Symbol">:</a> <a id="11367" class="Symbol">∀</a> <a id="11369" class="Symbol">(</a><a id="11370" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11370" class="Bound">n</a> <a id="11372" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11372" class="Bound">p</a> <a id="11374" class="Symbol">:</a> <a id="11376" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="11377" class="Symbol">)</a> <a id="11379" class="Symbol">→</a> <a id="11381" class="Symbol">(</a><a id="11382" class="Number">1</a> <a id="11384" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11386" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11370" class="Bound">n</a><a id="11387" class="Symbol">)</a> <a id="11389" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11391" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11372" class="Bound">p</a> <a id="11393" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="11395" class="Number">1</a> <a id="11397" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11399" class="Symbol">(</a><a id="11400" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11370" class="Bound">n</a> <a id="11402" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11404" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11372" class="Bound">p</a><a id="11405" class="Symbol">)</a>
+  <a id="11409" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11355" class="Function">+-assoc-1</a> <a id="11419" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a> <a id="11421" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a> <a id="11423" class="Symbol">=</a>
+    <a id="11429" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+      <a id="11441" class="Symbol">(</a><a id="11442" class="Number">1</a> <a id="11444" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11446" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a><a id="11447" class="Symbol">)</a> <a id="11449" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11451" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a>
+    <a id="11457" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+      <a id="11467" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11471" class="Symbol">(</a><a id="11472" class="Number">0</a> <a id="11474" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11476" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a><a id="11477" class="Symbol">)</a> <a id="11479" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11481" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a>
+    <a id="11487" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+      <a id="11497" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11501" class="Symbol">((</a><a id="11503" class="Number">0</a> <a id="11505" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11507" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a><a id="11508" class="Symbol">)</a> <a id="11510" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11512" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a><a id="11513" class="Symbol">)</a>
+    <a id="11519" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="11522" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="11527" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11531" class="Symbol">(</a><a id="11532" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11619" class="Function">+-assoc-0</a> <a id="11542" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a> <a id="11544" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a><a id="11545" class="Symbol">)</a> <a id="11547" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+      <a id="11555" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="11559" class="Symbol">(</a><a id="11560" class="Number">0</a> <a id="11562" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11564" class="Symbol">(</a><a id="11565" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a> <a id="11567" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11569" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a><a id="11570" class="Symbol">))</a>
+    <a id="11577" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+      <a id="11587" class="Number">1</a> <a id="11589" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11591" class="Symbol">(</a><a id="11592" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11419" class="Bound">n</a> <a id="11594" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11596" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11421" class="Bound">p</a><a id="11597" class="Symbol">)</a>
+    <a id="11603" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+    <a id="11609" class="Keyword">where</a>
+    <a id="11619" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11619" class="Function">+-assoc-0</a> <a id="11629" class="Symbol">:</a> <a id="11631" class="Symbol">∀</a> <a id="11633" class="Symbol">(</a><a id="11634" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11634" class="Bound">n</a> <a id="11636" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11636" class="Bound">p</a> <a id="11638" class="Symbol">:</a> <a id="11640" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="11641" class="Symbol">)</a> <a id="11643" class="Symbol">→</a> <a id="11645" class="Symbol">(</a><a id="11646" class="Number">0</a> <a id="11648" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11650" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11634" class="Bound">n</a><a id="11651" class="Symbol">)</a> <a id="11653" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11655" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11636" class="Bound">p</a> <a id="11657" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="11659" class="Number">0</a> <a id="11661" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11663" class="Symbol">(</a><a id="11664" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11634" class="Bound">n</a> <a id="11666" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11668" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11636" class="Bound">p</a><a id="11669" class="Symbol">)</a>
+    <a id="11675" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11619" class="Function">+-assoc-0</a> <a id="11685" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11685" class="Bound">n</a> <a id="11687" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11687" class="Bound">p</a> <a id="11689" class="Symbol">=</a>
+      <a id="11697" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+        <a id="11711" class="Symbol">(</a><a id="11712" class="Number">0</a> <a id="11714" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11716" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11685" class="Bound">n</a><a id="11717" class="Symbol">)</a> <a id="11719" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11721" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11687" class="Bound">p</a>
+      <a id="11729" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+        <a id="11741" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11685" class="Bound">n</a> <a id="11743" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11745" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11687" class="Bound">p</a>
+      <a id="11753" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+        <a id="11765" class="Number">0</a> <a id="11767" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11769" class="Symbol">(</a><a id="11770" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11685" class="Bound">n</a> <a id="11772" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="11774" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#11687" class="Bound">p</a><a id="11775" class="Symbol">)</a>
+      <a id="11783" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<h2 id="terminology-and-notation">Terminology and notation</h2>
+<p>The symbol <code>∀</code> appears in the statement of associativity to indicate that it holds for all numbers <code>m</code>, <code>n</code>, and <code>p</code>. We refer to <code>∀</code> as the <em>universal quantifier</em>, and it is discussed further in Chapter <a href="../Quantifiers/">Quantifiers</a>.</p>
+<p>Evidence for a universal quantifier is a function. The notations</p>
+<pre><code>+-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)</code></pre>
+<p>and</p>
+<pre><code>+-assoc : ∀ (m : ℕ) → ∀ (n : ℕ) → ∀ (p : ℕ) → (m + n) + p ≡ m + (n + p)</code></pre>
+<p>are equivalent. They differ from a function type such as <code>ℕ → ℕ → ℕ</code> in that variables are associated with each argument type, and the result type may mention (or depend upon) these variables; hence they are called <em>dependent functions</em>.</p>
+<h2 id="our-second-proof-commutativity">Our second proof: commutativity</h2>
+<p>Another important property of addition is that it is <em>commutative</em>, that is, that the order of the operands does not matter:</p>
+<pre><code>m + n ≡ n + m</code></pre>
+<p>The proof requires that we first demonstrate two lemmas.</p>
+<h3 id="the-first-lemma">The first lemma</h3>
+<p>The base case of the definition of addition states that zero is a left-identity:</p>
+<pre><code>zero + n ≡ n</code></pre>
+<p>Our first lemma states that zero is also a right-identity:</p>
+<pre><code>m + zero ≡ m</code></pre>
+Here is the lemma’s statement and proof:
+<pre class="Agda"><a id="+-identityʳ"></a><a id="12985" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#12985" class="Function">+-identityʳ</a> <a id="12997" class="Symbol">:</a> <a id="12999" class="Symbol">∀</a> <a id="13001" class="Symbol">(</a><a id="13002" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13002" class="Bound">m</a> <a id="13004" class="Symbol">:</a> <a id="13006" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="13007" class="Symbol">)</a> <a id="13009" class="Symbol">→</a> <a id="13011" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13002" class="Bound">m</a> <a id="13013" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="13015" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="13020" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="13022" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13002" class="Bound">m</a>
+<a id="13024" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#12985" class="Function">+-identityʳ</a> <a id="13036" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="13041" class="Symbol">=</a>
+  <a id="13045" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="13055" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="13060" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="13062" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a>
+  <a id="13069" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="13077" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a>
+  <a id="13084" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+<a id="13086" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#12985" class="Function">+-identityʳ</a> <a id="13098" class="Symbol">(</a><a id="13099" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="13103" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13103" class="Bound">m</a><a id="13104" class="Symbol">)</a> <a id="13106" class="Symbol">=</a>
+  <a id="13110" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="13120" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="13124" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13103" class="Bound">m</a> <a id="13126" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="13128" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a>
+  <a id="13135" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="13143" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="13147" class="Symbol">(</a><a id="13148" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13103" class="Bound">m</a> <a id="13150" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="13152" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a><a id="13156" class="Symbol">)</a>
+  <a id="13160" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="13163" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="13168" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="13172" class="Symbol">(</a><a id="13173" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#12985" class="Function">+-identityʳ</a> <a id="13185" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13103" class="Bound">m</a><a id="13186" class="Symbol">)</a> <a id="13188" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="13194" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="13198" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#13103" class="Bound">m</a>
+  <a id="13202" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<p>The signature states that we are defining the identifier <code>+-identityʳ</code> which provides evidence for the proposition:</p>
+<pre><code>∀ (m : ℕ) → m + zero ≡ m</code></pre>
+<p>Evidence for the proposition is a function that accepts a natural number, binds it to <code>m</code>, and returns evidence for the corresponding instance of the equation. The proof is by induction on <code>m</code>.</p>
+<p>For the base case, we must show:</p>
+<pre><code>zero + zero ≡ zero</code></pre>
+<p>Simplifying with the base case of addition, this is straightforward.</p>
+<p>For the inductive case, we must show:</p>
+<pre><code>(suc m) + zero = suc m</code></pre>
+<p>Simplifying both sides with the inductive case of addition yields the equation:</p>
+<pre><code>suc (m + zero) = suc m</code></pre>
+<p>This in turn follows by prefacing <code>suc</code> to both sides of the induction hypothesis:</p>
+<pre><code>m + zero ≡ m</code></pre>
+<p>Reading the chain of equations down from the top and up from the bottom takes us to the simplified equation above. The remaining equation has the justification:</p>
+<pre><code>⟨ cong suc (+-identityʳ m) ⟩</code></pre>
+<p>Here, the recursive invocation <code>+-identityʳ m</code> has as its type the induction hypothesis, and <code>cong suc</code> prefaces <code>suc</code> to each side to yield the needed equation. This completes the first lemma.</p>
+<h3 id="the-second-lemma">The second lemma</h3>
+<p>The inductive case of the definition of addition pushes <code>suc</code> on the first argument to the outside:</p>
+<pre><code>suc m + n ≡ suc (m + n)</code></pre>
+<p>Our second lemma does the same for <code>suc</code> on the second argument:</p>
+<pre><code>m + suc n ≡ suc (m + n)</code></pre>
+Here is the lemma’s statement and proof:
+<pre class="Agda"><a id="+-suc"></a><a id="14642" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14642" class="Function">+-suc</a> <a id="14648" class="Symbol">:</a> <a id="14650" class="Symbol">∀</a> <a id="14652" class="Symbol">(</a><a id="14653" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14653" class="Bound">m</a> <a id="14655" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14655" class="Bound">n</a> <a id="14657" class="Symbol">:</a> <a id="14659" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="14660" class="Symbol">)</a> <a id="14662" class="Symbol">→</a> <a id="14664" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14653" class="Bound">m</a> <a id="14666" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14668" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14672" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14655" class="Bound">n</a> <a id="14674" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="14676" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14680" class="Symbol">(</a><a id="14681" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14653" class="Bound">m</a> <a id="14683" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14685" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14655" class="Bound">n</a><a id="14686" class="Symbol">)</a>
+<a id="14688" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14642" class="Function">+-suc</a> <a id="14694" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="14699" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14699" class="Bound">n</a> <a id="14701" class="Symbol">=</a>
+  <a id="14705" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="14715" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="14720" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14722" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14726" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14699" class="Bound">n</a>
+  <a id="14730" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="14738" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14742" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14699" class="Bound">n</a>
+  <a id="14746" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="14754" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14758" class="Symbol">(</a><a id="14759" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="14764" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14766" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14699" class="Bound">n</a><a id="14767" class="Symbol">)</a>
+  <a id="14771" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+<a id="14773" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14642" class="Function">+-suc</a> <a id="14779" class="Symbol">(</a><a id="14780" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14784" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14784" class="Bound">m</a><a id="14785" class="Symbol">)</a> <a id="14787" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14787" class="Bound">n</a> <a id="14789" class="Symbol">=</a>
+  <a id="14793" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="14803" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14807" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14784" class="Bound">m</a> <a id="14809" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14811" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14815" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14787" class="Bound">n</a>
+  <a id="14819" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="14827" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14831" class="Symbol">(</a><a id="14832" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14784" class="Bound">m</a> <a id="14834" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14836" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14840" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14787" class="Bound">n</a><a id="14841" class="Symbol">)</a>
+  <a id="14845" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="14848" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="14853" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14857" class="Symbol">(</a><a id="14858" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14642" class="Function">+-suc</a> <a id="14864" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14784" class="Bound">m</a> <a id="14866" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14787" class="Bound">n</a><a id="14867" class="Symbol">)</a> <a id="14869" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="14875" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14879" class="Symbol">(</a><a id="14880" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14884" class="Symbol">(</a><a id="14885" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14784" class="Bound">m</a> <a id="14887" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14889" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14787" class="Bound">n</a><a id="14890" class="Symbol">))</a>
+  <a id="14895" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="14903" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14907" class="Symbol">(</a><a id="14908" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="14912" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14784" class="Bound">m</a> <a id="14914" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="14916" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14787" class="Bound">n</a><a id="14917" class="Symbol">)</a>
+  <a id="14921" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<p>The signature states that we are defining the identifier <code>+-suc</code> which provides evidence for the proposition:</p>
+<pre><code>∀ (m n : ℕ) → m + suc n ≡ suc (m + n)</code></pre>
+<p>Evidence for the proposition is a function that accepts two natural numbers, binds them to <code>m</code> and <code>n</code>, and returns evidence for the corresponding instance of the equation. The proof is by induction on <code>m</code>.</p>
+<p>For the base case, we must show:</p>
+<pre><code>zero + suc n ≡ suc (zero + n)</code></pre>
+<p>Simplifying with the base case of addition, this is straightforward.</p>
+<p>For the inductive case, we must show:</p>
+<pre><code>suc m + suc n ≡ suc (suc m + n)</code></pre>
+<p>Simplifying both sides with the inductive case of addition yields the equation:</p>
+<pre><code>suc (m + suc n) ≡ suc (suc (m + n))</code></pre>
+<p>This in turn follows by prefacing <code>suc</code> to both sides of the induction hypothesis:</p>
+<pre><code>m + suc n ≡ suc (m + n)</code></pre>
+<p>Reading the chain of equations down from the top and up from the bottom takes us to the simplified equation in the middle. The remaining equation has the justification:</p>
+<pre><code>⟨ cong suc (+-suc m n) ⟩</code></pre>
+<p>Here, the recursive invocation <code>+-suc m n</code> has as its type the induction hypothesis, and <code>cong suc</code> prefaces <code>suc</code> to each side to yield the needed equation. This completes the second lemma.</p>
+<h3 id="the-proposition">The proposition</h3>
+Finally, here is our proposition’s statement and proof:
+<pre class="Agda"><a id="+-comm"></a><a id="16215" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16215" class="Function">+-comm</a> <a id="16222" class="Symbol">:</a> <a id="16224" class="Symbol">∀</a> <a id="16226" class="Symbol">(</a><a id="16227" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16227" class="Bound">m</a> <a id="16229" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16229" class="Bound">n</a> <a id="16231" class="Symbol">:</a> <a id="16233" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="16234" class="Symbol">)</a> <a id="16236" class="Symbol">→</a> <a id="16238" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16227" class="Bound">m</a> <a id="16240" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16242" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16229" class="Bound">n</a> <a id="16244" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="16246" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16229" class="Bound">n</a> <a id="16248" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16250" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16227" class="Bound">m</a>
+<a id="16252" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16215" class="Function">+-comm</a> <a id="16259" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16259" class="Bound">m</a> <a id="16261" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="16266" class="Symbol">=</a>
+  <a id="16270" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="16280" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16259" class="Bound">m</a> <a id="16282" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16284" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a>
+  <a id="16291" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="16294" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#12985" class="Function">+-identityʳ</a> <a id="16306" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16259" class="Bound">m</a> <a id="16308" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="16314" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16259" class="Bound">m</a>
+  <a id="16318" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="16326" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="16331" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16333" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16259" class="Bound">m</a>
+  <a id="16337" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+<a id="16339" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16215" class="Function">+-comm</a> <a id="16346" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a> <a id="16348" class="Symbol">(</a><a id="16349" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="16353" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a><a id="16354" class="Symbol">)</a> <a id="16356" class="Symbol">=</a>
+  <a id="16360" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="16370" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a> <a id="16372" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16374" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="16378" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a>
+  <a id="16382" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="16385" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#14642" class="Function">+-suc</a> <a id="16391" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a> <a id="16393" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a> <a id="16395" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="16401" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="16405" class="Symbol">(</a><a id="16406" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a> <a id="16408" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16410" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a><a id="16411" class="Symbol">)</a>
+  <a id="16415" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="16418" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="16423" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="16427" class="Symbol">(</a><a id="16428" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16215" class="Function">+-comm</a> <a id="16435" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a> <a id="16437" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a><a id="16438" class="Symbol">)</a> <a id="16440" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="16446" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="16450" class="Symbol">(</a><a id="16451" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a> <a id="16453" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16455" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a><a id="16456" class="Symbol">)</a>
+  <a id="16460" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">≡⟨⟩</a>
+    <a id="16468" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="16472" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16353" class="Bound">n</a> <a id="16474" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="16476" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#16346" class="Bound">m</a>
+  <a id="16480" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<p>The first line states that we are defining the identifier <code>+-comm</code> which provides evidence for the proposition:</p>
+<pre><code>∀ (m n : ℕ) → m + n ≡ n + m</code></pre>
+<p>Evidence for the proposition is a function that accepts two natural numbers, binds them to <code>m</code> and <code>n</code>, and returns evidence for the corresponding instance of the equation. The proof is by induction on <code>n</code>. (Not on <code>m</code> this time!)</p>
+<p>For the base case, we must show:</p>
+<pre><code>m + zero ≡ zero + m</code></pre>
+<p>Simplifying both sides with the base case of addition yields the equation:</p>
+<pre><code>m + zero ≡ m</code></pre>
+<p>The remaining equation has the justification <code>⟨ +-identityʳ m ⟩</code>, which invokes the first lemma.</p>
+<p>For the inductive case, we must show:</p>
+<pre><code>m + suc n ≡ suc n + m</code></pre>
+<p>Simplifying both sides with the inductive case of addition yields the equation:</p>
+<pre><code>m + suc n ≡ suc (n + m)</code></pre>
+<p>We show this in two steps. First, we have:</p>
+<pre><code>m + suc n ≡ suc (m + n)</code></pre>
+<p>which is justified by the second lemma, <code>⟨ +-suc m n ⟩</code>. Then we have</p>
+<pre><code>suc (m + n) ≡ suc (n + m)</code></pre>
+<p>which is justified by congruence and the induction hypothesis, <code>⟨ cong suc (+-comm m n) ⟩</code>. This completes the proof.</p>
+<p>Agda requires that identifiers are defined before they are used, so we must present the lemmas before the main proposition, as we have done above. In practice, one will often attempt to prove the main proposition first, and the equations required to do so will suggest what lemmas to prove.</p>
+<h2 name="sections" id="our-first-corollary-rearranging">Our first corollary: rearranging</h2>
+We can apply associativity to rearrange parentheses however we like. Here is an example:
+<pre class="Agda"><a id="+-rearrange"></a><a id="18030" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18030" class="Function">+-rearrange</a> <a id="18042" class="Symbol">:</a> <a id="18044" class="Symbol">∀</a> <a id="18046" class="Symbol">(</a><a id="18047" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18047" class="Bound">m</a> <a id="18049" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18049" class="Bound">n</a> <a id="18051" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18051" class="Bound">p</a> <a id="18053" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18053" class="Bound">q</a> <a id="18055" class="Symbol">:</a> <a id="18057" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="18058" class="Symbol">)</a> <a id="18060" class="Symbol">→</a> <a id="18062" class="Symbol">(</a><a id="18063" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18047" class="Bound">m</a> <a id="18065" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18067" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18049" class="Bound">n</a><a id="18068" class="Symbol">)</a> <a id="18070" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18072" class="Symbol">(</a><a id="18073" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18051" class="Bound">p</a> <a id="18075" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18077" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18053" class="Bound">q</a><a id="18078" class="Symbol">)</a> <a id="18080" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="18082" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18047" class="Bound">m</a> <a id="18084" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18086" class="Symbol">(</a><a id="18087" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18049" class="Bound">n</a> <a id="18089" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18091" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18051" class="Bound">p</a><a id="18092" class="Symbol">)</a> <a id="18094" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18096" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18053" class="Bound">q</a>
+<a id="18098" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18030" class="Function">+-rearrange</a> <a id="18110" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18112" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18114" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a> <a id="18116" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a> <a id="18118" class="Symbol">=</a>
+  <a id="18122" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin</a>
+    <a id="18132" class="Symbol">(</a><a id="18133" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18135" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18137" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a><a id="18138" class="Symbol">)</a> <a id="18140" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18142" class="Symbol">(</a><a id="18143" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a> <a id="18145" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18147" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a><a id="18148" class="Symbol">)</a>
+  <a id="18152" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="18155" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="18163" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18165" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18167" class="Symbol">(</a><a id="18168" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a> <a id="18170" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18172" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a><a id="18173" class="Symbol">)</a> <a id="18175" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="18181" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18183" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18185" class="Symbol">(</a><a id="18186" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18188" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18190" class="Symbol">(</a><a id="18191" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a> <a id="18193" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18195" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a><a id="18196" class="Symbol">))</a>
+  <a id="18201" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="18204" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a> <a id="18209" class="Symbol">(</a><a id="18210" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18212" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+_</a><a id="18214" class="Symbol">)</a> <a id="18216" class="Symbol">(</a><a id="18217" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#980" class="Function">sym</a> <a id="18221" class="Symbol">(</a><a id="18222" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="18230" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18232" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a> <a id="18234" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a><a id="18235" class="Symbol">))</a> <a id="18238" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="18244" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18246" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18248" class="Symbol">((</a><a id="18250" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18252" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18254" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a><a id="18255" class="Symbol">)</a> <a id="18257" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18259" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a><a id="18260" class="Symbol">)</a>
+  <a id="18264" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">≡⟨</a> <a id="18267" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#980" class="Function">sym</a> <a id="18271" class="Symbol">(</a><a id="18272" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#7766" class="Function">+-assoc</a> <a id="18280" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18282" class="Symbol">(</a><a id="18283" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18285" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18287" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a><a id="18288" class="Symbol">)</a> <a id="18290" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a><a id="18291" class="Symbol">)</a> <a id="18293" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">⟩</a>
+    <a id="18299" class="Symbol">(</a><a id="18300" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18110" class="Bound">m</a> <a id="18302" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18304" class="Symbol">(</a><a id="18305" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18112" class="Bound">n</a> <a id="18307" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18309" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18114" class="Bound">p</a><a id="18310" class="Symbol">))</a> <a id="18313" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="18315" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#18116" class="Bound">q</a>
+  <a id="18319" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">∎</a>
+</pre>
+<p>No induction is required, we simply apply associativity twice. A few points are worthy of note.</p>
+<p>First, addition associates to the left, so <code>m + (n + p) + q</code> stands for <code>(m + (n + p)) + q</code>.</p>
+<p>Second, we use <code>sym</code> to interchange the sides of an equation. Proposition <code>+-assoc n p q</code> shifts parentheses from right to left:</p>
+<pre><code>(n + p) + q ≡ n + (p + q)</code></pre>
+<p>To shift them the other way, we use <code>sym (+-assoc n p q)</code>:</p>
+<pre><code>n + (p + q) ≡ (n + p) + q</code></pre>
+<p>In general, if <code>e</code> provides evidence for <code>x ≡ y</code> then <code>sym e</code> provides evidence for <code>y ≡ x</code>.</p>
+<p>Third, Agda supports a variant of the <em>section</em> notation introduced by Richard Bird. We write <code>(x +_)</code> for the function that applied to <code>y</code> returns <code>x + y</code>. Thus, applying the congruence <code>cong (m +_)</code> takes the above equation into:</p>
+<pre><code>m + (n + (p + q)) ≡ m + ((n + p) + q)</code></pre>
+<p>Similarly, we write <code>(_+ x)</code> for the function that applied to <code>y</code> returns <code>y + x</code>; the same works for any infix operator.</p>
+<h2 id="creation-one-last-time">Creation, one last time</h2>
+<p>Returning to the proof of associativity, it may be helpful to view the inductive proof (or, equivalently, the recursive definition) as a creation story. This time we are concerned with judgments asserting associativity:</p>
+<pre><code> -- In the beginning, we know nothing about associativity.</code></pre>
+<p>Now, we apply the rules to all the judgments we know about. The base case tells us that <code>(zero + n) + p ≡ zero + (n + p)</code> for every natural <code>n</code> and <code>p</code>. The inductive case tells us that if <code>(m + n) + p ≡ m + (n + p)</code> (on the day before today) then <code>(suc m + n) + p ≡ suc m + (n + p)</code> (today). We didn’t know any judgments about associativity before today, so that rule doesn’t give us any new judgments:</p>
+<pre><code>-- On the first day, we know about associativity of 0.
+(0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...</code></pre>
+<p>Then we repeat the process, so on the next day we know about all the judgments from the day before, plus any judgments added by the rules. The base case tells us nothing new, but now the inductive case adds more judgments:</p>
+<pre><code>-- On the second day, we know about associativity of 0 and 1.
+(0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
+(1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...</code></pre>
+<p>And we repeat the process again:</p>
+<pre><code>-- On the third day, we know about associativity of 0, 1, and 2.
+(0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
+(1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
+(2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...</code></pre>
+<p>You’ve got the hang of it by now:</p>
+<pre><code>-- On the fourth day, we know about associativity of 0, 1, 2, and 3.
+(0 + 0) + 0 ≡ 0 + (0 + 0)   ...   (0 + 4) + 5 ≡ 0 + (4 + 5)   ...
+(1 + 0) + 0 ≡ 1 + (0 + 0)   ...   (1 + 4) + 5 ≡ 1 + (4 + 5)   ...
+(2 + 0) + 0 ≡ 2 + (0 + 0)   ...   (2 + 4) + 5 ≡ 2 + (4 + 5)   ...
+(3 + 0) + 0 ≡ 3 + (0 + 0)   ...   (3 + 4) + 5 ≡ 3 + (4 + 5)   ...</code></pre>
+<p>The process continues. On the <em>m</em>’th day we will know all the judgments where the first number is less than <em>m</em>.</p>
+<p>There is also a completely finite approach to generating the same equations, which is left as an exercise for the reader.</p>
+<h4 name="finite-plus-assoc" id="exercise-finite--assoc-stretch">Exercise <code>finite-|-assoc</code> (stretch)</h4>
+<p>Write out what is known about associativity of addition on each of the first four days using a finite story of creation, as <a href="../Naturals/#finite-creation">earlier</a>.</p>
+<pre class="Agda"><a id="21723" class="Comment">-- Your code goes here</a>
+</pre>
+<h2 id="associativity-with-rewrite">Associativity with rewrite</h2>
+There is more than one way to skin a cat. Here is a second proof of associativity of addition in Agda, using <code>rewrite</code> rather than chains of equations:
+<pre class="Agda"><a id="+-assoc′"></a><a id="21939" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21939" class="Function">+-assoc′</a> <a id="21948" class="Symbol">:</a> <a id="21950" class="Symbol">∀</a> <a id="21952" class="Symbol">(</a><a id="21953" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21953" class="Bound">m</a> <a id="21955" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21955" class="Bound">n</a> <a id="21957" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21957" class="Bound">p</a> <a id="21959" class="Symbol">:</a> <a id="21961" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="21962" class="Symbol">)</a> <a id="21964" class="Symbol">→</a> <a id="21966" class="Symbol">(</a><a id="21967" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21953" class="Bound">m</a> <a id="21969" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="21971" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21955" class="Bound">n</a><a id="21972" class="Symbol">)</a> <a id="21974" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="21976" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21957" class="Bound">p</a> <a id="21978" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="21980" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21953" class="Bound">m</a> <a id="21982" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="21984" class="Symbol">(</a><a id="21985" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21955" class="Bound">n</a> <a id="21987" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="21989" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21957" class="Bound">p</a><a id="21990" class="Symbol">)</a>
+<a id="21992" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21939" class="Function">+-assoc′</a> <a id="22001" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a>    <a id="22009" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22009" class="Bound">n</a> <a id="22011" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22011" class="Bound">p</a>                          <a id="22038" class="Symbol">=</a>  <a id="22041" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+<a id="22046" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21939" class="Function">+-assoc′</a> <a id="22055" class="Symbol">(</a><a id="22056" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="22060" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22060" class="Bound">m</a><a id="22061" class="Symbol">)</a> <a id="22063" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22063" class="Bound">n</a> <a id="22065" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22065" class="Bound">p</a>  <a id="22068" class="Keyword">rewrite</a> <a id="22076" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#21939" class="Function">+-assoc′</a> <a id="22085" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22060" class="Bound">m</a> <a id="22087" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22063" class="Bound">n</a> <a id="22089" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22065" class="Bound">p</a>  <a id="22092" class="Symbol">=</a>  <a id="22095" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+</pre>
+<p>For the base case, we must show:</p>
+<pre><code>(zero + n) + p ≡ zero + (n + p)</code></pre>
+<p>Simplifying both sides with the base case of addition yields the equation:</p>
+<pre><code>n + p ≡ n + p</code></pre>
+<p>This holds trivially. The proof that a term is equal to itself is written <code>refl</code>.</p>
+<p>For the inductive case, we must show:</p>
+<pre><code>(suc m + n) + p ≡ suc m + (n + p)</code></pre>
+<p>Simplifying both sides with the inductive case of addition yields the equation:</p>
+<pre><code>suc ((m + n) + p) ≡ suc (m + (n + p))</code></pre>
+<p>After rewriting with the inductive hypothesis these two terms are equal, and the proof is again given by <code>refl</code>. Rewriting by a given equation is indicated by the keyword <code>rewrite</code> followed by a proof of that equation. Rewriting avoids not only chains of equations but also the need to invoke <code>cong</code>.</p>
+<h2 id="commutativity-with-rewrite">Commutativity with rewrite</h2>
+Here is a second proof of commutativity of addition, using <code>rewrite</code> rather than chains of equations:
+<pre class="Agda"><a id="+-identity′"></a><a id="22998" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22998" class="Function">+-identity′</a> <a id="23010" class="Symbol">:</a> <a id="23012" class="Symbol">∀</a> <a id="23014" class="Symbol">(</a><a id="23015" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23015" class="Bound">n</a> <a id="23017" class="Symbol">:</a> <a id="23019" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="23020" class="Symbol">)</a> <a id="23022" class="Symbol">→</a> <a id="23024" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23015" class="Bound">n</a> <a id="23026" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="23028" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="23033" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="23035" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23015" class="Bound">n</a>
+<a id="23037" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22998" class="Function">+-identity′</a> <a id="23049" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="23054" class="Symbol">=</a> <a id="23056" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+<a id="23061" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22998" class="Function">+-identity′</a> <a id="23073" class="Symbol">(</a><a id="23074" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="23078" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23078" class="Bound">n</a><a id="23079" class="Symbol">)</a> <a id="23081" class="Keyword">rewrite</a> <a id="23089" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22998" class="Function">+-identity′</a> <a id="23101" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23078" class="Bound">n</a> <a id="23103" class="Symbol">=</a> <a id="23105" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+
+<a id="+-suc′"></a><a id="23111" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23111" class="Function">+-suc′</a> <a id="23118" class="Symbol">:</a> <a id="23120" class="Symbol">∀</a> <a id="23122" class="Symbol">(</a><a id="23123" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23123" class="Bound">m</a> <a id="23125" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23125" class="Bound">n</a> <a id="23127" class="Symbol">:</a> <a id="23129" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="23130" class="Symbol">)</a> <a id="23132" class="Symbol">→</a> <a id="23134" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23123" class="Bound">m</a> <a id="23136" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="23138" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="23142" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23125" class="Bound">n</a> <a id="23144" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="23146" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="23150" class="Symbol">(</a><a id="23151" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23123" class="Bound">m</a> <a id="23153" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="23155" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23125" class="Bound">n</a><a id="23156" class="Symbol">)</a>
+<a id="23158" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23111" class="Function">+-suc′</a> <a id="23165" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="23170" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23170" class="Bound">n</a> <a id="23172" class="Symbol">=</a> <a id="23174" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+<a id="23179" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23111" class="Function">+-suc′</a> <a id="23186" class="Symbol">(</a><a id="23187" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="23191" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23191" class="Bound">m</a><a id="23192" class="Symbol">)</a> <a id="23194" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23194" class="Bound">n</a> <a id="23196" class="Keyword">rewrite</a> <a id="23204" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23111" class="Function">+-suc′</a> <a id="23211" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23191" class="Bound">m</a> <a id="23213" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23194" class="Bound">n</a> <a id="23215" class="Symbol">=</a> <a id="23217" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+
+<a id="+-comm′"></a><a id="23223" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23223" class="Function">+-comm′</a> <a id="23231" class="Symbol">:</a> <a id="23233" class="Symbol">∀</a> <a id="23235" class="Symbol">(</a><a id="23236" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23236" class="Bound">m</a> <a id="23238" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23238" class="Bound">n</a> <a id="23240" class="Symbol">:</a> <a id="23242" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="23243" class="Symbol">)</a> <a id="23245" class="Symbol">→</a> <a id="23247" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23236" class="Bound">m</a> <a id="23249" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="23251" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23238" class="Bound">n</a> <a id="23253" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="23255" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23238" class="Bound">n</a> <a id="23257" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">+</a> <a id="23259" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23236" class="Bound">m</a>
+<a id="23261" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23223" class="Function">+-comm′</a> <a id="23269" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23269" class="Bound">m</a> <a id="23271" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a> <a id="23276" class="Keyword">rewrite</a> <a id="23284" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#22998" class="Function">+-identity′</a> <a id="23296" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23269" class="Bound">m</a> <a id="23298" class="Symbol">=</a> <a id="23300" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+<a id="23305" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23223" class="Function">+-comm′</a> <a id="23313" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23313" class="Bound">m</a> <a id="23315" class="Symbol">(</a><a id="23316" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a> <a id="23320" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23320" class="Bound">n</a><a id="23321" class="Symbol">)</a> <a id="23323" class="Keyword">rewrite</a> <a id="23331" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23111" class="Function">+-suc′</a> <a id="23338" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23313" class="Bound">m</a> <a id="23340" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23320" class="Bound">n</a> <a id="23342" class="Symbol">|</a> <a id="23344" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23223" class="Function">+-comm′</a> <a id="23352" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23313" class="Bound">m</a> <a id="23354" href="plfa.part1.https://agda.github.io/agda-stdlib/v1.3/Induction.html#23320" class="Bound">n</a> <a id="23356" class="Symbol">=</a> <a id="23358" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a>
+</pre>
+<p>In the final line, rewriting with two equations is indicated by separating the two proofs of the relevant equations by a vertical bar; the rewrite on the left is performed before that on the right.</p>
+<h2 id="building-proofs-interactively">Building proofs interactively</h2>
+<p>It is instructive to see how to build the alternative proof of associativity using the interactive features of Agda in Emacs. Begin by typing:</p>
+<pre><code>+-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc′ m n p = ?</code></pre>
+<p>The question mark indicates that you would like Agda to help with filling in that part of the code. If you type <code>C-c C-l</code> (control-c followed by control-l), the question mark will be replaced:</p>
+<pre><code>+-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc′ m n p = { }0</code></pre>
+<p>The empty braces are called a <em>hole</em>, and 0 is a number used for referring to the hole. The hole may display highlighted in green. Emacs will also create a new window at the bottom of the screen displaying the text:</p>
+<pre><code>?0 : ((m + n) + p) ≡ (m + (n + p))</code></pre>
+<p>This indicates that hole 0 is to be filled in with a proof of the stated judgment.</p>
+<p>We wish to prove the proposition by induction on <code>m</code>. Move the cursor into the hole and type <code>C-c C-c</code>. You will be given the prompt:</p>
+<pre><code>pattern variables to case (empty for split on result):</code></pre>
+<p>Typing <code>m</code> will cause a split on that variable, resulting in an update to the code:</p>
+<pre><code>+-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc′ zero n p = { }0
++-assoc′ (suc m) n p = { }1</code></pre>
+<p>There are now two holes, and the window at the bottom tells you what each is required to prove:</p>
+<pre><code>?0 : ((zero + n) + p) ≡ (zero + (n + p))
+?1 : ((suc m + n) + p) ≡ (suc m + (n + p))</code></pre>
+<p>Going into hole 0 and typing <code>C-c C-,</code> will display the text:</p>
+<pre><code>Goal: (n + p) ≡ (n + p)
+————————————————————————————————————————————————————————————
+p : ℕ
+n : ℕ</code></pre>
+<p>This indicates that after simplification the goal for hole 0 is as stated, and that variables <code>p</code> and <code>n</code> of the stated types are available to use in the proof. The proof of the given goal is trivial, and going into the goal and typing <code>C-c C-r</code> will fill it in. Typing <code>C-c C-l</code> renumbers the remaining hole to 0:</p>
+<pre><code>+-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc′ zero n p = refl
++-assoc′ (suc m) n p = { }0</code></pre>
+<p>Going into the new hole 0 and typing <code>C-c C-,</code> will display the text:</p>
+<pre><code>Goal: suc ((m + n) + p) ≡ suc (m + (n + p))
+————————————————————————————————————————————————————————————
+p : ℕ
+n : ℕ
+m : ℕ</code></pre>
+<p>Again, this gives the simplified goal and the available variables. In this case, we need to rewrite by the induction hypothesis, so let’s edit the text accordingly:</p>
+<pre><code>+-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc′ zero n p = refl
++-assoc′ (suc m) n p rewrite +-assoc′ m n p = { }0</code></pre>
+<p>Going into the remaining hole and typing <code>C-c C-,</code> will display the text:</p>
+<pre><code>Goal: suc (m + (n + p)) ≡ suc (m + (n + p))
+————————————————————————————————————————————————————————————
+p : ℕ
+n : ℕ
+m : ℕ</code></pre>
+<p>The proof of the given goal is trivial, and going into the goal and typing <code>C-c C-r</code> will fill it in, completing the proof:</p>
+<pre><code>+-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc′ zero n p = refl
++-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl</code></pre>
+<h4 name="plus-swap" id="exercise--swap-recommended">Exercise <code>+-swap</code> (recommended)</h4>
+<p>Show</p>
+<pre><code>m + (n + p) ≡ n + (m + p)</code></pre>
+<p>for all naturals <code>m</code>, <code>n</code>, and <code>p</code>. No induction is needed, just apply the previous results which show addition is associative and commutative.</p>
+<pre class="Agda"><a id="26902" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 name="times-distrib-plus" id="exercise--distrib--recommended">Exercise <code>*-distrib-+</code> (recommended)</h4>
+<p>Show multiplication distributes over addition, that is,</p>
+<pre><code>(m + n) * p ≡ m * p + n * p</code></pre>
+<p>for all naturals <code>m</code>, <code>n</code>, and <code>p</code>.</p>
+<pre class="Agda"><a id="27131" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 name="times-assoc" id="exercise--assoc-recommended">Exercise <code>*-assoc</code> (recommended)</h4>
+<p>Show multiplication is associative, that is,</p>
+<pre><code>(m * n) * p ≡ m * (n * p)</code></pre>
+<p>for all naturals <code>m</code>, <code>n</code>, and <code>p</code>.</p>
+<pre class="Agda"><a id="27336" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 name="times-comm" id="exercise--comm-practice">Exercise <code>*-comm</code> (practice)</h4>
+<p>Show multiplication is commutative, that is,</p>
+<pre><code>m * n ≡ n * m</code></pre>
+<p>for all naturals <code>m</code> and <code>n</code>. As with commutativity of addition, you will need to formulate and prove suitable lemmas.</p>
+<pre class="Agda"><a id="27608" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 name="zero-monus" id="exercise-0n0-practice">Exercise <code>0∸n≡0</code> (practice)</h4>
+<p>Show</p>
+<pre><code>zero ∸ n ≡ zero</code></pre>
+<p>for all naturals <code>n</code>. Did your proof require induction?</p>
+<pre class="Agda"><a id="27777" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 name="monus-plus-assoc" id="exercise---assoc-practice">Exercise <code>∸-|-assoc</code> (practice)</h4>
+<p>Show that monus associates with addition, that is,</p>
+<pre><code>m ∸ n ∸ p ≡ m ∸ (n + p)</code></pre>
+<p>for all naturals <code>m</code>, <code>n</code>, and <code>p</code>.</p>
+<pre class="Agda"><a id="27990" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise-stretch">Exercise <code>+*^</code> (stretch)</h4>
+<p>Show the following three laws</p>
+<pre><code> m ^ (n + p) ≡ (m ^ n) * (m ^ p)  (^-distribˡ-|-*)
+ (m * n) ^ p ≡ (m ^ p) * (n ^ p)  (^-distribʳ-*)
+ (m ^ n) ^ p ≡ m ^ (n * p)        (^-*-assoc)</code></pre>
+<p>for all <code>m</code>, <code>n</code>, and <code>p</code>.</p>
+<h4 name="Bin-laws" id="exercise-bin-laws-stretch">Exercise <code>Bin-laws</code> (stretch)</h4>
+<p>Recall that Exercise <a href="../Naturals/#Bin">Bin</a> defines a datatype <code>Bin</code> of bitstrings representing natural numbers, and asks you to define functions</p>
+<pre><code>inc   : Bin → Bin
+to    : ℕ → Bin
+from  : Bin → ℕ</code></pre>
+<p>Consider the following laws, where <code>n</code> ranges over naturals and <code>b</code> over bitstrings:</p>
+<pre><code>from (inc b) ≡ suc (from b)
+to (from b) ≡ b
+from (to n) ≡ n</code></pre>
+<p>For each law: if it holds, prove; if not, give a counterexample.</p>
+<pre class="Agda"><a id="28759" class="Comment">-- Your code goes here</a>
+</pre>
+<h2 id="standard-library">Standard library</h2>
+Definitions similar to those in this chapter can be found in the standard library:
+<pre class="Agda"><a id="28896" class="Keyword">import</a> <a id="28903" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html" class="Module">Data.Nat.Properties</a> <a id="28923" class="Keyword">using</a> <a id="28929" class="Symbol">(</a><a id="28930" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12490" class="Function">+-assoc</a><a id="28937" class="Symbol">;</a> <a id="28939" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12646" class="Function">+-identityʳ</a><a id="28950" class="Symbol">;</a> <a id="28952" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12282" class="Function">+-suc</a><a id="28957" class="Symbol">;</a> <a id="28959" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12823" class="Function">+-comm</a><a id="28965" class="Symbol">)</a>
+</pre>
+<h2 id="unicode">Unicode</h2>
+<p>This chapter uses the following unicode:</p>
+<pre><code>∀  U+2200  FOR ALL (\forall, \all)
+ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
+′  U+2032  PRIME (\')
+″  U+2033  DOUBLE PRIME (\')
+‴  U+2034  TRIPLE PRIME (\')
+⁗  U+2057  QUADRUPLE PRIME (\')</code></pre>
+<p>Similar to <code>\r</code>, the command <code>\^r</code> gives access to a variety of superscript rightward arrows, and also a superscript letter <code>r</code>. The command <code>\'</code> gives access to a range of primes (<code>′ ″ ‴ ⁗</code>).</p>
+    </div>
+    <nav class="pager">
+    <ul class="pagination">
+        
+        <li><a class="pagelink" href="../Naturals/">Prev</a></li>
+        <li class="separator">&bullet;</li>
+        
+        
+        <li><a class="pagelink" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/part1/Induction.lagda.md">Source</a></li>
+        <li class="separator">&bullet;</li>
+        
+        
+        <li><a class="pagelink" href="../Relations/">Next</a></li>
+        <li class="separator">&bullet;</li>
+        
+    </ul>
+</nav>
+
+</article>
+
+            </div>
+        </main>
+        <footer class="site-footer h-card">
+    <data class="u-url" href="../"></data>
+    <div class="wrapper">
+        <h2 class="footer-heading">Programming Language Foundations in Agda</h2>
+        
+        
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Philip Wadler</li>
+                    <li>
+                        
+                        <a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a>
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+    
+    <li><a rel="me" href="https://github.com/wadler" title="wadler"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#github"></use></svg>&nbsp;wadler</a></li>
+    
+    
+</ul>
+
+            </div>
+            <div class="footer-col footer-col-3">
+                
+            </div>
+        </div>
+        
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Wen Kokke</li>
+                    <li>
+                        
+                        <a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a>
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+    
+    <li><a rel="me" href="https://github.com/wenkokke" title="wenkokke"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#github"></use></svg>&nbsp;wenkokke</a></li>
+    
+    
+    <li><a rel="me" href="https://twitter.com/wenkokke" title="wenkokke"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#twitter"></use></svg>&nbsp;wenkokke</a></li>
+    
+</ul>
+
+            </div>
+            <div class="footer-col footer-col-3">
+                
+            </div>
+        </div>
+        
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Jeremy G. Siek</li>
+                    <li>
+                        
+                        <a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a>
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+    
+    <li><a rel="me" href="https://github.com/jsiek" title="jsiek"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#github"></use></svg>&nbsp;jsiek</a></li>
+    
+    
+    <li><a rel="me" href="https://twitter.com/jeremysiek" title="jeremysiek"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#twitter"></use></svg>&nbsp;jeremysiek</a></li>
+    
+</ul>
+
+            </div>
+            <div class="footer-col footer-col-3">
+                
+            </div>
+        </div>
+        
+        
+        This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+    </div>
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../../../public/css/style.css">
+  
+  <title>Programming Language Foundations in Agda – Assignment2</title>
+  
+  
+  
+</head>
+
+    <body>
+        <header class="site-header">
+    <div class="wrapper">
+        <a class="site-title" href="../../../">Programming Language Foundations in Agda</a>
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="../../../">The Book</a>
+                <a class="page-link" href="../../../Announcements/">Announcements</a>
+                <a class="page-link" href="../../../GettingStarted/">Getting Started</a>
+                <a class="page-link" href="../../../Citing/">Citing</a>
+                <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper">
+                <article class="post">
+    <nav class="pager">
+    <ul class="pagination">
+        
+        
+        <li><a class="pagelink" href="https://github.com/plfa/plfa.github.io/blob/dev/courses/tspl/2019/Assignment2.lagda.md">Source</a></li>
+        <li class="separator">&bullet;</li>
+        
+        
+    </ul>
+</nav>
+
+    <header class="post-header">
+        <h1 class="post-title">Assignment2: TSPL Assignment 2</h1>
+    </header>
+    <div class="post-content">
+        <pre class="Agda"><a id="112" class="Keyword">module</a> <a id="119" href="Assignment2.html" class="Module">Assignment2</a> <a id="131" class="Keyword">where</a>
+</pre>
+<h2 id="your-name-and-email-goes-here">YOUR NAME AND EMAIL GOES HERE</h2>
+<h2 id="introduction">Introduction</h2>
+<p>You must do <em>all</em> the exercises labelled “(recommended)”.</p>
+<p>Exercises labelled “(stretch)” are there to provide an extra challenge. You don’t need to do all of these, but should attempt at least a few.</p>
+<p>Exercises labelled “(practice)” are included for those who want extra practice.</p>
+<p>Submit your homework using the “submit” command.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">submit</span> tspl cw2 Assignment2.lagda.md</span></code></pre></div>
+<p>Please ensure your files execute correctly under Agda!</p>
+<h2 id="good-scholarly-practice.">Good Scholarly Practice.</h2>
+<p>Please remember the University requirement as regards all assessed work. Details about this can be found at:</p>
+<blockquote>
+<p><a href="http://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct">http://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct</a></p>
+</blockquote>
+<p>Furthermore, you are required to take reasonable measures to protect your assessed work from unauthorised access. For example, if you put any such work on a public repository then you must set access permissions appropriately (generally permitting access only to yourself, or your group in the case of group practicals).</p>
+<h2 id="imports">Imports</h2>
+<pre class="Agda"><a id="1247" class="Keyword">import</a> <a id="1254" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="1292" class="Symbol">as</a> <a id="1295" class="Module">Eq</a>
+<a id="1298" class="Keyword">open</a> <a id="1303" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="1306" class="Keyword">using</a> <a id="1312" class="Symbol">(</a><a id="1313" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">_≡_</a><a id="1316" class="Symbol">;</a> <a id="1318" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#208" class="InductiveConstructor">refl</a><a id="1322" class="Symbol">;</a> <a id="1324" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#1131" class="Function">cong</a><a id="1328" class="Symbol">;</a> <a id="1330" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#980" class="Function">sym</a><a id="1333" class="Symbol">)</a>
+<a id="1335" class="Keyword">open</a> <a id="1340" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2419" class="Module">Eq.≡-Reasoning</a> <a id="1355" class="Keyword">using</a> <a id="1361" class="Symbol">(</a><a id="1362" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2517" class="Function Operator">begin_</a><a id="1368" class="Symbol">;</a> <a id="1370" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2575" class="Function Operator">_≡⟨⟩_</a><a id="1375" class="Symbol">;</a> <a id="1377" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2634" class="Function">step-≡</a><a id="1383" class="Symbol">;</a> <a id="1385" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Binary.PropositionalEquality.Core.html#2816" class="Function Operator">_∎</a><a id="1387" class="Symbol">)</a>
+<a id="1389" class="Keyword">open</a> <a id="1394" class="Keyword">import</a> <a id="1401" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.html" class="Module">Data.Nat</a> <a id="1410" class="Keyword">using</a> <a id="1416" class="Symbol">(</a><a id="1417" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="1418" class="Symbol">;</a> <a id="1420" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a><a id="1424" class="Symbol">;</a> <a id="1426" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a><a id="1429" class="Symbol">;</a> <a id="1431" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#325" class="Primitive Operator">_+_</a><a id="1434" class="Symbol">;</a> <a id="1436" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#528" class="Primitive Operator">_*_</a><a id="1439" class="Symbol">;</a> <a id="1441" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Base.html#1429" class="Primitive Operator">_∸_</a><a id="1444" class="Symbol">;</a> <a id="1446" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Base.html#937" class="Datatype Operator">_≤_</a><a id="1449" class="Symbol">;</a> <a id="1451" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Base.html#960" class="InductiveConstructor">z≤n</a><a id="1454" class="Symbol">;</a> <a id="1456" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Base.html#1002" class="InductiveConstructor">s≤s</a><a id="1459" class="Symbol">)</a>
+<a id="1461" class="Keyword">open</a> <a id="1466" class="Keyword">import</a> <a id="1473" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html" class="Module">Data.Nat.Properties</a> <a id="1493" class="Keyword">using</a> <a id="1499" class="Symbol">(</a><a id="1500" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12490" class="Function">+-assoc</a><a id="1507" class="Symbol">;</a> <a id="1509" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12646" class="Function">+-identityʳ</a><a id="1520" class="Symbol">;</a> <a id="1522" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12282" class="Function">+-suc</a><a id="1527" class="Symbol">;</a> <a id="1529" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#12823" class="Function">+-comm</a><a id="1535" class="Symbol">;</a>
+  <a id="1539" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#3725" class="Function">≤-refl</a><a id="1545" class="Symbol">;</a> <a id="1547" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#3908" class="Function">≤-trans</a><a id="1554" class="Symbol">;</a> <a id="1556" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#3775" class="Function">≤-antisym</a><a id="1565" class="Symbol">;</a> <a id="1567" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#4020" class="Function">≤-total</a><a id="1574" class="Symbol">;</a> <a id="1576" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#17410" class="Function">+-monoʳ-≤</a><a id="1585" class="Symbol">;</a> <a id="1587" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#17320" class="Function">+-monoˡ-≤</a><a id="1596" class="Symbol">;</a> <a id="1598" href="https://agda.github.io/agda-stdlib/v1.3/Data.Nat.Properties.html#17164" class="Function">+-mono-≤</a><a id="1606" class="Symbol">)</a>
+<a id="1608" class="Keyword">open</a> <a id="1613" class="Keyword">import</a> <a id="1620" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html" class="Module">Data.Product</a> <a id="1633" class="Keyword">using</a> <a id="1639" class="Symbol">(</a><a id="1640" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">_×_</a><a id="1643" class="Symbol">;</a> <a id="1645" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Sigma.html#252" class="Field">proj₁</a><a id="1650" class="Symbol">;</a> <a id="1652" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Sigma.html#264" class="Field">proj₂</a><a id="1657" class="Symbol">)</a> <a id="1659" class="Keyword">renaming</a> <a id="1668" class="Symbol">(</a><a id="1669" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">_,_</a> <a id="1673" class="Symbol">to</a> <a id="Builtin.Sigma._,_"></a><a id="1676" href="Assignment2.html#1676" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="1681" class="Symbol">)</a>
+<a id="1683" class="Keyword">open</a> <a id="1688" class="Keyword">import</a> <a id="1695" href="https://agda.github.io/agda-stdlib/v1.3/Data.Unit.html" class="Module">Data.Unit</a> <a id="1705" class="Keyword">using</a> <a id="1711" class="Symbol">(</a><a id="1712" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Unit.html#164" class="Record">⊤</a><a id="1713" class="Symbol">;</a> <a id="1715" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Unit.html#201" class="InductiveConstructor">tt</a><a id="1717" class="Symbol">)</a>
+<a id="1719" class="Keyword">open</a> <a id="1724" class="Keyword">import</a> <a id="1731" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.html" class="Module">Data.Sum</a> <a id="1740" class="Keyword">using</a> <a id="1746" class="Symbol">(</a><a id="1747" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">_⊎_</a><a id="1750" class="Symbol">;</a> <a id="1752" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#778" class="InductiveConstructor">inj₁</a><a id="1756" class="Symbol">;</a> <a id="1758" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#803" class="InductiveConstructor">inj₂</a><a id="1762" class="Symbol">)</a> <a id="1764" class="Keyword">renaming</a> <a id="1773" class="Symbol">(</a><a id="1774" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#914" class="Function Operator">[_,_]</a> <a id="1780" class="Symbol">to</a> <a id="Sum.Base.[_,_]"></a><a id="1783" href="Assignment2.html#1783" class="Function Operator">case-⊎</a><a id="1789" class="Symbol">)</a>
+<a id="1791" class="Keyword">open</a> <a id="1796" class="Keyword">import</a> <a id="1803" href="https://agda.github.io/agda-stdlib/v1.3/Data.Empty.html" class="Module">Data.Empty</a> <a id="1814" class="Keyword">using</a> <a id="1820" class="Symbol">(</a><a id="1821" href="https://agda.github.io/agda-stdlib/v1.3/Data.Empty.html#526" class="Datatype">⊥</a><a id="1822" class="Symbol">;</a> <a id="1824" href="https://agda.github.io/agda-stdlib/v1.3/Data.Empty.html#628" class="Function">⊥-elim</a><a id="1830" class="Symbol">)</a>
+<a id="1832" class="Keyword">open</a> <a id="1837" class="Keyword">import</a> <a id="1844" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html" class="Module">Data.Bool.Base</a> <a id="1859" class="Keyword">using</a> <a id="1865" class="Symbol">(</a><a id="1866" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Bool.html#163" class="Datatype">Bool</a><a id="1870" class="Symbol">;</a> <a id="1872" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Bool.html#188" class="InductiveConstructor">true</a><a id="1876" class="Symbol">;</a> <a id="1878" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a><a id="1883" class="Symbol">;</a> <a id="1885" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#1451" class="Function">T</a><a id="1886" class="Symbol">;</a> <a id="1888" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#986" class="Function Operator">_∧_</a><a id="1891" class="Symbol">;</a> <a id="1893" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#1044" class="Function Operator">_∨_</a><a id="1896" class="Symbol">;</a> <a id="1898" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#932" class="Function">not</a><a id="1901" class="Symbol">)</a>
+<a id="1903" class="Keyword">open</a> <a id="1908" class="Keyword">import</a> <a id="1915" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="1932" class="Keyword">using</a> <a id="1938" class="Symbol">(</a><a id="1939" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#653" class="Function Operator">¬_</a><a id="1941" class="Symbol">;</a> <a id="1943" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a><a id="1946" class="Symbol">;</a> <a id="1948" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1645" class="InductiveConstructor">yes</a><a id="1951" class="Symbol">;</a> <a id="1953" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1682" class="InductiveConstructor">no</a><a id="1955" class="Symbol">)</a>
+<a id="1957" class="Keyword">open</a> <a id="1962" class="Keyword">import</a> <a id="1969" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.html" class="Module">Relation.Nullary.Decidable</a> <a id="1996" class="Keyword">using</a> <a id="2002" class="Symbol">(</a><a id="2003" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊_⌋</a><a id="2006" class="Symbol">;</a> <a id="2008" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1484" class="Function">toWitness</a><a id="2017" class="Symbol">;</a> <a id="2019" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1653" class="Function">fromWitness</a><a id="2030" class="Symbol">)</a>
+<a id="2032" class="Keyword">open</a> <a id="2037" class="Keyword">import</a> <a id="2044" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Negation.html" class="Module">Relation.Nullary.Negation</a> <a id="2070" class="Keyword">using</a> <a id="2076" class="Symbol">(</a><a id="2077" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Negation.html#1286" class="Function">¬?</a><a id="2079" class="Symbol">)</a>
+<a id="2081" class="Keyword">open</a> <a id="2086" class="Keyword">import</a> <a id="2093" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Product.html" class="Module">Relation.Nullary.Product</a> <a id="2118" class="Keyword">using</a> <a id="2124" class="Symbol">(</a><a id="2125" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Product.html#904" class="Function Operator">_×-dec_</a><a id="2132" class="Symbol">)</a>
+<a id="2134" class="Keyword">open</a> <a id="2139" class="Keyword">import</a> <a id="2146" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Sum.html" class="Module">Relation.Nullary.Sum</a> <a id="2167" class="Keyword">using</a> <a id="2173" class="Symbol">(</a><a id="2174" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Sum.html#946" class="Function Operator">_⊎-dec_</a><a id="2181" class="Symbol">)</a>
+<a id="2183" class="Keyword">open</a> <a id="2188" class="Keyword">import</a> <a id="2195" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Negation.html" class="Module">Relation.Nullary.Negation</a> <a id="2221" class="Keyword">using</a> <a id="2227" class="Symbol">(</a><a id="2228" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Negation.html#929" class="Function">contraposition</a><a id="2242" class="Symbol">)</a>
+<a id="2244" class="Keyword">open</a> <a id="2249" class="Keyword">import</a> <a id="2256" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html" class="Module">Data.Product</a> <a id="2269" class="Keyword">using</a> <a id="2275" class="Symbol">(</a><a id="2276" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Sigma.html#166" class="Record">Σ</a><a id="2277" class="Symbol">;</a> <a id="2279" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">_,_</a><a id="2282" class="Symbol">;</a> <a id="2284" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1369" class="Function">∃</a><a id="2285" class="Symbol">;</a> <a id="2287" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#916" class="Function">Σ-syntax</a><a id="2295" class="Symbol">;</a> <a id="2297" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃-syntax</a><a id="2305" class="Symbol">)</a>
+<a id="2307" class="Keyword">open</a> <a id="2312" class="Keyword">import</a> <a id="2319" href="../../../Relations/" class="Module">plfa.part1.Relations</a> <a id="2340" class="Keyword">using</a> <a id="2346" class="Symbol">(</a><a id="2347" href="../../../Relations/#18881" class="Datatype Operator">_&lt;_</a><a id="2350" class="Symbol">;</a> <a id="2352" href="../../../Relations/#18908" class="InductiveConstructor">z&lt;s</a><a id="2355" class="Symbol">;</a> <a id="2357" href="../../../Relations/#18965" class="InductiveConstructor">s&lt;s</a><a id="2360" class="Symbol">)</a>
+<a id="2362" class="Keyword">open</a> <a id="2367" class="Keyword">import</a> <a id="2374" href="../../../Isomorphism/" class="Module">plfa.part1.Isomorphism</a> <a id="2397" class="Keyword">using</a> <a id="2403" class="Symbol">(</a><a id="2404" href="../../../Isomorphism/#4333" class="Record Operator">_≃_</a><a id="2407" class="Symbol">;</a> <a id="2409" href="../../../Isomorphism/#7057" class="Function">≃-sym</a><a id="2414" class="Symbol">;</a> <a id="2416" href="../../../Isomorphism/#7382" class="Function">≃-trans</a><a id="2423" class="Symbol">;</a> <a id="2425" href="../../../Isomorphism/#9231" class="Record Operator">_≲_</a><a id="2428" class="Symbol">;</a> <a id="2430" href="../../../Isomorphism/#2670" class="Postulate">extensionality</a><a id="2444" class="Symbol">)</a>
+<a id="2446" class="Keyword">open</a> <a id="2451" href="../../../Isomorphism/#8466" class="Module">plfa.part1.Isomorphism.≃-Reasoning</a>
+</pre>
+<h2 id="equality">Equality</h2>
+<h2 id="imports-1">Imports</h2>
+<p>This chapter has no imports. Every chapter in this book, and nearly every module in the Agda standard library, imports equality. Since we define equality here, any import would create a conflict.</p>
+<h2 id="equality-1">Equality</h2>
+<h4 id="exercise--reasoning-stretch">Exercise <code>≤-Reasoning</code> (stretch)</h4>
+<p>The proof of monotonicity from Chapter <a href="../../../Relations/">Relations</a> can be written in a more readable form by using an analogue of our notation for <code>≡-Reasoning</code>. Define <code>≤-Reasoning</code> analogously, and use it to write out an alternative proof that addition is monotonic with regard to inequality. Rewrite all of <code>+-monoˡ-≤</code>, <code>+-monoʳ-≤</code>, and <code>+-mono-≤</code>.</p>
+<pre class="Agda"><a id="3124" class="Comment">-- Your code goes here</a>
+</pre>
+<h2 id="isomorphism">Isomorphism</h2>
+<h4 id="exercise--implies--practice">Exercise <code>≃-implies-≲</code> (practice)</h4>
+Show that every isomorphism implies an embedding.
+<pre class="Agda"><a id="3262" class="Keyword">postulate</a>
+  <a id="≃-implies-≲"></a><a id="3274" href="Assignment2.html#3274" class="Postulate">≃-implies-≲</a> <a id="3286" class="Symbol">:</a> <a id="3288" class="Symbol">∀</a> <a id="3290" class="Symbol">{</a><a id="3291" href="Assignment2.html#3291" class="Bound">A</a> <a id="3293" href="Assignment2.html#3293" class="Bound">B</a> <a id="3295" class="Symbol">:</a> <a id="3297" class="PrimitiveType">Set</a><a id="3300" class="Symbol">}</a>
+    <a id="3306" class="Symbol">→</a> <a id="3308" href="Assignment2.html#3291" class="Bound">A</a> <a id="3310" href="../../../Isomorphism/#4333" class="Record Operator">≃</a> <a id="3312" href="Assignment2.html#3293" class="Bound">B</a>
+      <a id="3320" class="Comment">-----</a>
+    <a id="3330" class="Symbol">→</a> <a id="3332" href="Assignment2.html#3291" class="Bound">A</a> <a id="3334" href="../../../Isomorphism/#9231" class="Record Operator">≲</a> <a id="3336" href="Assignment2.html#3293" class="Bound">B</a>
+</pre>
+<pre class="Agda"><a id="3347" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="iff">Exercise <code>_⇔_</code> (practice)</h4>
+Define equivalence of propositions (also known as “if and only if”) as follows:
+<pre class="Agda"><a id="3498" class="Keyword">record</a> <a id="_⇔_"></a><a id="3505" href="Assignment2.html#3505" class="Record Operator">_⇔_</a> <a id="3509" class="Symbol">(</a><a id="3510" href="Assignment2.html#3510" class="Bound">A</a> <a id="3512" href="Assignment2.html#3512" class="Bound">B</a> <a id="3514" class="Symbol">:</a> <a id="3516" class="PrimitiveType">Set</a><a id="3519" class="Symbol">)</a> <a id="3521" class="Symbol">:</a> <a id="3523" class="PrimitiveType">Set</a> <a id="3527" class="Keyword">where</a>
+  <a id="3535" class="Keyword">field</a>
+    <a id="_⇔_.to"></a><a id="3545" href="Assignment2.html#3545" class="Field">to</a>   <a id="3550" class="Symbol">:</a> <a id="3552" href="Assignment2.html#3510" class="Bound">A</a> <a id="3554" class="Symbol">→</a> <a id="3556" href="Assignment2.html#3512" class="Bound">B</a>
+    <a id="_⇔_.from"></a><a id="3562" href="Assignment2.html#3562" class="Field">from</a> <a id="3567" class="Symbol">:</a> <a id="3569" href="Assignment2.html#3512" class="Bound">B</a> <a id="3571" class="Symbol">→</a> <a id="3573" href="Assignment2.html#3510" class="Bound">A</a>
+</pre>
+<p>Show that equivalence is reflexive, symmetric, and transitive.</p>
+<pre class="Agda"><a id="3647" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="Bin-embedding">Exercise <code>Bin-embedding</code> (stretch)</h4>
+<p>Recall that Exercises <a href="../../../Naturals/#Bin">Bin</a> and <a href="../../../Induction/#Bin-laws">Bin-laws</a> define a datatype <code>Bin</code> of bitstrings representing natural numbers, and asks you to define the following functions and predicates:</p>
+<pre><code>to : ℕ → Bin
+from : Bin → ℕ</code></pre>
+<p>which satisfy the following property:</p>
+<pre><code>from (to n) ≡ n</code></pre>
+Using the above, establish that there is an embedding of <code>ℕ</code> into <code>Bin</code>.
+<pre class="Agda"><a id="4120" class="Comment">-- Your code goes here</a>
+</pre>
+<p>Why do <code>to</code> and <code>from</code> not form an isomorphism?</p>
+<h2 id="connectives">Connectives</h2>
+<h4 id="exercise-recommended">Exercise <code>⇔≃×</code> (recommended)</h4>
+<p>Show that <code>A ⇔ B</code> as defined <a href="../../../Isomorphism/#iff">earlier</a> is isomorphic to <code>(A → B) × (B → A)</code>.</p>
+<pre class="Agda"><a id="4349" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--comm-recommended">Exercise <code>⊎-comm</code> (recommended)</h4>
+<p>Show sum is commutative up to isomorphism.</p>
+<pre class="Agda"><a id="4463" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--assoc-practice">Exercise <code>⊎-assoc</code> (practice)</h4>
+<p>Show sum is associative up to isomorphism.</p>
+<pre class="Agda"><a id="4575" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--identityˡ-recommended">Exercise <code>⊥-identityˡ</code> (recommended)</h4>
+<p>Show empty is the left identity of sums up to isomorphism.</p>
+<pre class="Agda"><a id="4710" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--identityʳ-practice">Exercise <code>⊥-identityʳ</code> (practice)</h4>
+<p>Show empty is the right identity of sums up to isomorphism.</p>
+<pre class="Agda"><a id="4843" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--weak--recommended">Exercise <code>⊎-weak-×</code> (recommended)</h4>
+Show that the following property holds:
+<pre class="Agda"><a id="4955" class="Keyword">postulate</a>
+  <a id="⊎-weak-×"></a><a id="4967" href="Assignment2.html#4967" class="Postulate">⊎-weak-×</a> <a id="4976" class="Symbol">:</a> <a id="4978" class="Symbol">∀</a> <a id="4980" class="Symbol">{</a><a id="4981" href="Assignment2.html#4981" class="Bound">A</a> <a id="4983" href="Assignment2.html#4983" class="Bound">B</a> <a id="4985" href="Assignment2.html#4985" class="Bound">C</a> <a id="4987" class="Symbol">:</a> <a id="4989" class="PrimitiveType">Set</a><a id="4992" class="Symbol">}</a> <a id="4994" class="Symbol">→</a> <a id="4996" class="Symbol">(</a><a id="4997" href="Assignment2.html#4981" class="Bound">A</a> <a id="4999" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="5001" href="Assignment2.html#4983" class="Bound">B</a><a id="5002" class="Symbol">)</a> <a id="5004" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="5006" href="Assignment2.html#4985" class="Bound">C</a> <a id="5008" class="Symbol">→</a> <a id="5010" href="Assignment2.html#4981" class="Bound">A</a> <a id="5012" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="5014" class="Symbol">(</a><a id="5015" href="Assignment2.html#4983" class="Bound">B</a> <a id="5017" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="5019" href="Assignment2.html#4985" class="Bound">C</a><a id="5020" class="Symbol">)</a>
+</pre>
+<p>This is called a <em>weak distributive law</em>. Give the corresponding distributive law, and explain how it relates to the weak version.</p>
+<pre class="Agda"><a id="5162" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--implies--practice-1">Exercise <code>⊎×-implies-×⊎</code> (practice)</h4>
+Show that a disjunct of conjuncts implies a conjunct of disjuncts:
+<pre class="Agda"><a id="5304" class="Keyword">postulate</a>
+  <a id="⊎×-implies-×⊎"></a><a id="5316" href="Assignment2.html#5316" class="Postulate">⊎×-implies-×⊎</a> <a id="5330" class="Symbol">:</a> <a id="5332" class="Symbol">∀</a> <a id="5334" class="Symbol">{</a><a id="5335" href="Assignment2.html#5335" class="Bound">A</a> <a id="5337" href="Assignment2.html#5337" class="Bound">B</a> <a id="5339" href="Assignment2.html#5339" class="Bound">C</a> <a id="5341" href="Assignment2.html#5341" class="Bound">D</a> <a id="5343" class="Symbol">:</a> <a id="5345" class="PrimitiveType">Set</a><a id="5348" class="Symbol">}</a> <a id="5350" class="Symbol">→</a> <a id="5352" class="Symbol">(</a><a id="5353" href="Assignment2.html#5335" class="Bound">A</a> <a id="5355" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="5357" href="Assignment2.html#5337" class="Bound">B</a><a id="5358" class="Symbol">)</a> <a id="5360" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="5362" class="Symbol">(</a><a id="5363" href="Assignment2.html#5339" class="Bound">C</a> <a id="5365" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="5367" href="Assignment2.html#5341" class="Bound">D</a><a id="5368" class="Symbol">)</a> <a id="5370" class="Symbol">→</a> <a id="5372" class="Symbol">(</a><a id="5373" href="Assignment2.html#5335" class="Bound">A</a> <a id="5375" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="5377" href="Assignment2.html#5339" class="Bound">C</a><a id="5378" class="Symbol">)</a> <a id="5380" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="5382" class="Symbol">(</a><a id="5383" href="Assignment2.html#5337" class="Bound">B</a> <a id="5385" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="5387" href="Assignment2.html#5341" class="Bound">D</a><a id="5388" class="Symbol">)</a>
+</pre>
+<p>Does the converse hold? If so, prove; if not, give a counterexample.</p>
+<pre class="Agda"><a id="5468" class="Comment">-- Your code goes here</a>
+</pre>
+<h2 id="negation">Negation</h2>
+<h4 id="exercise--irreflexive-recommended">Exercise <code>&lt;-irreflexive</code> (recommended)</h4>
+<p>Using negation, show that <a href="../../../Relations/#strict-inequality">strict inequality</a> is irreflexive, that is, <code>n &lt; n</code> holds for no <code>n</code>.</p>
+<pre class="Agda"><a id="5687" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise-trichotomy-practice">Exercise <code>trichotomy</code> (practice)</h4>
+<p>Show that strict inequality satisfies <a href="../../../Relations/#trichotomy">trichotomy</a>, that is, for any naturals <code>m</code> and <code>n</code> exactly one of the following holds:</p>
+<ul>
+<li><code>m &lt; n</code></li>
+<li><code>m ≡ n</code></li>
+<li><code>m &gt; n</code></li>
+</ul>
+<p>Here “exactly one” means that not only one of the three must hold, but that when one holds the negation of the other two must also hold.</p>
+<pre class="Agda"><a id="6079" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--dual--recommended">Exercise <code>⊎-dual-×</code> (recommended)</h4>
+<p>Show that conjunction, disjunction, and negation are related by a version of De Morgan’s Law.</p>
+<pre><code>¬ (A ⊎ B) ≃ (¬ A) × (¬ B)</code></pre>
+<p>This result is an easy consequence of something we’ve proved previously.</p>
+<pre class="Agda"><a id="6351" class="Comment">-- Your code goes here</a>
+</pre>
+<p>Do we also have the following?</p>
+<pre><code>¬ (A × B) ≃ (¬ A) ⊎ (¬ B)</code></pre>
+<p>If so, prove; if not, can you give a relation weaker than isomorphism that relates the two sides?</p>
+<h4 id="exercise-classical-stretch">Exercise <code>Classical</code> (stretch)</h4>
+<p>Consider the following principles:</p>
+<ul>
+<li>Excluded Middle: <code>A ⊎ ¬ A</code>, for all <code>A</code></li>
+<li>Double Negation Elimination: <code>¬ ¬ A → A</code>, for all <code>A</code></li>
+<li>Peirce’s Law: <code>((A → B) → A) → A</code>, for all <code>A</code> and <code>B</code>.</li>
+<li>Implication as disjunction: <code>(A → B) → ¬ A ⊎ B</code>, for all <code>A</code> and <code>B</code>.</li>
+<li>De Morgan: <code>¬ (¬ A × ¬ B) → A ⊎ B</code>, for all <code>A</code> and <code>B</code>.</li>
+</ul>
+<p>Show that each of these implies all the others.</p>
+<pre class="Agda"><a id="6966" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise-stable-stretch">Exercise <code>Stable</code> (stretch)</h4>
+Say that a formula is <em>stable</em> if double negation elimination holds for it:
+<pre class="Agda"><a id="Stable"></a><a id="7109" href="Assignment2.html#7109" class="Function">Stable</a> <a id="7116" class="Symbol">:</a> <a id="7118" class="PrimitiveType">Set</a> <a id="7122" class="Symbol">→</a> <a id="7124" class="PrimitiveType">Set</a>
+<a id="7128" href="Assignment2.html#7109" class="Function">Stable</a> <a id="7135" href="Assignment2.html#7135" class="Bound">A</a> <a id="7137" class="Symbol">=</a> <a id="7139" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#653" class="Function Operator">¬</a> <a id="7141" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#653" class="Function Operator">¬</a> <a id="7143" href="Assignment2.html#7135" class="Bound">A</a> <a id="7145" class="Symbol">→</a> <a id="7147" href="Assignment2.html#7135" class="Bound">A</a>
+</pre>
+<p>Show that any negated formula is stable, and that the conjunction of two stable formulas is stable.</p>
+<pre class="Agda"><a id="7258" class="Comment">-- Your code goes here</a>
+</pre>
+<h2 id="quantifiers">Quantifiers</h2>
+<h4 id="exercise--distrib--recommended">Exercise <code>∀-distrib-×</code> (recommended)</h4>
+Show that universals distribute over conjunction:
+<pre class="Agda"><a id="7400" class="Keyword">postulate</a>
+  <a id="∀-distrib-×"></a><a id="7412" href="Assignment2.html#7412" class="Postulate">∀-distrib-×</a> <a id="7424" class="Symbol">:</a> <a id="7426" class="Symbol">∀</a> <a id="7428" class="Symbol">{</a><a id="7429" href="Assignment2.html#7429" class="Bound">A</a> <a id="7431" class="Symbol">:</a> <a id="7433" class="PrimitiveType">Set</a><a id="7436" class="Symbol">}</a> <a id="7438" class="Symbol">{</a><a id="7439" href="Assignment2.html#7439" class="Bound">B</a> <a id="7441" href="Assignment2.html#7441" class="Bound">C</a> <a id="7443" class="Symbol">:</a> <a id="7445" href="Assignment2.html#7429" class="Bound">A</a> <a id="7447" class="Symbol">→</a> <a id="7449" class="PrimitiveType">Set</a><a id="7452" class="Symbol">}</a> <a id="7454" class="Symbol">→</a>
+    <a id="7460" class="Symbol">(∀</a> <a id="7463" class="Symbol">(</a><a id="7464" href="Assignment2.html#7464" class="Bound">x</a> <a id="7466" class="Symbol">:</a> <a id="7468" href="Assignment2.html#7429" class="Bound">A</a><a id="7469" class="Symbol">)</a> <a id="7471" class="Symbol">→</a> <a id="7473" href="Assignment2.html#7439" class="Bound">B</a> <a id="7475" href="Assignment2.html#7464" class="Bound">x</a> <a id="7477" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="7479" href="Assignment2.html#7441" class="Bound">C</a> <a id="7481" href="Assignment2.html#7464" class="Bound">x</a><a id="7482" class="Symbol">)</a> <a id="7484" href="../../../Isomorphism/#4333" class="Record Operator">≃</a> <a id="7486" class="Symbol">(∀</a> <a id="7489" class="Symbol">(</a><a id="7490" href="Assignment2.html#7490" class="Bound">x</a> <a id="7492" class="Symbol">:</a> <a id="7494" href="Assignment2.html#7429" class="Bound">A</a><a id="7495" class="Symbol">)</a> <a id="7497" class="Symbol">→</a> <a id="7499" href="Assignment2.html#7439" class="Bound">B</a> <a id="7501" href="Assignment2.html#7490" class="Bound">x</a><a id="7502" class="Symbol">)</a> <a id="7504" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="7506" class="Symbol">(∀</a> <a id="7509" class="Symbol">(</a><a id="7510" href="Assignment2.html#7510" class="Bound">x</a> <a id="7512" class="Symbol">:</a> <a id="7514" href="Assignment2.html#7429" class="Bound">A</a><a id="7515" class="Symbol">)</a> <a id="7517" class="Symbol">→</a> <a id="7519" href="Assignment2.html#7441" class="Bound">C</a> <a id="7521" href="Assignment2.html#7510" class="Bound">x</a><a id="7522" class="Symbol">)</a>
+</pre>
+<p>Compare this with the result (<code>→-distrib-×</code>) in Chapter <a href="../../../Connectives/">Connectives</a>.</p>
+<h4 id="exercise--implies--practice-2">Exercise <code>⊎∀-implies-∀⊎</code> (practice)</h4>
+Show that a disjunction of universals implies a universal of disjunctions:
+<pre class="Agda"><a id="7737" class="Keyword">postulate</a>
+  <a id="⊎∀-implies-∀⊎"></a><a id="7749" href="Assignment2.html#7749" class="Postulate">⊎∀-implies-∀⊎</a> <a id="7763" class="Symbol">:</a> <a id="7765" class="Symbol">∀</a> <a id="7767" class="Symbol">{</a><a id="7768" href="Assignment2.html#7768" class="Bound">A</a> <a id="7770" class="Symbol">:</a> <a id="7772" class="PrimitiveType">Set</a><a id="7775" class="Symbol">}</a> <a id="7777" class="Symbol">{</a><a id="7778" href="Assignment2.html#7778" class="Bound">B</a> <a id="7780" href="Assignment2.html#7780" class="Bound">C</a> <a id="7782" class="Symbol">:</a> <a id="7784" href="Assignment2.html#7768" class="Bound">A</a> <a id="7786" class="Symbol">→</a> <a id="7788" class="PrimitiveType">Set</a><a id="7791" class="Symbol">}</a> <a id="7793" class="Symbol">→</a>
+    <a id="7799" class="Symbol">(∀</a> <a id="7802" class="Symbol">(</a><a id="7803" href="Assignment2.html#7803" class="Bound">x</a> <a id="7805" class="Symbol">:</a> <a id="7807" href="Assignment2.html#7768" class="Bound">A</a><a id="7808" class="Symbol">)</a> <a id="7810" class="Symbol">→</a> <a id="7812" href="Assignment2.html#7778" class="Bound">B</a> <a id="7814" href="Assignment2.html#7803" class="Bound">x</a><a id="7815" class="Symbol">)</a> <a id="7817" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="7819" class="Symbol">(∀</a> <a id="7822" class="Symbol">(</a><a id="7823" href="Assignment2.html#7823" class="Bound">x</a> <a id="7825" class="Symbol">:</a> <a id="7827" href="Assignment2.html#7768" class="Bound">A</a><a id="7828" class="Symbol">)</a> <a id="7830" class="Symbol">→</a> <a id="7832" href="Assignment2.html#7780" class="Bound">C</a> <a id="7834" href="Assignment2.html#7823" class="Bound">x</a><a id="7835" class="Symbol">)</a>  <a id="7838" class="Symbol">→</a>  <a id="7841" class="Symbol">∀</a> <a id="7843" class="Symbol">(</a><a id="7844" href="Assignment2.html#7844" class="Bound">x</a> <a id="7846" class="Symbol">:</a> <a id="7848" href="Assignment2.html#7768" class="Bound">A</a><a id="7849" class="Symbol">)</a> <a id="7851" class="Symbol">→</a> <a id="7853" href="Assignment2.html#7778" class="Bound">B</a> <a id="7855" href="Assignment2.html#7844" class="Bound">x</a> <a id="7857" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="7859" href="Assignment2.html#7780" class="Bound">C</a> <a id="7861" href="Assignment2.html#7844" class="Bound">x</a>
+</pre>
+<p>Does the converse hold? If so, prove; if not, explain why.</p>
+<h4 id="exercise---practice">Exercise <code>∀-×</code> (practice)</h4>
+Consider the following type.
+<pre class="Agda"><a id="7993" class="Keyword">data</a> <a id="Tri"></a><a id="7998" href="Assignment2.html#7998" class="Datatype">Tri</a> <a id="8002" class="Symbol">:</a> <a id="8004" class="PrimitiveType">Set</a> <a id="8008" class="Keyword">where</a>
+  <a id="Tri.aa"></a><a id="8016" href="Assignment2.html#8016" class="InductiveConstructor">aa</a> <a id="8019" class="Symbol">:</a> <a id="8021" href="Assignment2.html#7998" class="Datatype">Tri</a>
+  <a id="Tri.bb"></a><a id="8027" href="Assignment2.html#8027" class="InductiveConstructor">bb</a> <a id="8030" class="Symbol">:</a> <a id="8032" href="Assignment2.html#7998" class="Datatype">Tri</a>
+  <a id="Tri.cc"></a><a id="8038" href="Assignment2.html#8038" class="InductiveConstructor">cc</a> <a id="8041" class="Symbol">:</a> <a id="8043" href="Assignment2.html#7998" class="Datatype">Tri</a>
+</pre>
+<p>Let <code>B</code> be a type indexed by <code>Tri</code>, that is <code>B : Tri → Set</code>. Show that <code>∀ (x : Tri) → B x</code> is isomorphic to <code>B aa × B bb × B cc</code>.</p>
+<h4 id="exercise--distrib--recommended-1">Exercise <code>∃-distrib-⊎</code> (recommended)</h4>
+Show that existentials distribute over disjunction:
+<pre class="Agda"><a id="8282" class="Keyword">postulate</a>
+  <a id="∃-distrib-⊎"></a><a id="8294" href="Assignment2.html#8294" class="Postulate">∃-distrib-⊎</a> <a id="8306" class="Symbol">:</a> <a id="8308" class="Symbol">∀</a> <a id="8310" class="Symbol">{</a><a id="8311" href="Assignment2.html#8311" class="Bound">A</a> <a id="8313" class="Symbol">:</a> <a id="8315" class="PrimitiveType">Set</a><a id="8318" class="Symbol">}</a> <a id="8320" class="Symbol">{</a><a id="8321" href="Assignment2.html#8321" class="Bound">B</a> <a id="8323" href="Assignment2.html#8323" class="Bound">C</a> <a id="8325" class="Symbol">:</a> <a id="8327" href="Assignment2.html#8311" class="Bound">A</a> <a id="8329" class="Symbol">→</a> <a id="8331" class="PrimitiveType">Set</a><a id="8334" class="Symbol">}</a> <a id="8336" class="Symbol">→</a>
+    <a id="8342" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="8345" href="Assignment2.html#8345" class="Bound">x</a> <a id="8347" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="8349" class="Symbol">(</a><a id="8350" href="Assignment2.html#8321" class="Bound">B</a> <a id="8352" href="Assignment2.html#8345" class="Bound">x</a> <a id="8354" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="8356" href="Assignment2.html#8323" class="Bound">C</a> <a id="8358" href="Assignment2.html#8345" class="Bound">x</a><a id="8359" class="Symbol">)</a> <a id="8361" href="../../../Isomorphism/#4333" class="Record Operator">≃</a> <a id="8363" class="Symbol">(</a><a id="8364" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="8367" href="Assignment2.html#8367" class="Bound">x</a> <a id="8369" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="8371" href="Assignment2.html#8321" class="Bound">B</a> <a id="8373" href="Assignment2.html#8367" class="Bound">x</a><a id="8374" class="Symbol">)</a> <a id="8376" href="https://agda.github.io/agda-stdlib/v1.3/Data.Sum.Base.html#728" class="Datatype Operator">⊎</a> <a id="8378" class="Symbol">(</a><a id="8379" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="8382" href="Assignment2.html#8382" class="Bound">x</a> <a id="8384" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="8386" href="Assignment2.html#8323" class="Bound">C</a> <a id="8388" href="Assignment2.html#8382" class="Bound">x</a><a id="8389" class="Symbol">)</a>
+</pre>
+<h4 id="exercise--implies--practice-3">Exercise <code>∃×-implies-×∃</code> (practice)</h4>
+Show that an existential of conjunctions implies a conjunction of existentials:
+<pre class="Agda"><a id="8523" class="Keyword">postulate</a>
+  <a id="∃×-implies-×∃"></a><a id="8535" href="Assignment2.html#8535" class="Postulate">∃×-implies-×∃</a> <a id="8549" class="Symbol">:</a> <a id="8551" class="Symbol">∀</a> <a id="8553" class="Symbol">{</a><a id="8554" href="Assignment2.html#8554" class="Bound">A</a> <a id="8556" class="Symbol">:</a> <a id="8558" class="PrimitiveType">Set</a><a id="8561" class="Symbol">}</a> <a id="8563" class="Symbol">{</a><a id="8564" href="Assignment2.html#8564" class="Bound">B</a> <a id="8566" href="Assignment2.html#8566" class="Bound">C</a> <a id="8568" class="Symbol">:</a> <a id="8570" href="Assignment2.html#8554" class="Bound">A</a> <a id="8572" class="Symbol">→</a> <a id="8574" class="PrimitiveType">Set</a><a id="8577" class="Symbol">}</a> <a id="8579" class="Symbol">→</a>
+    <a id="8585" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="8588" href="Assignment2.html#8588" class="Bound">x</a> <a id="8590" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="8592" class="Symbol">(</a><a id="8593" href="Assignment2.html#8564" class="Bound">B</a> <a id="8595" href="Assignment2.html#8588" class="Bound">x</a> <a id="8597" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="8599" href="Assignment2.html#8566" class="Bound">C</a> <a id="8601" href="Assignment2.html#8588" class="Bound">x</a><a id="8602" class="Symbol">)</a> <a id="8604" class="Symbol">→</a> <a id="8606" class="Symbol">(</a><a id="8607" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="8610" href="Assignment2.html#8610" class="Bound">x</a> <a id="8612" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="8614" href="Assignment2.html#8564" class="Bound">B</a> <a id="8616" href="Assignment2.html#8610" class="Bound">x</a><a id="8617" class="Symbol">)</a> <a id="8619" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1167" class="Function Operator">×</a> <a id="8621" class="Symbol">(</a><a id="8622" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="8625" href="Assignment2.html#8625" class="Bound">x</a> <a id="8627" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="8629" href="Assignment2.html#8566" class="Bound">C</a> <a id="8631" href="Assignment2.html#8625" class="Bound">x</a><a id="8632" class="Symbol">)</a>
+</pre>
+<p>Does the converse hold? If so, prove; if not, explain why.</p>
+<h4 id="exercise---practice-1">Exercise <code>∃-⊎</code> (practice)</h4>
+<p>Let <code>Tri</code> and <code>B</code> be as in Exercise <code>∀-×</code>. Show that <code>∃[ x ] B x</code> is isomorphic to <code>B aa ⊎ B bb ⊎ B cc</code>.</p>
+<h4 id="exercise--even-odd-practice">Exercise <code>∃-even-odd</code> (practice)</h4>
+<p>How do the proofs become more difficult if we replace <code>m * 2</code> and <code>1 + m * 2</code> by <code>2 * m</code> and <code>2 * m + 1</code>? Rewrite the proofs of <code>∃-even</code> and <code>∃-odd</code> when restated in this way.</p>
+<pre class="Agda"><a id="9059" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise----practice">Exercise <code>∃-|-≤</code> (practice)</h4>
+<p>Show that <code>y ≤ z</code> holds if and only if there exists a <code>x</code> such that <code>x + y ≡ z</code>.</p>
+<pre class="Agda"><a id="9207" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise--implies--recommended">Exercise <code>∃¬-implies-¬∀</code> (recommended)</h4>
+Show that existential of a negation implies negation of a universal:
+<pre class="Agda"><a id="9354" class="Keyword">postulate</a>
+  <a id="∃¬-implies-¬∀"></a><a id="9366" href="Assignment2.html#9366" class="Postulate">∃¬-implies-¬∀</a> <a id="9380" class="Symbol">:</a> <a id="9382" class="Symbol">∀</a> <a id="9384" class="Symbol">{</a><a id="9385" href="Assignment2.html#9385" class="Bound">A</a> <a id="9387" class="Symbol">:</a> <a id="9389" class="PrimitiveType">Set</a><a id="9392" class="Symbol">}</a> <a id="9394" class="Symbol">{</a><a id="9395" href="Assignment2.html#9395" class="Bound">B</a> <a id="9397" class="Symbol">:</a> <a id="9399" href="Assignment2.html#9385" class="Bound">A</a> <a id="9401" class="Symbol">→</a> <a id="9403" class="PrimitiveType">Set</a><a id="9406" class="Symbol">}</a>
+    <a id="9412" class="Symbol">→</a> <a id="9414" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">∃[</a> <a id="9417" href="Assignment2.html#9417" class="Bound">x</a> <a id="9419" href="https://agda.github.io/agda-stdlib/v1.3/Data.Product.html#1788" class="Function">]</a> <a id="9421" class="Symbol">(</a><a id="9422" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#653" class="Function Operator">¬</a> <a id="9424" href="Assignment2.html#9395" class="Bound">B</a> <a id="9426" href="Assignment2.html#9417" class="Bound">x</a><a id="9427" class="Symbol">)</a>
+      <a id="9435" class="Comment">--------------</a>
+    <a id="9454" class="Symbol">→</a> <a id="9456" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#653" class="Function Operator">¬</a> <a id="9458" class="Symbol">(∀</a> <a id="9461" href="Assignment2.html#9461" class="Bound">x</a> <a id="9463" class="Symbol">→</a> <a id="9465" href="Assignment2.html#9395" class="Bound">B</a> <a id="9467" href="Assignment2.html#9461" class="Bound">x</a><a id="9468" class="Symbol">)</a>
+</pre>
+<p>Does the converse hold? If so, prove; if not, explain why.</p>
+<h4 id="Bin-isomorphism">Exercise <code>Bin-isomorphism</code> (stretch)</h4>
+<p>Recall that Exercises <a href="../../../Naturals/#Bin">Bin</a>, <a href="../../../Induction/#Bin-laws">Bin-laws</a>, and <a href="../../../Relations/#Bin-predicates">Bin-predicates</a> define a datatype <code>Bin</code> of bitstrings representing natural numbers, and asks you to define the following functions and predicates:</p>
+<pre><code>to   : ℕ → Bin
+from : Bin → ℕ
+Can  : Bin → Set</code></pre>
+<p>And to establish the following properties:</p>
+<pre><code>from (to n) ≡ n
+
+----------
+Can (to n)
+
+Can b
+---------------
+to (from b) ≡ b</code></pre>
+<p>Using the above, establish that there is an isomorphism between <code>ℕ</code> and <code>∃[ b ](Can b)</code>.</p>
+<pre class="Agda"><a id="10158" class="Comment">-- Your code goes here</a>
+</pre>
+<h2 id="decidable">Decidable</h2>
+<h4 id="exercise-__-recommended">Exercise <code>_&lt;?_</code> (recommended)</h4>
+Analogous to the function above, define a function to decide strict inequality:
+<pre class="Agda"><a id="10321" class="Keyword">postulate</a>
+  <a id="_&lt;?_"></a><a id="10333" href="Assignment2.html#10333" class="Postulate Operator">_&lt;?_</a> <a id="10338" class="Symbol">:</a> <a id="10340" class="Symbol">∀</a> <a id="10342" class="Symbol">(</a><a id="10343" href="Assignment2.html#10343" class="Bound">m</a> <a id="10345" href="Assignment2.html#10345" class="Bound">n</a> <a id="10347" class="Symbol">:</a> <a id="10349" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="10350" class="Symbol">)</a> <a id="10352" class="Symbol">→</a> <a id="10354" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10358" class="Symbol">(</a><a id="10359" href="Assignment2.html#10343" class="Bound">m</a> <a id="10361" href="../../../Relations/#18881" class="Datatype Operator">&lt;</a> <a id="10363" href="Assignment2.html#10345" class="Bound">n</a><a id="10364" class="Symbol">)</a>
+</pre>
+<pre class="Agda"><a id="10375" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise-_ℕ_-practice">Exercise <code>_≡ℕ?_</code> (practice)</h4>
+Define a function to decide whether two naturals are equal:
+<pre class="Agda"><a id="10501" class="Keyword">postulate</a>
+  <a id="_≡ℕ?_"></a><a id="10513" href="Assignment2.html#10513" class="Postulate Operator">_≡ℕ?_</a> <a id="10519" class="Symbol">:</a> <a id="10521" class="Symbol">∀</a> <a id="10523" class="Symbol">(</a><a id="10524" href="Assignment2.html#10524" class="Bound">m</a> <a id="10526" href="Assignment2.html#10526" class="Bound">n</a> <a id="10528" class="Symbol">:</a> <a id="10530" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="10531" class="Symbol">)</a> <a id="10533" class="Symbol">→</a> <a id="10535" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10539" class="Symbol">(</a><a id="10540" href="Assignment2.html#10524" class="Bound">m</a> <a id="10542" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="10544" href="Assignment2.html#10526" class="Bound">n</a><a id="10545" class="Symbol">)</a>
+</pre>
+<pre class="Agda"><a id="10556" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="exercise-erasure-practice">Exercise <code>erasure</code> (practice)</h4>
+Show that erasure relates corresponding boolean and decidable operations:
+<pre class="Agda"><a id="10699" class="Keyword">postulate</a>
+  <a id="∧-×"></a><a id="10711" href="Assignment2.html#10711" class="Postulate">∧-×</a> <a id="10715" class="Symbol">:</a> <a id="10717" class="Symbol">∀</a> <a id="10719" class="Symbol">{</a><a id="10720" href="Assignment2.html#10720" class="Bound">A</a> <a id="10722" href="Assignment2.html#10722" class="Bound">B</a> <a id="10724" class="Symbol">:</a> <a id="10726" class="PrimitiveType">Set</a><a id="10729" class="Symbol">}</a> <a id="10731" class="Symbol">(</a><a id="10732" href="Assignment2.html#10732" class="Bound">x</a> <a id="10734" class="Symbol">:</a> <a id="10736" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10740" href="Assignment2.html#10720" class="Bound">A</a><a id="10741" class="Symbol">)</a> <a id="10743" class="Symbol">(</a><a id="10744" href="Assignment2.html#10744" class="Bound">y</a> <a id="10746" class="Symbol">:</a> <a id="10748" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10752" href="Assignment2.html#10722" class="Bound">B</a><a id="10753" class="Symbol">)</a> <a id="10755" class="Symbol">→</a> <a id="10757" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10759" href="Assignment2.html#10732" class="Bound">x</a> <a id="10761" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="10763" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#986" class="Function Operator">∧</a> <a id="10765" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10767" href="Assignment2.html#10744" class="Bound">y</a> <a id="10769" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="10771" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="10773" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10775" href="Assignment2.html#10732" class="Bound">x</a> <a id="10777" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Product.html#904" class="Function Operator">×-dec</a> <a id="10783" href="Assignment2.html#10744" class="Bound">y</a> <a id="10785" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a>
+  <a id="∨-⊎"></a><a id="10789" href="Assignment2.html#10789" class="Postulate">∨-⊎</a> <a id="10793" class="Symbol">:</a> <a id="10795" class="Symbol">∀</a> <a id="10797" class="Symbol">{</a><a id="10798" href="Assignment2.html#10798" class="Bound">A</a> <a id="10800" href="Assignment2.html#10800" class="Bound">B</a> <a id="10802" class="Symbol">:</a> <a id="10804" class="PrimitiveType">Set</a><a id="10807" class="Symbol">}</a> <a id="10809" class="Symbol">(</a><a id="10810" href="Assignment2.html#10810" class="Bound">x</a> <a id="10812" class="Symbol">:</a> <a id="10814" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10818" href="Assignment2.html#10798" class="Bound">A</a><a id="10819" class="Symbol">)</a> <a id="10821" class="Symbol">(</a><a id="10822" href="Assignment2.html#10822" class="Bound">y</a> <a id="10824" class="Symbol">:</a> <a id="10826" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10830" href="Assignment2.html#10800" class="Bound">B</a><a id="10831" class="Symbol">)</a> <a id="10833" class="Symbol">→</a> <a id="10835" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10837" href="Assignment2.html#10810" class="Bound">x</a> <a id="10839" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="10841" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#1044" class="Function Operator">∨</a> <a id="10843" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10845" href="Assignment2.html#10822" class="Bound">y</a> <a id="10847" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="10849" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="10851" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10853" href="Assignment2.html#10810" class="Bound">x</a> <a id="10855" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Sum.html#946" class="Function Operator">⊎-dec</a> <a id="10861" href="Assignment2.html#10822" class="Bound">y</a> <a id="10863" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a>
+  <a id="not-¬"></a><a id="10867" href="Assignment2.html#10867" class="Postulate">not-¬</a> <a id="10873" class="Symbol">:</a> <a id="10875" class="Symbol">∀</a> <a id="10877" class="Symbol">{</a><a id="10878" href="Assignment2.html#10878" class="Bound">A</a> <a id="10880" class="Symbol">:</a> <a id="10882" class="PrimitiveType">Set</a><a id="10885" class="Symbol">}</a> <a id="10887" class="Symbol">(</a><a id="10888" href="Assignment2.html#10888" class="Bound">x</a> <a id="10890" class="Symbol">:</a> <a id="10892" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="10896" href="Assignment2.html#10878" class="Bound">A</a><a id="10897" class="Symbol">)</a> <a id="10899" class="Symbol">→</a> <a id="10901" href="https://agda.github.io/agda-stdlib/v1.3/Data.Bool.Base.html#932" class="Function">not</a> <a id="10905" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10907" href="Assignment2.html#10888" class="Bound">x</a> <a id="10909" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="10911" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="10913" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="10915" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Negation.html#1286" class="Function">¬?</a> <a id="10918" href="Assignment2.html#10888" class="Bound">x</a> <a id="10920" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a>
+</pre>
+<h4 id="exercise-iff-erasure-recommended">Exercise <code>iff-erasure</code> (recommended)</h4>
+Give analogues of the <code>_⇔_</code> operation from Chapter <a href="../../../Isomorphism/#iff">Isomorphism</a>, operation on booleans and decidables, and also show the corresponding erasure:
+<pre class="Agda"><a id="11138" class="Keyword">postulate</a>
+  <a id="_iff_"></a><a id="11150" href="Assignment2.html#11150" class="Postulate Operator">_iff_</a> <a id="11156" class="Symbol">:</a> <a id="11158" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Bool.html#163" class="Datatype">Bool</a> <a id="11163" class="Symbol">→</a> <a id="11165" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Bool.html#163" class="Datatype">Bool</a> <a id="11170" class="Symbol">→</a> <a id="11172" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
+  <a id="_⇔-dec_"></a><a id="11179" href="Assignment2.html#11179" class="Postulate Operator">_⇔-dec_</a> <a id="11187" class="Symbol">:</a> <a id="11189" class="Symbol">∀</a> <a id="11191" class="Symbol">{</a><a id="11192" href="Assignment2.html#11192" class="Bound">A</a> <a id="11194" href="Assignment2.html#11194" class="Bound">B</a> <a id="11196" class="Symbol">:</a> <a id="11198" class="PrimitiveType">Set</a><a id="11201" class="Symbol">}</a> <a id="11203" class="Symbol">→</a> <a id="11205" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="11209" href="Assignment2.html#11192" class="Bound">A</a> <a id="11211" class="Symbol">→</a> <a id="11213" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="11217" href="Assignment2.html#11194" class="Bound">B</a> <a id="11219" class="Symbol">→</a> <a id="11221" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="11225" class="Symbol">(</a><a id="11226" href="Assignment2.html#11192" class="Bound">A</a> <a id="11228" href="Assignment2.html#3505" class="Record Operator">⇔</a> <a id="11230" href="Assignment2.html#11194" class="Bound">B</a><a id="11231" class="Symbol">)</a>
+  <a id="iff-⇔"></a><a id="11235" href="Assignment2.html#11235" class="Postulate">iff-⇔</a> <a id="11241" class="Symbol">:</a> <a id="11243" class="Symbol">∀</a> <a id="11245" class="Symbol">{</a><a id="11246" href="Assignment2.html#11246" class="Bound">A</a> <a id="11248" href="Assignment2.html#11248" class="Bound">B</a> <a id="11250" class="Symbol">:</a> <a id="11252" class="PrimitiveType">Set</a><a id="11255" class="Symbol">}</a> <a id="11257" class="Symbol">(</a><a id="11258" href="Assignment2.html#11258" class="Bound">x</a> <a id="11260" class="Symbol">:</a> <a id="11262" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="11266" href="Assignment2.html#11246" class="Bound">A</a><a id="11267" class="Symbol">)</a> <a id="11269" class="Symbol">(</a><a id="11270" href="Assignment2.html#11270" class="Bound">y</a> <a id="11272" class="Symbol">:</a> <a id="11274" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.html#1508" class="Record">Dec</a> <a id="11278" href="Assignment2.html#11248" class="Bound">B</a><a id="11279" class="Symbol">)</a> <a id="11281" class="Symbol">→</a> <a id="11283" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="11285" href="Assignment2.html#11258" class="Bound">x</a> <a id="11287" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="11289" href="Assignment2.html#11150" class="Postulate Operator">iff</a> <a id="11293" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="11295" href="Assignment2.html#11270" class="Bound">y</a> <a id="11297" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a> <a id="11299" href="https://agda.github.io/agda-stdlib/v1.3/Agda.Builtin.Equality.html#151" class="Datatype Operator">≡</a> <a id="11301" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌊</a> <a id="11303" href="Assignment2.html#11258" class="Bound">x</a> <a id="11305" href="Assignment2.html#11179" class="Postulate Operator">⇔-dec</a> <a id="11311" href="Assignment2.html#11270" class="Bound">y</a> <a id="11313" href="https://agda.github.io/agda-stdlib/v1.3/Relation.Nullary.Decidable.Core.html#1312" class="Function Operator">⌋</a>
+</pre>
+<pre class="Agda"><a id="11324" class="Comment">-- Your code goes here</a>
+</pre>
+    </div>
+    <nav class="pager">
+    <ul class="pagination">
+        
+        
+        <li><a class="pagelink" href="https://github.com/plfa/plfa.github.io/blob/dev/courses/tspl/2019/Assignment2.lagda.md">Source</a></li>
+        <li class="separator">&bullet;</li>
+        
+        
+    </ul>
+</nav>
+
+</article>
+
+            </div>
+        </main>
+        <footer class="site-footer h-card">
+    <data class="u-url" href="../../../"></data>
+    <div class="wrapper">
+        <h2 class="footer-heading">Programming Language Foundations in Agda</h2>
+        
+        
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Philip Wadler</li>
+                    <li>
+                        
+                        <a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a>
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+    
+    <li><a rel="me" href="https://github.com/wadler" title="wadler"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#github"></use></svg>&nbsp;wadler</a></li>
+    
+    
+</ul>
+
+            </div>
+            <div class="footer-col footer-col-3">
+                
+            </div>
+        </div>
+        
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Wen Kokke</li>
+                    <li>
+                        
+                        <a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a>
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+    
+    <li><a rel="me" href="https://github.com/wenkokke" title="wenkokke"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#github"></use></svg>&nbsp;wenkokke</a></li>
+    
+    
+    <li><a rel="me" href="https://twitter.com/wenkokke" title="wenkokke"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#twitter"></use></svg>&nbsp;wenkokke</a></li>
+    
+</ul>
+
+            </div>
+            <div class="footer-col footer-col-3">
+                
+            </div>
+        </div>
+        
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Jeremy G. Siek</li>
+                    <li>
+                        
+                        <a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a>
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+    
+    <li><a rel="me" href="https://github.com/jsiek" title="jsiek"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#github"></use></svg>&nbsp;jsiek</a></li>
+    
+    
+    <li><a rel="me" href="https://twitter.com/jeremysiek" title="jeremysiek"><svg class="svg-icon grey"><use xlink:href="/public/minima-social-icons.svg#twitter"></use></svg>&nbsp;jeremysiek</a></li>
+    
+</ul>
+
+            </div>
+            <div class="footer-col footer-col-3">
+                
+            </div>
+        </div>
+        
+        
+        This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+    </div>
+</footer>
+
+    </body>
+</html>
