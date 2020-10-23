@@ -46,8 +46,9 @@ James Chapman, James McKinna, and many others.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _<_; _≤?_; z≤n; s≤s)
 open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 ## Introduction
@@ -412,14 +413,21 @@ The final term represents the Church numeral two.
 
 ### Abbreviating de Bruijn indices
 
+We define a helper function that computes the length of a context,
+which will be useful in making sure an index is within context bounds:
+```
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
+```
+
 We can use a natural number to select a type from a context:
 ```
-lookup : Context → ℕ → Type
-lookup (Γ , A) zero     =  A
-lookup (Γ , _) (suc n)  =  lookup Γ n
-lookup ∅       _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
+lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 ```
+
 We intend to apply the function only when the natural is
 shorter than the length of the context, which we indicate by
 postulating an `impossible` term, just as we did
@@ -428,19 +436,29 @@ postulating an `impossible` term, just as we did
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
 ```
-count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
-count {Γ , _} zero     =  Z
-count {Γ , _} (suc n)  =  S (count n)
-count {∅}     _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count {_ , _} {zero}    (s≤s z≤n)  =  Z
+count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 ```
-This requires the same trick as before.
 
 We can then introduce a convenient abbreviation for variables:
 ```
-#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
-# n  =  ` count n
+#_ : ∀ {Γ}
+   → (n : ℕ)
+   → {n<?length : True (suc n ≤? length Γ)}
+     --------------------------------
+   → Γ ⊢ lookup (toWitness n<?length)
+#_ n {n<?length}  =  ` count (toWitness n<?length)
 ```
+Function `#_` takes an implicit argument `n<?length` that provides
+evidence for `n` to be within the context's bounds. Recall that
+[`True`]({{ site.baseurl }}/Decidable/#proof-by-reflection),
+[`_≤?_`]({{ site.baseurl }}/Decidable/#the-best-of-both-worlds) and
+[`toWitness`]({{ site.baseurl }}/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
+are defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The
+type of `n<?length` guards against invoking `#_` on an `n` that is out
+of context bounds. Finally, in the return type `n<?length` is
+converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
@@ -692,10 +710,10 @@ variables it is easy to define the special case of
 substitution for one free variable:
 ```
 _[_] : ∀ {Γ A B}
-        → Γ , B ⊢ A
-        → Γ ⊢ B
-          ---------
-        → Γ ⊢ A
+  → Γ , B ⊢ A
+  → Γ ⊢ B
+    ---------
+  → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   where
   σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
@@ -736,8 +754,8 @@ variable to avoid capture:
   `` ƛ "z" ⇒ ` "z" · (` "x" · `zero) ``
 
 Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
-`"y"` has type `` `ℕ ``, and the free `"x"` also has type ``
-`ℕ ⇒ `ℕ ``.  Here is the example formalised:
+`"y"` has type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
+Here is the example formalised:
 ```
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
@@ -756,7 +774,7 @@ The logician Haskell Curry observed that getting the
 definition of substitution right can be a tricky business.  It
 can be even trickier when using de Bruijn indices, which can
 often be hard to decipher.  Under the current approach, any
-definition of substitution must, of necessity, preserves
+definition of substitution must, of necessity, preserve
 types.  While this makes the definition more involved, it
 means that once it is done the hardest work is out of the way.
 And combining definition with proof makes it harder for errors
@@ -1066,9 +1084,9 @@ Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
 ```
-data Steps : ∀ {A} → ∅ ⊢ A → Set where
+data Steps {A} : ∅ ⊢ A → Set where
 
-  steps : ∀ {A} {L N : ∅ ⊢ A}
+  steps : {L N : ∅ ⊢ A}
     → L —↠ N
     → Finished N
       ----------
@@ -1359,7 +1377,7 @@ number of lines of code is as follows:
 
     Lambda                      216
     Properties                  235
-    DeBruijn                    275
+    DeBruijn                    276
 
 The relation between the two approaches approximates the
 golden ratio: extrinsically-typed terms

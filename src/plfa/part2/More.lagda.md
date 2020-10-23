@@ -206,7 +206,7 @@ construct to a calculus without the construct.
 Here is a function to swap the components of a pair:
 
     swap× : ∅ ⊢ A `× B ⇒ B `× A
-    swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
+    swap× = ƛ z ⇒ `⟨ `proj₂ z , `proj₁ z ⟩
 
 
 ## Alternative formulation of products

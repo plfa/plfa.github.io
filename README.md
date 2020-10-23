@@ -27,6 +27,7 @@ PLFA is tested against specific versions of Agda and the standard library, which
 
 There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out-of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.
 
+
 ### On macOS: Install the XCode Command Line Tools
 On macOS, you’ll need to install the [XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:
 ```bash
@@ -198,12 +199,12 @@ To load and type-check the file, use [`C-c C-l`][agda-docs-emacs-notation].
 
 Agda is edited interactively, using [“holes”][agda-docs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using “C-c C-l”, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
 
-    C-c C-c x    split on variable x
-    C-c C-space  fill in hole
-    C-c C-r      refine with constructor
-    C-c C-a      automatically fill in hole
-    C-c C-,      goal type and context
-    C-c C-.      goal type, context, and inferred type
+  - `C-c C-c x`: **c**ase split on variable x
+  - `C-c C-space`: fill in hole
+  - `C-c C-r`: **r**efine with constructor
+  - `C-c C-a`: **a**utomatically fill in hole
+  - `C-c C-,`: goal type and context
+  - `C-c C-.`: goal type, context, and inferred type
 
 See [the emacs-mode docs][agda-docs-emacs-mode] for more details.
 
@@ -259,12 +260,11 @@ If you want to know how you input a specific Unicode character in agda file, mov
 You'll see the key sequence of the character in mini buffer.
 
 
-
 ## Dependencies for developers
 PLFA is written in literate Agda with [Pandoc Markdown][pandoc].
 PLFA is available as both a website and an EPUB e-book, both of which can be built on UNIX and macOS.
-We provide instructions for either.
 Finally, to help developers avoid common mistakes, we provide a set of Git hooks.
+
 
 ### Building the website and e-book
 If you’d like to build the web version of PLFA locally, [Stack](#install-the-haskell-tool-stack) is all you need! PLFA is built using [Hakyll][hakyll], a Haskell library for building static websites. We’ve setup a Makefile to help you run common tasks. For instance, to build PLFA, run:
@@ -301,7 +301,6 @@ The [EPUB version][epub] of the book is built as part of the website, since it�
 
 
 ### Git hooks
-
 The repository comes with several Git hooks:
 
  1. The [fix-whitespace][fix-whitespace] program is run to check for whitespace violations.
