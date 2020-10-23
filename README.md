@@ -9,7 +9,6 @@ next      : /Naturals/
 <!-- Status & Version Badges -->
 
 [![Calendar Version][plfa-calver]][plfa-latest]
-[![Build Status][plfa-status]][plfa-travis]
 [![Agda][agda-version]][agda]
 [![agda-stdlib][agda-stdlib-version]][agda-stdlib]
 
