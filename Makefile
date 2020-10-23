@@ -113,6 +113,7 @@ publish: setup-check-rsync
 		--filter='P .git/' \
 		--filter='P .gitignore' \
 		--filter='P .stack-work' \
+		--filter='P .nojekyll' \
 		--filter='P CNAME' \
 		--delete-excluded \
 		_site/ .
