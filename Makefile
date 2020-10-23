@@ -91,6 +91,40 @@ list:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
 
 
+
+########################################
+# Publish PLFA
+########################################
+
+.PHONY: publish
+publish: setup-check-rsync
+	@echo "Cleaning up..."
+	make clean
+	@echo "Building site..."
+	make build
+	@echo "Testing site..."
+	make test
+	@echo "Creating web branch..."
+	git fetch --all
+	git checkout -b web --track origin/web
+	rsync -a \
+		--filter='P _site/' \
+		--filter='P _cache/' \
+		--filter='P .git/' \
+		--filter='P .gitignore' \
+		--filter='P .stack-work' \
+		--filter='P CNAME' \
+		--delete-excluded \
+		_site/ .
+	git add -A
+	@echo "Publishing web branch..."
+	git commit -m "Publish."
+	git push origin web:web
+	@echo "Deleting web branch..."
+	git checkout dev
+	git branch -D web
+
+
 #################################################################################
 # Setup dependencies
 #################################################################################
@@ -133,6 +167,14 @@ setup-check-epubcheck:
 ifeq (,$(wildcard $(shell which epubcheck)))
 	@echo "The command you called requires EPUBCheck"
 	@echo "See: https://github.com/w3c/epubcheck"
+endif
+
+.PHONY: setup-check-rsync
+setup-check-rsync:
+ifeq (,$(wildcard $(shell which rsync)))
+	@echo "The command you called requires rsync"
+	@echo "See: https://rsync.samba.org/"
+	@exit 1
 endif
 
 .PHONY: setup-install-htmlproofer
