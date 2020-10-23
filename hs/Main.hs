@@ -164,8 +164,8 @@ main = do
         >>= readMarkdownWith siteReaderOptions
         <&> writeHTML5With siteWriterOptions
         >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/page.html"    siteContext
-        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
+        >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
         >>= relativizeUrls
 
   -- Build compiler for literate Agda pages
@@ -176,8 +176,8 @@ main = do
         >>= readMarkdownWith siteReaderOptions
         <&> writeHTML5With siteWriterOptions
         >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/page.html"    siteContext
-        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
+        >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
         >>= relativizeUrls
 
   -- Run Hakyll
