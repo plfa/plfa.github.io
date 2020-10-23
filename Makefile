@@ -23,9 +23,22 @@ init: setup-check-fix-whitespace setup-check-htmlproofer
 .PHONY: build
 build: $(SITE_DIR)
 
-$(SITE_DIR): authors contributors css courses hs posts public src templates
+# TODO: replace these with dependencies on actual files
+
+$(SITE_DIR):      \
+		authors/      \
+		contributors/ \
+		css/          \
+		courses/      \
+		posts/        \
+		public/       \
+		src/          \
+		templates/    \
+		standard-library/ChangeLog.md
 	stack build && stack exec site build
 
+standard-library/ChangeLog.md:
+	git submodule update --recursive
 
 #################################################################################
 # Test generated site with HTMLProofer
@@ -34,16 +47,16 @@ $(SITE_DIR): authors contributors css courses hs posts public src templates
 .PHONY: test
 test: setup-install-htmlproofer $(SITE_DIR)
 	cd $(SITE_DIR) && htmlproofer \
-		--check-html \
-		--disable-external \
-		--report-invalid-tags \
-		--report-missing-names \
-		--report-script-embeds \
-		--report-missing-doctype \
-		--report-eof-tags \
-		--report-mismatched-tags \
-		--check-img-http \
-		--check-opengraph \
+		--check-html                \
+		--disable-external          \
+		--report-invalid-tags       \
+		--report-missing-names      \
+		--report-script-embeds      \
+		--report-missing-doctype    \
+		--report-eof-tags           \
+		--report-mismatched-tags    \
+		--check-img-http            \
+		--check-opengraph           \
 		.
 
 #################################################################################
@@ -77,8 +90,10 @@ update-contributors:
 # Clean up and remove the cache
 #################################################################################
 
+# TODO: change hs/Main.hs to get rid of this dependency
+
 .PHONY: clean
-clean:
+clean: standard-library/ChangeLog.md
 	stack build && stack exec site clean
 
 
@@ -107,15 +122,15 @@ publish: setup-check-rsync
 	@echo "Creating web branch..."
 	git fetch --all
 	git checkout -b web --track origin/web
-	rsync -a \
-		--filter='P _site/' \
-		--filter='P _cache/' \
-		--filter='P .git/' \
-		--filter='P .gitignore' \
+	rsync -a                   \
+		--filter='P _site/'      \
+		--filter='P _cache/'     \
+		--filter='P .git/'       \
+		--filter='P .gitignore'  \
 		--filter='P .stack-work' \
-		--filter='P .nojekyll' \
-		--filter='P CNAME' \
-		--delete-excluded \
+		--filter='P .nojekyll'   \
+		--filter='P CNAME'       \
+		--delete-excluded        \
 		_site/ .
 	git add -A
 	@echo "Publishing web branch..."
