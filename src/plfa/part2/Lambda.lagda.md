@@ -213,7 +213,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 ```
 
 
-#### Exercise `primed` (stretch) {#primed}
+#### Exercise `primed` (stretch) {name=primed}
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
@@ -1201,7 +1201,7 @@ the three places where a bound variable is introduced.
 The rules are deterministic, in that at most one rule applies to every term.
 
 
-### Example type derivations {#derivation}
+### Example type derivations {name=derivation}
 
 Type derivations correspond to trees. In informal notation, here
 is a type derivation for the Church numeral two,

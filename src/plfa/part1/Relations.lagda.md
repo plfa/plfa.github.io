@@ -241,7 +241,7 @@ lack---for instance by saying that a newly introduced relation is a
 partial order but not a total order.
 
 
-#### Exercise `orderings` (practice) {#orderings}
+#### Exercise `orderings` (practice) {name=orderings}
 
 Give an example of a preorder that is not a partial order.
 
@@ -359,7 +359,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-#### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
+#### Exercise `≤-antisym-cases` (practice) {name=leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -559,7 +559,7 @@ Show that multiplication is monotonic with regard to inequality.
 ```
 
 
-## Strict inequality {#strict-inequality}
+## Strict inequality {name=strict-inequality}
 
 We can define strict inequality similarly to inequality:
 ```
@@ -597,7 +597,7 @@ and conversely.  One can then give an alternative derivation of the
 properties of strict inequality, such as transitivity, by
 exploiting the corresponding properties of inequality.
 
-#### Exercise `<-trans` (recommended) {#less-trans}
+#### Exercise `<-trans` (recommended) {name=less-trans}
 
 Show that strict inequality is transitive.
 
@@ -605,7 +605,7 @@ Show that strict inequality is transitive.
 -- Your code goes here
 ```
 
-#### Exercise `trichotomy` (practice) {#trichotomy}
+#### Exercise `trichotomy` (practice) {name=trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -623,7 +623,7 @@ similar to that used for totality.
 -- Your code goes here
 ```
 
-#### Exercise `+-mono-<` (practice) {#plus-mono-less}
+#### Exercise `+-mono-<` (practice) {name=plus-mono-less}
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
@@ -632,7 +632,7 @@ As with inequality, some additional definitions may be required.
 -- Your code goes here
 ```
 
-#### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
+#### Exercise `≤-iff-<` (recommended) {name=leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
@@ -640,7 +640,7 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
 -- Your code goes here
 ```
 
-#### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
+#### Exercise `<-trans-revisited` (practice) {name=less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relation between strict inequality and inequality and
@@ -749,7 +749,7 @@ evidence that the first number is odd. If it is because it is the
 successor of an even number, then the result is odd because it is the
 successor of the sum of two even numbers, which is even.
 
-#### Exercise `o+o≡e` (stretch) {#odd-plus-odd}
+#### Exercise `o+o≡e` (stretch) {name=odd-plus-odd}
 
 Show that the sum of two odd numbers is even.
 
@@ -757,7 +757,7 @@ Show that the sum of two odd numbers is even.
 -- Your code goes here
 ```
 
-#### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
+#### Exercise `Bin-predicates` (stretch) {name=Bin-predicates}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)

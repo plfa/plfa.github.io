@@ -458,7 +458,7 @@ _ =
 ```
 Now the time to reverse a list is linear in the length of the list.
 
-## Map {#Map}
+## Map {name=Map}
 
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a _higher-order function_, one which takes a function as an
@@ -558,7 +558,7 @@ Define a suitable map operator over trees:
 -- Your code goes here
 ```
 
-## Fold {#Fold}
+## Fold {name=Fold}
 
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
@@ -833,7 +833,7 @@ Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 ```
 
 
-## All {#All}
+## All {name=All}
 
 We can also define predicates over lists. Two of the most important
 are `All` and `Any`.

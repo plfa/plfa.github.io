@@ -261,7 +261,7 @@ You'll see the key sequence of the character in mini buffer.
 
 
 ## Dependencies for developers
-PLFA is written in literate Agda with [Pandoc Markdown][pandoc].
+PLFA is written in literate Agda with [CommonMark][commonmark].
 PLFA is available as both a website and an EPUB e-book, both of which can be built on UNIX and macOS.
 Finally, to help developers avoid common mistakes, we provide a set of Git hooks.
 
@@ -348,6 +348,7 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
 [hakyll]: https://jaspervdj.be/hakyll/
 [pandoc]: https://pandoc.org/installing.html
+[commonmark]: https://commonmark.org/
 [epubcheck]: https://github.com/w3c/epubcheck
 [xcode]: https://developer.apple.com/xcode/
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro

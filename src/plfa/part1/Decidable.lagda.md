@@ -561,7 +561,7 @@ postulate
 -- Your code goes here
 ```
 
-## Proof by reflection {#proof-by-reflection}
+## Proof by reflection {name=proof-by-reflection}
 
 Let's revisit our definition of monus from
 Chapter [Naturals](/Naturals/).

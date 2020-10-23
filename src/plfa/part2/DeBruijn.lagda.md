@@ -445,20 +445,19 @@ We can then introduce a convenient abbreviation for variables:
 ```
 #_ : ∀ {Γ}
    → (n : ℕ)
-   → {n<?length : True (suc n ≤? length Γ)}
+   → {n∈Γ : True (suc n ≤? length Γ)}
      --------------------------------
-   → Γ ⊢ lookup (toWitness n<?length)
-#_ n {n<?length}  =  ` count (toWitness n<?length)
+   → Γ ⊢ lookup (toWitness n∈Γ)
+#_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
-Function `#_` takes an implicit argument `n<?length` that provides
-evidence for `n` to be within the context's bounds. Recall that
-[`True`]({{ site.baseurl }}/Decidable/#proof-by-reflection),
-[`_≤?_`]({{ site.baseurl }}/Decidable/#the-best-of-both-worlds) and
-[`toWitness`]({{ site.baseurl }}/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
-are defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The
-type of `n<?length` guards against invoking `#_` on an `n` that is out
-of context bounds. Finally, in the return type `n<?length` is
-converted to a witness that `n` is within the bounds.
+Function `#_` takes an implicit argument `n∈Γ` that provides evidence for `n` to
+be within the context's bounds. Recall that
+[`True`](/Decidable/#proof-by-reflection),
+[`_≤?_`](/Decidable/#the-best-of-both-worlds) and
+[`toWitness`](/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
+are defined in Chapter [Decidable](/Decidable/). The type of `n∈Γ` guards
+against invoking `#_` on an `n` that is out of context bounds. Finally, in the
+return type `n∈Γ` is converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
@@ -467,13 +466,9 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
 
 
-### Test examples {#examples}
-
-We repeat the test examples from
-Chapter [Lambda](/Lambda/).
-You can find them
-[here](/Lambda/#derivation)
-for comparison.
+### Test examples
+We repeat the test examples from Chapter [Lambda](/Lambda/). You can find them
+[here](/Lambda/#derivation) for comparison.
 
 First, computing two plus two on naturals:
 ```

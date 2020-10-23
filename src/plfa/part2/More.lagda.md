@@ -147,7 +147,7 @@ Here `M †` is the translation of term `M` from a calculus with the
 construct to a calculus without the construct.
 
 
-## Products {#products}
+## Products {name=products}
 
 ### Syntax
 
@@ -285,7 +285,7 @@ We can also translate back the other way:
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
-## Sums {#sums}
+## Sums {name=sums}
 
 ### Syntax
 

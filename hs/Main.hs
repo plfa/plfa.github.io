@@ -1,32 +1,48 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
 
 import           Control.Monad ((<=<), forM_)
 import qualified Data.ByteString.Lazy as BL
-import           Data.List as L
-import           Data.List.Extra as L
-import           Data.Maybe (fromMaybe)
-import           Data.Ord (comparing)
+import           Data.Functor ((<&>))
 import qualified Data.Text as T
 import           Hakyll
 import           Hakyll.Web.Agda
+import           Hakyll.Web.Template.Numeric
 import           Hakyll.Web.Template.Context.Metadata
+import           Hakyll.Web.Template.Context.Title
 import           Hakyll.Web.Sass
 import           Hakyll.Web.Routes.Permalink
 import           System.FilePath ((</>), takeDirectory)
-import           Text.Pandoc as Pandoc
-import           Text.Pandoc.Filter
-import           Text.Printf (printf)
-import           Text.Read (readMaybe)
+import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
+import qualified Text.Pandoc as Pandoc
+import qualified Text.Pandoc.Filter as Pandoc (Filter(..),  applyFilters)
 
 --------------------------------------------------------------------------------
 -- Configuration
 --------------------------------------------------------------------------------
 
-tocContext :: Context String -> Context String
-tocContext ctx = Context $ \k a _ -> do
-  m <- makeItem <=< getMetadata $ "src/plfa/toc.metadata"
-  unContext (objectContext ctx) k a m
+siteReaderOptions :: ReaderOptions
+siteReaderOptions = defaultHakyllReaderOptions
+  { readerExtensions = Pandoc.extensionsFromList
+    [ Ext_all_symbols_escapable
+    , Ext_auto_identifiers
+    , Ext_backtick_code_blocks
+    , Ext_citations
+    , Ext_footnotes
+    , Ext_header_attributes
+    , Ext_implicit_header_references
+    , Ext_intraword_underscores
+    , Ext_markdown_in_html_blocks
+    , Ext_raw_html
+    , Ext_shortcut_reference_links
+    , Ext_smart
+    , Ext_superscript
+    , Ext_subscript
+    , Ext_yaml_metadata_block
+    ]
+  }
+
+siteWriterOptions :: WriterOptions
+siteWriterOptions = defaultHakyllWriterOptions
 
 siteContext :: Context String
 siteContext = mconcat
@@ -55,6 +71,11 @@ siteSectionContext = mconcat
   , subtitleField
   , siteContext
   ]
+
+tableOfContentsContext :: Context String -> Context String
+tableOfContentsContext ctx = Context $ \k a _ -> do
+  m <- makeItem <=< getMetadata $ "src/plfa/toc.metadata"
+  unContext (objectContext ctx) k a m
 
 acknowledgementsContext :: Context String
 acknowledgementsContext = mconcat
@@ -100,6 +121,30 @@ sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
 
+epubSectionContext :: Context String
+epubSectionContext = mconcat
+  [ contentField "content" "content"
+  , titlerunningField
+  , subtitleField
+  ]
+
+epubReaderOptions :: ReaderOptions
+epubReaderOptions = siteReaderOptions
+  { readerStandalone    = True
+  , readerStripComments = True
+  }
+
+epubWriterOptions :: WriterOptions
+epubWriterOptions = siteWriterOptions
+  { writerTableOfContents  = True
+  , writerTOCDepth         = 2
+  , writerEpubFonts        = [ "public/webfonts/DejaVuSansMono.woff"
+                             , "public/webfonts/FreeMono.woff"
+                             , "public/webfonts/mononoki.woff"
+                             ]
+  , writerEpubChapterLevel = 2
+  }
+
 --------------------------------------------------------------------------------
 -- Build site
 --------------------------------------------------------------------------------
@@ -115,7 +160,9 @@ main = do
 
   -- Build compiler for Markdown pages
   let pageCompiler :: Compiler (Item String)
-      pageCompiler = pandocCompiler
+      pageCompiler = getResourceBody
+        >>= readMarkdownWith siteReaderOptions
+        <&> writeHTML5With siteWriterOptions
         >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
@@ -126,7 +173,8 @@ main = do
       pageWithAgdaCompiler opts = agdaCompilerWith opts
         >>= withItemBody (return . withUrls fixStdlibLink)
         >>= withItemBody (return . withUrls fixLocalLink)
-        >>= renderPandoc
+        >>= readMarkdownWith siteReaderOptions
+        <&> writeHTML5With siteWriterOptions
         >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
@@ -150,14 +198,14 @@ main = do
       compile $ do
         epubTemplate <- load "templates/epub.html"
             >>= compilePandocTemplate
-        epubMetadata <- load "src/plfa/meta.xml"
+        epubMetadata <- load "src/plfa/epub.xml"
         let ropt = epubReaderOptions
         let wopt = epubWriterOptions
               { writerTemplate     = Just . itemBody $ epubTemplate
               , writerEpubMetadata = Just . T.pack . itemBody $ epubMetadata
               }
         getResourceBody
-          >>= applyAsTemplate (tocContext epubSectionContext)
+          >>= applyAsTemplate (tableOfContentsContext epubSectionContext)
           >>= readPandocWith ropt
           >>= applyPandocFilters ropt [] "epub3"
           >>= writeEPUB3With wopt
@@ -166,7 +214,7 @@ main = do
       compile $ getResourceBody
         >>= applyAsTemplate siteContext
 
-    match "src/plfa/meta.xml" $
+    match "src/plfa/epub.xml" $
       compile $ getResourceBody
         >>= applyAsTemplate siteContext
 
@@ -174,8 +222,9 @@ main = do
     match "src/plfa/index.md" $ do
       route permalinkRoute
       compile $ getResourceBody
-        >>= applyAsTemplate (tocContext siteSectionContext)
-        >>= renderPandoc
+        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
+        >>= readMarkdownWith siteReaderOptions
+        <&> writeHTML5With siteWriterOptions
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= relativizeUrls
@@ -187,12 +236,13 @@ main = do
     match "src/plfa/backmatter/acknowledgements.md" $ do
       route permalinkRoute
       compile $ getResourceBody
-          >>= applyAsTemplate acknowledgementsContext
-          >>= renderPandoc
-          >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/page.html"    siteContext
-          >>= loadAndApplyTemplate "templates/default.html" siteContext
-          >>= relativizeUrls
+        >>= applyAsTemplate acknowledgementsContext
+        >>= readMarkdownWith siteReaderOptions
+        <&> writeHTML5With siteWriterOptions
+        >>= saveSnapshot "content"
+        >>= loadAndApplyTemplate "templates/page.html"    siteContext
+        >>= loadAndApplyTemplate "templates/default.html" siteContext
+        >>= relativizeUrls
 
     match "authors/*.metadata" $
       compile getResourceBody
@@ -204,18 +254,20 @@ main = do
     match "src/pages/announcements.html" $ do
       route permalinkRoute
       compile $ getResourceBody
-          >>= applyAsTemplate postListContext
-          >>= loadAndApplyTemplate "templates/page.html"      siteContext
-          >>= loadAndApplyTemplate "templates/default.html"   siteContext
-          >>= relativizeUrls
+        >>= applyAsTemplate postListContext
+        >>= loadAndApplyTemplate "templates/page.html"      siteContext
+        >>= loadAndApplyTemplate "templates/default.html"   siteContext
+        >>= relativizeUrls
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/post.html"    postContext
-            >>= loadAndApplyTemplate "templates/default.html" siteContext
-            >>= relativizeUrls
+        compile $ getResourceBody
+          >>= readMarkdownWith siteReaderOptions
+          <&> writeHTML5With siteWriterOptions
+          >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/post.html"    postContext
+          >>= loadAndApplyTemplate "templates/default.html" siteContext
+          >>= relativizeUrls
 
     -- Compile sections using literate Agda
     match "src/**.lagda.md" $ do
@@ -223,7 +275,7 @@ main = do
       compile $ pageWithAgdaCompiler agdaOptions
 
     -- Compile other sections and pages
-    match ("README.md" .||. "src/**.md") $ do
+    match ("README.md" .||. "src/**.md" .&&. complement "src/plfa/epub.md") $ do
       route permalinkRoute
       compile pageCompiler
 
@@ -248,8 +300,8 @@ main = do
     -- Compile 404 page
     match "404.html" $ do
       route idRoute
-      compile $ pandocCompiler
-          >>= loadAndApplyTemplate "templates/default.html" siteContext
+      compile $ getResourceBody
+        >>= loadAndApplyTemplate "templates/default.html" siteContext
 
     -- Compile templates
     match "templates/*" $ compile templateBodyCompiler
@@ -279,47 +331,62 @@ main = do
 
       -- Relativise URLs in HTML files
       match (fromGlob $ "versions" </> v </> "**.html") $ do
-        route $ gsubRoute ".versions/" (const "")
+        route $ gsubRoute "versions/" (const "")
         compile $ getResourceBody
-            >>= relativizeUrls
+          >>= relativizeUrls
 
       -- Copy other files
       match (fromGlob $ "versions" </> v </> "**") $ do
-        route $ gsubRoute ".versions/" (const "")
+        route $ gsubRoute "versions/" (const "")
         compile copyFileCompiler
 
+
 --------------------------------------------------------------------------------
--- EPUB generation
+-- Custom readers and writers
 --------------------------------------------------------------------------------
 
-epubSectionContext :: Context String
-epubSectionContext = mconcat
-  [ contentField "content" "content"
-  , titlerunningField
-  , subtitleField
-  ]
+-- | Read a CommonMark string using Pandoc, with the supplied options.
+readCommonMarkWith :: ReaderOptions           -- ^ Parser options
+                   -> Item String             -- ^ String to read
+                   -> Compiler (Item Pandoc)  -- ^ Resulting document
+readCommonMarkWith ropt item =
+  case Pandoc.runPure $ traverse (Pandoc.readCommonMark ropt) (fmap T.pack item) of
+    Left err    -> fail $
+      "Hakyll.Web.Pandoc.readPandocWith: parse failed: " ++ show err
+    Right item' -> return item'
 
-epubReaderOptions :: ReaderOptions
-epubReaderOptions = defaultHakyllReaderOptions
-  { readerStandalone    = True
-  , readerStripComments = True
-  }
+-- | Read a Markdown string using Pandoc, with the supplied options.
+readMarkdownWith :: ReaderOptions           -- ^ Parser options
+                   -> Item String             -- ^ String to read
+                   -> Compiler (Item Pandoc)  -- ^ Resulting document
+readMarkdownWith ropt item =
+  case Pandoc.runPure $ traverse (Pandoc.readMarkdown ropt) (fmap T.pack item) of
+    Left err    -> fail $
+      "Hakyll.Web.Pandoc.readPandocWith: parse failed: " ++ show err
+    Right item' -> return item'
 
-epubWriterOptions :: WriterOptions
-epubWriterOptions = defaultHakyllWriterOptions
-  { writerTableOfContents  = True
-  , writerTOCDepth         = 2
-  , writerEpubFonts        = [ "public/webfonts/DejaVuSansMono.woff"
-                             , "public/webfonts/FreeMono.woff"
-                             , "public/webfonts/mononoki.woff"
-                             ]
-  , writerEpubChapterLevel = 2
-  }
+-- | Write a document as HTML using Pandoc, with the supplied options.
+writeHTML5With :: WriterOptions  -- ^ Writer options for pandoc
+               -> Item Pandoc    -- ^ Document to write
+               -> Item String    -- ^ Resulting HTML
+writeHTML5With wopt (Item itemi doc) =
+  case Pandoc.runPure $ Pandoc.writeHtml5String wopt doc of
+    Left err    -> error $ "Hakyll.Web.Pandoc.writePandocWith: " ++ show err
+    Right item' -> Item itemi $ T.unpack item'
 
-applyPandocFilters :: ReaderOptions -> [Filter] -> String -> Item Pandoc -> Compiler (Item Pandoc)
+-- | Write a document as EPUB3 using Pandoc, with the supplied options.
+writeEPUB3With :: WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
+writeEPUB3With wopt (Item itemi doc) =
+  return $ case Pandoc.runPure $ Pandoc.writeEPUB3 wopt doc of
+    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
+    Right doc' -> Item itemi doc'
+
+-- | Apply a filter to a Pandoc document.
+applyPandocFilters :: ReaderOptions -> [Pandoc.Filter] -> String -> Item Pandoc -> Compiler (Item Pandoc)
 applyPandocFilters ropt filters fmt = withItemBody $
-  unsafeCompiler . runIOorExplode . applyFilters ropt filters [fmt]
+  unsafeCompiler . Pandoc.runIOorExplode . Pandoc.applyFilters ropt filters [fmt]
 
+-- | Compile a Pandoc template (as opposed to a Hakyll template).
 compilePandocTemplate :: Item String -> Compiler (Item (Pandoc.Template T.Text))
 compilePandocTemplate i = do
   let templatePath = toFilePath $ itemIdentifier i
@@ -328,48 +395,11 @@ compilePandocTemplate i = do
   template <- either fail return templateOrError
   makeItem template
 
-writeEPUB3With :: WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
-writeEPUB3With wopt (Item itemi doc) = do
-  return $ case runPure $ writeEPUB3 wopt doc of
-    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
-    Right doc' -> Item itemi doc'
-
 
 --------------------------------------------------------------------------------
 -- Supply snapshot as a field to the template
 --------------------------------------------------------------------------------
 
-subtitleField :: Context String
-subtitleField = Context go
-  where
-    go "subtitle" _ i = do
-      title <- maybe (fail "No title") return =<< getMetadataField (itemIdentifier i) "title"
-      case L.stripInfix ":" title of
-        Nothing -> fail "No titlerunning/subtitle distinction"
-        Just (_, subtitle) -> return . StringField $ L.trim subtitle
-    go k          _ i = fail $ printf "Missing field %s in context for item %s" k (show (itemIdentifier i))
-
-titlerunningField :: Context String
-titlerunningField = Context go
-  where
-    go "titlerunning" _ i = do
-      title <- maybe (fail "No title") return =<< getMetadataField (itemIdentifier i) "title"
-      case L.stripInfix ":" title of
-        Nothing -> fail "No titlerunning/subtitle distinction"
-        Just (titlerunning, _) -> return . StringField $ titlerunning
-    go k              _ i = fail $ printf "Missing field %s in context for item %s" k (show (itemIdentifier i))
-
 contentField :: String -> Snapshot -> Context String
 contentField key snapshot = field key $ \item ->
   itemBody <$> loadSnapshot (itemIdentifier item) snapshot
-
-byNumericFieldAsc :: MonadMetadata m => String -> [Item a] -> m [Item a]
-byNumericFieldAsc key = sortOnM $ \i -> do
-  maybeInt <- getMetadataField (itemIdentifier i) key
-  return $ fromMaybe (0 :: Int) (readMaybe =<< maybeInt)
-
-byNumericFieldDesc :: MonadMetadata m => String -> [Item a] -> m [Item a]
-byNumericFieldDesc key is = reverse <$> byNumericFieldAsc key is
-
-sortOnM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
-sortOnM f xs = map fst . L.sortBy (comparing snd) <$> mapM (\ x -> (x,) <$> f x) xs
