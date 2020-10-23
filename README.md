@@ -37,7 +37,7 @@ xcode-select --install
 ### Install the Haskell Tool Stack
 Agda is written in Haskell, so to install it we’ll need the *Haskell Tool Stack*, or *Stack* for short. Stack is a program for managing different Haskell compilers and packages:
 
-- *On UNIX and macOS.* Your package manager has a package for Stack, that’s probably your easiest option. For instance, Homebrew on macOS  and APT on Debian offer the “haskell-stack” package. Otherwise, you can follow the instructions on [the Stack website][haskell-stack]. Usually, Stack installs binaries at “~/.local/bin”. Please ensure this is on your PATH, by including the following in your shell configuration, e.g., in `~/.bash_profile`:
+- *On UNIX and macOS.* If your package manager has a package for Stack, that’s probably your easiest option. For instance, Homebrew on macOS  and APT on Debian offer the “haskell-stack” package. Otherwise, you can follow the instructions on [the Stack website][haskell-stack]. Usually, Stack installs binaries at “HOME/.local/bin”. Please ensure this is on your PATH, by including the following in your shell configuration, e.g., in `HOME/.bash_profile`:
   ```bash
   export PATH="${HOME}/.local/bin:${PATH}"
   ```
@@ -111,16 +111,16 @@ cd agda-stdlib
 git checkout v1.3
 ```
 Finally, we need to let Agda know where to find the Agda standard library.
-You'll need the path where you installed the standard library, which we’ll refer to as “AGDA_STDLIB”. Check to see that the file “AGDA_STDLIB/standard-library.agda-lib” exists.
+You'll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file.
 You will need to create two configuration files in “AGDA_DIR”. On UNIX and macOS, “AGDA_DIR” defaults to “~/.agda”. On Windwos, “AGDA_DIR” usually defaults to “%AppData%\agda”, where “%AppData%” usually defaults to “C:\Users\USERNAME\AppData\Roaming”.
 
 - If the “AGDA_DIR” directory does not already exist, create it.
-- In “AGDA_DIR”, create a plain-text file called “libraries” containing the path “AGDA_STDLIB/standard-library.agda-lib”. This lets Agda know that an Agda library called “standard-library” is available, at the path “AGDA_STDLIB”.
+- In “AGDA_DIR”, create a plain-text file called “libraries” containing the “/path/to/standard-library.agda-lib”. This lets Agda know that an Agda library called “standard-library” is available.
 - In “AGDA_DIR”, create a plain-text file called “defaults” containing *just* the line “standard-library”.
 
 More information about placing the standard libraries is available from [the Library Management page][agda-docs-package-system] of the Agda documentation.
 
-It is possible to set up PLFA as an Agda library as well.  If you want to complete the exercises found in the “courses” folder, or to import modules from the book, you need to do this.  To do so, add the path to “plfa.agda-lib” to “~/.agda/libraries” and add “plfa” to “~/.agda/defaults”, each on a line of their own.
+It is possible to set up PLFA as an Agda library as well.  If you want to complete the exercises found in the “courses” folder, or to import modules from the book, you need to do this.  To do so, add the path to “plfa.agda-lib” to “AGDA_DIR/libraries” and add “plfa” to “AGDA_DIR/defaults”, each on a line of their own.
 
 #### Check if the Agda standard library was installed correctly
 If you’d like, you can test to see if you’ve installed the Agda standard library correctly. Create a file called “nats.agda” with these lines:
@@ -157,7 +157,7 @@ The recommended editor for Agda is Emacs. To install Emacs:
 
  - *On Windows*. See the [GNU Emacs downloads page][emacs] for instructions.
 
-Make sure that you are able to open, edit, and save text files with your installation.  The [tour of Emacs][emacstour] page on the GNU Emacs site describes how to access the tutorial within your Emacs installation.
+Make sure that you are able to open, edit, and save text files with your installation.  The [tour of Emacs][emacs-tour] page on the GNU Emacs site describes how to access the tutorial within your Emacs installation.
 
 Agda ships with the editor support for Emacs built-in, so if you’ve installed Agda, all you have to do to configure Emacs is run:
 ```bash
@@ -179,7 +179,7 @@ Since version 2.6.0, Agda has had support for literate editing with Markdown, us
        ("\\.lagda.md\\'" . agda2-mode))
      auto-mode-alist))
 ```
-If you already have settings which change your “auto-mode-alist” in your configuration, put these *after* the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in “~/.emacs” or “~/.emacs.d/init.el”, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in “~/Library/Preferences/Aquamacs Emacs/Preferences”.
+If you already have settings which change your “auto-mode-alist” in your configuration, put these *after* the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in “HOME/.emacs” or “HOME/.emacs.d/init.el”, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in “HOME/Library/Preferences/Aquamacs Emacs/Preferences”. For Windows, see [the GNU Emacs documentation][emacs-home] for a description of where the Emacs configuration is located.
 
 #### Optional: using the “mononoki” font with Emacs
 Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [mononoki][font-mononoki], fonts such as [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
@@ -336,7 +336,8 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html#notation-for-key-combinations
 [agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
-[emacstour]: https://www.gnu.org/software/emacs/tour/
+[emacs-tour]: https://www.gnu.org/software/emacs/tour/
+[emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
 [aquamacs]: http://aquamacs.org/
 [agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg
 [agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.3
