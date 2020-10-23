@@ -21,19 +21,7 @@ init: setup-check-fix-whitespace setup-check-htmlproofer
 #################################################################################
 
 .PHONY: build
-build: $(SITE_DIR)
-
-# TODO: replace these with dependencies on actual files
-
-$(SITE_DIR):      \
-		authors/      \
-		contributors/ \
-		css/          \
-		courses/      \
-		posts/        \
-		public/       \
-		src/          \
-		templates/    \
+build: \
 		standard-library/ChangeLog.md
 	stack build && stack exec site build
 
@@ -45,7 +33,7 @@ standard-library/ChangeLog.md:
 #################################################################################
 
 .PHONY: test
-test: setup-install-htmlproofer $(SITE_DIR)
+test: setup-install-htmlproofer build
 	cd $(SITE_DIR) && htmlproofer \
 		--check-html                \
 		--disable-external          \
@@ -64,7 +52,7 @@ test: setup-install-htmlproofer $(SITE_DIR)
 #################################################################################
 
 .PHONY: test-epub
-test-epub: setup-check-epubcheck $(SITE_DIR)/plfa.epub
+test-epub: setup-check-epubcheck build
 	epubcheck $(SITE_DIR)/plfa.epub
 
 
@@ -73,7 +61,8 @@ test-epub: setup-check-epubcheck $(SITE_DIR)/plfa.epub
 #################################################################################
 
 .PHONY: watch
-watch:
+watch: \
+		standard-library/ChangeLog.md
 	stack build && stack exec site watch
 
 
@@ -90,10 +79,9 @@ update-contributors:
 # Clean up and remove the cache
 #################################################################################
 
-# TODO: change hs/Main.hs to get rid of this dependency
-
 .PHONY: clean
-clean: standard-library/ChangeLog.md
+clean: \
+		standard-library/ChangeLog.md
 	stack build && stack exec site clean
 
 
