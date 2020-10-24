@@ -558,8 +558,9 @@ and leave formalisation of the remaining constructs as an exercise.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _*_)
+open import Data.Nat using (ℕ; zero; suc; _*_; _<_; _≤?_; z≤n; s≤s)
 open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 
@@ -718,20 +719,24 @@ data _⊢_ : Context → Type → Set where
 ### Abbreviating de Bruijn indices
 
 ```
-lookup : Context → ℕ → Type
-lookup (Γ , A) zero     =  A
-lookup (Γ , _) (suc n)  =  lookup Γ n
-lookup ∅       _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
 
-count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
-count {Γ , _} zero     =  Z
-count {Γ , _} (suc n)  =  S (count n)
-count {∅}     _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
+lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 
-#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
-# n  =  ` count n
+count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count {_ , _} {zero}    (s≤s z≤n)  =  Z
+count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
+
+#_ : ∀ {Γ}
+  → (n : ℕ)
+  → {n<?length : True (suc n ≤? length Γ)}
+    --------------------------------------
+  → Γ ⊢ lookup (toWitness n<?length)
+#_ n {n<?length}  =  ` count (toWitness n<?length)
 ```
 
 ## Renaming
