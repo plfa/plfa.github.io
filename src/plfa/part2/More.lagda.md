@@ -733,10 +733,10 @@ count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 
 #_ : ∀ {Γ}
   → (n : ℕ)
-  → {n<?length : True (suc n ≤? length Γ)}
-    --------------------------------------
-  → Γ ⊢ lookup (toWitness n<?length)
-#_ n {n<?length}  =  ` count (toWitness n<?length)
+  → {n∈Γ : True (suc n ≤? length Γ)}
+    --------------------------------
+  → Γ ⊢ lookup (toWitness n∈Γ)
+#_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
 ## Renaming
