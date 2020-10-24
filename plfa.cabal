@@ -1,0 +1,60 @@
+cabal-version:      2.2
+name:               plfa
+version:            20.10
+description:        Programming Language Foundations in Agda
+homepage:           https://plfa.inf.ed.ac.uk
+license-file:       LICENSE
+author:             Wen Kokke
+copyright:          © 2017-2020 Wen Kokke, Jeremy G. Siek, and Philip Wadler
+category:           Web
+build-type:         Simple
+
+common shared-properties
+  ghc-options:      -Wall
+  default-language: Haskell2010
+  build-depends:    aeson                >=1.4  && <1.5
+                  , base                 >=4.6  && <5
+                  , bytestring           >=0.10 && <0.11
+                  , containers           >=0.6  && <0.7
+                  , directory            >=1.2  && <1.4
+                  , doctemplates         >=0.8  && <0.9
+                  , extra                >=1.7  && <1.8
+                  , filemanip            >=0.3  && <0.4
+                  , filepath             >=1.3  && <1.5
+                  , frontmatter          >=0.1  && <0.2
+                  , hakyll               >=4.10 && <4.15
+                  , pandoc               >=2.1  && <2.11
+                  , pandoc-types         >=1.20 && <1.21
+                  , pandoc-citeproc      >=0.17 && <0.18
+                  , text                 >=1.2  && <1.3
+                  , unordered-containers >=0.2  && <0.3
+                  , vector               >=0.12 && <0.13
+                  , yaml                 >=0.11 && <0.12
+
+library
+  import:           shared-properties
+  hs-source-dirs:   hs
+  exposed-modules:  Hakyll.Web.Agda
+                  , Hakyll.Web.Template.Numeric
+                  , Hakyll.Web.Template.Context.Metadata
+                  , Hakyll.Web.Template.Context.Title
+                  , Hakyll.Web.Sass
+                  , Hakyll.Web.Routes.Permalink
+  build-depends:    Agda               ==2.6.1.1
+                  , hsass              >=0.8  && <0.9
+                  , regex-tdfa         >=1.3  && <1.4
+                  , text-icu           >=0.7  && <0.8
+                  , text-regex-replace >=0.1  && <0.2
+
+executable site
+  import:           shared-properties
+  main-is:          hs/Main.hs
+  build-depends:    plfa
+  ghc-options:      -threaded
+
+executable update-contributors
+  import:           shared-properties
+  main-is:          hs/UpdateContributors.hs
+  build-depends:    exceptions         >=0.10 && <0.11
+                  , github             >=0.26 && <0.27
+                  , vector             >=0.12 && <0.13

@@ -1,0 +1,45 @@
+---
+parts:
+- title: "Front matter"
+  sections:
+  - src/plfa/frontmatter/dedication.md
+  - src/plfa/frontmatter/preface.md
+  - README.md
+- title: "Part 1: Logical Foundations"
+  sections:
+  - src/plfa/part1/Naturals.lagda.md
+  - src/plfa/part1/Induction.lagda.md
+  - src/plfa/part1/Relations.lagda.md
+  - src/plfa/part1/Equality.lagda.md
+  - src/plfa/part1/Isomorphism.lagda.md
+  - src/plfa/part1/Connectives.lagda.md
+  - src/plfa/part1/Negation.lagda.md
+  - src/plfa/part1/Quantifiers.lagda.md
+  - src/plfa/part1/Decidable.lagda.md
+  - src/plfa/part1/Lists.lagda.md
+- title: "Part 2: Programming Language Foundations"
+  sections:
+  - src/plfa/part2/Lambda.lagda.md
+  - src/plfa/part2/Properties.lagda.md
+  - src/plfa/part2/DeBruijn.lagda.md
+  - src/plfa/part2/More.lagda.md
+  - src/plfa/part2/Bisimulation.lagda.md
+  - src/plfa/part2/Inference.lagda.md
+  - src/plfa/part2/Untyped.lagda.md
+  - src/plfa/part2/Confluence.lagda.md
+  - src/plfa/part2/BigStep.lagda.md
+- title: "Part 3: Denotational Semantics"
+  sections:
+  - src/plfa/part3/Denotational.lagda.md
+  - src/plfa/part3/Compositional.lagda.md
+  - src/plfa/part3/Soundness.lagda.md
+  - src/plfa/part3/Adequacy.lagda.md
+  - src/plfa/part3/ContextualEquivalence.lagda.md
+- title: "Appendix"
+  sections:
+  - src/plfa/part2/Substitution.lagda.md
+- title: "Back matter"
+  sections:
+  - src/plfa/backmatter/acknowledgements.md
+  - src/plfa/backmatter/Fonts.lagda.md
+---

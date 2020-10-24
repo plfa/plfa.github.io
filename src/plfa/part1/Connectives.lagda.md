@@ -237,7 +237,7 @@ corresponds to `⟨ 1 , ⟨ true , aa ⟩ ⟩`, which is a member of the latter.
 
 #### Exercise `⇔≃×` (recommended)
 
-Show that `A ⇔ B` as defined [earlier]({{ site.baseurl }}/Isomorphism/#iff)
+Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
 
 ```
@@ -536,7 +536,7 @@ Show empty is the right identity of sums up to isomorphism.
 -- Your code goes here
 ```
 
-## Implication is function {#implication}
+## Implication is function {name=implication}
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
 whenever `A` holds then `B` must also hold.  We formalise implication using
@@ -796,9 +796,9 @@ The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to build triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with
 other useful notations, such as `[_,_]` to construct a list of two elements in
-Chapter [Lists]({{ site.baseurl }}/Lists/)
+Chapter [Lists](/Lists/)
 and `Γ , A` to extend environments in
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
+Chapter [DeBruijn](/DeBruijn/).
 The standard library `_⇔_` is similar to ours, but the one in the
 standard library is less convenient, since it is parameterised with
 respect to an arbitrary notion of equivalence.

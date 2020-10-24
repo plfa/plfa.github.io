@@ -238,7 +238,7 @@ Show that `Any` and `All` satisfy a version of De Morgan's Law:
 
 (Can you see why it is important that here `_∘_` is generalised
 to arbitrary levels, as described in the section on
-[universe polymorphism]({{ site.baseurl }}/Equality/#unipoly)?)
+[universe polymorphism](/Equality/#unipoly)?)
 
 Do we also have the following?
 

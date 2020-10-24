@@ -12,9 +12,9 @@ module plfa.part2.Inference where
 
 So far in our development, type derivations for the corresponding
 term have been provided by fiat.
-In Chapter [Lambda]({{ site.baseurl }}/Lambda/)
+In Chapter [Lambda](/Lambda/)
 type derivations are extrinsic to the term, while
-in Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/)
+in Chapter [DeBruijn](/DeBruijn/)
 type derivations are intrinsic to the term,
 but in both we have written out the type derivations in full.
 
@@ -28,11 +28,11 @@ inference, which will be presented in this chapter.
 
 This chapter ties our previous developments together. We begin with
 a term with some type annotations, close to the raw terms of
-Chapter [Lambda]({{ site.baseurl }}/Lambda/),
+Chapter [Lambda](/Lambda/),
 and from it we compute an intrinsically-typed term, in the style of
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
+Chapter [DeBruijn](/DeBruijn/).
 
-## Introduction: Inference rules as algorithms {#algorithms}
+## Introduction: Inference rules as algorithms {name=algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -381,7 +381,7 @@ required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
 ## Bidirectional type checking
 
 The typing rules for variables are as in
-[Lambda]({{ site.baseurl }}/Lambda/):
+[Lambda](/Lambda/):
 ```
 data _∋_⦂_ : Context → Id → Type → Set where
 
@@ -455,35 +455,35 @@ data _⊢_↓_ where
     → Γ ⊢ (M ↑) ↓ B
 ```
 We follow the same convention as
-Chapter [Lambda]({{ site.baseurl }}/Lambda/),
+Chapter [Lambda](/Lambda/),
 prefacing the constructor with `⊢` to derive the name of the
 corresponding type rule.
 
 The rules are similar to those in
-Chapter [Lambda]({{ site.baseurl }}/Lambda/),
+Chapter [Lambda](/Lambda/),
 modified to support synthesised and inherited types.
 The two new rules are those for `⊢↓` and `⊢↑`.
 The former both passes the type decoration as the inherited type and returns
 it as the synthesised type.  The latter takes the synthesised type and the
 inherited type and confirms they are identical --- it should remind you of
 the equality test in the application rule in the first
-[section]({{ site.baseurl }}/Inference/#algorithms).
+[section](/Inference/#algorithms).
 
 
-#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+#### Exercise `bidirectional-mul` (recommended) {name=bidirectional-mul}
 
 Rewrite your definition of multiplication from
-Chapter [Lambda]({{ site.baseurl }}/Lambda/), decorated to support inference.
+Chapter [Lambda](/Lambda/), decorated to support inference.
 
 ```
 -- Your code goes here
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+#### Exercise `bidirectional-products` (recommended) {name=bidirectional-products}
 
 Extend the bidirectional type rules to include products from
-Chapter [More]({{ site.baseurl }}/More/).
+Chapter [More](/More/).
 
 ```
 -- Your code goes here
@@ -493,7 +493,7 @@ Chapter [More]({{ site.baseurl }}/More/).
 #### Exercise `bidirectional-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More]({{ site.baseurl }}/More/).
+Chapter [More](/More/).
 
 ```
 -- Your code goes here
@@ -1003,7 +1003,7 @@ _ = refl
 From the evidence that a decorated term has the correct type it is
 easy to extract the corresponding intrinsically-typed term.  We use the
 name `DB` to refer to the code in
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
+Chapter [DeBruijn](/DeBruijn/).
 It is easy to define an _erasure_ function that takes an extrinsic
 type judgment into the corresponding intrinsically-typed term.
 
@@ -1066,17 +1066,17 @@ _ = refl
 ```
 Thus, we have confirmed that bidirectional type inference
 converts decorated versions of the lambda terms from
-Chapter [Lambda]({{ site.baseurl }}/Lambda/)
+Chapter [Lambda](/Lambda/)
 to the intrinsically-typed terms of
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
+Chapter [DeBruijn](/DeBruijn/).
 
 
 #### Exercise `inference-multiplication` (recommended)
 
 Apply inference to your decorated definition of multiplication from
-exercise [`bidirectional-mul`]({{ site.baseurl }}/Inference/#bidirectional-mul), and show that
+exercise [`bidirectional-mul`](/Inference/#bidirectional-mul), and show that
 erasure of the inferred typing yields your definition of
-multiplication from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
+multiplication from Chapter [DeBruijn](/DeBruijn/).
 
 ```
 -- Your code goes here
@@ -1085,7 +1085,7 @@ multiplication from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/).
 #### Exercise `inference-products` (recommended)
 
 Using your rules from exercise
-[`bidirectional-products`]({{ site.baseurl }}/Inference/#bidirectional-products), extend
+[`bidirectional-products`](/Inference/#bidirectional-products), extend
 bidirectional inference to include products.
 
 ```
@@ -1095,7 +1095,7 @@ bidirectional inference to include products.
 #### Exercise `inference-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More]({{ site.baseurl }}/More/).
+Chapter [More](/More/).
 
 ```
 -- Your code goes here

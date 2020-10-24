@@ -67,7 +67,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 ## Untyped is Uni-typed
 
 Our development will be close to that in
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
+Chapter [DeBruijn](/DeBruijn/),
 save that every term will have exactly the same type, written `★`
 and pronounced "any".
 This matches a slogan introduced by Dana Scott
@@ -769,7 +769,7 @@ Confirm that two times two is four.
 #### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
-Chapter [More]({{ site.baseurl }}/More/),
+Chapter [More](/More/),
 save for primitive numbers, in the untyped lambda calculus.
 
 ```
@@ -812,7 +812,7 @@ L —↠⟨ L—↠M ⟩ M—↠N = —↠-trans L—↠M M—↠N
 
 ## Multi-step reduction is a congruence
 
-Recall from Chapter [Induction]({{ site.baseurl }}/Induction/) that a
+Recall from Chapter [Induction](/Induction/) that a
 relation `R` is a _congruence_ for a given function `f` if it is
 preserved by that function, i.e., if `R x y` then `R (f x) (f y)`.
 The term constructors `ƛ_` and `_·_` are functions, and so

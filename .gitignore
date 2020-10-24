@@ -3,6 +3,13 @@
 .agda-stdlib.sed
 .links-*.sed
 
+## Haskell files
+_site/
+_cache/
+stack.yaml.lock
+.stack-work/
+dist-newstyle
+
 ## Jekyll files
 _site/
 .sass-cache/
@@ -26,4 +33,5 @@ auto/
 
 ## Misc build files
 out/
-.versions/
+*.zip
+versions/plfa.github.io-web-*/

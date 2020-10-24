@@ -70,10 +70,10 @@ And here is its corresponding type derivation:
       ∋z = Z
 
 (These are both taken from Chapter
-[Lambda]({{ site.baseurl }}/Lambda/)
+[Lambda](/Lambda/)
 and you can see the corresponding derivation tree written out
 in full
-[here]({{ site.baseurl }}/Lambda/#derivation).)
+[here](/Lambda/#derivation).)
 The two definitions are in close correspondence, where:
 
   * `` `_ `` corresponds to `` ⊢` ``
@@ -126,7 +126,7 @@ which in context `Γ` have type `A`.
 While these two choices fit well, they are independent.  One
 can use de Bruijn indices in raw terms, or
 have intrinsically-typed terms with names.  In
-Chapter [Untyped]({{ site.baseurl }}/Untyped/),
+Chapter [Untyped](/Untyped/),
 we will introduce terms with de Bruijn indices that
 are intrinsically scoped but not typed.
 
@@ -427,12 +427,11 @@ lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
 lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
 lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 ```
-The function takes a proof `p` that the natural number is within the
-context's bounds. This guarantees we will never try to select a type
-at a non-existing position within the context. Strict inequality `n <
-length Γ` holds whenever inequality `suc n ≤ length Γ` holds.  When
-recursing, proof `p` is pattern-matched via the `s≤s` constructor to a
-proof for a context with the rightmost type removed.
+
+We intend to apply the function only when the natural is
+shorter than the length of the context, which we indicate by
+postulating an `impossible` term, just as we did
+[here](/Lambda/#primed).
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
@@ -446,20 +445,19 @@ We can then introduce a convenient abbreviation for variables:
 ```
 #_ : ∀ {Γ}
   → (n : ℕ)
-  → {n<?length : True (suc n ≤? length Γ)}
-    --------------------------------------
-  → Γ ⊢ lookup (toWitness n<?length)
-#_ n {n<?length}  =  ` count (toWitness n<?length)
+  → {n∈Γ : True (suc n ≤? length Γ)}
+    --------------------------------
+  → Γ ⊢ lookup (toWitness n∈Γ)
+#_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
-Function `#_` takes an implicit argument `n<?length` that provides
-evidence for `n` to be within the context's bounds. Recall that
-[`True`]({{ site.baseurl }}/Decidable/#proof-by-reflection),
-[`_≤?_`]({{ site.baseurl }}/Decidable/#the-best-of-both-worlds) and
-[`toWitness`]({{ site.baseurl }}/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
-are defined in Chapter [Decidable]({{ site.baseurl }}/Decidable/). The
-type of `n<?length` guards against invoking `#_` on an `n` that is out
-of context bounds. Finally, in the return type `n<?length` is
-converted to a witness that `n` is within the bounds.
+Function `#_` takes an implicit argument `n∈Γ` that provides evidence for `n` to
+be within the context's bounds. Recall that
+[`True`](/Decidable/#proof-by-reflection),
+[`_≤?_`](/Decidable/#the-best-of-both-worlds) and
+[`toWitness`](/Decidable/#decidables-from-booleans-and-booleans-from-decidables)
+are defined in Chapter [Decidable](/Decidable/). The type of `n∈Γ` guards
+against invoking `#_` on an `n` that is out of context bounds. Finally, in the
+return type `n∈Γ` is converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
 ```
@@ -468,13 +466,9 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
 
 
-### Test examples {#examples}
-
-We repeat the test examples from
-Chapter [Lambda]({{ site.baseurl }}/Lambda/).
-You can find them
-[here]({{ site.baseurl }}/Lambda/#derivation)
-for comparison.
+### Test examples
+We repeat the test examples from Chapter [Lambda](/Lambda/). You can find them
+[here](/Lambda/#derivation) for comparison.
 
 First, computing two plus two on naturals:
 ```
@@ -806,7 +800,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
 Here `zero` requires an implicit parameter to aid inference,
 much in the same way that `[]` did in
-[Lists]({{ site.baseurl }}/Lists/).
+[Lists](/Lists/).
 
 
 ## Reduction

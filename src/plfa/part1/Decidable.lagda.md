@@ -39,7 +39,7 @@ open import plfa.part1.Isomorphism using (_⇔_)
 
 ## Evidence vs Computation
 
-Recall that Chapter [Relations]({{ site.baseurl }}/Relations/)
+Recall that Chapter [Relations](/Relations/)
 defined comparison as an inductive datatype,
 which provides _evidence_ that one number
 is less than or equal to another:
@@ -548,7 +548,7 @@ postulate
 #### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
-Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff),
+Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
 postulate
@@ -561,10 +561,10 @@ postulate
 -- Your code goes here
 ```
 
-## Proof by reflection {#proof-by-reflection}
+## Proof by reflection {name=proof-by-reflection}
 
 Let's revisit our definition of monus from
-Chapter [Naturals]({{ site.baseurl }}/Naturals/).
+Chapter [Naturals](/Naturals/).
 If we subtract a larger number from a smaller number, we take the result to be
 zero. We had to do something, after all. What could we have done differently? We
 could have defined a *guarded* version of minus, a function which subtracts `n`

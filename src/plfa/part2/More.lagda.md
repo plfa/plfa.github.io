@@ -31,10 +31,10 @@ informal. We show how to formalise the first four constructs and leave
 the rest as an exercise for the reader.
 
 Our informal descriptions will be in the style of
-Chapter [Lambda]({{ site.baseurl }}/Lambda/),
+Chapter [Lambda](/Lambda/),
 using extrinsically-typed terms,
 while our formalisation will be in the style of
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
+Chapter [DeBruijn](/DeBruijn/),
 using intrinsically-typed terms.
 
 By now, explaining with symbols should be more concise, more precise,
@@ -147,7 +147,7 @@ Here `M †` is the translation of term `M` from a calculus with the
 construct to a calculus without the construct.
 
 
-## Products {#products}
+## Products {name=products}
 
 ### Syntax
 
@@ -285,7 +285,7 @@ We can also translate back the other way:
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
-## Sums {#sums}
+## Sums {name=sums}
 
 ### Syntax
 
@@ -1236,7 +1236,7 @@ side to be well typed.
 
 ## Test examples
 
-We repeat the [test examples]({{ site.baseurl }}/DeBruijn/#examples) from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
+We repeat the [test examples](/DeBruijn/#examples) from Chapter [DeBruijn](/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
 ```
 two : ∀ {Γ} → Γ ⊢ `ℕ

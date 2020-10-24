@@ -198,8 +198,7 @@ Before starting the proof, we establish a couple lemmas
 about equivalent environments and substitutions.
 
 The empty environment is equivalent to the identity substitution
-`ids`, which we import from Chapter [Substitution]({{ site.baseurl
-}}/Substitution/).
+`ids`, which we import from Chapter [Substitution](/Substitution/).
 
 ```
 ≈ₑ-id : ∅' ≈ₑ ids
@@ -232,7 +231,7 @@ for the induction step we need the following lemma,
 which states that applying the composition of `exts σ`
 and `subst-zero` to `S x` is the same as just `σ x`,
 which is a corollary of a theorem in
-Chapter [Substitution]({{ site.baseurl }}/Substitution/).
+Chapter [Substitution](/Substitution/).
 
 ```
 subst-zero-exts : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{x : Γ ∋ ★}
