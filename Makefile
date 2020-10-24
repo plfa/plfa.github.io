@@ -101,8 +101,6 @@ list:
 
 .PHONY: publish
 publish: setup-check-rsync
-	@echo "Cleaning up..."
-	make clean
 	@echo "Building site..."
 	make build
 	@echo "Testing site..."
