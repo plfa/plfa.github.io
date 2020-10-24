@@ -61,7 +61,7 @@
     </header>
     <div class="post-content">
         <!-- Status & Version Badges -->
-<p><a href="https://github.com/plfa/plfa.github.io/releases/latest"><img src="https://img.shields.io/badge/calver-20.07-22bfda" alt="Calendar Version" /></a> <a href="https://github.com/agda/agda/releases/tag/v2.6.1"><img src="https://img.shields.io/badge/agda-v2.6.1-blue.svg" alt="Agda" /></a> <a href="https://github.com/agda/agda-stdlib/releases/tag/v1.3"><img src="https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg" alt="agda-stdlib" /></a></p>
+<p><a href="https://github.com/plfa/plfa.github.io/releases/latest"><img src="https://img.shields.io/badge/calver-20.07-22bfda" alt="Calendar Version" /></a> <a href="https://github.com/agda/agda/releases/tag/v2.6.1.1"><img src="https://img.shields.io/badge/agda-v2.6.1.1-blue.svg" alt="Agda" /></a> <a href="https://github.com/agda/agda-stdlib/releases/tag/v1.3"><img src="https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg" alt="agda-stdlib" /></a></p>
 <h2 id="dependencies-for-users">Dependencies for users</h2>
 <p>You can read PLFA <a href="http://plfa.inf.ed.ac.uk">online</a> without installing anything. However, if you wish to interact with the code or complete the exercises, you need several things:</p>
 <ul>
@@ -88,10 +88,10 @@
 <h3 id="install-git">Install Git</h3>
 <p>If you do not already have Git installed, see <a href="https://git-scm.com/downloads">the Git downloads page</a>.</p>
 <h3 id="install-agda-using-stack">Install Agda using Stack</h3>
-<p>The easiest way to install a <em>specific version</em> of Agda is using <a href="https://docs.haskellstack.org/en/stable/README/">Stack</a>. You can get the required version of Agda from GitHub, either by cloning the repository and switching to the correct branch, or by downloading <a href="https://github.com/agda/agda/releases/tag/v2.6.1">the zip archive</a>:</p>
+<p>The easiest way to install a <em>specific version</em> of Agda is using <a href="https://docs.haskellstack.org/en/stable/README/">Stack</a>. You can get the required version of Agda from GitHub, either by cloning the repository and switching to the correct branch, or by downloading <a href="https://github.com/agda/agda/releases/tag/v2.6.1.1">the zip archive</a>:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/agda/agda.git</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="bu">cd</span> agda</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="fu">git</span> checkout v2.6.1</span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="fu">git</span> checkout v2.6.1.1</span></code></pre></div>
 <p>To install Agda, run Stack from the Agda source directory:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="ex">stack</span> install --stack-yaml stack-8.8.3.yaml</span></code></pre></div>
 <p><em>This step will take a long time and a lot of memory to complete.</em></p>
@@ -127,7 +127,7 @@ Finished hello.</code></pre>
 <li>In “AGDA_DIR”, create a plain-text file called “libraries” containing the “/path/to/standard-library.agda-lib”. This lets Agda know that an Agda library called “standard-library” is available.</li>
 <li>In “AGDA_DIR”, create a plain-text file called “defaults” containing <em>just</em> the line “standard-library”.</li>
 </ul>
-<p>More information about placing the standard libraries is available from <a href="https://agda.readthedocs.io/en/v2.6.1/tools/package-system.html#example-using-the-standard-library">the Library Management page</a> of the Agda documentation.</p>
+<p>More information about placing the standard libraries is available from <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/package-system.html#example-using-the-standard-library">the Library Management page</a> of the Agda documentation.</p>
 <p>It is possible to set up PLFA as an Agda library as well. If you want to complete the exercises found in the “courses” folder, or to import modules from the book, you need to do this. To do so, add the path to “plfa.agda-lib” to “AGDA_DIR/libraries” and add “plfa” to “AGDA_DIR/defaults”, each on a line of their own.</p>
 <h4 id="check-if-the-agda-standard-library-was-installed-correctly">Check if the Agda standard library was installed correctly</h4>
 <p>If you’d like, you can test to see if you’ve installed the Agda standard library correctly. Create a file called “nats.agda” with these lines:</p>
@@ -158,7 +158,7 @@ Finished nats.</code></pre>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a><span class="ex">agda-mode</span> compile</span></code></pre></div>
 <p>If you are already an Emacs user and have customized your setup, you may want to note the configuration which the <code>setup</code> appends to your <code>.emacs</code> file, and integrate it with your own preferred setup.</p>
 <h4 id="check-if-agda-mode-was-installed-correctly">Check if “agda-mode” was installed correctly</h4>
-<p>Open the <code>nats.agda</code> file you created earlier, and load and type-check the file by typing <a href="https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
+<p>Open the <code>nats.agda</code> file you created earlier, and load and type-check the file by typing <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
 <h4 id="auto-loading-agda-mode-in-emacs">Auto-loading “agda-mode” in Emacs</h4>
 <p>Since version 2.6.0, Agda has had support for literate editing with Markdown, using the “.lagda.md” extension. One issue is that Emacs will default to Markdown editing mode for files with a “.md” suffix. In order to have “agda-mode” automatically loaded whenever you open a file ending with “.agda” or “.lagda.md”, add the following line to your Emacs configuration file:</p>
 <pre class="elisp"><code>;; auto-load agda-mode for .agda and .lagda.md
@@ -178,8 +178,8 @@ Finished nats.</code></pre>
                     :weight 'normal
                     :width  'normal)</code></pre>
 <h4 id="using-agda-mode-in-emacs">Using “agda-mode” in Emacs</h4>
-<p>To load and type-check the file, use <a href="https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
-<p>Agda is edited interactively, using <a href="https://agda.readthedocs.io/en/v2.5.4/getting-started/quick-guide.html">“holes”</a>, which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using “C-c C-l”, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:</p>
+<p>To load and type-check the file, use <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
+<p>Agda is edited interactively, using <a href="https://agda.readthedocs.io/en/v2.6.1.1/getting-started/quick-guide.html">“holes”</a>, which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using “C-c C-l”, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:</p>
 <ul>
 <li><code>C-c C-c x</code>: <strong>c</strong>ase split on variable x</li>
 <li><code>C-c C-space</code>: fill in hole</li>
@@ -188,7 +188,7 @@ Finished nats.</code></pre>
 <li><code>C-c C-,</code>: goal type and context</li>
 <li><code>C-c C-.</code>: goal type, context, and inferred type</li>
 </ul>
-<p>See <a href="https://agda.readthedocs.io/en/v2.6.1/tools/emacs-mode.html">the emacs-mode docs</a> for more details.</p>
+<p>See <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html">the emacs-mode docs</a> for more details.</p>
 <p>If you want to see messages beside rather than below your Agda code, you can do the following:</p>
 <ul>
 <li>Open your Agda file, and load it using <code>C-c C-l</code>;</li>
@@ -220,7 +220,7 @@ Finished nats.</code></pre>
 <pre><code>M-x quail-show-key</code></pre>
 <p>You’ll see the key sequence of the character in mini buffer.</p>
 <h2 id="dependencies-for-developers">Dependencies for developers</h2>
-<p>PLFA is written in literate Agda with <a href="https://commonmark.org/">CommonMark</a>. PLFA is available as both a website and an EPUB e-book, both of which can be built on UNIX and macOS. Finally, to help developers avoid common mistakes, we provide a set of Git hooks.</p>
+<p>PLFA is written in literate Agda with <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">Pandoc Markdown</a>. PLFA is available as both a website and an EPUB e-book, both of which can be built on UNIX and macOS. Finally, to help developers avoid common mistakes, we provide a set of Git hooks.</p>
 <h3 id="building-the-website-and-e-book">Building the website and e-book</h3>
 <p>If you’d like to build the web version of PLFA locally, <a href="#install-the-haskell-tool-stack">Stack</a> is all you need! PLFA is built using <a href="https://jaspervdj.be/hakyll/">Hakyll</a>, a Haskell library for building static websites. We’ve setup a Makefile to help you run common tasks. For instance, to build PLFA, run:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="fu">make</span> build</span></code></pre></div>
