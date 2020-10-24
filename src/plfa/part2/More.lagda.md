@@ -1105,9 +1105,9 @@ data Finished {Γ A} (N : Γ ⊢ A) : Set where
        ----------
        Finished N
 
-data Steps : ∀ {A} → ∅ ⊢ A → Set where
+data Steps {A} : ∅ ⊢ A → Set where
 
-  steps : ∀ {A} {L N : ∅ ⊢ A}
+  steps : {L N : ∅ ⊢ A}
     → L —↠ N
     → Finished N
       ----------
