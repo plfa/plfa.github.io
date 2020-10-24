@@ -428,10 +428,8 @@ lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
 lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 ```
 
-We intend to apply the function only when the natural is
-shorter than the length of the context, which we indicate by
-postulating an `impossible` term, just as we did
-[here](/Lambda/#primed).
+We intend to apply the function only when the natural is shorter than
+the length of the context, which is witnessed by `p`.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
