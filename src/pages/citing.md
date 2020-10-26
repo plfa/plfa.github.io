@@ -25,7 +25,6 @@ permalink      : /Citing/
 }
 ```
 
-
 ## PLFA version 19.08
 
 ### Chicago

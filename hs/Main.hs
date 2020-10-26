@@ -6,12 +6,14 @@ import           Data.Functor ((<&>))
 import qualified Data.Text as T
 import           Hakyll
 import           Hakyll.Web.Agda
+import           Hakyll.Web.Routes.Permalink
 import           Hakyll.Web.Template.Numeric
 import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Template.Context.Title
 import           Hakyll.Web.Sass
-import           Hakyll.Web.Routes.Permalink
 import           System.FilePath ((</>), takeDirectory)
+import qualified Text.CSL as CSL
+import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
 import qualified Text.Pandoc as Pandoc
 import qualified Text.Pandoc.Filter as Pandoc (Filter(..),  applyFilters)
@@ -152,6 +154,9 @@ epubWriterOptions = siteWriterOptions
 main :: IO ()
 main = do
 
+  let cslFileName = "csl/iso690-author-date-en.csl"
+  let bibFileName = "bib/plfa.bib"
+
   -- Build function to fix standard library URLs
   fixStdlibLink <- mkFixStdlibLink agdaStdlibPath
 
@@ -160,25 +165,33 @@ main = do
 
   -- Build compiler for Markdown pages
   let pageCompiler :: Compiler (Item String)
-      pageCompiler = getResourceBody
-        >>= readMarkdownWith siteReaderOptions
-        <&> writeHTML5With siteWriterOptions
-        >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
-        >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
-        >>= relativizeUrls
+      pageCompiler = do
+        csl <- load cslFileName
+        bib <- load bibFileName
+        getResourceBody
+          >>= readMarkdownWith siteReaderOptions
+          >>= processCites csl bib
+          <&> writeHTML5With siteWriterOptions
+          >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
+          >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
+          >>= relativizeUrls
 
   -- Build compiler for literate Agda pages
   let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
-      pageWithAgdaCompiler opts = agdaCompilerWith opts
-        >>= withItemBody (return . withUrls fixStdlibLink)
-        >>= withItemBody (return . withUrls fixLocalLink)
-        >>= readMarkdownWith siteReaderOptions
-        <&> writeHTML5With siteWriterOptions
-        >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
-        >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
-        >>= relativizeUrls
+      pageWithAgdaCompiler opts = do
+        csl <- load cslFileName
+        bib <- load bibFileName
+        agdaCompilerWith opts
+          >>= withItemBody (return . withUrls fixStdlibLink)
+          >>= withItemBody (return . withUrls fixLocalLink)
+          >>= readMarkdownWith siteReaderOptions
+          >>= processCites csl bib
+          <&> writeHTML5With siteWriterOptions
+          >>= saveSnapshot "content"
+          >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
+          >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
+          >>= relativizeUrls
 
   -- Run Hakyll
   --
@@ -260,9 +273,13 @@ main = do
         >>= relativizeUrls
 
     match "posts/*" $ do
-        route $ setExtension "html"
-        compile $ getResourceBody
+      route $ setExtension "html"
+      compile $ do
+        csl <- load cslFileName
+        bib <- load bibFileName
+        getResourceBody
           >>= readMarkdownWith siteReaderOptions
+          >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html"    postContext
@@ -306,6 +323,10 @@ main = do
     -- Compile templates
     match "templates/*" $ compile templateBodyCompiler
 
+    -- Compile CSL and BibTeX files
+    match "csl/*.csl" $ compile cslCompiler
+    match "bib/*.bib" $ compile biblioCompiler
+
     -- Copy resources
     match "public/**" $ do
       route idRoute
@@ -345,25 +366,27 @@ main = do
 -- Custom readers and writers
 --------------------------------------------------------------------------------
 
--- | Read a CommonMark string using Pandoc, with the supplied options.
-readCommonMarkWith :: ReaderOptions           -- ^ Parser options
-                   -> Item String             -- ^ String to read
-                   -> Compiler (Item Pandoc)  -- ^ Resulting document
-readCommonMarkWith ropt item =
-  case Pandoc.runPure $ traverse (Pandoc.readCommonMark ropt) (fmap T.pack item) of
-    Left err    -> fail $
-      "Hakyll.Web.Pandoc.readPandocWith: parse failed: " ++ show err
-    Right item' -> return item'
-
 -- | Read a Markdown string using Pandoc, with the supplied options.
 readMarkdownWith :: ReaderOptions           -- ^ Parser options
-                   -> Item String             -- ^ String to read
-                   -> Compiler (Item Pandoc)  -- ^ Resulting document
+                 -> Item String             -- ^ String to read
+                 -> Compiler (Item Pandoc)  -- ^ Resulting document
 readMarkdownWith ropt item =
   case Pandoc.runPure $ traverse (Pandoc.readMarkdown ropt) (fmap T.pack item) of
     Left err    -> fail $
       "Hakyll.Web.Pandoc.readPandocWith: parse failed: " ++ show err
     Right item' -> return item'
+
+-- | Process citations in a Pandoc document.
+processCites :: Item CSL -> Item Biblio -> Item Pandoc -> Compiler (Item Pandoc)
+processCites csl bib item = do
+    -- Parse CSL file, if given
+    style <- unsafeCompiler $ CSL.readCSLFile Nothing . toFilePath . itemIdentifier $ csl
+
+    -- We need to know the citation keys, add then *before* actually parsing the
+    -- actual page. If we don't do this, pandoc won't even consider them
+    -- citations!
+    let Biblio refs = itemBody bib
+    withItemBody (return . CSL.processCites style refs) item
 
 -- | Write a document as HTML using Pandoc, with the supplied options.
 writeHTML5With :: WriterOptions  -- ^ Writer options for pandoc
