@@ -55,7 +55,14 @@
     </header>
     <div class="post-content">
         <h2 id="to-do">To Do</h2>
-<p>Changes I would like to make to the book: - Relations, exercise <code>o+o≡e</code> –&gt; (recommended) - Relations, exercise <code>≤-iff-&lt;</code> –&gt; <code>≤→&lt;</code>, <code>&lt;→≤</code> - Relations, exercise <code>Bin-predicates</code> –&gt; <code>Bin-predicate</code> change canonical form of zero to be empty string, <code>&lt;&gt;</code>. Similar change to subsequent exercise.</p>
+<p>Changes I would like to make to the book:</p>
+<ul>
+<li>Relations, exercise <code>o+o≡e</code> –&gt; (recommended)</li>
+<li>Relations, exercise <code>≤-iff-&lt;</code> –&gt; <code>≤→&lt;</code>, <code>&lt;→≤</code></li>
+<li>Relations, exercise <code>Bin-predicates</code> –&gt; <code>Bin-predicate</code> Change canonical form of zero to be empty string, <code>&lt;&gt;</code>. Similar change to subsequent exercise.</li>
+</ul>
+<h2 id="citations">Citations</h2>
+<p>You can cite works by writing <code>@</code> followed by a citation key, e.g., <code>@plfa20.07</code>. For instance, the first release of PLFA was by <span class="citation" data-cites="plfa19.08">Wadler, Kokke (2019)</span>. See the <a href="#bibliography">bibliography</a> section below for the bibliography. Citations and the bibliography are currently styled according to the ISO-690 standard.</p>
 <h2 id="downloading-older-versions">Downloading older versions</h2>
 <p><a href="https://github.com/plfa/plfa.github.io/releases" class="uri">https://github.com/plfa/plfa.github.io/releases</a></p>
 <h2 id="google-analytics">Google Analytics</h2>
@@ -126,8 +133,31 @@ dom T | not=&gt; () | q =&gt; q₁
 <p><a href="https://analytics.google.com/analytics/web/">Google analytics</a></p>
 </blockquote>
 <h2 id="where-to-put-lists">Where to put Lists?</h2>
-<p>Three possible orders: + (a) As current + (b) Put Lists immediately after Induction. - requires moving composition &amp; extensionality earlier - requires moving parameterised modules earlier for monoids - add material to relations: lexical ordering, subtype ordering, All, Any, All-++ iff - add material to isomorphism: All-++ isomorphism - retain material on decidability of All, Any in Decidable + (c) Put Lists after Decidable - requires moving Any-decidable from Decidable to Lists + (d) As (b) but put parameterised modules in a separate chapter</p>
-<p>Tradeoffs: + (b) Distribution of exercises near where material is taught + (b) Additional reinforcement for simple proofs by induction + (a,c) Can drop material if there is lack of time + (a,c) Earlier emphasis on induction over evidence + (c) More consistent structuring principle</p>
+<p>Three possible orders:</p>
+<ol>
+<li>As current</li>
+<li>Put Lists immediately after Induction.
+<ul>
+<li>requires moving composition &amp; extensionality earlier</li>
+<li>requires moving parameterised modules earlier for monoids</li>
+<li>add material to relations: lexical ordering, subtype ordering, All, Any, All-++ iff</li>
+<li>add material to isomorphism: All-++ isomorphism</li>
+<li>retain material on decidability of All, Any in Decidable</li>
+</ul></li>
+<li>Put Lists after Decidable
+<ul>
+<li>requires moving Any-decidable from Decidable to Lists</li>
+</ul></li>
+<li>As (2) but put parameterised modules in a separate chapter</li>
+</ol>
+<p>Tradeoffs:</p>
+<ul>
+<li>(2) Distribution of exercises near where material is taught</li>
+<li>(2) Additional reinforcement for simple proofs by induction</li>
+<li>(1,3) Can drop material if there is lack of time</li>
+<li>(1,3) Earlier emphasis on induction over evidence</li>
+<li>(3) More consistent structuring principle</li>
+</ul>
 <h2 id="set-up-lists-of-exercises-to-do">Set up lists of exercises to do</h2>
 <ul>
 <li>Use md rather than HTML</li>
@@ -303,18 +333,14 @@ dom T | not=&gt; () | q =&gt; q₁
 <li>http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/TakeHomeExamTypes2017.pdf</li>
 </ul></li>
 </ul>
-<h2 id="syntax-for-lambda-calculus">Syntax for lambda calculus</h2>
-<ul>
-<li>ƛ \Gl-</li>
-<li>∙ .</li>
-</ul>
 <h2 id="adrians-comments-from-meetup">Adrian’s comments from MeetUp</h2>
-<p>Adrian King I think we’ve finally gone through the whole book now up through chapter Properties, and we’ve come up with just three places where we thought the book could have done a better job of preparing us for the exercises.</p>
+<p><strong>Adrian King</strong>:</p>
+<blockquote>
+<p>I think we’ve finally gone through the whole book now up through chapter Properties, and we’ve come up with just three places where we thought the book could have done a better job of preparing us for the exercises.</p>
 <p>Starting from the end of the book:</p>
 <ul>
-<li>Chapter Quantifiers, exercise Bin-isomorphism:</li>
-</ul>
-<p>In the to∘from case, we want to show that:</p>
+<li><p>Chapter Quantifiers, exercise Bin-isomorphism:</p>
+<p>In the <code>to∘from</code> case, we want to show that:</p>
 <pre><code>⟨ to (from x) , toCan {from x} ⟩ ≡ ⟨ x , canX ⟩</code></pre>
 <p>I found myself wanting to use a general lemma like:</p>
 <pre><code>exEq :
@@ -324,10 +350,8 @@ px ≡ py →
 ⟨ x , px ⟩ ≡ ⟨ y , py ⟩
 exEq refl refl = refl</code></pre>
 <p>which is in some sense true, but in Agda it doesn’t typecheck, because Agda can’t see that px’s type and py’s type are the same. My solution made explicit use of heterogeneous equality.</p>
-<p>I realize there are ways to solve this that don’t explicitly use heterogeneous equality, but the surprise factor of the exercise might have been lower if heterogeneous equality had been mentioned by that point, perhaps in the Equality chapter.</p>
-<ul>
-<li>Chapter Quantifiers, exercise ∀-×:</li>
-</ul>
+<p>I realize there are ways to solve this that don’t explicitly use heterogeneous equality, but the surprise factor of the exercise might have been lower if heterogeneous equality had been mentioned by that point, perhaps in the Equality chapter.</p></li>
+<li><p>Chapter Quantifiers, exercise ∀-×:</p>
 <p>I assume the intended solution looks something like:</p>
 <pre><code>∀-× : ∀ {B : Tri → Set} → ((x : Tri) → B x) ≃ (B aa × B bb × B cc)
 ∀-× = record {
@@ -341,11 +365,8 @@ Extensionality a b =
 {A : Set a} {B : A → Set b} {f g : (x : A) → B x} →
 (∀ x → f x ≡ g x) → f ≡ g
 
-postulate
-exten : ∀ {a b} → Extensionality a b</code></pre>
-<ul>
-<li>Chapter Relations, exercise Bin-predicates:</li>
-</ul>
+postulate exten : ∀ {a b} → Extensionality a b</code></pre></li>
+<li><p>Chapter Relations, exercise Bin-predicates:</p>
 <p>I made use here of the inspect idiom, in Aaron Stump’s variant, which is syntactically more convenient:</p>
 <pre><code>keep : ∀ {ℓa} → {a : Set ℓa} → (x : a) → Σ a (λ y → y ≡ x)
 keep x = x , refl</code></pre>
@@ -355,7 +376,15 @@ roundTripTwice {x} onex | zero , eq with oneIsMoreThanZero onex
 roundTripTwice {x} onex | zero , eq | 0&lt;fromx rewrite sym eq =
 ⊥-elim (not0&lt;0 0&lt;fromx)
 roundTripTwice {x} onex | suc n , eq rewrite sym eq | toTwiceSuc {n} |
-cong x0_ (sym (roundTrip (one onex))) | sym eq = refl</code></pre>
+cong x0_ (sym (roundTrip (one onex))) | sym eq = refl</code></pre></li>
+</ul>
+</blockquote>
+<h2 class="unnumbered" id="bibliography">Bibliography</h2>
+<div id="refs" class="references" role="doc-bibliography">
+<div id="ref-plfa19.08">
+<p>WADLER, Philip and KOKKE, Wen, 2019. <em>Programming language foundations in Agda</em> [online]. Available from: <a href="http://plfa.inf.ed.ac.uk/19.08/">http://plfa.inf.ed.ac.uk/19.08/</a></p>
+</div>
+</div>
     </div>
     <nav class="pager">
     <ul class="pagination">
