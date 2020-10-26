@@ -10,7 +10,7 @@ You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`
 
 ## Publish the current version of PLFA to the web
 
-PLFA used to be published automatically from the `dev` branch by Travis CI. However, given recent trouble with Agda and Travis CS, we moved away from automatic updates. 
+PLFA used to be published automatically from the `dev` branch by Travis CI. However, given recent trouble with Agda and Travis CS, we moved away from automatic updates.
 
 There are several steps to publishing the current version of PLFA to the web:
 
@@ -54,7 +54,7 @@ There are several steps to creating a new release for PLFA:
 - [ ] Add the release version `YY.0M` to the end of the `releaseVersions` variable in `hs/Main.hs`.[^nosupport]
 - [ ] Write an announcement for the release in the `_posts` folder, describing any major changes.
 - [ ] Commit your changes to the `dev` branch.
-- [ ] [Publish the current version of PLFA](#publish-the-current-version-of-PLFA-to-the-web) (again).
+- [ ] [Publish the current version of PLFA](#publish-the-current-version-of-plfa-to-the-web) (again).
 
 ## Bibliography
 
