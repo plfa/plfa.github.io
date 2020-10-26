@@ -39,6 +39,7 @@ siteReaderOptions = defaultHakyllReaderOptions
     , Ext_smart
     , Ext_superscript
     , Ext_subscript
+    , Ext_task_lists
     , Ext_yaml_metadata_block
     ]
   }
