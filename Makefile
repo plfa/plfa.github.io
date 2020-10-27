@@ -26,6 +26,7 @@ build: \
 	stack build && stack exec site build
 
 standard-library/ChangeLog.md:
+	git submodule init
 	git submodule update --recursive
 
 #################################################################################
