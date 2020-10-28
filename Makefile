@@ -97,7 +97,7 @@ list:
 
 
 ########################################
-# Publish PLFA
+# Publish PLFA to plfa.github.io
 ########################################
 
 .PHONY: publish
@@ -126,6 +126,29 @@ publish: setup-check-rsync
 	@echo "Deleting web branch..."
 	git checkout dev
 	git branch -D web
+
+
+########################################
+# Publish PLFA to plfa.inf.ed.ac.uk
+########################################
+
+PLFA_AFS_DIR := /afs/inf.ed.ac.uk/group/project/plfa
+
+.PHONY: publish-uoe
+publish-uoe:
+ifeq (,$(wildcard $(PLFA_AFS_DIR)))
+	@echo "Please connect the Informatics OpenAFS filesystem."
+	@echo "See: http://computing.help.inf.ed.ac.uk/informatics-filesystem"
+	@exit 1
+else
+ifeq (,$(wildcard $(PLFA_AFS_DIR)/html))
+	git clone https://github.com/plfa/plfa.github.io.git --branch web --single-branch --depth 1 html
+endif
+	cd $(PLFA_AFS_DIR)/html          \
+		&& git fetch --depth 1         \
+		&& git reset --hard origin/web \
+		&& git clean -dfx
+endif
 
 
 #################################################################################
