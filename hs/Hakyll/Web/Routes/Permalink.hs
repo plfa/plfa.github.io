@@ -4,9 +4,11 @@ module Hakyll.Web.Routes.Permalink
   ( convertPermalink
   , permalinkRoute
   , permalinkRouteWithDefault
+  , stripIndexFile
   ) where
 
 import           Data.List (stripPrefix)
+import           Data.List.Extra (stripSuffix)
 import           Data.Maybe (fromMaybe)
 import           Hakyll
 import           System.FilePath ((</>))
@@ -23,3 +25,8 @@ permalinkRouteWithDefault :: Routes -> Routes
 permalinkRouteWithDefault def = metadataRoute $ \metadata ->
   maybe def (constRoute . convertPermalink) (lookupString "permalink" metadata)
 
+-- Removes "index.html" from URLs.
+stripIndexFile :: String -> String
+stripIndexFile = withUrls dir
+  where
+    dir link = fromMaybe link (stripSuffix "index.html" link)

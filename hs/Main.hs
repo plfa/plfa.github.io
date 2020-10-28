@@ -176,7 +176,7 @@ main = do
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
-          >>= relativizeUrls
+          >>= prettifyUrls
 
   -- Build compiler for literate Agda pages
   let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
@@ -192,7 +192,7 @@ main = do
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
-          >>= relativizeUrls
+          >>= prettifyUrls
 
   -- Run Hakyll
   --
@@ -241,7 +241,7 @@ main = do
         <&> writeHTML5With siteWriterOptions
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
-        >>= relativizeUrls
+        >>= prettifyUrls
 
     match "src/**.metadata" $
       compile getResourceBody
@@ -256,7 +256,7 @@ main = do
         >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
-        >>= relativizeUrls
+        >>= prettifyUrls
 
     match "authors/*.metadata" $
       compile getResourceBody
@@ -271,7 +271,7 @@ main = do
         >>= applyAsTemplate postListContext
         >>= loadAndApplyTemplate "templates/page.html"      siteContext
         >>= loadAndApplyTemplate "templates/default.html"   siteContext
-        >>= relativizeUrls
+        >>= prettifyUrls
 
     match "posts/*" $ do
       route $ setExtension "html"
@@ -285,7 +285,7 @@ main = do
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html"    postContext
           >>= loadAndApplyTemplate "templates/default.html" siteContext
-          >>= relativizeUrls
+          >>= prettifyUrls
 
     -- Compile sections using literate Agda
     match "src/**.lagda.md" $ do
@@ -355,7 +355,7 @@ main = do
       match (fromGlob $ "versions" </> v </> "**.html") $ do
         route $ gsubRoute "versions/" (const "")
         compile $ getResourceBody
-          >>= relativizeUrls
+          >>= prettifyUrls
 
       -- Copy other files
       match (fromGlob $ "versions" </> v </> "**") $ do
@@ -427,3 +427,10 @@ compilePandocTemplate i = do
 contentField :: String -> Snapshot -> Context String
 contentField key snapshot = field key $ \item ->
   itemBody <$> loadSnapshot (itemIdentifier item) snapshot
+
+--------------------------------------------------------------------------------
+-- Relativise URLs and strip "index.html" suffixes
+--------------------------------------------------------------------------------
+
+prettifyUrls :: Item String -> Compiler (Item String)
+prettifyUrls = relativizeUrls <=< withItemBody (return . stripIndexFile)
