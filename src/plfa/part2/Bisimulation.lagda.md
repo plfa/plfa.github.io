@@ -165,7 +165,7 @@ data _~_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → `let M N ~ (ƛ N†) · M†
 ```
 The language in Chapter [More](/More/) has more constructs, which we could easily add.
-However, leaving the simulation small let's us focus on the essence.
+However, leaving the simulation small lets us focus on the essence.
 It's a handy technical trick that we can have a large source language,
 but only bother to include in the simulation the terms of interest.
 
