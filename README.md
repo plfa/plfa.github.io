@@ -258,6 +258,14 @@ If you want to know how you input a specific Unicode character in agda file, mov
 
 You'll see the key sequence of the character in mini buffer.
 
+### Spacemacs
+[Spacemacs][spacemacs] is a “community-driven Emacs distribution” with native support for both Emacs and Vim editing styles. It comes with [integration for “agda-mode”][spacemacs-agda] out of the box. All that is required is that you turn it on.
+
+### Visual Studio Code
+[Visual Studio Code][vscode] is a free source code editor developed by Microsoft. There is [a plugin for Agda support][vscode-agda] available on the Visual Studio Marketplace.
+
+### Atom
+[Atom][atom] is a free source code editor developed by GitHub. There is [a plugin for Agda support][atom-agda] available on the Atom package manager.
 
 ## Dependencies for developers
 PLFA is written in literate Agda with [Pandoc Markdown][pandoc-markdown].
@@ -338,6 +346,12 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
 [aquamacs]: http://aquamacs.org/
+[spacemacs]: https://www.spacemacs.org/
+[spacemacs-agda]: https://develop.spacemacs.org/layers/+lang/agda/README.html
+[vscode]: https://code.visualstudio.com/
+[vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
+[atom]: https://atom.io/
+[atom-agda]: https://atom.io/packages/agda-mode
 [agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg
 [agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.3
 [fix-whitespace]: https://github.com/agda/fix-whitespace
