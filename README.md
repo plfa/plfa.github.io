@@ -124,7 +124,7 @@ download that version, and then ask Stack to install it for us.
     ```
 
     The last step may give you notices about being in "'detached HEAD'
-    state" --- it's fine.  The success message you hope to see is
+    state" — it's fine.  The success message you hope to see is
     `Note: switching to 'v2.6.0.1'`.
 
     Alternatively, you can download a ZIP archive of that version from
@@ -284,8 +284,8 @@ library as well.  If you want to import PLFA modules into your Agda
 files — which is necessary for loading later sections of PLFA — then
 you _must_ set up the PLFA sources as an Agda library.  To do so,
 
- 1. Add the full path of the `PLFA` directory to `~/.agda/libraries`
-    on its own line.
+ 1. Add the full path of the `plfa.agda-lib` file within the `PLFA`
+    directory to `~/.agda/libraries` on its own line.
         
  2. Add `plfa` (lower-case!) to `~/.agda/defaults`, again on a line of
     its own.
@@ -422,7 +422,7 @@ files.  Let's say we want to add a comment line that reads
    ```
 
  - But after that last space, we do not find ∀ on the keyboard.  The
-   code for this character is the four characters `\all` --- so we
+   code for this character is the four characters `\all` — so we
    type those four characters, and when we finish, Emacs will replace
    them with what we want
 
