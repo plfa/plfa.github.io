@@ -70,6 +70,7 @@ Try installing the library from the normal installer for your system
 
 ### Stack reports that the file `user-manual.pdf` cannot be located
 
+You do not need the Agda user manual to do the exercises in PLFA.
 Remove the line containing `doc/user-manual.pdf` from the `Agda.cabal`
 file in the `agda` directory which you cloned via Git.
 
