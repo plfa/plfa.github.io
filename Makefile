@@ -148,6 +148,7 @@ endif
 		&& git fetch --depth 1         \
 		&& git reset --hard origin/web \
 		&& git clean -dfx
+	fsr setacl $(PLFA_AFS_DIR)/html system:groupwebserver rl
 endif
 
 
