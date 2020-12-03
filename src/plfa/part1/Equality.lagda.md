@@ -268,6 +268,14 @@ simplifies to a chain of applications of `trans` that ends in `trans e
 refl`, where `e` is a term that proves some equality, even though `e`
 alone would do.
 
+#### Exercise `trans` and `≡-Reasoning` (practice)
+
+Sadly, we cannot use the definition of trans' using ≡-Reasoning as the definition
+for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
+
+```
+-- Your code goes here
+```
 
 ## Chains of equations, another example
 
