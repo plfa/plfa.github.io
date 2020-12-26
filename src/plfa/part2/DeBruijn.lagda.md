@@ -1374,7 +1374,7 @@ number of lines of code is as follows:
 
 The relation between the two approaches approximates the
 golden ratio: extrinsically-typed terms
-require about 1.6 times as much code as intrinsicaly-typed.
+require about 1.6 times as much code as intrinsically-typed.
 
 ## Unicode
 
