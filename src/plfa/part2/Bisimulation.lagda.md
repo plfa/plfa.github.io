@@ -174,6 +174,10 @@ but only bother to include in the simulation the terms of interest.
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
+**Hint:** To avoid a `Incomplete pattern matching for _†.` error, you'll need to create an alternative "term" type, say, `|~`.
+This new type should include constructors for only those terms that are of interest to the `~` relation.
+You'll need to write a mapping function that takes terms of this new type into equivalents in the original type: `⊢`, in order to use the `~` relation, as defined, in your proofs.
+
 ```
 -- Your code goes here
 ```
