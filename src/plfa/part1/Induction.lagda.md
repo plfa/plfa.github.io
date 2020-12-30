@@ -71,7 +71,7 @@ distributes over another operator.  A careful author will often call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-#### Exercise `operators` (practice) {#operators}
+#### Exercise `operators` (practice) {name=operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -364,7 +364,7 @@ proof of associativity.
 
 The symbol `∀` appears in the statement of associativity to indicate that
 it holds for all numbers `m`, `n`, and `p`.  We refer to `∀` as the _universal
-quantifier_, and it is discussed further in Chapter [Quantifiers]({{ site.baseurl }}/Quantifiers/).
+quantifier_, and it is discussed further in Chapter [Quantifiers](/Quantifiers/).
 
 Evidence for a universal quantifier is a function.  The notations
 
@@ -599,7 +599,7 @@ the main proposition first, and the equations required to do so
 will suggest what lemmas to prove.
 
 
-## Our first corollary: rearranging {#sections}
+## Our first corollary: rearranging {name=sections}
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
@@ -695,11 +695,11 @@ judgments where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
+#### Exercise `finite-|-assoc` (stretch) {name=finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
-[earlier]({{ site.baseurl }}/Naturals/#finite-creation).
+[earlier](/Naturals/#finite-creation).
 
 ```
 -- Your code goes here
@@ -857,7 +857,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise `+-swap` (recommended) {#plus-swap}
+#### Exercise `+-swap` (recommended) {name=plus-swap}
 
 Show
 
@@ -872,7 +872,7 @@ is associative and commutative.
 ```
 
 
-#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
+#### Exercise `*-distrib-+` (recommended) {name=times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -885,7 +885,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-assoc` (recommended) {#times-assoc}
+#### Exercise `*-assoc` (recommended) {name=times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -898,7 +898,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-comm` (practice) {#times-comm}
+#### Exercise `*-comm` (practice) {name=times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -912,7 +912,7 @@ you will need to formulate and prove suitable lemmas.
 ```
 
 
-#### Exercise `0∸n≡0` (practice) {#zero-monus}
+#### Exercise `0∸n≡0` (practice) {name=zero-monus}
 
 Show
 
@@ -925,7 +925,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-#### Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
+#### Exercise `∸-|-assoc` (practice) {name=monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -942,17 +942,17 @@ for all naturals `m`, `n`, and `p`.
 
 Show the following three laws
 
-     m ^ (n + p) ≡ (m ^ n) * (m ^ p)  (^-distribˡ-+-*)
+     m ^ (n + p) ≡ (m ^ n) * (m ^ p)  (^-distribˡ-|-*)
      (m * n) ^ p ≡ (m ^ p) * (n ^ p)  (^-distribʳ-*)
      (m ^ n) ^ p ≡ m ^ (n * p)        (^-*-assoc)
 
 for all `m`, `n`, and `p`.
 
 
-#### Exercise `Bin-laws` (stretch) {#Bin-laws}
+#### Exercise `Bin-laws` (stretch) {name=Bin-laws}
 
 Recall that
-Exercise [Bin]({{ site.baseurl }}/Naturals/#Bin)
+Exercise [Bin](/Naturals/#Bin)
 defines a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define functions
 

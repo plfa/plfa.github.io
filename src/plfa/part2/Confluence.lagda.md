@@ -1,5 +1,5 @@
 ---
-title     : "Confluence: Confluence of untyped lambda calculus 🚧"
+title     : "Confluence: Confluence of untyped lambda calculus"
 layout    : page
 prev      : /Untyped/
 permalink : /Confluence/
@@ -49,7 +49,7 @@ diamond property. Here is a counter example.
 Both terms can reduce to `a a`, but the second term requires two steps
 to get there, not one.
 
-To side-step this problem, we'll define an auxilliary reduction
+To side-step this problem, we'll define an auxiliary reduction
 relation, called _parallel reduction_, that can perform many
 reductions simultaneously and thereby satisfy the diamond property.
 Furthermore, we show that a parallel reduction sequence exists between
@@ -221,7 +221,7 @@ The proof is by induction on `M ⇛ N`.
 * Suppose `L · M ⇛ L′ · M′` because `L ⇛ L′` and `M ⇛ M′`.
   By the induction hypothesis, we have `L —↠ L′` and `M —↠ M′`.
   So `L · M —↠ L′ · M` and then `L′ · M  —↠ L′ · M′`
-  because `—↠` is a congruence. 
+  because `—↠` is a congruence.
 
 * Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By similar reasoning, we have
@@ -264,7 +264,7 @@ in turn relies on `rename`, we start with a version of the
 substitution lemma, called `par-rename`, that is specialized to
 renamings.  The proof of `par-rename` relies on the fact that renaming
 and substitution commute with one another, which is a lemma that we
-import from Chapter [Substitution]({{ site.baseurl }}/Substitution/)
+import from Chapter [Substitution](/Substitution/)
 and restate here.
 
 ```
@@ -319,7 +319,7 @@ par-subst-exts s {x = S x} = par-rename s
 The next lemma that we need for proving that substitution respects
 parallel reduction is the following which states that
 simultaneoous substitution commutes with single substitution. We import this
-lemma from Chapter [Substitution]({{ site.baseurl }}/Substitution/)
+lemma from Chapter [Substitution](/Substitution/)
 and restate it below.
 
 ```
@@ -407,7 +407,7 @@ The heart of the confluence proof is made of stone, or rather, of
 diamond!  We show that parallel reduction satisfies the diamond
 property: that if `M ⇛ N` and `M ⇛ N′`, then `N ⇛ L` and `N′ ⇛ L` for
 some `L`.  The typical proof is an induction on `M ⇛ N` and `M ⇛ N′`
-so that every possible pair gives rise to a witeness `L` given by
+so that every possible pair gives rise to a witness `L` given by
 performing enough beta reductions in parallel.
 
 However, a simpler approach is to perform as many beta reductions in
@@ -451,7 +451,7 @@ par-triangle (papp {L = _ · _} p1 p2) = papp (par-triangle p1) (par-triangle p2
 
 The proof of the triangle property is an induction on `M ⇛ N`.
 
-* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`. 
+* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`.
 
 * Suppose `ƛ M ⇛ ƛ N`. By the induction hypothesis we have `N ⇛ M ⁺`
   and by definition `(λ M) ⁺ = λ (M ⁺)`, so we conclude that `λ N ⇛ λ
@@ -611,7 +611,7 @@ confluence L↠M₁ L↠M₂
 ## Notes
 
 Broadly speaking, this proof of confluence, based on parallel
-reduction, is due to W. Tait and P. Martin-Lof (see Barendredgt 1984,
+reduction, is due to W. Tait and P. Martin-Löf (see Barendredgt 1984,
 Section 3.2).  Details of the mechanization come from several sources.
 The `subst-par` lemma is the "strong substitutivity" lemma of Shafer,
 Tebbi, and Smolka (ITP 2015). The proofs of `par-triangle`, `strip`,
@@ -619,7 +619,7 @@ and `par-confluence` are based on the notion of complete development
 by Takahashi (1995) and Pfenning's 1992 technical report about the
 Church-Rosser theorem. In addition, we consulted Nipkow and
 Berghofer's mechanization in Isabelle, which is based on an earlier
-article by Nipkow (JAR 1996).  
+article by Nipkow (JAR 1996).
 
 ## Unicode
 

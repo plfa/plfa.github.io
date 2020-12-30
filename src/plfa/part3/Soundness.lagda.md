@@ -1,5 +1,5 @@
 ---
-title     : "Soundness: Soundness of reduction with respect to denotational semantics 🚧"
+title     : "Soundness: Soundness of reduction with respect to denotational semantics"
 layout    : page
 prev      : /Compositional/
 permalink : /Soundness/
@@ -226,10 +226,10 @@ The main challenge is dealing with the substitution in β reduction:
 We have that `γ ⊢ N [ M ] ↓ v` and need to show that
 `γ ⊢ (ƛ N) · M ↓ v`. Now consider the derivation of `γ ⊢ N [ M ] ↓ v`.
 The term `M` may occur 0, 1, or many times inside `N [ M ]`. At each of
-those occurences, `M` may result in a different value. But to build a
+those occurrences, `M` may result in a different value. But to build a
 derivation for `(ƛ N) · M`, we need a single value for `M`.  If `M`
-occured more than 1 time, then we can join all of the different values
-using `⊔`. If `M` occured 0 times, then we do not need any information
+occurred more than 1 time, then we can join all of the different values
+using `⊔`. If `M` occurred 0 times, then we do not need any information
 about `M` and can therefore use `⊥` for the value of `M`.
 
 

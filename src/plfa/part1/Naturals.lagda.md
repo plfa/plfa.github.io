@@ -1,7 +1,7 @@
 ---
 title     : "Naturals: Natural numbers"
 layout    : page
-prev      : /Preface/
+prev      : /GettingStarted/
 permalink : /Naturals/
 next      : /Induction/
 ---
@@ -76,7 +76,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-#### Exercise `seven` (practice) {#seven}
+#### Exercise `seven` (practice) {name=seven}
 
 Write out `7` in longhand.
 
@@ -276,7 +276,7 @@ all the names specified in the `using` clause into the current scope.
 In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
 will see how these are used below.  We take these as givens for now,
 but will see how they are defined in
-Chapter [Equality]({{ site.baseurl }}/Equality/).
+Chapter [Equality](/Equality/).
 
 Agda uses underbars to indicate where terms appear in infix or mixfix
 operators. Thus, `_≡_` and `_≡⟨⟩_` are infix (each operator is written
@@ -287,7 +287,7 @@ Parentheses and semicolons are among the few characters that cannot
 appear in names, so we do not need extra spaces in the `using` list.
 
 
-## Operations on naturals are recursive functions {#plus}
+## Operations on naturals are recursive functions {name=plus}
 
 Now that we have the natural numbers, what can we do with them?
 For instance, can we define arithmetic operations such as
@@ -425,7 +425,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-#### Exercise `+-example` (practice) {#plus-example}
+#### Exercise `+-example` (practice) {name=plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
@@ -486,7 +486,7 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-#### Exercise `*-example` (practice) {#times-example}
+#### Exercise `*-example` (practice) {name=times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
@@ -496,7 +496,7 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-#### Exercise `_^_` (recommended) {#power}
+#### Exercise `_^_` (recommended) {name=power}
 
 Define exponentiation, which is given by the following equations:
 
@@ -566,7 +566,7 @@ _ =
   ∎
 ```
 
-#### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
+#### Exercise `∸-example₁` and `∸-example₂` (recommended) {name=monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -701,7 +701,7 @@ definitions is quite similar.  They might be considered two sides of
 the same coin.
 
 
-## The story of creation, finitely {#finite-creation}
+## The story of creation, finitely {name=finite-creation}
 
 The above story was told in a stratified way.  First, we create
 the infinite set of naturals.  We take that set as given when
@@ -764,8 +764,9 @@ Begin by typing:
 
 The question mark indicates that you would like Agda to help with
 filling in that part of the code. If you type `C-c C-l` (pressing
-the control key while hitting the `c` key followed by the `l` key)
-the question mark will be replaced:
+the control key while hitting the `c` key followed by the `l` key),
+which stands for **l**oad, the question mark will be
+replaced:
 
     _+_ : ℕ → ℕ → ℕ
     m + n = { }0
@@ -777,11 +778,11 @@ Emacs will also create a window displaying the text
     ?0 : ℕ
 
 to indicate that hole 0 is to be filled in with a term of type `ℕ`.
-Typing `C-c C-f` will move you into the next hole.
+Typing `C-c C-f` (for **f**orward) will move you into the next hole.
 
 We wish to define addition by recursion on the first argument.
-Move the cursor into the hole and type `C-c C-c`.   You will be given
-the prompt:
+Move the cursor into the hole and type `C-c C-c` (for **c**ase).
+You will be given the prompt:
 
     pattern variables to case (empty for split on result):
 
@@ -820,9 +821,9 @@ required type of the hole, and what free variables are available:
     n : ℕ
     m : ℕ
 
-Going into the hole and type `C-c C-r` will fill it in with a constructor
-(if there is a unique choice) or tell you what constructors you might use,
-if there is a choice.  In this case, it displays the following:
+Going into the hole and type `C-c C-r` (for **r**efine) will fill it in
+with a constructor (if there is a unique choice) or tell you what constructors
+you might use, if there is a choice.  In this case, it displays the following:
 
     Don't know which constructor to introduce of zero or suc
 
@@ -871,7 +872,7 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
-#### Exercise `Bin` (stretch) {#Bin}
+#### Exercise `Bin` (stretch) {name=Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
@@ -892,7 +893,7 @@ standing for the number eleven is encoded as
 Representations are not unique due to leading zeros.
 Hence, eleven is also represented by `001011`, encoded as:
 
-    ⟨⟩ O I O I I
+    ⟨⟩ O O I O I I
 
 Define a function
 
@@ -941,7 +942,7 @@ Such a pragma can only be invoked once, as invoking it twice would
 raise confusion as to whether `2` is a value of type `ℕ` or type
 `Data.Nat.ℕ`.  Similar confusions arise if other pragmas are invoked
 twice. For this reason, we will usually avoid pragmas in future chapters.
-Information on pragmas can be found in the (Agda documentation)[https://agda.readthedocs.io/en/v2.6.1/language/pragmas.html].
+Information on pragmas can be found in the [Agda documentation](https://agda.readthedocs.io/en/v2.6.1/language/pragmas.html).
 
 
 ## Unicode

@@ -1,5 +1,5 @@
 ---
-title     : "Denotational: Denotational semantics of untyped lambda calculus 🚧"
+title     : "Denotational: Denotational semantics of untyped lambda calculus"
 layout    : page
 prev      : /BigStep/
 permalink : /Denotational/
@@ -638,7 +638,7 @@ of the following shape.
 The compositionality property is not trivial because the semantics we
 have defined includes three rules that are not syntax directed:
 `⊥-intro`, `⊔-intro`, and `sub`. The above equations suggest that the
-dentoational semantics can be defined as a recursive function, and
+denotational semantics can be defined as a recursive function, and
 indeed, we give such a definition and prove that it is equivalent to
 ℰ.
 
@@ -685,7 +685,7 @@ is called _adequacy_ in the literature.
 
     ℰ M ≃ ℰ (ƛ N)  implies M —↠ ƛ N′ for some N′
 
-The fourth chapter applies the results of the three preceeding
+The fourth chapter applies the results of the three preceding
 chapters (compositionality, soundness, and adequacy) to prove that
 denotational equality implies a property called _contextual
 equivalence_. This property is important because it justifies the use
@@ -823,7 +823,7 @@ D^suc zero (a[0] ∷ []) = ⊥
 D^suc (suc i) (a[i+1] ∷ a[i] ∷ ls) =  a[i] ↦ a[i+1]  ⊔  D^suc i (a[i] ∷ ls)
 ```
 
-We use the following auxilliary function to obtain the last element of
+We use the following auxiliary function to obtain the last element of
 a non-empty vector. (This formulation is more convenient for our
 purposes than the one in the Agda standard library.)
 
@@ -857,9 +857,9 @@ Dᶜ n (a[n] ∷ ls) = (D^suc n (a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ 
 The exercise is to prove that for any path `ls`, the meaning of the
 Church numeral `n` is `Dᶜ n ls`.
 
-To fascilitate talking about arbitrary Church numerals, the following
+To facilitate talking about arbitrary Church numerals, the following
 `church` function builds the term for the nth Church numeral,
-using the auxilliary function `apply-n`.
+using the auxiliary function `apply-n`.
 
 ```
 apply-n : (n : ℕ) → ∅ , ★ , ★ ⊢ ★

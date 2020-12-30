@@ -198,8 +198,7 @@ Before starting the proof, we establish a couple lemmas
 about equivalent environments and substitutions.
 
 The empty environment is equivalent to the identity substitution
-`ids`, which we import from Chapter [Substitution]({{ site.baseurl
-}}/Substitution/).
+`ids`, which we import from Chapter [Substitution](/Substitution/).
 
 ```
 ≈ₑ-id : ∅' ≈ₑ ids
@@ -215,7 +214,7 @@ sub-id = plfa.part2.Substitution.sub-id
 ```
 
 
-We define an auxilliary function for extending a substitution.
+We define an auxiliary function for extending a substitution.
 
 ```
 ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
@@ -232,7 +231,7 @@ for the induction step we need the following lemma,
 which states that applying the composition of `exts σ`
 and `subst-zero` to `S x` is the same as just `σ x`,
 which is a corollary of a theorem in
-Chapter [Substitution]({{ site.baseurl }}/Substitution/).
+Chapter [Substitution](/Substitution/).
 
 ```
 subst-zero-exts : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{x : Γ ∋ ★}
@@ -293,7 +292,7 @@ below.
     ⟨ subst σ (ƛ N) , ⟨ subst σ (ƛ N) ∎ , ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ ⟩ ⟩
 ⇓→—↠×≈{Γ}{γ} {σ = σ} {L · M} {V} (⇓-app {N = N} L⇓ƛNδ N⇓V) γ≈ₑσ
     with ⇓→—↠×≈{σ = σ} L⇓ƛNδ γ≈ₑσ
-... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN 
+... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
       with ⇓→—↠×≈ {σ = ext-subst τ (subst σ M)} N⇓V
              (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
            | β{∅}{subst (exts τ) N}{subst σ M}
@@ -393,7 +392,7 @@ underneath lambda abstractions via the `ζ` rule. The call-by-name
 semantics does not reduce under lambda, so a straightforward proof by
 induction on the reduction sequence is impossible.  In the article
 _Call-by-name, call-by-value, and the λ-calculus_, Plotkin proves the
-theorem in two steps, using two auxilliary reduction relations. The
+theorem in two steps, using two auxiliary reduction relations. The
 first step uses a classic technique called Curry-Feys standardisation.
 It relies on the notion of _standard reduction sequence_, which acts
 as a half-way point between full beta reduction and call-by-name by

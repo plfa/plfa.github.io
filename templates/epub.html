@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="$language$">
+<head>
+  <meta charset="utf-8" />
+  <title>$pagetitle$</title>
+  <link rel="stylesheet" type="text/css" href="css/agda.css" />
+  <link rel="stylesheet" type="text/css" href="css/epub.css" />
+</head>
+<body>
+<section epub:type="titlepage" class="titlepage">
+  <h1 class="title">$pagetitle$</h1>
+$for(authors)$
+  <p class="author">$name$</p>
+$endfor$
+$if(rights)$
+  <div class="rights">$rights$</div>
+  $endif$
+</section>
+<!-- NOTE: body is escaped because it is filled in by the Pandoc template engine, -->
+<!--       whereas the rest is filled in by the Hakyll template engine, both of   -->
+<!--       which use the same syntax. Yes, this is confusing.                     -->
+$$body$$
+</body>
+</html>
+

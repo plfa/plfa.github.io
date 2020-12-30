@@ -81,7 +81,7 @@ Since we define equality here, any import would create a conflict.
 #### Exercise `≤-Reasoning` (stretch)
 
 The proof of monotonicity from
-Chapter [Relations]({{ site.baseurl }}/Relations/)
+Chapter [Relations](/Relations/)
 can be written in a more readable form by using an analogue of our
 notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
@@ -126,8 +126,8 @@ Show that equivalence is reflexive, symmetric, and transitive.
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
-[Bin]({{ site.baseurl }}/Naturals/#Bin) and
-[Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws)
+[Bin](/Naturals/#Bin) and
+[Bin-laws](/Induction/#Bin-laws)
 define a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define the following functions and predicates:
 
@@ -149,7 +149,7 @@ Why do `to` and `from` not form an isomorphism?
 
 #### Exercise `⇔≃×` (recommended)
 
-Show that `A ⇔ B` as defined [earlier]({{ site.baseurl }}/Isomorphism/#iff)
+Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
 
 ```
@@ -221,7 +221,7 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 #### Exercise `<-irreflexive` (recommended)
 
 Using negation, show that
-[strict inequality]({{ site.baseurl }}/Relations/#strict-inequality)
+[strict inequality](/Relations/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
 ```
@@ -232,7 +232,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 #### Exercise `trichotomy` (practice)
 
 Show that strict inequality satisfies
-[trichotomy]({{ site.baseurl }}/Relations/#trichotomy),
+[trichotomy](/Relations/#trichotomy),
 that is, for any naturals `m` and `n` exactly one of the following holds:
 
 * `m < n`
@@ -310,7 +310,7 @@ postulate
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 ```
 Compare this with the result (`→-distrib-×`) in
-Chapter [Connectives]({{ site.baseurl }}/Connectives/).
+Chapter [Connectives](/Connectives/).
 
 
 #### Exercise `⊎∀-implies-∀⊎` (practice)
@@ -400,9 +400,9 @@ Does the converse hold? If so, prove; if not, explain why.
 #### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
-[Bin]({{ site.baseurl }}/Naturals/#Bin),
-[Bin-laws]({{ site.baseurl }}/Induction/#Bin-laws), and
-[Bin-predicates]({{ site.baseurl }}/Relations/#Bin-predicates)
+[Bin](/Naturals/#Bin),
+[Bin-laws](/Induction/#Bin-laws), and
+[Bin-predicates](/Relations/#Bin-predicates)
 define a datatype `Bin` of bitstrings representing natural numbers,
 and asks you to define the following functions and predicates:
 
@@ -469,7 +469,7 @@ postulate
 #### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
-Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff),
+Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
 postulate

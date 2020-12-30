@@ -1,5 +1,5 @@
 ---
-title     : "ContextualEquivalence: Denotational equality implies contextual equivalence 🚧"
+title     : "ContextualEquivalence: Denotational equality implies contextual equivalence"
 layout    : page
 prev      : /Adequacy/
 permalink : /ContextualEquivalence/
@@ -94,7 +94,7 @@ Putting these two facts together gives us
 
     ℰ (plug C N) ≃ ℰ (ƛN′).
 
-We then apply `↓→⇓` from Chapter [Adequacy]({{ site.baseurl }}/Adequacy/) to deduce
+We then apply `↓→⇓` from Chapter [Adequacy](/Adequacy/) to deduce
 
     ∅' ⊢ plug C N ⇓ clos (ƛ N′′) δ).
 

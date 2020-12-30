@@ -31,10 +31,10 @@ informal. We show how to formalise the first four constructs and leave
 the rest as an exercise for the reader.
 
 Our informal descriptions will be in the style of
-Chapter [Lambda]({{ site.baseurl }}/Lambda/),
+Chapter [Lambda](/Lambda/),
 using extrinsically-typed terms,
 while our formalisation will be in the style of
-Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
+Chapter [DeBruijn](/DeBruijn/),
 using intrinsically-typed terms.
 
 By now, explaining with symbols should be more concise, more precise,
@@ -147,7 +147,7 @@ Here `M †` is the translation of term `M` from a calculus with the
 construct to a calculus without the construct.
 
 
-## Products {#products}
+## Products {name=products}
 
 ### Syntax
 
@@ -206,7 +206,7 @@ construct to a calculus without the construct.
 Here is a function to swap the components of a pair:
 
     swap× : ∅ ⊢ A `× B ⇒ B `× A
-    swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
+    swap× = ƛ z ⇒ `⟨ `proj₂ z , `proj₁ z ⟩
 
 
 ## Alternative formulation of products
@@ -271,21 +271,21 @@ One might think that we could instead use a more compact translation:
     -- WRONG
       (case× L [⟨ x , y ⟩⇒ N ]) †
     =
-      (N †) [ x := proj₁ (L †) ][ y := proj₂ (L †) ]
+      (N †) [ x := `proj₁ (L †) ] [ y := `proj₂ (L †) ]
 
 But this behaves differently.  The first term always reduces `L`
-before `N`, and it computes `proj₁` and `proj₂` exactly once.  The
+before `N`, and it computes ```proj₁`` and ```proj₂`` exactly once.  The
 second term does not reduce `L` to a value before reducing `N`, and
 depending on how many times and where `x` and `y` appear in `N`, it
-may reduce `L` many times or not at all, and it may compute `proj₁`
-and `proj₂` many times or not at all.
+may reduce `L` many times or not at all, and it may compute ```proj₁``
+and ```proj₂`` many times or not at all.
 
 We can also translate back the other way:
 
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
-## Sums {#sums}
+## Sums {name=sums}
 
 ### Syntax
 
@@ -381,7 +381,7 @@ Here is the isomorphism between `A` and ``A `× `⊤``:
     to×⊤ = ƛ x ⇒ `⟨ x , `tt ⟩
 
     from×⊤ : ∅ ⊢ A `× `⊤ ⇒ A
-    from×⊤ = ƛ z ⇒ proj₁ z
+    from×⊤ = ƛ z ⇒ `proj₁ z
 
 
 ## Alternative formulation of unit type
@@ -558,8 +558,9 @@ and leave formalisation of the remaining constructs as an exercise.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _*_)
+open import Data.Nat using (ℕ; zero; suc; _*_; _<_; _≤?_; z≤n; s≤s)
 open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 
@@ -718,30 +719,40 @@ data _⊢_ : Context → Type → Set where
 ### Abbreviating de Bruijn indices
 
 ```
-lookup : Context → ℕ → Type
-lookup (Γ , A) zero     =  A
-lookup (Γ , _) (suc n)  =  lookup Γ n
-lookup ∅       _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
 
-count : ∀ {Γ} → (n : ℕ) → Γ ∋ lookup Γ n
-count {Γ , _} zero     =  Z
-count {Γ , _} (suc n)  =  S (count n)
-count {∅}     _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
+lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 
-#_ : ∀ {Γ} → (n : ℕ) → Γ ⊢ lookup Γ n
-# n  =  ` count n
+count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count {_ , _} {zero}    (s≤s z≤n)  =  Z
+count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
+
+#_ : ∀ {Γ}
+  → (n : ℕ)
+  → {n∈Γ : True (suc n ≤? length Γ)}
+    --------------------------------
+  → Γ ⊢ lookup (toWitness n∈Γ)
+#_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
 ## Renaming
 
 ```
-ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
+ext : ∀ {Γ Δ}
+  → (∀ {A}   →     Γ ∋ A →     Δ ∋ A)
+    ---------------------------------
+  → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 
-rename : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+rename : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    -----------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
 rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
@@ -989,13 +1000,13 @@ infix  1 begin_
 infixr 2 _—→⟨_⟩_
 infix  3 _∎
 
-data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+data _—↠_ {Γ A} : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  _∎ : ∀ {Γ A} (M : Γ ⊢ A)
+  _∎ : (M : Γ ⊢ A)
       ------
     → M —↠ M
 
-  _—→⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
+  _—→⟨_⟩_ : (L : Γ ⊢ A) {M N : Γ ⊢ A}
     → L —→ M
     → M —↠ N
       ------
@@ -1105,9 +1116,9 @@ data Finished {Γ A} (N : Γ ⊢ A) : Set where
        ----------
        Finished N
 
-data Steps : ∀ {A} → ∅ ⊢ A → Set where
+data Steps {A} : ∅ ⊢ A → Set where
 
-  steps : ∀ {A} {L N : ∅ ⊢ A}
+  steps : {L N : ∅ ⊢ A}
     → L —↠ N
     → Finished N
       ----------
@@ -1236,7 +1247,7 @@ side to be well typed.
 
 ## Test examples
 
-We repeat the [test examples]({{ site.baseurl }}/DeBruijn/#examples) from Chapter [DeBruijn]({{ site.baseurl }}/DeBruijn/),
+We repeat the [test examples](/DeBruijn/#examples) from Chapter [DeBruijn](/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
 ```
 two : ∀ {Γ} → Γ ⊢ `ℕ

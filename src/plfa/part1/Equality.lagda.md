@@ -132,7 +132,7 @@ Again, a useful exercise is to carry out an interactive development,
 checking how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
-## Congruence and substitution {#cong}
+## Congruence and substitution {name=cong}
 
 Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both:
@@ -268,6 +268,14 @@ simplifies to a chain of applications of `trans` that ends in `trans e
 refl`, where `e` is a term that proves some equality, even though `e`
 alone would do.
 
+#### Exercise `trans` and `≡-Reasoning` (practice)
+
+Sadly, we cannot use the definition of trans' using ≡-Reasoning as the definition
+for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
+
+```
+-- Your code goes here
+```
 
 ## Chains of equations, another example
 
@@ -347,7 +355,7 @@ an order that will make sense to the reader.
 #### Exercise `≤-Reasoning` (stretch)
 
 The proof of monotonicity from
-Chapter [Relations]({{ site.baseurl }}/Relations/)
+Chapter [Relations](/Relations/)
 can be written in a more readable form by using an analogue of our
 notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
@@ -627,7 +635,7 @@ Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
 draft, 2017.)
 
 
-## Universe polymorphism {#unipoly}
+## Universe polymorphism {name=unipoly}
 
 As we have seen, not every type belongs to `Set`, but instead every
 type belongs somewhere in the hierarchy `Set₀`, `Set₁`, `Set₂`, and so on,

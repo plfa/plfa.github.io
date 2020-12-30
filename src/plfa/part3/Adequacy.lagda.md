@@ -1,5 +1,5 @@
 ---
-title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics 🚧"
+title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics"
 layout    : page
 prev      : /Soundness/
 permalink : /Adequacy/
@@ -36,7 +36,7 @@ multi-step reduction a lambda abstraction.  The recursive structure of
 the derivations for `γ ⊢ M ↓ (v ↦ w)` are completely different from
 the structure of multi-step reductions, so a direct proof would be
 challenging. However, The structure of `γ ⊢ M ↓ (v ↦ w)` closer to
-that of [BigStep]({{ site.baseurl }}/BigStep/) call-by-name
+that of [BigStep](/BigStep/) call-by-name
 evaluation. Further, we already proved that big-step evaluation
 implies multi-step reduction to a lambda (`cbn→reduce`). So we shall
 prove that `γ ⊢ M ↓ (v ↦ w)` implies that `γ' ⊢ M ⇓ c`, where `c` is a
@@ -100,7 +100,7 @@ open import plfa.part3.Soundness using (soundness)
 ## The property of being greater or equal to a function
 
 We define the following short-hand for saying that a value is
-greather-than or equal to a function value.
+greater-than or equal to a function value.
 
 ```
 above-fun : Value → Set
@@ -417,7 +417,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c ⟨ v' , �
 
         𝕍 (v ↦ (w ⊔ w')) (clos (ƛ N) γ)
 
-  Let `c` be an arbtrary closure such that `𝔼 v c`.
+  Let `c` be an arbitrary closure such that `𝔼 v c`.
   Assume `w ⊔ w'` is greater than a function.
   Unfortunately, this does not mean that both `w` and `w'`
   are above functions. But thanks to the lemma `above-fun-⊔`,
@@ -619,7 +619,7 @@ adequacy{M}{N} eq
 
 As promised, we return to the question of whether call-by-name
 evaluation is equivalent to beta reduction. In chapter
-[BigStep]({{ site.baseurl }}/BigStep/) we established the forward
+[BigStep](/BigStep/) we established the forward
 direction: that if call-by-name produces a result, then the program
 beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backward
 direction of the if-and-only-if, leveraging our results about the
