@@ -176,7 +176,7 @@ Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
 **Hint:** Because we focus on only a few language constructs, to avoid an `Incomplete pattern matching for _†` error, you'll need to create an alternative "term" type, say, `⊢'`.
 This new type should include constructors for only those terms that are of interest to the `~` relation.
-Map `_†'` should take terms in the shrunken type `⊢'` into the full type `⊢`.
+Map `_†` should take a list of terms in the shrunken type: `⊢'`, into the full type: `⊢`.
 
 ```
 -- Your code goes here
