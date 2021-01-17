@@ -174,9 +174,14 @@ but only bother to include in the simulation the terms of interest.
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
-**Hint:** Because we focus on only a few language constructs, to avoid an `Incomplete pattern matching for _†` error, you'll need to create an alternative "term" type, say, `⊢'`.
-This new type should include constructors for only those terms that are of interest to the `~` relation.
-Map `_†` should take a list of terms in the shrunken type: `⊢'`, into the full type: `⊢`.
+**Hint:** A straightforward approach to defining the `_†` function will
+most likely result in a "Incomplete pattern matching" error
+from the Agda compiler. You must instead predicate your definition
+on proof that its main argument is indeed a member of the reduced
+set of terms that are of interest to our relation. To this end,
+the "Proof by reflection" section of the Decideables chapter and
+the "Abreviating De Bruijn indices" section of the De Bruijn
+chapter may prove useful to review.
 
 ```
 -- Your code goes here
