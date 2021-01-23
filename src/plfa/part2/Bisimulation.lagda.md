@@ -174,6 +174,11 @@ but only bother to include in the simulation the terms of interest.
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
+**Hint:** For simplicity, we focus on only a few constructs of the language,
+so `_†` should be defined only on relevant terms. One way to do this is
+to use a decidable predicate to pick out terms in the domain of `_†`, using
+[proof by reflection](/Decidable/#proof-by-reflection).
+
 ```
 -- Your code goes here
 ```
