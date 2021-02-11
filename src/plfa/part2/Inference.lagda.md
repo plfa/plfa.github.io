@@ -191,12 +191,12 @@ We can extract the grammar for terms from the above:
       M⁻ ↓ A                              switch to synthesized
 
     L⁻, M⁻, N⁻ ::=                      terms with inherited type
-      ƛ x ⇒ N                             abstraction
+      ƛ x ⇒ N⁻                            abstraction
       `zero                               zero
       `suc M⁻                             successor
       case L⁺ [zero⇒ M⁻ |suc x ⇒ N⁻ ]     case
-      μ x ⇒ N                             fixpoint
-      M ↑                                 switch to inherited
+      μ x ⇒ N⁻                            fixpoint
+      M⁺ ↑                                switch to inherited
 
 We will formalise the above shortly.
 

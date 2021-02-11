@@ -174,14 +174,10 @@ but only bother to include in the simulation the terms of interest.
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
 
-**Hint:** A straightforward approach to defining the `_†` function will
-most likely result in a "Incomplete pattern matching" error
-from the Agda compiler. You must instead predicate your definition
-on proof that its main argument is indeed a member of the reduced
-set of terms that are of interest to our relation. To this end,
-the "Proof by reflection" section of the Decideables chapter and
-the "Abreviating De Bruijn indices" section of the De Bruijn
-chapter may prove useful to review.
+**Hint:** For simplicity, we focus on only a few constructs of the language,
+so `_†` should be defined only on relevant terms. One way to do this is
+to use a decidable predicate to pick out terms in the domain of `_†`, using
+[proof by reflection](/Decidable/#proof-by-reflection).
 
 ```
 -- Your code goes here

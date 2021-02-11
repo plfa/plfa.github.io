@@ -38,6 +38,16 @@ $endfor$
 </div>
 $endif$
 
+For contributions to the answers repository:
+<div class="list-of-contributors">
+<ul>
+<li>William Cook</li>
+<li>David Banas</li>
+</ul>
+</div>
+There is a private repository of answers to selected questions on
+github. Please contact Philip Wadler if you would like to access it.
+
 For support:
 
   - EPSRC Programme Grant EP/K034413/1

@@ -114,3 +114,5 @@ You may need to import library functions required for the solution.
 
 Please do not post answers to the exercises in a public place.
 
+There is a private repository of answers to selected questions on
+github. Please contact Philip Wadler if you would like to access it.
