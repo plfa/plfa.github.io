@@ -120,12 +120,12 @@ A ≡ A′
   M⁻ ↓ A                              switch to inherited
 
 L⁻, M⁻, N⁻ ::=                      terms with inherited type
-  ƛ x ⇒ N                             abstraction
+  ƛ x ⇒ N⁻                            abstraction
   `zero                               zero
   `suc M⁻                             successor
   case L⁺ [zero⇒ M⁻ |suc x ⇒ N⁻ ]     case
-  μ x ⇒ N                             fixpoint
-  M ↑                                 switch to synthesized</code></pre>
+  μ x ⇒ N⁻                            fixpoint
+  M⁺ ↑                                switch to synthesized</code></pre>
 <p>We will formalise the above shortly.</p>
 <h2 id="soundness-and-completeness">Soundness and completeness</h2>
 <p>What we intend to show is that the typing judgments are <em>decidable</em>:</p>
