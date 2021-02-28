@@ -111,7 +111,7 @@ git checkout v1.3
 ```
 Finally, we need to let Agda know where to find the Agda standard library.
 You'll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file.
-You will need to create two configuration files in “AGDA_DIR”. On UNIX and macOS, “AGDA_DIR” defaults to “~/.agda”. On Windwos, “AGDA_DIR” usually defaults to “%AppData%\agda”, where “%AppData%” usually defaults to “C:\Users\USERNAME\AppData\Roaming”.
+You will need to create two configuration files in “AGDA_DIR”. On UNIX and macOS, “AGDA_DIR” defaults to “~/.agda”. On Windows, “AGDA_DIR” usually defaults to “%AppData%\agda”, where “%AppData%” usually defaults to “C:\Users\USERNAME\AppData\Roaming”.
 
 - If the “AGDA_DIR” directory does not already exist, create it.
 - In “AGDA_DIR”, create a plain-text file called “libraries” containing the “/path/to/standard-library.agda-lib”. This lets Agda know that an Agda library called “standard-library” is available.
