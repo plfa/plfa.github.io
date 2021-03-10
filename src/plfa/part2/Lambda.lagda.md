@@ -1314,7 +1314,7 @@ We can fill in the hole by typing C-c C-r again:
 
 And again:
 
-    ⊢suc′ = ⊢ƛ (⊢suc (⊢` { }3))
+    ⊢sucᶜ = ⊢ƛ (⊢suc (⊢` { }3))
     ?3 : ∅ , "n" ⦂ `ℕ ∋ "n" ⦂ `ℕ
 
 A further attempt with C-c C-r yields the message:
@@ -1323,7 +1323,7 @@ A further attempt with C-c C-r yields the message:
 
 We can fill in `Z` by hand. If we type C-c C-space, Agda will confirm we are done:
 
-    ⊢suc′ = ⊢ƛ (⊢suc (⊢` Z))
+    ⊢sucᶜ = ⊢ƛ (⊢suc (⊢` Z))
 
 The entire process can be automated using Agsy, invoked with C-c C-a.
 
@@ -1415,6 +1415,7 @@ This chapter uses the following unicode:
     ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
     ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
     ·  U+00B7  MIDDLE DOT (\cdot)
+    ≟  U+225F  QUESTIONED EQUAL TO (\?=)
     —  U+2014  EM DASH (\em)
     ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)

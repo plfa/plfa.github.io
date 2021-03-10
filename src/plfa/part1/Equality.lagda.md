@@ -520,15 +520,15 @@ it sparingly, but it is occasionally essential.
 
 ## Leibniz equality
 
-The form of asserting equality that we have used is due to Martin
-Löf, and was published in 1975.  An older form is due to Leibniz, and
+The form of asserting equality that we have used is due to Martin-Löf,
+and was published in 1975.  An older form is due to Leibniz, and
 was published in 1686.  Leibniz asserted the _identity of
 indiscernibles_: two objects are equal if and only if they satisfy the
 same properties. This principle sometimes goes by the name Leibniz'
 Law, and is closely related to Spock's Law, "A difference that makes
 no difference is no difference".  Here we define Leibniz equality,
 and show that two terms satisfy Leibniz equality if and only if they
-satisfy Martin Löf equality.
+satisfy Martin-Löf equality.
 
 Leibniz equality is usually formalised to state that `x ≐ y` holds if
 every property `P` that holds of `x` also holds of `y`.  Perhaps
@@ -593,7 +593,7 @@ implies `P x`.  To do so, we instantiate the equality with a predicate
 is trivial by reflexivity, and hence `Q y` follows from `x ≐ y`.  But
 `Q y` is exactly a proof of what we require, that `P y` implies `P x`.
 
-We now show that Martin Löf equality implies
+We now show that Martin-Löf equality implies
 Leibniz equality, and vice versa.  In the forward direction, if we know
 `x ≡ y` we need for any `P` to take evidence of `P x` to evidence of `P y`,
 which is easy since equality of `x` and `y` implies that any proof
@@ -625,7 +625,7 @@ to a proof of `P y` we need to show `x ≡ y`:
 ```
 The proof is similar to that for symmetry of Leibniz equality. We take
 `Q` to be the predicate that holds of `z` if `x ≡ z`. Then `Q x` is
-trivial by reflexivity of Martin Löf equality, and hence `Q y`
+trivial by reflexivity of Martin-Löf equality, and hence `Q y`
 follows from `x ≐ y`.  But `Q y` is exactly a proof of what we
 require, that `x ≡ y`.
 

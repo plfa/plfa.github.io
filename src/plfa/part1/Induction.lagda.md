@@ -290,7 +290,7 @@ hypothesis:
 Reading the chain of equations in the inductive case of the proof, the
 top and bottom of the chain match the two sides of the equation to be
 shown, and reading down from the top and up from the bottom takes us
-to the simplified equation above. The remaining equation, does not follow
+to the simplified equation above. The remaining equation does not follow
 from simplification alone, so we use an additional operator for chain
 reasoning, `_≡⟨_⟩_`, where a justification for the equation appears
 within angle brackets.  The justification given is:
