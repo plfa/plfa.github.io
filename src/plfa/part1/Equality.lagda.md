@@ -35,7 +35,7 @@ constructor `refl` provides evidence that `x ≡ x`. Hence, every value
 is equal to itself, and we have no other way of showing values
 equal.  The definition features an asymmetry, in that the
 first argument to `_≡_` is given by the parameter `x : A`, while the
-second is given by an index in `A → Set`.  This follows our policy
+second is given by an index in `A`.  This follows our policy
 of using parameters wherever possible.  The first argument to `_≡_`
 can be a parameter because it doesn't vary, while the second must be
 an index, so it can be required to be equal to the first.
