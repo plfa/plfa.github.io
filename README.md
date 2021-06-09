@@ -183,7 +183,7 @@ If you already have settings which change your “auto-mode-alist” in your con
 #### Optional: using the “mononoki” font with Emacs
 Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [mononoki][font-mononoki], fonts such as [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
 
-You can download and install mononoki directly from [GitHub][mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded “.otf” or “.ttf” file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the “font-mononoki” package, and APT on Debian offers the [“fonts-mononoki” package][font-mononoki-debian]. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
+You can download and install mononoki directly from [GitHub][mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded “.otf” or “.ttf” file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the “font-mononoki” package in the [“cask-fonts” cask][cask-fonts], and APT on Debian offers the [“fonts-mononoki” package][font-mononoki-debian]. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
 ``` elisp
 ;; default to mononoki
 (set-face-attribute 'default nil
@@ -370,3 +370,4 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [font-freemono]: https://www.gnu.org/software/freefont/
 [font-mononoki]: https://madmalik.github.io/mononoki/
 [font-mononoki-debian]: https://packages.debian.org/sid/fonts/fonts-mononoki
+[cask-fonts]: https://github.com/Homebrew/homebrew-cask-fonts
