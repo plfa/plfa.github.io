@@ -1,5 +1,8 @@
-resolver: lts-16.16
-compiler: ghc-8.8.4
+resolver: lts-17.2
+compiler: ghc-8.10.3
+compiler-check: match-exact
+
+allow-newer: true
 
 flags:
   pandoc:
