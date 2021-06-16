@@ -17,11 +17,7 @@ packages:
 extra-deps:
 
 # Agda dependencies:
-- Agda-2.6.1.1@sha256:d0f5051ae56de8417dc202cd7a8e23c9f21a75c69b44afb856b66b87ca8d54c4,32315
-- data-hash-0.2.0.1@sha256:0277d99cb8b535ecc375c59e55f1c91faab966d9167a946ef18445dd468ba727,1135
-- equivalence-0.3.5@sha256:aedbd070b7ab5e58dd1678cd85607bc33cb9ff62331c1fa098ca45063b3072db,1626
-- geniplate-mirror-0.7.7@sha256:6a698c1bcec25f4866999001c4de30049d4f8f00ec83f8930cda2f767489c637,1106
-- STMonadTrans-0.4.4@sha256:437eec4fdf5f56e9cd4360e08ed7f8f9f5f02ff3f1d634a14dbc71e890035387,1946
+- Agda-2.6.1.3@sha256:87769ebab4259b184c5b11d5beaff39b88bcc37902dfb3341f4fc46c5c7d3134,32945
 
 # Hakyll dependencies:
 - hakyll-4.13.4.1
@@ -41,3 +37,6 @@ extra-deps:
 
 # Regex dependencies:
 - text-regex-replace-0.1.1.3@sha256:e7f612df671c93ced54a3d26528db37852069884e5cb67d5afbb49d3defb5eb9,1627
+
+# Version of text-icu compatible with icu68+
+- text-icu-0.7.1.0@sha256:44e8b5966fcf61356a7356f3d2e8a5c5cc538170a15e94ff7b79b9f48ce9fd2f,3497
