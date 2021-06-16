@@ -57,7 +57,7 @@ The easiest way to install a *specific version* of Agda is using [Stack][haskell
 ```bash
 git clone https://github.com/agda/agda.git
 cd agda
-git checkout v2.6.1.1
+git checkout v2.6.1.3
 ```
 To install Agda, run Stack from the Agda source directory:
 ```bash
@@ -337,12 +337,12 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
 [haskell-ghc]: https://www.haskell.org/ghc/
 [git]: https://git-scm.com/downloads
-[agda]: https://github.com/agda/agda/releases/tag/v2.6.1.1
-[agda-version]: https://img.shields.io/badge/agda-v2.6.1.1-blue.svg
-[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.1.1/getting-started/quick-guide.html
-[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html
-[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html#notation-for-key-combinations
-[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1.1/tools/package-system.html#example-using-the-standard-library
+[agda]: https://github.com/agda/agda/releases/tag/v2.6.1.3
+[agda-version]: https://img.shields.io/badge/agda-v2.6.1.3-blue.svg
+[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.1.3/getting-started/quick-guide.html
+[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html
+[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html#notation-for-key-combinations
+[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1.3/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
