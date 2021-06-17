@@ -36,7 +36,7 @@ xcode-select --install
 ### Install the Haskell Tool Stack
 Agda is written in Haskell, so to install it we’ll need the *Haskell Tool Stack*, or *Stack* for short. Stack is a program for managing different Haskell compilers and packages:
 
-- *On UNIX and macOS.* If your package manager has a package for Stack, that’s probably your easiest option. For instance, Homebrew on macOS  and APT on Debian offer the “haskell-stack” package. Otherwise, you can follow the instructions on [the Stack website][haskell-stack]. Usually, Stack installs binaries at “HOME/.local/bin”. Please ensure this is on your PATH, by including the following in your shell configuration, e.g., in `HOME/.bash_profile`:
+- *On UNIX and macOS.* If your package manager has a package for Stack, that’s probably your easiest option. For instance, Homebrew on macOS  and APT on Debian offer the “haskell-stack” package. Otherwise, you can follow the instructions on [the Stack website][haskell-stack]. Usually, Stack installs binaries at `HOME/.local/bin`. Please ensure this is on your PATH, by including the following in your shell configuration, e.g., in `HOME/.bash_profile`:
   ```bash
   export PATH="${HOME}/.local/bin:${PATH}"
   ```
@@ -57,7 +57,7 @@ The easiest way to install a *specific version* of Agda is using [Stack][haskell
 ```bash
 git clone https://github.com/agda/agda.git
 cd agda
-git checkout v2.6.1.1
+git checkout v2.6.1.3
 ```
 To install Agda, run Stack from the Agda source directory:
 ```bash
@@ -66,13 +66,13 @@ stack install --stack-yaml stack-8.8.3.yaml
 *This step will take a long time and a lot of memory to complete.*
 
 #### Using an existing installation of GHC
-Stack is perfectly capable of installing and managing versions of the [Glasgow Haskell Compiler][haskell-ghc] for you. However, if you already have a copy of GHC installed, and you want Stack to use your system installation, you can pass the `--system-ghc` flag and select the appropriate “stack-*.yaml” file. For instance, if you have GHC 8.2.2 installed, run:
+Stack is perfectly capable of installing and managing versions of the [Glasgow Haskell Compiler][haskell-ghc] for you. However, if you already have a copy of GHC installed, and you want Stack to use your system installation, you can pass the `--system-ghc` flag and select the appropriate `stack-*.yaml` file. For instance, if you have GHC 8.2.2 installed, run:
 ```bash
 stack install --system-ghc --stack-yaml stack-8.2.2.yaml
 ```
 
 #### Check if Agda was installed correctly
-If you’d like, you can test to see if you’ve installed Agda correctly. Create a file called “hello.agda” with these lines:
+If you’d like, you can test to see if you’ve installed Agda correctly. Create a file called `hello.agda` with these lines:
 ```agda
 data Greeting : Set where
   hello : Greeting
@@ -80,7 +80,7 @@ data Greeting : Set where
 greet : Greeting
 greet = hello
 ```
-From a command line, change to the same directory where your “hello.agda” file is located. Then run:
+From a command line, change to the same directory where your `hello.agda` file is located. Then run:
 ```bash
 agda -v 2 hello.agda
 ```
@@ -96,7 +96,7 @@ You can get the latest version of Programming Language Foundations in Agda from 
 ```bash
 git clone --recurse-submodules https://github.com/plfa/plfa.github.io plfa
 ```
-PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got, in the “standard-library” directory!
+PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got, in the `standard-library` directory!
 
 If you forgot to add the `--recurse-submodules` flag, no worries, we can fix that!
 ```bash
@@ -111,18 +111,18 @@ git checkout v1.3
 ```
 Finally, we need to let Agda know where to find the Agda standard library.
 You'll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file.
-You will need to create two configuration files in “AGDA_DIR”. On UNIX and macOS, “AGDA_DIR” defaults to “~/.agda”. On Windows, “AGDA_DIR” usually defaults to “%AppData%\agda”, where “%AppData%” usually defaults to “C:\Users\USERNAME\AppData\Roaming”.
+You will need to create two configuration files in `AGDA_DIR`. On UNIX and macOS, `AGDA_DIR` defaults to `~/.agda`. On Windows, `AGDA_DIR` usually defaults to `%AppData%\agda`, where `%AppData%` usually defaults to `C:\Users\USERNAME\AppData\Roaming`.
 
-- If the “AGDA_DIR” directory does not already exist, create it.
-- In “AGDA_DIR”, create a plain-text file called “libraries” containing the “/path/to/standard-library.agda-lib”. This lets Agda know that an Agda library called “standard-library” is available.
-- In “AGDA_DIR”, create a plain-text file called “defaults” containing *just* the line “standard-library”.
+- If the `AGDA_DIR` directory does not already exist, create it.
+- In `AGDA_DIR`, create a plain-text file called `libraries` containing the `/path/to/standard-library.agda-lib`. This lets Agda know that an Agda library called `standard-library` is available.
+- In `AGDA_DIR`, create a plain-text file called `defaults` containing *just* the line `standard-library`.
 
 More information about placing the standard libraries is available from [the Library Management page][agda-docs-package-system] of the Agda documentation.
 
-It is possible to set up PLFA as an Agda library as well.  If you want to complete the exercises found in the “courses” folder, or to import modules from the book, you need to do this.  To do so, add the path to “plfa.agda-lib” to “AGDA_DIR/libraries” and add “plfa” to “AGDA_DIR/defaults”, each on a line of their own.
+It is possible to set up PLFA as an Agda library as well.  If you want to complete the exercises found in the `courses` folder, or to import modules from the book, you need to do this.  To do so, add the path to `plfa.agda-lib` to `AGDA_DIR/libraries` and add `plfa` to `AGDA_DIR/defaults`, each on a line of their own.
 
 #### Check if the Agda standard library was installed correctly
-If you’d like, you can test to see if you’ve installed the Agda standard library correctly. Create a file called “nats.agda” with these lines:
+If you’d like, you can test to see if you’ve installed the Agda standard library correctly. Create a file called `nats.agda` with these lines:
 ```agda
 open import Data.Nat
 
@@ -131,7 +131,7 @@ ten = 10
 ```
 (Note that the ℕ is a Unicode character, not a plain capital N. You should be able to just copy-and-paste it from this page into your file.)
 
-From a command line, change to the same directory where your “nats.agda” file is located. Then run:
+From a command line, change to the same directory where your `nats.agda` file is located. Then run:
 ```bash
 agda -v 2 nats.agda
 ```
@@ -165,11 +165,11 @@ agda-mode compile
 ```
 If you are already an Emacs user and have customized your setup, you may want to note the configuration which the `setup` appends to your `.emacs` file, and integrate it with your own preferred setup.
 
-#### Check if “agda-mode” was installed correctly
+#### Check if `agda-mode` was installed correctly
 Open the `nats.agda` file you created earlier, and load and type-check the file by typing [`C-c C-l`][agda-docs-emacs-notation].
 
-#### Auto-loading “agda-mode” in Emacs
-Since version 2.6.0, Agda has had support for literate editing with Markdown, using the “.lagda.md” extension.  One issue is that Emacs will default to Markdown editing mode for files with a “.md” suffix. In order to have “agda-mode” automatically loaded whenever you open a file ending with “.agda” or “.lagda.md”, add the following line to your Emacs configuration file:
+#### Auto-loading `agda-mode` in Emacs
+Since version 2.6.0, Agda has had support for literate editing with Markdown, using the `.lagda.md` extension.  One issue is that Emacs will default to Markdown editing mode for files with a `.md` suffix. In order to have `agda-mode` automatically loaded whenever you open a file ending with `.agda` or `.lagda.md`, add the following line to your Emacs configuration file:
 ```elisp
 ;; auto-load agda-mode for .agda and .lagda.md
 (setq auto-mode-alist
@@ -178,12 +178,12 @@ Since version 2.6.0, Agda has had support for literate editing with Markdown, us
        ("\\.lagda.md\\'" . agda2-mode))
      auto-mode-alist))
 ```
-If you already have settings which change your “auto-mode-alist” in your configuration, put these *after* the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in “HOME/.emacs” or “HOME/.emacs.d/init.el”, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in “HOME/Library/Preferences/Aquamacs Emacs/Preferences”. For Windows, see [the GNU Emacs documentation][emacs-home] for a description of where the Emacs configuration is located.
+If you already have settings which change your `auto-mode-alist` in your configuration, put these *after* the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in `HOME/.emacs` or `HOME/.emacs.d/init.el`, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in `HOME/Library/Preferences/Aquamacs Emacs/Preferences`. For Windows, see [the GNU Emacs documentation][emacs-home] for a description of where the Emacs configuration is located.
 
-#### Optional: using the “mononoki” font with Emacs
+#### Optional: using the mononoki font with Emacs
 Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [mononoki][font-mononoki], fonts such as [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
 
-You can download and install mononoki directly from [GitHub][mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded “.otf” or “.ttf” file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the “font-mononoki” package in the [“cask-fonts” cask][cask-fonts], and APT on Debian offers the [“fonts-mononoki” package][font-mononoki-debian]. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
+You can download and install mononoki directly from [GitHub][mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the `font-mononoki` package in the [`cask-fonts` cask][cask-fonts], and APT on Debian offers the [`fonts-mononoki` package][font-mononoki-debian]. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
 ``` elisp
 ;; default to mononoki
 (set-face-attribute 'default nil
@@ -193,12 +193,12 @@ You can download and install mononoki directly from [GitHub][mononoki]. For most
                     :width  'normal)
 ```
 
-#### Using “agda-mode” in Emacs
+#### Using `agda-mode` in Emacs
 To load and type-check the file, use [`C-c C-l`][agda-docs-emacs-notation].
 
-Agda is edited interactively, using [“holes”][agda-docs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using “C-c C-l”, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
+Agda is edited interactively, using [“holes”][agda-docs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using `C-c C-l`, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
 
-  - `C-c C-c x`: **c**ase split on variable x
+  - `C-c C-c`: **c**ase split (asks for variable name)
   - `C-c C-space`: fill in hole
   - `C-c C-r`: **r**efine with constructor
   - `C-c C-a`: **a**utomatically fill in hole
@@ -217,40 +217,41 @@ If you want to see messages beside rather than below your Agda code, you can do 
 
 Now, error messages from Agda will appear next to your file, rather than squished beneath it.
 
-#### Entering Unicode characters in Emacs with “agda-mode”
+#### Entering Unicode characters in Emacs with `agda-mode`
 When you write Agda code, you will need to insert characters which are not found on standard keyboards. Emacs “agda-mode” makes it easier to do this by defining character translations: when you enter certain sequences of ordinary characters (the kind you find on any keyboard), Emacs will replace them in your Agda file with the corresponding special character.
 
-For example, we can add a comment line to one of the “.agda” test files. Let's say we want to add a comment line that reads:
+For example, we can add a comment line to one of the `.agda` test files.
+Let's say we want to add a comment line that reads:
 ```
 {- I am excited to type ∀ and → and ≤ and ≡ !! -}
 ```
-The first few characters are ordinary, so we would just type them as usual:
+The first few characters are ordinary, so we would just type them as usual…
 ```
 {- I am excited to type
 ```
-But after that last space, we do not find ∀ on the keyboard. The code for this character is the four characters `\all`, so we type those four characters, and when we finish, Emacs will replace them with what we want:
+But after that last space, we do not find ∀ on the keyboard. The code for this character is the four characters `\all`, so we type those four characters, and when we finish, Emacs will replace them with what we want…
 ```
 {- I am excited to type ∀
 ```
-We can continue with the codes for the other characters. Sometimes the characters will change as we type them, because a prefix of our character's code is the code of another character. This happens with the arrow, whose code is `\->`.  After typing `\-` we see:
+We can continue with the codes for the other characters. Sometimes the characters will change as we type them, because a prefix of our character's code is the code of another character. This happens with the arrow, whose code is `\->`.  After typing `\-` we see…
 ```
 {- I am excited to type ∀ and
 ```
-because the code `\-` corresponds to a hyphen of a certain width. When we add the `>`, the `­` becomes `→`! The code for `≤` is `\<=`, and the code for `≡` is `\==`.
+…because the code `\-` corresponds to a hyphen of a certain width. When we add the `>`, the `­` becomes `→`! The code for `≤` is `\<=`, and the code for `≡` is `\==`.
 ```
 {- I am excited to type ∀ and → and ≤ and ≡
 ```
-Finally the last few characters are ordinary again,
+Finally the last few characters are ordinary again…
 ```
 {- I am excited to type ∀ and → and ≤ and ≡ !! -}
 ```
 If you're having trouble typing the Unicode characters into Emacs, the end of each chapter should provide a list of the Unicode characters introduced in that chapter.
 
-Emacs with “agda-mode” offers a number of useful commands, and two of them are especially useful when it comes to working with Unicode characters. For a full list of supported characters, use “agda-input-show-translations” with:
+Emacs with `agda-mode` offers a number of useful commands, and two of them are especially useful when it comes to working with Unicode characters. For a full list of supported characters, use `agda-input-show-translations` with:
 
     M-x agda-input-show-translations
 
-All the supported characters in “agda-mode” are shown.
+All the supported characters in `agda-mode` are shown.
 
 If you want to know how you input a specific Unicode character in agda file, move the cursor onto the character and type the following command:
 
@@ -259,7 +260,7 @@ If you want to know how you input a specific Unicode character in agda file, mov
 You'll see the key sequence of the character in mini buffer.
 
 ### Spacemacs
-[Spacemacs][spacemacs] is a “community-driven Emacs distribution” with native support for both Emacs and Vim editing styles. It comes with [integration for “agda-mode”][spacemacs-agda] out of the box. All that is required is that you turn it on.
+[Spacemacs][spacemacs] is a “community-driven Emacs distribution” with native support for both Emacs and Vim editing styles. It comes with [integration for `agda-mode`][spacemacs-agda] out of the box. All that is required is that you turn it on.
 
 ### Visual Studio Code
 [Visual Studio Code][vscode] is a free source code editor developed by Microsoft. There is [a plugin for Agda support][vscode-agda] available on the Visual Studio Marketplace.
@@ -283,7 +284,7 @@ If you’d like to serve PLFA locally, rebuilding the website when any of the so
 make watch
 ```
 The Makefile offers more than just building and watching, it also offers the following useful options:
-```
+```make
 build                      # Build PLFA
 watch                      # Build and serve PLFA, monitor for changes and rebuild
 test                       # Test web version for broken links, invalid HTML, etc.
@@ -294,15 +295,15 @@ update-contributors        # Pull in new contributors from GitHub to contributor
 list                       # List all build targets
 ```
 For completeness, the Makefile also offers the following options, but you’re unlikely to need these:
-```
+```make
 legacy-versions            # Build legacy versions of PLFA
 setup-install-bundler      # Install Ruby Bundler (needed for ‘legacy-versions’)
 setup-install-htmlproofer  # Install HTMLProofer (needed for ‘test’ and Git hooks)
-setup-check-fix-whitespace # Check to see if fix-whitespace is installed (needed for Git hooks)
-setup-check-epubcheck      # Check to see if epubcheck is installed (needed for EPUB tests)
-setup-check-gem            # Check to see if RubyGems is installed
-setup-check-npm            # Check to see if the Node Package Manager is installed
-setup-check-stack          # Check to see if the Haskell Tool Stack is installed
+setup-check-fix-whitespace # Check if fix-whitespace is installed (needed for Git hooks)
+setup-check-epubcheck      # Check if epubcheck is installed (needed for EPUB tests)
+setup-check-gem            # Check if RubyGems is installed
+setup-check-npm            # Check if the Node Package Manager is installed
+setup-check-stack          # Check if the Haskell Tool Stack is installed
 ```
 The [EPUB version][epub] of the book is built as part of the website, since it’s hosted on the website.
 
@@ -314,7 +315,7 @@ The repository comes with several Git hooks:
 
  2. The test suite is run to check if everything type checks.
 
-You can install these Git hooks by calling “make init”.
+You can install these Git hooks by calling `make init`.
 You can install [fix-whitespace][fix-whitespace] by running:
 ```bash
 git clone https://github.com/agda/fix-whitespace
@@ -325,7 +326,7 @@ If you want Stack to use your system installation of GHC, follow the instruction
 
 <!-- Links -->
 
-[epub]: https://plfa.github.io/out/epub/plfa.epub
+[epub]: https://plfa.github.io/plfa.epub
 [plfa]: http://plfa.inf.ed.ac.uk
 [plfa-dev]: https://github.com/plfa/plfa.github.io/archive/dev.zip
 [plfa-status]: https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev
@@ -336,12 +337,12 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
 [haskell-ghc]: https://www.haskell.org/ghc/
 [git]: https://git-scm.com/downloads
-[agda]: https://github.com/agda/agda/releases/tag/v2.6.1.1
-[agda-version]: https://img.shields.io/badge/agda-v2.6.1.1-blue.svg
-[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.1.1/getting-started/quick-guide.html
-[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html
-[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html#notation-for-key-combinations
-[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1.1/tools/package-system.html#example-using-the-standard-library
+[agda]: https://github.com/agda/agda/releases/tag/v2.6.1.3
+[agda-version]: https://img.shields.io/badge/agda-v2.6.1.3-blue.svg
+[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.1.3/getting-started/quick-guide.html
+[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html
+[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html#notation-for-key-combinations
+[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1.3/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
@@ -367,6 +368,7 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [xcode]: https://developer.apple.com/xcode/
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro
 [font-dejavusansmono]: https://dejavu-fonts.github.io/
+[mononoki]: https://github.com/madmalik/mononoki
 [font-freemono]: https://www.gnu.org/software/freefont/
 [font-mononoki]: https://madmalik.github.io/mononoki/
 [font-mononoki-debian]: https://packages.debian.org/sid/fonts/fonts-mononoki

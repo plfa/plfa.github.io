@@ -40,7 +40,7 @@ library
                   , Hakyll.Web.Template.Context.Title
                   , Hakyll.Web.Sass
                   , Hakyll.Web.Routes.Permalink
-  build-depends:    Agda               ==2.6.1.1
+  build-depends:    Agda               ==2.6.1.3
                   , hsass              >=0.8   && <0.9
                   , regex-tdfa         >=1.3   && <1.4
                   , text-icu           >=0.7.1 && <0.8

@@ -1,5 +1,11 @@
-resolver: lts-16.16
-compiler: ghc-8.8.4
+resolver: lts-17.2
+
+# Use GHC 8.10.3
+compiler: ghc-8.10.3
+compiler-check: match-exact
+
+# Allow never versions of packages
+allow-newer: true
 
 flags:
   pandoc:
@@ -9,18 +15,27 @@ packages:
 - .
 
 extra-deps:
+
+# Agda dependencies:
+- Agda-2.6.1.3@sha256:87769ebab4259b184c5b11d5beaff39b88bcc37902dfb3341f4fc46c5c7d3134,32945
+
+# Hakyll dependencies:
+- hakyll-4.13.4.1
+- pandoc-2.10.1@sha256:23d7ec480c7cb86740475a419d6ca4819987b6dd23bbae9b50bc3d42a7ed2f9f,36933
+- pandoc-citeproc-0.17.0.2@sha256:39c5c60a5eca2c1cb50ae9a00dc7093ca1baac78ad5be4e222505de257dce456,8737
+- commonmark-0.1.1.4@sha256:8717891c53c124ff64187c463619450241a41c0951cda2a43267d40f78992362,3278
+- commonmark-extensions-0.2.0.4@sha256:6a437bcfa3c757af4262b71336513619990eafb5cfdc33e57a499c93ad225608,3184
+- commonmark-pandoc-0.2.0.1@sha256:529c6e2c6cabf61558b66a28123eafc1d90d3324be29819f59f024e430312c1f,1105
+
 # Sass dependencies:
 - hsass-0.8.0@sha256:05fb3d435dbdf9f66a98db4e1ee57a313170a677e52ab3a5a05ced1fc42b0834,2899
 - hlibsass-0.1.10.1@sha256:08db56c633e9a83a642d8ea57dffa93112b092d05bf8f3b07491cfee9ee0dfa5,2565
-# Agda dependencies:
-- Agda-2.6.1.1@sha256:d0f5051ae56de8417dc202cd7a8e23c9f21a75c69b44afb856b66b87ca8d54c4,32315
-- text-icu-0.7.1.0
-- data-hash-0.2.0.1@sha256:0277d99cb8b535ecc375c59e55f1c91faab966d9167a946ef18445dd468ba727,1135
-- equivalence-0.3.5@sha256:aedbd070b7ab5e58dd1678cd85607bc33cb9ff62331c1fa098ca45063b3072db,1626
-- geniplate-mirror-0.7.7@sha256:6a698c1bcec25f4866999001c4de30049d4f8f00ec83f8930cda2f767489c637,1106
-- STMonadTrans-0.4.4@sha256:437eec4fdf5f56e9cd4360e08ed7f8f9f5f02ff3f1d634a14dbc71e890035387,1946
 # GitHub API dependencies:
 - github-0.26@sha256:a9d4046325c3eb28cdc7bef2c3f5bb213328caeae0b7dce6f51de655f0bffaa1,7162
 - binary-instances-1.0.0.1@sha256:e234be994da675479a3661f050d4a1d53565c9ed7786d9a68b7a29ba8b54b5a7,2659
+
 # Regex dependencies:
 - text-regex-replace-0.1.1.3@sha256:e7f612df671c93ced54a3d26528db37852069884e5cb67d5afbb49d3defb5eb9,1627
+
+# Version of text-icu compatible with icu68+
+- text-icu-0.7.1.0@sha256:44e8b5966fcf61356a7356f3d2e8a5c5cc538170a15e94ff7b79b9f48ce9fd2f,3497
