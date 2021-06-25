@@ -733,13 +733,13 @@ The proof is by induction on the term `M`.
 
     * If `x = S y`, we obtain the goal by the following equational reasoning.
 
-          exts (exts σ) (ext ρ (S y))
-        ≡ rename S_ (exts σ (ρ y))
-        ≡ rename S_ (rename S_ (σ (ρ y)      (by the premise)
-        ≡ rename (ext ρ) (exts σ (S y))      (by compose-rename)
-        ≡ rename ((ext ρ) ∘ S_) (σ y)
-        ≡ rename (ext ρ) (rename S_ (σ y))   (by compose-rename)
-        ≡ rename (ext ρ) (exts σ (S y))
+            exts (exts σ) (ext ρ (S y))
+          ≡ rename S_ (exts σ (ρ y))
+          ≡ rename S_ (rename S_ (σ (ρ y)      (by the premise)
+          ≡ rename (ext ρ) (exts σ (S y))      (by compose-rename)
+          ≡ rename ((ext ρ) ∘ S_) (σ y)
+          ≡ rename (ext ρ) (rename S_ (σ y))   (by compose-rename)
+          ≡ rename (ext ρ) (exts σ (S y))
 
 * If `M` is an application, we obtain the goal using the induction
   hypothesis for each subterm.
