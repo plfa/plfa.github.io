@@ -733,13 +733,13 @@ The proof is by induction on the term `M`.
 
     * If `x = S y`, we obtain the goal by the following equational reasoning.
 
-          exts (exts σ) (ext ρ (S y))
-        ≡ rename S_ (exts σ (ρ y))
-        ≡ rename S_ (rename S_ (σ (ρ y)      (by the premise)
-        ≡ rename (ext ρ) (exts σ (S y))      (by compose-rename)
-        ≡ rename ((ext ρ) ∘ S_) (σ y)
-        ≡ rename (ext ρ) (rename S_ (σ y))   (by compose-rename)
-        ≡ rename (ext ρ) (exts σ (S y))
+            exts (exts σ) (ext ρ (S y))
+          ≡ rename S_ (exts σ (ρ y))
+          ≡ rename S_ (rename S_ (σ (ρ y)      (by the premise)
+          ≡ rename (ext ρ) (exts σ (S y))      (by compose-rename)
+          ≡ rename ((ext ρ) ∘ S_) (σ y)
+          ≡ rename (ext ρ) (rename S_ (σ y))   (by compose-rename)
+          ≡ rename (ext ρ) (exts σ (S y))
 
 * If `M` is an application, we obtain the goal using the induction
   hypothesis for each subterm.
@@ -807,11 +807,11 @@ We proceed by induction on the term `M`.
 
 * If `M = ƛ N`, we first use the induction hypothesis to show that
 
-     ƛ ⟪ exts σ₂ ⟫ (⟪ exts σ₁ ⟫ N) ≡ ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N
+        ƛ ⟪ exts σ₂ ⟫ (⟪ exts σ₁ ⟫ N) ≡ ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N
 
   and then use the lemma `exts-seq` to show
 
-    ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N ≡ ƛ ⟪ exts ( σ₁ ⨟ σ₂) ⟫ N
+        ƛ ⟪ exts σ₁ ⨟ exts σ₂ ⟫ N ≡ ƛ ⟪ exts ( σ₁ ⨟ σ₂) ⟫ N
 
 * If `M` is an application, we use the induction hypothesis
   for both subterms.
