@@ -58,8 +58,8 @@ Evidence that `A × B` holds is of the form `⟨ M , N ⟩`, where `M`
 provides evidence that `A` holds and `N` provides evidence that `B`
 holds.
 
-Given evidence that `A × B` holds, we can conclude that either
-`A` holds or `B` holds:
+Given evidence that `A × B` holds, we can conclude that both
+`A` holds and `B` holds:
 ```
 proj₁ : ∀ {A B : Set}
   → A × B
