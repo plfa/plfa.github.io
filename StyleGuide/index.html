@@ -61,10 +61,10 @@
 <li><p>All module imports should be placed at the top of the file immediately after the module declaration.</p></li>
 <li><p>If the module takes parameters that require imports from other files then those imports only may be placed above the module declaration.</p></li>
 <li><p>If it is important that certain names only come into scope later in the file then the module should still be imported at the top of the file but it can be given a shorter name using <code>as</code> and then opened later on in the file when needed, e.g.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">import</span> Data<span class="ot">.</span>List<span class="ot">.</span>Relation<span class="ot">.</span>Binary<span class="ot">.</span>Equality<span class="ot">.</span>Setoid as SetoidEquality</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="ot">...</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="ot">...</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="kw">open</span> SetoidEquality S</span></code></pre></div></li>
+<div class="sourceCode" id="cb1"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> Data<span class="ot">.</span>List<span class="ot">.</span>Relation<span class="ot">.</span>Binary<span class="ot">.</span>Equality<span class="ot">.</span>Setoid as SetoidEquality</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ot">...</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ot">...</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> SetoidEquality S</span></code></pre></div></li>
 <li><p>The list of module imports should be in alphabetical order.</p></li>
 <li><p>When using only a few items from a module, the items should be enumerated in the import with <code>using</code> in order to make dependencies clearer.</p></li>
 </ul>
@@ -74,9 +74,9 @@
 <li><p>Every subsequent nested scope should then be indented by an additional two spaces.</p></li>
 <li><p><code>where</code> blocks should be indented by two spaces and their contents should be aligned with the <code>where</code>.</p></li>
 <li><p>If the type of a term does not fit on one line then the subsequent lines of the type should all be indented by two spaces, e.g.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>map-cong₂ <span class="ot">:</span> <span class="ot">∀</span> <span class="ot">{</span>a b<span class="ot">}</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span> a<span class="ot">}</span> <span class="ot">{</span>B <span class="ot">:</span> <span class="dt">Set</span> b<span class="ot">}</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>  <span class="ot">→</span> <span class="ot">∀</span> <span class="ot">{</span>f g <span class="ot">:</span> A <span class="ot">→</span> B<span class="ot">}</span> <span class="ot">{</span>xs<span class="ot">}</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="ot">→</span> All <span class="ot">(λ</span> x <span class="ot">→</span> f x ≡ g x<span class="ot">)</span> xs <span class="ot">→</span> map f xs ≡ map g xs</span></code></pre></div></li>
+<div class="sourceCode" id="cb2"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>map-cong₂ <span class="ot">:</span> <span class="ot">∀</span> <span class="ot">{</span>a b<span class="ot">}</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span> a<span class="ot">}</span> <span class="ot">{</span>B <span class="ot">:</span> <span class="dt">Set</span> b<span class="ot">}</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">→</span> <span class="ot">∀</span> <span class="ot">{</span>f g <span class="ot">:</span> A <span class="ot">→</span> B<span class="ot">}</span> <span class="ot">{</span>xs<span class="ot">}</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">→</span> All <span class="ot">(λ</span> x <span class="ot">→</span> f x ≡ g x<span class="ot">)</span> xs <span class="ot">→</span> map f xs ≡ map g xs</span></code></pre></div></li>
 <li><p>As can be seen in the example above, function arrows at line breaks should always go at the beginning of the next line rather than the end of the line.</p></li>
 </ul>
 <h4 id="module-parameters">Module parameters</h4>
@@ -85,10 +85,10 @@
 <li><p>If they don’t fit on a single line, then they should be spread out over multiple lines, each indented by two spaces. If they can be grouped logically by line then it is fine to do so, otherwise a line each is probably clearest.</p></li>
 <li><p>The <code>where</code> should go on it’s own line at the end.</p></li>
 <li><p>For example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">module</span> Relation<span class="ot">.</span>Binary<span class="ot">.</span>Reasoning<span class="ot">.</span>Base<span class="ot">.</span>Single</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>  <span class="ot">{</span>a ℓ<span class="ot">}</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span> a<span class="ot">}</span> <span class="ot">(_</span>∼<span class="ot">_</span> <span class="ot">:</span> Rel A ℓ<span class="ot">)</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>  <span class="ot">(</span>refl <span class="ot">:</span> Reflexive <span class="ot">_</span>∼<span class="ot">_)</span> <span class="ot">(</span>trans <span class="ot">:</span> Transitive <span class="ot">_</span>∼<span class="ot">_)</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>  <span class="kw">where</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb3"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> Relation<span class="ot">.</span>Binary<span class="ot">.</span>Reasoning<span class="ot">.</span>Base<span class="ot">.</span>Single</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">{</span>a ℓ<span class="ot">}</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span> a<span class="ot">}</span> <span class="ot">(_</span>∼<span class="ot">_</span> <span class="ot">:</span> Rel A ℓ<span class="ot">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">(</span>refl <span class="ot">:</span> Reflexive <span class="ot">_</span>∼<span class="ot">_)</span> <span class="ot">(</span>trans <span class="ot">:</span> Transitive <span class="ot">_</span>∼<span class="ot">_)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span></code></pre></div></li>
 </ul>
 <h4 id="reasoning-layout">Reasoning layout</h4>
 <ul>
@@ -96,22 +96,22 @@
 <li><p>Every subsequent combinator <code>_≡⟨_⟩_</code> should go on its own line, with the intermediate terms on their own line, indented by two spaces.</p></li>
 <li><p>The relation sign (e.g. <code>≡</code>) for each line should be aligned if possible.</p></li>
 <li><p>For example:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>+-comm <span class="ot">:</span> Commutative <span class="ot">_</span>+<span class="ot">_</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>+-comm zero    n <span class="ot">=</span> sym <span class="ot">(</span>+-identityʳ n<span class="ot">)</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>+-comm <span class="ot">(</span>suc m<span class="ot">)</span> n <span class="ot">=</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>  begin</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>    suc m + n</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>  ≡⟨⟩</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>    suc <span class="ot">(</span>m + n<span class="ot">)</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>  ≡⟨ cong suc <span class="ot">(</span>+-comm m n<span class="ot">)</span> ⟩</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>    suc <span class="ot">(</span>n + m<span class="ot">)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>  ≡⟨ sym <span class="ot">(</span>+-suc n m<span class="ot">)</span> ⟩</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>    n + suc m</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>  ∎</span></code></pre></div></li>
+<div class="sourceCode" id="cb4"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>+-comm <span class="ot">:</span> Commutative <span class="ot">_</span>+<span class="ot">_</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>+-comm zero    n <span class="ot">=</span> sym <span class="ot">(</span>+-identityʳ n<span class="ot">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>+-comm <span class="ot">(</span>suc m<span class="ot">)</span> n <span class="ot">=</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  begin</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    suc m + n</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  ≡⟨⟩</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    suc <span class="ot">(</span>m + n<span class="ot">)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  ≡⟨ cong suc <span class="ot">(</span>+-comm m n<span class="ot">)</span> ⟩</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    suc <span class="ot">(</span>n + m<span class="ot">)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  ≡⟨ sym <span class="ot">(</span>+-suc n m<span class="ot">)</span> ⟩</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    n + suc m</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  ∎</span></code></pre></div></li>
 <li><p>When multiple reasoning frameworks need to be used in the same file, the <code>open</code> statement should always come in a where clause local to the definition. This way users can easily see which reasoning toolkit is being used. For instance:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>foo m n p <span class="ot">=</span> begin</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>  <span class="ot">(...)</span> ∎</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>  <span class="kw">where</span> <span class="kw">open</span> ≤-Reasoning</span></code></pre></div></li>
+<div class="sourceCode" id="cb5"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>foo m n p <span class="ot">=</span> begin</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">(...)</span> ∎</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> <span class="kw">open</span> ≤-Reasoning</span></code></pre></div></li>
 </ul>
 <h4 id="record-layout">Record layout</h4>
 <ul>
@@ -120,27 +120,27 @@
 <li><p>Every subsequent item of the record should go on its own line starting with a <code>;</code>.</p></li>
 <li><p>The final line should end with <code>}</code> on its own.</p></li>
 <li><p>For example:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>≤-isPreorder <span class="ot">:</span> IsPreorder <span class="ot">_</span>≡<span class="ot">_</span> <span class="ot">_</span>≤<span class="ot">_</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>≤-isPreorder <span class="ot">=</span> <span class="kw">record</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>  <span class="ot">{</span> isEquivalence <span class="ot">=</span> isEquivalence</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>  <span class="ot">;</span> reflexive     <span class="ot">=</span> ≤-reflexive</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>  <span class="ot">;</span> trans         <span class="ot">=</span> ≤-trans</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>  <span class="ot">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb6"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>≤-isPreorder <span class="ot">:</span> IsPreorder <span class="ot">_</span>≡<span class="ot">_</span> <span class="ot">_</span>≤<span class="ot">_</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>≤-isPreorder <span class="ot">=</span> <span class="kw">record</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">{</span> isEquivalence <span class="ot">=</span> isEquivalence</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">;</span> reflexive     <span class="ot">=</span> ≤-reflexive</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">;</span> trans         <span class="ot">=</span> ≤-trans</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span></code></pre></div></li>
 </ul>
 <h4 id="where-blocks"><code>where</code> blocks</h4>
 <ul>
 <li><p><code>where</code> blocks are preferred rather than the <code>let</code> construction.</p></li>
 <li><p>The <code>where</code> should be placed on the line below the main proof, indented by two spaces.</p></li>
 <li><p>If the contents of the block is non-trivial then types should be provided alongside the terms, and all terms should be on lines after the <code>where</code>, e.g.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>statement <span class="ot">:</span> Statement</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>statement <span class="ot">=</span> proof</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>  <span class="kw">where</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>      proof <span class="ot">:</span> Proof</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>      proof <span class="ot">=</span> some-very-long-proof</span></code></pre></div></li>
+<div class="sourceCode" id="cb7"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>statement <span class="ot">:</span> Statement</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>statement <span class="ot">=</span> proof</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      proof <span class="ot">:</span> Proof</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      proof <span class="ot">=</span> some-very-long-proof</span></code></pre></div></li>
 <li><p>If the contents of the block is trivial or is an <code>open</code> statement then it can provided on the same line as the <code>where</code> and a type can be omitted, e.g.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>statement <span class="ot">:</span> Statement</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>statement <span class="ot">=</span> proof</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>  <span class="kw">where</span> proof <span class="ot">=</span> x</span></code></pre></div></li>
+<div class="sourceCode" id="cb8"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>statement <span class="ot">:</span> Statement</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>statement <span class="ot">=</span> proof</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> proof <span class="ot">=</span> x</span></code></pre></div></li>
 </ul>
 <h4 id="other">Other</h4>
 <ul>
@@ -185,11 +185,11 @@
 <h4 id="functions-and-relations-over-specific-datatypes">Functions and relations over specific datatypes</h4>
 <ul>
 <li><p>When defining a new relation over a datatype (e.g. <code>Data.List.Relation.Binary.Pointwise</code>) it is often common to define how to introduce and eliminate that relation over various simple functions (e.g. <code>map</code>) over that datatype:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>map⁺ <span class="ot">:</span> Pointwise <span class="ot">(λ</span> a b <span class="ot">→</span> R <span class="ot">(</span>f a<span class="ot">)</span> <span class="ot">(</span>g b<span class="ot">))</span> as bs <span class="ot">→</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>               Pointwise R <span class="ot">(</span>map f as<span class="ot">)</span> <span class="ot">(</span>map g bs<span class="ot">)</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>map⁻ <span class="ot">:</span> Pointwise R <span class="ot">(</span>map f as<span class="ot">)</span> <span class="ot">(</span>map g bs<span class="ot">)</span> <span class="ot">→</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a>               Pointwise <span class="ot">(λ</span> a b <span class="ot">→</span> R <span class="ot">(</span>f a<span class="ot">)</span> <span class="ot">(</span>g b<span class="ot">))</span> as bs</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>map⁺ <span class="ot">:</span> Pointwise <span class="ot">(λ</span> a b <span class="ot">→</span> R <span class="ot">(</span>f a<span class="ot">)</span> <span class="ot">(</span>g b<span class="ot">))</span> as bs <span class="ot">→</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>               Pointwise R <span class="ot">(</span>map f as<span class="ot">)</span> <span class="ot">(</span>map g bs<span class="ot">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>map⁻ <span class="ot">:</span> Pointwise R <span class="ot">(</span>map f as<span class="ot">)</span> <span class="ot">(</span>map g bs<span class="ot">)</span> <span class="ot">→</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>               Pointwise <span class="ot">(λ</span> a b <span class="ot">→</span> R <span class="ot">(</span>f a<span class="ot">)</span> <span class="ot">(</span>g b<span class="ot">))</span> as bs</span></code></pre></div>
 <p>Such elimination and introduction proofs are called the name of the function superscripted with either a <code>+</code> or <code>-</code> accordingly.</p></li>
 </ul>
     </div>

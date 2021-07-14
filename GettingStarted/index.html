@@ -61,7 +61,7 @@
     </header>
     <div class="post-content">
         <!-- Status & Version Badges -->
-<p><a href="https://github.com/plfa/plfa.github.io/releases/latest"><img src="https://img.shields.io/badge/calver-20.07-22bfda" alt="Calendar Version" /></a> <a href="https://github.com/agda/agda/releases/tag/v2.6.1.1"><img src="https://img.shields.io/badge/agda-v2.6.1.1-blue.svg" alt="Agda" /></a> <a href="https://github.com/agda/agda-stdlib/releases/tag/v1.3"><img src="https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg" alt="agda-stdlib" /></a></p>
+<p><a href="https://github.com/plfa/plfa.github.io/releases/latest"><img src="https://img.shields.io/badge/calver-20.07-22bfda" alt="Calendar Version" /></a> <a href="https://github.com/agda/agda/releases/tag/v2.6.1.3"><img src="https://img.shields.io/badge/agda-v2.6.1.3-blue.svg" alt="Agda" /></a> <a href="https://github.com/agda/agda-stdlib/releases/tag/v1.3"><img src="https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg" alt="agda-stdlib" /></a></p>
 <h2 id="dependencies-for-users">Dependencies for users</h2>
 <p>You can read PLFA <a href="http://plfa.inf.ed.ac.uk">online</a> without installing anything. However, if you wish to interact with the code or complete the exercises, you need several things:</p>
 <ul>
@@ -75,69 +75,69 @@
 <p>There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out-of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.</p>
 <h3 id="on-macos-install-the-xcode-command-line-tools">On macOS: Install the XCode Command Line Tools</h3>
 <p>On macOS, you’ll need to install the <a href="https://developer.apple.com/xcode/">XCode Command Line Tools</a>. For most versions of macOS, you can install these by running the following command:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">xcode-select</span> --install</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">xcode-select</span> <span class="at">--install</span></span></code></pre></div>
 <h3 id="install-the-haskell-tool-stack">Install the Haskell Tool Stack</h3>
 <p>Agda is written in Haskell, so to install it we’ll need the <em>Haskell Tool Stack</em>, or <em>Stack</em> for short. Stack is a program for managing different Haskell compilers and packages:</p>
 <ul>
 <li><p><em>On UNIX and macOS.</em> If your package manager has a package for Stack, that’s probably your easiest option. For instance, Homebrew on macOS and APT on Debian offer the “haskell-stack” package. Otherwise, you can follow the instructions on <a href="https://docs.haskellstack.org/en/stable/README/">the Stack website</a>. Usually, Stack installs binaries at <code>HOME/.local/bin</code>. Please ensure this is on your PATH, by including the following in your shell configuration, e.g., in <code>HOME/.bash_profile</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="bu">export</span> <span class="va">PATH=</span><span class="st">&quot;</span><span class="va">${HOME}</span><span class="st">/.local/bin:</span><span class="va">${PATH}</span><span class="st">&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH=</span><span class="st">&quot;</span><span class="va">${HOME}</span><span class="st">/.local/bin:</span><span class="va">${PATH}</span><span class="st">&quot;</span></span></code></pre></div>
 <p>Finally, ensure that you’ve got the latest version of Stack, by running:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">stack</span> upgrade</span></code></pre></div></li>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> upgrade</span></code></pre></div></li>
 <li><p><em>On Windows.</em> There is a Windows installer on <a href="https://docs.haskellstack.org/en/stable/README/">the Stack website</a>.</p></li>
 </ul>
 <h3 id="install-git">Install Git</h3>
 <p>If you do not already have Git installed, see <a href="https://git-scm.com/downloads">the Git downloads page</a>.</p>
 <h3 id="install-agda-using-stack">Install Agda using Stack</h3>
-<p>The easiest way to install a <em>specific version</em> of Agda is using <a href="https://docs.haskellstack.org/en/stable/README/">Stack</a>. You can get the required version of Agda from GitHub, either by cloning the repository and switching to the correct branch, or by downloading <a href="https://github.com/agda/agda/releases/tag/v2.6.1.1">the zip archive</a>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/agda/agda.git</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="bu">cd</span> agda</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="fu">git</span> checkout v2.6.1.1</span></code></pre></div>
+<p>The easiest way to install a <em>specific version</em> of Agda is using <a href="https://docs.haskellstack.org/en/stable/README/">Stack</a>. You can get the required version of Agda from GitHub, either by cloning the repository and switching to the correct branch, or by downloading <a href="https://github.com/agda/agda/releases/tag/v2.6.1.3">the zip archive</a>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/agda/agda.git</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> agda</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout v2.6.1.3</span></code></pre></div>
 <p>To install Agda, run Stack from the Agda source directory:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="ex">stack</span> install --stack-yaml stack-8.8.3.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> install <span class="at">--stack-yaml</span> stack-8.8.3.yaml</span></code></pre></div>
 <p><em>This step will take a long time and a lot of memory to complete.</em></p>
 <h4 id="using-an-existing-installation-of-ghc">Using an existing installation of GHC</h4>
 <p>Stack is perfectly capable of installing and managing versions of the <a href="https://www.haskell.org/ghc/">Glasgow Haskell Compiler</a> for you. However, if you already have a copy of GHC installed, and you want Stack to use your system installation, you can pass the <code>--system-ghc</code> flag and select the appropriate <code>stack-*.yaml</code> file. For instance, if you have GHC 8.2.2 installed, run:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="ex">stack</span> install --system-ghc --stack-yaml stack-8.2.2.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> install <span class="at">--system-ghc</span> <span class="at">--stack-yaml</span> stack-8.2.2.yaml</span></code></pre></div>
 <h4 id="check-if-agda-was-installed-correctly">Check if Agda was installed correctly</h4>
 <p>If you’d like, you can test to see if you’ve installed Agda correctly. Create a file called <code>hello.agda</code> with these lines:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="kw">data</span> Greeting <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>  hello <span class="ot">:</span> Greeting</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>greet <span class="ot">:</span> Greeting</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>greet <span class="ot">=</span> hello</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Greeting <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  hello <span class="ot">:</span> Greeting</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>greet <span class="ot">:</span> Greeting</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>greet <span class="ot">=</span> hello</span></code></pre></div>
 <p>From a command line, change to the same directory where your <code>hello.agda</code> file is located. Then run:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ex">agda</span> -v 2 hello.agda</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">agda</span> <span class="at">-v</span> 2 hello.agda</span></code></pre></div>
 <p>You should see a short message like the following, but no errors:</p>
 <pre><code>Checking hello (/path/to/hello.agda).
 Finished hello.</code></pre>
 <h3 id="install-plfa-and-the-agda-standard-library">Install PLFA and the Agda standard library</h3>
 <p>You can get the latest version of Programming Language Foundations in Agda from GitHub, either by cloning the repository, or by downloading <a href="https://github.com/plfa/plfa.github.io/archive/dev.zip">the zip archive</a>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">git</span> clone --recurse-submodules https://github.com/plfa/plfa.github.io plfa</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--recurse-submodules</span> https://github.com/plfa/plfa.github.io plfa</span></code></pre></div>
 <p>PLFA ships with the required version of the Agda standard library, so if you cloned with the <code>--recurse-submodules</code> flag, you’ve already got, in the <code>standard-library</code> directory!</p>
 <p>If you forgot to add the <code>--recurse-submodules</code> flag, no worries, we can fix that!</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="bu">cd</span> plfa/</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="fu">git</span> submodule update --recursive</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> plfa/</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> submodule update <span class="at">--recursive</span></span></code></pre></div>
 <p>If you obtained PLFA by downloading the zip archive, you can get the required version of the Agda standard library from GitHub. You can either clone the repository and switch to the correct branch, or you can download the <a href="https://github.com/agda/agda-stdlib/releases/tag/v1.3">the zip archive</a>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/agda/agda-stdlib.git agda-stdlib</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="bu">cd</span> agda-stdlib</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a><span class="fu">git</span> checkout v1.3</span></code></pre></div>
-<p>Finally, we need to let Agda know where to find the Agda standard library. You’ll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file. You will need to create two configuration files in <code>AGDA_DIR</code>. On UNIX and macOS, <code>AGDA_DIR</code> defaults to <code>~/.agda</code>. On Windwos, <code>AGDA_DIR</code> usually defaults to <code>%AppData%\agda</code>, where <code>%AppData%</code> usually defaults to <code>C:\Users\USERNAME\AppData\Roaming</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/agda/agda-stdlib.git agda-stdlib</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> agda-stdlib</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout v1.3</span></code></pre></div>
+<p>Finally, we need to let Agda know where to find the Agda standard library. You’ll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file. You will need to create two configuration files in <code>AGDA_DIR</code>. On UNIX and macOS, <code>AGDA_DIR</code> defaults to <code>~/.agda</code>. On Windows, <code>AGDA_DIR</code> usually defaults to <code>%AppData%\agda</code>, where <code>%AppData%</code> usually defaults to <code>C:\Users\USERNAME\AppData\Roaming</code>.</p>
 <ul>
 <li>If the <code>AGDA_DIR</code> directory does not already exist, create it.</li>
 <li>In <code>AGDA_DIR</code>, create a plain-text file called <code>libraries</code> containing the <code>/path/to/standard-library.agda-lib</code>. This lets Agda know that an Agda library called <code>standard-library</code> is available.</li>
 <li>In <code>AGDA_DIR</code>, create a plain-text file called <code>defaults</code> containing <em>just</em> the line <code>standard-library</code>.</li>
 </ul>
-<p>More information about placing the standard libraries is available from <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/package-system.html#example-using-the-standard-library">the Library Management page</a> of the Agda documentation.</p>
+<p>More information about placing the standard libraries is available from <a href="https://agda.readthedocs.io/en/v2.6.1.3/tools/package-system.html#example-using-the-standard-library">the Library Management page</a> of the Agda documentation.</p>
 <p>It is possible to set up PLFA as an Agda library as well. If you want to complete the exercises found in the <code>courses</code> folder, or to import modules from the book, you need to do this. To do so, add the path to <code>plfa.agda-lib</code> to <code>AGDA_DIR/libraries</code> and add <code>plfa</code> to <code>AGDA_DIR/defaults</code>, each on a line of their own.</p>
 <h4 id="check-if-the-agda-standard-library-was-installed-correctly">Check if the Agda standard library was installed correctly</h4>
 <p>If you’d like, you can test to see if you’ve installed the Agda standard library correctly. Create a file called <code>nats.agda</code> with these lines:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="kw">open</span> <span class="kw">import</span> Data<span class="ot">.</span>Nat</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>ten <span class="ot">:</span> ℕ</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>ten <span class="ot">=</span> <span class="dv">10</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">import</span> Data<span class="ot">.</span>Nat</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>ten <span class="ot">:</span> ℕ</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>ten <span class="ot">=</span> <span class="dv">10</span></span></code></pre></div>
 <p>(Note that the ℕ is a Unicode character, not a plain capital N. You should be able to just copy-and-paste it from this page into your file.)</p>
 <p>From a command line, change to the same directory where your <code>nats.agda</code> file is located. Then run:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="ex">agda</span> -v 2 nats.agda</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">agda</span> <span class="at">-v</span> 2 nats.agda</span></code></pre></div>
 <p>You should see a several lines describing the files which Agda loads while checking your file, but no errors:</p>
 <pre><code>Checking nats (/path/to/nats.agda).
 Loading  Agda.Builtin.Equality (…).
@@ -154,11 +154,11 @@ Finished nats.</code></pre>
 </ul>
 <p>Make sure that you are able to open, edit, and save text files with your installation. The <a href="https://www.gnu.org/software/emacs/tour/">tour of Emacs</a> page on the GNU Emacs site describes how to access the tutorial within your Emacs installation.</p>
 <p>Agda ships with the editor support for Emacs built-in, so if you’ve installed Agda, all you have to do to configure Emacs is run:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="ex">agda-mode</span> setup</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a><span class="ex">agda-mode</span> compile</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">agda-mode</span> setup</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">agda-mode</span> compile</span></code></pre></div>
 <p>If you are already an Emacs user and have customized your setup, you may want to note the configuration which the <code>setup</code> appends to your <code>.emacs</code> file, and integrate it with your own preferred setup.</p>
 <h4 id="check-if-agda-mode-was-installed-correctly">Check if <code>agda-mode</code> was installed correctly</h4>
-<p>Open the <code>nats.agda</code> file you created earlier, and load and type-check the file by typing <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
+<p>Open the <code>nats.agda</code> file you created earlier, and load and type-check the file by typing <a href="https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
 <h4 id="auto-loading-agda-mode-in-emacs">Auto-loading <code>agda-mode</code> in Emacs</h4>
 <p>Since version 2.6.0, Agda has had support for literate editing with Markdown, using the <code>.lagda.md</code> extension. One issue is that Emacs will default to Markdown editing mode for files with a <code>.md</code> suffix. In order to have <code>agda-mode</code> automatically loaded whenever you open a file ending with <code>.agda</code> or <code>.lagda.md</code>, add the following line to your Emacs configuration file:</p>
 <pre class="elisp"><code>;; auto-load agda-mode for .agda and .lagda.md
@@ -170,7 +170,7 @@ Finished nats.</code></pre>
 <p>If you already have settings which change your <code>auto-mode-alist</code> in your configuration, put these <em>after</em> the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in <code>HOME/.emacs</code> or <code>HOME/.emacs.d/init.el</code>, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in <code>HOME/Library/Preferences/Aquamacs Emacs/Preferences</code>. For Windows, see <a href="https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html">the GNU Emacs documentation</a> for a description of where the Emacs configuration is located.</p>
 <h4 id="optional-using-the-mononoki-font-with-emacs">Optional: using the mononoki font with Emacs</h4>
 <p>Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend <a href="https://madmalik.github.io/mononoki/">mononoki</a>, fonts such as <a href="https://github.com/adobe-fonts/source-code-pro">Source Code Pro</a>, <a href="https://dejavu-fonts.github.io/">DejaVu Sans Mono</a>, and <a href="https://www.gnu.org/software/freefont/">FreeMono</a> are all good alternatives.</p>
-<p>You can download and install mononoki directly from <a href="https://github.com/madmalik/mononoki">GitHub</a>. For most systems, installing a font is merely a matter of clicking the downloaded <code>.otf</code> or <code>.ttf</code> file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the “font-mononoki” package, and APT on Debian offers the <a href="https://packages.debian.org/sid/fonts/fonts-mononoki">“fonts-mononoki” package</a>. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:</p>
+<p>You can download and install mononoki directly from <a href="https://github.com/madmalik/mononoki">GitHub</a>. For most systems, installing a font is merely a matter of clicking the downloaded <code>.otf</code> or <code>.ttf</code> file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the <code>font-mononoki</code> package in the <a href="https://github.com/Homebrew/homebrew-cask-fonts"><code>cask-fonts</code> cask</a>, and APT on Debian offers the <a href="https://packages.debian.org/sid/fonts/fonts-mononoki"><code>fonts-mononoki</code> package</a>. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:</p>
 <pre class="elisp"><code>;; default to mononoki
 (set-face-attribute 'default nil
                     :family &quot;mononoki&quot;
@@ -178,8 +178,8 @@ Finished nats.</code></pre>
                     :weight 'normal
                     :width  'normal)</code></pre>
 <h4 id="using-agda-mode-in-emacs">Using <code>agda-mode</code> in Emacs</h4>
-<p>To load and type-check the file, use <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
-<p>Agda is edited interactively, using <a href="https://agda.readthedocs.io/en/v2.6.1.1/getting-started/quick-guide.html">“holes”</a>, which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using <code>C-c C-l</code>, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:</p>
+<p>To load and type-check the file, use <a href="https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html#notation-for-key-combinations"><code>C-c C-l</code></a>.</p>
+<p>Agda is edited interactively, using <a href="https://agda.readthedocs.io/en/v2.6.1.3/getting-started/quick-guide.html">“holes”</a>, which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using <code>C-c C-l</code>, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:</p>
 <ul>
 <li><code>C-c C-c</code>: <strong>c</strong>ase split (asks for variable name)</li>
 <li><code>C-c C-space</code>: fill in hole</li>
@@ -188,7 +188,7 @@ Finished nats.</code></pre>
 <li><code>C-c C-,</code>: goal type and context</li>
 <li><code>C-c C-.</code>: goal type, context, and inferred type</li>
 </ul>
-<p>See <a href="https://agda.readthedocs.io/en/v2.6.1.1/tools/emacs-mode.html">the emacs-mode docs</a> for more details.</p>
+<p>See <a href="https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html">the emacs-mode docs</a> for more details.</p>
 <p>If you want to see messages beside rather than below your Agda code, you can do the following:</p>
 <ul>
 <li>Open your Agda file, and load it using <code>C-c C-l</code>;</li>
@@ -229,9 +229,9 @@ Finished nats.</code></pre>
 <p>PLFA is written in literate Agda with <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">Pandoc Markdown</a>. PLFA is available as both a website and an EPUB e-book, both of which can be built on UNIX and macOS. Finally, to help developers avoid common mistakes, we provide a set of Git hooks.</p>
 <h3 id="building-the-website-and-e-book">Building the website and e-book</h3>
 <p>If you’d like to build the web version of PLFA locally, <a href="#install-the-haskell-tool-stack">Stack</a> is all you need! PLFA is built using <a href="https://jaspervdj.be/hakyll/">Hakyll</a>, a Haskell library for building static websites. We’ve setup a Makefile to help you run common tasks. For instance, to build PLFA, run:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="fu">make</span> build</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> build</span></code></pre></div>
 <p>If you’d like to serve PLFA locally, rebuilding the website when any of the source files are changed, run:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true"></a><span class="fu">make</span> watch</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> watch</span></code></pre></div>
 <p>The Makefile offers more than just building and watching, it also offers the following useful options:</p>
 <pre class="make"><code>build                      # Build PLFA
 watch                      # Build and serve PLFA, monitor for changes and rebuild
@@ -258,9 +258,9 @@ setup-check-stack          # Check if the Haskell Tool Stack is installed</code>
 <li><p>The test suite is run to check if everything type checks.</p></li>
 </ol>
 <p>You can install these Git hooks by calling <code>make init</code>. You can install <a href="https://github.com/agda/fix-whitespace">fix-whitespace</a> by running:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/agda/fix-whitespace</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true"></a><span class="bu">cd</span> fix-whitespace/</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true"></a><span class="ex">stack</span> install --stack-yaml stack-8.8.3.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/agda/fix-whitespace</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> fix-whitespace/</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> install <span class="at">--stack-yaml</span> stack-8.8.3.yaml</span></code></pre></div>
 <p>If you want Stack to use your system installation of GHC, follow the instructions for <a href="#using-an-existing-installation-of-ghc">Using an existing installation of GHC</a>.</p>
 <!-- Links -->
     </div>

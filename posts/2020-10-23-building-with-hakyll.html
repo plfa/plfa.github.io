@@ -50,9 +50,9 @@
     </header>
     <div class="post-content e-content" itemprop="articleBody">
         <p>We’re pleased to announce that as of today, PLFA builds entirely using Haskell! We’ve migrated our build system from a bundle of Makefiles, shell scripts, and Jekyll, over to <a href="https://jaspervdj.be/hakyll/">Hakyll</a>, a static site building written in Haskell. All you need to do to build and serve PLFA locally is:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">git</span> clone --recurse-submodules https://github.com/plfa/plfa.github.io PLFA</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="bu">cd</span> PLFA/</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="ex">stack</span> build <span class="kw">&amp;&amp;</span> <span class="ex">stack</span> exec site watch</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--recurse-submodules</span> https://github.com/plfa/plfa.github.io PLFA</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> PLFA/</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> build <span class="kw">&amp;&amp;</span> <span class="ex">stack</span> exec site watch</span></code></pre></div>
 <p>That will pull in all the dependencies: Agda, the standard library, Hakyll, Pandoc, <em>etc.</em></p>
 <p>There’s been lots of changes to the organisation of PLFA as a consequence, but the most important change, if you’re using PLFA as a student, is that we now include the correct version of the Agda standard library as a Git submodule. The <a href="../GettingStarted/#install-plfa-and-the-agda-standard-library">“Getting Started”</a> page can help you set it up correctly!</p>
 <p>If you’re a contributor to PLFA, there are some further changes that will affect you!</p>
