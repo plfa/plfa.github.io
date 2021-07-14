@@ -580,9 +580,9 @@ such that `Γ ∋ x ⦂ A` holds, then there is also no type `A` such that
 ```
 ext∋ : ∀ {Γ B x y}
   → x ≢ y
-  → ¬ ∃[ A ]( Γ ∋ x ⦂ A )
+  → ¬ ( ∃[ A ] Γ ∋ x ⦂ A )
     -----------------------------
-  → ¬ ∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A )
+  → ¬ ( ∃[ A ] Γ , y ⦂ B ∋ x ⦂ A )
 ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
 ext∋ _   ¬∃ ⟨ A , S _ ∋x ⟩  =  ¬∃ ⟨ A , ∋x ⟩
 ```
@@ -638,8 +638,8 @@ there is no term `B′` such that `Γ ⊢ L · M ↑ B′` holds:
 ¬arg : ∀ {Γ A B L M}
   → Γ ⊢ L ↑ A ⇒ B
   → ¬ Γ ⊢ M ↓ A
-    -------------------------
-  → ¬ ∃[ B′ ](Γ ⊢ L · M ↑ B′)
+    ----------------------------
+  → ¬ ( ∃[ B′ ] Γ ⊢ L · M ↑ B′ )
 ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M′ ⟩ rewrite dom≡ (uniq-↑ ⊢L ⊢L′) = ¬⊢M ⊢M′
 ```
 Let `⊢L` be evidence that `Γ ⊢ L ↑ A ⇒ B` holds and `¬⊢M` be evidence

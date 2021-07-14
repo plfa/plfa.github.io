@@ -336,7 +336,7 @@ main = do
     -- Compile CSS
     match "css/*.css" $ compile compressCssCompiler
 
-    scss <- makePatternDependency "css/theme/**.scss"
+    scss <- makePatternDependency "css/minima/**.scss"
     rulesExtraDependencies [scss] $
       match "css/minima.scss" $
         compile $ sassCompilerWith sassOptions
