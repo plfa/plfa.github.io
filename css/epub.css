@@ -4,19 +4,19 @@
     font-family: 'mononoki';
     font-weight: normal;
     font-style: normal;
-    src: url('../fonts/mononoki.woff');
+    src: url('../webfonts/mononoki.woff');
 }
 @font-face {
     font-family: 'FreeMono';
     font-weight: normal;
     font-style: normal;
-    src: url('../fonts/FreeMono.woff');
+    src: url('../webfonts/FreeMono.woff');
 }
 @font-face {
     font-family: 'DejaVuSansMono';
     font-weight: normal;
     font-style: normal;
-    src: url('../fonts/DejaVuSansMono.woff');
+    src: url('../webfonts/DejaVuSansMono.woff');
 }
 body { margin: 5%; text-align: justify; font-size: medium; }
 code { font-family: 'mononoki', 'FreeMono', 'DejaVuSansMono', monospace; }
