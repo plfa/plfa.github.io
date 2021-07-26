@@ -563,7 +563,7 @@ postulate
 
 ## Proof by reflection {name=proof-by-reflection}
 
-Let's revisit our definition of monus from
+Let's revisit our definition of minus from
 Chapter [Naturals](/Naturals/).
 If we subtract a larger number from a smaller number, we take the result to be
 zero. We had to do something, after all. What could we have done differently? We
