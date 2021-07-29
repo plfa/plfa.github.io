@@ -41,7 +41,7 @@ $endfor$
   * [William Cook, University of Texas][UT-2020]
   * [Jeremy Siek, Indiana University][IU-2020]
   * [John Maraist, University of Wisconsin-La Crosse][UWL-2020]
-  * [Ugo de'Liguoro, Universita di Torino][Torino-2020]
+  * [Ugo de'Liguoro, Università di Torino][Torino-2020]
 
 #### 2019
   * [Dan Ghica, University of Birmingham][BHAM-2019]
