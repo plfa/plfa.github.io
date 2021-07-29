@@ -319,9 +319,7 @@ The repository comes with several Git hooks:
 You can install these Git hooks by calling `make init`.
 You can install [fix-whitespace][fix-whitespace] by running:
 ```bash
-git clone https://github.com/agda/fix-whitespace
-cd fix-whitespace/
-stack install --stack-yaml stack-8.8.3.yaml
+stack install fix-whitespace
 ```
 If you want Stack to use your system installation of GHC, follow the instructions for [Using an existing installation of GHC](#using-an-existing-installation-of-ghc).
 
