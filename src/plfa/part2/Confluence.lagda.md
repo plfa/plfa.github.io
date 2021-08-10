@@ -611,7 +611,7 @@ confluence L↠M₁ L↠M₂
 ## Notes
 
 Broadly speaking, this proof of confluence, based on parallel
-reduction, is due to W. Tait and P. Martin-Löf (see Barendredgt 1984,
+reduction, is due to W. Tait and P. Martin-Löf (see Barendregt 1984,
 Section 3.2).  Details of the mechanization come from several sources.
 The `subst-par` lemma is the "strong substitutivity" lemma of Shafer,
 Tebbi, and Smolka (ITP 2015). The proofs of `par-triangle`, `strip`,
