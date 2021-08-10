@@ -41,6 +41,7 @@ $endfor$
   * [William Cook, University of Texas][UT-2020]
   * [Jeremy Siek, Indiana University][IU-2020]
   * [John Maraist, University of Wisconsin-La Crosse][UWL-2020]
+  * [Ugo de'Liguoro, Università di Torino][Torino-2020]
 
 #### 2019
   * [Dan Ghica, University of Birmingham][BHAM-2019]
@@ -71,3 +72,4 @@ Please tell us of others!
 [SCP]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#scf
 [NextJournal]: https://nextjournal.com/plfa/ToC
 [UWL-2020]: https://github.com/jphmrst/PLC/tree/fall2020
+[Torino-2020]: http://laurea.educ.di.unito.it/index.php/offerta-formativa/insegnamenti/elenco-completo/elenco-completo/scheda-insegnamento?cod=MFN0633&codA=&year=2020&orienta=NSE

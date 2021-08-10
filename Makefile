@@ -12,7 +12,7 @@ TMP_DIR := $(CACHE_DIR)/tmp
 #################################################################################
 
 .PHONY: init
-init: setup-check-fix-whitespace setup-check-htmlproofer
+init: setup-check-fix-whitespace setup-install-htmlproofer
 	git config core.hooksPath .githooks
 
 
