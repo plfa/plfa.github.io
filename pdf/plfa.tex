@@ -1,0 +1,173 @@
+\documentclass[10pt]{book}
+\usepackage{hyperref}
+\usepackage[links]{agda}
+\usepackage{fontspec}
+\setmainfont{DejaVu Sans}
+\setsansfont{DejaVu Sans}
+\setmonofont{[DejaVu-mononoki-Symbola-Droid.ttf]}
+\usepackage{soul}
+\usepackage{tcolorbox,fancyvrb,xcolor,tikz}
+\tcbuselibrary{skins,breakable}
+\usepackage{setspace}
+
+% wrap texttt lines
+\sloppy
+
+% disable section numbering
+\setcounter{secnumdepth}{0}
+
+
+% change background color for inline code in
+% markdown files. The following code does not work well for
+% long text as the text will exceed the page boundary
+
+\definecolor{bgcolor}{HTML}{EEEEFF}
+\let\oldtexttt\texttt
+
+\renewcommand{\texttt}[1]{
+  \colorbox{bgcolor}{\oldtexttt{#1}}
+  }
+
+
+% indent verbatim to be the same as agda code blocks
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{xleftmargin=0pt}
+
+% environments for adding background to agdacodeblocks and displays
+\newtcolorbox{fence}[1][]{
+  breakable,
+  colback=bgcolor,
+  spartan,
+  left=5pt,
+  boxrule=0pt,
+  frame hidden
+}
+\newenvironment{myDisplay}
+ {\VerbatimEnvironment
+  \begin{fence}
+ \begin{verbatim}
+ }
+ {\end{verbatim}
+  \end{fence}
+ }
+
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+
+
+% Use special font families without TeX ligatures for Agda code. (This
+% code is inspired by a comment by Enrico Gregorio/egreg:
+% https://tex.stackexchange.com/a/103078.) 
+\newfontfamily{\AgdaSerifFont}{DejaVu Serif}
+\newfontfamily{\AgdaSansSerifFont}{DejaVu Sans}
+\newfontfamily{\AgdaTypewriterFont}{DejaVu mononoki Symbola Droid}
+\renewcommand{\AgdaFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaCommentFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaBoundFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+
+\AgdaNoSpaceAroundCode{}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+
+% adjust spacing after toc numbering
+\usepackage{tocloft}
+\setlength\cftchapnumwidth{3em}
+\cftsetpnumwidth{4em}
+
+% style links with colors instead of boxes
+% https://tex.stackexchange.com/questions/823/remove-ugly-borders-around-clickable-cross-references-and-hyperlinks
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\begin{document}
+
+% adjust indentation of agda codeblocks
+\setlength{\mathindent}{0pt}
+
+% Stack Overflow: (error) \tightlist (converting .md file into .pdf using pandoc)
+% https://tex.stackexchange.com/questions/257418/error-tightlist-converting-md-file-into-pdf-using-pandoc/408474
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% https://ctan.org/pkg/titlepages
+% https://latex.org/forum/viewtopic.php?t=2843
+\newlength{\drop}
+\newcommand*{\titleAM}{\begingroup% Ancient Mariner, AW p. 151
+\setlength{\drop}{0.12\textheight}
+\centering
+\vspace*{\drop}
+{\large Philip Wadler, Wen Kokke, and Jeremy G. Siek}\\[\baselineskip]
+\vspace*{\drop}
+{\Huge Programming Language Foundations}\\[\baselineskip]
+{\Huge in}\\[\baselineskip]
+{\Huge Agda}\\[\drop]
+% {\small\scshape the publisher}\par
+\vfill
+{\Large \scshape 2021}\par
+\null\endgroup}
+
+
+\begin{titlepage}
+\titleAM
+\end{titlepage}
+\frontmatter
+\setcounter{tocdepth}{0}
+\tableofcontents
+\setcounter{tocdepth}{1}
+
+\input{ latex/plfa/frontmatter/dedication }
+\input{ latex/plfa/frontmatter/preface }
+\input{ latex/plfa/frontmatter/README }
+
+\mainmatter
+\part{Part 1: Logical Foundations}
+  \input{ latex/plfa/part1/Naturals }
+  \input{ latex/plfa/part1/Induction }
+  \input{ latex/plfa/part1/Relations }
+  \input{ latex/plfa/part1/Equality }
+  \input{ latex/plfa/part1/Isomorphism }
+  \input{ latex/plfa/part1/Connectives }
+  \input{ latex/plfa/part1/Negation }
+  \input{ latex/plfa/part1/Quantifiers }
+  \input{ latex/plfa/part1/Decidable }
+  \input{ latex/plfa/part1/Lists }
+\part{Part 2: Programming Language Foundations}
+  \input{ latex/plfa/part2/Lambda}
+  \input{ latex/plfa/part2/Properties}
+  \input{ latex/plfa/part2/DeBruijn}
+  \input{ latex/plfa/part2/More}
+  \input{ latex/plfa/part2/Bisimulation }
+  \input{ latex/plfa/part2/Inference }
+  \input{ latex/plfa/part2/Untyped }
+  \input{ latex/plfa/part2/Confluence }
+  \input{ latex/plfa/part2/BigStep }
+\part{ Part 3: Denotational Semantics }
+  \input{ latex/plfa/part3/Denotational }
+  \input{ latex/plfa/part3/Compositional }
+  \input{ latex/plfa/part3/Soundness }
+  \input{ latex/plfa/part3/Adequacy }
+  \input{ latex/plfa/part3/ContextualEquivalence }
+
+% https://tex.stackexchange.com/questions/286431/putting-appendix-outside-the-last-part
+\cleardoublepage
+\phantomsection
+\appendix
+\addcontentsline{toc}{part}{Appendices}
+\input{ latex/plfa/part2/Substitution }
+\input{ latex/plfa/backmatter/acknowledgements}
+\input{ latex/plfa/backmatter/Fonts }
+\end{document}

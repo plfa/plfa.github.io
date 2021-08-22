@@ -269,3 +269,7 @@ versions/$$(out): $$(tmp_dir)
 endef
 
 $(foreach legacy_version,$(LEGACY_VERSIONS),$(eval $(call build_legacy_version,$(legacy_version))))
+
+.PHONY: pdf
+pdf: 
+	make -C pdf
