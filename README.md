@@ -94,20 +94,21 @@ Finished hello.
 ### Install PLFA and the Agda standard library
 You can get the latest version of Programming Language Foundations in Agda from GitHub, either by cloning the repository, or by downloading [the zip archive][plfa-dev]:
 ```bash
-git clone --recurse-submodules https://github.com/plfa/plfa.github.io plfa
+git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/plfa/plfa.github.io plfa
+# Remove `--depth 1` and `--shallow-submodules` if you want the complete git history of PLFA and the standard library.
 ```
 PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got, in the `standard-library` directory!
 
 If you forgot to add the `--recurse-submodules` flag, no worries, we can fix that!
 ```bash
 cd plfa/
-git submodule update --recursive
+git submodule update --init --recursive --depth 1
+# Remove `--depth 1` if you want the complete git history of the standard library.
 ```
 If you obtained PLFA by downloading the zip archive, you can get the required version of the Agda standard library from GitHub. You can either clone the repository and switch to the correct branch, or you can download the [the zip archive][agda-stdlib]:
 ```bash
-git clone https://github.com/agda/agda-stdlib.git agda-stdlib
-cd agda-stdlib
-git checkout v1.3
+git clone https://github.com/agda/agda-stdlib.git --branch v1.6 --depth 1 agda-stdlib
+# Remove `--depth 1` if you want the complete git history of the standard library.
 ```
 Finally, we need to let Agda know where to find the Agda standard library.
 You'll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file.
@@ -318,9 +319,7 @@ The repository comes with several Git hooks:
 You can install these Git hooks by calling `make init`.
 You can install [fix-whitespace][fix-whitespace] by running:
 ```bash
-git clone https://github.com/agda/fix-whitespace
-cd fix-whitespace/
-stack install --stack-yaml stack-8.8.3.yaml
+stack install fix-whitespace
 ```
 If you want Stack to use your system installation of GHC, follow the instructions for [Using an existing installation of GHC](#using-an-existing-installation-of-ghc).
 
