@@ -78,8 +78,6 @@
 
 \AgdaNoSpaceAroundCode{}
 
-\setlength{\parindent}{0em}
-\setlength{\parskip}{1em}
 
 % Adjust spacing after toc numbering
 \usepackage{tocloft}
@@ -97,24 +95,27 @@
 
 \begin{document}
 
-% Adjust indentation of agda codeblocks
+% Adjust indentation of Agda code blocks
 \setlength{\mathindent}{0pt}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
 
 % Provide \tightlist environment
 % https://tex.stackexchange.com/q/257418
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+% Based on \titleAM:
 % https://ctan.org/pkg/titlepages
-% https://latex.org/forum/viewtopic.php?t=2843
 \begin{titlepage}
-  \newlength{\drop}
+  \newlength{\drop}%
   \setlength{\drop}{0.12\textheight}%
   \centering%
+  \vspace*{\drop}
   \begingroup% Ancient Mariner, AW p. 151
-  \vspace*{\drop}%
   {\large Philip Wadler, Wen Kokke, and Jeremy G. Siek}\\[\baselineskip]
-  {\Huge PROGRAMMING LANGUAGE FOUNDATIONS}\\[\baselineskip]
+  {\Huge PROGRAMMING LANGUAGE}\\[\baselineskip]
+  {\Huge FOUNDATIONS}\\[\baselineskip]
   {\Large IN}\\[\baselineskip]
   {\Huge Agda}\\[\drop]
   \vfill%
@@ -132,7 +133,8 @@
 \input{plfa/frontmatter/preface}
 \input{plfa/frontmatter/README}
 
-\mainmatter
+\mainmatter%
+
 \part{Part 1: Logical Foundations}
 \input{plfa/part1/Naturals}
 \input{plfa/part1/Induction}
