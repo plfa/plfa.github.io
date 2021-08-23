@@ -1012,7 +1012,7 @@ all-funs∈ {⊥} f with f {⊥} refl
 ... | fun ()
 all-funs∈ {v ↦ w} f = ⟨ v , ⟨ w , refl ⟩ ⟩
 all-funs∈ {u ⊔ u′} f
-    with all-funs∈ λ z → f (inj₁ z)
+    with all-funs∈ (λ z → f (inj₁ z))
 ... | ⟨ v , ⟨ w , m ⟩ ⟩ = ⟨ v , ⟨ w , (inj₁ m) ⟩ ⟩
 ```
 
