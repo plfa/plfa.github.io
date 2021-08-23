@@ -257,7 +257,7 @@ main = do
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= prettifyUrls
-    
+
     match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
       route $ constRoute "acknowledgements.md"
       compile $ getResourceBody

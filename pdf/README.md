@@ -7,7 +7,7 @@ Dependencies (relative to the root):
 - `README.md`
 - the font `DejaVu mononoki Symbola Droid` installed globally. (Could change to local?)
 
-First, run `stack build && stack exec site rebuild` from the parent directory to generate acknowledgements.md under `_site`, which is needed by the pdf (Only need to do this once). 
+First, run `stack build && stack exec site rebuild` from the parent directory to generate acknowledgements.md under `_site`, which is needed by the pdf (Only need to do this once).
 
 Then, running `make pdf` from the parent directory should be sufficient to compile the book. The book will be generated in this folder as `plfa.pdf`.
 

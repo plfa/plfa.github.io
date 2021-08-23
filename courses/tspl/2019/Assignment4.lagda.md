@@ -982,15 +982,15 @@ Remember to indent all code by two spaces.
 ```
   ext∋ : ∀ {Γ B x y}
     → x ≢ y
-    → ¬ (∃[ A ]( Γ ∋ x ⦂ A ))
+    → ¬ ∃[ A ]( Γ ∋ x ⦂ A )
       ------------------------------
-    → ¬ (∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A ))
+    → ¬ ∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A )
   ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
   ext∋ _   ¬∃ ⟨ A , S _ ⊢x ⟩  =  ¬∃ ⟨ A , ⊢x ⟩
 
   lookup : ∀ (Γ : Context) (x : Id)
            ------------------------
-         → Dec (∃[ A ](Γ ∋ x ⦂ A))
+         → Dec (∃[ A ]( Γ ∋ x ⦂ A ))
   lookup ∅ x                        =  no  (λ ())
   lookup (Γ , y ⦂ B) x with x ≟ y
   ... | yes refl                    =  yes ⟨ B , Z ⟩
@@ -1006,7 +1006,7 @@ Remember to indent all code by two spaces.
     → Γ ⊢ L ↑ A ⇒ B
     → ¬ Γ ⊢ M ↓ A
       ----------------------------
-    → ¬ (∃[ B′ ]( Γ ⊢ L · M ↑ B′ ))
+    → ¬ ∃[ B′ ]( Γ ⊢ L · M ↑ B′ )
   ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M′ ⟩ rewrite dom≡ (uniq-↑ ⊢L ⊢L′) = ¬⊢M ⊢M′
 
   ¬switch : ∀ {Γ M A B}

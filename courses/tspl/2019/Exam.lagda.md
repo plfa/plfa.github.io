@@ -589,9 +589,9 @@ module Problem3 where
 ```
   ext∋ : ∀ {Γ B x y}
     → x ≢ y
-    → ¬ ( ∃[ A ] Γ ∋ x ⦂ A )
+    → ¬ ∃[ A ]( Γ ∋ x ⦂ A )
       -----------------------------
-    → ¬ ( ∃[ A ] Γ , y ⦂ B ∋ x ⦂ A )
+    → ¬ ∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A )
   ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
   ext∋ _   ¬∃ ⟨ A , S _ ⊢x ⟩  =  ¬∃ ⟨ A , ⊢x ⟩
 
@@ -614,7 +614,7 @@ module Problem3 where
     → Γ ⊢ L ↑ A ⇒ B
     → ¬ Γ ⊢ M ↓ A
       ----------------------------
-    → ¬ ( ∃[ B′ ] Γ ⊢ L · M ↑ B′ )
+    → ¬ ∃[ B′ ]( Γ ⊢ L · M ↑ B′ )
   ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M′ ⟩ rewrite dom≡ (uniq-↑ ⊢L ⊢L′) = ¬⊢M ⊢M′
 
   ¬switch : ∀ {Γ M A B}
@@ -631,7 +631,7 @@ module Problem3 where
 ```
   synthesize : ∀ (Γ : Context) (M : Term⁺)
       -----------------------
-    → Dec (∃[ A ](Γ ⊢ M ↑ A))
+    → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
 
   inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
       ---------------
