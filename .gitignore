@@ -24,7 +24,6 @@ Gemfile.lock
 *.fdb_latexmk
 *.fls
 *.log
-*.pdf
 *.spl
 *.synctex.gz
 
