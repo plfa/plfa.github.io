@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 import           Control.Monad ((<=<), forM_)
@@ -7,6 +6,8 @@ import           Data.Char (toLower)
 import           Data.Functor ((<&>))
 import           Data.List (isPrefixOf, stripPrefix)
 import qualified Data.Text as T
+import qualified Data.Text.ICU as RE
+import qualified Data.Text.ICU.Replace as T
 import qualified Data.Yaml as Y
 import           Hakyll
 import           Hakyll.Web.Agda
@@ -21,8 +22,6 @@ import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
 import qualified Text.Pandoc as Pandoc
-import           Text.Pandoc.Definition (Block(..))
-import           Text.Pandoc.Walk (walk)
 import           Text.Printf
 
 --------------------------------------------------------------------------------
@@ -79,6 +78,7 @@ siteSectionContext :: Context String
 siteSectionContext = mconcat
   [ titlerunningField
   , subtitleField
+  , addShiftedBody "raw" (contentField "raw" "raw")
   , siteContext
   ]
 
@@ -133,67 +133,6 @@ sassOptions = defaultSassOptions
   }
 
 
--- Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
---
--- NOTE: This logic is partially duplicated in book/pdf.mk:TEX_PATH.
---
--- NOTE: This function assumes pdf.tex will be at TEX_DIR/.
---
-addTexPath :: Context a -> Context a
-addTexPath = addDerivedField "tex_path" deriveTexPath
-  where
-    deriveTexPath :: Context a -> [String] -> Item a -> Compiler ContextField
-    deriveTexPath ctx a i = do
-      fld <- unContext ctx "include" a i
-      case fld of
-        StringField includePath -> return $ StringField (texPath includePath)
-        _ -> fail "Key 'include' does not return a String"
-
-    texPath :: FilePath -> FilePath
-    texPath fnDotMd
-      | fnDotMd == "README.md"                         = "plfa/frontmatter/README.tex"
-      | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
-      | otherwise                                      = error ("textPath: cannot map " <> fnDotMd)
-
-    dropTopDirectory :: FilePath -> FilePath
-    dropTopDirectory = joinPath . tail . splitPath
-
--- Add an anchor based on the permalink, to be used as the header id.
-addAnchor :: Context a -> Context a
-addAnchor = addDerivedField "anchor" deriveAnchor
-  where
-    deriveAnchor :: Context a -> [String] -> Item a -> Compiler ContextField
-    deriveAnchor ctx a i = do
-      fld <- unContext ctx "permalink" a i
-      case fld of
-        StringField permalink -> StringField <$> anchor permalink
-        _ -> fail "Key 'permalink' does not return a String"
-
-    anchor :: String -> Compiler String
-    anchor permalink =
-      let maybeAnchor = map toLower <$> (stripSuffix "/" <=< stripPrefix "/") permalink
-      in maybe (fail $ printf "Key 'permalink' malformed '%s'" permalink) return maybeAnchor
-
-    stripSuffix :: String -> String -> Maybe String
-    stripSuffix suf str = reverse <$> stripPrefix (reverse suf) (reverse str)
-
--- Add the metadata back to the file as a Yaml header.
-addMetadata :: Item String -> Compiler (Item String)
-addMetadata item = do
-  metadata <- getMetadata (itemIdentifier item)
-  let yaml = "---\n" <> BS.unpack (Y.encode metadata) <> "---\n\n"
-  withItemBody (\body -> return (yaml <> body)) item
-
-
-
--- Shift all headers by a given value.
-shiftHeadersBy :: Int -> Pandoc -> Pandoc
-shiftHeadersBy n = walk shiftHeader
-  where
-    shiftHeader :: Block -> Block
-    shiftHeader (Header level attr inlines) = Header (level + n) attr inlines
-    shiftHeader block = block
-
 --------------------------------------------------------------------------------
 -- Build site
 --------------------------------------------------------------------------------
@@ -216,10 +155,10 @@ main = do
         csl <- load cslFileName
         bib <- load bibFileName
         getResourceBody
+          >>= saveSnapshot "raw"
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
-          >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/page.html" siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
           >>= prettifyUrls
@@ -229,13 +168,14 @@ main = do
       pageWithAgdaCompiler opts = do
         csl <- load cslFileName
         bib <- load bibFileName
-        agdaCompilerWith opts
+        getResourceBody
+          >>= saveSnapshot "raw"
+          >>= compileAgdaWith opts
           >>= withItemBody (return . withUrls fixStdlibLink)
           >>= withItemBody (return . withUrls fixLocalLink)
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
-          >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/page.html" siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
           >>= prettifyUrls
@@ -271,36 +211,12 @@ main = do
       route permalinkRoute
       compile $ getResourceBody
         >>= applyAsTemplate acknowledgementsContext
+        >>= saveSnapshot "raw"
         >>= readMarkdownWith siteReaderOptions
         <&> writeHTML5With siteWriterOptions
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= prettifyUrls
-
-    -- Compile raw version of acknowledgements used in constructing the PDF and EPUB
-    match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
-      route $ gsubRoute "src/" (const "raw/")
-      compile $ getResourceBody
-        >>= applyAsTemplate acknowledgementsContext
-        >>= addMetadata
-
-    -- Compile raw version of index used in constructing the PDF
-    match "book/pdf.tex" $ do
-      route $ gsubRoute "book/" (const "raw/")
-      compile $ getResourceBody
-        >>= applyAsTemplate (addTexPath (tableOfContentsContext siteSectionContext))
-
-    -- Compile raw version of index used in constructing the EPUB
-    match "book/epub.md" $ do
-      route $ gsubRoute "book/" (const "raw/")
-      compile $ getResourceBody
-        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
-
-    -- Compile metadata XML used in constructing the EPUB
-    match "book/epub.xml" $ version "raw" $ do
-      route   $ constRoute "raw/epub.xml"
-      compile $ getResourceBody
-        >>= applyAsTemplate siteContext
 
     match "authors/*.metadata" $
       compile getResourceBody
@@ -326,7 +242,7 @@ main = do
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
-          >>= saveSnapshot "content"
+          >>= saveSnapshot "content" -- used for teaser
           >>= loadAndApplyTemplate "templates/post.html"    postContext
           >>= loadAndApplyTemplate "templates/default.html" siteContext
           >>= prettifyUrls
@@ -391,6 +307,7 @@ main = do
         csses <- loadAll ("css/*.css" .||. "css/*.scss")
         makeItem $ unlines $ map itemBody csses
 
+
     -- Copy versions
     let versions = ["19.08", "20.07"]
     forM_ versions $ \v -> do
@@ -405,6 +322,33 @@ main = do
       match (fromGlob $ "versions" </> v </> "**") $ do
         route $ gsubRoute "versions/" (const "")
         compile copyFileCompiler
+
+
+    -- Compile raw version of acknowledgements used in constructing the PDF
+    match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
+      route $ gsubRoute "src/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate acknowledgementsContext
+        >>= restoreMetadata
+
+    -- Compile raw version of index used in constructing the PDF
+    match "book/pdf.tex" $ version "raw" $ do
+      route $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate (addTexPath (tableOfContentsContext siteSectionContext))
+
+    -- Compile raw version of index used in constructing the EPUB
+    match "book/epub.md" $ version "raw" $ do
+      route $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
+        >>= loadAndApplyTemplate "templates/metadata.md" siteContext
+
+    -- Compile metadata XML used in constructing the EPUB
+    match "book/epub.xml" $ version "raw" $ do
+      route   $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate siteContext
 
 
 --------------------------------------------------------------------------------
@@ -451,9 +395,90 @@ contentField :: String -> Snapshot -> Context String
 contentField key snapshot = field key $ \item ->
   itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
+
 --------------------------------------------------------------------------------
 -- Relativise URLs and strip "index.html" suffixes
 --------------------------------------------------------------------------------
 
 prettifyUrls :: Item String -> Compiler (Item String)
 prettifyUrls = relativizeUrls <=< withItemBody (return . stripIndexFile)
+
+
+--------------------------------------------------------------------------------
+-- Text wrangling for EPUB and PDF
+--------------------------------------------------------------------------------
+
+-- Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
+--
+-- NOTE: This logic is partially duplicated in book/pdf.mk:TEX_PATH.
+--
+-- NOTE: This function assumes pdf.tex will be at TEX_DIR/.
+--
+addTexPath :: Context a -> Context a
+addTexPath = addDerivedField "tex_path" deriveTexPath
+  where
+    deriveTexPath :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveTexPath ctx a i = do
+      includePath <- getString "include" ctx a i
+      return $ StringField (texPath includePath)
+
+    texPath :: FilePath -> FilePath
+    texPath fnDotMd
+      | fnDotMd == "README.md"                         = "plfa/frontmatter/README.tex"
+      | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
+      | otherwise                                      = error ("textPath: cannot map " <> fnDotMd)
+
+    dropTopDirectory :: FilePath -> FilePath
+    dropTopDirectory = joinPath . tail . splitPath
+
+-- Add an anchor based on the permalink, to be used as the header id.
+addAnchor :: Context a -> Context a
+addAnchor = addDerivedField "anchor" deriveAnchor
+  where
+    deriveAnchor :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveAnchor ctx a i = do
+      permalink <- getString "permalink" ctx a i
+      StringField <$> anchor permalink
+
+    anchor :: String -> Compiler String
+    anchor permalink =
+      let maybeAnchor = map toLower <$> (stripSuffix "/" <=< stripPrefix "/") permalink
+      in maybe (fail $ printf "Key 'permalink' malformed '%s'" permalink) return maybeAnchor
+
+    stripSuffix :: String -> String -> Maybe String
+    stripSuffix suf str = reverse <$> stripPrefix (reverse suf) (reverse str)
+
+
+-- Add a variant of 'key' where all headers have been shifted by 1.
+addShiftedBody :: String -> Context a -> Context a
+addShiftedBody key = addDerivedField ("shifted_" <> key) deriveShiftedBody
+  where
+    deriveShiftedBody :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveShiftedBody ctx a i = do
+      body <- getString key ctx a i
+      return $ StringField (shiftHeadersBy body)
+
+    -- Shift all headers by a given value.
+    --
+    -- NOTE: This is the /proper/ implementation of shift headers.
+    --       In practice, we use the fast one, which uses regular
+    --       expressions and only works on Markdown '#' headers.
+    --
+    -- shiftHeadersBy :: Int -> Pandoc -> Pandoc
+    -- shiftHeadersBy n = walk shiftHeader
+    --   where
+    --     shiftHeader :: Block -> Block
+    --     shiftHeader (Header level attr inlines) = Header (level + n) attr inlines
+    --     shiftHeader block = block
+    --
+    shiftHeadersBy :: String -> String
+    shiftHeadersBy body = T.unpack (T.replaceAll re "#$1" (T.pack body))
+      where
+        re = RE.regex [RE.Multiline] "^(#+)"
+
+-- |Add the original metadata block back to the file.
+restoreMetadata :: Item String -> Compiler (Item String)
+restoreMetadata item = do
+  metadata <- getMetadata (itemIdentifier item)
+  let yaml = "---\n" <> BS.unpack (Y.encode metadata) <> "---\n\n"
+  withItemBody (\body -> return (yaml <> body)) item

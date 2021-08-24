@@ -3,6 +3,7 @@
 module Hakyll.Web.Template.Context.Derived where
 
 import Hakyll
+import Text.Printf
 
 addDerivedField
   :: String
@@ -20,3 +21,13 @@ addDerivedField key derive ctx = Context $ \k a i ->
         ListField itemCtx items -> ListField (addDerivedField key derive itemCtx) items
         -- Otherwise, simply return the field.
         otherFld                -> otherFld
+
+
+
+-- Retrieve a String from the context
+getString :: String -> Context a -> [String] -> Item a -> Compiler String
+getString key ctx a i = do
+  fld <- unContext ctx key a i
+  case fld of
+    StringField str -> return str
+    _ -> fail $ printf "Key '%s' does not return a String" key

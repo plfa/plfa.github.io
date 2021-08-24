@@ -15,24 +15,25 @@ FRANKENFONT       := public/webfonts/DejaVu-mononoki-Symbola-Droid.woff
 # Compile PLFA to an EPUB using Pandoc
 #################################################################################
 
-.PHONY: epub-build
+.PHONY: epub epub-build
+epub: epub-build
 epub-build: $(SITE_DIR)/plfa.epub
 
 $(SITE_DIR)/plfa.epub: \
-		$(EPUB_DIR)/epub.md $(EPUB_DIR)/epub.css $(RAW_DIR)/epub.xml $(FRANKENFONT) \
+		$(RAW_DIR)/epub.md $(EPUB_DIR)/epub.css $(RAW_DIR)/epub.xml $(FRANKENFONT) \
 		$(MD_FILES) $(EPUB_LUA_SCRIPTS) | setup-install-pandoc
-	@$(PANDOC) \
+	@echo "Building EPUB"
+	$(PANDOC) \
 		--strip-comments \
 		--css=$(EPUB_DIR)/epub.css \
 		--epub-embed-font=$(FRANKENFONT) \
-    --epub-metadata=$(RAW_DIR)/epub.xml
+    --epub-metadata=$(RAW_DIR)/epub.xml \
 		--indented-code-class=default \
 		--lua-filter=$(EPUB_LUA_DIR)/set-default-code-class.lua -M default-code-class=agda \
 		--lua-filter=$(EPUB_LUA_DIR)/remove-badges.lua -M badge-url=https://img.shields.io/badge/ \
 		--lua-filter=$(EPUB_LUA_DIR)/epub-clean-html.lua \
 		--lua-filter=$(EPUB_LUA_DIR)/single-file-links.lua \
 		--standalone \
-		--fail-if-warnings \
 		--toc --toc-depth=2 \
 		--epub-chapter-level=2 \
 		$< -o $@
@@ -44,7 +45,8 @@ $(SITE_DIR)/plfa.epub: \
 
 .PHONY: epub-test
 epub-test: $(SITE_DIR)/plfa.epub | setup-check-epubcheck
-	epubcheck $(SITE_DIR)/plfa.epub
+	@echo "Testing EPUB with EPUBCheck"
+	@epubcheck $(SITE_DIR)/plfa.epub
 
 
 #################################################################################
@@ -52,7 +54,7 @@ epub-test: $(SITE_DIR)/plfa.epub | setup-check-epubcheck
 #################################################################################
 
 $(RAW_DIR)/epub.xml: $(EPUB_DIR)/epub.xml
-	make build
+	@make build
 
 
 #################################################################################
@@ -61,7 +63,8 @@ $(RAW_DIR)/epub.xml: $(EPUB_DIR)/epub.xml
 
 .PHONY: epub-clean
 epub-clean:
-	rm -f $(SITE_DIR)/plfa.epub
+	@echo "Cleaning generated files for EPUB"
+	@rm -f $(SITE_DIR)/plfa.epub
 
 
 #################################################################################

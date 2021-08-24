@@ -2,6 +2,6 @@ $for(parts)$
 # $title$
 $for(sections)$
 ## $title$ {#$anchor$}
-$body$
+$shifted_raw$
 $endfor$
 $endfor$

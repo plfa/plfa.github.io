@@ -18,18 +18,15 @@ PANDOC    := stack exec pandoc --
 
 .PHONY: all
 all:
-	@echo "Building site..."
-	make build
-	@echo "Testing site..."
-	make test
-	@echo "Building epub..."
-	make epub-build
-	@echo "Testing epub..."
-	make epub-test
-	@echo "Building pdf..."
-	make pdf-build
-	@echo "Testing pdf..."
+	@make build
+	@make epub-build
+	@make pdf-build
 
+.PHONY: all-clean
+all-clean:
+	@make clean
+	@make epub-clean
+	@make pdf-clean
 
 #################################################################################
 # Setup Git Hooks
@@ -37,7 +34,8 @@ all:
 
 .PHONY: init
 init: setup-check-fix-whitespace setup-install-htmlproofer
-	git config core.hooksPath .githooks
+	@echo "Setting up Git Hooks"
+	@git config core.hooksPath .githooks
 
 
 #################################################################################
@@ -45,13 +43,14 @@ init: setup-check-fix-whitespace setup-install-htmlproofer
 #################################################################################
 
 .PHONY: build
-build: \
-		standard-library/ChangeLog.md
-	stack build && stack exec site build
+build: standard-library/ChangeLog.md
+	@echo "Building site"
+	@stack build && stack exec site build
 
 standard-library/ChangeLog.md:
-	git submodule init
-	git submodule update --recursive
+	@echo "Updating Agda standard library"
+	@git submodule init
+	@git submodule update --recursive
 
 
 #################################################################################
@@ -60,17 +59,18 @@ standard-library/ChangeLog.md:
 
 .PHONY: test
 test: setup-install-htmlproofer build
-	cd $(SITE_DIR) && htmlproofer \
-		--check-html                \
-		--disable-external          \
-		--report-invalid-tags       \
-		--report-missing-names      \
-		--report-script-embeds      \
-		--report-missing-doctype    \
-		--report-eof-tags           \
-		--report-mismatched-tags    \
-		--check-img-http            \
-		--check-opengraph           \
+	@echo "Testing generated HTML using HTMLProofer"
+	@cd $(SITE_DIR) && htmlproofer \
+		--check-html                 \
+		--disable-external           \
+		--report-invalid-tags        \
+		--report-missing-names       \
+		--report-script-embeds       \
+		--report-missing-doctype     \
+		--report-eof-tags            \
+		--report-mismatched-tags     \
+		--check-img-http             \
+		--check-opengraph            \
 		.
 
 
@@ -79,9 +79,9 @@ test: setup-install-htmlproofer build
 #################################################################################
 
 .PHONY: watch
-watch: \
-		standard-library/ChangeLog.md
-	stack build && stack exec site watch
+watch: standard-library/ChangeLog.md
+	@echo "Watching for changes and rebuilding"
+	@stack build && stack exec site watch
 
 
 #################################################################################
@@ -90,7 +90,8 @@ watch: \
 
 .PHONY: update-contributors
 update-contributors:
-	stack build && stack exec update-contributors
+	@echo "Updating contributors from GitHub"
+	@stack build && stack exec update-contributors
 
 
 #################################################################################
@@ -98,9 +99,9 @@ update-contributors:
 #################################################################################
 
 .PHONY: clean
-clean: \
-		standard-library/ChangeLog.md
-	stack build && stack exec site clean
+clean: standard-library/ChangeLog.md
+	@echo "Cleaning generated files for site"
+	@stack build && stack exec site clean
 
 
 #################################################################################
@@ -119,9 +120,7 @@ list:
 
 .PHONY: publish
 publish: setup-check-rsync
-	@echo "Building site..."
-	make build
-	@echo "Testing site..."
+	make all
 	make test
 	@echo "Creating web branch..."
 	git fetch --all
@@ -159,13 +158,16 @@ ifeq (,$(wildcard $(PLFA_AFS_DIR)))
 	@exit 1
 else
 ifeq (,$(wildcard $(PLFA_AFS_DIR)/html))
+	@echo "Checkout latest version from GitHub"
 	git clone https://github.com/plfa/plfa.github.io.git --branch web --single-branch --depth 1 html
 endif
-	cd $(PLFA_AFS_DIR)/html          \
+	@echo "Checkout latest version from GitHub"
+	@cd $(PLFA_AFS_DIR)/html         \
 		&& git fetch --depth 1         \
 		&& git reset --hard origin/web \
 		&& git clean -dfx
-	fsr setacl $(PLFA_AFS_DIR)/html system:groupwebserver rl
+	@echo "Setting permissions to include web server"
+	@fsr setacl $(PLFA_AFS_DIR)/html system:groupwebserver rl
 endif
 
 

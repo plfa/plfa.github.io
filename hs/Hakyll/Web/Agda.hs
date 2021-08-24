@@ -5,6 +5,7 @@
 module Hakyll.Web.Agda
   ( agdaCompilerWith
   , agdaVerbosityQuiet
+  , compileAgdaWith
   , CommandLineOptions(..)
   , PragmaOptions(..)
   , defaultAgdaOptions
@@ -50,8 +51,12 @@ defaultAgdaPragmaOptions = defaultPragmaOptions
 
 -- |Compile literate Agda to HTML
 agdaCompilerWith :: CommandLineOptions -> Compiler (Item String)
-agdaCompilerWith agdaOptions = cached "Hakyll.Web.Agda.agdaCompilerWith" $ do
-  item <- getResourceBody
+agdaCompilerWith agdaOptions =
+  getResourceBody >>= compileAgdaWith agdaOptions
+
+-- |Compile literate Agda to HTML
+compileAgdaWith :: CommandLineOptions -> Item String -> Compiler (Item String)
+compileAgdaWith agdaOptions item = cached "Hakyll.Web.Agda.agdaCompilerWith" $ do
   let agdaPath = toFilePath (itemIdentifier item)
   let moduleName = agdaModule (itemBody item)
   TmpFile tmpPath <- newTmpFile ".lock"
@@ -120,7 +125,7 @@ readStdlibVersion stdlibPath = do
   changelog <- T.readFile changelogPath
   let versionLine = head (T.lines changelog)
   case T.stripPrefix "Version " versionLine of
-    Just versionStr -> return . T.unpack $ "v" <> T.strip versionStr
+    Just versionStr -> return $ T.unpack ("v" <> T.strip versionStr)
     Nothing -> error $ printf "Could not read version from '%s'" changelogPath
 
 -- |Fix references to the Agda standard library.
