@@ -23,7 +23,7 @@ $(SITE_DIR)/plfa.epub: \
 		$(RAW_DIR)/epub.md $(EPUB_DIR)/epub.css $(RAW_DIR)/epub.xml $(FRANKENFONT) \
 		$(MD_FILES) $(EPUB_LUA_SCRIPTS) | setup-install-pandoc
 	@echo "Building EPUB"
-	$(PANDOC) \
+	@$(PANDOC) \
 		--strip-comments \
 		--css=$(EPUB_DIR)/epub.css \
 		--epub-embed-font=$(FRANKENFONT) \
@@ -33,6 +33,7 @@ $(SITE_DIR)/plfa.epub: \
 		--lua-filter=$(EPUB_LUA_DIR)/remove-badges.lua -M badge-url=https://img.shields.io/badge/ \
 		--lua-filter=$(EPUB_LUA_DIR)/epub-clean-html.lua \
 		--lua-filter=$(EPUB_LUA_DIR)/single-file-links.lua \
+		--lua-filter=$(EPUB_LUA_DIR)/single-file-identifiers.lua \
 		--standalone \
 		--toc --toc-depth=2 \
 		--epub-chapter-level=2 \

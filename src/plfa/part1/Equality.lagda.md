@@ -132,7 +132,7 @@ Again, a useful exercise is to carry out an interactive development,
 checking how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
-## Congruence and substitution {name=cong}
+## Congruence and substitution {#cong}
 
 Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both:
@@ -635,7 +635,7 @@ Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
 draft, 2017.)
 
 
-## Universe polymorphism {name=unipoly}
+## Universe polymorphism {#unipoly}
 
 As we have seen, not every type belongs to `Set`, but instead every
 type belongs somewhere in the hierarchy `Set₀`, `Set₁`, `Set₂`, and so on,

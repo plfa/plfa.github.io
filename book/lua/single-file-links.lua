@@ -8,7 +8,7 @@
 --         [text](/chapter/)            -> [text](#chapter)
 --
 -- All other Links are ignored.
-function Link (el)
+function Link(el)
 	local n
 	-- Case 1:
 	el.target, n = el.target:gsub("^/(%w+)/#([%w-]+)$", "#%1-%2")

@@ -32,7 +32,7 @@ Chapter [Lambda](/Lambda/),
 and from it we compute an intrinsically-typed term, in the style of
 Chapter [DeBruijn](/DeBruijn/).
 
-## Introduction: Inference rules as algorithms {name=algorithms}
+## Introduction: Inference rules as algorithms {#algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -470,7 +470,7 @@ the equality test in the application rule in the first
 [section](/Inference/#algorithms).
 
 
-#### Exercise `bidirectional-mul` (recommended) {name=bidirectional-mul}
+#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -480,7 +480,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {name=bidirectional-products}
+#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).

@@ -83,7 +83,7 @@ g ∘′ f  =  λ x → g (f x)
 ```
 
 
-## Extensionality {name=extensionality}
+## Extensionality {#extensionality}
 
 Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
@@ -450,7 +450,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `_⇔_` (practice) {name=iff}
+#### Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
 ```
@@ -465,7 +465,7 @@ Show that equivalence is reflexive, symmetric, and transitive.
 -- Your code goes here
 ```
 
-#### Exercise `Bin-embedding` (stretch) {name=Bin-embedding}
+#### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin) and

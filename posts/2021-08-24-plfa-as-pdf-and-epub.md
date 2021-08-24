@@ -21,8 +21,8 @@ As always, bug reports and pull requests are very, very welcome!
 [Altariarite]: https://github.com/Altariarite
 [mreed20]: https://github.com/mreed20
 
-[PDF]: https://plfa.github.io/out/epub/plfa.pdf
-[EPUB]: https://plfa.github.io/out/epub/plfa.epub
+[PDF]: https://plfa.github.io/epub/plfa.pdf
+[EPUB]: https://plfa.github.io/epub/plfa.epub
 
 [issue577]: https://github.com/plfa/plfa.github.io/issues/577
 [issue578]: https://github.com/plfa/plfa.github.io/issues/578

@@ -71,7 +71,7 @@ distributes over another operator.  A careful author will often call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-#### Exercise `operators` (practice) {name=operators}
+#### Exercise `operators` (practice) {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -599,7 +599,7 @@ the main proposition first, and the equations required to do so
 will suggest what lemmas to prove.
 
 
-## Our first corollary: rearranging {name=sections}
+## Our first corollary: rearranging {#sections}
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
@@ -695,7 +695,7 @@ judgments where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise `finite-|-assoc` (stretch) {name=finite-plus-assoc}
+#### Exercise `finite-|-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
@@ -857,7 +857,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise `+-swap` (recommended) {name=plus-swap}
+#### Exercise `+-swap` (recommended) {#plus-swap}
 
 Show
 
@@ -872,7 +872,7 @@ is associative and commutative.
 ```
 
 
-#### Exercise `*-distrib-+` (recommended) {name=times-distrib-plus}
+#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -885,7 +885,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-assoc` (recommended) {name=times-assoc}
+#### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -898,7 +898,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-comm` (practice) {name=times-comm}
+#### Exercise `*-comm` (practice) {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -912,7 +912,7 @@ you will need to formulate and prove suitable lemmas.
 ```
 
 
-#### Exercise `0∸n≡0` (practice) {name=zero-monus}
+#### Exercise `0∸n≡0` (practice) {#zero-monus}
 
 Show
 
@@ -925,7 +925,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-#### Exercise `∸-|-assoc` (practice) {name=monus-plus-assoc}
+#### Exercise `∸-|-assoc` (practice) {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -949,7 +949,7 @@ Show the following three laws
 for all `m`, `n`, and `p`.
 
 
-#### Exercise `Bin-laws` (stretch) {name=Bin-laws}
+#### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)

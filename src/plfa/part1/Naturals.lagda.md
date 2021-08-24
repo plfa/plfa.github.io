@@ -76,7 +76,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-#### Exercise `seven` (practice) {name=seven}
+#### Exercise `seven` (practice) {#seven}
 
 Write out `7` in longhand.
 
@@ -287,7 +287,7 @@ Parentheses and semicolons are among the few characters that cannot
 appear in names, so we do not need extra spaces in the `using` list.
 
 
-## Operations on naturals are recursive functions {name=plus}
+## Operations on naturals are recursive functions {#plus}
 
 Now that we have the natural numbers, what can we do with them?
 For instance, can we define arithmetic operations such as
@@ -425,7 +425,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-#### Exercise `+-example` (practice) {name=plus-example}
+#### Exercise `+-example` (practice) {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
@@ -486,7 +486,7 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-#### Exercise `*-example` (practice) {name=times-example}
+#### Exercise `*-example` (practice) {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
@@ -496,7 +496,7 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-#### Exercise `_^_` (recommended) {name=power}
+#### Exercise `_^_` (recommended) {#power}
 
 Define exponentiation, which is given by the following equations:
 
@@ -566,7 +566,7 @@ _ =
   ∎
 ```
 
-#### Exercise `∸-example₁` and `∸-example₂` (recommended) {name=monus-examples}
+#### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -701,7 +701,7 @@ definitions is quite similar.  They might be considered two sides of
 the same coin.
 
 
-## The story of creation, finitely {name=finite-creation}
+## The story of creation, finitely {#finite-creation}
 
 The above story was told in a stratified way.  First, we create
 the infinite set of naturals.  We take that set as given when
@@ -872,7 +872,7 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
-#### Exercise `Bin` (stretch) {name=Bin}
+#### Exercise `Bin` (stretch) {#Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
