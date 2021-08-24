@@ -13,6 +13,25 @@ PANDOC    := stack exec pandoc --
 
 
 #################################################################################
+# Build PLFA site, EPUB, and PDF
+#################################################################################
+
+.PHONY: all
+all:
+	@echo "Building site..."
+	make build
+	@echo "Testing site..."
+	make test
+	@echo "Building epub..."
+	make epub-build
+	@echo "Testing epub..."
+	make epub-test
+	@echo "Building pdf..."
+	make pdf-build
+	@echo "Testing pdf..."
+
+
+#################################################################################
 # Setup Git Hooks
 #################################################################################
 
@@ -165,7 +184,7 @@ include book/pdf.mk
 
 
 #################################################################################
-# Setup dependencies
+# Setup or check dependencies
 #################################################################################
 
 .PHONY: setup-check-stack
@@ -207,13 +226,6 @@ ifeq (,$(wildcard $(shell which latexmk)))
 	@echo "The command you called requires Latexmk"
 	@echo "Latemk is included in MacTeX and MikTeX"
 	@echo "See: https://mg.readthedocs.io/latexmk.html"
-endif
-
-.PHONY: setup-check-epubcheck
-setup-check-epubcheck:
-ifeq (,$(wildcard $(shell which epubcheck)))
-	@echo "The command you called requires EPUBCheck"
-	@echo "See: https://github.com/w3c/epubcheck"
 endif
 
 .PHONY: setup-check-rsync

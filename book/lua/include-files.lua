@@ -12,22 +12,6 @@
 -- pandoc's List type
 local List = require 'pandoc.List'
 
---- Shift headings in block list by given number
-local function shift_headings(blocks, shift_by)
-  if not shift_by then
-    return blocks
-  end
-
-  local shift_headings_filter = {
-    Header = function (header)
-      header.level = header.level + shift_by
-      return header
-    end
-  }
-
-  return pandoc.walk_block(pandoc.Div(blocks), shift_headings_filter).content
-end
-
 --- Filter function for code blocks
 function CodeBlock(cb)
 
@@ -46,20 +30,22 @@ function CodeBlock(cb)
     if line:sub(1,2) ~= '//' then
       -- Read in the document at the file path specified by `line`.
       local fh = io.open(line)
-      local document = pandoc.read(fh:read '*a', format)
+      local doc = pandoc.read(fh:read '*a', format)
+      blocks:extend(document.blocks)
       fh:close()
-
-      -- Before shifting headings, add a title heading at the beginning of the chapter.
-      if document.meta.title then
-        local heading = pandoc.Header(1, pandoc.Str(pandoc.utils.stringify(document.meta.title)))
-        document.blocks:insert(1, heading)
-      end
-      -- Shift all headings by the user-specified amount, which is 0 by default.
-      local chapter = shift_headings(document.blocks, shift_heading_level_by)
-
-      -- Concatenate the chapter blocks (discarding the metadata) to the current document.
-      blocks:extend(chapter)
     end
   end
   return blocks
+end
+
+-- Apply a filter to a document.
+function apply_filter(doc, filters)
+  div = pandoc.Div(doc.blocks)
+  for _, filter in pairs(filters) do
+    if filter.Meta then
+      filter.Meta(doc.meta)
+    end
+    div = pandoc.walk_block(div, filter)
+  end
+  return pandoc.Pandoc(div.content, doc.meta)
 end

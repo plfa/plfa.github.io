@@ -2,9 +2,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import           Control.Monad ((<=<), forM_)
+import qualified Data.ByteString.Char8 as BS
+import           Data.Char (toLower)
 import           Data.Functor ((<&>))
-import           Data.List (isPrefixOf)
+import           Data.List (isPrefixOf, stripPrefix)
 import qualified Data.Text as T
+import qualified Data.Yaml as Y
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Routes.Permalink
@@ -18,6 +21,9 @@ import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
 import qualified Text.Pandoc as Pandoc
+import           Text.Pandoc.Definition (Block(..))
+import           Text.Pandoc.Walk (walk)
+import           Text.Printf
 
 --------------------------------------------------------------------------------
 -- Configuration
@@ -66,7 +72,7 @@ siteContext = mconcat
       , "authors/jsiek.metadata"
       ]
   , constField "google_analytics" "UA-125055580-1"
-  , defaultContext
+  , addAnchor defaultContext
   ]
 
 siteSectionContext :: Context String
@@ -77,10 +83,10 @@ siteSectionContext = mconcat
   ]
 
 tableOfContentsContext :: Context String -> Context String
-tableOfContentsContext ctx = Context $ \k a _ -> do
-  metadata <- getMetadata "src/plfa/toc.metadata"
-  m <- makeItem metadata
-  unContext (objectContext ctx) k a m
+tableOfContentsContext ctx = Context $ \k a _ ->
+  unContext (objectContext ctx) k a
+    =<< makeItem
+    =<< getMetadata "src/plfa/toc.metadata"
 
 acknowledgementsContext :: Context String
 acknowledgementsContext = mconcat
@@ -145,13 +151,48 @@ addTexPath = addDerivedField "tex_path" deriveTexPath
 
     texPath :: FilePath -> FilePath
     texPath fnDotMd
-      | fnDotMd == "README.md"                       = "plfa/frontmatter/README.tex"
+      | fnDotMd == "README.md"                         = "plfa/frontmatter/README.tex"
       | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
-      | otherwise                                    = error ("textPath: cannot map " <> fnDotMd)
+      | otherwise                                      = error ("textPath: cannot map " <> fnDotMd)
 
     dropTopDirectory :: FilePath -> FilePath
     dropTopDirectory = joinPath . tail . splitPath
 
+-- Add an anchor based on the permalink, to be used as the header id.
+addAnchor :: Context a -> Context a
+addAnchor = addDerivedField "anchor" deriveAnchor
+  where
+    deriveAnchor :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveAnchor ctx a i = do
+      fld <- unContext ctx "permalink" a i
+      case fld of
+        StringField permalink -> StringField <$> anchor permalink
+        _ -> fail "Key 'permalink' does not return a String"
+
+    anchor :: String -> Compiler String
+    anchor permalink =
+      let maybeAnchor = map toLower <$> (stripSuffix "/" <=< stripPrefix "/") permalink
+      in maybe (fail $ printf "Key 'permalink' malformed '%s'" permalink) return maybeAnchor
+
+    stripSuffix :: String -> String -> Maybe String
+    stripSuffix suf str = reverse <$> stripPrefix (reverse suf) (reverse str)
+
+-- Add the metadata back to the file as a Yaml header.
+addMetadata :: Item String -> Compiler (Item String)
+addMetadata item = do
+  metadata <- getMetadata (itemIdentifier item)
+  let yaml = "---\n" <> BS.unpack (Y.encode metadata) <> "---\n\n"
+  withItemBody (\body -> return (yaml <> body)) item
+
+
+
+-- Shift all headers by a given value.
+shiftHeadersBy :: Int -> Pandoc -> Pandoc
+shiftHeadersBy n = walk shiftHeader
+  where
+    shiftHeader :: Block -> Block
+    shiftHeader (Header level attr inlines) = Header (level + n) attr inlines
+    shiftHeader block = block
 
 --------------------------------------------------------------------------------
 -- Build site
@@ -179,7 +220,7 @@ main = do
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
           >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
+          >>= loadAndApplyTemplate "templates/page.html" siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
           >>= prettifyUrls
 
@@ -195,7 +236,7 @@ main = do
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
           >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
+          >>= loadAndApplyTemplate "templates/page.html" siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
           >>= prettifyUrls
 
@@ -241,13 +282,19 @@ main = do
       route $ gsubRoute "src/" (const "raw/")
       compile $ getResourceBody
         >>= applyAsTemplate acknowledgementsContext
-        >>= loadAndApplyTemplate "templates/metadata.md" siteContext
+        >>= addMetadata
 
     -- Compile raw version of index used in constructing the PDF
     match "book/pdf.tex" $ do
       route $ gsubRoute "book/" (const "raw/")
       compile $ getResourceBody
         >>= applyAsTemplate (addTexPath (tableOfContentsContext siteSectionContext))
+
+    -- Compile raw version of index used in constructing the EPUB
+    match "book/epub.md" $ do
+      route $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
 
     -- Compile metadata XML used in constructing the EPUB
     match "book/epub.xml" $ version "raw" $ do
