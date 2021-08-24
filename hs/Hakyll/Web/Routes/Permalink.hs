@@ -3,7 +3,6 @@
 module Hakyll.Web.Routes.Permalink
   ( convertPermalink
   , permalinkRoute
-  , permalinkRouteWithDefault
   , stripIndexFile
   ) where
 
@@ -19,11 +18,12 @@ convertPermalink :: FilePath -> FilePath
 convertPermalink link = fromMaybe link (stripPrefix "/" link) </> "index.html"
 
 permalinkRoute :: Routes
-permalinkRoute = permalinkRouteWithDefault (error "Missing field 'permalink'.")
-
-permalinkRouteWithDefault :: Routes -> Routes
-permalinkRouteWithDefault def = metadataRoute $ \metadata ->
-  maybe def (constRoute . convertPermalink) (lookupString "permalink" metadata)
+permalinkRoute = metadataRoute $ \metadata ->
+  case lookupString "permalink" metadata of
+    Nothing ->
+      customRoute (\identifier -> error $ "missing field 'permalink' in metadata " <> toFilePath identifier)
+    Just permalink ->
+      constRoute (convertPermalink permalink)
 
 -- Removes "index.html" from URLs.
 stripIndexFile :: String -> String

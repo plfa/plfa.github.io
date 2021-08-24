@@ -1,7 +1,7 @@
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 import           Control.Monad ((<=<), forM_)
-import qualified Data.ByteString.Lazy as BL
 import           Data.Functor ((<&>))
 import qualified Data.Text as T
 import           Hakyll
@@ -16,7 +16,6 @@ import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
 import qualified Text.Pandoc as Pandoc
-import qualified Text.Pandoc.Filter as Pandoc (Filter(..),  applyFilters)
 
 --------------------------------------------------------------------------------
 -- Configuration
@@ -124,29 +123,6 @@ sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
 
-epubSectionContext :: Context String
-epubSectionContext = mconcat
-  [ contentField "content" "content"
-  , titlerunningField
-  , subtitleField
-  ]
-
-epubReaderOptions :: ReaderOptions
-epubReaderOptions = siteReaderOptions
-  { readerStandalone    = True
-  , readerStripComments = True
-  }
-
-epubWriterOptions :: WriterOptions
-epubWriterOptions = siteWriterOptions
-  { writerTableOfContents  = True
-  , writerTOCDepth         = 2
-  , writerEpubFonts        = [ "public/webfonts/DejaVuSansMono.woff"
-                             , "public/webfonts/FreeMono.woff"
-                             , "public/webfonts/mononoki.woff"
-                             ]
-  , writerEpubChapterLevel = 2
-  }
 
 --------------------------------------------------------------------------------
 -- Build site
@@ -198,39 +174,13 @@ main = do
   --
   -- NOTE: The order of the various match expressions is important:
   --       Special-case compilation instructions for files such as
-  --       "src/plfa/epub.md" and "src/plfa/index.md" would be overwritten
-  --       by the general purpose compilers for "src/**.md", which would
+  --       "src/plfa/index.md" would be overwritten by the general
+  --       purpose compilers for "src/**.md", which would
   --       cause them to render incorrectly. It is possible to explicitly
   --       exclude such files using `complement` patterns, but this vastly
   --       complicates the match patterns.
   --
   hakyll $ do
-
-    -- Compile EPUB
-    match "src/plfa/epub.md" $ do
-      route $ constRoute "plfa.epub"
-      compile $ do
-        epubTemplate <- load "templates/epub.html"
-            >>= compilePandocTemplate
-        epubMetadata <- load "src/plfa/epub.xml"
-        let ropt = epubReaderOptions
-        let wopt = epubWriterOptions
-              { writerTemplate     = Just . itemBody $ epubTemplate
-              , writerEpubMetadata = Just . T.pack . itemBody $ epubMetadata
-              }
-        getResourceBody
-          >>= applyAsTemplate (tableOfContentsContext epubSectionContext)
-          >>= readPandocWith ropt
-          >>= applyPandocFilters ropt [] "epub3"
-          >>= writeEPUB3With wopt
-
-    match "templates/epub.html" $
-      compile $ getResourceBody
-        >>= applyAsTemplate siteContext
-
-    match "src/plfa/epub.xml" $
-      compile $ getResourceBody
-        >>= applyAsTemplate siteContext
 
     -- Compile Table of Contents
     match "src/plfa/index.md" $ do
@@ -253,15 +203,16 @@ main = do
         >>= applyAsTemplate acknowledgementsContext
         >>= readMarkdownWith siteReaderOptions
         <&> writeHTML5With siteWriterOptions
-        >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= prettifyUrls
 
-    match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
-      route $ constRoute "acknowledgements.md"
+    match "src/plfa/backmatter/acknowledgements.md" $ version "native" $ do
+      route   $ constRoute "versions/native/acknowledgements.native"
       compile $ getResourceBody
         >>= applyAsTemplate acknowledgementsContext
+        >>= readMarkdownWith siteReaderOptions
+        <&> writeNativeWith siteWriterOptions
 
     match "authors/*.metadata" $
       compile getResourceBody
@@ -298,7 +249,7 @@ main = do
       compile $ pageWithAgdaCompiler agdaOptions
 
     -- Compile other sections and pages
-    match ("README.md" .||. "src/**.md" .&&. complement "src/plfa/epub.md") $ do
+    match ("README.md" .||. "src/**.md") $ do
       route permalinkRoute
       compile pageCompiler
 
@@ -349,7 +300,7 @@ main = do
     create ["public/css/style.css"] $ do
       route idRoute
       compile $ do
-        csses <- loadAll ("css/*.css" .||. "css/*.scss" .&&. complement "css/epub.css")
+        csses <- loadAll ("css/*.css" .||. "css/*.scss")
         makeItem $ unlines $ map itemBody csses
 
     -- Copy versions
@@ -395,7 +346,7 @@ processCites csl bib item = do
     withItemBody (return . CSL.processCites style refs) item
 
 -- | Write a document as HTML using Pandoc, with the supplied options.
-writeHTML5With :: WriterOptions  -- ^ Writer options for pandoc
+writeHTML5With :: WriterOptions  -- ^ Writer options for Pandoc
                -> Item Pandoc    -- ^ Document to write
                -> Item String    -- ^ Resulting HTML
 writeHTML5With wopt (Item itemi doc) =
@@ -403,26 +354,14 @@ writeHTML5With wopt (Item itemi doc) =
     Left err    -> error $ "Hakyll.Web.Pandoc.writePandocWith: " ++ show err
     Right item' -> Item itemi $ T.unpack item'
 
--- | Write a document as EPUB3 using Pandoc, with the supplied options.
-writeEPUB3With :: WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
-writeEPUB3With wopt (Item itemi doc) =
-  return $ case Pandoc.runPure $ Pandoc.writeEPUB3 wopt doc of
-    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
-    Right doc' -> Item itemi doc'
-
--- | Apply a filter to a Pandoc document.
-applyPandocFilters :: ReaderOptions -> [Pandoc.Filter] -> String -> Item Pandoc -> Compiler (Item Pandoc)
-applyPandocFilters ropt filters fmt = withItemBody $
-  unsafeCompiler . Pandoc.runIOorExplode . Pandoc.applyFilters ropt filters [fmt]
-
--- | Compile a Pandoc template (as opposed to a Hakyll template).
-compilePandocTemplate :: Item String -> Compiler (Item (Pandoc.Template T.Text))
-compilePandocTemplate i = do
-  let templatePath = toFilePath $ itemIdentifier i
-  let templateBody = T.pack $ itemBody i
-  templateOrError <- unsafeCompiler $ Pandoc.compileTemplate templatePath templateBody
-  template <- either fail return templateOrError
-  makeItem template
+-- | Write a document as HTML using Pandoc, with the supplied options.
+writeNativeWith :: WriterOptions  -- ^ Writer options for Pandoc
+                -> Item Pandoc    -- ^ Document to write
+                -> Item String    -- ^ Resulting Markdown
+writeNativeWith wopt (Item itemi doc) =
+  case Pandoc.runPure $ Pandoc.writeNative wopt doc of
+    Left err    -> error $ "Hakyll.Web.Pandoc.writeNativeWith: " ++ show err
+    Right item' -> Item itemi $ T.unpack item'
 
 
 --------------------------------------------------------------------------------

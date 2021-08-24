@@ -13,7 +13,7 @@
 local List = require 'pandoc.List'
 
 --- Shift headings in block list by given number
-function shift_headings(blocks, shift_by)
+local function shift_headings(blocks, shift_by)
   if not shift_by then
     return blocks
   end
@@ -30,7 +30,8 @@ end
 
 --- Filter function for code blocks
 function CodeBlock(cb)
-  -- ignore code blocks which are not of class "include".
+
+  -- Ignore code blocks which are not of class "include".
   if not cb.classes:includes 'include' then
     return
   end
@@ -40,21 +41,24 @@ function CodeBlock(cb)
   local shift_heading_level_by =
     tonumber(cb.attributes['shift-heading-level-by'])
 
-
   local blocks = List:new()
   for line in cb.text:gmatch('[^\n]+') do
     if line:sub(1,2) ~= '//' then
       -- Read in the document at the file path specified by `line`.
       local fh = io.open(line)
       local document = pandoc.read(fh:read '*a', format)
+      fh:close()
+
       -- Before shifting headings, add a title heading at the beginning of the chapter.
-      local heading = pandoc.Header(1, pandoc.Str(pandoc.utils.stringify(document.meta.title)))
-      document.blocks:insert(1, heading)
+      if document.meta.title then
+        local heading = pandoc.Header(1, pandoc.Str(pandoc.utils.stringify(document.meta.title)))
+        document.blocks:insert(1, heading)
+      end
       -- Shift all headings by the user-specified amount, which is 0 by default.
       local chapter = shift_headings(document.blocks, shift_heading_level_by)
+
       -- Concatenate the chapter blocks (discarding the metadata) to the current document.
       blocks:extend(chapter)
-      fh:close()
     end
   end
   return blocks

@@ -1,17 +1,14 @@
+
 #################################################################################
 # Configuration
 #################################################################################
 
-SITE_DIR := _site
+SITE_DIR  := _site
 CACHE_DIR := _cache
-TMP_DIR := $(CACHE_DIR)/tmp
+TMP_DIR   := $(CACHE_DIR)/tmp
 
-AGDA := stack exec agda -- \
-		--no-libraries \
-		--include-path=standard-library/src
-PANDOC := stack exec pandoc -- \
-		--indented-code-classes=default
-		--top-level-division=chapter
+AGDA      := stack exec agda -- --no-libraries --include-path=standard-library/src
+PANDOC    := stack exec pandoc --
 
 
 #################################################################################
@@ -55,15 +52,6 @@ test: setup-install-htmlproofer build
 		--check-img-http            \
 		--check-opengraph           \
 		.
-
-
-#################################################################################
-# Test generated EPUB with EPUBCheck
-#################################################################################
-
-.PHONY: test-epub
-test-epub: setup-check-epubcheck build
-	epubcheck $(SITE_DIR)/plfa.epub
 
 
 #################################################################################
@@ -162,117 +150,17 @@ endif
 
 
 #################################################################################
+# Build EPUB
+#################################################################################
+
+include book/epub.mk
+
+
+#################################################################################
 # Build PDF
 #################################################################################
 
-PDF_DIR          := pdf
-PDF_TEMPLATE_DIR := $(PDF_DIR)/templates
-PDF_LUA_DIR      := $(PDF_DIR)/lua
-MD_DIR           := src
-LAGDA_TEX_DIR    := $(TMP_DIR)/lagda_tex
-TEX_DIR          := $(TMP_DIR)/tex
-
-# Convert MD_DIR/%.lagda.md to LAGDA_TEX_DIR/%.lagda.tex
-define LAGDA_TEX_PATH
-$(patsubst $(MD_DIR)/%.lagda.md,$(LAGDA_TEX_DIR)/%.lagda.tex,$(1))
-endef
-
-# Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
-define TEX_PATH
-$(patsubst $(PDF_DIR)/%,$(TEX_DIR)/%,\
-	$(patsubst README.md,$(TEX_DIR)/plfa/frontmatter/README.tex,\
-		$(patsubst $(MD_DIR)/%.md,$(TEX_DIR)/%.tex,\
-			$(patsubst $(MD_DIR)/%.lagda.md,$(TEX_DIR)/%.tex,$(1)))))
-endef
-
-# List source and intermediate files
-PDF_LUA_SCRIPTS  := $(wildcard $(PDF_LUA_DIR)/*.lua)
-PDF_STATIC_FILES := $(wildcard pdf/*.*)
-MD_FILES         := README.md $(wildcard $(MD_DIR)/plfa/**/*.md)
-LAGDA_MD_FILES   := $(filter %.lagda.md,$(MD_FILES))
-LAGDA_TEX_FILES  := $(call LAGDA_TEX_PATH,$(LAGDA_MD_FILES))
-TEX_FILES        := $(call TEX_PATH,$(MD_FILES) $(PDF_STATIC_FILES))
-
-# Compile PLFA to a PDF
-.PHONY: pdf
-pdf: $(SITE_DIR)/plfa.pdf
-
-$(SITE_DIR)/plfa.pdf: $(TEX_FILES)
-	@cd $(TEX_DIR) && latexmk -pdf -lualatex -use-make -halt-on-error plfa.tex
-	@cp $(TEX_DIR)/plfa.pdf $(SITE_DIR)/plfa.pdf
-
-
-# Copy static files needed by PDF compilation
-define MK_COPYSTATIC_RULE
-src := $(1)
-dst := $(2)
-$$(dst): $$(src)
-	@echo "Copy $$< to $$@"
-	@cp $$< $$@
-endef
-
-# Compile Markdown files to LaTeX
-define MK_MD2TEX_RULE
-src := $(1)
-dst := $(2)
-tpl := $(3)
-$$(dst): export UNCHECKED_FILES = README.md
-$$(dst): $$(src) $$(tpl) $(PDF_LUA_SCRIPTS) | setup-install-pandoc
-	@echo "Compile $$< to $$@"
-	@mkdir -p '$$(@D)'
-	@$(PANDOC) \
-		--lua-filter=$(PDF_LUA_DIR)/remove-badges.lua \
-		--lua-filter=$(PDF_LUA_DIR)/typeset-codeblocks.lua \
-		--lua-filter=$(PDF_LUA_DIR)/rewrite-links.lua \
-		--lua-filter=$(PDF_LUA_DIR)/single-file-headers-ids.lua \
-		--template=$$(tpl) \
-		$$< -o $$@
-endef
-
-# Compile Literate Agda files to LaTeX
-define MK_LAGDA_MD2TEX_RULE
-src := $(1)
-dst := $(2)
-$$(dst): $$(src) $(LAGDA_TEX_FILES) | setup-install-agda
-	@$(AGDA) --include-path=$(LAGDA_TEX_DIR) --latex --latex-dir=$(TEX_DIR) $$<
-endef
-
-
-# Copy static files (from PDF_DIR/% to TEX_DIR/%)
-$(foreach static_file,\
-	$(PDF_STATIC_FILES),\
-	$(eval $(call MK_COPYSTATIC_RULE,\
-		$(static_file),\
-		$(call TEX_PATH,$(static_file)))))
-
-# Compile .md files (from MD_DIR/%.md to TEX_DIR/%.tex)
-$(foreach md_file,\
-	$(filter-out %acknowledgements.md %.lagda.md,$(MD_FILES)),\
-	$(eval $(call MK_MD2TEX_RULE,\
-		$(md_file),\
-		$(call TEX_PATH,$(md_file)),\
-		$(PDF_TEMPLATE_DIR)/chapter.latex)))
-
-# Compile .lagda.md files (from MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex)
-$(foreach lagda_md_file,\
-	$(LAGDA_MD_FILES),\
-	$(eval $(call MK_MD2TEX_RULE,\
-		$(lagda_md_file),\
-		$(call LAGDA_TEX_PATH,$(lagda_md_file)),\
-		$(PDF_TEMPLATE_DIR)/chapter.latex)))
-
-# Compile acknowledgements (from SITE_DIR/acknowledgements.md to TEX_DIR/acknowledgements.tex)
-$(eval $(call MK_MD2TEX_RULE,\
-	$(SITE_DIR)/acknowledgements.md,\
-	$(TEX_DIR)/plfa/backmatter/acknowledgements.tex,\
-	$(PDF_TEMPLATE_DIR)/acknowledgements.latex))
-
-# Compile .lagda.tex files (from LAGDA_TEX_DIR/%.lagda.tex to TEX_DIR/%.tex)
-$(foreach lagda_md_file,\
-	$(LAGDA_MD_FILES),\
-	$(eval $(call MK_LAGDA_MD2TEX_RULE,\
-		$(call LAGDA_TEX_PATH,$(lagda_md_file)),\
-		$(call TEX_PATH,$(lagda_md_file)))))
+include book/pdf.mk
 
 
 #################################################################################
@@ -310,6 +198,14 @@ ifeq (,$(wildcard $(shell which fix-whitespace)))
 	@echo "Run: git clone https://github.com/agda/fix-whitespace"
 	@echo "     cd fix-whitespace/"
 	@echo "     stack install --stack-yaml stack-8.8.3.yaml"
+endif
+
+.PHONY: setup-check-latexmk
+setup-check-latexmk:
+ifeq (,$(wildcard $(shell which latexmk)))
+	@echo "The command you called requires Latexmk"
+	@echo "Latemk is included in MacTeX and MikTeX"
+	@echo "See: https://mg.readthedocs.io/latexmk.html"
 endif
 
 .PHONY: setup-check-epubcheck
