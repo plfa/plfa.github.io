@@ -37,7 +37,7 @@
 % text will exceed the page boundary.
 \definecolor{background-color}{HTML}{EEEEFF}
 \let\oldtexttt\texttt%
-\renewcommand{\texttt}[1]{\colorbox{bgcolor}{\oldtexttt{#1}}}
+\renewcommand{\texttt}[1]{\colorbox{background-color}{\oldtexttt{#1}}}
 
 % Box with background colour similar to web version:
 \newtcolorbox{agda}[1][]{
