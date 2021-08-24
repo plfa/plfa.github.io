@@ -123,54 +123,45 @@
   \null\endgroup
 \end{titlepage}
 
-\frontmatter
+$for(parts)$
+
+% Open front, main, and back matter sections:
+$if(frontmatter)$
+\frontmatter%
 \setcounter{tocdepth}{0}
 
-\tableofcontents
+\tableofcontents%
 \setcounter{tocdepth}{1}
-
-\input{plfa/frontmatter/dedication}
-\input{plfa/frontmatter/preface}
-\input{plfa/frontmatter/README}
-
+$endif$
+$if(mainmatter)$
 \mainmatter%
-
-\part{Part 1: Logical Foundations}
-\input{plfa/part1/Naturals}
-\input{plfa/part1/Induction}
-\input{plfa/part1/Relations}
-\input{plfa/part1/Equality}
-\input{plfa/part1/Isomorphism}
-\input{plfa/part1/Connectives}
-\input{plfa/part1/Negation}
-\input{plfa/part1/Quantifiers}
-\input{plfa/part1/Decidable}
-\input{plfa/part1/Lists}
-
-\part{Part 2: Programming Language Foundations}
-\input{plfa/part2/Lambda}
-\input{plfa/part2/Properties}
-\input{plfa/part2/DeBruijn}
-\input{plfa/part2/More}
-\input{plfa/part2/Bisimulation}
-\input{plfa/part2/Inference}
-\input{plfa/part2/Untyped}
-\input{plfa/part2/Confluence}
-\input{plfa/part2/BigStep}
-
-\part{Part 3: Denotational Semantics}
-\input{plfa/part3/Denotational}
-\input{plfa/part3/Compositional}
-\input{plfa/part3/Soundness}
-\input{plfa/part3/Adequacy}
-\input{plfa/part3/ContextualEquivalence}
-
-\cleardoublepage%
-\phantomsection%
-
+$endif$
+$if(backmatter)$
 \appendix
 \addcontentsline{toc}{part}{Appendices}
+$endif$
 
-\input{plfa/part2/Substitution}
-\input{plfa/backmatter/acknowledgements}
+% Only print title for main and back matter:
+$if(frontmatter)$
+% NOTE: Front matter titles are inserted via book/lua/single-file-headers.lua.
+$else$
+\part{$title$}
+$endif$
+
+% Include each section.
+$for(sections)$
+\input{$tex_path$}
+$endfor$
+
+% Close front, main, and back matter sections:
+$if(frontmatter)$
+$endif$
+$if(mainmatter)$
+\cleardoublepage%
+\phantomsection%
+$endif$
+$if(backmatter)$
+$endif$
+$endfor$
+
 \end{document}

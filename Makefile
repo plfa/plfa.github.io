@@ -4,6 +4,7 @@
 #################################################################################
 
 SITE_DIR  := _site
+RAW_DIR   := $(SITE_DIR)/raw
 CACHE_DIR := _cache
 TMP_DIR   := $(CACHE_DIR)/tmp
 

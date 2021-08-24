@@ -36,6 +36,7 @@ library
   hs-source-dirs:   hs
   exposed-modules:  Hakyll.Web.Agda
                   , Hakyll.Web.Template.Numeric
+                  , Hakyll.Web.Template.Context.Derived
                   , Hakyll.Web.Template.Context.Metadata
                   , Hakyll.Web.Template.Context.Title
                   , Hakyll.Web.Sass

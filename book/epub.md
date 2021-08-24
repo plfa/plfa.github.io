@@ -66,6 +66,6 @@ src/plfa/part2/Substitution.lagda.md
 
 ## Acknowledgements
 ``` {.include shift-heading-level-by=1}
-_site/acknowledgements.md
+_site/raw/plfa/backmatter/acknowledgements.md
 src/plfa/backmatter/Fonts.lagda.md
 ```

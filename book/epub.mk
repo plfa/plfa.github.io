@@ -7,8 +7,8 @@ MD_FILES          := README.md $(wildcard $(MD_DIR)/plfa/**/*.md)
 
 
 # Compile PLFA to an EPUB
-.PHONY: epub
-epub: $(SITE_DIR)/plfa.epub
+.PHONY: epub-build
+epub-build: $(SITE_DIR)/plfa.epub
 
 $(SITE_DIR)/plfa.epub: book/epub.md book/epub.css $(MD_FILES) $(EPUB_LUA_SCRIPTS) | setup-install-pandoc
 	@$(PANDOC) \

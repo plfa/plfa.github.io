@@ -3,15 +3,17 @@
 
 import           Control.Monad ((<=<), forM_)
 import           Data.Functor ((<&>))
+import           Data.List (isPrefixOf)
 import qualified Data.Text as T
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Routes.Permalink
 import           Hakyll.Web.Template.Numeric
+import           Hakyll.Web.Template.Context.Derived
 import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Template.Context.Title
 import           Hakyll.Web.Sass
-import           System.FilePath ((</>), takeDirectory)
+import           System.FilePath ((</>), takeDirectory, replaceExtensions, splitPath, joinPath)
 import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
@@ -76,7 +78,8 @@ siteSectionContext = mconcat
 
 tableOfContentsContext :: Context String -> Context String
 tableOfContentsContext ctx = Context $ \k a _ -> do
-  m <- makeItem <=< getMetadata $ "src/plfa/toc.metadata"
+  metadata <- getMetadata "src/plfa/toc.metadata"
+  m <- makeItem metadata
   unContext (objectContext ctx) k a m
 
 acknowledgementsContext :: Context String
@@ -122,6 +125,32 @@ sassOptions :: SassOptions
 sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
+
+
+-- Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
+--
+-- NOTE: This logic is partially duplicated in book/pdf.mk:TEX_PATH.
+--
+-- NOTE: This function assumes pdf.tex will be at TEX_DIR/.
+--
+addTexPath :: Context a -> Context a
+addTexPath = addDerivedField "tex_path" deriveTexPath
+  where
+    deriveTexPath :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveTexPath ctx a i = do
+      fld <- unContext ctx "include" a i
+      case fld of
+        StringField includePath -> return $ StringField (texPath includePath)
+        _ -> fail "Key 'include' does not return a String"
+
+    texPath :: FilePath -> FilePath
+    texPath fnDotMd
+      | fnDotMd == "README.md"                       = "plfa/frontmatter/README.tex"
+      | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
+      | otherwise                                    = error ("textPath: cannot map " <> fnDotMd)
+
+    dropTopDirectory :: FilePath -> FilePath
+    dropTopDirectory = joinPath . tail . splitPath
 
 
 --------------------------------------------------------------------------------
@@ -207,12 +236,24 @@ main = do
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= prettifyUrls
 
-    match "src/plfa/backmatter/acknowledgements.md" $ version "native" $ do
-      route   $ constRoute "versions/native/acknowledgements.native"
+    -- Compile raw version of acknowledgements used in constructing the PDF and EPUB
+    match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
+      route $ gsubRoute "src/" (const "raw/")
       compile $ getResourceBody
         >>= applyAsTemplate acknowledgementsContext
-        >>= readMarkdownWith siteReaderOptions
-        <&> writeNativeWith siteWriterOptions
+        >>= loadAndApplyTemplate "templates/metadata.md" siteContext
+
+    -- Compile raw version of index used in constructing the PDF
+    match "book/pdf.tex" $ do
+      route $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate (addTexPath (tableOfContentsContext siteSectionContext))
+
+    -- Compile metadata XML used in constructing the EPUB
+    match "book/epub.xml" $ version "raw" $ do
+      route   $ constRoute "raw/epub.xml"
+      compile $ getResourceBody
+        >>= applyAsTemplate siteContext
 
     match "authors/*.metadata" $
       compile getResourceBody
@@ -352,15 +393,6 @@ writeHTML5With :: WriterOptions  -- ^ Writer options for Pandoc
 writeHTML5With wopt (Item itemi doc) =
   case Pandoc.runPure $ Pandoc.writeHtml5String wopt doc of
     Left err    -> error $ "Hakyll.Web.Pandoc.writePandocWith: " ++ show err
-    Right item' -> Item itemi $ T.unpack item'
-
--- | Write a document as HTML using Pandoc, with the supplied options.
-writeNativeWith :: WriterOptions  -- ^ Writer options for Pandoc
-                -> Item Pandoc    -- ^ Document to write
-                -> Item String    -- ^ Resulting Markdown
-writeNativeWith wopt (Item itemi doc) =
-  case Pandoc.runPure $ Pandoc.writeNative wopt doc of
-    Left err    -> error $ "Hakyll.Web.Pandoc.writeNativeWith: " ++ show err
     Right item' -> Item itemi $ T.unpack item'
 
 
