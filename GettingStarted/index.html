@@ -57,7 +57,7 @@
 </nav>
 
     <header class="post-header">
-        <h1 class="post-title">Getting Started</h1>
+        <h1 class="post-title" id="gettingstarted">Getting Started</h1>
     </header>
     <div class="post-content">
         <!-- Status & Version Badges -->
@@ -112,15 +112,16 @@
 Finished hello.</code></pre>
 <h3 id="install-plfa-and-the-agda-standard-library">Install PLFA and the Agda standard library</h3>
 <p>You can get the latest version of Programming Language Foundations in Agda from GitHub, either by cloning the repository, or by downloading <a href="https://github.com/plfa/plfa.github.io/archive/dev.zip">the zip archive</a>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--recurse-submodules</span> https://github.com/plfa/plfa.github.io plfa</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span> 1 <span class="at">--recurse-submodules</span> <span class="at">--shallow-submodules</span> https://github.com/plfa/plfa.github.io plfa</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove `--depth 1` and `--shallow-submodules` if you want the complete git history of PLFA and the standard library.</span></span></code></pre></div>
 <p>PLFA ships with the required version of the Agda standard library, so if you cloned with the <code>--recurse-submodules</code> flag, you’ve already got, in the <code>standard-library</code> directory!</p>
 <p>If you forgot to add the <code>--recurse-submodules</code> flag, no worries, we can fix that!</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> plfa/</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> submodule update <span class="at">--recursive</span></span></code></pre></div>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> submodule update <span class="at">--init</span> <span class="at">--recursive</span> <span class="at">--depth</span> 1</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove `--depth 1` if you want the complete git history of the standard library.</span></span></code></pre></div>
 <p>If you obtained PLFA by downloading the zip archive, you can get the required version of the Agda standard library from GitHub. You can either clone the repository and switch to the correct branch, or you can download the <a href="https://github.com/agda/agda-stdlib/releases/tag/v1.3">the zip archive</a>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/agda/agda-stdlib.git agda-stdlib</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> agda-stdlib</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout v1.3</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/agda/agda-stdlib.git <span class="at">--branch</span> v1.6 <span class="at">--depth</span> 1 agda-stdlib</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove `--depth 1` if you want the complete git history of the standard library.</span></span></code></pre></div>
 <p>Finally, we need to let Agda know where to find the Agda standard library. You’ll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file. You will need to create two configuration files in <code>AGDA_DIR</code>. On UNIX and macOS, <code>AGDA_DIR</code> defaults to <code>~/.agda</code>. On Windows, <code>AGDA_DIR</code> usually defaults to <code>%AppData%\agda</code>, where <code>%AppData%</code> usually defaults to <code>C:\Users\USERNAME\AppData\Roaming</code>.</p>
 <ul>
 <li>If the <code>AGDA_DIR</code> directory does not already exist, create it.</li>
@@ -258,9 +259,7 @@ setup-check-stack          # Check if the Haskell Tool Stack is installed</code>
 <li><p>The test suite is run to check if everything type checks.</p></li>
 </ol>
 <p>You can install these Git hooks by calling <code>make init</code>. You can install <a href="https://github.com/agda/fix-whitespace">fix-whitespace</a> by running:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/agda/fix-whitespace</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> fix-whitespace/</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> install <span class="at">--stack-yaml</span> stack-8.8.3.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">stack</span> install fix-whitespace</span></code></pre></div>
 <p>If you want Stack to use your system installation of GHC, follow the instructions for <a href="#using-an-existing-installation-of-ghc">Using an existing installation of GHC</a>.</p>
 <!-- Links -->
     </div>
