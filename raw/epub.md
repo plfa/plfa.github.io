@@ -12,7 +12,7 @@ author      :
 
 - Jeremy G. Siek
 
-date        : 2021-08-24T22:09:16Z
+date        : 2021-08-24T22:49:09Z
 rights      : Creative Commons Attribution 4.0 International License
 ---
 
@@ -593,7 +593,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-##### Exercise `seven` (practice) {name=seven}
+##### Exercise `seven` (practice) {#seven}
 
 Write out `7` in longhand.
 
@@ -804,7 +804,7 @@ Parentheses and semicolons are among the few characters that cannot
 appear in names, so we do not need extra spaces in the `using` list.
 
 
-### Operations on naturals are recursive functions {name=plus}
+### Operations on naturals are recursive functions {#plus}
 
 Now that we have the natural numbers, what can we do with them?
 For instance, can we define arithmetic operations such as
@@ -942,7 +942,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-##### Exercise `+-example` (practice) {name=plus-example}
+##### Exercise `+-example` (practice) {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
@@ -1003,7 +1003,7 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-##### Exercise `*-example` (practice) {name=times-example}
+##### Exercise `*-example` (practice) {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
@@ -1013,7 +1013,7 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-##### Exercise `_^_` (recommended) {name=power}
+##### Exercise `_^_` (recommended) {#power}
 
 Define exponentiation, which is given by the following equations:
 
@@ -1083,7 +1083,7 @@ _ =
   ∎
 ```
 
-##### Exercise `∸-example₁` and `∸-example₂` (recommended) {name=monus-examples}
+##### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -1218,7 +1218,7 @@ definitions is quite similar.  They might be considered two sides of
 the same coin.
 
 
-### The story of creation, finitely {name=finite-creation}
+### The story of creation, finitely {#finite-creation}
 
 The above story was told in a stratified way.  First, we create
 the infinite set of naturals.  We take that set as given when
@@ -1389,7 +1389,7 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
-##### Exercise `Bin` (stretch) {name=Bin}
+##### Exercise `Bin` (stretch) {#Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
@@ -1576,7 +1576,7 @@ distributes over another operator.  A careful author will often call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-##### Exercise `operators` (practice) {name=operators}
+##### Exercise `operators` (practice) {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -2104,7 +2104,7 @@ the main proposition first, and the equations required to do so
 will suggest what lemmas to prove.
 
 
-### Our first corollary: rearranging {name=sections}
+### Our first corollary: rearranging {#sections}
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
@@ -2200,7 +2200,7 @@ judgments where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-##### Exercise `finite-|-assoc` (stretch) {name=finite-plus-assoc}
+##### Exercise `finite-|-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
@@ -2362,7 +2362,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-##### Exercise `+-swap` (recommended) {name=plus-swap}
+##### Exercise `+-swap` (recommended) {#plus-swap}
 
 Show
 
@@ -2377,7 +2377,7 @@ is associative and commutative.
 ```
 
 
-##### Exercise `*-distrib-+` (recommended) {name=times-distrib-plus}
+##### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -2390,7 +2390,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-##### Exercise `*-assoc` (recommended) {name=times-assoc}
+##### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -2403,7 +2403,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-##### Exercise `*-comm` (practice) {name=times-comm}
+##### Exercise `*-comm` (practice) {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -2417,7 +2417,7 @@ you will need to formulate and prove suitable lemmas.
 ```
 
 
-##### Exercise `0∸n≡0` (practice) {name=zero-monus}
+##### Exercise `0∸n≡0` (practice) {#zero-monus}
 
 Show
 
@@ -2430,7 +2430,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-##### Exercise `∸-|-assoc` (practice) {name=monus-plus-assoc}
+##### Exercise `∸-|-assoc` (practice) {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -2454,7 +2454,7 @@ Show the following three laws
 for all `m`, `n`, and `p`.
 
 
-##### Exercise `Bin-laws` (stretch) {name=Bin-laws}
+##### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)
@@ -2738,7 +2738,7 @@ lack---for instance by saying that a newly introduced relation is a
 partial order but not a total order.
 
 
-##### Exercise `orderings` (practice) {name=orderings}
+##### Exercise `orderings` (practice) {#orderings}
 
 Give an example of a preorder that is not a partial order.
 
@@ -2856,7 +2856,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-##### Exercise `≤-antisym-cases` (practice) {name=leq-antisym-cases}
+##### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -3056,7 +3056,7 @@ Show that multiplication is monotonic with regard to inequality.
 ```
 
 
-### Strict inequality {name=strict-inequality}
+### Strict inequality {#strict-inequality}
 
 We can define strict inequality similarly to inequality:
 ```
@@ -3094,7 +3094,7 @@ and conversely.  One can then give an alternative derivation of the
 properties of strict inequality, such as transitivity, by
 exploiting the corresponding properties of inequality.
 
-##### Exercise `<-trans` (recommended) {name=less-trans}
+##### Exercise `<-trans` (recommended) {#less-trans}
 
 Show that strict inequality is transitive.
 
@@ -3102,7 +3102,7 @@ Show that strict inequality is transitive.
 -- Your code goes here
 ```
 
-##### Exercise `trichotomy` (practice) {name=trichotomy}
+##### Exercise `trichotomy` (practice) {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -3120,7 +3120,7 @@ similar to that used for totality.
 -- Your code goes here
 ```
 
-##### Exercise `+-mono-<` (practice) {name=plus-mono-less}
+##### Exercise `+-mono-<` (practice) {#plus-mono-less}
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
@@ -3129,7 +3129,7 @@ As with inequality, some additional definitions may be required.
 -- Your code goes here
 ```
 
-##### Exercise `≤-iff-<` (recommended) {name=leq-iff-less}
+##### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
@@ -3137,7 +3137,7 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
 -- Your code goes here
 ```
 
-##### Exercise `<-trans-revisited` (practice) {name=less-trans-revisited}
+##### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relation between strict inequality and inequality and
@@ -3246,7 +3246,7 @@ evidence that the first number is odd. If it is because it is the
 successor of an even number, then the result is odd because it is the
 successor of the sum of two even numbers, which is even.
 
-##### Exercise `o+o≡e` (stretch) {name=odd-plus-odd}
+##### Exercise `o+o≡e` (stretch) {#odd-plus-odd}
 
 Show that the sum of two odd numbers is even.
 
@@ -3254,7 +3254,7 @@ Show that the sum of two odd numbers is even.
 -- Your code goes here
 ```
 
-##### Exercise `Bin-predicates` (stretch) {name=Bin-predicates}
+##### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)
@@ -3462,7 +3462,7 @@ Again, a useful exercise is to carry out an interactive development,
 checking how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
-### Congruence and substitution {name=cong}
+### Congruence and substitution {#cong}
 
 Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both:
@@ -3965,7 +3965,7 @@ Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
 draft, 2017.)
 
 
-### Universe polymorphism {name=unipoly}
+### Universe polymorphism {#unipoly}
 
 As we have seen, not every type belongs to `Set`, but instead every
 type belongs somewhere in the hierarchy `Set₀`, `Set₁`, `Set₂`, and so on,
@@ -4150,7 +4150,7 @@ g ∘′ f  =  λ x → g (f x)
 ```
 
 
-### Extensionality {name=extensionality}
+### Extensionality {#extensionality}
 
 Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
@@ -4517,7 +4517,7 @@ postulate
 -- Your code goes here
 ```
 
-##### Exercise `_⇔_` (practice) {name=iff}
+##### Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
 ```
@@ -4532,7 +4532,7 @@ Show that equivalence is reflexive, symmetric, and transitive.
 -- Your code goes here
 ```
 
-##### Exercise `Bin-embedding` (stretch) {name=Bin-embedding}
+##### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin) and
@@ -5109,7 +5109,7 @@ Show empty is the right identity of sums up to isomorphism.
 -- Your code goes here
 ```
 
-### Implication is function {name=implication}
+### Implication is function {#implication}
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
 whenever `A` holds then `B` must also hold.  We formalise implication using
@@ -6237,7 +6237,7 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
-##### Exercise `Bin-isomorphism` (stretch) {name=Bin-isomorphism}
+##### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin),
@@ -6856,7 +6856,7 @@ postulate
 -- Your code goes here
 ```
 
-### Proof by reflection {name=proof-by-reflection}
+### Proof by reflection {#proof-by-reflection}
 
 Let's revisit our definition of monus from
 Chapter [Naturals](/Naturals/).
@@ -7406,7 +7406,7 @@ _ =
 ```
 Now the time to reverse a list is linear in the length of the list.
 
-### Map {name=Map}
+### Map {#Map}
 
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a _higher-order function_, one which takes a function as an
@@ -7506,7 +7506,7 @@ Define a suitable map operator over trees:
 -- Your code goes here
 ```
 
-### Fold {name=Fold}
+### Fold {#Fold}
 
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
@@ -7781,7 +7781,7 @@ Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 ```
 
 
-### All {name=All}
+### All {#All}
 
 We can also define predicates over lists. Two of the most important
 are `All` and `Any`.
@@ -8293,7 +8293,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 ```
 
 
-##### Exercise `primed` (stretch) {name=primed}
+##### Exercise `primed` (stretch) {#primed}
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
@@ -9281,7 +9281,7 @@ the three places where a bound variable is introduced.
 The rules are deterministic, in that at most one rule applies to every term.
 
 
-#### Example type derivations {name=derivation}
+#### Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
 is a type derivation for the Church numeral two,
@@ -12623,7 +12623,7 @@ Here `M †` is the translation of term `M` from a calculus with the
 construct to a calculus without the construct.
 
 
-### Products {name=products}
+### Products {#products}
 
 #### Syntax
 
@@ -12761,7 +12761,7 @@ We can also translate back the other way:
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
-### Sums {name=sums}
+### Sums {#sums}
 
 #### Syntax
 
@@ -14273,7 +14273,7 @@ Chapter [Lambda](/Lambda/),
 and from it we compute an intrinsically-typed term, in the style of
 Chapter [DeBruijn](/DeBruijn/).
 
-### Introduction: Inference rules as algorithms {name=algorithms}
+### Introduction: Inference rules as algorithms {#algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -14711,7 +14711,7 @@ the equality test in the application rule in the first
 [section](/Inference/#algorithms).
 
 
-##### Exercise `bidirectional-mul` (recommended) {name=bidirectional-mul}
+##### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -14721,7 +14721,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-##### Exercise `bidirectional-products` (recommended) {name=bidirectional-products}
+##### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).
