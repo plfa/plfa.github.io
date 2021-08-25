@@ -1,14 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import           Control.Monad ((<=<), forM_)
-import qualified Data.ByteString.Char8 as BS
+import           Control.Monad ((<=<), (>=>), forM_)
 import           Data.Char (toLower)
 import           Data.Functor ((<&>))
 import           Data.List (isPrefixOf, stripPrefix)
 import qualified Data.Text as T
 import qualified Data.Text.ICU as RE
 import qualified Data.Text.ICU.Replace as T
-import qualified Data.Yaml as Y
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Routes.Permalink
@@ -149,34 +147,30 @@ main = do
   -- Build function to fix local URLs
   fixLocalLink <- mkFixLocalLink "src"
 
-  -- Build compiler for Markdown pages
-  let pageCompiler :: Compiler (Item String)
-      pageCompiler = do
-        csl <- load cslFileName
-        bib <- load bibFileName
-        getResourceBody
-          >>= saveSnapshot "raw"
-          >>= readMarkdownWith siteReaderOptions
-          >>= processCites csl bib
-          <&> writeHTML5With siteWriterOptions
-          >>= loadAndApplyTemplate "templates/page.html" siteSectionContext
-          >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
-          >>= prettifyUrls
+  let maybeCompileAgda
+        :: Maybe CommandLineOptions -- ^ If this argument is passed, Agda compilation is used.
+        -> Item String
+        -> Compiler (Item String)
+      maybeCompileAgda Nothing     = return
+      maybeCompileAgda (Just opts) =
+        compileAgdaWith opts >=>
+        withItemBody (return . withUrls fixStdlibLink) >=>
+        withItemBody (return . withUrls fixLocalLink)
 
-  -- Build compiler for literate Agda pages
-  let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
-      pageWithAgdaCompiler opts = do
+  -- Build compiler for Markdown pages with optional Literate Agda
+  let pageCompiler
+        :: Maybe CommandLineOptions -- ^ If this argument is passed, Agda compilation is used.
+        -> Compiler (Item String)
+      pageCompiler maybeOpts = do
         csl <- load cslFileName
         bib <- load bibFileName
         getResourceBody
           >>= saveSnapshot "raw"
-          >>= compileAgdaWith opts
-          >>= withItemBody (return . withUrls fixStdlibLink)
-          >>= withItemBody (return . withUrls fixLocalLink)
+          >>= maybeCompileAgda maybeOpts
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
-          >>= loadAndApplyTemplate "templates/page.html" siteSectionContext
+          >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
           >>= prettifyUrls
 
@@ -250,12 +244,12 @@ main = do
     -- Compile sections using literate Agda
     match "src/**.lagda.md" $ do
       route permalinkRoute
-      compile $ pageWithAgdaCompiler agdaOptions
+      compile $ pageCompiler (Just agdaOptions)
 
     -- Compile other sections and pages
     match ("README.md" .||. "src/**.md") $ do
       route permalinkRoute
-      compile pageCompiler
+      compile (pageCompiler Nothing)
 
     -- Compile course pages
     match "courses/**.lagda.md" $ do
@@ -265,11 +259,11 @@ main = do
         let courseOptions = agdaOptions
               { optIncludePaths = courseDir : optIncludePaths agdaOptions
               }
-        pageWithAgdaCompiler courseOptions
+        pageCompiler (Just courseOptions)
 
     match "courses/**.md" $ do
       route permalinkRoute
-      compile pageCompiler
+      compile $ pageCompiler Nothing
 
     match "courses/**.pdf" $ do
       route idRoute
@@ -323,6 +317,8 @@ main = do
         route $ gsubRoute "versions/" (const "")
         compile copyFileCompiler
 
+
+    -- Raw versions used from Makefile for PDF and EPUB construction
 
     -- Compile raw version of acknowledgements used in constructing the PDF
     match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
@@ -475,10 +471,3 @@ addShiftedBody key = addDerivedField ("shifted_" <> key) deriveShiftedBody
     shiftHeadersBy body = T.unpack (T.replaceAll re "#$1" (T.pack body))
       where
         re = RE.regex [RE.Multiline] "^(#+)"
-
--- |Add the original metadata block back to the file.
-restoreMetadata :: Item String -> Compiler (Item String)
-restoreMetadata item = do
-  metadata <- getMetadata (itemIdentifier item)
-  let yaml = "---\n" <> BS.unpack (Y.encode metadata) <> "---\n\n"
-  withItemBody (\body -> return (yaml <> body)) item

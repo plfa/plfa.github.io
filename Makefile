@@ -120,26 +120,28 @@ list:
 
 .PHONY: publish
 publish: setup-check-rsync
-	make all
-	make test
-	@echo "Creating web branch..."
+	@make all
+	@echo "Cleaning intermediate files"
+	rm -rf $(RAW_DIR)
+	@make test
+	@echo "Creating web branch"
 	git fetch --all
 	git checkout -b web --track origin/web
-	rsync -a                   \
-		--filter='P _site/'      \
-		--filter='P _cache/'     \
-		--filter='P .git/'       \
-		--filter='P .gitignore'  \
-		--filter='P .stack-work' \
-		--filter='P .nojekyll'   \
-		--filter='P CNAME'       \
-		--delete-excluded        \
-		_site/ .
+	rsync -a                    \
+		--filter='P $(SITE_DIR)/' \
+		--filter='P $(CACHE_DIR)' \
+		--filter='P .git/'        \
+		--filter='P .gitignore'   \
+		--filter='P .stack-work'  \
+		--filter='P .nojekyll'    \
+		--filter='P CNAME'        \
+		--delete-excluded         \
+		$(SITE_DIR) .
 	git add -A
-	@echo "Publishing web branch..."
+	@echo "Publishing web branch"
 	git commit -m "Publish."
 	git push origin web:web
-	@echo "Deleting web branch..."
+	@echo "Deleting web branch"
 	git checkout dev
 	git branch -D web
 
