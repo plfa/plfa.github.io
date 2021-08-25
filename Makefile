@@ -127,15 +127,15 @@ publish: setup-check-rsync
 	@echo "Creating web branch"
 	git fetch --all
 	git checkout -b web --track origin/web
-	rsync -a                    \
-		--filter='P $(SITE_DIR)/' \
-		--filter='P $(CACHE_DIR)' \
-		--filter='P .git/'        \
-		--filter='P .gitignore'   \
-		--filter='P .stack-work'  \
-		--filter='P .nojekyll'    \
-		--filter='P CNAME'        \
-		--delete-excluded         \
+	rsync -a                     \
+		--filter='P $(SITE_DIR)/'  \
+		--filter='P $(CACHE_DIR)/' \
+		--filter='P .git/'         \
+		--filter='P .gitignore'    \
+		--filter='P .stack-work'   \
+		--filter='P .nojekyll'     \
+		--filter='P CNAME'         \
+		--delete-excluded          \
 		$(SITE_DIR) .
 	git add -A
 	@echo "Publishing web branch"
