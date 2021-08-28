@@ -195,7 +195,7 @@ distinct? (x ∷ xs)
 ... | no x∉xs
     with distinct? xs
 ... | yes dxs = yes ⟨ x∉xs , dxs ⟩
-... | no ¬dxs = no λ x₁ → ¬dxs (proj₂ x₁)
+... | no ¬dxs = no λ z → ¬dxs (proj₂ z)
 ```
 
 With this decision procedure in hand, we define the following
