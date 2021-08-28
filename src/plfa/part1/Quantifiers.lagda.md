@@ -438,7 +438,7 @@ postulate
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise `Bin-isomorphism` (stretch) {name=Bin-isomorphism}
+#### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin),

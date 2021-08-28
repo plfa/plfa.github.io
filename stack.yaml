@@ -1,7 +1,7 @@
 resolver: lts-17.2
 
-# Use GHC 8.10.3
-compiler: ghc-8.10.3
+# Use GHC 8.10.5
+compiler: ghc-8.10.5
 compiler-check: match-exact
 
 # Allow never versions of packages

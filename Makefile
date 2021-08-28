@@ -1,11 +1,32 @@
+
 #################################################################################
 # Configuration
 #################################################################################
 
-SITE_DIR := _site
+SITE_DIR  := _site
+RAW_DIR   := $(SITE_DIR)/raw
 CACHE_DIR := _cache
-TMP_DIR := $(CACHE_DIR)/tmp
+TMP_DIR   := $(CACHE_DIR)/tmp
 
+AGDA      := stack exec agda -- --no-libraries --include-path=standard-library/src
+PANDOC    := stack exec pandoc --
+
+
+#################################################################################
+# Build PLFA site, EPUB, and PDF
+#################################################################################
+
+.PHONY: all
+all:
+	@make build
+	@make epub-build
+	@make pdf-build
+
+.PHONY: all-clean
+all-clean:
+	@make clean
+	@make epub-clean
+	@make pdf-clean
 
 #################################################################################
 # Setup Git Hooks
@@ -13,7 +34,8 @@ TMP_DIR := $(CACHE_DIR)/tmp
 
 .PHONY: init
 init: setup-check-fix-whitespace setup-install-htmlproofer
-	git config core.hooksPath .githooks
+	@echo "Setting up Git Hooks"
+	@git config core.hooksPath .githooks
 
 
 #################################################################################
@@ -21,13 +43,15 @@ init: setup-check-fix-whitespace setup-install-htmlproofer
 #################################################################################
 
 .PHONY: build
-build: \
-		standard-library/ChangeLog.md
-	stack build && stack exec site build
+build: standard-library/ChangeLog.md
+	@echo "Building site"
+	@stack build && stack exec site build
 
 standard-library/ChangeLog.md:
-	git submodule init
-	git submodule update --recursive
+	@echo "Updating Agda standard library"
+	@git submodule init
+	@git submodule update --recursive
+
 
 #################################################################################
 # Test generated site with HTMLProofer
@@ -35,26 +59,19 @@ standard-library/ChangeLog.md:
 
 .PHONY: test
 test: setup-install-htmlproofer build
-	cd $(SITE_DIR) && htmlproofer \
-		--check-html                \
-		--disable-external          \
-		--report-invalid-tags       \
-		--report-missing-names      \
-		--report-script-embeds      \
-		--report-missing-doctype    \
-		--report-eof-tags           \
-		--report-mismatched-tags    \
-		--check-img-http            \
-		--check-opengraph           \
+	@echo "Testing generated HTML using HTMLProofer"
+	@cd $(SITE_DIR) && htmlproofer \
+		--check-html                 \
+		--disable-external           \
+		--report-invalid-tags        \
+		--report-missing-names       \
+		--report-script-embeds       \
+		--report-missing-doctype     \
+		--report-eof-tags            \
+		--report-mismatched-tags     \
+		--check-img-http             \
+		--check-opengraph            \
 		.
-
-#################################################################################
-# Test generated EPUB with EPUBCheck
-#################################################################################
-
-.PHONY: test-epub
-test-epub: setup-check-epubcheck build
-	epubcheck $(SITE_DIR)/plfa.epub
 
 
 #################################################################################
@@ -62,9 +79,9 @@ test-epub: setup-check-epubcheck build
 #################################################################################
 
 .PHONY: watch
-watch: \
-		standard-library/ChangeLog.md
-	stack build && stack exec site watch
+watch: standard-library/ChangeLog.md
+	@echo "Watching for changes and rebuilding"
+	@stack build && stack exec site watch
 
 
 #################################################################################
@@ -73,7 +90,8 @@ watch: \
 
 .PHONY: update-contributors
 update-contributors:
-	stack build && stack exec update-contributors
+	@echo "Updating contributors from GitHub"
+	@stack build && stack exec update-contributors
 
 
 #################################################################################
@@ -81,9 +99,9 @@ update-contributors:
 #################################################################################
 
 .PHONY: clean
-clean: \
-		standard-library/ChangeLog.md
-	stack build && stack exec site clean
+clean: standard-library/ChangeLog.md
+	@echo "Cleaning generated files for site"
+	@stack build && stack exec site clean
 
 
 #################################################################################
@@ -102,28 +120,28 @@ list:
 
 .PHONY: publish
 publish: setup-check-rsync
-	@echo "Building site..."
-	make build
-	@echo "Testing site..."
-	make test
-	@echo "Creating web branch..."
+	@make all
+	@echo "Cleaning intermediate files"
+	rm -rf $(RAW_DIR)
+	@make test
+	@echo "Creating web branch"
 	git fetch --all
 	git checkout -b web --track origin/web
-	rsync -a                   \
-		--filter='P _site/'      \
-		--filter='P _cache/'     \
-		--filter='P .git/'       \
-		--filter='P .gitignore'  \
-		--filter='P .stack-work' \
-		--filter='P .nojekyll'   \
-		--filter='P CNAME'       \
-		--delete-excluded        \
-		_site/ .
+	rsync -a                     \
+		--filter='P $(SITE_DIR)/'  \
+		--filter='P $(CACHE_DIR)/' \
+		--filter='P .git/'         \
+		--filter='P .gitignore'    \
+		--filter='P .stack-work'   \
+		--filter='P .nojekyll'     \
+		--filter='P CNAME'         \
+		--delete-excluded          \
+		$(SITE_DIR) .
 	git add -A
-	@echo "Publishing web branch..."
+	@echo "Publishing web branch"
 	git commit -m "Publish."
 	git push origin web:web
-	@echo "Deleting web branch..."
+	@echo "Deleting web branch"
 	git checkout dev
 	git branch -D web
 
@@ -142,18 +160,35 @@ ifeq (,$(wildcard $(PLFA_AFS_DIR)))
 	@exit 1
 else
 ifeq (,$(wildcard $(PLFA_AFS_DIR)/html))
+	@echo "Checkout latest version from GitHub"
 	git clone https://github.com/plfa/plfa.github.io.git --branch web --single-branch --depth 1 html
 endif
-	cd $(PLFA_AFS_DIR)/html          \
+	@echo "Checkout latest version from GitHub"
+	@cd $(PLFA_AFS_DIR)/html         \
 		&& git fetch --depth 1         \
 		&& git reset --hard origin/web \
 		&& git clean -dfx
-	fsr setacl $(PLFA_AFS_DIR)/html system:groupwebserver rl
+	@echo "Setting permissions to include web server"
+	@fsr setacl $(PLFA_AFS_DIR)/html system:groupwebserver rl
 endif
 
 
 #################################################################################
-# Setup dependencies
+# Build EPUB
+#################################################################################
+
+include book/epub.mk
+
+
+#################################################################################
+# Build PDF
+#################################################################################
+
+include book/pdf.mk
+
+
+#################################################################################
+# Setup or check dependencies
 #################################################################################
 
 .PHONY: setup-check-stack
@@ -189,11 +224,12 @@ ifeq (,$(wildcard $(shell which fix-whitespace)))
 	@echo "     stack install --stack-yaml stack-8.8.3.yaml"
 endif
 
-.PHONY: setup-check-epubcheck
-setup-check-epubcheck:
-ifeq (,$(wildcard $(shell which epubcheck)))
-	@echo "The command you called requires EPUBCheck"
-	@echo "See: https://github.com/w3c/epubcheck"
+.PHONY: setup-check-latexmk
+setup-check-latexmk:
+ifeq (,$(wildcard $(shell which latexmk)))
+	@echo "The command you called requires Latexmk"
+	@echo "Latemk is included in MacTeX and MikTeX"
+	@echo "See: https://mg.readthedocs.io/latexmk.html"
 endif
 
 .PHONY: setup-check-rsync
@@ -218,6 +254,19 @@ ifeq (,$(wildcard $(shell which bundle)))
 	gem install bundle
 endif
 
+.PHONY: setup-install-agda
+setup-install-agda: setup-check-stack
+ifeq (,$(wildcard $(shell stack exec which -- agda)))
+	@echo "Installing Agda"
+	stack build --only-dependencies
+endif
+
+.PHONY: setup-install-pandoc
+setup-install-pandoc: setup-check-stack
+ifeq (,$(wildcard $(shell stack exec which -- pandoc)))
+	@echo "Installing Pandoc"
+	stack build --only-dependencies
+endif
 
 #################################################################################
 # Build legacy versions of website using Jekyll

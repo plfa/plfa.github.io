@@ -536,7 +536,7 @@ Show empty is the right identity of sums up to isomorphism.
 -- Your code goes here
 ```
 
-## Implication is function {name=implication}
+## Implication is function {#implication}
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
 whenever `A` holds then `B` must also hold.  We formalise implication using

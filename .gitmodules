@@ -1,3 +1,4 @@
 [submodule "standard-library"]
 	path = standard-library
-	url = git@github.com:agda/agda-stdlib.git
+	url = https://github.com/agda/agda-stdlib.git
+	shallow = true

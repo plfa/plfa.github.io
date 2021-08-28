@@ -631,7 +631,7 @@ module Problem3 where
 ```
   synthesize : ∀ (Γ : Context) (M : Term⁺)
       -----------------------
-    → Dec (∃[ A ](Γ ⊢ M ↑ A))
+    → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
 
   inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
       ---------------

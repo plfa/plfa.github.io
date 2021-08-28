@@ -879,7 +879,7 @@ typed (C-suc c) = ⊢suc (typed c)
 typed (C-rcd ⊢Ms dks As<:Bs) = ⊢<: (⊢rcd ⊢Ms dks) As<:Bs
 ```
 
-## Progress <a name="subtyping-progress"></a>
+## Progress {#subtyping-progress}
 
 The Progress theorem states that a well-typed term may either take a
 reduction step or it is already a value. The proof of Progress is like
@@ -952,7 +952,7 @@ progress (⊢<: {A = A}{B} ⊢M A<:B)           =  progress ⊢M
 * Case `⊢<:`: we invoke the induction hypothesis on sub-derivation of `Γ ⊢ M ⦂ A`.
 
 
-## Preservation <a name="subtyping-preservation"></a>
+## Preservation {#subtyping-preservation}
 
 In this section we prove that when a well-typed term takes a reduction
 step, the result is another well-typed term with the same type.

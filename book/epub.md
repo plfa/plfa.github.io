@@ -1,7 +1,7 @@
 $for(parts)$
 # $title$
 $for(sections)$
-$content$
+## $title$ {#$anchor$}
+$shifted_raw$
 $endfor$
 $endfor$
-

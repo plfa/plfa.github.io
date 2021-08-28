@@ -12,30 +12,33 @@ build-type:         Simple
 common shared-properties
   ghc-options:      -Wall
   default-language: Haskell2010
-  build-depends:    aeson                >=1.4  && <1.5
-                  , base                 >=4.6  && <5
-                  , bytestring           >=0.10 && <0.11
-                  , containers           >=0.6  && <0.7
-                  , directory            >=1.2  && <1.4
-                  , doctemplates         >=0.8  && <0.9
-                  , extra                >=1.7  && <1.8
-                  , filemanip            >=0.3  && <0.4
-                  , filepath             >=1.3  && <1.5
-                  , frontmatter          >=0.1  && <0.2
-                  , hakyll               >=4.10 && <4.15
-                  , pandoc               >=2.1  && <2.11
-                  , pandoc-types         >=1.20 && <1.21
-                  , pandoc-citeproc      >=0.17 && <0.18
-                  , text                 >=1.2  && <1.3
-                  , unordered-containers >=0.2  && <0.3
-                  , vector               >=0.12 && <0.13
-                  , yaml                 >=0.11 && <0.12
+  build-depends:    aeson                >=1.4   && <1.6
+                  , base                 >=4.6   && <5
+                  , bytestring           >=0.10  && <0.11
+                  , containers           >=0.6   && <0.7
+                  , directory            >=1.2   && <1.4
+                  , doctemplates         >=0.8   && <1.0
+                  , extra                >=1.7   && <1.8
+                  , filemanip            >=0.3   && <0.4
+                  , filepath             >=1.3   && <1.5
+                  , frontmatter          >=0.1   && <0.2
+                  , hakyll               >=4.10  && <4.15
+                  , pandoc               >=2.1   && <2.11
+                  , pandoc-types         >=1.20  && <1.23
+                  , pandoc-citeproc      >=0.17  && <0.18
+                  , text                 >=1.2   && <1.3
+                  , text-icu             >=0.7.1 && <0.8
+                  , text-regex-replace   >=0.1   && <0.2
+                  , unordered-containers >=0.2   && <0.3
+                  , vector               >=0.12  && <0.13
+                  , yaml                 >=0.11  && <0.12
 
 library
   import:           shared-properties
   hs-source-dirs:   hs
   exposed-modules:  Hakyll.Web.Agda
                   , Hakyll.Web.Template.Numeric
+                  , Hakyll.Web.Template.Context.Derived
                   , Hakyll.Web.Template.Context.Metadata
                   , Hakyll.Web.Template.Context.Title
                   , Hakyll.Web.Sass
@@ -43,8 +46,6 @@ library
   build-depends:    Agda               ==2.6.1.3
                   , hsass              >=0.8   && <0.9
                   , regex-tdfa         >=1.3   && <1.4
-                  , text-icu           >=0.7.1 && <0.8
-                  , text-regex-replace >=0.1   && <0.2
 
 executable site
   import:           shared-properties

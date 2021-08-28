@@ -32,7 +32,7 @@ Chapter [Lambda](/Lambda/),
 and from it we compute an intrinsically-typed term, in the style of
 Chapter [DeBruijn](/DeBruijn/).
 
-## Introduction: Inference rules as algorithms {name=algorithms}
+## Introduction: Inference rules as algorithms {#algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -208,11 +208,11 @@ _decidable_:
 
     synthesize : ∀ (Γ : Context) (M : Term⁺)
         -----------------------
-      → Dec (∃[ A ](Γ ⊢ M ↑ A))
+      → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
 
     inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
-        ---------------
-      → Dec (Γ ⊢ M ↓ A)
+              ---------------
+            → Dec (Γ ⊢ M ↓ A)
 
 Given context `Γ` and synthesised term `M`, we must decide whether
 there exists a type `A` such that `Γ ⊢ M ↑ A` holds, or its negation.
@@ -470,7 +470,7 @@ the equality test in the application rule in the first
 [section](/Inference/#algorithms).
 
 
-#### Exercise `bidirectional-mul` (recommended) {name=bidirectional-mul}
+#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -480,7 +480,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {name=bidirectional-products}
+#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).
@@ -597,8 +597,8 @@ there exists a type `A` such that `Γ ∋ x ⦂ A` holds, or its
 negation:
 ```
 lookup : ∀ (Γ : Context) (x : Id)
-    -----------------------
-  → Dec (∃[ A ](Γ ∋ x ⦂ A))
+         -------------------------
+       → Dec (∃[ A ]( Γ ∋ x ⦂ A ))
 lookup ∅ x                        =  no  (λ ())
 lookup (Γ , y ⦂ B) x with x ≟ y
 ... | yes refl                    =  yes ⟨ B , Z ⟩
@@ -686,8 +686,8 @@ and a type `A` and either returns evidence that `Γ ⊢ M ↓ A`,
 or its negation:
 ```
 synthesize : ∀ (Γ : Context) (M : Term⁺)
-    -----------------------
-  → Dec (∃[ A ](Γ ⊢ M ↑ A))
+             ---------------------------
+           → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
 
 inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
     ---------------

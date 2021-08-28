@@ -989,8 +989,8 @@ Remember to indent all code by two spaces.
   ext∋ _   ¬∃ ⟨ A , S _ ⊢x ⟩  =  ¬∃ ⟨ A , ⊢x ⟩
 
   lookup : ∀ (Γ : Context) (x : Id)
-      -----------------------
-    → Dec (∃[ A ](Γ ∋ x ⦂ A))
+           ------------------------
+         → Dec (∃[ A ]( Γ ∋ x ⦂ A ))
   lookup ∅ x                        =  no  (λ ())
   lookup (Γ , y ⦂ B) x with x ≟ y
   ... | yes refl                    =  yes ⟨ B , Z ⟩
@@ -1022,12 +1022,12 @@ Remember to indent all code by two spaces.
 
 ```
   synthesize : ∀ (Γ : Context) (M : Term⁺)
-      -----------------------
-    → Dec (∃[ A ](Γ ⊢ M ↑ A))
+               -----------------------
+             → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
 
   inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
-      ---------------
-    → Dec (Γ ⊢ M ↓ A)
+            ---------------
+          → Dec (Γ ⊢ M ↓ A)
 
   synthesize Γ (` x) with lookup Γ x
   ... | no  ¬∃              =  no  (λ{ ⟨ A , ⊢` ∋x ⟩ → ¬∃ ⟨ A , ∋x ⟩ })

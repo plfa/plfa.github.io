@@ -1,22 +1,26 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import           Control.Monad ((<=<), forM_)
-import qualified Data.ByteString.Lazy as BL
+import           Control.Monad ((<=<), (>=>), forM_)
+import           Data.Char (toLower)
 import           Data.Functor ((<&>))
+import           Data.List (isPrefixOf, stripPrefix)
 import qualified Data.Text as T
+import qualified Data.Text.ICU as RE
+import qualified Data.Text.ICU.Replace as T
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Routes.Permalink
 import           Hakyll.Web.Template.Numeric
+import           Hakyll.Web.Template.Context.Derived
 import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Template.Context.Title
 import           Hakyll.Web.Sass
-import           System.FilePath ((</>), takeDirectory)
+import           System.FilePath ((</>), takeDirectory, replaceExtensions, splitPath, joinPath)
 import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
 import qualified Text.Pandoc as Pandoc
-import qualified Text.Pandoc.Filter as Pandoc (Filter(..),  applyFilters)
+import           Text.Printf
 
 --------------------------------------------------------------------------------
 -- Configuration
@@ -65,20 +69,22 @@ siteContext = mconcat
       , "authors/jsiek.metadata"
       ]
   , constField "google_analytics" "UA-125055580-1"
-  , defaultContext
+  , addAnchor defaultContext
   ]
 
 siteSectionContext :: Context String
 siteSectionContext = mconcat
   [ titlerunningField
   , subtitleField
+  , addShiftedBody "raw" (contentField "raw" "raw")
   , siteContext
   ]
 
 tableOfContentsContext :: Context String -> Context String
-tableOfContentsContext ctx = Context $ \k a _ -> do
-  m <- makeItem <=< getMetadata $ "src/plfa/toc.metadata"
-  unContext (objectContext ctx) k a m
+tableOfContentsContext ctx = Context $ \k a _ ->
+  unContext (objectContext ctx) k a
+    =<< makeItem
+    =<< getMetadata "src/plfa/toc.metadata"
 
 acknowledgementsContext :: Context String
 acknowledgementsContext = mconcat
@@ -124,29 +130,6 @@ sassOptions = defaultSassOptions
   { sassIncludePaths = Just ["css"]
   }
 
-epubSectionContext :: Context String
-epubSectionContext = mconcat
-  [ contentField "content" "content"
-  , titlerunningField
-  , subtitleField
-  ]
-
-epubReaderOptions :: ReaderOptions
-epubReaderOptions = siteReaderOptions
-  { readerStandalone    = True
-  , readerStripComments = True
-  }
-
-epubWriterOptions :: WriterOptions
-epubWriterOptions = siteWriterOptions
-  { writerTableOfContents  = True
-  , writerTOCDepth         = 2
-  , writerEpubFonts        = [ "public/webfonts/DejaVuSansMono.woff"
-                             , "public/webfonts/FreeMono.woff"
-                             , "public/webfonts/mononoki.woff"
-                             ]
-  , writerEpubChapterLevel = 2
-  }
 
 --------------------------------------------------------------------------------
 -- Build site
@@ -164,32 +147,29 @@ main = do
   -- Build function to fix local URLs
   fixLocalLink <- mkFixLocalLink "src"
 
-  -- Build compiler for Markdown pages
-  let pageCompiler :: Compiler (Item String)
-      pageCompiler = do
+  let maybeCompileAgda
+        :: Maybe CommandLineOptions -- ^ If this argument is passed, Agda compilation is used.
+        -> Item String
+        -> Compiler (Item String)
+      maybeCompileAgda Nothing     = return
+      maybeCompileAgda (Just opts) =
+        compileAgdaWith opts >=>
+        withItemBody (return . withUrls fixStdlibLink) >=>
+        withItemBody (return . withUrls fixLocalLink)
+
+  -- Build compiler for Markdown pages with optional Literate Agda
+  let pageCompiler
+        :: Maybe CommandLineOptions -- ^ If this argument is passed, Agda compilation is used.
+        -> Compiler (Item String)
+      pageCompiler maybeOpts = do
         csl <- load cslFileName
         bib <- load bibFileName
         getResourceBody
+          >>= saveSnapshot "raw"
+          >>= maybeCompileAgda maybeOpts
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
-          >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
-          >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
-          >>= prettifyUrls
-
-  -- Build compiler for literate Agda pages
-  let pageWithAgdaCompiler :: CommandLineOptions -> Compiler (Item String)
-      pageWithAgdaCompiler opts = do
-        csl <- load cslFileName
-        bib <- load bibFileName
-        agdaCompilerWith opts
-          >>= withItemBody (return . withUrls fixStdlibLink)
-          >>= withItemBody (return . withUrls fixLocalLink)
-          >>= readMarkdownWith siteReaderOptions
-          >>= processCites csl bib
-          <&> writeHTML5With siteWriterOptions
-          >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
           >>= prettifyUrls
@@ -198,39 +178,13 @@ main = do
   --
   -- NOTE: The order of the various match expressions is important:
   --       Special-case compilation instructions for files such as
-  --       "src/plfa/epub.md" and "src/plfa/index.md" would be overwritten
-  --       by the general purpose compilers for "src/**.md", which would
+  --       "src/plfa/index.md" would be overwritten by the general
+  --       purpose compilers for "src/**.md", which would
   --       cause them to render incorrectly. It is possible to explicitly
   --       exclude such files using `complement` patterns, but this vastly
   --       complicates the match patterns.
   --
   hakyll $ do
-
-    -- Compile EPUB
-    match "src/plfa/epub.md" $ do
-      route $ constRoute "plfa.epub"
-      compile $ do
-        epubTemplate <- load "templates/epub.html"
-            >>= compilePandocTemplate
-        epubMetadata <- load "src/plfa/epub.xml"
-        let ropt = epubReaderOptions
-        let wopt = epubWriterOptions
-              { writerTemplate     = Just . itemBody $ epubTemplate
-              , writerEpubMetadata = Just . T.pack . itemBody $ epubMetadata
-              }
-        getResourceBody
-          >>= applyAsTemplate (tableOfContentsContext epubSectionContext)
-          >>= readPandocWith ropt
-          >>= applyPandocFilters ropt [] "epub3"
-          >>= writeEPUB3With wopt
-
-    match "templates/epub.html" $
-      compile $ getResourceBody
-        >>= applyAsTemplate siteContext
-
-    match "src/plfa/epub.xml" $
-      compile $ getResourceBody
-        >>= applyAsTemplate siteContext
 
     -- Compile Table of Contents
     match "src/plfa/index.md" $ do
@@ -251,9 +205,9 @@ main = do
       route permalinkRoute
       compile $ getResourceBody
         >>= applyAsTemplate acknowledgementsContext
+        >>= saveSnapshot "raw"
         >>= readMarkdownWith siteReaderOptions
         <&> writeHTML5With siteWriterOptions
-        >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/page.html"    siteContext
         >>= loadAndApplyTemplate "templates/default.html" siteContext
         >>= prettifyUrls
@@ -282,7 +236,7 @@ main = do
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
-          >>= saveSnapshot "content"
+          >>= saveSnapshot "content" -- used for teaser
           >>= loadAndApplyTemplate "templates/post.html"    postContext
           >>= loadAndApplyTemplate "templates/default.html" siteContext
           >>= prettifyUrls
@@ -290,12 +244,12 @@ main = do
     -- Compile sections using literate Agda
     match "src/**.lagda.md" $ do
       route permalinkRoute
-      compile $ pageWithAgdaCompiler agdaOptions
+      compile $ pageCompiler (Just agdaOptions)
 
     -- Compile other sections and pages
-    match ("README.md" .||. "src/**.md" .&&. complement "src/plfa/epub.md") $ do
+    match ("README.md" .||. "src/**.md") $ do
       route permalinkRoute
-      compile pageCompiler
+      compile (pageCompiler Nothing)
 
     -- Compile course pages
     match "courses/**.lagda.md" $ do
@@ -305,11 +259,11 @@ main = do
         let courseOptions = agdaOptions
               { optIncludePaths = courseDir : optIncludePaths agdaOptions
               }
-        pageWithAgdaCompiler courseOptions
+        pageCompiler (Just courseOptions)
 
     match "courses/**.md" $ do
       route permalinkRoute
-      compile pageCompiler
+      compile $ pageCompiler Nothing
 
     match "courses/**.pdf" $ do
       route idRoute
@@ -344,8 +298,9 @@ main = do
     create ["public/css/style.css"] $ do
       route idRoute
       compile $ do
-        csses <- loadAll ("css/*.css" .||. "css/*.scss" .&&. complement "css/epub.css")
+        csses <- loadAll ("css/*.css" .||. "css/*.scss")
         makeItem $ unlines $ map itemBody csses
+
 
     -- Copy versions
     let versions = ["19.08", "20.07"]
@@ -361,6 +316,35 @@ main = do
       match (fromGlob $ "versions" </> v </> "**") $ do
         route $ gsubRoute "versions/" (const "")
         compile copyFileCompiler
+
+
+    -- Raw versions used from Makefile for PDF and EPUB construction
+
+    -- Compile raw version of acknowledgements used in constructing the PDF
+    match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
+      route $ gsubRoute "src/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate acknowledgementsContext
+        >>= restoreMetadata
+
+    -- Compile raw version of index used in constructing the PDF
+    match "book/pdf.tex" $ version "raw" $ do
+      route $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate (addTexPath (tableOfContentsContext siteSectionContext))
+
+    -- Compile raw version of index used in constructing the EPUB
+    match "book/epub.md" $ version "raw" $ do
+      route $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
+        >>= loadAndApplyTemplate "templates/metadata.md" siteContext
+
+    -- Compile metadata XML used in constructing the EPUB
+    match "book/epub.xml" $ version "raw" $ do
+      route   $ gsubRoute "book/" (const "raw/")
+      compile $ getResourceBody
+        >>= applyAsTemplate siteContext
 
 
 --------------------------------------------------------------------------------
@@ -390,34 +374,13 @@ processCites csl bib item = do
     withItemBody (return . CSL.processCites style refs) item
 
 -- | Write a document as HTML using Pandoc, with the supplied options.
-writeHTML5With :: WriterOptions  -- ^ Writer options for pandoc
+writeHTML5With :: WriterOptions  -- ^ Writer options for Pandoc
                -> Item Pandoc    -- ^ Document to write
                -> Item String    -- ^ Resulting HTML
 writeHTML5With wopt (Item itemi doc) =
   case Pandoc.runPure $ Pandoc.writeHtml5String wopt doc of
     Left err    -> error $ "Hakyll.Web.Pandoc.writePandocWith: " ++ show err
     Right item' -> Item itemi $ T.unpack item'
-
--- | Write a document as EPUB3 using Pandoc, with the supplied options.
-writeEPUB3With :: WriterOptions -> Item Pandoc -> Compiler (Item BL.ByteString)
-writeEPUB3With wopt (Item itemi doc) =
-  return $ case Pandoc.runPure $ Pandoc.writeEPUB3 wopt doc of
-    Left  err  -> error $ "Hakyll.Web.Pandoc.writeEPUB3With: " ++ show err
-    Right doc' -> Item itemi doc'
-
--- | Apply a filter to a Pandoc document.
-applyPandocFilters :: ReaderOptions -> [Pandoc.Filter] -> String -> Item Pandoc -> Compiler (Item Pandoc)
-applyPandocFilters ropt filters fmt = withItemBody $
-  unsafeCompiler . Pandoc.runIOorExplode . Pandoc.applyFilters ropt filters [fmt]
-
--- | Compile a Pandoc template (as opposed to a Hakyll template).
-compilePandocTemplate :: Item String -> Compiler (Item (Pandoc.Template T.Text))
-compilePandocTemplate i = do
-  let templatePath = toFilePath $ itemIdentifier i
-  let templateBody = T.pack $ itemBody i
-  templateOrError <- unsafeCompiler $ Pandoc.compileTemplate templatePath templateBody
-  template <- either fail return templateOrError
-  makeItem template
 
 
 --------------------------------------------------------------------------------
@@ -428,9 +391,83 @@ contentField :: String -> Snapshot -> Context String
 contentField key snapshot = field key $ \item ->
   itemBody <$> loadSnapshot (itemIdentifier item) snapshot
 
+
 --------------------------------------------------------------------------------
 -- Relativise URLs and strip "index.html" suffixes
 --------------------------------------------------------------------------------
 
 prettifyUrls :: Item String -> Compiler (Item String)
 prettifyUrls = relativizeUrls <=< withItemBody (return . stripIndexFile)
+
+
+--------------------------------------------------------------------------------
+-- Text wrangling for EPUB and PDF
+--------------------------------------------------------------------------------
+
+-- Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
+--
+-- NOTE: This logic is partially duplicated in book/pdf.mk:TEX_PATH.
+--
+-- NOTE: This function assumes pdf.tex will be at TEX_DIR/.
+--
+addTexPath :: Context a -> Context a
+addTexPath = addDerivedField "tex_path" deriveTexPath
+  where
+    deriveTexPath :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveTexPath ctx a i = do
+      includePath <- getString "include" ctx a i
+      return $ StringField (texPath includePath)
+
+    texPath :: FilePath -> FilePath
+    texPath fnDotMd
+      | fnDotMd == "README.md"                         = "plfa/frontmatter/README.tex"
+      | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
+      | otherwise                                      = error ("textPath: cannot map " <> fnDotMd)
+
+    dropTopDirectory :: FilePath -> FilePath
+    dropTopDirectory = joinPath . tail . splitPath
+
+-- Add an anchor based on the permalink, to be used as the header id.
+addAnchor :: Context a -> Context a
+addAnchor = addDerivedField "anchor" deriveAnchor
+  where
+    deriveAnchor :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveAnchor ctx a i = do
+      permalink <- getString "permalink" ctx a i
+      StringField <$> anchor permalink
+
+    anchor :: String -> Compiler String
+    anchor permalink =
+      let maybeAnchor = map toLower <$> (stripSuffix "/" <=< stripPrefix "/") permalink
+      in maybe (fail $ printf "Key 'permalink' malformed '%s'" permalink) return maybeAnchor
+
+    stripSuffix :: String -> String -> Maybe String
+    stripSuffix suf str = reverse <$> stripPrefix (reverse suf) (reverse str)
+
+
+-- Add a variant of 'key' where all headers have been shifted by 1.
+addShiftedBody :: String -> Context a -> Context a
+addShiftedBody key = addDerivedField ("shifted_" <> key) deriveShiftedBody
+  where
+    deriveShiftedBody :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveShiftedBody ctx a i = do
+      body <- getString key ctx a i
+      return $ StringField (shiftHeadersBy body)
+
+    -- Shift all headers by a given value.
+    --
+    -- NOTE: This is the /proper/ implementation of shift headers.
+    --       In practice, we use the fast one, which uses regular
+    --       expressions and only works on Markdown '#' headers.
+    --
+    -- shiftHeadersBy :: Int -> Pandoc -> Pandoc
+    -- shiftHeadersBy n = walk shiftHeader
+    --   where
+    --     shiftHeader :: Block -> Block
+    --     shiftHeader (Header level attr inlines) = Header (level + n) attr inlines
+    --     shiftHeader block = block
+    --
+    shiftHeadersBy :: String -> String
+    shiftHeadersBy body = T.unpack (T.replaceAll re "#$1" (T.pack body))
+      where
+        re = RE.regex [RE.Multiline] "^(#+)"
