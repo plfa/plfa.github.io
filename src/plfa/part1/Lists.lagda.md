@@ -990,7 +990,7 @@ You will need to use extensionality.
 
 #### Exercise `All-∀` (practice)
 
-Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
+Show that `All P xs` is isomorphic to `∀ x → x ∈ xs → P x`.
 
 ```
 -- You code goes here
