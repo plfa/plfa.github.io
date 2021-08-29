@@ -105,7 +105,7 @@ Show that a disjunction of universals implies a universal of disjunctions:
 ```
 postulate
   ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
-    (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
+    (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x) → ∀ (x : A) → B x ⊎ C x
 ```
 Does the converse hold? If so, prove; if not, explain why.
 
@@ -463,21 +463,21 @@ And to establish the following properties:
     to (from b) ≡ b
 
 Using the above, establish that there is an isomorphism between `ℕ` and
-`∃[ b ](Can b)`.
+`∃[ b ] Can b`.
 
 We recommend proving the following lemmas which show that, for a given
 binary number `b`, there is only one proof of `One b` and similarly
 for `Can b`.
 
-    ≡One : ∀{b : Bin} (o o' : One b) → o ≡ o'
+    ≡One : ∀ {b : Bin} (o o′ : One b) → o ≡ o′
 
-    ≡Can : ∀{b : Bin} (cb : Can b) (cb' : Can b) → cb ≡ cb'
+    ≡Can : ∀ {b : Bin} (cb cb′ : Can b) → cb ≡ cb′
 
 Many of the alternatives for proving `to∘from` turn out to be tricky.
 However, the proof can be straightforward if you use the following lemma,
 which is a corollary of `≡Can`.
 
-    proj₁≡→Can≡ : {cb cb′ : ∃[ b ](Can b)} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
+    proj₁≡→Can≡ : {cb cb′ : ∃[ b ] Can b} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
 
 ```
 -- Your code goes here
