@@ -19,7 +19,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Nullary using (¬_)
-open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import plfa.part1.Isomorphism using (_≃_; extensionality)
 ```
@@ -175,6 +175,27 @@ corresponds to the term
     ⟨ M , N ⟩
 
 where `M` is a term of type `A` and `N` is a term of type `B M`.
+
+Note that the record definition gives us the projection functions
+`Σ′.proj₁′` and `Σ′.proj₂′` for free; if we adopt the inductive
+type version, those have to be defined separately.
+
+#### Exercise `proj₁` and `proj₂` (recommended)
+
+Define the projection functions for existentials:
+```
+postulate
+  proj₁ : ∀ {A : Set} {B : A → Set} → (pair : Σ[ x ∈ A ] B x) → A
+  proj₂ : ∀ {A : Set} {B : A → Set} → (pair : Σ[ x ∈ A ] B x) → B (proj₁ pair)
+```
+These definitions will collide with those in the standard library,
+which is why `proj₁` and `proj₂` from `Data.Product` are not imported
+in this chapter; in case you need them to complete some exercises,
+you can use a renaming import.
+
+```
+-- Your code goes here
+```
 
 Products arise as a special case of existentials, where the second
 component does not depend on a variable drawn from the first
@@ -453,6 +474,7 @@ and asks you to define the following functions and predicates:
 
 And to establish the following properties:
 
+    ---------------
     from (to n) ≡ n
 
     ----------
@@ -477,7 +499,7 @@ Many of the alternatives for proving `to∘from` turn out to be tricky.
 However, the proof can be straightforward if you use the following lemma,
 which is a corollary of `≡Can`.
 
-    proj₁≡→Can≡ : {cb cb′ : ∃[ b ] Can b} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
+    proj₁≡→Can≡ : ∀ {cb cb′ : ∃[ b ] Can b} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
 
 ```
 -- Your code goes here
