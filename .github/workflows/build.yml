@@ -10,7 +10,6 @@ jobs:
       matrix:
         os: [macOS-latest]
         ghc: ['8.10.5']
-        agda: ['2.6.1.3']
 
     steps:
 
@@ -30,6 +29,12 @@ jobs:
 
     # Setup & Cache Haskell
 
+    - name: Get Agda Info
+      id: agda-info
+      run: |
+        echo "::set-output name=agda::$(sed -n -e 's/^.*Agda\s*==\(\S*\)\s*/\1/p' plfa.cabal)"
+      shell: bash
+
     - name: Cache Haskell
       uses: actions/cache@v2
       id: cache-haskell
@@ -41,7 +46,7 @@ jobs:
           ~/.local
           ~/.stack
           $GITHUB_WORKSPACE/.stack-work
-        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-agda-${{ steps.agda-info.outputs.agda }}
 
     - name: Setup Haskell
       if: steps.cache-haskell.outputs.cache-hit != 'true'
@@ -55,16 +60,12 @@ jobs:
 
     # Setup & Cache HTMLProofer
 
-    - name: Get Gem Installation Directory
-      id: get-gemdir
-      shell: bash
-
-    - name: Get Ruby Configuration
-      id: get-ruby-config
+    - name: Get Ruby Info
+      id: ruby-info
       run: |
-        echo "::set-output name=ruby-version::$(ruby -e 'puts RUBY_VERSION')"
-        echo "::set-output name=gem-version::$(gem --version)"
-        echo "::set-output name=gem-directory::$(gem env gemdir)"
+        echo "::set-output name=ruby::$(ruby -e 'puts RUBY_VERSION')"
+        echo "::set-output name=gem::$(gem --version)"
+        echo "::set-output name=gemdir::$(gem env gemdir)"
       shell: bash
 
     - name: Setup HTMLProofer
@@ -76,8 +77,8 @@ jobs:
       id: cache-htmlproofer
       with:
         path: |
-          ${{ steps.get-ruby-config.outputs.gem-directory }}
-        key: ${{ matrix.os }}-ruby-${{ steps.get-ruby-config.outputs.ruby-version }}-gem-${{ steps.get-ruby-config.outputs.gem-version }}
+          ${{ steps.ruby-info.outputs.gemdir }}
+        key: ${{ matrix.os }}-ruby-${{ steps.ruby-info.outputs.ruby }}-gem-${{ steps.ruby-info.outputs.gem }}
 
 
     # Build & Test Website
