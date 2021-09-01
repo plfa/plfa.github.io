@@ -45,9 +45,13 @@ init: setup-check-fix-whitespace setup-install-htmlproofer
 # Build PLFA site
 #################################################################################
 
+.PHONY: build-deps
+build-deps:
+	$(STACK) build --only-dependencies
+
 .PHONY: build
-build: standard-library/ChangeLog.md
-	@echo "Building site"
+build: standard-library/ChangeLog.md | build-deps
+	@echo "Building website"
 	$(STACK) build
 	$(STACK) exec site build
 
@@ -83,7 +87,7 @@ test: setup-install-htmlproofer build
 #################################################################################
 
 .PHONY: watch
-watch: standard-library/ChangeLog.md
+watch: standard-library/ChangeLog.md | build-deps
 	@echo "Watching for changes and rebuilding"
 	$(STACK) build
 	$(STACK) exec site watch
@@ -94,7 +98,7 @@ watch: standard-library/ChangeLog.md
 #################################################################################
 
 .PHONY: update-contributors
-update-contributors:
+update-contributors: | build-deps
 	@echo "Updating contributors from GitHub"
 	$(STACK) build
 	$(STACK) exec update-contributors
@@ -105,7 +109,7 @@ update-contributors:
 #################################################################################
 
 .PHONY: clean
-clean: standard-library/ChangeLog.md
+clean: standard-library/ChangeLog.md | build-deps
 	@echo "Cleaning generated files for site"
 	$(STACK) build
 	$(STACK) exec site clean
