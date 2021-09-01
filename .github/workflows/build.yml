@@ -54,7 +54,9 @@ jobs:
       run: sudo gem install html-proofer
 
     - name: Build website
-      run: make build
+      run: |
+        STACK="stack --system-ghc --no-install-ghc" make build
 
     - name: Test website
-      run: make test
+      run: |
+        STACK="stack --system-ghc --no-install-ghc" make test

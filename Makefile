@@ -3,13 +3,16 @@
 # Configuration
 #################################################################################
 
+MAKE  ?= make
+STACK ?= stack
+
 SITE_DIR  := _site
 RAW_DIR   := $(SITE_DIR)/raw
 CACHE_DIR := _cache
 TMP_DIR   := $(CACHE_DIR)/tmp
 
-AGDA      := stack exec agda -- --no-libraries --include-path=standard-library/src
-PANDOC    := stack exec pandoc --
+AGDA      := $(STACK) exec agda -- --no-libraries --include-path=standard-library/src
+PANDOC    := $(STACK) exec pandoc --
 
 
 #################################################################################
@@ -18,15 +21,15 @@ PANDOC    := stack exec pandoc --
 
 .PHONY: all
 all:
-	@make build
-	@make epub-build
-	@make pdf-build
+	@$(MAKE) build
+	@$(MAKE) epub-build
+	@$(MAKE) pdf-build
 
 .PHONY: all-clean
 all-clean:
-	@make clean
-	@make epub-clean
-	@make pdf-clean
+	@$(MAKE) clean
+	@$(MAKE) epub-clean
+	@$(MAKE) pdf-clean
 
 #################################################################################
 # Setup Git Hooks
@@ -45,7 +48,7 @@ init: setup-check-fix-whitespace setup-install-htmlproofer
 .PHONY: build
 build: standard-library/ChangeLog.md
 	@echo "Building site"
-	@stack build && stack exec site build
+	@$(STACK) build && $(STACK) exec site build
 
 standard-library/ChangeLog.md:
 	@echo "Updating Agda standard library"
@@ -81,7 +84,7 @@ test: setup-install-htmlproofer build
 .PHONY: watch
 watch: standard-library/ChangeLog.md
 	@echo "Watching for changes and rebuilding"
-	@stack build && stack exec site watch
+	@$(STACK) build && $(STACK) exec site watch
 
 
 #################################################################################
@@ -91,7 +94,7 @@ watch: standard-library/ChangeLog.md
 .PHONY: update-contributors
 update-contributors:
 	@echo "Updating contributors from GitHub"
-	@stack build && stack exec update-contributors
+	@$(STACK) build && $(STACK) exec update-contributors
 
 
 #################################################################################
@@ -101,7 +104,7 @@ update-contributors:
 .PHONY: clean
 clean: standard-library/ChangeLog.md
 	@echo "Cleaning generated files for site"
-	@stack build && stack exec site clean
+	@$(STACK) build && $(STACK) exec site clean
 
 
 #################################################################################
@@ -120,10 +123,10 @@ list:
 
 .PHONY: publish
 publish: setup-check-rsync
-	@make all
+	@$(MAKE) all
 	@echo "Cleaning intermediate files"
 	rm -rf $(RAW_DIR)
-	@make test
+	@$(MAKE) test
 	@echo "Creating web branch"
 	git fetch --all
 	git checkout -b web --track origin/web
