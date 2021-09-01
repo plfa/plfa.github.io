@@ -34,8 +34,11 @@ jobs:
       id: cache
       with:
         path: |
-          ~/.stack
+          ~/.cabal
+          ~/.ghc
+          ~/.ghcup
           ~/.local
+          ~/.stack
           ${{ steps.get-gemdir.outputs.gemdir }}
           $GITHUB_WORKSPACE/.stack-work
           $GITHUB_WORKSPACE/_build
