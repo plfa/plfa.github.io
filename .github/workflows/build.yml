@@ -47,6 +47,8 @@ jobs:
       uses: haskell/actions/setup@v1
       with:
         ghc-version: ${{ matrix.ghc }}
+        cabal-version: 'latest'
+        stack-version: 'latest'
         enable-stack: true
 
 
