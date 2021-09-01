@@ -82,14 +82,14 @@ jobs:
 
     - name: Cache Site Builder
       uses: actions/cache@v2
-      id: cache-builder
+      id: cache-site-builder
       with:
         path: |
           $GITHUB_WORKSPACE/.stack-work
         key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-agda-${{ matrix.agda }}
 
     - name: Build Site Builder
-      if: steps.cache-builder.outputs.cache-hit != 'true'
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
       run: make build-deps
       shell: bash
 
