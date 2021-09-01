@@ -5,10 +5,38 @@ name: Build
 jobs:
   build:
     runs-on: macOS-latest
+
     strategy:
       matrix:
         ghc: ['8.10.5']
+
     steps:
+
+    - name: Get Gem Installation Directory
+      id: get-gemdir
+      run: |
+        echo "::set-output name=gemdir::$(gem env gemdir)"
+      shell: bash
+
+    - name: Get Agda version
+      id: get-agda-version
+      run: |
+        echo "::set-output name=agda-version::$(cat plfa.cabal | sed -n -e 's/^.*Agda\s*==\(\S*\)\s*/\1/p')"
+      shell: bash
+
+    - uses: actions/cache@v2
+      name: Cache files
+      id: cache
+      with:
+        path: |
+          ~/.stack
+          ~/.local
+          ${{ steps.get-gemdir.outputs.gemdir }}
+          $GITHUB_WORKSPACE/.stack-work
+          $GITHUB_WORKSPACE/_build
+          $GITHUB_WORKSPACE/_cache
+          $GITHUB_WORKSPACE/_site
+        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ steps.get-agda-version.outputs.agda-version }}
 
     - name: Setup Haskell
       uses: haskell/actions/setup@v1
@@ -17,6 +45,9 @@ jobs:
         enable-stack: true
         stack-version: 'latest'
 
+    - name: Setup HTMLProofer
+      run: sudo gem install html-proofer
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -24,9 +55,6 @@ jobs:
 
     - name: Build website
       run: make build
-
-    - name: Install HTMLProofer
-      run: sudo gem install html-proofer
 
     - name: Test website
       run: make test
