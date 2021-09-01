@@ -6,6 +6,13 @@ jobs:
   build:
     runs-on: macOS-latest
 
+    env:
+      # Use the GHC version installed by haskell/actions/setup
+      #
+      # NOTE: Makefile respects the STACK environment variable
+      #
+      STACK: stack --system-ghc --no-install-ghc
+
     strategy:
       matrix:
         ghc: ['8.10.5']
@@ -19,14 +26,12 @@ jobs:
 
     - name: Get Gem Installation Directory
       id: get-gemdir
-      run: |
-        echo "::set-output name=gemdir::$(gem env gemdir)"
+      run: echo "::set-output name=gemdir::$(gem env gemdir)"
       shell: bash
 
     - name: Get Agda version
       id: get-agda-version
-      run: |
-        echo "::set-output name=agda-version::$(cat plfa.cabal | sed -n -e 's/^.*Agda\s*==\s*\(\S*\)\s*/\1/p')"
+      run: echo "::set-output name=agda-version::$(cat plfa.cabal | sed -n -e 's/^.*Agda\s*==\s*\(\S*\)\s*/\1/p')"
       shell: bash
 
     - uses: actions/cache@v2
@@ -41,12 +46,10 @@ jobs:
           ~/.stack
           ${{ steps.get-gemdir.outputs.gemdir }}
           $GITHUB_WORKSPACE/.stack-work
-          $GITHUB_WORKSPACE/_build
-          $GITHUB_WORKSPACE/_cache
-          $GITHUB_WORKSPACE/_site
         key: ${{ runner.os }}-${{ matrix.ghc }}-${{ steps.get-agda-version.outputs.agda-version }}
 
     - name: Setup Haskell
+      if: steps.cache.outputs.cache-hit != 'true'
       uses: haskell/actions/setup@v1
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -54,12 +57,11 @@ jobs:
         stack-version: 'latest'
 
     - name: Setup HTMLProofer
+      if: steps.cache.outputs.cache-hit != 'true'
       run: sudo gem install html-proofer
 
     - name: Build website
-      run: |
-        STACK="stack --system-ghc --no-install-ghc" make build
+      run: make build
 
     - name: Test website
-      run: |
-        STACK="stack --system-ghc --no-install-ghc" make test
+      run: make test

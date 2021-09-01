@@ -21,15 +21,15 @@ PANDOC    := $(STACK) exec pandoc --
 
 .PHONY: all
 all:
-	@$(MAKE) build
-	@$(MAKE) epub-build
-	@$(MAKE) pdf-build
+	$(MAKE) build
+	$(MAKE) epub-build
+	$(MAKE) pdf-build
 
 .PHONY: all-clean
 all-clean:
-	@$(MAKE) clean
-	@$(MAKE) epub-clean
-	@$(MAKE) pdf-clean
+	$(MAKE) clean
+	$(MAKE) epub-clean
+	$(MAKE) pdf-clean
 
 #################################################################################
 # Setup Git Hooks
@@ -38,7 +38,7 @@ all-clean:
 .PHONY: init
 init: setup-check-fix-whitespace setup-install-htmlproofer
 	@echo "Setting up Git Hooks"
-	@git config core.hooksPath .githooks
+	git config core.hooksPath .githooks
 
 
 #################################################################################
@@ -48,12 +48,13 @@ init: setup-check-fix-whitespace setup-install-htmlproofer
 .PHONY: build
 build: standard-library/ChangeLog.md
 	@echo "Building site"
-	@$(STACK) build && $(STACK) exec site build
+	$(STACK) build
+	$(STACK) exec site build
 
 standard-library/ChangeLog.md:
 	@echo "Updating Agda standard library"
-	@git submodule init
-	@git submodule update --recursive
+	git submodule init
+	git submodule update --recursive
 
 
 #################################################################################
@@ -63,7 +64,7 @@ standard-library/ChangeLog.md:
 .PHONY: test
 test: setup-install-htmlproofer build
 	@echo "Testing generated HTML using HTMLProofer"
-	@cd $(SITE_DIR) && htmlproofer \
+	cd $(SITE_DIR) && htmlproofer  \
 		--check-html                 \
 		--disable-external           \
 		--report-invalid-tags        \
@@ -84,7 +85,8 @@ test: setup-install-htmlproofer build
 .PHONY: watch
 watch: standard-library/ChangeLog.md
 	@echo "Watching for changes and rebuilding"
-	@$(STACK) build && $(STACK) exec site watch
+	$(STACK) build
+	$(STACK) exec site watch
 
 
 #################################################################################
@@ -94,7 +96,8 @@ watch: standard-library/ChangeLog.md
 .PHONY: update-contributors
 update-contributors:
 	@echo "Updating contributors from GitHub"
-	@$(STACK) build && $(STACK) exec update-contributors
+	$(STACK) build
+	$(STACK) exec update-contributors
 
 
 #################################################################################
@@ -104,7 +107,8 @@ update-contributors:
 .PHONY: clean
 clean: standard-library/ChangeLog.md
 	@echo "Cleaning generated files for site"
-	@$(STACK) build && $(STACK) exec site clean
+	$(STACK) build
+	$(STACK) exec site clean
 
 
 #################################################################################
@@ -123,10 +127,10 @@ list:
 
 .PHONY: publish
 publish: setup-check-rsync
-	@$(MAKE) all
+	$(MAKE) all
 	@echo "Cleaning intermediate files"
 	rm -rf $(RAW_DIR)
-	@$(MAKE) test
+	$(MAKE) test
 	@echo "Creating web branch"
 	git fetch --all
 	git checkout -b web --track origin/web
