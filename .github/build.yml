@@ -1,0 +1,32 @@
+on: [push, pull_request]
+
+name: Build
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    strategy:
+      matrix:
+        ghc: ['8.10.5']
+    steps:
+
+    - name: Setup Haskell
+      uses: haskell/actions/setup@v1
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        enable-stack: true
+        stack-version: 'latest'
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Build website
+      run: make build
+
+    - name: Install HTMLProofer
+      run: sudo gem install html-proofer
+
+    - name: Test website
+      run: make test
