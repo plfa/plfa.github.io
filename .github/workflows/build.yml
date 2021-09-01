@@ -31,18 +31,6 @@ jobs:
 
     # Setup & Cache Haskell
 
-    - name: Cache Haskell
-      uses: actions/cache@v2
-      id: cache-haskell
-      with:
-        path: |
-          ~/.cabal
-          ~/.ghc
-          ~/.ghcup
-          ~/.local
-          ~/.stack
-        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
-
     - name: Setup Haskell
       if: steps.cache-haskell.outputs.cache-hit != 'true'
       uses: haskell/actions/setup@v1
