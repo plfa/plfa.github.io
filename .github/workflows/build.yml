@@ -4,10 +4,11 @@ name: Build
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
+        os: [macOS-latest]
         ghc: ['8.10.5']
         agda: ['2.6.1.3']
 
@@ -40,28 +41,30 @@ jobs:
           ~/.local
           ~/.stack
           $GITHUB_WORKSPACE/.stack-work
-        key: ${{ runner.os }}-ghc-${{ matrix.ghc }}
+        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
 
     - name: Setup Haskell
       if: steps.cache-haskell.outputs.cache-hit != 'true'
       uses: haskell/actions/setup@v1
       with:
+        enable-stack: true
         ghc-version: ${{ matrix.ghc }}
         cabal-version: 'latest'
         stack-version: 'latest'
-        enable-stack: true
 
 
     # Setup & Cache HTMLProofer
 
     - name: Get Gem Installation Directory
       id: get-gemdir
-      run: echo "::set-output name=gemdir::$(gem env gemdir)"
       shell: bash
 
-    - name: Get Ruby Version
-      id: get-ruby-version
-      run: echo "::set-output name=ruby-version::$(ruby -e 'puts RUBY_VERSION')"
+    - name: Get Ruby Configuration
+      id: get-ruby-config
+      run: |
+        echo "::set-output name=ruby-version::$(ruby -e 'puts RUBY_VERSION')"
+        echo "::set-output name=gem-version::$(gem --version)"
+        echo "::set-output name=gem-directory::$(gem env gemdir)"
       shell: bash
 
     - name: Setup HTMLProofer
@@ -73,7 +76,8 @@ jobs:
       id: cache-htmlproofer
       with:
         path: |
-          ${{ steps.get-gemdir.outputs.gemdir }}
+          ${{ steps.get-ruby-config.outputs.gem-directory }}
+        key: ${{ matrix.os }}-ruby-${{ steps.get-ruby-config.outputs.ruby-version }}-gem-${{ steps.get-ruby-config.outputs.gem-version }}
 
 
     # Build & Test Website
