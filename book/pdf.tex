@@ -5,7 +5,7 @@
 \usepackage{fontspec}
 \setmainfont{DejaVu Sans}
 \setsansfont{DejaVu Sans}
-\setmonofont{[DejaVu-mononoki-Symbola-Droid.ttf]}
+\setmonofont{DejaVu-mononoki-Symbola-Droid.ttf}
 \usepackage{soul}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,breakable}
@@ -36,6 +36,7 @@
 % The following code does not work well for long text as the
 % text will exceed the page boundary.
 \definecolor{background-color}{HTML}{EEEEFF}
+\definecolor{BACKGROUND-COLOR}{HTML}{EEEEFF}
 \let\oldtexttt\texttt%
 \renewcommand{\texttt}[1]{\colorbox{background-color}{\oldtexttt{#1}}}
 
