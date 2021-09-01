@@ -4,13 +4,18 @@ name: Build
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
 
     strategy:
       matrix:
         ghc: ['8.10.5']
 
     steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true
 
     - name: Get Gem Installation Directory
       id: get-gemdir
@@ -47,11 +52,6 @@ jobs:
 
     - name: Setup HTMLProofer
       run: sudo gem install html-proofer
-
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: true
 
     - name: Build website
       run: make build
