@@ -6,13 +6,6 @@ jobs:
   build:
     runs-on: macOS-latest
 
-    env:
-      # Use the GHC version installed by haskell/actions/setup
-      #
-      # NOTE: Makefile respects the STACK environment variable
-      #
-      STACK: stack --system-ghc --no-install-ghc
-
     strategy:
       matrix:
         ghc: ['8.10.5']
@@ -20,19 +13,25 @@ jobs:
 
     steps:
 
+
+    # Checkout
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
         submodules: true
 
-    - name: Get Gem Installation Directory
-      id: get-gemdir
-      run: echo "::set-output name=gemdir::$(gem env gemdir)"
-      shell: bash
+    - name: Update stack.yaml
+      run: |
+        stack config set system-ghc true
+        stack config set install-ghc false
 
-    - uses: actions/cache@v2
-      name: Cache files
-      id: cache
+
+    # Setup & Cache Haskell
+
+    - name: Cache Haskell
+      uses: actions/cache@v2
+      id: cache-haskell
       with:
         path: |
           ~/.cabal
@@ -40,24 +39,45 @@ jobs:
           ~/.ghcup
           ~/.local
           ~/.stack
-          ${{ steps.get-gemdir.outputs.gemdir }}
           $GITHUB_WORKSPACE/.stack-work
-        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ matrix.agda }}
+        key: ${{ runner.os }}-ghc-${{ matrix.ghc }}
 
     - name: Setup Haskell
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache-haskell.outputs.cache-hit != 'true'
       uses: haskell/actions/setup@v1
       with:
         ghc-version: ${{ matrix.ghc }}
         enable-stack: true
-        stack-version: 'latest'
+
+
+    # Setup & Cache HTMLProofer
+
+    - name: Get Gem Installation Directory
+      id: get-gemdir
+      run: echo "::set-output name=gemdir::$(gem env gemdir)"
+      shell: bash
+
+    - name: Get Ruby Version
+      id: get-ruby-version
+      run: echo "::set-output name=ruby-version::$(ruby -e 'puts RUBY_VERSION')"
+      shell: bash
 
     - name: Setup HTMLProofer
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache-htmlproofer.outputs.cache-hit != 'true'
       run: sudo gem install html-proofer
 
-    - name: Build website
+    - name: Cache HTMLProofer
+      uses: actions/cache@v2
+      id: cache-htmlproofer
+      with:
+        path: |
+          ${{ steps.get-gemdir.outputs.gemdir }}
+
+
+    # Build & Test Website
+
+    - name: Build Website
       run: make build
 
-    - name: Test website
+    - name: Test Website
       run: make test
