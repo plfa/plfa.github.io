@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         ghc: ['8.10.5']
+        agda: ['2.6.1.3']
 
     steps:
 
@@ -27,11 +28,6 @@ jobs:
     - name: Get Gem Installation Directory
       id: get-gemdir
       run: echo "::set-output name=gemdir::$(gem env gemdir)"
-      shell: bash
-
-    - name: Get Agda version
-      id: get-agda-version
-      run: echo "::set-output name=agda-version::$(cat plfa.cabal | sed -n -e 's/^.*Agda\s*==\s*\(\S*\)\s*/\1/p')"
       shell: bash
 
     - uses: actions/cache@v2
@@ -46,7 +42,7 @@ jobs:
           ~/.stack
           ${{ steps.get-gemdir.outputs.gemdir }}
           $GITHUB_WORKSPACE/.stack-work
-        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ steps.get-agda-version.outputs.agda-version }}
+        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ matrix.agda }}
 
     - name: Setup Haskell
       if: steps.cache.outputs.cache-hit != 'true'
