@@ -4,7 +4,7 @@ name: Build
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -21,7 +21,7 @@ jobs:
     - name: Get Agda version
       id: get-agda-version
       run: |
-        echo "::set-output name=agda-version::$(cat plfa.cabal | sed -n -e 's/^.*Agda\s*==\(\S*\)\s*/\1/p')"
+        echo "::set-output name=agda-version::$(cat plfa.cabal | sed -n -e 's/^.*Agda\s*==\s*\(\S*\)\s*/\1/p')"
       shell: bash
 
     - uses: actions/cache@v2
