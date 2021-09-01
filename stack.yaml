@@ -1,9 +1,17 @@
+resolver: lts-17.2
+
+compiler: ghc-8.10.5
+compiler-check: match-exact
+
+allow-newer: true
+
 flags:
   pandoc:
     embed_data_files: true
+
 packages:
 - .
-allow-newer: true
+
 extra-deps:
 - Agda-2.6.1.3@sha256:87769ebab4259b184c5b11d5beaff39b88bcc37902dfb3341f4fc46c5c7d3134,32945
 - hakyll-4.13.4.1
@@ -18,7 +26,3 @@ extra-deps:
 - binary-instances-1.0.0.1@sha256:e234be994da675479a3661f050d4a1d53565c9ed7786d9a68b7a29ba8b54b5a7,2659
 - text-regex-replace-0.1.1.3@sha256:e7f612df671c93ced54a3d26528db37852069884e5cb67d5afbb49d3defb5eb9,1627
 - text-icu-0.7.1.0@sha256:44e8b5966fcf61356a7356f3d2e8a5c5cc538170a15e94ff7b79b9f48ce9fd2f,3497
-compiler-check: match-exact
-install-ghc: false
-compiler: ghc-8.10.5
-resolver: lts-17.2
