@@ -20,38 +20,108 @@
 // See: https://madmalik.github.io/mononoki/
 @font-face {
     font-family: 'mononoki';
-    src: url('../fonts/mononoki.woff2') format('woff2'),
-         url('../fonts/mononoki.woff')  format('woff');
+    src: url('../fonts/mononoki.ttf')  format('ttf');
     font-weight: normal;
     font-style: normal;
+}
+@font-face {
+    font-family: 'mononoki';
+    src: url('../fonts/mononoki-Bold.ttf')  format('ttf');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'mononoki';
+    src: url('../fonts/mononoki-Italic.ttf')  format('ttf');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'mononoki';
+    src: url('../fonts/mononoki-BoldItalic.ttf')  format('ttf');
+    font-weight: bold;
+    font-style: italic;
 }
 
 // DejaVu Sans Mono
 // See: https://dejavu-fonts.github.io/
 @font-face {
     font-family: 'DejaVu Sans Mono';
-    src: url('../fonts/DejaVuSansMono.woff') format('woff');
+    src: url('../fonts/DejaVuSansMono.ttf') format('ttf');
     font-weight: normal;
     font-style: normal;
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../fonts/DejaVuSansMono-Bold.ttf') format('ttf');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../fonts/DejaVuSansMono-Oblique.ttf') format('ttf');
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../fonts/DejaVuSansMono-BoldOblique.ttf') format('ttf');
+    font-weight: bold;
+    font-style: oblique;
 }
 
 // FreeMono
 // See: https://www.gnu.org/software/freefont/
 @font-face {
     font-family: 'FreeMono';
-    src: url('../fonts/FreeMono.woff') format('woff');
-    font-stretch: normal;
+    src: url('../fonts/FreeMono.ttf') format('ttf');
+    font-weight: normal;
     font-style: normal;
+}
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../fonts/FreeMono-Bold.ttf') format('ttf');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../fonts/FreeMono-Oblique.ttf') format('ttf');
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../fonts/FreeMono-BoldOblique.ttf') format('ttf');
+    font-weight: bold;
+    font-style: oblique;
 }
 
 // Source Code Pro
 // See: https://github.com/adobe-fonts/source-code-pro
 @font-face {
     font-family: 'Source Code Pro';
-    src: url('../fonts/SourceCodePro.woff2') format('woff2'),
-         url('../fonts/SourceCodePro.woff') format('woff');
-    font-stretch: normal;
+    src: url('../fonts/SourceCodePro.ttf') format('ttf');
+    font-weight: normal;
     font-style: normal;
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../fonts/SourceCodePro-Bold.ttf') format('ttf');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../fonts/SourceCodePro-Italic.ttf') format('ttf');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../fonts/SourceCodePro-BoldItalic.ttf') format('ttf');
+    font-weight: bold;
+    font-style: italic;
 }
 
 body {
