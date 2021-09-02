@@ -20,6 +20,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        ref: dev
+        fetch-depth: 1
         submodules: true
 
     - name: Update stack.yaml
@@ -30,6 +32,15 @@ jobs:
 
 
     # Setup & Cache Haskell
+
+    - name: Cache Haskell
+      uses: actions/cache@v2
+      id: cache-haskell
+      with:
+        path: |
+          ~/.ghcup
+        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+
 
     - name: Setup Haskell
       if: steps.cache-haskell.outputs.cache-hit != 'true'
@@ -75,17 +86,22 @@ jobs:
         key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-agda-${{ matrix.agda }}
 
     - name: Build Agda
-      if: steps.cache-stack-work.outputs.cache-hit != 'true'
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
       run: stack build Agda-${{ matrix.agda }}
       shell: bash
 
     - name: Build Pandoc
-      if: steps.cache-stack-work.outputs.cache-hit != 'true'
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
       run: stack build pandoc-2.10.1
       shell: bash
 
+    - name: Build other dependencies
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
+      run: stack build --only-dependencies
+      shell: bash
+
     - name: Build Site Builder
-      if: steps.cache-stack-work.outputs.cache-hit != 'true'
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
       run: stack build
       shell: bash
 
