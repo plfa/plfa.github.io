@@ -1,10 +1,57 @@
 /* This is Pandoc's default ebook CSS, modified slightly. */
 /* https://github.com/jgm/pandoc/blob/master/data/epub.css */
+
+// Frankenfont
+// A custom font made by combining glyphs from mononoki, DejaVu Sans Mono,
+// Symbola and Droid, and adjusting the width where necessary to get a
+// consistent fixed-width font.
+//
+// NOTE: The font has some rendering issues on Windows (#591)
+//       and is currently disabled.
+//
+// @font-face{
+//     font-family: 'Frankenfont';
+//     src: url('../fonts/Frankenfont.woff') format('woff');
+//     font-weight: normal;
+//     font-style: normal;
+// }
+
+// mononoki
+// See: https://madmalik.github.io/mononoki/
 @font-face {
-    font-family: 'DejaVu-mononoki-Symbola-Droid';
+    font-family: 'mononoki';
+    src: url('../fonts/mononoki.woff2') format('woff2'),
+         url('../fonts/mononoki.woff')  format('woff');
     font-weight: normal;
     font-style: normal;
-    src: url('../fonts/DejaVu-mononoki-Symbola-Droid.woff');
+}
+
+// DejaVu Sans Mono
+// See: https://dejavu-fonts.github.io/
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../fonts/DejaVuSansMono.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// FreeMono
+// See: https://www.gnu.org/software/freefont/
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../fonts/FreeMono.woff') format('woff');
+    font-stretch: normal;
+    font-style: normal;
+}
+
+// Source Code Pro
+// See: https://github.com/adobe-fonts/source-code-pro
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../fonts/SourceCodePro.woff2') format('woff2'),
+         url('../fonts/SourceCodePro.woff') format('woff');
+    font-stretch: normal;
+    font-style: normal;
 }
 
 body {
@@ -14,7 +61,7 @@ body {
 }
 
 code {
-    font-family: 'DejaVu-mononoki-Symbola-Droid', monospace;
+    font-family: 'mononoki', 'DejaVu Sans Mono', 'FreeMono', 'Source Code Pro', monospace;
 }
 
 h1,
