@@ -2,25 +2,47 @@
 
 \usepackage{hyperref}
 \usepackage[links]{agda}
+
+% Use DejaVu and Frankenfont
 \usepackage{fontspec}
-\setmainfont{DejaVu Sans}
-\setsansfont{DejaVu Sans}
-\setmonofont{[DejaVu-mononoki-Symbola-Droid.ttf]}
+\setmainfont[
+  Extension      = .ttf,
+  Path           = fonts/,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic
+  ]{DejaVuSerif}
+\setsansfont[
+  Extension      = .ttf,
+  Path           = fonts/,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Oblique,
+  BoldItalicFont = *-BoldOblique
+  ]{DejaVuSans}
+\setmonofont[
+  Extension      = .ttf,
+  UprightFont    = *-Regular,
+  Path           = fonts/
+  ]{Frankenfont}
+
+% Use soul for underlines
 \usepackage{soul}
+
+% Setup colour boxes for code blocks
+\usepackage{xcolor}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,breakable}
 \usepackage{fancyvrb}
-\usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{setspace}
-\usepackage{geometry}
-\geometry{
+\usepackage[
   a4paper,
-  total={170mm,257mm},
-  left=20mm,
-  top=20mm,
-}
-
+  total = {170mm,257mm},
+  left  = 20mm,
+  top   = 20mm,
+  ]{geometry}
 
 % Wrap texttt lines
 \sloppy
@@ -28,7 +50,7 @@
 % Disable section numbering
 \setcounter{secnumdepth}{0}
 
-% Set the global text color:
+% Set the global text color
 \definecolor{textcolor}{HTML}{111111}
 \color{textcolor}
 

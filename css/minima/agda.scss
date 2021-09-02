@@ -5,13 +5,13 @@
 //
 // NOTE: The font has some rendering issues on Windows (#591)
 //       and is currently disabled.
-//
-// @font-face{
-//     font-family: 'Frankenfont';
-//     src: url('../webfonts/Frankenfont.woff') format('woff');
-//     font-weight: normal;
-//     font-style: normal;
-// }
+@font-face{
+    font-family: 'Frankenfont';
+    src: url('../webfonts/Frankenfont.woff2') format('woff2'),
+         url('../webfonts/Frankenfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 // mononoki
 // See: https://madmalik.github.io/mononoki/
@@ -130,7 +130,7 @@
 }
 
 @mixin code-font {
-    font-family: 'mononoki', 'DejaVu Sans Mono', 'FreeMono', 'Source Code Pro', monospace;
+    font-family: 'Frankenfont', 'FreeMono', 'DejaVu Sans Mono', 'mononoki', 'Source Code Pro', monospace;
     font-size: .85em;
 }
 @mixin code-container {

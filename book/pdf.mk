@@ -8,7 +8,8 @@ PDF_LUA_DIR      := $(PDF_DIR)/lua
 MD_DIR           := src
 LAGDA_TEX_DIR    := $(TMP_DIR)/lagda_tex
 TEX_DIR          := $(TMP_DIR)/tex
-FRANKENFONT      := $(PDF_DIR)/DejaVu-mononoki-Symbola-Droid.ttf
+FONTS_DIR        := $(PDF_DIR)/fonts
+FONTS            := $(wildcard $(FONTS_DIR)/*.ttf)
 
 
 #################################################################################
@@ -44,7 +45,7 @@ endef
 #################################################################################
 
 PDF_LUA_SCRIPTS  := $(wildcard $(PDF_LUA_DIR)/*.lua)
-PDF_STATIC_FILES := $(PDF_DIR)/pdf.tex $(FRANKENFONT)
+PDF_STATIC_FILES := $(PDF_DIR)/pdf.tex $(FONTS)
 MD_FILES         := README.md $(wildcard $(MD_DIR)/plfa/**/*.md)
 LAGDA_MD_FILES   := $(filter %.lagda.md,$(MD_FILES))
 LAGDA_TEX_FILES  := $(call LAGDA_TEX_PATH,$(LAGDA_MD_FILES))

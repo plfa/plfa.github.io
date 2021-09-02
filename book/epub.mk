@@ -8,8 +8,15 @@ EPUB_LUA_DIR      := $(EPUB_DIR)/lua
 EPUB_LUA_SCRIPTS  := $(wildcard $(EPUB_LUA_DIR)/*.lua)
 MD_DIR            := src
 MD_FILES          := README.md $(wildcard $(MD_DIR)/plfa/**/*.md)
-FRANKENFONT       := public/webfonts/DejaVu-mononoki-Symbola-Droid.woff
+WEBFONTS_DIR      := public/webfonts
+WEBFONTS          := $(wildcard $(WEBFONTS_DIR)/*.woff $(WEBFONTS_DIR)/*.woff2)
 
+EPUBCHECK         ?= epubcheck
+EBOOK_CONVERT     ?= ebook-convert
+
+EBOOK_OUTPUT_PROFILES := cybookg3 cybook_opus default generic_eink generic_eink_hd generic_eink_large hanlinv3 hanlinv5 illiad ipad ipad3 irexdr1000 irexdr800 jetbook5 kindle kindle_dx kindle_fire kindle_oasis kindle_pw kindle_pw3 kindle_voyage kobo msreader mobipocket nook nook_color nook_hd_plus pocketbook_inkpad3 pocketbook_lux pocketbook_hd pocketbook_900 pocketbook_pro_912 galaxy sony sony300 sony900 sony-landscape sonyt3 tablet
+
+DATE := $(shell date --utc --iso-8601)
 
 #################################################################################
 # Compile PLFA to an EPUB using Pandoc
@@ -19,25 +26,58 @@ FRANKENFONT       := public/webfonts/DejaVu-mononoki-Symbola-Droid.woff
 epub: epub-build
 epub-build: $(SITE_DIR)/plfa.epub
 
-$(SITE_DIR)/plfa.epub: \
-		$(RAW_DIR)/epub.md $(EPUB_DIR)/epub.css $(RAW_DIR)/epub.xml $(FRANKENFONT) \
+$(SITE_DIR)/plfa.html: \
+		$(RAW_DIR)/epub.md $(EPUB_DIR)/epub.css $(RAW_DIR)/epub.xml \
 		$(MD_FILES) $(EPUB_LUA_SCRIPTS) | setup-install-pandoc
-	@echo "Building EPUB"
-	@$(PANDOC) \
+	@echo "Building self-contained HTML"
+	$(PANDOC) \
+		--self-contained \
 		--strip-comments \
-		--css=$(EPUB_DIR)/epub.css \
-		--epub-embed-font=$(FRANKENFONT) \
-    --epub-metadata=$(RAW_DIR)/epub.xml \
+		--top-level-division=chapter \
 		--indented-code-class=default \
 		--lua-filter=$(EPUB_LUA_DIR)/set-default-code-class.lua -M default-code-class=agda \
 		--lua-filter=$(EPUB_LUA_DIR)/remove-badges.lua -M badge-url=https://img.shields.io/badge/ \
 		--lua-filter=$(EPUB_LUA_DIR)/epub-clean-html.lua \
 		--lua-filter=$(EPUB_LUA_DIR)/single-file-links.lua \
 		--lua-filter=$(EPUB_LUA_DIR)/single-file-identifiers.lua \
-		--standalone \
-		--toc --toc-depth=2 \
-		--epub-chapter-level=2 \
 		$< -o $@
+
+# Choose the correct EPUB output filename
+define EPUB_PATH
+$(SITE_DIR)/plfa$(if $(filter default,$(1)),,.$(1)).epub
+endef
+
+# Choose the correct reset.css file
+define EPUB_RESET_PATH
+$(EPUB_DIR)/reset$(if $(findstring kindle,$(1)),.kindle,.epub2).css
+endef
+
+define MK_EPUB_RULE
+dst := $(1)
+reset_css := $(2)
+ebook_output_profile := $(3)
+$(dst): $(SITE_DIR)/plfa.html $$(reset_css) $(EPUB_DIR)/epub.css $(WEBFONTS)
+	@echo "Building $$(dst)"
+	$(EBOOK_CONVERT) $$< $$@																	\
+		--title="Programming Language Foundations in Agda"			\
+		--authors="Philip Wadler & Wen Kokke & Jeremy G. Siek"	\
+		--language="en_US"																			\
+		--pubdate="$(DATE)"																			\
+		--output-profile="$$(ebook_output_profile)"							\
+		--smarten-punctuation																		\
+		--embed-all-fonts																				\
+		--subset-embedded-fonts																	\
+		--epub-version=2																				\
+		--extra-css="$$(reset_css)"															\
+		--extra-css="$(EPUB_DIR)/epub.css"
+endef
+
+$(foreach ebook_output_profile,\
+	$(EBOOK_OUTPUT_PROFILES),\
+	$(eval $(call MK_EPUB_RULE,\
+		$(call EPUB_PATH,$(ebook_output_profile)),\
+		$(call EPUB_RESET_PATH,$(ebook_output_profile)),\
+		$(ebook_output_profile))))
 
 
 #################################################################################
@@ -47,7 +87,7 @@ $(SITE_DIR)/plfa.epub: \
 .PHONY: epub-test
 epub-test: $(SITE_DIR)/plfa.epub | setup-check-epubcheck
 	@echo "Testing EPUB with EPUBCheck"
-	@epubcheck $(SITE_DIR)/plfa.epub
+	@$(EPUBCHECK) $(SITE_DIR)/plfa.epub
 
 
 #################################################################################
@@ -74,7 +114,14 @@ epub-clean:
 
 .PHONY: setup-check-epubcheck
 setup-check-epubcheck:
-ifeq (,$(wildcard $(shell which epubcheck)))
+ifeq (,$(wildcard $(shell which $(EPUBCHECK))))
 	@echo "The command you called requires EPUBCheck"
 	@echo "See: https://github.com/w3c/epubcheck"
+endif
+
+.PHONY: setup-check-calibre
+setup-check-calibre:
+ifeq (,$(wildcard $(shell which $(EBOOK_CONVERT))))
+	@echo "The command you called requires Calibre"
+	@echo "See: https://calibre-ebook.com/"
 endif
