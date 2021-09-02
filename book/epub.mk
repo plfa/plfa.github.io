@@ -8,15 +8,18 @@ EPUB_LUA_DIR      := $(EPUB_DIR)/lua
 EPUB_LUA_SCRIPTS  := $(wildcard $(EPUB_LUA_DIR)/*.lua)
 MD_DIR            := src
 MD_FILES          := README.md $(wildcard $(MD_DIR)/plfa/**/*.md)
+HTML_DIR          := $(TMP_DIR)/html
 WEBFONTS_DIR      := public/webfonts
 WEBFONTS          := $(wildcard $(WEBFONTS_DIR)/*.woff $(WEBFONTS_DIR)/*.woff2)
 
 EPUBCHECK         ?= epubcheck
 EBOOK_CONVERT     ?= ebook-convert
-
 EBOOK_OUTPUT_PROFILES := cybookg3 cybook_opus default generic_eink generic_eink_hd generic_eink_large hanlinv3 hanlinv5 illiad ipad ipad3 irexdr1000 irexdr800 jetbook5 kindle kindle_dx kindle_fire kindle_oasis kindle_pw kindle_pw3 kindle_voyage kobo msreader mobipocket nook nook_color nook_hd_plus pocketbook_inkpad3 pocketbook_lux pocketbook_hd pocketbook_900 pocketbook_pro_912 galaxy sony sony300 sony900 sony-landscape sonyt3 tablet
 
-DATE := $(shell date --utc --iso-8601)
+EPUB_FILES        := $(foreach ebook_output_profiles,\
+												$(EBOOK_OUTPUT_PROFILES),\
+												$(call EPUB_PATH,$(ebook_output_profile)))
+DATE              := $(shell date +"%B %d, %Y")
 
 #################################################################################
 # Compile PLFA to an EPUB using Pandoc
@@ -26,13 +29,16 @@ DATE := $(shell date --utc --iso-8601)
 epub: epub-build
 epub-build: $(SITE_DIR)/plfa.epub
 
-$(SITE_DIR)/plfa.html: \
+$(HTML_DIR)/plfa.html: \
 		$(RAW_DIR)/epub.md $(EPUB_DIR)/epub.css $(RAW_DIR)/epub.xml \
 		$(MD_FILES) $(EPUB_LUA_SCRIPTS) | setup-install-pandoc
 	@echo "Building self-contained HTML"
+	@mkdir -p '$(@D)'
 	$(PANDOC) \
 		--self-contained \
 		--strip-comments \
+		--toc --toc-depth=2 \
+		--css=$(EPUB_DIR)/epub.css \
 		--top-level-division=chapter \
 		--indented-code-class=default \
 		--lua-filter=$(EPUB_LUA_DIR)/set-default-code-class.lua -M default-code-class=agda \
@@ -41,6 +47,10 @@ $(SITE_DIR)/plfa.html: \
 		--lua-filter=$(EPUB_LUA_DIR)/single-file-links.lua \
 		--lua-filter=$(EPUB_LUA_DIR)/single-file-identifiers.lua \
 		$< -o $@
+
+$(RAW_DIR)/epub.md: $(EPUB_DIR)/epub.md
+	make build
+
 
 # Choose the correct EPUB output filename
 define EPUB_PATH
@@ -56,7 +66,7 @@ define MK_EPUB_RULE
 dst := $(1)
 reset_css := $(2)
 ebook_output_profile := $(3)
-$(dst): $(SITE_DIR)/plfa.html $$(reset_css) $(EPUB_DIR)/epub.css $(WEBFONTS)
+$(dst): $(HTML_DIR)/plfa.html $$(reset_css) $(EPUB_DIR)/epub.css $(WEBFONTS)
 	@echo "Building $$(dst)"
 	$(EBOOK_CONVERT) $$< $$@																	\
 		--title="Programming Language Foundations in Agda"			\
@@ -64,12 +74,7 @@ $(dst): $(SITE_DIR)/plfa.html $$(reset_css) $(EPUB_DIR)/epub.css $(WEBFONTS)
 		--language="en_US"																			\
 		--pubdate="$(DATE)"																			\
 		--output-profile="$$(ebook_output_profile)"							\
-		--smarten-punctuation																		\
-		--embed-all-fonts																				\
-		--subset-embedded-fonts																	\
-		--epub-version=2																				\
-		--extra-css="$$(reset_css)"															\
-		--extra-css="$(EPUB_DIR)/epub.css"
+		--epub-version=3
 endef
 
 $(foreach ebook_output_profile,\
@@ -105,6 +110,7 @@ $(RAW_DIR)/epub.xml: $(EPUB_DIR)/epub.xml
 .PHONY: epub-clean
 epub-clean:
 	@echo "Cleaning generated files for EPUB"
+	@rm -rf $(HTML_DIR)
 	@rm -f $(SITE_DIR)/plfa.epub
 
 

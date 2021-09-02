@@ -1,57 +1,191 @@
-@font-face{
+/* Frankenfont */
+/* A custom font made by combining glyphs from mononoki, DejaVu Sans Mono, */
+/* Symbola and Droid, and adjusting the width where necessary to get a */
+/* consistent fixed-width font. */
+@font-face {
     font-family: 'Frankenfont';
-    src: url('../fonts/Frankenfont-Regular.ttf') format('ttf');
+    src: url('fonts/Frankenfont-Regular.ttf') format('ttf');
     font-weight: normal;
     font-style: normal;
 }
+
+/* DejaVu Sans */
+/* See: https://dejavu-fonts.github.io/ */
 @font-face {
     font-family: 'DejaVu Sans';
-    src: url('../fonts/DejaVuSans-Regular.ttf') format('ttf');
+    src: url('fonts/DejaVuSans-Regular.ttf') format('ttf');
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'DejaVu Sans';
-    src: url('../fonts/DejaVuSans-Bold.ttf') format('ttf');
+    src: url('fonts/DejaVuSans-Bold.ttf') format('ttf');
     font-weight: bold;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'DejaVu Sans';
-    src: url('../fonts/DejaVuSans-Oblique.ttf') format('ttf');
+    src: url('fonts/DejaVuSans-Oblique.ttf') format('ttf');
     font-weight: normal;
     font-style: oblique;
 }
+
 @font-face {
     font-family: 'DejaVu Sans';
-    src: url('../fonts/DejaVuSans-BoldOblique.ttf') format('ttf');
+    src: url('fonts/DejaVuSans-BoldOblique.ttf') format('ttf');
     font-weight: bold;
     font-style: oblique;
 }
+
+/* DejaVu Serif */
+/* See: https://dejavu-fonts.github.io/ */
 @font-face {
     font-family: 'DejaVu Serif';
-    src: url('../fonts/DejaVuSerif-Regular.ttf') format('ttf');
+    src: url('fonts/DejaVuSerif-Regular.ttf') format('ttf');
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'DejaVu Serif';
-    src: url('../fonts/DejaVuSerif-Bold.ttf') format('ttf');
+    src: url('fonts/DejaVuSerif-Bold.ttf') format('ttf');
     font-weight: bold;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'DejaVu Serif';
-    src: url('../fonts/DejaVuSerif-Italic.ttf') format('ttf');
+    src: url('fonts/DejaVuSerif-Italic.ttf') format('ttf');
     font-weight: normal;
     font-style: italic;
 }
+
 @font-face {
     font-family: 'DejaVu Serif';
-    src: url('../fonts/DejaVuSerif-BoldItalic.ttf') format('ttf');
+    src: url('fonts/DejaVuSerif-BoldItalic.ttf') format('ttf');
     font-weight: bold;
     font-style: italic;
 }
+
 code {
     font-family: 'Frankenfont', 'FreeMono', 'DejaVu Sans Mono', 'mononoki', 'Source Code Pro', monospace;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-align: left;
+}
+
+nav#toc ol,
+nav#landmarks ol {
+    padding: 0;
+    margin-left: 1em;
+}
+
+nav#toc ol li,
+nav#landmarks ol li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+a.footnote-ref {
+    vertical-align: super;
+}
+
+em,
+em em em,
+em em em em em {
+    font-style: italic;
+}
+
+em em,
+em em em em {
+    font-style: normal;
+}
+
+code {
+    white-space: pre-wrap;
+}
+
+span.smallcaps {
+    font-variant: small-caps;
+}
+
+span.underline {
+    text-decoration: underline;
+}
+
+q {
+    quotes: "“""”""‘""’";
+}
+
+div.column {
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+}
+
+div.hanging-indent {
+    margin-left: 1.5em;
+    text-indent: -1.5em;
+}
+
+/* Workaround for iBooks issue; see #6242 */
+@media screen {
+    .sourceCode {
+        overflow: visible !important;
+        white-space: pre-wrap !important;
+    }
+}
+
+/* Agda. */
+pre.Agda {
+    font-family: 'Frankenfont', 'FreeMono', 'DejaVu Sans Mono', 'mononoki', 'Source Code Pro', monospace;
+    font-size: .85em;
+    break-inside: avoid;
+    padding: .4em .4em;
+    background: #e8f2fb;
+    border: 1px solid #c9e1f6;
+    border-radius: 3px;
+}
+
+/* Aspects. */
+.Comment       { color: #B22222 }
+.Keyword       { color: #CD6600 }
+.String        { color: #B22222 }
+.Number        { color: #A020F0 }
+.Symbol        { color: #404040 }
+.PrimitiveType { color: #0000CD }
+.Operator      {}
+
+/* NameKinds. */
+.Bound                  { color: black   }
+.InductiveConstructor   { color: #008B00 }
+.CoinductiveConstructor { color: #8B7500 }
+.Datatype               { color: #0000CD }
+.Field                  { color: #EE1289 }
+.Function               { color: #0000CD }
+.Module                 { color: #A020F0 }
+.Postulate              { color: #0000CD }
+.Primitive              { color: #0000CD }
+.Record                 { color: #0000CD }
+
+/* OtherAspects. */
+.DottedPattern      {}
+.UnsolvedMeta       { color: black; background: yellow         }
+.UnsolvedConstraint { color: black; background: yellow         }
+.TerminationProblem { color: black; background: #FFA07A        }
+.IncompletePattern  { color: black; background: #F5DEB3        }
+.Error              { color: red;   text-decoration: underline }
+.TypeChecks         { color: black; background: #ADD8E6        }
+
+/* Standard attributes. */
+.Agda a { text-decoration: none }
+.Agda a[href]:hover { background-color: #B4EEB4 }

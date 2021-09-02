@@ -8,7 +8,7 @@ STACK ?= stack
 
 SITE_DIR  := _site
 RAW_DIR   := $(SITE_DIR)/raw
-CACHE_DIR := _cache
+CACHE_DIR := _build
 TMP_DIR   := $(CACHE_DIR)/tmp
 
 AGDA      := $(STACK) exec agda -- --no-libraries --include-path=standard-library/src
