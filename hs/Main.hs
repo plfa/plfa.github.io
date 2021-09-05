@@ -358,7 +358,7 @@ main = do
     match "book/epub.md" $ version "tmp" $ do
       route tmpRoute
       compile $ getResourceBody
-        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
+        >>= applyAsTemplate (addMdPath (tableOfContentsContext siteSectionContext))
         >>= loadAndApplyTemplate "templates/metadata.md" siteContext
 
     -- Compile metadata XML used in constructing the EPUB
@@ -446,6 +446,21 @@ tmpRoute = customRoute mkPath
              & map (const "..")
              & joinPath
 
+-- Convert MD_DIR/%.lagda.md to EPUB_TMP_DIR/%.lagda.md
+--
+-- NOTE: This logic is partially duplicated in book/epub.mk:MD_PATH.
+--
+addMdPath :: Context a -> Context a
+addMdPath = addDerivedField "tex_path" deriveMdPath
+  where
+    deriveMdPath :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveMdPath ctx a i = do
+      includePath <- getString "include" ctx a i
+      return $ StringField (mdPath includePath)
+
+    mdPath :: FilePath -> FilePath
+    mdPath fnDotMd = tmpDirectory config </> fnDotMd
+
 -- Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
 --
 -- NOTE: This logic is partially duplicated in book/pdf.mk:TEX_PATH.
@@ -461,13 +476,7 @@ addTexPath = addDerivedField "tex_path" deriveTexPath
       return $ StringField (texPath includePath)
 
     texPath :: FilePath -> FilePath
-    texPath fnDotMd
-      | fnDotMd == "README.md"                       = "plfa/frontmatter/README.tex"
-      | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
-      | otherwise                                    = error ("textPath: cannot map " <> fnDotMd)
-
-    dropTopDirectory :: FilePath -> FilePath
-    dropTopDirectory = joinPath . tail . splitPath
+    texPath fnDotMd = tmpDirectory config </> replaceExtensions fnDotMd ".tex"
 
 -- Add an anchor based on the permalink, to be used as the header id.
 addAnchor :: Context a -> Context a

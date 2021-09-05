@@ -7,7 +7,6 @@ MAKE  ?= make
 STACK ?= stack
 
 SITE_DIR  := _site
-RAW_DIR   := $(SITE_DIR)/raw
 CACHE_DIR := _build
 TMP_DIR   := $(CACHE_DIR)/tmp
 
@@ -24,12 +23,6 @@ all:
 	$(MAKE) build
 	$(MAKE) epub-build
 	$(MAKE) pdf-build
-
-.PHONY: all-clean
-all-clean:
-	$(MAKE) clean
-	$(MAKE) epub-clean
-	$(MAKE) pdf-clean
 
 #################################################################################
 # Setup Git Hooks
@@ -109,11 +102,15 @@ update-contributors: | build-deps
 #################################################################################
 
 .PHONY: clean
-clean: standard-library/ChangeLog.md | build-deps
-	@echo "Cleaning generated files for site"
-	$(STACK) build
-	$(STACK) exec site clean
+clean:
+	@echo "Cleaning temporary files"
+	rm -rf $(CACHE_DIR)
+	rm -rf $(TMP_DIR)
 
+.PHONY: clobber
+clobber: clean
+	@echo "Cleaning generated files"
+	rm -rf $(SITE_DIR)
 
 #################################################################################
 # List targets in Makefile
@@ -133,7 +130,7 @@ list:
 publish: setup-check-rsync
 	$(MAKE) all
 	@echo "Cleaning intermediate files"
-	rm -rf $(RAW_DIR)
+	rm -rf $(TMP_DIR)
 	$(MAKE) test
 	@echo "Creating web branch"
 	git fetch --all
