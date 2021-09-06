@@ -1,6 +1,7 @@
 ---
-name          : Philip Wadler
-email         : wadler@inf.ed.ac.uk
-corresponding : true
-github        : wadler
+name: Philip Wadler
+email: wadler@inf.ed.ac.uk
+corresponding: true
+github:
+  username: wadler
 ---

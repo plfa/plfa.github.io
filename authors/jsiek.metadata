@@ -1,7 +1,9 @@
 ---
-name          : Jeremy G. Siek
-email         : jsiek@indiana.edu
-corresponding : true
-github        : jsiek
-twitter       : jeremysiek
+name: Jeremy G. Siek
+email: jsiek@indiana.edu
+corresponding: true
+github:
+  username: jsiek
+twitter:
+  username: jeremysiek
 ---

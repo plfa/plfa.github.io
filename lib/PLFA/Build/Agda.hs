@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Development.Shake.Agda
+module PLFA.Build.Agda
   ( Format (..)
   , AgdaOpts (..)
   , AgdaLib (..)
@@ -21,27 +21,25 @@ import Control.Exception (throwIO, handle)
 import Control.Monad (forM, forM_)
 import Data.ByteString qualified as B
 import Data.Default.Class (Default (..))
-import Data.Frontmatter (parseYamlFrontmatterEither)
-import Data.IORef (newIORef, readIORef, modifyIORef')
 import Data.List qualified as L
 import Data.List.Extra qualified as L
 import Data.Map (Map)
 import Data.Map qualified as M
-import Data.Maybe (listToMaybe, catMaybes, fromMaybe)
+import Data.Maybe (listToMaybe, catMaybes, fromMaybe, fromJust)
 import Data.Monoid (Endo(..))
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Data.Text.ICU qualified as ICU
 import Data.Text.ICU.Replace qualified as ICU
-import Data.Yaml (FromJSON(..), ToJSON(..), (.:), (.=))
-import Data.Yaml qualified as Y
 import Development.Shake (Action, liftIO)
 import Development.Shake.FilePath
-import General.Extra (liftExcept, liftEither, liftMaybe)
+import PLFA.Build.Metadata (getMetadata, getPermalink)
+import PLFA.Util (liftExcept, liftEither, liftMaybe)
 import System.Exit
 import System.Directory (doesFileExist, copyFile)
 import System.FilePath.Find ((~~?), (==?), always, extension, fileName, find)
+import System.IO.Temp (withTempDirectory, getCanonicalTemporaryDirectory)
 import Text.Printf
 
 
@@ -81,46 +79,48 @@ data AgdaOpts = AgdaOpts
   , tmpDir      :: FilePath
   , libraries   :: [AgdaLib]
   , inputFile   :: FilePath
-  , outputFiles :: Map Format FilePath
   }
 
 instance Default AgdaOpts where
   def = AgdaOpts
-        { formats     = error "AgdaOpts: please specify at least one format",
-          tmpDir      = error "AgdaOpts: please specify tmpDir",
-          libraries   = [],
-          inputFile   = error "AgdaOpts: please specify input file",
-          outputFiles = M.empty
+        { formats   = error "AgdaOpts: please specify at least one format",
+          tmpDir    = "",
+          libraries = [],
+          inputFile = error "AgdaOpts: please specify input file"
         }
 
+getTemporaryDirectory :: AgdaOpts -> IO FilePath
+getTemporaryDirectory AgdaOpts{..}
+  | null tmpDir = getCanonicalTemporaryDirectory
+  | otherwise   = return tmpDir
 
 -- | Highlight Agda code embedded in Markdown or LaTeX.
 highlightAgdaWith :: AgdaOpts -> Action (Map Format Text)
 highlightAgdaWith opts@AgdaOpts{..} = liftIO $ do
 
-  -- Call Agda with the appropriate options and backend
-  let backends = map getBackend formats
-  (configuredBackends, agdaOpts) <- liftExcept id $
-    parseBackendOptions backends (mkArgs opts) defaultOptions
-  absInputFile <- absolute inputFile
-  let interactor = backendInteraction absInputFile configuredBackends
-  swallowExitSuccess $
-    runTCMPrettyErrors $
-      runAgdaWithOptions interactor "agda" agdaOpts
+  -- Create a temporary directory
+  tmpParent <- getTemporaryDirectory opts
+  withTempDirectory tmpParent "agda" $ \tmpDir' -> do
+    let opts' = opts { tmpDir = tmpDir' }
 
-  -- For each format, check if an output file was provided:
-  -- * If so, simply copy the file.
-  -- * Otherwise, read the file and return it as part of the output map.
-  outputMapRef <- newIORef M.empty
-  forM_ formats $ \format -> do
-    out <- guessOutputPath format opts
-    case M.lookup format outputFiles of
-      Nothing -> do
+    -- Call Agda with the appropriate options and backend
+    let backends = map getBackend formats
+    (configuredBackends, agdaOpts) <- liftExcept id $
+      parseBackendOptions backends (mkArgs opts') defaultOptions
+    absInputFile <- absolute inputFile
+    let interactor = backendInteraction absInputFile configuredBackends
+    swallowExitSuccess $
+      runTCMPrettyErrors $
+        runAgdaWithOptions interactor "agda" agdaOpts
+
+    -- Create a map with the outputs for all formats
+    contents <-
+      forM formats $ \format -> do
+        out <- guessOutputPath format opts'
         content <- T.readFile out
-        modifyIORef' outputMapRef (M.insert format content)
-      Just outputFile -> copyFile out outputFile
+        return (format, content)
 
-  readIORef outputMapRef
+    return $ M.fromList contents
 
 
 mkArgs :: AgdaOpts -> [String]
@@ -200,19 +200,6 @@ allModules dir = do
 -- Fix references to local Agda modules using YAML frontmatter
 --------------------------------------------------------------------------------
 
-newtype Frontmatter = Frontmatter
-  { frontmatterPermalink :: FilePath
-  }
-
-instance FromJSON Frontmatter where
-  parseJSON = Y.withObject "Frontmatter" $ \v -> Frontmatter
-    <$> v .: "permalink"
-
-instance ToJSON Frontmatter where
-  toJSON Frontmatter{..} =
-    Y.object [ "permalink" .= frontmatterPermalink
-             ]
-
 -- | Create a function to fix URL references to local modules
 prepareFixLocalLinksWithPermalink :: FilePath -> IO (Url -> Url)
 prepareFixLocalLinksWithPermalink libDir = do
@@ -222,7 +209,8 @@ prepareFixLocalLinksWithPermalink libDir = do
 
   -- Get all permalinks and Agda module names from these files
   localLinkList <- forM inputFiles $ \inputFile -> do
-    permalink <- getPermalink inputFile
+    metadata <- getMetadata inputFile
+    permalink <- getPermalink metadata
     moduleName <- guessModuleName_ [libDir] inputFile
     return (moduleName, permalink)
 
@@ -236,14 +224,6 @@ prepareFixLocalLinksWithPermalink libDir = do
         return $ newPath <> anchor
 
   return fixLocalLinkWithPermalink
-
-
--- | Read the permalink field from the YAML frontmatter.
-getPermalink :: FilePath -> IO Url
-getPermalink inputFile = do
-  frontmatterOrError <- parseYamlFrontmatterEither <$> B.readFile inputFile
-  Frontmatter{..} <- liftEither (printf "Parse error in '%s': %s\n" inputFile) frontmatterOrError
-  return frontmatterPermalink
 
 
 --------------------------------------------------------------------------------
@@ -298,10 +278,10 @@ standardLibraryAgdaLib dir = do
 
 -- | Guess the path to which Agda writes the relevant output file.
 guessOutputPath :: Format -> AgdaOpts -> IO FilePath
-guessOutputPath Markdown opts@AgdaOpts{..} = do
+guessOutputPath Markdown AgdaOpts{..} = do
   moduleName <- guessModuleName_ (map libDir libraries) inputFile
   return $ tmpDir </> moduleName <.> "md"
-guessOutputPath LaTeX opts@AgdaOpts{..} = do
+guessOutputPath LaTeX AgdaOpts{..} = do
   modulePath <- guessModulePath_ (map libDir libraries) inputFile
   return $ tmpDir </> replaceExtensions modulePath "tex"
 

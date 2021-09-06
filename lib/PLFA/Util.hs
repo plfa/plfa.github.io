@@ -1,5 +1,6 @@
-module General.Extra
-  ( removeFile_
+module PLFA.Util
+  ( Url
+  , removeFile_
   , liftExcept
   , liftEither
   , liftMaybe
@@ -15,7 +16,7 @@ import System.Directory (Permissions(..), getPermissions, setPermissions, remove
 import System.IO.Error (isPermissionError)
 import Text.Printf
 
--- Taken from shake hidden module General.Extra
+type Url = String
 
 removeFile_ :: FilePath -> IO ()
 removeFile_ fp =

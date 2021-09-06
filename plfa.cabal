@@ -13,8 +13,13 @@ common plfa-common
   build-depends:       Agda == 2.6.2
                      , base
                      , containers
+                     , data-default-class
                      , filemanip
+                     , mustache
                      , shake
+                     , text
+                     , text-icu >= 0.7.1.0
+                     , text-regex-replace
   default-language:    Haskell2010
   default-extensions:  ImportQualifiedPost
                      , LambdaCase
@@ -23,15 +28,15 @@ common plfa-common
 library
   import:              plfa-common
   hs-source-dirs:      lib
-  exposed-modules:     Development.Shake.Agda
-                     , Development.Shake.ByteString
-                     , Development.Shake.CSS
-                     , Development.Shake.Sass
-                     , Development.Shake.Text
-                     , General.Extra
-  build-depends:       bytestring
+  exposed-modules:     PLFA.Build.Agda
+                     , PLFA.Build.Metadata
+                     , PLFA.Build.Style.CSS
+                     , PLFA.Build.Style.Sass
+                     , PLFA.Build.Text
+                     , PLFA.Util
+  build-depends:       aeson
+                     , bytestring
                      , charsetdetect
-                     , data-default-class
                      , directory
                      , extra
                      , frontmatter
@@ -39,9 +44,8 @@ library
                      , hasmin
                      , mtl
                      , regex-tdfa
-                     , text
-                     , text-icu >= 0.7.1.0
-                     , text-regex-replace
+                     , temporary
+                     , unordered-containers
                      , yaml
 
 executable builder

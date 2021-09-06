@@ -1,4 +1,4 @@
-module Development.Shake.Sass
+module PLFA.Build.Style.Sass
   ( -- * Compile Sass with hsass
     compileSass
   , compileSassWith

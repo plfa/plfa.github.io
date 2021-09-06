@@ -1,7 +1,9 @@
 ---
-name          : Wen Kokke
-email         : wen.kokke@ed.ac.uk
-corresponding : true
-github        : wenkokke
-twitter       : wenkokke
+name: Wen Kokke
+email: me@wen.works
+corresponding: true
+github:
+  username: wenkokke
+twitter:
+  username: wenkokke
 ---

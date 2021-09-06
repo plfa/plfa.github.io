@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Development.Shake.CSS
+module PLFA.Build.Style.CSS
   ( -- * Minify CSS with hasmin
     minifyCSS
   , minifyCSSWith

@@ -1,30 +1,40 @@
-import Control.Exception (assert)
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
+
+import Control.Exception (displayException)
 import Control.Monad (forM_)
+import Data.Default.Class (Default (..))
 import Data.Map qualified as M
+import Data.Text (Text)
+import Data.Text.ICU qualified as ICU
+import Data.Text.ICU.Replace qualified as ICU
 import Development.Shake
-import Development.Shake.Agda
-import Development.Shake.CSS
 import Development.Shake.FilePath
-import Development.Shake.Sass
-import Development.Shake.Text qualified as T
-import General.Extra
+import PLFA.Build.Agda
+import PLFA.Build.Metadata
+import PLFA.Build.Style.CSS
+import PLFA.Build.Style.Sass
+import PLFA.Build.Text qualified as T
+import PLFA.Util
 import System.FilePath.Find
-import Text.Pandoc
-import Text.Pandoc.Highlighting (tango)
-import Text.Printf
+import Text.Mustache as Mustache
+import Text.Mustache.Compile as Mustache
+import Text.Pandoc as Pandoc
+import Text.Pandoc.Writers.HTML as Pandoc
 
 
 -- Directories
 
 cacheDir      = "_build"
 htmlCacheDir  = cacheDir </> "html"
-mdCacheDir    = cacheDir </> "md"
+epubCacheDir  = cacheDir </> "epub"
 texCacheDir   = cacheDir </> "tex"
 siteDir       = "_site"
 srcDir        = "src"
 staticSrcDir  = "public"
 cssSrcDir     = "css"
 stdlibDir     = "standard-library"
+templateDir   = "templates"
 
 -- Options
 
@@ -32,21 +42,17 @@ shakeOpts = shakeOptions
   { shakeFiles = cacheDir </> "shake"
   }
 
+permalinkPath :: FilePath -> IO FilePath
+permalinkPath src = do
+  metadata <- getMetadata src
+  permalink <- getPermalink metadata
+  return $ siteDir </> permalink </> "index.html"
 
--- Build rules
-
--- | Convert paths from Markdown source files to highlighted TeX files.
-texCachePath :: FilePath -> FilePath
-texCachePath filePath = texCacheDir </> replaceExtensions filePath "tex"
-
--- | Convert paths from Markdown source files to highlighted Markdown files.
-mdCachePath :: FilePath -> FilePath
-mdCachePath filePath = mdCacheDir </> replaceExtensions filePath "md"
 
 main :: IO ()
 main = do
 
-  -- Enumerate files
+  -- * Input & Output Files
 
   -- All files in '$staticSrcDir' are copied verbatim to '$siteDir',
   -- preserving their relative paths.
@@ -57,8 +63,6 @@ main = do
   -- versions are further compiled to standalone HTML pages for the web version
   -- of PLFA.
   lagdaMdFiles <- find always (fileName ~~? "*.lagda.md") srcDir
-  let mdCacheFiles = map mdCachePath lagdaMdFiles
-  let texCacheFiles = map texCachePath lagdaMdFiles
 
   -- All files in '$cssSrcDir' are compiled into a single minified css file,
   -- written to '$siteDir/$staticSrcDir/style.css'
@@ -66,47 +70,88 @@ main = do
   let styleFile = siteDir </> staticSrcDir </> "style.css"
 
   -- Options for Agda highlighting
-  let plfa = def {libDir = srcDir}
   stdlib <- standardLibraryAgdaLib stdlibDir
-  let agdaLibs = [plfa, stdlib]
-  let agdaOpts = def {
-        formats   = [LaTeX, Markdown],
-        tmpDir    = cacheDir </> "tmp",
-        libraries = agdaLibs
-        }
-  fixLinks <- prepareFixLinks agdaLibs
+  fixLinks <- prepareFixLinks [def{libDir = srcDir}, stdlib]
 
-  -- Main dependency logic.
+
+  -- * Build Tasks
+
   shakeArgs shakeOpts $ do
 
-    -- compile static files
+    -- Compile a Mustache template
+    compileTemplate <- newCache $ \src -> do
+      tplOrError <- liftIO (Mustache.automaticCompile [templateDir] src)
+      tpl <- liftEither @Action show tplOrError
+      need (Mustache.getPartials (Mustache.ast tpl))
+      return tpl
+
+    -- Highlight a source file as HTML
+    highlightHTML <- newCache $ \(dir, src) -> do
+      resultMap <- highlightAgdaWith def
+                   { formats   = [Markdown],
+                     libraries = [def{libDir = dir}, stdlib],
+                     inputFile = src
+                   }
+      liftMaybe ("Highlight failed for " <> src) $
+        M.lookup Markdown resultMap
+
+    -- Render Markdown to HTML
+    markdownToHTML <- newCache $ \src -> do
+      runPandocIO $ do
+        ast <- Pandoc.readMarkdown readerOpts src
+        Pandoc.writeHtml5String writerOpts ast
+
+    -- Render Markdown to EPUB HTML
+    markdownToEPUB <- newCache $ \src -> do
+      runPandocIO $ do
+        ast <- Pandoc.readMarkdown readerOpts src
+        Pandoc.writeHtmlStringForEPUB EPUB3 writerOpts ast
+
+    -- Copy static files
     want staticFiles
 
     forM_ staticFiles $ \src ->
       siteDir </> src %> \out -> do
-        putInfo $ printf "Copy %s to %s" src out
+        putInfo $ "Copy " <> src
         copyFile' src out
 
-    -- Compile templates
-
-    -- Compile Markdown files
-
-    -- Compile literate Agda files to HTML and LaTeX
-    want (texCacheFiles <> mdCacheFiles)
+    -- Compile literate Agda files to HTML
+    let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
+        htmlStage1 src = htmlCacheDir </> "stage1" </> src
+        htmlStage2 src = htmlCacheDir </> "stage2" </> replaceExtensions src "md"
+        epubStage3 src = epubCacheDir </> "stage3" </> replaceExtensions src "html"
+        htmlStage3 src = htmlCacheDir </> "stage3" </> replaceExtensions src "html"
 
     forM_ lagdaMdFiles $ \src -> do
-      let texCacheOut = texCachePath src
-      let mdCacheOut = mdCachePath src
-      [texCacheOut, mdCacheOut] &%> \_ -> do
 
-        -- Register the source file as a dependency
-        need [src]
+      want [htmlStage3 src, epubStage3 src]
 
-        -- Run Agda with both LaTeX and HTML highlighting.
+      -- Stage 1: Preprocess the Markdown files
+      htmlStage1 src %> \out -> do
+        content <- T.readFile' src
+        putInfo $ "Preprocess " <> src
+        T.writeFile' out (preprocessForHtml content)
+
+      -- Stage 2: Highlight the Agda source
+      htmlStage2 src %> \out -> do
+        need [htmlStage1 fp | fp <- lagdaMdFiles]
         putInfo $ "Highlight " <> src
-        let outMap = M.fromList [(LaTeX, texCacheOut), (Markdown, mdCacheOut)]
-        contentMap <- highlightAgdaWith agdaOpts {inputFile = src, outputFiles = outMap}
-        assert (M.null contentMap) $ return ()
+        markdown <- highlightHTML (htmlStage1 srcDir, htmlStage1 src)
+        T.writeFile' out markdown
+
+      -- Stage 3: Render the Markdown to HTML
+      htmlStage3 src %> \out -> do
+        markdown <- T.readFile' (htmlStage2 src)
+        putInfo $ "Render " <> src
+        html5 <- markdownToHTML markdown
+        T.writeFile' out html5
+
+      -- Stage 3: Render the Markdown to HTML (EPUB)
+      epubStage3 src %> \out -> do
+        markdown <- T.readFile' (htmlStage2 src)
+        putInfo $ "Render " <> src
+        xhtml <- markdownToEPUB markdown
+        T.writeFile' out xhtml
 
     -- Compile style files
     want [styleFile]
@@ -114,35 +159,50 @@ main = do
     styleFile %> \out -> do
       let src = cssSrcDir </> "style.scss"
       need scssFiles
-      putInfo $ printf "Compile %s to %s" src out
+      putInfo $ "Compile " <> src
       css <- compileSassWith def {sassIncludePaths = Just [cssSrcDir]} src
       cssMin <- minifyCSSWith def css
       T.writeFile' out cssMin
 
-pandocReaderOpts :: ReaderOptions
-pandocReaderOpts = def
+runPandocIO :: PandocIO a -> Action a
+runPandocIO action = do
+  resultOrError <- liftIO (Pandoc.runIO action)
+  liftEither displayException resultOrError
+
+readerOpts :: ReaderOptions
+readerOpts = def
   { readerExtensions =
       extensionsFromList
       [ Ext_all_symbols_escapable
-      , Ext_auto_identifiers
-      , Ext_citations
-      , Ext_footnotes
-      , Ext_header_attributes
-      , Ext_implicit_header_references
-      , Ext_intraword_underscores
-      , Ext_markdown_in_html_blocks
-      , Ext_shortcut_reference_links
       , Ext_smart
       , Ext_superscript
       , Ext_subscript
-      , Ext_task_lists
+      , Ext_citations
+      , Ext_footnotes
+      , Ext_header_attributes
+      , Ext_intraword_underscores
+      , Ext_markdown_in_html_blocks
+      , Ext_shortcut_reference_links
       , Ext_yaml_metadata_block
+      , Ext_raw_attribute
       ]
       <>
       githubMarkdownExtensions
   }
 
-pandocWriterOpts :: WriterOptions
-pandocWriterOpts = def
-  { writerHighlightStyle = Just tango
-  }
+writerOpts :: WriterOptions
+writerOpts = def
+
+
+--------------------------------------------------------------------------------
+-- Preprocessing literate Agda files
+--------------------------------------------------------------------------------
+
+reCodeBlock :: ICU.Regex
+reCodeBlock = ICU.regex [ICU.DotAll, ICU.Multiline] "^```\\s*agda\\s*$(.*?)^```\\s*$"
+
+preprocessForHtml :: Text -> Text
+preprocessForHtml = ICU.replaceAll reCodeBlock "\n\n~~~{=html}\n```agda$1```\n\n~~~\n\n"
+
+preprocessForLaTeX :: Text -> Text
+preprocessForLaTeX = ICU.replaceAll reCodeBlock "\n\n~~~{=latex}\n\\begin{code}$1\\end{code}\n\n~~~\n\n"
