@@ -1,68 +1,123 @@
-import Data.List qualified as L
+import Control.Exception (assert)
+import Control.Monad (forM_)
+import Data.Map qualified as M
 import Development.Shake
+import Development.Shake.Agda
+import Development.Shake.CSS
 import Development.Shake.FilePath
-import PLFA.Agda
-import PLFA.CSS
-import PLFA.Data.Text qualified as T
+import Development.Shake.Sass
+import Development.Shake.Text qualified as T
+import General.Extra
+import System.FilePath.Find
 import Text.Pandoc
 import Text.Pandoc.Highlighting (tango)
+import Text.Printf
 
-cacheDir, htmlDir, siteDir, srcDir, stdlibSrcDir :: FilePath
-cacheDir     = "_build"
-htmlDir      = cacheDir </> "html"
-texDir       = cacheDir </> "tex"
-siteDir      = "_site"
-srcDir       = "src"
-stdlibSrcDir = "standard-library" </> "src"
-agdaOpts     = AgdaOpts
-  { format = undefined,
-    tmpDir = cacheDir </> "tmp",
-    includePaths = [srcDir, stdlibSrcDir],
-    inputFile = undefined
+
+-- Directories
+
+cacheDir      = "_build"
+htmlCacheDir  = cacheDir </> "html"
+mdCacheDir    = cacheDir </> "md"
+texCacheDir   = cacheDir </> "tex"
+siteDir       = "_site"
+srcDir        = "src"
+staticSrcDir  = "public"
+cssSrcDir     = "css"
+stdlibDir     = "standard-library"
+
+-- Options
+
+shakeOpts = shakeOptions
+  { shakeFiles = cacheDir </> "shake"
   }
 
-opts :: ShakeOptions
-opts = shakeOptions { shakeFiles = cacheDir </> "shake" }
+
+-- Build rules
+
+-- | Convert paths from Markdown source files to highlighted TeX files.
+texCachePath :: FilePath -> FilePath
+texCachePath filePath = texCacheDir </> replaceExtensions filePath "tex"
+
+-- | Convert paths from Markdown source files to highlighted Markdown files.
+mdCachePath :: FilePath -> FilePath
+mdCachePath filePath = mdCacheDir </> replaceExtensions filePath "md"
 
 main :: IO ()
-main = shakeArgs opts $ do
+main = do
 
-  -- compile static files
+  -- Enumerate files
 
-  -- Compile templates
+  -- All files in '$staticSrcDir' are copied verbatim to '$siteDir',
+  -- preserving their relative paths.
+  staticFiles <- find always (fileType ==? RegularFile) staticSrcDir
 
+  -- All .lagda.md files are rendered to highlighted Markdown and LaTeX files,
+  -- for construction of the EPUB and PDF versions of PLFA, and the Markdown
+  -- versions are further compiled to standalone HTML pages for the web version
+  -- of PLFA.
+  lagdaMdFiles <- find always (fileName ~~? "*.lagda.md") srcDir
+  let mdCacheFiles = map mdCachePath lagdaMdFiles
+  let texCacheFiles = map texCachePath lagdaMdFiles
 
-  -- Compile Markdown files
+  -- All files in '$cssSrcDir' are compiled into a single minified css file,
+  -- written to '$siteDir/$staticSrcDir/style.css'
+  scssFiles <- find always (fileName ~~? "*.scss") cssSrcDir
+  let styleFile = siteDir </> staticSrcDir </> "style.css"
 
-  -- Compile literate Agda files to HTML
-  want [texDir </> "src/plfa/part1/Naturals.lagda.tex"]
-  texDir </> "**/*.tex" %> \out -> do
-    src <- dropPrefix texDir (out -<.> "md")
-    need [src]
-    content <- callAgdaWith agdaOpts {format = LaTeX, inputFile = src}
-    T.writeFile out content
+  -- Options for Agda highlighting
+  let plfa = def {libDir = srcDir}
+  stdlib <- standardLibraryAgdaLib stdlibDir
+  let agdaLibs = [plfa, stdlib]
+  let agdaOpts = def {
+        formats   = [LaTeX, Markdown],
+        tmpDir    = cacheDir </> "tmp",
+        libraries = agdaLibs
+        }
+  fixLinks <- prepareFixLinks agdaLibs
 
-  -- Compile literate Agda files to HTML
-  want [htmlDir </> "src/plfa/part1/Naturals.lagda.md"]
-  htmlDir </> "**/*.md" %> \out -> do
-    src <- dropPrefix htmlDir out
-    need [src]
-    content <- callAgdaWith agdaOpts {format = Markdown, inputFile = src}
-    T.writeFile out content
+  -- Main dependency logic.
+  shakeArgs shakeOpts $ do
 
-  -- Compile style files
-  siteDir </> "css/style.css" %> \out -> do
-    let src = "css/minima.scss"
-    need [src]
-    css <- compileSassWith def {sassIncludePaths = Just ["css"]} src
-    min <- minifyCSSWith def css
-    T.writeFile out min
+    -- compile static files
+    want staticFiles
 
-dropPrefix :: FilePath -> FilePath -> Action FilePath
-dropPrefix prefixPath filePath = do
-  case L.stripPrefix (splitDirectories prefixPath) (splitDirectories filePath) of
-    Nothing   -> fail $ "Cannot strip prefix " <> prefixPath <> " from " <> filePath
-    Just path -> return (joinPath path)
+    forM_ staticFiles $ \src ->
+      siteDir </> src %> \out -> do
+        putInfo $ printf "Copy %s to %s" src out
+        copyFile' src out
+
+    -- Compile templates
+
+    -- Compile Markdown files
+
+    -- Compile literate Agda files to HTML and LaTeX
+    want (texCacheFiles <> mdCacheFiles)
+
+    forM_ lagdaMdFiles $ \src -> do
+      let texCacheOut = texCachePath src
+      let mdCacheOut = mdCachePath src
+      [texCacheOut, mdCacheOut] &%> \_ -> do
+
+        -- Register the source file as a dependency
+        need [src]
+
+        -- Run Agda with both LaTeX and HTML highlighting.
+        putInfo $ "Highlight " <> src
+        let outMap = M.fromList [(LaTeX, texCacheOut), (Markdown, mdCacheOut)]
+        contentMap <- highlightAgdaWith agdaOpts {inputFile = src, outputFiles = outMap}
+        assert (M.null contentMap) $ return ()
+
+    -- Compile style files
+    want [styleFile]
+
+    styleFile %> \out -> do
+      let src = cssSrcDir </> "style.scss"
+      need scssFiles
+      putInfo $ printf "Compile %s to %s" src out
+      css <- compileSassWith def {sassIncludePaths = Just [cssSrcDir]} src
+      cssMin <- minifyCSSWith def css
+      T.writeFile' out cssMin
 
 pandocReaderOpts :: ReaderOptions
 pandocReaderOpts = def

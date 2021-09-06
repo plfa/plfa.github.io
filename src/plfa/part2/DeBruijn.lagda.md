@@ -6,7 +6,7 @@ permalink : /DeBruijn/
 next      : /More/
 ---
 
-```
+```agda
 module plfa.part2.DeBruijn where
 ```
 
@@ -42,7 +42,7 @@ James Chapman, James McKinna, and many others.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -221,7 +221,7 @@ We now begin our formal development.
 
 First, we get all our infix declarations out of the way.
 We list separately operators for judgments, types, and terms:
-```
+```agda
 infix  4 _⊢_
 infix  4 _∋_
 infixl 5 _,_
@@ -244,7 +244,7 @@ contexts before terms.
 
 As before, we have just two types, functions and naturals.
 The formal definition is unchanged:
-```
+```agda
 data Type : Set where
   _⇒_ : Type → Type → Type
   `ℕ  : Type
@@ -254,7 +254,7 @@ data Type : Set where
 
 Contexts are as before, but we drop the names.
 Contexts are formalised as follows:
-```
+```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
@@ -264,7 +264,7 @@ recently bound variable on the right.  As before, we let `Γ`
 and `Δ` range over contexts.  We write `∅` for the empty
 context, and `Γ , A` for the context `Γ` extended by type `A`.
 For example
-```
+```agda
 _ : Context
 _ = ∅ , `ℕ ⇒ `ℕ , `ℕ
 ```
@@ -285,7 +285,7 @@ The lookup judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old lookup judgment, but
 with all variable names dropped:
-```
+```agda
 data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ A}
@@ -311,7 +311,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
 They correspond to the following intrinsically-typed variables:
-```
+```agda
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
 
@@ -335,7 +335,7 @@ The judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old typing judgment, but
 with all terms and variable names dropped:
-```
+```agda
 data _⊢_ : Context → Type → Set where
 
   `_ : ∀ {Γ A}
@@ -390,7 +390,7 @@ For example, consider the following old-style typing judgments:
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 They correspond to the following intrinsically-typed terms:
-```
+```agda
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
 _ = ` Z
 
@@ -415,14 +415,14 @@ The final term represents the Church numeral two.
 
 We define a helper function that computes the length of a context,
 which will be useful in making sure an index is within context bounds:
-```
+```agda
 length : Context → ℕ
 length ∅        =  zero
 length (Γ , _)  =  suc (length Γ)
 ```
 
 We can use a natural number to select a type from a context:
-```
+```agda
 lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
 lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
 lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
@@ -433,14 +433,14 @@ the length of the context, which is witnessed by `p`.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
-```
+```agda
 count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
 count {_ , _} {zero}    (s≤s z≤n)  =  Z
 count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 ```
 
 We can then introduce a convenient abbreviation for variables:
-```
+```agda
 #_ : ∀ {Γ}
   → (n : ℕ)
   → {n∈Γ : True (suc n ≤? length Γ)}
@@ -458,7 +458,7 @@ against invoking `#_` on an `n` that is out of context bounds. Finally, in the
 return type `n∈Γ` is converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
-```
+```agda
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
@@ -469,7 +469,7 @@ We repeat the test examples from Chapter [Lambda](/Lambda/). You can find them
 [here](/Lambda/#derivation) for comparison.
 
 First, computing two plus two on naturals:
-```
+```agda
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
 
@@ -483,7 +483,7 @@ We generalise to arbitrary contexts because later we will give examples
 where `two` appears nested inside binders.
 
 Next, computing two plus two on Church numerals:
-```
+```agda
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
 
@@ -511,7 +511,7 @@ Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the intrinsically-typed
 DeBruijn representation.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -530,7 +530,7 @@ from variables in one context to variables in another,
 extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped:
-```
+```agda
 ext : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
     ---------------------------------
@@ -553,7 +553,7 @@ With extension under our belts, it is straightforward
 to define renaming.  If variables in one context map to
 variables in another, then terms in the first context map to
 terms in the second:
-```
+```agda
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
     -----------------------
@@ -592,7 +592,7 @@ calculus.
 
 Here is an example of renaming a term with one free
 and one bound variable:
-```
+```agda
 M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₀ = ƛ (# 1 · (# 1 · # 0))
 
@@ -639,7 +639,7 @@ map from variables in one context to _terms_ in another.
 Given a map from variables in one context to terms over
 another, extension yields a map from the first context
 extended to the second context similarly extended:
-```
+```agda
 exts : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
     ---------------------------------
@@ -667,7 +667,7 @@ With extension under our belts, it is straightforward
 to define substitution.  If variables in one context map
 to terms over another, then terms in the first context
 map to terms in the second:
-```
+```agda
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     -----------------------
@@ -701,7 +701,7 @@ bound variable.
 From the general case of substitution for multiple free
 variables it is easy to define the special case of
 substitution for one free variable:
-```
+```agda
 _[_] : ∀ {Γ A B}
   → Γ , B ⊢ A
   → Γ ⊢ B
@@ -725,7 +725,7 @@ Consider the previous example:
   `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 
 Here is the example formalised:
-```
+```agda
 M₂ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₂ = ƛ # 1 · (# 1 · # 0)
 
@@ -749,7 +749,7 @@ variable to avoid capture:
 Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
 `"y"` has type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
 Here is the example formalised:
-```
+```agda
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
 
@@ -779,7 +779,7 @@ to sneak in.
 The definition of value is much as before, save that the
 added types incorporate the same information found in the
 Canonical Forms lemma:
-```
+```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
   V-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B}
@@ -809,7 +809,7 @@ have compatibility rules that reduce a part of a term,
 labelled with `ξ`, and rules that simplify a constructor
 combined with a destructor, labelled with `β`:
 
-```
+```agda
 infix 2 _—→_
 
 data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -868,7 +868,7 @@ definition of substitution.
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition:
-```
+```agda
 infix  2 _—↠_
 infix  1 begin_
 infixr 2 _—→⟨_⟩_
@@ -899,7 +899,7 @@ begin M—↠N = M—↠N
 We reiterate each of our previous examples.  First, the Church
 numeral two applied to the successor function and zero yields
 the natural number two:
-```
+```agda
 _ : twoᶜ · sucᶜ · `zero {∅} —↠ `suc `suc `zero
 _ =
   begin
@@ -917,7 +917,7 @@ _ =
 As before, we need to supply an explicit context to `` `zero ``.
 
 Next, a sample reduction demonstrating that two plus two is four:
-```
+```agda
 _ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
     plus · two · two
@@ -951,7 +951,7 @@ _ =
 ```
 
 And finally, a similar sample reduction for Church numerals:
-```
+```agda
 _ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero {∅}
 _ =
   begin
@@ -998,7 +998,7 @@ Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
 values.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -1007,7 +1007,7 @@ values.
 As before, every term that is well typed and closed is either
 a value or takes a reduction step.  The formulation of progress
 is just as before, but annotated with types:
-```
+```agda
 data Progress {A} (M : ∅ ⊢ A) : Set where
 
   step : ∀ {N : ∅ ⊢ A}
@@ -1025,7 +1025,7 @@ The statement and proof of progress is much as before,
 appropriately annotated.  We no longer need
 to explicitly refer to the Canonical Forms lemma, since it
 is built-in to the definition of value:
-```
+```agda
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
 progress (ƛ N)                          =  done V-ƛ
@@ -1053,7 +1053,7 @@ We can do much the same here, but we no longer need to explicitly
 refer to preservation, since it is built-in to the definition of reduction.
 
 As previously, gas is specified by a natural number:
-```
+```agda
 record Gas : Set where
   constructor gas
   field
@@ -1061,7 +1061,7 @@ record Gas : Set where
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value or indicate that it ran out of gas:
-```
+```agda
 data Finished {Γ A} (N : Γ ⊢ A) : Set where
 
    done :
@@ -1076,7 +1076,7 @@ data Finished {Γ A} (N : Γ ⊢ A) : Set where
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
-```
+```agda
 data Steps {A} : ∅ ⊢ A → Set where
 
   steps : {L N : ∅ ⊢ A}
@@ -1086,7 +1086,7 @@ data Steps {A} : ∅ ⊢ A → Set where
     → Steps L
 ```
 The evaluator takes gas and a term and returns the corresponding steps:
-```
+```agda
 eval : ∀ {A}
   → Gas
   → (L : ∅ ⊢ A)
@@ -1105,13 +1105,13 @@ to invoke preservation.
 
 We reiterate each of our previous examples.  We re-define the term
 `sucμ` that loops forever:
-```
+```agda
 sucμ : ∅ ⊢ `ℕ
 sucμ = μ (`suc (# 0))
 ```
 To compute the first three steps of the infinite reduction sequence,
 we evaluate with three steps worth of gas:
-```
+```agda
 _ : eval (gas 3) sucμ ≡
   steps
    (μ `suc ` Z
@@ -1127,7 +1127,7 @@ _ = refl
 ```
 
 The Church numeral two applied to successor and zero:
-```
+```agda
 _ : eval (gas 100) (twoᶜ · sucᶜ · `zero) ≡
   steps
    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero
@@ -1145,7 +1145,7 @@ _ = refl
 ```
 
 Two plus two is four:
-```
+```agda
 _ : eval (gas 100) (plus · two · two) ≡
   steps
    ((μ
@@ -1287,7 +1287,7 @@ _ = refl
 ```
 
 And the corresponding term for Church numerals:
-```
+```agda
 _ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
   steps
    ((ƛ
@@ -1354,7 +1354,7 @@ tedious and almost identical to the previous proof.
 
 Using the evaluator, confirm that two times two is four.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -1388,12 +1388,3 @@ This chapter uses the following unicode:
     ₆  U+2086  SUBSCRIPT SIX (\_6)
     ₇  U+2087  SUBSCRIPT SEVEN (\_7)
     ≠  U+2260  NOT EQUAL TO (\=n)
-
-```
-mul : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
-mul = μ ƛ ƛ (case (# 1) `zero (plus · # 1 · (# 3 · # 0 · # 1)))
-```
-
-_ : eval (gas 100) (mul · two · two) ≡ [code generated by ctrl+c ctrl+n]
-
-_ = refl

@@ -6,7 +6,7 @@ permalink : /Confluence/
 next      : /BigStep/
 ---
 
-```
+```agda
 module plfa.part2.Confluence where
 ```
 
@@ -60,7 +60,7 @@ confluence for parallel reduction.
 
 ## Imports
 
-```
+```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Function using (_∘_)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -77,7 +77,7 @@ open import plfa.part2.Untyped
 
 The parallel reduction relation is defined as follows.
 
-```
+```agda
 infix 2 _⇛_
 
 data _⇛_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -113,7 +113,7 @@ akin to the `ζ` rule and `pbeta` is akin to `β`.
 
 Parallel reduction is reflexive.
 
-```
+```agda
 par-refl : ∀{Γ A}{M : Γ ⊢ A} → M ⇛ M
 par-refl {Γ} {A} {` x} = pvar
 par-refl {Γ} {★} {ƛ N} = pabs par-refl
@@ -121,7 +121,7 @@ par-refl {Γ} {★} {L · M} = papp par-refl par-refl
 ```
 We define the sequences of parallel reduction as follows.
 
-```
+```agda
 infix  2 _⇛*_
 infixr 2 _⇛⟨_⟩_
 infix  3 _∎
@@ -146,7 +146,7 @@ Revisit the counter example to the diamond property for reduction by
 showing that the diamond property holds for parallel reduction in that
 case.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -158,7 +158,7 @@ The only-if direction is particularly easy. We start by showing
 that if `M —→ N`, then `M ⇛ N`. The proof is by induction on
 the reduction `M —→ N`.
 
-```
+```agda
 beta-par : ∀{Γ A}{M N : Γ ⊢ A}
   → M —→ N
     ------
@@ -173,7 +173,7 @@ With this lemma in hand we complete the only-if direction,
 that `M —↠ N` implies `M ⇛* N`. The proof is a straightforward
 induction on the reduction sequence `M —↠ N`.
 
-```
+```agda
 betas-pars : ∀{Γ A} {M N : Γ ⊢ A}
   → M —↠ N
     ------
@@ -188,7 +188,7 @@ proof of this direction is a bit different because it's not the case
 that `M ⇛ N` implies `M —→ N`. After all, `M ⇛ N` performs many
 reductions. So instead we shall prove that `M ⇛ N` implies `M —↠ N`.
 
-```
+```agda
 par-betas : ∀{Γ A}{M N : Γ ⊢ A}
   → M ⇛ N
     ------
@@ -232,7 +232,7 @@ The proof is by induction on `M ⇛ N`.
 With this lemma in hand, we complete the proof that `M ⇛* N` implies
 `M —↠ N` with a simple induction on `M ⇛* N`.
 
-```
+```agda
 pars-betas : ∀{Γ A} {M N : Γ ⊢ A}
   → M ⇛* N
     ------
@@ -254,7 +254,7 @@ the substitution `σ` pointwise parallel reduces to `τ`,
 then `subst σ N ⇛ subst τ N′`. We define the notion
 of pointwise parallel reduction as follows.
 
-```
+```agda
 par-subst : ∀{Γ Δ} → Subst Γ Δ → Subst Γ Δ → Set
 par-subst {Γ}{Δ} σ σ′ = ∀{A}{x : Γ ∋ A} → σ x ⇛ σ′ x
 ```
@@ -267,7 +267,7 @@ and substitution commute with one another, which is a lemma that we
 import from Chapter [Substitution](/Substitution/)
 and restate here.
 
-```
+```agda
 rename-subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{ρ : Rename Γ Δ }
     → (rename (ext ρ) N) [ rename ρ M ] ≡ rename ρ (N [ M ])
 rename-subst-commute {N = N} = plfa.part2.Substitution.rename-subst-commute {N = N}
@@ -275,7 +275,7 @@ rename-subst-commute {N = N} = plfa.part2.Substitution.rename-subst-commute {N =
 
 Now for the `par-rename` lemma.
 
-```
+```agda
 par-rename : ∀{Γ Δ A} {ρ : Rename Γ Δ} {M M′ : Γ ⊢ A}
   → M ⇛ M′
     ------------------------
@@ -307,7 +307,7 @@ With the `par-rename` lemma in hand, it is straightforward to show
 that extending substitutions preserves the pointwise parallel
 reduction relation.
 
-```
+```agda
 par-subst-exts : ∀{Γ Δ} {σ τ : Subst Γ Δ}
   → par-subst σ τ
     ------------------------------------------
@@ -322,7 +322,7 @@ simultaneoous substitution commutes with single substitution. We import this
 lemma from Chapter [Substitution](/Substitution/)
 and restate it below.
 
-```
+```agda
 subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
   → subst (exts σ) N [ subst σ M ] ≡ subst σ (N [ M ])
 subst-commute {N = N} = plfa.part2.Substitution.subst-commute {N = N}
@@ -330,7 +330,7 @@ subst-commute {N = N} = plfa.part2.Substitution.subst-commute {N = N}
 
 We are ready to prove that substitution respects parallel reduction.
 
-```
+```agda
 subst-par : ∀{Γ Δ A} {σ τ : Subst Γ Δ} {M M′ : Γ ⊢ A}
   → par-subst σ τ  →  M ⇛ M′
     --------------------------
@@ -381,7 +381,7 @@ We proceed by induction on `M ⇛ M′`.
 Of course, if `M ⇛ M′`, then `subst-zero M` pointwise parallel reduces
 to `subst-zero M′`.
 
-```
+```agda
 par-subst-zero : ∀{Γ}{A}{M M′ : Γ ⊢ A}
        → M ⇛ M′
        → par-subst (subst-zero M) (subst-zero M′)
@@ -392,7 +392,7 @@ par-subst-zero {M} {M′} p {A} {S x} = pvar
 We conclude this section with the desired corollary, that substitution
 respects parallel reduction.
 
-```
+```agda
 sub-par : ∀{Γ A B} {N N′ : Γ , A ⊢ B} {M M′ : Γ ⊢ A}
   → N ⇛ N′
   → M ⇛ M′
@@ -428,7 +428,7 @@ development_. The desired property may be illustrated as
 where downward lines are instances of `⇛`, so we call it the _triangle
 property_.
 
-```
+```agda
 _⁺ : ∀ {Γ A}
   → Γ ⊢ A → Γ ⊢ A
 (` x) ⁺       =  ` x
@@ -488,7 +488,7 @@ The diamond property then follows by halving the diamond into two triangles.
 That is, the diamond property is proved by applying the
 triangle property on each side with the same confluent term `M ⁺`.
 
-```
+```agda
 par-diamond : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N
   → M ⇛ N′
@@ -533,7 +533,7 @@ they are marked.
 The proof of the strip lemma is a straightforward induction on `M ⇛* N′`,
 using the triangle property in the induction step.
 
-```
+```agda
 strip : ∀{Γ A} {M N N′ : Γ ⊢ A}
   → M ⇛ N
   → M ⇛* N′
@@ -549,7 +549,7 @@ The proof of confluence for parallel reduction is now proved by
 induction on the sequence `M ⇛* N`, using the above lemma in the
 induction step.
 
-```
+```agda
 par-confluence : ∀{Γ A} {L M₁ M₂ : Γ ⊢ A}
   → L ⇛* M₁
   → L ⇛* M₂
@@ -595,7 +595,7 @@ Then by confluence we obtain some `L` such that
 `M₁ ⇛* N` and `M₂ ⇛* N`, from which we conclude that
 `M₁ —↠ N` and `M₂ —↠ N` by `pars-betas`.
 
-```
+```agda
 confluence : ∀{Γ A} {L M₁ M₂ : Γ ⊢ A}
   → L —↠ M₁
   → L —↠ M₂

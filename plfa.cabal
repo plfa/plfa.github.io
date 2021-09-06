@@ -12,6 +12,8 @@ build-type:         Simple
 common plfa-common
   build-depends:       Agda == 2.6.2
                      , base
+                     , containers
+                     , filemanip
                      , shake
   default-language:    Haskell2010
   default-extensions:  ImportQualifiedPost
@@ -21,23 +23,28 @@ common plfa-common
 library
   import:              plfa-common
   hs-source-dirs:      lib
-  exposed-modules:     PLFA.Agda
-                     , PLFA.Data.ByteString
-                     , PLFA.Data.Text
-                     , PLFA.CSS
-  other-modules:       General.Extra
+  exposed-modules:     Development.Shake.Agda
+                     , Development.Shake.ByteString
+                     , Development.Shake.CSS
+                     , Development.Shake.Sass
+                     , Development.Shake.Text
+                     , General.Extra
   build-depends:       bytestring
                      , charsetdetect
                      , data-default-class
                      , directory
+                     , extra
+                     , frontmatter
                      , hsass >= 0.3.0
                      , hasmin
                      , mtl
                      , regex-tdfa
                      , text
                      , text-icu >= 0.7.1.0
+                     , text-regex-replace
+                     , yaml
 
-executable site
+executable builder
   import:              plfa-common
   main-is:             app/Main.hs
   build-depends:       mustache

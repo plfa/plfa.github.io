@@ -51,20 +51,20 @@
 \setcounter{secnumdepth}{0}
 
 % Set the global text color
-\definecolor{textcolor}{HTML}{111111}
-\color{textcolor}
+\definecolor{TEXTCOLOR}{HTML}{111111}
+\color{TEXTCOLOR}
 
 % Change background color for inline code in markdown files.
 % The following code does not work well for long text as the
 % text will exceed the page boundary.
-\definecolor{background-color}{HTML}{EEEEFF}
+\definecolor{BACKGROUND-COLOR}{HTML}{EEEEFF}
 \let\oldtexttt\texttt%
-\renewcommand{\texttt}[1]{\colorbox{background-color}{\oldtexttt{#1}}}
+\renewcommand{\texttt}[1]{\colorbox{BACKGROUND-COLOR}{\oldtexttt{#1}}}
 
 % Box with background colour similar to web version:
 \newtcolorbox{agda}[1][]{
   frame hidden,
-  colback=background-color,
+  colback=BACKGROUND-COLOR,
   spartan,
   left=5pt,
   boxrule=0pt,
@@ -88,7 +88,7 @@
 % https://tex.stackexchange.com/a/103078
 \newfontfamily{\AgdaSerifFont}{DejaVu-Serif}
 \newfontfamily{\AgdaSansSerifFont}{DejaVu-Sans}
-\newfontfamily{\AgdaTypewriterFont}{DejaVu-mononoki-Symbola-Droid}
+\newfontfamily{\AgdaTypewriterFont}{Frankenfont}
 \renewcommand{\AgdaFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
 \renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
 \renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
@@ -104,12 +104,12 @@
 
 % Style links with colors instead of boxes:
 % https://tex.stackexchange.com/q/823
-\definecolor{linkcolor}{HTML}{2A7AE2}
+\definecolor{LINKCOLOR}{HTML}{2A7AE2}
 \hypersetup{
   colorlinks,
-  linkcolor={linkcolor},
-  citecolor={linkcolor},
-  urlcolor={linkcolor}
+  linkcolor={LINKCOLOR},
+  citecolor={LINKCOLOR},
+  urlcolor={LINKCOLOR}
 }
 
 \begin{document}

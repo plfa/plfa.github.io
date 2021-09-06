@@ -1,21 +1,8 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
-
-module PLFA.CSS
+module Development.Shake.Sass
   ( -- * Compile Sass with hsass
     compileSass
   , compileSassWith
   , SassOptions (..)
-    -- * Minify CSS with hasmin
-  , minifyCSS
-  , minifyCSSWith
-  , Hasmin.Config (..)
-  , Hasmin.ColorSettings (..)
-  , Hasmin.DimensionSettings (..)
-  , Hasmin.GradientSettings (..)
-  , Hasmin.FontWeightSettings (..)
-  , Hasmin.LetterCase (..)
-  , Hasmin.SortingMethod (..)
-  , Hasmin.RulesMergeSettings (..)
   ) where
 
 import Codec.Text.Detect qualified as Codec
@@ -28,7 +15,6 @@ import Data.Text.ICU.Convert qualified as Convert
 import Development.Shake
 import Text.Sass (SassError, SassOptions(..))
 import Text.Sass qualified as Sass
-import Hasmin qualified
 
 
 -- * Sass
@@ -43,7 +29,7 @@ compileSassWith opts filePath = do
 
   -- Compile `filePath` from Sass/SCSS to CSS
   resultOrError <- liftIO $ Sass.compileFile filePath opts
-  result <- liftEither showSassError resultOrError
+  result <- liftIO (liftEither resultOrError)
 
   -- Inform Shake of the dependencies used during compilation
   --
@@ -56,30 +42,11 @@ compileSassWith opts filePath = do
   liftIO $ toText (Sass.resultString result)
 
 
--- * CSS
-
--- | Minify CSS using 'Hasmin'.
-minifyCSS :: Text -> Action Text
-minifyCSS = minifyCSSWith def
-
--- | Minify CSS with options.
-minifyCSSWith :: Hasmin.Config -> Text -> Action Text
-minifyCSSWith opts css =
-  liftEither return (Hasmin.minifyCSSWith opts css)
-
-instance Default Hasmin.Config where
-  def = Hasmin.defaultConfig
-
-
-
 -- * Helper functions
 
-showSassError :: SassError -> Action String
-showSassError e = liftIO $ Sass.errorMessage e
-
-liftEither :: MonadFail m => (e -> m String) -> Either e a -> m a
-liftEither pretty (Left  e) = fail =<< pretty e
-liftEither _      (Right a) = return a
+liftEither :: Either SassError a -> IO a
+liftEither (Left  e) = fail =<< Sass.errorMessage e
+liftEither (Right a) = return a
 
 toText :: BS.ByteString -> IO Text
 toText bs = do
