@@ -1,4 +1,4 @@
-module PLFA.Build.Text
+module PLFA.Build.Prelude.Text
   ( T.Text
   , readFile'
   , writeFile'
@@ -7,8 +7,7 @@ module PLFA.Build.Text
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Development.Shake (Action, liftIO, need)
-import Development.Shake.FilePath (takeDirectory)
-import PLFA.Util
+import PLFA.Build.Prelude.FilePath
 import System.Directory
 
 readFile' :: FilePath -> Action T.Text

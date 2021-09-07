@@ -1,5 +1,15 @@
 ---
-parts:
+pagetitle: Programming Language Foundations in Agda
+pageurl: https://plfa.github.io/
+description: |
+  An introduction to programming language theory using the proof assistant Agda.
+language: en_US
+rights: Creative Commons Attribution 4.0 International License
+rights_url: https://creativecommons.org/licenses/by/4.0/
+repository: plfa/plfa.github.io
+branch: dev
+google_analytics: UA-125055580-1
+toc:
 - frontmatter: True
   title: "Front matter"
   sections:

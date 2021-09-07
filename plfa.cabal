@@ -23,6 +23,7 @@ common plfa-common
   default-language:    Haskell2010
   default-extensions:  ImportQualifiedPost
                      , LambdaCase
+                     , OverloadedStrings
                      , RecordWildCards
 
 library
@@ -30,21 +31,34 @@ library
   hs-source-dirs:      lib
   exposed-modules:     PLFA.Build.Agda
                      , PLFA.Build.Metadata
+                     , PLFA.Build.Pandoc
+                     , PLFA.Build.Prelude
+                     , PLFA.Build.Route
                      , PLFA.Build.Style.CSS
                      , PLFA.Build.Style.Sass
-                     , PLFA.Build.Text
-                     , PLFA.Util
+  other-modules:       PLFA.Build.Prelude.ByteString
+                     , PLFA.Build.Prelude.Error
+                     , PLFA.Build.Prelude.FilePath
+                     , PLFA.Build.Prelude.Text
+                     , PLFA.Build.Prelude.Url
   build-depends:       aeson
                      , bytestring
                      , charsetdetect
                      , directory
+                     , doclayout
+                     , doctemplates
                      , extra
+                     , filepath
                      , frontmatter
                      , hsass >= 0.3.0
                      , hasmin
                      , mtl
+                     , pandoc
+                     , pandoc-types
                      , regex-tdfa
+                     , tagsoup
                      , temporary
+                     , time
                      , unordered-containers
                      , yaml
 
@@ -52,7 +66,6 @@ executable builder
   import:              plfa-common
   main-is:             app/Main.hs
   build-depends:       mustache
-                     , pandoc
                      , shake
                      , text
                      , plfa

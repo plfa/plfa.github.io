@@ -5,17 +5,12 @@ module PLFA.Build.Style.Sass
   , SassOptions (..)
   ) where
 
-import Codec.Text.Detect qualified as Codec
-import Data.ByteString qualified as BS
-import Data.ByteString.Lazy qualified as LBS
+import Data.Bitraversable (Bitraversable (..))
 import Data.Default.Class (Default(..))
-import Data.Maybe (fromMaybe)
-import Data.Text (Text)
-import Data.Text.ICU.Convert qualified as Convert
 import Development.Shake
-import Text.Sass (SassError, SassOptions(..))
+import Text.Sass (SassOptions(..))
 import Text.Sass qualified as Sass
-
+import PLFA.Build.Prelude
 
 -- * Sass
 
@@ -29,7 +24,8 @@ compileSassWith opts filePath = do
 
   -- Compile `filePath` from Sass/SCSS to CSS
   resultOrError <- liftIO $ Sass.compileFile filePath opts
-  result <- liftIO (liftEither resultOrError)
+  resultOrErrorMsg <- liftIO $ bitraverse Sass.errorMessage return resultOrError
+  result <- liftIO (liftEither id resultOrErrorMsg)
 
   -- Inform Shake of the dependencies used during compilation
   --
@@ -40,18 +36,3 @@ compileSassWith opts filePath = do
 
   -- Convert the resulting ByteString to Text
   liftIO $ toText (Sass.resultString result)
-
-
--- * Helper functions
-
-liftEither :: Either SassError a -> IO a
-liftEither (Left  e) = fail =<< Sass.errorMessage e
-liftEither (Right a) = return a
-
-toText :: BS.ByteString -> IO Text
-toText bs = do
-  let lbs = LBS.fromChunks [bs]
-  let maybeEncoding = Codec.detectEncodingName lbs
-  let encoding = fromMaybe "" maybeEncoding
-  converter <- Convert.open encoding (Just True)
-  return $ Convert.toUnicode converter bs

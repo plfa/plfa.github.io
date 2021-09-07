@@ -11,7 +11,7 @@ remove, parts that require better explanation, good exercises, errors,
 and typos---are welcome.  The book repository is on [GitHub].
 Pull requests are encouraged.
 
-$for(parts)$
+$for(toc)$
 ## $title$
 <ul>
 $for(sections)$

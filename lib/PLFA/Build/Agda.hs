@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module PLFA.Build.Agda
   ( Format (..)
@@ -18,30 +18,25 @@ import Agda.Interaction.Highlighting.HTML (htmlBackend)
 import Agda.Interaction.Highlighting.LaTeX (latexBackend)
 import Agda.Utils.FileName (absolute)
 import Control.Exception (throwIO, handle)
-import Control.Monad (forM, forM_)
-import Data.ByteString qualified as B
+import Control.Monad (forM)
 import Data.Default.Class (Default (..))
 import Data.List qualified as L
-import Data.List.Extra qualified as L
 import Data.Map (Map)
 import Data.Map qualified as M
-import Data.Maybe (listToMaybe, catMaybes, fromMaybe, fromJust)
+import Data.Maybe (listToMaybe, catMaybes, fromMaybe)
 import Data.Monoid (Endo(..))
-import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Data.Text.ICU qualified as ICU
 import Data.Text.ICU.Replace qualified as ICU
-import Development.Shake (Action, liftIO)
-import Development.Shake.FilePath
-import PLFA.Build.Metadata (getMetadata, getPermalink)
-import PLFA.Util (liftExcept, liftEither, liftMaybe)
 import System.Exit
-import System.Directory (doesFileExist, copyFile)
+import System.Directory qualified as System (doesFileExist)
 import System.FilePath.Find ((~~?), (==?), always, extension, fileName, find)
 import System.IO.Temp (withTempDirectory, getCanonicalTemporaryDirectory)
 import Text.Printf
 
+import PLFA.Build.Metadata (readYamlFrontmatter, (^.))
+import PLFA.Build.Prelude
 
 --------------------------------------------------------------------------------
 -- Compile literate Agda to Markdown/HTML or LaTeX
@@ -51,8 +46,6 @@ data Format
   = Markdown
   | LaTeX
   deriving (Eq, Ord)
-
-type Url = String
 
 data AgdaLib
   = AgdaLib
@@ -144,7 +137,7 @@ getBackend LaTeX    = latexBackend
 
 -- | If the passed action throws an 'ExitSuccess', catch it and swallow it.
 swallowExitSuccess :: IO () -> IO ()
-swallowExitSuccess action = handle handler action
+swallowExitSuccess act = handle handler act
   where
     handler :: ExitCode -> IO ()
     handler ExitSuccess = return ()
@@ -173,15 +166,15 @@ prepareFixLinks agdaLibs = appEndo <$> foldMap prepareFixLinks1 agdaLibs
 prepareFixExternalLinks :: FilePath -> Url -> IO (Url -> Url)
 prepareFixExternalLinks libDir libUrl = do
   regex <- reLinkToExternal libDir
-  let replace = ICU.rstring libUrl <> "/$1.html$2"
+  let replace = ICU.rtext libUrl <> "/$1.html$2"
   let fixExternalLink :: Url -> Url
-      fixExternalLink url = T.unpack $ ICU.replaceAll regex replace $ T.pack url
+      fixExternalLink url = ICU.replaceAll regex replace url
   return fixExternalLink
 
 -- | An ICU regular expression which matches links to the Agda standard library.
 reLinkToExternal :: FilePath -> IO ICU.Regex
 reLinkToExternal libDir = do
-  modNames <- map T.pack <$> allModules libDir
+  modNames <- allModules libDir
   let builtin  = "Agda\\.[A-Za-z\\.]+"
   let modPatns = T.replace "." "\\." <$> modNames
   let modPatn  = T.concat . L.intersperse "|" $ builtin : modPatns
@@ -189,7 +182,7 @@ reLinkToExternal libDir = do
   return (ICU.regex [] hrefPatn)
 
 -- | Gather all modules given a path.
-allModules :: FilePath -> IO [String]
+allModules :: FilePath -> IO [Text]
 allModules dir = do
   inputFiles <- find always (extension ==? ".agda") dir
   modules <- traverse (guessModuleName_ [dir]) inputFiles
@@ -209,8 +202,8 @@ prepareFixLocalLinksWithPermalink libDir = do
 
   -- Get all permalinks and Agda module names from these files
   localLinkList <- forM inputFiles $ \inputFile -> do
-    metadata <- getMetadata inputFile
-    permalink <- getPermalink metadata
+    metadata <- readYamlFrontmatter inputFile
+    permalink <- metadata ^. "permalink"
     moduleName <- guessModuleName_ [libDir] inputFile
     return (moduleName, permalink)
 
@@ -219,12 +212,12 @@ prepareFixLocalLinksWithPermalink libDir = do
   -- Construct a function which looks up the URL in the map.
   let fixLocalLinkWithPermalink :: Url -> Url
       fixLocalLinkWithPermalink url = fromMaybe url $ do
-        (oldPath, anchor) <- L.stripInfix ".html" url
-        newPath <- M.lookup oldPath localLinks
-        return $ newPath <> anchor
+        let (oldUrl, anchor) = T.breakOn "#" url
+        let moduleName = T.replace ".html" "" oldUrl
+        newUrl <- M.lookup moduleName localLinks
+        return $ newUrl <> anchor
 
   return fixLocalLinkWithPermalink
-
 
 --------------------------------------------------------------------------------
 -- Construct an 'AgdaLib' value for the standard library
@@ -232,17 +225,17 @@ prepareFixLocalLinksWithPermalink libDir = do
 
 -- | Check whether or not a given 'FilePath' is a copy of the standard library.
 isStandardLibrary :: FilePath -> IO Bool
-isStandardLibrary dir = doesFileExist $ dir </> "standard-library.agda-lib"
+isStandardLibrary dir = System.doesFileExist $ dir </> "standard-library.agda-lib"
 
 -- | The default file used to obtain the current Agda standard library version.
 changelogName :: FilePath
 changelogName = "CHANGELOG.md"
 
 -- | Read the version information from the first line of 'CHANGELOG.md'.
-getStandardLibraryVersion :: FilePath -> IO String
+getStandardLibraryVersion :: FilePath -> IO Text
 getStandardLibraryVersion dir = do
   let pathToChangelog = dir </> changelogName
-  correct <- doesFileExist pathToChangelog
+  correct <- System.doesFileExist pathToChangelog
   if not correct then
     error $ "Could not find " <> changelogName <> " in " <> dir
   else do
@@ -250,7 +243,7 @@ getStandardLibraryVersion dir = do
     let verLine = head (T.lines changelog)
     ver <- liftMaybe ("Cannot read version from " <> pathToChangelog) $
       T.stripPrefix "Version " verLine
-    return $ T.unpack $ "v" <> T.strip ver
+    return $ "v" <> T.strip ver
 
 -- | Construct an 'AgdaLib' value from the path to the standard library.
 --
@@ -265,10 +258,10 @@ standardLibraryAgdaLib dir = do
     error $ "Could not find standard library at " <> dir
   else do
     ver <- getStandardLibraryVersion dir
-    printf "Found standard-library version %s at %s\n" ver dir
-    let stdlibUrl = "https://agda.github.io/agda-stdlib" </> ver
+    printf "Found standard-library version %s\n" ver
+    let stdlibUrl = "https://agda.github.io/agda-stdlib/" <> ver
     return AgdaLib
-      { libDir    = dir </> "src"
+      { libDir = dir </> "src"
       , libUrl = Just stdlibUrl
       }
 
@@ -280,21 +273,21 @@ standardLibraryAgdaLib dir = do
 guessOutputPath :: Format -> AgdaOpts -> IO FilePath
 guessOutputPath Markdown AgdaOpts{..} = do
   moduleName <- guessModuleName_ (map libDir libraries) inputFile
-  return $ tmpDir </> moduleName <.> "md"
+  return $ tmpDir </> T.unpack moduleName <.> "md"
 guessOutputPath LaTeX AgdaOpts{..} = do
   modulePath <- guessModulePath_ (map libDir libraries) inputFile
   return $ tmpDir </> replaceExtensions modulePath "tex"
 
 -- | Guess the module name based on the filename and the include path.
-guessModuleName :: [FilePath] -> FilePath -> Maybe FilePath
+guessModuleName :: [FilePath] -> FilePath -> Maybe Text
 guessModuleName includePaths inputFile = pathToModule <$> guessModulePath includePaths inputFile
   where
-    pathToModule fp = map sepToDot (dropExtensions fp)
+    pathToModule fp = T.map sepToDot (T.pack $ dropExtensions fp)
       where
         sepToDot c = if c == '/' then '.' else c
 
 -- | Variant of 'guessModuleName' which throws an error.
-guessModuleName_ :: [FilePath] -> FilePath -> IO FilePath
+guessModuleName_ :: [FilePath] -> FilePath -> IO Text
 guessModuleName_ includePaths inputFile =
   liftMaybe ("Could not guess module name for " <> inputFile) $
     guessModuleName includePaths inputFile

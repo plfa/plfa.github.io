@@ -127,7 +127,7 @@ list:
 ########################################
 
 .PHONY: publish
-publish: setup-check-rsync
+publish: | setup-check-rsync
 	$(MAKE) all
 	@echo "Cleaning intermediate files"
 	rm -rf $(TMP_DIR)

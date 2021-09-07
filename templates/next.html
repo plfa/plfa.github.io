@@ -1,16 +1,16 @@
 <nav class="pager">
     <ul class="pagination">
-        {{#prev}}
-        <li><a class="pagelink" href="{{url}}">Prev</a></li>
+        $if(prev)$
+        <li><a class="pagelink" href="$prev$">Prev</a></li>
         <li class="separator">&bullet;</li>
-        {{/prev}}
-        {{#source}}
-        <li><a class="pagelink" href="https://github.com/{{repository}}/blob/{{branch}}/{{file}}">Source</a></li>
+        $endif$
+        $if(source)$
+        <li><a class="pagelink" href="https://github.com/$repository$/blob/$branch$/$source$">Source</a></li>
         <li class="separator">&bullet;</li>
-        {{/source}}
-        {{#next}}
-        <li><a class="pagelink" href="{{url}}">Next</a></li>
+        $endif$
+        $if(next)$
+        <li><a class="pagelink" href="$next$">Next</a></li>
         <li class="separator">&bullet;</li>
-        {{/next}}
+        $endif$
     </ul>
 </nav>

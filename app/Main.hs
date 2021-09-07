@@ -1,173 +1,302 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
-
-import Control.Exception (displayException)
-import Control.Monad (forM_)
-import Data.Default.Class (Default (..))
+import Control.Monad (forM, forM_, when)
+import Data.Function (on)
+import Data.Functor ((<&>))
+import Data.List (sortBy)
 import Data.Map qualified as M
-import Data.Text (Text)
 import Data.Text.ICU qualified as ICU
 import Data.Text.ICU.Replace qualified as ICU
-import Development.Shake
-import Development.Shake.FilePath
 import PLFA.Build.Agda
 import PLFA.Build.Metadata
+import PLFA.Build.Pandoc as Pandoc
+import PLFA.Build.Prelude
+import PLFA.Build.Route
 import PLFA.Build.Style.CSS
 import PLFA.Build.Style.Sass
-import PLFA.Build.Text qualified as T
-import PLFA.Util
 import System.FilePath.Find
-import Text.Mustache as Mustache
-import Text.Mustache.Compile as Mustache
-import Text.Pandoc as Pandoc
-import Text.Pandoc.Writers.HTML as Pandoc
 
 
+--------------------------------------------------------------------------------
 -- Directories
+--------------------------------------------------------------------------------
 
-cacheDir      = "_build"
-htmlCacheDir  = cacheDir </> "html"
-epubCacheDir  = cacheDir </> "epub"
-texCacheDir   = cacheDir </> "tex"
-siteDir       = "_site"
-srcDir        = "src"
-staticSrcDir  = "public"
-cssSrcDir     = "css"
-stdlibDir     = "standard-library"
-templateDir   = "templates"
+cacheDir       = "_build"
+htmlCacheDir   = cacheDir </> "html"
+epubCacheDir   = cacheDir </> "epub"
+texCacheDir    = cacheDir </> "tex"
+siteDir        = "_site"
+srcDir         = "src"
+authorDir      = "authors"
+contributorDir = "contributors"
+publicDir      = "public"
+cssDir         = "css"
+stdlibDir      = "standard-library"
+templateDir    = "templates"
 
--- Options
 
-shakeOpts = shakeOptions
-  { shakeFiles = cacheDir </> "shake"
-  }
-
-permalinkPath :: FilePath -> IO FilePath
-permalinkPath src = do
-  metadata <- getMetadata src
-  permalink <- getPermalink metadata
-  return $ siteDir </> permalink </> "index.html"
-
+-- TODO:
+--
+--   - Adapt code which unfolds include paths to include metadata from included files.
+--   - Copy code which includes titlerunning and subtitle.
+--   - Finish PDF and EPUB.
+--
 
 main :: IO ()
 main = do
 
-  -- * Input & Output Files
+  --------------------------------------------------------------------------------
+  -- Gather input files
+  --------------------------------------------------------------------------------
 
-  -- All files in '$staticSrcDir' are copied verbatim to '$siteDir',
-  -- preserving their relative paths.
-  staticFiles <- find always (fileType ==? RegularFile) staticSrcDir
+  staticFiles <-
+    find always (fileType ==? RegularFile) publicDir
 
-  -- All .lagda.md files are rendered to highlighted Markdown and LaTeX files,
-  -- for construction of the EPUB and PDF versions of PLFA, and the Markdown
-  -- versions are further compiled to standalone HTML pages for the web version
-  -- of PLFA.
-  lagdaMdFiles <- find always (fileName ~~? "*.lagda.md") srcDir
+  mdFiles <-
+    find always (fileType ==? RegularFile &&? fileName ~~? "*.md") srcDir
 
-  -- All files in '$cssSrcDir' are compiled into a single minified css file,
-  -- written to '$siteDir/$staticSrcDir/style.css'
-  scssFiles <- find always (fileName ~~? "*.scss") cssSrcDir
-  let styleFile = siteDir </> staticSrcDir </> "style.css"
+  lagdaMdFiles <-
+    find always (fileType ==? RegularFile &&? fileName ~~? "*.lagda.md") srcDir
 
-  -- Options for Agda highlighting
-  stdlib <- standardLibraryAgdaLib stdlibDir
-  fixLinks <- prepareFixLinks [def{libDir = srcDir}, stdlib]
-
-
-  -- * Build Tasks
+  permalinkRoutingTable <-
+    getPermalinkRoutingTable siteDir mdFiles
 
   shakeArgs shakeOpts $ do
 
-    -- Compile a Mustache template
-    compileTemplate <- newCache $ \src -> do
-      tplOrError <- liftIO (Mustache.automaticCompile [templateDir] src)
-      tpl <- liftEither @Action show tplOrError
-      need (Mustache.getPartials (Mustache.ast tpl))
-      return tpl
+    --------------------------------------------------------------------------------
+    -- Highlighting literate Agda files
+    --------------------------------------------------------------------------------
 
-    -- Highlight a source file as HTML
-    highlightHTML <- newCache $ \(dir, src) -> do
-      resultMap <- highlightAgdaWith def
-                   { formats   = [Markdown],
-                     libraries = [def{libDir = dir}, stdlib],
-                     inputFile = src
-                   }
-      liftMaybe ("Highlight failed for " <> src) $
-        M.lookup Markdown resultMap
+    getStandardLibraryAgdaLib <- newCache $ \() -> liftIO $
+      standardLibraryAgdaLib stdlibDir
 
-    -- Render Markdown to HTML
-    markdownToHTML <- newCache $ \src -> do
-      runPandocIO $ do
-        ast <- Pandoc.readMarkdown readerOpts src
-        Pandoc.writeHtml5String writerOpts ast
+    let highlightHTML :: (FilePath, FilePath) -> Action Text
+        highlightHTML (dir, src) = do
+          stdlib <- getStandardLibraryAgdaLib ()
+          resultMap <- highlightAgdaWith def
+                       { formats   = [Markdown],
+                         libraries = [def{libDir = dir}, stdlib],
+                         inputFile = src
+                       }
+          liftMaybe ("Highlight failed for " <> src) $
+            M.lookup Markdown resultMap
 
-    -- Render Markdown to EPUB HTML
-    markdownToEPUB <- newCache $ \src -> do
-      runPandocIO $ do
-        ast <- Pandoc.readMarkdown readerOpts src
-        Pandoc.writeHtmlStringForEPUB EPUB3 writerOpts ast
+    let highlightLaTeX :: (FilePath, FilePath) -> Action Text
+        highlightLaTeX (dir, src) = do
+          stdlib <- getStandardLibraryAgdaLib ()
+          resultMap <- highlightAgdaWith def
+                       { formats   = [Markdown],
+                         libraries = [def{libDir = dir}, stdlib],
+                         inputFile = src
+                       }
+          liftMaybe ("Highlight failed for " <> src) $
+            M.lookup LaTeX resultMap
 
-    -- Copy static files
-    want staticFiles
 
-    forM_ staticFiles $ \src ->
-      siteDir </> src %> \out -> do
+    --------------------------------------------------------------------------------
+    -- Format conversion with Pandoc
+    --------------------------------------------------------------------------------
+
+    getFixLinks <- newCache $ \() -> do
+      stdlib <- getStandardLibraryAgdaLib ()
+      liftIO $
+        prepareFixLinks [def{libDir = srcDir}, stdlib]
+
+    let markdownToHTML :: Text -> Action Text
+        markdownToHTML src = do
+          fixLinks <- getFixLinks ()
+          runPandocIO $ do
+            ast <- Pandoc.readMarkdown readerOpts src
+            let ast' = withUrlsPandoc fixLinks ast
+            Pandoc.writeHtml5String writerOpts ast'
+
+    let markdownToEPUB :: Text -> Action Text
+        markdownToEPUB src = runPandocIO $ do
+          ast <- Pandoc.readMarkdown readerOpts src
+          Pandoc.writeHtmlStringForEPUB EPUB3 writerOpts ast
+
+    let markdownToLaTeX :: Text -> Action Text
+        markdownToLaTeX src = runPandocIO $ do
+          ast <- Pandoc.readMarkdown readerOpts src
+          Pandoc.writeLaTeX writerOpts ast
+
+
+    --------------------------------------------------------------------------------
+    -- Templates
+    --------------------------------------------------------------------------------
+
+    getTemplate <- newCache $ \inputFile -> do
+      need [inputFile]
+      Pandoc.compileTemplate inputFile
+
+    let applyTemplate :: FilePath -> Metadata -> Text -> Action Text
+        applyTemplate inputFile metadata body = do
+          tpl <- getTemplate inputFile
+          return $ Pandoc.renderTemplate tpl (metadata & "body" .~ body)
+
+    let applyAsTemplate :: FilePath -> Metadata -> Action Text
+        applyAsTemplate inputFile metadata = do
+          tpl <- getTemplate inputFile
+          return $ Pandoc.renderTemplate tpl metadata
+
+
+    --------------------------------------------------------------------------------
+    -- Metadata
+    --------------------------------------------------------------------------------
+
+    getAuthors <- newCache $ \() -> do
+      authorFiles <- liftIO $ find always (fileName ~~? "*.metadata") authorDir
+      authors <- traverse readYamlFrontmatter' authorFiles
+      return (authors :: [Author])
+
+    getContributors <- newCache $ \() -> do
+      contributorFiles <- liftIO $ find always (fileName ~~? "*.metadata") contributorDir
+      contributors <- traverse readYamlFrontmatter' contributorFiles
+      let sortedContributors = sortBy (compare `on` contributorCount) contributors
+      return (sortedContributors :: [Contributor])
+
+    getSiteMetadata <- newCache $ \() -> do
+      metadata <- readYamlFrontmatter' $ srcDir </> "site.metadata"
+      authors <- getAuthors ()
+      contributors <- getContributors()
+      return $
+        metadata & "authors"      .~ authors
+                 & "contributors" .~ contributors
+
+    getFileMetadata <- newCache $ \inputFile -> do
+      siteMetadata <- getSiteMetadata ()
+      frontmatterMetadata <- readYamlFrontmatter' inputFile
+      lastModifiedMetadata <- lastModified inputFile "modified_date"
+      return $ mconcat
+        [ siteMetadata,
+          frontmatterMetadata,
+          lastModifiedMetadata,
+          sourceFile inputFile "source"
+        ]
+
+
+    --------------------------------------------------------------------------------
+    -- Static files
+    --
+    -- All files in '$publicDir' are copied verbatim to '$siteDir', preserving
+    -- their relative paths.
+    --------------------------------------------------------------------------------
+
+    forM_ staticFiles $ \src -> do
+      let out = siteDir </> src
+
+      want [out]
+
+      out %> \_ -> do
         putInfo $ "Copy " <> src
         copyFile' src out
 
-    -- Compile literate Agda files to HTML
+    --------------------------------------------------------------------------------
+    -- HTML compilation
+    --------------------------------------------------------------------------------
+
     let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
         htmlStage1 src = htmlCacheDir </> "stage1" </> src
         htmlStage2 src = htmlCacheDir </> "stage2" </> replaceExtensions src "md"
-        epubStage3 src = epubCacheDir </> "stage3" </> replaceExtensions src "html"
         htmlStage3 src = htmlCacheDir </> "stage3" </> replaceExtensions src "html"
+        htmlStage4 src = permalinkRoutingTable M.! src
 
-    forM_ lagdaMdFiles $ \src -> do
+    --------------------------------------------------------------------------------
+    -- Compile source files to HTML
+    --
+    -- Literate Agda files are rendered in four stages:
+    --
+    --   Stage 1. Preprocessing. Literate code blocks are marked as raw HTML or
+    --            LaTeX by wrapping them in a code block with the appropriate raw
+    --            attribute. For the LaTeX backend, the backtick fences are replaced
+    --            by a LaTeX code environment.
+    --
+    --   Stage 2. Highlighting. Literate code blocks are highlighted using Agda.
+    --
+    --   Stage 3. Rendering. The surrounding Markdown is rendered as either HTML or
+    --            LaTeX using Pandoc. The files used on the website are rendered as
+    --            HTML5 and the files used in the EPUB are rendered to XHTML.
+    --
+    --   Stage 4. Templating. The relevant templates are applied, and the file is
+    --            written to the path determined by its permalink.
+    --
+    -- Markdown files are copied verbatim to Stage 2 and pass through Stages 3 & 4.
+    --
+    --------------------------------------------------------------------------------
 
-      want [htmlStage3 src, epubStage3 src]
+    want [htmlStage4 src | src <- mdFiles]
 
-      -- Stage 1: Preprocess the Markdown files
-      htmlStage1 src %> \out -> do
-        content <- T.readFile' src
-        putInfo $ "Preprocess " <> src
-        T.writeFile' out (preprocessForHtml content)
+    forM_ mdFiles $ \src -> do
 
-      -- Stage 2: Highlight the Agda source
-      htmlStage2 src %> \out -> do
-        need [htmlStage1 fp | fp <- lagdaMdFiles]
-        putInfo $ "Highlight " <> src
-        markdown <- highlightHTML (htmlStage1 srcDir, htmlStage1 src)
-        T.writeFile' out markdown
+      if (src `elem` lagdaMdFiles) then do
+
+        -- Stage 1: Preprocess literate Agda files
+        htmlStage1 src %> \out -> do
+          putInfo $ "Preprocess " <> src
+          content <- readFile' src
+          writeFile' out (preprocessForHtml content)
+
+        -- Stage 2: Highlight literate Agda files
+        htmlStage2 src %> \out -> do
+          putInfo $ "Highlight " <> src
+          need [htmlStage1 fp | fp <- lagdaMdFiles]
+          markdown <- highlightHTML (htmlStage1 srcDir, htmlStage1 src)
+          writeFile' out markdown
+
+      else do
+
+        -- Stage 2: Copy Markdown files verbatim
+        htmlStage2 src %> \out -> do
+          putInfo $ "Copy " <> src
+          copyFile' src out
 
       -- Stage 3: Render the Markdown to HTML
       htmlStage3 src %> \out -> do
-        markdown <- T.readFile' (htmlStage2 src)
         putInfo $ "Render " <> src
+        markdown <- readFile' (htmlStage2 src)
         html5 <- markdownToHTML markdown
-        T.writeFile' out html5
+        writeFile' out html5
 
-      -- Stage 3: Render the Markdown to HTML (EPUB)
-      epubStage3 src %> \out -> do
-        markdown <- T.readFile' (htmlStage2 src)
-        putInfo $ "Render " <> src
-        xhtml <- markdownToEPUB markdown
-        T.writeFile' out xhtml
+      -- Stage 4: Apply page template to HTML
+      htmlStage4 src %> \out -> do
+        putInfo $ "Template " <> src
+        metadata <- getFileMetadata src
+        applyAsTemplate (htmlStage3 src) metadata
+          >>= applyTemplate "templates/page.html" metadata
+          >>= applyTemplate "templates/default.html" metadata
+          <&> withUrls relativizeUrl
+          >>= writeFile' out
 
+
+
+    --------------------------------------------------------------------------------
     -- Compile style files
+    --
+    -- All Sass files in '$cssDir' are compiled into a single minified CSS file,
+    -- which is then written to '$styleFile'.
+    --------------------------------------------------------------------------------
+
+    getSCSSFiles <- newCache $ \() -> liftIO $
+      find always (fileType ==? RegularFile &&? fileName ~~? "*.scss") cssDir
+
+    let styleFile = siteDir </> publicDir </> cssDir </> "style.css"
+
     want [styleFile]
 
     styleFile %> \out -> do
-      let src = cssSrcDir </> "style.scss"
-      need scssFiles
+      let src = cssDir </> "style.scss"
       putInfo $ "Compile " <> src
-      css <- compileSassWith def {sassIncludePaths = Just [cssSrcDir]} src
+      need =<< getSCSSFiles ()
+      css <- compileSassWith def {sassIncludePaths = Just [cssDir]} src
       cssMin <- minifyCSSWith def css
-      T.writeFile' out cssMin
+      writeFile' out cssMin
 
-runPandocIO :: PandocIO a -> Action a
-runPandocIO action = do
-  resultOrError <- liftIO (Pandoc.runIO action)
-  liftEither displayException resultOrError
+
+--------------------------------------------------------------------------------
+-- Configuration
+--------------------------------------------------------------------------------
+
+shakeOpts = shakeOptions
+  { shakeFiles = cacheDir </> "shake"
+  }
 
 readerOpts :: ReaderOptions
 readerOpts = def
@@ -198,11 +327,11 @@ writerOpts = def
 -- Preprocessing literate Agda files
 --------------------------------------------------------------------------------
 
-reCodeBlock :: ICU.Regex
-reCodeBlock = ICU.regex [ICU.DotAll, ICU.Multiline] "^```\\s*agda\\s*$(.*?)^```\\s*$"
-
 preprocessForHtml :: Text -> Text
 preprocessForHtml = ICU.replaceAll reCodeBlock "\n\n~~~{=html}\n```agda$1```\n\n~~~\n\n"
 
 preprocessForLaTeX :: Text -> Text
 preprocessForLaTeX = ICU.replaceAll reCodeBlock "\n\n~~~{=latex}\n\\begin{code}$1\\end{code}\n\n~~~\n\n"
+
+reCodeBlock :: ICU.Regex
+reCodeBlock = ICU.regex [ICU.DotAll, ICU.Multiline] "^```\\s*agda\\s*$(.*?)^```\\s*$"

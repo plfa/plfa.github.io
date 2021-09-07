@@ -1,25 +1,29 @@
 <footer class="site-footer h-card">
     <data class="u-url" href="/"></data>
     <div class="wrapper">
-        <h2 class="footer-heading">{{pagetitle}}</h2>
-        {{#authors}}
+        <h2 class="footer-heading">$pagetitle$</h2>
+        $for(authors)$
         <div class="footer-col-wrapper">
             <div class="footer-col footer-col-1">
                 <ul class="contact-list">
-                    <li class="p-name">{{name}}</li>
+                    <li class="p-name">$name$</li>
                     <li>
-                        <a class="u-email" href="mailto:{{email}}">{{email}}</a>
+                        $if(email)$
+                        <a class="u-email" href="mailto:$email$">$email$</a>
+                        $endif$
                     </li>
                 </ul>
             </div>
             <div class="footer-col footer-col-2">
-                {{> social.html}}
+                $^$${ social() }
             </div>
             <div class="footer-col footer-col-3">
-                <p>{{blurb}}</p>
+                $if(blurb)$
+                <p>$blurb$</p>
+                $endif$
             </div>
         </div>
-        {{/authors}}
-        This work is licensed under a <a rel="license" href="{{rights_url}}">{{rights}}</a>
+        $endfor$
+        This work is licensed under a <a rel="license" href="$rights_url$">$rights$</a>
     </div>
 </footer>
