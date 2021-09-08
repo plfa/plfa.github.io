@@ -2,7 +2,10 @@ import Control.Monad (forM, forM_, when)
 import Data.Function (on)
 import Data.Functor ((<&>))
 import Data.List (sortBy)
+import Data.Map (Map)
 import Data.Map qualified as M
+import Data.Maybe (fromMaybe)
+import Data.Text qualified as T
 import Data.Text.ICU qualified as ICU
 import Data.Text.ICU.Replace qualified as ICU
 import PLFA.Build.Agda
@@ -12,31 +15,31 @@ import PLFA.Build.Prelude
 import PLFA.Build.Route
 import PLFA.Build.Style.CSS
 import PLFA.Build.Style.Sass
-import System.FilePath.Find
 
 
 --------------------------------------------------------------------------------
 -- Directories
 --------------------------------------------------------------------------------
 
-cacheDir       = "_build"
-htmlCacheDir   = cacheDir </> "html"
-epubCacheDir   = cacheDir </> "epub"
-texCacheDir    = cacheDir </> "tex"
-siteDir        = "_site"
-srcDir         = "src"
-authorDir      = "authors"
-contributorDir = "contributors"
-publicDir      = "public"
-cssDir         = "css"
-stdlibDir      = "standard-library"
-templateDir    = "templates"
-
+rootDir           = "."
+cacheDir          = rootDir </> "_build"
+htmlCacheDir      = cacheDir </> "html"
+epubCacheDir      = cacheDir </> "epub"
+texCacheDir       = cacheDir </> "tex"
+siteDir           = rootDir </> "_site"
+srcDir            = rootDir </> "src"
+courseDir         = rootDir </> "courses"
+authorDir         = rootDir </> "authors"
+contributorDir    = rootDir </> "contributors"
+publicDir         = rootDir </> "public"
+cssDir            = rootDir </> "css"
+stdlibDir         = rootDir </> "standard-library"
+stdlibAgdaLibFile = stdlibDir </> "standard-library.agda-lib"
+templateDir       = rootDir </> "templates"
+allowDirs         = [srcDir, courseDir, authorDir, contributorDir, publicDir, cssDir, templateDir]
 
 -- TODO:
 --
---   - Adapt code which unfolds include paths to include metadata from included files.
---   - Copy code which includes titlerunning and subtitle.
 --   - Finish PDF and EPUB.
 --
 
@@ -47,14 +50,34 @@ main = do
   -- Gather input files
   --------------------------------------------------------------------------------
 
+  -- Restrict top-level recursive search to the '$allowList' of directories
+  let allowDirsOnly =
+        depth ==? 0 ||? depth ==? 1 &&? filePath ==*? allowDirs ||? depth >? 1
+
+  let findAll p1 p2 dirs =
+        concat <$> traverse (find p1 p2) dirs
+
   staticFiles <-
-    find always (fileType ==? RegularFile) publicDir
+    find always regularFile publicDir
+
+  agdaLibFiles <-
+    map normalise <$>
+      find allowDirsOnly (regularFile &&? extensions ==? ".agda-lib") rootDir
+
+  agdaLibs <-
+    traverse readAgdaLib agdaLibFiles
+
+  stdlib <-
+    standardLibraryAgdaLib stdlibDir
 
   mdFiles <-
-    find always (fileType ==? RegularFile &&? fileName ~~? "*.md") srcDir
+    map normalise <$>
+      find allowDirsOnly (regularFile &&? extension ==? ".md") rootDir
 
-  lagdaMdFiles <-
-    find always (fileType ==? RegularFile &&? fileName ~~? "*.lagda.md") srcDir
+  lagdaMdFilesByAgdaLib <-
+    forM agdaLibs $ \agdaLib -> do
+      lagdaMdFiles <- findAll always (regularFile &&? extensions ==? ".lagda.md") (libIncludes agdaLib)
+      return (agdaLib, lagdaMdFiles)
 
   permalinkRoutingTable <-
     getPermalinkRoutingTable siteDir mdFiles
@@ -65,30 +88,27 @@ main = do
     -- Highlighting literate Agda files
     --------------------------------------------------------------------------------
 
-    getStandardLibraryAgdaLib <- newCache $ \() -> liftIO $
-      standardLibraryAgdaLib stdlibDir
+    let agdaLibMap :: Map LibName AgdaLib
+        agdaLibMap = M.fromList $
+          [ (libName agdaLib, agdaLib) | agdaLib <- (stdlib : agdaLibs) ]
 
-    let highlightHTML :: (FilePath, FilePath) -> Action Text
-        highlightHTML (dir, src) = do
-          stdlib <- getStandardLibraryAgdaLib ()
+    let resolveDepend :: LibName -> AgdaLib
+        resolveDepend name =
+          fromMaybe (error $ "Could not find " <> name) (M.lookup name agdaLibMap)
+
+    let resolveDepends :: [LibName] -> [AgdaLib]
+        resolveDepends libs = map resolveDepend libs
+
+    let highlightAgdaFor:: FilePath -> [AgdaLib] -> FilePath -> Format -> Action Text
+        highlightAgdaFor librariesFile deps src format = do
           resultMap <- highlightAgdaWith def
-                       { formats   = [Markdown],
-                         libraries = [def{libDir = dir}, stdlib],
-                         inputFile = src
+                       { formats       = [format],
+                         librariesFile = Just librariesFile,
+                         libraries     = deps,
+                         inputFile     = src
                        }
           liftMaybe ("Highlight failed for " <> src) $
-            M.lookup Markdown resultMap
-
-    let highlightLaTeX :: (FilePath, FilePath) -> Action Text
-        highlightLaTeX (dir, src) = do
-          stdlib <- getStandardLibraryAgdaLib ()
-          resultMap <- highlightAgdaWith def
-                       { formats   = [Markdown],
-                         libraries = [def{libDir = dir}, stdlib],
-                         inputFile = src
-                       }
-          liftMaybe ("Highlight failed for " <> src) $
-            M.lookup LaTeX resultMap
+            M.lookup format resultMap
 
 
     --------------------------------------------------------------------------------
@@ -96,9 +116,7 @@ main = do
     --------------------------------------------------------------------------------
 
     getFixLinks <- newCache $ \() -> do
-      stdlib <- getStandardLibraryAgdaLib ()
-      liftIO $
-        prepareFixLinks [def{libDir = srcDir}, stdlib]
+      liftIO $ prepareFixLinks $ [stdlib] <> agdaLibs
 
     let markdownToHTML :: Text -> Action Text
         markdownToHTML src = do
@@ -154,12 +172,7 @@ main = do
       return (sortedContributors :: [Contributor])
 
     getSiteMetadata <- newCache $ \() -> do
-      metadata <- readYamlFrontmatter' $ srcDir </> "site.metadata"
-      authors <- getAuthors ()
-      contributors <- getContributors()
-      return $
-        metadata & "authors"      .~ authors
-                 & "contributors" .~ contributors
+      readYamlFrontmatter' $ srcDir </> "site.metadata"
 
     getFileMetadata <- newCache $ \inputFile -> do
       siteMetadata <- getSiteMetadata ()
@@ -167,11 +180,22 @@ main = do
       lastModifiedMetadata <- lastModified inputFile "modified_date"
       return $ mconcat
         [ siteMetadata,
-          frontmatterMetadata,
+          addTitleVariants frontmatterMetadata,
           lastModifiedMetadata,
           sourceFile inputFile "source"
         ]
 
+    getTocMetadata <- newCache $ \() -> do
+      metadata     <- readYamlFrontmatter' $ srcDir </> "toc.metadata"
+      authors      <- getAuthors ()
+      contributors <- getContributors()
+      return $
+        metadata & "authors"      .~ authors
+                 & "contributors" .~ contributors
+
+    getSiteTocMetadata <- newCache $ \() -> do
+      toc <- getTocMetadata ()
+      resolveIncludes getFileMetadata toc
 
     --------------------------------------------------------------------------------
     -- Static files
@@ -182,27 +206,30 @@ main = do
 
     forM_ staticFiles $ \src -> do
       let out = siteDir </> src
-
       want [out]
-
-      out %> \_ -> do
-        putInfo $ "Copy " <> src
-        copyFile' src out
+      out %> \_ -> copyFile' src out
 
     --------------------------------------------------------------------------------
     -- HTML compilation
     --------------------------------------------------------------------------------
 
     let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
-        htmlStage1 src = htmlCacheDir </> "stage1" </> src
-        htmlStage2 src = htmlCacheDir </> "stage2" </> replaceExtensions src "md"
-        htmlStage3 src = htmlCacheDir </> "stage3" </> replaceExtensions src "html"
-        htmlStage4 src = permalinkRoutingTable M.! src
+        htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
+        htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> replaceExtensions src "md"
+        htmlStage3 src = normalise $ permalinkRoutingTable M.! src
+
+    let htmlStage1Lib :: AgdaLib -> AgdaLib
+        htmlStage1Lib agdaLib
+          | agdaLib == stdlib = agdaLib
+          | otherwise         = agdaLib
+            { libFile     = htmlStage1 (libFile agdaLib),
+              libIncludes = map htmlStage1 (libIncludes agdaLib)
+            }
 
     --------------------------------------------------------------------------------
     -- Compile source files to HTML
     --
-    -- Literate Agda files are rendered in four stages:
+    -- Literate Agda files are rendered in stages:
     --
     --   Stage 1. Preprocessing. Literate code blocks are marked as raw HTML or
     --            LaTeX by wrapping them in a code block with the appropriate raw
@@ -211,55 +238,66 @@ main = do
     --
     --   Stage 2. Highlighting. Literate code blocks are highlighted using Agda.
     --
-    --   Stage 3. Rendering. The surrounding Markdown is rendered as either HTML or
-    --            LaTeX using Pandoc. The files used on the website are rendered as
-    --            HTML5 and the files used in the EPUB are rendered to XHTML.
+    --   Stage 3. Templating & Rendering. The relevant templates are applied, and
+    --            the Markdown is rendered to HTML and LaTeX using Pandoc.
     --
-    --   Stage 4. Templating. The relevant templates are applied, and the file is
-    --            written to the path determined by its permalink.
-    --
-    -- Markdown files are copied verbatim to Stage 2 and pass through Stages 3 & 4.
+    -- Markdown files are copied verbatim to Stage 2 and pass through Stage 3.
     --
     --------------------------------------------------------------------------------
 
-    want [htmlStage4 src | src <- mdFiles]
+    want [htmlStage3 src | src <- mdFiles]
 
-    forM_ mdFiles $ \src -> do
+    -- Generate an appropriate libraries file
+    htmlStage1 ".agda/libraries" %> \out -> do
+      alwaysRerun
+      let libraries = [ libFile (htmlStage1Lib lib) | lib <- stdlib : agdaLibs ]
+      need libraries
+      writeFile' out (T.unlines (map T.pack libraries))
 
-      if (src `elem` lagdaMdFiles) then do
+    -- Compile .lagda.md files in the context of their .agda-lib file
+    forM_ lagdaMdFilesByAgdaLib $ \(agdaLib, lagdaMdFiles) -> do
+
+      -- Copy over .agda-lib file
+      libFile (htmlStage1Lib agdaLib) %> \out -> do
+        let src = libFile agdaLib
+        need [src]
+        copyFile' src out
+
+      forM_ lagdaMdFiles $ \src -> do
 
         -- Stage 1: Preprocess literate Agda files
         htmlStage1 src %> \out -> do
-          putInfo $ "Preprocess " <> src
-          content <- readFile' src
-          writeFile' out (preprocessForHtml content)
+          readFile' src
+            <&> preprocessForHtml
+            >>= writeFile' out
 
         -- Stage 2: Highlight literate Agda files
         htmlStage2 src %> \out -> do
-          putInfo $ "Highlight " <> src
-          need [htmlStage1 fp | fp <- lagdaMdFiles]
-          markdown <- highlightHTML (htmlStage1 srcDir, htmlStage1 src)
+          -- Update file paths in library files
+          let libraries = [ htmlStage1Lib lib | lib <- agdaLib : resolveDepends (libDepends agdaLib) ]
+          -- Need updated libraries file, .agda-lib files, and all .lagda.md files
+          need [ htmlStage1 ".agda/libraries" ]
+          need [ libFile lib | lib <- libraries]
+          need [ htmlStage1 lagdaMdFile | lagdaMdFile <- lagdaMdFiles ]
+          -- Highlight Agda as HTML
+          markdown <- highlightAgdaFor (htmlStage1 ".agda/libraries") libraries (htmlStage1 src) Markdown
           writeFile' out markdown
 
-      else do
+    forM_ mdFiles $ \src -> do
+
+      when (takeExtensions src == ".md") $ do
 
         -- Stage 2: Copy Markdown files verbatim
         htmlStage2 src %> \out -> do
-          putInfo $ "Copy " <> src
           copyFile' src out
 
       -- Stage 3: Render the Markdown to HTML
       htmlStage3 src %> \out -> do
-        putInfo $ "Render " <> src
-        markdown <- readFile' (htmlStage2 src)
-        html5 <- markdownToHTML markdown
-        writeFile' out html5
-
-      -- Stage 4: Apply page template to HTML
-      htmlStage4 src %> \out -> do
-        putInfo $ "Template " <> src
-        metadata <- getFileMetadata src
-        applyAsTemplate (htmlStage3 src) metadata
+        fileMetadata <- getFileMetadata src
+        siteTocMetadata <- getSiteTocMetadata ()
+        let metadata = fileMetadata <> siteTocMetadata
+        applyAsTemplate (htmlStage2 src) metadata
+          >>= markdownToHTML
           >>= applyTemplate "templates/page.html" metadata
           >>= applyTemplate "templates/default.html" metadata
           <&> withUrls relativizeUrl
@@ -283,7 +321,6 @@ main = do
 
     styleFile %> \out -> do
       let src = cssDir </> "style.scss"
-      putInfo $ "Compile " <> src
       need =<< getSCSSFiles ()
       css <- compileSassWith def {sassIncludePaths = Just [cssDir]} src
       cssMin <- minifyCSSWith def css
@@ -295,7 +332,8 @@ main = do
 --------------------------------------------------------------------------------
 
 shakeOpts = shakeOptions
-  { shakeFiles = cacheDir </> "shake"
+  { shakeFiles    = cacheDir </> "shake"
+  , shakeProgress = progressSimple
   }
 
 readerOpts :: ReaderOptions

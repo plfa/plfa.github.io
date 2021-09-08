@@ -10,7 +10,9 @@ module PLFA.Build.Metadata
     Author (..),
     Contributor (..),
     lastModified,
-    sourceFile
+    sourceFile,
+    addTitleVariants,
+    resolveIncludes
   ) where
 
 import Data.Aeson (encode)
@@ -21,6 +23,7 @@ import Data.Function ((&))
 import Data.HashMap.Strict qualified as H
 import Data.Text qualified as T
 import Data.Time.Format (formatTime, defaultTimeLocale)
+import Data.Vector as V
 import Data.Yaml qualified as Y
 import System.Directory
 import System.IO.Unsafe (unsafePerformIO)
@@ -143,7 +146,7 @@ instance FromJSON Contributor where
 
 
 --------------------------------------------------------------------------------
--- Modification time
+-- Metadata field: modification time
 --------------------------------------------------------------------------------
 
 -- | Adapted from hakyll's 'Hakyll.Web.Template.Context.modificationTimeField'
@@ -155,9 +158,51 @@ lastModified inputFile key = liftIO $ do
 
 
 --------------------------------------------------------------------------------
--- Source file
+-- Metadata field: source file
 --------------------------------------------------------------------------------
 
 sourceFile :: FilePath -> Text -> Metadata
 sourceFile inputFile key =
   mempty & key .~ inputFile
+
+
+--------------------------------------------------------------------------------
+-- Metadata field: running title and subtitle
+--------------------------------------------------------------------------------
+
+addTitleVariants :: Metadata -> Metadata
+addTitleVariants metadata = case metadata ^. "title" of
+  Nothing    -> metadata
+  Just title ->
+    let (titlerunning, subtitle) = T.breakOn ":" title in
+      if T.null subtitle then
+        metadata -- No titlerunning/subtitle distinction
+      else
+        metadata & "titlerunning" .~ T.strip titlerunning
+                 & "subtitle"     .~ T.strip (T.drop 1 subtitle)
+
+
+--------------------------------------------------------------------------------
+-- Metadata field: include metadata from files
+--------------------------------------------------------------------------------
+
+resolveIncludes :: (FilePath -> Action Metadata) -> Metadata -> Action Metadata
+resolveIncludes reader (Metadata object) = fromValue <$> walkValue (Object object)
+  where
+    fromValue :: Value -> Metadata
+    fromValue (Object object) = Metadata object
+
+    walkValue :: Value -> Action Value
+    walkValue (Object object) = do
+      object' <- resolveInclude object
+      Object <$> traverse walkValue object'
+    walkValue (Array array)   = Array <$> traverse walkValue array
+    walkValue value           = return value
+
+    resolveInclude :: Object -> Action Object
+    resolveInclude object =
+      case Metadata object ^. "include" of
+        Nothing       -> return object
+        Just filePath -> do
+          Metadata includedObject <- reader filePath
+          return (object <> includedObject)

@@ -13,7 +13,7 @@ import Data.Aeson.Types (Value (..))
 import PLFA.Build.Prelude
 import PLFA.Build.Metadata
 import Text.DocLayout qualified as Doc (render)
-import Text.Pandoc as Export hiding (Template, getTemplate, compileTemplate, renderTemplate)
+import Text.Pandoc as Export hiding (Format, Template, getTemplate, compileTemplate, renderTemplate)
 import Text.Pandoc.Writers.HTML as Export (writeHtmlStringForEPUB)
 import Text.Pandoc.Templates qualified as Template
 

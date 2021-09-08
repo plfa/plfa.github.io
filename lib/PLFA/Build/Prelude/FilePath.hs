@@ -1,26 +1,27 @@
 module PLFA.Build.Prelude.FilePath
   ( removeFile_
-  , dropPrefix
   , module Shake
+  , regularFile
+  , (~~*?)
+  , (==*?)
+  , extensions
+  , module Find
   ) where
 
 import Control.Exception (IOException, catch, handle)
-import Control.Monad (when)
-import Data.List (stripPrefix)
+import Control.Monad (when, liftM)
 import Development.Shake.FilePath qualified as Shake
 import System.FilePath
+import System.FilePath.GlobPattern
+import System.FilePath.Find as Find
 import System.Directory (Permissions(..), getPermissions, setPermissions, removeFile)
 import System.IO.Error (isPermissionError)
-import Text.Printf
-import PLFA.Build.Prelude.Error
 
-dropPrefix :: MonadFail m => FilePath -> FilePath -> m FilePath
-dropPrefix prefixPath filePath = do
-  path <- liftMaybe (printf "Cannot strip prefix '%s' from '%s'" prefixPath filePath) $
-    splitDirectories prefixPath `stripPrefix` splitDirectories filePath
-  return (joinPath path)
-
+--------------------------------------------------------------------------------
+-- File handling
+--
 -- Taken from shake General.Extra
+--------------------------------------------------------------------------------
 
 removeFile_ :: FilePath -> IO ()
 removeFile_ fp =
@@ -35,3 +36,21 @@ catchIO = catch
 
 handleIO :: (IOException -> IO a) -> IO a -> IO a
 handleIO = handle
+
+
+--------------------------------------------------------------------------------
+-- Find files
+--------------------------------------------------------------------------------
+
+regularFile :: FilterPredicate
+regularFile = fileType ==? RegularFile
+
+(~~*?) :: FindClause FilePath -> [GlobPattern] -> FilterPredicate
+file ~~*? globPatterns = foldr (\globPattern -> (file ~~? globPattern ||?)) (return False) globPatterns
+
+(==*?) :: FindClause FilePath -> [GlobPattern] -> FilterPredicate
+file ==*? globPatterns = foldr (\globPattern -> (file ==? globPattern ||?)) (return False) globPatterns
+
+
+extensions :: FindClause FilePath
+extensions = liftM takeExtensions fileName

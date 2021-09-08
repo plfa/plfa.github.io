@@ -11,17 +11,15 @@ remove, parts that require better explanation, good exercises, errors,
 and typos---are welcome.  The book repository is on [GitHub].
 Pull requests are encouraged.
 
-$for(toc)$
-## $title$
-<ul>
-$for(sections)$
-$if(titlerunning)$
-<li><a href="$url$">$titlerunning$</a>: $subtitle$</li>
+$for(part)$
+## $part.title$
+$for(part.section)$
+$if(part.section.titlerunning)$
+  * [$part.section.titlerunning$]($part.section.permalink$): $part.section.subtitle$
 $else$
-<li><a href="$url$">$title$</a></li>
+  * [$part.section.title$]($part.section.permalink$)
 $endif$
 $endfor$
-</ul>
 $endfor$
 
 ## Related

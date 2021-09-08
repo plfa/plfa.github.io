@@ -1,29 +1,29 @@
 <footer class="site-footer h-card">
     <data class="u-url" href="/"></data>
     <div class="wrapper">
-        <h2 class="footer-heading">$pagetitle$</h2>
-        $for(authors)$
+        <h2 class="footer-heading">$site.title$</h2>
+        $for(author)$
         <div class="footer-col-wrapper">
             <div class="footer-col footer-col-1">
                 <ul class="contact-list">
-                    <li class="p-name">$name$</li>
+                    <li class="p-name">$author.name$</li>
                     <li>
-                        $if(email)$
-                        <a class="u-email" href="mailto:$email$">$email$</a>
+                        $if(author.email)$
+                        <a class="u-email" href="mailto:$author.email$">$author.email$</a>
                         $endif$
                     </li>
                 </ul>
             </div>
             <div class="footer-col footer-col-2">
-                $^$${ social() }
+                $^$${ author:social() }
             </div>
             <div class="footer-col footer-col-3">
-                $if(blurb)$
-                <p>$blurb$</p>
+                $if(author.blurb)$
+                <p>$author.blurb$</p>
                 $endif$
             </div>
         </div>
         $endfor$
-        This work is licensed under a <a rel="license" href="$rights_url$">$rights$</a>
+        This work is licensed under a <a rel="license" href="$site.license.url$">$site.license.name$</a>
     </div>
 </footer>

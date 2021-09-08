@@ -23,6 +23,6 @@ getPermalinkRoutingTable targetDir sources = do
   permalinkRoutes <-
     forM sources $ \src -> do
       out <- permalinkRoute targetDir src
-      return (src, out)
+      return (src, normalise out)
   return $
     M.fromList permalinkRoutes

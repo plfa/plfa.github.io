@@ -60,6 +60,7 @@ library
                      , temporary
                      , time
                      , unordered-containers
+                     , vector
                      , yaml
 
 executable builder

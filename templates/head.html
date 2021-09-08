@@ -4,11 +4,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/public/css/style.css">
   $if(titlerunning)$
-  <title>$pagetitle$ – $titlerunning$</title>
+  <title>$site.title$ – $titlerunning$</title>
   $else$
-  <title>$pagetitle$ – $title$</title>
+  <title>$site.title$ – $title$</title>
   $endif$
-  $if(google-analytics)$
+  $if(site.google-analytics)$
   $^$${ google-analytics() }
   $endif$
 </head>
