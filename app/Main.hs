@@ -21,27 +21,22 @@ import PLFA.Build.Style.Sass
 -- Directories
 --------------------------------------------------------------------------------
 
-rootDir           = "."
-cacheDir          = rootDir </> "_build"
-htmlCacheDir      = cacheDir </> "html"
-epubCacheDir      = cacheDir </> "epub"
-texCacheDir       = cacheDir </> "tex"
-siteDir           = rootDir </> "_site"
-srcDir            = rootDir </> "src"
-courseDir         = rootDir </> "courses"
 authorDir         = rootDir </> "authors"
+cacheDir          = rootDir </> "_build"
 contributorDir    = rootDir </> "contributors"
-publicDir         = rootDir </> "public"
+courseDir         = rootDir </> "courses"
 cssDir            = rootDir </> "css"
+epubCacheDir      = cacheDir </> "epub"
+htmlCacheDir      = cacheDir </> "html"
+postsDir          = rootDir </> "posts"
+publicDir         = rootDir </> "public"
+rootDir           = "."
+siteDir           = rootDir </> "_site"
 stdlibDir         = rootDir </> "standard-library"
 stdlibAgdaLibFile = stdlibDir </> "standard-library.agda-lib"
+srcDir            = rootDir </> "src"
+texCacheDir       = cacheDir </> "tex"
 templateDir       = rootDir </> "templates"
-allowDirs         = [srcDir, courseDir, authorDir, contributorDir, publicDir, cssDir, templateDir]
-
--- TODO:
---
---   - Finish PDF and EPUB.
---
 
 main :: IO ()
 main = do
@@ -50,37 +45,19 @@ main = do
   -- Gather input files
   --------------------------------------------------------------------------------
 
-  -- Restrict top-level recursive search to the '$allowList' of directories
-  let allowDirsOnly =
-        depth ==? 0 ||? depth ==? 1 &&? filePath ==*? allowDirs ||? depth >? 1
+  staticFiles <- find always regularFile publicDir
+  agdaLibs    <- findAgdaLibs rootDir
+  stdlib      <- standardLibraryAgdaLib stdlibDir
+  mdFiles     <- findMdFiles rootDir
+  scssFiles   <- findSassFiles cssDir
 
-  let findAll p1 p2 dirs =
-        concat <$> traverse (find p1 p2) dirs
+  lagdaMdFilesByAgdaLib <- forM agdaLibs findLagdaMdFiles
+  permalinkRoutingTable <- getPermalinkRoutingTable siteDir mdFiles
 
-  staticFiles <-
-    find always regularFile publicDir
-
-  agdaLibFiles <-
-    map normalise <$>
-      find allowDirsOnly (regularFile &&? extensions ==? ".agda-lib") rootDir
-
-  agdaLibs <-
-    traverse readAgdaLib agdaLibFiles
-
-  stdlib <-
-    standardLibraryAgdaLib stdlibDir
-
-  mdFiles <-
-    map normalise <$>
-      find allowDirsOnly (regularFile &&? extension ==? ".md") rootDir
-
-  lagdaMdFilesByAgdaLib <-
-    forM agdaLibs $ \agdaLib -> do
-      lagdaMdFiles <- findAll always (regularFile &&? extensions ==? ".lagda.md") (libIncludes agdaLib)
-      return (agdaLib, lagdaMdFiles)
-
-  permalinkRoutingTable <-
-    getPermalinkRoutingTable siteDir mdFiles
+  let route :: FilePath -> FilePath
+      route inputFile = fromMaybe
+        (siteDir </> inputFile -<.> "html")
+        (M.lookup inputFile permalinkRoutingTable)
 
   shakeArgs shakeOpts $ do
 
@@ -211,23 +188,6 @@ main = do
 
     --------------------------------------------------------------------------------
     -- HTML compilation
-    --------------------------------------------------------------------------------
-
-    let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
-        htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
-        htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> replaceExtensions src "md"
-        htmlStage3 src = normalise $ permalinkRoutingTable M.! src
-
-    let htmlStage1Lib :: AgdaLib -> AgdaLib
-        htmlStage1Lib agdaLib
-          | agdaLib == stdlib = agdaLib
-          | otherwise         = agdaLib
-            { libFile     = htmlStage1 (libFile agdaLib),
-              libIncludes = map htmlStage1 (libIncludes agdaLib)
-            }
-
-    --------------------------------------------------------------------------------
-    -- Compile source files to HTML
     --
     -- Literate Agda files are rendered in stages:
     --
@@ -245,11 +205,23 @@ main = do
     --
     --------------------------------------------------------------------------------
 
+    let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
+        htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
+        htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> replaceExtensions src "md"
+        htmlStage3 src = normalise $ route src
+
+    let htmlStage1Lib :: AgdaLib -> AgdaLib
+        htmlStage1Lib agdaLib
+          | agdaLib == stdlib = agdaLib
+          | otherwise         = agdaLib
+            { libFile     = htmlStage1 (libFile agdaLib),
+              libIncludes = map htmlStage1 (libIncludes agdaLib)
+            }
+
     want [htmlStage3 src | src <- mdFiles]
 
     -- Generate an appropriate libraries file
     htmlStage1 ".agda/libraries" %> \out -> do
-      alwaysRerun
       let libraries = [ libFile (htmlStage1Lib lib) | lib <- stdlib : agdaLibs ]
       need libraries
       writeFile' out (T.unlines (map T.pack libraries))
@@ -285,7 +257,7 @@ main = do
 
     forM_ mdFiles $ \src -> do
 
-      when (takeExtensions src == ".md") $ do
+      when (takeExtensions src /= ".lagda.md") $ do
 
         -- Stage 2: Copy Markdown files verbatim
         htmlStage2 src %> \out -> do
@@ -303,8 +275,6 @@ main = do
           <&> withUrls relativizeUrl
           >>= writeFile' out
 
-
-
     --------------------------------------------------------------------------------
     -- Compile style files
     --
@@ -312,16 +282,13 @@ main = do
     -- which is then written to '$styleFile'.
     --------------------------------------------------------------------------------
 
-    getSCSSFiles <- newCache $ \() -> liftIO $
-      find always (fileType ==? RegularFile &&? fileName ~~? "*.scss") cssDir
-
     let styleFile = siteDir </> publicDir </> cssDir </> "style.css"
 
     want [styleFile]
 
     styleFile %> \out -> do
       let src = cssDir </> "style.scss"
-      need =<< getSCSSFiles ()
+      need scssFiles
       css <- compileSassWith def {sassIncludePaths = Just [cssDir]} src
       cssMin <- minifyCSSWith def css
       writeFile' out cssMin
@@ -332,9 +299,7 @@ main = do
 --------------------------------------------------------------------------------
 
 shakeOpts = shakeOptions
-  { shakeFiles    = cacheDir </> "shake"
-  , shakeProgress = progressSimple
-  }
+  { shakeProgress = progressSimple }
 
 readerOpts :: ReaderOptions
 readerOpts = def
@@ -359,6 +324,37 @@ readerOpts = def
 
 writerOpts :: WriterOptions
 writerOpts = def
+
+
+--------------------------------------------------------------------------------
+-- Helpers for finding files
+--------------------------------------------------------------------------------
+
+allowDirsOnly :: FilterPredicate
+allowDirsOnly = depth ==? 0 ||? depth ==? 1 &&? filePath ==*? allowDirs ||? depth >? 1
+  where
+    allowDirs = [authorDir, contributorDir, courseDir, cssDir, postsDir, publicDir, srcDir, templateDir]
+
+findAll :: FilterPredicate -> FilterPredicate -> [FilePath] -> IO [FilePath]
+findAll p1 p2 dirs = concat <$> traverse (find p1 p2) dirs
+
+findAgdaLibs :: FilePath -> IO [AgdaLib]
+findAgdaLibs dir = do
+  agdaLibFiles <- find allowDirsOnly (regularFile &&? extensions ==? ".agda-lib") dir
+  traverse readAgdaLib agdaLibFiles
+
+findMdFiles :: FilePath -> IO [FilePath]
+findMdFiles dir =
+  map normalise <$>
+    find allowDirsOnly (regularFile &&? extension ==? ".md") dir
+
+findLagdaMdFiles :: AgdaLib -> IO (AgdaLib, [FilePath])
+findLagdaMdFiles agdaLib = do
+  lagdaMdFiles <- findAll always (regularFile &&? extensions ==? ".lagda.md") (libIncludes agdaLib)
+  return (agdaLib, lagdaMdFiles)
+
+findSassFiles :: FilePath -> IO [FilePath]
+findSassFiles dir = find always (regularFile &&? extensions ==? ".scss") dir
 
 
 --------------------------------------------------------------------------------
