@@ -37,6 +37,9 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2021
+  * Favonia, University of Minnesota
+
 #### 2020
   * [William Cook, University of Texas][UT-2020]
   * [Jeremy Siek, Indiana University][IU-2020]
