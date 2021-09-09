@@ -186,7 +186,7 @@ sourceFile inputFile key =
 -- | Create a metadata object containing the date inferred from the file path.
 dateFromFilePath :: FilePath -> Text -> Metadata
 dateFromFilePath inputFile key =
-  case T.splitOn "-" $ T.pack inputFile of
+  case T.splitOn "-" $ T.pack $ takeFileName inputFile of
     (year : month : day : _) -> mempty & key .~ T.concat [year, "-", month, "-", day]
     _                        -> mempty
 

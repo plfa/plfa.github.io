@@ -6,6 +6,8 @@ We’re pleased to announce that PLFA is now available as both [a PDF][PDF] and 
 
 In a double whammy, we’ve recently fixed compilation to EPUB as well! Compilation to EPUB never quite survived the move to Hakyll, and the EPUB available on the website was broken for quite a while. Fortunately, we’ve fixed the EPUB compilation, based on [Yuanting Mao][Altariarite] work on PDF compilation and [Michael Reed][mreed20]’s original work on EPUB compilation.
 
+<!--more-->
+
 There’s still several kinks to even out in the process:
 
   - ([#577][issue577]) EPUB generation breaks internal links;

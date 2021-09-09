@@ -39,6 +39,7 @@ library
                      , PLFA.Build.Metadata
                      , PLFA.Build.Pandoc
                      , PLFA.Build.Prelude
+                     , PLFA.Build.Preprocess
                      , PLFA.Build.Route
                      , PLFA.Build.Style.CSS
                      , PLFA.Build.Style.Sass

@@ -13,6 +13,7 @@ import PLFA.Build.Gather
 import PLFA.Build.Metadata
 import PLFA.Build.Pandoc as Pandoc
 import PLFA.Build.Prelude
+import PLFA.Build.Preprocess
 import PLFA.Build.Route
 import PLFA.Build.Style.CSS
 import PLFA.Build.Style.Sass
@@ -22,22 +23,21 @@ import PLFA.Build.Style.Sass
 -- Directories
 --------------------------------------------------------------------------------
 
-authorDir         = rootDir </> "authors"
-cacheDir          = rootDir </> "_build"
-contributorDir    = rootDir </> "contributors"
-courseDir         = rootDir </> "courses"
-cssDir            = rootDir </> "css"
+authorDir         = "authors"
+cacheDir          = "_build"
+contributorDir    = "contributors"
+courseDir         = "courses"
+cssDir            = "css"
 epubCacheDir      = cacheDir </> "epub"
 htmlCacheDir      = cacheDir </> "html"
-postsDir          = rootDir </> "posts"
-publicDir         = rootDir </> "public"
-rootDir           = "."
-siteDir           = rootDir </> "_site"
-stdlibDir         = rootDir </> "standard-library"
+postsDir          = "posts"
+publicDir         = "public"
+siteDir           = "_site"
+stdlibDir         = "standard-library"
 stdlibAgdaLibFile = stdlibDir </> "standard-library.agda-lib"
-srcDir            = rootDir </> "src"
+srcDir            = "src"
 texCacheDir       = cacheDir </> "tex"
-templateDir       = rootDir </> "templates"
+templateDir       = "templates"
 
 main :: IO ()
 main = do
@@ -46,17 +46,20 @@ main = do
   -- Gather input files and build routing table
   --------------------------------------------------------------------------------
 
+  -- Gather files
   staticFiles           <- gather always regularFile [publicDir]
   agdaLibs              <- gatherAgdaLibs [courseDir, srcDir]
   stdlib                <- readStandardLibraryAgdaLib stdlibDir
-  mdFiles               <- gatherMdFiles [courseDir, srcDir]
+  mdFiles               <- gatherMdFiles [courseDir, postsDir, srcDir]
   scssFiles             <- gatherSassFiles [cssDir]
   postMdFiles           <- gatherMdFiles [postsDir]
   lagdaMdFilesByAgdaLib <- gatherLagdaMdFilesForAgdaLibs agdaLibs
 
-  permalinkRoutingTable <- buildPermalinkRoutingTable siteDir mdFiles
-  let postsRoutingTable = asRoutingTable (\src -> siteDir </> src -<.> "html") postMdFiles
-  let routingTable = permalinkRoutingTable <> postsRoutingTable
+  -- Build routing table
+  permalinkRoutingTable <- buildPermalinkRoutingTable mdFiles
+  let postsRoutingTable = asRoutingTable (-<.> "html") postMdFiles
+  let errorRoutingTable = asRoutingTable id ["404.html"]
+  let routingTable = mconcat [permalinkRoutingTable, postsRoutingTable, errorRoutingTable]
 
   shakeArgs shakeOpts $ do
 
@@ -64,27 +67,28 @@ main = do
     -- Highlighting literate Agda files
     --------------------------------------------------------------------------------
 
+    -- Create a lookup table of Agda libraries by name.
+    --
+    -- NOTE: We exclude the standard library from the Agda libraries earlier, so we
+    --       can load it using 'readStandardLibraryAgdaLib', which is slightly more
+    --       sophisticated, in that it reads the version and constructs the external
+    --       URL at which it is hosted. We add it to the lookup table manually here.
+    --
     let agdaLibMap :: Map LibName AgdaLib
         agdaLibMap = M.fromList $
           [ (libName agdaLib, agdaLib) | agdaLib <- (stdlib : agdaLibs) ]
 
+    -- Resolve a dependency by name using the Agda library lookup table.
     let resolveDepend :: LibName -> AgdaLib
-        resolveDepend name =
-          fromMaybe (error $ "Could not find " <> name) (M.lookup name agdaLibMap)
+        resolveDepend name = fromMaybe (error $ "Could not find " <> name) (M.lookup name agdaLibMap)
 
-    let resolveDepends :: [LibName] -> [AgdaLib]
-        resolveDepends libs = map resolveDepend libs
-
+    -- Highlight Agda code for a given format code with a given 'libraries' file and a
+    -- list of libraries, include the library of which the file itself is a part.
     let highlightAgdaFor:: FilePath -> [AgdaLib] -> FilePath -> Format -> Action Text
         highlightAgdaFor librariesFile deps src format = do
           resultMap <- highlightAgdaWith def
-                       { formats       = [format],
-                         librariesFile = Just librariesFile,
-                         libraries     = deps,
-                         inputFile     = src
-                       }
-          liftMaybe ("Highlight failed for " <> src) $
-            M.lookup format resultMap
+            { formats = [format], librariesFile = Just librariesFile, libraries = deps, inputFile = src }
+          liftMaybe ("Highlight failed for " <> src) $ M.lookup format resultMap
 
 
     --------------------------------------------------------------------------------
@@ -94,6 +98,11 @@ main = do
     getFixLinks <- newCache $ \() -> do
       liftIO $ prepareFixLinks $ [stdlib] <> agdaLibs
 
+    -- Render Markdown to HTML5 using Pandoc, applying the code to fix links
+    -- to local and external modules.
+    --
+    -- NOTE: Every Agda file in a local module /must/ have a permalink attribute.
+    --
     let markdownToHTML :: Text -> Action Text
         markdownToHTML src = do
           fixLinks <- getFixLinks ()
@@ -102,11 +111,19 @@ main = do
             let ast' = withUrlsPandoc fixLinks ast
             Pandoc.writeHtml5String writerOpts ast'
 
+    -- Render Markdown to XHTML using Pandoc.
+    --
+    -- NOTE: Currently, all links are left broken.
+    --
     let markdownToEPUB :: Text -> Action Text
         markdownToEPUB src = runPandocIO $ do
           ast <- Pandoc.readMarkdown readerOpts src
           Pandoc.writeHtmlStringForEPUB EPUB3 writerOpts ast
 
+    -- Render Markdown to LaTeX using Pandoc.
+    --
+    -- NOTE: Currently, all links are left broken.
+    --
     let markdownToLaTeX :: Text -> Action Text
         markdownToLaTeX src = runPandocIO $ do
           ast <- Pandoc.readMarkdown readerOpts src
@@ -121,15 +138,16 @@ main = do
       need [inputFile]
       Pandoc.compileTemplate inputFile
 
-    let applyTemplate :: FilePath -> Metadata -> Text -> Action Text
-        applyTemplate inputFile metadata body = do
-          tpl <- getTemplate inputFile
-          return $ Pandoc.renderTemplate tpl (metadata & "body" .~ body)
-
+    -- Apply a template with some metadata.
     let applyAsTemplate :: FilePath -> Metadata -> Action Text
         applyAsTemplate inputFile metadata = do
           tpl <- getTemplate inputFile
           return $ Pandoc.renderTemplate tpl metadata
+
+    -- Apply a template with metadata to some content.
+    let applyTemplate :: FilePath -> Metadata -> Text -> Action Text
+        applyTemplate inputFile metadata body =
+          applyAsTemplate inputFile (metadata & "body" .~ body)
 
 
     --------------------------------------------------------------------------------
@@ -180,9 +198,14 @@ main = do
           let bodyField   = mempty & "body" .~ body
           let dateField   = dateFromFilePath postMdFile "date"
           let teaserField = teaser body "teaser"
-          let urlField    = mempty & "url" .~ route routingTable postMdFile
+          let urlField    = mempty & "url" .~ ("/" </> postMdFile -<.> "html")
           return $ mconcat [metadata, bodyField, dateField, teaserField, urlField]
-      return $ mempty & "post" .~ posts
+      --
+      -- NOTE: The posts are read in the order provided by the file system which,
+      --       due to the naming convention, is oldest-first. Rather than sorting
+      --       by date recent-first, we can therefore simply reverse the list.
+      --
+      return $ mempty & "post" .~ reverse posts
 
     --------------------------------------------------------------------------------
     -- Static files
@@ -218,7 +241,7 @@ main = do
     let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
         htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
         htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> replaceExtensions src "md"
-        htmlStage3 src = normalise $ route routingTable src
+        htmlStage3 src = normalise $ routeFile siteDir routingTable src
 
     let htmlStage1Lib :: AgdaLib -> AgdaLib
         htmlStage1Lib agdaLib
@@ -257,7 +280,8 @@ main = do
         -- Stage 2: Highlight literate Agda files
         htmlStage2 src %> \out -> do
           -- Update file paths in library files
-          let libraries = [ htmlStage1Lib lib | lib <- agdaLib : resolveDepends (libDepends agdaLib) ]
+          let depends = [ resolveDepend dep | dep <- libDepends agdaLib ]
+          let libraries = [ htmlStage1Lib lib | lib <- agdaLib : depends ]
           -- Need updated libraries file, .agda-lib files, and all .lagda.md files
           need [ htmlStage1 ".agda/libraries" ]
           need [ libFile lib | lib <- libraries]
@@ -285,8 +309,8 @@ main = do
         let metadata = mconcat [fileMetadata, siteTocMetadata, postMetadata]
         applyAsTemplate (htmlStage2 src) metadata
           >>= markdownToHTML
-          >>= applyTemplate "templates/page.html" metadata
-          >>= applyTemplate "templates/default.html" metadata
+          >>= applyTemplate (templateDir </> "page.html") metadata
+          >>= applyTemplate (templateDir </> "default.html") metadata
           <&> withUrls relativizeUrl
           >>= writeFile' out
         putInfo $ "Updated " <> src
@@ -343,17 +367,3 @@ readerOpts = def
 
 writerOpts :: WriterOptions
 writerOpts = def
-
-
---------------------------------------------------------------------------------
--- Preprocessing literate Agda files
---------------------------------------------------------------------------------
-
-preprocessForHtml :: Text -> Text
-preprocessForHtml = ICU.replaceAll reCodeBlock "\n\n~~~{=html}\n```agda$1```\n\n~~~\n\n"
-
-preprocessForLaTeX :: Text -> Text
-preprocessForLaTeX = ICU.replaceAll reCodeBlock "\n\n~~~{=latex}\n\\begin{code}$1\\end{code}\n\n~~~\n\n"
-
-reCodeBlock :: ICU.Regex
-reCodeBlock = ICU.regex [ICU.DotAll, ICU.Multiline] "^```\\s*agda\\s*$(.*?)^```\\s*$"

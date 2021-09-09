@@ -1,8 +1,11 @@
+{-# LANGUAGE TupleSections #-}
+
 module PLFA.Build.Route
   ( RoutingTable
   , buildPermalinkRoutingTable
   , asRoutingTable
-  , route
+  , routeUrl
+  , routeFile
   ) where
 
 import Control.Monad (forM)
@@ -19,27 +22,30 @@ addIndexHtml url
   | otherwise              = url
 
 
-type RoutingTable = Map FilePath FilePath
+type RoutingTable = Map FilePath Url
 
-buildPermalinkRoutingTable :: FilePath -> [FilePath] -> IO RoutingTable
-buildPermalinkRoutingTable targetDir sources = do
+buildPermalinkRoutingTable :: [FilePath] -> IO RoutingTable
+buildPermalinkRoutingTable sources = do
   permalinkRoutes <-
     forM sources $ \src -> do
-      maybeOut <- permalinkRoute targetDir src
-      return $ fmap (\out -> (src, normalise out)) maybeOut
+      maybeOut <- permalinkRoute src
+      return $ fmap (src,) maybeOut
   return $ M.fromList (catMaybes permalinkRoutes)
 
-permalinkRoute :: FilePath -> FilePath -> IO (Maybe FilePath)
-permalinkRoute targetDir src = do
+permalinkRoute :: FilePath -> IO (Maybe Url)
+permalinkRoute src = do
   metadata <- readYamlFrontmatter src
   forM (metadata ^. "permalink") $ \permalink -> do
-    let permalink' = T.unpack $ T.dropWhile (=='/') $ addIndexHtml $ permalink
-    return $ targetDir </> permalink'
+    return $ addIndexHtml permalink
 
 asRoutingTable :: (FilePath -> FilePath) -> [FilePath] -> RoutingTable
-asRoutingTable f sources = M.fromList [ (src, f src) | src <- sources ]
+asRoutingTable f sources = M.fromList [ (src, T.pack $ f src) | src <- sources ]
 
-route :: RoutingTable -> FilePath -> FilePath
-route table src = case M.lookup src table of
+routeUrl :: RoutingTable -> FilePath -> Url
+routeUrl table src = case M.lookup src table of
   Nothing  -> error $ "Could not find route for " <> src
   Just out -> out
+
+routeFile :: FilePath -> RoutingTable -> FilePath -> FilePath
+routeFile targetDir table src =
+  targetDir </> (T.unpack $ T.dropWhile (=='/') $ routeUrl table src)
