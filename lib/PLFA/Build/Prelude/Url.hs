@@ -19,17 +19,16 @@ import PLFA.Build.Prelude.FilePath
 
 type Url = Text
 
+
 -- | Make a Url relative to the site's root directory.
 --
 --   Adapted from hakyll's 'Hakyll.Web.Html.RelativizeUrls.relativizeUrls'
 relativizeUrl :: Url -> Url
 relativizeUrl url
-  | isRelative url = let (path, _anchor) = T.breakOn "#" url in toRoot path <> url
-  | otherwise      = url
+  | "/" `T.isPrefixOf` url && not ("//" `T.isPrefixOf` url) =
+    let (path, _anchor) = T.breakOn "#" url in toRoot path <> url
+  | otherwise = url
   where
-    isRelative :: Url -> Bool
-    isRelative url = "/" `T.isPrefixOf` url && not ("//" `T.isPrefixOf` url)
-
     -- | Creates the relative URL path to the site root for a given absolute URL path.
     toRoot :: Url -> Url
     toRoot = T.pack .

@@ -16,10 +16,8 @@ module PLFA.Build.Agda
   , readAgdaLib'
   , readAgdaLib
   , highlightAgdaWith
-  , standardLibraryAgdaLib
+  , readStandardLibraryAgdaLib
   , prepareFixLinks
-  , prepareFixExternalLinks
-  , prepareFixLocalLinksWithPermalink
   ) where
 
 import Agda.Main
@@ -254,8 +252,8 @@ getStandardLibraryVersion dir = do
 --         is located in the 'src' subdirectory. If that ever changes, or
 --         it becomes easy to read .agda-lib files, this should be fixed.
 --
-standardLibraryAgdaLib :: FilePath -> IO AgdaLib
-standardLibraryAgdaLib dir = do
+readStandardLibraryAgdaLib :: FilePath -> IO AgdaLib
+readStandardLibraryAgdaLib dir = do
   let agdaLibFile = dir </> "standard-library.agda-lib"
   correct <- System.doesFileExist agdaLibFile
   if not correct then

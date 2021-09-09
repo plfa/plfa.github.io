@@ -1,23 +1,13 @@
-## Agda files
-_build/
-*.agdai
-.agda-stdlib.sed
-.links-*.sed
-
-## Haskell files
-_site/
-_cache/
-stack.yaml.lock
+.shake/
 .stack-work/
-dist-newstyle
+_site/
+_build/
+auto/
+dist-newstyle/
+versions/plfa.github.io-web-*/
 
-## Jekyll files
-.sass-cache/
-.agda-stdlib.sed
-.jekyll-metadata
-Gemfile.lock
-
-## LaTeX files
+*.agdai
+*.lock
 *.aux
 *.bbl
 *.blg
@@ -27,13 +17,6 @@ Gemfile.lock
 *.pdf
 *.spl
 *.synctex.gz
-
-## Emacs files
-auto/
-
-## Misc build files
 *.zip
-versions/plfa.github.io-web-*/
 
-## Include plfa.pdf
 !plfa.pdf

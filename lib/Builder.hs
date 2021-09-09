@@ -9,6 +9,7 @@ import Data.Text qualified as T
 import Data.Text.ICU qualified as ICU
 import Data.Text.ICU.Replace qualified as ICU
 import PLFA.Build.Agda
+import PLFA.Build.Gather
 import PLFA.Build.Metadata
 import PLFA.Build.Pandoc as Pandoc
 import PLFA.Build.Prelude
@@ -42,22 +43,20 @@ main :: IO ()
 main = do
 
   --------------------------------------------------------------------------------
-  -- Gather input files
+  -- Gather input files and build routing table
   --------------------------------------------------------------------------------
 
-  staticFiles <- find always regularFile publicDir
-  agdaLibs    <- findAgdaLibs rootDir
-  stdlib      <- standardLibraryAgdaLib stdlibDir
-  mdFiles     <- findMdFiles rootDir
-  scssFiles   <- findSassFiles cssDir
+  staticFiles           <- gather always regularFile [publicDir]
+  agdaLibs              <- gatherAgdaLibs [courseDir, srcDir]
+  stdlib                <- readStandardLibraryAgdaLib stdlibDir
+  mdFiles               <- gatherMdFiles [courseDir, srcDir]
+  scssFiles             <- gatherSassFiles [cssDir]
+  postMdFiles           <- gatherMdFiles [postsDir]
+  lagdaMdFilesByAgdaLib <- gatherLagdaMdFilesForAgdaLibs agdaLibs
 
-  lagdaMdFilesByAgdaLib <- forM agdaLibs findLagdaMdFiles
-  permalinkRoutingTable <- getPermalinkRoutingTable siteDir mdFiles
-
-  let route :: FilePath -> FilePath
-      route inputFile = fromMaybe
-        (siteDir </> inputFile -<.> "html")
-        (M.lookup inputFile permalinkRoutingTable)
+  permalinkRoutingTable <- buildPermalinkRoutingTable siteDir mdFiles
+  let postsRoutingTable = asRoutingTable (\src -> siteDir </> src -<.> "html") postMdFiles
+  let routingTable = permalinkRoutingTable <> postsRoutingTable
 
   shakeArgs shakeOpts $ do
 
@@ -174,6 +173,17 @@ main = do
       toc <- getTocMetadata ()
       resolveIncludes getFileMetadata toc
 
+    getPostMetadata <- newCache $ \() -> do
+      posts <-
+        forM postMdFiles $ \postMdFile -> do
+          (body, metadata) <- readFileWithMetadata' postMdFile
+          let bodyField   = mempty & "body" .~ body
+          let dateField   = dateFromFilePath postMdFile "date"
+          let teaserField = teaser body "teaser"
+          let urlField    = mempty & "url" .~ route routingTable postMdFile
+          return $ mconcat [metadata, bodyField, dateField, teaserField, urlField]
+      return $ mempty & "post" .~ posts
+
     --------------------------------------------------------------------------------
     -- Static files
     --
@@ -208,7 +218,7 @@ main = do
     let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
         htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
         htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> replaceExtensions src "md"
-        htmlStage3 src = normalise $ route src
+        htmlStage3 src = normalise $ route routingTable src
 
     let htmlStage1Lib :: AgdaLib -> AgdaLib
         htmlStage1Lib agdaLib
@@ -239,6 +249,7 @@ main = do
 
         -- Stage 1: Preprocess literate Agda files
         htmlStage1 src %> \out -> do
+          need [src]
           readFile' src
             <&> preprocessForHtml
             >>= writeFile' out
@@ -254,6 +265,7 @@ main = do
           -- Highlight Agda as HTML
           markdown <- highlightAgdaFor (htmlStage1 ".agda/libraries") libraries (htmlStage1 src) Markdown
           writeFile' out markdown
+          putInfo $ "Checked " <> src
 
     forM_ mdFiles $ \src -> do
 
@@ -261,19 +273,23 @@ main = do
 
         -- Stage 2: Copy Markdown files verbatim
         htmlStage2 src %> \out -> do
+          need [src]
           copyFile' src out
 
       -- Stage 3: Render the Markdown to HTML
       htmlStage3 src %> \out -> do
-        fileMetadata <- getFileMetadata src
+        need [htmlStage2 src]
+        fileMetadata    <- getFileMetadata src
         siteTocMetadata <- getSiteTocMetadata ()
-        let metadata = fileMetadata <> siteTocMetadata
+        postMetadata    <- getPostMetadata ()
+        let metadata = mconcat [fileMetadata, siteTocMetadata, postMetadata]
         applyAsTemplate (htmlStage2 src) metadata
           >>= markdownToHTML
           >>= applyTemplate "templates/page.html" metadata
           >>= applyTemplate "templates/default.html" metadata
           <&> withUrls relativizeUrl
           >>= writeFile' out
+        putInfo $ "Updated " <> src
 
     --------------------------------------------------------------------------------
     -- Compile style files
@@ -292,6 +308,7 @@ main = do
       css <- compileSassWith def {sassIncludePaths = Just [cssDir]} src
       cssMin <- minifyCSSWith def css
       writeFile' out cssMin
+      putInfo $ "Updated " <> out
 
 
 --------------------------------------------------------------------------------
@@ -317,6 +334,8 @@ readerOpts = def
       , Ext_shortcut_reference_links
       , Ext_yaml_metadata_block
       , Ext_raw_attribute
+      , Ext_fenced_divs
+      , Ext_bracketed_spans
       ]
       <>
       githubMarkdownExtensions
@@ -324,37 +343,6 @@ readerOpts = def
 
 writerOpts :: WriterOptions
 writerOpts = def
-
-
---------------------------------------------------------------------------------
--- Helpers for finding files
---------------------------------------------------------------------------------
-
-allowDirsOnly :: FilterPredicate
-allowDirsOnly = depth ==? 0 ||? depth ==? 1 &&? filePath ==*? allowDirs ||? depth >? 1
-  where
-    allowDirs = [authorDir, contributorDir, courseDir, cssDir, postsDir, publicDir, srcDir, templateDir]
-
-findAll :: FilterPredicate -> FilterPredicate -> [FilePath] -> IO [FilePath]
-findAll p1 p2 dirs = concat <$> traverse (find p1 p2) dirs
-
-findAgdaLibs :: FilePath -> IO [AgdaLib]
-findAgdaLibs dir = do
-  agdaLibFiles <- find allowDirsOnly (regularFile &&? extensions ==? ".agda-lib") dir
-  traverse readAgdaLib agdaLibFiles
-
-findMdFiles :: FilePath -> IO [FilePath]
-findMdFiles dir =
-  map normalise <$>
-    find allowDirsOnly (regularFile &&? extension ==? ".md") dir
-
-findLagdaMdFiles :: AgdaLib -> IO (AgdaLib, [FilePath])
-findLagdaMdFiles agdaLib = do
-  lagdaMdFiles <- findAll always (regularFile &&? extensions ==? ".lagda.md") (libIncludes agdaLib)
-  return (agdaLib, lagdaMdFiles)
-
-findSassFiles :: FilePath -> IO [FilePath]
-findSassFiles dir = find always (regularFile &&? extensions ==? ".scss") dir
 
 
 --------------------------------------------------------------------------------

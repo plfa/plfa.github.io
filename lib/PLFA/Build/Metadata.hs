@@ -4,13 +4,17 @@ module PLFA.Build.Metadata
     readYaml,
     readYamlFrontmatter',
     readYamlFrontmatter,
+    readFileWithMetadata',
+    readFileWithMetadata,
     (^.),
     (.~),
     (&),
     Author (..),
     Contributor (..),
     lastModified,
+    dateFromFilePath,
     sourceFile,
+    teaser,
     addTitleVariants,
     resolveIncludes
   ) where
@@ -18,12 +22,12 @@ module PLFA.Build.Metadata
 import Data.Aeson (encode)
 import Data.Aeson.Types
 import Data.ByteString qualified as B
-import Data.Frontmatter (parseYamlFrontmatterEither)
+import Data.Frontmatter as Frontmatter (Result, IResult (..), parseYamlFrontmatter)
 import Data.Function ((&))
 import Data.HashMap.Strict qualified as H
 import Data.Text qualified as T
 import Data.Time.Format (formatTime, defaultTimeLocale)
-import Data.Vector as V
+import Data.Vector ()
 import Data.Yaml qualified as Y
 import System.Directory
 import System.IO.Unsafe (unsafePerformIO)
@@ -72,11 +76,25 @@ readYamlFrontmatter' inputFile = do
 
 -- | Read the YAML frontmatter from a file.
 readYamlFrontmatter :: FromJSON a => FilePath -> IO a
-readYamlFrontmatter inputFile = do
-  contents <- B.readFile inputFile
-  liftEither (\msg -> "Parse error in " <> inputFile <> ": " <> msg) $
-    parseYamlFrontmatterEither contents
+readYamlFrontmatter inputFile =
+  snd <$> readFileWithMetadata inputFile
 
+-- | Read a file with its YAML frontmatter and return both as a Shake action.
+readFileWithMetadata' :: FromJSON a => FilePath -> Action (Text, a)
+readFileWithMetadata' inputFile = do
+  need [inputFile]
+  liftIO $ readFileWithMetadata inputFile
+
+-- | Read a file with its YAML frontmatter and return both.
+readFileWithMetadata :: FromJSON a => FilePath -> IO (Text, a)
+readFileWithMetadata inputFile = do
+  contents <- B.readFile inputFile
+  withResult (parseYamlFrontmatter contents)
+  where
+    withResult :: (FromJSON a) => Frontmatter.Result a -> IO (Text, a)
+    withResult (Done body metadata) = do tbody <- toText body; return (tbody, metadata)
+    withResult (Fail _ _ message)   = fail message
+    withResult (Partial k)          = withResult (k "")
 
 -- * Instances
 
@@ -146,10 +164,12 @@ instance FromJSON Contributor where
 
 
 --------------------------------------------------------------------------------
--- Metadata field: modification time
+-- Metadata fields
 --------------------------------------------------------------------------------
 
--- | Adapted from hakyll's 'Hakyll.Web.Template.Context.modificationTimeField'
+-- | Create a metadata object containing the file modification time.
+--
+--   Adapted from hakyll's 'Hakyll.Web.Template.Context.modificationTimeField'.
 lastModified :: FilePath -> Text -> Action Metadata
 lastModified inputFile key = liftIO $ do
   time <- getModificationTime inputFile
@@ -157,19 +177,30 @@ lastModified inputFile key = liftIO $ do
   return $ mempty & key .~ modified
 
 
---------------------------------------------------------------------------------
--- Metadata field: source file
---------------------------------------------------------------------------------
-
+-- | Create a metadata object containing the source path.
 sourceFile :: FilePath -> Text -> Metadata
 sourceFile inputFile key =
   mempty & key .~ inputFile
 
 
---------------------------------------------------------------------------------
--- Metadata field: running title and subtitle
---------------------------------------------------------------------------------
+-- | Create a metadata object containing the date inferred from the file path.
+dateFromFilePath :: FilePath -> Text -> Metadata
+dateFromFilePath inputFile key =
+  case T.splitOn "-" $ T.pack inputFile of
+    (year : month : day : _) -> mempty & key .~ T.concat [year, "-", month, "-", day]
+    _                        -> mempty
 
+
+-- | Create a metadata object containing a teaser constructed from the first argument.
+teaser :: Text -> Text -> Metadata
+teaser body key
+  | T.null rest = mempty
+  | otherwise   = mempty & key .~ teaserBody
+  where
+    (teaserBody, rest) = T.breakOn "<!--more-->" body
+
+
+-- | Add running title and subtitle, if title contains a colon.
 addTitleVariants :: Metadata -> Metadata
 addTitleVariants metadata = case metadata ^. "title" of
   Nothing    -> metadata
@@ -182,10 +213,7 @@ addTitleVariants metadata = case metadata ^. "title" of
                  & "subtitle"     .~ T.strip (T.drop 1 subtitle)
 
 
---------------------------------------------------------------------------------
--- Metadata field: include metadata from files
---------------------------------------------------------------------------------
-
+-- | Resolve 'include' fields by including metadata from files.
 resolveIncludes :: (FilePath -> Action Metadata) -> Metadata -> Action Metadata
 resolveIncludes reader (Metadata object) = fromValue <$> walkValue (Object object)
   where

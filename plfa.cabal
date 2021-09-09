@@ -12,14 +12,19 @@ build-type:         Simple
 common plfa-common
   build-depends:       Agda == 2.6.2
                      , base
+                     , bytestring
                      , containers
                      , data-default-class
+                     , directory
                      , filemanip
-                     , mustache
+                     , filepath
+                     , frontmatter
                      , shake
                      , text
                      , text-icu >= 0.7.1.0
                      , text-regex-replace
+                     , vector
+                     , yaml
   default-language:    Haskell2010
   default-extensions:  ImportQualifiedPost
                      , LambdaCase
@@ -30,6 +35,7 @@ library
   import:              plfa-common
   hs-source-dirs:      lib
   exposed-modules:     PLFA.Build.Agda
+                     , PLFA.Build.Gather
                      , PLFA.Build.Metadata
                      , PLFA.Build.Pandoc
                      , PLFA.Build.Prelude
@@ -42,14 +48,10 @@ library
                      , PLFA.Build.Prelude.Text
                      , PLFA.Build.Prelude.Url
   build-depends:       aeson
-                     , bytestring
                      , charsetdetect
-                     , directory
                      , doclayout
                      , doctemplates
                      , extra
-                     , filepath
-                     , frontmatter
                      , hsass >= 0.3.0
                      , hasmin
                      , mtl
@@ -60,16 +62,17 @@ library
                      , temporary
                      , time
                      , unordered-containers
-                     , vector
-                     , yaml
 
 executable builder
   import:              plfa-common
-  main-is:             app/Main.hs
-  build-depends:       mustache
-                     , shake
-                     , text
-                     , plfa
+  main-is:             lib/Builder.hs
+  build-depends:       plfa
+
+executable update-contributors
+  import:              plfa-common
+  main-is:             lib/UpdateContributors.hs
+  build-depends:       exceptions
+                     , github >=0.26
 
 -- common shared-properties
 --   ghc-options:      -Wall
@@ -116,9 +119,3 @@ executable builder
 --   build-depends:    plfa
 --   ghc-options:      -threaded
 --
--- executable update-contributors
---   import:           shared-properties
---   main-is:          hs/UpdateContributors.hs
---   build-depends:    exceptions         >=0.10 && <0.11
---                   , github             >=0.26 && <0.27
---                   , vector             >=0.12 && <0.13
