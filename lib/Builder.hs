@@ -6,15 +6,14 @@ import Data.Map (Map)
 import Data.Map qualified as M
 import Data.Maybe (fromMaybe)
 import Data.Text qualified as T
-import Data.Text.ICU qualified as ICU
-import Data.Text.ICU.Replace qualified as ICU
 import PLFA.Build.Agda
 import PLFA.Build.Gather
 import PLFA.Build.Metadata
 import PLFA.Build.Pandoc as Pandoc
 import PLFA.Build.Prelude
 import PLFA.Build.Preprocess
-import PLFA.Build.Route
+import PLFA.Build.Route hiding (routeFile, routeUrl)
+import PLFA.Build.Route qualified as Route (routeFile, routeUrl)
 import PLFA.Build.Style.CSS
 import PLFA.Build.Style.Sass
 
@@ -48,9 +47,10 @@ main = do
 
   -- Gather files
   staticFiles           <- gather always regularFile [publicDir]
+  coursePdfs            <- gather always (regularFile &&? extension ==? ".pdf") [courseDir]
   agdaLibs              <- gatherAgdaLibs [courseDir, srcDir]
   stdlib                <- readStandardLibraryAgdaLib stdlibDir
-  mdFiles               <- gatherMdFiles [courseDir, postsDir, srcDir]
+  mdFiles               <- ("README.md" :) <$> gatherMdFiles [courseDir, postsDir, srcDir]
   scssFiles             <- gatherSassFiles [cssDir]
   postMdFiles           <- gatherMdFiles [postsDir]
   lagdaMdFilesByAgdaLib <- gatherLagdaMdFilesForAgdaLibs agdaLibs
@@ -58,10 +58,15 @@ main = do
   -- Build routing table
   permalinkRoutingTable <- buildPermalinkRoutingTable mdFiles
   let postsRoutingTable = asRoutingTable (-<.> "html") postMdFiles
-  let errorRoutingTable = asRoutingTable id ["404.html"]
-  let routingTable = mconcat [permalinkRoutingTable, postsRoutingTable, errorRoutingTable]
+  let staticRoutingTable = asRoutingTable id (staticFiles <> coursePdfs)
+  let routingTable = mconcat [permalinkRoutingTable, postsRoutingTable, staticRoutingTable]
+  let routeUrl  src = Route.routeUrl routingTable src
+  let routeFile src = Route.routeFile siteDir routingTable src
 
   shakeArgs shakeOpts $ do
+
+    -- Require Shake builds all targets in the routing table
+    wantAllTargets siteDir routingTable
 
     --------------------------------------------------------------------------------
     -- Highlighting literate Agda files
@@ -98,20 +103,20 @@ main = do
     getFixLinks <- newCache $ \() -> do
       liftIO $ prepareFixLinks $ [stdlib] <> agdaLibs
 
-    -- Render Markdown to HTML5 using Pandoc, applying the code to fix links
+    -- Render Markdown to Html5 using Pandoc, applying the code to fix links
     -- to local and external modules.
     --
     -- NOTE: Every Agda file in a local module /must/ have a permalink attribute.
     --
-    let markdownToHTML :: Text -> Action Text
-        markdownToHTML src = do
+    let markdownToHtml :: Text -> Action Text
+        markdownToHtml src = do
           fixLinks <- getFixLinks ()
           runPandocIO $ do
             ast <- Pandoc.readMarkdown readerOpts src
             let ast' = withUrlsPandoc fixLinks ast
             Pandoc.writeHtml5String writerOpts ast'
 
-    -- Render Markdown to XHTML using Pandoc.
+    -- Render Markdown to XHtml using Pandoc.
     --
     -- NOTE: Currently, all links are left broken.
     --
@@ -184,8 +189,8 @@ main = do
       authors      <- getAuthors ()
       contributors <- getContributors()
       return $
-        metadata & "authors"      .~ authors
-                 & "contributors" .~ contributors
+        metadata & "author"      .~ authors
+                 & "contributor" .~ contributors
 
     getSiteTocMetadata <- newCache $ \() -> do
       toc <- getTocMetadata ()
@@ -215,16 +220,15 @@ main = do
     --------------------------------------------------------------------------------
 
     forM_ staticFiles $ \src -> do
-      let out = siteDir </> src
-      want [out]
-      out %> \_ -> copyFile' src out
+      routeFile src %> \out ->
+        copyFile' src out
 
     --------------------------------------------------------------------------------
-    -- HTML compilation
+    -- Html compilation
     --
     -- Literate Agda files are rendered in stages:
     --
-    --   Stage 1. Preprocessing. Literate code blocks are marked as raw HTML or
+    --   Stage 1. Preprocessing. Literate code blocks are marked as raw Html or
     --            LaTeX by wrapping them in a code block with the appropriate raw
     --            attribute. For the LaTeX backend, the backtick fences are replaced
     --            by a LaTeX code environment.
@@ -232,7 +236,7 @@ main = do
     --   Stage 2. Highlighting. Literate code blocks are highlighted using Agda.
     --
     --   Stage 3. Templating & Rendering. The relevant templates are applied, and
-    --            the Markdown is rendered to HTML and LaTeX using Pandoc.
+    --            the Markdown is rendered to Html and LaTeX using Pandoc.
     --
     -- Markdown files are copied verbatim to Stage 2 and pass through Stage 3.
     --
@@ -241,7 +245,7 @@ main = do
     let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
         htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
         htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> replaceExtensions src "md"
-        htmlStage3 src = normalise $ routeFile siteDir routingTable src
+        htmlStage3 src = normalise $ routeFile src
 
     let htmlStage1Lib :: AgdaLib -> AgdaLib
         htmlStage1Lib agdaLib
@@ -250,8 +254,6 @@ main = do
             { libFile     = htmlStage1 (libFile agdaLib),
               libIncludes = map htmlStage1 (libIncludes agdaLib)
             }
-
-    want [htmlStage3 src | src <- mdFiles]
 
     -- Generate an appropriate libraries file
     htmlStage1 ".agda/libraries" %> \out -> do
@@ -286,7 +288,7 @@ main = do
           need [ htmlStage1 ".agda/libraries" ]
           need [ libFile lib | lib <- libraries]
           need [ htmlStage1 lagdaMdFile | lagdaMdFile <- lagdaMdFiles ]
-          -- Highlight Agda as HTML
+          -- Highlight Agda as Html
           markdown <- highlightAgdaFor (htmlStage1 ".agda/libraries") libraries (htmlStage1 src) Markdown
           writeFile' out markdown
           putInfo $ "Checked " <> src
@@ -300,7 +302,7 @@ main = do
           need [src]
           copyFile' src out
 
-      -- Stage 3: Render the Markdown to HTML
+      -- Stage 3: Render the Markdown to Html
       htmlStage3 src %> \out -> do
         need [htmlStage2 src]
         fileMetadata    <- getFileMetadata src
@@ -308,10 +310,11 @@ main = do
         postMetadata    <- getPostMetadata ()
         let metadata = mconcat [fileMetadata, siteTocMetadata, postMetadata]
         applyAsTemplate (htmlStage2 src) metadata
-          >>= markdownToHTML
+          >>= markdownToHtml
           >>= applyTemplate (templateDir </> "page.html") metadata
           >>= applyTemplate (templateDir </> "default.html") metadata
-          <&> withUrls relativizeUrl
+          <&> withUrls (relativizeUrl {-w.r.t.-} (routeUrl src))
+          <&> postprocessHtml5 -- TODO: Pandoc generates incorrect HTML5
           >>= writeFile' out
         putInfo $ "Updated " <> src
 

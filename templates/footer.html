@@ -6,16 +6,41 @@
         <div class="footer-col-wrapper">
             <div class="footer-col footer-col-1">
                 <ul class="contact-list">
-                    <li class="p-name">$author.name$</li>
+                    <li class="p-name">
+                        $author.name$
+                    </li>
                     <li>
+                        $if(author.corresponding)$
                         $if(author.email)$
                         <a class="u-email" href="mailto:$author.email$">$author.email$</a>
+                        $endif$
+                        $else$
+                        &em;
                         $endif$
                     </li>
                 </ul>
             </div>
             <div class="footer-col footer-col-2">
-                $^$${ author:social() }
+                <ul class="social-media-list">
+                    <li>
+                        <a rel="me" href="https://github.com/$author.github$" title="$author.github$">
+                            <svg class="svg-icon grey">
+                                <use xlink:href="/public/minima-social-icons.svg#github"></use>
+                            </svg>
+                            &nbsp;$author.github$
+                        </a>
+                    </li>
+                    $if(author.twitter)$
+                    <li>
+                        <a rel="me" href="https://twitter.com/$author.twitter$" title="$author.twitter$">
+                            <svg class="svg-icon grey">
+                                <use xlink:href="/public/minima-social-icons.svg#twitter"></use>
+                            </svg>
+                            &nbsp;$author.twitter$
+                        </a>
+                    </li>
+                    $endif$
+                </ul>
             </div>
             <div class="footer-col footer-col-3">
                 $if(author.blurb)$

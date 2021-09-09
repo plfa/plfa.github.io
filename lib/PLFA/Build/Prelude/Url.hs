@@ -23,10 +23,9 @@ type Url = Text
 -- | Make a Url relative to the site's root directory.
 --
 --   Adapted from hakyll's 'Hakyll.Web.Html.RelativizeUrls.relativizeUrls'
-relativizeUrl :: Url -> Url
-relativizeUrl url
-  | "/" `T.isPrefixOf` url && not ("//" `T.isPrefixOf` url) =
-    let (path, _anchor) = T.breakOn "#" url in toRoot path <> url
+relativizeUrl :: Url -> Url -> Url
+relativizeUrl pageUrl url
+  | "/" `T.isPrefixOf` url && not ("//" `T.isPrefixOf` url) = toRoot pageUrl <> url
   | otherwise = url
   where
     -- | Creates the relative URL path to the site root for a given absolute URL path.
@@ -41,6 +40,7 @@ relativizeUrl url
 
 
 
+
 -- | Apply a function to each Url in a raw HTML document.
 --
 --   Adapted from hakyll's 'Hakyll.Web.Html.withUrls'
@@ -50,7 +50,7 @@ withUrls f = TS.renderTags . map tag . TS.parseTags
     tag (TS.TagOpen s a) = TS.TagOpen s $ map attr a
     tag x                = x
     attr (k, v)          = (k, if k `elem` refs then f v else v)
-    refs                 = ["src", "href"]
+    refs                 = ["src", "href", "xlink:href"]
 
 -- | Apply a function to each Url in a Pandoc document.
 withUrlsPandoc :: (Url -> Url) -> Pandoc -> Pandoc

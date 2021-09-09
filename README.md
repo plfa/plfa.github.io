@@ -290,23 +290,12 @@ build                      # Build PLFA
 watch                      # Build and serve PLFA, monitor for changes and rebuild
 test                       # Test web version for broken links, invalid HTML, etc.
 test-epub                  # Test EPUB for compliance to the EPUB3 standard
-clean                      # Clean PLFA build
+clean                      # Remove cache
+clobber                    # Remove generated files
 init                       # Setup the Git hooks (see below)
 update-contributors        # Pull in new contributors from GitHub to contributors/
 list                       # List all build targets
 ```
-For completeness, the Makefile also offers the following options, but you’re unlikely to need these:
-```make
-legacy-versions            # Build legacy versions of PLFA
-setup-install-bundler      # Install Ruby Bundler (needed for ‘legacy-versions’)
-setup-install-htmlproofer  # Install HTMLProofer (needed for ‘test’ and Git hooks)
-setup-check-fix-whitespace # Check if fix-whitespace is installed (needed for Git hooks)
-setup-check-epubcheck      # Check if epubcheck is installed (needed for EPUB tests)
-setup-check-gem            # Check if RubyGems is installed
-setup-check-npm            # Check if the Node Package Manager is installed
-setup-check-stack          # Check if the Haskell Tool Stack is installed
-```
-The [EPUB version][epub] of the book is built as part of the website, since it’s hosted on the website.
 
 
 ### Git hooks

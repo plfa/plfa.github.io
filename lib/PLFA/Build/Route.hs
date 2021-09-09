@@ -6,6 +6,7 @@ module PLFA.Build.Route
   , asRoutingTable
   , routeUrl
   , routeFile
+  , wantAllTargets
   ) where
 
 import Control.Monad (forM)
@@ -48,4 +49,12 @@ routeUrl table src = case M.lookup src table of
 
 routeFile :: FilePath -> RoutingTable -> FilePath -> FilePath
 routeFile targetDir table src =
-  targetDir </> (T.unpack $ T.dropWhile (=='/') $ routeUrl table src)
+  urlToFile targetDir (routeUrl table src)
+
+wantAllTargets :: FilePath -> RoutingTable -> Rules ()
+wantAllTargets targetDir table =
+  want [ urlToFile targetDir url | url <- M.elems table ]
+
+urlToFile :: FilePath -> Url -> FilePath
+urlToFile targetDir url =
+  targetDir </> (T.unpack $ T.dropWhile (=='/') $ url)

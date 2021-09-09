@@ -141,6 +141,10 @@
   margin-left: 0;
 }
 
+.corresponding {
+  text-decoration: underline;
+}
+
 .footer-col-wrapper,
 .social-links {
   @include relative-font-size(0.9375);
@@ -331,4 +335,3 @@
     width: calc(50% - (#{$spacing-unit} / 2));
   }
 }
-

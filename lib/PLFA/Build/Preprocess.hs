@@ -1,17 +1,37 @@
 module PLFA.Build.Preprocess
   ( preprocessForHtml
   , preprocessForLaTeX
+  , postprocessHtml5
   ) where
 
+import Data.String (IsString (fromString))
 import Data.Text.ICU qualified as ICU
 import Data.Text.ICU.Replace qualified as ICU
 import PLFA.Build.Prelude
+import Text.Printf (printf)
 
 --------------------------------------------------------------------------------
 -- Preprocessing literate Agda files
 --------------------------------------------------------------------------------
 
--- | Wrap literate Agda blocks in a raw HTML block.
+-- | Removes closing tags for '<img>' and '<input>' tags.
+postprocessHtml5 :: Text -> Text
+postprocessHtml5 = ICU.replaceAll reSelfClosing "/>"
+  where
+    reSelfClosing :: ICU.Regex
+    reSelfClosing =
+      fromString $ foldr1 (>|<) $ map (printf "(></%s>)") selfClosingTags
+
+    (>|<) :: String -> String -> String
+    s1 >|< s2 = s1 <> "|" <> s2
+
+    selfClosingTags :: [String]
+    selfClosingTags =
+      ["area", "base", "br", "col", "embed", "hr", "img", "input", "link",
+       "meta", "param", "source", "track", "wbr", "command", "keygen", "menuitem"]
+
+
+-- | Wrap literate Agda blocks in a raw Html block.
 preprocessForHtml :: Text -> Text
 preprocessForHtml = ICU.replaceAll reCodeBlock "\n\n~~~{=html}\n```agda$1```\n\n~~~\n\n"
 
