@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module PLFA.Build.Prelude.Url
-  ( Url
-  , relativizeUrl
-  , withUrls
-  , withUrlsPandoc
-  , withUrlsBlockPandoc
-  , withUrlsInlinePandoc
+  ( Url,
+    relativizeUrl,
+    withUrls,
+    withUrlsPandoc,
+    withUrlsBlockPandoc,
+    withUrlsInlinePandoc
   ) where
 
 import Data.Function ((&))
@@ -37,8 +37,6 @@ relativizeUrl pageUrl url
              splitDirectories .
              takeDirectory .
              T.unpack
-
-
 
 
 -- | Apply a function to each Url in a raw HTML document.

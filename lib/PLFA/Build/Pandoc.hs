@@ -5,14 +5,15 @@ module PLFA.Build.Pandoc
     Template,
     runPandocIO,
     compileTemplate,
-    renderTemplate
+    renderTemplate,
   ) where
 
 import Control.Exception (displayException)
-import Data.Aeson.Types (Value (..))
+import Data.Aeson.Types
 import PLFA.Build.Prelude
 import PLFA.Build.Metadata
 import Text.DocLayout qualified as Doc (render)
+import Text.Pandoc.App as Export
 import Text.Pandoc as Export hiding (Format, Template, getTemplate, compileTemplate, renderTemplate)
 import Text.Pandoc.Writers.HTML as Export (writeHtmlStringForEPUB)
 import Text.Pandoc.Templates qualified as Template

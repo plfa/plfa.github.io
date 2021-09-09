@@ -2,6 +2,8 @@ module PLFA.Build.Metadata
   ( Metadata (..),
     readYaml',
     readYaml,
+    writeYaml',
+    writeYaml,
     readYamlFrontmatter',
     readYamlFrontmatter,
     readFileWithMetadata',
@@ -11,10 +13,11 @@ module PLFA.Build.Metadata
     (&),
     Author (..),
     Contributor (..),
-    lastModified,
-    dateFromFilePath,
-    sourceFile,
-    teaser,
+    lastModifiedField,
+    dateFromFileNameField,
+    currentDateField,
+    constField,
+    teaserField,
     addTitleVariants,
     resolveIncludes
   ) where
@@ -26,7 +29,8 @@ import Data.Frontmatter as Frontmatter (Result, IResult (..), parseYamlFrontmatt
 import Data.Function ((&))
 import Data.HashMap.Strict qualified as H
 import Data.Text qualified as T
-import Data.Time.Format (formatTime, defaultTimeLocale)
+import Data.Time
+import Data.Time.Format.ISO8601 (iso8601Show)
 import Data.Vector ()
 import Data.Yaml qualified as Y
 import System.Directory
@@ -57,6 +61,10 @@ metadata@(Metadata obj) ^. key = do
   a <- liftResult $ fromJSON v
   return a
 
+
+--------------------------------------------------------------------------------
+-- Reading and writing
+--------------------------------------------------------------------------------
 
 -- | Read a YAML file as a Shake action.
 readYaml' :: FromJSON a => FilePath -> Action a
@@ -95,6 +103,14 @@ readFileWithMetadata inputFile = do
     withResult (Done body metadata) = do tbody <- toText body; return (tbody, metadata)
     withResult (Fail _ _ message)   = fail message
     withResult (Partial k)          = withResult (k "")
+
+
+writeYaml' :: ToJSON a => FilePath -> a -> Action ()
+writeYaml' outputFile a = liftIO $ Y.encodeFile outputFile a
+
+writeYaml :: ToJSON a => FilePath -> a -> IO ()
+writeYaml outputFile a = Y.encodeFile outputFile a
+
 
 -- * Instances
 
@@ -167,38 +183,45 @@ instance FromJSON Contributor where
 -- Metadata fields
 --------------------------------------------------------------------------------
 
+prettyDate :: FormatTime t => t -> String
+prettyDate time = formatTime defaultTimeLocale "%a %-d %b, %Y" time
+
 -- | Create a metadata object containing the file modification time.
 --
 --   Adapted from hakyll's 'Hakyll.Web.Template.Context.modificationTimeField'.
-lastModified :: FilePath -> Text -> Action Metadata
-lastModified inputFile key = liftIO $ do
-  time <- getModificationTime inputFile
-  let modified = formatTime defaultTimeLocale "%0Y-%m-%dT%H:%M:%SZ" time
-  return $ mempty & key .~ modified
+lastModifiedField :: FilePath -> Text -> Action Metadata
+lastModifiedField inputFile key = liftIO $ do
+  modificationTime <- getModificationTime inputFile
+  return $ constField key (iso8601Show modificationTime)
 
-
--- | Create a metadata object containing the source path.
-sourceFile :: FilePath -> Text -> Metadata
-sourceFile inputFile key =
-  mempty & key .~ inputFile
-
+-- | Create a metadata object containing the current date.
+currentDateField :: Text -> Action Metadata
+currentDateField key = liftIO $ do
+  currentTime <- getCurrentTime
+  return $ constField key (prettyDate currentTime)
 
 -- | Create a metadata object containing the date inferred from the file path.
-dateFromFilePath :: FilePath -> Text -> Metadata
-dateFromFilePath inputFile key =
-  case T.splitOn "-" $ T.pack $ takeFileName inputFile of
-    (year : month : day : _) -> mempty & key .~ T.concat [year, "-", month, "-", day]
-    _                        -> mempty
+dateFromFileNameField :: FilePath -> Text -> Metadata
+dateFromFileNameField inputFile key
+  | length chunks >= 3 = constField key (prettyDate date)
+  | otherwise          = mempty
+  where
+    inputFileName = takeFileName inputFile
+    chunks        = map T.unpack $ T.splitOn "-" $ T.pack inputFileName
+    ~(y:m:d:_)    = map read chunks
+    date          = fromGregorian y (fromInteger m) (fromInteger d)
 
+-- | Create a metadata object containing the provided value.
+constField :: ToJSON a => Text -> a -> Metadata
+constField key a = mempty & key .~ a
 
 -- | Create a metadata object containing a teaser constructed from the first argument.
-teaser :: Text -> Text -> Metadata
-teaser body key
+teaserField :: Text -> Text -> Metadata
+teaserField body key
   | T.null rest = mempty
-  | otherwise   = mempty & key .~ teaserBody
+  | otherwise   = constField key teaserBody
   where
     (teaserBody, rest) = T.breakOn "<!--more-->" body
-
 
 -- | Add running title and subtitle, if title contains a colon.
 addTitleVariants :: Metadata -> Metadata
@@ -211,7 +234,6 @@ addTitleVariants metadata = case metadata ^. "title" of
       else
         metadata & "titlerunning" .~ T.strip titlerunning
                  & "subtitle"     .~ T.strip (T.drop 1 subtitle)
-
 
 -- | Resolve 'include' fields by including metadata from files.
 resolveIncludes :: (FilePath -> Action Metadata) -> Metadata -> Action Metadata

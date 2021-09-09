@@ -9,4 +9,4 @@ title: "Praise for PLFA"
 > “One of the most inspiring courses. Philip designed a course that is both very theoretical and very practical.”
 
 [TSPL-2019]: https://plfa.github.io/20.07/TSPL/2019/
-[EUSA-2020]: https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/
+[EUSA-2020]: https://web.archive.org/web/20201130051416/https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/

@@ -4,7 +4,8 @@ title: Notes
 permalink: /Notes/
 ---
 
-## To Do
+
+## To do
 
 Changes I would like to make to the book:
 
@@ -240,7 +241,7 @@ The following comments were collected on the Agda mailing list.
 
 * András Kovács <kovacsahun@hotmail.com>
   + applies unary parametricity
-    - http://lpaste.net/363029
+    - lpaste.net/363029 (link broken)
 
 * Ulf Norell <ulf.norell@gmail.com>
   + helped with deriving Eq

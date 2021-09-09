@@ -18,6 +18,7 @@ module PLFA.Build.Agda
   , highlightAgdaWith
   , readStandardLibraryAgdaLib
   , prepareFixLinks
+  , mapAgdaLib
   ) where
 
 import Agda.Main
@@ -324,9 +325,6 @@ readAgdaLib inputFile = do
       _libIncludes = map normalise (_libIncludes agdaLibFile)
     } Nothing
 
-instance Eq AgdaLib where
-  lib1 == lib2 = libName lib1 == libName lib2
-
 instance ToJSON AgdaLib where
   toJSON agdaLib =
     object [ "name"    .= libName agdaLib
@@ -336,6 +334,15 @@ instance ToJSON AgdaLib where
            , "pragmas" .= libPragmas agdaLib
            , "url"     .= libUrl agdaLib
            ]
+
+
+mapAgdaLib :: (FilePath -> FilePath) -> AgdaLib -> AgdaLib
+mapAgdaLib f agdaLib =
+  if libName agdaLib == "standard-library" then
+    agdaLib
+  else
+    agdaLib { libFile     = f (libFile agdaLib),
+              libIncludes = map f (libIncludes agdaLib) }
 
 --------------------------------------------------------------------------------
 -- Temporary directories

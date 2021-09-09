@@ -142,46 +142,46 @@
   \null\endgroup
 \end{titlepage}
 
-$for(parts)$
+$for(part)$
 
 % Open front, main, and back matter sections:
-$if(frontmatter)$
+$if(part.frontmatter)$
 \frontmatter%
 \setcounter{tocdepth}{0}
 
 \tableofcontents%
 \setcounter{tocdepth}{1}
 $endif$
-$if(mainmatter)$
+$if(part.mainmatter)$
 \mainmatter%
 $endif$
-$if(backmatter)$
+$if(part.backmatter)$
 \appendix
 \addcontentsline{toc}{part}{Appendices}
 $endif$
 
 % Only print title for main and back matter:
-$if(frontmatter)$
+$if(part.frontmatter)$
 % NOTE: Front matter titles are inserted via book/lua/single-file-headers.lua.
 $else$
-\part{$title$}
+\part{$part.title$}
 $endif$
 
 % Include each section.
-$for(sections)$
-\hypertarget{$anchor$}{%
-  \chapter{$title$}\label{$anchor$}}
-\input{$tex_path$}
+$for(part.section)$
+\hypertarget{$part.section.anchor$}{%
+  \chapter{$part.section.title$}\label{$part.section.anchor$}}
+$part.section.body$
 $endfor$
 
 % Close front, main, and back matter sections:
-$if(frontmatter)$
+$if(part.frontmatter)$
 $endif$
-$if(mainmatter)$
+$if(part.mainmatter)$
 \cleardoublepage%
 \phantomsection%
 $endif$
-$if(backmatter)$
+$if(part.backmatter)$
 $endif$
 $endfor$
 
