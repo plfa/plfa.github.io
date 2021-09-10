@@ -38,7 +38,7 @@ $endfor$
 ### Courses taught from the textbook
 
 #### 2021
-  * Favonia, University of Minnesota
+  * Favonia, University of Minnesota _(The course website is not pubilc; here is the [link to Favonia's homepage](https://favonia.org).)_
 
 #### 2020
   * [William Cook, University of Texas][UT-2020]
