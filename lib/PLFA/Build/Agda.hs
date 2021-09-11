@@ -56,10 +56,11 @@ import PLFA.Build.Prelude
 data Format
   = Markdown
   | LaTeX
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 -- | Extend Agda's 'AgdaLibFile' with optional URLs.
 data AgdaLib = AgdaLibExt AgdaLibFile (Maybe Url)
+  deriving Show
 
 -- | A record pattern synonym for Agda library files.
 pattern AgdaLib ::  LibName -> FilePath -> [FilePath] -> [LibName] -> [String] -> Maybe Url -> AgdaLib
@@ -73,6 +74,7 @@ data AgdaOpts = AgdaOpts
     libraries     :: [AgdaLib],
     inputFile     :: FilePath
   }
+  deriving (Show)
 
 instance Default AgdaOpts where
   def = AgdaOpts
@@ -94,8 +96,9 @@ highlightAgdaWith opts@AgdaOpts{..} = liftIO $ do
 
     -- Call Agda with the appropriate options and backend
     let backends = map getBackend formats
+    let args = buildArgs optsWithTmpDir
     (configuredBackends, agdaOpts) <- liftExcept id $
-      parseBackendOptions backends (buildArgs optsWithTmpDir) Agda.defaultOptions
+      parseBackendOptions backends args Agda.defaultOptions
     absInputFile <- absolute inputFile
     let interactor = backendInteraction absInputFile configuredBackends
     swallowExitSuccess $
@@ -282,7 +285,8 @@ guessOutputPath LaTeX AgdaOpts{..} = do
 
 -- | Guess the module name based on the filename and the include path.
 guessModuleName :: [FilePath] -> FilePath -> Maybe Text
-guessModuleName includePaths inputFile = pathToModule <$> guessModulePath includePaths inputFile
+guessModuleName includePaths inputFile =
+  pathToModule <$> guessModulePath includePaths inputFile
   where
     pathToModule fp = T.map sepToDot (T.pack $ dropExtensions fp)
       where
@@ -296,8 +300,8 @@ guessModuleName_ includePaths inputFile =
 
 -- | Guess the module path based on the filename and the include path.
 guessModulePath :: [FilePath] -> FilePath -> Maybe FilePath
-guessModulePath includePaths inputFile =
-  listToMaybe $ catMaybes $ [ stripPrefix includePath inputFile | includePath <- includePaths ]
+guessModulePath includePaths inputFile = listToMaybe . catMaybes $
+  [ stripPrefix includePath inputFile | includePath <- includePaths ]
   where
     stripPrefix fp1 fp2 =
       joinPath <$> L.stripPrefix (splitDirectories fp1) (splitDirectories fp2)

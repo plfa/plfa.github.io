@@ -46,8 +46,6 @@ webfontsDir       = publicDir </> "webfonts"
 bibtexFile        = "bib" </> "plfa.bib"
 stdlibAgdaLibFile = stdlibDir </> "standard-library.agda-lib"
 
-badgeUrl          = ""
-
 main :: IO ()
 main = do
 
@@ -413,10 +411,11 @@ main = do
     -- Compile PDF
     --------------------------------------------------------------------------------
 
-{-
-
-    let texStage1, texStage2 :: FilePath -> FilePath
-        texStage1 src = normalise $ texCacheDir </> "stage1" </> src
+    let texStage1, texStage2, texStage3 :: FilePath -> FilePath
+        texStage1 src
+          -- TODO: replace this shitty code with something sensible
+          | hasExtension src = normalise $ texCacheDir </> "stage1" </> src -<.> "tex"
+          | otherwise        = normalise $ texCacheDir </> "stage1" </> src
         texStage2 src = normalise $ texCacheDir </> "stage2" </> stripLagda src
         texStage3 src = normalise $ texCacheDir </> "stage3" </> src -<.> "tex"
 
@@ -460,7 +459,7 @@ main = do
           need [ libFile lib | lib <- libraries]
           need [ texStage1 lagdaMdFile | lagdaMdFile <- lagdaMdFiles ]
           -- Highlight Agda as LaTeX
-          markdown <- highlightAgdaFor (htmlStage1 ".agda/libraries") libraries (htmlStage1 src) LaTeX
+          markdown <- highlightAgdaFor (texStage1 ".agda/libraries") libraries (texStage1 src) LaTeX
           writeFile' out markdown
           putInfo $ "Checked " <> src
 
