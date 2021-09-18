@@ -374,7 +374,7 @@ restated in this way.
 -- Your code goes here
 ```
 
-#### Exercise `∃-|-≤` (practice)
+#### Exercise `∃-+-≤` (practice)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
