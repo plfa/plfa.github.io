@@ -509,7 +509,7 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the intrinsically-typed
-DeBruijn representation.
+de Bruijn representation.
 
 ```
 -- Your code goes here
