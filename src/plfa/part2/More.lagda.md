@@ -274,11 +274,11 @@ One might think that we could instead use a more compact translation:
       (N †) [ x := `proj₁ (L †) ] [ y := `proj₂ (L †) ]
 
 But this behaves differently.  The first term always reduces `L`
-before `N`, and it computes ```proj₁`` and ```proj₂`` exactly once.  The
+before `N`, and it computes `` `proj₁ `` and `` `proj₂ `` exactly once.  The
 second term does not reduce `L` to a value before reducing `N`, and
 depending on how many times and where `x` and `y` appear in `N`, it
-may reduce `L` many times or not at all, and it may compute ```proj₁``
-and ```proj₂`` many times or not at all.
+may reduce `L` many times or not at all, and it may compute `` `proj₁ ``
+and `` `proj₂ `` many times or not at all.
 
 We can also translate back the other way:
 
