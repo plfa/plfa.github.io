@@ -511,11 +511,11 @@ _ =
   ∎
 ```
 
-Any type that is parameterised on another type, such as lists, has a
+A type that is parameterised on another type, such as list, often has a
 corresponding map, which accepts a function and returns a function
 from the type parameterised on the domain of the function to the type
 parameterised on the range of the function. Further, a type that is
-parameterised on _n_ types will have a map that is parameterised on
+parameterised on _n_ types often has a map that is parameterised on
 _n_ functions.
 
 
