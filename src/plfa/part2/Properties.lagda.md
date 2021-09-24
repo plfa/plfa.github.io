@@ -125,7 +125,7 @@ If we expand out the negations, we have
 which are the same function with the arguments swapped.
 
 
-## Canonical Forms
+#### Exercise `Canonical-≃` (practice)
 
 Well-typed values must take one of a small number of _canonical forms_,
 which provide an analogue of the `Value` relation that relates values
@@ -154,59 +154,12 @@ data Canonical_⦂_ : Term → Type → Set where
     → Canonical `suc V ⦂ `ℕ
 ```
 
-Every closed, well-typed value is canonical:
+Show that `Canonical V ⦂ A` is isomorphic to `(∅ ⊢ V ⦂ A) × (Value V)`,
+that is, the canonical forms are exactly the well-typed values.
+
 ```
-canonical : ∀ {V A}
-  → ∅ ⊢ V ⦂ A
-  → Value V
-    -----------
-  → Canonical V ⦂ A
-canonical (⊢` ())          ()
-canonical (⊢ƛ ⊢N)          V-ƛ         =  C-ƛ ⊢N
-canonical (⊢L · ⊢M)        ()
-canonical ⊢zero            V-zero      =  C-zero
-canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
-canonical (⊢case ⊢L ⊢M ⊢N) ()
-canonical (⊢μ ⊢M)          ()
+-- Your code goes here
 ```
-There are only three interesting cases to consider:
-
-* If the term is a lambda abstraction, then well-typing of the term
-  guarantees well-typing of the body.
-
-* If the term is zero then it is canonical trivially.
-
-* If the term is a successor then since it is well typed its argument
-  is well typed, and since it is a value its argument is a value.
-  Hence, by induction its argument is also canonical.
-
-The variable case is thrown out because a closed term has no free
-variables and because a variable is not a value.  The cases for
-application, case expression, and fixpoint are thrown out because they
-are not values.
-
-Conversely, if a term is canonical then it is a value
-and it is well typed in the empty context:
-```
-value : ∀ {M A}
-  → Canonical M ⦂ A
-    ----------------
-  → Value M
-value (C-ƛ ⊢N)    =  V-ƛ
-value C-zero      =  V-zero
-value (C-suc CM)  =  V-suc (value CM)
-
-typed : ∀ {M A}
-  → Canonical M ⦂ A
-    ---------------
-  → ∅ ⊢ M ⦂ A
-typed (C-ƛ ⊢N)    =  ⊢ƛ ⊢N
-typed C-zero      =  ⊢zero
-typed (C-suc CM)  =  ⊢suc (typed CM)
-```
-The proofs are straightforward, and again use induction in the
-case of successor.
-
 
 ## Progress
 
@@ -257,19 +210,17 @@ progress (⊢` ())
 progress (⊢ƛ ⊢N)                            =  done V-ƛ
 progress (⊢L · ⊢M) with progress ⊢L
 ... | step L—→L′                            =  step (ξ-·₁ L—→L′)
-... | done VL with progress ⊢M
-...   | step M—→M′                          =  step (ξ-·₂ VL M—→M′)
-...   | done VM with canonical ⊢L VL
-...     | C-ƛ _                             =  step (β-ƛ VM)
+... | done V-ƛ with progress ⊢M
+...   | step M—→M′                          =  step (ξ-·₂ V-ƛ M—→M′)
+...   | done VM                             =  step (β-ƛ VM)
 progress ⊢zero                              =  done V-zero
 progress (⊢suc ⊢M) with progress ⊢M
 ...  | step M—→M′                           =  step (ξ-suc M—→M′)
 ...  | done VM                              =  done (V-suc VM)
 progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | step L—→L′                            =  step (ξ-case L—→L′)
-... | done VL with canonical ⊢L VL
-...   | C-zero                              =  step β-zero
-...   | C-suc CL                            =  step (β-suc (value CL))
+... | done (V-zero)                         =  step β-zero
+... | done (V-suc VL)                       =  step (β-suc VL)
 progress (⊢μ ⊢M)                            =  step β-μ
 ```
 We induct on the evidence that the term is well typed.
@@ -288,7 +239,8 @@ Let's unpack the first three cases:
     to `L′ · M`
 
   + If the term is done, we have evidence that `L` is
-    a value. Recursively apply progress to the derivation
+    a value, which must be a lambda abstraction.
+    Recursively apply progress to the derivation
     that `M` is well typed:
 
     - If the term steps, we have evidence that `M —→ M′`,
@@ -298,11 +250,6 @@ Let's unpack the first three cases:
       subterm has already supplied the required evidence.
 
     - If the term is done, we have evidence that `M` is
-      a value.  We apply the canonical forms lemma to the
-      evidence that `L` is well typed and a value, which
-      since we are in an application leads to the
-      conclusion that `L` must be a lambda
-      abstraction.  We also have evidence that `M` is
       a value, so our original term steps by `β-ƛ`.
 
 The remaining cases are similar.  If by induction we have a
