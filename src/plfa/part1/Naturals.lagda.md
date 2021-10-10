@@ -94,7 +94,7 @@ _conclusion_.  The first rule is the base case. It has no hypotheses,
 and the conclusion asserts that `zero` is a natural.  The second rule
 is the inductive case. It has one hypothesis, which assumes that `m`
 is a natural, and the conclusion asserts that `suc m`
-is a also a natural.
+is also a natural.
 
 
 ## Unpacking the Agda definition
@@ -117,7 +117,7 @@ corresponding `data` declaration.  The lines
 
 give _signatures_ specifying the types of the constructors `zero` and `suc`.
 They tell us that `zero` is a natural number and that `suc` takes a natural
-number as argument and returns a natural number.
+number as an argument and returns a natural number.
 
 You may have noticed that `ℕ` and `→` don't appear on your keyboard.
 They are symbols in _unicode_.  At the end of each chapter is a list
