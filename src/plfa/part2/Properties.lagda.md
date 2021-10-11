@@ -406,7 +406,7 @@ ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 Let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.
 The proof is by case analysis of the evidence that `x` appears
-in the extended map `Γ , y ⦂ B`:
+in the extended context `Γ , y ⦂ B`:
 
 * If `x` is the same as `y`, we used `Z` to access the last variable
 in the extended `Γ`; and can similarly use `Z` to access the last
