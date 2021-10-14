@@ -841,16 +841,16 @@ The entire process can be automated using Agsy, invoked with C-c C-a.
 
 ### Injective
 
-Note that `Γ ∋ x ⦂ A` is injective.
+Note that `Γ ∋ x ⦂ A` is functional.
 \begin{code}
-∋-injective : ∀ {Γ w A B} → Γ ∋ w ⦂ A → Γ ∋ w ⦂ B → A ≡ B
-∋-injective Z        Z          =  refl
-∋-injective Z        (S w≢ _)   =  ⊥-elim (w≢ refl)
-∋-injective (S w≢ _) Z          =  ⊥-elim (w≢ refl)
-∋-injective (S _ ∋w) (S _ ∋w′)  =  ∋-injective ∋w ∋w′
+∋-functional : ∀ {Γ w A B} → Γ ∋ w ⦂ A → Γ ∋ w ⦂ B → A ≡ B
+∋-functional Z        Z          =  refl
+∋-functional Z        (S w≢ _)   =  ⊥-elim (w≢ refl)
+∋-functional (S w≢ _) Z          =  ⊥-elim (w≢ refl)
+∋-functional (S _ ∋w) (S _ ∋w′)  =  ∋-functional ∋w ∋w′
 \end{code}
 
-The relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
+The relation `Γ ⊢ M ⦂ A` is not functional. For example, in any `Γ`
 the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
 
 ### Non-examples
@@ -875,7 +875,7 @@ contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
 contradiction ()
 
 ex₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ # "x" · # "x" ⦂ A)
-ex₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-injective ∋x ∋x′)
+ex₂ (⇒-I (⇒-E (Ax ∋x) (Ax ∋x′)))  =  contradiction (∋-functional ∋x ∋x′)
 \end{code}
 
 

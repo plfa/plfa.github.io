@@ -1199,19 +1199,19 @@ Chapter [Inference]({{ site.baseurl }}{% link out/plta/DeBruijn.md %})
 will show how to use Agda to compute type derivations directly.
 
 
-### Lookup is injective
+### Lookup is functional
 
-The lookup relation `Γ ∋ x ⦂ A` is injective, in that for each `Γ` and `x`
+The lookup relation `Γ ∋ x ⦂ A` is functional, in that for each `Γ` and `x`
 there is at most one `A` such that the judgment holds.
 \begin{code}
-∋-injective : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
-∋-injective Z        Z          =  refl
-∋-injective Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
-∋-injective (S x≢ _) Z          =  ⊥-elim (x≢ refl)
-∋-injective (S _ ∋x) (S _ ∋x′)  =  ∋-injective ∋x ∋x′
+∋-functional : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
+∋-functional Z        Z          =  refl
+∋-functional Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
+∋-functional (S x≢ _) Z          =  ⊥-elim (x≢ refl)
+∋-functional (S _ ∋x) (S _ ∋x′)  =  ∋-functional ∋x ∋x′
 \end{code}
 
-The typing relation `Γ ⊢ M ⦂ A` is not injective. For example, in any `Γ`
+The typing relation `Γ ⊢ M ⦂ A` is not functional. For example, in any `Γ`
 the term `ƛ "x" ⇒ "x"` has type `A ⇒ A` for any type `A`.
 
 ### Non-examples
@@ -1233,7 +1233,7 @@ doing so requires types `A` and `B` such that `A ⇒ B ≡ A`.
 
 \begin{code}
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ` "x" · ` "x" ⦂ A)
-nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-injective ∋x ∋x′)
+nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-functional ∋x ∋x′)
   where
   contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
   contradiction ()
