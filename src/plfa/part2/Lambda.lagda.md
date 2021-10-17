@@ -60,7 +60,7 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (∃-syntax; _×_)
 open import Data.String using (String; _≟_)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Relation.Nullary.Decidable using (⌊_⌋; False; toWitnessFalse)
+open import Relation.Nullary.Decidable using (False; toWitnessFalse)
 open import Relation.Nullary.Negation using (¬?)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
