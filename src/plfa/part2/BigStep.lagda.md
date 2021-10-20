@@ -48,7 +48,7 @@ open import plfa.part2.Substitution using (Subst; ids)
 
 ## Environments
 
-To handle variables and function application, there is the choice
+To handle variables and function applications, there is the choice
 between using substitution, as in `—→`, or to use an _environment_.
 An environment in call-by-name is a map from variables to closures,
 that is, to terms paired with their environments. We choose to use
@@ -225,7 +225,7 @@ The next lemma we need to prove states that if you start with an
 equivalent environment and substitution `γ ≈ₑ σ`, extending them with
 an equivalent closure and term `c ≈ N` produces an equivalent
 environment and substitution: `(γ ,' V) ≈ₑ (ext-subst σ N)`,
-or equivalently, `(γ ,' V) x ≈ₑ (ext-subst σ N) x` for any
+or equivalently, `(γ ,' V) x ≈ (ext-subst σ N) x` for any
 variable `x`. The proof will be by induction on `x` and
 for the induction step we need the following lemma,
 which states that applying the composition of `exts σ`
@@ -272,7 +272,7 @@ sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ 
 sub-sub {M = M} = plfa.part2.Substitution.sub-sub {M = M}
 ```
 
-We arive at the main lemma: if `M` big steps to a
+We arrive at the main lemma: if `M` big steps to a
 closure `V` in environment `γ`, and if `γ ≈ₑ σ`, then `subst σ M` reduces
 to some term `N` that is equivalent to `V`. We describe the proof
 below.
@@ -308,7 +308,7 @@ to consider.
 
 * Case `⇓-var`.
   So we have `γ x ≡ clos L δ` and `δ ⊢ L ⇓ V`.
-  We need to show that `subst σ x —↠ N` and `V ≈ N` for some `N`.
+  We need to show that ``subst σ (` x) —↠ N`` and `V ≈ N` for some `N`.
   The premise `γ ≈ₑ σ` tells us that `γ x ≈ σ x`, so `clos L δ ≈ σ x`.
   By the definition of `≈`, there exists a `τ` such that
   `δ ≈ₑ τ` and `σ x ≡ subst τ L `.
@@ -322,7 +322,7 @@ to consider.
   and `clos (subst σ (ƛ N)) γ ≈ subst σ (ƛ N)`.
 
 * Case `⇓-app`.
-  Using `γ ⊢ L ⇓ clos N δ` and `γ ≈ₑ σ`,
+  Using `γ ⊢ L ⇓ clos (ƛ N) δ` and `γ ≈ₑ σ`,
   the induction hypothesis gives us
 
         subst σ L —↠ ƛ subst (exts τ) N                                     (1)
