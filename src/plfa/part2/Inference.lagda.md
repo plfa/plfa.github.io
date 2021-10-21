@@ -207,7 +207,7 @@ What we intend to show is that the typing judgments are
 _decidable_:
 
     synthesize : ∀ (Γ : Context) (M : Term⁺)
-        -----------------------
+        -------------------------
       → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
 
     inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
@@ -318,9 +318,9 @@ data Term⁺ : Set
 data Term⁻ : Set
 
 data Term⁺ where
-  `_                        : Id → Term⁺
-  _·_                       : Term⁺ → Term⁻ → Term⁺
-  _↓_                       : Term⁻ → Type → Term⁺
+  `_                       : Id → Term⁺
+  _·_                      : Term⁺ → Term⁻ → Term⁺
+  _↓_                      : Term⁻ → Type → Term⁺
 
 data Term⁻ where
   ƛ_⇒_                     : Id → Term⁻ → Term⁻
@@ -386,7 +386,7 @@ The typing rules for variables are as in
 data _∋_⦂_ : Context → Id → Type → Set where
 
   Z : ∀ {Γ x A}
-      --------------------
+      -----------------
     → Γ , x ⦂ A ∋ x ⦂ A
 
   S : ∀ {Γ x y A B}
