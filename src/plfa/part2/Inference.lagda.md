@@ -255,6 +255,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.String using (String; _≟_)
 open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Relation.Nullary using (¬_; Dec; yes; no)
+open import Relation.Nullary.Decidable using (False; toWitnessFalse)
 ```
 
 Once we have a type derivation, it will be easy to construct
@@ -831,11 +832,8 @@ read directly from the corresponding typing rules.
 First, we copy a function introduced earlier that makes it easy to
 compute the evidence that two variable names are distinct:
 ```
-_≠_ : ∀ (x y : Id) → x ≢ y
-x ≠ y  with x ≟ y
-...       | no  x≢y  =  x≢y
-...       | yes _    =  ⊥-elim impossible
-  where postulate impossible : ⊥
+_≠_ : ∀ (x y : Id) {x≢y : False (x ≟ y)} → x ≢ y
+_≠_ _ _ {x≢y = x≢y} = toWitnessFalse x≢y
 ```
 
 Here is the result of typing two plus two on naturals:
