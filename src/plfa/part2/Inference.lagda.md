@@ -829,11 +829,16 @@ read directly from the corresponding typing rules.
 
 ## Testing the example terms
 
-First, we copy a function introduced earlier that makes it easy to
-compute the evidence that two variable names are distinct:
+First, we copy the smart constructor `S′` introduced earlier that makes it easy to
+access a variable in a context:
 ```
-_≠_ : ∀ (x y : Id) {x≢y : False (x ≟ y)} → x ≢ y
-_≠_ _ _ {x≢y = x≢y} = toWitnessFalse x≢y
+S′ : ∀ {Γ x y A B}
+   → {x≢y : False (x ≟ y)}
+   → Γ ∋ x ⦂ A
+     ------------------
+   → Γ , y ⦂ B ∋ x ⦂ A
+
+S′ {x≢y = x≢y} x = S (toWitnessFalse x≢y) x
 ```
 
 Here is the result of typing two plus two on naturals:
@@ -844,15 +849,15 @@ Here is the result of typing two plus two on naturals:
    (⊢μ
     (⊢ƛ
      (⊢ƛ
-      (⊢case (⊢` (S ("m" ≠ "n") Z)) (⊢↑ (⊢` Z) refl)
+      (⊢case (⊢` (S′ Z)) (⊢↑ (⊢` Z) refl)
        (⊢suc
         (⊢↑
          (⊢`
-          (S ("p" ≠ "m")
-           (S ("p" ≠ "n")
-            (S ("p" ≠ "m") Z)))
+          (S′
+           (S′
+            (S′ Z)))
           · ⊢↑ (⊢` Z) refl
-          · ⊢↑ (⊢` (S ("n" ≠ "m") Z)) refl)
+          · ⊢↑ (⊢` (S′ Z)) refl)
          refl))))))
    · ⊢suc (⊢suc ⊢zero)
    · ⊢suc (⊢suc ⊢zero))
@@ -865,9 +870,8 @@ _ = refl
 ```
 Indeed, the above derivation was computed by evaluating the term on
 the left, with minor editing of the result.  The only editing required
-was to replace Agda's representation of the evidence that two strings
-are unequal (which it cannot print nor read) by equivalent calls to
-`_≠_`.
+was to use the smart constructor `S′` to obtain the evidence that
+two variable names (as strings) are unequal (which it cannot print nor read).
 
 Here is the result of typing two plus two with Church numerals:
 ```
@@ -880,16 +884,16 @@ Here is the result of typing two plus two with Church numerals:
      (⊢ƛ
       (⊢↑
        (⊢`
-        (S ("m" ≠ "z")
-         (S ("m" ≠ "s")
-          (S ("m" ≠ "n") Z)))
-        · ⊢↑ (⊢` (S ("s" ≠ "z") Z)) refl
+        (S′
+         (S′
+          (S′ Z)))
+        · ⊢↑ (⊢` (S′ Z)) refl
         ·
         ⊢↑
         (⊢`
-         (S ("n" ≠ "z")
-          (S ("n" ≠ "s") Z))
-         · ⊢↑ (⊢` (S ("s" ≠ "z") Z)) refl
+         (S′
+          (S′ Z))
+         · ⊢↑ (⊢` (S′ Z)) refl
          · ⊢↑ (⊢` Z) refl)
         refl)
        refl)))))
@@ -897,16 +901,16 @@ Here is the result of typing two plus two with Church numerals:
   ⊢ƛ
   (⊢ƛ
    (⊢↑
-    (⊢` (S ("s" ≠ "z") Z) ·
-     ⊢↑ (⊢` (S ("s" ≠ "z") Z) · ⊢↑ (⊢` Z) refl)
+    (⊢` (S′ Z) ·
+     ⊢↑ (⊢` (S′ Z) · ⊢↑ (⊢` Z) refl)
      refl)
     refl))
   ·
   ⊢ƛ
   (⊢ƛ
    (⊢↑
-    (⊢` (S ("s" ≠ "z") Z) ·
-     ⊢↑ (⊢` (S ("s" ≠ "z") Z) · ⊢↑ (⊢` Z) refl)
+    (⊢` (S′ Z) ·
+     ⊢↑ (⊢` (S′ Z) · ⊢↑ (⊢` Z) refl)
      refl)
     refl))
   · ⊢ƛ (⊢suc (⊢↑ (⊢` Z) refl))

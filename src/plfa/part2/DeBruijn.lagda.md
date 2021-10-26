@@ -66,7 +66,7 @@ And here is its corresponding type derivation:
     ⊢twoᶜ : ∀ {A} → ∅ ⊢ twoᶜ ⦂ Ch A
     ⊢twoᶜ = ⊢ƛ (⊢ƛ (⊢` ∋s · (⊢` ∋s · ⊢` ∋z)))
       where
-      ∋s = S ("s" ≠ "z") Z
+      ∋s = S′ Z
       ∋z = Z
 
 (These are both taken from Chapter
@@ -154,11 +154,11 @@ Here is its corresponding type derivation:
     ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
              (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
       where
-      ∋+  = (S ("+" ≠ "m") (S ("+" ≠ "n") (S ("+" ≠ "m") Z)))
-      ∋m  = (S ("m" ≠ "n") Z)
+      ∋+  = (S′ (S′ (S′ Z)))
+      ∋m  = (S′ Z)
       ∋n  = Z
       ∋m′ = Z
-      ∋n′ = (S ("n" ≠ "m") Z)
+      ∋n′ = (S′ Z)
 
 The two definitions are in close correspondence, where in
 addition to the previous correspondences we have:
@@ -1388,4 +1388,3 @@ This chapter uses the following unicode:
     ₆  U+2086  SUBSCRIPT SIX (\_6)
     ₇  U+2087  SUBSCRIPT SEVEN (\_7)
     ≠  U+2260  NOT EQUAL TO (\=n)
-
