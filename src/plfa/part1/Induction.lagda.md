@@ -948,6 +948,10 @@ Show the following three laws
 
 for all `m`, `n`, and `p`.
 
+```
+-- Your code goes here
+```
+
 
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
