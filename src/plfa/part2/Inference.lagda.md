@@ -719,7 +719,7 @@ There are three cases:
     which yields a contradiction.
 
   + If it succeeds, then `∋x` is evidence that `Γ ∋ x ⦂ A`, and
-    hence `` ⊢′ ∋x `` is evidence that `` Γ ⊢ ` x ↑ A ``.
+    hence `` ⊢` ∋x `` is evidence that `` Γ ⊢ ` x ↑ A ``.
 
 * If the term is an application `L · M`, we recurse on the function `L`:
 
