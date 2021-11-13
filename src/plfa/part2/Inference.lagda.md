@@ -589,7 +589,7 @@ ext∋ _   ¬∃ ⟨ A , S _ ∋x ⟩  =  ¬∃ ⟨ A , ∋x ⟩
 Given a type `A` and evidence that `Γ , y ⦂ B ∋ x ⦂ A` holds, we must
 demonstrate a contradiction.  If the judgment holds by `Z`, then we
 must have that `x` and `y` are the same, which contradicts the first
-assumption. If the judgment holds by `S _ ⊢x` then `⊢x` provides
+assumption. If the judgment holds by `S _ ∋x` then `∋x` provides
 evidence that `Γ ∋ x ⦂ A`, which contradicts the second assumption.
 
 Given a context `Γ` and a variable `x`, we decide whether
@@ -719,7 +719,7 @@ There are three cases:
     which yields a contradiction.
 
   + If it succeeds, then `∋x` is evidence that `Γ ∋ x ⦂ A`, and
-    hence `` ⊢′ ∋x `` is evidence that `` Γ ⊢ ` x ↑ A ``.
+    hence `` ⊢` ∋x `` is evidence that `` Γ ⊢ ` x ↑ A ``.
 
 * If the term is an application `L · M`, we recurse on the function `L`:
 
