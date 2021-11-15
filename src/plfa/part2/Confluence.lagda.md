@@ -244,7 +244,7 @@ pars-betas (L ⇛⟨ p ⟩ ps) = —↠-trans (par-betas p) (pars-betas ps)
 
 ## Substitution lemma for parallel reduction
 
-Our next goal is the prove the diamond property for parallel
+Our next goal is to prove the diamond property for parallel
 reduction. But to do that, we need to prove that substitution
 respects parallel reduction. That is, if
 `N ⇛ N′` and `M ⇛ M′`, then `N [ M ] ⇛ N′ [ M′ ]`.
@@ -289,7 +289,7 @@ par-rename {Γ}{Δ}{A}{ρ} (pbeta{Γ}{N}{N′}{M}{M′} p₁ p₂)
 
 ```
 
-The proof is by induction on `M ⇛ M′`. The first four cases
+The proof is by induction on `M ⇛ M′`. The first three cases
 are straightforward so we just consider the last one for `pbeta`.
 
 * Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
@@ -318,7 +318,7 @@ par-subst-exts s {x = S x} = par-rename s
 
 The next lemma that we need for proving that substitution respects
 parallel reduction is the following which states that
-simultaneoous substitution commutes with single substitution. We import this
+simultaneous substitution commutes with single substitution. We import this
 lemma from Chapter [Substitution](/Substitution/)
 and restate it below.
 
@@ -451,7 +451,7 @@ par-triangle (papp {L = _ · _} p1 p2) = papp (par-triangle p1) (par-triangle p2
 
 The proof of the triangle property is an induction on `M ⇛ N`.
 
-* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x`.
+* Suppose `x ⇛ x`. Clearly `x ⁺ = x`, so `x ⇛ x ⁺`.
 
 * Suppose `ƛ M ⇛ ƛ N`. By the induction hypothesis we have `N ⇛ M ⁺`
   and by definition `(λ M) ⁺ = λ (M ⁺)`, so we conclude that `λ N ⇛ λ
