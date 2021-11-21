@@ -721,6 +721,8 @@ This works because:
     ≡
       f · (μ f)
 
+This fixpoint definition is well-known as [the Y combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed-point_combinators_in_lambda_calculus), discovered by Haskell Curry.
+
 With de Bruijn indices, we have the following:
 ```
 μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
