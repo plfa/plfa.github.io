@@ -223,7 +223,7 @@ ext-subst{Γ}{Δ} σ N {A} = subst (subst-zero N) ∘ exts σ
 
 The next lemma we need to prove states that if you start with an
 equivalent environment and substitution `γ ≈ₑ σ`, extending them with
-an equivalent closure and term `c ≈ N` produces an equivalent
+an equivalent closure and term `V ≈ N` produces an equivalent
 environment and substitution: `(γ ,' V) ≈ₑ (ext-subst σ N)`,
 or equivalently, `(γ ,' V) x ≈ (ext-subst σ N) x` for any
 variable `x`. The proof will be by induction on `x` and
