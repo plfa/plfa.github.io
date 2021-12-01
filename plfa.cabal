@@ -41,6 +41,7 @@ library
                      , PLFA.Build.Prelude
                      , PLFA.Build.Preprocess
                      , PLFA.Build.Route
+                     , PLFA.Build.Staged
                      , PLFA.Build.Style.CSS
                      , PLFA.Build.Style.Sass
   other-modules:       PLFA.Build.Prelude.ByteString

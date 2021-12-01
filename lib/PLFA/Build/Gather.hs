@@ -1,6 +1,8 @@
 module PLFA.Build.Gather where
 
 import Control.Monad (forM)
+import Data.Map (Map)
+import Data.Map qualified as M
 import PLFA.Build.Agda
 import PLFA.Build.Prelude
 
@@ -36,6 +38,17 @@ gatherLagdaMdFilesForAgdaLibs agdaLibs =
   forM agdaLibs $ \agdaLib -> do
     lagdaMdFiles <- gatherLagdaMdFilesForAgdaLib agdaLib
     return (agdaLib, lagdaMdFiles)
+
+buildAgdaLibMap :: [AgdaLib] -> IO (Map FilePath AgdaLib)
+buildAgdaLibMap agdaLibs = do
+  lagdaMdFilesByAgdaLib <- gatherLagdaMdFilesForAgdaLibs agdaLibs
+  return $ M.fromList $ concat
+    [
+      [ (lagdaMdFile, agdaLib)
+      | lagdaMdFile <- lagdaMdFiles
+      ]
+    | (agdaLib, lagdaMdFiles) <- lagdaMdFilesByAgdaLib
+    ]
 
 gatherSassFiles :: [FilePath] -> IO [FilePath]
 gatherSassFiles dirs =
