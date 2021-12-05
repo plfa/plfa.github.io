@@ -726,9 +726,9 @@ ext-⊑ ρ lt (S n′) = lt n′
 
 We proceed by cases on the de Bruijn index `n`.
 
-* If it is `Z`, then we just need to show that `v ≡ v`, which we have by `refl`.
+* If it is `Z`, then we just need to show that `v ⊑ v`, which we have by `⊑-refl`.
 
-* If it is `S n′`, then the goal simplifies to `γ n′ ≡ δ (ρ n′)`,
+* If it is `S n′`, then the goal simplifies to `γ n′ ⊑ δ (ρ n′)`,
   which is an instance of the premise.
 
 Now for the renaming lemma. Suppose we have a renaming that maps
@@ -760,7 +760,7 @@ The proof is by induction on the semantics of `M`.  As you can see, all
 of the cases are trivial except the cases for variables and lambda.
 
 * For a variable `x`, we make use of the premise to show that
-  `γ x ≡ δ (ρ x)`.
+  `γ x ⊑ δ (ρ x)`.
 
 * For a lambda abstraction, the induction hypothesis requires us to
   extend the renaming. We do so, and use the `ext-⊑` lemma to show
