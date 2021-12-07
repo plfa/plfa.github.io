@@ -1079,7 +1079,7 @@ included in `w`.
 With the `⨆dom` and `⨆cod` functions in hand, we can make precise the
 conclusion of the inversion principle for functions, which we package
 into the following predicate named `factor`. We say that `v ↦ w`
-_factors_ `u` into `u′` if `u′` is a included in `u`, if `u′` contains only
+_factors_ `u` into `u′` if `u′` is included in `u`, if `u′` contains only
 functions, its domain is less than `v`, and its codomain is greater
 than `w`.
 
@@ -1154,7 +1154,7 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
 
 * Suppose `u′ ≡ u₁′ ↦ u₂′`. Then `u₁′ ↦ u₂′ ∈ u` and we can apply the
   premise (the induction hypothesis from `u ⊑ u₂`) to obtain that
-  `u₁′ ↦ u₂′` factors of `u₂ into u₂′`. This case is complete because
+  `u₁′ ↦ u₂′` factors `u₂` into `u₃`. This case is complete because
   `⨆dom u′ ≡ u₁′` and `⨆cod u′ ≡ u₂′`.
 
 * Suppose `u′ ≡ u₁′ ⊔ u₂′`. Then we have `u₁′ ⊆ u` and `u₂′ ⊆ u`. We also
