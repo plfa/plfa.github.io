@@ -56,7 +56,6 @@ down a denotational semantics of the lambda calculus.
 
 ```
 open import Agda.Primitive using (lzero; lsuc)
-open import Data.Empty using (⊥-elim)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
@@ -1129,7 +1128,7 @@ sub-inv-trans : ∀{u′ u₂ u : Value}
       ---------------------------------------------------------------
     → Σ[ u₃ ∈ Value ] factor u₂ u₃ (⨆dom u′) (⨆cod u′)
 sub-inv-trans {⊥} {u₂} {u} fu′ u′⊆u IH =
-   ⊥-elim (contradiction (fu′ refl) ¬Fun⊥)
+   contradiction (fu′ refl) ¬Fun⊥
 sub-inv-trans {u₁′ ↦ u₂′} {u₂} {u} fg u′⊆u IH = IH (↦⊆→∈ u′⊆u)
 sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
     with ⊔⊆-inv u′⊆u
