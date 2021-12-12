@@ -6,7 +6,7 @@ permalink : /BigStep/
 next      : /Denotational/
 ---
 
-```
+```agda
 module plfa.part2.BigStep where
 ```
 
@@ -33,7 +33,7 @@ single sub-computation has been completed.
 
 ## Imports
 
-```
+```agda
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; sym; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -60,7 +60,7 @@ is made easier by aligning these choices.
 
 We define environments and closures as follows.
 
-```
+```agda
 ClosEnv : Context → Set
 
 data Clos : Set where
@@ -72,7 +72,7 @@ ClosEnv Γ = ∀ (x : Γ ∋ ★) → Clos
 As usual, we have the empty environment, and we can extend an
 environment.
 
-```
+```agda
 ∅' : ClosEnv ∅
 ∅' ()
 
@@ -88,7 +88,7 @@ written `γ ⊢ M ⇓ V`, where `γ` is the environment, `M` is the input
 term, and `V` is the result value.  A _value_ is a closure whose term
 is a lambda abstraction.
 
-```
+```agda
 data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
 
   ⇓-var : ∀{Γ}{γ : ClosEnv Γ}{x : Γ ∋ ★}{Δ}{δ : ClosEnv Δ}{M : Δ ⊢ ★}{V}
@@ -125,7 +125,7 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
 Show that `(ƛ ƛ # 1) · ((ƛ # 0 · # 0) · (ƛ # 0 · # 0))`
 terminates under big-step call-by-name evaluation.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -137,7 +137,7 @@ If the big-step relation evaluates a term `M` to both `V` and
 call-by-name relation is a partial function. The proof is a
 straightforward induction on the two big-step derivations.
 
-```
+```agda
 ⇓-determ : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{V V' : Clos}
   → γ ⊢ M ⇓ V → γ ⊢ M ⇓ V'
   → V ≡ V'
@@ -180,7 +180,7 @@ equivalent.
 We make the two notions of equivalence precise by defining the
 following two mutually-recursive predicates `V ≈ M` and `γ ≈ₑ σ`.
 
-```
+```agda
 _≈_ : Clos → (∅ ⊢ ★) → Set
 _≈ₑ_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
@@ -200,7 +200,7 @@ about equivalent environments and substitutions.
 The empty environment is equivalent to the identity substitution
 `ids`, which we import from Chapter [Substitution](/Substitution/).
 
-```
+```agda
 ≈ₑ-id : ∅' ≈ₑ ids
 ≈ₑ-id {()}
 ```
@@ -208,7 +208,7 @@ The empty environment is equivalent to the identity substitution
 Of course, applying the identity substitution to a term returns
 the same term.
 
-```
+```agda
 sub-id : ∀{Γ} {A} {M : Γ ⊢ A} → subst ids M ≡ M
 sub-id = plfa.part2.Substitution.sub-id
 ```
@@ -216,7 +216,7 @@ sub-id = plfa.part2.Substitution.sub-id
 
 We define an auxiliary function for extending a substitution.
 
-```
+```agda
 ext-subst : ∀{Γ Δ} → Subst Γ Δ → Δ ⊢ ★ → Subst (Γ , ★) Δ
 ext-subst{Γ}{Δ} σ N {A} = subst (subst-zero N) ∘ exts σ
 ```
@@ -233,7 +233,7 @@ and `subst-zero` to `S x` is the same as just `σ x`,
 which is a corollary of a theorem in
 Chapter [Substitution](/Substitution/).
 
-```
+```agda
 subst-zero-exts : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{x : Γ ∋ ★}
   → (subst (subst-zero M) ∘ exts σ) (S x) ≡ σ x
 subst-zero-exts {Γ}{Δ}{σ}{B}{M}{x} =
@@ -242,7 +242,7 @@ subst-zero-exts {Γ}{Δ}{σ}{B}{M}{x} =
 
 So the proof of `≈ₑ-ext` is as follows.
 
-```
+```agda
 ≈ₑ-ext : ∀ {Γ} {γ : ClosEnv Γ} {σ : Subst Γ ∅} {V} {N : ∅ ⊢ ★}
   → γ ≈ₑ σ  →  V ≈ N
     --------------------------
@@ -266,7 +266,7 @@ To prove the main lemma, we need another technical lemma about
 substitution. Applying one substitution after another is the same as
 composing the two substitutions and then applying them.
 
-```
+```agda
 sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ}
   → subst σ₂ (subst σ₁ M) ≡ subst (subst σ₂ ∘ σ₁) M
 sub-sub {M = M} = plfa.part2.Substitution.sub-sub {M = M}
@@ -277,7 +277,7 @@ closure `V` in environment `γ`, and if `γ ≈ₑ σ`, then `subst σ M` reduce
 to some term `N` that is equivalent to `V`. We describe the proof
 below.
 
-```
+```agda
 ⇓→—↠×≈ : ∀{Γ}{γ : ClosEnv Γ}{σ : Subst Γ ∅}{M : Γ ⊢ ★}{V : Clos}
        → γ ⊢ M ⇓ V  →  γ ≈ₑ σ
          ---------------------------------------
@@ -360,7 +360,7 @@ to consider.
 With the main lemma complete, we establish the forward direction
 of the equivalence between the big-step semantics and beta reduction.
 
-```
+```agda
 cbn→reduce :  ∀{M : ∅ ⊢ ★}{Δ}{δ : ClosEnv Δ}{N′ : Δ , ★ ⊢ ★}
   → ∅' ⊢ M ⇓ clos (ƛ N′) δ
     -----------------------------
@@ -379,7 +379,7 @@ the analogue of the application rule `⇓-app` should perform
 substitution, as in `N [ M ]`, instead of extending the environment
 with `M`. Prove that `M ↓ N` implies `M —↠ N`.
 
-```
+```agda
 -- Your code goes here
 ```
 

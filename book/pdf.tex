@@ -2,26 +2,49 @@
 
 \usepackage{hyperref}
 \usepackage[links]{agda}
+
+% Use DejaVu and Frankenfont
 \usepackage{fontspec}
-\setmainfont{DejaVu Sans}
-\setsansfont{DejaVu Sans}
-\setmonofont{[DejaVu-mononoki-Symbola-Droid.ttf]}
+\setmainfont[
+  Extension      = .ttf,
+  Path           = fonts/,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic
+  ]{DejaVuSerif}
+\setsansfont[
+  Extension      = .ttf,
+  Path           = fonts/,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Oblique,
+  BoldItalicFont = *-BoldOblique
+  ]{DejaVuSans}
+\setmonofont[
+  Extension      = .ttf,
+  UprightFont    = *-Regular,
+  Path           = fonts/
+  ]{Frankenfont}
+
+% Use soul for underlines
 \usepackage{soul}
+
+% Setup colour boxes for code blocks
+\usepackage{xcolor}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,breakable}
 \usepackage{fancyvrb}
-\usepackage{fvextra}
-\usepackage{xcolor}
+\usepackage{fvextra} % merged from dev
+\usepackage{xcolor} % merged from dev
 \usepackage{tikz}
 \usepackage{setspace}
-\usepackage{geometry}
-\geometry{
+\usepackage[
   a4paper,
-  total={170mm,257mm},
-  left=20mm,
-  top=20mm,
-}
-
+  total = {170mm,257mm},
+  left  = 20mm,
+  top   = 20mm,
+  ]{geometry}
 
 % Wrap texttt lines
 \sloppy
@@ -29,21 +52,21 @@
 % Disable section numbering
 \setcounter{secnumdepth}{0}
 
-% Set the global text color:
-\definecolor{textcolor}{HTML}{111111}
-\color{textcolor}
+% Set the global text color
+\definecolor{TEXTCOLOR}{HTML}{111111}
+\color{TEXTCOLOR}
 
 % Change background color for inline code in markdown files.
 % The following code does not work well for long text as the
 % text will exceed the page boundary.
-\definecolor{background-color}{HTML}{EEEEFF}
+\definecolor{BACKGROUND-COLOR}{HTML}{EEEEFF}
 \let\oldtexttt\texttt%
-\renewcommand{\texttt}[1]{\colorbox{background-color}{\oldtexttt{#1}}}
+\renewcommand{\texttt}[1]{\colorbox{BACKGROUND-COLOR}{\oldtexttt{#1}}}
 
 % Box with background colour similar to web version:
 \newtcolorbox{agda}[1][]{
   frame hidden,
-  colback=background-color,
+  colback=BACKGROUND-COLOR,
   spartan,
   left=5pt,
   boxrule=0pt,
@@ -67,7 +90,7 @@
 % https://tex.stackexchange.com/a/103078
 \newfontfamily{\AgdaSerifFont}{DejaVu-Serif}
 \newfontfamily{\AgdaSansSerifFont}{DejaVu-Sans}
-\newfontfamily{\AgdaTypewriterFont}{DejaVu-mononoki-Symbola-Droid}
+\newfontfamily{\AgdaTypewriterFont}{Frankenfont}
 \renewcommand{\AgdaFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
 \renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
 \renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
@@ -83,12 +106,12 @@
 
 % Style links with colors instead of boxes:
 % https://tex.stackexchange.com/q/823
-\definecolor{linkcolor}{HTML}{2A7AE2}
+\definecolor{LINKCOLOR}{HTML}{2A7AE2}
 \hypersetup{
   colorlinks,
-  linkcolor={linkcolor},
-  citecolor={linkcolor},
-  urlcolor={linkcolor}
+  linkcolor={LINKCOLOR},
+  citecolor={LINKCOLOR},
+  urlcolor={LINKCOLOR}
 }
 
 \begin{document}
@@ -121,46 +144,46 @@
   \null\endgroup
 \end{titlepage}
 
-$for(parts)$
+$for(part)$
 
 % Open front, main, and back matter sections:
-$if(frontmatter)$
+$if(part.frontmatter)$
 \frontmatter%
 \setcounter{tocdepth}{0}
 
 \tableofcontents%
 \setcounter{tocdepth}{1}
 $endif$
-$if(mainmatter)$
+$if(part.mainmatter)$
 \mainmatter%
 $endif$
-$if(backmatter)$
+$if(part.backmatter)$
 \appendix
 \addcontentsline{toc}{part}{Appendices}
 $endif$
 
 % Only print title for main and back matter:
-$if(frontmatter)$
+$if(part.frontmatter)$
 % NOTE: Front matter titles are inserted via book/lua/single-file-headers.lua.
 $else$
-\part{$title$}
+\part{$part.title$}
 $endif$
 
 % Include each section.
-$for(sections)$
-\hypertarget{$anchor$}{%
-  \chapter{$title$}\label{$anchor$}}
-\input{$tex_path$}
+$for(part.section)$
+\hypertarget{$part.section.anchor$}{%
+  \chapter{$part.section.title$}\label{$part.section.anchor$}}
+$part.section.body$
 $endfor$
 
 % Close front, main, and back matter sections:
-$if(frontmatter)$
+$if(part.frontmatter)$
 $endif$
-$if(mainmatter)$
+$if(part.mainmatter)$
 \cleardoublepage%
 \phantomsection%
 $endif$
-$if(backmatter)$
+$if(part.backmatter)$
 $endif$
 $endfor$
 

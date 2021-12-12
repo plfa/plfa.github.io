@@ -12,6 +12,8 @@ We deprecated [agda2html](https://github.com/wenkokke/agda2html). In version 2.6
 ```bash
 agda --html --html-highlight=code FILE.lagda.md
 ```
-Of course, [agda2html](https://github.com/wenkokke/agda2html) offered support for more than just inline highlighting of code in Markdown files. We have written a bash script, [`highlight.sh`](https://github.com/plfa/plfa.github.io/blob/dev/highlight.sh), which supports much of the same functionality. In particular, it uses sed to redirect links to the standard library to [the online version](https://agda.github.io/agda-stdlib/README.html). For the time being, we dropped support for module references, e.g., linking to the chapter on Naturals by writing `[Naturals][plfa.Naturals]`, and removed all module references from the text.
+Of course, [agda2html](https://github.com/wenkokke/agda2html) offered support for more than just inline highlighting of code in Markdown files. We have written a bash script, [`highlight.sh`][highlight.sh] (*deprecated*) which supports much of the same functionality. In particular, it uses sed to redirect links to the standard library to [the online version](https://agda.github.io/agda-stdlib/README.html). For the time being, we dropped support for module references, e.g., linking to the chapter on Naturals by writing `[Naturals][plfa.Naturals]`, and removed all module references from the text.
 
 Lastly, to use Agda 2.6 with Markdown, we updated all literal Agda files. We replaced LaTeX code fences, i.e., `\begin{code}` and `\end{code}`, with Markdown backtick fences ```` ``` ````, and changed the file extensions `.lagda` to `.lagda.md`. As a consequence, when you open up a literate Agda file in Emacs, it will open the file in Markdown mode -- if you have it installed -- or in fundamental mode. To switch to Agda mode, you will have to invoke `M-x agda2-mode`.
+
+[highlight.sh]: https://github.com/plfa/plfa.github.io/blob/ea8bee4461e2e43891605d7f694dfce8a2b1923f/highlight.sh

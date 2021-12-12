@@ -1,3 +1,0 @@
-name: plfa
-depend: standard-library
-include: src

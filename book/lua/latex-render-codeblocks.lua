@@ -1,4 +1,4 @@
-local unchecked_files = {}
+local unchecked_files = {"README.md"}
 
 local function is_checked()
   -- Check if any of our input files is an unchecked file.
@@ -33,15 +33,6 @@ local function render_codeblock(cb)
   return pandoc.RawBlock('tex', '\\begin{pre}\n' .. cb.text .. '\n\\end{pre}')
 end
 
-local function get_unchecked_files(meta)
-  if meta['unchecked-files'] then
-    for unchecked_file in string.gmatch(pandoc.utils.stringify(meta['unchecked-files']), "([^ ]+)") do
-      unchecked_files[unchecked_file] = true
-    end
-  end
-end
-
 return {
-  { Meta = get_unchecked_files },
   { CodeBlock = render_codeblock }
 }

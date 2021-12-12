@@ -6,7 +6,7 @@ permalink : /Naturals/
 next      : /Induction/
 ---
 
-```
+```agda
 module plfa.part1.Naturals where
 ```
 
@@ -45,7 +45,7 @@ as a pair of inference rules:
     suc m : ℕ
 
 And here is the definition in Agda:
-```
+```agda
 data ℕ : Set where
   zero : ℕ
   suc  : ℕ → ℕ
@@ -80,7 +80,7 @@ successor of two; and so on.
 
 Write out `7` in longhand.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -234,7 +234,7 @@ code, with the exception of one special kind of comment, called a
 _pragma_, which is enclosed between `{-#` and `#-}`.
 
 Including the line
-```
+```agda
 {-# BUILTIN NATURAL ℕ #-}
 ```
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
@@ -259,7 +259,7 @@ terms involving natural numbers.  To support doing so, we import
 the definition of equality and notations for reasoning
 about it from the Agda standard library:
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
@@ -301,7 +301,7 @@ instances of addition and multiplication can be specified in
 just a couple of lines.
 
 Here is the definition of addition in Agda:
-```
+```agda
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
 (suc m) + n = suc (m + n)
@@ -346,7 +346,7 @@ addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called _well founded_.
 
 For example, let's add two and three:
-```
+```agda
 _ : 2 + 3 ≡ 5
 _ =
   begin
@@ -365,7 +365,7 @@ _ =
 ```
 We can write the same derivation more compactly by only
 expanding shorthand as needed:
-```
+```agda
 _ : 2 + 3 ≡ 5
 _ =
   begin
@@ -398,7 +398,7 @@ consists of a series of terms separated by `≡⟨⟩`.
 
 In fact, both proofs are longer than need be, and Agda is satisfied
 with the following:
-```
+```agda
 _ : 2 + 3 ≡ 5
 _ = refl
 ```
@@ -429,7 +429,7 @@ other word for evidence, which we will use interchangeably, is _proof_.
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -438,7 +438,7 @@ Compute `3 + 4`, writing out your reasoning as a chain of equations, using the e
 
 Once we have defined addition, we can define multiplication
 as repeated addition:
-```
+```agda
 _*_ : ℕ → ℕ → ℕ
 zero    * n  =  zero
 (suc m) * n  =  n + (m * n)
@@ -465,7 +465,7 @@ Again, the definition is well founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
 For example, let's multiply two and three:
-```
+```agda
 _ =
   begin
     2 * 3
@@ -491,7 +491,7 @@ it can easily be inferred from the corresponding term.
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -505,7 +505,7 @@ Define exponentiation, which is given by the following equations:
 
 Check that `3 ^ 4` is `81`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -520,7 +520,7 @@ subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first use of a definition that uses pattern
 matching against both arguments:
-```
+```agda
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero   =  m
 zero  ∸ suc n  =  zero
@@ -539,7 +539,7 @@ monus on bigger numbers is defined in terms of monus on
 smaller numbers.
 
 For example, let's subtract two from three:
-```
+```agda
 _ =
   begin
     3 ∸ 2
@@ -553,7 +553,7 @@ _ =
 ```
 We did not use the second equation at all, but it will be required
 if we try to subtract a larger number from a smaller one:
-```
+```agda
 _ =
   begin
     2 ∸ 3
@@ -570,7 +570,7 @@ _ =
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -587,7 +587,7 @@ so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
 needs to be declared:
-```
+```agda
 infixl 6  _+_  _∸_
 infixl 7  _*_
 ```
@@ -854,7 +854,7 @@ a program this simple, using `C-c C-c` to split cases can be helpful.
 ## More pragmas
 
 Including the lines
-```
+```agda
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
@@ -876,7 +876,7 @@ _m_ and _n_.
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
-```
+```agda
 data Bin : Set where
   ⟨⟩ : Bin
   _O : Bin → Bin
@@ -917,7 +917,7 @@ For the former, choose the bitstring to have no leading zeros if it
 represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -929,7 +929,7 @@ definitions in the standard library.  The naturals, constructors for
 them, and basic operators upon them, are defined in the standard
 library module `Data.Nat`:
 
-```
+```agda
 -- import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
 ```
 

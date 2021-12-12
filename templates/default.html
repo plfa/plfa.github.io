@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-    $partial("templates/head.html")$
+    $^$${ head() }
     <body>
-        $partial("templates/header.html")$
+        $^$${ header() }
         <main class="page-content" aria-label="Content">
             <div class="wrapper">
-                $body$
+$body$
             </div>
         </main>
-        $partial("templates/footer.html")$
+        $^$${ footer() }
     </body>
 </html>

@@ -3,25 +3,25 @@ title     : Table of Contents
 permalink : /
 ---
 
-This book is an introduction to programming language theory using the
-proof assistant Agda.
+This book is an introduction to programming language theory using the proof
+assistant Agda.
 
-Comments on all matters---organisation, material to add, material to
-remove, parts that require better explanation, good exercises, errors,
-and typos---are welcome.  The book repository is on [GitHub].
-Pull requests are encouraged.
+Comments on all matters---organisation, material to add, material to remove,
+parts that require better explanation, good exercises, errors, and typos---are
+welcome.  The book repository is on [GitHub]. Pull requests are encouraged.
+There is a private repository of answers to selected questions on github. Please
+contact one of the authors if you would like to access it.
 
-$for(parts)$
-## $title$
-<ul>
-$for(sections)$
-$if(titlerunning)$
-<li><a href="$url$">$titlerunning$</a>: $subtitle$</li>
+
+$for(part)$
+## $part.title$
+$for(part.section)$
+$if(part.section.titlerunning)$
+  * [$part.section.titlerunning$]($part.section.permalink$): $part.section.subtitle$
 $else$
-<li><a href="$url$">$title$</a></li>
+  * [$part.section.title$]($part.section.permalink$)
 $endif$
 $endfor$
-</ul>
 $endfor$
 
 ## Related

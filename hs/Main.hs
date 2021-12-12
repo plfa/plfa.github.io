@@ -1,12 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import           Control.Monad ((<=<), (>=>), forM_)
+import           Data.Binary (Binary)
 import           Data.Char (toLower)
+import           Data.Function ((&))
 import           Data.Functor ((<&>))
 import           Data.List (isPrefixOf, stripPrefix)
 import qualified Data.Text as T
 import qualified Data.Text.ICU as RE
 import qualified Data.Text.ICU.Replace as T
+import           Data.Typeable (Typeable)
 import           Hakyll
 import           Hakyll.Web.Agda
 import           Hakyll.Web.Routes.Permalink
@@ -25,6 +28,22 @@ import           Text.Printf
 --------------------------------------------------------------------------------
 -- Configuration
 --------------------------------------------------------------------------------
+
+-- General configuration
+config :: Configuration
+config = defaultConfiguration
+  { destinationDirectory = "_site"
+  , storeDirectory       = "_build"
+  , tmpDirectory         = "_build" </> "tmp"
+  }
+
+-- | Hakyll deletes 'tmpDirectory' after each run. Since we'd like to use
+--   'tmpDirectory' ourselves, we need Hakyll to use a subdirectory.
+hakyllConfig :: Configuration
+hakyllConfig = config
+  { storeDirectory = storeDirectory config </> "hakyll"
+  , tmpDirectory   = tmpDirectory config </> "hakyll"
+  }
 
 siteReaderOptions :: ReaderOptions
 siteReaderOptions = defaultHakyllReaderOptions
@@ -165,8 +184,8 @@ main = do
         csl <- load cslFileName
         bib <- load bibFileName
         getResourceBody
-          >>= saveSnapshot "raw"
           >>= maybeCompileAgda maybeOpts
+          >>= saveSnapshot "raw"
           >>= readMarkdownWith siteReaderOptions
           >>= processCites csl bib
           <&> writeHTML5With siteWriterOptions
@@ -184,7 +203,7 @@ main = do
   --       exclude such files using `complement` patterns, but this vastly
   --       complicates the match patterns.
   --
-  hakyll $ do
+  hakyllWith hakyllConfig $ do
 
     -- Compile Table of Contents
     match "src/plfa/index.md" $ do
@@ -318,31 +337,33 @@ main = do
         compile copyFileCompiler
 
 
-    -- Raw versions used from Makefile for PDF and EPUB construction
+    -- Temporary files used from Makefile for PDF and EPUB construction
 
     -- Compile raw version of acknowledgements used in constructing the PDF
-    match "src/plfa/backmatter/acknowledgements.md" $ version "raw" $ do
-      route $ gsubRoute "src/" (const "raw/")
-      compile $ getResourceBody
-        >>= applyAsTemplate acknowledgementsContext
-        >>= restoreMetadata
+    match "src/plfa/backmatter/acknowledgements.md" $ version "tmp" $ do
+      route tmpRoute
+      compile $ getSnapshot "raw" Nothing >>= restoreMetadata
+
+    match "src/**.lagda.md" $ version "tmp" $ do
+      route tmpRoute
+      compile $ getSnapshot "raw" Nothing >>= restoreMetadata
 
     -- Compile raw version of index used in constructing the PDF
-    match "book/pdf.tex" $ version "raw" $ do
-      route $ gsubRoute "book/" (const "raw/")
+    match "book/pdf.tex" $ version "tmp" $ do
+      route tmpRoute
       compile $ getResourceBody
         >>= applyAsTemplate (addTexPath (tableOfContentsContext siteSectionContext))
 
     -- Compile raw version of index used in constructing the EPUB
-    match "book/epub.md" $ version "raw" $ do
-      route $ gsubRoute "book/" (const "raw/")
+    match "book/epub.md" $ version "tmp" $ do
+      route tmpRoute
       compile $ getResourceBody
-        >>= applyAsTemplate (tableOfContentsContext siteSectionContext)
+        >>= applyAsTemplate (addMdPath (tableOfContentsContext siteSectionContext))
         >>= loadAndApplyTemplate "templates/metadata.md" siteContext
 
     -- Compile metadata XML used in constructing the EPUB
-    match "book/epub.xml" $ version "raw" $ do
-      route   $ gsubRoute "book/" (const "raw/")
+    match "book/epub.xml" $ version "tmp" $ do
+      route tmpRoute
       compile $ getResourceBody
         >>= applyAsTemplate siteContext
 
@@ -350,6 +371,12 @@ main = do
 --------------------------------------------------------------------------------
 -- Custom readers and writers
 --------------------------------------------------------------------------------
+
+getSnapshot :: (Binary a, Typeable a) => Snapshot -> Maybe String -> Compiler (Item a)
+getSnapshot snapshot ver = do
+  i <- getUnderlying
+  contents <- loadSnapshotBody (setVersion ver i) snapshot
+  makeItem contents
 
 -- | Read a Markdown string using Pandoc, with the supplied options.
 readMarkdownWith :: ReaderOptions           -- ^ Parser options
@@ -404,6 +431,36 @@ prettifyUrls = relativizeUrls <=< withItemBody (return . stripIndexFile)
 -- Text wrangling for EPUB and PDF
 --------------------------------------------------------------------------------
 
+tmpRoute :: Routes
+tmpRoute = customRoute mkPath
+  where
+    mkPath :: Identifier -> FilePath
+    mkPath i = escape </> tmpDir </> toFilePath i
+
+    tmpDir :: FilePath
+    tmpDir = tmpDirectory config
+
+    escape :: FilePath
+    escape = destinationDirectory config
+             & splitPath
+             & map (const "..")
+             & joinPath
+
+-- Convert MD_DIR/%.lagda.md to EPUB_TMP_DIR/%.lagda.md
+--
+-- NOTE: This logic is partially duplicated in book/epub.mk:MD_PATH.
+--
+addMdPath :: Context a -> Context a
+addMdPath = addDerivedField "tex_path" deriveMdPath
+  where
+    deriveMdPath :: Context a -> [String] -> Item a -> Compiler ContextField
+    deriveMdPath ctx a i = do
+      includePath <- getString "include" ctx a i
+      return $ StringField (mdPath includePath)
+
+    mdPath :: FilePath -> FilePath
+    mdPath fnDotMd = tmpDirectory config </> fnDotMd
+
 -- Convert MD_DIR/%.md to LAGDA_TEX_DIR/%.lagda.tex or TEX_DIR/%.tex
 --
 -- NOTE: This logic is partially duplicated in book/pdf.mk:TEX_PATH.
@@ -419,13 +476,7 @@ addTexPath = addDerivedField "tex_path" deriveTexPath
       return $ StringField (texPath includePath)
 
     texPath :: FilePath -> FilePath
-    texPath fnDotMd
-      | fnDotMd == "README.md"                         = "plfa/frontmatter/README.tex"
-      | any (`isPrefixOf` fnDotMd) ["src/", "book/"] = dropTopDirectory (replaceExtensions fnDotMd ".tex")
-      | otherwise                                      = error ("textPath: cannot map " <> fnDotMd)
-
-    dropTopDirectory :: FilePath -> FilePath
-    dropTopDirectory = joinPath . tail . splitPath
+    texPath fnDotMd = tmpDirectory config </> replaceExtensions fnDotMd ".tex"
 
 -- Add an anchor based on the permalink, to be used as the header id.
 addAnchor :: Context a -> Context a
