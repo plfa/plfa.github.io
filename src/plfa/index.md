@@ -37,9 +37,13 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2021
+  * Favonia, University of Minnesota _(The course website is not pubilc; here is the [link to Favonia's homepage](https://favonia.org).)_
+
 #### 2020
   * [William Cook, University of Texas][UT-2020]
   * [Jeremy Siek, Indiana University][IU-2020]
+  * [Maria Emilia Maietti and Ingo Blechschmidt, Università di Padova][Padova-2020]
   * [John Maraist, University of Wisconsin-La Crosse][UWL-2020]
   * [Ugo de'Liguoro, Università di Torino][Torino-2020]
 
@@ -73,3 +77,4 @@ Please tell us of others!
 [NextJournal]: https://nextjournal.com/plfa/ToC
 [UWL-2020]: https://github.com/jphmrst/PLC/tree/fall2020
 [Torino-2020]: http://laurea.educ.di.unito.it/index.php/offerta-formativa/insegnamenti/elenco-completo/elenco-completo/scheda-insegnamento?cod=MFN0633&codA=&year=2020&orienta=NSE
+[Padova-2020]: https://www.math.unipd.it/~maietti/typ21.html

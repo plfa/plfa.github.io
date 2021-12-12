@@ -6,8 +6,8 @@ permalink : /Lambda/
 next      : /Properties/
 ---
 
-```agda
-module plfa.part2.Lambda where
+```
+module Lambda where
 ```
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
@@ -52,16 +52,15 @@ four.
 
 ## Imports
 
-```agda
-open import Data.Bool using (Bool; true; false; T; not)
+```
+open import Data.Bool using (T; not)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; _∷_; [])
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (∃-syntax; _×_)
 open import Data.String using (String; _≟_)
-open import Data.Unit using (tt)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Relation.Nullary.Decidable using (False; toWitnessFalse)
+open import Relation.Nullary.Decidable using (⌊_⌋; False; toWitnessFalse)
 open import Relation.Nullary.Negation using (¬?)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
@@ -102,7 +101,7 @@ Here is the syntax of terms in Backus-Naur Form (BNF):
       μ x ⇒ M
 
 And here it is formalised in Agda:
-```agda
+```
 Id : Set
 Id = String
 
@@ -132,7 +131,7 @@ Case expressions are self-bracketing.
 Here are some example terms: the natural number two,
 a function that adds naturals,
 and a term that computes two plus two:
-```agda
+```
 two : Term
 two = `suc `suc `zero
 
@@ -163,7 +162,7 @@ second.  This is called the _Church representation_ of the
 naturals.  Here are some example terms: the Church numeral two, a
 function that adds Church numerals, a function to compute successor,
 and a term that computes two plus two:
-```agda
+```
 twoᶜ : Term
 twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
 
@@ -197,7 +196,7 @@ Write out the definition of a lambda term that multiplies
 two natural numbers.  Your definition may use `plus` as
 defined earlier.
 
-```agda
+```
 -- Your code goes here
 ```
 
@@ -209,7 +208,7 @@ two natural numbers represented as Church numerals. Your
 definition may use `plusᶜ` as defined earlier (or may not
 — there are nice definitions both ways).
 
-```agda
+```
 -- Your code goes here
 ```
 
@@ -219,40 +218,38 @@ definition may use `plusᶜ` as defined earlier (or may not
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
-
-```agda
-var? : (t : Term) → Bool
-var? (` _)  =  true
-var? _      =  false
-
-ƛ′_⇒_ : (t : Term) → {_ : T (var? t)} → Term → Term
-ƛ′_⇒_ (` x) N = ƛ x ⇒ N
-
-case′_[zero⇒_|suc_⇒_] : Term → Term → (t : Term) → {_ : T (var? t)} → Term → Term
-case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
-
-μ′_⇒_ : (t : Term) → {_ : T (var? t)} → Term → Term
-μ′ (` x) ⇒ N  =  μ x ⇒ N
 ```
+ƛ′_⇒_ : Term → Term → Term
+ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
+ƛ′ _ ⇒ _      =  ⊥-elim impossible
+  where postulate impossible : ⊥
 
-Recall that `T` is a function that maps from the computation world to
-the evidence world, as
-[defined]({{ site.baseurl }}/Decidable/#relating-evidence-and-computation)
-in Chapter [Decidable]({{ site.baseurl }}/Decidable/).  We ensure to
-use the primed functions only when the respective term argument is a
-variable, which we do by providing implicit evidence.  For example, if
-we tried to define an abstraction term that binds anything but a
-variable:
+case′_[zero⇒_|suc_⇒_] : Term → Term → Term → Term → Term
+case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
+case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
+  where postulate impossible : ⊥
 
-    _ : Term
-    _ = ƛ′ two ⇒ two
+μ′_⇒_ : Term → Term → Term
+μ′ (` x) ⇒ N  =  μ x ⇒ N
+μ′ _ ⇒ _      =  ⊥-elim impossible
+  where postulate impossible : ⊥
+```
+We intend to apply the function only when the first term is a variable, which we
+indicate by postulating a term `impossible` of the empty type `⊥`.  If we use
+C-c C-n to normalise the term
 
-Agda would complain it cannot find a value of the bottom type for the
-implicit argument. Note the implicit argument's type reduces to `⊥`
-when term `t` is anything but a variable.
+    ƛ′ two ⇒ two
+
+Agda will return an answer warning us that the impossible has occurred:
+
+    ⊥-elim (plfa.part2.Lambda.impossible (`` `suc (`suc `zero)) (`suc (`suc `zero)) ``)
+
+While postulating the impossible is a useful technique, it must be
+used with care, since such postulation could allow us to provide
+evidence of _any_ proposition whatsoever, regardless of its truth.
 
 The definition of `plus` can now be written as follows:
-```agda
+```
 plus′ : Term
 plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
           case′ m
@@ -361,21 +358,22 @@ as values; thus, `` plus `` by itself is considered a value.
 
 The predicate `Value M` holds if term `M` is a value:
 
-```agda
+```
 data Value : Term → Set where
+  instance
 
-  V-ƛ : ∀ {x N}
-      ---------------
-    → Value (ƛ x ⇒ N)
+    V-ƛ : ∀ {x N}
+        ---------------
+      → Value (ƛ x ⇒ N)
 
-  V-zero :
-      -----------
-      Value `zero
+    V-zero :
+        -----------
+        Value `zero
 
-  V-suc : ∀ {V}
-    → Value V
-      --------------
-    → Value (`suc V)
+    V-suc : ∀ {V}
+      → {{ Value V }}
+        --------------
+      → Value (`suc V)
 ```
 
 In what follows, we let `V` and `W` range over values.
@@ -385,8 +383,9 @@ In what follows, we let `V` and `W` range over values.
 
 In informal presentations of formal semantics, using
 `V` as the name of a metavariable is sufficient to
-indicate that it is a value. In Agda, we must explicitly
-invoke the `Value` predicate.
+indicate that it is a value. In Agda, we must
+invoke the `Value` predicate, but we use `{{ }}`
+so that it may be invoked implicitly.
 
 ### Other approaches
 
@@ -462,7 +461,7 @@ which will be adequate for our purposes.
 
 Here is the formal definition of substitution by closed terms in Agda:
 
-```agda
+```
 infix 9 _[_:=_]
 
 _[_:=_] : Term → Id → Term → Term
@@ -505,7 +504,10 @@ simply push substitution recursively into the subterms.
 
 Here is confirmation that the examples above are correct:
 
-```agda
+```
+_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
+_ = refl
+
 _ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
 _ = refl
 
@@ -521,7 +523,6 @@ _ = refl
 _ : (ƛ "y" ⇒ ` "y") [ "x" := `zero ] ≡ ƛ "y" ⇒ ` "y"
 _ = refl
 ```
-
 
 #### Quiz
 
@@ -543,8 +544,25 @@ Rewrite the definition to factor the common part of these three
 clauses into a single function, defined by mutual recursion with
 substitution.
 
-```agda
--- Your code goes here
+
+## Evaluation contexts
+
+```
+infix  7  □·_
+infix  7  _·□
+infix  8  `suc□
+
+data Frame : Set where
+  □·_                   : Term → Frame
+  _·□                   : (V : Term) → {{Value V}} → Frame
+  `suc□                 : Frame
+  case□[zero⇒_|suc_⇒_]  : Term → Id → Term → Frame
+
+_[_] : Frame → Term → Term
+(□· M) [ L ]                        =  L · M
+(V ·□) [ M ]                        =  V · M
+(`suc□) [ M ]                       =  `suc M
+(case□[zero⇒ M |suc x ⇒ N ]) [ L ]  =  case L [zero⇒ M |suc x ⇒ N ]
 ```
 
 
@@ -601,49 +619,33 @@ case where we substitute by a term that is not a value.
 
 Here are the rules formalised in Agda:
 
-```agda
+```
 infix 4 _—→_
 
 data _—→_ : Term → Term → Set where
 
-  ξ-·₁ : ∀ {L L′ M}
-    → L —→ L′
-      -----------------
-    → L · M —→ L′ · M
-
-  ξ-·₂ : ∀ {V M M′}
-    → Value V
-    → M —→ M′
-      -----------------
-    → V · M —→ V · M′
-
   β-ƛ : ∀ {x N V}
-    → Value V
+    → {{ Value V }}
       ------------------------------
     → (ƛ x ⇒ N) · V —→ N [ x := V ]
-
-  ξ-suc : ∀ {M M′}
-    → M —→ M′
-      ------------------
-    → `suc M —→ `suc M′
-
-  ξ-case : ∀ {x L L′ M N}
-    → L —→ L′
-      -----------------------------------------------------------------
-    → case L [zero⇒ M |suc x ⇒ N ] —→ case L′ [zero⇒ M |suc x ⇒ N ]
 
   β-zero : ∀ {x M N}
       ----------------------------------------
     → case `zero [zero⇒ M |suc x ⇒ N ] —→ M
 
   β-suc : ∀ {x V M N}
-    → Value V
+    → {{ Value V }}
       ---------------------------------------------------
     → case `suc V [zero⇒ M |suc x ⇒ N ] —→ N [ x := V ]
 
   β-μ : ∀ {x M}
       ------------------------------
     → μ x ⇒ M —→ M [ x := μ x ⇒ M ]
+
+  ξ : ∀ F {M M′}
+    → M —→ M′
+      -------------------
+    → F [ M ] —→ F [ M′ ]
 ```
 
 The reduction rules are carefully designed to ensure that subterms
@@ -701,7 +703,7 @@ We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
 reasoning about chains of equalities in
 Chapter [Equality](/Equality/):
-```agda
+```
 infix  2 _—↠_
 infix  1 begin_
 infixr 2 _—→⟨_⟩_
@@ -740,7 +742,7 @@ appealing way, as we will see in the next section.
 An alternative is to define reflexive and transitive closure directly,
 as the smallest relation that includes `—→` and is also reflexive
 and transitive.  We could do so as follows:
-```agda
+```
 data _—↠′_ : Term → Term → Set where
 
   step′ : ∀ {M N}
@@ -767,7 +769,7 @@ the two definitions are equivalent (indeed, one embeds in the other).
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
 
-```agda
+```
 -- Your code goes here
 ```
 
@@ -795,7 +797,7 @@ while if the top two lines stand for a single reduction
 step and the bottom two stand for zero or more reduction
 steps it is called the diamond property. In symbols:
 
-```agda
+```
 postulate
   confluence : ∀ {L M N}
     → ((L —↠ M) × (L —↠ N))
@@ -811,7 +813,7 @@ postulate
 The reduction system studied in this chapter is deterministic.
 In symbols:
 
-```agda
+```
 postulate
   deterministic : ∀ {L M N}
     → L —→ M
@@ -829,98 +831,98 @@ systems studied in this text are trivially confluent.
 
 We start with a simple example. The Church numeral two applied to the
 successor function and zero yields the natural number two:
-```agda
+```
 _ : twoᶜ · sucᶜ · `zero —↠ `suc `suc `zero
 _ =
   begin
     twoᶜ · sucᶜ · `zero
-  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ (□· _) β-ƛ ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero
-  —→⟨ β-ƛ V-zero ⟩
+  —→⟨ β-ƛ ⟩
     sucᶜ · (sucᶜ · `zero)
-  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+  —→⟨ ξ (_ ·□) β-ƛ ⟩
     sucᶜ · `suc `zero
-  —→⟨ β-ƛ (V-suc V-zero) ⟩
+  —→⟨ β-ƛ ⟩
     `suc (`suc `zero)
   ∎
 ```
 
 Here is a sample reduction demonstrating that two plus two is four:
-```agda
+```
 _ : plus · two · two —↠ `suc `suc `suc `suc `zero
 _ =
   begin
     plus · two · two
-  —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+  —→⟨ ξ (□· _) (ξ (□· _) β-μ) ⟩
     (ƛ "m" ⇒ ƛ "n" ⇒
       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two · two
-  —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ (□· _) β-ƛ ⟩
     (ƛ "n" ⇒
       case two [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
          · two
-  —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+  —→⟨ β-ƛ ⟩
     case two [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ]
-  —→⟨ β-suc (V-suc V-zero) ⟩
+  —→⟨ β-suc ⟩
     `suc (plus · `suc `zero · two)
-  —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+  —→⟨ ξ `suc□ (ξ (□· _) (ξ (□· _) β-μ)) ⟩
     `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · `suc `zero · two)
-  —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+  —→⟨ ξ `suc□ (ξ (□· _) β-ƛ) ⟩
     `suc ((ƛ "n" ⇒
       case `suc `zero [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two)
-  —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ `suc□ β-ƛ ⟩
     `suc (case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ])
-  —→⟨ ξ-suc (β-suc V-zero) ⟩
+  —→⟨ ξ `suc□ β-suc ⟩
     `suc `suc (plus · `zero · two)
-  —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+  —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· _) (ξ (□· _) β-μ))) ⟩
     `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒
       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · `zero · two)
-  —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+  —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· _) β-ƛ)) ⟩
     `suc `suc ((ƛ "n" ⇒
       case `zero [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two)
-  —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+  —→⟨ ξ `suc□ (ξ `suc□ β-ƛ) ⟩
     `suc `suc (case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ])
-  —→⟨ ξ-suc (ξ-suc β-zero) ⟩
+  —→⟨ ξ `suc□ (ξ `suc□ β-zero) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
 ```
 
 And here is a similar sample reduction for Church numerals:
-```agda
+```
 _ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero
 _ =
   begin
     (ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ ` "m" · ` "s" · (` "n" · ` "s" · ` "z"))
       · twoᶜ · twoᶜ · sucᶜ · `zero
-  —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+  —→⟨ ξ (□· _) (ξ (□· _) (ξ (□· _) β-ƛ)) ⟩
     (ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · ` "s" · (` "n" · ` "s" · ` "z"))
       · twoᶜ · sucᶜ · `zero
-  —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+  —→⟨ ξ (□· _) (ξ (□· _) β-ƛ) ⟩
     (ƛ "s" ⇒ ƛ "z" ⇒ twoᶜ · ` "s" · (twoᶜ · ` "s" · ` "z")) · sucᶜ · `zero
-  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ (□· _) β-ƛ ⟩
     (ƛ "z" ⇒ twoᶜ · sucᶜ · (twoᶜ · sucᶜ · ` "z")) · `zero
-  —→⟨ β-ƛ V-zero ⟩
+  —→⟨ β-ƛ ⟩
     twoᶜ · sucᶜ · (twoᶜ · sucᶜ · `zero)
-  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+  —→⟨ ξ (□· _) β-ƛ ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (twoᶜ · sucᶜ · `zero)
-  —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+  —→⟨ ξ (_ ·□) (ξ (□· _) β-ƛ) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · ((ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero)
-  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+  —→⟨ ξ (_ ·□) β-ƛ ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (sucᶜ · (sucᶜ · `zero))
-  —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+  —→⟨ ξ (_ ·□) (ξ (_ ·□) β-ƛ) ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (sucᶜ · (`suc `zero))
-  —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+  —→⟨ ξ (_ ·□) β-ƛ ⟩
     (ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · (`suc `suc `zero)
-  —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+  —→⟨ β-ƛ ⟩
     sucᶜ · (sucᶜ · `suc `suc `zero)
-  —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+  —→⟨ ξ (_ ·□) β-ƛ ⟩
     sucᶜ · (`suc `suc `suc `zero)
-  —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
+  —→⟨ β-ƛ ⟩
    `suc (`suc (`suc (`suc `zero)))
   ∎
 ```
@@ -932,7 +934,7 @@ In the next chapter, we will see how to compute such reduction sequences.
 
 Write out the reduction sequence demonstrating that one plus one is two.
 
-```agda
+```
 -- Your code goes here
 ```
 
@@ -952,7 +954,7 @@ Here is the syntax of types in BNF:
 
 And here it is formalised in Agda:
 
-```agda
+```
 infixr 7 _⇒_
 
 data Type : Set where
@@ -1020,7 +1022,7 @@ and variable `` "z" `` with type `` `ℕ ``.
 
 Contexts are formalised as follows:
 
-```agda
+```
 infixl 5  _,_⦂_
 
 data Context : Set where
@@ -1040,7 +1042,7 @@ to the list
 
     [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ]
 
-```agda
+```
 -- Your code goes here
 ```
 
@@ -1071,7 +1073,7 @@ the other variables.  For example,
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
 Lookup is formalised as follows:
-```agda
+```
 infix  4  _∋_⦂_
 
 data _∋_⦂_ : Context → Id → Type → Set where
@@ -1096,14 +1098,14 @@ variable with the same name to its left in the list.
 It can be rather tedious to use the `S` constructor, as you have to provide
 proofs that `x ≢ y` each time. For example:
 
-```agda
+```
 _ : ∅ , "x" ⦂ `ℕ ⇒ `ℕ , "y" ⦂ `ℕ , "z" ⦂ `ℕ ∋ "x" ⦂ `ℕ ⇒ `ℕ
 _ = S (λ()) (S (λ()) Z)
 ```
 
 Instead, we'll use a "smart constructor", which uses [proof by reflection](/Decidable/#proof-by-reflection) to check the inequality while type checking:
 
-```agda
+```
 S′ : ∀ {Γ x y A B}
    → {x≢y : False (x ≟ y)}
    → Γ ∋ x ⦂ A
@@ -1131,7 +1133,7 @@ For example:
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 Typing is formalised as follows:
-```agda
+```
 infix  4  _⊢_⦂_
 
 data _⊢_⦂_ : Context → Term → Type → Set where
@@ -1233,7 +1235,7 @@ The typing derivation is valid for any `Γ` and `A`, for instance,
 we might take `Γ` to be `∅` and `A` to be `` `ℕ ``.
 
 Here is the above typing derivation formalised in Agda:
-```agda
+```
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
 
@@ -1245,7 +1247,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ```
 
 Here are the typings corresponding to computing two plus two:
-```agda
+```
 ⊢two : ∀ {Γ} → Γ ⊢ two ⦂ `ℕ
 ⊢two = ⊢suc (⊢suc ⊢zero)
 
@@ -1272,7 +1274,7 @@ contexts, the first where `"n"` is the last binding in the context, and
 the second after `"m"` is bound in the successor branch of the case.
 
 And here are typings for the remainder of the Church example:
-```agda
+```
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
   where
@@ -1338,7 +1340,7 @@ will show how to use Agda to compute type derivations directly.
 
 The lookup relation `Γ ∋ x ⦂ A` is functional, in that for each `Γ` and `x`
 there is at most one `A` such that the judgment holds:
-```agda
+```
 ∋-functional : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-functional Z        Z          =  refl
 ∋-functional Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
@@ -1357,7 +1359,7 @@ a formal proof that it is not possible to type the term
 requires that the first term in the application is both a natural and
 a function:
 
-```agda
+```
 nope₁ : ∀ {A} → ¬ (∅ ⊢ `zero · `suc `zero ⦂ A)
 nope₁ (() · _)
 ```
@@ -1366,7 +1368,7 @@ As a second example, here is a formal proof that it is not possible to
 type `` ƛ "x" ⇒ ` "x" · ` "x" ``. It cannot be typed, because
 doing so requires types `A` and `B` such that `A ⇒ B ≡ A`:
 
-```agda
+```
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ` "x" · ` "x" ⦂ A)
 nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-functional ∋x ∋x′)
   where
@@ -1396,7 +1398,7 @@ or explain why there are no such types.
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well typed.
 
-```agda
+```
 -- Your code goes here
 ```
 
@@ -1406,7 +1408,7 @@ showing that it is well typed.
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well typed.
 
-```agda
+```
 -- Your code goes here
 ```
 
