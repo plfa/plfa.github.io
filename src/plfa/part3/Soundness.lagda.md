@@ -241,13 +241,13 @@ if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where `(δ ∘ ρ) `⊑ γ
 
 First, we need a variant of a lemma given earlier.
 ```
-ext-⊑′ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
+ext-`⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
   → (δ ∘ ρ) `⊑ γ
     ------------------------------
   → ((δ `, v) ∘ ext ρ) `⊑ (γ `, v)
-ext-⊑′ ρ lt Z = ⊑-refl
-ext-⊑′ ρ lt (S x) = lt x
+ext-`⊑ ρ lt Z = ⊑-refl
+ext-`⊑ ρ lt (S x) = lt x
 ```
 
 The proof is then as follows.
@@ -261,7 +261,7 @@ rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
 rename-reflect {M = ` x} all-n d with var-inv d
 ... | lt =  sub var (⊑-trans lt (all-n x))
 rename-reflect {M = ƛ N}{ρ = ρ} all-n (↦-intro d) =
-   ↦-intro (rename-reflect (ext-⊑′ ρ all-n) d)
+   ↦-intro (rename-reflect (ext-`⊑ ρ all-n) d)
 rename-reflect {M = ƛ N} all-n ⊥-intro = ⊥-intro
 rename-reflect {M = ƛ N} all-n (⊔-intro d₁ d₂) =
    ⊔-intro (rename-reflect all-n d₁) (rename-reflect all-n d₂)
@@ -281,7 +281,7 @@ We cannot prove this lemma by induction on the derivation of
 
 * If it is a variable, we apply the inversion lemma to obtain
   that `v ⊑ δ (ρ x)`. Instantiating the premise to `x` we have
-  `δ (ρ x) = γ x`, so we conclude by the `var` rule.
+  `δ (ρ x) ⊑ γ x`, so we conclude by the `var` rule.
 
 * If it is a lambda abstraction `ƛ N`, we have
   rename `ρ (ƛ N) = ƛ (rename (ext ρ) N)`.
@@ -289,7 +289,7 @@ We cannot prove this lemma by induction on the derivation of
 
   * Rule `↦-intro`: To satisfy the premise of the induction
     hypothesis, we prove that the renaming can be extended to be a
-    mapping from `γ , v₁ to δ , v₁`.
+    mapping from `γ , v` to `δ , v`.
 
   * Rule `⊥-intro`: We simply apply `⊥-intro`.
 
