@@ -15,6 +15,7 @@ import PLFA.Build.Prelude
 import PLFA.Build.Preprocess
 import PLFA.Build.Route hiding (routeFile, routeUrl)
 import PLFA.Build.Route qualified as Route (routeFile, routeUrl)
+import PLFA.Build.Staged
 import PLFA.Build.Style.CSS
 import PLFA.Build.Style.Sass
 
@@ -29,16 +30,11 @@ cacheDir          = "_build"
 contributorDir    = "contributors"
 courseDir         = "courses"
 cssDir            = "css"
-epubCacheDir      = cacheDir </> "epub"
-htmlCacheDir      = cacheDir </> "html"
-htmlStage1Dir     = htmlCacheDir </> "stage1"
-htmlStage2Dir     = htmlCacheDir </> "stage2"
 postsDir          = "posts"
 publicDir         = "public"
 siteDir           = "_site"
 stdlibDir         = "standard-library"
 srcDir            = "src"
-texCacheDir       = cacheDir </> "tex"
 templateDir       = "templates"
 fontsDir          = bookDir </> "fonts"
 webfontsDir       = publicDir </> "webfonts"
@@ -62,17 +58,17 @@ main = do
   mdFiles               <- ("README.md" :) <$> gatherMdFiles [postsDir, srcDir]
   scssFiles             <- gatherSassFiles [cssDir]
   postMdFiles           <- gatherMdFiles [postsDir]
-  lagdaMdFilesByAgdaLib <- gatherLagdaMdFilesForAgdaLibs agdaLibs
+  mdFileToAgdaLib       <- buildAgdaLibMap agdaLibs
   webfontFiles          <- gather always (regularFile &&? extension ==? ".woff") [webfontsDir]
   fontFiles             <- gather always (regularFile &&? extension ==? ".ttf") [fontsDir]
 
   -- Build routing table
   permalinkRoutingTable <- buildPermalinkRoutingTable mdFiles
-  let postsRoutingTable = asRoutingTable (-<.> "html") postMdFiles
+  let postsRoutingTable  = asRoutingTable (-<.> "html") postMdFiles
   let staticRoutingTable = asRoutingTable id (staticFiles <> coursePdfs)
-  let routingTable = mconcat [permalinkRoutingTable, postsRoutingTable, staticRoutingTable]
-  let routeUrl  src = Route.routeUrl routingTable src
-  let routeFile src = Route.routeFile siteDir routingTable src
+  let routingTable       = mconcat [permalinkRoutingTable, postsRoutingTable, staticRoutingTable]
+  let routeUrl  src      = Route.routeUrl routingTable src
+  let routeFile src      = Route.routeFile siteDir routingTable src
 
   shakeArgs shakeOpts $ do
 
@@ -90,17 +86,18 @@ main = do
     --       sophisticated, in that it reads the version and constructs the external
     --       URL at which it is hosted. We add it to the lookup table manually here.
     --
-    let agdaLibMap :: Map LibName AgdaLib
-        agdaLibMap = M.fromList $
-          [ (libName agdaLib, agdaLib) | agdaLib <- (stdlib : agdaLibs) ]
+    let libNameToAgdaLib :: Map LibName AgdaLib
+        libNameToAgdaLib = M.fromList $
+          [ (libName agdaLib, agdaLib) | agdaLib <- stdlib : agdaLibs ]
 
     -- Resolve a dependency by name using the Agda library lookup table.
     let resolveDepend :: LibName -> AgdaLib
-        resolveDepend name = fromMaybe (error $ "Could not find " <> name) (M.lookup name agdaLibMap)
+        resolveDepend name =
+          fromMaybe (error $ "Could not find " <> name) (M.lookup name libNameToAgdaLib)
 
     -- Highlight Agda code for a given format code with a given 'libraries' file and a
     -- list of libraries, include the library of which the file itself is a part.
-    let highlightAgdaFor:: FilePath -> [AgdaLib] -> FilePath -> Format -> Action Text
+    let highlightAgdaFor :: FilePath -> [AgdaLib] -> FilePath -> Format -> Action Text
         highlightAgdaFor librariesFile deps src format = do
           resultMap <- highlightAgdaWith def
             { formats = [format], librariesFile = Just librariesFile, libraries = deps, inputFile = src }
@@ -111,8 +108,8 @@ main = do
     -- Format conversion with Pandoc
     --------------------------------------------------------------------------------
 
-    getFixLinks <- newCache $ \() -> do
-      liftIO $ prepareFixLinks $ [stdlib] <> agdaLibs
+    getFixLinks <- newCache $ \() ->
+      liftIO $ prepareFixLinks (stdlib : agdaLibs)
 
     -- Render Markdown to Html5 using Pandoc, applying the code to fix links
     -- to local and external modules.
@@ -191,7 +188,7 @@ main = do
     let getTocMetadataWith :: (FilePath -> FilePath) -> Action Metadata
         getTocMetadataWith fileMap = do
           toc             <- readYamlFrontmatter' $ srcDir </> "toc.metadata"
-          tocWithIncludes <- resolveIncludes (\inputFile -> getFileMetadata (fileMap inputFile)) toc
+          tocWithIncludes <- resolveIncludes (getFileMetadata . fileMap) toc
           authors         <- getAuthors ()
           contributors    <- getContributors()
           return $ mconcat [
@@ -249,81 +246,70 @@ main = do
     --
     --------------------------------------------------------------------------------
 
-    let htmlStage1, htmlStage2, htmlStage3 :: FilePath -> FilePath
-        htmlStage1 src = normalise $ htmlCacheDir </> "stage1" </> src
-        htmlStage2 src = normalise $ htmlCacheDir </> "stage2" </> stripLagda src
-        htmlStage3 src = normalise $ routeFile src
-        stripLagda src
-          | takeExtensions src == ".lagda.md" = replaceExtensions src "md"
-          | otherwise                         = src
+    let stage1 :: Stage ()
+        stage1 = def { compileAction = preprocess }
+          where
+            preprocess () inputPath outputPath key
+              | takeExtensions key == ".lagda.md" = do
+                  contents <- readFile' (inputPath key)
+                  writeFile' (outputPath key) (preprocessForHtml contents)
+              | otherwise = copyFile' (inputPath key) (outputPath key)
 
-    -- Generate an appropriate libraries file
-    htmlStage1 ".agda/libraries" %> \out -> do
-      let libraries = [ libFile (mapAgdaLib htmlStage1 lib) | lib <- stdlib : agdaLibs ]
-      need libraries
-      writeFile' out (T.unlines (map T.pack libraries))
+    let stage2 :: Stage ()
+        stage2 = Stage { nameAction = stripLagda, compileAction = check, auxiliaryRules = buildLibrariesFile }
+          where
+            librariesFileName = ".agda/libraries"
 
-    getTocMetadataForHtml <- newCache $ \() -> do
-      siteMetadata <- getSiteMetadata ()
-      tocMetadata <- getTocMetadataWith htmlStage2
-      return $ mconcat [siteMetadata, tocMetadata]
+            stripLagda key
+              | takeExtensions key == ".lagda.md" = replaceExtensions key "md"
+              | otherwise                         = key
 
-    -- Compile .lagda.md files in the context of their .agda-lib file
-    forM_ lagdaMdFilesByAgdaLib $ \(agdaLib, lagdaMdFiles) -> do
+            check () inputPath outputPath key
+              | takeExtensions key == ".lagda.md" = do
+                  let librariesFile = inputPath librariesFileName
+                  need [librariesFile]
+                  let agdaLib = mdFileToAgdaLib M.! key
+                  let depends = [ resolveDepend dep | dep <- libDepends agdaLib ]
+                  let libraries = [ mapAgdaLib inputPath lib | lib <- agdaLib : depends ]
+                  need (map libFile libraries)
+                  contents <- highlightAgdaFor librariesFile libraries (inputPath key) Markdown
+                  writeFile' (outputPath key) contents
+                  putInfo $ "Checked " <> key
+              | otherwise = copyFile' (inputPath key) (outputPath key)
 
-      -- Copy over .agda-lib file
-      libFile (mapAgdaLib htmlStage1 agdaLib) %> \out -> do
-        let src = libFile agdaLib
-        need [src]
-        copyFile' src out
+            buildLibrariesFile inputPath outputPath =
+              inputPath librariesFileName %> \out -> do
+                let libraryFiles = [ libFile (mapAgdaLib inputPath lib) | lib <- stdlib : agdaLibs ]
+                need libraryFiles
+                writeFile' out (T.unlines (map T.pack libraryFiles))
 
-      forM_ lagdaMdFiles $ \src -> do
+    let stage3 :: Stage (() -> Action Metadata)
+        stage3 = Stage { nameAction = routeFile, compileAction = render, auxiliaryRules = cacheTocMetadata }
+          where
+            render getTocMetadata inputPath outputPath key = do
+              fileMetadata <- getFileMetadata (inputPath key)
+              tocMetadata  <- getTocMetadata ()
+              postMetadata <- getPostMetadata ()
+              let metadata = mconcat [fileMetadata, tocMetadata, postMetadata]
+              applyAsTemplate (inputPath key) metadata
+                >>= markdownToHtml
+                >>= applyTemplate (templateDir </> "page.html") metadata
+                >>= applyTemplate (templateDir </> "default.html") metadata
+                <&> withUrls (relativizeUrl {-w.r.t.-} (routeUrl key))
+                <&> postprocessHtml5 -- TODO: Pandoc generates incorrect HTML5
+                >>= writeFile' (outputPath key)
+              putInfo $ "Updated " <> key
 
-        -- Stage 1: Preprocess literate Agda files
-        htmlStage1 src %> \out -> do
-          need [src]
-          readFile' src
-            <&> preprocessForHtml
-            >>= writeFile' out
+            cacheTocMetadata inputPath outputPath =
+              newCache $ \() -> do
+                siteMetadata <- getSiteMetadata ()
+                tocMetadata <- getTocMetadataWith inputPath
+                return $ mconcat [siteMetadata, tocMetadata]
 
-        -- Stage 2: Highlight literate Agda files
-        htmlStage2 src %> \out -> do
-          -- Update file paths in library files
-          let depends = [ resolveDepend dep | dep <- libDepends agdaLib ]
-          let libraries = [ mapAgdaLib htmlStage1 lib | lib <- agdaLib : depends ]
-          -- Need updated libraries file, .agda-lib files, and all .lagda.md files
-          need [ htmlStage1 ".agda/libraries" ]
-          need [ libFile lib | lib <- libraries]
-          need [ htmlStage1 lagdaMdFile | lagdaMdFile <- lagdaMdFiles ]
-          -- Highlight Agda as Html
-          markdown <- highlightAgdaFor (htmlStage1 ".agda/libraries") libraries (htmlStage1 src) Markdown
-          writeFile' out markdown
-          putInfo $ "Checked " <> src
-
-    forM_ mdFiles $ \src -> do
-
-      when (takeExtensions src /= ".lagda.md") $ do
-
-        -- Stage 2: Copy Markdown files verbatim
-        htmlStage2 src %> \out -> do
-          need [src]
-          copyFile' src out
-
-      -- Stage 3: Render the Markdown to Html
-      htmlStage3 src %> \out -> do
-        need [htmlStage2 src]
-        fileMetadata <- getFileMetadata src
-        tocMetadata  <- getTocMetadataForHtml ()
-        postMetadata <- getPostMetadata ()
-        let metadata = mconcat [fileMetadata, tocMetadata, postMetadata]
-        applyAsTemplate (htmlStage2 src) metadata
-          >>= markdownToHtml
-          >>= applyTemplate (templateDir </> "page.html") metadata
-          >>= applyTemplate (templateDir </> "default.html") metadata
-          <&> withUrls (relativizeUrl {-w.r.t.-} (routeUrl src))
-          <&> postprocessHtml5 -- TODO: Pandoc generates incorrect HTML5
-          >>= writeFile' out
-        putInfo $ "Updated " <> src
+    runStagesIn
+      (cacheDir </> "html")
+      [SomeStage stage1, SomeStage stage2, SomeStage stage3]
+      (map libFile agdaLibs <> mdFiles)
 
     --------------------------------------------------------------------------------
     -- Compile style files
@@ -349,6 +335,7 @@ main = do
     -- Compile EPUB
     --------------------------------------------------------------------------------
 
+    {-
     let epubFile     = bookDir </> "epub.md"
     let epubMetaYaml = bookDir </> "epub.meta.yaml"
     let epubMetaXml  = bookDir </> "epub.xml"
@@ -406,11 +393,13 @@ main = do
           optCss              = [bookDir </> "epub.css"],
           optStripComments    = True
         }
+    -- -}
 
     --------------------------------------------------------------------------------
     -- Compile PDF
     --------------------------------------------------------------------------------
 
+    {-
     let texStage1, texStage2, texStage3 :: FilePath -> FilePath
         texStage1 src
           -- TODO: replace this shitty code with something sensible
@@ -495,7 +484,20 @@ main = do
       tex <- applyAsTemplate pdfFile tocMetadata
       writeFile' out tex
 
--- -}
+
+    forM_ mdFiles $ \src -> do
+
+      when (takeExtensions src /= ".lagda.md") $ do
+
+        -- Stage 2: Copy Markdown files verbatim
+        htmlStage2 src %> \out -> do
+          need [src]
+          copyFile' src out
+
+      -- Stage 3: Render the Markdown to Html
+      htmlStage3 src %> \out -> do
+        need [htmlStage2 src]
+    -- -}
 
 --------------------------------------------------------------------------------
 -- Configuration
