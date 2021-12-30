@@ -160,10 +160,11 @@ open _≃_
 ```
 Let's unpack the definition. An isomorphism between sets `A` and `B` consists
 of four things:
-+ A function `to` from `A` to `B`,
-+ A function `from` from `B` back to `A`,
-+ Evidence `from∘to` asserting that `from` is a *left-inverse* for `to`,
-+ Evidence `to∘from` asserting that `from` is a *right-inverse* for `to`.
+
+  1. A function `to` from `A` to `B`,
+  2. A function `from` from `B` back to `A`,
+  3. Evidence `from∘to` asserting that `from` is a *left-inverse* for `to`,
+  4. Evidence `to∘from` asserting that `from` is a *right-inverse* for `to`.
 
 In particular, the third asserts that `from ∘ to` is the identity, and
 the fourth that `to ∘ from` is the identity, hence the names.
