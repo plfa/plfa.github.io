@@ -81,7 +81,7 @@ Subst : Context → Context → Set
 Subst Γ Δ = ∀{A} → Γ ∋ A → Δ ⊢ A
 ```
 
-We use the following more succinct notation the `subst` function.
+We use the following more succinct notation for the `subst` function.
 
 ```
 ⟪_⟫ : ∀{Γ Δ A} → Subst Γ Δ → Γ ⊢ A → Δ ⊢ A
@@ -91,7 +91,7 @@ We use the following more succinct notation the `subst` function.
 
 ## The σ algebra of substitution
 
-Substitutions map de Bruijn indices (natural numbers) to terms, so we
+A substitution maps de Bruijn indices (natural numbers) to terms, so we
 can view a substitution simply as a sequence of terms, or more
 precisely, as an infinite sequence of terms. The σ algebra consists of
 four operations for building such sequences: identity `ids`, shift
@@ -130,12 +130,12 @@ _•_ : ∀{Γ Δ A} → (Δ ⊢ A) → Subst Γ Δ → Subst (Γ , A) Δ
 ```
 
 Given two substitutions `σ` and `τ`, the sequencing operation `σ ⨟ τ`
-produces the sequence
+composes the two substitutions by first applying `σ` and then applying
+`τ`. So it produces the sequence
 
     ⟪τ⟫(σ 0), ⟪τ⟫(σ 1), ⟪τ⟫(σ 2), ...
 
-That is, it composes the two substitutions by first applying
-`σ` and then applying `τ`.
+Here is the definition.
 
 ```
 infixr 5 _⨟_
