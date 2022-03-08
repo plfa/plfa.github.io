@@ -592,11 +592,6 @@ requires negation, as does the fact that the three cases in
 trichotomy are mutually exclusive, so those points are deferred to
 Chapter [Negation](/Negation/).
 
-It is straightforward to show that `suc m ≤ n` implies `m < n`,
-and conversely.  One can then give an alternative derivation of the
-properties of strict inequality, such as transitivity, by
-exploiting the corresponding properties of inequality.
-
 #### Exercise `<-trans` (recommended) {#less-trans}
 
 Show that strict inequality is transitive.
