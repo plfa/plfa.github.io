@@ -44,7 +44,7 @@ open plfa.part1.Isomorphism.≃-Reasoning
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
-declaring a suitable record type:
+declaring a suitable datatype:
 ```
 data _×_ (A B : Set) : Set where
 
@@ -248,7 +248,7 @@ is isomorphic to `(A → B) × (B → A)`.
 ## Truth is unit
 
 Truth `⊤` always holds. We formalise this idea by
-declaring a suitable record type:
+declaring a suitable datatype:
 ```
 data ⊤ : Set where
 
