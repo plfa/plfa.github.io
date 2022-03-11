@@ -644,7 +644,11 @@ For example:
 
 Show that fold and append are related as follows:
 
+```
+postulate
+  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+```
 
 ```
 -- Your code goes here
@@ -789,12 +793,8 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ∎
 ```
 
-In a previous exercise we showed the following.
-```
-postulate
-  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) →
-    foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
-```
+In the foldr-++ exercise we showed
+foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 
 As a consequence, using a previous exercise, we have the following:
 ```
