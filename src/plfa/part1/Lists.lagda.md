@@ -796,7 +796,8 @@ postulate
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 ```
 
-As a consequence, using a previous exercise, we have the following:
+As a consequence we can decompose fold over append in a monoid
+into two folds as follows.
 ```
 foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
   ∀ (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
