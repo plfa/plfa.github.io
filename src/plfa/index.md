@@ -37,6 +37,9 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2022
+  * [Andrej Bauer, University of Ljubljana][UL-2022]
+
 #### 2021
   * Favonia, University of Minnesota _(The course website is not pubilc; here is the [link to Favonia's homepage](https://favonia.org).)_
 
@@ -61,20 +64,22 @@ $endfor$
 
 Please tell us of others!
 
+[GitHub]: https://github.com/plfa/plfa.github.io/
+[SBMF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
+[SCP]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#scf
+[NextJournal]: https://nextjournal.com/plfa/ToC
+[EUSA-2020]: https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/
 [TSPL-2018]: https://plfa.github.io/19.08/TSPL/2018/
+[UVM-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/
 [PUC-2019]: https://plfa.github.io/20.07/PUC/2019/
 [TSPL-2019]: https://plfa.github.io/20.07/TSPL/2019/
-[GitHub]: https://github.com/plfa/plfa.github.io/
-[UVM-2018]: https://web.archive.org/web/20190324115921/http://david.darais.com/courses/fa2018-cs295A/
 [IU-2020]: https://jsiek.github.io/B522-PL-Foundations/
 [SFPL-Meetup-2020]: http://meet.meetup.com/wf/click?upn=ZDzXt-2B-2BZmzYir6Bq5X7vEQ2iNYdgjN9-2FU9nWKp99AU8rZjrncUsSYODqOGn6kV-2BqW71oirCo-2Bk8O1q2FtDFhYZR-2B737CPhNWBjt58LuSRC-2BWTj61VZCHquysW8z7dVtQWxB5Sorl3chjZLDptP70L7aBZL14FTERnKJcRQdrMtc-3D_IqHN4t3hH47BvE1Cz0BakIxV4odHudhr6IVs-2Fzslmv-2FBuORsh-2FwQmOxMBdyMHsSBndQDQmt47hobqsLp-2Bm04Y9LwgV66MGyucsd0I9EgDEUB-2FjzdtSgRv-2Fxng8Pgsa3AZIEYILOhLpQ5ige5VFYTEHVN1pEqnujCHovmTxJkqAK9H-2BIL15-2FPxx97RfHcz7M30YNyqp6TOYfgTxyUHc6lufYKFA75Y7MV6MeDJMxw9-2FYUxR6CEjdoagQBmaGkBVzN
 [UW-2019]: https://cs.uwaterloo.ca/~plragde/842/
 [UT-2020]: https://www.cs.utexas.edu/~wcook/Courses/386L/Sp2020-GradPL.pdf
 [BHAM-2019]: https://www.cs.bham.ac.uk/internal/modules/2019/06-26943/
-[EUSA-2020]: https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/
-[SBMF]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#sbmf
-[SCP]: https://homepages.inf.ed.ac.uk/wadler/topics/agda.html#scf
-[NextJournal]: https://nextjournal.com/plfa/ToC
 [UWL-2020]: https://github.com/jphmrst/PLC/tree/fall2020
 [Torino-2020]: http://laurea.educ.di.unito.it/index.php/offerta-formativa/insegnamenti/elenco-completo/elenco-completo/scheda-insegnamento?cod=MFN0633&codA=&year=2020&orienta=NSE
 [Padova-2020]: https://www.math.unipd.it/~maietti/typ21.html
+[UL-2022]: http://www.andrej.com/zapiski/ISRM-LOGRAC-2022/00-introduction.html
+
