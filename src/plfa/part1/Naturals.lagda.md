@@ -528,7 +528,6 @@ _ =
   ≡⟨⟩
     12
   ∎
-
 ```
 
 
@@ -561,8 +560,8 @@ matching against both arguments:
 ```
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero   =  m
-zero  ∸ suc n  =  zero
 suc m ∸ suc n  =  m ∸ n
+zero  ∸ suc n  =  zero
 ```
 We can do a simple analysis to show that all the cases are covered.
 
@@ -609,7 +608,18 @@ _ =
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
 ```
--- Your code goes here
+_ =
+  begin
+    5 ∸ 3
+  ≡⟨⟩
+    4 ∸ 2
+  ≡⟨⟩
+    3 ∸ 1
+  ≡⟨⟩
+    2 ∸ 0
+  ≡⟨⟩
+    2
+  ∎
 ```
 
 
@@ -626,8 +636,25 @@ so write `m + n + p` to mean `(m + n) + p`.
 In Agda the precedence and associativity of infix operators
 needs to be declared:
 ```
-infixl 6  _+_  _∸_
+infixl 6  _+_
+infixl 6  _∸_
 infixl 7  _*_
+
+_ : 5 ∸ 3 ∸ 2 ≡ 0
+_ = refl
+
+{-
+infix 2 if_then_else_
+infixl 5 _>_
+
+if (2 + 3) > 10 then ?? else ??
+-}
+
+{-
+2 + 3 + 5
+(2 + 3) + 5
+2 + (3 + 5)
+-}
 ```
 This states operators `_+_` and `_∸_` have precedence level 6,
 and operator `_*_` has precedence level 7.
@@ -654,6 +681,11 @@ arrows associate to the right and application associates to the left
 and
 
 `_+_ 2 3` stands for `(_+_ 2) 3`.
+
+```
+_ : ℕ → ℕ
+_ = _+ 2
+```
 
 The term `_+_ 2` by itself stands for the function that adds two to
 its argument, hence applying it to three yields five.
@@ -888,6 +920,21 @@ Exploiting interaction to this degree is probably not helpful for a program this
 simple, but the same techniques can help with more complex programs.  Even for
 a program this simple, using `C-c C-c` to split cases can be helpful.
 
+```
+{-
+C-c C-, ???
+C-c C-t/e
+C-c C-space
+C-c C-f/b
+C-c C-c
+C-c C-r
+C-c C-x C-r
+-}
+
+_+'_ : ℕ → ℕ → ℕ
+n +' zero = n
+n +' suc m = suc (n +' m)
+```
 
 ## More pragmas
 
@@ -896,6 +943,9 @@ Including the lines
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
+
+_ : 100000000000000001 ≡ 100000000000000000 + 1
+_ = refl
 ```
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
@@ -919,6 +969,10 @@ data Bin : Set where
   ⟨⟩ : Bin
   _O : Bin → Bin
   _I : Bin → Bin
+
+infixl 5 _O _I
+
+-- _ = (⟨⟩ (I O) I) I
 ```
 For instance, the bitstring
 
@@ -956,7 +1010,32 @@ represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
 ```
--- Your code goes here
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (b O) = b I
+inc (b I) = (inc b) O
+
+to : ℕ → Bin
+to zero = ⟨⟩ O
+to (suc n) = inc (to n)
+
+double : ℕ → ℕ
+double zero = zero
+double (suc n) = suc (suc (double n))
+
+double₁ : ℕ → ℕ
+double₁ n = 2 * n
+
+double₂ : ℕ → ℕ
+double₂ n = n + n
+
+double₃ : ℕ → ℕ
+double₃ n = n * 2
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (b O) = double (from b)
+from (b I) = suc (double (from b))
 ```
 
 
