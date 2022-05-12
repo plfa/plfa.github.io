@@ -32,6 +32,20 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 ```
 
+```
+-- Example of case-expansion on the RHS.
+
+record Foo : Set where
+  field
+    left : ℕ
+    right : ℕ
+
+foo : (x : ℕ) → Foo
+Foo.left (foo x) = 1
+Foo.right (foo x) = 2
+-- foo x = record { left = 1 ; right = 2 }
+```
+
 
 ## Properties of operators
 
@@ -95,6 +109,8 @@ We can test the proposition by choosing specific numbers for the three
 variables:
 ```
 _ : (3 + 4) + 5 ≡ 3 + (4 + 5)
+_ = refl
+{-
 _ =
   begin
     (3 + 4) + 5
@@ -107,6 +123,7 @@ _ =
   ≡⟨⟩
     3 + (4 + 5)
   ∎
+-}
 ```
 Here we have displayed the computation as a chain of equations,
 one term to a line.  It is often easiest to read such chains from the top down
@@ -297,6 +314,7 @@ within angle brackets.  The justification given is:
 
     ⟨ cong suc (+-assoc m n p) ⟩
 
+
 Here, the recursive invocation `+-assoc m n p` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
 yield the needed equation.
@@ -373,6 +391,11 @@ Evidence for a universal quantifier is a function.  The notations
 and
 
     +-assoc : ∀ (m : ℕ) → ∀ (n : ℕ) → ∀ (p : ℕ) → (m + n) + p ≡ m + (n + p)
+
+```
+-- Don't really need the `∀`.
+postulate +-assoc' : (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+```
 
 are equivalent. They differ from a function type such as `ℕ → ℕ → ℕ`
 in that variables are associated with each argument type, and the
@@ -868,7 +891,25 @@ just apply the previous results which show addition
 is associative and commutative.
 
 ```
--- Your code goes here
++-swap : (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
++-swap m n p =
+  begin
+    m + (n + p)
+  ≡⟨ sym (+-assoc m n p) ⟩
+    (m + n) + p
+  ≡⟨ cong (_+ p) (+-comm m n) ⟩
+    (n + m) + p
+  ≡⟨ +-assoc n m p ⟩  -- C-c C-a
+    n + (m + p)
+  ∎
+
++-swap' : (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
++-swap' m n p rewrite sym (+-assoc m n p) | +-comm m n | +-assoc n m p = refl  -- C-c C-r
+
+-- m + (n + p) ≡ n + (m + p)
+-- m + n + p ≡ n + (m + p)
+-- n + m + p ≡ n + (m + p)
+-- n + (m + p) ≡ n + (m + p)
 ```
 
 
@@ -881,7 +922,13 @@ Show multiplication distributes over addition, that is,
 for all naturals `m`, `n`, and `p`.
 
 ```
--- Your code goes here
+*-distrib-+ : (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+*-distrib-+ zero n p = refl
+*-distrib-+ (suc m) n p rewrite *-distrib-+ m n p | +-assoc p (m * p) (n * p) = refl
+
+-- p + (m + n) * p ≡ p + m * p + n * p      -- (m + n) * p => m * p + n * p
+-- p + (m * p + n * p) ≡ p + m * p + n * p
+-- p + (m * p + n * p) ≡ p + (m * p + n * p)
 ```
 
 
@@ -894,7 +941,7 @@ Show multiplication is associative, that is,
 for all naturals `m`, `n`, and `p`.
 
 ```
--- Your code goes here
+postulate *-assoc : (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
 ```
 
 
@@ -908,9 +955,56 @@ for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
 ```
--- Your code goes here
-```
+taut : (n : ℕ) → zero ≡ zero * n
+taut n = refl
 
+*-ident : (n : ℕ) → zero ≡ n * zero
+*-ident zero = refl
+*-ident (suc n) = *-ident n
+
+-- Example of recursive definitions.
+
+thing1 : ℕ → ℕ
+thing2 : ℕ → ℕ
+
+thing1 zero = zero
+thing1 (suc n) = thing2 n
+
+thing2 zero = 1
+thing2 (suc n) = thing1 n
+
+lemma : (m n : ℕ) → m * suc n ≡ m + m * n
+lemma zero n = refl
+lemma (suc m) n =
+  begin
+    suc m * suc n
+  ≡⟨⟩
+    suc n + m * suc n
+  ≡⟨ cong (λ x → suc n + x) (lemma m n) ⟩
+    suc n + (m + m * n)
+  ≡⟨⟩
+    suc (n + (m + m * n))
+  ≡⟨ cong suc (+-swap n m (m * n)) ⟩
+    suc (m + (n + m * n))
+  ≡⟨⟩
+    suc m + (n + m * n)
+  ≡⟨⟩
+    suc m + suc m * n
+  ∎
+
+*-comm : (m n : ℕ) → m * n ≡ n * m
+*-comm zero n = *-ident n
+*-comm (suc m) n =
+  begin
+    suc m * n
+  ≡⟨⟩
+    n + m * n
+  ≡⟨ cong (n +_) (*-comm m n) ⟩
+    n + n * m
+  ≡⟨ sym (lemma n m) ⟩
+    n * suc m
+  ∎
+```
 
 #### Exercise `0∸n≡0` (practice) {#zero-monus}
 
@@ -975,6 +1069,14 @@ For each law: if it holds, prove; if not, give a counterexample.
 
 ```
 -- Your code goes here
+
+-- Example of case-expanding on `≡`.
+
+test₁ : (n : ℕ) → (n ≡ suc n) → ℕ
+test₁ n x = {!!}
+
+test₂ : (n : ℕ) → (n ≡ n + 1) → ℕ
+test₂ n x = {!!}
 ```
 
 
