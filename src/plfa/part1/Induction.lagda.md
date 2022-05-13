@@ -29,7 +29,7 @@ and some operations upon them.  We also import a couple of new operations,
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _^_)
 ```
 
 ```
@@ -1044,8 +1044,18 @@ for all `m`, `n`, and `p`.
 
 ```
 -- Your code goes here
-```
 
+^-distribˡ-+-* : (m n p : ℕ) → m ^ (n + p) ≡ (m ^ n) * (m ^ p)
+^-distribˡ-+-* m zero p =  sym (+-identityʳ (m ^ p))
+^-distribˡ-+-* m (suc n) p =
+  begin
+  m * (m ^ (n + p))
+  ≡⟨ cong (m *_) (^-distribˡ-+-* m n p) ⟩
+  m * (m ^ n * m ^ p)
+  ≡⟨ sym (*-assoc m (m ^ n) (m ^ p)) ⟩
+  m * (m ^ n) * (m ^ p)
+  ∎
+```
 
 #### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
@@ -1071,12 +1081,83 @@ For each law: if it holds, prove; if not, give a counterexample.
 -- Your code goes here
 
 -- Example of case-expanding on `≡`.
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+inc : Bin → Bin
+inc ⟨⟩    = (⟨⟩ I)
+inc (b O) = (b I)
+inc (b I) = ((inc b) O)
+
+to : ℕ → Bin
+to zero    = (⟨⟩ O)
+to (suc n) = inc (to n)
+
+double : ℕ → ℕ
+double zero = zero
+double (suc n) = suc (suc (double n))
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (n O) = double (from n)
+from (n I) = suc (double (from n))
+
+--    from (inc b) ≡ suc (from b)
+--    to (from b) ≡ b
+--    from (to n) ≡ n
+
+from-inc≡suc-from : (b : Bin) → from (inc b) ≡ suc (from b)
+from-inc≡suc-from ⟨⟩ = refl
+from-inc≡suc-from (b O) = refl
+from-inc≡suc-from (b I) rewrite from-inc≡suc-from b = refl
+
+-- to-from≡id : (b : Bin) → to (from b) ≡ b
+-- to-from≡id ⟨⟩ = {!!}
+-- to-from≡id (b O) = {!!}
+-- to-from≡id (b I) = {!!}
+
+from-to≡id : (n : ℕ) → from (to n) ≡ n
+from-to≡id zero = refl
+from-to≡id (suc n)
+  rewrite from-inc≡suc-from (to n)
+        | from-to≡id n = refl
 
 test₁ : (n : ℕ) → (n ≡ suc n) → ℕ
 test₁ n x = {!!}
 
 test₂ : (n : ℕ) → (n ≡ n + 1) → ℕ
 test₂ n x = {!!}
+```
+
+```
+-- Modulus
+
+mod-helper : ℕ → ℕ → ℕ → ℕ → ℕ
+mod-helper m zero a b = a
+mod-helper m (suc n) a zero = mod-helper m n zero m
+mod-helper m (suc n) a (suc b) = mod-helper m n (suc a) b
+
+_ : mod-helper 2 3 0 2 ≡ 0
+_ = refl
+_ : mod-helper 3 5 0 3 ≡ 1
+_ = refl
+_ : mod-helper 3 7 0 3 ≡ 3
+_ = refl
+
+mod : ℕ → ℕ → ℕ
+mod n zero = zero
+mod n (suc m) = mod-helper m n 0 m
+
+_ : mod 5 3 ≡ 2
+_ = refl
+_ : mod 6 3 ≡ 0
+_ = refl
+_ : mod 0 3 ≡ 0
+_ = refl
+_ : mod 8 7 ≡ 1
+_ = refl
 ```
 
 
