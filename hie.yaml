@@ -1,0 +1,6 @@
+cradle:
+  cabal:
+    - path: "./Buildfile.hs"
+      component: "exe:builder"
+    - path: "./Buildfile/"
+      component: "exe:builder"

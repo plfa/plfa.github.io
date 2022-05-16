@@ -1,0 +1,7 @@
+packages:
+  plfa.cabal
+
+source-repository-package
+  type: git
+  location: https://github.com/wenkokke/shoggoth
+  tag: bf1c85a137e8c69cb8d442df51bf6dc4771eba70

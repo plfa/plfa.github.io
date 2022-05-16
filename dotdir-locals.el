@@ -5,7 +5,6 @@
 (turn-off-auto-fill)
 (remove-hook 'text-mode-hook #'turn-on-auto-fill)
 
-
 ;; Disable auto-fill for Aquamacs
 (when (featurep 'aquamacs)
   (remove-hook 'text-mode-hook 'auto-detect-wrap))

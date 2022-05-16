@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "elements": ["html5"],
+  "extends": ["html-validate:recommended", "html-validate:document"],
+  "rules": {
+    "wcag/h30": ["off"],
+    "wcag/h37": ["warn"],
+    "require-sri": ["off"],
+    "no-inline-style": ["off"],
+    "valid-id": ["off"]
+  }
+}

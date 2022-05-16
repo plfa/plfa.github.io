@@ -1,4 +1,3 @@
----
 part:
 - frontmatter: True
   title: "Front matter"
@@ -45,4 +44,3 @@ part:
   section:
   - include: src/plfa/backmatter/acknowledgements.md
   - include: src/plfa/backmatter/Fonts.lagda.md
----

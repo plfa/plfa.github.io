@@ -1,4 +1,3 @@
----
 site:
   title: Programming Language Foundations in Agda
   url: https://plfa.github.io/
@@ -13,4 +12,4 @@ site:
     name: plfa.github.io
     branch: dev
   google_analytics: UA-125055580-1
----
+
