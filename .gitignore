@@ -1,13 +1,14 @@
-.shake/
-.stack-work/
-_site/
-_build/
-auto/
-dist-newstyle/
-versions/plfa.github.io-web-*/
+/.shake/
+/.stack-work/
+/_site/
+/_build/
+/dist-newstyle/
+/versions/plfa.github.io-web-*/
 
 *.agdai
+*.el
 *.lock
+*.code-workspace
 *.aux
 *.bbl
 *.blg
