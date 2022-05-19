@@ -1041,7 +1041,7 @@ their domains and `⨆cod u` returns the join of their codomains.
 
 We need just one property each for `⨆dom` and `⨆cod`.  Given a collection of
 functions represented by value `u`, and an entry `v ↦ w ∈ u`, we know
-that `v` is included in the domain of `v`.
+that `v` is included in the domain of `u`.
 
 ```
 ↦∈→⊆⨆dom : ∀{u v w : Value}
