@@ -24,7 +24,8 @@ _induction_.
 
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also import a couple of new operations,
-`cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
+`cong`, `sym`, and `step-≡` with its syntax `_≡⟨_⟩_`, which are
+explained below:
 ```
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
