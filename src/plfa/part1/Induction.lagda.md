@@ -1160,6 +1160,65 @@ _ : mod 8 7 ≡ 1
 _ = refl
 ```
 
+```
+*-identity : ∀ (n : ℕ) →  zero ≡ n * zero
+*-identity zero = refl
+*-identity (suc n) = {!!}
+                -- zero ≡ (suc n) * zero
+                -- zero ≡ zero + n * zero
+```
+
+1. Why does recursion in a record field fail termination (example)?
+
+```
+-- module experimental.itaiz.Termination where
+
+open import Data.Nat
+
+record _⇒_ (A B : Set) : Set where
+  field
+    to′ : A → B
+
+open _⇒_
+
+-- Fails termination checker.
+
+abc : ℕ ⇒ ℕ
+abc = record
+  { to′ = to′-helper
+  } where to′-helper = λ{ zero → zero ; (suc x) → to′-helper x }
+-- abc = record
+--   { to′ = λ{ zero → zero ; (suc x) → to′ abc x }}
+
+term-test₁ : ℕ → ℕ
+term-test₁ zero = zero
+term-test₁ (suc n) = term-test₁ n
+
+term-test₂ : ℕ → ℕ
+term-test₂ = λ{ zero → zero ; (suc x) → term-test₂ x }
+
+term-test₃ : ℕ → ℕ → ℕ
+term-test₃ n zero = zero
+term-test₃ n (suc m) = term-test₃ n m
+
+term-test₄ : ℕ → ℕ → ℕ
+term-test₄ n = λ{ zero → zero ; (suc m) → term-test₄ n m }
+
+term-test₅ : ℕ → ℕ → ℕ
+term-test₅ = λ{ n zero → zero ; n (suc m) → term-test₅ n m }
+```
+
+Why does Agda not have the expected type for holes for function application (chat)?
+```
+open import Data.Nat
+
+a : ℕ
+a = f zero where f : ℕ → ℕ ; f = λ x → {!!}
+
+-- o+o=e : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
+-- o+o=e (suc evenm) (suc evenn) = ? (e+e=e evenm evenn)
+```
+
 
 ## Standard library
 

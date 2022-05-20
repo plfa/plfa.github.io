@@ -247,12 +247,17 @@ Give an example of a preorder that is not a partial order.
 
 ```
 -- Your code goes here
+-- transitive and reflexive but not anti-symmetric
+-- equivalent class
+-- connectedness in graph
 ```
 
 Give an example of a partial order that is not a total order.
 
 ```
+-- transitive, reflexive and anti-symmetric, but not total
 -- Your code goes here
+-- subset lattice
 ```
 
 ## Reflexivity
@@ -756,6 +761,9 @@ Show that the sum of two odd numbers is even.
 
 ```
 -- Your code goes here
+
+-- o+o≡e : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
+-- o+o≡e (suc evenm) (suc evenn) = {!!} (e+e≡e evenm evenn)
 ```
 
 #### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
