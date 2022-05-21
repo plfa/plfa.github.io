@@ -24,12 +24,6 @@ jobs:
         fetch-depth: 1
         submodules: true
 
-    - name: Update stack.yaml
-      run: |
-        stack config set system-ghc true
-        stack config set install-ghc false
-      shell: bash
-
 
     # Setup & Cache Haskell
 
@@ -50,7 +44,36 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: 'latest'
         stack-version: 'latest'
+      id: haskell-setup
 
+    - name: Update stack.yaml
+      run: |
+        stack config set system-ghc true
+        stack config set install-ghc false
+      shell: bash
+
+    - name: Info about the setup
+      shell: bash
+      run: |
+        echo "runner.os   = ${{ runner.os }}"
+        echo "ghc-path    = ${{ steps.haskell-setup.outputs.ghc-path    }}"
+        echo "cabal-path  = ${{ steps.haskell-setup.outputs.cabal-path  }}"
+        echo "stack-path  = ${{ steps.haskell-setup.outputs.stack-path  }}"
+        echo "cabal-store = ${{ steps.haskell-setup.outputs.cabal-store }}"
+        echo "ghc-exe     = ${{ steps.haskell-setup.outputs.ghc-exe     }}"
+        echo "cabal-exe   = ${{ steps.haskell-setup.outputs.cabal-exe   }}"
+        echo "stack-exe   = ${{ steps.haskell-setup.outputs.stack-exe   }}"
+        echo "stack-root  = ${{ steps.haskell-setup.outputs.stack-root  }}"
+        echo "STACK_VER=$(stack --numeric-version)" >> ${GITHUB_ENV}
+        echo "GHC_VER=$(ghc --numeric-version)" >> ${GITHUB_ENV}
+
+    - name: Haskell versions
+      shell: bash
+      run: |
+        echo "GHC_VER     = ${{ env.GHC_VER   }}"
+        echo "STACK_VER   = ${{ env.STACK_VER }}"
+        # echo "STACK_YAML=stack-${{ env.GHC_VER }}.yaml" >> ${GITHUB_ENV}
+        # echo "STACK_FLAGS=--stack-yaml stack-${{ env.GHC_VER }}.yaml --system-ghc --no-terminal --color always" >> ${GITHUB_ENV}
 
     # Setup & Cache HTMLProofer
 
@@ -92,7 +115,7 @@ jobs:
 
     - name: Build Pandoc
       if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build pandoc-2.10.1
+      run: stack build pandoc-2.18
       shell: bash
 
     - name: Build other dependencies
