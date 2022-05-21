@@ -8,7 +8,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [macOS-latest]
+        os: [ubuntu-latest]
+        # [macOS-latest]
         ghc: ['8.10.7']
         agda: ['2.6.1.3']
 
@@ -98,6 +99,13 @@ jobs:
       shell: bash
 
 
+    - name: Prepare Agda standard library
+      run: |
+        cabal update
+        cd standard-library
+        cabal run --allow-newer GenerateEverything
+        cd ..
+      shell: bash
 
     # Setup & Cache Agda, pandoc, and site builder
 
@@ -111,14 +119,20 @@ jobs:
     - name: Update stack
       run: stack update --silent
 
-    - name: Build Pandoc
-      if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build pandoc
-      shell: bash
-
     - name: Build Agda
       if: steps.cache-site-builder.outputs.cache-hit != 'true'
       run: stack build Agda-${{ matrix.agda }}
+      shell: bash
+
+    # To avoid locked .agdai files when building the site,
+    # we precompile the .agdai files of the standard library.
+    - name: Build standard-library
+      run: stack exec --cwd standard-library agda -- -i . -i src Everything.agda
+      shell: bash
+
+    - name: Build Pandoc
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
+      run: stack build pandoc
       shell: bash
 
     - name: Build other dependencies
