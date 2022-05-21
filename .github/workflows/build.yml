@@ -20,8 +20,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        ref: dev
-        fetch-depth: 1
+        # ref: dev
+        # fetch-depth: 1
         submodules: true
 
 
