@@ -108,14 +108,17 @@ jobs:
         path: $GITHUB_WORKSPACE/.stack-work
         key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-agda-${{ matrix.agda }}
 
-    - name: Build Agda
-      if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build Agda-${{ matrix.agda }}
-      shell: bash
+    - name: Update stack
+      run: stack update --silent
 
     - name: Build Pandoc
       if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build pandoc-2.18
+      run: stack build pandoc
+      shell: bash
+
+    - name: Build Agda
+      if: steps.cache-site-builder.outputs.cache-hit != 'true'
+      run: stack build Agda-${{ matrix.agda }}
       shell: bash
 
     - name: Build other dependencies
