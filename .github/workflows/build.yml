@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [macOS-latest]
-        ghc: ['8.10.5']
+        ghc: ['8.10.7']
         agda: ['2.6.1.3']
 
     steps:

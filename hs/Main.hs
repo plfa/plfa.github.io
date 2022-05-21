@@ -16,10 +16,12 @@ import           Hakyll.Web.Template.Context.Metadata
 import           Hakyll.Web.Template.Context.Title
 import           Hakyll.Web.Sass
 import           System.FilePath ((</>), takeDirectory, replaceExtensions, splitPath, joinPath)
-import qualified Text.CSL as CSL
-import qualified Text.CSL.Pandoc as CSL (processCites)
+-- pandoc-citeproc is deprecated
+-- import qualified Text.CSL as CSL
+-- import qualified Text.CSL.Pandoc as CSL (processCites)
 import           Text.Pandoc (Pandoc(..), ReaderOptions(..), WriterOptions(..), Extension(..))
 import qualified Text.Pandoc as Pandoc
+import           Text.Pandoc.Citeproc (processCitations)
 import           Text.Printf
 
 --------------------------------------------------------------------------------
@@ -162,13 +164,15 @@ main = do
         :: Maybe CommandLineOptions -- ^ If this argument is passed, Agda compilation is used.
         -> Compiler (Item String)
       pageCompiler maybeOpts = do
-        csl <- load cslFileName
-        bib <- load bibFileName
+        -- csl <- load cslFileName
+        -- bib <- load bibFileName
+        -- TODO: incorporate csl and bib
         getResourceBody
           >>= saveSnapshot "raw"
           >>= maybeCompileAgda maybeOpts
           >>= readMarkdownWith siteReaderOptions
-          >>= processCites csl bib
+          -- >>= processCites csl bib -- RELIES on pandoc-citeproc
+          -- >>= processCitations  -- WRONG TYPE
           <&> writeHTML5With siteWriterOptions
           >>= loadAndApplyTemplate "templates/page.html"    siteSectionContext
           >>= loadAndApplyTemplate "templates/default.html" siteSectionContext
@@ -230,11 +234,13 @@ main = do
     match "posts/*" $ do
       route $ setExtension "html"
       compile $ do
-        csl <- load cslFileName
-        bib <- load bibFileName
+        -- csl <- load cslFileName
+        -- bib <- load bibFileName
+        -- TODO: incorporate csl and bib
         getResourceBody
           >>= readMarkdownWith siteReaderOptions
-          >>= processCites csl bib
+          -- >>= processCites csl bib
+          -- >>= processCitations  -- WRONG TYPE
           <&> writeHTML5With siteWriterOptions
           >>= saveSnapshot "content" -- used for teaser
           >>= loadAndApplyTemplate "templates/post.html"    postContext
@@ -361,17 +367,18 @@ readMarkdownWith ropt item =
       "Hakyll.Web.Pandoc.readPandocWith: parse failed: " ++ show err
     Right item' -> return item'
 
--- | Process citations in a Pandoc document.
-processCites :: Item CSL -> Item Biblio -> Item Pandoc -> Compiler (Item Pandoc)
-processCites csl bib item = do
-    -- Parse CSL file, if given
-    style <- unsafeCompiler $ CSL.readCSLFile Nothing . toFilePath . itemIdentifier $ csl
+-- TODO: Migrate to citeproc package, see e.g. CiteProc.Style
+-- -- | Process citations in a Pandoc document.
+-- processCites :: Item CSL -> Item Biblio -> Item Pandoc -> Compiler (Item Pandoc)
+-- processCites csl bib item = do
+--     -- Parse CSL file, if given
+--     style <- unsafeCompiler $ CSL.readCSLFile Nothing . toFilePath . itemIdentifier $ csl
 
-    -- We need to know the citation keys, add then *before* actually parsing the
-    -- actual page. If we don't do this, pandoc won't even consider them
-    -- citations!
-    let Biblio refs = itemBody bib
-    withItemBody (return . CSL.processCites style refs) item
+--     -- We need to know the citation keys, add then *before* actually parsing the
+--     -- actual page. If we don't do this, pandoc won't even consider them
+--     -- citations!
+--     let Biblio refs = itemBody bib
+--     withItemBody (return . CSL.processCites style refs) item
 
 -- | Write a document as HTML using Pandoc, with the supplied options.
 writeHTML5With :: WriterOptions  -- ^ Writer options for Pandoc
