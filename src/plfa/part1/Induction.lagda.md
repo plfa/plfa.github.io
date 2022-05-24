@@ -23,7 +23,7 @@ _induction_.
 ## Imports
 
 We require equality as in the previous chapter, plus the naturals
-and some operations upon them.  We also import a couple of new operations,
+and some operations upon them.  We also require a couple of new operations,
 `cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
 ```
 import Relation.Binary.PropositionalEquality as Eq
@@ -31,6 +31,7 @@ open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 ```
+(Importing `step-≡` defines `_≡⟨_⟩_`.)
 
 
 ## Properties of operators
@@ -50,10 +51,10 @@ on names for some of the most common properties.
 * _Commutativity_.   Operator `+` is commutative if order of
   arguments does not matter: `m + n ≡ n + m`, for all `m` and `n`.
 
-* _Distributivity_.   Operator `*` distributes over operator `+` from the
-  left if `(m + n) * p ≡ (m * p) + (n * p)`, for all `m`, `n`, and `p`,
-  and from the right if `m * (p + q) ≡ (m * p) + (m * q)`, for all `m`,
-  `p`, and `q`.
+* _Distributivity_.  Operator `*` distributes over operator `+` from
+  the left if `m * (p + q) ≡ (m * p) + (m * q)`, for all `m`, `p`, and
+  `q`, and from the right if `(m + n) * p ≡ (m * p) + (n * p)`, for all
+  `m`, `n`, and `p`.
 
 Addition has identity `0` and multiplication has identity `1`;
 addition and multiplication are both associative and commutative;
@@ -94,6 +95,7 @@ Here `m`, `n`, and `p` are variables that range over all natural numbers.
 We can test the proposition by choosing specific numbers for the three
 variables:
 ```
+
 _ : (3 + 4) + 5 ≡ 3 + (4 + 5)
 _ =
   begin
@@ -606,13 +608,11 @@ Here is an example:
 ```
 +-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
 +-rearrange m n p q =
-  begin
+  begin 
     (m + n) + (p + q)
-  ≡⟨ +-assoc m n (p + q) ⟩
-    m + (n + (p + q))
-  ≡⟨ cong (m +_) (sym (+-assoc n p q)) ⟩
-    m + ((n + p) + q)
-  ≡⟨ sym (+-assoc m (n + p) q) ⟩
+  ≡⟨ sym (+-assoc (m + n) p q) ⟩
+    ((m + n) + p) + q
+  ≡⟨ cong (_+ q) (+-assoc m n p) ⟩
     (m + (n + p)) + q
   ∎
 ```
@@ -623,26 +623,30 @@ First, addition associates to the left, so `m + (n + p) + q`
 stands for `(m + (n + p)) + q`.
 
 Second, we use `sym` to interchange the sides of an equation.
-Proposition `+-assoc n p q` shifts parentheses from right to left:
+Proposition `+-assoc (m + n) p q` shifts parentheses from left to right:
 
-    (n + p) + q ≡ n + (p + q)
+    ((m + n) + p) + q ≡ (m + n) + (p + q)
 
 To shift them the other way, we use `sym (+-assoc n p q)`:
 
-    n + (p + q) ≡ (n + p) + q
+    (m + n) + (p + q) ≡ ((m + n) + p) + q
 
 In general, if `e` provides evidence for `x ≡ y` then `sym e` provides
 evidence for `y ≡ x`.
 
 Third, Agda supports a variant of the _section_ notation introduced by
-Richard Bird.  We write `(x +_)` for the function that applied to `y`
-returns `x + y`.  Thus, applying the congruence `cong (m +_)` takes
-the above equation into:
+Richard Bird.  We write `(_+ y)` for the function that applied to `x`
+returns `x + y`.  Thus, applying the congruence `cong (_+ q)` to
+`assoc m n p` takes the equation:
 
-    m + (n + (p + q)) ≡ m + ((n + p) + q)
+    (m + n) + p  ≡  m + (n + p)
 
-Similarly, we write `(_+ x)` for the function that applied to `y`
-returns `y + x`; the same works for any infix operator.
+into the equation:
+
+    ((m + n) + p) + q  ≡  (m + (n + p)) + q
+
+Similarly, we write `(x +_)` for the function that applied to `y`
+returns `x + y`; the same works for any infix operator.
 
 
 

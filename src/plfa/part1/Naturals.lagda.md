@@ -78,11 +78,14 @@ successor of two; and so on.
 
 #### Exercise `seven` (practice) {#seven}
 
-Write out `7` in longhand.
+Write out `7` in longhand. 
 
 ```
 -- Your code goes here
 ```
+
+You will need to give both a type signature and definition for the
+variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
 
 
 ## Unpacking the inference rules
