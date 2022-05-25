@@ -2,12 +2,12 @@
 title     : "Lambda: Introduction to Lambda Calculus"
 layout    : page
 prev      : /Lists/
-permalink : /LambdaPeter/
+permalink : /LambdaFixpoint/
 next      : /Properties/
 ---
 
 ```
-module plfa.part2.LambdaPeter where
+module plfa.part2.LambdaFixpoint where
 ```
 
 The _lambda-calculus_, first published by the logician Alonzo Church in

@@ -2,12 +2,12 @@
 title     : "Properties: Progress and Preservation"
 layout    : page
 prev      : /Lambda/
-permalink : /Properties/
+permalink : /PropertiesFixpoint/
 next      : /DeBruijn/
 ---
 
 ```
-module plfa.part2.PropertiesPeter where
+module plfa.part2.PropertiesFixpoint where
 ```
 
 This chapter covers properties of the simply-typed lambda calculus, as
@@ -31,8 +31,8 @@ open import Data.Product
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Function using (_∘_)
--- open import plfa.part1.Isomorphism
-open import plfa.part2.LambdaPeter
+open import plfa.part1.Isomorphism
+open import plfa.part2.LambdaFixpoint
 ```
 
 
