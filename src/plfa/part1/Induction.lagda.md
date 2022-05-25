@@ -738,9 +738,15 @@ Simplifying both sides with the inductive case of addition yields the equation:
 
     suc ((m + n) + p) ≡ suc (m + (n + p))
 
-After rewriting with the inductive hypothesis these two terms are equal, and the
-proof is again given by `refl`.  Rewriting by a given equation is indicated by
-the keyword `rewrite` followed by a proof of that equation.  Rewriting avoids
+This is our goal to be proved.  Rewriting by a given equation is
+indicated by the keyword `rewrite` followed by a proof of that
+equation.  Rewriting replaces each occurrence of the left-hand side of
+the equation in the goal by the right-hand side.  In this case, after
+rewriting by the inductive hypothesis our goal becomes
+
+    suc (m + (n + p)) ≡ suc (m + (n + p))
+
+and the proof is again given by `refl`.  Rewriting avoids
 not only chains of equations but also the need to invoke `cong`.
 
 
