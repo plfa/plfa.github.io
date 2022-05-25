@@ -129,9 +129,8 @@ Case expressions are self-bracketing.
 
 ### Example terms
 
-Here are some example terms: the natural number two,
-a function that adds naturals,
-and a term that computes two plus two:
+Here are a couple of example terms: the natural number two
+and a function that adds naturals:
 ```
 two : Term
 two = `suc `suc `zero
@@ -160,9 +159,8 @@ As a second example, we use higher-order functions to represent
 natural numbers.  In particular, the number _n_ is represented by a
 function that accepts two arguments and applies the first _n_ times to the
 second.  This is called the _Church representation_ of the
-naturals.  Here are some example terms: the Church numeral two, a
-function that adds Church numerals, a function to compute successor,
-and a term that computes two plus two:
+naturals.  Here are a few example terms: the Church numeral two, a
+function that adds Church numerals, and a function to compute successor:
 ```
 twoᶜ : Term
 twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
@@ -236,8 +234,8 @@ case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
 
 Recall that `T` is a function that maps from the computation world to
 the evidence world, as
-[defined]({{ site.baseurl }}/Decidable/#relating-evidence-and-computation)
-in Chapter [Decidable]({{ site.baseurl }}/Decidable/).  We ensure to
+[defined](/Decidable/#relating-evidence-and-computation)
+in Chapter [Decidable](/Decidable/).  We ensure to
 use the primed functions only when the respective term argument is a
 variable, which we do by providing implicit evidence.  For example, if
 we tried to define an abstraction term that binds anything but a
@@ -442,7 +440,7 @@ the body of the abstraction stands for a _different_ variable than
 `x` outside the abstraction, they just happen to have the same name.
 
 We will give a definition of substitution that is only valid
-when term substituted for the variable is closed. This is because
+when the term substituted for the variable is closed. This is because
 substitution by terms that are _not_ closed may require renaming
 of bound variables. For example:
 
@@ -466,20 +464,20 @@ infix 9 _[_:=_]
 
 _[_:=_] : Term → Id → Term → Term
 (` x) [ y := V ] with x ≟ y
-... | yes _          =  V
-... | no  _          =  ` x
+... | yes _         = V
+... | no  _         = ` x
 (ƛ x ⇒ N) [ y := V ] with x ≟ y
-... | yes _          =  ƛ x ⇒ N
-... | no  _          =  ƛ x ⇒ N [ y := V ]
-(L · M) [ y := V ]   =  L [ y := V ] · M [ y := V ]
-(`zero) [ y := V ]   =  `zero
-(`suc M) [ y := V ]  =  `suc M [ y := V ]
+... | yes _         = ƛ x ⇒ N
+... | no  _         = ƛ x ⇒ N [ y := V ]
+(L · M) [ y := V ]  = L [ y := V ] · M [ y := V ]
+(`zero) [ y := V ]  = `zero
+(`suc M) [ y := V ] = `suc M [ y := V ]
 (case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
-... | yes _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
-... | no  _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
+... | yes _         = case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
+... | no  _         = case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
 (μ x ⇒ N) [ y := V ] with x ≟ y
-... | yes _          =  μ x ⇒ N
-... | no  _          =  μ x ⇒ N [ y := V ]
+... | yes _         = μ x ⇒ N
+... | no  _         = μ x ⇒ N [ y := V ]
 ```
 
 Let's unpack the first three cases:
@@ -505,7 +503,8 @@ simply push substitution recursively into the subterms.
 Here is confirmation that the examples above are correct:
 
 ```
-_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ] ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
+_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ]
+      ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
 _ = refl
 
 _ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡ sucᶜ · (sucᶜ · `zero)
@@ -736,9 +735,9 @@ We can read this as follows:
 The notation is chosen to allow us to lay out example reductions in an
 appealing way, as we will see in the next section.
 
-An alternative is to define reflexive and transitive closure directly,
-as the smallest relation that includes `—→` and is also reflexive
-and transitive.  We could do so as follows:
+Alternatively, we might define reflexive and transitive closure directly
+as the smallest relation that includes `—→` and is reflexive
+and transitive.  We do so as follows:
 ```
 data _—↠′_ : Term → Term → Set where
 
@@ -1009,7 +1008,7 @@ body of an abstraction its bound variable may appear free.
 
 A _context_ associates variables with types.  We let `Γ` and `Δ` range
 over contexts.  We write `∅` for the empty context, and `Γ , x ⦂ A`
-for the context that extends `Γ` by mapping variable `x` to type `A`.
+for the context that extends `Γ` by associating variable `x` with type `A`.
 For example,
 
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ``

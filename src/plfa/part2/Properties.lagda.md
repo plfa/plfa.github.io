@@ -168,13 +168,13 @@ reduction step.  However, this is not true in general.  The term
 
     `zero · `suc `zero
 
-is neither a value nor can take a reduction step. And if `` s ⦂ `ℕ ⇒ `ℕ ``
+is neither a value nor can take a reduction step. And if `` "s" ⦂ `ℕ ⇒ `ℕ ``
 then the term
 
-     s · `zero
+     ` "s" · `zero
 
 cannot reduce because we do not know which function is bound to the
-free variable `s`.  The first of those terms is ill typed, and the
+free variable `"s"`.  The first of these terms is ill typed, and the
 second has a free variable.  Every term that is well typed and closed
 has the desired property.
 
@@ -425,13 +425,14 @@ rename : ∀ {Γ Δ}
   → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
     ----------------------------------
   → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
-rename ρ (⊢` ∋w)           =  ⊢` (ρ ∋w)
-rename ρ (⊢ƛ ⊢N)           =  ⊢ƛ (rename (ext ρ) ⊢N)
-rename ρ (⊢L · ⊢M)         =  (rename ρ ⊢L) · (rename ρ ⊢M)
-rename ρ ⊢zero             =  ⊢zero
-rename ρ (⊢suc ⊢M)         =  ⊢suc (rename ρ ⊢M)
-rename ρ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename ρ ⊢L) (rename ρ ⊢M) (rename (ext ρ) ⊢N)
-rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (ext ρ) ⊢M)
+rename ρ (⊢` ∋w)    =  ⊢` (ρ ∋w)
+rename ρ (⊢ƛ ⊢N)    =  ⊢ƛ (rename (ext ρ) ⊢N)
+rename ρ (⊢L · ⊢M)  =  (rename ρ ⊢L) · (rename ρ ⊢M)
+rename ρ ⊢zero      =  ⊢zero
+rename ρ (⊢suc ⊢M)  =  ⊢suc (rename ρ ⊢M)
+rename ρ (⊢case ⊢L ⊢M ⊢N)
+                    =  ⊢case (rename ρ ⊢L) (rename ρ ⊢M) (rename (ext ρ) ⊢N)
+rename ρ (⊢μ ⊢M)    =  ⊢μ (rename (ext ρ) ⊢M)
 ```
 As before, let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.  We induct
@@ -551,23 +552,23 @@ subst : ∀ {Γ x N V A B}
     --------------------
   → Γ ⊢ N [ x := V ] ⦂ B
 subst {x = y} ⊢V (⊢` {x = x} Z) with x ≟ y
-... | yes _           =  weaken ⊢V
-... | no  x≢y         =  ⊥-elim (x≢y refl)
+... | yes _         =  weaken ⊢V
+... | no  x≢y       =  ⊥-elim (x≢y refl)
 subst {x = y} ⊢V (⊢` {x = x} (S x≢y ∋x)) with x ≟ y
-... | yes refl        =  ⊥-elim (x≢y refl)
-... | no  _           =  ⊢` ∋x
+... | yes refl      =  ⊥-elim (x≢y refl)
+... | no  _         =  ⊢` ∋x
 subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
-... | yes refl        =  ⊢ƛ (drop ⊢N)
-... | no  x≢y         =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
-subst ⊢V (⊢L · ⊢M)    =  (subst ⊢V ⊢L) · (subst ⊢V ⊢M)
-subst ⊢V ⊢zero        =  ⊢zero
-subst ⊢V (⊢suc ⊢M)    =  ⊢suc (subst ⊢V ⊢M)
+... | yes refl      =  ⊢ƛ (drop ⊢N)
+... | no  x≢y       =  ⊢ƛ (subst ⊢V (swap x≢y ⊢N))
+subst ⊢V (⊢L · ⊢M)  =  (subst ⊢V ⊢L) · (subst ⊢V ⊢M)
+subst ⊢V ⊢zero      =  ⊢zero
+subst ⊢V (⊢suc ⊢M)  =  ⊢suc (subst ⊢V ⊢M)
 subst {x = y} ⊢V (⊢case {x = x} ⊢L ⊢M ⊢N) with x ≟ y
-... | yes refl        =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
-... | no  x≢y         =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
+... | yes refl      =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (drop ⊢N)
+... | no  x≢y       =  ⊢case (subst ⊢V ⊢L) (subst ⊢V ⊢M) (subst ⊢V (swap x≢y ⊢N))
 subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
-... | yes refl        =  ⊢μ (drop ⊢M)
-... | no  x≢y         =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
+... | yes refl      =  ⊢μ (drop ⊢M)
+... | no  x≢y       =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
 ```
 We induct on the evidence that `N` is well typed in the
 context `Γ` extended by `x`.
@@ -587,7 +588,7 @@ choose type names as convenient.
 
 Now that naming is resolved, let's unpack the first three cases:
 
-* In the variable case, we must show
+* In the variable case, we must show:
 
       ∅ ⊢ V ⦂ B
       Γ , y ⦂ B ⊢ ` x ⦂ A
@@ -610,7 +611,7 @@ Now that naming is resolved, let's unpack the first three cases:
     the definition of substitution to simplify:
 
     - If the variables are equal, then after simplification we
-      must show
+      must show:
 
           ∅ ⊢ V ⦂ A
           ---------
@@ -634,7 +635,7 @@ Now that naming is resolved, let's unpack the first three cases:
     - If the variables are equal we have a contradiction.
 
     - If the variables are unequal, then after simplification we
-      must show
+      must show:
 
           ∅ ⊢ V ⦂ B
           x ≢ y
@@ -644,14 +645,14 @@ Now that naming is resolved, let's unpack the first three cases:
 
       which follows by the typing rule for variables.
 
-* In the abstraction case, we must show
+* In the abstraction case, we must show:
 
       ∅ ⊢ V ⦂ B
       Γ , y ⦂ B ⊢ (ƛ x ⇒ N) ⦂ A ⇒ C
       --------------------------------
       Γ ⊢ (ƛ x ⇒ N) [ y := V ] ⦂ A ⇒ C
 
-  where the second hypothesis follows from
+  where the second hypothesis follows from:
 
       Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
 
@@ -664,7 +665,7 @@ Now that naming is resolved, let's unpack the first three cases:
         -------------------------
         Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ C
 
-    From the drop lemma, `drop`, we may conclude:
+    From the drop lemma we know:
 
         Γ , x ⦂ B , x ⦂ A ⊢ N ⦂ C
         -------------------------
@@ -675,12 +676,14 @@ Now that naming is resolved, let's unpack the first three cases:
   + If the variables are distinct then after simplification we must show:
 
         ∅ ⊢ V ⦂ B
+        x ≢ y
         Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
         --------------------------------
         Γ ⊢ ƛ x ⇒ (N [ y := V ]) ⦂ A ⇒ C
 
-    From the swap lemma we may conclude:
+    From the swap lemma we know:
 
+        x ≢ y
         Γ , y ⦂ B , x ⦂ A ⊢ N ⦂ C
         -------------------------
         Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
@@ -694,14 +697,14 @@ Now that naming is resolved, let's unpack the first three cases:
 
     The typing rule for abstractions then yields the required conclusion.
 
-* In the application case, we must show
+* In the application case, we must show:
 
       ∅ ⊢ V ⦂ C
       Γ , y ⦂ C ⊢ L · M ⦂ B
       --------------------------
       Γ ⊢ (L · M) [ y := V ] ⦂ B
 
-  where the second hypothesis follows from the two judgments
+  where the second hypothesis follows from the two judgments:
 
       Γ , y ⦂ C ⊢ L ⦂ A ⇒ B
       Γ , y ⦂ C ⊢ M ⦂ A
@@ -904,35 +907,34 @@ eval : ∀ {L A}
   → ∅ ⊢ L ⦂ A
     ---------
   → Steps L
-eval {L} (gas zero)    ⊢L                                =  steps (L ∎) out-of-gas
+eval {L} (gas zero)    ⊢L                     =  steps (L ∎) out-of-gas
 eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                                            =  steps (L ∎) (done VL)
+... | done VL                                 =  steps (L ∎) (done VL)
 ... | step {M} L—→M with eval (gas m) (preserve ⊢L L—→M)
-...    | steps M—↠N fin                                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+...    | steps M—↠N fin                       =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well typed.  We consider the amount of gas
 remaining.  There are two possibilities:
 
 * It is zero, so we stop early.  We return the trivial reduction
-  sequence `L —↠ L`, evidence that `L` is well typed, and an
-  indication that we are out of gas.
+  sequence `L —↠ L` and an indication that we are out of gas.
 
 * It is non-zero and after the next step we have `m` gas remaining.
   Apply progress to the evidence that term `L` is well typed.  There
   are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
-    trivial reduction sequence `L —↠ L`, evidence that `L` is
-    well typed, and the evidence that `L` is a value.
+    trivial reduction sequence `L —↠ L`
+    and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well typed, and we recursively invoke
     `eval` on the remaining gas.  The result is evidence that
-    `M —↠ N`, together with evidence that `N` is well typed and an
+    `M —↠ N` and
     indication of whether reduction finished.  We combine the evidence
-    that `L —→ M` and `M —↠ N` to return evidence that `L —↠ N`,
-    together with the other relevant evidence.
+    that `L —→ M` and `M —↠ N` to return evidence that `L —↠ N`
+    and the indication of whether reduction finished.
 
 
 ### Examples
@@ -1432,7 +1434,7 @@ the presence of these rules?  For each property, write either
 "remains true" or "becomes false." If a property becomes
 false, give a counterexample:
 
-  - Determinism of `step`
+  - Determinism
 
   - Progress
 
@@ -1455,7 +1457,7 @@ the presence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
 false, give a counterexample:
 
-  - Determinism of `step`
+  - Determinism
 
   - Progress
 
@@ -1470,7 +1472,7 @@ true in the absence of this rule?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
 false, give a counterexample:
 
-  - Determinism of `step`
+  - Determinism
 
   - Progress
 
@@ -1498,11 +1500,11 @@ And that we add the corresponding reduction rule:
     i · m —→ n
 
 Which of the following properties remain true in
-the presence of this rule?  For each one, write either
+the presence of these rules?  For each one, write either
 "remains true" or else "becomes false." If a property becomes
 false, give a counterexample:
 
-  - Determinism of `step`
+  - Determinism
 
   - Progress
 

@@ -97,7 +97,7 @@ You can get the latest version of Programming Language Foundations in Agda from 
 git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/plfa/plfa.github.io plfa
 # Remove `--depth 1` and `--shallow-submodules` if you want the complete git history of PLFA and the standard library.
 ```
-PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got, in the `standard-library` directory!
+PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got it, in the `standard-library` directory!
 
 If you forgot to add the `--recurse-submodules` flag, no worries, we can fix that!
 ```bash
