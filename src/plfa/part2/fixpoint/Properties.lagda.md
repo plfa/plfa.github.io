@@ -1028,19 +1028,19 @@ _ : eval (gas 100) ⊢2+2 ≡
    ((μ "+" ⇒
      (ƛ "m" ⇒
       (ƛ "n" ⇒
-       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+       case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
        ])))
     · `suc (`suc `zero)
     · `suc (`suc `zero)
    —→⟨ ξ-·₁ (β-μ (V-suc (V-suc V-zero))) ⟩
     (ƛ "m" ⇒
      (ƛ "n" ⇒
-      case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+      case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒
       `suc
       ((μ "+" ⇒
         (ƛ "m" ⇒
          (ƛ "n" ⇒
-          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+          case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
           ])))
        · ` "m"
        · ` "n")
@@ -1049,24 +1049,24 @@ _ : eval (gas 100) ⊢2+2 ≡
     · `suc (`suc `zero)
    —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
     (ƛ "n" ⇒
-     case `suc (`suc `zero) [zero⇒ ` "n" |suc "m" ⇒
+     case `suc (`suc `zero) [ `zero ⇒ ` "n" ∥ `suc "m" ⇒
      `suc
      ((μ "+" ⇒
        (ƛ "m" ⇒
         (ƛ "n" ⇒
-         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+         case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
          ])))
       · ` "m"
       · ` "n")
      ])
     · `suc (`suc `zero)
    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+    case `suc (`suc `zero) [ `zero ⇒ `suc (`suc `zero) ∥ `suc "m" ⇒
     `suc
     ((μ "+" ⇒
       (ƛ "m" ⇒
        (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+        case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
         ])))
      · ` "m"
      · `suc (`suc `zero))
@@ -1076,7 +1076,7 @@ _ : eval (gas 100) ⊢2+2 ≡
     ((μ "+" ⇒
       (ƛ "m" ⇒
        (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+        case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
         ])))
      · `suc `zero
      · `suc (`suc `zero))
@@ -1084,12 +1084,12 @@ _ : eval (gas 100) ⊢2+2 ≡
     `suc
     ((ƛ "m" ⇒
       (ƛ "n" ⇒
-       case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+       case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒
        `suc
        ((μ "+" ⇒
          (ƛ "m" ⇒
           (ƛ "n" ⇒
-           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+           case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
            ])))
         · ` "m"
         · ` "n")
@@ -1099,12 +1099,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
     `suc
     ((ƛ "n" ⇒
-      case `suc `zero [zero⇒ ` "n" |suc "m" ⇒
+      case `suc `zero [ `zero ⇒ ` "n" ∥ `suc "m" ⇒
       `suc
       ((μ "+" ⇒
         (ƛ "m" ⇒
          (ƛ "n" ⇒
-          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+          case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
           ])))
        · ` "m"
        · ` "n")
@@ -1112,12 +1112,12 @@ _ : eval (gas 100) ⊢2+2 ≡
      · `suc (`suc `zero))
    —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
     `suc
-    case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+    case `suc `zero [ `zero ⇒ `suc (`suc `zero) ∥ `suc "m" ⇒
     `suc
     ((μ "+" ⇒
       (ƛ "m" ⇒
        (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+        case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
         ])))
      · ` "m"
      · `suc (`suc `zero))
@@ -1128,7 +1128,7 @@ _ : eval (gas 100) ⊢2+2 ≡
      ((μ "+" ⇒
        (ƛ "m" ⇒
         (ƛ "n" ⇒
-         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+         case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
          ])))
       · `zero
       · `suc (`suc `zero)))
@@ -1137,12 +1137,12 @@ _ : eval (gas 100) ⊢2+2 ≡
     (`suc
      ((ƛ "m" ⇒
        (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+        case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒
         `suc
         ((μ "+" ⇒
           (ƛ "m" ⇒
            (ƛ "n" ⇒
-            case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+            case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
             ])))
          · ` "m"
          · ` "n")
@@ -1153,12 +1153,12 @@ _ : eval (gas 100) ⊢2+2 ≡
     `suc
     (`suc
      ((ƛ "n" ⇒
-       case `zero [zero⇒ ` "n" |suc "m" ⇒
+       case `zero [ `zero ⇒ ` "n" ∥ `suc "m" ⇒
        `suc
        ((μ "+" ⇒
          (ƛ "m" ⇒
           (ƛ "n" ⇒
-           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+           case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
            ])))
         · ` "m"
         · ` "n")
@@ -1167,12 +1167,12 @@ _ : eval (gas 100) ⊢2+2 ≡
    —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
     `suc
     (`suc
-     case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+     case `zero [ `zero ⇒ `suc (`suc `zero) ∥ `suc "m" ⇒
      `suc
      ((μ "+" ⇒
        (ƛ "m" ⇒
         (ƛ "n" ⇒
-         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+         case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
          ])))
       · ` "m"
       · `suc (`suc `zero))
@@ -1363,14 +1363,14 @@ When we introduced reduction, we claimed it was deterministic.
 For completeness, we present a formal proof here.
 
 Our proof will need a variant
-of congruence to deal with functions of four arguments
-(to deal with `case_[zero⇒_|suc_⇒_]`).  It
+of congruence to deal with functions of five arguments
+(to deal with `case_[_⇒_∥_⇒_]`).  It
 is exactly analogous to `cong` and `cong₂` as defined previously:
 ```
-cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
-  {s w : A} {t x : B} {u y : C} {v z : D}
-  → s ≡ w → t ≡ x → u ≡ y → v ≡ z → f s t u v ≡ f w x y z
-cong₄ f refl refl refl refl = refl
+cong₅ : ∀ {A B C D E F : Set} (f : A → B → C → D → E → F)
+  {p v : A} {q w : B} {r x : C} {s y : D} {t z : E}
+  → p ≡ v → q ≡ w → r ≡ x → s ≡ y → t ≡ z → f p q r s t ≡ f v w x y z
+cong₅ f refl refl refl refl refl = refl
 ```
 
 It is now straightforward to show that reduction is deterministic:
@@ -1395,8 +1395,8 @@ det (β-μ VM)         (ξ-·₂ _ M—→M″)   =  ⊥-elim (V—↛ VM M—�
 det (β-ƛ _)          (β-ƛ _)          =  refl
 det (β-μ _)          (β-μ _)          =  refl
 det (ξ-suc M—→M′)    (ξ-suc M—→M″)    =  cong `suc_ (det M—→M′ M—→M″)
-det (ξ-case L—→L′)   (ξ-case L—→L″)   =  cong₄ case_[zero⇒_|suc_⇒_]
-                                           (det L—→L′ L—→L″) refl refl refl
+det (ξ-case L—→L′)   (ξ-case L—→L″)   =  cong₅ case_[_⇒_∥_⇒_]
+                                           (det L—→L′ L—→L″) refl refl refl refl
 det (ξ-case L—→L′)   β-zero           =  ⊥-elim (V—↛ V-zero L—→L′)
 det (ξ-case L—→L′)   (β-suc VL)       =  ⊥-elim (V—↛ (V-suc VL) L—→L′)
 det β-zero           (ξ-case M—→M″)   =  ⊥-elim (V—↛ V-zero M—→M″)

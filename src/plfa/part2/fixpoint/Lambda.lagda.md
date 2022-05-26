@@ -78,7 +78,7 @@ Three are for the naturals:
 
   * Zero `` `zero ``
   * Successor `` `suc M ``
-  * Case `` case L [zero⇒ M |suc x ⇒ N ] ``
+  * Case `` case L [ `zero ⇒ M ∥ `suc x ⇒ N ] ``
 
 And one is for recursion:
 
@@ -98,7 +98,7 @@ Here is the syntax of terms in Backus-Naur Form (BNF):
 
     L, M, N  ::=
       ` x  |  ƛ x ⇒ N  |  L · M  |
-      `zero  |  `suc M  |  case L [zero⇒ M |suc x ⇒ N ]  |
+      `zero  |  `suc M  |  case L [ `zero⇒ M ∥ `suc x ⇒ N ]  |
       μ f ⇒ ƛ x ⇒ M
 
 And here it is formalised in Agda:
@@ -113,19 +113,27 @@ infix  8  `suc_
 infix  9  `_
 
 data Term : Set
+data Zero : Set
+data Suc  : Set
 data Func : Set
 
 data Term where
-  `_                      :  Id → Term
-  ƛ_⇒_                    :  Id → Term → Term
-  _·_                     :  Term → Term → Term
-  `zero                   :  Term
-  `suc_                   :  Term → Term
-  case_[zero⇒_|suc_⇒_]    :  Term → Term → Id → Term → Term
-  μ_⇒_                    :  Id → Func → Term
+  `_              :  Id → Term
+  ƛ_⇒_            :  Id → Term → Term
+  _·_             :  Term → Term → Term
+  `zero           :  Term
+  `suc_           :  Term → Term
+  case_[_⇒_∥_⇒_]  :  Term → Zero → Term → Suc → Term → Term
+  μ_⇒_            :  Id → Func → Term
+
+data Zero where
+  `zero           :  Zero
+
+data Suc where
+  `suc_           :  Id → Suc
 
 data Func where
-  ƛ_⇒_                    :  Id → Term → Func
+  ƛ_⇒_            :  Id → Term → Func
 ```
 We represent identifiers by strings.  We choose precedence so that
 lambda abstraction and fixpoint bind least tightly, then application,
@@ -145,8 +153,8 @@ two = `suc `suc `zero
 plus : Term
 plus = μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
          case ` "m"
-           [zero⇒ ` "n"
-           |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
+           [ `zero ⇒ ` "n"
+           ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
 ```
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in
@@ -233,8 +241,11 @@ var? _      =  false
 ƛ′_⇒_ : (t : Term) → {_ : T (var? t)} → Term → Term
 ƛ′_⇒_ (` x) N = ƛ x ⇒ N
 
-case′_[zero⇒_|suc_⇒_] : Term → Term → (t : Term) → {_ : T (var? t)} → Term → Term
-case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
+data Suc′ : Set where
+  `suc_ : (t : Term) → {_ : T (var? t)} → Suc′
+
+case′_[_⇒_∥_⇒_] : Term → Zero → Term → Suc′ → Term → Term
+case′ L [ `zero ⇒ M ∥ `suc (` x) ⇒ N ]  =  case L [ `zero ⇒ M ∥ `suc x ⇒ N ]
 
 μ′_⇒_⇒_ : (f : Term) → {_ : T (var? f)} → (x : Term) → {_ : T (var? x)} → Term → Term
 μ′ (` f) ⇒ (` x) ⇒ N  =  μ f ⇒ ƛ x ⇒ N
@@ -261,8 +272,8 @@ The definition of `plus` can now be written as follows:
 plus′ : Term
 plus′ = μ′ + ⇒ m ⇒ ƛ′ n ⇒
           case′ m
-            [zero⇒ n
-            |suc m ⇒ `suc (+ · m · n) ]
+            [ `zero ⇒ n
+            ∥ `suc m ⇒ `suc (+ · m · n) ]
   where
   +  =  ` "+"
   m  =  ` "m"
@@ -341,16 +352,16 @@ to alpha renaming. In the term
 
     μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
       case ` "m"
-        [zero⇒ ` "n"
-        |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
+        [ `zero ⇒ ` "n"
+        ∥ `suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
 
 notice that there are two binding occurrences of `m`, one in the first
 line and one in the last line.  It is equivalent to the following term,
 
     μ "plus" ⇒ ƛ "x" ⇒ ƛ "y" ⇒
       case ` "x"
-        [zero⇒ ` "y"
-        |suc "x′" ⇒ `suc (` "plus" · ` "x′" · ` "y") ]
+        [ `zero ⇒ ` "y"
+        ∥ `suc "x′" ⇒ `suc (` "plus" · ` "x′" · ` "y") ]
 
 where the two binding occurrences corresponding to `m` now have distinct
 names, `x` and `x′`.
@@ -484,9 +495,9 @@ _[_:=_] : Term → Id → Term → Term
 (L · M) [ y := V ]   =  L [ y := V ] · M [ y := V ]
 (`zero) [ y := V ]   =  `zero
 (`suc M) [ y := V ]  =  `suc M [ y := V ]
-(case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
-... | yes _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
-... | no  _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
+(case L [ `zero ⇒ M ∥ `suc x ⇒ N ]) [ y := V ] with x ≟ y
+... | yes _          =  case L [ y := V ] [ `zero ⇒ M [ y := V ] ∥ `suc x ⇒ N ]
+... | no  _          =  case L [ y := V ] [ `zero ⇒ M [ y := V ] ∥ `suc x ⇒ N [ y := V ] ]
 (μ f ⇒ ƛ x ⇒ N) [ y := V ] with f ≟ y | x ≟ y 
 ... | yes _ | _      =  μ f ⇒ ƛ x ⇒ N
 ... | no  _ | yes _  =  μ f ⇒ ƛ x ⇒ N
@@ -640,16 +651,16 @@ data _—→_ : Term → Term → Set where
   ξ-case : ∀ {x L L′ M N}
     → L —→ L′
       -----------------------------------------------------------------
-    → case L [zero⇒ M |suc x ⇒ N ] —→ case L′ [zero⇒ M |suc x ⇒ N ]
+    → case L [ `zero ⇒ M ∥ `suc x ⇒ N ] —→ case L′ [ `zero ⇒ M ∥ `suc x ⇒ N ]
 
   β-zero : ∀ {x M N}
       ----------------------------------------
-    → case `zero [zero⇒ M |suc x ⇒ N ] —→ M
+    → case `zero [ `zero ⇒ M ∥ `suc x ⇒ N ] —→ M
 
   β-suc : ∀ {x V M N}
     → Value V
       ---------------------------------------------------
-    → case `suc V [zero⇒ M |suc x ⇒ N ] —→ N [ x := V ]
+    → case `suc V [ `zero ⇒ M ∥ `suc x ⇒ N ] —→ N [ x := V ]
 
   β-μ : ∀ {f x N V}
     → Value V
@@ -864,38 +875,38 @@ _ =
     plus · two · two
   —→⟨ ξ-·₁ (β-μ (V-suc (V-suc V-zero))) ⟩
     (ƛ "m" ⇒ ƛ "n" ⇒
-      case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
+      case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two · two
   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
     (ƛ "n" ⇒
-      case two [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
+      case two [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
          · two
   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    case two [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ]
+    case two [ `zero ⇒ two ∥ `suc "m" ⇒ `suc (plus · ` "m" · two) ]
   —→⟨ β-suc (V-suc V-zero) ⟩
     `suc (plus · `suc `zero · two)
   —→⟨ ξ-suc (ξ-·₁ (β-μ (V-suc V-zero))) ⟩
     `suc ((ƛ "m" ⇒ ƛ "n" ⇒
-      case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
+      case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · `suc `zero · two)
   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
     `suc ((ƛ "n" ⇒
-      case `suc `zero [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
+      case `suc `zero [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two)
   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    `suc (case `suc `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ])
+    `suc (case `suc `zero [ `zero ⇒ two ∥ `suc "m" ⇒ `suc (plus · ` "m" · two) ])
   —→⟨ ξ-suc (β-suc V-zero) ⟩
     `suc `suc (plus · `zero · two)
   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-μ V-zero))) ⟩
     `suc `suc ((ƛ "m" ⇒ ƛ "n" ⇒
-      case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
+      case ` "m" [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · `zero · two)
   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
     `suc `suc ((ƛ "n" ⇒
-      case `zero [zero⇒ ` "n" |suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
+      case `zero [ `zero ⇒ ` "n" ∥ `suc "m" ⇒ `suc (plus · ` "m" · ` "n") ])
         · two)
   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
-    `suc `suc (case `zero [zero⇒ two |suc "m" ⇒ `suc (plus · ` "m" · two) ])
+    `suc `suc (case `zero [ `zero ⇒ two ∥ `suc "m" ⇒ `suc (plus · ` "m" · two) ])
   —→⟨ ξ-suc (ξ-suc β-zero) ⟩
     `suc (`suc (`suc (`suc `zero)))
   ∎
@@ -1187,7 +1198,7 @@ data _⊢_⦂_ where
     → Γ ⊢ M ⦂ A
     → Γ , x ⦂ `ℕ ⊢ N ⦂ A
       -------------------------------------
-    → Γ ⊢ case L [zero⇒ M |suc x ⇒ N ] ⦂ A
+    → Γ ⊢ case L [ `zero ⇒ M ∥ `suc x ⇒ N ] ⦂ A
 
   ⊢μ : ∀ {Γ f x N A B}
     → Γ , f ⦂ A ⇒ B ⊢ᶠ ƛ x ⇒ N ⦂ A ⇒ B
@@ -1439,6 +1450,7 @@ This chapter uses the following unicode:
     ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
     ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
     ·  U+00B7  MIDDLE DOT (\cdot)
+    ∥  U+2225  PARALLEL TO (\||)
     ≟  U+225F  QUESTIONED EQUAL TO (\?=)
     —  U+2014  EM DASH (\em)
     ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
