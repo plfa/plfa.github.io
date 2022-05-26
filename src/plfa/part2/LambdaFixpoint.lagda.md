@@ -1147,10 +1147,10 @@ For example:
 Typing is formalised as follows:
 ```
 infix  4  _⊢_⦂_
-infix  4  _⊢_⦂ᶠ_
+infix  4  _⊢ᶠ_⦂_
 
 data _⊢_⦂_ : Context → Term → Type → Set
-data _⊢_⦂ᶠ_ : Context → Func → Type → Set
+data _⊢ᶠ_⦂_ : Context → Func → Type → Set
 
 data _⊢_⦂_ where
 
@@ -1193,16 +1193,16 @@ data _⊢_⦂_ where
     → Γ ⊢ case L [zero⇒ M |suc x ⇒ N ] ⦂ A
 
   ⊢μ : ∀ {Γ f F A}
-    → Γ , f ⦂ A ⊢ F ⦂ᶠ A
+    → Γ , f ⦂ A ⊢ᶠ F ⦂ A
       ------------------
     → Γ ⊢ μ f ⇒ F ⦂ A
 
-data _⊢_⦂ᶠ_ where
+data _⊢ᶠ_⦂_ where
 
   ⊢ƛ : ∀ {Γ x N A B}
     → Γ , x ⦂ A ⊢ N ⦂ B
       -------------------
-    → Γ ⊢ ƛ x ⇒ N ⦂ᶠ A ⇒ B
+    → Γ ⊢ᶠ ƛ x ⇒ N ⦂ A ⇒ B
 ```
 
 Each type rule is named after the constructor for the
