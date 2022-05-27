@@ -371,6 +371,10 @@ argument is `s≤s`.  Why is it ok to omit them?
 
 ```
 -- Your code goes here
+-- impossible case:
+-- ≤-antisym z≤n       s≤s
+-- 0 ≤ n     suc n ≤ suc m
+-- 0 != suc m
 ```
 
 
@@ -561,6 +565,20 @@ Show that multiplication is monotonic with regard to inequality.
 
 ```
 -- Your code goes here
+open Data.Nat using (_*_)
+
+-- *-mono-≤ʳ : ∀ (n p q : ℕ)
+--   → p ≤ q
+--     -------------
+--   → n * p ≤ n * q
+
+*-mono-≤ : ∀ {m n p q : ℕ}
+  → m ≤ n
+  → p ≤ q
+    -------------
+  → m * p ≤ n * q
+*-mono-≤ z≤n pleq = z≤n
+*-mono-≤ (s≤s mlen) pleq = +-mono-≤ _ _ _ _ pleq (*-mono-≤ mlen pleq)
 ```
 
 
@@ -609,6 +627,14 @@ exercise exploits the relation between < and ≤.)
 
 ```
 -- Your code goes here
+<-trans : ∀ {m n p : ℕ}
+  → m < n
+  → n < p
+    -----
+  → m < p
+
+<-trans z<s (s<s nltp) = z<s
+<-trans (s<s mltn) (s<s nltp) = s<s (<-trans mltn nltp)
 ```
 
 #### Exercise `trichotomy` (practice) {#trichotomy}
@@ -627,6 +653,28 @@ similar to that used for totality.
 
 ```
 -- Your code goes here
+data Trichotomy (m n : ℕ) : Set where
+  left :
+      m < n
+      --------------
+    → Trichotomy m n
+  center :
+      m ≡ n
+      --------------
+    → Trichotomy m n
+  right :
+      n < m
+      --------------
+    → Trichotomy m n
+
+<-trichotomy : ∀ (m n : ℕ) → Trichotomy m n
+<-trichotomy zero zero = center refl
+<-trichotomy zero (suc n) = left z<s
+<-trichotomy (suc m) zero = right z<s
+<-trichotomy (suc m) (suc n) with <-trichotomy m n -- Target: Trichotomy (suc m) (suc n)
+...                          | left x   = left (s<s x)
+...                          | center x = center (cong suc x)
+...                          | right x  = right (s<s x)
 ```
 
 #### Exercise `+-mono-<` (practice) {#plus-mono-less}
@@ -636,6 +684,12 @@ As with inequality, some additional definitions may be required.
 
 ```
 -- Your code goes here
++-mono-<ˡ : ∀ (m p q : ℕ)
+  → p < q
+    -------------
+  → m + p < m + q
++-mono-<ˡ zero p q pltq = pltq
++-mono-<ˡ (suc m) p q pltq = s<s (+-mono-<ˡ m p q pltq)
 ```
 
 #### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
@@ -644,6 +698,12 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
 
 ```
 -- Your code goes here
+≤-if-< : ∀ {m n : ℕ}
+ → m < n
+   ---------
+ → suc m ≤ n
+≤-if-< z<s = s≤s z≤n
+≤-if-< (s<s mltn) = s≤s (≤-if-< mltn)
 ```
 
 #### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
