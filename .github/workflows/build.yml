@@ -98,15 +98,6 @@ jobs:
       run: sudo gem install html-proofer
       shell: bash
 
-
-    - name: Prepare Agda standard library
-      run: |
-        cabal update
-        cd standard-library
-        cabal run --allow-newer GenerateEverything
-        cd ..
-      shell: bash
-
     # Setup & Cache Agda, pandoc, and site builder
 
     - name: Cache .stack-work
@@ -124,11 +115,19 @@ jobs:
       run: stack build Agda-${{ matrix.agda }}
       shell: bash
 
-    # To avoid locked .agdai files when building the site,
-    # we precompile the .agdai files of the standard library.
-    - name: Build standard-library
-      run: stack exec --cwd standard-library agda -- -i . -i src Everything.agda
-      shell: bash
+    # - name: Prepare Agda standard library
+    #   run: |
+    #     cabal update
+    #     cd standard-library
+    #     cabal run --allow-newer GenerateEverything
+    #     cd ..
+    #   shell: bash
+
+    # # To avoid locked .agdai files when building the site,
+    # # we precompile the .agdai files of the standard library.
+    # - name: Build standard-library
+    #   run: stack exec --cwd standard-library agda -- -i . -i src Everything.agda
+    #   shell: bash
 
     - name: Build Pandoc
       if: steps.cache-site-builder.outputs.cache-hit != 'true'

@@ -11,6 +11,7 @@ RAW_DIR   := $(SITE_DIR)/raw
 CACHE_DIR := _cache
 TMP_DIR   := $(CACHE_DIR)/tmp
 
+AGDA_BIN  := $(STACK) exec agda --
 AGDA      := $(STACK) exec agda -- --no-libraries --include-path=standard-library/src
 PANDOC    := $(STACK) exec pandoc --
 
@@ -52,6 +53,7 @@ build-deps:
 .PHONY: build
 build: standard-library/ChangeLog.md | build-deps
 	@echo "Building website"
+	src/typecheck-plfa.sh "$(AGDA_BIN)"
 	$(STACK) build
 	$(STACK) exec site build
 
