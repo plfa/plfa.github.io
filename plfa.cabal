@@ -36,12 +36,12 @@ executable builder
     , data-default-class
     , mtl
     , multimap
-    , plfa:plfa-types
+    , plfa
     , process
     , shoggoth
-    , shoggoth:shoggoth-agda
-    , shoggoth:shoggoth-hasmin
-    , shoggoth:shoggoth-hsass
+    -- , shoggoth:shoggoth-agda
+    -- , shoggoth:shoggoth-hasmin
+    -- , shoggoth:shoggoth-hsass
     , text
     , text-icu            ^>=0.7.1.0
 
@@ -57,12 +57,12 @@ executable update-contributors
     , filepath
     , frontmatter
     , github              ^>=0.26
-    , plfa:plfa-types
+    , plfa
     , text
     , vector
     , yaml
 
-library plfa-types
+library
   import:              language-haskell
   hs-source-dirs:      tools/
   exposed-modules:
