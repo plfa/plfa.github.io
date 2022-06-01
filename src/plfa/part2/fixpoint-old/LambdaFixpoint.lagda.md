@@ -7,7 +7,7 @@ next      : /Properties/
 ---
 
 ```
-module plfa.part2.LambdaFixpoint where
+module plfa.part2.fixpoint-old.LambdaFixpoint where
 ```
 
 The _lambda-calculus_, first published by the logician Alonzo Church in
@@ -490,7 +490,7 @@ _[_:=_] : Term → Id → Term → Term
 (case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
 ... | yes _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
 ... | no  _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
-(μ f ⇒ ƛ x ⇒ N) [ y := V ] with f ≟ y | x ≟ y 
+(μ f ⇒ ƛ x ⇒ N) [ y := V ] with f ≟ y | x ≟ y
 ... | yes _ | _      =  μ f ⇒ ƛ x ⇒ N
 ... | no  _ | yes _  =  μ f ⇒ ƛ x ⇒ N
 ... | no  _ | no  _  =  μ f ⇒ ƛ x ⇒ N [ y := V ]

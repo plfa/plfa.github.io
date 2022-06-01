@@ -7,7 +7,7 @@ next      : /DeBruijn/
 ---
 
 ```
-module plfa.part2.PropertiesFixpoint where
+module plfa.part2.fixpoint-old.PropertiesFixpoint where
 ```
 
 This chapter covers properties of the simply-typed lambda calculus, as
@@ -32,7 +32,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Function using (_∘_)
 open import plfa.part1.Isomorphism
-open import plfa.part2.LambdaFixpoint
+open import plfa.part2.fixpoint-old.LambdaFixpoint
 ```
 
 
@@ -523,7 +523,7 @@ contradiction (evidenced by `x≢x refl`).
 
 Third, if the last two variables in a context differ then we can swap them:
 ```
-swap-ρ : ∀ {Γ x y A B} 
+swap-ρ : ∀ {Γ x y A B}
   → x ≢ y
     --------------------------------------
   → Γ , y ⦂ B , x ⦂ A →ᴿ Γ , x ⦂ A , y ⦂ B
