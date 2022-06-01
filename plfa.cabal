@@ -1,4 +1,4 @@
-cabal-version:      3.0
+cabal-version:      3.6
 name:               plfa
 version:            20.10
 description:        Programming Language Foundations in Agda
@@ -38,7 +38,7 @@ executable builder
     , multimap
     , plfa
     , process
-    , shoggoth
+    , shoggoth ==0.1
     -- , shoggoth:shoggoth-agda
     -- , shoggoth:shoggoth-hasmin
     -- , shoggoth:shoggoth-hsass

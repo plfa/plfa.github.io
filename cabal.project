@@ -4,4 +4,4 @@ packages:
 source-repository-package
   type: git
   location: https://github.com/wenkokke/shoggoth
-  tag: 20ad7c2e722f9a5eed5dfcb220e4383d4ec11765
+  tag: 949a43cab17aff6d49653d24e1a021898a7d4aa4
