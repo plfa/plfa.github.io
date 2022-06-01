@@ -2,7 +2,7 @@ cabal-version:      3.0
 name:               plfa
 version:            20.10
 description:        Programming Language Foundations in Agda
-homepage:           https://plfa.inf.ed.ac.uk
+homepage:           https://plfa.github.io
 license-file:       LICENSE
 author:             Wen Kokke
 copyright:          © 2017-2022 Wen Kokke, Jeremy G. Siek, and Philip Wadler
@@ -36,6 +36,7 @@ executable builder
     , data-default-class
     , mtl
     , multimap
+    , plfa:plfa-types
     , process
     , shoggoth
     , shoggoth:shoggoth-agda
@@ -48,5 +49,26 @@ executable update-contributors
   import:              language-haskell
   main-is:             tools/UpdateContributors.hs
   build-depends:
+    , bytestring
+    , containers
+    , directory
     , exceptions
-    , github >=0.26
+    , filemanip
+    , filepath
+    , frontmatter
+    , github              ^>=0.26
+    , plfa:plfa-types
+    , text
+    , vector
+    , yaml
+
+library plfa-types
+  import:              language-haskell
+  hs-source-dirs:      tools/
+  exposed-modules:
+    , Buildfile.Author
+    , Buildfile.Contributor
+  build-depends:
+    , aeson
+    , base
+    , text

@@ -1,0 +1,3 @@
+ignore-project: False
+extra-include-dirs: /usr/local/opt/icu4c/include
+extra-lib-dirs: /usr/local/opt/icu4c/lib

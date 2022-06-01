@@ -37,6 +37,10 @@ init:
 
 CABAL_ARGS += --verbose=0
 
+ifneq ($(DEV),)
+CABAL_ARGS += --project-file=cabal.project.dev
+endif
+
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
 
 HTML_MINIFIER_ARGS += --collapse-whitespace

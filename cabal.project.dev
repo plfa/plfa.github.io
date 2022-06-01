@@ -1,0 +1,4 @@
+packages:
+  wenkokke.cabal
+  posts/*.cabal
+  ../shoggoth/shoggoth.cabal

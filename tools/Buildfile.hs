@@ -28,7 +28,6 @@ outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
-
 main :: IO ()
 main = do
   shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimple} $ do
@@ -53,22 +52,50 @@ main = do
               [styleSrcDir </> "*.scss"] %-> styleRouter
             ]
 
+    -- NOTE: required by 'makeFileWithMetadataGetter', 'makePostMetadataGetter', and 'makePostListMetadataGetter'
+    let ?outputDirectory = outDir
+
     --------------------------------------------------------------------------------
     -- Cached file, template, and metadata getters
 
-    cachedGetSiteMetadata <- newCache getSiteMetadata
-    let ?getSiteMetadata = cachedGetSiteMetadata
-    cachedGetFileWithMetadata <- newCache getFileWithMetadata
-    let ?getFileWithMetadata = cachedGetFileWithMetadata
-    cachedGetTemplateFile <- newCache getTemplateFile
-    let ?getTemplateFile = getTemplateFile
-    let ?readerOpts = def {readerExtensions = markdownDialect}
+    defaultMetadataGetter <-
+      makeDefaultMetadataGetter
+        def
+          { defaultMetadataFiles = ["src/site.yml", "src/toc.yml"],
+            includeBuildDate = Just "build_date"
+          }
+    let ?getDefaultMetadata = defaultMetadataGetter
+
+    fileWithMetadataGetter <-
+      makeFileWithMetadataGetter
+        def
+    let ?getFileWithMetadata = fileWithMetadataGetter
+
+    templateFileGetter <-
+      makeTemplateFileGetter
+        def
+          { templateDirectory = "templates"
+          }
+    let ?getTemplateFile = templateFileGetter
+
+    -- Default Pandoc options
+    let ?readerOpts =
+          def
+            { readerExtensions = markdownDialect
+            }
     let ?writerOpts =
           def
             { writerHTMLMathMethod = KaTeX "",
               writerEmailObfuscation = JavascriptObfuscation,
               writerHighlightStyle = Just highlightStyle
             }
+
+    --------------------------------------------------------------------------------
+    -- Agda link fixers
+
+    cachedGetAgdaLinkFixer <- newCache $ \() ->
+      Agda.makeAgdaLinkFixer (Just standardLibrary) localLibraries otherLibraries
+    let ?getAgdaLinkFixer = cachedGetAgdaLinkFixer
 
     --------------------------------------------------------------------------------
     -- Phony targets
@@ -127,72 +154,6 @@ tspl19Library =
     }
 
 --------------------------------------------------------------------------------
--- Posts
-
-postSrcDir, postHtmlAgdaDir, postHtmlBodyDir, postOutDir :: FilePath
-postSrcDir = "posts"
-postHtmlAgdaDir = tmpDir </> "stage1" </> "posts" -- Render .lagda.md to .md
-postHtmlBodyDir = tmpDir </> "stage2" </> "posts" -- Render .md to .html
-postOutDir = outDir -- NOTE: cannot rely on 'postOutDir' to test if a FilePath is an output
-
-postRouter :: (?agdaLibraries :: [Agda.Library]) => Source -> Either String Stages
-postRouter src = do
-  let postSrc = makeRelative postSrcDir src
-  PostInfo {..} <- parsePostSource postSrc
-  let htmlBody = postHtmlBodyDir </> postSrc
-  let out = postOutDir </> year </> month </> day </> fileName </> "index.html"
-  let stages = "html-body" :@: htmlBody :>: Output out
-  if Agda.isAgdaFile src
-    then do
-      highlightAgda <- Agda.htmlOutputPath postHtmlAgdaDir ?agdaLibraries src
-      return (highlightAgda :>: stages)
-    else return stages
-
-isPostSrc, isPostHtmlAgda, isPostHtmlBody, isPostOut :: FilePath -> Bool
-isPostSrc src = postSrcDir `isPrefixOf` src
-isPostHtmlAgda tmp = postHtmlAgdaDir `isPrefixOf` tmp
-isPostHtmlBody tmp = postHtmlBodyDir `isPrefixOf` tmp
-isPostOut out = isRight (parsePostOutput out)
-
--- postRules ::
---   ( ?routingTable :: RoutingTable,
---     ?getTemplateFile :: FilePath -> Action Template,
---     ?getPostWithMetadata :: FilePath -> Action (Metadata, Text),
---     ?agdaLibraries :: [Agda.Library],
---     ?getAgdaLinkFixer :: () -> Action (Url -> Url),
---     ?readerOpts :: Pandoc.ReaderOptions,
---     ?writerOpts :: Pandoc.WriterOptions
---   ) =>
---   Rules ()
--- postRules = do
---   -- Compile literate Agda to Markdown & HTML
---   isPostHtmlAgda ?> \next -> do
---     prev <- routePrev next
---     Agda.compileTo Agda.Html ?agdaLibraries postHtmlAgdaDir prev
-
---   -- Compile Markdown to HTML
---   isPostHtmlBody ?> \next -> do
---     (out, prev, src) <- (,,) <$> route next <*> routePrev next <*> routeSource next
---     agdaLinkFixer <- ?getAgdaLinkFixer ()
---     let maybeAgdaLinkFixer = if Agda.isAgdaFile src then Just (Pandoc.withUrls agdaLinkFixer) else Nothing
---     readFile' prev
---       >>= markdownToPandoc
---       >>= processCitations
---       <&> Pandoc.shiftHeadersBy 2
---       <&> fromMaybe id maybeAgdaLinkFixer
---       >>= pandocToHtml5 -- postprocessHtml5 in next rule
---       >>= writeFile' next
-
---   -- Apply templates
---   isPostOut ?> \out -> do
---     (prev, src) <- (,) <$> routePrev out <*> routeSource out
---     metadata <- fst <$> ?getPostWithMetadata src
---     readFile' prev
---       >>= applyTemplates ["post.html", "default.html"] metadata
---       <&> postprocessHtml5 outDir out
---       >>= writeFile' out
-
---------------------------------------------------------------------------------
 -- Style Sheets
 
 styleSrcDir, styleOutDir :: FilePath
@@ -246,136 +207,3 @@ assetRules =
   assetOutDir <//> "*" %> \out -> do
     src <- routeSource out
     copyFile' src out
-
---------------------------------------------------------------------------------
--- Markdown to HTML compilation
-
-highlightStyle :: Pandoc.HighlightStyle
-highlightStyle = Pandoc.pygments
-
-markdownDialect :: Extensions
-markdownDialect = Pandoc.pandocExtensions
-
-markdownToPandoc ::
-  ( ?readerOpts :: Pandoc.ReaderOptions
-  ) =>
-  Text ->
-  Action Pandoc
-markdownToPandoc =
-  Pandoc.runPandoc . Pandoc.readMarkdown ?readerOpts
-
-pandocToHtml5 ::
-  ( ?writerOpts :: Pandoc.WriterOptions
-  ) =>
-  Pandoc ->
-  Action Text
-pandocToHtml5 =
-  Pandoc.runPandoc . Pandoc.writeHtml5String ?writerOpts
-
-processCitations :: Pandoc -> Action Pandoc
-processCitations =
-  Pandoc.runPandoc . Citeproc.processCitations
-
-postprocessHtml5 :: FilePath -> FilePath -> Text -> Text
-postprocessHtml5 outDir out html5 =
-  html5
-    & TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-    & TagSoup.addDefaultTableHeaderScope "col"
-    & Pandoc.postprocessHtml5
-
---------------------------------------------------------------------------------
--- Metadata
-
--- | Get the default metadata for the website.
-getSiteMetadata :: () -> Action Metadata
-getSiteMetadata () = do
-  siteMetadata <- readYaml' "src/site.yml"
-  buildDateFld <- currentDateField rfc822DateFormat "build_date"
-  let metadata = mconcat [siteMetadata, buildDateFld]
-  return $ constField "site" metadata
-
--- | Get a file body and its metadata, including derived metadata.
---
---   This function adds the following metadata fields,
---   in addition to the metadata added by 'getSiteMetadata':
---
---     - @url@: The URL to the output file.
---     - @body@: The body of the source file.
---     - @source@: The path to the source file.
---     - @modified_date@: The date at which the file was last modified, in the ISO8601 format.
---     - @build_date@: The date at which the is website was last built, in the RFC822 format.
---     - @highlight-css@: The CSS for syntax highlighting, if the original file specifies 'highlight'.
-getFileWithMetadata ::
-  ( ?routingTable :: RoutingTable,
-    ?getSiteMetadata :: () -> Action Metadata
-  ) =>
-  FilePath ->
-  Action (Metadata, Text)
-getFileWithMetadata src = do
-  out <- route src
-  let url = "/" <> makeRelative outDir out
-  siteMetadata <- ?getSiteMetadata ()
-  (fileMetadata, body) <- readFileWithMetadata' src
-  let urlFld = constField "url" url
-  let bodyFld = constField "body" body
-  let sourceFld = constField "source" src
-  modifiedDateFld <- lastModifiedISO8601Field src "modified_date"
-  let metadata = mconcat [siteMetadata, fileMetadata, urlFld, bodyFld, sourceFld, modifiedDateFld]
-  return (metadata, body)
-
--- | Get a metadata object representing all posts.
---
---   This function adds the following metadata fields for each post,
---   in addition to the metadata added by 'getFileWithMetadata':
---
---   - @date@: The date of the post, in a human readable format.
---   - @date_rfc822@: The date of the post, in the RFC822 date format.
-getPostWithMetadata ::
-  ( ?routingTable :: RoutingTable,
-    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
-  ) =>
-  FilePath ->
-  Action (Metadata, Text)
-getPostWithMetadata src = do
-  (fileMetadata, body) <- ?getFileWithMetadata src
-  dateFld <- either fail return $ postDateField "%a %-d %b, %Y" src "date"
-  dateRfc822Fld <- either fail return $ postDateField rfc822DateFormat src "date_rfc822"
-  let metadata = mconcat [fileMetadata, dateFld, dateRfc822Fld]
-  return (metadata, body)
-
--- | Get a metadata object representing all posts.
---
---   This function adds the following metadata fields for each post,
---   in addition to the metadata added by 'getFileWithMetadata':
---
---   - @body_html@: The rendered HTML body of the source file.
---   - @teaser_html@: The rendered HTML teaser for the post.
---   - @teaser_plain@: The plain text teaser for the post.
-getPostsMetadata ::
-  ( ?routingTable :: RoutingTable,
-    ?getPostWithMetadata :: FilePath -> Action (Metadata, Text)
-  ) =>
-  () ->
-  Action Metadata
-getPostsMetadata () = do
-  -- Get posts from routing table
-  postSrcs <- filter isPostSrc <$> sources
-  -- Gather metadata for each post
-  postsMetadata <- forM postSrcs $ \src -> do
-    -- Get output file for URL and html-body anchor for teaser
-    (out, ankHtmlBody) <- (,) <$> route src <*> routeAnchor "html-body" src
-    let url = "/" <> makeRelative outDir out
-    postMetadata <- fst <$> ?getPostWithMetadata src
-    bodyHtml <- readFile' ankHtmlBody
-    let bodyHtmlFld = constField "body_html" bodyHtml
-    teaserHtmlFld <- either fail return $ htmlTeaserField url bodyHtml "teaser_html"
-    teaserPlainFld <- either fail return $ textTeaserField bodyHtml "teaser_plain"
-    return $ mconcat [postMetadata, bodyHtmlFld, teaserHtmlFld, teaserPlainFld]
-  return $ constField "post" (reverse postsMetadata)
-
--- | Get a template from the @templates/@ directory.
-getTemplateFile :: FilePath -> Action Template
-getTemplateFile inputFile = do
-  let inputPath = "templates" </> inputFile
-  need [inputPath]
-  compileTemplateFile inputPath
