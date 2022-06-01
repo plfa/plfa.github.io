@@ -38,7 +38,7 @@ executable builder
     , multimap
     , plfa
     , process
-    , shoggoth ==0.1
+    , shoggoth
     -- , shoggoth:shoggoth-agda
     -- , shoggoth:shoggoth-hasmin
     -- , shoggoth:shoggoth-hsass
@@ -56,7 +56,7 @@ executable update-contributors
     , filemanip
     , filepath
     , frontmatter
-    , github              ^>=0.26
+    , github              ^>=0.28
     , plfa
     , text
     , vector
