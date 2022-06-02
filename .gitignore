@@ -1,7 +1,7 @@
 /.shake/
 /.stack-work/
 /_site/
-/_build/
+/_cache/
 /dist-newstyle/
 /versions/plfa.github.io-web-*/
 

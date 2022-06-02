@@ -1,13 +1,16 @@
 module Main where
 
+import Buildfile.Author (Author)
+import Buildfile.Contributor (Contributor (..))
 import Control.Monad (forM, unless)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
-import Data.Function ((&), on)
+import Data.Function (on, (&))
 import Data.Functor ((<&>))
 import Data.List (isPrefixOf, sortBy)
+import Data.List qualified as List
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text
@@ -24,30 +27,30 @@ import Shoggoth.TagSoup qualified as TagSoup
 import Shoggoth.Template.Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
-import Buildfile.Author (Author)
-import Buildfile.Contributor (Contributor (..))
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
 authorDir, contributorDir :: FilePath
-authorDir         = "authors"
-contributorDir    = "contributors"
+authorDir = "authors"
+contributorDir = "contributors"
 
-postSrcDir :: FilePath
+bookSrcDir, chapterSrcDir, postSrcDir, coursesSrcDir, tspl19SrcDir :: FilePath
+bookSrcDir = "book"
+chapterSrcDir = "src"
 postSrcDir = "posts"
+coursesSrcDir = "courses"
+tspl19SrcDir = coursesSrcDir </> "TSPL/2019"
 
 tmpAgdaHtmlDir, tmpBodyHtmlDir :: FilePath
 tmpAgdaHtmlDir = tmpDir </> "stage1" -- Render .lagda.md to .md
 tmpBodyHtmlDir = tmpDir </> "stage2" -- Render .md to .html
 
-styleSrcDir, styleOutDir :: FilePath
+assetSrcDir, styleSrcDir, styleOutDir :: FilePath
+assetSrcDir = "assets"
 styleSrcDir = "sass"
 styleOutDir = outDir </> "assets/css"
-
-highlightStyle :: HighlightStyle
-highlightStyle = pygments
 
 --------------------------------------------------------------------------------
 -- Rules
@@ -62,44 +65,60 @@ main =
           mempty
             & addShakeExtra (OutputDirectory outDir)
             & addShakeExtra (TemplateDirectory "templates")
-            & addShakeExtra
-              def
-                { readerExtensions = pandocExtensions
-                }
-            & addShakeExtra
-              def
-                { writerHTMLMathMethod = KaTeX "",
-                  writerEmailObfuscation = JavascriptObfuscation,
-                  writerHighlightStyle = Just highlightStyle
-                }
+            & addShakeExtra readerOpts
+            & addShakeExtra writerOpts
       }
     $ do
       --------------------------------------------------------------------------------
       -- Agda libraries
 
       standardLibrary <- Agda.getStandardLibrary "standard-library"
-      let agdaLibraries = [standardLibrary, plfaLibrary, tspl19Library, postLibrary]
+      -- [standardLibrary, plfaLibrary, tspl19Library, postLibrary]
+
+      let agdaLibrariesFor :: FilePath -> Action [Agda.Library]
+          agdaLibrariesFor src
+            | isChapterSrc src = return [standardLibrary, plfaLibrary]
+            | isTSPL19Src src = return [standardLibrary, plfaLibrary, tspl19Library]
+            | isPostSrc src = return [standardLibrary, plfaLibrary]
+            | otherwise = fail $ "Cannot determine Agda libraries for " <> src
 
       --------------------------------------------------------------------------------
       -- Routing table
 
-      -- let postRouter :: FilePath -> Either String Stages
-      --     postRouter src = do
-      --       PostInfo {..} <- parsePostSource (takeFileName src)
-      --       let postBodyHtml = tmpBodyHtmlDir </> replaceExtensions src "md"
-      --       let postOut = outDir </> postYear </> postMonth </> postDay </> postSlug </> "index.html"
-      --       if Agda.isAgdaFile src
-      --         then do
-      --           postAgdaHtml <- Agda.htmlOutputPath tmpAgdaHtmlDir agdaLibraries src
-      --           return $ postAgdaHtml :> "body_html" :@ postBodyHtml :> Output postOut
-      --         else return $ "body_html" :@ postBodyHtml :> Output postOut
+      let postOrPermalinkRouter :: FilePath -> Action FilePath
+          postOrPermalinkRouter src
+            | isPostSrc src = do
+              PostInfo {..} <- either fail return $ parsePostSource (takeFileName src)
+              return $ outDir </> postYear </> postMonth </> postDay </> postSlug </> "index.html"
+            | otherwise =
+              permalinkRouter src
+
+      let postOrPermalinkRouterWithAgda :: FilePath -> Action Stages
+          postOrPermalinkRouterWithAgda src = do
+            let bodyHtml = tmpBodyHtmlDir </> replaceExtensions src "md"
+            out <- postOrPermalinkRouter src
+            agdaLibraries <- agdaLibrariesFor src
+            if Agda.isAgdaFile src
+              then do
+                (lib, includePath, agdaHtmlFileName) <-
+                  either fail return $ Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
+                let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
+                return $ agdaHtml :> "body_html" :@ bodyHtml :> Output out
+              else return $ "body_html" :@ bodyHtml :> Output out
 
       let ?routingTable =
             mconcat
-              [ -- Assets
+              [ -- Book
+                [chapterSrcDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                -- Courses
+                [tspl19SrcDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                [tspl19SrcDir <//> "*.pdf"] *|-> (outDir </>),
+                -- Announcements
+                [postSrcDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                -- Assets
                 ["pages/404.md"] |-> permalinkRouter,
                 ["sass/style.scss"] |-> outDir </> "assets/css/style.css",
-                ["assets//*"] *|-> \src -> outDir </> src
+                [assetSrcDir <//> "*"] *|-> (outDir </>)
               ]
 
       --------------------------------------------------------------------------------
@@ -107,28 +126,29 @@ main =
 
       getAuthors <- newCache $ \() -> do
         authorFiles <- getDirectoryFiles authorDir ["*.yml"]
-        authors <- traverse readYaml authorFiles
+        authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
         return (authors :: [Author])
 
       getContributors <- newCache $ \() -> do
         contributorFiles <- getDirectoryFiles contributorDir ["*.yml"]
-        contributors <- traverse readYaml contributorFiles
+        contributors <- traverse (\src -> readYaml $ contributorDir </> src) contributorFiles
         let sortedContributors = sortBy (compare `on` contributorCount) contributors
         return (sortedContributors :: [Contributor])
 
       getDefaultMetadata <- newCache $ \() -> do
-        siteMetadata <- readYaml "src/site.yml"
-        tocMetadata <- readYaml "src/toc.yml"
-        publishedDate <- currentDateField rfc822DateFormat "build_date"
+        siteMetadata <- readYaml (bookSrcDir </> "site.yml")
+        tocMetadata <- readYaml (bookSrcDir </> "toc.yml")
         authorMetadata <- getAuthors ()
         contributorMetadata <- getContributors ()
-        return $ mconcat
-          [ constField "site" (siteMetadata :: Metadata)
-          , constField "toc" (tocMetadata :: Metadata)
-          , constField "author" authorMetadata
-          , constField "contributor" contributorMetadata
-          , publishedDate
-          ]
+        buildDate <- currentDateField rfc822DateFormat "build_date"
+        return $
+          mconcat
+            [ constField "site" (siteMetadata :: Metadata),
+              constField "toc" (tocMetadata :: Metadata),
+              constField "author" authorMetadata,
+              constField "contributor" contributorMetadata,
+              buildDate
+            ]
 
       getAgdaLinkFixer <- newCache $ \() ->
         Agda.makeAgdaLinkFixer (Just standardLibrary) [plfaLibrary, tspl19Library, postLibrary] []
@@ -189,84 +209,96 @@ main =
         removeFilesAfter tmpDir ["//*"]
 
       --------------------------------------------------------------------------------
+      -- Compile Markdown+Agda to HTML
+
+      -- Stage 1: Compile Agda to HTML
+      tmpAgdaHtmlDir <//> "*.md" %> \next -> do
+        (src, prev) <- (,) <$> routeSource next <*> routePrev next
+        agdaLibraries <- agdaLibrariesFor prev
+        Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDir prev
+
+      -- Stage 2: Compile Markdown to HTML
+      tmpBodyHtmlDir <//> "*.md" %> \next -> do
+        (src, prev, out) <- (,,) <$> routeSource next <*> routePrev next <*> route next
+        agdaLinkFixer <- getAgdaLinkFixer ()
+        let maybeAgdaLinkFixer
+              | Agda.isAgdaFile src = Just (withUrls agdaLinkFixer)
+              | otherwise = Nothing
+        readFile' prev
+          >>= markdownToPandoc
+          <&> shiftHeadersBy 2
+          <&> fromMaybe id maybeAgdaLinkFixer
+          >>= processCitations
+          >>= pandocToHtml5
+          >>= writeFile' next
+
+      -- Stage 3: Apply HTML templates
+      outDir <//> "*.html" %> \out -> do
+        (src, prev) <- (,) <$> routeSource out <*> routePrev out
+        (metadata, htmlBody) <- getFileWithMetadata prev
+        templates <- if
+          | isChapterSrc src -> return ["page.html", "default.html"]
+          | isCoursesSrc src -> return ["page.html", "default.html"]
+          | isPostSrc    src -> return ["post.html", "default.html"]
+          | otherwise        -> fail $ "Cannot compile " <> out <> " with generic rule.\
+                                       \Maybe the generic rule shadows the specific rule?"
+        html <- applyTemplates templates metadata htmlBody
+        writeFile' out $ postProcessHtml5 outDir out html
+
+      --------------------------------------------------------------------------------
       -- Posts
 
       -- match posts/YYYY-MM-DD-<slug><file-extensions>
-      -- let isPostSource src = isRight $
-      --       parsePostSource (makeRelative postSrcDir src)
+      let isPostSource src = isRight $
+            parsePostSource (makeRelative postSrcDir src)
 
       -- match _site/YYYY/MM/DD/<slug>/index.html
-      -- let isPostOutput out = isRight $
-      --       parsePostOutput (makeRelative outDir out)
+      let isPostOutput out = isRight $
+            parsePostOutput (makeRelative outDir out)
 
-      -- getPostsField <- newCache $ \() -> do
-      --   posts <- filter isPostSource <$> sources
-      --   postsMetadata <- forM posts $ \post -> do
-      --     bodyHtml <- routeAnchor "body_html" post
-      --     (fileMetadata, body) <- getFileWithMetadata bodyHtml
-      --     let bodyHtmlField = constField "body_html" body
-      --     url <- either fail return $ fileMetadata ^. "url"
-      --     htmlTeaserField <- either fail return $ htmlTeaserFieldFromHtml url body "teaser_html"
-      --     textTeaserField <- either fail return $ textTeaserFieldFromHtml body "teaser_plain"
-      --     return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
-      --   return $ constField "post" (reverse postsMetadata)
+      getPostsField <- newCache $ \() -> do
+        posts <- filter isPostSource <$> sources
+        postsMetadata <- forM posts $ \post -> do
+          bodyHtml <- routeAnchor "body_html" post
+          (fileMetadata, body) <- getFileWithMetadata bodyHtml
+          let bodyHtmlField = constField "body_html" body
+          url <- either fail return $ fileMetadata ^. "url"
+          htmlTeaserField <- either fail return $ htmlTeaserFieldFromHtml url body "teaser_html"
+          textTeaserField <- either fail return $ textTeaserFieldFromHtml body "teaser_plain"
+          return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
+        return $ constField "post" (reverse postsMetadata)
 
-      -- Build index.hmtl
-      -- outDir </> "index.html" %> \out -> do
+      -- Build /Announcements/
+      -- outDir </> "Announcements" </> "index.html" %> \out -> do
       --   src <- routeSource out
       --   postsField <- getPostsField ()
-      --   (fileMetadata, indexHtmlTemplate) <- getFileWithMetadata src
-      --   indexHtmlBody <- applyAsTemplate (postsField <> fileMetadata) indexHtmlTemplate
+      --   (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
+      --   indexMarkdownBody <- applyAsTemplate (postsField <> fileMetadata) indexMarkdownTemplate
+      --   indexHtml <-
       --   indexHtml <- applyTemplate "default.html" fileMetadata indexHtmlBody
       --   writeFile' out $ postProcessHtml5 outDir out indexHtml
 
       -- Build rss.xml
-      -- outDir </> "rss.xml" %> \out -> do
-      --   src <- routeSource out
-      --   postsField <- getPostsField ()
-      --   (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
-      --   rssXml <- applyAsTemplate (postsField <> fileMetadata) rssXmlTemplate
-      --   writeFile' out rssXml
-
-      -- Stage 1: Compile Agda to HTML
-      -- tmpAgdaHtmlDir <//> "*.md" %> \next -> do
-      --   prev <- routePrev next
-      --   Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDir prev
-
-      -- Stage 2: Compile Markdown to HTML
-      -- tmpBodyHtmlDir <//> "*.md" %> \next -> do
-      --   (out, prev, src) <- (,,) <$> route next <*> routePrev next <*> routeSource next
-      --   agdaLinkFixer <- getAgdaLinkFixer ()
-      --   let maybeAgdaLinkFixer
-      --         | Agda.isAgdaFile src = Just (withUrls agdaLinkFixer)
-      --         | otherwise = Nothing
-      --   readFile' prev
-      --     >>= markdownToPandoc
-      --     <&> shiftHeadersBy 2
-      --     <&> fromMaybe id maybeAgdaLinkFixer
-      --     >>= processCitations
-      --     >>= pandocToHtml5
-      --     >>= writeFile' next
-
-      -- Stage 3: Apply templates
-      -- isPostOutput ?> \out -> do
-      --   (prev, src) <- (,) <$> routePrev out <*> routeSource out
-      --   (metadata, postHtmlBody) <- getFileWithMetadata prev
-      --   return postHtmlBody
-      --     >>= applyTemplates ["post.html", "default.html"] metadata
-      --     <&> postProcessHtml5 outDir out
-      --     >>= writeFile' out
+      outDir </> "rss.xml" %> \out -> do
+        src <- routeSource out
+        postsField <- getPostsField ()
+        (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
+        rssXml <- applyAsTemplate (postsField <> fileMetadata) rssXmlTemplate
+        writeFile' out rssXml
 
       --------------------------------------------------------------------------------
       -- Assets
 
-      -- alternatives $ do
-      --   -- Build 404.html
-      --   outDir </> "404.html" %> \out -> do
-      --     src <- routeSource out
-      --     (fileMetadata, errorHtmlBody) <- getFileWithMetadata src
-      --     errorHtml <- applyTemplate "default.html" fileMetadata errorHtmlBody
-      --     writeFile' out $ postProcessHtml5 outDir out errorHtml
+      -- Build 404.html
+      outDir </> "404.html" %> \out -> do
+        src <- routeSource out
+        (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
+        errorDocBody <- markdownToPandoc errorMarkdownBody
+        let errorDocBody' = shiftHeadersBy 2 errorDocBody
+        errorDocBody'' <- processCitations errorDocBody'
+        errorHtmlBody <- pandocToHtml5 errorDocBody''
+        errorHtml <- applyTemplates ["default.html"] fileMetadata errorHtmlBody
+        writeFile' out $ postProcessHtml5 outDir out errorHtml
 
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
@@ -281,7 +313,12 @@ main =
         minCss <- CSS.minifyCSS css
         writeFile' out minCss
 
-      -- Copy assets/
+      -- Copy course PDFs
+      outDir <//> "*.pdf" %> \out -> do
+        src <- routeSource out
+        copyFile' src out
+
+      -- Copy assets
       outDir </> "assets" <//> "*" %> \out -> do
         src <- routeSource out
         copyFile' src out
@@ -289,31 +326,34 @@ main =
 --------------------------------------------------------------------------------
 -- Agda
 
-plfaSrcDir :: FilePath
-plfaSrcDir = "src"
+isChapterSrc, isCoursesSrc, isTSPL19Src, isPostSrc :: FilePath -> Bool
+isChapterSrc src = chapterSrcDir `List.isPrefixOf` src
+isCoursesSrc src = coursesSrcDir `List.isPrefixOf` src
+isTSPL19Src  src = tspl19SrcDir  `List.isPrefixOf` src
+isPostSrc    src = postSrcDir    `List.isPrefixOf` src
 
 plfaLibrary :: Agda.Library
 plfaLibrary =
   Agda.Library
-    { libraryRoot = "",
-      includePaths = ["src"],
+    { libraryRoot = chapterSrcDir,
+      includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
 
 tspl19Library :: Agda.Library
 tspl19Library =
   Agda.Library
-    { libraryRoot = "courses/tspl/2019",
-      includePaths = [""],
+    { libraryRoot = tspl19SrcDir,
+      includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/TSPL/2019/"
     }
 
 postLibrary :: Agda.Library
 postLibrary =
   Agda.Library
-    { libraryRoot = "",
-      includePaths = [postSrcDir],
-      canonicalBaseUrl = "https://wen.works/"
+    { libraryRoot = postSrcDir,
+      includePaths = ["."],
+      canonicalBaseUrl = "https://plfa.github.io/"
     }
 
 --------------------------------------------------------------------------------
@@ -329,8 +369,9 @@ sassOptions =
 --------------------------------------------------------------------------------
 -- HTML5 post-processing
 --
--- * removes "/index.html" from URLs
--- * relativizes URLs
+-- - removes "/index.html" from URLs
+-- - relativizes URLs
+-- - adds a default table header scope
 
 postProcessHtml5 :: FilePath -> FilePath -> Text -> Text
 postProcessHtml5 outDir out html5 =
@@ -338,3 +379,46 @@ postProcessHtml5 outDir out html5 =
     & TagSoup.withUrls (removeIndexHtml . relativizeUrl outDir out)
     & TagSoup.addDefaultTableHeaderScope "col"
 
+--------------------------------------------------------------------------------
+-- Pandoc options
+
+readerOpts :: ReaderOptions
+readerOpts =
+  def
+    { readerExtensions =
+        extensionsFromList
+          [ Ext_all_symbols_escapable,
+            Ext_auto_identifiers,
+            Ext_backtick_code_blocks,
+            Ext_citations,
+            Ext_footnotes,
+            Ext_header_attributes,
+            Ext_intraword_underscores,
+            Ext_markdown_in_html_blocks,
+            Ext_shortcut_reference_links,
+            Ext_smart,
+            Ext_superscript,
+            Ext_subscript,
+            Ext_task_lists,
+            Ext_yaml_metadata_block,
+            Ext_raw_html,
+            Ext_raw_attribute,
+            Ext_fenced_code_blocks,
+            Ext_backtick_code_blocks
+          ]
+    }
+
+-- TODO: recover this from the 'readerExtensions' above, or vice versa
+markdownFormat :: Text
+markdownFormat = "markdown_strict+all_symbols_escapable+auto_identifiers+backtick_code_blocks+citations+footnotes+header_attributes+intraword_underscores+markdown_in_html_blocks+shortcut_reference_links+smart+superscript+subscript+task_lists+yaml_metadata_block+raw_html+raw_attribute+fenced_code_blocks+backtick_code_blocks"
+
+writerOpts :: WriterOptions
+writerOpts =
+  def
+    { writerHTMLMathMethod = KaTeX "",
+      writerEmailObfuscation = JavascriptObfuscation,
+      writerHighlightStyle = Just highlightStyle
+    }
+
+highlightStyle :: HighlightStyle
+highlightStyle = pygments

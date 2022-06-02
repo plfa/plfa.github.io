@@ -19,6 +19,7 @@ common language-haskell
     ImportQualifiedPost
     LambdaCase
     MultiParamTypeClasses
+    MultiWayIf
     OverloadedStrings
     PatternSynonyms
     RecordWildCards
@@ -58,6 +59,7 @@ executable update-contributors
     , frontmatter
     , github              ^>=0.28
     , plfa
+    , shoggoth
     , text
     , vector
     , yaml
@@ -69,6 +71,6 @@ library
     , Buildfile.Author
     , Buildfile.Contributor
   build-depends:
-    , aeson
+    , aeson ^>=2
     , base
     , text

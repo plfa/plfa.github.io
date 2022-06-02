@@ -7,8 +7,8 @@ permalink : /Announcements/
 $for(post)$
 ## $post.title$
 [$post.date$]{.post-meta}
-$if(post.teaser)$
-$post.teaser$
+$if(post.teaser_html)$
+$post.teaser_html$
 [(more)]($post.url$)
 $else$
 $post.body$

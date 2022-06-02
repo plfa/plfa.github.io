@@ -6,6 +6,7 @@ module Buildfile.Contributor where
 
 import Data.Aeson.Types
 import Data.Text (Text)
+import Text.Printf (printf)
 
 data Contributor = Contributor
   { contributorName   :: Text
@@ -26,3 +27,8 @@ instance FromJSON Contributor where
     <*> v .: "github"
     <*> v .: "count"
 
+instance Semigroup Contributor where
+  Contributor _name1 github1 count1 <> Contributor name2 github2 count2
+    = if github1 == github2
+      then Contributor name2 github2 (count1 `max` count2)
+      else error $ printf "Cannot merge unrelated contributors '%s' and '%s'" github1 github2

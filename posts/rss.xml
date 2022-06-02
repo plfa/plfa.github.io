@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>$site.title$</title>
+    <link>$site.baseurl$</link>
+    <description>
+      <![CDATA[$site.description$]]>
+    </description>
+    <atom:link href="$site.baseurl$$url$" rel="self" type="application/rss+xml" />
+    <lastBuildDate>$site.build_date$</lastBuildDate>
+    $for(post)$
+    <item>
+      <title>$post.title$</title>
+      <link>$site.baseurl$$post.url$</link>
+      <description>
+        <![CDATA[
+        $if(post.teaser_plain)$
+          $^$$post.teaser_plain$
+        $endif$
+        ]]>
+      </description>
+      <pubDate>$post.date_rfc822$</pubDate>
+      <guid>$site.baseurl$$post.url$</guid>
+      <dc:creator>
+      $for(site.author)$
+      $site.author.name.given$ $site.author.name.family$
+      $endfor$
+      </dc:creator>
+    </item>
+    $endfor$
+  </channel>
+</rss>
