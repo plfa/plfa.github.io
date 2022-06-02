@@ -215,7 +215,10 @@ main =
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
         agdaLibraries <- agdaLibrariesFor prev
-        Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDir prev
+        (lib, includePath, _) <-
+          either fail return $ Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
+        let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath
+        Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
 
       -- Stage 2: Compile Markdown to HTML
       tmpBodyHtmlDir <//> "*.md" %> \next -> do
