@@ -39,6 +39,7 @@ $endfor$
 
 #### 2022
   * [Andrej Bauer, University of Ljubljana][UL-2022]
+  * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2022]
 
 #### 2021
   * Favonia, University of Minnesota _(The course website is not pubilc; here is the [link to Favonia's homepage](https://favonia.org).)_
@@ -82,4 +83,4 @@ Please tell us of others!
 [Torino-2020]: http://laurea.educ.di.unito.it/index.php/offerta-formativa/insegnamenti/elenco-completo/elenco-completo/scheda-insegnamento?cod=MFN0633&codA=&year=2020&orienta=NSE
 [Padova-2020]: https://www.math.unipd.it/~maietti/typ21.html
 [UL-2022]: http://www.andrej.com/zapiski/ISRM-LOGRAC-2022/00-introduction.html
-
+[Freiburg-2022]: https://proglang.informatik.uni-freiburg.de/teaching/proglang/2022ss/
