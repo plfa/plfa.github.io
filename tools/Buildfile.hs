@@ -300,7 +300,6 @@ main =
         return indexMarkdownTemplate
           >>= applyAsTemplate (postsField <> fileMetadata)
           >>= markdownToPandoc
-          <&> shiftHeadersBy 2
           >>= processCitations
           >>= pandocToHtml5
           >>= applyTemplate "default.html" fileMetadata

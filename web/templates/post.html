@@ -5,16 +5,10 @@
             <time class="dt-published" datetime="$date$" itemprop="datePublished">
                 $date$
             </time>
-            $if(modified_date)$
-            ~
-            <time class="dt-modified" datetime="$modified_date$" itemprop="dateModified">
-                $modified_date$
-            </time>
-            $endif$
         </p>
     </header>
     <div class="post-content e-content" itemprop="articleBody">
-        $body$
+$body$
     </div>
     <a class="u-url" href="$url$" hidden></a>
 </article>
