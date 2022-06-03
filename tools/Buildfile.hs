@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Monad law, left identity" #-}
 
 module Main where
 
@@ -57,8 +59,8 @@ styleDir    = webDir </> "sass"
 templateDir = webDir </> "templates"
 
 tmpAgdaHtmlDir, tmpBodyHtmlDir :: FilePath
-tmpAgdaHtmlDir = tmpDir </> "stage1" -- Render .lagda.md to .md
-tmpBodyHtmlDir = tmpDir </> "stage2" -- Render .md to .html
+tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Render .lagda.md to .md
+tmpBodyHtmlDir = tmpDir </> "body_html" -- Render .md to .html
 
 -- TODO:
 -- - [ ] build table of contents
@@ -130,6 +132,7 @@ main =
                 [tspl19Dir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 [tspl19Dir <//> "*.pdf"] *|-> \src -> outDir </> makeRelative courseDir src,
                 -- Announcements
+                [pagesDir </> "announcements.md"] |-> postOrPermalinkRouterWithAgda,
                 [postDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Assets
                 [pagesDir </> "404.md"] |-> permalinkRouter,
@@ -153,14 +156,14 @@ main =
 
       getDefaultMetadata <- newCache $ \() -> do
         siteMetadata <- readYaml (dataDir </> "site.yml")
-        tocMetadata <- readYaml (dataDir </> "toc.yml")
+        -- tocMetadata <- readYaml (dataDir </> "toc.yml")
         authorMetadata <- getAuthors ()
         contributorMetadata <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
         return $
           mconcat
             [ constField "site" (siteMetadata :: Metadata),
-              constField "toc" (tocMetadata :: Metadata),
+              -- constField "toc" (tocMetadata :: Metadata),
               constField "author" authorMetadata,
               constField "contributor" contributorMetadata,
               buildDate
@@ -188,6 +191,11 @@ main =
               (head, _) <- readFileWithMetadata src
               (_, body) <- readFileWithMetadata cur
               return (head, body)
+
+        -- Title variants:
+        titleVariants <-
+          either (const mempty) return $
+            titleVariantMetadata <$> head ^. "title"
 
         -- Source field:
         let sourceField = constField "source" src
@@ -226,7 +234,7 @@ main =
         removeFilesAfter tmpDir ["//*"]
 
       --------------------------------------------------------------------------------
-      -- Compile Markdown+Agda to HTML
+      -- Compile Markdown & Agda to HTML
 
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
@@ -258,22 +266,13 @@ main =
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (metadata, htmlBody) <- getFileWithMetadata prev
         projectHtmlTemplates <-
-          either fail return $ getHtmlTemplatesForProject <$> getProject src
+          either fail return $
+            getHtmlTemplatesForProject <$> getProject src
         html <- applyTemplates projectHtmlTemplates metadata htmlBody
         writeFile' out $ postProcessHtml5 outDir out html
 
       --------------------------------------------------------------------------------
       -- Posts
-
-      -- match posts/YYYY-MM-DD-<slug><file-extensions>
-      let isPostSource src =
-            isRight $
-              parsePostSource (makeRelative postDir src)
-
-      -- match _site/YYYY/MM/DD/<slug>/index.html
-      let isPostOutput out =
-            isRight $
-              parsePostOutput (makeRelative outDir out)
 
       getPostsField <- newCache $ \() -> do
         posts <- filter isPostSource <$> sources
@@ -281,21 +280,32 @@ main =
           bodyHtml <- routeAnchor "body_html" post
           (fileMetadata, body) <- getFileWithMetadata bodyHtml
           let bodyHtmlField = constField "body_html" body
-          url <- either fail return $ fileMetadata ^. "url"
-          htmlTeaserField <- either fail return $ htmlTeaserFieldFromHtml url body "teaser_html"
-          textTeaserField <- either fail return $ textTeaserFieldFromHtml body "teaser_plain"
+          url <-
+            either fail return $
+              fileMetadata ^. "url"
+          htmlTeaserField <-
+            either (const mempty) return $
+              htmlTeaserFieldFromHtml url body "teaser_html"
+          textTeaserField <-
+            either (const mempty) return $
+              textTeaserFieldFromHtml body "teaser_plain"
           return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
         return $ constField "post" (reverse postsMetadata)
 
       -- Build /Announcements/
-      -- outDir </> "Announcements" </> "index.html" %> \out -> do
-      --   src <- routeSource out
-      --   postsField <- getPostsField ()
-      --   (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-      --   indexMarkdownBody <- applyAsTemplate (postsField <> fileMetadata) indexMarkdownTemplate
-      --   indexHtml <-
-      --   indexHtml <- applyTemplate "default.html" fileMetadata indexHtmlBody
-      --   writeFile' out $ postProcessHtml5 outDir out indexHtml
+      outDir </> "Announcements" </> "index.html" %> \out -> do
+        src <- routeSource out
+        postsField <- getPostsField ()
+        (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
+        return indexMarkdownTemplate
+          >>= applyAsTemplate (postsField <> fileMetadata)
+          >>= markdownToPandoc
+          <&> shiftHeadersBy 2
+          >>= processCitations
+          >>= pandocToHtml5
+          >>= applyTemplate "default.html" fileMetadata
+          <&> postProcessHtml5 outDir out
+          >>= writeFile' out
 
       -- Build rss.xml
       outDir </> "rss.xml" %> \out -> do
@@ -341,6 +351,7 @@ main =
       --
       -- TODO: build from source instead of copying
       -- TODO: remove PDFs from repository
+      --
       outDir <//> "*.pdf" %> \out -> do
         src <- routeSource out
         copyFile' src out
@@ -457,13 +468,18 @@ readerOpts =
             Ext_raw_html,
             Ext_raw_attribute,
             Ext_fenced_code_blocks,
-            Ext_backtick_code_blocks
+            Ext_backtick_code_blocks,
+            Ext_fenced_divs,
+            Ext_bracketed_spans
+            -- header_attributes
+            -- inline_code_attributes
+            -- link_attributes
           ]
     }
 
 -- TODO: recover this from the 'readerExtensions' above, or vice versa
-markdownFormat :: Text
-markdownFormat = "markdown_strict+all_symbols_escapable+auto_identifiers+backtick_code_blocks+citations+footnotes+header_attributes+intraword_underscores+markdown_in_html_blocks+shortcut_reference_links+smart+superscript+subscript+task_lists+yaml_metadata_block+raw_html+raw_attribute+fenced_code_blocks+backtick_code_blocks"
+-- markdownFormat :: Text
+-- markdownFormat = "markdown_strict+all_symbols_escapable+auto_identifiers+backtick_code_blocks+citations+footnotes+header_attributes+intraword_underscores+markdown_in_html_blocks+shortcut_reference_links+smart+superscript+subscript+task_lists+yaml_metadata_block+raw_html+raw_attribute+fenced_code_blocks+backtick_code_blocks"
 
 writerOpts :: WriterOptions
 writerOpts =
