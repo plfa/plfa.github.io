@@ -143,6 +143,7 @@ main =
       --------------------------------------------------------------------------------
       -- Caches
 
+
       getAuthors <- newCache $ \() -> do
         authorFiles <- getDirectoryFiles authorDir ["*.yml"]
         authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
@@ -156,7 +157,6 @@ main =
 
       getDefaultMetadata <- newCache $ \() -> do
         siteMetadata <- readYaml (dataDir </> "site.yml")
-        -- tocMetadata <- readYaml (dataDir </> "toc.yml")
         authorMetadata <- getAuthors ()
         contributorMetadata <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
@@ -218,6 +218,18 @@ main =
         let metadata = mconcat [defaultMetadata, head, urlField, bodyField, sourceField, modifiedDateField, dateField, dateRfc822Field]
 
         return (metadata, body)
+
+      getTableOfContents <- newCache $ \() -> do
+        tocMetadata <- readYaml (dataDir </> "toc.yml")
+        flip resolveIncludes tocMetadata $ \src -> do
+          bodyHtml <- routeAnchor "body_html" src
+          (metadata, htmlBody) <- getFileWithMetadata bodyHtml
+          return $ mconcat
+            [ metadata
+            , constField "body_html" htmlBody
+            ]
+
+
 
       --------------------------------------------------------------------------------
       -- Phony targets
