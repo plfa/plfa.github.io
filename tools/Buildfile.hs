@@ -37,25 +37,30 @@ outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
-authorDir, contributorDir :: FilePath
-authorDir = "authors"
-contributorDir = "contributors"
+dataDir, authorDir, contributorDir :: FilePath
+dataDir        = "data"
+authorDir      = dataDir </> "authors"
+contributorDir = dataDir </> "contributors"
 
-bookSrcDir, chapterSrcDir, postSrcDir, coursesSrcDir, tspl19SrcDir :: FilePath
-bookSrcDir = "book"
-chapterSrcDir = "src"
-postSrcDir = "posts"
-coursesSrcDir = "courses"
-tspl19SrcDir = coursesSrcDir </> "TSPL/2019"
+bookDir, chapterDir, courseDir, tspl19Dir :: FilePath
+bookDir    = "book"
+chapterDir = "src"
+courseDir  = "courses"
+tspl19Dir  = courseDir </> "TSPL/2019"
+
+webDir, assetDir, pagesDir, postDir, styleDir, templateDir :: FilePath
+webDir      = "web"
+assetDir    = webDir </> "assets"
+pagesDir    = webDir </> "pages"
+postDir     = webDir </> "posts"
+styleDir    = webDir </> "sass"
+templateDir = webDir </> "templates"
 
 tmpAgdaHtmlDir, tmpBodyHtmlDir :: FilePath
 tmpAgdaHtmlDir = tmpDir </> "stage1" -- Render .lagda.md to .md
 tmpBodyHtmlDir = tmpDir </> "stage2" -- Render .md to .html
 
-assetSrcDir, styleSrcDir, styleOutDir :: FilePath
-assetSrcDir = "assets"
-styleSrcDir = "sass"
-styleOutDir = outDir </> "assets/css"
+
 
 --------------------------------------------------------------------------------
 -- Rules
@@ -69,7 +74,7 @@ main =
         shakeExtra =
           mempty
             & addShakeExtra (OutputDirectory outDir)
-            & addShakeExtra (TemplateDirectory "templates")
+            & addShakeExtra (TemplateDirectory templateDir)
             & addShakeExtra readerOpts
             & addShakeExtra writerOpts
       }
@@ -111,16 +116,16 @@ main =
       let ?routingTable =
             mconcat
               [ -- Book
-                [chapterSrcDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Courses
-                [tspl19SrcDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
-                [tspl19SrcDir <//> "*.pdf"] *|-> (outDir </>),
+                [tspl19Dir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                [tspl19Dir <//> "*.pdf"] *|-> \src -> outDir </> makeRelative courseDir src,
                 -- Announcements
-                [postSrcDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                [postDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Assets
-                ["pages/404.md"] |-> permalinkRouter,
-                ["sass/style.scss"] |-> outDir </> "assets/css/style.css",
-                [assetSrcDir <//> "*"] *|-> (outDir </>)
+                [pagesDir </> "404.md"] |-> permalinkRouter,
+                [styleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
+                [assetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative assetDir src
               ]
 
       --------------------------------------------------------------------------------
@@ -138,8 +143,8 @@ main =
         return (sortedContributors :: [Contributor])
 
       getDefaultMetadata <- newCache $ \() -> do
-        siteMetadata <- readYaml (bookSrcDir </> "site.yml")
-        tocMetadata <- readYaml (bookSrcDir </> "toc.yml")
+        siteMetadata <- readYaml (dataDir </> "site.yml")
+        tocMetadata <- readYaml (dataDir </> "toc.yml")
         authorMetadata <- getAuthors ()
         contributorMetadata <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
@@ -254,7 +259,7 @@ main =
       -- match posts/YYYY-MM-DD-<slug><file-extensions>
       let isPostSource src =
             isRight $
-              parsePostSource (makeRelative postSrcDir src)
+              parsePostSource (makeRelative postDir src)
 
       -- match _site/YYYY/MM/DD/<slug>/index.html
       let isPostOutput out =
@@ -341,9 +346,9 @@ instance Hashable Project
 
 getProject :: MonadError String m => FilePath -> m Project
 getProject src
-  | chapterSrcDir `List.isPrefixOf` src = return Book
-  | tspl19SrcDir `List.isPrefixOf` src = return $ Course "tspl19"
-  | postSrcDir `List.isPrefixOf` src = return Post
+  | chapterDir `List.isPrefixOf` src = return Book
+  | tspl19Dir `List.isPrefixOf` src = return $ Course "tspl19"
+  | postDir `List.isPrefixOf` src = return Post
   | otherwise = throwError $ printf "Not in a known Agda project: '%s'" src
 
 getHtmlTemplatesForProject :: Project -> [FilePath]
@@ -352,15 +357,15 @@ getHtmlTemplatesForProject Course {} = ["page.html", "default.html"]
 getHtmlTemplatesForProject Post      = ["post.html", "default.html"]
 
 getLocalAgdaLibrariesForProject :: Project -> [Agda.Library]
-getLocalAgdaLibrariesForProject Book = [bookLibrary]
+getLocalAgdaLibrariesForProject Book              = [bookLibrary]
 getLocalAgdaLibrariesForProject (Course "tspl19") = [bookLibrary, tspl19Library]
-getLocalAgdaLibrariesForProject Post = [bookLibrary, postLibrary]
+getLocalAgdaLibrariesForProject Post              = [bookLibrary, postLibrary]
 getLocalAgdaLibrariesForProject (Course courseId) = error $ printf "Unknown course '%s'" courseId
 
 bookLibrary :: Agda.Library
 bookLibrary =
   Agda.Library
-    { libraryRoot = chapterSrcDir,
+    { libraryRoot = chapterDir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
@@ -368,7 +373,7 @@ bookLibrary =
 tspl19Library :: Agda.Library
 tspl19Library =
   Agda.Library
-    { libraryRoot = tspl19SrcDir,
+    { libraryRoot = tspl19Dir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/TSPL/2019/"
     }
@@ -376,7 +381,7 @@ tspl19Library =
 postLibrary :: Agda.Library
 postLibrary =
   Agda.Library
-    { libraryRoot = postSrcDir,
+    { libraryRoot = postDir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
@@ -387,8 +392,8 @@ postLibrary =
 sassOptions :: SassOptions
 sassOptions =
   def
-    { sassIncludePaths = Just [styleSrcDir],
-      sassImporters = Just [CSS.minCssImporter styleSrcDir 1]
+    { sassIncludePaths = Just [styleDir],
+      sassImporters = Just [CSS.minCssImporter styleDir 1]
     }
 
 --------------------------------------------------------------------------------
