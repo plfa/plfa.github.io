@@ -69,6 +69,7 @@ tmpBodyHtmlDir = tmpDir </> "stage2" -- Render .md to .html
 -- - [ ] include archived versions
 -- - [ ] build epub
 -- - [ ] build pdf
+-- - [ ] set agda _build directory to be under _cache
 
 --------------------------------------------------------------------------------
 -- Rules
