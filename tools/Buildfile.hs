@@ -60,7 +60,15 @@ tmpAgdaHtmlDir, tmpBodyHtmlDir :: FilePath
 tmpAgdaHtmlDir = tmpDir </> "stage1" -- Render .lagda.md to .md
 tmpBodyHtmlDir = tmpDir </> "stage2" -- Render .md to .html
 
-
+-- TODO:
+-- - [ ] build table of contents
+-- - [ ] build announcements
+-- - [ ] build announcements RSS
+-- - [ ] build other pages
+-- - [ ] load bib and csl files for every markdown file
+-- - [ ] include archived versions
+-- - [ ] build epub
+-- - [ ] build pdf
 
 --------------------------------------------------------------------------------
 -- Rules
@@ -94,11 +102,11 @@ main =
       -- Routing table
 
       let postOrPermalinkRouter :: FilePath -> Action FilePath
-          postOrPermalinkRouter src = case getProject src of
-            Right Post -> do
+          postOrPermalinkRouter src
+            | isPostSource src = do
               PostInfo {..} <- either fail return $ parsePostSource (takeFileName src)
               return $ outDir </> postYear </> postMonth </> postDay </> postSlug </> "index.html"
-            _ -> permalinkRouter src
+            | otherwise = permalinkRouter src
 
       let postOrPermalinkRouterWithAgda :: FilePath -> Action Stages
           postOrPermalinkRouterWithAgda src = do
@@ -323,13 +331,16 @@ main =
         minCss <- CSS.minifyCSS css
         writeFile' out minCss
 
-      -- Copy course PDFs
-      outDir <//> "*.pdf" %> \out -> do
+      -- Copy static assets
+      outDir </> "assets" <//> "*" %> \out -> do
         src <- routeSource out
         copyFile' src out
 
-      -- Copy assets
-      outDir </> "assets" <//> "*" %> \out -> do
+      -- Copy course PDFs
+      --
+      -- TODO: build from source instead of copying
+      -- TODO: remove PDFs from repository
+      outDir <//> "*.pdf" %> \out -> do
         src <- routeSource out
         copyFile' src out
 
@@ -385,6 +396,17 @@ postLibrary =
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
+
+--------------------------------------------------------------------------------
+-- Posts
+
+-- match posts/YYYY-MM-DD-<slug><file-extensions>
+isPostSource :: FilePath -> Bool
+isPostSource src = isRight $ parsePostSource (makeRelative postDir src)
+
+-- match _site/YYYY/MM/DD/<slug>/index.html
+isPostOutput :: FilePath -> Bool
+isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 
 --------------------------------------------------------------------------------
 -- Sass Options
