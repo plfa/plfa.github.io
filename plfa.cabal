@@ -13,6 +13,7 @@ common language-haskell
   build-depends:       base
   default-language:    Haskell2010
   default-extensions:
+    DeriveGeneric
     FlexibleContexts
     FlexibleInstances
     ImplicitParams
@@ -35,6 +36,7 @@ executable builder
     , base
     , containers
     , data-default-class
+    , hashable
     , mtl
     , multimap
     , plfa

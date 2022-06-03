@@ -1,3 +1,4 @@
+
 module Main where
 
 import Buildfile.Author (Author)
@@ -27,6 +28,10 @@ import Shoggoth.TagSoup qualified as TagSoup
 import Shoggoth.Template.Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
+import Text.Printf (printf)
+import GHC.Generics (Generic)
+import Data.Hashable
+
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -73,33 +78,30 @@ main =
       -- Agda libraries
 
       standardLibrary <- Agda.getStandardLibrary "standard-library"
-      -- [standardLibrary, plfaLibrary, tspl19Library, postLibrary]
+      -- [standardLibrary, bookLibrary, tspl19Library, postLibrary]
 
-      let agdaLibrariesFor :: FilePath -> Action [Agda.Library]
-          agdaLibrariesFor src
-            | isChapterSrc src = return [standardLibrary, plfaLibrary]
-            | isTSPL19Src src = return [standardLibrary, plfaLibrary, tspl19Library]
-            | isPostSrc src = return [standardLibrary, plfaLibrary]
-            | otherwise = fail $ "Cannot determine Agda libraries for " <> src
+      let getAgdaLibrariesForProject :: Project -> [Agda.Library]
+          getAgdaLibrariesForProject project = standardLibrary : localAgdaLibraries
+            where
+              localAgdaLibraries = getLocalAgdaLibrariesForProject project
 
       --------------------------------------------------------------------------------
       -- Routing table
 
       let postOrPermalinkRouter :: FilePath -> Action FilePath
-          postOrPermalinkRouter src
-            | isPostSrc src = do
+          postOrPermalinkRouter src = case getProject src of
+            Right Post -> do
               PostInfo {..} <- either fail return $ parsePostSource (takeFileName src)
               return $ outDir </> postYear </> postMonth </> postDay </> postSlug </> "index.html"
-            | otherwise =
-              permalinkRouter src
+            _ -> permalinkRouter src
 
       let postOrPermalinkRouterWithAgda :: FilePath -> Action Stages
           postOrPermalinkRouterWithAgda src = do
             let bodyHtml = tmpBodyHtmlDir </> replaceExtensions src "md"
             out <- postOrPermalinkRouter src
-            agdaLibraries <- agdaLibrariesFor src
             if Agda.isAgdaFile src
               then do
+                agdaLibraries <- either fail return $ getAgdaLibrariesForProject <$> getProject src
                 (lib, includePath, agdaHtmlFileName) <-
                   either fail return $ Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
                 let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
@@ -150,8 +152,9 @@ main =
               buildDate
             ]
 
-      getAgdaLinkFixer <- newCache $ \() ->
-        Agda.makeAgdaLinkFixer (Just standardLibrary) [plfaLibrary, tspl19Library, postLibrary] []
+      getAgdaLinkFixer <- newCache $ \project -> do
+        let localAgdaLibraries = getLocalAgdaLibrariesForProject project
+        Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
 
       getTemplateFile <- makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
@@ -214,7 +217,7 @@ main =
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
-        agdaLibraries <- agdaLibrariesFor prev
+        agdaLibraries <- either fail return $ getAgdaLibrariesForProject <$> getProject src
         (lib, includePath, _) <-
           either fail return $ Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
         let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath
@@ -223,10 +226,11 @@ main =
       -- Stage 2: Compile Markdown to HTML
       tmpBodyHtmlDir <//> "*.md" %> \next -> do
         (src, prev, out) <- (,,) <$> routeSource next <*> routePrev next <*> route next
-        agdaLinkFixer <- getAgdaLinkFixer ()
-        let maybeAgdaLinkFixer
-              | Agda.isAgdaFile src = Just (withUrls agdaLinkFixer)
-              | otherwise = Nothing
+        maybeAgdaLinkFixer <-
+          getProject src
+            & either (const Nothing) Just -- rightToMaybe
+            & traverse getAgdaLinkFixer
+            & fmap (fmap withUrls)
         readFile' prev
           >>= markdownToPandoc
           <&> shiftHeadersBy 2
@@ -239,25 +243,23 @@ main =
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (metadata, htmlBody) <- getFileWithMetadata prev
-        templates <- if
-          | isChapterSrc src -> return ["page.html", "default.html"]
-          | isCoursesSrc src -> return ["page.html", "default.html"]
-          | isPostSrc    src -> return ["post.html", "default.html"]
-          | otherwise        -> fail $ "Cannot compile " <> out <> " with generic rule.\
-                                       \Maybe the generic rule shadows the specific rule?"
-        html <- applyTemplates templates metadata htmlBody
+        projectHtmlTemplates <-
+          either fail return $ getHtmlTemplatesForProject <$> getProject src
+        html <- applyTemplates projectHtmlTemplates metadata htmlBody
         writeFile' out $ postProcessHtml5 outDir out html
 
       --------------------------------------------------------------------------------
       -- Posts
 
       -- match posts/YYYY-MM-DD-<slug><file-extensions>
-      let isPostSource src = isRight $
-            parsePostSource (makeRelative postSrcDir src)
+      let isPostSource src =
+            isRight $
+              parsePostSource (makeRelative postSrcDir src)
 
       -- match _site/YYYY/MM/DD/<slug>/index.html
-      let isPostOutput out = isRight $
-            parsePostOutput (makeRelative outDir out)
+      let isPostOutput out =
+            isRight $
+              parsePostOutput (makeRelative outDir out)
 
       getPostsField <- newCache $ \() -> do
         posts <- filter isPostSource <$> sources
@@ -329,14 +331,34 @@ main =
 --------------------------------------------------------------------------------
 -- Agda
 
-isChapterSrc, isCoursesSrc, isTSPL19Src, isPostSrc :: FilePath -> Bool
-isChapterSrc src = chapterSrcDir `List.isPrefixOf` src
-isCoursesSrc src = coursesSrcDir `List.isPrefixOf` src
-isTSPL19Src  src = tspl19SrcDir  `List.isPrefixOf` src
-isPostSrc    src = postSrcDir    `List.isPrefixOf` src
+data Project
+  = Book
+  | Course {courseId :: String}
+  | Post
+  deriving (Show, Eq, Generic)
 
-plfaLibrary :: Agda.Library
-plfaLibrary =
+instance Hashable Project
+
+getProject :: MonadError String m => FilePath -> m Project
+getProject src
+  | chapterSrcDir `List.isPrefixOf` src = return Book
+  | tspl19SrcDir `List.isPrefixOf` src = return $ Course "tspl19"
+  | postSrcDir `List.isPrefixOf` src = return Post
+  | otherwise = throwError $ printf "Not in a known Agda project: '%s'" src
+
+getHtmlTemplatesForProject :: Project -> [FilePath]
+getHtmlTemplatesForProject Book      = ["page.html", "default.html"]
+getHtmlTemplatesForProject Course {} = ["page.html", "default.html"]
+getHtmlTemplatesForProject Post      = ["post.html", "default.html"]
+
+getLocalAgdaLibrariesForProject :: Project -> [Agda.Library]
+getLocalAgdaLibrariesForProject Book = [bookLibrary]
+getLocalAgdaLibrariesForProject (Course "tspl19") = [bookLibrary, tspl19Library]
+getLocalAgdaLibrariesForProject Post = [bookLibrary, postLibrary]
+getLocalAgdaLibrariesForProject (Course courseId) = error $ printf "Unknown course '%s'" courseId
+
+bookLibrary :: Agda.Library
+bookLibrary =
   Agda.Library
     { libraryRoot = chapterSrcDir,
       includePaths = ["."],
