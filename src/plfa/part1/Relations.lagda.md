@@ -704,6 +704,10 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
  → suc m ≤ n
 ≤-if-< z<s = s≤s z≤n
 ≤-if-< (s<s mltn) = s≤s (≤-if-< mltn)
+
+<-if-≤ : {m n : ℕ} → suc m ≤ n → m < n
+<-if-≤ {zero} (s≤s m≤n) = z<s
+<-if-≤ {suc m} (s≤s sm≤n) = s<s (<-if-≤ sm≤n)
 ```
 
 #### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
@@ -713,7 +717,21 @@ using the relation between strict inequality and inequality and
 the fact that inequality is transitive.
 
 ```
--- Your code goes here
+≤-suc : (n : ℕ) → n ≤ suc n
+≤-suc zero = z≤n
+≤-suc (suc n) = s≤s (≤-suc n)
+
+<-trans' : {m n p : ℕ} → m < n → n < p → m < p
+<-trans' {n = n} m<n n<p =
+  <-if-≤ (≤-trans (≤-if-< m<n)
+         (≤-trans (≤-suc n) (≤-if-< n<p)))
+
+{-
+m < n <-> suc m ≤ n
+n < p <-> suc n ≤ p
+
+m < p <-> suc m ≤ p
+-}
 ```
 
 
@@ -820,10 +838,11 @@ successor of the sum of two even numbers, which is even.
 Show that the sum of two odd numbers is even.
 
 ```
--- Your code goes here
+postulate +-sucʳ : (m n : ℕ) → m + suc n ≡ suc m + n
 
--- o+o≡e : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
--- o+o≡e (suc evenm) (suc evenn) = {!!} (e+e≡e evenm evenn)
+o+o≡e : {m n : ℕ} → odd m → odd n → even (m + n)
+o+o≡e {suc m} {suc n} (suc em) (suc en)
+  rewrite +-sucʳ m n = suc (suc (e+e≡e em en))
 ```
 
 #### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
@@ -876,7 +895,77 @@ properties of `One`. Also, you may need to prove that
 if `One b` then `1` is less or equal to the result of `from b`.)
 
 ```
--- Your code goes here
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+infixl 5 _O _I
+
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (b O) = b I
+inc (b I) = (inc b) O
+
+to : ℕ → Bin
+to zero = ⟨⟩ O
+to (suc n) = inc (to n)
+
+double : ℕ → ℕ
+double zero = zero
+double (suc n) = suc (suc (double n))
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (b O) = double (from b)
+from (b I) = suc (double (from b))
+
+postulate from∘inc≡suc∘from : (b : Bin) → from (inc b) ≡ suc (from b)
+
+from∘to≡id : (n : ℕ) → from (to n) ≡ n
+from∘to≡id zero = refl
+from∘to≡id (suc n) rewrite from∘inc≡suc∘from (to n) = cong suc (from∘to≡id n)
+
+data One : Bin → Set where
+  one : One (⟨⟩ I)
+  one-O : {b : Bin} → One b → One (b O)
+  one-I : {b : Bin} → One b → One (b I)
+
+to∘double≡O∘to : (n : ℕ) → 0 < n → to (double n) ≡ to n O
+to∘double≡O∘to (suc zero) z<s = refl
+to∘double≡O∘to (suc (suc n)) z<s rewrite to∘double≡O∘to (suc n) z<s = refl
+
+{-
+inc (inc (inc (inc (to (double n))))) ≡ inc (inc (to n)) O
+
+to∘double (suc n)
+to (double (suc n))
+to (suc (suc (double n)))
+inc (inc (to (double n)))
+
+to (suc n) O
+inc (to n) O
+-}
+
+2*>0 : {n : ℕ} → 0 < n → 0 < double n
+2*>0 z<s = z<s
+
+One→>0 : {b : Bin} → One b → 0 < from b
+One→>0 one = z<s
+One→>0 (one-O ob) = 2*>0 (One→>0 ob)
+One→>0 (one-I ob) = z<s
+
+data Can : Bin → Set where
+  zero : Can (⟨⟩ O)
+  one : {b : Bin} → One b → Can b
+
+to∘from≡id : (b : Bin) → Can b → to (from b) ≡ b
+to∘from≡id .(⟨⟩ O) zero = refl
+to∘from≡id .(⟨⟩ I) (one one) = refl
+to∘from≡id (b O) (one (one-O ob))
+  rewrite to∘double≡O∘to (from b) (One→>0 ob) = cong _O (to∘from≡id b (one ob))
+to∘from≡id (b I) (one (one-I ob))
+  rewrite to∘double≡O∘to (from b) (One→>0 ob) = cong _I (to∘from≡id b (one ob))
 ```
 
 ## Standard library
