@@ -2,6 +2,9 @@
 $for(author)$
 <dc:creator id="$author.github$">$author.name$</dc:creator>
 $endfor$
+$for(contributor)$
+<dc:contributor id="$contributor.github$">$contributor.name$</dc:contributor>
+$endfor$
 <dc:rights>$site.license.name$</dc:rights>
 <dc:language>$site.language$</dc:language>
-<dc:date>$today$</dc:date>
+<dc:date>$build_date$</dc:date>

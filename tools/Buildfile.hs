@@ -1,22 +1,25 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 {-# HLINT ignore "Monad law, left identity" #-}
 
 module Main where
 
 import Buildfile.Author (Author)
 import Buildfile.Contributor (Contributor (..))
-import Control.Monad (forM, unless)
+import Control.Monad (forM, unless, forM_)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
 import Data.Function (on, (&))
 import Data.Functor ((<&>))
+import Data.Hashable
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text
+import GHC.Generics (Generic)
 import Shoggoth.Agda qualified as Agda
 import Shoggoth.CSS.Minify qualified as CSS
 import Shoggoth.CSS.Sass (SassOptions (..))
@@ -31,47 +34,42 @@ import Shoggoth.Template.Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import Text.Printf (printf)
-import GHC.Generics (Generic)
-import Data.Hashable
-
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
-dataDir, authorDir, contributorDir :: FilePath
-dataDir        = "data"
-authorDir      = dataDir </> "authors"
+dataDir, authorDir, contributorDir, legacyDir :: FilePath
+dataDir = "data"
+authorDir = dataDir </> "authors"
 contributorDir = dataDir </> "contributors"
+legacyDir = dataDir </> "legacy"
 
-bookDir, chapterDir, courseDir, tspl19Dir :: FilePath
-bookDir    = "book"
+bookDir, chapterDir, courseDir :: FilePath
+bookDir = "book"
 chapterDir = "src"
-courseDir  = "courses"
-tspl19Dir  = courseDir </> "TSPL/2019"
+courseDir = "courses"
 
-webDir, assetDir, pagesDir, postDir, styleDir, templateDir :: FilePath
-webDir      = "web"
-assetDir    = webDir </> "assets"
-pagesDir    = webDir </> "pages"
-postDir     = webDir </> "posts"
-styleDir    = webDir </> "sass"
+webDir, assetDir, postDir, styleDir, templateDir :: FilePath
+webDir = "web"
+assetDir = webDir </> "assets"
+postDir = webDir </> "posts"
+styleDir = webDir </> "sass"
 templateDir = webDir </> "templates"
 
 tmpAgdaHtmlDir, tmpBodyHtmlDir :: FilePath
 tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Render .lagda.md to .md
 tmpBodyHtmlDir = tmpDir </> "body_html" -- Render .md to .html
 
+legacyVersions :: [String]
+legacyVersions = ["19.08", "20.07"]
+
 -- TODO:
--- - [ ] build table of contents
--- - [ ] build announcements
--- - [ ] build announcements RSS
--- - [ ] build other pages
--- - [ ] load bib and csl files for every markdown file
+-- - [ ] load BibTeX and CSL files as part of processCitations
 -- - [ ] include archived versions
 -- - [ ] build epub
 -- - [ ] build pdf
--- - [ ] set agda _build directory to be under _cache
+-- - [ ] set Agda _build directory to be under _cache
 
 --------------------------------------------------------------------------------
 -- Rules
@@ -94,7 +92,6 @@ main =
       -- Agda libraries
 
       standardLibrary <- Agda.getStandardLibrary "standard-library"
-      -- [standardLibrary, bookLibrary, tspl19Library, postLibrary]
 
       let getAgdaLibrariesForProject :: Project -> [Agda.Library]
           getAgdaLibrariesForProject project = standardLibrary : localAgdaLibraries
@@ -107,42 +104,54 @@ main =
       let postOrPermalinkRouter :: FilePath -> Action FilePath
           postOrPermalinkRouter src
             | isPostSource src = do
-              PostInfo {..} <- either fail return $ parsePostSource (takeFileName src)
+              PostInfo {..} <- failOnError $ parsePostSource (takeFileName src)
               return $ outDir </> postYear </> postMonth </> postDay </> postSlug </> "index.html"
             | otherwise = permalinkRouter src
 
       let postOrPermalinkRouterWithAgda :: FilePath -> Action Stages
           postOrPermalinkRouterWithAgda src = do
-            let bodyHtml = tmpBodyHtmlDir </> replaceExtensions src "md"
+            let bodyHtml = tmpBodyHtmlDir </> replaceExtensions src "html"
             out <- postOrPermalinkRouter src
             if Agda.isAgdaFile src
               then do
-                agdaLibraries <- either fail return $ getAgdaLibrariesForProject <$> getProject src
+                agdaLibraries <-
+                  failOnError $
+                    getAgdaLibrariesForProject <$> getProject src
                 (lib, includePath, agdaHtmlFileName) <-
-                  either fail return $ Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
+                  failOnError $
+                    Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
                 let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
                 return $ agdaHtml :> "body_html" :@ bodyHtml :> Output out
               else return $ "body_html" :@ bodyHtml :> Output out
 
       let ?routingTable =
             mconcat
-              [ -- Book
+              [ -- Book (Web Version)
+                ["README.md"] |-> postOrPermalinkRouterWithAgda,
+                [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
-                -- Courses
-                [tspl19Dir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
-                [tspl19Dir <//> "*.pdf"] *|-> \src -> outDir </> makeRelative courseDir src,
                 -- Announcements
-                [pagesDir </> "announcements.md"] |-> postOrPermalinkRouterWithAgda,
+                [webDir </> "Announcements.md"] |-> postOrPermalinkRouterWithAgda,
+                [webDir </> "rss.xml"] |-> outDir </> "rss.xml",
                 [postDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                -- Documentation
+                [webDir </> "Citing.md"] |-> postOrPermalinkRouterWithAgda,
+                [webDir </> "Contributing.md"] |-> postOrPermalinkRouterWithAgda,
+                [webDir </> "StyleGuide.md"] |-> postOrPermalinkRouterWithAgda,
+                -- Courses
+                [courseDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                [courseDir <//> "*.pdf"] *|-> \src -> outDir </> makeRelative courseDir src,
                 -- Assets
-                [pagesDir </> "404.md"] |-> permalinkRouter,
+                [webDir </> "404.md"] |-> permalinkRouter,
                 [styleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
+                create $ outDir </> "assets/css/highlight.css",
                 [assetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative assetDir src
+                -- Versions (Legacy)
+                -- [legacyDir <//> "*"] *|-> \src -> outDir </> makeRelative legacyDir src
               ]
 
       --------------------------------------------------------------------------------
       -- Caches
-
 
       getAuthors <- newCache $ \() -> do
         authorFiles <- getDirectoryFiles authorDir ["*.yml"]
@@ -163,7 +172,6 @@ main =
         return $
           mconcat
             [ constField "site" (siteMetadata :: Metadata),
-              -- constField "toc" (tocMetadata :: Metadata),
               constField "author" authorMetadata,
               constField "contributor" contributorMetadata,
               buildDate
@@ -177,7 +185,7 @@ main =
       let ?getTemplateFile = getTemplateFile
 
       getFileWithMetadata <- newCache $ \cur -> do
-        (src, out) <- (,) <$> routeSource cur <*> route cur
+        (src, out, url) <- (,,) <$> routeSource cur <*> route cur <*> routeUrl cur
 
         -- Read default metadata:
         defaultMetadata <- getDefaultMetadata ()
@@ -193,9 +201,9 @@ main =
               return (head, body)
 
         -- Title variants:
-        titleVariants <-
-          either (const mempty) return $
-            titleVariantMetadata <$> head ^. "title"
+        let titleVariants =
+              ignoreError $
+                titleVariantMetadata <$> head ^. "title"
 
         -- Source field:
         let sourceField = constField "source" src
@@ -204,7 +212,7 @@ main =
         let bodyField = constField "body" body
 
         -- URL field:
-        let urlField = constField "url" $ "/" <> makeRelative outDir out
+        let urlField = constField "url" url
 
         -- Modified date field (ISO8601):
         modifiedDateField <- lastModifiedISO8601Field src "modified_date"
@@ -215,27 +223,25 @@ main =
         -- Post date field (RFC822, optional):
         let dateRfc822Field = fromRight mempty $ postDateField rfc822DateFormat src "date_rfc822"
 
-        let metadata = mconcat [defaultMetadata, head, urlField, bodyField, sourceField, modifiedDateField, dateField, dateRfc822Field]
+        let metadata =
+              mconcat
+                [ defaultMetadata,
+                  head,
+                  urlField,
+                  bodyField,
+                  titleVariants,
+                  sourceField,
+                  modifiedDateField,
+                  dateField,
+                  dateRfc822Field
+                ]
 
         return (metadata, body)
-
-      getTableOfContents <- newCache $ \() -> do
-        tocMetadata <- readYaml (dataDir </> "toc.yml")
-        flip resolveIncludes tocMetadata $ \src -> do
-          bodyHtml <- routeAnchor "body_html" src
-          (metadata, htmlBody) <- getFileWithMetadata bodyHtml
-          return $ mconcat
-            [ metadata
-            , constField "body_html" htmlBody
-            ]
-
-
 
       --------------------------------------------------------------------------------
       -- Phony targets
 
       "build" ~> do
-        need [outDir </> "assets/css/highlight.css"]
         need =<< outputs
 
       "clean" ~> do
@@ -246,41 +252,80 @@ main =
         removeFilesAfter tmpDir ["//*"]
 
       --------------------------------------------------------------------------------
+      -- Table of Contents
+
+      getTableOfContentsField <- newCache $ \() -> do
+        tocMetadata <- readYaml (dataDir </> "toc.yml")
+        toc <- flip resolveIncludes tocMetadata $ \chapterSrc -> do
+          bodyHtml <- routeAnchor "body_html" chapterSrc
+          (metadata, htmlBody) <- getFileWithMetadata bodyHtml
+          return $
+            mconcat
+              [ metadata,
+                constField "body_html" htmlBody
+              ]
+        return $ constField "toc" toc
+
+      -- Build /
+      outDir </> "index.html" %> \out -> do
+        src <- routeSource out
+        tocField <- getTableOfContentsField ()
+        (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
+        return indexMarkdownTemplate
+          >>= applyAsTemplate (tocField <> fileMetadata)
+          >>= markdownToPandoc
+          >>= processCitations
+          >>= pandocToHtml5
+          >>= applyTemplates ["page.html", "default.html"] fileMetadata
+          <&> postProcessHtml5 outDir out
+          >>= writeFile' out
+
+      --------------------------------------------------------------------------------
       -- Compile Markdown & Agda to HTML
 
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
-        agdaLibraries <- either fail return $ getAgdaLibrariesForProject <$> getProject src
+        agdaLibraries <-
+          failOnError $
+            getAgdaLibrariesForProject <$> getProject src
         (lib, includePath, _) <-
-          either fail return $ Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
+          failOnError $
+            Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
         let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath
         Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
 
       -- Stage 2: Compile Markdown to HTML
-      tmpBodyHtmlDir <//> "*.md" %> \next -> do
+      tmpBodyHtmlDir <//> "*.html" %> \next -> do
         (src, prev, out) <- (,,) <$> routeSource next <*> routePrev next <*> route next
         maybeAgdaLinkFixer <-
           getProject src
-            & either (const Nothing) Just -- rightToMaybe
+            & rightToMaybe
             & traverse getAgdaLinkFixer
             & fmap (fmap withUrls)
         readFile' prev
           >>= markdownToPandoc
-          <&> shiftHeadersBy 2
           <&> fromMaybe id maybeAgdaLinkFixer
           >>= processCitations
           >>= pandocToHtml5
           >>= writeFile' next
 
       -- Stage 3: Apply HTML templates
-      outDir <//> "*.html" %> \out -> do
+      let hasHtmlBody :: FilePath -> Bool
+          hasHtmlBody out = isHtml && not isLegacyVersion
+            where
+              isHtml =
+                (outDir <//> "*.html") ?== out
+              isLegacyVersion =
+                any (\legacyVersion -> (outDir </> legacyVersion <//> "*") ?== out) legacyVersions
+
+      hasHtmlBody ?> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (metadata, htmlBody) <- getFileWithMetadata prev
-        projectHtmlTemplates <-
-          either fail return $
-            getHtmlTemplatesForProject <$> getProject src
-        html <- applyTemplates projectHtmlTemplates metadata htmlBody
+        let htmlTemplates
+              | isPostSource src = ["post.html", "default.html"]
+              | otherwise = ["page.html", "default.html"]
+        html <- applyTemplates htmlTemplates metadata htmlBody
         writeFile' out $ postProcessHtml5 outDir out html
 
       --------------------------------------------------------------------------------
@@ -293,14 +338,14 @@ main =
           (fileMetadata, body) <- getFileWithMetadata bodyHtml
           let bodyHtmlField = constField "body_html" body
           url <-
-            either fail return $
+            failOnError $
               fileMetadata ^. "url"
-          htmlTeaserField <-
-            either (const mempty) return $
-              htmlTeaserFieldFromHtml url body "teaser_html"
-          textTeaserField <-
-            either (const mempty) return $
-              textTeaserFieldFromHtml body "teaser_plain"
+          let htmlTeaserField =
+                ignoreError $
+                  htmlTeaserFieldFromHtml url body "teaser_html"
+          let textTeaserField =
+                ignoreError $
+                  textTeaserFieldFromHtml body "teaser_plain"
           return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
         return $ constField "post" (reverse postsMetadata)
 
@@ -314,7 +359,7 @@ main =
           >>= markdownToPandoc
           >>= processCitations
           >>= pandocToHtml5
-          >>= applyTemplate "default.html" fileMetadata
+          >>= applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 
@@ -334,9 +379,8 @@ main =
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
         errorDocBody <- markdownToPandoc errorMarkdownBody
-        let errorDocBody' = shiftHeadersBy 2 errorDocBody
-        errorDocBody'' <- processCitations errorDocBody'
-        errorHtmlBody <- pandocToHtml5 errorDocBody''
+        errorDocBody' <- processCitations errorDocBody
+        errorHtmlBody <- pandocToHtml5 errorDocBody'
         errorHtml <- applyTemplates ["default.html"] fileMetadata errorHtmlBody
         writeFile' out $ postProcessHtml5 outDir out errorHtml
 
@@ -358,6 +402,19 @@ main =
         src <- routeSource out
         copyFile' src out
 
+      -- Copy legacy versions
+      --
+      -- NOTE: legacy versions are those where the releases on GitHub did not
+      --       have relativized URLs, and as such cannot simply be downloaded
+      --       into the appropriate version subdirectory without breaking all
+      --       links.
+      --
+
+      forM_ legacyVersions $ \legacyVersion ->
+        outDir </> legacyVersion <//> "*" %> \out -> do
+          src <- routeSource out
+          copyFile' src out
+
       -- Copy course PDFs
       --
       -- TODO: build from source instead of copying
@@ -378,23 +435,30 @@ data Project
 
 instance Hashable Project
 
+getCourseId :: MonadError String m => FilePath -> m String
+getCourseId src
+  | courseDir `List.isPrefixOf` src = return $ makeRelative courseDir (takeDirectory src)
+  | otherwise = throwError $ printf "Courses must be in '%s', '%s':" courseDir src
+
 getProject :: MonadError String m => FilePath -> m Project
 getProject src
   | chapterDir `List.isPrefixOf` src = return Book
-  | tspl19Dir `List.isPrefixOf` src = return $ Course "tspl19"
+  | courseDir `List.isPrefixOf` src = Course <$> getCourseId src
   | postDir `List.isPrefixOf` src = return Post
-  | otherwise = throwError $ printf "Not in a known Agda project: '%s'" src
-
-getHtmlTemplatesForProject :: Project -> [FilePath]
-getHtmlTemplatesForProject Book      = ["page.html", "default.html"]
-getHtmlTemplatesForProject Course {} = ["page.html", "default.html"]
-getHtmlTemplatesForProject Post      = ["post.html", "default.html"]
+  | otherwise = throwError $ printf "Not part of an Agda project: '%s'" src
 
 getLocalAgdaLibrariesForProject :: Project -> [Agda.Library]
-getLocalAgdaLibrariesForProject Book              = [bookLibrary]
-getLocalAgdaLibrariesForProject (Course "tspl19") = [bookLibrary, tspl19Library]
-getLocalAgdaLibrariesForProject Post              = [bookLibrary, postLibrary]
-getLocalAgdaLibrariesForProject (Course courseId) = error $ printf "Unknown course '%s'" courseId
+getLocalAgdaLibrariesForProject Book = [bookLibrary]
+getLocalAgdaLibrariesForProject (Course courseId) = [bookLibrary, courseLibrary]
+  where
+    courseLibrary :: Agda.Library
+    courseLibrary =
+      Agda.Library
+        { libraryRoot = courseDir </> courseId,
+          includePaths = ["."],
+          canonicalBaseUrl = "https://plfa.github.io/" <> Text.pack courseId
+        }
+getLocalAgdaLibrariesForProject Post = [bookLibrary, postLibrary]
 
 bookLibrary :: Agda.Library
 bookLibrary =
@@ -402,14 +466,6 @@ bookLibrary =
     { libraryRoot = chapterDir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
-    }
-
-tspl19Library :: Agda.Library
-tspl19Library =
-  Agda.Library
-    { libraryRoot = tspl19Dir,
-      includePaths = ["."],
-      canonicalBaseUrl = "https://plfa.github.io/TSPL/2019/"
     }
 
 postLibrary :: Agda.Library
@@ -502,3 +558,15 @@ writerOpts =
 
 highlightStyle :: HighlightStyle
 highlightStyle = pygments
+
+--------------------------------------------------------------------------------
+-- Helper functions
+
+failOnError :: MonadFail m => Either String a -> m a
+failOnError = either fail return
+
+ignoreError :: Monoid a => Either String a -> a
+ignoreError = fromRight mempty
+
+rightToMaybe :: Either e a -> Maybe a
+rightToMaybe = either (const Nothing) Just

@@ -1,5 +1,5 @@
 title: Programming Language Foundations in Agda
-url: https://plfa.github.io/
+baseurl: https://plfa.github.io/
 description: |
   An introduction to programming language theory using the proof assistant Agda.
 language: en_US

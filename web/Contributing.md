@@ -1,6 +1,6 @@
 ---
 title     : "Instructions for various tasks"
-permalink : /HOWTO/
+permalink : /Contributing/
 ---
 
 ## Add a citation

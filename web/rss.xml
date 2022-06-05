@@ -6,8 +6,9 @@
     <description>
       <![CDATA[$site.description$]]>
     </description>
+    <language>$site.language$</language>
     <atom:link href="$site.baseurl$$url$" rel="self" type="application/rss+xml" />
-    <lastBuildDate>$site.build_date$</lastBuildDate>
+    <lastBuildDate>$build_date$</lastBuildDate>
     $for(post)$
     <item>
       <title>$post.title$</title>
@@ -21,11 +22,9 @@
       </description>
       <pubDate>$post.date_rfc822$</pubDate>
       <guid>$site.baseurl$$post.url$</guid>
-      <dc:creator>
-      $for(site.author)$
-      $site.author.name.given$ $site.author.name.family$
+      $for(author)$
+      <dc:creator>$author.name$</dc:creator>
       $endfor$
-      </dc:creator>
     </item>
     $endfor$
   </channel>

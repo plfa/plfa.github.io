@@ -13,18 +13,18 @@ There is a private repository of answers to selected questions on github. Please
 contact one of the authors if you would like to access it.
 
 
-$for(part)$
-## $part.title$
-$for(part.section)$
-$if(part.section.titlerunning)$
-  * [$part.section.titlerunning$]($part.section.permalink$): $part.section.subtitle$
+$for(toc.part)$
+## $toc.part.title$
+$for(toc.part.section)$
+$if(toc.part.section.titlerunning)$
+  * [$toc.part.section.titlerunning$]($toc.part.section.url$): $toc.part.section.subtitle$
 $else$
-  * [$part.section.title$]($part.section.permalink$)
+  * [$toc.part.section.title$]($toc.part.section.url$)
 $endif$
 $endfor$
 $endfor$
 
-## Related
+  ## Related
 
 ### Mailing lists
 
@@ -38,7 +38,7 @@ $endfor$
 ### Courses taught from the textbook
 
 #### 2021
-  * Favonia, University of Minnesota _(The course website is not pubilc; here is the [link to Favonia's homepage](https://favonia.org).)_
+  * Favonia, University of Minnesota _(The course website is not public; here is the [link to Favonia's homepage](https://favonia.org).)_
 
 #### 2020
   * [William Cook, University of Texas][UT-2020]

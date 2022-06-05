@@ -37,7 +37,7 @@ For pull requests big and small, and for answering questions on the Agda mailing
 ::: {.list-of-contributors}
 
 $for(contributor)$
-  * [$contributor.name$](https://github.com/$contributor.gibhut$)
+  * [$contributor.name$](https://github.com/$contributor.github$)
 $endfor$
   * [Your name goes here]
 
