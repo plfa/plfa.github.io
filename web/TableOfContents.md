@@ -24,16 +24,19 @@ $endif$
 $endfor$
 $endfor$
 
-  ## Related
+## Related
 
+
+<!-- NOTE: The Mailing Lists are Deprecated -->
+<!--
 ### Mailing lists
-
   * [plfa-interest@inf.ed.ac.uk](http://lists.inf.ed.ac.uk/mailman/listinfo/plfa-interest): <br />
     A mailing list for users of the book. <br />
     This is the place to ask and answer questions, or comment on the content of the book.
   * [plfa-dev@inf.ed.ac.uk](http://lists.inf.ed.ac.uk/mailman/listinfo/plfa-dev): <br />
     A mailing list for contributors. <br />
     This is the place to discuss changes and new additions to the book in excruciating detail.
+-->
 
 ### Courses taught from the textbook
 

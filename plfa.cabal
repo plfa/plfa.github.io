@@ -33,7 +33,9 @@ executable builder
   import:              language-haskell
   main-is:             tools/Buildfile.hs
   build-depends:
+    , aeson
     , base
+    , bytestring
     , containers
     , data-default-class
     , hashable

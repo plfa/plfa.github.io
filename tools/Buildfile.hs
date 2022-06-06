@@ -6,9 +6,12 @@ module Main where
 
 import Buildfile.Author (Author)
 import Buildfile.Contributor (Contributor (..))
-import Control.Monad (forM, unless, forM_)
+import Control.Monad (forM, forM_, unless)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
+import Data.Aeson (FromJSON (..))
+import Data.Aeson.Types (FromJSON, withObject, (.!=), (.:), (.:?))
+import Data.ByteString.Lazy qualified as LazyByteString
 import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
 import Data.Function (on, (&))
@@ -19,18 +22,20 @@ import Data.List qualified as List
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text
+import Data.Traversable (for)
 import GHC.Generics (Generic)
 import Shoggoth.Agda qualified as Agda
 import Shoggoth.CSS.Minify qualified as CSS
 import Shoggoth.CSS.Sass (SassOptions (..))
 import Shoggoth.CSS.Sass qualified as CSS
-import Shoggoth.Configuration (OutputDirectory (..), TemplateDirectory (TemplateDirectory))
+import Shoggoth.Configuration (OutputDirectory (..), TemplateDirectory (..), CacheDirectory (..))
 import Shoggoth.Metadata
 import Shoggoth.PostInfo
 import Shoggoth.Prelude
 import Shoggoth.Routing
 import Shoggoth.TagSoup qualified as TagSoup
-import Shoggoth.Template.Pandoc
+import Shoggoth.Template.Pandoc (Extension (..), HTMLMathMethod (..), HighlightStyle, Inlines, Lang, Locale, MetaValue, ObfuscationMethod (..), Pandoc (..), ReaderOptions (..), Reference, WriterOptions (..), extensionsFromList, runPandoc)
+import Shoggoth.Template.Pandoc qualified as Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import Text.Printf (printf)
@@ -39,16 +44,19 @@ outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
-dataDir, authorDir, contributorDir, legacyDir :: FilePath
+dataDir, authorDir, contributorDir, legacyDir, bibliographyFile, tableOfContentsFile :: FilePath
 dataDir = "data"
 authorDir = dataDir </> "authors"
 contributorDir = dataDir </> "contributors"
 legacyDir = dataDir </> "legacy"
+tableOfContentsFile = dataDir </> "toc.yml"
+bibliographyFile = dataDir </> "plfa.bib"
 
-bookDir, chapterDir, courseDir :: FilePath
+bookDir, chapterDir, courseDir, fontsDir :: FilePath
 bookDir = "book"
 chapterDir = "src"
 courseDir = "courses"
+fontsDir = bookDir </> "fonts"
 
 webDir, assetDir, postDir, styleDir, templateDir :: FilePath
 webDir = "web"
@@ -83,6 +91,7 @@ main =
         shakeExtra =
           mempty
             & addShakeExtra (OutputDirectory outDir)
+            & addShakeExtra (CacheDirectory tmpDir)
             & addShakeExtra (TemplateDirectory templateDir)
             & addShakeExtra readerOpts
             & addShakeExtra writerOpts
@@ -121,8 +130,13 @@ main =
                   failOnError $
                     Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
                 let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
-                return $ agdaHtml :> "body_html" :@ bodyHtml :> Output out
-              else return $ "body_html" :@ bodyHtml :> Output out
+                return $
+                  "agda_html" :@ agdaHtml
+                    :> "body_html" :@ bodyHtml
+                    :> Output out
+              else do
+                return $
+                  "body_html" :@ bodyHtml :> Output out
 
       let ?routingTable =
             mconcat
@@ -130,6 +144,8 @@ main =
                 ["README.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                -- Book (EPUB Version)
+                -- create (outDir </> "plfa.epub"),
                 -- Announcements
                 [webDir </> "Announcements.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "rss.xml"] |-> outDir </> "rss.xml",
@@ -137,6 +153,7 @@ main =
                 -- Documentation
                 [webDir </> "Citing.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "Contributing.md"] |-> postOrPermalinkRouterWithAgda,
+                [webDir </> "Notes.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "StyleGuide.md"] |-> postOrPermalinkRouterWithAgda,
                 -- Courses
                 [courseDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
@@ -144,10 +161,10 @@ main =
                 -- Assets
                 [webDir </> "404.md"] |-> permalinkRouter,
                 [styleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
-                create $ outDir </> "assets/css/highlight.css",
-                [assetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative assetDir src
+                create (outDir </> "assets/css/highlight.css"),
+                [assetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative assetDir src,
                 -- Versions (Legacy)
-                -- [legacyDir <//> "*"] *|-> \src -> outDir </> makeRelative legacyDir src
+                [legacyDir <//> "*"] *|-> \src -> outDir </> makeRelative legacyDir src
               ]
 
       --------------------------------------------------------------------------------
@@ -177,11 +194,24 @@ main =
               buildDate
             ]
 
+      getReferences <- newCache $ \() -> do
+        bibliographyFileBody <- readFile' bibliographyFile
+        bibliographyFileDoc@(Pandoc meta _) <- runPandoc $ Pandoc.readBibTeX readerOpts bibliographyFileBody
+        case Pandoc.lookupMeta "references" meta of
+          Just references -> return references
+          Nothing -> fail $ printf "Could not read references from '%s'" bibliographyFile
+
+      let processCitations :: Pandoc -> Action Pandoc
+          processCitations doc = do
+            references <- getReferences ()
+            Pandoc.processCitations $
+              Pandoc.setMeta "references" references doc
+
       getAgdaLinkFixer <- newCache $ \project -> do
         let localAgdaLibraries = getLocalAgdaLibrariesForProject project
         Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
 
-      getTemplateFile <- makeCachedTemplateFileGetter
+      getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
 
       getFileWithMetadata <- newCache $ \cur -> do
@@ -255,16 +285,9 @@ main =
       -- Table of Contents
 
       getTableOfContentsField <- newCache $ \() -> do
-        tocMetadata <- readYaml (dataDir </> "toc.yml")
-        toc <- flip resolveIncludes tocMetadata $ \chapterSrc -> do
-          bodyHtml <- routeAnchor "body_html" chapterSrc
-          (metadata, htmlBody) <- getFileWithMetadata bodyHtml
-          return $
-            mconcat
-              [ metadata,
-                constField "body_html" htmlBody
-              ]
-        return $ constField "toc" toc
+        tocMetadata <- readYaml tableOfContentsFile
+        tocResolved <- resolveIncludes (fmap fst . getFileWithMetadata) tocMetadata
+        return $ constField "toc" tocResolved
 
       -- Build /
       outDir </> "index.html" %> \out -> do
@@ -272,11 +295,11 @@ main =
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         return indexMarkdownTemplate
-          >>= applyAsTemplate (tocField <> fileMetadata)
-          >>= markdownToPandoc
+          >>= Pandoc.applyAsTemplate (tocField <> fileMetadata)
+          >>= Pandoc.markdownToPandoc
           >>= processCitations
-          >>= pandocToHtml5
-          >>= applyTemplates ["page.html", "default.html"] fileMetadata
+          >>= Pandoc.pandocToHtml5
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 
@@ -302,12 +325,12 @@ main =
           getProject src
             & rightToMaybe
             & traverse getAgdaLinkFixer
-            & fmap (fmap withUrls)
+            & fmap (fmap Pandoc.withUrls)
         readFile' prev
-          >>= markdownToPandoc
+          >>= Pandoc.markdownToPandoc
           <&> fromMaybe id maybeAgdaLinkFixer
           >>= processCitations
-          >>= pandocToHtml5
+          >>= Pandoc.pandocToHtml5
           >>= writeFile' next
 
       -- Stage 3: Apply HTML templates
@@ -325,7 +348,7 @@ main =
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
               | otherwise = ["page.html", "default.html"]
-        html <- applyTemplates htmlTemplates metadata htmlBody
+        html <- Pandoc.applyTemplates htmlTemplates metadata htmlBody
         writeFile' out $ postProcessHtml5 outDir out html
 
       --------------------------------------------------------------------------------
@@ -355,11 +378,11 @@ main =
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         return indexMarkdownTemplate
-          >>= applyAsTemplate (postsField <> fileMetadata)
-          >>= markdownToPandoc
+          >>= Pandoc.applyAsTemplate (postsField <> fileMetadata)
+          >>= Pandoc.markdownToPandoc
           >>= processCitations
-          >>= pandocToHtml5
-          >>= applyTemplates ["page.html", "default.html"] fileMetadata
+          >>= Pandoc.pandocToHtml5
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 
@@ -368,8 +391,9 @@ main =
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
-        rssXml <- applyAsTemplate (postsField <> fileMetadata) rssXmlTemplate
-        writeFile' out rssXml
+        return rssXmlTemplate
+          >>= Pandoc.applyAsTemplate (postsField <> fileMetadata)
+          >>= writeFile' out
 
       --------------------------------------------------------------------------------
       -- Assets
@@ -378,10 +402,10 @@ main =
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
-        errorDocBody <- markdownToPandoc errorMarkdownBody
+        errorDocBody <- Pandoc.markdownToPandoc errorMarkdownBody
         errorDocBody' <- processCitations errorDocBody
-        errorHtmlBody <- pandocToHtml5 errorDocBody'
-        errorHtml <- applyTemplates ["default.html"] fileMetadata errorHtmlBody
+        errorHtmlBody <- Pandoc.pandocToHtml5 errorDocBody'
+        errorHtml <- Pandoc.applyTemplates ["default.html"] fileMetadata errorHtmlBody
         writeFile' out $ postProcessHtml5 outDir out errorHtml
 
       -- Build assets/css/style.css
@@ -393,7 +417,7 @@ main =
 
       -- Build assets/css/highlight.css
       outDir </> "assets/css/highlight.css" %> \out -> do
-        let css = Text.pack (styleToCss highlightStyle)
+        let css = Text.pack (Pandoc.styleToCss highlightStyle)
         minCss <- CSS.minifyCSS css
         writeFile' out minCss
 
@@ -424,11 +448,88 @@ main =
         src <- routeSource out
         copyFile' src out
 
+      --------------------------------------------------------------------------------
+      -- EPUB
+
+      let routeSection src
+            | Agda.isAgdaFile src = routeAnchor "agda_html" src
+            | otherwise = return src
+
+      outDir </> "plfa.epub" %> \out -> do
+        -- Require metadata file
+        need [tmpDir </> "epub-metadata.xml"]
+
+        -- Read the table of contents
+        toc <- readYaml @Book tableOfContentsFile
+
+        -- Compose documents for each part
+        parts <- for (bookParts toc) $ \part -> do
+          --
+          -- Compose documents for each section
+          sections <- for (partSections part) $ \section -> do
+            --
+            -- Get section document
+            sectionSrc <- routeSection (sectionInclude section)
+            (sectionMetadata, sectionBody) <- getFileWithMetadata sectionSrc
+            Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
+
+            -- Get section title
+            sectionTitle <- failOnError $ sectionMetadata ^. "title"
+
+            -- Compose section document
+            let sectionDoc =
+                  Builder.divWith Builder.nullAttr $
+                    Builder.header 2 (Builder.text sectionTitle)
+                      <> Builder.fromList (Pandoc.shiftHeadersBy 1 sectionBlocks)
+            return sectionDoc
+
+          -- Compose part document
+          let partDoc =
+                Builder.divWith Builder.nullAttr $
+                  Builder.header 1 (Builder.text (partTitle part))
+                    <> mconcat sections
+          return partDoc
+
+        -- Compose book
+        -- defaultMetadata <- getDefaultMetadata ()
+        -- title <- failOnError $ defaultMetadata ^. "title"
+
+        bookDoc <-
+          return (Builder.doc (mconcat parts))
+            >>= processCitations
+            -- <&> Builder.setTitle (Builder.text title)
+
+        -- Set writer options
+        epubMetadata <- readFile' $ tmpDir </> "epub-metadata.xml"
+        epubFonts <- getDirectoryFiles fontsDir ["*.ttf"]
+
+        let writerOptsForEpub =
+              writerOpts
+                { writerTableOfContents = True,
+                  writerCiteMethod = Pandoc.Natbib,
+                  writerWrapText = Pandoc.WrapPreserve,
+                  writerTopLevelDivision = Pandoc.TopLevelPart,
+                  writerEpubMetadata = Just epubMetadata,
+                  writerEpubFonts = epubFonts,
+                  writerEpubChapterLevel = 2,
+                  writerTOCDepth = 2,
+                  writerReferenceLocation = Pandoc.EndOfSection
+                }
+
+        epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
+        liftIO $ LazyByteString.writeFile out epub
+
+      tmpDir </> "epub-metadata.xml" %> \out -> do
+        defaultMetadata <- getDefaultMetadata ()
+        readFile' (dataDir </> "epub-metadata.xml")
+          >>= Pandoc.applyAsTemplate defaultMetadata
+          >>= writeFile' out
+
 --------------------------------------------------------------------------------
 -- Agda
 
 data Project
-  = Book
+  = Main
   | Course {courseId :: String}
   | Post
   deriving (Show, Eq, Generic)
@@ -442,14 +543,14 @@ getCourseId src
 
 getProject :: MonadError String m => FilePath -> m Project
 getProject src
-  | chapterDir `List.isPrefixOf` src = return Book
+  | chapterDir `List.isPrefixOf` src = return Main
   | courseDir `List.isPrefixOf` src = Course <$> getCourseId src
   | postDir `List.isPrefixOf` src = return Post
   | otherwise = throwError $ printf "Not part of an Agda project: '%s'" src
 
 getLocalAgdaLibrariesForProject :: Project -> [Agda.Library]
-getLocalAgdaLibrariesForProject Book = [bookLibrary]
-getLocalAgdaLibrariesForProject (Course courseId) = [bookLibrary, courseLibrary]
+getLocalAgdaLibrariesForProject Main = [mainLibrary]
+getLocalAgdaLibrariesForProject (Course courseId) = [mainLibrary, courseLibrary]
   where
     courseLibrary :: Agda.Library
     courseLibrary =
@@ -458,10 +559,10 @@ getLocalAgdaLibrariesForProject (Course courseId) = [bookLibrary, courseLibrary]
           includePaths = ["."],
           canonicalBaseUrl = "https://plfa.github.io/" <> Text.pack courseId
         }
-getLocalAgdaLibrariesForProject Post = [bookLibrary, postLibrary]
+getLocalAgdaLibrariesForProject Post = [mainLibrary, postLibrary]
 
-bookLibrary :: Agda.Library
-bookLibrary =
+mainLibrary :: Agda.Library
+mainLibrary =
   Agda.Library
     { libraryRoot = chapterDir,
       includePaths = ["."],
@@ -557,7 +658,7 @@ writerOpts =
     }
 
 highlightStyle :: HighlightStyle
-highlightStyle = pygments
+highlightStyle = Pandoc.pygments
 
 --------------------------------------------------------------------------------
 -- Helper functions
@@ -565,8 +666,54 @@ highlightStyle = pygments
 failOnError :: MonadFail m => Either String a -> m a
 failOnError = either fail return
 
+failOnNothing :: MonadFail m => String -> Maybe a -> m a
+failOnNothing msg = maybe (fail msg) return
+
 ignoreError :: Monoid a => Either String a -> a
 ignoreError = fromRight mempty
 
 rightToMaybe :: Either e a -> Maybe a
 rightToMaybe = either (const Nothing) Just
+
+--------------------------------------------------------------------------------
+-- Table of Contents (datatype)
+
+newtype Book = Book
+  { bookParts :: [Part]
+  }
+  deriving (Show)
+
+instance FromJSON Book where
+  parseJSON = withObject "Book" $ \v ->
+    Book
+      <$> v .: "part"
+
+data Part = Part
+  { partTitle :: Text,
+    partSections :: [Section],
+    partFrontmatter :: Bool,
+    partMainmatter :: Bool,
+    partBackmatter :: Bool
+  }
+  deriving (Show)
+
+instance FromJSON Part where
+  parseJSON = withObject "Part" $ \v ->
+    Part
+      <$> v .: "title"
+      <*> v .: "section"
+      <*> v .:? "frontmatter" .!= False
+      <*> v .:? "mainmatter" .!= False
+      <*> v .:? "backmatter" .!= False
+
+data Section = Section
+  { sectionTitle :: Text,
+    sectionInclude :: FilePath
+  }
+  deriving (Show)
+
+instance FromJSON Section where
+  parseJSON = withObject "Section" $ \v ->
+    Section
+      <$> v .: "title"
+      <*> v .: "include"

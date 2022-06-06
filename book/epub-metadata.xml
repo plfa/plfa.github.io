@@ -1,4 +1,6 @@
+<!-- https://www.dublincore.org/specifications/dublin-core/dces/ -->
 <dc:title>$site.title$</dc:title>
+<dc:description><![CDATA[$site.description$]]></dc:description>
 $for(author)$
 <dc:creator id="$author.github$">$author.name$</dc:creator>
 $endfor$
@@ -8,3 +10,4 @@ $endfor$
 <dc:rights>$site.license.name$</dc:rights>
 <dc:language>$site.language$</dc:language>
 <dc:date>$build_date$</dc:date>
+<dc:type>Text</dc:type>
