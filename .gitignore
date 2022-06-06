@@ -2,6 +2,7 @@
 /.stack-work/
 /_site/
 /_cache/
+_build/
 /dist-newstyle/
 /versions/plfa.github.io-web-*/
 
