@@ -1,4 +1,3 @@
-<!-- https://www.dublincore.org/specifications/dublin-core/dces/ -->
 <dc:title>$site.title$</dc:title>
 <dc:description><![CDATA[$site.description$]]></dc:description>
 $for(author)$

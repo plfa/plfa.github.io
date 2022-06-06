@@ -52,22 +52,25 @@ legacyDir = dataDir </> "legacy"
 tableOfContentsFile = dataDir </> "toc.yml"
 bibliographyFile = dataDir </> "plfa.bib"
 
-bookDir, chapterDir, courseDir, fontsDir :: FilePath
+bookDir, chapterDir, courseDir, fontsDir, epubStyleDir, epubMetadataFile :: FilePath
 bookDir = "book"
 chapterDir = "src"
 courseDir = "courses"
 fontsDir = bookDir </> "fonts"
+epubStyleDir = bookDir </> "sass"
+epubMetadataFile = bookDir </> "epub-metadata.xml"
 
-webDir, assetDir, postDir, styleDir, templateDir :: FilePath
+webDir, assetDir, postDir, webStyleDir, templateDir :: FilePath
 webDir = "web"
 assetDir = webDir </> "assets"
 postDir = webDir </> "posts"
-styleDir = webDir </> "sass"
+webStyleDir = webDir </> "sass"
 templateDir = webDir </> "templates"
 
-tmpAgdaHtmlDir, tmpBodyHtmlDir :: FilePath
+tmpAgdaHtmlDir, tmpBodyHtmlDir, tmpEpubDir :: FilePath
 tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Render .lagda.md to .md
 tmpBodyHtmlDir = tmpDir </> "body_html" -- Render .md to .html
+tmpEpubDir = tmpDir </> "epub"
 
 legacyVersions :: [String]
 legacyVersions = ["19.08", "20.07"]
@@ -121,6 +124,7 @@ main =
           postOrPermalinkRouterWithAgda src = do
             let bodyHtml = tmpBodyHtmlDir </> replaceExtensions src "html"
             out <- postOrPermalinkRouter src
+            let commonStages = "body_html" :@ bodyHtml :> Output out
             if Agda.isAgdaFile src
               then do
                 agdaLibraries <-
@@ -130,13 +134,8 @@ main =
                   failOnError $
                     Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
                 let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
-                return $
-                  "agda_html" :@ agdaHtml
-                    :> "body_html" :@ bodyHtml
-                    :> Output out
-              else do
-                return $
-                  "body_html" :@ bodyHtml :> Output out
+                return $ "agda_html" :@ agdaHtml :> commonStages
+              else return commonStages
 
       let ?routingTable =
             mconcat
@@ -145,7 +144,7 @@ main =
                 [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Book (EPUB Version)
-                -- create (outDir </> "plfa.epub"),
+                create (outDir </> "plfa.epub"),
                 -- Announcements
                 [webDir </> "Announcements.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "rss.xml"] |-> outDir </> "rss.xml",
@@ -160,7 +159,7 @@ main =
                 [courseDir <//> "*.pdf"] *|-> \src -> outDir </> makeRelative courseDir src,
                 -- Assets
                 [webDir </> "404.md"] |-> permalinkRouter,
-                [styleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
+                [webStyleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
                 create (outDir </> "assets/css/highlight.css"),
                 [assetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative assetDir src,
                 -- Versions (Legacy)
@@ -277,10 +276,12 @@ main =
       "clean" ~> do
         removeFilesAfter tmpAgdaHtmlDir ["//*"]
         removeFilesAfter tmpBodyHtmlDir ["//*"]
+        removeFilesAfter tmpEpubDir ["//*"]
 
       "clobber" ~> do
         removeFilesAfter tmpAgdaHtmlDir ["//*"]
         removeFilesAfter tmpBodyHtmlDir ["//*"]
+        removeFilesAfter tmpEpubDir ["//*"]
         removeFilesAfter outDir ["//*"]
 
       --------------------------------------------------------------------------------
@@ -415,7 +416,7 @@ main =
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
         src <- routeSource out
-        CSS.compileSassWith sassOptions src
+        CSS.compileSassWith webSassOptions src
           >>= CSS.minifyCSS
           >>= writeFile' out
 
@@ -438,7 +439,6 @@ main =
       --       into the appropriate version subdirectory without breaking all
       --       links.
       --
-
       forM_ legacyVersions $ \legacyVersion ->
         outDir </> legacyVersion <//> "*" %> \out -> do
           src <- routeSource out
@@ -461,14 +461,15 @@ main =
             | otherwise = return src
 
       outDir </> "plfa.epub" %> \out -> do
-        -- Require metadata file
-        need [tmpDir </> "epub-metadata.xml"]
+        -- Require metadata and stylesheet
+        need [tmpEpubDir </> "epub-metadata.xml",
+              tmpEpubDir </> "style.css"]
 
         -- Read the table of contents
         toc <- readYaml @Book tableOfContentsFile
 
         -- Compose documents for each part
-        parts <- for (bookParts toc) $ \part -> do
+        parts <- for (zip [1..] (bookParts toc)) $ \(number, part) -> do
           --
           -- Compose documents for each section
           sections <- for (partSections part) $ \section -> do
@@ -478,34 +479,33 @@ main =
             (sectionMetadata, sectionBody) <- getFileWithMetadata sectionSrc
             Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
 
-            -- Get section title
+            -- Get section title & ident
             sectionTitle <- failOnError $ sectionMetadata ^. "title"
+            let sectionIdent = Text.pack $ takeBaseName sectionSrc
 
             -- Compose section document
             let sectionDoc =
-                  Builder.divWith Builder.nullAttr $
+                  Builder.divWith (sectionIdent, [], []) $
                     Builder.header 2 (Builder.text sectionTitle)
                       <> Builder.fromList (Pandoc.shiftHeadersBy 1 sectionBlocks)
             return sectionDoc
 
           -- Compose part document
+          let partIdent = Text.pack $ "part-" <> show @Int number
           let partDoc =
-                Builder.divWith Builder.nullAttr $
+                Builder.divWith (partIdent, [], []) $
                   Builder.header 1 (Builder.text (partTitle part))
                     <> mconcat sections
           return partDoc
 
         -- Compose book
-        -- defaultMetadata <- getDefaultMetadata ()
-        -- title <- failOnError $ defaultMetadata ^. "title"
-
         bookDoc <-
           return (Builder.doc (mconcat parts))
             >>= processCitations
-            -- <&> Builder.setTitle (Builder.text title)
+            <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
 
         -- Set writer options
-        epubMetadata <- readFile' $ tmpDir </> "epub-metadata.xml"
+        epubMetadata <- readFile' $ tmpEpubDir </> "epub-metadata.xml"
         epubFonts <- getDirectoryFiles fontsDir ["*.ttf"]
 
         let writerOptsForEpub =
@@ -524,10 +524,18 @@ main =
         epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
         liftIO $ LazyByteString.writeFile out epub
 
-      tmpDir </> "epub-metadata.xml" %> \out -> do
+      -- Build epub metadata
+      tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         defaultMetadata <- getDefaultMetadata ()
-        readFile' (dataDir </> "epub-metadata.xml")
+        readFile' epubMetadataFile
           >>= Pandoc.applyAsTemplate defaultMetadata
+          >>= writeFile' out
+
+      -- Build epub stylesheet
+      tmpEpubDir </> "style.css" %> \out -> do
+        src <- routeSource out
+        CSS.compileSassWith epubSassOptions src
+          >>= CSS.minifyCSS
           >>= writeFile' out
 
 --------------------------------------------------------------------------------
@@ -596,11 +604,18 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- Sass Options
 
-sassOptions :: SassOptions
-sassOptions =
+webSassOptions :: SassOptions
+webSassOptions =
   def
-    { sassIncludePaths = Just [styleDir],
-      sassImporters = Just [CSS.minCssImporter styleDir 1]
+    { sassIncludePaths = Just [webStyleDir],
+      sassImporters = Just [CSS.minCssImporter webStyleDir 1]
+    }
+
+epubSassOptions :: SassOptions
+epubSassOptions =
+  def
+    { sassIncludePaths = Just [epubStyleDir],
+      sassImporters = Just [CSS.minCssImporter epubStyleDir 1]
     }
 
 --------------------------------------------------------------------------------
@@ -711,14 +726,12 @@ instance FromJSON Part where
       <*> v .:? "mainmatter" .!= False
       <*> v .:? "backmatter" .!= False
 
-data Section = Section
-  { sectionTitle :: Text,
-    sectionInclude :: FilePath
+newtype Section = Section
+  { sectionInclude :: FilePath
   }
   deriving (Show)
 
 instance FromJSON Section where
   parseJSON = withObject "Section" $ \v ->
     Section
-      <$> v .: "title"
-      <*> v .: "include"
+      <$> v .: "include"
