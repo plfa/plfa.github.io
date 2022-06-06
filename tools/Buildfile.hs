@@ -275,11 +275,13 @@ main =
         need =<< outputs
 
       "clean" ~> do
-        removeFilesAfter tmpDir ["//*"]
+        removeFilesAfter tmpAgdaHtmlDir ["//*"]
+        removeFilesAfter tmpBodyHtmlDir ["//*"]
 
       "clobber" ~> do
+        removeFilesAfter tmpAgdaHtmlDir ["//*"]
+        removeFilesAfter tmpBodyHtmlDir ["//*"]
         removeFilesAfter outDir ["//*"]
-        removeFilesAfter tmpDir ["//*"]
 
       --------------------------------------------------------------------------------
       -- Table of Contents
