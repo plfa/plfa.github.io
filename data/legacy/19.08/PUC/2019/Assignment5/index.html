@@ -1,118 +1,16 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Assignment5: PUC Assignment 5 | Programming Language Foundations in Agda
-</title><!-- Begin Jekyll SEO tag v2.6.1 -->
-<meta name="generator" content="Jekyll v3.9.0" />
-<meta property="og:title" content="Assignment5: PUC Assignment 5" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="Programming Language Foundations in Agda" />
-<meta property="og:description" content="Programming Language Foundations in Agda" />
-<link rel="canonical" href="https://plfa.github.io/19.08/PUC/2019/Assignment5/" />
-<meta property="og:url" content="https://plfa.github.io/19.08/PUC/2019/Assignment5/" />
-<meta property="og:site_name" content="Programming Language Foundations in Agda" />
-<script type="application/ld+json">
-{"url":"https://plfa.github.io/19.08/PUC/2019/Assignment5/","headline":"Assignment5: PUC Assignment 5","description":"Programming Language Foundations in Agda","@type":"WebPage","@context":"https://schema.org"}</script>
-<!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/19.08/assets/main.css"></head>
-<body><header class="site-header" role="banner">
-
-    <div class="wrapper">
-
-        <a class="site-title" href="/19.08/">Programming Language Foundations in Agda
-</a>
-
-        <nav class="site-nav">
-            <span class="menu-icon">
-                <svg viewBox="0 0 18 15" width="18px" height="15px">
-                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
-                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
-                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
-                </svg>
-            </span>
-
-            <div class="trigger">
-                <a class="page-link" href="/19.08/">The Book</a>
-                <a class="page-link" href="/19.08/Announcements/">Announcements</a>
-                <a class="page-link" href="/19.08/GettingStarted/">Getting Started</a>
-                <a class="page-link" href="/19.08/Citing/">Citing</a>
-                <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a>
-            </div>
-        </nav>
-
-    </div>
-
-</header>
-<main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post">
-
-  <header class="post-header">
-      <h1 class="post-title">Assignment5: PUC Assignment 5</h1>
-  </header>
-
-  <p style="text-align:center;">
-
-
-
-    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment5.lagda.md">Source</a>
-
-
-
-</p>
-
-
-  <div class="post-content">
-    <pre class="Agda"><a id="110" class="Keyword">module</a> <a id="117" href="/19.08/PUC/2019/Assignment5/" class="Module">Assignment5</a> <a id="129" class="Keyword">where</a>
-</pre>
-<h2 id="your-name-and-email-goes-here">YOUR NAME AND EMAIL GOES HERE</h2>
-
-<h2 id="introduction">Introduction</h2>
-
-<p>You must do <em>all</em> the exercises labelled “(recommended)”.</p>
-
-<p>Exercises labelled “(stretch)” are there to provide an extra challenge.
-You don’t need to do all of these, but should attempt at least a few.</p>
-
-<p>Exercises without a label are optional, and may be done if you want
-some extra practice.</p>
-
-<p>Please ensure your files execute correctly under Agda!</p>
-
-<p><strong>IMPORTANT</strong> For ease of marking, when modifying the given code please write</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- begin
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Assignment5: PUC Assignment 5 | Programming Language Foundations in Agda</title><meta name="generator" content="Jekyll v3.9.0"><meta property="og:title" content="Assignment5: PUC Assignment 5"><meta property="og:locale" content="en_US"><meta name="description" content="Programming Language Foundations in Agda"><meta property="og:description" content="Programming Language Foundations in Agda"><link rel="canonical" href="https://plfa.github.io/19.08/PUC/2019/Assignment5/"><meta property="og:url" content="https://plfa.github.io/19.08/PUC/2019/Assignment5/"><meta property="og:site_name" content="Programming Language Foundations in Agda"><script type="application/ld+json">{"url":"https://plfa.github.io/19.08/PUC/2019/Assignment5/","headline":"Assignment5: PUC Assignment 5","description":"Programming Language Foundations in Agda","@type":"WebPage","@context":"https://schema.org"}</script><link rel="stylesheet" href="/19.08/assets/main.css"></head><body><header class="site-header" role="banner"><div class="wrapper"><a class="site-title" href="/19.08/">Programming Language Foundations in Agda</a><nav class="site-nav"><span class="menu-icon"><svg viewBox="0 0 18 15" width="18px" height="15px"><path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/><path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/><path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/></svg></span><div class="trigger"><a class="page-link" href="/19.08/">The Book</a> <a class="page-link" href="/19.08/Announcements/">Announcements</a> <a class="page-link" href="/19.08/GettingStarted/">Getting Started</a> <a class="page-link" href="/19.08/Citing/">Citing</a> <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a></div></nav></div></header><main class="page-content" aria-label="Content"><div class="wrapper"><article class="post"><header class="post-header"><h1 class="post-title">Assignment5: PUC Assignment 5</h1></header><p style="text-align:center"><a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment5.lagda.md">Source</a></p><div class="post-content"><pre class="Agda"><a id="110" class="Keyword">module</a> <a id="117" href="/19.08/PUC/2019/Assignment5/" class="Module">Assignment5</a> <a id="129" class="Keyword">where</a>
+</pre><h2 id="your-name-and-email-goes-here">YOUR NAME AND EMAIL GOES HERE</h2><h2 id="introduction">Introduction</h2><p>You must do <em>all</em> the exercises labelled “(recommended)”.</p><p>Exercises labelled “(stretch)” are there to provide an extra challenge. You don’t need to do all of these, but should attempt at least a few.</p><p>Exercises without a label are optional, and may be done if you want some extra practice.</p><p>Please ensure your files execute correctly under Agda!</p><p><strong>IMPORTANT</strong> For ease of marking, when modifying the given code please write</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- begin
 -- end
-</code></pre></div></div>
-
-<p>before and after code you add, to indicate your changes.</p>
-
-<h2 id="imports">Imports</h2>
-
-<pre class="Agda"><a id="719" class="Keyword">import</a> <a id="726" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="764" class="Symbol">as</a> <a id="767" class="Module">Eq</a>
+</code></pre></div></div><p>before and after code you add, to indicate your changes.</p><h2 id="imports">Imports</h2><pre class="Agda"><a id="719" class="Keyword">import</a> <a id="726" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="764" class="Symbol">as</a> <a id="767" class="Module">Eq</a>
 <a id="770" class="Keyword">open</a> <a id="775" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="778" class="Keyword">using</a> <a id="784" class="Symbol">(</a><a id="785" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">_≡_</a><a id="788" class="Symbol">;</a> <a id="790" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="794" class="Symbol">;</a> <a id="796" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#939" class="Function">sym</a><a id="799" class="Symbol">;</a> <a id="801" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#984" class="Function">trans</a><a id="806" class="Symbol">;</a> <a id="808" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a><a id="812" class="Symbol">;</a> <a id="814" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html#1436" class="Function">cong₂</a><a id="819" class="Symbol">;</a> <a id="821" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#799" class="Function Operator">_≢_</a><a id="824" class="Symbol">)</a>
 <a id="826" class="Keyword">open</a> <a id="831" class="Keyword">import</a> <a id="838" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html" class="Module">Data.Empty</a> <a id="849" class="Keyword">using</a> <a id="855" class="Symbol">(</a><a id="856" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#279" class="Datatype">⊥</a><a id="857" class="Symbol">;</a> <a id="859" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a><a id="865" class="Symbol">)</a>
 <a id="867" class="Keyword">open</a> <a id="872" class="Keyword">import</a> <a id="879" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.html" class="Module">Data.Nat</a> <a id="888" class="Keyword">using</a> <a id="894" class="Symbol">(</a><a id="895" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="896" class="Symbol">;</a> <a id="898" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a><a id="902" class="Symbol">;</a> <a id="904" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a><a id="907" class="Symbol">;</a> <a id="909" href="Agda.Builtin.Nat.html#298" class="Primitive Operator">_+_</a><a id="912" class="Symbol">;</a> <a id="914" href="Agda.Builtin.Nat.html#501" class="Primitive Operator">_*_</a><a id="917" class="Symbol">)</a>
 <a id="919" class="Keyword">open</a> <a id="924" class="Keyword">import</a> <a id="931" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html" class="Module">Data.Product</a> <a id="944" class="Keyword">using</a> <a id="950" class="Symbol">(</a><a id="951" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1162" class="Function Operator">_×_</a><a id="954" class="Symbol">;</a> <a id="956" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1364" class="Function">∃</a><a id="957" class="Symbol">;</a> <a id="959" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1783" class="Function">∃-syntax</a><a id="967" class="Symbol">)</a> <a id="969" class="Keyword">renaming</a> <a id="978" class="Symbol">(</a><a id="979" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">_,_</a> <a id="983" class="Symbol">to</a> <a id="986" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="991" class="Symbol">)</a>
 <a id="993" class="Keyword">open</a> <a id="998" class="Keyword">import</a> <a id="1005" href="https://agda.github.io/agda-stdlib/v1.1/Data.String.html" class="Module">Data.String</a> <a id="1017" class="Keyword">using</a> <a id="1023" class="Symbol">(</a><a id="1024" href="Agda.Builtin.String.html#206" class="Postulate">String</a><a id="1030" class="Symbol">;</a> <a id="1032" href="https://agda.github.io/agda-stdlib/v1.1/Data.String.Properties.html#2569" class="Function Operator">_≟_</a><a id="1035" class="Symbol">)</a>
 <a id="1037" class="Keyword">open</a> <a id="1042" class="Keyword">import</a> <a id="1049" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="1066" class="Keyword">using</a> <a id="1072" class="Symbol">(</a><a id="1073" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬_</a><a id="1075" class="Symbol">;</a> <a id="1077" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#605" class="Datatype">Dec</a><a id="1080" class="Symbol">;</a> <a id="1082" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a><a id="1085" class="Symbol">;</a> <a id="1087" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a><a id="1089" class="Symbol">)</a>
-</pre>
-
-<h2 id="inference">Inference</h2>
-
-<pre class="Agda"><a id="1115" class="Keyword">module</a> <a id="Inference"></a><a id="1122" href="/19.08/PUC/2019/Assignment5/#1122" class="Module">Inference</a> <a id="1132" class="Keyword">where</a>
-</pre>
-<p>Remember to indent all code by two spaces.</p>
-
-<h3 id="imports-1">Imports</h3>
-
-<pre class="Agda">  <a id="1206" class="Keyword">import</a> <a id="1213" href="/19.08/More/" class="Module">plfa.part2.More</a> <a id="1229" class="Symbol">as</a> <a id="1232" class="Module">DB</a>
-</pre>
-<h3 id="syntax">Syntax</h3>
-
-<pre class="Agda">  <a id="1258" class="Keyword">infix</a>   <a id="1266" class="Number">4</a>  <a id="1269" href="/19.08/PUC/2019/Assignment5/#2582" class="Datatype Operator">_∋_⦂_</a>
+</pre><h2 id="inference">Inference</h2><pre class="Agda"><a id="1115" class="Keyword">module</a> <a id="Inference"></a><a id="1122" href="/19.08/PUC/2019/Assignment5/#1122" class="Module">Inference</a> <a id="1132" class="Keyword">where</a>
+</pre><p>Remember to indent all code by two spaces.</p><h3 id="imports-1">Imports</h3><pre class="Agda">  <a id="1206" class="Keyword">import</a> <a id="1213" href="/19.08/More/" class="Module">plfa.part2.More</a> <a id="1229" class="Symbol">as</a> <a id="1232" class="Module">DB</a>
+</pre><h3 id="syntax">Syntax</h3><pre class="Agda">  <a id="1258" class="Keyword">infix</a>   <a id="1266" class="Number">4</a>  <a id="1269" href="/19.08/PUC/2019/Assignment5/#2582" class="Datatype Operator">_∋_⦂_</a>
   <a id="1277" class="Keyword">infix</a>   <a id="1285" class="Number">4</a>  <a id="1288" href="/19.08/PUC/2019/Assignment5/#2852" class="Datatype Operator">_⊢_↑_</a>
   <a id="1296" class="Keyword">infix</a>   <a id="1304" class="Number">4</a>  <a id="1307" href="/19.08/PUC/2019/Assignment5/#2896" class="Datatype Operator">_⊢_↓_</a>
   <a id="1315" class="Keyword">infixl</a>  <a id="1323" class="Number">5</a>  <a id="1326" href="/19.08/PUC/2019/Assignment5/#1669" class="InductiveConstructor Operator">_,_⦂_</a>
@@ -126,10 +24,7 @@ some extra practice.</p>
   <a id="1422" class="Keyword">infixl</a>  <a id="1430" class="Number">7</a>  <a id="1433" href="/19.08/PUC/2019/Assignment5/#3036" class="InductiveConstructor Operator">_·_</a>
   <a id="1439" class="Keyword">infix</a>   <a id="1447" class="Number">8</a>  <a id="1450" href="/19.08/PUC/2019/Assignment5/#2046" class="InductiveConstructor Operator">`suc_</a>
   <a id="1458" class="Keyword">infix</a>   <a id="1466" class="Number">9</a>  <a id="1469" href="/19.08/PUC/2019/Assignment5/#1789" class="InductiveConstructor Operator">`_</a>
-</pre>
-<h3 id="identifiers-types-and-contexts">Identifiers, types, and contexts</h3>
-
-<pre class="Agda">  <a id="Inference.Id"></a><a id="1521" href="/19.08/PUC/2019/Assignment5/#1521" class="Function">Id</a> <a id="1524" class="Symbol">:</a> <a id="1526" class="PrimitiveType">Set</a>
+</pre><h3 id="identifiers-types-and-contexts">Identifiers, types, and contexts</h3><pre class="Agda">  <a id="Inference.Id"></a><a id="1521" href="/19.08/PUC/2019/Assignment5/#1521" class="Function">Id</a> <a id="1524" class="Symbol">:</a> <a id="1526" class="PrimitiveType">Set</a>
   <a id="1532" href="/19.08/PUC/2019/Assignment5/#1521" class="Function">Id</a> <a id="1535" class="Symbol">=</a> <a id="1537" href="Agda.Builtin.String.html#206" class="Postulate">String</a>
 
   <a id="1547" class="Keyword">data</a> <a id="Inference.Type"></a><a id="1552" href="/19.08/PUC/2019/Assignment5/#1552" class="Datatype">Type</a> <a id="1557" class="Symbol">:</a> <a id="1559" class="PrimitiveType">Set</a> <a id="1563" class="Keyword">where</a>
@@ -139,10 +34,7 @@ some extra practice.</p>
   <a id="1620" class="Keyword">data</a> <a id="Inference.Context"></a><a id="1625" href="/19.08/PUC/2019/Assignment5/#1625" class="Datatype">Context</a> <a id="1633" class="Symbol">:</a> <a id="1635" class="PrimitiveType">Set</a> <a id="1639" class="Keyword">where</a>
     <a id="Inference.Context.∅"></a><a id="1649" href="/19.08/PUC/2019/Assignment5/#1649" class="InductiveConstructor">∅</a>     <a id="1655" class="Symbol">:</a> <a id="1657" href="Assignment5.html#1625" class="Datatype">Context</a>
     <a id="Inference.Context._,_⦂_"></a><a id="1669" href="/19.08/PUC/2019/Assignment5/#1669" class="InductiveConstructor Operator">_,_⦂_</a> <a id="1675" class="Symbol">:</a> <a id="1677" href="Assignment5.html#1625" class="Datatype">Context</a> <a id="1685" class="Symbol">→</a> <a id="1687" href="Assignment5.html#1521" class="Function">Id</a> <a id="1690" class="Symbol">→</a> <a id="1692" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="1697" class="Symbol">→</a> <a id="1699" href="Assignment5.html#1625" class="Datatype">Context</a>
-</pre>
-<h3 id="terms">Terms</h3>
-
-<pre class="Agda">  <a id="1729" class="Keyword">data</a> <a id="Inference.Term⁺"></a><a id="1734" href="/19.08/PUC/2019/Assignment5/#1734" class="Datatype">Term⁺</a> <a id="1740" class="Symbol">:</a> <a id="1742" class="PrimitiveType">Set</a>
+</pre><h3 id="terms">Terms</h3><pre class="Agda">  <a id="1729" class="Keyword">data</a> <a id="Inference.Term⁺"></a><a id="1734" href="/19.08/PUC/2019/Assignment5/#1734" class="Datatype">Term⁺</a> <a id="1740" class="Symbol">:</a> <a id="1742" class="PrimitiveType">Set</a>
   <a id="1748" class="Keyword">data</a> <a id="Inference.Term⁻"></a><a id="1753" href="/19.08/PUC/2019/Assignment5/#1753" class="Datatype">Term⁻</a> <a id="1759" class="Symbol">:</a> <a id="1761" class="PrimitiveType">Set</a>
 
   <a id="1768" class="Keyword">data</a> <a id="1773" href="/19.08/PUC/2019/Assignment5/#1734" class="Datatype">Term⁺</a> <a id="1779" class="Keyword">where</a>
@@ -157,10 +49,7 @@ some extra practice.</p>
     <a id="Inference.Term⁻.`case_[zero⇒_|suc_⇒_]"></a><a id="2091" href="/19.08/PUC/2019/Assignment5/#2091" class="InductiveConstructor Operator">`case_[zero⇒_|suc_⇒_]</a>    <a id="2116" class="Symbol">:</a> <a id="2118" href="Assignment5.html#1734" class="Datatype">Term⁺</a> <a id="2124" class="Symbol">→</a> <a id="2126" href="Assignment5.html#1753" class="Datatype">Term⁻</a> <a id="2132" class="Symbol">→</a> <a id="2134" href="Assignment5.html#1521" class="Function">Id</a> <a id="2137" class="Symbol">→</a> <a id="2139" href="Assignment5.html#1753" class="Datatype">Term⁻</a> <a id="2145" class="Symbol">→</a> <a id="2147" href="Assignment5.html#1753" class="Datatype">Term⁻</a>
     <a id="Inference.Term⁻.μ_⇒_"></a><a id="2157" href="/19.08/PUC/2019/Assignment5/#2157" class="InductiveConstructor Operator">μ_⇒_</a>                     <a id="2182" class="Symbol">:</a> <a id="2184" href="Assignment5.html#1521" class="Function">Id</a> <a id="2187" class="Symbol">→</a> <a id="2189" href="Assignment5.html#1753" class="Datatype">Term⁻</a> <a id="2195" class="Symbol">→</a> <a id="2197" href="Assignment5.html#1753" class="Datatype">Term⁻</a>
     <a id="Inference.Term⁻._↑"></a><a id="2207" href="/19.08/PUC/2019/Assignment5/#2207" class="InductiveConstructor Operator">_↑</a>                       <a id="2232" class="Symbol">:</a> <a id="2234" href="Assignment5.html#1734" class="Datatype">Term⁺</a> <a id="2240" class="Symbol">→</a> <a id="2242" href="Assignment5.html#1753" class="Datatype">Term⁻</a>
-</pre>
-<h3 id="sample-terms">Sample terms</h3>
-
-<pre class="Agda">  <a id="Inference.two"></a><a id="2277" href="/19.08/PUC/2019/Assignment5/#2277" class="Function">two</a> <a id="2281" class="Symbol">:</a> <a id="2283" href="Assignment5.html#1753" class="Datatype">Term⁻</a>
+</pre><h3 id="sample-terms">Sample terms</h3><pre class="Agda">  <a id="Inference.two"></a><a id="2277" href="/19.08/PUC/2019/Assignment5/#2277" class="Function">two</a> <a id="2281" class="Symbol">:</a> <a id="2283" href="Assignment5.html#1753" class="Datatype">Term⁻</a>
   <a id="2291" href="/19.08/PUC/2019/Assignment5/#2277" class="Function">two</a> <a id="2295" class="Symbol">=</a> <a id="2297" href="Assignment5.html#2046" class="InductiveConstructor Operator">`suc</a> <a id="2302" class="Symbol">(</a><a id="2303" href="Assignment5.html#2046" class="InductiveConstructor Operator">`suc</a> <a id="2308" href="Assignment5.html#2009" class="InductiveConstructor">`zero</a><a id="2313" class="Symbol">)</a>
 
   <a id="Inference.plus"></a><a id="2318" href="/19.08/PUC/2019/Assignment5/#2318" class="Function">plus</a> <a id="2323" class="Symbol">:</a> <a id="2325" href="Assignment5.html#1734" class="Datatype">Term⁺</a>
@@ -171,10 +60,7 @@ some extra practice.</p>
 
   <a id="Inference.2+2"></a><a id="2517" href="/19.08/PUC/2019/Assignment5/#2517" class="Function">2+2</a> <a id="2521" class="Symbol">:</a> <a id="2523" href="Assignment5.html#1734" class="Datatype">Term⁺</a>
   <a id="2531" href="/19.08/PUC/2019/Assignment5/#2517" class="Function">2+2</a> <a id="2535" class="Symbol">=</a> <a id="2537" href="Assignment5.html#2318" class="Function">plus</a> <a id="2542" href="Assignment5.html#1832" class="InductiveConstructor Operator">·</a> <a id="2544" href="Assignment5.html#2277" class="Function">two</a> <a id="2548" href="Assignment5.html#1832" class="InductiveConstructor Operator">·</a> <a id="2550" href="Assignment5.html#2277" class="Function">two</a>
-</pre>
-<h3 id="lookup">Lookup</h3>
-
-<pre class="Agda">  <a id="2577" class="Keyword">data</a> <a id="Inference._∋_⦂_"></a><a id="2582" href="/19.08/PUC/2019/Assignment5/#2582" class="Datatype Operator">_∋_⦂_</a> <a id="2588" class="Symbol">:</a> <a id="2590" href="Assignment5.html#1625" class="Datatype">Context</a> <a id="2598" class="Symbol">→</a> <a id="2600" href="Assignment5.html#1521" class="Function">Id</a> <a id="2603" class="Symbol">→</a> <a id="2605" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="2610" class="Symbol">→</a> <a id="2612" class="PrimitiveType">Set</a> <a id="2616" class="Keyword">where</a>
+</pre><h3 id="lookup">Lookup</h3><pre class="Agda">  <a id="2577" class="Keyword">data</a> <a id="Inference._∋_⦂_"></a><a id="2582" href="/19.08/PUC/2019/Assignment5/#2582" class="Datatype Operator">_∋_⦂_</a> <a id="2588" class="Symbol">:</a> <a id="2590" href="Assignment5.html#1625" class="Datatype">Context</a> <a id="2598" class="Symbol">→</a> <a id="2600" href="Assignment5.html#1521" class="Function">Id</a> <a id="2603" class="Symbol">→</a> <a id="2605" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="2610" class="Symbol">→</a> <a id="2612" class="PrimitiveType">Set</a> <a id="2616" class="Keyword">where</a>
 
     <a id="Inference._∋_⦂_.Z"></a><a id="2627" href="/19.08/PUC/2019/Assignment5/#2627" class="InductiveConstructor">Z</a> <a id="2629" class="Symbol">:</a> <a id="2631" class="Symbol">∀</a> <a id="2633" class="Symbol">{</a><a id="2634" href="Assignment5.html#2634" class="Bound">Γ</a> <a id="2636" href="Assignment5.html#2636" class="Bound">x</a> <a id="2638" href="Assignment5.html#2638" class="Bound">A</a><a id="2639" class="Symbol">}</a>
         <a id="2649" class="Comment">--------------------</a>
@@ -185,10 +71,7 @@ some extra practice.</p>
       <a id="2739" class="Symbol">→</a> <a id="2741" href="/19.08/PUC/2019/Assignment5/#2708" class="Bound">Γ</a> <a id="2743" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="2745" href="Assignment5.html#2710" class="Bound">x</a> <a id="2747" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="2749" href="Assignment5.html#2714" class="Bound">A</a>
         <a id="2759" class="Comment">-----------------</a>
       <a id="2783" class="Symbol">→</a> <a id="2785" href="/19.08/PUC/2019/Assignment5/#2708" class="Bound">Γ</a> <a id="2787" href="Assignment5.html#1669" class="InductiveConstructor Operator">,</a> <a id="2789" href="Assignment5.html#2712" class="Bound">y</a> <a id="2791" href="Assignment5.html#1669" class="InductiveConstructor Operator">⦂</a> <a id="2793" href="Assignment5.html#2716" class="Bound">B</a> <a id="2795" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="2797" href="Assignment5.html#2710" class="Bound">x</a> <a id="2799" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="2801" href="Assignment5.html#2714" class="Bound">A</a>
-</pre>
-<h3 id="bidirectional-type-checking">Bidirectional type checking</h3>
-
-<pre class="Agda">  <a id="2847" class="Keyword">data</a> <a id="Inference._⊢_↑_"></a><a id="2852" href="/19.08/PUC/2019/Assignment5/#2852" class="Datatype Operator">_⊢_↑_</a> <a id="2858" class="Symbol">:</a> <a id="2860" href="Assignment5.html#1625" class="Datatype">Context</a> <a id="2868" class="Symbol">→</a> <a id="2870" href="Assignment5.html#1734" class="Datatype">Term⁺</a> <a id="2876" class="Symbol">→</a> <a id="2878" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="2883" class="Symbol">→</a> <a id="2885" class="PrimitiveType">Set</a>
+</pre><h3 id="bidirectional-type-checking">Bidirectional type checking</h3><pre class="Agda">  <a id="2847" class="Keyword">data</a> <a id="Inference._⊢_↑_"></a><a id="2852" href="/19.08/PUC/2019/Assignment5/#2852" class="Datatype Operator">_⊢_↑_</a> <a id="2858" class="Symbol">:</a> <a id="2860" href="Assignment5.html#1625" class="Datatype">Context</a> <a id="2868" class="Symbol">→</a> <a id="2870" href="Assignment5.html#1734" class="Datatype">Term⁺</a> <a id="2876" class="Symbol">→</a> <a id="2878" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="2883" class="Symbol">→</a> <a id="2885" class="PrimitiveType">Set</a>
   <a id="2891" class="Keyword">data</a> <a id="Inference._⊢_↓_"></a><a id="2896" href="/19.08/PUC/2019/Assignment5/#2896" class="Datatype Operator">_⊢_↓_</a> <a id="2902" class="Symbol">:</a> <a id="2904" href="Assignment5.html#1625" class="Datatype">Context</a> <a id="2912" class="Symbol">→</a> <a id="2914" href="Assignment5.html#1753" class="Datatype">Term⁻</a> <a id="2920" class="Symbol">→</a> <a id="2922" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="2927" class="Symbol">→</a> <a id="2929" class="PrimitiveType">Set</a>
 
   <a id="2936" class="Keyword">data</a> <a id="2941" href="/19.08/PUC/2019/Assignment5/#2852" class="Datatype Operator">_⊢_↑_</a> <a id="2947" class="Keyword">where</a>
@@ -242,11 +125,7 @@ some extra practice.</p>
       <a id="3833" class="Symbol">→</a> <a id="3835" href="/19.08/PUC/2019/Assignment5/#3804" class="Bound">A</a> <a id="3837" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="3839" href="Assignment5.html#3806" class="Bound">B</a>
         <a id="3849" class="Comment">-------------</a>
       <a id="3869" class="Symbol">→</a> <a id="3871" href="/19.08/PUC/2019/Assignment5/#3800" class="Bound">Γ</a> <a id="3873" href="Assignment5.html#2896" class="Datatype Operator">⊢</a> <a id="3875" class="Symbol">(</a><a id="3876" href="Assignment5.html#3802" class="Bound">M</a> <a id="3878" href="Assignment5.html#2207" class="InductiveConstructor Operator">↑</a><a id="3879" class="Symbol">)</a> <a id="3881" href="Assignment5.html#2896" class="Datatype Operator">↓</a> <a id="3883" href="Assignment5.html#3806" class="Bound">B</a>
-</pre>
-
-<h3 id="type-equality">Type equality</h3>
-
-<pre class="Agda">  <a id="Inference._≟Tp_"></a><a id="3916" href="/19.08/PUC/2019/Assignment5/#3916" class="Function Operator">_≟Tp_</a> <a id="3922" class="Symbol">:</a> <a id="3924" class="Symbol">(</a><a id="3925" href="Assignment5.html#3925" class="Bound">A</a> <a id="3927" href="Assignment5.html#3927" class="Bound">B</a> <a id="3929" class="Symbol">:</a> <a id="3931" href="Assignment5.html#1552" class="Datatype">Type</a><a id="3935" class="Symbol">)</a> <a id="3937" class="Symbol">→</a> <a id="3939" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#605" class="Datatype">Dec</a> <a id="3943" class="Symbol">(</a><a id="3944" href="Assignment5.html#3925" class="Bound">A</a> <a id="3946" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="3948" href="Assignment5.html#3927" class="Bound">B</a><a id="3949" class="Symbol">)</a>
+</pre><h3 id="type-equality">Type equality</h3><pre class="Agda">  <a id="Inference._≟Tp_"></a><a id="3916" href="/19.08/PUC/2019/Assignment5/#3916" class="Function Operator">_≟Tp_</a> <a id="3922" class="Symbol">:</a> <a id="3924" class="Symbol">(</a><a id="3925" href="Assignment5.html#3925" class="Bound">A</a> <a id="3927" href="Assignment5.html#3927" class="Bound">B</a> <a id="3929" class="Symbol">:</a> <a id="3931" href="Assignment5.html#1552" class="Datatype">Type</a><a id="3935" class="Symbol">)</a> <a id="3937" class="Symbol">→</a> <a id="3939" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#605" class="Datatype">Dec</a> <a id="3943" class="Symbol">(</a><a id="3944" href="Assignment5.html#3925" class="Bound">A</a> <a id="3946" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="3948" href="Assignment5.html#3927" class="Bound">B</a><a id="3949" class="Symbol">)</a>
   <a id="3953" href="/19.08/PUC/2019/Assignment5/#1573" class="InductiveConstructor">`ℕ</a>      <a id="3961" href="Assignment5.html#3916" class="Function Operator">≟Tp</a> <a id="3965" href="Assignment5.html#1573" class="InductiveConstructor">`ℕ</a>              <a id="3981" class="Symbol">=</a>  <a id="3984" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="3988" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>
   <a id="3995" href="/19.08/PUC/2019/Assignment5/#1573" class="InductiveConstructor">`ℕ</a>      <a id="4003" href="Assignment5.html#3916" class="Function Operator">≟Tp</a> <a id="4007" class="Symbol">(</a><a id="4008" href="Assignment5.html#4008" class="Bound">A</a> <a id="4010" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4012" href="Assignment5.html#4012" class="Bound">B</a><a id="4013" class="Symbol">)</a>         <a id="4023" class="Symbol">=</a>  <a id="4026" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="4029" class="Symbol">λ()</a>
   <a id="4035" class="Symbol">(</a><a id="4036" href="/19.08/PUC/2019/Assignment5/#4036" class="Bound">A</a> <a id="4038" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4040" href="Assignment5.html#4040" class="Bound">B</a><a id="4041" class="Symbol">)</a> <a id="4043" href="Assignment5.html#3916" class="Function Operator">≟Tp</a> <a id="4047" href="Assignment5.html#1573" class="InductiveConstructor">`ℕ</a>              <a id="4063" class="Symbol">=</a>  <a id="4066" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="4069" class="Symbol">λ()</a>
@@ -255,10 +134,7 @@ some extra practice.</p>
   <a id="4128" class="Symbol">...</a>  <a id="4133" class="Symbol">|</a> <a id="4135" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="4138" href="/19.08/PUC/2019/Assignment5/#4138" class="Bound">A≢</a>    <a id="4144" class="Symbol">|</a> <a id="4146" class="Symbol">_</a>         <a id="4156" class="Symbol">=</a>  <a id="4159" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="4162" class="Symbol">λ{</a><a id="4164" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a> <a id="4169" class="Symbol">→</a> <a id="4171" href="Assignment5.html#4138" class="Bound">A≢</a> <a id="4174" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="4178" class="Symbol">}</a>
   <a id="4182" class="Symbol">...</a>  <a id="4187" class="Symbol">|</a> <a id="4189" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="4193" class="Symbol">_</a>    <a id="4198" class="Symbol">|</a> <a id="4200" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="4203" href="/19.08/PUC/2019/Assignment5/#4203" class="Bound">B≢</a>     <a id="4210" class="Symbol">=</a>  <a id="4213" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="4216" class="Symbol">λ{</a><a id="4218" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a> <a id="4223" class="Symbol">→</a> <a id="4225" href="Assignment5.html#4203" class="Bound">B≢</a> <a id="4228" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="4232" class="Symbol">}</a>
   <a id="4236" class="Symbol">...</a>  <a id="4241" class="Symbol">|</a> <a id="4243" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="4247" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a> <a id="4252" class="Symbol">|</a> <a id="4254" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="4258" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>  <a id="4264" class="Symbol">=</a>  <a id="4267" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="4271" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>
-</pre>
-<h3 id="prerequisites">Prerequisites</h3>
-
-<pre class="Agda">  <a id="Inference.dom≡"></a><a id="4306" href="/19.08/PUC/2019/Assignment5/#4306" class="Function">dom≡</a> <a id="4311" class="Symbol">:</a> <a id="4313" class="Symbol">∀</a> <a id="4315" class="Symbol">{</a><a id="4316" href="Assignment5.html#4316" class="Bound">A</a> <a id="4318" href="Assignment5.html#4318" class="Bound">A′</a> <a id="4321" href="Assignment5.html#4321" class="Bound">B</a> <a id="4323" href="Assignment5.html#4323" class="Bound">B′</a><a id="4325" class="Symbol">}</a> <a id="4327" class="Symbol">→</a> <a id="4329" href="Assignment5.html#4316" class="Bound">A</a> <a id="4331" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4333" href="Assignment5.html#4321" class="Bound">B</a> <a id="4335" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4337" href="Assignment5.html#4318" class="Bound">A′</a> <a id="4340" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4342" href="Assignment5.html#4323" class="Bound">B′</a> <a id="4345" class="Symbol">→</a> <a id="4347" href="Assignment5.html#4316" class="Bound">A</a> <a id="4349" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4351" href="Assignment5.html#4318" class="Bound">A′</a>
+</pre><h3 id="prerequisites">Prerequisites</h3><pre class="Agda">  <a id="Inference.dom≡"></a><a id="4306" href="/19.08/PUC/2019/Assignment5/#4306" class="Function">dom≡</a> <a id="4311" class="Symbol">:</a> <a id="4313" class="Symbol">∀</a> <a id="4315" class="Symbol">{</a><a id="4316" href="Assignment5.html#4316" class="Bound">A</a> <a id="4318" href="Assignment5.html#4318" class="Bound">A′</a> <a id="4321" href="Assignment5.html#4321" class="Bound">B</a> <a id="4323" href="Assignment5.html#4323" class="Bound">B′</a><a id="4325" class="Symbol">}</a> <a id="4327" class="Symbol">→</a> <a id="4329" href="Assignment5.html#4316" class="Bound">A</a> <a id="4331" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4333" href="Assignment5.html#4321" class="Bound">B</a> <a id="4335" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4337" href="Assignment5.html#4318" class="Bound">A′</a> <a id="4340" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4342" href="Assignment5.html#4323" class="Bound">B′</a> <a id="4345" class="Symbol">→</a> <a id="4347" href="Assignment5.html#4316" class="Bound">A</a> <a id="4349" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4351" href="Assignment5.html#4318" class="Bound">A′</a>
   <a id="4356" href="/19.08/PUC/2019/Assignment5/#4306" class="Function">dom≡</a> <a id="4361" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a> <a id="4366" class="Symbol">=</a> <a id="4368" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>
 
   <a id="Inference.rng≡"></a><a id="4376" href="/19.08/PUC/2019/Assignment5/#4376" class="Function">rng≡</a> <a id="4381" class="Symbol">:</a> <a id="4383" class="Symbol">∀</a> <a id="4385" class="Symbol">{</a><a id="4386" href="Assignment5.html#4386" class="Bound">A</a> <a id="4388" href="Assignment5.html#4388" class="Bound">A′</a> <a id="4391" href="Assignment5.html#4391" class="Bound">B</a> <a id="4393" href="Assignment5.html#4393" class="Bound">B′</a><a id="4395" class="Symbol">}</a> <a id="4397" class="Symbol">→</a> <a id="4399" href="Assignment5.html#4386" class="Bound">A</a> <a id="4401" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4403" href="Assignment5.html#4391" class="Bound">B</a> <a id="4405" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4407" href="Assignment5.html#4388" class="Bound">A′</a> <a id="4410" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4412" href="Assignment5.html#4393" class="Bound">B′</a> <a id="4415" class="Symbol">→</a> <a id="4417" href="Assignment5.html#4391" class="Bound">B</a> <a id="4419" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4421" href="Assignment5.html#4393" class="Bound">B′</a>
@@ -266,26 +142,16 @@ some extra practice.</p>
 
   <a id="Inference.ℕ≢⇒"></a><a id="4446" href="/19.08/PUC/2019/Assignment5/#4446" class="Function">ℕ≢⇒</a> <a id="4450" class="Symbol">:</a> <a id="4452" class="Symbol">∀</a> <a id="4454" class="Symbol">{</a><a id="4455" href="Assignment5.html#4455" class="Bound">A</a> <a id="4457" href="Assignment5.html#4457" class="Bound">B</a><a id="4458" class="Symbol">}</a> <a id="4460" class="Symbol">→</a> <a id="4462" href="Assignment5.html#1573" class="InductiveConstructor">`ℕ</a> <a id="4465" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#799" class="Function Operator">≢</a> <a id="4467" href="Assignment5.html#4455" class="Bound">A</a> <a id="4469" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="4471" href="Assignment5.html#4457" class="Bound">B</a>
   <a id="4475" href="/19.08/PUC/2019/Assignment5/#4446" class="Function">ℕ≢⇒</a> <a id="4479" class="Symbol">()</a>
-</pre>
-
-<h3 id="unique-lookup">Unique lookup</h3>
-
-<pre class="Agda">  <a id="Inference.uniq-∋"></a><a id="4513" href="/19.08/PUC/2019/Assignment5/#4513" class="Function">uniq-∋</a> <a id="4520" class="Symbol">:</a> <a id="4522" class="Symbol">∀</a> <a id="4524" class="Symbol">{</a><a id="4525" href="Assignment5.html#4525" class="Bound">Γ</a> <a id="4527" href="Assignment5.html#4527" class="Bound">x</a> <a id="4529" href="Assignment5.html#4529" class="Bound">A</a> <a id="4531" href="Assignment5.html#4531" class="Bound">B</a><a id="4532" class="Symbol">}</a> <a id="4534" class="Symbol">→</a> <a id="4536" href="Assignment5.html#4525" class="Bound">Γ</a> <a id="4538" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="4540" href="Assignment5.html#4527" class="Bound">x</a> <a id="4542" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="4544" href="Assignment5.html#4529" class="Bound">A</a> <a id="4546" class="Symbol">→</a> <a id="4548" href="Assignment5.html#4525" class="Bound">Γ</a> <a id="4550" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="4552" href="Assignment5.html#4527" class="Bound">x</a> <a id="4554" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="4556" href="Assignment5.html#4531" class="Bound">B</a> <a id="4558" class="Symbol">→</a> <a id="4560" href="Assignment5.html#4529" class="Bound">A</a> <a id="4562" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4564" href="Assignment5.html#4531" class="Bound">B</a>
+</pre><h3 id="unique-lookup">Unique lookup</h3><pre class="Agda">  <a id="Inference.uniq-∋"></a><a id="4513" href="/19.08/PUC/2019/Assignment5/#4513" class="Function">uniq-∋</a> <a id="4520" class="Symbol">:</a> <a id="4522" class="Symbol">∀</a> <a id="4524" class="Symbol">{</a><a id="4525" href="Assignment5.html#4525" class="Bound">Γ</a> <a id="4527" href="Assignment5.html#4527" class="Bound">x</a> <a id="4529" href="Assignment5.html#4529" class="Bound">A</a> <a id="4531" href="Assignment5.html#4531" class="Bound">B</a><a id="4532" class="Symbol">}</a> <a id="4534" class="Symbol">→</a> <a id="4536" href="Assignment5.html#4525" class="Bound">Γ</a> <a id="4538" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="4540" href="Assignment5.html#4527" class="Bound">x</a> <a id="4542" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="4544" href="Assignment5.html#4529" class="Bound">A</a> <a id="4546" class="Symbol">→</a> <a id="4548" href="Assignment5.html#4525" class="Bound">Γ</a> <a id="4550" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="4552" href="Assignment5.html#4527" class="Bound">x</a> <a id="4554" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="4556" href="Assignment5.html#4531" class="Bound">B</a> <a id="4558" class="Symbol">→</a> <a id="4560" href="Assignment5.html#4529" class="Bound">A</a> <a id="4562" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4564" href="Assignment5.html#4531" class="Bound">B</a>
   <a id="4568" href="/19.08/PUC/2019/Assignment5/#4513" class="Function">uniq-∋</a> <a id="4575" href="Assignment5.html#2627" class="InductiveConstructor">Z</a> <a id="4577" href="Assignment5.html#2627" class="InductiveConstructor">Z</a>                 <a id="4595" class="Symbol">=</a>  <a id="4598" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>
   <a id="4605" href="/19.08/PUC/2019/Assignment5/#4513" class="Function">uniq-∋</a> <a id="4612" href="Assignment5.html#2627" class="InductiveConstructor">Z</a> <a id="4614" class="Symbol">(</a><a id="4615" href="Assignment5.html#2701" class="InductiveConstructor">S</a> <a id="4617" href="Assignment5.html#4617" class="Bound">x≢y</a> <a id="4621" class="Symbol">_)</a>         <a id="4632" class="Symbol">=</a>  <a id="4635" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a> <a id="4642" class="Symbol">(</a><a id="4643" href="Assignment5.html#4617" class="Bound">x≢y</a> <a id="4647" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="4651" class="Symbol">)</a>
   <a id="4655" href="/19.08/PUC/2019/Assignment5/#4513" class="Function">uniq-∋</a> <a id="4662" class="Symbol">(</a><a id="4663" href="Assignment5.html#2701" class="InductiveConstructor">S</a> <a id="4665" href="Assignment5.html#4665" class="Bound">x≢y</a> <a id="4669" class="Symbol">_)</a> <a id="4672" href="Assignment5.html#2627" class="InductiveConstructor">Z</a>         <a id="4682" class="Symbol">=</a>  <a id="4685" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a> <a id="4692" class="Symbol">(</a><a id="4693" href="Assignment5.html#4665" class="Bound">x≢y</a> <a id="4697" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="4701" class="Symbol">)</a>
   <a id="4705" href="/19.08/PUC/2019/Assignment5/#4513" class="Function">uniq-∋</a> <a id="4712" class="Symbol">(</a><a id="4713" href="Assignment5.html#2701" class="InductiveConstructor">S</a> <a id="4715" class="Symbol">_</a> <a id="4717" href="Assignment5.html#4717" class="Bound">∋x</a><a id="4719" class="Symbol">)</a> <a id="4721" class="Symbol">(</a><a id="4722" href="Assignment5.html#2701" class="InductiveConstructor">S</a> <a id="4724" class="Symbol">_</a> <a id="4726" href="Assignment5.html#4726" class="Bound">∋x′</a><a id="4729" class="Symbol">)</a>  <a id="4732" class="Symbol">=</a>  <a id="4735" href="Assignment5.html#4513" class="Function">uniq-∋</a> <a id="4742" href="Assignment5.html#4717" class="Bound">∋x</a> <a id="4745" href="Assignment5.html#4726" class="Bound">∋x′</a>
-</pre>
-<h3 id="unique-synthesis">Unique synthesis</h3>
-
-<pre class="Agda">  <a id="Inference.uniq-↑"></a><a id="4782" href="/19.08/PUC/2019/Assignment5/#4782" class="Function">uniq-↑</a> <a id="4789" class="Symbol">:</a> <a id="4791" class="Symbol">∀</a> <a id="4793" class="Symbol">{</a><a id="4794" href="Assignment5.html#4794" class="Bound">Γ</a> <a id="4796" href="Assignment5.html#4796" class="Bound">M</a> <a id="4798" href="Assignment5.html#4798" class="Bound">A</a> <a id="4800" href="Assignment5.html#4800" class="Bound">B</a><a id="4801" class="Symbol">}</a> <a id="4803" class="Symbol">→</a> <a id="4805" href="Assignment5.html#4794" class="Bound">Γ</a> <a id="4807" href="Assignment5.html#2852" class="Datatype Operator">⊢</a> <a id="4809" href="Assignment5.html#4796" class="Bound">M</a> <a id="4811" href="Assignment5.html#2852" class="Datatype Operator">↑</a> <a id="4813" href="Assignment5.html#4798" class="Bound">A</a> <a id="4815" class="Symbol">→</a> <a id="4817" href="Assignment5.html#4794" class="Bound">Γ</a> <a id="4819" href="Assignment5.html#2852" class="Datatype Operator">⊢</a> <a id="4821" href="Assignment5.html#4796" class="Bound">M</a> <a id="4823" href="Assignment5.html#2852" class="Datatype Operator">↑</a> <a id="4825" href="Assignment5.html#4800" class="Bound">B</a> <a id="4827" class="Symbol">→</a> <a id="4829" href="Assignment5.html#4798" class="Bound">A</a> <a id="4831" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4833" href="Assignment5.html#4800" class="Bound">B</a>
+</pre><h3 id="unique-synthesis">Unique synthesis</h3><pre class="Agda">  <a id="Inference.uniq-↑"></a><a id="4782" href="/19.08/PUC/2019/Assignment5/#4782" class="Function">uniq-↑</a> <a id="4789" class="Symbol">:</a> <a id="4791" class="Symbol">∀</a> <a id="4793" class="Symbol">{</a><a id="4794" href="Assignment5.html#4794" class="Bound">Γ</a> <a id="4796" href="Assignment5.html#4796" class="Bound">M</a> <a id="4798" href="Assignment5.html#4798" class="Bound">A</a> <a id="4800" href="Assignment5.html#4800" class="Bound">B</a><a id="4801" class="Symbol">}</a> <a id="4803" class="Symbol">→</a> <a id="4805" href="Assignment5.html#4794" class="Bound">Γ</a> <a id="4807" href="Assignment5.html#2852" class="Datatype Operator">⊢</a> <a id="4809" href="Assignment5.html#4796" class="Bound">M</a> <a id="4811" href="Assignment5.html#2852" class="Datatype Operator">↑</a> <a id="4813" href="Assignment5.html#4798" class="Bound">A</a> <a id="4815" class="Symbol">→</a> <a id="4817" href="Assignment5.html#4794" class="Bound">Γ</a> <a id="4819" href="Assignment5.html#2852" class="Datatype Operator">⊢</a> <a id="4821" href="Assignment5.html#4796" class="Bound">M</a> <a id="4823" href="Assignment5.html#2852" class="Datatype Operator">↑</a> <a id="4825" href="Assignment5.html#4800" class="Bound">B</a> <a id="4827" class="Symbol">→</a> <a id="4829" href="Assignment5.html#4798" class="Bound">A</a> <a id="4831" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4833" href="Assignment5.html#4800" class="Bound">B</a>
   <a id="4837" href="/19.08/PUC/2019/Assignment5/#4782" class="Function">uniq-↑</a> <a id="4844" class="Symbol">(</a><a id="4845" href="Assignment5.html#2958" class="InductiveConstructor">⊢`</a> <a id="4848" href="Assignment5.html#4848" class="Bound">∋x</a><a id="4850" class="Symbol">)</a> <a id="4852" class="Symbol">(</a><a id="4853" href="Assignment5.html#2958" class="InductiveConstructor">⊢`</a> <a id="4856" href="Assignment5.html#4856" class="Bound">∋x′</a><a id="4859" class="Symbol">)</a>       <a id="4867" class="Symbol">=</a>  <a id="4870" href="Assignment5.html#4513" class="Function">uniq-∋</a> <a id="4877" href="Assignment5.html#4848" class="Bound">∋x</a> <a id="4880" href="Assignment5.html#4856" class="Bound">∋x′</a>
   <a id="4886" href="/19.08/PUC/2019/Assignment5/#4782" class="Function">uniq-↑</a> <a id="4893" class="Symbol">(</a><a id="4894" href="Assignment5.html#4894" class="Bound">⊢L</a> <a id="4897" href="Assignment5.html#3036" class="InductiveConstructor Operator">·</a> <a id="4899" href="Assignment5.html#4899" class="Bound">⊢M</a><a id="4901" class="Symbol">)</a> <a id="4903" class="Symbol">(</a><a id="4904" href="Assignment5.html#4904" class="Bound">⊢L′</a> <a id="4908" href="Assignment5.html#3036" class="InductiveConstructor Operator">·</a> <a id="4910" href="Assignment5.html#4910" class="Bound">⊢M′</a><a id="4913" class="Symbol">)</a>  <a id="4916" class="Symbol">=</a>  <a id="4919" href="Assignment5.html#4376" class="Function">rng≡</a> <a id="4924" class="Symbol">(</a><a id="4925" href="Assignment5.html#4782" class="Function">uniq-↑</a> <a id="4932" href="Assignment5.html#4894" class="Bound">⊢L</a> <a id="4935" href="Assignment5.html#4904" class="Bound">⊢L′</a><a id="4938" class="Symbol">)</a>
   <a id="4942" href="/19.08/PUC/2019/Assignment5/#4782" class="Function">uniq-↑</a> <a id="4949" class="Symbol">(</a><a id="4950" href="Assignment5.html#3145" class="InductiveConstructor">⊢↓</a> <a id="4953" href="Assignment5.html#4953" class="Bound">⊢M</a><a id="4955" class="Symbol">)</a> <a id="4957" class="Symbol">(</a><a id="4958" href="Assignment5.html#3145" class="InductiveConstructor">⊢↓</a> <a id="4961" href="Assignment5.html#4961" class="Bound">⊢M′</a><a id="4964" class="Symbol">)</a>       <a id="4972" class="Symbol">=</a>  <a id="4975" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>
-</pre>
-<h2 id="lookup-type-of-a-variable-in-the-context">Lookup type of a variable in the context</h2>
-
-<pre class="Agda">  <a id="Inference.ext∋"></a><a id="5036" href="/19.08/PUC/2019/Assignment5/#5036" class="Function">ext∋</a> <a id="5041" class="Symbol">:</a> <a id="5043" class="Symbol">∀</a> <a id="5045" class="Symbol">{</a><a id="5046" href="Assignment5.html#5046" class="Bound">Γ</a> <a id="5048" href="Assignment5.html#5048" class="Bound">B</a> <a id="5050" href="Assignment5.html#5050" class="Bound">x</a> <a id="5052" href="Assignment5.html#5052" class="Bound">y</a><a id="5053" class="Symbol">}</a>
+</pre><h2 id="lookup-type-of-a-variable-in-the-context">Lookup type of a variable in the context</h2><pre class="Agda">  <a id="Inference.ext∋"></a><a id="5036" href="/19.08/PUC/2019/Assignment5/#5036" class="Function">ext∋</a> <a id="5041" class="Symbol">:</a> <a id="5043" class="Symbol">∀</a> <a id="5045" class="Symbol">{</a><a id="5046" href="Assignment5.html#5046" class="Bound">Γ</a> <a id="5048" href="Assignment5.html#5048" class="Bound">B</a> <a id="5050" href="Assignment5.html#5050" class="Bound">x</a> <a id="5052" href="Assignment5.html#5052" class="Bound">y</a><a id="5053" class="Symbol">}</a>
     <a id="5059" class="Symbol">→</a> <a id="5061" href="/19.08/PUC/2019/Assignment5/#5050" class="Bound">x</a> <a id="5063" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#799" class="Function Operator">≢</a> <a id="5065" href="Assignment5.html#5052" class="Bound">y</a>
     <a id="5071" class="Symbol">→</a> <a id="5073" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬</a> <a id="5075" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1783" class="Function">∃[</a> <a id="5078" href="/19.08/PUC/2019/Assignment5/#5078" class="Bound">A</a> <a id="5080" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1783" class="Function">]</a><a id="5081" class="Symbol">(</a> <a id="5083" href="Assignment5.html#5046" class="Bound">Γ</a> <a id="5085" href="Assignment5.html#2582" class="Datatype Operator">∋</a> <a id="5087" href="Assignment5.html#5050" class="Bound">x</a> <a id="5089" href="Assignment5.html#2582" class="Datatype Operator">⦂</a> <a id="5091" href="Assignment5.html#5078" class="Bound">A</a> <a id="5093" class="Symbol">)</a>
       <a id="5101" class="Comment">-----------------------------</a>
@@ -302,10 +168,7 @@ some extra practice.</p>
   <a id="5492" class="Symbol">...</a> <a id="5496" class="Symbol">|</a> <a id="5498" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a> <a id="5501" href="/19.08/PUC/2019/Assignment5/#5501" class="Bound">x≢y</a> <a id="5505" class="Keyword">with</a> <a id="5510" href="Assignment5.html#5259" class="Function">lookup</a> <a id="5517" class="Bound">Γ</a> <a id="5519" class="Bound">x</a>
   <a id="5523" class="Symbol">...</a>             <a id="5539" class="Symbol">|</a> <a id="5541" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a>  <a id="5545" href="/19.08/PUC/2019/Assignment5/#5545" class="Bound">¬∃</a>          <a id="5557" class="Symbol">=</a>  <a id="5560" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a>  <a id="5564" class="Symbol">(</a><a id="5565" href="Assignment5.html#5036" class="Function">ext∋</a> <a id="5570" class="Bound">x≢y</a> <a id="5574" href="Assignment5.html#5545" class="Bound">¬∃</a><a id="5576" class="Symbol">)</a>
   <a id="5580" class="Symbol">...</a>             <a id="5596" class="Symbol">|</a> <a id="5598" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="5602" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟨</a> <a id="5604" href="/19.08/PUC/2019/Assignment5/#5604" class="Bound">A</a> <a id="5606" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">,</a> <a id="5608" href="Assignment5.html#5608" class="Bound">⊢x</a> <a id="5611" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟩</a>  <a id="5614" class="Symbol">=</a>  <a id="5617" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="5621" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟨</a> <a id="5623" href="Assignment5.html#5604" class="Bound">A</a> <a id="5625" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">,</a> <a id="5627" href="Assignment5.html#2701" class="InductiveConstructor">S</a> <a id="5629" class="Bound">x≢y</a> <a id="5633" href="Assignment5.html#5608" class="Bound">⊢x</a> <a id="5636" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟩</a>
-</pre>
-<h3 id="promoting-negations">Promoting negations</h3>
-
-<pre class="Agda">  <a id="Inference.¬arg"></a><a id="5674" href="/19.08/PUC/2019/Assignment5/#5674" class="Function">¬arg</a> <a id="5679" class="Symbol">:</a> <a id="5681" class="Symbol">∀</a> <a id="5683" class="Symbol">{</a><a id="5684" href="Assignment5.html#5684" class="Bound">Γ</a> <a id="5686" href="Assignment5.html#5686" class="Bound">A</a> <a id="5688" href="Assignment5.html#5688" class="Bound">B</a> <a id="5690" href="Assignment5.html#5690" class="Bound">L</a> <a id="5692" href="Assignment5.html#5692" class="Bound">M</a><a id="5693" class="Symbol">}</a>
+</pre><h3 id="promoting-negations">Promoting negations</h3><pre class="Agda">  <a id="Inference.¬arg"></a><a id="5674" href="/19.08/PUC/2019/Assignment5/#5674" class="Function">¬arg</a> <a id="5679" class="Symbol">:</a> <a id="5681" class="Symbol">∀</a> <a id="5683" class="Symbol">{</a><a id="5684" href="Assignment5.html#5684" class="Bound">Γ</a> <a id="5686" href="Assignment5.html#5686" class="Bound">A</a> <a id="5688" href="Assignment5.html#5688" class="Bound">B</a> <a id="5690" href="Assignment5.html#5690" class="Bound">L</a> <a id="5692" href="Assignment5.html#5692" class="Bound">M</a><a id="5693" class="Symbol">}</a>
     <a id="5699" class="Symbol">→</a> <a id="5701" href="/19.08/PUC/2019/Assignment5/#5684" class="Bound">Γ</a> <a id="5703" href="Assignment5.html#2852" class="Datatype Operator">⊢</a> <a id="5705" href="Assignment5.html#5690" class="Bound">L</a> <a id="5707" href="Assignment5.html#2852" class="Datatype Operator">↑</a> <a id="5709" href="Assignment5.html#5686" class="Bound">A</a> <a id="5711" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="5713" href="Assignment5.html#5688" class="Bound">B</a>
     <a id="5719" class="Symbol">→</a> <a id="5721" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬</a> <a id="5723" href="/19.08/PUC/2019/Assignment5/#5684" class="Bound">Γ</a> <a id="5725" href="Assignment5.html#2896" class="Datatype Operator">⊢</a> <a id="5727" href="Assignment5.html#5692" class="Bound">M</a> <a id="5729" href="Assignment5.html#2896" class="Datatype Operator">↓</a> <a id="5731" href="Assignment5.html#5686" class="Bound">A</a>
       <a id="5739" class="Comment">-------------------------</a>
@@ -318,11 +181,7 @@ some extra practice.</p>
       <a id="5928" class="Comment">---------------</a>
     <a id="5948" class="Symbol">→</a> <a id="5950" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬</a> <a id="5952" href="/19.08/PUC/2019/Assignment5/#5885" class="Bound">Γ</a> <a id="5954" href="Assignment5.html#2896" class="Datatype Operator">⊢</a> <a id="5956" class="Symbol">(</a><a id="5957" href="Assignment5.html#5887" class="Bound">M</a> <a id="5959" href="Assignment5.html#2207" class="InductiveConstructor Operator">↑</a><a id="5960" class="Symbol">)</a> <a id="5962" href="Assignment5.html#2896" class="Datatype Operator">↓</a> <a id="5964" href="Assignment5.html#5891" class="Bound">B</a>
   <a id="5968" href="/19.08/PUC/2019/Assignment5/#5872" class="Function">¬switch</a> <a id="5976" href="Assignment5.html#5976" class="Bound">⊢M</a> <a id="5979" href="Assignment5.html#5979" class="Bound">A≢B</a> <a id="5983" class="Symbol">(</a><a id="5984" href="Assignment5.html#3792" class="InductiveConstructor">⊢↑</a> <a id="5987" href="Assignment5.html#5987" class="Bound">⊢M′</a> <a id="5991" href="Assignment5.html#5991" class="Bound">A′≡B</a><a id="5995" class="Symbol">)</a> <a id="5997" class="Keyword">rewrite</a> <a id="6005" href="Assignment5.html#4782" class="Function">uniq-↑</a> <a id="6012" href="Assignment5.html#5976" class="Bound">⊢M</a> <a id="6015" href="Assignment5.html#5987" class="Bound">⊢M′</a> <a id="6019" class="Symbol">=</a> <a id="6021" href="Assignment5.html#5979" class="Bound">A≢B</a> <a id="6025" href="Assignment5.html#5991" class="Bound">A′≡B</a>
-</pre>
-
-<h2 id="synthesize-and-inherit-types">Synthesize and inherit types</h2>
-
-<pre class="Agda">  <a id="Inference.synthesize"></a><a id="6075" href="/19.08/PUC/2019/Assignment5/#6075" class="Function">synthesize</a> <a id="6086" class="Symbol">:</a> <a id="6088" class="Symbol">∀</a> <a id="6090" class="Symbol">(</a><a id="6091" href="Assignment5.html#6091" class="Bound">Γ</a> <a id="6093" class="Symbol">:</a> <a id="6095" href="Assignment5.html#1625" class="Datatype">Context</a><a id="6102" class="Symbol">)</a> <a id="6104" class="Symbol">(</a><a id="6105" href="Assignment5.html#6105" class="Bound">M</a> <a id="6107" class="Symbol">:</a> <a id="6109" href="Assignment5.html#1734" class="Datatype">Term⁺</a><a id="6114" class="Symbol">)</a>
+</pre><h2 id="synthesize-and-inherit-types">Synthesize and inherit types</h2><pre class="Agda">  <a id="Inference.synthesize"></a><a id="6075" href="/19.08/PUC/2019/Assignment5/#6075" class="Function">synthesize</a> <a id="6086" class="Symbol">:</a> <a id="6088" class="Symbol">∀</a> <a id="6090" class="Symbol">(</a><a id="6091" href="Assignment5.html#6091" class="Bound">Γ</a> <a id="6093" class="Symbol">:</a> <a id="6095" href="Assignment5.html#1625" class="Datatype">Context</a><a id="6102" class="Symbol">)</a> <a id="6104" class="Symbol">(</a><a id="6105" href="Assignment5.html#6105" class="Bound">M</a> <a id="6107" class="Symbol">:</a> <a id="6109" href="Assignment5.html#1734" class="Datatype">Term⁺</a><a id="6114" class="Symbol">)</a>
       <a id="6122" class="Comment">-----------------------</a>
     <a id="6150" class="Symbol">→</a> <a id="6152" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#605" class="Datatype">Dec</a> <a id="6156" class="Symbol">(</a><a id="6157" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1783" class="Function">∃[</a> <a id="6160" href="/19.08/PUC/2019/Assignment5/#6160" class="Bound">A</a> <a id="6162" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1783" class="Function">]</a><a id="6163" class="Symbol">(</a><a id="6164" href="Assignment5.html#6091" class="Bound">Γ</a> <a id="6166" href="Assignment5.html#2852" class="Datatype Operator">⊢</a> <a id="6168" href="Assignment5.html#6105" class="Bound">M</a> <a id="6170" href="Assignment5.html#2852" class="Datatype Operator">↑</a> <a id="6172" href="Assignment5.html#6160" class="Bound">A</a><a id="6173" class="Symbol">))</a>
 
@@ -369,10 +228,7 @@ some extra practice.</p>
   <a id="8213" class="Symbol">...</a> <a id="8217" class="Symbol">|</a> <a id="8219" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="8223" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟨</a> <a id="8225" href="/19.08/PUC/2019/Assignment5/#8225" class="Bound">A</a> <a id="8227" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">,</a> <a id="8229" href="Assignment5.html#8229" class="Bound">⊢M</a> <a id="8232" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟩</a> <a id="8234" class="Keyword">with</a> <a id="8239" href="Assignment5.html#8225" class="Bound">A</a> <a id="8241" href="Assignment5.html#3916" class="Function Operator">≟Tp</a> <a id="8245" class="Bound">B</a>
   <a id="8249" class="Symbol">...</a>   <a id="8255" class="Symbol">|</a> <a id="8257" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a>  <a id="8261" href="/19.08/PUC/2019/Assignment5/#8261" class="Bound">A≢B</a>             <a id="8277" class="Symbol">=</a>  <a id="8280" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a>  <a id="8284" class="Symbol">(</a><a id="8285" href="Assignment5.html#5872" class="Function">¬switch</a> <a id="8293" class="Bound">⊢M</a> <a id="8296" href="Assignment5.html#8261" class="Bound">A≢B</a><a id="8299" class="Symbol">)</a>
   <a id="8303" class="Symbol">...</a>   <a id="8309" class="Symbol">|</a> <a id="8311" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="8315" href="/19.08/PUC/2019/Assignment5/#8315" class="Bound">A≡B</a>             <a id="8331" class="Symbol">=</a>  <a id="8334" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a> <a id="8338" class="Symbol">(</a><a id="8339" href="Assignment5.html#3792" class="InductiveConstructor">⊢↑</a> <a id="8342" class="Bound">⊢M</a> <a id="8345" href="Assignment5.html#8315" class="Bound">A≡B</a><a id="8348" class="Symbol">)</a>
-</pre>
-<h3 id="erasure">Erasure</h3>
-
-<pre class="Agda">  <a id="Inference.∥_∥Tp"></a><a id="8374" href="/19.08/PUC/2019/Assignment5/#8374" class="Function Operator">∥_∥Tp</a> <a id="8380" class="Symbol">:</a> <a id="8382" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="8387" class="Symbol">→</a> <a id="8389" href="/19.08/More/#14469" class="Datatype">DB.Type</a>
+</pre><h3 id="erasure">Erasure</h3><pre class="Agda">  <a id="Inference.∥_∥Tp"></a><a id="8374" href="/19.08/PUC/2019/Assignment5/#8374" class="Function Operator">∥_∥Tp</a> <a id="8380" class="Symbol">:</a> <a id="8382" href="Assignment5.html#1552" class="Datatype">Type</a> <a id="8387" class="Symbol">→</a> <a id="8389" href="/19.08/More/#14469" class="Datatype">DB.Type</a>
   <a id="8399" href="/19.08/PUC/2019/Assignment5/#8374" class="Function Operator">∥</a> <a id="8401" href="Assignment5.html#1573" class="InductiveConstructor">`ℕ</a> <a id="8404" href="Assignment5.html#8374" class="Function Operator">∥Tp</a>             <a id="8420" class="Symbol">=</a>  <a id="8423" href="/19.08/More/#14488" class="InductiveConstructor">DB.`ℕ</a>
   <a id="8431" href="/19.08/PUC/2019/Assignment5/#8374" class="Function Operator">∥</a> <a id="8433" href="Assignment5.html#8433" class="Bound">A</a> <a id="8435" href="Assignment5.html#1590" class="InductiveConstructor Operator">⇒</a> <a id="8437" href="Assignment5.html#8437" class="Bound">B</a> <a id="8439" href="Assignment5.html#8374" class="Function Operator">∥Tp</a>          <a id="8452" class="Symbol">=</a>  <a id="8455" href="Assignment5.html#8374" class="Function Operator">∥</a> <a id="8457" href="Assignment5.html#8433" class="Bound">A</a> <a id="8459" href="Assignment5.html#8374" class="Function Operator">∥Tp</a> <a id="8463" href="/19.08/More/#14503" class="InductiveConstructor Operator">DB.⇒</a> <a id="8468" href="Assignment5.html#8374" class="Function Operator">∥</a> <a id="8470" href="Assignment5.html#8437" class="Bound">B</a> <a id="8472" href="Assignment5.html#8374" class="Function Operator">∥Tp</a>
 
@@ -397,218 +253,4 @@ some extra practice.</p>
   <a id="9060" href="/19.08/PUC/2019/Assignment5/#8768" class="Function Operator">∥</a> <a id="9062" href="Assignment5.html#3509" class="InductiveConstructor">⊢case</a> <a id="9068" href="Assignment5.html#9068" class="Bound">⊢L</a> <a id="9071" href="Assignment5.html#9071" class="Bound">⊢M</a> <a id="9074" href="Assignment5.html#9074" class="Bound">⊢N</a> <a id="9077" href="Assignment5.html#8768" class="Function Operator">∥⁻</a>  <a id="9081" class="Symbol">=</a>  <a id="9084" href="/19.08/More/#15292" class="InductiveConstructor">DB.case</a> <a id="9092" href="Assignment5.html#8714" class="Function Operator">∥</a> <a id="9094" href="Assignment5.html#9068" class="Bound">⊢L</a> <a id="9097" href="Assignment5.html#8714" class="Function Operator">∥⁺</a> <a id="9100" href="Assignment5.html#8768" class="Function Operator">∥</a> <a id="9102" href="Assignment5.html#9071" class="Bound">⊢M</a> <a id="9105" href="Assignment5.html#8768" class="Function Operator">∥⁻</a> <a id="9108" href="Assignment5.html#8768" class="Function Operator">∥</a> <a id="9110" href="Assignment5.html#9074" class="Bound">⊢N</a> <a id="9113" href="Assignment5.html#8768" class="Function Operator">∥⁻</a>
   <a id="9118" href="/19.08/PUC/2019/Assignment5/#8768" class="Function Operator">∥</a> <a id="9120" href="Assignment5.html#3694" class="InductiveConstructor">⊢μ</a> <a id="9123" href="Assignment5.html#9123" class="Bound">⊢M</a> <a id="9126" href="Assignment5.html#8768" class="Function Operator">∥⁻</a>           <a id="9139" class="Symbol">=</a>  <a id="9142" href="/19.08/More/#15391" class="InductiveConstructor Operator">DB.μ</a> <a id="9147" href="Assignment5.html#8768" class="Function Operator">∥</a> <a id="9149" href="Assignment5.html#9123" class="Bound">⊢M</a> <a id="9152" href="Assignment5.html#8768" class="Function Operator">∥⁻</a>
   <a id="9157" href="/19.08/PUC/2019/Assignment5/#8768" class="Function Operator">∥</a> <a id="9159" href="Assignment5.html#3792" class="InductiveConstructor">⊢↑</a> <a id="9162" href="Assignment5.html#9162" class="Bound">⊢M</a> <a id="9165" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a> <a id="9170" href="Assignment5.html#8768" class="Function Operator">∥⁻</a>      <a id="9178" class="Symbol">=</a>  <a id="9181" href="Assignment5.html#8714" class="Function Operator">∥</a> <a id="9183" href="Assignment5.html#9162" class="Bound">⊢M</a> <a id="9186" href="Assignment5.html#8714" class="Function Operator">∥⁺</a>
-</pre>
-
-<h4 id="bidirectional-mul">Exercise <code class="language-plaintext highlighter-rouge">bidirectional-mul</code> (recommended)</h4>
-
-<p>Rewrite your definition of multiplication from
-Chapter [Lambda][plfa.Lambda], decorated to support inference.</p>
-
-<h4 id="bidirectional-products">Exercise <code class="language-plaintext highlighter-rouge">bidirectional-products</code> (recommended)</h4>
-
-<p>Extend the bidirectional type rules to include products from
-Chapter [More][plfa.More].</p>
-
-<h4 id="exercise-bidirectional-rest-stretch">Exercise <code class="language-plaintext highlighter-rouge">bidirectional-rest</code> (stretch)</h4>
-
-<p>Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More][plfa.More].</p>
-
-<h4 id="exercise-inference-mul-recommended">Exercise <code class="language-plaintext highlighter-rouge">inference-mul</code> (recommended)</h4>
-
-<p>Using the definition from exercise <a href="#bidirectional-mul">bidirectional-mul</a>,
-infer the corresponding inherently typed term.
-Show that erasure of the inferred typing yields your definition of
-multiplication from Chapter [DeBruijn][plfa.DeBruijn].</p>
-
-<h4 id="exercise-inference-products-recommended">Exercise <code class="language-plaintext highlighter-rouge">inference-products</code> (recommended)</h4>
-
-<p>Extend bidirectional inference to include products from
-Chapter [More][plfa.More].</p>
-
-<h4 id="exercise-inference-rest-stretch">Exercise <code class="language-plaintext highlighter-rouge">inference-rest</code> (stretch)</h4>
-
-<p>Extend bidirectional inference to include the rest of the constructs from
-Chapter [More][plfa.More].</p>
-
-<h2 id="untyped">Untyped</h2>
-
-<h4 id="exercise-type">Exercise (<code class="language-plaintext highlighter-rouge">Type≃⊤</code>)</h4>
-
-<p>Show that <code class="language-plaintext highlighter-rouge">Type</code> is isomorphic to <code class="language-plaintext highlighter-rouge">⊤</code>, the unit type.</p>
-
-<h4 id="exercise-contextℕ">Exercise (<code class="language-plaintext highlighter-rouge">Context≃ℕ</code>)</h4>
-
-<p>Show that <code class="language-plaintext highlighter-rouge">Context</code> is isomorphic to <code class="language-plaintext highlighter-rouge">ℕ</code>.</p>
-
-<h4 id="exercise-variant-1">Exercise (<code class="language-plaintext highlighter-rouge">variant-1</code>)</h4>
-
-<p>How would the rules change if we want call-by-value where terms
-normalise completely?  Assume that <code class="language-plaintext highlighter-rouge">β</code> should not permit reduction
-unless both terms are in normal form.</p>
-
-<h4 id="exercise-variant-2">Exercise (<code class="language-plaintext highlighter-rouge">variant-2</code>)</h4>
-
-<p>How would the rules change if we want call-by-value where terms
-do not reduce underneath lambda?  Assume that <code class="language-plaintext highlighter-rouge">β</code>
-permits reduction when both terms are values (that is, lambda
-abstractions).  What would <code class="language-plaintext highlighter-rouge">2+2ᶜ</code> reduce to in this case?</p>
-
-<h4 id="exercise-plus-eval">Exercise <code class="language-plaintext highlighter-rouge">plus-eval</code></h4>
-
-<p>Use the evaluator to confirm that <code class="language-plaintext highlighter-rouge">plus · two · two</code> and <code class="language-plaintext highlighter-rouge">four</code>
-normalise to the same term.</p>
-
-<h4 id="exercise-multiplication-untyped-recommended">Exercise <code class="language-plaintext highlighter-rouge">multiplication-untyped</code> (recommended)</h4>
-
-<p>Use the encodings above to translate your definition of
-multiplication from previous chapters with the Scott
-representation and the encoding of the fixpoint operator.
-Confirm that two times two is four.</p>
-
-<h4 id="exercise-encode-more-stretch">Exercise <code class="language-plaintext highlighter-rouge">encode-more</code> (stretch)</h4>
-
-<p>Along the lines above, encode all of the constructs of
-Chapter [More][plfa.More],
-save for primitive numbers, in the untyped lambda calculus.</p>
-
-  </div>
-
-  <p style="text-align:center;">
-
-
-
-    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment5.lagda.md">Source</a>
-
-
-
-</p>
-
-
-</article>
-
-      </div>
-    </main><footer class="site-footer h-card">
-  <data class="u-url" href="/19.08/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">Programming Language Foundations in Agda
-</h2><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Philip Wadler</li>
-          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Wen Kokke</li>
-          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Jeremy Siek</li>
-          <li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
-  </div>
-</footer>
-<!-- Import jQuery -->
-<script type="text/javascript" src="/19.08/assets/jquery.js"></script>
-
-<script type="text/javascript">
-
- // Makes sandwhich menu works
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
- // Script which allows for foldable code blocks
- $('div.foldable pre').each(function(){
-     var autoHeight = $(this).height();
-     var lineHeight = parseFloat($(this).css('line-height'));
-
-     var plus    = $("<div></div>");
-     var horLine = $("<div></div>");
-     var verLine = $("<div></div>");
-     $(this).prepend(plus);
-     plus.css({
-         'position'         : 'relative',
-         'float'            : 'right',
-         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
-         'width'            : lineHeight,
-         'height'           : lineHeight});
-     verLine.css({
-         'position'         : 'relative',
-         'height'           : lineHeight,
-         'width'            : '3px',
-         'background-color' : '#C1E0FF'});
-     horLine.css({
-         'position'         : 'relative',
-         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
-         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
-         'height'           : '3px',
-         'width'            : lineHeight,
-         'background-color' : '#C1E0FF'});
-     plus.append(verLine);
-     plus.append(horLine);
-
-     $(this).height(2.0 * lineHeight);
-     $(this).css('overflow','hidden');
-
-     $(this).click(function(){
-         if ($(this).height() == autoHeight) {
-             $(this).height(2.0 * lineHeight);
-             plus.show();
-         }
-         else {
-             $(this).height('auto');
-             plus.hide();
-         }
-     });
- });
-</script>
-
-<!-- Import KaTeX -->
-<script type="text/javascript" src="/19.08/assets/katex.js"></script>
-
-<!-- Script which renders TeX using KaTeX -->
-<script type="text/javascript">
- $("script[type='math/tex']").replaceWith(
-     function(){
-         var tex = $(this).text();
-         return "<span class=\"inline-equation\">" +
-                katex.renderToString(tex) +
-                "</span>";
-     });
- $("script[type='math/tex; mode=display']").replaceWith(
-     function(){
-         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
-         return "<div class=\"equation\">" +
-                katex.renderToString("\\displaystyle "+tex) +
-                "</div>";
-     });
-</script>
-</body>
-
-</html>
+</pre><h4 id="bidirectional-mul">Exercise <code class="language-plaintext highlighter-rouge">bidirectional-mul</code> (recommended)</h4><p>Rewrite your definition of multiplication from Chapter [Lambda][plfa.Lambda], decorated to support inference.</p><h4 id="bidirectional-products">Exercise <code class="language-plaintext highlighter-rouge">bidirectional-products</code> (recommended)</h4><p>Extend the bidirectional type rules to include products from Chapter [More][plfa.More].</p><h4 id="exercise-bidirectional-rest-stretch">Exercise <code class="language-plaintext highlighter-rouge">bidirectional-rest</code> (stretch)</h4><p>Extend the bidirectional type rules to include the rest of the constructs from Chapter [More][plfa.More].</p><h4 id="exercise-inference-mul-recommended">Exercise <code class="language-plaintext highlighter-rouge">inference-mul</code> (recommended)</h4><p>Using the definition from exercise <a href="#bidirectional-mul">bidirectional-mul</a>, infer the corresponding inherently typed term. Show that erasure of the inferred typing yields your definition of multiplication from Chapter [DeBruijn][plfa.DeBruijn].</p><h4 id="exercise-inference-products-recommended">Exercise <code class="language-plaintext highlighter-rouge">inference-products</code> (recommended)</h4><p>Extend bidirectional inference to include products from Chapter [More][plfa.More].</p><h4 id="exercise-inference-rest-stretch">Exercise <code class="language-plaintext highlighter-rouge">inference-rest</code> (stretch)</h4><p>Extend bidirectional inference to include the rest of the constructs from Chapter [More][plfa.More].</p><h2 id="untyped">Untyped</h2><h4 id="exercise-type">Exercise (<code class="language-plaintext highlighter-rouge">Type≃⊤</code>)</h4><p>Show that <code class="language-plaintext highlighter-rouge">Type</code> is isomorphic to <code class="language-plaintext highlighter-rouge">⊤</code>, the unit type.</p><h4 id="exercise-contextℕ">Exercise (<code class="language-plaintext highlighter-rouge">Context≃ℕ</code>)</h4><p>Show that <code class="language-plaintext highlighter-rouge">Context</code> is isomorphic to <code class="language-plaintext highlighter-rouge">ℕ</code>.</p><h4 id="exercise-variant-1">Exercise (<code class="language-plaintext highlighter-rouge">variant-1</code>)</h4><p>How would the rules change if we want call-by-value where terms normalise completely? Assume that <code class="language-plaintext highlighter-rouge">β</code> should not permit reduction unless both terms are in normal form.</p><h4 id="exercise-variant-2">Exercise (<code class="language-plaintext highlighter-rouge">variant-2</code>)</h4><p>How would the rules change if we want call-by-value where terms do not reduce underneath lambda? Assume that <code class="language-plaintext highlighter-rouge">β</code> permits reduction when both terms are values (that is, lambda abstractions). What would <code class="language-plaintext highlighter-rouge">2+2ᶜ</code> reduce to in this case?</p><h4 id="exercise-plus-eval">Exercise <code class="language-plaintext highlighter-rouge">plus-eval</code></h4><p>Use the evaluator to confirm that <code class="language-plaintext highlighter-rouge">plus · two · two</code> and <code class="language-plaintext highlighter-rouge">four</code> normalise to the same term.</p><h4 id="exercise-multiplication-untyped-recommended">Exercise <code class="language-plaintext highlighter-rouge">multiplication-untyped</code> (recommended)</h4><p>Use the encodings above to translate your definition of multiplication from previous chapters with the Scott representation and the encoding of the fixpoint operator. Confirm that two times two is four.</p><h4 id="exercise-encode-more-stretch">Exercise <code class="language-plaintext highlighter-rouge">encode-more</code> (stretch)</h4><p>Along the lines above, encode all of the constructs of Chapter [More][plfa.More], save for primitive numbers, in the untyped lambda calculus.</p></div><p style="text-align:center"><a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment5.lagda.md">Source</a></p></article></div></main><footer class="site-footer h-card"><data class="u-url" href="/19.08/"></data><div class="wrapper"><h2 class="footer-heading">Programming Language Foundations in Agda</h2><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Philip Wadler</li><li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Wen Kokke</li><li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Jeremy Siek</li><li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></div></footer><script type="text/javascript" src="/19.08/assets/jquery.js"></script><script type="text/javascript">$(".menu-icon").click(function(){$(".trigger").toggle()}),$("div.foldable pre").each(function(){var i=$(this).height(),t=parseFloat($(this).css("line-height")),h=$("<div></div>"),e=$("<div></div>"),o=$("<div></div>");$(this).prepend(h),h.css({position:"relative",float:"right",right:"-"+(.5*t-1.5)+"px",width:t,height:t}),o.css({position:"relative",height:t,width:"3px","background-color":"#C1E0FF"}),e.css({position:"relative",top:"-"+(.5*t+1.5)+"px",left:"-"+(.5*t-1.5)+"px",height:"3px",width:t,"background-color":"#C1E0FF"}),h.append(o),h.append(e),$(this).height(2*t),$(this).css("overflow","hidden"),$(this).click(function(){$(this).height()==i?($(this).height(2*t),h.show()):($(this).height("auto"),h.hide())})})</script><script type="text/javascript" src="/19.08/assets/katex.js"></script><script type="text/javascript">$("script[type='math/tex']").replaceWith(function(){var t=$(this).text();return'<span class="inline-equation">'+katex.renderToString(t)+"</span>"}),$("script[type='math/tex; mode=display']").replaceWith(function(){var t=$(this).text().replace(/%.*?(\n|$)/g,"");return'<div class="equation">'+katex.renderToString("\\displaystyle "+t)+"</div>"})</script></body></html>

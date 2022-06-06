@@ -1,123 +1,5 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>More: Additional constructs of simply-typed lambda calculus | Programming Language Foundations in Agda
-</title><!-- Begin Jekyll SEO tag v2.6.1 -->
-<meta name="generator" content="Jekyll v3.9.0" />
-<meta property="og:title" content="More: Additional constructs of simply-typed lambda calculus" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="Programming Language Foundations in Agda" />
-<meta property="og:description" content="Programming Language Foundations in Agda" />
-<link rel="canonical" href="https://plfa.github.io/20.07/More/" />
-<meta property="og:url" content="https://plfa.github.io/20.07/More/" />
-<meta property="og:site_name" content="Programming Language Foundations in Agda" />
-<script type="application/ld+json">
-{"url":"https://plfa.github.io/20.07/More/","headline":"More: Additional constructs of simply-typed lambda calculus","description":"Programming Language Foundations in Agda","@type":"WebPage","@context":"https://schema.org"}</script>
-<!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/20.07/assets/main.css"></head>
-<body><header class="site-header" role="banner">
-
-    <div class="wrapper">
-
-        <a class="site-title" href="/20.07/">Programming Language Foundations in Agda
-</a>
-
-        <nav class="site-nav">
-            <span class="menu-icon">
-                <svg viewBox="0 0 18 15" width="18px" height="15px">
-                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
-                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
-                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
-                </svg>
-            </span>
-
-            <div class="trigger">
-                <a class="page-link" href="/20.07/">The Book</a>
-                <a class="page-link" href="/20.07/Announcements/">Announcements</a>
-                <a class="page-link" href="/20.07/GettingStarted/">Getting Started</a>
-                <a class="page-link" href="/20.07/Citing/">Citing</a>
-                <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a>
-            </div>
-        </nav>
-
-    </div>
-
-</header>
-<main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post">
-
-  <header class="post-header">
-      <h1 class="post-title">More: Additional constructs of simply-typed lambda calculus</h1>
-  </header>
-
-  <p style="text-align:center;">
-
-    <a alt="Previous chapter" href="/20.07/DeBruijn/">Prev</a>
-
-
-    &bullet;
-
-
-    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-20.07/src/plfa/part2/More.lagda.md">Source</a>
-
-
-    &bullet;
-
-
-    <a alt="Next chapter" href="/20.07/Bisimulation/">Next</a>
-
-</p>
-
-
-  <div class="post-content">
-    <pre class="Agda"><a id="174" class="Keyword">module</a> <a id="181" href="/20.07/More/" class="Module">plfa.part2.More</a> <a id="197" class="Keyword">where</a>
-</pre>
-<p>So far, we have focussed on a relatively minimal language, based on
-Plotkin’s PCF, which supports functions, naturals, and fixpoints.  In
-this chapter we extend our calculus to support the following:</p>
-
-<ul>
-  <li>primitive numbers</li>
-  <li><em>let</em> bindings</li>
-  <li>products</li>
-  <li>an alternative formulation of products</li>
-  <li>sums</li>
-  <li>unit type</li>
-  <li>an alternative formulation of unit type</li>
-  <li>empty type</li>
-  <li>lists</li>
-</ul>
-
-<p>All of the data types should be familiar from Part I of this textbook.
-For <em>let</em> and the alternative formulations we show how they translate
-to other constructs in the calculus.  Most of the description will be
-informal. We show how to formalise the first four constructs and leave
-the rest as an exercise for the reader.</p>
-
-<p>Our informal descriptions will be in the style of
-Chapter <a href="/20.07/Lambda/">Lambda</a>,
-using extrinsically-typed terms,
-while our formalisation will be in the style of
-Chapter <a href="/20.07/DeBruijn/">DeBruijn</a>,
-using intrinsically-typed terms.</p>
-
-<p>By now, explaining with symbols should be more concise, more precise,
-and easier to follow than explaining in prose.
-For each construct, we give syntax, typing, reductions, and an example.
-We also give translations where relevant; formally establishing the
-correctness of translations will be the subject of the next chapter.</p>
-
-<h2 id="primitive-numbers">Primitive numbers</h2>
-
-<p>We define a <code class="language-plaintext highlighter-rouge">Nat</code> type equivalent to the built-in natural number type
-with multiplication as a primitive operation on numbers:</p>
-
-<h3 id="syntax">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>More: Additional constructs of simply-typed lambda calculus | Programming Language Foundations in Agda</title><meta name="generator" content="Jekyll v3.9.0"><meta property="og:title" content="More: Additional constructs of simply-typed lambda calculus"><meta property="og:locale" content="en_US"><meta name="description" content="Programming Language Foundations in Agda"><meta property="og:description" content="Programming Language Foundations in Agda"><link rel="canonical" href="https://plfa.github.io/20.07/More/"><meta property="og:url" content="https://plfa.github.io/20.07/More/"><meta property="og:site_name" content="Programming Language Foundations in Agda"><script type="application/ld+json">{"url":"https://plfa.github.io/20.07/More/","headline":"More: Additional constructs of simply-typed lambda calculus","description":"Programming Language Foundations in Agda","@type":"WebPage","@context":"https://schema.org"}</script><link rel="stylesheet" href="/20.07/assets/main.css"></head><body><header class="site-header" role="banner"><div class="wrapper"><a class="site-title" href="/20.07/">Programming Language Foundations in Agda</a><nav class="site-nav"><span class="menu-icon"><svg viewBox="0 0 18 15" width="18px" height="15px"><path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/><path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/><path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/></svg></span><div class="trigger"><a class="page-link" href="/20.07/">The Book</a> <a class="page-link" href="/20.07/Announcements/">Announcements</a> <a class="page-link" href="/20.07/GettingStarted/">Getting Started</a> <a class="page-link" href="/20.07/Citing/">Citing</a> <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a></div></nav></div></header><main class="page-content" aria-label="Content"><div class="wrapper"><article class="post"><header class="post-header"><h1 class="post-title">More: Additional constructs of simply-typed lambda calculus</h1></header><p style="text-align:center"><a alt="Previous chapter" href="/20.07/DeBruijn/">Prev</a> &bullet; <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-20.07/src/plfa/part2/More.lagda.md">Source</a> &bullet; <a alt="Next chapter" href="/20.07/Bisimulation/">Next</a></p><div class="post-content"><pre class="Agda"><a id="174" class="Keyword">module</a> <a id="181" href="/20.07/More/" class="Module">plfa.part2.More</a> <a id="197" class="Keyword">where</a>
+</pre><p>So far, we have focussed on a relatively minimal language, based on Plotkin’s PCF, which supports functions, naturals, and fixpoints. In this chapter we extend our calculus to support the following:</p><ul><li>primitive numbers</li><li><em>let</em> bindings</li><li>products</li><li>an alternative formulation of products</li><li>sums</li><li>unit type</li><li>an alternative formulation of unit type</li><li>empty type</li><li>lists</li></ul><p>All of the data types should be familiar from Part I of this textbook. For <em>let</em> and the alternative formulations we show how they translate to other constructs in the calculus. Most of the description will be informal. We show how to formalise the first four constructs and leave the rest as an exercise for the reader.</p><p>Our informal descriptions will be in the style of Chapter <a href="/20.07/Lambda/">Lambda</a>, using extrinsically-typed terms, while our formalisation will be in the style of Chapter <a href="/20.07/DeBruijn/">DeBruijn</a>, using intrinsically-typed terms.</p><p>By now, explaining with symbols should be more concise, more precise, and easier to follow than explaining in prose. For each construct, we give syntax, typing, reductions, and an example. We also give translations where relevant; formally establishing the correctness of translations will be the subject of the next chapter.</p><h2 id="primitive-numbers">Primitive numbers</h2><p>We define a <code class="language-plaintext highlighter-rouge">Nat</code> type equivalent to the built-in natural number type with multiplication as a primitive operation on numbers:</p><h3 id="syntax">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   Nat                                 primitive natural numbers
 
 L, M, N ::= ...                     Terms
@@ -126,15 +8,7 @@ L, M, N ::= ...                     Terms
 
 V, W ::= ...                        Values
   con c                               constant
-</code></pre></div></div>
-
-<h3 id="typing">Typing</h3>
-
-<p>The hypothesis of the <code class="language-plaintext highlighter-rouge">con</code> rule is unusual, in that
-it refers to a typing judgment of Agda rather than a
-typing judgment of the defined calculus:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c : ℕ
+</code></pre></div></div><h3 id="typing">Typing</h3><p>The hypothesis of the <code class="language-plaintext highlighter-rouge">con</code> rule is unusual, in that it refers to a typing judgment of Agda rather than a typing judgment of the defined calculus:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c : ℕ
 --------------- con
 Γ ⊢ con c : Nat
 
@@ -142,16 +16,7 @@ typing judgment of the defined calculus:</p>
 Γ ⊢ M : Nat
 ---------------- _`*_
 Γ ⊢ L `* M : Nat
-</code></pre></div></div>
-
-<h3 id="reduction">Reduction</h3>
-
-<p>A rule that defines a primitive directly, such as the last rule below,
-is called a δ rule.  Here the δ rule defines multiplication of
-primitive numbers in terms of multiplication of naturals as given
-by the Agda standard prelude:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
+</code></pre></div></div><h3 id="reduction">Reduction</h3><p>A rule that defines a primitive directly, such as the last rule below, is called a δ rule. Here the δ rule defines multiplication of primitive numbers in terms of multiplication of naturals as given by the Agda standard prelude:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
 ----------------- ξ-*₁
 L `* M —→ L′ `* M
 
@@ -161,71 +26,27 @@ V `* M —→ V `* M′
 
 ----------------------------- δ-*
 con c `* con d —→ con (c * d)
-</code></pre></div></div>
-
-<h3 id="example">Example</h3>
-
-<p>Here is a function to cube a primitive number:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cube : ∅ ⊢ Nat ⇒ Nat
+</code></pre></div></div><h3 id="example">Example</h3><p>Here is a function to cube a primitive number:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cube : ∅ ⊢ Nat ⇒ Nat
 cube = ƛ x ⇒ x `* x `* x
-</code></pre></div></div>
-
-<h2 id="let-bindings">Let bindings</h2>
-
-<p>Let bindings affect only the syntax of terms; they introduce no new
-types or values:</p>
-
-<h3 id="syntax-1">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L, M, N ::= ...                     Terms
+</code></pre></div></div><h2 id="let-bindings">Let bindings</h2><p>Let bindings affect only the syntax of terms; they introduce no new types or values:</p><h3 id="syntax-1">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L, M, N ::= ...                     Terms
   `let x `= M `in N                   let
-</code></pre></div></div>
-
-<h3 id="typing-1">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ M ⦂ A
+</code></pre></div></div><h3 id="typing-1">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ M ⦂ A
 Γ , x ⦂ A ⊢ N ⦂ B
 ------------------------- `let
 Γ ⊢ `let x `= M `in N ⦂ B
-</code></pre></div></div>
-
-<h3 id="reduction-1">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
+</code></pre></div></div><h3 id="reduction-1">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
 --------------------------------------- ξ-let
 `let x `= M `in N —→ `let x `= M′ `in N
 
 --------------------------------- β-let
 `let x `= V `in N —→ N [ x := V ]
-</code></pre></div></div>
-
-<h3 id="example-1">Example</h3>
-
-<p>Here is a function to raise a primitive number to the tenth power:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp10 : ∅ ⊢ Nat ⇒ Nat
+</code></pre></div></div><h3 id="example-1">Example</h3><p>Here is a function to raise a primitive number to the tenth power:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp10 : ∅ ⊢ Nat ⇒ Nat
 exp10 = ƛ x ⇒ `let x2  `= x  `* x  `in
               `let x4  `= x2 `* x2 `in
               `let x5  `= x4 `* x  `in
               x5 `* x5
-</code></pre></div></div>
-
-<h3 id="translation">Translation</h3>
-
-<p>We can translate each <em>let</em> term into an application of an abstraction:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
-</code></pre></div></div>
-
-<p>Here <code class="language-plaintext highlighter-rouge">M †</code> is the translation of term <code class="language-plaintext highlighter-rouge">M</code> from a calculus with the
-construct to a calculus without the construct.</p>
-
-<h2 id="products">Products</h2>
-
-<h3 id="syntax-2">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h3 id="translation">Translation</h3><p>We can translate each <em>let</em> term into an application of an abstraction:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(`let x `= M `in N) †  =  (ƛ x ⇒ (N †)) · (M †)
+</code></pre></div></div><p>Here <code class="language-plaintext highlighter-rouge">M †</code> is the translation of term <code class="language-plaintext highlighter-rouge">M</code> from a calculus with the construct to a calculus without the construct.</p><h2 id="products">Products</h2><h3 id="syntax-2">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   A `× B                              product type
 
 L, M, N ::= ...                     Terms
@@ -235,11 +56,7 @@ L, M, N ::= ...                     Terms
 
 V, W ::= ...                        Values
   `⟨ V , W ⟩                          pair
-</code></pre></div></div>
-
-<h3 id="typing-2">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ M ⦂ A
+</code></pre></div></div><h3 id="typing-2">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ M ⦂ A
 Γ ⊢ N ⦂ B
 ----------------------- `⟨_,_⟩ or `×-I
 Γ ⊢ `⟨ M , N ⟩ ⦂ A `× B
@@ -251,11 +68,7 @@ V, W ::= ...                        Values
 Γ ⊢ L ⦂ A `× B
 ---------------- `proj₂ or `×-E₂
 Γ ⊢ `proj₂ L ⦂ B
-</code></pre></div></div>
-
-<h3 id="reduction-2">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
+</code></pre></div></div><h3 id="reduction-2">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
 ------------------------- ξ-⟨,⟩₁
 `⟨ M , N ⟩ —→ `⟨ M′ , N ⟩
 
@@ -276,26 +89,9 @@ L —→ L′
 
 ---------------------- β-proj₂
 `proj₂ `⟨ V , W ⟩ —→ W
-</code></pre></div></div>
-
-<h3 id="example-2">Example</h3>
-
-<p>Here is a function to swap the components of a pair:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>swap× : ∅ ⊢ A `× B ⇒ B `× A
+</code></pre></div></div><h3 id="example-2">Example</h3><p>Here is a function to swap the components of a pair:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>swap× : ∅ ⊢ A `× B ⇒ B `× A
 swap× = ƛ z ⇒ `⟨ proj₂ z , proj₁ z ⟩
-</code></pre></div></div>
-
-<h2 id="alternative-formulation-of-products">Alternative formulation of products</h2>
-
-<p>There is an alternative formulation of products, where in place of two
-ways to eliminate the type we have a case term that binds two
-variables.  We repeat the syntax in full, but only give the new type
-and reduction rules:</p>
-
-<h3 id="syntax-3">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h2 id="alternative-formulation-of-products">Alternative formulation of products</h2><p>There is an alternative formulation of products, where in place of two ways to eliminate the type we have a case term that binds two variables. We repeat the syntax in full, but only give the new type and reduction rules:</p><h3 id="syntax-3">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   A `× B                              product type
 
 L, M, N ::= ...                     Terms
@@ -304,76 +100,32 @@ L, M, N ::= ...                     Terms
 
 V, W ::=                            Values
   `⟨ V , W ⟩                          pair
-</code></pre></div></div>
-
-<h3 id="typing-3">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ L ⦂ A `× B
+</code></pre></div></div><h3 id="typing-3">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ L ⦂ A `× B
 Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
 ------------------------------- case× or ×-E
 Γ ⊢ case× L [⟨ x , y ⟩⇒ N ] ⦂ C
-</code></pre></div></div>
-
-<h3 id="reduction-3">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
+</code></pre></div></div><h3 id="reduction-3">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
 --------------------------------------------------- ξ-case×
 case× L [⟨ x , y ⟩⇒ N ] —→ case× L′ [⟨ x , y ⟩⇒ N ]
 
 --------------------------------------------------------- β-case×
 case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒ N ] —→ N [ x := V ][ y := W ]
-</code></pre></div></div>
-
-<h3 id="example-3">Example</h3>
-
-<p>Here is a function to swap the components of a pair rewritten in the new notation:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>swap×-case : ∅ ⊢ A `× B ⇒ B `× A
+</code></pre></div></div><h3 id="example-3">Example</h3><p>Here is a function to swap the components of a pair rewritten in the new notation:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>swap×-case : ∅ ⊢ A `× B ⇒ B `× A
 swap×-case = ƛ z ⇒ case× z
                      [⟨ x , y ⟩⇒ `⟨ y , x ⟩ ]
-</code></pre></div></div>
-
-<h3 id="translation-1">Translation</h3>
-
-<p>We can translate the alternative formulation into the one with projections:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  (case× L [⟨ x , y ⟩⇒ N ]) †
+</code></pre></div></div><h3 id="translation-1">Translation</h3><p>We can translate the alternative formulation into the one with projections:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  (case× L [⟨ x , y ⟩⇒ N ]) †
 =
   `let z `= (L †) `in
   `let x `= `proj₁ z `in
   `let y `= `proj₂ z `in
   (N †)
-</code></pre></div></div>
-
-<p>Here <code class="language-plaintext highlighter-rouge">z</code> is a variable that does not appear free in <code class="language-plaintext highlighter-rouge">N</code>.  We refer
-to such a variable as <em>fresh</em>.</p>
-
-<p>One might think that we could instead use a more compact translation:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- WRONG
+</code></pre></div></div><p>Here <code class="language-plaintext highlighter-rouge">z</code> is a variable that does not appear free in <code class="language-plaintext highlighter-rouge">N</code>. We refer to such a variable as <em>fresh</em>.</p><p>One might think that we could instead use a more compact translation:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- WRONG
   (case× L [⟨ x , y ⟩⇒ N ]) †
 =
   (N †) [ x := proj₁ (L †) ][ y := proj₂ (L †) ]
-</code></pre></div></div>
-
-<p>But this behaves differently.  The first term always reduces <code class="language-plaintext highlighter-rouge">L</code>
-before <code class="language-plaintext highlighter-rouge">N</code>, and it computes <code class="language-plaintext highlighter-rouge">proj₁</code> and <code class="language-plaintext highlighter-rouge">proj₂</code> exactly once.  The
-second term does not reduce <code class="language-plaintext highlighter-rouge">L</code> to a value before reducing <code class="language-plaintext highlighter-rouge">N</code>, and
-depending on how many times and where <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> appear in <code class="language-plaintext highlighter-rouge">N</code>, it
-may reduce <code class="language-plaintext highlighter-rouge">L</code> many times or not at all, and it may compute <code class="language-plaintext highlighter-rouge">proj₁</code>
-and <code class="language-plaintext highlighter-rouge">proj₂</code> many times or not at all.</p>
-
-<p>We can also translate back the other way:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
+</code></pre></div></div><p>But this behaves differently. The first term always reduces <code class="language-plaintext highlighter-rouge">L</code> before <code class="language-plaintext highlighter-rouge">N</code>, and it computes <code class="language-plaintext highlighter-rouge">proj₁</code> and <code class="language-plaintext highlighter-rouge">proj₂</code> exactly once. The second term does not reduce <code class="language-plaintext highlighter-rouge">L</code> to a value before reducing <code class="language-plaintext highlighter-rouge">N</code>, and depending on how many times and where <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> appear in <code class="language-plaintext highlighter-rouge">N</code>, it may reduce <code class="language-plaintext highlighter-rouge">L</code> many times or not at all, and it may compute <code class="language-plaintext highlighter-rouge">proj₁</code> and <code class="language-plaintext highlighter-rouge">proj₂</code> many times or not at all.</p><p>We can also translate back the other way:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
 (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
-</code></pre></div></div>
-
-<h2 id="sums">Sums</h2>
-
-<h3 id="syntax-4">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h2 id="sums">Sums</h2><h3 id="syntax-4">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   A `⊎ B                              sum type
 
 L, M, N ::= ...                     Terms
@@ -384,11 +136,7 @@ L, M, N ::= ...                     Terms
 V, W ::= ...                        Values
   `inj₁ V                             inject first component
   `inj₂ W                             inject second component
-</code></pre></div></div>
-
-<h3 id="typing-4">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ M ⦂ A
+</code></pre></div></div><h3 id="typing-4">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ M ⦂ A
 -------------------- `inj₁ or ⊎-I₁
 Γ ⊢ `inj₁ M ⦂ A `⊎ B
 
@@ -401,11 +149,7 @@ V, W ::= ...                        Values
 Γ , y ⦂ B ⊢ N ⦂ C
 ----------------------------------------- case⊎ or ⊎-E
 Γ ⊢ case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] ⦂ C
-</code></pre></div></div>
-
-<h3 id="reduction-4">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
+</code></pre></div></div><h3 id="reduction-4">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
 ------------------- ξ-inj₁
 `inj₁ M —→ `inj₁ M′
 
@@ -422,27 +166,11 @@ case⊎ (`inj₁ V) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ M [ x := V ]
 
 --------------------------------------------------------- β-inj₂
 case⊎ (`inj₂ W) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ N [ y := W ]
-</code></pre></div></div>
-
-<h3 id="example-4">Example</h3>
-
-<p>Here is a function to swap the components of a sum:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>swap⊎ : ∅ ⊢ A `⊎ B ⇒ B `⊎ A
+</code></pre></div></div><h3 id="example-4">Example</h3><p>Here is a function to swap the components of a sum:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>swap⊎ : ∅ ⊢ A `⊎ B ⇒ B `⊎ A
 swap⊎ = ƛ z ⇒ case⊎ z
                 [inj₁ x ⇒ `inj₂ x
                 |inj₂ y ⇒ `inj₁ y ]
-</code></pre></div></div>
-
-<h2 id="unit-type">Unit type</h2>
-
-<p>For the unit type, there is a way to introduce
-values of the type but no way to eliminate values of the type.
-There are no reduction rules.</p>
-
-<h3 id="syntax-5">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h2 id="unit-type">Unit type</h2><p>For the unit type, there is a way to introduce values of the type but no way to eliminate values of the type. There are no reduction rules.</p><h3 id="syntax-5">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   `⊤                                  unit type
 
 L, M, N ::= ...                     Terms
@@ -450,38 +178,14 @@ L, M, N ::= ...                     Terms
 
 V, W ::= ...                        Values
   `tt                                 unit value
-</code></pre></div></div>
-
-<h3 id="typing-5">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------------ `tt or ⊤-I
+</code></pre></div></div><h3 id="typing-5">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------------ `tt or ⊤-I
 Γ ⊢ `tt ⦂ `⊤
-</code></pre></div></div>
-
-<h3 id="reduction-5">Reduction</h3>
-
-<p>(none)</p>
-
-<h3 id="example-5">Example</h3>
-
-<p>Here is the isomorphism between <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">A `× `⊤</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>to×⊤ : ∅ ⊢ A ⇒ A `× `⊤
+</code></pre></div></div><h3 id="reduction-5">Reduction</h3><p>(none)</p><h3 id="example-5">Example</h3><p>Here is the isomorphism between <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">A `× `⊤</code>:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>to×⊤ : ∅ ⊢ A ⇒ A `× `⊤
 to×⊤ = ƛ x ⇒ `⟨ x , `tt ⟩
 
 from×⊤ : ∅ ⊢ A `× `⊤ ⇒ A
 from×⊤ = ƛ z ⇒ proj₁ z
-</code></pre></div></div>
-
-<h2 id="alternative-formulation-of-unit-type">Alternative formulation of unit type</h2>
-
-<p>There is an alternative formulation of the unit type, where in place of
-no way to eliminate the type we have a case term that binds zero variables.
-We repeat the syntax in full, but only give the new type and reduction rules:</p>
-
-<h3 id="syntax-6">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h2 id="alternative-formulation-of-unit-type">Alternative formulation of unit type</h2><p>There is an alternative formulation of the unit type, where in place of no way to eliminate the type we have a case term that binds zero variables. We repeat the syntax in full, but only give the new type and reduction rules:</p><h3 id="syntax-6">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   `⊤                                  unit type
 
 L, M, N ::= ...                     Terms
@@ -490,80 +194,33 @@ L, M, N ::= ...                     Terms
 
 V, W ::= ...                        Values
   `tt                                 unit value
-</code></pre></div></div>
-
-<h3 id="typing-6">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ L ⦂ `⊤
+</code></pre></div></div><h3 id="typing-6">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ L ⦂ `⊤
 Γ ⊢ M ⦂ A
 ------------------------ case⊤ or ⊤-E
 Γ ⊢ case⊤ L [tt⇒ M ] ⦂ A
-</code></pre></div></div>
-
-<h3 id="reduction-6">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
+</code></pre></div></div><h3 id="reduction-6">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
 ------------------------------------- ξ-case⊤
 case⊤ L [tt⇒ M ] —→ case⊤ L′ [tt⇒ M ]
 
 ----------------------- β-case⊤
 case⊤ `tt [tt⇒ M ] —→ M
-</code></pre></div></div>
-
-<h3 id="example-6">Example</h3>
-
-<p>Here is half the isomorphism between <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">A `× `⊤</code> rewritten in the new notation:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from×⊤-case : ∅ ⊢ A `× `⊤ ⇒ A
+</code></pre></div></div><h3 id="example-6">Example</h3><p>Here is half the isomorphism between <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">A `× `⊤</code> rewritten in the new notation:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from×⊤-case : ∅ ⊢ A `× `⊤ ⇒ A
 from×⊤-case = ƛ z ⇒ case× z
                       [⟨ x , y ⟩⇒ case⊤ y
                                     [tt⇒ x ] ]
-</code></pre></div></div>
-
-<h3 id="translation-2">Translation</h3>
-
-<p>We can translate the alternative formulation into one without case:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(case⊤ L [tt⇒ M ]) †  =  `let z `= (L †) `in (M †)
-</code></pre></div></div>
-
-<p>Here <code class="language-plaintext highlighter-rouge">z</code> is a variable that does not appear free in <code class="language-plaintext highlighter-rouge">M</code>.</p>
-
-<h2 id="empty-type">Empty type</h2>
-
-<p>For the empty type, there is a way to eliminate values of
-the type but no way to introduce values of the type.  There are no
-values of the type and no β rule, but there is a ξ rule.  The <code class="language-plaintext highlighter-rouge">case⊥</code>
-construct plays a role similar to <code class="language-plaintext highlighter-rouge">⊥-elim</code> in Agda:</p>
-
-<h3 id="syntax-7">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h3 id="translation-2">Translation</h3><p>We can translate the alternative formulation into one without case:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(case⊤ L [tt⇒ M ]) †  =  `let z `= (L †) `in (M †)
+</code></pre></div></div><p>Here <code class="language-plaintext highlighter-rouge">z</code> is a variable that does not appear free in <code class="language-plaintext highlighter-rouge">M</code>.</p><h2 id="empty-type">Empty type</h2><p>For the empty type, there is a way to eliminate values of the type but no way to introduce values of the type. There are no values of the type and no β rule, but there is a ξ rule. The <code class="language-plaintext highlighter-rouge">case⊥</code> construct plays a role similar to <code class="language-plaintext highlighter-rouge">⊥-elim</code> in Agda:</p><h3 id="syntax-7">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   `⊥                                  empty type
 
 L, M, N ::= ...                     Terms
   case⊥ L []                          case
-</code></pre></div></div>
-
-<h3 id="typing-7">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ L ⦂ `⊥
+</code></pre></div></div><h3 id="typing-7">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Γ ⊢ L ⦂ `⊥
 ------------------ case⊥ or ⊥-E
 Γ ⊢ case⊥ L [] ⦂ A
-</code></pre></div></div>
-
-<h3 id="reduction-7">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
+</code></pre></div></div><h3 id="reduction-7">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>L —→ L′
 ------------------------- ξ-case⊥
 case⊥ L [] —→ case⊥ L′ []
-</code></pre></div></div>
-
-<h3 id="example-7">Example</h3>
-
-<p>Here is the isomorphism between <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">A `⊎ `⊥</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>to⊎⊥ : ∅ ⊢ A ⇒ A `⊎ `⊥
+</code></pre></div></div><h3 id="example-7">Example</h3><p>Here is the isomorphism between <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">A `⊎ `⊥</code>:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>to⊎⊥ : ∅ ⊢ A ⇒ A `⊎ `⊥
 to⊎⊥ = ƛ x ⇒ `inj₁ x
 
 from⊎⊥ : ∅ ⊢ A `⊎ `⊥ ⇒ A
@@ -571,13 +228,7 @@ from⊎⊥ = ƛ z ⇒ case⊎ z
                  [inj₁ x ⇒ x
                  |inj₂ y ⇒ case⊥ y
                              [] ]
-</code></pre></div></div>
-
-<h2 id="lists">Lists</h2>
-
-<h3 id="syntax-8">Syntax</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
+</code></pre></div></div><h2 id="lists">Lists</h2><h3 id="syntax-8">Syntax</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A, B, C ::= ...                     Types
   `List A                             list type
 
 L, M, N ::= ...                     Terms
@@ -588,11 +239,7 @@ L, M, N ::= ...                     Terms
 V, W ::= ...                        Values
   `[]                                 nil
   V `∷ W                              cons
-</code></pre></div></div>
-
-<h3 id="typing-8">Typing</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>----------------- `[] or List-I₁
+</code></pre></div></div><h3 id="typing-8">Typing</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>----------------- `[] or List-I₁
 Γ ⊢ `[] ⦂ `List A
 
 Γ ⊢ M ⦂ A
@@ -605,11 +252,7 @@ V, W ::= ...                        Values
 Γ , x ⦂ A , xs ⦂ `List A ⊢ N ⦂ B
 -------------------------------------- caseL or List-E
 Γ ⊢ caseL L [[]⇒ M | x ∷ xs ⇒ N ] ⦂ B
-</code></pre></div></div>
-
-<h3 id="reduction-8">Reduction</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
+</code></pre></div></div><h3 id="reduction-8">Reduction</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M —→ M′
 ----------------- ξ-∷₁
 M `∷ N —→ M′ `∷ N
 
@@ -626,44 +269,17 @@ caseL `[] [[]⇒ M | x ∷ xs ⇒ N ] —→ M
 
 --------------------------------------------------------------- β-∷
 caseL (V `∷ W) [[]⇒ M | x ∷ xs ⇒ N ] —→ N [ x := V ][ xs := W ]
-</code></pre></div></div>
-
-<h3 id="example-8">Example</h3>
-
-<p>Here is the map function for lists:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mapL : ∅ ⊢ (A ⇒ B) ⇒ `List A ⇒ `List B
+</code></pre></div></div><h3 id="example-8">Example</h3><p>Here is the map function for lists:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mapL : ∅ ⊢ (A ⇒ B) ⇒ `List A ⇒ `List B
 mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
          caseL xs
            [[]⇒ `[]
            | x ∷ xs ⇒ f · x `∷ mL · f · xs ]
-</code></pre></div></div>
-
-<h2 id="formalisation">Formalisation</h2>
-
-<p>We now show how to formalise</p>
-
-<ul>
-  <li>primitive numbers</li>
-  <li><em>let</em> bindings</li>
-  <li>products</li>
-  <li>an alternative formulation of products</li>
-</ul>
-
-<p>and leave formalisation of the remaining constructs as an exercise.</p>
-
-<h3 id="imports">Imports</h3>
-
-<pre class="Agda"><a id="14047" class="Keyword">import</a> <a id="14054" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="14092" class="Symbol">as</a> <a id="14095" class="Module">Eq</a>
+</code></pre></div></div><h2 id="formalisation">Formalisation</h2><p>We now show how to formalise</p><ul><li>primitive numbers</li><li><em>let</em> bindings</li><li>products</li><li>an alternative formulation of products</li></ul><p>and leave formalisation of the remaining constructs as an exercise.</p><h3 id="imports">Imports</h3><pre class="Agda"><a id="14047" class="Keyword">import</a> <a id="14054" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="14092" class="Symbol">as</a> <a id="14095" class="Module">Eq</a>
 <a id="14098" class="Keyword">open</a> <a id="14103" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="14106" class="Keyword">using</a> <a id="14112" class="Symbol">(</a><a id="14113" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">_≡_</a><a id="14116" class="Symbol">;</a> <a id="14118" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="14122" class="Symbol">)</a>
 <a id="14124" class="Keyword">open</a> <a id="14129" class="Keyword">import</a> <a id="14136" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html" class="Module">Data.Empty</a> <a id="14147" class="Keyword">using</a> <a id="14153" class="Symbol">(</a><a id="14154" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#279" class="Datatype">⊥</a><a id="14155" class="Symbol">;</a> <a id="14157" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a><a id="14163" class="Symbol">)</a>
 <a id="14165" class="Keyword">open</a> <a id="14170" class="Keyword">import</a> <a id="14177" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.html" class="Module">Data.Nat</a> <a id="14186" class="Keyword">using</a> <a id="14192" class="Symbol">(</a><a id="14193" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="14194" class="Symbol">;</a> <a id="14196" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a><a id="14200" class="Symbol">;</a> <a id="14202" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a><a id="14205" class="Symbol">;</a> <a id="14207" href="Agda.Builtin.Nat.html#501" class="Primitive Operator">_*_</a><a id="14210" class="Symbol">)</a>
 <a id="14212" class="Keyword">open</a> <a id="14217" class="Keyword">import</a> <a id="14224" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="14241" class="Keyword">using</a> <a id="14247" class="Symbol">(</a><a id="14248" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬_</a><a id="14250" class="Symbol">)</a>
-</pre>
-
-<h3 id="syntax-9">Syntax</h3>
-
-<pre class="Agda"><a id="14274" class="Keyword">infix</a>  <a id="14281" class="Number">4</a> <a id="14283" href="/20.07/More/#14915" class="Datatype Operator">_⊢_</a>
+</pre><h3 id="syntax-9">Syntax</h3><pre class="Agda"><a id="14274" class="Keyword">infix</a>  <a id="14281" class="Number">4</a> <a id="14283" href="/20.07/More/#14915" class="Datatype Operator">_⊢_</a>
 <a id="14287" class="Keyword">infix</a>  <a id="14294" class="Number">4</a> <a id="14296" href="/20.07/More/#14724" class="Datatype Operator">_∋_</a>
 <a id="14300" class="Keyword">infixl</a> <a id="14307" class="Number">5</a> <a id="14309" href="/20.07/More/#14640" class="InductiveConstructor Operator">_,_</a>
 
@@ -678,24 +294,15 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
 <a id="14408" class="Keyword">infix</a>  <a id="14415" class="Number">9</a> <a id="14417" href="/20.07/More/#14967" class="InductiveConstructor Operator">`_</a>
 <a id="14420" class="Keyword">infix</a>  <a id="14427" class="Number">9</a> <a id="14429" href="/20.07/More/#14807" class="InductiveConstructor Operator">S_</a>
 <a id="14432" class="Keyword">infix</a>  <a id="14439" class="Number">9</a> <a id="14441" href="/20.07/More/#16457" class="Function Operator">#_</a>
-</pre>
-<h3 id="types">Types</h3>
-
-<pre class="Agda"><a id="14464" class="Keyword">data</a> <a id="Type"></a><a id="14469" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14474" class="Symbol">:</a> <a id="14476" class="PrimitiveType">Set</a> <a id="14480" class="Keyword">where</a>
+</pre><h3 id="types">Types</h3><pre class="Agda"><a id="14464" class="Keyword">data</a> <a id="Type"></a><a id="14469" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14474" class="Symbol">:</a> <a id="14476" class="PrimitiveType">Set</a> <a id="14480" class="Keyword">where</a>
   <a id="Type.`ℕ"></a><a id="14488" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a>    <a id="14494" class="Symbol">:</a> <a id="14496" href="/20.07/More/#14469" class="Datatype">Type</a>
   <a id="Type._⇒_"></a><a id="14503" href="/20.07/More/#14503" class="InductiveConstructor Operator">_⇒_</a>   <a id="14509" class="Symbol">:</a> <a id="14511" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14516" class="Symbol">→</a> <a id="14518" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14523" class="Symbol">→</a> <a id="14525" href="/20.07/More/#14469" class="Datatype">Type</a>
   <a id="Type.Nat"></a><a id="14532" href="/20.07/More/#14532" class="InductiveConstructor">Nat</a>   <a id="14538" class="Symbol">:</a> <a id="14540" href="/20.07/More/#14469" class="Datatype">Type</a>
   <a id="Type._`×_"></a><a id="14547" href="/20.07/More/#14547" class="InductiveConstructor Operator">_`×_</a>  <a id="14553" class="Symbol">:</a> <a id="14555" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14560" class="Symbol">→</a> <a id="14562" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14567" class="Symbol">→</a> <a id="14569" href="/20.07/More/#14469" class="Datatype">Type</a>
-</pre>
-<h3 id="contexts">Contexts</h3>
-
-<pre class="Agda"><a id="14597" class="Keyword">data</a> <a id="Context"></a><a id="14602" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14610" class="Symbol">:</a> <a id="14612" class="PrimitiveType">Set</a> <a id="14616" class="Keyword">where</a>
+</pre><h3 id="contexts">Contexts</h3><pre class="Agda"><a id="14597" class="Keyword">data</a> <a id="Context"></a><a id="14602" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14610" class="Symbol">:</a> <a id="14612" class="PrimitiveType">Set</a> <a id="14616" class="Keyword">where</a>
   <a id="Context.∅"></a><a id="14624" href="/20.07/More/#14624" class="InductiveConstructor">∅</a>   <a id="14628" class="Symbol">:</a> <a id="14630" href="/20.07/More/#14602" class="Datatype">Context</a>
   <a id="Context._,_"></a><a id="14640" href="/20.07/More/#14640" class="InductiveConstructor Operator">_,_</a> <a id="14644" class="Symbol">:</a> <a id="14646" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14654" class="Symbol">→</a> <a id="14656" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14661" class="Symbol">→</a> <a id="14663" href="/20.07/More/#14602" class="Datatype">Context</a>
-</pre>
-<h3 id="variables-and-the-lookup-judgment">Variables and the lookup judgment</h3>
-
-<pre class="Agda"><a id="14719" class="Keyword">data</a> <a id="_∋_"></a><a id="14724" href="/20.07/More/#14724" class="Datatype Operator">_∋_</a> <a id="14728" class="Symbol">:</a> <a id="14730" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14738" class="Symbol">→</a> <a id="14740" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14745" class="Symbol">→</a> <a id="14747" class="PrimitiveType">Set</a> <a id="14751" class="Keyword">where</a>
+</pre><h3 id="variables-and-the-lookup-judgment">Variables and the lookup judgment</h3><pre class="Agda"><a id="14719" class="Keyword">data</a> <a id="_∋_"></a><a id="14724" href="/20.07/More/#14724" class="Datatype Operator">_∋_</a> <a id="14728" class="Symbol">:</a> <a id="14730" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14738" class="Symbol">→</a> <a id="14740" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14745" class="Symbol">→</a> <a id="14747" class="PrimitiveType">Set</a> <a id="14751" class="Keyword">where</a>
 
   <a id="_∋_.Z"></a><a id="14760" href="/20.07/More/#14760" class="InductiveConstructor">Z</a> <a id="14762" class="Symbol">:</a> <a id="14764" class="Symbol">∀</a> <a id="14766" class="Symbol">{</a><a id="14767" href="/20.07/More/#14767" class="Bound">Γ</a> <a id="14769" href="/20.07/More/#14769" class="Bound">A</a><a id="14770" class="Symbol">}</a>
       <a id="14778" class="Comment">---------</a>
@@ -705,10 +312,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
     <a id="14826" class="Symbol">→</a> <a id="14828" href="/20.07/More/#14815" class="Bound">Γ</a> <a id="14830" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="14832" href="/20.07/More/#14819" class="Bound">B</a>
       <a id="14840" class="Comment">---------</a>
     <a id="14854" class="Symbol">→</a> <a id="14856" href="/20.07/More/#14815" class="Bound">Γ</a> <a id="14858" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="14860" href="/20.07/More/#14817" class="Bound">A</a> <a id="14862" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="14864" href="/20.07/More/#14819" class="Bound">B</a>
-</pre>
-<h3 id="terms-and-the-typing-judgment">Terms and the typing judgment</h3>
-
-<pre class="Agda"><a id="14910" class="Keyword">data</a> <a id="_⊢_"></a><a id="14915" href="/20.07/More/#14915" class="Datatype Operator">_⊢_</a> <a id="14919" class="Symbol">:</a> <a id="14921" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14929" class="Symbol">→</a> <a id="14931" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14936" class="Symbol">→</a> <a id="14938" class="PrimitiveType">Set</a> <a id="14942" class="Keyword">where</a>
+</pre><h3 id="terms-and-the-typing-judgment">Terms and the typing judgment</h3><pre class="Agda"><a id="14910" class="Keyword">data</a> <a id="_⊢_"></a><a id="14915" href="/20.07/More/#14915" class="Datatype Operator">_⊢_</a> <a id="14919" class="Symbol">:</a> <a id="14921" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="14929" class="Symbol">→</a> <a id="14931" href="/20.07/More/#14469" class="Datatype">Type</a> <a id="14936" class="Symbol">→</a> <a id="14938" class="PrimitiveType">Set</a> <a id="14942" class="Keyword">where</a>
 
   <a id="14951" class="Comment">-- variables</a>
 
@@ -802,10 +406,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
       <a id="16025" class="Comment">--------------</a>
     <a id="16044" class="Symbol">→</a> <a id="16046" href="/20.07/More/#15973" class="Bound">Γ</a> <a id="16048" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="16050" href="/20.07/More/#15979" class="Bound">C</a>
 
-</pre>
-<h3 id="abbreviating-de-bruijn-indices">Abbreviating de Bruijn indices</h3>
-
-<pre class="Agda"><a id="lookup"></a><a id="16098" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16105" class="Symbol">:</a> <a id="16107" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="16115" class="Symbol">→</a> <a id="16117" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="16119" class="Symbol">→</a> <a id="16121" href="/20.07/More/#14469" class="Datatype">Type</a>
+</pre><h3 id="abbreviating-de-bruijn-indices">Abbreviating de Bruijn indices</h3><pre class="Agda"><a id="lookup"></a><a id="16098" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16105" class="Symbol">:</a> <a id="16107" href="/20.07/More/#14602" class="Datatype">Context</a> <a id="16115" class="Symbol">→</a> <a id="16117" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="16119" class="Symbol">→</a> <a id="16121" href="/20.07/More/#14469" class="Datatype">Type</a>
 <a id="16126" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16133" class="Symbol">(</a><a id="16134" href="/20.07/More/#16134" class="Bound">Γ</a> <a id="16136" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="16138" href="/20.07/More/#16138" class="Bound">A</a><a id="16139" class="Symbol">)</a> <a id="16141" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a>     <a id="16150" class="Symbol">=</a>  <a id="16153" href="/20.07/More/#16138" class="Bound">A</a>
 <a id="16155" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16162" class="Symbol">(</a><a id="16163" href="/20.07/More/#16163" class="Bound">Γ</a> <a id="16165" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="16167" class="Symbol">_)</a> <a id="16170" class="Symbol">(</a><a id="16171" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a> <a id="16175" href="/20.07/More/#16175" class="Bound">n</a><a id="16176" class="Symbol">)</a>  <a id="16179" class="Symbol">=</a>  <a id="16182" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16189" href="/20.07/More/#16163" class="Bound">Γ</a> <a id="16191" href="/20.07/More/#16175" class="Bound">n</a>
 <a id="16193" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16200" href="/20.07/More/#14624" class="InductiveConstructor">∅</a>       <a id="16208" class="Symbol">_</a>        <a id="16217" class="Symbol">=</a>  <a id="16220" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a> <a id="16227" href="/20.07/More/#16256" class="Postulate">impossible</a>
@@ -819,10 +420,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
 
 <a id="#_"></a><a id="16457" href="/20.07/More/#16457" class="Function Operator">#_</a> <a id="16460" class="Symbol">:</a> <a id="16462" class="Symbol">∀</a> <a id="16464" class="Symbol">{</a><a id="16465" href="/20.07/More/#16465" class="Bound">Γ</a><a id="16466" class="Symbol">}</a> <a id="16468" class="Symbol">→</a> <a id="16470" class="Symbol">(</a><a id="16471" href="/20.07/More/#16471" class="Bound">n</a> <a id="16473" class="Symbol">:</a> <a id="16475" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="16476" class="Symbol">)</a> <a id="16478" class="Symbol">→</a> <a id="16480" href="/20.07/More/#16465" class="Bound">Γ</a> <a id="16482" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="16484" href="/20.07/More/#16098" class="Function">lookup</a> <a id="16491" href="/20.07/More/#16465" class="Bound">Γ</a> <a id="16493" href="/20.07/More/#16471" class="Bound">n</a>
 <a id="16495" href="/20.07/More/#16457" class="Function Operator">#</a> <a id="16497" href="/20.07/More/#16497" class="Bound">n</a>  <a id="16500" class="Symbol">=</a>  <a id="16503" href="/20.07/More/#14967" class="InductiveConstructor Operator">`</a> <a id="16505" href="/20.07/More/#16272" class="Function">count</a> <a id="16511" href="/20.07/More/#16497" class="Bound">n</a>
-</pre>
-<h2 id="renaming">Renaming</h2>
-
-<pre class="Agda"><a id="ext"></a><a id="16535" href="/20.07/More/#16535" class="Function">ext</a> <a id="16539" class="Symbol">:</a> <a id="16541" class="Symbol">∀</a> <a id="16543" class="Symbol">{</a><a id="16544" href="/20.07/More/#16544" class="Bound">Γ</a> <a id="16546" href="/20.07/More/#16546" class="Bound">Δ</a><a id="16547" class="Symbol">}</a> <a id="16549" class="Symbol">→</a> <a id="16551" class="Symbol">(∀</a> <a id="16554" class="Symbol">{</a><a id="16555" href="/20.07/More/#16555" class="Bound">A</a><a id="16556" class="Symbol">}</a> <a id="16558" class="Symbol">→</a> <a id="16560" href="/20.07/More/#16544" class="Bound">Γ</a> <a id="16562" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16564" href="/20.07/More/#16555" class="Bound">A</a> <a id="16566" class="Symbol">→</a> <a id="16568" href="/20.07/More/#16546" class="Bound">Δ</a> <a id="16570" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16572" href="/20.07/More/#16555" class="Bound">A</a><a id="16573" class="Symbol">)</a> <a id="16575" class="Symbol">→</a> <a id="16577" class="Symbol">(∀</a> <a id="16580" class="Symbol">{</a><a id="16581" href="/20.07/More/#16581" class="Bound">A</a> <a id="16583" href="/20.07/More/#16583" class="Bound">B</a><a id="16584" class="Symbol">}</a> <a id="16586" class="Symbol">→</a> <a id="16588" href="/20.07/More/#16544" class="Bound">Γ</a> <a id="16590" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="16592" href="/20.07/More/#16581" class="Bound">A</a> <a id="16594" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16596" href="/20.07/More/#16583" class="Bound">B</a> <a id="16598" class="Symbol">→</a> <a id="16600" href="/20.07/More/#16546" class="Bound">Δ</a> <a id="16602" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="16604" href="/20.07/More/#16581" class="Bound">A</a> <a id="16606" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16608" href="/20.07/More/#16583" class="Bound">B</a><a id="16609" class="Symbol">)</a>
+</pre><h2 id="renaming">Renaming</h2><pre class="Agda"><a id="ext"></a><a id="16535" href="/20.07/More/#16535" class="Function">ext</a> <a id="16539" class="Symbol">:</a> <a id="16541" class="Symbol">∀</a> <a id="16543" class="Symbol">{</a><a id="16544" href="/20.07/More/#16544" class="Bound">Γ</a> <a id="16546" href="/20.07/More/#16546" class="Bound">Δ</a><a id="16547" class="Symbol">}</a> <a id="16549" class="Symbol">→</a> <a id="16551" class="Symbol">(∀</a> <a id="16554" class="Symbol">{</a><a id="16555" href="/20.07/More/#16555" class="Bound">A</a><a id="16556" class="Symbol">}</a> <a id="16558" class="Symbol">→</a> <a id="16560" href="/20.07/More/#16544" class="Bound">Γ</a> <a id="16562" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16564" href="/20.07/More/#16555" class="Bound">A</a> <a id="16566" class="Symbol">→</a> <a id="16568" href="/20.07/More/#16546" class="Bound">Δ</a> <a id="16570" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16572" href="/20.07/More/#16555" class="Bound">A</a><a id="16573" class="Symbol">)</a> <a id="16575" class="Symbol">→</a> <a id="16577" class="Symbol">(∀</a> <a id="16580" class="Symbol">{</a><a id="16581" href="/20.07/More/#16581" class="Bound">A</a> <a id="16583" href="/20.07/More/#16583" class="Bound">B</a><a id="16584" class="Symbol">}</a> <a id="16586" class="Symbol">→</a> <a id="16588" href="/20.07/More/#16544" class="Bound">Γ</a> <a id="16590" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="16592" href="/20.07/More/#16581" class="Bound">A</a> <a id="16594" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16596" href="/20.07/More/#16583" class="Bound">B</a> <a id="16598" class="Symbol">→</a> <a id="16600" href="/20.07/More/#16546" class="Bound">Δ</a> <a id="16602" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="16604" href="/20.07/More/#16581" class="Bound">A</a> <a id="16606" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="16608" href="/20.07/More/#16583" class="Bound">B</a><a id="16609" class="Symbol">)</a>
 <a id="16611" href="/20.07/More/#16535" class="Function">ext</a> <a id="16615" href="/20.07/More/#16615" class="Bound">ρ</a> <a id="16617" href="/20.07/More/#14760" class="InductiveConstructor">Z</a>      <a id="16624" class="Symbol">=</a>  <a id="16627" href="/20.07/More/#14760" class="InductiveConstructor">Z</a>
 <a id="16629" href="/20.07/More/#16535" class="Function">ext</a> <a id="16633" href="/20.07/More/#16633" class="Bound">ρ</a> <a id="16635" class="Symbol">(</a><a id="16636" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="16638" href="/20.07/More/#16638" class="Bound">x</a><a id="16639" class="Symbol">)</a>  <a id="16642" class="Symbol">=</a>  <a id="16645" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="16647" class="Symbol">(</a><a id="16648" href="/20.07/More/#16633" class="Bound">ρ</a> <a id="16650" href="/20.07/More/#16638" class="Bound">x</a><a id="16651" class="Symbol">)</a>
 
@@ -841,10 +439,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
 <a id="17269" href="/20.07/More/#16654" class="Function">rename</a> <a id="17276" href="/20.07/More/#17276" class="Bound">ρ</a> <a id="17278" class="Symbol">(</a><a id="17279" href="/20.07/More/#15782" class="InductiveConstructor">`proj₁</a> <a id="17286" href="/20.07/More/#17286" class="Bound">L</a><a id="17287" class="Symbol">)</a>     <a id="17293" class="Symbol">=</a>  <a id="17296" href="/20.07/More/#15782" class="InductiveConstructor">`proj₁</a> <a id="17303" class="Symbol">(</a><a id="17304" href="/20.07/More/#16654" class="Function">rename</a> <a id="17311" href="/20.07/More/#17276" class="Bound">ρ</a> <a id="17313" href="/20.07/More/#17286" class="Bound">L</a><a id="17314" class="Symbol">)</a>
 <a id="17316" href="/20.07/More/#16654" class="Function">rename</a> <a id="17323" href="/20.07/More/#17323" class="Bound">ρ</a> <a id="17325" class="Symbol">(</a><a id="17326" href="/20.07/More/#15851" class="InductiveConstructor">`proj₂</a> <a id="17333" href="/20.07/More/#17333" class="Bound">L</a><a id="17334" class="Symbol">)</a>     <a id="17340" class="Symbol">=</a>  <a id="17343" href="/20.07/More/#15851" class="InductiveConstructor">`proj₂</a> <a id="17350" class="Symbol">(</a><a id="17351" href="/20.07/More/#16654" class="Function">rename</a> <a id="17358" href="/20.07/More/#17323" class="Bound">ρ</a> <a id="17360" href="/20.07/More/#17333" class="Bound">L</a><a id="17361" class="Symbol">)</a>
 <a id="17363" href="/20.07/More/#16654" class="Function">rename</a> <a id="17370" href="/20.07/More/#17370" class="Bound">ρ</a> <a id="17372" class="Symbol">(</a><a id="17373" href="/20.07/More/#15962" class="InductiveConstructor">case×</a> <a id="17379" href="/20.07/More/#17379" class="Bound">L</a> <a id="17381" href="/20.07/More/#17381" class="Bound">M</a><a id="17382" class="Symbol">)</a>    <a id="17387" class="Symbol">=</a>  <a id="17390" href="/20.07/More/#15962" class="InductiveConstructor">case×</a> <a id="17396" class="Symbol">(</a><a id="17397" href="/20.07/More/#16654" class="Function">rename</a> <a id="17404" href="/20.07/More/#17370" class="Bound">ρ</a> <a id="17406" href="/20.07/More/#17379" class="Bound">L</a><a id="17407" class="Symbol">)</a> <a id="17409" class="Symbol">(</a><a id="17410" href="/20.07/More/#16654" class="Function">rename</a> <a id="17417" class="Symbol">(</a><a id="17418" href="/20.07/More/#16535" class="Function">ext</a> <a id="17422" class="Symbol">(</a><a id="17423" href="/20.07/More/#16535" class="Function">ext</a> <a id="17427" href="/20.07/More/#17370" class="Bound">ρ</a><a id="17428" class="Symbol">))</a> <a id="17431" href="/20.07/More/#17381" class="Bound">M</a><a id="17432" class="Symbol">)</a>
-</pre>
-<h2 id="simultaneous-substitution">Simultaneous Substitution</h2>
-
-<pre class="Agda"><a id="exts"></a><a id="17473" href="/20.07/More/#17473" class="Function">exts</a> <a id="17478" class="Symbol">:</a> <a id="17480" class="Symbol">∀</a> <a id="17482" class="Symbol">{</a><a id="17483" href="/20.07/More/#17483" class="Bound">Γ</a> <a id="17485" href="/20.07/More/#17485" class="Bound">Δ</a><a id="17486" class="Symbol">}</a> <a id="17488" class="Symbol">→</a> <a id="17490" class="Symbol">(∀</a> <a id="17493" class="Symbol">{</a><a id="17494" href="/20.07/More/#17494" class="Bound">A</a><a id="17495" class="Symbol">}</a> <a id="17497" class="Symbol">→</a> <a id="17499" href="/20.07/More/#17483" class="Bound">Γ</a> <a id="17501" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="17503" href="/20.07/More/#17494" class="Bound">A</a> <a id="17505" class="Symbol">→</a> <a id="17507" href="/20.07/More/#17485" class="Bound">Δ</a> <a id="17509" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="17511" href="/20.07/More/#17494" class="Bound">A</a><a id="17512" class="Symbol">)</a> <a id="17514" class="Symbol">→</a> <a id="17516" class="Symbol">(∀</a> <a id="17519" class="Symbol">{</a><a id="17520" href="/20.07/More/#17520" class="Bound">A</a> <a id="17522" href="/20.07/More/#17522" class="Bound">B</a><a id="17523" class="Symbol">}</a> <a id="17525" class="Symbol">→</a> <a id="17527" href="/20.07/More/#17483" class="Bound">Γ</a> <a id="17529" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="17531" href="/20.07/More/#17520" class="Bound">A</a> <a id="17533" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="17535" href="/20.07/More/#17522" class="Bound">B</a> <a id="17537" class="Symbol">→</a> <a id="17539" href="/20.07/More/#17485" class="Bound">Δ</a> <a id="17541" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="17543" href="/20.07/More/#17520" class="Bound">A</a> <a id="17545" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="17547" href="/20.07/More/#17522" class="Bound">B</a><a id="17548" class="Symbol">)</a>
+</pre><h2 id="simultaneous-substitution">Simultaneous Substitution</h2><pre class="Agda"><a id="exts"></a><a id="17473" href="/20.07/More/#17473" class="Function">exts</a> <a id="17478" class="Symbol">:</a> <a id="17480" class="Symbol">∀</a> <a id="17482" class="Symbol">{</a><a id="17483" href="/20.07/More/#17483" class="Bound">Γ</a> <a id="17485" href="/20.07/More/#17485" class="Bound">Δ</a><a id="17486" class="Symbol">}</a> <a id="17488" class="Symbol">→</a> <a id="17490" class="Symbol">(∀</a> <a id="17493" class="Symbol">{</a><a id="17494" href="/20.07/More/#17494" class="Bound">A</a><a id="17495" class="Symbol">}</a> <a id="17497" class="Symbol">→</a> <a id="17499" href="/20.07/More/#17483" class="Bound">Γ</a> <a id="17501" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="17503" href="/20.07/More/#17494" class="Bound">A</a> <a id="17505" class="Symbol">→</a> <a id="17507" href="/20.07/More/#17485" class="Bound">Δ</a> <a id="17509" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="17511" href="/20.07/More/#17494" class="Bound">A</a><a id="17512" class="Symbol">)</a> <a id="17514" class="Symbol">→</a> <a id="17516" class="Symbol">(∀</a> <a id="17519" class="Symbol">{</a><a id="17520" href="/20.07/More/#17520" class="Bound">A</a> <a id="17522" href="/20.07/More/#17522" class="Bound">B</a><a id="17523" class="Symbol">}</a> <a id="17525" class="Symbol">→</a> <a id="17527" href="/20.07/More/#17483" class="Bound">Γ</a> <a id="17529" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="17531" href="/20.07/More/#17520" class="Bound">A</a> <a id="17533" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="17535" href="/20.07/More/#17522" class="Bound">B</a> <a id="17537" class="Symbol">→</a> <a id="17539" href="/20.07/More/#17485" class="Bound">Δ</a> <a id="17541" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="17543" href="/20.07/More/#17520" class="Bound">A</a> <a id="17545" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="17547" href="/20.07/More/#17522" class="Bound">B</a><a id="17548" class="Symbol">)</a>
 <a id="17550" href="/20.07/More/#17473" class="Function">exts</a> <a id="17555" href="/20.07/More/#17555" class="Bound">σ</a> <a id="17557" href="/20.07/More/#14760" class="InductiveConstructor">Z</a>      <a id="17564" class="Symbol">=</a>  <a id="17567" href="/20.07/More/#14967" class="InductiveConstructor Operator">`</a> <a id="17569" href="/20.07/More/#14760" class="InductiveConstructor">Z</a>
 <a id="17571" href="/20.07/More/#17473" class="Function">exts</a> <a id="17576" href="/20.07/More/#17576" class="Bound">σ</a> <a id="17578" class="Symbol">(</a><a id="17579" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="17581" href="/20.07/More/#17581" class="Bound">x</a><a id="17582" class="Symbol">)</a>  <a id="17585" class="Symbol">=</a>  <a id="17588" href="/20.07/More/#16654" class="Function">rename</a> <a id="17595" href="/20.07/More/#14807" class="InductiveConstructor Operator">S_</a> <a id="17598" class="Symbol">(</a><a id="17599" href="/20.07/More/#17576" class="Bound">σ</a> <a id="17601" href="/20.07/More/#17581" class="Bound">x</a><a id="17602" class="Symbol">)</a>
 
@@ -863,10 +458,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
 <a id="18194" href="/20.07/More/#17605" class="Function">subst</a> <a id="18200" href="/20.07/More/#18200" class="Bound">σ</a> <a id="18202" class="Symbol">(</a><a id="18203" href="/20.07/More/#15782" class="InductiveConstructor">`proj₁</a> <a id="18210" href="/20.07/More/#18210" class="Bound">L</a><a id="18211" class="Symbol">)</a>     <a id="18217" class="Symbol">=</a>  <a id="18220" href="/20.07/More/#15782" class="InductiveConstructor">`proj₁</a> <a id="18227" class="Symbol">(</a><a id="18228" href="/20.07/More/#17605" class="Function">subst</a> <a id="18234" href="/20.07/More/#18200" class="Bound">σ</a> <a id="18236" href="/20.07/More/#18210" class="Bound">L</a><a id="18237" class="Symbol">)</a>
 <a id="18239" href="/20.07/More/#17605" class="Function">subst</a> <a id="18245" href="/20.07/More/#18245" class="Bound">σ</a> <a id="18247" class="Symbol">(</a><a id="18248" href="/20.07/More/#15851" class="InductiveConstructor">`proj₂</a> <a id="18255" href="/20.07/More/#18255" class="Bound">L</a><a id="18256" class="Symbol">)</a>     <a id="18262" class="Symbol">=</a>  <a id="18265" href="/20.07/More/#15851" class="InductiveConstructor">`proj₂</a> <a id="18272" class="Symbol">(</a><a id="18273" href="/20.07/More/#17605" class="Function">subst</a> <a id="18279" href="/20.07/More/#18245" class="Bound">σ</a> <a id="18281" href="/20.07/More/#18255" class="Bound">L</a><a id="18282" class="Symbol">)</a>
 <a id="18284" href="/20.07/More/#17605" class="Function">subst</a> <a id="18290" href="/20.07/More/#18290" class="Bound">σ</a> <a id="18292" class="Symbol">(</a><a id="18293" href="/20.07/More/#15962" class="InductiveConstructor">case×</a> <a id="18299" href="/20.07/More/#18299" class="Bound">L</a> <a id="18301" href="/20.07/More/#18301" class="Bound">M</a><a id="18302" class="Symbol">)</a>    <a id="18307" class="Symbol">=</a>  <a id="18310" href="/20.07/More/#15962" class="InductiveConstructor">case×</a> <a id="18316" class="Symbol">(</a><a id="18317" href="/20.07/More/#17605" class="Function">subst</a> <a id="18323" href="/20.07/More/#18290" class="Bound">σ</a> <a id="18325" href="/20.07/More/#18299" class="Bound">L</a><a id="18326" class="Symbol">)</a> <a id="18328" class="Symbol">(</a><a id="18329" href="/20.07/More/#17605" class="Function">subst</a> <a id="18335" class="Symbol">(</a><a id="18336" href="/20.07/More/#17473" class="Function">exts</a> <a id="18341" class="Symbol">(</a><a id="18342" href="/20.07/More/#17473" class="Function">exts</a> <a id="18347" href="/20.07/More/#18290" class="Bound">σ</a><a id="18348" class="Symbol">))</a> <a id="18351" href="/20.07/More/#18301" class="Bound">M</a><a id="18352" class="Symbol">)</a>
-</pre>
-<h2 id="single-and-double-substitution">Single and double substitution</h2>
-
-<pre class="Agda"><a id="substZero"></a><a id="18398" href="/20.07/More/#18398" class="Function">substZero</a> <a id="18408" class="Symbol">:</a> <a id="18410" class="Symbol">∀</a> <a id="18412" class="Symbol">{</a><a id="18413" href="/20.07/More/#18413" class="Bound">Γ</a><a id="18414" class="Symbol">}{</a><a id="18416" href="/20.07/More/#18416" class="Bound">A</a> <a id="18418" href="/20.07/More/#18418" class="Bound">B</a><a id="18419" class="Symbol">}</a> <a id="18421" class="Symbol">→</a> <a id="18423" href="/20.07/More/#18413" class="Bound">Γ</a> <a id="18425" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="18427" href="/20.07/More/#18416" class="Bound">A</a> <a id="18429" class="Symbol">→</a> <a id="18431" href="/20.07/More/#18413" class="Bound">Γ</a> <a id="18433" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="18435" href="/20.07/More/#18416" class="Bound">A</a> <a id="18437" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="18439" href="/20.07/More/#18418" class="Bound">B</a> <a id="18441" class="Symbol">→</a> <a id="18443" href="/20.07/More/#18413" class="Bound">Γ</a> <a id="18445" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="18447" href="/20.07/More/#18418" class="Bound">B</a>
+</pre><h2 id="single-and-double-substitution">Single and double substitution</h2><pre class="Agda"><a id="substZero"></a><a id="18398" href="/20.07/More/#18398" class="Function">substZero</a> <a id="18408" class="Symbol">:</a> <a id="18410" class="Symbol">∀</a> <a id="18412" class="Symbol">{</a><a id="18413" href="/20.07/More/#18413" class="Bound">Γ</a><a id="18414" class="Symbol">}{</a><a id="18416" href="/20.07/More/#18416" class="Bound">A</a> <a id="18418" href="/20.07/More/#18418" class="Bound">B</a><a id="18419" class="Symbol">}</a> <a id="18421" class="Symbol">→</a> <a id="18423" href="/20.07/More/#18413" class="Bound">Γ</a> <a id="18425" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="18427" href="/20.07/More/#18416" class="Bound">A</a> <a id="18429" class="Symbol">→</a> <a id="18431" href="/20.07/More/#18413" class="Bound">Γ</a> <a id="18433" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="18435" href="/20.07/More/#18416" class="Bound">A</a> <a id="18437" href="/20.07/More/#14724" class="Datatype Operator">∋</a> <a id="18439" href="/20.07/More/#18418" class="Bound">B</a> <a id="18441" class="Symbol">→</a> <a id="18443" href="/20.07/More/#18413" class="Bound">Γ</a> <a id="18445" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="18447" href="/20.07/More/#18418" class="Bound">B</a>
 <a id="18449" href="/20.07/More/#18398" class="Function">substZero</a> <a id="18459" href="/20.07/More/#18459" class="Bound">V</a> <a id="18461" href="/20.07/More/#14760" class="InductiveConstructor">Z</a>      <a id="18468" class="Symbol">=</a>  <a id="18471" href="/20.07/More/#18459" class="Bound">V</a>
 <a id="18473" href="/20.07/More/#18398" class="Function">substZero</a> <a id="18483" href="/20.07/More/#18483" class="Bound">V</a> <a id="18485" class="Symbol">(</a><a id="18486" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="18488" href="/20.07/More/#18488" class="Bound">x</a><a id="18489" class="Symbol">)</a>  <a id="18492" class="Symbol">=</a>  <a id="18495" href="/20.07/More/#14967" class="InductiveConstructor Operator">`</a> <a id="18497" href="/20.07/More/#18488" class="Bound">x</a>
 
@@ -889,10 +481,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
   <a id="18809" href="/20.07/More/#18773" class="Function">σ</a> <a id="18811" href="/20.07/More/#14760" class="InductiveConstructor">Z</a>          <a id="18822" class="Symbol">=</a>  <a id="18825" href="/20.07/More/#18732" class="Bound">W</a>
   <a id="18829" href="/20.07/More/#18773" class="Function">σ</a> <a id="18831" class="Symbol">(</a><a id="18832" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="18834" href="/20.07/More/#14760" class="InductiveConstructor">Z</a><a id="18835" class="Symbol">)</a>      <a id="18842" class="Symbol">=</a>  <a id="18845" href="/20.07/More/#18730" class="Bound">V</a>
   <a id="18849" href="/20.07/More/#18773" class="Function">σ</a> <a id="18851" class="Symbol">(</a><a id="18852" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="18854" class="Symbol">(</a><a id="18855" href="/20.07/More/#14807" class="InductiveConstructor Operator">S</a> <a id="18857" href="/20.07/More/#18857" class="Bound">x</a><a id="18858" class="Symbol">))</a>  <a id="18862" class="Symbol">=</a>  <a id="18865" href="/20.07/More/#14967" class="InductiveConstructor Operator">`</a> <a id="18867" href="/20.07/More/#18857" class="Bound">x</a>
-</pre>
-<h2 id="values">Values</h2>
-
-<pre class="Agda"><a id="18889" class="Keyword">data</a> <a id="Value"></a><a id="18894" href="/20.07/More/#18894" class="Datatype">Value</a> <a id="18900" class="Symbol">:</a> <a id="18902" class="Symbol">∀</a> <a id="18904" class="Symbol">{</a><a id="18905" href="/20.07/More/#18905" class="Bound">Γ</a> <a id="18907" href="/20.07/More/#18907" class="Bound">A</a><a id="18908" class="Symbol">}</a> <a id="18910" class="Symbol">→</a> <a id="18912" href="/20.07/More/#18905" class="Bound">Γ</a> <a id="18914" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="18916" href="/20.07/More/#18907" class="Bound">A</a> <a id="18918" class="Symbol">→</a> <a id="18920" class="PrimitiveType">Set</a> <a id="18924" class="Keyword">where</a>
+</pre><h2 id="values">Values</h2><pre class="Agda"><a id="18889" class="Keyword">data</a> <a id="Value"></a><a id="18894" href="/20.07/More/#18894" class="Datatype">Value</a> <a id="18900" class="Symbol">:</a> <a id="18902" class="Symbol">∀</a> <a id="18904" class="Symbol">{</a><a id="18905" href="/20.07/More/#18905" class="Bound">Γ</a> <a id="18907" href="/20.07/More/#18907" class="Bound">A</a><a id="18908" class="Symbol">}</a> <a id="18910" class="Symbol">→</a> <a id="18912" href="/20.07/More/#18905" class="Bound">Γ</a> <a id="18914" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="18916" href="/20.07/More/#18907" class="Bound">A</a> <a id="18918" class="Symbol">→</a> <a id="18920" class="PrimitiveType">Set</a> <a id="18924" class="Keyword">where</a>
 
   <a id="18933" class="Comment">-- functions</a>
 
@@ -924,13 +513,7 @@ mapL = μ mL ⇒ ƛ f ⇒ ƛ xs ⇒
     <a id="19365" class="Symbol">→</a> <a id="19367" href="/20.07/More/#18894" class="Datatype">Value</a> <a id="19373" href="/20.07/More/#19336" class="Bound">W</a>
       <a id="19381" class="Comment">----------------</a>
     <a id="19402" class="Symbol">→</a> <a id="19404" href="/20.07/More/#18894" class="Datatype">Value</a> <a id="19410" href="/20.07/More/#15701" class="InductiveConstructor Operator">`⟨</a> <a id="19413" href="/20.07/More/#19324" class="Bound">V</a> <a id="19415" href="/20.07/More/#15701" class="InductiveConstructor Operator">,</a> <a id="19417" href="/20.07/More/#19336" class="Bound">W</a> <a id="19419" href="/20.07/More/#15701" class="InductiveConstructor Operator">⟩</a>
-</pre>
-<p>Implicit arguments need to be supplied when they are
-not fixed by the given arguments.</p>
-
-<h2 id="reduction-9">Reduction</h2>
-
-<pre class="Agda"><a id="19532" class="Keyword">infix</a> <a id="19538" class="Number">2</a> <a id="19540" href="/20.07/More/#19551" class="Datatype Operator">_—→_</a>
+</pre><p>Implicit arguments need to be supplied when they are not fixed by the given arguments.</p><h2 id="reduction-9">Reduction</h2><pre class="Agda"><a id="19532" class="Keyword">infix</a> <a id="19538" class="Number">2</a> <a id="19540" href="/20.07/More/#19551" class="Datatype Operator">_—→_</a>
 
 <a id="19546" class="Keyword">data</a> <a id="_—→_"></a><a id="19551" href="/20.07/More/#19551" class="Datatype Operator">_—→_</a> <a id="19556" class="Symbol">:</a> <a id="19558" class="Symbol">∀</a> <a id="19560" class="Symbol">{</a><a id="19561" href="/20.07/More/#19561" class="Bound">Γ</a> <a id="19563" href="/20.07/More/#19563" class="Bound">A</a><a id="19564" class="Symbol">}</a> <a id="19566" class="Symbol">→</a> <a id="19568" class="Symbol">(</a><a id="19569" href="/20.07/More/#19561" class="Bound">Γ</a> <a id="19571" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="19573" href="/20.07/More/#19563" class="Bound">A</a><a id="19574" class="Symbol">)</a> <a id="19576" class="Symbol">→</a> <a id="19578" class="Symbol">(</a><a id="19579" href="/20.07/More/#19561" class="Bound">Γ</a> <a id="19581" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="19583" href="/20.07/More/#19563" class="Bound">A</a><a id="19584" class="Symbol">)</a> <a id="19586" class="Symbol">→</a> <a id="19588" class="PrimitiveType">Set</a> <a id="19592" class="Keyword">where</a>
 
@@ -1056,10 +639,7 @@ not fixed by the given arguments.</p>
       <a id="22192" class="Comment">----------------------------------</a>
     <a id="22231" class="Symbol">→</a> <a id="22233" href="/20.07/More/#15962" class="InductiveConstructor">case×</a> <a id="22239" href="/20.07/More/#15701" class="InductiveConstructor Operator">`⟨</a> <a id="22242" href="/20.07/More/#22115" class="Bound">V</a> <a id="22244" href="/20.07/More/#15701" class="InductiveConstructor Operator">,</a> <a id="22246" href="/20.07/More/#22127" class="Bound">W</a> <a id="22248" href="/20.07/More/#15701" class="InductiveConstructor Operator">⟩</a> <a id="22250" href="/20.07/More/#22139" class="Bound">M</a> <a id="22252" href="/20.07/More/#19551" class="Datatype Operator">—→</a> <a id="22255" href="/20.07/More/#22139" class="Bound">M</a> <a id="22257" href="/20.07/More/#18620" class="Function Operator">[</a> <a id="22259" href="/20.07/More/#22115" class="Bound">V</a> <a id="22261" href="/20.07/More/#18620" class="Function Operator">][</a> <a id="22264" href="/20.07/More/#22127" class="Bound">W</a> <a id="22266" href="/20.07/More/#18620" class="Function Operator">]</a>
 
-</pre>
-<h2 id="reflexive-and-transitive-closure">Reflexive and transitive closure</h2>
-
-<pre class="Agda"><a id="22315" class="Keyword">infix</a>  <a id="22322" class="Number">2</a> <a id="22324" href="/20.07/More/#22380" class="Datatype Operator">_—↠_</a>
+</pre><h2 id="reflexive-and-transitive-closure">Reflexive and transitive closure</h2><pre class="Agda"><a id="22315" class="Keyword">infix</a>  <a id="22322" class="Number">2</a> <a id="22324" href="/20.07/More/#22380" class="Datatype Operator">_—↠_</a>
 <a id="22329" class="Keyword">infix</a>  <a id="22336" class="Number">1</a> <a id="22338" href="/20.07/More/#22581" class="Function Operator">begin_</a>
 <a id="22345" class="Keyword">infixr</a> <a id="22352" class="Number">2</a> <a id="22354" href="/20.07/More/#22484" class="InductiveConstructor Operator">_—→⟨_⟩_</a>
 <a id="22362" class="Keyword">infix</a>  <a id="22369" class="Number">3</a> <a id="22371" href="/20.07/More/#22430" class="InductiveConstructor Operator">_∎</a>
@@ -1081,11 +661,7 @@ not fixed by the given arguments.</p>
     <a id="22627" class="Comment">------</a>
   <a id="22636" class="Symbol">→</a> <a id="22638" href="/20.07/More/#22599" class="Bound">M</a> <a id="22640" href="/20.07/More/#22380" class="Datatype Operator">—↠</a> <a id="22643" href="/20.07/More/#22601" class="Bound">N</a>
 <a id="22645" href="/20.07/More/#22581" class="Function Operator">begin</a> <a id="22651" href="/20.07/More/#22651" class="Bound">M—↠N</a> <a id="22656" class="Symbol">=</a> <a id="22658" href="/20.07/More/#22651" class="Bound">M—↠N</a>
-</pre>
-
-<h2 id="values-do-not-reduce">Values do not reduce</h2>
-
-<pre class="Agda"><a id="V¬—→"></a><a id="22698" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22703" class="Symbol">:</a> <a id="22705" class="Symbol">∀</a> <a id="22707" class="Symbol">{</a><a id="22708" href="/20.07/More/#22708" class="Bound">Γ</a> <a id="22710" href="/20.07/More/#22710" class="Bound">A</a><a id="22711" class="Symbol">}</a> <a id="22713" class="Symbol">{</a><a id="22714" href="/20.07/More/#22714" class="Bound">M</a> <a id="22716" href="/20.07/More/#22716" class="Bound">N</a> <a id="22718" class="Symbol">:</a> <a id="22720" href="/20.07/More/#22708" class="Bound">Γ</a> <a id="22722" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="22724" href="/20.07/More/#22710" class="Bound">A</a><a id="22725" class="Symbol">}</a>
+</pre><h2 id="values-do-not-reduce">Values do not reduce</h2><pre class="Agda"><a id="V¬—→"></a><a id="22698" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22703" class="Symbol">:</a> <a id="22705" class="Symbol">∀</a> <a id="22707" class="Symbol">{</a><a id="22708" href="/20.07/More/#22708" class="Bound">Γ</a> <a id="22710" href="/20.07/More/#22710" class="Bound">A</a><a id="22711" class="Symbol">}</a> <a id="22713" class="Symbol">{</a><a id="22714" href="/20.07/More/#22714" class="Bound">M</a> <a id="22716" href="/20.07/More/#22716" class="Bound">N</a> <a id="22718" class="Symbol">:</a> <a id="22720" href="/20.07/More/#22708" class="Bound">Γ</a> <a id="22722" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="22724" href="/20.07/More/#22710" class="Bound">A</a><a id="22725" class="Symbol">}</a>
   <a id="22729" class="Symbol">→</a> <a id="22731" href="/20.07/More/#18894" class="Datatype">Value</a> <a id="22737" href="/20.07/More/#22714" class="Bound">M</a>
     <a id="22743" class="Comment">----------</a>
   <a id="22756" class="Symbol">→</a> <a id="22758" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬</a> <a id="22760" class="Symbol">(</a><a id="22761" href="/20.07/More/#22714" class="Bound">M</a> <a id="22763" href="/20.07/More/#19551" class="Datatype Operator">—→</a> <a id="22766" href="/20.07/More/#22716" class="Bound">N</a><a id="22767" class="Symbol">)</a>
@@ -1095,11 +671,7 @@ not fixed by the given arguments.</p>
 <a id="22864" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22869" href="/20.07/More/#19221" class="InductiveConstructor">V-con</a>        <a id="22882" class="Symbol">()</a>
 <a id="22885" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22890" href="/20.07/More/#19303" class="InductiveConstructor Operator">V-⟨</a> <a id="22894" href="/20.07/More/#22894" class="Bound">VM</a> <a id="22897" href="/20.07/More/#19303" class="InductiveConstructor Operator">,</a> <a id="22899" class="Symbol">_</a> <a id="22901" href="/20.07/More/#19303" class="InductiveConstructor Operator">⟩</a> <a id="22903" class="Symbol">(</a><a id="22904" href="/20.07/More/#21151" class="InductiveConstructor">ξ-⟨,⟩₁</a> <a id="22911" href="/20.07/More/#22911" class="Bound">M—→M′</a><a id="22916" class="Symbol">)</a>    <a id="22921" class="Symbol">=</a>  <a id="22924" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22929" href="/20.07/More/#22894" class="Bound">VM</a> <a id="22932" href="/20.07/More/#22911" class="Bound">M—→M′</a>
 <a id="22938" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22943" href="/20.07/More/#19303" class="InductiveConstructor Operator">V-⟨</a> <a id="22947" class="Symbol">_</a> <a id="22949" href="/20.07/More/#19303" class="InductiveConstructor Operator">,</a> <a id="22951" href="/20.07/More/#22951" class="Bound">VN</a> <a id="22954" href="/20.07/More/#19303" class="InductiveConstructor Operator">⟩</a> <a id="22956" class="Symbol">(</a><a id="22957" href="/20.07/More/#21278" class="InductiveConstructor">ξ-⟨,⟩₂</a> <a id="22964" class="Symbol">_</a> <a id="22966" href="/20.07/More/#22966" class="Bound">N—→N′</a><a id="22971" class="Symbol">)</a>  <a id="22974" class="Symbol">=</a>  <a id="22977" href="/20.07/More/#22698" class="Function">V¬—→</a> <a id="22982" href="/20.07/More/#22951" class="Bound">VN</a> <a id="22985" href="/20.07/More/#22966" class="Bound">N—→N′</a>
-</pre>
-
-<h2 id="progress">Progress</h2>
-
-<pre class="Agda"><a id="23014" class="Keyword">data</a> <a id="Progress"></a><a id="23019" href="/20.07/More/#23019" class="Datatype">Progress</a> <a id="23028" class="Symbol">{</a><a id="23029" href="/20.07/More/#23029" class="Bound">A</a><a id="23030" class="Symbol">}</a> <a id="23032" class="Symbol">(</a><a id="23033" href="/20.07/More/#23033" class="Bound">M</a> <a id="23035" class="Symbol">:</a> <a id="23037" href="/20.07/More/#14624" class="InductiveConstructor">∅</a> <a id="23039" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="23041" href="/20.07/More/#23029" class="Bound">A</a><a id="23042" class="Symbol">)</a> <a id="23044" class="Symbol">:</a> <a id="23046" class="PrimitiveType">Set</a> <a id="23050" class="Keyword">where</a>
+</pre><h2 id="progress">Progress</h2><pre class="Agda"><a id="23014" class="Keyword">data</a> <a id="Progress"></a><a id="23019" href="/20.07/More/#23019" class="Datatype">Progress</a> <a id="23028" class="Symbol">{</a><a id="23029" href="/20.07/More/#23029" class="Bound">A</a><a id="23030" class="Symbol">}</a> <a id="23032" class="Symbol">(</a><a id="23033" href="/20.07/More/#23033" class="Bound">M</a> <a id="23035" class="Symbol">:</a> <a id="23037" href="/20.07/More/#14624" class="InductiveConstructor">∅</a> <a id="23039" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="23041" href="/20.07/More/#23029" class="Bound">A</a><a id="23042" class="Symbol">)</a> <a id="23044" class="Symbol">:</a> <a id="23046" class="PrimitiveType">Set</a> <a id="23050" class="Keyword">where</a>
 
   <a id="Progress.step"></a><a id="23059" href="/20.07/More/#23059" class="InductiveConstructor">step</a> <a id="23064" class="Symbol">:</a> <a id="23066" class="Symbol">∀</a> <a id="23068" class="Symbol">{</a><a id="23069" href="/20.07/More/#23069" class="Bound">N</a> <a id="23071" class="Symbol">:</a> <a id="23073" href="/20.07/More/#14624" class="InductiveConstructor">∅</a> <a id="23075" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="23077" href="/20.07/More/#23029" class="Bound">A</a><a id="23078" class="Symbol">}</a>
     <a id="23084" class="Symbol">→</a> <a id="23086" href="/20.07/More/#23033" class="Bound">M</a> <a id="23088" href="/20.07/More/#19551" class="Datatype Operator">—→</a> <a id="23091" href="/20.07/More/#23069" class="Bound">N</a>
@@ -1154,11 +726,7 @@ not fixed by the given arguments.</p>
 <a id="25192" href="/20.07/More/#23186" class="Function">progress</a> <a id="25201" class="Symbol">(</a><a id="25202" href="/20.07/More/#15962" class="InductiveConstructor">case×</a> <a id="25208" href="/20.07/More/#25208" class="Bound">L</a> <a id="25210" href="/20.07/More/#25210" class="Bound">M</a><a id="25211" class="Symbol">)</a> <a id="25213" class="Keyword">with</a> <a id="25218" href="/20.07/More/#23186" class="Function">progress</a> <a id="25227" href="/20.07/More/#25208" class="Bound">L</a>
 <a id="25229" class="Symbol">...</a>    <a id="25236" class="Symbol">|</a> <a id="25238" href="/20.07/More/#23059" class="InductiveConstructor">step</a> <a id="25243" href="/20.07/More/#25243" class="Bound">L—→L′</a>                         <a id="25273" class="Symbol">=</a>  <a id="25276" href="/20.07/More/#23059" class="InductiveConstructor">step</a> <a id="25281" class="Symbol">(</a><a id="25282" href="/20.07/More/#21953" class="InductiveConstructor">ξ-case×</a> <a id="25290" href="/20.07/More/#25243" class="Bound">L—→L′</a><a id="25295" class="Symbol">)</a>
 <a id="25297" class="Symbol">...</a>    <a id="25304" class="Symbol">|</a> <a id="25306" href="/20.07/More/#23130" class="InductiveConstructor">done</a> <a id="25311" class="Symbol">(</a><a id="25312" href="/20.07/More/#19303" class="InductiveConstructor Operator">V-⟨</a> <a id="25316" href="/20.07/More/#25316" class="Bound">VM</a> <a id="25319" href="/20.07/More/#19303" class="InductiveConstructor Operator">,</a> <a id="25321" href="/20.07/More/#25321" class="Bound">VN</a> <a id="25324" href="/20.07/More/#19303" class="InductiveConstructor Operator">⟩</a><a id="25325" class="Symbol">)</a>               <a id="25341" class="Symbol">=</a>  <a id="25344" href="/20.07/More/#23059" class="InductiveConstructor">step</a> <a id="25349" class="Symbol">(</a><a id="25350" href="/20.07/More/#22092" class="InductiveConstructor">β-case×</a> <a id="25358" href="/20.07/More/#25316" class="Bound">VM</a> <a id="25361" href="/20.07/More/#25321" class="Bound">VN</a><a id="25363" class="Symbol">)</a>
-</pre>
-
-<h2 id="evaluation">Evaluation</h2>
-
-<pre class="Agda"><a id="25390" class="Keyword">data</a> <a id="Gas"></a><a id="25395" href="/20.07/More/#25395" class="Datatype">Gas</a> <a id="25399" class="Symbol">:</a> <a id="25401" class="PrimitiveType">Set</a> <a id="25405" class="Keyword">where</a>
+</pre><h2 id="evaluation">Evaluation</h2><pre class="Agda"><a id="25390" class="Keyword">data</a> <a id="Gas"></a><a id="25395" href="/20.07/More/#25395" class="Datatype">Gas</a> <a id="25399" class="Symbol">:</a> <a id="25401" class="PrimitiveType">Set</a> <a id="25405" class="Keyword">where</a>
   <a id="Gas.gas"></a><a id="25413" href="/20.07/More/#25413" class="InductiveConstructor">gas</a> <a id="25417" class="Symbol">:</a> <a id="25419" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="25421" class="Symbol">→</a> <a id="25423" href="/20.07/More/#25395" class="Datatype">Gas</a>
 
 <a id="25428" class="Keyword">data</a> <a id="Finished"></a><a id="25433" href="/20.07/More/#25433" class="Datatype">Finished</a> <a id="25442" class="Symbol">{</a><a id="25443" href="/20.07/More/#25443" class="Bound">Γ</a> <a id="25445" href="/20.07/More/#25445" class="Bound">A</a><a id="25446" class="Symbol">}</a> <a id="25448" class="Symbol">(</a><a id="25449" href="/20.07/More/#25449" class="Bound">N</a> <a id="25451" class="Symbol">:</a> <a id="25453" href="/20.07/More/#25443" class="Bound">Γ</a> <a id="25455" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="25457" href="/20.07/More/#25445" class="Bound">A</a><a id="25458" class="Symbol">)</a> <a id="25460" class="Symbol">:</a> <a id="25462" class="PrimitiveType">Set</a> <a id="25466" class="Keyword">where</a>
@@ -1190,11 +758,7 @@ not fixed by the given arguments.</p>
 <a id="25889" class="Symbol">...</a> <a id="25893" class="Symbol">|</a> <a id="25895" href="/20.07/More/#23130" class="InductiveConstructor">done</a> <a id="25900" href="/20.07/More/#25900" class="Bound">VL</a>                            <a id="25930" class="Symbol">=</a>  <a id="25933" href="/20.07/More/#25630" class="InductiveConstructor">steps</a> <a id="25939" class="Symbol">(</a><a id="25940" class="Bound">L</a> <a id="25942" href="/20.07/More/#22430" class="InductiveConstructor Operator">∎</a><a id="25943" class="Symbol">)</a> <a id="25945" class="Symbol">(</a><a id="25946" href="/20.07/More/#25476" class="InductiveConstructor">done</a> <a id="25951" href="/20.07/More/#25900" class="Bound">VL</a><a id="25953" class="Symbol">)</a>
 <a id="25955" class="Symbol">...</a> <a id="25959" class="Symbol">|</a> <a id="25961" href="/20.07/More/#23059" class="InductiveConstructor">step</a> <a id="25966" class="Symbol">{</a><a id="25967" href="/20.07/More/#25967" class="Bound">M</a><a id="25968" class="Symbol">}</a> <a id="25970" href="/20.07/More/#25970" class="Bound">L—→M</a> <a id="25975" class="Keyword">with</a> <a id="25980" href="/20.07/More/#25720" class="Function">eval</a> <a id="25985" class="Symbol">(</a><a id="25986" href="/20.07/More/#25413" class="InductiveConstructor">gas</a> <a id="25990" class="Bound">m</a><a id="25991" class="Symbol">)</a> <a id="25993" href="/20.07/More/#25967" class="Bound">M</a>
 <a id="25995" class="Symbol">...</a>    <a id="26002" class="Symbol">|</a> <a id="26004" href="/20.07/More/#25630" class="InductiveConstructor">steps</a> <a id="26010" href="/20.07/More/#26010" class="Bound">M—↠N</a> <a id="26015" href="/20.07/More/#26015" class="Bound">fin</a>                  <a id="26036" class="Symbol">=</a>  <a id="26039" href="/20.07/More/#25630" class="InductiveConstructor">steps</a> <a id="26045" class="Symbol">(</a><a id="26046" class="Bound">L</a> <a id="26048" href="/20.07/More/#22484" class="InductiveConstructor Operator">—→⟨</a> <a id="26052" class="Bound">L—→M</a> <a id="26057" href="/20.07/More/#22484" class="InductiveConstructor Operator">⟩</a> <a id="26059" href="/20.07/More/#26010" class="Bound">M—↠N</a><a id="26063" class="Symbol">)</a> <a id="26065" href="/20.07/More/#26015" class="Bound">fin</a>
-</pre>
-
-<h2 id="examples">Examples</h2>
-
-<pre class="Agda"><a id="cube"></a><a id="26092" href="/20.07/More/#26092" class="Function">cube</a> <a id="26097" class="Symbol">:</a> <a id="26099" href="/20.07/More/#14624" class="InductiveConstructor">∅</a> <a id="26101" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="26103" href="/20.07/More/#14532" class="InductiveConstructor">Nat</a> <a id="26107" href="/20.07/More/#14503" class="InductiveConstructor Operator">⇒</a> <a id="26109" href="/20.07/More/#14532" class="InductiveConstructor">Nat</a>
+</pre><h2 id="examples">Examples</h2><pre class="Agda"><a id="cube"></a><a id="26092" href="/20.07/More/#26092" class="Function">cube</a> <a id="26097" class="Symbol">:</a> <a id="26099" href="/20.07/More/#14624" class="InductiveConstructor">∅</a> <a id="26101" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="26103" href="/20.07/More/#14532" class="InductiveConstructor">Nat</a> <a id="26107" href="/20.07/More/#14503" class="InductiveConstructor Operator">⇒</a> <a id="26109" href="/20.07/More/#14532" class="InductiveConstructor">Nat</a>
 <a id="26113" href="/20.07/More/#26092" class="Function">cube</a> <a id="26118" class="Symbol">=</a> <a id="26120" href="/20.07/More/#15035" class="InductiveConstructor Operator">ƛ</a> <a id="26122" class="Symbol">(</a><a id="26123" href="/20.07/More/#16457" class="Function Operator">#</a> <a id="26125" class="Number">0</a> <a id="26127" href="/20.07/More/#15527" class="InductiveConstructor Operator">`*</a> <a id="26130" href="/20.07/More/#16457" class="Function Operator">#</a> <a id="26132" class="Number">0</a> <a id="26134" href="/20.07/More/#15527" class="InductiveConstructor Operator">`*</a> <a id="26137" href="/20.07/More/#16457" class="Function Operator">#</a> <a id="26139" class="Number">0</a><a id="26140" class="Symbol">)</a>
 
 <a id="26143" href="/20.07/More/#26143" class="Function">_</a> <a id="26145" class="Symbol">:</a> <a id="26147" href="/20.07/More/#26092" class="Function">cube</a> <a id="26152" href="/20.07/More/#15103" class="InductiveConstructor Operator">·</a> <a id="26154" href="/20.07/More/#15476" class="InductiveConstructor">con</a> <a id="26158" class="Number">2</a> <a id="26160" href="/20.07/More/#22380" class="Datatype Operator">—↠</a> <a id="26163" href="/20.07/More/#15476" class="InductiveConstructor">con</a> <a id="26167" class="Number">8</a>
@@ -1264,46 +828,13 @@ not fixed by the given arguments.</p>
    <a id="27750" href="/20.07/More/#22484" class="InductiveConstructor Operator">—→⟨</a> <a id="27754" href="/20.07/More/#22092" class="InductiveConstructor">β-case×</a> <a id="27762" href="/20.07/More/#19221" class="InductiveConstructor">V-con</a> <a id="27768" href="/20.07/More/#19051" class="InductiveConstructor">V-zero</a> <a id="27775" href="/20.07/More/#22484" class="InductiveConstructor Operator">⟩</a>
      <a id="27782" href="/20.07/More/#15701" class="InductiveConstructor Operator">`⟨</a> <a id="27785" href="/20.07/More/#15193" class="InductiveConstructor">`zero</a> <a id="27791" href="/20.07/More/#15701" class="InductiveConstructor Operator">,</a> <a id="27793" href="/20.07/More/#15476" class="InductiveConstructor">con</a> <a id="27797" class="Number">42</a> <a id="27800" href="/20.07/More/#15701" class="InductiveConstructor Operator">⟩</a>
    <a id="27805" href="/20.07/More/#22430" class="InductiveConstructor Operator">∎</a>
-</pre>
-<h4 id="exercise-more-recommended-and-practice">Exercise <code class="language-plaintext highlighter-rouge">More</code> (recommended and practice)</h4>
-
-<p>Formalise the remaining constructs defined in this chapter.
-Make your changes in this file.
-Evaluate each example, applied to data as needed,
-to confirm it returns the expected answer:</p>
-
-<ul>
-  <li>sums (recommended)</li>
-  <li>unit type (practice)</li>
-  <li>an alternative formulation of unit type (practice)</li>
-  <li>empty type (recommended)</li>
-  <li>lists (practice)</li>
-</ul>
-
-<p>Please delimit any code you add as follows:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- begin
+</pre><h4 id="exercise-more-recommended-and-practice">Exercise <code class="language-plaintext highlighter-rouge">More</code> (recommended and practice)</h4><p>Formalise the remaining constructs defined in this chapter. Make your changes in this file. Evaluate each example, applied to data as needed, to confirm it returns the expected answer:</p><ul><li>sums (recommended)</li><li>unit type (practice)</li><li>an alternative formulation of unit type (practice)</li><li>empty type (recommended)</li><li>lists (practice)</li></ul><p>Please delimit any code you add as follows:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- begin
 -- end
-</code></pre></div></div>
-
-<h4 id="exercise-double-subst-stretch">Exercise <code class="language-plaintext highlighter-rouge">double-subst</code> (stretch)</h4>
-
-<p>Show that a double substitution is equivalent to two single
-substitutions.</p>
-<pre class="Agda"><a id="28391" class="Keyword">postulate</a>
+</code></pre></div></div><h4 id="exercise-double-subst-stretch">Exercise <code class="language-plaintext highlighter-rouge">double-subst</code> (stretch)</h4><p>Show that a double substitution is equivalent to two single substitutions.</p><pre class="Agda"><a id="28391" class="Keyword">postulate</a>
   <a id="double-subst"></a><a id="28403" href="/20.07/More/#28403" class="Postulate">double-subst</a> <a id="28416" class="Symbol">:</a>
     <a id="28422" class="Symbol">∀</a> <a id="28424" class="Symbol">{</a><a id="28425" href="/20.07/More/#28425" class="Bound">Γ</a> <a id="28427" href="/20.07/More/#28427" class="Bound">A</a> <a id="28429" href="/20.07/More/#28429" class="Bound">B</a> <a id="28431" href="/20.07/More/#28431" class="Bound">C</a><a id="28432" class="Symbol">}</a> <a id="28434" class="Symbol">{</a><a id="28435" href="/20.07/More/#28435" class="Bound">V</a> <a id="28437" class="Symbol">:</a> <a id="28439" href="/20.07/More/#28425" class="Bound">Γ</a> <a id="28441" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="28443" href="/20.07/More/#28427" class="Bound">A</a><a id="28444" class="Symbol">}</a> <a id="28446" class="Symbol">{</a><a id="28447" href="/20.07/More/#28447" class="Bound">W</a> <a id="28449" class="Symbol">:</a> <a id="28451" href="/20.07/More/#28425" class="Bound">Γ</a> <a id="28453" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="28455" href="/20.07/More/#28429" class="Bound">B</a><a id="28456" class="Symbol">}</a> <a id="28458" class="Symbol">{</a><a id="28459" href="/20.07/More/#28459" class="Bound">N</a> <a id="28461" class="Symbol">:</a> <a id="28463" href="/20.07/More/#28425" class="Bound">Γ</a> <a id="28465" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="28467" href="/20.07/More/#28427" class="Bound">A</a> <a id="28469" href="/20.07/More/#14640" class="InductiveConstructor Operator">,</a> <a id="28471" href="/20.07/More/#28429" class="Bound">B</a> <a id="28473" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="28475" href="/20.07/More/#28431" class="Bound">C</a><a id="28476" class="Symbol">}</a> <a id="28478" class="Symbol">→</a>
       <a id="28486" href="/20.07/More/#28459" class="Bound">N</a> <a id="28488" href="/20.07/More/#18620" class="Function Operator">[</a> <a id="28490" href="/20.07/More/#28435" class="Bound">V</a> <a id="28492" href="/20.07/More/#18620" class="Function Operator">][</a> <a id="28495" href="/20.07/More/#28447" class="Bound">W</a> <a id="28497" href="/20.07/More/#18620" class="Function Operator">]</a> <a id="28499" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="28501" class="Symbol">(</a><a id="28502" href="/20.07/More/#28459" class="Bound">N</a> <a id="28504" href="/20.07/More/#18500" class="Function Operator">[</a> <a id="28506" href="/20.07/More/#16654" class="Function">rename</a> <a id="28513" href="/20.07/More/#14807" class="InductiveConstructor Operator">S_</a> <a id="28516" href="/20.07/More/#28447" class="Bound">W</a> <a id="28518" href="/20.07/More/#18500" class="Function Operator">]</a><a id="28519" class="Symbol">)</a> <a id="28521" href="/20.07/More/#18500" class="Function Operator">[</a> <a id="28523" href="/20.07/More/#28435" class="Bound">V</a> <a id="28525" href="/20.07/More/#18500" class="Function Operator">]</a>
-</pre>
-<p>Note the arguments need to be swapped and <code class="language-plaintext highlighter-rouge">W</code> needs to have
-its context adjusted via renaming in order for the right-hand
-side to be well typed.</p>
-
-<h2 id="test-examples">Test examples</h2>
-
-<p>We repeat the <a href="/20.07/DeBruijn/#examples">test examples</a> from Chapter <a href="/20.07/DeBruijn/">DeBruijn</a>,
-in order to make sure we have not broken anything in the process of extending our base calculus.</p>
-<pre class="Agda"><a id="two"></a><a id="28920" href="/20.07/More/#28920" class="Function">two</a> <a id="28924" class="Symbol">:</a> <a id="28926" class="Symbol">∀</a> <a id="28928" class="Symbol">{</a><a id="28929" href="/20.07/More/#28929" class="Bound">Γ</a><a id="28930" class="Symbol">}</a> <a id="28932" class="Symbol">→</a> <a id="28934" href="/20.07/More/#28929" class="Bound">Γ</a> <a id="28936" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="28938" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a>
+</pre><p>Note the arguments need to be swapped and <code class="language-plaintext highlighter-rouge">W</code> needs to have its context adjusted via renaming in order for the right-hand side to be well typed.</p><h2 id="test-examples">Test examples</h2><p>We repeat the <a href="/20.07/DeBruijn/#examples">test examples</a> from Chapter <a href="/20.07/DeBruijn/">DeBruijn</a>, in order to make sure we have not broken anything in the process of extending our base calculus.</p><pre class="Agda"><a id="two"></a><a id="28920" href="/20.07/More/#28920" class="Function">two</a> <a id="28924" class="Symbol">:</a> <a id="28926" class="Symbol">∀</a> <a id="28928" class="Symbol">{</a><a id="28929" href="/20.07/More/#28929" class="Bound">Γ</a><a id="28930" class="Symbol">}</a> <a id="28932" class="Symbol">→</a> <a id="28934" href="/20.07/More/#28929" class="Bound">Γ</a> <a id="28936" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="28938" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a>
 <a id="28941" href="/20.07/More/#28920" class="Function">two</a> <a id="28945" class="Symbol">=</a> <a id="28947" href="/20.07/More/#15236" class="InductiveConstructor Operator">`suc</a> <a id="28952" href="/20.07/More/#15236" class="InductiveConstructor Operator">`suc</a> <a id="28957" href="/20.07/More/#15193" class="InductiveConstructor">`zero</a>
 
 <a id="plus"></a><a id="28964" href="/20.07/More/#28964" class="Function">plus</a> <a id="28969" class="Symbol">:</a> <a id="28971" class="Symbol">∀</a> <a id="28973" class="Symbol">{</a><a id="28974" href="/20.07/More/#28974" class="Bound">Γ</a><a id="28975" class="Symbol">}</a> <a id="28977" class="Symbol">→</a> <a id="28979" href="/20.07/More/#28974" class="Bound">Γ</a> <a id="28981" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="28983" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a> <a id="28986" href="/20.07/More/#14503" class="InductiveConstructor Operator">⇒</a> <a id="28988" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a> <a id="28991" href="/20.07/More/#14503" class="InductiveConstructor Operator">⇒</a> <a id="28993" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a>
@@ -1326,166 +857,7 @@ in order to make sure we have not broken anything in the process of extending ou
 
 <a id="2+2ᶜ"></a><a id="29338" href="/20.07/More/#29338" class="Function">2+2ᶜ</a> <a id="29343" class="Symbol">:</a> <a id="29345" class="Symbol">∀</a> <a id="29347" class="Symbol">{</a><a id="29348" href="/20.07/More/#29348" class="Bound">Γ</a><a id="29349" class="Symbol">}</a> <a id="29351" class="Symbol">→</a> <a id="29353" href="/20.07/More/#29348" class="Bound">Γ</a> <a id="29355" href="/20.07/More/#14915" class="Datatype Operator">⊢</a> <a id="29357" href="/20.07/More/#14488" class="InductiveConstructor">`ℕ</a>
 <a id="29360" href="/20.07/More/#29338" class="Function">2+2ᶜ</a> <a id="29365" class="Symbol">=</a> <a id="29367" href="/20.07/More/#29200" class="Function">plusᶜ</a> <a id="29373" href="/20.07/More/#15103" class="InductiveConstructor Operator">·</a> <a id="29375" href="/20.07/More/#29142" class="Function">twoᶜ</a> <a id="29380" href="/20.07/More/#15103" class="InductiveConstructor Operator">·</a> <a id="29382" href="/20.07/More/#29142" class="Function">twoᶜ</a> <a id="29387" href="/20.07/More/#15103" class="InductiveConstructor Operator">·</a> <a id="29389" href="/20.07/More/#29290" class="Function">sucᶜ</a> <a id="29394" href="/20.07/More/#15103" class="InductiveConstructor Operator">·</a> <a id="29396" href="/20.07/More/#15193" class="InductiveConstructor">`zero</a>
-</pre>
-<h2 id="unicode">Unicode</h2>
-
-<p>This chapter uses the following unicode:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
+</pre><h2 id="unicode">Unicode</h2><p>This chapter uses the following unicode:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
 †  U+2020  DAGGER (\dag)
 ‡  U+2021  DOUBLE DAGGER (\ddag)
-</code></pre></div></div>
-
-  </div>
-
-  <p style="text-align:center;">
-
-    <a alt="Previous chapter" href="/20.07/DeBruijn/">Prev</a>
-
-
-    &bullet;
-
-
-    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-20.07/src/plfa/part2/More.lagda.md">Source</a>
-
-
-    &bullet;
-
-
-    <a alt="Next chapter" href="/20.07/Bisimulation/">Next</a>
-
-</p>
-
-
-</article>
-
-      </div>
-    </main><footer class="site-footer h-card">
-  <data class="u-url" href="/20.07/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">Programming Language Foundations in Agda
-</h2><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Philip Wadler</li>
-          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Wen Kokke</li>
-          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Jeremy G. Siek</li>
-          <li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
-  </div>
-</footer>
-<!-- Import jQuery -->
-<script type="text/javascript" src="/20.07/assets/jquery.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.2/anchor.min.js" integrity="sha256-E4RlfxwyJVmkkk0szw7LYJxuPlp6evtPSBDlWHsYYL8=" crossorigin="anonymous"></script>
-<script type="text/javascript">
-  anchors.add();
-</script>
-
-<script type="text/javascript">
-
- // Makes sandwhich menu works
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
- // Script which allows for foldable code blocks
- $('div.foldable pre').each(function(){
-     var autoHeight = $(this).height();
-     var lineHeight = parseFloat($(this).css('line-height'));
-
-     var plus    = $("<div></div>");
-     var horLine = $("<div></div>");
-     var verLine = $("<div></div>");
-     $(this).prepend(plus);
-     plus.css({
-         'position'         : 'relative',
-         'float'            : 'right',
-         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
-         'width'            : lineHeight,
-         'height'           : lineHeight});
-     verLine.css({
-         'position'         : 'relative',
-         'height'           : lineHeight,
-         'width'            : '3px',
-         'background-color' : '#C1E0FF'});
-     horLine.css({
-         'position'         : 'relative',
-         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
-         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
-         'height'           : '3px',
-         'width'            : lineHeight,
-         'background-color' : '#C1E0FF'});
-     plus.append(verLine);
-     plus.append(horLine);
-
-     $(this).height(2.0 * lineHeight);
-     $(this).css('overflow','hidden');
-
-     $(this).click(function(){
-         if ($(this).height() == autoHeight) {
-             $(this).height(2.0 * lineHeight);
-             plus.show();
-         }
-         else {
-             $(this).height('auto');
-             plus.hide();
-         }
-     });
- });
-</script>
-
-<!-- Import KaTeX -->
-<script type="text/javascript" src="/20.07/assets/katex.js"></script>
-
-<!-- Script which renders TeX using KaTeX -->
-<script type="text/javascript">
- $("script[type='math/tex']").replaceWith(
-     function(){
-         var tex = $(this).text();
-         return "<span class=\"inline-equation\">" +
-                katex.renderToString(tex) +
-                "</span>";
-     });
- $("script[type='math/tex; mode=display']").replaceWith(
-     function(){
-         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
-         return "<div class=\"equation\">" +
-                katex.renderToString("\\displaystyle "+tex) +
-                "</div>";
-     });
-</script>
-</body>
-
-</html>
+</code></pre></div></div></div><p style="text-align:center"><a alt="Previous chapter" href="/20.07/DeBruijn/">Prev</a> &bullet; <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-20.07/src/plfa/part2/More.lagda.md">Source</a> &bullet; <a alt="Next chapter" href="/20.07/Bisimulation/">Next</a></p></article></div></main><footer class="site-footer h-card"><data class="u-url" href="/20.07/"></data><div class="wrapper"><h2 class="footer-heading">Programming Language Foundations in Agda</h2><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Philip Wadler</li><li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Wen Kokke</li><li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Jeremy G. Siek</li><li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/20.07/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></div></footer><script type="text/javascript" src="/20.07/assets/jquery.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.2/anchor.min.js" integrity="sha256-E4RlfxwyJVmkkk0szw7LYJxuPlp6evtPSBDlWHsYYL8=" crossorigin="anonymous"></script><script type="text/javascript">anchors.add()</script><script type="text/javascript">$(".menu-icon").click(function(){$(".trigger").toggle()}),$("div.foldable pre").each(function(){var i=$(this).height(),t=parseFloat($(this).css("line-height")),h=$("<div></div>"),e=$("<div></div>"),o=$("<div></div>");$(this).prepend(h),h.css({position:"relative",float:"right",right:"-"+(.5*t-1.5)+"px",width:t,height:t}),o.css({position:"relative",height:t,width:"3px","background-color":"#C1E0FF"}),e.css({position:"relative",top:"-"+(.5*t+1.5)+"px",left:"-"+(.5*t-1.5)+"px",height:"3px",width:t,"background-color":"#C1E0FF"}),h.append(o),h.append(e),$(this).height(2*t),$(this).css("overflow","hidden"),$(this).click(function(){$(this).height()==i?($(this).height(2*t),h.show()):($(this).height("auto"),h.hide())})})</script><script type="text/javascript" src="/20.07/assets/katex.js"></script><script type="text/javascript">$("script[type='math/tex']").replaceWith(function(){var t=$(this).text();return'<span class="inline-equation">'+katex.renderToString(t)+"</span>"}),$("script[type='math/tex; mode=display']").replaceWith(function(){var t=$(this).text().replace(/%.*?(\n|$)/g,"");return'<div class="equation">'+katex.renderToString("\\displaystyle "+t)+"</div>"})</script></body></html>

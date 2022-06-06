@@ -1,139 +1,17 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Assignment4: PUC Assignment 4 | Programming Language Foundations in Agda
-</title><!-- Begin Jekyll SEO tag v2.6.1 -->
-<meta name="generator" content="Jekyll v3.9.0" />
-<meta property="og:title" content="Assignment4: PUC Assignment 4" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="Programming Language Foundations in Agda" />
-<meta property="og:description" content="Programming Language Foundations in Agda" />
-<link rel="canonical" href="https://plfa.github.io/19.08/PUC/2019/Assignment4/" />
-<meta property="og:url" content="https://plfa.github.io/19.08/PUC/2019/Assignment4/" />
-<meta property="og:site_name" content="Programming Language Foundations in Agda" />
-<script type="application/ld+json">
-{"url":"https://plfa.github.io/19.08/PUC/2019/Assignment4/","headline":"Assignment4: PUC Assignment 4","description":"Programming Language Foundations in Agda","@type":"WebPage","@context":"https://schema.org"}</script>
-<!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/19.08/assets/main.css"></head>
-<body><header class="site-header" role="banner">
-
-    <div class="wrapper">
-
-        <a class="site-title" href="/19.08/">Programming Language Foundations in Agda
-</a>
-
-        <nav class="site-nav">
-            <span class="menu-icon">
-                <svg viewBox="0 0 18 15" width="18px" height="15px">
-                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
-                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
-                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
-                </svg>
-            </span>
-
-            <div class="trigger">
-                <a class="page-link" href="/19.08/">The Book</a>
-                <a class="page-link" href="/19.08/Announcements/">Announcements</a>
-                <a class="page-link" href="/19.08/GettingStarted/">Getting Started</a>
-                <a class="page-link" href="/19.08/Citing/">Citing</a>
-                <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a>
-            </div>
-        </nav>
-
-    </div>
-
-</header>
-<main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post">
-
-  <header class="post-header">
-      <h1 class="post-title">Assignment4: PUC Assignment 4</h1>
-  </header>
-
-  <p style="text-align:center;">
-
-
-
-    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment4.lagda.md">Source</a>
-
-
-
-</p>
-
-
-  <div class="post-content">
-    <pre class="Agda"><a id="110" class="Keyword">module</a> <a id="117" href="/19.08/PUC/2019/Assignment4/" class="Module">Assignment4</a> <a id="129" class="Keyword">where</a>
-</pre>
-<h2 id="your-name-and-email-goes-here">YOUR NAME AND EMAIL GOES HERE</h2>
-
-<h2 id="introduction">Introduction</h2>
-
-<p>You must do <em>all</em> the exercises labelled “(recommended)”.</p>
-
-<p>Exercises labelled “(stretch)” are there to provide an extra challenge.
-You don’t need to do all of these, but should attempt at least a few.</p>
-
-<p>Exercises without a label are optional, and may be done if you want
-some extra practice.</p>
-
-<p>Please ensure your files execute correctly under Agda!</p>
-
-<p><strong>IMPORTANT</strong> For ease of marking, when modifying the given code please write</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- begin
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Assignment4: PUC Assignment 4 | Programming Language Foundations in Agda</title><meta name="generator" content="Jekyll v3.9.0"><meta property="og:title" content="Assignment4: PUC Assignment 4"><meta property="og:locale" content="en_US"><meta name="description" content="Programming Language Foundations in Agda"><meta property="og:description" content="Programming Language Foundations in Agda"><link rel="canonical" href="https://plfa.github.io/19.08/PUC/2019/Assignment4/"><meta property="og:url" content="https://plfa.github.io/19.08/PUC/2019/Assignment4/"><meta property="og:site_name" content="Programming Language Foundations in Agda"><script type="application/ld+json">{"url":"https://plfa.github.io/19.08/PUC/2019/Assignment4/","headline":"Assignment4: PUC Assignment 4","description":"Programming Language Foundations in Agda","@type":"WebPage","@context":"https://schema.org"}</script><link rel="stylesheet" href="/19.08/assets/main.css"></head><body><header class="site-header" role="banner"><div class="wrapper"><a class="site-title" href="/19.08/">Programming Language Foundations in Agda</a><nav class="site-nav"><span class="menu-icon"><svg viewBox="0 0 18 15" width="18px" height="15px"><path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/><path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/><path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/></svg></span><div class="trigger"><a class="page-link" href="/19.08/">The Book</a> <a class="page-link" href="/19.08/Announcements/">Announcements</a> <a class="page-link" href="/19.08/GettingStarted/">Getting Started</a> <a class="page-link" href="/19.08/Citing/">Citing</a> <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a></div></nav></div></header><main class="page-content" aria-label="Content"><div class="wrapper"><article class="post"><header class="post-header"><h1 class="post-title">Assignment4: PUC Assignment 4</h1></header><p style="text-align:center"><a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment4.lagda.md">Source</a></p><div class="post-content"><pre class="Agda"><a id="110" class="Keyword">module</a> <a id="117" href="/19.08/PUC/2019/Assignment4/" class="Module">Assignment4</a> <a id="129" class="Keyword">where</a>
+</pre><h2 id="your-name-and-email-goes-here">YOUR NAME AND EMAIL GOES HERE</h2><h2 id="introduction">Introduction</h2><p>You must do <em>all</em> the exercises labelled “(recommended)”.</p><p>Exercises labelled “(stretch)” are there to provide an extra challenge. You don’t need to do all of these, but should attempt at least a few.</p><p>Exercises without a label are optional, and may be done if you want some extra practice.</p><p>Please ensure your files execute correctly under Agda!</p><p><strong>IMPORTANT</strong> For ease of marking, when modifying the given code please write</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- begin
 -- end
-</code></pre></div></div>
-
-<p>before and after code you add, to indicate your changes.</p>
-
-<h2 id="imports">Imports</h2>
-
-<pre class="Agda"><a id="719" class="Keyword">import</a> <a id="726" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="764" class="Symbol">as</a> <a id="767" class="Module">Eq</a>
+</code></pre></div></div><p>before and after code you add, to indicate your changes.</p><h2 id="imports">Imports</h2><pre class="Agda"><a id="719" class="Keyword">import</a> <a id="726" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="764" class="Symbol">as</a> <a id="767" class="Module">Eq</a>
 <a id="770" class="Keyword">open</a> <a id="775" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="778" class="Keyword">using</a> <a id="784" class="Symbol">(</a><a id="785" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">_≡_</a><a id="788" class="Symbol">;</a> <a id="790" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="794" class="Symbol">;</a> <a id="796" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#939" class="Function">sym</a><a id="799" class="Symbol">;</a> <a id="801" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#984" class="Function">trans</a><a id="806" class="Symbol">;</a> <a id="808" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a><a id="812" class="Symbol">;</a> <a id="814" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html#1436" class="Function">cong₂</a><a id="819" class="Symbol">;</a> <a id="821" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#799" class="Function Operator">_≢_</a><a id="824" class="Symbol">)</a>
 <a id="826" class="Keyword">open</a> <a id="831" class="Keyword">import</a> <a id="838" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html" class="Module">Data.Empty</a> <a id="849" class="Keyword">using</a> <a id="855" class="Symbol">(</a><a id="856" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#279" class="Datatype">⊥</a><a id="857" class="Symbol">;</a> <a id="859" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a><a id="865" class="Symbol">)</a>
 <a id="867" class="Keyword">open</a> <a id="872" class="Keyword">import</a> <a id="879" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.html" class="Module">Data.Nat</a> <a id="888" class="Keyword">using</a> <a id="894" class="Symbol">(</a><a id="895" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="896" class="Symbol">;</a> <a id="898" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a><a id="902" class="Symbol">;</a> <a id="904" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a><a id="907" class="Symbol">;</a> <a id="909" href="Agda.Builtin.Nat.html#298" class="Primitive Operator">_+_</a><a id="912" class="Symbol">;</a> <a id="914" href="Agda.Builtin.Nat.html#501" class="Primitive Operator">_*_</a><a id="917" class="Symbol">)</a>
 <a id="919" class="Keyword">open</a> <a id="924" class="Keyword">import</a> <a id="931" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html" class="Module">Data.Product</a> <a id="944" class="Keyword">using</a> <a id="950" class="Symbol">(</a><a id="951" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1162" class="Function Operator">_×_</a><a id="954" class="Symbol">;</a> <a id="956" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1364" class="Function">∃</a><a id="957" class="Symbol">;</a> <a id="959" href="https://agda.github.io/agda-stdlib/v1.1/Data.Product.html#1783" class="Function">∃-syntax</a><a id="967" class="Symbol">)</a> <a id="969" class="Keyword">renaming</a> <a id="978" class="Symbol">(</a><a id="979" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">_,_</a> <a id="983" class="Symbol">to</a> <a id="986" href="Agda.Builtin.Sigma.html#209" class="InductiveConstructor Operator">⟨_,_⟩</a><a id="991" class="Symbol">)</a>
 <a id="993" class="Keyword">open</a> <a id="998" class="Keyword">import</a> <a id="1005" href="https://agda.github.io/agda-stdlib/v1.1/Data.String.html" class="Module">Data.String</a> <a id="1017" class="Keyword">using</a> <a id="1023" class="Symbol">(</a><a id="1024" href="Agda.Builtin.String.html#206" class="Postulate">String</a><a id="1030" class="Symbol">;</a> <a id="1032" href="https://agda.github.io/agda-stdlib/v1.1/Data.String.Properties.html#2569" class="Function Operator">_≟_</a><a id="1035" class="Symbol">)</a>
 <a id="1037" class="Keyword">open</a> <a id="1042" class="Keyword">import</a> <a id="1049" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html" class="Module">Relation.Nullary</a> <a id="1066" class="Keyword">using</a> <a id="1072" class="Symbol">(</a><a id="1073" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬_</a><a id="1075" class="Symbol">;</a> <a id="1077" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#605" class="Datatype">Dec</a><a id="1080" class="Symbol">;</a> <a id="1082" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#641" class="InductiveConstructor">yes</a><a id="1085" class="Symbol">;</a> <a id="1087" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#668" class="InductiveConstructor">no</a><a id="1089" class="Symbol">)</a>
-</pre>
-
-<h2 id="debruijn">DeBruijn</h2>
-
-<pre class="Agda"><a id="1115" class="Keyword">module</a> <a id="DeBruijn"></a><a id="1122" href="/19.08/PUC/2019/Assignment4/#1122" class="Module">DeBruijn</a> <a id="1131" class="Keyword">where</a>
-</pre>
-<p>Remember to indent all code by two spaces.</p>
-
-<pre class="Agda">  <a id="1192" class="Keyword">open</a> <a id="1197" class="Keyword">import</a> <a id="1204" href="/19.08/DeBruijn/" class="Module">plfa.part2.DeBruijn</a>
-</pre>
-
-<h4 id="exercise-mul-recommended">Exercise (<code class="language-plaintext highlighter-rouge">mul</code>) (recommended)</h4>
-
-<p>Write out the definition of a lambda term that multiplies
-two natural numbers, now adapted to the inherently typed
-DeBruijn representation.</p>
-
-<h4 id="exercise-v">Exercise <code class="language-plaintext highlighter-rouge">V¬—→</code></h4>
-
-<p>Following the previous development, show values do
-not reduce, and its corollary, terms that reduce are not
-values.</p>
-
-<h4 id="exercise-mul-example-recommended">Exercise <code class="language-plaintext highlighter-rouge">mul-example</code> (recommended)</h4>
-
-<p>Using the evaluator, confirm that two times two is four.</p>
-
-<h2 id="more">More</h2>
-
-<pre class="Agda"><a id="1664" class="Keyword">module</a> <a id="More"></a><a id="1671" href="/19.08/PUC/2019/Assignment4/#1671" class="Module">More</a> <a id="1676" class="Keyword">where</a>
-</pre>
-<p>Remember to indent all code by two spaces.</p>
-
-<h3 id="syntax">Syntax</h3>
-
-<pre class="Agda">  <a id="1750" class="Keyword">infix</a>  <a id="1757" class="Number">4</a> <a id="1759" href="/19.08/PUC/2019/Assignment4/#2554" class="Datatype Operator">_⊢_</a>
+</pre><h2 id="debruijn">DeBruijn</h2><pre class="Agda"><a id="1115" class="Keyword">module</a> <a id="DeBruijn"></a><a id="1122" href="/19.08/PUC/2019/Assignment4/#1122" class="Module">DeBruijn</a> <a id="1131" class="Keyword">where</a>
+</pre><p>Remember to indent all code by two spaces.</p><pre class="Agda">  <a id="1192" class="Keyword">open</a> <a id="1197" class="Keyword">import</a> <a id="1204" href="/19.08/DeBruijn/" class="Module">plfa.part2.DeBruijn</a>
+</pre><h4 id="exercise-mul-recommended">Exercise (<code class="language-plaintext highlighter-rouge">mul</code>) (recommended)</h4><p>Write out the definition of a lambda term that multiplies two natural numbers, now adapted to the inherently typed DeBruijn representation.</p><h4 id="exercise-v">Exercise <code class="language-plaintext highlighter-rouge">V¬—→</code></h4><p>Following the previous development, show values do not reduce, and its corollary, terms that reduce are not values.</p><h4 id="exercise-mul-example-recommended">Exercise <code class="language-plaintext highlighter-rouge">mul-example</code> (recommended)</h4><p>Using the evaluator, confirm that two times two is four.</p><h2 id="more">More</h2><pre class="Agda"><a id="1664" class="Keyword">module</a> <a id="More"></a><a id="1671" href="/19.08/PUC/2019/Assignment4/#1671" class="Module">More</a> <a id="1676" class="Keyword">where</a>
+</pre><p>Remember to indent all code by two spaces.</p><h3 id="syntax">Syntax</h3><pre class="Agda">  <a id="1750" class="Keyword">infix</a>  <a id="1757" class="Number">4</a> <a id="1759" href="/19.08/PUC/2019/Assignment4/#2554" class="Datatype Operator">_⊢_</a>
   <a id="1765" class="Keyword">infix</a>  <a id="1772" class="Number">4</a> <a id="1774" href="/19.08/PUC/2019/Assignment4/#2347" class="Datatype Operator">_∋_</a>
   <a id="1780" class="Keyword">infixl</a> <a id="1787" class="Number">5</a> <a id="1789" href="/19.08/PUC/2019/Assignment4/#2261" class="InductiveConstructor Operator">_,_</a>
 
@@ -149,10 +27,7 @@ values.</p>
   <a id="1920" class="Keyword">infix</a>  <a id="1927" class="Number">9</a> <a id="1929" href="/19.08/PUC/2019/Assignment4/#2610" class="InductiveConstructor Operator">`_</a>
   <a id="1934" class="Keyword">infix</a>  <a id="1941" class="Number">9</a> <a id="1943" href="/19.08/PUC/2019/Assignment4/#2438" class="InductiveConstructor Operator">S_</a>
   <a id="1948" class="Keyword">infix</a>  <a id="1955" class="Number">9</a> <a id="1957" href="/19.08/PUC/2019/Assignment4/#4258" class="Function Operator">#_</a>
-</pre>
-<h3 id="types">Types</h3>
-
-<pre class="Agda">  <a id="1982" class="Keyword">data</a> <a id="More.Type"></a><a id="1987" href="/19.08/PUC/2019/Assignment4/#1987" class="Datatype">Type</a> <a id="1992" class="Symbol">:</a> <a id="1994" class="PrimitiveType">Set</a> <a id="1998" class="Keyword">where</a>
+</pre><h3 id="types">Types</h3><pre class="Agda">  <a id="1982" class="Keyword">data</a> <a id="More.Type"></a><a id="1987" href="/19.08/PUC/2019/Assignment4/#1987" class="Datatype">Type</a> <a id="1992" class="Symbol">:</a> <a id="1994" class="PrimitiveType">Set</a> <a id="1998" class="Keyword">where</a>
     <a id="More.Type.`ℕ"></a><a id="2008" href="/19.08/PUC/2019/Assignment4/#2008" class="InductiveConstructor">`ℕ</a>    <a id="2014" class="Symbol">:</a> <a id="2016" href="Assignment4.html#1987" class="Datatype">Type</a>
     <a id="More.Type._⇒_"></a><a id="2025" href="/19.08/PUC/2019/Assignment4/#2025" class="InductiveConstructor Operator">_⇒_</a>   <a id="2031" class="Symbol">:</a> <a id="2033" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2038" class="Symbol">→</a> <a id="2040" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2045" class="Symbol">→</a> <a id="2047" href="Assignment4.html#1987" class="Datatype">Type</a>
     <a id="More.Type.Nat"></a><a id="2056" href="/19.08/PUC/2019/Assignment4/#2056" class="InductiveConstructor">Nat</a>   <a id="2062" class="Symbol">:</a> <a id="2064" href="Assignment4.html#1987" class="Datatype">Type</a>
@@ -161,16 +36,10 @@ values.</p>
     <a id="More.Type.`⊤"></a><a id="2135" href="/19.08/PUC/2019/Assignment4/#2135" class="InductiveConstructor">`⊤</a>    <a id="2141" class="Symbol">:</a> <a id="2143" href="Assignment4.html#1987" class="Datatype">Type</a>
     <a id="More.Type.`⊥"></a><a id="2152" href="/19.08/PUC/2019/Assignment4/#2152" class="InductiveConstructor">`⊥</a>    <a id="2158" class="Symbol">:</a> <a id="2160" href="Assignment4.html#1987" class="Datatype">Type</a>
     <a id="More.Type.`List"></a><a id="2169" href="/19.08/PUC/2019/Assignment4/#2169" class="InductiveConstructor">`List</a> <a id="2175" class="Symbol">:</a> <a id="2177" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2182" class="Symbol">→</a> <a id="2184" href="Assignment4.html#1987" class="Datatype">Type</a>
-</pre>
-<h3 id="contexts">Contexts</h3>
-
-<pre class="Agda">  <a id="2214" class="Keyword">data</a> <a id="More.Context"></a><a id="2219" href="/19.08/PUC/2019/Assignment4/#2219" class="Datatype">Context</a> <a id="2227" class="Symbol">:</a> <a id="2229" class="PrimitiveType">Set</a> <a id="2233" class="Keyword">where</a>
+</pre><h3 id="contexts">Contexts</h3><pre class="Agda">  <a id="2214" class="Keyword">data</a> <a id="More.Context"></a><a id="2219" href="/19.08/PUC/2019/Assignment4/#2219" class="Datatype">Context</a> <a id="2227" class="Symbol">:</a> <a id="2229" class="PrimitiveType">Set</a> <a id="2233" class="Keyword">where</a>
     <a id="More.Context.∅"></a><a id="2243" href="/19.08/PUC/2019/Assignment4/#2243" class="InductiveConstructor">∅</a>   <a id="2247" class="Symbol">:</a> <a id="2249" href="Assignment4.html#2219" class="Datatype">Context</a>
     <a id="More.Context._,_"></a><a id="2261" href="/19.08/PUC/2019/Assignment4/#2261" class="InductiveConstructor Operator">_,_</a> <a id="2265" class="Symbol">:</a> <a id="2267" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="2275" class="Symbol">→</a> <a id="2277" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2282" class="Symbol">→</a> <a id="2284" href="Assignment4.html#2219" class="Datatype">Context</a>
-</pre>
-<h3 id="variables-and-the-lookup-judgment">Variables and the lookup judgment</h3>
-
-<pre class="Agda">  <a id="2342" class="Keyword">data</a> <a id="More._∋_"></a><a id="2347" href="/19.08/PUC/2019/Assignment4/#2347" class="Datatype Operator">_∋_</a> <a id="2351" class="Symbol">:</a> <a id="2353" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="2361" class="Symbol">→</a> <a id="2363" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2368" class="Symbol">→</a> <a id="2370" class="PrimitiveType">Set</a> <a id="2374" class="Keyword">where</a>
+</pre><h3 id="variables-and-the-lookup-judgment">Variables and the lookup judgment</h3><pre class="Agda">  <a id="2342" class="Keyword">data</a> <a id="More._∋_"></a><a id="2347" href="/19.08/PUC/2019/Assignment4/#2347" class="Datatype Operator">_∋_</a> <a id="2351" class="Symbol">:</a> <a id="2353" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="2361" class="Symbol">→</a> <a id="2363" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2368" class="Symbol">→</a> <a id="2370" class="PrimitiveType">Set</a> <a id="2374" class="Keyword">where</a>
 
     <a id="More._∋_.Z"></a><a id="2385" href="/19.08/PUC/2019/Assignment4/#2385" class="InductiveConstructor">Z</a> <a id="2387" class="Symbol">:</a> <a id="2389" class="Symbol">∀</a> <a id="2391" class="Symbol">{</a><a id="2392" href="Assignment4.html#2392" class="Bound">Γ</a> <a id="2394" href="Assignment4.html#2394" class="Bound">A</a><a id="2395" class="Symbol">}</a>
         <a id="2405" class="Comment">---------</a>
@@ -180,10 +49,7 @@ values.</p>
       <a id="2459" class="Symbol">→</a> <a id="2461" href="/19.08/PUC/2019/Assignment4/#2446" class="Bound">Γ</a> <a id="2463" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="2465" href="Assignment4.html#2450" class="Bound">B</a>
         <a id="2475" class="Comment">---------</a>
       <a id="2491" class="Symbol">→</a> <a id="2493" href="/19.08/PUC/2019/Assignment4/#2446" class="Bound">Γ</a> <a id="2495" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="2497" href="Assignment4.html#2448" class="Bound">A</a> <a id="2499" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="2501" href="Assignment4.html#2450" class="Bound">B</a>
-</pre>
-<h3 id="terms-and-the-typing-judgment">Terms and the typing judgment</h3>
-
-<pre class="Agda">  <a id="2549" class="Keyword">data</a> <a id="More._⊢_"></a><a id="2554" href="/19.08/PUC/2019/Assignment4/#2554" class="Datatype Operator">_⊢_</a> <a id="2558" class="Symbol">:</a> <a id="2560" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="2568" class="Symbol">→</a> <a id="2570" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2575" class="Symbol">→</a> <a id="2577" class="PrimitiveType">Set</a> <a id="2581" class="Keyword">where</a>
+</pre><h3 id="terms-and-the-typing-judgment">Terms and the typing judgment</h3><pre class="Agda">  <a id="2549" class="Keyword">data</a> <a id="More._⊢_"></a><a id="2554" href="/19.08/PUC/2019/Assignment4/#2554" class="Datatype Operator">_⊢_</a> <a id="2558" class="Symbol">:</a> <a id="2560" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="2568" class="Symbol">→</a> <a id="2570" href="Assignment4.html#1987" class="Datatype">Type</a> <a id="2575" class="Symbol">→</a> <a id="2577" class="PrimitiveType">Set</a> <a id="2581" class="Keyword">where</a>
 
     <a id="2592" class="Comment">-- variables</a>
 
@@ -277,10 +143,7 @@ values.</p>
         <a id="3802" class="Comment">--------------</a>
       <a id="3823" class="Symbol">→</a> <a id="3825" href="/19.08/PUC/2019/Assignment4/#3744" class="Bound">Γ</a> <a id="3827" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="3829" href="Assignment4.html#3750" class="Bound">C</a>
 
-</pre>
-<h3 id="abbreviating-de-bruijn-indices">Abbreviating de Bruijn indices</h3>
-
-<pre class="Agda">  <a id="More.lookup"></a><a id="3879" href="/19.08/PUC/2019/Assignment4/#3879" class="Function">lookup</a> <a id="3886" class="Symbol">:</a> <a id="3888" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="3896" class="Symbol">→</a> <a id="3898" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="3900" class="Symbol">→</a> <a id="3902" href="Assignment4.html#1987" class="Datatype">Type</a>
+</pre><h3 id="abbreviating-de-bruijn-indices">Abbreviating de Bruijn indices</h3><pre class="Agda">  <a id="More.lookup"></a><a id="3879" href="/19.08/PUC/2019/Assignment4/#3879" class="Function">lookup</a> <a id="3886" class="Symbol">:</a> <a id="3888" href="Assignment4.html#2219" class="Datatype">Context</a> <a id="3896" class="Symbol">→</a> <a id="3898" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="3900" class="Symbol">→</a> <a id="3902" href="Assignment4.html#1987" class="Datatype">Type</a>
   <a id="3909" href="/19.08/PUC/2019/Assignment4/#3879" class="Function">lookup</a> <a id="3916" class="Symbol">(</a><a id="3917" href="Assignment4.html#3917" class="Bound">Γ</a> <a id="3919" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="3921" href="Assignment4.html#3921" class="Bound">A</a><a id="3922" class="Symbol">)</a> <a id="3924" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a>     <a id="3933" class="Symbol">=</a>  <a id="3936" href="Assignment4.html#3921" class="Bound">A</a>
   <a id="3940" href="/19.08/PUC/2019/Assignment4/#3879" class="Function">lookup</a> <a id="3947" class="Symbol">(</a><a id="3948" href="Assignment4.html#3948" class="Bound">Γ</a> <a id="3950" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="3952" class="Symbol">_)</a> <a id="3955" class="Symbol">(</a><a id="3956" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a> <a id="3960" href="Assignment4.html#3960" class="Bound">n</a><a id="3961" class="Symbol">)</a>  <a id="3964" class="Symbol">=</a>  <a id="3967" href="Assignment4.html#3879" class="Function">lookup</a> <a id="3974" href="Assignment4.html#3948" class="Bound">Γ</a> <a id="3976" href="Assignment4.html#3960" class="Bound">n</a>
   <a id="3980" href="/19.08/PUC/2019/Assignment4/#3879" class="Function">lookup</a> <a id="3987" href="Assignment4.html#2243" class="InductiveConstructor">∅</a>       <a id="3995" class="Symbol">_</a>        <a id="4004" class="Symbol">=</a>  <a id="4007" href="https://agda.github.io/agda-stdlib/v1.1/Data.Empty.html#294" class="Function">⊥-elim</a> <a id="4014" href="Assignment4.html#4045" class="Postulate">impossible</a>
@@ -294,10 +157,7 @@ values.</p>
 
   <a id="More.#_"></a><a id="4258" href="/19.08/PUC/2019/Assignment4/#4258" class="Function Operator">#_</a> <a id="4261" class="Symbol">:</a> <a id="4263" class="Symbol">∀</a> <a id="4265" class="Symbol">{</a><a id="4266" href="Assignment4.html#4266" class="Bound">Γ</a><a id="4267" class="Symbol">}</a> <a id="4269" class="Symbol">→</a> <a id="4271" class="Symbol">(</a><a id="4272" href="Assignment4.html#4272" class="Bound">n</a> <a id="4274" class="Symbol">:</a> <a id="4276" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="4277" class="Symbol">)</a> <a id="4279" class="Symbol">→</a> <a id="4281" href="Assignment4.html#4266" class="Bound">Γ</a> <a id="4283" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="4285" href="Assignment4.html#3879" class="Function">lookup</a> <a id="4292" href="Assignment4.html#4266" class="Bound">Γ</a> <a id="4294" href="Assignment4.html#4272" class="Bound">n</a>
   <a id="4298" href="/19.08/PUC/2019/Assignment4/#4258" class="Function Operator">#</a> <a id="4300" href="Assignment4.html#4300" class="Bound">n</a>  <a id="4303" class="Symbol">=</a>  <a id="4306" href="Assignment4.html#2610" class="InductiveConstructor Operator">`</a> <a id="4308" href="Assignment4.html#4063" class="Function">count</a> <a id="4314" href="Assignment4.html#4300" class="Bound">n</a>
-</pre>
-<h2 id="renaming">Renaming</h2>
-
-<pre class="Agda">  <a id="More.ext"></a><a id="4340" href="/19.08/PUC/2019/Assignment4/#4340" class="Function">ext</a> <a id="4344" class="Symbol">:</a> <a id="4346" class="Symbol">∀</a> <a id="4348" class="Symbol">{</a><a id="4349" href="Assignment4.html#4349" class="Bound">Γ</a> <a id="4351" href="Assignment4.html#4351" class="Bound">Δ</a><a id="4352" class="Symbol">}</a> <a id="4354" class="Symbol">→</a> <a id="4356" class="Symbol">(∀</a> <a id="4359" class="Symbol">{</a><a id="4360" href="Assignment4.html#4360" class="Bound">A</a><a id="4361" class="Symbol">}</a> <a id="4363" class="Symbol">→</a> <a id="4365" href="Assignment4.html#4349" class="Bound">Γ</a> <a id="4367" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4369" href="Assignment4.html#4360" class="Bound">A</a> <a id="4371" class="Symbol">→</a> <a id="4373" href="Assignment4.html#4351" class="Bound">Δ</a> <a id="4375" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4377" href="Assignment4.html#4360" class="Bound">A</a><a id="4378" class="Symbol">)</a> <a id="4380" class="Symbol">→</a> <a id="4382" class="Symbol">(∀</a> <a id="4385" class="Symbol">{</a><a id="4386" href="Assignment4.html#4386" class="Bound">A</a> <a id="4388" href="Assignment4.html#4388" class="Bound">B</a><a id="4389" class="Symbol">}</a> <a id="4391" class="Symbol">→</a> <a id="4393" href="Assignment4.html#4349" class="Bound">Γ</a> <a id="4395" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="4397" href="Assignment4.html#4386" class="Bound">A</a> <a id="4399" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4401" href="Assignment4.html#4388" class="Bound">B</a> <a id="4403" class="Symbol">→</a> <a id="4405" href="Assignment4.html#4351" class="Bound">Δ</a> <a id="4407" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="4409" href="Assignment4.html#4386" class="Bound">A</a> <a id="4411" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4413" href="Assignment4.html#4388" class="Bound">B</a><a id="4414" class="Symbol">)</a>
+</pre><h2 id="renaming">Renaming</h2><pre class="Agda">  <a id="More.ext"></a><a id="4340" href="/19.08/PUC/2019/Assignment4/#4340" class="Function">ext</a> <a id="4344" class="Symbol">:</a> <a id="4346" class="Symbol">∀</a> <a id="4348" class="Symbol">{</a><a id="4349" href="Assignment4.html#4349" class="Bound">Γ</a> <a id="4351" href="Assignment4.html#4351" class="Bound">Δ</a><a id="4352" class="Symbol">}</a> <a id="4354" class="Symbol">→</a> <a id="4356" class="Symbol">(∀</a> <a id="4359" class="Symbol">{</a><a id="4360" href="Assignment4.html#4360" class="Bound">A</a><a id="4361" class="Symbol">}</a> <a id="4363" class="Symbol">→</a> <a id="4365" href="Assignment4.html#4349" class="Bound">Γ</a> <a id="4367" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4369" href="Assignment4.html#4360" class="Bound">A</a> <a id="4371" class="Symbol">→</a> <a id="4373" href="Assignment4.html#4351" class="Bound">Δ</a> <a id="4375" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4377" href="Assignment4.html#4360" class="Bound">A</a><a id="4378" class="Symbol">)</a> <a id="4380" class="Symbol">→</a> <a id="4382" class="Symbol">(∀</a> <a id="4385" class="Symbol">{</a><a id="4386" href="Assignment4.html#4386" class="Bound">A</a> <a id="4388" href="Assignment4.html#4388" class="Bound">B</a><a id="4389" class="Symbol">}</a> <a id="4391" class="Symbol">→</a> <a id="4393" href="Assignment4.html#4349" class="Bound">Γ</a> <a id="4395" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="4397" href="Assignment4.html#4386" class="Bound">A</a> <a id="4399" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4401" href="Assignment4.html#4388" class="Bound">B</a> <a id="4403" class="Symbol">→</a> <a id="4405" href="Assignment4.html#4351" class="Bound">Δ</a> <a id="4407" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="4409" href="Assignment4.html#4386" class="Bound">A</a> <a id="4411" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="4413" href="Assignment4.html#4388" class="Bound">B</a><a id="4414" class="Symbol">)</a>
   <a id="4418" href="/19.08/PUC/2019/Assignment4/#4340" class="Function">ext</a> <a id="4422" href="Assignment4.html#4422" class="Bound">ρ</a> <a id="4424" href="Assignment4.html#2385" class="InductiveConstructor">Z</a>      <a id="4431" class="Symbol">=</a>  <a id="4434" href="Assignment4.html#2385" class="InductiveConstructor">Z</a>
   <a id="4438" href="/19.08/PUC/2019/Assignment4/#4340" class="Function">ext</a> <a id="4442" href="Assignment4.html#4442" class="Bound">ρ</a> <a id="4444" class="Symbol">(</a><a id="4445" href="Assignment4.html#2438" class="InductiveConstructor Operator">S</a> <a id="4447" href="Assignment4.html#4447" class="Bound">x</a><a id="4448" class="Symbol">)</a>  <a id="4451" class="Symbol">=</a>  <a id="4454" href="Assignment4.html#2438" class="InductiveConstructor Operator">S</a> <a id="4456" class="Symbol">(</a><a id="4457" href="Assignment4.html#4442" class="Bound">ρ</a> <a id="4459" href="Assignment4.html#4447" class="Bound">x</a><a id="4460" class="Symbol">)</a>
 
@@ -316,10 +176,7 @@ values.</p>
   <a id="5104" href="/19.08/PUC/2019/Assignment4/#4465" class="Function">rename</a> <a id="5111" href="Assignment4.html#5111" class="Bound">ρ</a> <a id="5113" class="Symbol">(</a><a id="5114" href="Assignment4.html#3535" class="InductiveConstructor">`proj₁</a> <a id="5121" href="Assignment4.html#5121" class="Bound">L</a><a id="5122" class="Symbol">)</a>     <a id="5128" class="Symbol">=</a>  <a id="5131" href="Assignment4.html#3535" class="InductiveConstructor">`proj₁</a> <a id="5138" class="Symbol">(</a><a id="5139" href="Assignment4.html#4465" class="Function">rename</a> <a id="5146" href="Assignment4.html#5111" class="Bound">ρ</a> <a id="5148" href="Assignment4.html#5121" class="Bound">L</a><a id="5149" class="Symbol">)</a>
   <a id="5153" href="/19.08/PUC/2019/Assignment4/#4465" class="Function">rename</a> <a id="5160" href="Assignment4.html#5160" class="Bound">ρ</a> <a id="5162" class="Symbol">(</a><a id="5163" href="Assignment4.html#3612" class="InductiveConstructor">`proj₂</a> <a id="5170" href="Assignment4.html#5170" class="Bound">L</a><a id="5171" class="Symbol">)</a>     <a id="5177" class="Symbol">=</a>  <a id="5180" href="Assignment4.html#3612" class="InductiveConstructor">`proj₂</a> <a id="5187" class="Symbol">(</a><a id="5188" href="Assignment4.html#4465" class="Function">rename</a> <a id="5195" href="Assignment4.html#5160" class="Bound">ρ</a> <a id="5197" href="Assignment4.html#5170" class="Bound">L</a><a id="5198" class="Symbol">)</a>
   <a id="5202" href="/19.08/PUC/2019/Assignment4/#4465" class="Function">rename</a> <a id="5209" href="Assignment4.html#5209" class="Bound">ρ</a> <a id="5211" class="Symbol">(</a><a id="5212" href="Assignment4.html#3733" class="InductiveConstructor">case×</a> <a id="5218" href="Assignment4.html#5218" class="Bound">L</a> <a id="5220" href="Assignment4.html#5220" class="Bound">M</a><a id="5221" class="Symbol">)</a>    <a id="5226" class="Symbol">=</a>  <a id="5229" href="Assignment4.html#3733" class="InductiveConstructor">case×</a> <a id="5235" class="Symbol">(</a><a id="5236" href="Assignment4.html#4465" class="Function">rename</a> <a id="5243" href="Assignment4.html#5209" class="Bound">ρ</a> <a id="5245" href="Assignment4.html#5218" class="Bound">L</a><a id="5246" class="Symbol">)</a> <a id="5248" class="Symbol">(</a><a id="5249" href="Assignment4.html#4465" class="Function">rename</a> <a id="5256" class="Symbol">(</a><a id="5257" href="Assignment4.html#4340" class="Function">ext</a> <a id="5261" class="Symbol">(</a><a id="5262" href="Assignment4.html#4340" class="Function">ext</a> <a id="5266" href="Assignment4.html#5209" class="Bound">ρ</a><a id="5267" class="Symbol">))</a> <a id="5270" href="Assignment4.html#5220" class="Bound">M</a><a id="5271" class="Symbol">)</a>
-</pre>
-<h2 id="simultaneous-substitution">Simultaneous Substitution</h2>
-
-<pre class="Agda">  <a id="More.exts"></a><a id="5314" href="/19.08/PUC/2019/Assignment4/#5314" class="Function">exts</a> <a id="5319" class="Symbol">:</a> <a id="5321" class="Symbol">∀</a> <a id="5323" class="Symbol">{</a><a id="5324" href="Assignment4.html#5324" class="Bound">Γ</a> <a id="5326" href="Assignment4.html#5326" class="Bound">Δ</a><a id="5327" class="Symbol">}</a> <a id="5329" class="Symbol">→</a> <a id="5331" class="Symbol">(∀</a> <a id="5334" class="Symbol">{</a><a id="5335" href="Assignment4.html#5335" class="Bound">A</a><a id="5336" class="Symbol">}</a> <a id="5338" class="Symbol">→</a> <a id="5340" href="Assignment4.html#5324" class="Bound">Γ</a> <a id="5342" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="5344" href="Assignment4.html#5335" class="Bound">A</a> <a id="5346" class="Symbol">→</a> <a id="5348" href="Assignment4.html#5326" class="Bound">Δ</a> <a id="5350" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="5352" href="Assignment4.html#5335" class="Bound">A</a><a id="5353" class="Symbol">)</a> <a id="5355" class="Symbol">→</a> <a id="5357" class="Symbol">(∀</a> <a id="5360" class="Symbol">{</a><a id="5361" href="Assignment4.html#5361" class="Bound">A</a> <a id="5363" href="Assignment4.html#5363" class="Bound">B</a><a id="5364" class="Symbol">}</a> <a id="5366" class="Symbol">→</a> <a id="5368" href="Assignment4.html#5324" class="Bound">Γ</a> <a id="5370" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="5372" href="Assignment4.html#5361" class="Bound">A</a> <a id="5374" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="5376" href="Assignment4.html#5363" class="Bound">B</a> <a id="5378" class="Symbol">→</a> <a id="5380" href="Assignment4.html#5326" class="Bound">Δ</a> <a id="5382" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="5384" href="Assignment4.html#5361" class="Bound">A</a> <a id="5386" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="5388" href="Assignment4.html#5363" class="Bound">B</a><a id="5389" class="Symbol">)</a>
+</pre><h2 id="simultaneous-substitution">Simultaneous Substitution</h2><pre class="Agda">  <a id="More.exts"></a><a id="5314" href="/19.08/PUC/2019/Assignment4/#5314" class="Function">exts</a> <a id="5319" class="Symbol">:</a> <a id="5321" class="Symbol">∀</a> <a id="5323" class="Symbol">{</a><a id="5324" href="Assignment4.html#5324" class="Bound">Γ</a> <a id="5326" href="Assignment4.html#5326" class="Bound">Δ</a><a id="5327" class="Symbol">}</a> <a id="5329" class="Symbol">→</a> <a id="5331" class="Symbol">(∀</a> <a id="5334" class="Symbol">{</a><a id="5335" href="Assignment4.html#5335" class="Bound">A</a><a id="5336" class="Symbol">}</a> <a id="5338" class="Symbol">→</a> <a id="5340" href="Assignment4.html#5324" class="Bound">Γ</a> <a id="5342" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="5344" href="Assignment4.html#5335" class="Bound">A</a> <a id="5346" class="Symbol">→</a> <a id="5348" href="Assignment4.html#5326" class="Bound">Δ</a> <a id="5350" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="5352" href="Assignment4.html#5335" class="Bound">A</a><a id="5353" class="Symbol">)</a> <a id="5355" class="Symbol">→</a> <a id="5357" class="Symbol">(∀</a> <a id="5360" class="Symbol">{</a><a id="5361" href="Assignment4.html#5361" class="Bound">A</a> <a id="5363" href="Assignment4.html#5363" class="Bound">B</a><a id="5364" class="Symbol">}</a> <a id="5366" class="Symbol">→</a> <a id="5368" href="Assignment4.html#5324" class="Bound">Γ</a> <a id="5370" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="5372" href="Assignment4.html#5361" class="Bound">A</a> <a id="5374" href="Assignment4.html#2347" class="Datatype Operator">∋</a> <a id="5376" href="Assignment4.html#5363" class="Bound">B</a> <a id="5378" class="Symbol">→</a> <a id="5380" href="Assignment4.html#5326" class="Bound">Δ</a> <a id="5382" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="5384" href="Assignment4.html#5361" class="Bound">A</a> <a id="5386" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="5388" href="Assignment4.html#5363" class="Bound">B</a><a id="5389" class="Symbol">)</a>
   <a id="5393" href="/19.08/PUC/2019/Assignment4/#5314" class="Function">exts</a> <a id="5398" href="Assignment4.html#5398" class="Bound">σ</a> <a id="5400" href="Assignment4.html#2385" class="InductiveConstructor">Z</a>      <a id="5407" class="Symbol">=</a>  <a id="5410" href="Assignment4.html#2610" class="InductiveConstructor Operator">`</a> <a id="5412" href="Assignment4.html#2385" class="InductiveConstructor">Z</a>
   <a id="5416" href="/19.08/PUC/2019/Assignment4/#5314" class="Function">exts</a> <a id="5421" href="Assignment4.html#5421" class="Bound">σ</a> <a id="5423" class="Symbol">(</a><a id="5424" href="Assignment4.html#2438" class="InductiveConstructor Operator">S</a> <a id="5426" href="Assignment4.html#5426" class="Bound">x</a><a id="5427" class="Symbol">)</a>  <a id="5430" class="Symbol">=</a>  <a id="5433" href="Assignment4.html#4465" class="Function">rename</a> <a id="5440" href="Assignment4.html#2438" class="InductiveConstructor Operator">S_</a> <a id="5443" class="Symbol">(</a><a id="5444" href="Assignment4.html#5421" class="Bound">σ</a> <a id="5446" href="Assignment4.html#5426" class="Bound">x</a><a id="5447" class="Symbol">)</a>
 
@@ -338,10 +195,7 @@ values.</p>
   <a id="6065" href="/19.08/PUC/2019/Assignment4/#5452" class="Function">subst</a> <a id="6071" href="Assignment4.html#6071" class="Bound">σ</a> <a id="6073" class="Symbol">(</a><a id="6074" href="Assignment4.html#3535" class="InductiveConstructor">`proj₁</a> <a id="6081" href="Assignment4.html#6081" class="Bound">L</a><a id="6082" class="Symbol">)</a>     <a id="6088" class="Symbol">=</a>  <a id="6091" href="Assignment4.html#3535" class="InductiveConstructor">`proj₁</a> <a id="6098" class="Symbol">(</a><a id="6099" href="Assignment4.html#5452" class="Function">subst</a> <a id="6105" href="Assignment4.html#6071" class="Bound">σ</a> <a id="6107" href="Assignment4.html#6081" class="Bound">L</a><a id="6108" class="Symbol">)</a>
   <a id="6112" href="/19.08/PUC/2019/Assignment4/#5452" class="Function">subst</a> <a id="6118" href="Assignment4.html#6118" class="Bound">σ</a> <a id="6120" class="Symbol">(</a><a id="6121" href="Assignment4.html#3612" class="InductiveConstructor">`proj₂</a> <a id="6128" href="Assignment4.html#6128" class="Bound">L</a><a id="6129" class="Symbol">)</a>     <a id="6135" class="Symbol">=</a>  <a id="6138" href="Assignment4.html#3612" class="InductiveConstructor">`proj₂</a> <a id="6145" class="Symbol">(</a><a id="6146" href="Assignment4.html#5452" class="Function">subst</a> <a id="6152" href="Assignment4.html#6118" class="Bound">σ</a> <a id="6154" href="Assignment4.html#6128" class="Bound">L</a><a id="6155" class="Symbol">)</a>
   <a id="6159" href="/19.08/PUC/2019/Assignment4/#5452" class="Function">subst</a> <a id="6165" href="Assignment4.html#6165" class="Bound">σ</a> <a id="6167" class="Symbol">(</a><a id="6168" href="Assignment4.html#3733" class="InductiveConstructor">case×</a> <a id="6174" href="Assignment4.html#6174" class="Bound">L</a> <a id="6176" href="Assignment4.html#6176" class="Bound">M</a><a id="6177" class="Symbol">)</a>    <a id="6182" class="Symbol">=</a>  <a id="6185" href="Assignment4.html#3733" class="InductiveConstructor">case×</a> <a id="6191" class="Symbol">(</a><a id="6192" href="Assignment4.html#5452" class="Function">subst</a> <a id="6198" href="Assignment4.html#6165" class="Bound">σ</a> <a id="6200" href="Assignment4.html#6174" class="Bound">L</a><a id="6201" class="Symbol">)</a> <a id="6203" class="Symbol">(</a><a id="6204" href="Assignment4.html#5452" class="Function">subst</a> <a id="6210" class="Symbol">(</a><a id="6211" href="Assignment4.html#5314" class="Function">exts</a> <a id="6216" class="Symbol">(</a><a id="6217" href="Assignment4.html#5314" class="Function">exts</a> <a id="6222" href="Assignment4.html#6165" class="Bound">σ</a><a id="6223" class="Symbol">))</a> <a id="6226" href="Assignment4.html#6176" class="Bound">M</a><a id="6227" class="Symbol">)</a>
-</pre>
-<h2 id="single-and-double-substitution">Single and double substitution</h2>
-
-<pre class="Agda">  <a id="More._[_]"></a><a id="6275" href="/19.08/PUC/2019/Assignment4/#6275" class="Function Operator">_[_]</a> <a id="6280" class="Symbol">:</a> <a id="6282" class="Symbol">∀</a> <a id="6284" class="Symbol">{</a><a id="6285" href="Assignment4.html#6285" class="Bound">Γ</a> <a id="6287" href="Assignment4.html#6287" class="Bound">A</a> <a id="6289" href="Assignment4.html#6289" class="Bound">B</a><a id="6290" class="Symbol">}</a>
+</pre><h2 id="single-and-double-substitution">Single and double substitution</h2><pre class="Agda">  <a id="More._[_]"></a><a id="6275" href="/19.08/PUC/2019/Assignment4/#6275" class="Function Operator">_[_]</a> <a id="6280" class="Symbol">:</a> <a id="6282" class="Symbol">∀</a> <a id="6284" class="Symbol">{</a><a id="6285" href="Assignment4.html#6285" class="Bound">Γ</a> <a id="6287" href="Assignment4.html#6287" class="Bound">A</a> <a id="6289" href="Assignment4.html#6289" class="Bound">B</a><a id="6290" class="Symbol">}</a>
     <a id="6296" class="Symbol">→</a> <a id="6298" href="/19.08/PUC/2019/Assignment4/#6285" class="Bound">Γ</a> <a id="6300" href="Assignment4.html#2261" class="InductiveConstructor Operator">,</a> <a id="6302" href="Assignment4.html#6287" class="Bound">A</a> <a id="6304" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="6306" href="Assignment4.html#6289" class="Bound">B</a>
     <a id="6312" class="Symbol">→</a> <a id="6314" href="/19.08/PUC/2019/Assignment4/#6285" class="Bound">Γ</a> <a id="6316" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="6318" href="Assignment4.html#6287" class="Bound">A</a>
     <a id="6324" class="Comment">------------</a>
@@ -364,10 +218,7 @@ values.</p>
     <a id="6687" href="/19.08/PUC/2019/Assignment4/#6649" class="Function">σ</a> <a id="6689" href="Assignment4.html#2385" class="InductiveConstructor">Z</a>          <a id="6700" class="Symbol">=</a>  <a id="6703" href="Assignment4.html#6604" class="Bound">W</a>
     <a id="6709" href="/19.08/PUC/2019/Assignment4/#6649" class="Function">σ</a> <a id="6711" class="Symbol">(</a><a id="6712" href="Assignment4.html#2438" class="InductiveConstructor Operator">S</a> <a id="6714" href="Assignment4.html#2385" class="InductiveConstructor">Z</a><a id="6715" class="Symbol">)</a>      <a id="6722" class="Symbol">=</a>  <a id="6725" href="Assignment4.html#6602" class="Bound">V</a>
     <a id="6731" href="/19.08/PUC/2019/Assignment4/#6649" class="Function">σ</a> <a id="6733" class="Symbol">(</a><a id="6734" href="Assignment4.html#2438" class="InductiveConstructor Operator">S</a> <a id="6736" class="Symbol">(</a><a id="6737" href="Assignment4.html#2438" class="InductiveConstructor Operator">S</a> <a id="6739" href="Assignment4.html#6739" class="Bound">x</a><a id="6740" class="Symbol">))</a>  <a id="6744" class="Symbol">=</a>  <a id="6747" href="Assignment4.html#2610" class="InductiveConstructor Operator">`</a> <a id="6749" href="Assignment4.html#6739" class="Bound">x</a>
-</pre>
-<h2 id="values">Values</h2>
-
-<pre class="Agda">  <a id="6773" class="Keyword">data</a> <a id="More.Value"></a><a id="6778" href="/19.08/PUC/2019/Assignment4/#6778" class="Datatype">Value</a> <a id="6784" class="Symbol">:</a> <a id="6786" class="Symbol">∀</a> <a id="6788" class="Symbol">{</a><a id="6789" href="Assignment4.html#6789" class="Bound">Γ</a> <a id="6791" href="Assignment4.html#6791" class="Bound">A</a><a id="6792" class="Symbol">}</a> <a id="6794" class="Symbol">→</a> <a id="6796" href="Assignment4.html#6789" class="Bound">Γ</a> <a id="6798" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="6800" href="Assignment4.html#6791" class="Bound">A</a> <a id="6802" class="Symbol">→</a> <a id="6804" class="PrimitiveType">Set</a> <a id="6808" class="Keyword">where</a>
+</pre><h2 id="values">Values</h2><pre class="Agda">  <a id="6773" class="Keyword">data</a> <a id="More.Value"></a><a id="6778" href="/19.08/PUC/2019/Assignment4/#6778" class="Datatype">Value</a> <a id="6784" class="Symbol">:</a> <a id="6786" class="Symbol">∀</a> <a id="6788" class="Symbol">{</a><a id="6789" href="Assignment4.html#6789" class="Bound">Γ</a> <a id="6791" href="Assignment4.html#6791" class="Bound">A</a><a id="6792" class="Symbol">}</a> <a id="6794" class="Symbol">→</a> <a id="6796" href="Assignment4.html#6789" class="Bound">Γ</a> <a id="6798" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="6800" href="Assignment4.html#6791" class="Bound">A</a> <a id="6802" class="Symbol">→</a> <a id="6804" class="PrimitiveType">Set</a> <a id="6808" class="Keyword">where</a>
 
     <a id="6819" class="Comment">-- functions</a>
 
@@ -399,13 +250,7 @@ values.</p>
       <a id="7299" class="Symbol">→</a> <a id="7301" href="/19.08/PUC/2019/Assignment4/#6778" class="Datatype">Value</a> <a id="7307" href="Assignment4.html#7266" class="Bound">W</a>
         <a id="7317" class="Comment">----------------</a>
       <a id="7340" class="Symbol">→</a> <a id="7342" href="/19.08/PUC/2019/Assignment4/#6778" class="Datatype">Value</a> <a id="7348" href="Assignment4.html#3444" class="InductiveConstructor Operator">`⟨</a> <a id="7351" href="Assignment4.html#7254" class="Bound">V</a> <a id="7353" href="Assignment4.html#3444" class="InductiveConstructor Operator">,</a> <a id="7355" href="Assignment4.html#7266" class="Bound">W</a> <a id="7357" href="Assignment4.html#3444" class="InductiveConstructor Operator">⟩</a>
-</pre>
-<p>Implicit arguments need to be supplied when they are
-not fixed by the given arguments.</p>
-
-<h2 id="reduction">Reduction</h2>
-
-<pre class="Agda">  <a id="7472" class="Keyword">infix</a> <a id="7478" class="Number">2</a> <a id="7480" href="/19.08/PUC/2019/Assignment4/#7493" class="Datatype Operator">_—→_</a>
+</pre><p>Implicit arguments need to be supplied when they are not fixed by the given arguments.</p><h2 id="reduction">Reduction</h2><pre class="Agda">  <a id="7472" class="Keyword">infix</a> <a id="7478" class="Number">2</a> <a id="7480" href="/19.08/PUC/2019/Assignment4/#7493" class="Datatype Operator">_—→_</a>
 
   <a id="7488" class="Keyword">data</a> <a id="More._—→_"></a><a id="7493" href="/19.08/PUC/2019/Assignment4/#7493" class="Datatype Operator">_—→_</a> <a id="7498" class="Symbol">:</a> <a id="7500" class="Symbol">∀</a> <a id="7502" class="Symbol">{</a><a id="7503" href="Assignment4.html#7503" class="Bound">Γ</a> <a id="7505" href="Assignment4.html#7505" class="Bound">A</a><a id="7506" class="Symbol">}</a> <a id="7508" class="Symbol">→</a> <a id="7510" class="Symbol">(</a><a id="7511" href="Assignment4.html#7503" class="Bound">Γ</a> <a id="7513" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="7515" href="Assignment4.html#7505" class="Bound">A</a><a id="7516" class="Symbol">)</a> <a id="7518" class="Symbol">→</a> <a id="7520" class="Symbol">(</a><a id="7521" href="Assignment4.html#7503" class="Bound">Γ</a> <a id="7523" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="7525" href="Assignment4.html#7505" class="Bound">A</a><a id="7526" class="Symbol">)</a> <a id="7528" class="Symbol">→</a> <a id="7530" class="PrimitiveType">Set</a> <a id="7534" class="Keyword">where</a>
 
@@ -530,10 +375,7 @@ not fixed by the given arguments.</p>
       <a id="10310" class="Symbol">→</a> <a id="10312" href="/19.08/PUC/2019/Assignment4/#6778" class="Datatype">Value</a> <a id="10318" href="Assignment4.html#10257" class="Bound">W</a>
         <a id="10328" class="Comment">----------------------------------</a>
       <a id="10369" class="Symbol">→</a> <a id="10371" href="/19.08/PUC/2019/Assignment4/#3733" class="InductiveConstructor">case×</a> <a id="10377" href="Assignment4.html#3444" class="InductiveConstructor Operator">`⟨</a> <a id="10380" href="Assignment4.html#10245" class="Bound">V</a> <a id="10382" href="Assignment4.html#3444" class="InductiveConstructor Operator">,</a> <a id="10384" href="Assignment4.html#10257" class="Bound">W</a> <a id="10386" href="Assignment4.html#3444" class="InductiveConstructor Operator">⟩</a> <a id="10388" href="Assignment4.html#10269" class="Bound">M</a> <a id="10390" href="Assignment4.html#7493" class="Datatype Operator">—→</a> <a id="10393" href="Assignment4.html#10269" class="Bound">M</a> <a id="10395" href="Assignment4.html#6478" class="Function Operator">[</a> <a id="10397" href="Assignment4.html#10245" class="Bound">V</a> <a id="10399" href="Assignment4.html#6478" class="Function Operator">][</a> <a id="10402" href="Assignment4.html#10257" class="Bound">W</a> <a id="10404" href="Assignment4.html#6478" class="Function Operator">]</a>
-</pre>
-<h2 id="reflexive-and-transitive-closure">Reflexive and transitive closure</h2>
-
-<pre class="Agda">  <a id="10454" class="Keyword">infix</a>  <a id="10461" class="Number">2</a> <a id="10463" href="/19.08/PUC/2019/Assignment4/#10527" class="Datatype Operator">_—↠_</a>
+</pre><h2 id="reflexive-and-transitive-closure">Reflexive and transitive closure</h2><pre class="Agda">  <a id="10454" class="Keyword">infix</a>  <a id="10461" class="Number">2</a> <a id="10463" href="/19.08/PUC/2019/Assignment4/#10527" class="Datatype Operator">_—↠_</a>
   <a id="10470" class="Keyword">infix</a>  <a id="10477" class="Number">1</a> <a id="10479" href="/19.08/PUC/2019/Assignment4/#10748" class="Function Operator">begin_</a>
   <a id="10488" class="Keyword">infixr</a> <a id="10495" class="Number">2</a> <a id="10497" href="/19.08/PUC/2019/Assignment4/#10641" class="InductiveConstructor Operator">_—→⟨_⟩_</a>
   <a id="10507" class="Keyword">infix</a>  <a id="10514" class="Number">3</a> <a id="10516" href="/19.08/PUC/2019/Assignment4/#10579" class="InductiveConstructor Operator">_∎</a>
@@ -555,11 +397,7 @@ not fixed by the given arguments.</p>
       <a id="10800" class="Comment">------</a>
     <a id="10811" class="Symbol">→</a> <a id="10813" href="/19.08/PUC/2019/Assignment4/#10768" class="Bound">M</a> <a id="10815" href="Assignment4.html#10527" class="Datatype Operator">—↠</a> <a id="10818" href="Assignment4.html#10770" class="Bound">N</a>
   <a id="10822" href="/19.08/PUC/2019/Assignment4/#10748" class="Function Operator">begin</a> <a id="10828" href="Assignment4.html#10828" class="Bound">M—↠N</a> <a id="10833" class="Symbol">=</a> <a id="10835" href="Assignment4.html#10828" class="Bound">M—↠N</a>
-</pre>
-
-<h2 id="values-do-not-reduce">Values do not reduce</h2>
-
-<pre class="Agda">  <a id="More.V¬—→"></a><a id="10877" href="/19.08/PUC/2019/Assignment4/#10877" class="Function">V¬—→</a> <a id="10882" class="Symbol">:</a> <a id="10884" class="Symbol">∀</a> <a id="10886" class="Symbol">{</a><a id="10887" href="Assignment4.html#10887" class="Bound">Γ</a> <a id="10889" href="Assignment4.html#10889" class="Bound">A</a><a id="10890" class="Symbol">}</a> <a id="10892" class="Symbol">{</a><a id="10893" href="Assignment4.html#10893" class="Bound">M</a> <a id="10895" href="Assignment4.html#10895" class="Bound">N</a> <a id="10897" class="Symbol">:</a> <a id="10899" href="Assignment4.html#10887" class="Bound">Γ</a> <a id="10901" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="10903" href="Assignment4.html#10889" class="Bound">A</a><a id="10904" class="Symbol">}</a>
+</pre><h2 id="values-do-not-reduce">Values do not reduce</h2><pre class="Agda">  <a id="More.V¬—→"></a><a id="10877" href="/19.08/PUC/2019/Assignment4/#10877" class="Function">V¬—→</a> <a id="10882" class="Symbol">:</a> <a id="10884" class="Symbol">∀</a> <a id="10886" class="Symbol">{</a><a id="10887" href="Assignment4.html#10887" class="Bound">Γ</a> <a id="10889" href="Assignment4.html#10889" class="Bound">A</a><a id="10890" class="Symbol">}</a> <a id="10892" class="Symbol">{</a><a id="10893" href="Assignment4.html#10893" class="Bound">M</a> <a id="10895" href="Assignment4.html#10895" class="Bound">N</a> <a id="10897" class="Symbol">:</a> <a id="10899" href="Assignment4.html#10887" class="Bound">Γ</a> <a id="10901" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="10903" href="Assignment4.html#10889" class="Bound">A</a><a id="10904" class="Symbol">}</a>
     <a id="10910" class="Symbol">→</a> <a id="10912" href="/19.08/PUC/2019/Assignment4/#6778" class="Datatype">Value</a> <a id="10918" href="Assignment4.html#10893" class="Bound">M</a>
       <a id="10926" class="Comment">----------</a>
     <a id="10941" class="Symbol">→</a> <a id="10943" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Nullary.html#535" class="Function Operator">¬</a> <a id="10945" class="Symbol">(</a><a id="10946" href="/19.08/PUC/2019/Assignment4/#10893" class="Bound">M</a> <a id="10948" href="Assignment4.html#7493" class="Datatype Operator">—→</a> <a id="10951" href="Assignment4.html#10895" class="Bound">N</a><a id="10952" class="Symbol">)</a>
@@ -569,11 +407,7 @@ not fixed by the given arguments.</p>
   <a id="11057" href="/19.08/PUC/2019/Assignment4/#10877" class="Function">V¬—→</a> <a id="11062" href="Assignment4.html#7135" class="InductiveConstructor">V-con</a>        <a id="11075" class="Symbol">()</a>
   <a id="11080" href="/19.08/PUC/2019/Assignment4/#10877" class="Function">V¬—→</a> <a id="11085" href="Assignment4.html#7233" class="InductiveConstructor Operator">V-⟨</a> <a id="11089" href="Assignment4.html#11089" class="Bound">VM</a> <a id="11092" href="Assignment4.html#7233" class="InductiveConstructor Operator">,</a> <a id="11094" class="Symbol">_</a> <a id="11096" href="Assignment4.html#7233" class="InductiveConstructor Operator">⟩</a> <a id="11098" class="Symbol">(</a><a id="11099" href="Assignment4.html#9217" class="InductiveConstructor">ξ-⟨,⟩₁</a> <a id="11106" href="Assignment4.html#11106" class="Bound">M—→M′</a><a id="11111" class="Symbol">)</a>    <a id="11116" class="Symbol">=</a>  <a id="11119" href="Assignment4.html#10877" class="Function">V¬—→</a> <a id="11124" href="Assignment4.html#11089" class="Bound">VM</a> <a id="11127" href="Assignment4.html#11106" class="Bound">M—→M′</a>
   <a id="11135" href="/19.08/PUC/2019/Assignment4/#10877" class="Function">V¬—→</a> <a id="11140" href="Assignment4.html#7233" class="InductiveConstructor Operator">V-⟨</a> <a id="11144" class="Symbol">_</a> <a id="11146" href="Assignment4.html#7233" class="InductiveConstructor Operator">,</a> <a id="11148" href="Assignment4.html#11148" class="Bound">VN</a> <a id="11151" href="Assignment4.html#7233" class="InductiveConstructor Operator">⟩</a> <a id="11153" class="Symbol">(</a><a id="11154" href="Assignment4.html#9352" class="InductiveConstructor">ξ-⟨,⟩₂</a> <a id="11161" class="Symbol">_</a> <a id="11163" href="Assignment4.html#11163" class="Bound">N—→N′</a><a id="11168" class="Symbol">)</a>  <a id="11171" class="Symbol">=</a>  <a id="11174" href="Assignment4.html#10877" class="Function">V¬—→</a> <a id="11179" href="Assignment4.html#11148" class="Bound">VN</a> <a id="11182" href="Assignment4.html#11163" class="Bound">N—→N′</a>
-</pre>
-
-<h2 id="progress">Progress</h2>
-
-<pre class="Agda">  <a id="11213" class="Keyword">data</a> <a id="More.Progress"></a><a id="11218" href="/19.08/PUC/2019/Assignment4/#11218" class="Datatype">Progress</a> <a id="11227" class="Symbol">{</a><a id="11228" href="Assignment4.html#11228" class="Bound">A</a><a id="11229" class="Symbol">}</a> <a id="11231" class="Symbol">(</a><a id="11232" href="Assignment4.html#11232" class="Bound">M</a> <a id="11234" class="Symbol">:</a> <a id="11236" href="Assignment4.html#2243" class="InductiveConstructor">∅</a> <a id="11238" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="11240" href="Assignment4.html#11228" class="Bound">A</a><a id="11241" class="Symbol">)</a> <a id="11243" class="Symbol">:</a> <a id="11245" class="PrimitiveType">Set</a> <a id="11249" class="Keyword">where</a>
+</pre><h2 id="progress">Progress</h2><pre class="Agda">  <a id="11213" class="Keyword">data</a> <a id="More.Progress"></a><a id="11218" href="/19.08/PUC/2019/Assignment4/#11218" class="Datatype">Progress</a> <a id="11227" class="Symbol">{</a><a id="11228" href="Assignment4.html#11228" class="Bound">A</a><a id="11229" class="Symbol">}</a> <a id="11231" class="Symbol">(</a><a id="11232" href="Assignment4.html#11232" class="Bound">M</a> <a id="11234" class="Symbol">:</a> <a id="11236" href="Assignment4.html#2243" class="InductiveConstructor">∅</a> <a id="11238" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="11240" href="Assignment4.html#11228" class="Bound">A</a><a id="11241" class="Symbol">)</a> <a id="11243" class="Symbol">:</a> <a id="11245" class="PrimitiveType">Set</a> <a id="11249" class="Keyword">where</a>
 
     <a id="More.Progress.step"></a><a id="11260" href="/19.08/PUC/2019/Assignment4/#11260" class="InductiveConstructor">step</a> <a id="11265" class="Symbol">:</a> <a id="11267" class="Symbol">∀</a> <a id="11269" class="Symbol">{</a><a id="11270" href="Assignment4.html#11270" class="Bound">N</a> <a id="11272" class="Symbol">:</a> <a id="11274" href="Assignment4.html#2243" class="InductiveConstructor">∅</a> <a id="11276" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="11278" href="Assignment4.html#11228" class="Bound">A</a><a id="11279" class="Symbol">}</a>
       <a id="11287" class="Symbol">→</a> <a id="11289" href="/19.08/PUC/2019/Assignment4/#11232" class="Bound">M</a> <a id="11291" href="Assignment4.html#7493" class="Datatype Operator">—→</a> <a id="11294" href="Assignment4.html#11270" class="Bound">N</a>
@@ -628,11 +462,7 @@ not fixed by the given arguments.</p>
   <a id="13489" href="/19.08/PUC/2019/Assignment4/#11403" class="Function">progress</a> <a id="13498" class="Symbol">(</a><a id="13499" href="Assignment4.html#3733" class="InductiveConstructor">case×</a> <a id="13505" href="Assignment4.html#13505" class="Bound">L</a> <a id="13507" href="Assignment4.html#13507" class="Bound">M</a><a id="13508" class="Symbol">)</a> <a id="13510" class="Keyword">with</a> <a id="13515" href="Assignment4.html#11403" class="Function">progress</a> <a id="13524" href="Assignment4.html#13505" class="Bound">L</a>
   <a id="13528" class="Symbol">...</a>    <a id="13535" class="Symbol">|</a> <a id="13537" href="/19.08/PUC/2019/Assignment4/#11260" class="InductiveConstructor">step</a> <a id="13542" href="Assignment4.html#13542" class="Bound">L—→L′</a>                         <a id="13572" class="Symbol">=</a>  <a id="13575" href="Assignment4.html#11260" class="InductiveConstructor">step</a> <a id="13580" class="Symbol">(</a><a id="13581" href="Assignment4.html#10075" class="InductiveConstructor">ξ-case×</a> <a id="13589" href="Assignment4.html#13542" class="Bound">L—→L′</a><a id="13594" class="Symbol">)</a>
   <a id="13598" class="Symbol">...</a>    <a id="13605" class="Symbol">|</a> <a id="13607" href="/19.08/PUC/2019/Assignment4/#11339" class="InductiveConstructor">done</a> <a id="13612" class="Symbol">(</a><a id="13613" href="Assignment4.html#7233" class="InductiveConstructor Operator">V-⟨</a> <a id="13617" href="Assignment4.html#13617" class="Bound">VM</a> <a id="13620" href="Assignment4.html#7233" class="InductiveConstructor Operator">,</a> <a id="13622" href="Assignment4.html#13622" class="Bound">VN</a> <a id="13625" href="Assignment4.html#7233" class="InductiveConstructor Operator">⟩</a><a id="13626" class="Symbol">)</a>               <a id="13642" class="Symbol">=</a>  <a id="13645" href="Assignment4.html#11260" class="InductiveConstructor">step</a> <a id="13650" class="Symbol">(</a><a id="13651" href="Assignment4.html#10222" class="InductiveConstructor">β-case×</a> <a id="13659" href="Assignment4.html#13617" class="Bound">VM</a> <a id="13662" href="Assignment4.html#13622" class="Bound">VN</a><a id="13664" class="Symbol">)</a>
-</pre>
-
-<h2 id="evaluation">Evaluation</h2>
-
-<pre class="Agda">  <a id="13693" class="Keyword">data</a> <a id="More.Gas"></a><a id="13698" href="/19.08/PUC/2019/Assignment4/#13698" class="Datatype">Gas</a> <a id="13702" class="Symbol">:</a> <a id="13704" class="PrimitiveType">Set</a> <a id="13708" class="Keyword">where</a>
+</pre><h2 id="evaluation">Evaluation</h2><pre class="Agda">  <a id="13693" class="Keyword">data</a> <a id="More.Gas"></a><a id="13698" href="/19.08/PUC/2019/Assignment4/#13698" class="Datatype">Gas</a> <a id="13702" class="Symbol">:</a> <a id="13704" class="PrimitiveType">Set</a> <a id="13708" class="Keyword">where</a>
     <a id="More.Gas.gas"></a><a id="13718" href="/19.08/PUC/2019/Assignment4/#13718" class="InductiveConstructor">gas</a> <a id="13722" class="Symbol">:</a> <a id="13724" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="13726" class="Symbol">→</a> <a id="13728" href="Assignment4.html#13698" class="Datatype">Gas</a>
 
   <a id="13735" class="Keyword">data</a> <a id="More.Finished"></a><a id="13740" href="/19.08/PUC/2019/Assignment4/#13740" class="Datatype">Finished</a> <a id="13749" class="Symbol">{</a><a id="13750" href="Assignment4.html#13750" class="Bound">Γ</a> <a id="13752" href="Assignment4.html#13752" class="Bound">A</a><a id="13753" class="Symbol">}</a> <a id="13755" class="Symbol">(</a><a id="13756" href="Assignment4.html#13756" class="Bound">N</a> <a id="13758" class="Symbol">:</a> <a id="13760" href="Assignment4.html#13750" class="Bound">Γ</a> <a id="13762" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="13764" href="Assignment4.html#13752" class="Bound">A</a><a id="13765" class="Symbol">)</a> <a id="13767" class="Symbol">:</a> <a id="13769" class="PrimitiveType">Set</a> <a id="13773" class="Keyword">where</a>
@@ -664,10 +494,7 @@ not fixed by the given arguments.</p>
   <a id="14238" class="Symbol">...</a> <a id="14242" class="Symbol">|</a> <a id="14244" href="/19.08/PUC/2019/Assignment4/#11339" class="InductiveConstructor">done</a> <a id="14249" href="Assignment4.html#14249" class="Bound">VL</a>                            <a id="14279" class="Symbol">=</a>  <a id="14282" href="Assignment4.html#13955" class="InductiveConstructor">steps</a> <a id="14288" class="Symbol">(</a><a id="14289" class="Bound">L</a> <a id="14291" href="Assignment4.html#10579" class="InductiveConstructor Operator">∎</a><a id="14292" class="Symbol">)</a> <a id="14294" class="Symbol">(</a><a id="14295" href="Assignment4.html#13785" class="InductiveConstructor">done</a> <a id="14300" href="Assignment4.html#14249" class="Bound">VL</a><a id="14302" class="Symbol">)</a>
   <a id="14306" class="Symbol">...</a> <a id="14310" class="Symbol">|</a> <a id="14312" href="/19.08/PUC/2019/Assignment4/#11260" class="InductiveConstructor">step</a> <a id="14317" class="Symbol">{</a><a id="14318" href="Assignment4.html#14318" class="Bound">M</a><a id="14319" class="Symbol">}</a> <a id="14321" href="Assignment4.html#14321" class="Bound">L—→M</a> <a id="14326" class="Keyword">with</a> <a id="14331" href="Assignment4.html#14055" class="Function">eval</a> <a id="14336" class="Symbol">(</a><a id="14337" href="Assignment4.html#13718" class="InductiveConstructor">gas</a> <a id="14341" class="Bound">m</a><a id="14342" class="Symbol">)</a> <a id="14344" href="Assignment4.html#14318" class="Bound">M</a>
   <a id="14348" class="Symbol">...</a>    <a id="14355" class="Symbol">|</a> <a id="14357" href="/19.08/PUC/2019/Assignment4/#13955" class="InductiveConstructor">steps</a> <a id="14363" href="Assignment4.html#14363" class="Bound">M—↠N</a> <a id="14368" href="Assignment4.html#14368" class="Bound">fin</a>                  <a id="14389" class="Symbol">=</a>  <a id="14392" href="Assignment4.html#13955" class="InductiveConstructor">steps</a> <a id="14398" class="Symbol">(</a><a id="14399" class="Bound">L</a> <a id="14401" href="Assignment4.html#10641" class="InductiveConstructor Operator">—→⟨</a> <a id="14405" class="Bound">L—→M</a> <a id="14410" href="Assignment4.html#10641" class="InductiveConstructor Operator">⟩</a> <a id="14412" href="Assignment4.html#14363" class="Bound">M—↠N</a><a id="14416" class="Symbol">)</a> <a id="14418" href="Assignment4.html#14368" class="Bound">fin</a>
-</pre>
-<h2 id="examples">Examples</h2>
-
-<pre class="Agda">  <a id="More.cube"></a><a id="14446" href="/19.08/PUC/2019/Assignment4/#14446" class="Function">cube</a> <a id="14451" class="Symbol">:</a> <a id="14453" href="Assignment4.html#2243" class="InductiveConstructor">∅</a> <a id="14455" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="14457" href="Assignment4.html#2056" class="InductiveConstructor">Nat</a> <a id="14461" href="Assignment4.html#2025" class="InductiveConstructor Operator">⇒</a> <a id="14463" href="Assignment4.html#2056" class="InductiveConstructor">Nat</a>
+</pre><h2 id="examples">Examples</h2><pre class="Agda">  <a id="More.cube"></a><a id="14446" href="/19.08/PUC/2019/Assignment4/#14446" class="Function">cube</a> <a id="14451" class="Symbol">:</a> <a id="14453" href="Assignment4.html#2243" class="InductiveConstructor">∅</a> <a id="14455" href="Assignment4.html#2554" class="Datatype Operator">⊢</a> <a id="14457" href="Assignment4.html#2056" class="InductiveConstructor">Nat</a> <a id="14461" href="Assignment4.html#2025" class="InductiveConstructor Operator">⇒</a> <a id="14463" href="Assignment4.html#2056" class="InductiveConstructor">Nat</a>
   <a id="14469" href="/19.08/PUC/2019/Assignment4/#14446" class="Function">cube</a> <a id="14474" class="Symbol">=</a> <a id="14476" href="Assignment4.html#2688" class="InductiveConstructor Operator">ƛ</a> <a id="14478" class="Symbol">(</a><a id="14479" href="Assignment4.html#4258" class="Function Operator">#</a> <a id="14481" class="Number">0</a> <a id="14483" href="Assignment4.html#3246" class="InductiveConstructor Operator">`*</a> <a id="14486" href="Assignment4.html#4258" class="Function Operator">#</a> <a id="14488" class="Number">0</a> <a id="14490" href="Assignment4.html#3246" class="InductiveConstructor Operator">`*</a> <a id="14493" href="Assignment4.html#4258" class="Function Operator">#</a> <a id="14495" class="Number">0</a><a id="14496" class="Symbol">)</a>
 
   <a id="14501" href="/19.08/PUC/2019/Assignment4/#14501" class="Function">_</a> <a id="14503" class="Symbol">:</a> <a id="14505" href="Assignment4.html#14446" class="Function">cube</a> <a id="14510" href="Assignment4.html#2764" class="InductiveConstructor Operator">·</a> <a id="14512" href="Assignment4.html#3187" class="InductiveConstructor">con</a> <a id="14516" class="Number">2</a> <a id="14518" href="Assignment4.html#10527" class="Datatype Operator">—↠</a> <a id="14521" href="Assignment4.html#3187" class="InductiveConstructor">con</a> <a id="14525" class="Number">8</a>
@@ -737,159 +564,4 @@ not fixed by the given arguments.</p>
      <a id="16224" href="/19.08/PUC/2019/Assignment4/#10641" class="InductiveConstructor Operator">—→⟨</a> <a id="16228" href="Assignment4.html#10222" class="InductiveConstructor">β-case×</a> <a id="16236" href="Assignment4.html#7135" class="InductiveConstructor">V-con</a> <a id="16242" href="Assignment4.html#6947" class="InductiveConstructor">V-zero</a> <a id="16249" href="Assignment4.html#10641" class="InductiveConstructor Operator">⟩</a>
        <a id="16258" href="/19.08/PUC/2019/Assignment4/#3444" class="InductiveConstructor Operator">`⟨</a> <a id="16261" href="Assignment4.html#2866" class="InductiveConstructor">`zero</a> <a id="16267" href="Assignment4.html#3444" class="InductiveConstructor Operator">,</a> <a id="16269" href="Assignment4.html#3187" class="InductiveConstructor">con</a> <a id="16273" class="Number">42</a> <a id="16276" href="Assignment4.html#3444" class="InductiveConstructor Operator">⟩</a>
      <a id="16283" href="/19.08/PUC/2019/Assignment4/#10579" class="InductiveConstructor Operator">∎</a>
-</pre>
-
-<h4 id="exercise-more-recommended-in-part">Exercise <code class="language-plaintext highlighter-rouge">More</code> (recommended in part)</h4>
-
-<p>Formalise the remaining constructs defined in this chapter.
-Evaluate each example, applied to data as needed,
-to confirm it returns the expected answer.</p>
-
-<ul>
-  <li>sums (recommended)</li>
-  <li>unit type</li>
-  <li>an alternative formulation of unit type</li>
-  <li>empty type (recommended)</li>
-  <li>lists</li>
-</ul>
-
-  </div>
-
-  <p style="text-align:center;">
-
-
-
-    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment4.lagda.md">Source</a>
-
-
-
-</p>
-
-
-</article>
-
-      </div>
-    </main><footer class="site-footer h-card">
-  <data class="u-url" href="/19.08/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">Programming Language Foundations in Agda
-</h2><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Philip Wadler</li>
-          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Wen Kokke</li>
-          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div><div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Jeremy Siek</li>
-          <li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3"></div>
-    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
-  </div>
-</footer>
-<!-- Import jQuery -->
-<script type="text/javascript" src="/19.08/assets/jquery.js"></script>
-
-<script type="text/javascript">
-
- // Makes sandwhich menu works
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
- // Script which allows for foldable code blocks
- $('div.foldable pre').each(function(){
-     var autoHeight = $(this).height();
-     var lineHeight = parseFloat($(this).css('line-height'));
-
-     var plus    = $("<div></div>");
-     var horLine = $("<div></div>");
-     var verLine = $("<div></div>");
-     $(this).prepend(plus);
-     plus.css({
-         'position'         : 'relative',
-         'float'            : 'right',
-         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
-         'width'            : lineHeight,
-         'height'           : lineHeight});
-     verLine.css({
-         'position'         : 'relative',
-         'height'           : lineHeight,
-         'width'            : '3px',
-         'background-color' : '#C1E0FF'});
-     horLine.css({
-         'position'         : 'relative',
-         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
-         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
-         'height'           : '3px',
-         'width'            : lineHeight,
-         'background-color' : '#C1E0FF'});
-     plus.append(verLine);
-     plus.append(horLine);
-
-     $(this).height(2.0 * lineHeight);
-     $(this).css('overflow','hidden');
-
-     $(this).click(function(){
-         if ($(this).height() == autoHeight) {
-             $(this).height(2.0 * lineHeight);
-             plus.show();
-         }
-         else {
-             $(this).height('auto');
-             plus.hide();
-         }
-     });
- });
-</script>
-
-<!-- Import KaTeX -->
-<script type="text/javascript" src="/19.08/assets/katex.js"></script>
-
-<!-- Script which renders TeX using KaTeX -->
-<script type="text/javascript">
- $("script[type='math/tex']").replaceWith(
-     function(){
-         var tex = $(this).text();
-         return "<span class=\"inline-equation\">" +
-                katex.renderToString(tex) +
-                "</span>";
-     });
- $("script[type='math/tex; mode=display']").replaceWith(
-     function(){
-         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
-         return "<div class=\"equation\">" +
-                katex.renderToString("\\displaystyle "+tex) +
-                "</div>";
-     });
-</script>
-</body>
-
-</html>
+</pre><h4 id="exercise-more-recommended-in-part">Exercise <code class="language-plaintext highlighter-rouge">More</code> (recommended in part)</h4><p>Formalise the remaining constructs defined in this chapter. Evaluate each example, applied to data as needed, to confirm it returns the expected answer.</p><ul><li>sums (recommended)</li><li>unit type</li><li>an alternative formulation of unit type</li><li>empty type (recommended)</li><li>lists</li></ul></div><p style="text-align:center"><a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev-19.08/courses/puc/2019/Assignment4.lagda.md">Source</a></p></article></div></main><footer class="site-footer h-card"><data class="u-url" href="/19.08/"></data><div class="wrapper"><h2 class="footer-heading">Programming Language Foundations in Agda</h2><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Philip Wadler</li><li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Wen Kokke</li><li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div><div class="footer-col-wrapper"><div class="footer-col footer-col-1"><ul class="contact-list"><li class="p-name">Jeremy Siek</li><li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li></ul></div><div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/19.08/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul></div><div class="footer-col footer-col-3"></div></div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></div></footer><script type="text/javascript" src="/19.08/assets/jquery.js"></script><script type="text/javascript">$(".menu-icon").click(function(){$(".trigger").toggle()}),$("div.foldable pre").each(function(){var i=$(this).height(),t=parseFloat($(this).css("line-height")),h=$("<div></div>"),e=$("<div></div>"),o=$("<div></div>");$(this).prepend(h),h.css({position:"relative",float:"right",right:"-"+(.5*t-1.5)+"px",width:t,height:t}),o.css({position:"relative",height:t,width:"3px","background-color":"#C1E0FF"}),e.css({position:"relative",top:"-"+(.5*t+1.5)+"px",left:"-"+(.5*t-1.5)+"px",height:"3px",width:t,"background-color":"#C1E0FF"}),h.append(o),h.append(e),$(this).height(2*t),$(this).css("overflow","hidden"),$(this).click(function(){$(this).height()==i?($(this).height(2*t),h.show()):($(this).height("auto"),h.hide())})})</script><script type="text/javascript" src="/19.08/assets/katex.js"></script><script type="text/javascript">$("script[type='math/tex']").replaceWith(function(){var t=$(this).text();return'<span class="inline-equation">'+katex.renderToString(t)+"</span>"}),$("script[type='math/tex; mode=display']").replaceWith(function(){var t=$(this).text().replace(/%.*?(\n|$)/g,"");return'<div class="equation">'+katex.renderToString("\\displaystyle "+t)+"</div>"})</script></body></html>
