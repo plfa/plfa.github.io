@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>$site.title$</title>
-    <link>$site.baseurl$</link>
+    <title>$pagetitle$</title>
+    <link>$baseurl$</link>
     <description>
-      <![CDATA[$site.description$]]>
+      <![CDATA[$description$]]>
     </description>
-    <language>$site.language$</language>
-    <atom:link href="$site.baseurl$$url$" rel="self" type="application/rss+xml" />
+    <language>$language$</language>
+    <atom:link href="$baseurl$$url$" rel="self" type="application/rss+xml" />
     <lastBuildDate>$build_date$</lastBuildDate>
     $for(post)$
     <item>
       <title>$post.title$</title>
-      <link>$site.baseurl$$post.url$</link>
+      <link>$baseurl$$post.url$</link>
       <description>
         <![CDATA[
         $if(post.teaser_plain)$
@@ -21,7 +21,7 @@
         ]]>
       </description>
       <pubDate>$post.date_rfc822$</pubDate>
-      <guid>$site.baseurl$$post.url$</guid>
+      <guid>$baseurl$$post.url$</guid>
       $for(author)$
       <dc:creator>$author.name$</dc:creator>
       $endfor$

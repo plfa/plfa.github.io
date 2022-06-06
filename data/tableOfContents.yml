@@ -3,8 +3,11 @@ part:
   title: "Front matter"
   section:
   - include: src/plfa/frontmatter/dedication.md
+    epub-type: dedication
   - include: src/plfa/frontmatter/preface.md
+    epub-type: preface
   - include: README.md
+    epub-type: foreword
 - mainmatter: True
   title: "Part 1: Logical Foundations"
   section:
@@ -40,7 +43,10 @@ part:
   title: "Appendix"
   section:
   - include: src/plfa/part2/Substitution.lagda.md
+    epub-type: appendix
 - title: "Back matter"
   section:
   - include: src/plfa/backmatter/acknowledgements.md
+    epub-type: acknowledgements
   - include: src/plfa/backmatter/Fonts.lagda.md
+    epub-type: appendix

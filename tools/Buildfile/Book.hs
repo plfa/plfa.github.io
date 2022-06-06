@@ -31,8 +31,9 @@ instance FromJSON Part where
       <*> v .:? "mainmatter" .!= False
       <*> v .:? "backmatter" .!= False
 
-newtype Section = Section
+data Section = Section
   { sectionInclude :: FilePath
+  , sectionEpubType :: Text
   }
   deriving (Show)
 
@@ -40,3 +41,4 @@ instance FromJSON Section where
   parseJSON = withObject "Section" $ \v ->
     Section
       <$> v .: "include"
+      <*> v .:? "epub-type" .!= "bodymatter"

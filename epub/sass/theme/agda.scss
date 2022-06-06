@@ -9,19 +9,6 @@
     border-radius: 3px;
 }
 
-/* Code. */
-pre {
-    break-inside: avoid;
-}
-pre.highlight {
-    @include code-container;
-    border-style: dashed !important;
-}
-code {
-    @include code-font;
-    white-space: pre;
-}
-
 /* Agda. */
 pre.Agda {
     @include code-font;

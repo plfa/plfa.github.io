@@ -37,6 +37,7 @@ executable builder
     , bytestring
     , containers
     , data-default-class
+    , directory
     , hashable
     , mtl
     , multimap

@@ -44,7 +44,7 @@ endif
 SHAKE_ARGS += -j
 SHAKE_ARGS += -V
 SHAKE_ARGS += --lint
-SHAKE_ARGS += --profile
+SHAKE_ARGS += --profile=$(TMP_DIR)
 SHAKE_ARGS += --timing
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
@@ -121,34 +121,13 @@ serve: check-browser-sync
 ########################################
 # Test site with:
 # - html-validate
-# - cabal tests
+# - feed-validator (optional)
+# - HTMLProofer (optional)
+# - EPUBCheck (optional)
 ########################################
 
 .PHONY: test
 test: test-html-validate
-	@$(CABAL) $(CABAL_ARGS) v2-test
-
-
-# HTMLProofer
-
-HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
-
-HTML_PROOFER_ARGS += --check-html
-HTML_PROOFER_ARGS += --check-img-http
-HTML_PROOFER_ARGS += --check-opengraph
-HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
-HTML_PROOFER_ARGS += --report-eof-tags
-HTML_PROOFER_ARGS += --report-invalid-tags
-HTML_PROOFER_ARGS += --report-missing-names
-HTML_PROOFER_ARGS += --report-missing-doctype
-HTML_PROOFER_ARGS += --report-mismatched-tags
-HTML_PROOFER_ARGS += --report-script-embeds
-HTML_PROOFER_ARGS += .
-
-.PHONY: test-html-proofer
-test-html-proofer: check-html-proofer
-	@echo "Checking HTML..."
-	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
 
 
 # html-validate
@@ -177,8 +156,42 @@ test-feed-validator: check-feed-validator
 	@(cd $(OUT_DIR) && $(FEED_VALIDATOR) $(FEED_VALIDATOR_ARGS))
 
 
+# HTMLProofer
+
+HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
+
+HTML_PROOFER_ARGS += --check-html
+HTML_PROOFER_ARGS += --check-img-http
+HTML_PROOFER_ARGS += --check-opengraph
+HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
+HTML_PROOFER_ARGS += --report-eof-tags
+HTML_PROOFER_ARGS += --report-invalid-tags
+HTML_PROOFER_ARGS += --report-missing-names
+HTML_PROOFER_ARGS += --report-missing-doctype
+HTML_PROOFER_ARGS += --report-mismatched-tags
+HTML_PROOFER_ARGS += --report-script-embeds
+HTML_PROOFER_ARGS += .
+
+.PHONY: test-html-proofer
+test-html-proofer: check-html-proofer
+	@echo "Checking HTML..."
+	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
+
+
+# EPUBCheck
+
+EPUBCHECK ?= $(wildcard $(shell which epubcheck))
+
+EPUBCHECK_ARGS += $(OUT_DIR)/plfa.epub
+
+.PHONY: test-epubcheck
+test-epubcheck: check-epubcheck
+	@echo "Checking plfa.epub..."
+	@$(EPUBCHECK) $(EPUBCHECK_ARGS)
+
+
 ########################################
-# Dependencies for build
+# Dependencies
 ########################################
 
 .PHONY: check-haskell
@@ -189,33 +202,16 @@ ifeq (,$(CABAL))
 	@exit 1
 endif
 
-########################################
-# Dependencies for watch
-########################################
-
-.PHONY: check-fswatch
-ifeq (,$(FSWATCH))
-check-fswatch:
-	@echo "This task requires fswatch:"
-	@echo "https://github.com/emcrisostomo/fswatch#getting-fswatch"
-	@exit 1
+.PHONY: check-html-minifier
+ifeq (,$(HTML-MINIFIER))
+check-html-minifier: check-node
+	@$(eval HTML_MINIFIER := npx --yes html-minifier)
 endif
-
-
-########################################
-# Dependencies for serve
-########################################
 
 .PHONY: check-browser-sync
 ifeq (,$(BROWSER_SYNC))
 check-browser-sync: check-node
 	@$(eval BROWSER_SYNC := npx --yes browser-sync)
-endif
-
-.PHONY: check-html-minifier
-ifeq (,$(HTML-MINIFIER))
-check-html-minifier: check-node
-	@$(eval HTML_MINIFIER := npx --yes html-minifier)
 endif
 
 .PHONY: check-feed-validator
@@ -238,11 +234,6 @@ check-node:
 	@exit 1
 endif
 
-
-########################################
-# Dependencies for test
-########################################
-
 .PHONY: check-html-proofer
 ifeq (,$(HTML_PROOFER))
 check-html-proofer: check-rbenv
@@ -256,5 +247,21 @@ ifeq (,$(RBENV))
 check-rbenv:
 	@echo "This task requires RBEnv:"
 	@echo "https://github.com/rbenv/rbenv#installation"
+	@exit 1
+endif
+
+.PHONY: check-fswatch
+ifeq (,$(FSWATCH))
+check-fswatch:
+	@echo "This task requires fswatch:"
+	@echo "https://github.com/emcrisostomo/fswatch#getting-fswatch"
+	@exit 1
+endif
+
+.PHONY: check-epubcheck
+ifeq (,$(EPUBCHECK))
+check-epubcheck:
+	@echo "This task requires epubcheck:"
+	@echo "https://www.w3.org/publishing/epubcheck/"
 	@exit 1
 endif

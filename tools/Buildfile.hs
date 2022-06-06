@@ -3,7 +3,7 @@
 {-# HLINT ignore "Monad law, left identity" #-}
 module Main where
 
-import Buildfile.Author (Author)
+import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Part (..), Section (..))
 import Buildfile.Contributor (Contributor (..))
 import Control.Monad (forM, forM_, unless)
@@ -32,10 +32,11 @@ import Shoggoth.PostInfo
 import Shoggoth.Prelude
 import Shoggoth.Routing
 import Shoggoth.TagSoup qualified as TagSoup
-import Shoggoth.Template.Pandoc (Extension (..), HTMLMathMethod (..), HighlightStyle, Inlines, Lang, Locale, MetaValue, ObfuscationMethod (..), Pandoc (..), ReaderOptions (..), Reference, WriterOptions (..), extensionsFromList, runPandoc)
+import Shoggoth.Template.Pandoc (Extension (..), HTMLMathMethod (..), HighlightStyle, Inlines, Lang, Locale, MetaValue, ObfuscationMethod (..), Pandoc (..), ReaderOptions (..), Reference, WriterOptions (..), extensionsFromList, runPandoc, runPandocWith)
 import Shoggoth.Template.Pandoc qualified as Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
+import System.Directory (makeAbsolute)
 import Text.Printf (printf)
 
 outDir, tmpDir :: FilePath
@@ -47,8 +48,8 @@ dataDir = "data"
 authorDir = dataDir </> "authors"
 contributorDir = dataDir </> "contributors"
 legacyDir = dataDir </> "legacy"
-tableOfContentsFile = dataDir </> "toc.yml"
-bibliographyFile = dataDir </> "plfa.bib"
+tableOfContentsFile = dataDir </> "tableOfContents.yml"
+bibliographyFile = dataDir </> "bibliography.bib"
 
 chapterDir, courseDir :: FilePath
 chapterDir = "src"
@@ -82,7 +83,8 @@ legacyVersions = ["19.08", "20.07"]
 -- Rules
 
 main :: IO ()
-main =
+main = do
+  absTmpDir <- makeAbsolute tmpDir
   shakeArgs
     shakeOptions
       { shakeFiles = tmpDir,
@@ -90,7 +92,7 @@ main =
         shakeExtra =
           mempty
             & addShakeExtra (OutputDirectory outDir)
-            & addShakeExtra (CacheDirectory tmpDir)
+            & addShakeExtra (CacheDirectory absTmpDir)
             & addShakeExtra (TemplateDirectory webTemplateDir)
             & addShakeExtra readerOpts
             & addShakeExtra writerOpts
@@ -129,7 +131,12 @@ main =
                 (lib, includePath, agdaHtmlFileName) <-
                   failOnError $
                     Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
-                let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName </> agdaHtmlFileName
+                -- NOTE: Each Agda file compiles to its own directory, i.e., the
+                --       `agdaHtmlFileName` is included in the path. Otherwise,
+                --       Agda will regenerate files it already generated in a
+                --       previous task, and you'll get an error saying that the
+                --       temporary file has "changed since being depended upon".
+                let agdaHtml = tmpAgdaHtmlDir </> agdaHtmlFileName </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
                 return $ "agda_html" :@ agdaHtml :> commonStages
               else return commonStages
 
@@ -177,17 +184,19 @@ main =
         return (sortedContributors :: [Contributor])
 
       getDefaultMetadata <- newCache $ \() -> do
-        siteMetadata <- readYaml (dataDir </> "site.yml")
+        metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
         authorMetadata <- getAuthors ()
         contributorMetadata <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
+        version <- currentDateField "%y.%m" "version"
         return $
           mconcat
-            [ constField "site" (siteMetadata :: Metadata),
+            [ metadata,
               constField "author" authorMetadata,
               constField "contributor" contributorMetadata,
               buildDate
             ]
+      let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
         bibliographyFileBody <- readFile' bibliographyFile
@@ -208,60 +217,6 @@ main =
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
-
-      getFileWithMetadata <- newCache $ \cur -> do
-        (src, out, url) <- (,,) <$> routeSource cur <*> route cur <*> routeUrl cur
-
-        -- Read default metadata:
-        defaultMetadata <- getDefaultMetadata ()
-
-        -- Read metadata from source file and body from current file:
-        (head, body) <-
-          if src == cur
-            then do
-              readFileWithMetadata src
-            else do
-              (head, _) <- readFileWithMetadata src
-              (_, body) <- readFileWithMetadata cur
-              return (head, body)
-
-        -- Title variants:
-        let titleVariants =
-              ignoreError $
-                titleVariantMetadata <$> head ^. "title"
-
-        -- Source field:
-        let sourceField = constField "source" src
-
-        -- Body field:
-        let bodyField = constField "body" body
-
-        -- URL field:
-        let urlField = constField "url" url
-
-        -- Modified date field (ISO8601):
-        modifiedDateField <- lastModifiedISO8601Field src "modified_date"
-
-        -- Post date field (human-readable, optional):
-        let dateField = fromRight mempty $ postDateField "%a %-d %b, %Y" src "date"
-
-        -- Post date field (RFC822, optional):
-        let dateRfc822Field = fromRight mempty $ postDateField rfc822DateFormat src "date_rfc822"
-
-        let metadata =
-              mconcat
-                [ defaultMetadata,
-                  head,
-                  urlField,
-                  bodyField,
-                  titleVariants,
-                  sourceField,
-                  modifiedDateField,
-                  dateField,
-                  dateRfc822Field
-                ]
-
-        return (metadata, body)
 
       --------------------------------------------------------------------------------
       -- Phony targets
@@ -314,7 +269,7 @@ main =
         (lib, includePath, agdaHtmlFileName) <-
           failOnError $
             Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
-        let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
+        let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> agdaHtmlFileName </> Agda.libraryRoot lib </> includePath
         Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
 
       -- Stage 2: Compile Markdown to HTML
@@ -429,7 +384,7 @@ main =
       -- Copy static assets
       outDir </> "assets" <//> "*" %> \out -> do
         src <- routeSource out
-        copyFileChanged src out
+        copyFile' src out
 
       -- Copy legacy versions
       --
@@ -441,7 +396,7 @@ main =
       forM_ legacyVersions $ \legacyVersion ->
         outDir </> legacyVersion <//> "*" %> \out -> do
           src <- routeSource out
-          copyFileChanged src out
+          copyFile' src out
 
       -- Copy course PDFs
       --
@@ -450,7 +405,7 @@ main =
       --
       outDir <//> "*.pdf" %> \out -> do
         src <- routeSource out
-        copyFileChanged src out
+        copyFile' src out
 
       --------------------------------------------------------------------------------
       -- EPUB
@@ -474,7 +429,6 @@ main =
           --
           -- Compose documents for each section
           sections <- for (partSections part) $ \section -> do
-            --
             -- Get section document
             sectionSrc <- routeSection (sectionInclude section)
             (sectionMetadata, sectionBody) <- getFileWithMetadata sectionSrc
@@ -486,7 +440,7 @@ main =
 
             -- Compose section document
             let sectionDoc =
-                  Builder.divWith (sectionIdent, [], []) $
+                  Builder.divWith (sectionIdent, [], [("epub:type", sectionEpubType section)]) $
                     Builder.header 2 (Builder.text sectionTitle)
                       <> Builder.fromList (Pandoc.shiftHeadersBy 1 sectionBlocks)
             return sectionDoc
@@ -507,11 +461,13 @@ main =
 
         -- Set writer options
         epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
-        epubFonts <- getDirectoryFiles epubFontsDir ["*.ttf"]
+        epubFonts <- getDirectoryFiles "" [epubFontsDir </> "*.ttf"]
+        epubTemplate <- getTemplateFile (epubDir </> "epub.html")
 
         let writerOptsForEpub =
               writerOpts
-                { writerTableOfContents = True,
+                { writerTemplate = Just epubTemplate,
+                  writerTableOfContents = True,
                   writerCiteMethod = Pandoc.Natbib,
                   writerWrapText = Pandoc.WrapPreserve,
                   writerTopLevelDivision = Pandoc.TopLevelPart,
@@ -522,7 +478,8 @@ main =
                   writerReferenceLocation = Pandoc.EndOfSection
                 }
 
-        epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
+        epub <- runPandocWith Pandoc.INFO $
+          Pandoc.writeEPUB3 writerOptsForEpub bookDoc
         liftIO $ LazyByteString.writeFile out epub
 
       -- Build epub metadata
@@ -610,6 +567,69 @@ webSassOptions = def {sassIncludePaths = Just [webStyleDir]}
 
 epubSassOptions :: SassOptions
 epubSassOptions = def {sassIncludePaths = Just [epubStyleDir]}
+
+--------------------------------------------------------------------------------
+-- File reader
+
+getFileWithMetadata ::
+  ( ?getDefaultMetadata :: () -> Action Metadata,
+    ?routingTable :: RoutingTable
+  ) =>
+  FilePath ->
+  Action (Metadata, Text)
+getFileWithMetadata cur = do
+  (src, out, url) <- (,,) <$> routeSource cur <*> route cur <*> routeUrl cur
+
+  -- Read default metadata:
+  defaultMetadata <- ?getDefaultMetadata ()
+
+  -- Read metadata from source file and body from current file:
+  (head, body) <-
+    if src == cur
+      then do
+        readFileWithMetadata src
+      else do
+        (head, _) <- readFileWithMetadata src
+        (_, body) <- readFileWithMetadata cur
+        return (head, body)
+
+  -- Title variants:
+  let titleVariants =
+        ignoreError $
+          titleVariantMetadata <$> head ^. "title"
+
+  -- Source field:
+  let sourceField = constField "source" src
+
+  -- Body field:
+  let bodyField = constField "body" body
+
+  -- URL field:
+  let urlField = constField "url" url
+
+  -- Modified date field (ISO8601):
+  modifiedDateField <- lastModifiedISO8601Field src "modified_date"
+
+  -- Post date field (human-readable, optional):
+  let dateField = fromRight mempty $ postDateField "%a %-d %b, %Y" src "date"
+
+  -- Post date field (RFC822, optional):
+  let dateRfc822Field = fromRight mempty $ postDateField rfc822DateFormat src "date_rfc822"
+
+  let metadata =
+        mconcat
+          [ defaultMetadata,
+            head,
+            urlField,
+            bodyField,
+            titleVariants,
+            sourceField,
+            modifiedDateField,
+            dateField,
+            dateRfc822Field
+          ]
+
+  return (metadata, body)
 
 --------------------------------------------------------------------------------
 -- HTML5 post-processing

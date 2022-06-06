@@ -4,6 +4,7 @@ layout    : page
 prev      : /Untyped/
 permalink : /Acknowledgements/
 next      : /Fonts/
+epub-type : acknowledgments
 ---
 
 Thank you to:
