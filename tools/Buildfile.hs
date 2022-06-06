@@ -1,12 +1,13 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Monad law, left identity" #-}
 module Main where
 
 import Buildfile.Author (Author)
+import Buildfile.Book
 import Buildfile.Contributor (Contributor (..))
 import Control.Monad (forM, forM_, unless)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
-import Data.Aeson (FromJSON (..))
-import Data.Aeson.Types (FromJSON, withObject, (.!=), (.:), (.:?))
 import Data.ByteString.Lazy qualified as LazyByteString
 import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
@@ -75,7 +76,6 @@ legacyVersions = ["19.08", "20.07"]
 -- TODO:
 -- - [ ] build epub
 -- - [ ] build pdf
--- - [ ] set Agda _build directory to be under _cache
 
 --------------------------------------------------------------------------------
 -- Rules
@@ -651,9 +651,6 @@ readerOpts =
             Ext_backtick_code_blocks,
             Ext_fenced_divs,
             Ext_bracketed_spans
-            -- header_attributes
-            -- inline_code_attributes
-            -- link_attributes
           ]
     }
 
@@ -686,44 +683,3 @@ ignoreError = fromRight mempty
 
 rightToMaybe :: Either e a -> Maybe a
 rightToMaybe = either (const Nothing) Just
-
---------------------------------------------------------------------------------
--- Table of Contents (datatype)
-
-newtype Book = Book
-  { bookParts :: [Part]
-  }
-  deriving (Show)
-
-instance FromJSON Book where
-  parseJSON = withObject "Book" $ \v ->
-    Book
-      <$> v .: "part"
-
-data Part = Part
-  { partTitle :: Text,
-    partSections :: [Section],
-    partFrontmatter :: Bool,
-    partMainmatter :: Bool,
-    partBackmatter :: Bool
-  }
-  deriving (Show)
-
-instance FromJSON Part where
-  parseJSON = withObject "Part" $ \v ->
-    Part
-      <$> v .: "title"
-      <*> v .: "section"
-      <*> v .:? "frontmatter" .!= False
-      <*> v .:? "mainmatter" .!= False
-      <*> v .:? "backmatter" .!= False
-
-newtype Section = Section
-  { sectionInclude :: FilePath
-  }
-  deriving (Show)
-
-instance FromJSON Section where
-  parseJSON = withObject "Section" $ \v ->
-    Section
-      <$> v .: "include"

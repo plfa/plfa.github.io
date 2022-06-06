@@ -1,6 +1,0 @@
-# HLint configuration file
-# https://github.com/ndmitchell/hlint
-
-- ignore: { name: "Redundant <&>" }
-- ignore: { name: "Eta reduce" }
-- ignore: { name: "Monad law, left identity" }
