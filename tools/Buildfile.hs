@@ -1,7 +1,3 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
-{-# HLINT ignore "Monad law, left identity" #-}
-
 module Main where
 
 import Buildfile.Author (Author)
@@ -16,7 +12,7 @@ import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
 import Data.Function (on, (&))
 import Data.Functor ((<&>))
-import Data.Hashable
+import Data.Hashable ( Hashable )
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
 import Data.Maybe (fromMaybe)
@@ -77,8 +73,6 @@ legacyVersions :: [String]
 legacyVersions = ["19.08", "20.07"]
 
 -- TODO:
--- - [ ] load BibTeX and CSL files as part of processCitations
--- - [ ] include archived versions
 -- - [ ] build epub
 -- - [ ] build pdf
 -- - [ ] set Agda _build directory to be under _cache
