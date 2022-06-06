@@ -52,20 +52,21 @@ legacyDir = dataDir </> "legacy"
 tableOfContentsFile = dataDir </> "toc.yml"
 bibliographyFile = dataDir </> "plfa.bib"
 
-bookDir, chapterDir, courseDir, fontsDir, epubStyleDir, epubMetadataFile :: FilePath
-bookDir = "book"
+chapterDir, courseDir :: FilePath
 chapterDir = "src"
 courseDir = "courses"
-fontsDir = bookDir </> "fonts"
-epubStyleDir = bookDir </> "sass"
-epubMetadataFile = bookDir </> "epub-metadata.xml"
 
-webDir, assetDir, postDir, webStyleDir, templateDir :: FilePath
+epubDir, epubFontsDir, epubStyleDir :: FilePath
+epubDir = "epub"
+epubFontsDir = epubDir </> "fonts"
+epubStyleDir = epubDir </> "sass"
+
+webDir, webAssetDir, webPostDir, webStyleDir, webTemplateDir :: FilePath
 webDir = "web"
-assetDir = webDir </> "assets"
-postDir = webDir </> "posts"
+webAssetDir = webDir </> "assets"
+webPostDir = webDir </> "posts"
 webStyleDir = webDir </> "sass"
-templateDir = webDir </> "templates"
+webTemplateDir = webDir </> "templates"
 
 tmpAgdaHtmlDir, tmpBodyHtmlDir, tmpEpubDir :: FilePath
 tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Render .lagda.md to .md
@@ -95,7 +96,7 @@ main =
           mempty
             & addShakeExtra (OutputDirectory outDir)
             & addShakeExtra (CacheDirectory tmpDir)
-            & addShakeExtra (TemplateDirectory templateDir)
+            & addShakeExtra (TemplateDirectory webTemplateDir)
             & addShakeExtra readerOpts
             & addShakeExtra writerOpts
       }
@@ -145,10 +146,12 @@ main =
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Book (EPUB Version)
                 create (outDir </> "plfa.epub"),
+                [epubDir </> "epub-metadata.xml"] |-> tmpEpubDir </> "epub-metadata.xml",
+                [epubStyleDir </> "style.scss"] |-> tmpEpubDir </> "style.css",
                 -- Announcements
                 [webDir </> "Announcements.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "rss.xml"] |-> outDir </> "rss.xml",
-                [postDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                [webPostDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Documentation
                 [webDir </> "Citing.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "Contributing.md"] |-> postOrPermalinkRouterWithAgda,
@@ -161,7 +164,7 @@ main =
                 [webDir </> "404.md"] |-> permalinkRouter,
                 [webStyleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
                 create (outDir </> "assets/css/highlight.css"),
-                [assetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative assetDir src,
+                [webAssetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative webAssetDir src,
                 -- Versions (Legacy)
                 [legacyDir <//> "*"] *|-> \src -> outDir </> makeRelative legacyDir src
               ]
@@ -505,8 +508,8 @@ main =
             <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
 
         -- Set writer options
-        epubMetadata <- readFile' $ tmpEpubDir </> "epub-metadata.xml"
-        epubFonts <- getDirectoryFiles fontsDir ["*.ttf"]
+        epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
+        epubFonts <- getDirectoryFiles epubFontsDir ["*.ttf"]
 
         let writerOptsForEpub =
               writerOpts
@@ -526,8 +529,9 @@ main =
 
       -- Build epub metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
+        src <- routeSource out
         defaultMetadata <- getDefaultMetadata ()
-        readFile' epubMetadataFile
+        readFile' src
           >>= Pandoc.applyAsTemplate defaultMetadata
           >>= writeFile' out
 
@@ -558,7 +562,7 @@ getProject :: MonadError String m => FilePath -> m Project
 getProject src
   | chapterDir `List.isPrefixOf` src = return Main
   | courseDir `List.isPrefixOf` src = Course <$> getCourseId src
-  | postDir `List.isPrefixOf` src = return Post
+  | webPostDir `List.isPrefixOf` src = return Post
   | otherwise = throwError $ printf "Not part of an Agda project: '%s'" src
 
 getLocalAgdaLibrariesForProject :: Project -> [Agda.Library]
@@ -585,7 +589,7 @@ mainLibrary =
 postLibrary :: Agda.Library
 postLibrary =
   Agda.Library
-    { libraryRoot = postDir,
+    { libraryRoot = webPostDir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
@@ -595,7 +599,7 @@ postLibrary =
 
 -- match posts/YYYY-MM-DD-<slug><file-extensions>
 isPostSource :: FilePath -> Bool
-isPostSource src = isRight $ parsePostSource (makeRelative postDir src)
+isPostSource src = isRight $ parsePostSource (makeRelative webPostDir src)
 
 -- match _site/YYYY/MM/DD/<slug>/index.html
 isPostOutput :: FilePath -> Bool

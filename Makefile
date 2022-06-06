@@ -55,7 +55,7 @@ HTML_MINIFIER_ARGS += --file-ext=html
 
 .PHONY: build
 build: check-haskell check-html-minifier
-	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build
+	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build -V
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
 
