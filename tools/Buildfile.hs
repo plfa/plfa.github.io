@@ -1,9 +1,10 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 {-# HLINT ignore "Monad law, left identity" #-}
 module Main where
 
 import Buildfile.Author (Author)
-import Buildfile.Book
+import Buildfile.Book (Book (..), Part (..), Section (..))
 import Buildfile.Contributor (Contributor (..))
 import Control.Monad (forM, forM_, unless)
 import Control.Monad.Except (MonadError (throwError))
@@ -13,7 +14,7 @@ import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
 import Data.Function (on, (&))
 import Data.Functor ((<&>))
-import Data.Hashable ( Hashable )
+import Data.Hashable (Hashable)
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
 import Data.Maybe (fromMaybe)
@@ -128,7 +129,7 @@ main =
                 (lib, includePath, agdaHtmlFileName) <-
                   failOnError $
                     Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
-                let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
+                let agdaHtml = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName </> agdaHtmlFileName
                 return $ "agda_html" :@ agdaHtml :> commonStages
               else return commonStages
 
@@ -310,10 +311,10 @@ main =
         agdaLibraries <-
           failOnError $
             getAgdaLibrariesForProject <$> getProject src
-        (lib, includePath, _) <-
+        (lib, includePath, agdaHtmlFileName) <-
           failOnError $
             Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
-        let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath
+        let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
         Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
 
       -- Stage 2: Compile Markdown to HTML
