@@ -116,7 +116,7 @@ getContributors auth owner repo = do
         simpleUser <- GH.commitAuthor commit
         let simpleUserName = GH.untagName $ GH.simpleUserLogin simpleUser
         if simpleUserName == "invalid-email-address"
-          then fail $ "Invalid email address"
+          then fail "Invalid email address"
           else return simpleUser
   forM (frequency commitAuthors) $ \(simpleUser, count) -> do
     printf "Get user info for %s\n" (T.unpack $ GH.untagName $ GH.simpleUserLogin simpleUser)
