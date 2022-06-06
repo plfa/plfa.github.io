@@ -32,9 +32,10 @@ import Text.Printf (printf)
 
 -- * Configuration
 
-authorDir, contributorDir :: FilePath
-authorDir = "authors"
-contributorDir = "contributors"
+dataDir, authorDir, contributorDir :: FilePath
+dataDir = "data"
+authorDir = dataDir </> "authors"
+contributorDir = dataDir </> "contributors"
 
 githubOwner, githubRepo :: Text
 githubOwner = "plfa"
@@ -109,7 +110,16 @@ readContributors dir = do
 getContributors :: GH.Auth -> GH.Name GH.Owner -> GH.Name GH.Repo -> IO [Contributor]
 getContributors auth owner repo = do
   commits <- getCommits auth owner repo
-  forM (frequency (mapMaybe GH.commitAuthor commits)) $ \(simpleUser, count) -> do
+  -- If there author has an invalid email address, GitHub returns a SimpleUser
+  -- with the name "invalid-email-address", rather than throwing an error
+  let commitAuthors = flip mapMaybe commits $ \commit -> do
+        simpleUser <- GH.commitAuthor commit
+        let simpleUserName = GH.untagName $ GH.simpleUserLogin simpleUser
+        if simpleUserName == "invalid-email-address"
+          then fail $ "Invalid email address"
+          else return simpleUser
+  forM (frequency commitAuthors) $ \(simpleUser, count) -> do
+    printf "Get user info for %s\n" (T.unpack $ GH.untagName $ GH.simpleUserLogin simpleUser)
     user <- getUserInfo auth simpleUser
     return $ toContributor user count
 
