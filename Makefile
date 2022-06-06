@@ -41,6 +41,12 @@ ifneq ($(DEV),)
 CABAL_ARGS += --project-file=cabal.project.dev
 endif
 
+SHAKE_ARGS += -j
+SHAKE_ARGS += -V
+SHAKE_ARGS += --lint
+SHAKE_ARGS += --profile
+SHAKE_ARGS += --timing
+
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
 
 HTML_MINIFIER_ARGS += --collapse-whitespace
@@ -55,7 +61,7 @@ HTML_MINIFIER_ARGS += --file-ext=html
 
 .PHONY: build
 build: check-haskell check-html-minifier
-	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build -V
+	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
 

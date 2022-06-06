@@ -28,7 +28,7 @@ import Shoggoth.Agda qualified as Agda
 import Shoggoth.CSS.Minify qualified as CSS
 import Shoggoth.CSS.Sass (SassOptions (..))
 import Shoggoth.CSS.Sass qualified as CSS
-import Shoggoth.Configuration (OutputDirectory (..), TemplateDirectory (..), CacheDirectory (..))
+import Shoggoth.Configuration (CacheDirectory (..), OutputDirectory (..), TemplateDirectory (..))
 import Shoggoth.Metadata
 import Shoggoth.PostInfo
 import Shoggoth.Prelude
@@ -146,8 +146,6 @@ main =
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Book (EPUB Version)
                 create (outDir </> "plfa.epub"),
-                [epubDir </> "epub-metadata.xml"] |-> tmpEpubDir </> "epub-metadata.xml",
-                [epubStyleDir </> "style.scss"] |-> tmpEpubDir </> "style.css",
                 -- Announcements
                 [webDir </> "Announcements.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "rss.xml"] |-> outDir </> "rss.xml",
@@ -419,6 +417,9 @@ main =
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
         src <- routeSource out
+        scss <- getDirectoryFiles "" [webStyleDir <//> "*.scss"]
+        putInfo $ show scss
+        need scss
         CSS.compileSassWith webSassOptions src
           >>= CSS.minifyCSS
           >>= writeFile' out
@@ -433,7 +434,7 @@ main =
       -- Copy static assets
       outDir </> "assets" <//> "*" %> \out -> do
         src <- routeSource out
-        copyFile' src out
+        copyFileChanged src out
 
       -- Copy legacy versions
       --
@@ -445,7 +446,7 @@ main =
       forM_ legacyVersions $ \legacyVersion ->
         outDir </> legacyVersion <//> "*" %> \out -> do
           src <- routeSource out
-          copyFile' src out
+          copyFileChanged src out
 
       -- Copy course PDFs
       --
@@ -454,7 +455,7 @@ main =
       --
       outDir <//> "*.pdf" %> \out -> do
         src <- routeSource out
-        copyFile' src out
+        copyFileChanged src out
 
       --------------------------------------------------------------------------------
       -- EPUB
@@ -465,14 +466,16 @@ main =
 
       outDir </> "plfa.epub" %> \out -> do
         -- Require metadata and stylesheet
-        need [tmpEpubDir </> "epub-metadata.xml",
-              tmpEpubDir </> "style.css"]
+        need
+          [ tmpEpubDir </> "epub-metadata.xml",
+            tmpEpubDir </> "style.css"
+          ]
 
         -- Read the table of contents
         toc <- readYaml @Book tableOfContentsFile
 
         -- Compose documents for each part
-        parts <- for (zip [1..] (bookParts toc)) $ \(number, part) -> do
+        parts <- for (zip [1 ..] (bookParts toc)) $ \(number, part) -> do
           --
           -- Compose documents for each section
           sections <- for (partSections part) $ \section -> do
@@ -529,16 +532,15 @@ main =
 
       -- Build epub metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
-        src <- routeSource out
         defaultMetadata <- getDefaultMetadata ()
-        readFile' src
+        readFile' (epubDir </> "epub-metadata.xml")
           >>= Pandoc.applyAsTemplate defaultMetadata
           >>= writeFile' out
 
       -- Build epub stylesheet
       tmpEpubDir </> "style.css" %> \out -> do
-        src <- routeSource out
-        CSS.compileSassWith epubSassOptions src
+        need =<< getDirectoryFiles "" [epubStyleDir <//> "*.scss"]
+        CSS.compileSassWith epubSassOptions (epubStyleDir </> "style.scss")
           >>= CSS.minifyCSS
           >>= writeFile' out
 
@@ -609,18 +611,10 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 -- Sass Options
 
 webSassOptions :: SassOptions
-webSassOptions =
-  def
-    { sassIncludePaths = Just [webStyleDir],
-      sassImporters = Just [CSS.minCssImporter webStyleDir 1]
-    }
+webSassOptions = def {sassIncludePaths = Just [webStyleDir]}
 
 epubSassOptions :: SassOptions
-epubSassOptions =
-  def
-    { sassIncludePaths = Just [epubStyleDir],
-      sassImporters = Just [CSS.minCssImporter epubStyleDir 1]
-    }
+epubSassOptions = def {sassIncludePaths = Just [epubStyleDir]}
 
 --------------------------------------------------------------------------------
 -- HTML5 post-processing
