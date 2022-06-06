@@ -402,24 +402,27 @@ main =
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
-        errorDocBody <- Pandoc.markdownToPandoc errorMarkdownBody
-        errorDocBody' <- processCitations errorDocBody
-        errorHtmlBody <- Pandoc.pandocToHtml5 errorDocBody'
-        errorHtml <- Pandoc.applyTemplates ["default.html"] fileMetadata errorHtmlBody
-        writeFile' out $ postProcessHtml5 outDir out errorHtml
+        return errorMarkdownBody
+          >>= Pandoc.markdownToPandoc
+          >>= processCitations
+          >>= Pandoc.pandocToHtml5
+          >>= Pandoc.applyTemplates ["default.html"] fileMetadata
+          <&> postProcessHtml5 outDir out
+          >>= writeFile' out
 
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
         src <- routeSource out
-        css <- CSS.compileSassWith sassOptions src
-        minCss <- CSS.minifyCSS css
-        writeFile' out minCss
+        CSS.compileSassWith sassOptions src
+          >>= CSS.minifyCSS
+          >>= writeFile' out
 
       -- Build assets/css/highlight.css
       outDir </> "assets/css/highlight.css" %> \out -> do
         let css = Text.pack (Pandoc.styleToCss highlightStyle)
-        minCss <- CSS.minifyCSS css
-        writeFile' out minCss
+        return css
+          >>= CSS.minifyCSS
+          >>= writeFile' out
 
       -- Copy static assets
       outDir </> "assets" <//> "*" %> \out -> do
