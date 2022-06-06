@@ -20,5 +20,6 @@ _build/
 *.spl
 *.synctex.gz
 *.zip
+*.local
 
 !plfa.pdf

@@ -172,33 +172,6 @@ test-feed-validator: check-feed-validator
 
 
 ########################################
-# Deploy blog
-########################################
-
-.PHONY: deploy
-deploy:
-	@if [[ `git status --porcelain` ]]; then echo "Uncommited changes!"; exit 1; fi
-	@echo "Running tests..."
-	@make test
-	@echo "Backing up Agda interfaces..."
-	@mkdir -p $(TMP_DIR)/agda-stdlib
-	@if [ -d "agda-stdlib/_build" ]; then mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/; fi
-	@echo "Deploying site..."
-	git fetch --all
-	git checkout -b main --track origin/main
-	rsync -r --delete --exclude=$(OUT_DIR) --exclude=$(TMP_DIR) --exclude=.git --exclude=.gitignore --exclude=CNAME $(OUT_DIR)/ .
-	git add -A
-	git commit -m "Publish"
-	git push origin main:main
-	git checkout dev
-	git branch -D main
-	git submodule update --init
-	if [ -d "$(TMP_DIR)/agda-stdlib/_build" ]; then mv $(TMP_DIR)/agda-stdlib/_build agda-stdlib/; fi
-
-
-
-
-########################################
 # Dependencies for build
 ########################################
 
