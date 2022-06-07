@@ -14,6 +14,7 @@ data Author = Author
   , authorTwitter       :: Maybe Text
   , authorCorresponding :: Bool
   }
+  deriving (Show)
 
 instance ToJSON Author where
   toJSON Author{..} =

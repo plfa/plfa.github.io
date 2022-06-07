@@ -13,6 +13,7 @@ data Contributor = Contributor
   , contributorGithub :: Text
   , contributorCount  :: Int
   }
+  deriving (Show)
 
 instance ToJSON Contributor where
   toJSON Contributor{..} =

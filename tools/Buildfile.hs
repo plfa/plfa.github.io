@@ -60,7 +60,7 @@ epubDir, epubFontsDir, epubStyleDir, epubTemplateDir :: FilePath
 epubDir = bookDir </> "epub"
 epubFontsDir = epubDir </> "fonts"
 epubStyleDir = epubDir </> "sass"
-epubTemplateDir = epubTemplateDir
+epubTemplateDir = epubDir </> "templates"
 
 webDir, webAssetDir, webPostDir, webStyleDir, webTemplateDir :: FilePath
 webDir = "web"
@@ -78,7 +78,7 @@ legacyVersions :: [String]
 legacyVersions = ["19.08", "20.07"]
 
 -- TODO:
--- - [ ] build epub
+-- - [ ] fix epub
 -- - [ ] build pdf
 
 --------------------------------------------------------------------------------
@@ -180,8 +180,8 @@ main = do
 
       -- getContributors <- newCache $ \() -> do
       let getContributors = \() -> do
-            contributorFiles <- getDirectoryFiles contributorDir ["*.yml"]
-            contributors <- traverse (\src -> readYaml $ contributorDir </> src) contributorFiles
+            contributorFiles <- getDirectoryFiles "" [contributorDir </> "*.yml"]
+            contributors <- traverse readYaml contributorFiles
             let sortedContributors = sortBy (compare `on` contributorCount) contributors
             return (sortedContributors :: [Contributor])
 
@@ -189,11 +189,7 @@ main = do
       -- let getDefaultMetadata = \() -> do
             metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
             authorMetadata <- getAuthors ()
-            return $
-              mconcat
-                [ metadata,
-                  constField "author" authorMetadata
-                ]
+            return $ mconcat [ metadata, constField "author" authorMetadata ]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
@@ -217,10 +213,6 @@ main = do
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
-      -- let ?getTemplateFile = \templateFile -> do
-      --       let inputPath = webTemplateDir </> templateFile
-      --       need [inputPath]
-      --       Pandoc.compileTemplateFile inputPath
 
       --------------------------------------------------------------------------------
       -- Phony targets
@@ -505,14 +497,9 @@ main = do
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         let src = epubTemplateDir </> "epub-metadata.xml"
         defaultMetadata <- getDefaultMetadata ()
-        contributorMetadata <- getContributors ()
+        contributors <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata =
-              mconcat
-                [ defaultMetadata,
-                  constField "contributor" contributorMetadata,
-                  buildDate
-                ]
+        let metadata = mconcat [defaultMetadata, constField "contributor" contributors, buildDate]
         readFile' src
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
