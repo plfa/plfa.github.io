@@ -43,11 +43,10 @@ outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
-dataDir, authorDir, contributorDir, legacyDir, bibliographyFile, tableOfContentsFile :: FilePath
+dataDir, authorDir, contributorDir, bibliographyFile, tableOfContentsFile :: FilePath
 dataDir = "data"
 authorDir = dataDir </> "authors"
 contributorDir = dataDir </> "contributors"
-legacyDir = dataDir </> "legacy"
 tableOfContentsFile = dataDir </> "tableOfContents.yml"
 bibliographyFile = dataDir </> "bibliography.bib"
 
