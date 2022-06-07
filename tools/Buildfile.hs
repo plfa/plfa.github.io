@@ -370,7 +370,6 @@ main = do
       outDir </> "assets/css/style.css" %> \out -> do
         src <- routeSource out
         scss <- getDirectoryFiles "" [webStyleDir <//> "*.scss"]
-        putInfo $ show scss
         need scss
         CSS.compileSassWith webSassOptions src
           >>= CSS.minifyCSS
