@@ -60,6 +60,7 @@ HTML_MINIFIER_ARGS += --file-ext=html
 
 .PHONY: build
 build: check-haskell check-html-minifier
+	@mkdir -p $(TMP_DIR)/reports/
 	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
