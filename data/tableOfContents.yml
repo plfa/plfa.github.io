@@ -2,9 +2,9 @@ part:
 - frontmatter: True
   title: "Front matter"
   section:
-  - include: src/plfa/frontmatter/dedication.md
+  - include: src/plfa/frontmatter/Dedication.md
     epub-type: dedication
-  - include: src/plfa/frontmatter/preface.md
+  - include: src/plfa/frontmatter/Preface.md
     epub-type: preface
   - include: README.md
     epub-type: foreword
@@ -46,7 +46,7 @@ part:
     epub-type: appendix
 - title: "Back matter"
   section:
-  - include: src/plfa/backmatter/acknowledgements.md
+  - include: src/plfa/backmatter/Acknowledgements.md
     epub-type: acknowledgements
   - include: src/plfa/backmatter/Fonts.lagda.md
     epub-type: appendix

@@ -1,3 +1,10 @@
+---
+title     : Getting Started
+prev      : /Preface/
+permalink : /GettingStarted/
+next      : /Naturals/
+---
+
 <!-- Status & Version Badges -->
 
 [![Calendar Version][plfa-calver]][plfa-latest]

@@ -145,7 +145,7 @@ main = do
       let ?routingTable =
             mconcat
               [ -- Book (Web Version)
-                ["README.md"] |-> (outDir </> "GettingStarted" </> "index.html"),
+                ["README.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Book (EPUB Version)
@@ -186,7 +186,8 @@ main = do
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
         authorMetadata <- getAuthors ()
-        return $ mconcat [ metadata, constField "author" authorMetadata ]
+        contributorMetadata <- getContributors ()
+        return $ mconcat [ metadata, constField "author" authorMetadata, constField "contributor" contributorMetadata ]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
@@ -325,25 +326,6 @@ main = do
           >>= processCitations
           >>= Pandoc.pandocToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          <&> postProcessHtml5 outDir out
-          >>= writeFile' out
-
-      -- Build /GettingStarted/index.html
-      outDir </> "GettingStarted" </> "index.html" %> \out -> do
-        src <- routeSource out
-        -- putInfo $ printf "Compile '%s' to '%s'" src out
-        (fileMetadata, readmeMarkdown) <- getFileWithMetadata src
-        let metadata =
-              mconcat
-                [ fileMetadata,
-                  constField @Text "title" "Getting Started",
-                  constField @Text "prev"  "/Preface/",
-                  constField @Text "next"  "/Naturals/"
-                ]
-        return readmeMarkdown
-          >>= Pandoc.markdownToPandoc
-          >>= Pandoc.pandocToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] metadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 
@@ -502,9 +484,8 @@ main = do
         let src = epubTemplateDir </> "epub-metadata.xml"
         -- putInfo $ printf "Compile '%s' to '%s'" src out
         defaultMetadata <- getDefaultMetadata ()
-        contributors <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata = mconcat [defaultMetadata, constField "contributor" contributors, buildDate]
+        let metadata = mconcat [defaultMetadata, buildDate]
         readFile' src
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
