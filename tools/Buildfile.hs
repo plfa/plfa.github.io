@@ -237,6 +237,7 @@ main = do
       -- Build /
       outDir </> "index.html" %> \out -> do
         src <- routeSource out
+        putInfo $ printf "Compile '%s' to '%s'" src out
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         return indexMarkdownTemplate
@@ -254,6 +255,7 @@ main = do
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
+        putInfo $ printf "Compile '%s' to '%s'" prev next
         agdaLibraries <-
           failOnError $
             getAgdaLibrariesForProject <$> getProject src
@@ -266,6 +268,7 @@ main = do
       -- Stage 2: Compile Markdown to HTML
       tmpBodyHtmlDir <//> "*.html" %> \next -> do
         (src, prev, out) <- (,,) <$> routeSource next <*> routePrev next <*> route next
+        putInfo $ printf "Compile '%s' to '%s'" prev next
         maybeAgdaLinkFixer <-
           getProject src
             & rightToMaybe
@@ -281,6 +284,7 @@ main = do
       -- Stage 3: Apply HTML templates
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
+        putInfo $ printf "Compile '%s' to '%s'" prev out
         (metadata, htmlBody) <- getFileWithMetadata prev
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
@@ -312,6 +316,7 @@ main = do
       -- Build /Announcements/index.html
       outDir </> "Announcements" </> "index.html" %> \out -> do
         src <- routeSource out
+        putInfo $ printf "Compile '%s' to '%s'" src out
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         return indexMarkdownTemplate
@@ -326,8 +331,8 @@ main = do
       -- Build /GettingStarted/index.html
       outDir </> "GettingStarted" </> "index.html" %> \out -> do
         src <- routeSource out
+        putInfo $ printf "Compile '%s' to '%s'" src out
         (fileMetadata, readmeMarkdown) <- getFileWithMetadata src
-
         let metadata =
               mconcat
                 [ fileMetadata,
@@ -335,7 +340,6 @@ main = do
                   constField @Text "prev"  "/Preface/",
                   constField @Text "next"  "/Naturals/"
                 ]
-
         return readmeMarkdown
           >>= Pandoc.markdownToPandoc
           >>= Pandoc.pandocToHtml5
@@ -346,6 +350,7 @@ main = do
       -- Build rss.xml
       outDir </> "rss.xml" %> \out -> do
         src <- routeSource out
+        putInfo $ printf "Compile '%s' to '%s'" src out
         postsField <- getPostsField ()
         (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
         buildDate <- currentDateField rfc822DateFormat "build_date"
@@ -365,6 +370,7 @@ main = do
       -- Build 404.html
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
+        putInfo $ printf "Compile '%s' to '%s'" src out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
         return errorMarkdownBody
           >>= Pandoc.markdownToPandoc
@@ -377,6 +383,7 @@ main = do
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
         src <- routeSource out
+        putInfo $ printf "Compile '%s' to '%s'" src out
         scss <- getDirectoryFiles "" [webStyleDir <//> "*.scss"]
         need scss
         CSS.compileSassWith webSassOptions src
@@ -411,6 +418,8 @@ main = do
             | otherwise = return src
 
       outDir </> "plfa.epub" %> \out -> do
+        putInfo $ printf "Create '%s'" out
+
         -- Require metadata and stylesheet
         need
           [ tmpEpubDir </> "epub-metadata.xml",
@@ -491,6 +500,7 @@ main = do
       -- Build epub metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         let src = epubTemplateDir </> "epub-metadata.xml"
+        putInfo $ printf "Compile '%s' to '%s'" src out
         defaultMetadata <- getDefaultMetadata ()
         contributors <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
@@ -502,6 +512,7 @@ main = do
       -- Build epub stylesheet
       tmpEpubDir </> "style.css" %> \out -> do
         let src = epubStyleDir </> "style.scss"
+        putInfo $ printf "Compile '%s' to '%s'" src out
         need =<< getDirectoryFiles "" [epubStyleDir <//> "*.scss"]
         CSS.compileSassWith epubSassOptions src
           >>= CSS.minifyCSS
