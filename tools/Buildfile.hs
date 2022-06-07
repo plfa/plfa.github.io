@@ -686,10 +686,6 @@ readerOpts =
           ]
     }
 
--- TODO: recover this from the 'readerExtensions' above, or vice versa
--- markdownFormat :: Text
--- markdownFormat = "markdown_strict+all_symbols_escapable+auto_identifiers+backtick_code_blocks+citations+footnotes+header_attributes+intraword_underscores+markdown_in_html_blocks+shortcut_reference_links+smart+superscript+subscript+task_lists+yaml_metadata_block+raw_html+raw_attribute+fenced_code_blocks+backtick_code_blocks"
-
 writerOpts :: WriterOptions
 writerOpts =
   def
