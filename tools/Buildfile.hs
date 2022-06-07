@@ -453,9 +453,14 @@ main = do
                     <> mconcat sections
           return partDoc
 
+        -- Get title page
+        titlePageDoc <-
+          readFile' (epubDir </> "epub-titlepage.md")
+            >>= Pandoc.markdownToPandoc
+
         -- Compose book
         bookDoc <-
-          return (Builder.doc (mconcat parts))
+          return (titlePageDoc <> Builder.doc (mconcat parts))
             >>= processCitations
             <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
 

@@ -205,25 +205,25 @@ endif
 .PHONY: check-html-minifier
 ifeq (,$(HTML-MINIFIER))
 check-html-minifier: check-node
-	@$(eval HTML_MINIFIER := npx --yes html-minifier)
+	@$(eval HTML_MINIFIER := npm_config_yes=true npx html-minifier)
 endif
 
 .PHONY: check-browser-sync
 ifeq (,$(BROWSER_SYNC))
 check-browser-sync: check-node
-	@$(eval BROWSER_SYNC := npx --yes browser-sync)
+	@$(eval BROWSER_SYNC := npm_config_yes=true npx browser-sync)
 endif
 
 .PHONY: check-feed-validator
 ifeq (,$(FEED_VALIDATOR))
 check-feed-validator: check-node
-	@$(eval FEED_VALIDATOR := npx --yes feed-validator)
+	@$(eval FEED_VALIDATOR := npm_config_yes=true npx feed-validator)
 endif
 
 .PHONY: check-html-validate
 ifeq (,$(HTML_VALIDATE))
 check-html-validate: check-node
-	@$(eval HTML_VALIDATE := npx --yes html-validate)
+	@$(eval HTML_VALIDATE := npm_config_yes=true npx html-validate)
 endif
 
 .PHONY: check-node
