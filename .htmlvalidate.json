@@ -3,10 +3,16 @@
   "elements": ["html5"],
   "extends": ["html-validate:recommended", "html-validate:document"],
   "rules": {
+    "require-sri": ["off"],
+    "valid-id": ["off"],
     "wcag/h30": ["off"],
     "wcag/h37": ["warn"],
-    "require-sri": ["off"],
-    "no-inline-style": ["off"],
-    "valid-id": ["off"]
+    "no-inline-style": ["warn"],
+    "heading-level": ["warn"],
+    "no-dup-id": ["warn"],
+    "long-title": ["warn"],
+    "input-missing-label": ["warn"],
+    "script-type": ["warn"],
+    "prefer-tbody": ["warn"]
   }
 }
