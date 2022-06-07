@@ -13,12 +13,13 @@ next      : /Naturals/
 [![agda-stdlib][agda-stdlib-version]][agda-stdlib]
 
 
-## Dependencies for users
+## Installing Agda and PLFA
 You can read PLFA [online][plfa] without installing anything. However, if you wish to interact with the code or complete the exercises, you need several things:
 
-  - [Stack](#install-the-haskell-tool-stack)
+  - if on macOS: [XCode](#on-macos-install-the-xcode-command-line-tools)
   - [Git](#install-git)
-  - [Agda](#install-agda-using-stack)
+  - [GHC and Cabal](#install-ghc-and-cabal)
+  - [Agda](#install-agda)
   - [Agda standard library](#install-plfa-and-the-agda-standard-library)
   - [PLFA](#install-plfa-and-the-agda-standard-library)
 
@@ -26,124 +27,62 @@ PLFA is tested against specific versions of Agda and the standard library, which
 
 There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out-of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.
 
-
 ### On macOS: Install the XCode Command Line Tools
 On macOS, you’ll need to install the [XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:
 ```bash
 xcode-select --install
 ```
 
-### Install the Haskell Tool Stack
-Agda is written in Haskell, so to install it we’ll need the *Haskell Tool Stack*, or *Stack* for short. Stack is a program for managing different Haskell compilers and packages:
-
-- *On UNIX and macOS.* If your package manager has a package for Stack, that’s probably your easiest option. For instance, Homebrew on macOS  and APT on Debian offer the “haskell-stack” package. Otherwise, you can follow the instructions on [the Stack website][haskell-stack]. Usually, Stack installs binaries at `HOME/.local/bin`. Please ensure this is on your PATH, by including the following in your shell configuration, e.g., in `HOME/.bash_profile`:
-  ```bash
-  export PATH="${HOME}/.local/bin:${PATH}"
-  ```
-  Finally, ensure that you’ve got the latest version of Stack, by running:
-  ```bash
-  stack upgrade
-  ```
-
-- *On Windows.* There is a Windows installer on [the Stack website][haskell-stack].
-
-
 ### Install Git
+To check whether you have git, run the following command:
+```bash
+git --version
+```
 If you do not already have Git installed, see [the Git downloads page][git].
 
 
-### Install Agda using Stack
-The easiest way to install a *specific version* of Agda is using [Stack][haskell-stack]. You can get the required version of Agda from GitHub, either by cloning the repository and switching to the correct branch, or by downloading [the zip archive][agda]:
+### Install GHC and Cabal
+Agda is written in Haskell, so to install it we’ll need the *Glorious Haskell Compiler* (version 8.10.7) and it's package managed *Cabal* (any version after 3.6). We recommend installing both of these using [ghcup][ghcup].
+
+
+## Install Agda
+The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.2.2. Run the following command:
 ```bash
-git clone https://github.com/agda/agda.git
-cd agda
-git checkout v2.6.1.3
-```
-To install Agda, run Stack from the Agda source directory:
-```bash
-stack install --stack-yaml stack-8.8.3.yaml
+cabal update
+cabal install Agda-2.6.2.2
 ```
 *This step will take a long time and a lot of memory to complete.*
 
-#### Using an existing installation of GHC
-Stack is perfectly capable of installing and managing versions of the [Glasgow Haskell Compiler][haskell-ghc] for you. However, if you already have a copy of GHC installed, and you want Stack to use your system installation, you can pass the `--system-ghc` flag and select the appropriate `stack-*.yaml` file. For instance, if you have GHC 8.2.2 installed, run:
-```bash
-stack install --system-ghc --stack-yaml stack-8.2.2.yaml
-```
+For further information, see the [Agda installation instructions][agda-installation].
 
-#### Check if Agda was installed correctly
-If you’d like, you can test to see if you’ve installed Agda correctly. Create a file called `hello.agda` with these lines:
-```agda
-data Greeting : Set where
-  hello : Greeting
-
-greet : Greeting
-greet = hello
-```
-From a command line, change to the same directory where your `hello.agda` file is located. Then run:
-```bash
-agda -v 2 hello.agda
-```
-You should see a short message like the following, but no errors:
-```
-Checking hello (/path/to/hello.agda).
-Finished hello.
-```
+If you'd like, you can [test to see if you've installed Agda correctly][agda-hello-world].
 
 
 ### Install PLFA and the Agda standard library
-You can get the latest version of Programming Language Foundations in Agda from GitHub, either by cloning the repository, or by downloading [the zip archive][plfa-dev]:
+We recommend installing PLFA from Github into your home directory, by running the following command:
 ```bash
 git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/plfa/plfa.github.io plfa
-# Remove `--depth 1` and `--shallow-submodules` if you want the complete git history of PLFA and the standard library.
 ```
-PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got, in the `standard-library` directory!
+(Remove `--depth 1` and `--shallow-submodules` if you want the complete git history. If you forget to type `--recurse-submodules`, delete the freshly created `plfa` directory and retype the command with the correct flags.)
 
-If you forgot to add the `--recurse-submodules` flag, no worries, we can fix that!
+Finally, we need to let Agda know where to find the Agda standard library and PLFA. Two configuration files are required, one which lists paths to the libraries and one which specifies which libraries to load by default.
+
+On macOS and Unix, if PLFA is installed in your home directory and you have no existing library configuration files you wish to preserve,run the following commands:
 ```bash
-cd plfa/
-git submodule update --init --recursive --depth 1
-# Remove `--depth 1` if you want the complete git history of the standard library.
+mkdir -p ~/.agda
+cp ~/plfa/data/dotagda/* ~/.agda
 ```
-If you obtained PLFA by downloading the zip archive, you can get the required version of the Agda standard library from GitHub. You can either clone the repository and switch to the correct branch, or you can download the [the zip archive][agda-stdlib]:
-```bash
-git clone https://github.com/agda/agda-stdlib.git --branch v1.6 --depth 1 agda-stdlib
-# Remove `--depth 1` if you want the complete git history of the standard library.
-```
-Finally, we need to let Agda know where to find the Agda standard library.
-You'll need the path where you installed the standard library. Check to see that the file “standard-library.agda-lib” exists, and make a note of the path to this file.
-You will need to create two configuration files in `AGDA_DIR`. On UNIX and macOS, `AGDA_DIR` defaults to `~/.agda`. On Windows, `AGDA_DIR` usually defaults to `%AppData%\agda`, where `%AppData%` usually defaults to `C:\Users\USERNAME\AppData\Roaming`.
+This provides access to both the Agda standard library and to PLFA as an Agda library.
+
+Otherwise, you will need to edit the appropriate files. Both configuration files are located in the directory `AGDA_DIR`. On UNIX and macOS, `AGDA_DIR` defaults to `~/.agda`. On Windows, `AGDA_DIR` usually defaults to `%AppData%\agda`, where `%AppData%` usually defaults to `C:\Users\USERNAME\AppData\Roaming`.
 
 - If the `AGDA_DIR` directory does not already exist, create it.
-- In `AGDA_DIR`, create a plain-text file called `libraries` containing the `/path/to/standard-library.agda-lib`. This lets Agda know that an Agda library called `standard-library` is available.
+- In `AGDA_DIR`, create a plain-text file called `libraries` containing `AGDA_STDLIB/standard-library.agda-lib`, where `AGDA_STDLIB` is the path to where the Agda standard library is located (e.g., `~/plfa/standard-library/`). This lets Agda know that an Agda library called `standard-library` is available.
 - In `AGDA_DIR`, create a plain-text file called `defaults` containing *just* the line `standard-library`.
+- If you want to complete the exercises or to import modules from the book, you will also need to provide access to PLFA as an Agda library.  To do so, let `PLFA` b the path to the root directory for PLFA.
+ Add `PLFA/src/plfa.agda-lib` to `AGDA_DIR/libraries` and add `plfa` to `AGDA_DIR/defaults`, each on a line of their own.
 
 More information about placing the standard libraries is available from [the Library Management page][agda-docs-package-system] of the Agda documentation.
-
-It is possible to set up PLFA as an Agda library as well.  If you want to complete the exercises found in the `courses` folder, or to import modules from the book, you need to do this.  To do so, add the path to `plfa.agda-lib` to `AGDA_DIR/libraries` and add `plfa` to `AGDA_DIR/defaults`, each on a line of their own.
-
-#### Check if the Agda standard library was installed correctly
-If you’d like, you can test to see if you’ve installed the Agda standard library correctly. Create a file called `nats.agda` with these lines:
-```agda
-open import Data.Nat
-
-ten : ℕ
-ten = 10
-```
-(Note that the ℕ is a Unicode character, not a plain capital N. You should be able to just copy-and-paste it from this page into your file.)
-
-From a command line, change to the same directory where your `nats.agda` file is located. Then run:
-```bash
-agda -v 2 nats.agda
-```
-You should see a several lines describing the files which Agda loads while checking your file, but no errors:
-```
-Checking nats (/path/to/nats.agda).
-Loading  Agda.Builtin.Equality (…).
-…
-Loading  Data.Nat (…).
-Finished nats.
-```
 
 
 ## Setting up an editor for Agda
@@ -269,48 +208,6 @@ You'll see the key sequence of the character in mini buffer.
 ### Atom
 [Atom][atom] is a free source code editor developed by GitHub. There is [a plugin for Agda support][atom-agda] available on the Atom package manager.
 
-## Dependencies for developers
-PLFA is written in literate Agda with [Pandoc Markdown][pandoc-markdown].
-PLFA is available as both a website and an EPUB e-book, both of which can be built on UNIX and macOS.
-Finally, to help developers avoid common mistakes, we provide a set of Git hooks.
-
-
-### Building the website and e-book
-If you’d like to build the web version of PLFA locally, [Stack](#install-the-haskell-tool-stack) is all you need! PLFA is built using [Hakyll][hakyll], a Haskell library for building static websites. We’ve setup a Makefile to help you run common tasks. For instance, to build PLFA, run:
-```bash
-make build
-```
-If you’d like to serve PLFA locally, rebuilding the website when any of the source files are changed, run:
-```bash
-make watch
-```
-The Makefile offers more than just building and watching, it also offers the following useful options:
-```make
-build                      # Build PLFA
-watch                      # Build and serve PLFA, monitor for changes and rebuild
-test                       # Test web version for broken links, invalid HTML, etc.
-test-epub                  # Test EPUB for compliance to the EPUB3 standard
-clean                      # Remove cache
-clobber                    # Remove generated files
-init                       # Setup the Git hooks (see below)
-update-contributors        # Pull in new contributors from GitHub to contributors/
-list                       # List all build targets
-```
-
-
-### Git hooks
-The repository comes with several Git hooks:
-
- 1. The [fix-whitespace][fix-whitespace] program is run to check for whitespace violations.
-
- 2. The test suite is run to check if everything type checks.
-
-You can install these Git hooks by calling `make init`.
-You can install [fix-whitespace][fix-whitespace] by running:
-```bash
-stack install fix-whitespace
-```
-If you want Stack to use your system installation of GHC, follow the instructions for [Using an existing installation of GHC](#using-an-existing-installation-of-ghc).
 
 <!-- Links -->
 
@@ -322,15 +219,16 @@ If you want Stack to use your system installation of GHC, follow the instruction
 [plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
 [plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
-[haskell-stack]:  https://docs.haskellstack.org/en/stable/README/
-[haskell-ghc]: https://www.haskell.org/ghc/
+[ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
-[agda]: https://github.com/agda/agda/releases/tag/v2.6.1.3
-[agda-version]: https://img.shields.io/badge/agda-v2.6.1.3-blue.svg
-[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.1.3/getting-started/quick-guide.html
-[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html
-[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.1.3/tools/emacs-mode.html#notation-for-key-combinations
-[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.1.3/tools/package-system.html#example-using-the-standard-library
+[agda]: https://github.com/agda/agda/releases/tag/v2.6.2.2
+[agda-installation]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/installation.html
+[agda-hello-world]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/hello-world.html
+[agda-version]: https://img.shields.io/badge/agda-v2.6.2.2-blue.svg
+[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/quick-guide.html
+[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html
+[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html#notation-for-key-combinations
+[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.2.2/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
