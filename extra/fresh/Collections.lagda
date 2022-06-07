@@ -1,6 +1,5 @@
 ---
 title     : "Collections: Representing collections as lists"
-layout    : page
 permalink : /Collections
 ---
 
@@ -39,7 +38,7 @@ open import Relation.Nullary.Product using (_×-dec_)
 
 \begin{code}
 module fresh.Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
-  
+
     Coll : Set → Set
     Coll A  =  List A
 
@@ -52,7 +51,7 @@ module fresh.Collections (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) whe
       here : ∀ {x xs} →
         ----------
         x ∈ x ∷ xs
-        
+
       there : ∀ {w x xs} →
         w ∈ xs →
         ----------

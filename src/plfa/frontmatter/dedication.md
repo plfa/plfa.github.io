@@ -1,6 +1,5 @@
 ---
 title     : "Dedication"
-layout    : page
 permalink : /Dedication/
 next      : /Preface/
 ---

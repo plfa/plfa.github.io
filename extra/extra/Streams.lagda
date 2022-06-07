@@ -1,6 +1,5 @@
 ---
 title     : "Streams: Streams and coinduction"
-layout    : page
 permalink : /Streams
 ---
 

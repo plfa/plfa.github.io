@@ -28,7 +28,6 @@ shift
 cat <<-EOF
 ---
 title     : "Assignment$NUM: $COURSE Assignment $NUM"
-layout    : page
 permalink : /$COURSE/$YEAR/Assignment$NUM/
 ---
 

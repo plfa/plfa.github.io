@@ -1,6 +1,5 @@
 ---
 title     : "Subtyping: Records"
-layout    : page
 prev      : /More/
 permalink : /Subtyping/
 next      : /Bisimulation/

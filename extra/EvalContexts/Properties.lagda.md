@@ -1,7 +1,5 @@
 ---
 title     : "Properties: Progress and Preservation"
-layout    : page
-prev      : /Lambda/
 permalink : /Properties/
 next      : /DeBruijn/
 ---

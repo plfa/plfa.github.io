@@ -1,6 +1,5 @@
 ---
 title     : "Denotational: Denotational Semantics"
-layout    : page
 permalink : /Denotational
 ---
 

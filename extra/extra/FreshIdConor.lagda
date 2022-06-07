@@ -1,6 +1,5 @@
 ---
 title     : "FreshIdConor: Generation of fresh names"
-layout    : page
 permalink : /FreshIdConor
 ---
 

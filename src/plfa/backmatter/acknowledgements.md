@@ -1,6 +1,5 @@
 ---
 title     : "Acknowledgements"
-layout    : page
 prev      : /Untyped/
 permalink : /Acknowledgements/
 next      : /Fonts/

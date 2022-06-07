@@ -1,6 +1,5 @@
 ---
 title     : "DeBruijn: Intrinsically-typed de Bruijn representation"
-layout    : page
 prev      : /Properties/
 permalink : /DeBruijn/
 next      : /More/

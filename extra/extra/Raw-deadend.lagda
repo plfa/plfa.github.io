@@ -1,6 +1,5 @@
 ---
 title     : "Raw: Raw, Scoped, Typed"
-layout    : page
 permalink : /Raw
 ---
 

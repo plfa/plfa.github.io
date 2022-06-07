@@ -1,7 +1,6 @@
 
 ---
 title     : "Basics: Functional Programming in Agda"
-layout    : page
 permalink : /Basics
 ---
 
@@ -35,7 +34,7 @@ distinct ()
 \begin{code}
 _≟_ : ∀ (m n : ℕ) → Dec (m ≡ n)
 zero ≟ zero =  yes refl
-zero ≟ suc n =  no (λ()) 
+zero ≟ suc n =  no (λ())
 suc m ≟ zero =  no (λ())
 suc m ≟ suc n with m ≟ n
 ... | yes refl =  yes refl

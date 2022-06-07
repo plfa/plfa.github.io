@@ -1,6 +1,5 @@
 ---
 title     : "ContextualEquivalence: Denotational equality implies contextual equivalence"
-layout    : page
 prev      : /Adequacy/
 permalink : /ContextualEquivalence/
 next      : /Substitution/

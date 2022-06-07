@@ -1,6 +1,5 @@
 ---
 title     : "Soundness: Soundness of reduction with respect to denotational semantics"
-layout    : page
 prev      : /Compositional/
 permalink : /Soundness/
 next      : /Adequacy/

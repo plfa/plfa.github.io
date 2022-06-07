@@ -1,6 +1,5 @@
 ---
 title     : "Preface"
-layout    : page
 prev      : /Dedication/
 permalink : /Preface/
 next      : /GettingStarted/

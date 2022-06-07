@@ -1,6 +1,5 @@
 ---
 title     : "Naturals: Natural numbers"
-layout    : page
 prev      : /GettingStarted/
 permalink : /Naturals/
 next      : /Induction/

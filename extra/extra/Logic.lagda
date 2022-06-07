@@ -1,6 +1,5 @@
 ---
 title     : "Logic: Propositions as Types"
-layout    : page
 permalink : /Logic
 ---
 

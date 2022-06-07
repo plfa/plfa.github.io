@@ -1,6 +1,5 @@
 ---
 title     : "Bisimulation: Relating reduction systems"
-layout    : page
 prev      : /More/
 permalink : /Bisimulation/
 next      : /Inference/

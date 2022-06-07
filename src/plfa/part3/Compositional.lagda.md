@@ -1,6 +1,5 @@
 ---
 title     : "Compositional: The denotational semantics is compositional"
-layout    : page
 prev      : /Denotational/
 permalink : /Compositional/
 next      : /Soundness/

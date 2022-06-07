@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Notes
 permalink: /Notes/
 ---
@@ -22,10 +21,6 @@ You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`
 ## Downloading older versions
 
 <https://github.com/plfa/plfa.github.io/releases>
-
-## Google Analytics
-
-<https://analytics.google.com/analytics/web/>
 
 ## Git commands
 

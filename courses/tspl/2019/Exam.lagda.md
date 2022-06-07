@@ -1,6 +1,5 @@
 ---
 title     : "Exam: TSPL Exam file"
-layout    : page
 permalink : /TSPL/2019/Exam/
 ---
 

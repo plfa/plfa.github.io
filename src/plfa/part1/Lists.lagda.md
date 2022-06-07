@@ -1,6 +1,5 @@
 ---
 title     : "Lists: Lists and higher-order functions"
-layout    : page
 prev      : /Decidable/
 permalink : /Lists/
 next      : /Lambda/

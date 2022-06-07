@@ -1,6 +1,5 @@
 ---
 title     : "Decidable: Booleans and decision procedures"
-layout    : page
 permalink : /DecidableExtra/
 ---
 
@@ -565,17 +564,17 @@ postulate
   ∨-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
   not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
 \end{code}
-  
+
 #### Exercise `iff-erasure` (recommended)
 
-Give analogues of the `_⇔_` operation from 
+Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism][plfa.Isomorphism#iff],
 operation on booleans and decidables, and also show the corresponding erasure.
 \begin{code}
 postulate
   _iff_ : Bool → Bool → Bool
   _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
-  iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋  
+  iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
 \end{code}
 
 

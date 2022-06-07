@@ -1,6 +1,5 @@
 ---
 title     : "Connectives: Conjunction, disjunction, and implication"
-layout    : page
 prev      : /Isomorphism/
 permalink : /Connectives/
 next      : /Negation/

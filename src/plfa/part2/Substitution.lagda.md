@@ -1,6 +1,5 @@
 ---
 title     : "Substitution: Substitution in the untyped lambda calculus"
-layout    : page
 prev      : /ContextualEquivalence/
 permalink : /Substitution/
 next      : /Acknowledgements/

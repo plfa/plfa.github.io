@@ -1,6 +1,5 @@
 ---
 title     : "Assignment4: TSPL Assignment 4"
-layout    : page
 permalink : /TSPL/2019/Assignment4/
 ---
 

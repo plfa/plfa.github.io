@@ -1,6 +1,5 @@
 ---
 title          : How to Cite this Book
-layout         : page
 permalink      : /Citing/
 ---
 

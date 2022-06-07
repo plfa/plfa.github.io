@@ -1,6 +1,5 @@
 ---
 title     : "Negation: Negation, with intuitionistic and classical logic"
-layout    : page
 prev      : /Connectives/
 permalink : /Negation/
 next      : /Quantifiers/

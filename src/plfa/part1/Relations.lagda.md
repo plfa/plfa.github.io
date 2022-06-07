@@ -1,6 +1,5 @@
 ---
 title     : "Relations: Inductive definition of relations"
-layout    : page
 prev      : /Induction/
 permalink : /Relations/
 next      : /Equality/
