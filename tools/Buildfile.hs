@@ -74,13 +74,6 @@ tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Render .lagda.md to .md
 tmpBodyHtmlDir = tmpDir </> "body_html" -- Render .md to .html
 tmpEpubDir = tmpDir </> "epub"
 
-legacyVersions :: [String]
-legacyVersions = ["19.08", "20.07"]
-
--- TODO:
--- - [ ] fix epub
--- - [ ] build pdf
-
 --------------------------------------------------------------------------------
 -- Rules
 
