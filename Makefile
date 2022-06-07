@@ -41,9 +41,9 @@ ifneq ($(DEV),)
 CABAL_ARGS += --project-file=cabal.project.dev
 endif
 
-SHAKE_ARGS += -j
+SHAKE_ARGS += -j2
 SHAKE_ARGS += --lint
-SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
+# SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
 SHAKE_ARGS += --timing
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
@@ -63,6 +63,8 @@ build: check-haskell check-html-minifier
 	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
+	@unzip -d $(OUT_DIR) data/legacy/19.08.zip
+	@unzip -d $(OUT_DIR) data/legacy/20.07.zip
 
 .PHONY: clean
 clean: check-haskell

@@ -1,10 +1,8 @@
-/.shake/
-/.stack-work/
 /_site/
 /_cache/
-_build/
 /dist-newstyle/
-/versions/plfa.github.io-web-*/
+
+_build/
 
 *.agdai
 *.el
@@ -23,4 +21,6 @@ _build/
 *.local
 
 !plfa.pdf
+!data/legacy/19.08.zip
+!data/legacy/20.07.zip
 !cabal.project.ci.local

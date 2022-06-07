@@ -145,7 +145,7 @@ main = do
       let ?routingTable =
             mconcat
               [ -- Book (Web Version)
-                ["README.md"] |-> postOrPermalinkRouterWithAgda,
+                ["README.md"] |-> (outDir </> "GettingStarted" </> "index.html"),
                 [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Book (EPUB Version)
@@ -166,46 +166,43 @@ main = do
                 [webDir </> "404.md"] |-> permalinkRouter,
                 [webStyleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
                 create (outDir </> "assets/css/highlight.css"),
-                [webAssetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative webAssetDir src,
-                -- Versions (Legacy)
-                [legacyDir <//> "*"] *|-> \src -> outDir </> makeRelative legacyDir src
+                [webAssetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative webAssetDir src
               ]
 
       --------------------------------------------------------------------------------
       -- Caches
 
-      getAuthors <- newCache $ \() -> do
-        authorFiles <- getDirectoryFiles authorDir ["*.yml"]
-        authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
-        return (authors :: [Author])
+      -- getAuthors <- newCache $ \() -> do
+      let getAuthors = \() -> do
+            authorFiles <- getDirectoryFiles authorDir ["*.yml"]
+            authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
+            return (authors :: [Author])
 
-      getContributors <- newCache $ \() -> do
-        contributorFiles <- getDirectoryFiles contributorDir ["*.yml"]
-        contributors <- traverse (\src -> readYaml $ contributorDir </> src) contributorFiles
-        let sortedContributors = sortBy (compare `on` contributorCount) contributors
-        return (sortedContributors :: [Contributor])
+      -- getContributors <- newCache $ \() -> do
+      let getContributors = \() -> do
+            contributorFiles <- getDirectoryFiles contributorDir ["*.yml"]
+            contributors <- traverse (\src -> readYaml $ contributorDir </> src) contributorFiles
+            let sortedContributors = sortBy (compare `on` contributorCount) contributors
+            return (sortedContributors :: [Contributor])
 
       getDefaultMetadata <- newCache $ \() -> do
-        metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
-        authorMetadata <- getAuthors ()
-        contributorMetadata <- getContributors ()
-        buildDate <- currentDateField rfc822DateFormat "build_date"
-        version <- currentDateField "%y.%m" "version"
-        return $
-          mconcat
-            [ metadata,
-              constField "author" authorMetadata,
-              constField "contributor" contributorMetadata,
-              buildDate
-            ]
+      -- let getDefaultMetadata = \() -> do
+            metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
+            authorMetadata <- getAuthors ()
+            return $
+              mconcat
+                [ metadata,
+                  constField "author" authorMetadata
+                ]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
-        bibliographyFileBody <- readFile' bibliographyFile
-        bibliographyFileDoc@(Pandoc meta _) <- runPandoc $ Pandoc.readBibTeX readerOpts bibliographyFileBody
-        case Pandoc.lookupMeta "references" meta of
-          Just references -> return references
-          Nothing -> fail $ printf "Could not read references from '%s'" bibliographyFile
+      -- let getReferences = \() -> do
+            bibliographyFileBody <- readFile' bibliographyFile
+            bibliographyFileDoc@(Pandoc meta _) <- runPandoc $ Pandoc.readBibTeX readerOpts bibliographyFileBody
+            case Pandoc.lookupMeta "references" meta of
+              Just references -> return references
+              Nothing -> fail $ printf "Could not read references from '%s'" bibliographyFile
 
       let processCitations :: Pandoc -> Action Pandoc
           processCitations doc = do
@@ -213,12 +210,17 @@ main = do
             Pandoc.processCitations $
               Pandoc.setMeta "references" references doc
 
-      getAgdaLinkFixer <- newCache $ \project -> do
-        let localAgdaLibraries = getLocalAgdaLibrariesForProject project
-        Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
+      -- getAgdaLinkFixer <- newCache $ \project -> do
+      let getAgdaLinkFixer = \project -> do
+            let localAgdaLibraries = getLocalAgdaLibrariesForProject project
+            Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
+      -- let ?getTemplateFile = \templateFile -> do
+      --       let inputPath = webTemplateDir </> templateFile
+      --       need [inputPath]
+      --       Pandoc.compileTemplateFile inputPath
 
       --------------------------------------------------------------------------------
       -- Phony targets
@@ -240,10 +242,10 @@ main = do
       --------------------------------------------------------------------------------
       -- Table of Contents
 
-      getTableOfContentsField <- newCache $ \() -> do
-        tocMetadata <- readYaml tableOfContentsFile
-        tocResolved <- resolveIncludes (fmap fst . getFileWithMetadata) tocMetadata
-        return $ constField "toc" tocResolved
+      let getTableOfContentsField = \() -> do
+            tocMetadata <- readYaml tableOfContentsFile
+            tocResolved <- resolveIncludes (fmap fst . getFileWithMetadata) tocMetadata
+            return $ constField "toc" tocResolved
 
       -- Build /
       outDir </> "index.html" %> \out -> do
@@ -290,15 +292,7 @@ main = do
           >>= writeFile' next
 
       -- Stage 3: Apply HTML templates
-      let hasHtmlBody :: FilePath -> Bool
-          hasHtmlBody out = isHtml && not isLegacyVersion
-            where
-              isHtml =
-                (outDir <//> "*.html") ?== out
-              isLegacyVersion =
-                any (\legacyVersion -> (outDir </> legacyVersion <//> "*") ?== out) legacyVersions
-
-      hasHtmlBody ?> \out -> do
+      outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (metadata, htmlBody) <- getFileWithMetadata prev
         let htmlTemplates
@@ -310,25 +304,25 @@ main = do
       --------------------------------------------------------------------------------
       -- Posts
 
-      getPostsField <- newCache $ \() -> do
-        posts <- filter isPostSource <$> sources
-        postsMetadata <- forM posts $ \post -> do
-          bodyHtml <- routeAnchor "body_html" post
-          (fileMetadata, body) <- getFileWithMetadata bodyHtml
-          let bodyHtmlField = constField "body_html" body
-          url <-
-            failOnError $
-              fileMetadata ^. "url"
-          let htmlTeaserField =
-                ignoreError $
-                  htmlTeaserFieldFromHtml url body "teaser_html"
-          let textTeaserField =
-                ignoreError $
-                  textTeaserFieldFromHtml body "teaser_plain"
-          return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
-        return $ constField "post" (reverse postsMetadata)
+      let getPostsField = \() -> do
+            posts <- filter isPostSource <$> sources
+            postsMetadata <- forM posts $ \post -> do
+              bodyHtml <- routeAnchor "body_html" post
+              (fileMetadata, body) <- getFileWithMetadata bodyHtml
+              let bodyHtmlField = constField "body_html" body
+              url <-
+                failOnError $
+                  fileMetadata ^. "url"
+              let htmlTeaserField =
+                    ignoreError $
+                      htmlTeaserFieldFromHtml url body "teaser_html"
+              let textTeaserField =
+                    ignoreError $
+                      textTeaserFieldFromHtml body "teaser_plain"
+              return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
+            return $ constField "post" (reverse postsMetadata)
 
-      -- Build /Announcements/
+      -- Build /Announcements/index.html
       outDir </> "Announcements" </> "index.html" %> \out -> do
         src <- routeSource out
         postsField <- getPostsField ()
@@ -342,13 +336,40 @@ main = do
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 
+      -- Build /GettingStarted/index.html
+      outDir </> "GettingStarted" </> "index.html" %> \out -> do
+        src <- routeSource out
+        (fileMetadata, readmeMarkdown) <- getFileWithMetadata src
+
+        let metadata =
+              mconcat
+                [ fileMetadata,
+                  constField @Text "title" "Getting Started",
+                  constField @Text "prev"  "/Preface/",
+                  constField @Text "next"  "/Naturals/"
+                ]
+
+        return readmeMarkdown
+          >>= Pandoc.markdownToPandoc
+          >>= Pandoc.pandocToHtml5
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] metadata
+          <&> postProcessHtml5 outDir out
+          >>= writeFile' out
+
       -- Build rss.xml
       outDir </> "rss.xml" %> \out -> do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
+        buildDate <- currentDateField rfc822DateFormat "build_date"
+        let metadata =
+              mconcat
+                [ postsField,
+                  fileMetadata,
+                  buildDate
+                ]
         return rssXmlTemplate
-          >>= Pandoc.applyAsTemplate (postsField <> fileMetadata)
+          >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
 
       --------------------------------------------------------------------------------
@@ -385,18 +406,6 @@ main = do
       outDir </> "assets" <//> "*" %> \out -> do
         src <- routeSource out
         copyFile' src out
-
-      -- Copy legacy versions
-      --
-      -- NOTE: legacy versions are those where the releases on GitHub did not
-      --       have relativized URLs, and as such cannot simply be downloaded
-      --       into the appropriate version subdirectory without breaking all
-      --       links.
-      --
-      forM_ legacyVersions $ \legacyVersion ->
-        outDir </> legacyVersion <//> "*" %> \out -> do
-          src <- routeSource out
-          copyFile' src out
 
       -- Copy course PDFs
       --
@@ -494,15 +503,25 @@ main = do
 
       -- Build epub metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
+        let src = epubTemplateDir </> "epub-metadata.xml"
         defaultMetadata <- getDefaultMetadata ()
-        readFile' (epubTemplateDir </> "epub-metadata.xml")
-          >>= Pandoc.applyAsTemplate defaultMetadata
+        contributorMetadata <- getContributors ()
+        buildDate <- currentDateField rfc822DateFormat "build_date"
+        let metadata =
+              mconcat
+                [ defaultMetadata,
+                  constField "contributor" contributorMetadata,
+                  buildDate
+                ]
+        readFile' src
+          >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
 
       -- Build epub stylesheet
       tmpEpubDir </> "style.css" %> \out -> do
+        let src = epubStyleDir </> "style.scss"
         need =<< getDirectoryFiles "" [epubStyleDir <//> "*.scss"]
-        CSS.compileSassWith epubSassOptions (epubStyleDir </> "style.scss")
+        CSS.compileSassWith epubSassOptions src
           >>= CSS.minifyCSS
           >>= writeFile' out
 
