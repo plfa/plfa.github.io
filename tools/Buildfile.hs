@@ -172,13 +172,11 @@ main = do
       --------------------------------------------------------------------------------
       -- Caches
 
-      -- getAuthors <- newCache $ \() -> do
       let getAuthors = \() -> do
             authorFiles <- getDirectoryFiles authorDir ["*.yml"]
             authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
             return (authors :: [Author])
 
-      -- getContributors <- newCache $ \() -> do
       let getContributors = \() -> do
             contributorFiles <- getDirectoryFiles "" [contributorDir </> "*.yml"]
             contributors <- traverse readYaml contributorFiles
@@ -186,19 +184,17 @@ main = do
             return (sortedContributors :: [Contributor])
 
       getDefaultMetadata <- newCache $ \() -> do
-      -- let getDefaultMetadata = \() -> do
-            metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
-            authorMetadata <- getAuthors ()
-            return $ mconcat [ metadata, constField "author" authorMetadata ]
+        metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
+        authorMetadata <- getAuthors ()
+        return $ mconcat [ metadata, constField "author" authorMetadata ]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
-      -- let getReferences = \() -> do
-            bibliographyFileBody <- readFile' bibliographyFile
-            bibliographyFileDoc@(Pandoc meta _) <- runPandoc $ Pandoc.readBibTeX readerOpts bibliographyFileBody
-            case Pandoc.lookupMeta "references" meta of
-              Just references -> return references
-              Nothing -> fail $ printf "Could not read references from '%s'" bibliographyFile
+        bibliographyFileBody <- readFile' bibliographyFile
+        bibliographyFileDoc@(Pandoc meta _) <- runPandoc $ Pandoc.readBibTeX readerOpts bibliographyFileBody
+        case Pandoc.lookupMeta "references" meta of
+          Just references -> return references
+          Nothing -> fail $ printf "Could not read references from '%s'" bibliographyFile
 
       let processCitations :: Pandoc -> Action Pandoc
           processCitations doc = do
@@ -206,10 +202,9 @@ main = do
             Pandoc.processCitations $
               Pandoc.setMeta "references" references doc
 
-      -- getAgdaLinkFixer <- newCache $ \project -> do
-      let getAgdaLinkFixer = \project -> do
-            let localAgdaLibraries = getLocalAgdaLibrariesForProject project
-            Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
+      getAgdaLinkFixer <- newCache $ \project -> do
+        let localAgdaLibraries = getLocalAgdaLibrariesForProject project
+        Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
