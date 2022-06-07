@@ -376,8 +376,7 @@ main = do
 
       -- Build assets/css/highlight.css
       outDir </> "assets/css/highlight.css" %> \out -> do
-        let css = Text.pack (Pandoc.styleToCss highlightStyle)
-        return css
+        return highlightCss
           >>= CSS.minifyCSS
           >>= writeFile' out
 
@@ -453,21 +452,26 @@ main = do
                     <> mconcat sections
           return partDoc
 
-        -- Get title page
-        titlePageDoc <-
-          readFile' (epubDir </> "epub-titlepage.md")
-            >>= Pandoc.markdownToPandoc
+        -- Get metadata
+        defaultMetadata <- getDefaultMetadata ()
+        title <- failOnError $ defaultMetadata ^. "pagetitle"
+        author <- fmap authorName <$> getAuthors ()
+        rights <- failOnError $ defaultMetadata ^. "license.name"
 
         -- Compose book
         bookDoc <-
-          return (titlePageDoc <> Builder.doc (mconcat parts))
+          return (Builder.doc (mconcat parts))
             >>= processCitations
+            <&> Pandoc.setMeta "title" (Builder.str title)
+            <&> Pandoc.setMeta "author" author
+            <&> Pandoc.setMeta "rights" (Builder.str rights)
             <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
+            <&> Pandoc.setMeta "highlighting-css" highlightCss
 
         -- Set writer options
         epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
         epubFonts <- getDirectoryFiles "" [epubFontsDir </> "*.ttf"]
-        epubTemplate <- getTemplateFile (epubDir </> "epub.html")
+        epubTemplate <- Pandoc.compileTemplateFile (epubDir </> "templates" </> "epub.html")
 
         let writerOptsForEpub =
               writerOpts
@@ -490,7 +494,7 @@ main = do
       -- Build epub metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         defaultMetadata <- getDefaultMetadata ()
-        readFile' (epubDir </> "epub-metadata.xml")
+        readFile' (epubDir </> "templates" </> "epub-metadata.xml")
           >>= Pandoc.applyAsTemplate defaultMetadata
           >>= writeFile' out
 
@@ -694,6 +698,9 @@ writerOpts =
 
 highlightStyle :: HighlightStyle
 highlightStyle = Pandoc.pygments
+
+highlightCss :: Text
+highlightCss = Text.pack $ Pandoc.styleToCss highlightStyle
 
 --------------------------------------------------------------------------------
 -- Helper functions

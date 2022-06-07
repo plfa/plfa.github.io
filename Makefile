@@ -44,7 +44,7 @@ endif
 SHAKE_ARGS += -j
 SHAKE_ARGS += -V
 SHAKE_ARGS += --lint
-SHAKE_ARGS += --profile=$(TMP_DIR)
+SHAKE_ARGS += --profile=$(TMP_DIR)/report.html
 SHAKE_ARGS += --timing
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
