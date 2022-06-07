@@ -51,14 +51,16 @@ legacyDir = dataDir </> "legacy"
 tableOfContentsFile = dataDir </> "tableOfContents.yml"
 bibliographyFile = dataDir </> "bibliography.bib"
 
-chapterDir, courseDir :: FilePath
+bookDir, chapterDir, courseDir :: FilePath
+bookDir = "book"
 chapterDir = "src"
 courseDir = "courses"
 
-epubDir, epubFontsDir, epubStyleDir :: FilePath
-epubDir = "epub"
+epubDir, epubFontsDir, epubStyleDir, epubTemplateDir :: FilePath
+epubDir = bookDir </> "epub"
 epubFontsDir = epubDir </> "fonts"
 epubStyleDir = epubDir </> "sass"
+epubTemplateDir = epubTemplateDir
 
 webDir, webAssetDir, webPostDir, webStyleDir, webTemplateDir :: FilePath
 webDir = "web"
@@ -471,7 +473,7 @@ main = do
         -- Set writer options
         epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
         epubFonts <- getDirectoryFiles "" [epubFontsDir </> "*.ttf"]
-        epubTemplate <- Pandoc.compileTemplateFile (epubDir </> "templates" </> "epub.html")
+        epubTemplate <- Pandoc.compileTemplateFile (epubTemplateDir </> "epub.html")
 
         let writerOptsForEpub =
               writerOpts
@@ -494,7 +496,7 @@ main = do
       -- Build epub metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         defaultMetadata <- getDefaultMetadata ()
-        readFile' (epubDir </> "templates" </> "epub-metadata.xml")
+        readFile' (epubTemplateDir </> "epub-metadata.xml")
           >>= Pandoc.applyAsTemplate defaultMetadata
           >>= writeFile' out
 
