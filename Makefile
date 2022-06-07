@@ -44,7 +44,7 @@ endif
 SHAKE_ARGS += -j
 SHAKE_ARGS += -V
 SHAKE_ARGS += --lint
-SHAKE_ARGS += --profile=$(TMP_DIR)/report.html
+SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
 SHAKE_ARGS += --timing
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
@@ -190,6 +190,21 @@ test-epubcheck: check-epubcheck
 	@$(EPUBCHECK) $(EPUBCHECK_ARGS)
 
 
+# Ace by Daisy
+
+ACE ?= $(wildcard $(shell which ace))
+
+ACE_ARGS += --lang=en
+ACE_ARGS += --tempdir=$(TMP_DIR)/ace
+ACE_ARGS += --outdir=$(TMP_DIR)/ace
+ACE_ARGS += $(OUT_DIR)/plfa.epub
+
+.PHONY: test-ace
+test-ace: check-ace
+	@echo "Checking plfa.epub..."
+	@$(ACE) $(ACE_ARGS)
+	@echo "See report: $(TMP_DIR)/ace/report.html"
+
 ########################################
 # Dependencies
 ########################################
@@ -224,6 +239,12 @@ endif
 ifeq (,$(HTML_VALIDATE))
 check-html-validate: check-node
 	@$(eval HTML_VALIDATE := npm_config_yes=true npx html-validate)
+endif
+
+.PHONY: check-ace
+ifeq (,$(ACE))
+check-ace: check-node
+	@$(eval ACE := npm_config_yes=true npx @daisy/ace)
 endif
 
 .PHONY: check-node
