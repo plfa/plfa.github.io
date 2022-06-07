@@ -68,8 +68,8 @@ jobs:
       - name: Build website
         run: make build
 
-      - name: Test website
-        run: make test
+      # - name: Test website
+      #   run: make test
                 
       # - name: Deploy website
       #   uses: JamesIves/github-pages-deploy-action@v4.2.5
