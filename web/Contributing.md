@@ -3,10 +3,6 @@ title     : "Instructions for various tasks"
 permalink : /Contributing/
 ---
 
-## How to add a citation
-
-You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`. For instance, the first release of PLFA was by @plfa19.08. See the [Bibliography](#bibliography) section below for the bibliography. Citations and the bibliography are currently styled according to the ISO-690 standard. Other styles can easily be found using the [Zotero Style Repository][Zotero]. The citation keys are cross-referenced with the BibTeX file under `bib/plfa.bib`.
-
 
 ## How to publish the current version of PLFA to the web
 
@@ -58,6 +54,10 @@ Then, we need to make sure that the release is published to live versions of PLF
 - [ ] Wait for your changes to be propagated to the live version.
 
 The first two releases, 19.08 and 20.07, are included in the `dev` branch of the repository under `data/legacy/`, because these versions do not use relative URLs, and as such cannot simply be moved into a subdirectory. Later releases should use relative URLs, and therefore can simply be downloaded from GitHub, and copied into their appropriate subdirectories.
+
+## How to add a citation
+
+You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`. For instance, the first release of PLFA was by @plfa19.08. See the [Bibliography](#bibliography) section below for the bibliography. Citations and the bibliography are currently styled according to the ISO-690 standard. Other styles can easily be found using the [Zotero Style Repository][Zotero]. The citation keys are cross-referenced with the BibTeX file under `bib/plfa.bib`.
 
 ## References
 
