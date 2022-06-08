@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - shoggoth
+      - dev
   pull_request:
     types:
       - opened
@@ -18,10 +18,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macOS-latest]
+        os: [macOS-latest, ubuntu-latest]
         ghc: ["8.10.7"]
-        node: ["14"]
-        cabal: ["3.6.2.0"]
+        node: ["16", "latest"]
+        cabal: ["3.6", "latest"]
 
     steps:
       - name: Checkout
@@ -30,12 +30,12 @@ jobs:
           submodules: 'true'
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
       - name: Setup Haskell
-        uses: haskell/actions/setup@v1
+        uses: haskell/actions/setup@v2
         id: setup-haskell
         with:
           ghc-version: ${{ matrix.ghc }}
@@ -68,8 +68,8 @@ jobs:
       - name: Build website
         run: make build
 
-      # - name: Test website
-      #   run: make test
+      - name: Test website
+        run: make test
                 
       # - name: Deploy website
       #   uses: JamesIves/github-pages-deploy-action@v4.2.5
