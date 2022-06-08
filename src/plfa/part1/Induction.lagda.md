@@ -1,12 +1,11 @@
 ---
 title     : "Induction: Proof by Induction"
-layout    : page
 prev      : /Naturals/
 permalink : /Induction/
 next      : /Relations/
 ---
 
-```
+```agda
 module plfa.part1.Induction where
 ```
 
@@ -25,7 +24,7 @@ _induction_.
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
 `cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
@@ -94,8 +93,7 @@ Here `m`, `n`, and `p` are variables that range over all natural numbers.
 
 We can test the proposition by choosing specific numbers for the three
 variables:
-```
-
+```agda
 _ : (3 + 4) + 5 ≡ 3 + (4 + 5)
 _ =
   begin
@@ -225,7 +223,7 @@ If we can demonstrate both of these, then associativity of addition
 follows by induction.
 
 Here is the proposition's statement and proof:
-```
+```agda
 +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc zero n p =
   begin
@@ -321,7 +319,7 @@ As a concrete example of how induction corresponds to recursion, here
 is the computation that occurs when instantiating `m` to `2` in the
 proof of associativity.
 
-```
+```agda
 +-assoc-2 : ∀ (n p : ℕ) → (2 + n) + p ≡ 2 + (n + p)
 +-assoc-2 n p =
   begin
@@ -403,7 +401,7 @@ Our first lemma states that zero is also a right-identity:
     m + zero ≡ m
 
 Here is the lemma's statement and proof:
-```
+```agda
 +-identityʳ : ∀ (m : ℕ) → m + zero ≡ m
 +-identityʳ zero =
   begin
@@ -470,7 +468,7 @@ Our second lemma does the same for `suc` on the second argument:
     m + suc n ≡ suc (m + n)
 
 Here is the lemma's statement and proof:
-```
+```agda
 +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
 +-suc zero n =
   begin
@@ -532,7 +530,7 @@ yield the needed equation.  This completes the second lemma.
 ### The proposition
 
 Finally, here is our proposition's statement and proof:
-```
+```agda
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
   begin
@@ -605,7 +603,7 @@ will suggest what lemmas to prove.
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
-```
+```agda
 +-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
 +-rearrange m n p q =
   begin 
@@ -705,7 +703,7 @@ Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
 [earlier](/Naturals/#finite-creation).
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -714,7 +712,7 @@ first four days using a finite story of creation, as
 There is more than one way to skin a cat.  Here is a second proof of
 associativity of addition in Agda, using `rewrite` rather than chains of
 equations:
-```
+```agda
 +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc′ zero    n p                          =  refl
 +-assoc′ (suc m) n p  rewrite +-assoc′ m n p  =  refl
@@ -754,7 +752,7 @@ not only chains of equations but also the need to invoke `cong`.
 
 Here is a second proof of commutativity of addition, using `rewrite` rather than
 chains of equations:
-```
+```agda
 +-identity′ : ∀ (n : ℕ) → n + zero ≡ n
 +-identity′ zero = refl
 +-identity′ (suc n) rewrite +-identity′ n = refl
@@ -877,7 +875,7 @@ for all naturals `m`, `n`, and `p`. No induction is needed,
 just apply the previous results which show addition
 is associative and commutative.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -890,7 +888,7 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -903,7 +901,7 @@ Show multiplication is associative, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -917,7 +915,7 @@ Show multiplication is commutative, that is,
 for all naturals `m` and `n`.  As with commutativity of addition,
 you will need to formulate and prove suitable lemmas.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -930,7 +928,7 @@ Show
 
 for all naturals `n`. Did your proof require induction?
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -943,7 +941,7 @@ Show that monus associates with addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -983,7 +981,7 @@ over bitstrings:
 
 For each law: if it holds, prove; if not, give a counterexample.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -991,7 +989,7 @@ For each law: if it holds, prove; if not, give a counterexample.
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
-```
+```agda
 import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
 

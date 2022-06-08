@@ -1,12 +1,11 @@
 ---
 title     : "Subtyping: Records"
-layout    : page
 prev      : /More/
 permalink : /Subtyping/
 next      : /Bisimulation/
 ---
 
-```
+```agda
 module plfa.part2.Subtyping where
 ```
 
@@ -77,7 +76,7 @@ intrinsic terms.
 
 ## Imports
 
-```
+```agda
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elimi)
 open import Data.Fin using (Fin; zero; suc)
@@ -102,7 +101,7 @@ open import Relation.Nullary using (Dec; yes; no; ¬_)
 The syntax includes that of the STLC with a few additions regarding
 records that we explain in the following sections.
 
-```
+```agda
 infixl 5 _,_
 infix 4 _⊆_
 infix 5 _<:_
@@ -130,7 +129,7 @@ infix 2 _—→_
 
 We represent field names as strings.
 
-```
+```agda
 Name : Set
 Name = String
 ```
@@ -161,14 +160,14 @@ vector of types.
 
 The field names of a record type must be distinct, which we define as
 follows.
-```
+```agda
 distinct : ∀{A : Set}{n} → Vec A n → Set
 distinct [] = ⊤
 distinct (x ∷ xs) = ¬ (x ∈ xs) × distinct xs
 ```
 
 For vectors of distinct elements, lookup is injective.
-```
+```agda
 distinct-lookup-inj : ∀ {n}{ls : Vec Name n}{i j : Fin n}
    → distinct ls  →  lookup ls i ≡ lookup ls j
    → i ≡ j
@@ -186,7 +185,7 @@ relevant one. In general, the laundering of irrelevant proofs into
 relevant ones is easy to do when the predicate in question is
 decidable. The following is a decision procedure for whether a vector
 is distinct.
-```
+```agda
 distinct? : ∀{n} → (xs : Vec Name n) → Dec (distinct xs)
 distinct? [] = yes tt
 distinct? (x ∷ xs)
@@ -201,7 +200,7 @@ distinct? (x ∷ xs)
 With this decision procedure in hand, we define the following
 function for laundering irrelevant proofs of distinctness into
 relevant ones.
-```
+```agda
 distinct-relevant : ∀ {n}{fs : Vec Name n} .(d : distinct fs) → distinct fs
 distinct-relevant {n}{fs} d
     with distinct? fs
@@ -211,13 +210,13 @@ distinct-relevant {n}{fs} d
 
 The fields of one record are a *subset* of the fields of another
 record if every field of the first is also a field of the second.
-```
+```agda
 _⊆_ : ∀{n m} → Vec Name n → Vec Name m → Set
 xs ⊆ ys = (x : Name) → x ∈ xs → x ∈ ys
 ```
 
 This subset relation is reflexive and transitive.
-```
+```agda
 ⊆-refl : ∀{n}{ls : Vec Name n} → ls ⊆ ls
 ⊆-refl {n}{ls} = λ x x∈ls → x∈ls
 
@@ -228,7 +227,7 @@ This subset relation is reflexive and transitive.
 
 If `y` is an element of vector `xs`, then `y` is at some index `i` of
 the vector.
-```
+```agda
 lookup-∈ : ∀{ℓ}{A : Set ℓ}{n} {xs : Vec A n}{y}
    → y ∈ xs
    → Σ[ i ∈ Fin n ] lookup xs i ≡ y
@@ -240,7 +239,7 @@ lookup-∈ {xs = x ∷ xs} (there y∈xs)
 
 If one vector `ns` is a subset of another `ms`, then for any element
 `lookup ns i`, there is an equal element in `ms` at some index.
-```
+```agda
 lookup-⊆ : ∀{n m : ℕ}{ns : Vec Name n}{ms : Vec Name m}{i : Fin n}
    → ns ⊆ ms
    → Σ[ k ∈ Fin m ] lookup ns i ≡ lookup ms k
@@ -254,7 +253,7 @@ lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
 
 ## Types
 
-```
+```agda
 data Type : Set where
   _⇒_   : Type → Type → Type
   `ℕ    : Type
@@ -277,7 +276,7 @@ cast is allowed via the subsumption rule. The following data type
 definition specifies the subtyping rules for natural numbers,
 functions, and record types. We discuss each rule below.
 
-```
+```agda
 data _<:_ : Type → Type → Set where
   <:-nat : `ℕ <: `ℕ
 
@@ -319,7 +318,7 @@ The second premise of the record subtyping rule (`<:-rcd`) expresses
 _depth subtyping_, that is, it allows the types of the fields to
 change according to subtyping. The following is an abbreviation for
 this premise.
-```
+```agda
 _⦂_<:_⦂_ : ∀ {m n} → Vec Name m → Vec Type m → Vec Name n → Vec Type n → Set
 _⦂_<:_⦂_ {m}{n} ks Ss ls Ts = (∀{i : Fin n}{j : Fin m}
     → lookup ks j ≡ lookup ls i  →  lookup Ss j <: lookup Ts i)
@@ -332,7 +331,7 @@ A` for any type `A`. The proof does not go by induction on the type
 `A` because of the `<:-rcd` rule. We instead use induction on the size
 of the type. So we first define size of a type, and the size of a
 vector of types, as follows.
-```
+```agda
 ty-size : (A : Type) → ℕ
 vec-ty-size : ∀ {n : ℕ} → (As : Vec Type n) → ℕ
 
@@ -344,7 +343,7 @@ vec-ty-size {n} (x ∷ xs) = ty-size x + vec-ty-size xs
 ```
 
 The size of a type is always positive.
-```
+```agda
 ty-size-pos : ∀ {A} → 0 < ty-size A
 ty-size-pos {A ⇒ B} = s≤s z≤n
 ty-size-pos {`ℕ} = s≤s z≤n
@@ -352,7 +351,7 @@ ty-size-pos {｛ fs ⦂ As ｝ } = s≤s z≤n
 ```
 
 The size of a type in a vector is less-or-equal in size to the entire vector.
-```
+```agda
 lookup-vec-ty-size : ∀{k} {As : Vec Type k} {j}
    → ty-size (lookup As j) ≤ vec-ty-size As
 lookup-vec-ty-size {suc k} {A ∷ As} {zero} = m≤m+n _ _
@@ -360,7 +359,7 @@ lookup-vec-ty-size {suc k} {A ∷ As} {suc j} = ≤-trans (lookup-vec-ty-size {k
 ```
 
 Here is the proof of reflexivity, by induction on the size of the type.
-```
+```agda
 <:-refl-aux : ∀{n}{A}{m : ty-size A ≤ n} → A <: A
 <:-refl-aux {0}{A}{m}
     with ty-size-pos {A}
@@ -400,14 +399,14 @@ and proceeds by induction on `n`.
     is one smaller than the size of `｛ ls ⦂ As ｝`.
 
 The following corollary packages up reflexivity for ease of use.
-```
+```agda
 <:-refl : ∀{A} → A <: A
 <:-refl {A} = <:-refl-aux {ty-size A}{A}{≤-refl}
 ```
 
 ## Subtyping is transitive
 
-```
+```agda
 <:-trans : ∀{A B C}
     → A <: B   →   B <: C
       -------------------
@@ -462,7 +461,7 @@ The proof is by induction on the derivations of `A <: B` and `B <: C`.
 We choose to represent variables with de Bruijn indices, so contexts
 are sequences of types.
 
-```
+```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
@@ -473,7 +472,7 @@ data Context : Set where
 The lookup judgment is a three-place relation, with a context, a de
 Bruijn index, and a type.
 
-```
+```agda
 data _∋_⦂_ : Context → ℕ → Type → Set where
 
   Z : ∀ {Γ A}
@@ -497,7 +496,7 @@ data _∋_⦂_ : Context → ℕ → Type → Set where
 As mentioned above, variables are de Bruijn indices, which we
 represent with natural numbers.
 
-```
+```agda
 Id : Set
 Id = ℕ
 ```
@@ -507,7 +506,7 @@ the one in the [Lambda](/Lambda/) chapter, but adapted for de
 Bruijn indices.  The two new term constructors are for record creation
 and field access.
 
-```
+```agda
 data Term : Set where
   `_                      : Id → Term
   ƛ_                      : Term → Term
@@ -526,7 +525,7 @@ the *field initializers*.
 The typing judgment takes the form `Γ ⊢ M ⦂ A` and relies on an
 auxiliary judgment `Γ ⊢* Ms ⦂ As` for typing a vector of terms.
 
-```
+```agda
 data _⊢*_⦂_ : Context → ∀ {n} → Vec Term n → Vec Type n → Set
 
 data _⊢_⦂_ : Context → Term → Type → Set where
@@ -621,7 +620,7 @@ section and postpone `subst-pres` to the
 [Preservation](#subtyping-preservation) section.  Likewise for `rename`.
 
 We begin by defining the `ext` function on renamings.
-```
+```agda
 ext : (Id → Id) → (Id → Id)
 ext ρ 0      =  0
 ext ρ (suc x)  =  suc (ρ x)
@@ -629,7 +628,7 @@ ext ρ (suc x)  =  suc (ρ x)
 
 The `rename` function is defined mutually with the auxiliary
 `rename-vec` function, which is needed in the case for records.
-```
+```agda
 rename-vec : (Id → Id) → ∀{n} → Vec Term n → Vec Term n
 
 rename : (Id → Id) → (Term → Term)
@@ -650,7 +649,7 @@ rename-vec ρ (M ∷ Ms) = rename ρ M ∷ rename-vec ρ Ms
 
 With the `rename` function in hand, we can define the `exts` function
 on substitutions.
-```
+```agda
 exts : (Id → Term) → (Id → Term)
 exts σ 0      =  ` 0
 exts σ (suc x)  =  rename suc (σ x)
@@ -658,7 +657,7 @@ exts σ (suc x)  =  rename suc (σ x)
 
 We define `subst` mutually with the auxiliary `subst-vec` function,
 which is needed in the case for records.
-```
+```agda
 subst-vec : (Id → Term) → ∀{n} → Vec Term n → Vec Term n
 
 subst : (Id → Term) → (Term → Term)
@@ -679,7 +678,7 @@ subst-vec σ (M ∷ Ms) = (subst σ M) ∷ (subst-vec σ Ms)
 
 As usual, we implement single substitution using simultaneous
 substitution.
-```
+```agda
 subst-zero : Term → Id → Term
 subst-zero M 0       =  M
 subst-zero M (suc x) =  ` x
@@ -695,7 +694,7 @@ In a call-by-value language, a record is usually only considered a
 value if all its field initializers are values. Here we instead treat
 records in a lazy fashion, declaring any record to be a value, to save
 on some extra bookkeeping.
-```
+```agda
 data Value : Term → Set where
 
   V-ƛ : ∀ {N}
@@ -721,7 +720,7 @@ The following datatype `_—→_` defines the reduction relation for the
 STLC with records. We discuss the two new rules for records in the
 following paragraph.
 
-```
+```agda
 data _—→_ : Term → Term → Set where
 
   ξ-·₁ : ∀ {L L′ M : Term}
@@ -788,7 +787,7 @@ As in the [Properties](/Properties/) chapter, we
 define a `Canonical V ⦂ A` relation that characterizes the well-typed
 values.  The presence of the subsumption rule impacts its definition
 because we must allow the type of the value `V` to be a subtype of `A`.
-```
+```agda
 data Canonical_⦂_ : Term → Type → Set where
 
   C-ƛ : ∀ {N A B C D}
@@ -814,7 +813,7 @@ data Canonical_⦂_ : Term → Type → Set where
 ```
 
 Every closed, well-typed value is canonical:
-```
+```agda
 canonical : ∀ {V A}
   → ∅ ⊢ V ⦂ A
   → Value V
@@ -856,7 +855,7 @@ cases on the derivation of subtyping.
 
 
 If a term is canonical, then it is also a value.
-```
+```agda
 value : ∀ {M A}
   → Canonical M ⦂ A
     ----------------
@@ -868,7 +867,7 @@ value (C-rcd _ _ _) = V-rcd
 ```
 
 A canonical value is a well-typed value.
-```
+```agda
 typed : ∀ {V A}
   → Canonical V ⦂ A
     ---------------
@@ -888,7 +887,7 @@ proceeds by induction on the typing derivation and most of the cases
 remain the same. Below we discuss the new cases for records and
 subsumption.
 
-```
+```agda
 data Progress (M : Term) : Set where
 
   step : ∀ {N}
@@ -902,7 +901,7 @@ data Progress (M : Term) : Set where
     → Progress M
 ```
 
-```
+```agda
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     ----------
@@ -966,14 +965,14 @@ proofs of these lemmas are adapted from the intrinsic versions of the
 We define the following abbreviation for a *well-typed renaming* from Γ
 to Δ, that is, a renaming that sends variables in Γ to variables in Δ
 with the same type.
-```
+```agda
 _⦂ᵣ_⇒_ : (Id → Id) → Context → Context → Set
 ρ ⦂ᵣ Γ ⇒ Δ = ∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ ρ x ⦂ A
 ```
 
 The `ext` function takes a well-typed renaming from Γ to Δ
 and extends it to become a renaming from (Γ , B) to (Δ , B).
-```
+```agda
 ext-pres : ∀ {Γ Δ ρ B}
   → ρ ⦂ᵣ Γ ⇒ Δ
     --------------------------------
@@ -985,7 +984,7 @@ ext-pres {ρ = ρ } ρ⦂ (S {x = x} ∋x) =  S (ρ⦂ ∋x)
 Next we prove that both `rename` and `rename-vec` preserve types.  We
 use the `ext-pres` lemma in each of the cases with a variable binding: `⊢ƛ`,
 `⊢μ`, and `⊢case`.
-```
+```agda
 ren-vec-pres : ∀ {Γ Δ ρ}{n}{Ms : Vec Term n}{As : Vec Type n}
   → ρ ⦂ᵣ Γ ⇒ Δ  →  Γ ⊢* Ms ⦂ As  →  Δ ⊢* rename-vec ρ Ms ⦂ As
 
@@ -1014,7 +1013,7 @@ ren-vec-pres {ρ = ρ} ρ⦂ (⊢*-∷ ⊢M ⊢Ms) =
 
 A *well-typed substitution* from Γ to Δ sends variables in Γ to terms
 of the same type in the context Δ.
-```
+```agda
 _⦂_⇒_ : (Id → Term) → Context → Context → Set
 σ ⦂ Γ ⇒ Δ = ∀ {A x} → Γ ∋ x ⦂ A → Δ ⊢ subst σ (` x) ⦂ A
 ```
@@ -1025,7 +1024,7 @@ we note that `exts σ (suc x) ≡ rename sub (σ x)`, so we need to prove
 `Δ , B ⊢ rename suc (σ x) ⦂ A`, which we obtain by the `rename-pres`
 lemma.
 
-```
+```agda
 exts-pres : ∀ {Γ Δ σ B}
   → σ ⦂ Γ ⇒ Δ
     --------------------------------
@@ -1037,7 +1036,7 @@ exts-pres {σ = σ} σ⦂ (S {x = x} ∋x) = rename-pres {ρ = suc} S (σ⦂ ∋
 Now we prove that both `subst` and `subst-vec` preserve types.  We use
 the `exts-pres` lemma in each of the cases with a variable binding:
 `⊢ƛ`, `⊢μ`, and `⊢case`.
-```
+```agda
 subst-vec-pres : ∀ {Γ Δ σ}{n}{Ms : Vec Term n}{A}
   → σ ⦂ Γ ⇒ Δ  →  Γ ⊢* Ms ⦂ A  →  Δ ⊢* subst-vec σ Ms ⦂ A
 
@@ -1066,7 +1065,7 @@ subst-vec-pres {σ = σ} σ⦂ (⊢*-∷ ⊢M ⊢Ms) =
 
 The fact that single substitution preserves types is a corollary
 of `subst-pres`.
-```
+```agda
 substitution : ∀{Γ A B M N}
    → Γ ⊢ M ⦂ A
    → (Γ , A) ⊢ N ⦂ B
@@ -1082,7 +1081,7 @@ substitution {Γ}{A}{B}{M}{N} ⊢M ⊢N = subst-pres {σ = subst-zero M} G ⊢N
 
 We require just one last lemma before we get to the proof of preservation.
 The following lemma establishes that field access preserves types.
-```
+```agda
 field-pres : ∀{n}{As : Vec Type n}{A}{Ms : Vec Term n}{i : Fin n}
          → ∅ ⊢* Ms ⦂ As
          → lookup As i ≡ A
@@ -1104,7 +1103,7 @@ The proof is by induction on the typing derivation.
 We conclude this chapter with the proof of preservation. We discuss
 the cases particular to records and subtyping in the paragraph
 following the Agda proof.
-```
+```agda
 preserve : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
   → M —→ N

@@ -1,6 +1,5 @@
 ---
 title     : "SmallInherent"
-layout    : page
 permalink : /SmallInherent/
 ---
 
@@ -111,7 +110,7 @@ subst σ (L · M)        =  (subst σ L) · (subst σ M)
 
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
-        → Γ ⊢ B 
+        → Γ ⊢ B
           ---------
         → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N

@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "browser-sync": "^2.27.7",
+    "feed-validator": "^1.1.1",
+    "html-validate": "^6.2.0"
+  },
+  "dependencies": {
+    "html-minifier": "^4.0.0"
+  }
+}

@@ -1,12 +1,11 @@
 ---
 title     : "Denotational: Denotational semantics of untyped lambda calculus"
-layout    : page
 prev      : /BigStep/
 permalink : /Denotational/
 next      : /Compositional/
 ---
 
-```
+```agda
 module plfa.part3.Denotational where
 ```
 
@@ -54,7 +53,7 @@ down a denotational semantics of the lambda calculus.
 
 ## Imports
 
-```
+```agda
 open import Agda.Primitive using (lzero; lsuc)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -90,7 +89,7 @@ either a single mapping or the empty set.
     outputs according to both `v` and `w`.  Think of it as taking the
     union of the two sets.
 
-```
+```agda
 infixr 7 _↦_
 infixl 5 _⊔_
 
@@ -105,7 +104,7 @@ type. This relation plays the key role in enabling self-application.
 There are two rules that are specific to functions, `⊑-fun` and `⊑-dist`,
 which we discuss below.
 
-```
+```agda
 infix 4 _⊑_
 
 data _⊑_ : Value → Value → Set where
@@ -158,7 +157,7 @@ outputs.
 
 The `⊑` relation is reflexive.
 
-```
+```agda
 ⊑-refl : ∀ {v} → v ⊑ v
 ⊑-refl {⊥} = ⊑-bot
 ⊑-refl {v ↦ v′} = ⊑-fun ⊑-refl ⊑-refl
@@ -168,7 +167,7 @@ The `⊑` relation is reflexive.
 The `⊔` operation is monotonic with respect to `⊑`, that is, given two
 larger values it produces a larger value.
 
-```
+```agda
 ⊔⊑⊔ : ∀ {v w v′ w′}
   → v ⊑ v′  →  w ⊑ w′
     -----------------------
@@ -181,7 +180,7 @@ input values are not identical. One can first combine the two inputs
 using ⊔ and then apply the `⊑-dist` rule to obtain the following
 property.
 
-```
+```agda
 ⊔↦⊔-dist : ∀{v v′ w w′ : Value}
   → (v ⊔ v′) ↦ (w ⊔ w′) ⊑ (v ↦ w) ⊔ (v′ ↦ w′)
 ⊔↦⊔-dist = ⊑-trans ⊑-dist (⊔⊑⊔ (⊑-fun (⊑-conj-R1 ⊑-refl) ⊑-refl)
@@ -195,7 +194,7 @@ property.
 If the join `u ⊔ v` is less than another value `w`,
 then both `u` and `v` are less than `w`.
 
-```
+```agda
 ⊔⊑-invL : ∀{u v w : Value}
   → u ⊔ v ⊑ w
     ---------
@@ -221,13 +220,13 @@ then both `u` and `v` are less than `w`.
 An environment gives meaning to the free variables in a term by
 mapping variables to values.
 
-```
+```agda
 Env : Context → Set
 Env Γ = ∀ (x : Γ ∋ ★) → Value
 ```
 
 We have the empty environment, and we can extend an environment.
-```
+```agda
 `∅ : Env ∅
 `∅ ()
 
@@ -240,7 +239,7 @@ _`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
 
 We can recover the previous environment from an extended environment,
 and the last value. Putting them together again takes us back to where we started.
-```
+```agda
 init : ∀ {Γ} → Env (Γ , ★) → Env Γ
 init γ x = γ (S x)
 
@@ -257,7 +256,7 @@ init-last {Γ} γ = extensionality lemma
 We extend the `⊑` relation point-wise to environments with the
 following definition.
 
-```
+```agda
 _`⊑_ : ∀ {Γ} → Env Γ → Env Γ → Set
 _`⊑_ {Γ} γ δ = ∀ (x : Γ ∋ ★) → γ x ⊑ δ x
 ```
@@ -265,7 +264,7 @@ _`⊑_ {Γ} γ δ = ∀ (x : Γ ∋ ★) → γ x ⊑ δ x
 We define a bottom environment and a join operator on environments,
 which takes the point-wise join of their values.
 
-```
+```agda
 `⊥ : ∀ {Γ} → Env Γ
 `⊥ x = ⊥
 
@@ -277,7 +276,7 @@ The `⊑-refl`, `⊑-conj-R1`, and `⊑-conj-R2` rules lift to environments.  So
 the join of two environments `γ` and `δ` is greater than the first
 environment `γ` or the second environment `δ`.
 
-```
+```agda
 `⊑-refl : ∀ {Γ} {γ : Env Γ} → γ `⊑ γ
 `⊑-refl {Γ} {γ} x = ⊑-refl {γ x}
 
@@ -297,7 +296,7 @@ quite natural, but don't let the similarity fool you.  There are
 subtle but important differences! So here is the definition of the
 semantics, which we discuss in detail in the following paragraphs.
 
-```
+```agda
 infix 3 _⊢_↓_
 
 data _⊢_↓_ : ∀{Γ} → Env Γ → (Γ ⊢ ★) → Value → Set where
@@ -341,12 +340,12 @@ environment with `v` bound to its parameter produces the output `w`.
 As a simple example of this rule, we can see that the identity function
 maps `⊥` to `⊥` and also that it maps `⊥ ↦ ⊥` to `⊥ ↦ ⊥`.
 
-```
+```agda
 id : ∅ ⊢ ★
 id = ƛ # 0
 ```
 
-```
+```agda
 denot-id1 : ∀ {γ} → γ ⊢ id ↓ ⊥ ↦ ⊥
 denot-id1 = ↦-intro var
 
@@ -367,7 +366,7 @@ In the following we show that the identity function produces a table
 containing both of the previous results, `⊥ ↦ ⊥` and
 `(⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)`.
 
-```
+```agda
 denot-id3 : `∅ ⊢ id ↓ (⊥ ↦ ⊥) ⊔ (⊥ ↦ ⊥) ↦ (⊥ ↦ ⊥)
 denot-id3 = ⊔-intro denot-id1 denot-id2
 ```
@@ -393,7 +392,7 @@ the identity function to itself.  Indeed, we have both that
 `∅ ⊢ id ↓ (u ↦ u) ↦ (u ↦ u)` and also `∅ ⊢ id ↓ (u ↦ u)`, so we can
 apply the rule `↦-elim`.
 
-```
+```agda
 id-app-id : ∀ {u : Value} → `∅ ⊢ id · id ↓ (u ↦ u)
 id-app-id {u} = ↦-elim (↦-intro var) (↦-intro var)
 ```
@@ -411,7 +410,7 @@ using the `sub` rule.  In particular, we use the ⊑-conj-R1 and
 and parameter `u`, and it returns `w`.  Indeed we derive this as
 follows.
 
-```
+```agda
 denot-twoᶜ : ∀{u v w : Value} → `∅ ⊢ twoᶜ ↓ ((u ↦ v ⊔ v ↦ w) ↦ u ↦ w)
 denot-twoᶜ {u}{v}{w} =
   ↦-intro (↦-intro (↦-elim (sub var lt1) (↦-elim (sub var lt2) var)))
@@ -431,7 +430,7 @@ output of `Δ` is `w`. The derivation is given below.  The first occurrences
 of `x` evaluates to `v ↦ w`, the second occurrence of `x` evaluates to `v`,
 and then the result of the application is `w`.
 
-```
+```agda
 Δ : ∅ ⊢ ★
 Δ = (ƛ (# 0) · (# 0))
 
@@ -455,7 +454,7 @@ whenever we can show that a program evaluates to two values, we can apply
 matches the input of the first occurrence of `Δ`, so we can conclude that
 the result of the application is `⊥`.
 
-```
+```agda
 Ω : ∅ ⊢ ★
 Ω = Δ · Δ
 
@@ -466,7 +465,7 @@ denot-Ω = ↦-elim denot-Δ (⊔-intro (↦-intro ⊥-intro) ⊥-intro)
 A shorter derivation of the same result is by just one use of the
 `⊥-intro` rule.
 
-```
+```agda
 denot-Ω' : `∅ ⊢ Ω ↓ ⊥
 denot-Ω' = ⊥-intro
 ```
@@ -485,7 +484,7 @@ Instead, the `↦-elim` rule seems to require an exact match.  However,
 because of the `sub` rule, application really does allow larger
 arguments.
 
-```
+```agda
 ↦-elim2 : ∀ {Γ} {γ : Env Γ} {M₁ M₂ v₁ v₂ v₃}
   → γ ⊢ M₁ ↓ (v₁ ↦ v₃)
   → γ ⊢ M₂ ↓ v₂
@@ -501,7 +500,7 @@ What is a denotation for `plusᶜ`? That is, find a value `v` (other than `⊥`)
 such that `∅ ⊢ plusᶜ ↓ v`. Also, give the proof of `∅ ⊢ plusᶜ ↓ v`
 for your choice of `v`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -512,7 +511,7 @@ Next we define a notion of denotational equality based on the above
 semantics. Its statement makes use of an if-and-only-if, which we
 define as follows.
 
-```
+```agda
 _iff_ : Set → Set → Set
 P iff Q = (P → Q) × (Q → P)
 ```
@@ -521,7 +520,7 @@ Another way to view the denotational semantics is as a function that
 maps a term to a relation from environments to values.  That is, the
 _denotation_ of a term is a relation from environments to values.
 
-```
+```agda
 Denotation : Context → Set₁
 Denotation Γ = (Env Γ → Value → Set)
 ```
@@ -529,7 +528,7 @@ Denotation Γ = (Env Γ → Value → Set)
 The following function ℰ gives this alternative view of the semantics,
 which really just amounts to changing the order of the parameters.
 
-```
+```agda
 ℰ : ∀{Γ} → (M : Γ ⊢ ★) → Denotation Γ
 ℰ M = λ γ v → γ ⊢ M ↓ v
 ```
@@ -537,7 +536,7 @@ which really just amounts to changing the order of the parameters.
 In general, two denotations are equal when they produce the same
 values in the same environment.
 
-```
+```agda
 infix 3 _≃_
 
 _≃_ : ∀ {Γ} → (Denotation Γ) → (Denotation Γ) → Set
@@ -546,7 +545,7 @@ _≃_ : ∀ {Γ} → (Denotation Γ) → (Denotation Γ) → Set
 
 Denotational equality is an equivalence relation.
 
-```
+```agda
 ≃-refl : ∀ {Γ : Context} → {M : Denotation Γ}
   → M ≃ M
 ≃-refl γ v = ⟨ (λ x → x) , (λ x → x) ⟩
@@ -589,7 +588,7 @@ denotation-setoid Γ = record
   open import Relation.Binary.Reasoning.Setoid (denotation-setoid Γ)
     renaming (begin_ to start_; _≈⟨_⟩_ to _≃⟨_⟩_; _∎ to _☐) public
 -->
-```
+```agda
 
 module ≃-Reasoning {Γ : Context} where
 
@@ -713,7 +712,7 @@ renaming that maps variables in `γ` into variables with equal or
 larger values in `δ`. This lemmas says that extending the renaming
 producing a renaming `ext r` that maps `γ , v` to `δ , v`.
 
-```
+```agda
 ext-⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
   → γ `⊑ (δ ∘ ρ)
@@ -736,7 +735,7 @@ results in `v` when evaluated in environment `γ`, then applying the
 renaming to `M` produces a program that results in the same value `v` when
 evaluated in `δ`.
 
-```
+```agda
 rename-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
   → (ρ : Rename Γ Δ)
   → γ `⊑ (δ ∘ ρ)
@@ -778,7 +777,7 @@ function.  We apply the renaming lemma with the identity renaming,
 which gives us `δ ⊢ rename (λ {A} x → x) M ↓ v`, and then we apply the
 `rename-id` lemma to obtain `δ ⊢ M ↓ v`.
 
-```
+```agda
 ⊑-env : ∀ {Γ} {γ : Env Γ} {δ : Env Γ} {M v}
   → γ ⊢ M ↓ v
   → γ `⊑ δ
@@ -794,7 +793,7 @@ In the proof that substitution reflects denotations, in the case for
 lambda abstraction, we use a minor variation of `⊑-env`, in which just
 the last element of the environment gets larger.
 
-```
+```agda
 up-env : ∀ {Γ} {γ : Env Γ} {M v u₁ u₂}
   → (γ `, u₁) ⊢ M ↓ v
   → u₁ ⊑ u₂
@@ -816,7 +815,7 @@ order. The edges in the path map the ith vertex to the `i + 1` vertex.
 The following function `D^suc` (for denotation of successor) constructs
 a table whose entries are all the edges in the path.
 
-```
+```agda
 D^suc : (n : ℕ) → Vec Value (suc n) → Value
 D^suc zero (a[0] ∷ []) = ⊥
 D^suc (suc i) (a[i+1] ∷ a[i] ∷ ls) =  a[i] ↦ a[i+1]  ⊔  D^suc i (a[i] ∷ ls)
@@ -826,7 +825,7 @@ We use the following auxiliary function to obtain the last element of
 a non-empty vector. (This formulation is more convenient for our
 purposes than the one in the Agda standard library.)
 
-```
+```agda
 vec-last : ∀{n : ℕ} → Vec Value (suc n) → Value
 vec-last {0} (a ∷ []) = a
 vec-last {suc n} (a ∷ b ∷ ls) = vec-last (b ∷ ls)
@@ -835,7 +834,7 @@ vec-last {suc n} (a ∷ b ∷ ls) = vec-last (b ∷ ls)
 The function `Dᶜ` computes the denotation of the nth Church numeral
 for a given path.
 
-```
+```agda
 Dᶜ : (n : ℕ) → Vec Value (suc n) → Value
 Dᶜ n (a[n] ∷ ls) = (D^suc n (a[n] ∷ ls)) ↦ (vec-last (a[n] ∷ ls)) ↦ a[n]
 ```
@@ -860,7 +859,7 @@ To facilitate talking about arbitrary Church numerals, the following
 `church` function builds the term for the nth Church numeral,
 using the auxiliary function `apply-n`.
 
-```
+```agda
 apply-n : (n : ℕ) → ∅ , ★ , ★ ⊢ ★
 apply-n zero = # 0
 apply-n (suc n) = # 1 · apply-n n
@@ -874,7 +873,7 @@ Prove the following theorem.
     denot-church : ∀{n : ℕ}{ls : Vec Value (suc n)}
        → `∅ ⊢ church n ↓ Dᶜ n ls
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -908,7 +907,7 @@ other contexts one can instead think of `⊥` as the empty set, but here
 we must think of it as an element.)  We write `u ∈ v` to say that `u` is
 an element of `v`, as defined below.
 
-```
+```agda
 infix 5 _∈_
 
 _∈_ : Value → Value → Set
@@ -920,7 +919,7 @@ u ∈ (v ⊔ w) = u ∈ v ⊎ u ∈ w
 So we can represent a collection of values simply as a value.  We
 write `v ⊆ w` to say that all the elements of `v` are also in `w`.
 
-```
+```agda
 infix 5 _⊆_
 
 _⊆_ : Value → Value → Set
@@ -931,7 +930,7 @@ The notions of membership and inclusion for values are closely related
 to the less-than relation. They are narrower relations in that they
 imply the less-than relation but not the other way around.
 
-```
+```agda
 ∈→⊑ : ∀{u v : Value}
     → u ∈ v
       -----
@@ -956,7 +955,7 @@ We shall also need some inversion principles for value inclusion.  If
 the union of `u` and `v` is included in `w`, then of course both `u` and
 `v` are each included in `w`.
 
-```
+```agda
 ⊔⊆-inv : ∀{u v w : Value}
        → (u ⊔ v) ⊆ w
          ---------------
@@ -968,7 +967,7 @@ In our value representation, the function value `v ↦ w` is both an
 element and also a singleton set. So if `v ↦ w` is a subset of `u`,
 then `v ↦ w` must be a member of `u`.
 
-```
+```agda
 ↦⊆→∈ : ∀{v w u : Value}
      → v ↦ w ⊆ u
        ---------
@@ -984,7 +983,7 @@ predicates. We write `Fun u` if `u` is a function value, that is, if
 `u ≡ v ↦ w` for some values `v` and `w`. We write `all-funs v` if all the elements
 of `v` are functions.
 
-```
+```agda
 data Fun : Value → Set where
   fun : ∀{u v w} → u ≡ (v ↦ w) → Fun u
 
@@ -994,7 +993,7 @@ all-funs v = ∀{u} → u ∈ v → Fun u
 
 The value `⊥` is not a function.
 
-```
+```agda
 ¬Fun⊥ : ¬ (Fun ⊥)
 ¬Fun⊥ (fun ())
 ```
@@ -1003,7 +1002,7 @@ In our values-as-sets representation, our sets always include at least
 one element. Thus, if all the elements are functions, there is at
 least one that is a function.
 
-```
+```agda
 all-funs∈ : ∀{u}
       → all-funs u
       → Σ[ v ∈ Value ] Σ[ w ∈ Value ] v ↦ w ∈ u
@@ -1027,7 +1026,7 @@ To this end we define the following `⨆dom` and `⨆cod` functions.  Given some
 value `u` (that represents a set of entries), `⨆dom u` returns the join of
 their domains and `⨆cod u` returns the join of their codomains.
 
-```
+```agda
 ⨆dom : (u : Value) → Value
 ⨆dom ⊥  = ⊥
 ⨆dom (v ↦ w) = v
@@ -1043,7 +1042,7 @@ We need just one property each for `⨆dom` and `⨆cod`.  Given a collection of
 functions represented by value `u`, and an entry `v ↦ w ∈ u`, we know
 that `v` is included in the domain of `u`.
 
-```
+```agda
 ↦∈→⊆⨆dom : ∀{u v w : Value}
           → all-funs u  →  (v ↦ w) ∈ u
             ----------------------
@@ -1062,7 +1061,7 @@ Regarding `⨆cod`, suppose we have a collection of functions represented
 by `u`, but all of them are just copies of `v ↦ w`.  Then the `⨆cod u` is
 included in `w`.
 
-```
+```agda
 ⊆↦→⨆cod⊆ : ∀{u v w : Value}
         → u ⊆ v ↦ w
           ---------
@@ -1082,7 +1081,7 @@ _factors_ `u` into `u′` if `u′` is included in `u`, if `u′` contains only
 functions, its domain is less than `v`, and its codomain is greater
 than `w`.
 
-```
+```agda
 factor : (u : Value) → (u′ : Value) → (v : Value) → (w : Value) → Set
 factor u u′ v w = all-funs u′  ×  u′ ⊆ u  ×  ⨆dom u′ ⊑ v  ×  w ⊑ ⨆cod u′
 ```
@@ -1121,7 +1120,7 @@ With these facts in hand, we proceed by induction on `u′`
 to prove that `(⨆dom u′) ↦ (⨆cod u′)` factors `u₂` into `u₃`.
 We discuss each case of the proof in the text below.
 
-```
+```agda
 sub-inv-trans : ∀{u′ u₂ u : Value}
     → all-funs u′  →  u′ ⊆ u
     → (∀{v′ w′} → v′ ↦ w′ ∈ u → Σ[ u₃ ∈ Value ] factor u₂ u₃ v′ w′)
@@ -1179,7 +1178,7 @@ less-than for functions. We show that if `u₁ ⊑ u₂`, then for any
 by induction on the derivation of `u₁ ⊑ u₂`, and describe each case in
 the text after the Agda proof.
 
-```
+```agda
 sub-inv : ∀{u₁ u₂ : Value}
         → u₁ ⊑ u₂
         → ∀{v w} → v ↦ w ∈ u₁
@@ -1298,7 +1297,7 @@ later proofs. We specialize the premise to just `v ↦ w ⊑ u₁`
 and we modify the conclusion to say that for every
 `v′ ↦ w′ ∈ u₂`, we have `v′ ⊑ v`.
 
-```
+```agda
 sub-inv-fun : ∀{v w u₁ : Value}
     → (v ↦ w) ⊑ u₁
       -----------------------------------------------------
@@ -1315,7 +1314,7 @@ sub-inv-fun{v}{w}{u₁} abc
 The second corollary is the inversion rule that one would expect for
 less-than with functions on the left and right-hand sides.
 
-```
+```agda
 ↦⊑↦-inv : ∀{v w v′ w′}
         → v ↦ w ⊑ v′ ↦ w′
           -----------------

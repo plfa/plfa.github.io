@@ -1,6 +1,5 @@
 ---
 title     : "Scoped: Scoped and Typed DeBruijn representation"
-layout    : page
 permalink : /Scoped
 ---
 
@@ -297,7 +296,7 @@ sub ρ (app L M)  =  app (sub ρ L) (sub ρ M)
 sub ρ (abs N)    =  abs (sub (ext (rename S ∘ ρ) (var Z)) N)
 
 substitute : ∀ {Γ : Env} {A B : Type} → Exp (Γ , A) B → Exp Γ A → Exp Γ B
-substitute N M =  sub (ext var M) N 
+substitute N M =  sub (ext var M) N
 \end{code}
 
 ## Value
@@ -319,8 +318,8 @@ data _⟶_ : {Γ : Env} {A : Type} → Exp Γ A → Exp Γ A → Set where
      Val L →
      M ⟶ M′ →
      app L M ⟶ app L M′
-  β : ∀ {Γ : Env} {A B : Type} {N : Exp (Γ , A) B} {M : Exp Γ A} → 
-    Val M → 
+  β : ∀ {Γ : Env} {A B : Type} {N : Exp (Γ , A) B} {M : Exp Γ A} →
+    Val M →
     app (abs N) M ⟶ substitute N M
 \end{code}
 
@@ -405,5 +404,5 @@ ex₄ : progress (app (abs (abs (abs (app (app Γone (var (S Z))) (app (app (var
 ex₄ = refl
 
 ex₅ : progress (abs (abs (app (app Γone (var (S Z))) (app (app Γone (var (S Z))) (var Z))))) ≡ inj₂ Fun
-ex₅ = refl  
+ex₅ = refl
 \end{code}

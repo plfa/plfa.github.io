@@ -1,12 +1,11 @@
 ---
 title     : "Relations: Inductive definition of relations"
-layout    : page
 prev      : /Induction/
 permalink : /Relations/
 next      : /Equality/
 ---
 
-```
+```agda
 module plfa.part1.Relations where
 ```
 
@@ -15,7 +14,7 @@ the next step is to define relations, such as _less than or equal_.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong)
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -46,7 +45,7 @@ definition as a pair of inference rules:
         suc m ≤ suc n
 
 And here is the definition in Agda:
-```
+```agda
 data _≤_ : ℕ → ℕ → Set where
 
   z≤n : ∀ {n : ℕ}
@@ -91,7 +90,7 @@ For example, here in inference rule notation is the proof that
           2 ≤ 4
 
 And here is the corresponding Agda proof:
-```
+```agda
 _ : 2 ≤ 4
 _ = s≤s (s≤s z≤n)
 ```
@@ -120,17 +119,17 @@ If we wish, it is possible to provide implicit arguments explicitly by
 writing the arguments inside curly braces.  For instance, here is the
 Agda proof that `2 ≤ 4` repeated, with the implicit arguments made
 explicit:
-```
+```agda
 _ : 2 ≤ 4
 _ = s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))
 ```
 One may also identify implicit arguments by name:
-```
+```agda
 _ : 2 ≤ 4
 _ = s≤s {m = 1} {n = 3} (s≤s {m = 0} {n = 2} (z≤n {n = 2}))
 ```
 In the latter format, you can choose to only supply some implicit arguments:
-```
+```agda
 _ : 2 ≤ 4
 _ = s≤s {n = 3} (s≤s {n = 2} z≤n)
 ```
@@ -139,7 +138,7 @@ It is not permitted to swap implicit arguments, even when named.
 We can ask Agda to use the same inference to try and infer an _explicit_ term,
 by writing `_`. For instance, we can define a variant of the proposition
 `+-identityʳ` with implicit arguments:
-```
+```agda
 +-identityʳ′ : ∀ {m : ℕ} → m + zero ≡ m
 +-identityʳ′ = +-identityʳ _
 ```
@@ -152,7 +151,7 @@ If Agda fails to infer the value, it reports an error.
 ## Precedence
 
 We declare the precedence for comparison as follows:
-```
+```agda
 infix 4 _≤_
 ```
 We set the precedence of `_≤_` at level 4, so it binds less tightly
@@ -180,7 +179,7 @@ want to go from bigger things to smaller things.
 
 There is only one way to prove that `suc m ≤ suc n`, for any `m`
 and `n`.  This lets us invert our previous rule.
-```
+```agda
 inv-s≤s : ∀ {m n : ℕ}
   → suc m ≤ suc n
     -------------
@@ -199,7 +198,7 @@ But often inversions of this kind hold.
 
 Another example of inversion is showing that there is
 only one way a number can be less than or equal to zero.
-```
+```agda
 inv-z≤n : ∀ {m : ℕ}
   → m ≤ zero
     --------
@@ -245,13 +244,13 @@ partial order but not a total order.
 
 Give an example of a preorder that is not a partial order.
 
-```
+```agda
 -- Your code goes here
 ```
 
 Give an example of a partial order that is not a total order.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -261,7 +260,7 @@ The first property to prove about comparison is that it is reflexive:
 for any natural `n`, the relation `n ≤ n` holds.  We follow the
 convention in the standard library and make the argument implicit,
 as that will make it easier to invoke reflexivity:
-```
+```agda
 ≤-refl : ∀ {n : ℕ}
     -----
   → n ≤ n
@@ -282,7 +281,7 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 The second property to prove about comparison is that it is
 transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤ p`
 hold, then `m ≤ p` holds.  Again, `m`, `n`, and `p` are implicit:
-```
+```agda
 ≤-trans : ∀ {m n p : ℕ}
   → m ≤ n
   → n ≤ p
@@ -309,7 +308,7 @@ inequality implies that it is `zero`.  Agda can determine that such a
 case cannot arise, and does not require (or permit) it to be listed.
 
 Alternatively, we could make the implicit parameters explicit:
-```
+```agda
 ≤-trans′ : ∀ (m n p : ℕ)
   → m ≤ n
   → n ≤ p
@@ -336,7 +335,7 @@ using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 The third property to prove about comparison is that it is
 antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and
 `n ≤ m` hold, then `m ≡ n` holds:
-```
+```agda
 ≤-antisym : ∀ {m n : ℕ}
   → m ≤ n
   → n ≤ m
@@ -364,7 +363,7 @@ follows by congruence.
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -376,7 +375,7 @@ for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
 `m` and `n` are equal.
 
 We specify what it means for inequality to be total:
-```
+```agda
 data Total (m n : ℕ) : Set where
 
   forward :
@@ -400,7 +399,7 @@ be introduced in Chapter [Connectives](/Connectives/).)
 This is our first use of a datatype with _parameters_,
 in this case `m` and `n`.  It is equivalent to the following
 indexed datatype:
-```
+```agda
 data Total′ : ℕ → ℕ → Set where
 
   forward′ : ∀ {m n : ℕ}
@@ -422,7 +421,7 @@ occasionally aid Agda's termination checker, so we will use them in
 preference to indexed types when possible.
 
 With that preliminary out of the way, we specify and prove totality:
-```
+```agda
 ≤-total : ∀ (m n : ℕ) → Total m n
 ≤-total zero    n                         =  forward z≤n
 ≤-total (suc m) zero                      =  flipped z≤n
@@ -461,7 +460,7 @@ and the right-hand side of the equation.
 
 Every use of `with` is equivalent to defining a helper function.  For
 example, the definition above is equivalent to the following:
-```
+```agda
 ≤-total′ : ∀ (m n : ℕ) → Total m n
 ≤-total′ zero    n        =  forward z≤n
 ≤-total′ (suc m) zero     =  flipped z≤n
@@ -481,7 +480,7 @@ of the preceding equation.
 If both arguments are equal, then both cases hold and we could return evidence
 of either.  In the code above we return the forward case, but there is a
 variant that returns the flipped case:
-```
+```agda
 ≤-total″ : ∀ (m n : ℕ) → Total m n
 ≤-total″ m       zero                      =  flipped z≤n
 ≤-total″ zero    (suc n)                   =  forward z≤n
@@ -504,7 +503,7 @@ is monotonic with regard to inequality, meaning:
 The proof is straightforward using the techniques we have learned, and is best
 broken into three parts. First, we deal with the special case of showing
 addition is monotonic on the right:
-```
+```agda
 +-monoʳ-≤ : ∀ (n p q : ℕ)
   → p ≤ q
     -------------
@@ -526,7 +525,7 @@ The proof is by induction on the first argument.
 Second, we deal with the special case of showing addition is
 monotonic on the left. This follows from the previous
 result and the commutativity of addition:
-```
+```agda
 +-monoˡ-≤ : ∀ (m n p : ℕ)
   → m ≤ n
     -------------
@@ -537,7 +536,7 @@ Rewriting by `+-comm m p` and `+-comm n p` converts `m + p ≤ n + p` into
 `p + m ≤ p + n`, which is proved by invoking `+-monoʳ-≤ p m n m≤n`.
 
 Third, we combine the two previous results:
-```
+```agda
 +-mono-≤ : ∀ (m n p q : ℕ)
   → m ≤ n
   → p ≤ q
@@ -554,7 +553,7 @@ transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 Show that multiplication is monotonic with regard to inequality.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -562,7 +561,7 @@ Show that multiplication is monotonic with regard to inequality.
 ## Strict inequality {#strict-inequality}
 
 We can define strict inequality similarly to inequality:
-```
+```agda
 infix 4 _<_
 
 data _<_ : ℕ → ℕ → Set where
@@ -602,7 +601,7 @@ exploiting the corresponding properties of inequality.
 Show that strict inequality is transitive. Use a direct proof. (A later
 exercise exploits the relation between < and ≤.)
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -620,7 +619,7 @@ similar to that used for totality.
 (We will show that the three cases are exclusive after we introduce
 [negation](/Negation/).)
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -629,7 +628,7 @@ similar to that used for totality.
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -637,7 +636,7 @@ As with inequality, some additional definitions may be required.
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -647,7 +646,7 @@ Give an alternative proof that strict inequality is transitive,
 using the relation between strict inequality and inequality and
 the fact that inequality is transitive.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -657,7 +656,7 @@ the fact that inequality is transitive.
 As a further example, let's specify even and odd numbers.  Inequality
 and strict inequality are _binary relations_, while even and odd are
 _unary relations_, sometimes called _predicates_:
-```
+```agda
 data even : ℕ → Set
 data odd  : ℕ → Set
 
@@ -712,7 +711,7 @@ one restrict overloading to related meanings, as we have done here,
 but it is not required.
 
 We show that the sum of two even numbers is even:
-```
+```agda
 e+e≡e : ∀ {m n : ℕ}
   → even m
   → even n
@@ -754,7 +753,7 @@ successor of the sum of two even numbers, which is even.
 
 Show that the sum of two odd numbers is even.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -807,14 +806,14 @@ and back is the identity:
 properties of `One`. Also, you may need to prove that
 if `One b` then `1` is less or equal to the result of `from b`.)
 
-```
+```agda
 -- Your code goes here
 ```
 
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
-```
+```agda
 import Data.Nat using (_≤_; z≤n; s≤s)
 import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)

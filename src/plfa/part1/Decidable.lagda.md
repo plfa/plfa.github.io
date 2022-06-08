@@ -1,12 +1,11 @@
 ---
 title     : "Decidable: Booleans and decision procedures"
-layout    : page
 prev      : /Quantifiers/
 permalink : /Decidable/
 next      : /Lists/
 ---
 
-```
+```agda
 module plfa.part1.Decidable where
 ```
 
@@ -21,7 +20,7 @@ of a new notion of _decidable_.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
@@ -43,7 +42,7 @@ Recall that Chapter [Relations](/Relations/)
 defined comparison as an inductive datatype,
 which provides _evidence_ that one number
 is less than or equal to another:
-```
+```agda
 infix 4 _≤_
 
 data _≤_ : ℕ → ℕ → Set where
@@ -59,7 +58,7 @@ data _≤_ : ℕ → ℕ → Set where
 ```
 For example, we can provide evidence that `2 ≤ 4`,
 and show there is no possible evidence that `4 ≤ 2`:
-```
+```agda
 2≤4 : 2 ≤ 4
 2≤4 = s≤s (s≤s z≤n)
 
@@ -73,14 +72,14 @@ no possible evidence for `2 ≤ 0`, which `z≤n` cannot match
 
 An alternative, which may seem more familiar, is to define a
 type of booleans:
-```
+```agda
 data Bool : Set where
   true  : Bool
   false : Bool
 ```
 Given booleans, we can define a function of two numbers that
 _computes_ to `true` if the comparison holds and to `false` otherwise:
-```
+```agda
 infix 4 _≤ᵇ_
 
 _≤ᵇ_ : ℕ → ℕ → Bool
@@ -94,7 +93,7 @@ middle clause arises because there is no possible evidence that
 `suc m ≤ zero` for any `m`.
 For example, we can compute that `2 ≤ᵇ 4` holds,
 and we can compute that `4 ≤ᵇ 2` does not hold:
-```
+```agda
 _ : (2 ≤ᵇ 4) ≡ true
 _ =
   begin
@@ -131,7 +130,7 @@ and the one use of `()` when showing there can be no evidence that `4 ≤ 2`.
 We would hope to be able to show these two approaches are related, and
 indeed we can.  First, we define a function that lets us map from the
 computation world to the evidence world:
-```
+```agda
 T : Bool → Set
 T true   =  ⊤
 T false  =  ⊥
@@ -145,7 +144,7 @@ no possible evidence that `T b` holds if `b` is false.
 Another way to put this is that `T b` is inhabited exactly when `b ≡ true`
 is inhabited.
 In the forward direction, we need to do a case analysis on the boolean `b`:
-```
+```agda
 T→≡ : ∀ (b : Bool) → T b → b ≡ true
 T→≡ true tt   =  refl
 T→≡ false ()
@@ -154,7 +153,7 @@ If `b` is true then `T b` is inhabited by `tt` and `b ≡ true` is inhabited
 by `refl`, while if `b` is false then `T b` in uninhabited.
 
 In the reverse direction, there is no need for a case analysis on the boolean `b`:
-```
+```agda
 ≡→T : ∀ {b : Bool} → b ≡ true → T b
 ≡→T refl  =  tt
 ```
@@ -165,7 +164,7 @@ Now we can show that `T (m ≤ᵇ n)` is inhabited exactly when `m ≤ n` is inh
 
 In the forward direction, we consider the three clauses in the definition
 of `_≤ᵇ_`:
-```
+```agda
 ≤ᵇ→≤ : ∀ (m n : ℕ) → T (m ≤ᵇ n) → m ≤ n
 ≤ᵇ→≤ zero    n       tt  =  z≤n
 ≤ᵇ→≤ (suc m) zero    ()
@@ -184,7 +183,7 @@ We recursively invoke the function to get evidence that `m ≤ n`, which
 
 In the reverse direction, we consider the possible forms of evidence
 that `m ≤ n`:
-```
+```agda
 ≤→≤ᵇ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ n)
 ≤→≤ᵇ z≤n        =  tt
 ≤→≤ᵇ (s≤s m≤n)  =  ≤→≤ᵇ m≤n
@@ -216,7 +215,7 @@ does the relation hold or does it not? Conversely, the evidence approach tells
 us exactly why the relation holds, but we are responsible for generating the
 evidence.  But it is easy to define a type that combines the benefits of
 both approaches.  It is called `Dec A`, where `Dec` is short for _decidable_:
-```
+```agda
 data Dec (A : Set) : Set where
   yes :   A → Dec A
   no  : ¬ A → Dec A
@@ -231,7 +230,7 @@ is less than or equal to the other, and provides evidence to justify its conclus
 
 First, we introduce two functions useful for constructing evidence that
 an inequality does not hold:
-```
+```agda
 ¬s≤z : ∀ {m : ℕ} → ¬ (suc m ≤ zero)
 ¬s≤z ()
 
@@ -247,7 +246,7 @@ form `s≤s m≤n` where `m≤n` is evidence that `m ≤ n`.  Hence, we have
 a contradiction, evidenced by `¬m≤n m≤n`.
 
 Using these, it is straightforward to decide an inequality:
-```
+```agda
 _≤?_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 zero  ≤? n                   =  yes z≤n
 suc m ≤? zero                =  no ¬s≤z
@@ -275,7 +274,7 @@ to derive them from `_≤?_`.
 
 We can use our new function to _compute_ the _evidence_ that earlier we had to
 think up on our own:
-```
+```agda
 _ : 2 ≤? 4 ≡ yes (s≤s (s≤s z≤n))
 _ = refl
 
@@ -294,24 +293,24 @@ trouble normalising evidence of negation.)
 #### Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality:
-```
+```agda
 postulate
   _<?_ : ∀ (m n : ℕ) → Dec (m < n)
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
-```
+```agda
 postulate
   _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -321,7 +320,7 @@ postulate
 Curious readers might wonder if we could reuse the definition of
 `m ≤ᵇ n`, together with the proofs that it is equivalent to `m ≤ n`, to show
 decidability.  Indeed, we can do so as follows:
-```
+```agda
 _≤?′_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
 ...        | true   | p        | _            = yes (p tt)
@@ -355,20 +354,20 @@ section.  If one really wants `_≤ᵇ_`, then it and its properties are easily 
 from `_≤?_`, as we will now show.
 
 Erasure takes a decidable value to a boolean:
-```
+```agda
 ⌊_⌋ : ∀ {A : Set} → Dec A → Bool
 ⌊ yes x ⌋  =  true
 ⌊ no ¬x ⌋  =  false
 ```
 Using erasure, we can easily derive `_≤ᵇ_` from `_≤?_`:
-```
+```agda
 _≤ᵇ′_ : ℕ → ℕ → Bool
 m ≤ᵇ′ n  =  ⌊ m ≤? n ⌋
 ```
 
 Further, if `D` is a value of type `Dec A`, then `T ⌊ D ⌋` is
 inhabited exactly when `A` is inhabited:
-```
+```agda
 toWitness : ∀ {A : Set} {D : Dec A} → T ⌊ D ⌋ → A
 toWitness {A} {yes x} tt  =  x
 toWitness {A} {no ¬x} ()
@@ -379,7 +378,7 @@ fromWitness {A} {no ¬x} x  =  ¬x x
 ```
 Using these, we can easily derive that `T (m ≤ᵇ′ n)` is inhabited
 exactly when `m ≤ n` is inhabited:
-```
+```agda
 ≤ᵇ′→≤ : ∀ {m n : ℕ} → T (m ≤ᵇ′ n) → m ≤ n
 ≤ᵇ′→≤  =  toWitness
 
@@ -399,7 +398,7 @@ Each of these extends to decidables.
 
 The conjunction of two booleans is true if both are true,
 and false if either is false:
-```
+```agda
 infixr 6 _∧_
 
 _∧_ : Bool → Bool → Bool
@@ -414,7 +413,7 @@ the answer is the same.
 
 Correspondingly, given two decidable propositions, we can
 decide their conjunction:
-```
+```agda
 infixr 6 _×-dec_
 
 _×-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A × B)
@@ -436,7 +435,7 @@ yield the contradiction, but it would be equally valid to pick the second.
 
 The disjunction of two booleans is true if either is true,
 and false if both are false:
-```
+```agda
 infixr 5 _∨_
 
 _∨_ : Bool → Bool → Bool
@@ -451,7 +450,7 @@ the answer is the same.
 
 Correspondingly, given two decidable propositions, we can
 decide their disjunction:
-```
+```agda
 infixr 5 _⊎-dec_
 
 _⊎-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⊎ B)
@@ -473,14 +472,14 @@ but it would be equally valid to pick the second.
 
 The negation of a boolean is false if its argument is true,
 and vice versa:
-```
+```agda
 not : Bool → Bool
 not true  = false
 not false = true
 ```
 Correspondingly, given a decidable proposition, we
 can decide its negation:
-```
+```agda
 ¬? : ∀ {A : Set} → Dec A → Dec (¬ A)
 ¬? (yes x)  =  no (¬¬-intro x)
 ¬? (no ¬x)  =  yes ¬x
@@ -492,7 +491,7 @@ of the fact that `A` holds.
 
 There is also a slightly less familiar connective,
 corresponding to implication:
-```
+```agda
 _⊃_ : Bool → Bool → Bool
 _     ⊃ true   =  true
 false ⊃ _      =  true
@@ -510,7 +509,7 @@ the answer is the same.
 
 Correspondingly, given two decidable propositions,
 we can decide if the first implies the second:
-```
+```agda
 _→-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A → B)
 _     →-dec yes y  =  yes (λ _ → y)
 no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
@@ -538,7 +537,7 @@ on which matches; but either is equally valid.
 #### Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
-```
+```agda
 postulate
   ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
   ∨-⊎ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
@@ -550,14 +549,14 @@ postulate
 Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
-```
+```agda
 postulate
   _iff_ : Bool → Bool → Bool
   _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
   iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -570,7 +569,7 @@ zero. We had to do something, after all. What could we have done differently? We
 could have defined a *guarded* version of minus, a function which subtracts `n`
 from `m` only if `n ≤ m`:
 
-```
+```agda
 minus : (m n : ℕ) (n≤m : n ≤ m) → ℕ
 minus m       zero    _         = m
 minus (suc m) (suc n) (s≤s n≤m) = minus m n n≤m
@@ -579,7 +578,7 @@ minus (suc m) (suc n) (s≤s n≤m) = minus m n n≤m
 Unfortunately, it is painful to use, since we have to explicitly provide
 the proof that `n ≤ m`:
 
-```
+```agda
 _ : minus 5 3 (s≤s (s≤s (s≤s z≤n))) ≡ 2
 _ = refl
 ```
@@ -609,14 +608,14 @@ guard.
 
 We obtain the witness for `n ≤ m` using `toWitness`, which we defined earlier:
 
-```
+```agda
 _-_ : (m n : ℕ) {n≤m : T ⌊ n ≤? m ⌋} → ℕ
 _-_ m n {n≤m} = minus m n (toWitness n≤m)
 ```
 
 We can safely use `_-_` as long as we statically know the two numbers:
 
-```
+```agda
 _ : 5 - 3 ≡ 2
 _ = refl
 ```
@@ -624,7 +623,7 @@ _ = refl
 It turns out that this idiom is very common. The standard library defines a
 synonym for `T ⌊ ? ⌋` called `True`:
 
-```
+```agda
 True : ∀ {Q} → Dec Q → Set
 True Q = T ⌊ Q ⌋
 ```
@@ -636,7 +635,7 @@ Give analogues of `True`, `toWitness`, and `fromWitness` which work with *negate
 
 ## Standard Library
 
-```
+```agda
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 import Data.Nat using (_≤?_)
 import Relation.Nullary using (Dec; yes; no)

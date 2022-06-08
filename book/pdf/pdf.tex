@@ -1,0 +1,190 @@
+\documentclass[10pt]{book}
+
+\usepackage{hyperref}
+\usepackage[links]{agda}
+
+% Use DejaVu and Frankenfont
+\usepackage{fontspec}
+\setmainfont[
+  Extension      = .ttf,
+  Path           = fonts/,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic
+  ]{DejaVuSerif}
+\setsansfont[
+  Extension      = .ttf,
+  Path           = fonts/,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Oblique,
+  BoldItalicFont = *-BoldOblique
+  ]{DejaVuSans}
+\setmonofont[
+  Extension      = .ttf,
+  UprightFont    = *-Regular,
+  Path           = fonts/
+  ]{Frankenfont}
+
+% Use soul for underlines
+\usepackage{soul}
+
+% Setup colour boxes for code blocks
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{setspace}
+\usepackage[
+  a4paper,
+  total = {170mm,257mm},
+  left  = 20mm,
+  top   = 20mm,
+  ]{geometry}
+
+% Wrap texttt lines
+\sloppy
+
+% Disable section numbering
+\setcounter{secnumdepth}{0}
+
+% Set the global text color
+\definecolor{TEXTCOLOR}{HTML}{111111}
+\color{TEXTCOLOR}
+
+% Change background color for inline code in markdown files.
+% The following code does not work well for long text as the
+% text will exceed the page boundary.
+\definecolor{BACKGROUND-COLOR}{HTML}{EEEEFF}
+\let\oldtexttt\texttt%
+\renewcommand{\texttt}[1]{\colorbox{BACKGROUND-COLOR}{\oldtexttt{#1}}}
+
+% Box with background colour similar to web version:
+\newtcolorbox{agda}[1][]{
+  frame hidden,
+  colback=BACKGROUND-COLOR,
+  spartan,
+  left=5pt,
+  boxrule=0pt,
+  breakable,
+}
+
+% Verbatim environment similarly indented to Agda code blocks.
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{xleftmargin=0pt}%
+
+% Adding backgrounds to verbatim environments.
+\newenvironment{pre}{
+  \VerbatimEnvironment
+  \begin{agda}
+  \begin{Verbatim}[breaklines=true]%
+}{\end{Verbatim}
+  \end{agda}
+}
+
+% Use special font families without TeX ligatures for Agda code.
+% Solution inspired by a comment by Enrico Gregorio:
+% https://tex.stackexchange.com/a/103078
+\newfontfamily{\AgdaSerifFont}{DejaVu-Serif}
+\newfontfamily{\AgdaSansSerifFont}{DejaVu-Sans}
+\newfontfamily{\AgdaTypewriterFont}{Frankenfont}
+\renewcommand{\AgdaFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaCommentFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaBoundFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+
+\AgdaNoSpaceAroundCode{}
+
+% Adjust spacing after toc numbering
+\usepackage{tocloft}
+\setlength\cftchapnumwidth{3em}
+\cftsetpnumwidth{4em}
+
+% Style links with colors instead of boxes:
+% https://tex.stackexchange.com/q/823
+\definecolor{LINKCOLOR}{HTML}{2A7AE2}
+\hypersetup{
+  colorlinks,
+  linkcolor={LINKCOLOR},
+  citecolor={LINKCOLOR},
+  urlcolor={LINKCOLOR}
+}
+
+\begin{document}
+
+% Adjust indentation of Agda code blocks
+\setlength{\mathindent}{0pt}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+% Provide \tightlist environment
+% https://tex.stackexchange.com/q/257418
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Based on \titleAM:
+% https://ctan.org/pkg/titlepages
+\begin{titlepage}
+  \newlength{\drop}%
+  \setlength{\drop}{0.12\textheight}%
+  \centering%
+  \vspace*{\drop}
+  \begingroup% Ancient Mariner, AW p. 151
+  {\large Philip Wadler, Wen Kokke, and Jeremy G. Siek}\\[\baselineskip]
+  {\Huge PROGRAMMING LANGUAGE}\\[\baselineskip]
+  {\Huge FOUNDATIONS}\\[\baselineskip]
+  {\Large IN}\\[\baselineskip]
+  {\Huge Agda}\\[\drop]
+  \vfill%
+  {\small\scshape 2021}\par%
+  \null\endgroup
+\end{titlepage}
+
+$for(part)$
+
+% Open front, main, and back matter sections:
+$if(part.frontmatter)$
+\frontmatter%
+\setcounter{tocdepth}{0}
+
+\tableofcontents%
+\setcounter{tocdepth}{1}
+$endif$
+$if(part.mainmatter)$
+\mainmatter%
+$endif$
+$if(part.backmatter)$
+\appendix
+\addcontentsline{toc}{part}{Appendices}
+$endif$
+
+% Only print title for main and back matter:
+$if(part.frontmatter)$
+% NOTE: Front matter titles are inserted via book/lua/single-file-headers.lua.
+$else$
+\part{$part.title$}
+$endif$
+
+% Include each section.
+$for(part.section)$
+\hypertarget{$part.section.anchor$}{%
+  \chapter{$part.section.title$}\label{$part.section.anchor$}}
+$part.section.body$
+$endfor$
+
+% Close front, main, and back matter sections:
+$if(part.frontmatter)$
+$endif$
+$if(part.mainmatter)$
+\cleardoublepage%
+\phantomsection%
+$endif$
+$if(part.backmatter)$
+$endif$
+$endfor$
+
+\end{document}

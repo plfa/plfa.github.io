@@ -1,6 +1,5 @@
 ---
 title     : "Collections: Collections represented as Lists"
-layout    : page
 permalink : /Collections
 ---
 
@@ -49,7 +48,7 @@ module Collection
          (isEquivalence : IsEquivalence _≈_)
          where
 
-  open IsEquivalence isEquivalence 
+  open IsEquivalence isEquivalence
 
   abstract
 
@@ -121,8 +120,8 @@ collections with a small number of elements.
       backward {x ∷ xs} (there w∈) with backward {xs} w∈
       ...                             | inj₁ ∈xs          =  inj₁ (there ∈xs)
       ...                             | inj₂ ∈ys          =  inj₂ ∈ys
-      
-    
+
+
 \end{code}
 
 # Operations with decidable equivalence
@@ -138,7 +137,7 @@ collections with a small number of elements.
         xs \\ x  =  filter (¬? ∘ (x ≟_)) xs
 
 
-\end{code}        
+\end{code}
 
 
 ## Standard Library

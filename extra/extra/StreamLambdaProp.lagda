@@ -1,6 +1,5 @@
 ---
 title     : "StreamLambdaProp: Properties of Simply-Typed Lambda Calculus"
-layout    : page
 permalink : /StreamLambdaProp/
 ---
 

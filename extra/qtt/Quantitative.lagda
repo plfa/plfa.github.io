@@ -1,6 +1,5 @@
 ---
 title     : "Quantitative: Counting Resources in Types"
-layout    : page
 permalink : /Quantitative/
 ---
 

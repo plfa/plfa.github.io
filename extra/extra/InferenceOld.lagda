@@ -1,6 +1,5 @@
 ---
 title     : "Inference: Bidirectional type inference"
-layout    : page
 permalink : /Inference/
 ---
 
@@ -9,7 +8,7 @@ module plfa.Inference where
 \end{code}
 
 So far in our development, type derivations for the corresponding
-term have been provided by fiat.  
+term have been provided by fiat.
 In Chapter [Lambda]({{ site.baseurl }}{% link out/plfa/Lambda.md %})
 type derivations were given separately from the term, while
 in Chapter [DeBruijn]({{ site.baseurl }}{% link out/plfa/DeBruijn.md %})
@@ -85,7 +84,7 @@ as ouput. Consider the rules:
     Γ ⊢ ` x ⦂ A
 
     Γ , x ⦂ A ⊢ N ⦂ B
-    --------------------------- 
+    ---------------------------
     Γ ⊢ (ƛ x ⦂ A ⇒ N) ⦂ (A ⇒ B)
 
     Γ ⊢ L ⦂ A ⇒ B
@@ -224,7 +223,7 @@ pattern [_,_,_,_] w x y z  =  w ∷ x ∷ y ∷ z ∷ []
 Once we have a type derivation, it will be easy to construct
 from it the inherently typed representation.  In order that we
 can compare with our previous development, we import
-module `pfla.DeBruijn`.  
+module `pfla.DeBruijn`.
 
 \begin{code}
 open import plfa.DeBruijn as DB using (Type; `ℕ; _⇒_)
@@ -594,7 +593,7 @@ Extending our notation to allow a pattern to the left of a turnstyle, we have:
     Γ , P : A ⊢ N : I B
     Γ , Q : A ⊢ M : I B
     ---------------------------
-    Γ ⊢ (do P ← L          
+    Γ ⊢ (do P ← L
               where Q → M
             N)            : I B
 
@@ -617,11 +616,11 @@ translates to
 
 and
 
-    do P ← L          
+    do P ← L
          where Q₁ → M₁
-               ...    
+               ...
                Qₙ → Mₙ
-       N 
+       N
 
 translates to
 

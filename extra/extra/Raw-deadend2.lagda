@@ -1,6 +1,5 @@
 ---
 title     : "Raw: Raw, Scoped, Typed"
-layout    : page
 permalink : /Raw
 ---
 
@@ -148,7 +147,7 @@ module Raw where
   subst ys ρ (L · M)      =  subst ys ρ L · subst ys ρ M
   subst ys ρ (`zero)      =  `zero
   subst ys ρ (`suc M)     =  `suc (subst ys ρ M)
-                       
+
   _[_:=_] : Term → Id → Term → Term
   N [ x := M ]  =  subst (free M ++ (free N \\ x))  (∅ , x ↦ M) N
 \end{code}
@@ -172,7 +171,7 @@ module Raw where
   _ = refl
 
   _ : (⌊ "s" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := (`λ "m" `→ `suc ⌊ "m" ⌋) ]
-                                   [ "z" := `zero ] 
+                                   [ "z" := `zero ]
         ≡ (`λ "m" `→ `suc ⌊ "m" ⌋) · (`λ "m" `→ `suc ⌊ "m" ⌋) · `zero
   _ = refl
 
@@ -320,13 +319,13 @@ Not needed, and no longer correct.
       → Stuck (V · M)
 
     st-·-nat : ∀ {V M}
-      → Natural V 
+      → Natural V
         --------------
       → Stuck (V · M)
-      
+
     st-suc-λ : ∀ {x N}
         -------------------------
-      → Stuck (`suc (`λ x `→ N)) 
+      → Stuck (`suc (`λ x `→ N))
 
     st-suc : ∀ {M}
       → Stuck M
@@ -380,12 +379,12 @@ Not needed, and no longer correct.
         -----------
       → Progress M
 
-    stuck : 
+    stuck :
         Stuck M
         -----------
       → Progress M
 
-    done : 
+    done :
         Value M
         -----------
       → Progress M
@@ -416,7 +415,7 @@ Not needed, and no longer correct.
 
 ### Preservation
 
-Preservation of closed terms is not so easy. 
+Preservation of closed terms is not so easy.
 
 \begin{code}
   preservation : ∀ {M N : Term} → Closed M → M ⟶ N → Closed N
@@ -483,7 +482,7 @@ module Scoped where
     S : ∀ {Γ}
       → Γ ∋*
         --------
-      → Γ ,* ∋* 
+      → Γ ,* ∋*
 
   data _⊢* : Ctx → Set where
 
@@ -491,7 +490,7 @@ module Scoped where
       → Γ ∋*
         -----
       → Γ ⊢*
-      
+
     `λ_`→_  : ∀ {Γ} (x : Id)
       → Γ ,* ⊢*
         --------
@@ -510,7 +509,7 @@ module Scoped where
     `suc : ∀ {Γ}
       → Γ ⊢*
         -----
-      → Γ ⊢* 
+      → Γ ⊢*
 \end{code}
 
 ### Shorthand for variables
@@ -561,7 +560,7 @@ the correct type.
     lookup (x ∷ xs) w with w ≟ x
     ...                  | yes _  =  0
     ...                  | no  _  =  suc (lookup xs w)
- 
+
     helper : ∀ {Γ} → List Id → Raw.Term → Γ ⊢*
     helper xs Raw.⌊ x ⌋         = ⌈ lookup xs x ⌉
     helper xs (Raw.`λ x `→ N)  =  `λ x `→ helper (x ∷ xs) N

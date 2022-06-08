@@ -1,6 +1,5 @@
 ---
 title     : "Collections: Representing collections as lists"
-layout    : page
 permalink : /Collections
 ---
 
@@ -62,7 +61,7 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       here : ∀ {x xs} →
         ----------
         x ∈ x ∷ xs
-        
+
       there : ∀ {w x xs} →
         w ∈ xs →
         ----------
@@ -96,7 +95,7 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
 
     lemma-\\-∈-≢ : ∀ {w x xs} → w ∈ xs \\ x ↔ w ∈ xs × w ≢ x
     lemma-\\-∈-≢ = ⟨ forward , backward ⟩
-      where    
+      where
 
       next : ∀ {w x y xs} → w ∈ xs × w ≢ x → w ∈ y ∷ xs × w ≢ x
       next ⟨ w∈ , w≢ ⟩   =  ⟨ there w∈ , w≢ ⟩
@@ -162,7 +161,7 @@ module CollectionDec (A : Set) (_≟_ : ∀ (x y : A) → Dec (x ≡ y)) where
       ...                             | inj₂ ∈ys          =  inj₂ ∈ys
 
 
-\end{code}        
+\end{code}
 
 
 ## Standard Library

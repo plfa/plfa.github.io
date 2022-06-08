@@ -1,13 +1,12 @@
 ---
 title     : "Substitution: Substitution in the untyped lambda calculus"
-layout    : page
 prev      : /ContextualEquivalence/
 permalink : /Substitution/
 next      : /Acknowledgements/
 ---
 
 
-```
+```agda
 module plfa.part2.Substitution where
 ```
 
@@ -45,7 +44,7 @@ system that _decides_ whether any two substitutions are equal.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong; cong₂; cong-app)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
@@ -55,7 +54,7 @@ open import plfa.part2.Untyped
             rename; subst; ext; exts; _[_]; subst-zero)
 ```
 
-```
+```agda
 postulate
   extensionality : ∀ {A B : Set} {f g : A → B}
     → (∀ (x : A) → f x ≡ g x)
@@ -68,7 +67,7 @@ postulate
 We introduce the following shorthand for the type of a _renaming_ from
 variables in context `Γ` to variables in context `Δ`.
 
-```
+```agda
 Rename : Context → Context → Set
 Rename Γ Δ = ∀{A} → Γ ∋ A → Δ ∋ A
 ```
@@ -76,14 +75,14 @@ Rename Γ Δ = ∀{A} → Γ ∋ A → Δ ∋ A
 Similarly, we introduce the following shorthand for the type of a
 _substitution_ from variables in context `Γ` to terms in context `Δ`.
 
-```
+```agda
 Subst : Context → Context → Set
 Subst Γ Δ = ∀{A} → Γ ∋ A → Δ ⊢ A
 ```
 
 We use the following more succinct notation for the `subst` function.
 
-```
+```agda
 ⟪_⟫ : ∀{Γ Δ A} → Subst Γ Δ → Γ ⊢ A → Δ ⊢ A
 ⟪ σ ⟫ = λ M → subst σ M
 ```
@@ -98,7 +97,7 @@ four operations for building such sequences: identity `ids`, shift
 `↑`, cons `M • σ`, and sequencing `σ ⨟ τ`.  The sequence `0, 1, 2, ...`
 is constructed by the identity substitution.
 
-```
+```agda
 ids : ∀{Γ} → Subst Γ Γ
 ids x = ` x
 ```
@@ -109,7 +108,7 @@ The shift operation `↑` constructs the sequence
 
 and is defined as follows.
 
-```
+```agda
 ↑ : ∀{Γ A} → Subst Γ (Γ , A)
 ↑ x = ` (S x)
 ```
@@ -121,7 +120,7 @@ Given a term `M` and substitution `σ`, the operation
 
 This operation is analogous to the `cons` operation of Lisp.
 
-```
+```agda
 infixr 6 _•_
 
 _•_ : ∀{Γ Δ A} → (Δ ⊢ A) → Subst Γ Δ → Subst (Γ , A) Δ
@@ -137,7 +136,7 @@ composes the two substitutions by first applying `σ` and then applying
 
 Here is the definition.
 
-```
+```agda
 infixr 5 _⨟_
 
 _⨟_ : ∀{Γ Δ Σ} → Subst Γ Δ → Subst Δ Σ → Subst Γ Σ
@@ -207,7 +206,7 @@ We have
 where `ren` turns a renaming `ρ` into a substitution by post-composing
 `ρ` with the identity substitution.
 
-```
+```agda
 ren : ∀{Γ Δ} → Rename Γ Δ → Subst Γ Δ
 ren ρ = ids ∘ ρ
 ```
@@ -266,19 +265,19 @@ cons'ing `M` onto `σ`.
 We start with the proofs that are immediate from the definitions of
 the operators.
 
-```
+```agda
 sub-head : ∀ {Γ Δ} {A} {M : Δ ⊢ A}{σ : Subst Γ Δ}
          → ⟪ M • σ ⟫ (` Z) ≡ M
 sub-head = refl
 ```
 
-```
+```agda
 sub-tail : ∀{Γ Δ} {A B} {M : Δ ⊢ A} {σ : Subst Γ Δ}
          → (↑ ⨟ M • σ) {A = B} ≡ σ
 sub-tail = extensionality λ x → refl
 ```
 
-```
+```agda
 sub-η : ∀{Γ Δ} {A B} {σ : Subst (Γ , A) Δ}
       → (⟪ σ ⟫ (` Z) • (↑ ⨟ σ)) {A = B} ≡ σ
 sub-η {Γ}{Δ}{A}{B}{σ} = extensionality λ x → lemma
@@ -288,7 +287,7 @@ sub-η {Γ}{Δ}{A}{B}{σ} = extensionality λ x → lemma
    lemma {x = S x} = refl
 ```
 
-```
+```agda
 Z-shift : ∀{Γ}{A B}
         → ((` Z) • ↑) ≡ ids {Γ , A} {B}
 Z-shift {Γ}{A}{B} = extensionality lemma
@@ -298,13 +297,13 @@ Z-shift {Γ}{A}{B} = extensionality lemma
    lemma (S y) = refl
 ```
 
-```
+```agda
 sub-idL : ∀{Γ Δ} {σ : Subst Γ Δ} {A}
        → ids ⨟ σ ≡ σ {A}
 sub-idL = extensionality λ x → refl
 ```
 
-```
+```agda
 sub-dist :  ∀{Γ Δ Σ : Context} {A B} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
               {M : Δ ⊢ A}
          → ((M • σ) ⨟ τ) ≡ ((subst τ M) • (σ ⨟ τ)) {B}
@@ -315,7 +314,7 @@ sub-dist {Γ}{Δ}{Σ}{A}{B}{σ}{τ}{M} = extensionality λ x → lemma {x = x}
   lemma {x = S x} = refl
 ```
 
-```
+```agda
 sub-app : ∀{Γ Δ} {σ : Subst Γ Δ} {L : Γ ⊢ ★}{M : Γ ⊢ ★}
         → ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
 sub-app = refl
@@ -333,7 +332,7 @@ the equational reasoning in the later sections of this chapter.
  but I have not yet found a way to make that work. It seems that
  various implicit parameters get in the way.]
 
-```
+```agda
 cong-ext : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}
    → (∀{A} → ρ ≡ ρ′ {A})
      ---------------------------------
@@ -345,7 +344,7 @@ cong-ext{Γ}{Δ}{ρ}{ρ′}{B} rr {A} = extensionality λ x → lemma {x}
   lemma {S y} = cong S_ (cong-app rr y)
 ```
 
-```
+```agda
 cong-rename : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}{M : Γ ⊢ B}
         → (∀{A} → ρ ≡ ρ′ {A})
           ------------------------
@@ -357,7 +356,7 @@ cong-rename {M = L · M} rr =
    cong₂ _·_ (cong-rename rr) (cong-rename rr)
 ```
 
-```
+```agda
 cong-exts : ∀{Γ Δ}{σ σ′ : Subst Γ Δ}{B}
    → (∀{A} → σ ≡ σ′ {A})
      -----------------------------------
@@ -369,7 +368,7 @@ cong-exts{Γ}{Δ}{σ}{σ′}{B} ss {A} = extensionality λ x → lemma {x}
    lemma {S x} = cong (rename S_) (cong-app (ss {A}) x)
 ```
 
-```
+```agda
 cong-sub : ∀{Γ Δ}{σ σ′ : Subst Γ Δ}{A}{M M′ : Γ ⊢ A}
             → (∀{A} → σ ≡ σ′ {A})  →  M ≡ M′
               ------------------------------
@@ -381,7 +380,7 @@ cong-sub {Γ} {Δ} {σ} {σ′} {A} {L · M} ss refl =
    cong₂ _·_ (cong-sub {M = L} ss refl) (cong-sub {M = M} ss refl)
 ```
 
-```
+```agda
 cong-sub-zero : ∀{Γ}{B : Type}{M M′ : Γ ⊢ B}
   → M ≡ M′
     -----------------------------------------
@@ -390,7 +389,7 @@ cong-sub-zero {Γ}{B}{M}{M′} mm' {A} =
    extensionality λ x → cong (λ z → subst-zero z x) mm'
 ```
 
-```
+```agda
 cong-cons : ∀{Γ Δ}{A}{M N : Δ ⊢ A}{σ τ : Subst Γ Δ}
   → M ≡ N  →  (∀{A} → σ {A} ≡ τ {A})
     --------------------------------
@@ -402,7 +401,7 @@ cong-cons{Γ}{Δ}{A}{M}{N}{σ}{τ} refl st {A′} = extensionality lemma
   lemma (S x) = cong-app st x
 ```
 
-```
+```agda
 cong-seq : ∀{Γ Δ Σ}{σ σ′ : Subst Γ Δ}{τ τ′ : Subst Δ Σ}
   → (∀{A} → σ {A} ≡ σ′ {A}) → (∀{A} → τ {A} ≡ τ′ {A})
   → ∀{A} → (σ ⨟ τ) {A} ≡ (σ′ ⨟ τ′) {A}
@@ -438,7 +437,7 @@ Because `subst` uses the `exts` function, we need the following lemma
 which says that `exts` and `ext` do the same thing except that `ext`
 works on renamings and `exts` works on substitutions.
 
-```
+```agda
 ren-ext : ∀ {Γ Δ}{B C : Type} {ρ : Rename Γ Δ}
         → ren (ext ρ {B = B}) ≡ exts (ren ρ) {C}
 ren-ext {Γ}{Δ}{B}{C}{ρ} = extensionality λ x → lemma {x = x}
@@ -451,7 +450,7 @@ ren-ext {Γ}{Δ}{B}{C}{ρ} = extensionality λ x → lemma {x = x}
 With this lemma in hand, the proof is a straightforward induction on
 the term `M`.
 
-```
+```agda
 rename-subst-ren : ∀ {Γ Δ}{A} {ρ : Rename Γ Δ}{M : Γ ⊢ A}
                  → rename ρ M ≡ ⟪ ren ρ ⟫ M
 rename-subst-ren {M = ` x} = refl
@@ -472,7 +471,7 @@ rename-subst-ren {M = L · M} = cong₂ _·_ rename-subst-ren rename-subst-ren
 
 The substitution `ren S_` is equivalent to `↑`.
 
-```
+```agda
 ren-shift : ∀{Γ}{A}{B}
           → ren S_ ≡ ↑ {A = B} {A}
 ren-shift {Γ}{A}{B} = extensionality λ x → lemma {x = x}
@@ -484,7 +483,7 @@ ren-shift {Γ}{A}{B} = extensionality λ x → lemma {x = x}
 
 The substitution `rename S_ M` is equivalent to shifting: `⟪ ↑ ⟫ M`.
 
-```
+```agda
 rename-shift : ∀{Γ} {A} {B} {M : Γ ⊢ A}
              → rename (S_{B = B}) M ≡ ⟪ ↑ ⟫ M
 rename-shift{Γ}{A}{B}{M} =
@@ -502,7 +501,7 @@ is equivalent to cons'ing Z onto the sequence formed by applying `σ`
 and then shifting. The proof is by case analysis on the variable `x`,
 using `rename-subst-ren` for when `x = S y`.
 
-```
+```agda
 exts-cons-shift : ∀{Γ Δ} {A B} {σ : Subst Γ Δ}
                 → exts σ {A} {B} ≡ (` Z • (σ ⨟ ↑))
 exts-cons-shift = extensionality λ x → lemma{x = x}
@@ -515,7 +514,7 @@ exts-cons-shift = extensionality λ x → lemma{x = x}
 
 As a corollary, we have a similar correspondence for `ren (ext ρ)`.
 
-```
+```agda
 ext-cons-Z-shift : ∀{Γ Δ} {ρ : Rename Γ Δ}{A}{B}
                  → ren (ext ρ {B = B}) ≡ (` Z • (ren ρ ⨟ ↑)) {A}
 ext-cons-Z-shift {Γ}{Δ}{ρ}{A}{B} =
@@ -531,7 +530,7 @@ ext-cons-Z-shift {Γ}{Δ}{ρ}{A}{B} =
 Finally, the `subst-zero M` substitution is equivalent to cons'ing `M`
 onto the identity substitution.
 
-```
+```agda
 subst-Z-cons-ids : ∀{Γ}{A B : Type}{M : Γ ⊢ B}
                  → subst-zero M ≡ (M • ids) {A}
 subst-Z-cons-ids = extensionality λ x → lemma {x = x}
@@ -548,7 +547,7 @@ subst-Z-cons-ids = extensionality λ x → lemma {x = x}
 The equation `sub-abs` follows immediately from the equation
 `exts-cons-shift`.
 
-```
+```agda
 sub-abs : ∀{Γ Δ} {σ : Subst Γ Δ} {N : Γ , ★ ⊢ ★}
         → ⟪ σ ⟫ (ƛ N) ≡ ƛ ⟪ (` Z) • (σ ⨟ ↑) ⟫ N
 sub-abs {σ = σ}{N = N} =
@@ -565,7 +564,7 @@ The proof of `sub-id` requires the following lemma which says that
 extending the identity substitution produces the identity
 substitution.
 
-```
+```agda
 exts-ids : ∀{Γ}{A B}
          → exts ids ≡ ids {Γ , B} {A}
 exts-ids {Γ}{A}{B} = extensionality lemma
@@ -577,7 +576,7 @@ exts-ids {Γ}{A}{B} = extensionality lemma
 The proof of `⟪ ids ⟫ M ≡ M` now follows easily by induction on `M`,
 using `exts-ids` in the case for `M ≡ ƛ N`.
 
-```
+```agda
 sub-id : ∀{Γ} {A} {M : Γ ⊢ A}
          → ⟪ ids ⟫ M ≡ M
 sub-id {M = ` x} = refl
@@ -596,7 +595,7 @@ sub-id {M = L · M} = cong₂ _·_ sub-id sub-id
 
 The `rename-id` equation is a corollary is `sub-id`.
 
-```
+```agda
 rename-id : ∀ {Γ}{A} {M : Γ ⊢ A}
   → rename (λ {A} x → x) M ≡ M
 rename-id {M = M} =
@@ -615,7 +614,7 @@ rename-id {M = M} =
 
 The proof of `sub-idR` follows directly from `sub-id`.
 
-```
+```agda
 sub-idR : ∀{Γ Δ} {σ : Subst Γ Δ} {A}
        → (σ ⨟ ids) ≡ σ {A}
 sub-idR {Γ}{σ = σ}{A} =
@@ -643,7 +642,7 @@ specialization for renaming.
 
 This in turn requires the following lemma about `ext`.
 
-```
+```agda
 compose-ext : ∀{Γ Δ Σ}{ρ : Rename Δ Σ} {ρ′ : Rename Γ Δ} {A B}
             → ((ext ρ) ∘ (ext ρ′)) ≡ ext (ρ ∘ ρ′) {B} {A}
 compose-ext = extensionality λ x → lemma {x = x}
@@ -658,7 +657,7 @@ To prove that composing renamings is equivalent to applying one after
 the other using `rename`, we proceed by induction on the term `M`,
 using the `compose-ext` lemma in the case for `M ≡ ƛ N`.
 
-```
+```agda
 compose-rename : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A}{ρ : Rename Δ Σ}{ρ′ : Rename Γ Δ}
   → rename ρ (rename ρ′ M) ≡ rename (ρ ∘ ρ′) M
 compose-rename {M = ` x} = refl
@@ -680,7 +679,7 @@ The next lemma states that if a renaming and substitution commute on
 variables, then they also commute on terms. We explain the proof in
 detail below.
 
-```
+```agda
 commute-subst-rename : ∀{Γ Δ}{M : Γ ⊢ ★}{σ : Subst Γ Δ}
                         {ρ : ∀{Γ} → Rename Γ (Γ , ★)}
      → (∀{x : Γ ∋ ★} → exts σ {B = ★} (ρ x) ≡ rename ρ (σ x))
@@ -752,7 +751,7 @@ to prove this directly by equational reasoning in the σ algebra, but
 that would require the `sub-assoc` equation, whose proof depends on
 `sub-sub`, which in turn depends on this lemma.)
 
-```
+```agda
 exts-seq : ∀{Γ Δ Δ′} {σ₁ : Subst Γ Δ} {σ₂ : Subst Δ Δ′}
          → ∀ {A} → (exts σ₁ ⨟ exts σ₂) {A} ≡ exts (σ₁ ⨟ σ₂)
 exts-seq = extensionality λ x → lemma {x = x}
@@ -784,7 +783,7 @@ The proof proceed by cases on `x`.
 
 Now we come to the proof of `sub-sub`, which we explain below.
 
-```
+```agda
 sub-sub : ∀{Γ Δ Σ}{A}{M : Γ ⊢ A} {σ₁ : Subst Γ Δ}{σ₂ : Subst Δ Σ}
             → ⟪ σ₂ ⟫ (⟪ σ₁ ⟫ M) ≡ ⟪ σ₁ ⨟ σ₂ ⟫ M
 sub-sub {M = ` x} = refl
@@ -820,7 +819,7 @@ We proceed by induction on the term `M`.
 The following corollary of `sub-sub` specializes the first
 substitution to a renaming.
 
-```
+```agda
 rename-subst : ∀{Γ Δ Δ′}{M : Γ ⊢ ★}{ρ : Rename Γ Δ}{σ : Subst Δ Δ′}
              → ⟪ σ ⟫ (rename ρ M) ≡ ⟪ σ ∘ ρ ⟫ M
 rename-subst {Γ}{Δ}{Δ′}{M}{ρ}{σ} =
@@ -841,7 +840,7 @@ rename-subst {Γ}{Δ}{Δ′}{M}{ρ}{σ} =
 The proof of `sub-assoc` follows directly from `sub-sub` and the
 definition of sequencing.
 
-```
+```agda
 sub-assoc : ∀{Γ Δ Σ Ψ : Context} {σ : Subst Γ Δ} {τ : Subst Δ Σ}
              {θ : Subst Σ Ψ}
           → ∀{A} → (σ ⨟ τ) ⨟ θ ≡ (σ ⨟ τ ⨟ θ) {A}
@@ -867,7 +866,7 @@ The last equation we needed to prove `subst-zero-exts-cons` was
 the equations for `exts` and `subst-zero` and then apply the σ algebra
 equation to arrive at the normal form `M • σ`.
 
-```
+```agda
 subst-zero-exts-cons : ∀{Γ Δ}{σ : Subst Γ Δ}{B}{M : Δ ⊢ B}{A}
                      → exts σ ⨟ subst-zero M ≡ (M • σ) {A}
 subst-zero-exts-cons {Γ}{Δ}{σ}{B}{M}{A} =
@@ -907,7 +906,7 @@ normal form
 We then do the same with the right-hand side, arriving at the same
 normal form.
 
-```
+```agda
 subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{σ : Subst Γ Δ }
     → ⟪ exts σ ⟫ N [ ⟪ σ ⟫ M ] ≡ ⟪ σ ⟫ (N [ M ])
 subst-commute {Γ}{Δ}{N}{M}{σ} =
@@ -947,7 +946,7 @@ substitution. In the proof below, we first exchange `rename ρ` for
 the substitution `⟪ ren ρ ⟫`, and apply `subst-commute`, and
 then convert back to `rename ρ`.
 
-```
+```agda
 rename-subst-commute : ∀{Γ Δ}{N : Γ , ★ ⊢ ★}{M : Γ ⊢ ★}{ρ : Rename Γ Δ }
     → (rename (ext ρ) N) [ rename ρ M ] ≡ rename ρ (N [ M ])
 rename-subst-commute {Γ}{Δ}{N}{M}{ρ} =
@@ -968,7 +967,7 @@ rename-subst-commute {Γ}{Δ}{N}{M}{ρ} =
 To present the substitution lemma, we introduce the following notation
 for substituting a term `M` for index 1 within term `N`.
 
-```
+```agda
 _〔_〕 : ∀ {Γ A B C}
         → Γ , B , C ⊢ A
         → Γ ⊢ B
@@ -981,7 +980,7 @@ _〔_〕 {Γ} {A} {B} {C} N M =
 The substitution lemma is stated as follows and proved as a corollary
 of the `subst-commute` lemma.
 
-```
+```agda
 substitution : ∀{Γ}{M : Γ , ★ , ★ ⊢ ★}{N : Γ , ★ ⊢ ★}{L : Γ ⊢ ★}
     → (M [ N ]) [ L ] ≡ (M 〔 L 〕) [ (N [ L ]) ]
 substitution{M = M}{N = N}{L = L} =

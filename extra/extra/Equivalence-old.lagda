@@ -1,6 +1,5 @@
 ---
 title     : "Equivalence: Equivalence and equational reasoning"
-layout    : page
 permalink : /Equivalence
 ---
 
