@@ -3,17 +3,17 @@
   "elements": ["html5"],
   "extends": ["html-validate:recommended", "html-validate:document"],
   "rules": {
-    "require-sri": ["off"],
-    "valid-id": ["off"],
-    "wcag/h30": ["off"],
-    "wcag/h37": ["warn"],
-    "no-inline-style": ["warn"],
     "heading-level": ["warn"],
-    "no-dup-id": ["warn"],
-    "long-title": ["warn"],
     "input-missing-label": ["warn"],
-    "script-type": ["warn"],
+    "long-title": ["warn"],
+    "no-dup-id": ["warn"],
+    "no-inline-style": ["warn"],
+    "no-trailing-whitespace": ["warn"],
     "prefer-tbody": ["warn"],
-    "no-trailing-whitespace": ["warn"]
+    "require-sri": ["warn"],
+    "script-type": ["warn"], 
+    "valid-id": ["warn"],
+    "wcag/h30": ["warn"],
+    "wcag/h37": ["warn"]
   }
 }
