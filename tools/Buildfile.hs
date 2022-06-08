@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 {-# HLINT ignore "Monad law, left identity" #-}
+{-# HLINT ignore "Redundant <&>" #-}
 module Main where
 
 import Buildfile.Author (Author (..))
@@ -476,8 +477,7 @@ main = do
                   writerReferenceLocation = Pandoc.EndOfSection
                 }
 
-        epub <- runPandocWith Pandoc.INFO $
-          Pandoc.writeEPUB3 writerOptsForEpub bookDoc
+        epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
         liftIO $ LazyByteString.writeFile out epub
 
       -- Build epub metadata
