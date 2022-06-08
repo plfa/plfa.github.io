@@ -259,9 +259,7 @@ main = do
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
-        agdaLibraries <-
-          failOnError $
-            getAgdaLibrariesForProject <$> getProject src
+        agdaLibraries <- failOnError $ getAgdaLibrariesForProject <$> getProject src
         (lib, includePath, agdaHtmlFileName) <-
           failOnError $
             Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
@@ -276,8 +274,7 @@ main = do
         maybeAgdaLinkFixer <-
           getProject src
             & rightToMaybe
-            & traverse getAgdaLinkFixer
-            & fmap (fmap Pandoc.withUrls)
+            & traverse (fmap Pandoc.withUrls . getAgdaLinkFixer)
         readFile' prev
           >>= Pandoc.markdownToPandoc
           <&> fromMaybe id maybeAgdaLinkFixer
@@ -304,15 +301,9 @@ main = do
               bodyHtml <- routeAnchor "body_html" post
               (fileMetadata, body) <- getFileWithMetadata bodyHtml
               let bodyHtmlField = constField "body_html" body
-              url <-
-                failOnError $
-                  fileMetadata ^. "url"
-              let htmlTeaserField =
-                    ignoreError $
-                      htmlTeaserFieldFromHtml url body "teaser_html"
-              let textTeaserField =
-                    ignoreError $
-                      textTeaserFieldFromHtml body "teaser_plain"
+              url <- failOnError $ fileMetadata ^. "url"
+              let htmlTeaserField = ignoreError $ htmlTeaserFieldFromHtml url body "teaser_html"
+              let textTeaserField = ignoreError $ textTeaserFieldFromHtml body "teaser_plain"
               return $ mconcat [fileMetadata, bodyHtmlField, htmlTeaserField, textTeaserField]
             return $ constField "post" (reverse postsMetadata)
 
@@ -336,12 +327,7 @@ main = do
         postsField <- getPostsField ()
         (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
         buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata =
-              mconcat
-                [ postsField,
-                  fileMetadata,
-                  buildDate
-                ]
+        let metadata = mconcat [ postsField, fileMetadata, buildDate ]
         return rssXmlTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
