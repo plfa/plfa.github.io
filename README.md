@@ -15,7 +15,7 @@ next      : /Naturals/
 ## Installing Agda and PLFA
 You can read PLFA [online][plfa] without installing anything. However, if you wish to interact with the code or complete the exercises, you need several things:
 
-  - if on macOS: [XCode](#on-macos-install-the-xcode-command-line-tools)
+  - On macOS: the [XCode Command Line Tools](#on-macos-install-the-xcode-command-line-tools)
   - [Git](#install-git)
   - [GHC and Cabal](#install-ghc-and-cabal)
   - [Agda](#install-agda)
@@ -26,22 +26,24 @@ PLFA is tested against specific versions of Agda and the standard library, which
 
 There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out-of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.
 
+
 ### On macOS: Install the XCode Command Line Tools
 On macOS, you’ll need to install the [XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:
 ```bash
 xcode-select --install
 ```
 
+
 ### Install Git
-To check whether you have git, run the following command:
+You can check whether you have Git by running the following command:
 ```bash
 git --version
 ```
-If you do not already have Git installed, see [the Git downloads page][git].
+If you do not have Git, see [the Git downloads page][git].
 
 
 ### Install GHC and Cabal
-Agda is written in Haskell, so to install it we’ll need the *Glorious Haskell Compiler* (version 8.10.7) and it's package managed *Cabal* (any version after 3.6). We recommend installing both of these using [ghcup][ghcup].
+Agda is written in Haskell, so to install it we’ll need the *Glorious Haskell Compiler* version 8.10.7 and it's package managed *Cabal*. We recommend installing both of these using [ghcup][ghcup].
 
 
 ## Install Agda
@@ -212,9 +214,6 @@ You'll see the key sequence of the character in mini buffer.
 
 [epub]: https://plfa.github.io/plfa.epub
 [plfa]: http://plfa.inf.ed.ac.uk
-[plfa-dev]: https://github.com/plfa/plfa.github.io/archive/dev.zip
-[plfa-status]: https://travis-ci.org/plfa/plfa.github.io.svg?branch=dev
-[plfa-travis]: https://travis-ci.org/plfa/plfa.github.io
 [plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
 [plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
@@ -245,7 +244,6 @@ You'll see the key sequence of the character in mini buffer.
 [ruby-bundler]: https://bundler.io/#getting-started
 [ruby-jekyll]: https://jekyllrb.com/
 [ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
-[hakyll]: https://jaspervdj.be/hakyll/
 [pandoc]: https://pandoc.org/installing.html
 [pandoc-markdown]: https://pandoc.org/MANUAL.html#pandocs-markdown
 [commonmark]: https://commonmark.org/
