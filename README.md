@@ -28,7 +28,7 @@ There are several versions of Agda and its standard library online. If you are u
 
 
 ### On macOS: Install the XCode Command Line Tools
-On macOS, you’ll need to install the [XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:
+On macOS, you’ll need to install [The XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:
 ```bash
 xcode-select --install
 ```
