@@ -61,6 +61,7 @@ HTML_MINIFIER_ARGS += --file-ext=html
 UNZIP ?= unzip
 
 UNZIP_ARGS += -q
+UNZIP_ARGS += -n
 UNZIP_ARGS += -d $(OUT_DIR)
 
 .PHONY: build
