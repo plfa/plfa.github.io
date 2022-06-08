@@ -41,7 +41,7 @@ ifneq ($(DEV),)
 CABAL_ARGS += --project-file=cabal.project.dev
 endif
 
-SHAKE_ARGS += -j
+SHAKE_ARGS += -j1
 SHAKE_ARGS += --lint
 SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
 SHAKE_ARGS += --timing
