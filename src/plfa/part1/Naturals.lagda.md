@@ -77,11 +77,14 @@ successor of two; and so on.
 
 #### Exercise `seven` (practice) {#seven}
 
-Write out `7` in longhand.
+Write out `7` in longhand. 
 
 ```agda
 -- Your code goes here
 ```
+
+You will need to give both a type signature and definition for the
+variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
 
 
 ## Unpacking the inference rules
@@ -479,7 +482,7 @@ _ =
   ∎
 ```
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
-The second line matches the inductive case by taking `m = 0` and `n = 3`,
+the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
 Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
@@ -798,7 +801,7 @@ required type of each:
     ?0 : ℕ
     ?1 : ℕ
 
-Going into hole 0 and type `C-c C-,` will display information on the
+Going into hole 0 and typing `C-c C-,` will display information on the
 required type of the hole, and what free variables are available:
 
     Goal: ℕ
@@ -812,7 +815,7 @@ filled, you can type `C-c C-space`, which will remove the hole:
     zero + n = n
     suc m + n = { }1
 
-Again, going into hole 1 and type `C-c C-,` will display information on the
+Again, going into hole 1 and typing `C-c C-,` will display information on the
 required type of the hole, and what free variables are available:
 
     Goal: ℕ

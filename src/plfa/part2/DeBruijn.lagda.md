@@ -511,7 +511,11 @@ two natural numbers, now adapted to the intrinsically-typed
 de Bruijn representation.
 
 ```agda
--- Your code goes here
+mul : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
+mul = μ ƛ ƛ (case (# 1) (`zero) (plus · # 1 · (# 3 · # 0 · # 1)))
+
+three : ∀ {Γ} → Γ ⊢ `ℕ
+three = `suc two
 ```
 
 

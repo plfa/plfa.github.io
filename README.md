@@ -62,7 +62,7 @@ We recommend installing PLFA from Github into your home directory, by running th
 ```bash
 git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/plfa/plfa.github.io plfa
 ```
-(Remove `--depth 1` and `--shallow-submodules` if you want the complete git history. If you forget to type `--recurse-submodules`, delete the freshly created `plfa` directory and retype the command with the correct flags.)
+PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got it, in the `standard-library` directory!
 
 Finally, we need to let Agda know where to find the Agda standard library and PLFA. Two configuration files are required, one which lists paths to the libraries and one which specifies which libraries to load by default.
 

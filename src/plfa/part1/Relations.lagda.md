@@ -598,7 +598,8 @@ exploiting the corresponding properties of inequality.
 
 #### Exercise `<-trans` (recommended) {#less-trans}
 
-Show that strict inequality is transitive.
+Show that strict inequality is transitive. Use a direct proof. (A later
+exercise exploits the relation between < and ≤.)
 
 ```agda
 -- Your code goes here
@@ -608,9 +609,9 @@ Show that strict inequality is transitive.
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
-  * `m < n`,
-  * `m ≡ n`, or
-  * `m > n`.
+* `m < n`,
+* `m ≡ n`, or
+* `m > n`.
 
 Define `m > n` to be the same as `n < m`.
 You will need a suitable data declaration,
