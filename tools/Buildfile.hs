@@ -96,7 +96,9 @@ main = do
       }
     $ do
       --------------------------------------------------------------------------------
-      -- Agda libraries
+      -- Agda resource & libraries
+      
+      agda <- newResource "agda" 1
 
       standardLibrary <- liftIO $
         catch (Agda.getStandardLibrary "standard-library") $
@@ -264,7 +266,8 @@ main = do
           failOnError $
             Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
         let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> agdaHtmlFileName </> Agda.libraryRoot lib </> includePath
-        Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
+        withResource agda 1 $
+          Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
 
       -- Stage 2: Compile Markdown to HTML
       tmpBodyHtmlDir <//> "*.html" %> \next -> do
