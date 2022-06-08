@@ -38,6 +38,8 @@ import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import System.Directory (makeAbsolute)
 import Text.Printf (printf)
+import Control.Exception (catch)
+import System.Exit (exitWith, ExitCode (..))
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -95,7 +97,14 @@ main = do
       --------------------------------------------------------------------------------
       -- Agda libraries
 
-      standardLibrary <- Agda.getStandardLibrary "standard-library"
+      standardLibrary <- liftIO $
+        catch (Agda.getStandardLibrary "standard-library") $
+            \Agda.AgdaStandardLibraryNotFound {..} -> do
+              putStrLn "Could not find Agda standard library.\n\
+                       \Did you forget to clone the repository with the '--recurse-submodules' flag?\n\
+                       \If so, you can download the Agda standard library into the 'standard-library' directory by running:\n\n\
+                       \  git submodule update --init"
+              exitWith (ExitFailure 1)
 
       let getAgdaLibrariesForProject :: Project -> [Agda.Library]
           getAgdaLibrariesForProject project = standardLibrary : localAgdaLibraries
