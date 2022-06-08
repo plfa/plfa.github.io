@@ -562,7 +562,7 @@ epubSassOptions :: SassOptions
 epubSassOptions = def {sassIncludePaths = Just [epubStyleDir]}
 
 --------------------------------------------------------------------------------
--- File reader
+-- File Reader
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
