@@ -13,6 +13,7 @@
     "long-title": ["warn"],
     "input-missing-label": ["warn"],
     "script-type": ["warn"],
-    "prefer-tbody": ["warn"]
+    "prefer-tbody": ["warn"],
+    "no-trailing-whitespace": ["warn"]
   }
 }
