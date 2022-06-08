@@ -46,7 +46,7 @@ If you do not have Git, see [the Git downloads page][git].
 Agda is written in Haskell, so to install it we’ll need the *Glorious Haskell Compiler* version 8.10.7 and it's package managed *Cabal*. We recommend installing both of these using [ghcup][ghcup].
 
 
-## Install Agda
+### Install Agda
 The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.2.2. Run the following command:
 ```bash
 cabal update
