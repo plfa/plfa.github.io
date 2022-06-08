@@ -258,7 +258,7 @@ main = do
 
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
-        (src, prev) <- (,) <$> routeSource next <*> routePrev next
+        (src, prev) <- (,) <$> routeSource out <*> routePrev out
         agdaLibraries <-
           failOnError $
             getAgdaLibrariesForProject <$> getProject src
@@ -266,6 +266,7 @@ main = do
           failOnError $
             Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
         let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> agdaHtmlFileName </> Agda.libraryRoot lib </> includePath
+        need [prev]
         withResource agda 1 $
           Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
 
