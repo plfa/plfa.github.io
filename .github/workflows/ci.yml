@@ -62,7 +62,7 @@ jobs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
 
       - name: Build website
