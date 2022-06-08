@@ -58,14 +58,20 @@ HTML_MINIFIER_ARGS += --input-dir=$(OUT_DIR)
 HTML_MINIFIER_ARGS += --output-dir=$(OUT_DIR)
 HTML_MINIFIER_ARGS += --file-ext=html
 
+UNZIP ?= unzip
+
+UNZIP_ARGS += -q
+UNZIP_ARGS += -d $(OUT_DIR)
+
 .PHONY: build
 build: check-haskell check-html-minifier
 	@mkdir -p $(TMP_DIR)/reports/
 	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
-	@echo "Minifying HTML..."
+	@echo "Minifying HTML with html-minifier..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
-	@unzip -d $(OUT_DIR) data/legacy/19.08.zip
-	@unzip -d $(OUT_DIR) data/legacy/20.07.zip
+	@echo "Unpacking legacy versions..."
+	@$(UNZIP) $(UNZIP_ARGS) data/legacy/19.08.zip
+	@$(UNZIP) $(UNZIP_ARGS)  data/legacy/20.07.zip
 
 .PHONY: clean
 clean: check-haskell
@@ -140,7 +146,7 @@ HTML_VALIDATE_ARGS += .
 
 .PHONY: test-html-validate
 test-html-validate: check-html-validate
-	@echo "Checking HTML..."
+	@echo "Checking HTML with html-validate..."
 	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
 
 
@@ -154,7 +160,7 @@ FEED_VALIDATOR_ARGS += rss.xml
 
 .PHONY: test-feed-validator
 test-feed-validator: check-feed-validator
-	@echo "Checking rss.xml..."
+	@echo "Checking RSS with feed-validator..."
 	@(cd $(OUT_DIR) && $(FEED_VALIDATOR) $(FEED_VALIDATOR_ARGS))
 
 
@@ -176,7 +182,7 @@ HTML_PROOFER_ARGS += .
 
 .PHONY: test-html-proofer
 test-html-proofer: check-html-proofer
-	@echo "Checking HTML..."
+	@echo "Checking HTML with HTMLProofer..."
 	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
 
 
@@ -188,7 +194,7 @@ EPUBCHECK_ARGS += $(OUT_DIR)/plfa.epub
 
 .PHONY: test-epubcheck
 test-epubcheck: check-epubcheck
-	@echo "Checking plfa.epub..."
+	@echo "Checking EPUB with EPUBCheck..."
 	@$(EPUBCHECK) $(EPUBCHECK_ARGS)
 
 
@@ -203,7 +209,7 @@ ACE_ARGS += $(OUT_DIR)/plfa.epub
 
 .PHONY: test-ace
 test-ace: check-ace
-	@echo "Checking plfa.epub..."
+	@echo "Checking EPUB with Ace by DAISY..."
 	@$(ACE) $(ACE_ARGS)
 	@echo "See report: $(TMP_DIR)/ace/report.html"
 
