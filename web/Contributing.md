@@ -63,6 +63,41 @@ The first two releases, 19.08 and 20.07, are included in the `dev` branch of the
 You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`. For instance, the first release of PLFA was by @plfa19.08. See the [Bibliography](#bibliography) section below for the bibliography. Citations and the bibliography are currently styled according to the ISO-690 standard. Other styles can easily be found using the [Zotero Style Repository][Zotero]. The citation keys are cross-referenced with the BibTeX file under `bib/plfa.bib`.
 
 
+## The structure of the PLFA repository
+
+```
+plfa
+├── book
+│   ├── epub
+│   └── pdf
+├── courses
+│   └── TSPL/2019
+├── data
+│   ├── authors
+│   ├── contributors
+│   ├── dotagda
+│   └── bibliography.bib
+│   └── metadata.yml
+│   └── tableOfContents.yml
+├── extra
+├── papers
+├── src
+│   └── plfa
+│       ├── backmatter
+│       ├── frontmatter
+│       ├── part1
+│       ├── part2
+│       └── part3
+├── tools
+│   └── Buildfile.hs
+│   └── UpdateContributors.hs
+└── web
+    ├── assets
+    ├── posts
+    ├── sass
+    └── templates
+```
+
 ## References
 
 [SemVer]: https://semver.org/
