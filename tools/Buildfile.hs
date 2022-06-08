@@ -97,7 +97,7 @@ main = do
     $ do
       --------------------------------------------------------------------------------
       -- Agda resource & libraries
-      
+
       agda <- newResource "agda" 1
 
       standardLibrary <- liftIO $
@@ -258,7 +258,7 @@ main = do
 
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
-        (src, prev) <- (,) <$> routeSource out <*> routePrev out
+        (src, prev) <- (,) <$> routeSource next <*> routePrev next
         agdaLibraries <-
           failOnError $
             getAgdaLibrariesForProject <$> getProject src
