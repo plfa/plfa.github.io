@@ -15,7 +15,7 @@ next      : /Naturals/
 ## Installing Agda and PLFA
 You can read PLFA [online][plfa] without installing anything. However, if you wish to interact with the code or complete the exercises, you need several things:
 
-  - On macOS: the [XCode Command Line Tools](#on-macos-install-the-xcode-command-line-tools)
+  - On macOS: [The XCode Command Line Tools](#on-macos-install-the-xcode-command-line-tools)
   - [Git](#install-git)
   - [GHC and Cabal](#install-ghc-and-cabal)
   - [Agda](#install-agda)
