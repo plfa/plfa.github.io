@@ -20,8 +20,8 @@ jobs:
       matrix:
         os: [macOS-latest, ubuntu-latest]
         ghc: ["8.10.7"]
-        node: ["16", "latest"]
-        cabal: ["3.6", "latest"]
+        node: ["latest"]
+        cabal: ["latest"]
 
     steps:
       - name: Checkout
