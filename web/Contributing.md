@@ -4,9 +4,11 @@ permalink : /Contributing/
 ---
 
 
-## How to publish the current version of PLFA to the web
+## How to publish the current version of PLFA
 
 Any changes to the development branch `dev` are automatically published to the live version of the book, provided that they pass certain tests. If you've made changes though the book, and they are not propagated to the live version, please check the build status on (GitHub Actions)[GitHub-Actions].
+
+The copy of PLFA hosted at <https://plfa.inf.ed.ac.uk> updates daily.
 
 
 ## How to publish an announcement
@@ -55,9 +57,11 @@ Then, we need to make sure that the release is published to live versions of PLF
 
 The first two releases, 19.08 and 20.07, are included in the `dev` branch of the repository under `data/legacy/`, because these versions do not use relative URLs, and as such cannot simply be moved into a subdirectory. Later releases should use relative URLs, and therefore can simply be downloaded from GitHub, and copied into their appropriate subdirectories.
 
+
 ## How to add a citation
 
 You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`. For instance, the first release of PLFA was by @plfa19.08. See the [Bibliography](#bibliography) section below for the bibliography. Citations and the bibliography are currently styled according to the ISO-690 standard. Other styles can easily be found using the [Zotero Style Repository][Zotero]. The citation keys are cross-referenced with the BibTeX file under `bib/plfa.bib`.
+
 
 ## References
 
