@@ -1,6 +1,5 @@
 ---
 title     : "Inherent"
-layout    : page
 permalink : /Inherent/
 ---
 

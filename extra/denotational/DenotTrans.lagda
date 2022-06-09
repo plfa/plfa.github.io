@@ -1,6 +1,5 @@
 ---
 title     : "DenotTrans: Denotational Transitivity"
-layout    : page
 permalink : /DenotTrans/
 ---
 

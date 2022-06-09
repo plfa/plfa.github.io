@@ -1,6 +1,5 @@
 ---
 title     : "Quantitative: Multiplicities and Linearity"
-layout    : page
 permalink : /Quantitative/Mult/
 ---
 

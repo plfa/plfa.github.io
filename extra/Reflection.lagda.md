@@ -1,6 +1,5 @@
 ---
 title     : "Reflection: Proof by Reflection"
-layout    : page
 prev      : /Decidable/
 permalink : /Reflection/
 next      : /Lists/

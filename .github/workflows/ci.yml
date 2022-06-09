@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+env:
+  CABAL_ARGS: "--project-file=cabal.project.ci"
+
+jobs:
+  build:
+    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest]
+        ghc: ["8.10.7"]
+        node: ["latest"]
+        cabal: ["latest"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v2
+        id: setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: ${{ matrix.cabal }}
+
+      - name: Cabal freeze
+        run: |
+          cabal v2-update
+          cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
+
+      - name: Add Cabal installdir to path (Unix)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run:  echo "${HOME}/.cabal/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Add Cabal installdir to path (Windows)
+        if: runner.os == 'Windows'
+        run: echo "$env:APPDATA\cabal\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: powershell
+
+      - name: Cache ~/.cabal/store and dist-newstyle
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ steps.setup-haskell.outputs.cabal-store }}
+            dist-newstyle
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.ci.freeze') }}
+          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
+
+      - name: Build website
+        run: make build
+
+      - name: Test website
+        run: make test
+                
+      # - name: Deploy website
+      #   if: runner.os == 'macOS'
+      #   uses: JamesIves/github-pages-deploy-action@v4.2.5
+      #   with:
+      #     branch: web
+      #     folder: _site
+
+        

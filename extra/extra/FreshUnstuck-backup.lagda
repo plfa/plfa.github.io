@@ -1,6 +1,5 @@
 ---
 title     : "FreshUnstuck: Generation of fresh names with strings"
-layout    : page
 permalink : /FreshUnstuck
 ---
 
@@ -41,7 +40,7 @@ data _∈_ : Id → List Id → Set where
       here : ∀ {x xs} →
         ----------
         x ∈ x ∷ xs
-        
+
       there : ∀ {w x xs} →
         w ∈ xs →
         ----------
@@ -57,25 +56,25 @@ next s  = foldr _⊔_ 0 ∘ map (bump s)
 
 ⊔-lemma : ∀ {s w xs} → w ∈ xs → bump s w ≤ next s xs
 ⊔-lemma {s} {_} {_ ∷ xs} here        =  m≤m⊔n _ (next s xs)
-⊔-lemma {s} {w} {x ∷ xs} (there x∈)  =  ≤-trans (⊔-lemma {s} {w} x∈) (n≤m⊔n (bump s x) (next s xs)) 
+⊔-lemma {s} {w} {x ∷ xs} (there x∈)  =  ≤-trans (⊔-lemma {s} {w} x∈) (n≤m⊔n (bump s x) (next s xs))
 
 fresh : Id → List Id → Id
 fresh (id s _) xs = id s (next s xs)
 
 id-invert-str : ∀ {s t m n} → (id s m) ≡ (id t n) → t ≡ s
-id-invert-str refl = refl 
+id-invert-str refl = refl
 
 id-invert-nat : ∀ {s t m n} → (id s m) ≡ (id t n) → n ≡ m
 id-invert-nat refl = refl
 
 not-suc-le : ∀ {n} → ¬ (suc n ≤ n)
 not-suc-le {zero} ()
-not-suc-le {suc n} (Nat.s≤s sn≤n) = not-suc-le sn≤n 
+not-suc-le {suc n} (Nat.s≤s sn≤n) = not-suc-le sn≤n
 
 fresh-lemma : ∀ {w x xs} → w ∈ xs → w ≢ fresh x xs
 fresh-lemma {w @ (id t n)} {x @ (id s _)} {xs} w∈ w≢fr
-  with s String.≟ t | ⊔-lemma {s} {w} {xs} w∈ 
-... | yes refl | prf rewrite id-invert-nat w≢fr = not-suc-le prf 
+  with s String.≟ t | ⊔-lemma {s} {w} {xs} w∈
+... | yes refl | prf rewrite id-invert-nat w≢fr = not-suc-le prf
 ... | no ¬p    | _  = ¬p (id-invert-str w≢fr)
 
 pattern [_]       x        =  x ∷ []

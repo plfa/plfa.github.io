@@ -1,6 +1,5 @@
 ---
 title     : "Modules: Modules and List Examples"
-layout    : page
 permalink : /Modules/
 ---
 

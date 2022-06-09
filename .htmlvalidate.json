@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "elements": ["html5"],
+  "extends": ["html-validate:recommended", "html-validate:document"],
+  "rules": {
+    "heading-level": ["warn"],
+    "input-missing-label": ["warn"],
+    "long-title": ["warn"],
+    "no-dup-id": ["warn"],
+    "no-inline-style": ["warn"],
+    "no-trailing-whitespace": ["warn"],
+    "prefer-tbody": ["warn"],
+    "require-sri": ["warn"],
+    "script-type": ["warn"], 
+    "valid-id": ["warn"],
+    "wcag/h30": ["warn"],
+    "wcag/h37": ["warn"]
+  }
+}

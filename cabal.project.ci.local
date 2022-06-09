@@ -1,0 +1,4 @@
+ignore-project: False
+
+package shoggoth
+  flags: +install-agda

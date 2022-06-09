@@ -1,6 +1,5 @@
 ---
 title     : "Raw"
-layout    : page
 permalink : /Raw/
 ---
 

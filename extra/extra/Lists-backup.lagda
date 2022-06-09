@@ -1,6 +1,5 @@
 ---
 title     : "Lists: Lists and higher-order functions"
-layout    : page
 permalink : /Lists
 ---
 
@@ -59,7 +58,7 @@ denotes the list of the first three natural numbers.  Since `_::_`
 associates to the right, the term parses as `0 ∷ (1 ∷ (2 ∷ []))`.
 Here `0` is the first element of the list, called the *head*,
 and `1 ∷ (2 ∷ [])` is a list of the remaining elements, called the
-*tail*. Lists are a rather strange beast: they have a head and a tail, 
+*tail*. Lists are a rather strange beast: they have a head and a tail,
 nothing in between, and the tail is itself another list!
 
 As we've seen, parameterised types can be translated to
@@ -107,7 +106,7 @@ on the right-hand side of an equation.
 ## Append
 
 Our first function on lists is written `_++_` and pronounced
-*append*.  
+*append*.
 \begin{code}
 infixr 5 _++_
 
@@ -265,7 +264,7 @@ The length of one list appended to another is the
 sum of the lengths of the lists.
 \begin{code}
 length-++ : ∀ {A : Set} (xs ys : List A) → length (xs ++ ys) ≡ length xs + length ys
-length-++ {A} [] ys = 
+length-++ {A} [] ys =
   begin
     length ([] ++ ys)
   ≡⟨⟩
@@ -449,7 +448,7 @@ _ =
     shunt (2 ∷ []) (1 ∷ 0 ∷ [])
   ≡⟨⟩
     shunt [] (2 ∷ 1 ∷ 0 ∷ [])
-  ≡⟨⟩  
+  ≡⟨⟩
     2 ∷ 1 ∷ 0 ∷ []
   ∎
 \end{code}
@@ -533,7 +532,7 @@ Prove the following relationship between map and append.
 
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
-for the empty list.  
+for the empty list.
 \begin{code}
 foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
 foldr _⊗_ e []        =  e
@@ -559,7 +558,7 @@ _ =
     1 + (2 + (3 + (4 + foldr _+_ 0 [])))
   ≡⟨⟩
     1 + (2 + (3 + (4 + 0)))
-  ∎    
+  ∎
 \end{code}
 Fold requires time linear in the length of the list.
 
@@ -603,7 +602,7 @@ postulate
 \end{code}
 
 
-### Exercise (`map-is-foldr`)  
+### Exercise (`map-is-foldr`)
 
 Show that map can be defined using fold.
 \begin{code}
@@ -728,7 +727,7 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
     foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
   ∎
 \end{code}
-    
+
 ## All {#All}
 
 We can also define predicates over lists. Two of the most important

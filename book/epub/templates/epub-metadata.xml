@@ -1,0 +1,12 @@
+<dc:title type="main">$pagetitle$</dc:title>
+<dc:description><![CDATA[$description$]]></dc:description>
+$for(author)$
+<dc:creator role="aut" id="$author.github$">$author.name$</dc:creator>
+$endfor$
+$for(contributor)$
+<dc:contributor role="ctb" id="$contributor.github$">$contributor.name$</dc:contributor>
+$endfor$
+<dc:rights>$license.name$</dc:rights>
+<dc:language>$language$</dc:language>
+<dc:date>$build_date$</dc:date>
+<dc:type>Text</dc:type>

@@ -1,0 +1,127 @@
+// Frankenfont
+// A custom font made by combining glyphs from mononoki, DejaVu Sans Mono,
+// Symbola and Droid, and adjusting the width where necessary to get a
+// consistent fixed-width font.
+@font-face{
+    font-family: 'Frankenfont';
+    src: url('../webfonts/Frankenfont-Regular.woff2') format('woff2'),
+         url('../webfonts/Frankenfont-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// mononoki
+// See: https://madmalik.github.io/mononoki/
+@font-face {
+    font-family: 'mononoki';
+    src: url('../webfonts/mononoki-Regular.woff2') format('woff2'),
+         url('../webfonts/mononoki-Regular.woff')  format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'mononoki';
+    src: url('../webfonts/mononoki-Bold.woff2') format('woff2'),
+         url('../webfonts/mononoki-Bold.woff')  format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'mononoki';
+    src: url('../webfonts/mononoki-Italic.woff2') format('woff2'),
+         url('../webfonts/mononoki-Italic.woff')  format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'mononoki';
+    src: url('../webfonts/mononoki-BoldItalic.woff2') format('woff2'),
+         url('../webfonts/mononoki-BoldItalic.woff')  format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+// DejaVu Sans Mono
+// See: https://dejavu-fonts.github.io/
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../webfonts/DejaVuSansMono-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../webfonts/DejaVuSansMono-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../webfonts/DejaVuSansMono-Oblique.woff') format('woff');
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {
+    font-family: 'DejaVu Sans Mono';
+    src: url('../webfonts/DejaVuSansMono-BoldOblique.woff') format('woff');
+    font-weight: bold;
+    font-style: oblique;
+}
+
+// FreeMono
+// See: https://www.gnu.org/software/freefont/
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../webfonts/FreeMono-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../webfonts/FreeMono-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../webfonts/FreeMono-Oblique.woff') format('woff');
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {
+    font-family: 'FreeMono';
+    src: url('../webfonts/FreeMono-BoldOblique.woff') format('woff');
+    font-weight: bold;
+    font-style: oblique;
+}
+
+// Source Code Pro
+// See: https://github.com/adobe-fonts/source-code-pro
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../webfonts/SourceCodePro-Regular.woff2') format('woff2'),
+         url('../webfonts/SourceCodePro-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../webfonts/SourceCodePro-Bold.woff2') format('woff2'),
+         url('../webfonts/SourceCodePro-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../webfonts/SourceCodePro-Italic.woff2') format('woff2'),
+         url('../webfonts/SourceCodePro-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../webfonts/SourceCodePro-BoldItalic.woff2') format('woff2'),
+         url('../webfonts/SourceCodePro-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
