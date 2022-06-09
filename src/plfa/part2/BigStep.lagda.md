@@ -185,7 +185,7 @@ _≈ₑ_ : ∀{Γ} → ClosEnv Γ → Subst Γ ∅ → Set
 
 (clos {Γ} M γ) ≈ N = Σ[ σ ∈ Subst Γ ∅ ] γ ≈ₑ σ × (N ≡ subst σ M)
 
-γ ≈ₑ σ = ∀{x} → (γ x) ≈ (σ x)
+γ ≈ₑ σ = ∀ x → (γ x) ≈ (σ x)
 ```
 
 We can now state the main lemma:
@@ -201,7 +201,7 @@ The empty environment is equivalent to the identity substitution
 
 ```agda
 ≈ₑ-id : ∅' ≈ₑ ids
-≈ₑ-id {()}
+≈ₑ-id ()
 ```
 
 Of course, applying the identity substitution to a term returns
@@ -246,9 +246,9 @@ So the proof of `≈ₑ-ext` is as follows.
   → γ ≈ₑ σ  →  V ≈ N
     --------------------------
   → (γ ,' V) ≈ₑ (ext-subst σ N)
-≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N {Z} = V≈N
-≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N {S x}
-  rewrite subst-zero-exts {σ = σ}{M = N}{x} = γ≈ₑσ
+≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N Z = V≈N
+≈ₑ-ext {Γ} {γ} {σ} {V} {N} γ≈ₑσ V≈N (S x)
+  rewrite subst-zero-exts {σ = σ}{M = N}{x} = γ≈ₑσ x
 ```
 
 We proceed by induction on the input variable.
@@ -282,7 +282,7 @@ below.
          ---------------------------------------
        → Σ[ N ∈ ∅ ⊢ ★ ] (subst σ M —↠ N) × V ≈ N
 ⇓→—↠×≈ {γ = γ} (⇓-var{x = x} γx≡Lδ δ⊢L⇓V) γ≈ₑσ
-    with γ x | γ≈ₑσ {x} | γx≡Lδ
+    with γ x | γ≈ₑσ x | γx≡Lδ
 ... | clos L δ | ⟨ τ , ⟨ δ≈ₑτ , σx≡τL ⟩ ⟩ | refl
       with ⇓→—↠×≈{σ = τ} δ⊢L⇓V δ≈ₑτ
 ...   | ⟨ N , ⟨ τL—↠N , V≈N ⟩ ⟩ rewrite σx≡τL =
@@ -293,7 +293,7 @@ below.
     with ⇓→—↠×≈{σ = σ} L⇓ƛNδ γ≈ₑσ
 ... | ⟨ _ , ⟨ σL—↠ƛτN , ⟨ τ , ⟨ δ≈ₑτ , ≡ƛτN ⟩ ⟩ ⟩ ⟩ rewrite ≡ƛτN
       with ⇓→—↠×≈ {σ = ext-subst τ (subst σ M)} N⇓V
-             (λ {x} → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ {x})
+             (λ x → ≈ₑ-ext{σ = τ} δ≈ₑτ ⟨ σ , ⟨ γ≈ₑσ , refl ⟩ ⟩ x)
            | β{∅}{subst (exts τ) N}{subst σ M}
 ...   | ⟨ N' , ⟨ —↠N' , V≈N' ⟩ ⟩ | ƛτN·σM—→
         rewrite sub-sub{M = N}{σ₁ = exts τ}{σ₂ = subst-zero (subst σ M)} =
