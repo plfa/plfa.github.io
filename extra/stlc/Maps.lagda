@@ -1,6 +1,5 @@
 ---
 title     : "Maps: Total and Partial Maps"
-layout    : page
 permalink : /Maps
 ---
 
@@ -121,7 +120,7 @@ a map `ρ`, a key `x`, and a value `v` and returns a new map that
 takes `x` to `v` and takes every other key to whatever `ρ` does.
 
 \begin{code}
-  infixl 15 _,_↦_  
+  infixl 15 _,_↦_
 
   _,_↦_ : ∀ {A} → TotalMap A → Id → A → TotalMap A
   (ρ , x ↦ v) y with x ≟ y
@@ -232,13 +231,13 @@ the second update on `ρ`:
 
 \begin{code}
   postulate
-    update-shadow : ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) 
+    update-shadow : ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A)
                   → (ρ , x ↦ v , x ↦ w) ≡ (ρ , x ↦ w)
 \end{code}
 
 <div class="hidden">
 \begin{code}
-  update-shadow′ :  ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A) 
+  update-shadow′ :  ∀ {A} (ρ : TotalMap A) (x : Id) (v w : A)
                   → ((ρ , x ↦ v) , x ↦ w) ≡ (ρ , x ↦ w)
   update-shadow′ ρ x v w = extensionality lemma
     where
@@ -294,20 +293,20 @@ updates.
     ... | no  x≢z  | yes refl  =  sym (update-eq′ ρ z w)
     ... | yes refl | no  y≢z   =  update-eq′ ρ z v
     ... | no  x≢z  | no  y≢z   =  trans (update-neq ρ x v z x≢z)
-                                        (sym (update-neq ρ y w z y≢z))  
+                                        (sym (update-neq ρ y w z y≢z))
 \end{code}
 
 And a slightly different version of the same proof.
 
-\begin{code}  
+\begin{code}
   update-permute′′ : ∀ {A} (ρ : TotalMap A) (x : Id) (v : A) (y : Id) (w : A) (z : Id)
                    → x ≢ y → (ρ , x ↦ v , y ↦ w) z ≡ (ρ , y ↦ w , x ↦ v) z
   update-permute′′ {A} ρ x v y w z x≢y with x ≟ z | y ≟ z
   ... | yes x≡z | yes y≡z = ⊥-elim (x≢y (trans x≡z (sym y≡z)))
-  ... | no  x≢z | yes y≡z rewrite y≡z  =  sym (update-eq′ ρ z w)  
+  ... | no  x≢z | yes y≡z rewrite y≡z  =  sym (update-eq′ ρ z w)
   ... | yes x≡z | no  y≢z rewrite x≡z  =  update-eq′ ρ z v
   ... | no  x≢z | no  y≢z  =  trans (update-neq ρ x v z x≢z)
-                                    (sym (update-neq ρ y w z y≢z))  
+                                    (sym (update-neq ρ y w z y≢z))
 \end{code}
 </div>
 
@@ -332,7 +331,7 @@ module PartialMap where
 \end{code}
 
 \begin{code}
-  infixl 15 _,_↦_  
+  infixl 15 _,_↦_
 
   _,_↦_ : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) → PartialMap A
   ρ , x ↦ v = TotalMap._,_↦_ ρ x (just v)
@@ -358,20 +357,20 @@ We now lift all of the basic lemmas about total maps to partial maps.
 \end{code}
 
 \begin{code}
-  update-shadow : ∀ {A} (ρ : PartialMap A) (x : Id) (v w : A) 
+  update-shadow : ∀ {A} (ρ : PartialMap A) (x : Id) (v w : A)
                 → (ρ , x ↦ v , x ↦ w) ≡ (ρ , x ↦ w)
   update-shadow ρ x v w = TotalMap.update-shadow ρ x (just v) (just w)
 \end{code}
 
 \begin{code}
-  update-same : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) 
+  update-same : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A)
               → ρ x ≡ just v
               → (ρ , x ↦ v) ≡ ρ
   update-same ρ x v ρx≡v rewrite sym ρx≡v = TotalMap.update-same ρ x
 \end{code}
 
 \begin{code}
-  update-permute : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id) (w : A) 
+  update-permute : ∀ {A} (ρ : PartialMap A) (x : Id) (v : A) (y : Id) (w : A)
                  → x ≢ y → (ρ , x ↦ v , y ↦ w) ≡ (ρ , y ↦ w , x ↦ v)
   update-permute ρ x v y w x≢y = TotalMap.update-permute ρ x (just v) y (just w) x≢y
 \end{code}

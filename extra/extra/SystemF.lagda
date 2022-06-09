@@ -1,6 +1,5 @@
 ---
 title     : "SystemF: Inherently typed System F"
-layout    : page
 permalink : /SystemF/
 ---
 
@@ -153,7 +152,7 @@ outermost free variable.
 \begin{code}
 _[_]⋆ : ∀ {Φ J K}
         → Φ ,⋆ K ⊢⋆ J
-        → Φ ⊢⋆ K 
+        → Φ ⊢⋆ K
           -------------
         → Φ ⊢⋆ J
 _[_]⋆ {Φ} {J} {K} B A =  subst⋆ {Φ ,⋆ K} {Φ} σ {J} B

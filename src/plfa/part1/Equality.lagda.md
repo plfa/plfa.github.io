@@ -1,12 +1,11 @@
 ---
 title     : "Equality: Equality and equational reasoning"
-layout    : page
 prev      : /Relations/
 permalink : /Equality/
 next      : /Isomorphism/
 ---
 
-```
+```agda
 module plfa.part1.Equality where
 ```
 
@@ -26,7 +25,7 @@ Since we define equality here, any import would create a conflict.
 ## Equality
 
 We declare equality as follows:
-```
+```agda
 data _≡_ {A : Set} (x : A) : A → Set where
   refl : x ≡ x
 ```
@@ -41,7 +40,7 @@ can be a parameter because it doesn't vary, while the second must be
 an index, so it can be required to be equal to the first.
 
 We declare the precedence of equality as follows:
-```
+```agda
 infix 4 _≡_
 ```
 We set the precedence of `_≡_` at level 4, the same as `_≤_`,
@@ -55,7 +54,7 @@ is illegal.
 An equivalence relation is one which is reflexive, symmetric, and transitive.
 Reflexivity is built-in to the definition of equality, via the
 constructor `refl`.  It is straightforward to show symmetry:
-```
+```agda
 sym : ∀ {A : Set} {x y : A}
   → x ≡ y
     -----
@@ -120,7 +119,7 @@ the expected type:
 This completes the definition as given above.
 
 Transitivity is equally straightforward:
-```
+```agda
 trans : ∀ {A : Set} {x y z : A}
   → x ≡ y
   → y ≡ z
@@ -136,7 +135,7 @@ instantiated.
 
 Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both:
-```
+```agda
 cong : ∀ {A B : Set} (f : A → B) {x y : A}
   → x ≡ y
     ---------
@@ -145,7 +144,7 @@ cong f refl  =  refl
 ```
 
 Congruence of functions with two arguments is similar:
-```
+```agda
 cong₂ : ∀ {A B C : Set} (f : A → B → C) {u x : A} {v y : B}
   → u ≡ x
   → v ≡ y
@@ -157,7 +156,7 @@ cong₂ f refl refl  =  refl
 Equality is also a congruence in the function position of an application.
 If two functions are equal, then applying them to the same term
 yields equal terms:
-```
+```agda
 cong-app : ∀ {A B : Set} {f g : A → B}
   → f ≡ g
     ---------------------
@@ -167,7 +166,7 @@ cong-app refl x = refl
 
 Equality also satisfies *substitution*.
 If two values are equal and a predicate holds of the first then it also holds of the second:
-```
+```agda
 subst : ∀ {A : Set} {x y : A} (P : A → Set)
   → x ≡ y
     ---------
@@ -182,7 +181,7 @@ Here we show how to support reasoning with chains of equations, as
 used throughout the book.  We package the declarations into a module,
 named `≡-Reasoning`, to match the format used in Agda's standard
 library:
-```
+```agda
 module ≡-Reasoning {A : Set} where
 
   infix  1 begin_
@@ -226,7 +225,7 @@ available in the current environment.
 
 As an example, let's look at a proof of transitivity
 as a chain of equations:
-```
+```agda
 trans′ : ∀ {A : Set} {x y z : A}
   → x ≡ y
   → y ≡ z
@@ -273,7 +272,7 @@ alone would do.
 Sadly, we cannot use the definition of trans' using ≡-Reasoning as the definition
 for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -283,7 +282,7 @@ As a second example of chains of equations, we repeat the proof that addition
 is commutative.  We first repeat the definitions of naturals and addition.
 We cannot import them because (as noted at the beginning of this chapter)
 it would cause a conflict:
-```
+```agda
 data ℕ : Set where
   zero : ℕ
   suc  : ℕ → ℕ
@@ -294,7 +293,7 @@ zero    + n  =  n
 ```
 
 To save space we postulate (rather than prove in full) two lemmas:
-```
+```agda
 postulate
   +-identity : ∀ (m : ℕ) → m + zero ≡ m
   +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
@@ -306,7 +305,7 @@ caution.  If we postulate something false then we could use Agda to
 prove anything whatsoever.
 
 We then repeat the proof of commutativity:
-```
+```agda
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
   begin
@@ -361,7 +360,7 @@ notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mono-≤`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -371,7 +370,7 @@ regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mon
 
 Consider a property of natural numbers, such as being even.
 We repeat the earlier definition:
-```
+```agda
 data even : ℕ → Set
 data odd  : ℕ → Set
 
@@ -398,12 +397,12 @@ Agda includes special notation to support just this kind of reasoning,
 the `rewrite` notation we encountered earlier.
 To enable this notation, we use pragmas to tell Agda which type
 corresponds to equality:
-```
+```agda
 {-# BUILTIN EQUALITY _≡_ #-}
 ```
 
 We can then prove the desired property as follows:
-```
+```agda
 even-comm : ∀ (m n : ℕ)
   → even (m + n)
     ------------
@@ -462,7 +461,7 @@ the same type as the goal.
 One may perform multiple rewrites, each separated by a vertical bar.  For instance,
 here is a second proof that addition is commutative, relying on rewrites rather
 than chains of equalities:
-```
+```agda
 +-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm′ zero    n  rewrite +-identity n             =  refl
 +-comm′ (suc m) n  rewrite +-suc n m | +-comm′ m n  =  refl
@@ -480,7 +479,7 @@ when feasible.
 
 The `rewrite` notation is in fact shorthand for an appropriate use of `with`
 abstraction:
-```
+```agda
 even-comm′ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
@@ -507,7 +506,7 @@ reversing the order of the clauses will cause Agda to report an error.
 
 In this case, we can avoid rewrite by simply applying the substitution
 function defined earlier:
-```
+```agda
 even-comm″ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
@@ -537,7 +536,7 @@ converse, that every property `P` that holds of `y` also holds of `x`.
 
 Let `x` and `y` be objects of type `A`. We say that `x ≐ y` holds if
 for every predicate `P` over type `A` we have that `P x` implies `P y`:
-```
+```agda
 _≐_ : ∀ {A : Set} (x y : A) → Set₁
 _≐_ {A} x y = ∀ (P : A → Set) → P x → P y
 ```
@@ -556,7 +555,7 @@ must use `Set₁`.  We say a bit more about levels below.
 Leibniz equality is reflexive and transitive,
 where the first follows by a variant of the identity function
 and the second by a variant of function composition:
-```
+```agda
 refl-≐ : ∀ {A : Set} {x : A}
   → x ≐ x
 refl-≐ P Px  =  Px
@@ -572,7 +571,7 @@ trans-≐ x≐y y≐z P Px  =  y≐z P (x≐y P Px)
 Symmetry is less obvious.  We have to show that if `P x` implies `P y`
 for all predicates `P`, then the implication holds the other way round
 as well:
-```
+```agda
 sym-≐ : ∀ {A : Set} {x y : A}
   → x ≐ y
     -----
@@ -598,7 +597,7 @@ Leibniz equality, and vice versa.  In the forward direction, if we know
 `x ≡ y` we need for any `P` to take evidence of `P x` to evidence of `P y`,
 which is easy since equality of `x` and `y` implies that any proof
 of `P x` is also a proof of `P y`:
-```
+```agda
 ≡-implies-≐ : ∀ {A : Set} {x y : A}
   → x ≡ y
     -----
@@ -609,7 +608,7 @@ This direction follows from substitution, which we showed earlier.
 
 In the reverse direction, given that for any `P` we can take a proof of `P x`
 to a proof of `P y` we need to show `x ≡ y`:
-```
+```agda
 ≐-implies-≡ : ∀ {A : Set} {x y : A}
   → x ≐ y
     -----
@@ -647,7 +646,7 @@ two values of a type that belongs to `Set ℓ` for some arbitrary level `ℓ`?
 The answer is _universe polymorphism_, where a definition is made
 with respect to an arbitrary level `ℓ`. To make use of levels, we
 first import the following:
-```
+```agda
 open import Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc)
 ```
 We rename constructors `zero` and `suc` to `lzero` and `lsuc` to avoid confusion
@@ -671,12 +670,12 @@ and so on. There is also an operator
 that given two levels returns the larger of the two.
 
 Here is the definition of equality, generalised to an arbitrary level:
-```
+```agda
 data _≡′_ {ℓ : Level} {A : Set ℓ} (x : A) : A → Set ℓ where
   refl′ : x ≡′ x
 ```
 Similarly, here is the generalised definition of symmetry:
-```
+```agda
 sym′ : ∀ {ℓ : Level} {A : Set ℓ} {x y : A}
   → x ≡′ y
     ------
@@ -688,7 +687,7 @@ the text, but most definitions in the standard library, including those for
 equality, are generalised to arbitrary levels as above.
 
 Here is the generalised definition of Leibniz equality:
-```
+```agda
 _≐′_ : ∀ {ℓ : Level} {A : Set ℓ} (x y : A) → Set (lsuc ℓ)
 _≐′_ {ℓ} {A} x y = ∀ (P : A → Set ℓ) → P x → P y
 ```
@@ -698,7 +697,7 @@ term that includes `Set ℓ`.
 
 Most other functions in the standard library are also generalised to
 arbitrary levels. For instance, here is the definition of composition.
-```
+```agda
 _∘_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
   → (B → C) → (A → B) → A → C
 (g ∘ f) x  =  g (f x)
@@ -716,7 +715,7 @@ library. The Agda standard library defines `_≡⟨_⟩_` as `step-≡`, [which 
 the order of the arguments][step-≡]. The standard library also defines a syntax
 macro, which is automatically imported whenever you import `step-≡`, which
 recovers the original argument order:
-```
+```agda
 -- import Relation.Binary.PropositionalEquality as Eq
 -- open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
 -- open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)

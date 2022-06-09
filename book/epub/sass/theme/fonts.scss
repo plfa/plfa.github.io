@@ -1,0 +1,70 @@
+/* Frankenfont */
+/* A custom font made by combining glyphs from mononoki, DejaVu Sans Mono, */
+/* Symbola and Droid, and adjusting the width where necessary to get a */
+/* consistent fixed-width font. */
+@font-face {
+  font-family: 'Frankenfont';
+  src: url('../fonts/Frankenfont-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* DejaVu Sans */
+/* See: https://dejavu-fonts.github.io/ */
+@font-face {
+  font-family: 'DejaVu Sans';
+  src: url('../fonts/DejaVuSans-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  src: url('../fonts/DejaVuSans-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  src: url('../fonts/DejaVuSans-Oblique.ttf') format('ttf');
+  font-weight: normal;
+  font-style: oblique;
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  src: url('../fonts/DejaVuSans-BoldOblique.ttf') format('ttf');
+  font-weight: bold;
+  font-style: oblique;
+}
+
+/* DejaVu Serif */
+/* See: https://dejavu-fonts.github.io/ */
+@font-face {
+  font-family: 'DejaVu Serif';
+  src: url('../fonts/DejaVuSerif-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DejaVu Serif';
+  src: url('../fonts/DejaVuSerif-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DejaVu Serif';
+  src: url('../fonts/DejaVuSerif-Italic.ttf') format('ttf');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'DejaVu Serif';
+  src: url('../fonts/DejaVuSerif-BoldItalic.ttf') format('ttf');
+  font-weight: bold;
+  font-style: italic;
+}

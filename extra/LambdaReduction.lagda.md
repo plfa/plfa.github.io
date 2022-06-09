@@ -1,6 +1,5 @@
 ---
 title     : "Full beta reduction of the untyped lambda calculus"
-layout    : page
 prev      : /Substitution/
 permalink : /LambdaReduction/
 next      : /Confluence/

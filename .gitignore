@@ -1,23 +1,13 @@
-## Agda files
+/_site/
+/_cache/
+/dist-newstyle/
+
 _build/
+
 *.agdai
-.agda-stdlib.sed
-.links-*.sed
-
-## Haskell files
-_site/
-_cache/
-stack.yaml.lock
-.stack-work/
-dist-newstyle
-
-## Jekyll files
-.sass-cache/
-.agda-stdlib.sed
-.jekyll-metadata
-Gemfile.lock
-
-## LaTeX files
+*.el
+*.lock
+*.code-workspace
 *.aux
 *.bbl
 *.blg
@@ -27,13 +17,10 @@ Gemfile.lock
 *.pdf
 *.spl
 *.synctex.gz
-
-## Emacs files
-auto/
-
-## Misc build files
 *.zip
-versions/plfa.github.io-web-*/
+*.local
 
-## Include plfa.pdf
 !plfa.pdf
+!data/legacy/19.08.zip
+!data/legacy/20.07.zip
+!cabal.project.ci.local
