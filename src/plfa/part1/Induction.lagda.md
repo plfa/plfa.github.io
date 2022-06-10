@@ -1080,30 +1080,9 @@ For each law: if it holds, prove; if not, give a counterexample.
 ```
 -- Your code goes here
 
+open import plfa.share.Bin using (Bin; ⟨⟩; _O; _I; inc; to; double; from)
+
 -- Example of case-expanding on `≡`.
-data Bin : Set where
-  ⟨⟩ : Bin
-  _O : Bin → Bin
-  _I : Bin → Bin
-
-inc : Bin → Bin
-inc ⟨⟩    = (⟨⟩ I)
-inc (b O) = (b I)
-inc (b I) = ((inc b) O)
-
-to : ℕ → Bin
-to zero    = (⟨⟩ O)
-to (suc n) = inc (to n)
-
-double : ℕ → ℕ
-double zero = zero
-double (suc n) = suc (suc (double n))
-
-from : Bin → ℕ
-from ⟨⟩ = zero
-from (n O) = double (from n)
-from (n I) = suc (double (from n))
-
 --    from (inc b) ≡ suc (from b)
 --    to (from b) ≡ b
 --    from (to n) ≡ n
