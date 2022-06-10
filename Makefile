@@ -35,10 +35,12 @@ init:
 # Build site with Shake
 ########################################
 
+ifeq ($(CI),)
 CABAL_ARGS += --verbose=0
-
+else
 ifneq ($(DEV),)
 CABAL_ARGS += --project-file=cabal.project.dev
+endif
 endif
 
 SHAKE_ARGS += -j
@@ -60,7 +62,9 @@ HTML_MINIFIER_ARGS += --file-ext=html
 
 UNZIP ?= unzip
 
+ifeq ($(CI),)
 UNZIP_ARGS += -q
+endif
 UNZIP_ARGS += -n
 UNZIP_ARGS += -d $(OUT_DIR)
 
