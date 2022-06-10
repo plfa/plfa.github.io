@@ -897,7 +897,10 @@ if `One b` then `1` is less or equal to the result of `from b`.)
 ```
 open import plfa.share.Bin using (Bin; ⟨⟩; _O; _I; inc; to; double; from)
 
-postulate from∘inc≡suc∘from : (b : Bin) → from (inc b) ≡ suc (from b)
+from∘inc≡suc∘from : (b : Bin) → from (inc b) ≡ suc (from b)
+from∘inc≡suc∘from ⟨⟩ = refl
+from∘inc≡suc∘from (b O) = refl
+from∘inc≡suc∘from (b I) rewrite from∘inc≡suc∘from b = refl
 
 from∘to≡id : (n : ℕ) → from (to n) ≡ n
 from∘to≡id zero = refl
