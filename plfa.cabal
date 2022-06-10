@@ -79,4 +79,5 @@ library
   build-depends:
     , aeson ^>=2
     , base
+    , bimap
     , text

@@ -35,14 +35,6 @@ init:
 # Build site with Shake
 ########################################
 
-ifeq ($(CI),)
-CABAL_ARGS += --verbose=0
-else
-ifneq ($(DEV),)
-CABAL_ARGS += --project-file=cabal.project.dev
-endif
-endif
-
 SHAKE_ARGS += -j
 SHAKE_ARGS += --lint
 SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
@@ -70,6 +62,9 @@ UNZIP_ARGS += -d $(OUT_DIR)
 
 .PHONY: build
 build: check-haskell check-html-minifier
+	@echo "Compiling builder"
+	@$(CABAL) $(CABAL_ARGS) v2-build builder
+	@echo "Building PLFA with builder"
 	@mkdir -p $(TMP_DIR)/reports/
 	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 	@echo "Minifying HTML with html-minifier..."
