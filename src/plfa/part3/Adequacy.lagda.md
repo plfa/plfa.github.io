@@ -1,8 +1,6 @@
 ---
 title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics"
-prev      : /Soundness/
 permalink : /Adequacy/
-next      : /ContextualEquivalence/
 ---
 
 ```agda

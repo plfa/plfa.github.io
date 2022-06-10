@@ -1,8 +1,6 @@
 ---
 title     : "Equality: Equality and equational reasoning"
-prev      : /Relations/
 permalink : /Equality/
-next      : /Isomorphism/
 ---
 
 ```agda

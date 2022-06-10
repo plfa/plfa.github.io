@@ -1,8 +1,6 @@
 ---
 title     : "Decidable: Booleans and decision procedures"
-prev      : /Quantifiers/
 permalink : /Decidable/
-next      : /Lists/
 ---
 
 ```agda

@@ -1,9 +1,7 @@
 ---
 title     : "Properties: Progress and Preservation"
 layout    : page
-prev      : /Lambda/
 permalink : /PropertiesFixpoint/
-next      : /DeBruijn/
 ---
 
 ```
@@ -98,7 +96,7 @@ V—↛ : ∀ {M N}
 V—↛ V-ƛ        ()
 V—↛ V-zero     ()
 V—↛ (V-suc VM) (ξ-suc M—→N)  =  V—↛ VM M—→N
-V—↛ V-μ        ()   
+V—↛ V-μ        ()
 ```
 We consider the three possibilities for values:
 
@@ -513,7 +511,7 @@ contradiction (evidenced by `x≢x refl`).
 
 Third, if the last two variables in a context differ then we can swap them:
 ```
-swap : ∀ {Γ x y A B} 
+swap : ∀ {Γ x y A B}
   → x ≢ y
     --------------------------------------
   → Γ , y ⦂ B , x ⦂ A →ᴿ Γ , x ⦂ A , y ⦂ B

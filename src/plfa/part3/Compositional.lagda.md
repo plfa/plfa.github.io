@@ -1,8 +1,6 @@
 ---
 title     : "Compositional: The denotational semantics is compositional"
-prev      : /Denotational/
 permalink : /Compositional/
-next      : /Soundness/
 ---
 
 ```agda

@@ -1,8 +1,6 @@
 ---
 title     : "Full beta reduction of the untyped lambda calculus"
-prev      : /Substitution/
 permalink : /LambdaReduction/
-next      : /Confluence/
 ---
 
 ```

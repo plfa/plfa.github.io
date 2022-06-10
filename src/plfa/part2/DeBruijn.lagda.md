@@ -1,8 +1,6 @@
 ---
 title     : "DeBruijn: Intrinsically-typed de Bruijn representation"
-prev      : /Properties/
 permalink : /DeBruijn/
-next      : /More/
 ---
 
 ```agda

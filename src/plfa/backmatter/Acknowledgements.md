@@ -1,8 +1,6 @@
 ---
 title     : "Acknowledgements"
-prev      : /Untyped/
 permalink : /Acknowledgements/
-next      : /Fonts/
 epub-type : acknowledgments
 ---
 

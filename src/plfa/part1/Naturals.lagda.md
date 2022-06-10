@@ -1,8 +1,6 @@
 ---
 title     : "Naturals: Natural numbers"
-prev      : /GettingStarted/
 permalink : /Naturals/
-next      : /Induction/
 ---
 
 ```agda
@@ -77,7 +75,7 @@ successor of two; and so on.
 
 #### Exercise `seven` (practice) {#seven}
 
-Write out `7` in longhand. 
+Write out `7` in longhand.
 
 ```agda
 -- Your code goes here

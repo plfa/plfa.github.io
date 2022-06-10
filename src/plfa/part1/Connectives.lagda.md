@@ -1,8 +1,6 @@
 ---
 title     : "Connectives: Conjunction, disjunction, and implication"
-prev      : /Isomorphism/
 permalink : /Connectives/
-next      : /Negation/
 ---
 
 ```agda

@@ -1,8 +1,6 @@
 ---
 title     : "Reflection: Proof by Reflection"
-prev      : /Decidable/
 permalink : /Reflection/
-next      : /Lists/
 ---
 
 ```

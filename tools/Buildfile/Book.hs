@@ -1,11 +1,11 @@
 module Buildfile.Book where
 
-import Data.Aeson.Types (FromJSON (..), withObject, (.!=), (.:), (.:?))
+import Control.Monad ((<=<))
+import Data.Aeson.Types (FromJSON (..), ToJSON (..), object, withObject, (.!=), (.:), (.:?), (.=))
 import Data.Bimap qualified as Bimap
 import Data.Text (Text)
 import Data.Typeable (Typeable)
 import GHC.Generics (Generic)
-import Control.Monad ((<=<))
 
 newtype Book = Book
   { bookParts :: [Part]
@@ -16,6 +16,12 @@ instance FromJSON Book where
   parseJSON = withObject "Book" $ \v ->
     Book
       <$> v .: "part"
+
+instance ToJSON Book where
+  toJSON Book {..} =
+    object
+      [ "part" .= bookParts
+      ]
 
 data Part = Part
   { partTitle :: Text,
@@ -35,9 +41,19 @@ instance FromJSON Part where
       <*> v .:? "mainmatter" .!= False
       <*> v .:? "backmatter" .!= False
 
+instance ToJSON Part where
+  toJSON Part {..} =
+    object
+      [ "title" .= partTitle,
+        "section" .= partSections,
+        "frontmatter" .= partFrontmatter,
+        "mainmatter" .= partMainmatter,
+        "backmatter" .= partBackmatter
+      ]
+
 data Section = Section
-  { sectionInclude :: FilePath
-  , sectionEpubType :: Text
+  { sectionInclude :: FilePath,
+    sectionEpubType :: Text
   }
   deriving (Show)
 
@@ -47,9 +63,14 @@ instance FromJSON Section where
       <$> v .: "include"
       <*> v .:? "epub-type" .!= "bodymatter"
 
+instance ToJSON Section where
+  toJSON Section {..} =
+    object
+      [ "include" .= sectionInclude,
+        "epub-type" .= sectionEpubType
+      ]
 
-
-newtype SectionTable = SectionTable { sectionBimap :: Bimap.Bimap FilePath FilePath }
+newtype SectionTable = SectionTable {sectionBimap :: Bimap.Bimap FilePath FilePath}
 
 fromBook :: Book -> SectionTable
 fromBook book = SectionTable {..}
@@ -70,7 +91,7 @@ fromBook book = SectionTable {..}
         flattenSection = return . sectionInclude
 
 nextSection :: SectionTable -> FilePath -> Maybe FilePath
-nextSection SectionTable{..} src = Bimap.lookup src sectionBimap
+nextSection SectionTable {..} src = Bimap.lookup src sectionBimap
 
 previousSection :: SectionTable -> FilePath -> Maybe FilePath
-previousSection SectionTable{..} src = Bimap.lookupR src sectionBimap
+previousSection SectionTable {..} src = Bimap.lookupR src sectionBimap

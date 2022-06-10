@@ -1,8 +1,6 @@
 ---
 title     : "Confluence: Confluence of untyped lambda calculus"
-prev      : /Untyped/
 permalink : /Confluence/
-next      : /BigStep/
 ---
 
 ```agda

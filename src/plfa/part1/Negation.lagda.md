@@ -1,8 +1,6 @@
 ---
 title     : "Negation: Negation, with intuitionistic and classical logic"
-prev      : /Connectives/
 permalink : /Negation/
-next      : /Quantifiers/
 ---
 
 ```agda

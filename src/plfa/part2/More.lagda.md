@@ -1,8 +1,6 @@
 ---
 title     : "More: Additional constructs of simply-typed lambda calculus"
-prev      : /DeBruijn/
 permalink : /More/
-next      : /Bisimulation/
 ---
 
 ```agda

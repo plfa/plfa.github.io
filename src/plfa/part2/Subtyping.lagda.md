@@ -1,8 +1,6 @@
 ---
 title     : "Subtyping: Records"
-prev      : /More/
 permalink : /Subtyping/
-next      : /Bisimulation/
 ---
 
 ```agda

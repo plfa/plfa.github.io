@@ -1,8 +1,6 @@
 ---
 title     : "Properties: Progress and Preservation"
-prev      : /Lambda/
 permalink : /Properties/
-next      : /DeBruijn/
 ---
 
 ```agda

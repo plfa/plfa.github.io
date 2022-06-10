@@ -1,8 +1,6 @@
 ---
 title     : "BigStep: Big-step semantics of untyped lambda calculus"
-prev      : /Confluence/
 permalink : /BigStep/
-next      : /Denotational/
 ---
 
 ```agda

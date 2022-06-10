@@ -1,8 +1,6 @@
 ---
 title     : "Isomorphism: Isomorphism and Embedding"
-prev      : /Equality/
 permalink : /Isomorphism/
-next      : /Connectives/
 ---
 
 ```agda

@@ -5,11 +5,13 @@
 module Main where
 
 import Buildfile.Author (Author (..))
-import Buildfile.Book (Book (..), Part (..), Section (..))
+import Buildfile.Book (Book (..), Part (..), Section (..), SectionTable, fromBook, nextSection, previousSection)
 import Buildfile.Contributor (Contributor (..))
+import Control.Exception (catch)
 import Control.Monad (forM, forM_, unless)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
+import Control.Monad.RWS qualified as Agda
 import Data.ByteString.Lazy qualified as LazyByteString
 import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
@@ -38,10 +40,8 @@ import Shoggoth.Template.Pandoc qualified as Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import System.Directory (makeAbsolute)
+import System.Exit (ExitCode (..), exitWith)
 import Text.Printf (printf)
-import Control.Exception (catch)
-import System.Exit (exitWith, ExitCode (..))
-import qualified Control.Monad.RWS as Agda
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -102,15 +102,6 @@ main = do
       agda <- newResource "agda" 1
       Agda.makeVersionOracle
       Agda.makeStandardLibraryOracle "standard-library"
-
-      -- standardLibrary <- liftIO $
-      --   catch (Agda.getStandardLibrary "standard-library") $
-      --       \Agda.AgdaStandardLibraryNotFound {..} -> do
-      --         putStrLn "Could not find Agda standard library.\n\
-      --                  \Did you forget to clone the repository with the '--recurse-submodules' flag?\n\
-      --                  \If so, you can download the Agda standard library into the 'standard-library' directory by running:\n\n\
-      --                  \  git submodule update --init"
-      --         exitWith (ExitFailure 1)
 
       --------------------------------------------------------------------------------
       -- Routing table
@@ -178,17 +169,23 @@ main = do
             authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
             return (authors :: [Author])
 
-      let getContributors = \() -> do
+      getContributors <- newCache $ \() -> do
             contributorFiles <- getDirectoryFiles "" [contributorDir </> "*.yml"]
             contributors <- traverse readYaml contributorFiles
             let sortedContributors = sortBy (compare `on` contributorCount) contributors
             return (sortedContributors :: [Contributor])
 
+      getTableOfContents <- newCache $ \() -> do
+        readYaml @Book tableOfContentsFile
+
+      getSectionTable <- newCache $ \() -> do
+        fromBook <$> getTableOfContents ()
+      let ?getSectionTable = getSectionTable
+
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
         authorMetadata <- getAuthors ()
-        contributorMetadata <- getContributors ()
-        return $ mconcat [ metadata, constField "author" authorMetadata, constField "contributor" contributorMetadata ]
+        return $ mconcat [metadata, constField "author" authorMetadata]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
@@ -234,7 +231,7 @@ main = do
       -- Table of Contents
 
       let getTableOfContentsField = \() -> do
-            tocMetadata <- readYaml tableOfContentsFile
+            tocMetadata <- toMetadata <$> getTableOfContents ()
             tocResolved <- resolveIncludes (fmap fst . getFileWithMetadata) tocMetadata
             return $ constField "toc" tocResolved
 
@@ -322,13 +319,27 @@ main = do
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 
+      -- Build /Acknowledgements/index.html
+      outDir </> "Acknowledgements" </> "index.html" %> \out -> do
+        src <- routeSource out
+        contributorField <- constField "contributor" <$> getContributors ()
+        (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
+        return acknowledgmentsMarkdownTemplate
+          >>= Pandoc.applyAsTemplate (contributorField <> fileMetadata)
+          >>= Pandoc.markdownToPandoc
+          >>= processCitations
+          >>= Pandoc.pandocToHtml5
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
+          <&> postProcessHtml5 outDir out
+          >>= writeFile' out
+
       -- Build rss.xml
       outDir </> "rss.xml" %> \out -> do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
         buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata = mconcat [ postsField, fileMetadata, buildDate ]
+        let metadata = mconcat [postsField, fileMetadata, buildDate]
         return rssXmlTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
@@ -385,7 +396,6 @@ main = do
             | otherwise = return src
 
       outDir </> "plfa.epub" %> \out -> do
-
         -- Require metadata and stylesheet
         need
           [ tmpEpubDir </> "epub-metadata.xml",
@@ -393,7 +403,7 @@ main = do
           ]
 
         -- Read the table of contents
-        toc <- readYaml @Book tableOfContentsFile
+        toc <- getTableOfContents ()
 
         -- Compose documents for each part
         parts <- for (zip [1 ..] (bookParts toc)) $ \(number, part) -> do
@@ -466,8 +476,9 @@ main = do
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         let src = epubTemplateDir </> "epub-metadata.xml"
         defaultMetadata <- getDefaultMetadata ()
+        contributors <- getContributors ()
         buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata = mconcat [defaultMetadata, buildDate]
+        let metadata = mconcat [defaultMetadata, constField "contributor" contributors, buildDate]
         readFile' src
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
@@ -506,8 +517,8 @@ getAgdaLibrariesForProject project = do
   standardLibrary <- Agda.getStandardLibrary
   return $
     case project of
-      Main            -> [standardLibrary, mainLibrary]
-      Post            -> [standardLibrary, mainLibrary, postLibrary]
+      Main -> [standardLibrary, mainLibrary]
+      Post -> [standardLibrary, mainLibrary, postLibrary]
       Course courseId -> [standardLibrary, mainLibrary, courseLibrary]
         where
           courseLibrary :: Agda.Library
@@ -559,6 +570,7 @@ epubSassOptions = def {sassIncludePaths = Just [epubStyleDir]}
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
+    ?getSectionTable :: () -> Action SectionTable,
     ?routingTable :: RoutingTable
   ) =>
   FilePath ->
@@ -593,6 +605,15 @@ getFileWithMetadata cur = do
   -- URL field:
   let urlField = constField "url" url
 
+  -- Previous and next section URLs:
+  sectionTable <- ?getSectionTable ()
+
+  maybePrevUrl <- traverse routeUrl (previousSection sectionTable src)
+  let prevField = ignoreNothing $ constField "prev" <$> maybePrevUrl
+
+  maybeNextUrl <- traverse routeUrl (nextSection sectionTable src)
+  let nextField = ignoreNothing $ constField "next" <$> maybeNextUrl
+
   -- Modified date field (ISO8601):
   modifiedDateField <- lastModifiedISO8601Field src "modified_date"
 
@@ -610,6 +631,8 @@ getFileWithMetadata cur = do
             bodyField,
             titleVariants,
             sourceField,
+            prevField,
+            nextField,
             modifiedDateField,
             dateField,
             dateRfc822Field
@@ -686,6 +709,9 @@ failOnNothing msg = maybe (fail msg) return
 
 ignoreError :: Monoid a => Either String a -> a
 ignoreError = fromRight mempty
+
+ignoreNothing :: Monoid a => Maybe a -> a
+ignoreNothing = fromMaybe mempty
 
 rightToMaybe :: Either e a -> Maybe a
 rightToMaybe = either (const Nothing) Just

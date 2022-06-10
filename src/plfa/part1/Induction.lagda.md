@@ -1,8 +1,6 @@
 ---
 title     : "Induction: Proof by Induction"
-prev      : /Naturals/
 permalink : /Induction/
-next      : /Relations/
 ---
 
 ```agda
@@ -606,7 +604,7 @@ Here is an example:
 ```agda
 +-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
 +-rearrange m n p q =
-  begin 
+  begin
     (m + n) + (p + q)
   ≡⟨ sym (+-assoc (m + n) p q) ⟩
     ((m + n) + p) + q

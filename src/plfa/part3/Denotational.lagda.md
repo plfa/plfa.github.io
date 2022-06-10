@@ -1,8 +1,6 @@
 ---
 title     : "Denotational: Denotational semantics of untyped lambda calculus"
-prev      : /BigStep/
 permalink : /Denotational/
-next      : /Compositional/
 ---
 
 ```agda

@@ -1,6 +1,5 @@
 ---
 title     : "Fonts"
-prev      : /Acknowledgements/
 permalink : /Fonts/
 ---
 

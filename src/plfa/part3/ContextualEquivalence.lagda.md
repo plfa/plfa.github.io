@@ -1,8 +1,6 @@
 ---
 title     : "ContextualEquivalence: Denotational equality implies contextual equivalence"
-prev      : /Adequacy/
 permalink : /ContextualEquivalence/
-next      : /Substitution/
 ---
 
 ```agda

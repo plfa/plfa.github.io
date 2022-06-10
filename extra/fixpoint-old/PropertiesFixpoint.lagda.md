@@ -1,9 +1,7 @@
 ---
 title     : "Properties: Progress and Preservation"
 layout    : page
-prev      : /Lambda/
 permalink : /PropertiesFixpoint/
-next      : /DeBruijn/
 ---
 
 ```
@@ -523,7 +521,7 @@ contradiction (evidenced by `x≢x refl`).
 
 Third, if the last two variables in a context differ then we can swap them:
 ```
-swap-ρ : ∀ {Γ x y A B} 
+swap-ρ : ∀ {Γ x y A B}
   → x ≢ y
     --------------------------------------
   → Γ , y ⦂ B , x ⦂ A →ᴿ Γ , x ⦂ A , y ⦂ B

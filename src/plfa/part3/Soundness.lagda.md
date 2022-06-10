@@ -1,8 +1,6 @@
 ---
 title     : "Soundness: Soundness of reduction with respect to denotational semantics"
-prev      : /Compositional/
 permalink : /Soundness/
-next      : /Adequacy/
 ---
 
 ```agda

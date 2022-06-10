@@ -1,9 +1,7 @@
 ---
 title     : "Lambda: Introduction to Lambda Calculus"
 layout    : page
-prev      : /Lists/
 permalink : /LambdaFixpoint/
-next      : /Properties/
 ---
 
 ```
@@ -490,7 +488,7 @@ _[_:=_] : Term → Id → Term → Term
 (case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
 ... | yes _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
 ... | no  _          =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
-(μ f ⇒ ƛ x ⇒ N) [ y := V ] with f ≟ y | x ≟ y 
+(μ f ⇒ ƛ x ⇒ N) [ y := V ] with f ≟ y | x ≟ y
 ... | yes _ | _      =  μ f ⇒ ƛ x ⇒ N
 ... | no  _ | yes _  =  μ f ⇒ ƛ x ⇒ N
 ... | no  _ | no  _  =  μ f ⇒ ƛ x ⇒ N [ y := V ]

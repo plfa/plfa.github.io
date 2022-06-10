@@ -1,8 +1,6 @@
 ---
 title     : "Bisimulation: Relating reduction systems"
-prev      : /More/
 permalink : /Bisimulation/
-next      : /Inference/
 ---
 
 ```agda

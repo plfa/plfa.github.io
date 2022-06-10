@@ -62,9 +62,7 @@ UNZIP_ARGS += -d $(OUT_DIR)
 
 .PHONY: build
 build: check-haskell check-html-minifier
-	@echo "Compiling builder"
-	@$(CABAL) $(CABAL_ARGS) v2-build builder
-	@echo "Building PLFA with builder"
+	@echo "Building PLFA..."
 	@mkdir -p $(TMP_DIR)/reports/
 	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 	@echo "Minifying HTML with html-minifier..."

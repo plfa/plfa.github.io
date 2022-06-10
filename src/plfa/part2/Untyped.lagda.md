@@ -1,8 +1,6 @@
 ---
 title     : "Untyped: Untyped lambda calculus with full normalisation"
-prev      : /Inference/
 permalink : /Untyped/
-next      : /Confluence/
 ---
 
 ```agda

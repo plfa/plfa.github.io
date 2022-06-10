@@ -1,7 +1,6 @@
 ---
 title     : "Dedication"
 permalink : /Dedication/
-next      : /Preface/
 ---
 
 <p style="text-align:center;">

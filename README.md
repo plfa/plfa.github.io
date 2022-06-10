@@ -1,8 +1,6 @@
 ---
-title     : Getting Started
-prev      : /Preface/
-permalink : /GettingStarted/
-next      : /Naturals/
+title: Getting Started
+permalink: /GettingStarted/
 ---
 
 <!-- Status & Version Badges -->

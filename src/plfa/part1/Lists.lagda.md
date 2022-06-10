@@ -1,8 +1,6 @@
 ---
 title     : "Lists: Lists and higher-order functions"
-prev      : /Decidable/
 permalink : /Lists/
-next      : /Lambda/
 ---
 
 ```agda

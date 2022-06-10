@@ -1,8 +1,6 @@
 ---
 title     : "Lambda: Introduction to Lambda Calculus"
-prev      : /Lists/
 permalink : /Lambda/
-next      : /Properties/
 ---
 
 ```

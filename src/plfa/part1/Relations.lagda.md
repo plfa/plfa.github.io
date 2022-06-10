@@ -1,8 +1,6 @@
 ---
 title     : "Relations: Inductive definition of relations"
-prev      : /Induction/
 permalink : /Relations/
-next      : /Equality/
 ---
 
 ```agda

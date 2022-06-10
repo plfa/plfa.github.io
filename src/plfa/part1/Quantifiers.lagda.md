@@ -1,8 +1,6 @@
 ---
 title     : "Quantifiers: Universals and existentials"
-prev      : /Negation/
 permalink : /Quantifiers/
-next      : /Decidable/
 ---
 
 ```agda

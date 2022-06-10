@@ -1,8 +1,6 @@
 ---
 title     : "Inference: Bidirectional type inference"
-prev      : /Bisimulation/
 permalink : /Inference/
-next      : /Untyped/
 ---
 
 ```agda
