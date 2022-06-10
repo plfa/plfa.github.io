@@ -41,6 +41,7 @@ import System.Directory (makeAbsolute)
 import Text.Printf (printf)
 import Control.Exception (catch)
 import System.Exit (exitWith, ExitCode (..))
+import qualified Control.Monad.RWS as Agda
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -99,20 +100,17 @@ main = do
       -- Agda resource & libraries
 
       agda <- newResource "agda" 1
+      Agda.makeVersionOracle
+      Agda.makeStandardLibraryOracle "standard-library"
 
-      standardLibrary <- liftIO $
-        catch (Agda.getStandardLibrary "standard-library") $
-            \Agda.AgdaStandardLibraryNotFound {..} -> do
-              putStrLn "Could not find Agda standard library.\n\
-                       \Did you forget to clone the repository with the '--recurse-submodules' flag?\n\
-                       \If so, you can download the Agda standard library into the 'standard-library' directory by running:\n\n\
-                       \  git submodule update --init"
-              exitWith (ExitFailure 1)
-
-      let getAgdaLibrariesForProject :: Project -> [Agda.Library]
-          getAgdaLibrariesForProject project = standardLibrary : localAgdaLibraries
-            where
-              localAgdaLibraries = getLocalAgdaLibrariesForProject project
+      -- standardLibrary <- liftIO $
+      --   catch (Agda.getStandardLibrary "standard-library") $
+      --       \Agda.AgdaStandardLibraryNotFound {..} -> do
+      --         putStrLn "Could not find Agda standard library.\n\
+      --                  \Did you forget to clone the repository with the '--recurse-submodules' flag?\n\
+      --                  \If so, you can download the Agda standard library into the 'standard-library' directory by running:\n\n\
+      --                  \  git submodule update --init"
+      --         exitWith (ExitFailure 1)
 
       --------------------------------------------------------------------------------
       -- Routing table
@@ -131,9 +129,8 @@ main = do
             let commonStages = "body_html" :@ bodyHtml :> Output out
             if Agda.isAgdaFile src
               then do
-                agdaLibraries <-
-                  failOnError $
-                    getAgdaLibrariesForProject <$> getProject src
+                project <- failOnError (getProject src)
+                agdaLibraries <- getAgdaLibrariesForProject project
                 (lib, includePath, agdaHtmlFileName) <-
                   failOnError $
                     Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
@@ -208,8 +205,10 @@ main = do
               Pandoc.setMeta "references" references doc
 
       getAgdaLinkFixer <- newCache $ \project -> do
-        let localAgdaLibraries = getLocalAgdaLibrariesForProject project
-        Agda.makeAgdaLinkFixer (Just standardLibrary) localAgdaLibraries []
+        standardLibrary <- Agda.getStandardLibrary
+        agdaLibrariesWithStandardLibrary <- getAgdaLibrariesForProject project
+        let agdaLibraries = List.delete standardLibrary agdaLibrariesWithStandardLibrary
+        Agda.makeAgdaLinkFixer (Just standardLibrary) agdaLibraries []
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
@@ -259,7 +258,9 @@ main = do
       -- Stage 1: Compile Agda to HTML
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
-        agdaLibraries <- failOnError $ getAgdaLibrariesForProject <$> getProject src
+        Agda.getVersion
+        project <- failOnError (getProject src)
+        agdaLibraries <- getAgdaLibrariesForProject project
         (lib, includePath, agdaHtmlFileName) <-
           failOnError $
             Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
@@ -484,11 +485,9 @@ main = do
 
 data Project
   = Main
-  | Course {courseId :: String}
   | Post
-  deriving (Show, Eq, Generic)
-
-instance Hashable Project
+  | Course {courseId :: String}
+  deriving (Show, Typeable, Eq, Generic, Hashable, Binary, NFData)
 
 getCourseId :: MonadError String m => FilePath -> m String
 getCourseId src
@@ -502,18 +501,22 @@ getProject src
   | webPostDir `List.isPrefixOf` src = return Post
   | otherwise = throwError $ printf "Not part of an Agda project: '%s'" src
 
-getLocalAgdaLibrariesForProject :: Project -> [Agda.Library]
-getLocalAgdaLibrariesForProject Main = [mainLibrary]
-getLocalAgdaLibrariesForProject (Course courseId) = [mainLibrary, courseLibrary]
-  where
-    courseLibrary :: Agda.Library
-    courseLibrary =
-      Agda.Library
-        { libraryRoot = courseDir </> courseId,
-          includePaths = ["."],
-          canonicalBaseUrl = "https://plfa.github.io/" <> Text.pack courseId
-        }
-getLocalAgdaLibrariesForProject Post = [mainLibrary, postLibrary]
+getAgdaLibrariesForProject :: Project -> Action [Agda.Library]
+getAgdaLibrariesForProject project = do
+  standardLibrary <- Agda.getStandardLibrary
+  return $
+    case project of
+      Main            -> [standardLibrary, mainLibrary]
+      Post            -> [standardLibrary, mainLibrary, postLibrary]
+      Course courseId -> [standardLibrary, mainLibrary, courseLibrary]
+        where
+          courseLibrary :: Agda.Library
+          courseLibrary =
+            Agda.Library
+              { libraryRoot = courseDir </> courseId,
+                includePaths = ["."],
+                canonicalBaseUrl = "https://plfa.github.io/" <> Text.pack courseId
+              }
 
 mainLibrary :: Agda.Library
 mainLibrary =

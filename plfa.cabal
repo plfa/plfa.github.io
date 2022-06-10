@@ -13,6 +13,7 @@ common language-haskell
   build-depends:       base
   default-language:    Haskell2010
   default-extensions:
+    DeriveAnyClass
     DeriveGeneric
     FlexibleContexts
     FlexibleInstances
