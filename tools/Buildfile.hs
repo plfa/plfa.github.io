@@ -109,8 +109,17 @@ main = do
       getAgdaFileInfo <- newCache $ \src -> do
         project <- failOnError $ getProject src
         agdaLibraries <- getAgdaLibrariesForProject project
-        fileInfo <- failOnError $ Agda.resolveFileInfo agdaLibraries src
-        return (RichAgdaFileInfo fileInfo project agdaLibraries)
+        fileInfo@Agda.AgdaFileInfo {library, libraryIncludePath, outputFileForHtml, moduleName} <-
+          failOnError $ Agda.resolveFileInfo agdaLibraries src
+        -- NOTE: Each Agda file compiles to its own directory, i.e., the
+        --       `agdaHtmlPathName` is included in the path. Otherwise,
+        --       Agda will regenerate files it already generated in a
+        --       previous task, and you'll get an error saying that the
+        --       temporary file has "changed since being depended upon".
+        let libraryRawAgdaHtmlDir = tmpRawAgdaHtmlDir </> Text.unpack moduleName </> Agda.libraryRoot library </> libraryIncludePath
+        let rawAgdaHtmlPath = libraryRawAgdaHtmlDir </> outputFileForHtml
+        let agdaHtmlPath = tmpAgdaHtmlDir </> replaceExtensions src (takeExtension outputFileForHtml)
+        return (RichAgdaFileInfo fileInfo libraryRawAgdaHtmlDir rawAgdaHtmlPath agdaHtmlPath project agdaLibraries)
 
       --------------------------------------------------------------------------------
       -- Routing table
@@ -129,15 +138,8 @@ main = do
             let commonStages = "body_html" :@ bodyHtml :> Output out
             if Agda.isAgdaFile src
               then do
-                AgdaFileInfo {library, libraryIncludePath, outputFileForHtml, moduleName} <- getAgdaFileInfo src
-                -- NOTE: Each Agda file compiles to its own directory, i.e., the
-                --       `agdaHtmlFileName` is included in the path. Otherwise,
-                --       Agda will regenerate files it already generated in a
-                --       previous task, and you'll get an error saying that the
-                --       temporary file has "changed since being depended upon".
-                let rawAgdaHtml = tmpRawAgdaHtmlDir </> Text.unpack moduleName </> Agda.libraryRoot library </> libraryIncludePath </> outputFileForHtml
-                let agdaHtml = tmpAgdaHtmlDir </> replaceExtensions src "md"
-                return $ "raw_agda_html" :@ rawAgdaHtml :> "agda_html" :@ agdaHtml :> commonStages
+                AgdaFileInfo {rawAgdaHtmlPath, agdaHtmlPath} <- getAgdaFileInfo src
+                return $ rawAgdaHtmlPath :> "agda_html" :@ agdaHtmlPath :> commonStages
               else return commonStages
 
       let ?routingTable =
@@ -207,14 +209,10 @@ main = do
             Pandoc.processCitations $
               Pandoc.setMeta "references" references doc
 
-      let qualifyAgdaId moduleName id = "agda:" <> moduleName <> ":" <> id
-
       getAgdaLinkFixer <- newCache $ \src -> do
-        AgdaFileInfo {moduleName, project} <- getAgdaFileInfo src
+        info@AgdaFileInfo {moduleName, project, libraries} <- getAgdaFileInfo src
         standardLibrary <- Agda.getStandardLibrary
-        agdaLibrariesWithStandardLibrary <- getAgdaLibrariesForProject project
-        let agdaLibraries = List.delete standardLibrary agdaLibrariesWithStandardLibrary
-        Agda.makeAgdaLinkFixer (qualifyAgdaId moduleName) (Just standardLibrary) agdaLibraries []
+        Agda.makeAgdaLinkFixer (Just standardLibrary) (List.delete standardLibrary libraries) []
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
@@ -268,21 +266,20 @@ main = do
       tmpRawAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
         Agda.getVersion
-        AgdaFileInfo {library, libraryIncludePath, outputFileForHtml, moduleName, libraries} <- getAgdaFileInfo src
-        let tmpRawAgdaHtmlDirForLib = tmpRawAgdaHtmlDir </> Text.unpack moduleName </> Agda.libraryRoot library </> libraryIncludePath
+        AgdaFileInfo {libraryRawAgdaHtmlDir, libraries} <- getAgdaFileInfo src
         need [prev]
         withResource agda 1 $
-          Agda.compileTo Agda.Html libraries tmpRawAgdaHtmlDirForLib prev
+          Agda.compileTo Agda.Html libraries libraryRawAgdaHtmlDir prev
 
       -- Stage 2: Fix raw Agda HTML output
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
         need [prev]
-        AgdaFileInfo {moduleName} <- getAgdaFileInfo src
+        RichAgdaFileInfo{agdaFileInfo} <- getAgdaFileInfo src
         agdaLinkFixer <- getAgdaLinkFixer src
         readFile' prev
-          <&> TagSoup.parseTags
-          <&> Agda.runAgdaSoup . traverse (Agda.mapAgdaId (qualifyAgdaId moduleName) . TagSoup.mapUrls agdaLinkFixer)
+          <&> TagSoup.parseTagsOptions TagSoup.parseOptions{ TagSoup.optTagPosition = True }
+          <&> Agda.runAgdaSoup . traverse (Agda.qualifyIdSoup agdaFileInfo . TagSoup.mapUrls agdaLinkFixer)
           <&> TagSoup.renderTags
           >>= writeFile' next
 
@@ -536,7 +533,8 @@ getAgdaLibrariesForProject project = do
           courseLibrary :: Agda.Library
           courseLibrary =
             Agda.Library
-              { libraryRoot = courseDir </> courseId,
+              { libraryName = Text.replace "/" "." (Text.pack courseId),
+                libraryRoot = courseDir </> courseId,
                 includePaths = ["."],
                 canonicalBaseUrl = "https://plfa.github.io/" <> Text.pack courseId
               }
@@ -544,7 +542,8 @@ getAgdaLibrariesForProject project = do
 mainLibrary :: Agda.Library
 mainLibrary =
   Agda.Library
-    { libraryRoot = chapterDir,
+    { libraryName = "plfa",
+      libraryRoot = chapterDir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
@@ -552,7 +551,8 @@ mainLibrary =
 postLibrary :: Agda.Library
 postLibrary =
   Agda.Library
-    { libraryRoot = webPostDir,
+    { libraryName = "announcements",
+      libraryRoot = webPostDir,
       includePaths = ["."],
       canonicalBaseUrl = "https://plfa.github.io/"
     }
@@ -728,10 +728,17 @@ ignoreNothing = fromMaybe mempty
 rightToMaybe :: Either e a -> Maybe a
 rightToMaybe = either (const Nothing) Just
 
-data RichAgdaFileInfo = RichAgdaFileInfo Agda.AgdaFileInfo Project [Agda.Library]
+data RichAgdaFileInfo = RichAgdaFileInfo
+  { agdaFileInfo :: Agda.AgdaFileInfo,
+    _libraryRawAgdaHtmlDir :: FilePath,
+    _rawAgdaHtmlPath :: FilePath,
+    _agdaHtmlPath :: FilePath,
+    _project :: Project,
+    _libraries :: [Agda.Library]
+  }
   deriving (Show, Typeable, Eq, Generic, Hashable, Binary, NFData)
 
-pattern AgdaFileInfo :: Agda.Library -> FilePath -> FilePath -> Text -> FilePath -> FilePath -> Project -> [Agda.Library] -> RichAgdaFileInfo
+pattern AgdaFileInfo :: Agda.Library -> FilePath -> FilePath -> Text -> FilePath -> FilePath -> FilePath -> FilePath -> FilePath -> Project -> [Agda.Library] -> RichAgdaFileInfo
 pattern AgdaFileInfo
   { library,
     libraryIncludePath,
@@ -739,6 +746,9 @@ pattern AgdaFileInfo
     moduleName,
     outputFileForLaTeX,
     outputFileForHtml,
+    libraryRawAgdaHtmlDir,
+    rawAgdaHtmlPath,
+    agdaHtmlPath,
     project,
     libraries
   } =
@@ -751,5 +761,8 @@ pattern AgdaFileInfo
         outputFileForLaTeX
         outputFileForHtml
       )
+    libraryRawAgdaHtmlDir
+    rawAgdaHtmlPath
+    agdaHtmlPath
     project
     libraries
