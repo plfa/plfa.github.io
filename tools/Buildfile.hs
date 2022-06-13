@@ -10,7 +10,7 @@ import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Part (..), Section (..), SectionTable, fromBook, nextSection, previousSection)
 import Buildfile.Contributor (Contributor (..))
 import Control.Exception (catch)
-import Control.Monad ((>=>), forM, forM_, unless)
+import Control.Monad (forM, forM_, unless, (>=>))
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.State (evalState)
@@ -172,10 +172,11 @@ main = do
       --------------------------------------------------------------------------------
       -- Caches
 
-      let getAuthors = \() -> do
+      getAuthors <- newCache $ \() -> do
             authorFiles <- getDirectoryFiles authorDir ["*.yml"]
             authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
             return (authors :: [Author])
+      let ?getAuthors = getAuthors
 
       getContributors <- newCache $ \() -> do
         contributorFiles <- getDirectoryFiles "" [contributorDir </> "*.yml"]
@@ -185,6 +186,7 @@ main = do
 
       getTableOfContents <- newCache $ \() -> do
         readYaml @Book tableOfContentsFile
+      let ?getTableOfContents = getTableOfContents
 
       getSectionTable <- newCache $ \() -> do
         fromBook <$> getTableOfContents ()
@@ -192,7 +194,7 @@ main = do
 
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
-        authorMetadata <- getAuthors ()
+        authorMetadata <- ?getAuthors ()
         return $ mconcat [metadata, constField "author" authorMetadata]
       let ?getDefaultMetadata = getDefaultMetadata
 
@@ -202,16 +204,7 @@ main = do
         case Pandoc.lookupMeta "references" meta of
           Just references -> return references
           Nothing -> fail $ printf "Could not read references from '%s'" bibliographyFile
-
-      let processCitations :: Pandoc -> Action Pandoc
-          processCitations doc = do
-            references <- getReferences ()
-            Pandoc.processCitations $
-              Pandoc.setMeta "references" references doc
-
-      let markdownToHtml5 :: Text -> Action Text
-          markdownToHtml5 =
-            Pandoc.markdownToPandoc >=> processCitations >=> Pandoc.pandocToHtml5
+      let ?getReferences = getReferences
 
       getAgdaLinkFixer <- newCache $ \src -> do
         info@AgdaFileInfo {moduleName, project, libraries} <- getAgdaFileInfo src
@@ -277,11 +270,11 @@ main = do
       tmpAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
         need [prev]
-        RichAgdaFileInfo{agdaFileInfo} <- getAgdaFileInfo src
+        RichAgdaFileInfo {agdaFileInfo} <- getAgdaFileInfo src
         agdaLinkFixer <- getAgdaLinkFixer src
         readFileWithMetadata prev
           <&> snd
-          <&> TagSoup.parseTagsOptions TagSoup.parseOptions{ TagSoup.optTagPosition = True }
+          <&> TagSoup.parseTagsOptions TagSoup.parseOptions {TagSoup.optTagPosition = True}
           <&> Agda.runAgdaSoup . traverse (Agda.qualifyIdSoup agdaFileInfo . TagSoup.mapUrls agdaLinkFixer)
           <&> TagSoup.renderTags
           >>= writeFile' next
@@ -398,61 +391,12 @@ main = do
       --------------------------------------------------------------------------------
       -- EPUB
 
-      let routeSection src
-            | Agda.isAgdaFile src = routeAnchor "agda_html" src
-            | otherwise = return src
-
       outDir </> "plfa.epub" %> \out -> do
         -- Require metadata and stylesheet
         need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
 
-        -- Read the table of contents
-        toc <- getTableOfContents ()
-
-        -- Compose documents for each part
-        parts <- for (zip [1 ..] (bookParts toc)) $ \(number, part) -> do
-          --
-          -- Compose documents for each section
-          sections <- for (partSections part) $ \section -> do
-            -- Get section document
-            sectionSrc <- routeSection (sectionInclude section)
-            (sectionMetadata, sectionBody) <- getFileWithMetadata sectionSrc
-            Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
-
-            -- Get section title & ident
-            sectionTitle <- failOnError $ sectionMetadata ^. "title"
-            let sectionIdent = Text.pack $ takeBaseName sectionSrc
-
-            -- Compose section document
-            let sectionDoc =
-                  Builder.divWith (sectionIdent, [], [("epub:type", sectionEpubType section)]) $
-                    Builder.header 2 (Builder.text sectionTitle)
-                      <> Builder.fromList (Pandoc.shiftHeadersBy 1 sectionBlocks)
-            return sectionDoc
-
-          -- Compose part document
-          let partIdent = Text.pack $ "part-" <> show @Int number
-          let partDoc =
-                Builder.divWith (partIdent, [], []) $
-                  Builder.header 1 (Builder.text (partTitle part))
-                    <> mconcat sections
-          return partDoc
-
-        -- Get metadata
-        defaultMetadata <- getDefaultMetadata ()
-        title <- failOnError $ defaultMetadata ^. "pagetitle"
-        author <- fmap authorName <$> getAuthors ()
-        rights <- failOnError $ defaultMetadata ^. "license.name"
-
-        -- Compose book
-        bookDoc <-
-          return (Builder.doc (mconcat parts))
-            >>= processCitations
-            <&> Pandoc.setMeta "title" (Builder.str title)
-            <&> Pandoc.setMeta "author" author
-            <&> Pandoc.setMeta "rights" (Builder.str rights)
-            <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
-            <&> Pandoc.setMeta "highlighting-css" highlightCss
+        bookDoc <- makeBookDoc $ \src ->
+          if Agda.isAgdaFile src then routeAnchor "agda_html" src else return src
 
         -- Set writer options
         epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
@@ -646,6 +590,73 @@ getFileWithMetadata cur = do
           ]
 
   return (metadata, body)
+
+--------------------------------------------------------------------------------
+-- Compile Markdown
+
+processCitations :: (?getReferences :: () -> Action MetaValue) => Pandoc -> Action Pandoc
+processCitations doc = do
+  references <- ?getReferences ()
+  Pandoc.processCitations $
+    Pandoc.setMeta "references" references doc
+
+markdownToHtml5 :: (?getReferences :: () -> Action MetaValue) => Text -> Action Text
+markdownToHtml5 =
+  Pandoc.markdownToPandoc >=> processCitations >=> Pandoc.pandocToHtml5
+
+--------------------------------------------------------------------------------
+-- Compile standalone book
+
+makeBookDoc :: (?getDefaultMetadata::() -> Action Metadata,
+                ?getSectionTable::() -> Action SectionTable,
+                ?getTableOfContents :: () -> Action Book,
+                ?getAuthors :: () -> Action [Author],
+                ?getReferences::() -> Action MetaValue,
+                ?routingTable::RoutingTable) => (FilePath -> Action FilePath) -> Action Pandoc
+makeBookDoc routeSection = do
+  -- Read the table of contents
+  toc <- ?getTableOfContents ()
+
+  -- Compose documents for each part
+  parts <- for (zip [1 ..] (bookParts toc)) $ \(number, part) -> do
+    -- Compose documents for each section
+    sections <- for (partSections part) $ \section -> do
+      -- Get section document
+      sectionSrc <- routeSection (sectionInclude section)
+      (sectionMetadata, sectionBody) <- getFileWithMetadata sectionSrc
+      Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
+      -- Get section title & ident
+      sectionTitle <- failOnError $ sectionMetadata ^. "title"
+      let sectionIdent = Text.pack $ takeBaseName sectionSrc
+      -- Compose section document
+      let sectionDoc =
+            Builder.divWith (sectionIdent, [], [("epub:type", sectionEpubType section)]) $
+              Builder.header 2 (Builder.text sectionTitle)
+                <> Builder.fromList (Pandoc.shiftHeadersBy 1 sectionBlocks)
+      return sectionDoc
+
+    -- Compose part document
+    let partIdent = Text.pack $ "part-" <> show @Int number
+    let partDoc =
+          Builder.divWith (partIdent, [], []) $
+            Builder.header 1 (Builder.text (partTitle part))
+              <> mconcat sections
+    return partDoc
+
+  -- Get metadata
+  defaultMetadata <- ?getDefaultMetadata ()
+  title <- failOnError $ defaultMetadata ^. "pagetitle"
+  author <- fmap authorName <$> ?getAuthors ()
+  rights <- failOnError $ defaultMetadata ^. "license.name"
+
+  -- Compose book
+  return (Builder.doc (mconcat parts))
+    >>= processCitations
+    <&> Pandoc.setMeta "title" (Builder.str title)
+    <&> Pandoc.setMeta "author" author
+    <&> Pandoc.setMeta "rights" (Builder.str rights)
+    <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
+    <&> Pandoc.setMeta "highlighting-css" highlightCss
 
 --------------------------------------------------------------------------------
 -- HTML5 post-processing
