@@ -11,6 +11,7 @@ on:
 
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
+  HTML_PROOFER: "bundle exec htmlproofer"
 
 jobs:
   build:
