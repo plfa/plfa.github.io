@@ -34,6 +34,12 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0' # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
       # - name: Setup EPUBCheck (Linux)
       #   if: runner.os == 'Linux'
       #   run: apt-get install epubcheck
@@ -79,9 +85,9 @@ jobs:
       - name: Test with html-validate
         run: make test-html-validate
 
-      # - name: Test with HTMLProofer
-      #   if: runner.os == 'Linux'
-      #   run: make test-html-proofer
+      - name: Test with HTMLProofer
+        if: runner.os == 'Linux'
+        run: make test-html-proofer
 
       # - name: Test with EPUBCheck
       #   if: runner.os == 'Linux' || runner.os == 'macOS'
