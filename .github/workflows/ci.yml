@@ -34,6 +34,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Setup rbenv
+        uses: masa-iwasaki/setup-rbenv@v1
+
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
         id: setup-haskell
@@ -69,7 +72,9 @@ jobs:
         run: make build
 
       - name: Test website
-        run: make test
+        run: |
+          make test-html-validate
+          make test-html-proofer
                 
       # - name: Deploy website
       #   if: runner.os == 'macOS'
