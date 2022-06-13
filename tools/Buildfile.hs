@@ -10,7 +10,7 @@ import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Part (..), Section (..), SectionTable, fromBook, nextSection, previousSection)
 import Buildfile.Contributor (Contributor (..))
 import Control.Exception (catch)
-import Control.Monad (forM, forM_, unless)
+import Control.Monad ((>=>), forM, forM_, unless)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.State (evalState)
@@ -209,6 +209,10 @@ main = do
             Pandoc.processCitations $
               Pandoc.setMeta "references" references doc
 
+      let markdownToHtml5 :: Text -> Action Text
+          markdownToHtml5 =
+            Pandoc.markdownToPandoc >=> processCitations >=> Pandoc.pandocToHtml5
+
       getAgdaLinkFixer <- newCache $ \src -> do
         info@AgdaFileInfo {moduleName, project, libraries} <- getAgdaFileInfo src
         standardLibrary <- Agda.getStandardLibrary
@@ -252,9 +256,7 @@ main = do
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate (tocField <> fileMetadata)
-          >>= Pandoc.markdownToPandoc
-          >>= processCitations
-          >>= Pandoc.pandocToHtml5
+          >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
@@ -277,7 +279,8 @@ main = do
         need [prev]
         RichAgdaFileInfo{agdaFileInfo} <- getAgdaFileInfo src
         agdaLinkFixer <- getAgdaLinkFixer src
-        readFile' prev
+        readFileWithMetadata prev
+          <&> snd
           <&> TagSoup.parseTagsOptions TagSoup.parseOptions{ TagSoup.optTagPosition = True }
           <&> Agda.runAgdaSoup . traverse (Agda.qualifyIdSoup agdaFileInfo . TagSoup.mapUrls agdaLinkFixer)
           <&> TagSoup.renderTags
@@ -287,9 +290,7 @@ main = do
       tmpBodyHtmlDir <//> "*.html" %> \next -> do
         (src, prev, out) <- (,,) <$> routeSource next <*> routePrev next <*> route next
         readFile' prev
-          >>= Pandoc.markdownToPandoc
-          >>= processCitations
-          >>= Pandoc.pandocToHtml5
+          >>= markdownToHtml5
           >>= writeFile' next
 
       -- Stage 4: Apply HTML templates
@@ -324,9 +325,7 @@ main = do
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate (postsField <> fileMetadata)
-          >>= Pandoc.markdownToPandoc
-          >>= processCitations
-          >>= Pandoc.pandocToHtml5
+          >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
@@ -338,9 +337,7 @@ main = do
         (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
         return acknowledgmentsMarkdownTemplate
           >>= Pandoc.applyAsTemplate (contributorField <> fileMetadata)
-          >>= Pandoc.markdownToPandoc
-          >>= processCitations
-          >>= Pandoc.pandocToHtml5
+          >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
@@ -364,10 +361,8 @@ main = do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
         return errorMarkdownBody
-          >>= Pandoc.markdownToPandoc
-          >>= processCitations
-          >>= Pandoc.pandocToHtml5
-          >>= Pandoc.applyTemplates ["default.html"] fileMetadata
+          >>= markdownToHtml5
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
           <&> postProcessHtml5 outDir out
           >>= writeFile' out
 

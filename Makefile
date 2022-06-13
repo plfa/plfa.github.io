@@ -36,7 +36,6 @@ init:
 ########################################
 
 SHAKE_ARGS += -j
-SHAKE_ARGS += -V
 SHAKE_ARGS += --lint
 SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
 SHAKE_ARGS += --timing
