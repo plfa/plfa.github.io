@@ -87,7 +87,6 @@ jobs:
         run: make test-html-validate
 
       - name: Test with HTMLProofer
-        if: runner.os == 'Linux'
         run: make test-html-proofer
 
       # - name: Test with EPUBCheck
