@@ -34,10 +34,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup rbenv
-        if: runner.os == 'Linux'
-        uses: masa-iwasaki/setup-rbenv@v1
-
       # - name: Setup EPUBCheck (Linux)
       #   if: runner.os == 'Linux'
       #   run: apt-get install epubcheck
@@ -83,9 +79,9 @@ jobs:
       - name: Test with html-validate
         run: make test-html-validate
 
-      - name: Test with HTMLProofer
-        if: runner.os == 'Linux'
-        run: make test-html-proofer
+      # - name: Test with HTMLProofer
+      #   if: runner.os == 'Linux'
+      #   run: make test-html-proofer
 
       # - name: Test with EPUBCheck
       #   if: runner.os == 'Linux' || runner.os == 'macOS'
