@@ -18,7 +18,7 @@ default: build
 ########################################
 
 # make test-html-proofer:
-#   - CHECK_EXTERNAL_LINKS:
+#   - EXTERNAL_LINKS:
 #     If set, external links are checked.
 
 
@@ -132,9 +132,6 @@ serve: check-browser-sync
 # - EPUBCheck (optional)
 ########################################
 
-.PHONY: test
-test: test-html-validate
-
 
 # html-validate
 
@@ -170,6 +167,9 @@ HTML_PROOFER_ARGS += --check-html
 HTML_PROOFER_ARGS += --check-img-http
 HTML_PROOFER_ARGS += --check-opengraph
 HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
+ifeq ($(EXTERNAL_LINKS),)
+HTML_PROOFER_ARGS += --disable-external
+endif
 HTML_PROOFER_ARGS += --report-eof-tags
 HTML_PROOFER_ARGS += --report-invalid-tags
 HTML_PROOFER_ARGS += --report-missing-names
