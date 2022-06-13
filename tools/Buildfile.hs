@@ -1,7 +1,9 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
+{-# LANGUAGE DeriveAnyClass #-}
 {-# HLINT ignore "Monad law, left identity" #-}
 {-# HLINT ignore "Redundant <&>" #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 module Main where
 
 import Buildfile.Author (Author (..))
@@ -11,7 +13,7 @@ import Control.Exception (catch)
 import Control.Monad (forM, forM_, unless)
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
-import Control.Monad.RWS qualified as Agda
+import Control.Monad.State (evalState)
 import Data.ByteString.Lazy qualified as LazyByteString
 import Data.Default.Class (Default (def))
 import Data.Either (fromRight, isRight)
@@ -72,9 +74,10 @@ webPostDir = webDir </> "posts"
 webStyleDir = webDir </> "sass"
 webTemplateDir = webDir </> "templates"
 
-tmpAgdaHtmlDir, tmpBodyHtmlDir, tmpEpubDir :: FilePath
-tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Render .lagda.md to .md
-tmpBodyHtmlDir = tmpDir </> "body_html" -- Render .md to .html
+tmpRawAgdaHtmlDir, tmpAgdaHtmlDir, tmpBodyHtmlDir, tmpEpubDir :: FilePath
+tmpRawAgdaHtmlDir = tmpDir </> "raw_agda_html" -- Compile literate Agda code blocks to raw HTML
+tmpAgdaHtmlDir = tmpDir </> "agda_html" -- Fix Agda HTML output
+tmpBodyHtmlDir = tmpDir </> "body_html" -- Compile Markdown to HTML
 tmpEpubDir = tmpDir </> "epub"
 
 --------------------------------------------------------------------------------
@@ -103,6 +106,12 @@ main = do
       Agda.makeVersionOracle
       Agda.makeStandardLibraryOracle "standard-library"
 
+      getAgdaFileInfo <- newCache $ \src -> do
+        project <- failOnError $ getProject src
+        agdaLibraries <- getAgdaLibrariesForProject project
+        fileInfo <- failOnError $ Agda.resolveFileInfo agdaLibraries src
+        return (RichAgdaFileInfo fileInfo project agdaLibraries)
+
       --------------------------------------------------------------------------------
       -- Routing table
 
@@ -120,18 +129,15 @@ main = do
             let commonStages = "body_html" :@ bodyHtml :> Output out
             if Agda.isAgdaFile src
               then do
-                project <- failOnError (getProject src)
-                agdaLibraries <- getAgdaLibrariesForProject project
-                (lib, includePath, agdaHtmlFileName) <-
-                  failOnError $
-                    Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
+                AgdaFileInfo {library, libraryIncludePath, outputFileForHtml, moduleName} <- getAgdaFileInfo src
                 -- NOTE: Each Agda file compiles to its own directory, i.e., the
                 --       `agdaHtmlFileName` is included in the path. Otherwise,
                 --       Agda will regenerate files it already generated in a
                 --       previous task, and you'll get an error saying that the
                 --       temporary file has "changed since being depended upon".
-                let agdaHtml = tmpAgdaHtmlDir </> agdaHtmlFileName </> Agda.libraryRoot lib </> includePath </> agdaHtmlFileName
-                return $ "agda_html" :@ agdaHtml :> commonStages
+                let rawAgdaHtml = tmpRawAgdaHtmlDir </> Text.unpack moduleName </> Agda.libraryRoot library </> libraryIncludePath </> outputFileForHtml
+                let agdaHtml = tmpAgdaHtmlDir </> replaceExtensions src "md"
+                return $ "raw_agda_html" :@ rawAgdaHtml :> "agda_html" :@ agdaHtml :> commonStages
               else return commonStages
 
       let ?routingTable =
@@ -170,10 +176,10 @@ main = do
             return (authors :: [Author])
 
       getContributors <- newCache $ \() -> do
-            contributorFiles <- getDirectoryFiles "" [contributorDir </> "*.yml"]
-            contributors <- traverse readYaml contributorFiles
-            let sortedContributors = sortBy (compare `on` contributorCount) contributors
-            return (sortedContributors :: [Contributor])
+        contributorFiles <- getDirectoryFiles "" [contributorDir </> "*.yml"]
+        contributors <- traverse readYaml contributorFiles
+        let sortedContributors = sortBy (compare `on` contributorCount) contributors
+        return (sortedContributors :: [Contributor])
 
       getTableOfContents <- newCache $ \() -> do
         readYaml @Book tableOfContentsFile
@@ -201,11 +207,14 @@ main = do
             Pandoc.processCitations $
               Pandoc.setMeta "references" references doc
 
-      getAgdaLinkFixer <- newCache $ \project -> do
+      let qualifyAgdaId moduleName id = "agda:" <> moduleName <> ":" <> id
+
+      getAgdaLinkFixer <- newCache $ \src -> do
+        AgdaFileInfo {moduleName, project} <- getAgdaFileInfo src
         standardLibrary <- Agda.getStandardLibrary
         agdaLibrariesWithStandardLibrary <- getAgdaLibrariesForProject project
         let agdaLibraries = List.delete standardLibrary agdaLibrariesWithStandardLibrary
-        Agda.makeAgdaLinkFixer (Just standardLibrary) agdaLibraries []
+        Agda.makeAgdaLinkFixer (qualifyAgdaId moduleName) (Just standardLibrary) agdaLibraries []
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
@@ -216,16 +225,19 @@ main = do
       "build" ~> do
         need =<< outputs
 
-      "clean" ~> do
-        removeFilesAfter tmpAgdaHtmlDir ["//*"]
-        removeFilesAfter tmpBodyHtmlDir ["//*"]
-        removeFilesAfter tmpEpubDir ["//*"]
+      let clean = do
+            removeFilesAfter tmpRawAgdaHtmlDir ["//*"]
+            removeFilesAfter tmpAgdaHtmlDir ["//*"]
+            removeFilesAfter tmpBodyHtmlDir ["//*"]
+            removeFilesAfter tmpEpubDir ["//*"]
 
-      "clobber" ~> do
-        removeFilesAfter tmpAgdaHtmlDir ["//*"]
-        removeFilesAfter tmpBodyHtmlDir ["//*"]
-        removeFilesAfter tmpEpubDir ["//*"]
-        removeFilesAfter outDir ["//*"]
+      "clean" ~> clean
+
+      let clobber = do
+            clean
+            removeFilesAfter outDir ["//*"]
+
+      "clobber" ~> clobber
 
       --------------------------------------------------------------------------------
       -- Table of Contents
@@ -252,35 +264,38 @@ main = do
       --------------------------------------------------------------------------------
       -- Compile Markdown & Agda to HTML
 
-      -- Stage 1: Compile Agda to HTML
-      tmpAgdaHtmlDir <//> "*.md" %> \next -> do
+      -- Stage 1: Compile literate Agda code blocks to raw HTML
+      tmpRawAgdaHtmlDir <//> "*.md" %> \next -> do
         (src, prev) <- (,) <$> routeSource next <*> routePrev next
         Agda.getVersion
-        project <- failOnError (getProject src)
-        agdaLibraries <- getAgdaLibrariesForProject project
-        (lib, includePath, agdaHtmlFileName) <-
-          failOnError $
-            Agda.resolveLibraryAndOutputFileName Agda.Html agdaLibraries src
-        let tmpAgdaHtmlDirForLib = tmpAgdaHtmlDir </> agdaHtmlFileName </> Agda.libraryRoot lib </> includePath
+        AgdaFileInfo {library, libraryIncludePath, outputFileForHtml, moduleName, libraries} <- getAgdaFileInfo src
+        let tmpRawAgdaHtmlDirForLib = tmpRawAgdaHtmlDir </> Text.unpack moduleName </> Agda.libraryRoot library </> libraryIncludePath
         need [prev]
         withResource agda 1 $
-          Agda.compileTo Agda.Html agdaLibraries tmpAgdaHtmlDirForLib prev
+          Agda.compileTo Agda.Html libraries tmpRawAgdaHtmlDirForLib prev
 
-      -- Stage 2: Compile Markdown to HTML
+      -- Stage 2: Fix raw Agda HTML output
+      tmpAgdaHtmlDir <//> "*.md" %> \next -> do
+        (src, prev) <- (,) <$> routeSource next <*> routePrev next
+        need [prev]
+        AgdaFileInfo {moduleName} <- getAgdaFileInfo src
+        agdaLinkFixer <- getAgdaLinkFixer src
+        readFile' prev
+          <&> TagSoup.parseTags
+          <&> Agda.runAgdaSoup . traverse (Agda.mapAgdaId (qualifyAgdaId moduleName) . TagSoup.mapUrls agdaLinkFixer)
+          <&> TagSoup.renderTags
+          >>= writeFile' next
+
+      -- Stage 3: Compile Markdown to HTML
       tmpBodyHtmlDir <//> "*.html" %> \next -> do
         (src, prev, out) <- (,,) <$> routeSource next <*> routePrev next <*> route next
-        maybeAgdaLinkFixer <-
-          getProject src
-            & rightToMaybe
-            & traverse (fmap Pandoc.withUrls . getAgdaLinkFixer)
         readFile' prev
           >>= Pandoc.markdownToPandoc
-          <&> fromMaybe id maybeAgdaLinkFixer
           >>= processCitations
           >>= Pandoc.pandocToHtml5
           >>= writeFile' next
 
-      -- Stage 3: Apply HTML templates
+      -- Stage 4: Apply HTML templates
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (metadata, htmlBody) <- getFileWithMetadata prev
@@ -397,10 +412,7 @@ main = do
 
       outDir </> "plfa.epub" %> \out -> do
         -- Require metadata and stylesheet
-        need
-          [ tmpEpubDir </> "epub-metadata.xml",
-            tmpEpubDir </> "style.css"
-          ]
+        need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
 
         -- Read the table of contents
         toc <- getTableOfContents ()
@@ -715,3 +727,29 @@ ignoreNothing = fromMaybe mempty
 
 rightToMaybe :: Either e a -> Maybe a
 rightToMaybe = either (const Nothing) Just
+
+data RichAgdaFileInfo = RichAgdaFileInfo Agda.AgdaFileInfo Project [Agda.Library]
+  deriving (Show, Typeable, Eq, Generic, Hashable, Binary, NFData)
+
+pattern AgdaFileInfo :: Agda.Library -> FilePath -> FilePath -> Text -> FilePath -> FilePath -> Project -> [Agda.Library] -> RichAgdaFileInfo
+pattern AgdaFileInfo
+  { library,
+    libraryIncludePath,
+    modulePath,
+    moduleName,
+    outputFileForLaTeX,
+    outputFileForHtml,
+    project,
+    libraries
+  } =
+  RichAgdaFileInfo
+    ( Agda.AgdaFileInfo
+        library
+        libraryIncludePath
+        modulePath
+        moduleName
+        outputFileForLaTeX
+        outputFileForHtml
+      )
+    project
+    libraries

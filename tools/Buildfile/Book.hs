@@ -4,8 +4,6 @@ import Control.Monad ((<=<))
 import Data.Aeson.Types (FromJSON (..), ToJSON (..), object, withObject, (.!=), (.:), (.:?), (.=))
 import Data.Bimap qualified as Bimap
 import Data.Text (Text)
-import Data.Typeable (Typeable)
-import GHC.Generics (Generic)
 
 newtype Book = Book
   { bookParts :: [Part]
