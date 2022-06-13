@@ -8,7 +8,6 @@
     "long-title": ["warn"],
     "no-dup-id": ["warn"],
     "no-inline-style": ["warn"],
-    "no-trailing-whitespace": ["warn"],
     "prefer-tbody": ["warn"],
     "require-sri": ["warn"],
     "script-type": ["warn"], 
