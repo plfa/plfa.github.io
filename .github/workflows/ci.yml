@@ -40,13 +40,13 @@ jobs:
         with:
           bundler-cache: true
 
-      # - name: Setup EPUBCheck (Linux)
-      #   if: runner.os == 'Linux'
-      #   run: apt-get install epubcheck
+      - name: Setup EPUBCheck (Linux)
+        if: runner.os == 'Linux'
+        run: apt-get install epubcheck
 
-      # - name: Setup EPUBCheck (macOS)
-      #   if: runner.os == 'macOS'
-      #   run: brew install epubcheck
+      - name: Setup EPUBCheck (macOS)
+        if: runner.os == 'macOS'
+        run: brew install epubcheck
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
@@ -88,9 +88,9 @@ jobs:
       - name: Test with HTMLProofer
         run: make test-html-proofer
 
-      # - name: Test with EPUBCheck
-      #   if: runner.os == 'Linux' || runner.os == 'macOS'
-      #   run: make test-epubcheck
+      - name: Test with EPUBCheck
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: make test-epubcheck
                 
       # - name: Deploy website
       #   if: runner.os == 'macOS'
