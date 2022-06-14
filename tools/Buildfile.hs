@@ -688,7 +688,7 @@ makeBookDoc routeSection = do
                 <> Builder.fromList
                   ( sectionBlocks
                       & Pandoc.shiftHeadersBy 1
-                      & Pandoc.withIds (qualifyIdent sectionUrl)
+                      & Pandoc.withIds (qualifyIdent True sectionUrl)
                       & Pandoc.withUrls (qualifyAnchor sectionUrl)
                   )
       return sectionDoc
@@ -719,21 +719,20 @@ makeBookDoc routeSection = do
 
 internalizeUrl :: Url -> Url
 internalizeUrl url
-  | isAbsoluteUrl url = "#" <> qualifyIdent urlPath hashAndAnchor
+  | isAbsoluteUrl url = "#" <> qualifyIdent False urlPath hashAndAnchor
   | otherwise = url
   where
     (urlPath, hashAndAnchor) = Text.breakOn "#" url
 
 qualifyAnchor :: Url -> Url -> Url
 qualifyAnchor urlPath url
-  | "#" `Text.isPrefixOf` url = "#" <> qualifyIdent urlPath url
+  | "#" `Text.isPrefixOf` url = "#" <> qualifyIdent False urlPath url
   | otherwise = url
 
-qualifyIdent :: Url -> Text -> Text
-qualifyIdent urlPath hashAndAnchor
-  | Text.null hashAndAnchor = ""    -- No anchor
-  | Text.null anchor        = ident -- Self anchor '#'
-  | otherwise               = ident <> "_" <> anchor
+qualifyIdent :: Bool -> Url -> Text -> Text
+qualifyIdent emptyAnchorMeansNoId urlPath hashAndAnchor
+  | Text.null anchor = if emptyAnchorMeansNoId then "" else ident
+  | otherwise        = ident <> "_" <> anchor
   where
     anchor = Text.dropWhile (== '#') hashAndAnchor
     ident = urlToIdent urlPath
