@@ -675,8 +675,8 @@ makeBookDoc routeSection = do
     sections <- for (partSections part) $ \section -> do
       -- Get section document
       let sectionSrc = sectionInclude section
-      (sectionAnchor, sectionUrl) <- (,) <$> routeSection sectionSrc <*> routeUrl sectionSrc
-      (sectionMetadata, sectionBody) <- getFileWithMetadata sectionAnchor
+      (sectionHtml, sectionUrl) <- (,) <$> routeSection sectionSrc <*> routeUrl sectionSrc
+      (sectionMetadata, sectionBody) <- getFileWithMetadata sectionHtml
       Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
       -- Get section title & ident
       sectionTitle <- failOnError $ sectionMetadata ^. "title"
@@ -731,8 +731,8 @@ qualifyAnchor urlPath url
 
 qualifyIdent :: Url -> Text -> Text
 qualifyIdent urlPath hashAndAnchor
-  | Text.null hashAndAnchor = ""                     -- No anchor
-  | Text.null anchor        = ident                  -- Self anchor '#'
+  | Text.null hashAndAnchor = ""    -- No anchor
+  | Text.null anchor        = ident -- Self anchor '#'
   | otherwise               = ident <> "_" <> anchor
   where
     anchor = Text.dropWhile (== '#') hashAndAnchor
