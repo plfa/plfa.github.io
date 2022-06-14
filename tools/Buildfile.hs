@@ -9,7 +9,7 @@ module Main where
 import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Part (..), Section (..), SectionTable, fromBook, nextSection, previousSection)
 import Buildfile.Contributor (Contributor (..))
-import Control.Exception (catch)
+import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, (>=>))
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
@@ -22,7 +22,7 @@ import Data.Functor ((<&>))
 import Data.Hashable (Hashable)
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isNothing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Traversable (for)
@@ -173,9 +173,9 @@ main = do
       -- Caches
 
       getAuthors <- newCache $ \() -> do
-            authorFiles <- getDirectoryFiles authorDir ["*.yml"]
-            authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
-            return (authors :: [Author])
+        authorFiles <- getDirectoryFiles authorDir ["*.yml"]
+        authors <- traverse (\src -> readYaml $ authorDir </> src) authorFiles
+        return (authors :: [Author])
       let ?getAuthors = getAuthors
 
       getContributors <- newCache $ \() -> do
@@ -607,12 +607,33 @@ markdownToHtml5 =
 --------------------------------------------------------------------------------
 -- Compile standalone book
 
-makeBookDoc :: (?getDefaultMetadata::() -> Action Metadata,
-                ?getSectionTable::() -> Action SectionTable,
-                ?getTableOfContents :: () -> Action Book,
-                ?getAuthors :: () -> Action [Author],
-                ?getReferences::() -> Action MetaValue,
-                ?routingTable::RoutingTable) => (FilePath -> Action FilePath) -> Action Pandoc
+internalizeUrl :: Url -> Url
+internalizeUrl url
+  | isAbsoluteUrl url = qualifyIdent urlPath $ Text.dropWhile (== '#') hashAndAnchor
+  | otherwise = url
+  where
+    (urlPath, hashAndAnchor) = Text.breakOn "#" url
+
+qualifyIdent :: Url -> Text -> Text
+qualifyIdent urlPath anchor =
+  assert (isNothing $ Text.find (== '#') urlPath) $
+    assert (isAbsoluteUrl urlPath) $
+      urlToIdent urlPath <> ":" <> anchor
+
+urlToIdent :: Url -> Text
+urlToIdent url =
+  Text.intercalate "-" (filter (not . Text.null) (Text.splitOn "/" (removeIndexHtml url)))
+
+makeBookDoc ::
+  ( ?getDefaultMetadata :: () -> Action Metadata,
+    ?getSectionTable :: () -> Action SectionTable,
+    ?getTableOfContents :: () -> Action Book,
+    ?getAuthors :: () -> Action [Author],
+    ?getReferences :: () -> Action MetaValue,
+    ?routingTable :: RoutingTable
+  ) =>
+  (FilePath -> Action FilePath) ->
+  Action Pandoc
 makeBookDoc routeSection = do
   -- Read the table of contents
   toc <- ?getTableOfContents ()
@@ -622,21 +643,22 @@ makeBookDoc routeSection = do
     -- Compose documents for each section
     sections <- for (partSections part) $ \section -> do
       -- Get section document
-      sectionSrc <- routeSection (sectionInclude section)
-      (sectionMetadata, sectionBody) <- getFileWithMetadata sectionSrc
+      let sectionSrc = sectionInclude section
+      (sectionAnchor, sectionUrl) <- (,) <$> routeSection sectionSrc <*> routeUrl sectionSrc
+      (sectionMetadata, sectionBody) <- getFileWithMetadata sectionAnchor
       Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
       -- Get section title & ident
       sectionTitle <- failOnError $ sectionMetadata ^. "title"
-      let sectionIdent = Text.pack $ takeBaseName sectionSrc
+      let sectionIdent = urlToIdent sectionUrl
       -- Compose section document
       let sectionDoc =
             Builder.divWith (sectionIdent, [], [("epub:type", sectionEpubType section)]) $
               Builder.header 2 (Builder.text sectionTitle)
-                <> Builder.fromList (Pandoc.shiftHeadersBy 1 sectionBlocks)
+                <> Builder.fromList (Pandoc.withIdsBlock (qualifyIdent sectionUrl) <$> Pandoc.shiftHeadersBy 1 sectionBlocks)
       return sectionDoc
 
     -- Compose part document
-    let partIdent = Text.pack $ "part-" <> show @Int number
+    let partIdent = Text.pack $ "Part-" <> show @Int number
     let partDoc =
           Builder.divWith (partIdent, [], []) $
             Builder.header 1 (Builder.text (partTitle part))
@@ -651,6 +673,7 @@ makeBookDoc routeSection = do
 
   -- Compose book
   return (Builder.doc (mconcat parts))
+    <&> Pandoc.withUrls internalizeUrl
     >>= processCitations
     <&> Pandoc.setMeta "title" (Builder.str title)
     <&> Pandoc.setMeta "author" author
