@@ -10,7 +10,7 @@ import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Part (..), Section (..), SectionTable, fromBook, nextSection, previousSection)
 import Buildfile.Contributor (Contributor (..))
 import Control.Exception (assert, catch)
-import Control.Monad (forM, forM_, unless, (>=>))
+import Control.Monad (forM, forM_, unless, when, (>=>))
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.State (evalState)
@@ -26,6 +26,7 @@ import Data.Maybe (fromMaybe, isNothing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Traversable (for)
+import Debug.Trace qualified as Debug
 import GHC.Generics (Generic)
 import Shoggoth.Agda qualified as Agda
 import Shoggoth.CSS.Minify qualified as CSS
@@ -148,6 +149,8 @@ main = do
                 ["README.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
+                -- Book (Standalone HTML)
+                create (outDir </> "plfa.html"),
                 -- Book (EPUB Version)
                 create (outDir </> "plfa.epub"),
                 -- Announcements
@@ -195,7 +198,8 @@ main = do
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
         authorMetadata <- ?getAuthors ()
-        return $ mconcat [metadata, constField "author" authorMetadata]
+        buildDate <- currentDateField rfc822DateFormat "build_date"
+        return $ mconcat [metadata, constField "author" authorMetadata, buildDate]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
@@ -340,8 +344,7 @@ main = do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, rssXmlTemplate) <- getFileWithMetadata src
-        buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata = mconcat [postsField, fileMetadata, buildDate]
+        let metadata = mconcat [postsField, fileMetadata]
         return rssXmlTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
@@ -389,14 +392,59 @@ main = do
         copyFile' src out
 
       --------------------------------------------------------------------------------
+      -- Standalone HTML
+
+      outDir </> "plfa.html" %> \out -> do
+        -- Require all assets, rss.xml, and standalone template:
+        assets <- filter ((outDir </> "assets" <//> "*") ?==) <$> outputs
+        need assets
+        need [outDir </> "rss.xml", webTemplateDir </> "standalone.html"]
+
+        defaultMetadata <- ?getDefaultMetadata ()
+
+        let routeSection src =
+              if Agda.isAgdaFile src then routeAnchor "agda_html" src else return src
+
+        bookDoc <- makeBookDoc routeSection
+
+        standaloneHtmlTemplate <- Pandoc.compileTemplateFile (webTemplateDir </> "standalone.html")
+
+        let writerOptsForStandaloneHtml =
+              writerOpts
+                { writerTemplate = Just standaloneHtmlTemplate,
+                  writerTableOfContents = True,
+                  writerCiteMethod = Pandoc.Natbib,
+                  writerWrapText = Pandoc.WrapPreserve,
+                  writerTopLevelDivision = Pandoc.TopLevelPart,
+                  writerTOCDepth = 2,
+                  writerReferenceLocation = Pandoc.EndOfSection
+                }
+
+        let pandocToStandaloneHtml doc = runPandoc $ do
+              Pandoc.setResourcePath [outDir]
+              return doc
+                >>= Pandoc.writeHtml5String writerOptsForStandaloneHtml
+                <&> postProcessHtml5 outDir out
+                >>= Pandoc.makeSelfContained
+
+        return bookDoc
+          >>= pandocToStandaloneHtml
+          >>= writeFile' out
+
+      --------------------------------------------------------------------------------
       -- EPUB
 
       outDir </> "plfa.epub" %> \out -> do
         -- Require metadata and stylesheet
         need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
 
-        bookDoc <- makeBookDoc $ \src ->
-          if Agda.isAgdaFile src then routeAnchor "agda_html" src else return src
+        let routeSection src =
+              if Agda.isAgdaFile src then routeAnchor "agda_html" src else return src
+
+        bookDoc <-
+          makeBookDoc routeSection
+            <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
+            <&> Pandoc.setMeta "highlighting-css" highlightCss
 
         -- Set writer options
         epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
@@ -425,8 +473,7 @@ main = do
         let src = epubTemplateDir </> "epub-metadata.xml"
         defaultMetadata <- getDefaultMetadata ()
         contributors <- getContributors ()
-        buildDate <- currentDateField rfc822DateFormat "build_date"
-        let metadata = mconcat [defaultMetadata, constField "contributor" contributors, buildDate]
+        let metadata = mconcat [defaultMetadata, constField "contributor" contributors]
         readFile' src
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
@@ -607,23 +654,6 @@ markdownToHtml5 =
 --------------------------------------------------------------------------------
 -- Compile standalone book
 
-internalizeUrl :: Url -> Url
-internalizeUrl url
-  | isAbsoluteUrl url = qualifyIdent urlPath $ Text.dropWhile (== '#') hashAndAnchor
-  | otherwise = url
-  where
-    (urlPath, hashAndAnchor) = Text.breakOn "#" url
-
-qualifyIdent :: Url -> Text -> Text
-qualifyIdent urlPath anchor =
-  assert (isNothing $ Text.find (== '#') urlPath) $
-    assert (isAbsoluteUrl urlPath) $
-      urlToIdent urlPath <> ":" <> anchor
-
-urlToIdent :: Url -> Text
-urlToIdent url =
-  Text.intercalate "-" (filter (not . Text.null) (Text.splitOn "/" (removeIndexHtml url)))
-
 makeBookDoc ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
     ?getSectionTable :: () -> Action SectionTable,
@@ -654,7 +684,12 @@ makeBookDoc routeSection = do
       let sectionDoc =
             Builder.divWith (sectionIdent, [], [("epub:type", sectionEpubType section)]) $
               Builder.header 2 (Builder.text sectionTitle)
-                <> Builder.fromList (Pandoc.withIdsBlock (qualifyIdent sectionUrl) <$> Pandoc.shiftHeadersBy 1 sectionBlocks)
+                <> Builder.fromList
+                  ( sectionBlocks
+                      & Pandoc.shiftHeadersBy 1
+                      & Pandoc.withIds (qualifyIdent sectionUrl)
+                      & Pandoc.withUrls (qualifyAnchor sectionUrl)
+                  )
       return sectionDoc
 
     -- Compose part document
@@ -670,6 +705,7 @@ makeBookDoc routeSection = do
   title <- failOnError $ defaultMetadata ^. "pagetitle"
   author <- fmap authorName <$> ?getAuthors ()
   rights <- failOnError $ defaultMetadata ^. "license.name"
+  date <- failOnError $ defaultMetadata ^. "build_date"
 
   -- Compose book
   return (Builder.doc (mconcat parts))
@@ -678,8 +714,34 @@ makeBookDoc routeSection = do
     <&> Pandoc.setMeta "title" (Builder.str title)
     <&> Pandoc.setMeta "author" author
     <&> Pandoc.setMeta "rights" (Builder.str rights)
-    <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
-    <&> Pandoc.setMeta "highlighting-css" highlightCss
+    <&> Pandoc.setMeta "date" (Builder.str date)
+
+internalizeUrl :: Url -> Url
+internalizeUrl url
+  | isAbsoluteUrl url = "#" <> qualifyIdent urlPath hashAndAnchor
+  | otherwise = url
+  where
+    (urlPath, hashAndAnchor) = Text.breakOn "#" url
+
+qualifyAnchor :: Url -> Url -> Url
+qualifyAnchor urlPath url
+  | "#" `Text.isPrefixOf` url = "#" <> qualifyIdent urlPath url
+  | otherwise = url
+
+qualifyIdent :: Url -> Text -> Text
+qualifyIdent urlPath hashAndAnchor
+  | Text.null hashAndAnchor = ""                     -- No anchor
+  | Text.null anchor        = ident                  -- Self anchor '#'
+  | otherwise               = ident <> "_" <> anchor
+  where
+    anchor = Text.dropWhile (== '#') hashAndAnchor
+    ident = urlToIdent urlPath
+
+urlToIdent :: Url -> Text
+urlToIdent url =
+  assert (isNothing $ Text.find (== '#') url) $
+    assert (isAbsoluteUrl url) $
+      Text.intercalate "-" (filter (not . Text.null) (Text.splitOn "/" (removeIndexHtml url)))
 
 --------------------------------------------------------------------------------
 -- HTML5 post-processing
@@ -767,7 +829,6 @@ data RichAgdaFileInfo = RichAgdaFileInfo
   }
   deriving (Show, Typeable, Eq, Generic, Hashable, Binary, NFData)
 
-pattern AgdaFileInfo :: Agda.Library -> FilePath -> FilePath -> Text -> FilePath -> FilePath -> FilePath -> FilePath -> FilePath -> Project -> [Agda.Library] -> RichAgdaFileInfo
 pattern AgdaFileInfo
   { library,
     libraryIncludePath,

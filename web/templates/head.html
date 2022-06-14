@@ -6,6 +6,10 @@
   $if(titlerunning)$
   <title>$pagetitle$ – $titlerunning$</title>
   $else$
+  $if(title)$
   <title>$pagetitle$ – $title$</title>
+  $else$
+  <title>$pagetitle$</title>
+  $endif$
   $endif$
 </head>
