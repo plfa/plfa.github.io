@@ -434,6 +434,7 @@ main = do
       --------------------------------------------------------------------------------
       -- EPUB
 
+      -- Build EPUB
       outDir </> "plfa.epub" %> \out -> do
         -- Require metadata and stylesheet
         need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
@@ -468,7 +469,7 @@ main = do
         epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
         liftIO $ LazyByteString.writeFile out epub
 
-      -- Build epub metadata
+      -- Build EPUB metadata
       tmpEpubDir </> "epub-metadata.xml" %> \out -> do
         let src = epubTemplateDir </> "epub-metadata.xml"
         defaultMetadata <- getDefaultMetadata ()
@@ -478,7 +479,7 @@ main = do
           >>= Pandoc.applyAsTemplate metadata
           >>= writeFile' out
 
-      -- Build epub stylesheet
+      -- Build EPUB stylesheet
       tmpEpubDir </> "style.css" %> \out -> do
         let src = epubStyleDir </> "style.scss"
         need =<< getDirectoryFiles "" [epubStyleDir <//> "*.scss"]
