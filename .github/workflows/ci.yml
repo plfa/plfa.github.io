@@ -42,7 +42,7 @@ jobs:
 
       - name: Setup EPUBCheck (Linux)
         if: runner.os == 'Linux'
-        run: apt-get install epubcheck
+        run: sudo apt-get install -y epubcheck
 
       - name: Setup EPUBCheck (macOS)
         if: runner.os == 'macOS'
