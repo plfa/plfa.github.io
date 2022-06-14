@@ -8,7 +8,7 @@
     </description>
     <language>$language$</language>
     <atom:link href="$baseurl$$url$" rel="self" type="application/rss+xml" />
-    <lastBuildDate>$build_date$</lastBuildDate>
+    <lastBuildDate>$build_date_rfc822$</lastBuildDate>
     $for(post)$
     <item>
       <title>$post.title$</title>

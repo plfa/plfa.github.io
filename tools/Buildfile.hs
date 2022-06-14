@@ -198,8 +198,9 @@ main = do
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
         authorMetadata <- ?getAuthors ()
-        buildDate <- currentDateField rfc822DateFormat "build_date"
-        return $ mconcat [metadata, constField "author" authorMetadata, buildDate]
+        buildDate <- currentDateField  "%Y-%m" "build_date"
+        buildDateRfc822 <- currentDateField rfc822DateFormat "build_date_rfc822"
+        return $ mconcat [metadata, constField "author" authorMetadata, buildDate, buildDateRfc822]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do

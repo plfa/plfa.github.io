@@ -188,6 +188,7 @@ test-html-proofer: check-html-proofer
 
 EPUBCHECK ?= $(wildcard $(shell which epubcheck))
 
+EPUBCHECK_ARGS += --customMessages .epubcheck.tsv
 EPUBCHECK_ARGS += $(OUT_DIR)/plfa.epub
 
 .PHONY: test-epubcheck
