@@ -92,11 +92,11 @@ jobs:
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-epubcheck
                 
-      # - name: Deploy website
-      #   if: runner.os == 'macOS'
-      #   uses: JamesIves/github-pages-deploy-action@v4.2.5
-      #   with:
-      #     branch: web
-      #     folder: _site
+      - name: Deploy website
+        if: runner.os == 'macOS'
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: web
+          folder: _site
 
         
