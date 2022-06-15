@@ -8,7 +8,7 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Wed, 15 Jun 2022 10:59:03 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jun 2022 11:28:08 +0000</lastBuildDate>
         <item>
       <title>PLFA as PDF and EPUB</title>
       <link>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</link>
@@ -28,9 +28,9 @@
       </description>
       <pubDate>Tue, 24 Aug 2021 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Building with Hakyll</title>
@@ -58,9 +58,9 @@
       </description>
       <pubDate>Fri, 23 Oct 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/10/23/building-with-hakyll/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Migration to Agda 2.6.1</title>
@@ -77,9 +77,9 @@
       </description>
       <pubDate>Mon, 20 Jul 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/07/20/migration-to-agda-2/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Versions and Releases</title>
@@ -92,9 +92,9 @@
       </description>
       <pubDate>Tue, 14 Jul 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/07/14/versions-and-releases/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Introducing Part 3: Denotational Semantics</title>
@@ -110,9 +110,9 @@
       </description>
       <pubDate>Mon, 13 Jul 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/07/13/denotational-semantics/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Talking about PLFA…</title>
@@ -123,9 +123,9 @@
       </description>
       <pubDate>Tue, 23 Jun 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/06/23/talking-about-plfa/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>PLFA as EPUB</title>
@@ -136,9 +136,9 @@
       </description>
       <pubDate>Tue, 02 Jun 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/06/02/plfa-as-epub/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Praise for PLFA</title>
@@ -149,9 +149,9 @@
       </description>
       <pubDate>Thu, 30 Apr 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/04/30/praise-for-plfa/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>PLFA as a Notebook</title>
@@ -162,9 +162,9 @@
       </description>
       <pubDate>Fri, 10 Jan 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/01/10/plfa-as-a-notebook/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
         <item>
       <title>Migration to Agda 2.6.0.1</title>
@@ -180,9 +180,9 @@
       </description>
       <pubDate>Fri, 12 Jul 2019 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2019/07/12/migration-to-agda-2/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
-            <dc:creator>Philip Wadler</dc:creator>
           </item>
       </channel>
 </rss>
