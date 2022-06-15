@@ -1,11 +1,6 @@
 OUT_DIR := _site
 TMP_DIR := _cache
 
-# OS = {Windows_NT, Linux, Darwin}
-ifneq ($(OS),Windows_NT)
-OS := $(shell uname -s)
-endif
-
 CABAL ?= $(wildcard $(shell which cabal))
 NPX ?= $(wildcard $(shell which npx))
 RBENV ?= $(wildcard $(shell which rbenv))
