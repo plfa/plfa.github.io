@@ -1,6 +1,7 @@
 ---
 title     : Table of Contents
 permalink : /
+next      : /Dedication/
 ---
 
 This book is an introduction to programming language theory using the proof
