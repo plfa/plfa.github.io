@@ -362,7 +362,30 @@ it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mono-≤`.
 
 ```
--- Your code goes here
+data _≤_ : ℕ → ℕ → Set where
+  z≤n : {n : ℕ} → zero ≤ n
+  s≤s : {m n : ℕ} → m ≤ n → suc m ≤ suc n
+
+postulate ≤-refl : {x : ℕ} → x ≤ x
+postulate ≤-trans : {x y z : ℕ} → x ≤ y → y ≤ z → x ≤ z
+
+module ≤-Reasoning where
+
+  infix 1 ≤-begin_
+  infixr 2 _≤⟨⟩_ _≤⟨_⟩_
+  infix 2 _≤-∎
+
+  ≤-begin_ : {x y : ℕ} → x ≤ y → x ≤ y
+  ≤-begin x≤y = x≤y
+
+  _≤⟨⟩_ : (x : ℕ) → {y : ℕ} → x ≤ y → x ≤ y
+  x ≤⟨⟩ x≤y = x≤y
+
+  _≤⟨_⟩_ : (x : ℕ) → {y z : ℕ} → x ≤ y → y ≤ z → x ≤ z
+  x ≤⟨ x≤y ⟩ y≤z = ≤-trans x≤y y≤z
+
+  _≤-∎ : (x : ℕ) → x ≤ x
+  x ≤-∎ = ≤-refl
 ```
 
 
