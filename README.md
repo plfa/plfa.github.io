@@ -23,7 +23,7 @@ You can read PLFA [online][plfa] without installing anything. However, if you wi
 
 PLFA is tested against specific versions of Agda and the standard library, which are shown in the badges above. Agda and the standard library change rapidly, and these changes often break PLFA, so using older or newer versions usually causes problems.
 
-There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out-of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.
+There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.
 
 
 ### On macOS: Install the XCode Command Line Tools
@@ -42,7 +42,7 @@ If you do not have Git, see [the Git downloads page][git].
 
 
 ### Install GHC and Cabal
-Agda is written in Haskell, so to install it we’ll need the *Glorious Haskell Compiler* version 8.10.7 and it's package managed *Cabal*. We recommend installing both of these using [ghcup][ghcup].
+Agda is written in Haskell, so to install it we’ll need the *Glorious Haskell Compiler* version 8.10.7 and its package manager *Cabal*. We recommend installing both of these using [ghcup][ghcup].
 
 
 ### Install Agda
@@ -67,7 +67,7 @@ PLFA ships with the required version of the Agda standard library, so if you clo
 
 Finally, we need to let Agda know where to find the Agda standard library and PLFA. Two configuration files are required, one which lists paths to the libraries and one which specifies which libraries to load by default.
 
-On macOS and Unix, if PLFA is installed in your home directory and you have no existing library configuration files you wish to preserve,run the following commands:
+On macOS and Unix, if PLFA is installed in your home directory and you have no existing library configuration files you wish to preserve, run the following commands:
 ```bash
 mkdir -p ~/.agda
 cp ~/plfa/data/dotagda/* ~/.agda
