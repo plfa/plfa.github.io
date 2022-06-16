@@ -281,7 +281,7 @@ main = do
           <&> snd
           <&> TagSoup.parseTagsOptions TagSoup.parseOptions {TagSoup.optTagPosition = True}
           <&> Agda.runAgdaSoup . traverse (Agda.qualifyIdSoup agdaFileInfo . TagSoup.mapUrls agdaLinkFixer)
-          <&> TagSoup.renderTags
+          <&> TagSoup.renderTagsOptio TgagSoup.renderOptions {TagSoup.optEscape = id}
           >>= writeFile' next
 
       -- Stage 3: Compile Markdown to HTML
