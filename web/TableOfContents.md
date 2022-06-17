@@ -13,6 +13,7 @@ welcome.  The book repository is on [GitHub]. Pull requests are encouraged.
 There is a private repository of answers to selected questions on github. Please
 contact one of the authors if you would like to access it.
 
+TEST
 
 $for(toc.part)$
 ## $toc.part.title$
