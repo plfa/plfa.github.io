@@ -16,14 +16,20 @@ env:
 
 jobs:
   build:
-    name: Build ${{ matrix.os }} / GHC ${{ matrix.ghc }}
-    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: true
       matrix:
         os: [macOS-latest, ubuntu-latest]
-        ghc: ["8.10.7"]
-        node: ["latest"]
-        cabal: ["latest"]
+        ghc-version: ["8.10.7"]
+        cabal-version: ["3.6"]
+        node-version: ["16"]
+        experimental: [false]
+    
+        
+    name: Build (${{ matrix.os }} with GHC ${{ matrix.ghc-version }})
+        
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
 
     steps:
       - name: Checkout
@@ -53,8 +59,8 @@ jobs:
         uses: haskell/actions/setup@v2
         id: setup-haskell
         with:
-          ghc-version: ${{ matrix.ghc }}
-          cabal-version: ${{ matrix.cabal }}
+          ghc-version: ${{ matrix.ghc-version }}
+          cabal-version: ${{ matrix.cabal-version }}
 
       - name: Cabal freeze
         run: |
@@ -77,8 +83,8 @@ jobs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.ci.freeze') }}
-          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
+          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-
           
       - name: Cache _cache and _site
         uses: actions/cache@v3
@@ -102,18 +108,20 @@ jobs:
         run: make test-epubcheck
 
       - name: Upload artifact (Push)
-        if: github.event_name == 'push'
+        if: runner.os == 'Linux' && github.event_name == 'push'
         uses: actions/upload-artifact@v3
         with:
           name: latest
           path: _site
+          if-no-files-found: error
           
       - name: Upload artifact (Pull Request)
-        if: github.event_name == 'pull_request'
+        if: runner.os == 'Linux' && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: pull-request-${{ github.event.pull_request.number }}
+          name: pull-request-${{ github.event.pull_request.number }} 
           path: _site
+          if-no-files-found: error
     
       # - name: Deploy website
       #  if: runner.os == 'Linux' && github.event_name == 'push'
