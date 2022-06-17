@@ -20,12 +20,14 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        ghc-version: ["8.10.7"]
+        ghc-version: ["8.10.7", "9.2.2"]
         cabal-version: ["3.6"]
         node-version: ["16"]
         include:
           - experimental: false
           - os: windows-latest
+            experimental: true
+          - ghc-version: "9.2.2"
             experimental: true
           - os: ubuntu-latest
             os-pretty: Linux
@@ -49,7 +51,7 @@ jobs:
       
       - name: Setup the ICU library (Windows)
         if: ${{ runner.os == 'Windows' }}
-        run: pacman --noconfirm -S mingw-w64-x86_64-libc++ mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu  
+        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu  
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
