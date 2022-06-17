@@ -32,7 +32,7 @@ jobs:
           - os: macOS-latest
             os-pretty: macOS
           - os: windows-latest
-            os-pretty: Window
+            os-pretty: Windows
 
     name: Build on ${{ matrix.os-pretty }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
