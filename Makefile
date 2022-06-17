@@ -33,7 +33,7 @@ SHAKE_ARGS += --lint
 SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
 SHAKE_ARGS += --timing
 
-HTML_MINIFIER ?= npm_config_yes=true npx html-minifier
+HTML_MINIFIER ?= npx html-minifier
 
 HTML_MINIFIER_ARGS += --collapse-whitespace
 HTML_MINIFIER_ARGS += --collapse-boolean-attributes
@@ -101,7 +101,7 @@ watch:
 # Start local server with BrowserSync
 ########################################
 
-BROWSER_SYNC ?= npm_config_yes=true npx browser-sync
+BROWSER_SYNC ?= npx browser-sync
 
 BROWSER_SYNC_ARGS += start
 BROWSER_SYNC_ARGS += --server
@@ -126,7 +126,7 @@ serve:
 
 # html-validate
 
-HTML_VALIDATE ?= npm_config_yes=true npx html-minifier
+HTML_VALIDATE ?= npx html-minifier
 
 HTML_VALIDATE_ARGS += .
 
@@ -183,7 +183,7 @@ test-epubcheck:
 
 # Ace by Daisy
 
-ACE ?= npm_config_yes=true npx @daisy/ace
+ACE ?= npx @daisy/ace
 
 ACE_ARGS += --lang=en
 ACE_ARGS += --tempdir=$(TMP_DIR)/ace
