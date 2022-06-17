@@ -28,10 +28,8 @@ jobs:
     
         
     name: Build (${{ matrix.os }} with GHC ${{ matrix.ghc-version }})
-        
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -113,12 +111,32 @@ jobs:
           name: pull-request-${{ github.event.pull_request.number }} 
           path: _site
           if-no-files-found: error
+          
+  deploy:
+    concurrency: ci-${{ github.ref }}
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: github.event_name == 'push'
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+
+      - name: Download Artifact
+        if: github.event_name == 'push'
+        uses: actions/download-artifact@v3
+        with:
+          name: latest
+          path: latest
+
+      - name: Deploy Artifact
+        if: github.event_name == 'push'
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: web
+          folder: latest
     
-      # - name: Deploy website
-      #  if: runner.os == 'Linux' && github.event_name == 'push'
-      #  uses: JamesIves/github-pages-deploy-action@v4.3.3
-      #  with:
-      #    branch: web
-      #    folder: _site
+
 
         
