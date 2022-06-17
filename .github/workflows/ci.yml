@@ -91,7 +91,7 @@ jobs:
             ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
             ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-
           
-      - name: Cache Shake Build
+      - name: Cache Shake build
         uses: actions/cache@v3
         with:
           path: |
@@ -101,11 +101,11 @@ jobs:
           restore-keys: |
             ${{ matrix.os }}-output
 
-      - name: Build website
+      - name: Build artifact
         run: make build
         shell: sh
 
-      - name: Test with html-validate
+      - name: Test with HTML-validate
         run: make test-html-validate
         shell: sh
 
@@ -146,14 +146,14 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Download Artifact
+      - name: Download artifact
         if: github.event_name == 'push'
         uses: actions/download-artifact@v3
         with:
           name: latest
           path: latest
 
-      - name: Deploy Artifact
+      - name: Deploy artifact
         if: github.event_name == 'push'
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
