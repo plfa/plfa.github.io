@@ -21,48 +21,8 @@
 #
 # The extended glob pattern can be used to specify file/direcotory names.
 # For details, see http://hackage.haskell.org/package/filemanip-0.3.6.3/docs/System-FilePath-GlobPattern.html
-#
-included-dirs:
-  - ".github"
-  - ".githooks"
-  - "courses"
-  - "data"
-  - "epub"
-  - "src"
-  - "tools"
-  - "web"
-
-excluded-dirs:
-  - ".git"
-  - ".stack-work"
-  - "_site"
-  - "_cache"
-  - "_build"
-  - "extra"
-  - "papers"
-  - "standard-library"
 
 included-files:
-  - ".gitignore"
-  - ".gitmodules"
-  - "*.agda-lib"
-  - "*.bib"
-  - "*.cabal"
-  - "*.csl"
-  - "*.hs"
-  - "*.html"
-  - "*.lua"
-  - "*.md"
-  - "*.tex"
-  - "*.yaml"
-  - "*.yml"
-  - "*.json"
-  - "LICENSE"
-  - "Gemfile"
-  - "Makefile"
-
-included-files:
-- ".feed-validator.config.js"
 - ".gitignore"
 - ".htmlvalidate.json"
 - ".htmlvalidateignore"
@@ -74,8 +34,6 @@ included-files:
 - "cabal.project"
 - "cabal.project.ci"
 - "cabal.project.ci.local"
-- "cabal.project.dev"
-- "cabal.project.dev.local.macos"
 - "cabal.project.local.macos"
 - "dotdir-locals.el"
 - "*.md"
@@ -90,9 +48,10 @@ included-files:
 included-dirs:
 - ".githooks"
 - ".github"
+- "book"
 - "courses"
 - "data"
-- "epub"
+- "papers"
 - "src"
 - "tools"
 - "web"
@@ -108,5 +67,4 @@ excluded-dirs:
 - "_site"
 - "dist-newstyle"
 - "extra"
-- "papers"
 - "standard-library"
