@@ -169,7 +169,7 @@ test-html-proofer:
 
 # EPUBCheck
 
-EPUBCHECK ?= $(wildcard $(shell which epubcheck))
+EPUBCHECK ?= epubcheck
 
 EPUBCHECK_ARGS += --customMessages .epubcheck.tsv
 EPUBCHECK_ARGS += $(OUT_DIR)/plfa.epub
