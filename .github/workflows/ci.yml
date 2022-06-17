@@ -11,8 +11,8 @@ on:
 
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
-  HTML_PROOFER: "bundle exec htmlproofer"
-  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: true # Use fast system libraries for html-proofer.
+  npm_config_yes: true # Don't ask for confirmation before installing packages.
 
 jobs:
   build:
