@@ -158,11 +158,14 @@ test-feed-validator: check-feed-validator
 
 HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
 
-HTML_PROOFER_ARGS += --cache="{cache: {timeframe: {external: '30d'}, storage_dir: '$(TMP_DIR)/html-proofer'}}"
+# In anticipation of html-proofer-4.0.0
+# HTML_PROOFER_ARGS += --cache="{cache: {timeframe: {external: '30d'}, storage_dir: '$(TMP_DIR)/html-proofer'}}"
+# HTML_PROOFER_ARGS += --file-ignore="/\.\/plfa.html/,/\.\/assets\/.*\.html/"
+
 HTML_PROOFER_ARGS += --check-html
 HTML_PROOFER_ARGS += --check-img-http
 HTML_PROOFER_ARGS += --check-opengraph
-HTML_PROOFER_ARGS += --ignore-files="/\.\/plfa.html/,/\.\/assets\/.*\.html/"
+HTML_PROOFER_ARGS += --file-ignore="/\.\/plfa.html/,/\.\/assets\/.*\.html/"
 ifeq ($(EXTERNAL_LINKS),)
 HTML_PROOFER_ARGS += --disable-external
 endif
