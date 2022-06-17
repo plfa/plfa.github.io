@@ -126,7 +126,7 @@ serve:
 
 # html-validate
 
-HTML_VALIDATE ?= npx html-minifier
+HTML_VALIDATE ?= npx html-validate
 
 HTML_VALIDATE_ARGS += .
 
