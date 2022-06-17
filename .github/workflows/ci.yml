@@ -93,7 +93,7 @@ jobs:
         run: make test-epubcheck
                 
       - name: Deploy website
-        if: runner.os == 'macOS'
+        if: runner.os == 'Linux' && github.event_name == 'push'
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: web
