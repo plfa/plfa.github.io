@@ -19,12 +19,15 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
         ghc-version: ["8.10.7"]
         cabal-version: ["3.6"]
         node-version: ["16"]
         include:
           - experimental: false
+          - os: windows-latest
+            experimental: true
+          
      
     name: Build (${{ runner.os }} with GHC ${{ matrix.ghc-version }})
     runs-on: ${{ matrix.os }}
