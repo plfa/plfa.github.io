@@ -49,12 +49,12 @@ jobs:
       
       - name: Setup the ICU library (Windows)
         if: ${{ runner.os == 'Windows' }}
-        run: pacman --noconfirm -S pkg-config icu --triplet mingw-w64-x86_64  
+        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu  
           
       - name: Setup libsass (Windows)
         if: ${{ runner.os == 'Windows' }}
         run: |
-          pacman --noconfirm -S libsass --triplet mingw-w64-x86_64
+          pacman --noconfirm -S mingw-w64-x86_64-libsass
           Echo "CABAL_ARGS=$env:CABAL_ARGS --flag=externalLibsass" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Setup Haskell
