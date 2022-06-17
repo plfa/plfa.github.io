@@ -117,8 +117,8 @@ serve:
 
 ########################################
 # Test site with:
-# - html-validate
-# - html-proofer
+# - HTML-validate
+# - HTMLProofer
 # - EPUBCheck
 # - Ace by Daisy
 ########################################
@@ -132,7 +132,7 @@ HTML_VALIDATE_ARGS += .
 
 .PHONY: test-html-validate
 test-html-validate:
-	@echo "Checking HTML with html-validate..."
+	@echo "Checking HTML with HTML-validate..."
 	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
 
 
