@@ -49,7 +49,7 @@ jobs:
       
       - name: Install the ICU library (Windows)
         if: ${{ runner.os == 'Windows' }}
-        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu
+        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu mingw-w64-x86_64-libsass
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
