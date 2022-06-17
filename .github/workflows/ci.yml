@@ -68,16 +68,6 @@ jobs:
           cabal v2-update
           cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
 
-      - name: Add Cabal installdir to path (Unix)
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        run:  echo "${HOME}/.cabal/bin" >> $GITHUB_PATH
-        shell: bash
-
-      - name: Add Cabal installdir to path (Windows)
-        if: runner.os == 'Windows'
-        run: echo "$env:APPDATA\cabal\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        shell: powershell
-
       - name: Cache ~/.cabal/store and dist-newstyle
         uses: actions/cache@v3
         with:
