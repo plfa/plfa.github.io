@@ -24,9 +24,15 @@ jobs:
         cabal-version: ["3.6"]
         node-version: ["16"]
         include:
+          # Experimental builds.
           - experimental: false
           - os: windows-latest
             experimental: true
+          # Default shells.
+          - shell: bash
+          - os: windows-latest
+            shell: msys {0}
+          # Pretty OS names.
           - os: ubuntu-latest
             os-pretty: Linux
           - os: macOS-latest
@@ -37,21 +43,24 @@ jobs:
     name: Build on ${{ matrix.os-pretty }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: 'true'
         
-      - name: Setup MSYS path (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        run: Echo "C:\msys64\mingw64\bin;C:\msys64\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-        shell: pwsh
-        
-      - name: Install the ICU library (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu
-        shell: pwsh
+      - name: Setup MSYS (Windows)
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            base-devel
+            git
+            pkg-config
+            icu
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
@@ -64,7 +73,6 @@ jobs:
         run: |
           cabal v2-update
           cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
-        shell: sh
 
       - name: Cache Haskell
         uses: actions/cache@v3
@@ -75,10 +83,7 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: |
             haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
-            haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
             haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-
-            ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
-            ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-
           
       - name: Cache Shake build
         uses: actions/cache@v3
@@ -89,7 +94,6 @@ jobs:
           key: build-${{ runner.os }}
           restore-keys: |
             build-${{ matrix.os }}
-            ${{ matrix.os }}-output
   
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -98,11 +102,9 @@ jobs:
     
       - name: Build artifact
         run: make build
-        shell: sh
 
       - name: Test with HTML-validate
         run: make test-html-validate
-        shell: sh
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -111,22 +113,18 @@ jobs:
   
       - name: Test with HTMLProofer
         run: make test-html-proofer
-        shell: sh
 
       - name: Setup EPUBCheck (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get install -y epubcheck
-        shell: sh
 
       - name: Setup EPUBCheck (macOS)
         if: runner.os == 'macOS'
         run: brew install epubcheck
-        shell: sh
         
       - name: Test with EPUBCheck
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-epubcheck
-        shell: sh
 
       - name: Upload artifact
         if: runner.os == 'Linux' && github.event_name == 'push'
