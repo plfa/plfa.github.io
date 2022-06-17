@@ -66,22 +66,27 @@ jobs:
           cabal v2-update
           cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
 
-      - name: Cache ~/.cabal/store and dist-newstyle
+      - name: Cache Haskell
         uses: actions/cache@v3
         with:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
-          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-
+          key: haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
+          restore-keys: |
+            haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-
+            ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
+            ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-
           
-      - name: Cache _cache and _site
+      - name: Cache Shake Build
         uses: actions/cache@v3
         with:
           path: |
             _cache
             _site
-          key: ${{ matrix.os }}-output
+          key: build-${{ matrix.os }}
+          restore-keys: |
+            ${{ matrix.os }}-output
 
       - name: Build website
         run: make build
@@ -113,6 +118,7 @@ jobs:
           if-no-files-found: error
           
   deploy:
+    name: Deploy
     concurrency: ci-${{ github.ref }}
     needs: [build]
     runs-on: ubuntu-latest
