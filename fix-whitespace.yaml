@@ -23,6 +23,8 @@
 # For details, see http://hackage.haskell.org/package/filemanip-0.3.6.3/docs/System-FilePath-GlobPattern.html
 
 included-files:
+- ".dir-locals.el"
+- ".epubcheck.tsv"
 - ".gitignore"
 - ".htmlvalidate.json"
 - ".htmlvalidateignore"
@@ -35,7 +37,6 @@ included-files:
 - "cabal.project.ci"
 - "cabal.project.ci.local"
 - "cabal.project.local.macos"
-- "dotdir-locals.el"
 - "*.md"
 - "*.hs"
 - "*.lagda.md"
