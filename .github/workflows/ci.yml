@@ -42,24 +42,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: 'true'
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Setup EPUBCheck (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get install -y epubcheck
-
-      - name: Setup EPUBCheck (macOS)
-        if: runner.os == 'macOS'
-        run: brew install epubcheck
         
       - name: Setup ICU4C (Windows)
         if: runner.os == 'Windows'
@@ -108,7 +90,12 @@ jobs:
           key: build-${{ matrix.os }}
           restore-keys: |
             ${{ matrix.os }}-output
-
+  
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+    
       - name: Build artifact
         run: make build
         shell: sh
@@ -117,10 +104,25 @@ jobs:
         run: make test-html-validate
         shell: sh
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+  
       - name: Test with HTMLProofer
         run: make test-html-proofer
         shell: sh
 
+      - name: Setup EPUBCheck (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y epubcheck
+        shell: sh
+
+      - name: Setup EPUBCheck (macOS)
+        if: runner.os == 'macOS'
+        run: brew install epubcheck
+        shell: sh
+        
       - name: Test with EPUBCheck
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-epubcheck
