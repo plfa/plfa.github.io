@@ -124,7 +124,7 @@ serve:
 ########################################
 
 
-# html-validate
+# HTML-validate
 
 HTML_VALIDATE ?= npx html-validate
 
@@ -136,7 +136,7 @@ test-html-validate:
 	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
 
 
-# html-proofer
+# HTMLProofer
 
 HTML_PROOFER ?= bundle exec htmlproofer
 
