@@ -24,7 +24,6 @@
 
 included-files:
 - ".dir-locals.el"
-- ".epubcheck.tsv"
 - ".gitignore"
 - ".htmlvalidate.json"
 - ".htmlvalidateignore"
@@ -59,6 +58,7 @@ included-dirs:
 
 excluded-files:
 - ".DS_Store"
+- ".epubcheck.tsv"
 - ".gitmodules"
 
 excluded-dirs:
