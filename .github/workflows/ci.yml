@@ -55,6 +55,14 @@ jobs:
       - name: Setup EPUBCheck (macOS)
         if: runner.os == 'macOS'
         run: brew install epubcheck
+        
+      - name: Setup ICU (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/unicode-org/icu/releases/download/release-71-1/icu4c-71_1-Win32-MSVC2019.zip" -OutFile "${{ runner.temp }}/icu4c.zip"
+          Expand-Archive "${{ runner.temp }}/icu4c.zip" -DestinationPath "${{ github.workspace }}/icu4c/" -Force
+          echo "CABAL_ARGS=$env:CABAL_ARGS --extra-lib-dirs='${{ github.workspace }}/icu4c/' --extra-include-dirs='${{ github.workspace }}/icu4c/include'" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        shell: pwsh
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
@@ -67,6 +75,7 @@ jobs:
         run: |
           cabal v2-update
           cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
+        shell: sh
 
       - name: Cache Haskell
         uses: actions/cache@v3
@@ -92,16 +101,20 @@ jobs:
 
       - name: Build website
         run: make build
+        shell: sh
 
       - name: Test with html-validate
         run: make test-html-validate
+        shell: sh
 
       - name: Test with HTMLProofer
         run: make test-html-proofer
+        shell: sh
 
       - name: Test with EPUBCheck
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-epubcheck
+        shell: sh
 
       - name: Upload artifact (Push)
         if: runner.os == 'Linux' && github.event_name == 'push'
