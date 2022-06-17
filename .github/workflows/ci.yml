@@ -12,6 +12,7 @@ on:
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
   HTML_PROOFER: "bundle exec htmlproofer"
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
 jobs:
   build:
