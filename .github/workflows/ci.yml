@@ -27,8 +27,7 @@ jobs:
           - experimental: false
           - os: windows-latest
             experimental: true
-          
-     
+
     name: Build (${{ matrix.os }} with GHC ${{ matrix.ghc-version }})
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
