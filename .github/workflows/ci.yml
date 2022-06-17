@@ -16,7 +16,7 @@ env:
 
 jobs:
   build:
-    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
+    name: Build ${{ matrix.os }} / GHC ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -100,12 +100,26 @@ jobs:
       - name: Test with EPUBCheck
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-epubcheck
-                
-      - name: Deploy website
-        if: runner.os == 'Linux' && github.event_name == 'push'
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+
+      - name: Upload artifact (Push)
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
         with:
-          branch: web
-          folder: _site
+          name: latest
+          path: _site
+          
+      - name: Upload artifact (Pull Request)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: pull-request-${{ github.event.pull_request.number }}
+          path: _site
+    
+      # - name: Deploy website
+      #  if: runner.os == 'Linux' && github.event_name == 'push'
+      #  uses: JamesIves/github-pages-deploy-action@v4.3.3
+      #  with:
+      #    branch: web
+      #    folder: _site
 
         
