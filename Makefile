@@ -168,6 +168,8 @@ HTML_PROOFER_ARGS += --check-opengraph
 HTML_PROOFER_ARGS += --file-ignore="/\.\/plfa.html/,/\.\/assets\/.*\.html/"
 ifeq ($(EXTERNAL_LINKS),)
 HTML_PROOFER_ARGS += --disable-external
+else
+HTML_PROOFER_ARGS += --url-ignore="/github.com/"
 endif
 HTML_PROOFER_ARGS += --report-eof-tags
 HTML_PROOFER_ARGS += --report-invalid-tags
