@@ -69,7 +69,7 @@ jobs:
           Copy-Item "${{ github.workspace }}\icu4c\bin\icuuc71.dll" -Destination "${{ github.workspace }}\icu4c\bin\icuuc.dll"
           Copy-Item "${{ github.workspace }}\icu4c\bin\icuin71.dll" -Destination "${{ github.workspace }}\icu4c\bin\icuin.dll"
           Copy-Item "${{ github.workspace }}\icu4c\bin\icudt71.dll" -Destination "${{ github.workspace }}\icu4c\bin\icudt.dll"
-          Echo "CABAL_ARGS=$env:CABAL_ARGS --extra-lib-dirs='${{ github.workspace }}\icu4c\bin' --extra-include-dirs='${{ github.workspace }}\icu4c\include'" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Echo "CABAL_ARGS=$env:CABAL_ARGS --extra-lib-dirs=${{ github.workspace }}\icu4c\bin --extra-include-dirs=${{ github.workspace }}\icu4c\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           Echo "${{ github.workspace }}\icu4c\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         shell: pwsh
 
