@@ -20,7 +20,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        ghc-version: ["8.10.7", "9.2.2"]
+        ghc-version: ["8.10.7"] # "9.2.2"
         cabal-version: ["3.6"]
         node-version: ["16"]
         include:
