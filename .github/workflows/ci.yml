@@ -72,8 +72,10 @@ jobs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
+          key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: |
+            haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
+            haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
             haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-
             ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
             ${{ matrix.os }}-GHC-${{ matrix.ghc-version }}-
@@ -84,8 +86,9 @@ jobs:
           path: |
             _cache
             _site
-          key: build-${{ matrix.os }}
+          key: build-${{ runner.os }}
           restore-keys: |
+            build-${{ matrix.os }}
             ${{ matrix.os }}-output
   
       - name: Setup Node.js
