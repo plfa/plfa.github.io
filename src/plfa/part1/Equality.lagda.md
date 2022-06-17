@@ -389,7 +389,6 @@ module ≤-Reasoning where
 ```
 
 
-
 ## Rewriting
 
 Consider a property of natural numbers, such as being even.
@@ -508,8 +507,20 @@ even-comm′ : ∀ (m n : ℕ)
   → even (m + n)
     ------------
   → even (n + m)
-even-comm′ m n ev with   m + n  | +-comm m n
-...                  | .(n + m) | refl       = ev
+{-
+-- OK:
+even-comm′ m n ev with  m + n | +-comm m n
+...                  | .(n + m) | refl = ev
+-}
+{-
+-- FAIL:
+even-comm′ m n ev with +-comm m n | m + n
+...                  | refl | .(n + m) = ev
+-}
+even-comm′ m n ev = foo (m + n) (+-comm m n) ev
+  where
+    foo : (sum : ℕ) → sum ≡ n + m → even sum → even (n + m)
+    foo .(n + m) refl ev' = ev'
 ```
 In general, one can follow `with` by any number of expressions,
 separated by bars, where each following equation has the same number
@@ -580,34 +591,20 @@ Leibniz equality is reflexive and transitive,
 where the first follows by a variant of the identity function
 and the second by a variant of function composition:
 ```
-refl-≐ : ∀ {A : Set} {x : A}
-  → x ≐ x
-refl-≐ P Px  =  Px
+refl-≐ : ∀ {A : Set} {x : A} → x ≐ x
+refl-≐ {x} P Px = Px
 
-trans-≐ : ∀ {A : Set} {x y z : A}
-  → x ≐ y
-  → y ≐ z
-    -----
-  → x ≐ z
-trans-≐ x≐y y≐z P Px  =  y≐z P (x≐y P Px)
+trans-≐ : ∀ {A : Set} {x y z : A} → x ≐ y → y ≐ z → x ≐ z
+trans-≐ x≐y y≐z P Px = y≐z P (x≐y P Px)
 ```
 
 Symmetry is less obvious.  We have to show that if `P x` implies `P y`
 for all predicates `P`, then the implication holds the other way round
 as well:
 ```
-sym-≐ : ∀ {A : Set} {x y : A}
-  → x ≐ y
-    -----
-  → y ≐ x
-sym-≐ {A} {x} {y} x≐y P  =  Qy
-  where
-    Q : A → Set
-    Q z = P z → P x
-    Qx : Q x
-    Qx = refl-≐ P
-    Qy : Q y
-    Qy = x≐y Q Qx
+-- Our property is: "P is true for z implies P is true for x".
+sym-≐ : ∀ {A : Set} {x y : A} → x ≐ y → y ≐ x
+sym-≐ {A} {x = x} x≐y P Py = x≐y (λ (z : A) → P z → P x) (λ (Px : P x) → Px) Py
 ```
 
 Given `x ≐ y`, a specific `P`, we have to construct a proof that `P y`
@@ -622,29 +619,17 @@ Leibniz equality, and vice versa.  In the forward direction, if we know
 which is easy since equality of `x` and `y` implies that any proof
 of `P x` is also a proof of `P y`:
 ```
-≡-implies-≐ : ∀ {A : Set} {x y : A}
-  → x ≡ y
-    -----
-  → x ≐ y
-≡-implies-≐ x≡y P  =  subst P x≡y
+≡-implies-≐ : ∀ {A : Set} {x y : A} → x ≡ y → x ≐ y
+≡-implies-≐ refl = λ P Px → Px
 ```
 This direction follows from substitution, which we showed earlier.
 
 In the reverse direction, given that for any `P` we can take a proof of `P x`
 to a proof of `P y` we need to show `x ≡ y`:
 ```
-≐-implies-≡ : ∀ {A : Set} {x y : A}
-  → x ≐ y
-    -----
-  → x ≡ y
-≐-implies-≡ {A} {x} {y} x≐y  =  Qy
-  where
-    Q : A → Set
-    Q z = x ≡ z
-    Qx : Q x
-    Qx = refl
-    Qy : Q y
-    Qy = x≐y Q Qx
+-- Our property is: "z ≡ y implies x ≡ y".
+≐-implies-≡ : ∀ {A : Set} {x y : A} → x ≐ y → x ≡ y
+≐-implies-≡ {A} {x} {y} x≐y = x≐y (λ (z : A) → z ≡ y → x ≡ y) (λ (x≡y : x ≡ y) → x≡y) refl
 ```
 The proof is similar to that for symmetry of Leibniz equality. We take
 `Q` to be the predicate that holds of `z` if `x ≡ z`. Then `Q x` is
@@ -671,7 +656,7 @@ The answer is _universe polymorphism_, where a definition is made
 with respect to an arbitrary level `ℓ`. To make use of levels, we
 first import the following:
 ```
-open import Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc)
+open import Level using (Level; _⊔_; Setω) renaming (zero to lzero; suc to lsuc)
 ```
 We rename constructors `zero` and `suc` to `lzero` and `lsuc` to avoid confusion
 between levels and naturals.
@@ -694,9 +679,33 @@ and so on. There is also an operator
 that given two levels returns the larger of the two.
 
 Here is the definition of equality, generalised to an arbitrary level:
+
 ```
+{-
+-- FAIL:
+
+data Bar (X : Set₁) : Set₁ where
+  Ø : Bar X
+  bar : (Y : Set₁) → Bar Y → Bar X
+
+b : Bar Set₀
+b = bar Set₀ Ø
+
+c : Bar Set₀
+c = bar Set₀ b
+-}
+
+_ : Setω₁
+_ = Setω
+
+_ : Setω
+_ = (ℓ : Level) → Set ℓ
+
 data _≡′_ {ℓ : Level} {A : Set ℓ} (x : A) : A → Set ℓ where
   refl′ : x ≡′ x
+
+_ : Set ≡′ Set₀
+_ = refl′
 ```
 Similarly, here is the generalised definition of symmetry:
 ```
