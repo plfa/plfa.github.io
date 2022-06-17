@@ -47,6 +47,7 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         run: |
           Echo "C:\msys64\mingw64\bin;C:\msys64\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+          Echo "CABAL_ARGS=$env:CABAL_ARGS --flag=externalLibsass" | Out-File -FilePath $env:GITHUB_ENV -Append
           pacman --noconfirm -S pkg-config icu libsass --triplet mingw-w64-x86_64  
 
       - name: Setup Haskell
