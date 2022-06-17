@@ -49,13 +49,7 @@ jobs:
       
       - name: Setup the ICU library (Windows)
         if: ${{ runner.os == 'Windows' }}
-        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu  
-          
-      - name: Setup libsass (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          pacman --noconfirm -S mingw-w64-x86_64-libsass
-          Echo "CABAL_ARGS=$env:CABAL_ARGS --flag=externalLibsass" | Out-File -FilePath $env:GITHUB_ENV -Append
+        run: pacman --noconfirm -S mingw-w64-x86_64-libc++ mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu  
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
@@ -78,7 +72,6 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: |
             haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
-            haskell-${{ matrix.os }}-${{ matrix.ghc-version }}-
           
       - name: Cache Shake build
         uses: actions/cache@v3
@@ -87,8 +80,6 @@ jobs:
             _cache
             _site
           key: build-${{ runner.os }}
-          restore-keys: |
-            build-${{ matrix.os }}
   
       - name: Setup Node.js
         uses: actions/setup-node@v3
