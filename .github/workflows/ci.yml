@@ -78,6 +78,14 @@ jobs:
             dist-newstyle
           key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
+          
+      - name: Cache _cache and _site
+        uses: actions/cache@v3
+        with:
+          path: |
+            _cache
+            _site
+          key: ${{ matrix.os }}-output
 
       - name: Build website
         run: make build
