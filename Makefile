@@ -158,6 +158,7 @@ test-feed-validator: check-feed-validator
 
 HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
 
+HTML_PROOFER_ARGS += --cache="$(TMP_DIR)/HTMLProofer"
 HTML_PROOFER_ARGS += --check-html
 HTML_PROOFER_ARGS += --check-img-http
 HTML_PROOFER_ARGS += --check-opengraph
