@@ -34,7 +34,7 @@ jobs:
           - os: windows-latest
             runner-os: Window
 
-    name: Build (${{ matrix.runner-os }} with GHC ${{ matrix.ghc-version }})
+    name: Build on ${{ matrix.runner-os }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     steps:
