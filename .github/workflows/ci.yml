@@ -61,7 +61,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/unicode-org/icu/releases/download/release-71-1/icu4c-71_1-Win32-MSVC2019.zip" -OutFile "${{ runner.temp }}/icu4c.zip"
           Expand-Archive "${{ runner.temp }}/icu4c.zip" -DestinationPath "${{ github.workspace }}/icu4c/" -Force
-          Echo "CABAL_ARGS='$env:CABAL_ARGS --extra-lib-dirs=${{ github.workspace }}/icu4c/ --extra-include-dirs=${{ github.workspace }}/icu4c/include'" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Echo "CABAL_ARGS=$env:CABAL_ARGS --extra-lib-dirs='${{ github.workspace }}/icu4c/' --extra-include-dirs='${{ github.workspace }}/icu4c/include'" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         shell: pwsh
 
       - name: Setup Haskell
