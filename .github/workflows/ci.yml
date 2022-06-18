@@ -100,8 +100,14 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install epubcheck
         
+      - name: Setup EPUBCheck (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v4.2.4/epubcheck-4.2.4.zip" -OutFile "${{ runner.temp }}\epubcheck-4.2.4.zip"
+          Expand-Archive "{{ runner.temp }}\epubcheck-4.2.4.zip" -DestinationPath "${{ github.workspace }}\epubcheck\"
+          Echo "EPUBCHECK=java -jar ${{ github.workspace }}\epubcheck\epubcheck-4.2.4\epubcheck.jar" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        
       - name: Test with EPUBCheck
-        if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-epubcheck
 
       - name: Upload artifact
