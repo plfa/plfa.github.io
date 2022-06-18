@@ -7,7 +7,7 @@
 module Main where
 
 import Buildfile.Author (Author (..))
-import Buildfile.Book (Book (..), Part (..), Chapter (..), chapterTable, fromBook, nextChapter, previousChapter)
+import Buildfile.Book (Book (..), Part (..), Chapter (..), ChapterTable, fromBook, nextChapter, previousChapter)
 import Buildfile.Contributor (Contributor (..))
 import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, when, (>=>))
