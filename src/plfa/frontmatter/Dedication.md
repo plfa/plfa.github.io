@@ -3,18 +3,9 @@ title     : "Dedication"
 permalink : /Dedication/
 ---
 
-<p style="text-align:center;">
-  <span style="font-size:1.5em">de Philip, para Wanda</span>
-</p>
-
-<p style="text-align:center;">
-  <span style="font-size:1.17em">amor da minha vida</span>
-</p>
-
-<p style="text-align:center;">
-  <span style="font-size:1em">knock knock knock</span>
-</p>
-
-<p style="text-align:center;">
-  <span style="font-size:1em">...</span>
-</p>
+::: {.dedication}
+[de Philip, para Wanda]{.xx-large}
+[amor da minha vida]{.x-large}
+[knock knock knock]{.large}
+[...]{.}
+:::
