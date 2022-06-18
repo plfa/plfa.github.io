@@ -22,7 +22,7 @@ import Data.Functor ((<&>))
 import Data.Hashable (Hashable)
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
-import Data.Maybe (fromMaybe, isNothing, isJust)
+import Data.Maybe (fromMaybe, isNothing, isJust, maybeToList)
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Text.Lazy qualified as LazyText
@@ -741,13 +741,13 @@ npx cmdOpts package args = do
 
 sass :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
 sass cmdOpts args maybeStdin = do
-  let stdinCmdOpt = maybe mempty (\stdin -> [StdinBS (LazyText.encodeUtf8 stdin)]) maybeStdin
+  let stdinCmdOpt = [StdinBS (LazyText.encodeUtf8 stdin) | stdin <- maybeToList maybeStdin]
   let stdinArg = ["--stdin" | isJust maybeStdin]
   npx (stdinCmdOpt <> cmdOpts) "sass" (stdinArg <> args)
 
 htmlMinifier :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
 htmlMinifier cmdOpts args maybeStdin = do
-  let stdinCmdOpt = maybe mempty (\stdin -> [StdinBS (LazyText.encodeUtf8 stdin)]) maybeStdin
+  let stdinCmdOpt = [StdinBS (LazyText.encodeUtf8 stdin) | stdin <- maybeToList maybeStdin]
   npx (stdinCmdOpt <> cmdOpts) "html-minifier" (defaultHtmlMinifierArgs <> args)
   where
     defaultHtmlMinifierArgs :: [String]
