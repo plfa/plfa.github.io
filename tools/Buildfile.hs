@@ -14,10 +14,10 @@ import Control.Monad (forM, forM_, unless, when, (>=>))
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.State (evalState)
-import Data.ByteString.Lazy.Base64 qualified as LazyByteString
 import Data.ByteString.Lazy qualified as LazyByteString
+import Data.ByteString.Lazy.Base64 qualified as LazyByteString
 import Data.Default.Class (Default (def))
-import Data.Digest.Pure.SHA qualified as Digest (sha512, bytestringDigest)
+import Data.Digest.Pure.SHA qualified as Digest (bytestringDigest, sha512)
 import Data.Either (fromRight, isRight)
 import Data.Function (on, (&))
 import Data.Functor ((<&>))
@@ -261,7 +261,7 @@ main = do
         src <- routeSource out
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getDefaultCssMetadata
+        cssField <- getCssMetadata
         let metadata = mconcat [tocField, fileMetadata, cssField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
@@ -305,7 +305,7 @@ main = do
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (fileMetadata, htmlBody) <- getFileWithMetadata prev
-        cssField <- getDefaultCssMetadata
+        cssField <- getCssMetadata
         let metadata = mconcat [fileMetadata, cssField]
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
@@ -334,7 +334,7 @@ main = do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getDefaultCssMetadata
+        cssField <- getCssMetadata
         let metadata = mconcat [postsField, fileMetadata, cssField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
@@ -347,7 +347,7 @@ main = do
         src <- routeSource out
         contributorField <- constField "contributor" <$> getContributors ()
         (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getDefaultCssMetadata
+        cssField <- getCssMetadata
         let metadata = mconcat [contributorField, fileMetadata, cssField]
         return acknowledgmentsMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
@@ -372,7 +372,7 @@ main = do
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
-        cssField <- getDefaultCssMetadata
+        cssField <- getCssMetadata
         return errorMarkdownBody
           >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> cssField)
@@ -567,27 +567,21 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- File Reader
 
-getDefaultCssMetadata ::
-  ( ?getDigest :: FilePath -> Action LazyText.Text,
-    ?routingTable :: RoutingTable
-  ) =>
-  Action Metadata
-getDefaultCssMetadata = do
-  let css = [outDir </> "assets/css/style.css", outDir </> "assets/css/highlight.css"]
-  cssMetadatas <- traverse getCssMetadata css
-  return $ constField "css" cssMetadatas
-
 getCssMetadata ::
   ( ?getDigest :: FilePath -> Action LazyText.Text,
     ?routingTable :: RoutingTable
   ) =>
-  FilePath ->
   Action Metadata
-getCssMetadata out = do
-  need [out]
-  url <- routeUrl out
-  integrity <- ?getDigest out
-  return $ mconcat [constField "url" url, constField "integrity" integrity]
+getCssMetadata =
+  constField "css" <$>
+    traverse getCssMetadata1
+      [outDir </> "assets/css/style.css", outDir </> "assets/css/highlight.css"]
+  where
+    getCssMetadata1 out = do
+      need [out]
+      url <- routeUrl out
+      integrity <- ?getDigest out
+      return $ mconcat [constField "url" url, constField "integrity" integrity]
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
