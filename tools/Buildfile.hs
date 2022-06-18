@@ -373,8 +373,7 @@ main = do
 
       -- Build assets/css/highlight.css
       outDir </> "assets/css/highlight.css" %> \out -> do
-        let stdin = LazyText.fromChunks [highlightCss]
-        sass [] ["--style=compressed", out] (Just stdin)
+        sass [] ["--style=compressed", out] (Just $ LazyText.pack highlightCss)
 
       -- Copy static assets
       outDir </> "assets" <//> "*" %> \out -> do
@@ -825,8 +824,8 @@ writerOpts =
 highlightStyle :: HighlightStyle
 highlightStyle = Pandoc.pygments
 
-highlightCss :: Text
-highlightCss = Text.pack $ Pandoc.styleToCss highlightStyle
+highlightCss :: String
+highlightCss = Pandoc.styleToCss highlightStyle
 
 --------------------------------------------------------------------------------
 -- Helper functions
