@@ -22,16 +22,15 @@ import Data.Functor ((<&>))
 import Data.Hashable (Hashable)
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
-import Data.Maybe (fromMaybe, isNothing)
+import Data.Maybe (fromMaybe, isNothing, isJust)
 import Data.Text (Text)
 import Data.Text qualified as Text
+import Data.Text.Lazy qualified as LazyText
+import Data.Text.Lazy.Encoding qualified as LazyText
 import Data.Traversable (for)
 import Debug.Trace qualified as Debug
 import GHC.Generics (Generic)
 import Shoggoth.Agda qualified as Agda
-import Shoggoth.CSS.Minify qualified as CSS
-import Shoggoth.CSS.Sass (SassOptions (..))
-import Shoggoth.CSS.Sass qualified as CSS
 import Shoggoth.Configuration (CacheDirectory (..), OutputDirectory (..), TemplateDirectory (..))
 import Shoggoth.Metadata
 import Shoggoth.PostInfo
@@ -45,6 +44,8 @@ import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import System.Directory (makeAbsolute)
 import System.Exit (ExitCode (..), exitWith)
 import Text.Printf (printf)
+import GHC.Stack.Types (HasCallStack)
+import qualified Data.Text.Encoding as Text
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -256,7 +257,7 @@ main = do
           >>= Pandoc.applyAsTemplate (tocField <> fileMetadata)
           >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          <&> postProcessHtml5 outDir out
+          >>= postProcessHtml5 outDir out
           >>= writeFile' out
 
       --------------------------------------------------------------------------------
@@ -299,7 +300,8 @@ main = do
               | isPostSource src = ["post.html", "default.html"]
               | otherwise = ["page.html", "default.html"]
         html <- Pandoc.applyTemplates htmlTemplates metadata htmlBody
-        writeFile' out $ postProcessHtml5 outDir out html
+        html <- postProcessHtml5 outDir out html
+        writeFile' out html
 
       --------------------------------------------------------------------------------
       -- Posts
@@ -325,7 +327,7 @@ main = do
           >>= Pandoc.applyAsTemplate (postsField <> fileMetadata)
           >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          <&> postProcessHtml5 outDir out
+          >>= postProcessHtml5 outDir out
           >>= writeFile' out
 
       -- Build /Acknowledgements/index.html
@@ -337,7 +339,7 @@ main = do
           >>= Pandoc.applyAsTemplate (contributorField <> fileMetadata)
           >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          <&> postProcessHtml5 outDir out
+          >>= postProcessHtml5 outDir out
           >>= writeFile' out
 
       -- Build rss.xml
@@ -360,23 +362,19 @@ main = do
         return errorMarkdownBody
           >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          <&> postProcessHtml5 outDir out
+          >>= postProcessHtml5 outDir out
           >>= writeFile' out
 
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
         src <- routeSource out
-        scss <- getDirectoryFiles "" [webStyleDir <//> "*.scss"]
-        need scss
-        CSS.compileSassWith webSassOptions src
-          >>= CSS.minifyCSS
-          >>= writeFile' out
+        need =<< getDirectoryFiles "" [webStyleDir <//> "*.scss"]
+        sass [] ["--load-path=" <> webStyleDir, "--style=compressed", src, out] Nothing
 
       -- Build assets/css/highlight.css
       outDir </> "assets/css/highlight.css" %> \out -> do
-        return highlightCss
-          >>= CSS.minifyCSS
-          >>= writeFile' out
+        let stdin = LazyText.fromChunks [highlightCss]
+        sass [] ["--load-path=" <> epubStyleDir, "--style=compressed", out] (Just stdin)
 
       -- Copy static assets
       outDir </> "assets" <//> "*" %> \out -> do
@@ -421,12 +419,12 @@ main = do
                   writerReferenceLocation = Pandoc.EndOfSection
                 }
 
-        let pandocToStandaloneHtml doc = runPandoc $ do
-              Pandoc.setResourcePath [outDir]
-              return doc
-                >>= Pandoc.writeHtml5String writerOptsForStandaloneHtml
-                <&> postProcessHtml5 outDir out
-                >>= Pandoc.makeSelfContained
+        let pandocToStandaloneHtml doc = do
+              html5 <- runPandoc (Pandoc.writeHtml5String writerOptsForStandaloneHtml doc)
+              html5 <- postProcessHtml5 outDir out html5
+              runPandoc $ do
+                Pandoc.setResourcePath [outDir]
+                Pandoc.makeSelfContained html5
 
         return bookDoc
           >>= pandocToStandaloneHtml
@@ -484,9 +482,7 @@ main = do
       tmpEpubDir </> "style.css" %> \out -> do
         let src = epubStyleDir </> "style.scss"
         need =<< getDirectoryFiles "" [epubStyleDir <//> "*.scss"]
-        CSS.compileSassWith epubSassOptions src
-          >>= CSS.minifyCSS
-          >>= writeFile' out
+        sass [] ["--load-path=" <> epubStyleDir, "--style=compressed", src, out] Nothing
 
 --------------------------------------------------------------------------------
 -- Agda
@@ -555,15 +551,6 @@ isPostSource src = isRight $ parsePostSource (makeRelative webPostDir src)
 -- match _site/YYYY/MM/DD/<slug>/index.html
 isPostOutput :: FilePath -> Bool
 isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
-
---------------------------------------------------------------------------------
--- Sass Options
-
-webSassOptions :: SassOptions
-webSassOptions = def {sassIncludePaths = Just [webStyleDir]}
-
-epubSassOptions :: SassOptions
-epubSassOptions = def {sassIncludePaths = Just [epubStyleDir]}
 
 --------------------------------------------------------------------------------
 -- File Reader
@@ -745,17 +732,56 @@ urlToIdent url =
       Text.intercalate "-" (filter (not . Text.null) (Text.splitOn "/" (removeIndexHtml url)))
 
 --------------------------------------------------------------------------------
+-- Node.js
+
+npx :: (HasCallStack, CmdResult r) => [CmdOption] -> String -> [String] -> Action r
+npx cmdOpts package args = do
+  need ["package.json"]
+  command (AddEnv "npm_config_yes" "true" : Traced package : cmdOpts) "npx" (package : args)
+
+sass :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
+sass cmdOpts args maybeStdin = do
+  let stdinCmdOpt = maybe mempty (\stdin -> [StdinBS (LazyText.encodeUtf8 stdin)]) maybeStdin
+  let stdinArg = ["--stdin" | isJust maybeStdin]
+  npx (stdinCmdOpt <> cmdOpts) "sass" (stdinArg <> args)
+
+htmlMinifier :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
+htmlMinifier cmdOpts args maybeStdin = do
+  let stdinCmdOpt = maybe mempty (\stdin -> [StdinBS (LazyText.encodeUtf8 stdin)]) maybeStdin
+  npx (stdinCmdOpt <> cmdOpts) "html-minifier" (defaultHtmlMinifierArgs <> args)
+  where
+    defaultHtmlMinifierArgs :: [String]
+    defaultHtmlMinifierArgs =
+      [ "--collapse-boolean-attributes"
+      , "--collapse-inline-tag-whitespace"
+      , "--collapse-whitespace"
+      , "--minify-css"
+      , "--minify-js"
+      , "--minify-urls"
+      , "--quote-character='"
+      , "--remove-comments"
+      , "--remove-empty-attributes"
+      , "--remove-empty-elements"
+      , "--remove-redundant-attributes"
+      , "--remove-tag-whitespace"
+      , "--use-short-doctype"
+      ]
+
+--------------------------------------------------------------------------------
 -- HTML5 post-processing
 --
 -- - removes "/index.html" from URLs
 -- - relativizes URLs
 -- - adds a default table header scope
 
-postProcessHtml5 :: FilePath -> FilePath -> Text -> Text
-postProcessHtml5 outDir out html5 =
-  html5
-    & TagSoup.withUrls (removeIndexHtml . relativizeUrl outDir out)
-    & TagSoup.addDefaultTableHeaderScope "col"
+postProcessHtml5 :: FilePath -> FilePath -> Text -> Action Text
+postProcessHtml5 outDir out html = do
+  let fixedHtml =
+        html
+          & TagSoup.withUrls (removeIndexHtml . relativizeUrl outDir out)
+          & TagSoup.addDefaultTableHeaderScope "col"
+  Stdout minifiedHtml <- htmlMinifier [] [] (Just (LazyText.fromChunks [fixedHtml]))
+  return $ Text.decodeUtf8 minifiedHtml
 
 --------------------------------------------------------------------------------
 -- Pandoc options

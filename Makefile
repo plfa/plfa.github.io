@@ -33,34 +33,11 @@ SHAKE_ARGS += --lint
 SHAKE_ARGS += --profile=$(TMP_DIR)/reports/build.html
 SHAKE_ARGS += --timing
 
-HTML_MINIFIER ?= npx html-minifier
-
-HTML_MINIFIER_ARGS += --collapse-whitespace
-HTML_MINIFIER_ARGS += --collapse-boolean-attributes
-HTML_MINIFIER_ARGS += --minify-css
-HTML_MINIFIER_ARGS += --minify-js
-HTML_MINIFIER_ARGS += --minify-urls
-HTML_MINIFIER_ARGS += --remove-comments
-HTML_MINIFIER_ARGS += --input-dir=$(OUT_DIR)
-HTML_MINIFIER_ARGS += --output-dir=$(OUT_DIR)
-HTML_MINIFIER_ARGS += --file-ext=html
-
-UNZIP ?= unzip
-
-UNZIP_ARGS += -q
-UNZIP_ARGS += -n
-UNZIP_ARGS += -d $(OUT_DIR)
-
 .PHONY: build
 build:
 	@echo "Building PLFA..."
 	@mkdir -p $(TMP_DIR)/reports/
 	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
-	@echo "Minifying HTML with html-minifier..."
-	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
-	@echo "Unpacking legacy versions..."
-	@$(UNZIP) $(UNZIP_ARGS) data/legacy/19.08.zip
-	@$(UNZIP) $(UNZIP_ARGS)  data/legacy/20.07.zip
 
 .PHONY: clean
 clean:

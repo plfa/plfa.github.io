@@ -147,6 +147,12 @@ jobs:
           name: latest
           path: latest
 
+      - name: Unpack legacy versions
+        if: github.event_name == 'push'
+        run: |
+          unzip -q -n -d latest data/legacy/19.08.zip
+          unzip -q -n -d latest data/legacy/20.07.zip
+
       - name: Deploy artifact
         if: github.event_name == 'push'
         uses: JamesIves/github-pages-deploy-action@v4.3.3
