@@ -10,7 +10,7 @@
     "no-inline-style": ["warn"],
     "prefer-tbody": ["warn"],
     "require-sri": ["warn"],
-    "script-type": ["warn"], 
+    "script-type": ["warn"],
     "valid-id": ["warn", {"relaxed": true}],
     "wcag/h30": ["warn"],
     "wcag/h37": ["warn"]

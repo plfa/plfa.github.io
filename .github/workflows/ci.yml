@@ -64,7 +64,7 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: |
             haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
-          
+
       - name: Cache Shake build
         uses: actions/cache@v3
         with:
@@ -72,12 +72,12 @@ jobs:
             _cache
             _site
           key: build-${{ runner.os }}
-  
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-    
+
       - name: Build artifact
         run: make build
 
@@ -88,7 +88,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-  
+
       - name: Test with HTMLProofer
         run: make test-html-proofer
 
@@ -99,14 +99,14 @@ jobs:
       - name: Setup EPUBCheck (macOS)
         if: runner.os == 'macOS'
         run: brew install epubcheck
-        
+
       - name: Setup EPUBCheck (Windows)
         if: runner.os == 'Windows'
         run: |
           Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v4.2.4/epubcheck-4.2.4.zip" -OutFile "${{ runner.temp }}\epubcheck-4.2.4.zip"
           Expand-Archive "{{ runner.temp }}\epubcheck-4.2.4.zip" -DestinationPath "${{ github.workspace }}\epubcheck\"
           Echo "EPUBCHECK=java -jar ${{ github.workspace }}\epubcheck\epubcheck-4.2.4\epubcheck.jar" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        
+
       - name: Test with EPUBCheck
         run: make test-epubcheck
 
@@ -117,15 +117,15 @@ jobs:
           name: latest
           path: _site
           if-no-files-found: error
-          
+
       - name: Upload artifact for pull request
         if: runner.os == 'Linux' && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: pull-request-${{ github.event.pull_request.number }} 
+          name: pull-request-${{ github.event.pull_request.number }}
           path: _site
           if-no-files-found: error
-          
+
   deploy:
     name: Deploy
     concurrency: ci-${{ github.ref }}
@@ -157,7 +157,4 @@ jobs:
         with:
           branch: web
           folder: latest
-    
 
-
-        
