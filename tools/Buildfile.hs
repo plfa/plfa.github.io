@@ -261,7 +261,7 @@ main = do
         src <- routeSource out
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getCssMetadata
+        cssField <- getCssField
         let metadata = mconcat [tocField, fileMetadata, cssField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
@@ -305,7 +305,7 @@ main = do
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (fileMetadata, htmlBody) <- getFileWithMetadata prev
-        cssField <- getCssMetadata
+        cssField <- getCssField
         let metadata = mconcat [fileMetadata, cssField]
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
@@ -334,7 +334,7 @@ main = do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getCssMetadata
+        cssField <- getCssField
         let metadata = mconcat [postsField, fileMetadata, cssField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
@@ -347,7 +347,7 @@ main = do
         src <- routeSource out
         contributorField <- constField "contributor" <$> getContributors ()
         (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getCssMetadata
+        cssField <- getCssField
         let metadata = mconcat [contributorField, fileMetadata, cssField]
         return acknowledgmentsMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
@@ -372,7 +372,7 @@ main = do
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
-        cssField <- getCssMetadata
+        cssField <- getCssField
         return errorMarkdownBody
           >>= markdownToHtml5
           >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> cssField)
@@ -567,17 +567,17 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- File Reader
 
-getCssMetadata ::
+getCssField ::
   ( ?getDigest :: FilePath -> Action LazyText.Text,
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
-getCssMetadata =
+getCssField =
   constField "css" <$>
-    traverse getCssMetadata1
+    traverse getCssField1
       [outDir </> "assets/css/style.css", outDir </> "assets/css/highlight.css"]
   where
-    getCssMetadata1 out = do
+    getCssField1 out = do
       need [out]
       url <- routeUrl out
       integrity <- ?getDigest out
