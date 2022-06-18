@@ -16,11 +16,11 @@ contact one of the authors if you would like to access it.
 
 $for(toc.part)$
 ## $toc.part.title$
-$for(toc.part.section)$
-$if(toc.part.section.titlerunning)$
-  * [$toc.part.section.titlerunning$]($toc.part.section.url$): $toc.part.section.subtitle$
+$for(toc.part.chapter)$
+$if(toc.part.chapter.titlerunning)$
+  * [$toc.part.chapter.titlerunning$]($toc.part.chapter.url$): $toc.part.chapter.subtitle$
 $else$
-  * [$toc.part.section.title$]($toc.part.section.url$)
+  * [$toc.part.chapter.title$]($toc.part.chapter.url$)
 $endif$
 $endfor$
 $endfor$
