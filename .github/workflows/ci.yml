@@ -43,14 +43,6 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Setup MSYS (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        run: Echo "C:\msys64\mingw64\bin;C:\msys64\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-      
-      - name: Setup the ICU library (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        run: pacman --noconfirm -S mingw-w64-x86_64-pkg-config mingw-w64-x86_64-icu  
-
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
         id: setup-haskell

@@ -5,7 +5,7 @@ description:        Programming Language Foundations in Agda
 homepage:           https://plfa.github.io
 license-file:       LICENSE
 author:             Wen Kokke
-copyright:          © 2017-2022 Wen Kokke, Jeremy G. Siek, and Philip Wadler
+copyright:          © 2017-2022 Wen Kokke
 category:           Web
 build-type:         Simple
 
@@ -44,11 +44,7 @@ executable builder
     , plfa
     , process
     , shoggoth
-    -- , shoggoth:shoggoth-agda
-    -- , shoggoth:shoggoth-hasmin
-    -- , shoggoth:shoggoth-hsass
     , text
-    , text-icu            ^>=0.7.1.0
 
 executable update-contributors
   import:              language-haskell
