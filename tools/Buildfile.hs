@@ -374,7 +374,7 @@ main = do
       -- Build assets/css/highlight.css
       outDir </> "assets/css/highlight.css" %> \out -> do
         let stdin = LazyText.fromChunks [highlightCss]
-        sass [] ["--load-path=" <> epubStyleDir, "--style=compressed", out] (Just stdin)
+        sass [] ["--style=compressed", out] (Just stdin)
 
       -- Copy static assets
       outDir </> "assets" <//> "*" %> \out -> do
