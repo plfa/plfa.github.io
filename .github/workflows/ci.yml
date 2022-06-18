@@ -11,8 +11,7 @@ on:
 
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
-  NOKOGIRI_USE_SYSTEM_LIBRARIES: true # Use fast system libraries for html-proofer.
-  npm_config_yes: true # Don't ask for confirmation before installing packages.
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
 jobs:
   build:
@@ -53,7 +52,7 @@ jobs:
       - name: Cabal freeze
         run: |
           cabal v2-update
-          cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
+          cabal v2-freeze $CABAL_ARGS
 
       - name: Cache Haskell
         uses: actions/cache@v3
@@ -62,8 +61,7 @@ jobs:
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
-          restore-keys: |
-            haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
+          restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
 
       - name: Cache Shake build
         uses: actions/cache@v3
