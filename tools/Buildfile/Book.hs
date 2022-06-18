@@ -23,7 +23,7 @@ instance ToJSON Book where
 
 data Part = Part
   { partTitle :: Text,
-    partSections :: [Section],
+    partChapters :: [Chapter],
     partFrontmatter :: Bool,
     partMainmatter :: Bool,
     partBackmatter :: Bool
@@ -34,7 +34,7 @@ instance FromJSON Part where
   parseJSON = withObject "Part" $ \v ->
     Part
       <$> v .: "title"
-      <*> v .: "section"
+      <*> v .: "chapter"
       <*> v .:? "frontmatter" .!= False
       <*> v .:? "mainmatter" .!= False
       <*> v .:? "backmatter" .!= False
@@ -43,53 +43,53 @@ instance ToJSON Part where
   toJSON Part {..} =
     object
       [ "title" .= partTitle,
-        "section" .= partSections,
+        "chapter" .= partChapters,
         "frontmatter" .= partFrontmatter,
         "mainmatter" .= partMainmatter,
         "backmatter" .= partBackmatter
       ]
 
-data Section = Section
-  { sectionInclude :: FilePath,
-    sectionEpubType :: Text
+data Chapter = Chapter
+  { chapterInclude :: FilePath,
+    chapterEpubType :: Text
   }
   deriving (Show)
 
-instance FromJSON Section where
-  parseJSON = withObject "Section" $ \v ->
-    Section
+instance FromJSON Chapter where
+  parseJSON = withObject "Chapter" $ \v ->
+    Chapter
       <$> v .: "include"
       <*> v .:? "epub-type" .!= "bodymatter"
 
-instance ToJSON Section where
-  toJSON Section {..} =
+instance ToJSON Chapter where
+  toJSON Chapter {..} =
     object
-      [ "include" .= sectionInclude,
-        "epub-type" .= sectionEpubType
+      [ "include" .= chapterInclude,
+        "epub-type" .= chapterEpubType
       ]
 
-newtype SectionTable = SectionTable {sectionBimap :: Bimap.Bimap FilePath FilePath}
+newtype ChapterTable = ChapterTable {chapterBimap :: Bimap.Bimap FilePath FilePath}
 
-fromBook :: Book -> SectionTable
-fromBook book = SectionTable {..}
+fromBook :: Book -> ChapterTable
+fromBook book = ChapterTable {..}
   where
-    sectionBimap :: Bimap.Bimap FilePath FilePath
-    sectionBimap = Bimap.fromList $ zip sectionList (tail sectionList)
+    chapterBimap :: Bimap.Bimap FilePath FilePath
+    chapterBimap = Bimap.fromList $ zip chapterList (tail chapterList)
 
-    sectionList :: [FilePath]
-    sectionList = flattenBook book
+    chapterList :: [FilePath]
+    chapterList = flattenBook book
       where
         flattenBook :: Book -> [FilePath]
         flattenBook = flattenPart <=< bookParts
 
         flattenPart :: Part -> [FilePath]
-        flattenPart = flattenSection <=< partSections
+        flattenPart = flattenChapter <=< partChapters
 
-        flattenSection :: Section -> [FilePath]
-        flattenSection = return . sectionInclude
+        flattenChapter :: Chapter -> [FilePath]
+        flattenChapter = return . chapterInclude
 
-nextSection :: SectionTable -> FilePath -> Maybe FilePath
-nextSection SectionTable {..} src = Bimap.lookup src sectionBimap
+nextChapter :: ChapterTable -> FilePath -> Maybe FilePath
+nextChapter ChapterTable {..} src = Bimap.lookup src chapterBimap
 
-previousSection :: SectionTable -> FilePath -> Maybe FilePath
-previousSection SectionTable {..} src = Bimap.lookupR src sectionBimap
+previousChapter :: ChapterTable -> FilePath -> Maybe FilePath
+previousChapter ChapterTable {..} src = Bimap.lookupR src chapterBimap

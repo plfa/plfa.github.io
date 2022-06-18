@@ -1,7 +1,7 @@
 part:
 - frontmatter: True
   title: "Front matter"
-  section:
+  chapter:
   - include: src/plfa/frontmatter/Dedication.md
     epub-type: dedication
   - include: src/plfa/frontmatter/Preface.md
@@ -10,7 +10,7 @@ part:
     epub-type: foreword
 - mainmatter: True
   title: "Part 1: Logical Foundations"
-  section:
+  chapter:
   - include: src/plfa/part1/Naturals.lagda.md
   - include: src/plfa/part1/Induction.lagda.md
   - include: src/plfa/part1/Relations.lagda.md
@@ -22,7 +22,7 @@ part:
   - include: src/plfa/part1/Decidable.lagda.md
   - include: src/plfa/part1/Lists.lagda.md
 - title: "Part 2: Programming Language Foundations"
-  section:
+  chapter:
   - include: src/plfa/part2/Lambda.lagda.md
   - include: src/plfa/part2/Properties.lagda.md
   - include: src/plfa/part2/DeBruijn.lagda.md
@@ -33,7 +33,7 @@ part:
   - include: src/plfa/part2/Confluence.lagda.md
   - include: src/plfa/part2/BigStep.lagda.md
 - title: "Part 3: Denotational Semantics"
-  section:
+  chapter:
   - include: src/plfa/part3/Denotational.lagda.md
   - include: src/plfa/part3/Compositional.lagda.md
   - include: src/plfa/part3/Soundness.lagda.md
@@ -41,11 +41,11 @@ part:
   - include: src/plfa/part3/ContextualEquivalence.lagda.md
 - backmatter: True
   title: "Appendix"
-  section:
+  chapter:
   - include: src/plfa/part2/Substitution.lagda.md
     epub-type: appendix
 - title: "Back matter"
-  section:
+  chapter:
   - include: src/plfa/backmatter/Acknowledgements.md
     epub-type: acknowledgements
   - include: src/plfa/backmatter/Fonts.lagda.md

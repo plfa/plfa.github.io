@@ -7,7 +7,7 @@
 module Main where
 
 import Buildfile.Author (Author (..))
-import Buildfile.Book (Book (..), Part (..), Section (..), SectionTable, fromBook, nextSection, previousSection)
+import Buildfile.Book (Book (..), Part (..), Chapter (..), chapterTable, fromBook, nextChapter, previousChapter)
 import Buildfile.Contributor (Contributor (..))
 import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, when, (>=>))
@@ -192,9 +192,9 @@ main = do
         readYaml @Book tableOfContentsFile
       let ?getTableOfContents = getTableOfContents
 
-      getSectionTable <- newCache $ \() -> do
+      getChapterTable <- newCache $ \() -> do
         fromBook <$> getTableOfContents ()
-      let ?getSectionTable = getSectionTable
+      let ?getChapterTable = getChapterTable
 
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
@@ -400,10 +400,10 @@ main = do
 
         defaultMetadata <- ?getDefaultMetadata ()
 
-        let routeSection src =
+        let routeChapter src =
               if Agda.isAgdaFile src then routeAnchor "agda_html" src else return src
 
-        bookDoc <- makeBookDoc routeSection
+        bookDoc <- makeBookDoc routeChapter
 
         standaloneHtmlTemplate <- Pandoc.compileTemplateFile (webTemplateDir </> "standalone.html")
 
@@ -415,7 +415,7 @@ main = do
                   writerWrapText = Pandoc.WrapPreserve,
                   writerTopLevelDivision = Pandoc.TopLevelPart,
                   writerTOCDepth = 2,
-                  writerReferenceLocation = Pandoc.EndOfSection
+                  writerReferenceLocation = Pandoc.EndOfChapter
                 }
 
         let pandocToStandaloneHtml doc = do
@@ -437,11 +437,11 @@ main = do
         -- Require metadata and stylesheet
         need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
 
-        let routeSection src =
+        let routeChapter src =
               if Agda.isAgdaFile src then routeAnchor "agda_html" src else return src
 
         bookDoc <-
-          makeBookDoc routeSection
+          makeBookDoc routeChapter
             <&> Pandoc.setMeta "css" [tmpEpubDir </> "style.css"]
             <&> Pandoc.setMeta "highlighting-css" highlightCss
 
@@ -461,7 +461,7 @@ main = do
                   writerEpubFonts = epubFonts,
                   writerEpubChapterLevel = 2,
                   writerTOCDepth = 2,
-                  writerReferenceLocation = Pandoc.EndOfSection
+                  writerReferenceLocation = Pandoc.EndOfChapter
                 }
 
         epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
@@ -556,7 +556,7 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
-    ?getSectionTable :: () -> Action SectionTable,
+    ?getChapterTable :: () -> Action chapterTable,
     ?routingTable :: RoutingTable
   ) =>
   FilePath ->
@@ -591,13 +591,13 @@ getFileWithMetadata cur = do
   -- URL field:
   let urlField = constField "url" url
 
-  -- Previous and next section URLs:
-  sectionTable <- ?getSectionTable ()
+  -- Previous and next chapter URLs:
+  chapterTable <- ?getChapterTable ()
 
-  maybePrevUrl <- traverse routeUrl (previousSection sectionTable src)
+  maybePrevUrl <- traverse routeUrl (previousChapter chapterTable src)
   let prevField = ignoreNothing $ constField "prev" <$> maybePrevUrl
 
-  maybeNextUrl <- traverse routeUrl (nextSection sectionTable src)
+  maybeNextUrl <- traverse routeUrl (nextChapter chapterTable src)
   let nextField = ignoreNothing $ constField "next" <$> maybeNextUrl
 
   -- Modified date field (ISO8601):
@@ -644,7 +644,7 @@ markdownToHtml5 =
 
 makeBookDoc ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
-    ?getSectionTable :: () -> Action SectionTable,
+    ?getChapterTable :: () -> Action chapterTable,
     ?getTableOfContents :: () -> Action Book,
     ?getAuthors :: () -> Action [Author],
     ?getReferences :: () -> Action MetaValue,
@@ -652,40 +652,40 @@ makeBookDoc ::
   ) =>
   (FilePath -> Action FilePath) ->
   Action Pandoc
-makeBookDoc routeSection = do
+makeBookDoc routeChapter = do
   -- Read the table of contents
   toc <- ?getTableOfContents ()
 
   -- Compose documents for each part
   parts <- for (zip [1 ..] (bookParts toc)) $ \(number, part) -> do
-    -- Compose documents for each section
-    sections <- for (partSections part) $ \section -> do
-      -- Get section document
-      let sectionSrc = sectionInclude section
-      (sectionHtml, sectionUrl) <- (,) <$> routeSection sectionSrc <*> routeUrl sectionSrc
-      (sectionMetadata, sectionBody) <- getFileWithMetadata sectionHtml
-      Pandoc _ sectionBlocks <- Pandoc.markdownToPandoc sectionBody
-      -- Get section title & ident
-      sectionTitle <- failOnError $ sectionMetadata ^. "title"
-      let sectionIdent = urlToIdent sectionUrl
-      -- Compose section document
-      let sectionDoc =
-            Builder.divWith (sectionIdent, [], [("epub:type", sectionEpubType section)]) $
-              Builder.header 2 (Builder.text sectionTitle)
+    -- Compose documents for each chapter
+    chapters <- for (partChapters part) $ \chapter -> do
+      -- Get chapter document
+      let chapterSrc = chapterInclude chapter
+      (chapterHtml, chapterUrl) <- (,) <$> routeChapter chapterSrc <*> routeUrl chapterSrc
+      (chapterMetadata, chapterBody) <- getFileWithMetadata chapterHtml
+      Pandoc _ chapterBlocks <- Pandoc.markdownToPandoc chapterBody
+      -- Get chapter title & ident
+      chapterTitle <- failOnError $ chapterMetadata ^. "title"
+      let chapterIdent = urlToIdent chapterUrl
+      -- Compose chapter document
+      let chapterDoc =
+            Builder.divWith (chapterIdent, [], [("epub:type", chapterEpubType chapter)]) $
+              Builder.header 2 (Builder.text chapterTitle)
                 <> Builder.fromList
-                  ( sectionBlocks
+                  ( chapterBlocks
                       & Pandoc.shiftHeadersBy 1
-                      & Pandoc.withIds (qualifyIdent True sectionUrl)
-                      & Pandoc.withUrls (qualifyAnchor sectionUrl)
+                      & Pandoc.withIds (qualifyIdent True chapterUrl)
+                      & Pandoc.withUrls (qualifyAnchor chapterUrl)
                   )
-      return sectionDoc
+      return chapterDoc
 
     -- Compose part document
     let partIdent = Text.pack $ "Part-" <> show @Int number
     let partDoc =
           Builder.divWith (partIdent, [], []) $
             Builder.header 1 (Builder.text (partTitle part))
-              <> mconcat sections
+              <> mconcat chapters
     return partDoc
 
   -- Get metadata
