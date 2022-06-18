@@ -169,7 +169,7 @@ main = do
                 [courseDir <//> "*.pdf"] *|-> \src -> outDir </> makeRelative courseDir src,
                 -- Assets
                 [webDir </> "404.md"] |-> permalinkRouter,
-                [webStyleDir </> "style.scss"] |-> outDir </> "assets/css/style.css",
+                [webStyleDir </> "light.scss"] |-> outDir </> "assets/css/light.css",
                 create (outDir </> "assets/css/highlight.css"),
                 [webAssetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative webAssetDir src
               ]
@@ -378,8 +378,8 @@ main = do
           >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> cssField)
           >>= writeHtml5 outDir out
 
-      -- Build assets/css/style.css
-      outDir </> "assets/css/style.css" %> \out -> do
+      -- Build assets/css/light.css
+      outDir </> "assets/css/light.css" %> \out -> do
         src <- routeSource out
         need =<< getDirectoryFiles "" [webStyleDir <//> "*.scss"]
         sass [] ["--load-path=" <> webStyleDir, "--style=compressed", src, out] Nothing
@@ -573,9 +573,10 @@ getCssField ::
   ) =>
   Action Metadata
 getCssField =
-  constField "css" <$>
-    traverse getCssField1
-      [outDir </> "assets/css/style.css", outDir </> "assets/css/highlight.css"]
+  constField "css"
+    <$> traverse
+      getCssField1
+      [outDir </> "assets/css/light.css", outDir </> "assets/css/highlight.css"]
   where
     getCssField1 out = do
       need [out]
