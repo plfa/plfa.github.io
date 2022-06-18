@@ -35,6 +35,7 @@ executable builder
   main-is:             tools/Buildfile.hs
   build-depends:
     , base
+    , base64
     , bytestring
     , containers
     , data-default-class
