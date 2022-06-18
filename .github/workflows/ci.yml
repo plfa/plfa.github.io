@@ -27,8 +27,6 @@ jobs:
           - experimental: false
           - os: windows-latest
             experimental: true
-          - ghc-version: "9.2.2"
-            experimental: true
           - os: ubuntu-latest
             os-pretty: Linux
           - os: macOS-latest
