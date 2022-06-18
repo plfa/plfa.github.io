@@ -68,7 +68,6 @@ jobs:
         with:
           path: |
             _cache
-            _site
           key: build-${{ runner.os }}
 
       - name: Setup Node.js
