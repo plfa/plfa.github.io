@@ -100,6 +100,8 @@ serve:
 # - Ace by Daisy
 ########################################
 
+.PHONY: test
+test: test-html-validate
 
 # HTML-validate
 

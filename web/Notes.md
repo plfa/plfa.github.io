@@ -139,8 +139,6 @@ Tradeoffs:
 * Resolve any issues with modules to define properties of orderings?
 * Resolve any issues with equivalence and Setoids?
 
-# Old questions
-
 ## Possible structures for the book
 
 * One possible development

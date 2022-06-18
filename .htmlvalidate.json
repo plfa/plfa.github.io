@@ -6,13 +6,8 @@
     "heading-level": ["warn"],
     "input-missing-label": ["warn"],
     "long-title": ["warn"],
-    "no-dup-id": ["warn"],
     "no-inline-style": ["warn"],
-    "prefer-tbody": ["warn"],
-    "require-sri": ["warn"],
-    "script-type": ["warn"],
-    "valid-id": ["warn", {"relaxed": true}],
-    "wcag/h30": ["warn"],
-    "wcag/h37": ["warn"]
+    "valid-id": ["error", { "relaxed": true }],
+    "wcag/h30": ["warn"]
   }
 }

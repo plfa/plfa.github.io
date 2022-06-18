@@ -15,6 +15,7 @@ common language-haskell
   default-extensions:
     FlexibleContexts
     FlexibleInstances
+    GADTs
     ImplicitParams
     ImportQualifiedPost
     LambdaCase
@@ -43,6 +44,7 @@ executable builder
     , multimap
     , plfa
     , process
+    , SHA
     , shoggoth
     , text
 

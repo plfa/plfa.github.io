@@ -7,7 +7,7 @@
 module Main where
 
 import Buildfile.Author (Author (..))
-import Buildfile.Book (Book (..), Part (..), Chapter (..), ChapterTable, fromBook, nextChapter, previousChapter)
+import Buildfile.Book (Book (..), Chapter (..), ChapterTable, Part (..), fromBook, nextChapter, previousChapter)
 import Buildfile.Contributor (Contributor (..))
 import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, when, (>=>))
@@ -16,20 +16,22 @@ import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.State (evalState)
 import Data.ByteString.Lazy qualified as LazyByteString
 import Data.Default.Class (Default (def))
+import Data.Digest.Pure.SHA (sha512, showDigest)
 import Data.Either (fromRight, isRight)
 import Data.Function (on, (&))
 import Data.Functor ((<&>))
 import Data.Hashable (Hashable)
 import Data.List (isPrefixOf, sortBy)
 import Data.List qualified as List
-import Data.Maybe (fromMaybe, isNothing, isJust, maybeToList)
+import Data.Maybe (fromMaybe, isJust, isNothing, maybeToList)
 import Data.Text (Text)
 import Data.Text qualified as Text
+import Data.Text.Encoding qualified as Text
 import Data.Text.Lazy qualified as LazyText
 import Data.Text.Lazy.Encoding qualified as LazyText
 import Data.Traversable (for)
-import Debug.Trace qualified as Debug
 import GHC.Generics (Generic)
+import GHC.Stack.Types (HasCallStack)
 import Shoggoth.Agda qualified as Agda
 import Shoggoth.Configuration (CacheDirectory (..), OutputDirectory (..), TemplateDirectory (..))
 import Shoggoth.Metadata
@@ -44,8 +46,6 @@ import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import System.Directory (makeAbsolute)
 import System.Exit (ExitCode (..), exitWith)
 import Text.Printf (printf)
-import GHC.Stack.Types (HasCallStack)
-import qualified Data.Text.Encoding as Text
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -148,6 +148,7 @@ main = do
             mconcat
               [ -- Book (Web Version)
                 ["README.md"] |-> postOrPermalinkRouterWithAgda,
+                ["CONTRIBUTING.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "TableOfContents.md"] |-> postOrPermalinkRouterWithAgda,
                 [chapterDir </> "plfa" <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Book (Standalone HTML)
@@ -160,7 +161,6 @@ main = do
                 [webPostDir <//> "*.md"] *|-> postOrPermalinkRouterWithAgda,
                 -- Documentation
                 [webDir </> "Citing.md"] |-> postOrPermalinkRouterWithAgda,
-                [webDir </> "Contributing.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "Notes.md"] |-> postOrPermalinkRouterWithAgda,
                 [webDir </> "StyleGuide.md"] |-> postOrPermalinkRouterWithAgda,
                 -- Courses
@@ -199,7 +199,7 @@ main = do
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
         authorMetadata <- ?getAuthors ()
-        buildDate <- currentDateField  "%Y-%m" "build_date"
+        buildDate <- currentDateField "%Y-%m" "build_date"
         buildDateRfc822 <- currentDateField rfc822DateFormat "build_date_rfc822"
         return $ mconcat [metadata, constField "author" authorMetadata, buildDate, buildDateRfc822]
       let ?getDefaultMetadata = getDefaultMetadata
@@ -216,6 +216,13 @@ main = do
         info@AgdaFileInfo {moduleName, project, libraries} <- getAgdaFileInfo src
         standardLibrary <- Agda.getStandardLibrary
         Agda.makeAgdaLinkFixer (Just standardLibrary) (List.delete standardLibrary libraries) []
+
+      getFileDigestSHA512 <- newCache $ \src ->
+        liftIO $ do
+          stream <- LazyByteString.readFile src
+          let digest = sha512 stream
+          return $ "sha512-" <> showDigest digest
+      let ?getFileDigestSHA512 = getFileDigestSHA512
 
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
@@ -253,12 +260,13 @@ main = do
         src <- routeSource out
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
+        cssField <- getCssField
+        let metadata = mconcat [tocField, fileMetadata, cssField]
         return indexMarkdownTemplate
-          >>= Pandoc.applyAsTemplate (tocField <> fileMetadata)
+          >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          >>= postProcessHtml5 outDir out
-          >>= writeFile' out
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] metadata
+          >>= writeHtml5 outDir out
 
       --------------------------------------------------------------------------------
       -- Compile Markdown & Agda to HTML
@@ -295,7 +303,9 @@ main = do
       -- Stage 4: Apply HTML templates
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
-        (metadata, htmlBody) <- getFileWithMetadata prev
+        (fileMetadata, htmlBody) <- getFileWithMetadata prev
+        cssField <- getCssField
+        let metadata = mconcat [fileMetadata, cssField]
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
               | otherwise = ["page.html", "default.html"]
@@ -323,24 +333,26 @@ main = do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
+        cssField <- getCssField
+        let metadata = mconcat [postsField, fileMetadata, cssField]
         return indexMarkdownTemplate
-          >>= Pandoc.applyAsTemplate (postsField <> fileMetadata)
+          >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          >>= postProcessHtml5 outDir out
-          >>= writeFile' out
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] metadata
+          >>= writeHtml5 outDir out
 
       -- Build /Acknowledgements/index.html
       outDir </> "Acknowledgements" </> "index.html" %> \out -> do
         src <- routeSource out
         contributorField <- constField "contributor" <$> getContributors ()
         (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
+        cssField <- getCssField
+        let metadata = mconcat [contributorField, fileMetadata, cssField]
         return acknowledgmentsMarkdownTemplate
-          >>= Pandoc.applyAsTemplate (contributorField <> fileMetadata)
+          >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          >>= postProcessHtml5 outDir out
-          >>= writeFile' out
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] metadata
+          >>= writeHtml5 outDir out
 
       -- Build rss.xml
       outDir </> "rss.xml" %> \out -> do
@@ -359,11 +371,11 @@ main = do
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
+        cssField <- getCssField
         return errorMarkdownBody
           >>= markdownToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] fileMetadata
-          >>= postProcessHtml5 outDir out
-          >>= writeFile' out
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> cssField)
+          >>= writeHtml5 outDir out
 
       -- Build assets/css/style.css
       outDir </> "assets/css/style.css" %> \out -> do
@@ -554,9 +566,31 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- File Reader
 
+getCssField ::
+  ( ?getFileDigestSHA512 :: FilePath -> Action String,
+    ?routingTable :: RoutingTable
+  ) =>
+  Action Metadata
+getCssField = do
+  let css = [outDir </> "assets/css/style.css", outDir </> "assets/css/highlight.css"]
+  cssMetadatas <- traverse getCssMetadata css
+  return $ constField "css" cssMetadatas
+
+getCssMetadata ::
+  ( ?getFileDigestSHA512 :: FilePath -> Action String,
+    ?routingTable :: RoutingTable
+  ) =>
+  FilePath ->
+  Action Metadata
+getCssMetadata out = do
+  need [out]
+  url <- routeUrl out
+  integrity <- ?getFileDigestSHA512 out
+  return $ mconcat [constField "url" url, constField "integrity" integrity]
+
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
-    ?getChapterTable :: () -> Action chapterTable,
+    ?getChapterTable :: () -> Action ChapterTable,
     ?routingTable :: RoutingTable
   ) =>
   FilePath ->
@@ -627,24 +661,11 @@ getFileWithMetadata cur = do
   return (metadata, body)
 
 --------------------------------------------------------------------------------
--- Compile Markdown
-
-processCitations :: (?getReferences :: () -> Action MetaValue) => Pandoc -> Action Pandoc
-processCitations doc = do
-  references <- ?getReferences ()
-  Pandoc.processCitations $
-    Pandoc.setMeta "references" references doc
-
-markdownToHtml5 :: (?getReferences :: () -> Action MetaValue) => Text -> Action Text
-markdownToHtml5 =
-  Pandoc.markdownToPandoc >=> processCitations >=> Pandoc.pandocToHtml5
-
---------------------------------------------------------------------------------
--- Compile standalone book
+-- Create Pandoc document for book (for single-document formats)
 
 makeBookDoc ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
-    ?getChapterTable :: () -> Action chapterTable,
+    ?getChapterTable :: () -> Action ChapterTable,
     ?getTableOfContents :: () -> Action Book,
     ?getAuthors :: () -> Action [Author],
     ?getReferences :: () -> Action MetaValue,
@@ -719,7 +740,7 @@ qualifyAnchor urlPath url
 qualifyIdent :: Bool -> Url -> Text -> Text
 qualifyIdent emptyAnchorMeansNoId urlPath hashAndAnchor
   | Text.null anchor = if emptyAnchorMeansNoId then "" else ident
-  | otherwise        = ident <> "_" <> anchor
+  | otherwise = ident <> "_" <> anchor
   where
     anchor = Text.dropWhile (== '#') hashAndAnchor
     ident = urlToIdent urlPath
@@ -751,19 +772,19 @@ htmlMinifier cmdOpts args maybeStdin = do
   where
     defaultHtmlMinifierArgs :: [String]
     defaultHtmlMinifierArgs =
-      [ "--collapse-boolean-attributes"
-      , "--collapse-inline-tag-whitespace"
-      , "--collapse-whitespace"
-      , "--minify-css"
-      , "--minify-js"
-      , "--minify-urls"
-      , "--quote-character='"
-      , "--remove-comments"
-      , "--remove-empty-attributes"
-      , "--remove-empty-elements"
-      , "--remove-redundant-attributes"
-      , "--remove-tag-whitespace"
-      , "--use-short-doctype"
+      [ "--collapse-boolean-attributes",
+        "--collapse-inline-tag-whitespace",
+        "--collapse-whitespace",
+        "--minify-css",
+        "--minify-js",
+        "--minify-urls",
+        "--quote-character=\"",
+        "--remove-comments",
+        "--remove-empty-attributes",
+        "--remove-empty-elements",
+        "--remove-redundant-attributes",
+        "--remove-script-type-attributes",
+        "--remove-style-link-type-attributes"
       ]
 
 --------------------------------------------------------------------------------
@@ -772,18 +793,44 @@ htmlMinifier cmdOpts args maybeStdin = do
 -- - removes "/index.html" from URLs
 -- - relativizes URLs
 -- - adds a default table header scope
+-- - minifies HTML using html-minifier
+
+writeHtml5 :: FilePath -> FilePath -> Text -> Action ()
+writeHtml5 outDir out html = do
+  trackWrite [out]
+  genericPostProcessHtml5 OutputToFile outDir out html
 
 postProcessHtml5 :: FilePath -> FilePath -> Text -> Action Text
-postProcessHtml5 outDir out html = do
+postProcessHtml5 = genericPostProcessHtml5 OutputToText
+
+data CmdOutput r where
+  OutputToFile :: CmdOutput ()
+  OutputToText :: CmdOutput Text
+
+genericPostProcessHtml5 :: CmdOutput r -> FilePath -> FilePath -> Text -> Action r
+genericPostProcessHtml5 cmdoutput outDir out html = do
   let fixedHtml =
         html
           & TagSoup.withUrls (removeIndexHtml . relativizeUrl outDir out)
           & TagSoup.addDefaultTableHeaderScope "col"
-  Stdout minifiedHtml <- htmlMinifier [] [] (Just (LazyText.fromChunks [fixedHtml]))
-  return $ Text.decodeUtf8 minifiedHtml
+  let stdin = LazyText.fromChunks [fixedHtml]
+  case cmdoutput of
+    OutputToFile -> do
+      () <- htmlMinifier [] ["--output=" <> out] (Just stdin)
+      return ()
+    OutputToText -> do
+      Stdout minifiedHtml <- htmlMinifier [] [] (Just stdin)
+      return (Text.decodeUtf8 minifiedHtml)
 
---------------------------------------------------------------------------------
--- Pandoc options
+-- | Convert Markdown to HTML5 using Pandoc.
+markdownToHtml5 :: (?getReferences :: () -> Action MetaValue) => Text -> Action Text
+markdownToHtml5 = Pandoc.markdownToPandoc >=> processCitations >=> Pandoc.pandocToHtml5
+
+-- | Process Markdown citations with citeproc using the references returned by @?getReferences@.
+processCitations :: (?getReferences :: () -> Action MetaValue) => Pandoc -> Action Pandoc
+processCitations doc = do
+  references <- ?getReferences ()
+  Pandoc.processCitations (Pandoc.setMeta "references" references doc)
 
 readerOpts :: ReaderOptions
 readerOpts =
@@ -828,22 +875,7 @@ highlightCss :: String
 highlightCss = Pandoc.styleToCss highlightStyle
 
 --------------------------------------------------------------------------------
--- Helper functions
-
-failOnError :: MonadFail m => Either String a -> m a
-failOnError = either fail return
-
-failOnNothing :: MonadFail m => String -> Maybe a -> m a
-failOnNothing msg = maybe (fail msg) return
-
-ignoreError :: Monoid a => Either String a -> a
-ignoreError = fromRight mempty
-
-ignoreNothing :: Monoid a => Maybe a -> a
-ignoreNothing = fromMaybe mempty
-
-rightToMaybe :: Either e a -> Maybe a
-rightToMaybe = either (const Nothing) Just
+-- Agda file info
 
 data RichAgdaFileInfo = RichAgdaFileInfo
   { agdaFileInfo :: Agda.AgdaFileInfo,
@@ -855,6 +887,19 @@ data RichAgdaFileInfo = RichAgdaFileInfo
   }
   deriving (Show, Typeable, Eq, Generic, Hashable, Binary, NFData)
 
+pattern AgdaFileInfo ::
+  Agda.Library ->
+  FilePath ->
+  FilePath ->
+  Agda.ModuleName ->
+  FilePath ->
+  FilePath ->
+  FilePath ->
+  FilePath ->
+  FilePath ->
+  Project ->
+  [Agda.Library] ->
+  RichAgdaFileInfo
 pattern AgdaFileInfo
   { library,
     libraryIncludePath,
@@ -882,3 +927,21 @@ pattern AgdaFileInfo
     agdaHtmlPath
     project
     libraries
+
+--------------------------------------------------------------------------------
+-- Helper functions
+
+failOnError :: MonadFail m => Either String a -> m a
+failOnError = either fail return
+
+failOnNothing :: MonadFail m => String -> Maybe a -> m a
+failOnNothing msg = maybe (fail msg) return
+
+ignoreError :: Monoid a => Either String a -> a
+ignoreError = fromRight mempty
+
+ignoreNothing :: Monoid a => Maybe a -> a
+ignoreNothing = fromMaybe mempty
+
+rightToMaybe :: Either e a -> Maybe a
+rightToMaybe = either (const Nothing) Just
