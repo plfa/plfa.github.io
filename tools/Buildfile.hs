@@ -170,6 +170,7 @@ main = do
                 -- Assets
                 [webDir </> "404.md"] |-> permalinkRouter,
                 [webStyleDir </> "light.scss"] |-> outDir </> "assets/css/light.css",
+                [webStyleDir </> "dark.scss"] |-> outDir </> "assets/css/dark.css",
                 create (outDir </> "assets/css/highlight.css"),
                 [webAssetDir <//> "*"] *|-> \src -> outDir </> "assets" </> makeRelative webAssetDir src
               ]
