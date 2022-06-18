@@ -12,3 +12,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+      
+  # Maintain dependencies for RubyGems
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "daily"
