@@ -134,7 +134,7 @@ HTML_PROOFER_ARGS += --report-missing-names
 HTML_PROOFER_ARGS += --report-missing-doctype
 HTML_PROOFER_ARGS += --report-mismatched-tags
 HTML_PROOFER_ARGS += --report-script-embeds
-HTML_PROOFER_ARGS += --storage-dir
+HTML_PROOFER_ARGS += --storage-dir=$(TMP_DIR)/htmlproofer
 HTML_PROOFER_ARGS += --timeframe=30d
 HTML_PROOFER_ARGS += --url-ignore="/github.com/"
 HTML_PROOFER_ARGS += .

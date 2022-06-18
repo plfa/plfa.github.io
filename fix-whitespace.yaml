@@ -20,7 +20,7 @@
 # 4) excluded-files is a block-list of included-files.
 #
 # The extended glob pattern can be used to specify file/direcotory names.
-# For details, see http://hackage.haskell.org/package/filemanip-0.3.6.3/docs/System-FilePath-GlobPattern.html
+# For details, see https://hackage.haskell.org/package/filemanip-0.3.6.3/docs/System-FilePath-GlobPattern.html
 
 included-files:
 - ".dir-locals.el"

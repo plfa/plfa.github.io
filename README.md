@@ -246,7 +246,7 @@ You'll see the key sequence of the character in mini buffer.
 <!-- Links -->
 
 [epub]: https://plfa.github.io/plfa.epub
-[plfa]: http://plfa.inf.ed.ac.uk
+[plfa]: https://plfa.inf.ed.ac.uk
 [plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
 [plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
@@ -265,7 +265,7 @@ You'll see the key sequence of the character in mini buffer.
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
-[aquamacs]: http://aquamacs.org/
+[aquamacs]: https://aquamacs.org/
 [spacemacs]: https://www.spacemacs.org/
 [spacemacs-agda]: https://develop.spacemacs.org/layers/+lang/agda/README.html
 [vscode]: https://code.visualstudio.com/

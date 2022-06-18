@@ -101,7 +101,7 @@ Trying to show full-blown isomorphism appears difficult.
 
 This is the approach hinted at by Abel in his [lecture].
 
-[lecture]: http://cs.ioc.ee/~tarmo/tsem12/abel-slides.pdf
+[lecture]: https://cs.ioc.ee/~tarmo/tsem12/abel-slides.pdf
 
 \begin{code}
 record EStream (A : Set) : Set

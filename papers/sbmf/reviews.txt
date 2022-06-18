@@ -203,7 +203,7 @@ Please follow strictly
 the author instructions of Springer-Verlag when preparing the
 final version:
 
-  http://www.springer.de/comp/lncs/authors.html
+  https://www.springer.de/comp/lncs/authors.html
 
 Our publisher has recently introduced an extra control loop: once
 data processing is finished, they will contact all corresponding

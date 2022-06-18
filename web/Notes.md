@@ -218,15 +218,15 @@ The following comments were collected on the Agda mailing list.
 
 * Nils Anders Danielsson <nad@cse.gu.se>
   + cites Chlipala, who uses binary parametricity
-    - http://adam.chlipala.net/cpdt/html/Cpdt.ProgLang.html
-    - http://adam.chlipala.net/cpdt/html/Intensional.html
+    - https://adam.chlipala.net/cpdt/html/Cpdt.ProgLang.html
+    - https://adam.chlipala.net/cpdt/html/Intensional.html
 
 * Roman <effectfully@gmail.com>
   + (similar to my solution)
     - https://github.com/effectfully/random-stuff/blob/master/Normalization/PHOAS.agda
     - https://github.com/effectfully/random-stuff/blob/master/Normalization/Liftable.agda
   + also cites Abel's habilitation
-    -  http://www.cse.chalmers.se/~abela/habil.pdf
+    -  https://www.cse.chalmers.se/~abela/habil.pdf
   + See his note to the Agda mailing list of 26 June,
         "Typed Jigger in vanilla Agda"
     It points to the following solution.
@@ -247,7 +247,7 @@ The following comments were collected on the Agda mailing list.
 
 * Nils Anders Danielsson <nad@cse.gu.se>
   +
-  http://www.cse.chalmers.se/~nad/listings/partiality-monad/Lambda.Simplified.Delay-monad.Interpreter.html
+  https://www.cse.chalmers.se/~nad/listings/partiality-monad/Lambda.Simplified.Delay-monad.Interpreter.html
   + /~nad/repos/codata/Lambda/Closure/Functional
 * untyped lambda calculus by Gallais
   + https://gist.github.com/gallais/303cfcfe053fbc63eb61
@@ -258,23 +258,23 @@ The following comments were collected on the Agda mailing list.
 
 * Kenichi Asai, Extracting a Call-by-Name Partial Evaluator from a Proof of
   Termination, PEPM 2019
-  + http://pllab.is.ocha.ac.jp/~asai/papers/pepm19.pdf
-  + http://pllab.is.ocha.ac.jp/~asai/papers/pepm2019/
+  + https://pllab.is.ocha.ac.jp/~asai/papers/pepm19.pdf
+  + https://pllab.is.ocha.ac.jp/~asai/papers/pepm2019/
 * Kenichi Asai, Certifying CPS Transformation of Let-Polymorphic
   Calculus Using PHOAS, APLAS 2018
   + https://link.springer.com/chapter/10.1007/978-3-030-02768-1_20
-  + http://pllab.is.ocha.ac.jp/~asai/papers/aplas18.agda
+  + https://pllab.is.ocha.ac.jp/~asai/papers/aplas18.agda
 
 
 ## Agda resources
 * Chalmers class
-  + http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/
+  + https://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/
 * Dybjer lecture notes
-  + http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/LectureNotes.pdf
+  + https://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/LectureNotes.pdf
 * Ulf Norell and James Chapman lecture notes
-  + http://www.cse.chalmers.se/~ulfn/darcs/AFP08/LectureNotes/AgdaIntro.pdf
+  + https://www.cse.chalmers.se/~ulfn/darcs/AFP08/LectureNotes/AgdaIntro.pdf
 * Chalmer Take Home exam 2017
-  + http://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/TakeHomeExamTypes2017.pdf
+  + https://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/TakeHomeExamTypes2017.pdf
 
 
 ## Adrian's comments from MeetUp

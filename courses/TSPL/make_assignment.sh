@@ -55,7 +55,7 @@ Please ensure your files execute correctly under Agda!
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
 
-> [http://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct](http://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct)
+> [https://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct](https://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct)
 
 Furthermore, you are required to take reasonable measures to protect
 your assessed work from unauthorised access. For example, if you put

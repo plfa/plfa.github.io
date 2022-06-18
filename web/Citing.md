@@ -9,7 +9,7 @@ permalink      : /Citing/
 
 > Wadler, Philip, Wen Kokke, and Jeremy G. Siek.
 > _Programming Language Foundations in Agda_.
-> Available at `http://plfa.inf.ed.ac.uk/20.07/`.
+> Available at `https://plfa.inf.ed.ac.uk/20.07/`.
 > 2020.
 
 ### BibTeX
@@ -20,7 +20,7 @@ permalink      : /Citing/
     title  = {Programming Language Foundations in {A}gda},
     year   = {2020},
     month  = jul,
-    url    = {http://plfa.inf.ed.ac.uk/20.07/},
+    url    = {https://plfa.inf.ed.ac.uk/20.07/},
 }
 ```
 
@@ -30,7 +30,7 @@ permalink      : /Citing/
 
 > Wadler, Philip and Wen Kokke.
 > _Programming Language Foundations in Agda_.
-> Available at `http://plfa.inf.ed.ac.uk/19.08/`.
+> Available at `https://plfa.inf.ed.ac.uk/19.08/`.
 > 2019.
 
 ### BibTeX
@@ -41,6 +41,6 @@ permalink      : /Citing/
     title  = {Programming Language Foundations in {A}gda},
     year   = {2019},
     month  = aug,
-    url    = {http://plfa.inf.ed.ac.uk/19.08/},
+    url    = {https://plfa.inf.ed.ac.uk/19.08/},
 }
 ```
