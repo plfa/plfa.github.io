@@ -54,11 +54,9 @@ Then, we need to make sure that the release is published to live versions of PLF
 
 The first two releases, 19.08 and 20.07, are included in the `dev` branch of the repository under `data/legacy/`, because these versions do not use relative URLs, and as such cannot simply be moved into a subdirectory. Later releases should use relative URLs, and therefore can simply be downloaded from GitHub, and copied into their appropriate subdirectories.
 
-
 ## How to add a citation
 
 You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`. For instance, the first release of PLFA was by @plfa19.08. See the [Bibliography](#bibliography) section below for the bibliography. Citations and the bibliography are currently styled using Pandoc's default citation style. Other styles can easily be found using the [Zotero Style Repository][zotero] and added into the build file by setting the `citation-style` meta-variable. The citation keys are cross-referenced with `data/bibliography.bib`.
-
 
 ## The structure of the PLFA repository
 
