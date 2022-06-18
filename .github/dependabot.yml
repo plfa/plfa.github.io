@@ -6,15 +6,21 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    assignees:
+      - "wenkokke"
  
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+    assignees:
+      - "wenkokke"
       
   # Maintain dependencies for RubyGems
   - package-ecosystem: "bundler"
     directory: "/"
     schedule:
       interval: "daily"
+    assignees:
+      - "wenkokke"
