@@ -31,7 +31,6 @@ included-files:
 - ".ruby-version"
 - "Gemfile"
 - "LICENSE"
-- "Makefile"
 - "cabal.project"
 - "cabal.project.ci"
 - "cabal.project.ci.local"
@@ -60,6 +59,7 @@ excluded-files:
 - ".DS_Store"
 - ".epubcheck.tsv"
 - ".gitmodules"
+- "Makefile"
 
 excluded-dirs:
 - ".git"
