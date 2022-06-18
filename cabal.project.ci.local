@@ -1,4 +1,4 @@
 ignore-project: False
 
 package shoggoth
-  flags: +with-agda -with-hsass -with-hasmin
+  flags: +with-agda
