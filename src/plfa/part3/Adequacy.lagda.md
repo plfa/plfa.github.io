@@ -309,7 +309,7 @@ not-above-fun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{N : Γ , ★ ⊢ ★ }
       -------------------
     → 𝕍 v (clos (ƛ N) γ')
 not-above-fun-𝕍 {⊥} af = tt
-not-above-fun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , ⊑-refl ⟩ ⟩ af)
+not-above-fun-𝕍 {v ↦ v'} af = contradiction ⟨ v , ⟨ v' , ⊑-refl ⟩ ⟩ af
 not-above-fun-𝕍 {v₁ ⊔ v₂} af
     with not-above-fun-⊔-inv af
 ... | ⟨ af1 , af2 ⟩ = ⟨ not-above-fun-𝕍 af1 , not-above-fun-𝕍 af2 ⟩
@@ -364,8 +364,8 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c sf
 sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c ⟨ v' , ⟨ w'' , lt ⟩ ⟩
     | no naf2 | no naf3
     with above-fun-⊔ ⟨ v' , ⟨ w'' , lt ⟩ ⟩
-... | inj₁ af2 = ⊥-elim (contradiction af2 naf2)
-... | inj₂ af3 = ⊥-elim (contradiction af3 naf3)
+... | inj₁ af2 = contradiction af2 naf2
+... | inj₂ af3 = contradiction af3 naf3
 ```
 
 * Case `⊑-bot`. We immediately have `𝕍 ⊥ (clos (ƛ N) γ)`.
@@ -512,8 +512,8 @@ kth-x{γ' = γ'}{x = x} with γ' x
     ⟨ clos (ƛ N) γ₁ , ⟨ M'⇓c₂ , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
 ↓→𝔼 𝔾γγ' (⊔-intro d₁ d₂) fv12 | no nfv1  | no nfv2
     with above-fun-⊔ fv12
-... | inj₁ fv1 = ⊥-elim (contradiction fv1 nfv1)
-... | inj₂ fv2 = ⊥-elim (contradiction fv2 nfv2)
+... | inj₁ fv1 = contradiction fv1 nfv1
+... | inj₂ fv2 = contradiction fv2 nfv2
 ↓→𝔼 {Γ} {γ} {γ'} {M} {v'} 𝔾γγ' (sub{v = v} d v'⊑v) fv'
     with ↓→𝔼 {Γ} {γ} {γ'} {M} 𝔾γγ' d (above-fun-⊑ fv' v'⊑v)
 ... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =

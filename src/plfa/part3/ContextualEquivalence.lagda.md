@@ -78,10 +78,10 @@ denot-equal-terminates {Γ}{M}{N}{C} ℰM≃ℰN ⟨ N′ , CM—↠ƛN′ ⟩ =
     cbn→reduce (proj₂ (proj₂ (proj₂ (↓→⇓ ℰCN≃ℰƛN′))))
 ```
 
-The proof is direct. Because `plug C —↠ plug C (ƛN′)`,
+The proof is direct. Because `plug C —↠ plug C (ƛ N′)`,
 we can apply soundness to obtain
 
-    ℰ (plug C M) ≃ ℰ (ƛN′)
+    ℰ (plug C M) ≃ ℰ (ƛ N′)
 
 From `ℰ M ≃ ℰ N`, compositionality gives us
 
@@ -89,7 +89,7 @@ From `ℰ M ≃ ℰ N`, compositionality gives us
 
 Putting these two facts together gives us
 
-    ℰ (plug C N) ≃ ℰ (ƛN′).
+    ℰ (plug C N) ≃ ℰ (ƛ N′).
 
 We then apply `↓→⇓` from Chapter [Adequacy](/Adequacy/) to deduce
 
