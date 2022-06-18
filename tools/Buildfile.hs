@@ -415,7 +415,7 @@ main = do
                   writerWrapText = Pandoc.WrapPreserve,
                   writerTopLevelDivision = Pandoc.TopLevelPart,
                   writerTOCDepth = 2,
-                  writerReferenceLocation = Pandoc.EndOfChapter
+                  writerReferenceLocation = Pandoc.EndOfDocument
                 }
 
         let pandocToStandaloneHtml doc = do
@@ -461,7 +461,7 @@ main = do
                   writerEpubFonts = epubFonts,
                   writerEpubChapterLevel = 2,
                   writerTOCDepth = 2,
-                  writerReferenceLocation = Pandoc.EndOfChapter
+                  writerReferenceLocation = Pandoc.EndOfDocument
                 }
 
         epub <- runPandoc $ Pandoc.writeEPUB3 writerOptsForEpub bookDoc
