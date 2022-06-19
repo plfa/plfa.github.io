@@ -101,7 +101,7 @@ serve:
 ########################################
 
 .PHONY: test
-test: test-html-validate test-html-proofer test-epubcheck
+test: test-html-validate
 
 # HTML-validate
 
