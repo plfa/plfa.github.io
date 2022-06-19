@@ -23,6 +23,7 @@ $else$
   * [$toc.part.chapter.title$]($toc.part.chapter.url$)
 $endif$
 $endfor$
+
 $endfor$
 
 ## Related
