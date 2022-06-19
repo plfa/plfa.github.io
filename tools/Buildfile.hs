@@ -262,8 +262,8 @@ main = do
         src <- routeSource out
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getCssField
-        let metadata = mconcat [tocField, fileMetadata, cssField]
+        stylesheetField <- getStylesheetField
+        let metadata = mconcat [tocField, fileMetadata, stylesheetField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
@@ -306,8 +306,8 @@ main = do
       outDir <//> "*.html" %> \out -> do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (fileMetadata, htmlBody) <- getFileWithMetadata prev
-        cssField <- getCssField
-        let metadata = mconcat [fileMetadata, cssField]
+        stylesheetField <- getStylesheetField
+        let metadata = mconcat [fileMetadata, stylesheetField]
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
               | otherwise = ["page.html", "default.html"]
@@ -335,8 +335,8 @@ main = do
         src <- routeSource out
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getCssField
-        let metadata = mconcat [postsField, fileMetadata, cssField]
+        stylesheetField <- getStylesheetField
+        let metadata = mconcat [postsField, fileMetadata, stylesheetField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
@@ -348,8 +348,8 @@ main = do
         src <- routeSource out
         contributorField <- constField "contributor" <$> getContributors ()
         (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
-        cssField <- getCssField
-        let metadata = mconcat [contributorField, fileMetadata, cssField]
+        stylesheetField <- getStylesheetField
+        let metadata = mconcat [contributorField, fileMetadata, stylesheetField]
         return acknowledgmentsMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
@@ -373,10 +373,10 @@ main = do
       outDir </> "404.html" %> \out -> do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
-        cssField <- getCssField
+        stylesheetField <- getStylesheetField
         return errorMarkdownBody
           >>= markdownToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> cssField)
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> stylesheetField)
           >>= writeHtml5 outDir out
 
       -- Build assets/css/light.css
@@ -568,22 +568,18 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- File Reader
 
-getCssField ::
+getStylesheetField ::
   ( ?getDigest :: FilePath -> Action LazyText.Text,
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
-getCssField =
-  constField "css"
-    <$> traverse
-      getCssField1
-      [outDir </> "assets/css/light.css", outDir </> "assets/css/highlight.css"]
-  where
-    getCssField1 out = do
-      need [out]
-      url <- routeUrl out
-      integrity <- ?getDigest out
-      return $ mconcat [constField "url" url, constField "integrity" integrity]
+getStylesheetField =
+  let stylesheets = [outDir </> "assets/css/light.css", outDir </> "assets/css/highlight.css"]
+   in fmap (constField "stylesheet") . for stylesheets $ \out -> do
+        need [out]
+        url <- routeUrl out
+        integrity <- ?getDigest out
+        return $ mconcat [constField "url" url, constField "integrity" integrity]
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
