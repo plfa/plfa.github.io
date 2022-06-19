@@ -754,7 +754,7 @@ urlToIdent url =
 npx :: (HasCallStack, CmdResult r) => [CmdOption] -> String -> [String] -> Action r
 npx cmdOpts package args = do
   need ["package.json"]
-  command (AddEnv "npm_config_yes" "true" : Traced package : cmdOpts) "npx" (package : args)
+  command (AddEnv "npm_config_yes" "true" : Traced package : cmdOpts) ("npx" <.> exe) (package : args)
 
 sass :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
 sass cmdOpts args maybeStdin = do
