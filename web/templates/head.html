@@ -2,9 +2,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- stylesheets -->
   $for(stylesheet)$
-  <link rel="stylesheet" href="$stylesheet.url$" integrity="$stylesheet.integrity$">
+  <link rel="stylesheet" href="$stylesheet.url$"$if(stylesheet.integrity)$  integrity="$stylesheet.integrity$"$endif$>
   $endfor$
+  <!-- title -->
   $if(titlerunning)$
   <title>$pagetitle$ – $titlerunning$</title>
   $else$
@@ -14,4 +16,16 @@
   <title>$pagetitle$</title>
   $endif$
   $endif$
+  <!-- scripts -->
+  $for(script)$
+  $if(script.url)$
+  <script src="$script.url$"$if(script.integrity)$ integrity="$script.integrity$"$endif$></script>
+  $else$
+  $endif$
+  $if(script.body)$
+  <script>
+    $script.body$
+  </script>
+  $endif$
+  $endfor$
 </head>

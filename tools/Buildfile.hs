@@ -200,10 +200,10 @@ main = do
 
       getDefaultMetadata <- newCache $ \() -> do
         metadata <- readYaml @Metadata (dataDir </> "metadata.yml")
-        authorMetadata <- ?getAuthors ()
-        buildDate <- currentDateField "%Y-%m" "build_date"
-        buildDateRfc822 <- currentDateField rfc822DateFormat "build_date_rfc822"
-        return $ mconcat [metadata, constField "author" authorMetadata, buildDate, buildDateRfc822]
+        authorField <- constField "author" <$> ?getAuthors ()
+        buildDateField <- currentDateField "%Y-%m" "build_date"
+        buildDateRfc822Field <- currentDateField rfc822DateFormat "build_date_rfc822"
+        return $ mconcat [metadata, authorField, buildDateField, buildDateRfc822Field]
       let ?getDefaultMetadata = getDefaultMetadata
 
       getReferences <- newCache $ \() -> do
@@ -219,15 +219,15 @@ main = do
         standardLibrary <- Agda.getStandardLibrary
         Agda.makeAgdaLinkFixer (Just standardLibrary) (List.delete standardLibrary libraries) []
 
+      getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
+      let ?getTemplateFile = getTemplateFile
+
       getDigest <- newCache $ \src ->
         liftIO $ do
           stream <- LazyByteString.readFile src
           let digest = Digest.sha512 stream
           return $ "sha512-" <> LazyByteString.encodeBase64 (Digest.bytestringDigest digest)
       let ?getDigest = getDigest
-
-      getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
-      let ?getTemplateFile = getTemplateFile
 
       --------------------------------------------------------------------------------
       -- Phony targets
@@ -263,7 +263,8 @@ main = do
         tocField <- getTableOfContentsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         stylesheetField <- getStylesheetField
-        let metadata = mconcat [tocField, fileMetadata, stylesheetField]
+        scriptField <- getScriptField
+        let metadata = mconcat [tocField, fileMetadata, stylesheetField, scriptField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
@@ -307,7 +308,8 @@ main = do
         (src, prev) <- (,) <$> routeSource out <*> routePrev out
         (fileMetadata, htmlBody) <- getFileWithMetadata prev
         stylesheetField <- getStylesheetField
-        let metadata = mconcat [fileMetadata, stylesheetField]
+        scriptField <- getScriptField
+        let metadata = mconcat [fileMetadata, stylesheetField, scriptField]
         let htmlTemplates
               | isPostSource src = ["post.html", "default.html"]
               | otherwise = ["page.html", "default.html"]
@@ -336,7 +338,8 @@ main = do
         postsField <- getPostsField ()
         (fileMetadata, indexMarkdownTemplate) <- getFileWithMetadata src
         stylesheetField <- getStylesheetField
-        let metadata = mconcat [postsField, fileMetadata, stylesheetField]
+        scriptField <- getScriptField
+        let metadata = mconcat [postsField, fileMetadata, stylesheetField, scriptField]
         return indexMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
@@ -349,7 +352,8 @@ main = do
         contributorField <- constField "contributor" <$> getContributors ()
         (fileMetadata, acknowledgmentsMarkdownTemplate) <- getFileWithMetadata src
         stylesheetField <- getStylesheetField
-        let metadata = mconcat [contributorField, fileMetadata, stylesheetField]
+        scriptField <- getScriptField
+        let metadata = mconcat [contributorField, fileMetadata, stylesheetField, scriptField]
         return acknowledgmentsMarkdownTemplate
           >>= Pandoc.applyAsTemplate metadata
           >>= markdownToHtml5
@@ -374,9 +378,11 @@ main = do
         src <- routeSource out
         (fileMetadata, errorMarkdownBody) <- getFileWithMetadata src
         stylesheetField <- getStylesheetField
+        scriptField <- getScriptField
+        let metadata = mconcat [fileMetadata, stylesheetField, scriptField]
         return errorMarkdownBody
           >>= markdownToHtml5
-          >>= Pandoc.applyTemplates ["page.html", "default.html"] (fileMetadata <> stylesheetField)
+          >>= Pandoc.applyTemplates ["page.html", "default.html"] metadata
           >>= writeHtml5 outDir out
 
       -- Build assets/css/light.css
@@ -568,13 +574,43 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- File Reader
 
+data Script
+  = ScriptFile FilePath
+  | ScriptBody Text
+
+getScriptField ::
+  ( ?getDigest :: FilePath -> Action LazyText.Text,
+    ?routingTable :: RoutingTable
+  ) =>
+  Action Metadata
+getScriptField =
+  let scripts =
+        [ ScriptFile $ outDir </> "assets/js/anchor.js",
+          ScriptBody
+            "/* Add anchors on DOMContentLoaded */\n\
+            \document.addEventListener('DOMContentLoaded', function(event) {\n\
+            \  anchors.add('h1').add('h2').add('h3').add('h4');\n\
+            \});"
+        ]
+   in fmap (constField "script") . for scripts $ \case
+        ScriptFile out -> do
+          need [out]
+          url <- routeUrl out
+          integrity <- ?getDigest out
+          return $ mconcat [constField "url" url, constField "integrity" integrity]
+        ScriptBody body ->
+          return $ constField "body" body
+
 getStylesheetField ::
   ( ?getDigest :: FilePath -> Action LazyText.Text,
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
 getStylesheetField =
-  let stylesheets = [outDir </> "assets/css/light.css", outDir </> "assets/css/highlight.css"]
+  let stylesheets =
+        [ outDir </> "assets/css/light.css",
+          outDir </> "assets/css/highlight.css"
+        ]
    in fmap (constField "stylesheet") . for stylesheets $ \out -> do
         need [out]
         url <- routeUrl out
@@ -766,7 +802,6 @@ htmlMinifier cmdOpts args maybeStdin = do
     defaultHtmlMinifierArgs :: [String]
     defaultHtmlMinifierArgs =
       [ "--collapse-boolean-attributes",
-        "--collapse-inline-tag-whitespace",
         "--collapse-whitespace",
         "--minify-css",
         "--minify-js",
