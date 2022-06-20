@@ -50,7 +50,11 @@
     }
   }
 
-  #darkmode-trigger {
+  .darkmode-trigger {
+    display: none;
+  }
+
+  label[for="darkmode-trigger"] {
     display: block;
     float: right;
     width: 36px;
@@ -72,12 +76,12 @@
     cursor: pointer;
   }
 
-  input#nav-trigger ~ .trigger {
+  input.nav-trigger ~ .trigger {
     clear: both;
     display: none;
   }
 
-  input:checked#nav-trigger ~ .trigger {
+  input:checked.nav-trigger ~ .trigger {
     display: block;
     padding-bottom: 5px;
   }
@@ -103,10 +107,6 @@
 
     label[for="nav-trigger"] {
       display: none;
-
-      .menu-icon {
-        display: none;
-      }
     }
 
     input ~ .trigger {
