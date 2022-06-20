@@ -50,19 +50,6 @@
     }
   }
 
-  .darkmode-trigger {
-    display: none;
-  }
-
-  label[for="darkmode-trigger"] {
-    display: block;
-    float: right;
-    width: 36px;
-    height: 36px;
-    z-index: 2;
-    cursor: pointer;
-  }
-
   .nav-trigger {
     display: none;
   }
@@ -109,7 +96,7 @@
       display: none;
     }
 
-    input ~ .trigger {
+    input.nav-trigger ~ .trigger {
       display: block;
     }
 

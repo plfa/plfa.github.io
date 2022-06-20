@@ -24,14 +24,21 @@ function darkmode(lightId, darkId) {
       }
     }
     // Set or remove 'disabled' attribute on stylesheets
+    // Set the dark mode trigger
+    const trigger = document.getElementById('darkmode-trigger');
     if (enabled) {
       stylesheetDark.disabled = false;
+      trigger.classList.remove('fa-moon');
       stylesheetLight.disabled = true;
+      trigger.classList.add('fa-sun');
     } else {
       stylesheetLight.disabled = false;
+      trigger.classList.remove('fa-sun');
       stylesheetDark.disabled = true;
+      trigger.classList.add('fa-moon');
     }
   };
+  const anchors = document.getElementsByTagName("a");
   // Create top-level function to toggle dark mode
   window.darkmode.toggle = function () {
     set(!window.darkmode.enabled);
