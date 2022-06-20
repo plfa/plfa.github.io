@@ -12,10 +12,11 @@
                     <li>
                         $if(author.corresponding)$
                         $if(author.email)$
-                        <a class="u-email" href="mailto:$author.email$">$author.email$</a>
+                        <a class="u-email" href="mailto:$author.email$">
+                            <i class="far fa-envelope"></i>
+                            &nbsp;$author.email$
+                        </a>
                         $endif$
-                        $else$
-                        &em;
                         $endif$
                     </li>
                 </ul>
@@ -24,18 +25,14 @@
                 <ul class="social-media-list">
                     <li>
                         <a rel="me" href="https://github.com/$author.github$" title="$author.github$">
-                            <svg class="svg-icon grey">
-                                <use xlink:href="/assets/minima-social-icons.svg#github"></use>
-                            </svg>
+                            <i class="fab fa-github"></i>
                             &nbsp;$author.github$
                         </a>
                     </li>
                     $if(author.twitter)$
                     <li>
                         <a rel="me" href="https://twitter.com/$author.twitter$" title="$author.twitter$">
-                            <svg class="svg-icon grey">
-                                <use xlink:href="/assets/minima-social-icons.svg#twitter"></use>
-                            </svg>
+                            <i class="fab fa-twitter"></i>
                             &nbsp;$author.twitter$
                         </a>
                     </li>

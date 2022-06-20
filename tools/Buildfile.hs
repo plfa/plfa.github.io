@@ -9,6 +9,7 @@ module Main where
 import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Chapter (..), ChapterTable, Part (..), fromBook, nextChapter, previousChapter)
 import Buildfile.Contributor (Contributor (..))
+import Buildfile.Stylesheet as Stylesheet
 import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, when, (>=>))
 import Control.Monad.Except (MonadError (throwError))
@@ -222,7 +223,8 @@ main = do
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
 
-      getDigest <- newCache $ \src ->
+      getDigest <- newCache $ \src -> do
+        need [src]
         liftIO $ do
           stream <- LazyByteString.readFile src
           let digest = Digest.sha512 stream
@@ -387,6 +389,12 @@ main = do
 
       -- Build assets/css/light.css
       outDir </> "assets/css/light.css" %> \out -> do
+        src <- routeSource out
+        need =<< getDirectoryFiles "" [webStyleDir <//> "*.scss"]
+        sass [] ["--load-path=" <> webStyleDir, "--style=compressed", src, out] Nothing
+
+      -- Build assets/css/dark.css
+      outDir </> "assets/css/dark.css" %> \out -> do
         src <- routeSource out
         need =<< getDirectoryFiles "" [webStyleDir <//> "*.scss"]
         sass [] ["--load-path=" <> webStyleDir, "--style=compressed", src, out] Nothing
@@ -583,39 +591,35 @@ getScriptField ::
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
-getScriptField =
+getScriptField = do
   let scripts =
         [ ScriptFile $ outDir </> "assets/js/anchor.js",
-          ScriptBody
+          ScriptFile $ outDir </> "assets/js/darkmode.js",
+          ScriptBody $
             "/* Add anchors on DOMContentLoaded */\n\
             \document.addEventListener('DOMContentLoaded', function(event) {\n\
             \  anchors.add('h1').add('h2').add('h3').add('h4');\n\
+            \  darkmode('stylesheet-light', 'stylesheet-dark');\n\
             \});"
         ]
-   in fmap (constField "script") . for scripts $ \case
-        ScriptFile out -> do
-          need [out]
-          url <- routeUrl out
-          integrity <- ?getDigest out
-          return $ mconcat [constField "url" url, constField "integrity" integrity]
-        ScriptBody body ->
-          return $ constField "body" body
+  scriptMetadata <- for scripts $ \case
+    ScriptFile out -> do
+      (url, integrity) <- (,) <$> routeUrl out <*> ?getDigest out
+      return $ mconcat [constField "url" url, constField "integrity" integrity, constField "id" $ "script-" <> takeBaseName out]
+    ScriptBody body ->
+      return $ constField "body" body
+  return $ constField "script" scriptMetadata
 
 getStylesheetField ::
   ( ?getDigest :: FilePath -> Action LazyText.Text,
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
-getStylesheetField =
-  let stylesheets =
-        [ outDir </> "assets/css/light.css",
-          outDir </> "assets/css/highlight.css"
-        ]
-   in fmap (constField "stylesheet") . for stylesheets $ \out -> do
-        need [out]
-        url <- routeUrl out
-        integrity <- ?getDigest out
-        return $ mconcat [constField "url" url, constField "integrity" integrity]
+getStylesheetField = do
+  let stylesheets = [outDir </> "assets/css" </> id <.> "css" | id <- ["light", "dark", "highlight"]]
+  [light, dark, highlight] <- traverse Stylesheet.fromFilePath stylesheets
+  return $
+    constField "stylesheet" [light, alternate dark , highlight]
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
@@ -809,7 +813,6 @@ htmlMinifier cmdOpts args maybeStdin = do
         "--quote-character=\"",
         "--remove-comments",
         "--remove-empty-attributes",
-        "--remove-empty-elements",
         "--remove-redundant-attributes",
         "--remove-script-type-attributes",
         "--remove-style-link-type-attributes"

@@ -74,11 +74,14 @@ library
     , Buildfile.Author
     , Buildfile.Book
     , Buildfile.Contributor
+    , Buildfile.Stylesheet
   build-depends:
     , aeson ^>=2
     , base
     , bimap
+    , data-default-class
     , mtl
+    , shoggoth
     , tagsoup
     , text
     , transformers

@@ -1,6 +1,7 @@
 ---
 title     : "Dedication"
 permalink : /Dedication/
+prev      : /
 ---
 
 ::: {.dedication}
