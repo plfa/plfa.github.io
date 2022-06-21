@@ -9,8 +9,8 @@ module Main where
 import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Chapter (..), ChapterTable, Part (..), fromBook, nextChapter, previousChapter)
 import Buildfile.Contributor (Contributor (..))
-import Buildfile.Stylesheet as Stylesheet ( alternate, fromFilePath, Stylesheet (stylesheetId) )
-import Buildfile.Script as Script ( inline, fromFilePath )
+import Buildfile.Stylesheet qualified as Stylesheet ( alternate, fromFilePath)
+import Buildfile.Script qualified as Script ( inline, fromFilePath )
 import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, when, (>=>))
 import Control.Monad.Except (MonadError (throwError))
@@ -49,6 +49,7 @@ import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
 import System.Directory (makeAbsolute)
 import System.Exit (ExitCode (..), exitWith)
 import Text.Printf (printf)
+import Buildfile.Stylesheet (Stylesheet(stylesheetId, stylesheetEnabled))
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -610,13 +611,16 @@ getStylesheetField ::
   ) =>
   Action Metadata
 getStylesheetField = do
-  let alternates = ["stylesheet-dark"]
+  let alternate ss
+        | stylesheetId ss == "stylesheet-dark" = Stylesheet.alternate ss
+        | otherwise = ss
   stylesheets <-
     outputs
       <&> filter ((outDir </> "assets/css/*.css") ?==)
       >>= traverse Stylesheet.fromFilePath
-      <&> fmap (\ss -> if stylesheetId ss `elem` alternates then alternate ss else ss)
-  return $ constField "stylesheet" stylesheets
+      <&> fmap alternate
+  let sortedStylesheets = sortBy (flip compare `on` stylesheetEnabled) stylesheets
+  return $ constField "stylesheet" sortedStylesheets
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
