@@ -1,10 +1,6 @@
 function darkmode(lightId, darkId) {
   const stylesheetLight = document.getElementById(lightId);
   const stylesheetDark = document.getElementById(darkId);
-  // Function to update the URL.search attribute in all anchors
-  const updateAnchors = function (enabled) {
-
-  };
   // Function to set darkmode in document
   const set = function (enabled) {
     window.darkmode.enabled = enabled;
@@ -12,15 +8,17 @@ function darkmode(lightId, darkId) {
     const base = window.location.protocol + window.location.host;
     const anchors = document.getElementsByTagName("a");
     for (var i = 0; i < anchors.length; i++) {
-      const url = new URL(anchors[i].href, base);
-      if (url.host === window.location.host) {
-        if (enabled) {
-          url.searchParams.set('dark','true');
+      if (anchors[i].hasAttribute('href')) {
+        const url = new URL(anchors[i].href, base);
+        if (url.host === window.location.host) {
+          if (enabled) {
+            url.searchParams.set('dark','true');
+          }
+          else {
+            url.searchParams.delete('dark');
+          }
+          anchors[i].href = url.href;
         }
-        else {
-          url.searchParams.delete('dark');
-        }
-        anchors[i].href = url.href;
       }
     }
     // Set or remove 'disabled' attribute on stylesheets
