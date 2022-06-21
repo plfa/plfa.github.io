@@ -798,7 +798,9 @@ defaultHtmlMinifierArgs =
     "--quote-character=\"",
     "--remove-comments",
     "--remove-empty-attributes",
-    "--remove-redundant-attributes"
+    "--remove-redundant-attributes",
+    "--remove-script-type-attributes",
+    "--remove-style-link-type-attributes"
   ]
 
 htmlMinifier :: HasCallStack => CmdOutput r -> [CmdOption] -> [String] -> LazyText.Text -> Action r
