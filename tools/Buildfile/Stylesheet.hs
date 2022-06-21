@@ -1,12 +1,12 @@
 module Buildfile.Stylesheet where
 
-import Data.Aeson.Types
-import Data.Default.Class
+import Data.Aeson.Types (KeyValue ((.=)), ToJSON (toJSON), object)
 import Data.Maybe (isJust)
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Text.Lazy qualified as LazyText
-import Shoggoth.Prelude (Action, Url, takeBaseName)
+import Shoggoth.Configuration (Mode (Development), getMode)
+import Shoggoth.Prelude (Action, Url, getEnvWithDefault, takeBaseName)
 import Shoggoth.Routing (RoutingTable, routeUrl)
 
 data Stylesheet = Stylesheet
@@ -15,14 +15,14 @@ data Stylesheet = Stylesheet
     stylesheetId :: Text,
     stylesheetEnabled :: Bool,
     stylesheetUrl :: Url,
-    stylesheetIntegrity :: LazyText.Text
+    stylesheetIntegrity :: Maybe LazyText.Text
   }
 
 alternate :: Stylesheet -> Stylesheet
 alternate ss = ss {stylesheetRelation = "alternate stylesheet", stylesheetEnabled = False}
 
 fromFilePath ::
-  ( ?getDigest :: FilePath -> Action LazyText.Text,
+  ( ?getDigest :: FilePath -> Action (Maybe LazyText.Text),
     ?routingTable :: RoutingTable
   ) =>
   FilePath ->

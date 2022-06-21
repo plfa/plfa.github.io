@@ -9,7 +9,8 @@ module Main where
 import Buildfile.Author (Author (..))
 import Buildfile.Book (Book (..), Chapter (..), ChapterTable, Part (..), fromBook, nextChapter, previousChapter)
 import Buildfile.Contributor (Contributor (..))
-import Buildfile.Stylesheet as Stylesheet
+import Buildfile.Stylesheet as Stylesheet ( alternate, fromFilePath, Stylesheet (stylesheetId) )
+import Buildfile.Script as Script ( inline, fromFilePath )
 import Control.Exception (assert, catch)
 import Control.Monad (forM, forM_, unless, when, (>=>))
 import Control.Monad.Except (MonadError (throwError))
@@ -35,7 +36,7 @@ import Data.Traversable (for)
 import GHC.Generics (Generic)
 import GHC.Stack.Types (HasCallStack)
 import Shoggoth.Agda qualified as Agda
-import Shoggoth.Configuration (CacheDirectory (..), OutputDirectory (..), TemplateDirectory (..))
+import Shoggoth.Configuration
 import Shoggoth.Metadata
 import Shoggoth.PostInfo
 import Shoggoth.Prelude
@@ -223,12 +224,15 @@ main = do
       getTemplateFile <- Pandoc.makeCachedTemplateFileGetter
       let ?getTemplateFile = getTemplateFile
 
-      getDigest <- newCache $ \src -> do
-        need [src]
-        liftIO $ do
-          stream <- LazyByteString.readFile src
-          let digest = Digest.sha512 stream
-          return $ "sha512-" <> LazyByteString.encodeBase64 (Digest.bytestringDigest digest)
+      getDigest <- newCache $ \src ->
+        getMode >>= \case
+          Development -> return Nothing
+          Production -> do
+            need [src]
+            liftIO $ do
+              stream <- LazyByteString.readFile src
+              let digest = Digest.sha512 stream
+              return . Just $ "sha512-" <> LazyByteString.encodeBase64 (Digest.bytestringDigest digest)
       let ?getDigest = getDigest
 
       --------------------------------------------------------------------------------
@@ -582,44 +586,37 @@ isPostOutput out = isRight $ parsePostOutput (makeRelative outDir out)
 --------------------------------------------------------------------------------
 -- File Reader
 
-data Script
-  = ScriptFile FilePath
-  | ScriptBody Text
-
 getScriptField ::
-  ( ?getDigest :: FilePath -> Action LazyText.Text,
+  ( ?getDigest :: FilePath -> Action (Maybe LazyText.Text),
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
 getScriptField = do
-  let scripts =
-        [ ScriptFile $ outDir </> "assets/js/anchor.js",
-          ScriptFile $ outDir </> "assets/js/darkmode.js",
-          ScriptBody $
-            "/* Add anchors on DOMContentLoaded */\n\
-            \document.addEventListener('DOMContentLoaded', function(event) {\n\
-            \  anchors.add('h1').add('h2').add('h3').add('h4');\n\
-            \  darkmode('stylesheet-light', 'stylesheet-dark');\n\
-            \});"
-        ]
-  scriptMetadata <- for scripts $ \case
-    ScriptFile out -> do
-      (url, integrity) <- (,) <$> routeUrl out <*> ?getDigest out
-      return $ mconcat [constField "url" url, constField "integrity" integrity, constField "id" $ "script-" <> takeBaseName out]
-    ScriptBody body ->
-      return $ constField "body" body
-  return $ constField "script" scriptMetadata
+  scripts <-
+    outputs
+      <&> filter ((outDir </> "assets/js/*.js") ?==)
+      >>= traverse Script.fromFilePath
+  return $ constField "script" (scripts <> [Script.inline onload])
+  where
+    onload =
+      "document.addEventListener('DOMContentLoaded', function(event) {\n\
+      \  anchors.add('h1').add('h2').add('h3').add('h4');\n\
+      \  darkmode('stylesheet-light', 'stylesheet-dark');\n\
+      \});"
 
 getStylesheetField ::
-  ( ?getDigest :: FilePath -> Action LazyText.Text,
+  ( ?getDigest :: FilePath -> Action (Maybe LazyText.Text),
     ?routingTable :: RoutingTable
   ) =>
   Action Metadata
 getStylesheetField = do
-  let stylesheets = [outDir </> "assets/css" </> id <.> "css" | id <- ["light", "dark", "highlight"]]
-  [light, dark, highlight] <- traverse Stylesheet.fromFilePath stylesheets
-  return $
-    constField "stylesheet" [light, alternate dark , highlight]
+  let alternates = ["stylesheet-dark"]
+  stylesheets <-
+    outputs
+      <&> filter ((outDir </> "assets/css/*.css") ?==)
+      >>= traverse Stylesheet.fromFilePath
+      <&> fmap (\ss -> if stylesheetId ss `elem` alternates then alternate ss else ss)
+  return $ constField "stylesheet" stylesheets
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
@@ -631,10 +628,10 @@ getFileWithMetadata ::
 getFileWithMetadata cur = do
   (src, out, url) <- (,,) <$> routeSource cur <*> route cur <*> routeUrl cur
 
-  -- Read default metadata:
+  -- Default metadata:
   defaultMetadata <- ?getDefaultMetadata ()
 
-  -- Read metadata from source file and body from current file:
+  -- Metadata from source file and body from current file:
   (head, body) <-
     if src == cur
       then do
@@ -644,36 +641,21 @@ getFileWithMetadata cur = do
         (_, body) <- readFileWithMetadata cur
         return (head, body)
 
-  -- Title variants:
-  let titleVariants =
-        ignoreError $
-          titleVariantMetadata <$> head ^. "title"
-
-  -- Source field:
+  let titleVariants = ignoreError $ titleVariantMetadata <$> head ^. "title"
   let sourceField = constField "source" src
-
-  -- Body field:
   let bodyField = constField "body" body
-
-  -- URL field:
   let urlField = constField "url" url
 
   -- Previous and next chapter URLs:
   chapterTable <- ?getChapterTable ()
-
   maybePrevUrl <- traverse routeUrl (previousChapter chapterTable src)
   let prevField = ignoreNothing $ constField "prev" <$> maybePrevUrl
-
   maybeNextUrl <- traverse routeUrl (nextChapter chapterTable src)
   let nextField = ignoreNothing $ constField "next" <$> maybeNextUrl
 
-  -- Modified date field (ISO8601):
+  -- Dates:
   modifiedDateField <- lastModifiedISO8601Field src "modified_date"
-
-  -- Post date field (human-readable, optional):
   let dateField = fromRight mempty $ postDateField "%a %-d %b, %Y" src "date"
-
-  -- Post date field (RFC822, optional):
   let dateRfc822Field = fromRight mempty $ postDateField rfc822DateFormat src "date_rfc822"
 
   let metadata =
@@ -798,25 +780,38 @@ sass cmdOpts args maybeStdin = do
   let stdinArg = ["--stdin" | isJust maybeStdin]
   npx (stdinCmdOpt <> cmdOpts) "sass" (stdinArg <> args)
 
-htmlMinifier :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
-htmlMinifier cmdOpts args maybeStdin = do
-  let stdinCmdOpt = [StdinBS (LazyText.encodeUtf8 stdin) | stdin <- maybeToList maybeStdin]
-  npx (stdinCmdOpt <> cmdOpts) "html-minifier" (defaultHtmlMinifierArgs <> args)
-  where
-    defaultHtmlMinifierArgs :: [String]
-    defaultHtmlMinifierArgs =
-      [ "--collapse-boolean-attributes",
-        "--collapse-whitespace",
-        "--minify-css",
-        "--minify-js",
-        "--minify-urls",
-        "--quote-character=\"",
-        "--remove-comments",
-        "--remove-empty-attributes",
-        "--remove-redundant-attributes",
-        "--remove-script-type-attributes",
-        "--remove-style-link-type-attributes"
-      ]
+data CmdOutput r where
+  OutputToFile :: FilePath -> CmdOutput ()
+  OutputToText :: CmdOutput Text
+
+defaultHtmlMinifierArgs :: [String]
+defaultHtmlMinifierArgs =
+  [ "--collapse-boolean-attributes",
+    "--collapse-whitespace",
+    "--minify-css",
+    "--minify-js",
+    "--minify-urls",
+    "--quote-character=\"",
+    "--remove-comments",
+    "--remove-empty-attributes",
+    "--remove-redundant-attributes"
+  ]
+
+htmlMinifier :: HasCallStack => CmdOutput r -> [CmdOption] -> [String] -> LazyText.Text -> Action r
+htmlMinifier cmdOutput cmdOpts args stdin = getMode >>= \case
+  Development -> do
+    let body = Text.concat $ LazyText.toChunks stdin
+    case cmdOutput of
+      OutputToFile out -> writeFile' out body
+      OutputToText -> return body
+  Production -> do
+    let stdinCmdOpt = StdinBS (LazyText.encodeUtf8 stdin)
+    case cmdOutput of
+      OutputToFile out ->
+        npx (stdinCmdOpt : cmdOpts) "html-minifier" (["--output=" <> out] <> args)
+      OutputToText -> do
+        Stdout minifiedHtml <- npx (stdinCmdOpt : cmdOpts) "html-minifier" args
+        return (Text.decodeUtf8 minifiedHtml)
 
 --------------------------------------------------------------------------------
 -- HTML5 post-processing
@@ -829,29 +824,17 @@ htmlMinifier cmdOpts args maybeStdin = do
 writeHtml5 :: FilePath -> FilePath -> Text -> Action ()
 writeHtml5 outDir out html = do
   trackWrite [out]
-  genericPostProcessHtml5 OutputToFile outDir out html
+  genericPostProcessHtml5 (OutputToFile out) outDir out html
 
 postProcessHtml5 :: FilePath -> FilePath -> Text -> Action Text
 postProcessHtml5 = genericPostProcessHtml5 OutputToText
 
-data CmdOutput r where
-  OutputToFile :: CmdOutput ()
-  OutputToText :: CmdOutput Text
-
 genericPostProcessHtml5 :: CmdOutput r -> FilePath -> FilePath -> Text -> Action r
-genericPostProcessHtml5 cmdoutput outDir out html = do
-  let fixedHtml =
-        html
-          & TagSoup.withUrls (removeIndexHtml . relativizeUrl outDir out)
-          & TagSoup.addDefaultTableHeaderScope "col"
-  let stdin = LazyText.fromChunks [fixedHtml]
-  case cmdoutput of
-    OutputToFile -> do
-      () <- htmlMinifier [] ["--output=" <> out] (Just stdin)
-      return ()
-    OutputToText -> do
-      Stdout minifiedHtml <- htmlMinifier [] [] (Just stdin)
-      return (Text.decodeUtf8 minifiedHtml)
+genericPostProcessHtml5 cmdOutput outDir out html = do
+  let body = html & TagSoup.withUrls (removeIndexHtml . relativizeUrl outDir out)
+                  & TagSoup.addDefaultTableHeaderScope "col"
+  let stdin = LazyText.fromChunks [body]
+  htmlMinifier cmdOutput [] defaultHtmlMinifierArgs stdin
 
 -- | Convert Markdown to HTML5 using Pandoc.
 markdownToHtml5 :: (?getReferences :: () -> Action MetaValue) => Text -> Action Text

@@ -82,10 +82,10 @@ BROWSER_SYNC ?= npx browser-sync
 
 BROWSER_SYNC_ARGS += start
 BROWSER_SYNC_ARGS += --server
-BROWSER_SYNC_ARGS += --files "."
+BROWSER_SYNC_ARGS += --watch
 BROWSER_SYNC_ARGS += --no-ui
-BROWSER_SYNC_ARGS += --reload-delay 500
-BROWSER_SYNC_ARGS += --reload-debounce 500
+BROWSER_SYNC_ARGS += --reload-delay 2000
+BROWSER_SYNC_ARGS += --reload-debounce 2000
 
 .PHONY: serve
 serve:
