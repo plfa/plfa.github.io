@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Stylesheets -->
   $for(stylesheet)$
-  <link rel="$stylesheet.rel$" href="$stylesheet.url$" type="text/css"
+  <link rel="$stylesheet.rel$" href="$stylesheet.url$"
     $if(stylesheet.integrity)$  integrity="$stylesheet.integrity$"$endif$
     $if(stylesheet.title)$ title="$stylesheet.title$"$endif$
     $if(stylesheet.id)$ id="$stylesheet.id$"$endif$
@@ -23,7 +23,7 @@
   <!-- Scripts -->
   $for(script)$
   $if(script.url)$
-  <script src="$script.url$" type="text/javascript"
+  <script src="$script.url$"
     $if(script.integrity)$ integrity="$script.integrity$"$endif$
     $if(script.id)$  id="$script.id$"$endif$></script>
   $else$
