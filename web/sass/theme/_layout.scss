@@ -37,10 +37,6 @@
   border-radius: 5px;
   text-align: right;
 
-  .nav-trigger {
-    display: none;
-  }
-
   .menu-icon {
     float: right;
     width: 36px;
@@ -54,6 +50,10 @@
     }
   }
 
+  .nav-trigger {
+    display: none;
+  }
+
   label[for="nav-trigger"] {
     display: block;
     float: right;
@@ -63,12 +63,12 @@
     cursor: pointer;
   }
 
-  input ~ .trigger {
+  input.nav-trigger ~ .trigger {
     clear: both;
     display: none;
   }
 
-  input:checked ~ .trigger {
+  input:checked.nav-trigger ~ .trigger {
     display: block;
     padding-bottom: 5px;
   }
@@ -96,11 +96,7 @@
       display: none;
     }
 
-    .menu-icon {
-      display: none;
-    }
-
-    input ~ .trigger {
+    input.nav-trigger ~ .trigger {
       display: block;
     }
 
@@ -116,8 +112,6 @@
   }
 }
 
-
-
 /**
  * Site footer
  */
@@ -132,7 +126,7 @@
 }
 
 .feed-subscribe .svg-icon {
-  padding: 5px 5px 2px 0
+  padding: 5px 5px 2px 0;
 }
 
 .contact-list,
@@ -180,7 +174,7 @@
 
 @media screen and (min-width: $on-medium) {
   .footer-col-wrapper {
-    display: flex
+    display: flex;
   }
 
   .footer-col {
@@ -198,8 +192,6 @@
     }
   }
 }
-
-
 
 /**
  * Page content
@@ -236,8 +228,6 @@
   @include relative-font-size(1.5);
 }
 
-
-
 /**
  * Posts
  */
@@ -259,8 +249,16 @@
 .post-content {
   margin-bottom: $spacing-unit;
 
-  h1, h2, h3 { margin-top: $spacing-unit * 2 }
-  h4, h5, h6 { margin-top: $spacing-unit }
+  h1,
+  h2,
+  h3 {
+    margin-top: $spacing-unit * 2;
+  }
+  h4,
+  h5,
+  h6 {
+    margin-top: $spacing-unit;
+  }
 
   h2 {
     @include relative-font-size(1.75);
@@ -290,42 +288,39 @@
   }
 }
 
-
 .social-media-list {
   display: table;
   li {
     float: left;
     margin: 5px 10px 5px 0;
-    &:last-of-type { margin-right: 0 }
+    &:last-of-type {
+      margin-right: 0;
+    }
     a {
       display: block;
     }
   }
 }
 
-
-
 /**
  * Pagination navbar
  */
 .pager {
-    .pagination {
-        display: flex;
-        justify-content: center;
-        list-style: none;
-        li {
-            margin: 5px 10px 5px 0;
-        }
-        li.page-link:last-of-type {
-            margin-right: 0;
-        }
-        li.separator:last-of-type {
-            display: none;
-        }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    li {
+      margin: 5px 10px 5px 0;
     }
+    li.page-link:last-of-type {
+      margin-right: 0;
+    }
+    li.separator:last-of-type {
+      display: none;
+    }
+  }
 }
-
-
 
 /**
  * Grid helpers
