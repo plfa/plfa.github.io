@@ -50,6 +50,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
