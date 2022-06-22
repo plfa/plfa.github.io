@@ -95,6 +95,7 @@ jobs:
         run: make test-html-validate
 
       - name: Test with HTMLProofer
+        if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-html-proofer
         env:
           NOKOGIRI_USE_SYSTEM_LIBRARIES: true
