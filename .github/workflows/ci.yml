@@ -32,18 +32,13 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     defaults:
       run:
-        shell: sh
+        shell: pwsh
   
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: 'true'
-          
-      - name: Setup MSYS path
-        if: runner.os == 'Windows'
-        run: Echo "C:\msys64\mingw64\bin;C:\msys64\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-        shell: pwsh  
 
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
@@ -106,8 +101,10 @@ jobs:
       - name: Setup EPUBCheck
         if: steps.cache-epubcheck.outputs.cache-hit != 'true'
         run: |
-          wget "https://github.com/w3c/epuubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -O "${{ runner.temp }}/epubcheck.zip"
-          unzip -q -n "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"   
+          Invoke-WebRequest `
+            -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" `
+            -OutFile "${{ runner.temp }}/epubcheck.zip"
+          Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
@@ -137,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: sh
+        shell: pwsh
     steps:
       - name: Checkout
         if: github.event_name == 'push'
@@ -155,10 +152,15 @@ jobs:
       - name: Download releases
         if: github.event_name == 'push'
         run: |
-          wget "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" -O "${{ runner.temp }}/v19.08.zip"
-          unzip -q -n -d site/19.08 "${{ runner.temp }}/v19.08.zip"
-          wget "https://github.com/plfa/plfa.github.io/releases/download/v20.07/Website.zip" -O "${{ runner.temp }}/v20.07.zip"
-          unzip -q -n -d site/20.07 "${{ runner.temp }}/v20.07.zip"
+          Invoke-WebRequest `
+            -Uri "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" `
+            -OutFile "${{ runner.temp }}/v19.08.zip"
+          Expand-Archive "${{ runner.temp }}/v19.08.zip" -DestinationPath "site/19.08"
+          
+          Invoke-WebRequest `
+            -Uri "https://github.com/plfa/plfa.github.io/releases/download/v20.08/Website.zip" `
+            -OutFile "${{ runner.temp }}/v20.08.zip"
+          Expand-Archive "${{ runner.temp }}/v20.08.zip" -DestinationPath "site/20.08"   
 
       - name: Deploy artifact
         if: github.event_name == 'push'
