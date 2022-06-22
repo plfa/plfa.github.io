@@ -108,7 +108,7 @@ jobs:
         if: runner.os == 'Linux' && github.event_name == 'push'
         uses: actions/upload-artifact@v3
         with:
-          name: latest
+          name: HEAD
           path: _site
           if-no-files-found: error
 
@@ -139,21 +139,21 @@ jobs:
         if: github.event_name == 'push'
         uses: actions/download-artifact@v3
         with:
-          name: latest
-          path: latest
+          name: HEAD
+          path: site
 
       - name: Unpack legacy versions
         if: github.event_name == 'push'
         run: |
-          unzip -q -n -d latest data/legacy/19.08.zip
-          unzip -q -n -d latest data/legacy/20.07.zip
+          unzip -q -n -d site data/legacy/19.08.zip
+          unzip -q -n -d site data/legacy/20.07.zip
 
       - name: Deploy artifact
         if: github.event_name == 'push'
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: web
-          folder: latest
+          folder: site
 
   rebase:
     name: Rebase Pull Requests

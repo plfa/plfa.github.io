@@ -1,6 +1,7 @@
 /_site/
 /_cache/
 /dist-newstyle/
+/node_modules/
 
 _build/
 

@@ -60,6 +60,7 @@ excluded-files:
 - ".epubcheck.tsv"
 - ".gitmodules"
 - "Makefile"
+- "package-lock.json"
 
 excluded-dirs:
 - ".git"
@@ -69,3 +70,4 @@ excluded-dirs:
 - "dist-newstyle"
 - "extra"
 - "standard-library"
+- "node_modules"
