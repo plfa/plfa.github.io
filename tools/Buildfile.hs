@@ -781,7 +781,7 @@ defaultHtmlMinifierArgs =
     "--minify-css",
     "--minify-js",
     "--minify-urls",
-    "--quote-character=\"",
+    "--quote-character=\\\"",
     "--remove-comments",
     "--remove-empty-attributes",
     "--remove-redundant-attributes",
