@@ -75,6 +75,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: which npm
+
       - name: Build artifact
         run: make build
 
