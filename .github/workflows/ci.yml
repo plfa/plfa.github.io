@@ -53,6 +53,7 @@ jobs:
           cache: 'npm'
 
       - name: Setup Ruby
+        if: runner.os == 'Linux' || runner.os == 'macOS'
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
