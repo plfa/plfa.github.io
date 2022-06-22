@@ -49,6 +49,11 @@ jobs:
           ghc-version: ${{ matrix.ghc-version }}
           cabal-version: ${{ matrix.cabal-version }}
 
+      - name: Print Haskell version
+        run: |
+          ghc --version
+          cabal --version
+
       - name: Cabal freeze
         run: |
           cabal v2-update
@@ -74,6 +79,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: Print Node.js version
+        run: |
+          node --version
+          npm --version
 
       - name: Build artifact
         run: make build
