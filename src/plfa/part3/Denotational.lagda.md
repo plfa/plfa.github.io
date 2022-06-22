@@ -569,23 +569,6 @@ equal, that is, `ℰ M ≃ ℰ N`.
 The following submodule introduces equational reasoning for the `≃`
 relation.
 
-<!--
-
-JGS: I couldn't get this to work. The definitions here were accepted
-by Agda, but then the uses in the Compositional chapter got rejected.
-
-denotation-setoid : Context → Setoid (lsuc lzero) lzero
-denotation-setoid Γ = record
-  { Carrier = Denotation Γ
-  ; _≈_ = _≃_
-  ; isEquivalence = record { refl = ≃-refl ; sym = ≃-sym ; trans = ≃-trans } }
--->
-<!--
-  The following went inside the module ≃-Reasoning:
-
-  open import Relation.Binary.Reasoning.Setoid (denotation-setoid Γ)
-    renaming (begin_ to start_; _≈⟨_⟩_ to _≃⟨_⟩_; _∎ to _☐) public
--->
 ```agda
 
 module ≃-Reasoning {Γ : Context} where

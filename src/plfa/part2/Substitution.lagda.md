@@ -326,10 +326,6 @@ operators `•` and `⨟` and for `subst` and its helper functions `ext`,
 `rename`, `exts`, and `subst-zero`. These congruence rules help with
 the equational reasoning in the later sections of this chapter.
 
-[JGS: I would have liked to prove all of these via cong and cong₂,
- but I have not yet found a way to make that work. It seems that
- various implicit parameters get in the way.]
-
 ```agda
 cong-ext : ∀{Γ Δ}{ρ ρ′ : Rename Γ Δ}{B}
    → (∀{A} → ρ ≡ ρ′ {A})
