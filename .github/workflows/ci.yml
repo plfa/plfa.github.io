@@ -11,9 +11,6 @@ on:
 
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
-  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
-  EPUBCHECK_VERSION: "4.2.4"
-  EPUBCHECK: "java -jar ${{ github.workspace }}\epubcheck\epubcheck-${{ env.EPUBCHECK_VERSION }}\epubcheck.jar"
 
 jobs:
   build:
@@ -24,6 +21,7 @@ jobs:
         ghc-version: ["8.10.7"] # "9.2.2"
         cabal-version: ["3.6"]
         node-version: ["16"]
+        epubcheck-version: ["4.2.4"]
         include:
           - experimental: false
           - os: windows-latest
@@ -63,7 +61,7 @@ jobs:
 
       - name: Setup EPUBCheck
         run: |
-          wget https://github.com/w3c/epubcheck/releases/download/v${{ env.EPUBCHECK_VERSION }}/epubcheck-${{ env.EPUBCHECK_VERSION }}.zip -o "${{ runner.temp }}/epubcheck.zip"
+          wget https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip -o "${{ runner.temp }}/epubcheck.zip"
           unzip "{{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
         shell: sh
 
@@ -84,8 +82,8 @@ jobs:
       - name: Cache EPUBCheck
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/epubcheck/
-          key: epubcheck-${{ runner.os }}
+          path: ${{ github.workspace }}/epubcheck/epubcheck-${{ matrix.epubcheck-version }}
+          key: epubcheck-${{ runner.os }}-${{ matrix.epubcheck-version }}
 
       - name: Cache build
         uses: actions/cache@v3
@@ -102,9 +100,13 @@ jobs:
 
       - name: Test with HTMLProofer
         run: make test-html-proofer
+        env:
+          NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
+        env:
+          EPUBCHECK: "java -jar ${{ github.workspace }}/epubcheck/epubcheck-${{ matrix.epubcheck-version }}/epubcheck.jar"
 
       - name: Upload artifact
         if: runner.os == 'Linux' && github.event_name == 'push'
