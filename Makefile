@@ -14,15 +14,6 @@ default: build
 
 
 ########################################
-# Initialize Git Hooks
-########################################
-
-.PHONY: init
-init:
-	git config core.hooksPath .githooks
-
-
-########################################
 # Build site with Shake
 ########################################
 

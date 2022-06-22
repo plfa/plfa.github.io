@@ -11,7 +11,7 @@ permalink: /GettingStarted/
 [![Build Status][plfa-status]][plfa-ci]
 
 
-## Installing Agda and PLFA
+## Getting Started for Readers
 
 You can read PLFA [online][plfa] without installing anything. However, if you wish to interact with the code or complete the exercises, you need several things:
 
@@ -258,7 +258,7 @@ You'll see the key sequence of the character in mini buffer.
 [agda-installation]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/installation.html
 [agda-hello-world]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/hello-world.html
 [agda-version]: https://img.shields.io/badge/agda-v2.6.2.2-blue.svg
-[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/quick-guide.html
+[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/a-taste-of-agda.html#preliminaries
 [agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html
 [agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html#notation-for-key-combinations
 [agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.2.2/tools/package-system.html#example-using-the-standard-library
