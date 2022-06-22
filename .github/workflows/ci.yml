@@ -21,7 +21,7 @@ jobs:
         ghc-version: ["8.10.7"] # "9.2.2"
         cabal-version: ["3.6"]
         node-version: ["16"]
-        epubcheck-version: ["4.2.4"]
+        epubcheck-version: ["4.2.6"]
         include:
           - experimental: false
           - os: windows-latest
@@ -30,6 +30,9 @@ jobs:
     name: Build on ${{ matrix.os }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
+    defaults:
+      run:
+        shell: sh
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,6 +50,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -55,9 +59,8 @@ jobs:
 
       - name: Setup EPUBCheck
         run: |
-          wget https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip -o "${{ runner.temp }}/epubcheck.zip"
-          unzip "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
-        shell: sh
+          wget "https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -O "${{ runner.temp }}/epubcheck.zip"
+          unzip -q -n "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
 
       - name: Cabal freeze
         run: |
@@ -122,6 +125,9 @@ jobs:
     concurrency: ci-${{ github.ref }}
     needs: [build]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: sh
     steps:
       - name: Checkout
         if: github.event_name == 'push'
