@@ -155,3 +155,10 @@ jobs:
           branch: web
           folder: latest
 
+  rebase:
+    name: Rebase Pull Requests
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: linhbn123/rebase-pull-requests@v1.0.1
+
