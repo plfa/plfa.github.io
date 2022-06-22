@@ -33,7 +33,6 @@ jobs:
     defaults:
       run:
         shell: pwsh
-  
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -104,7 +103,8 @@ jobs:
           Invoke-WebRequest `
             -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" `
             -OutFile "${{ runner.temp }}/epubcheck.zip"
-          Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
+          Expand-Archive "${{ runner.temp }}/epubcheck.zip" `
+            -DestinationPath "${{ github.workspace }}/epubcheck/"
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
@@ -155,12 +155,14 @@ jobs:
           Invoke-WebRequest `
             -Uri "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" `
             -OutFile "${{ runner.temp }}/v19.08.zip"
-          Expand-Archive "${{ runner.temp }}/v19.08.zip" -DestinationPath "site/19.08"
+          Expand-Archive "${{ runner.temp }}/v19.08.zip" `
+            -DestinationPath "site/19.08"
           
           Invoke-WebRequest `
             -Uri "https://github.com/plfa/plfa.github.io/releases/download/v20.08/Website.zip" `
             -OutFile "${{ runner.temp }}/v20.08.zip"
-          Expand-Archive "${{ runner.temp }}/v20.08.zip" -DestinationPath "site/20.08"   
+          Expand-Archive "${{ runner.temp }}/v20.08.zip" `
+            -DestinationPath "site/20.08"   
 
       - name: Deploy artifact
         if: github.event_name == 'push'
@@ -168,6 +170,39 @@ jobs:
         with:
           branch: web
           folder: site
+          
+  release:
+    name: Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+
+      - name: Download artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/download-artifact@v3
+        with:
+          name: HEAD
+          path: site
+          
+      - name: Build release asset
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: Compress-Archive -Path site/* Job-DestinationPath Website.zip
+        
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: Website.zip
+          fail_on_unmatched_files: true
+
 
   rebase:
     name: Rebase Pull Requests
