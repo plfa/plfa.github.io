@@ -33,6 +33,7 @@ jobs:
     defaults:
       run:
         shell: sh
+  
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -52,17 +53,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Setup Ruby
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Setup EPUBCheck
-        run: |
-          wget "https://github.com/w3c/epuubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -O "${{ runner.temp }}/epubcheck.zip"
-          unzip -q -n "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
-
       - name: Cabal freeze
         run: |
           cabal v2-update
@@ -77,12 +67,6 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
 
-      - name: Cache EPUBCheck
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/epubcheck/epubcheck-${{ matrix.epubcheck-version }}
-          key: epubcheck-${{ runner.os }}-${{ matrix.epubcheck-version }}
-
       - name: Cache build
         uses: actions/cache@v3
         with:
@@ -95,11 +79,30 @@ jobs:
       - name: Test with HTML-validate
         run: make test-html-validate
 
+      - name: Setup Ruby
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          
       - name: Test with HTMLProofer
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-html-proofer
         env:
           NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+          
+      - name: Cache EPUBCheck
+        uses: actions/cache@v3
+        id: cache-epubcheck
+        with:
+          path: ${{ github.workspace }}/epubcheck/epubcheck-${{ matrix.epubcheck-version }}
+          key: epubcheck-${{ runner.os }}-${{ matrix.epubcheck-version }}
+          
+      - name: Setup EPUBCheck
+        if: steps.cache-epubcheck.outputs.cache-hit != 'true'
+        run: |
+          wget "https://github.com/w3c/epuubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -O "${{ runner.temp }}/epubcheck.zip"
+          unzip -q -n "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"   
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
