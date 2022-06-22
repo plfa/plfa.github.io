@@ -12,6 +12,8 @@ on:
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+  EPUBCHECK_VERSION: "4.2.4"
+  EPUBCHECK: "java -jar ${{ github.workspace }}\epubcheck\epubcheck-${{ env.EPUBCHECK_VERSION }}\epubcheck.jar"
 
 jobs:
   build:
@@ -59,21 +61,11 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Setup EPUBCheck (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get install -y epubcheck
-
-      - name: Setup EPUBCheck (macOS)
-        if: runner.os == 'macOS'
-        run: brew install epubcheck || brew install --build-from-source epubcheck
-
-      - name: Setup EPUBCheck (Windows)
-        if: runner.os == 'Windows'
+      - name: Setup EPUBCheck
         run: |
-          Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v4.2.4/epubcheck-4.2.4.zip" -OutFile "${{ runner.temp }}\epubcheck-4.2.4.zip"
-          Expand-Archive "{{ runner.temp }}\epubcheck-4.2.4.zip" -DestinationPath "${{ github.workspace }}\epubcheck\"
-          Echo "EPUBCHECK=java -jar ${{ github.workspace }}\epubcheck\epubcheck-4.2.4\epubcheck.jar" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        shell: pwsh
+          wget https://github.com/w3c/epubcheck/releases/download/v${{ env.EPUBCHECK_VERSION }}/epubcheck-${{ env.EPUBCHECK_VERSION }}.zip -o "${{ runner.temp }}/epubcheck.zip"
+          unzip "{{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
+        shell: sh
 
       - name: Cabal freeze
         run: |
@@ -89,11 +81,18 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
 
-      - name: Cache Shake build
+      - name: Cache EPUBCheck
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/epubcheck/
+          key: epubcheck-${{ runner.os }}
+
+      - name: Cache build
         uses: actions/cache@v3
         with:
           path: _cache
           key: build-${{ runner.os }}
+
 
       - name: Build artifact
         run: make build
