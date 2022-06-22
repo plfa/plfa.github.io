@@ -42,7 +42,7 @@ import Shoggoth.PostInfo
 import Shoggoth.Prelude
 import Shoggoth.Routing
 import Shoggoth.TagSoup qualified as TagSoup
-import Shoggoth.Template.Pandoc (Extension (..), HTMLMathMethod (..), HighlightStyle, Inlines, Lang, Locale, MetaValue, ObfuscationMethod (..), Pandoc (..), ReaderOptions (..), Reference, WriterOptions (..), extensionsFromList, runPandoc, runPandocWith)
+import Shoggoth.Template.Pandoc (Extension (..), HTMLMathMethod (..), HighlightStyle, Inlines, Lang, Locale, MetaValue, ObfuscationMethod (..), Pandoc (..), ReaderOptions (..), Reference, WriterOptions (..), extensionsFromList, runPandoc, runPandocWith, defaultKaTeXURL)
 import Shoggoth.Template.Pandoc qualified as Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
@@ -762,7 +762,7 @@ urlToIdent url =
 npmExec :: (HasCallStack, CmdResult r) => [CmdOption] -> String -> [String] -> Action r
 npmExec cmdOpts package args = do
   need ["package.json"]
-  command (AddEnv "npm_config_yes" "true" : Traced package : cmdOpts) "npm" ("exec" : package : "--" : args)
+  command (AddEnv "npm_config_yes" "true" : Traced package : Shell : cmdOpts) "npm" ("exec" : package : "--" : args)
 
 sass :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText.Text -> Action r
 sass cmdOpts args maybeStdin = do
@@ -869,7 +869,7 @@ readerOpts =
 writerOpts :: WriterOptions
 writerOpts =
   def
-    { writerHTMLMathMethod = KaTeX "",
+    { writerHTMLMathMethod = KaTeX defaultKaTeXURL,
       writerEmailObfuscation = JavascriptObfuscation,
       writerHighlightStyle = Just highlightStyle
     }
