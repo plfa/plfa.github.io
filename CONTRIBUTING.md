@@ -3,9 +3,75 @@ title: "Contributing"
 permalink: /Contributing/
 ---
 
+## Getting Started for Contributors
+
+If you plan to contribute to the book, and wish to build the book locally, you will need to install some additional dependencies:
+Please start by following the instructions for readers in [Getting Started](/GettingStarted/#getting-started-for-readers).
+This should leave you with a working installation of basic development tools, Haskell, Agda, the standard library, and PLFA.
+
+### Building, Viewing, and Basic Testing
+
+Building the book requires the latest version of [Node.js][nodejs], which is used at various stages to compile and test HTML, CSS, and JavaScript.
+
+Once you have installed [Node.js][nodejs], you can build the book, and run basic tests, using the following commands:
+
+```sh
+make                    # Alias for "make build"
+make build              # Builds PLFA
+make clean              # Cleans out the build cache
+make clobber            # Cleans out the build cache and clobbers the build
+make serve              # Starts server and opens the book in a browser
+make test               # Alias for "make test-html-validate"
+make test-html-validate # Tests the generated HTML using HTML-validate
+```
+
+The continuous integration tests the generated output with two additional testing commands, each of which come with their own dependencies.
+
+### Testing Links with HTMLProofer
+
+To test whether or not any of the internal links in the book are broken, we use [HTMLProofer][htmlproofer].
+This requires [a relatively recent Ruby version][ruby] (see the `.ruby-version` file for details) as well as [bundler][bundler].
+We recommend installing Ruby via [rbenv][rbenv].
+
+Once you have installed [Ruby][ruby] and [bundler][bundler], you can test for broken links using the following command:
+
+```sh
+make test-html-proofer  # Tests the generated HTML using HTMLProofer
+```
+
+You can optionally pass `EXTERNAL_LINKS=true` to test external links as well.
+
+### Testing EPUB with EPUBCheck
+
+To test whether or not there are any faults in the generated EPUB, we use [EPUBCheck][epubcheck].
+This requires [EPUBCheck][epubcheck], and possibly [Java][java].
+We recommend installing [EPUBCheck][epubcheck] via [the installation instructions given by W3C][epubcheck].
+
+Once you have installed [EPUBCheck][epubcheck], you can test the generated EPUB using the following command:
+
+```sh
+make test-epubcheck     # Tests the generated EPUB using EPUBCheck
+```
+
+### Checking for whitespace violations using fix-whitespace
+
+To keep the code clean of trailing whitespace and missing terminal newlines we use [fix-whitespace][fix-whitespace].
+
+You can install [fix-whitespace][fix-whitespace] by running the following command:
+
+```sh
+cabal v2-install fix-whitespace
+```
+
+Once you have installed [fix-whitespace][fix-whitespace], you can set up a git hook which automatically checks the whitespace on commit (see `.githooks/pre-commit`) by running the following command:
+
+```sh
+git config core.hooksPath .githooks
+```
+
 ## How to publish the current version of PLFA
 
-Any changes to the development branch `dev` are automatically published to the live version of the book, provided that they pass certain tests. If you've made changes though the book, and they are not propagated to the live version, please check the build status on [GitHub Actions][GitHub-Actions].
+Any changes to the development branch `dev` are automatically published to the live version of the book, provided that they pass certain tests. If you've made changes though the book, and they are not propagated to the live version, please check the build status on [GitHub Actions][github-actions].
 
 The copy of PLFA hosted at <https://plfa.inf.ed.ac.uk> updates daily.
 
@@ -101,3 +167,14 @@ plfa
 [zotero]: https://www.zotero.org/styles
 [github-actions]: https://github.com/plfa/plfa.github.io/actions
 [github-releases]: https://github.com/plfa/plfa.github.io/releases
+[nodejs]: https://nodejs.dev/learn/how-to-install-nodejs
+[htmlproofer]: https://github.com/gjtorikian/html-proofer
+[ruby]: https://www.ruby-lang.org/en/downloads/
+[bundler]: https://bundler.io/#getting-started
+[rbenv]: https://github.com/rbenv/rbenv
+[rvm]: http://rvm.io
+[epubcheck]: https://www.w3.org/publishing/epubcheck/docs/installation/
+[epubcheck-brew]: https://formulae.brew.sh/formula/epubcheck
+[epubcheck-apt]: https://tracker.debian.org/pkg/epubcheck
+[java]: https://www.java.com/en/download/
+[fix-whitespace]: https://github.com/agda/fix-whitespace
