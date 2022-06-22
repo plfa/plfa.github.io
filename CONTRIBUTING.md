@@ -5,7 +5,7 @@ permalink: /Contributing/
 
 ## How to publish the current version of PLFA
 
-Any changes to the development branch `dev` are automatically published to the live version of the book, provided that they pass certain tests. If you've made changes though the book, and they are not propagated to the live version, please check the build status on (GitHub Actions)[GitHub-Actions].
+Any changes to the development branch `dev` are automatically published to the live version of the book, provided that they pass certain tests. If you've made changes though the book, and they are not propagated to the live version, please check the build status on [GitHub Actions][GitHub-Actions].
 
 The copy of PLFA hosted at <https://plfa.inf.ed.ac.uk> updates daily.
 
