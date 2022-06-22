@@ -595,13 +595,8 @@ getScriptField ::
 getScriptField = do
   anchorjs <- Script.fromFilePath (outDir </> "assets/js/anchor.js")
   darkmode <- Script.fromFilePath (outDir </> "assets/js/darkmode.js")
-  return $ constField "script" [anchorjs, darkmode, Script.inline onload]
-  where
-    onload =
-      "document.addEventListener('DOMContentLoaded', function(event) {\n\
-      \  anchors.add('h1').add('h2').add('h3').add('h4');\n\
-      \  darkmode('stylesheet-light', 'stylesheet-dark');\n\
-      \});"
+  main <- Script.fromFilePath (outDir </> "assets/js/main.js")
+  return $ constField "script" [anchorjs, darkmode, main]
 
 getStylesheetField ::
   ( ?getDigest :: FilePath -> Action (Maybe LazyText.Text),
