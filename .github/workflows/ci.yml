@@ -60,7 +60,7 @@ jobs:
 
       - name: Setup EPUBCheck
         run: |
-          wget "https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -O "${{ runner.temp }}/epubcheck.zip"
+          wget "https://github.com/w3c/epuubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -O "${{ runner.temp }}/epubcheck.zip"
           unzip -q -n "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
 
       - name: Cabal freeze
@@ -144,11 +144,13 @@ jobs:
           name: HEAD
           path: site
 
-      - name: Unpack legacy versions
+      - name: Download releases
         if: github.event_name == 'push'
         run: |
-          unzip -q -n -d site data/legacy/19.08.zip
-          unzip -q -n -d site data/legacy/20.07.zip
+          wget "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" -O "${{ runner.temp }}/v19.08.zip"
+          unzip -q -n -d site/19.08 "${{ runner.temp }}/v19.08.zip"
+          wget "https://github.com/plfa/plfa.github.io/releases/download/v20.07/Website.zip" -O "${{ runner.temp }}/v20.07.zip"
+          unzip -q -n -d site/20.07 "${{ runner.temp }}/v20.07.zip"
 
       - name: Deploy artifact
         if: github.event_name == 'push'
