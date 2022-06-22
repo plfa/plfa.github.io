@@ -65,7 +65,7 @@ jobs:
 
       - name: Setup EPUBCheck (macOS)
         if: runner.os == 'macOS'
-        run: brew install epubcheck
+        run: brew install epubcheck || brew install --build-from-source epubcheck
 
       - name: Setup EPUBCheck (Windows)
         if: runner.os == 'Windows'
