@@ -56,7 +56,7 @@ jobs:
       - name: Setup EPUBCheck
         run: |
           wget https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip -o "${{ runner.temp }}/epubcheck.zip"
-          unzip "{{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
+          unzip "${{ runner.temp }}/epubcheck.zip" -d "${{ github.workspace }}/epubcheck/"
         shell: sh
 
       - name: Cabal freeze
