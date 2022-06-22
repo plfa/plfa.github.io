@@ -593,11 +593,9 @@ getScriptField ::
   ) =>
   Action Metadata
 getScriptField = do
-  scripts <-
-    outputs
-      <&> filter ((outDir </> "assets/js/*.js") ?==)
-      >>= traverse Script.fromFilePath
-  return $ constField "script" (scripts <> [Script.inline onload])
+  anchorjs <- Script.fromFilePath (outDir </> "assets/js/anchor.js")
+  darkmode <- Script.fromFilePath (outDir </> "assets/js/darkmode.js")
+  return $ constField "script" [anchorjs, darkmode, Script.inline onload]
   where
     onload =
       "document.addEventListener('DOMContentLoaded', function(event) {\n\
@@ -611,16 +609,9 @@ getStylesheetField ::
   ) =>
   Action Metadata
 getStylesheetField = do
-  let alternate ss
-        | stylesheetId ss == "stylesheet-dark" = Stylesheet.alternate ss
-        | otherwise = ss
-  stylesheets <-
-    outputs
-      <&> filter ((outDir </> "assets/css/*.css") ?==)
-      >>= traverse Stylesheet.fromFilePath
-      <&> fmap alternate
-  let sortedStylesheets = sortBy (flip compare `on` stylesheetEnabled) stylesheets
-  return $ constField "stylesheet" sortedStylesheets
+  light <- Stylesheet.fromFilePath (outDir </> "assets/css/light.css")
+  dark <- Stylesheet.alternate <$> Stylesheet.fromFilePath (outDir </> "assets/css/dark.css")
+  return $ constField "stylesheet" [light, dark]
 
 getFileWithMetadata ::
   ( ?getDefaultMetadata :: () -> Action Metadata,
