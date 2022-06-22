@@ -759,8 +759,8 @@ urlToIdent url =
 --------------------------------------------------------------------------------
 -- Node.js
 
-npx :: (HasCallStack, CmdResult r) => [CmdOption] -> String -> [String] -> Action r
-npx cmdOpts package args = do
+npmExec :: (HasCallStack, CmdResult r) => [CmdOption] -> String -> [String] -> Action r
+npmExec cmdOpts package args = do
   need ["package.json"]
   command (AddEnv "npm_config_yes" "true" : Traced package : cmdOpts) "npm" ("exec" : package : "--" : args)
 
@@ -768,7 +768,7 @@ sass :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> Maybe LazyText
 sass cmdOpts args maybeStdin = do
   let stdinCmdOpt = [StdinBS (LazyText.encodeUtf8 stdin) | stdin <- maybeToList maybeStdin]
   let stdinArg = ["--stdin" | isJust maybeStdin]
-  npx (stdinCmdOpt <> cmdOpts) "sass" (stdinArg <> args)
+  npmExec (stdinCmdOpt <> cmdOpts) "sass" (stdinArg <> args)
 
 data CmdOutput r where
   OutputToFile :: FilePath -> CmdOutput ()
@@ -800,9 +800,9 @@ htmlMinifier cmdOutput cmdOpts args stdin = getMode >>= \case
     let stdinCmdOpt = StdinBS (LazyText.encodeUtf8 stdin)
     case cmdOutput of
       OutputToFile out ->
-        npx (stdinCmdOpt : cmdOpts) "html-minifier" (["--output=" <> out] <> args)
+        npmExec (stdinCmdOpt : cmdOpts) "html-minifier" (["--output=" <> out] <> args)
       OutputToText -> do
-        Stdout minifiedHtml <- npx (stdinCmdOpt : cmdOpts) "html-minifier" args
+        Stdout minifiedHtml <- npmExec (stdinCmdOpt : cmdOpts) "html-minifier" args
         return (Text.decodeUtf8 minifiedHtml)
 
 --------------------------------------------------------------------------------
