@@ -14,6 +14,8 @@ env:
   CABAL_VERSION: "3.6"
   NODE_VERSION: "16"
   EPUBCHECK_VERSION: "4.2.6"
+  RECOMMENDED_OS: "Linux"
+  RECOMMENDED_GHC_VERSION: "8.10.7"
 
 jobs:
 
@@ -30,10 +32,6 @@ jobs:
           - experimental: false
           - os: windows-latest
             experimental: true
-          - deploy: false
-          - os: ubuntu-latest
-            ghc-version: "8.10.7"
-            deploy: true
 
     name: Build on ${{ matrix.os }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
@@ -130,18 +128,18 @@ jobs:
       # Upload: From the main matrix configuration, publish the build as an artifact
 
       - name: Upload artifact
-        if: matrix.deploy && github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/upload-artifact@v3
         with:
-          name: HEAD
+          name: Website HEAD ${{ runner.os }} GHC-${{ matrix.ghc-version }}
           path: _site
           if-no-files-found: error
 
       - name: Upload artifact for pull request
-        if: matrix.deploy && github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: PR${{ github.event.pull_request.number }}
+          name: Website PR-${{ github.event.pull_request.number }} ${{ runner.os }} GHC-${{ matrix.ghc-version }}
           path: _site
           if-no-files-found: error
 
@@ -166,7 +164,7 @@ jobs:
         if: github.event_name == 'push'
         uses: actions/download-artifact@v3
         with:
-          name: HEAD
+          name: Website HEAD ${{ env.RECOMMENDED_OS }} GHC-${{ env.RECOMMENDED_GHC_VERSION }}
           path: site
 
       # Deploy: Prepare v19.08
