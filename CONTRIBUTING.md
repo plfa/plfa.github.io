@@ -89,7 +89,7 @@ If the announcement is short, it will be displayed in full in on the announcemen
 
 ## How to publish a new release
 
-For a project such as PLFA, [Semantic Versioning][semver] doesn’t make a huge amount of sense. Instead, we’ve adopted [Calendar Versioning][calver], following, e.g., [Ubuntu][ubuntu]. PLFA versions are of the form `YY.0M`, where `YY` is the short year, and `0M` is the zero-padded month. 
+For a project such as PLFA, [Semantic Versioning][semver] doesn’t make a huge amount of sense. Instead, we’ve adopted [Calendar Versioning][calver], following, e.g., [Ubuntu][ubuntu]. PLFA versions are of the form `YY.0M`, where `YY` is the short year, and `0M` is the zero-padded month.
 
 To create a new release for PLFA, follow these steps:
 

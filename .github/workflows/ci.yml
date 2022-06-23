@@ -11,21 +11,29 @@ on:
 
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
+  CABAL_VERSION: "3.6"
+  NODE_VERSION: "16"
+  EPUBCHECK_VERSION: "4.2.6"
 
 jobs:
+
+  ################################################################################
+  # Build:
+  ################################################################################
   build:
     strategy:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         ghc-version: ["8.10.7"] # "9.2.2"
-        cabal-version: ["3.6"]
-        node-version: ["16"]
-        epubcheck-version: ["4.2.6"]
         include:
           - experimental: false
           - os: windows-latest
             experimental: true
+          - deploy: false
+          - os: ubuntu-latest
+            ghc-version: "8.10.7"
+            deploy: true
 
     name: Build on ${{ matrix.os }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
@@ -36,18 +44,22 @@ jobs:
         with:
           submodules: 'true'
 
+      # Setup: Setup Node.js
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # Setup: Setup GHC and Cabal
+
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
         id: setup-haskell
         with:
           ghc-version: ${{ matrix.ghc-version }}
-          cabal-version: ${{ matrix.cabal-version }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cabal-version: ${{ env.CABAL_VERSION }}
 
       - name: Cabal freeze
         run: |
@@ -64,6 +76,8 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
 
+      # Build: Build PLFA
+
       - name: Cache build
         uses: actions/cache@v3
         with:
@@ -73,42 +87,50 @@ jobs:
       - name: Build artifact
         run: make build
 
+      # Test: Test the generated HTML with HTML-validate
+
       - name: Test with HTML-validate
         run: make test-html-validate
+
+      # Test: Test the generated HTML with HTMLProofer
 
       - name: Setup Ruby
         if: runner.os == 'Linux' || runner.os == 'macOS'
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          
+
       - name: Test with HTMLProofer
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-html-proofer
         env:
           NOKOGIRI_USE_SYSTEM_LIBRARIES: true
-          
+
+      # Test: Test the generated EPUB with EPUBCheck
+
       - name: Cache EPUBCheck
         uses: actions/cache@v3
         id: cache-epubcheck
         with:
-          path: ${{ github.workspace }}/epubcheck/epubcheck-${{ matrix.epubcheck-version }}
-          key: epubcheck-${{ runner.os }}-${{ matrix.epubcheck-version }}
-          
+          path: ${{ github.workspace }}/epubcheck/epubcheck-${{ env.EPUBCHECK_VERSION }}
+          key: epubcheck-${{ runner.os }}-${{ env.EPUBCHECK_VERSION }}
+
       - name: Setup EPUBCheck
         if: steps.cache-epubcheck.outputs.cache-hit != 'true'
         run: |
-          Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ matrix.epubcheck-version }}/epubcheck-${{ matrix.epubcheck-version }}.zip" -OutFile "${{ runner.temp }}/epubcheck.zip"
+          Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ env.EPUBCHECK_VERSION }}/epubcheck-${{ env.EPUBCHECK_VERSION }}.zip" -OutFile "${{ runner.temp }}/epubcheck.zip"
           Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
         shell: pwsh
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
         env:
-          EPUBCHECK: "java -jar ${{ github.workspace }}/epubcheck/epubcheck-${{ matrix.epubcheck-version }}/epubcheck.jar"
+          EPUBCHECK: "java -jar ${{ github.workspace }}/epubcheck/epubcheck-${{ env.EPUBCHECK_VERSION }}/epubcheck.jar"
+
+      # Upload: From the main matrix configuration, publish the build as an artifact
 
       - name: Upload artifact
-        if: runner.os == 'Linux' && github.event_name == 'push'
+        if: matrix.deploy == 'true' && github.event_name == 'push'
         uses: actions/upload-artifact@v3
         with:
           name: HEAD
@@ -116,13 +138,16 @@ jobs:
           if-no-files-found: error
 
       - name: Upload artifact for pull request
-        if: runner.os == 'Linux' && github.event_name == 'pull_request'
+        if: matrix.deploy == 'true' && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: PR-${{ github.event.pull_request.number }}
+          name: PR${{ github.event.pull_request.number }}
           path: _site
           if-no-files-found: error
 
+  ################################################################################
+  # Deploy: On successful build, deploy all versions of PLFA to GitHub Pages
+  ################################################################################
   deploy:
     name: Deploy
     concurrency: ci-${{ github.ref }}
@@ -135,6 +160,8 @@ jobs:
         with:
           submodules: 'true'
 
+      # Deploy: Prepare HEAD
+
       - name: Download artifact
         if: github.event_name == 'push'
         uses: actions/download-artifact@v3
@@ -142,14 +169,47 @@ jobs:
           name: HEAD
           path: site
 
-      - name: Download releases
+      # Deploy: Prepare v19.08
+
+      - name: Cache v19.08
         if: github.event_name == 'push'
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" -OutFile "${{ runner.temp }}/v19.08.zip"
-          Expand-Archive "${{ runner.temp }}/v19.08.zip" -DestinationPath "site/19.08"
-          Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v20.08/Website.zip" -OutFile "${{ runner.temp }}/v20.08.zip"
-          Expand-Archive "${{ runner.temp }}/v20.08.zip" -DestinationPath "site/20.08"
-        shell: pwsh 
+        uses: actions/cache@v3
+        id: cache-v19.08
+        with:
+          path: ${{ github.workspace }}/v19.08.zip
+          key: version-v19.08
+
+      - name: Download v19.08
+        if: github.event_name == 'push' && steps.cache-v19.08.outputs.cache-hit != 'true'
+        run: Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" -OutFile "${{ github.workspace }}/v19.08.zip"
+        shell: pwsh
+
+      - name: Deploy v19.08
+        if: github.event_name == 'push'
+        run: Expand-Archive "${{ github.workspace }}/v19.08.zip" -DestinationPath "site/19.08"
+        shell: pwsh
+
+      # Deploy: Prepare v20.07
+
+      - name: Cache v20.07
+        if: github.event_name == 'push'
+        uses: actions/cache@v3
+        id: cache-v20.07
+        with:
+          path: ${{ github.workspace }}/v20.07.zip
+          key: version-v20.07
+
+      - name: Download v20.07
+        if: github.event_name == 'push' && steps.cache-v20.07.outputs.cache-hit != 'true'
+        run: Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v20.07/Website.zip" -OutFile "${{ github.workspace }}/v20.07.zip"
+        shell: pwsh
+
+      - name: Deploy v20.07
+        if: github.event_name == 'push'
+        run: Expand-Archive "${{ github.workspace }}/v20.07.zip" -DestinationPath "site/20.07"
+        shell: pwsh
+
+      # Deploy: Publish to GitHub Pages
 
       - name: Deploy artifact
         if: github.event_name == 'push'
@@ -157,7 +217,10 @@ jobs:
         with:
           branch: web
           folder: site
-          
+
+  ################################################################################
+  # Release: On tag, publish the HEAD version of the website as a GitHub Release
+  ################################################################################
   release:
     name: Release
     needs: [build]
@@ -175,12 +238,12 @@ jobs:
         with:
           name: HEAD
           path: site
-          
+
       - name: Build release asset
         if: startsWith(github.ref, 'refs/tags/v')
-        run: Compress-Archive -Path site/* Job-DestinationPath Website.zip
+        run: Compress-Archive -Path "site/*" Job-DestinationPath Website.zip
         shell: pwsh
-        
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
@@ -188,6 +251,9 @@ jobs:
           files: Website.zip
           fail_on_unmatched_files: true
 
+  ################################################################################
+  # Rebase: On push to dev, automatically rebase open pull requests
+  ################################################################################
   rebase:
     name: Rebase Pull Requests
     needs: [build]
