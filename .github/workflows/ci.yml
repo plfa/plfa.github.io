@@ -130,7 +130,7 @@ jobs:
       # Upload: From the main matrix configuration, publish the build as an artifact
 
       - name: Upload artifact
-        if: matrix.deploy == 'true' && github.event_name == 'push'
+        if: matrix.deploy && github.event_name == 'push'
         uses: actions/upload-artifact@v3
         with:
           name: HEAD
@@ -138,7 +138,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload artifact for pull request
-        if: matrix.deploy == 'true' && github.event_name == 'pull_request'
+        if: matrix.deploy && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           name: PR${{ github.event.pull_request.number }}
