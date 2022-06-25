@@ -57,6 +57,11 @@ or
 
     λ (x : A) → N
 
+```
+baz : ℕ → Set
+baz = λ{ n → ℕ }
+```
+
 both of which are equivalent to `λ{x → N}`. The latter allows one to
 specify the domain of the function.
 
@@ -65,7 +70,6 @@ using a named function: it avoids a lengthy type declaration; and the
 definition appears exactly where the function is used, so there is no
 need for the writer to remember to declare it in advance, or for the
 reader to search for the definition in the code.
-
 
 ## Function composition
 
@@ -80,6 +84,9 @@ expressions, is as follows:
 ```
 _∘′_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
 g ∘′ f  =  λ x → g (f x)
+
+_∘''_ : {A B : Set} {C : B → Set} → ((b : B) → C b) → (f : A → B) → ((a : A) → C (f a))
+(g ∘'' f) x = g (f x)
 ```
 
 
@@ -98,6 +105,13 @@ postulate
     → (∀ (x : A) → f x ≡ g x)
       -----------------------
     → f ≡ g
+
+suc-≡-+1 : suc ≡ (λ n → n + 1)
+suc-≡-+1 = extensionality lemma
+  where
+    lemma : (n : ℕ) → suc n ≡ n + 1
+    lemma zero = refl
+    lemma (suc n) = cong suc (lemma n)
 ```
 Postulating extensionality does not lead to difficulties, as it is
 known to be consistent with the theory that underlies Agda.
@@ -143,6 +157,7 @@ Here the type of `f` and `g` has changed from `A → B` to
 `∀ (x : A) → B x`, generalising ordinary functions to
 dependent functions.
 
+SEE:  https://stackoverflow.com/questions/56304634/is-functional-extensionality-with-dependent-functions-consistent
 
 ## Isomorphism
 
@@ -154,7 +169,7 @@ record _≃_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
-    from∘to : ∀ (x : A) → from (to x) ≡ x
+    from∘to : ∀ (x : A) → from (to x) ≡ x -- from∘to ≡ id
     to∘from : ∀ (y : B) → to (from y) ≡ y
 open _≃_
 ```
@@ -191,6 +206,32 @@ from∘to′ (mk-≃′ f g g∘f f∘g) = g∘f
 
 to∘from′ : ∀ {A B : Set} → (A≃B : A ≃′ B) → (∀ (y : B) → to′ A≃B (from′ A≃B y) ≡ y)
 to∘from′ (mk-≃′ f g g∘f f∘g) = f∘g
+```
+
+```
+data Foo : Set where
+  foo : ℕ → Foo
+
+foo-get : Foo → ℕ
+foo-get (foo n) = n
+
+foo≡ : (f : Foo) → foo (foo-get f) ≡ f
+foo≡ (foo n) = refl
+-- Doesn't work:
+-- foo≡ f = refl
+
+record Bar : Set where
+  constructor ⟦_,_⟧
+  field
+    bar : ℕ
+    gak : ℕ
+
+open Bar
+
+bar≡ : (b : Bar) → ⟦ bar b , gak b ⟧ ≡ b
+bar≡ b = refl
+
+-- WHY?  eta-expansion?!
 ```
 
 We construct values of the record type with the syntax
@@ -261,7 +302,7 @@ functions, and use equational reasoning to combine the inverses:
   record
     { to       = to   B≃C ∘ to   A≃B
     ; from     = from A≃B ∘ from B≃C
-    ; from∘to  = λ{x →
+    ; from∘to  = λ x →
         begin
           (from A≃B ∘ from B≃C) ((to B≃C ∘ to A≃B) x)
         ≡⟨⟩
@@ -270,8 +311,8 @@ functions, and use equational reasoning to combine the inverses:
           from A≃B (to A≃B x)
         ≡⟨ from∘to A≃B x ⟩
           x
-        ∎}
-    ; to∘from = λ{y →
+        ∎
+    ; to∘from = λ y →
         begin
           (to B≃C ∘ to A≃B) ((from A≃B ∘ from B≃C) y)
         ≡⟨⟩
@@ -280,7 +321,7 @@ functions, and use equational reasoning to combine the inverses:
           to B≃C (from B≃C y)
         ≡⟨ to∘from B≃C y ⟩
           y
-        ∎}
+        ∎
      }
 ```
 
@@ -293,6 +334,39 @@ of equality for isomorphism.  We omit the form that corresponds to `_≡⟨⟩_`
 trivial isomorphisms arise far less often than trivial equalities:
 
 ```
+-- Instead of defining reasoning repeatedly, instead define `Preorder` and
+-- `*-Reasoning` for any preorder.
+
+open import Agda.Primitive using (_⊔_)
+
+-- Levels are tricky here.
+record Preorder {ℓ₁ ℓ₂} {𝕏 : Set ℓ₁} (_≤_ : 𝕏 → 𝕏 → Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
+  field
+    P-refl : {x : 𝕏} → x ≤ x
+    P-trans : {x y z : 𝕏} → x ≤ y → y ≤ z → x ≤ z
+
+open Preorder
+
+module *-Reasoning {ℓ₁ ℓ₂} {𝕏 : Set ℓ₁} (_≤_ : 𝕏 → 𝕏 → Set ℓ₂) (R : Preorder _≤_) where
+  infix  1 *-begin_
+  infixr 2 _*⟨_⟩_
+  infix  3 _*-∎
+
+  *-begin_ : {x y : 𝕏} → x ≤ y → x ≤ y
+  *-begin_ x≤y = x≤y
+
+  _*⟨_⟩_ : (x : 𝕏) {y z : 𝕏} → x ≤ y → y ≤ z → x ≤ z
+  x *⟨ x≤y ⟩ y≤z = P-trans R x≤y y≤z
+
+  _*-∎ : (x : 𝕏) → x ≤ x
+  x *-∎ = P-refl R
+
+open *-Reasoning
+  (_≃_)
+  (record { P-refl = ≃-refl ; P-trans = ≃-trans })
+  renaming (*-begin_ to ≃-begin ; _*⟨_⟩_ to _≃⟨_⟩_; _*-∎ to _≃-∎)
+
+{-
 module ≃-Reasoning where
 
   infix  1 ≃-begin_
@@ -318,6 +392,7 @@ module ≃-Reasoning where
   A ≃-∎ = ≃-refl
 
 open ≃-Reasoning
+-}
 ```
 
 
@@ -409,6 +484,40 @@ We can also support tabular reasoning for embedding,
 analogous to that used for isomorphism:
 
 ```
+open *-Reasoning
+  (_≲_)
+  (record { P-refl = ≲-refl ; P-trans = ≲-trans })
+  renaming (*-begin_ to ≲-begin ; _*⟨_⟩_ to _≲⟨_⟩_; _*-∎ to _≲-∎)
+
+-- Extra stuff about embedding and `Fin` (finite sets).
+
+-- NOTE:  Need `Fin zero` to be non-empty for there to be an embedding
+-- `Fin zero ≲ Fin (suc n)`.
+
+data Fin : ℕ → Set where
+  zero : {n : ℕ} → Fin n
+  suc : {n : ℕ} → Fin n → Fin (suc n)
+
+data _≤_ : ℕ → ℕ → Set where
+  z≤n : {n : ℕ} → zero ≤ n
+  s≤s : {m n : ℕ} → m ≤ n → suc m ≤ suc n
+
+≤→≲ : {m n : ℕ} → m ≤ n → Fin m ≲ Fin n
+≤→≲ z≤n = record { to = λ{ zero → zero } ; from = λ j → zero ; from∘to = λ{ zero → refl } }
+≤→≲ {suc m} {suc n} (s≤s m≤n) with ≤→≲ m≤n
+... | F≲F = record { to = to' ; from = from' ; from∘to = from∘to' }
+  where
+    to' : Fin (suc m) → Fin (suc n)
+    to' zero = zero
+    to' (suc i) = suc (to F≲F i)
+    from' : Fin (suc n) → Fin (suc m)
+    from' zero = zero
+    from' (suc j) = suc (from F≲F j)
+    from∘to' : (i : Fin (suc m)) → from' (to' i) ≡ i
+    from∘to' zero = refl
+    from∘to' (suc i) = cong suc (from∘to F≲F i)
+
+{-
 module ≲-Reasoning where
 
   infix  1 ≲-begin_
@@ -434,21 +543,19 @@ module ≲-Reasoning where
   A ≲-∎ = ≲-refl
 
 open ≲-Reasoning
+-}
 ```
 
 #### Exercise `≃-implies-≲` (practice)
 
 Show that every isomorphism implies an embedding.
 ```
-postulate
-  ≃-implies-≲ : ∀ {A B : Set}
-    → A ≃ B
-      -----
-    → A ≲ B
-```
-
-```
--- Your code goes here
+≃-implies-≲ : {A B : Set} → A ≃ B → A ≲ B
+≃-implies-≲ A≃B = record
+  { to = to A≃B
+  ; from = from A≃B
+  ; from∘to = from∘to A≃B
+  }
 ```
 
 #### Exercise `_⇔_` (practice) {#iff}
@@ -459,11 +566,23 @@ record _⇔_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
+
+open _⇔_
 ```
 Show that equivalence is reflexive, symmetric, and transitive.
 
 ```
--- Your code goes here
+⇔-refl : {A : Set} → A ⇔ A
+⇔-refl {A} = record { to = λ x → x ; from = λ x → x }
+
+⇔-sym : {A B : Set} → A ⇔ B → B ⇔ A
+⇔-sym  A⇔B = record { to = from A⇔B; from = to A⇔B }
+
+⇔-trans : {A B C : Set} → A ⇔ B → B ⇔ C → A ⇔ C
+⇔-trans A⇔B B⇔C = record
+  { to = to B⇔C ∘ to A⇔B
+  ; from = from A⇔B ∘ from B⇔C
+  }
 ```
 
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
