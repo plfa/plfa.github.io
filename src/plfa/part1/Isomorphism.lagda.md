@@ -487,7 +487,7 @@ analogous to that used for isomorphism:
 open *-Reasoning
   (_≲_)
   (record { P-refl = ≲-refl ; P-trans = ≲-trans })
-  renaming (*-begin_ to ≲-begin ; _*⟨_⟩_ to _≲⟨_⟩_; _*-∎ to _≲-∎)
+  renaming (*-begin_ to ≲-begin_ ; _*⟨_⟩_ to _≲⟨_⟩_; _*-∎ to _≲-∎)
 
 -- Extra stuff about embedding and `Fin` (finite sets).
 
