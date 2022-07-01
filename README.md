@@ -46,7 +46,7 @@ If you do not have Git, see [the Git downloads page][git].
 
 ### Install GHC and Cabal
 
-Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ version 8.10.7 and its package manager _Cabal_. We recommend installing both of these using [ghcup][ghcup].
+Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ version 8.10.7 (or 9.2.3) and its package manager _Cabal_. We recommend installing these using [ghcup][ghcup].
 
 ### Install Agda
 
@@ -57,9 +57,9 @@ cabal update
 cabal install Agda-2.6.2.2
 ```
 
-_This step will take a long time and a lot of memory to complete._
+This step will take a long time and a lot of memory to complete.
 
-For further information, see the [Agda installation instructions][agda-installation].
+If you have problems or for alternatives see the [Agda installation instructions][agda-installation].
 
 If you'd like, you can [test to see if you've installed Agda correctly][agda-hello-world].
 
