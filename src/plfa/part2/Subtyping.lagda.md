@@ -1239,25 +1239,25 @@ of progress and preservation) to use the non-algorithmic subtyping
 rules for Chapter 15 of Types and Programming Languages, which we list here:
 
     (S-RcdWidth)
-    --------------------------------------------------------------
-    { l₁:A₁, ..., lᵤ:Aᵤ, ..., lᵤ₊ₓ:Aᵤ₊ₓ } <: { l₁:A₁, ..., lᵤ:Aᵤ }
+    -------------------------------------------------------------------------
+    ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ, ..., lᵤ₊ₓ ⦂ Aᵤ₊ₓ ⦘ < ⦂  ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘
 
     (S-RcdDepth)
         ∀i∈1..u, Aᵢ <: Bᵢ
-    ----------------------------------------------
-    { l₁:A₁, ..., lᵤ:Aᵤ } <: { l₁:B₁, ..., lᵤ:Bᵤ }
+    ------------------------------------------------------
+    ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
 
     (S-RcdPerm)
     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
-    ----------------------------------------------
-    { k₁:A₁, ..., kᵤ:Aᵤ } <: { l₁:B₁, ..., lᵤ:Bᵤ }
+    ------------------------------------------------------
+    ⦗ k₁ ⦂ A₁, ..., kᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
 
 You will most likely need to prove inversion lemmas for the subtype relation
 of the form:
 
     If S <: T₁ ⇒ T₂, then S ≡ S₁ ⇒ S₂, T₁ <: S₁, and S₂ <: T₂, for some S₁, S₂.
 
-    If S <: { lᵢ : Tᵢ | i ∈ 1..n }, then S ≡ { kⱼ : Sⱼ | j ∈ 1..m }
+    If S <: ⦗ lᵢ ⦂ Tᵢ | i ∈ 1..n ⦘, then S ≡ ⦗ kⱼ ⦂ Sⱼ | j ∈ 1..m ⦘
     and { lᵢ | i ∈ 1..n } ⊆ { kⱼ | j ∈ 1..m }
     and Sⱼ <: Tᵢ for every i and j such that lᵢ = kⱼ.
 
@@ -1275,3 +1275,20 @@ of the form:
   Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
 
 * Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ⦗  U+2997  LEFT BLACK TORTOISE SHELL BRACKET (\()
+    ⦘  U+2997  RIGHT BLACK TORTOISE SHELL BRACKET (\))
+    ⦂  U+2982  Z NOTATION TYPE COLON (\:)
+    ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub=)
+    ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
+    ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+    μ  U+03BC  GREEK SMALL LETTER MU (\mu)
+    ·  U+00B7  MIDDLE DOT (\cdot)
+    ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
+    ∋  U+220B  CONTAINS AS MEMBER (\ni)
+    →  U+2192  RIGHTWARDS ARROW (\to)
+    —  U+2014  EM DASH (\em)
