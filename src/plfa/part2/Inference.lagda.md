@@ -204,11 +204,11 @@ What we intend to show is that the typing judgments are
 _decidable_:
 
     synthesize : ∀ (Γ : Context) (M : Term⁺)
-        -------------------------
-      → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
+        ------------------------------------
+      → Dec (∃[ A ] Γ ⊢ M ↑ A)
 
     inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
-              ---------------
+              --------------------------------------
             → Dec (Γ ⊢ M ↓ A)
 
 Given context `Γ` and synthesised term `M`, we must decide whether
@@ -578,9 +578,9 @@ such that `Γ ∋ x ⦂ A` holds, then there is also no type `A` such that
 ```agda
 ext∋ : ∀ {Γ B x y}
   → x ≢ y
-  → ¬ ∃[ A ]( Γ ∋ x ⦂ A )
-    -----------------------------
-  → ¬ ∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A )
+  → ¬ (∃[ A ] Γ ∋ x ⦂ A)
+    ----------------------------
+  → ¬ (∃[ A ] Γ , y ⦂ B ∋ x ⦂ A)
 ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
 ext∋ _   ¬∃ ⟨ A , S _ ∋x ⟩  =  ¬∃ ⟨ A , ∋x ⟩
 ```
@@ -595,8 +595,8 @@ there exists a type `A` such that `Γ ∋ x ⦂ A` holds, or its
 negation:
 ```agda
 lookup : ∀ (Γ : Context) (x : Id)
-         -------------------------
-       → Dec (∃[ A ]( Γ ∋ x ⦂ A ))
+         ------------------------
+       → Dec (∃[ A ] Γ ∋ x ⦂ A)
 lookup ∅ x                        =  no  (λ ())
 lookup (Γ , y ⦂ B) x with x ≟ y
 ... | yes refl                    =  yes ⟨ B , Z ⟩
@@ -636,8 +636,8 @@ there is no term `B′` such that `Γ ⊢ L · M ↑ B′` holds:
 ¬arg : ∀ {Γ A B L M}
   → Γ ⊢ L ↑ A ⇒ B
   → ¬ Γ ⊢ M ↓ A
-    ----------------------------
-  → ¬ ∃[ B′ ]( Γ ⊢ L · M ↑ B′ )
+    --------------------------
+  → ¬ (∃[ B′ ] Γ ⊢ L · M ↑ B′)
 ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M′ ⟩ rewrite dom≡ (uniq-↑ ⊢L ⊢L′) = ¬⊢M ⊢M′
 ```
 Let `⊢L` be evidence that `Γ ⊢ L ↑ A ⇒ B` holds and `¬⊢M` be evidence
@@ -685,7 +685,7 @@ or its negation:
 ```agda
 synthesize : ∀ (Γ : Context) (M : Term⁺)
              ---------------------------
-           → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
+           → Dec (∃[ A ] Γ ⊢ M ↑ A )
 
 inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
     ---------------

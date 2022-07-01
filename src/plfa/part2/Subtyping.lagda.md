@@ -27,7 +27,7 @@ can also have type `B` if `A` is a subtype of `B`.
 
     ⊢<: : ∀{Γ M A B}
       → Γ ⊢ M ⦂ A
-    → A <: B
+      → A <: B
         -----------
       → Γ ⊢ M ⦂ B
 
@@ -101,10 +101,10 @@ records that we explain in the following sections.
 
 ```agda
 infixl 5 _,_
-infix 4 _⊆_
-infix 5 _<:_
+infix  4 _⊆_
+infix  5 _<:_
 infix  4 _⊢_⦂_
-infix 4 _⊢*_⦂_
+infix  4 _⊢*_⦂_
 infix  4 _∋_⦂_
 infix  4 Canonical_⦂_
 
@@ -116,11 +116,11 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infixl 7 _#_
-infix 5 ｛_⦂_｝
-infix 5 ｛_:=_｝
+infix 5 {_⦂_｝
+infix 5 {_:=_｝
 
-infix 5 _[_]
-infix 2 _—→_
+infix  5 _[_]
+infix  2 _—→_
 ```
 
 ## Record Fields and their Properties

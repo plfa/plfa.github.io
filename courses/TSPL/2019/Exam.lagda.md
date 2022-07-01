@@ -4,7 +4,7 @@ permalink : /TSPL/2019/Exam/
 ---
 
 
-```
+```agda
 module Exam where
 ```
 
@@ -17,7 +17,7 @@ before and after code you add, to indicate your changes.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -31,7 +31,7 @@ open import Relation.Binary using (Decidable)
 
 ## Problem 1
 
-```
+```agda
 module Problem1 where
 
   open import Function using (_∘_)
@@ -48,13 +48,13 @@ Remember to indent all code by two spaces.
 
 Remember to indent all code by two spaces.
 
-```
+```agda
 module Problem2 where
 ```
 
 ### Infix declarations
 
-```
+```agda
   infix  4 _⊢_
   infix  4 _∋_
   infixl 5 _,_
@@ -72,7 +72,7 @@ module Problem2 where
 
 ### Types and contexts
 
-```
+```agda
   data Type : Set where
     _⇒_   : Type → Type → Type
     `ℕ    : Type
@@ -84,7 +84,7 @@ module Problem2 where
 
 ### Variables and the lookup judgment
 
-```
+```agda
   data _∋_ : Context → Type → Set where
 
     Z : ∀ {Γ A}
@@ -99,7 +99,7 @@ module Problem2 where
 
 ### Terms and the typing judgment
 
-```
+```agda
   data _⊢_ : Context → Type → Set where
 
     `_ : ∀ {Γ} {A}
@@ -142,7 +142,7 @@ module Problem2 where
 
 ### Abbreviating de Bruijn indices
 
-```
+```agda
   lookup : Context → ℕ → Type
   lookup (Γ , A) zero     =  A
   lookup (Γ , _) (suc n)  =  lookup Γ n
@@ -161,7 +161,7 @@ module Problem2 where
 
 ### Renaming
 
-```
+```agda
   ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
       -----------------------------------
     → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
@@ -183,7 +183,7 @@ module Problem2 where
 
 ### Simultaneous Substitution
 
-```
+```agda
   exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
       ----------------------------------
     → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
@@ -205,7 +205,7 @@ module Problem2 where
 
 ### Single substitution
 
-```
+```agda
   _[_] : ∀ {Γ A B}
           → Γ , B ⊢ A
           → Γ ⊢ B
@@ -220,7 +220,7 @@ module Problem2 where
 
 ### Values
 
-```
+```agda
   data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
     V-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B}
@@ -239,7 +239,7 @@ module Problem2 where
 
 ### Reduction
 
-```
+```agda
   infix 2 _—→_
 
   data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -287,7 +287,7 @@ module Problem2 where
 
 ### Reflexive and transitive closure
 
-```
+```agda
   infix  2 _—↠_
   infix  1 begin_
   infixr 2 _—→⟨_⟩_
@@ -315,7 +315,7 @@ module Problem2 where
 
 ### Progress
 
-```
+```agda
   data Progress {A} (M : ∅ ⊢ A) : Set where
 
     step : ∀ {N : ∅ ⊢ A}
@@ -349,7 +349,7 @@ module Problem2 where
 
 ### Evaluation
 
-```
+```agda
   record Gas : Set where
     constructor gas
     field
@@ -390,19 +390,19 @@ module Problem2 where
 
 Remember to indent all code by two spaces.
 
-```
+```agda
 module Problem3 where
 ```
 
 ### Imports
 
-```
+```agda
   import plfa.part2.DeBruijn as DB
 ```
 
 ### Syntax
 
-```
+```agda
   infix   4  _∋_⦂_
   infix   4  _⊢_↑_
   infix   4  _⊢_↓_
@@ -419,7 +419,7 @@ module Problem3 where
 
 ### Types
 
-```
+```agda
   data Type : Set where
     _⇒_   : Type → Type → Type
     `ℕ    : Type
@@ -427,14 +427,14 @@ module Problem3 where
 
 ### Identifiers
 
-```
+```agda
   Id : Set
   Id = String
 ```
 
 ### Contexts
 
-```
+```agda
   data Context : Set where
     ∅     : Context
     _,_⦂_ : Context → Id → Type → Context
@@ -442,7 +442,7 @@ module Problem3 where
 
 ### Terms
 
-```
+```agda
   data Term⁺ : Set
   data Term⁻ : Set
 
@@ -462,7 +462,7 @@ module Problem3 where
 
 ### Lookup
 
-```
+```agda
   data _∋_⦂_ : Context → Id → Type → Set where
 
     Z : ∀ {Γ x A}
@@ -478,7 +478,7 @@ module Problem3 where
 
 ### Bidirectional type checking
 
-```
+```agda
   data _⊢_↑_ : Context → Term⁺ → Type → Set
   data _⊢_↓_ : Context → Term⁻ → Type → Set
 
@@ -538,7 +538,7 @@ module Problem3 where
 
 ### Type equality
 
-```
+```agda
   _≟Tp_ : (A B : Type) → Dec (A ≡ B)
   `ℕ      ≟Tp `ℕ              =  yes refl
   `ℕ      ≟Tp (A ⇒ B)         =  no λ()
@@ -552,7 +552,7 @@ module Problem3 where
 
 ### Prerequisites
 
-```
+```agda
   dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
   dom≡ refl = refl
 
@@ -566,7 +566,7 @@ module Problem3 where
 
 ### Unique lookup
 
-```
+```agda
   uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
   uniq-∋ Z Z                 =  refl
   uniq-∋ Z (S x≢y _)         =  ⊥-elim (x≢y refl)
@@ -576,7 +576,7 @@ module Problem3 where
 
 ### Unique synthesis
 
-```
+```agda
   uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
   uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
   uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
@@ -585,19 +585,19 @@ module Problem3 where
 
 ## Lookup type of a variable in the context
 
-```
+```agda
   ext∋ : ∀ {Γ B x y}
     → x ≢ y
-    → ¬ ∃[ A ]( Γ ∋ x ⦂ A )
-      -----------------------------
-    → ¬ ∃[ A ]( Γ , y ⦂ B ∋ x ⦂ A )
+    → ¬ (∃[ A ] Γ ∋ x ⦂ A)
+      ----------------------------
+    → ¬ (∃[ A ] Γ , y ⦂ B ∋ x ⦂ A)
   ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
   ext∋ _   ¬∃ ⟨ A , S _ ⊢x ⟩  =  ¬∃ ⟨ A , ⊢x ⟩
 
   lookup :
       ∀ (Γ : Context) (x : Id)
       -----------------------
-    → Dec (∃[ A ](Γ ∋ x ⦂ A))
+    → Dec (∃[ A ] Γ ∋ x ⦂ A)
   lookup ∅ x                        =  no  (λ ())
   lookup (Γ , y ⦂ B) x with x ≟ y
   ... | yes refl                    =  yes ⟨ B , Z ⟩
@@ -608,12 +608,12 @@ module Problem3 where
 
 ### Promoting negations
 
-```
+```agda
   ¬arg : ∀ {Γ A B L M}
     → Γ ⊢ L ↑ A ⇒ B
-    → ¬ Γ ⊢ M ↓ A
-      ----------------------------
-    → ¬ ∃[ B′ ]( Γ ⊢ L · M ↑ B′ )
+    → ¬ (Γ ⊢ M ↓ A)
+      --------------------------
+    → ¬ (∃[ B′ ] Γ ⊢ L · M ↑ B′)
   ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M′ ⟩ rewrite dom≡ (uniq-↑ ⊢L ⊢L′) = ¬⊢M ⊢M′
 
   ¬switch : ∀ {Γ M A B}
@@ -627,10 +627,10 @@ module Problem3 where
 
 ## Synthesize and inherit types
 
-```
+```agda
   synthesize : ∀ (Γ : Context) (M : Term⁺)
       -----------------------
-    → Dec (∃[ A ]( Γ ⊢ M ↑ A ))
+    → Dec (∃[ A ] Γ ⊢ M ↑ A )
 
   inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
       ---------------
