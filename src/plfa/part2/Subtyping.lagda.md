@@ -36,26 +36,26 @@ records and record types.  A *record* is a grouping of named values,
 called *fields*. For example, one could represent a point on the
 Cartesian plane with the following record.
 
-    { x = 4, y = 1 }
+    ⦗ x := 4, y := 1 ⦘
 
 A *record type* gives a type for each field. In the following, we
 specify that the fields `x` and `y` both have type `ℕ`.
 
-    { x : `ℕ,  y : `ℕ }
+    ⦗ x ⦂ `ℕ,  y ⦂ `ℕ ⦘
 
 One record type is a subtype of another if it has all of the fields of
 the supertype and if the types of those fields are subtypes of the
 corresponding fields in the supertype. So, for example, a point in
 three dimensions is a subtype of a point in two dimensions.
 
-    { x : `ℕ,  y : `ℕ, z : `ℕ } <: { x : `ℕ,  y : `ℕ }
+    ⦗ x ⦂ `ℕ,  y ⦂ `ℕ, z ⦂ `ℕ ⦘ <: ⦗ x ⦂ `ℕ,  y ⦂ `ℕ ⦘
 
 The elimination form for records is field access (aka. projection),
 written `M # l`, and whose dynamic semantics is defined by the
 following reduction rule, which says that accessing the field `lⱼ`
 returns the value stored at that field.
 
-    {l₁=v₁, ..., lⱼ=vⱼ, ..., lᵢ=vᵢ} # lⱼ —→  vⱼ
+    ⦗ l₁ := v₁, ..., lⱼ := vⱼ, ..., lᵢ := vᵢ ⦘ # lⱼ —→  vⱼ
 
 In this chapter we add records and record types to the simply typed
 lambda calculus (STLC) and prove type safety. It is instructive to see
@@ -80,8 +80,10 @@ open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elimi)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_; _+_)
 open import Data.Nat.Properties
-    using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n; n≤m+n)
-open import Data.Product using (_×_; proj₁; proj₂; Σ-syntax) renaming (_,_ to ⟨_,_⟩)
+    using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n;
+           m≤n+m)
+open import Data.Product
+    using (_×_; proj₁; proj₂; Σ-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.String using (String; _≟_)
 open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; []; _∷_; lookup)
@@ -116,8 +118,8 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infixl 7 _#_
-infix 5 {_⦂_｝
-infix 5 {_:=_｝
+infix 5 ⦗_⦂_⦘
+infix 5 ⦗_:=_⦘
 
 infix  5 _[_]
 infix  2 _—→_
@@ -255,11 +257,11 @@ lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
 data Type : Set where
   _⇒_   : Type → Type → Type
   `ℕ    : Type
-  ｛_⦂_｝ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type
+  ⦗_⦂_⦘ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type
 ```
 
 In addition to function types `A ⇒ B` and natural numbers `ℕ`, we
-have the record type `｛ ls ⦂ As ｝`, where `ls` is a vector of field
+have the record type `⦗ ls ⦂ As ⦘`, where `ls` is a vector of field
 names and `As` is a vector of types, as discussed above.  We require
 that the field names be distinct, but we do not want the details of
 the proof of distinctness to affect whether two record types are
@@ -289,7 +291,7 @@ data _<:_ : Type → Type → Set where
     → (∀{i : Fin n}{j : Fin m} → lookup ks j ≡ lookup ls i
                                → lookup Ss j <: lookup Ts i)
       ------------------------------------------------------
-    → ｛ ks ⦂ Ss ｝ {d1} <: ｛ ls ⦂ Ts ｝ {d2}
+    → ⦗ ks ⦂ Ss ⦘ {d1} <: ⦗ ls ⦂ Ts ⦘ {d2}
 ```
 
 The rule `<:-nat` says that `ℕ` is a subtype of itself.
@@ -335,7 +337,7 @@ vec-ty-size : ∀ {n : ℕ} → (As : Vec Type n) → ℕ
 
 ty-size (A ⇒ B) = suc (ty-size A + ty-size B)
 ty-size `ℕ = 1
-ty-size ｛ ls ⦂ As ｝ = suc (vec-ty-size As)
+ty-size ⦗ ls ⦂ As ⦘ = suc (vec-ty-size As)
 vec-ty-size {n} [] = 0
 vec-ty-size {n} (x ∷ xs) = ty-size x + vec-ty-size xs
 ```
@@ -345,7 +347,7 @@ The size of a type is always positive.
 ty-size-pos : ∀ {A} → 0 < ty-size A
 ty-size-pos {A ⇒ B} = s≤s z≤n
 ty-size-pos {`ℕ} = s≤s z≤n
-ty-size-pos {｛ fs ⦂ As ｝ } = s≤s z≤n
+ty-size-pos {⦗ fs ⦂ As ⦘ } = s≤s z≤n
 ```
 
 The size of a type in a vector is less-or-equal in size to the entire vector.
@@ -353,7 +355,7 @@ The size of a type in a vector is less-or-equal in size to the entire vector.
 lookup-vec-ty-size : ∀{k} {As : Vec Type k} {j}
    → ty-size (lookup As j) ≤ vec-ty-size As
 lookup-vec-ty-size {suc k} {A ∷ As} {zero} = m≤m+n _ _
-lookup-vec-ty-size {suc k} {A ∷ As} {suc j} = ≤-trans (lookup-vec-ty-size {k} {As}) (n≤m+n _ _)
+lookup-vec-ty-size {suc k} {A ∷ As} {suc j} = ≤-trans (lookup-vec-ty-size {k} {As}) (m≤n+m _ _)
 ```
 
 Here is the proof of reflexivity, by induction on the size of the type.
@@ -369,7 +371,7 @@ Here is the proof of reflexivity, by induction on the size of the type.
   let A<:A = <:-refl-aux {n}{A}{m+n≤o⇒m≤o _ (≤-pred m) } in
   let B<:B = <:-refl-aux {n}{B}{m+n≤o⇒n≤o _ (≤-pred m) } in
   <:-fun A<:A B<:B
-<:-refl-aux {suc n}{｛ ls ⦂ As ｝ {d} }{m} = <:-rcd {d1 = d}{d2 = d} ⊆-refl G
+<:-refl-aux {suc n}{⦗ ls ⦂ As ⦘ {d} }{m} = <:-rcd {d1 = d}{d2 = d} ⊆-refl G
     where
     G : ls ⦂ As <: ls ⦂ As
     G {i}{j} lij rewrite distinct-lookup-inj (distinct-relevant d) lij =
@@ -386,7 +388,7 @@ and proceeds by induction on `n`.
   * If it is `ℕ`, then we have `ℕ <: ℕ` by rule `<:-nat`.
   * If it is `A ⇒ B`, then by induction we have `A <: A` and `B <: B`.
     We conclude that `A ⇒ B <: A ⇒ B` by rule `<:-fun`.
-  * If it is `｛ ls ⦂ As ｝`, then it suffices to prove that
+  * If it is `⦗ ls ⦂ As ⦘`, then it suffices to prove that
     `ls ⊆ ls` and `ls ⦂ As <: ls ⦂ As`. The former is proved by `⊆-refl`.
     Regarding the latter, we need to show that for any `i` and `j`,
     `lookup ls j ≡ lookup ls i` implies `lookup As j <: lookup As i`.
@@ -394,7 +396,7 @@ and proceeds by induction on `n`.
     We then use the induction hypothesis to show that
     `lookup As i <: lookup As i`, noting that the size of
     `lookup As i` is less-than-or-equal to the size of `As`, which
-    is one smaller than the size of `｛ ls ⦂ As ｝`.
+    is one smaller than the size of `⦗ ls ⦂ As ⦘`.
 
 The following corollary packages up reflexivity for ease of use.
 ```agda
@@ -412,7 +414,7 @@ The following corollary packages up reflexivity for ease of use.
 <:-trans {A₁ ⇒ A₂} {B₁ ⇒ B₂} {C₁ ⇒ C₂} (<:-fun A₁<:B₁ A₂<:B₂) (<:-fun B₁<:C₁ B₂<:C₂) =
     <:-fun (<:-trans B₁<:C₁ A₁<:B₁) (<:-trans A₂<:B₂ B₂<:C₂)
 <:-trans {.`ℕ} {`ℕ} {.`ℕ} <:-nat <:-nat = <:-nat
-<:-trans {｛ ls ⦂ As ｝{d1} } {｛ ms ⦂ Bs ｝ {d2} } {｛ ns ⦂ Cs ｝ {d3} }
+<:-trans {⦗ ls ⦂ As ⦘{d1} } {⦗ ms ⦂ Bs ⦘ {d2} } {⦗ ns ⦂ Cs ⦘ {d3} }
     (<:-rcd ms⊆ls As<:Bs) (<:-rcd ns⊆ms Bs<:Cs) =
     <:-rcd (⊆-trans ns⊆ms ms⊆ls) As<:Cs
     where
@@ -436,20 +438,20 @@ The proof is by induction on the derivations of `A <: B` and `B <: C`.
   we have `A₂ <: C₂`. We conclude that `A₁ ⇒ A₂ <: C₁ ⇒ C₂` by rule `<:-fun`.
 
 * If both derivations end with `<:-rcd`, so we have
-  `｛ ls ⦂ As ｝ <: ｛ ms ⦂ Bs ｝` and `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
+  `⦗ ls ⦂ As ⦘ <: ⦗ ms ⦂ Bs ⦘` and `⦗ ms ⦂ Bs ⦘ <: ⦗ ns ⦂ Cs ⦘`.
   From `ls ⊆ ms` and `ms ⊆ ns` we have `ls ⊆ ns` because `⊆` is transitive.
   Next we need to prove that `ls ⦂ As <: ns ⦂ Cs`.
   Suppose `lookup ls j ≡ lookup ns i` for an arbitrary `i` and `j`.
   We need to prove that `lookup As j <: lookup Cs i`.
   By the induction hypothesis, it suffices to show
   that `lookup As j <: lookup Bs k` and `lookup Bs k <: lookup Cs i` for some `k`.
-  We can obtain the former from `｛ ls ⦂ As ｝ <: ｛ ms ⦂ Bs ｝`
+  We can obtain the former from `⦗ ls ⦂ As ⦘ <: ⦗ ms ⦂ Bs ⦘`
   if we can prove that `lookup ls j ≡ lookup ms k`.
   We already have `lookup ls j ≡ lookup ns i` and we
   obtain `lookup ns i ≡ lookup ms k` by use of the lemma `lookup-⊆`,
   noting that `ns ⊆ ms`.
   We can obtain the later, that `lookup Bs k <: lookup Cs i`,
-  from `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
+  from `⦗ ms ⦂ Bs ⦘ <: ⦗ ns ⦂ Cs ⦘`.
   It suffices to show that `lookup ms k ≡ lookup ns i`,
   which we have by symmetry.
 
@@ -513,11 +515,11 @@ data Term : Set where
   `suc_                   : Term → Term
   case_[zero⇒_|suc⇒_]     : Term → Term → Term → Term
   μ_                      : Term → Term
-  ｛_:=_｝                 : {n : ℕ} (ls : Vec Name n) (Ms : Vec Term n) → Term
+  ⦗_:=_⦘                  : {n : ℕ} (ls : Vec Name n) (Ms : Vec Term n) → Term
   _#_                     : Term → Name → Term
 ```
 
-In a record `｛ ls := Ms ｝`, we refer to the vector of terms `Ms` as
+In a record `⦗ ls := Ms ⦘`, we refer to the vector of terms `Ms` as
 the *field initializers*.
 
 The typing judgment takes the form `Γ ⊢ M ⦂ A` and relies on an
@@ -568,11 +570,11 @@ data _⊢_⦂_ : Context → Term → Type → Set where
   ⊢rcd : ∀ {Γ n}{Ms : Vec Term n}{As : Vec Type n}{ls : Vec Name n}
      → Γ ⊢* Ms ⦂ As
      → (d : distinct ls)
-     → Γ ⊢ ｛ ls := Ms ｝ ⦂ ｛ ls ⦂ As ｝ {d}
+     → Γ ⊢ ⦗ ls := Ms ⦘ ⦂ ⦗ ls ⦂ As ⦘ {d}
 
 
   ⊢# : ∀ {n : ℕ}{Γ A M l}{ls : Vec Name n}{As : Vec Type n}{i}{d}
-     → Γ ⊢ M ⦂ ｛ ls ⦂ As ｝{d}
+     → Γ ⊢ M ⦂ ⦗ ls ⦂ As ⦘{d}
      → lookup ls i ≡ l
      → lookup As i ≡ A
      → Γ ⊢ M # l ⦂ A
@@ -638,7 +640,7 @@ rename ρ (`suc M)       =  `suc (rename ρ M)
 rename ρ (case L [zero⇒ M |suc⇒ N ]) =
     case (rename ρ L) [zero⇒ rename ρ M |suc⇒ rename (ext ρ) N ]
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
-rename ρ ｛ ls := Ms ｝ = ｛ ls := rename-vec ρ Ms ｝
+rename ρ ⦗ ls := Ms ⦘ = ⦗ ls := rename-vec ρ Ms ⦘
 rename ρ (M # l)       = (rename ρ M) # l
 
 rename-vec ρ [] = []
@@ -667,7 +669,7 @@ subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (case L [zero⇒ M |suc⇒ N ])
                        =  case (subst σ L) [zero⇒ subst σ M |suc⇒ subst (exts σ) N ]
 subst σ (μ N)          =  μ (subst (exts σ) N)
-subst σ ｛ ls := Ms ｝  = ｛ ls := subst-vec σ Ms ｝
+subst σ ⦗ ls := Ms ⦘  = ⦗ ls := subst-vec σ Ms ⦘
 subst σ (M # l)        = (subst σ M) # l
 
 subst-vec σ [] = []
@@ -709,7 +711,7 @@ data Value : Term → Set where
     → Value (`suc V)
 
   V-rcd : ∀{n}{ls : Vec Name n}{Ms : Vec Term n}
-    → Value ｛ ls := Ms ｝
+    → Value ⦗ ls := Ms ⦘
 ```
 
 ## Reduction
@@ -767,7 +769,7 @@ data _—→_ : Term → Term → Set where
   β-# : ∀ {n}{ls : Vec Name n}{Ms : Vec Term n} {l}{j : Fin n}
     → lookup ls j ≡ l
       ---------------------------------
-    → ｛ ls := Ms ｝ # l —→  lookup Ms j
+    → ⦗ ls := Ms ⦘ # l —→  lookup Ms j
 ```
 
 We have just two new reduction rules:
@@ -806,8 +808,8 @@ data Canonical_⦂_ : Term → Type → Set where
   C-rcd : ∀{n m}{ls : Vec Name n}{ks : Vec Name m}{Ms As Bs}{dls}
     → ∅ ⊢* Ms ⦂ As
     → (dks : distinct ks)
-    → ｛ ks ⦂ As ｝{dks}  <: ｛ ls ⦂ Bs ｝{dls}
-    → Canonical ｛ ks := Ms ｝ ⦂ ｛ ls ⦂ Bs ｝ {dls}
+    → ⦗ ks ⦂ As ⦘{dks}  <: ⦗ ls ⦂ Bs ⦘{dls}
+    → Canonical ⦗ ks := Ms ⦘ ⦂ ⦗ ls ⦂ Bs ⦘ {dls}
 ```
 
 Every closed, well-typed value is canonical:
@@ -845,10 +847,10 @@ cases on the derivation of subtyping.
   we have `∅ , A′ ⊢ N ⦂ B′` and `A′ ⇒ B′ <: A ⇒ B` for some `A′` and `B′`.
   We conclude that `Canonical (ƛ N) ⦂ C ⇒ D` by rule `C-ƛ` and the transitivity of subtyping.
 
-* If the last rule is `<:-rcd`, then we have `｛ ls ⦂ Ss ｝ <: ｛ ks ⦂ Ts ｝`
-  and `∅ ⊢ ｛ ks′ := Ms ｝ ⦂ ｛ ks ⦂ Ss ｝`. By the induction hypothesis,
-  we have `∅ ⊢* Ms ⦂ As`, `distinct ks′`, and `｛ ks′ ⦂ As ｝ <: ｛ ks ⦂ Ss ｝`.
-  We conclude that `Canonical ｛ ks′ := Ms ｝ ⦂ ｛ ks ⦂ Ts ｝`
+* If the last rule is `<:-rcd`, then we have `⦗ ls ⦂ Ss ⦘ <: ⦗ ks ⦂ Ts ⦘`
+  and `∅ ⊢ ⦗ ks′ := Ms ⦘ ⦂ ⦗ ks ⦂ Ss ⦘`. By the induction hypothesis,
+  we have `∅ ⊢* Ms ⦂ As`, `distinct ks′`, and `⦗ ks′ ⦂ As ⦘ <: ⦗ ks ⦂ Ss ⦘`.
+  We conclude that `Canonical ⦗ ks′ := Ms ⦘ ⦂ ⦗ ks ⦂ Ts ⦘`
   by rule `C-rcd` and the transitivity of subtyping.
 
 
@@ -936,13 +938,13 @@ progress (⊢# {n}{Γ}{A}{M}{l}{ls}{As}{i}{d} ⊢M ls[i]=l As[i]=A)
 progress (⊢rcd x d)                         =  done V-rcd
 progress (⊢<: {A = A}{B} ⊢M A<:B)           =  progress ⊢M
 ```
-* Case `⊢#`: We have `Γ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
+* Case `⊢#`: We have `Γ ⊢ M ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
   By the induction hypothesis, either `M —→ M′` or `M` is a value. In the later case we
   conclude that `M # l —→ M′ # l` by rule `ξ-#`. On the other hand, if `M` is a value,
-  we invoke the canonical forms lemma to show that `M` has the form `｛ ms := Ms ｝`
+  we invoke the canonical forms lemma to show that `M` has the form `⦗ ms := Ms ⦘`
   where `∅ ⊢* Ms ⦂ Bs` and `ls ⊆ ms`. By lemma `lookup-⊆`, we have
   `lookup ls i ≡ lookup ms k` for some `k`. Thus, we have `lookup ms k ≡ l`
-  and we conclude `｛ ms := Ms ｝ # l —→ lookup Ms k` by rule `β-#`.
+  and we conclude `⦗ ms := Ms ⦘ # l —→ lookup Ms k` by rule `β-#`.
 
 * Case `⊢rcd`: we immediately characterize the record as a value.
 
@@ -1138,12 +1140,12 @@ preserve (⊢<: ⊢M B<:A) M—→N                       =  ⊢<: (preserve ⊢
 Recall that the proof is by induction on the derivation of `∅ ⊢ M ⦂ A`
 with cases on `M —→ N`.
 
-* Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
-  and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ｛ ls ⦂ As ｝`
+* Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
+  and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ⦗ ls ⦂ As ⦘`
   and then conclude by rule `⊢#`.
 
-* Case `⊢#` and `β-#`. We have `∅ ⊢ ｛ ks := Ms ｝ ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`,
-  `lookup As i ≡ A`, `lookup ks j ≡ l`, and `｛ ks := Ms ｝ # l —→ lookup Ms j`.
+* Case `⊢#` and `β-#`. We have `∅ ⊢ ⦗ ks := Ms ⦘ ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`,
+  `lookup As i ≡ A`, `lookup ks j ≡ l`, and `⦗ ks := Ms ⦘ # l —→ lookup Ms j`.
   By the canonical forms lemma, we have `∅ ⊢* Ms ⦂ Bs`, `ls ⊆ ks` and `ks ⦂ Bs <: ls ⦂ As`.
   By lemma `lookup-⊆` we have `lookup ls i ≡ lookup ks k` for some `k`.
   Also, we have `∅ ⊢ lookup Ms k ⦂ lookup Bs k` by lemma `field-pres`.
