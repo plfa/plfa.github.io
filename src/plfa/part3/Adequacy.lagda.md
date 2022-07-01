@@ -82,13 +82,13 @@ open import plfa.part2.Untyped
             _—↠_; _—→⟨_⟩_; _∎; _—→_; ξ₁; ξ₂; β; ζ)
 open import plfa.part2.Substitution using (ids; sub-id)
 open import plfa.part2.BigStep
-     using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
-            cbn→reduce)
+     using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app;
+            ⇓-determ; cbn→reduce)
 open import plfa.part3.Denotational
      using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; all-funs∈; _⊔_; ∈→⊑;
             var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
-            ⊑-trans; ⊑-conj-R1; ⊑-conj-R2; ⊑-conj-L; ⊑-refl; ⊑-fun; ⊑-bot; ⊑-dist;
-            sub-inv-fun)
+            ⊑-trans; ⊑-conj-R1; ⊑-conj-R2; ⊑-conj-L; ⊑-refl; ⊑-fun; ⊑-bot;
+            ⊑-dist; sub-inv-fun)
 open import plfa.part3.Soundness using (soundness)
 
 ```
