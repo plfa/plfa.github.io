@@ -125,6 +125,61 @@ infix  5 _[_]
 infix  2 _—→_
 ```
 
+## Vectors and Bounded Naturals
+
+We use Agda's vectors to represent records, so we begin with a brief
+digression to introduce Agda's `Vec` and `Fin` types.
+
+Vectors in Agda are similar to lists except that the type of a vector
+is parameterized by the vector's length. For example,
+```agda
+_ : Vec ℕ 3
+_ = 0 ∷ 1 ∷ 2 ∷ []
+```
+is a vector of length `3` that contains natural numbers.  The familiar
+operators for constructing a list (`_∷_`) and for the empty list (`[]`) are
+overloaded for use with vectors.  An important difference between
+vectors and lists appears in the `lookup` function, which we use
+extensively in this chapter. The following is the type signature for
+`lookup` on a vector:
+
+    lookup : ∀ {n} → (v : Vec A n) → (i : Fin n) → A
+
+The `lookup` function returns the element at position `i` of the
+vector `v`. However, the type of `i` deserves some explanation.
+
+The type `Fin` is an alternative to the type for natural numbers `ℕ`
+with the difference that `Fin` is parameterized by an upper bound.
+Values of type `Fin n` are representations of numbers less than `n`,
+so it has a finite number of inhabitants (hence the name `Fin`).
+The `Fin` data definition is analagous to that of `ℕ`, with the
+constructors `zero` and `suc`.
+
+    data Fin : ℕ → Set where
+      zero : {n : ℕ} → Fin (suc n)
+      suc  : {n : ℕ} (i : Fin n) → Fin (suc n)
+
+For example, the only inhabitants of `Fin 2` are `zero` and `suc zero`.
+```agda
+_ : Fin 2
+_ = zero
+
+_ : Fin 2
+_ = suc zero
+```
+
+Returning to the `lookup` function, the index `i` has type `Fin n`,
+which means that the index is guaranteed to be less than the length of
+the vector, so `lookup` is guaranteed to succeed and return an
+element of the vector.
+
+In addition to `lookup`, we use several more operations on vectors.
+The membership operator `x ∈ v` holds when element `x` is in
+vector `v`. The decidable membership operator `x ∈? v` computes
+whether or not `x ∈ v`. The decidable equality operator `≟`
+computes whether two vectors are equal.
+
+
 ## Record Fields and their Properties
 
 We represent field names as strings.
@@ -134,9 +189,9 @@ Name : Set
 Name = String
 ```
 
-A record is traditionally written as follows
+A record is written as follows
 
-    { l₁ = M₁, ..., lᵢ = Mᵢ }
+    ⦗ l₁ := M₁, ..., lᵢ := Mᵢ ⦘
 
 so a natural representation is a list of label-term pairs.
 However, we find it more convenient to represent records as a pair of
@@ -148,9 +203,9 @@ vectors (Agda's `Vec` type), one vector of fields and one vector of terms:
 This representation has the advantage that the traditional subscript
 notation `lᵢ` corresponds to indexing into a vector.
 
-Likewise, a record type, traditionally written as
+Likewise, a record type, written as
 
-    { l₁ : A₁, ..., lᵢ : Aᵢ }
+    ⦗ l₁ ⦂ A₁, ..., lᵢ ⦂ Aᵢ ⦘
 
 will be represented as a pair of vectors, one vector of fields and one
 vector of types.
