@@ -21,7 +21,7 @@ subtype relation should always be reflexive and transitive. When
 `A` is a subtype of `B`, that is, `A <: B`, we may also refer to
 `B` as a supertype of `A`.
 
-To formulate a type system for a language with subtyping, one simply
+To formulate a type system for a language with subtyping, one 
 adds the *subsumption rule*, which states that a term of type `A`
 can also have type `B` if `A` is a subtype of `B`.
 
@@ -290,50 +290,6 @@ distinct [] = ⊤
 distinct (x ∷ xs) = ¬ (x ∈ xs) × distinct xs
 ```
 
-For vectors of distinct elements, lookup is injective.
-```agda
-distinct-lookup-inj : ∀ {n}{ls : Vec Name n}{i j : Fin n}
-   → distinct ls
-   → lookup ls i ≡ lookup ls j
-     -------------------------
-   → i ≡ j
-distinct-lookup-inj {ls = x ∷ ls} {zero} {zero} ⟨ x∉ls , dls ⟩ refl = refl
-distinct-lookup-inj {ls = x ∷ ls} {zero} {suc j} ⟨ x∉ls , dls ⟩ refl =
-    ⊥-elim (x∉ls (∈-lookup j ls))
-distinct-lookup-inj {ls = x ∷ ls} {suc i} {zero} ⟨ x∉ls , dls ⟩ refl =
-    ⊥-elim (x∉ls (∈-lookup i ls))
-distinct-lookup-inj {ls = x ∷ ls} {suc i} {suc j} ⟨ x∉ls , dls ⟩ lsij =
-    cong suc (distinct-lookup-inj dls lsij)
-```
-
-We shall need to convert from an irrelevant proof of distinctness to a
-relevant one. In general, the laundering of irrelevant proofs into
-relevant ones is easy to do when the predicate in question is
-decidable. The following is a decision procedure for whether a vector
-is distinct.
-```agda
-distinct? : ∀{n} → (xs : Vec Name n) → Dec (distinct xs)
-distinct? [] = yes tt
-distinct? (x ∷ xs)
-    with x ∈? xs
-... | yes x∈xs = no λ z → proj₁ z x∈xs
-... | no x∉xs
-    with distinct? xs
-... | yes dxs = yes ⟨ x∉xs , dxs ⟩
-... | no ¬dxs = no λ z → ¬dxs (proj₂ z)
-```
-
-With this decision procedure in hand, we define the following
-function for laundering irrelevant proofs of distinctness into
-relevant ones.
-```agda
-distinct-relevant : ∀ {n}{fs : Vec Name n} .(d : distinct fs) → distinct fs
-distinct-relevant {n}{fs} d
-    with distinct? fs
-... | yes dfs = dfs
-... | no ¬dfs = ⊥-elimi (¬dfs d)
-```
-
 The fields of one record are a *subset* of the fields of another
 record if every field of the first is also a field of the second.
 ```agda
@@ -351,32 +307,6 @@ This subset relation is reflexive and transitive.
 ⊆-trans {l}{n}{m}{ns}{ms}{ls} ns⊆ms ms⊆ls = λ x z → ms⊆ls x (ns⊆ms x z)
 ```
 
-If `y` is an element of vector `xs`, then `y` is at some index `i` of
-the vector.
-```agda
-lookup-∈ : ∀{ℓ}{A : Set ℓ}{n} {xs : Vec A n}{y}
-   → y ∈ xs
-   → Σ[ i ∈ Fin n ] lookup xs i ≡ y
-lookup-∈ {xs = x ∷ xs} (here refl) = ⟨ zero , refl ⟩
-lookup-∈ {xs = x ∷ xs} (there y∈xs)
-    with lookup-∈ y∈xs
-... | ⟨ i , xs[i]=y ⟩ = ⟨ (suc i) , xs[i]=y ⟩
-```
-
-If one vector `ns` is a subset of another `ms`, then for any element
-`lookup ns i`, there is an equal element in `ms` at some index.
-```agda
-lookup-⊆ : ∀{n m : ℕ}{ns : Vec Name n}{ms : Vec Name m}{i : Fin n}
-   → ns ⊆ ms
-   → Σ[ k ∈ Fin m ] lookup ns i ≡ lookup ms k
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {zero} ns⊆ms
-    with lookup-∈ (ns⊆ms x (here refl))
-... | ⟨ k , ms[k]=x ⟩ =
-      ⟨ k , (sym ms[k]=x) ⟩
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
-    lookup-⊆ {n} {m} {ns} {ms} {i} (λ x z → x∷ns⊆ms x (there z))
-```
-
 ## Types
 
 ```agda
@@ -386,14 +316,32 @@ data Type : Set where
   ⦗_⦂_⦘ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type
 ```
 
-In addition to function types `A ⇒ B` and natural numbers `ℕ`, we
-have the record type `⦗ ls ⦂ As ⦘`, where `ls` is a vector of field
-names and `As` is a vector of types, as discussed above.  We require
-that the field names be distinct, but we do not want the details of
-the proof of distinctness to affect whether two record types are
-equal, so we declare that parameter to be irrelevant by placing a `.`
-in front of it.
+In addition to function types `A ⇒ B` and natural numbers `ℕ`, we have
+the record type `⦗ ls ⦂ As ⦘`, where `ls` is a vector of field names
+and `As` is a vector of types, as discussed above.
 
+We require that the field names be distinct with a record type, hence
+the parameter `.{d : distinct}`.  The period `.` at the begining
+indicates that `d` is an irrelevant parameter of the constructor
+`⦗_⦂_⦘`, which means that the argument for `d` is ignored by Agda when
+reasoning about the equality of values created with `⦗_⦂_⦘`. For
+example, Agda accepts that the following two field types are equal
+even though we have not proved that `d₁` and `d₂` are equal.
+
+```agda
+_ : ∀ {d₁ d₂ : distinct ("x" ∷ "y" ∷ [])}
+   → ⦗ "x" ∷ "y" ∷ [] ⦂ `ℕ ∷ `ℕ ∷ [] ⦘ {d₁}
+     ≡ ⦗ "x" ∷ "y" ∷ [] ⦂ `ℕ ∷ `ℕ ∷ [] ⦘ {d₂}
+_ = refl 
+```
+
+The reason that we choose to make parameter `d` irrelevant is that we
+want record types to be equal if their field names and types are
+equal, regarding of the details of the proof of distinctness. An
+alternative approach would be to prove that any two proofs of
+`distinct ls` are equal, but our attempt to prove that failed because
+it requires that any two proofs of `¬ (x ∈ ls)` are equal and we do
+not know how to prove that.
 
 ## Subtyping
 
@@ -448,6 +396,80 @@ this premise.
 _⦂_<:_⦂_ : ∀ {m n} → Vec Name m → Vec Type m → Vec Name n → Vec Type n → Set
 _⦂_<:_⦂_ {m}{n} ks Ss ls Ts = (∀{i : Fin n}{j : Fin m}
     → lookup ks j ≡ lookup ls i  →  lookup Ss j <: lookup Ts i)
+```
+
+## Properties of `lookup`
+
+If `y` is an element of vector `xs`, then `y` is at some index `i` of
+the vector.
+```agda
+lookup-∈ : ∀{ℓ}{A : Set ℓ}{n} {xs : Vec A n}{y}
+   → y ∈ xs
+   → Σ[ i ∈ Fin n ] lookup xs i ≡ y
+lookup-∈ {xs = x ∷ xs} (here refl) = ⟨ zero , refl ⟩
+lookup-∈ {xs = x ∷ xs} (there y∈xs)
+    with lookup-∈ y∈xs
+... | ⟨ i , xs[i]=y ⟩ = ⟨ (suc i) , xs[i]=y ⟩
+```
+
+If one vector `ns` is a subset of another `ms`, then for any element
+`lookup ns i`, there is an equal element in `ms` at some index.
+```agda
+lookup-⊆ : ∀{n m : ℕ}{ns : Vec Name n}{ms : Vec Name m}{i : Fin n}
+   → ns ⊆ ms
+   → Σ[ k ∈ Fin m ] lookup ns i ≡ lookup ms k
+lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {zero} ns⊆ms
+    with lookup-∈ (ns⊆ms x (here refl))
+... | ⟨ k , ms[k]=x ⟩ =
+      ⟨ k , (sym ms[k]=x) ⟩
+lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
+    lookup-⊆ {n} {m} {ns} {ms} {i} (λ x z → x∷ns⊆ms x (there z))
+```
+
+## Properties of `distinct`
+
+For vectors of distinct elements, lookup is injective.
+```agda
+distinct-lookup-inj : ∀ {n}{ls : Vec Name n}{i j : Fin n}
+   → distinct ls
+   → lookup ls i ≡ lookup ls j
+     -------------------------
+   → i ≡ j
+distinct-lookup-inj {ls = x ∷ ls} {zero} {zero} ⟨ x∉ls , dls ⟩ refl = refl
+distinct-lookup-inj {ls = x ∷ ls} {zero} {suc j} ⟨ x∉ls , dls ⟩ refl =
+    ⊥-elim (x∉ls (∈-lookup j ls))
+distinct-lookup-inj {ls = x ∷ ls} {suc i} {zero} ⟨ x∉ls , dls ⟩ refl =
+    ⊥-elim (x∉ls (∈-lookup i ls))
+distinct-lookup-inj {ls = x ∷ ls} {suc i} {suc j} ⟨ x∉ls , dls ⟩ lsij =
+    cong suc (distinct-lookup-inj dls lsij)
+```
+
+We shall need to convert from an irrelevant proof of distinctness to a
+relevant one. In general, the laundering of irrelevant proofs into
+relevant ones is easy to do when the predicate in question is
+decidable. The following is a decision procedure for whether a vector
+is distinct.
+```agda
+distinct? : ∀{n} → (xs : Vec Name n) → Dec (distinct xs)
+distinct? [] = yes tt
+distinct? (x ∷ xs)
+    with x ∈? xs
+... | yes x∈xs = no λ z → proj₁ z x∈xs
+... | no x∉xs
+    with distinct? xs
+... | yes dxs = yes ⟨ x∉xs , dxs ⟩
+... | no ¬dxs = no λ z → ¬dxs (proj₂ z)
+```
+
+With this decision procedure in hand, we define the following
+function for laundering irrelevant proofs of distinctness into
+relevant ones.
+```agda
+distinct-relevant : ∀ {n}{fs : Vec Name n} .(d : distinct fs) → distinct fs
+distinct-relevant {n}{fs} d
+    with distinct? fs
+... | yes dfs = dfs
+... | no ¬dfs = ⊥-elimi (¬dfs d)
 ```
 
 ## Subtyping is Reflexive
