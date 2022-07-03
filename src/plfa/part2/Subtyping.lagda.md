@@ -77,20 +77,19 @@ intrinsic terms.
 ```agda
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elimi)
-open import Data.Fin using (Fin; zero; suc)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_; _+_)
 open import Data.Nat.Properties
     using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n;
            m≤n+m)
 open import Data.Product
-    using (_×_; proj₁; proj₂; Σ-syntax) renaming (_,_ to ⟨_,_⟩)
+    using (_×_; proj₁; proj₂; Σ-syntax; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.String using (String; _≟_)
 open import Data.Unit using (⊤; tt)
-open import Data.Vec using (Vec; []; _∷_; lookup)
 open import Data.Vec.Membership.Propositional using (_∈_)
 open import Data.Vec.Membership.DecPropositional _≟_ using (_∈?_)
 open import Data.Vec.Membership.Propositional.Properties using (∈-lookup)
 open import Data.Vec.Relation.Unary.Any using (here; there)
+open import Level using (Level)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
@@ -125,41 +124,76 @@ infix  5 _[_]
 infix  2 _—→_
 ```
 
-## Vectors and Bounded Naturals
+## Vectors
 
-We use Agda's vectors to represent records, so we begin with a brief
-digression to introduce Agda's `Vec` and `Fin` types.
+We use Agda's vectors to represent records, so we begin with a
+digression to introduce Agda's `Vec`.
 
 Vectors in Agda are similar to lists except that the type of a vector
-is parameterized by the vector's length. For example,
+is parameterized by the vector's length. The following data type
+definition is a replica of the definition of the `Vec`.  The
+constructors for `Vec` have the same names as those for `List`.  The
+constructor `[]` creates an empty vector (of length `zero`) and the
+constuctor `_∷_` creates a vector of length `suc n` by placing an
+element in front of another vector of length `n`.
+
+```agda
+module VecReplica where
+  
+  variable a : Level
+  
+  data Vec (A : Set a) : ℕ → Set a where
+    []  : Vec A zero
+    _∷_ : ∀ {n} (x : A) (xs : Vec A n) → Vec A (suc n)
+```
+
+We now import `Vec` from the Agda standard library.
+```agda
+open import Data.Vec using (Vec; []; _∷_; lookup)
+```
+The following shows the construction of a vector of three integers
+and vector of two strings.
 ```agda
 _ : Vec ℕ 3
 _ = 0 ∷ 1 ∷ 2 ∷ []
+
+_ : Vec String 2
+_ = "hello" ∷ "world" ∷ []
 ```
-is a vector of length `3` that contains natural numbers.  The familiar
-operators for constructing a list (`_∷_`) and for the empty list (`[]`) are
-overloaded for use with vectors.  An important difference between
-vectors and lists appears in the `lookup` function, which we use
-extensively in this chapter. The following is the type signature for
-`lookup` on a vector:
+
+An important difference between vectors and lists appears in the
+`lookup` function, which we use extensively in this chapter. The
+following is the type signature for `lookup` on a vector:
 
     lookup : ∀ {n} → (v : Vec A n) → (i : Fin n) → A
 
 The `lookup` function returns the element at position `i` of the
 vector `v`. However, the type of `i` deserves some explanation.
 
+## `Fin`: Bounded Natural Numbers
+
 The type `Fin` is an alternative to the type for natural numbers `ℕ`
 with the difference that `Fin` is parameterized by an upper bound.
 Values of type `Fin n` are representations of numbers less than `n`,
-so it has a finite number of inhabitants (hence the name `Fin`).
-The `Fin` data definition is analagous to that of `ℕ`, with the
-constructors `zero` and `suc`.
+so it has a finite number of inhabitants (hence the name `Fin`).  The
+`Fin` data definition, replicated below, is analagous to that of `ℕ`,
+with constructors with the same names `zero` and `suc`.
 
-    data Fin : ℕ → Set where
-      zero : {n : ℕ} → Fin (suc n)
-      suc  : {n : ℕ} (i : Fin n) → Fin (suc n)
+```agda
+module FinReplica where
+  
+  data Fin : ℕ → Set where
+    zero : {n : ℕ} → Fin (suc n)
+    suc  : {n : ℕ} (i : Fin n) → Fin (suc n)
+```
 
-For example, the only inhabitants of `Fin 2` are `zero` and `suc zero`.
+We import the real `Fin` from the Agda standard library.
+```agda
+open import Data.Fin using (Fin; zero; suc)
+```
+
+The following shows the construction of two values of type `Fin 2`,
+`zero` and `suc zero`.
 ```agda
 _ : Fin 2
 _ = zero
@@ -167,11 +201,46 @@ _ = zero
 _ : Fin 2
 _ = suc zero
 ```
+Note that the value produced by `zero` for type `Fin 2` is not the
+same value as the value produced by `zero` for type `ℕ`. In general,
+values of type `Fin n` and of type `ℕ` are not interchangeable.
+However, `Fin n` is isomorphic to the natural numbers that are less
+than `n`.
 
-Returning to the `lookup` function, the index `i` has type `Fin n`,
-which means that the index is guaranteed to be less than the length of
-the vector, so `lookup` is guaranteed to succeed and return an
-element of the vector.
+#### Exercise `≃-Fin-∃ℕ<` (practice)
+
+Show that `Fin n` is isomorphic to `∃[ i ] i < n`.
+
+```agda
+open import plfa.part1.Isomorphism
+
+postulate
+  ≃-Fin-∃ℕ< : ∀ n → Fin n ≃ (∃[ i ] i < n)
+```
+
+```agda
+-- Your code goes here
+```
+
+## Vector Operations
+
+Returning to the vector `lookup` function,
+
+    lookup : ∀ {n} → (v : Vec A n) → (i : Fin n) → A
+
+the index `i` has type `Fin n`, which means that the index is
+guaranteed to be less than the length of the vector, so `lookup` is
+guaranteed to succeed and return an element of the vector. For
+example, the following example uses `lookup` to obtain the element `7`
+at index `2` of the vector.
+```agda
+_ : let vec : Vec ℕ 4
+        vec = (5 ∷ 0 ∷ 7 ∷ 2 ∷ [])
+        two : Fin 4
+        two = suc (suc zero)
+    in lookup vec two ≡ 7
+_ = refl
+```
 
 In addition to `lookup`, we use several more operations on vectors.
 The membership operator `x ∈ v` holds when element `x` is in
@@ -224,9 +293,11 @@ distinct (x ∷ xs) = ¬ (x ∈ xs) × distinct xs
 For vectors of distinct elements, lookup is injective.
 ```agda
 distinct-lookup-inj : ∀ {n}{ls : Vec Name n}{i j : Fin n}
-   → distinct ls  →  lookup ls i ≡ lookup ls j
+   → distinct ls
+   → lookup ls i ≡ lookup ls j
+     -------------------------
    → i ≡ j
-distinct-lookup-inj {ls = x ∷ ls} {zero} {zero} ⟨ x∉ls , dls ⟩ lsij = refl
+distinct-lookup-inj {ls = x ∷ ls} {zero} {zero} ⟨ x∉ls , dls ⟩ refl = refl
 distinct-lookup-inj {ls = x ∷ ls} {zero} {suc j} ⟨ x∉ls , dls ⟩ refl =
     ⊥-elim (x∉ls (∈-lookup j ls))
 distinct-lookup-inj {ls = x ∷ ls} {suc i} {zero} ⟨ x∉ls , dls ⟩ refl =
