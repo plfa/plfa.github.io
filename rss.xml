@@ -8,15 +8,15 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Thu, 30 Jun 2022 13:21:55 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 04 Jul 2022 21:19:56 +0000</lastBuildDate>
         <item>
       <title>PLFA as PDF and EPUB</title>
       <link>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</link>
       <description>
         <![CDATA[
-                  We’re pleased to announce that PLFA is now available as both ~~a
-                  PDF~~ and an EPUB! Thanks
-                  to hard work by Yuanting
+                  We’re pleased to announce that PLFA is now available as both a
+                  PDF and an EPUB!
+                  Thanks to hard work by Yuanting
                   Mao, who did an internship with Phil at the University of Edinburgh,
                   and a little elbow grease on our part, we’re finally compiling to
                   PDF!
