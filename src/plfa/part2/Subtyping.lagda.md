@@ -76,7 +76,7 @@ intrinsic terms.
 
 ```agda
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elimi)
+open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elim-irrel)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_; _+_)
 open import Data.Nat.Properties
     using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n;
@@ -320,13 +320,13 @@ In addition to function types `A ⇒ B` and natural numbers `ℕ`, we have
 the record type `⦗ ls ⦂ As ⦘`, where `ls` is a vector of field names
 and `As` is a vector of types, as discussed above.
 
-We require that the field names be distinct with a record type, hence
-the parameter `.{d : distinct}`.  The period `.` at the begining
-indicates that `d` is an irrelevant parameter of the constructor
-`⦗_⦂_⦘`, which means that the argument for `d` is ignored by Agda when
-reasoning about the equality of values created with `⦗_⦂_⦘`. For
-example, Agda accepts that the following two field types are equal
-even though we have not proved that `d₁` and `d₂` are equal.
+We require that the field names be distinct hence the parameter
+`.{d : distinct}`.  The period `.` at the begining indicates that `d` is an
+irrelevant parameter of the constructor `⦗_⦂_⦘`, which means that its
+argument is ignored by Agda when reasoning about the equality
+of values created by `⦗_⦂_⦘`. For example, Agda accepts that the
+following two field types are equal even though we have not proved
+that `d₁` and `d₂` are equal.
 
 ```agda
 _ : ∀ {d₁ d₂ : distinct ("x" ∷ "y" ∷ [])}
@@ -335,13 +335,18 @@ _ : ∀ {d₁ d₂ : distinct ("x" ∷ "y" ∷ [])}
 _ = refl 
 ```
 
-The reason that we choose to make parameter `d` irrelevant is that we
-want record types to be equal if their field names and types are
-equal, regarding of the details of the proof of distinctness. An
-alternative approach would be to prove that any two proofs of
-`distinct ls` are equal, but our attempt to prove that failed because
-it requires that any two proofs of `¬ (x ∈ ls)` are equal and we do
-not know how to prove that.
+By choosing to make parameter `d` irrelevant, we are saying that the
+proof of distinctness is not part of the record type itself but
+instead it is merely a precondition to creating one. (An alternative
+approach would be to try and prove that any two proofs of `distinct
+ls` are equal, but our attempt to prove that failed because it
+required that any two proofs of `¬ (x ∈ ls)` are equal and we do not
+know how to prove that.)  Agda limits the use of irrelevant
+parameters; they cannot be inspected using pattern matching. However,
+irrelevant parameters can be used in the `⊥-elim` provided by the
+`Data.Empty.Irrelevant` module. We have imported this `⊥-elim`
+under the name `⊥-elim-irrel` to avoid a conflict with the
+one in `Data.Empty`.
 
 ## Subtyping
 
@@ -398,6 +403,11 @@ _⦂_<:_⦂_ {m}{n} ks Ss ls Ts = (∀{i : Fin n}{j : Fin m}
     → lookup ks j ≡ lookup ls i  →  lookup Ss j <: lookup Ts i)
 ```
 
+Our next goal is to prove that subtyping is reflexive and transitive.
+However, we first need to establish several lemmas about `lookup`
+and `distinct`.
+
+
 ## Properties of `lookup`
 
 If `y` is an element of vector `xs`, then `y` is at some index `i` of
@@ -412,18 +422,18 @@ lookup-∈ {xs = x ∷ xs} (there y∈xs)
 ... | ⟨ i , xs[i]=y ⟩ = ⟨ (suc i) , xs[i]=y ⟩
 ```
 
-If one vector `ns` is a subset of another `ms`, then for any element
-`lookup ns i`, there is an equal element in `ms` at some index.
+If one vector `ms` is a subset of another `ns`, then for any element
+`lookup ms i`, there is an equal element in `ns` at some index.
 ```agda
-lookup-⊆ : ∀{n m : ℕ}{ns : Vec Name n}{ms : Vec Name m}{i : Fin n}
-   → ns ⊆ ms
-   → Σ[ k ∈ Fin m ] lookup ns i ≡ lookup ms k
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {zero} ns⊆ms
-    with lookup-∈ (ns⊆ms x (here refl))
-... | ⟨ k , ms[k]=x ⟩ =
-      ⟨ k , (sym ms[k]=x) ⟩
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
-    lookup-⊆ {n} {m} {ns} {ms} {i} (λ x z → x∷ns⊆ms x (there z))
+lookup-⊆ : ∀{n m : ℕ}{ms : Vec Name n}{ns : Vec Name m}{i : Fin n}
+   → ms ⊆ ns
+   → Σ[ k ∈ Fin m ] lookup ms i ≡ lookup ns k
+lookup-⊆ {suc n} {m} {x ∷ ms} {ns} {zero} ms⊆ns
+    with lookup-∈ (ms⊆ns x (here refl))
+... | ⟨ k , ns[k]=x ⟩ =
+      ⟨ k , (sym ns[k]=x) ⟩
+lookup-⊆ {suc n} {m} {x ∷ ms} {ns} {suc i} x∷ms⊆ns =
+    lookup-⊆ {n} {m} {ms} {ns} {i} (λ x z → x∷ms⊆ns x (there z))
 ```
 
 ## Properties of `distinct`
@@ -444,11 +454,15 @@ distinct-lookup-inj {ls = x ∷ ls} {suc i} {suc j} ⟨ x∉ls , dls ⟩ lsij =
     cong suc (distinct-lookup-inj dls lsij)
 ```
 
-We shall need to convert from an irrelevant proof of distinctness to a
-relevant one. In general, the laundering of irrelevant proofs into
-relevant ones is easy to do when the predicate in question is
-decidable. The following is a decision procedure for whether a vector
-is distinct.
+Recall that irrelevant parameters cannot be used for pattern matching,
+but in the lemma `distinct-lookup-inj` we do indeed pattern match on
+the `distinct ls` parameter. This poses a problem in the the proof of
+reflexivity of subtyping, where we need to use this lemma but the
+record type in question only provides an irrelevant proof of
+distinctness. Thankfully, it is straightforward to convert an
+irrelevant proof into a relevant one when the predicate is
+decidable. The following is a decision procedure for `distinct`.
+
 ```agda
 distinct? : ∀{n} → (xs : Vec Name n) → Dec (distinct xs)
 distinct? [] = yes tt
@@ -461,23 +475,24 @@ distinct? (x ∷ xs)
 ... | no ¬dxs = no λ z → ¬dxs (proj₂ z)
 ```
 
-With this decision procedure in hand, we define the following
-function for laundering irrelevant proofs of distinctness into
-relevant ones.
+The following function converts irrelevant proofs of distinctness into
+relevant ones, using `⊥-elim-irrel` in the case where the result of
+the decision procedure contradicts the irrelevant proof.
 ```agda
 distinct-relevant : ∀ {n}{fs : Vec Name n} .(d : distinct fs) → distinct fs
 distinct-relevant {n}{fs} d
     with distinct? fs
 ... | yes dfs = dfs
-... | no ¬dfs = ⊥-elimi (¬dfs d)
+... | no ¬dfs = ⊥-elim-irrel (¬dfs d)
 ```
 
 ## Subtyping is Reflexive
 
 In this section we prove that subtyping is reflexive, that is, `A <:
 A` for any type `A`. The proof does not go by induction on the type
-`A` because of the `<:-rcd` rule. We instead use induction on the size
-of the type. So we first define size of a type, and the size of a
+`A` because the `<:-rcd` rule obscures the structural recursion
+with its use of `lookup`. We instead use induction on the size
+of the type. So we first define the size of a type and the size of a
 vector of types, as follows.
 ```agda
 ty-size : (A : Type) → ℕ
@@ -503,10 +518,12 @@ The size of a type in a vector is less-or-equal in size to the entire vector.
 lookup-vec-ty-size : ∀{k} {As : Vec Type k} {j}
    → ty-size (lookup As j) ≤ vec-ty-size As
 lookup-vec-ty-size {suc k} {A ∷ As} {zero} = m≤m+n _ _
-lookup-vec-ty-size {suc k} {A ∷ As} {suc j} = ≤-trans (lookup-vec-ty-size {k} {As}) (m≤n+m _ _)
+lookup-vec-ty-size {suc k} {A ∷ As} {suc j} =
+    ≤-trans (lookup-vec-ty-size {k} {As}) (m≤n+m _ _)
 ```
 
 Here is the proof of reflexivity, by induction on the size of the type.
+We discuss the cases below.
 ```agda
 <:-refl-aux : ∀{n}{A}{m : ty-size A ≤ n} → A <: A
 <:-refl-aux {0}{A}{m}
@@ -529,7 +546,8 @@ Here is the proof of reflexivity, by induction on the size of the type.
 The theorem statement uses `n` as an upper bound on the size of the type `A`
 and proceeds by induction on `n`.
 
-* If it is `0`, then we have a contradiction because the size of a type is always positive.
+* If it is `0`, then we have a contradiction because the size of a
+  type is always positive.
 
 * If it is `suc n`, we proceed by cases on the type `A`.
 
@@ -554,6 +572,8 @@ The following corollary packages up reflexivity for ease of use.
 
 ## Subtyping is transitive
 
+The proof of transitivity is by induction on the derivations of `A <:
+B` and `B <: C`. We discuss the cases below.
 ```agda
 <:-trans : ∀{A B C}
     → A <: B   →   B <: C
@@ -575,9 +595,8 @@ The following corollary packages up reflexivity for ease of use.
         <:-trans As[j]<:Bs[k] Bs[k]<:Cs[i]
 ```
 
-The proof is by induction on the derivations of `A <: B` and `B <: C`.
-
-* If both derivations end with `<:-nat`: then we immediately conclude that `ℕ <: ℕ`.
+* If both derivations end with `<:-nat`: then we immediately conclude
+  that `ℕ <: ℕ`.
 
 * If both derivations end with `<:-fun`:
   we have `A₁ ⇒ A₂ <: B₁ ⇒ B₂` and  `B₁ ⇒ B₂ <: C₁ ⇒ C₂`.
