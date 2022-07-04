@@ -202,10 +202,10 @@ But after that last space, we do not find ∀ on the keyboard. The code for this
 We can continue with the codes for the other characters. Sometimes the characters will change as we type them, because a prefix of our character's code is the code of another character. This happens with the arrow, whose code is `\->`. After typing `\-` we see…
 
 ```
-{- I am excited to type ∀ and
+{- I am excited to type ∀ and -
 ```
 
-…because the code `\-` corresponds to a hyphen of a certain width. When we add the `>`, the `­` becomes `→`! The code for `≤` is `\<=`, and the code for `≡` is `\==`.
+…because the code `\-` corresponds to a hyphen of a certain width. When we add the `>`, the `-` becomes `→`! The code for `≤` is `\<=`, and the code for `≡` is `\==`.
 
 ```
 {- I am excited to type ∀ and → and ≤ and ≡
