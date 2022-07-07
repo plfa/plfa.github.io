@@ -21,7 +21,7 @@ distributivity.
 
 ```
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; cong; cong-app)
+open Eq using (_≡_; refl; sym; cong; cong-app)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-comm)
@@ -361,10 +361,15 @@ module *-Reasoning {ℓ₁ ℓ₂} {𝕏 : Set ℓ₁} (_≤_ : 𝕏 → 𝕏 �
   _*-∎ : (x : 𝕏) → x ≤ x
   x *-∎ = P-refl R
 
-open *-Reasoning
-  (_≃_)
-  (record { P-refl = ≃-refl ; P-trans = ≃-trans })
-  renaming (*-begin_ to ≃-begin ; _*⟨_⟩_ to _≃⟨_⟩_; _*-∎ to _≃-∎)
+module ≃-Reasoning where
+
+  open *-Reasoning
+    (_≃_)
+    (record { P-refl = ≃-refl ; P-trans = ≃-trans })
+    renaming (*-begin_ to ≃-begin_ ; _*⟨_⟩_ to _≃⟨_⟩_; _*-∎ to _≃-∎)
+    public
+
+open ≃-Reasoning
 
 {-
 module ≃-Reasoning where
@@ -484,10 +489,15 @@ We can also support tabular reasoning for embedding,
 analogous to that used for isomorphism:
 
 ```
-open *-Reasoning
-  (_≲_)
-  (record { P-refl = ≲-refl ; P-trans = ≲-trans })
-  renaming (*-begin_ to ≲-begin_ ; _*⟨_⟩_ to _≲⟨_⟩_; _*-∎ to _≲-∎)
+module ≲-Reasoning where
+
+  open *-Reasoning
+    (_≲_)
+    (record { P-refl = ≲-refl ; P-trans = ≲-trans })
+    renaming (*-begin_ to ≲-begin_ ; _*⟨_⟩_ to _≲⟨_⟩_; _*-∎ to _≲-∎)
+    public
+
+open ≲-Reasoning
 
 -- Extra stuff about embedding and `Fin` (finite sets).
 
@@ -583,6 +593,17 @@ Show that equivalence is reflexive, symmetric, and transitive.
   { to = to B⇔C ∘ to A⇔B
   ; from = from A⇔B ∘ from B⇔C
   }
+```
+
+```
+-- Extra: Embedding implies injection.
+
+inj : {A B : Set} → (A → B) → Set
+inj {A} f = (x y : A) → f x ≡ f y → x ≡ y
+
+≲→inj : {A B : Set} → (r : A ≲ B) → inj (to r)
+≲→inj A≲B x y to[x≡y] with cong (from A≲B) to[x≡y]
+... | from∘to[x≡y] rewrite from∘to A≲B x | from∘to A≲B y = from∘to[x≡y]
 ```
 
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
