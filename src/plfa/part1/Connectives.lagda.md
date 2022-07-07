@@ -715,7 +715,7 @@ this fact is similar in structure to our previous results:
     }
 ```
 
-Sums do not distribute over products up to isomorphism, but it is an embedding:
+Sums do not distribute over products up to isomorphism, but up to retraction:
 ```agda
 ⊎-distrib-× : ∀ {A B C : Set} → (A × B) ⊎ C ≲ (A ⊎ C) × (B ⊎ C)
 ⊎-distrib-× =
@@ -735,7 +735,7 @@ Sums do not distribute over products up to isomorphism, but it is an embedding:
 Note that there is a choice in how we write the `from` function.
 As given, it takes `⟨ inj₂ z , inj₂ z′ ⟩` to `inj₂ z`, but it is
 easy to write a variant that instead returns `inj₂ z′`.  We have
-an embedding rather than an isomorphism because the
+a retraction rather than an isomorphism because the
 `from` function must discard either `z` or `z′` in this case.
 
 In the usual approach to logic, both of the distribution laws
@@ -746,7 +746,7 @@ are given as equivalences, where each side implies the other:
 
 But when we consider the functions that provide evidence for these
 implications, then the first corresponds to an isomorphism while the
-second only corresponds to an embedding, revealing a sense in which
+second only corresponds to a retraction, revealing a sense in which
 one of these laws is "more true" than the other.
 
 

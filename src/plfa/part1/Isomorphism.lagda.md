@@ -1,5 +1,5 @@
 ---
-title     : "Isomorphism: Isomorphism and Embedding"
+title     : "Isomorphism: Isomorphism and Retraction"
 permalink : /Isomorphism/
 ---
 
@@ -8,7 +8,7 @@ module plfa.part1.Isomorphism where
 ```
 
 This section introduces isomorphism as a way of asserting that two
-types are equal, and embedding as a way of asserting that one type is
+types are equal, and retraction as a way of asserting that one type is
 smaller than another.  We apply isomorphisms in the next chapter
 to demonstrate that operations on types such as product and sum
 satisfy properties akin to associativity, commutativity, and
@@ -318,15 +318,14 @@ open ≃-Reasoning
 ```
 
 
-## Embedding
+## Retractions
 
-We also need the notion of _embedding_, which is a weakening of
+We also need the notion of _retraction_, which is a weakening of
 isomorphism.  While an isomorphism shows that two types are in
-one-to-one correspondence, an embedding shows that the first type is
-included in the second; or, equivalently, that there is a many-to-one
+one-to-one correspondence, a retraction exhibits instead a many-to-one
 correspondence between the second type and the first.
 
-Here is the formal definition of embedding:
+Here is the formal definition of a retraction:
 ```agda
 infix 0 _≲_
 record _≲_ (A B : Set) : Set where
@@ -336,11 +335,13 @@ record _≲_ (A B : Set) : Set where
     from∘to : ∀ (x : A) → from (to x) ≡ x
 open _≲_
 ```
-It is the same as an isomorphism, save that it lacks the `to∘from` field.
-Hence, we know that `from` is left-inverse to `to`, but not that `from`
-is right-inverse to `to`.
+It is the same as an isomorphism, save that it lacks the `to∘from`
+field.  Hence, we know that `from` is left-inverse to `to`, but not
+that `from` is right-inverse to `to`.  More verbosely, we may call
+this a _section-retraction pair_, with `to` as the section and `from`
+as the retraction.
 
-Embedding is reflexive and transitive, but not symmetric.  The proofs
+Retraction is reflexive and transitive, but not symmetric.  The proofs
 are cut down versions of the similar proofs for isomorphism:
 ```agda
 ≲-refl : ∀ {A : Set} → A ≲ A
@@ -367,9 +368,9 @@ are cut down versions of the similar proofs for isomorphism:
      }
 ```
 
-It is also easy to see that if two types embed in each other, and the
-embedding functions correspond, then they are isomorphic.  This is a
-weak form of anti-symmetry:
+It is also easy to see that if the same two functions exhibit a
+retraction in both directions between two types, then they are an
+isomorphism.  This is a weak form of anti-symmetry:
 ```agda
 ≲-antisym : ∀ {A B : Set}
   → (A≲B : A ≲ B)
@@ -395,14 +396,14 @@ weak form of anti-symmetry:
         ∎}
     }
 ```
-The first three components are copied from the embedding, while the
-last combines the left inverse of `B ≲ A` with the equivalences of
-the `to` and `from` components from the two embeddings to obtain
-the right inverse of the isomorphism.
+The first three components are copied from one of the given
+retractions, while the last combines the left inverse of `B ≲ A` with
+the equivalences of the `to` and `from` components from the two
+retractions to obtain the right inverse of the isomorphism.
 
-## Equational reasoning for embedding
+## Equational reasoning for retractions
 
-We can also support tabular reasoning for embedding,
+We can also support tabular reasoning for retractions,
 analogous to that used for isomorphism:
 
 ```agda
@@ -435,7 +436,7 @@ open ≲-Reasoning
 
 #### Exercise `≃-implies-≲` (practice)
 
-Show that every isomorphism implies an embedding.
+Show that every isomorphism implies a retraction.
 ```agda
 postulate
   ≃-implies-≲ : ∀ {A B : Set}
@@ -463,7 +464,7 @@ Show that equivalence is reflexive, symmetric, and transitive.
 -- Your code goes here
 ```
 
-#### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
+#### Exercise `Bin-retraction` (stretch) {#Bin-retraction}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin) and
@@ -478,7 +479,7 @@ which satisfy the following property:
 
     from (to n) ≡ n
 
-Using the above, establish that there is an embedding of `ℕ` into `Bin`.
+Using the above, establish that there is a retraction from `Bin` onto `ℕ`.
 ```agda
 -- Your code goes here
 ```
