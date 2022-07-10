@@ -110,15 +110,12 @@ where `as` is a list of field names, and `AS` is a map of types, and
 Map : ∀ {ℓ} {X : Set} (xs : List X) (Y : Set ℓ) → Set ℓ
 Map {ℓ} {X} xs Y = ∀ {x : X} → (x ∈ xs) → Y
 
-map : ∀ {ℓ} {X : Set} {xs : List X} {Y : Set} {Z : Set ℓ} → (Y → Z) → Map xs Y → Map xs Z
+map : ∀ {ℓ} {X : Set} {xs : List X} {Y : Set} {Z : Set ℓ}
+  → (Y → Z) → Map xs Y → Map xs Z
 map f YS {x} x∈xs = f (YS x∈xs)
 
 dMap : ∀ {X : Set} (xs : List X) (YS : Map xs Set) → Set
 dMap {X} xs YS = ∀ {x : X} (x∈xs : x ∈ xs) → YS x∈xs
-
-dmap : ∀ {X : Set} {xs : List X} {YS ZS : Map xs Set}
-  → (∀ {x} (x∈xs : x ∈ xs) → YS x∈xs → ZS x∈xs) → dMap xs YS → dMap xs ZS
-dmap f YS {x} x∈xs = f x∈xs (YS x∈xs)
 ```
 
 ## Record Fields
@@ -372,6 +369,39 @@ rename ρ (M ↑ A<:B)        =  rename ρ M ↑ A<:B
 rename* ρ MS a∈as          =  rename ρ (MS a∈as)
 ```
 
+```agda
+exts : ∀ {Γ Δ}
+  → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
+    ---------------------------------
+  → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
+exts σ Z      =  ` Z
+exts σ (S x)  =  rename S_ (σ x)
+```
+
+```agda
+subst : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ⊢ A)
+    -----------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+
+subst* : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ⊢ A)
+    -----------------------------------------------
+  → (∀ {as} {AS : Map as Type} → Γ ⊢* AS → Δ ⊢* AS)
+
+subst σ (` k)             =  σ k
+subst σ (ƛ N)             =  ƛ (subst (exts σ) N)
+subst σ (L · M)           =  (subst σ L) · (subst σ M)
+subst σ (`zero)           =  `zero
+subst σ (`suc M)          =  `suc (subst σ M)
+subst σ (case L M N)      =  case (subst σ L) (subst σ M) (subst (exts σ) N)
+subst σ (μ N)             =  μ (subst (exts σ) N)
+subst ρ (⦗ as ⦂ MS ⦘{d})  =  ⦗ as ⦂ subst* ρ MS ⦘{d}
+subst ρ (M # a∈as)        =  subst ρ M # a∈as
+subst ρ (M ↑ A<:B)        =  subst ρ M ↑ A<:B
+
+subst* ρ MS a∈as          =  subst ρ (MS a∈as)
+```
 
 
 -- -- In preparation of defining the reduction rules for this language, we
