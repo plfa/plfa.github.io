@@ -110,11 +110,15 @@ where `as` is a list of field names, and `AS` is a map of types, and
 Map : ∀ {ℓ} {X : Set} (xs : List X) (Y : Set ℓ) → Set ℓ
 Map {ℓ} {X} xs Y = ∀ {x : X} → (x ∈ xs) → Y
 
-map : ∀ {ℓ} {X Y : Set} {Z : Set ℓ} {xs : List X} → (Y → Z) → Map xs Y → Map xs Z
+map : ∀ {ℓ} {X : Set} {xs : List X} {Y : Set} {Z : Set ℓ} → (Y → Z) → Map xs Y → Map xs Z
 map f YS {x} x∈xs = f (YS x∈xs)
 
 dMap : ∀ {X : Set} (xs : List X) (YS : Map xs Set) → Set
 dMap {X} xs YS = ∀ {x : X} (x∈xs : x ∈ xs) → YS x∈xs
+
+dmap : ∀ {X : Set} {xs : List X} {YS ZS : Map xs Set}
+  → (∀ {x} (x∈xs : x ∈ xs) → YS x∈xs → ZS x∈xs) → dMap xs YS → dMap xs ZS
+dmap f YS {x} x∈xs = f x∈xs (YS x∈xs)
 ```
 
 ## Record Fields
@@ -263,7 +267,10 @@ appears in the list of fields `as`. In the third, we supply evidence
 `A<:B` of the judgement `A <: B` that `A` is a subtype of `B`.
 
 ```agda
-data _⊢_ : Context → Type → Set where
+data _⊢_ : Context → Type → Set
+_⊢*_ : ∀ {as : List Field} → Context → Map as Type → Set
+
+data _⊢_ where
 
   `_ : ∀ {Γ A}
     → Γ ∋ A
@@ -305,18 +312,17 @@ data _⊢_ : Context → Type → Set where
   ⦗_⦂_⦘ : ∀ {Γ}
     → (as : List Field)
     → {AS : Map as Type}
-    → (MS : dMap as (map (Γ ⊢_) AS))
+    → (MS : Γ ⊢* AS)
     → {d : distinct as}
       --------------------
     → Γ ⊢ ⦗ as ⦂ AS ⦘{ d }
 
-  _#_ : ∀ {Γ a}
-    → {as : List Field}
+  _#_ : ∀ {Γ a as}
     → {AS : Map as Type}
     → {d : distinct as}
     → (M : Γ ⊢ ⦗ as ⦂ AS ⦘{ d })
     → (a∈as : a ∈ as)
-      --------------------
+      --------------------------
     → Γ ⊢ AS a∈as
 
   _↑_ : ∀ {Γ A B}
@@ -324,10 +330,49 @@ data _⊢_ : Context → Type → Set where
     → A <: B
       ------
     → Γ ⊢ B
+
+_⊢*_ {as} Γ AS = dMap as (map (Γ ⊢_) AS)
+```
+
+## Renaming and Substitution
+
+Copied from Chapter [DeBruijn](/DeBruijn/), with extra cases for records.
+
+```agda
+ext : ∀ {Γ Δ}
+  → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
+    ---------------------------------
+  → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
+ext ρ Z      =  Z
+ext ρ (S x)  =  S (ρ x)
+```
+
+```agda
+rename : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    -----------------------
+  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+
+rename* : ∀ {Γ Δ}
+  → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    -----------------------------------------------
+  → (∀ {as} {AS : Map as Type} → Γ ⊢* AS → Δ ⊢* AS)
+
+rename ρ (` x)             =  ` (ρ x)
+rename ρ (ƛ N)             =  ƛ (rename (ext ρ) N)
+rename ρ (L · M)           =  (rename ρ L) · (rename ρ M)
+rename ρ (`zero)           =  `zero
+rename ρ (`suc M)          =  `suc (rename ρ M)
+rename ρ (case L M N)      =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
+rename ρ (μ N)             =  μ (rename (ext ρ) N)
+rename ρ (⦗ as ⦂ MS ⦘{d})  =  ⦗ as ⦂ rename* ρ MS ⦘{d}
+rename ρ (M # a∈as)        =  rename ρ M # a∈as
+rename ρ (M ↑ A<:B)        =  rename ρ M ↑ A<:B
+
+rename* ρ MS a∈as          =  rename ρ (MS a∈as)
 ```
 
 
--- -- ## Renaming and Substitution
 
 -- -- In preparation of defining the reduction rules for this language, we
 -- -- define simultaneous substitution using the same recipe as in the
