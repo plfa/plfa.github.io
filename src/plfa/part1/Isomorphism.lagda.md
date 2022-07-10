@@ -501,31 +501,22 @@ open ≲-Reasoning
 
 -- Extra stuff about embedding and `Fin` (finite sets).
 
--- NOTE:  Need `Fin zero` to be non-empty for there to be an embedding
--- `Fin zero ≲ Fin (suc n)`.
-
 data Fin : ℕ → Set where
-  zero : {n : ℕ} → Fin n
+  zero : {n : ℕ} → Fin (suc n)
   suc : {n : ℕ} → Fin n → Fin (suc n)
 
 data _≤_ : ℕ → ℕ → Set where
   z≤n : {n : ℕ} → zero ≤ n
   s≤s : {m n : ℕ} → m ≤ n → suc m ≤ suc n
 
-≤→≲ : {m n : ℕ} → m ≤ n → Fin m ≲ Fin n
-≤→≲ z≤n = record { to = λ{ zero → zero } ; from = λ j → zero ; from∘to = λ{ zero → refl } }
+≤→≲ : {m n : ℕ} → m ≤ n → Fin (suc m) ≲ Fin (suc n)
+≤→≲ z≤n = record { to = λ{ zero  → zero } ; from = λ{ _ → zero } ; from∘to = λ{ zero → refl } }
 ≤→≲ {suc m} {suc n} (s≤s m≤n) with ≤→≲ m≤n
-... | F≲F = record { to = to' ; from = from' ; from∘to = from∘to' }
-  where
-    to' : Fin (suc m) → Fin (suc n)
-    to' zero = zero
-    to' (suc i) = suc (to F≲F i)
-    from' : Fin (suc n) → Fin (suc m)
-    from' zero = zero
-    from' (suc j) = suc (from F≲F j)
-    from∘to' : (i : Fin (suc m)) → from' (to' i) ≡ i
-    from∘to' zero = refl
-    from∘to' (suc i) = cong suc (from∘to F≲F i)
+... | F≲F = record
+  { to = λ{ zero → zero ; (suc i) → suc (to (≤→≲ m≤n) i) }
+  ; from = λ{ zero → zero ; (suc j) → suc (from (≤→≲ m≤n) j) }
+  ; from∘to = λ{ zero → refl ; (suc i) → cong suc (from∘to (≤→≲ m≤n) i) }
+  }
 
 {-
 module ≲-Reasoning where
