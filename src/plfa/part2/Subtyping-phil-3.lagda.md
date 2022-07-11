@@ -25,7 +25,7 @@ open import Data.Nat.Properties
 open import Data.String using (String; _≟_)
 open import Data.Unit using (⊤; tt)
 open import Function using (id; _∘_)
--- open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
+open import Data.Product using (_×_; Σ; ∃; Σ-syntax; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 -- open import Data.Vec using (Vec; []; _∷_; lookup)
 -- open import Data.Vec.Membership.Propositional using (_∈_)
 -- open import Data.Vec.Membership.DecPropositional _≟_ using (_∈?_)
@@ -117,6 +117,7 @@ map f YS {x} x∈xs = f (YS x∈xs)
 dMap : ∀ {X : Set} (xs : List X) (YS : Map xs Set) → Set
 dMap {X} xs YS = ∀ {x : X} (x∈xs : x ∈ xs) → YS x∈xs
 ```
+
 
 ## Record Fields
 
@@ -265,7 +266,7 @@ appears in the list of fields `as`. In the third, we supply evidence
 
 ```agda
 data _⊢_ : Context → Type → Set
-_⊢*_ : ∀ {as : List Field} → Context → Map as Type → Set
+_⊢*_ : ∀ {as} → Context → Map as Type → Set
 
 data _⊢_ where
 
@@ -328,8 +329,10 @@ data _⊢_ where
       ------
     → Γ ⊢ B
 
-_⊢*_ {as} Γ AS = dMap as (map (Γ ⊢_) AS)
+_⊢*_ {as} Γ AS = ∀ {a} (a∈as : a ∈ as) → Γ ⊢ AS a∈as
 ```
+The right-hand side of `Γ ⊢* AS` is equivalent to `dMap as (map (Γ ⊢_) AS)`.
+
 
 ## Renaming and Substitution
 
@@ -403,276 +406,209 @@ subst ρ (M ↑ A<:B)        =  subst ρ M ↑ A<:B
 subst* ρ MS a∈as          =  subst ρ (MS a∈as)
 ```
 
+```agda
+_[_] : ∀ {Γ A B}
+  → Γ , B ⊢ A
+  → Γ ⊢ B
+    ---------
+  → Γ ⊢ A
+_[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
+  where
+  σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
+  σ Z      =  M
+  σ (S x)  =  ` x
+```
 
--- -- In preparation of defining the reduction rules for this language, we
--- -- define simultaneous substitution using the same recipe as in the
--- -- [DeBruijn](/DeBruijn/) chapter, but adapted to extrinsic
--- -- terms. Thus, the `subst` function is split into two parts: a raw
--- -- `subst` function that operators on terms and a `subst-pres` lemma that
--- -- proves that substitution preserves types. We define `subst` in this
--- -- section and postpone `subst-pres` to the
--- -- [Preservation](#subtyping-preservation) section.  Likewise for `rename`.
+## Values
 
--- -- We begin by defining the `ext` function on renamings.
--- -- ```agda
--- -- ext : (Id → Id) → (Id → Id)
--- -- ext ρ 0      =  0
--- -- ext ρ (suc x)  =  suc (ρ x)
--- -- ```
+Keeping Jeremy's notion of lazy records for now.  We need one more
+value form, to assert that a subsumptions is a value if its contained
+term is a value.
 
--- -- The `rename` function is defined mutually with the auxiliary
--- -- `rename-vec` function, which is needed in the case for records.
--- -- ```agda
--- -- rename-vec : (Id → Id) → ∀{n} → Vec Term n → Vec Term n
+```agda
+data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
--- -- rename : (Id → Id) → (Term → Term)
--- -- rename ρ (` x)          =  ` (ρ x)
--- -- rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
--- -- rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
--- -- rename ρ (`zero)        =  `zero
--- -- rename ρ (`suc M)       =  `suc (rename ρ M)
--- -- rename ρ (case L [zero⇒ M |suc⇒ N ]) =
--- --     case (rename ρ L) [zero⇒ rename ρ M |suc⇒ rename (ext ρ) N ]
--- -- rename ρ (μ N)          =  μ (rename (ext ρ) N)
--- -- rename ρ ⦗ ls := Ms ⦘ = ⦗ ls := rename-vec ρ Ms ⦘
--- -- rename ρ (M # l)       = (rename ρ M) # l
+  V-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B}
+      ---------------------------
+    → Value (ƛ N)
 
--- -- rename-vec ρ [] = []
--- -- rename-vec ρ (M ∷ Ms) = rename ρ M ∷ rename-vec ρ Ms
--- -- ```
+  V-zero : ∀ {Γ}
+      -----------------
+    → Value (`zero {Γ})
 
--- -- With the `rename` function in hand, we can define the `exts` function
--- -- on substitutions.
--- -- ```agda
--- -- exts : (Id → Term) → (Id → Term)
--- -- exts σ 0      =  ` 0
--- -- exts σ (suc x)  =  rename suc (σ x)
--- -- ```
+  V-suc : ∀ {Γ} {V : Γ ⊢ `ℕ}
+    → Value V
+      --------------
+    → Value (`suc V)
 
--- -- We define `subst` mutually with the auxiliary `subst-vec` function,
--- -- which is needed in the case for records.
--- -- ```agda
--- -- subst-vec : (Id → Term) → ∀{n} → Vec Term n → Vec Term n
+  V-⦗⦘ : ∀ {Γ} {as} {AS : Map as Type} {MS : Γ ⊢* AS} {d : distinct as}
+      -----------------------------------------------------------------
+    → Value (⦗ as ⦂ MS ⦘{d})
+```
 
--- -- subst : (Id → Term) → (Term → Term)
--- -- subst σ (` k)          =  σ k
--- -- subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
--- -- subst σ (L · M)        =  (subst σ L) · (subst σ M)
--- -- subst σ (`zero)        =  `zero
--- -- subst σ (`suc M)       =  `suc (subst σ M)
--- -- subst σ (case L [zero⇒ M |suc⇒ N ])
--- --                        =  case (subst σ L) [zero⇒ subst σ M |suc⇒ subst (exts σ) N ]
--- -- subst σ (μ N)          =  μ (subst (exts σ) N)
--- -- subst σ ⦗ ls := Ms ⦘  = ⦗ ls := subst-vec σ Ms ⦘
--- -- subst σ (M # l)        = (subst σ M) # l
+## Reification
 
--- -- subst-vec σ [] = []
--- -- subst-vec σ (M ∷ Ms) = (subst σ M) ∷ (subst-vec σ Ms)
--- -- ```
+Testing two values of type `Γ ⊢* AS` for equality is tricky, so instead
+we consider a way to reify such structures into iterated products.
 
--- -- As usual, we implement single substitution using simultaneous
--- -- substitution.
--- -- ```agda
--- -- subst-zero : Term → Id → Term
--- -- subst-zero M 0       =  M
--- -- subst-zero M (suc x) =  ` x
+```agda
+reify : ∀ (as : List Field) (Γ : Context) (AS : Map as Type) → Set
+reify [] Γ AS        =  ⊤
+reify (a ∷ as) Γ AS  =  Γ ⊢ AS {a} {!!} × reify as Γ (AS ∘ there)
 
--- -- _[_] : Term → Term → Term
--- -- _[_] N M =  subst (subst-zero M) N
--- -- ```
+REIFY : ∀ (as : List Field) (Γ : Context) (AS : Map as Type) (MS : Γ ⊢* AS) → reify as Γ AS
+REIFY [] Γ AS MS        = tt
+REIFY (a ∷ as) Γ AS MS  = ⟨ MS {a} {!!} , REIFY as Γ (AS ∘ there) (MS ∘ there) ⟩
+```
 
--- -- ## Values
+## Reduction
 
--- -- We extend the definition of `Value` to include a clause for records.
--- -- In a call-by-value language, a record is usually only considered a
--- -- value if all its field initializers are values. Here we instead treat
--- -- records in a lazy fashion, declaring any record to be a value, to save
--- -- on some extra bookkeeping.
--- -- ```agda
--- -- data Value : Term → Set where
+Reduction is as in Chapter [DeBruijn](/DeBruijn/), with five new
+rules, `ξ-#`, `β-#`, `ξ-<:`, `β-<:-ℕ`, `β-<:-⇒`, and `β-<:-⦗⦘` The
+last four of these don't appear in Jeremy's development, a difference
+between the extrinsic and intrinsic approaches.
 
--- --   V-ƛ : ∀ {N}
--- --       -----------
--- --     → Value (ƛ N)
+```agda
+coerce : ∀ {Γ as bs} {AS : Map as Type} {BS : Map bs Type}
+           → (bs ⊆ as)
+           → (as ⦂ AS <: bs ⦂ BS)
+           → (Γ ⊢* AS)
+             ---------
+           → (Γ ⊢* BS)
+coerce bs⊆as AS<:BS MS a∈bs = MS a∈as ↑ AS<:BS a∈as a∈bs 
+  where
+  a∈as = bs⊆as a∈bs
 
--- --   V-zero :
--- --       -------------
--- --       Value (`zero)
+infix 2 _—→_
 
--- --   V-suc : ∀ {V}
--- --     → Value V
--- --       --------------
--- --     → Value (`suc V)
+data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
--- --   V-rcd : ∀{n}{ls : Vec Name n}{Ms : Vec Term n}
--- --     → Value ⦗ ls := Ms ⦘
--- -- ```
+  ξ-·₁ : ∀ {Γ A B} {L L′ : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
+    → L —→ L′
+      ---------------
+    → L · M —→ L′ · M
 
--- -- ## Reduction
+  ξ-·₂ : ∀ {Γ A B} {V : Γ ⊢ A ⇒ B} {M M′ : Γ ⊢ A}
+    → Value V
+    → M —→ M′
+      ---------------
+    → V · M —→ V · M′
 
--- -- The following datatype `_—→_` defines the reduction relation for the
--- -- STLC with records. We discuss the two new rules for records in the
--- -- following paragraph.
+  β-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
+    → Value W
+      --------------------
+    → (ƛ N) · W —→ N [ W ]
 
--- -- ```agda
--- -- data _—→_ : Term → Term → Set where
+  ξ-suc : ∀ {Γ} {M M′ : Γ ⊢ `ℕ}
+    → M —→ M′
+      -----------------
+    → `suc M —→ `suc M′
 
--- --   ξ-·₁ : ∀ {L L′ M : Term}
--- --     → L —→ L′
--- --       ---------------
--- --     → L · M —→ L′ · M
+  ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+    → L —→ L′
+      -------------------------
+    → case L M N —→ case L′ M N
 
--- --   ξ-·₂ : ∀ {V  M M′ : Term}
--- --     → Value V
--- --     → M —→ M′
--- --       ---------------
--- --     → V · M —→ V · M′
+  β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+      -------------------
+    → case `zero M N —→ M
 
--- --   β-ƛ : ∀ {N W : Term}
--- --     → Value W
--- --       --------------------
--- --     → (ƛ N) · W —→ N [ W ]
+  β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+    → Value V
+      ----------------------------
+    → case (`suc V) M N —→ N [ V ]
 
--- --   ξ-suc : ∀ {M M′ : Term}
--- --     → M —→ M′
--- --       -----------------
--- --     → `suc M —→ `suc M′
+  β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
+      ----------------
+    → μ N —→ N [ μ N ]
 
--- --   ξ-case : ∀ {L L′ M N : Term}
--- --     → L —→ L′
--- --       -------------------------------------------------------
--- --     → case L [zero⇒ M |suc⇒ N ] —→ case L′ [zero⇒ M |suc⇒ N ]
+  ξ-# : ∀ {Γ as a} {AS : Map as Type} {d : distinct as}
+          {M M′ : Γ ⊢ ⦗ as ⦂ AS ⦘{d}} {a∈as : a ∈ as}
+    → M —→ M′
+      ---------------------
+    → M # a∈as —→ M′ # a∈as
 
--- --   β-zero :  ∀ {M N : Term}
--- --       ----------------------------------
--- --     → case `zero [zero⇒ M |suc⇒ N ] —→ M
+  β-# : ∀ {Γ as a} {AS : Map as Type} {d : distinct as}
+          {MS : Γ ⊢* AS} {a∈as : a ∈ as} {M : Γ ⊢ AS a∈as}
+    → MS a∈as ≡ M
+      --------------------------
+    → ⦗ as ⦂ MS ⦘{d} # a∈as —→ M
 
--- --   β-suc : ∀ {V M N : Term}
--- --     → Value V
--- --       -------------------------------------------
--- --     → case (`suc V) [zero⇒ M |suc⇒ N ] —→ N [ V ]
+  ξ-<: : ∀ {Γ A B} {M M′ : Γ ⊢ A} {A<:B : A <: B} 
+    → M —→ M′
+      ---------------------
+    → M ↑ A<:B —→ M′ ↑ A<:B
 
--- --   β-μ : ∀ {N : Term}
--- --       ----------------
--- --     → μ N —→ N [ μ N ]
+  β-<:-ℕ : ∀ {Γ} {M : Γ ⊢ `ℕ}
+    → Value M
+      -------------
+    → M ↑ <:-ℕ —→ M
 
--- --   ξ-# : ∀ {M M′ : Term}{l}
--- --     → M —→ M′
--- --     → M # l —→ M′ # l
+  β-<:-⇒ : ∀ {Γ A B A′ B′} {M : Γ ⊢ A ⇒ B}
+             {A′<:A : A′ <: A} {B<:B′ : B <: B′}
+    → Value M
+      -----------------------------------------------------------------
+    → M ↑ (<:-⇒ A′<:A B<:B′) —→ ƛ (rename S_ M · (` Z ↑ A′<:A) ↑ B<:B′)
 
--- --   β-# : ∀ {n}{ls : Vec Name n}{Ms : Vec Term n} {l}{j : Fin n}
--- --     → lookup ls j ≡ l
--- --       ---------------------------------
--- --     → ⦗ ls := Ms ⦘ # l —→  lookup Ms j
--- -- ```
-
--- -- We have just two new reduction rules:
--- -- * Rule `ξ-#`: A field access expression `M # l` reduces to `M′ # l`
--- --    provided that `M` reduces to `M′`.
-
--- -- * Rule `β-#`: When field access is applied to a record,
--- --    and if the label `l` is at position `j` in the vector of field names,
--- --    then result is the term at position `j` in the field initializers.
+  β-<:-⦗⦘ : ∀ {Γ as bs} {AS : Map as Type} {BS : Map bs Type}
+              {bs⊆as : bs ⊆ as} {AS<:BS : as ⦂ AS <: bs ⦂ BS}
+              {MS : Γ ⊢* AS} {NS : Γ ⊢* BS} {d : distinct as} {e : distinct bs}
+    → REIFY bs Γ BS (coerce bs⊆as AS<:BS MS) ≡ REIFY bs Γ BS NS
+      --------------------------------------------------------
+    → ⦗ as ⦂ MS ⦘{d} ↑ (<:-⦗⦘ bs⊆as AS<:BS) —→ ⦗ bs ⦂ NS ⦘{e}
+```
 
 
--- -- ## Canonical Forms
+## Progress {#subtyping-progress}
 
--- -- As in the [Properties](/Properties/) chapter, we
--- -- define a `Canonical V ⦂ A` relation that characterizes the well-typed
--- -- values.  The presence of the subsumption rule impacts its definition
--- -- because we must allow the type of the value `V` to be a subtype of `A`.
--- -- ```agda
--- -- data Canonical_⦂_ : Term → Type → Set where
+```agda
+data Progress {A} (M : ∅ ⊢ A) : Set where
 
--- --   C-ƛ : ∀ {N A B C D}
--- --     →  ∅ , A ⊢ N ⦂ B
--- --     → A ⇒ B <: C ⇒ D
--- --       -------------------------
--- --     → Canonical (ƛ N) ⦂ (C ⇒ D)
+  step : ∀ {N : ∅ ⊢ A}
+    → M —→ N
+      ----------
+    → Progress M
 
--- --   C-zero :
--- --       --------------------
--- --       Canonical `zero ⦂ `ℕ
+  done :
+      Value M
+      ----------
+    → Progress M
+```
 
--- --   C-suc : ∀ {V}
--- --     → Canonical V ⦂ `ℕ
--- --       ---------------------
--- --     → Canonical `suc V ⦂ `ℕ
+The statement and proof of progress is much as before,
+appropriately annotated.  We no longer need
+to explicitly refer to the Canonical Forms lemma, since it
+is built-in to the definition of value:
+```agda
+progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
+progress (` ())
+progress (ƛ N)                          =  done V-ƛ
+progress (L · M) with progress L
+...    | step L—→L′                     =  step (ξ-·₁ L—→L′)
+...    | done V-ƛ with progress M
+...        | step M—→M′                 =  step (ξ-·₂ V-ƛ M—→M′)
+...        | done VM                    =  step (β-ƛ VM)
+progress (`zero)                        =  done V-zero
+progress (`suc M) with progress M
+...    | step M—→M′                     =  step (ξ-suc M—→M′)
+...    | done VM                        =  done (V-suc VM)
+progress (case L M N) with progress L
+...    | step L—→L′                     =  step (ξ-case L—→L′)
+...    | done V-zero                    =  step (β-zero)
+...    | done (V-suc VL)                =  step (β-suc VL)
+progress (μ N)                          =  step (β-μ)
+progress (⦗ as ⦂ MS ⦘{d})               =  done V-⦗⦘ 
+progress (M # a∈as) with progress M
+...    | step M—→M′                     =  step (ξ-# M—→M′)
+...    | done V-⦗⦘                      =  step (β-# refl)
+progress (M ↑ A<:B) with progress M
+...    | step M—→M′                     =  step (ξ-<: M—→M′)
+...    | done VM with VM | A<:B
+...        | V-ℕ  | <:-ℕ                       =  step (β-<:-ℕ VM)
+...        | V-⇒  | <:-⇒ A′<:A B<:B′           =  step (β-<:-⇒ VM)
+...        | V-⦗⦘ | <:-⦗⦘ bs⊆as AS<:BS         =  step (β-<:-⦗⦘ refl)
+```
 
--- --   C-rcd : ∀{n m}{ls : Vec Name n}{ks : Vec Name m}{Ms As Bs}{dls}
--- --     → ∅ ⊢* Ms ⦂ As
--- --     → (dks : distinct ks)
--- --     → ⦗ ks ⦂ As ⦘{dks}  <: ⦗ ls ⦂ Bs ⦘{dls}
--- --     → Canonical ⦗ ks := Ms ⦘ ⦂ ⦗ ls ⦂ Bs ⦘ {dls}
--- -- ```
-
--- -- Every closed, well-typed value is canonical:
--- -- ```agda
--- -- canonical : ∀ {V A}
--- --   → ∅ ⊢ V ⦂ A
--- --   → Value V
--- --     -----------
--- --   → Canonical V ⦂ A
--- -- canonical (⊢` ())          ()
--- -- canonical (⊢ƛ ⊢N)          V-ƛ         =  C-ƛ ⊢N <:-refl
--- -- canonical (⊢· ⊢L ⊢M)       ()
--- -- canonical ⊢zero            V-zero      =  C-zero
--- -- canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
--- -- canonical (⊢case ⊢L ⊢M ⊢N) ()
--- -- canonical (⊢μ ⊢M)          ()
--- -- canonical (⊢rcd ⊢Ms d) VV = C-rcd {dls = d} ⊢Ms d <:-refl
--- -- canonical (⊢<: ⊢V <:-nat) VV = canonical ⊢V VV
--- -- canonical (⊢<: ⊢V (<:-fun {A}{B}{C}{D} C<:A B<:D)) VV
--- --     with canonical ⊢V VV
--- -- ... | C-ƛ {N}{A′}{B′}{A}{B} ⊢N  AB′<:AB = C-ƛ ⊢N (<:-trans AB′<:AB (<:-fun C<:A B<:D))
--- -- canonical (⊢<: ⊢V (<:-rcd {ks = ks}{ls = ls}{d2 = dls} ls⊆ks ls⦂Ss<:ks⦂Ts)) VV
--- --     with canonical ⊢V VV
--- -- ... | C-rcd {ks = ks′} ⊢Ms dks′ As<:Ss =
--- --       C-rcd {dls = distinct-relevant dls} ⊢Ms dks′ (<:-trans As<:Ss (<:-rcd ls⊆ks ls⦂Ss<:ks⦂Ts))
--- -- ```
--- -- The case for subsumption (`⊢<:`) is interesting. We proceed by
--- -- cases on the derivation of subtyping.
-
--- -- * If the last rule is `<:-nat`, then we have `∅ ⊢ V ⦂ ℕ`
--- --   and the induction hypothesis gives us `Canonical V ⦂ ℕ`.
-
--- -- * If the last rule is `<:-fun`, then we have `A ⇒ B <: C ⇒ D`
--- --   and `∅ ⊢ ƛ N ⦂ A ⇒ B`. By the induction hypothesis,
--- --   we have `∅ , A′ ⊢ N ⦂ B′` and `A′ ⇒ B′ <: A ⇒ B` for some `A′` and `B′`.
--- --   We conclude that `Canonical (ƛ N) ⦂ C ⇒ D` by rule `C-ƛ` and the transitivity of subtyping.
-
--- -- * If the last rule is `<:-rcd`, then we have `⦗ ls ⦂ Ss ⦘ <: ⦗ ks ⦂ Ts ⦘`
--- --   and `∅ ⊢ ⦗ ks′ := Ms ⦘ ⦂ ⦗ ks ⦂ Ss ⦘`. By the induction hypothesis,
--- --   we have `∅ ⊢* Ms ⦂ As`, `distinct ks′`, and `⦗ ks′ ⦂ As ⦘ <: ⦗ ks ⦂ Ss ⦘`.
--- --   We conclude that `Canonical ⦗ ks′ := Ms ⦘ ⦂ ⦗ ks ⦂ Ts ⦘`
--- --   by rule `C-rcd` and the transitivity of subtyping.
-
-
--- -- If a term is canonical, then it is also a value.
--- -- ```agda
--- -- value : ∀ {M A}
--- --   → Canonical M ⦂ A
--- --     ----------------
--- --   → Value M
--- -- value (C-ƛ _ _)     = V-ƛ
--- -- value C-zero        = V-zero
--- -- value (C-suc CM)    = V-suc (value CM)
--- -- value (C-rcd _ _ _) = V-rcd
--- -- ```
-
--- -- A canonical value is a well-typed value.
--- -- ```agda
--- -- typed : ∀ {V A}
--- --   → Canonical V ⦂ A
--- --     ---------------
--- --   → ∅ ⊢ V ⦂ A
--- -- typed (C-ƛ ⊢N AB<:CD) = ⊢<: (⊢ƛ ⊢N) AB<:CD
--- -- typed C-zero = ⊢zero
--- -- typed (C-suc c) = ⊢suc (typed c)
--- -- typed (C-rcd ⊢Ms dks As<:Bs) = ⊢<: (⊢rcd ⊢Ms dks) As<:Bs
--- -- ```
-
--- -- ## Progress {#subtyping-progress}
 
 -- -- The Progress theorem states that a well-typed term may either take a
 -- -- reduction step or it is already a value. The proof of Progress is like
