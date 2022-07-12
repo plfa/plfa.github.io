@@ -21,7 +21,7 @@ subtype relation should always be reflexive and transitive. When
 `A` is a subtype of `B`, that is, `A <: B`, we may also refer to
 `B` as a supertype of `A`.
 
-To formulate a type system for a language with subtyping, one 
+To formulate a type system for a language with subtyping, one
 adds the *subsumption rule*, which states that a term of type `A`
 can also have type `B` if `A` is a subtype of `B`.
 
@@ -139,9 +139,9 @@ element in front of another vector of length `n`.
 
 ```agda
 module VecReplica where
-  
+
   variable a : Level
-  
+
   data Vec (A : Set a) : ℕ → Set a where
     []  : Vec A zero
     _∷_ : ∀ {n} (x : A) (xs : Vec A n) → Vec A (suc n)
@@ -181,7 +181,7 @@ with constructors with the same names `zero` and `suc`.
 
 ```agda
 module FinReplica where
-  
+
   data Fin : ℕ → Set where
     zero : {n : ℕ} → Fin (suc n)
     suc  : {n : ℕ} (i : Fin n) → Fin (suc n)
@@ -332,7 +332,7 @@ that `d₁` and `d₂` are equal.
 _ : ∀ {d₁ d₂ : distinct ("x" ∷ "y" ∷ [])}
    → ⦗ "x" ∷ "y" ∷ [] ⦂ `ℕ ∷ `ℕ ∷ [] ⦘ {d₁}
      ≡ ⦗ "x" ∷ "y" ∷ [] ⦂ `ℕ ∷ `ℕ ∷ [] ⦘ {d₂}
-_ = refl 
+_ = refl
 ```
 
 By choosing to make parameter `d` irrelevant, we are saying that the
