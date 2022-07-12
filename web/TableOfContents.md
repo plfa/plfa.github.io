@@ -45,6 +45,7 @@ $endfor$
 #### 2022
   * [Andrej Bauer, University of Ljubljana][UL-2022]
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2022]
+  * Michael Shulman, University of San Diego
 
 #### 2021
   * Favonia, University of Minnesota
