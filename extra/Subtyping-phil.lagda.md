@@ -10,7 +10,7 @@ complicated the previous version.
 
 
 ```agda
-module plfa.part2.Subtyping-phil-5 where
+module Subtyping-phil where
 ```
 
 ## Imports
@@ -134,6 +134,11 @@ map f YS x x∈xs = f (YS x x∈xs)
 
 dMap : ∀ {X : Set} (xs : List X) (YS : Map xs Set) → Set
 dMap {X} xs YS = ∀ (x : X) → (x∈xs : x ∈ xs) → YS x x∈xs
+
+-- rep* : ∀ as -> Type* as -> Set
+-- rep* []  =  ⊤
+-- rep* (a ∷ as)  =  Type × rep* as
+
 ```
 
 
@@ -147,10 +152,14 @@ Field = String
 ## Types
 
 ```agda
+Type* : List Field → Set
+
 data Type : Set where
   _⇒_   : Type → Type → Type
   `ℕ    : Type
   ⦗_⦂_⦘ :  (as : List Field) → (AS : Map as Type) → {distinct as} → Type
+
+Type* as = ∀ (a : Field) → (a ∈ as) → Type
 ```
 
 In addition to function types `A ⇒ B` and natural numbers `ℕ`, we
@@ -169,8 +178,8 @@ rule for records.
 ```agda
 data _<:_ : Type → Type → Set
 
-_⦂_<:_⦂_ : ∀ (as : List Field) (AS : Map as Type)
-             (bs : List Field) (BS : Map bs Type) → Set
+_⦂_<:_⦂_ : ∀ (as : List Field) (AS : Type* as)
+             (bs : List Field) (BS : Type* bs) → Set
 as ⦂ AS <: bs ⦂ BS
   = ∀ a → (a∈as : a ∈ as) → (a∈bs : a ∈ bs) → AS a a∈as <: BS a a∈bs
 
@@ -184,8 +193,8 @@ data _<:_ where
       ----------------
     → A ⇒ B <: A′ ⇒ B′
 
-  <:-⦗⦘ : ∀ {as : List Field}{AS : Map as Type}{d : distinct as}
-            {bs : List Field}{BS : Map bs Type}{e : distinct bs}
+  <:-⦗⦘ : ∀ {as : List Field}{AS : Type* as}{d : distinct as}
+            {bs : List Field}{BS : Type* bs}{e : distinct bs}
     → bs ⊆ as
     → as ⦂ AS <: bs ⦂ BS
       --------------------------------
@@ -284,7 +293,7 @@ appears in the list of fields `as`. In the third, we supply evidence
 
 ```agda
 data _⊢_ : Context → Type → Set
-_⊢*_ : ∀ {as} → Context → Map as Type → Set
+_⊢*_ : ∀ {as} → Context → Type* as → Set
 
 data _⊢_ where
 
@@ -327,14 +336,14 @@ data _⊢_ where
 
   ⦗_⦂_⦘ : ∀ {Γ}
     → (as : List Field)
-    → {AS : Map as Type}
+    → {AS : Type* as}
     → (MS : Γ ⊢* AS)
     → {d : distinct as}
       --------------------
     → Γ ⊢ ⦗ as ⦂ AS ⦘{ d }
 
   _#_ : ∀ {Γ a as}
-    → {AS : Map as Type}
+    → {AS : Type* as}
     → {d : distinct as}
     → (M : Γ ⊢ ⦗ as ⦂ AS ⦘{ d })
     → (a∈as : a ∈ as)
@@ -374,7 +383,7 @@ rename : ∀ {Γ Δ}
 rename* : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
     -----------------------------------------------
-  → (∀ {as} {AS : Map as Type} → Γ ⊢* AS → Δ ⊢* AS)
+  → (∀ {as} {AS : Type* as} → Γ ⊢* AS → Δ ⊢* AS)
 
 rename ρ (` x)             =  ` (ρ x)
 rename ρ (ƛ N)             =  ƛ (rename (ext ρ) N)
@@ -408,7 +417,7 @@ subst : ∀ {Γ Δ}
 subst* : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     -----------------------------------------------
-  → (∀ {as} {AS : Map as Type} → Γ ⊢* AS → Δ ⊢* AS)
+  → (∀ {as} {AS : Type* as} → Γ ⊢* AS → Δ ⊢* AS)
 
 subst σ (` k)             =  σ k
 subst σ (ƛ N)             =  ƛ (subst (exts σ) N)
@@ -459,7 +468,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
       --------------
     → Value (`suc V)
 
-  V-⦗⦘ : ∀ {Γ} {as} {AS : Map as Type} {MS : Γ ⊢* AS} {d : distinct as}
+  V-⦗⦘ : ∀ {Γ} {as} {AS : Type* as} {MS : Γ ⊢* AS} {d : distinct as}
       -----------------------------------------------------------------
     → Value (⦗ as ⦂ MS ⦘{d})
 ```
@@ -472,7 +481,7 @@ last four of these don't appear in Jeremy's development, a difference
 between the extrinsic and intrinsic approaches.
 
 ```agda
-coerce : ∀ {Γ as bs} {AS : Map as Type} {BS : Map bs Type}
+coerce : ∀ {Γ as bs} {AS : Type* as} {BS : Type* bs}
            → (bs ⊆ as)
            → (as ⦂ AS <: bs ⦂ BS)
            → (Γ ⊢* AS)
@@ -525,13 +534,13 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------
     → μ N —→ N [ μ N ]
 
-  ξ-# : ∀ {Γ as a} {AS : Map as Type} {d : distinct as}
+  ξ-# : ∀ {Γ as a} {AS : Type* as} {d : distinct as}
           {M M′ : Γ ⊢ ⦗ as ⦂ AS ⦘{d}} {a∈as : a ∈ as}
     → M —→ M′
       ---------------------
     → M # a∈as —→ M′ # a∈as
 
-  β-# : ∀ {Γ as a} {AS : Map as Type} {d : distinct as}
+  β-# : ∀ {Γ as a} {AS : Type* as} {d : distinct as}
           {MS : Γ ⊢* AS} {a∈as : a ∈ as} {M : Γ ⊢ AS a a∈as}
     → MS a a∈as ≡ M
       --------------------------
@@ -553,7 +562,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       -----------------------------------------------------------------
     → M ↑ (<:-⇒ A′<:A B<:B′) —→ ƛ (rename S_ M · (` Z ↑ A′<:A) ↑ B<:B′)
 
-  β-<:-⦗⦘ : ∀ {Γ as bs} {AS : Map as Type} {BS : Map bs Type}
+  β-<:-⦗⦘ : ∀ {Γ as bs} {AS : Type* as} {BS : Type* bs}
               {bs⊆as : bs ⊆ as} {AS<:BS : as ⦂ AS <: bs ⦂ BS}
               {MS : Γ ⊢* AS} {NS : Γ ⊢* BS} {d : distinct as} {e : distinct bs}
     → coerce bs⊆as AS<:BS MS ≡ NS
