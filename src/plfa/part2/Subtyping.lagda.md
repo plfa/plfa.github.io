@@ -501,8 +501,9 @@ vec-ty-size : ∀ {n : ℕ} → (As : Vec Type n) → ℕ
 ty-size (A ⇒ B) = suc (ty-size A + ty-size B)
 ty-size `ℕ = 1
 ty-size ⦗ ls ⦂ As ⦘ = suc (vec-ty-size As)
-vec-ty-size {n} [] = 0
-vec-ty-size {n} (x ∷ xs) = ty-size x + vec-ty-size xs
+
+vec-ty-size [] = 0
+vec-ty-size (x ∷ xs) = ty-size x + vec-ty-size xs
 ```
 
 The size of a type is always positive.
@@ -738,7 +739,6 @@ data _⊢_⦂_ : Context → Term → Type → Set where
      → Γ ⊢* Ms ⦂ As
      → (d : distinct ls)
      → Γ ⊢ ⦗ ls := Ms ⦘ ⦂ ⦗ ls ⦂ As ⦘ {d}
-
 
   ⊢# : ∀ {n : ℕ}{Γ A M l}{ls : Vec Name n}{As : Vec Type n}{i}{d}
      → Γ ⊢ M ⦂ ⦗ ls ⦂ As ⦘{d}
