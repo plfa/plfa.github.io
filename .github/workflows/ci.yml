@@ -158,12 +158,21 @@ jobs:
 
       # Deploy: Prepare HEAD
 
-      - name: Download artifact
+      - name: Download latest artifact
         if: github.event_name == 'push'
         uses: actions/download-artifact@v3
         with:
           name: Website HEAD ${{ env.RECOMMENDED_OS }} GHC-${{ env.RECOMMENDED_GHC_VERSION }}
           path: site
+          
+      - name: Download all artifacts
+        if: github.event_name == 'push'
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+          
+      - run: ls -R
+        working-directory: artifacts
 
       # Deploy: Prepare v19.08
 
