@@ -69,6 +69,20 @@ Once you have installed [fix-whitespace][fix-whitespace], you can set up a git h
 git config core.hooksPath .githooks
 ```
 
+## How to make changes to PLFA
+
+The `dev` branch of the repository is write-protected, meaning that changes can only be made via pull requests, once all tests have passed. To make changes, create a new branch by running the following command from your local copy of the repository:
+```sh
+git checkout -b [new_branch_name] [old_branch_name]
+```
+We suggest basing your branches on `dev`, and naming branches after issues, e.g., `issue-650` or using a description of the new features they implement, e,g., `feature-subtyping`.
+
+Publish the branch by running the following command from your local copy of the repository:
+```sh
+git push origin [new_branch_name]
+```
+Then open a pull request on GitHub, from the [Pull Requests][github-pulls] tab.
+
 ## How to publish the current version of PLFA
 
 Any changes to the development branch `dev` are automatically published to the live version of the book, provided that they pass certain tests. If you've made changes though the book, and they are not propagated to the live version, please check the build status on [GitHub Actions][github-actions].
@@ -162,3 +176,5 @@ plfa
 [epubcheck-apt]: https://tracker.debian.org/pkg/epubcheck
 [java]: https://www.java.com/en/download/
 [fix-whitespace]: https://github.com/agda/fix-whitespace
+[github-branches]: https://github.com/plfa/plfa.github.io/branches
+[github-pulls]: https://github.com/plfa/plfa.github.io/pulls
