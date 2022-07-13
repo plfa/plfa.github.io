@@ -259,10 +259,10 @@ jobs:
   ################################################################################
   # Rebase: On push to dev, automatically rebase open pull requests
   ################################################################################
-  rebase:
-    name: Rebase Pull Requests
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: linhbn123/rebase-pull-requests@v1.0.1
+  # rebase:
+  #   name: Rebase Pull Requests
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: linhbn123/rebase-pull-requests@v1.0.1
 
