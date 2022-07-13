@@ -8,6 +8,9 @@ author:             Wen Kokke
 copyright:          © 2017-2022 Wen Kokke
 category:           Web
 build-type:         Simple
+tested-with:
+  GHC == 9.2.3
+  GHC == 8.10.7
 
 common language-haskell
   build-depends:       base
