@@ -45,6 +45,7 @@ $endfor$
 #### 2022
   * [Andrej Bauer, University of Ljubljana][UL-2022]
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2022]
+  * Michael Shulman, University of San Diego
 
 #### 2021
   * Favonia, University of Minnesota
@@ -55,7 +56,7 @@ $endfor$
   * [Jeremy Siek, Indiana University][IU-2020]
   * [Maria Emilia Maietti and Ingo Blechschmidt, Università di Padova][Padova-2020]
   * [John Maraist, University of Wisconsin-La Crosse][UWL-2020]
-  * [Ugo de'Liguoro, Università di Torino][Torino-2020]
+  * Ugo de'Liguoro, Università di Torino
 
 #### 2019
   * [Dan Ghica, University of Birmingham][BHAM-2019]
