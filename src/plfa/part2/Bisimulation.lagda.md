@@ -227,7 +227,7 @@ and if `M ~ M†` then `rename ρ M ~ rename ρ M†`:
 ~rename ρ (~let ~M ~N)  =  ~let (~rename ρ ~M) (~rename (ext ρ) ~N)
 ```
 The structure of the proof is similar to the structure of renaming itself:
-reconstruct each term with recursive invocation, extending the environment
+reconstruct each term with recursive invocation, extending the context
 where appropriate (in this case, only for the body of an abstraction).
 
 
@@ -273,7 +273,7 @@ x ~ σ† x`, and if `M ~ M†`, then `subst σ M ~ subst σ† M†`:
 ```
 Again, the structure of the proof is similar to the structure of
 substitution itself: reconstruct each term with recursive invocation,
-extending the environment where appropriate (in this case, only for
+extending the context where appropriate (in this case, only for
 the body of an abstraction).
 
 From the general case of substitution, it is also easy to derive
