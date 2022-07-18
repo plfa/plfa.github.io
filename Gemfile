@@ -2,4 +2,4 @@
 
 source 'https://rubygems.org'
 
-gem 'html-proofer', "~> 3.19.4", :require => false
+gem 'html-proofer', "~> 4.2.0", :require => false
