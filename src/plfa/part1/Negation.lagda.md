@@ -74,7 +74,7 @@ we have only half of this equivalence, namely that `A` implies `¬ ¬ A`:
   → A
     -----
   → ¬ ¬ A
-¬¬-intro x  =  λ{¬x → ¬x x}
+¬¬-intro a ¬a = ¬a a
 ```
 Let `x` be evidence of `A`. We show that assuming
 `¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
@@ -101,7 +101,7 @@ We cannot show that `¬ ¬ A` implies `A`, but we can show that
   → ¬ ¬ ¬ A
     -------
   → ¬ A
-¬¬¬-elim ¬¬¬x  =  λ x → ¬¬¬x (¬¬-intro x)
+¬¬¬-elim ¬¬¬a a = ¬¬¬a (¬¬-intro a)
 ```
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 `A` leads to a contradiction, and hence `¬ A` must hold.
@@ -116,8 +116,8 @@ stating that if `A` implies `B`, then `¬ B` implies `¬ A`:
 contraposition : ∀ {A B : Set}
   → (A → B)
     -----------
-  → (¬ B → ¬ A)
-contraposition f ¬y x = ¬y (f x)
+  → ((B → ⊥) → (A → ⊥))
+contraposition f ¬b a = ¬b (f a)
 ```
 Let `f` be evidence of `A → B` and let `¬y` be evidence of `¬ B`.  We
 will show that assuming `A` leads to a contradiction, and hence `¬ A`
@@ -132,8 +132,8 @@ x ≢ y  =  ¬ (x ≡ y)
 ```
 It is trivial to show distinct numbers are not equal:
 ```
-_ : 1 ≢ 2
-_ = λ()
+safd : 1 ≢ 2
+safd ()
 ```
 This is our first use of an absurd pattern in a lambda expression.
 The type `M ≡ N` is occupied exactly when `M` and `N` simplify to
@@ -185,6 +185,11 @@ quantifies over all `x` such that `A` holds, hence any
 such `x` immediately leads to a contradiction,
 again causing the equality to hold trivially.
 
+```
+emptyFunctionsEqual : ∀ {A : Set} → (f g : ⊥ → A) → f ≡ g
+emptyFunctionsEqual f g = extensionality λ ()
+```
+
 
 #### Exercise `<-irreflexive` (recommended)
 
@@ -193,7 +198,9 @@ Using negation, show that
 is irreflexive, that is, `n < n` holds for no `n`.
 
 ```
--- Your code goes here
+open Data.Nat
+<-irreflexive : {n : ℕ} → ¬ (n < n)
+<-irreflexive (s≤s n<n) = <-irreflexive n<n
 ```
 
 
@@ -211,7 +218,25 @@ Here "exactly one" means that not only one of the three must hold,
 but that when one holds the negation of the other two must also hold.
 
 ```
--- Your code goes here
+
+<-suc-inj : {a b : ℕ} → suc a < suc b → a < b
+<-suc-inj (s≤s sa<sb) = sa<sb
+
+open import Data.Nat.Properties
+data StrictTrichotomy (a b : ℕ) : Set where
+  case-a<b : a < b → a ≢ b → a ≯ b → StrictTrichotomy a b
+  case-a≡b : a ≮ b → a ≡ b → a ≯ b → StrictTrichotomy a b
+  case-a>b : a ≮ b → a ≢ b → a > b → StrictTrichotomy a b
+
+strict : (a b : ℕ) → StrictTrichotomy a b
+strict zero zero = case-a≡b (λ ()) refl (λ ())
+strict zero (suc b) = case-a<b (s≤s z≤n) (λ ()) (λ ())
+strict (suc a) zero = case-a>b (λ ()) (λ ()) (s≤s z≤n)
+strict (suc a) (suc b) with strict a b
+... | case-a<b a<b a≢b a≯b = case-a<b (s≤s a<b) (λ sa≡sb → a≢b (suc-injective sa≡sb)) λ sa>sb → a≯b (<-suc-inj sa>sb)
+... | case-a≡b a≮b a≡b a≯b rewrite a≡b  = case-a≡b <-irreflexive refl <-irreflexive
+... | case-a>b a≮b a≢b a>b = case-a>b (λ sa>sb → a≮b (<-suc-inj sa>sb)) ((λ sa≡sb → a≢b (suc-injective sa≡sb))) (s≤s a>b)
+
 ```
 
 #### Exercise `⊎-dual-×` (recommended)
@@ -224,7 +249,17 @@ version of De Morgan's Law.
 This result is an easy consequence of something we've proved previously.
 
 ```
--- Your code goes here
+open import Data.Product
+exfalso : {A : Set} → ⊥ → A
+exfalso ()
+
+⊎-dual-× : (A B : Set) → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+⊎-dual-× A B = record
+                 { to = λ ¬[a⊎b] → (λ a → ¬[a⊎b] (inj₁ a)) , λ b → ¬[a⊎b] (inj₂ b)
+                 ; from = λ{ (¬a , ¬b) (inj₁ a) → ¬a a ; (¬a , ¬b) (inj₂ b) → ¬b b}
+                 ; from∘to = λ ¬[a⊎b] → extensionality λ a⊎b → exfalso (¬[a⊎b] a⊎b)
+                 ; to∘from = λ ¬a×¬b → refl
+                 }
 ```
 
 
@@ -234,6 +269,18 @@ Do we also have the following?
 
 If so, prove; if not, can you give a relation weaker than
 isomorphism that relates the two sides?
+
+```
+
+deMorgan₂From : ∀ (A B : Set) →  ((¬ A) ⊎ (¬ B)) → ¬ (A × B)
+deMorgan₂From A B (inj₁ ¬a) a×b = ¬a (proj₁ a×b)
+deMorgan₂From A B (inj₂ ¬b) a×b = ¬b (proj₂ a×b)
+
+deMorgan₂To-irrefutable : ∀ (A B : Set) → ¬ (A × B) → ¬ ¬ ((¬ A) ⊎ (¬ B))
+deMorgan₂To-irrefutable A B ¬[a×b] ¬[¬a⊎¬b] = ¬[¬a⊎¬b] (inj₂ λ b → ¬[¬a⊎¬b] (inj₁ λ a → ¬[a×b] (a , b))) 
+
+
+```
 
 
 ## Intuitive and Classical logic
@@ -292,7 +339,7 @@ meaning that the negation of its negation is provable (and hence that
 its negation is never provable):
 ```
 em-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
-em-irrefutable = λ k → k (inj₂ (λ x → k (inj₁ x)))
+em-irrefutable ¬[a⊎¬a] = ¬[a⊎¬a] (inj₂ (λ a → ¬[a⊎¬a] (inj₁ a)))
 ```
 The best way to explain this code is to develop it interactively:
 
