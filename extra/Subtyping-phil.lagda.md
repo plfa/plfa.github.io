@@ -792,13 +792,10 @@ M₀ = ƛ ((` Z) # here)
 M₁ : ∅ ⊢ Pt3
 M₁ = ⦗ xyz ⦂ MS3 ⦘
 
-M₂ : ∅ ⊢ Pt2
-M₂ = M₁ ↑ Pt3<:Pt2
+M₂ : ∅ ⊢ `ℕ
+M₂ = M₀ · (M₁ ↑ Pt3<:Pt2)
 
-M₃ : ∅ ⊢ `ℕ
-M₃ = M₀ · M₂
-
-_ : M₃ —↠ `zero
+_ : M₂ —↠ `zero
 _ =
   begin
     ((ƛ ((` Z) # here)) · (⦗ xyz ⦂ MS3 ⦘ ↑ <:-⦗⦘ xy⊆xyz xyz⦂AS3<:xy⦂AS2))
@@ -811,6 +808,30 @@ _ =
   —→⟨ β-<:-ℕ V-zero ⟩
     `zero
   ∎
+
+M₃ : ∅ ⊢ `ℕ
+M₃ = (M₀ ↑ <:-⇒ Pt3<:Pt2 <:-ℕ) · M₁
+
+_ : M₃ —↠ `zero
+_ =
+  begin
+    ((ƛ ((` Z) # here)) ↑ <:-⇒ (<:-⦗⦘ xy⊆xyz xyz⦂AS3<:xy⦂AS2) <:-ℕ) · ⦗ xyz ⦂ MS3 ⦘
+  —→⟨ ξ-·₁ (β-<:-⇒ V-ƛ) ⟩
+   (ƛ (ƛ ((` Z) # here)) · (` Z ↑ <:-⦗⦘ xy⊆xyz xyz⦂AS3<:xy⦂AS2) ↑ <:-ℕ) · ⦗ xyz ⦂ MS3 ⦘
+  —→⟨ β-ƛ V-⦗⦘ ⟩
+   ((ƛ ((` Z) # here)) · (⦗ xyz ⦂ MS3 ⦘ ↑ <:-⦗⦘ xy⊆xyz xyz⦂AS3<:xy⦂AS2)) ↑ <:-ℕ
+  —→⟨ ξ-<: (ξ-·₂ V-ƛ (β-<:-⦗⦘ refl)) ⟩
+   (ƛ ((` Z) # here)) · ⦗ xy ⦂ (λ a a∈bs → MS3 a (xy⊆xyz a∈bs) ↑ xyz⦂AS3<:xy⦂AS2 a (xy⊆xyz a∈bs) a∈bs) ⦘ ↑ <:-ℕ
+  —→⟨ ξ-<: (β-ƛ V-⦗⦘) ⟩
+    (⦗ xy ⦂ (λ a a∈bs → MS3 a (xy⊆xyz a∈bs) ↑ xyz⦂AS3<:xy⦂AS2 a (xy⊆xyz a∈bs) a∈bs) ⦘ # here) ↑ <:-ℕ
+  —→⟨ ξ-<: (β-# refl) ⟩
+    (`zero ↑ <:-ℕ) ↑ <:-ℕ
+  —→⟨ ξ-<: (β-<:-ℕ V-zero) ⟩
+    `zero ↑ <:-ℕ
+  —→⟨ β-<:-ℕ V-zero ⟩
+    `zero
+  ∎
+
 ```
 
 -- -- -- #### Exercise `intrinsic-records` (stretch)
