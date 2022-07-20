@@ -31,7 +31,7 @@ open import Data.Nat.Properties
 open import Data.String using (String; _≟_)
 open import Data.Unit using (⊤; tt)
 open import Function using (id; _∘_)
-open import Data.Product using (_×_; Σ; ∃; Σ-syntax; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open import Data.Product using (_×_; Σ; ∃; _,_; Σ-syntax; ∃-syntax)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
@@ -46,7 +46,7 @@ infix  4 _∈_
 
 infix  4 _⊢_
 infix  4 _∋_
-infixl 5 _,_
+infixl 5 _▷_
 
 infix  5 _<:_
 infixr 7 _⇒_
@@ -134,11 +134,6 @@ map f YS x x∈xs = f (YS x x∈xs)
 
 dMap : ∀ {X : Set} (xs : List X) (YS : Map xs Set) → Set
 dMap {X} xs YS = ∀ (x : X) → (x∈xs : x ∈ xs) → YS x x∈xs
-
--- rep* : ∀ as -> Type* as -> Set
--- rep* []  =  ⊤
--- rep* (a ∷ as)  =  Type × rep* as
-
 ```
 
 
@@ -264,18 +259,18 @@ Contexts and variables are exactly as in Chapter [DeBruijn](/DeBruijn/).
 ```agda
 data Context : Set where
   ∅   : Context
-  _,_ : Context → Type → Context
+  _▷_ : Context → Type → Context
 
 data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ A}
       ---------
-    → Γ , A ∋ A
+    → Γ ▷ A ∋ A
 
   S_ : ∀ {Γ A B}
     → Γ ∋ A
       ---------
-    → Γ , B ∋ A
+    → Γ ▷ B ∋ A
 ```
 
 ## Terms
@@ -303,7 +298,7 @@ data _⊢_ where
     → Γ ⊢ A
 
   ƛ_  : ∀ {Γ A B}
-    → Γ , A ⊢ B
+    → Γ ▷ A ⊢ B
       ---------
     → Γ ⊢ A ⇒ B
 
@@ -325,12 +320,12 @@ data _⊢_ where
   case : ∀ {Γ A}
     → Γ ⊢ `ℕ
     → Γ ⊢ A
-    → Γ , `ℕ ⊢ A
+    → Γ ▷ `ℕ ⊢ A
       ----------
     → Γ ⊢ A
 
   μ_ : ∀ {Γ A}
-    → Γ , A ⊢ A
+    → Γ ▷ A ⊢ A
       ---------
     → Γ ⊢ A
 
@@ -369,7 +364,7 @@ Copied from Chapter [DeBruijn](/DeBruijn/), with extra cases for records.
 ext : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
     ---------------------------------
-  → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
+  → (∀ {A B} → Γ ▷ B ∋ A → Δ ▷ B ∋ A)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 ```
@@ -403,7 +398,7 @@ rename* ρ MS a a∈as        =  rename ρ (MS a a∈as)
 exts : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
     ---------------------------------
-  → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
+  → (∀ {A B} → Γ ▷ B ∋ A → Δ ▷ B ⊢ A)
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
 ```
@@ -435,13 +430,13 @@ subst* ρ MS a a∈as        =  subst ρ (MS a a∈as)
 
 ```agda
 _[_] : ∀ {Γ A B}
-  → Γ , B ⊢ A
+  → Γ ▷ B ⊢ A
   → Γ ⊢ B
     ---------
   → Γ ⊢ A
-_[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
+_[_] {Γ} {A} {B} N M =  subst {Γ ▷ B} {Γ} σ {A} N
   where
-  σ : ∀ {A} → Γ , B ∋ A → Γ ⊢ A
+  σ : ∀ {A} → Γ ▷ B ∋ A → Γ ⊢ A
   σ Z      =  M
   σ (S x)  =  ` x
 ```
@@ -455,7 +450,7 @@ term is a value.
 ```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
-  V-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B}
+  V-ƛ : ∀ {Γ A B} {N : Γ ▷ A ⊢ B}
       ---------------------------
     → Value (ƛ N)
 
@@ -506,7 +501,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------------
     → V · M —→ V · M′
 
-  β-ƛ : ∀ {Γ A B} {N : Γ , A ⊢ B} {W : Γ ⊢ A}
+  β-ƛ : ∀ {Γ A B} {N : Γ ▷ A ⊢ B} {W : Γ ⊢ A}
     → Value W
       --------------------
     → (ƛ N) · W —→ N [ W ]
@@ -516,21 +511,21 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       -----------------
     → `suc M —→ `suc M′
 
-  ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+  ξ-case : ∀ {Γ A} {L L′ : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ ▷ `ℕ ⊢ A}
     → L —→ L′
       -------------------------
     → case L M N —→ case L′ M N
 
-  β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+  β-zero :  ∀ {Γ A} {M : Γ ⊢ A} {N : Γ ▷ `ℕ ⊢ A}
       -------------------
     → case `zero M N —→ M
 
-  β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ , `ℕ ⊢ A}
+  β-suc : ∀ {Γ A} {V : Γ ⊢ `ℕ} {M : Γ ⊢ A} {N : Γ ▷ `ℕ ⊢ A}
     → Value V
       ----------------------------
     → case (`suc V) M N —→ N [ V ]
 
-  β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
+  β-μ : ∀ {Γ A} {N : Γ ▷ A ⊢ A}
       ----------------
     → μ N —→ N [ μ N ]
 
@@ -620,416 +615,334 @@ progress (M ↑ A<:B) with progress M
 ...        | V-⦗⦘ | <:-⦗⦘ bs⊆as AS<:BS  =  step (β-<:-⦗⦘ refl)
 ```
 
+## Reflexive and transitive closure
+
+The reflexive and transitive closure is exactly as before.
+We simply cut-and-paste the previous definition:
+```agda
+infix  2 _—↠_
+infix  1 begin_
+infixr 2 _—→⟨_⟩_
+infix  3 _∎
+
+data _—↠_ {Γ A} : (Γ ⊢ A) → (Γ ⊢ A) → Set where
+
+  _∎ : (M : Γ ⊢ A)
+      ------
+    → M —↠ M
+
+  _—→⟨_⟩_ : (L : Γ ⊢ A) {M N : Γ ⊢ A}
+    → L —→ M
+    → M —↠ N
+      ------
+    → L —↠ N
+
+begin_ : ∀ {Γ A} {M N : Γ ⊢ A}
+  → M —↠ N
+    ------
+  → M —↠ N
+begin M—↠N = M—↠N
+```
+
+
+## Evaluation
+
+```agda
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
+```
+
+```agda
+data Finished {Γ A} (N : Γ ⊢ A) : Set where
+
+   done :
+       Value N
+       ----------
+     → Finished N
+
+   out-of-gas :
+       ----------
+       Finished N
+```
+
+```agda
+data Steps {A} : ∅ ⊢ A → Set where
+
+  steps : {L N : ∅ ⊢ A}
+    → L —↠ N
+    → Finished N
+      ----------
+    → Steps L
+```
+
+The evaluator takes gas and a term and returns the corresponding steps:
+```agda
+eval : ∀ {A}
+  → Gas
+  → (L : ∅ ⊢ A)
+    -----------
+  → Steps L
+eval (gas zero)    L                     =  steps (L ∎) out-of-gas
+eval (gas (suc m)) L with progress L
+... | done VL                            =  steps (L ∎) (done VL)
+... | step {M} L—→M with eval (gas m) M
+...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+```
+
+## Reify and Reflect
+
+```agda
+rep* : ∀ (as : List Field) → Set
+rep* [] =  ⊤
+rep* (a ∷ as)  =  Type × rep* as
+
+next* : ∀ {a} {as} → Type* (a ∷ as) → Type* as
+next* AS a a∈as = AS a (there a∈as)
+
+reify* : ∀ (as : List Field) → Type* as → rep* as
+reify* [] AS = tt
+reify* (a ∷ as) AS = AS a here , reify* as (next* AS)
+
+reflect* : ∀ (as : List Field) → rep* as → Type* as
+reflect* [] tt a ()
+reflect* (a ∷ as) (A , AT) .a here  =  A
+reflect* (_ ∷ as) (A , AT) a (there a∈as)  =  reflect* as AT a a∈as
+
+rep⊢* : ∀ (as : List Field) → Context → (rep* as) → Set
+rep⊢* [] Γ tt =  ⊤
+rep⊢* (a ∷ as) Γ (A , AT)  = Γ ⊢ A × rep⊢* as Γ AT
+
+next⊢* : ∀ {a} {as} {Γ} {AS : Type* (a ∷ as)} → Γ ⊢* AS → Γ ⊢* next* AS
+next⊢* MS a a∈as = MS a (there a∈as)
+
+reify⊢* : ∀ (as : List Field) → (Γ : Context) → (AS : Type* as) → Γ ⊢* AS → rep⊢* as Γ (reify* as AS)
+reify⊢* [] Γ AS MS = tt
+reify⊢* (a ∷ as) Γ AS MS = MS a here , reify⊢* as Γ (next* AS) (next⊢* MS)
+
+reflect⊢* : ∀ (as : List Field) → (Γ : Context) → (AT : rep* as) → (MT : rep⊢* as Γ AT) → Γ ⊢* reflect* as AT
+reflect⊢* [] Γ tt tt a ()
+reflect⊢* (a ∷ as) Γ (A , AT) (M , MT) .a here  =  M
+reflect⊢* (_ ∷ as) Γ (A , AT) (M , MT) a (there a∈as)  =  reflect⊢* as Γ AT MT a a∈as
+```
+
+## Example
+
+```agda
+xy : List Field
+xy = "x" ∷ "y" ∷ []
+
+dxy : distinct xy
+dxy ."x" here here = refl
+dxy ."x" here (there (there ()))
+dxy ."y" (there here) (there here) = refl
+
+xyz : List Field
+xyz = "x" ∷ "y" ∷ "z" ∷ []
+
+dxyz : distinct xyz
+dxyz ."x" here here = refl
+dxyz ."x" here (there (there (there ())))
+dxyz ."y" (there here) (there here) = refl
+dxyz ."y" (there here) (there (there (there ())))
+dxyz ."z" (there (there here)) (there (there here)) = refl
+
+xy⊆xyz : xy ⊆ xyz
+xy⊆xyz here = here
+xy⊆xyz (there here) = there here
+
+AS2 : Type* xy
+AS2 ."x" here = `ℕ
+AS2 ."y" (there here) = `ℕ
 
--- -- The Progress theorem states that a well-typed term may either take a
--- -- reduction step or it is already a value. The proof of Progress is like
--- -- the one in the [Properties](/Properties/); it
--- -- proceeds by induction on the typing derivation and most of the cases
--- -- remain the same. Below we discuss the new cases for records and
--- -- subsumption.
-
--- -- ```agda
--- -- data Progress (M : Term) : Set where
-
--- --   step : ∀ {N}
--- --     → M —→ N
--- --       ----------
--- --     → Progress M
-
--- --   done :
--- --       Value M
--- --       ----------
--- --     → Progress M
--- -- ```
-
--- -- ```agda
--- -- progress : ∀ {M A}
--- --   → ∅ ⊢ M ⦂ A
--- --     ----------
--- --   → Progress M
--- -- progress (⊢` ())
--- -- progress (⊢ƛ ⊢N)                            = done V-ƛ
--- -- progress (⊢· ⊢L ⊢M)
--- --     with progress ⊢L
--- -- ... | step L—→L′                            = step (ξ-·₁ L—→L′)
--- -- ... | done VL
--- --         with progress ⊢M
--- -- ...     | step M—→M′                        = step (ξ-·₂ VL M—→M′)
--- -- ...     | done VM
--- --         with canonical ⊢L VL
--- -- ...     | C-ƛ ⊢N _                          = step (β-ƛ VM)
--- -- progress ⊢zero                              =  done V-zero
--- -- progress (⊢suc ⊢M) with progress ⊢M
--- -- ...  | step M—→M′                           =  step (ξ-suc M—→M′)
--- -- ...  | done VM                              =  done (V-suc VM)
--- -- progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
--- -- ... | step L—→L′                            =  step (ξ-case L—→L′)
--- -- ... | done VL with canonical ⊢L VL
--- -- ...   | C-zero                              =  step β-zero
--- -- ...   | C-suc CL                            =  step (β-suc (value CL))
--- -- progress (⊢μ ⊢M)                            =  step β-μ
--- -- progress (⊢# {n}{Γ}{A}{M}{l}{ls}{As}{i}{d} ⊢M ls[i]=l As[i]=A)
--- --     with progress ⊢M
--- -- ... | step M—→M′                            =  step (ξ-# M—→M′)
--- -- ... | done VM
--- --     with canonical ⊢M VM
--- -- ... | C-rcd {ks = ms}{As = Bs} ⊢Ms _ (<:-rcd ls⊆ms _)
--- --     with lookup-⊆ {i = i} ls⊆ms
--- -- ... | ⟨ k , ls[i]=ms[k] ⟩                   =  step (β-# {j = k}(trans (sym ls[i]=ms[k]) ls[i]=l))
--- -- progress (⊢rcd x d)                         =  done V-rcd
--- -- progress (⊢<: {A = A}{B} ⊢M A<:B)           =  progress ⊢M
--- -- ```
--- -- * Case `⊢#`: We have `Γ ⊢ M ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
--- --   By the induction hypothesis, either `M —→ M′` or `M` is a value. In the later case we
--- --   conclude that `M # l —→ M′ # l` by rule `ξ-#`. On the other hand, if `M` is a value,
--- --   we invoke the canonical forms lemma to show that `M` has the form `⦗ ms := Ms ⦘`
--- --   where `∅ ⊢* Ms ⦂ Bs` and `ls ⊆ ms`. By lemma `lookup-⊆`, we have
--- --   `lookup ls i ≡ lookup ms k` for some `k`. Thus, we have `lookup ms k ≡ l`
--- --   and we conclude `⦗ ms := Ms ⦘ # l —→ lookup Ms k` by rule `β-#`.
-
--- -- * Case `⊢rcd`: we immediately characterize the record as a value.
-
--- -- * Case `⊢<:`: we invoke the induction hypothesis on sub-derivation of `Γ ⊢ M ⦂ A`.
-
-
--- -- ## Preservation {#subtyping-preservation}
-
--- -- In this section we prove that when a well-typed term takes a reduction
--- -- step, the result is another well-typed term with the same type.
-
--- -- As mentioned earlier, we need to prove that substitution preserve
--- -- types, which in turn requires that renaming preserves types.  The
--- -- proofs of these lemmas are adapted from the intrinsic versions of the
--- -- `ext`, `rename`, `exts`, and `subst` functions in the
--- -- [DeBruijn](/DeBruijn/) chapter.
-
--- -- We define the following abbreviation for a *well-typed renaming* from Γ
--- -- to Δ, that is, a renaming that sends variables in Γ to variables in Δ
--- -- with the same type.
--- -- ```agda
--- -- _⦂ᵣ_⇒_ : (Id → Id) → Context → Context → Set
--- -- ρ ⦂ᵣ Γ ⇒ Δ = ∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ ρ x ⦂ A
--- -- ```
-
--- -- The `ext` function takes a well-typed renaming from Γ to Δ
--- -- and extends it to become a renaming from (Γ , B) to (Δ , B).
--- -- ```agda
--- -- ext-pres : ∀ {Γ Δ ρ B}
--- --   → ρ ⦂ᵣ Γ ⇒ Δ
--- --     --------------------------------
--- --   → ext ρ ⦂ᵣ (Γ , B) ⇒ (Δ , B)
--- -- ext-pres {ρ = ρ } ρ⦂ Z = Z
--- -- ext-pres {ρ = ρ } ρ⦂ (S {x = x} ∋x) =  S (ρ⦂ ∋x)
--- -- ```
-
--- -- Next we prove that both `rename` and `rename-vec` preserve types.  We
--- -- use the `ext-pres` lemma in each of the cases with a variable binding: `⊢ƛ`,
--- -- `⊢μ`, and `⊢case`.
--- -- ```agda
--- -- ren-vec-pres : ∀ {Γ Δ ρ}{n}{Ms : Vec Term n}{As : Vec Type n}
--- --   → ρ ⦂ᵣ Γ ⇒ Δ  →  Γ ⊢* Ms ⦂ As  →  Δ ⊢* rename-vec ρ Ms ⦂ As
-
--- -- rename-pres : ∀ {Γ Δ ρ M A}
--- --   → ρ ⦂ᵣ Γ ⇒ Δ
--- --   → Γ ⊢ M ⦂ A
--- --     ------------------
--- --   → Δ ⊢ rename ρ M ⦂ A
--- -- rename-pres ρ⦂ (⊢` ∋w)           =  ⊢` (ρ⦂ ∋w)
--- -- rename-pres {ρ = ρ} ρ⦂ (⊢ƛ ⊢N)   =  ⊢ƛ (rename-pres {ρ = ext ρ} (ext-pres {ρ = ρ} ρ⦂) ⊢N)
--- -- rename-pres {ρ = ρ} ρ⦂ (⊢· ⊢L ⊢M)=  ⊢· (rename-pres {ρ = ρ} ρ⦂ ⊢L) (rename-pres {ρ = ρ} ρ⦂ ⊢M)
--- -- rename-pres {ρ = ρ} ρ⦂ (⊢μ ⊢M)   =  ⊢μ (rename-pres {ρ = ext ρ} (ext-pres {ρ = ρ} ρ⦂) ⊢M)
--- -- rename-pres ρ⦂ (⊢rcd ⊢Ms dls)    = ⊢rcd (ren-vec-pres ρ⦂ ⊢Ms ) dls
--- -- rename-pres {ρ = ρ} ρ⦂ (⊢# {d = d} ⊢M lif liA) = ⊢# {d = d}(rename-pres {ρ = ρ} ρ⦂ ⊢M) lif liA
--- -- rename-pres {ρ = ρ} ρ⦂ (⊢<: ⊢M lt) = ⊢<: (rename-pres {ρ = ρ} ρ⦂ ⊢M) lt
--- -- rename-pres ρ⦂ ⊢zero               = ⊢zero
--- -- rename-pres ρ⦂ (⊢suc ⊢M)           = ⊢suc (rename-pres ρ⦂ ⊢M)
--- -- rename-pres ρ⦂ (⊢case ⊢L ⊢M ⊢N)    =
--- --     ⊢case (rename-pres ρ⦂ ⊢L) (rename-pres ρ⦂ ⊢M) (rename-pres (ext-pres ρ⦂) ⊢N)
-
--- -- ren-vec-pres ρ⦂ ⊢*-[] = ⊢*-[]
--- -- ren-vec-pres {ρ = ρ} ρ⦂ (⊢*-∷ ⊢M ⊢Ms) =
--- --   let IH = ren-vec-pres {ρ = ρ} ρ⦂ ⊢Ms in
--- --   ⊢*-∷ (rename-pres {ρ = ρ} ρ⦂ ⊢M) IH
--- -- ```
-
--- -- A *well-typed substitution* from Γ to Δ sends variables in Γ to terms
--- -- of the same type in the context Δ.
--- -- ```agda
--- -- _⦂_⇒_ : (Id → Term) → Context → Context → Set
--- -- σ ⦂ Γ ⇒ Δ = ∀ {A x} → Γ ∋ x ⦂ A → Δ ⊢ subst σ (` x) ⦂ A
--- -- ```
-
--- -- The `exts` function sends well-typed substitutions from Γ to Δ to
--- -- well-typed substitutions from (Γ , B) to (Δ , B). In the case for `S`,
--- -- we note that `exts σ (suc x) ≡ rename sub (σ x)`, so we need to prove
--- -- `Δ , B ⊢ rename suc (σ x) ⦂ A`, which we obtain by the `rename-pres`
--- -- lemma.
-
--- -- ```agda
--- -- exts-pres : ∀ {Γ Δ σ B}
--- --   → σ ⦂ Γ ⇒ Δ
--- --     --------------------------------
--- --   → exts σ ⦂ (Γ , B) ⇒ (Δ , B)
--- -- exts-pres {σ = σ} σ⦂ Z = ⊢` Z
--- -- exts-pres {σ = σ} σ⦂ (S {x = x} ∋x) = rename-pres {ρ = suc} S (σ⦂ ∋x)
--- -- ```
-
--- -- Now we prove that both `subst` and `subst-vec` preserve types.  We use
--- -- the `exts-pres` lemma in each of the cases with a variable binding:
--- -- `⊢ƛ`, `⊢μ`, and `⊢case`.
--- -- ```agda
--- -- subst-vec-pres : ∀ {Γ Δ σ}{n}{Ms : Vec Term n}{A}
--- --   → σ ⦂ Γ ⇒ Δ  →  Γ ⊢* Ms ⦂ A  →  Δ ⊢* subst-vec σ Ms ⦂ A
-
--- -- subst-pres : ∀ {Γ Δ σ N A}
--- --   → σ ⦂ Γ ⇒ Δ
--- --   → Γ ⊢ N ⦂ A
--- --     -----------------
--- --   → Δ ⊢ subst σ N ⦂ A
--- -- subst-pres σ⦂ (⊢` eq)            = σ⦂ eq
--- -- subst-pres {σ = σ} σ⦂ (⊢ƛ ⊢N)    = ⊢ƛ (subst-pres{σ = exts σ}(exts-pres {σ = σ} σ⦂) ⊢N)
--- -- subst-pres {σ = σ} σ⦂ (⊢· ⊢L ⊢M) = ⊢· (subst-pres{σ = σ} σ⦂ ⊢L) (subst-pres{σ = σ} σ⦂ ⊢M)
--- -- subst-pres {σ = σ} σ⦂ (⊢μ ⊢M)    = ⊢μ (subst-pres{σ = exts σ} (exts-pres{σ = σ} σ⦂) ⊢M)
--- -- subst-pres σ⦂ (⊢rcd ⊢Ms dls) = ⊢rcd (subst-vec-pres σ⦂ ⊢Ms ) dls
--- -- subst-pres {σ = σ} σ⦂ (⊢# {d = d} ⊢M lif liA) =
--- --     ⊢# {d = d} (subst-pres {σ = σ} σ⦂ ⊢M) lif liA
--- -- subst-pres {σ = σ} σ⦂ (⊢<: ⊢N lt) = ⊢<: (subst-pres {σ = σ} σ⦂ ⊢N) lt
--- -- subst-pres σ⦂ ⊢zero = ⊢zero
--- -- subst-pres σ⦂ (⊢suc ⊢M) = ⊢suc (subst-pres σ⦂ ⊢M)
--- -- subst-pres σ⦂ (⊢case ⊢L ⊢M ⊢N) =
--- --     ⊢case (subst-pres σ⦂ ⊢L) (subst-pres σ⦂ ⊢M) (subst-pres (exts-pres σ⦂) ⊢N)
-
--- -- subst-vec-pres σ⦂ ⊢*-[] = ⊢*-[]
--- -- subst-vec-pres {σ = σ} σ⦂ (⊢*-∷ ⊢M ⊢Ms) =
--- --     ⊢*-∷ (subst-pres {σ = σ} σ⦂ ⊢M) (subst-vec-pres σ⦂ ⊢Ms)
--- -- ```
-
--- -- The fact that single substitution preserves types is a corollary
--- -- of `subst-pres`.
--- -- ```agda
--- -- substitution : ∀{Γ A B M N}
--- --    → Γ ⊢ M ⦂ A
--- --    → (Γ , A) ⊢ N ⦂ B
--- --      ---------------
--- --    → Γ ⊢ N [ M ] ⦂ B
--- -- substitution {Γ}{A}{B}{M}{N} ⊢M ⊢N = subst-pres {σ = subst-zero M} G ⊢N
--- --     where
--- --     G : ∀ {C : Type} {x : ℕ}
--- --       → (Γ , A) ∋ x ⦂ C → Γ ⊢ subst (subst-zero M) (` x) ⦂ C
--- --     G {C} {zero} Z = ⊢M
--- --     G {C} {suc x} (S ∋x) = ⊢` ∋x
--- -- ```
-
--- -- We require just one last lemma before we get to the proof of preservation.
--- -- The following lemma establishes that field access preserves types.
--- -- ```agda
--- -- field-pres : ∀{n}{As : Vec Type n}{A}{Ms : Vec Term n}{i : Fin n}
--- --          → ∅ ⊢* Ms ⦂ As
--- --          → lookup As i ≡ A
--- --          → ∅ ⊢ lookup Ms i ⦂ A
--- -- field-pres {i = zero} (⊢*-∷ ⊢M ⊢Ms) refl = ⊢M
--- -- field-pres {i = suc i} (⊢*-∷ ⊢M ⊢Ms) As[i]=A = field-pres ⊢Ms As[i]=A
--- -- ```
--- -- The proof is by induction on the typing derivation.
-
--- -- * Case `⊢-*-[]`: This case yields a contradiction because `Fin 0` is uninhabitable.
-
--- -- * Case `⊢-*-∷`: So we have `∅ ⊢ M ⦂ B` and `∅ ⊢* Ms ⦂ As`. We proceed by cases on `i`.
-
--- --     * If it is `0`, then lookup yields term `M` and `A ≡ B`, so we conclude that `∅ ⊢ M ⦂ A`.
-
--- --     * If it is `suc i`, then we conclude by the induction hypothesis.
-
-
--- -- We conclude this chapter with the proof of preservation. We discuss
--- -- the cases particular to records and subtyping in the paragraph
--- -- following the Agda proof.
--- -- ```agda
--- -- preserve : ∀ {M N A}
--- --   → ∅ ⊢ M ⦂ A
--- --   → M —→ N
--- --     ----------
--- --   → ∅ ⊢ N ⦂ A
--- -- preserve (⊢` ())
--- -- preserve (⊢ƛ ⊢N)                 ()
--- -- preserve (⊢· ⊢L ⊢M)              (ξ-·₁ L—→L′)     =  ⊢· (preserve ⊢L L—→L′) ⊢M
--- -- preserve (⊢· ⊢L ⊢M)              (ξ-·₂ VL M—→M′)  =  ⊢· ⊢L (preserve ⊢M M—→M′)
--- -- preserve (⊢· ⊢L ⊢M)              (β-ƛ VL)
--- --     with canonical ⊢L V-ƛ
--- -- ... | C-ƛ ⊢N (<:-fun CA BC)                       =  ⊢<: (substitution (⊢<: ⊢M CA) ⊢N) BC
--- -- preserve ⊢zero                   ()
--- -- preserve (⊢suc ⊢M)               (ξ-suc M—→M′)    =  ⊢suc (preserve ⊢M M—→M′)
--- -- preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L—→L′)   =  ⊢case (preserve ⊢L L—→L′) ⊢M ⊢N
--- -- preserve (⊢case ⊢L ⊢M ⊢N)        (β-zero)         =  ⊢M
--- -- preserve (⊢case ⊢L ⊢M ⊢N)        (β-suc VV)
--- --     with canonical ⊢L (V-suc VV)
--- -- ... | C-suc CV                                    =  substitution (typed CV) ⊢N
--- -- preserve (⊢μ ⊢M)                 (β-μ)            =  substitution (⊢μ ⊢M) ⊢M
--- -- preserve (⊢# {d = d} ⊢M lsi Asi) (ξ-# M—→M′)      =  ⊢# {d = d} (preserve ⊢M M—→M′) lsi Asi
--- -- preserve (⊢# {ls = ls}{i = i} ⊢M refl refl) (β-# {ls = ks}{Ms}{j = j} ks[j]=l)
--- --     with canonical ⊢M V-rcd
--- -- ... | C-rcd {As = Bs} ⊢Ms dks (<:-rcd {ks = ks} ls⊆ks Bs<:As)
--- --     with lookup-⊆ {i = i} ls⊆ks
--- -- ... | ⟨ k , ls[i]=ks[k] ⟩
--- --     with field-pres {i = k} ⊢Ms refl
--- -- ... | ⊢Ms[k]⦂Bs[k]
--- --     rewrite distinct-lookup-inj dks (trans ks[j]=l ls[i]=ks[k]) =
--- --     let Ms[k]⦂As[i] = ⊢<: ⊢Ms[k]⦂Bs[k] (Bs<:As (sym ls[i]=ks[k])) in
--- --     Ms[k]⦂As[i]
--- -- preserve (⊢<: ⊢M B<:A) M—→N                       =  ⊢<: (preserve ⊢M M—→N) B<:A
--- -- ```
--- -- Recall that the proof is by induction on the derivation of `∅ ⊢ M ⦂ A`
--- -- with cases on `M —→ N`.
-
--- -- * Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
--- --   and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ⦗ ls ⦂ As ⦘`
--- --   and then conclude by rule `⊢#`.
-
--- -- * Case `⊢#` and `β-#`. We have `∅ ⊢ ⦗ ks := Ms ⦘ ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`,
--- --   `lookup As i ≡ A`, `lookup ks j ≡ l`, and `⦗ ks := Ms ⦘ # l —→ lookup Ms j`.
--- --   By the canonical forms lemma, we have `∅ ⊢* Ms ⦂ Bs`, `ls ⊆ ks` and `ks ⦂ Bs <: ls ⦂ As`.
--- --   By lemma `lookup-⊆` we have `lookup ls i ≡ lookup ks k` for some `k`.
--- --   Also, we have `∅ ⊢ lookup Ms k ⦂ lookup Bs k` by lemma `field-pres`.
--- --   Then because `ks ⦂ Bs <: ls ⦂ As` and `lookup ks k ≡ lookup ls i`, we have
--- --   `lookup Bs k <: lookup As i`. So by rule `⊢<:` we have
--- --   `∅ ⊢ lookup Ms k ⦂ lookup As i`.
--- --   Finally, because `lookup` is injective and `lookup ks j ≡ lookup ks k`,
--- --   we have `j ≡ k` and conclude that `∅ ⊢ lookup Ms j ⦂ lookup As i`.
-
--- -- * Case `⊢<:`. We have `∅ ⊢ M ⦂ B`, `B <: A`, and `M —→ N`. We apply the induction hypothesis
--- --   to obtain `∅ ⊢ N ⦂ B` and then subsumption to conclude that `∅ ⊢ N ⦂ A`.
-
-
--- -- #### Exercise `intrinsic-records` (stretch)
-
--- -- Formulate the language of this chapter, STLC with records, using
--- -- intrinsically typed terms. This requires taking an algorithmic approach
--- -- to the type system, which means that there is no subsumption rule and
--- -- instead subtyping is used in the elimination rules. For example,
--- -- the rule for function application would be:
-
--- --     _·_ : ∀ {Γ A B C}
--- --       → Γ ⊢ A ⇒ B
--- --       → Γ ⊢ C
--- --       → C <: A
--- --         -------
--- --       → Γ ⊢ B
-
--- -- #### Exercise `type-check-records` (practice)
-
--- -- Write a recursive function whose input is a `Term` and whose output
--- -- is a typing derivation for that term, if one exists.
-
--- --     type-check : (M : Term) → (Γ : Context) → Maybe (Σ[ A ∈ Type ] Γ ⊢ M ⦂ A)
-
--- -- #### Exercise `variants` (recommended)
-
--- -- Add variants to the language of this chapter and update the proofs of
--- -- progress and preservation. The variant type is a generalization of a
--- -- sum type, similar to the way the record type is a generalization of
--- -- product. The following summarizes the treatment of variants in the
--- -- book Types and Programming Languages. A variant type is traditionally
--- -- written:
-
--- --     〈l₁:A₁, ..., lᵤ:Aᵤ〉
-
--- -- The term for introducing a variant is
-
--- --     〈l=t〉
-
--- -- and the term for eliminating a variant is
-
--- --     case L of 〈l₁=x₁〉 ⇒ M₁ | ... | 〈lᵤ=xᵤ〉 ⇒ Mᵤ
-
--- -- The typing rules for these terms are
-
--- --     (T-Variant)
--- --     Γ ⊢ Mⱼ : Aⱼ
--- --     ---------------------------------
--- --     Γ ⊢ 〈lⱼ=Mⱼ〉 : 〈l₁=A₁, ... , lᵤ=Aᵤ〉
-
-
--- --     (T-Case)
--- --     Γ ⊢ L : 〈l₁=A₁, ... , lᵤ=Aᵤ〉
--- --     ∀ i ∈ 1..u,   Γ,xᵢ:Aᵢ ⊢ Mᵢ : B
--- --     ---------------------------------------------------
--- --     Γ ⊢ case L of 〈l₁=x₁〉 ⇒ M₁ | ... | 〈lᵤ=xᵤ〉 ⇒ Mᵤ  : B
-
--- -- The non-algorithmic subtyping rules for variants are
-
--- --     (S-VariantWidth)
--- --     ------------------------------------------------------------
--- --     〈l₁=A₁, ..., lᵤ=Aᵤ〉   <:   〈l₁=A₁, ..., lᵤ=Aᵤ, ..., lᵤ₊ₓ=Aᵤ₊ₓ〉
-
--- --     (S-VariantDepth)
--- --     ∀ i ∈ 1..u,    Aᵢ <: Bᵢ
--- --     ---------------------------------------------
--- --     〈l₁=A₁, ..., lᵤ=Aᵤ〉   <:   〈l₁=B₁, ..., lᵤ=Bᵤ〉
-
--- --     (S-VariantPerm)
--- --     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
--- --     ----------------------------------------------
--- --     〈k₁=A₁, ..., kᵤ=Aᵤ〉   <:   〈l₁=B₁, ..., lᵤ=Bᵤ〉
-
--- -- Come up with an algorithmic subtyping rule for variant types.
-
--- -- #### Exercise `<:-alternative` (stretch)
-
--- -- Revise this formalisation of records with subtyping (including proofs
--- -- of progress and preservation) to use the non-algorithmic subtyping
--- -- rules for Chapter 15 of Types and Programming Languages, which we list here:
-
--- --     (S-RcdWidth)
--- --     -------------------------------------------------------------------------
--- --     ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ, ..., lᵤ₊ₓ ⦂ Aᵤ₊ₓ ⦘ < ⦂  ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘
-
--- --     (S-RcdDepth)
--- --         ∀i∈1..u, Aᵢ <: Bᵢ
--- --     ------------------------------------------------------
--- --     ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
-
--- --     (S-RcdPerm)
--- --     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
--- --     ------------------------------------------------------
--- --     ⦗ k₁ ⦂ A₁, ..., kᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
-
--- -- You will most likely need to prove inversion lemmas for the subtype relation
--- -- of the form:
-
--- --     If S <: T₁ ⇒ T₂, then S ≡ S₁ ⇒ S₂, T₁ <: S₁, and S₂ <: T₂, for some S₁, S₂.
-
--- --     If S <: ⦗ lᵢ ⦂ Tᵢ | i ∈ 1..n ⦘, then S ≡ ⦗ kⱼ ⦂ Sⱼ | j ∈ 1..m ⦘
--- --     and { lᵢ | i ∈ 1..n } ⊆ { kⱼ | j ∈ 1..m }
--- --     and Sⱼ <: Tᵢ for every i and j such that lᵢ = kⱼ.
-
--- -- ## References
-
--- -- * John C. Reynolds. Using Category Theory to Design Implicit
--- --   Conversions and Generic Operators.
--- --   In Semantics-Directed Compiler Generation, 1980.
--- --   LNCS Volume 94.
-
--- -- * Luca Cardelli. A semantics of multiple inheritance.  In Semantics of
--- --   Data Types, 1984. Springer.
-
--- -- * Barbara H. Liskov and Jeannette M. Wing.  A Behavioral Notion of
--- --   Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
-
--- -- * Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
-
--- -- ## Unicode
-
--- -- This chapter uses the following unicode:
-
--- --     ⦗  U+2997  LEFT BLACK TORTOISE SHELL BRACKET (\()
--- --     ⦘  U+2997  RIGHT BLACK TORTOISE SHELL BRACKET (\))
--- --     ⦂  U+2982  Z NOTATION TYPE COLON (\:)
--- --     ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub=)
--- --     ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
--- --     ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
--- --     μ  U+03BC  GREEK SMALL LETTER MU (\mu)
--- --     ·  U+00B7  MIDDLE DOT (\cdot)
--- --     ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
--- --     ∋  U+220B  CONTAINS AS MEMBER (\ni)
--- --     →  U+2192  RIGHTWARDS ARROW (\to)
--- --     —  U+2014  EM DASH (\em)
+MS2 : ∅ ⊢* AS2
+MS2 ."x" here = `zero
+MS2 ."y" (there here) = `suc `zero
+
+AS3 : Type* xyz
+AS3 ."x" here = `ℕ
+AS3 ."y" (there here) = `ℕ
+AS3 ."z" (there (there here)) = `ℕ
+
+MS3 : ∅ ⊢* AS3
+MS3 ."x" here = `zero
+MS3 ."y" (there here) = `suc `zero
+MS3 ."z" (there (there here)) = `suc `suc `zero
+
+Pt2 : Type
+Pt2 = ⦗ xy ⦂ AS2 ⦘{dxy}
+
+Pt3 : Type
+Pt3 = ⦗ xyz ⦂ AS3 ⦘{dxyz}
+
+xyz⦂AS3<:xy⦂AS2 : xyz ⦂ AS3 <: xy ⦂ AS2
+xyz⦂AS3<:xy⦂AS2 ."x" here here = <:-ℕ
+xyz⦂AS3<:xy⦂AS2 ."x" here (there (there ()))
+xyz⦂AS3<:xy⦂AS2 ."y" (there here) (there here) = <:-ℕ
+xyz⦂AS3<:xy⦂AS2 ."z" (there (there here)) (there (there ()))
+xyz⦂AS3<:xy⦂AS2 _ (there (there (there ())))
+
+Pt3<:Pt2 : Pt3 <: Pt2
+Pt3<:Pt2 = <:-⦗⦘ xy⊆xyz xyz⦂AS3<:xy⦂AS2
+
+M₀ : ∅ ⊢ Pt2 ⇒ `ℕ
+M₀ = ƛ ((` Z) # here)
+
+M₁ : ∅ ⊢ Pt3
+M₁ = ⦗ xyz ⦂ MS3 ⦘
+
+M₂ : ∅ ⊢ Pt2
+M₂ = M₁ ↑ Pt3<:Pt2
+
+M₃ : ∅ ⊢ `ℕ
+M₃ = M₀ · M₂
+
+_ : M₃ —↠ `zero
+_ =
+  begin
+    ((ƛ ((` Z) # here)) · (⦗ xyz ⦂ MS3 ⦘ ↑ <:-⦗⦘ xy⊆xyz xyz⦂AS3<:xy⦂AS2))
+  —→⟨ ξ-·₂ V-ƛ (β-<:-⦗⦘ refl) ⟩
+    (ƛ ((` Z) # here)) · ⦗ xy ⦂ (λ a a∈bs → MS3 a (xy⊆xyz a∈bs) ↑ xyz⦂AS3<:xy⦂AS2 a (xy⊆xyz a∈bs) a∈bs) ⦘
+  —→⟨ β-ƛ V-⦗⦘ ⟩
+    (⦗ xy ⦂ (λ a a∈bs → MS3 a (xy⊆xyz a∈bs) ↑ xyz⦂AS3<:xy⦂AS2 a (xy⊆xyz a∈bs) a∈bs) ⦘ # here)
+  —→⟨ β-# refl ⟩
+    `zero ↑ <:-ℕ
+  —→⟨ β-<:-ℕ V-zero ⟩
+    `zero
+  ∎
+```
+
+-- -- -- #### Exercise `intrinsic-records` (stretch)
+
+-- -- -- Formulate the language of this chapter, STLC with records, using
+-- -- -- intrinsically typed terms. This requires taking an algorithmic approach
+-- -- -- to the type system, which means that there is no subsumption rule and
+-- -- -- instead subtyping is used in the elimination rules. For example,
+-- -- -- the rule for function application would be:
+
+-- -- --     _·_ : ∀ {Γ A B C}
+-- -- --       → Γ ⊢ A ⇒ B
+-- -- --       → Γ ⊢ C
+-- -- --       → C <: A
+-- -- --         -------
+-- -- --       → Γ ⊢ B
+
+-- -- -- #### Exercise `type-check-records` (practice)
+
+-- -- -- Write a recursive function whose input is a `Term` and whose output
+-- -- -- is a typing derivation for that term, if one exists.
+
+-- -- --     type-check : (M : Term) → (Γ : Context) → Maybe (Σ[ A ∈ Type ] Γ ⊢ M ⦂ A)
+
+-- -- -- #### Exercise `variants` (recommended)
+
+-- -- -- Add variants to the language of this chapter and update the proofs of
+-- -- -- progress and preservation. The variant type is a generalization of a
+-- -- -- sum type, similar to the way the record type is a generalization of
+-- -- -- product. The following summarizes the treatment of variants in the
+-- -- -- book Types and Programming Languages. A variant type is traditionally
+-- -- -- written:
+
+-- -- --     〈l₁:A₁, ..., lᵤ:Aᵤ〉
+
+-- -- -- The term for introducing a variant is
+
+-- -- --     〈l=t〉
+
+-- -- -- and the term for eliminating a variant is
+
+-- -- --     case L of 〈l₁=x₁〉 ⇒ M₁ | ... | 〈lᵤ=xᵤ〉 ⇒ Mᵤ
+
+-- -- -- The typing rules for these terms are
+
+-- -- --     (T-Variant)
+-- -- --     Γ ⊢ Mⱼ : Aⱼ
+-- -- --     ---------------------------------
+-- -- --     Γ ⊢ 〈lⱼ=Mⱼ〉 : 〈l₁=A₁, ... , lᵤ=Aᵤ〉
+
+
+-- -- --     (T-Case)
+-- -- --     Γ ⊢ L : 〈l₁=A₁, ... , lᵤ=Aᵤ〉
+-- -- --     ∀ i ∈ 1..u,   Γ,xᵢ:Aᵢ ⊢ Mᵢ : B
+-- -- --     ---------------------------------------------------
+-- -- --     Γ ⊢ case L of 〈l₁=x₁〉 ⇒ M₁ | ... | 〈lᵤ=xᵤ〉 ⇒ Mᵤ  : B
+
+-- -- -- The non-algorithmic subtyping rules for variants are
+
+-- -- --     (S-VariantWidth)
+-- -- --     ------------------------------------------------------------
+-- -- --     〈l₁=A₁, ..., lᵤ=Aᵤ〉   <:   〈l₁=A₁, ..., lᵤ=Aᵤ, ..., lᵤ₊ₓ=Aᵤ₊ₓ〉
+
+-- -- --     (S-VariantDepth)
+-- -- --     ∀ i ∈ 1..u,    Aᵢ <: Bᵢ
+-- -- --     ---------------------------------------------
+-- -- --     〈l₁=A₁, ..., lᵤ=Aᵤ〉   <:   〈l₁=B₁, ..., lᵤ=Bᵤ〉
+
+-- -- --     (S-VariantPerm)
+-- -- --     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
+-- -- --     ----------------------------------------------
+-- -- --     〈k₁=A₁, ..., kᵤ=Aᵤ〉   <:   〈l₁=B₁, ..., lᵤ=Bᵤ〉
+
+-- -- -- Come up with an algorithmic subtyping rule for variant types.
+
+-- -- -- #### Exercise `<:-alternative` (stretch)
+
+-- -- -- Revise this formalisation of records with subtyping (including proofs
+-- -- -- of progress and preservation) to use the non-algorithmic subtyping
+-- -- -- rules for Chapter 15 of Types and Programming Languages, which we list here:
+
+-- -- --     (S-RcdWidth)
+-- -- --     -------------------------------------------------------------------------
+-- -- --     ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ, ..., lᵤ₊ₓ ⦂ Aᵤ₊ₓ ⦘ < ⦂  ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘
+
+-- -- --     (S-RcdDepth)
+-- -- --         ∀i∈1..u, Aᵢ <: Bᵢ
+-- -- --     ------------------------------------------------------
+-- -- --     ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
+
+-- -- --     (S-RcdPerm)
+-- -- --     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
+-- -- --     ------------------------------------------------------
+-- -- --     ⦗ k₁ ⦂ A₁, ..., kᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
+
+-- -- -- You will most likely need to prove inversion lemmas for the subtype relation
+-- -- -- of the form:
+
+-- -- --     If S <: T₁ ⇒ T₂, then S ≡ S₁ ⇒ S₂, T₁ <: S₁, and S₂ <: T₂, for some S₁, S₂.
+
+-- -- --     If S <: ⦗ lᵢ ⦂ Tᵢ | i ∈ 1..n ⦘, then S ≡ ⦗ kⱼ ⦂ Sⱼ | j ∈ 1..m ⦘
+-- -- --     and { lᵢ | i ∈ 1..n } ⊆ { kⱼ | j ∈ 1..m }
+-- -- --     and Sⱼ <: Tᵢ for every i and j such that lᵢ = kⱼ.
+
+-- ## References
+
+-- * John C. Reynolds. Using Category Theory to Design Implicit
+--   Conversions and Generic Operators.
+--   In Semantics-Directed Compiler Generation, 1980.
+--   LNCS Volume 94.
+
+-- * Luca Cardelli. A semantics of multiple inheritance.  In Semantics of
+--   Data Types, 1984. Springer.
+
+-- * Barbara H. Liskov and Jeannette M. Wing.  A Behavioral Notion of
+--   Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
+
+-- * Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
+
+-- # Unicode
+
+-- This chapter uses the following unicode:
+
+--   ⦗  U+2997  LEFT BLACK TORTOISE SHELL BRACKET (\()
+--    ⦘ U+2997  RIGHT BLACK TORTOISE SHELL BRACKET (\))
+--    ⦂  U+2982  Z NOTATION TYPE COLON (\:)
+--    ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub=)
+--    ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
+--    ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+--    μ  U+03BC  GREEK SMALL LETTER MU (\mu)
+--    ·  U+00B7  MIDDLE DOT (\cdot)
+--    ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
+--    ∋  U+220B  CONTAINS AS MEMBER (\ni)
+--    →  U+2192  RIGHTWARDS ARROW (\to)
+--    —  U+2014  EM DASH (\em)
