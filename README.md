@@ -46,7 +46,7 @@ If you do not have Git, see [the Git downloads page][git].
 
 ### Install GHC and Cabal
 
-Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ version 8.10.7 (or 9.2.3) and its package manager _Cabal_. We recommend installing these using [ghcup][ghcup].
+Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ (version 8.10.7 or 9.2.3) and its package manager _Cabal_. We recommend installing these using [ghcup][ghcup].
 
 ### Install Agda
 
@@ -272,8 +272,8 @@ You'll see the key sequence of the character in mini buffer.
 [vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
 [atom]: https://atom.io/
 [atom-agda]: https://atom.io/packages/agda-mode
-[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.3-blue.svg
-[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.3
+[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.7.1-blue.svg
+[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.1
 [fix-whitespace]: https://github.com/agda/fix-whitespace
 [ruby]: https://www.ruby-lang.org/en/documentation/installation/
 [ruby-bundler]: https://bundler.io/#getting-started

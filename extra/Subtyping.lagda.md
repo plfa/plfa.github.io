@@ -21,13 +21,13 @@ subtype relation should always be reflexive and transitive. When
 `A` is a subtype of `B`, that is, `A <: B`, we may also refer to
 `B` as a supertype of `A`.
 
-To formulate a type system for a language with subtyping, one simply
+To formulate a type system for a language with subtyping, one
 adds the *subsumption rule*, which states that a term of type `A`
 can also have type `B` if `A` is a subtype of `B`.
 
     ⊢<: : ∀{Γ M A B}
       → Γ ⊢ M ⦂ A
-    → A <: B
+      → A <: B
         -----------
       → Γ ⊢ M ⦂ B
 
@@ -36,26 +36,26 @@ records and record types.  A *record* is a grouping of named values,
 called *fields*. For example, one could represent a point on the
 Cartesian plane with the following record.
 
-    { x = 4, y = 1 }
+    ⦗ x := 4, y := 1 ⦘
 
 A *record type* gives a type for each field. In the following, we
 specify that the fields `x` and `y` both have type `ℕ`.
 
-    { x : `ℕ,  y : `ℕ }
+    ⦗ x ⦂ `ℕ,  y ⦂ `ℕ ⦘
 
 One record type is a subtype of another if it has all of the fields of
 the supertype and if the types of those fields are subtypes of the
 corresponding fields in the supertype. So, for example, a point in
 three dimensions is a subtype of a point in two dimensions.
 
-    { x : `ℕ,  y : `ℕ, z : `ℕ } <: { x : `ℕ,  y : `ℕ }
+    ⦗ x ⦂ `ℕ,  y ⦂ `ℕ, z ⦂ `ℕ ⦘ <: ⦗ x ⦂ `ℕ,  y ⦂ `ℕ ⦘
 
 The elimination form for records is field access (aka. projection),
 written `M # l`, and whose dynamic semantics is defined by the
 following reduction rule, which says that accessing the field `lⱼ`
 returns the value stored at that field.
 
-    {l₁=v₁, ..., lⱼ=vⱼ, ..., lᵢ=vᵢ} # lⱼ —→  vⱼ
+    ⦗ l₁ := v₁, ..., lⱼ := vⱼ, ..., lᵢ := vᵢ ⦘ # lⱼ —→  vⱼ
 
 In this chapter we add records and record types to the simply typed
 lambda calculus (STLC) and prove type safety. It is instructive to see
@@ -76,19 +76,20 @@ intrinsic terms.
 
 ```agda
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elimi)
-open import Data.Fin using (Fin; zero; suc)
+open import Data.Empty.Irrelevant renaming (⊥-elim to ⊥-elim-irrel)
 open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_; _+_)
 open import Data.Nat.Properties
-    using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n; n≤m+n)
-open import Data.Product using (_×_; proj₁; proj₂; Σ-syntax) renaming (_,_ to ⟨_,_⟩)
+    using (m+n≤o⇒m≤o; m+n≤o⇒n≤o; n≤0⇒n≡0; ≤-pred; ≤-refl; ≤-trans; m≤m+n;
+           m≤n+m)
+open import Data.Product
+    using (_×_; proj₁; proj₂; Σ-syntax; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
 open import Data.String using (String; _≟_)
 open import Data.Unit using (⊤; tt)
-open import Data.Vec using (Vec; []; _∷_; lookup)
 open import Data.Vec.Membership.Propositional using (_∈_)
 open import Data.Vec.Membership.DecPropositional _≟_ using (_∈?_)
 open import Data.Vec.Membership.Propositional.Properties using (∈-lookup)
 open import Data.Vec.Relation.Unary.Any using (here; there)
+open import Level using (Level)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
@@ -101,10 +102,10 @@ records that we explain in the following sections.
 
 ```agda
 infixl 5 _,_
-infix 4 _⊆_
-infix 5 _<:_
+infix  4 _⊆_
+infix  5 _<:_
 infix  4 _⊢_⦂_
-infix 4 _⊢*_⦂_
+infix  4 _⊢*_⦂_
 infix  4 _∋_⦂_
 infix  4 Canonical_⦂_
 
@@ -116,12 +117,137 @@ infixl 7 _·_
 infix  8 `suc_
 infix  9 `_
 infixl 7 _#_
-infix 5 ｛_⦂_｝
-infix 5 ｛_:=_｝
+infix 5 ⦗_⦂_⦘
+infix 5 ⦗_:=_⦘
 
-infix 5 _[_]
-infix 2 _—→_
+infix  5 _[_]
+infix  2 _—→_
 ```
+
+## Vectors
+
+We use Agda's vectors to represent records, so we begin with a
+digression to introduce Agda's `Vec`.
+
+Vectors in Agda are similar to lists except that the type of a vector
+is parameterized by the vector's length. The following data type
+definition is a replica of the definition of the `Vec`.  The
+constructors for `Vec` have the same names as those for `List`.  The
+constructor `[]` creates an empty vector (of length `zero`) and the
+constuctor `_∷_` creates a vector of length `suc n` by placing an
+element in front of another vector of length `n`.
+
+```agda
+module VecReplica where
+
+  variable a : Level
+
+  data Vec (A : Set a) : ℕ → Set a where
+    []  : Vec A zero
+    _∷_ : ∀ {n} (x : A) (xs : Vec A n) → Vec A (suc n)
+```
+
+We now import `Vec` from the Agda standard library.
+```agda
+open import Data.Vec using (Vec; []; _∷_; lookup)
+```
+The following shows the construction of a vector of three integers
+and vector of two strings.
+```agda
+_ : Vec ℕ 3
+_ = 0 ∷ 1 ∷ 2 ∷ []
+
+_ : Vec String 2
+_ = "hello" ∷ "world" ∷ []
+```
+
+An important difference between vectors and lists appears in the
+`lookup` function, which we use extensively in this chapter. The
+following is the type signature for `lookup` on a vector:
+
+    lookup : ∀ {n} → (v : Vec A n) → (i : Fin n) → A
+
+The `lookup` function returns the element at position `i` of the
+vector `v`. However, the type of `i` deserves some explanation.
+
+## `Fin`: Bounded Natural Numbers
+
+The type `Fin` is an alternative to the type for natural numbers `ℕ`
+with the difference that `Fin` is parameterized by an upper bound.
+Values of type `Fin n` are representations of numbers less than `n`,
+so it has a finite number of inhabitants (hence the name `Fin`).  The
+`Fin` data definition, replicated below, is analagous to that of `ℕ`,
+with constructors with the same names `zero` and `suc`.
+
+```agda
+module FinReplica where
+
+  data Fin : ℕ → Set where
+    zero : {n : ℕ} → Fin (suc n)
+    suc  : {n : ℕ} (i : Fin n) → Fin (suc n)
+```
+
+We import the real `Fin` from the Agda standard library.
+```agda
+open import Data.Fin using (Fin; zero; suc)
+```
+
+The following shows the construction of two values of type `Fin 2`,
+`zero` and `suc zero`.
+```agda
+_ : Fin 2
+_ = zero
+
+_ : Fin 2
+_ = suc zero
+```
+Note that the value produced by `zero` for type `Fin 2` is not the
+same value as the value produced by `zero` for type `ℕ`. In general,
+values of type `Fin n` and of type `ℕ` are not interchangeable.
+However, `Fin n` is isomorphic to the natural numbers that are less
+than `n`.
+
+#### Exercise `≃-Fin-∃ℕ<` (practice)
+
+Show that `Fin n` is isomorphic to `∃[ i ] i < n`.
+
+```agda
+open import plfa.part1.Isomorphism
+
+postulate
+  ≃-Fin-∃ℕ< : ∀ n → Fin n ≃ (∃[ i ] i < n)
+```
+
+```agda
+-- Your code goes here
+```
+
+## Vector Operations
+
+Returning to the vector `lookup` function,
+
+    lookup : ∀ {n} → (v : Vec A n) → (i : Fin n) → A
+
+the index `i` has type `Fin n`, which means that the index is
+guaranteed to be less than the length of the vector, so `lookup` is
+guaranteed to succeed and return an element of the vector. For
+example, the following example uses `lookup` to obtain the element `7`
+at index `2` of the vector.
+```agda
+_ : let vec : Vec ℕ 4
+        vec = (5 ∷ 0 ∷ 7 ∷ 2 ∷ [])
+        two : Fin 4
+        two = suc (suc zero)
+    in lookup vec two ≡ 7
+_ = refl
+```
+
+In addition to `lookup`, we use several more operations on vectors.
+The membership operator `x ∈ v` holds when element `x` is in
+vector `v`. The decidable membership operator `x ∈? v` computes
+whether or not `x ∈ v`. The decidable equality operator `≟`
+computes whether two vectors are equal.
+
 
 ## Record Fields and their Properties
 
@@ -132,9 +258,9 @@ Name : Set
 Name = String
 ```
 
-A record is traditionally written as follows
+A record is written as follows
 
-    { l₁ = M₁, ..., lᵢ = Mᵢ }
+    ⦗ l₁ := M₁, ..., lᵢ := Mᵢ ⦘
 
 so a natural representation is a list of label-term pairs.
 However, we find it more convenient to represent records as a pair of
@@ -146,9 +272,9 @@ vectors (Agda's `Vec` type), one vector of fields and one vector of terms:
 This representation has the advantage that the traditional subscript
 notation `lᵢ` corresponds to indexing into a vector.
 
-Likewise, a record type, traditionally written as
+Likewise, a record type, written as
 
-    { l₁ : A₁, ..., lᵢ : Aᵢ }
+    ⦗ l₁ ⦂ A₁, ..., lᵢ ⦂ Aᵢ ⦘
 
 will be represented as a pair of vectors, one vector of fields and one
 vector of types.
@@ -162,48 +288,6 @@ follows.
 distinct : ∀{A : Set}{n} → Vec A n → Set
 distinct [] = ⊤
 distinct (x ∷ xs) = ¬ (x ∈ xs) × distinct xs
-```
-
-For vectors of distinct elements, lookup is injective.
-```agda
-distinct-lookup-inj : ∀ {n}{ls : Vec Name n}{i j : Fin n}
-   → distinct ls  →  lookup ls i ≡ lookup ls j
-   → i ≡ j
-distinct-lookup-inj {ls = x ∷ ls} {zero} {zero} ⟨ x∉ls , dls ⟩ lsij = refl
-distinct-lookup-inj {ls = x ∷ ls} {zero} {suc j} ⟨ x∉ls , dls ⟩ refl =
-    ⊥-elim (x∉ls (∈-lookup j ls))
-distinct-lookup-inj {ls = x ∷ ls} {suc i} {zero} ⟨ x∉ls , dls ⟩ refl =
-    ⊥-elim (x∉ls (∈-lookup i ls))
-distinct-lookup-inj {ls = x ∷ ls} {suc i} {suc j} ⟨ x∉ls , dls ⟩ lsij =
-    cong suc (distinct-lookup-inj dls lsij)
-```
-
-We shall need to convert from an irrelevant proof of distinctness to a
-relevant one. In general, the laundering of irrelevant proofs into
-relevant ones is easy to do when the predicate in question is
-decidable. The following is a decision procedure for whether a vector
-is distinct.
-```agda
-distinct? : ∀{n} → (xs : Vec Name n) → Dec (distinct xs)
-distinct? [] = yes tt
-distinct? (x ∷ xs)
-    with x ∈? xs
-... | yes x∈xs = no λ z → proj₁ z x∈xs
-... | no x∉xs
-    with distinct? xs
-... | yes dxs = yes ⟨ x∉xs , dxs ⟩
-... | no ¬dxs = no λ z → ¬dxs (proj₂ z)
-```
-
-With this decision procedure in hand, we define the following
-function for laundering irrelevant proofs of distinctness into
-relevant ones.
-```agda
-distinct-relevant : ∀ {n}{fs : Vec Name n} .(d : distinct fs) → distinct fs
-distinct-relevant {n}{fs} d
-    with distinct? fs
-... | yes dfs = dfs
-... | no ¬dfs = ⊥-elimi (¬dfs d)
 ```
 
 The fields of one record are a *subset* of the fields of another
@@ -223,49 +307,46 @@ This subset relation is reflexive and transitive.
 ⊆-trans {l}{n}{m}{ns}{ms}{ls} ns⊆ms ms⊆ls = λ x z → ms⊆ls x (ns⊆ms x z)
 ```
 
-If `y` is an element of vector `xs`, then `y` is at some index `i` of
-the vector.
-```agda
-lookup-∈ : ∀{ℓ}{A : Set ℓ}{n} {xs : Vec A n}{y}
-   → y ∈ xs
-   → Σ[ i ∈ Fin n ] lookup xs i ≡ y
-lookup-∈ {xs = x ∷ xs} (here refl) = ⟨ zero , refl ⟩
-lookup-∈ {xs = x ∷ xs} (there y∈xs)
-    with lookup-∈ y∈xs
-... | ⟨ i , xs[i]=y ⟩ = ⟨ (suc i) , xs[i]=y ⟩
-```
-
-If one vector `ns` is a subset of another `ms`, then for any element
-`lookup ns i`, there is an equal element in `ms` at some index.
-```agda
-lookup-⊆ : ∀{n m : ℕ}{ns : Vec Name n}{ms : Vec Name m}{i : Fin n}
-   → ns ⊆ ms
-   → Σ[ k ∈ Fin m ] lookup ns i ≡ lookup ms k
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {zero} ns⊆ms
-    with lookup-∈ (ns⊆ms x (here refl))
-... | ⟨ k , ms[k]=x ⟩ =
-      ⟨ k , (sym ms[k]=x) ⟩
-lookup-⊆ {suc n} {m} {x ∷ ns} {ms} {suc i} x∷ns⊆ms =
-    lookup-⊆ {n} {m} {ns} {ms} {i} (λ x z → x∷ns⊆ms x (there z))
-```
-
 ## Types
 
 ```agda
 data Type : Set where
   _⇒_   : Type → Type → Type
   `ℕ    : Type
-  ｛_⦂_｝ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type
+  ⦗_⦂_⦘ : {n : ℕ} (ls : Vec Name n) (As : Vec Type n) → .{d : distinct ls} → Type
 ```
 
-In addition to function types `A ⇒ B` and natural numbers `ℕ`, we
-have the record type `｛ ls ⦂ As ｝`, where `ls` is a vector of field
-names and `As` is a vector of types, as discussed above.  We require
-that the field names be distinct, but we do not want the details of
-the proof of distinctness to affect whether two record types are
-equal, so we declare that parameter to be irrelevant by placing a `.`
-in front of it.
+In addition to function types `A ⇒ B` and natural numbers `ℕ`, we have
+the record type `⦗ ls ⦂ As ⦘`, where `ls` is a vector of field names
+and `As` is a vector of types, as discussed above.
 
+We require that the field names be distinct hence the parameter
+`.{d : distinct}`.  The period `.` at the begining indicates that `d` is an
+irrelevant parameter of the constructor `⦗_⦂_⦘`, which means that its
+argument is ignored by Agda when reasoning about the equality
+of values created by `⦗_⦂_⦘`. For example, Agda accepts that the
+following two field types are equal even though we have not proved
+that `d₁` and `d₂` are equal.
+
+```agda
+_ : ∀ {d₁ d₂ : distinct ("x" ∷ "y" ∷ [])}
+   → ⦗ "x" ∷ "y" ∷ [] ⦂ `ℕ ∷ `ℕ ∷ [] ⦘ {d₁}
+     ≡ ⦗ "x" ∷ "y" ∷ [] ⦂ `ℕ ∷ `ℕ ∷ [] ⦘ {d₂}
+_ = refl
+```
+
+By choosing to make parameter `d` irrelevant, we are saying that the
+proof of distinctness is not part of the record type itself but
+instead it is merely a precondition to creating one. (An alternative
+approach would be to try and prove that any two proofs of `distinct
+ls` are equal, but our attempt to prove that failed because it
+required that any two proofs of `¬ (x ∈ ls)` are equal and we do not
+know how to prove that.)  Agda limits the use of irrelevant
+parameters; they cannot be inspected using pattern matching. However,
+irrelevant parameters can be used in the `⊥-elim` provided by the
+`Data.Empty.Irrelevant` module. We have imported this `⊥-elim`
+under the name `⊥-elim-irrel` to avoid a conflict with the
+one in `Data.Empty`.
 
 ## Subtyping
 
@@ -289,7 +370,7 @@ data _<:_ : Type → Type → Set where
     → (∀{i : Fin n}{j : Fin m} → lookup ks j ≡ lookup ls i
                                → lookup Ss j <: lookup Ts i)
       ------------------------------------------------------
-    → ｛ ks ⦂ Ss ｝ {d1} <: ｛ ls ⦂ Ts ｝ {d2}
+    → ⦗ ks ⦂ Ss ⦘ {d1} <: ⦗ ls ⦂ Ts ⦘ {d2}
 ```
 
 The rule `<:-nat` says that `ℕ` is a subtype of itself.
@@ -322,12 +403,96 @@ _⦂_<:_⦂_ {m}{n} ks Ss ls Ts = (∀{i : Fin n}{j : Fin m}
     → lookup ks j ≡ lookup ls i  →  lookup Ss j <: lookup Ts i)
 ```
 
+Our next goal is to prove that subtyping is reflexive and transitive.
+However, we first need to establish several lemmas about `lookup`
+and `distinct`.
+
+
+## Properties of `lookup`
+
+If `y` is an element of vector `xs`, then `y` is at some index `i` of
+the vector.
+```agda
+lookup-∈ : ∀{ℓ}{A : Set ℓ}{n} {xs : Vec A n}{y}
+   → y ∈ xs
+   → Σ[ i ∈ Fin n ] lookup xs i ≡ y
+lookup-∈ {xs = x ∷ xs} (here refl) = ⟨ zero , refl ⟩
+lookup-∈ {xs = x ∷ xs} (there y∈xs)
+    with lookup-∈ y∈xs
+... | ⟨ i , xs[i]=y ⟩ = ⟨ (suc i) , xs[i]=y ⟩
+```
+
+If one vector `ms` is a subset of another `ns`, then for any element
+`lookup ms i`, there is an equal element in `ns` at some index.
+```agda
+lookup-⊆ : ∀{n m : ℕ}{ms : Vec Name n}{ns : Vec Name m}{i : Fin n}
+   → ms ⊆ ns
+   → Σ[ k ∈ Fin m ] lookup ms i ≡ lookup ns k
+lookup-⊆ {suc n} {m} {x ∷ ms} {ns} {zero} ms⊆ns
+    with lookup-∈ (ms⊆ns x (here refl))
+... | ⟨ k , ns[k]=x ⟩ =
+      ⟨ k , (sym ns[k]=x) ⟩
+lookup-⊆ {suc n} {m} {x ∷ ms} {ns} {suc i} x∷ms⊆ns =
+    lookup-⊆ {n} {m} {ms} {ns} {i} (λ x z → x∷ms⊆ns x (there z))
+```
+
+## Properties of `distinct`
+
+For vectors of distinct elements, lookup is injective.
+```agda
+distinct-lookup-inj : ∀ {n}{ls : Vec Name n}{i j : Fin n}
+   → distinct ls
+   → lookup ls i ≡ lookup ls j
+     -------------------------
+   → i ≡ j
+distinct-lookup-inj {ls = x ∷ ls} {zero} {zero} ⟨ x∉ls , dls ⟩ refl = refl
+distinct-lookup-inj {ls = x ∷ ls} {zero} {suc j} ⟨ x∉ls , dls ⟩ refl =
+    ⊥-elim (x∉ls (∈-lookup j ls))
+distinct-lookup-inj {ls = x ∷ ls} {suc i} {zero} ⟨ x∉ls , dls ⟩ refl =
+    ⊥-elim (x∉ls (∈-lookup i ls))
+distinct-lookup-inj {ls = x ∷ ls} {suc i} {suc j} ⟨ x∉ls , dls ⟩ lsij =
+    cong suc (distinct-lookup-inj dls lsij)
+```
+
+Recall that irrelevant parameters cannot be used for pattern matching,
+but in the lemma `distinct-lookup-inj` we do indeed pattern match on
+the `distinct ls` parameter. This poses a problem in the the proof of
+reflexivity of subtyping, where we need to use this lemma but the
+record type in question only provides an irrelevant proof of
+distinctness. Thankfully, it is straightforward to convert an
+irrelevant proof into a relevant one when the predicate is
+decidable. The following is a decision procedure for `distinct`.
+
+```agda
+distinct? : ∀{n} → (xs : Vec Name n) → Dec (distinct xs)
+distinct? [] = yes tt
+distinct? (x ∷ xs)
+    with x ∈? xs
+... | yes x∈xs = no λ z → proj₁ z x∈xs
+... | no x∉xs
+    with distinct? xs
+... | yes dxs = yes ⟨ x∉xs , dxs ⟩
+... | no ¬dxs = no λ z → ¬dxs (proj₂ z)
+```
+
+The following function converts irrelevant proofs of distinctness into
+relevant ones, using `⊥-elim-irrel` in the case where the result of
+the decision procedure contradicts the irrelevant proof.
+```agda
+distinct-relevant : ∀ {n}{fs : Vec Name n} .(d : distinct fs) → distinct fs
+distinct-relevant {n}{fs} d
+    with distinct? fs
+... | yes dfs = dfs
+... | no ¬dfs = ⊥-elim-irrel (¬dfs d)
+```
+
 ## Subtyping is Reflexive
 
 In this section we prove that subtyping is reflexive, that is, `A <:
 A` for any type `A`. The proof does not go by induction on the type
-`A` because of the `<:-rcd` rule. We instead use induction on the size
-of the type. So we first define size of a type, and the size of a
+`A` because the `<:-rcd` rule obscures the structural recursion
+with its use of `lookup`. We instead use induction on the size
+of the type. So we first define the size of a type and the size of a
 vector of types, as follows.
 ```agda
 ty-size : (A : Type) → ℕ
@@ -335,9 +500,10 @@ vec-ty-size : ∀ {n : ℕ} → (As : Vec Type n) → ℕ
 
 ty-size (A ⇒ B) = suc (ty-size A + ty-size B)
 ty-size `ℕ = 1
-ty-size ｛ ls ⦂ As ｝ = suc (vec-ty-size As)
-vec-ty-size {n} [] = 0
-vec-ty-size {n} (x ∷ xs) = ty-size x + vec-ty-size xs
+ty-size ⦗ ls ⦂ As ⦘ = suc (vec-ty-size As)
+
+vec-ty-size [] = 0
+vec-ty-size (x ∷ xs) = ty-size x + vec-ty-size xs
 ```
 
 The size of a type is always positive.
@@ -345,7 +511,7 @@ The size of a type is always positive.
 ty-size-pos : ∀ {A} → 0 < ty-size A
 ty-size-pos {A ⇒ B} = s≤s z≤n
 ty-size-pos {`ℕ} = s≤s z≤n
-ty-size-pos {｛ fs ⦂ As ｝ } = s≤s z≤n
+ty-size-pos {⦗ fs ⦂ As ⦘ } = s≤s z≤n
 ```
 
 The size of a type in a vector is less-or-equal in size to the entire vector.
@@ -353,10 +519,12 @@ The size of a type in a vector is less-or-equal in size to the entire vector.
 lookup-vec-ty-size : ∀{k} {As : Vec Type k} {j}
    → ty-size (lookup As j) ≤ vec-ty-size As
 lookup-vec-ty-size {suc k} {A ∷ As} {zero} = m≤m+n _ _
-lookup-vec-ty-size {suc k} {A ∷ As} {suc j} = ≤-trans (lookup-vec-ty-size {k} {As}) (n≤m+n _ _)
+lookup-vec-ty-size {suc k} {A ∷ As} {suc j} =
+    ≤-trans (lookup-vec-ty-size {k} {As}) (m≤n+m _ _)
 ```
 
 Here is the proof of reflexivity, by induction on the size of the type.
+We discuss the cases below.
 ```agda
 <:-refl-aux : ∀{n}{A}{m : ty-size A ≤ n} → A <: A
 <:-refl-aux {0}{A}{m}
@@ -369,7 +537,7 @@ Here is the proof of reflexivity, by induction on the size of the type.
   let A<:A = <:-refl-aux {n}{A}{m+n≤o⇒m≤o _ (≤-pred m) } in
   let B<:B = <:-refl-aux {n}{B}{m+n≤o⇒n≤o _ (≤-pred m) } in
   <:-fun A<:A B<:B
-<:-refl-aux {suc n}{｛ ls ⦂ As ｝ {d} }{m} = <:-rcd {d1 = d}{d2 = d} ⊆-refl G
+<:-refl-aux {suc n}{⦗ ls ⦂ As ⦘ {d} }{m} = <:-rcd {d1 = d}{d2 = d} ⊆-refl G
     where
     G : ls ⦂ As <: ls ⦂ As
     G {i}{j} lij rewrite distinct-lookup-inj (distinct-relevant d) lij =
@@ -379,14 +547,15 @@ Here is the proof of reflexivity, by induction on the size of the type.
 The theorem statement uses `n` as an upper bound on the size of the type `A`
 and proceeds by induction on `n`.
 
-* If it is `0`, then we have a contradiction because the size of a type is always positive.
+* If it is `0`, then we have a contradiction because the size of a
+  type is always positive.
 
 * If it is `suc n`, we proceed by cases on the type `A`.
 
   * If it is `ℕ`, then we have `ℕ <: ℕ` by rule `<:-nat`.
   * If it is `A ⇒ B`, then by induction we have `A <: A` and `B <: B`.
     We conclude that `A ⇒ B <: A ⇒ B` by rule `<:-fun`.
-  * If it is `｛ ls ⦂ As ｝`, then it suffices to prove that
+  * If it is `⦗ ls ⦂ As ⦘`, then it suffices to prove that
     `ls ⊆ ls` and `ls ⦂ As <: ls ⦂ As`. The former is proved by `⊆-refl`.
     Regarding the latter, we need to show that for any `i` and `j`,
     `lookup ls j ≡ lookup ls i` implies `lookup As j <: lookup As i`.
@@ -394,7 +563,7 @@ and proceeds by induction on `n`.
     We then use the induction hypothesis to show that
     `lookup As i <: lookup As i`, noting that the size of
     `lookup As i` is less-than-or-equal to the size of `As`, which
-    is one smaller than the size of `｛ ls ⦂ As ｝`.
+    is one smaller than the size of `⦗ ls ⦂ As ⦘`.
 
 The following corollary packages up reflexivity for ease of use.
 ```agda
@@ -404,6 +573,8 @@ The following corollary packages up reflexivity for ease of use.
 
 ## Subtyping is transitive
 
+The proof of transitivity is by induction on the derivations of `A <:
+B` and `B <: C`. We discuss the cases below.
 ```agda
 <:-trans : ∀{A B C}
     → A <: B   →   B <: C
@@ -412,7 +583,7 @@ The following corollary packages up reflexivity for ease of use.
 <:-trans {A₁ ⇒ A₂} {B₁ ⇒ B₂} {C₁ ⇒ C₂} (<:-fun A₁<:B₁ A₂<:B₂) (<:-fun B₁<:C₁ B₂<:C₂) =
     <:-fun (<:-trans B₁<:C₁ A₁<:B₁) (<:-trans A₂<:B₂ B₂<:C₂)
 <:-trans {.`ℕ} {`ℕ} {.`ℕ} <:-nat <:-nat = <:-nat
-<:-trans {｛ ls ⦂ As ｝{d1} } {｛ ms ⦂ Bs ｝ {d2} } {｛ ns ⦂ Cs ｝ {d3} }
+<:-trans {⦗ ls ⦂ As ⦘{d1} } {⦗ ms ⦂ Bs ⦘ {d2} } {⦗ ns ⦂ Cs ⦘ {d3} }
     (<:-rcd ms⊆ls As<:Bs) (<:-rcd ns⊆ms Bs<:Cs) =
     <:-rcd (⊆-trans ns⊆ms ms⊆ls) As<:Cs
     where
@@ -425,9 +596,8 @@ The following corollary packages up reflexivity for ease of use.
         <:-trans As[j]<:Bs[k] Bs[k]<:Cs[i]
 ```
 
-The proof is by induction on the derivations of `A <: B` and `B <: C`.
-
-* If both derivations end with `<:-nat`: then we immediately conclude that `ℕ <: ℕ`.
+* If both derivations end with `<:-nat`: then we immediately conclude
+  that `ℕ <: ℕ`.
 
 * If both derivations end with `<:-fun`:
   we have `A₁ ⇒ A₂ <: B₁ ⇒ B₂` and  `B₁ ⇒ B₂ <: C₁ ⇒ C₂`.
@@ -436,20 +606,20 @@ The proof is by induction on the derivations of `A <: B` and `B <: C`.
   we have `A₂ <: C₂`. We conclude that `A₁ ⇒ A₂ <: C₁ ⇒ C₂` by rule `<:-fun`.
 
 * If both derivations end with `<:-rcd`, so we have
-  `｛ ls ⦂ As ｝ <: ｛ ms ⦂ Bs ｝` and `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
+  `⦗ ls ⦂ As ⦘ <: ⦗ ms ⦂ Bs ⦘` and `⦗ ms ⦂ Bs ⦘ <: ⦗ ns ⦂ Cs ⦘`.
   From `ls ⊆ ms` and `ms ⊆ ns` we have `ls ⊆ ns` because `⊆` is transitive.
   Next we need to prove that `ls ⦂ As <: ns ⦂ Cs`.
   Suppose `lookup ls j ≡ lookup ns i` for an arbitrary `i` and `j`.
   We need to prove that `lookup As j <: lookup Cs i`.
   By the induction hypothesis, it suffices to show
   that `lookup As j <: lookup Bs k` and `lookup Bs k <: lookup Cs i` for some `k`.
-  We can obtain the former from `｛ ls ⦂ As ｝ <: ｛ ms ⦂ Bs ｝`
+  We can obtain the former from `⦗ ls ⦂ As ⦘ <: ⦗ ms ⦂ Bs ⦘`
   if we can prove that `lookup ls j ≡ lookup ms k`.
   We already have `lookup ls j ≡ lookup ns i` and we
   obtain `lookup ns i ≡ lookup ms k` by use of the lemma `lookup-⊆`,
   noting that `ns ⊆ ms`.
   We can obtain the later, that `lookup Bs k <: lookup Cs i`,
-  from `｛ ms ⦂ Bs ｝ <: ｛ ns ⦂ Cs ｝`.
+  from `⦗ ms ⦂ Bs ⦘ <: ⦗ ns ⦂ Cs ⦘`.
   It suffices to show that `lookup ms k ≡ lookup ns i`,
   which we have by symmetry.
 
@@ -513,11 +683,11 @@ data Term : Set where
   `suc_                   : Term → Term
   case_[zero⇒_|suc⇒_]     : Term → Term → Term → Term
   μ_                      : Term → Term
-  ｛_:=_｝                 : {n : ℕ} (ls : Vec Name n) (Ms : Vec Term n) → Term
+  ⦗_:=_⦘                  : {n : ℕ} (ls : Vec Name n) (Ms : Vec Term n) → Term
   _#_                     : Term → Name → Term
 ```
 
-In a record `｛ ls := Ms ｝`, we refer to the vector of terms `Ms` as
+In a record `⦗ ls := Ms ⦘`, we refer to the vector of terms `Ms` as
 the *field initializers*.
 
 The typing judgment takes the form `Γ ⊢ M ⦂ A` and relies on an
@@ -568,11 +738,10 @@ data _⊢_⦂_ : Context → Term → Type → Set where
   ⊢rcd : ∀ {Γ n}{Ms : Vec Term n}{As : Vec Type n}{ls : Vec Name n}
      → Γ ⊢* Ms ⦂ As
      → (d : distinct ls)
-     → Γ ⊢ ｛ ls := Ms ｝ ⦂ ｛ ls ⦂ As ｝ {d}
-
+     → Γ ⊢ ⦗ ls := Ms ⦘ ⦂ ⦗ ls ⦂ As ⦘ {d}
 
   ⊢# : ∀ {n : ℕ}{Γ A M l}{ls : Vec Name n}{As : Vec Type n}{i}{d}
-     → Γ ⊢ M ⦂ ｛ ls ⦂ As ｝{d}
+     → Γ ⊢ M ⦂ ⦗ ls ⦂ As ⦘{d}
      → lookup ls i ≡ l
      → lookup As i ≡ A
      → Γ ⊢ M # l ⦂ A
@@ -638,7 +807,7 @@ rename ρ (`suc M)       =  `suc (rename ρ M)
 rename ρ (case L [zero⇒ M |suc⇒ N ]) =
     case (rename ρ L) [zero⇒ rename ρ M |suc⇒ rename (ext ρ) N ]
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
-rename ρ ｛ ls := Ms ｝ = ｛ ls := rename-vec ρ Ms ｝
+rename ρ ⦗ ls := Ms ⦘ = ⦗ ls := rename-vec ρ Ms ⦘
 rename ρ (M # l)       = (rename ρ M) # l
 
 rename-vec ρ [] = []
@@ -667,7 +836,7 @@ subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (case L [zero⇒ M |suc⇒ N ])
                        =  case (subst σ L) [zero⇒ subst σ M |suc⇒ subst (exts σ) N ]
 subst σ (μ N)          =  μ (subst (exts σ) N)
-subst σ ｛ ls := Ms ｝  = ｛ ls := subst-vec σ Ms ｝
+subst σ ⦗ ls := Ms ⦘  = ⦗ ls := subst-vec σ Ms ⦘
 subst σ (M # l)        = (subst σ M) # l
 
 subst-vec σ [] = []
@@ -709,7 +878,7 @@ data Value : Term → Set where
     → Value (`suc V)
 
   V-rcd : ∀{n}{ls : Vec Name n}{Ms : Vec Term n}
-    → Value ｛ ls := Ms ｝
+    → Value ⦗ ls := Ms ⦘
 ```
 
 ## Reduction
@@ -767,7 +936,7 @@ data _—→_ : Term → Term → Set where
   β-# : ∀ {n}{ls : Vec Name n}{Ms : Vec Term n} {l}{j : Fin n}
     → lookup ls j ≡ l
       ---------------------------------
-    → ｛ ls := Ms ｝ # l —→  lookup Ms j
+    → ⦗ ls := Ms ⦘ # l —→  lookup Ms j
 ```
 
 We have just two new reduction rules:
@@ -806,8 +975,8 @@ data Canonical_⦂_ : Term → Type → Set where
   C-rcd : ∀{n m}{ls : Vec Name n}{ks : Vec Name m}{Ms As Bs}{dls}
     → ∅ ⊢* Ms ⦂ As
     → (dks : distinct ks)
-    → ｛ ks ⦂ As ｝{dks}  <: ｛ ls ⦂ Bs ｝{dls}
-    → Canonical ｛ ks := Ms ｝ ⦂ ｛ ls ⦂ Bs ｝ {dls}
+    → ⦗ ks ⦂ As ⦘{dks}  <: ⦗ ls ⦂ Bs ⦘{dls}
+    → Canonical ⦗ ks := Ms ⦘ ⦂ ⦗ ls ⦂ Bs ⦘ {dls}
 ```
 
 Every closed, well-typed value is canonical:
@@ -845,10 +1014,10 @@ cases on the derivation of subtyping.
   we have `∅ , A′ ⊢ N ⦂ B′` and `A′ ⇒ B′ <: A ⇒ B` for some `A′` and `B′`.
   We conclude that `Canonical (ƛ N) ⦂ C ⇒ D` by rule `C-ƛ` and the transitivity of subtyping.
 
-* If the last rule is `<:-rcd`, then we have `｛ ls ⦂ Ss ｝ <: ｛ ks ⦂ Ts ｝`
-  and `∅ ⊢ ｛ ks′ := Ms ｝ ⦂ ｛ ks ⦂ Ss ｝`. By the induction hypothesis,
-  we have `∅ ⊢* Ms ⦂ As`, `distinct ks′`, and `｛ ks′ ⦂ As ｝ <: ｛ ks ⦂ Ss ｝`.
-  We conclude that `Canonical ｛ ks′ := Ms ｝ ⦂ ｛ ks ⦂ Ts ｝`
+* If the last rule is `<:-rcd`, then we have `⦗ ls ⦂ Ss ⦘ <: ⦗ ks ⦂ Ts ⦘`
+  and `∅ ⊢ ⦗ ks′ := Ms ⦘ ⦂ ⦗ ks ⦂ Ss ⦘`. By the induction hypothesis,
+  we have `∅ ⊢* Ms ⦂ As`, `distinct ks′`, and `⦗ ks′ ⦂ As ⦘ <: ⦗ ks ⦂ Ss ⦘`.
+  We conclude that `Canonical ⦗ ks′ := Ms ⦘ ⦂ ⦗ ks ⦂ Ts ⦘`
   by rule `C-rcd` and the transitivity of subtyping.
 
 
@@ -936,13 +1105,13 @@ progress (⊢# {n}{Γ}{A}{M}{l}{ls}{As}{i}{d} ⊢M ls[i]=l As[i]=A)
 progress (⊢rcd x d)                         =  done V-rcd
 progress (⊢<: {A = A}{B} ⊢M A<:B)           =  progress ⊢M
 ```
-* Case `⊢#`: We have `Γ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
+* Case `⊢#`: We have `Γ ⊢ M ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`, and `lookup As i ≡ A`.
   By the induction hypothesis, either `M —→ M′` or `M` is a value. In the later case we
   conclude that `M # l —→ M′ # l` by rule `ξ-#`. On the other hand, if `M` is a value,
-  we invoke the canonical forms lemma to show that `M` has the form `｛ ms := Ms ｝`
+  we invoke the canonical forms lemma to show that `M` has the form `⦗ ms := Ms ⦘`
   where `∅ ⊢* Ms ⦂ Bs` and `ls ⊆ ms`. By lemma `lookup-⊆`, we have
   `lookup ls i ≡ lookup ms k` for some `k`. Thus, we have `lookup ms k ≡ l`
-  and we conclude `｛ ms := Ms ｝ # l —→ lookup Ms k` by rule `β-#`.
+  and we conclude `⦗ ms := Ms ⦘ # l —→ lookup Ms k` by rule `β-#`.
 
 * Case `⊢rcd`: we immediately characterize the record as a value.
 
@@ -1138,12 +1307,12 @@ preserve (⊢<: ⊢M B<:A) M—→N                       =  ⊢<: (preserve ⊢
 Recall that the proof is by induction on the derivation of `∅ ⊢ M ⦂ A`
 with cases on `M —→ N`.
 
-* Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
-  and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ｛ ls ⦂ As ｝`
+* Case `⊢#` and `ξ-#`: So `∅ ⊢ M ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`, `lookup As i ≡ A`,
+  and `M —→ M′`. We apply the induction hypothesis to obtain `∅ ⊢ M′ ⦂ ⦗ ls ⦂ As ⦘`
   and then conclude by rule `⊢#`.
 
-* Case `⊢#` and `β-#`. We have `∅ ⊢ ｛ ks := Ms ｝ ⦂ ｛ ls ⦂ As ｝`, `lookup ls i ≡ l`,
-  `lookup As i ≡ A`, `lookup ks j ≡ l`, and `｛ ks := Ms ｝ # l —→ lookup Ms j`.
+* Case `⊢#` and `β-#`. We have `∅ ⊢ ⦗ ks := Ms ⦘ ⦂ ⦗ ls ⦂ As ⦘`, `lookup ls i ≡ l`,
+  `lookup As i ≡ A`, `lookup ks j ≡ l`, and `⦗ ks := Ms ⦘ # l —→ lookup Ms j`.
   By the canonical forms lemma, we have `∅ ⊢* Ms ⦂ Bs`, `ls ⊆ ks` and `ks ⦂ Bs <: ls ⦂ As`.
   By lemma `lookup-⊆` we have `lookup ls i ≡ lookup ks k` for some `k`.
   Also, we have `∅ ⊢ lookup Ms k ⦂ lookup Bs k` by lemma `field-pres`.
@@ -1237,25 +1406,25 @@ of progress and preservation) to use the non-algorithmic subtyping
 rules for Chapter 15 of Types and Programming Languages, which we list here:
 
     (S-RcdWidth)
-    --------------------------------------------------------------
-    { l₁:A₁, ..., lᵤ:Aᵤ, ..., lᵤ₊ₓ:Aᵤ₊ₓ } <: { l₁:A₁, ..., lᵤ:Aᵤ }
+    -------------------------------------------------------------------------
+    ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ, ..., lᵤ₊ₓ ⦂ Aᵤ₊ₓ ⦘ < ⦂  ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘
 
     (S-RcdDepth)
         ∀i∈1..u, Aᵢ <: Bᵢ
-    ----------------------------------------------
-    { l₁:A₁, ..., lᵤ:Aᵤ } <: { l₁:B₁, ..., lᵤ:Bᵤ }
+    ------------------------------------------------------
+    ⦗ l₁ ⦂ A₁, ..., lᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
 
     (S-RcdPerm)
     ∀i∈1..u, ∃j∈1..u, kⱼ = lᵢ and Aⱼ = Bᵢ
-    ----------------------------------------------
-    { k₁:A₁, ..., kᵤ:Aᵤ } <: { l₁:B₁, ..., lᵤ:Bᵤ }
+    ------------------------------------------------------
+    ⦗ k₁ ⦂ A₁, ..., kᵤ ⦂ Aᵤ ⦘ <: ⦗ l₁ ⦂ B₁, ..., lᵤ ⦂ Bᵤ ⦘
 
 You will most likely need to prove inversion lemmas for the subtype relation
 of the form:
 
     If S <: T₁ ⇒ T₂, then S ≡ S₁ ⇒ S₂, T₁ <: S₁, and S₂ <: T₂, for some S₁, S₂.
 
-    If S <: { lᵢ : Tᵢ | i ∈ 1..n }, then S ≡ { kⱼ : Sⱼ | j ∈ 1..m }
+    If S <: ⦗ lᵢ ⦂ Tᵢ | i ∈ 1..n ⦘, then S ≡ ⦗ kⱼ ⦂ Sⱼ | j ∈ 1..m ⦘
     and { lᵢ | i ∈ 1..n } ⊆ { kⱼ | j ∈ 1..m }
     and Sⱼ <: Tᵢ for every i and j such that lᵢ = kⱼ.
 
@@ -1273,3 +1442,20 @@ of the form:
   Subtyping. In ACM Trans. Program. Lang. Syst.  Volume 16, 1994.
 
 * Types and Programming Languages. Benjamin C. Pierce. The MIT Press. 2002.
+
+## Unicode
+
+This chapter uses the following unicode:
+
+    ⦗  U+2997  LEFT BLACK TORTOISE SHELL BRACKET (\()
+    ⦘  U+2997  RIGHT BLACK TORTOISE SHELL BRACKET (\))
+    ⦂  U+2982  Z NOTATION TYPE COLON (\:)
+    ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub=)
+    ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
+    ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+    μ  U+03BC  GREEK SMALL LETTER MU (\mu)
+    ·  U+00B7  MIDDLE DOT (\cdot)
+    ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
+    ∋  U+220B  CONTAINS AS MEMBER (\ni)
+    →  U+2192  RIGHTWARDS ARROW (\to)
+    —  U+2014  EM DASH (\em)

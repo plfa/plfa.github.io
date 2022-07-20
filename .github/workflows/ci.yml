@@ -30,10 +30,6 @@ jobs:
         ghc-version: ["8.10.7", "9.2.3"]
         include:
           - experimental: false
-          - os: windows-latest
-            experimental: true
-          - ghc-version: "9.2.3"
-            experimental: true
 
     name: Build on ${{ matrix.os }} with GHC ${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
@@ -162,7 +158,7 @@ jobs:
 
       # Deploy: Prepare HEAD
 
-      - name: Download artifact
+      - name: Download latest artifact
         if: github.event_name == 'push'
         uses: actions/download-artifact@v3
         with:
@@ -254,10 +250,10 @@ jobs:
   ################################################################################
   # Rebase: On push to dev, automatically rebase open pull requests
   ################################################################################
-  rebase:
-    name: Rebase Pull Requests
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: linhbn123/rebase-pull-requests@v1.0.1
+  # rebase:
+  #   name: Rebase Pull Requests
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: linhbn123/rebase-pull-requests@v1.0.1
 
