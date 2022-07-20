@@ -111,18 +111,25 @@ Subset is reflexive and transitive.
 
 ## Finite maps, dependent finite maps
 
+These are here out of interest, they are not needed for what follows,
+as instead `Type* as` and `Γ ⊢* AS` are defined directly.
+
 We consider maps indexed by the elements of a list with a fixed target
-type.  The particular case of interest will be `AS : Map as Type`,
-where `as` is a list of field names, and `AS` is a map of types.
+type.  The particular case of interest will be `AS : Type* as`, where
+we define
+
+  Type* as = Map as Type
+
+with `as` a list of field names, and `AS : Type* as` a map of types.
 
 We also consider dependent maps, which are indexed by the elements of
 a list and where the target is a map of sets indexed by the same
-list. The particular case of interest will be
+list. The particular case of interest will be `MS : Γ ⊢* AS`, where
 
-    MS : dMap as (map (Γ ⊢_) AS)
+    Γ ⊢* AS = dMap as (map (Γ ⊢_) AS)
 
-where `as` is a list of field names, and `AS` is a map of types, and
-`map` applies a function to a map to yield another map.
+with `as` a list of field names, and `AS` is a map of types, and
+where `map` applies a function to a map to yield another map.
 
 ```agda
 Map : ∀ {ℓ} {X : Set} (xs : List X) (Y : Set ℓ) → Set ℓ
@@ -692,6 +699,8 @@ eval (gas (suc m)) L with progress L
 ```
 
 ## Reify and Reflect
+
+These are here out of interest, they are not needed for what follows.
 
 ```agda
 rep* : ∀ (as : List Field) → Set
