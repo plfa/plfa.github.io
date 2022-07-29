@@ -21,7 +21,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import plfa.part1.Isomorphism using (_≃_; extensionality)
+open import plfa.part1.Isomorphism using (_≃_; extensionality; ∀-extensionality)
 ```
 
 
@@ -87,14 +87,22 @@ such as `Π[ x ∈ A ] (B x)`, where `Π` stands for product.  However, we
 will stick with the name dependent function, because (as we will see)
 dependent product is ambiguous.
 
+-- For the future:
+-- Fin n × Fin m ≃ Fin (n * m)
+-- and the equivalent for the above.
 
 #### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
 ```
-postulate
-  ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
+∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
+∀-distrib-× = record
+  { to = λ f → ⟨ (λ x → proj₁ (f x)) , (λ x → proj₂ (f x)) ⟩
+  ; from = λ{ ⟨ f₁ , f₂ ⟩ → λ x → ⟨ (f₁ x) , (f₂ x) ⟩ }
+  ; from∘to = λ f → refl
+  ; to∘from = λ f → refl
+  }
 ```
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
@@ -103,12 +111,32 @@ Chapter [Connectives](/Connectives/).
 
 Show that a disjunction of universals implies a universal of disjunctions:
 ```
-postulate
-  ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
+⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x) → ∀ (x : A) → B x ⊎ C x
+⊎∀-implies-∀⊎ (inj₁ f) x = inj₁ (f x)
+⊎∀-implies-∀⊎ (inj₂ g) x = inj₂ (g x)
 ```
 Does the converse hold? If so, prove; if not, explain why.
 
+```
+open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Bool using (Bool; true; false)
+open import Data.Unit using (⊤; tt)
+
+counter₁ : (∀ {A : Set} {B C : A → Set} →
+    (∀ (x : A) → B x ⊎ C x) → (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)) → ⊥
+counter₁ H with H f
+  where
+    A = Bool
+    B : Bool → Set
+    B = λ{ true → ⊥ ; false → ⊤ }
+    C : Bool → Set
+    C = λ{ true → ⊤ ; false → ⊥ }
+    f : (x : Bool) → B x ⊎ C x
+    f = λ{ true → inj₂ tt; false → inj₁ tt }
+... | inj₁ fb = fb true
+... | inj₂ fc = fc false
+```
 
 #### Exercise `∀-×` (practice)
 
@@ -118,6 +146,14 @@ data Tri : Set where
   aa : Tri
   bb : Tri
   cc : Tri
+
+Tri-× : {B : Tri → Set} → (∀ (x : Tri) → B x) ≃ B aa × B bb × B cc
+Tri-× = record
+  { to = λ f → ⟨ (f aa) , ⟨ (f bb) , (f cc) ⟩ ⟩
+  ; from = λ{ ⟨ a , ⟨ b , c ⟩ ⟩ aa → a ; ⟨ a , ⟨ b , c ⟩ ⟩ bb → b ; ⟨ a , ⟨ b , c ⟩ ⟩ cc → c }
+  ; from∘to = λ f → ∀-extensionality (λ{ aa → refl ; bb → refl ; cc → refl })
+  ; to∘from = λ abc → refl
+  }
 ```
 Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
 Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
@@ -192,6 +228,9 @@ each of the types `B x₁ , ⋯ B xₙ` has `m₁ , ⋯ , mₙ` distinct members
 then `Σ[ x ∈ A ] B x` has `m₁ + ⋯ + mₙ` members, which explains the
 choice of notation for existentials, since `Σ` stands for sum.
 
+-- ?
+-- {d : Fin n → ℕ} {B : (i : Fin n) → Fin (d i)} Σ[ i ∈ Fin n ] B i ≃ Fin (sum d)
+
 Existentials are sometimes referred to as dependent products, since
 products arise as a special case.  However, that choice of names is
 doubly confusing, since universals also have a claim to the name dependent
@@ -248,18 +287,35 @@ establish the isomorphism is identical to what we wrote when discussing
 
 Show that existentials distribute over disjunction:
 ```
-postulate
-  ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
+∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
+∃-distrib-⊎ = record
+  { to = λ{ ⟨ x , inj₁ b ⟩ → inj₁ ⟨ x , b ⟩ ; ⟨ x , inj₂ c ⟩ → inj₂ ⟨ x , c ⟩ }
+  ; from = λ{ (inj₁ ⟨ x , b ⟩) → ⟨ x , (inj₁ b) ⟩ ; (inj₂ ⟨ x , c ⟩) → ⟨ x , (inj₂ c) ⟩ }
+  ; from∘to = λ{ ⟨ x , inj₁ b ⟩ → refl ; ⟨ x , inj₂ c ⟩ → refl }
+  ; to∘from = λ{ (inj₁ ⟨ x , b ⟩) → refl ; (inj₂ ⟨ x , c ⟩) → refl }
+  }
 ```
 
 #### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
 ```
-postulate
-  ∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
+∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
+∃×-implies-×∃ ⟨ x , ⟨ b , c ⟩ ⟩ = ⟨ ⟨ x , b ⟩ , ⟨ x , c ⟩ ⟩
+
+counter₂ : (∀ {A : Set} {B C : A → Set} → (∃[ x ] B x) × (∃[ x ] C x) →
+    ∃[ x ] (B x × C x)) → ⊥
+counter₂ H with H {Bool} {B} {C} ⟨ ⟨ false , tt ⟩ , ⟨ true , tt ⟩ ⟩
+  where
+    A = Bool
+    B : Bool → Set
+    B = λ{ true → ⊥ ; false → ⊤ }
+    C : Bool → Set
+    C = λ{ true → ⊤ ; false → ⊥ }
+... | ⟨ false , ⟨ b , c ⟩ ⟩ = c
+... | ⟨ true , ⟨ b , c ⟩ ⟩ = b
 ```
 Does the converse hold? If so, prove; if not, explain why.
 
@@ -386,7 +442,14 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
 
 ```
--- Your code goes here
+open Data.Nat using (_≤_; z≤n; s≤s)
+open import Data.Nat.Properties using (+-identityʳ; +-suc; suc-injective)
+open Eq using (sym)
+
+∃-+-≤ : {y z : ℕ} → y ≤ z → ∃[ x ] (x + y ≡ z)
+∃-+-≤ {zero} {z} z≤n = ⟨ z , +-identityʳ z ⟩
+∃-+-≤ {suc y} {suc z} (s≤s y≤z) with ∃-+-≤ y≤z
+... | ⟨ x , refl ⟩ = ⟨ x , +-suc x y ⟩
 ```
 
 
