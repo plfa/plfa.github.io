@@ -205,8 +205,7 @@ necessitates that we cannot introduce operations such as
 substitution or reduction without also showing that they
 preserve types.  Hence, the order of presentation must change.
 
-The syntax of terms now incorporates their typing rules, and the
-definition of values now incorporates the Canonical Forms lemma.  The
+The syntax of terms now incorporates their typing rules.  The
 definition of substitution is somewhat more involved, but incorporates
 the trickiest part of the previous proof, the lemma establishing that
 substitution preserves types.  The definition of reduction
@@ -777,9 +776,7 @@ to sneak in.
 
 ## Values
 
-The definition of value is much as before, save that the
-added types incorporate the same information found in the
-Canonical Forms lemma:
+The definition of value is much as before:
 ```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -988,8 +985,8 @@ _ =
 
 We have now completed all the definitions, which of
 necessity subsumed some of the propositions from the
-earlier development: Canonical Forms,
-Substitution preserves types, and Preservation.
+earlier development, namely that
+substitution and reduction preserves types.
 We now turn to proving the remaining results from the
 previous development.
 
@@ -1023,9 +1020,7 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
 ```
 
 The statement and proof of progress is much as before,
-appropriately annotated.  We no longer need
-to explicitly refer to the Canonical Forms lemma, since it
-is built-in to the definition of value:
+appropriately annotated:
 ```agda
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
@@ -1053,7 +1048,7 @@ Before, we combined progress and preservation to evaluate a term.
 We can do much the same here, but we no longer need to explicitly
 refer to preservation, since it is built-in to the definition of reduction.
 
-As previously, gas is specified by a natural number:
+
 ```agda
 record Gas : Set where
   constructor gas

@@ -35,6 +35,7 @@ open import Data.Product using (_×_; Σ; ∃; _,_; Σ-syntax; ∃-syntax)
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Relation.Nullary using (Dec; yes; no; ¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 ## Operators
@@ -735,6 +736,15 @@ reflect⊢* [] Γ tt tt a ()
 reflect⊢* (a ∷ as) Γ (A , AT) (M , MT) .a here  =  M
 reflect⊢* (_ ∷ as) Γ (A , AT) (M , MT) a (there a∈as)  =  reflect⊢* as Γ AT MT a a∈as
 ```
+
+## Extracting evidence from a decision procedure
+
+```agda
+evidence : ∀ {P : Set} (Q : Dec P) → True Q → P
+evidence (yes p) tt  =  p
+evidence (no ¬p) ()
+```
+
 
 ## Example
 
