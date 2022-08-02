@@ -117,6 +117,9 @@ variable
 ## Type class to convert naturals to an arbitrary type
 
 ```
+variable
+  n : ℕ
+
 record OfNat (A : Set) (n : ℕ) : Set where
   field
     ofNat : A
@@ -128,7 +131,7 @@ instance
   ofNat {{OfNat-Z}} = Z
 
 instance
-  OfNat-S : ∀ {Γ : Env} {A B : Type} {n : ℕ} → {{OfNat (Γ ∋ A) n}} → OfNat (Γ ▷ B ∋ A) (suc n)
+  OfNat-S : {{OfNat (Γ ∋ A) n}} → OfNat (Γ ▷ B ∋ A) (suc n)
   ofNat {{OfNat-S}} = S ofNat
 
 #_ : ∀ {Γ : Env} {A : Type} (n : ℕ) → {{OfNat (Γ ∋ A) n}} → Γ ⊢ A
