@@ -1,7 +1,6 @@
-STLC with Nested evaluation contexts
+PCF with nested evaluation contexts
 
-Siek, Thiemann, and Wadler
-
+Philip Wadler, 2 Aug 2022
 ```
 module variants.Evaluation where
 

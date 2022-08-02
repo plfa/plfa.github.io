@@ -1,6 +1,6 @@
-STLC with Nested evaluation contexts
+PCF with frames
 
-Siek, Thiemann, and Wadler
+Philip Wadler, 2 Aug 2022
 
 ```
 module variants.Frame where
@@ -114,9 +114,45 @@ variable
   L M N V W : Γ ⊢ A
 ```
 
+## Type class to convert naturals to an arbitrary type
+
+```
+record OfNat (A : Set) (n : ℕ) : Set where
+  field
+    ofNat : A
+
+open OfNat {{...}} public
+
+instance
+  OfNat-Z : OfNat (Γ ▷ A ∋ A) 0
+  ofNat {{OfNat-Z}} = Z
+
+instance
+  OfNat-S : ∀ {Γ : Env} {A B : Type} {n : ℕ} → {{OfNat (Γ ∋ A) n}} → OfNat (Γ ▷ B ∋ A) (suc n)
+  ofNat {{OfNat-S}} = S ofNat
+
+#_ : ∀ {Γ : Env} {A : Type} (n : ℕ) → {{OfNat (Γ ∋ A) n}} → Γ ⊢ A
+# n  =  ` ofNat
+```
+
+Testing!
+
+```
+_ : Γ ▷ `ℕ ⊢ `ℕ
+_ = # 0
+
+_ : Γ ▷ `ℕ ⇒ `ℕ ▷ `ℕ ⊢ `ℕ ⇒ `ℕ
+_ = # 1
+
+```
+
 ## Renaming maps, substitution maps, term maps
 
 ```
+infix 4 _→ᴿ_
+infix 4 _→ˢ_
+infix 4 _→ᵀ_
+
 _→ᴿ_ : Env → Env → Set
 Γ →ᴿ Δ = ∀ {A} → Γ ∋ A → Δ ∋ A
 
@@ -323,11 +359,11 @@ data _—→_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
   μ-· :
      Value V
-     -------------------------
+     ----------------------------
    → (μ N) · V —→ (N [ μ N ]) · V
 
   μ-case :
-     -------------------------------------
+     ---------------------------------------
      case (μ L) M N —→ case (L [ μ L ]) M N
 
   ξ-refl : 
@@ -423,16 +459,16 @@ progress (ƛ N)                           =  done (ƛ N)
 progress (L · M) with progress L
 ... | step L—→L′                         =  step (ξ (□· M) L—→L′)
 ... | done v with progress M
-...     | step (M—→M′)                =  step (ξ (v ·□) M—→M′)
+...     | step (M—→M′)                   =  step (ξ (v ·□) M—→M′)
 ...     | done w with v
 ...         | (ƛ N)                      =  step ((β-ƛ w))
 ...         | (μ N)                      =  step ((μ-· w))
 progress `zero                           =  done `zero
 progress (`suc M) with progress M
-... | step (M—→M′)                    =  step (ξ (`suc□) M—→M′)
+... | step (M—→M′)                       =  step (ξ (`suc□) M—→M′)
 ... | done v                             =  done (`suc v)
 progress (case L M N) with progress L
-... | step (L—→L′)                    =  step (ξ (case□ M N) L—→L′)
+... | step (L—→L′)                       =  step (ξ (case□ M N) L—→L′)
 ... | done v with v
 ...     | `zero                          =  step (β-zero)
 ...     | (`suc v)                       =  step ((β-suc v))
