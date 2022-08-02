@@ -56,17 +56,20 @@ data _∋_ : Env → Type → Set where
       Γ ∋ A
       ---------
     → Γ ▷ B ∋ A
+
+variable
+  x y : Γ ∋ A
 ```
 
 ## Terms
 
 ```
-infix   4 _⊢_
-infix   5 ƛ_
-infix   5 μ_
-infixl  6 _·_
-infix   7 `suc
-infix   8 `_
+infix  4  _⊢_
+infix  5  ƛ_
+infix  5  μ_
+infixl 6  _·_
+infix  7  `suc_
+infix  8  `_
 
 data _⊢_ : Env → Type → Set where
 
@@ -90,7 +93,7 @@ data _⊢_ : Env → Type → Set where
       ------
       Γ ⊢ `ℕ
 
-  `suc :
+  `suc_ :
       Γ ⊢ `ℕ
       ------
     → Γ ⊢ `ℕ
@@ -209,15 +212,15 @@ data Value : (Γ ⊢ A) → Set where
   `zero :
       Value {Γ} `zero
 
-  `suc :
+  `suc_ :
       Value V
       --------------
     → Value (`suc V)
 
   μ_ :
-      (N : Γ ▷ A ⊢ B)
+      (N : Γ ▷ A ⊢ A)
       ---------------
-    → Value (ƛ N)
+    → Value (μ N)
 
 variable
   v : Value V
@@ -354,10 +357,14 @@ data _↦_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ---------------------------
     → case (`suc V) M N ↦ N [ V ]
 
-  β-μ :
+  μ-· :
      Value V
      -------------------------
    → (μ N) · V ↦ (N [ μ N ]) · V
+
+  μ-case :
+     -------------------------------------
+     case (μ L) M N ↦ case (L [ μ L ]) M N
 
 data _—→_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
@@ -408,355 +415,161 @@ begin M—↠N = M—↠N
 Values are irreducible.  The auxiliary definition rearranges the
 order of the arguments because it works better for Agda.  
 ```
-value-irreducible : ∀ {Γ A} {V M : Γ ⊢ A} → Value V → ¬ (V —→ M)
+value-irreducible : Value V → ¬ (V —→ M)
 value-irreducible v V—→M  =  nope V—→M v
-   where
-   nope : ∀ {Γ A} {V M : Γ ⊢ A} → V —→ M → Value V → ⊥
-   nope (ξ `suc[ E ] (β-ƛ v))   (`suc w)  =  nope (ξ E (β-ƛ v)) w
-   nope (ξ `suc[ E ] β-zero)    (`suc w)  =  nope (ξ E β-zero) w
-   nope (ξ `suc[ E ] (β-suc v)) (`suc w)  =  nope (ξ E (β-suc v)) w
-   nope (ξ `suc[ E ] (β-μ v))   (`suc w)  =  nope (ξ E (β-μ v)) w
+  where
+  nope : V —→ M → Value V → ⊥
+  nope (ξ □ (β-ƛ v)) ()
+  nope (ξ `suc[ E ] V—→M) (`suc w)  =  nope (ξ E V—→M) w
 ```
 
--- Variables are irreducible.
--- ```
--- variable-irreducible : ∀ {Γ A} {x : Γ ∋ A} {N : Γ ⊢ A}
---     ------------
---   → ¬ (` x —→ N)
--- variable-irreducible (ξ □ ())
--- ```
+Variables are irreducible.
+```
+variable-irreducible :
+    ------------
+    ¬ (` x —→ N)
+variable-irreducible (ξ □ ())
+```
 
--- Boxes are irreducible (at the top level)
--- ```
--- box-irreducible : ∀ {Γ G} {M : Γ ⊢ G} {N : Γ ⊢ ★}
---   → (g : Ground G)
---     --------------
---   → ¬ (M ⇑ g ↦ N)
--- box-irreducible g ()
--- ```
+## Progress
 
--- Blame is irreducible.
--- ```
--- blame-irreducible : ∀ {Γ A} {M′ : Γ ⊢ A}  → ¬ (blame —→ M′)
--- blame-irreducible (ξ □ ())
--- ```
+Every term that is well typed and closed is either
+blame or a value or takes a reduction step.
 
--- ## Progress
+```
+data Progress : (∅ ⊢ A) → Set where
 
--- Every term that is well typed and closed is either
--- blame or a value or takes a reduction step.
+  step :
+      L —→ M
+      ----------
+    → Progress L
 
--- ```
--- data Progress {A} : (∅ ⊢ A) → Set where
+  done :
+      Value V
+      ----------
+    → Progress V
 
---   blame : ∀ {B}
---    → (E : Frame ∅ B A)
---      ---------------------
---    → Progress (E ⟦ blame ⟧)
+progress :
+    (M : ∅ ⊢ A)
+    -----------
+  → Progress M
 
---   step : ∀ {M N : ∅ ⊢ A}
---     → M —→ N
---       ----------
---     → Progress M
-
---   done : ∀ {M : ∅ ⊢ A}
---     → Value M
---       ----------
---     → Progress M
-
--- progress± : ∀ {A B} {V : ∅ ⊢ A}
---   → (v : Value V)
---   → (±p : A => B)
---     --------------------
---   → ∃[ M ](V ⟨ ±p ⟩ ↦ M)
--- progress± v ±p with split ±p in e
--- progress± v     _ | id                   =  _ , ident e v
--- progress± (ƛ _) _ | _ ⇒ _                =  _ , wrap e
--- progress± v       (+ _ ⇑ g) | other      =  _ , expand v g
--- progress± (v ⇑ g) (- _ ⇑ h) | other
---     with ground g ≡? ground h
--- ... | yes refl rewrite uniqueG g h       =  _ , collapse v h
--- ... | no  G≢H                            =  _ , collide v g h G≢H
-
--- progress : ∀ {A}
---   → (M : ∅ ⊢ A)
---     -----------
---   → Progress M
-
--- progress (ƛ N)                           =  done (ƛ N)
--- progress (L · M) with progress L
--- ... | blame E                            =  blame ([ E ]· M)
--- ... | step (ξ E L↦L′)                    =  step (ξ ([ E ]· M) L↦L′)
--- ... | done (ƛ N) with progress M
--- ...     | blame E                        =  blame ((ƛ N) ·[ E ])
--- ...     | step (ξ E M↦M′)                =  step (ξ ((ƛ N) ·[ E ]) M↦M′)
--- ...     | done w                         =  step (ξ □ (β w))
--- progress ($ k)                           =  done ($ k)
--- progress (L ⦅ _⊕_ ⦆ M) with progress L
--- ... | blame E                            =  blame ([ E ]⦅ _⊕_ ⦆ M)
--- ... | step (ξ E L↦L′)                    =  step (ξ ([ E ]⦅ _⊕_ ⦆ M) L↦L′)
--- ... | done ($ k) with progress M
--- ...     | blame E                        =  blame (($ k) ⦅ _⊕_ ⦆[ E ])
--- ...     | step (ξ E M↦M′)                =  step (ξ (($ k) ⦅ _⊕_ ⦆[ E ]) M↦M′)
--- ...     | done ($ k′)                    =  step (ξ □ δ)
--- progress (M ⇑ g) with progress M
--- ... | blame E                            =  blame ([ E ]⇑ g)
--- ... | step (ξ E M↦M′)                    =  step (ξ ([ E ]⇑ g) M↦M′)
--- ... | done v                             =  done (v ⇑ g)
--- progress (M ⟨ ±p ⟩) with progress M
--- ... | blame E                            =  blame ([ E ]⟨ ±p ⟩)
--- ... | step (ξ E M↦M′)                    =  step (ξ ([ E ]⟨ ±p ⟩) M↦M′)
--- ... | done v with progress± v ±p
--- ...     | _ , V⟨±p⟩↦N                    =  step (ξ □ V⟨±p⟩↦N)
--- progress blame                           =  blame □
--- ```
+progress (ƛ N)                           =  done (ƛ N)
+progress (L · M) with progress L
+... | step (ξ E L↦L′)                    =  step (ξ ([ E ]· M) L↦L′)
+... | done v with progress M
+...     | step (ξ E M↦M′)                =  step (ξ (v ·[ E ]) M↦M′)
+...     | done w with v
+...         | (ƛ N)                      =  step (ξ □ (β-ƛ w))
+...         | (μ N)                      =  step (ξ □ (μ-· w))
+progress `zero                           =  done `zero
+progress (`suc M) with progress M
+... | step (ξ E M↦M′)                    =  step (ξ (`suc[ E ]) M↦M′)
+... | done v                             =  done (`suc v)
+progress (case L M N) with progress L
+... | step (ξ E L↦L′)                    =  step (ξ (case[ E ] M N) L↦L′)
+... | done v with v
+...     | `zero                          =  step (ξ □ β-zero)
+...     | (`suc v)                       =  step (ξ □ (β-suc v))
+...     | (μ N)                          =  step (ξ □ μ-case)
+progress (μ N)                           =  done (μ N)
+```
 
 
--- ## Evaluation
+## Evaluation
 
--- Gas is specified by a natural number:
--- ```
--- record Gas : Set where
---   constructor gas
---   field
---     amount : ℕ
--- ```
--- When our evaluator returns a term `N`, it will either give evidence that
--- `N` is a value, or indicate that blame occurred or it ran out of gas.
--- ```
--- data Finished {A} : (∅ ⊢ A) → Set where
+Gas is specified by a natural number:
+```
+record Gas : Set where
+  constructor gas
+  field
+    amount : ℕ
+```
+When our evaluator returns a term `N`, it will either give evidence that
+`N` is a value, or indicate that blame occurred or it ran out of gas.
+```
+data Finished : (∅ ⊢ A) → Set where
 
---    done : ∀ {N : ∅ ⊢ A}
---      → Value N
---        ----------
---      → Finished N
+   done :
+       Value N
+       ----------
+     → Finished N
 
---    blame : ∀ {B}
---      → (E : Frame ∅ B A)
---        ---------------------
---      → Finished (E ⟦ blame ⟧)
+   out-of-gas :
+       ----------
+       Finished N
+```
+Given a term `L` of type `A`, the evaluator will, for some `N`, return
+a reduction sequence from `L` to `N` and an indication of whether
+reduction finished:
+```
+data Steps : ∅ ⊢ A → Set where
 
---    out-of-gas : {N : ∅ ⊢ A}
---        ----------
---      → Finished N
--- ```
--- Given a term `L` of type `A`, the evaluator will, for some `N`, return
--- a reduction sequence from `L` to `N` and an indication of whether
--- reduction finished:
--- ```
--- data Steps {A} : ∅ ⊢ A → Set where
+  steps :
+      L —↠ M
+    → Finished M
+      ----------
+    → Steps L
+```
+The evaluator takes gas and a term and returns the corresponding steps:
+```
+eval :
+    Gas
+  → (L : ∅ ⊢ A)
+    -----------
+  → Steps L
+eval (gas zero) L          =  steps (L ∎) out-of-gas
+eval (gas (suc m)) L
+    with progress L
+... | done v               =  steps (L ∎) (done v)
+... | step {M = M} L—→M
+    with eval (gas m) M
+... | steps M—↠N fin       =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+```
 
---   steps : {L N : ∅ ⊢ A}
---     → L —↠ N
---     → Finished N
---       ----------
---     → Steps L
--- ```
--- The evaluator takes gas and a term and returns the corresponding steps:
--- ```
--- eval : ∀ {A}
---   → Gas
---   → (L : ∅ ⊢ A)
---     -----------
---   → Steps L
--- eval (gas zero) L          =  steps (L ∎) out-of-gas
--- eval (gas (suc m)) L
---     with progress L
--- ... | done v               =  steps (L ∎) (done v)
--- ... | blame E              =  steps (L ∎) (blame E)
--- ... | step {L} {M} L—→M
---     with eval (gas m) M
--- ... | steps M—↠N fin       =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
--- ```
+# Example
 
--- ## Type erasure
+Computing two plus two on naturals:
+```agda
+pattern two = `suc `suc `zero
 
--- ```
--- infix 6 _≤★
+pattern x′ = ` S Z
+pattern y′ = ` Z
+pattern p′ = ` S S S Z
+pattern x″ = ` Z
+pattern y″ = ` S Z
+pattern plus = μ ƛ ƛ (case x′ y′ (`suc (p′ · x″ · y″)))
+```
 
--- pattern  _≤★ ι   =  id ⇑ ($ ι)
--- pattern  ★⇒★≤★   =  id ⇑ ★⇒★
+Next, a sample reduction demonstrating that two plus two is four:
+```agda
+_ : plus · two · two —↠ `suc `suc `suc `suc (`zero {∅})
+_ = begin
+      plus · two · two
+    —→⟨ ξ ([ □ ]· two) (μ-· two) ⟩
+      (ƛ (ƛ case y″ x″ (`suc (plus · x″ · y″)))) · two · two
+    —→⟨ ξ ([ □ ]· two) (β-ƛ two) ⟩
+      (ƛ case two x″ (`suc (plus · x″ · y″))) · two
+    —→⟨ ξ □ (β-ƛ two) ⟩
+      case two two (`suc (plus · x″ · two))
+    —→⟨ ξ □ (β-suc (`suc `zero)) ⟩
+      `suc (plus · `suc `zero · two)
+    —→⟨ ξ `suc[ [ □ ]· two ] (μ-· (`suc `zero)) ⟩
+      `suc ((ƛ (ƛ case y″ x″ (`suc (plus · x″ · y″)))) · `suc `zero · two)
+    —→⟨ ξ `suc[ [ □ ]· two ] (β-ƛ (`suc `zero)) ⟩
+      `suc ((ƛ case (`suc `zero) x″ (`suc (plus · x″ · y″))) · two)
+    —→⟨ ξ `suc[ □ ] (β-ƛ two) ⟩
+      `suc case (`suc `zero) two (`suc (plus · x″ · two))
+    —→⟨ ξ `suc[ □ ] (β-suc `zero) ⟩
+      `suc (`suc (plus · `zero · two))
+    —→⟨ ξ `suc[ `suc[ [ □ ]· two ] ] (μ-· `zero) ⟩
+      `suc (`suc ((ƛ (ƛ case y″ x″ (`suc (plus · x″ · y″)))) · `zero · two))
+    —→⟨ ξ `suc[ `suc[ [ □ ]· two ] ] (β-ƛ `zero) ⟩
+      `suc (`suc ((ƛ case `zero x″ (`suc (plus · x″ · y″))) · two))
+    —→⟨ ξ `suc[ `suc[ □ ] ] (β-ƛ two) ⟩
+      `suc (`suc case `zero two (`suc (plus · x″ · two)))
+    —→⟨ ξ `suc[ `suc[ □ ] ] β-zero ⟩
+      `suc (`suc two)
+    ∎
+```
 
--- infix  6 _·★_
--- infix  6 _⦅_⦆★_
--- infix  8 $★_
-
--- pattern  ƛ★_ N          =  (ƛ N) ⟨ + ★⇒★≤★ ⟩
--- pattern  _·★_ L M       =  (L ⟨ - ★⇒★≤★ ⟩) · M
--- pattern  $★_ {ι = ι} k  =  $ k ⇑ $ ι
--- pattern  _⦅_⦆★_ {ι = ι} {ι′} {ι″} M _⊕_ N
---   =  ((M ⟨ - ι ≤★ ⟩) ⦅ _⊕_ ⦆ (N ⟨ - ι′ ≤★ ⟩)) ⟨ + ι″ ≤★ ⟩
-
--- data Static : ∀ {Γ A} → (Γ ⊢ A) → Set where
-
---   `_ : ∀ {Γ A}
---     → (x : Γ ∋ A)
---       ------------
---     → Static (` x)
-
---   ƛ_ : ∀ {Γ A B} {N : Γ ▷ A ⊢ B}
---     → Static N
---       ------------
---     → Static (ƛ N)
-
---   _·_ : ∀ {Γ A B} {L : Γ ⊢ A ⇒ B} {M : Γ ⊢ A}
---     → Static L
---     → Static M
---       --------------
---     → Static (L · M)
-
---   $_ : ∀ {Γ ι}
---     → (k : rep ι)
---       -------------------
---     → Static {Γ = Γ} ($ k)
-
---   _⦅_⦆_ : ∀ {Γ ι ι′ ι″} {M : Γ ⊢ $ ι} {N : Γ ⊢ $ ι′}
---     → Static M
---     → (_⊕_ : rep ι → rep ι′ → rep ι″)
---     → Static N
---       --------------------
---     → Static (M ⦅ _⊕_ ⦆ N)
-
--- static : ∀ {Γ A} {M : Γ ⊢ A}
---   → (m : Static M)
---     -------------
---   → Γ ⊢ A
--- static {M = M} m  =  M
-
--- ⌈_⌉ᴳ : Env → Env
--- ⌈ ∅ ⌉ᴳ = ∅
--- ⌈ Γ ▷ A ⌉ᴳ = ⌈ Γ ⌉ᴳ ▷ ★
-
--- ⌈_⌉ˣ : ∀ {Γ A} → (Γ ∋ A) → (⌈ Γ ⌉ᴳ ∋ ★)
--- ⌈ Z ⌉ˣ          = Z
--- ⌈ S x ⌉ˣ        = S ⌈ x ⌉ˣ
-
--- ⌈_⌉ : ∀ {Γ A} {M : Γ ⊢ A} → Static M → (⌈ Γ ⌉ᴳ ⊢ ★)
--- ⌈ ` x ⌉          =  ` ⌈ x ⌉ˣ
--- ⌈ ƛ N ⌉          =  ƛ★ ⌈ N ⌉
--- ⌈ L · M ⌉        =  ⌈ L ⌉ ·★ ⌈ M ⌉
--- ⌈ $ k ⌉          =  $★ k
--- ⌈ M ⦅ _⊕_ ⦆ N ⌉  =  ⌈ M ⌉ ⦅ _⊕_ ⦆★ ⌈ N ⌉
--- ```
-
--- ## Examples
-
--- The following abbreviations cause Agda to produce more readable output
--- when using `eval`.  In particular, the specialised `$ℕ★_`, `$𝔹★_`, and
--- `_⦅_⦆ℕ★_` lead to more readable results than the generic `$★_` and
--- `_⦅_⦆★_`.  After the output is produced, rewriting `ℕ★` and `𝔹★`
--- yields the more generic operators, which are fine for input.
-
--- ```
--- pattern  $ℕ      =  $ ′ℕ
--- pattern  $𝔹      =  $ ′𝔹
--- pattern  ℕ≤★     =  id ⇑ $ℕ
--- pattern  𝔹≤★     =  id ⇑ $𝔹
--- pattern  ℕ⇒ℕ≤★   =  ℕ≤★ ⇒ ℕ≤★ ⇑ ★⇒★
-
--- infix  6 _⦅_⦆ℕ★_
--- infix  8 $ℕ★_
--- infix  8 $𝔹★_
-
--- pattern  $ℕ★_ k          =  $ k ⇑ $ℕ
--- pattern  $𝔹★_ k          =  $ k ⇑ $𝔹
--- pattern  _⦅_⦆ℕ★_ M _⊕_ N
---   =  ((M ⟨ - ℕ≤★ ⟩) ⦅ _⊕_ ⦆ (N ⟨ - ℕ≤★ ⟩)) ⟨ + ℕ≤★ ⟩
-
--- inc     :  ∅ ⊢ $ℕ ⇒ $ℕ
--- inc     =  ƛ (` Z ⦅ _+_ ⦆ $ 1)
-
--- Inc     :  Static inc
--- Inc     =  ƛ (` Z ⦅ _+_ ⦆ $ 1)
-
--- inc★    :  ∅ ⊢ ★
--- inc★    =  ⌈ Inc ⌉
-
--- inc★′   :  ∅ ⊢ ★
--- inc★′   =  inc ⟨ + ℕ⇒ℕ≤★ ⟩
-
--- inc2—↠3  : inc · ($ 2) —↠ $ 3
--- inc2—↠3  =
---   begin
---     (ƛ (` Z ⦅ _+_ ⦆ $ 1)) · $ 2
---   —→⟨ ξ □ (β ($ 2)) ⟩
---     $ 2 ⦅ _+_ ⦆ $ 1
---   —→⟨ ξ □ δ ⟩ $ 3
---   ∎
-
--- inc★2★—↠3★  : inc★ ·★ ($★ 2) —↠ $★ 3
--- inc★2★—↠3★  =
---   begin
---     (ƛ★ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ·★ $ℕ★ 2
---   —→⟨ ξ ([ [ □ ]⟨ - ★⇒★≤★ ⟩ ]· $ℕ★ 2) (expand (ƛ _) ★⇒★) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ⟨ + id ⟩ ⇑ ★⇒★) ·★ $ℕ★ 2
---   —→⟨ ξ ([ [ [ □ ]⇑ ★⇒★ ]⟨ - ★⇒★≤★ ⟩ ]· $ℕ★ 2) (ident refl (ƛ _)) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ⇑ ★⇒★) ·★ $ℕ★ 2
---   —→⟨ ξ ([ □ ]· $ℕ★ 2) (collapse (ƛ _) ★⇒★) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ⟨ - id ⟩) · $ℕ★ 2
---   —→⟨ ξ ([ □ ]· $ℕ★ 2) (ident refl (ƛ _)) ⟩
---     (ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) · $ℕ★ 2
---   —→⟨ ξ □ (β ($ℕ★ 2)) ⟩
---     $ℕ★ 2 ⦅ _+_ ⦆ℕ★ $ℕ★ 1
---   —→⟨ ξ [ [ □ ]⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ]⟨ + ℕ≤★ ⟩ (collapse ($ 2) $ℕ) ⟩
---     ($ 2 ⟨ - id ⟩) ⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ [ □ ]⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ]⟨ + ℕ≤★ ⟩ (ident refl ($ 2)) ⟩
---     $ 2 ⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ $ 2 ⦅ _+_ ⦆[ □ ] ]⟨ + ℕ≤★ ⟩ (collapse ($ 1) $ℕ) ⟩
---     $ 2 ⦅ _+_ ⦆ ($ 1 ⟨ - id ⟩) ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ $ 2 ⦅ _+_ ⦆[ □ ] ]⟨ + ℕ≤★ ⟩ (ident refl ($ 1)) ⟩
---     $ 2 ⦅ _+_ ⦆ $ 1 ⟨ + ℕ≤★ ⟩ —→⟨ ξ [ □ ]⟨ + ℕ≤★ ⟩ δ ⟩
---     $ 3 ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ □ (expand ($ 3) $ℕ) ⟩
---     $ 3 ⟨ + id ⟩ ⇑ $ℕ
---   —→⟨ ξ ([ □ ]⇑ $ℕ) (ident refl ($ 3)) ⟩
---     $ℕ★ 3
---   ∎
-
--- inc★′2★—↠3★  : inc★′ ·★ ($★ 2) —↠ $★ 3
--- inc★′2★—↠3★  =
---   begin
---     ((ƛ (` Z ⦅ _+_ ⦆ $ 1)) ⟨ + ℕ⇒ℕ≤★ ⟩) ·★ $ℕ★ 2
---   —→⟨ ξ ([ [ □ ]⟨ - ★⇒★≤★ ⟩ ]· $ℕ★ 2) (expand (ƛ _) ★⇒★) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ $ 1)) ⟨ + ℕ≤★ ⇒ ℕ≤★ ⟩ ⇑ ★⇒★) ·★ $ℕ★ 2
---   —→⟨ ξ ([ [ [ □ ]⇑ ★⇒★ ]⟨ - ★⇒★≤★ ⟩ ]· $ℕ★ 2) (wrap refl) ⟩
---     ((ƛ ((ƛ (` Z ⦅ _+_ ⦆ $ 1)) · (` Z ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩)) ⇑ ★⇒★) ·★ $ℕ★ 2
---   —→⟨ ξ ([ □ ]· $ℕ★ 2) (collapse (ƛ _) ★⇒★) ⟩
---     ((ƛ ((ƛ (` Z ⦅ _+_ ⦆ $ 1)) · (` Z ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩)) ⟨ - id ⟩) · $ℕ★ 2
---   —→⟨ ξ ([ □ ]· $ℕ★ 2) (ident refl (ƛ _)) ⟩
---     (ƛ ((ƛ (` Z ⦅ _+_ ⦆ $ 1)) · (` Z ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩)) · $ℕ★ 2
---   —→⟨ ξ □ (β ($ℕ★ 2)) ⟩
---     (ƛ (` Z ⦅ _+_ ⦆ $ 1)) · ($ℕ★ 2 ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ (ƛ (` Z ⦅ _+_ ⦆ $ 1)) ·[ □ ] ]⟨ + ℕ≤★ ⟩ (collapse ($ 2) $ℕ) ⟩
---     (ƛ (` Z ⦅ _+_ ⦆ $ 1)) · ($ 2 ⟨ - id ⟩) ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ (ƛ (` Z ⦅ _+_ ⦆ $ 1)) ·[ □ ] ]⟨ + ℕ≤★ ⟩ (ident refl ($ 2)) ⟩
---     (ƛ (` Z ⦅ _+_ ⦆ $ 1)) · $ 2 ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ □ ]⟨ + ℕ≤★ ⟩ (β ($ 2)) ⟩
---     $ 2 ⦅ _+_ ⦆ $ 1 ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ [ □ ]⟨ + ℕ≤★ ⟩ δ ⟩
---     $ 3 ⟨ + ℕ≤★ ⟩
---   —→⟨ ξ □ (expand ($ 3) $ℕ) ⟩
---     $ 3 ⟨ + id ⟩ ⇑ $ℕ
---   —→⟨ ξ ([ □ ]⇑ $ℕ) (ident refl ($ 3)) ⟩
---     $ℕ★ 3
---   ∎
-
--- inc★true★—↠blame : inc★ ·★ ($★ true) —↠
---   ([ [ □ ]⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ]⟨ + ℕ≤★ ⟩) ⟦ blame ⟧
--- inc★true★—↠blame =
---   begin
---     (ƛ★ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ·★ $𝔹★ true
---   —→⟨ ξ ([ [ □ ]⟨ - ★⇒★≤★ ⟩ ]· $𝔹★ true) (expand (ƛ _) ★⇒★) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ⟨ + id ⟩ ⇑ ★⇒★) ·★ $𝔹★ true
---   —→⟨ ξ ([ [ [ □ ]⇑ ★⇒★ ]⟨ - ★⇒★≤★ ⟩ ]· $𝔹★ true) (ident refl (ƛ _)) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ⇑ ★⇒★) ·★ $𝔹★ true
---   —→⟨ ξ ([ □ ]· $𝔹★ true) (collapse (ƛ _) ★⇒★) ⟩
---     ((ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) ⟨ - id ⟩) · $𝔹★ true
---   —→⟨ ξ ([ □ ]· $𝔹★ true) (ident refl (ƛ _)) ⟩
---     (ƛ (` Z ⦅ _+_ ⦆ℕ★ $ℕ★ 1)) · $𝔹★ true
---   —→⟨ ξ □ (β ($𝔹★ true)) ⟩
---     $𝔹★ true ⦅ _+_ ⦆ℕ★ $ℕ★ 1
---   —→⟨ ξ [ [ □ ]⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ]⟨ + ℕ≤★ ⟩ (collide ($ true) $𝔹 $ℕ (λ())) ⟩
---     blame ⦅ _+_ ⦆ ($ℕ★ 1 ⟨ - ℕ≤★ ⟩) ⟨ + ℕ≤★ ⟩
---   ∎
--- ```
