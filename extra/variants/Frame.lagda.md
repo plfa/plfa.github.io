@@ -549,28 +549,28 @@ _ =
   begin
     plus · two · two
   —→⟨ ξ (□· two) (μ-· (`suc (`suc `zero))) ⟩
-    (ƛ (ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1)))) · two · two
+    (ƛ ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1))) · two · two
   —→⟨ ξ (□· two) (β-ƛ (`suc (`suc `zero))) ⟩
-    (ƛ case (two) (# 0) (`suc (plus · # 0 · # 1))) · two
+    (ƛ case two (# 0) (`suc (plus · # 0 · # 1))) · two
   —→⟨ β-ƛ (`suc (`suc `zero)) ⟩
-    case (two) (two) (`suc (plus · # 0 · two))
+    case two two (`suc (plus · # 0 · two))
   —→⟨ β-suc (`suc `zero) ⟩
     `suc (plus · `suc `zero · two)
   —→⟨ ξ `suc□ (ξ (□· two) (μ-· (`suc `zero))) ⟩
-    `suc ((ƛ (ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1)))) · `suc `zero · two)
+    `suc ((ƛ ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1))) · `suc `zero · two)
   —→⟨ ξ `suc□ (ξ (□· two) (β-ƛ (`suc `zero))) ⟩
     `suc ((ƛ case (`suc `zero) (# 0) (`suc (plus · # 0 · # 1))) · two)
   —→⟨ ξ `suc□ (β-ƛ (`suc (`suc `zero))) ⟩
-    `suc case (`suc `zero) (two) (`suc (plus · # 0 · two))
+    `suc case (`suc `zero) two (`suc (plus · # 0 · two))
   —→⟨ ξ `suc□ (β-suc `zero) ⟩
-    `suc (`suc (plus · `zero · two))
+    `suc `suc (plus · `zero · two)
   —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· two) (μ-· `zero))) ⟩
-    `suc (`suc ((ƛ (ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1)))) · `zero · two))
+    `suc `suc ((ƛ ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1))) · `zero · two)
   —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· two) (β-ƛ `zero))) ⟩
-    `suc (`suc ((ƛ case `zero (# 0) (`suc (plus · # 0 · # 1))) · two))
+    `suc `suc ((ƛ case `zero (# 0) (`suc (plus · # 0 · # 1))) · two)
   —→⟨ ξ `suc□ (ξ `suc□ (β-ƛ (`suc (`suc `zero)))) ⟩
-    `suc (`suc case `zero (two) (`suc (plus · # 0 · two)))
+    `suc `suc (case `zero (two) (`suc (plus · # 0 · two)))
   —→⟨ ξ `suc□ (ξ `suc□ β-zero) ⟩
-    `suc (`suc (`suc (`suc `zero)))
+    `suc `suc `suc `suc `zero
   ∎
 ```
