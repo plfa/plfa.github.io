@@ -532,45 +532,45 @@ eval (gas (suc m)) L
 
 Computing two plus two on naturals:
 ```agda
-pattern two = `suc `suc `zero
+two : Γ ⊢ `ℕ
+two = `suc `suc `zero
 
-pattern x′ = ` S Z
-pattern y′ = ` Z
-pattern p′ = ` S S S Z
-pattern x″ = ` Z
-pattern y″ = ` S Z
-pattern plus = μ ƛ ƛ (case x′ y′ (`suc (p′ · x″ · y″)))
+plus : Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
+plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
+
+2+2 : ∅ ⊢ `ℕ
+2+2 = plus · two · two
 ```
 
 Next, a sample reduction demonstrating that two plus two is four:
 ```agda
-_ : plus · two · two —↠ `suc `suc `suc `suc (`zero {∅})
-_ = begin
-      plus · two · two
-    —→⟨ ξ (□· two) (μ-· two) ⟩
-      (ƛ (ƛ case y″ x″ (`suc (plus · x″ · y″)))) · two · two
-    —→⟨ ξ (□· two) (β-ƛ two) ⟩
-      (ƛ case two x″ (`suc (plus · x″ · y″))) · two
-    —→⟨ (β-ƛ two) ⟩
-      case two two (`suc (plus · x″ · two))
-    —→⟨ (β-suc (`suc `zero)) ⟩
-      `suc (plus · `suc `zero · two)
-    —→⟨ ξ `suc□ (ξ (□· two) (μ-· (`suc `zero))) ⟩
-      `suc ((ƛ (ƛ case y″ x″ (`suc (plus · x″ · y″)))) · `suc `zero · two)
-    —→⟨ ξ `suc□ (ξ (□· two) (β-ƛ (`suc `zero))) ⟩
-      `suc ((ƛ case (`suc `zero) x″ (`suc (plus · x″ · y″))) · two)
-    —→⟨ ξ `suc□ (β-ƛ two) ⟩
-      `suc case (`suc `zero) two (`suc (plus · x″ · two))
-    —→⟨ ξ `suc□ (β-suc `zero) ⟩
-      `suc (`suc (plus · `zero · two))
-    —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· two) (μ-· `zero))) ⟩
-      `suc (`suc ((ƛ (ƛ case y″ x″ (`suc (plus · x″ · y″)))) · `zero · two))
-    —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· two) (β-ƛ `zero))) ⟩
-      `suc (`suc ((ƛ case `zero x″ (`suc (plus · x″ · y″))) · two))
-    —→⟨ ξ `suc□ (ξ `suc□ (β-ƛ two)) ⟩
-      `suc (`suc case `zero two (`suc (plus · x″ · two)))
-    —→⟨ ξ `suc□ (ξ `suc□ β-zero) ⟩
-      `suc (`suc two)
-    ∎
+_ : 2+2 —↠ `suc `suc `suc `suc `zero
+_ = 
+  begin
+    plus · two · two
+  —→⟨ ξ (□· two) (μ-· (`suc (`suc `zero))) ⟩
+    (ƛ (ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1)))) · two · two
+  —→⟨ ξ (□· two) (β-ƛ (`suc (`suc `zero))) ⟩
+    (ƛ case (two) (# 0) (`suc (plus · # 0 · # 1))) · two
+  —→⟨ β-ƛ (`suc (`suc `zero)) ⟩
+    case (two) (two) (`suc (plus · # 0 · two))
+  —→⟨ β-suc (`suc `zero) ⟩
+    `suc (plus · `suc `zero · two)
+  —→⟨ ξ `suc□ (ξ (□· two) (μ-· (`suc `zero))) ⟩
+    `suc ((ƛ (ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1)))) · `suc `zero · two)
+  —→⟨ ξ `suc□ (ξ (□· two) (β-ƛ (`suc `zero))) ⟩
+    `suc ((ƛ case (`suc `zero) (# 0) (`suc (plus · # 0 · # 1))) · two)
+  —→⟨ ξ `suc□ (β-ƛ (`suc (`suc `zero))) ⟩
+    `suc case (`suc `zero) (two) (`suc (plus · # 0 · two))
+  —→⟨ ξ `suc□ (β-suc `zero) ⟩
+    `suc (`suc (plus · `zero · two))
+  —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· two) (μ-· `zero))) ⟩
+    `suc (`suc ((ƛ (ƛ case (# 1) (# 0) (`suc (plus · # 0 · # 1)))) · `zero · two))
+  —→⟨ ξ `suc□ (ξ `suc□ (ξ (□· two) (β-ƛ `zero))) ⟩
+    `suc (`suc ((ƛ case `zero (# 0) (`suc (plus · # 0 · # 1))) · two))
+  —→⟨ ξ `suc□ (ξ `suc□ (β-ƛ (`suc (`suc `zero)))) ⟩
+    `suc (`suc case `zero (two) (`suc (plus · # 0 · two)))
+  —→⟨ ξ `suc□ (ξ `suc□ β-zero) ⟩
+    `suc (`suc (`suc (`suc `zero)))
+  ∎
 ```
-
