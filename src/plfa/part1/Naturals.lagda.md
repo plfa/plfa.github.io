@@ -4,6 +4,7 @@ permalink : /Naturals/
 ---
 
 ```agda
+{-# OPTIONS --exact-split #-}
 module plfa.part1.Naturals where
 ```
 
@@ -534,9 +535,24 @@ We can do a simple analysis to show that all the cases are covered.
       - If it is `zero`, then the second equation applies.
       - If it is `suc m`, then the third equation applies.
 
-Again, the recursive definition is well founded because
-monus on bigger numbers is defined in terms of monus on
-smaller numbers.
+Agda will raise an error if all the cases are not covered.
+
+Enumerating the cases as above ensures that exactly one equation
+will apply.  Say the second line was instead written
+
+    zero  ∸ n  =  zero
+
+Then it would not be clear whether Agda should use the first
+or second line to simplify `zero ∸ zero`.  In this case, both
+lines lead to the same answer, `zero`, but that may not be
+the case in general.  The `--exact-split` flag, set at the beginning of this chapter,
+causes Agda to raise an error if cases overlap.  We will normally set the flag,
+but it will be omitted in Chapter [Decidable](/Decidable/) to permit
+an interesting example in Section [Logical Connectives](/Decidable/#logical-connectives).
+
+As with addition and multiplication, the recursive definition is well
+founded because monus on bigger numbers is defined in terms of monus
+on smaller numbers.
 
 For example, let's subtract two from three:
 ```agda
@@ -565,6 +581,8 @@ _ =
     0
   ∎
 ```
+
+
 
 #### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
