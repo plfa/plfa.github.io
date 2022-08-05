@@ -27,5 +27,3 @@ and `_*_`.
 
 Confirm that two plus three is five and two times three is
 six in this representation.
-
-

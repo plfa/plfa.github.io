@@ -893,5 +893,3 @@ take {L} (suc n) LiftL with force LiftL
 ... | step L↦M LiftM  with  take n LiftM
 ...   |  ⟨ N , M↠N ⟩                          =  ⟨ N , L ⟶⟨ L↦M ⟩ M↠N ⟩
 \end{code}
-
-

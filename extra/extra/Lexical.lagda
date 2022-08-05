@@ -27,7 +27,7 @@ module Lexical (A : Set) (_≺_ : Rel A) (≺-trans : Trans _≺_) where
   infix 4 _≪_
 
   data _≪_ : Rel (List A) where
- 
+
     halt : ∀ {x : A} {xs : List A}
         -------
       → [] ≪ x ∷ xs
@@ -56,4 +56,3 @@ module Lexical (A : Set) (_≺_ : Rel A) (≺-trans : Trans _≺_) where
   ≪-antirefl ≺-antirefl (next xs≪ys) refl = ⊥-elim (≪-antirefl ≺-antirefl xs≪ys refl)
 
 \end{code}
-

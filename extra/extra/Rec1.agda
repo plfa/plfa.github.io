@@ -4,4 +4,3 @@ module Rec1 where
 
   y : ℕ
   y = x
-

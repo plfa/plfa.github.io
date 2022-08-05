@@ -67,4 +67,3 @@ uniq-⊥ h w rewrite natural-⊥ h w | η-⊥ w = refl
 
   η-helper : (x : A) → η-lhs x ≡ f x
   η-helper x = refl
-

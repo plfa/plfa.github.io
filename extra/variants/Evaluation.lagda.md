@@ -192,7 +192,7 @@ Special case of substitution, used in beta rule
 
 _[_] :
     Γ ▷ A ⊢ B
-  → Γ ⊢ A 
+  → Γ ⊢ A
     ---------
   → Γ ⊢ B
 _[_] N M =  sub (σ₀ M) N
@@ -322,7 +322,7 @@ _∘_ :
 
 Composition and plugging
 ```
-∘-lemma : 
+∘-lemma :
     (E : Γ ⊢ B => C)
   → (F : Γ ⊢ A => B)
   → (P : Γ ⊢ A)
@@ -367,7 +367,7 @@ data _↦_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
 data _—→_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  ξ-refl : 
+  ξ-refl :
       {M′ N′ : Γ ⊢ B}
     → (E : Γ ⊢ A => B)
     → M′ ≡ E ⟦ M ⟧
@@ -571,4 +571,3 @@ _ = begin
       `suc (`suc two)
     ∎
 ```
-

@@ -213,4 +213,3 @@ eval (gas (suc m)) L with progress L
 ... | step {M} L—→M with eval (gas m) M
 ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
-

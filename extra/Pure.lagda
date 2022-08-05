@@ -648,4 +648,3 @@ normalise (suc g) L with progress L
 ...     | normal g′ M⟶*N Nⁿ            =  normal g′ (L ⟶⟨ L⟶M ⟩ M⟶*N) Nⁿ
 -}
 \end{code}
-

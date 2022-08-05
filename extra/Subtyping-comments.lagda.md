@@ -163,9 +163,3 @@ subtyping rule for variant types") isn't appropriate for a recommended
 question, as the terms in it are only defined in an earlier stretch
 question. That could be fixed by turning the last sentence into a
 separate stretch exercise.
-
-
-
-
-
-

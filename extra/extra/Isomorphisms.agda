@@ -12,7 +12,7 @@ Isomorphism of all and exists.
   record
     { to   =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
     ; fro  =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
-    ; invˡ =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) } 
-    ; invʳ =  λ { ∀¬bx → refl } 
+    ; invˡ =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) }
+    ; invʳ =  λ { ∀¬bx → refl }
     }
 \end{code}

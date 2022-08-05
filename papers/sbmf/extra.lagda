@@ -4,19 +4,19 @@
   \includegraphics[width=\textwidth]{figures/InherentIndices.png}
   \caption{Indices}
   \label{fig:indices}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/InherentSubst.png}
   \caption{Substitution}
   \label{fig:subst}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/InherentReductions.png}
   \caption{Reductions}
   \label{fig:reductions}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/InherentProgress.png}
@@ -29,4 +29,3 @@
   \caption{Evaluation}
   \label{fig:eval}
 \end{figure}
-

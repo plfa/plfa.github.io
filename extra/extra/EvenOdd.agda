@@ -41,4 +41,3 @@ is-even′ : ∀ (n : ℕ) → even n → ∃(λ (m : ℕ) → n ≡ 2 * m)
 is-even′ zero zero =  zero , refl
 is-even′ (suc n) (suc oddn) with is-odd n oddn
 ... | m , n≡1+2*m rewrite n≡1+2*m | +-identity m | +-suc m m = suc m , {!!}
-

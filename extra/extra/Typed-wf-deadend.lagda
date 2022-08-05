@@ -837,4 +837,3 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...          | normal n CV M⟶*V          =  normal n CV (L ⟶⟨ L⟶M ⟩ M⟶*V)
 -}
 \end{code}
-

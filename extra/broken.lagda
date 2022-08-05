@@ -16,4 +16,3 @@ Here is an example.
     (m + (n + p)) + q
   ∎
 \end{code}
-

@@ -279,6 +279,3 @@ _ : fresh zs0 [ x0 , x1 , x2 , zs1 ] ≡ zs2
 _ = refl
 -}
 \end{code}
-
-
-

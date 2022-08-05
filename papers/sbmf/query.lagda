@@ -32,4 +32,3 @@ in my draft textbook:
 
 Questions: What sources in the literature should one cite for this
 technique?  How well-known is it as folklore?
-

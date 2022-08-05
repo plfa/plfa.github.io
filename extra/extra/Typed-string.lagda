@@ -783,5 +783,3 @@ preservation (⊢Y ⊢M)                (ξ-Y M⟶)     =  ⊢Y (preservation �
 preservation (⊢Y (⊢λ ⊢N))           (β-Y _ refl)   =  ⊢substitution ⊢N (⊢Y (⊢λ ⊢N))
 -}
 \end{code}
-
-

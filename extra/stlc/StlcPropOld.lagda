@@ -848,4 +848,3 @@ with arithmetic.  Specifically:
   - Extend the proofs of all the properties (up to `soundness`) of
     the original STLC to deal with the new syntactic forms.  Make
     sure Agda accepts the whole file.
-

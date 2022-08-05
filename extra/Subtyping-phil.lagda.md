@@ -107,7 +107,7 @@ Subset is reflexive and transitive.
   → ys ⊆ zs
     -------
   → xs ⊆ zs
-⊆-trans xs⊆ys ys⊆zs =  ys⊆zs ∘ xs⊆ys 
+⊆-trans xs⊆ys ys⊆zs =  ys⊆zs ∘ xs⊆ys
 ```
 
 ## Finite maps, dependent finite maps
@@ -249,7 +249,7 @@ plays the role of a substructure of `⦗ as ⦂ AS ⦘{d}`.
     <:-⦗⦘ cs⊆as AS<:CS
     where
     cs⊆as : cs ⊆ as
-    cs⊆as = ⊆-trans cs⊆bs bs⊆as 
+    cs⊆as = ⊆-trans cs⊆bs bs⊆as
 
     AS<:CS : as ⦂ AS <: cs ⦂ CS
     AS<:CS a a∈as a∈cs with cs⊆bs a∈cs
@@ -490,7 +490,7 @@ coerce : ∀ {Γ as bs} {AS : Type* as} {BS : Type* bs}
            → (Γ ⊢* AS)
              ---------
            → (Γ ⊢* BS)
-coerce bs⊆as AS<:BS MS a a∈bs = MS a a∈as ↑ AS<:BS a a∈as a∈bs 
+coerce bs⊆as AS<:BS MS a a∈bs = MS a a∈as ↑ AS<:BS a a∈as a∈bs
   where
   a∈as = bs⊆as a∈bs
 
@@ -549,7 +549,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       --------------------------
     → ⦗ as ⦂ MS ⦘{d} # a∈as —→ M
 
-  ξ-<: : ∀ {Γ A B} {M M′ : Γ ⊢ A} {A<:B : A <: B} 
+  ξ-<: : ∀ {Γ A B} {M M′ : Γ ⊢ A} {A<:B : A <: B}
     → M —→ M′
       ---------------------
     → M ↑ A<:B —→ M′ ↑ A<:B
@@ -611,7 +611,7 @@ progress (case L M N) with progress L
 ...    | done V-zero                    =  step (β-zero)
 ...    | done (V-suc VL)                =  step (β-suc VL)
 progress (μ N)                          =  step (β-μ)
-progress (⦗ as ⦂ MS ⦘{d})               =  done V-⦗⦘ 
+progress (⦗ as ⦂ MS ⦘{d})               =  done V-⦗⦘
 progress (M # a∈as) with progress M
 ...    | step M—→M′                     =  step (ξ-# M—→M′)
 ...    | done V-⦗⦘                      =  step (β-# refl)

@@ -51,4 +51,3 @@ data _⊢_ : Context → Type → Set where
       ----------
     → Γ ⊢ B
 \end{code}
-

@@ -101,7 +101,7 @@ open import Data.Product using (∃; _,_)
   ≡⟨⟩
     suc m * p + n * p
   ∎
-  
+
 
 
 
@@ -122,7 +122,7 @@ lemma m =
   ≡⟨⟩
     suc (suc (2 * m))
   ∎
-  
+
 ev-ex : ∀ {n : ℕ} → even n → ∃(λ (m : ℕ) → 2 * m ≡ n)
 ev-ex ev0 =  (0 , refl)
 ev-ex (ev+2 ev) with ev-ex ev
@@ -135,5 +135,3 @@ ex-ev (suc m , refl) rewrite lemma m = ev+2 (ex-ev (m , refl))
 
 -- I can't see how to avoid using rewrite in the second proof,
 -- or how to use rewrite in the first proof!
-
-

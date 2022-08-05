@@ -9,4 +9,3 @@ zero + n = zero
 suc m + n = suc (m + n)
 
 import Data.Nat using (ℕ; zero; suc; _+_)
-

@@ -403,5 +403,3 @@ normalise (suc g) L with progress L
 ...    | step {M} L⟶M with normalise g M
 ...        | normal h M⟶*N                =  normal (suc h) (L ⟶⟨ L⟶M ⟩ M⟶*N)
 \end{code}
-
-

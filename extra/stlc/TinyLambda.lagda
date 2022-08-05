@@ -92,7 +92,7 @@ module Source where
 
   _[_] : ∀ {Γ A B}
           → Γ , B ⊢ A
-          → Γ ⊢ B 
+          → Γ ⊢ B
             ---------
           → Γ ⊢ A
   _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N

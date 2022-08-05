@@ -6,4 +6,3 @@ postulate
   adjoint : ∀ {x y z} → x + y ≥ z ⇔ x ≥ z ∸ y
   unit : ∀ {x y} → x ≥ (x + y) ∸ y
   apply : ∀ {x y} → (x ∸ y) + y ≥ x
-
