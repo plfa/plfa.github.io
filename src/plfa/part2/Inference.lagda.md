@@ -631,7 +631,7 @@ these results are easy to demonstrate inline, but we provide
 auxiliary functions for a couple of the trickier cases.
 
 If `Γ ⊢ L ↑ A ⇒ B` holds but `Γ ⊢ M ↓ A` does not hold, then
-there is no term `B′` such that `Γ ⊢ L · M ↑ B′` holds:
+there is no type `B′` such that `Γ ⊢ L · M ↑ B′` holds:
 ```agda
 ¬arg : ∀ {Γ A B L M}
   → Γ ⊢ L ↑ A ⇒ B
