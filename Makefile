@@ -1,3 +1,4 @@
+# ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 OUT_DIR := _site
 TMP_DIR := _cache
 
@@ -28,15 +29,15 @@ SHAKE_ARGS += --timing
 build:
 	@echo "Building PLFA..."
 	@mkdir -p $(TMP_DIR)/reports/
-	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
+	$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 
 .PHONY: clean
 clean:
-	@$(CABAL) $(CABAL_ARGS) v2-run builder -- clean
+	$(CABAL) $(CABAL_ARGS) v2-run builder -- clean
 
 .PHONY: clobber
 clobber:
-	@$(CABAL) $(CABAL_ARGS) v2-run builder -- clobber
+	$(CABAL) $(CABAL_ARGS) v2-run builder -- clobber
 
 
 ########################################
@@ -80,7 +81,7 @@ BROWSER_SYNC_ARGS += --reload-debounce 2000
 
 .PHONY: serve
 serve:
-	@(cd $(OUT_DIR) && $(BROWSER_SYNC) $(BROWSER_SYNC_ARGS))
+	(cd $(OUT_DIR) && $(BROWSER_SYNC) $(BROWSER_SYNC_ARGS))
 
 
 ########################################
@@ -103,37 +104,28 @@ HTML_VALIDATE_ARGS += .
 .PHONY: test-html-validate
 test-html-validate:
 	@echo "Checking HTML with HTML-validate..."
-	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
+	(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
 
 
 # HTMLProofer
 
 HTML_PROOFER ?= bundle exec htmlproofer
 
-HTML_PROOFER_ARGS += --check-html
-HTML_PROOFER_ARGS += --check-img-http
-HTML_PROOFER_ARGS += --check-opengraph
-HTML_PROOFER_ARGS += --check-sri
-ifeq ($(EXTERNAL_LINKS),)
-HTML_PROOFER_ARGS += --disable-external
-endif
-HTML_PROOFER_ARGS += --enforce-https
-HTML_PROOFER_ARGS += --file-ignore="/\.\/plfa.html/,/\.\/assets\/.*\.html/"
-HTML_PROOFER_ARGS += --report-eof-tags
-HTML_PROOFER_ARGS += --report-invalid-tags
-HTML_PROOFER_ARGS += --report-missing-names
-HTML_PROOFER_ARGS += --report-missing-doctype
-HTML_PROOFER_ARGS += --report-mismatched-tags
-HTML_PROOFER_ARGS += --report-script-embeds
-HTML_PROOFER_ARGS += --storage-dir=$(TMP_DIR)/htmlproofer
-HTML_PROOFER_ARGS += --timeframe=30d
-HTML_PROOFER_ARGS += --url-ignore="/github.com/"
+HTML_PROOFER_ARGS += --allow-hash-href=true
+HTML_PROOFER_ARGS += --allow-missing-href=true
+HTML_PROOFER_ARGS += --checks=Images,Links,Scripts
+HTML_PROOFER_ARGS += --check-sri=true
+HTML_PROOFER_ARGS += --disable-external=true
+HTML_PROOFER_ARGS += --enforce-https=true
+HTML_PROOFER_ARGS += --ignore-urls="/github.com/"
+HTML_PROOFER_ARGS += --log-level=":info"
+HTML_PROOFER_ARGS += --cache='{"timeframe":{"external":"2w","internal":"1w"},"storage_dir":"$(TMP_DIR)/htmlproofer/"}'
 HTML_PROOFER_ARGS += .
 
 .PHONY: test-html-proofer
 test-html-proofer:
 	@echo "Checking HTML with HTMLProofer..."
-	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
+	(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
 
 
 # EPUBCheck
@@ -146,7 +138,7 @@ EPUBCHECK_ARGS += $(OUT_DIR)/plfa.epub
 .PHONY: test-epubcheck
 test-epubcheck:
 	@echo "Checking EPUB with EPUBCheck..."
-	@$(EPUBCHECK) $(EPUBCHECK_ARGS)
+	$(EPUBCHECK) $(EPUBCHECK_ARGS)
 
 
 # Ace by Daisy
@@ -161,5 +153,5 @@ ACE_ARGS += $(OUT_DIR)/plfa.epub
 .PHONY: test-ace
 test-ace:
 	@echo "Checking EPUB with Ace by DAISY..."
-	@$(ACE) $(ACE_ARGS)
+	$(ACE) $(ACE_ARGS)
 	@echo "See report: $(TMP_DIR)/ace/report.html"
