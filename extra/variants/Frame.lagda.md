@@ -232,7 +232,7 @@ Special case of substitution, used in beta rule
 
 _[_] :
     Γ ▷ A ⊢ B
-  → Γ ⊢ A 
+  → Γ ⊢ A
     ---------
   → Γ ⊢ B
 _[_] N M =  sub (σ₀ M) N
@@ -369,7 +369,7 @@ data _—→_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
      ---------------------------------------
      case (μ L) M N —→ case (L [ μ L ]) M N
 
-  ξ-refl : 
+  ξ-refl :
       {M′ N′ : Γ ⊢ B}
     → (E : Γ ⊢ A => B)
     → M′ ≡ E ⟦ M ⟧
@@ -548,7 +548,7 @@ plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 Next, a sample reduction demonstrating that two plus two is four:
 ```agda
 _ : 2+2 —↠ `suc `suc `suc `suc `zero
-_ = 
+_ =
   begin
     plus · two · two
   —→⟨ ξ (□· two) (μ-· (`suc (`suc `zero))) ⟩

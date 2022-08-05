@@ -8,7 +8,7 @@ open import Relation.Binary.Core using (Reflexive; Transitive)
 module Subset (A : Set) where
 
   infix 4 _⊆_
-  infix 4 _∈_ 
+  infix 4 _∈_
 
   data _∈_ : A → List A → Set where
 
@@ -20,7 +20,7 @@ module Subset (A : Set) where
       → x ∈ xs
         ----------
       → x ∈ y ∷ xs
-        
+
   _⊆_ : List A → List A → Set
   xs ⊆ ys  =  ∀ {w : A} → w ∈ xs → w ∈ ys
 

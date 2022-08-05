@@ -1527,4 +1527,3 @@ _ : normalise 1
    · ⊢suc (⊢suc ⊢zero))
 -}
 \end{code}
-

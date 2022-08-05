@@ -658,5 +658,3 @@ false, give a counterexample.
   - Progress
 
   - Preservation
-
-

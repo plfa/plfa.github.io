@@ -1277,4 +1277,3 @@ This chapter uses the following unicode
     ∋    U+220B:  CONTAINS AS MEMBER (\ni)
     ⊢    U+22A2:  RIGHT TACK (\vdash or \|-)
     ⦂    U+2982:  Z NOTATION TYPE COLON (\:)
-

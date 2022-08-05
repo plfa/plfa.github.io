@@ -1256,4 +1256,3 @@ of the current version of `⊢subst`.
 Stepping into a subterm, just need to precompose `ρ` with a
 lemma stating that the free variables of the subterm are
 a subset of the free variables of the term.
-

@@ -42,7 +42,7 @@
 %% merlin.mbs  (with options: `ay,nat,vonx,nm-rvvc,ed-rev,yr-par,aymth,note-yr,jttl-rm,volp-com,numser,ser-vol,jnm-x,btit-rm,bt-rm,edparxc,au-col,in-col,fin-bare,pp,ed,abr,mth-bare,xedn,jabr,and-com,and-com-ed,xand,url,url-nt,em-x,nfss,')
 %% ----------------------------------------
 %% *** natbib-compatible .bst file for Springer LNCS ***
-%% 
+%%
 %% Copyright 1994-2007 Patrick W Daly
  % ===============================================================
  % IMPORTANT NOTICE:

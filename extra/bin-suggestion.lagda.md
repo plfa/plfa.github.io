@@ -25,4 +25,3 @@ tofrom b (tocan ⟨ n , btn ⟩) =
   ; to∘from = \ { ⟨ _ , tocan ⟨ n , refl ⟩ ⟩ -> refl }
   }
 ```
-

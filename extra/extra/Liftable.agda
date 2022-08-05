@@ -41,7 +41,7 @@ data Con : Set where
 
 data _∈_ σ : Con -> Set where
   vz  : ∀ {Γ}   -> σ ∈ Γ ▻ σ
-  vs_ : ∀ {Γ τ} -> σ ∈ Γ     -> σ ∈ Γ ▻ τ 
+  vs_ : ∀ {Γ τ} -> σ ∈ Γ     -> σ ∈ Γ ▻ τ
 
 data _⊢_ Γ : Type -> Set where
   var : ∀ {σ}   -> σ ∈ Γ     -> Γ ⊢ σ

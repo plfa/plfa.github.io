@@ -13,7 +13,7 @@ For instance,
 
     case (μ x → suc x) [zero→ zero | suc x → x]
 
-returns (μ x → suc x). 
+returns (μ x → suc x).
 
 The second has two values of function type, both lambda abstractions and fixpoints.
 

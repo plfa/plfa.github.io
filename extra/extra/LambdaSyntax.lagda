@@ -15,4 +15,3 @@ plusᶜ′ =  ƛ` m ⇒ ƛ` n ⇒ ƛ` s ⇒ ƛ` z ⇒ (m · s · (n · s · z))
 
 _ : plusᶜ ≡ plusᶜ′
 _ = refl
-

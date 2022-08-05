@@ -86,4 +86,3 @@ twoDB = (abs (abs (app (var 1) (app (var 1) (var 0)))))
 ex : PH→DB twoPH ≡ twoDB
 ex = refl
 \end{code}
-

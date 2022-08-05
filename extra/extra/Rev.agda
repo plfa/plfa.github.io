@@ -68,4 +68,3 @@ rev-inv (x ∷ xs) =
 revAll : ∀ (P : A → Set) → ∀ {xs} → All P xs → All P (rev xs)
 revAll P [] = []
 revAll P (Px ∷ Pxs) =  revAll P Pxs ++All [ Px ]
-

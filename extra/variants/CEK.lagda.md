@@ -36,7 +36,7 @@ data _==>_ : Type → Type → Set where
 
 variable
   K : A ==> B
-```    
+```  
 
 Extending a substitution
 
@@ -92,7 +92,7 @@ data _~~>_ : CEK A → CEK A → Set where
   CEK-ξ-case□ :
       ----------------------------------------------------------
       cek (case L M N) σ K ~~> cek L σ ((case□ M N) ∷ K)
-        
+
   CEK-β-zero :
       ---------------------------------------------------
       cek `zero σ ((case□ M N) ∷ K) ~~> cek M σ K
@@ -101,7 +101,7 @@ data _~~>_ : CEK A → CEK A → Set where
       (v : Value V)
       ----------------------------------------------------------------
     → cek (`suc V) σ ((case□ M N) ∷ K) ~~> cek N (σ ► V) (▵ K)
-    
+
   CEK-μ-· :
      (v : Value V)
      -----------------------------------------------------------------------
@@ -111,5 +111,3 @@ data _~~>_ : CEK A → CEK A → Set where
      -----------------------------------------------------------------------------
      cek (μ L) σ ((case□ M N) ∷ K) ~~> cek L (σ ► (μ L)) ((case□ M N) ∷ K)
 ```
-
-

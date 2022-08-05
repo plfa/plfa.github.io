@@ -66,9 +66,7 @@ g (`A `⊎ `B) = `¬ ((`¬ g `A) `× (`¬ g `B))
 g (`¬ `A) = `¬ g `A
 
 stable-g : ∀ (`A : Formula) → Stable (interp (g `A))
-stable-g (atomic A) =  ¬-stable 
+stable-g (atomic A) =  ¬-stable
 stable-g (`A `× `B) =  ×-stable (stable-g `A) (stable-g `B)
 stable-g (`A `⊎ `B) =  ¬-stable
 stable-g (`¬ `A) = ¬-stable
-
-

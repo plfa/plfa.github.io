@@ -913,4 +913,3 @@ This chapter uses the following unicode
     β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
 
 Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).
-

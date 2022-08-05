@@ -786,4 +786,3 @@ open import Strict
 
 -- Universes
 open import Universe
-

@@ -1003,4 +1003,3 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...          | out-of-gas M⟶*N ⊢N        =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N) ⊢N
 ...          | normal n CV M⟶*V          =  normal n CV (L ⟶⟨ L⟶M ⟩ M⟶*V)
 \end{code}
-
