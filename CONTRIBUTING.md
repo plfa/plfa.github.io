@@ -124,40 +124,47 @@ You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`
 
 ## The structure of the PLFA repository
 
-```
+```sh
 plfa
+│
+├── src                        # Source files for PLFA chapters:
+│   └── plfa                   #
+│       ├── backmatter         # All files in these folders must be either
+│       ├── frontmatter        # plain Markdown or well-typed literate Agda
+│       ├── part1              # with Markdown, and must contain a YAML header
+│       ├── part2              # defining at least a title and a permalink.
+│       └── part3              #
+│
+├── tools                      # Tools used for building PLFA:
+│   └── Buildfile.hs           #   - code for building PLFA.
+│   └── UpdateContributors.hs  #   - code for updating data/contributors.
+│
+├── data                       # Data used when building PLFA:
+│   ├── authors                #   - information about the authors
+│   ├── contributors           #   - information about the contributors
+│   └── bibliography.bib       #   - bibliographic information
+│   └── metadata.yml           #   - web metadata, e.g., language & description
+│   └── tableOfContents.yml    #   - table of contents
+│
+├── web                        # Files only used for website:
+│   ├── assets                 #   - static assets
+│   ├── posts                  #   - announcements
+│   ├── sass                   #   - stylesheets
+│   └── templates              #   - HTML templates
+│
 ├── book
-│   ├── epub
-│   └── pdf
-├── courses
-│   └── TSPL/2019
-├── data
-│   ├── authors
-│   ├── contributors
-│   ├── dotagda
-│   └── bibliography.bib
-│   └── metadata.yml
-│   └── tableOfContents.yml
-├── extra
-├── papers
-├── src
-│   └── plfa
-│       ├── backmatter
-│       ├── frontmatter
-│       ├── part1
-│       ├── part2
-│       └── part3
-├── tools
-│   └── Buildfile.hs
-│   └── UpdateContributors.hs
-└── web
-    ├── assets
-    ├── posts
-    ├── sass
-    └── templates
+│   ├── epub                   # Files only used for EPUB version.
+│   └── pdf                    # Files only used for PDF version.
+│
+├── courses                    # Pages for courses using PLFA by the authors:
+│   └── TSPL/2019              #   - TSPL, University of Edinburgh, 2019
+│
+├── papers                     # Source files for papers written about PLFA.
+│
+└── extra                      # Incomplete, unincorporated formalisations.
 ```
 
-## References
+## Bibliography
 
 [semver]: https://semver.org/
 [calver]: https://calver.org
