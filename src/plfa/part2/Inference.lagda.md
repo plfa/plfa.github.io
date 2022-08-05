@@ -665,7 +665,7 @@ Let `⊢M` be evidence that `Γ ⊢ M ↑ A` holds, and `A≢B` be evidence
 that `A ≢ B`.  Given evidence that `Γ ⊢ (M ↑) ↓ B` holds, we must
 demonstrate a contradiction.  The evidence must take the form `⊢↑ ⊢M′
 A′≡B`, where `⊢M′` is evidence that `Γ ⊢ M ↑ A′` and `A′≡B` is
-evidence that `A′≡B`.  By `uniq-↑` applied to `⊢M` and `⊢M′` we know
+evidence that `A′ ≡ B`.  By `uniq-↑` applied to `⊢M` and `⊢M′` we know
 that `A ≡ A′`, which means that `A≢B` and `A′≡B` yield a
 contradiction.  Without the `rewrite` clause, Agda would not allow us
 to derive a contradiction between `A≢B` and `A′≡B`, since one concerns
