@@ -907,45 +907,33 @@ from∘to≡id zero = refl
 from∘to≡id (suc n) rewrite from∘inc≡suc∘from (to n) = cong suc (from∘to≡id n)
 
 data One : Bin → Set where
-  one : One (⟨⟩ I)
-  one-O : {b : Bin} → One b → One (b O)
-  one-I : {b : Bin} → One b → One (b I)
+  ⟨⟩I:One : One (⟨⟩ I)
+  One+O:One : {b : Bin} → One b → One (b O)
+  One+I:One : {b : Bin} → One b → One (b I)
 
 to∘double≡O∘to : (n : ℕ) → 0 < n → to (double n) ≡ to n O
 to∘double≡O∘to (suc zero) z<s = refl
 to∘double≡O∘to (suc (suc n)) z<s rewrite to∘double≡O∘to (suc n) z<s = refl
 
-{-
-inc (inc (inc (inc (to (double n))))) ≡ inc (inc (to n)) O
-
-to∘double (suc n)
-to (double (suc n))
-to (suc (suc (double n)))
-inc (inc (to (double n)))
-
-to (suc n) O
-inc (to n) O
--}
-
 2*>0 : {n : ℕ} → 0 < n → 0 < double n
 2*>0 z<s = z<s
 
 One→>0 : {b : Bin} → One b → 0 < from b
-One→>0 one = z<s
-One→>0 (one-O ob) = 2*>0 (One→>0 ob)
-One→>0 (one-I ob) = z<s
+One→>0 ⟨⟩I:One = z<s
+One→>0 (One+O:One ob) = 2*>0 (One→>0 ob)
+One→>0 (One+I:One ob) = z<s
 
 data Can : Bin → Set where
-  zero : Can (⟨⟩ O)
-  one : {b : Bin} → One b → Can b
+  ⟨⟩O:Can : Can (⟨⟩ O)
+  One:Can : {b : Bin} → One b → Can b
 
 to∘from≡id : (b : Bin) → Can b → to (from b) ≡ b
-to∘from≡id .(⟨⟩ O) zero = refl
-to∘from≡id .(⟨⟩ I) (one one) = refl
-to∘from≡id (b O) (one (one-O ob))
-  rewrite to∘double≡O∘to (from b) (One→>0 ob) = cong _O (to∘from≡id b (one ob))
-to∘from≡id (b I) (one (one-I ob))
-  rewrite to∘double≡O∘to (from b) (One→>0 ob) = cong _I (to∘from≡id b (one ob))
+to∘from≡id .(⟨⟩ O) ⟨⟩O:Can = refl
+to∘from≡id .(⟨⟩ I) (One:Can ⟨⟩I:One) = refl
+to∘from≡id (b O) (One:Can (One+O:One ob))
+  rewrite to∘double≡O∘to (from b) (One→>0 ob) = cong _O (to∘from≡id b (One:Can ob))
+to∘from≡id (b I) (One:Can (One+I:One ob))
+  rewrite to∘double≡O∘to (from b) (One→>0 ob) = cong _I (to∘from≡id b (One:Can ob))
 ```
 
 ## Standard library

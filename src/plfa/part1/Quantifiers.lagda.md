@@ -16,12 +16,12 @@ This chapter introduces universal and existential quantification.
 
 ```
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
+open Eq using (_≡_; refl; cong; sym)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Nullary using (¬_)
 open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import plfa.part1.Isomorphism using (_≃_; extensionality; ∀-extensionality)
+open import plfa.part1.Isomorphism using (_≃_; _⇔_; extensionality; ∀-extensionality)
 ```
 
 
@@ -443,15 +443,27 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 
 ```
 open Data.Nat using (_≤_; z≤n; s≤s)
-open import Data.Nat.Properties using (+-identityʳ; +-suc; suc-injective)
-open Eq using (sym)
+open import Data.Nat.Properties using
+  ( +-identityʳ
+  ; +-suc
+  ; suc-injective
+  ; ≤-trans
+  ; ≤-refl
+  ; m≤n+m
+  )
 
-∃-+-≤ : {y z : ℕ} → y ≤ z → ∃[ x ] (x + y ≡ z)
-∃-+-≤ {zero} {z} z≤n = ⟨ z , +-identityʳ z ⟩
-∃-+-≤ {suc y} {suc z} (s≤s y≤z) with ∃-+-≤ y≤z
-... | ⟨ x , refl ⟩ = ⟨ x , +-suc x y ⟩
+∃-+-≤ : {y z : ℕ} → (y ≤ z) ⇔ (∃[ x ] (x + y ≡ z))
+∃-+-≤ {y} {z} = record { to = to y z ; from = from y z }
+  where
+    to : (y z : ℕ) → y ≤ z → ∃[ x ] (x + y ≡ z)
+    to zero z z≤n = ⟨ z , +-identityʳ z ⟩
+    to (suc y) (suc z) (s≤s y≤z) with to y z y≤z
+    ... | ⟨ x , refl ⟩ = ⟨ x , +-suc x y ⟩
+    from : (y z : ℕ) → ∃[ x ] (x + y ≡ z) → y ≤ z
+    from y .y ⟨ zero , refl ⟩ = ≤-refl
+    from y (suc z) ⟨ suc x , sx+y≡sz ⟩ with from y z ⟨ x , suc-injective sx+y≡sz ⟩
+    ... | y≤z = ≤-trans y≤z (m≤n+m z 1)
 ```
-
 
 ## Existentials, Universals, and Negation
 
@@ -492,14 +504,21 @@ requires extensionality.
 
 Show that existential of a negation implies negation of a universal:
 ```
-postulate
-  ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
-    → ∃[ x ] (¬ B x)
-      --------------
-    → ¬ (∀ x → B x)
+∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set} → ∃[ x ] (¬ B x) → ¬ (∀ x → B x)
+∃¬-implies-¬∀ ⟨ x , ¬Bx ⟩ f = ¬Bx (f x)
 ```
 Does the converse hold? If so, prove; if not, explain why.
 
+```
+-- The converse implies the "weak excluded middle".
+
+¬∀-implies-∃¬→WEM :
+  ({A : Set} {B : A → Set} → ¬ (∀ x → B x) → ∃[ x ] (¬ B x))
+  → ({A : Set} → ¬ A ⊎ ¬ ¬ A)
+¬∀-implies-∃¬→WEM H {A} with H {Bool} {λ{ false → A ; true → ¬ A }} (λ f → f true (f false))
+... | ⟨ false , ¬A ⟩ = inj₁ ¬A
+... | ⟨ true , ¬¬A ⟩ = inj₂ ¬¬A
+```
 
 #### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
@@ -543,7 +562,53 @@ which is a corollary of `≡Can`.
     proj₁≡→Can≡ : {cb cb′ : ∃[ b ] Can b} → proj₁ cb ≡ proj₁ cb′ → cb ≡ cb′
 
 ```
--- Your code goes here
+open import plfa.share.Bin using (Bin; ⟨⟩; _O; _I; inc; to; double; from)
+open import plfa.part1.Relations using
+  ( Can; ⟨⟩O:Can; One:Can
+  ; One; ⟨⟩I:One; One+O:One; One+I:One
+  ; from∘to≡id
+  ; to∘from≡id
+  )
+
+Ob→Oib : {b : Bin} → One b → One (inc b)
+Ob→Oib ⟨⟩I:One = One+O:One ⟨⟩I:One
+Ob→Oib (One+O:One ob) = One+I:One ob
+Ob→Oib (One+I:One ob) = One+O:One (Ob→Oib ob)
+
+Cb→Cib : {b : Bin} → Can b → Can (inc b)
+Cb→Cib ⟨⟩O:Can = One:Can ⟨⟩I:One
+Cb→Cib (One:Can ⟨⟩I:One) = One:Can (One+O:One ⟨⟩I:One)
+Cb→Cib (One:Can (One+O:One ob)) = One:Can (One+I:One ob)
+Cb→Cib (One:Can (One+I:One ob)) = One:Can (Ob→Oib (One+I:One ob))
+
+Can-to : (n : ℕ) → Can (to n)
+Can-to zero = ⟨⟩O:Can
+Can-to (suc n) = Cb→Cib (Can-to n)
+
+≡One : {b : Bin} → (o o' : One b) → o ≡ o'
+≡One ⟨⟩I:One ⟨⟩I:One = refl
+≡One (One+O:One o) (One+O:One o') = cong One+O:One (≡One o o')
+≡One (One+I:One o) (One+I:One o') = cong One+I:One (≡One o o')
+
+≡Can : {b : Bin} → (cb cb' : Can b) → cb ≡ cb'
+≡Can ⟨⟩O:Can ⟨⟩O:Can = refl
+≡Can (One:Can ob) (One:Can ob') = cong One:Can (≡One ob ob')
+≡Can ⟨⟩O:Can (One:Can (One+O:One ()))
+≡Can (One:Can (One+O:One ())) ⟨⟩O:Can
+
+pr₁ : {A : Set} {B : A → Set} → Σ A B → A
+pr₁ ⟨ x , _ ⟩ = x
+
+pr₁≡→Can≡ : {bcb bcb′ : ∃[ b ] Can b} → pr₁ bcb ≡ pr₁ bcb′ → bcb ≡ bcb′
+pr₁≡→Can≡ {⟨ b , cb ⟩} {⟨ .b , cb' ⟩} refl rewrite ≡Can cb cb' = refl
+
+ℕ≃∃[b]Canb : ℕ ≃ ∃[ b ] Can b
+ℕ≃∃[b]Canb = record
+  { to = λ n → ⟨ to n , Can-to n ⟩
+  ; from = λ{ ⟨ b , cb ⟩ → from b }
+  ; from∘to = λ n → from∘to≡id n
+  ; to∘from = λ{ ⟨ b , cb ⟩ → pr₁≡→Can≡ (to∘from≡id b cb) }
+  }
 ```
 
 
