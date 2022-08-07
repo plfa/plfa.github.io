@@ -1,4 +1,4 @@
-# ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+ABS_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 OUT_DIR := _site
 TMP_DIR := _cache
 
@@ -119,7 +119,7 @@ HTML_PROOFER_ARGS += --disable-external=true
 HTML_PROOFER_ARGS += --enforce-https=true
 HTML_PROOFER_ARGS += --ignore-urls="/github.com/"
 HTML_PROOFER_ARGS += --log-level=":info"
-HTML_PROOFER_ARGS += --cache='{"timeframe":{"external":"2w","internal":"1w"},"storage_dir":"$(TMP_DIR)/htmlproofer/"}'
+HTML_PROOFER_ARGS += --cache='{"timeframe":{"external":"2w"},"storage_dir":"$(ABS_DIR)$(TMP_DIR)/htmlproofer/"}'
 HTML_PROOFER_ARGS += .
 
 .PHONY: test-html-proofer
