@@ -233,7 +233,7 @@ You'll see the key sequence of the character in mini buffer.
 
 ### Spacemacs
 
-[Spacemacs][spacemacs] is a “community-driven Emacs distribution” with native support for both Emacs and Vim editing styles. It comes with [integration for `agda-mode`][spacemacs-agda] out of the box. All that is required is that you turn it on.
+[Spacemacs][spacemacs] is a “community-driven Emacs distribution” with native support for both Emacs and Vim editing styles. It comes with [integration for `agda-mode`][spacemacs-agda] out of the box. All that is required is that you enable the Agda layer in your `.spacemacs` file.
 
 ### Visual Studio Code
 
