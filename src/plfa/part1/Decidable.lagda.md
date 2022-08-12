@@ -167,9 +167,11 @@ In the forward direction, we consider the three clauses in the definition
 of `_≤ᵇ_`:
 ```
 ≤ᵇ→≤ : ∀ (m n : ℕ) → T (m ≤ᵇ n) → m ≤ n
-≤ᵇ→≤ zero    n       tt  =  z≤n
-≤ᵇ→≤ (suc m) zero    ()
-≤ᵇ→≤ (suc m) (suc n) t   =  s≤s (≤ᵇ→≤ m n t)
+≤ᵇ→≤ zero n _ = z≤n
+≤ᵇ→≤ (suc m) zero ()
+≤ᵇ→≤ (suc m) (suc n) t = s≤s (≤ᵇ→≤ m n t)
+-- t : T (suc m ≤ᵇ suc n)
+--     T (m ≤ᵇ n)
 ```
 In the first clause, we immediately have that `zero ≤ᵇ n` is
 true, so `T (m ≤ᵇ n)` is evidenced by `tt`, and correspondingly `m ≤ n` is
@@ -186,8 +188,8 @@ In the reverse direction, we consider the possible forms of evidence
 that `m ≤ n`:
 ```
 ≤→≤ᵇ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ n)
-≤→≤ᵇ z≤n        =  tt
-≤→≤ᵇ (s≤s m≤n)  =  ≤→≤ᵇ m≤n
+≤→≤ᵇ z≤n = tt
+≤→≤ᵇ (s≤s m≤n) = ≤→≤ᵇ m≤n
 ```
 If the evidence is `z≤n` then we immediately have that `zero ≤ᵇ n` is
 true, so `T (m ≤ᵇ n)` is evidenced by `tt`. If the evidence is `s≤s`
@@ -295,24 +297,35 @@ trouble normalising evidence of negation.)
 
 Analogous to the function above, define a function to decide strict inequality:
 ```
-postulate
-  _<?_ : ∀ (m n : ℕ) → Dec (m < n)
-```
+¬s<s : ∀ {m n : ℕ} → ¬ (m < n) → ¬ (suc m < suc n)
+¬s<s ¬m<n (s<s m<n) = ¬m<n m<n
 
-```
--- Your code goes here
+_<?_ : ∀ (m n : ℕ) → Dec (m < n)
+m <? zero = no (λ ())
+zero <? suc n = yes z<s
+suc m <? suc n with m <? n
+... | yes m<n = yes (s<s m<n)
+... | no m≮n = no (¬s<s m≮n)
 ```
 
 #### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
 ```
-postulate
-  _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
-```
+open import Data.Nat.Properties using (suc-injective)
 
-```
--- Your code goes here
+lemma : {m n : ℕ} → ¬ (m ≡ n) → ¬ (suc m ≡ suc n)
+lemma m≢n refl = m≢n refl
+
+_≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
+zero ≡ℕ? zero = yes refl
+zero ≡ℕ? suc n = no (λ ())
+suc m ≡ℕ? zero = no (λ ())
+suc m ≡ℕ? suc n with m ≡ℕ? n
+... | yes refl = yes refl
+... | no m≢n = no (lemma m≢n)
+--... | no m≢n = no λ sm≡sn → m≢n (suc-injective sm≡sn)
+--... | no m≢n = no λ{ refl → m≢n refl }
 ```
 
 
@@ -326,6 +339,15 @@ _≤?′_ : ∀ (m n : ℕ) → Dec (m ≤ n)
 m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
 ...        | true   | p        | _            = yes (p tt)
 ...        | false  | _        | ¬p           = no ¬p
+
+-- T (m ≤ᵇ n) → m ≤ n
+-- T true
+-- ⊤
+
+-- m ≤ n → T (m ≤ᵇ n)
+-- m ≤ n → T false
+-- m ≤ n → ⊥
+-- ¬ (m ≤ n)
 ```
 If `m ≤ᵇ n` is true then `≤ᵇ→≤` yields a proof that `m ≤ n` holds,
 while if it is false then `≤→≤ᵇ` takes a proof that `m ≤ n` holds into a contradiction.
@@ -333,10 +355,16 @@ while if it is false then `≤→≤ᵇ` takes a proof that `m ≤ n` holds into
 The triple binding of the `with` clause in this proof is essential.
 If instead we wrote:
 
-    _≤?″_ : ∀ (m n : ℕ) → Dec (m ≤ n)
-    m ≤?″ n with m ≤ᵇ n
-    ... | true   =  yes (≤ᵇ→≤ m n tt)
-    ... | false  =  no (≤→≤ᵇ {m} {n})
+```
+open Eq using (sym)
+
+postulate transport : {A : Set} → (P : A → Set) → {x y : A} → x ≡ y → P x → P y
+
+_≤?″_ : ∀ (m n : ℕ) → Dec (m ≤ n)
+m ≤?″ n with m ≤ᵇ n in m≤ᵇn≡Bool
+... | true = yes (≤ᵇ→≤ m n (transport T (sym m≤ᵇn≡Bool) tt)) 
+... | false = no λ m≤n → transport T m≤ᵇn≡Bool (≤→≤ᵇ m≤n)
+```
 
 then Agda would make two complaints, one for each clause:
 
