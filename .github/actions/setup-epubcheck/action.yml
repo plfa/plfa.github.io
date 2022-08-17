@@ -20,9 +20,13 @@ runs:
 
       - name: Setup EPUBCheck
         if: steps.cache-epubcheck.outputs.cache-hit != 'true'
-        id: setup-epubcheck
         run: |
           Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ inputs.epubcheck-version }}/epubcheck-${{ inputs.epubcheck-version }}.zip" -OutFile "${{ runner.temp }}/epubcheck.zip"
           Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
+        shell: pwsh
+
+      - name: Set output
+        id: setup-epubcheck
+        run: |
           Write-Output "::set-output name=epubcheck-jar-path::${{ github.workspace }}/epubcheck/epubcheck-${{ inputs.epubcheck-version }}/epubcheck.jar"
         shell: pwsh
