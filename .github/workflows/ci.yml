@@ -44,13 +44,16 @@ jobs:
         with:
           submodules: 'true'
 
-      # Setup: Setup Node.js
+      # Setup: Setup Node
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+
+      - name: Setup Node dependencies
+        run: npm install
 
       # Setup: Setup Python and bumpver
 
@@ -60,7 +63,7 @@ jobs:
           cache: 'pip'
           cache-dependency-path: requirements-dev.txt
 
-      - name: Install Python dependencies
+      - name: Setup Python dependencies
         run: pip install -r requirements-dev.txt
 
       # Setup Ruby
@@ -71,6 +74,10 @@ jobs:
         with:
           bundler-cache: true
 
+      - name: Setup Ruby dependencies
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: bundle install
+
       # Setup: Setup GHC and Cabal
 
       - name: Setup Haskell
@@ -79,11 +86,6 @@ jobs:
         with:
           ghc-version: ${{ matrix.ghc-version }}
           cabal-version: ${{ env.CABAL_VERSION }}
-
-      - name: Cabal freeze
-        run: |
-          cabal v2-update
-          cabal v2-freeze $CABAL_ARGS
 
       - name: Cache Haskell
         uses: actions/cache@v3
@@ -94,13 +96,10 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
 
-      # Setup: Add version information to environment
+      # Setup: Version
 
-      - name: Add version information to environment
+      - name: Add PLFA version to environment
         run: bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Show version
-        run: echo "PLFA ${{ env.CURRENT_VERSION }}"
 
       # Build: Build PLFA
 
