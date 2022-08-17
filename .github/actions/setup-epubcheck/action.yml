@@ -25,8 +25,7 @@ runs:
           Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
         shell: pwsh
 
-      - name: Set output
+      - name: Set epubcheck-jar-path
         id: setup-epubcheck
-        run: |
-          Write-Output "::set-output name=epubcheck-jar-path::${{ github.workspace }}/epubcheck/epubcheck-${{ inputs.epubcheck-version }}/epubcheck.jar"
+        run: Write-Output "::set-output name=epubcheck-jar-path::${{ github.workspace }}/epubcheck/epubcheck-${{ inputs.epubcheck-version }}/epubcheck.jar"
         shell: pwsh
