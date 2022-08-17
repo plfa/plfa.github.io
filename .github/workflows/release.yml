@@ -1,0 +1,34 @@
+name: Release
+
+on: [workflow_call]
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
+
+      - name: Set version environment variables
+        run: pipx run bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: HEAD
+          path: site
+
+      - name: Build release asset
+        run: Compress-Archive -Path "site/*" Job-DestinationPath Website.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Website.zip
+          fail_on_unmatched_files: true

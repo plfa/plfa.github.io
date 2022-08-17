@@ -1,0 +1,62 @@
+name: Publish
+
+on: [workflow_call]
+
+jobs:
+  publish:
+    name: Publish
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+
+      # Prepare HEAD
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Website HEAD ${{ env.RECOMMENDED_OS }} GHC-${{ env.RECOMMENDED_GHC_VERSION }}
+          path: site
+
+      # Prepare v19.08
+
+      - name: Cache v19.08
+        uses: actions/cache@v3
+        id: cache-v19_08
+        with:
+          path: ${{ github.workspace }}/v19.08.zip
+          key: version-v19_08
+
+      - name: Download v19.08
+        if: steps.cache-v19_08.outputs.cache-hit != 'true'
+        run: Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" -OutFile "${{ github.workspace }}/v19.08.zip"
+
+      - name: Publish v19.08
+        run: Expand-Archive "${{ github.workspace }}/v19.08.zip" -DestinationPath "site/19.08"
+
+      # Prepare v20.07
+
+      - name: Cache v20.07
+        uses: actions/cache@v3
+        id: cache-v20_07
+        with:
+          path: ${{ github.workspace }}/v20.07.zip
+          key: version-v20_07
+
+      - name: Download v20.07
+        if: steps.cache-v20_07.outputs.cache-hit != 'true'
+        run: Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v20.07/Website.zip" -OutFile "${{ github.workspace }}/v20.07.zip"
+
+      - name: Publish v20.07
+        run: Expand-Archive "${{ github.workspace }}/v20.07.zip" -DestinationPath "site/20.07"
+
+      # Publish to GitHub Pages
+
+      - name: Publish artifact
+        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        with:
+          branch: web
+          folder: site
