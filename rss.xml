@@ -8,7 +8,7 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Wed, 17 Aug 2022 13:18:14 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 17 Aug 2022 18:37:18 +0000</lastBuildDate>
         <item>
       <title>PLFA as PDF and EPUB</title>
       <link>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</link>
@@ -30,36 +30,6 @@
       </description>
       <pubDate>Tue, 24 Aug 2021 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</guid>
-            <dc:creator>Philip Wadler</dc:creator>
-            <dc:creator>Wen Kokke</dc:creator>
-            <dc:creator>Jeremy G. Siek</dc:creator>
-          </item>
-        <item>
-      <title>Building with Hakyll</title>
-      <link>https://plfa.github.io//2020/10/23/building-with-hakyll/index.html</link>
-      <description>
-        <![CDATA[
-                  We’re pleased to announce that as of today, PLFA builds entirely
-                  using Haskell! We’ve migrated our build system from a bundle of
-                  Makefiles, shell scripts, and Jekyll, over to Hakyll, a static site building
-                  written in Haskell. All you need to do to build and serve PLFA locally
-                  is:
-                  git clone --recurse-submodules https://github.com/plfa/plfa.github.io PLFA
-                  cd PLFA/
-                  stack build && stack exec site watch
-                  That will pull in all the dependencies: Agda, the standard library,
-                  Hakyll, Pandoc, etc.
-                  There’s been lots of changes to the organisation of PLFA as a
-                  consequence, but the most important change, if you’re using PLFA as a
-                  student, is that we now include the correct version of the Agda standard
-                  library as a Git submodule. The “Getting
-                  Started” page can help you set it up correctly!
-                  If you’re a contributor to PLFA, there are some further changes that
-                  will affect you!
-        ]]>
-      </description>
-      <pubDate>Fri, 23 Oct 2020 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2020/10/23/building-with-hakyll/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
