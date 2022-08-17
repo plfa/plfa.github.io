@@ -2,10 +2,6 @@ name: Release
 
 on: [workflow_call]
 
-env:
-  RECOMMENDED_OS: "Linux"
-  RECOMMENDED_GHC_VERSION: "8.10.7"
-
 jobs:
   release:
     name: Release
@@ -22,6 +18,11 @@ jobs:
       - name: Set version environment variables
         run: pipx run bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 
+      - name: Build release notes
+        run: |
+          Get-Content ./web/posts/*-release-notes-${{ env.CURRENT_VERSION }} | Select-Object -Skip 3 | Out-File -FilePath ${{ github.workspace }}/release-notes-${{ env.CURRENT_VERSION }}.md -Encoding utf8
+        shell: pwsh
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
@@ -29,10 +30,13 @@ jobs:
           path: site
 
       - name: Build release asset
-        run: Compress-Archive -Path "site/*" Job-DestinationPath Website.zip
+        run: |
+          Compress-Archive -Path "site/*" Job-DestinationPath Website.zip
+        shell: pwsh
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: Website.zip
+          body_path: ${{ github.workspace }}/release-notes-${{ env.CURRENT_VERSION }}.md
           fail_on_unmatched_files: true
