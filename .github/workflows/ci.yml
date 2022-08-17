@@ -17,6 +17,10 @@ env:
   RECOMMENDED_OS: "Linux"
   RECOMMENDED_GHC_VERSION: "8.10.7"
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
 
   ################################################################################
@@ -80,7 +84,6 @@ jobs:
         run: |
           cabal v2-update
           cabal v2-freeze $CABAL_ARGS
-        shell: bash
 
       - name: Cache Haskell
         uses: actions/cache@v3
@@ -137,7 +140,6 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ env.EPUBCHECK_VERSION }}/epubcheck-${{ env.EPUBCHECK_VERSION }}.zip" -OutFile "${{ runner.temp }}/epubcheck.zip"
           Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
-        shell: pwsh
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
@@ -199,12 +201,10 @@ jobs:
       - name: Download v19.08
         if: github.event_name == 'push' && steps.cache-v19_08.outputs.cache-hit != 'true'
         run: Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v19.08/Website.zip" -OutFile "${{ github.workspace }}/v19.08.zip"
-        shell: pwsh
 
       - name: Deploy v19.08
         if: github.event_name == 'push'
         run: Expand-Archive "${{ github.workspace }}/v19.08.zip" -DestinationPath "site/19.08"
-        shell: pwsh
 
       # Deploy: Prepare v20.07
 
@@ -219,12 +219,10 @@ jobs:
       - name: Download v20.07
         if: github.event_name == 'push' && steps.cache-v20_07.outputs.cache-hit != 'true'
         run: Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v20.07/Website.zip" -OutFile "${{ github.workspace }}/v20.07.zip"
-        shell: pwsh
 
       - name: Deploy v20.07
         if: github.event_name == 'push'
         run: Expand-Archive "${{ github.workspace }}/v20.07.zip" -DestinationPath "site/20.07"
-        shell: pwsh
 
       # Deploy: Publish to GitHub Pages
 
@@ -259,7 +257,6 @@ jobs:
       - name: Build release asset
         if: startsWith(github.ref, 'refs/tags/v')
         run: Compress-Archive -Path "site/*" Job-DestinationPath Website.zip
-        shell: pwsh
 
       - name: Release
         uses: softprops/action-gh-release@v1
