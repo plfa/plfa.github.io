@@ -41,6 +41,8 @@ jobs:
         with:
           submodules: 'true'
 
+      # Setup
+
       - name: Setup Haskell
         uses: ./.github/actions/setup-haskell
         with:
@@ -66,7 +68,7 @@ jobs:
       - name: Set version environment variables
         run: pipx run bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 
-      # Build: Build PLFA
+      # Build
 
       - name: Cache build
         uses: actions/cache@v3
@@ -77,12 +79,10 @@ jobs:
       - name: Build artifact
         run: make build
 
-      # Test: Test the generated HTML with HTML-validate
+      # Test
 
       - name: Test with HTML-validate
         run: make test-html-validate
-
-      # Test: Test the generated HTML with HTMLProofer
 
       - name: Test with HTMLProofer
         if: runner.os == 'Linux' || runner.os == 'macOS'
@@ -90,14 +90,12 @@ jobs:
         env:
           NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
-      # Test: Test the generated EPUB with EPUBCheck
-
       - name: Test with EPUBCheck
         run: make test-epubcheck
         env:
           EPUBCHECK: "java -jar ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}"
 
-      # Upload: From the main matrix configuration, publish the build as an artifact
+      # Upload artifact
 
       - name: Upload artifact
         if: github.event_name == 'push'
