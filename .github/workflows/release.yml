@@ -1,5 +1,4 @@
-name: Release
-
+name: Create GitHub Release
 on: [workflow_call]
 
 jobs:
@@ -12,8 +11,8 @@ jobs:
         with:
           submodules: "true"
 
-      - name: Setup Python
-        uses: ./.github/actions/setup-python
+      - name: Setup pipx
+        uses: ./.github/actions/setup-pipx
 
       - name: Set version environment variables
         run: pipx run bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
