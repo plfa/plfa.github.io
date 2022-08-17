@@ -1,9 +1,10 @@
 name: Create GitHub Release
-on: [workflow_call]
+
+on:
+  workflow_call:
 
 jobs:
   release:
-    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
