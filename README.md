@@ -183,37 +183,37 @@ When you write Agda code, you will need to insert characters which are not found
 For example, we can add a comment line to one of the `.agda` test files.
 Let's say we want to add a comment line that reads:
 
-```
+```agda
 {- I am excited to type ∀ and → and ≤ and ≡ !! -}
 ```
 
 The first few characters are ordinary, so we would just type them as usual…
 
-```
+```agda
 {- I am excited to type
 ```
 
 But after that last space, we do not find ∀ on the keyboard. The code for this character is the four characters `\all`, so we type those four characters, and when we finish, Emacs will replace them with what we want…
 
-```
+```agda
 {- I am excited to type ∀
 ```
 
 We can continue with the codes for the other characters. Sometimes the characters will change as we type them, because a prefix of our character's code is the code of another character. This happens with the arrow, whose code is `\->`. After typing `\-` we see…
 
-```
+```agda
 {- I am excited to type ∀ and -
 ```
 
 …because the code `\-` corresponds to a hyphen of a certain width. When we add the `>`, the `-` becomes `→`! The code for `≤` is `\<=`, and the code for `≡` is `\==`.
 
-```
+```agda
 {- I am excited to type ∀ and → and ≤ and ≡
 ```
 
 Finally the last few characters are ordinary again…
 
-```
+```agda
 {- I am excited to type ∀ and → and ≤ and ≡ !! -}
 ```
 
