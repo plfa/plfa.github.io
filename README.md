@@ -5,11 +5,10 @@ permalink: /GettingStarted/
 
 <!-- Status & Version Badges -->
 
+[![Build Status][plfa-badge-status-svg]][plfa-badge-status-url]
 [![Calendar Version][plfa-badge-version-svg]][plfa-badge-version-url]
 [![Agda][agda-badge-version-svg]][agda-badge-version-url]
 [![agda-stdlib][agda-stdlib-version-svg]][agda-stdlib-version-url]
-[![Build Status][plfa-badge-status-svg]][plfa-badge-status-url]
-
 
 ## Getting Started for Readers
 
