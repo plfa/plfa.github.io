@@ -59,9 +59,9 @@ cabal install Agda-2.6.2.2
 
 This step will take a long time and a lot of memory to complete.
 
-If you have problems or for alternatives see the [Agda installation instructions][agda-installation].
+If you have problems or for alternatives see the [Agda installation instructions][agda-readthedocs-installation].
 
-If you'd like, you can [test to see if you've installed Agda correctly][agda-hello-world].
+If you'd like, you can [test to see if you've installed Agda correctly][agda-readthedocs-hello-world].
 
 ### Install PLFA and the Agda standard library
 
@@ -258,8 +258,8 @@ You'll see the key sequence of the character in mini buffer.
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
 [xcode]: https://developer.apple.com/xcode/
-[agda-installation]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/installation.html
-[agda-hello-world]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/hello-world.html
+[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/installation.html
+[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/hello-world.html
 [agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/a-taste-of-agda.html#preliminaries
 [agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html
 [agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html#notation-for-key-combinations
