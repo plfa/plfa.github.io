@@ -44,32 +44,10 @@ jobs:
         with:
           submodules: 'true'
 
-      # Setup: Setup Node
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Setup Node dependencies
-        run: npm install
-
-      # Setup: Setup Python and pipx
-
-      - uses: ./.github/actions/setup-pipx
-
-      # Setup Ruby
-
-      - name: Setup Ruby
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-python
+      - uses: ./.github/actions/setup-ruby
         if: runner.os == 'Linux' || runner.os == 'macOS'
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Setup Ruby dependencies
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: bundle install
 
       # Setup: Setup GHC and Cabal
 

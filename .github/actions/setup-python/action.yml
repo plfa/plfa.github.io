@@ -1,5 +1,5 @@
-name: 'Setup pipx'
-description: 'Setup pipx'
+name: 'Setup Python'
+description: 'Setup Python'
 runs:
   using: "composite"
   steps:
