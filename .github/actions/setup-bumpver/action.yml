@@ -1,5 +1,5 @@
 name: 'Setup BumpVer'
-description: 'Setup BumpVer'
+description: 'Setup BumpVer. Requires that requirements-dev.txt contains bumpver.'
 outputs:
   current-version:
     description: 'The current version.'

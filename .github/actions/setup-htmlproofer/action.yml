@@ -1,5 +1,5 @@
 name: 'Setup HTMLProofer'
-description: 'Setup HTMLProofer'
+description: 'Setup HTMLProofer. Requires that Gemfile contains html-proofer.'
 runs:
   using: "composite"
   steps:
