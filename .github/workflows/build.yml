@@ -101,7 +101,7 @@ jobs:
       artifact-name: Website HEAD Linux GHC-8.10.7
 
   release:
-    name: Create GitHub Release
+    name: Publish to GitHub Releases
     needs: [build]
     if: startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/release.yml

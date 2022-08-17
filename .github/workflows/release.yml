@@ -1,4 +1,4 @@
-name: Create GitHub Release
+name: Publish to GitHub Releases
 
 on:
   workflow_call:
