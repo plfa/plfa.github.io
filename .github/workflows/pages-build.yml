@@ -11,8 +11,6 @@ on:
 
 env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
-  RECOMMENDED_OS: "Linux"
-  RECOMMENDED_GHC_VERSION: "8.10.7"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
 defaults:
@@ -107,7 +105,7 @@ jobs:
     if: github.event_name == 'push'
     uses: ./.github/workflows/pages-build-compose.yml
     with:
-      artifact-name: Website HEAD ${{ env.RECOMMENDED_OS }} GHC-${{ env.RECOMMENDED_GHC_VERSION }}
+      artifact-name: Website HEAD Linux GHC-8.10.7
 
   pages-build-release:
     needs: [pages-build]
