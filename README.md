@@ -6,9 +6,9 @@ permalink: /GettingStarted/
 <!-- Status & Version Badges -->
 
 [![Build Status][plfa-badge-status-svg]][plfa-badge-status-url]
-[![Calendar Version][plfa-badge-version-svg]][plfa-badge-version-url]
+[![Release Version][plfa-badge-version-svg]][plfa-badge-version-url]
 [![agda][agda-badge-version-svg]][agda-badge-version-url]
-[![agda-stdlib][agda-stdlib-version-svg]][agda-stdlib-version-url]
+[![standard-library][agda-stdlib-version-svg]][agda-stdlib-version-url]
 
 ## Getting Started for Readers
 
@@ -244,7 +244,7 @@ You'll see the key sequence of the character in mini buffer.
 
 <!-- Links -->
 
-[plfa-badge-version-svg]: https://img.shields.io/badge/calver-v20.07-22bfda
+[plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
 [plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-badge-status-svg]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
 [plfa-badge-status-url]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
