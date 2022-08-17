@@ -245,7 +245,7 @@ You'll see the key sequence of the character in mini buffer.
 
 <!-- Links -->
 
-[plfa-badge-version-svg]: https://img.shields.io/badge/calver-20.07-22bfda
+[plfa-badge-version-svg]: https://img.shields.io/badge/calver-v20.07-22bfda
 [plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-badge-status-svg]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
 [plfa-badge-status-url]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
