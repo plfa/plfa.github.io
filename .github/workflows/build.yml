@@ -36,13 +36,6 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Setup BumpVer
-        uses: ./.github/actions/setup-bumpver
-
-      - name: Test BumpVer configuration
-        run: bumpver update --dry --no-fetch
-        shell: pwsh
-
       - name: Setup Haskell
         uses: ./.github/actions/setup-haskell
         with:
@@ -52,25 +45,14 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
-      - name: Cache build
-        uses: actions/cache@v3
-        with:
-          path: _cache
-          key: build-${{ runner.os }}
-
-      - name: Build website
-        run: make build
-
-      - name: Test with HTML-validate
-        run: make test-html-validate
+      - name: Setup BumpVer
+        uses: ./.github/actions/setup-bumpver
+        # depends on requirements-dev.txt
 
       - name: Setup HTMLProofer
         if: runner.os != 'Windows'
         uses: ./.github/actions/setup-htmlproofer
-
-      - name: Test with HTMLProofer
-        if: runner.os != 'Windows'
-        run: make test-htmlproofer
+        # depends on Gemfile
 
       - name: Setup EPUBCheck
         uses: ./.github/actions/setup-epubcheck
@@ -78,24 +60,34 @@ jobs:
         with:
           epubcheck-version: "4.2.6"
 
+      - name: Cache build
+        uses: actions/cache@v3
+        with:
+          path: _cache
+          key: build-${{ runner.os }}
+
+      - name: Build
+        run: make build
+
+      - name: Test with BumpVer
+        run: bumpver update --dry --no-fetch
+
+      - name: Test with HTML-validate
+        run: make test-html-validate
+
+      - name: Test with HTMLProofer
+        if: runner.os != 'Windows'
+        run: make test-htmlproofer
+
       - name: Test with EPUBCheck
         run: make test-epubcheck
         env:
           EPUBCHECK: "java -jar ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}"
 
-      - name: Upload artifact
-        if: github.event_name == 'push'
+      - name: Upload latest artifact
         uses: actions/upload-artifact@v3
         with:
           name: Website HEAD ${{ runner.os }} GHC-${{ matrix.ghc-version }}
-          path: _site
-          if-no-files-found: error
-
-      - name: Upload artifact for pull request
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v3
-        with:
-          name: Website PR-${{ github.event.pull_request.number }} ${{ runner.os }} GHC-${{ matrix.ghc-version }}
           path: _site
           if-no-files-found: error
 
