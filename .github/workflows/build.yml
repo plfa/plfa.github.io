@@ -13,6 +13,7 @@ env:
   CABAL_ARGS: "--project-file=cabal.project.ci"
   RECOMMENDED_OS: "Linux"
   RECOMMENDED_GHC_VERSION: "8.10.7"
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
 defaults:
   run:
@@ -57,7 +58,6 @@ jobs:
 
       - name: Setup Ruby
         uses: ./.github/actions/setup-ruby
-        if: runner.os == 'Linux' || runner.os == 'macOS'
 
       - name: Setup EPUBCheck
         uses: ./.github/actions/setup-epubcheck
@@ -85,10 +85,7 @@ jobs:
         run: make test-html-validate
 
       - name: Test with HTMLProofer
-        if: runner.os == 'Linux' || runner.os == 'macOS'
         run: make test-html-proofer
-        env:
-          NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
       - name: Test with EPUBCheck
         run: make test-epubcheck
