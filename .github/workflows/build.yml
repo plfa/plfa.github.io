@@ -36,6 +36,13 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Setup BumpVer
+        uses: ./.github/actions/setup-bumpver
+
+      - name: Test BumpVer configuration
+        run: bumpver update --dry --no-fetch
+        shell: pwsh
+
       - name: Setup Haskell
         uses: ./.github/actions/setup-haskell
         with:
