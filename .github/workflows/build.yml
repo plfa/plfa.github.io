@@ -93,6 +93,7 @@ jobs:
           if-no-files-found: error
 
   publish:
+    name: Publish to GitHub Pages
     needs: [pages-build]
     if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml
@@ -100,6 +101,7 @@ jobs:
       artifact-name: Website HEAD Linux GHC-8.10.7
 
   release:
+    name: Create GitHub Release
     needs: [pages-build]
     if: startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/release.yml
