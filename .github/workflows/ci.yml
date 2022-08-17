@@ -48,6 +48,25 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      # Setup: Setup Python and bumpver
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Python dependencies
+        run: pip install -r requirements-dev.txt
+
+      # Setup Ruby
+
+      - name: Setup Ruby
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
       # Setup: Setup GHC and Cabal
 
       - name: Setup Haskell
@@ -72,6 +91,14 @@ jobs:
           key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
           restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
 
+      # Setup: Add version information to environment
+
+      - name: Add version information to environment
+        run: bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Show version
+        run: echo "PLFA ${{ env.CURRENT_VERSION }}"
+
       # Build: Build PLFA
 
       - name: Cache build
@@ -89,12 +116,6 @@ jobs:
         run: make test-html-validate
 
       # Test: Test the generated HTML with HTMLProofer
-
-      - name: Setup Ruby
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
 
       - name: Test with HTMLProofer
         if: runner.os == 'Linux' || runner.os == 'macOS'
