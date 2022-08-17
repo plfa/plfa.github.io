@@ -1,4 +1,4 @@
-name: Build
+name: pages-build
 
 on:
   push:
@@ -20,11 +20,7 @@ defaults:
     shell: pwsh
 
 jobs:
-
-  ################################################################################
-  # Build:
-  ################################################################################
-  build:
+  pages-build:
     strategy:
       fail-fast: true
       matrix:
@@ -106,12 +102,12 @@ jobs:
           path: _site
           if-no-files-found: error
 
-  publish:
+  pages-build-versions:
     needs: [build]
     if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml
 
-  release:
+  pages-release:
     needs: [build]
     if: startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/release.yml
