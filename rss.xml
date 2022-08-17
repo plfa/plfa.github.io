@@ -8,7 +8,7 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Wed, 17 Aug 2022 10:57:13 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 17 Aug 2022 13:18:14 +0000</lastBuildDate>
         <item>
       <title>PLFA as PDF and EPUB</title>
       <link>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</link>
@@ -99,6 +99,19 @@
             <dc:creator>Jeremy G. Siek</dc:creator>
           </item>
         <item>
+      <title>Release Notes v20.07</title>
+      <link>https://plfa.github.io//2020/07/13/release-notes-v20/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Mon, 13 Jul 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/07/13/release-notes-v20/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
       <title>Introducing Part 3: Denotational Semantics</title>
       <link>https://plfa.github.io//2020/07/13/denotational-semantics/index.html</link>
       <description>
@@ -164,6 +177,19 @@
       </description>
       <pubDate>Fri, 10 Jan 2020 12:00:00 +0000</pubDate>
       <guid>https://plfa.github.io//2020/01/10/plfa-as-a-notebook/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Release Notes v19.08</title>
+      <link>https://plfa.github.io//2019/08/31/release-notes-v19/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Sat, 31 Aug 2019 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2019/08/31/release-notes-v19/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
