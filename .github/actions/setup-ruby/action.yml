@@ -3,12 +3,8 @@ description: 'Setup Ruby'
 runs:
   using: "composite"
   steps:
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
+          # use .ruby-version
           bundler-cache: true
-
-      - name: Setup Ruby dependencies
-        run: bundle install
-        shell: pwsh
