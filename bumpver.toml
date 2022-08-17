@@ -7,9 +7,11 @@ tag = true
 push = true
 
 [bumpver.file_patterns]
-"bumpver.toml" = ['current_version = "{version}"$']
+"bumpver.toml" = ['^current_version = "{version}"$']
 "plfa.cabal" = [
-  'version:            {pep440_version}$',
-  'copyright:          © 2017-YYYY Wen Kokke'
+  '^version:            {pep440_version}$',
+  '^copyright:          © 2017-YYYY Wen Kokke$'
 ]
-"README.md" = ['https://img.shields.io/badge/calver-{version}-22bfda']
+"README.md" = [
+  '^\[plfa-badge-version-svg\]: https://img.shields.io/badge/calver-{version}-22bfda$'
+]
