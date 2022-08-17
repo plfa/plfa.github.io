@@ -2,6 +2,10 @@ name: Release
 
 on: [workflow_call]
 
+env:
+  RECOMMENDED_OS: "Linux"
+  RECOMMENDED_GHC_VERSION: "8.10.7"
+
 jobs:
   release:
     name: Release
