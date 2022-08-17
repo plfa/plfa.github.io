@@ -12,6 +12,3 @@ push = true
   '^version:            {pep440_version}$',
   '^copyright:          © 2017-YYYY Wen Kokke$'
 ]
-"README.md" = [
-  '^\[plfa-badge-version-svg\]: https://img.shields.io/badge/calver-{version}-22bfda$'
-]
