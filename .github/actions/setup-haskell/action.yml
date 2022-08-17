@@ -1,0 +1,27 @@
+name: 'Setup Haskell'
+description: 'Setup Haskell'
+runs:
+  using: "composite"
+  steps:
+
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v2
+        id: setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
+          cabal-version: ${{ env.CABAL_VERSION }}
+
+      - name: Freeze Haskell dependencies
+        run: |
+          cabal v2-update
+          cabal v2-freeze $CABAL_ARGS
+        shell: pwsh
+
+      - name: Cache Haskell dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ steps.setup-haskell.outputs.cabal-store }}
+            dist-newstyle
+          key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
+          restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-

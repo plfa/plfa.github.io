@@ -7,6 +7,7 @@ runs:
         uses: actions/setup-python@v4
         id: setup-python
         with:
+          python-version-file: .python-version
           cache: 'pip'
           cache-dependency-path: requirements-dev.txt
 
@@ -14,7 +15,7 @@ runs:
         run: pip install -r requirements-dev.txt
         shell: pwsh
 
-      - name: Add pipx environment to the GitHub environment
+      - name: Get path to pipx virtual environment cache
         run: |
           $PIPX_VENV_CACHEDIR = pipx environment --value=PIPX_VENV_CACHEDIR | Out-String
           Echo "PIPX_VENV_CACHEDIR=${PIPX_VENV_CACHEDIR}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append

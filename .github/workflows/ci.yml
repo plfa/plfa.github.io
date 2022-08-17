@@ -44,33 +44,13 @@ jobs:
         with:
           submodules: 'true'
 
+      # Setup: Dependencies
+
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
       - uses: ./.github/actions/setup-ruby
         if: runner.os == 'Linux' || runner.os == 'macOS'
-
-      # Setup: Setup GHC and Cabal
-
-      - name: Setup Haskell
-        uses: haskell/actions/setup@v2
-        id: setup-haskell
-        with:
-          ghc-version: ${{ matrix.ghc-version }}
-          cabal-version: ${{ env.CABAL_VERSION }}
-
-      - name: Freeze Haskell dependencies
-        run: |
-          cabal v2-update
-          cabal v2-freeze $CABAL_ARGS
-
-      - name: Cache Haskell dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ steps.setup-haskell.outputs.cabal-store }}
-            dist-newstyle
-          key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
-          restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
+      - uses: ./.github/actions/setup-haskell
 
       # Setup: Version
 
