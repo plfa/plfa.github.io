@@ -102,12 +102,14 @@ jobs:
           path: _site
           if-no-files-found: error
 
-  pages-build-versions:
-    needs: [build]
+  pages-build-compose:
+    needs: [pages-build]
     if: github.event_name == 'push'
-    uses: ./.github/workflows/publish.yml
+    uses: ./.github/workflows/pages-build-compose.yml
+    with:
+      artifact-name: Website HEAD ${{ env.RECOMMENDED_OS }} GHC-${{ env.RECOMMENDED_GHC_VERSION }}
 
-  pages-release:
-    needs: [build]
+  pages-build-release:
+    needs: [pages-build]
     if: startsWith(github.ref, 'refs/tags/v')
-    uses: ./.github/workflows/release.yml
+    uses: ./.github/workflows/pages-build-release.yml

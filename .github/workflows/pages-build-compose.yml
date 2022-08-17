@@ -1,14 +1,15 @@
-name: pages-build-versions
+name: pages-build-compose
 
-on: [workflow_call]
-
-env:
-  RECOMMENDED_OS: "Linux"
-  RECOMMENDED_GHC_VERSION: "8.10.7"
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
 
 jobs:
-  pages-build-versions:
-    name: Compose versions & publish
+  pages-build-compose:
+    name: Compose versions
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +23,7 @@ jobs:
       - name: Download latest artifact
         uses: actions/download-artifact@v3
         with:
-          name: Website HEAD ${{ env.RECOMMENDED_OS }} GHC-${{ env.RECOMMENDED_GHC_VERSION }}
+          name: ${{ inputs.artifact-name }}
           path: site
 
       - uses: ./.github/actions/download-plfa-release
