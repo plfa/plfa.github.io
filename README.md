@@ -5,10 +5,10 @@ permalink: /GettingStarted/
 
 <!-- Status & Version Badges -->
 
-[![Calendar Version][plfa-calver]][plfa-latest]
-[![Agda][agda-version]][agda]
-[![agda-stdlib][agda-stdlib-version]][agda-stdlib]
-[![Build Status][plfa-status]][plfa-ci]
+[![Calendar Version][plfa-badge-version-svg]][plfa-badge-version-url]
+[![Agda][agda-badge-version-svg]][agda-badge-version-url]
+[![agda-stdlib][agda-stdlib-version-svg]][agda-stdlib-version-url]
+[![Build Status][plfa-badge-status-svg]][plfa-badge-status-url]
 
 
 ## Getting Started for Readers
@@ -92,7 +92,7 @@ Otherwise, you will need to edit the appropriate files. Both configuration files
 - If you want to complete the exercises or to import modules from the book, you will also need to provide access to PLFA as an Agda library. To do so, let `PLFA` be the path to the root directory for PLFA.
   Add `PLFA/src/plfa.agda-lib` to `AGDA_DIR/libraries` and add `plfa` to `AGDA_DIR/defaults`, each on a line of their own.
 
-More information about placing the standard libraries is available from [the Library Management page][agda-docs-package-system] of the Agda documentation.
+More information about placing the standard libraries is available from [the Library Management page][agda-readthedocs-package-system] of the Agda documentation.
 
 ## Setting up an editor for Agda
 
@@ -119,7 +119,7 @@ If you are already an Emacs user and have customized your setup, you may want to
 
 #### Check if `agda-mode` was installed correctly
 
-Open the `nats.agda` file you created earlier, and load and type-check the file by typing [`C-c C-l`][agda-docs-emacs-notation].
+Open the `nats.agda` file you created earlier, and load and type-check the file by typing [`C-c C-l`][agda-readthedocs-emacs-notation].
 
 #### Auto-loading `agda-mode` in Emacs
 
@@ -140,7 +140,7 @@ If you already have settings which change your `auto-mode-alist` in your configu
 
 Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [mononoki][font-mononoki], fonts such as [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
 
-You can download and install mononoki directly from [GitHub][mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the `font-mononoki` package in the [`cask-fonts` cask][cask-fonts], and APT on Debian offers the [`fonts-mononoki` package][font-mononoki-debian]. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
+You can download and install mononoki directly from [the website][font-mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the `font-mononoki` package, and APT on Debian offers the `fonts-mononoki` package. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
 
 ```elisp
 ;; default to mononoki
@@ -153,9 +153,9 @@ You can download and install mononoki directly from [GitHub][mononoki]. For most
 
 #### Using `agda-mode` in Emacs
 
-To load and type-check the file, use [`C-c C-l`][agda-docs-emacs-notation].
+To load and type-check the file, use [`C-c C-l`][agda-readthedocs-emacs-notation].
 
-Agda is edited interactively, using [“holes”][agda-docs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using `C-c C-l`, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
+Agda is edited interactively, using [“holes”][agda-readthedocs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using `C-c C-l`, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
 
 - `C-c C-c`: **c**ase split (asks for variable name)
 - `C-c C-space`: fill in hole
@@ -164,7 +164,7 @@ Agda is edited interactively, using [“holes”][agda-docs-holes], which are bi
 - `C-c C-,`: goal type and context
 - `C-c C-.`: goal type, context, and inferred type
 
-See [the emacs-mode docs][agda-docs-emacs-mode] for more details.
+See [the emacs-mode docs][agda-readthedocs-emacs-mode] for more details.
 
 If you want to see messages beside rather than below your Agda code, you can do the following:
 
@@ -245,23 +245,25 @@ You'll see the key sequence of the character in mini buffer.
 
 <!-- Links -->
 
-[epub]: https://plfa.github.io/plfa.epub
+[plfa-badge-version-svg]: https://img.shields.io/badge/calver-20.07-22bfda
+[plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
+[plfa-badge-status-svg]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
+[plfa-badge-status-url]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
+[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.2.2-blue.svg
+[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.2.2
+[agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v1.7.1-blue.svg
+[agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.1
 [plfa]: https://plfa.inf.ed.ac.uk
-[plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
-[plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
-[plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
-[plfa-status]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
-[plfa-ci]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
+[plfa-epub]: https://plfa.github.io/plfa.epub
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
-[agda]: https://github.com/agda/agda/releases/tag/v2.6.2.2
+[xcode]: https://developer.apple.com/xcode/
 [agda-installation]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/installation.html
 [agda-hello-world]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/hello-world.html
-[agda-version]: https://img.shields.io/badge/agda-v2.6.2.2-blue.svg
-[agda-docs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/a-taste-of-agda.html#preliminaries
-[agda-docs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html
-[agda-docs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html#notation-for-key-combinations
-[agda-docs-package-system]: https://agda.readthedocs.io/en/v2.6.2.2/tools/package-system.html#example-using-the-standard-library
+[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/a-taste-of-agda.html#preliminaries
+[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html
+[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html#notation-for-key-combinations
+[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.6.2.2/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
@@ -272,22 +274,8 @@ You'll see the key sequence of the character in mini buffer.
 [vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
 [atom]: https://atom.io/
 [atom-agda]: https://atom.io/packages/agda-mode
-[agda-stdlib-version]: https://img.shields.io/badge/agda--stdlib-v1.7.1-blue.svg
-[agda-stdlib]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.1
-[fix-whitespace]: https://github.com/agda/fix-whitespace
-[ruby]: https://www.ruby-lang.org/en/documentation/installation/
-[ruby-bundler]: https://bundler.io/#getting-started
-[ruby-jekyll]: https://jekyllrb.com/
-[ruby-html-proofer]: https://github.com/gjtorikian/html-proofer
-[pandoc]: https://pandoc.org/installing.html
-[pandoc-markdown]: https://pandoc.org/MANUAL.html#pandocs-markdown
-[commonmark]: https://commonmark.org/
-[epubcheck]: https://github.com/w3c/epubcheck
-[xcode]: https://developer.apple.com/xcode/
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro
 [font-dejavusansmono]: https://dejavu-fonts.github.io/
-[mononoki]: https://github.com/madmalik/mononoki
 [font-freemono]: https://www.gnu.org/software/freefont/
 [font-mononoki]: https://madmalik.github.io/mononoki/
 [font-mononoki-debian]: https://packages.debian.org/sid/fonts/fonts-mononoki
-[cask-fonts]: https://github.com/Homebrew/homebrew-cask-fonts
