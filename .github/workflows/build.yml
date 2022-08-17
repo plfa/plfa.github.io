@@ -54,6 +54,7 @@ jobs:
         uses: ./.github/actions/setup-node
 
       - name: Setup Ruby
+        if: runner.os != "Windows"
         uses: ./.github/actions/setup-ruby
 
       - name: Setup EPUBCheck
@@ -79,6 +80,7 @@ jobs:
         run: make test-html-validate
 
       - name: Test with HTMLProofer
+        if: runner.os != "Windows"
         run: make test-html-proofer
 
       - name: Test with EPUBCheck
