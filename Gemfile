@@ -1,4 +1,4 @@
-# Used by `make test-html-proofer`
+# Used by `make test-htmlproofer`
 
 source 'https://rubygems.org'
 

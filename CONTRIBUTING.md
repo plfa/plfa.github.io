@@ -36,7 +36,7 @@ We recommend installing Ruby via [rbenv][rbenv].
 Once you have installed [Ruby][ruby] and [bundler][bundler], you can test for broken links using the following command:
 
 ```sh
-make test-html-proofer  # Tests the generated HTML using HTMLProofer
+make test-htmlproofer  # Tests the generated HTML using HTMLProofer
 ```
 
 You can optionally pass `EXTERNAL_LINKS=true` to test external links as well.

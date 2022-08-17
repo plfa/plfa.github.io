@@ -1,5 +1,5 @@
-name: 'Setup bundler'
-description: 'Setup bundler'
+name: 'Setup HTMLProofer'
+description: 'Setup HTMLProofer'
 runs:
   using: "composite"
   steps:

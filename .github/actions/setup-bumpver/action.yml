@@ -1,0 +1,16 @@
+name: 'Setup BumpVer'
+description: 'Setup BumpVer'
+runs:
+  using: "composite"
+  steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        id: setup-python
+        with:
+          python-version-file: .python-version
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Setup Python dependencies
+        run: pip install -r requirements-dev.txt
+        shell: pwsh

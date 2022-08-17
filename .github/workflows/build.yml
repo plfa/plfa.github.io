@@ -57,13 +57,13 @@ jobs:
       - name: Test with HTML-validate
         run: make test-html-validate
 
-      - name: Setup bundler
+      - name: Setup HTMLProofer
         if: runner.os != 'Windows'
-        uses: ./.github/actions/setup-bundler
+        uses: ./.github/actions/setup-htmlproofer
 
       - name: Test with HTMLProofer
         if: runner.os != 'Windows'
-        run: make test-html-proofer
+        run: make test-htmlproofer
 
       - name: Setup EPUBCheck
         uses: ./.github/actions/setup-epubcheck

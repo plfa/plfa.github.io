@@ -12,11 +12,11 @@ jobs:
         with:
           submodules: "true"
 
-      - name: Setup pipx
-        uses: ./.github/actions/setup-pipx
+      - name: Setup bumpver
+        uses: ./.github/actions/setup-bumpver
 
       - name: Set version environment variables
-        run: pipx run bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+        run: bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Get release notes
         run: |

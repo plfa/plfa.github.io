@@ -9,7 +9,7 @@ default: build
 # Command-line arguments
 ########################################
 
-# make test-html-proofer:
+# make test-htmlproofer:
 #   - EXTERNAL_LINKS:
 #     If set, external links are checked.
 
@@ -122,8 +122,8 @@ HTML_PROOFER_ARGS += --log-level=":info"
 HTML_PROOFER_ARGS += --cache='{"timeframe":{"external":"2w"},"storage_dir":"$(ABS_DIR)$(TMP_DIR)/htmlproofer/"}'
 HTML_PROOFER_ARGS += .
 
-.PHONY: test-html-proofer
-test-html-proofer:
+.PHONY: test-htmlproofer
+test-htmlproofer:
 	@echo "Checking HTML with HTMLProofer..."
 	(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
 
