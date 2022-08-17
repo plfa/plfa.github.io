@@ -250,8 +250,8 @@ You'll see the key sequence of the character in mini buffer.
 [plfa-calver]: https://img.shields.io/badge/calver-20.07-22bfda
 [plfa-latest]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-master]: https://github.com/plfa/plfa.github.io/archive/master.zip
-[plfa-status]: https://github.com/plfa/plfa.github.io/actions/workflows/ci.yml/badge.svg
-[plfa-ci]: https://github.com/plfa/plfa.github.io/actions/workflows/ci.yml
+[plfa-status]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
+[plfa-ci]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
 [agda]: https://github.com/agda/agda/releases/tag/v2.6.2.2

@@ -117,7 +117,7 @@ To create a new release for PLFA, follow these steps:
 - Run `make test` and handle any warnings or errors.
 - Push your changes to a new `release-{version}` branch. Create a pull request from `release-{version}` into `dev`. Handle any errors that arise on the CI. Merge the pull request.
 - Create a new tag named `v0Y.0M` and push it to GitHub.
-- Update `ci.yml` to publish the new version. Use the jobs "Cache v19.08", "Download v19.08", and "Deploy v19.08" as a template.
+- Update `build.yml` to publish the new version. Use the jobs "Cache v19.08", "Download v19.08", and "Deploy v19.08" as a template.
 
 ## How to add a citation
 
