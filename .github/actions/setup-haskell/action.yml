@@ -1,5 +1,18 @@
 name: 'Setup Haskell'
 description: 'Setup Haskell'
+inputs:
+  ghc-version:
+    required: false
+    description: 'Version of GHC to use. If set to "latest", it will always get the latest stable version.'
+    default: 'latest'
+  cabal-version:
+    required: false
+    description: 'Version of Cabal to use. If set to "latest", it will always get the latest stable version.'
+    default: 'latest'
+  cabal-project-freeze-file:
+    required: false
+    description: 'Path to the frozen project configuration. Defaults to "cabal.project.freeze".'
+    default: 'cabal.project.freeze'
 runs:
   using: "composite"
   steps:
@@ -8,8 +21,8 @@ runs:
         uses: haskell/actions/setup@v2
         id: setup-haskell
         with:
-          ghc-version: ${{ matrix.ghc-version }}
-          cabal-version: ${{ env.CABAL_VERSION }}
+          ghc-version: ${{ inputs.ghc-version }}
+          cabal-version: ${{ inputs.cabal-version }}
 
       - name: Freeze Haskell dependencies
         run: |
@@ -23,5 +36,5 @@ runs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-${{ hashFiles('cabal.project.ci.freeze') }}
-          restore-keys: haskell-${{ runner.os }}-${{ matrix.ghc-version }}-
+          key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(inputs.cabal-freeze-file) }}
+          restore-keys: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-

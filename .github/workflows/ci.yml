@@ -46,11 +46,14 @@ jobs:
 
       # Setup: Dependencies
 
+      - uses: ./.github/actions/setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
+          cabal-project-freeze-file: cabal.project.ci.freeze
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
       - uses: ./.github/actions/setup-ruby
         if: runner.os == 'Linux' || runner.os == 'macOS'
-      - uses: ./.github/actions/setup-haskell
 
       # Setup: Version
 
