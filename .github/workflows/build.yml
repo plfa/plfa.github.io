@@ -27,7 +27,7 @@ jobs:
         include:
           - experimental: false
 
-    name: Build on ${{ matrix.os }} with GHC ${{ matrix.ghc-version }}
+    name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     steps:
@@ -35,8 +35,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: 'true'
-
-      # Setup
 
       - name: Setup Haskell
         uses: ./.github/actions/setup-haskell
@@ -47,9 +45,25 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
-      - name: Setup Ruby
+      - name: Cache build
+        uses: actions/cache@v3
+        with:
+          path: _cache
+          key: build-${{ runner.os }}
+
+      - name: Build website
+        run: make build
+
+      - name: Test with HTML-validate
+        run: make test-html-validate
+
+      - name: Setup bundler
         if: runner.os != 'Windows'
-        uses: ./.github/actions/setup-ruby
+        uses: ./.github/actions/setup-bundler
+
+      - name: Test with HTMLProofer
+        if: runner.os != 'Windows'
+        run: make test-html-proofer
 
       - name: Setup EPUBCheck
         uses: ./.github/actions/setup-epubcheck
@@ -57,32 +71,10 @@ jobs:
         with:
           epubcheck-version: "4.2.6"
 
-      # Build
-
-      - name: Cache build
-        uses: actions/cache@v3
-        with:
-          path: _cache
-          key: build-${{ runner.os }}
-
-      - name: Build artifact
-        run: make build
-
-      # Test
-
-      - name: Test with HTML-validate
-        run: make test-html-validate
-
-      - name: Test with HTMLProofer
-        if: runner.os != 'Windows'
-        run: make test-html-proofer
-
       - name: Test with EPUBCheck
         run: make test-epubcheck
         env:
           EPUBCHECK: "java -jar ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}"
-
-      # Upload artifact
 
       - name: Upload artifact
         if: github.event_name == 'push'

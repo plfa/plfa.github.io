@@ -1,5 +1,5 @@
-name: 'Setup Ruby'
-description: 'Setup Ruby'
+name: 'Setup bundler'
+description: 'Setup bundler'
 runs:
   using: "composite"
   steps:
