@@ -1,4 +1,4 @@
-name: pages-build-compose
+name: Publish
 
 on:
   workflow_call:
@@ -8,8 +8,8 @@ on:
         type: string
 
 jobs:
-  pages-build-compose:
-    name: Compose versions
+  publish:
+    name: Publish
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
@@ -17,8 +17,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: 'true'
-
-      # Download latest & releases
 
       - name: Download latest artifact
         uses: actions/download-artifact@v3
@@ -36,9 +34,7 @@ jobs:
           plfa-version: v20.07
           path: site
 
-      # Publish to GitHub Pages
-
-      - name: Publish artifact
+      - name: Publish to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.0
         with:
           branch: web

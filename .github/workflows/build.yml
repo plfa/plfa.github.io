@@ -1,4 +1,4 @@
-name: pages-build
+name: Build & Test
 
 on:
   push:

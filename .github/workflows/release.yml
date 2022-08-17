@@ -1,9 +1,9 @@
-name: pages-build-release
+name: Release
 
 on: [workflow_call]
 
 jobs:
-  pages-build-release:
+  release:
     name: Release
     runs-on: ubuntu-latest
     steps:
