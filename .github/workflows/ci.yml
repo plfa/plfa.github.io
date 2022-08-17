@@ -57,25 +57,7 @@ jobs:
 
       # Setup: Setup Python and pipx
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        id: setup-python
-        with:
-          cache: 'pip'
-          cache-dependency-path: requirements-dev.txt
-
-      - name: Setup Python dependencies
-        run: pip install -r requirements-dev.txt
-
-      - name: Setup pipx
-        run: pipx environment | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Cache pipx virtual environments
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ env.PIPX_VENV_CACHEDIR }}
-          key: pipx-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('requirements-dev.txt') }}
+      - uses: .github/actions/setup-pipx
 
       # Setup Ruby
 
