@@ -9,7 +9,7 @@ updates:
     assignees:
       - "wenkokke"
 
-  # Maintain dependencies for npm
+  # Maintain dependencies for Node
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -17,8 +17,16 @@ updates:
     assignees:
       - "wenkokke"
 
-  # Maintain dependencies for RubyGems
+  # Maintain dependencies for Ruby
   - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "wenkokke"
+
+  # Maintain dependencies for Python
+  - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "daily"
