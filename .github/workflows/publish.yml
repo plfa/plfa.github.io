@@ -24,12 +24,12 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: site
 
-      - uses: ./.github/actions/download-plfa-release
+      - uses: ./.github/actions/download-release
         with:
           plfa-version: v19.08
           path: site
 
-      - uses: ./.github/actions/download-plfa-release
+      - uses: ./.github/actions/download-release
         with:
           plfa-version: v20.07
           path: site

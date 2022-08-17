@@ -100,14 +100,14 @@ jobs:
           path: _site
           if-no-files-found: error
 
-  pages-build-compose:
+  publish:
     needs: [pages-build]
     if: github.event_name == 'push'
-    uses: ./.github/workflows/pages-build-compose.yml
+    uses: ./.github/workflows/publish.yml
     with:
       artifact-name: Website HEAD Linux GHC-8.10.7
 
-  pages-build-release:
+  release:
     needs: [pages-build]
     if: startsWith(github.ref, 'refs/tags/v')
-    uses: ./.github/workflows/pages-build-release.yml
+    uses: ./.github/workflows/release.yml

@@ -1,5 +1,5 @@
-name: 'Download PLFA version'
-description: 'Download PLFA version'
+name: 'Download PLFA release'
+description: 'Download PLFA release'
 inputs:
   plfa-version:
     required: true
