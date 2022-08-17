@@ -12,7 +12,7 @@ jobs:
         with:
           submodules: "true"
 
-      - name: Setup bumpver
+      - name: Setup BumpVer
         uses: ./.github/actions/setup-bumpver
 
       - name: Set version environment variables
