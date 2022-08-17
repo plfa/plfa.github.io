@@ -57,7 +57,7 @@ jobs:
 
       # Setup: Setup Python and pipx
 
-      - uses: .github/actions/setup-pipx
+      - uses: ./.github/actions/setup-pipx
 
       # Setup Ruby
 
