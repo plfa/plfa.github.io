@@ -87,7 +87,12 @@ jobs:
           ghc-version: ${{ matrix.ghc-version }}
           cabal-version: ${{ env.CABAL_VERSION }}
 
-      - name: Cache Haskell
+      - name: Freeze Haskell dependencies
+        run: |
+          cabal v2-update
+          cabal v2-freeze $CABAL_ARGS
+
+      - name: Cache Haskell dependencies
         uses: actions/cache@v3
         with:
           path: |
