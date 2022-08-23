@@ -23,7 +23,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        ghc-version: ["8.10.7", "9.2.3", "9.2.4", "9.4.1"]
+        ghc-version: ["8.10.7", "9.2.3", "9.2.4"]
         include:
           - experimental: false
           - ghc-version: "9.2.4"
