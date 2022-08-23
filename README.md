@@ -45,7 +45,13 @@ If you do not have Git, see [the Git downloads page][git].
 
 ### Install GHC and Cabal
 
-Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ and its package manager _Cabal_. PLFA should work with any version of GHC >=8.10, but is tested with versions 8.10.7 and 9.2.3. We recommend installing GHC and Cabal using [ghcup][ghcup].
+Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ and its package manager _Cabal_. PLFA should work with any version of GHC >=8.10, but is tested with versions 8.10 and 9.2. We recommend installing GHC and Cabal using [ghcup][ghcup].  For instance, once `ghcup` is installed, by typing
+
+```bash
+ghcup set ghc 9.2
+ghcup set cabal recommended
+```
+or using `ghcup tui` and choosing to `set` the appropriate tools.
 
 ### Install Agda
 
