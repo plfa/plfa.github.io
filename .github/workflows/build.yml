@@ -28,8 +28,6 @@ jobs:
           - experimental: false
           - ghc-version: "9.2.4"
             experimental: true
-          - ghc-version: "9.4.1"
-            experimental: true
 
     name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
