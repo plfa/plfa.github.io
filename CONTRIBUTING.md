@@ -5,7 +5,7 @@ permalink: /Contributing/
 
 ## Getting Started for Contributors
 
-If you plan to contribute to the book, and wish to build the book locally, you will need to install some additional dependencies:
+If you plan to contribute to the book, and wish to build the book locally, you will need to install some additional dependencies.
 Please start by following the instructions for readers in [Getting Started](/GettingStarted/#getting-started-for-readers).
 This should leave you with a working installation of basic development tools, Haskell, Agda, the standard library, and PLFA.
 
@@ -53,22 +53,6 @@ Once you have installed [EPUBCheck][epubcheck], you can test the generated EPUB 
 make test-epubcheck     # Tests the generated EPUB using EPUBCheck
 ```
 
-### Checking for whitespace violations using fix-whitespace
-
-To keep the code clean of trailing whitespace and missing terminal newlines we use [fix-whitespace][fix-whitespace].
-
-You can install [fix-whitespace][fix-whitespace] by running the following command:
-
-```sh
-cabal v2-install fix-whitespace
-```
-
-Once you have installed [fix-whitespace][fix-whitespace], you can set up a git hook which automatically checks the whitespace on commit (see `.githooks/pre-commit`) by running the following command:
-
-```sh
-git config core.hooksPath .githooks
-```
-
 ## How to make changes to PLFA
 
 The `dev` branch of the repository is write-protected, meaning that changes can only be made via pull requests, once all tests have passed. To make changes, create a new branch by running the following command from your local copy of the repository:
@@ -113,11 +97,23 @@ To create a new release for PLFA, follow these steps:
 
 - Write [an announcement](#how-to-publish-an-announcement) for the release, which describes any major changes. Use the previous release notes announcements as a template.
 - Add an entry for the new version to [`Citing.md`][citing].
-- Update the version in `plfa.cabal` to `0Y.MM`. Don't use zero padding for the month, as Cabal does not allow leading zeros.
-- Run `make test` and handle any warnings or errors.
-- Push your changes to a new `release-{version}` branch. Create a pull request from `release-{version}` into `dev`. Handle any errors that arise on the CI. Merge the pull request.
-- Create a new tag named `v0Y.0M` and push it to GitHub.
-- Update `publish.yml` to publish the new version.
+- Run `bumpver update`, or:
+  + Update the version in `plfa.cabal` to `YY.MM`. Don't use zero padding, as Cabal does not allow leading zeros.
+  + Update the version in the badge in the README file, which is in the footnotes as `[plfa-badge-version-svg]`.
+  + Commit and push your changes.
+  + Run `make test` and handle any warnings or errors.
+  + Create a new tag named `v0Y.0M` and push it to GitHub.
+- Wait for the CI to finish, and a new version to be published to [GitHub Releases][github-releases].
+- Update `publish.yml` to download and publish the new version, by adding the following snippet:
+  ```yaml
+  - uses: ./.github/actions/download-release
+    with:
+      plfa-version: v0Y.0M
+      path: site
+  ```
+- Commit and push your changes.
+- Wait for the CI to finish, and for the website to be updated.
+- Check if the new version is available at <https://plfa.github.io/0Y.0M/>.
 
 ## How to add a citation
 
