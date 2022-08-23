@@ -248,6 +248,10 @@ You'll see the key sequence of the character in mini buffer.
 
 [Atom][atom] is a free source code editor developed by GitHub. There is [a plugin for Agda support][atom-agda] available on the Atom package manager.
 
+## Getting Started for Contributors
+
+If you plan to build PLFA locally, please refer to [Contributing][plfa-contributing] for additional instructions.
+
 <!-- Links -->
 
 [plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
@@ -260,6 +264,7 @@ You'll see the key sequence of the character in mini buffer.
 [agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.1
 [plfa]: https://plfa.inf.ed.ac.uk
 [plfa-epub]: https://plfa.github.io/plfa.epub
+[plfa-contributing]: https://plfa.github.io/Contributing/
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
 [xcode]: https://developer.apple.com/xcode/
