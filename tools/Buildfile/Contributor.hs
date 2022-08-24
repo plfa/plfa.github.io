@@ -4,35 +4,33 @@
 
 module Buildfile.Contributor where
 
+import Control.Applicative (Alternative ((<|>)))
 import Data.Aeson.Types
+import Data.Maybe (fromJust, fromMaybe)
 import Data.Text (Text)
 import Text.Printf (printf)
 
 data Contributor = Contributor
-  { contributorName   :: Text
-  , contributorGithub :: Text
-  , contributorEmail  :: Text
-  , contributorCount  :: Int
+  { contributorName :: Text,
+    contributorGithub :: Text,
+    contributorEmail :: Text,
+    contributorCommits :: Int
   }
   deriving (Show)
 
 instance ToJSON Contributor where
-  toJSON Contributor{..} =
-    object [ "name"    .= contributorName
-           , "github"  .= contributorGithub
-           , "email"   .= contributorEmail
-           , "count"   .= contributorCount
-           ]
+  toJSON Contributor {..} =
+    object
+      [ "name" .= contributorName,
+        "github" .= contributorGithub,
+        "email" .= contributorEmail,
+        "commits" .= contributorCommits
+      ]
 
 instance FromJSON Contributor where
-  parseJSON = withObject "Contributor" $ \v -> Contributor
-    <$> v .: "name"
-    <*> v .: "github"
-    <*> v .: "email"
-    <*> v .: "count"
-
-instance Semigroup Contributor where
-  Contributor _name1 github1 email1 count1 <> Contributor name2 github2 email2 count2
-    = if github1 == github2
-      then Contributor name2 github2 email2 (count1 `max` count2)
-      else error $ printf "Cannot merge unrelated contributors '%s' and '%s'" github1 github2
+  parseJSON = withObject "Contributor" $ \v ->
+    Contributor
+      <$> (fromMaybe "" <$> v .:? "name")
+      <*> (fromMaybe "" <$> v .:? "github")
+      <*> (fromMaybe "" <$> v .:? "email")
+      <*> (fromMaybe 0 <$> (v .:? "count" <|> v .:? "commits"))

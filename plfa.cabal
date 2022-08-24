@@ -75,13 +75,17 @@ executable update-contributors-local
   import:              language-haskell
   main-is:             tools/UpdateContributorsLocal.hs
   build-depends:
+    , aeson
     , bytestring
+    , charsetdetect
     , conduit
+    , containers
     , git
     , github
     , plfa
     , shoggoth
     , text
+    , text-icu              ^>=0.7.1.0
     , unordered-containers
     , vector
 
