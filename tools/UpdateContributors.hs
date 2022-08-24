@@ -11,6 +11,7 @@ import Buildfile.Configuration
     githubRepo,
   )
 import Buildfile.Contributor (Contributor (..))
+import Buildfile.Configuration
 import Control.Monad (forM, forM_)
 import Data.ByteString qualified as B
 import Data.ByteString.Char8 qualified as BC
