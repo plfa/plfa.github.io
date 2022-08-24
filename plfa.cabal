@@ -80,7 +80,10 @@ executable update-contributors-local
     , git
     , github
     , plfa
+    , shoggoth
     , text
+    , unordered-containers
+    , vector
 
 library
   import:              language-haskell
