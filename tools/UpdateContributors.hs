@@ -5,6 +5,7 @@ module Main where
 
 import Buildfile.Author (Author (..))
 import Buildfile.Contributor (Contributor (..))
+import Buildfile.Configuration
 import Control.Monad (forM, forM_)
 import Data.ByteString qualified as B
 import Data.ByteString.Char8 qualified as BC
@@ -31,15 +32,6 @@ import System.FilePath.Glob (namesMatching)
 import Text.Printf (printf)
 
 -- * Configuration
-
-dataDir, authorDir, contributorDir :: FilePath
-dataDir = "data"
-authorDir = dataDir </> "authors"
-contributorDir = dataDir </> "contributors"
-
-githubOwner, githubRepo :: Text
-githubOwner = "plfa"
-githubRepo = "plfa.github.io"
 
 githubErrors :: [Text]
 githubErrors = ["invalid-email-address"]
