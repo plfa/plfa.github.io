@@ -8,7 +8,20 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Tue, 23 Aug 2022 23:13:03 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Aug 2022 23:43:21 +0000</lastBuildDate>
+        <item>
+      <title>Release Notes v22.08</title>
+      <link>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Wed, 24 Aug 2022 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
         <item>
       <title>PLFA as PDF and EPUB</title>
       <link>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</link>
