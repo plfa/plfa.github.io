@@ -2,6 +2,10 @@ name: Publish to GitHub Releases
 
 on:
   workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
 
 jobs:
   release:
@@ -24,7 +28,7 @@ jobs:
       - name: Download latest artifact
         uses: actions/download-artifact@v3
         with:
-          name: HEAD
+          name: ${{ inputs.artifact-name }}
           path: site
 
       - name: Build Website.zip

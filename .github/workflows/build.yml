@@ -12,6 +12,7 @@ on:
       - synchronize
 
 env:
+  ARTIFACT_NAME: "Website HEAD Linux GHC-8.10.7"
   CABAL_ARGS: "--project-file=cabal.project.ci"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
@@ -99,10 +100,12 @@ jobs:
     if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml
     with:
-      artifact-name: Website HEAD Linux GHC-8.10.7
+      artifact-name: ${{ env.ARTIFACT_NAME }}
 
   release:
     name: Publish to GitHub Releases
     needs: [build]
     if: startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/release.yml
+    with:
+      artifact-name: ${{ env.ARTIFACT_NAME }}
