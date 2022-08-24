@@ -33,7 +33,7 @@ jobs:
 
       - name: Build Website.zip
         run: |
-          Compress-Archive -Path "site/*" Job-DestinationPath Website.zip
+          Compress-Archive -Path "site/*" -DestinationPath Website.zip
         shell: pwsh
 
       - name: Create GitHub Release
