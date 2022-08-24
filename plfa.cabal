@@ -71,6 +71,17 @@ executable update-contributors
     , vector
     , yaml
 
+executable update-contributors-local
+  import:              language-haskell
+  main-is:             tools/UpdateContributorsLocal.hs
+  build-depends:
+    , bytestring
+    , conduit
+    , git
+    , github
+    , plfa
+    , text
+
 library
   import:              language-haskell
   hs-source-dirs:      tools/

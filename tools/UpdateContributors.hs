@@ -4,6 +4,12 @@
 module Main where
 
 import Buildfile.Author (Author (..))
+import Buildfile.Configuration
+  ( authorDir,
+    contributorDir,
+    githubOwner,
+    githubRepo,
+  )
 import Buildfile.Contributor (Contributor (..))
 import Control.Monad (forM, forM_)
 import Data.ByteString qualified as B
@@ -31,15 +37,6 @@ import System.FilePath.Glob (namesMatching)
 import Text.Printf (printf)
 
 -- * Configuration
-
-dataDir, authorDir, contributorDir :: FilePath
-dataDir = "data"
-authorDir = dataDir </> "authors"
-contributorDir = dataDir </> "contributors"
-
-githubOwner, githubRepo :: Text
-githubOwner = "plfa"
-githubRepo = "plfa.github.io"
 
 githubErrors :: [Text]
 githubErrors = ["invalid-email-address"]
@@ -125,7 +122,7 @@ getContributors auth owner repo = do
 
 -- | Convert a |GH.User| value to a |Contributor| value.
 toContributor :: GH.User -> Int -> Contributor
-toContributor commitAuthor count = Contributor name github count
+toContributor commitAuthor count = Contributor name github "" count
   where
     name = fromMaybe github (GH.userName commitAuthor)
     github = GH.untagName (GH.userLogin commitAuthor)

@@ -4,5 +4,7 @@ cradle:
       component: "exe:builder"
     - path: "./tools/UpdateContributors.hs"
       component: "exe:update-contributors"
+    - path: "./tools/UpdateContributorsLocal.hs"
+      component: "exe:update-contributors-local"
     - path: "./tools/Buildfile/"
       component: "lib:plfa"
