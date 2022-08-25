@@ -32,6 +32,11 @@ jobs:
         with:
           plfa-version: v20.07
           path: site
+          
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: v22.08
+          path: site
 
       - name: Publish to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.0
