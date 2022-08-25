@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" xmlns:dc="https://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Programming Language Foundations in Agda</title>
+    <link>https://plfa.github.io/</link>
+    <description>
+      <![CDATA[An introduction to programming language theory using the proof assistant Agda.]]>
+    </description>
+    <language>en</language>
+    <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Aug 2022 17:54:52 +0000</lastBuildDate>
+        <item>
+      <title>Release Notes v22.08</title>
+      <link>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Wed, 24 Aug 2022 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>PLFA as PDF and EPUB</title>
+      <link>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</link>
+      <description>
+        <![CDATA[
+                  We’re pleased to announce that PLFA is now available as both a
+                  PDF and an EPUB!
+                  Thanks to hard work by Yuanting
+                  Mao, who did an internship with Phil at the University of Edinburgh,
+                  and a little elbow grease on our part, we’re finally compiling to
+                  PDF!
+                  In a double whammy, we’ve recently fixed compilation to EPUB as well!
+                  Compilation to EPUB never quite survived the move to Hakyll, and the
+                  EPUB available on the website was broken for quite a while. Fortunately,
+                  we’ve fixed the EPUB compilation, based on Yuanting Mao work on PDF
+                  compilation and Michael Reed’s
+                  original work on EPUB compilation.
+        ]]>
+      </description>
+      <pubDate>Tue, 24 Aug 2021 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2021/08/24/plfa-as-pdf-and-epub/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Migration to Agda 2.6.1</title>
+      <link>https://plfa.github.io//2020/07/20/migration-to-agda-2/index.html</link>
+      <description>
+        <![CDATA[
+                  We upgraded to Agda 2.6.1
+                  and version 1.3
+                  of the standard library. If you want to continue working with the
+                  latest version of the book, you’ll have to update your versions locally.
+                  Please follow the instructions in Getting
+                  Started to reinstall Agda and the standard library.
+        ]]>
+      </description>
+      <pubDate>Mon, 20 Jul 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/07/20/migration-to-agda-2/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Versions and Releases</title>
+      <link>https://plfa.github.io//2020/07/14/versions-and-releases/index.html</link>
+      <description>
+        <![CDATA[
+                  We’re adding stable releases to PLFA, which you can find on
+                  GitHub!
+        ]]>
+      </description>
+      <pubDate>Tue, 14 Jul 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/07/14/versions-and-releases/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Release Notes v20.07</title>
+      <link>https://plfa.github.io//2020/07/13/release-notes-v20/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Mon, 13 Jul 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/07/13/release-notes-v20/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Introducing Part 3: Denotational Semantics</title>
+      <link>https://plfa.github.io//2020/07/13/denotational-semantics/index.html</link>
+      <description>
+        <![CDATA[
+                  We’re pleased to announce an entirely new part of the book,
+                  contributed by Jeremy G. Siek! You may have noticed his name appearing
+                  on the list of authors some months ago, or the chapters that make up
+                  Part 3 slowly making their appearance. Well, that’s all
+                  Jeremy’s work!
+        ]]>
+      </description>
+      <pubDate>Mon, 13 Jul 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/07/13/denotational-semantics/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Talking about PLFA…</title>
+      <link>https://plfa.github.io//2020/06/23/talking-about-plfa/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Tue, 23 Jun 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/06/23/talking-about-plfa/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>PLFA as EPUB</title>
+      <link>https://plfa.github.io//2020/06/02/plfa-as-epub/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Tue, 02 Jun 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/06/02/plfa-as-epub/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Praise for PLFA</title>
+      <link>https://plfa.github.io//2020/04/30/praise-for-plfa/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Thu, 30 Apr 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/04/30/praise-for-plfa/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>PLFA as a Notebook</title>
+      <link>https://plfa.github.io//2020/01/10/plfa-as-a-notebook/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Fri, 10 Jan 2020 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2020/01/10/plfa-as-a-notebook/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Release Notes v19.08</title>
+      <link>https://plfa.github.io//2019/08/31/release-notes-v19/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Sat, 31 Aug 2019 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2019/08/31/release-notes-v19/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+        <item>
+      <title>Migration to Agda 2.6.0.1</title>
+      <link>https://plfa.github.io//2019/07/12/migration-to-agda-2/index.html</link>
+      <description>
+        <![CDATA[
+                  We upgraded to Agda 2.6.0.1 and version 1.1 of the
+                  standard library. If you want to continue working with the book,
+                  you’ll have to update your versions locally. Please follow the
+                  instructions in Getting Started to
+                  reinstall Agda and the standard library.
+        ]]>
+      </description>
+      <pubDate>Fri, 12 Jul 2019 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2019/07/12/migration-to-agda-2/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
+      </channel>
+</rss>
