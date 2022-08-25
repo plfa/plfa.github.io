@@ -330,8 +330,8 @@ _Communications of the ACM_, December 2015.)
 
 The law of the excluded middle can be formulated as follows:
 ```
-postulate
-  em : ∀ {A : Set} → A ⊎ ¬ A
+--postulate
+--  em : ∀ {A : Set} → A ⊎ ¬ A
 ```
 As we noted, the law of the excluded middle does not hold in
 intuitionistic logic.  However, we can show that it is _irrefutable_,
@@ -428,7 +428,52 @@ Consider the following principles:
 Show that each of these implies all the others.
 
 ```
--- Your code goes here
+EM = (A : Set) → A ⊎ ¬ A
+
+¬¬-ELIM = (A : Set) → ¬ ¬ A → A
+
+PIERCE = (A B : Set) → ((A → B) → A) → A
+
+IMPL-AS-DISJ = (A B : Set) → (A → B) → ¬ A ⊎ B
+
+DEMORGAN = (A B : Set) → ¬ (¬ A × ¬ B) → A ⊎ B
+
+em→¬¬-elim : EM → ¬¬-ELIM
+em→¬¬-elim em A ¬¬a with em A
+... | inj₁ a = a
+... | inj₂ ¬a = ⊥-elim (¬¬a ¬a)
+
+¬¬-elim→em : ¬¬-ELIM → EM
+¬¬-elim→em ¬¬-elim A = ¬¬-elim (A ⊎ ¬ A) em-irrefutable
+
+¬¬-elim→pierce : ¬¬-ELIM → PIERCE
+¬¬-elim→pierce ¬¬-elim A B A→B→A = ¬¬-elim A helper
+  where
+  helper : ¬ ¬ A
+  helper ¬a = ¬a (A→B→A λ a → ⊥-elim (¬a a))
+
+pierce→¬¬-elim : PIERCE → ¬¬-ELIM
+pierce→¬¬-elim pierce A ¬¬a = pierce A ⊥ λ ¬a → ⊥-elim (¬¬a ¬a)
+
+em→impl-as-disj : EM → IMPL-AS-DISJ
+em→impl-as-disj em A B a→b with em A
+... | inj₁ a = inj₂ (a→b a)
+... | inj₂ ¬a = inj₁ ¬a
+
+impl-as-disj→em : IMPL-AS-DISJ → EM
+impl-as-disj→em impl-as-disj A with impl-as-disj A A λ a → a
+... | inj₁ ¬a = inj₂ ¬a
+... | inj₂ a = inj₁ a
+
+em→deMorgan : EM → DEMORGAN
+em→deMorgan em A B ¬[¬a×¬b] with em A | em B
+... | inj₁ a | inj₁ b = inj₁ a
+... | inj₁ a | inj₂ ¬b = inj₁ a
+... | inj₂ ¬a | inj₁ b = inj₂ b
+... | inj₂ ¬a | inj₂ ¬b = ⊥-elim (¬[¬a×¬b] ((¬a , ¬b)))
+
+demorgan→em : DEMORGAN → EM
+demorgan→em demorgan A = demorgan A (¬ A) λ{ (¬a , ¬¬a) → ¬¬a ¬a}
 ```
 
 
@@ -443,7 +488,14 @@ Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 
 ```
--- Your code goes here
+
+neg-stable : ∀ (A : Set) → Stable (¬ A )
+neg-stable A ¬¬¬a a = ¬¬¬a λ ¬a → ¬a a
+
+conj-stable : ∀ (A B : Set) → Stable A → Stable B → Stable (A × B)
+conj-stable A B sa sb ¬¬a×b = sa (λ ¬a → ¬¬a×b λ a×b → ¬a (proj₁ a×b)) , sb (λ ¬b → ¬¬a×b λ a×b → ¬b (proj₂ a×b)) 
+
+
 ```
 
 ## Standard Prelude

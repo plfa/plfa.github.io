@@ -23,7 +23,7 @@ of a new notion of _decidable_.
 
 ```
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
+open Eq using (_≡_; refl; cong)
 open Eq.≡-Reasoning
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
@@ -359,11 +359,11 @@ If instead we wrote:
 open Eq using (sym)
 
 postulate transport : {A : Set} → (P : A → Set) → {x y : A} → x ≡ y → P x → P y
-
-_≤?″_ : ∀ (m n : ℕ) → Dec (m ≤ n)
-m ≤?″ n with m ≤ᵇ n in m≤ᵇn≡Bool
-... | true = yes (≤ᵇ→≤ m n (transport T (sym m≤ᵇn≡Bool) tt)) 
-... | false = no λ m≤n → transport T m≤ᵇn≡Bool (≤→≤ᵇ m≤n)
+--
+--_≤?″_ : ∀ (m n : ℕ) → Dec (m ≤ n)
+--m ≤?″ n with m ≤ᵇ n in m≤ᵇn≡Bool
+--... | true = yes (≤ᵇ→≤ m n (transport T (sym m≤ᵇn≡Bool) tt)) 
+--... | false = no λ m≤n → transport T m≤ᵇn≡Bool (≤→≤ᵇ m≤n)
 ```
 
 then Agda would make two complaints, one for each clause:
@@ -388,7 +388,7 @@ Erasure takes a decidable value to a boolean:
 ⌊ yes x ⌋  =  true
 ⌊ no ¬x ⌋  =  false
 ```
-Using erasure, we can easily derive `_≤ᵇ_` from `_≤?_`:
+Using erasure, we can easily deirve `_≤ᵇ_` from `_≤?_`:
 ```
 _≤ᵇ′_ : ℕ → ℕ → Bool
 m ≤ᵇ′ n  =  ⌊ m ≤? n ⌋
@@ -404,6 +404,12 @@ toWitness {A} {no ¬x} ()
 fromWitness : ∀ {A : Set} {D : Dec A} → A → T ⌊ D ⌋
 fromWitness {A} {yes x} _  =  tt
 fromWitness {A} {no ¬x} x  =  ¬x x
+
+natDecidable : Dec ℕ
+natDecidable = yes 0
+
+--val : {n : ℕ} → T ⌊ yes n ⌋ → ℕ
+--val {n} = toWitness {A = ℕ}
 ```
 Using these, we can easily derive that `T (m ≤ᵇ′ n)` is inhabited
 exactly when `m ≤ n` is inhabited:
@@ -543,6 +549,23 @@ _→-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A → B)
 _     →-dec yes y  =  yes (λ _ → y)
 no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
 yes x →-dec no ¬y  =  no (λ f → ¬y (f x))
+
+_¬⊎-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (¬ A ⊎ B)
+_     ¬⊎-dec yes y  =  yes (inj₂ y)
+no ¬x ¬⊎-dec _      =  yes (inj₁ ¬x)
+yes x ¬⊎-dec no ¬y  =  no λ { (inj₁ ¬a) → ¬a x ; (inj₂ b) → ¬y b}
+
+→-implies-¬⊎ : {A B : Set} → Dec A → (A → B) → (¬ A ⊎ B)
+→-implies-¬⊎ (yes a) a→b = inj₂ (a→b a)
+→-implies-¬⊎ (no ¬a) _ = inj₁ ¬a
+
+→-implies-¬⊎' : {A B : Set} → Dec B → (A → B) → (¬ A ⊎ B)
+→-implies-¬⊎' (yes b) a→b = inj₂ b
+→-implies-¬⊎' (no ¬b) a→b = inj₁ (λ a → ¬b (a→b a))
+
+¬⊎→-implies : {A B : Set} → (¬ A ⊎ B) → (A → B)
+¬⊎→-implies (inj₁ ¬a) a = ⊥-elim (¬a a)
+¬⊎→-implies (inj₂ b) a = b
 ```
 The implication holds if either the second holds or
 the negation of the first holds, and its negation
@@ -567,8 +590,12 @@ on which matches; but either is equally valid.
 
 Show that erasure relates corresponding boolean and decidable operations:
 ```
+∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
+∧-× (yes a) (yes b) = refl {x = true}
+∧-× (yes a) (no ¬b) = refl {x = false}
+∧-× (no ¬a) db = refl {x = false}
+
 postulate
-  ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
   ∨-⊎ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
   not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
 ```
@@ -579,14 +606,23 @@ Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
-postulate
-  _iff_ : Bool → Bool → Bool
-  _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
-  iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
-```
+_iff_ : Bool → Bool → Bool
+true iff true = true
+false iff false = true
+_ iff _ = false
 
-```
--- Your code goes here
+open _⇔_
+_⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
+yes a ⇔-dec yes b = yes (record { to = λ _ → b ; from = λ _ → a })
+yes a ⇔-dec no ¬b = no λ a⇔b → ¬b (to a⇔b a)
+no ¬a ⇔-dec yes b = no λ a⇔b → ¬a (from a⇔b b)
+no ¬a ⇔-dec no ¬b = yes (record { to = λ a → ⊥-elim (¬a a) ; from = λ b → ⊥-elim (¬b b) })
+
+iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
+iff-⇔ (yes x) (yes x₁) = refl {x = true}
+iff-⇔ (yes x) (no x₁) = refl {x = false}
+iff-⇔ (no x) (yes x₁) = refl {x = false}
+iff-⇔ (no x) (no x₁) = refl {x = true}
 ```
 
 ## Proof by reflection {#proof-by-reflection}
@@ -647,6 +683,42 @@ We can safely use `_-_` as long as we statically know the two numbers:
 ```
 _ : 5 - 3 ≡ 2
 _ = refl
+
+a≤sa : (a : ℕ) → a ≤ suc a
+a≤sa zero = z≤n
+a≤sa (suc a) = s≤s (a≤sa a)
+
+m≤n-subsingleton : (m n : ℕ) → (p q : m ≤ n) → p ≡ q
+m≤n-subsingleton zero n z≤n z≤n = refl
+m≤n-subsingleton (suc m) (suc n) (s≤s p) (s≤s q) = cong s≤s (m≤n-subsingleton m n p q)
+
+sm≤?sn : (m n : ℕ) → Dec (suc m ≤ suc n)
+sm≤?sn zero _ = yes (s≤s z≤n)
+sm≤?sn (suc m) zero = no (¬s≤s ¬s≤z)
+sm≤?sn (suc m) (suc n) with sm≤?sn m n
+... | yes m≤n = yes (s≤s m≤n)
+... | no m≰n = no (¬s≤s m≰n)
+
+-- sm-sn≡m-n : (m n : ℕ) → {n≤ᵀm : T ⌊ n ≤? m ⌋} →
+--   _-_ (suc m) (suc n) {fromWitness (s≤s (toWitness n≤ᵀm))} ≡
+--   _-_ m n {n≤ᵀm}
+-- sm-sn≡m-n (m) (n) {n≤ᵀm} = cong (minus (suc m) (suc n)) (m≤n-subsingleton (suc n) (suc m) ((toWitness {D = {!sm≤?sn n m!}} (fromWitness {D = {!!}} (s≤s (toWitness n≤ᵀm))))) ((s≤s (toWitness n≤ᵀm))))
+-- 
+-- begin
+--     minus (suc m) (suc n)
+--       (toWitness {D = {!sm≤?sn n m!}} (fromWitness {D = {!sm≤?sn n m!}} (s≤s (toWitness n≤ᵀm))))
+--   ≡⟨  ⟩
+--     minus (suc m) (suc n)
+--       (s≤s (toWitness n≤ᵀm))
+--   ≡⟨⟩
+--     minus m n (toWitness n≤ᵀm)
+--   ∎
+
+open Eq using (trans)
+
+-- sa-a≡1 : (a : ℕ) → _-_ (suc a) a {fromWitness (a≤sa a)} ≡ 1
+-- sa-a≡1 zero = refl
+-- sa-a≡1 (suc a) = {!trans (sm-sn≡m-n (suc a) a {fromWitness (a≤sa a)}) (sa-a≡1 a)!}
 ```
 
 It turns out that this idiom is very common. The standard library defines a
