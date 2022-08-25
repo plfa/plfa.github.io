@@ -27,9 +27,9 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         ghc-version: ["9.2.4"]
         include:
-          - experimental: false
           - os: ubuntu-latest
             ghc-version: "8.10.7"
+          - experimental: false
 
     name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
