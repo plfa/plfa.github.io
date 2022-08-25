@@ -25,17 +25,17 @@ jobs:
 
       - uses: ./.github/actions/download-release
         with:
-          plfa-version: v19.08
+          plfa-version: "19.08"
           path: site
 
       - uses: ./.github/actions/download-release
         with:
-          plfa-version: v20.07
+          plfa-version: "20.07"
           path: site
-          
+
       - uses: ./.github/actions/download-release
         with:
-          plfa-version: v22.08
+          plfa-version: "22.08"
           path: site
 
       - name: Publish to GitHub Pages

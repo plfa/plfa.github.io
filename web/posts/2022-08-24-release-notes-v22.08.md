@@ -6,8 +6,8 @@ We are pleased to announce the release of v22.08 of Programming Language Foundat
 
 The release will be permanently available at:
 
-- <https://plfa.github.io/v22.08/>
-- <https://plfa.inf.ed.ac.uk/v22.08/>
+- <https://plfa.github.io/22.08/>
+- <https://plfa.inf.ed.ac.uk/22.08/>
 
 <!-- more -->
 
