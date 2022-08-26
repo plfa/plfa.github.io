@@ -733,6 +733,32 @@ True Q = T ⌊ Q ⌋
 
 Give analogues of `True`, `toWitness`, and `fromWitness` which work with *negated* properties. Call these `False`, `toWitnessFalse`, and `fromWitnessFalse`.
 
+```
+False : {A : Set} → Dec A → Set
+--False Q = T ⌊ ¬? Q ⌋
+False Q = True (¬? Q)
+
+{-
+toWitness' : ∀ {A : Set} {D : Dec A} → T ⌊ D ⌋ → A
+toWitness' {A} {yes x} tt  =  x
+
+¬? : ∀ {A : Set} → Dec A → Dec (¬ A)
+¬? (yes x)  =  no (¬¬-intro x)
+¬? (no ¬x)  =  yes ¬x
+-}
+
+toWitnessFalse : ∀ {A : Set} {D : Dec A} → T ⌊ ¬? D ⌋ → ¬ A
+--toWitnessFalse {A} {no ¬a} _ = ¬a
+--toWitnessFalse {A} {D} = toWitness {¬ A} {¬? D}
+toWitnessFalse = toWitness
+
+fromWitnessFalse : ∀ {A : Set} {D : Dec A} → ¬ A → T ⌊ ¬? D ⌋
+--fromWitnessFalse {A} {yes a} ¬a = ¬a a
+--fromWitnessFalse {A} {no _} _ = tt
+--fromWitnessFalse {A} {D} = fromWitness {¬ A} {¬? D}
+fromWitnessFalse = fromWitness
+```
+
 
 ## Standard Library
 

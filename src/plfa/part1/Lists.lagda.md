@@ -263,26 +263,9 @@ has insufficient information to infer the implicit parameter.
 The length of one list appended to another is the
 sum of the lengths of the lists:
 ```
-length-++ : ∀ {A : Set} (xs ys : List A)
-  → length (xs ++ ys) ≡ length xs + length ys
-length-++ {A} [] ys =
-  begin
-    length ([] ++ ys)
-  ≡⟨⟩
-    length ys
-  ≡⟨⟩
-    length {A} [] + length ys
-  ∎
-length-++ (x ∷ xs) ys =
-  begin
-    length ((x ∷ xs) ++ ys)
-  ≡⟨⟩
-    suc (length (xs ++ ys))
-  ≡⟨ cong suc (length-++ xs ys) ⟩
-    suc (length xs + length ys)
-  ≡⟨⟩
-    length (x ∷ xs) + length ys
-  ∎
+length-++ : ∀ {A : Set} (xs ys : List A) → length (xs ++ ys) ≡ length xs + length ys
+length-++ [] ys = refl
+length-++ (x ∷ xs) ys = cong suc (length-++ xs ys)
 ```
 The proof is by induction on the first argument. The base case
 instantiates to `[]`, and follows by straightforward computation.  As
@@ -353,6 +336,21 @@ reverse of the second appended to the reverse of the first:
 
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
+```
+reverse-++-distrib : {A : Set} → (xs ys : List A) → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+reverse-++-distrib [] ys = sym (++-identityʳ (reverse ys))
+reverse-++-distrib (x ∷ xs) ys = begin
+    reverse ((x ∷ xs) ++ ys)
+  ≡⟨⟩
+    reverse (xs ++ ys) ++ [ x ]
+  ≡⟨ cong (_++ [ x ]) (reverse-++-distrib xs ys) ⟩
+    (reverse ys ++ reverse xs) ++ [ x ]
+  ≡⟨ ++-assoc (reverse ys) (reverse xs) [ x ] ⟩
+    reverse ys ++ (reverse xs ++ [ x ])
+  ≡⟨⟩
+    reverse ys ++ reverse (x ∷ xs)
+  ∎
+```
 
 #### Exercise `reverse-involutive` (recommended)
 
@@ -361,6 +359,23 @@ as the identity function.  Show that reverse is an involution:
 
     reverse (reverse xs) ≡ xs
 
+```
+reverse-involutive : {A : Set} → (xs : List A) → reverse (reverse xs) ≡ xs
+reverse-involutive [] = refl
+reverse-involutive (x ∷ xs) = begin
+  reverse (reverse (x ∷ xs))
+  ≡⟨⟩
+  reverse (reverse xs ++ [ x ])
+  ≡⟨ reverse-++-distrib (reverse xs) [ x ] ⟩
+  reverse [ x ] ++ reverse (reverse xs)
+  ≡⟨⟩
+  [ x ] ++ reverse (reverse xs)
+  ≡⟨ cong ([ x ] ++_) (reverse-involutive xs) ⟩
+  [ x ] ++ xs
+  ≡⟨⟩
+  x ∷ xs
+  ∎
+```
 
 ## Faster reverse
 
