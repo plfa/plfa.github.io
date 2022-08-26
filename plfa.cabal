@@ -1,6 +1,6 @@
 cabal-version:      3.6
 name:               plfa
-version:            20.7
+version:            22.8
 description:        Programming Language Foundations in Agda
 homepage:           https://plfa.github.io
 license-file:       LICENSE
@@ -9,8 +9,8 @@ copyright:          © 2017-2022 Wen Kokke
 category:           Web
 build-type:         Simple
 tested-with:
-  GHC == 9.2.3
   GHC == 9.2.4
+  GHC == 9.2.3
   GHC == 8.10.7
 
 common language-haskell

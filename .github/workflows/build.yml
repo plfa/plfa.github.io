@@ -25,7 +25,16 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        ghc-version: ["8.10.7", "9.2.4"]
+        ghc-version: ["8.10", "9.0", "9.2"]
+        exclude:
+          - os: macOS-latest
+            ghc-version: "8.10"
+          - os: macOS-latest
+            ghc-version: "9.0"
+          - os: windows-latest
+            ghc-version: "8.10"
+          - os: windows-latest
+            ghc-version: "9.0"
         include:
           - experimental: false
 
@@ -99,7 +108,7 @@ jobs:
     if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml
     with:
-      artifact-name: Website HEAD Linux GHC-8.10.7
+      artifact-name: Website HEAD Linux GHC-9.2
 
   release:
     name: Publish to GitHub Releases
@@ -107,4 +116,4 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/release.yml
     with:
-      artifact-name: Website HEAD Linux GHC-8.10.7
+      artifact-name: Website HEAD Linux GHC-9.2

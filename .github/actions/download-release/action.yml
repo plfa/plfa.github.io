@@ -20,7 +20,7 @@ runs:
       - name: Download PLFA release
         if: steps.cache-plfa-release.outputs.cache-hit != 'true'
         run: |
-          Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/${{ inputs.plfa-version }}/Website.zip" -OutFile "${{ github.workspace }}/${{ inputs.plfa-version }}.zip"
+          Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v${{ inputs.plfa-version }}/Website.zip" -OutFile "${{ github.workspace }}/${{ inputs.plfa-version }}.zip"
         shell: pwsh
 
       - name: Extract PLFA release
