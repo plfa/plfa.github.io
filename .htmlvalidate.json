@@ -8,6 +8,6 @@
     "long-title": ["warn"],
     "no-inline-style": ["warn"],
     "valid-id": ["error", { "relaxed": true }],
-    "wcag/h30": ["warn"]
+    "wcag/h30": ["off"]
   }
 }
