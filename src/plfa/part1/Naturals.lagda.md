@@ -5,6 +5,7 @@ permalink : /Naturals/
 
 ```agda
 {-# OPTIONS --exact-split #-}
+
 module plfa.part1.Naturals where
 ```
 
