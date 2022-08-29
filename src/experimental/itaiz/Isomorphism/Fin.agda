@@ -57,24 +57,24 @@ Fm⊎Fn≃Fm+n m n = record { to = to m n ; from = from m n ; from∘to = from�
     ... | inj₁ i rewrite sym eq = cong suc (to∘from m n x)
     ... | inj₂ j rewrite sym eq = cong suc (to∘from m n x)
 
-A⊎Fn≃Fsn×A : {n : ℕ} {A : Set} → A ⊎ (Fin n × A) ≃ Fin (suc n) × A
-A⊎Fn≃Fsn×A {n} {A} = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
+Fsn×A≃A⊎Fn : {n : ℕ} {A : Set} → Fin (suc n) × A ≃ A ⊎ (Fin n × A)
+Fsn×A≃A⊎Fn {n} {A} = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
   where
-    to : A ⊎ (Fin n × A) → Fin (suc n) × A
-    to (inj₁ a) = zero , a
-    to (inj₂ (n , a)) = (suc n) , a
+    to : Fin (suc n) × A → A ⊎ (Fin n × A)
+    to (zero , a) = inj₁ a
+    to (suc n , a) = inj₂ (n , a)
     
-    from : Fin (suc n) × A → A ⊎ (Fin n × A)
-    from (zero , a) = inj₁ a
-    from (suc n , a) = inj₂ (n , a)
+    from : A ⊎ (Fin n × A) → Fin (suc n) × A
+    from (inj₁ a) = zero , a
+    from (inj₂ (n , a)) = (suc n) , a
     
-    from∘to : (x : A ⊎ (Fin n × A)) → from (to x) ≡ x
-    from∘to (inj₁ a) = refl
-    from∘to (inj₂ (n , a)) = refl
-    
-    to∘from : (y : Fin (suc n) × A) → to (from y) ≡ y
-    to∘from (zero , a) = refl
-    to∘from (suc n , a) = refl
+    from∘to : (x : Fin (suc n) × A) → from (to x) ≡ x
+    from∘to (zero , a) = refl
+    from∘to (suc n , a) = refl
+
+    to∘from : (x : A ⊎ (Fin n × A)) → to (from x) ≡ x
+    to∘from (inj₁ a) = refl
+    to∘from (inj₂ (n , a)) = refl
 
 open ≃-Reasoning
 
@@ -83,7 +83,7 @@ Fm×Fn≃Fm*n zero n = record { to = λ{ () } ; from = λ{ () } ; from∘to = λ
 Fm×Fn≃Fm*n (suc m) n =
   ≃-begin
     (Fin (suc m) × Fin n)
-  ≃⟨ ≃-sym A⊎Fn≃Fsn×A ⟩
+  ≃⟨ Fsn×A≃A⊎Fn ⟩
     (Fin n ⊎ (Fin m × Fin n))
   ≃⟨ ≃-⊎ˡ (Fm×Fn≃Fm*n m n) ⟩
     (Fin n ⊎ (Fin (m * n)))
