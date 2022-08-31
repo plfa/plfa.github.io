@@ -2,8 +2,9 @@ module experimental.itaiz.Isomorphism.Fin where
 
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Nat using (ℕ; zero; suc; _<_; z≤n; s≤s; _+_; _*_)
-open import Data.Product using (∃-syntax; _×_; _,_)
+open import Data.Product using (Σ; ∃-syntax; _×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym)
 
 open import experimental.itaiz.Isomorphism
@@ -57,6 +58,39 @@ Fm⊎Fn≃Fm+n m n = record { to = to m n ; from = from m n ; from∘to = from�
     ... | inj₁ i rewrite sym eq = cong suc (to∘from m n x)
     ... | inj₂ j rewrite sym eq = cong suc (to∘from m n x)
 
+ΣFsn≃0⊎ΣFn : {n : ℕ} {A : Fin (suc n) → Set} → Σ (Fin (suc n)) A ≃ A zero ⊎ Σ (Fin n) (A ∘ suc)
+ΣFsn≃0⊎ΣFn {n} {A} = record
+  { to = λ{ (zero , a0) → inj₁ a0 ; (suc i , asi) → inj₂ (i , asi) }
+  ; from = λ{ (inj₁ a0) → zero , a0 ; (inj₂ (i , asi)) → suc i , asi }
+  ; from∘to = λ{ (zero , a0) → refl ; (suc i , asi) → refl }
+  ; to∘from = λ{ (inj₁ a0) → refl ; (inj₂ (i , asi)) → refl }
+  }
+
+sum : {n : ℕ} → (f : Fin n → ℕ) → ℕ
+sum {zero} f = zero
+sum {suc n} f = f zero + sum (f ∘ suc)
+
+Σ-sum : {n : ℕ} → (d : Fin n → ℕ) → Σ (Fin n) (Fin ∘ d) ≃ Fin (sum d)
+Σ-sum {zero} d = record
+  { to = λ{ () }
+  ; from = λ{ () }
+  ; from∘to = λ{ () }
+  ; to∘from = λ{ () }
+  }
+Σ-sum {suc n} d =
+  ≃-begin
+  Σ (Fin (suc n)) (Fin ∘ d)
+  ≃⟨ ΣFsn≃0⊎ΣFn ⟩
+  (Fin (d zero) ⊎ Σ (Fin n) (Fin ∘ d ∘ suc))
+  ≃⟨ ≃-⊎ˡ (Σ-sum (d ∘ suc)) ⟩
+  (Fin (d zero) ⊎ Fin (sum (d ∘ suc)))
+  ≃⟨ Fm⊎Fn≃Fm+n (d zero) (sum (d ∘ suc)) ⟩
+  Fin (d zero + sum (d ∘ suc))
+  ≃⟨ ≃-refl ⟩
+  Fin (sum d)
+  ≃-∎
+  where open ≃-Reasoning
+
 Fsn×A≃A⊎Fn : {n : ℕ} {A : Set} → Fin (suc n) × A ≃ A ⊎ (Fin n × A)
 Fsn×A≃A⊎Fn {n} {A} = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
   where
@@ -76,10 +110,13 @@ Fsn×A≃A⊎Fn {n} {A} = record { to = to ; from = from ; from∘to = from∘to
     to∘from (inj₁ a) = refl
     to∘from (inj₂ (n , a)) = refl
 
-open ≃-Reasoning
-
 Fm×Fn≃Fm*n : (m n : ℕ) → Fin m × Fin n ≃ Fin (m * n)
-Fm×Fn≃Fm*n zero n = record { to = λ{ () } ; from = λ{ () } ; from∘to = λ{ () }; to∘from = λ{ () }}
+Fm×Fn≃Fm*n zero n = record
+  { to = λ{ () }
+  ; from = λ{ () }
+  ; from∘to = λ{ () }
+  ; to∘from = λ{ () }
+  }
 Fm×Fn≃Fm*n (suc m) n =
   ≃-begin
     (Fin (suc m) × Fin n)
@@ -92,3 +129,40 @@ Fm×Fn≃Fm*n (suc m) n =
   ≃⟨ ≃-refl ⟩
     Fin ((suc m) * n)
   ≃-∎
+  where open ≃-Reasoning
+
+product : {n : ℕ} → (f : Fin n → ℕ) → ℕ
+product {zero} f = 1
+product {suc n} f = f zero * product (f ∘ suc)
+
+postulate extensionality : {A : Set} → {B : A → Set} → (f g : (x : A) → B x) → ((x : A) → f x ≡ g x) → f ≡ g
+
+ΠFsn≃F0×ΠFn : {n : ℕ} {d : Fin (suc n) → ℕ} → ((i : Fin (suc n)) → Fin (d i)) ≃ Fin (d zero) × ((i : Fin n) → Fin (d (suc i)))
+ΠFsn≃F0×ΠFn = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
+  where
+    to = λ f → (f zero) , (f ∘ suc)
+    from = λ{ (Fd0 , f) → λ{ zero → Fd0 ; (suc i) → f i }}
+    from∘to = λ f → extensionality (from (to f)) f λ{ zero → refl ; (suc x) → refl }
+    to∘from = λ{ (Fd0 , f) → refl }
+
+Π-product : {n : ℕ} → (d : Fin n → ℕ) → ((i : Fin n) → Fin (d i)) ≃ Fin (product d)
+Π-product {zero} d = record
+  { to = λ _ → zero
+  ; from = λ _ ()
+  ; from∘to = λ f → extensionality (λ ()) f (λ ())
+  ; to∘from = λ{ zero → refl }
+  }
+Π-product {suc n} d =
+  ≃-begin
+  ((i : Fin (suc n)) → Fin (d i))
+  ≃⟨ ΠFsn≃F0×ΠFn ⟩
+  (Fin (d zero) × ((i : Fin n) → Fin ((d ∘ suc) i)))
+  ≃⟨ ≃-×ˡ (Π-product (d ∘ suc)) ⟩
+  (Fin (d zero) × Fin (product (d ∘ suc)))
+  ≃⟨ Fm×Fn≃Fm*n (d zero) (product (d ∘ suc)) ⟩
+  Fin ((d zero) * product (d ∘ suc))
+  ≃⟨ ≃-refl ⟩
+  Fin (product d)
+  ≃-∎
+  where open ≃-Reasoning
+

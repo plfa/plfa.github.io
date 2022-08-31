@@ -59,6 +59,14 @@ open _≃_
   ; to∘from = λ{ (inj₁ x) → refl ; (inj₂ b) → cong inj₂ (to∘from A≃B b) }
   }
 
+≃-×ˡ : {X A B : Set} → A ≃ B → X × A ≃ X × B
+≃-×ˡ A≃B = record
+  { to = λ{ (x , a) → x , to A≃B a }
+  ; from = λ{ (x , b) → x , from A≃B b }
+  ; from∘to = λ{ (x , a) → cong (x ,_) (from∘to A≃B a) }
+  ; to∘from = λ{ (x , b) → cong (x ,_) (to∘from A≃B b) }
+  }
+
 infix 0 _≲_
 record _≲_ (A B : Set) : Set where
   field
