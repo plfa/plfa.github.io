@@ -108,6 +108,7 @@ open Preorder
 module *-Reasoning {ℓ₁ ℓ₂} {𝕏 : Set ℓ₁} (_≤_ : 𝕏 → 𝕏 → Set ℓ₂) (R : Preorder _≤_) where
   infix  1 *-begin_
   infixr 2 _*⟨_⟩_
+  infixr 2 _*⟨⟩_
   infix  3 _*-∎
 
   *-begin_ : {x y : 𝕏} → x ≤ y → x ≤ y
@@ -115,6 +116,9 @@ module *-Reasoning {ℓ₁ ℓ₂} {𝕏 : Set ℓ₁} (_≤_ : 𝕏 → 𝕏 �
 
   _*⟨_⟩_ : (x : 𝕏) {y z : 𝕏} → x ≤ y → y ≤ z → x ≤ z
   x *⟨ x≤y ⟩ y≤z = *-trans R x≤y y≤z
+
+  _*⟨⟩_ : (x : 𝕏) {y : 𝕏} → x ≤ y → x ≤ y
+  x *⟨⟩ x≤y = x≤y
 
   _*-∎ : (x : 𝕏) → x ≤ x
   x *-∎ = *-refl R
