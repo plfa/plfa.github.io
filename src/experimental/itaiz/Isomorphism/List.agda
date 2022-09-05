@@ -62,8 +62,8 @@ reverse (x ∷ l) = reverse l ++ [ x ]
 
 postulate extensionality : {A B : Set} {f g : A → B} → ((x : A) → f x ≡ g x) → f ≡ g
 
-L≃Vn : List A ≃ ∃[ n ] Vec A n
-L≃Vn = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
+LA≃∃nVAn : List A ≃ ∃[ n ] Vec A n
+LA≃∃nVAn = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
   where
     to : List A → ∃[ n ] Vec A n
     to [] = zero , []
@@ -79,8 +79,8 @@ L≃Vn = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to
     to∘from (zero , []) = refl
     to∘from (suc n , x ∷ v) rewrite to∘from (n , v) = refl
 
-Vn≃Fn→A : (n : ℕ) → Vec A n ≃ (Fin n → A)
-Vn≃Fn→A n = record { to = to n ; from = from n ; from∘to = from∘to n ; to∘from = to∘from n }
+VAn≃Fn→A : (n : ℕ) → Vec A n ≃ (Fin n → A)
+VAn≃Fn→A n = record { to = to n ; from = from n ; from∘to = from∘to n ; to∘from = to∘from n }
   where
     to : (n : ℕ) → Vec A n → (Fin n → A)
     to zero [] ()
@@ -100,7 +100,7 @@ Vn≃Fn→A n = record { to = to n ; from = from n ; from∘to = from∘to n ; t
     to∘from n f = extensionality (to∘from' n f)
 
 LA≃Fn→A : List A ≃ ∃[ n ] (Fin n → A)
-LA≃Fn→A = ≃-trans L≃Vn (∀≃→≃Σ Vn≃Fn→A)
+LA≃Fn→A = ≃-trans LA≃∃nVAn (∀≃→≃Σ VAn≃Fn→A)
 
 ∃x∈l≃Fl : (l : List A) → ∃[ x ] x ∈ l ≃ Fin (length l)
 ∃x∈l≃Fl l = record { to = to l ; from = from l ; from∘to = from∘to l ; to∘from = to∘from l }
