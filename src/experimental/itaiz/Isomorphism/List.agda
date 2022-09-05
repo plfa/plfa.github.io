@@ -26,6 +26,10 @@ data _∈_ {A : Set} : A → List A → Set where
   zero : {x : A} → {l : List A} → x ∈ (x ∷ l)
   suc : {x y : A} → {l : List A} → x ∈ l → x ∈ (y ∷ l)
 
+data Vec (A : Set) : ℕ → Set where
+  [] : Vec A zero
+  _∷_ : {n : ℕ} → A → Vec A n → Vec A (suc n)
+
 variable
   A : Set
 
@@ -58,37 +62,45 @@ reverse (x ∷ l) = reverse l ++ [ x ]
 
 postulate extensionality : {A B : Set} {f g : A → B} → ((x : A) → f x ≡ g x) → f ≡ g
 
-LA-expand : List A ≃ ∃[ n ] Σ[ xs ∈ List A ] length xs ≡ n
-LA-expand = record
-  { to = λ xs → length xs , xs , refl
-  ; from = λ { (_ , xs , refl) → xs }
-  ; from∘to = λ xs → refl
-  ; to∘from = λ { (_ , xs , refl) → refl }
-  }
-
-∀n-LA≃Fn→A : (n : ℕ) → Σ[ xs ∈ List A ] length xs ≡ n ≃ (Fin n → A)
-∀n-LA≃Fn→A n = record { to = to n ; from = from n ; from∘to = from∘to n ; to∘from = to∘from n }
+L≃Vn : List A ≃ ∃[ n ] Vec A n
+L≃Vn = record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from }
   where
-    to : (n : ℕ) → Σ[ xs ∈ List A ] length xs ≡ n → (Fin n → A)
-    to zero _ ()
-    to (suc n) (x ∷ xs , slxs≡sn) zero = x
-    to (suc n) (x ∷ xs , slxs≡sn) (suc i) = to n (xs , suc-injective slxs≡sn) i
-    from : (n : ℕ) → (Fin n → A) → Σ[ xs ∈ List A ] length xs ≡ n
-    from zero _ = [] , refl
+    to : List A → ∃[ n ] Vec A n
+    to [] = zero , []
+    to (x ∷ xs) with to xs
+    ... | n , v = suc n , x ∷ v
+    from : ∃[ n ] Vec A n → List A
+    from (zero , []) = []
+    from (suc n , x ∷ v) = x ∷ from (n , v)
+    from∘to : (xs : List A) → from (to xs) ≡ xs
+    from∘to [] = refl
+    from∘to (x ∷ xs) rewrite from∘to xs = refl
+    to∘from : (ex : ∃[ n ] Vec A n) → to (from ex) ≡ ex
+    to∘from (zero , []) = refl
+    to∘from (suc n , x ∷ v) rewrite to∘from (n , v) = refl
+
+Vn≃Fn→A : (n : ℕ) → Vec A n ≃ (Fin n → A)
+Vn≃Fn→A n = record { to = to n ; from = from n ; from∘to = from∘to n ; to∘from = to∘from n }
+  where
+    to : (n : ℕ) → Vec A n → (Fin n → A)
+    to zero [] ()
+    to (suc n) (x ∷ xs) zero = x
+    to (suc n) (x ∷ xs) (suc i) = to n xs i
+    from : (n : ℕ) → (Fin n → A) → Vec A n
+    from zero _ = []
     from (suc n) f with from n (f ∘ suc)
-    ... | xs , lxs≡n = (f zero ∷ xs) , (cong suc lxs≡n)
-    from∘to : (n : ℕ) → (ex : Σ[ xs ∈ List A ] length xs ≡ n) → from n (to n ex) ≡ ex
-    from∘to zero ([] , refl) = refl
-    from∘to (suc n) (x ∷ xs , refl) rewrite from∘to n (xs , refl) = refl
+    ... | v = f zero ∷ v
+    from∘to : (n : ℕ) → (v : Vec A n) → from n (to n v) ≡ v
+    from∘to zero [] = refl
+    from∘to (suc n) (x ∷ v) rewrite from∘to n v = refl
     to∘from' : (n : ℕ) → (f : Fin n → A) → (i : Fin n) → to n (from n f) i ≡ f i
     to∘from' (suc n) f zero = refl
-    to∘from' (suc n) f (suc i) with from n (f ∘ suc) in eq
-    ... | xs , refl rewrite sym eq = to∘from' n (f ∘ suc) i
+    to∘from' (suc n) f (suc i) = to∘from' n (f ∘ suc) i
     to∘from : (n : ℕ) → (f : Fin n → A) → to n (from n f) ≡ f
     to∘from n f = extensionality (to∘from' n f)
 
 LA≃Fn→A : List A ≃ ∃[ n ] (Fin n → A)
-LA≃Fn→A = ≃-trans LA-expand (∀≃→≃Σ ∀n-LA≃Fn→A)
+LA≃Fn→A = ≃-trans L≃Vn (∀≃→≃Σ Vn≃Fn→A)
 
 ∃x∈l≃Fl : (l : List A) → ∃[ x ] x ∈ l ≃ Fin (length l)
 ∃x∈l≃Fl l = record { to = to l ; from = from l ; from∘to = from∘to l ; to∘from = to∘from l }
