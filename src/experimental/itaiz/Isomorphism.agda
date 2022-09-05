@@ -1,6 +1,6 @@
 module experimental.itaiz.Isomorphism where
 
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (Σ; _×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_; id)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
@@ -65,6 +65,14 @@ open _≃_
   ; from = λ{ (x , b) → x , from A≃B b }
   ; from∘to = λ{ (x , a) → cong (x ,_) (from∘to A≃B a) }
   ; to∘from = λ{ (x , b) → cong (x ,_) (to∘from A≃B b) }
+  }
+
+∀≃→≃Σ : {A : Set} {B C : A → Set} → ((x : A) → B x ≃ C x) → Σ A B ≃ Σ A C
+∀≃→≃Σ B≃C = record
+  { to = λ { (a , b) → a , to (B≃C a) b }
+  ; from = λ { (a , c) → a , from (B≃C a) c }
+  ; from∘to = λ { (a , b) → cong (a ,_) (from∘to (B≃C a) b) }
+  ; to∘from = λ { (a , c) → cong (a ,_) (to∘from (B≃C a) c) }
   }
 
 infix 0 _≲_
