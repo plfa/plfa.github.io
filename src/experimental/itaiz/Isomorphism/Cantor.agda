@@ -1,4 +1,4 @@
-module experimental.itaiz.Isomorphism.Cantor (A : Set) where
+module experimental.itaiz.Isomorphism.Cantor where
 
 open import Data.Bool using (Bool; false; true; not)
 open import Data.Product using (∃-syntax; _,_)
@@ -12,14 +12,14 @@ nb≢b : {b : Bool} → not b ≢ b
 nb≢b {false} ()
 nb≢b {true} ()
 
-ℙA : Set
-ℙA = A → Bool
+ℙ : Set → Set
+ℙ A = A → Bool
 
-cantor : ¬ (ℙA ≲ A)
-cantor ℙA≲A = missing-α (to α , refl)
+cantor : (A : Set) → ¬ (ℙ A ≲ A)
+cantor A ℙA≲A = missing-α (to α , refl)
   where
     open _≲_ ℙA≲A
-    α : ℙA
+    α : ℙ A
     α n = not (from n n)
     missing-α : ¬ (∃[ n ] to α ≡ n)
     missing-α (n , toα≡n) = nb≢b (
