@@ -1,16 +1,11 @@
 module experimental.itaiz.Isomorphism.List where
 
 open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; z≤n; s≤s)
-open import Data.Nat.Properties using (≤-trans; +-comm; suc-injective; +-identityʳ; +-suc)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Product using (_×_; _,_; Σ-syntax; ∃-syntax; proj₁; proj₂)
-open import Data.Sum.Properties using (inj₁-injective; inj₂-injective)
-open import Function using (_∘_; id)
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; sym; trans; subst; cong-app)
-open Relation.Binary.PropositionalEquality.≡-Reasoning
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (¬_)
+open import Data.Product using (_,_; ∃-syntax)
+open import Function using (_∘_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import experimental.itaiz.Isomorphism
 
