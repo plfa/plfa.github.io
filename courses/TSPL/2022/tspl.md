@@ -7,17 +7,21 @@ permalink : /TSPL/2022/
 
 * **Instructor**
     [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
-* **Teaching assistants**
-  - [Tudor Ferariu](https://www.inf.ed.ac.uk/people/students/Tudor_Ferariu.html)
+* **Teaching assistant**
+    [Tudor Ferariu](https://www.inf.ed.ac.uk/people/students/Tudor_Ferariu.html)
 
 ## Lectures and tutorials
 
 Lectures take place Monday and Thursday.
 Monday's lecture is immediately followed by a tutorial.
-* **10.00--10.50am** Monday AT 2.11 Lecture
-* **11.10--12.00noon** Monday AT 2.11 Tutorial
+
+* **10.00--10.50am** Monday 50GS G.02 Lecture
+* **11.10--12.00noon** Monday 50GS G.02 Tutorial
 * **10.00--10.50am** Thursday AT 2.11 Lecture
-All lectures and tutorials are in Appleton Tower 2.11.
+
+Monday's lecture and tutorial are in George Square 50, room G.02.
+
+Thursday's lecture is in Appleton Tower, room 2.11.
 
 <table>
 <thead>
@@ -112,11 +116,11 @@ courses where there are easier marks to be had.
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
-* [Assignment 1](/TSPL/2022/Assignment1/) cw1 due 4pm Thursday  October (Week 3)
-* Assignment 2 cw2 due 4pm Thursday 17 October (Week 5)
-* Assignment 3 cw3 due 4pm Thursday 31 October (Week 7)
-* Assignment 4 cw4 due 4pm Thursday 14 November (Week 9)
-* Assignment 5 cw5 due 4pm Thursday 21 November (Week 10)
+* [Assignment 1](/TSPL/2022/Assignment1/) cw1 due 4pm Thursday 6 October (Week 3)
+* Assignment 2 cw2 due 4pm Thursday 20 October (Week 5)
+* Assignment 3 cw3 due 4pm Thursday 3 November(Week 7)
+* Assignment 4 cw4 due 4pm Thursday 17 November (Week 9)
+* Assignment 5 cw5 due 4pm Thursday 24 November (Week 10)
   <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
 
 

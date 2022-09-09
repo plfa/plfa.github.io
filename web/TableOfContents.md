@@ -47,9 +47,11 @@ $endfor$
   * Michael Shulman, University of San Diego
     <!-- The course website is not public. -->
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2022]
+  * [Philip Wadler, University of Edinburgh][TSPL-2022]
 
 [UL-2022]: https://web.archive.org/web/20220222095923/https://www.andrej.com/zapiski/ISRM-LOGRAC-2022/00-introduction.html
 [Freiburg-2022]: https://web.archive.org/web/20220810154516/https://proglang.informatik.uni-freiburg.de/teaching/proglang/2022ss/
+[TSPL-2022]: https://plfa.github.io/TSPL/2022/
 
 #### 2021
   * Favonia, University of Minnesota
