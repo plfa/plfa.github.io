@@ -15,13 +15,10 @@ permalink : /TSPL/2022/
 Lectures take place Monday and Thursday.
 Monday's lecture is immediately followed by a tutorial.
 
-* **10.00--10.50am** Monday 50GS G.02 Lecture
-* **11.10--12.00noon** Monday 50GS G.02 Tutorial
-* **10.00--10.50am** Thursday AT 2.11 Lecture
-
-Monday's lecture and tutorial are in George Square 50, room G.02.
-
-Thursday's lecture is in Appleton Tower, room 2.11.
+* **10.00--12.00** _Monday Lecture and Tutorial_
+  George Square 50, room G.02 (50GS G.02).
+* **10.00--10.50** _Thursday Lecture_
+  Appleton Tower, room 2.11 (AT 2.11). 
 
 <table>
 <thead>
@@ -34,35 +31,35 @@ Thursday's lecture is in Appleton Tower, room 2.11.
 <tbody>
  <tr>
   <td>1</td>
-  <td><b>19 Sep</b> <a href="/Naturals/">Naturals</a></td>
-  <td><b>22 Sep</b> <a href="/Induction/">Induction</a></td>
+  <td><b>19 Sep</b> (Bank Holiday)
+  <td><b>22 Sep</b> <a href="/Naturals/">Naturals</a></td>
  </tr>
  <tr>
   <td>2</td>
-  <td><b>26 Sep</b> <a href="/Relations/">Relations</a></td>
-  <td><b>29 Sep</b> <a href="/Equality/">Equality</a> &amp;
-                    <a href="/Isomorphism/">Isomorphism</a></td></td>
+  <td><b>26 Sep</b> <a href="/Induction/">Induction</a></td>
+  <td><b>29 Sep</b> <a href="/Relations/">Relations</a></td>
  </tr>
  <tr>
   <td>3</td>
-  <td><b> 3 Oct</b> <a href="/Connectives/">Connectives</a></td>
-  <td><b> 6 Oct</b> <a href="/Negation/">Negation</a></td>
+  <td><b> 3 Oct</b> <a href="/Equality/">Equality</a> &amp;
+                    <a href="/Isomorphism/">Isomorphism</a></td></td>
+  <td><b> 6 Oct</b> <a href="/Connectives/">Connectives</a></td>
  </tr>
  <tr>
   <td>4</td>
-  <td><b>10 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
-  <td><b>13 Oct</b> <a href="/Decidable/">Decidable</a> &amp;
-                    <a href="/Lists/">Lists</a></td>
+  <td><b>10 Oct</b> <a href="/Negation/">Negation</a></td>
+  <td><b>13 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
  </tr>
  <tr>
   <td>5</td>
-  <td><b>17 Oct</b> <a href="/Lambda/">Lambda</a></td>
+  <td><b>17 Oct</b> <a href="/Decidable/">Decidable</a> &amp;
+                    <a href="/Lists/">Lists</a></td>
   <td><b>20 Oct</b> <a href="/Lambda/">Lambda</a></td>
  </tr>
  <tr>
   <td>6</td>
-  <td><b>24 Oct</b> <a href="/Properties/">Properties</a></td>
-  <td><b>27 Oct</b> 
+  <td><b>24 Oct</b> <a href="/Lambda/">Lambda</a></td>
+  <td><b>27 Oct</b> <a href="/Properties/">Properties</a></td> 
  </tr>
  <tr>
   <td>7</td>

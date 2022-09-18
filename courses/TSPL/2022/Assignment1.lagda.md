@@ -40,6 +40,10 @@ yourself, or your group in the case of group practicals).
 
 ```
 module Naturals where
+  import Relation.Binary.PropositionalEquality as Eq
+  open Eq using (_≡_; refl)
+  open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
+  import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
 ```
 
 #### Exercise `seven` (practice) {#seven}
@@ -152,6 +156,7 @@ Confirm that these both give the correct answer for zero through four.
 
 ```
 module Induction where
+  import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)  
 ```
 
 ## Imports
@@ -320,6 +325,9 @@ For each law: if it holds, prove; if not, give a counterexample.
 
 ```
 module Relations where
+  import Data.Nat using (_≤_; z≤n; s≤s)
+  import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
+                                    +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 ```
 
 ## Imports
