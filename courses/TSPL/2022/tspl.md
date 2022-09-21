@@ -113,11 +113,11 @@ courses where there are easier marks to be had.
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
-* [Assignment 1](/TSPL/2022/Assignment1/) cw1 due 4pm Thursday 6 October (Week 3)
-* Assignment 2 cw2 due 4pm Thursday 20 October (Week 5)
-* Assignment 3 cw3 due 4pm Thursday 3 November(Week 7)
-* Assignment 4 cw4 due 4pm Thursday 17 November (Week 9)
-* Assignment 5 cw5 due 4pm Thursday 24 November (Week 10)
+* [Assignment 1](/TSPL/2022/Assignment1/) cw1 due 12 noon Thursday 6 October (Week 3)
+* Assignment 2 cw2 due 12 noon Thursday 20 October (Week 5)
+* Assignment 3 cw3 due 12 noon Thursday 3 November(Week 7)
+* Assignment 4 cw4 due 12 noon Thursday 17 November (Week 9)
+* Assignment 5 cw5 due 12 noon Thursday 24 November (Week 10)
   <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
 
 
@@ -136,7 +136,7 @@ projects that contributed to ongoing research. One possible paper to tackle is
 [here](https://homepages.inf.ed.ac.uk/wadler/papers/coercions-jfp/coercions-jfp.pdf).
 Talk to me if you want to formalise something else.
 
-* Optional project cw6 due 4pm Thursday 28 November (Week 11)
+* Optional project cw6 due 12 noon Thursday 28 November (Week 11)
 
 Submit the optional project by running
 ``` bash
@@ -178,7 +178,7 @@ practice for the exam and familiarise yourself with exam conditions.
 You may offer feedback on the course at
 [https://www.surveymonkey.co.uk/r/YX7ZFYC](https://www.surveymonkey.co.uk/r/YX7ZFYC).
 
-Please do so by 4pm Thursday 31 October.
+Please do so by 12 noon Thursday 31 October.
 -->
 
 <!--
