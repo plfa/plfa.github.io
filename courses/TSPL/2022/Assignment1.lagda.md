@@ -9,6 +9,7 @@ module Assignment1 where
 
 ## YOUR NAME AND EMAIL GOES HERE
 
+
 ## Introduction
 
 You must do _all_ the exercises labelled "(recommended)".

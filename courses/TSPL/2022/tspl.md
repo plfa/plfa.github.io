@@ -3,6 +3,7 @@ title     : "TSPL: Course notes"
 permalink : /TSPL/2022/
 ---
 
+
 ## Staff
 
 * **Instructor**
