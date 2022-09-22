@@ -96,6 +96,7 @@ jobs:
           EPUBCHECK: "java -jar ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}"
 
       - name: Upload latest artifact
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: Website HEAD ${{ runner.os }} GHC-${{ matrix.ghc-version }}
