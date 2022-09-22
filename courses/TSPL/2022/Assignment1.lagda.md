@@ -488,4 +488,3 @@ if `One b` then `1` is less or equal to the result of `from b`.)
 ```agda
   -- Your code goes here
 ```
-

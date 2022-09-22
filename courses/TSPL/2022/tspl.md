@@ -18,7 +18,7 @@ Monday's lecture is immediately followed by a tutorial.
 * **10.00--12.00** _Monday Lecture and Tutorial_
   George Square 50, room G.02 (50GS G.02).
 * **10.00--10.50** _Thursday Lecture_
-  Appleton Tower, room 2.11 (AT 2.11). 
+  Appleton Tower, room 2.11 (AT 2.11).
 
 <table>
 <thead>
@@ -59,7 +59,7 @@ Monday's lecture is immediately followed by a tutorial.
  <tr>
   <td>6</td>
   <td><b>24 Oct</b> <a href="/Lambda/">Lambda</a></td>
-  <td><b>27 Oct</b> <a href="/Properties/">Properties</a></td> 
+  <td><b>27 Oct</b> <a href="/Properties/">Properties</a></td>
  </tr>
  <tr>
   <td>7</td>
@@ -68,7 +68,7 @@ Monday's lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>8</td>
-  <td><b> 7 Nov</b> <a href="/Inference/">Inference</a></td> 
+  <td><b> 7 Nov</b> <a href="/Inference/">Inference</a></td>
   <td><b>10 Nov</b> <a href="/Untyped/">Untyped</a></td></td>
  </tr>
  <tr>
