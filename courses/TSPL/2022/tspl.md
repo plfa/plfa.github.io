@@ -119,7 +119,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * Assignment 3 cw3 due 12 noon Thursday 3 November(Week 7)
 * Assignment 4 cw4 due 12 noon Thursday 17 November (Week 9)
 * Assignment 5 cw5 due 12 noon Thursday 24 November (Week 10)
-  <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
+<!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
 
 
 Assignments are submitted by running
