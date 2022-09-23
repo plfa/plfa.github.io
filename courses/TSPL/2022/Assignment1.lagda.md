@@ -157,7 +157,7 @@ Confirm that these both give the correct answer for zero through four.
 
 ```
 module Induction where
-  import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)  
+  import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
 
 ## Imports
