@@ -32,60 +32,60 @@ Monday's lecture is immediately followed by a tutorial.
 <tbody>
  <tr>
   <td>1</td>
-  <td><b>19 Sep</b> (Bank Holiday)
-  <td><b>22 Sep</b> <a href="/Naturals/">Naturals</a></td>
+  <td>**19 Sep** (Bank Holiday)
+  <td>**22 Sep** [Naturals](/Naturals/)</td>
  </tr>
  <tr>
   <td>2</td>
-  <td><b>26 Sep</b> <a href="/Induction/">Induction</a></td>
-  <td><b>29 Sep</b> <a href="/Relations/">Relations</a></td>
+  <td>**26 Sep** [Induction](/Induction/)</td>
+  <td>**29 Sep** [Relations](/Relations/)</td>
  </tr>
  <tr>
   <td>3</td>
-  <td><b> 3 Oct</b> <a href="/Equality/">Equality</a> &amp;
-                    <a href="/Isomorphism/">Isomorphism</a></td></td>
-  <td><b> 6 Oct</b> <a href="/Connectives/">Connectives</a></td>
+  <td> **3 Oct** [Equality](/Equality/) &amp;
+                 [Isomorphism](/Isomorphism/)</td>
+  <td> **6 Oct** [Connectives](/Connectives/)</td>
  </tr>
  <tr>
   <td>4</td>
-  <td><b>10 Oct</b> <a href="/Negation/">Negation</a></td>
-  <td><b>13 Oct</b> <a href="/Quantifiers/">Quantifiers</a></td>
+  <td>**10 Oct** [Negation](/Negation/)</td>
+  <td>**13 Oct** [Quantifiers](/Quantifiers/)</td>
  </tr>
  <tr>
   <td>5</td>
-  <td><b>17 Oct</b> <a href="/Decidable/">Decidable</a> &amp;
-                    <a href="/Lists/">Lists</a></td>
-  <td><b>20 Oct</b> <a href="/Lambda/">Lambda</a></td>
+  <td>**17 Oct** [Decidable](/Decidable/) &amp;
+                 [Lists](/Lists/)</td>
+  <td>**20 Oct** [Lambda](/Lambda/)</td>
  </tr>
  <tr>
   <td>6</td>
-  <td><b>24 Oct</b> <a href="/Lambda/">Lambda</a></td>
-  <td><b>27 Oct</b> <a href="/Properties/">Properties</a></td>
+  <td>**24 Oct** [Lambda](/Lambda/)</td>
+  <td>**27 Oct** [Properties](/Properties/)</td>
  </tr>
  <tr>
   <td>7</td>
-  <td><b>31 Oct</b> <a href="/DeBruijn/">DeBruijn</a></td>
-  <td><b> 3 Nov</b> <a href="/More/">More</a></td>
+  <td>**31 Oct** [DeBruijn](/DeBruijn/)</td>
+  <td> **3 Nov** [More](/More/)</td>
  </tr>
  <tr>
   <td>8</td>
-  <td><b> 7 Nov</b> <a href="/Inference/">Inference</a></td>
-  <td><b>10 Nov</b> <a href="/Untyped/">Untyped</a></td></td>
+  <td> **7 Nov** [Inference](/Inference/)</td>
+  <td>**10 Nov** [Untyped](/Untyped/)</td>
  </tr>
  <tr>
   <td>9</td>
-  <td><b>14 Nov</b> Blame and Coercions </td>
-  <td><b>17 Nov</b> </td>
+  <td>**14 Nov** Blame and Coercions</td>
+  <td>**17 Nov**</td>
  </tr>
  <tr>
   <td>10</td>
-  <td><b>21 Nov</b>	</td>
-  <td><b>24 Nov</b>	</td>
+  <td>**21 Nov**</td>
+  <td>**24 Nov**</td>
  </tr>
  <tr>
   <td>11</td>
-  <td><b>28 Nov</b> Propositions as Types </td>
-  <td><b> 1 Dec</b> Mock Exam </td>
+  <td>**28 Nov** Propositions as Types</td>
+  <td> **1 Dec** Mock Exam</td>
  </tr>
 </tbody>
 </table>
@@ -96,10 +96,10 @@ Monday's lecture is immediately followed by a tutorial.
 Assessment for the course is as follows.
 
 * five courseworks, five points each, including a take-home mock exam
-  (the "mock mock"), <b>25%</b>
-* optional project, take a research paper and formalise its development, <b>25%</b>
-* mock exam, online with Agda proof assistant under exam conditions, <b>0%</b>
-* final exam, online with Agda proof assistant, <b>50%</b>
+  (the "mock mock"), **25%**
+* optional project, take a research paper and formalise its development, **25%**
+* mock exam, online with Agda proof assistant under exam conditions, **0%**
+* final exam, online with Agda proof assistant, **50%**
 
 Students are expected to get 3--5 points each (out of 5) on the
 courseworks. Students who undertake the coursework and mock exam typically
