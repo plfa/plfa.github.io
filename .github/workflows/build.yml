@@ -25,18 +25,16 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        ghc-version: ["8.10", "9.0", "9.2"]
-        exclude:
-          - os: macOS-latest
-            ghc-version: "8.10"
-          - os: macOS-latest
-            ghc-version: "9.0"
-          - os: windows-latest
-            ghc-version: "8.10"
-          - os: windows-latest
-            ghc-version: "9.0"
+        ghc-version: ["9.2"]
         include:
           - experimental: false
+          - os: ubuntu-latest
+            ghc-version: "8.10"
+          - os: ubuntu-latest
+            ghc-version: "9.0"
+          - os: ubuntu-latest
+            ghc-version: "9.4"
+            experimental: true
 
     name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
