@@ -27,11 +27,11 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         ghc-version: ["9.2"]
         include:
-          - experimental: false
           - os: ubuntu-latest
             ghc-version: "8.10"
           - os: ubuntu-latest
             ghc-version: "9.0"
+          - experimental: false
           - os: ubuntu-latest
             ghc-version: "9.4"
             experimental: true
