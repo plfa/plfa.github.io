@@ -623,7 +623,7 @@ Proposition `+-assoc (m + n) p q` shifts parentheses from left to right:
 
     ((m + n) + p) + q ≡ (m + n) + (p + q)
 
-To shift them the other way, we use `sym (+-assoc n p q)`:
+To shift them the other way, we use `sym (+-assoc (m + n) p q)`:
 
     (m + n) + (p + q) ≡ ((m + n) + p) + q
 
