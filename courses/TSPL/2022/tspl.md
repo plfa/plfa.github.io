@@ -19,7 +19,13 @@ Monday's lecture is immediately followed by a tutorial.
 * **10.00--12.00** _Monday Lecture and Tutorial_
   George Square 50, room G.02 (50GS G.02).
 * **10.00--10.50** _Thursday Lecture_
-  Appleton Tower, room 2.11 (AT 2.11).
+  Lister Learning and Teaching Centre, room G.13 (LLTC G.13).
+  
+## Links
+
+* [Piazza](https://piazza.com/class/l8epstau8uc5dd/)
+* [Lectures](https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home)
+
 
 <table>
 <thead>
