@@ -523,7 +523,7 @@ subst-reflect (sub d lt) eq
     From the later we have `(δ , v₁) ⊢ # 0 ↓ v′`.
     By the lemma `var-inv` we have `v′ ⊑ v₁`, so by the `up-env` lemma we
     have `(δ′ , v₁) ⊢ M′ ↓ v₂` and therefore `δ′ ⊢ ƛ M′ ↓ v₁ → v₂`.  We
-    also need to show that `δ `⊢ σ ↓ δ′`.  Fix `k`. We have
+    also need to show that `δ ⊢ σ ↓ δ′`.  Fix `k`. We have
     `(δ , v₁) ⊢ rename S_ σ k ↓ δ k′`.  We then apply the lemma
     `rename-inc-reflect` to obtain `δ ⊢ σ k ↓ δ k′`, so this case is
     complete.
