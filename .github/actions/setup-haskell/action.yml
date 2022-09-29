@@ -36,7 +36,8 @@ runs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(env.CABAL_PROJECT_FREEZE_FILE) }}
+          key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(env.CABAL_PROJECT_LOCAL_FILE) }}-${{ hashFiles(env.CABAL_PROJECT_FREEZE_FILE) }}
           restore-keys: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-
         env:
+          CABAL_PROJECT_LOCAL_FILE: ${{ inputs.cabal-project-file }}.local
           CABAL_PROJECT_FREEZE_FILE: ${{ inputs.cabal-project-file }}.freeze
