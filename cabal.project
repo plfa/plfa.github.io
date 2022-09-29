@@ -9,6 +9,7 @@ if impl(ghc >= 9.4)
     deepseq-generics-0.2.0.0:base,
     deepseq-generics-0.2.0.0:ghc-prim
   constraints:
+    aeson +defer-type-errors
     base == 4.17.0.0,
     ghc-prim == 0.9.0,
     template-haskell == 2.19.0.0
