@@ -52,7 +52,7 @@ jobs:
         with:
           ghc-version: ${{ matrix.ghc-version }}
           cabal-version: ${{ matrix.cabal-version }}
-          cabal-project-file: cabal.project.ci
+          cabal-project-file: cabal.project.ghc-${{ matrix.ghc-version }}.ci
 
       - name: Setup Node
         uses: ./.github/actions/setup-node
