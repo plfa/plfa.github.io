@@ -1,8 +1,3 @@
-!cabal.project.ci.local
-!cabal.project.ghc-*.ci.local
-!data/legacy/19.08.zip
-!data/legacy/20.07.zip
-!plfa.pdf
 *.agdai
 *.aux
 *.bbl
@@ -23,3 +18,9 @@
 /_site/
 /dist-newstyle/
 /node_modules/
+!cabal.project.ci.local
+!cabal-project.ghc-8.10.ci.local
+!cabal-project.ghc-9.0.ci.local
+!cabal-project.ghc-9.2.ci.local
+!cabal-project.ghc-9.4.ci.local
+!plfa.pdf
