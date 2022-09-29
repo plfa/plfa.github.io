@@ -82,7 +82,7 @@ library
     , Buildfile.Script
     , Buildfile.Stylesheet
   build-depends:
-    , aeson ^>=2
+    , aeson >=2, <3
     , base
     , bimap
     , data-default-class
