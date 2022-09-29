@@ -1,8 +1,11 @@
 packages:
   plfa.cabal
 
-allow-newer:
-  deepseq-generics-0.2.0.0:base
+if impl(ghc >= 9.4)
+  allow-newer:
+    deepseq-generics-0.2.0.0:base
+  constraints:
+    base-4.17.0.0
 
 source-repository-package
   type: git
