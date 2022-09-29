@@ -41,6 +41,8 @@ jobs:
     name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
+    env:
+      CABAL_PROJECT_FILE: cabal.project.ghc-${{ matrix.ghc-version }}.ci
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -52,7 +54,7 @@ jobs:
         with:
           ghc-version: ${{ matrix.ghc-version }}
           cabal-version: ${{ matrix.cabal-version }}
-          cabal-project-file: cabal.project.ghc-${{ matrix.ghc-version }}.ci
+          cabal-project-file: ${{ env.CABAL_PROJECT_FILE }}
 
       - name: Setup Node
         uses: ./.github/actions/setup-node
@@ -80,6 +82,8 @@ jobs:
 
       - name: Build
         run: make build
+        env:
+          CABAL_ARGS: --project-file=${{ env.CABAL_PROJECT_FILE }}
 
       - name: Test with BumpVer
         run: bumpver update --dry --no-fetch
