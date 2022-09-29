@@ -50,6 +50,7 @@ jobs:
         uses: ./.github/actions/setup-haskell
         with:
           ghc-version: ${{ matrix.ghc-version }}
+          cabal-version: 'latest'
           cabal-project-file: cabal.project.ci
 
       - name: Setup Node

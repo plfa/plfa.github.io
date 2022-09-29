@@ -1,4 +1,4 @@
-cabal-version:      3.6
+cabal-version:      3.8
 name:               plfa
 version:            22.8
 description:        Programming Language Foundations in Agda
