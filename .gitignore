@@ -1,4 +1,5 @@
 !cabal.project.ci.local
+!cabal.project.ghc-*.ci.local
 !data/legacy/19.08.zip
 !data/legacy/20.07.zip
 !plfa.pdf

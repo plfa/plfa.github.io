@@ -5,3 +5,7 @@ source-repository-package
   type: git
   location: https://github.com/wenkokke/shoggoth
   tag: 3bc1ff1c843724c7cae03d6c72182f516e3b3a59
+
+allow-newer:
+  *:base,
+  *:ghc-prim
