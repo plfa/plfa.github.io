@@ -7,6 +7,5 @@ source-repository-package
   tag: 3bc1ff1c843724c7cae03d6c72182f516e3b3a59
 
 allow-newer:
-  deepseq-generics-0.2.0.0:base,
-  deepseq-generics-0.2.0.0:ghc-prim,
-  unicode-collation-0.1.3.2:base
+  *:base,
+  *:ghc-prim
