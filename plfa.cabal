@@ -64,7 +64,7 @@ executable update-contributors
     , filemanip
     , filepath
     , frontmatter
-    , github              ^>=0.28
+    , github              >=0.28
     , plfa
     , shoggoth
     , text

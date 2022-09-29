@@ -1,21 +1,7 @@
 packages:
   plfa.cabal
 
-if impl(ghc >= 9.4)
-  allow-newer:
-    aeson-2.1.1.0:base,
-    aeson-2.1.1.0:ghc-prim,
-    aeson-2.1.1.0:template-haskell,
-    deepseq-generics-0.2.0.0:base,
-    deepseq-generics-0.2.0.0:ghc-prim
-    shoggoth-0.1.0.0:aeson
-  constraints:
-    aeson == 2.1.1.0 +defer-type-errors,
-    base == 4.17.0.0,
-    ghc-prim == 0.9.0,
-    template-haskell == 2.19.0.0
-
 source-repository-package
   type: git
   location: https://github.com/wenkokke/shoggoth
-  tag: 8debe8e3b426ff76a68c9f37d68e5f23629cc822
+  tag: 3bc1ff1c843724c7cae03d6c72182f516e3b3a59
