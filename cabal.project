@@ -3,6 +3,7 @@ packages:
 
 if impl(ghc >= 9.4)
   allow-newer:
+    aeson-2.0.3.0:base,
     deepseq-generics-0.2.0.0:base,
     deepseq-generics-0.2.0.0:ghc-prim
   constraints:
