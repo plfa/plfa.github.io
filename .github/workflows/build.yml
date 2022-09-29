@@ -12,7 +12,6 @@ on:
       - synchronize
 
 env:
-  CABAL_ARGS: "--project-file=cabal.project.ci"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
 defaults:
@@ -51,7 +50,7 @@ jobs:
         uses: ./.github/actions/setup-haskell
         with:
           ghc-version: ${{ matrix.ghc-version }}
-          cabal-project-freeze-file: cabal.project.ci.freeze
+          cabal-project-file: cabal.project.ci
 
       - name: Setup Node
         uses: ./.github/actions/setup-node

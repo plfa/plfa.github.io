@@ -9,10 +9,10 @@ inputs:
     required: false
     description: 'Version of Cabal to use. If set to "latest", it will always get the latest stable version.'
     default: 'latest'
-  cabal-project-freeze-file:
+  cabal-project-file:
     required: false
-    description: 'Path to the frozen project configuration. Defaults to "cabal.project.freeze".'
-    default: 'cabal.project.freeze'
+    description: 'Path to the project configuration. Defaults to "cabal.project".'
+    default: 'cabal.project'
 runs:
   using: "composite"
   steps:
@@ -27,7 +27,7 @@ runs:
       - name: Freeze Haskell dependencies
         run: |
           cabal v2-update
-          cabal v2-freeze $CABAL_ARGS
+          cabal v2-freeze --project-file=${{ inputs.cabal-project-file }}
         shell: pwsh
 
       - name: Cache Haskell dependencies
@@ -36,5 +36,7 @@ runs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(inputs.cabal-freeze-file) }}
+          key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(env.CABAL_PROJECT_FREEZE_FILE) }}
           restore-keys: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-
+        env:
+          CABAL_PROJECT_FREEZE_FILE: ${{ inputs.cabal-project-file }}.freeze
