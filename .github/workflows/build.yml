@@ -25,6 +25,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         ghc-version: ["9.2"]
+        cabal-version: ["3.6.2.0"]
         include:
           - experimental: false
           - os: ubuntu-latest
@@ -50,7 +51,7 @@ jobs:
         uses: ./.github/actions/setup-haskell
         with:
           ghc-version: ${{ matrix.ghc-version }}
-          cabal-version: 'latest'
+          cabal-version: ${{ matrix.cabal-version }}
           cabal-project-file: cabal.project.ci
 
       - name: Setup Node
