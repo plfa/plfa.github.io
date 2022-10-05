@@ -626,7 +626,7 @@ True : ∀ {Q} → Dec Q → Set
 True Q = T ⌊ Q ⌋
 ```
 
-#### Exercise `False`
+#### Exercise `False` (practice)
 
 Give analogues of `True`, `toWitness`, and `fromWitness` which work with *negated* properties. Call these `False`, `toWitnessFalse`, and `fromWitnessFalse`.
 

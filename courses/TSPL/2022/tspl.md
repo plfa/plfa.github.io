@@ -23,9 +23,13 @@ Monday's lecture is immediately followed by a tutorial.
   
 ## Links
 
-* [Piazza](https://piazza.com/class/l8epstau8uc5dd/)
-* [Lectures](https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home)
+* [Piazza][piazza] 
+* [Lectures][lectures]
+* [Learn][learn]
 
+piazza: https://piazza.com/class/l8epstau8uc5dd/
+lectures: https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home
+learn: https://www.learn.ed.ac.uk/ultra/courses/_98006_1/cl/outline
 
 <table>
 <thead>
@@ -39,28 +43,26 @@ Monday's lecture is immediately followed by a tutorial.
  <tr>
   <td>1</td>
   <td>**19 Sep** (Bank Holiday)
-  <td>**22 Sep** [Naturals](/Naturals/)</td>
+  <td>**22 Sep** Introduction </td>
  </tr>
  <tr>
   <td>2</td>
-  <td>**26 Sep** [Induction](/Induction/)</td>
-  <td>**29 Sep** [Relations](/Relations/)</td>
+  <td>**26 Sep** [Naturals](/Naturals/)</td>
+  <td>**29 Sep** [Induction](/Induction/)</td>
  </tr>
  <tr>
   <td>3</td>
-  <td> **3 Oct** [Equality](/Equality/) &amp;
-                 [Isomorphism](/Isomorphism/)</td>
-  <td> **6 Oct** [Connectives](/Connectives/)</td>
+  <td> **3 Oct** [Relations](/Relations/)</td>
+  <td> **6 Oct** [Equality](/Equality/) &amp; [Isomorphism](/Isomorphism/)</td>
  </tr>
  <tr>
   <td>4</td>
-  <td>**10 Oct** [Negation](/Negation/)</td>
+  <td>**10 Oct** [Connectives](/Connectives/) &amp; [Negation](/Negation/)</td>
   <td>**13 Oct** [Quantifiers](/Quantifiers/)</td>
  </tr>
  <tr>
   <td>5</td>
-  <td>**17 Oct** [Decidable](/Decidable/) &amp;
-                 [Lists](/Lists/)</td>
+  <td>**17 Oct** [Decidable](/Decidable/) &amp; [Lists](/Lists/)</td>
   <td>**20 Oct** [Lambda](/Lambda/)</td>
  </tr>
  <tr>
@@ -127,12 +129,17 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * Assignment 5 cw5 due 12 noon Thursday 24 November (Week 10)
 <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
 
+Assignments are submitted via Codegrade on the [Learn][learn] page.
+Navigate to
 
-Assignments are submitted by running
+    Assessment > Assignment Submission.
+
+
+<!-- Assignments are submitted by running
 ``` bash
 submit tspl cwN AssignmentN.lagda.md
 ```
-where N is the number of the assignment.
+where N is the number of the assignment. -->
 
 
 ## Optional project
@@ -173,9 +180,7 @@ practice for the exam and familiarise yourself with exam conditions.
   _International Conference on Functional Programming_, 2000.
 
 [reynolds]: https://homepages.inf.ed.ac.uk/wadler/papers/reynolds/three-approaches.pdf
-
 [barendregt]: https://homepages.inf.ed.ac.uk/wadler/papers/barendregt/pure-type-systems.pdf
-
 [gapayev]: https://homepages.inf.ed.ac.uk/wadler/papers/gapayev/gapayev-et-al-icfp2000.pdf
 
 
