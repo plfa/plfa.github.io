@@ -23,9 +23,15 @@ Monday's lecture is immediately followed by a tutorial.
   
 ## Links
 
-* [Piazza](https://piazza.com/class/l8epstau8uc5dd/)
-* [Lectures](https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home)
+* [Piazza][piazza] 
+* [Lectures][lectures]
+* [Learn][learn]
 
+[piazza]: https://piazza.com/class/l8epstau8uc5dd/
+[lectures]: https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home
+[learn]: https://www.learn.ed.ac.uk/ultra/courses/_98006_1/cl/outline
+
+## Schedule
 
 <table>
 <thead>
@@ -39,28 +45,26 @@ Monday's lecture is immediately followed by a tutorial.
  <tr>
   <td>1</td>
   <td>**19 Sep** (Bank Holiday)
-  <td>**22 Sep** [Naturals](/Naturals/)</td>
+  <td>**22 Sep** Introduction </td>
  </tr>
  <tr>
   <td>2</td>
-  <td>**26 Sep** [Induction](/Induction/)</td>
-  <td>**29 Sep** [Relations](/Relations/)</td>
+  <td>**26 Sep** [Naturals](/Naturals/)</td>
+  <td>**29 Sep** [Induction](/Induction/)</td>
  </tr>
  <tr>
   <td>3</td>
-  <td> **3 Oct** [Equality](/Equality/) &amp;
-                 [Isomorphism](/Isomorphism/)</td>
-  <td> **6 Oct** [Connectives](/Connectives/)</td>
+  <td> **3 Oct** [Relations](/Relations/)</td>
+  <td> **6 Oct** [Equality](/Equality/) &amp; [Isomorphism](/Isomorphism/)</td>
  </tr>
  <tr>
   <td>4</td>
-  <td>**10 Oct** [Negation](/Negation/)</td>
+  <td>**10 Oct** [Connectives](/Connectives/) &amp; [Negation](/Negation/)</td>
   <td>**13 Oct** [Quantifiers](/Quantifiers/)</td>
  </tr>
  <tr>
   <td>5</td>
-  <td>**17 Oct** [Decidable](/Decidable/) &amp;
-                 [Lists](/Lists/)</td>
+  <td>**17 Oct** [Decidable](/Decidable/) &amp; [Lists](/Lists/)</td>
   <td>**20 Oct** [Lambda](/Lambda/)</td>
  </tr>
  <tr>
@@ -90,8 +94,8 @@ Monday's lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>11</td>
-  <td>**28 Nov** Propositions as Types</td>
-  <td> **1 Dec** Mock Exam</td>
+  <td>**28 Nov** Mock Exam</td>
+  <td> **1 Dec** Propositions as Types</td>
  </tr>
 </tbody>
 </table>
@@ -111,7 +115,7 @@ Students are expected to get 3--5 points each (out of 5) on the
 courseworks. Students who undertake the coursework and mock exam typically
 get 50 points (out of 50) on the final exam. In order to conform with
 the University's Common Marking Scheme, students may typically
-get only 10 points (out of 25) on the optional project.  Attempting
+get only 10 points or less (out of 25) on the optional project.  Attempting
 the optional project may not be a good use of time compared to other
 courses where there are easier marks to be had.
 
@@ -127,33 +131,55 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * Assignment 5 cw5 due 12 noon Thursday 24 November (Week 10)
 <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
 
+## How to submit coursework
 
-Assignments are submitted by running
+Go to the TSPL [Learn][learn] course and select “Assessment” from the left hand
+menu. Select the “Assignment Submission” folder and then click on the
+link “submit your coursework here”. This will take you to the
+Gradescope interface.
+
+For anyone who has sat an online exam over the
+last two years, Gradescope should look familiar.
+Gradescope programming assignments differ from exams in that
+it offers three options for submitting your work:
+
+  *   Drag and drop your code file(s) into Gradescope
+  *   Submit a GitHub repository
+  *   Submit a Bitbucket repository
+
+For the last two, you need to link your account to submit from GitHub or Bitbucket if you have not already.
+Instructions to do so are [here](https://help.gradescope.com/article/lcn4nfvcww-student-edit-account#linking_accounts).
+
+
+<!-- Assignments are submitted by running
 ``` bash
 submit tspl cwN AssignmentN.lagda.md
 ```
-where N is the number of the assignment.
+where N is the number of the assignment. -->
 
 
 ## Optional project
 
 The optional project is to take a research paper and formalise all or
 part of it in Agda.  In the past, some students have submitted superb optional
-projects that contributed to ongoing research. One possible paper to tackle is
-[here](https://homepages.inf.ed.ac.uk/wadler/papers/coercions-jfp/coercions-jfp.pdf).
-Talk to me if you want to formalise something else.
+projects that contributed to ongoing research.
+Talk to me about what you would like to submit.
+<!-- One possible paper to tackle is
+[here](https://homepages.inf.ed.ac.uk/wadler/papers/coercions-jfp/coercions-jfp.pdf). -->
 
-* Optional project cw6 due 12 noon Thursday 28 November (Week 11)
+* Optional project cw6 due 12 noon Thursday 1 December (Week 11)
 
+<!--
 Submit the optional project by running
 ``` bash
 submit tspl essay Essay.lagda.md
 ```
+-->
 
 ## Mock exam
 
-10am-12noon Friday 29 November, AT 5.05 West Lab. An online
-examination with the Agda proof assistant, under DICE to let you
+10am-12noon Monday 28 November. An online
+examination with the Agda proof assistant, to let you
 practice for the exam and familiarise yourself with exam conditions.
 
 
@@ -173,9 +199,7 @@ practice for the exam and familiarise yourself with exam conditions.
   _International Conference on Functional Programming_, 2000.
 
 [reynolds]: https://homepages.inf.ed.ac.uk/wadler/papers/reynolds/three-approaches.pdf
-
 [barendregt]: https://homepages.inf.ed.ac.uk/wadler/papers/barendregt/pure-type-systems.pdf
-
 [gapayev]: https://homepages.inf.ed.ac.uk/wadler/papers/gapayev/gapayev-et-al-icfp2000.pdf
 
 
