@@ -12,7 +12,6 @@ on:
       - synchronize
 
 env:
-  CABAL_ARGS: "--project-file=cabal.project.ci"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
 defaults:
@@ -48,7 +47,6 @@ jobs:
         uses: ./.github/actions/setup-haskell
         with:
           ghc-version: ${{ matrix.ghc-version }}
-          cabal-project-file: cabal.project.ghc-${{ matrix.ghc-version }}
           cabal-project-freeze-file: cabal.project.ghc-${{ matrix.ghc-version }}.freeze
 
       - name: Setup Agda
@@ -83,6 +81,9 @@ jobs:
 
       - name: Build
         run: make build
+        env:
+          CABAL_ARGS: --project-file=cabal.project.ghc-${{ matrix.ghc-version }}
+        # depends on cabal.project.ghc-X.Y
 
       - name: Test with BumpVer
         run: bumpver update --dry --no-fetch
