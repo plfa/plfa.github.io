@@ -1,6 +1,0 @@
-ignore-project: False
-
-jobs: 1
-
-package shoggoth
-  flags: +with-agda

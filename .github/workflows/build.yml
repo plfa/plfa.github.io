@@ -48,7 +48,14 @@ jobs:
         uses: ./.github/actions/setup-haskell
         with:
           ghc-version: ${{ matrix.ghc-version }}
-          cabal-project-freeze-file: cabal.project.ci.freeze
+          cabal-project-file: cabal.project.ghc-${{ matrix.ghc-version }}
+          cabal-project-freeze-file: cabal.project.ghc-${{ matrix.ghc-version }}.freeze
+
+      - name: Setup Agda
+        uses: wenkokke/setup-agda@latest
+        with:
+          agda-version: latest
+          force-no-build: true
 
       - name: Setup Node
         uses: ./.github/actions/setup-node

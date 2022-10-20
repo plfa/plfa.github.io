@@ -9,26 +9,23 @@ inputs:
     required: false
     description: 'Version of Cabal to use. If set to "latest", it will always get the latest stable version.'
     default: 'latest'
+  cabal-project-file:
+    required: false
+    description: 'Path to the project configuration. Defaults to "cabal.project".'
+    default: 'cabal.project'
   cabal-project-freeze-file:
     required: false
-    description: 'Path to the frozen project configuration. Defaults to "cabal.project.freeze".'
+    description: 'Path to project freeze file. Defaults to "cabal.project.freeze".'
     default: 'cabal.project.freeze'
 runs:
   using: "composite"
   steps:
-
       - name: Setup Haskell
         uses: haskell/actions/setup@v2
         id: setup-haskell
         with:
           ghc-version: ${{ inputs.ghc-version }}
           cabal-version: ${{ inputs.cabal-version }}
-
-      - name: Freeze Haskell dependencies
-        run: |
-          cabal v2-update
-          cabal v2-freeze $CABAL_ARGS
-        shell: pwsh
 
       - name: Cache Haskell dependencies
         uses: actions/cache@v3
