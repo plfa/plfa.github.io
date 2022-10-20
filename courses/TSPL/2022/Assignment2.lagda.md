@@ -1,6 +1,6 @@
 ---
 title     : "Assignment2: TSPL Assignment 2"
-permalink : /TSPL/2020/Assignment2/
+permalink : /TSPL/2022/Assignment2/
 ---
 
 ```
@@ -522,4 +522,3 @@ which is a corollary of `≡Can`.
 ```agda
   -- Your code goes here
 ```
-

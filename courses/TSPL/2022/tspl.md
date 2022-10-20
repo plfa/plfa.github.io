@@ -20,10 +20,10 @@ Monday's lecture is immediately followed by a tutorial.
   George Square 50, room G.02 (50GS G.02).
 * **10.00--10.50** _Thursday Lecture_
   Lister Learning and Teaching Centre, room G.13 (LLTC G.13).
-  
+
 ## Links
 
-* [Piazza][piazza] 
+* [Piazza][piazza]
 * [Lectures][lectures]
 * [Learn][learn]
 

@@ -233,7 +233,7 @@ value : ∀ {Γ A} {V : Γ ⊢ A}
   → (v : Value V)
     -------------
   → Γ ⊢ A
-value {V = V} v  =  V  
+value {V = V} v  =  V
 ```
 
 
@@ -245,7 +245,7 @@ ren-val :
   → Value V
     ------------------
   → Value (ren ρ V)
--- ren-val ρ (ƛ N)    =  
+-- ren-val ρ (ƛ N)    =
 
 ren-val ρ (ƛ N)     = ƛ (ren (ren▷ ρ) N)
 ren-val ρ `zero     = `zero
@@ -412,7 +412,7 @@ begin M—↠N = M—↠N
 ## Irreducible terms
 
 Values are irreducible.  The auxiliary definition rearranges the
-order of the arguments because it works better for Agda.  
+order of the arguments because it works better for Agda.
 ```
 value-irreducible : Value V → ¬ (V —→ M)
 value-irreducible v V—→M  =  nope V—→M v

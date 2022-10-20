@@ -36,7 +36,7 @@ data _==>_ : Type → Type → Set where
 
 variable
   K : A ==> B
-```  
+```
 
 Extending a substitution
 
