@@ -577,7 +577,7 @@ or second line to simplify `zero ∸ zero`.  In this case, both
 lines lead to the same answer, `zero`, but that may not be
 the case in general.  Putting the line
 
-    {- OPTIONS --exact-split -}
+    {-# OPTIONS --exact-split #-}
 
 at the beginning of a file causes Agda to raise an error if cases
 overlap, which is sometimes helpful. We will give an example where
