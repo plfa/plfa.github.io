@@ -398,16 +398,16 @@ for some element of a list.  Give their definitions.
 The relation `merge` holds when two lists merge to give a third list.
 ```agda
   data merge {A : Set} : (xs ys zs : List A) → Set where
-  
+
     [] :
         --------------
         merge [] [] []
-  
+
     left-∷ : ∀ {x xs ys zs}
       → merge xs ys zs
         --------------------------
       → merge (x ∷ xs) ys (x ∷ zs)
-  
+
     right-∷ : ∀ {y xs ys zs}
       → merge xs ys zs
         --------------------------
@@ -418,7 +418,7 @@ For example,
 ```agda
   _ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
   _ = left-∷ (right-∷ (right-∷ (left-∷ [])))
-  
+
 ```
 
 Given a decidable predicate and a list, we can split the list
@@ -498,13 +498,13 @@ by adding the following definitions:
   var? : (t : Term) → Bool
   var? (` _)  =  true
   var? _      =  false
-  
+
   ƛ′_⇒_ : (t : Term) → {_ : T (var? t)} → Term → Term
   ƛ′_⇒_ (` x) N = ƛ x ⇒ N
-  
+
   case′_[zero⇒_|suc_⇒_] : Term → Term → (t : Term) → {_ : T (var? t)} → Term → Term
   case′ L [zero⇒ M |suc (` x) ⇒ N ]  =  case L [zero⇒ M |suc x ⇒ N ]
-  
+
   μ′_⇒_ : (t : Term) → {_ : T (var? t)} → Term → Term
   μ′ (` x) ⇒ N  =  μ x ⇒ N
 ```
@@ -648,18 +648,18 @@ containing only its bound variable, and the argument of successor
 must itself be canonical:
 ```agda
   infix  4 Canonical_⦂_
-  
+
   data Canonical_⦂_ : Term → Type → Set where
-  
+
     C-ƛ : ∀ {x A N B}
       → ∅ , x ⦂ A ⊢ N ⦂ B
         -----------------------------
       → Canonical (ƛ x ⇒ N) ⦂ (A ⇒ B)
-  
+
     C-zero :
         --------------------
         Canonical `zero ⦂ `ℕ
-  
+
     C-suc : ∀ {V}
       → Canonical V ⦂ `ℕ
         ---------------------
@@ -794,4 +794,3 @@ don't get stuck_.Provide proofs of the three postulates, `unstuck`, `preserves`,
 ```agda
   -- Your code goes here
 ```
-

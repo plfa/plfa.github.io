@@ -19,7 +19,7 @@ Monday's lecture is immediately followed by a tutorial.
 * **10.00--12.00** _Monday Lecture and Tutorial_
   George Square 50, room G.02 (50GS G.02).
 * **10.00--10.50** _Thursday Lecture_
-  Informatics Forum, room G.03 (IF G.03), save for Thursday 10 November in G.07 (IF G.07).	
+  Informatics Forum, room G.03 (IF G.03), save for Thursday 10 November in G.07 (IF G.07).
 
 ## Links
 

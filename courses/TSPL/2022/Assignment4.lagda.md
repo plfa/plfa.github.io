@@ -340,5 +340,3 @@ save for primitive numbers, in the untyped lambda calculus.
 ```agda
   -- Your code goes here
 ```
-
-
