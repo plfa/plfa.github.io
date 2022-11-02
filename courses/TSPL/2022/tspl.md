@@ -19,7 +19,7 @@ Monday's lecture is immediately followed by a tutorial.
 * **10.00--12.00** _Monday Lecture and Tutorial_
   George Square 50, room G.02 (50GS G.02).
 * **10.00--10.50** _Thursday Lecture_
-  Lister Learning and Teaching Centre, room G.13 (LLTC G.13).
+  Informatics Forum, room G.03 (IF G.03), save for Thursday 10 November in G.07 (IF G.07).
 
 ## Links
 
@@ -126,8 +126,8 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 
 * [Assignment 1](/TSPL/2022/Assignment1/) cw1 due 12 noon Thursday 6 October (Week 3)
 * [Assignment 2](/TSPL/2022/Assignment2/) cw2 due 12 noon Thursday 20 October (Week 5)
-* Assignment 3 cw3 due 12 noon Thursday 3 November(Week 7)
-* Assignment 4 cw4 due 12 noon Thursday 17 November (Week 9)
+* [Assignment 3](/TSPL/2022/Assignment3/) cw3 due 12 noon Thursday 3 November(Week 7)
+* [Assignment 4](/TSPL/2022/Assignment4/) cw4 due 12 noon Thursday 17 November (Week 9)
 * Assignment 5 cw5 due 12 noon Thursday 24 November (Week 10)
 <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**. -->
 
