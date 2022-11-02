@@ -459,7 +459,7 @@ auxiliary predicate
 
     One : Bin → Set
 
-that holds only if the bistring has a leading one.  A bitstring is
+that holds only if the bitstring has a leading one.  A bitstring is
 canonical if it has a leading one (representing a positive number) or
 if it consists of a single zero (representing zero).
 
