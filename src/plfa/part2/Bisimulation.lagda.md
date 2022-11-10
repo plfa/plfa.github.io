@@ -57,9 +57,13 @@ in the target:
 This stronger condition is known as _lock-step_ or _on the nose_ simulation.
 
 We are particularly interested in the situation where there is also
-a simulation from the target to the source: every reduction in the
+a simulation from the target to the source, using the inverse relation `~⁻¹`:
+every reduction in the
 target has a corresponding reduction sequence in the source.  This
 situation is called a _bisimulation_.
+It's important to note that two simulations do not always give rise to a
+bisimulation in general, the underlying relation of two simulations needs to be
+inverse of each other to have a bisimulation.
 
 Simulation is established by case analysis over all possible
 reductions and all possible terms to which they are related.  For each
