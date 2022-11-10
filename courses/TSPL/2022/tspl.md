@@ -74,22 +74,22 @@ Monday's lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>7</td>
-  <td>**31 Oct** [DeBruijn](/DeBruijn/)</td>
-  <td> **3 Nov** [More](/More/)</td>
+  <td>**31 Oct** [Properties](/Properties/)</td>
+  <td> **3 Nov** [DeBruijn](/DeBruijn/)</td>
  </tr>
  <tr>
   <td>8</td>
-  <td> **7 Nov** [Inference](/Inference/)</td>
-  <td>**10 Nov** [Untyped](/Untyped/)</td>
+  <td> **7 Nov** [More](/More/)</td>
+  <td>**10 Nov** [Inference](/Inference/)</td>
  </tr>
  <tr>
   <td>9</td>
-  <td>**14 Nov** Blame and Coercions</td>
-  <td>**17 Nov**</td>
+  <td>**14 Nov** [Untyped](/Untyped/)</td>
+  <td>**17 Nov** [Eval](/TSPL/2022/Eval/)</td>
  </tr>
  <tr>
   <td>10</td>
-  <td>**21 Nov**</td>
+  <td>**21 Nov** Blame and Coercions</td>
   <td>**24 Nov**</td>
  </tr>
  <tr>
