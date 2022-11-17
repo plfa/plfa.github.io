@@ -102,7 +102,6 @@ data _⊢_ : Context → Type → Set where
 ### Test examples
 
 First, computing two plus two on naturals:
-
 ```agda
 pattern two = `suc `suc `zero
 pattern plus = μ ƛ ƛ (case (` S Z) (` Z) (`suc (` S S S Z · ` Z · ` S Z)))
@@ -110,8 +109,6 @@ pattern plus = μ ƛ ƛ (case (` S Z) (` Z) (`suc (` S S S Z · ` Z · ` S Z)))
 2+2 : ∅ ⊢ `ℕ
 2+2 = plus · two · two
 ```
-We generalise to arbitrary contexts because later we will give examples
-where `two` appears nested inside binders.
 
 Next, computing two plus two on Church numerals:
 ```agda
@@ -127,14 +124,14 @@ pattern sucᶜ = ƛ `suc (` Z)
 ## Renaming maps, substitution maps, term maps
 
 ```
-_→ᴿ_ : Context → Context → Set
-Γ →ᴿ Δ = ∀ {A} → Γ ∋ A → Δ ∋ A
+_→ʳ_ : Context → Context → Set
+Γ →ʳ Δ = ∀ {A} → Γ ∋ A → Δ ∋ A
 
 _→ˢ_ : Context → Context → Set
 Γ →ˢ Δ = ∀ {A} → Γ ∋ A → Δ ⊢ A
 
-_→ᵀ_ : Context → Context → Set
-Γ →ᵀ Δ = ∀ {A} → Γ ⊢ A → Δ ⊢ A
+_→ᵗ_ : Context → Context → Set
+Γ →ᵗ Δ = ∀ {A} → Γ ⊢ A → Δ ⊢ A
 ```
 
 
@@ -143,16 +140,16 @@ _→ᵀ_ : Context → Context → Set
 Extension of renaming maps
 ```
 ren▷ : ∀ {Γ Δ A}
-  → (Γ →ᴿ Δ)
+  → (Γ →ʳ Δ)
     ----------------------------
-  → ((Γ ▷ A) →ᴿ (Δ ▷ A))
+  → ((Γ ▷ A) →ʳ (Δ ▷ A))
 ren▷ ρ Z      =  Z
 ren▷ ρ (S x)  =  S (ρ x)
 
 ren : ∀ {Γ Δ}
-  → (Γ →ᴿ Δ)
+  → (Γ →ʳ Δ)
     --------
-  → (Γ →ᵀ Δ)
+  → (Γ →ᵗ Δ)
 ren ρ (` x)          = ` (ρ x)
 ren ρ (ƛ N)          =  ƛ (ren (ren▷ ρ) N)
 ren ρ (L · M)        =  (ren ρ L) · (ren ρ M)
@@ -161,7 +158,7 @@ ren ρ (`suc M)       = `suc (ren ρ M)
 ren ρ (case L M N)   = case (ren ρ L) (ren ρ M) (ren (ren▷ ρ) N)
 ren ρ (μ N)          = μ (ren (ren▷ ρ) N)
 
-lift : ∀ {Γ : Context} {A : Type} → Γ →ᵀ (Γ ▷ A)
+lift : ∀ {Γ : Context} {A : Type} → Γ →ᵗ (Γ ▷ A)
 lift = ren S_
 ```
 
@@ -178,7 +175,7 @@ sub▷ σ (S x)  =  lift (σ x)
 sub : ∀ {Γ Δ : Context}
   → (Γ →ˢ Δ)
     --------
-  → (Γ →ᵀ Δ)
+  → (Γ →ᵗ Δ)
 sub σ (` x)          =  σ x
 sub σ (ƛ  N)         =  ƛ (sub (sub▷ σ) N)
 sub σ (L · M)        =  (sub σ L) · (sub σ M)
@@ -232,7 +229,23 @@ value : ∀ {Γ A} {V : Γ ⊢ A}
 value {V = V} v  =  V
 ```
 
-## Frames
+## Frames (aka Evaluation Contexts)
+
+Here is how evaluation contexts are written informally:
+
+    E ::= □ | E · M | V · E | `suc E | `case E M N
+
+    M —→ M′
+    ------------- ξ
+    E[M] —→ E[M′]
+
+Since now values uniquely dermine the underlying term, we can now write, for instance
+
+    (ƛ N) ·[ E ]
+
+instead of
+
+    _·[_] { ƛ N } V-ƛ E
 
 ```
 infix  4 _⊢_==>_
