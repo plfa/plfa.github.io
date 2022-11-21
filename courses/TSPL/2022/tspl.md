@@ -89,7 +89,7 @@ Monday's lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>10</td>
-  <td>**21 Nov** Blame and Coercions</td>
+  <td>**21 Nov** [agda2hs](https://github.com/agda/agda2hs) (guest: [Orestis Melkonian](https://omelkonian.github.io/))</td>
   <td>**24 Nov**</td>
  </tr>
  <tr>
