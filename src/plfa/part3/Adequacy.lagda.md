@@ -296,10 +296,10 @@ too.
 
 In a moment we prove that `𝕍` is preserved when going from a greater
 value to a lesser value: if `𝕍 v c` and `v' ⊑ v`, then `𝕍 v' c`.
-This property, named `𝕍-sub`, is needed by the main lemma in
+This property, named `sub-𝕍`, is needed by the main lemma in
 the case for the `sub` rule.
 
-To prove `𝕍-sub`, we in turn need the following property concerning
+To prove `sub-𝕍`, we in turn need the following property concerning
 values that are not greater than a function, that is, values that are
 equivalent to `⊥`. In such cases, `𝕍 v (clos (ƛ N) γ')` is trivially true.
 
@@ -315,14 +315,14 @@ not-above-fun-𝕍 {v₁ ⊔ v₂} af
 ... | ⟨ af1 , af2 ⟩ = ⟨ not-above-fun-𝕍 af1 , not-above-fun-𝕍 af2 ⟩
 ```
 
-The proofs of `𝕍-sub` and `𝔼-sub` are intertwined.
+The proofs of `sub-𝕍` and `sub-𝔼` are intertwined.
 
 ```agda
 sub-𝕍 : ∀{c : Clos}{v v'} → 𝕍 v c → v' ⊑ v → 𝕍 v' c
 sub-𝔼 : ∀{c : Clos}{v v'} → 𝔼 v c → v' ⊑ v → 𝔼 v' c
 ```
 
-We prove `𝕍-sub` by case analysis on the closure's term, to dispatch the
+We prove `sub-𝕍` by case analysis on the closure's term, to dispatch the
 cases for variables and application. We then proceed by induction on
 `v' ⊑ v`. We describe each case below.
 
