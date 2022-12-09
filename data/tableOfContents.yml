@@ -43,6 +43,7 @@ part:
   title: "Appendix"
   chapter:
   - include: src/plfa/part2/Substitution.lagda.md
+  - include: src/plfa/part2/UnicodeCharTable.md
     epub-type: appendix
 - title: "Back matter"
   chapter:
