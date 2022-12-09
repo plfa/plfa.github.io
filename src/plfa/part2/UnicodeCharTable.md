@@ -341,6 +341,3 @@ This chapter uses the following unicode:
 
 The `\st` command permits navigation among many different stars;
 the one we use is number 7.
-
-
-
