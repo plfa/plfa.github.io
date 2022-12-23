@@ -199,7 +199,7 @@ uniq-∋ (S _ ∋x) (S _ ∋x′)  =  uniq-∋ ∋x ∋x′
 uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
 uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
 uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
-uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl 
+uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
 
 -- Failed lookups still fail if a different binding is added.
 
@@ -257,7 +257,7 @@ synthesize Γ (L · M) with synthesize Γ L
 ... | yes ⟨ `ℕ ,    ⊢L ⟩  =  no  (λ{ ⟨ _ , ⊢L′ · _  ⟩  →  ℕ≢⇒ (uniq-↑ ⊢L ⊢L′) })
 ... | yes ⟨ A ⇒ B , ⊢L ⟩ with inherit Γ M A
 ...    | no  ¬⊢M          =  no  (¬arg ⊢L ¬⊢M)
-...    | yes ⊢M           =  yes ⟨ B , ⊢L · ⊢M ⟩  
+...    | yes ⊢M           =  yes ⟨ B , ⊢L · ⊢M ⟩
 synthesize Γ (M ↓ A) with inherit Γ M A
 ... | no  ¬⊢M             =  no  (λ{ ⟨ _ , ⊢↓ ⊢M ⟩  →  ¬⊢M ⊢M })
 ... | yes ⊢M              =  yes ⟨ A , ⊢↓ ⊢M ⟩
@@ -274,7 +274,7 @@ inherit Γ (`suc M) `ℕ with inherit Γ M `ℕ
 inherit Γ (`suc M) (A ⇒ B)  =  no  (λ())
 inherit Γ (`case L [zero⇒ M |suc x ⇒ N ]) A with synthesize Γ L
 ... | no ¬∃                 =  no  (λ{ (⊢case ⊢L  _ _) → ¬∃ ⟨ `ℕ , ⊢L ⟩})
-... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })   
+... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })
 ... | yes ⟨ `ℕ ,    ⊢L ⟩ with inherit Γ M A
 ...    | no ¬⊢M             =  no  (λ{ (⊢case _ ⊢M _) → ¬⊢M ⊢M })
 ...    | yes ⊢M with inherit (Γ , x ⦂ `ℕ) N A
@@ -498,7 +498,7 @@ decorate⁻ (ƛ x ⇒ M) = ƛ x ⇒ decorate⁻ M
 decorate⁻ (M · M₁) = (decorate⁺ M) · (decorate⁻ M₁) ↑
 decorate⁻ `zero = `zero
 decorate⁻ (`suc M) = `suc (decorate⁻ M)
-decorate⁻ `case M [zero⇒ M₁ |suc x ⇒ M₂ ] 
+decorate⁻ `case M [zero⇒ M₁ |suc x ⇒ M₂ ]
  = `case (decorate⁺ M) [zero⇒ (decorate⁻ M₁) |suc x ⇒ (decorate⁻ M₂) ]
 decorate⁻ (μ x ⇒ M) = μ x ⇒ decorate⁻ M
 decorate⁻ (M ⦂ x) = decorate⁻ M
@@ -566,7 +566,7 @@ _ : decorate⁺ l2+2ᶜ ≡ 2+2ᶜ
 _ = refl
 
 
-{- 
+{-
   Unicode used in this chapter:
 
   ↓  U+2193:  DOWNWARDS ARROW (\d)

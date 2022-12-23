@@ -57,4 +57,3 @@ ev-ex : ∀ {n : ℕ} → Even n → ∃[ m ] (2 * m ≡ n)
 ev-ex ev0 =  (zero , refl)
 ev-ex (ev2 ev) with ev-ex ev
 ... | (m , refl) = (suc m , lemma m)
-

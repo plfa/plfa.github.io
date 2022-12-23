@@ -1,0 +1,26 @@
+// Placeholder to allow defining custom styles that override everything else.
+// (Use `_sass/minima/custom-variables.scss` to override variable defaults)
+
+.dedication {
+  text-align: center;
+}
+.xxx-large {
+  font-size: 2rem;
+}
+.xx-large {
+  font-size: 1.5rem;
+}
+.x-large {
+  font-size: 1.25rem;
+}
+.large {
+  font-size: 1rem;
+}
+.list-of-contributors ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: calc(100% - 2rem);
+}
+.list-of-contributors ul li {
+  margin-right: 2rem;
+}

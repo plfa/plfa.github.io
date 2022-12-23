@@ -1,6 +1,5 @@
 ---
 title     : "StlcNew: The Simply Typed Lambda-Calculus"
-layout    : page
 permalink : /StlcNew
 ---
 
@@ -76,7 +75,7 @@ and three are for the base type, booleans:
   * Conditions, `if L then M else N`
 
 Abstraction is also called lambda abstraction, and is the construct
-from which the calculus takes its name. 
+from which the calculus takes its name.
 
 With the exception of variables, each term form either constructs
 a value of a given type (abstractions yield functions, true and
@@ -136,7 +135,7 @@ Here are a couple of example terms, `not` of type
 and applies the function to the boolean twice.
 
 \begin{code}
-not two : Term 
+not two : Term
 not =  ƛ "x" ⇒ if # "x" then false else true
 two =  ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x")
 \end{code}
@@ -152,7 +151,7 @@ irrelevant.  Thus the five terms
 * `` ƛ "f" ⇒ ƛ "x" ⇒ # "f" · (# "f" · # "x") ``
 * `` ƛ "g" ⇒ ƛ "y" ⇒ # "g" · (# "g" · # "y") ``
 * `` ƛ "fred" ⇒ ƛ "xander" ⇒ # "fred" · (# "fred" · # "xander") ``
-* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``  
+* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``
 * `` ƛ "x" ⇒ ƛ "f" ⇒ # "x" · (# "x" · # "f") ``
 
 are all considered equivalent.  This equivalence relation
@@ -165,7 +164,7 @@ that are bound may become free.  Consider the following terms.
   Both variable `f` and `x` are bound.
 
 * `` ƛ "x" ⇒ # "f" · (# "f" · # "x") ``
-  has `x` as a bound variable but `f` as a free variable.  
+  has `x` as a bound variable but `f` as a free variable.
 
 * `` # "f" · (# "f" · # "x") ``
   has both `f` and `x` as free variables.
@@ -176,7 +175,7 @@ two are open.  A formal definition of bound and free variables will be
 given in the next chapter.
 
 Different occurrences of a variable may be bound and free.
-In the term 
+In the term
 
     (ƛ "x" ⇒ # "x") · # "x"
 
@@ -417,7 +416,7 @@ conditional, we first reduce the condition until it becomes a value;
 if the condition is true the conditional reduces to the first
 branch and if false it reduces to the second branch.
 
-In an informal presentation of the formal semantics, 
+In an informal presentation of the formal semantics,
 the rules for reduction are written as follows.
 
     L ⟹ L′
@@ -459,7 +458,7 @@ and indeed such rules are traditionally called beta rules.
 Here are the above rules formalised in Agda.
 
 \begin{code}
-infix 10 _⟹_ 
+infix 10 _⟹_
 
 data _⟹_ : Term → Term → Set where
 
@@ -480,7 +479,7 @@ data _⟹_ : Term → Term → Set where
     → (ƛ x ⇒ N) · V ⟹ N [ x := V ]
 
   ξif : ∀ {L L′ M N}
-    → L ⟹ L′    
+    → L ⟹ L′
       -------------------------------------------
     → if L then M else N ⟹ if L′ then M else N
 
@@ -550,7 +549,7 @@ Here it is formalised in Agda, along similar lines to what
 we used for reasoning about [Equality](Equality).
 
 \begin{code}
-infix  2 _⟹*_ 
+infix  2 _⟹*_
 infix  1 begin_
 infixr 2 _⟹⟨_⟩_
 infix  3 _∎
@@ -564,7 +563,7 @@ data _⟹*_ : Term → Term → Set where
     → L ⟹ M
     → M ⟹* N
       ---------
-    → L ⟹* N  
+    → L ⟹* N
 
 begin_ : ∀ {M N} → (M ⟹* N) → (M ⟹* N)
 begin M⟹*N = M⟹*N
@@ -628,7 +627,7 @@ In general, we use typing _judgments_ of the form
 to assert in type environment `Γ` that term `M` has type `A`.
 Environment `Γ` provides types for all the free variables in `M`.
 
-Here are three examples. 
+Here are three examples.
 
 * `` ∅ , "f" ⦂ 𝔹 ⇒ 𝔹 , "x" ⦂ 𝔹 ⊢ # "f" · (# "f" · # "x") ⦂  𝔹 ``
 * `` ∅ , "f" ⦂ 𝔹 ⇒ 𝔹 ⊢ (ƛ "x" ⇒ # "f" · (# "f" · # "x")) ⦂  𝔹 ⇒ 𝔹 ``
@@ -642,7 +641,7 @@ environment `Γ` by mapping variable `x` to type `A`.
 
 *Need text to explain `Γ ∋ x ⦂ A`*
 
-In an informal presentation of the formal semantics, 
+In an informal presentation of the formal semantics,
 the rules for typing are written as follows.
 
     Γ x ≡ A
@@ -671,7 +670,7 @@ the rules for typing are written as follows.
     Γ ⊢ if L then M else N ⦂ A
 
 As we will show later, the rules are deterministic, in that
-at most one rule applies to every term. 
+at most one rule applies to every term.
 
 The proof rules come in pairs, with rules to introduce and to
 eliminate each connective, labeled `-I` and `-E`, respectively. As we
@@ -693,7 +692,7 @@ infix  4  _⊢_⦂_
 infixl 5  _,_⦂_
 
 data Context : Set where
-  ∅ : Context 
+  ∅ : Context
   _,_⦂_ : Context → Id → Type → Context
 
 data _∋_⦂_ : Context → Id → Type → Set where
@@ -739,7 +738,7 @@ data _⊢_⦂_ : Context → Term → Type → Set where
     → Γ ⊢ M ⦂ A
     → Γ ⊢ N ⦂ A
       ---------------------------
-    → Γ ⊢ if L then M else N ⦂ A    
+    → Γ ⊢ if L then M else N ⦂ A
 \end{code}
 
 ### Example type derivations
@@ -778,9 +777,9 @@ Derivation of `two`:
 Where `∋f` and `∋x` abbreviate the two derivations:
 
 
-                 ---------------- Z           
-    "x" ≢ "f"    Γ₁ ∋ "f" ⦂ B ⇒ B          
-    ----------------------------- S        ------------- Z  
+                 ---------------- Z
+    "x" ≢ "f"    Γ₁ ∋ "f" ⦂ B ⇒ B
+    ----------------------------- S        ------------- Z
     Γ₂ ∋ "f" ⦂ B ⇒ B                       Γ₂ ∋ "x" ⦂ 𝔹
 
 where `Γ₁ = ∅ , f ⦂ 𝔹 ⇒ 𝔹` and `Γ₂ = ∅ , f ⦂ 𝔹 ⇒ 𝔹 , x ⦂ 𝔹`.
@@ -914,4 +913,3 @@ This chapter uses the following unicode
     β    U+03B2: GREEK SMALL LETTER BETA (\Gb or \beta)
 
 Note that ′ (U+2032: PRIME) is not the same as ' (U+0027: APOSTROPHE).
-

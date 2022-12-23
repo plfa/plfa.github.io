@@ -1,6 +1,5 @@
 ---
 title     : "Raw"
-layout    : page
 permalink : /Raw/
 ---
 
@@ -64,4 +63,3 @@ data _⊢_⦂_ : Context → Term → Type → Set where
       -------------
     → Γ ⊢ L · M ⦂ B
 \end{code}
-

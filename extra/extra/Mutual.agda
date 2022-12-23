@@ -21,4 +21,3 @@ mutual
 /Users/wadler/sf/src/extra/Mutual.agda:3,6-10
 Missing definition for even
 -}
-

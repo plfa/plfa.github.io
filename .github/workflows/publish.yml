@@ -1,0 +1,45 @@
+name: Publish to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: site
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "19.08"
+          path: site
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "20.07"
+          path: site
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "22.08"
+          path: site
+
+      - name: Publish to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: web
+          folder: site

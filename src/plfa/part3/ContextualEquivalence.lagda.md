@@ -1,18 +1,15 @@
 ---
 title     : "ContextualEquivalence: Denotational equality implies contextual equivalence"
-layout    : page
-prev      : /Adequacy/
 permalink : /ContextualEquivalence/
-next      : /Substitution/
 ---
 
-```
+```agda
 module plfa.part3.ContextualEquivalence where
 ```
 
 ## Imports
 
-```
+```agda
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
      renaming (_,_ to ⟨_,_⟩)
 open import plfa.part2.Untyped using (_⊢_; ★; ∅; _,_; ƛ_; _—↠_)
@@ -34,7 +31,7 @@ results. As discuss in the Denotational chapter, the result of
 a program in the lambda calculus is to terminate or not.
 We characterize termination with the reduction semantics as follows.
 
-```
+```agda
 terminates : ∀{Γ} → (M : Γ ⊢ ★) → Set
 terminates {Γ} M = Σ[ N ∈ (Γ , ★ ⊢ ★) ] (M —↠ ƛ N)
 ```
@@ -43,7 +40,7 @@ So two terms are contextually equivalent if plugging them into the
 same context produces two programs that either terminate or diverge
 together.
 
-```
+```agda
 _≅_ : ∀{Γ} → (M N : Γ ⊢ ★) → Set
 (_≅_ {Γ} M N) = ∀ {C : Ctx Γ ∅}
                 → (terminates (plug C M)) iff (terminates (plug C N))
@@ -69,7 +66,7 @@ The lemma states that if `M` and `N` are denotationally equal
 and if `M` plugged into `C` terminates, then so does
 `N` plugged into `C`.
 
-```
+```agda
 denot-equal-terminates : ∀{Γ} {M N : Γ ⊢ ★} {C : Ctx Γ ∅}
   → ℰ M ≃ ℰ N  →  terminates (plug C M)
     -----------------------------------
@@ -81,10 +78,10 @@ denot-equal-terminates {Γ}{M}{N}{C} ℰM≃ℰN ⟨ N′ , CM—↠ƛN′ ⟩ =
     cbn→reduce (proj₂ (proj₂ (proj₂ (↓→⇓ ℰCN≃ℰƛN′))))
 ```
 
-The proof is direct. Because `plug C —↠ plug C (ƛN′)`,
+The proof is direct. Because `plug C —↠ plug C (ƛ N′)`,
 we can apply soundness to obtain
 
-    ℰ (plug C M) ≃ ℰ (ƛN′)
+    ℰ (plug C M) ≃ ℰ (ƛ N′)
 
 From `ℰ M ≃ ℰ N`, compositionality gives us
 
@@ -92,7 +89,7 @@ From `ℰ M ≃ ℰ N`, compositionality gives us
 
 Putting these two facts together gives us
 
-    ℰ (plug C N) ≃ ℰ (ƛN′).
+    ℰ (plug C N) ≃ ℰ (ƛ N′).
 
 We then apply `↓→⇓` from Chapter [Adequacy](/Adequacy/) to deduce
 
@@ -106,7 +103,7 @@ so we conclude that
 
 The main theorem follows by two applications of the lemma.
 
-```
+```agda
 denot-equal-contex-equal : ∀{Γ} {M N : Γ ⊢ ★}
   → ℰ M ≃ ℰ N
     ---------

@@ -1,0 +1,15 @@
+name: 'Setup Node'
+description: 'Setup Node'
+runs:
+  using: "composite"
+  steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .node-version
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Node dependencies
+        run: npm install
+        shell: pwsh

@@ -1,12 +1,9 @@
 ---
 title     : "Untyped: Untyped lambda calculus with full normalisation"
-layout    : page
-prev      : /Inference/
 permalink : /Untyped/
-next      : /Confluence/
 ---
 
-```
+```agda
 module plfa.part2.Untyped where
 ```
 
@@ -48,7 +45,7 @@ the range of different lambda calculi one may encounter.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -81,7 +78,7 @@ can now be defined in the language itself.
 
 First, we get all our infix declarations out of the way:
 
-```
+```agda
 infix  4  _⊢_
 infix  4  _∋_
 infixl 5  _,_
@@ -94,7 +91,7 @@ infixl 7  _·_
 ## Types
 
 We have just one type:
-```
+```agda
 data Type : Set where
   ★ : Type
 ```
@@ -103,7 +100,7 @@ data Type : Set where
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -111,7 +108,7 @@ Show that `Type` is isomorphic to `⊤`, the unit type.
 
 As before, a context is a list of types, with the type of the
 most recently bound variable on the right:
-```
+```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
@@ -122,7 +119,7 @@ We let `Γ` and `Δ` range over contexts.
 
 Show that `Context` is isomorphic to `ℕ`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -130,7 +127,7 @@ Show that `Context` is isomorphic to `ℕ`.
 
 Intrinsically-scoped variables correspond to the lookup judgment.  The
 rules are as before:
-```
+```agda
 data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ A}
@@ -157,7 +154,7 @@ Intrinsically-scoped terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
 well scoped — that is, that all variables they mention are in scope —
 but not that they are well typed:
-```
+```agda
 data _⊢_ : Context → Type → Set where
 
   `_ : ∀ {Γ A}
@@ -185,7 +182,7 @@ fixpoints into this calculus.
 As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
 every variable has the same type:
-```
+```agda
 count : ∀ {Γ} → ℕ → Γ ∋ ★
 count {Γ , ★} zero     =  Z
 count {Γ , ★} (suc n)  =  S (count n)
@@ -194,7 +191,7 @@ count {∅}     _        =  ⊥-elim impossible
 ```
 
 We can then introduce a convenient abbreviation for variables:
-```
+```agda
 #_ : ∀ {Γ} → ℕ → Γ ⊢ ★
 # n  =  ` count n
 ```
@@ -202,7 +199,7 @@ We can then introduce a convenient abbreviation for variables:
 ## Test examples
 
 Our only example is computing two plus two on Church numerals:
-```
+```agda
 twoᶜ : ∀ {Γ} → Γ ⊢ ★
 twoᶜ = ƛ ƛ (# 1 · (# 1 · # 0))
 
@@ -225,7 +222,7 @@ two.
 ## Renaming
 
 Our definition of renaming is as before.  First, we need an extension lemma:
-```
+```agda
 ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
     -----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ∋ A)
@@ -236,7 +233,7 @@ We could replace all instances of `A` and `B` by `★`, but arguably it is
 clearer not to do so.
 
 Now it is straightforward to define renaming:
-```
+```agda
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
     ------------------------
@@ -251,7 +248,7 @@ This is exactly as before, save that there are fewer term forms.
 
 Our definition of substitution is also exactly as before.
 First we need an extension lemma:
-```
+```agda
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ----------------------------------
   → (∀ {A B} → Γ , B ∋ A → Δ , B ⊢ A)
@@ -261,7 +258,7 @@ exts σ (S x)  =  rename S_ (σ x)
 Again, we could replace all instances of `A` and `B` by `★`.
 
 Now it is straightforward to define substitution:
-```
+```agda
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ------------------------
@@ -275,7 +272,7 @@ Again, this is exactly as before, save that there are fewer term forms.
 ## Single substitution
 
 It is easy to define the special case of substitution for one free variable:
-```
+```agda
 subst-zero : ∀ {Γ B} → (Γ ⊢ B) → ∀ {A} → (Γ , B ∋ A) → (Γ ⊢ A)
 subst-zero M Z      =  M
 subst-zero M (S x)  =  ` x
@@ -293,14 +290,14 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} (subst-zero M) {A} N
 Reduction continues until a term is fully normalised.  Hence, instead
 of values, we are now interested in _normal forms_.  Terms in normal
 form are defined by mutual recursion with _neutral_ terms:
-```
+```agda
 data Neutral : ∀ {Γ A} → Γ ⊢ A → Set
 data Normal  : ∀ {Γ A} → Γ ⊢ A → Set
 ```
 Neutral terms arise because we now consider reduction of open terms,
 which may contain free variables.  A term is neutral if it is a
 variable or a neutral term applied to a normal term:
-```
+```agda
 data Neutral where
 
   `_  : ∀ {Γ A} (x : Γ ∋ A)
@@ -316,7 +313,7 @@ data Neutral where
 A term is a normal form if it is neutral or an abstraction where the
 body is a normal form. We use `′_` to label neutral terms.
 Like `` `_ ``, it is unobtrusive:
-```
+```agda
 data Normal where
 
   ′_ : ∀ {Γ A} {M : Γ ⊢ A}
@@ -331,14 +328,14 @@ data Normal where
 ```
 
 We introduce a convenient abbreviation for evidence that a variable is neutral:
-```
+```agda
 #′_ : ∀ {Γ} (n : ℕ) → Neutral {Γ} (# n)
 #′ n  =  ` count n
 ```
 
 For example, here is the evidence that the Church numeral two is in
 normal form:
-```
+```agda
 _ : Normal (twoᶜ {∅})
 _ = ƛ ƛ (′ #′ 1 · (′ #′ 1 · (′ #′ 0)))
 ```
@@ -368,7 +365,7 @@ call-by-name and to enable full normalisation:
 * A new rule `ζ` is added, to enable reduction underneath a lambda.
 
 Here are the formalised rules:
-```
+```agda
 infix 2 _—→_
 
 data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -399,7 +396,7 @@ How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
 unless both terms are in normal form.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -410,7 +407,7 @@ do not reduce underneath lambda?  Assume that `β`
 permits reduction when both terms are values (that is, lambda
 abstractions).  What would `2+2ᶜ` reduce to in this case?
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -418,7 +415,7 @@ abstractions).  What would `2+2ᶜ` reduce to in this case?
 ## Reflexive and transitive closure
 
 We cut-and-paste the previous definition:
-```
+```agda
 infix  2 _—↠_
 infix  1 begin_
 infixr 2 _—→⟨_⟩_
@@ -447,7 +444,7 @@ begin M—↠N = M—↠N
 ## Example reduction sequence
 
 Here is the demonstration that two plus two is four:
-```
+```agda
 _ : 2+2ᶜ —↠ fourᶜ
 _ =
   begin
@@ -483,7 +480,7 @@ it for open, well-scoped terms.  The definition of normal form permits
 free variables, and we have no terms that are not functions.
 
 A term makes progress if it can take a step or is in normal form:
-```
+```agda
 data Progress {Γ A} (M : Γ ⊢ A) : Set where
 
   step : ∀ {N : Γ ⊢ A}
@@ -498,7 +495,7 @@ data Progress {Γ A} (M : Γ ⊢ A) : Set where
 ```
 
 If a term is well scoped then it satisfies progress:
-```
+```agda
 progress : ∀ {Γ A} → (M : Γ ⊢ A) → Progress M
 progress (` x)                                 =  done (′ ` x)
 progress (ƛ N)  with  progress N
@@ -546,7 +543,7 @@ application.
 As previously, progress immediately yields an evaluator.
 
 Gas is specified by a natural number:
-```
+```agda
 record Gas : Set where
   constructor gas
   field
@@ -554,7 +551,7 @@ record Gas : Set where
 ```
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is normal or indicate that it ran out of gas:
-```
+```agda
 data Finished {Γ A} (N : Γ ⊢ A) : Set where
 
    done :
@@ -569,7 +566,7 @@ data Finished {Γ A} (N : Γ ⊢ A) : Set where
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
-```
+```agda
 data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
 
   steps : ∀ {Γ A} {L N : Γ ⊢ A}
@@ -579,7 +576,7 @@ data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
     → Steps L
 ```
 The evaluator takes gas and a term and returns the corresponding steps:
-```
+```agda
 eval : ∀ {Γ A}
   → Gas
   → (L : Γ ⊢ A)
@@ -597,7 +594,7 @@ generalises to an arbitrary context `Γ`.
 ## Example
 
 We reiterate our previous example. Two plus two is four, with Church numerals:
-```
+```agda
 _ : eval (gas 100) 2+2ᶜ ≡
   steps
    ((ƛ
@@ -678,7 +675,7 @@ zero branch of the case.  (The cases could be in either order.
 We put the successor case first to ease comparison with Church numerals.)
 
 Here is the Scott representation of naturals encoded with de Bruijn indexes:
-```
+```agda
 `zero : ∀ {Γ} → (Γ ⊢ ★)
 `zero = ƛ ƛ (# 0)
 
@@ -696,7 +693,7 @@ ordinary term using lambda abstraction.
 Applying successor to the zero indeed reduces to the Scott numeral
 for one.
 
-```
+```agda
 _ : eval (gas 100) (`suc_ {∅} `zero) ≡
     steps
         ((ƛ (ƛ (ƛ # 1 · # 2))) · (ƛ (ƛ # 0))
@@ -722,14 +719,14 @@ This works because:
       f · (μ f)
 
 With de Bruijn indices, we have the following:
-```
+```agda
 μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
 μ N  =  (ƛ ((ƛ (# 1 · (# 0 · # 0))) · (ƛ (# 1 · (# 0 · # 0))))) · (ƛ N)
 ```
 The argument to fixpoint is treated similarly to the successor branch of case.
 
 We can now define two plus two exactly as before:
-```
+```agda
 infix 5 μ_
 
 two : ∀ {Γ} → Γ ⊢ ★
@@ -751,7 +748,7 @@ but they do both reduce to the same normal term.
 Use the evaluator to confirm that `plus · two · two` and `four`
 normalise to the same term.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -762,7 +759,7 @@ multiplication from previous chapters with the Scott
 representation and the encoding of the fixpoint operator.
 Confirm that two times two is four.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -772,7 +769,7 @@ Along the lines above, encode all of the constructs of
 Chapter [More](/More/),
 save for primitive numbers, in the untyped lambda calculus.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -787,7 +784,7 @@ one reduction to the front of a reduction sequence.  The following is
 the proof of transitivity, which has the same structure as the append
 function `_++_` on lists.
 
-```
+```agda
 —↠-trans : ∀{Γ}{A}{L M N : Γ ⊢ A}
          → L —↠ M
          → M —↠ N
@@ -799,7 +796,7 @@ function `_++_` on lists.
 The following notation makes it convenient to employ
 transitivity of `—↠`.
 
-```
+```agda
 infixr 2 _—↠⟨_⟩_
 
 _—↠⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
@@ -826,7 +823,7 @@ congruence for the untyped lambda calculus. The multi-step reduction
 relation `—↠` is also a congruence, which we prove in the following
 three lemmas.
 
-```
+```agda
 appL-cong : ∀ {Γ} {L L' M : Γ ⊢ ★}
          → L —↠ L'
            ---------------
@@ -848,7 +845,7 @@ The proof of `appL-cong` is by induction on the reduction sequence `L —↠ L'`
 The proofs of `appR-cong` and `abs-cong` follow the same pattern as
 the proof for `appL-cong`.
 
-```
+```agda
 appR-cong : ∀ {Γ} {L M M' : Γ ⊢ ★}
          → M —↠ M'
            ---------------
@@ -857,7 +854,7 @@ appR-cong {Γ}{L}{M}{M'} (M ∎) = L · M ∎
 appR-cong {Γ}{L}{M}{M'} (M —→⟨ r ⟩ rs) = L · M —→⟨ ξ₂ r ⟩ appR-cong rs
 ```
 
-```
+```agda
 abs-cong : ∀ {Γ} {N N' : Γ , ★ ⊢ ★}
          → N —↠ N'
            ----------

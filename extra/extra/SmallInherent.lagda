@@ -1,6 +1,5 @@
 ---
 title     : "SmallInherent"
-layout    : page
 permalink : /SmallInherent/
 ---
 
@@ -111,7 +110,7 @@ subst σ (L · M)        =  (subst σ L) · (subst σ M)
 
 _[_] : ∀ {Γ A B}
         → Γ , B ⊢ A
-        → Γ ⊢ B 
+        → Γ ⊢ B
           ---------
         → Γ ⊢ A
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
@@ -214,4 +213,3 @@ eval (gas (suc m)) L with progress L
 ... | step {M} L—→M with eval (gas m) M
 ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 \end{code}
-

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    $^$${ head() }
+    <body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper">
+                <section class="titlepage">
+                <h1 class="title">$pagetitle$</h1>
+                $for(author)$
+                    <p class="author">$author$</p>
+                $endfor$
+                <p class="date">$date$</p>
+                <div class="rights">$rights$</div>
+                </section>
+$body$
+            </div>
+        </main>
+        $^$${ footer() }
+    </body>
+</html>

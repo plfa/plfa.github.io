@@ -1,6 +1,5 @@
 ---
 title     : "StlcPropNew: Properties of STLC"
-layout    : page
 permalink : /StlcPropNew
 ---
 
@@ -31,7 +30,7 @@ open import StlcNew
 The first step in establishing basic properties of reduction and typing
 is to identify the possible _canonical forms_ (i.e., well-typed closed values)
 belonging to each type.  For function types the canonical forms are lambda-abstractions,
-while for boolean types they are values `true` and `false`.  
+while for boolean types they are values `true` and `false`.
 
 \begin{code}
 data canonical_for_ : Term → Type → Set where
@@ -158,7 +157,7 @@ technical lemmas), the story goes like this:
   - The one case that is significantly different is the one for the
     `βλ·` rule, whose definition uses the substitution operation.  To see that
     this step preserves typing, we need to know that the substitution itself
-    does.  So we prove a ... 
+    does.  So we prove a ...
 
   - _substitution lemma_, stating that substituting a (closed) term
     `V` for a variable `x` in a term `N` preserves the type of `N`.
@@ -319,7 +318,7 @@ rename : ∀ {Γ Δ}
         → (∀ {M A} → Γ ⊢ M ⦂ A → Δ ⊢ M ⦂ A)
 rename σ (Ax ∋w)        = Ax (σ ∋w)
 rename σ (⇒-I ⊢N)       = ⇒-I (rename (ext σ) ⊢N)
-rename σ (⇒-E ⊢L ⊢M)    = ⇒-E (rename σ ⊢L) (rename σ ⊢M) 
+rename σ (⇒-E ⊢L ⊢M)    = ⇒-E (rename σ ⊢L) (rename σ ⊢M)
 rename σ 𝔹-I₁           = 𝔹-I₁
 rename σ 𝔹-I₂           = 𝔹-I₂
 rename σ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (rename σ ⊢L) (rename σ ⊢M) (rename σ ⊢N)
@@ -659,5 +658,3 @@ false, give a counterexample.
   - Progress
 
   - Preservation
-
-

@@ -7,7 +7,7 @@ module Prelude where
   infixr 3 ∃𝑠𝑡
   infixl 5 _∨_
   infixr 20 _∷_
-  
+
   data 𝔹 : Set where
     T : 𝔹
     F : 𝔹

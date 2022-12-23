@@ -1,0 +1,31 @@
+name: 'Setup EPUBCheck'
+description: 'Setup EPUBCheck'
+inputs:
+  epubcheck-version:
+    required: true
+    description: 'Version of EPUBCheck to use.'
+outputs:
+  epubcheck-jar-path:
+    description: 'Path to the installed EPUBCheck JAR file.'
+    value: ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}
+runs:
+  using: "composite"
+  steps:
+      - name: Cache EPUBCheck
+        uses: actions/cache@v3
+        id: cache-epubcheck
+        with:
+          path: ${{ github.workspace }}/epubcheck/epubcheck-${{ inputs.epubcheck-version }}
+          key: epubcheck-${{ runner.os }}-${{ inputs.epubcheck-version }}
+
+      - name: Setup EPUBCheck
+        if: steps.cache-epubcheck.outputs.cache-hit != 'true'
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/w3c/epubcheck/releases/download/v${{ inputs.epubcheck-version }}/epubcheck-${{ inputs.epubcheck-version }}.zip" -OutFile "${{ runner.temp }}/epubcheck.zip"
+          Expand-Archive "${{ runner.temp }}/epubcheck.zip" -DestinationPath "${{ github.workspace }}/epubcheck/"
+        shell: pwsh
+
+      - name: Set epubcheck-jar-path
+        id: setup-epubcheck
+        run: Write-Output "::set-output name=epubcheck-jar-path::${{ github.workspace }}/epubcheck/epubcheck-${{ inputs.epubcheck-version }}/epubcheck.jar"
+        shell: pwsh

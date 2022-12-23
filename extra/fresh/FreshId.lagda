@@ -1,6 +1,5 @@
 ---
 title     : "FreshId: Generation of fresh names"
-layout    : page
 permalink : /FreshId
 ---
 
@@ -113,7 +112,7 @@ module RevBreak {A : Set} where
   bbreak : ∀ {P : A → Set} (P? : Decidable P) → (xs : List A) → Break P xs
   bbreak P? ws with break P? (rev ws)
   ...             | none {xs} Pxs               =  none {rev xs} (revAll Pws)
-  ...             | some {xs} {y} {zs} Pxs ¬Py  =  some ¬Py 
+  ...             | some {xs} {y} {zs} Pxs ¬Py  =  some ¬Py
 -}
 \end{code}
 
@@ -160,11 +159,11 @@ module IdBase
   prefixS-lemma x
     rewrite toList∘fromList ((reverse ∘ dropWhile P? ∘ reverse ∘ toList) x)
           | reverse-involutive ((dropWhile P? ∘ reverse ∘ toList) x)
-    =  dropWhile-lemma P? ((reverse ∘ toList) x) 
-    
+    =  dropWhile-lemma P? ((reverse ∘ toList) x)
+
   prefix : Id → Prefix
-  prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩ 
-    
+  prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩
+
   suffix : Id → ℕ
   suffix =  length ∘ takeWhile P? ∘ reverse ∘ toList
 
@@ -280,6 +279,3 @@ _ : fresh zs0 [ x0 , x1 , x2 , zs1 ] ≡ zs2
 _ = refl
 -}
 \end{code}
-
-
-

@@ -1,0 +1,70 @@
+@mixin code-font {
+    font-family: 'Frankenfont', 'FreeMono', 'DejaVu Sans Mono', 'mononoki', 'Source Code Pro', monospace;
+    font-size: .85em;
+}
+@mixin code-container {
+    padding: .4em .4em;
+    background: #212121;
+    border: 1px solid #414141;
+    border-radius: 3px;
+}
+
+/* Code. */
+pre {
+    break-inside: avoid;
+}
+pre.highlight {
+    @include code-container;
+    border-style: dashed !important;
+}
+code {
+    @include code-font;
+    white-space: pre;
+}
+
+/* Agda. */
+pre.Agda {
+    @include code-font;
+    @include code-container;
+}
+
+pre.Spec {
+    @include code-font;
+    @include code-container;
+    border-style: dashed !important;
+    color: #B22222;
+}
+
+/* Aspects. */
+.Comment       { color: #b64343 }
+.Keyword       { color: #ce8133 }
+.String        { color: #B22222 }
+.Number        { color: #b051eb }
+.Symbol        { color: #8b8b8b }
+.PrimitiveType { color: #4343ca }
+.Operator      {}
+
+/* NameKinds. */
+.Bound                  { color: #bbbbbb }
+.InductiveConstructor   { color: #3a833a }
+.CoinductiveConstructor { color: #8B7500 }
+.Datatype               { color: #4343ca }
+.Field                  { color: #EE1289 }
+.Function               { color: #4343ca }
+.Module                 { color: #b051eb }
+.Postulate              { color: #4343ca }
+.Primitive              { color: #4343ca }
+.Record                 { color: #4343ca }
+
+/* OtherAspects. */
+.DottedPattern      {}
+.UnsolvedMeta       { color: #bbbbbb; background: yellow         }
+.UnsolvedConstraint { color: #bbbbbb; background: yellow         }
+.TerminationProblem { color: #bbbbbb; background: #FFA07A        }
+.IncompletePattern  { color: #bbbbbb; background: #F5DEB3        }
+.Error              { color: #B22222;   text-decoration: underline }
+.TypeChecks         { color: #bbbbbb; background: #ADD8E6        }
+
+/* Standard attributes. */
+.Agda a { text-decoration: none }
+.Agda a[href]:hover { background-color: #377037 }

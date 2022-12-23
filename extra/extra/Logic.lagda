@@ -1,6 +1,5 @@
 ---
 title     : "Logic: Propositions as Types"
-layout    : page
 permalink : /Logic
 ---
 
@@ -146,7 +145,7 @@ and similarly for `invʳ`, which does the same (up to renaming).
     ; from    = λ { (y , x) → (x , y)}
     ; from∘to = λ { (x , y) → refl }
     ; to∘from = λ { (y , x) → refl }
-    } 
+    }
 \end{code}
 
 Being *commutative* is different from being *commutative up to
@@ -175,7 +174,7 @@ matching against a suitable pattern to enable simplificition.
     ; from    = λ { (x , (y , z)) → ((x , y) , z) }
     ; from∘to = λ { ((x , y) , z) → refl }
     ; to∘from = λ { (x , (y , z)) → refl }
-    } 
+    }
 \end{code}
 
 Being *associative* is not the same as being *associative
@@ -351,10 +350,10 @@ does the same (up to renaming).
               }
   ; from∘to = λ { (inj₁ x) → refl
                 ; (inj₂ y) → refl
-                } 
+                }
   ; to∘from = λ { (inj₁ y) → refl
                 ; (inj₂ x) → refl
-                }  
+                }
   }
 \end{code}
 Being *commutative* is different from being *commutative up to
@@ -490,7 +489,7 @@ a member of the former, corresponds to `true`, which is a member of
 the latter.
 
 That empty is also a right identity follows immediately from
-commutativity of sum and left identity.  
+commutativity of sum and left identity.
 \begin{code}
 ⊥-identityʳ : ∀ {A : Set} → (A ⊎ ⊥) ≃ A
 ⊥-identityʳ {A} =
@@ -567,14 +566,14 @@ arguments of the type `Bool → Tri`:
 →-count : (Bool → Tri) → ℕ
 →-count f with f true | f false
 ...           | aa    | aa      = 1
-...           | aa    | bb      = 2  
+...           | aa    | bb      = 2
 ...           | aa    | cc      = 3
 ...           | bb    | aa      = 4
 ...           | bb    | bb      = 5
 ...           | bb    | cc      = 6
 ...           | cc    | aa      = 7
 ...           | cc    | bb      = 8
-...           | cc    | cc      = 9  
+...           | cc    | cc      = 9
 \end{code}
 
 Exponential on types also share a property with exponential on
@@ -593,7 +592,7 @@ The proof of the right inverse requires extensionality.
 \begin{code}
 postulate
   extensionality : ∀ {A B : Set} → {f g : A → B} → (∀ (x : A) → f x ≡ g x) → f ≡ g
-  
+
 currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
 currying =
   record
@@ -642,7 +641,7 @@ is the same as the assertion that if `A` holds then `C` holds and if
 →-distributes-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
 →-distributes-⊎ =
   record
-    { to   = λ f → ( (λ x → f (inj₁ x)) , (λ y → f (inj₂ y)) ) 
+    { to   = λ f → ( (λ x → f (inj₁ x)) , (λ y → f (inj₂ y)) )
     ; fro  = λ {(g , h) → λ { (inj₁ x) → g x ; (inj₂ y) → h y } }
     ; invˡ = λ f → extensionality (λ { (inj₁ x) → refl ; (inj₂ y) → refl })
     ; invʳ = λ {(g , h) → refl}
@@ -665,7 +664,7 @@ postulate
 →-distributes-× : ∀ {A B C : Set} → (A → B × C) ≃ ((A → B) × (A → C))
 →-distributes-× =
   record
-    { to   = λ f → ( (λ x → fst (f x)) , (λ y → snd (f y)) ) 
+    { to   = λ f → ( (λ x → fst (f x)) , (λ y → snd (f y)) )
     ; fro  = λ {(g , h) → (λ x → (g x , h x))}
     ; invˡ = λ f → extensionality (λ x → η-× (f x))
     ; invʳ = λ {(g , h) → refl}
@@ -681,7 +680,7 @@ this fact is similar in structure to our previous results.
 ×-distributes-⊎ : ∀ {A B C : Set} → ((A ⊎ B) × C) ≃ ((A × C) ⊎ (B × C))
 ×-distributes-⊎ =
   record
-    { to   = λ { ((inj₁ x) , z) → (inj₁ (x , z)) 
+    { to   = λ { ((inj₁ x) , z) → (inj₁ (x , z))
                ; ((inj₂ y) , z) → (inj₂ (y , z))
                }
     ; fro  = λ { (inj₁ (x , z)) → ((inj₁ x) , z)
@@ -692,7 +691,7 @@ this fact is similar in structure to our previous results.
                }
     ; invʳ = λ { (inj₁ (x , z)) → refl
                ; (inj₂ (y , z)) → refl
-               }               
+               }
     }
 \end{code}
 
@@ -736,7 +735,7 @@ true" than the other.
 
 Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
-as implication of false. 
+as implication of false.
 \begin{code}
 ¬_ : Set → Set
 ¬ A = A → ⊥
@@ -1004,7 +1003,7 @@ A) → B[x])`.
 a simpler example that I could start with?]
 
 As an example, recall the definitions of `even` from
-Chapter [Relations](Relations).  
+Chapter [Relations](Relations).
 \begin{code}
 data even : ℕ → Set where
   ev0 : even zero
@@ -1040,7 +1039,7 @@ The lemma is straightforward, and uses the lemma
 allows us to simplify `m + suc n` to `suc (m + n)`.
 
 Here is the proof in the forward direction.
-\begin{code}  
+\begin{code}
 ev-ex : ∀ {n : ℕ} → even n → ∃(λ (m : ℕ) → 2 * m ≡ n)
 ev-ex ev0 =  (zero , refl)
 ev-ex (ev+2 ev) with ev-ex ev
@@ -1075,7 +1074,7 @@ returns a proof that `n` is even.  The proof is by induction
 over the number `m`.
 
 - If it is zero, then we must show that twice zero is even,
-which follows by rule `ev0`. 
+which follows by rule `ev0`.
 
 - If it is `suc m`, then we must show that `2 * suc m` is
 even.  After rewriting with our lemma, we must show that
@@ -1094,8 +1093,8 @@ of a disjuntion is isomorphic to a conjunction of negations.
   record
     { to   =  λ { ¬∃bx x bx → ¬∃bx (x , bx) }
     ; fro  =  λ { ∀¬bx (x , bx) → ∀¬bx x bx }
-    ; invˡ =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) } 
-    ; invʳ =  λ { ∀¬bx → refl } 
+    ; invˡ =  λ { ¬∃bx → extensionality (λ { (x , bx) → refl }) }
+    ; invʳ =  λ { ∀¬bx → refl }
     }
 \end{code}
 In the `to` direction, we are given a value `¬∃bx` of type
@@ -1176,7 +1175,3 @@ demorgan-inv : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
 demorgan-inv (inj₁ a) (¬a , ¬b) =  ¬a a
 demorgan-inv (inj₂ b) (¬a , ¬b) =  ¬b b
 \end{code}
-
-
-
-    

@@ -39,7 +39,7 @@ module Prelude where
   infixl 15 _⊟_
   infixl 15 _∾_
   infixr 20 _∷_
-  
+
   data 𝔹 : Set where
     T : 𝔹
     F : 𝔹
@@ -77,7 +77,7 @@ module Prelude where
   wk[∈] (x′ ∷ xs) x = wk[∈] xs (S x)
 
   i[∈][_] : ∀ {ℓ} {A : Set ℓ} {xs : ⟬ A ⟭} {x x′ : A} (ε′ : x′ ∈ xs) → x ∈ xs ⊟ ε′ → x ∈ xs
-  i[∈][ Z ] x = S x 
+  i[∈][ Z ] x = S x
   i[∈][ S ε′ ] Z = Z
   i[∈][ S ε′ ] (S x) = S (i[∈][ ε′ ] x)
 
@@ -103,7 +103,7 @@ data _⊢_ : ∀ (Γ : ⟬ type ⟭) (τ : type) → Set where
   ⟨𝔹⟩ : ∀ {Γ}
     (b : 𝔹)
     → Γ ⊢ ⟨𝔹⟩
-  ⟨if⟩_❴_❵❴_❵ : ∀ {Γ τ} 
+  ⟨if⟩_❴_❵❴_❵ : ∀ {Γ τ}
     (e₁ : Γ ⊢ ⟨𝔹⟩)
     (e₂ : Γ ⊢ τ)
     (e₃ : Γ ⊢ τ)
@@ -193,11 +193,11 @@ progress ⟨if⟩ e ❴ e₁ ❵❴ e₂ ❵ with progress e
 … | Inr ⟨∃ e′ , ε ⟩ = Inr ⟨∃ ⟨if⟩ e′ ❴ e₁ ❵❴ e₂ ❵ , ξif ε ⟩
 progress (Var ())
 progress (⟨λ⟩ e) = Inl (⟨λ⟩ e)
-progress (e₁ ⟨⋅⟩ e₂) with progress e₁ 
+progress (e₁ ⟨⋅⟩ e₂) with progress e₁
 … | Inr ⟨∃ e₁′ , ε ⟩ = Inr ⟨∃ e₁′ ⟨⋅⟩ e₂ , ξ⋅₁ ε ⟩
 … | Inl (⟨λ⟩ e) with progress e₂
 … | Inl x = Inr ⟨∃ cut[⊢] e₂ e , βλ x ⟩
-… | Inr ⟨∃ e₂′ , ε ⟩ = Inr ⟨∃ e₁ ⟨⋅⟩ e₂′ , ξ⋅₂ (⟨λ⟩ e) ε ⟩ 
+… | Inr ⟨∃ e₂′ , ε ⟩ = Inr ⟨∃ e₁ ⟨⋅⟩ e₂′ , ξ⋅₂ (⟨λ⟩ e) ε ⟩
 
 -- Some ideas for possible extensions or homework assignments
 -- 1. A. Write a conversion from the dependent de Bruijn encoding (e : Γ ⊢ τ)

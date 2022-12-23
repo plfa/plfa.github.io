@@ -1,11 +1,9 @@
 ---
 title     : "Fonts"
-layout    : page
-prev      : /Acknowledgements/
 permalink : /Fonts/
 ---
 
-```
+```agda
 module plfa.backmatter.Fonts where
 ```
 
@@ -108,4 +106,3 @@ Here are some characters that are often not monospaced.
     𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑖𝑗𝑘|
     ℰℱ|
     ----------|
-

@@ -1,6 +1,5 @@
 ---
 title     : "TypedFresh: Fresh variables in substitution (broken)"
-layout    : page
 permalink : /TypedFresh
 ---
 
@@ -64,7 +63,7 @@ data Term : Set where
   `_              : Id → Term
   `λ_⇒_           : Id → Term → Term
   _·_             : Term → Term → Term
-  `zero           : Term    
+  `zero           : Term
   `suc_           : Term → Term
   `pred_          : Term → Term
   `if0_then_else_ : Term → Term → Term → Term
@@ -244,7 +243,7 @@ erase (⊢Y ⊢M)           =  `Y (erase ⊢M)
 ### Properties of erasure
 
 \begin{code}
-cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} → 
+cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} →
                                s ≡ t → u ≡ v → x ≡ y → f s u x ≡ f t v y
 cong₃ f refl refl refl = refl
 
@@ -329,8 +328,8 @@ subst ys ρ (`suc M)    =  `suc (subst ys ρ M)
 subst ys ρ (`pred M)   =  `pred (subst ys ρ M)
 subst ys ρ (`if0 L then M else N)
   =  `if0 (subst ys ρ L) then (subst ys ρ M) else (subst ys ρ N)
-subst ys ρ (`Y M)      =  `Y (subst ys ρ M)  
-                       
+subst ys ρ (`Y M)      =  `Y (subst ys ρ M)
+
 _[_:=_] : Term → Id → Term → Term
 N [ x := M ]  =  subst (free M ++ (free N \\ x)) (∅ , x ↦ M) N
 \end{code}
@@ -341,7 +340,7 @@ N [ x := M ]  =  subst (free M ++ (free N \\ x)) (∅ , x ↦ M) N
 _ : (` s · ` s · ` z) [ z := `zero ] ≡ (` s · ` s · `zero)
 _ = refl
 
-_ : (` s · ` s · ` z) [ s := (`λ m ⇒ `suc ` m) ] [ z := `zero ] 
+_ : (` s · ` s · ` z) [ s := (`λ m ⇒ `suc ` m) ] [ z := `zero ]
      ≡ ((`λ p ⇒ `suc ` p) · (`λ p ⇒ `suc ` p) · `zero)
 _ = refl
 
@@ -366,7 +365,7 @@ data Value : Term → Set where
     → Value V
       --------------
     → Value (`suc V)
-      
+
   Fun : ∀ {x N}
       ---------------
     → Value (`λ x ⇒ N)
@@ -422,7 +421,7 @@ data _⟶_ : Term → Term → Set where
   β-if0-zero : ∀ {M N}
       ------------------------------
     → `if0 `zero then M else N ⟶ M
-  
+
   β-if0-suc : ∀ {V M N}
     → Value V
       ---------------------------------
@@ -469,7 +468,7 @@ begin M⟶*N = M⟶*N
 \begin{code}
 data Canonical : Term → Type → Set where
 
-  Zero : 
+  Zero :
       ------------------
       Canonical `zero `ℕ
 
@@ -477,7 +476,7 @@ data Canonical : Term → Type → Set where
     → Canonical V `ℕ
       ---------------------
     → Canonical (`suc V) `ℕ
- 
+
   Fun : ∀ {x N A B}
     → ε , x ⦂ A ⊢ N ⦂ B
       ------------------------------
@@ -518,7 +517,7 @@ value Zero         =  Zero
 value (Suc CV)     =  Suc (value CV)
 value (Fun ⊢N)     =  Fun
 \end{code}
-    
+
 ## Progress
 
 \begin{code}
@@ -574,7 +573,7 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 free-lemma : ∀ {Γ M A} → Γ ⊢ M ⦂ A → free M ⊆ dom Γ
 free-lemma (Ax ⊢x) w∈ with w∈
 ...                      | here         =  dom-lemma ⊢x
-...                      | there ()   
+...                      | there ()
 free-lemma {Γ} (⊢λ {N = N} ⊢N)          =  ∷-to-\\ (free-lemma ⊢N)
 free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 ...                        | inj₁ ∈L    = free-lemma ⊢L ∈L
@@ -588,7 +587,7 @@ free-lemma (⊢if0 ⊢L ⊢M ⊢N) w∈
 ...         | inj₂ ∈MN with ++-to-⊎ ∈MN
 ...                       | inj₁ ∈M     = free-lemma ⊢M ∈M
 ...                       | inj₂ ∈N     = free-lemma ⊢N ∈N
-free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈       
+free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 \end{code}
 
 ### Renaming
@@ -630,7 +629,7 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
     M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
     N⊆ = trans-⊆ ⊆-++₂ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
 ⊢rename ⊢σ ⊆xs (⊢Y ⊢M)     =  ⊢Y (⊢rename ⊢σ ⊆xs ⊢M)
-    
+
 \end{code}
 
 
@@ -658,7 +657,7 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
   Σ′ {w} w∈′ with w ≟ x
   ...            | yes refl    =  ⊆-++₁
   ...            | no  w≢      =  ⊆-++₂ ∘ Σ (there⁻¹ w∈′ w≢)
-  
+
   ⊆xs′ :  free N ⊆ xs′
   ⊆xs′ =  \\-to-∷ ⊆xs
 
@@ -689,7 +688,7 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
     L⊆ = trans-⊆ ⊆-++₁ ⊆xs
     M⊆ = trans-⊆ ⊆-++₁ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
     N⊆ = trans-⊆ ⊆-++₂ (trans-⊆ (⊆-++₂ {free L}) ⊆xs)
-⊢subst Σ ⊢ρ ⊆xs (⊢Y ⊢M)          =  ⊢Y (⊢subst Σ ⊢ρ ⊆xs ⊢M)    
+⊢subst Σ ⊢ρ ⊆xs (⊢Y ⊢M)          =  ⊢Y (⊢subst Σ ⊢ρ ⊆xs ⊢M)
 
 ⊢substitution : ∀ {Γ x A N B M} →
   Γ , x ⦂ A ⊢ N ⦂ B →
@@ -708,7 +707,7 @@ free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
   Σ {w} w∈ y∈ with w ≟ x
   ...            | yes _                   =  ⊆-++₁ y∈
   ...            | no w≢ rewrite ∈-[_] y∈  =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
-  
+
   ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
   ⊢ρ {w} w∈ Z         with w ≟ x
   ...                    | yes _     =  ⊢M
@@ -1528,4 +1527,3 @@ _ : normalise 1
    · ⊢suc (⊢suc ⊢zero))
 -}
 \end{code}
-

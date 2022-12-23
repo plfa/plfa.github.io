@@ -1,7 +1,0 @@
-<dc:title>$pagetitle$</dc:title>
-$for(authors)$
-<dc:creator id="$github$">$name$</dc:creator>
-$endfor$
-<dc:rights>$rights$</dc:rights>
-<dc:language>$language$</dc:language>
-<dc:date>$modified$</dc:date>

@@ -25,4 +25,3 @@ _ = refl
 
 _ : 4 ≤? 2 ≡ no (¬s≤s (¬s≤s ¬s≤z))
 _ = refl
-

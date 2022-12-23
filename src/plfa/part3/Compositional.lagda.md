@@ -1,12 +1,9 @@
 ---
 title     : "Compositional: The denotational semantics is compositional"
-layout    : page
-prev      : /Denotational/
 permalink : /Compositional/
-next      : /Soundness/
 ---
 
-```
+```agda
 module plfa.part3.Compositional where
 ```
 
@@ -26,7 +23,7 @@ with such a definition and prove that it is equivalent to ℰ.
 
 ## Imports
 
-```
+```agda
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -57,7 +54,7 @@ subterm `M`, an environment `γ`, and a value `v`.  If we define `ℱ` by
 recursion on the value `v`, then it matches up nicely with the three
 rules `↦-intro`, `⊥-intro`, and `⊔-intro`.
 
-```
+```agda
 ℱ : ∀{Γ} → Denotation (Γ , ★) → Denotation Γ
 ℱ D γ (v ↦ w) = D (γ `, v) w
 ℱ D γ ⊥ = ⊤
@@ -79,7 +76,7 @@ smaller value `u`. The proof is a straightforward induction on the
 derivation of `u ⊑ v`, using the `up-env` lemma in the case for the
 `⊑-fun` rule.
 
-```
+```agda
 sub-ℱ : ∀{Γ}{N : Γ , ★ ⊢ ★}{γ v u}
   → ℱ (ℰ N) γ v
   → u ⊑ v
@@ -95,19 +92,12 @@ sub-ℱ {v = v₁ ↦ v₂ ⊔ v₁ ↦ v₃} {v₁ ↦ (v₂ ⊔ v₃)} ⟨ N2 
 sub-ℱ d (⊑-trans x₁ x₂) = sub-ℱ (sub-ℱ d x₂) x₁
 ```
 
-<!--
-[PLW:
-  If denotations were strengthened to be downward closed,
-  we could rewrite the signature replacing (ℰ N) by d : Denotation (Γ , ★)]
-[JGS: I'll look into this.]
--->
-
 With this subsumption property in hand, we can prove the forward
 direction of the semantic equation for lambda.  The proof is by
 induction on the semantics, using `sub-ℱ` in the case for the `sub`
 rule.
 
-```
+```agda
 ℰƛ→ℱℰ : ∀{Γ}{γ : Env Γ}{N : Γ , ★ ⊢ ★}{v : Value}
   → ℰ (ƛ N) γ v
     ------------
@@ -122,7 +112,7 @@ The "inversion lemma" for lambda abstraction is a special case of the
 above. The inversion lemma is useful in proving that denotations are
 preserved by reduction.
 
-```
+```agda
 lambda-inversion : ∀{Γ}{γ : Env Γ}{N : Γ , ★ ⊢ ★}{v₁ v₂ : Value}
   → γ ⊢ ƛ N ↓ v₁ ↦ v₂
     -----------------
@@ -134,7 +124,7 @@ The backward direction of the semantic equation for lambda is even
 easier to prove than the forward direction. We proceed by induction on
 the value v.
 
-```
+```agda
 ℱℰ→ℰƛ : ∀{Γ}{γ : Env Γ}{N : Γ , ★ ⊢ ★}{v : Value}
   → ℱ (ℰ N) γ v
     ------------
@@ -147,7 +137,7 @@ the value v.
 So indeed, the denotational semantics is compositional with respect
 to lambda abstraction, as witnessed by the function `ℱ`.
 
-```
+```agda
 lam-equiv : ∀{Γ}{N : Γ , ★ ⊢ ★}
   → ℰ (ƛ N) ≃ ℱ (ℰ N)
 lam-equiv γ v = ⟨ ℰƛ→ℱℰ , ℱℰ→ℰƛ ⟩
@@ -177,7 +167,7 @@ any value `w` equivalent to `⊥`, for the `⊥-intro` rule, and to include any
 value `w` that is the output of an entry `v ↦ w` in `D₁`, provided the
 input `v` is in `D₂`, for the `↦-elim` rule.
 
-```
+```agda
 infixl 7 _●_
 
 _●_ : ∀{Γ} → Denotation Γ → Denotation Γ → Denotation Γ
@@ -192,7 +182,7 @@ Next we consider the inversion lemma for application, which is also
 the forward direction of the semantic equation for application.  We
 describe the proof below.
 
-```
+```agda
 ℰ·→●ℰ : ∀{Γ}{γ : Env Γ}{L M : Γ ⊢ ★}{v : Value}
   → ℰ (L · M) γ v
     ----------------
@@ -271,7 +261,7 @@ The forward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`
 In case `v ⊑ ⊥`, we obtain `Γ ⊢ L · M ↓ ⊥` by rule `⊥-intro`.
 Otherwise, we conclude immediately by rule `↦-elim`.
 
-```
+```agda
 ●ℰ→ℰ· : ∀{Γ}{γ : Env Γ}{L M : Γ ⊢ ★}{v}
   → (ℰ L ● ℰ M) γ v
     ----------------
@@ -283,7 +273,7 @@ Otherwise, we conclude immediately by rule `↦-elim`.
 So we have proved that the semantics is compositional with respect to
 function application, as witnessed by the `●` function.
 
-```
+```agda
 app-equiv : ∀{Γ}{L M : Γ ⊢ ★}
   → ℰ (L · M) ≃ (ℰ L) ● (ℰ M)
 app-equiv γ v = ⟨ ℰ·→●ℰ , ●ℰ→ℰ· ⟩
@@ -293,7 +283,7 @@ We also need an inversion lemma for variables.
 If `Γ ⊢ x ↓ v`, then `v ⊑ γ x`. The proof is a straightforward
 induction on the semantics.
 
-```
+```agda
 var-inv : ∀ {Γ v x} {γ : Env Γ}
   → ℰ (` x) γ v
     -------------------
@@ -307,7 +297,7 @@ var-inv ⊥-intro = ⊑-bot
 To round-out the semantic equations, we establish the following one
 for variables.
 
-```
+```agda
 var-equiv : ∀{Γ}{x : Γ ∋ ★} → ℰ (` x) ≃ (λ γ v → v ⊑ γ x)
 var-equiv γ v = ⟨ var-inv , (λ lt → sub var lt) ⟩
 ```
@@ -329,7 +319,7 @@ respect to lambda abstraction: that `ℰ N ≃ ℰ N′` implies `ℰ (ƛ N) ≃
 (ƛ N′)`. We shall use the `lam-equiv` equation to reduce this question to
 whether `ℱ` is a congruence.
 
-```
+```agda
 ℱ-cong : ∀{Γ}{D D′ : Denotation (Γ , ★)}
   → D ≃ D′
     -----------
@@ -351,7 +341,7 @@ induction on the value `v`.
 We now prove that lambda abstraction is a congruence by direct
 equational reasoning.
 
-```
+```agda
 lam-cong : ∀{Γ}{N N′ : Γ , ★ ⊢ ★}
   → ℰ N ≃ ℰ N′
     -----------------
@@ -374,7 +364,7 @@ application: that `ℰ L ≃ ℰ L′` and `ℰ M ≃ ℰ M′` imply
 reduces this to the question of whether the `●` operator
 is a congruence.
 
-```
+```agda
 ●-cong : ∀{Γ}{D₁ D₁′ D₂ D₂′ : Denotation Γ}
   → D₁ ≃ D₁′ → D₂ ≃ D₂′
   → (D₁ ● D₂) ≃ (D₁′ ● D₂′)
@@ -395,7 +385,7 @@ This time the lemma is proved by cases on `(D₁ ● D₂) γ v`.
 With the congruence of `●`, we can prove that application is a
 congruence by direct equational reasoning.
 
-```
+```agda
 app-cong : ∀{Γ}{L L′ M M′ : Γ ⊢ ★}
   → ℰ L ≃ ℰ L′
   → ℰ M ≃ ℰ M′
@@ -426,7 +416,7 @@ definition `Ctx` makes this idea explicit. We index the `Ctx` data
 type with two contexts for variables: one for the hole and one for
 terms that result from filling the hole.
 
-```
+```agda
 data Ctx : Context → Context → Set where
   ctx-hole : ∀{Γ} → Ctx Γ Γ
   ctx-lam :  ∀{Γ Δ} → Ctx (Γ , ★) (Δ , ★) → Ctx (Γ , ★) Δ
@@ -452,7 +442,7 @@ data Ctx : Context → Context → Set where
 The action of surrounding a term with a context is defined by the
 following `plug` function. It is defined by recursion on the context.
 
-```
+```agda
 plug : ∀{Γ}{Δ} → Ctx Γ Δ → Γ ⊢ ★ → Δ ⊢ ★
 plug ctx-hole M = M
 plug (ctx-lam C) N = ƛ plug C N
@@ -465,7 +455,7 @@ two terms `M` and `N` that are denotationally equal, plugging them both
 into an arbitrary context `C` produces two programs that are
 denotationally equal.
 
-```
+```agda
 compositionality : ∀{Γ Δ}{C : Ctx Γ Δ} {M N : Γ ⊢ ★}
   → ℰ M ≃ ℰ N
     ---------------------------
@@ -493,7 +483,7 @@ following function `⟦ M ⟧` that maps terms to denotations, using the
 auxiliary curry `ℱ` and apply `●` functions in the cases for lambda
 and application, respectively.
 
-```
+```agda
 ⟦_⟧ : ∀{Γ} → (M : Γ ⊢ ★) → Denotation Γ
 ⟦ ` x ⟧ γ v = v ⊑ γ x
 ⟦ ƛ N ⟧ = ℱ ⟦ N ⟧
@@ -505,7 +495,7 @@ straightforward induction, using the three equations
 `var-equiv`, `lam-equiv`, and `app-equiv` together
 with the congruence lemmas for `ℱ` and `●`.
 
-```
+```agda
 ℰ≃⟦⟧ : ∀ {Γ} {M : Γ ⊢ ★} → ℰ M ≃ ⟦ M ⟧
 ℰ≃⟦⟧ {Γ} {` x} = var-equiv
 ℰ≃⟦⟧ {Γ} {ƛ N} =

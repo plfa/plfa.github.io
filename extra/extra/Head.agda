@@ -20,7 +20,7 @@ isPrime c = ⌊ c Char.≟ prime ⌋
 
 head-lemma : ∀ (s : List Char) → ¬ Head isPrime (dropWhile isPrime s)
 head-lemma [] = λ()
-head-lemma (c ∷ s) with isPrime c 
+head-lemma (c ∷ s) with isPrime c
 ...                   | true       =  head-lemma s
 ...                   | false      =  ¬h
   where

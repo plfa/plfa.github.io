@@ -1,0 +1,38 @@
+name: 'Setup BumpVer'
+description: 'Setup BumpVer. Requires that requirements-dev.txt contains bumpver.'
+outputs:
+  current-version:
+    description: 'The current version.'
+    value: ${{ steps.set-current-version.outputs.current-version }}
+  pep440-version:
+    description: 'The current version, normalised according to PEP440.'
+    value: ${{ steps.set-current-version.outputs.current-version }}
+runs:
+  using: "composite"
+  steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        id: setup-python
+        with:
+          python-version-file: .python-version
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Setup Python dependencies
+        run: pip install -r requirements-dev.txt
+        shell: pwsh
+
+      - name: Set BumpVer environment variables
+        id: setup-epubcheck
+        run: bumpver show --no-fetch --env | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+        shell: pwsh
+
+      - name: Set current-version
+        id: set-current-version
+        run: Write-Output "::set-output name=current-version::${{ env.CURRENT_VERSION }}"
+        shell: pwsh
+
+      - name: Set pep440-version
+        id: set-pep440-version
+        run: Write-Output "::set-output name=pep440-version::${{ env.PEP440_VERSION }}"
+        shell: pwsh

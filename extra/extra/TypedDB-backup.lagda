@@ -1,6 +1,5 @@
 ---
 title     : "TypedDB: Typed DeBruijn representation"
-layout    : page
 permalink : /TypedDB
 ---
 
@@ -183,7 +182,7 @@ _[_] {Γ} {A} N M =  subst {Γ , A} {Γ} ρ N
 \begin{code}
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
-  Zero : ∀ {Γ} → 
+  Zero : ∀ {Γ} →
       -----------------
       Value (`zero {Γ})
 
@@ -191,7 +190,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
     → Value V
       --------------
     → Value (`suc V)
-      
+
   Fun : ∀ {Γ A B} {N : Γ , A ⊢ B}
       ---------------------------
     → Value (ƛ N)
@@ -404,5 +403,3 @@ normalise (suc g) L with progress L
 ...    | step {M} L⟶M with normalise g M
 ...        | normal h M⟶*N                =  normal (suc h) (L ⟶⟨ L⟶M ⟩ M⟶*N)
 \end{code}
-
-

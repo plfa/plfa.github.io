@@ -21,7 +21,7 @@ _ : 4 ≤? 2 ≡ no {!!}
 _ = refl
 
 {-
-Using ^C ^N, the term 
+Using ^C ^N, the term
   4 ≤? 2
 evaluates to
   no (λ { (s≤s m≤n) → (λ { (s≤s m≤n) → (λ ()) 1 m≤n }) m≤n })

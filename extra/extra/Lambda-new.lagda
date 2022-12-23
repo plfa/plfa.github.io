@@ -1,6 +1,5 @@
 ---
 title     : "Lambda: Introduction to Lambda Calculus"
-layout    : page
 permalink : /Lambda/
 ---
 
@@ -46,7 +45,7 @@ variables, partly because such terms are easier to read and partly
 because the development is more traditional.
 
 The development in this chapter was inspired by the corresponding
-development in Chapter _Stlc_ of _Software Foundations_ 
+development in Chapter _Stlc_ of _Software Foundations_
 (_Programming Language Foundations_).  We differ by
 representing contexts explicitly (as lists pairing identifiers with
 types) rather than as partial maps (which take identifiers to types),
@@ -523,7 +522,7 @@ the rules for reduction of applications are written as follows.
     V · M —→ V · M′
 
     ---------------------------- β-ƛ
-    (ƛ x ⇒ N) · V —→ N [ x := V ] 
+    (ƛ x ⇒ N) · V —→ N [ x := V ]
 
 The Agda version of the rules below will be similar, except that universal
 quantifications are made explicit, and so are the predicates that indicate
@@ -1278,4 +1277,3 @@ This chapter uses the following unicode
     ∋    U+220B:  CONTAINS AS MEMBER (\ni)
     ⊢    U+22A2:  RIGHT TACK (\vdash or \|-)
     ⦂    U+2982:  Z NOTATION TYPE COLON (\:)
-

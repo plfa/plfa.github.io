@@ -1,0 +1,18 @@
+// Frankenfont
+// A custom font made by combining glyphs from mononoki, DejaVu Sans Mono,
+// Symbola and Droid, and adjusting the width where necessary to get a
+// consistent fixed-width font.
+@font-face {
+  font-family: "Frankenfont";
+  src: url("../fonts/Frankenfont-Regular.woff2") format("woff2"),
+    url("../fonts/Frankenfont-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import
+    "fontawesome/fontawesome",
+    "fontawesome/regular",
+    "fontawesome/solid",
+    "fontawesome/brands"
+;

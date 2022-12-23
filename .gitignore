@@ -1,39 +1,24 @@
-## Agda files
-_build/
+!cabal.project.ci.local
+!data/legacy/19.08.zip
+!data/legacy/20.07.zip
+!plfa.pdf
 *.agdai
-.agda-stdlib.sed
-.links-*.sed
-
-## Haskell files
-_site/
-_cache/
-stack.yaml.lock
-.stack-work/
-dist-newstyle
-
-## Jekyll files
-.sass-cache/
-.agda-stdlib.sed
-.jekyll-metadata
-Gemfile.lock
-
-## LaTeX files
 *.aux
 *.bbl
 *.blg
+*.code-workspace
+*.el
 *.fdb_latexmk
 *.fls
+*.local
 *.log
 *.pdf
 *.spl
 *.synctex.gz
-
-## Emacs files
-auto/
-
-## Misc build files
 *.zip
-versions/plfa.github.io-web-*/
-
-## Include plfa.pdf
-!plfa.pdf
+/Gemfile.lock
+/_build/
+/_cache/
+/_site/
+/dist-newstyle/
+/node_modules/

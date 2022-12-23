@@ -1,6 +1,5 @@
 ---
 title     : "StlcPropOld: Properties of STLC"
-layout    : page
 permalink : /StlcPropOld
 ---
 
@@ -35,7 +34,7 @@ As we saw for the simple calculus in Chapter [Types]({{ "Types" | relative_url }
 The first step in establishing basic properties of reduction and typing
 is to identify the possible _canonical forms_ (i.e., well-typed closed values)
 belonging to each type.  For function types the canonical forms are lambda-abstractions,
-while for boolean types they are values `true` and `false`.  
+while for boolean types they are values `true` and `false`.
 
 \begin{code}
 data canonical_for_ : Term → Type → Set where
@@ -167,7 +166,7 @@ technical lemmas), the story goes like this:
   - The one case that is significantly different is the one for the
     `βλ·` rule, whose definition uses the substitution operation.  To see that
     this step preserves typing, we need to know that the substitution itself
-    does.  So we prove a ... 
+    does.  So we prove a ...
 
   - _substitution lemma_, stating that substituting a (closed) term
     `V` for a variable `x` in a term `N` preserves the type of `N`.
@@ -399,7 +398,7 @@ context-lemma {Γ} {Γ′} {λ[ x ∶ A ] N} Γ~Γ′ (⇒-I ⊢N) = ⇒-I (cont
   ... | yes refl = refl
   ... | no  x≢y  = Γ~Γ′ (free-λ x≢y y∈N)
 context-lemma Γ~Γ′ (⇒-E ⊢L ⊢M) = ⇒-E (context-lemma (Γ~Γ′ ∘ free-·₁)  ⊢L)
-                                       (context-lemma (Γ~Γ′ ∘ free-·₂) ⊢M) 
+                                       (context-lemma (Γ~Γ′ ∘ free-·₂) ⊢M)
 context-lemma Γ~Γ′ 𝔹-I₁ = 𝔹-I₁
 context-lemma Γ~Γ′ 𝔹-I₂ = 𝔹-I₂
 context-lemma Γ~Γ′ (𝔹-E ⊢L ⊢M ⊢N) = 𝔹-E (context-lemma (Γ~Γ′ ∘ free-if₁) ⊢L)
@@ -849,4 +848,3 @@ with arithmetic.  Specifically:
   - Extend the proofs of all the properties (up to `soundness`) of
     the original STLC to deal with the new syntactic forms.  Make
     sure Agda accepts the whole file.
-

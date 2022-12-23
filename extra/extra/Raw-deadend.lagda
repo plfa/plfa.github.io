@@ -1,6 +1,5 @@
 ---
 title     : "Raw: Raw, Scoped, Typed"
-layout    : page
 permalink : /Raw
 ---
 
@@ -143,7 +142,7 @@ module Raw where
   subst ys ρ (L · M)      =  subst ys ρ L · subst ys ρ M
   subst ys ρ (`zero)      =  `zero
   subst ys ρ (`suc M)     =  `suc (subst ys ρ M)
-                       
+
   _[_:=_] : Term → Id → Term → Term
   N [ x := M ]  =  subst (free M ++ (free N \\ x))  (∅ , x ↦ M) N
 \end{code}
@@ -167,7 +166,7 @@ module Raw where
   _ = refl
 
   _ : (⌊ "s" ⌋ · ⌊ "s" ⌋ · ⌊ "z" ⌋) [ "s" := (`λ "m" `→ `suc ⌊ "m" ⌋) ]
-                                   [ "z" := `zero ] 
+                                   [ "z" := `zero ]
         ≡ (`λ "m" `→ `suc ⌊ "m" ⌋) · (`λ "m" `→ `suc ⌊ "m" ⌋) · `zero
   _ = refl
 
@@ -315,13 +314,13 @@ Not needed, and no longer correct.
       → Stuck (V · M)
 
     st-·-nat : ∀ {V M}
-      → Natural V 
+      → Natural V
         --------------
       → Stuck (V · M)
-      
+
     st-suc-λ : ∀ {x N}
         -------------------------
-      → Stuck (`suc (`λ x `→ N)) 
+      → Stuck (`suc (`λ x `→ N))
 
     st-suc : ∀ {M}
       → Stuck M
@@ -375,12 +374,12 @@ Not needed, and no longer correct.
         -----------
       → Progress M
 
-    stuck : 
+    stuck :
         Stuck M
         -----------
       → Progress M
 
-    done : 
+    done :
         Value M
         -----------
       → Progress M
@@ -411,7 +410,7 @@ Not needed, and no longer correct.
 
 ### Preservation
 
-Preservation of closed terms is not so easy. 
+Preservation of closed terms is not so easy.
 
 \begin{code}
   preservation : ∀ {M N : Term} → Closed M → M ⟶ N → Closed N
@@ -482,7 +481,7 @@ module Scoped where
     S_ : ∀ {Γ}
       → Γ ∋*
         --------
-      → Γ ,* ∋* 
+      → Γ ,* ∋*
 
   data _⊢* : Ctx → Set where
 
@@ -490,7 +489,7 @@ module Scoped where
       → Γ ∋*
         -----
       → Γ ⊢*
-      
+
     `λ_`→_  : ∀ {Γ} (x : Id)
       → Γ ,* ⊢*
         --------
@@ -509,7 +508,7 @@ module Scoped where
     `suc : ∀ {Γ}
       → Γ ⊢*
         -----
-      → Γ ⊢* 
+      → Γ ⊢*
 \end{code}
 
 ## Conversion: Raw to Scoped
@@ -522,7 +521,7 @@ module Scoped where
     here : ∀ {x xs} →
       ----------
       x ∈ x ∷ xs
-      
+
     there : ∀ {w x xs} →
       w ∈ xs →
       ----------
@@ -569,7 +568,7 @@ module Scoped where
       helper w (x ∷ xs) with w ≟ x
       ...                  | yes _   =  Z
       ...                  | no  _   =  S (helper xs)
--}    
+-}
 \end{code}
 
 

@@ -1,0 +1,37 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Stylesheets -->
+  $for(stylesheet)$
+  <link rel="$stylesheet.rel$" href="$stylesheet.url$"
+    $if(stylesheet.integrity)$  integrity="$stylesheet.integrity$"$endif$
+    $if(stylesheet.title)$ title="$stylesheet.title$"$endif$
+    $if(stylesheet.id)$ id="$stylesheet.id$"$endif$
+    $if(stylesheet.enabled)$$else$ disabled$endif$>
+  $endfor$
+  <!-- Title -->
+  $if(titlerunning)$
+  <title>$pagetitle$ – $titlerunning$</title>
+  $else$
+  $if(title)$
+  <title>$pagetitle$ – $title$</title>
+  $else$
+  <title>$pagetitle$</title>
+  $endif$
+  $endif$
+  <!-- Scripts -->
+  $for(script)$
+  $if(script.url)$
+  <script src="$script.url$"
+    $if(script.integrity)$ integrity="$script.integrity$"$endif$
+    $if(script.id)$  id="$script.id$"$endif$></script>
+  $else$
+  $endif$
+  $if(script.body)$
+  <script>
+    $script.body$
+  </script>
+  $endif$
+  $endfor$
+</head>

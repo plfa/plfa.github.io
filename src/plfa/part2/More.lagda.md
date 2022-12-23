@@ -1,12 +1,9 @@
 ---
 title     : "More: Additional constructs of simply-typed lambda calculus"
-layout    : page
-prev      : /DeBruijn/
 permalink : /More/
-next      : /Bisimulation/
 ---
 
-```
+```agda
 module plfa.part2.More where
 ```
 
@@ -554,7 +551,7 @@ and leave formalisation of the remaining constructs as an exercise.
 
 ### Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -566,7 +563,7 @@ open import Relation.Nullary.Decidable using (True; toWitness)
 
 ### Syntax
 
-```
+```agda
 infix  4 _⊢_
 infix  4 _∋_
 infixl 5 _,_
@@ -586,7 +583,7 @@ infix  9 #_
 
 ### Types
 
-```
+```agda
 data Type : Set where
   `ℕ    : Type
   _⇒_   : Type → Type → Type
@@ -596,7 +593,7 @@ data Type : Set where
 
 ### Contexts
 
-```
+```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
@@ -604,7 +601,7 @@ data Context : Set where
 
 ### Variables and the lookup judgment
 
-```
+```agda
 data _∋_ : Context → Type → Set where
 
   Z : ∀ {Γ A}
@@ -619,7 +616,7 @@ data _∋_ : Context → Type → Set where
 
 ### Terms and the typing judgment
 
-```
+```agda
 data _⊢_ : Context → Type → Set where
 
   -- variables
@@ -718,7 +715,7 @@ data _⊢_ : Context → Type → Set where
 
 ### Abbreviating de Bruijn indices
 
-```
+```agda
 length : Context → ℕ
 length ∅        =  zero
 length (Γ , _)  =  suc (length Γ)
@@ -741,7 +738,7 @@ count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 
 ## Renaming
 
-```
+```agda
 ext : ∀ {Γ Δ}
   → (∀ {A}   →     Γ ∋ A →     Δ ∋ A)
     ---------------------------------
@@ -771,7 +768,7 @@ rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
 
 ## Simultaneous Substitution
 
-```
+```agda
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
@@ -795,7 +792,7 @@ subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 
 ## Single and double substitution
 
-```
+```agda
 substZero : ∀ {Γ}{A B} → Γ ⊢ A → Γ , A ∋ B → Γ ⊢ B
 substZero V Z      =  V
 substZero V (S x)  =  ` x
@@ -823,7 +820,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
 
 ## Values
 
-```
+```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
   -- functions
@@ -863,7 +860,7 @@ not fixed by the given arguments.
 
 ## Reduction
 
-```
+```agda
 infix 2 _—→_
 
 data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -994,7 +991,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
 ## Reflexive and transitive closure
 
-```
+```agda
 infix  2 _—↠_
 infix  1 begin_
 infixr 2 _—→⟨_⟩_
@@ -1022,7 +1019,7 @@ begin M—↠N = M—↠N
 
 ## Values do not reduce
 
-```
+```agda
 V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A}
   → Value M
     ----------
@@ -1038,7 +1035,7 @@ V¬—→ V-⟨ _ , VN ⟩ (ξ-⟨,⟩₂ _ N—→N′)  =  V¬—→ VN N—�
 
 ## Progress
 
-```
+```agda
 data Progress {A} (M : ∅ ⊢ A) : Set where
 
   step : ∀ {N : ∅ ⊢ A}
@@ -1099,7 +1096,7 @@ progress (case× L M) with progress L
 
 ## Evaluation
 
-```
+```agda
 record Gas : Set where
   constructor gas
   field
@@ -1139,7 +1136,7 @@ eval (gas (suc m)) L with progress L
 
 ## Examples
 
-```
+```agda
 cube : ∅ ⊢ Nat ⇒ Nat
 cube = ƛ (# 0 `* # 0 `* # 0)
 
@@ -1235,7 +1232,7 @@ Please delimit any code you add as follows:
 
 Show that a double substitution is equivalent to two single
 substitutions.
-```
+```agda
 postulate
   double-subst :
     ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
@@ -1249,7 +1246,7 @@ side to be well typed.
 
 We repeat the [test examples](/DeBruijn/#examples) from Chapter [DeBruijn](/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
-```
+```agda
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
 

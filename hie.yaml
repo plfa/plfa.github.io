@@ -1,0 +1,8 @@
+cradle:
+  cabal:
+    - path: "./tools/Buildfile.hs"
+      component: "exe:builder"
+    - path: "./tools/UpdateContributors.hs"
+      component: "exe:update-contributors"
+    - path: "./tools/Buildfile/"
+      component: "lib:plfa"

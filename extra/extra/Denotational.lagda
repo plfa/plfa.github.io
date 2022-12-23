@@ -1,6 +1,5 @@
 ---
 title     : "Denotational: Denotational Semantics"
-layout    : page
 permalink : /Denotational
 ---
 
@@ -61,5 +60,3 @@ _ = refl
 _ : ⟦ ⊢fourCh ⟧ tt ≡ 4
 _ = refl
 \end{code}
-
-

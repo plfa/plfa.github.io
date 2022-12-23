@@ -59,12 +59,12 @@
   The textbook is written as a literate Agda script, and can be found
   here:
   \begin{center}
-    \url{http://plfa.inf.ed.ac.uk}
+    \url{https://plfa.inf.ed.ac.uk}
   \end{center}
 \end{abstract}
 
 \begin{keyword}
-  Agda \sep Coq \sep lambda calculus \sep dependent types.  
+  Agda \sep Coq \sep lambda calculus \sep dependent types.
 \end{keyword}
 
 \maketitle
@@ -159,7 +159,7 @@ community, but which deserves to be better known.  The paper is
 organised as follows.
 
 Section~2 outlines the
-topics covered in PLFA, and notes what is omitted.  
+topics covered in PLFA, and notes what is omitted.
 
 Section~3 compares Agda and Coq as vehicles for pedagogy.  Before
 writing the book, it was not obvious that it was even possible;
@@ -449,26 +449,26 @@ challenging, to say the least.
   \includegraphics[width=\textwidth]{figures/plfa-progress-1.png}
   \caption{PLFA, Progress (1/2)}
   \label{fig:plfa-progress-1}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[p]
   \includegraphics[width=\textwidth]{figures/plfa-progress-2.png}
   \includegraphics[width=\textwidth]{figures/plfa-progress-3a.png}
   \caption{PLFA, Progress (2/2)}
   \label{fig:plfa-progress-2}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/sf-progress-1.png}
   \caption{SF, Progress (1/2)}
   \label{fig:sf-progress-1}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/sf-progress-2.png}
   \caption{SF, Progress (2/2)}
   \label{fig:sf-progress-2}
-\end{figure}  
+\end{figure}
 
 The introduction listed several reasons for preferring Agda over Coq.
 But Coq tactics enable more compact proofs. Would it be possible for
@@ -507,7 +507,7 @@ structurally smaller arguments.  The proof of determinism in SF
 and has a comparable size.
 
 % We suspect tactics could cut down the
-% proof significantly. 
+% proof significantly.
 % We tried to compare with SF's proof that reduction
 % is deterministic, but failed to find that proof.
 
@@ -517,7 +517,7 @@ postconditions and generates the necessary verification conditions. The
 conditions are then verified by a custom tactic, where any questions of
 arithmetic are resolved by the ``omega'' tactic invoking a decision procedure.
 The entire exercise would be easy to repeat in Agda, save for the last step, as
-Agda does not offer support for proof automation out of the box. It is 
+Agda does not offer support for proof automation out of the box. It is
 certainly possible to implement proof automation in Agda---see, e.g., the auto
 tactic by \citet{Kokke-2015}, and the collection of tactics in Ulf Norell's
 \texttt{agda-prelude}\footnote{\url{https://github.com/UlfNorell/agda-prelude}}.
@@ -558,7 +558,7 @@ to the informal explanation that follows.
 SF puts the informal explanation first, followed by the formal proof. The text
 hides the formal proof script under an icon; the figure shows what appears when
 the icon is expanded. As teachers, we were aware that students might skip the
-formal proof on a first reading, and we have to hope the students 
+formal proof on a first reading, and we have to hope the students
 return to it and step through it with an interactive tool in order to make it
 intelligible.  We expect the students skipped over many such proofs.  This
 particular proof forms the basis for a question on several exams,
@@ -658,7 +658,7 @@ Similarly for reflexive and transitive closure —↠.
   \includegraphics[width=\textwidth]{figures/plfa-eval.png}
   \caption{PLFA, Evaluation}
   \label{fig:plfa-eval}
-\end{figure}  
+\end{figure}
 
 A standard approach to type soundness used by many texts,
 including SF and PLFA, is to prove progress and preservation,
@@ -766,13 +766,13 @@ connection becomes more widely known.
   \includegraphics[width=\textwidth]{figures/raw.png}
   \caption{Extrinsic approach in PLFA}
   \label{fig:extrinsic}
-\end{figure}  
+\end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\textwidth]{figures/inherent.png}
   \caption{Intrinsic approach in PLFA}
   \label{fig:intrinsic}
-\end{figure}  
+\end{figure}
 
 % TODO: consider rewriting this?
 The second part of PLFA first discusses two different approaches to
@@ -851,7 +851,7 @@ error-prone without intrinsic types to give assurance of correctness.
 For instrinsic typing with named variables, simultaneous substitution by
 open terms remains difficult.
 
-The benefits of the intrinsic approach 
+The benefits of the intrinsic approach
 are well known to some. The technique was introduced by
 \citet{Altenkirch-and-Reus-1999}, and widely used elsewhere,
 notably by \citet{Chapman-2009} and \citet{Allais-et-al-2017}.
@@ -885,7 +885,7 @@ teaching from PLFA.  To date, he has taught three courses from PLFA.
   3-hour slots, comprising two hours of lecture followed by one
   hour of lab.  Thirty undergraduate students sat the course, which
   covered chapters Naturals, Induction, and Relations.
-    
+
 \end{itemize}
 In addition, David Darais at University of Vermont and John Leo at
 Google Seattle have taught from PLFA.
@@ -899,9 +899,9 @@ Exercises in PLFA are classified in three ways.
 \item
   Exercises labelled “(stretch)” are there to provide an extra
   challenge. Few students do all of these, but most attempt at least a
-  few. 
+  few.
 
-\item   
+\item
   Exercises without a label are included for those who want extra
   practice.  To Philip's surprise, students at PUC-Rio completed
   quite a few of these.
@@ -1019,7 +1019,7 @@ web service for continuous integration.  This means that the book is constantly
 changing.  To accommodate those who want a more stable version, e.g., for
 teaching, we maintain a stable version of the book at
 \begin{center}
-  \url{http://plfa.inf.ed.ac.uk/stable}
+  \url{https://plfa.inf.ed.ac.uk/stable}
 \end{center}
 The stable version of the book is updated much less frequently, and updates
 are announced.

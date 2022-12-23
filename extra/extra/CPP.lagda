@@ -45,7 +45,7 @@ ren ρ (`λ b)    = `λ (ren ((su ∘ ρ) -, ze) b)
 \end{code}
 %</ren>
 \begin{code}
-  where 
+  where
 
   _-,_ : ∀ {Γ σ Δ} → (∀ {τ} → Var τ Γ → Var τ Δ) → Var σ Δ → ∀ {τ} → Var τ (σ ∷ Γ) → Var τ Δ
   (ρ -, v) ze     = v
@@ -118,5 +118,3 @@ nbe ρ (`λ t)    = LAM (λ re v → nbe ((wk re ∘ ρ) -, v) t)
   (ρ -, v) ze     = v
   (ρ -, v) (su k) = ρ k
 \end{code}
-
-

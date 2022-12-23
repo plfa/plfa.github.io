@@ -1,6 +1,5 @@
 ---
 title     : "Quantitative: Relation to Linear Algebra"
-layout    : page
 permalink : /Quantitative/LinAlg/
 ---
 

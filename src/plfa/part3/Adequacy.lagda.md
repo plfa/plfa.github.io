@@ -1,12 +1,9 @@
 ---
 title     : "Adequacy: Adequacy of denotational semantics with respect to operational semantics"
-layout    : page
-prev      : /Soundness/
 permalink : /Adequacy/
-next      : /ContextualEquivalence/
 ---
 
-```
+```agda
 module plfa.part3.Adequacy where
 ```
 
@@ -67,7 +64,7 @@ The rest of this chapter is organized as follows.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -85,13 +82,13 @@ open import plfa.part2.Untyped
             _—↠_; _—→⟨_⟩_; _∎; _—→_; ξ₁; ξ₂; β; ζ)
 open import plfa.part2.Substitution using (ids; sub-id)
 open import plfa.part2.BigStep
-     using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app; ⇓-determ;
-            cbn→reduce)
+     using (Clos; clos; ClosEnv; ∅'; _,'_; _⊢_⇓_; ⇓-var; ⇓-lam; ⇓-app;
+            ⇓-determ; cbn→reduce)
 open import plfa.part3.Denotational
      using (Value; Env; `∅; _`,_; _↦_; _⊑_; _⊢_↓_; ⊥; all-funs∈; _⊔_; ∈→⊑;
             var; ↦-elim; ↦-intro; ⊔-intro; ⊥-intro; sub; ℰ; _≃_; _iff_;
-            ⊑-trans; ⊑-conj-R1; ⊑-conj-R2; ⊑-conj-L; ⊑-refl; ⊑-fun; ⊑-bot; ⊑-dist;
-            sub-inv-fun)
+            ⊑-trans; ⊑-conj-R1; ⊑-conj-R2; ⊑-conj-L; ⊑-refl; ⊑-fun; ⊑-bot;
+            ⊑-dist; sub-inv-fun)
 open import plfa.part3.Soundness using (soundness)
 
 ```
@@ -102,7 +99,7 @@ open import plfa.part3.Soundness using (soundness)
 We define the following short-hand for saying that a value is
 greater-than or equal to a function value.
 
-```
+```agda
 above-fun : Value → Set
 above-fun u = Σ[ v ∈ Value ] Σ[ w ∈ Value ] v ↦ w ⊑ u
 ```
@@ -110,7 +107,7 @@ above-fun u = Σ[ v ∈ Value ] Σ[ w ∈ Value ] v ↦ w ⊑ u
 If a value `u` is greater than a function, then an even greater value `u'`
 is too.
 
-```
+```agda
 above-fun-⊑ : ∀{u u' : Value}
       → above-fun u → u ⊑ u'
         -------------------
@@ -120,7 +117,7 @@ above-fun-⊑ ⟨ v , ⟨ w , lt' ⟩ ⟩ lt = ⟨ v , ⟨ w , ⊑-trans lt' lt 
 
 The bottom value `⊥` is not greater than a function.
 
-```
+```agda
 above-fun⊥ : ¬ above-fun ⊥
 above-fun⊥ ⟨ v , ⟨ w , lt ⟩ ⟩
     with sub-inv-fun lt
@@ -134,7 +131,7 @@ above-fun⊥ ⟨ v , ⟨ w , lt ⟩ ⟩
 If the join of two values `u` and `u'` is greater than a function, then
 at least one of them is too.
 
-```
+```agda
 above-fun-⊔ : ∀{u u'}
            → above-fun (u ⊔ u')
            → above-fun u ⊎ above-fun u'
@@ -151,7 +148,7 @@ above-fun-⊔{u}{u'} ⟨ v , ⟨ w , v↦w⊑u⊔u' ⟩ ⟩
 On the other hand, if neither of `u` and `u'` is greater than a function,
 then their join is also not greater than a function.
 
-```
+```agda
 not-above-fun-⊔ : ∀{u u' : Value}
                → ¬ above-fun u → ¬ above-fun u'
                → ¬ above-fun (u ⊔ u')
@@ -164,7 +161,7 @@ not-above-fun-⊔ naf1 naf2 af12
 The converse is also true. If the join of two values is not above a
 function, then neither of them is individually.
 
-```
+```agda
 not-above-fun-⊔-inv : ∀{u u' : Value} → ¬ above-fun (u ⊔ u')
               → ¬ above-fun u × ¬ above-fun u'
 not-above-fun-⊔-inv af = ⟨ f af , g af ⟩
@@ -180,7 +177,7 @@ not-above-fun-⊔-inv af = ⟨ f af , g af ⟩
 The property of being greater than a function value is decidable, as
 exhibited by the following function.
 
-```
+```agda
 above-fun? : (v : Value) → Dec (above-fun v)
 above-fun? ⊥ = no above-fun⊥
 above-fun? (v ↦ w) = yes ⟨ v , ⟨ w , ⊑-refl ⟩ ⟩
@@ -202,7 +199,7 @@ to a closure `c'` in WHNF and `𝕍 v c'`. Regarding `𝕍 v c`, it will hold wh
 `c` is in WHNF, and if `v` is a function, the body of `c` evaluates
 according to `v`.
 
-```
+```agda
 𝕍 : Value → Clos → Set
 𝔼 : Value → Clos → Set
 ```
@@ -215,7 +212,7 @@ application, then `𝕍` is false (`Bot`). If the term is a lambda
 abstraction, we define `𝕍` by recursion on the value, which we
 describe below.
 
-```
+```agda
 𝕍 v (clos (` x₁) γ) = Bot
 𝕍 v (clos (M · M₁) γ) = Bot
 𝕍 ⊥ (clos (ƛ M) γ) = ⊤
@@ -239,7 +236,7 @@ describe below.
 The definition of `𝔼` is straightforward. If `v` is a greater than a
 function, then `M` evaluates to a closure related to `v`.
 
-```
+```agda
 𝔼 v (clos M γ') = above-fun v → Σ[ c ∈ Clos ] γ' ⊢ M ⇓ c × 𝕍 v c
 ```
 
@@ -250,7 +247,7 @@ semantic values to environments of closures.  In the following, `𝔾`
 relates `γ` to `γ'` if the corresponding values and closures are related
 by `𝔼`.
 
-```
+```agda
 𝔾 : ∀{Γ} → Env Γ → ClosEnv Γ → Set
 𝔾 {Γ} γ γ' = ∀{x : Γ ∋ ★} → 𝔼 (γ x) (γ' x)
 
@@ -267,7 +264,7 @@ We need a few properties of the `𝕍` and `𝔼` relations.  The first is that
 a closure in the `𝕍` relation must be in weak-head normal form.  We
 define WHNF has follows.
 
-```
+```agda
 data WHNF : ∀ {Γ A} → Γ ⊢ A → Set where
   ƛ_ : ∀ {Γ} {N : Γ , ★ ⊢ ★}
      → WHNF (ƛ N)
@@ -275,7 +272,7 @@ data WHNF : ∀ {Γ A} → Γ ⊢ A → Set where
 
 The proof goes by cases on the term in the closure.
 
-```
+```agda
 𝕍→WHNF : ∀{Γ}{γ : ClosEnv Γ}{M : Γ ⊢ ★}{v}
        → 𝕍 v (clos M γ) → WHNF M
 𝕍→WHNF {M = ` x} {v} ()
@@ -287,7 +284,7 @@ Next we have an introduction rule for `𝕍` that mimics the `⊔-intro`
 rule. If both `u` and `v` are related to a closure `c`, then their join is
 too.
 
-```
+```agda
 𝕍⊔-intro : ∀{c u v}
          → 𝕍 u c → 𝕍 v c
            ---------------
@@ -299,37 +296,37 @@ too.
 
 In a moment we prove that `𝕍` is preserved when going from a greater
 value to a lesser value: if `𝕍 v c` and `v' ⊑ v`, then `𝕍 v' c`.
-This property, named `𝕍-sub`, is needed by the main lemma in
+This property, named `sub-𝕍`, is needed by the main lemma in
 the case for the `sub` rule.
 
-To prove `𝕍-sub`, we in turn need the following property concerning
+To prove `sub-𝕍`, we in turn need the following property concerning
 values that are not greater than a function, that is, values that are
 equivalent to `⊥`. In such cases, `𝕍 v (clos (ƛ N) γ')` is trivially true.
 
-```
+```agda
 not-above-fun-𝕍 : ∀{v : Value}{Γ}{γ' : ClosEnv Γ}{N : Γ , ★ ⊢ ★ }
     → ¬ above-fun v
       -------------------
     → 𝕍 v (clos (ƛ N) γ')
 not-above-fun-𝕍 {⊥} af = tt
-not-above-fun-𝕍 {v ↦ v'} af = ⊥-elim (contradiction ⟨ v , ⟨ v' , ⊑-refl ⟩ ⟩ af)
+not-above-fun-𝕍 {v ↦ v'} af = contradiction ⟨ v , ⟨ v' , ⊑-refl ⟩ ⟩ af
 not-above-fun-𝕍 {v₁ ⊔ v₂} af
     with not-above-fun-⊔-inv af
 ... | ⟨ af1 , af2 ⟩ = ⟨ not-above-fun-𝕍 af1 , not-above-fun-𝕍 af2 ⟩
 ```
 
-The proofs of `𝕍-sub` and `𝔼-sub` are intertwined.
+The proofs of `sub-𝕍` and `sub-𝔼` are intertwined.
 
-```
+```agda
 sub-𝕍 : ∀{c : Clos}{v v'} → 𝕍 v c → v' ⊑ v → 𝕍 v' c
 sub-𝔼 : ∀{c : Clos}{v v'} → 𝔼 v c → v' ⊑ v → 𝔼 v' c
 ```
 
-We prove `𝕍-sub` by case analysis on the closure's term, to dispatch the
+We prove `sub-𝕍` by case analysis on the closure's term, to dispatch the
 cases for variables and application. We then proceed by induction on
 `v' ⊑ v`. We describe each case below.
 
-```
+```agda
 sub-𝕍 {clos (` x) γ} {v} () lt
 sub-𝕍 {clos (L · M) γ} () lt
 sub-𝕍 {clos (ƛ N) γ} vc ⊑-bot = tt
@@ -367,8 +364,8 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c sf
 sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c ⟨ v' , ⟨ w'' , lt ⟩ ⟩
     | no naf2 | no naf3
     with above-fun-⊔ ⟨ v' , ⟨ w'' , lt ⟩ ⟩
-... | inj₁ af2 = ⊥-elim (contradiction af2 naf2)
-... | inj₂ af3 = ⊥-elim (contradiction af3 naf3)
+... | inj₁ af2 = contradiction af2 naf2
+... | inj₂ af3 = contradiction af3 naf3
 ```
 
 * Case `⊑-bot`. We immediately have `𝕍 ⊥ (clos (ƛ N) γ)`.
@@ -440,7 +437,7 @@ sub-𝕍 {c} {v ↦ w ⊔ v ↦ w'} ⟨ vcw , vcw' ⟩ ⊑-dist ev1c ⟨ v' , �
 
 The proof of `sub-𝔼` is direct and explained below.
 
-```
+```agda
 sub-𝔼 {clos M γ} {v} {v'} 𝔼v v'⊑v fv'
     with 𝔼v (above-fun-⊑ fv' v'⊑v)
 ... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
@@ -461,7 +458,7 @@ induction on the derivation of `γ ⊢ M ↓ v` we discuss each case below.
 
 The following lemma, kth-x, is used in the case for the `var` rule.
 
-```
+```agda
 kth-x : ∀{Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
      → Σ[ Δ ∈ Context ] Σ[ δ ∈ ClosEnv Δ ] Σ[ M ∈ Δ ⊢ ★ ]
                  γ' x ≡ clos M δ
@@ -469,7 +466,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
 ... | clos{Γ = Δ} M δ = ⟨ Δ , ⟨ δ , ⟨ M , refl ⟩ ⟩ ⟩
 ```
 
-```
+```agda
 ↓→𝔼 : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{M : Γ ⊢ ★ }{v}
             → 𝔾 γ γ' → γ ⊢ M ↓ v → 𝔼 v (clos M γ')
 ↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (var{x = x}) fγx
@@ -515,8 +512,8 @@ kth-x{γ' = γ'}{x = x} with γ' x
     ⟨ clos (ƛ N) γ₁ , ⟨ M'⇓c₂ , 𝕍⊔-intro 𝕍1c 𝕍2c ⟩ ⟩
 ↓→𝔼 𝔾γγ' (⊔-intro d₁ d₂) fv12 | no nfv1  | no nfv2
     with above-fun-⊔ fv12
-... | inj₁ fv1 = ⊥-elim (contradiction fv1 nfv1)
-... | inj₂ fv2 = ⊥-elim (contradiction fv2 nfv2)
+... | inj₁ fv1 = contradiction fv1 nfv1
+... | inj₂ fv2 = contradiction fv2 nfv2
 ↓→𝔼 {Γ} {γ} {γ'} {M} {v'} 𝔾γγ' (sub{v = v} d v'⊑v) fv'
     with ↓→𝔼 {Γ} {γ} {γ'} {M} 𝔾γγ' d (above-fun-⊑ fv' v'⊑v)
 ... | ⟨ c , ⟨ M⇓c , 𝕍v ⟩ ⟩ =
@@ -582,7 +579,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
 From the main lemma we can directly show that `ℰ M ≃ ℰ (ƛ N)` implies
 that `M` big-steps to a lambda, i.e., `∅ ⊢ M ⇓ clos (ƛ N′) γ`.
 
-```
+```agda
 ↓→⇓ : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}  →  ℰ M ≃ ℰ (ƛ N)
          →  Σ[ Γ ∈ Context ] Σ[ N′ ∈ (Γ , ★ ⊢ ★) ] Σ[ γ ∈ ClosEnv Γ ]
             ∅' ⊢ M ⇓ clos (ƛ N′) γ

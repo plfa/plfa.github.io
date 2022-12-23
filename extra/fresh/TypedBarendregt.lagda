@@ -1,6 +1,5 @@
 ---
 title     : "TypedBarendregt: Raw terms with types (broken)"
-layout    : page
 permalink : /TypedBarendregt
 ---
 
@@ -68,7 +67,7 @@ data Term : Set where
   `_              : Id → Term
   `λ_`→_          : Id → Term → Term
   _·_             : Term → Term → Term
-  `zero           : Term    
+  `zero           : Term
   `suc_           : Term → Term
   `pred_          : Term → Term
   `if0_then_else_ : Term → Term → Term → Term
@@ -250,7 +249,7 @@ erase (⊢Y ⊢M)           =  `Y (erase ⊢M)
 ### Properties of erasure
 
 \begin{code}
-cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} → 
+cong₃ : ∀ {A B C D : Set} (f : A → B → C → D) {s t u v x y} →
                                s ≡ t → u ≡ v → x ≡ y → f s u x ≡ f t v y
 cong₃ f refl refl refl = refl
 
@@ -331,13 +330,13 @@ rename : List Id → (Id → Id) → Term → Term
 rename ys σ (` x) = ` σ x
 rename ys σ (`λ x `→ M) = `λ y `→ rename (y ∷ ys) (σ , x ↦ y) M
   where
-  y = fresh ys 
+  y = fresh ys
 rename ys σ (L · M) =  rename ys σ L · rename ys σ M
 rename ys σ `zero =  `zero
 rename ys σ (`suc M) =  `suc (rename ys σ M)
 rename ys σ (`pred M) =  `pred (rename ys σ M)
 rename ys σ (`if0 L then M else N) =
-   `if0 (rename ys σ L) then (rename ys σ M) else (rename ys σ N) 
+   `if0 (rename ys σ L) then (rename ys σ M) else (rename ys σ N)
 rename ys σ (`Y M) =  `Y (rename ys σ M)
 
 barendregt : Term → Term
@@ -369,8 +368,8 @@ subst ρ (`suc M)     =  `suc (subst ρ M)
 subst ρ (`pred M)    =  `pred (subst ρ M)
 subst ρ (`if0 L then M else N)
   =  `if0 (subst ρ L) then (subst ρ M) else (subst ρ N)
-subst ρ (`Y M)       =  `Y (subst ρ M)  
-                       
+subst ρ (`Y M)       =  `Y (subst ρ M)
+
 _[_:=_] : Term → Id → Term → Term
 N [ x := M ]  =  subst (tm-∅ , x ↦ M) N
 \end{code}
@@ -381,7 +380,7 @@ N [ x := M ]  =  subst (tm-∅ , x ↦ M) N
 _ : (` s · ` s · ` z) [ z := `zero ] ≡ (` s · ` s · `zero)
 _ = refl
 
-_ : (` s · ` s · ` z) [ s := (`λ m `→ `suc ` m) ] [ z := `zero ] 
+_ : (` s · ` s · ` z) [ s := (`λ m `→ `suc ` m) ] [ z := `zero ]
       ≡ (`λ m `→ `suc ` m) · (`λ m `→ `suc ` m) · `zero
 _ = refl
 
@@ -407,7 +406,7 @@ data Value : Term → Set where
     → Value V
       --------------
     → Value (`suc V)
-      
+
   Fun : ∀ {x N}
       ---------------
     → Value (`λ x `→ N)
@@ -463,7 +462,7 @@ data _⟶_ : Term → Term → Set where
   β-if0-zero : ∀ {M N}
       -------------------------------
     → `if0 `zero then M else N ⟶ M
-  
+
   β-if0-suc : ∀ {V M N}
     → Value V
       ----------------------------------
@@ -508,7 +507,7 @@ begin M⟶*N = M⟶*N
 
 \begin{code}
 _ : plus · two · two ⟶* (`suc (`suc (`suc (`suc `zero))))
-_ = 
+_ =
   begin
     plus · two · two
   ⟶⟨ ξ-·₁ (ξ-·₁ (β-Y refl)) ⟩
@@ -537,7 +536,7 @@ _ =
   ⟶⟨ ξ-suc (β-if0-suc Zero) ⟩
    `suc (`suc (plus · (`pred (`suc `zero)) · two))
   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ (β-Y refl)))) ⟩
-   `suc (`suc ((`λ m `→ (`λ n `→ `if0 ` m then ` n else 
+   `suc (`suc ((`λ m `→ (`λ n `→ `if0 ` m then ` n else
      `suc (plus · (`pred (` m)) · (` n)))) · (`pred (`suc `zero)) · two))
   ⟶⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₂ Fun (β-pred-suc Zero)))) ⟩
    `suc (`suc ((`λ m `→ (`λ n `→ `if0 ` m then ` n else
@@ -611,7 +610,7 @@ Almost half the lines in the above proof are redundant, for example
 
     det (ξ-·₁ L⟶L′) (ξ-·₂ VL _) = ⊥-elim (Val-⟶ VL L⟶L′)
     det (ξ-·₂ VL _) (ξ-·₁ L⟶L″) = ⊥-elim (Val-⟶ VL L⟶L″)
- 
+
 are essentially identical. What we might like to do is delete the
 redundant lines and add
 
@@ -626,7 +625,7 @@ and neither is smaller.
 \begin{code}
 data Canonical : Term → Type → Set where
 
-  Zero : 
+  Zero :
       -------------------
       Canonical `zero `ℕ
 
@@ -634,7 +633,7 @@ data Canonical : Term → Type → Set where
     → Canonical V `ℕ
       ----------------------
     → Canonical (`suc V) `ℕ
- 
+
   Fun : ∀ {x N A B}
     → ε , x `: A ⊢ N `: B
       -------------------------------
@@ -675,7 +674,7 @@ value Zero         =  Zero
 value (Suc CV)     =  Suc (value CV)
 value (Fun ⊢N)     =  Fun
 \end{code}
-    
+
 ## Progress
 
 \begin{code}
@@ -732,7 +731,7 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 free-lemma : ∀ {Γ M A} → Γ ⊢ M `: A → free M ⊆ dom Γ
 free-lemma (Ax ⊢x) w∈ with w∈
 ...                      | here         =  dom-lemma ⊢x
-...                      | there ()   
+...                      | there ()
 free-lemma {Γ} (⊢λ {N = N} ⊢N)          =  ∷-to-\\ (free-lemma ⊢N)
 free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 ...                        | inj₁ ∈L    = free-lemma ⊢L ∈L
@@ -746,7 +745,7 @@ free-lemma (⊢if0 ⊢L ⊢M ⊢N) w∈
 ...         | inj₂ ∈MN with ++-to-⊎ ∈MN
 ...                       | inj₁ ∈M     = free-lemma ⊢M ∈M
 ...                       | inj₂ ∈N     = free-lemma ⊢N ∈N
-free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈       
+free-lemma (⊢Y ⊢M) w∈                   = free-lemma ⊢M w∈
 -}
 \end{code}
 
@@ -790,7 +789,7 @@ data ok : ∀ {Γ M A} → (Γ ⊢ M `: A) → Set where
 
   ok-Ax : ∀ {Γ A x} {⊢x : Γ ∋ x `: A}
       -----------
-    → ok (Ax ⊢x) 
+    → ok (Ax ⊢x)
 
   ok-λ : ∀ {Γ x N A B} {⊢N : Γ , x `: A ⊢ N `: B}
     → x ∉ Γ
@@ -812,7 +811,7 @@ data ok : ∀ {Γ M A} → (Γ ⊢ M `: A) → Set where
     → ok ⊢M
       -------------
     → ok (⊢suc ⊢M)
-  
+
   ok-pred : ∀ {Γ M} {⊢M : Γ ⊢ M `: `ℕ}
     → ok ⊢M
       --------------
@@ -840,8 +839,8 @@ ok-lemma : ∀ {Γ M A}
   → (⊢M : Γ ⊢ M `: A)
     ------------------
   → ok (bar-lemma ⊢M)
-ok-lemma = {!!}  
-  
+ok-lemma = {!!}
+
 data  _||_ : Ctx → Term → Set where
 
   B-var : ∀ {Γ x}
@@ -1004,4 +1003,3 @@ normalise {L} (suc m) ⊢L with progress ⊢L
 ...          | out-of-gas M⟶*N ⊢N        =  out-of-gas (L ⟶⟨ L⟶M ⟩ M⟶*N) ⊢N
 ...          | normal n CV M⟶*V          =  normal n CV (L ⟶⟨ L⟶M ⟩ M⟶*V)
 \end{code}
-

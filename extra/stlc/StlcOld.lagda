@@ -1,6 +1,5 @@
 ---
 title     : "StlcOld: The Simply Typed Lambda-Calculus"
-layout    : page
 permalink : /StlcOld
 ---
 
@@ -88,7 +87,7 @@ and three are for the base type, booleans:
   * Conditions, `if L then M else N`
 
 Abstraction is also called lambda abstraction, and is the construct
-from which the calculus takes its name. 
+from which the calculus takes its name.
 
 With the exception of variables, each term form either constructs
 a value of a given type (abstractions yield functions, true and
@@ -122,7 +121,7 @@ data Term : Set where
 We use the following special characters
 
     ⇒  U+21D2: RIGHTWARDS DOUBLE ARROW (\=>)
-    `  U+0060: GRAVE ACCENT 
+    `  U+0060: GRAVE ACCENT
     λ  U+03BB: GREEK SMALL LETTER LAMBDA (\Gl or \lambda)
     ∶  U+2236: RATIO (\:)
     ·  U+00B7: MIDDLE DOT (\cdot)
@@ -169,7 +168,7 @@ f  =  id 0
 x  =  id 1
 y  =  id 2
 
-not two : Term 
+not two : Term
 not =  λ[ x ∶ 𝔹 ] (if ` x then false else true)
 two =  λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x)
 \end{code}
@@ -185,7 +184,7 @@ irrelevant.  Thus the five terms
 * `` λ[ f ∶ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
 * `` λ[ g ∶ 𝔹 ⇒ 𝔹 ] λ[ y ∶ 𝔹 ] ` g · (` g · ` y) ``
 * `` λ[ fred ∶ 𝔹 ⇒ 𝔹 ] λ[ xander ∶ 𝔹 ] ` fred · (` fred · ` xander) ``
-* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``  
+* `` λ[ 😇 ∶ 𝔹 ⇒ 𝔹 ] λ[ 😈  ∶ 𝔹 ] ` 😇 · (` 😇 · ` 😈 ) ``
 * `` λ[ x ∶ 𝔹 ⇒ 𝔹 ] λ[ f ∶ 𝔹 ] ` x · (` x · ` f) ``
 
 are all considered equivalent.  This equivalence relation
@@ -201,7 +200,7 @@ that are bound may become free.  Consider the following terms.
   Both variable `f` and `x` are bound.
 
 * `` λ[ x ∶ 𝔹 ] ` f · (` f · ` x) ``
-  has `x` as a bound variable but `f` as a free variable.  
+  has `x` as a bound variable but `f` as a free variable.
 
 * `` ` f · (` f · ` x) ``
   has both `f` and `x` as free variables.
@@ -212,7 +211,7 @@ two are open.  A formal definition of bound and free variables will be
 given in the next chapter.
 
 Different occurrences of a variable may be bound and free.
-In the term 
+In the term
 
     (λ[ x ∶ 𝔹 ] ` x) · ` x
 
@@ -464,7 +463,7 @@ conditional, we first reduce the condition until it becomes a value;
 if the condition is true the conditional reduces to the first
 branch and if false it reduces to the second branch.a
 
-In an informal presentation of the formal semantics, 
+In an informal presentation of the formal semantics,
 the rules for reduction are written as follows.
 
     L ⟹ L′
@@ -508,7 +507,7 @@ and indeed such rules are traditionally called beta rules.
 Here are the above rules formalised in Agda.
 
 \begin{code}
-infix 10 _⟹_ 
+infix 10 _⟹_
 
 data _⟹_ : Term → Term → Set where
   ξ·₁ : ∀ {L L′ M} →
@@ -521,7 +520,7 @@ data _⟹_ : Term → Term → Set where
   βλ· : ∀ {x A N V} → Value V →
     (λ[ x ∶ A ] N) · V ⟹ N [ x := V ]
   ξif : ∀ {L L′ M N} →
-    L ⟹ L′ →    
+    L ⟹ L′ →
     if L then M else N ⟹ if L′ then M else N
   βif-true : ∀ {M N} →
     if true then M else N ⟹ M
@@ -592,13 +591,13 @@ are written as follows.
 Here it is formalised in Agda.
 
 \begin{code}
-infix 10 _⟹*_ 
+infix 10 _⟹*_
 infixr 2 _⟹⟨_⟩_
 infix  3 _∎
 
 data _⟹*_ : Term → Term → Set where
   _∎ : ∀ M → M ⟹* M
-  _⟹⟨_⟩_ : ∀ L {M N} → L ⟹ M → M ⟹* N → L ⟹* N  
+  _⟹⟨_⟩_ : ∀ L {M N} → L ⟹ M → M ⟹* N → L ⟹* N
 \end{code}
 
 We can read this as follows.
@@ -665,7 +664,7 @@ In general, we use typing _judgments_ of the form
 which asserts in type environment `Γ` that term `M` has type `A`.
 Environment `Γ` provides types for all the free variables in `M`.
 
-Here are three examples. 
+Here are three examples.
 
 * `` ∅ , f ∶ 𝔹 ⇒ 𝔹 , x ∶ 𝔹 ⊢ ` f · (` f · ` x) ∶  𝔹 ``
 * `` ∅ , f ∶ 𝔹 ⇒ 𝔹 ⊢ (λ[ x ∶ 𝔹 ] ` f · (` f · ` x)) ∶  𝔹 ⇒ 𝔹 ``
@@ -675,7 +674,7 @@ Environments are partial maps from identifiers to types, built using `∅`
 for the empty map, and `Γ , x ∶ A` for the map that extends
 environment `Γ` by mapping variable `x` to type `A`.
 
-In an informal presentation of the formal semantics, 
+In an informal presentation of the formal semantics,
 the rules for typing are written as follows.
 
     Γ x ≡ A
@@ -704,7 +703,7 @@ the rules for typing are written as follows.
     Γ ⊢ if L then M else N ∶ A
 
 As we will show later, the rules are deterministic, in that
-at most one rule applies to every term. 
+at most one rule applies to every term.
 
 The proof rules come in pairs, with rules to introduce and to
 eliminate each connective, labeled `-I` and `-E`, respectively. As we
@@ -745,7 +744,7 @@ data _⊢_∶_ : Context → Term → Type → Set where
     Γ ⊢ L ∶ 𝔹 →
     Γ ⊢ M ∶ A →
     Γ ⊢ N ∶ A →
-    Γ ⊢ if L then M else N ∶ A    
+    Γ ⊢ if L then M else N ∶ A
 \end{code}
 
 #### Example type derivations
@@ -869,6 +868,3 @@ or explain why there are no such types.
 1. `` ∅ ⊢ λ[ y ∶ 𝔹 ⇒ 𝔹 ⇒ 𝔹 ] λ[ x ∶ 𝔹 ] ` y · ` x ∶ A ``
 2. `` ∅ , x ∶ A ⊢ x · x ∶ B ``
 3. `` ∅ , x ∶ A , y ∶ B ⊢ λ[ z ∶ C ] ` x · (` y · ` z) ∶ D ``
-
-
-

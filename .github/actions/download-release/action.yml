@@ -1,0 +1,28 @@
+name: 'Download PLFA release'
+description: 'Download PLFA release'
+inputs:
+  plfa-version:
+    required: true
+    description: 'Version of PLFA.'
+  path:
+    required: true
+    description: 'Target directory.'
+runs:
+  using: "composite"
+  steps:
+      - name: Cache PLFA release
+        uses: actions/cache@v3
+        id: cache-plfa-release
+        with:
+          path: ${{ github.workspace }}/${{ inputs.plfa-version }}.zip
+          key: plfa-version-${{ inputs.plfa-version }}
+
+      - name: Download PLFA release
+        if: steps.cache-plfa-release.outputs.cache-hit != 'true'
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/plfa/plfa.github.io/releases/download/v${{ inputs.plfa-version }}/Website.zip" -OutFile "${{ github.workspace }}/${{ inputs.plfa-version }}.zip"
+        shell: pwsh
+
+      - name: Extract PLFA release
+        run: Expand-Archive "${{ github.workspace }}/${{ inputs.plfa-version }}.zip" -DestinationPath "${{ inputs.path }}/${{ inputs.plfa-version }}"
+        shell: pwsh

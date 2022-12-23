@@ -1,0 +1,10 @@
+name: 'Setup HTMLProofer'
+description: 'Setup HTMLProofer. Requires that Gemfile contains html-proofer.'
+runs:
+  using: "composite"
+  steps:
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          # use .ruby-version
+          bundler-cache: true

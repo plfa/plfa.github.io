@@ -66,7 +66,7 @@ Here are the inference rules for Natural Deduction annotated with Agda terms.
     ---------------------------- ∀-E
     L M : Bx [ x := M ]
 
-             
+
     M : A    Nx [ x := M ] : Bx [ x := M ]
     -------------------------------------- ∃-I
     (M , Nx) : ∃ A (λ x → Bx)

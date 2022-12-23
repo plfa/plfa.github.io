@@ -1,6 +1,5 @@
 ---
 title     : "TypedBadfix: Typed Lambda term representation (bad fix)"
-layout    : page
 permalink : /TypedBadfix
 ---
 
@@ -59,7 +58,7 @@ data Env : Set where
 data Term : Set where
   `_    : Id → Term
   `λ_⇒_ : Id → Term → Term
-  _·_   : Term → Term → Term  
+  _·_   : Term → Term → Term
 
 data _∋_⦂_ : Env → Id → Type → Set where
 
@@ -372,7 +371,7 @@ dom-lemma (S x≢y ⊢y)  =  there (dom-lemma ⊢y)
 free-lemma : ∀ {Γ M A} → Γ ⊢ M ⦂ A → free M ⊆ dom Γ
 free-lemma (` ⊢x) w∈ with w∈
 ...                     | here          =  dom-lemma ⊢x
-...                     | there ()   
+...                     | there ()
 free-lemma {Γ} (`λ_ {x = x} {N = N} ⊢N)  =  ∷-to-\\ (free-lemma ⊢N)
 free-lemma (⊢L · ⊢M) w∈ with ++-to-⊎ w∈
 ...                        | inj₁ ∈L    = free-lemma ⊢L ∈L
@@ -504,7 +503,7 @@ map-≢ {_} {_} {w} {x} w≢ with w ≟ x
   Σ′ {w} w∈′ with w ≟ x
   ...            | yes refl    =  ⊆-++₁
   ...            | no  w≢      =  ⊆-++₂ ∘ Σ (there⁻¹ w∈′ w≢)
-  
+
   ⊆xs′ :  free N ⊆ xs′
   ⊆xs′ =  \\-to-∷ ⊆xs
 
@@ -586,7 +585,7 @@ _//_ : Env → List Id → Env
     ⊆N[x:=M] : free (N [ x := M ]) ⊆ ys
     ⊆N[x:=M] = ?
 -}
-  
+
 {-
 ⊢substitution : ∀ {Γ x A N B M} →
   Γ , x ⦂ A ⊢ N ⦂ B →
@@ -600,7 +599,7 @@ _//_ : Env → List Id → Env
   Δ    =  Γ // ys
   ⊢N′  =  rename {Γ , x ⦂ A} {Δ , x ⦂ A} ? ⊢N
   ⊢M′  =  rename {Γ} {Δ} ? ⊢M
-  
+
   -- rename is no longer sufficiently powerful
   -- it can do weakening but not strengthening
 
@@ -616,7 +615,7 @@ _//_ : Env → List Id → Env
   Σ {w} w∈ y∈ with w ≟ x
   ...            | yes _                   =  ⊆-++₁ y∈
   ...            | no w≢ rewrite ∈-[_] y∈  =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
-  
+
   ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
   ⊢ρ {w} w∈ Z         with w ≟ x
   ...                    | yes _     =  ⊢M
@@ -642,7 +641,7 @@ _//_ : Env → List Id → Env
   Γ′   =  Γ // ys
   ⊢N′  =  rename {Γ , x ⦂ A} {Γ′ , x ⦂ A} ? ⊢N
   ⊢M′  =  rename {Γ} {Γ′} ? ⊢M
-  
+
   -- rename is no longer sufficiently powerful
   -- it can do weakening but not strengthening
 
@@ -658,7 +657,7 @@ _//_ : Env → List Id → Env
   Σ {w} w∈ y∈ with w ≟ x
   ...            | yes _                   =  ⊆-++₁ y∈
   ...            | no w≢ rewrite ∈-[_] y∈  =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
-  
+
   ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
   ⊢ρ {w} w∈ Z         with w ≟ x
   ...                    | yes _     =  ⊢M
@@ -689,7 +688,7 @@ _//_ : Env → List Id → Env
   Σ {w} w∈ y∈ with w ≟ x
   ...            | yes _                   =  ⊆-++₁ y∈
   ...            | no w≢ rewrite ∈-[_] y∈  =  ⊆-++₂ (∈-≢-to-\\ w∈ w≢)
-  
+
   ⊢ρ : ∀ {w B} → w ∈ xs → Γ′ ∋ w ⦂ B → Γ ⊢ ρ w ⦂ B
   ⊢ρ {w} w∈ Z         with w ≟ x
   ...                    | yes _     =  ⊢M
@@ -719,6 +718,3 @@ preservation (⊢V · ⊢M) (ξ-⟹₂ valV M⟶M′)   =  ⊢V · preservation 
 preservation ((`λ ⊢N) · ⊢W) (β-⟹ valW)      =  ⊢substitution ⊢N ⊢W
 -}
 \end{code}
-
-
-

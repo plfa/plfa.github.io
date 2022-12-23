@@ -1,0 +1,44 @@
+name: Publish to GitHub Releases
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Setup BumpVer
+        id: setup-bumpver
+        uses: ./.github/actions/setup-bumpver
+
+      - name: Get release notes
+        run: |
+          Get-Content ./web/posts/*-release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md | Select-Object -Skip 3 | Out-File -FilePath ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md -Encoding utf8
+        shell: pwsh
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: site
+
+      - name: Build Website.zip
+        run: |
+          Compress-Archive -Path "site/*" -DestinationPath Website.zip
+        shell: pwsh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Website.zip
+          body_path: ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md
+          fail_on_unmatched_files: true

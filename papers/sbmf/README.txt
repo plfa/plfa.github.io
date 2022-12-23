@@ -18,6 +18,6 @@ I started with an evaluator and proved type soundness.
 
 This kind of exercise has also been performed using fuel, see Siek's
 "Type Safety in Three Easy Lemmas"
-(http://siek.blogspot.com/2013/05/type-safety-in-three-easy-lemmas.html)
+(https://siek.blogspot.com/2013/05/type-safety-in-three-easy-lemmas.html)
 and "Functional Big-Step Semantics" by Owens et al.
 (https://doi.org/10.1007/978-3-662-49498-1_23).

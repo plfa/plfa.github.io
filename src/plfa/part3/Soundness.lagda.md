@@ -1,12 +1,9 @@
 ---
 title     : "Soundness: Soundness of reduction with respect to denotational semantics"
-layout    : page
-prev      : /Compositional/
 permalink : /Soundness/
-next      : /Adequacy/
 ---
 
-```
+```agda
 module plfa.part3.Soundness where
 ```
 
@@ -32,7 +29,7 @@ expansion is false for most typed lambda calculi!
 
 ## Imports
 
-```
+```agda
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -76,9 +73,9 @@ meaning.  That is, if `M` results in `v` in environment `γ`, then applying a
 substitution `σ` to `M` gives us a program that also results in `v`, but in
 an environment `δ` in which, for every variable `x`, `σ x` results in the
 same value as the one for `x` in the original environment `γ`.
-We write `δ ⊢ σ ↓ γ` for this condition.
+We write `` δ `⊢ σ ↓ γ `` for this condition.
 
-```
+```agda
 infix 3 _`⊢_↓_
 _`⊢_↓_ : ∀{Δ Γ} → Env Δ → Subst Γ Δ → Env Γ → Set
 _`⊢_↓_ {Δ}{Γ} δ σ γ = (∀ (x : Γ ∋ ★) → δ ⊢ σ x ↓ γ x)
@@ -89,7 +86,7 @@ lemma. It says that applying the `exts` function to a substitution
 produces a new substitution that maps variables to terms that when
 evaluated in `δ , v` produce the values in `γ , v`.
 
-```
+```agda
 subst-ext : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (σ : Subst Γ Δ)
   → δ `⊢ σ ↓ γ
@@ -111,14 +108,14 @@ The proof is by cases on the de Bruijn index `x`.
 With the extension lemma in hand, the proof that simultaneous
 substitution preserves meaning is straightforward.  Let's dive in!
 
-```
+```agda
 subst-pres : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} {M : Γ ⊢ ★}
   → (σ : Subst Γ Δ)
   → δ `⊢ σ ↓ γ
   → γ ⊢ M ↓ v
     ------------------
   → δ ⊢ subst σ M ↓ v
-subst-pres σ s (var {x = x}) = (s x)
+subst-pres σ s (var {x = x}) = s x
 subst-pres σ s (↦-elim d₁ d₂) =
   ↦-elim (subst-pres σ s d₁) (subst-pres σ s d₂)
 subst-pres σ s (↦-intro d) =
@@ -132,9 +129,9 @@ subst-pres σ s (sub d lt) = sub (subst-pres σ s d) lt
 The proof is by induction on the semantics of `M`.  The two interesting
 cases are for variables and lambda abstractions.
 
-* For a variable `x`, we have that `v ⊑ γ x` and we need to show that
+* For a variable `x`, we have that `v = γ x` and we need to show that
   `δ ⊢ σ x ↓ v`.  From the premise applied to `x`, we have that
-  `δ ⊢ σ x ↓ γ x`, so we conclude by the `sub` rule.
+  `δ ⊢ σ x ↓ γ x` aka `δ ⊢ σ x ↓ v`.
 
 * For a lambda abstraction, we must extend the substitution
   for the induction hypothesis. We apply the `subst-ext` lemma
@@ -151,7 +148,7 @@ we have that `γ , v ⊢ M ↓ w` and `γ ⊢ N ↓ v`.
 So we need to show that `γ ⊢ M [ N ] ↓ w`, or equivalently,
 that `γ ⊢ subst (subst-zero N) M ↓ w`.
 
-```
+```agda
 substitution : ∀ {Γ} {γ : Env Γ} {N M v w}
    → γ `, v ⊢ N ↓ w
    → γ ⊢ M ↓ v
@@ -183,7 +180,7 @@ Let `y` be an arbitrary variable (de Bruijn index).
 With the substitution lemma in hand, it is straightforward to prove
 that reduction preserves denotations.
 
-```
+```agda
 preserve : ∀ {Γ} {γ : Env Γ} {M N v}
   → γ ⊢ M ↓ v
   → M —→ N
@@ -240,18 +237,18 @@ we prove the opposite, that it reflects meaning. That is,
 if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where `(δ ∘ ρ) `⊑ γ`.
 
 First, we need a variant of a lemma given earlier.
-```
-ext-⊑′ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
+```agda
+ext-`⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
   → (δ ∘ ρ) `⊑ γ
     ------------------------------
   → ((δ `, v) ∘ ext ρ) `⊑ (γ `, v)
-ext-⊑′ ρ lt Z = ⊑-refl
-ext-⊑′ ρ lt (S x) = lt x
+ext-`⊑ ρ lt Z = ⊑-refl
+ext-`⊑ ρ lt (S x) = lt x
 ```
 
 The proof is then as follows.
-```
+```agda
 rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
   → {ρ : Rename Γ Δ}
   → (δ ∘ ρ) `⊑ γ
@@ -261,7 +258,7 @@ rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
 rename-reflect {M = ` x} all-n d with var-inv d
 ... | lt =  sub var (⊑-trans lt (all-n x))
 rename-reflect {M = ƛ N}{ρ = ρ} all-n (↦-intro d) =
-   ↦-intro (rename-reflect (ext-⊑′ ρ all-n) d)
+   ↦-intro (rename-reflect (ext-`⊑ ρ all-n) d)
 rename-reflect {M = ƛ N} all-n ⊥-intro = ⊥-intro
 rename-reflect {M = ƛ N} all-n (⊔-intro d₁ d₂) =
    ⊔-intro (rename-reflect all-n d₁) (rename-reflect all-n d₂)
@@ -281,7 +278,7 @@ We cannot prove this lemma by induction on the derivation of
 
 * If it is a variable, we apply the inversion lemma to obtain
   that `v ⊑ δ (ρ x)`. Instantiating the premise to `x` we have
-  `δ (ρ x) = γ x`, so we conclude by the `var` rule.
+  `δ (ρ x) ⊑ γ x`, so we conclude by the `var` rule.
 
 * If it is a lambda abstraction `ƛ N`, we have
   rename `ρ (ƛ N) = ƛ (rename (ext ρ) N)`.
@@ -289,7 +286,7 @@ We cannot prove this lemma by induction on the derivation of
 
   * Rule `↦-intro`: To satisfy the premise of the induction
     hypothesis, we prove that the renaming can be extended to be a
-    mapping from `γ , v₁ to δ , v₁`.
+    mapping from `γ , v` to `δ , v`.
 
   * Rule `⊥-intro`: We simply apply `⊥-intro`.
 
@@ -305,7 +302,7 @@ We cannot prove this lemma by induction on the derivation of
 In the upcoming uses of `rename-reflect`, the renaming will always be
 the increment function. So we prove a corollary for that special case.
 
-```
+```agda
 rename-inc-reflect : ∀ {Γ v′ v} {γ : Env Γ} { M : Γ ⊢ ★}
   → (γ `, v′) ⊢ rename S_ M ↓ v
     ----------------------------
@@ -321,14 +318,14 @@ reflects denotations. That is, if `γ ⊢ (subst σ M) ↓ v`, then
 `γ ⊢ σ k ↓ δ k` and `δ ⊢ M ↓ v` for any `k` and some `δ`.
 We shall start with the case in which `M` is a variable `x`.
 So instead the premise is `γ ⊢ σ x ↓ v` and we need to show that
-`δ ⊢ x ↓ v` for some `δ`. The `δ` that we choose shall be the
+`` δ ⊢ ` x ↓ v `` for some `δ`. The `δ` that we choose shall be the
 environment that maps `x` to `v` and every other variable to `⊥`.
 
 Next we define the environment that maps `x` to `v` and every other
 variable to `⊥`, that is `const-env x v`. To tell variables apart, we
 define the following function for deciding equality of variables.
 
-```
+```agda
 _var≟_ : ∀ {Γ} → (x y : Γ ∋ ★) → Dec (x ≡ y)
 Z var≟ Z  =  yes refl
 Z var≟ (S _)  =  no λ()
@@ -344,7 +341,7 @@ var≟-refl (S x) rewrite var≟-refl x = refl
 
 Now we use `var≟` to define `const-env`.
 
-```
+```agda
 const-env : ∀{Γ} → (x : Γ ∋ ★) → Value → Env Γ
 const-env x v y with x var≟ y
 ...             | yes _       = v
@@ -353,14 +350,14 @@ const-env x v y with x var≟ y
 
 Of course, `const-env x v` maps `x` to value `v`
 
-```
+```agda
 same-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
 same-const-env {x = x} rewrite var≟-refl x = refl
 ```
 
 and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
 
-```
+```agda
 diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
   → x ≢ y
     -------------------
@@ -370,10 +367,10 @@ diff-const-env {Γ} {x} {y} neq with x var≟ y
 ...  | no _    =  refl
 ```
 
-So we choose `const-env x v` for `δ` and obtain `δ ⊢ x ↓ v`
+So we choose `const-env x v` for `δ` and obtain `` δ ⊢ ` x ↓ v ``
 with the `var` rule.
 
-It remains to prove that `γ ⊢ σ ↓ δ` and `δ ⊢ M ↓ v` for any `k`, given that
+It remains to prove that `` γ `⊢ σ ↓ δ `` and `δ ⊢ M ↓ v` for any `k`, given that
 we have chosen `const-env x v` for `δ`.  We shall have two cases to
 consider, `x ≡ y` or `x ≢ y`.
 
@@ -388,7 +385,7 @@ Thus, we have completed the variable case of the proof that
 simultaneous substitution reflects denotations.  Here is the proof
 again, formally.
 
-```
+```agda
 subst-reflect-var : ∀ {Γ Δ} {γ : Env Δ} {x : Γ ∋ ★} {v} {σ : Subst Γ Δ}
   → γ ⊢ σ x ↓ v
     -----------------------------------------
@@ -408,7 +405,7 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
 
 Every substitution produces terms that can evaluate to `⊥`.
 
-```
+```agda
 subst-⊥ : ∀{Γ Δ}{γ : Env Δ}{σ : Subst Γ Δ}
     -----------------
   → γ `⊢ σ ↓ `⊥
@@ -419,7 +416,7 @@ If a substitution produces terms that evaluate to the values in
 both `γ₁` and `γ₂`, then those terms also evaluate to the values in
 `γ₁ ⊔ γ₂`.
 
-```
+```agda
 subst-⊔ : ∀{Γ Δ}{γ : Env Δ}{γ₁ γ₂ : Env Γ}{σ : Subst Γ Δ}
            → γ `⊢ σ ↓ γ₁
            → γ `⊢ σ ↓ γ₂
@@ -430,7 +427,7 @@ subst-⊔ γ₁-ok γ₂-ok x = ⊔-intro (γ₁-ok x) (γ₂-ok x)
 
 ### The Lambda constructor is injective
 
-```
+```agda
 lambda-inj : ∀ {Γ} {M N : Γ , ★ ⊢ ★ }
   → _≡_ {A = Γ ⊢ ★} (ƛ M) (ƛ N)
     ---------------------------
@@ -442,12 +439,12 @@ lambda-inj refl = refl
 
 In this section we prove a central lemma, that
 substitution reflects denotations. That is, if `γ ⊢ subst σ M ↓ v`, then
-`δ ⊢ M ↓ v` and `γ ⊢ σ ↓ δ` for some `δ`. We shall proceed by induction on
+`δ ⊢ M ↓ v` and `` γ `⊢ σ ↓ δ `` for some `δ`. We shall proceed by induction on
 the derivation of `γ ⊢ subst σ M ↓ v`. This requires a minor
 restatement of the lemma, changing the premise to `γ ⊢ L ↓ v` and
 `L ≡ subst σ M`.
 
-```
+```agda
 split : ∀ {Γ} {M : Γ , ★ ⊢ ★} {δ : Env (Γ , ★)} {v}
   → δ ⊢ M ↓ v
     --------------------------
@@ -507,15 +504,15 @@ subst-reflect (sub d lt) eq
   We apply the lemma `subst-reflect-var` to conclude.
 
 * Case `↦-elim`: We have `subst σ M ≡ L₁ · L₂`. We proceed by cases on `M`.
-  * Case `M ≡ x`: We apply the `subst-reflect-var` lemma again to conclude.
+  * Case `` M ≡ ` x ``: We apply the `subst-reflect-var` lemma again to conclude.
 
   * Case `M ≡ M₁ · M₂`: By the induction hypothesis, we have
-    some `δ₁` and `δ₂` such that `δ₁ ⊢ M₁ ↓ v₁ ↦ v₃` and `γ ⊢ σ ↓ δ₁`,
-    as well as `δ₂ ⊢ M₂ ↓ v₁` and `γ ⊢ σ ↓ δ₂`.
+    some `δ₁` and `δ₂` such that `δ₁ ⊢ M₁ ↓ v₁ ↦ v₃` and `` γ `⊢ σ ↓ δ₁ ``,
+    as well as `δ₂ ⊢ M₂ ↓ v₁` and `` γ `⊢ σ ↓ δ₂ ``.
     By `⊑-env` we have `δ₁ ⊔ δ₂ ⊢ M₁ ↓ v₁ ↦ v₃` and `δ₁ ⊔ δ₂ ⊢ M₂ ↓ v₁`
     (using `⊑-env-conj-R1` and `⊑-env-conj-R2`), and therefore
     `δ₁ ⊔ δ₂ ⊢ M₁ · M₂ ↓ v₃`.
-    We conclude this case by obtaining `γ ⊢ σ ↓ δ₁ ⊔ δ₂`
+    We conclude this case by obtaining `` γ `⊢ σ ↓ δ₁ ⊔ δ₂ ``
     by the `subst-⊔` lemma.
 
 * Case `↦-intro`: We have `subst σ M ≡ ƛ L′`. We proceed by cases on `M`.
@@ -526,21 +523,21 @@ subst-reflect (sub d lt) eq
     From the later we have `(δ , v₁) ⊢ # 0 ↓ v′`.
     By the lemma `var-inv` we have `v′ ⊑ v₁`, so by the `up-env` lemma we
     have `(δ′ , v₁) ⊢ M′ ↓ v₂` and therefore `δ′ ⊢ ƛ M′ ↓ v₁ → v₂`.  We
-    also need to show that `δ `⊢ σ ↓ δ′`.  Fix `k`. We have
+    also need to show that `δ ⊢ σ ↓ δ′`.  Fix `k`. We have
     `(δ , v₁) ⊢ rename S_ σ k ↓ δ k′`.  We then apply the lemma
     `rename-inc-reflect` to obtain `δ ⊢ σ k ↓ δ k′`, so this case is
     complete.
 
 * Case `⊥-intro`: We choose `⊥` for `δ`.
   We have `⊥ ⊢ M ↓ ⊥` by `⊥-intro`.
-  We have `δ ⊢ σ ↓ ⊥` by the lemma `subst-empty`.
+  We have `` δ `⊢ σ ↓ `⊥ `` by the lemma `subst-⊥`.
 
 * Case `⊔-intro`: By the induction hypothesis we have
-  `δ₁ ⊢ M ↓ v₁`, `δ₂ ⊢ M ↓ v₂`, `δ ⊢ σ ↓ δ₁`, and `δ ⊢ σ ↓ δ₂`.
+  `δ₁ ⊢ M ↓ v₁`, `δ₂ ⊢ M ↓ v₂`, `` δ `⊢ σ ↓ δ₁ ``, and `` δ `⊢ σ ↓ δ₂ ``.
   We have `δ₁ ⊔ δ₂ ⊢ M ↓ v₁` and `δ₁ ⊔ δ₂ ⊢ M ↓ v₂`
   by `⊑-env` with `⊑-env-conj-R1` and `⊑-env-conj-R2`.
   So by `⊔-intro` we have `δ₁ ⊔ δ₂ ⊢ M ↓ v₁ ⊔ v₂`.
-  By `subst-⊔` we conclude that `δ ⊢ σ ↓ δ₁ ⊔ δ₂`.
+  By `subst-⊔` we conclude that `` δ `⊢ σ ↓ δ₁ ⊔ δ₂ ``.
 
 
 ### Single substitution reflects denotations
@@ -555,9 +552,9 @@ for some value `v`. We have `N [ M ] = subst (subst-zero M) N`.
 
 We first prove a lemma about `subst-zero`, that if
 `δ ⊢ subst-zero M ↓ γ`, then
-`γ ⊑ (δ , w) × δ ⊢ M ↓ w` for some `w`.
+`` γ `⊑ (δ , w) × δ ⊢ M ↓ w `` for some `w`.
 
-```
+```agda
 subst-zero-reflect : ∀ {Δ} {δ : Env Δ} {γ : Env (Δ , ★)} {M : Δ ⊢ ★}
   → δ `⊢ subst-zero M ↓ γ
     ----------------------------------------
@@ -571,15 +568,15 @@ subst-zero-reflect {δ = δ} {γ = γ} δσγ = ⟨ last γ , ⟨ lemma , δσγ
 
 We choose `w` to be the last value in `γ` and we obtain `δ ⊢ M ↓ w`
 by applying the premise to variable `Z`. Finally, to prove
-`γ ⊑ (δ , w)`, we prove a lemma by induction in the input variable.
+`` γ `⊑ (δ , w) ``, we prove a lemma by induction in the input variable.
 The base case is trivial because of our choice of `w`.
 In the induction case, `S x`, the premise
 `δ ⊢ subst-zero M ↓ γ` gives us `δ ⊢ x ↓ γ (S x)` and then
-using `var-inv` we conclude that `γ (S x) ⊑ (δ `, w) (S x)`.
+using `var-inv` we conclude that `` γ (S x) ⊑ (δ `, w) (S x) ``.
 
 Now to prove that substitution reflects denotations.
 
-```
+```agda
 substitution-reflect : ∀ {Δ} {δ : Env Δ} {N : Δ , ★ ⊢ ★} {M : Δ ⊢ ★} {v}
   → δ ⊢ N [ M ] ↓ v
     ------------------------------------------------
@@ -592,9 +589,9 @@ substitution-reflect d with subst-reflect d refl
 We apply the `subst-reflect` lemma to obtain
 `δ ⊢ subst-zero M ↓ γ` and `γ ⊢ N ↓ v` for some `γ`.
 Using the former, the `subst-zero-reflect` lemma gives
-us `γ ⊑ (δ , w)` and `δ ⊢ M ↓ w`. We conclude that
+us `` γ `⊑ (δ , w) `` and `δ ⊢ M ↓ w`. We conclude that
 `δ , w ⊢ N ↓ v` by applying the `⊑-env` lemma, using
-`γ ⊢ N ↓ v` and `γ ⊑ (δ , w)`.
+`γ ⊢ N ↓ v` and `` γ `⊑ (δ , w) ``.
 
 
 ### Reduction reflects denotations
@@ -602,7 +599,7 @@ us `γ ⊑ (δ , w)` and `δ ⊢ M ↓ w`. We conclude that
 Now that we have proved that substitution reflects denotations, we can
 easily prove that reduction does too.
 
-```
+```agda
 reflect-beta : ∀{Γ}{γ : Env Γ}{M N}{v}
     → γ ⊢ (N [ M ]) ↓ v
     → γ ⊢ (ƛ N) · M ↓ v
@@ -644,7 +641,7 @@ reflect (sub d lt) r mn = sub (reflect d r mn) lt
 We have proved that reduction both preserves and reflects
 denotations. Thus, reduction implies denotational equality.
 
-```
+```agda
 reduce-equal : ∀ {Γ} {M : Γ ⊢ ★} {N : Γ ⊢ ★}
   → M —→ N
     ---------
@@ -657,7 +654,7 @@ We conclude with the _soundness property_, that multi-step reduction
 to a lambda abstraction implies denotational equivalence with a lambda
 abstraction.
 
-```
+```agda
 soundness : ∀{Γ} {M : Γ ⊢ ★} {N : Γ , ★ ⊢ ★}
   → M —↠ ƛ N
     -----------------

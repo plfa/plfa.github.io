@@ -1,6 +1,5 @@
 ---
 title     : "PropertiesDec: Progress and Preservation"
-layout    : page
 permalink : /PropertiesDec/
 ---
 
@@ -154,7 +153,7 @@ data Canonical_⦂_ : Term → Type → Set where
     → Canonical V ⦂ `ℕ
       ---------------------
     → Canonical `suc V ⦂ `ℕ
-\end{code}    
+\end{code}
 
 Every closed, well-typed value is canonical.
 \begin{code}
@@ -171,7 +170,7 @@ canonical (⊢suc ⊢V)        (V-suc VV)  =  C-suc (canonical ⊢V VV)
 canonical (⊢case ⊢L ⊢M ⊢N) ()
 canonical (⊢μ ⊢M)          ()
 \end{code}
-There are only three interesting cases to consider. 
+There are only three interesting cases to consider.
 
 * If the term is a lambda abstraction, then well-typing of the term
   guarantees well-typing of the body.
@@ -275,7 +274,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 progress (⊢μ ⊢M)                            =  step β-μ
 \end{code}
 We induct on the evidence that `M` is well-typed.
-Let's unpack the first three cases.  
+Let's unpack the first three cases.
 
 * The term cannot be a variable, since no variable is well typed
   in the empty context.
@@ -406,7 +405,7 @@ to substitution by closed terms in order to avoid the need to
 rename bound variables.  The term into which we are substituting
 is typed in an arbitrary context `Γ`, extended by the variable
 `x` for which we are substituting; and the result term is typed
-in `Γ`. 
+in `Γ`.
 
 The lemma establishes that substitution composes well with typing:
 if we first type the components separately and then combine them we get
@@ -441,7 +440,7 @@ and `Γ , x ⦂ A` appears in a hypothesis.  Thus:
     Γ ⊢ ƛ x ⇒ N ⦂ A ⇒ B
 
 for lambda expressions, and similarly for case and fixpoint.  To deal
-with this situation, we first prove a lemma showing that if one context maps to another, 
+with this situation, we first prove a lemma showing that if one context maps to another,
 this is still true after adding the same variable to
 both contexts.
 \begin{code}
@@ -604,7 +603,7 @@ substvar : ∀ {Γ x y V A B}
   → ∅ ⊢ V ⦂ B
   → Γ , y ⦂ B ∋ x ⦂ A
     ------------------------
-  → Γ ⊢ (` x) [ y := V ] ⦂ A 
+  → Γ ⊢ (` x) [ y := V ] ⦂ A
 
 substbind : ∀ {Γ x y N V A B C}
   → ∅ ⊢ V ⦂ B
@@ -659,7 +658,7 @@ Now that naming is resolved, let's unpack the first three cases.
   where the second hypothesis follows from:
 
       Γ , y ⦂ B ∋ x ⦂ A
-    
+
   There are two subcases, depending on the evidence for this judgment.
 
   + The lookup judgment is evidenced by rule `Z`:
@@ -732,7 +731,7 @@ Now that naming is resolved, let's unpack the first three cases.
         -------------------------
         Γ , x ⦂ A ⊢ N ⦂ C
 
-    The typing rule for abstractions then yields the required conclusion.    
+    The typing rule for abstractions then yields the required conclusion.
 
   + If the variables are distinct then after simplification we must show
 
@@ -750,7 +749,7 @@ Now that naming is resolved, let's unpack the first three cases.
     The inductive hypothesis gives us
 
         ∅ ⊢ V ⦂ B
-        Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C        
+        Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
         ------------------------------------
         Γ , x ⦂ A , y ⦂ B ⊢ N [ y := V ] ⦂ C
 
@@ -804,7 +803,7 @@ preserve ⊢zero                   ()
 preserve (⊢suc ⊢M)               (ξ-suc M—→M′)    =  ⊢suc (preserve ⊢M M—→M′)
 preserve (⊢case ⊢L ⊢M ⊢N)        (ξ-case L—→L′)   =  ⊢case (preserve ⊢L L—→L′) ⊢M ⊢N
 preserve (⊢case ⊢zero ⊢M ⊢N)     β-zero           =  ⊢M
-preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-suc VV)       =  subst ⊢V ⊢N 
+preserve (⊢case (⊢suc ⊢V) ⊢M ⊢N) (β-suc VV)       =  subst ⊢V ⊢N
 preserve (⊢μ ⊢M)                 (β-μ)            =  subst (⊢μ ⊢M) ⊢M
 \end{code}
 The proof never mentions the types of `M` or `N`,
@@ -1021,7 +1020,7 @@ remaining.  There are two possibilities.
   + Term `L` is a value, so we are done. We return the
     trivial reduction sequence `L —↠ L`, evidence that `L` is
     well-typed, and the evidence that `L` is a value.
-  
+
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well-typed, and we recursively invoke
     `eval` on the remaining gas.  The result is evidence that
@@ -1372,7 +1371,7 @@ unstuck′ : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     -----------
   → ¬ (Stuck M)
-unstuck′ ⊢M ⟨ ¬M—→N , ¬VM ⟩ with progress ⊢M 
+unstuck′ ⊢M ⟨ ¬M—→N , ¬VM ⟩ with progress ⊢M
 ... | step M—→N  =  ¬M—→N M—→N
 ... | done VM   =  ¬VM VM
 \end{code}
@@ -1453,7 +1452,7 @@ three typical cases.
 
   By induction we have `L′ ≡ L″`, and hence by congruence
   `L′ · M ≡ L″ · M`.
-  
+
 * An instance of `ξ-·₁` and an instance of `ξ-·₂`.
 
                               Value L
@@ -1468,7 +1467,7 @@ three typical cases.
 
 * Two instances of `β-ƛ`.
 
-      Value V                              Value V                         
+      Value V                              Value V
       ----------------------------- β-ƛ    ----------------------------- β-ƛ
       (ƛ x ⇒ N) · V —→ N [ x := V ]        (ƛ x ⇒ N) · V —→ N [ x := V ]
 

@@ -1,6 +1,5 @@
 ---
 title     : "FreshId: Generation of fresh names"
-layout    : page
 permalink : /FreshId
 ---
 
@@ -17,7 +16,7 @@ module FreshId where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; []; _∷_; _++_; map; foldr; 
+open import Data.List using (List; []; _∷_; _++_; map; foldr;
   reverse; replicate; length)
 open import Data.List.Properties using (reverse-involutive)
 open import Data.List.All using (All; []; _∷_)
@@ -122,11 +121,11 @@ module IdBase
   prefixS-lemma x
     rewrite toList∘fromList ((reverse ∘ dropWhile P? ∘ reverse ∘ toList) x)
           | reverse-involutive ((dropWhile P? ∘ reverse ∘ toList) x)
-    =  dropWhile-lemma P? ((reverse ∘ toList) x) 
-    
+    =  dropWhile-lemma P? ((reverse ∘ toList) x)
+
   prefix : Id → Prefix
-  prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩ 
-    
+  prefix x  =  ⟨ prefixS x , prefixS-lemma x ⟩
+
   suffix : Id → ℕ
   suffix =  length ∘ takeWhile P? ∘ reverse ∘ toList
 
@@ -244,6 +243,3 @@ _ = refl
 _ : fresh zs0 [ x0 , x1 , x2 , zs1 ] ≡ zs2
 _ = refl
 \end{code}
-
-
-

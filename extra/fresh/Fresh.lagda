@@ -1,6 +1,5 @@
 ---
 title     : "Fresh: Choose fresh variable name"
-layout    : page
 permalink : /Fresh
 ---
 

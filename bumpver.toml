@@ -1,0 +1,14 @@
+[bumpver]
+current_version = "v22.08"
+version_pattern = "v0Y.0M[.INC0]"
+commit_message = "Bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[bumpver.file_patterns]
+"bumpver.toml" = ['^current_version = "{version}"$']
+"plfa.cabal" = [
+  '^version:            {pep440_version}$',
+  '^copyright:          © 2017-YYYY Wen Kokke$'
+]

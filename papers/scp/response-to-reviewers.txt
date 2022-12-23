@@ -27,7 +27,7 @@ revised manuscript.
 To submit a revision, please go to https://ees.elsevier.com/scico/ and
 login as an Author.  Your username is: wadler@inf.ed.ac.uk If you need
 to retrieve password details, please go to:
-http://ees.elsevier.com/scico/automail_query.asp
+https://ees.elsevier.com/scico/automail_query.asp
 
 On your Main Menu page is a folder entitled "Submissions Needing
 Revision". You will find your submission record there.
@@ -406,16 +406,16 @@ journal, the publication fee is only 520 US$.
 
 Questions?  Please contact the MethodsX team at methodsx@elsevier.com.
 Example MethodsX articles can be found here:
-http://www.sciencedirect.com/science/journal/22150161 Yours sincerely,
+https://www.sciencedirect.com/science/journal/22150161 Yours sincerely,
 
 INTERACTIVE PLOT VIEWER (OPTIONAL)
 
 Science of Computer Programming features the Interactive Plot Viewer,
-see: http://www.elsevier.com/interactiveplots. Interactive Plots
+see: https://www.elsevier.com/interactiveplots. Interactive Plots
 provide easy access to the data behind plots. To include one with your
 article, please prepare a .csv file with your plot data and test it
 online at
-http://authortools.elsevier.com/interactiveplots/verification before
+https://authortools.elsevier.com/interactiveplots/verification before
 submission as supplementary material.  PLEASE NOTE: Science of
 Computer Programming would like to enrich online articles by
 displaying interactive figures that help the reader to visualize and
@@ -429,9 +429,8 @@ submit .FIG files along with your revised submission.
 ________________
 
 For further assistance, please visit our customer support site at
-http://help.elsevier.com/app/answers/list/p/7923. Here you can search
+https://help.elsevier.com/app/answers/list/p/7923. Here you can search
 for solutions on a range of topics, find answers to frequently asked
 questions and learn more about EES via interactive tutorials. You will
 also find our 24/7 support contact details should you need any further
 assistance from one of our customer support representatives.
-

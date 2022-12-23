@@ -47,4 +47,3 @@ demorgan-inv : ∀ {A B : Set} → A ⊎ B → ¬ (¬ A × ¬ B)
 demorgan-inv (inj₁ a) (¬a , ¬b) =  ¬a a
 demorgan-inv (inj₂ b) (¬a , ¬b) =  ¬b b
 \end{code}
-

@@ -38,7 +38,7 @@ example₁ =
   begin
     I² · I · (not · false)
   ⟹*⟪ γ⇒₁ (β⇒ value-λ) ⟫
-    (λ[ x ∶ 𝔹 ] I · var x) · (not · false)                  
+    (λ[ x ∶ 𝔹 ] I · var x) · (not · false)
   ⟹*⟪ γ⇒₂ value-λ (β⇒ value-false) ⟫
     (λ[ x ∶ 𝔹 ] I · var x) · (if false then false else true)
   ⟹*⟪ γ⇒₂ value-λ β𝔹₂ ⟫
@@ -47,4 +47,4 @@ example₁ =
     I · true
   ⟹*⟪ β⇒ value-true ⟫
     true
-  ∎  
+  ∎

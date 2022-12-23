@@ -2,7 +2,7 @@ open import Data.Nat using (ℕ; suc ; zero; _+_; _≤′_; _<′_; _<_; _≤_;
     z≤n; s≤s; ≤′-refl; ≤′-step; _≟_) renaming (_⊔_ to max)
 open import Data.Nat.Properties
   using (n≤0⇒n≡0; ≤-refl; ≤-trans; m≤m⊔n; n≤m⊔n; ≤-step; ⊔-mono-≤;
-         +-mono-≤; +-mono-≤-<; +-mono-<-≤; +-comm; +-assoc; n≤1+n; 
+         +-mono-≤; +-mono-≤-<; +-mono-<-≤; +-comm; +-assoc; n≤1+n;
          ≤-pred; m≤m+n; n≤m+n; ≤-reflexive; ≤′⇒≤; ≤⇒≤′; +-suc)
 open Data.Nat.Properties.≤-Reasoning using (begin_; _≤⟨_⟩_; _∎)
 open import Data.Bool  using (Bool) renaming (_≟_ to _=?_)
@@ -12,7 +12,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
 open import Data.Unit using (⊤; tt)
 open import Data.Maybe
-open import Data.List using (List ; _∷_ ; []; _++_) 
+open import Data.List using (List ; _∷_ ; []; _++_)
 open import Relation.Nullary using (¬_)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Negation using (contradiction)
@@ -30,7 +30,7 @@ data Prim : Set where
   base : Base → Prim
   _⇒_ : Base → Prim → Prim
 
-base-rep : Base → Set 
+base-rep : Base → Set
 base-rep Nat = ℕ
 base-rep 𝔹 = Bool
 
@@ -51,7 +51,7 @@ base-rep-eq? {𝔹} k k′ = k =? k′
 infixr 7 _↦_
 infixl 6 _⊔_
 
-data Value : Set 
+data Value : Set
 
 data Value where
   ⊥ : Value
@@ -77,7 +77,7 @@ AllFun : (u : Value) → Set
 AllFun ⊥ = Bot
 AllFun (const x) = Bot
 AllFun (v ↦ w) = ⊤
-AllFun (u ⊔ v) = AllFun u × AllFun v 
+AllFun (u ⊔ v) = AllFun u × AllFun v
 
 dom : (u : Value) → Value
 dom ⊥ = ⊥
@@ -147,11 +147,11 @@ factor u u′ v w = AllFun u′ × u′ ⊆ u × dom u′ ⊑ v × w ⊑ cod u�
 ⊑-fun-inv {u₁} {u21 ⊔ u22} {v} {w} (⊑-conj-R1 u₁⊑u₂) v↦w∈u₁
     with ⊑-fun-inv {u₁} {u21} {v} {w} u₁⊑u₂ v↦w∈u₁
 ... | ⟨ u₃ , ⟨ afu₃ , ⟨ u3⊆u₁ , ⟨ du₃⊑v , w⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
-    ⟨ u₃ , ⟨ afu₃ , ⟨ (λ {x} x₁ → inj₁ (u3⊆u₁ x₁)) , ⟨ du₃⊑v , w⊑codu₃ ⟩ ⟩ ⟩ ⟩  
+    ⟨ u₃ , ⟨ afu₃ , ⟨ (λ {x} x₁ → inj₁ (u3⊆u₁ x₁)) , ⟨ du₃⊑v , w⊑codu₃ ⟩ ⟩ ⟩ ⟩
 ⊑-fun-inv {u₁} {u21 ⊔ u22} {v} {w} (⊑-conj-R2 u₁⊑u₂) v↦w∈u₁
     with ⊑-fun-inv {u₁} {u22} {v} {w} u₁⊑u₂ v↦w∈u₁
 ... | ⟨ u₃ , ⟨ afu₃ , ⟨ u3⊆u₁ , ⟨ du₃⊑v , w⊑codu₃ ⟩ ⟩ ⟩ ⟩ =
-    ⟨ u₃ , ⟨ afu₃ , ⟨ (λ {x} x₁ → inj₂ (u3⊆u₁ x₁)) , ⟨ du₃⊑v , w⊑codu₃ ⟩ ⟩ ⟩ ⟩  
+    ⟨ u₃ , ⟨ afu₃ , ⟨ (λ {x} x₁ → inj₂ (u3⊆u₁ x₁)) , ⟨ du₃⊑v , w⊑codu₃ ⟩ ⟩ ⟩ ⟩
 ⊑-fun-inv {u11 ↦ u21} {u₂} {v} {w} (⊑-fun{u′ = u′} u′⊆u₂ afu′ du′⊑u11 u21⊑cu′)
     refl =
       ⟨ u′ , ⟨ afu′ , ⟨ u′⊆u₂ , ⟨ du′⊑u11 , u21⊑cu′ ⟩ ⟩ ⟩ ⟩
@@ -300,7 +300,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
 <<-nat-wf P ih x y = ih x y (help x y)
   where help : (x y : ℕ) → ∀{ x' y'} → ⟨ x' , y' ⟩ << ⟨ x , y ⟩ → P x' y'
         help .(suc x') y {x'}{y'} (fst ≤′-refl) =
-            ih x' y' (help x' y') 
+            ih x' y' (help x' y')
         help .(suc x) y {x'}{y'} (fst (≤′-step {x} q)) =
             help x y {x'}{y'} (fst q)
         help x .(suc y) {x'}{y} (snd x'≤x ≤′-refl) =
@@ -324,7 +324,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
 ⊑-trans-rec : ∀ d s → ⊑-trans-P d s
 ⊑-trans-rec = <<-nat-wf ⊑-trans-P helper
   where
-  helper : ∀ x y 
+  helper : ∀ x y
          → (∀ {x' y'} → ⟨ x' , y' ⟩ << ⟨ x , y ⟩ → ⊑-trans-P x' y')
          → ⊑-trans-P x y
   helper d s IH {.⊥} {v} {w} d≡ s≡ ⊑-⊥ v⊑w = ⊑-⊥
@@ -346,7 +346,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
                suc (size u₁ + (size u₂ + size v))
             ≤⟨ s≤s (≤-reflexive (sym (+-assoc (size u₁) (size u₂) (size v)))) ⟩
                suc (size u₁ + size u₂ + size v)
-            ∎ 
+            ∎
       M1 : ⟨ depth u₁ + depth w , size u₁ + size v ⟩ <<
            ⟨ max (depth u₁) (depth u₂) + depth w ,
              suc (size u₁ + size u₂ + size v) ⟩
@@ -360,12 +360,12 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
                suc (size u₂ + size v)
             ≤⟨ s≤s (+-mono-≤ (n≤m+n (size u₁) (size u₂)) ≤-refl) ⟩
                suc ((size u₁ + size u₂) + size v)
-            ∎ 
+            ∎
       M2 : ⟨ depth u₂ + depth w , size u₂ + size v ⟩ <<
            ⟨ max (depth u₁) (depth u₂) + depth w ,
              suc (size u₁ + size u₂ + size v) ⟩
       M2 = snd (≤⇒≤′ M2a) (≤⇒≤′ M2b)
-  helper d s IH {u} {v₁ ⊔ v₂} {w} d≡ s≡ (⊑-conj-R1 u⊑v₁) v₁⊔v₂⊑w 
+  helper d s IH {u} {v₁ ⊔ v₂} {w} d≡ s≡ (⊑-conj-R1 u⊑v₁) v₁⊔v₂⊑w
       rewrite d≡ | s≡ =
       let v₁⊑w = ⊔⊑R v₁⊔v₂⊑w in
       IH M {u}{v₁}{w} refl refl u⊑v₁ v₁⊑w
@@ -376,7 +376,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
               size u + suc (size v₁)
            ≤⟨ +-mono-≤ ≤-refl (s≤s (m≤m+n (size v₁) (size v₂))) ⟩
               size u + suc (size v₁ + size v₂)
-           ∎ 
+           ∎
       M : ⟨ depth u + depth w , size u + size v₁ ⟩ <<
           ⟨ depth u + depth w , size u + suc (size v₁ + size v₂) ⟩
       M = snd (≤⇒≤′ ≤-refl) (≤⇒≤′ Ma)
@@ -391,7 +391,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
               size u + suc (size v₂)
            ≤⟨ +-mono-≤ ≤-refl (s≤s (n≤m+n (size v₁) (size v₂))) ⟩
               size u + suc (size v₁ + size v₂)
-           ∎ 
+           ∎
       M : ⟨ depth u + depth w , size u + size v₂ ⟩ <<
           ⟨ depth u + depth w , size u + suc (size v₁ + size v₂) ⟩
       M = snd (≤⇒≤′ ≤-refl) (≤⇒≤′ Ma)
@@ -416,7 +416,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
                suc (depth u₁ + depth (dom w′))
             ≤⟨ s≤s (+-mono-≤ (m≤m⊔n (depth u₁) (depth u₂)) dw′≤w) ⟩
                suc (max (depth u₁) (depth u₂) + depth w)
-            ∎ 
+            ∎
       M1 : ⟨ depth (dom w′) + depth u₁ , size (dom w′) + size (dom v′) ⟩
         << ⟨ suc (max (depth u₁) (depth u₂) + depth w) ,
              suc (size u₁ + size u₂ + size v) ⟩
@@ -425,7 +425,7 @@ data _<<_ : ℕ × ℕ → ℕ × ℕ → Set where
                suc (depth u₂ + depth (cod w′))
             ≤⟨ s≤s (+-mono-≤ (n≤m⊔n (depth u₁) (depth u₂)) cw′≤w) ⟩
                suc (max (depth u₁) (depth u₂) + depth w)
-            ∎ 
+            ∎
       M2 : ⟨ depth u₂ + depth (cod w′) ,
              size u₂ + size (cod v′) ⟩
         << ⟨ suc (max (depth u₁) (depth u₂) + depth w) ,

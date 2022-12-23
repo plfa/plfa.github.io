@@ -1,117 +1,125 @@
-on: [push, pull_request]
+name: Build & Test
 
-name: Build
+on:
+  push:
+    branches:
+      - dev
+    tags:
+      - '*'
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+env:
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-
     strategy:
+      fail-fast: true
       matrix:
-        os: [macOS-latest]
-        ghc: ['8.10.5']
-        agda: ['2.6.1.3']
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        ghc-version: ["9.2"]
+        include:
+          - experimental: false
+          - os: ubuntu-latest
+            ghc-version: "8.10"
+            experimental: false
+          - os: ubuntu-latest
+            ghc-version: "9.0"
+            experimental: false
 
+    name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
 
+      - name: Setup Haskell
+        uses: ./.github/actions/setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
+          cabal-project-freeze-file: cabal.project.ghc-${{ matrix.ghc-version }}.freeze
 
-    # Checkout
+      - name: Setup Agda
+        uses: wenkokke/setup-agda@latest
+        with:
+          agda-version: latest
+          force-no-build: true
 
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        ref: dev
-        fetch-depth: 1
-        submodules: true
+      - name: Setup Node
+        uses: ./.github/actions/setup-node
 
-    - name: Update stack.yaml
-      run: |
-        stack config set system-ghc true
-        stack config set install-ghc false
-      shell: bash
+      - name: Setup BumpVer
+        uses: ./.github/actions/setup-bumpver
+        # depends on requirements-dev.txt
 
+      - name: Setup HTMLProofer
+        if: runner.os != 'Windows'
+        uses: ./.github/actions/setup-htmlproofer
+        # depends on Gemfile
 
-    # Setup & Cache Haskell
+      - name: Setup EPUBCheck
+        uses: ./.github/actions/setup-epubcheck
+        id: setup-epubcheck
+        with:
+          epubcheck-version: "4.2.6"
 
-    - name: Cache Haskell
-      uses: actions/cache@v2
-      id: cache-haskell
-      with:
-        path: |
-          ~/.ghcup
-        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+      - name: Cache build
+        uses: actions/cache@v3
+        with:
+          path: _cache
+          key: build-${{ runner.os }}-${{ secrets.BUILD_CACHE_VERSION }}
 
+      - name: Build
+        run: make build
+        env:
+          CABAL_ARGS: --project-file=cabal.project.ghc-${{ matrix.ghc-version }}
+        # depends on cabal.project.ghc-X.Y
 
-    - name: Setup Haskell
-      if: steps.cache-haskell.outputs.cache-hit != 'true'
-      uses: haskell/actions/setup@v1
-      with:
-        enable-stack: true
-        ghc-version: ${{ matrix.ghc }}
-        cabal-version: 'latest'
-        stack-version: 'latest'
+      - name: Test with BumpVer
+        run: bumpver update --dry --no-fetch
 
+      - name: Test with HTML-validate
+        run: make test-html-validate
 
-    # Setup & Cache HTMLProofer
+      - name: Test with HTMLProofer
+        if: runner.os != 'Windows'
+        run: make test-htmlproofer
 
-    - name: Get Ruby Info
-      id: ruby-info
-      run: |
-        echo "::set-output name=ruby::$(ruby -e 'puts RUBY_VERSION')"
-        echo "::set-output name=gem::$(gem --version)"
-        echo "::set-output name=gemdir::$(gem env gemdir)"
-      shell: bash
+      - name: Test with EPUBCheck
+        run: make test-epubcheck
+        env:
+          EPUBCHECK: "java -jar ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}"
 
-    - name: Cache HTMLProofer
-      uses: actions/cache@v2
-      id: cache-htmlproofer
-      with:
-        path: ${{ steps.ruby-info.outputs.gemdir }}
-        key: ${{ matrix.os }}-ruby-${{ steps.ruby-info.outputs.ruby }}-gem-${{ steps.ruby-info.outputs.gem }}
+      - name: Upload latest artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Website HEAD ${{ runner.os }} GHC-${{ matrix.ghc-version }}
+          path: _site
+          if-no-files-found: error
 
-    - name: Setup HTMLProofer
-      if: steps.cache-htmlproofer.outputs.cache-hit != 'true'
-      run: sudo gem install html-proofer
-      shell: bash
+  publish:
+    name: Publish to GitHub Pages
+    needs: [build]
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/publish.yml
+    with:
+      artifact-name: Website HEAD Linux GHC-9.2
 
-
-
-    # Setup & Cache Agda, pandoc, and site builder
-
-    - name: Cache .stack-work
-      uses: actions/cache@v2
-      id: cache-stack-work
-      with:
-        path: $GITHUB_WORKSPACE/.stack-work
-        key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-agda-${{ matrix.agda }}
-
-    - name: Build Agda
-      if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build Agda-${{ matrix.agda }}
-      shell: bash
-
-    - name: Build Pandoc
-      if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build pandoc-2.10.1
-      shell: bash
-
-    - name: Build other dependencies
-      if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build --only-dependencies
-      shell: bash
-
-    - name: Build Site Builder
-      if: steps.cache-site-builder.outputs.cache-hit != 'true'
-      run: stack build
-      shell: bash
-
-
-    # Build & Test Website
-
-    - name: Build Website
-      run: make build
-      shell: bash
-
-    - name: Test Website
-      run: make test
-      shell: bash
+  release:
+    name: Publish to GitHub Releases
+    needs: [build]
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/release.yml
+    with:
+      artifact-name: Website HEAD Linux GHC-9.2

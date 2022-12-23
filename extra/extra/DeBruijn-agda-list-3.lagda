@@ -195,6 +195,3 @@ extract : ∀ {A : Type} {Γ Δ : Env} → Extends (Γ , A) Δ → Var Δ A
 extract Z     = Z
 extract (S k) = S (extract k)
 \end{code}
-
-
-

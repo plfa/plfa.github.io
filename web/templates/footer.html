@@ -1,0 +1,51 @@
+<footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+    <div class="wrapper">
+        <h2 class="footer-heading">$pagetitle$</h2>
+        $for(author)$
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">
+                        $author.name$
+                    </li>
+                    <li>
+                        $if(author.corresponding)$
+                        $if(author.email)$
+                        <a class="u-email" href="mailto:$author.email$">
+                            <i class="far fa-envelope"></i>
+                            &nbsp;$author.email$
+                        </a>
+                        $endif$
+                        $endif$
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col-2">
+                <ul class="social-media-list">
+                    <li>
+                        <a rel="me" href="https://github.com/$author.github$" title="$author.github$">
+                            <i class="fab fa-github"></i>
+                            &nbsp;$author.github$
+                        </a>
+                    </li>
+                    $if(author.twitter)$
+                    <li>
+                        <a rel="me" href="https://twitter.com/$author.twitter$" title="$author.twitter$">
+                            <i class="fab fa-twitter"></i>
+                            &nbsp;$author.twitter$
+                        </a>
+                    </li>
+                    $endif$
+                </ul>
+            </div>
+            <div class="footer-col footer-col-3">
+                $if(author.blurb)$
+                <p>$author.blurb$</p>
+                $endif$
+            </div>
+        </div>
+        $endfor$
+        This work is licensed under a <a rel="license" href="$license.url$">$license.name$</a>
+    </div>
+</footer>

@@ -1,12 +1,9 @@
 ---
 title     : "Isomorphism: Isomorphism and Embedding"
-layout    : page
-prev      : /Equality/
 permalink : /Isomorphism/
-next      : /Connectives/
 ---
 
-```
+```agda
 module plfa.part1.Isomorphism where
 ```
 
@@ -19,7 +16,7 @@ distributivity.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; cong-app)
 open Eq.≡-Reasoning
@@ -70,14 +67,14 @@ reader to search for the definition in the code.
 ## Function composition
 
 In what follows, we will make use of function composition:
-```
+```agda
 _∘_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
 (g ∘ f) x  = g (f x)
 ```
 Thus, `g ∘ f` is the function that first applies `f` and
 then applies `g`.  An equivalent definition, exploiting lambda
 expressions, is as follows:
-```
+```agda
 _∘′_ : ∀ {A B C : Set} → (B → C) → (A → B) → (A → C)
 g ∘′ f  =  λ x → g (f x)
 ```
@@ -92,7 +89,7 @@ converse of `cong-app`, as introduced
 [earlier](/Equality/#cong).
 
 Agda does not presume extensionality, but we can postulate that it holds:
-```
+```agda
 postulate
   extensionality : ∀ {A B : Set} {f g : A → B}
     → (∀ (x : A) → f x ≡ g x)
@@ -106,14 +103,14 @@ As an example, consider that we need results from two libraries,
 one where addition is defined, as in
 Chapter [Naturals](/Naturals/),
 and one where it is defined the other way around.
-```
+```agda
 _+′_ : ℕ → ℕ → ℕ
 m +′ zero  = m
 m +′ suc n = suc (m +′ n)
 ```
 Applying commutativity, it is easy to show that both operators always
 return the same result given the same arguments:
-```
+```agda
 same-app : ∀ (m n : ℕ) → m +′ n ≡ m + n
 same-app m n rewrite +-comm m n = helper m n
   where
@@ -124,7 +121,7 @@ same-app m n rewrite +-comm m n = helper m n
 However, it might be convenient to assert that the two operators are
 actually indistinguishable. This we can do via two applications of
 extensionality:
-```
+```agda
 same : _+′_ ≡ _+_
 same = extensionality (λ m → extensionality (λ n → same-app m n))
 ```
@@ -132,7 +129,7 @@ We occasionally need to postulate extensionality in what follows.
 
 More generally, we may wish to postulate extensionality for
 dependent functions.
-```
+```agda
 postulate
   ∀-extensionality : ∀ {A : Set} {B : A → Set} {f g : ∀(x : A) → B x}
     → (∀ (x : A) → f x ≡ g x)
@@ -148,7 +145,7 @@ dependent functions.
 
 Two sets are isomorphic if they are in one-to-one correspondence.
 Here is a formal definition of isomorphism:
-```
+```agda
 infix 0 _≃_
 record _≃_ (A B : Set) : Set where
   field
@@ -160,10 +157,11 @@ open _≃_
 ```
 Let's unpack the definition. An isomorphism between sets `A` and `B` consists
 of four things:
-+ A function `to` from `A` to `B`,
-+ A function `from` from `B` back to `A`,
-+ Evidence `from∘to` asserting that `from` is a *left-inverse* for `to`,
-+ Evidence `to∘from` asserting that `from` is a *right-inverse* for `to`.
+
+  1. A function `to` from `A` to `B`,
+  2. A function `from` from `B` back to `A`,
+  3. Evidence `from∘to` asserting that `from` is a *left-inverse* for `to`,
+  4. Evidence `to∘from` asserting that `from` is a *right-inverse* for `to`.
 
 In particular, the third asserts that `from ∘ to` is the identity, and
 the fourth that `to ∘ from` is the identity, hence the names.
@@ -171,7 +169,7 @@ The declaration `open _≃_` makes available the names `to`, `from`,
 `from∘to`, and `to∘from`, otherwise we would need to write `_≃_.to` and so on.
 
 The above is our first use of records. A record declaration behaves similar to a single-constructor data declaration (there are minor differences, which we discuss in [Connectives](/Connectives/)):
-```
+```agda
 data _≃′_ (A B : Set): Set where
   mk-≃′ : ∀ (to : A → B) →
           ∀ (from : B → A) →
@@ -214,7 +212,7 @@ where `f`, `g`, `g∘f`, and `f∘g` are values of suitable types.
 Isomorphism is an equivalence, meaning that it is reflexive, symmetric,
 and transitive.  To show isomorphism is reflexive, we take both `to`
 and `from` to be the identity function:
-```
+```agda
 ≃-refl : ∀ {A : Set}
     -----
   → A ≃ A
@@ -234,7 +232,7 @@ simplifies to `x`, and similarly for the right inverse.
 
 To show isomorphism is symmetric, we simply swap the roles of `to`
 and `from`, and `from∘to` and `to∘from`:
-```
+```agda
 ≃-sym : ∀ {A B : Set}
   → A ≃ B
     -----
@@ -250,7 +248,7 @@ and `from`, and `from∘to` and `to∘from`:
 
 To show isomorphism is transitive, we compose the `to` and `from`
 functions, and use equational reasoning to combine the inverses:
-```
+```agda
 ≃-trans : ∀ {A B C : Set}
   → A ≃ B
   → B ≃ C
@@ -291,7 +289,7 @@ isomorphism.  We essentially copy the previous definition
 of equality for isomorphism.  We omit the form that corresponds to `_≡⟨⟩_`, since
 trivial isomorphisms arise far less often than trivial equalities:
 
-```
+```agda
 module ≃-Reasoning where
 
   infix  1 ≃-begin_
@@ -329,7 +327,7 @@ included in the second; or, equivalently, that there is a many-to-one
 correspondence between the second type and the first.
 
 Here is the formal definition of embedding:
-```
+```agda
 infix 0 _≲_
 record _≲_ (A B : Set) : Set where
   field
@@ -344,7 +342,7 @@ is right-inverse to `to`.
 
 Embedding is reflexive and transitive, but not symmetric.  The proofs
 are cut down versions of the similar proofs for isomorphism:
-```
+```agda
 ≲-refl : ∀ {A : Set} → A ≲ A
 ≲-refl =
   record
@@ -372,7 +370,7 @@ are cut down versions of the similar proofs for isomorphism:
 It is also easy to see that if two types embed in each other, and the
 embedding functions correspond, then they are isomorphic.  This is a
 weak form of anti-symmetry:
-```
+```agda
 ≲-antisym : ∀ {A B : Set}
   → (A≲B : A ≲ B)
   → (B≲A : B ≲ A)
@@ -407,7 +405,7 @@ the right inverse of the isomorphism.
 We can also support tabular reasoning for embedding,
 analogous to that used for isomorphism:
 
-```
+```agda
 module ≲-Reasoning where
 
   infix  1 ≲-begin_
@@ -438,7 +436,7 @@ open ≲-Reasoning
 #### Exercise `≃-implies-≲` (practice)
 
 Show that every isomorphism implies an embedding.
-```
+```agda
 postulate
   ≃-implies-≲ : ∀ {A B : Set}
     → A ≃ B
@@ -446,14 +444,14 @@ postulate
     → A ≲ B
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
-```
+```agda
 record _⇔_ (A B : Set) : Set where
   field
     to   : A → B
@@ -461,7 +459,7 @@ record _⇔_ (A B : Set) : Set where
 ```
 Show that equivalence is reflexive, symmetric, and transitive.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -481,7 +479,7 @@ which satisfy the following property:
     from (to n) ≡ n
 
 Using the above, establish that there is an embedding of `ℕ` into `Bin`.
-```
+```agda
 -- Your code goes here
 ```
 
@@ -490,7 +488,7 @@ Why do `to` and `from` not form an isomorphism?
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
-```
+```agda
 import Function using (_∘_)
 import Function.Inverse using (_↔_)
 import Function.LeftInverse using (_↞_)

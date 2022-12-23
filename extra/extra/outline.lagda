@@ -31,7 +31,7 @@ Relations
     [should I include a bit of lattice theory?]
   proof by induction over evidence
     ≤-refl; ≤-trans; ≤-antisym; ≤-total
-    [define ≤-total using ⊎ or a custom datatype? Probably custom is better]    
+    [define ≤-total using ⊎ or a custom datatype? Probably custom is better]
   decidable relations
     total order corresponds to a decidable relation
 Lists
@@ -95,8 +95,8 @@ Logic
   there exists
     example: even n → ∃(λ m → n = 2 * m)
     exercise: odd n → ∃(λ m → n = 2 * m + 1)
-    example: 
-      ∀ (A : Set) (B : A → Set) → 
+    example:
+      ∀ (A : Set) (B : A → Set) →
         (∀ (x : A) → B x) → ¬ ∃ (λ (x : A) → ¬ B x)
     exercise:
       ∀ (A : Set) (B : A → Set) →
@@ -109,7 +109,7 @@ Logic
       de Morgan's law: ¬ (¬ A × ¬ B) → A ⊎ B
       implication implies disjunction: (A → B) → ¬ A ⊎ B
     show classical implies
-      ∀ (A : Set) (B : A → Set) → 
+      ∀ (A : Set) (B : A → Set) →
         ¬ (∃(λ (x : A) → ¬ B x) → ∀ (x : A) → B x
       ∀ (A : Set) (B : A → Set) →
         ¬ (∀ (x : A) → ¬ B x) → ∃(λ (x : A) → B x)
@@ -136,7 +136,3 @@ Structures [not sure where this goes]
   other properties of relations
     irreflexive
     complement of a relation
-
-
-
-

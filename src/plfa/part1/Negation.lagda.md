@@ -1,12 +1,9 @@
 ---
 title     : "Negation: Negation, with intuitionistic and classical logic"
-layout    : page
-prev      : /Connectives/
 permalink : /Negation/
-next      : /Quantifiers/
 ---
 
-```
+```agda
 module plfa.part1.Negation where
 ```
 
@@ -15,7 +12,7 @@ and classical logic.
 
 ## Imports
 
-```
+```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -30,7 +27,7 @@ open import plfa.part1.Isomorphism using (_≃_; extensionality)
 Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
 as implication of false:
-```
+```agda
 ¬_ : Set → Set
 ¬ A = A → ⊥
 ```
@@ -47,7 +44,7 @@ that `A` holds into evidence that `⊥` holds.
 
 Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
 In other words, if both `¬ A` and `A` hold, then we have a contradiction:
-```
+```agda
 ¬-elim : ∀ {A : Set}
   → ¬ A
   → A
@@ -61,7 +58,7 @@ means that `¬x` must be a function of type `A → ⊥`, and hence the applicati
 
 We set the precedence of negation so that it binds more tightly
 than disjunction and conjunction, but less tightly than anything else:
-```
+```agda
 infix 3 ¬_
 ```
 Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)` and `¬ m ≡ n` as `¬ (m ≡ n)`.
@@ -69,7 +66,7 @@ Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)` and `¬ m ≡ n` as `¬ (m ≡
 In _classical_ logic, we have that `A` is equivalent to `¬ ¬ A`.
 As we discuss below, in Agda we use _intuitionistic_ logic, where
 we have only half of this equivalence, namely that `A` implies `¬ ¬ A`:
-```
+```agda
 ¬¬-intro : ∀ {A : Set}
   → A
     -----
@@ -83,7 +80,7 @@ we have a contradiction, evidenced by `¬x x`.  Hence, we have
 shown `¬ ¬ A`.
 
 An equivalent way to write the above is as follows:
-```
+```agda
 ¬¬-intro′ : ∀ {A : Set}
   → A
     -----
@@ -96,7 +93,7 @@ use this latter style, as it is more compact.
 
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
 `¬ ¬ ¬ A` implies `¬ A`:
-```
+```agda
 ¬¬¬-elim : ∀ {A : Set}
   → ¬ ¬ ¬ A
     -------
@@ -112,7 +109,7 @@ can conclude `¬ ¬ A`, evidenced by `¬¬-intro x`.  Then from
 
 Another law of logic is _contraposition_,
 stating that if `A` implies `B`, then `¬ B` implies `¬ A`:
-```
+```agda
 contraposition : ∀ {A B : Set}
   → (A → B)
     -----------
@@ -126,12 +123,12 @@ may conclude `B`, evidenced by `f x`, and from `B` and `¬ B` we may
 conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown `¬ A`.
 
 Using negation, it is straightforward to define inequality:
-```
+```agda
 _≢_ : ∀ {A : Set} → A → A → Set
 x ≢ y  =  ¬ (x ≡ y)
 ```
 It is trivial to show distinct numbers are not equal:
-```
+```agda
 _ : 1 ≢ 2
 _ = λ()
 ```
@@ -141,7 +138,7 @@ identical terms. Since `1` and `2` simplify to distinct normal forms,
 Agda determines that there is no possible evidence that `1 ≡ 2`.
 As a second example, it is also easy to validate
 Peano's postulate that zero is not the successor of any number:
-```
+```agda
 peano : ∀ {m : ℕ} → zero ≢ suc m
 peano = λ()
 ```
@@ -158,7 +155,7 @@ we know for arithmetic, where
 
 Indeed, there is exactly one proof of `⊥ → ⊥`.  We can write
 this proof two different ways:
-```
+```agda
 id : ⊥ → ⊥
 id x = x
 
@@ -166,7 +163,7 @@ id′ : ⊥ → ⊥
 id′ ()
 ```
 But, using extensionality, we can prove these equal:
-```
+```agda
 id≡id′ : id ≡ id′
 id≡id′ = extensionality (λ())
 ```
@@ -175,7 +172,7 @@ By extensionality, `id ≡ id′` holds if for every
 is no `x` in their domain, so the equality holds trivially.
 
 Indeed, we can show any two proofs of a negation are equal:
-```
+```agda
 assimilation : ∀ {A : Set} (¬x ¬x′ : ¬ A) → ¬x ≡ ¬x′
 assimilation ¬x ¬x′ = extensionality (λ x → ⊥-elim (¬x x))
 ```
@@ -192,7 +189,7 @@ Using negation, show that
 [strict inequality](/Relations/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -210,7 +207,7 @@ that is, for any naturals `m` and `n` exactly one of the following holds:
 Here "exactly one" means that not only one of the three must hold,
 but that when one holds the negation of the other two must also hold.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -223,7 +220,7 @@ version of De Morgan's Law.
 
 This result is an easy consequence of something we've proved previously.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -282,7 +279,7 @@ _Communications of the ACM_, December 2015.)
 ## Excluded middle is irrefutable
 
 The law of the excluded middle can be formulated as follows:
-```
+```agda
 postulate
   em : ∀ {A : Set} → A ⊎ ¬ A
 ```
@@ -290,7 +287,7 @@ As we noted, the law of the excluded middle does not hold in
 intuitionistic logic.  However, we can show that it is _irrefutable_,
 meaning that the negation of its negation is provable (and hence that
 its negation is never provable):
-```
+```agda
 em-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
 em-irrefutable = λ k → k (inj₂ (λ x → k (inj₁ x)))
 ```
@@ -380,7 +377,7 @@ Consider the following principles:
 
 Show that each of these implies all the others.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -388,21 +385,21 @@ Show that each of these implies all the others.
 #### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
-```
+```agda
 Stable : Set → Set
 Stable A = ¬ ¬ A → A
 ```
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 
-```
+```agda
 -- Your code goes here
 ```
 
 ## Standard Prelude
 
 Definitions similar to those in this chapter can be found in the standard library:
-```
+```agda
 import Relation.Nullary using (¬_)
 import Relation.Nullary.Negation using (contraposition)
 ```
