@@ -1384,8 +1384,7 @@ mapped to and from the natural numbers using a kind of Godel encoding.
   of Symbolic Logic, vol. 48, pages 931-940, 1983.
 
 * Lambda Calculus with Types. Henk Barendregt, Wil Dekkers, and
-  Richard Statman, Cambridge University Press, Perspectives in Logic,
-  2013.
+  Richard Statman, Cambridge University Press, Perspectives in Logic, 2013.
 
 * Functional characterization of some semantic equalities inside
   λ-calculus. Mario Coppo, Mariangiola Dezani-Ciancaglini, and Patrick
