@@ -1315,9 +1315,9 @@ less-than with functions on the left and right-hand sides.
 ## Notes
 
 The denotational semantics presented in this chapter is an example of
-a _filter model_ (@Barendregt:1983aa). Filter
+a _filter model_ (@Barendregt:1983). Filter
 models use type systems with intersection types to precisely
-characterize runtime behavior (@Coppo:1979aa).
+characterize runtime behavior (@Coppo:1979).
 The notation that we use in this chapter is not that of type
 systems and intersection types, but the `Value` data type is isomorphic
 to types (`↦` is `→`, `⊔` is `∧`, `⊥` is `⊤`), the `⊑` relation is the
@@ -1329,11 +1329,11 @@ type atoms, intersection type systems provide semantics for many different
 untyped λ calculi, from full beta to the lazy and call-by-value calculi
 (@Alessi:2006) (@Rocca:2004).
 The denotational semantics in this chapter corresponds to the BCD
-system (@Barendregt:1983aa).  Part 3 of the
+system (@Barendregt:1983).  Part 3 of the
 book _Lambda Calculus with Types_ describes a framework for
 intersection type systems that enables results similar to the ones in
 this chapter, but for the entire family of intersection type systems
-(@Barendregt:2013aa).
+(@Barendregt:2013).
 
 The two ideas of using finite tables to represent functions and of
 relaxing table lookup to enable self application first appeared in a
