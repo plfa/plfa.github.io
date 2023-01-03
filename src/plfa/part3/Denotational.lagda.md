@@ -1315,10 +1315,10 @@ less-than with functions on the left and right-hand sides.
 ## Notes
 
 The denotational semantics presented in this chapter is an example of
-a _filter model_ (Barendregt, Coppo, Dezani-Ciancaglini, 1983). Filter
+a _filter model_ (@Barendregt:1983aa). Filter
 models use type systems with intersection types to precisely
-characterize runtime behavior (Coppo, Dezani-Ciancaglini, and Salle,
-1979). The notation that we use in this chapter is not that of type
+characterize runtime behavior (@Coppo:1979aa).
+The notation that we use in this chapter is not that of type
 systems and intersection types, but the `Value` data type is isomorphic
 to types (`↦` is `→`, `⊔` is `∧`, `⊥` is `⊤`), the `⊑` relation is the
 inverse of subtyping `<:`, and the evaluation relation `ρ ⊢ M ↓ v` is
@@ -1327,18 +1327,18 @@ replace `↓` with `:` and one has a typing judgement `Γ ⊢ M : A`.
 By varying the definition of subtyping and using different choices of
 type atoms, intersection type systems provide semantics for many different
 untyped λ calculi, from full beta to the lazy and call-by-value calculi
-(Alessi, Barbanera, and Dezani-Ciancaglini, 2006) (Rocca and Paolini, 2004).
+(@Alessi:2006) (@Rocca:2004).
 The denotational semantics in this chapter corresponds to the BCD
-system (Barendregt, Coppo, Dezani-Ciancaglini, 1983).  Part 3 of the
+system (@Barendregt:1983aa).  Part 3 of the
 book _Lambda Calculus with Types_ describes a framework for
 intersection type systems that enables results similar to the ones in
 this chapter, but for the entire family of intersection type systems
-(Barendregt, Dekkers, and Statman, 2013).
+(@Barendregt:2013aa).
 
 The two ideas of using finite tables to represent functions and of
 relaxing table lookup to enable self application first appeared in a
-technical report by Gordon Plotkin (1972) and are later described in
-an article in Theoretical Computer Science (Plotkin 1993).  In that
+technical report by @Plotkin:1972 and are later described in
+an article in Theoretical Computer Science (@Plotkin:1993).  In that
 work, the inductive definition of `Value` is a bit different than the
 one we use:
 
@@ -1350,7 +1350,7 @@ as in this chapter. The finite powersets are used to enable a function
 table to appear in the input and in the output. These differences
 amount to changing where the recursion appears in the definition of
 `Value`.  Plotkin's model is an example of a _graph model_ of the
-untyped lambda calculus (Barendregt, 1984). In a graph model, the
+untyped lambda calculus (@barendregt84:_lambda_calculus). In a graph model, the
 semantics is presented as a function from programs and environments to
 (possibly infinite) sets of values. The semantics in this chapter is
 instead defined as a relation, but set-valued functions are isomorphic
@@ -1358,9 +1358,9 @@ to relations. Indeed, we present the semantics as a function in the
 next chapter and prove that it is equivalent to the relational
 version.
 
-Dana Scott's ℘(ω) (1976) and Engeler's B(A) (1981) are two more
-examples of graph models. Both use the following inductive definition
-of `Value`.
+The ℘(ω) model of @Scott:1976 and the B(A) model of
+@Engeler:1981 are two more examples of graph models. Both use the
+following inductive definition of `Value`.
 
     Value = C + ℘f(Value) × Value
 
@@ -1370,42 +1370,6 @@ sets of values and a pair of sets `(V, V′)` can be represented as a set
 of pairs `{ (V, v′) | v′ ∈ V′ }`.  In Scott's ℘(ω), the above values are
 mapped to and from the natural numbers using a kind of Godel encoding.
 
-
-## References
-
-* Intersection Types and Lambda Models.  Fabio Alessi, Franco
-  Barbanera, and Mariangiola Dezani-Ciancaglini, Theoretical
-  Compututer Science, vol. 355, pages 108-126, 2006.
-
-* The Lambda Calculus. H.P. Barendregt, 1984.
-
-* A filter lambda model and the completeness of type assignment.  Henk
-  Barendregt, Mario Coppo, and Mariangiola Dezani-Ciancaglini, Journal
-  of Symbolic Logic, vol. 48, pages 931-940, 1983.
-
-* Lambda Calculus with Types. Henk Barendregt, Wil Dekkers, and
-  Richard Statman, Cambridge University Press, Perspectives in Logic, 2013.
-
-* Functional characterization of some semantic equalities inside
-  λ-calculus. Mario Coppo, Mariangiola Dezani-Ciancaglini, and Patrick
-  Salle, in Sixth Colloquium on Automata, Languages and Programming.
-  Springer, pages 133--146, 1979.
-
-* Algebras and combinators. Erwin Engeler, Algebra Universalis,
-  vol. 13, pages 389-392, 1981.
-
-* A Set-Theoretical Definition of Application. Gordon D. Plotkin,
-  University of Edinburgh, Technical Report MIP-R-95, 1972.
-
-* Set-theoretical and other elementary models of the λ-calculus.
-  Gordon D. Plotkin, Theoretical Computer Science, vol. 121,
-  pages 351-409, 1993.
-
-* The Parametric Lambda Calculus. Simona Ronchi Della Rocca and Luca
-  Paolini, Springer, 2004.
-
-* Data Types as Lattices. Dana Scott, SIAM Journal on Computing,
-  vol. 5, pages 522-587, 1976.
 
 ## Unicode
 
