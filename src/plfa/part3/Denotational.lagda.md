@@ -1387,3 +1387,5 @@ This chapter uses the following unicode:
     ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~- or \simeq)
     ∈  U+2208  ELEMENT OF (\in)
     ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub= or \subseteq)
+
+## References
