@@ -111,14 +111,19 @@ test-html-validate:
 
 HTML_PROOFER ?= bundle exec htmlproofer
 
-HTML_PROOFER_ARGS += --allow-hash-href=true
-HTML_PROOFER_ARGS += --allow-missing-href=true
+HTML_PROOFER_ARGS += --allow-hash-href
+HTML_PROOFER_ARGS += --allow-missing-href
 HTML_PROOFER_ARGS += --checks=Images,Links,Scripts
-HTML_PROOFER_ARGS += --check-sri=true
-HTML_PROOFER_ARGS += --disable-external=true
-HTML_PROOFER_ARGS += --enforce-https=true
-HTML_PROOFER_ARGS += --ignore-urls="/github.com/"
+HTML_PROOFER_ARGS += --check-sri
+ifeq ($(EXTERNAL_LINKS),true)
+HTML_PROOFER_ARGS += --no-disable-external
+else
+HTML_PROOFER_ARGS += --disable-external
+endif
+HTML_PROOFER_ARGS += --ignore-urls="/github.com/,/java.com/,/pre-commit.ci/,/shields.io/,/web.archive.org/"
 HTML_PROOFER_ARGS += --log-level=":info"
+HTML_PROOFER_ARGS += --only-4xx
+HTML_PROOFER_ARGS += --swap-urls="plfa.github.io:."
 HTML_PROOFER_ARGS += --cache='{"timeframe":{"external":"2w"},"storage_dir":"$(ABS_DIR)$(TMP_DIR)/htmlproofer/"}'
 HTML_PROOFER_ARGS += .
 
