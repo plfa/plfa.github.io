@@ -169,7 +169,7 @@ plfa
 [zotero]: https://www.zotero.org/styles
 [github-actions]: https://github.com/plfa/plfa.github.io/actions
 [github-releases]: https://github.com/plfa/plfa.github.io/releases
-[nodejs]: https://nodejs.dev/learn/how-to-install-nodejs
+[nodejs]: https://nodejs.dev/en/
 [htmlproofer]: https://github.com/gjtorikian/html-proofer
 [ruby]: https://www.ruby-lang.org/en/downloads/
 [bundler]: https://bundler.io/#getting-started
