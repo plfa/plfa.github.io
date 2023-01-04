@@ -19,7 +19,7 @@ data Stylesheet = Stylesheet
   }
 
 alternate :: Stylesheet -> Stylesheet
-alternate ss = ss {stylesheetRelation = "alternate stylesheet", stylesheetEnabled = False}
+alternate ss = ss {stylesheetRelation = "stylesheet", stylesheetEnabled = False}
 
 fromFilePath ::
   ( ?getDigest :: FilePath -> Action (Maybe LazyText.Text),
