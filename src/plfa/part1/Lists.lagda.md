@@ -65,13 +65,13 @@ data List′ : Set → Set where
   []′  : ∀ {A : Set} → List′ A
   _∷′_ : ∀ {A : Set} → A → List′ A → List′ A
 ```
-Each constructor takes the parameter as an implicit argument.
+Each constructor takes the index as an implicit argument.
 Thus, our example list could also be written:
 ```agda
 _ : List ℕ
 _ = _∷_ {ℕ} 0 (_∷_ {ℕ} 1 (_∷_ {ℕ} 2 ([] {ℕ})))
 ```
-where here we have provided the implicit parameters explicitly.
+where here we have provided the implicit arguments explicitly.
 
 Including the pragma:
 
