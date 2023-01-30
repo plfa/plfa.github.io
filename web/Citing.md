@@ -20,7 +20,7 @@ permalink      : /Citing/
     title  = {Programming Language Foundations in {A}gda},
     year   = {2022},
     month  = aug,
-    url    = {https://plfa.inf.ed.ac.uk/20.08/},
+    url    = {https://plfa.inf.ed.ac.uk/22.08/},
 }
 ```
 
