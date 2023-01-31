@@ -50,7 +50,7 @@ jobs:
           cabal-project-freeze-file: cabal.project.ghc-${{ matrix.ghc-version }}.freeze
 
       - name: Setup Agda
-        uses: wenkokke/setup-agda@latest
+        uses: wenkokke/setup-agda@v1.2.0
         with:
           agda-version: latest
           force-no-build: true
