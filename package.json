@@ -3,6 +3,6 @@
     "browser-sync": "^2.27.11",
     "html-validate": "^7.13.1",
     "html-minifier": "^4.0.0",
-    "sass": "^1.57.1"
+    "sass": "^1.58.0"
   }
 }
