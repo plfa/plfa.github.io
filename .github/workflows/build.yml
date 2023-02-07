@@ -66,7 +66,7 @@ jobs:
             ghc-version: "9.4.4"
             experimental: true
 
-    name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
+    name: ${{ matrix.os }} / Agda-${{ matrix.agda-version }} / GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     steps:
