@@ -24,7 +24,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          # Recommended versions on every OS
+          # Recommended versions
           - os: macOS-latest
             agda-version: "2.6.2.2"
             ghc-version: "9.2.4"
@@ -53,13 +53,16 @@ jobs:
             experimental: true
           # Legacy versions of GHC
           - os: ubuntu-latest
+            agda-version: "2.6.2.2"
             ghc-version: "8.10.7"
             experimental: false
           - os: ubuntu-latest
+            agda-version: "2.6.2.2"
             ghc-version: "9.0.2"
             experimental: false
           # Experimental versions of GHC
           - os: ubuntu-latest
+            agda-version: "2.6.2.2"
             ghc-version: "9.4.4"
             experimental: true
 
