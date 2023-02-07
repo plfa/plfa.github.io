@@ -52,7 +52,7 @@ jobs:
       - name: Setup Agda
         uses: wenkokke/setup-agda@latest
         with:
-          agda-version: latest
+          agda-version: "2.6.2.2"
           force-no-build: true
 
       - name: Setup Node
