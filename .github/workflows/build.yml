@@ -99,10 +99,6 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
-      - name: Setup BumpVer
-        uses: ./.github/actions/setup-bumpver
-        # depends on requirements-dev.txt
-
       - name: Setup HTMLProofer
         if: runner.os != 'Windows'
         uses: ./.github/actions/setup-htmlproofer
@@ -125,9 +121,6 @@ jobs:
         env:
           CABAL_ARGS: --project-file=cabal.project.ghc-${{ matrix.ghc-version }}
         # depends on cabal.project.ghc-X.Y
-
-      - name: Test with BumpVer
-        run: bumpver update --dry --no-fetch
 
       - name: Test with HTML-validate
         run: make test-html-validate
