@@ -33,6 +33,9 @@ jobs:
           - os: ubuntu-latest
             ghc-version: "9.0.2"
             experimental: false
+          - os: ubuntu-latest
+            ghc-version: "9.4.4"
+            experimental: true
 
     name: Build on ${{ matrix.os }} with GHC-${{ matrix.ghc-version }}
     runs-on: ${{ matrix.os }}
