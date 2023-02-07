@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps:
       - name: Setup Haskell
-        uses: haskell/actions/setup@v2
+        uses: haskell/actions/setup@v2.3.3
         id: setup-haskell
         with:
           ghc-version: ${{ inputs.ghc-version }}
