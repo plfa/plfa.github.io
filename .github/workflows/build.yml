@@ -69,11 +69,11 @@ jobs:
             ghc-version: "9.0.2"
             experimental: false
           # Newer versions of GHC
-          - name: Build with newer GHC 9.4.4
-            os: ubuntu-latest
-            agda-version: "2.6.2.2"
-            ghc-version: "9.4.4"
-            experimental: true
+          # - name: Build with newer GHC 9.4.4
+          #   os: ubuntu-latest
+          #   agda-version: "2.6.2.2"
+          #   ghc-version: "9.4.4"
+          #   experimental: true
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
