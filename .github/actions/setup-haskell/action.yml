@@ -1,37 +1,43 @@
-name: 'Setup Haskell'
-description: 'Setup Haskell'
+name: "Setup Haskell"
+description: "Setup Haskell"
 inputs:
   ghc-version:
     required: false
     description: 'Version of GHC to use. If set to "latest", it will always get the latest stable version.'
-    default: 'latest'
+    default: "latest"
   cabal-version:
     required: false
     description: 'Version of Cabal to use. If set to "latest", it will always get the latest stable version.'
-    default: 'latest'
+    default: "latest"
   cabal-project-file:
     required: false
     description: 'Path to the project configuration. Defaults to "cabal.project".'
-    default: 'cabal.project'
+    default: "cabal.project"
   cabal-project-freeze-file:
     required: false
     description: 'Path to project freeze file. Defaults to "cabal.project.freeze".'
-    default: 'cabal.project.freeze'
+    default: "cabal.project.freeze"
 runs:
   using: "composite"
   steps:
-      - name: Setup Haskell
-        uses: haskell/actions/setup@v2
-        id: setup-haskell
-        with:
-          ghc-version: ${{ inputs.ghc-version }}
-          cabal-version: ${{ inputs.cabal-version }}
+    - name: Workaround runner image issue
+      if: runner.os == 'Linux'
+      # https://github.com/actions/runner-images/issues/7061
+      run: sudo chown -R $USER /usr/local/.ghcup
+      shell: sh
 
-      - name: Cache Haskell dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ steps.setup-haskell.outputs.cabal-store }}
-            dist-newstyle
-          key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(inputs.cabal-freeze-file) }}
-          restore-keys: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-
+    - name: Setup Haskell
+      uses: haskell/actions/setup@v2.3.3
+      id: setup-haskell
+      with:
+        ghc-version: ${{ inputs.ghc-version }}
+        cabal-version: ${{ inputs.cabal-version }}
+
+    - name: Cache Haskell dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ steps.setup-haskell.outputs.cabal-store }}
+          dist-newstyle
+        key: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-${{ hashFiles(inputs.cabal-freeze-file) }}
+        restore-keys: haskell-${{ runner.os }}-${{ inputs.ghc-version }}-

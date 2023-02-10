@@ -1,7 +1,10 @@
 packages:
   plfa.cabal
 
+constraints:
+  pandoc <3
+
 source-repository-package
   type: git
   location: https://github.com/wenkokke/shoggoth
-  tag: 8debe8e3b426ff76a68c9f37d68e5f23629cc822
+  tag: 68ea8bdd595c259a731a22f107767c2e303e61b2

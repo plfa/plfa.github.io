@@ -1,21 +1,18 @@
-cabal-version:      3.6
-name:               plfa
-version:            22.8
-description:        Programming Language Foundations in Agda
-homepage:           https://plfa.github.io
-license-file:       LICENSE
-author:             Wen Kokke
-copyright:          © 2017-2022 Wen Kokke
-category:           Web
-build-type:         Simple
-tested-with:
-  GHC == 9.2.4
-  GHC == 9.2.3
-  GHC == 8.10.7
+cabal-version: 3.6
+name:          plfa
+version:       22.8
+description:   Programming Language Foundations in Agda
+homepage:      https://plfa.github.io
+license-file:  LICENSE
+author:        Wen Kokke
+copyright:     © 2017-2022 Wen Kokke
+category:      Web
+build-type:    Simple
+tested-with:   GHC ==8.10.7 || ==9.0.2 || ==9.2.3 || ==9.2.4
 
 common language-haskell
-  build-depends:       base
-  default-language:    Haskell2010
+  build-depends:      base
+  default-language:   Haskell2010
   default-extensions:
     FlexibleContexts
     FlexibleInstances
@@ -35,8 +32,8 @@ common language-haskell
     TypeSynonymInstances
 
 executable builder
-  import:              language-haskell
-  main-is:             tools/Buildfile.hs
+  import:        language-haskell
+  main-is:       tools/Buildfile.hs
   build-depends:
     , base
     , base64
@@ -54,8 +51,8 @@ executable builder
     , text
 
 executable update-contributors
-  import:              language-haskell
-  main-is:             tools/UpdateContributors.hs
+  import:        language-haskell
+  main-is:       tools/UpdateContributors.hs
   build-depends:
     , bytestring
     , containers
@@ -64,7 +61,7 @@ executable update-contributors
     , filemanip
     , filepath
     , frontmatter
-    , github              ^>=0.28
+    , github       >=0.28
     , plfa
     , shoggoth
     , text
@@ -72,17 +69,18 @@ executable update-contributors
     , yaml
 
 library
-  import:              language-haskell
-  hs-source-dirs:      tools/
+  import:          language-haskell
+  hs-source-dirs:  tools/
   exposed-modules:
-    , Buildfile.Author
-    , Buildfile.Book
-    , Buildfile.Configuration
-    , Buildfile.Contributor
-    , Buildfile.Script
-    , Buildfile.Stylesheet
+    Buildfile.Author
+    Buildfile.Book
+    Buildfile.Configuration
+    Buildfile.Contributor
+    Buildfile.Script
+    Buildfile.Stylesheet
+
   build-depends:
-    , aeson ^>=2
+    , aeson               >=2
     , base
     , bimap
     , data-default-class
