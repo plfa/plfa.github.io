@@ -31,7 +31,7 @@ jobs:
             ghc-version: "9.2.4"
             experimental: false
           - name: Build on Linux
-            os: ubuntu-20.04
+            os: ubuntu-latest
             agda-version: "2.6.2.2"
             ghc-version: "9.2.4"
             experimental: false
@@ -42,38 +42,38 @@ jobs:
             experimental: false
           # Older versions of Agda
           - name: Build with older Agda 2.6.2.1
-            os: ubuntu-20.04
+            os: ubuntu-latest
             agda-version: "2.6.2.1"
             ghc-version: "9.2.4"
             experimental: true
           - name: Build with older Agda 2.6.2
-            os: ubuntu-20.04
+            os: ubuntu-latest
             agda-version: "2.6.2"
             ghc-version: "9.2.4"
             experimental: true
           # Newer versions of Agda
           - name: Build with newer Agda 2.6.3
-            os: ubuntu-20.04
+            os: ubuntu-latest
             agda-version: "2.6.3"
             ghc-version: "9.2.4"
             experimental: true
           # Older versions of GHC
           - name: Build with older GHC 8.10.7
-            os: ubuntu-20.04
+            os: ubuntu-latest
             agda-version: "2.6.2.2"
             ghc-version: "8.10.7"
             experimental: false
           - name: Build with older GHC 9.0.2
-            os: ubuntu-20.04
+            os: ubuntu-latest
             agda-version: "2.6.2.2"
             ghc-version: "9.0.2"
             experimental: false
           # Newer versions of GHC
-          # - name: Build with newer GHC 9.4.4
-          #   os: ubuntu-20.04
-          #   agda-version: "2.6.2.2"
-          #   ghc-version: "9.4.4"
-          #   experimental: true
+          - name: Build with newer GHC 9.4.4
+            os: ubuntu-latest
+            agda-version: "2.6.2.2"
+            ghc-version: "9.4.4"
+            experimental: true
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
