@@ -469,15 +469,23 @@ main = do
       outDir </> "plfa.epub" %> \out -> do
         let src = outDir </> "plfa_unpolished.epub"
         need [src]
-        ebookPolish [] [
-            "--smarten-punctuation",
-            "--remove-unused-css",
-            "--add-soft-hyphens",
-            "--upgrade-book",
-            "--jacket",
-            "--embed-fonts",
-            "--subset-fonts"
-          ] out src
+        maybeEbookPolish <- liftIO $ findExecutable "ebook-polish"
+        case maybeEbookPolish of
+          Nothing -> do
+            putWarn "Could not find 'ebook-publish' on the PATH; plfa.epub is unpolished"
+            copyFile' src out
+          Just ebookPolish -> do
+            command ebookPolish [] [
+              "--smarten-punctuation",
+              "--remove-unused-css",
+              "--add-soft-hyphens",
+              "--upgrade-book",
+              "--jacket",
+              "--embed-fonts",
+              "--subset-fonts",
+              src,
+              out
+            ]
 
       -- Build unpolished EPUB
       outDir </> "plfa_unpolished.epub" %> \out -> do
@@ -769,14 +777,6 @@ urlToIdent url =
   assert (isNothing $ Text.find (== '#') url) $
     assert (isAbsoluteUrl url) $
       Text.intercalate "-" (filter (not . Text.null) (Text.splitOn "/" (removeIndexHtml url)))
-
-
---------------------------------------------------------------------------------
--- Calibre
-
-ebookPolish :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> FilePath -> FilePath -> Action r
-ebookPolish cmdOpts args inputFile outputFile = do
-  command (Shell : cmdOpts) "ebook-polish" (args ++ [inputFile, outputFile])
 
 --------------------------------------------------------------------------------
 -- Node.js
