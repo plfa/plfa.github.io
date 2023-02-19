@@ -465,8 +465,22 @@ main = do
       --------------------------------------------------------------------------------
       -- EPUB
 
-      -- Build EPUB
+      -- Polish EPUB with Calibre
       outDir </> "plfa.epub" %> \out -> do
+        let src = outDir </> "plfa_unpolished.epub"
+        need [src]
+        ebookPolish [] [
+            "--smarten-punctuation",
+            "--remove-unused-css",
+            "--add-soft-hyphens",
+            "--upgrade-book",
+            "--jacket",
+            "--embed-fonts",
+            "--subset-fonts"
+          ] out src
+
+      -- Build unpolished EPUB
+      outDir </> "plfa_unpolished.epub" %> \out -> do
         -- Require metadata and stylesheet
         need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
 
@@ -755,6 +769,14 @@ urlToIdent url =
   assert (isNothing $ Text.find (== '#') url) $
     assert (isAbsoluteUrl url) $
       Text.intercalate "-" (filter (not . Text.null) (Text.splitOn "/" (removeIndexHtml url)))
+
+
+--------------------------------------------------------------------------------
+-- Calibre
+
+ebookPolish :: (HasCallStack, CmdResult r) => [CmdOption] -> [String] -> FilePath -> FilePath -> Action r
+ebookPolish cmdOpts args inputFile outputFile = do
+  command (Shell : cmdOpts) "ebook-polish" (args ++ [inputFile, outputFile])
 
 --------------------------------------------------------------------------------
 -- Node.js
