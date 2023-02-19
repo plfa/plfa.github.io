@@ -1,0 +1,19 @@
+name: "Setup Calibre"
+description: "Setup Calibre"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Calibre (Linux)
+      if: runner.os == 'Linux'
+      run: sudo apt install calibre -y
+      shell: sh
+
+    - name: Setup Calibre (macOS)
+      if: runner.os == 'macOS'
+      run: brew install --cask calibre
+      shell: sh
+
+    - name: Setup Calibre (Windows)
+      if: runner.os == 'Windows'
+      run: choco install calibre
+      shell: sh

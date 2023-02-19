@@ -110,6 +110,9 @@ jobs:
         with:
           epubcheck-version: "4.2.6"
 
+      - name: Setup Calibre
+        uses: ./.github/actions/setup-calibre
+
       - name: Cache build
         uses: actions/cache@v3
         with:
