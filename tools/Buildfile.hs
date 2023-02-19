@@ -467,7 +467,7 @@ main = do
 
       -- Polish EPUB with Calibre
       outDir </> "plfa.epub" %> \out -> do
-        let src = outDir </> "plfa_unpolished.epub"
+        let src = tmpEpubDir </> "plfa_unpolished.epub"
         need [src]
         maybeEbookPolish <- liftIO $ findExecutable "ebook-polish"
         case maybeEbookPolish of
@@ -488,7 +488,7 @@ main = do
               ]
 
       -- Build unpolished EPUB
-      outDir </> "plfa_unpolished.epub" %> \out -> do
+      tmpEpubDir </> "plfa_unpolished.epub" %> \out -> do
         -- Require metadata and stylesheet
         need [tmpEpubDir </> "epub-metadata.xml", tmpEpubDir </> "style.css"]
 
