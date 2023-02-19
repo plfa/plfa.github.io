@@ -46,7 +46,7 @@ import Shoggoth.Template.Pandoc (Extension (..), HTMLMathMethod (..), HighlightS
 import Shoggoth.Template.Pandoc qualified as Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
 import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
-import System.Directory (makeAbsolute)
+import System.Directory (findExecutable, makeAbsolute)
 import System.Exit (ExitCode (..), exitWith)
 import Text.Printf (printf)
 import Buildfile.Stylesheet (Stylesheet(stylesheetId, stylesheetEnabled))
@@ -475,17 +475,17 @@ main = do
             putWarn "Could not find 'ebook-publish' on the PATH; plfa.epub is unpolished"
             copyFile' src out
           Just ebookPolish -> do
-            command ebookPolish [] [
-              "--smarten-punctuation",
-              "--remove-unused-css",
-              "--add-soft-hyphens",
-              "--upgrade-book",
-              "--jacket",
-              "--embed-fonts",
-              "--subset-fonts",
-              src,
-              out
-            ]
+            command [] ebookPolish [
+                "--smarten-punctuation",
+                "--remove-unused-css",
+                "--add-soft-hyphens",
+                "--upgrade-book",
+                "--jacket",
+                "--embed-fonts",
+                "--subset-fonts",
+                src,
+                out
+              ]
 
       -- Build unpolished EPUB
       outDir </> "plfa_unpolished.epub" %> \out -> do
