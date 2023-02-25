@@ -27,17 +27,17 @@ jobs:
           # Recommended versions
           - name: Build on macOS
             os: macOS-latest
-            agda-version: "2.6.2.2"
+            agda-version: "2.6.3"
             ghc-version: "9.2.4"
             experimental: false
           - name: Build on Linux
             os: ubuntu-latest
-            agda-version: "2.6.2.2"
+            agda-version: "2.6.3"
             ghc-version: "9.2.4"
             experimental: false
           - name: Build on Windows
             os: windows-latest
-            agda-version: "2.6.2.2"
+            agda-version: "2.6.3"
             ghc-version: "9.2.4"
             experimental: false
           # Older versions of Agda
