@@ -63,7 +63,7 @@ The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.2.2. 
 
 ```bash
 cabal update
-cabal install Agda-2.6.2.2
+cabal install Agda-2.6.3
 ```
 
 This step will take a long time and a lot of memory to complete.
