@@ -51,8 +51,7 @@ jobs:
             agda-version: "2.6.2"
             ghc-version: "9.2.4"
             experimental: true
-          # Newer versions of Agda
-          - name: Build with newer Agda 2.6.3
+          - name: Build with newer Agda 2.6.2.2
             os: ubuntu-latest
             agda-version: "2.6.3"
             ghc-version: "9.2.4"
@@ -60,18 +59,18 @@ jobs:
           # Older versions of GHC
           - name: Build with older GHC 8.10.7
             os: ubuntu-latest
-            agda-version: "2.6.2.2"
+            agda-version: "2.6.3"
             ghc-version: "8.10.7"
             experimental: false
           - name: Build with older GHC 9.0.2
             os: ubuntu-latest
-            agda-version: "2.6.2.2"
+            agda-version: "2.6.3"
             ghc-version: "9.0.2"
             experimental: false
           # Newer versions of GHC
           - name: Build with newer GHC 9.4.4
             os: ubuntu-latest
-            agda-version: "2.6.2.2"
+            agda-version: "2.6.3"
             ghc-version: "9.4.4"
             experimental: true
 
