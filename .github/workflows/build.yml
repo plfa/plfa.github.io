@@ -62,19 +62,6 @@ jobs:
             agda-stdlib-version: "1.7.1"
             ghc-version: "9.2.4"
             experimental: true
-          # Older versions of GHC
-          - name: Build with older GHC 8.10.7
-            os: ubuntu-latest
-            agda-version: "2.6.3"
-            agda-stdlib-version: "1.7.2"
-            ghc-version: "8.10.7"
-            experimental: false
-          - name: Build with older GHC 9.0.2
-            os: ubuntu-latest
-            agda-version: "2.6.3"
-            agda-stdlib-version: "1.7.2"
-            ghc-version: "9.0.2"
-            experimental: false
           # Newer versions of GHC
           - name: Build with newer GHC 9.4.4
             os: ubuntu-latest
@@ -82,6 +69,19 @@ jobs:
             agda-stdlib-version: "1.7.2"
             ghc-version: "9.4.4"
             experimental: true
+          # Older versions of GHC
+          - name: Build with older GHC 9.0.2
+            os: ubuntu-latest
+            agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
+            ghc-version: "9.0.2"
+            experimental: false
+          - name: Build with older GHC 8.10.7
+            os: ubuntu-latest
+            agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
+            ghc-version: "8.10.7"
+            experimental: false
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
