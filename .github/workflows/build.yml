@@ -28,49 +28,58 @@ jobs:
           - name: Build on macOS
             os: macOS-latest
             agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
             ghc-version: "9.2.4"
             experimental: false
           - name: Build on Linux
             os: ubuntu-latest
             agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
             ghc-version: "9.2.4"
             experimental: false
           - name: Build on Windows
             os: windows-latest
             agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
             ghc-version: "9.2.4"
             experimental: false
           # Older versions of Agda
           - name: Build with older Agda 2.6.2.1
             os: ubuntu-latest
             agda-version: "2.6.2.1"
+            agda-stdlib-version: "1.7.1"
             ghc-version: "9.2.4"
             experimental: true
           - name: Build with older Agda 2.6.2
             os: ubuntu-latest
             agda-version: "2.6.2"
+            agda-stdlib-version: "1.7.1"
             ghc-version: "9.2.4"
             experimental: true
           - name: Build with older Agda 2.6.2.2
             os: ubuntu-latest
             agda-version: "2.6.2.2"
+            agda-stdlib-version: "1.7.1"
             ghc-version: "9.2.4"
             experimental: true
           # Older versions of GHC
           - name: Build with older GHC 8.10.7
             os: ubuntu-latest
             agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
             ghc-version: "8.10.7"
             experimental: false
           - name: Build with older GHC 9.0.2
             os: ubuntu-latest
             agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
             ghc-version: "9.0.2"
             experimental: false
           # Newer versions of GHC
           - name: Build with newer GHC 9.4.4
             os: ubuntu-latest
             agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
             ghc-version: "9.4.4"
             experimental: true
 
@@ -117,6 +126,11 @@ jobs:
         with:
           path: _cache
           key: build-${{ runner.os }}-${{ secrets.BUILD_CACHE_VERSION }}
+
+      - name: Update standard library
+        if: matrix.agda-stdlib-version != '1.7.2'
+        run: git checkout v${{ matrix.agda-stdlib-version }}
+        working-directory: standard-library
 
       - name: Build
         run: make build
