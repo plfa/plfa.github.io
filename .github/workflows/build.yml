@@ -44,6 +44,12 @@ jobs:
             ghc-version: "9.2.4"
             experimental: false
           # Older versions of Agda
+          - name: Build with older Agda 2.6.2.2
+            os: ubuntu-latest
+            agda-version: "2.6.2.2"
+            agda-stdlib-version: "1.7.1"
+            ghc-version: "9.2.4"
+            experimental: true
           - name: Build with older Agda 2.6.2.1
             os: ubuntu-latest
             agda-version: "2.6.2.1"
@@ -53,12 +59,6 @@ jobs:
           - name: Build with older Agda 2.6.2
             os: ubuntu-latest
             agda-version: "2.6.2"
-            agda-stdlib-version: "1.7.1"
-            ghc-version: "9.2.4"
-            experimental: true
-          - name: Build with older Agda 2.6.2.2
-            os: ubuntu-latest
-            agda-version: "2.6.2.2"
             agda-stdlib-version: "1.7.1"
             ghc-version: "9.2.4"
             experimental: true
@@ -127,7 +127,7 @@ jobs:
           path: _cache
           key: build-${{ runner.os }}-${{ secrets.BUILD_CACHE_VERSION }}
 
-      - name: Update standard library
+      - name: Set standard-library version
         if: matrix.agda-stdlib-version != '1.7.2'
         run: git checkout v${{ matrix.agda-stdlib-version }}
         working-directory: standard-library
