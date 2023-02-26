@@ -8,7 +8,20 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Mon, 20 Feb 2023 21:15:17 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 26 Feb 2023 21:43:43 +0000</lastBuildDate>
+        <item>
+      <title>Migration to Agda 2.6.3</title>
+      <link>https://plfa.github.io//2023/02/26/migration-to-agda-2/index.html</link>
+      <description>
+        <![CDATA[
+                ]]>
+      </description>
+      <pubDate>Sun, 26 Feb 2023 12:00:00 +0000</pubDate>
+      <guid>https://plfa.github.io//2023/02/26/migration-to-agda-2/index.html</guid>
+            <dc:creator>Philip Wadler</dc:creator>
+            <dc:creator>Wen Kokke</dc:creator>
+            <dc:creator>Jeremy G. Siek</dc:creator>
+          </item>
         <item>
       <title>Release Notes v22.08</title>
       <link>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</link>
