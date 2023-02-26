@@ -282,8 +282,6 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [spacemacs-agda]: https://develop.spacemacs.org/layers/+lang/agda/README.html
 [vscode]: https://code.visualstudio.com/
 [vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
-[atom]: https://atom.io/
-[atom-agda]: https://atom.io/packages/agda-mode
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro
 [font-dejavusansmono]: https://dejavu-fonts.github.io/
 [font-freemono]: https://www.gnu.org/software/freefont/
