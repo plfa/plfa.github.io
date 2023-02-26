@@ -6,6 +6,7 @@
     "heading-level": ["off"],
     "input-missing-label": ["warn"],
     "long-title": ["warn"],
+    "no-dup-id": ["warn"],
     "no-inline-style": ["warn"],
     "valid-id": ["error", { "relaxed": true }],
     "wcag/h30": ["off"]
