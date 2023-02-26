@@ -129,7 +129,9 @@ jobs:
 
       - name: Set standard-library version
         if: matrix.agda-stdlib-version != '1.7.2'
-        run: git checkout v${{ matrix.agda-stdlib-version }}
+        run: |
+          git fetch origin v${{ matrix.agda-stdlib-version }}:v${{ matrix.agda-stdlib-version }} --depth=1
+          git checkout v${{ matrix.agda-stdlib-version }}
         working-directory: standard-library
 
       - name: Build
