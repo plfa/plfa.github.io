@@ -8,29 +8,29 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Mon, 27 Feb 2023 00:45:55 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Feb 2023 16:40:47 +0000</lastBuildDate>
         <item>
       <title>Migration to Agda 2.6.3</title>
-      <link>https://plfa.github.io//2023/02/26/migration-to-agda-2/index.html</link>
+      <link>https://plfa.github.io//2023/02/26/migration-to-agda-2-6-3/index.html</link>
       <description>
         <![CDATA[
                 ]]>
       </description>
       <pubDate>Sun, 26 Feb 2023 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2023/02/26/migration-to-agda-2/index.html</guid>
+      <guid>https://plfa.github.io//2023/02/26/migration-to-agda-2-6-3/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
           </item>
         <item>
       <title>Release Notes v22.08</title>
-      <link>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</link>
+      <link>https://plfa.github.io//2022/08/24/release-notes-v22-08/index.html</link>
       <description>
         <![CDATA[
                 ]]>
       </description>
       <pubDate>Wed, 24 Aug 2022 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2022/08/24/release-notes-v22/index.html</guid>
+      <guid>https://plfa.github.io//2022/08/24/release-notes-v22-08/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
@@ -62,7 +62,7 @@
           </item>
         <item>
       <title>Migration to Agda 2.6.1</title>
-      <link>https://plfa.github.io//2020/07/20/migration-to-agda-2/index.html</link>
+      <link>https://plfa.github.io//2020/07/20/migration-to-agda-2-6-1/index.html</link>
       <description>
         <![CDATA[
                   We upgraded to Agda 2.6.1
@@ -74,7 +74,7 @@
         ]]>
       </description>
       <pubDate>Mon, 20 Jul 2020 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2020/07/20/migration-to-agda-2/index.html</guid>
+      <guid>https://plfa.github.io//2020/07/20/migration-to-agda-2-6-1/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
@@ -96,13 +96,13 @@
           </item>
         <item>
       <title>Release Notes v20.07</title>
-      <link>https://plfa.github.io//2020/07/13/release-notes-v20/index.html</link>
+      <link>https://plfa.github.io//2020/07/13/release-notes-v20-07/index.html</link>
       <description>
         <![CDATA[
                 ]]>
       </description>
       <pubDate>Mon, 13 Jul 2020 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2020/07/13/release-notes-v20/index.html</guid>
+      <guid>https://plfa.github.io//2020/07/13/release-notes-v20-07/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
@@ -179,20 +179,20 @@
           </item>
         <item>
       <title>Release Notes v19.08</title>
-      <link>https://plfa.github.io//2019/08/31/release-notes-v19/index.html</link>
+      <link>https://plfa.github.io//2019/08/31/release-notes-v19-08/index.html</link>
       <description>
         <![CDATA[
                 ]]>
       </description>
       <pubDate>Sat, 31 Aug 2019 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2019/08/31/release-notes-v19/index.html</guid>
+      <guid>https://plfa.github.io//2019/08/31/release-notes-v19-08/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
           </item>
         <item>
       <title>Migration to Agda 2.6.0.1</title>
-      <link>https://plfa.github.io//2019/07/12/migration-to-agda-2/index.html</link>
+      <link>https://plfa.github.io//2019/07/12/migration-to-agda-2-6-0-1/index.html</link>
       <description>
         <![CDATA[
                   We upgraded to Agda 2.6.0.1 and version 1.1 of the
@@ -203,7 +203,7 @@
         ]]>
       </description>
       <pubDate>Fri, 12 Jul 2019 12:00:00 +0000</pubDate>
-      <guid>https://plfa.github.io//2019/07/12/migration-to-agda-2/index.html</guid>
+      <guid>https://plfa.github.io//2019/07/12/migration-to-agda-2-6-0-1/index.html</guid>
             <dc:creator>Philip Wadler</dc:creator>
             <dc:creator>Wen Kokke</dc:creator>
             <dc:creator>Jeremy G. Siek</dc:creator>
