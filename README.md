@@ -6,10 +6,10 @@ permalink: /GettingStarted/
 <!-- Status & Version Badges -->
 
 [![Build Status][plfa-badge-status-svg]][plfa-badge-status-url]
+[![pre-commit.ci status][pre-commit-status-svg]][pre-commit-status-url]
 [![Release Version][plfa-badge-version-svg]][plfa-badge-version-url]
 [![agda][agda-badge-version-svg]][agda-badge-version-url]
 [![standard-library][agda-stdlib-version-svg]][agda-stdlib-version-url]
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/plfa/plfa.github.io/dev.svg)](https://results.pre-commit.ci/latest/github/plfa/plfa.github.io/dev)
 
 ## Getting Started for Readers
 
@@ -254,10 +254,12 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 
 <!-- Links -->
 
-[plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
-[plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
 [plfa-badge-status-svg]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
 [plfa-badge-status-url]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
+[pre-commit-status-svg]: https://results.pre-commit.ci/badge/github/plfa/plfa.github.io/dev.svg
+[pre-commit-status-url]: https://results.pre-commit.ci/latest/github/plfa/plfa.github.io/dev
+[plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
+[plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
 [agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.3-blue.svg
 [agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.3.
 [agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v1.7.2-blue.svg
