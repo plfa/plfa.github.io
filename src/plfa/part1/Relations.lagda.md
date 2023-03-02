@@ -649,7 +649,7 @@ the fact that inequality is transitive.
 ```
 
 
-## Even and odd
+## Even and odd {#even-and-odd}
 
 As a further example, let's specify even and odd numbers.  Inequality
 and strict inequality are _binary relations_, while even and odd are
