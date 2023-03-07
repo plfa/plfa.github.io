@@ -57,8 +57,10 @@ $endfor$
   * Favonia, University of Minnesota
     <!-- The course website is not public. -->
   * [Prabhakar Ragde, University of Waterloo][UW-2021]
+  * [Jacques Carette, McMaster University][McM-2021] (based on Prabhakar's)
 
 [UW-2021]: https://web.archive.org/web/20210424214202/https://cs.uwaterloo.ca/~plragde/747/
+[McM-2021]: https://github.com/JacquesCarette/CAS706-F2021/
 
 #### 2020
   * [William Cook, University of Texas][UT-2020]
