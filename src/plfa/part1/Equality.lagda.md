@@ -171,7 +171,12 @@ subst : ∀ {A : Set} {x y : A} (P : A → Set)
   → P x → P y
 subst P refl px = px
 ```
-
+A predicate is a proposition over values of some type `A`, and since we model
+_propositions as types_, a predicate is a type parameterized in `A`.
+As an example, consider our earlier examples `even` and `odd` from
+Chapter [Relations](/Relations/#even-and-odd), which are predicates on natural numbers `ℕ`.
+(We will compare representing predicates as inductive data types `A → Set`
+versus functions to booleans `A → Bool` in Chapter [Decidable](/Decidable/).)
 
 ## Chains of equations
 
