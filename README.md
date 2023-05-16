@@ -6,7 +6,6 @@ permalink: /GettingStarted/
 <!-- Status & Version Badges -->
 
 [![Build Status][plfa-badge-status-svg]][plfa-badge-status-url]
-[![pre-commit.ci status][pre-commit-status-svg]][pre-commit-status-url]
 [![Release Version][plfa-badge-version-svg]][plfa-badge-version-url]
 [![agda][agda-badge-version-svg]][agda-badge-version-url]
 [![standard-library][agda-stdlib-version-svg]][agda-stdlib-version-url]
@@ -49,21 +48,18 @@ If you do not have Git, see [the Git downloads page][git].
 Agda is written in Haskell, so to install it we’ll need the _Glorious Haskell Compiler_ and its package manager _Cabal_. PLFA should work with any version of GHC >=8.10, but is tested with versions 8.10 and 9.2. We recommend installing GHC and Cabal using [ghcup][ghcup].  For instance, once `ghcup` is installed, by typing
 
 ```bash
-ghcup install ghc 9.2.4
-ghcup install cabal recommended
-
-ghcup set ghc 9.2.4
+ghcup set ghc 9.2
 ghcup set cabal recommended
 ```
 or using `ghcup tui` and choosing to `set` the appropriate tools.
 
 ### Install Agda
 
-The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.3. Run the following command:
+The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.2.2. Run the following command:
 
 ```bash
 cabal update
-cabal install Agda-2.6.3
+cabal install Agda-2.6.2.2
 ```
 
 This step will take a long time and a lot of memory to complete.
@@ -98,7 +94,7 @@ Otherwise, you will need to edit the appropriate files. Both configuration files
 - If the `AGDA_DIR` directory does not already exist, create it.
 - In `AGDA_DIR`, create a plain-text file called `libraries` containing `AGDA_STDLIB/standard-library.agda-lib`, where `AGDA_STDLIB` is the path to where the Agda standard library is located (e.g., `~/plfa/standard-library/`). This lets Agda know that an Agda library called `standard-library` is available.
 - In `AGDA_DIR`, create a plain-text file called `defaults` containing _just_ the line `standard-library`.
-- If you want to complete the exercises or to import modules from the book, you will also need to provide access to PLFA as an Agda library. To do so, let `PLFA` be the path to the root directory for PLFA.
+- If you want to import modules from the book, you will also need to provide access to PLFA as an Agda library. To do so, let `PLFA` be the path to the root directory for PLFA.
   Add `PLFA/src/plfa.agda-lib` to `AGDA_DIR/libraries` and add `plfa` to `AGDA_DIR/defaults`, each on a line of their own.
 
 More information about placing the standard libraries is available from [the Library Management page][agda-readthedocs-package-system] of the Agda documentation.
@@ -248,34 +244,36 @@ You'll see the key sequence of the character in mini buffer.
 
 [Visual Studio Code][vscode] is a free source code editor developed by Microsoft. There is [a plugin for Agda support][vscode-agda] available on the Visual Studio Marketplace.
 
+### Atom
+
+[Atom][atom] is a free source code editor developed by GitHub. There is [a plugin for Agda support][atom-agda] available on the Atom package manager.
+
 ## Getting Started for Contributors
 
 If you plan to build PLFA locally, please refer to [Contributing][plfa-contributing] for additional instructions.
 
 <!-- Links -->
 
-[plfa-badge-status-svg]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
-[plfa-badge-status-url]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
-[pre-commit-status-svg]: https://results.pre-commit.ci/badge/github/plfa/plfa.github.io/dev.svg
-[pre-commit-status-url]: https://results.pre-commit.ci/latest/github/plfa/plfa.github.io/dev
 [plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
 [plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
-[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.3-blue.svg
-[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.3.
-[agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v1.7.2-blue.svg
-[agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.2
+[plfa-badge-status-svg]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml/badge.svg
+[plfa-badge-status-url]: https://github.com/plfa/plfa.github.io/actions/workflows/build.yml
+[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.2.2-blue.svg
+[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.2.2
+[agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v1.7.1-blue.svg
+[agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.1
 [plfa]: https://plfa.inf.ed.ac.uk
 [plfa-epub]: https://plfa.github.io/plfa.epub
 [plfa-contributing]: https://plfa.github.io/Contributing/
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
 [xcode]: https://developer.apple.com/xcode/
-[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.6.3/getting-started/installation.html
-[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.6.3/getting-started/hello-world.html
-[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.3/getting-started/a-taste-of-agda.html#preliminaries
-[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.3/tools/emacs-mode.html
-[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.3/tools/emacs-mode.html#notation-for-key-combinations
-[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.6.3/tools/package-system.html#example-using-the-standard-library
+[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/installation.html
+[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/hello-world.html
+[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.2.2/getting-started/a-taste-of-agda.html#preliminaries
+[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html
+[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.2.2/tools/emacs-mode.html#notation-for-key-combinations
+[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.6.2.2/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
@@ -284,6 +282,8 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [spacemacs-agda]: https://develop.spacemacs.org/layers/+lang/agda/README.html
 [vscode]: https://code.visualstudio.com/
 [vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
+[atom]: https://atom.io/
+[atom-agda]: https://atom.io/packages/agda-mode
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro
 [font-dejavusansmono]: https://dejavu-fonts.github.io/
 [font-freemono]: https://www.gnu.org/software/freefont/

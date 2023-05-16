@@ -508,7 +508,11 @@ two natural numbers, now adapted to the intrinsically-typed
 de Bruijn representation.
 
 ```agda
--- Your code goes here
+mul : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
+mul = μ ƛ ƛ (case (# 1) (`zero) (plus · # 1 · (# 3 · # 0 · # 1)))
+
+three : ∀ {Γ} → Γ ⊢ `ℕ
+three = `suc two
 ```
 
 
@@ -668,7 +672,7 @@ subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     -----------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-subst σ (` k)          =  σ k
+subst σ (` x)          =  σ x
 subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
 subst σ (L · M)        =  (subst σ L) · (subst σ M)
 subst σ (`zero)        =  `zero
