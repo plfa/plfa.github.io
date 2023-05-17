@@ -364,7 +364,7 @@ The symbol `∀` appears in the statement of associativity to indicate that
 it holds for all numbers `m`, `n`, and `p`.  We refer to `∀` as the _universal
 quantifier_, and it is discussed further in Chapter [Quantifiers](/Quantifiers/).
 
-Evidence for a universal quantifier is a function.  The notations
+Evidence for a universal quantifier is a function.  The signatures
 
     +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 
@@ -376,6 +376,22 @@ are equivalent. They differ from a function type such as `ℕ → ℕ → ℕ`
 in that variables are associated with each argument type, and the
 result type may mention (or depend upon) these variables; hence they
 are called _dependent functions_.
+
+Ordinary functions are a special case of dependent functions. For instance,
+the signatures
+
+    _+_ : ℕ → ℕ → ℕ
+
+and
+
+    _+_ : ∀ (m n : ℕ) → ℕ
+
+and
+
+    _+_ : ∀ (m : ℕ) → ∀ (n : ℕ) → ℕ
+
+are all equivalent.
+
 
 
 ## Our second proof: commutativity

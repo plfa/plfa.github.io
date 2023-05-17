@@ -47,17 +47,11 @@ the range of different lambda calculi one may encounter.
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Unit using (⊤; tt)
-open import Function using (_∘_)
-open import Function.Equivalence using (_⇔_; equivalence)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (map)
-open import Relation.Nullary.Negation using (contraposition)
-open import Relation.Nullary.Product using (_×-dec_)
+open import Data.Nat using (ℕ; zero; suc; _<_; _≤?_; z≤n; s≤s)
+open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 
@@ -183,17 +177,23 @@ As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
 every variable has the same type:
 ```agda
-count : ∀ {Γ} → ℕ → Γ ∋ ★
-count {Γ , ★} zero     =  Z
-count {Γ , ★} (suc n)  =  S (count n)
-count {∅}     _        =  ⊥-elim impossible
-  where postulate impossible : ⊥
+length : Context → ℕ
+length ∅        =  zero
+length (Γ , _)  =  suc (length Γ)
+
+count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ ★
+count {Γ , ★} {zero}    (s≤s z≤n)  =  Z
+count {Γ , ★} {(suc n)} (s≤s p)    =  S (count p)
 ```
 
 We can then introduce a convenient abbreviation for variables:
 ```agda
-#_ : ∀ {Γ} → ℕ → Γ ⊢ ★
-# n  =  ` count n
+#_ : ∀ {Γ}
+  → (n : ℕ)
+  → {n∈Γ : True (suc n ≤? length Γ)}
+    --------------------------------
+  → Γ ⊢ ★
+#_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
 ## Test examples
@@ -329,8 +329,8 @@ data Normal where
 
 We introduce a convenient abbreviation for evidence that a variable is neutral:
 ```agda
-#′_ : ∀ {Γ} (n : ℕ) → Neutral {Γ} (# n)
-#′ n  =  ` count n
+#′_ : ∀ {Γ} (n : ℕ) {n∈Γ : True (suc n ≤? length Γ)} → Neutral {Γ} (# n)
+#′_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
 For example, here is the evidence that the Church numeral two is in
