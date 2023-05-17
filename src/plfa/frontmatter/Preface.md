@@ -107,7 +107,14 @@ Few students do all of these, but most attempt at least a few.
 Exercises labelled "(practice)" are included for those who want extra
 practice.
 
-You may need to import library functions required for the solution.
+You may answer the exercises by downloading the book from github and
+editing where it says "-- Your code goes here". Alternatively, you
+may be given a file to edit containing exercises for a given coursework.
+
+In either case, you may need to import additional library functions
+required for the solution. You may also need to set up PLFA as an Agda
+library, as described in
+[Getting Started](/GettingStarted/#install-plfa-and-the-agda-standard-library).
 
 Please do not post answers to the exercises in a public place.
 

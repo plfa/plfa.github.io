@@ -98,7 +98,7 @@ Otherwise, you will need to edit the appropriate files. Both configuration files
 - If the `AGDA_DIR` directory does not already exist, create it.
 - In `AGDA_DIR`, create a plain-text file called `libraries` containing `AGDA_STDLIB/standard-library.agda-lib`, where `AGDA_STDLIB` is the path to where the Agda standard library is located (e.g., `~/plfa/standard-library/`). This lets Agda know that an Agda library called `standard-library` is available.
 - In `AGDA_DIR`, create a plain-text file called `defaults` containing _just_ the line `standard-library`.
-- If you want to complete the exercises or to import modules from the book, you will also need to provide access to PLFA as an Agda library. To do so, let `PLFA` be the path to the root directory for PLFA.
+- If you want to import modules from the book, you will also need to provide access to PLFA as an Agda library. To do so, let `PLFA` be the path to the root directory for PLFA.
   Add `PLFA/src/plfa.agda-lib` to `AGDA_DIR/libraries` and add `plfa` to `AGDA_DIR/defaults`, each on a line of their own.
 
 More information about placing the standard libraries is available from [the Library Management page][agda-readthedocs-package-system] of the Agda documentation.

@@ -668,7 +668,7 @@ subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     -----------------------
   → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
-subst σ (` k)          =  σ k
+subst σ (` x)          =  σ x
 subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
 subst σ (L · M)        =  (subst σ L) · (subst σ M)
 subst σ (`zero)        =  `zero
