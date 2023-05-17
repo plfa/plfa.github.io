@@ -488,7 +488,7 @@ Chapter [More](/More/).
 ```
 
 
-#### Exercise `bidirectional-rest` (stretch)
+#### Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/).
