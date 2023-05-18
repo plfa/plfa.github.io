@@ -56,10 +56,15 @@ in the target:
 
 This stronger condition is known as _lock-step_ or _on the nose_ simulation.
 
-We are particularly interested in the situation where there is also
-a simulation from the target to the source: every reduction in the
-target has a corresponding reduction sequence in the source.  This
-situation is called a _bisimulation_.
+We are particularly interested in the situation where there is also a
+simulation from the target to the source: every reduction in the
+target has a corresponding reduction sequence in the source. In other
+words, `~` is a simulation from source to target, and the converse of
+`~` is a simulation from target to source: this situation is called a
+_bisimulation_.  (In general, if < and > are arbitrary relations such
+that `x < y` if and only if `y > x` then we say that `<` and `>` are
+_converse_ relations. Hence, if `~` is a relation from source to target,
+its converse is a relation from target to source.)
 
 Simulation is established by case analysis over all possible
 reductions and all possible terms to which they are related.  For each

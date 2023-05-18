@@ -630,7 +630,7 @@ As with inequality, some additional definitions may be required.
 -- Your code goes here
 ```
 
-#### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
+#### Exercise `≤→<, <→≤` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 

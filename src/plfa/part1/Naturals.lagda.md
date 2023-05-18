@@ -396,7 +396,14 @@ equations.  The chain starts with `begin` and finishes with `∎`
 (pronounced "qed" or "tombstone", the latter from its appearance), and
 consists of a series of terms separated by `≡⟨⟩`.
 
-In fact, both proofs are longer than need be, and Agda is satisfied
+Note the proofs above appear in colour, meaning that Agda has
+processed and accepted those lines, and hence they are guaranteed not
+to contain type errors. The same colour appears in the Emacs source
+file after it has been processed in Agda. In Emacs, right clicking on
+any symbol in colour, such as `+` or `suc` or `≡`, will take you to the
+definition of that symbol.
+
+In fact, both proofs above are longer than need be, and Agda is satisfied
 with the following:
 ```agda
 _ : 2 + 3 ≡ 5

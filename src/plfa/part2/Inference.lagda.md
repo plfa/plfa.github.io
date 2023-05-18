@@ -488,7 +488,7 @@ Chapter [More](/More/).
 ```
 
 
-#### Exercise `bidirectional-rest` (stretch)
+#### Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/).
@@ -1085,7 +1085,7 @@ multiplication from Chapter [DeBruijn](/DeBruijn/).
 
 Using your rules from exercise
 [`bidirectional-products`](/Inference/#bidirectional-products), extend
-bidirectional inference to include products.
+bidirectional inference to include products. Also extend erasure.
 
 ```agda
 -- Your code goes here
@@ -1093,8 +1093,10 @@ bidirectional inference to include products.
 
 #### Exercise `inference-rest` (stretch)
 
-Extend the bidirectional type rules to include the rest of the constructs from
-Chapter [More](/More/).
+Using your rules from exercise
+[`bidirectional-rest`](/Inference/#bidirectional-rest), extend
+bidirectional inference to include the rest of the constructs from
+Chapter [More](/More/). Also extend erasure.
 
 ```agda
 -- Your code goes here
@@ -1107,7 +1109,7 @@ Agda itself uses bidirectional inference.  This explains why
 constructors can be overloaded while other defined names cannot ---
 here by _overloaded_ we mean that the same name can be used for
 constructors of different types.  Constructors are typed by
-inheritance, and so the name is available when resolving the
+inheritance, and so the type is available when resolving the
 constructor, whereas variables are typed by synthesis, and so each
 variable must have a unique type.
 
