@@ -236,7 +236,7 @@ Here is an example showing how to compute the length of a list:
 _ : length [ 0 , 1 , 2 ] ≡ 3
 _ =
   begin
-    length (0 ∷ 1 ∷ 2 ∷ [])
+    length (0 ∷ 1 ∷ 2 ∷ [])
   ≡⟨⟩
     suc (length (1 ∷ 2 ∷ []))
   ≡⟨⟩
