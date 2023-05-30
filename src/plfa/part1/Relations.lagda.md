@@ -454,7 +454,7 @@ This is our first use of the `with` clause in Agda.  The keyword
 `with` is followed by an expression and one or more subsequent lines.
 Each line begins with an ellipsis (`...`) and a vertical bar (`|`),
 followed by a pattern to be matched against the expression
-and the right-hand side of the equation.
+on the right-hand side of the equation.
 
 Every use of `with` is equivalent to defining a helper function.  For
 example, the definition above is equivalent to the following:
