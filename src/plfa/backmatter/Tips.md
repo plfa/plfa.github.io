@@ -3,7 +3,7 @@ title     : "Tips"
 permalink : /Tips/
 ---
 
-# Interactive development 
+# Interactive development
 
 ## Equational reasoning skeleton
 
@@ -20,7 +20,7 @@ begin
 ∎
 ```
 
-This sets up a series of reasoning steps with holes for both the expressions at each step, and the step itself. 
+This sets up a series of reasoning steps with holes for both the expressions at each step, and the step itself.
 Since the reasoning steps are holes, Agda will always accept this, so you can make incremental progress while keeping your file compiling.
 
 Now call "solve" (`C-c C-s` in Emacs).
@@ -55,7 +55,7 @@ If you have a function like this:
 ```agda
 foo a = ?
 ```
-and you want to introduce a `with`-clause, there is no direct hotkey for this. 
+and you want to introduce a `with`-clause, there is no direct hotkey for this.
 The fastest thing to do is to write
 ```agda
 foo a with my-thing
@@ -78,11 +78,11 @@ For example, compare:
 ```
 vs
 ```agda
-foo b * 2 
+foo b * 2
 ```
 
 The definition of `*` does case analysis on its first argument.
-This means that if the first argument to `*` is a constructor application, Agda can do some computation for you. 
+This means that if the first argument to `*` is a constructor application, Agda can do some computation for you.
 The first example computes to `foo b + (foo b + zero)`, but the second one does not compute at all: Agda can't pattern match on `foo b`, it could be anything!
 
 Doing this lets Agda do more definitional simplification, which means you have to do less work.
@@ -186,10 +186,10 @@ There are a few ways to avoid green slime, but one way that often works is to us
 ```agda
 data Tree (A : Set) : ℕ → Set where
   leaf : A → Tree A 1
-  node : 
+  node :
     ∀ {s : ℕ} {s‵ : ℕ}
-    → Tree A s 
-    → Tree A s 
+    → Tree A s
+    → Tree A s
     → s‵ ≡ s + s
     → Tree A s‵
 ```
