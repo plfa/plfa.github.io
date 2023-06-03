@@ -143,7 +143,7 @@ We define a convenient syntax for existentials as follows:
 ```agda
 Σ-syntax = Σ
 infix 2 Σ-syntax
-syntax Σ-syntax A (λ x → B) = Σ[ x ∈ A ] B
+syntax Σ-syntax A (λ x → Bx) = Σ[ x ∈ A ] Bx
 ```
 This is our first use of a syntax declaration, which specifies that
 the term on the left may be written with the syntax on the right.
