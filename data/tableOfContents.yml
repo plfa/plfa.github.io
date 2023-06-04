@@ -49,5 +49,6 @@ part:
   - include: src/plfa/backmatter/Acknowledgements.md
     epub-type: acknowledgements
   - include: src/plfa/backmatter/Tips.md
+    epub-type: appendix
   - include: src/plfa/backmatter/Fonts.lagda.md
     epub-type: appendix
