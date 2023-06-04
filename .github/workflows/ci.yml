@@ -83,8 +83,8 @@ jobs:
       - name: "Setup Agda"
         uses: wenkokke/setup-agda@latest
         with:
-          agda-version: ${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }}
-          force-no-build: true
+          agda-version: "${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }}"
+          force-no-build: "true"
 
       - name: "Setup Node"
         uses: ./.github/actions/setup-node
@@ -120,7 +120,7 @@ jobs:
         run: make build
         env:
           CABAL_ARGS: --project-file=cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}
-        # depends on cabal.project.ghc-X.Y
+        # depends on cabal.project.ghc-X.Y.Z
 
       - name: "Test with HTML-validate"
         run: make test-html-validate
@@ -138,9 +138,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Website HEAD ${{ runner.os }} Agda-${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }} GHC-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}
-          path: _site
-          if-no-files-found: error
+          name: "Website HEAD ${{ runner.os }} Agda-${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }} GHC-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
+          path: "_site"
+          if-no-files-found: "error"
 
   publish:
     name: Publish to GitHub Pages
@@ -157,29 +157,29 @@ jobs:
       - name: Download latest artifact
         uses: actions/download-artifact@v3
         with:
-          name: Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}
-          path: site
+          name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
+          path: "site"
 
       - uses: ./.github/actions/download-release
         with:
           plfa-version: "19.08"
-          path: site
+          path: "site"
 
       - uses: ./.github/actions/download-release
         with:
           plfa-version: "20.07"
-          path: site
+          path: "site"
 
       - uses: ./.github/actions/download-release
         with:
           plfa-version: "22.08"
-          path: site
+          path: "site"
 
       - name: Publish to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.2
         with:
           branch: web
-          folder: site
+          folder: "site"
 
   release:
     name: Publish to GitHub Releases
@@ -199,14 +199,16 @@ jobs:
 
       - name: Get release notes
         run: |
-          Get-Content ./web/posts/*-release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md | Select-Object -Skip 3 | Out-File -FilePath ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md -Encoding utf8
+          Get-Content ./web/posts/*-release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md `
+            | Select-Object -Skip 3 `
+            | Out-File -FilePath ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md -Encoding utf8
         shell: pwsh
 
       - name: Download latest artifact
         uses: actions/download-artifact@v3
         with:
-          name: Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}
-          path: site
+          name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
+          path: "site"
 
       - name: Build Website.zip
         run: |
