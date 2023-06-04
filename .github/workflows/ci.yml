@@ -30,37 +30,32 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          # Recommended versions
+          # Default versions
           - name: "Build on macOS"
             os: macOS-latest
-            experimental: false
           - name: "Build on Linux"
             os: ubuntu-latest
-            experimental: false
           - name: "Build on Windows"
             os: windows-latest
-            experimental: false
+
           # Older versions of Agda
           - name: "Build with older Agda 2.6.2.2"
             os: ubuntu-latest
             agda-version: "2.6.2.2"
             agda-stdlib-version: "1.7.1"
-            experimental: false
           - name: "Build with older Agda 2.6.2.1"
             os: ubuntu-latest
             agda-version: "2.6.2.1"
             agda-stdlib-version: "1.7.1"
-            experimental: false
           - name: "Build with older Agda 2.6.2"
             os: ubuntu-latest
             agda-version: "2.6.2"
             agda-stdlib-version: "1.7.1"
-            experimental: false
           - name: "Build with older Agda 2.6.1.3"
             os: ubuntu-latest
             agda-version: "2.6.1.3"
             agda-stdlib-version: "1.6"
-            experimental: false
+
           # Newer versions of GHC
           - name: "Build with newer GHC 9.6.2"
             os: ubuntu-latest
@@ -69,20 +64,18 @@ jobs:
           - name: "Build with newer GHC 9.4.5"
             os: ubuntu-latest
             ghc-version: "9.4.5"
-            experimental: false
+
           # Older versions of GHC
           - name: "Build with older GHC 9.0.2"
             os: ubuntu-latest
             ghc-version: "9.0.2"
-            experimental: false
           - name: "Build with older GHC 8.10.7"
             os: ubuntu-latest
             ghc-version: "8.10.7"
-            experimental: false
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.experimental || false }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
