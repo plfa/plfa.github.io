@@ -1,4 +1,4 @@
-name: Build & Test
+name: CI
 
 on:
   push:
@@ -160,16 +160,78 @@ jobs:
 
   publish:
     name: Publish to GitHub Pages
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
     needs: [build]
-    if: github.event_name == 'push'
-    uses: ./.github/workflows/publish.yml
-    with:
-      artifact-name: Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}
+          path: site
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "19.08"
+          path: site
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "20.07"
+          path: site
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "22.08"
+          path: site
+
+      - name: Publish to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.2
+        with:
+          branch: web
+          folder: site
 
   release:
     name: Publish to GitHub Releases
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
     needs: [build]
     if: startsWith(github.ref, 'refs/tags/v')
-    uses: ./.github/workflows/release.yml
-    with:
-      artifact-name: Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Setup BumpVer
+        id: setup-bumpver
+        uses: ./.github/actions/setup-bumpver
+
+      - name: Get release notes
+        run: |
+          Get-Content ./web/posts/*-release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md | Select-Object -Skip 3 | Out-File -FilePath ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md -Encoding utf8
+        shell: pwsh
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}
+          path: site
+
+      - name: Build Website.zip
+        run: |
+          Compress-Archive -Path "site/*" -DestinationPath Website.zip
+        shell: pwsh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Website.zip
+          body_path: ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md
+          fail_on_unmatched_files: true
