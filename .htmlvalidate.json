@@ -3,12 +3,13 @@
   "elements": ["html5"],
   "extends": ["html-validate:recommended", "html-validate:document"],
   "rules": {
-    "heading-level": ["off"],
-    "input-missing-label": ["warn"],
     "long-title": ["warn"],
     "no-dup-id": ["warn"],
     "no-inline-style": ["warn"],
+    "prefer-native-element": ["warn"],
     "valid-id": ["error", { "relaxed": true }],
+    "heading-level": ["off"],
+    "input-missing-label": ["off"],
     "wcag/h30": ["off"]
   }
 }

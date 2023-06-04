@@ -1,0 +1,223 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+    tags:
+      - "*"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  merge_group:
+
+env:
+  DEFAULT_AGDA_VERSION: "2.6.3"
+  DEFAULT_AGDA_STDLIB_VERSION: "1.7.2"
+  DEFAULT_GHC_VERSION: "9.2.7"
+  DEFAULT_CABAL_VERSION: "3.10.1.0"
+  DEFAULT_EPUBCHECK_VERSION: "4.2.6"
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          # Default versions
+          - name: "Build on Linux"
+          - name: "Build on macOS"
+            os: macOS-latest
+          - name: "Build on Windows"
+            os: windows-latest
+
+          # Older versions of Agda
+          - name: "Build with older Agda 2.6.2.2"
+            agda-version: "2.6.2.2"
+            agda-stdlib-version: "1.7.1"
+          - name: "Build with older Agda 2.6.2.1"
+            agda-version: "2.6.2.1"
+            agda-stdlib-version: "1.7.1"
+          - name: "Build with older Agda 2.6.2"
+            agda-version: "2.6.2"
+            agda-stdlib-version: "1.7.1"
+          - name: "Build with older Agda 2.6.1.3"
+            agda-version: "2.6.1.3"
+            agda-stdlib-version: "1.6"
+
+          # Newer versions of GHC
+          - name: "Build with newer GHC 9.6.2"
+            ghc-version: "9.6.2"
+            experimental: true
+          - name: "Build with newer GHC 9.4.5"
+            ghc-version: "9.4.5"
+
+          # Older versions of GHC
+          - name: "Build with older GHC 9.0.2"
+            ghc-version: "9.0.2"
+          - name: "Build with older GHC 8.10.7"
+            ghc-version: "8.10.7"
+
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+    continue-on-error: ${{ matrix.experimental || false }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: "Setup Haskell"
+        uses: ./.github/actions/setup-haskell
+        with:
+          ghc-version: "${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
+          cabal-version: "${{ env.DEFAULT_CABAL_VERSION }}"
+          cabal-project-freeze-file: "cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}.freeze"
+
+      - name: "Setup Agda"
+        uses: wenkokke/setup-agda@latest
+        with:
+          agda-version: "${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }}"
+          force-no-build: "true"
+
+      - name: "Setup Node"
+        uses: ./.github/actions/setup-node
+
+      - name: "Setup HTMLProofer"
+        if: runner.os != 'Windows'
+        uses: ./.github/actions/setup-htmlproofer
+        # depends on Gemfile
+
+      - name: "Setup EPUBCheck"
+        uses: ./.github/actions/setup-epubcheck
+        id: setup-epubcheck
+        with:
+          epubcheck-version: "${{ env.DEFAULT_EPUBCHECK_VERSION }}"
+
+      - name: "Setup Calibre"
+        uses: ./.github/actions/setup-calibre
+
+      - name: "Cache build"
+        uses: actions/cache@v3
+        with:
+          path: _cache
+          key: build-${{ runner.os }}-${{ secrets.BUILD_CACHE_VERSION }}
+
+      - name: "Set standard-library version"
+        if: matrix.agda-stdlib-version && matrix.agda-stdlib-version != env.DEFAULT_AGDA_STDLIB_VERSION
+        run: |
+          git fetch origin v${{ matrix.agda-stdlib-version }}:v${{ matrix.agda-stdlib-version }} --depth=1
+          git checkout v${{ matrix.agda-stdlib-version }}
+        working-directory: standard-library
+
+      - name: "Build"
+        run: make build
+        env:
+          CABAL_ARGS: "--project-file=cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
+        # depends on cabal.project.ghc-X.Y.Z
+
+      - name: "Test with HTML-validate"
+        run: make test-html-validate
+
+      - name: "Test with HTMLProofer"
+        if: runner.os != 'Windows'
+        run: make test-htmlproofer
+
+      - name: "Test with EPUBCheck"
+        run: make test-epubcheck
+        env:
+          EPUBCHECK: "java -jar ${{ steps.setup-epubcheck.outputs.epubcheck-jar-path }}"
+
+      - name: "Upload latest artifact"
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: "Website HEAD ${{ runner.os }} Agda-${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }} GHC-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
+          path: "_site"
+          if-no-files-found: "error"
+
+  publish:
+    name: Publish to GitHub Pages
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
+    needs: [build]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
+          path: "site"
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "19.08"
+          path: "site"
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "20.07"
+          path: "site"
+
+      - uses: ./.github/actions/download-release
+        with:
+          plfa-version: "22.08"
+          path: "site"
+
+      - name: Publish to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.2
+        with:
+          branch: web
+          folder: "site"
+
+  release:
+    name: Publish to GitHub Releases
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
+    needs: [build]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Setup BumpVer
+        id: setup-bumpver
+        uses: ./.github/actions/setup-bumpver
+
+      - name: Get release notes
+        run: |
+          Get-Content ./web/posts/*-release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md `
+            | Select-Object -Skip 3 `
+            | Out-File -FilePath ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md -Encoding utf8
+        shell: pwsh
+
+      - name: Download latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
+          path: "site"
+
+      - name: Build Website.zip
+        run: |
+          Compress-Archive -Path "site/*" -DestinationPath Website.zip
+        shell: pwsh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Website.zip
+          body_path: ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md
+          fail_on_unmatched_files: true
