@@ -29,6 +29,7 @@ SHAKE_ARGS += --timing
 build:
 	@echo "Building PLFA..."
 	@mkdir -p $(TMP_DIR)/reports/
+	$(CABAL) $(CABAL_ARGS) v2-update
 	$(CABAL) $(CABAL_ARGS) v2-run builder -- build $(SHAKE_ARGS)
 
 .PHONY: clean

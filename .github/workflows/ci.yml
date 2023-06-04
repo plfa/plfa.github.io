@@ -119,7 +119,7 @@ jobs:
       - name: "Build"
         run: make build
         env:
-          CABAL_ARGS: --project-file=cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}
+          CABAL_ARGS: "--project-file=cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
         # depends on cabal.project.ghc-X.Y.Z
 
       - name: "Test with HTML-validate"
