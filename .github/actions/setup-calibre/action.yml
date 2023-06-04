@@ -5,7 +5,9 @@ runs:
   steps:
     - name: Setup Calibre (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt install calibre -y
+      run: |
+        sudo apt-get update
+        sudo apt-get install calibre -y
       shell: sh
 
     - name: Setup Calibre (macOS)
