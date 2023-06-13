@@ -27,7 +27,7 @@ runs:
       shell: sh
 
     - name: Setup Haskell
-      uses: haskell/actions/setup@v2.3.3
+      uses: haskell/actions/setup@v2
       id: setup-haskell
       with:
         ghc-version: ${{ inputs.ghc-version }}
