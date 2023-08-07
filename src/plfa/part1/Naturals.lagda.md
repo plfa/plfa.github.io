@@ -78,7 +78,8 @@ successor of two; and so on.
 Write out `7` in longhand.
 
 ```agda
--- Your code goes here
+seven : ℕ
+seven = suc (suc (suc (suc (suc (suc (suc zero))))))
 ```
 
 You will need to give both a type signature and definition for the
@@ -437,7 +438,21 @@ other word for evidence, which we will use interchangeably, is _proof_.
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
 ```agda
--- Your code goes here
+_ : 3 + 4 ≡ 7
+_ =
+  begin
+    3 + 4
+  ≡⟨⟩ -- shorthand for
+    (suc (suc (suc zero))) + (suc (suc (suc (suc zero))))
+  ≡⟨⟩ -- inductive case of `_+_`
+    suc ((suc (suc zero)) + (suc (suc (suc (suc zero)))))
+  ≡⟨⟩ -- inductive case of `_+_`
+    suc (suc ((suc zero) + (suc (suc (suc (suc zero))))))
+  ≡⟨⟩ -- inductive case of `_+_`
+    suc (suc (suc (zero + (suc (suc (suc (suc zero)))))))
+  ≡⟨⟩ -- base case of `_+_`
+    suc (suc (suc (suc (suc (suc (suc zero))))))
+  ∎
 ```
 
 
