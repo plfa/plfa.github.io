@@ -75,10 +75,17 @@ Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
 (You do not have to prove these properties.)
 
+> The pair (_*_; _∸_) on ℕ
+> - identity for _*_ is 1, and for _∸_ right identity is 0
+> - _*_ is associative, and _∸_ is not
+> - _*_ is cummutative, and _∸_ is not
+> - _*_ distributes over _∸_ as in n * (p ∸ q) is (n * p) ∸ (n * q)
+
 Give an example of an operator that has an identity and is
 associative but is not commutative.
 (You do not have to prove these properties.)
 
+> Matrix multiplication A x B is associative but not commutative and has I as identity
 
 ## Associativity
 
@@ -710,6 +717,8 @@ judgments where the first number is less than _m_.
 
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
+
+> omg - that would be.. me _!!!_ (screams)
 
 #### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
 
