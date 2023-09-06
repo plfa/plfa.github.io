@@ -11,7 +11,7 @@ module plfa.part2.Substitution where
 ## Introduction
 
 The primary purpose of this chapter is to prove that substitution
-commutes with itself. Barendgredt (1984) refers to this
+commutes with itself. Barendregt (1984) refers to this
 as the substitution lemma:
 
     M [x:=N] [y:=L] = M [y:=L] [x:= N[y:=L] ]
