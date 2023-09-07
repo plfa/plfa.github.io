@@ -608,13 +608,13 @@ confluence L↠M₁ L↠M₂
 ## Notes
 
 This mechanized proof of confluence is based on several sources. The
-`subst-par` lemma is the "strong substitutivity" lemma of Shafer,
-Tebbi, and Smolka (ITP 2015). The proofs of `par-triangle`, `strip`,
+`subst-par` lemma is the "strong substitutivity" lemma of 
+@Schafer:2015. The proofs of `par-triangle`, `strip`,
 and `par-confluence` are based on the notion of complete development
-by Takahashi (1995) and Pfenning's 1992 technical report about the
+by @Takahashi:1995 and the technical report by @Pfenning:1992 about the
 Church-Rosser theorem. In addition, we consulted Nipkow and
 Berghofer's mechanization in Isabelle, which is based on an earlier
-article by Nipkow (JAR 1996).
+paper by @Nipkow:1996.
 
 ## Unicode
 
