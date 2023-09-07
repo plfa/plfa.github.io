@@ -608,7 +608,7 @@ confluence L↠M₁ L↠M₂
 ## Notes
 
 This mechanized proof of confluence is based on several sources. The
-`subst-par` lemma is the "strong substitutivity" lemma of 
+`subst-par` lemma is the "strong substitutivity" lemma of
 @Schafer:2015. The proofs of `par-triangle`, `strip`,
 and `par-confluence` are based on the notion of complete development
 by @Takahashi:1995 and the technical report by @Pfenning:1992 about the
