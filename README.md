@@ -126,10 +126,6 @@ agda-mode compile
 
 If you are already an Emacs user and have customized your setup, you may want to note the configuration which the `setup` appends to your `.emacs` file, and integrate it with your own preferred setup.
 
-#### Check if `agda-mode` was installed correctly
-
-Open the `nats.agda` file you created earlier, and load and type-check the file by typing [`C-c C-l`][agda-readthedocs-emacs-notation].
-
 #### Auto-loading `agda-mode` in Emacs
 
 Since version 2.6.0, Agda has had support for literate editing with Markdown, using the `.lagda.md` extension. One issue is that Emacs will default to Markdown editing mode for files with a `.md` suffix. In order to have `agda-mode` automatically loaded whenever you open a file ending with `.agda` or `.lagda.md`, add the following line to your Emacs configuration file:
@@ -159,6 +155,10 @@ You can download and install mononoki directly from [the website][font-mononoki]
                     :weight 'normal
                     :width  'normal)
 ```
+
+#### Check if `agda-mode` was installed correctly
+
+Open the first chapter of the book (`plfa/src/plfa/part1/Naturals.lagda.md`) in Emacs.  You can load and type-check the file by typing [`C-c C-l`][agda-readthedocs-emacs-notation].
 
 #### Using `agda-mode` in Emacs
 
