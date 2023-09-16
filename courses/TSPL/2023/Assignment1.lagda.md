@@ -1,6 +1,6 @@
 ---
 title     : "Assignment1: TSPL Assignment 1"
-permalink : /TSPL/2022/Assignment1/
+permalink : /TSPL/2023/Assignment1/
 ---
 
 ```
