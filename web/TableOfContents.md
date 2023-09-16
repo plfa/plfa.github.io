@@ -42,6 +42,11 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2023
+  * [Philip Wadler, University of Edinburgh][TSPL-2023]
+
+[TSPL-2023]: /TSPL/2023/
+
 #### 2022
   * [Andrej Bauer, University of Ljubljana][UL-2022]
   * Michael Shulman, University of San Diego
