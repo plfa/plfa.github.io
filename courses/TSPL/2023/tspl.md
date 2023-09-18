@@ -16,12 +16,15 @@ permalink : /TSPL/2023/
 Lectures take place Monday and Wednesday.
 Each lecture is immediately followed by a tutorial.
 
-* **12.00--14.00** _Monday Lecture and Tutorial_
+* **12.10--14.00** _Monday Lecture and Tutorial_
   [Old Medical School](https://www.ed.ac.uk/maps/maps?building=0113)
   [MST Teaching Room 13 (01M.473) - Doorway 3]( https://www.ed.ac.uk/timetabling-examinations/timetabling/room-bookings/bookable-rooms3/room/0113_01M_01M.473)
-* **10.00--10.50** _Wednesday Lecture and Tutorial_
+* **12.10--14.00** _Wednesday Lecture and Tutorial_
   [Appleton Tower](https://www.ed.ac.uk/maps/maps?building=0201)
   [AT 2.12](https://www.ed.ac.uk/timetabling-examinations/timetabling/room-bookings/bookable-rooms3/room/0201_02_2.12)
+* **12.10--14.00** _Friday Lecture and Tutorial_ **(week 1 only)**
+  [Old Medical School](https://www.ed.ac.uk/maps/maps?building=0113)
+  [MST Teaching Room 13 (01M.473) - Doorway 3]( https://www.ed.ac.uk/timetabling-examinations/timetabling/room-bookings/bookable-rooms3/room/0113_01M_01M.473)
 
 ## Links
 
