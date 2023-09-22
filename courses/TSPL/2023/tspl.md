@@ -76,7 +76,7 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>6</td>
-  <td>**23 Oct** [Lambda](/Lambda/)</td> 
+  <td>**23 Oct** [Lambda](/Lambda/)</td>
   <td>**25 Oct** [Properties](/Properties/)</td>
  </tr>
  <tr>
