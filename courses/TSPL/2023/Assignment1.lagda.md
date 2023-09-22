@@ -19,7 +19,8 @@ You don't need to do all of these, but should attempt at least a few.
 
 Exercises labelled "(practice)" are included for those who want extra practice.
 
-Submit your homework using the "submit" command.
+Submit your homework using Gradescope. Go to the course page under Learn.
+Select `Assessment`, then select `Assignment Submission`.
 Please ensure your files execute correctly under Agda!
 
 
@@ -410,7 +411,7 @@ As with inequality, some additional definitions may be required.
   -- Your code goes here
 ```
 
-#### Exercise `≤-iff-<` (recommended) {#leq-iff-less}
+#### Exercise `≤→<, <→≤` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
