@@ -56,43 +56,43 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>2</td>
-  <td>**25 Sep**
-  <td>**28 Sep**
+  <td>**25 Sep** </td>
+  <td>**28 Sep** </td>
  </tr>
  <tr>
   <td>3</td>
-  <td> **2 Oct**
-  <td> **4 Oct**
+  <td> **2 Oct** [Equality](/Equality/) (no class, read on your own)</td>
+  <td> **4 Oct** [Isomorphism](/Isomorphism/) (no class, read on your own)</td>
  </tr>
  <tr>
   <td>4</td>
-  <td>**9 Oct** [Equality](/Equality/) &amp; [Isomorphism](/Isomorphism/)</td>
-  <td>**11 Oct** [Connectives](/Connectives/)
+  <td>**9 Oct** [Connectives](/Connectives/)</td>
+  <td>**11 Oct** [Negation](/Negation/)</td>
  </tr>
  <tr>
   <td>5</td>
-  <td>**16 Oct** [Negation](/Negation/)</td>
-  <td>**18 Oct** [Quantifiers](/Quantifiers/)</td>
+  <td>**16 Oct** [Quantifiers](/Quantifiers/)</td>
+  <td>**18 Oct** [Decidable](/Decidable/)</td>
  </tr>
  <tr>
   <td>6</td>
-  <td>**23 Oct** [Decidable](/Decidable/) &amp; [Lists](/Lists/)</td>
-  <td>**25 Oct** [Lambda](/Lambda/)</td>
+  <td>**23 Oct** [Lambda](/Lambda/)</td>
+  <td>**25 Oct** [Properties](/Properties/)</td>
  </tr>
  <tr>
   <td>7</td>
-  <td>**30 Oct** [Properties](/Properties/)</td>
-  <td> **1 Nov** [DeBruijn](/DeBruijn/)</td>
+  <td>**30 Oct** [DeBruijn](/DeBruijn/)</td>
+  <td> **1 Nov** [More](/More/)</td>
  </tr>
  <tr>
   <td>8</td>
-  <td> **6 Nov** [More](/More/)</td>
-  <td>**8 Nov** [Inference](/Inference/)</td>
+  <td> **6 Nov** [Inference](/Inference/)</td>
+  <td>**8 Nov** [Untyped](/Untyped/)</td>
  </tr>
  <tr>
   <td>9</td>
-  <td>**13 Nov** [Untyped](/Untyped/)</td>
-  <td>**15 Nov** [Eval](/TSPL/2022/Eval/)</td>
+  <td>**13 Nov** [Eval](/TSPL/2022/Eval/)</td>
+  <td>**15 Nov** </td>
  </tr>
  <tr>
   <td>10</td>
