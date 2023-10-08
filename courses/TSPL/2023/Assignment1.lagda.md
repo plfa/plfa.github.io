@@ -19,7 +19,8 @@ You don't need to do all of these, but should attempt at least a few.
 
 Exercises labelled "(practice)" are included for those who want extra practice.
 
-Submit your homework using the "submit" command.
+Submit your homework using Gradescope. Go to the course page under Learn.
+Select `Assessment`, then select `Assignment Submission`.
 Please ensure your files execute correctly under Agda!
 
 
@@ -44,7 +45,7 @@ module Naturals where
   import Relation.Binary.PropositionalEquality as Eq
   open Eq using (_≡_; refl)
   open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
-  import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+  open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
 ```
 
 #### Exercise `seven` (practice) {#seven}
@@ -157,7 +158,6 @@ Confirm that these both give the correct answer for zero through four.
 
 ```
 module Induction where
-  import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
 
 ## Imports
@@ -170,6 +170,7 @@ and some operations upon them.  We also require a couple of new operations,
   open Eq using (_≡_; refl; cong; sym)
   open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
   open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
+  open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
 (Importing `step-≡` defines `_≡⟨_⟩_`.)
 
@@ -326,9 +327,6 @@ For each law: if it holds, prove; if not, give a counterexample.
 
 ```
 module Relations where
-  import Data.Nat using (_≤_; z≤n; s≤s)
-  import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
-                                    +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 ```
 
 ## Imports
@@ -338,6 +336,10 @@ module Relations where
   open Eq using (_≡_; refl; cong)
   open import Data.Nat using (ℕ; zero; suc; _+_)
   open import Data.Nat.Properties using (+-comm; +-identityʳ)
+  open import Data.Nat using (_≤_; z≤n; s≤s)
+  open import Data.Nat.Properties
+    using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
+           +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 ```
 
 
@@ -482,9 +484,19 @@ and back is the identity:
     ---------------
     to (from b) ≡ b
 
-(Hint: For each of these, you may first need to prove related
-properties of `One`. Also, you may need to prove that
-if `One b` then `1` is less or equal to the result of `from b`.)
+Hint: For each of these, you may first need to prove related
+properties of `One`. It may also help to prove the following:
+
+    One b
+    ----------
+    1 ≤ from b
+
+    1 ≤ n
+    ---------------------
+    to (2 * n) ≡ (to n) O
+
+The hypothesis `1 ≤ n` is required for the latter, because
+`to (2 * 0) ≡ ⟨⟩ O` but `(to 0) O ≡ ⟨⟩ O O`.
 
 ```agda
   -- Your code goes here

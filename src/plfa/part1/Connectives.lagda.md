@@ -232,7 +232,7 @@ For example, the type `(ℕ × Bool) × Tri` is _not_ the same as `ℕ ×
 instance `⟨ ⟨ 1 , true ⟩ , aa ⟩`, which is a member of the former,
 corresponds to `⟨ 1 , ⟨ true , aa ⟩ ⟩`, which is a member of the latter.
 
-#### Exercise `⇔≃×` (recommended)
+#### Exercise `⇔≃×` (practice)
 
 Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
