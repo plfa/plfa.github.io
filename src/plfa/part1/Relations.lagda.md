@@ -800,9 +800,16 @@ and back is the identity:
     ---------------
     to (from b) ≡ b
 
-(Hint: For each of these, you may first need to prove related
-properties of `One`. Also, you may need to prove that
-if `One b` then `1` is less or equal to the result of `from b`.)
+Hint: For each of these, you may first need to prove related
+properties of `One`. It may also help to prove the following:
+
+    One b
+    ----------
+    1 ≤ from b
+
+    1 ≤ n
+    ---------------------
+    to (2 * n) ≡ (to n) O
 
 ```agda
 -- Your code goes here

@@ -628,7 +628,28 @@ True Q = T ⌊ Q ⌋
 
 #### Exercise `False` (practice)
 
-Give analogues of `True`, `toWitness`, and `fromWitness` which work with *negated* properties. Call these `False`, `toWitnessFalse`, and `fromWitnessFalse`.
+Give analogues of `True`, `toWitness`, and `fromWitness` which work
+with *negated* properties. Call these `False`, `toWitnessFalse`, and
+`fromWitnessFalse`.
+
+
+#### Exercise `Bin-decidable` (stretch)
+
+Recall that Exercises
+[Bin](/Naturals/#Bin),
+[Bin-laws](/Induction/#Bin-laws), and
+[Bin-predicates](/Relations/#Bin-predicates)
+define a datatype `Bin` of bitstrings representing natural numbers,
+and asks you to define the following predicates:
+
+    One  : Bin → Set
+    Can  : Bin → Set
+
+Show that both of the above are decidable.
+
+    One? : ∀ (b : Bin) → Dec (One b)
+    Can? : ∀ (b : Bin) → Dec (Can b)
+
 
 
 ## Standard Library

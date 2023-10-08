@@ -127,7 +127,7 @@ be had.
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
 * [Assignment 1](/TSPL/2023/Assignment1/) cw1 due 12 noon Thursday 5 October (Week 3)
-* Assignment 2 cw2 due 12 noon Thursday 19 October (Week 5)
+* [Assignment 2](/TSPL/2023/Assignment2/) cw2 due 12 noon Thursday 19 October (Week 5)
 * Assignment 3 cw3 due 12 noon Thursday 2 November (Week 7)
 * Assignment 4 cw4 due 12 noon Thursday 16 November (Week 9)
 * Assignment 5 cw5 due 12 noon Thursday 23 November (Week 10)
