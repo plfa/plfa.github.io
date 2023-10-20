@@ -162,7 +162,7 @@ cong-app : ∀ {A B : Set} {f g : A → B}
 cong-app refl x = refl
 ```
 
-Equality also satisfies *substitution*.
+Equality also satisfies _substitution_.
 If two values are equal and a predicate holds of the first then it also holds of the second:
 ```agda
 subst : ∀ {A : Set} {x y : A} (P : A → Set)
@@ -173,9 +173,9 @@ subst P refl px = px
 ```
 A predicate is a proposition over values of some type `A`, and since we model
 _propositions as types_, a predicate is a type parameterized in `A`.
-As an example, consider our earlier examples `even` and `odd` from
-Chapter [Relations](/Relations/#even-and-odd), which are predicates on natural numbers `ℕ`.
-(We will compare representing predicates as inductive data types `A → Set`
+As an example, `even : ℕ → Set` and `odd : ℕ → Set` from
+Chapter [Relations](/Relations/#even-and-odd) are predicates on natural numbers `ℕ`.
+(We will compare representing predicates as data types `A → Set`
 versus functions to booleans `A → Bool` in Chapter [Decidable](/Decidable/).)
 
 ## Chains of equations
@@ -188,7 +188,7 @@ library:
 module ≡-Reasoning {A : Set} where
 
   infix  1 begin_
-  infixr 2 _≡⟨⟩_ _≡⟨_⟩_
+  infixr 2 _≡⟨⟩_ step-≡
   infix  3 _∎
 
   begin_ : ∀ {x y : A}
@@ -203,12 +203,10 @@ module ≡-Reasoning {A : Set} where
     → x ≡ y
   x ≡⟨⟩ x≡y  =  x≡y
 
-  _≡⟨_⟩_ : ∀ (x : A) {y z : A}
-    → x ≡ y
-    → y ≡ z
-      -----
-    → x ≡ z
-  x ≡⟨ x≡y ⟩ y≡z  =  trans x≡y y≡z
+  step-≡ : ∀ (x {y z} : A) → y ≡ z → x ≡ y → x ≡ z
+  step-≡ x y≡z x≡y  =  trans x≡y y≡z
+
+  syntax step-≡ x y≡z x≡y  =  x ≡⟨  x≡y ⟩ y≡z
 
   _∎ : ∀ (x : A)
       -----
@@ -226,7 +224,29 @@ each chapter of this book, save that the body of a top-level module
 need not be indented.  Opening the module makes all of the definitions
 available in the current environment.
 
-As an example, let's look at a proof of transitivity
+This is also our first use of a syntax declaration, which specifies
+that the term on the left may be written with the syntax on the right.
+The syntax `x ≡⟨ x≡y ⟩ y≡z` inherits the fixity `infixr 2` declared
+for `step-≡`, and the special syntax is available when the identifier
+`step-≡` is imported.
+
+Rather than introducing `step-≡` with special syntax, we might have
+declared `_≡⟨_⟩′_` directly:
+```agda
+_≡⟨_⟩′_ : ∀ {A : Set} (x : A) {y z : A}
+  → x ≡ y
+  → y ≡ z
+    -----
+  → x ≡ z
+x ≡⟨ x≡y ⟩′ y≡z  =  trans x≡y y≡z
+```
+The reason for indirection is that `step-≡` reverses
+the order of the arguments, which happens to allow Agda to
+perform type inference more efficiently. We will encounter some
+long chains in Chapter (Lambda)[Lambda], so efficiency can be
+important.
+
+Let's look at a proof of transitivity
 as a chain of equations:
 ```agda
 trans′ : ∀ {A : Set} {x y z : A}
@@ -272,8 +292,9 @@ alone would do.
 
 #### Exercise `trans` and `≡-Reasoning` (practice)
 
-Sadly, we cannot use the definition of trans' using ≡-Reasoning as the definition
-for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
+Sadly, we cannot use the definition of trans' using ≡-Reasoning as the
+definition for trans. Can you see why? (Hint: look at the definition
+of `_≡⟨_⟩_`)
 
 ```agda
 -- Your code goes here

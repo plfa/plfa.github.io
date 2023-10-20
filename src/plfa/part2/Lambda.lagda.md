@@ -707,11 +707,13 @@ data _—↠_ : Term → Term → Set where
       ---------
     → M —↠ M
 
-  _—→⟨_⟩_ : ∀ L {M N}
-    → L —→ M
+  step—→ : ∀ L {M N}
     → M —↠ N
+    → L —→ M
       ---------
     → L —↠ N
+
+pattern _—→⟨_⟩_ L L—→M M—↠N = step—→ L M—↠N L—→M
 
 begin_ : ∀ {M N}
   → M —↠ N
@@ -731,6 +733,13 @@ We can read this as follows:
 
 The notation is chosen to allow us to lay out example reductions in an
 appealing way, as we will see in the next section.
+
+Recall that in Chapter (Equality)[Equality] we defined chains of equalities
+using `step-≡` with a syntax declaration to reverse the order of the
+arguments, here we similarly introduce `step—→` with a pattern declaration
+to reverse the order of the arguments.  As before, this happens to allow
+Agda to perform type inference more efficiently.  We will need some long
+chains of reductions below, so efficiency can be important.
 
 Alternatively, we might define reflexive and transitive closure directly
 as the smallest relation that includes `—→` and is reflexive

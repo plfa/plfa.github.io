@@ -874,11 +874,13 @@ data _—↠_ {Γ A} : (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ------
     → M —↠ M
 
-  _—→⟨_⟩_ : (L : Γ ⊢ A) {M N : Γ ⊢ A}
-    → L —→ M
+  step—→ : (L : Γ ⊢ A) {M N : Γ ⊢ A}
     → M —↠ N
+    → L —→ M
       ------
     → L —↠ N
+
+pattern _—→⟨_⟩_ L L—→M M—↠N = step—→ L M—↠N L—→M
 
 begin_ : ∀ {Γ A} {M N : Γ ⊢ A}
   → M —↠ N
