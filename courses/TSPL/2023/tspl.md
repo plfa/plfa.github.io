@@ -67,7 +67,7 @@ Each lecture is immediately followed by a tutorial.
  <tr>
   <td>4</td>
   <td>**9 Oct** [Connectives](/Connectives/)</td>
-  <td>**11 Oct** [Negation](/Negation/)</td> &amp; [Quantifiers](/Quantifiers/)</td>
+  <td>**11 Oct** [Negation](/Negation/) &amp; [Quantifiers](/Quantifiers/)</td>
  </tr>
  <tr>
   <td>5</td>
