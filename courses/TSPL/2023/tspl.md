@@ -61,37 +61,37 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>3</td>
-  <td> **2 Oct** [Equality](/Equality/) (no class, read on your own)</td>
-  <td> **4 Oct** [Isomorphism](/Isomorphism/) (no class, read on your own)</td>
+  <td>**2 Oct** [Equality](/Equality/) (no class, read on your own)</td>
+  <td>**4 Oct** [Isomorphism](/Isomorphism/) (no class, read on your own)</td>
  </tr>
  <tr>
   <td>4</td>
   <td>**9 Oct** [Connectives](/Connectives/)</td>
-  <td>**11 Oct** [Negation](/Negation/)</td>
+  <td>**11 Oct** [Negation](/Negation/) &amp; [Quantifiers](/Quantifiers/)</td>
  </tr>
  <tr>
   <td>5</td>
-  <td>**16 Oct** [Quantifiers](/Quantifiers/)</td>
-  <td>**18 Oct** [Decidable](/Decidable/)</td>
+  <td>**16 Oct** [Decidable](/Decidable/)</td>
+  <td>**18 Oct** [Lambda](/Lambda/)</td>
  </tr>
  <tr>
   <td>6</td>
-  <td>**23 Oct** [Lambda](/Lambda/)</td>
+  <td>**23 Oct** [Lambda](/Lambda/) &amp; [Properties](/Properties/)</td>
   <td>**25 Oct** [Properties](/Properties/)</td>
  </tr>
  <tr>
   <td>7</td>
   <td>**30 Oct** [DeBruijn](/DeBruijn/)</td>
-  <td> **1 Nov** [More](/More/)</td>
+  <td>**1 Nov** [More](/More/)</td>
  </tr>
  <tr>
   <td>8</td>
-  <td> **6 Nov** [Inference](/Inference/)</td>
+  <td>**6 Nov** [Inference](/Inference/)</td>
   <td>**8 Nov** [Untyped](/Untyped/)</td>
  </tr>
  <tr>
   <td>9</td>
-  <td>**13 Nov** [Eval](/TSPL/2022/Eval/)</td>
+  <td>**13 Nov** <!-- [Eval](/TSPL/2022/Eval/) --></td>
   <td>**15 Nov** </td>
  </tr>
  <tr>
@@ -102,7 +102,7 @@ Each lecture is immediately followed by a tutorial.
  <tr>
   <td>11</td>
   <td>**27 Nov** [agda2hs](https://github.com/agda/agda2hs) (guest: [Orestis Melkonian](https://omelkonian.github.io/))</td>
-  <td> **29 Nov** Propositions as Types</td>
+  <td>**29 Nov** Propositions as Types</td>
  </tr>
 </tbody>
 </table>
@@ -128,7 +128,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 
 * [Assignment 1](/TSPL/2023/Assignment1/) cw1 due 12 noon Thursday 5 October (Week 3)
 * [Assignment 2](/TSPL/2023/Assignment2/) cw2 due 12 noon Thursday 19 October (Week 5)
-* Assignment 3 cw3 due 12 noon Thursday 2 November (Week 7)
+* [Assignment 3](/TSPL/2023/Assignment3/) cw3 due 12 noon Thursday 2 November (Week 7)
 * Assignment 4 cw4 due 12 noon Thursday 16 November (Week 9)
 * Assignment 5 cw5 due 12 noon Thursday 23 November (Week 10)
   <!-- Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all
