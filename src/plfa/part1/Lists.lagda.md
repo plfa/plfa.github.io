@@ -219,7 +219,6 @@ these three properties establish that `_++_` and `[]` form
 a _monoid_ over lists.
 
 ## Length
-xb
 
 Our next function finds the length of a list:
 ```agda
