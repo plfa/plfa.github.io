@@ -421,19 +421,21 @@ infix  1 begin_
 infixr 2 _—→⟨_⟩_
 infix  3 _∎
 
-data _—↠_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
+data _—↠_ {Γ A} : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
-  _∎ : ∀ {Γ A} (M : Γ ⊢ A)
-      --------
+  _∎ : (M : Γ ⊢ A)
+      ------
     → M —↠ M
 
-  _—→⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
-    → L —→ M
+  step—→ : (L : Γ ⊢ A) {M N : Γ ⊢ A}
     → M —↠ N
-      ---------
+    → L —→ M
+      ------
     → L —↠ N
 
-begin_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
+pattern _—→⟨_⟩_ L L—→M M—↠N = step—→ L M—↠N L—→M
+
+begin_ : ∀ {Γ A} {M N : Γ ⊢ A}
   → M —↠ N
     ------
   → M —↠ N
