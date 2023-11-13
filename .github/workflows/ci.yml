@@ -15,7 +15,7 @@ on:
 env:
   DEFAULT_AGDA_VERSION: "2.6.3"
   DEFAULT_AGDA_STDLIB_VERSION: "1.7.2"
-  DEFAULT_GHC_VERSION: "9.2.7"
+  DEFAULT_GHC_VERSION: "9.4.7"
   DEFAULT_CABAL_VERSION: "3.10.1.0"
   DEFAULT_EPUBCHECK_VERSION: "4.2.6"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
@@ -52,13 +52,16 @@ jobs:
             agda-stdlib-version: "1.6"
 
           # Newer versions of GHC
-          - name: "Build with newer GHC 9.6.2"
-            ghc-version: "9.6.2"
+          - name: "Build with newer GHC 9.8.1"
+            ghc-version: "9.8.1"
             experimental: true
-          - name: "Build with newer GHC 9.4.5"
-            ghc-version: "9.4.5"
+          - name: "Build with newer GHC 9.6.3"
+            ghc-version: "9.6.3"
+            experimental: true
 
           # Older versions of GHC
+          - name: "Build with older GHC 9.2.8"
+            ghc-version: "9.2.8"
           - name: "Build with older GHC 9.0.2"
             ghc-version: "9.0.2"
           - name: "Build with older GHC 8.10.7"
