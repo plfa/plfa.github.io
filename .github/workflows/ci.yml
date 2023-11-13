@@ -13,8 +13,8 @@ on:
   merge_group:
 
 env:
-  DEFAULT_AGDA_VERSION: "2.6.3"
-  DEFAULT_AGDA_STDLIB_VERSION: "1.7.2"
+  DEFAULT_AGDA_VERSION: "2.6.4"
+  DEFAULT_AGDA_STDLIB_VERSION: "1.7.3"
   DEFAULT_GHC_VERSION: "9.2.7"
   DEFAULT_CABAL_VERSION: "3.10.1.0"
   DEFAULT_EPUBCHECK_VERSION: "4.2.6"
@@ -38,6 +38,9 @@ jobs:
             os: windows-latest
 
           # Older versions of Agda
+          - name: "Build with older Agda 2.6.3"
+            agda-version: "2.6.3"
+            agda-stdlib-version: "1.7.2"
           - name: "Build with older Agda 2.6.2.2"
             agda-version: "2.6.2.2"
             agda-stdlib-version: "1.7.1"
