@@ -59,11 +59,11 @@ or using `ghcup tui` and choosing to `set` the appropriate tools.
 
 ### Install Agda
 
-The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.3. Run the following command:
+The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.4. Run the following command:
 
 ```bash
 cabal update
-cabal install Agda-2.6.3
+cabal install Agda-2.6.4
 ```
 
 This step will take a long time and a lot of memory to complete.
@@ -260,8 +260,8 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [pre-commit-status-url]: https://results.pre-commit.ci/latest/github/plfa/plfa.github.io/dev
 [plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
 [plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
-[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.3-blue.svg
-[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.3.
+[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.4-blue.svg
+[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.4.
 [agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v1.7.2-blue.svg
 [agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.2
 [plfa]: https://plfa.inf.ed.ac.uk
@@ -270,12 +270,12 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
 [xcode]: https://developer.apple.com/xcode/
-[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.6.3/getting-started/installation.html
-[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.6.3/getting-started/hello-world.html
-[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.3/getting-started/a-taste-of-agda.html#preliminaries
-[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.3/tools/emacs-mode.html
-[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.3/tools/emacs-mode.html#notation-for-key-combinations
-[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.6.3/tools/package-system.html#example-using-the-standard-library
+[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.6.4/getting-started/installation.html
+[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.6.4/getting-started/hello-world.html
+[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.4/getting-started/a-taste-of-agda.html#preliminaries
+[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.4/tools/emacs-mode.html
+[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.4/tools/emacs-mode.html#notation-for-key-combinations
+[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.6.4/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
