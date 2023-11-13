@@ -80,7 +80,6 @@ jobs:
         with:
           ghc-version: "${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
           cabal-version: "${{ env.DEFAULT_CABAL_VERSION }}"
-          cabal-project-freeze-file: "cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}.freeze"
 
       - name: "Setup Agda"
         uses: wenkokke/setup-agda@latest
@@ -120,9 +119,6 @@ jobs:
 
       - name: "Build"
         run: make build
-        env:
-          CABAL_ARGS: "--project-file=cabal.project.ghc-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
-        # depends on cabal.project.ghc-X.Y.Z
 
       - name: "Test with HTML-validate"
         run: make test-html-validate
