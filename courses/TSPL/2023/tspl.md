@@ -91,8 +91,8 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>9</td>
-  <td>**13 Nov** <!-- [Eval](/TSPL/2022/Eval/) --></td>
-  <td>**15 Nov** </td>
+  <td>**13 Nov** [Untyped](/Untyped/)</td>
+  <td>**15 Nov** [Eval](/TSPL/2023/Eval/)</td>
  </tr>
  <tr>
   <td>10</td>
