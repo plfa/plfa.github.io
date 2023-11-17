@@ -96,13 +96,13 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>10</td>
-  <td>**20 Nov** </td>
-  <td>**23 Nov**</td>
+  <td>**20 Nov** [Reynolds][reynolds] Let polymorphism </td>
+  <td>**23 Nov** [Reynolds][reynolds] Subtyping </td>
  </tr>
  <tr>
   <td>11</td>
-  <td>**27 Nov** [agda2hs](https://github.com/agda/agda2hs) (guest: [Orestis Melkonian](https://omelkonian.github.io/))</td>
-  <td>**29 Nov** Propositions as Types</td>
+  <td>**27 Nov** [Reynolds][reynolds] Explicit polymorphism </td>
+  <td>**29 Nov** [Propositions as Types][p-as-t] </td>
  </tr>
 </tbody>
 </table>
@@ -130,9 +130,13 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * [Assignment 2](/TSPL/2023/Assignment2/) cw2 due 12 noon Thursday 19 October (Week 5)
 * [Assignment 3](/TSPL/2023/Assignment3/) cw3 due 12 noon Thursday 2 November (Week 7)
 * [Assignment 4](/TSPL/2023/Assignment4/) cw4 due 12 noon Thursday 16 November (Week 9)
-* [Assignment 5](/courses/TSPL/2023/Exam.pdf) cw5 due 12 noon Thursday 23 November (Week 10)
-  Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all
+* [Assignment 5][Assignment5] cw5 due 12 noon Thursday 23 November (Week 10)
+  Use file [Exam][Exam]. Despite the rubric, do **all
   three questions**.
+
+[Assignment5]: https://homepages.inf.ed.ac.uk/wadler/tspl/2023/Assignment5.pdf
+[Exam]: https://homepages.inf.ed.ac.uk/wadler/tspl/2023/Exam.lagda.md
+
 
 ## How to submit coursework
 
@@ -202,10 +206,14 @@ practice for the exam and familiarise yourself with exam conditions.
   [Recursive Subtyping Revealed][gapayev],
   _International Conference on Functional Programming_, 2000.
 
+* Philip Wadler.
+  [Propositions as Types][p-as-t],
+  _Communications of the ACM_, 58(12): 75–84, December 2015.
+
 [reynolds]: https://homepages.inf.ed.ac.uk/wadler/papers/reynolds/three-approaches.pdf
 [barendregt]: https://homepages.inf.ed.ac.uk/wadler/papers/barendregt/pure-type-systems.pdf
 [gapayev]: https://homepages.inf.ed.ac.uk/wadler/papers/gapayev/gapayev-et-al-icfp2000.pdf
-
+[p-as-t]: https://dl.acm.org/doi/10.1145/2699407
 
 <!--
 ## Midterm course feedback
