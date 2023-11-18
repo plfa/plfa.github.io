@@ -96,12 +96,12 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>10</td>
-  <td>**20 Nov** [Reynolds][reynolds] Let polymorphism </td>
-  <td>**23 Nov** [Reynolds][reynolds] Subtyping </td>
+  <td>**20 Nov** extra tutorial </td>
+  <td>**23 Nov** extra tutorial </td>
  </tr>
  <tr>
   <td>11</td>
-  <td>**27 Nov** [Reynolds][reynolds] Explicit polymorphism </td>
+  <td>**27 Nov** </td>
   <td>**29 Nov** [Propositions as Types][p-as-t] </td>
  </tr>
 </tbody>
