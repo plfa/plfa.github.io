@@ -101,8 +101,8 @@ Each lecture is immediately followed by a tutorial.
  </tr>
  <tr>
   <td>11</td>
-  <td>**27 Nov** </td>
-  <td>**29 Nov** [Propositions as Types][p-as-t] </td>
+  <td>**27 Nov** [Propositions as Types][p-as-t] </td>
+  <td>**29 Nov** (no class) </td>
  </tr>
 </tbody>
 </table>
