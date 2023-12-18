@@ -136,7 +136,7 @@ jobs:
 
       - name: "Upload latest artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "Website HEAD ${{ runner.os }} Agda-${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }} GHC-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
           path: "_site"
