@@ -134,7 +134,7 @@ jobs:
 
       - name: "Upload latest artifact"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "Website HEAD ${{ runner.os }} Agda-${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }} GHC-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
           path: "_site"
@@ -153,7 +153,7 @@ jobs:
           submodules: "true"
 
       - name: Download latest artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
           path: "site"
@@ -174,7 +174,7 @@ jobs:
           path: "site"
 
       - name: Publish to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           branch: web
           folder: "site"
@@ -203,7 +203,7 @@ jobs:
         shell: pwsh
 
       - name: Download latest artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
           path: "site"
