@@ -7,9 +7,4 @@ constraints:
 source-repository-package
   type: git
   location: https://github.com/wenkokke/shoggoth
-  tag: 68ea8bdd595c259a731a22f107767c2e303e61b2
-
-source-repository-package
-  type: git
-  location: https://github.com/wenkokke/charsetdetect
-  tag: ec232296e403c3101d734a203b45d030459dc1cc
+  tag: 576a7165fc69a9d4d7c5695c597854f80f2cbb31
