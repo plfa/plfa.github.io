@@ -7,4 +7,4 @@ constraints:
 source-repository-package
   type: git
   location: https://github.com/wenkokke/shoggoth
-  tag: 68ea8bdd595c259a731a22f107767c2e303e61b2
+  tag: 576a7165fc69a9d4d7c5695c597854f80f2cbb31
