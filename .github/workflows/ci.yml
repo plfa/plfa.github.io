@@ -105,7 +105,7 @@ jobs:
         uses: ./.github/actions/setup-calibre
 
       - name: "Cache build"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: _cache
           key: build-${{ runner.os }}-${{ secrets.BUILD_CACHE_VERSION }}
