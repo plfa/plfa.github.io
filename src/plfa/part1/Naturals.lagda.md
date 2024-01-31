@@ -83,6 +83,8 @@ Write out `7` in longhand.
 
 You will need to give both a type signature and definition for the
 variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
+See the end of any chapter for help with inputting special Unicode
+characters introduced in that chapter.
 
 
 ## Unpacking the inference rules
