@@ -234,7 +234,7 @@ main = do
             liftIO $ do
               stream <- LazyByteString.readFile src
               let digest = Digest.sha512 stream
-              return . Just $ "sha512-" <> LazyByteString.encodeBase64 (Digest.bytestringDigest digest)
+              return . Just $ "sha512-" <> LazyByteString.extractBase64 (LazyByteString.encodeBase64 (Digest.bytestringDigest digest))
       let ?getDigest = getDigest
 
       --------------------------------------------------------------------------------
