@@ -17,8 +17,9 @@ import Control.Monad (forM, forM_, unless, when, (>=>))
 import Control.Monad.Except (MonadError (throwError))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.State (evalState)
+import Data.Base64.Types qualified as Base64
 import Data.ByteString.Lazy qualified as LazyByteString
-import Data.ByteString.Lazy.Base64 qualified as LazyByteString
+import Data.ByteString.Lazy.Base64 qualified as Base64
 import Data.Default.Class (Default (def))
 import Data.Digest.Pure.SHA qualified as Digest (bytestringDigest, sha512)
 import Data.Either (fromRight, isRight)
@@ -234,7 +235,7 @@ main = do
             liftIO $ do
               stream <- LazyByteString.readFile src
               let digest = Digest.sha512 stream
-              return . Just $ "sha512-" <> LazyByteString.encodeBase64 (Digest.bytestringDigest digest)
+              return . Just $ "sha512-" <> Base64.extractBase64 (Base64.encodeBase64 (Digest.bytestringDigest digest))
       let ?getDigest = getDigest
 
       --------------------------------------------------------------------------------
