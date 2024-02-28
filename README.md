@@ -164,7 +164,7 @@ Open the first chapter of the book (`plfa/src/plfa/part1/Naturals.lagda.md`) in 
 
 To load and type-check the file, use [`C-c C-l`][agda-readthedocs-emacs-notation].
 
-Agda is edited interactively, using [“holes”][agda-readthedocs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using `C-c C-l`, Agda replaces the question mark with a hole. There are several things you can to while the cursor is in a hole:
+Agda is edited interactively, using [“holes”][agda-readthedocs-holes], which are bits of the program that are not yet filled in. If you use a question mark as an expression, and load the buffer using `C-c C-l`, Agda replaces the question mark with a hole. There are several things you can do while the cursor is in a hole:
 
 - `C-c C-c`: **c**ase split (asks for variable name)
 - `C-c C-space`: fill in hole
