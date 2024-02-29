@@ -43,8 +43,10 @@ $endfor$
 ### Courses taught from the textbook
 
 #### 2023
+  * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2023]
   * [Philip Wadler, University of Edinburgh][TSPL-2023]
 
+[Freiburg-2023]: https://web.archive.org/web/20240208112146/https://proglang.informatik.uni-freiburg.de/teaching/proglang/2023ws/
 [TSPL-2023]: /TSPL/2023/
 
 #### 2022

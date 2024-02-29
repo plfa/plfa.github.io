@@ -8,7 +8,7 @@ author:        Wen Kokke
 copyright:     © 2017-2022 Wen Kokke
 category:      Web
 build-type:    Simple
-tested-with:   GHC ==8.10.7 || ==9.0.2 || ==9.2.8 || ==9.4.5
+tested-with:   GHC ==8.10.7 || ==9.0.2 || ==9.2.8 || ==9.4.8 || ==9.6.3
 
 common language-haskell
   build-depends:      base
@@ -36,7 +36,7 @@ executable builder
   main-is:       tools/Buildfile.hs
   build-depends:
     , base
-    , base64
+    , base64              >=1.0
     , bytestring
     , containers
     , data-default-class
