@@ -243,7 +243,7 @@ x ≡⟨ x≡y ⟩′ y≡z  =  trans x≡y y≡z
 The reason for indirection is that `step-≡` reverses
 the order of the arguments, which happens to allow Agda to
 perform type inference more efficiently. We will encounter some
-long chains in Chapter (Lambda)[Lambda], so efficiency can be
+long chains in Chapter [Lambda](/Lambda/), so efficiency can be
 important.
 
 Let's look at a proof of transitivity
