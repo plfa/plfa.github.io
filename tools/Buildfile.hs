@@ -474,7 +474,7 @@ main = do
         maybeEbookPolish <- liftIO $ findExecutable "ebook-polish"
         case maybeEbookPolish of
           Nothing -> do
-            putWarn "Could not find 'ebook-publish' on the PATH; plfa.epub is unpolished"
+            putWarn "Could not find 'ebook-polish' on the PATH; plfa.epub is unpolished"
             copyFile' src out
           Just ebookPolish -> do
             command
