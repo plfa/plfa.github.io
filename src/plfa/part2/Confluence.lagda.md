@@ -409,8 +409,7 @@ performing enough beta reductions in parallel.
 
 However, a simpler approach is to perform as many beta reductions in
 parallel as possible on `M`, say `M ⁺`, and then show that `N` also
-parallel reduces to `M ⁺`. This is the idea of Takahashi's _complete
-development_. The desired property may be illustrated as
+parallel reduces to `M ⁺`. The desired property may be illustrated as
 
         M
        /|
