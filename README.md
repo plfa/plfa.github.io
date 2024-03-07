@@ -34,7 +34,7 @@ Visit https://github.com/plfa/plfa.github.io in your browser, press the dot (`.`
 Apart from using the web version of VSCode, you can also connect to the codespace from your local VSCode. Here is the [instruction](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-github-codespaces-in-visual-studio-code).
 
 Optionally, you can run the devcontainer on your local machine. Git clone the [repo](https://github.com/plfa/plfa.github.io) to your computer, open it with VSCode, and then the editor will prompt you to reopen in container. For more details, please refer to the [documentation](https://code.visualstudio.com/docs/devcontainers/tutorial).
- 
+
 ### On macOS: Install the XCode Command Line Tools
 
 On macOS, you’ll need to install [The XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:
