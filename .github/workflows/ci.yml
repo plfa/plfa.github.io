@@ -214,7 +214,7 @@ jobs:
         shell: pwsh
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: Website.zip
           body_path: ${{ github.workspace }}/release-notes-${{ steps.setup-bumpver.outputs.current-version }}.md
