@@ -257,7 +257,7 @@ We proceed by induction on the semantics.
       `v′ → v ⊑ v′ → v₁`.
 
 
-The forward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
+The backward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
 In case `v ⊑ ⊥`, we obtain `Γ ⊢ L · M ↓ ⊥` by rule `⊥-intro`.
 Otherwise, we conclude immediately by rule `↦-elim`.
 
