@@ -500,7 +500,7 @@ subst-reflect (sub d lt) eq
 ... | ⟨ δ , ⟨ subst-δ , m ⟩ ⟩ = ⟨ δ , ⟨ subst-δ , sub m lt ⟩ ⟩
 ```
 
-* Case `var`: We have subst `σ M ≡ y`, so `M` must also be a variable, say `x`.
+* Case `var`: We have `subst σ M ≡ y`, so `M` must also be a variable, say `x`.
   We apply the lemma `subst-reflect-var` to conclude.
 
 * Case `↦-elim`: We have `subst σ M ≡ L₁ · L₂`. We proceed by cases on `M`.
