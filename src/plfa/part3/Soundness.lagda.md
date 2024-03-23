@@ -378,7 +378,7 @@ Now to finish the two cases of the proof.
 
 * In the case where `x ≡ y`, we need to show
   that `γ ⊢ σ y ↓ v`, but that's just our premise.
-* In the case where `x ≢ y,` we need to show
+* In the case where `x ≢ y`, we need to show
   that `γ ⊢ σ y ↓ ⊥`, which we do via rule `⊥-intro`.
 
 Thus, we have completed the variable case of the proof that
