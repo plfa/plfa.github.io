@@ -355,7 +355,7 @@ same-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
 same-const-env {x = x} rewrite var≟-refl x = refl
 ```
 
-and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
+and `const-env x v` maps `y` to `⊥`, so long as `x ≢ y`.
 
 ```agda
 diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
