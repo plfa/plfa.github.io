@@ -234,7 +234,7 @@ about `M` and can therefore use `⊥` for the value of `M`.
 
 Previously we showed that renaming variables preserves meaning.  Now
 we prove the opposite, that it reflects meaning. That is,
-if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where `(δ ∘ ρ) `⊑ γ`.
+if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where ``(δ ∘ ρ) `⊑ γ``.
 
 First, we need a variant of a lemma given earlier.
 ```agda
