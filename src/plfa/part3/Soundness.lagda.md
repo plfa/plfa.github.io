@@ -234,7 +234,7 @@ about `M` and can therefore use `⊥` for the value of `M`.
 
 Previously we showed that renaming variables preserves meaning.  Now
 we prove the opposite, that it reflects meaning. That is,
-if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where `(δ ∘ ρ) `⊑ γ`.
+if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where ``(δ ∘ ρ) `⊑ γ``.
 
 First, we need a variant of a lemma given earlier.
 ```agda
@@ -355,7 +355,7 @@ same-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
 same-const-env {x = x} rewrite var≟-refl x = refl
 ```
 
-and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
+and `const-env x v` maps `y` to `⊥`, so long as `x ≢ y`.
 
 ```agda
 diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
@@ -378,7 +378,7 @@ Now to finish the two cases of the proof.
 
 * In the case where `x ≡ y`, we need to show
   that `γ ⊢ σ y ↓ v`, but that's just our premise.
-* In the case where `x ≢ y,` we need to show
+* In the case where `x ≢ y`, we need to show
   that `γ ⊢ σ y ↓ ⊥`, which we do via rule `⊥-intro`.
 
 Thus, we have completed the variable case of the proof that
@@ -500,7 +500,7 @@ subst-reflect (sub d lt) eq
 ... | ⟨ δ , ⟨ subst-δ , m ⟩ ⟩ = ⟨ δ , ⟨ subst-δ , sub m lt ⟩ ⟩
 ```
 
-* Case `var`: We have subst `σ M ≡ y`, so `M` must also be a variable, say `x`.
+* Case `var`: We have `subst σ M ≡ y`, so `M` must also be a variable, say `x`.
   We apply the lemma `subst-reflect-var` to conclude.
 
 * Case `↦-elim`: We have `subst σ M ≡ L₁ · L₂`. We proceed by cases on `M`.
