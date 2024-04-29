@@ -14,7 +14,7 @@ contains about seventy sextillion stars.
 But the number of stars is finite, while natural numbers are infinite.
 Count all the stars, and you will still have as many natural numbers
 left over as you started with.
-
+{-testing ∀ -}
 
 ## The naturals are an inductive datatype
 
@@ -75,14 +75,14 @@ successor of two; and so on.
 
 #### Exercise `seven` (practice) {#seven}
 
-Write out `7` in longhand.
+Write out `7` in longhand. The suggestion below loads but is, of course, incorrect.
 
 ```agda
--- Your code goes here
+seven : ℕ
+seven = zero
 ```
 
-You will need to give both a type signature and definition for the
-variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
+Type `C-c C-l` in Emacs to instruct Agda to re-load.
 
 
 ## Unpacking the inference rules
