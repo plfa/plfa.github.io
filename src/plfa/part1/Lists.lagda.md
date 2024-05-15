@@ -648,8 +648,11 @@ For example:
 #### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
-
+```agda
+postulate
+  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+```
 
 ```agda
 -- Your code goes here
@@ -797,12 +800,9 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ∎
 ```
 
-In a previous exercise we showed the following.
-```agda
-postulate
-  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) →
+In exercise `foldr-++` above we showed the following:
+
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
-```
 
 As a consequence we can decompose fold over append in a monoid
 into two folds as follows.
