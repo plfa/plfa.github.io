@@ -97,7 +97,11 @@ cp ~/plfa/data/dotagda/* ~/.agda
 
 This provides access to both the Agda standard library and to PLFA as an Agda library.
 
-Otherwise, you will need to edit the appropriate files. Both configuration files are located in the directory `AGDA_DIR`. On UNIX and macOS, `AGDA_DIR` defaults to `~/.agda`. On Windows, `AGDA_DIR` usually defaults to `%AppData%\agda`, where `%AppData%` usually defaults to `C:\Users\USERNAME\AppData\Roaming`.
+Otherwise, you will need to edit the appropriate files. Both configuration files are located in the directory `AGDA_DIR`. On UNIX and macOS, `AGDA_DIR` defaults to `~/.agda`. On Windows, `AGDA_DIR` usually defaults to `%AppData%\agda`, whereas `%AppData%` usually defaults to `C:\Users\USERNAME\AppData\Roaming`, otherwise Agda will show the current `AGDA_DIR` by running:
+
+```bash
+agda --print-agda-dir
+```
 
 - If the `AGDA_DIR` directory does not already exist, create it.
 - In `AGDA_DIR`, create a plain-text file called `libraries` containing `AGDA_STDLIB/standard-library.agda-lib`, where `AGDA_STDLIB` is the path to where the Agda standard library is located (e.g., `~/plfa/standard-library/`). This lets Agda know that an Agda library called `standard-library` is available.
