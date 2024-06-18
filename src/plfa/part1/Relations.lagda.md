@@ -7,8 +7,17 @@ permalink : /Relations/
 module plfa.part1.Relations where
 ```
 
-After having defined operations such as addition and multiplication,
-the next step is to define relations, such as _less than or equal_.
+In this chapter, we will define the _less than or equal_ relation and
+explore its properties. In Agda, there are two approaches to defining
+relations. The first approach, similar to how we defined operations
+such as addition and multiplication, defines a function that
+_computes_ whether the relation holds. The second approach, which is
+the topic of this chapter, represents a relation as an inductive data
+type of _evidence_ that the relation holds. In the upcoming Chapter
+[Decidable](/Decidable/) we will revisit the _less than or equal_
+relation, show how to define the function that computes it and then
+proceed to unify these two approaches, showing that they are 'two
+sides of the same coin'.
 
 ## Imports
 
@@ -157,14 +166,6 @@ than `_+_` at level 6 and hence `1 + 2 ≤ 3` parses as `(1 + 2) ≤ 3`.
 We write `infix` to indicate that the operator does not associate to
 either the left or right, as it makes no sense to parse `1 ≤ 2 ≤ 3` as
 either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
-
-
-## Decidability
-
-Given two numbers, it is straightforward to compute whether or not the
-first is less than or equal to the second.  We don't give the code for
-doing so here, but will return to this point in
-Chapter [Decidable](/Decidable/).
 
 
 ## Inversion
