@@ -36,34 +36,34 @@ pre.Spec {
 }
 
 /* Aspects. */
-.Comment       { color: #b64343 }
-.Keyword       { color: #ce8133 }
-.String        { color: #B22222 }
-.Number        { color: #b051eb }
-.Symbol        { color: #8b8b8b }
-.PrimitiveType { color: #4343ca }
-.Operator      {}
+.Agda .Comment       { color: #b64343 }
+.Agda .Keyword       { color: #ce8133 }
+.Agda .String        { color: #B22222 }
+.Agda .Number        { color: #b051eb }
+.Agda .Symbol        { color: #8b8b8b }
+.Agda .PrimitiveType { color: #4343ca }
+.Agda .Operator      {}
 
 /* NameKinds. */
-.Bound                  { color: #bbbbbb }
-.InductiveConstructor   { color: #3a833a }
-.CoinductiveConstructor { color: #8B7500 }
-.Datatype               { color: #4343ca }
-.Field                  { color: #EE1289 }
-.Function               { color: #4343ca }
-.Module                 { color: #b051eb }
-.Postulate              { color: #4343ca }
-.Primitive              { color: #4343ca }
-.Record                 { color: #4343ca }
+.Agda .Bound                  { color: #bbbbbb }
+.Agda .InductiveConstructor   { color: #3a833a }
+.Agda .CoinductiveConstructor { color: #8B7500 }
+.Agda .Datatype               { color: #4343ca }
+.Agda .Field                  { color: #EE1289 }
+.Agda .Function               { color: #4343ca }
+.Agda .Module                 { color: #b051eb }
+.Agda .Postulate              { color: #4343ca }
+.Agda .Primitive              { color: #4343ca }
+.Agda .Record                 { color: #4343ca }
 
 /* OtherAspects. */
-.DottedPattern      {}
-.UnsolvedMeta       { color: #bbbbbb; background: yellow         }
-.UnsolvedConstraint { color: #bbbbbb; background: yellow         }
-.TerminationProblem { color: #bbbbbb; background: #FFA07A        }
-.IncompletePattern  { color: #bbbbbb; background: #F5DEB3        }
-.Error              { color: #B22222;   text-decoration: underline }
-.TypeChecks         { color: #bbbbbb; background: #ADD8E6        }
+.Agda .DottedPattern      {}
+.Agda .UnsolvedMeta       { color: #bbbbbb; background: yellow         }
+.Agda .UnsolvedConstraint { color: #bbbbbb; background: yellow         }
+.Agda .TerminationProblem { color: #bbbbbb; background: #FFA07A        }
+.Agda .IncompletePattern  { color: #bbbbbb; background: #F5DEB3        }
+.Agda .Error              { color: #B22222;   text-decoration: underline }
+.Agda .TypeChecks         { color: #bbbbbb; background: #ADD8E6        }
 
 /* Standard attributes. */
 .Agda a { text-decoration: none }
