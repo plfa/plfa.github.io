@@ -158,7 +158,7 @@ The σ algebra includes the following equations.
 
     (sub-id)    ⟪ ids ⟫ M      ≡ M
     (sub-app)   ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
-    (sub-abs)   ⟪ σ ⟫ (ƛ N)    ≡ ƛ ⟪ σ ⟫ N
+    (sub-abs)   ⟪ σ ⟫ (ƛ N) ≡ ƛ ⟪ (` Z) • (σ ⨟ ↑) ⟫ N
     (sub-sub)   ⟪ τ ⟫ ⟪ σ ⟫ M  ≡ ⟪ σ ⨟ τ ⟫ M
 
     (sub-idL)   ids ⨟ σ        ≡ σ
