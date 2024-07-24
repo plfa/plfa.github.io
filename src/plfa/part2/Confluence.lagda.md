@@ -46,7 +46,14 @@ diamond property. Here is a counter example.
 Both terms can reduce to `a a`, but the second term requires two steps
 to get there, not one.
 
-To side-step this problem, we'll define an auxiliary reduction
+If we abstract this example, whenever `N —→ N'`,
+we have two ways to reduce a term of the form `(λ x. M) N`:
+
+    (λ x. M) N —→ (λ x. M) N′
+    (λ x. M) N —→ M [ x := N ]
+
+To bring these two reductions back together in a single step,
+we'll define an auxiliary reduction
 relation, called _parallel reduction_, that can perform many
 reductions simultaneously and thereby satisfy the diamond property.
 Furthermore, we show that a parallel reduction sequence exists between
@@ -72,7 +79,50 @@ open import plfa.part2.Untyped
 
 ## Parallel Reduction
 
-The parallel reduction relation is defined as follows.
+The problem with the example above is that when we reduce
+
+    (λ x. M) N —→ M [ x := N ]
+
+we make _two_ copies of `N`.  That's why bringing the terms back
+together requires two reduction steps, not one.  Because `M` is `x x`,
+
+    M [ x := N ]
+      ≡
+    N N 
+      —→
+    N' N
+      —→
+    N' N'
+
+Parallel reduction turns this sequence into a single step by allowing
+both function and argument to be reduced in the same step:
+
+    N N ⇛ N' N'
+
+To make reduction work in parallel, all that's needed is to change the
+rule for reducing a term of the form `L · M`.
+Ordinary reduction must reduce `L` _or_ `M`, but parallel reduction
+may reduce both `L` _and_ `M`.  Given a term `M [x := N ]` 
+where `N —→ N'`, parallel reduction can reduce every copy of `N`
+in a single step.
+
+Parallel reduction has one other fine point: in a term of the form
+
+    (λ x. M) N,
+
+it may be that `M [x := N ]` contains _no_ copies of `N` (because `x`
+does not occur free in `M`).  In this case,
+to match the reduction
+
+    (λ x. M) N —→ (λ x. M) N′
+
+it must be possible for `M [x := N]` to parallel-reduce to itself.
+(It is sufficient to allow a variable to parallel-reduce to itself;
+the rest is taken care of by
+structural rules for reducing abstractions and applications.)
+
+Using these two ideas, reflexive reduction and simultaneous reduction,
+the parallel-reduction relation is defined as follows.
 
 ```agda
 infix 2 _⇛_
