@@ -292,7 +292,7 @@ of values, we are now interested in _normal forms_.
 [Why in this chapter do we introduce a syntactic criterion for
 normal form, whereas in the Properties chapter we define a normal form
 using a semantic criterion (as a term that does not reduce)?]
-A term is in normal form if it does not contain a β-redex: 
+A term is in normal form if it does not contain a β-redex:
 
   - A variable is in normal form.
 
@@ -370,7 +370,7 @@ neutral terms, and using `#′` in place of `#`
 #### Exercise (`non-abstraction`) (practice)
 
 Define a judgment `¬ƛ` mapping well-scoped terms to `Set`.
-Type `¬ƛ M` is inhabited if and only if `M` is not an abstraction. 
+Type `¬ƛ M` is inhabited if and only if `M` is not an abstraction.
 
 ```agda
 -- Your code goes here
