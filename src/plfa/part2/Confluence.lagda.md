@@ -88,7 +88,7 @@ together requires two reduction steps, not one.  Because `M` is `x x`,
 
     M [ x := N ]
       ≡
-    N N 
+    N N
       —→
     N' N
       —→
@@ -102,7 +102,7 @@ both function and argument to be reduced in the same step:
 To make reduction work in parallel, all that's needed is to change the
 rule for reducing a term of the form `L · M`.
 Ordinary reduction must reduce `L` _or_ `M`, but parallel reduction
-may reduce both `L` _and_ `M`.  Given a term `M [x := N ]` 
+may reduce both `L` _and_ `M`.  Given a term `M [x := N ]`
 where `N —→ N'`, parallel reduction can reduce every copy of `N`
 in a single step.
 
