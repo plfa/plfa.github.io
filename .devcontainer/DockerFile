@@ -1,0 +1,3 @@
+FROM haskell:9.8
+RUN apt update && apt install emacs -y
+RUN cabal update && cabal install Agda-2.6.3
