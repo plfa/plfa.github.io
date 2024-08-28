@@ -1,18 +1,13 @@
-# PLFA specific items to ignore
 !cabal.project.ci.local
 !data/legacy/19.08.zip
 !data/legacy/20.07.zip
 !plfa.pdf
-/Gemfile.lock
-/_build/
-/_cache/
-/_site/
-/node_modules/
-
 # Agda files
-*.agdai
-
+# GHC / Cabal / Stack
 # Latex
+# Mac droppings
+# PLFA specific items to ignore
+*.agdai
 *.aux
 *.bbl
 *.blg
@@ -26,9 +21,10 @@
 *.spl
 *.synctex.gz
 *.zip
-
-# GHC / Cabal / Stack
-/dist-newstyle/
-
-# Mac droppings
 .DS_Store
+/Gemfile.lock
+/_build/
+/_cache/
+/_site/
+/dist-newstyle/
+/node_modules/
