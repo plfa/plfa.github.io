@@ -22,11 +22,10 @@ of a new notion of _decidable_.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using ()
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Product.Base using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Relation.Nullary.Negation using (¬_)
   renaming (contradiction to ¬¬-intro)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -658,11 +657,9 @@ Show that both of the above are decidable.
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 import Data.Nat using (_≤?_)
 import Relation.Nullary using (Dec; yes; no)
-import Relation.Nullary.Decidable using (⌊_⌋; True; toWitness; fromWitness)
-import Relation.Nullary.Negation using (¬?)
-import Relation.Nullary.Product using (_×-dec_)
-import Relation.Nullary.Sum using (_⊎-dec_)
-import Relation.Binary using (Decidable)
+import Relation.Nullary.Decidable using
+  (⌊_⌋; True; toWitness; fromWitness; _×-dec_; _⊎-dec_; ¬?)
+import Relation.Binary.Definitions using (Decidable)
 ```
 
 
