@@ -21,14 +21,14 @@ _induction_.
 
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
-`cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
+`cong`, `sym`, `_≡⟨⟩_` and `_≡⟨_⟩_`, which are explained below:
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; step-≡-∣; step-≡-⟩; _∎)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_;_^_)
 ```
-(Importing `step-≡-⟩` defines `_≡⟨_⟩_`.)
+(Importing `step--∣` defines `_≡⟨⟩_` and importing `step-≡-⟩` defines `_≡⟨_⟩_`.)
 
 
 ## Properties of operators

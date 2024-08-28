@@ -65,8 +65,9 @@ data List′ : Set → Set₁ where
   []′  : ∀ {A : Set} → List′ A
   _∷′_ : ∀ {A : Set} → A → List′ A → List′ A
 ```
-The difference is that this has to end up in a larger set
-(which is what `Set₁` means) for technical reasons.
+This is almost equivalent, save that with parametrised types the result
+can be in `Set`, whereas for technical reasons indexed types require the
+result to be `Set₁`.
 
 Each constructor of `List` takes the parameter as an implicit argument.
 Thus, our example list could also be written:
