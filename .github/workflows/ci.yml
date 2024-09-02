@@ -174,7 +174,7 @@ jobs:
           path: "site"
 
       - name: Publish to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.6.3
+        uses: JamesIves/github-pages-deploy-action@v4.6.4
         with:
           branch: web
           folder: "site"
