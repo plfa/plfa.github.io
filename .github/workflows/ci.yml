@@ -20,9 +20,15 @@ env:
   DEFAULT_EPUBCHECK_VERSION: "4.2.6"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
+# Use PowerShell by default
 defaults:
   run:
     shell: pwsh
+
+# Limit concurrent runs to one per branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
