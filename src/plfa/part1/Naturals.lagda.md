@@ -262,7 +262,7 @@ about it from the Agda standard library:
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; step-≡-∣; _∎)
 ```
 
 The first line brings the standard library module that defines
@@ -273,7 +273,9 @@ are `_≡_`, the equality operator, and `refl`, the name for evidence
 that two terms are equal.  The third line takes a module that
 specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
-In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
+In this case, the names added are `begin_`, `step-≡-|`, and `_∎`.
+Furthermore this also brings in to scope `_≡⟨⟩_` which is a mixfix
+synonym for `step-≡-∣`. We
 will see how these are used below.  We take these as givens for now,
 but will see how they are defined in
 Chapter [Equality](/Equality/).
