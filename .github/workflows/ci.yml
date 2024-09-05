@@ -85,7 +85,7 @@ jobs:
           cabal-version: "${{ env.DEFAULT_CABAL_VERSION }}"
 
       - name: "Setup Agda"
-        uses: wenkokke/setup-agda@latest
+        uses: wenkokke/setup-agda@v2
         with:
           agda-version: "${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }}"
           force-no-build: "true"
