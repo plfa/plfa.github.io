@@ -22,14 +22,13 @@ of a new notion of _decidable_.
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using ()
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Product.Base using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Relation.Nullary.Negation as Neg using (¬_)
   renaming (contradiction to ¬¬-intro)
 open import Data.Unit using (⊤; tt)
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Empty using (⊥)
 open import plfa.part1.Relations using (_<_; z<s; s<s)
 open import plfa.part1.Isomorphism using (_⇔_)
 ```
@@ -510,7 +509,7 @@ we can decide if the first implies the second:
 ```agda
 _→-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A → B)
 _     →-dec yes y  =  yes (λ _ → y)
-no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
+no ¬x →-dec _      =  yes (λ x → Neg.contradiction x ¬x)
 yes x →-dec no ¬y  =  no (λ f → ¬y (f x))
 ```
 The implication holds if either the second holds or
@@ -658,11 +657,9 @@ Show that both of the above are decidable.
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
 import Data.Nat using (_≤?_)
 import Relation.Nullary using (Dec; yes; no)
-import Relation.Nullary.Decidable using (⌊_⌋; True; toWitness; fromWitness)
-import Relation.Nullary.Negation using (¬?)
-import Relation.Nullary.Product using (_×-dec_)
-import Relation.Nullary.Sum using (_⊎-dec_)
-import Relation.Binary using (Decidable)
+import Relation.Nullary.Decidable using
+  (⌊_⌋; True; toWitness; fromWitness; _×-dec_; _⊎-dec_; ¬?)
+import Relation.Binary.Definitions using (Decidable)
 ```
 
 

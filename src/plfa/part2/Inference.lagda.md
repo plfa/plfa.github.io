@@ -247,12 +247,12 @@ We are now ready to begin the formal development.
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Empty using (⊥)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.String using (String; _≟_)
-open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (False; toWitnessFalse)
+open import Data.Product.Base using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Decidable using ( Dec; yes; no; False; toWitnessFalse)
 ```
 
 Once we have a type derivation, it will be easy to construct
@@ -540,8 +540,8 @@ one showing `Γ ∋ x ⦂ A` and one showing `Γ ∋ x ⦂ B`, it follows that
 ```agda
 uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 uniq-∋ Z Z                 =  refl
-uniq-∋ Z (S x≢y _)         =  ⊥-elim (x≢y refl)
-uniq-∋ (S x≢y _) Z         =  ⊥-elim (x≢y refl)
+uniq-∋ Z (S x≢y _)         =  contradiction refl x≢y
+uniq-∋ (S x≢y _) Z         =  contradiction refl x≢y
 uniq-∋ (S _ ∋x) (S _ ∋x′)  =  uniq-∋ ∋x ∋x′
 ```
 If both derivations are by rule `Z` then uniqueness

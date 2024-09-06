@@ -30,8 +30,8 @@ principle known as _Propositions as Types_:
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ)
-open import Function using (_∘_)
+open import Data.Nat.Base using (ℕ)
+open import Function.Base using (_∘_)
 open import plfa.part1.Isomorphism using (_≃_; _≲_; extensionality; _⇔_)
 open plfa.part1.Isomorphism.≃-Reasoning
 ```
@@ -787,7 +787,7 @@ import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Data.Unit using (⊤; tt)
 import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 import Data.Empty using (⊥; ⊥-elim)
-import Function.Equivalence using (_⇔_)
+import Function.Bundles using (_⇔_)
 ```
 The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to build triples or larger tuples from pairs,

@@ -59,8 +59,8 @@ confluence for parallel reduction.
 
 ```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Function using (_∘_)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+open import Function.Base using (_∘_)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
 open import plfa.part2.Substitution using (Rename; Subst)
 open import plfa.part2.Untyped

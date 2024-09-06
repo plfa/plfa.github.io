@@ -50,16 +50,14 @@ four.
 ## Imports
 
 ```agda
-open import Data.Bool using (Bool; true; false; T; not)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; _∷_; [])
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (∃-syntax; _×_)
+open import Data.Bool.Base using (Bool; true; false; T; not)
+open import Data.List.Base using (List; _∷_; [])
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Product.Base using (∃-syntax; _×_)
 open import Data.String using (String; _≟_)
-open import Data.Unit using (tt)
-open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Relation.Nullary.Decidable using (False; toWitnessFalse)
-open import Relation.Nullary.Negation using (¬?)
+open import Data.Unit.Base using (tt)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Decidable using (Dec; yes; no; False; toWitnessFalse; ¬?)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
@@ -1345,8 +1343,8 @@ there is at most one `A` such that the judgment holds:
 ```agda
 ∋-functional : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-functional Z        Z          =  refl
-∋-functional Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
-∋-functional (S x≢ _) Z          =  ⊥-elim (x≢ refl)
+∋-functional Z        (S x≢ _)   =  contradiction refl x≢
+∋-functional (S x≢ _) Z          =  contradiction refl x≢
 ∋-functional (S _ ∋x) (S _ ∋x′)  =  ∋-functional ∋x ∋x′
 ```
 
@@ -1372,10 +1370,10 @@ doing so requires types `A` and `B` such that `A ⇒ B ≡ A`:
 
 ```agda
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ` "x" · ` "x" ⦂ A)
-nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-functional ∋x ∋x′)
+nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  = impossible (∋-functional ∋x ∋x′)
   where
-  contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
-  contradiction ()
+  impossible : ∀ {A B} → ¬ (A ⇒ B ≡ A)
+  impossible ()
 ```
 
 
