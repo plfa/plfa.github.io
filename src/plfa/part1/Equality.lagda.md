@@ -199,7 +199,7 @@ module ≡-Reasoning {A : Set} where
 
   step-≡-⟩ : ∀ (x : A) {y z : A} → y ≡ z → x ≡ y → x ≡ z
   step-≡-⟩ x y≡z x≡y  =  trans x≡y y≡z
- 
+
   syntax step-≡-∣ x x≡y      =  x ≡⟨⟩ x≡y
   syntax step-≡-⟩ x y≡z x≡y  =  x ≡⟨  x≡y ⟩ y≡z
 
