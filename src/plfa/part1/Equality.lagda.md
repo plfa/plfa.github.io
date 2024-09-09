@@ -188,59 +188,49 @@ library:
 module ≡-Reasoning {A : Set} where
 
   infix  1 begin_
-  infixr 2 _≡⟨⟩_ step-≡
+  infixr 2 step-≡-∣ step-≡-⟩
   infix  3 _∎
 
-  begin_ : ∀ {x y : A}
-    → x ≡ y
-      -----
-    → x ≡ y
+  begin_ : ∀ {x y : A} → x ≡ y → x ≡ y
   begin x≡y  =  x≡y
 
-  _≡⟨⟩_ : ∀ (x : A) {y : A}
-    → x ≡ y
-      -----
-    → x ≡ y
-  x ≡⟨⟩ x≡y  =  x≡y
+  step-≡-∣ : ∀ (x : A) {y : A} → x ≡ y → x ≡ y
+  step-≡-∣ x x≡y  =  x≡y
 
-  step-≡ : ∀ (x {y z} : A) → y ≡ z → x ≡ y → x ≡ z
-  step-≡ x y≡z x≡y  =  trans x≡y y≡z
+  step-≡-⟩ : ∀ (x : A) {y z : A} → y ≡ z → x ≡ y → x ≡ z
+  step-≡-⟩ x y≡z x≡y  =  trans x≡y y≡z
 
-  syntax step-≡ x y≡z x≡y  =  x ≡⟨  x≡y ⟩ y≡z
+  syntax step-≡-∣ x x≡y      =  x ≡⟨⟩ x≡y
+  syntax step-≡-⟩ x y≡z x≡y  =  x ≡⟨  x≡y ⟩ y≡z
 
-  _∎ : ∀ (x : A)
-      -----
-    → x ≡ x
+  _∎ : ∀ (x : A) → x ≡ x
   x ∎  =  refl
 
 open ≡-Reasoning
 ```
 This is our first use of a nested module. It consists of the keyword
 `module` followed by the module name and any parameters, explicit or
-implicit, the keyword `where`, and the contents of the module indented.
-Modules may contain any sort of declaration, including other nested modules.
-Nested modules are similar to the top-level modules that constitute
-each chapter of this book, save that the body of a top-level module
-need not be indented.  Opening the module makes all of the definitions
-available in the current environment.
+implicit, and the keyword `where`; this is followed by the contents of
+the module, which must be indented.  Modules may contain any sort of
+declaration, including other nested modules.  Nested modules are
+similar to the top-level modules that constitute each chapter of this
+book, save that the body of a top-level module need not be indented.
+Opening the module makes all of the definitions available in the
+current environment.
 
 This is also our first use of a syntax declaration, which specifies
 that the term on the left may be written with the syntax on the right.
 The syntax `x ≡⟨ x≡y ⟩ y≡z` inherits the fixity `infixr 2` declared
-for `step-≡`, and the special syntax is available when the identifier
-`step-≡` is imported.
+for `step-≡-⟩`, and the special syntax is available when the identifier
+`step-≡-⟩` is imported. Similarly for `step-≡-∣`.
 
 Rather than introducing `step-≡` with special syntax, we might have
 declared `_≡⟨_⟩′_` directly:
 ```agda
-_≡⟨_⟩′_ : ∀ {A : Set} (x : A) {y z : A}
-  → x ≡ y
-  → y ≡ z
-    -----
-  → x ≡ z
+_≡⟨_⟩′_ : ∀ {A : Set} (x : A) {y z : A} → x ≡ y → y ≡ z → x ≡ z
 x ≡⟨ x≡y ⟩′ y≡z  =  trans x≡y y≡z
 ```
-The reason for indirection is that `step-≡` reverses
+The reason for indirection is that `step-≡-⟩` reverses
 the order of the arguments, which happens to allow Agda to
 perform type inference more efficiently. We will encounter some
 long chains in Chapter [Lambda](/Lambda/), so efficiency can be
@@ -270,16 +260,15 @@ According to the fixity declarations, the body parses as follows:
 The application of `begin` is purely cosmetic, as it simply returns
 its argument.  That argument consists of `_≡⟨_⟩_` applied to `x`,
 `x≡y`, and `y ≡⟨ y≡z ⟩ (z ∎)`.  The first argument is a term, `x`,
-while the second and third arguments are both proofs of equations, in
-particular proofs of `x ≡ y` and `y ≡ z` respectively, which are
-combined by `trans` in the body of `_≡⟨_⟩_` to yield a proof of `x ≡
-z`.  The proof of `y ≡ z` consists of `_≡⟨_⟩_` applied to `y`, `y≡z`,
-and `z ∎`.  The first argument is a term, `y`, while the second and
-third arguments are both proofs of equations, in particular proofs of
-`y ≡ z` and `z ≡ z` respectively, which are combined by `trans` in the
-body of `_≡⟨_⟩_` to yield a proof of `y ≡ z`.  Finally, the proof of
-`z ≡ z` consists of `_∎` applied to the term `z`, which yields `refl`.
-After simplification, the body is equivalent to the term:
+while the second and third arguments are proofs of `x ≡ y` and `y ≡ z`
+respectively, which are combined by `trans` in the body of `_≡⟨_⟩_` to
+yield a proof of `x ≡ z`.  The proof of `y ≡ z` consists of `_≡⟨_⟩_`
+applied to `y`, `y≡z`, and `z ∎`.  The first argument is a term, `y`,
+while the second and third arguments are proofs of `y ≡ z` and `z ≡ z`
+respectively, which are combined by `trans` in the body of `_≡⟨_⟩_` to
+yield a proof of `y ≡ z`.  Finally, the proof of `z ≡ z` consists of
+`_∎` applied to the term `z`, which yields `refl`.  After
+simplification, the body is equivalent to the term:
 
     trans x≡y (trans y≡z refl)
 
@@ -287,12 +276,16 @@ We could replace any use of a chain of equations by a chain of
 applications of `trans`; the result would be more compact but harder
 to read.  The trick behind `∎` means that a chain of equalities
 simplifies to a chain of applications of `trans` that ends in `trans e
-refl`, where `e` is a term that proves some equality, even though `e`
-alone would do.
+refl`, where `e` is a term that proves some equality.
+
+(That trick might seem inefficient, since `trans e refl` and `e` both
+prove the same equality. But that inefficiency is key to our nice
+notation nice notation for chains of equalities.  One shouldn't fear
+inefficiency if it improves readability!)
 
 #### Exercise `trans` and `≡-Reasoning` (practice)
 
-Sadly, we cannot use the definition of trans' using ≡-Reasoning as the
+Sadly, we cannot use the definition of `trans'` using ≡-Reasoning as the
 definition for trans. Can you see why? (Hint: look at the definition
 of `_≡⟨_⟩_`)
 
