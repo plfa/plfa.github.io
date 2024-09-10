@@ -280,8 +280,8 @@ refl`, where `e` is a term that proves some equality.
 
 (That trick might seem inefficient, since `trans e refl` and `e` both
 prove the same equality. But that inefficiency is key to our nice
-notation nice notation for chains of equalities.  One shouldn't fear
-inefficiency if it improves readability!)
+notation for chains of equalities.  One shouldn't fear inefficiency
+if it improves readability!)
 
 #### Exercise `trans` and `≡-Reasoning` (practice)
 
