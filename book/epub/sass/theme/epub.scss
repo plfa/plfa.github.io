@@ -1,6 +1,6 @@
 /* This defines styles and classes used in the book */
 body { margin: 5%; text-align: justify; font-size: medium; }
-code { font-family: monospace; }
+code { font-family: 'JuliaMono', monospace; }
 h1 { text-align: left; }
 h2 { text-align: left; }
 h3 { text-align: left; }
@@ -8,9 +8,9 @@ h4 { text-align: left; }
 h5 { text-align: left; }
 h6 { text-align: left; }
 /* For title, author, and date on the cover page */
-h1.title { }
-p.author { }
-p.date { }
+// h1.title { }
+// p.author { }
+// p.date { }
 nav#toc ol,
 nav#landmarks ol { padding: 0; margin-left: 1em; }
 nav#toc ol li,

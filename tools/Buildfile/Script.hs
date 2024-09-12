@@ -6,7 +6,8 @@ import Data.Text qualified as Text
 import Data.Text.Lazy qualified as LazyText
 import Shoggoth.Configuration (Mode (Development), getMode)
 import Shoggoth.Prelude (Action, Url, takeBaseName)
-import Shoggoth.Routing (RoutingTable, routeUrl)
+import Shoggoth.Routing (RoutingTable)
+import Shoggoth.Routing qualified as Route (url)
 
 data Script
   = ScriptFile
@@ -27,8 +28,8 @@ fromFilePath ::
   Action Script
 fromFilePath out = do
   let id = Text.pack (takeBaseName out)
-  url <- routeUrl out
-  (url, integrity) <- (,) <$> routeUrl out <*> ?getDigest out
+  url <- Route.url out
+  (url, integrity) <- (,) <$> Route.url out <*> ?getDigest out
   return $
     ScriptFile
       { scriptId = "script-" <> id,
