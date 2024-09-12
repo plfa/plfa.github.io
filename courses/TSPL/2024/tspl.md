@@ -10,7 +10,7 @@ permalink : /TSPL/2024/
     [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
 * **Teaching assistants**
     [Malin Altenmüller](https://maltenmuller.github.io/),
-    [Louis Lemonnier](https://www.inf.ed.ac.uk/people/staff/Louis_Lemonnier.html)
+    [Louis Lemonnier](https://homepages.inf.ed.ac.uk/llemonni/)
 
 
 ## Lectures and tutorials
