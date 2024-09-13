@@ -3,12 +3,30 @@
 // Symbola and Droid, and adjusting the width where necessary to get a
 // consistent fixed-width font.
 @font-face {
-  font-family: "Frankenfont";
-  src: url("../fonts/Frankenfont-Regular.woff2") format("woff2"),
-    url("../fonts/Frankenfont-Regular.woff") format("woff");
+  font-family: 'JuliaMono';
+  src: url('../fonts/JuliaMono-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'JuliaMono';
+  src: url('../fonts/JuliaMono-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'JuliaMono';
+  src: url('../fonts/JuliaMono-RegularItalic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'JuliaMono';
+  src: url('../fonts/JuliaMono-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+}
+
 
 @import
     "fontawesome/fontawesome",
