@@ -1,5 +1,5 @@
 ---
-title     : "TSPL: Course notes"
+title     : "TSPL: Course notes (Fall 2024)"
 permalink : /TSPL/2024/
 ---
 
@@ -102,14 +102,14 @@ Assessment for the course is as follows.
 * project, take a research paper and formalise its development, **20%**
 
 Because there is no final, we need to be able to check that students
-can explain their work during tutorials.  For this reason, you can
+can explain their work during tutorials.  For this reason, _you can
 only achieve marks on coursework if you have attended at least one of
-the four tutorial sessions in the week before it is due.
+the four tutorial sessions in the week before it is due_.
 
 In order to conform with the University's Common Marking Scheme,
 students may typically get only 10 points or less (out of 20) on the
-project.  Attempting the project may not be a good use of time
-compared to other courses where there are easier marks to be had.
+project.  _Attempting the project may not be a good use of time
+compared to other courses where there are easier marks to be had._
 Not all students are expected to attempt the project.
 
 
