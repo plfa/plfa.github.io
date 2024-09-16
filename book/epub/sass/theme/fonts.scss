@@ -1,5 +1,5 @@
-/* JuliaMono */
-/* See: https://juliamono.netlify.app/download/ */
+// JuliaMono
+// See: https://juliamono.netlify.app/download/
 @font-face {
   font-family: 'JuliaMono';
   src: url('../fonts/JuliaMono-Regular.woff2') format('woff2');
@@ -21,6 +21,32 @@
 @font-face {
   font-family: 'JuliaMono';
   src: url('../fonts/JuliaMono-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+}
+// InriaSans
+// See: https://github.com/BlackFoundryCom/InriaFonts
+@font-face {
+  font-family: 'InriaSans';
+  src: url('../fonts/InriaSans-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'InriaSans';
+  src: url('../fonts/InriaSans-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'InriaSans';
+  src: url('../fonts/InriaSans-RegularItalic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'InriaSans';
+  src: url('../fonts/InriaSans-BoldItalic.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
 }
