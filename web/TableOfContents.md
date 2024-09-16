@@ -42,6 +42,11 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2024
+  * [Philip Wadler, University of Edinburgh][TSPL-2024]
+
+[TSPL-2024]: /TSPL/2024/
+
 #### 2023
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2023]
   * [Philip Wadler, University of Edinburgh][TSPL-2023]
