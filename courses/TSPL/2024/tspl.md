@@ -121,7 +121,7 @@ Not all students are expected to attempt the project.
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
-* Assignment 1 cw1 due 12 noon Friday 18 October (Week 5)
+* [Assignment 1](/TSPL/2024/Assignment1/) cw1 due 12 noon Friday 18 October (Week 5)
 * Assignment 2 cw2 due 12 noon Friday 1 November (Week 7)
 * Assignment 3 cw3 due 12 noon Friday 15 November (Week 9)
 * Assignment 4 cw4 due 12 noon Friday 29 November (Week 11)
