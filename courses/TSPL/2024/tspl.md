@@ -18,9 +18,12 @@ permalink : /TSPL/2024/
 Lectures take place Tuesday, Wednesday, and Thursday weeks 4--10.
 Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 
-* **12.10--14.00** _Tuesday Lecture and Tutorial_ (room to be decided)
-* **12.10--13.00** _Wednesday Lecture_ (room to be decided)
-* **12.10--14.00** _Thursday Lecture and Tutorial_ (room to be decided)
+* **12.10--14.00** _Tuesday Lecture and Tutorial_
+  Teaching Room 13 (01M.473) - Doorway 3 - Medical School, Teviot
+* **12.10--13.00** _Wednesday Lecture_
+  G.07 Meadows Lecture Theatre - Doorway 4 - Medical School, Teviot
+* **12.10--14.00** _Thursday Lecture and Tutorial_
+  5.3 - Lister Learning and Teaching Centre
 
 ## Course textbook
 
@@ -30,9 +33,10 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 
 * [Piazza][piazza]
 * [Learn][learn]
+<!-- Omit DRPS because it is not https -->
 <!-- * [Lectures][lectures] -->
 
-[piazza]: https://piazza.com/class/m06l2njzc9l1x6
+[piazza]: https://piazza.com/class/m03x8uq3s642g7
 [learn]: https://www.learn.ed.ac.uk/ultra/courses/_117826_1/outline
 [lectures]: https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home
 
