@@ -33,12 +33,11 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 
 * [Piazza][piazza]
 * [Learn][learn]
-* [DRPS][drps]
+<!-- Omit DRPS because it is not https -->
 <!-- * [Lectures][lectures] -->
 
 [piazza]: https://piazza.com/class/m03x8uq3s642g7
 [learn]: https://www.learn.ed.ac.uk/ultra/courses/_117826_1/outline
-[drps]: http://www.drps.ed.ac.uk/24-25/dpt/cxinfr11114.htm
 [lectures]: https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home
 
 ## Schedule
