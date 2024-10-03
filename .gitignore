@@ -2,6 +2,11 @@
 !data/legacy/19.08.zip
 !data/legacy/20.07.zip
 !plfa.pdf
+# Agda files
+# GHC / Cabal / Stack
+# Latex
+# Mac droppings
+# PLFA specific items to ignore
 *.agdai
 *.aux
 *.bbl
@@ -16,6 +21,7 @@
 *.spl
 *.synctex.gz
 *.zip
+.DS_Store
 /Gemfile.lock
 /_build/
 /_cache/
