@@ -287,15 +287,37 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} (subst-zero M) {A} N
 ## Neutral and normal terms
 
 Reduction continues until a term is fully normalised.  Hence, instead
-of values, we are now interested in _normal forms_.  Terms in normal
-form are defined by mutual recursion with _neutral_ terms:
+of values, we are now interested in _normal forms_.
+[Why in this chapter do we introduce a syntactic criterion for
+normal form, whereas in the Properties chapter we define a normal form
+using a semantic criterion (as a term that does not reduce)?]
+A term is in normal form if it does not contain a β-redex:
+
+  - A variable is in normal form.
+
+  - An abstraction `ƛ x ⇒ N` is in normal form whenever `N` is in normal form.
+
+  - An application `L · M` is in normal form whenenever `L` is in normal form, `M` is in
+    normal form, _and_ `L` is not an abstraction.
+
+Capturing that last condition, that `L` is not an abstraction,
+requires a second form of judgment.
+We could introduce a judgment that defines "not an abstraction."
+But for reasons explored in Exercise `alternate-normal` below,
+we prefer one that says "`L` is not an abstraction _and_
+is in
+normal form."  Such a term is called _neutral_.  Neutral terms are
+defined by mutual recursion with terms in normal form.
 ```agda
 data Neutral : ∀ {Γ A} → Γ ⊢ A → Set
 data Normal  : ∀ {Γ A} → Γ ⊢ A → Set
 ```
-Neutral terms arise because we now consider reduction of open terms,
-which may contain free variables.  A term is neutral if it is a
-variable or a neutral term applied to a normal term:
+
+A variable is not an abstraction and is in normal form so it is neutral.
+An application `L · M` is not an abstraction, and it is in normal form
+if `L` is in normal form, `M` is in normal form, and `L` is not a
+lambda.
+In other words, `L · M` is neutral when `L` is neutral and `M` is in normal form:
 ```agda
 data Neutral where
 
@@ -309,8 +331,9 @@ data Neutral where
       ---------------
     → Neutral (L · M)
 ```
-A term is a normal form if it is neutral or an abstraction where the
-body is a normal form. We use `′_` to label neutral terms.
+The normal forms include all the neutral terms, plus every
+abstraction whose body is in normal form.
+Neutral terms are labeled using `′_`.
 Like `` `_ ``, it is unobtrusive:
 ```agda
 data Normal where
@@ -341,6 +364,34 @@ _ = ƛ ƛ (′ #′ 1 · (′ #′ 1 · (′ #′ 0)))
 The evidence that a term is in normal form is almost identical to
 the term itself, decorated with some additional primes to indicate
 neutral terms, and using `#′` in place of `#`
+
+
+#### Exercise (`non-abstraction`) (practice)
+
+Define a judgment `¬ƛ` mapping well-scoped terms to `Set`.
+Type `¬ƛ M` is inhabited if and only if `M` is not an abstraction.
+
+```agda
+-- Your code goes here
+```
+
+#### Exercise (`alternate-normal`) (practice)
+
+Using judgment `¬ƛ` to define `Normal'`, an alternative way of
+defining normal forms.  Show that `Normal'` is equivalent to `Normal`.
+
+```agda
+-- Your code goes here
+```
+
+How many Agda constructors are needed to define judgments `¬ƛ` and
+`Normal'`?
+Every constructor represents a case that must be handled in every
+proof about normal forms.
+If defining `Normal` using `Neutral` requires fewer constructors, that
+is reason enough to prefer it.
+
+
 
 
 ## Reduction step
