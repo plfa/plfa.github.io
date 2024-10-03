@@ -539,6 +539,35 @@ which matches only if both pattern `P` and pattern `Q` match.  Character
 required around it.  In this case, the pattern ensures that `L` is an
 application.
 
+We already observed that reduction in the untyped lambda calculus is
+non-deterministic. However, the `progress` function is deterministic and
+thus it picks one particular reduction sequence out of many possible ones.
+In other words, `progress` implements a _reduction strategy_ that searches
+for the next redex in a top-down traversal of the term, visiting any subterms
+from left to right. It reduces the first redex that it encounters on this
+traversal. We can see that as follows in the definition of `progress`:
+
+* There is no choice in the variable case.
+* At a lambda abstraction, `progress` continues the search in the body.
+* At an application, there are several subcases.
+  + If the application is a beta redex, it gets reduced without looking
+    further into the subterms.
+  + Otherwise, the subterms are processed from left to right.
+
+What other choices do we have?
+* At any application, we might choose to reduce the right, argument subterm.
+  But doing so introduces a chance of nontermination because the beta reduction
+  may ignore its argument.
+* At a beta redex, we might choose to reduce the body of the lambda.
+  But we will have more opportunities reducing the body right after the beta
+  reduction.
+
+The strategy implemented by `progress` is known as _normal order reduction_
+or _leftmost outermost reduction_. It has the pleasing property that
+if any reduction sequence terminates in a normal form, then
+normal order reduction terminates in the same normal form.
+
+
 ## Evaluation
 
 As previously, progress immediately yields an evaluator.
