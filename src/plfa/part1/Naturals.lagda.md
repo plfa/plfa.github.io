@@ -840,6 +840,9 @@ filled, you can type `C-c C-space`, which will remove the hole:
     zero + n = n
     suc m + n = { }1
 
+Note: `C-space` may be a reserved command on Mac OS X, in which case
+try typing `C-c C-r` instead.
+
 Again, going into hole 1 and typing `C-c C-,` will display information on the
 required type of the hole, and what free variables are available:
 
