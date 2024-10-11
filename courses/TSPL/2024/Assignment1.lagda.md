@@ -45,7 +45,7 @@ module Naturals where
   import Relation.Binary.PropositionalEquality as Eq
   open Eq using (_≡_; refl)
   open Eq.≡-Reasoning using (begin_; step-≡-∣; _∎)
-  open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+  open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 ```
 
 #### Exercise `seven` (practice) {#seven}
@@ -169,7 +169,7 @@ and some operations upon them.  We also require a couple of new operations,
   import Relation.Binary.PropositionalEquality as Eq
   open Eq using (_≡_; refl; cong; sym)
   open Eq.≡-Reasoning using (begin_; step-≡-∣; step-≡-⟩; _∎)
-  open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
+  open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _^_)
   open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
 (Importing `step-≡` defines `_≡⟨_⟩_`.)

@@ -14,10 +14,10 @@ and classical logic.
 
 ```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Product.Base using (_×_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Product using (_×_)
 open import Relation.Nullary.Negation using (contradiction)
 open import plfa.part1.Isomorphism using (_≃_; extensionality)
 ```
@@ -404,6 +404,8 @@ Definitions similar to those in this chapter can be found in the standard librar
 import Relation.Nullary using (¬_)
 import Relation.Nullary.Negation using (contradiction; contraposition)
 ```
+The standard library uses `contradiction`, which combines our
+`¬-elim` and `⊥-elim`.
 
 ## Unicode
 
