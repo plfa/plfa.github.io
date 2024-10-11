@@ -122,7 +122,7 @@ Not all students are expected to attempt the project.
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
 * [Assignment 1](/TSPL/2024/Assignment1/) cw1 due 12 noon Friday 18 October (Week 5)
-* Assignment 2 cw2 due 12 noon Friday 1 November (Week 7)
+* [Assignment 2](/TSPL/2024/Assignment2/) cw2 due 12 noon Friday 1 November (Week 7)
 * Assignment 3 cw3 due 12 noon Friday 15 November (Week 9)
 * Assignment 4 cw4 due 12 noon Friday 29 November (Week 11)
 * Essay cw5 due 12 noon Thursday 23 January 2025 (Week 2, Semester 2)
@@ -153,6 +153,20 @@ or Bitbucket if you have not already.  Instructions to do so are
 submit tspl cwN AssignmentN.lagda.md
 ```
 where N is the number of the assignment. -->
+
+
+## Good Scholarly Practice.
+
+Please remember the University requirement as
+regards all assessed work. Details about this can be found at:
+
+> [https://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct](https://web.inf.ed.ac.uk/infweb/admin/policies/academic-misconduct)
+
+You are required to take reasonable measures to protect
+your assessed work from unauthorised access. For example, if you put
+any such work on a public repository then you must set access
+permissions appropriately (generally permitting access only to
+yourself). Do not publish solutions to the coursework.
 
 
 ## Project
