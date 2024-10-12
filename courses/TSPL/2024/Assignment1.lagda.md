@@ -37,6 +37,15 @@ any such work on a public repository then you must set access
 permissions appropriately (generally permitting access only to
 yourself). Do not publish solutions to the coursework.
 
+## Deadline and late policy
+
+The deadline and late policy for this assignment are specified on
+Learn in the "Coursework Planner". There are no extensions and
+no ETAs. Coursework is marked best three out of four. Guidance
+on late submissions is at
+
+> [https://web.inf.ed.ac.uk/node/4533](https://web.inf.ed.ac.uk/node/4533)
+
 
 ## Naturals
 

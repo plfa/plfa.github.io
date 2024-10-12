@@ -103,7 +103,7 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 Assessment for the course is as follows.
 
 * four courseworks, marked best three out of four, **80%**
-* project, take a research paper and formalise its development, **20%**
+* essay, take a research paper and formalise its development, **20%**
 
 Because there is no final, we need to be able to check that students
 can explain their work during tutorials.  For this reason, _you can
@@ -112,9 +112,9 @@ the four tutorial sessions in the week before it is due_.
 
 In order to conform with the University's Common Marking Scheme,
 students may typically get only 10 points or less (out of 20) on the
-project.  _Attempting the project may not be a good use of time
+essay.  _Attempting the essay may not be a good use of time
 compared to other courses where there are easier marks to be had._
-Not all students are expected to attempt the project.
+Not all students are expected to attempt the essay.
 
 
 ## Coursework
@@ -122,7 +122,7 @@ Not all students are expected to attempt the project.
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
 * [Assignment 1](/TSPL/2024/Assignment1/) cw1 due 12 noon Friday 18 October (Week 5)
-* Assignment 2 cw2 due 12 noon Friday 1 November (Week 7)
+* [Assignment 2](/TSPL/2024/Assignment2/) cw2 due 12 noon Friday 1 November (Week 7)
 * Assignment 3 cw3 due 12 noon Friday 15 November (Week 9)
 * Assignment 4 cw4 due 12 noon Friday 29 November (Week 11)
 * Essay cw5 due 12 noon Thursday 23 January 2025 (Week 2, Semester 2)
@@ -155,12 +155,12 @@ submit tspl cwN AssignmentN.lagda.md
 where N is the number of the assignment. -->
 
 
-## Project
+## Essay
 
-The optional project is to take a research paper and formalise all or
-part of it in Agda.  In the past, some students have submitted superb optional
-projects that contributed to ongoing research.
-Talk to me about what you would like to submit.
+The essay is to take a research paper and formalise all or
+part of it in Agda.  In the past, some students have submitted superb
+essays that contributed to ongoing research.
+Talk to Prof Wadler about what you would like to submit.
 
 <!--
 ## Mock exam
