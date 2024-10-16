@@ -97,8 +97,6 @@ postulate
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
 
-Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
-
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
@@ -423,7 +421,7 @@ of a disjunction is isomorphic to a conjunction of negations:
   record
     { to      =  λ{ ¬∃xy x y → ¬∃xy ⟨ x , y ⟩ }
     ; from    =  λ{ ∀¬xy ⟨ x , y ⟩ → ∀¬xy x y }
-    ; from∘to =  λ{ ¬∃xy → extensionality λ{ ⟨ x , y ⟩ → refl } }
+    ; from∘to =  λ{ ¬∃xy → refl }
     ; to∘from =  λ{ ∀¬xy → refl }
     }
 ```
@@ -440,8 +438,7 @@ of type `∃[ x ] B x` we can derive false.  Applying `∀¬xy`
 to `x` gives a value of type `¬ B x`, and applying that to `y` yields
 a contradiction.
 
-The two inverse proofs are straightforward, where one direction
-requires extensionality.
+The two inverse proofs are straightforward.
 
 
 #### Exercise `∃¬-implies-¬∀` (recommended)
