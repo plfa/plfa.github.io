@@ -629,7 +629,6 @@ we have the isomorphism
 Both types can be viewed as functions that given evidence that `A` holds
 and evidence that `B` holds can return evidence that `C` holds.
 This isomorphism sometimes goes by the name *currying*.
-The proof of the right inverse requires extensionality:
 ```agda
 currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
 currying =
@@ -637,10 +636,9 @@ currying =
     { to      =  λ{ f → λ{ ⟨ x , y ⟩ → f x y }}
     ; from    =  λ{ g → λ{ x → λ{ y → g ⟨ x , y ⟩ }}}
     ; from∘to =  λ{ f → refl }
-    ; to∘from =  λ{ g → extensionality λ{ ⟨ x , y ⟩ → refl }}
+    ; to∘from =  λ{ g → refl }
     }
 ```
-
 Currying tells us that instead of a function that takes a pair of arguments,
 we can have a function that takes the first argument and returns a function that
 expects the second argument.  Thus, for instance, our way of writing addition
@@ -687,15 +685,14 @@ we have the isomorphism:
 
 That is, the assertion that if `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
-`A` holds then `C` holds.  The proof of left inverse requires both extensionality
-and the rule `η-×` for products:
+`A` holds then `C` holds.
 ```agda
 →-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ (A → B) × (A → C)
 →-distrib-× =
   record
     { to      = λ{ f → ⟨ proj₁ ∘ f , proj₂ ∘ f ⟩ }
     ; from    = λ{ ⟨ g , h ⟩ → λ x → ⟨ g x , h x ⟩ }
-    ; from∘to = λ{ f → extensionality λ{ x → η-× (f x) } }
+    ; from∘to = λ{ f → refl }
     ; to∘from = λ{ ⟨ g , h ⟩ → refl }
     }
 ```
