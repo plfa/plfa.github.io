@@ -46,9 +46,9 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 <thead>
  <tr>
   <th scope="col">Week</th>
-  <th scope="col">Mon</th>
+  <th scope="col">Tue</th>
   <th scope="col">Wed</th>
-  <th scope="col">Fri<th>
+  <th scope="col">Thu<th>
  </tr>
 </thead>
 <tbody>
