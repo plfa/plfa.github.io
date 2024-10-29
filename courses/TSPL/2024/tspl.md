@@ -72,7 +72,7 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
  </tr>
  <tr>
   <td>7</td>
-  <td>**29 Oct** [Lambda](/Lambda/)[^lists]</td> 
+  <td>**29 Oct** [Lambda](/Lambda/)[^lists]</td>
   <td>**30 Oct** [Lambda](/Lambda/)</td>
   <td>**31 Oct** (Milner lecture)
  </tr>
