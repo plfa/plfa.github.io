@@ -252,10 +252,12 @@ module Quantifiers where
   open import Relation.Nullary using (¬_)
   open import Function using (_∘_)
   open import plfa.part1.Isomorphism using (_≃_; extensionality; ∀-extensionality)
-  open import plfa.part1.Connectives
-    hiding (Tri)
-  open import plfa.part1.Quantifiers
-    hiding (∀-distrib-×; ⊎∀-implies-∀⊎; ∃-distrib-⊎; ∃×-implies-×∃; ∃¬-implies-¬∀; Tri)
+  open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+  open import Data.Unit using (⊤; tt)
+  open import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
+  open import Data.Empty using (⊥; ⊥-elim)
+  open import Function.Bundles using (_⇔_)
+  open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 ```
 
 #### Exercise `∀-distrib-×` (recommended)

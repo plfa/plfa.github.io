@@ -72,9 +72,9 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
  </tr>
  <tr>
   <td>7</td>
-  <td>**29 Oct** [Lists](/Lists/)</td>
+  <td>**29 Oct** [Lambda](/Lambda/)[^lists]</td> 
   <td>**30 Oct** [Lambda](/Lambda/)</td>
-  <td>**31 Oct** [Lambda](/Lambda/)</td>
+  <td>**31 Oct** (Milner lecture)
  </tr>
  <tr>
   <td>8</td>
@@ -96,6 +96,8 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
  </tr>
 </tbody>
 </table>
+
+[^lists]:In week 7, also read [Lists](/Lists/) on your own.
 
 
 ## Assessment
