@@ -207,7 +207,7 @@ former, corresponds to `⟨ aa , true ⟩`, which is a member of the latter.
 
 For associativity, the `to` function reassociates two uses of pairing,
 taking `⟨ ⟨ x , y ⟩ , z ⟩` to `⟨ x , ⟨ y , z ⟩ ⟩`, and the `from` function does
-the inverse. 
+the inverse.
 ```agda
 ×-assoc : ∀ {A B C : Set} → (A × B) × C ≃ A × (B × C)
 ×-assoc =
