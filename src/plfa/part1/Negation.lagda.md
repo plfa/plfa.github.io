@@ -99,7 +99,7 @@ We cannot show that `¬ ¬ A` implies `A`, but we can show that
   → ¬ ¬ ¬ A
     -------
   → ¬ A
-¬¬¬-elim ¬¬¬x  =  λ x → ¬¬¬x (¬¬-intro x)
+¬¬¬-elim ¬¬¬x x  =  ¬¬¬x (¬¬-intro x)
 ```
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 `A` leads to a contradiction, and hence `¬ A` must hold.
