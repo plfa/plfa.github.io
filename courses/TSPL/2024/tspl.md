@@ -79,7 +79,7 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
  <tr>
   <td>8</td>
   <td>**5 Nov** [Properties](/Properties/)</td>
-  <td>**6 Nov** [Properties](/Properties/)</td>
+  <td>**6 Nov** [Properties](/Properties/)[^online]</td>
   <td>**7 Nov** [DeBruijn](/DeBruijn/)</td>
  </tr>
  <tr>
@@ -99,6 +99,11 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 
 [^lists]:In week 7, also read [Lists](/Lists/) on your own.
 
+[^online]:This lecture willl be delivered online by Malin Altenmuller.
+The Zoom link is here:<br/>
+[https://ed-ac-uk.zoom.us/j/81894080012](https://ed-ac-uk.zoom.us/j/81894080012)<br/>
+Meeting ID: 818 9408 0012<br/>
+Passcode: aDvv0dXC
 
 ## Assessment
 
@@ -125,7 +130,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 
 * [Assignment 1](/TSPL/2024/Assignment1/) cw1 due 12 noon Friday 18 October (Week 5)
 * [Assignment 2](/TSPL/2024/Assignment2/) cw2 due 12 noon Friday 1 November (Week 7)
-* Assignment 3 cw3 due 12 noon Friday 15 November (Week 9)
+* [Assignment 3](/TSPL/2024/Assignment3/) cw3 due 12 noon Friday 15 November (Week 9)
 * Assignment 4 cw4 due 12 noon Friday 29 November (Week 11)
 * Essay cw5 due 12 noon Thursday 23 January 2025 (Week 2, Semester 2)
 
