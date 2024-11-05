@@ -81,6 +81,9 @@ reverse of the second appended to the reverse of the first:
 
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
+```agda
+  -- Your code goes here
+```
 
 #### Exercise `reverse-involutive` (recommended)
 
@@ -89,6 +92,9 @@ as the identity function.  Show that reverse is an involution:
 
     reverse (reverse xs) ≡ xs
 
+```agda
+  -- Your code goes here
+```
 
 #### Exercise `map-compose` (practice)
 
