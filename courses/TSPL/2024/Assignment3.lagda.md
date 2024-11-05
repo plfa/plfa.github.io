@@ -74,7 +74,7 @@ module Lists where
     hiding (downFrom; Tree; leaf; node; merge)
 ```
 
-#### Exercise `reverse-++-distrib` (practice) (recommended)
+#### Exercise `reverse-++-distrib` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
@@ -82,7 +82,7 @@ reverse of the second appended to the reverse of the first:
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
 
-#### Exercise `reverse-involutive` (practice) (recommended)
+#### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution:
@@ -382,8 +382,7 @@ module Lambda where
   open import Data.String using (String; _≟_)
   open import Data.Unit using (tt)
   open import Relation.Nullary using (Dec; yes; no; ¬_)
-  open import Relation.Nullary.Decidable using (False; toWitnessFalse)
-  open import Relation.Nullary.Negation using (¬?)
+  open import Relation.Nullary.Decidable using (False; toWitnessFalse; ¬?)
   open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
