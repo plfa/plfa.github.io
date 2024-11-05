@@ -349,6 +349,8 @@ module Relations where
   open import Data.Nat.Properties
     using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
            +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
+
+  open import plfa.part1.Relations hiding (_≤_; z≤n; s≤s)
 ```
 
 
