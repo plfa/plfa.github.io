@@ -181,9 +181,6 @@ isomorphism_.
 
 For commutativity, the `to` function swaps a pair, taking `⟨ x , y ⟩` to
 `⟨ y , x ⟩`, and the `from` function does the same (up to renaming).
-Instantiating the patterns correctly in `from∘to` and `to∘from` is essential.
-Replacing the definition of `from∘to` by `λ w → refl` will not work;
-and similarly for `to∘from`:
 ```agda
 ×-comm : ∀ {A B : Set} → A × B ≃ B × A
 ×-comm =
@@ -210,8 +207,7 @@ former, corresponds to `⟨ aa , true ⟩`, which is a member of the latter.
 
 For associativity, the `to` function reassociates two uses of pairing,
 taking `⟨ ⟨ x , y ⟩ , z ⟩` to `⟨ x , ⟨ y , z ⟩ ⟩`, and the `from` function does
-the inverse.  Again, the evidence of left and right inverse requires
-matching against a suitable pattern to enable simplification:
+the inverse.
 ```agda
 ×-assoc : ∀ {A B C : Set} → (A × B) × C ≃ A × (B × C)
 ×-assoc =
@@ -255,7 +251,7 @@ record ⊤ : Set where
 ```
 Evidence that `⊤` holds is of the form `tt`.
 The record construction `record {}` corresponds to the term `tt`. The
-constructor declaration allows us to write `tt′`.
+constructor declaration allows us to write `tt`.
 
 There is an introduction rule, but no elimination rule.
 Given evidence that `⊤` holds, there is nothing more of interest we

@@ -74,7 +74,7 @@ module Lists where
     hiding (downFrom; Tree; leaf; node; merge)
 ```
 
-#### Exercise `reverse-++-distrib` (practice) (recommended)
+#### Exercise `reverse-++-distrib` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
@@ -82,7 +82,7 @@ reverse of the second appended to the reverse of the first:
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
 
-#### Exercise `reverse-involutive` (practice) (recommended)
+#### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution:
@@ -129,7 +129,7 @@ Define a suitable map operator over trees:
   -- Your code goes here
 ```
 
-#### Exercise `product` (practice) (was recommended)
+#### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
 For example:
@@ -140,7 +140,7 @@ For example:
   -- Your code goes here
 ```
 
-#### Exercise `foldr-++` (practice) (was recommended)
+#### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
 
@@ -196,7 +196,7 @@ Demonstrate an analogue of `map-is-foldr` for the type of trees.
   -- Your code goes here
 ```
 
-#### Exercise `sum-downFrom` (practice) (was stretch)
+#### Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows:
 ```agda
@@ -241,7 +241,7 @@ Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 ```
 
 
-#### Exercise `Any-++-⇔` (practice) (was recommended)
+#### Exercise `Any-++-⇔` (recommended)
 
 Prove a result similar to `All-++-⇔`, but with `Any` in place of `All`, and a suitable
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
@@ -251,7 +251,7 @@ replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
   -- Your code goes here
 ```
 
-#### Exercise `All-++-≃` (practice) (was stretch)
+#### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 
@@ -259,7 +259,7 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `¬Any⇔All¬` (practice) (was recommended)
+#### Exercise `¬Any⇔All¬` (recommended)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
 
@@ -280,7 +280,7 @@ If so, prove; if not, explain why.
   -- Your code goes here
 ```
 
-#### Exercise `¬Any≃All¬` (practice) (was stretch)
+#### Exercise `¬Any≃All¬` (stretch)
 
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
 You will need to use extensionality.
@@ -307,7 +307,7 @@ Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 ```
 
 
-#### Exercise `Any?` (practice) (was stretch)
+#### Exercise `Any?` (stretch)
 
 Just as `All` has analogues `all` and `All?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
@@ -319,7 +319,7 @@ for some element of a list.  Give their definitions.
 ```
 
 
-#### Exercise `split` (practice) (was stretch)
+#### Exercise `split` (stretch)
 
 The relation `merge` holds when two lists merge to give a third list.
 ```agda
@@ -382,8 +382,7 @@ module Lambda where
   open import Data.String using (String; _≟_)
   open import Data.Unit using (tt)
   open import Relation.Nullary using (Dec; yes; no; ¬_)
-  open import Relation.Nullary.Decidable using (False; toWitnessFalse)
-  open import Relation.Nullary.Negation using (¬?)
+  open import Relation.Nullary.Decidable using (False; toWitnessFalse; ¬?)
   open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
