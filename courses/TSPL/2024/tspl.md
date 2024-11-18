@@ -92,7 +92,13 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
   <td>10</td>
   <td>**19 Nov** [Inference](/Inference/)</td>
   <td>**20 Nov** [Untyped](/Untyped/)</td>
-  <td>**21 Nov** Propositions as Types</td>
+  <td>**21 Nov** [Untyped](/Untyped/)</td>
+ </tr>
+ <tr>
+  <td>11</td>
+  <td>**26 Nov** Propositions as Types</td>
+  <td>**27 Nov** (no lecture)</td>
+  <td>**28 Nov** (no lecture; tutorial only)</td>
  </tr>
 </tbody>
 </table>
@@ -131,7 +137,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * [Assignment 1](/TSPL/2024/Assignment1/) cw1 due 12 noon Friday 18 October (Week 5)
 * [Assignment 2](/TSPL/2024/Assignment2/) cw2 due 12 noon Friday 1 November (Week 7)
 * [Assignment 3](/TSPL/2024/Assignment3/) cw3 due 12 noon Friday 15 November (Week 9)
-* Assignment 4 cw4 due 12 noon Friday 29 November (Week 11)
+* [Assignment 4](/TSPL/2024/Assignment3/) cw4 due 12 noon Friday 29 November (Week 11)
 * Essay cw5 due 12 noon Thursday 23 January 2025 (Week 2, Semester 2)
 
 
