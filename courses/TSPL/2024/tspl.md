@@ -137,7 +137,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * [Assignment 1](/TSPL/2024/Assignment1/) cw1 due 12 noon Friday 18 October (Week 5)
 * [Assignment 2](/TSPL/2024/Assignment2/) cw2 due 12 noon Friday 1 November (Week 7)
 * [Assignment 3](/TSPL/2024/Assignment3/) cw3 due 12 noon Friday 15 November (Week 9)
-* [Assignment 4](/TSPL/2024/Assignment3/) cw4 due 12 noon Friday 29 November (Week 11)
+* [Assignment 4](/TSPL/2024/Assignment4/) cw4 due 12 noon Friday 29 November (Week 11)
 * Essay cw5 due 12 noon Thursday 23 January 2025 (Week 2, Semester 2)
 
 
