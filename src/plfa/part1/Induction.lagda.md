@@ -649,7 +649,7 @@ evidence for `y ≡ x`.
 Third, Agda supports a variant of the _section_ notation introduced by
 Richard Bird.  We write `(_+ y)` for the function that applied to `x`
 returns `x + y`.  Thus, applying the congruence `cong (_+ q)` to
-`assoc m n p` takes the equation:
+`+-assoc m n p` takes the equation:
 
     (m + n) + p  ≡  m + (n + p)
 
