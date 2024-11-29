@@ -173,8 +173,8 @@ judgment returns `A` as the synthesized type of the term as a whole,
 as well as using it as the inherited type for `M`.
 
 The term form `M ↓ A` represents the only place terms need to be
-decorated with types.  It only appears when switching from synthesis
-to inheritance, that is, when a term that _deconstructs_ a value of a
+decorated with types.  It only appears when switching from inheritance
+to synthesis, that is, when a term that _deconstructs_ a value of a
 type contains as its main term a term that _constructs_ a value of a
 type, in other words, a place where a `β`-reduction will occur.
 Typically, we will find that decorations are only required on top
