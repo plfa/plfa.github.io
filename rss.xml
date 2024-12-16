@@ -8,7 +8,7 @@
     </description>
     <language>en</language>
     <atom:link href="https://plfa.github.io//rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Tue, 10 Dec 2024 02:17:49 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 16 Dec 2024 22:23:31 +0000</lastBuildDate>
         <item>
       <title>Migration to Agda 2.7.0</title>
       <link>https://plfa.github.io//2024/09/05/migration-to-agda-2-7-0/index.html</link>
