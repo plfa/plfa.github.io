@@ -397,7 +397,7 @@ of two stable formulas is stable.
 -- Your code goes here
 ```
 
-## Standard Prelude
+## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 ```agda
