@@ -141,6 +141,7 @@ record Σ (A : Set) (B : A → Set) : Set where
   field
     proj₁ : A
     proj₂ : B proj₁
+open Σ
 ```
 Here we have a dependent record, where the type of `proj₂`
 refers to the field `proj₁`.
