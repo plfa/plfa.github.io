@@ -147,7 +147,8 @@ binding, due to shadowing.
 Here is its corresponding type derivation:
 
     ⊢plus : ∅ ⊢ plus ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
-    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
+    ⊢plus = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m)
+             (⊢zero (⊢` ∋n))
              (⊢suc (⊢` ∋+ · ⊢` ∋m′ · ⊢` ∋n′)))))
       where
       ∋+  = (S′ (S′ (S′ Z)))
