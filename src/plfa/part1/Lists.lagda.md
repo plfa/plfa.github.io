@@ -995,7 +995,6 @@ If so, prove; if not, explain why.
 #### Exercise `¬Any≃All¬` (stretch)
 
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
-You will need to use extensionality.
 
 ```agda
 -- Your code goes here
