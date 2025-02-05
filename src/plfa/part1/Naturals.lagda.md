@@ -794,10 +794,9 @@ can first uncomment the following code (remove the `--`s):
 ```
 
 The question mark indicates that you would like Agda to help with
-filling in that part of the code. If you type `C-c C-l` (pressing
-the control key while hitting the `c` key followed by the `l` key),
-which stands for **l**oad, the question mark will be
-replaced:
+filling in that part of the code. Once uncommented, if you type `C-c C-l`
+(pressing the control key while hitting the `c` key followed by the `l`
+key), which stands for **l**oad, the question mark will bereplaced:
 
     _+'_ : ℕ → ℕ → ℕ
     m +' n = { }0
