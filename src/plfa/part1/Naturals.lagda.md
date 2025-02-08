@@ -784,22 +784,21 @@ Agda is designed to be used with the Emacs text editor, and the two
 in combination provide features that help to create definitions
 and proofs interactively.
 
-To demonstrate it, we will use addition again, but since `_+_` was already
-defined in the file (above), we will use `_plus_` this time. You
-can first uncomment the following code (remove the `--`s):
+Let's consider how to define addition interactively. (If you want to
+follow along, use a name other than `_+_` to avoid conflict with the
+definition above.)
 
-```agda
--- _plus_ : ℕ → ℕ → ℕ
--- m plus n = ?
-```
+    _+_ : ℕ → ℕ → ℕ
+    m + n = ?
 
 The question mark indicates that you would like Agda to help with
-filling in that part of the code. Once uncommented, if you type `C-c C-l`
-(pressing the control key while hitting the `c` key followed by the `l`
-key), which stands for **l**oad, the question mark will bereplaced:
+filling in that part of the code. If you type `C-c C-l` (pressing
+the control key while hitting the `c` key followed by the `l` key),
+which stands for **l**oad, the question mark will be
+replaced:
 
-    _plus_ : ℕ → ℕ → ℕ
-    m plus n = { }0
+    _+_ : ℕ → ℕ → ℕ
+    m + n = { }0
 
 The empty braces are called a *hole*, and 0 is a number used for
 referring to the hole.  The hole will display highlighted in green.
@@ -819,9 +818,9 @@ You will be given the prompt:
 Typing `m` will cause a split on that variable, resulting
 in an update to the code:
 
-    _plus_ : ℕ → ℕ → ℕ
-    zero plus n = { }0
-    suc m plus n = { }1
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = { }0
+    suc m + n = { }1
 
 There are now two holes, and the window at the bottom tells you the
 required type of each:
@@ -839,9 +838,9 @@ required type of the hole, and what free variables are available:
 This strongly suggests filling the hole with `n`.  After the hole is
 filled, you can type `C-c C-space`, which will remove the hole:
 
-    _plus_ : ℕ → ℕ → ℕ
-    zero plus n = n
-    suc m plus n = { }1
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = { }1
 
 Again, going into hole 1 and typing `C-c C-,` will display information on the
 required type of the hole, and what free variables are available:
@@ -859,9 +858,9 @@ you might use, if there is a choice.  In this case, it displays the following:
 
 Filling the hole with `suc ?` and typing `C-c C-space` results in the following:
 
-    _plus_ : ℕ → ℕ → ℕ
-    zero plus n = n
-    suc m plus n = suc { }1
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = suc { }1
 
 Going into the new hole and typing `C-c C-,` gives similar information to before:
 
@@ -870,11 +869,11 @@ Going into the new hole and typing `C-c C-,` gives similar information to before
     n : ℕ
     m : ℕ
 
-We can fill the hole with `m plus n` and type `C-c C-space` to complete the program:
+We can fill the hole with `m + n` and type `C-c C-space` to complete the program:
 
-    _plus_ : ℕ → ℕ → ℕ
-    zero plus n = n
-    suc m plus n = suc (m plus n)
+    _+_ : ℕ → ℕ → ℕ
+    zero + n = n
+    suc m + n = suc (m + n)
 
 Exploiting interaction to this degree is probably not helpful for a program this
 simple, but the same techniques can help with more complex programs.  Even for
