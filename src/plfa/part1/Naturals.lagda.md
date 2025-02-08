@@ -788,6 +788,8 @@ Let's consider how to define addition interactively. (If you want to
 follow along, use a name other than `_+_` to avoid conflict with the
 definition above.)
 
+Begin by typing:
+
     _+_ : ℕ → ℕ → ℕ
     m + n = ?
 
