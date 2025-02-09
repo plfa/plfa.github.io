@@ -37,6 +37,14 @@
                         </a>
                     </li>
                     $endif$
+                    $if(author.mastodon)$
+                    <li>
+                        <a rel="me" href="https://$author.mastodon.server$/@$author.mastodon.username$" title="@$author.mastodon.username$@$author.mastodon.server$">
+                            <i class="fab fa-mastodon"></i>
+                            &nbsp;@$author.mastodon.username$@$author.mastodon.server$
+                        </a>
+                    </li>
+                    $endif$
                 </ul>
             </div>
             <div class="footer-col footer-col-3">

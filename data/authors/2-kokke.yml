@@ -2,3 +2,6 @@ name: Wen Kokke
 email: me@wen.works
 corresponding: true
 github: wenkokke
+mastodon:
+  username: wen
+  server: types.pl
