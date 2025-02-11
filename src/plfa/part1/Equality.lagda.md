@@ -285,8 +285,8 @@ if it improves readability!)
 
 #### Exercise `trans` and `≡-Reasoning` (practice)
 
-Sadly, we cannot use the definition of `trans′` using ≡-Reasoning as the
-definition for trans. Can you see why? (Hint: look at the definition
+Sadly, we cannot use the definition of `trans′` using `≡-Reasoning` as the
+definition for `trans`. Can you see why? (Hint: look at the definition
 of `_≡⟨_⟩_`)
 
 ```agda
