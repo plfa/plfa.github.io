@@ -90,7 +90,7 @@ constructor is the identity over products:
 ```
 For record types, η-equality holds *by definition*.
 While proving `η-×`, we do not have to
-pattern match on `w` to know that η-equality holds
+pattern match on `w` to know that η-equality holds.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction:
