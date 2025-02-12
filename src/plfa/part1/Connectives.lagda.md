@@ -258,8 +258,9 @@ Given evidence that `⊤` holds, there is nothing more of interest we
 can conclude.  Since truth always holds, knowing that it holds tells
 us nothing new.
 
-The nullary case of `η-×` is `η-⊤`, which asserts that any
-value of type `⊤` must be equal to `tt`:
+The nullary case of `η-×` is `η-⊤`.
+While proving `η-⊤`, we do not have to pattern match on `w`---Agda *knows* it
+is equal to `tt`:
 ```agda
 η-⊤ : ∀ (w : ⊤) → tt ≡ w
 η-⊤ w = refl
@@ -281,9 +282,7 @@ data ⊤′ : Set where
     ⊤′
 ```
 As with the product, the record type `⊤` and the data type `⊤′` behave
-similarly, but η-equality holds *by definition* for the record type. While
-proving `η-⊤′`, we do not have to pattern match on `w`---Agda *knows* it is
-equal to `tt′`:
+similarly, but η-equality holds *by definition* for the record type.
 ```agda
 η-⊤′ : ∀ (w : ⊤′) → tt′ ≡ w
 η-⊤′ tt′ = refl
