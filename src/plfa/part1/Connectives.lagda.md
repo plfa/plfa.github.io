@@ -288,7 +288,7 @@ it does not for the data type, so we need to pattern match on `w`:
 η-⊤′ : ∀ (w : ⊤′) → tt′ ≡ w
 η-⊤′ tt′ = refl
 ```
-The pattern match on the left-hand side is essential. Replacing
+The pattern matching on the left-hand side is essential. Replacing
 `w` by `tt′` allows both sides of the propositional equality to
 simplify to the same term.
 As with products, it is convenient to have η-equality *definitionally*,
