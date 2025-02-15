@@ -732,7 +732,7 @@ We can read this as follows:
 The notation is chosen to allow us to lay out example reductions in an
 appealing way, as we will see in the next section.
 
-Recall that in Chapter (Equality)[Equality] we defined chains of equalities
+Recall that in Chapter [Equality](/Equality/) we defined chains of equalities
 using `step-≡` with a syntax declaration to reverse the order of the
 arguments, here we similarly introduce `step—→` with a pattern declaration
 to reverse the order of the arguments.  As before, this happens to allow
