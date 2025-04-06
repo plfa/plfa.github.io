@@ -112,6 +112,10 @@ $endfor$
 [TSPL-2018]: https://plfa.github.io/19.08/TSPL/2018/
 [UVM-2018]: https://web.archive.org/web/20190324115921/https://david.darais.com/courses/fa2018-cs295A/
 
+### Derived works
+
+* [PLFArend](https://github.com/marat-rkh/PLFArend): the PLFA book with all code snippets rewritten in Arend.
+
 Please tell us of others!
 
 [GitHub]: https://github.com/plfa/plfa.github.io/
