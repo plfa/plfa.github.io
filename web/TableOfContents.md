@@ -115,6 +115,7 @@ $endfor$
 ### Derived works
 
 * [PLFArend](https://github.com/marat-rkh/PLFArend): the PLFA book with all code snippets rewritten in Arend.
+* [PLFaLean](https://github.com/rami3l/PLFaLean): PLFA proofs implemented in Lean 4, covering Parts 2-3 of the v22.08 release of the book.
 
 Please tell us of others!
 
