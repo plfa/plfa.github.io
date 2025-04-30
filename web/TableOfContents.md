@@ -42,6 +42,11 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2025
+  * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2025]
+
+[Freiburg-2025]: https://proglang.github.io/teaching/25ss/eopl.html
+
 #### 2024
   * [Philip Wadler, University of Edinburgh][TSPL-2024]
 
