@@ -1,0 +1,41 @@
+{
+  "name": "tutorial-template",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "prettier": "npx prettier -w ."
+  },
+  "dependencies": {
+    "tufte-css": "^1.8.0"
+  },
+  "devDependencies": {
+    "astro": "^5.10.1",
+    "@benrbray/remark-cite": "^2.0.1-alpha.4",
+    "@citation-js/core": "^0.7.18",
+    "@citation-js/plugin-bibtex": "^0.7.18",
+    "@citation-js/plugin-csl": "^0.7.18",
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "@types/unist": "^3.0.3",
+    "fast-deep-equal": "^3.1.3",
+    "hast-util-from-html": "^2.0.3",
+    "hastscript": "^9.0.1",
+    "mdast-util-bracketed-spans": "^1.0.1",
+    "mdast-util-phrasing": "^4.1.0",
+    "prettier": "^3.5.3",
+    "rehype-mathjax": "^7.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-behead": "^3.1.0",
+    "remark-bracketed-spans-2": "^1.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "unist-util-visit": "^5.0.0"
+  },
+  "prettier": {
+    "proseWrap": "never"
+  }
+}

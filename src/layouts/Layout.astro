@@ -1,0 +1,51 @@
+---
+import "tufte-css/tufte.min.css";
+import CopyOnClick from "../components/CopyOnClick.astro";
+import { pageTitle } from "../site";
+const { frontmatter } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{frontmatter.title}</title>
+  </head>
+  <body>
+    <article>
+      <header>
+        <p class="banner-title">
+          <a href={base}>{pageTitle}</a>
+        </p>
+      </header>
+      <h1>{frontmatter.title}</h1>
+      {
+        frontmatter?.subtitle && (
+          <span class="subtitle">{frontmatter?.subtitle}</span>
+        )
+      }
+      <slot />
+    </article>
+  </body>
+</html>
+
+<!-- Add "Copy on Click" button to code blocks. -->
+<CopyOnClick />
+
+<style is:global>
+  /* Fix Tufte CSS */
+  @import "../assets/css/tufte-fixes.css";
+
+  /* Add Prism Themes */
+  @import "prismjs/themes/prism-solarizedlight.min.css"
+    screen;
+  @import "prismjs/themes/prism-tomorrow.min.css"
+    screen and (prefers-color-scheme: dark);
+
+  /* Add local style sheets */
+  @import "../assets/css/banner.css";
+  @import "../assets/css/marginnote.css";
+  @import "../assets/css/marginnote-bibliography.css";
+</style>

@@ -1,0 +1,105 @@
+<!-- Component that adds copy buttons to code blocks. -->
+<template id="copyButtonTemplate">
+  <button>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <title>Copy to clipboard</title>
+      <path
+        fill-rule="evenodd"
+        d="M7.024 3.75c0-.966.784-1.75 1.75-1.75H20.25c.966 0 1.75.784 1.75 1.75v11.498a1.75 1.75 0 01-1.75 1.75H8.774a1.75 1.75 0 01-1.75-1.75V3.75zm1.75-.25a.25.25 0 00-.25.25v11.498c0 .139.112.25.25.25H20.25a.25.25 0 00.25-.25V3.75a.25.25 0 00-.25-.25H8.774z"
+      >
+      </path>
+      <path
+        d="M1.995 10.749a1.75 1.75 0 011.75-1.751H5.25a.75.75 0 110 1.5H3.745a.25.25 0 00-.25.25L3.5 20.25c0 .138.111.25.25.25h9.5a.25.25 0 00.25-.25v-1.51a.75.75 0 111.5 0v1.51A1.75 1.75 0 0113.25 22h-9.5A1.75 1.75 0 012 20.25l-.005-9.501z"
+      >
+      </path>
+    </svg>
+  </button>
+</template>
+<template id="copiedFeedbackTemplate">
+  <span class="copied">Copied!</span>
+</template>
+<style is:global>
+  /* NOTE: These colors must be kept in sync with the syntax highlighting theme. */
+  :root {
+    --background: #fdf6e3;
+    --foreground: #657b83;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #2d2d2d;
+      --foreground: #cccccc;
+    }
+  }
+  div.copy-on-click {
+    display: flex;
+    justify-content: right;
+    width: 100%;
+    height: 0;
+  }
+  div.copy-on-click > button {
+    height: 1.7rem;
+    width: 1.7rem;
+    padding: 0.265rem;
+    border-color: var(--foreground);
+    border-radius: 0.35rem;
+    background-color: var(--background);
+    transition: all 0.2s;
+    opacity: 0.2;
+    color: var(--foreground);
+  }
+  div.copy-on-click > button:hover {
+    opacity: 0.6;
+  }
+  div.copy-on-click > button > svg {
+    height: 1rem;
+    width: 1rem;
+    stroke: var(--foreground);
+    fill: var(--foreground);
+    transition: all 0.2s;
+  }
+  div.copy-on-click > span.copied {
+    color: var(--foreground);
+    line-height: 1.7rem;
+    margin-right: 0.5rem;
+  }
+</style>
+<script>
+  function makeCopier(
+    pre: HTMLElement,
+    button: HTMLButtonElement,
+    feedback: HTMLDivElement
+  ) {
+    const code = pre.querySelector("code")!;
+    async function copier() {
+      await navigator.clipboard.writeText(code.innerText);
+      button.classList.add("clicked");
+      feedback.style.display = "block";
+      setTimeout(() => button.classList.remove("clicked"), 100);
+      setTimeout(() => (feedback.style.display = "none"), 500);
+    }
+    return copier;
+  }
+  function addCopyOnClick() {
+    const copyButton = (
+      document.getElementById("copyButtonTemplate") as HTMLTemplateElement
+    ).content.firstElementChild!;
+    const copiedFeedback = (
+      document.getElementById("copiedFeedbackTemplate") as HTMLTemplateElement
+    ).content.firstElementChild!;
+
+    document.querySelectorAll("pre").forEach((pre) => {
+      if (navigator.clipboard) {
+        const div = document.createElement("div");
+        div.classList.add("copy-on-click");
+        const feedback = copiedFeedback.cloneNode(true) as HTMLDivElement;
+        feedback.style.display = "none";
+        div.appendChild(feedback);
+        const button = copyButton.cloneNode(true) as HTMLButtonElement;
+        button.addEventListener("click", makeCopier(pre, button, feedback));
+        div.appendChild(button);
+        pre.insertBefore(div, pre.firstChild);
+      }
+    });
+  }
+  addCopyOnClick();
+</script>

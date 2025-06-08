@@ -1,0 +1,8 @@
+span.inline-bib {
+  display: inline-block;
+}
+span.inline-bib > span.inline-bib-entry {
+  display: list-item;
+  list-style-position: outside;
+  list-style-type: disclosure-closed;
+}

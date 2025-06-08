@@ -1,0 +1,17 @@
+/* Style for page banner */
+article > header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+article > header > p {
+  width: 55%;
+}
+article > header > p.banner-title {
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  display: block;
+  line-height: 1;
+}

@@ -1,0 +1,37 @@
+/* Fix image scaling in tufte-css */
+/* See: https://github.com/edwardtufte/tufte-css/pull/192 */
+img {
+  height: auto;
+}
+
+/* Disable underline in code block in tufte-css */
+/* See: https://github.com/edwardtufte/tufte-css/pull/187 */
+code > a {
+  /* TODO: use text-decoration when next version of tufte-css is released */
+  background: unset !important;
+}
+
+/* Fix width of pre elements. */
+pre {
+  width: 52.5%;
+}
+pre > code {
+  width: 97%;
+}
+pre.fullwidth {
+  width: 90%;
+}
+pre.fullwidth > code {
+  width: 97%;
+}
+@media (max-width: 760px) {
+  pre {
+    width: 97%;
+  }
+  pre.fullwidth {
+    width: 97%;
+  }
+  .fullwidth {
+    max-width: 97%;
+  }
+}

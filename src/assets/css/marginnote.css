@@ -1,0 +1,21 @@
+label.margin-toggle--always-display {
+  display: inline !important;
+}
+@media (max-width: 760px) {
+  label.margin-toggle--always-display:has(
+      + input[type="checkbox"].margin-toggle:not(:checked)
+    )
+    > span.margin-toggle--label {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: rgba(17, 17, 17, 0.34);
+  }
+}
+@media (max-width: 760px) and (prefers-color-scheme: dark) {
+  label.margin-toggle--always-display:has(
+      + input[type="checkbox"].margin-toggle:not(:checked)
+    )
+    > span.margin-toggle--label {
+    text-decoration-color: rgba(221, 221, 221, 0.34);
+  }
+}

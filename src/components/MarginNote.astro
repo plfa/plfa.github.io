@@ -1,0 +1,28 @@
+---
+// NOTE: This code should be kept in sync with the code in src/plugins/remarkRehype-tufte.ts.
+const { id, label } = Astro.props;
+---
+
+{
+  label === undefined ? (
+    <>
+      <label for={id} class="margin-toggle">
+        "⊕"
+      </label>
+      <input type="checkbox" id={id} class="margin-toggle" />
+      <span class="marginnote">
+        <slot />
+      </span>
+    </>
+  ) : (
+    <>
+      <label for={id} class="margin-toggle margin-toggle--always-display">
+        <span class="margin-toggle--label">{String(label)}</span>
+      </label>
+      <input type="checkbox" id={id} class="margin-toggle" />
+      <span class="marginnote">
+        <slot />
+      </span>
+    </>
+  )
+}
