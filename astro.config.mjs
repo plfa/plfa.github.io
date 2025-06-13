@@ -7,6 +7,8 @@
  * @typedef {import("hast").Text} HastText
  */
 import { defineConfig } from "astro/config";
+// @ts-ignore
+import remarkAgda from "remark-agda";
 import remarkBehead from "remark-behead";
 import remarkBracketedSpans2 from "remark-bracketed-spans-2";
 import remarkCite from "./src/plugins/remark-cite.ts";
@@ -25,6 +27,19 @@ import remarkRehypeTufte from "./src/plugins/remarkRehype-tufte.ts";
 import rehypeTufte from "./src/plugins/rehype-tufte.ts";
 import rehypeHeadingAnchor from "./src/plugins/rehype-heading-anchor.ts";
 
+// Agda options
+const ROOT = import.meta.dirname;
+const Agda = {
+  agdaStdlibBaseUrl: "https://agda.github.io/agda-stdlib/v2.2/",
+  htmlDir: ".astro/cache/remark-agda/html",
+  args: ["--library-file=tutorial-template.agda-lib-index"],
+  options: {
+    cwd: ROOT,
+    env: { ROOT },
+    stdout: "inherit",
+  },
+};
+
 // MathJax options:
 const MathJax = {
   // TeX Input Processor Options
@@ -42,6 +57,7 @@ export default defineConfig({
   markdown: {
     syntaxHighlight: "prism",
     remarkPlugins: [
+      [remarkAgda, Agda],
       [remarkBehead, { depth: 1 }],
       // @ts-ignore
       remarkBracketedSpans2,
