@@ -10,6 +10,7 @@ import { defineConfig } from "astro/config";
 import remarkBehead from "remark-behead";
 import remarkBracketedSpans2 from "remark-bracketed-spans-2";
 import remarkCite from "./src/plugins/remark-cite.ts";
+import remarkCustomHeaderId from "remark-custom-header-id";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import remarkSmartyPants from "remark-smartypants";
@@ -43,6 +44,7 @@ export default defineConfig({
       // @ts-ignore
       remarkBracketedSpans2,
       remarkCite,
+      remarkCustomHeaderId,
       remarkDirective,
       remarkMath,
       // @ts-ignore
