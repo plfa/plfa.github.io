@@ -32,7 +32,7 @@ const ROOT = import.meta.dirname;
 const Agda = {
   agdaStdlibBaseUrl: "https://agda.github.io/agda-stdlib/v2.2/",
   htmlDir: ".astro/cache/remark-agda/html",
-  args: ["--library-file=tutorial-template.agda-lib-index"],
+  args: ["--library-file=plfa.agda-lib-index"],
   options: {
     cwd: ROOT,
     env: { ROOT },
