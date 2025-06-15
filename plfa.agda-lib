@@ -1,3 +1,3 @@
-name:    special-octo-eureka
+name:    plfa
 include: src/content
 depend:  standard-library
