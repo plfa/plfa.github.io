@@ -33,6 +33,7 @@
     "remark-bracketed-spans-2": "^1.0.1",
     "remark-directive": "^4.0.0",
     "remark-math": "^6.0.0",
+    "remark-smartypants": "^3.0.2",
     "unist-util-visit": "^5.0.0"
   },
   "prettier": {

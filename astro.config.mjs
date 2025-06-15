@@ -12,6 +12,7 @@ import remarkBracketedSpans2 from "remark-bracketed-spans-2";
 import remarkCite from "./src/plugins/remark-cite.ts";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
+import remarkSmartyPants from "remark-smartypants";
 import rehypeMathJax from "rehype-mathjax";
 import { bracketedSpanToHast } from "mdast-util-bracketed-spans";
 import remarkRehypeCite, {
@@ -44,6 +45,8 @@ export default defineConfig({
       remarkCite,
       remarkDirective,
       remarkMath,
+      // @ts-ignore
+      [remarkSmartyPants, { dashes: "oldschool" }],
       remarkTufte,
     ],
     remarkRehype: {
