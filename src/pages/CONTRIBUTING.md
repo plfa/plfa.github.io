@@ -1,6 +1,6 @@
 ---
 layout: ../layouts/Layout.astro
-title: Getting Started
+title: Contributing
 ---
 
 # Building
