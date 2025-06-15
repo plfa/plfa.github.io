@@ -1,6 +1,6 @@
 {
-  "name": "tutorial-template",
-  "version": "0.0.1",
+  "name": "plfa",
+  "version": "22.8",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
