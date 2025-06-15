@@ -15,6 +15,7 @@ import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import remarkSmartyPants from "remark-smartypants";
 import rehypeMathJax from "rehype-mathjax";
+import rehypeSlug from "rehype-slug";
 import { bracketedSpanToHast } from "mdast-util-bracketed-spans";
 import remarkRehypeCite, {
   loadBibTeX,
@@ -22,6 +23,7 @@ import remarkRehypeCite, {
 import remarkTufte from "./src/plugins/remark-tufte.ts";
 import remarkRehypeTufte from "./src/plugins/remarkRehype-tufte.ts";
 import rehypeTufte from "./src/plugins/rehype-tufte.ts";
+import rehypeHeadingAnchor from "./src/plugins/rehype-heading-anchor.ts";
 
 // MathJax options:
 const MathJax = {
@@ -58,7 +60,12 @@ export default defineConfig({
         ...remarkRehypeTufte(),
       },
     },
-    rehypePlugins: [[rehypeMathJax, MathJax], rehypeTufte],
+    rehypePlugins: [
+      rehypeSlug,
+      rehypeHeadingAnchor,
+      [rehypeMathJax, MathJax],
+      rehypeTufte,
+    ],
     gfm: true,
   },
 });

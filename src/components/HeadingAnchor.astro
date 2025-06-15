@@ -1,0 +1,10 @@
+---
+// NOTE: This code should be kept in sync with the code in ./src/plugins/rehype-heading-anchor.ts
+import HeadingAnchorIcon from "./HeadingAnchorIcon.astro";
+const { id } = Astro.props;
+---
+
+<a class="heading-anchor" href={`#${id}`}>
+  <slot />
+  <HeadingAnchorIcon />
+</a>

@@ -1,0 +1,71 @@
+/* Colors for use in link anchors and copy-on-click */
+/* NOTE: These colors must be kept in sync with the syntax highlighting theme. */
+:root {
+  --link-anchor: #151515;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --link-anchor: #fffff8;
+  }
+}
+
+/* Style for heading anchors */
+h1 > a.heading-anchor > span.heading-anchor-icon > svg {
+  margin-left: 0.6rem;
+  height: 2.6rem;
+  width: auto;
+  stroke: var(--link-anchor);
+  fill: var(--link-anchor);
+}
+h2 > a.heading-anchor > span.heading-anchor-icon > svg {
+  margin-left: 0.6rem;
+  height: 1.6rem;
+  width: auto;
+  stroke: var(--link-anchor);
+  fill: var(--link-anchor);
+}
+h3 > a.heading-anchor > span.heading-anchor-icon > svg {
+  margin-left: 0.45rem;
+  height: 1.2rem;
+  width: auto;
+  stroke: var(--link-anchor);
+  fill: var(--link-anchor);
+}
+a.heading-anchor {
+  /* TODO: use text-decoration when next version of tufte-css is released */
+  background: unset;
+}
+a.heading-anchor:hover {
+  /* TODO: use text-decoration when next version of tufte-css is released */
+  background:
+    -webkit-linear-gradient(var(--link-anchor), var(--link-anchor)),
+    -webkit-linear-gradient(var(--link-anchor), var(--link-anchor)),
+    -webkit-linear-gradient(currentColor, currentColor);
+  background:
+    linear-gradient(var(--link-anchor), var(--link-anchor)),
+    linear-gradient(var(--link-anchor), var(--link-anchor)),
+    linear-gradient(currentColor, currentColor);
+  -webkit-background-size:
+    0.05em 1px,
+    0.05em 1px,
+    1px 1px;
+  -moz-background-size:
+    0.05em 1px,
+    0.05em 1px,
+    1px 1px;
+  background-size:
+    0.05em 1px,
+    0.05em 1px,
+    1px 1px;
+  background-repeat: no-repeat, no-repeat, repeat-x;
+  background-position:
+    0% 93%,
+    100% 93%,
+    0% 93%;
+}
+a.heading-anchor > span.heading-anchor-icon > svg {
+  display: none;
+}
+a.heading-anchor:hover > span.heading-anchor-icon > svg {
+  display: inline;
+}
