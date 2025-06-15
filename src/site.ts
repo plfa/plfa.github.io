@@ -1,2 +1,2 @@
 /** Page title. */
-export const pageTitle: string = "Tutorial Template";
+export const pageTitle: string = "Programming Language Foundations in Agda";
