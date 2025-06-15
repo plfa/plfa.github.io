@@ -3,5 +3,7 @@ layout: ../layouts/Layout.astro
 title: Table of Contents
 ---
 
-1. [Getting Started](./README)
-2. [EPUB](./tutorial-template.epub)
+0. [Contributing](./CONTRIBUTING)
+1. [Naturals](./Naturals)
+2. [Induction](./Induction)
+3. [Relations](./Relations)
