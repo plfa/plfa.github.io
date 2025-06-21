@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+defaults:
+  run:
+    shell: sh
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: 🛠️ Setup dependencies
+        run: npm ci
+
+      - name: 🏗️ Build
+        run: npm run build
+
+      - name: 📦 Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ runner.os }}
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
+
+  publish-pages:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    needs: [build]
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.publish-pages.outputs.page_url }}
+
+    steps:
+      - name: 🛠️ Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: 📦 Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-Linux
+          path: dist
+
+      - name: 📦 Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: 🚀 Publish to Pages
+        id: publish-pages
+        uses: actions/deploy-pages@v4
