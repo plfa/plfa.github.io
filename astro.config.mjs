@@ -52,8 +52,8 @@ const bibliography = await loadBibTeX("./src/assets/bibliography.bib");
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://wen.works",
-  base: import.meta.env.DEV ? "" : "/tutorial-template",
+  site: "https://plfa.inf.ed.ac.uk",
+  base: "",
   markdown: {
     syntaxHighlight: "prism",
     remarkPlugins: [
