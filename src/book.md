@@ -13,6 +13,9 @@ rights: © 2018–2025 Philip Wadler, Wen Kokke, Jeremy G. Siek, CC BY 4.0
 ---
 
 ```{.include shift-heading-level-by=1}
+content/plfa/part1/Naturals.lagda.md
+content/plfa/part1/Induction.lagda.md
+content/plfa/part1/Relations.lagda.md
 ```
 
 # Bibliography
