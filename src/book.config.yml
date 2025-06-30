@@ -1,0 +1,44 @@
+reader: markdown
+input-file: book.md
+
+writer: epub
+output-file: ../dist/tutorial-template.epub
+
+resource-path:
+  - assets
+
+html-math-method:
+  method: mathml
+
+filters:
+  - plugins/pandoc-include-files.lua
+  - plugins/pandoc-tufte.lua
+  - citeproc
+
+bibliography: assets/bibliography.bib
+
+css:
+  - ../node_modules/tufte-css/tufte.epub.css
+  - assets/css/tufte-fixes.epub.css
+
+epub-fonts:
+  - ../node_modules/tufte-css/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot
+  - ../node_modules/tufte-css/et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf
+  - ../node_modules/tufte-css/et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg
+  - ../node_modules/tufte-css/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff
+  - ../node_modules/tufte-css/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot
+  - ../node_modules/tufte-css/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf
+  - ../node_modules/tufte-css/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg
+  - ../node_modules/tufte-css/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff
+  - ../node_modules/tufte-css/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot
+  - ../node_modules/tufte-css/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf
+  - ../node_modules/tufte-css/et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg
+  - ../node_modules/tufte-css/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff
+  - ../node_modules/tufte-css/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot
+  - ../node_modules/tufte-css/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.ttf
+  - ../node_modules/tufte-css/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.svg
+  - ../node_modules/tufte-css/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff
+  - ../node_modules/tufte-css/et-book/et-book-semi-bold-old-style-figures/et-book-semi-bold-old-style-figures.eot
+  - ../node_modules/tufte-css/et-book/et-book-semi-bold-old-style-figures/et-book-semi-bold-old-style-figures.ttf
+  - ../node_modules/tufte-css/et-book/et-book-semi-bold-old-style-figures/et-book-semi-bold-old-style-figures.svg
+  - ../node_modules/tufte-css/et-book/et-book-semi-bold-old-style-figures/et-book-semi-bold-old-style-figures.woff

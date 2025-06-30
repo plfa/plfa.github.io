@@ -1,0 +1,81 @@
+/*
+ * Pandoc renders bracketed .footer spans as spans,
+ * which do not display as block elements by default.
+ */
+span.footer {
+  display: block;
+}
+/*
+ * This is the contents of the `@media (max-width: 760px)`
+ * media pragma, reproduced with `!important` for EPUB.
+ */
+body {
+  width: 84%;
+  padding-left: 8%;
+  padding-right: 8%;
+}
+
+hr,
+section > p,
+section > footer,
+section > table {
+  width: 100%;
+}
+
+pre > code {
+  width: 97%;
+}
+
+section > dl,
+section > ol,
+section > ul {
+  width: 90%;
+}
+
+figure {
+  max-width: 90%;
+}
+
+figcaption,
+figure.fullwidth figcaption {
+  margin-right: 0%;
+  max-width: none;
+}
+
+blockquote {
+  margin-left: 1.5em;
+  margin-right: 0em;
+}
+
+blockquote p,
+blockquote footer {
+  width: 100%;
+}
+
+label.margin-toggle:not(.sidenote-number) {
+  display: inline;
+}
+
+.sidenote,
+.marginnote {
+  display: block;
+  float: left;
+  left: 1rem;
+  clear: both;
+  width: 95%;
+  margin: 1rem 2.5%;
+  position: relative;
+}
+
+label {
+  cursor: pointer;
+}
+
+div.table-wrapper,
+table {
+  width: 85%;
+}
+
+img {
+  width: 100%;
+}
