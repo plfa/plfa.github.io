@@ -9,6 +9,7 @@
     "astro": "astro",
     "prettier": "npx prettier -w .",
     "epub": "node src/plugins/patch-tufte-css-for-epub.mjs && mkdir -p dist && cd src && pandoc -d book.config.yml",
+    "epubcheck": "epubcheck --customMessages .epubcheck.tsv dist/tutorial-template.epub",
     "epub-view": "ebook-viewer dist/tutorial-template.epub"
   },
   "dependencies": {
