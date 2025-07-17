@@ -44,8 +44,10 @@ $endfor$
 
 #### 2025
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2025]
+  * [Joseph Eremondi, University of Regina][EremondiPage]
 
 [Freiburg-2025]: https://proglang.github.io/teaching/25ss/eopl.html
+[EremondiPage]: https://www2.cs.uregina.ca/~eremondj/
 
 #### 2024
   * [Philip Wadler, University of Edinburgh][TSPL-2024]
