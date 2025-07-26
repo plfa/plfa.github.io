@@ -61,7 +61,7 @@ How to make changes depends on whether you are a member of the plfa organization
 
 ### If you are not a member of the plfa organization
 
-First make a fork of the repository. There is a button on the github interface for doing this. Then make a local copy of your fork. Then follow the same instructions (below) as for members.
+First make a fork of the repository. There is a button on the github interface for doing this. Then make a local copy of your fork. Then follow the same instructions (below) as for members. When you perform the `git push`, you will be given a URL with which to make the pull request.
 
 ### For members of the plfa organization
 
