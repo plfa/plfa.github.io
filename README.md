@@ -145,16 +145,18 @@ Since version 2.6.0, Agda has had support for literate editing with Markdown, us
 
 If you already have settings which change your `auto-mode-alist` in your configuration, put these _after_ the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in `HOME/.emacs` or `HOME/.emacs.d/init.el`, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in `HOME/Library/Preferences/Aquamacs Emacs/Preferences`. For Windows, see [the GNU Emacs documentation][emacs-home] for a description of where the Emacs configuration is located.
 
-#### Optional: using the mononoki font with Emacs
+#### Optional: using the JuliaMono font with Emacs
 
-Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [mononoki][font-mononoki], fonts such as [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
+Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [JuliaMono][font-JuliaMono], fonts such as [mononoki][font-mononoki], [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
 
-You can download and install mononoki directly from [the website][font-mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the `font-mononoki` package, and APT on Debian offers the `fonts-mononoki` package. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
+You can download and install JuliaMono directly from [the website][font-JuliaMono]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file.
+If your package manager offers a package for JuliaMono, that might be easier. For instance, Homebrew on macOS offers the [`font-juliamono`][[font-JuliaMono-homebrew]] cask.
+To configure Emacs to use JuliaMono as its default font, add the following to the end of your Emacs configuration file:
 
 ```elisp
-;; default to mononoki
+;; default to JuliaMono
 (set-face-attribute 'default nil
-                    :family "mononoki"
+                    :family "JuliaMono"
                     :height 120
                     :weight 'normal
                     :width  'normal)
@@ -290,6 +292,8 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro
 [font-dejavusansmono]: https://dejavu-fonts.github.io/
+[font-JuliaMono]: https://juliamono.netlify.app/download/
+[font-JuliaMono-homebrew]: https://juliamono.netlify.app/download/#macos_homebrew
 [font-freemono]: https://www.gnu.org/software/freefont/
 [font-mononoki]: https://madmalik.github.io/mononoki/
 [font-mononoki-debian]: https://packages.debian.org/sid/fonts/fonts-mononoki

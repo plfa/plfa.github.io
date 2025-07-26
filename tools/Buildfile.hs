@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 {-# HLINT ignore "Redundant <&>" #-}
 {-# HLINT ignore "Monad law, left identity" #-}
 
@@ -506,7 +507,7 @@ main = do
 
         -- Set writer options
         epubMetadata <- readFile' (tmpEpubDir </> "epub-metadata.xml")
-        epubFonts <- getDirectoryFiles "" [epubFontsDir </> "*.ttf"]
+        epubFonts <- getDirectoryFiles "" [epubFontsDir </> "*.woff2"]
         epubTemplate <- Pandoc.compileTemplateFile (epubTemplateDir </> "epub.html")
 
         let writerOptsForEpub =
@@ -551,12 +552,12 @@ data Project
   | Course {courseId :: String}
   deriving (Show, Typeable, Eq, Generic, Hashable, Binary, NFData)
 
-getCourseId :: MonadError String m => FilePath -> m String
+getCourseId :: (MonadError String m) => FilePath -> m String
 getCourseId src
   | courseDir `List.isPrefixOf` src = return $ makeRelative courseDir (takeDirectory src)
   | otherwise = throwError $ printf "Courses must be in '%s', '%s':" courseDir src
 
-getProject :: MonadError String m => FilePath -> m Project
+getProject :: (MonadError String m) => FilePath -> m Project
 getProject src
   | chapterDir `List.isPrefixOf` src = return Main
   | courseDir `List.isPrefixOf` src = Course <$> getCourseId src
@@ -815,7 +816,7 @@ defaultHtmlMinifierArgs =
     "--remove-style-link-type-attributes"
   ]
 
-htmlMinifier :: HasCallStack => CmdOutput r -> [CmdOption] -> [String] -> LazyText.Text -> Action r
+htmlMinifier :: (HasCallStack) => CmdOutput r -> [CmdOption] -> [String] -> LazyText.Text -> Action r
 htmlMinifier cmdOutput cmdOpts args stdin =
   getMode >>= \case
     Development -> do
@@ -967,16 +968,16 @@ pattern AgdaFileInfo
 --------------------------------------------------------------------------------
 -- Helper functions
 
-failOnError :: MonadFail m => Either String a -> m a
+failOnError :: (MonadFail m) => Either String a -> m a
 failOnError = either fail return
 
-failOnNothing :: MonadFail m => String -> Maybe a -> m a
+failOnNothing :: (MonadFail m) => String -> Maybe a -> m a
 failOnNothing msg = maybe (fail msg) return
 
-ignoreError :: Monoid a => Either String a -> a
+ignoreError :: (Monoid a) => Either String a -> a
 ignoreError = fromRight mempty
 
-ignoreNothing :: Monoid a => Maybe a -> a
+ignoreNothing :: (Monoid a) => Maybe a -> a
 ignoreNothing = fromMaybe mempty
 
 rightToMaybe :: Either e a -> Maybe a

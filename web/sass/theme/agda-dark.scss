@@ -1,5 +1,5 @@
 @mixin code-font {
-    font-family: 'Frankenfont', 'FreeMono', 'DejaVu Sans Mono', 'mononoki', 'Source Code Pro', monospace;
+    font-family: 'JuliaMono';
     font-size: .85em;
 }
 @mixin code-container {
@@ -42,7 +42,7 @@ pre.Spec {
 .Number        { color: #b051eb }
 .Symbol        { color: #8b8b8b }
 .PrimitiveType { color: #4343ca }
-.Operator      {}
+// .Operator      {}
 
 /* NameKinds. */
 .Bound                  { color: #bbbbbb }
@@ -57,7 +57,7 @@ pre.Spec {
 .Record                 { color: #4343ca }
 
 /* OtherAspects. */
-.DottedPattern      {}
+// .DottedPattern      {}
 .UnsolvedMeta       { color: #bbbbbb; background: yellow         }
 .UnsolvedConstraint { color: #bbbbbb; background: yellow         }
 .TerminationProblem { color: #bbbbbb; background: #FFA07A        }

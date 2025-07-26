@@ -784,6 +784,10 @@ Agda is designed to be used with the Emacs text editor, and the two
 in combination provide features that help to create definitions
 and proofs interactively.
 
+Let's consider how to define addition interactively. (If you want to
+follow along, use a name other than `_+_` to avoid conflict with the
+definition above.)
+
 Begin by typing:
 
     _+_ : ℕ → ℕ → ℕ
