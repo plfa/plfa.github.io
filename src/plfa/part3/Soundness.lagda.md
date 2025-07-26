@@ -394,7 +394,7 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
   const-env-ok : γ `⊢ σ ↓ const-env x v
   const-env-ok y with x var≟ y
   ... | yes x≡y rewrite sym x≡y | same-const-env {Γ}{x}{v} = xv
-  ... | no x≢y rewrite diff-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
+  ... | no x≢y = ⊥-intro
 ```
 
 
