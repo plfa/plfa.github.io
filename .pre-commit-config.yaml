@@ -16,7 +16,7 @@ repos:
     -   id: fix-byte-order-marker
     -   id: file-contents-sorter
         args: [--unique]
-        files: '\.epubcheck\.tsv|\.gitignore|\.htmlvalidateignore'
+        files: '\.epubcheck\.tsv|\.htmlvalidateignore'
     -   id: forbid-new-submodules
     -   id: end-of-file-fixer
     -   id: mixed-line-ending
