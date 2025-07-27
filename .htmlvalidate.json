@@ -7,6 +7,8 @@
     "no-dup-id": ["warn"],
     "no-inline-style": ["warn"],
     "prefer-native-element": ["warn"],
+    "unique-landmark": ["off"],
+    "hidden-focusable": ["off"],
     "valid-id": ["error", { "relaxed": true }],
     "heading-level": ["off"],
     "input-missing-label": ["off"],

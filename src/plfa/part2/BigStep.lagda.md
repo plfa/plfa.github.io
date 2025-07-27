@@ -33,9 +33,9 @@ single sub-computation has been completed.
 ```agda
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; sym; cong-app)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Function using (_∘_)
+open import Function.Base using (_∘_)
 open import plfa.part2.Untyped
   using (Context; _⊢_; _∋_; ★; ∅; _,_; Z; S_; `_; #_; ƛ_; _·_;
   subst; subst-zero; exts; rename; β; ξ₁; ξ₂; ζ; _—→_; _—↠_; _—→⟨_⟩_; _∎;

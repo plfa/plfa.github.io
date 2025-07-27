@@ -20,14 +20,14 @@ sequences for us.
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Product
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Product.Base
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
   renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Function using (_∘_)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Function.Base using (_∘_)
 open import plfa.part1.Isomorphism
 open import plfa.part2.Lambda
 ```
@@ -489,7 +489,7 @@ drop {Γ} {x} {M} {A} {B} {C} ⊢M = rename ρ ⊢M
       -------------------------
     → Γ , x ⦂ B ∋ z ⦂ C
   ρ Z                 =  Z
-  ρ (S x≢x Z)         =  ⊥-elim (x≢x refl)
+  ρ (S x≢x Z)         =  contradiction refl x≢x
   ρ (S z≢x (S _ ∋z))  =  S z≢x ∋z
 ```
 Here map `ρ` can never be invoked on the inner occurrence of `x` since
@@ -550,9 +550,9 @@ subst : ∀ {Γ x N V A B}
   → Γ ⊢ N [ x := V ] ⦂ B
 subst {x = y} ⊢V (⊢` {x = x} Z) with x ≟ y
 ... | yes _         =  weaken ⊢V
-... | no  x≢y       =  ⊥-elim (x≢y refl)
+... | no  x≢y       =  contradiction refl x≢y
 subst {x = y} ⊢V (⊢` {x = x} (S x≢y ∋x)) with x ≟ y
-... | yes refl      =  ⊥-elim (x≢y refl)
+... | yes refl      =  contradiction refl x≢y
 ... | no  _         =  ⊢` ∋x
 subst {x = y} ⊢V (⊢ƛ {x = x} ⊢N) with x ≟ y
 ... | yes refl      =  ⊢ƛ (drop ⊢N)
@@ -1349,22 +1349,22 @@ det : ∀ {M M′ M″}
     --------
   → M′ ≡ M″
 det (ξ-·₁ L—→L′)   (ξ-·₁ L—→L″)     =  cong₂ _·_ (det L—→L′ L—→L″) refl
-det (ξ-·₁ L—→L′)   (ξ-·₂ VL M—→M″)  =  ⊥-elim (V¬—→ VL L—→L′)
-det (ξ-·₁ L—→L′)   (β-ƛ _)          =  ⊥-elim (V¬—→ V-ƛ L—→L′)
-det (ξ-·₂ VL _)    (ξ-·₁ L—→L″)     =  ⊥-elim (V¬—→ VL L—→L″)
+det (ξ-·₁ L—→L′)   (ξ-·₂ VL M—→M″)  =  contradiction L—→L′ (V¬—→ VL)
+det (ξ-·₁ L—→L′)   (β-ƛ _)          =  contradiction L—→L′ (V¬—→ V-ƛ)
+det (ξ-·₂ VL _)    (ξ-·₁ L—→L″)     =  contradiction L—→L″ (V¬—→ VL)
 det (ξ-·₂ _ M—→M′) (ξ-·₂ _ M—→M″)   =  cong₂ _·_ refl (det M—→M′ M—→M″)
-det (ξ-·₂ _ M—→M′) (β-ƛ VM)         =  ⊥-elim (V¬—→ VM M—→M′)
-det (β-ƛ _)        (ξ-·₁ L—→L″)     =  ⊥-elim (V¬—→ V-ƛ L—→L″)
-det (β-ƛ VM)       (ξ-·₂ _ M—→M″)   =  ⊥-elim (V¬—→ VM M—→M″)
+det (ξ-·₂ _ M—→M′) (β-ƛ VM)         =  contradiction M—→M′ (V¬—→ VM)
+det (β-ƛ _)        (ξ-·₁ L—→L″)     =  contradiction L—→L″ (V¬—→ V-ƛ)
+det (β-ƛ VM)       (ξ-·₂ _ M—→M″)   =  contradiction M—→M″ (V¬—→ VM)
 det (β-ƛ _)        (β-ƛ _)          =  refl
 det (ξ-suc M—→M′)  (ξ-suc M—→M″)    =  cong `suc_ (det M—→M′ M—→M″)
 det (ξ-case L—→L′) (ξ-case L—→L″)   =  cong₄ case_[zero⇒_|suc_⇒_]
                                          (det L—→L′ L—→L″) refl refl refl
-det (ξ-case L—→L′) β-zero           =  ⊥-elim (V¬—→ V-zero L—→L′)
-det (ξ-case L—→L′) (β-suc VL)       =  ⊥-elim (V¬—→ (V-suc VL) L—→L′)
-det β-zero         (ξ-case M—→M″)   =  ⊥-elim (V¬—→ V-zero M—→M″)
+det (ξ-case L—→L′) β-zero           =  contradiction L—→L′ (V¬—→ V-zero)
+det (ξ-case L—→L′) (β-suc VL)       =  contradiction L—→L′ (V¬—→ (V-suc VL))
+det β-zero         (ξ-case M—→M″)   =  contradiction M—→M″ (V¬—→ V-zero)
 det β-zero         β-zero           =  refl
-det (β-suc VL)     (ξ-case L—→L″)   =  ⊥-elim (V¬—→ (V-suc VL) L—→L″)
+det (β-suc VL)     (ξ-case L—→L″)   =  contradiction L—→L″ (V¬—→ (V-suc VL))
 det (β-suc _)      (β-suc _)        =  refl
 det β-μ            β-μ              =  refl
 ```

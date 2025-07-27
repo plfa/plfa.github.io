@@ -24,10 +24,10 @@ with such a definition and prove that it is equivalent to ℰ.
 ## Imports
 
 ```agda
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Unit using (⊤; tt)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Unit.Base using (⊤; tt)
 open import plfa.part2.Untyped
   using (Context; _,_; ★; _∋_; _⊢_; `_; ƛ_; _·_)
 open import plfa.part3.Denotational
@@ -257,7 +257,7 @@ We proceed by induction on the semantics.
       `v′ → v ⊑ v′ → v₁`.
 
 
-The forward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
+The backward direction is proved by cases on the premise `(ℰ L ● ℰ M) γ v`.
 In case `v ⊑ ⊥`, we obtain `Γ ⊢ L · M ↓ ⊥` by rule `⊥-intro`.
 Otherwise, we conclude immediately by rule `↦-elim`.
 

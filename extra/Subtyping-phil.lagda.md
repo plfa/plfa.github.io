@@ -155,14 +155,15 @@ Field = String
 ## Types
 
 ```agda
-Type* : List Field → Set
+data Type : Set
 
-data Type : Set where
+Type* : List Field → Set
+Type* as = ∀ (a : Field) → (a ∈ as) → Type
+
+data Type where
   _⇒_   : Type → Type → Type
   `ℕ    : Type
-  ⦗_⦂_⦘ :  (as : List Field) → (AS : Map as Type) → {distinct as} → Type
-
-Type* as = ∀ (a : Field) → (a ∈ as) → Type
+  ⦗_⦂_⦘ :  (as : List Field) → (AS : Type* as) → {distinct as} → Type
 ```
 
 In addition to function types `A ⇒ B` and natural numbers `ℕ`, we

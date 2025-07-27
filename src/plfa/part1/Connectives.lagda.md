@@ -43,33 +43,23 @@ Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
 declaring a suitable datatype:
 ```agda
-data _×_ (A B : Set) : Set where
-
-  ⟨_,_⟩ :
-      A
-    → B
-      -----
-    → A × B
+record _×_ (A B : Set) : Set where
+  constructor ⟨_,_⟩
+  field
+    proj₁ : A
+    proj₂ : B
+open _×_
 ```
 Evidence that `A × B` holds is of the form `⟨ M , N ⟩`, where `M`
 provides evidence that `A` holds and `N` provides evidence that `B`
 holds.
+The record construction `record { proj₁ = M ; proj₂ = N }` corresponds to the
+term `⟨ M , N ⟩` where `M` is a term of type `A` and `N` is a term of type `B`.
+The constructor declaration allows us to write `⟨ M , N ⟩` in place of the
+record construction.
 
 Given evidence that `A × B` holds, we can conclude that both
-`A` holds and `B` holds:
-```agda
-proj₁ : ∀ {A B : Set}
-  → A × B
-    -----
-  → A
-proj₁ ⟨ x , y ⟩ = x
-
-proj₂ : ∀ {A B : Set}
-  → A × B
-    -----
-  → B
-proj₂ ⟨ x , y ⟩ = y
-```
+`A` holds and `B` holds, using the projections `proj₁` and `proj₂` respectively.
 If `L` provides evidence that `A × B` holds, then `proj₁ L` provides evidence
 that `A` holds, and `proj₂ L` provides evidence that `B` holds.
 
@@ -92,15 +82,15 @@ we say the connective holds---how to _define_ the connective. An
 elimination rule describes what we may conclude when the connective
 holds---how to _use_ the connective.[^from-wadler-2015]
 
-In this case, applying each destructor and reassembling the results with the
+Applying each destructor and reassembling the results with the
 constructor is the identity over products:
 ```agda
 η-× : ∀ {A B : Set} (w : A × B) → ⟨ proj₁ w , proj₂ w ⟩ ≡ w
-η-× ⟨ x , y ⟩ = refl
+η-× w = refl
 ```
-The pattern matching on the left-hand side is essential, since
-replacing `w` by `⟨ x , y ⟩` allows both sides of the
-propositional equality to simplify to the same term.
+For record types, η-equality holds *by definition*.
+While proving `η-×`, we do not have to
+pattern match on `w` to know that η-equality holds.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction:
@@ -109,32 +99,44 @@ infixr 2 _×_
 ```
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
 
-Alternatively, we can declare conjunction as a record type:
+Alternatively, we can declare conjunction as a data type,
+and the projections as functions using pattern matching.
 ```agda
-record _×′_ (A B : Set) : Set where
-  constructor ⟨_,_⟩′
-  field
-    proj₁′ : A
-    proj₂′ : B
-open _×′_
-```
-The record construction `record { proj₁′ = M ; proj₂′ = N }` corresponds to the
-term `⟨ M , N ⟩` where `M` is a term of type `A` and `N` is a term of type `B`.
-The constructor declaration allows us to write `⟨ M , N ⟩′` in place of the
-record construction.
+data _×′_ (A B : Set) : Set where
 
-The data type `_×_` and the record type `_×′_` behave similarly. One
-difference is that for data types we have to prove η-equality, but for record
-types, η-equality holds *by definition*. While proving `η-×′`, we do not have to
-pattern match on `w` to know that η-equality holds:
+  ⟨_,_⟩′ :
+      A
+    → B
+      -----
+    → A ×′ B
+
+proj₁′ : ∀ {A B : Set}
+  → A ×′ B
+    -----
+  → A
+proj₁′ ⟨ x , y ⟩′ = x
+
+proj₂′ : ∀ {A B : Set}
+  → A ×′ B
+    -----
+  → B
+proj₂′ ⟨ x , y ⟩′ = y
+```
+The record type `_×_` and the data type `_×′_` behave similarly. One
+difference is that for for record
+types, η-equality holds *by definition*,
+but for data types have to
+pattern match know that η-equality holds:
 ```agda
 η-×′ : ∀ {A B : Set} (w : A ×′ B) → ⟨ proj₁′ w , proj₂′ w ⟩′ ≡ w
-η-×′ w = refl
+η-×′ ⟨ x , y ⟩′ = refl
 ```
-It can be very convenient to have η-equality *definitionally*, and so the
-standard library defines `_×_` as a record type. We use the definition from the
-standard library in later chapters.
-
+The pattern matching on the left-hand side is essential, since
+replacing `w` by `⟨ x , y ⟩′` allows both sides of the
+propositional equality to simplify to the same term.
+It is convenient to have η-equality *definitionally*,
+so we use records in preference to data types
+whenever there is only one constructor.
 
 Given two types `A` and `B`, we refer to `A × B` as the
 _product_ of `A` and `B`.  In set theory, it is also sometimes
@@ -179,17 +181,14 @@ isomorphism_.
 
 For commutativity, the `to` function swaps a pair, taking `⟨ x , y ⟩` to
 `⟨ y , x ⟩`, and the `from` function does the same (up to renaming).
-Instantiating the patterns correctly in `from∘to` and `to∘from` is essential.
-Replacing the definition of `from∘to` by `λ w → refl` will not work;
-and similarly for `to∘from`:
 ```agda
 ×-comm : ∀ {A B : Set} → A × B ≃ B × A
 ×-comm =
   record
     { to       =  λ{ ⟨ x , y ⟩ → ⟨ y , x ⟩ }
     ; from     =  λ{ ⟨ y , x ⟩ → ⟨ x , y ⟩ }
-    ; from∘to  =  λ{ ⟨ x , y ⟩ → refl }
-    ; to∘from  =  λ{ ⟨ y , x ⟩ → refl }
+    ; from∘to  =  λ{ w → refl }
+    ; to∘from  =  λ{ w → refl }
     }
 ```
 
@@ -208,16 +207,15 @@ former, corresponds to `⟨ aa , true ⟩`, which is a member of the latter.
 
 For associativity, the `to` function reassociates two uses of pairing,
 taking `⟨ ⟨ x , y ⟩ , z ⟩` to `⟨ x , ⟨ y , z ⟩ ⟩`, and the `from` function does
-the inverse.  Again, the evidence of left and right inverse requires
-matching against a suitable pattern to enable simplification:
+the inverse.
 ```agda
 ×-assoc : ∀ {A B C : Set} → (A × B) × C ≃ A × (B × C)
 ×-assoc =
   record
     { to      = λ{ ⟨ ⟨ x , y ⟩ , z ⟩ → ⟨ x , ⟨ y , z ⟩ ⟩ }
     ; from    = λ{ ⟨ x , ⟨ y , z ⟩ ⟩ → ⟨ ⟨ x , y ⟩ , z ⟩ }
-    ; from∘to = λ{ ⟨ ⟨ x , y ⟩ , z ⟩ → refl }
-    ; to∘from = λ{ ⟨ x , ⟨ y , z ⟩ ⟩ → refl }
+    ; from∘to = λ{ w → refl }
+    ; to∘from = λ{ w → refl }
     }
 ```
 
@@ -245,53 +243,57 @@ is isomorphic to `(A → B) × (B → A)`.
 ## Truth is unit
 
 Truth `⊤` always holds. We formalise this idea by
-declaring a suitable datatype:
+declaring the empty record type.
 ```agda
-data ⊤ : Set where
+record ⊤ : Set where
+  constructor tt
 
-  tt :
-    --
-    ⊤
 ```
 Evidence that `⊤` holds is of the form `tt`.
+The record construction `record {}` corresponds to the term `tt`. The
+constructor declaration allows us to write `tt`.
 
 There is an introduction rule, but no elimination rule.
 Given evidence that `⊤` holds, there is nothing more of interest we
 can conclude.  Since truth always holds, knowing that it holds tells
 us nothing new.
 
-The nullary case of `η-×` is `η-⊤`, which asserts that any
-value of type `⊤` must be equal to `tt`:
+The nullary case of `η-×` is `η-⊤`.
+While proving `η-⊤`, we do not have to pattern match on `w`---Agda *knows* it
+is equal to `tt`:
 ```agda
 η-⊤ : ∀ (w : ⊤) → tt ≡ w
-η-⊤ tt = refl
-```
-The pattern matching on the left-hand side is essential. Replacing
-`w` by `tt` allows both sides of the propositional equality to
-simplify to the same term.
+η-⊤ w = refl
 
-Alternatively, we can declare truth as an empty record:
+```
+Agda knows that *any* value of type `⊤` must be `tt`, so any time we need a
+value of type `⊤`, we can tell Agda to figure it out:
 ```agda
-record ⊤′ : Set where
-  constructor tt′
+truth : ⊤
+truth = _
 ```
-The record construction `record {}` corresponds to the term `tt`. The
-constructor declaration allows us to write `tt′`.
 
-As with the product, the data type `⊤` and the record type `⊤′` behave
-similarly, but η-equality holds *by definition* for the record type. While
-proving `η-⊤′`, we do not have to pattern match on `w`---Agda *knows* it is
-equal to `tt′`:
+Alternatively, we can declare truth as a data type:
+```agda
+data ⊤′ : Set where
+
+  tt′ :
+    --
+    ⊤′
+```
+As with the product, the record type `⊤` and the data type `⊤′` behave
+similarly, but while η-equality holds *by definition* for the record type,
+it does not for the data type, so we need to pattern match on `w`:
 ```agda
 η-⊤′ : ∀ (w : ⊤′) → tt′ ≡ w
-η-⊤′ w = refl
+η-⊤′ tt′ = refl
 ```
-Agda knows that *any* value of type `⊤′` must be `tt′`, so any time we need a
-value of type `⊤′`, we can tell Agda to figure it out:
-```agda
-truth′ : ⊤′
-truth′ = _
-```
+The pattern matching on the left-hand side is essential. Replacing
+`w` by `tt′` allows both sides of the propositional equality to
+simplify to the same term.
+As with products, it is convenient to have η-equality *definitionally*,
+so we use records in preference to data types
+whenever there is only one constructor.
 
 We refer to `⊤` as the _unit_ type. And, indeed,
 type `⊤` has exactly one member, `tt`.  For example, the following
@@ -504,6 +506,9 @@ uniq-⊥ h ()
 Using the absurd pattern asserts there are no possible values for `w`,
 so the equation holds trivially.
 
+We can also use `()` in nested patterns. For instance,
+`⟨ () , tt ⟩` is a pattern of type `⊥ × ⊤`.
+
 We refer to `⊥` as the _empty_ type. And, indeed,
 type `⊥` has no members. For example, the following function
 enumerates all possible arguments of type `⊥`:
@@ -620,7 +625,6 @@ we have the isomorphism
 Both types can be viewed as functions that given evidence that `A` holds
 and evidence that `B` holds can return evidence that `C` holds.
 This isomorphism sometimes goes by the name *currying*.
-The proof of the right inverse requires extensionality:
 ```agda
 currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
 currying =
@@ -628,10 +632,9 @@ currying =
     { to      =  λ{ f → λ{ ⟨ x , y ⟩ → f x y }}
     ; from    =  λ{ g → λ{ x → λ{ y → g ⟨ x , y ⟩ }}}
     ; from∘to =  λ{ f → refl }
-    ; to∘from =  λ{ g → extensionality λ{ ⟨ x , y ⟩ → refl }}
+    ; to∘from =  λ{ g → refl }
     }
 ```
-
 Currying tells us that instead of a function that takes a pair of arguments,
 we can have a function that takes the first argument and returns a function that
 expects the second argument.  Thus, for instance, our way of writing addition
@@ -664,7 +667,7 @@ is the same as the assertion that if `A` holds then `C` holds and if
     { to      = λ{ f → ⟨ f ∘ inj₁ , f ∘ inj₂ ⟩ }
     ; from    = λ{ ⟨ g , h ⟩ → λ{ (inj₁ x) → g x ; (inj₂ y) → h y } }
     ; from∘to = λ{ f → extensionality λ{ (inj₁ x) → refl ; (inj₂ y) → refl } }
-    ; to∘from = λ{ ⟨ g , h ⟩ → refl }
+    ; to∘from = λ{ _ → refl }
     }
 ```
 
@@ -678,15 +681,14 @@ we have the isomorphism:
 
 That is, the assertion that if `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
-`A` holds then `C` holds.  The proof of left inverse requires both extensionality
-and the rule `η-×` for products:
+`A` holds then `C` holds.
 ```agda
 →-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ (A → B) × (A → C)
 →-distrib-× =
   record
     { to      = λ{ f → ⟨ proj₁ ∘ f , proj₂ ∘ f ⟩ }
     ; from    = λ{ ⟨ g , h ⟩ → λ x → ⟨ g x , h x ⟩ }
-    ; from∘to = λ{ f → extensionality λ{ x → η-× (f x) } }
+    ; from∘to = λ{ f → refl }
     ; to∘from = λ{ ⟨ g , h ⟩ → refl }
     }
 ```
@@ -733,10 +735,10 @@ Sums do not distribute over products up to isomorphism, but it is an embedding:
     }
 ```
 Note that there is a choice in how we write the `from` function.
-As given, it takes `⟨ inj₂ z , inj₂ z′ ⟩` to `inj₂ z`, but it is
-easy to write a variant that instead returns `inj₂ z′`.  We have
+As given, it takes `⟨ inj₂ z , inj₂ w ⟩` to `inj₂ z`, but it is
+easy to write a variant that instead returns `inj₂ w`.  We have
 an embedding rather than an isomorphism because the
-`from` function must discard either `z` or `z′` in this case.
+`from` function must discard either `z` or `w` in this case.
 
 In the usual approach to logic, both of the distribution laws
 are given as equivalences, where each side implies the other:
@@ -787,7 +789,7 @@ import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Data.Unit using (⊤; tt)
 import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 import Data.Empty using (⊥; ⊥-elim)
-import Function.Equivalence using (_⇔_)
+import Function.Bundles using (_⇔_)
 ```
 The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to build triples or larger tuples from pairs,

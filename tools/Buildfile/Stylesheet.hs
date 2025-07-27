@@ -7,7 +7,8 @@ import Data.Text qualified as Text
 import Data.Text.Lazy qualified as LazyText
 import Shoggoth.Configuration (Mode (Development), getMode)
 import Shoggoth.Prelude (Action, Url, getEnvWithDefault, takeBaseName)
-import Shoggoth.Routing (RoutingTable, routeUrl)
+import Shoggoth.Routing (RoutingTable)
+import Shoggoth.Routing qualified as Route (url)
 
 data Stylesheet = Stylesheet
   { stylesheetTitle :: Text,
@@ -29,7 +30,7 @@ fromFilePath ::
   Action Stylesheet
 fromFilePath out = do
   let id = Text.pack (takeBaseName out)
-  (url, integrity) <- (,) <$> routeUrl out <*> ?getDigest out
+  (url, integrity) <- (,) <$> Route.url out <*> ?getDigest out
   return $
     Stylesheet
       { stylesheetTitle = Text.toTitle id,

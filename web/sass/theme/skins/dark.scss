@@ -1,8 +1,10 @@
 @charset "utf-8";
 
+@use 'sass:color';
+
 $brand-color:           #999999 !default;
-$brand-color-light:     lighten($brand-color, 5%) !default;
-$brand-color-dark:      darken($brand-color, 35%) !default;
+$brand-color-light:     color.scale($brand-color, $lightness: 5%) !default;
+$brand-color-dark:      color.scale($brand-color, $lightness: -35%) !default;
 
 $site-title-color:      $brand-color-light !default;
 
@@ -19,9 +21,9 @@ $border-color-02:       $brand-color-light !default;
 $border-color-03:       $brand-color !default;
 
 $table-text-color:      $text-color !default;
-$table-zebra-color:     lighten($background-color, 4%) !default;
-$table-header-bg-color: lighten($background-color, 10%) !default;
-$table-header-border:   lighten($background-color, 21%) !default;
+$table-zebra-color:     color.scale($background-color, $lightness: 4%) !default;
+$table-header-bg-color: color.scale($background-color, $lightness: 10%) !default;
+$table-header-border:   color.scale($background-color, $lightness: 21%) !default;
 $table-border-color:    $border-color-01 !default;
 
 

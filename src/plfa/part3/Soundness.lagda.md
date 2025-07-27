@@ -31,15 +31,12 @@ expansion is false for most typed lambda calculi!
 
 ```agda
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+  using (_≡_; _≢_; refl; sym)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Agda.Primitive using (lzero)
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using (contradiction)
-open import Data.Empty using (⊥-elim)
-open import Relation.Nullary using (Dec; yes; no)
-open import Function using (_∘_)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Function.Base using (_∘_)
 open import plfa.part2.Untyped
      using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
             subst; _[_]; subst-zero; ext; rename; exts;
@@ -234,7 +231,7 @@ about `M` and can therefore use `⊥` for the value of `M`.
 
 Previously we showed that renaming variables preserves meaning.  Now
 we prove the opposite, that it reflects meaning. That is,
-if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where `(δ ∘ ρ) `⊑ γ`.
+if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where ``(δ ∘ ρ) `⊑ γ``.
 
 First, we need a variant of a lemma given earlier.
 ```agda
@@ -355,7 +352,7 @@ same-const-env : ∀{Γ} {x : Γ ∋ ★} {v} → (const-env x v) x ≡ v
 same-const-env {x = x} rewrite var≟-refl x = refl
 ```
 
-and `const-env x v` maps `y` to `⊥, so long as `x ≢ y`.
+and `const-env x v` maps `y` to `⊥`, so long as `x ≢ y`.
 
 ```agda
 diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
@@ -363,7 +360,7 @@ diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
     -------------------
   → const-env x v y ≡ ⊥
 diff-const-env {Γ} {x} {y} neq with x var≟ y
-...  | yes eq  =  ⊥-elim (neq eq)
+...  | yes eq  =  contradiction eq neq
 ...  | no _    =  refl
 ```
 
@@ -378,7 +375,7 @@ Now to finish the two cases of the proof.
 
 * In the case where `x ≡ y`, we need to show
   that `γ ⊢ σ y ↓ v`, but that's just our premise.
-* In the case where `x ≢ y,` we need to show
+* In the case where `x ≢ y`, we need to show
   that `γ ⊢ σ y ↓ ⊥`, which we do via rule `⊥-intro`.
 
 Thus, we have completed the variable case of the proof that
@@ -397,7 +394,7 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
   const-env-ok : γ `⊢ σ ↓ const-env x v
   const-env-ok y with x var≟ y
   ... | yes x≡y rewrite sym x≡y | same-const-env {Γ}{x}{v} = xv
-  ... | no x≢y rewrite diff-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
+  ... | no x≢y = ⊥-intro
 ```
 
 
@@ -500,7 +497,7 @@ subst-reflect (sub d lt) eq
 ... | ⟨ δ , ⟨ subst-δ , m ⟩ ⟩ = ⟨ δ , ⟨ subst-δ , sub m lt ⟩ ⟩
 ```
 
-* Case `var`: We have subst `σ M ≡ y`, so `M` must also be a variable, say `x`.
+* Case `var`: We have `subst σ M ≡ y`, so `M` must also be a variable, say `x`.
   We apply the lemma `subst-reflect-var` to conclude.
 
 * Case `↦-elim`: We have `subst σ M ≡ L₁ · L₂`. We proceed by cases on `M`.

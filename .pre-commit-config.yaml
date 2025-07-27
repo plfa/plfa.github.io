@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
     -   id: check-added-large-files
     -   id: check-case-conflict
@@ -16,7 +16,7 @@ repos:
     -   id: fix-byte-order-marker
     -   id: file-contents-sorter
         args: [--unique]
-        files: '\.epubcheck\.tsv|\.gitignore|\.htmlvalidateignore'
+        files: '\.epubcheck\.tsv|\.htmlvalidateignore'
     -   id: forbid-new-submodules
     -   id: end-of-file-fixer
     -   id: mixed-line-ending
