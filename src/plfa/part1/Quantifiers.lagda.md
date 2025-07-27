@@ -58,7 +58,7 @@ Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
 is a term of type `A` then we may conclude that `B M` holds:
 ```agda
 ∀-elim : ∀ {A : Set} {B : A → Set}
-  → (L : ∀ (x : A) → B x)
+  → (∀ (x : A) → B x)
   → (M : A)
     -----------------
   → B M
@@ -97,8 +97,6 @@ postulate
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
 
-Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
-
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
@@ -136,49 +134,67 @@ the proposition `B x` with each free occurrence of `x` replaced by
 `Σ[ x ∈ A ] B x`.
 
 We formalise existential quantification by declaring a suitable
-inductive type:
+record type:
 ```agda
-data Σ (A : Set) (B : A → Set) : Set where
-  ⟨_,_⟩ : (x : A) → B x → Σ A B
+record Σ (A : Set) (B : A → Set) : Set where
+  constructor ⟨_,_⟩
+  field
+    proj₁ : A
+    proj₂ : B proj₁
 ```
+Here we have a dependent record, where the type of `proj₂`
+refers to the field `proj₁`.
+Evidence that `Σ A B` holds is of the form
+
+    ⟨ M , N ⟩
+
+where `M` is a term of type `A` and `N` is a term of type `B M`.
+Equivalently, the evidence may be written in the form
+
+    record { proj₁ = M ; proj₂ = N }.
+
 We define a convenient syntax for existentials as follows:
 ```agda
 Σ-syntax = Σ
 infix 2 Σ-syntax
 syntax Σ-syntax A (λ x → Bx) = Σ[ x ∈ A ] Bx
 ```
-This is our first use of a syntax declaration, which specifies that
-the term on the left may be written with the syntax on the right.
-The special syntax is available only when the identifier
-`Σ-syntax` is imported.
+This is our first use of a syntax declaration to define binding.  It
+specifies that the term on the left may be written with the syntax on
+the right. Note that the term on the left includes a lambda
+expression, with `x` as a bound variable.  The special syntax is
+available only when the identifier `Σ-syntax` is imported.
 
-Evidence that `Σ[ x ∈ A ] B x` holds is of the form
-`⟨ M , N ⟩` where `M` is a term of type `A`, and `N` is evidence
-that `B M` holds.
+The syntax declaration makes `Σ[ x ∈ A ] Bx` and `Σ A (λ x → Bx)`
+equivalent. In particular, instantiating `Bx` to `B x`, we have
+that `Σ[ x ∈ A ] B x` and `Σ A (λ x → B x)` are equivalent.
+By the η rule we have `(λ x → B x) ≡ B` and so they are also
+equivalent to `Σ A B`.
 
-Equivalently, we could also declare existentials as a record type:
+Equivalently, we could also declare existentials as an inductive type:
 ```agda
-record Σ′ (A : Set) (B : A → Set) : Set where
-  field
-    proj₁′ : A
-    proj₂′ : B proj₁′
+data Σ′ (A : Set) (B : A → Set) : Set where
+  ⟨_,_⟩′ : (x : A) → B x → Σ′ A B
+
+proj₁′ : ∀ {A : Set} {B : A → Set} → Σ′ A B → A
+proj₁′ ⟨ x , y ⟩′ = x
+
+proj₂′ : ∀ {A : Set} {B : A → Set} → ∀ (w : Σ′ A B) → B (proj₁′ w)
+proj₂′ ⟨ x , y ⟩′ = y
 ```
-Here record construction
-
-    record
-      { proj₁′ = M
-      ; proj₂′ = N
-      }
-
-corresponds to the term
-
-    ⟨ M , N ⟩
-
-where `M` is a term of type `A` and `N` is a term of type `B M`.
+One consequence of the dependence is that `proj₁′` appears in the type
+signature for `proj₂′`.
 
 Products arise as a special case of existentials, where the second
-component does not depend on a variable drawn from the first
-component.  When a product is viewed as evidence of a conjunction,
+component does not depend on the first component.
+```
+_×′_ : Set → Set → Set
+A ×′ B = Σ[ x ∈ A ] B
+```
+(Here we prime `×` to avoid collision with product from the standard
+library, which we imported for use in exercises in the last section.)
+
+When a product is viewed as evidence of a conjunction,
 both of its components are viewed as evidence, whereas when it is
 viewed as evidence of an existential, the first component is viewed as
 an element of a datatype and the second component is viewed as
@@ -192,10 +208,11 @@ each of the types `B x₁ , ⋯ B xₙ` has `m₁ , ⋯ , mₙ` distinct members
 then `Σ[ x ∈ A ] B x` has `m₁ + ⋯ + mₙ` members, which explains the
 choice of notation for existentials, since `Σ` stands for sum.
 
-Existentials are sometimes referred to as dependent products, since
+Existentials are also sometimes referred to as dependent products, since
 products arise as a special case.  However, that choice of names is
 doubly confusing, since universals also have a claim to the name dependent
 product and since existentials also have a claim to the name dependent sum.
+We will stick with the name dependent sum.
 
 A common notation for existentials is `∃` (analogous to `∀` for universals).
 We follow the convention of the Agda standard library, and reserve this
@@ -237,7 +254,7 @@ Indeed, the converse also holds, and the two together form an isomorphism:
     { to      =  λ{ f → λ{ ⟨ x , y ⟩ → f x y }}
     ; from    =  λ{ g → λ{ x → λ{ y → g ⟨ x , y ⟩ }}}
     ; from∘to =  λ{ f → refl }
-    ; to∘from =  λ{ g → extensionality λ{ ⟨ x , y ⟩ → refl }}
+    ; to∘from =  λ{ g → refl }
     }
 ```
 The result can be viewed as a generalisation of currying.  Indeed, the code to
@@ -404,7 +421,7 @@ of a disjunction is isomorphic to a conjunction of negations:
   record
     { to      =  λ{ ¬∃xy x y → ¬∃xy ⟨ x , y ⟩ }
     ; from    =  λ{ ∀¬xy ⟨ x , y ⟩ → ∀¬xy x y }
-    ; from∘to =  λ{ ¬∃xy → extensionality λ{ ⟨ x , y ⟩ → refl } }
+    ; from∘to =  λ{ ¬∃xy → refl }
     ; to∘from =  λ{ ∀¬xy → refl }
     }
 ```
@@ -421,8 +438,7 @@ of type `∃[ x ] B x` we can derive false.  Applying `∀¬xy`
 to `x` gives a value of type `¬ B x`, and applying that to `y` yields
 a contradiction.
 
-The two inverse proofs are straightforward, where one direction
-requires extensionality.
+The two inverse proofs are straightforward.
 
 
 #### Exercise `∃¬-implies-¬∀` (recommended)

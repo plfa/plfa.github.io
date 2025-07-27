@@ -15,8 +15,8 @@ the next step is to define relations, such as _less than or equal_.
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong)
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Nat.Properties using (+-comm; +-identityʳ)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Properties using (+-comm; +-identityʳ; *-comm)
 ```
 
 
@@ -819,7 +819,7 @@ properties of `One`. It may also help to prove the following:
 
 Definitions similar to those in this chapter can be found in the standard library:
 ```agda
-import Data.Nat using (_≤_; z≤n; s≤s)
+import Data.Nat using (_≤_; z≤n; s≤s; _<_)
 import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total;
                                   +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
 ```

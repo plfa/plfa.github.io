@@ -173,8 +173,8 @@ judgment returns `A` as the synthesized type of the term as a whole,
 as well as using it as the inherited type for `M`.
 
 The term form `M ↓ A` represents the only place terms need to be
-decorated with types.  It only appears when switching from synthesis
-to inheritance, that is, when a term that _deconstructs_ a value of a
+decorated with types.  It only appears when switching from inheritance
+to synthesis, that is, when a term that _deconstructs_ a value of a
 type contains as its main term a term that _constructs_ a value of a
 type, in other words, a place where a `β`-reduction will occur.
 Typically, we will find that decorations are only required on top
@@ -185,7 +185,7 @@ We can extract the grammar for terms from the above:
     L⁺, M⁺, N⁺ ::=                      terms with synthesized type
       x                                   variable
       L⁺ · M⁻                             application
-      M⁻ ↓ A                              switch to inherited
+      M⁻ ↓ A                              switch from inherited
 
     L⁻, M⁻, N⁻ ::=                      terms with inherited type
       ƛ x ⇒ N⁻                            abstraction
@@ -193,7 +193,7 @@ We can extract the grammar for terms from the above:
       `suc M⁻                             successor
       case L⁺ [zero⇒ M⁻ |suc x ⇒ N⁻ ]     case
       μ x ⇒ N⁻                            fixpoint
-      M⁺ ↑                                switch to synthesized
+      M⁺ ↑                                switch from synthesized
 
 We will formalise the above shortly.
 
@@ -217,9 +217,9 @@ Similarly, given context `Γ`, inherited term `M`, and type `A`, we
 must decide whether `Γ ⊢ M ↓ A` holds, or its negation.
 
 Our proof is constructive. In the synthesised case, it will either
-deliver a pair of a type `A` and evidence that `Γ ⊢ M ↓ A`, or a function
+deliver a pair of a type `A` and evidence that `Γ ⊢ M ↑ A`, or a function
 that given such a pair produces evidence of a contradiction. In the inherited
-case, it will either deliver evidence that `Γ ⊢ M ↑ A`, or a function
+case, it will either deliver evidence that `Γ ⊢ M ↓ A`, or a function
 that given such evidence produces evidence of a contradiction.
 The positive case is referred to as _soundness_ --- synthesis and inheritance
 succeed only if the corresponding relation holds.  The negative case is
@@ -247,12 +247,12 @@ We are now ready to begin the formal development.
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Empty using (⊥)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.String using (String; _≟_)
-open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (False; toWitnessFalse)
+open import Data.Product.Base using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Decidable using ( Dec; yes; no; False; toWitnessFalse)
 ```
 
 Once we have a type derivation, it will be easy to construct
@@ -540,8 +540,8 @@ one showing `Γ ∋ x ⦂ A` and one showing `Γ ∋ x ⦂ B`, it follows that
 ```agda
 uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 uniq-∋ Z Z                 =  refl
-uniq-∋ Z (S x≢y _)         =  ⊥-elim (x≢y refl)
-uniq-∋ (S x≢y _) Z         =  ⊥-elim (x≢y refl)
+uniq-∋ Z (S x≢y _)         =  contradiction refl x≢y
+uniq-∋ (S x≢y _) Z         =  contradiction refl x≢y
 uniq-∋ (S _ ∋x) (S _ ∋x′)  =  uniq-∋ ∋x ∋x′
 ```
 If both derivations are by rule `Z` then uniqueness
@@ -698,7 +698,7 @@ synthesize Γ (` x) with lookup Γ x
 ... | no  ¬∃              =  no  (λ{ ⟨ A , ⊢` ∋x ⟩ → ¬∃ ⟨ A , ∋x ⟩ })
 ... | yes ⟨ A , ∋x ⟩      =  yes ⟨ A , ⊢` ∋x ⟩
 synthesize Γ (L · M) with synthesize Γ L
-... | no  ¬∃              =  no  (λ{ ⟨ _ , ⊢L  · _  ⟩  →  ¬∃ ⟨ _ , ⊢L ⟩ })
+... | no  ¬∃              =  no  (λ{ ⟨ B , ⊢L  · _  ⟩  →  ¬∃ ⟨ _ ⇒ B , ⊢L ⟩ })
 ... | yes ⟨ `ℕ ,    ⊢L ⟩  =  no  (λ{ ⟨ _ , ⊢L′ · _  ⟩  →  ℕ≢⇒ (uniq-↑ ⊢L ⊢L′) })
 ... | yes ⟨ A ⇒ B , ⊢L ⟩ with inherit Γ M A
 ...    | no  ¬⊢M          =  no  (¬arg ⊢L ¬⊢M)

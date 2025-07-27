@@ -268,7 +268,7 @@ One might think that we could instead use a more compact translation:
     -- WRONG
       (case× L [⟨ x , y ⟩⇒ N ]) †
     =
-      (N †) [ x := `proj₁ (L †) ] [ y := `proj₂ (L †) ]
+      (N †) [ x := `proj₁ (L †) ][ y := `proj₂ (L †) ]
 
 But this behaves differently.  The first term always reduces `L`
 before `N`, and it computes `` `proj₁ `` and `` `proj₂ `` exactly once.  The
@@ -554,9 +554,8 @@ and leave formalisation of the remaining constructs as an exercise.
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
-open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc; _*_; _<_; _≤?_; z≤n; s≤s)
-open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Negation using (¬_)
 open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
