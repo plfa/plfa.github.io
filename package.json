@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "browser-sync": "^3.0.4",
-    "html-validate": "^9.7.1",
+    "html-validate": "^10.0.0",
     "html-minifier": "^4.0.0",
     "sass": "^1.89.2"
   }
