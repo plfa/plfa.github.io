@@ -169,7 +169,7 @@ jobs:
           submodules: "true"
 
       - name: Download latest artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
           path: "site"
@@ -219,7 +219,7 @@ jobs:
         shell: pwsh
 
       - name: Download latest artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
           path: "site"
