@@ -23,16 +23,22 @@ begin
 This sets up a series of reasoning steps with holes for both the expressions at each step, and the step itself.
 Since the reasoning steps are holes, Agda will always accept this, so you can make incremental progress while keeping your file compiling.
 
-Now call "solve" (`C-c C-s` in Emacs).
+Now call "solve" (`C-c C-s`).
+You can call this outside a hole to have it try solving all holes in the file, or in a hole to try solving only that hole.
 This will solve the expression holes at the beginning and the end so you don't have to fill them in.
 You can do this again if you fix a step, so if you fill in the reasoning you want to do for a step, you can use "solve" and Agda will fill in the next term.
+
+You can prefix the solve command such that it computes terms and types (`C-u C-c C-s`). This `C-u` prefix also works for many other commands.
+
+Alternatively you can use "auto" (`C-c C-a`) which tries to fill in holes using anything it can think of.
+This can work in many more situations, but you do risk it filling in junk like a genie twisting your wish if you haven't constrained the hole is enough.
 
 ## Goal information will show computed terms
 
 Suppose you have a partial equational reasoning proof:
 ```agda
 begin
-    2 + (x + y)
+    1 + (x + y)
   ≡⟨ ?2 ⟩
     ?
   ≡⟨ ? ⟩
@@ -43,11 +49,11 @@ begin
 ```
 
 The first term can be computed more.
-To see this, you can ask for the goal context for `?2` and it will show something like this:
+To see this, you can ask for the goal type (`C-t`) for `?2` and it will show this:
 ```
-?2 = suc (suc (x + y)) = y_5244
+suc (x + y) = _y_10
 ```
-i.e. your LHS and an unknown RHS (because it's a hole), but it will show the LHS fully computed, which you can copy into your file directly.
+i.e. your LHS and an unknown RHS (because the next step is still a hole), but it will show the LHS fully computed, which you can copy into your file directly.
 
 ## Quickly setting up `with` clauses
 
@@ -65,7 +71,7 @@ and then ask to case-split on `x`.
 
 ## Quickly setting up record skeletons
 
-"Refine" (`C-c C-r` in Emacs) will set up a skeleton for a record constructor if Agda knows a hole must be a record type.
+"Refine" (`C-c C-r`) will set up a skeleton for a record constructor if Agda knows a hole must be a record type.
 This is useful for e.g. isomorphisms, products, sigmas, or existentials.
 
 # General tips
@@ -81,12 +87,15 @@ vs
 foo b * 2
 ```
 
-The definition of `*` does case analysis on its first argument.
-This means that if the first argument to `*` is a constructor application, Agda can do some computation for you.
+The definition of `*` does case analysis on its left operand.
+This means that if the left operand to `*` is a constructor application, Agda can do some computation for you.
 The first example computes to `foo b + (foo b + zero)`, but the second one does not compute at all: Agda can't pattern match on `foo b`, it could be anything!
 
-Doing this lets Agda do more definitional simplification, which means you have to do less work.
-Unfortunately it does require you to know _which_ arguments are the one that Agda can evaluate, which requires looking at the definitions of the functions.
+Aligning your expressions with with the computation order like this lets Agda do more definitional simplification, which means you have to do less work.
+Unfortunately it does require you to know _which_ arguments are the one that Agda can evaluate.
+Binary operators conventionally match on their left operand first if the choice is free.
+For example, `_+_`, `_*_`, and `_++_` all match first on their left operand, but `_^_` has to match first on the right operand, the exponent.
+You can always look it up yourself by going to the function definition (`M-.` or middle mouse click).
 
 ## `x + x` is better than `2 * x`
 
@@ -133,7 +142,8 @@ They use three approaches for doing "multiple steps":
 
 However, notably they all use the same supporting proofs!
 That means you can often write the overall proof however you find easiest and then rewrite it into another form if you want.
-For example, do the proof slowly with equational reasoning, and then turn it into a compact proof with `rewrite`.
+Do keep in mind that compact proofs are not always the most readable.
+Strife to find a happy medium that shows each important step clearly without too many trivial steps in between.
 
 ## Avoid mutual recursion in proofs by recursing outside the lemma
 
@@ -152,11 +162,13 @@ Look at the second part of the proof of commutativity of `+`:
 ```
 We use two equalities: the `+-suc` lemma, and a recursive use of `+-comm`.
 
-If you were doing this for the first time, you might be tempted to make _one_ lemma for both those steps.
-It wouldn't look that different, it would just have `n` and `m` swapped.
-But then you would find that you needed to call `+-comm` from the lemma, which needs mutual recursion.
+If you were doing this for the first time, you might be tempted to make _one_ lemma for both those steps:
+```agda
++-suc-comm : m + suc n ≡ suc (n + m)
+```
+But then you would need to call `+-comm` from within this lemma, which would make `+-comm` and `+-suc-comm` mutually recursive.
 
-Instead, you can do what's done here and use the recursive call before/after your lemma.
+Instead, follow this example and use the recursive call before or after your lemma.
 
 ## When to use implicit parameters
 
@@ -187,11 +199,13 @@ There are a few ways to avoid green slime, but one way that often works is to us
 data Tree (A : Set) : ℕ → Set where
   leaf : A → Tree A 1
   node :
-    ∀ {s : ℕ} {s‵ : ℕ}
+    ∀ {s : ℕ} {s′ : ℕ}
     → Tree A s
     → Tree A s
-    → s‵ ≡ s + s
-    → Tree A s‵
+    → s′ ≡ s + s
+    → Tree A s′
 ```
 
 Now you can still get the information about the sum by matching on the proof, but Agda has an easier time.
+
+Conor McBride coined the term green slime in reference to the boom of hazardous green slime in 1970s science fiction due to the advent of colour television.
