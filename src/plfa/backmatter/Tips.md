@@ -143,7 +143,7 @@ They use three approaches for doing "multiple steps":
 However, notably they all use the same supporting proofs!
 That means you can often write the overall proof however you find easiest and then rewrite it into another form if you want.
 Do keep in mind that compact proofs are not always the most readable.
-Strife to find a happy medium that shows each important step clearly without too many trivial steps in between.
+Strive to find a happy medium that shows each important step clearly without too many trivial steps in between.
 
 ## Avoid mutual recursion in proofs by recursing outside the lemma
 
