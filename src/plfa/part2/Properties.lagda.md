@@ -20,7 +20,7 @@ sequences for us.
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; zero; suc; _<_; _≤_; s≤s; z≤n)
 open import Data.Product.Base
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
   renaming (_,_ to ⟨_,_⟩)
@@ -849,66 +849,71 @@ Instead, we will provide a natural number to Agda, and permit it
 to stop short of a value if the term requires more than the given
 number of reduction steps.
 
-A similar issue arises with cryptocurrencies.  Systems which use
-smart contracts require the miners that maintain the blockchain to
-evaluate the program which embodies the contract.  For instance,
-validating a transaction on Ethereum may require executing a program
-for the Ethereum Virtual Machine (EVM).  A long-running or
-non-terminating program might cause the miner to invest arbitrary
-effort in validating a contract for little or no return.  To avoid
-this situation, each transaction is accompanied by an amount of _gas_
-available for computation.  Each step executed on the EVM is charged
-an advertised amount of gas, and the transaction pays for the gas at a
-published rate: a given number of Ethers (the currency of Ethereum)
-per unit of gas.
+A similar issue arises with cryptocurrencies.  Systems which use smart
+contracts require the miners that maintain the blockchain to evaluate
+the program which embodies the contract.  For instance, validating a
+transaction on Ethereum may require executing a program for the
+Ethereum Virtual Machine (EVM).  A long-running or non-terminating
+program might cause the miner to invest arbitrary effort in validating
+a contract for little or no return.  To avoid this situation, each
+transaction is accompanied by an amount of _gas_ available for
+computation.  Each step executed on the EVM is charged an advertised
+amount of gas, and the transaction pays for the gas at a published
+rate: a given number of Ethers (the currency of Ethereum) per unit of
+gas. By analogy, we will use the name _gas_ for the parameter which
+puts a bound on the number of reduction steps.
 
-By analogy, we will use the name _gas_ for the parameter which puts a
-bound on the number of reduction steps.  `Gas` is specified by a natural number:
+We will relate gas to the number of steps in a reduction sequence.
+```
+length : ∀ {M N} → M —↠ N → ℕ
+length (M ∎)                =  zero
+length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
+```
+
+`Gas` is specified by a natural number:
 ```agda
 record Gas : Set where
   constructor gas
   field
     amount : ℕ
 ```
-When our evaluator returns a term `N`, it will either give evidence that
-`N` is a value or indicate that it ran out of gas:
+
+For given an amount of gas `g` and evidence that term `M` is
+well-typed, our evaluator either runs out of gas, returning a sequence
+`M —↠ N` of length exactly `g`, or it terminates, returning a sequence
+`M —↠ N` of length less than `g` and evidence that `N` is a value.
 ```agda
-data Finished (N : Term) : Set where
+data Eval (M : Term) (g : ℕ) : Set where
 
-  done :
-      Value N
-      ----------
-    → Finished N
+  out-of-gas : {N : Term}
+    → (M—↠N : M —↠ N)  
+    → length M—↠N ≡ g
+      ---------------
+    → Eval M g
 
-  out-of-gas :
-      ----------
-      Finished N
-```
-Given a term `L` of type `A`, the evaluator will, for some `N`, return
-a reduction sequence from `L` to `N` and an indication of whether
-reduction finished:
-```agda
-data Steps (L : Term) : Set where
-
-  steps : ∀ {N}
-    → L —↠ N
-    → Finished N
-      ----------
-    → Steps L
+  terminates : {N : Term}
+    → (M—↠N : M —↠ N)
+    → length M—↠N < g
+    → Value N
+      ---------------
+    → Eval M g
 ```
 The evaluator takes gas and evidence that a term is well typed,
 and returns the corresponding steps:
 ```agda
 eval : ∀ {L A}
-  → Gas
+  → (g : ℕ)
   → ∅ ⊢ L ⦂ A
     ---------
-  → Steps L
-eval {L} (gas zero)    ⊢L                     =  steps (L ∎) out-of-gas
-eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                                 =  steps (L ∎) (done VL)
-... | step {M} L—→M with eval (gas m) (preserve ⊢L L—→M)
-...    | steps M—↠N fin                       =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+  → Eval L g
+eval {L} zero    ⊢L                   =  out-of-gas (L ∎) refl
+eval {L} (suc g) ⊢L with progress ⊢L
+... | done VL                         =  terminates (L ∎) (s≤s z≤n) VL
+... | step L—→M with eval g (preserve ⊢L L—→M)
+...   | out-of-gas M—↠N ≡g
+        =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
+...   | terminates M—↠N <g VN
+        =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s≤s <g) VN
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well typed.  We consider the amount of gas
@@ -934,601 +939,601 @@ remaining.  There are two possibilities:
     and the indication of whether reduction finished.
 
 
-### Examples
-
-We can now use Agda to compute the non-terminating reduction
-sequence given earlier.  First, we show that the term `sucμ`
-is well typed:
-```agda
-⊢sucμ : ∅ ⊢ μ "x" ⇒ `suc ` "x" ⦂ `ℕ
-⊢sucμ = ⊢μ (⊢suc (⊢` ∋x))
-  where
-  ∋x = Z
-```
-To show the first three steps of the infinite reduction
-sequence, we evaluate with three steps worth of gas:
-```agda
-_ : eval (gas 3) ⊢sucμ ≡
-  steps
-   (μ "x" ⇒ `suc ` "x"
-   —→⟨ β-μ ⟩
-    `suc (μ "x" ⇒ `suc ` "x")
-   —→⟨ ξ-suc β-μ ⟩
-    `suc (`suc (μ "x" ⇒ `suc ` "x"))
-   —→⟨ ξ-suc (ξ-suc β-μ) ⟩
-    `suc (`suc (`suc (μ "x" ⇒ `suc ` "x")))
-   ∎)
-   out-of-gas
-_ = refl
-```
-
-Similarly, we can use Agda to compute the reduction sequences given
-in the previous chapter.  We start with the Church numeral two
-applied to successor and zero.  Supplying 100 steps of gas is more than enough:
-```agda
-_ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
-  steps
-   ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
-   · `zero
-   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
-    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-     `zero
-   —→⟨ β-ƛ V-zero ⟩
-    (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero)
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
-    (ƛ "n" ⇒ `suc ` "n") · `suc `zero
-   —→⟨ β-ƛ (V-suc V-zero) ⟩
-    `suc (`suc `zero)
-   ∎)
-   (done (V-suc (V-suc V-zero)))
-_ = refl
-```
-The example above was generated by using `C-c C-n` to normalise the
-left-hand side of the equation and pasting in the result as the
-right-hand side of the equation.  The example reduction of the
-previous chapter was derived from this result, reformatting and
-writing `twoᶜ` and `sucᶜ` in place of their expansions.
-
-Next, we show two plus two is four:
-```agda
-_ : eval (gas 100) ⊢2+2 ≡
-  steps
-   ((μ "+" ⇒
-     (ƛ "m" ⇒
-      (ƛ "n" ⇒
-       case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-       ])))
-    · `suc (`suc `zero)
-    · `suc (`suc `zero)
-   —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
-    (ƛ "m" ⇒
-     (ƛ "n" ⇒
-      case ` "m" [zero⇒ ` "n" |suc "m" ⇒
-      `suc
-      ((μ "+" ⇒
-        (ƛ "m" ⇒
-         (ƛ "n" ⇒
-          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-          ])))
-       · ` "m"
-       · ` "n")
-      ]))
-    · `suc (`suc `zero)
-    · `suc (`suc `zero)
-   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    (ƛ "n" ⇒
-     case `suc (`suc `zero) [zero⇒ ` "n" |suc "m" ⇒
-     `suc
-     ((μ "+" ⇒
-       (ƛ "m" ⇒
-        (ƛ "n" ⇒
-         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-         ])))
-      · ` "m"
-      · ` "n")
-     ])
-    · `suc (`suc `zero)
-   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
-    `suc
-    ((μ "+" ⇒
-      (ƛ "m" ⇒
-       (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-        ])))
-     · ` "m"
-     · `suc (`suc `zero))
-    ]
-   —→⟨ β-suc (V-suc V-zero) ⟩
-    `suc
-    ((μ "+" ⇒
-      (ƛ "m" ⇒
-       (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-        ])))
-     · `suc `zero
-     · `suc (`suc `zero))
-   —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
-    `suc
-    ((ƛ "m" ⇒
-      (ƛ "n" ⇒
-       case ` "m" [zero⇒ ` "n" |suc "m" ⇒
-       `suc
-       ((μ "+" ⇒
-         (ƛ "m" ⇒
-          (ƛ "n" ⇒
-           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-           ])))
-        · ` "m"
-        · ` "n")
-       ]))
-     · `suc `zero
-     · `suc (`suc `zero))
-   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
-    `suc
-    ((ƛ "n" ⇒
-      case `suc `zero [zero⇒ ` "n" |suc "m" ⇒
-      `suc
-      ((μ "+" ⇒
-        (ƛ "m" ⇒
-         (ƛ "n" ⇒
-          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-          ])))
-       · ` "m"
-       · ` "n")
-      ])
-     · `suc (`suc `zero))
-   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    `suc
-    case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
-    `suc
-    ((μ "+" ⇒
-      (ƛ "m" ⇒
-       (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-        ])))
-     · ` "m"
-     · `suc (`suc `zero))
-    ]
-   —→⟨ ξ-suc (β-suc V-zero) ⟩
-    `suc
-    (`suc
-     ((μ "+" ⇒
-       (ƛ "m" ⇒
-        (ƛ "n" ⇒
-         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-         ])))
-      · `zero
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
-    `suc
-    (`suc
-     ((ƛ "m" ⇒
-       (ƛ "n" ⇒
-        case ` "m" [zero⇒ ` "n" |suc "m" ⇒
-        `suc
-        ((μ "+" ⇒
-          (ƛ "m" ⇒
-           (ƛ "n" ⇒
-            case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-            ])))
-         · ` "m"
-         · ` "n")
-        ]))
-      · `zero
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
-    `suc
-    (`suc
-     ((ƛ "n" ⇒
-       case `zero [zero⇒ ` "n" |suc "m" ⇒
-       `suc
-       ((μ "+" ⇒
-         (ƛ "m" ⇒
-          (ƛ "n" ⇒
-           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-           ])))
-        · ` "m"
-        · ` "n")
-       ])
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
-    `suc
-    (`suc
-     case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
-     `suc
-     ((μ "+" ⇒
-       (ƛ "m" ⇒
-        (ƛ "n" ⇒
-         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
-         ])))
-      · ` "m"
-      · `suc (`suc `zero))
-     ])
-   —→⟨ ξ-suc (ξ-suc β-zero) ⟩
-    `suc (`suc (`suc (`suc `zero)))
-   ∎)
-   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
-_ = refl
-```
-Again, the derivation in the previous chapter was derived by
-editing the above.
-
-Similarly, we can evaluate the corresponding term for Church numerals:
-```agda
-_ : eval (gas 100) ⊢2+2ᶜ ≡
-  steps
-   ((ƛ "m" ⇒
-     (ƛ "n" ⇒
-      (ƛ "s" ⇒ (ƛ "z" ⇒ ` "m" · ` "s" · (` "n" · ` "s" · ` "z")))))
-    · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
-    · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
-    · (ƛ "n" ⇒ `suc ` "n")
-    · `zero
-   —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
-    (ƛ "n" ⇒
-     (ƛ "s" ⇒
-      (ƛ "z" ⇒
-       (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" ·
-       (` "n" · ` "s" · ` "z"))))
-    · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
-    · (ƛ "n" ⇒ `suc ` "n")
-    · `zero
-   —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
-    (ƛ "s" ⇒
-     (ƛ "z" ⇒
-      (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" ·
-      ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" · ` "z")))
-    · (ƛ "n" ⇒ `suc ` "n")
-    · `zero
-   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
-    (ƛ "z" ⇒
-     (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
-     ·
-     ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
-      · ` "z"))
-    · `zero
-   —→⟨ β-ƛ V-zero ⟩
-    (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
-    ·
-    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
-     · `zero)
-   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
-    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
-     · `zero)
-   —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
-    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-    ((ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-     `zero)
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
-    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-    ((ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero))
-   —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
-    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-    ((ƛ "n" ⇒ `suc ` "n") · `suc `zero)
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
-    (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
-    `suc (`suc `zero)
-   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `suc (`suc `zero))
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    (ƛ "n" ⇒ `suc ` "n") · `suc (`suc (`suc `zero))
-   —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
-    `suc (`suc (`suc (`suc `zero)))
-   ∎)
-   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
-_ = refl
-```
-And again, the example in the previous section was derived by editing the
-above.
-
-#### Exercise `mul-eval` (recommended)
-
-Using the evaluator, confirm that two times two is four.
-
-```agda
--- Your code goes here
-```
-
-
-#### Exercise: `progress-preservation` (practice)
-
-Without peeking at their statements above, write down the progress
-and preservation theorems for the simply typed lambda-calculus.
-
-```agda
--- Your code goes here
-```
-
-
-#### Exercise `subject_expansion` (practice)
-
-We say that `M` _reduces_ to `N` if `M —→ N`,
-but we can also describe the same situation by saying
-that `N` _expands_ to `M`.
-The preservation property is sometimes called _subject reduction_.
-Its opposite is _subject expansion_, which holds if
-`M —→ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
-Find two counter-examples to subject expansion, one
-with case expressions and one not involving case expressions.
-
-```agda
--- Your code goes here
-```
-
-
-## Well-typed terms don't get stuck
-
-A term is _normal_ if it cannot reduce:
-```agda
-Normal : Term → Set
-Normal M  =  ∀ {N} → ¬ (M —→ N)
-```
-
-A term is _stuck_ if it is normal yet not a value:
-```agda
-Stuck : Term → Set
-Stuck M  =  Normal M × ¬ Value M
-```
-
-Using progress, it is easy to show that no well-typed term is stuck:
-```agda
-postulate
-  unstuck : ∀ {M A}
-    → ∅ ⊢ M ⦂ A
-      -----------
-    → ¬ (Stuck M)
-```
-
-Using preservation, it is easy to show that after any number of steps,
-a well-typed term remains well typed:
-```agda
-postulate
-  preserves : ∀ {M N A}
-    → ∅ ⊢ M ⦂ A
-    → M —↠ N
-      ---------
-    → ∅ ⊢ N ⦂ A
-```
-
-An easy consequence is that starting from a well-typed term, taking
-any number of reduction steps leads to a term that is not stuck:
-```agda
-postulate
-  wttdgs : ∀ {M N A}
-    → ∅ ⊢ M ⦂ A
-    → M —↠ N
-      -----------
-    → ¬ (Stuck N)
-```
-Felleisen and Wright, who introduced proofs via progress and
-preservation, summarised this result with the slogan _well-typed terms
-don't get stuck_.  (They were referring to earlier work by Robin
-Milner, who used denotational rather than operational semantics. He
-introduced `wrong` as the denotation of a term with a type error, and
-showed _well-typed terms don't go wrong_.)
-
-#### Exercise `stuck` (practice)
-
-Give an example of an ill-typed term that does get stuck.
-
-```agda
--- Your code goes here
-```
-
-#### Exercise `unstuck` (recommended)
-
-Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
-
-```agda
--- Your code goes here
-```
-
-## Reduction is deterministic
-
-When we introduced reduction, we claimed it was deterministic.
-For completeness, we present a formal proof here.
-
-Our proof will need a variant
-of congruence to deal with functions of four arguments
-(to deal with `case_[zero⇒_|suc_⇒_]`).  It
-is exactly analogous to `cong` and `cong₂` as defined previously:
-```agda
-cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
-  {s w : A} {t x : B} {u y : C} {v z : D}
-  → s ≡ w → t ≡ x → u ≡ y → v ≡ z → f s t u v ≡ f w x y z
-cong₄ f refl refl refl refl = refl
-```
-
-It is now straightforward to show that reduction is deterministic:
-```agda
-det : ∀ {M M′ M″}
-  → (M —→ M′)
-  → (M —→ M″)
-    --------
-  → M′ ≡ M″
-det (ξ-·₁ L—→L′)   (ξ-·₁ L—→L″)     =  cong₂ _·_ (det L—→L′ L—→L″) refl
-det (ξ-·₁ L—→L′)   (ξ-·₂ VL M—→M″)  =  contradiction L—→L′ (V¬—→ VL)
-det (ξ-·₁ L—→L′)   (β-ƛ _)          =  contradiction L—→L′ (V¬—→ V-ƛ)
-det (ξ-·₂ VL _)    (ξ-·₁ L—→L″)     =  contradiction L—→L″ (V¬—→ VL)
-det (ξ-·₂ _ M—→M′) (ξ-·₂ _ M—→M″)   =  cong₂ _·_ refl (det M—→M′ M—→M″)
-det (ξ-·₂ _ M—→M′) (β-ƛ VM)         =  contradiction M—→M′ (V¬—→ VM)
-det (β-ƛ _)        (ξ-·₁ L—→L″)     =  contradiction L—→L″ (V¬—→ V-ƛ)
-det (β-ƛ VM)       (ξ-·₂ _ M—→M″)   =  contradiction M—→M″ (V¬—→ VM)
-det (β-ƛ _)        (β-ƛ _)          =  refl
-det (ξ-suc M—→M′)  (ξ-suc M—→M″)    =  cong `suc_ (det M—→M′ M—→M″)
-det (ξ-case L—→L′) (ξ-case L—→L″)   =  cong₄ case_[zero⇒_|suc_⇒_]
-                                         (det L—→L′ L—→L″) refl refl refl
-det (ξ-case L—→L′) β-zero           =  contradiction L—→L′ (V¬—→ V-zero)
-det (ξ-case L—→L′) (β-suc VL)       =  contradiction L—→L′ (V¬—→ (V-suc VL))
-det β-zero         (ξ-case M—→M″)   =  contradiction M—→M″ (V¬—→ V-zero)
-det β-zero         β-zero           =  refl
-det (β-suc VL)     (ξ-case L—→L″)   =  contradiction L—→L″ (V¬—→ (V-suc VL))
-det (β-suc _)      (β-suc _)        =  refl
-det β-μ            β-μ              =  refl
-```
-The proof is by induction over possible reductions.  We consider
-three typical cases:
-
-* Two instances of `ξ-·₁`:
-
-      L —→ L′                 L —→ L″
-      --------------- ξ-·₁    --------------- ξ-·₁
-      L · M —→ L′ · M         L · M —→ L″ · M
-
-  By induction we have `L′ ≡ L″`, and hence by congruence
-  `L′ · M ≡ L″ · M`.
-
-* An instance of `ξ-·₁` and an instance of `ξ-·₂`:
-
-                              Value L
-      L —→ L′                 M —→ M″
-      --------------- ξ-·₁    --------------- ξ-·₂
-      L · M —→ L′ · M         L · M —→ L · M″
-
-  The rule on the left requires `L` to reduce, but the rule on the right
-  requires `L` to be a value.  This is a contradiction since values do
-  not reduce.  If the value constraint was removed from `ξ-·₂`, or from
-  one of the other reduction rules, then determinism would no longer hold.
-
-* Two instances of `β-ƛ`:
-
-      Value V                              Value V
-      ----------------------------- β-ƛ    ----------------------------- β-ƛ
-      (ƛ x ⇒ N) · V —→ N [ x := V ]        (ƛ x ⇒ N) · V —→ N [ x := V ]
-
-  Since the left-hand sides are identical, the right-hand sides are
-  also identical. The formal proof simply invokes `refl`.
-
-Five of the 18 lines in the above proof are redundant, e.g., the case
-when one rule is `ξ-·₁` and the other is `ξ-·₂` is considered twice,
-once with `ξ-·₁` first and `ξ-·₂` second, and the other time with the
-two swapped.  What we might like to do is delete the redundant lines
-and add
-
-    det M—→M′ M—→M″ = sym (det M—→M″ M—→M′)
-
-to the bottom of the proof. But this does not work: the termination
-checker complains, because the arguments have merely switched order
-and neither is smaller.
-
-
-#### Quiz
-
-Suppose we add a new term `zap` with the following reduction rule
-
-    -------- β-zap
-    M —→ zap
-
-and the following typing rule:
-
-    ----------- ⊢zap
-    Γ ⊢ zap ⦂ A
-
-Which of the following properties remain true in
-the presence of these rules?  For each property, write either
-"remains true" or "becomes false." If a property becomes
-false, give a counterexample:
-
-  - Determinism
-
-  - Progress
-
-  - Preservation
-
-
-#### Quiz
-
-Suppose instead that we add a new term `foo` with the following
-reduction rules:
-
-    ------------------ β-foo₁
-    (λ x ⇒ ` x) —→ foo
-
-    ----------- β-foo₂
-    foo —→ zero
-
-Which of the following properties remain true in
-the presence of this rule?  For each one, write either
-"remains true" or else "becomes false." If a property becomes
-false, give a counterexample:
-
-  - Determinism
-
-  - Progress
-
-  - Preservation
-
-
-#### Quiz
-
-Suppose instead that we remove the rule `ξ·₁` from the step
-relation. Which of the following properties remain
-true in the absence of this rule?  For each one, write either
-"remains true" or else "becomes false." If a property becomes
-false, give a counterexample:
-
-  - Determinism
-
-  - Progress
-
-  - Preservation
-
-
-#### Quiz
-
-We can enumerate all the computable function from naturals to
-naturals, by writing out all programs of type `` `ℕ ⇒ `ℕ`` in
-lexical order.  Write `fᵢ` for the `i`'th function in this list.
-
-Say we add a typing rule that applies the above enumeration
-to interpret a natural as a function from naturals to naturals:
-
-    Γ ⊢ L ⦂ `ℕ
-    Γ ⊢ M ⦂ `ℕ
-    -------------- _·ℕ_
-    Γ ⊢ L · M ⦂ `ℕ
-
-And that we add the corresponding reduction rule:
-
-    fᵢ(m) —→ n
-    ---------- δ
-    i · m —→ n
-
-Which of the following properties remain true in
-the presence of these rules?  For each one, write either
-"remains true" or else "becomes false." If a property becomes
-false, give a counterexample:
-
-  - Determinism
-
-  - Progress
-
-  - Preservation
-
-Are all properties preserved in this case? Are there any
-other alterations we would wish to make to the system?
-
-## Unicode
-
-This chapter uses the following unicode:
-
-    ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
-    Δ  U+0394  GREEK CAPITAL LETTER DELTA (\GD or \Delta)
-    β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
-    δ  U+03B4  GREEK SMALL LETTER DELTA (\Gd or \delta)
-    μ  U+03BC  GREEK SMALL LETTER MU (\Gm or \mu)
-    ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
-    ρ  U+03B4  GREEK SMALL LETTER RHO (\Gr or \rho)
-    ᵢ  U+1D62  LATIN SUBSCRIPT SMALL LETTER I (\_i)
-    ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
-    –  U+2013  EM DASH (\em)
-    ₄  U+2084  SUBSCRIPT FOUR (\_4)
-    ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
-    ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
-    ∅  U+2205  EMPTY SET (\0)
-    ∋  U+220B  CONTAINS AS MEMBER (\ni)
-    ≟  U+225F  QUESTIONED EQUAL TO (\?=)
-    ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
-    ⦂  U+2982  Z NOTATION TYPE COLON (\:)
+-- ### Examples
+
+-- We can now use Agda to compute the non-terminating reduction
+-- sequence given earlier.  First, we show that the term `sucμ`
+-- is well typed:
+-- ```agda
+-- ⊢sucμ : ∅ ⊢ μ "x" ⇒ `suc ` "x" ⦂ `ℕ
+-- ⊢sucμ = ⊢μ (⊢suc (⊢` ∋x))
+--   where
+--   ∋x = Z
+-- ```
+-- To show the first three steps of the infinite reduction
+-- sequence, we evaluate with three steps worth of gas:
+-- ```agda
+-- _ : eval (gas 3) ⊢sucμ ≡
+--   steps
+--    (μ "x" ⇒ `suc ` "x"
+--    —→⟨ β-μ ⟩
+--     `suc (μ "x" ⇒ `suc ` "x")
+--    —→⟨ ξ-suc β-μ ⟩
+--     `suc (`suc (μ "x" ⇒ `suc ` "x"))
+--    —→⟨ ξ-suc (ξ-suc β-μ) ⟩
+--     `suc (`suc (`suc (μ "x" ⇒ `suc ` "x")))
+--    ∎)
+--    out-of-gas
+-- _ = refl
+-- ```
+
+-- Similarly, we can use Agda to compute the reduction sequences given
+-- in the previous chapter.  We start with the Church numeral two
+-- applied to successor and zero.  Supplying 100 steps of gas is more than enough:
+-- ```agda
+-- _ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
+--   steps
+--    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
+--    · `zero
+--    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+--     (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--      `zero
+--    —→⟨ β-ƛ V-zero ⟩
+--     (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero)
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+--     (ƛ "n" ⇒ `suc ` "n") · `suc `zero
+--    —→⟨ β-ƛ (V-suc V-zero) ⟩
+--     `suc (`suc `zero)
+--    ∎)
+--    (done (V-suc (V-suc V-zero)))
+-- _ = refl
+-- ```
+-- The example above was generated by using `C-c C-n` to normalise the
+-- left-hand side of the equation and pasting in the result as the
+-- right-hand side of the equation.  The example reduction of the
+-- previous chapter was derived from this result, reformatting and
+-- writing `twoᶜ` and `sucᶜ` in place of their expansions.
+
+-- Next, we show two plus two is four:
+-- ```agda
+-- _ : eval (gas 100) ⊢2+2 ≡
+--   steps
+--    ((μ "+" ⇒
+--      (ƛ "m" ⇒
+--       (ƛ "n" ⇒
+--        case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--        ])))
+--     · `suc (`suc `zero)
+--     · `suc (`suc `zero)
+--    —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+--     (ƛ "m" ⇒
+--      (ƛ "n" ⇒
+--       case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+--       `suc
+--       ((μ "+" ⇒
+--         (ƛ "m" ⇒
+--          (ƛ "n" ⇒
+--           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--           ])))
+--        · ` "m"
+--        · ` "n")
+--       ]))
+--     · `suc (`suc `zero)
+--     · `suc (`suc `zero)
+--    —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+--     (ƛ "n" ⇒
+--      case `suc (`suc `zero) [zero⇒ ` "n" |suc "m" ⇒
+--      `suc
+--      ((μ "+" ⇒
+--        (ƛ "m" ⇒
+--         (ƛ "n" ⇒
+--          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--          ])))
+--       · ` "m"
+--       · ` "n")
+--      ])
+--     · `suc (`suc `zero)
+--    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+--     case `suc (`suc `zero) [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+--     `suc
+--     ((μ "+" ⇒
+--       (ƛ "m" ⇒
+--        (ƛ "n" ⇒
+--         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--         ])))
+--      · ` "m"
+--      · `suc (`suc `zero))
+--     ]
+--    —→⟨ β-suc (V-suc V-zero) ⟩
+--     `suc
+--     ((μ "+" ⇒
+--       (ƛ "m" ⇒
+--        (ƛ "n" ⇒
+--         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--         ])))
+--      · `suc `zero
+--      · `suc (`suc `zero))
+--    —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+--     `suc
+--     ((ƛ "m" ⇒
+--       (ƛ "n" ⇒
+--        case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+--        `suc
+--        ((μ "+" ⇒
+--          (ƛ "m" ⇒
+--           (ƛ "n" ⇒
+--            case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--            ])))
+--         · ` "m"
+--         · ` "n")
+--        ]))
+--      · `suc `zero
+--      · `suc (`suc `zero))
+--    —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+--     `suc
+--     ((ƛ "n" ⇒
+--       case `suc `zero [zero⇒ ` "n" |suc "m" ⇒
+--       `suc
+--       ((μ "+" ⇒
+--         (ƛ "m" ⇒
+--          (ƛ "n" ⇒
+--           case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--           ])))
+--        · ` "m"
+--        · ` "n")
+--       ])
+--      · `suc (`suc `zero))
+--    —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+--     `suc
+--     case `suc `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+--     `suc
+--     ((μ "+" ⇒
+--       (ƛ "m" ⇒
+--        (ƛ "n" ⇒
+--         case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--         ])))
+--      · ` "m"
+--      · `suc (`suc `zero))
+--     ]
+--    —→⟨ ξ-suc (β-suc V-zero) ⟩
+--     `suc
+--     (`suc
+--      ((μ "+" ⇒
+--        (ƛ "m" ⇒
+--         (ƛ "n" ⇒
+--          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--          ])))
+--       · `zero
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+--     `suc
+--     (`suc
+--      ((ƛ "m" ⇒
+--        (ƛ "n" ⇒
+--         case ` "m" [zero⇒ ` "n" |suc "m" ⇒
+--         `suc
+--         ((μ "+" ⇒
+--           (ƛ "m" ⇒
+--            (ƛ "n" ⇒
+--             case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--             ])))
+--          · ` "m"
+--          · ` "n")
+--         ]))
+--       · `zero
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+--     `suc
+--     (`suc
+--      ((ƛ "n" ⇒
+--        case `zero [zero⇒ ` "n" |suc "m" ⇒
+--        `suc
+--        ((μ "+" ⇒
+--          (ƛ "m" ⇒
+--           (ƛ "n" ⇒
+--            case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--            ])))
+--         · ` "m"
+--         · ` "n")
+--        ])
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+--     `suc
+--     (`suc
+--      case `zero [zero⇒ `suc (`suc `zero) |suc "m" ⇒
+--      `suc
+--      ((μ "+" ⇒
+--        (ƛ "m" ⇒
+--         (ƛ "n" ⇒
+--          case ` "m" [zero⇒ ` "n" |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n")
+--          ])))
+--       · ` "m"
+--       · `suc (`suc `zero))
+--      ])
+--    —→⟨ ξ-suc (ξ-suc β-zero) ⟩
+--     `suc (`suc (`suc (`suc `zero)))
+--    ∎)
+--    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
+-- _ = refl
+-- ```
+-- Again, the derivation in the previous chapter was derived by
+-- editing the above.
+
+-- Similarly, we can evaluate the corresponding term for Church numerals:
+-- ```agda
+-- _ : eval (gas 100) ⊢2+2ᶜ ≡
+--   steps
+--    ((ƛ "m" ⇒
+--      (ƛ "n" ⇒
+--       (ƛ "s" ⇒ (ƛ "z" ⇒ ` "m" · ` "s" · (` "n" · ` "s" · ` "z")))))
+--     · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
+--     · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
+--     · (ƛ "n" ⇒ `suc ` "n")
+--     · `zero
+--    —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+--     (ƛ "n" ⇒
+--      (ƛ "s" ⇒
+--       (ƛ "z" ⇒
+--        (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" ·
+--        (` "n" · ` "s" · ` "z"))))
+--     · (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")))
+--     · (ƛ "n" ⇒ `suc ` "n")
+--     · `zero
+--    —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+--     (ƛ "s" ⇒
+--      (ƛ "z" ⇒
+--       (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" ·
+--       ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · ` "s" · ` "z")))
+--     · (ƛ "n" ⇒ `suc ` "n")
+--     · `zero
+--    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+--     (ƛ "z" ⇒
+--      (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
+--      ·
+--      ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
+--       · ` "z"))
+--     · `zero
+--    —→⟨ β-ƛ V-zero ⟩
+--     (ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
+--     ·
+--     ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
+--      · `zero)
+--    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+--     (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--     ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
+--      · `zero)
+--    —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+--     (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--     ((ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--      `zero)
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+--     (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--     ((ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `zero))
+--    —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+--     (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--     ((ƛ "n" ⇒ `suc ` "n") · `suc `zero)
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+--     (ƛ "z" ⇒ (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · ` "z")) ·
+--     `suc (`suc `zero)
+--    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+--     (ƛ "n" ⇒ `suc ` "n") · ((ƛ "n" ⇒ `suc ` "n") · `suc (`suc `zero))
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+--     (ƛ "n" ⇒ `suc ` "n") · `suc (`suc (`suc `zero))
+--    —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
+--     `suc (`suc (`suc (`suc `zero)))
+--    ∎)
+--    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
+-- _ = refl
+-- ```
+-- And again, the example in the previous section was derived by editing the
+-- above.
+
+-- #### Exercise `mul-eval` (recommended)
+
+-- Using the evaluator, confirm that two times two is four.
+
+-- ```agda
+-- -- Your code goes here
+-- ```
+
+
+-- #### Exercise: `progress-preservation` (practice)
+
+-- Without peeking at their statements above, write down the progress
+-- and preservation theorems for the simply typed lambda-calculus.
+
+-- ```agda
+-- -- Your code goes here
+-- ```
+
+
+-- #### Exercise `subject_expansion` (practice)
+
+-- We say that `M` _reduces_ to `N` if `M —→ N`,
+-- but we can also describe the same situation by saying
+-- that `N` _expands_ to `M`.
+-- The preservation property is sometimes called _subject reduction_.
+-- Its opposite is _subject expansion_, which holds if
+-- `M —→ N` and `∅ ⊢ N ⦂ A` imply `∅ ⊢ M ⦂ A`.
+-- Find two counter-examples to subject expansion, one
+-- with case expressions and one not involving case expressions.
+
+-- ```agda
+-- -- Your code goes here
+-- ```
+
+
+-- ## Well-typed terms don't get stuck
+
+-- A term is _normal_ if it cannot reduce:
+-- ```agda
+-- Normal : Term → Set
+-- Normal M  =  ∀ {N} → ¬ (M —→ N)
+-- ```
+
+-- A term is _stuck_ if it is normal yet not a value:
+-- ```agda
+-- Stuck : Term → Set
+-- Stuck M  =  Normal M × ¬ Value M
+-- ```
+
+-- Using progress, it is easy to show that no well-typed term is stuck:
+-- ```agda
+-- postulate
+--   unstuck : ∀ {M A}
+--     → ∅ ⊢ M ⦂ A
+--       -----------
+--     → ¬ (Stuck M)
+-- ```
+
+-- Using preservation, it is easy to show that after any number of steps,
+-- a well-typed term remains well typed:
+-- ```agda
+-- postulate
+--   preserves : ∀ {M N A}
+--     → ∅ ⊢ M ⦂ A
+--     → M —↠ N
+--       ---------
+--     → ∅ ⊢ N ⦂ A
+-- ```
+
+-- An easy consequence is that starting from a well-typed term, taking
+-- any number of reduction steps leads to a term that is not stuck:
+-- ```agda
+-- postulate
+--   wttdgs : ∀ {M N A}
+--     → ∅ ⊢ M ⦂ A
+--     → M —↠ N
+--       -----------
+--     → ¬ (Stuck N)
+-- ```
+-- Felleisen and Wright, who introduced proofs via progress and
+-- preservation, summarised this result with the slogan _well-typed terms
+-- don't get stuck_.  (They were referring to earlier work by Robin
+-- Milner, who used denotational rather than operational semantics. He
+-- introduced `wrong` as the denotation of a term with a type error, and
+-- showed _well-typed terms don't go wrong_.)
+
+-- #### Exercise `stuck` (practice)
+
+-- Give an example of an ill-typed term that does get stuck.
+
+-- ```agda
+-- -- Your code goes here
+-- ```
+
+-- #### Exercise `unstuck` (recommended)
+
+-- Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
+
+-- ```agda
+-- -- Your code goes here
+-- ```
+
+-- ## Reduction is deterministic
+
+-- When we introduced reduction, we claimed it was deterministic.
+-- For completeness, we present a formal proof here.
+
+-- Our proof will need a variant
+-- of congruence to deal with functions of four arguments
+-- (to deal with `case_[zero⇒_|suc_⇒_]`).  It
+-- is exactly analogous to `cong` and `cong₂` as defined previously:
+-- ```agda
+-- cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
+--   {s w : A} {t x : B} {u y : C} {v z : D}
+--   → s ≡ w → t ≡ x → u ≡ y → v ≡ z → f s t u v ≡ f w x y z
+-- cong₄ f refl refl refl refl = refl
+-- ```
+
+-- It is now straightforward to show that reduction is deterministic:
+-- ```agda
+-- det : ∀ {M M′ M″}
+--   → (M —→ M′)
+--   → (M —→ M″)
+--     --------
+--   → M′ ≡ M″
+-- det (ξ-·₁ L—→L′)   (ξ-·₁ L—→L″)     =  cong₂ _·_ (det L—→L′ L—→L″) refl
+-- det (ξ-·₁ L—→L′)   (ξ-·₂ VL M—→M″)  =  contradiction L—→L′ (V¬—→ VL)
+-- det (ξ-·₁ L—→L′)   (β-ƛ _)          =  contradiction L—→L′ (V¬—→ V-ƛ)
+-- det (ξ-·₂ VL _)    (ξ-·₁ L—→L″)     =  contradiction L—→L″ (V¬—→ VL)
+-- det (ξ-·₂ _ M—→M′) (ξ-·₂ _ M—→M″)   =  cong₂ _·_ refl (det M—→M′ M—→M″)
+-- det (ξ-·₂ _ M—→M′) (β-ƛ VM)         =  contradiction M—→M′ (V¬—→ VM)
+-- det (β-ƛ _)        (ξ-·₁ L—→L″)     =  contradiction L—→L″ (V¬—→ V-ƛ)
+-- det (β-ƛ VM)       (ξ-·₂ _ M—→M″)   =  contradiction M—→M″ (V¬—→ VM)
+-- det (β-ƛ _)        (β-ƛ _)          =  refl
+-- det (ξ-suc M—→M′)  (ξ-suc M—→M″)    =  cong `suc_ (det M—→M′ M—→M″)
+-- det (ξ-case L—→L′) (ξ-case L—→L″)   =  cong₄ case_[zero⇒_|suc_⇒_]
+--                                          (det L—→L′ L—→L″) refl refl refl
+-- det (ξ-case L—→L′) β-zero           =  contradiction L—→L′ (V¬—→ V-zero)
+-- det (ξ-case L—→L′) (β-suc VL)       =  contradiction L—→L′ (V¬—→ (V-suc VL))
+-- det β-zero         (ξ-case M—→M″)   =  contradiction M—→M″ (V¬—→ V-zero)
+-- det β-zero         β-zero           =  refl
+-- det (β-suc VL)     (ξ-case L—→L″)   =  contradiction L—→L″ (V¬—→ (V-suc VL))
+-- det (β-suc _)      (β-suc _)        =  refl
+-- det β-μ            β-μ              =  refl
+-- ```
+-- The proof is by induction over possible reductions.  We consider
+-- three typical cases:
+
+-- * Two instances of `ξ-·₁`:
+
+--       L —→ L′                 L —→ L″
+--       --------------- ξ-·₁    --------------- ξ-·₁
+--       L · M —→ L′ · M         L · M —→ L″ · M
+
+--   By induction we have `L′ ≡ L″`, and hence by congruence
+--   `L′ · M ≡ L″ · M`.
+
+-- * An instance of `ξ-·₁` and an instance of `ξ-·₂`:
+
+--                               Value L
+--       L —→ L′                 M —→ M″
+--       --------------- ξ-·₁    --------------- ξ-·₂
+--       L · M —→ L′ · M         L · M —→ L · M″
+
+--   The rule on the left requires `L` to reduce, but the rule on the right
+--   requires `L` to be a value.  This is a contradiction since values do
+--   not reduce.  If the value constraint was removed from `ξ-·₂`, or from
+--   one of the other reduction rules, then determinism would no longer hold.
+
+-- * Two instances of `β-ƛ`:
+
+--       Value V                              Value V
+--       ----------------------------- β-ƛ    ----------------------------- β-ƛ
+--       (ƛ x ⇒ N) · V —→ N [ x := V ]        (ƛ x ⇒ N) · V —→ N [ x := V ]
+
+--   Since the left-hand sides are identical, the right-hand sides are
+--   also identical. The formal proof simply invokes `refl`.
+
+-- Five of the 18 lines in the above proof are redundant, e.g., the case
+-- when one rule is `ξ-·₁` and the other is `ξ-·₂` is considered twice,
+-- once with `ξ-·₁` first and `ξ-·₂` second, and the other time with the
+-- two swapped.  What we might like to do is delete the redundant lines
+-- and add
+
+--     det M—→M′ M—→M″ = sym (det M—→M″ M—→M′)
+
+-- to the bottom of the proof. But this does not work: the termination
+-- checker complains, because the arguments have merely switched order
+-- and neither is smaller.
+
+
+-- #### Quiz
+
+-- Suppose we add a new term `zap` with the following reduction rule
+
+--     -------- β-zap
+--     M —→ zap
+
+-- and the following typing rule:
+
+--     ----------- ⊢zap
+--     Γ ⊢ zap ⦂ A
+
+-- Which of the following properties remain true in
+-- the presence of these rules?  For each property, write either
+-- "remains true" or "becomes false." If a property becomes
+-- false, give a counterexample:
+
+--   - Determinism
+
+--   - Progress
+
+--   - Preservation
+
+
+-- #### Quiz
+
+-- Suppose instead that we add a new term `foo` with the following
+-- reduction rules:
+
+--     ------------------ β-foo₁
+--     (λ x ⇒ ` x) —→ foo
+
+--     ----------- β-foo₂
+--     foo —→ zero
+
+-- Which of the following properties remain true in
+-- the presence of this rule?  For each one, write either
+-- "remains true" or else "becomes false." If a property becomes
+-- false, give a counterexample:
+
+--   - Determinism
+
+--   - Progress
+
+--   - Preservation
+
+
+-- #### Quiz
+
+-- Suppose instead that we remove the rule `ξ·₁` from the step
+-- relation. Which of the following properties remain
+-- true in the absence of this rule?  For each one, write either
+-- "remains true" or else "becomes false." If a property becomes
+-- false, give a counterexample:
+
+--   - Determinism
+
+--   - Progress
+
+--   - Preservation
+
+
+-- #### Quiz
+
+-- We can enumerate all the computable function from naturals to
+-- naturals, by writing out all programs of type `` `ℕ ⇒ `ℕ`` in
+-- lexical order.  Write `fᵢ` for the `i`'th function in this list.
+
+-- Say we add a typing rule that applies the above enumeration
+-- to interpret a natural as a function from naturals to naturals:
+
+--     Γ ⊢ L ⦂ `ℕ
+--     Γ ⊢ M ⦂ `ℕ
+--     -------------- _·ℕ_
+--     Γ ⊢ L · M ⦂ `ℕ
+
+-- And that we add the corresponding reduction rule:
+
+--     fᵢ(m) —→ n
+--     ---------- δ
+--     i · m —→ n
+
+-- Which of the following properties remain true in
+-- the presence of these rules?  For each one, write either
+-- "remains true" or else "becomes false." If a property becomes
+-- false, give a counterexample:
+
+--   - Determinism
+
+--   - Progress
+
+--   - Preservation
+
+-- Are all properties preserved in this case? Are there any
+-- other alterations we would wish to make to the system?
+
+-- ## Unicode
+
+-- This chapter uses the following unicode:
+
+--     ƛ  U+019B  LATIN SMALL LETTER LAMBDA WITH STROKE (\Gl-)
+--     Δ  U+0394  GREEK CAPITAL LETTER DELTA (\GD or \Delta)
+--     β  U+03B2  GREEK SMALL LETTER BETA (\Gb or \beta)
+--     δ  U+03B4  GREEK SMALL LETTER DELTA (\Gd or \delta)
+--     μ  U+03BC  GREEK SMALL LETTER MU (\Gm or \mu)
+--     ξ  U+03BE  GREEK SMALL LETTER XI (\Gx or \xi)
+--     ρ  U+03B4  GREEK SMALL LETTER RHO (\Gr or \rho)
+--     ᵢ  U+1D62  LATIN SUBSCRIPT SMALL LETTER I (\_i)
+--     ᶜ  U+1D9C  MODIFIER LETTER SMALL C (\^c)
+--     –  U+2013  EM DASH (\em)
+--     ₄  U+2084  SUBSCRIPT FOUR (\_4)
+--     ↠  U+21A0  RIGHTWARDS TWO HEADED ARROW (\rr-)
+--     ⇒  U+21D2  RIGHTWARDS DOUBLE ARROW (\=>)
+--     ∅  U+2205  EMPTY SET (\0)
+--     ∋  U+220B  CONTAINS AS MEMBER (\ni)
+--     ≟  U+225F  QUESTIONED EQUAL TO (\?=)
+--     ⊢  U+22A2  RIGHT TACK (\vdash or \|-)
+--     ⦂  U+2982  Z NOTATION TYPE COLON (\:)
