@@ -20,7 +20,7 @@ sequences for us.
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
-open import Data.Nat.Base using (ℕ; zero; suc; _<_; _≤_; s≤s; z≤n)
+open import Data.Nat.Base using (ℕ; zero; suc; _<_; s<s; z<s; _≤_; s≤s; z≤n)
 open import Data.Product.Base
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
   renaming (_,_ to ⟨_,_⟩)
@@ -908,17 +908,17 @@ eval : ∀ {L A}
   → Eval L g
 eval {L} zero    ⊢L            =  out-of-gas (L ∎) refl
 eval {L} (suc g) ⊢L with progress ⊢L
-... | done VL                  =  terminates (L ∎) (s≤s z≤n) VL
+... | done VL                  =  terminates (L ∎) z<s VL
 ... | step {M} L—→M with eval {M} g (preserve ⊢L L—→M)
 ...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
-...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s≤s <g) VN
+...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well typed.  We consider the amount of gas
 remaining.  There are two possibilities:
 
 * It is zero, so we are out of gas.  We return the trivial reduction
-  sequence `L —↠ L` and evidence that its length is zero.
+  sequence `L —↠ L` and evidence `refl` that its length is zero.
 
 * It is non-zero and after the next step we have `m` gas remaining.
   Apply progress to the evidence that term `L` is well typed.  There
@@ -926,22 +926,23 @@ remaining.  There are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
     trivial reduction sequence `L —↠ L`,
-    evidence that it's length is less than one,
+    evidence `z<s` that it's length is less than `suc g`,
     and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well typed, and we recursively invoke
     `eval` on the remaining gas. There are two possibilities:
 
-    - The recursive eval runs out of gas, returning a reduction sequence
-      `M —↠ N` and evidence that its length equals `g`. We return the
-      a sequence `L —↠ N` and evidence that its length equals `suc g`.
+    - The recursive eval runs out of gas, returning a reduction
+      sequence `M —↠ N` and evidence `≡g` that its length equals
+      `g`. We return the a sequence `L —↠ N` and evidence
+      `cong suc ≡g` that its length equals `suc g`.
 
     - The recursive eval terminates, returning a reduction sequence
-      `M —↠ N`, evidence that its length is less than `g`, and evidence
-      that `N` is a value. We return the sequence `L —↠ N`, evidence
-      that its length is less than `suc g`, and the same evidence that
-      `N` is a value.
+      `M —↠ N`, evidence `<g` that its length is less than `g`, and
+      evidence `VN` that `N` is a value. We return the sequence `L —↠ N`,
+      evidence `s<s <g` that its length is less than `suc g`, and
+      evidence `VN` that `N` is a value.
 
 (Thanks to Conrad Watt for suggesting to relate gas and the length of
 the reduction sequence.)
@@ -1005,6 +1006,8 @@ left-hand side of the equation and pasting in the result as the
 right-hand side of the equation.  The example reduction of the
 previous chapter was derived from this result, reformatting and
 writing `twoᶜ` and `sucᶜ` in place of their expansions.
+Recall that `_<_` is defined in terms of `_≤_`, which is why
+the evidence that `4 < 100` is constructed from `s≤s` and `z≤n`.
 
 Next, we show two plus two is four:
 ```agda
