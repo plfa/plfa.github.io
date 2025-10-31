@@ -47,8 +47,8 @@ the range of different lambda calculi one may encounter.
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
-open import Data.Nat using (ℕ; zero; suc; _<_; _≤?_; z≤n; s≤s)
+open Eq using (_≡_; refl; cong)
+open import Data.Nat using (ℕ; zero; suc; _<_; z<s; s<s; _≤_; z≤n; s≤s; _≤?_)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Nullary.Decidable using (True; toWitness)
 ```
@@ -176,11 +176,11 @@ As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
 every variable has the same type:
 ```agda
-length : Context → ℕ
-length ∅        =  zero
-length (Γ , _)  =  suc (length Γ)
+size : Context → ℕ
+size ∅        =  zero
+size (Γ , _)  =  suc (size Γ)
 
-count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ ★
+count : ∀ {Γ} → {n : ℕ} → (p : n < size Γ) → Γ ∋ ★
 count {Γ , ★} {zero}    (s≤s z≤n)  =  Z
 count {Γ , ★} {(suc n)} (s≤s p)    =  S (count p)
 ```
@@ -189,7 +189,7 @@ We can then introduce a convenient abbreviation for variables:
 ```agda
 #_ : ∀ {Γ}
   → (n : ℕ)
-  → {n∈Γ : True (suc n ≤? length Γ)}
+  → {n∈Γ : True (suc n ≤? size Γ)}
     --------------------------------
   → Γ ⊢ ★
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
@@ -328,7 +328,7 @@ data Normal where
 
 We introduce a convenient abbreviation for evidence that a variable is neutral:
 ```agda
-#′_ : ∀ {Γ} (n : ℕ) {n∈Γ : True (suc n ≤? length Γ)} → Neutral {Γ} (# n)
+#′_ : ∀ {Γ} (n : ℕ) {n∈Γ : True (suc n ≤? size Γ)} → Neutral {Γ} (# n)
 #′_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
@@ -543,51 +543,45 @@ application.
 
 As previously, progress immediately yields an evaluator.
 
-Gas is specified by a natural number:
-```agda
-record Gas : Set where
-  constructor gas
-  field
-    amount : ℕ
+We relate gas to the number of steps in a reduction sequence.
 ```
-When our evaluator returns a term `N`, it will either give evidence that
-`N` is normal or indicate that it ran out of gas:
-```agda
-data Finished {Γ A} (N : Γ ⊢ A) : Set where
-
-   done :
-       Normal N
-       ----------
-     → Finished N
-
-   out-of-gas :
-       ----------
-       Finished N
+length : ∀ {Γ A} {M N : Γ ⊢ A} → M —↠ N → ℕ
+length (M ∎)                =  zero
+length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 ```
-Given a term `L` of type `A`, the evaluator will, for some `N`, return
-a reduction sequence from `L` to `N` and an indication of whether
-reduction finished:
+If the evaluator runs out of gas it returns a sequence
+of length equal to the amount of gas, while if it terminates in returns
+a sequence of length less than the amount of gas and ending in a
+normal form.
 ```agda
-data Steps : ∀ {Γ A} → Γ ⊢ A → Set where
+data Eval {Γ A} (M : Γ ⊢ A) (g : ℕ) : Set where
 
-  steps : ∀ {Γ A} {L N : Γ ⊢ A}
-    → L —↠ N
-    → Finished N
-      ----------
-    → Steps L
+  out-of-gas : {N : Γ ⊢ A}
+    → (M—↠N : M —↠ N)  
+    → length M—↠N ≡ g
+      ---------------
+    → Eval M g
+
+  terminates : {N : Γ ⊢ A}
+    → (M—↠N : M —↠ N)
+    → length M—↠N < g
+    → Normal N
+      ---------------
+    → Eval M g
 ```
-The evaluator takes gas and a term and returns the corresponding steps:
+The evaluator takes gas and a term and returns the corresponding steps.
 ```agda
 eval : ∀ {Γ A}
-  → Gas
+  → (g : ℕ)
   → (L : Γ ⊢ A)
-    -----------
-  → Steps L
-eval (gas zero)    L                     =  steps (L ∎) out-of-gas
-eval (gas (suc m)) L with progress L
-... | done NrmL                          =  steps (L ∎) (done NrmL)
-... | step {M} L—→M with eval (gas m) M
-...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+    ---------
+  → Eval L g
+eval zero L            =  out-of-gas (L ∎) refl
+eval (suc g) L with progress L
+... | done VL                  =  terminates (L ∎) z<s VL
+... | step {M} L—→M with eval g M
+...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
+...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
 The definition is as before, save that the empty context `∅`
 generalises to an arbitrary context `Γ`.
@@ -596,8 +590,8 @@ generalises to an arbitrary context `Γ`.
 
 We reiterate our previous example. Two plus two is four, with Church numerals:
 ```agda
-_ : eval (gas 100) 2+2ᶜ ≡
-  steps
+_ : eval 100 2+2ᶜ ≡
+  terminates
    ((ƛ
      (ƛ
       (ƛ
@@ -638,12 +632,12 @@ _ : eval (gas 100) 2+2ᶜ ≡
    —→⟨ ζ (ζ (ξ₂ (ξ₂ β))) ⟩
     ƛ (ƛ (` (S Z)) · ((` (S Z)) · ((` (S Z)) · ((` (S Z)) · (` Z)))))
    ∎)
-   (done
+   (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))
+   (ƛ
     (ƛ
-     (ƛ
-      (′
-       (` (S Z)) ·
-       (′ (` (S Z)) · (′ (` (S Z)) · (′ (` (S Z)) · (′ (` Z)))))))))
+     (′
+      (` (S Z)) ·
+      (′ (` (S Z)) · (′ (` (S Z)) · (′ (` (S Z)) · (′ (` Z))))))))
 _ = refl
 ```
 
@@ -695,13 +689,14 @@ Applying successor to the zero indeed reduces to the Scott numeral
 for one.
 
 ```agda
-_ : eval (gas 100) (`suc_ {∅} `zero) ≡
-    steps
+_ : eval 100 (`suc_ {∅} `zero) ≡
+    terminates
         ((ƛ (ƛ (ƛ # 1 · # 2))) · (ƛ (ƛ # 0))
     —→⟨ β ⟩
          ƛ (ƛ # 1 · (ƛ (ƛ # 0)))
     ∎)
-    (done (ƛ (ƛ (′ (` (S Z)) · (ƛ (ƛ (′ (` Z))))))))
+    (s≤s (s≤s z≤n))
+    (ƛ (ƛ (′ (` (S Z)) · (ƛ (ƛ (′ (` Z)))))))
 _ = refl
 ```
 

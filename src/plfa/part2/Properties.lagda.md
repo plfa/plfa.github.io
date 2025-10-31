@@ -870,14 +870,6 @@ length (M ∎)                =  zero
 length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 ```
 
-`Gas` is specified by a natural number:
-```agda
-record Gas : Set where
-  constructor gas
-  field
-    amount : ℕ
-```
-
 For given an amount of gas `g` and evidence that term `M` is
 well-typed, our evaluator either runs out of gas, returning a sequence
 `M —↠ N` of length exactly `g`, or it terminates, returning a sequence
@@ -899,7 +891,8 @@ data Eval (M : Term) (g : ℕ) : Set where
     → Eval M g
 ```
 The evaluator takes gas and evidence that a term is well typed,
-and returns the corresponding steps:
+and returns a reduction sequence, indicating either that it ran
+out of gas or that it terminated.
 ```agda
 eval : ∀ {L A}
   → (g : ℕ)
