@@ -1090,7 +1090,7 @@ The definition is a little simpler than previously, as we no longer need
 to invoke preservation.
 
 We don't repeat the previous examples, as they add little save length.
-Similarly for the proof that reduction is deterministic.
+Similarly for the proof that reduction Uis deterministic.
 
 
 #### Exercise `mul-example` (recommended)
@@ -1134,6 +1134,9 @@ This chapter uses the following unicode:
     ₇  U+2087  SUBSCRIPT SEVEN (\_7)
     ≠  U+2260  NOT EQUAL TO (\=n)
 
+
+-- Following omitted as for some reason they vastly increase
+-- time for Agda to check the file.
 
 -- ## Examples
 
