@@ -154,7 +154,7 @@ data Canonical_⦂_ : Term → Type → Set where
 Show that `Canonical V ⦂ A` is isomorphic to `(∅ ⊢ V ⦂ A) × (Value V)`,
 that is, the canonical forms are exactly the well-typed values.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -864,7 +864,7 @@ gas. By analogy, we will use the name _gas_ for the parameter which
 puts a bound on the number of reduction steps.
 
 We will relate gas to the number of steps in a reduction sequence.
-```
+```agda
 length : ∀ {M N} → M —↠ N → ℕ
 length (M ∎)                =  zero
 length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
