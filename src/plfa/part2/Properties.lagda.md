@@ -878,7 +878,7 @@ well-typed, our evaluator either runs out of gas, returning a sequence
 data Eval (M : Term) (g : ℕ) : Set where
 
   out-of-gas : {N : Term}
-    → (M—↠N : M —↠ N)  
+    → (M—↠N : M —↠ N)
     → length M—↠N ≡ g
       ---------------
     → Eval M g
@@ -939,7 +939,7 @@ remaining.  There are two possibilities:
 
 (Thanks to Conrad Watt for suggesting to relate gas and the length of
 the reduction sequence.)
-      
+
 
 ### Examples
 

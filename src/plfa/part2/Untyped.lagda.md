@@ -557,7 +557,7 @@ normal form.
 data Eval {Γ A} (M : Γ ⊢ A) (g : ℕ) : Set where
 
   out-of-gas : {N : Γ ⊢ A}
-    → (M—↠N : M —↠ N)  
+    → (M—↠N : M —↠ N)
     → length M—↠N ≡ g
       ---------------
     → Eval M g

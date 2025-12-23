@@ -1058,7 +1058,7 @@ a sequence of length less than the amount of gas and ending in a value.
 data Eval {A} (M : ∅ ⊢ A) (g : ℕ) : Set where
 
   out-of-gas : {N : ∅ ⊢ A}
-    → (M—↠N : M —↠ N)  
+    → (M—↠N : M —↠ N)
     → length M—↠N ≡ g
       ---------------
     → Eval M g
@@ -1395,4 +1395,3 @@ This chapter uses the following unicode:
 --    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 -- _ = refl
 -- ```
-

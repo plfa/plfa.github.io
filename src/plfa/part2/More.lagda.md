@@ -1105,7 +1105,7 @@ length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 data Eval {A} (M : ∅ ⊢ A) (g : ℕ) : Set where
 
   out-of-gas : {N : ∅ ⊢ A}
-    → (M—↠N : M —↠ N)  
+    → (M—↠N : M —↠ N)
     → length M—↠N ≡ g
       ---------------
     → Eval M g
