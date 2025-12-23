@@ -911,7 +911,7 @@ evidence that `L` is well typed.  We consider the amount of gas
 remaining.  There are two possibilities:
 
 * It is zero, so we are out of gas.  We return the trivial reduction
-  sequence `L —↠ L` and evidence `refl` that its length is zero.
+  sequence `L —↠ L` and evidence that its length is zero.
 
 * It is non-zero and after the next step we have `m` gas remaining.
   Apply progress to the evidence that term `L` is well typed.  There
@@ -919,23 +919,22 @@ remaining.  There are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
     trivial reduction sequence `L —↠ L`,
-    evidence `z<s` that it's length is less than `suc g`,
+    evidence that it's length is less than one,
     and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well typed, and we recursively invoke
     `eval` on the remaining gas. There are two possibilities:
 
-    - The recursive eval runs out of gas, returning a reduction
-      sequence `M —↠ N` and evidence `≡g` that its length equals
-      `g`. We return the a sequence `L —↠ N` and evidence
-      `cong suc ≡g` that its length equals `suc g`.
+    - The recursive eval runs out of gas, returning a reduction sequence
+      `M —↠ N` and evidence that its length equals `g`. We return the
+      a sequence `L —↠ N` and evidence that its length equals `suc g`.
 
     - The recursive eval terminates, returning a reduction sequence
-      `M —↠ N`, evidence `<g` that its length is less than `g`, and
-      evidence `VN` that `N` is a value. We return the sequence `L —↠ N`,
-      evidence `s<s <g` that its length is less than `suc g`, and
-      evidence `VN` that `N` is a value.
+      `M —↠ N`, evidence that its length is less than `g`, and evidence
+      that `N` is a value. We return the sequence `L —↠ N`, evidence
+      that its length is less than `suc g`, and the same evidence that
+      `N` is a value.
 
 (Thanks to Conrad Watt for suggesting to relate gas and the length of
 the reduction sequence.)
