@@ -11,7 +11,7 @@ This chapter discusses the list data type.  It gives further examples
 of many of the techniques we have developed so far, and provides
 examples of polymorphic types and higher-order functions.
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -29,7 +29,7 @@ open import plfa.part1.Isomorphism using (_≃_; _⇔_)
 ```
 
 
-## Lists
+# Lists
 
 Lists are defined in Agda as follows:
 
@@ -94,7 +94,7 @@ list, and the constructors `[]` and `_∷_` correspond to nil and
 cons respectively, allowing a more efficient representation of lists.
 
 
-## List syntax
+# List syntax
 
 We can write lists more conveniently by introducing the following definitions:
 
@@ -114,7 +114,7 @@ a pattern on the left-hand side of an equation, or a term
 on the right-hand side of an equation.
 
 
-## Append
+# Append
 
 Our first function on lists is written `_++_` and pronounced
 _append_:
@@ -156,7 +156,7 @@ Appending two lists requires time linear in the
 number of elements in the first list.
 
 
-## Reasoning about append
+# Reasoning about append
 
 We can reason about lists in much the same way that we reason
 about numbers.  Here is the proof that append is associative:
@@ -241,7 +241,7 @@ As we will see later,
 these three properties establish that `_++_` and `[]` form
 a _monoid_ over lists.
 
-## Length
+# Length
 
 Our next function finds the length of a list:
 
@@ -282,7 +282,7 @@ must instead write `length {ℕ} []`.  Since `[]` has no elements, Agda
 has insufficient information to infer the implicit parameter.
 
 
-## Reasoning about length
+# Reasoning about length
 
 The length of one list appended to another is the
 sum of the lengths of the lists:
@@ -320,7 +320,7 @@ by a recursive invocation of the proof, in this case `length-++ xs ys`,
 and it is promoted by the congruence `cong suc`.
 
 
-## Reverse
+# Reverse
 
 Using append, it is easy to formulate a function to reverse a list:
 
@@ -376,7 +376,7 @@ reversed, append takes time linear in the length of the first
 list, and the sum of the numbers up to `n - 1` is `n * (n - 1) / 2`.
 (We will validate that last fact in an exercise later in this chapter.)
 
-#### Exercise `reverse-++-distrib` (recommended)
+## Exercise `reverse-++-distrib` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
@@ -388,7 +388,7 @@ reverse of the second appended to the reverse of the first:
 ```
 
 
-#### Exercise `reverse-involutive` (recommended)
+## Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution:
@@ -400,7 +400,7 @@ as the identity function.  Show that reverse is an involution:
 ```
 
 
-## Faster reverse
+# Faster reverse
 
 The definition above, while easy to reason about, is less efficient than
 one might expect since it takes time quadratic in the length of the list.
@@ -504,7 +504,7 @@ _ =
 
 Now the time to reverse a list is linear in the length of the list.
 
-## Map {#Map}
+# Map {#Map}
 
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a _higher-order function_, one which takes a function as an
@@ -570,7 +570,7 @@ parameterised on _n_ types often has a map that is parameterised on
 _n_ functions.
 
 
-#### Exercise `map-compose` (practice)
+## Exercise `map-compose` (practice)
 
 Prove that the map of a composition is equal to the composition of two maps:
 
@@ -582,7 +582,7 @@ The last step of the proof requires extensionality.
 -- Your code goes here
 ```
 
-#### Exercise `map-++-distribute` (practice)
+## Exercise `map-++-distribute` (practice)
 
 Prove the following relationship between map and append:
 
@@ -592,7 +592,7 @@ Prove the following relationship between map and append:
 -- Your code goes here
 ```
 
-#### Exercise `map-Tree` (practice)
+## Exercise `map-Tree` (practice)
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
@@ -611,7 +611,7 @@ Define a suitable map operator over trees:
 -- Your code goes here
 ```
 
-## Fold {#Fold}
+# Fold {#Fold}
 
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
@@ -687,7 +687,7 @@ Here, if `xs` is of type `List A`, then we see we have an instance of
 Demonstrating both these equations is left as an exercise.
 
 
-#### Exercise `product` (recommended)
+## Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
 For example:
@@ -698,7 +698,7 @@ For example:
 -- Your code goes here
 ```
 
-#### Exercise `foldr-++` (recommended)
+## Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
 
@@ -712,7 +712,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `foldr-∷` (practice)
+## Exercise `foldr-∷` (practice)
 
 Show
 
@@ -727,7 +727,7 @@ Show as a consequence of `foldr-++` above that
 -- Your code goes here
 ```
 
-#### Exercise `map-is-foldr` (practice)
+## Exercise `map-is-foldr` (practice)
 
 Show that map can be defined using fold:
 
@@ -739,7 +739,7 @@ The proof requires extensionality.
 -- Your code goes here
 ```
 
-#### Exercise `fold-Tree` (practice)
+## Exercise `fold-Tree` (practice)
 
 Define a suitable fold function for the type of trees given earlier:
 
@@ -750,7 +750,7 @@ Define a suitable fold function for the type of trees given earlier:
 -- Your code goes here
 ```
 
-#### Exercise `map-is-fold-Tree` (practice)
+## Exercise `map-is-fold-Tree` (practice)
 
 Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
@@ -758,7 +758,7 @@ Demonstrate an analogue of `map-is-foldr` for the type of trees.
 -- Your code goes here
 ```
 
-#### Exercise `sum-downFrom` (stretch)
+## Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows:
 
@@ -784,7 +784,7 @@ equal to `n * (n ∸ 1) / 2`:
 -- Your code goes here
 ```
 
-## Monoids
+# Monoids
 
 Typically when we use a fold the operator is associative and the
 value is a left and right identity for the operator, meaning that the
@@ -881,7 +881,7 @@ foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
   ∎
 ```
 
-#### Exercise `foldl` (practice)
+## Exercise `foldl` (practice)
 
 Define a function `foldl` which is analogous to `foldr`, but where
 operations associate to the left rather than the right.  For example:
@@ -894,7 +894,7 @@ operations associate to the left rather than the right.  For example:
 ```
 
 
-#### Exercise `foldr-monoid-foldl` (practice)
+## Exercise `foldr-monoid-foldl` (practice)
 
 Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
@@ -904,7 +904,7 @@ Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 ```
 
 
-## All {#All}
+# All {#All}
 
 We can also define predicates over lists. Two of the most important
 are `All` and `Any`.
@@ -944,7 +944,7 @@ scope when the pattern is declared.  That's not the case here, since
 `List` is defined before `[_,_,_]`, but `All` is defined later.)
 
 
-## Any
+# Any
 
 Predicate `Any P` holds if predicate `P` is satisfied by some element of a list:
 
@@ -997,7 +997,7 @@ The five occurrences of `()` attest to the fact that there is no
 possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 `3 ∈ []`, respectively.
 
-## All and append
+# All and append
 
 A predicate holds for every element of one list appended to another if and
 only if it holds for every element of both lists:
@@ -1024,7 +1024,7 @@ All-++-⇔ xs ys =
   from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ =  Px ∷ from xs ys ⟨ Pxs , Pys ⟩
 ```
 
-#### Exercise `Any-++-⇔` (recommended)
+## Exercise `Any-++-⇔` (recommended)
 
 Prove a result similar to `All-++-⇔`, but with `Any` in place of `All`, and a suitable
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
@@ -1034,7 +1034,7 @@ replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 -- Your code goes here
 ```
 
-#### Exercise `All-++-≃` (stretch)
+## Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 
@@ -1042,7 +1042,7 @@ Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `¬Any⇔All¬` (recommended)
+## Exercise `¬Any⇔All¬` (recommended)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
 
@@ -1063,7 +1063,7 @@ If so, prove; if not, explain why.
 -- Your code goes here
 ```
 
-#### Exercise `¬Any≃All¬` (stretch)
+## Exercise `¬Any≃All¬` (stretch)
 
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
 
@@ -1071,7 +1071,7 @@ Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `All-∀` (practice)
+## Exercise `All-∀` (practice)
 
 Show that `All P xs` is isomorphic to `∀ x → x ∈ xs → P x`.
 
@@ -1080,7 +1080,7 @@ Show that `All P xs` is isomorphic to `∀ x → x ∈ xs → P x`.
 ```
 
 
-#### Exercise `Any-∃` (practice)
+## Exercise `Any-∃` (practice)
 
 Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 
@@ -1089,7 +1089,7 @@ Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 ```
 
 
-## Decidability of All
+# Decidability of All
 
 If we consider a predicate as a function that yields a boolean,
 it is easy to define an analogue of `All`, which returns true if
@@ -1133,7 +1133,7 @@ decidable, using `_∷_` rather than `⟨_,_⟩` to combine the evidence for
 the head and tail of the list.
 
 
-#### Exercise `Any?` (stretch)
+## Exercise `Any?` (stretch)
 
 Just as `All` has analogues `all` and `All?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
@@ -1145,7 +1145,7 @@ for some element of a list.  Give their definitions.
 ```
 
 
-#### Exercise `split` (stretch)
+## Exercise `split` (stretch)
 
 The relation `merge` holds when two lists merge to give a third list.
 
@@ -1192,7 +1192,7 @@ with their corresponding proofs.
 -- Your code goes here
 ```
 
-## Standard Library
+# Standard Library
 
 Definitions similar to those in this chapter can be found in the standard library:
 
@@ -1216,7 +1216,7 @@ one for unary relations (as used in this chapter where `P` ranges over
 unary predicates) and one for binary relations (as used earlier, where `_≤_`
 ranges over a binary relation).
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

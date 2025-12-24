@@ -125,7 +125,7 @@ Chapter [More](/More/)
 are in bisimulation.
 
 
-## Imports
+# Imports
 
 We import our source language from
 Chapter [More](/More/):
@@ -135,7 +135,7 @@ open import plfa.part2.More
 ```
 
 
-## Simulation
+# Simulation
 
 The simulation is a straightforward formalisation of the rules
 in the introduction:
@@ -174,7 +174,7 @@ However, leaving the simulation small lets us focus on the essence.
 It's a handy technical trick that we can have a large source language,
 but only bother to include in the simulation the terms of interest.
 
-#### Exercise `_†` (practice)
+## Exercise `_†` (practice)
 
 Formalise the translation from source to target given in the introduction.
 Show that `M † ≡ N` implies `M ~ N`, and conversely.
@@ -189,7 +189,7 @@ to use a decidable predicate to pick out terms in the domain of `_†`, using
 ```
 
 
-## Simulation commutes with values
+# Simulation commutes with values
 
 We need a number of technical results. The first is that simulation
 commutes with values.  That is, if `M ~ M†` and `M` is a value then
@@ -210,7 +210,7 @@ commutes with values.  That is, if `M ~ M†` and `M` is a value then
 It is a straightforward case analysis, where here the only value
 of interest is a lambda abstraction.
 
-#### Exercise `~val⁻¹` (practice)
+## Exercise `~val⁻¹` (practice)
 
 Show that this also holds in the reverse direction: if `M ~ M†`
 and `Value M†` then `Value M`.
@@ -220,7 +220,7 @@ and `Value M†` then `Value M`.
 ```
 
 
-## Simulation commutes with renaming
+# Simulation commutes with renaming
 
 The next technical result is that simulation commutes with renaming.
 That is, if `ρ` maps any judgment `Γ ∋ A` to a judgment `Δ ∋ A`,
@@ -242,7 +242,7 @@ reconstruct each term with recursive invocation, extending the environment
 where appropriate (in this case, only for the body of an abstraction).
 
 
-## Simulation commutes with substitution
+# Simulation commutes with substitution
 
 The third technical result is that simulation commutes with substitution.
 It is more complex than renaming, because where we had one renaming map
@@ -311,7 +311,7 @@ the required special case.  If `N ~ N†` and `M ~ M†`, then
 Once more, the structure of the proof resembles the original.
 
 
-## The relation is a simulation
+# The relation is a simulation
 
 Finally, we can show that the relation actually is a simulation.
 In fact, we will show the stronger condition of a lock-step simulation.
@@ -479,7 +479,7 @@ In its structure, it looks a little bit like a proof of progress:
     we have `N [ x := V ] ~ N† [ x := V† ]`.
 
 
-#### Exercise `sim⁻¹` (practice)
+## Exercise `sim⁻¹` (practice)
 
 Show that we also have a simulation in the other direction, and hence that we have
 a bisimulation.
@@ -488,7 +488,7 @@ a bisimulation.
 -- Your code goes here
 ```
 
-#### Exercise `products` (practice)
+## Exercise `products` (practice)
 
 Show that the two formulations of products in
 Chapter [More](/More/)
@@ -500,7 +500,7 @@ In this case, the simulation is _not_ lock-step.
 -- Your code goes here
 ```
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

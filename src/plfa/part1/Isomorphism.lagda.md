@@ -14,7 +14,7 @@ to demonstrate that operations on types such as product and sum
 satisfy properties akin to associativity, commutativity, and
 distributivity.
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -25,7 +25,7 @@ open import Data.Nat.Properties using (+-comm)
 ```
 
 
-## Lambda expressions
+# Lambda expressions
 
 The chapter begins with a few preliminaries that will be useful
 here and elsewhere: lambda expressions, function composition, and
@@ -64,7 +64,7 @@ need for the writer to remember to declare it in advance, or for the
 reader to search for the definition in the code.
 
 
-## Function composition
+# Function composition
 
 In what follows, we will make use of function composition:
 
@@ -83,7 +83,7 @@ g ∘′ f  =  λ x → g (f x)
 ```
 
 
-## Extensionality {#extensionality}
+# Extensionality {#extensionality}
 
 Extensionality asserts that the only way to distinguish functions is
 by applying them; if two functions applied to the same argument always
@@ -154,7 +154,7 @@ Here the type of `f` and `g` has changed from `A → B` to
 dependent functions.
 
 
-## Isomorphism
+# Isomorphism
 
 Two sets are isomorphic if they are in one-to-one correspondence.
 Here is a formal definition of isomorphism:
@@ -223,7 +223,7 @@ inductive type
 where `f`, `g`, `g∘f`, and `f∘g` are values of suitable types.
 
 
-## Isomorphism is an equivalence
+# Isomorphism is an equivalence
 
 Isomorphism is an equivalence, meaning that it is reflexive, symmetric,
 and transitive.  To show isomorphism is reflexive, we take both `to`
@@ -302,7 +302,7 @@ functions, and use equational reasoning to combine the inverses:
 ```
 
 
-## Equational reasoning for isomorphism
+# Equational reasoning for isomorphism
 
 It is straightforward to support a variant of equational reasoning for
 isomorphism.  We essentially copy the previous definition
@@ -338,7 +338,7 @@ open ≃-Reasoning
 ```
 
 
-## Embedding
+# Embedding
 
 We also need the notion of _embedding_, which is a weakening of
 isomorphism.  While an isomorphism shows that two types are in
@@ -425,7 +425,7 @@ last combines the left inverse of `B ≲ A` with the equivalences of
 the `to` and `from` components from the two embeddings to obtain
 the right inverse of the isomorphism.
 
-## Equational reasoning for embedding
+# Equational reasoning for embedding
 
 We can also support tabular reasoning for embedding,
 analogous to that used for isomorphism:
@@ -458,7 +458,7 @@ module ≲-Reasoning where
 open ≲-Reasoning
 ```
 
-#### Exercise `≃-implies-≲` (practice)
+## Exercise `≃-implies-≲` (practice)
 
 Show that every isomorphism implies an embedding.
 
@@ -474,7 +474,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `_⇔_` (practice) {#iff}
+## Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
 
@@ -491,7 +491,7 @@ Show that equivalence is reflexive, symmetric, and transitive.
 -- Your code goes here
 ```
 
-#### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
+## Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin) and
@@ -514,7 +514,7 @@ Using the above, establish that there is an embedding of `ℕ` into `Bin`.
 
 Why do `to` and `from` not form an isomorphism?
 
-## Standard library
+# Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 
@@ -528,7 +528,7 @@ The standard library `_↔_` and `_↩_` correspond to our `_≃_` and
 convenient, since they depend on a nested record structure and are
 parameterised with regard to an arbitrary notion of equivalence.
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

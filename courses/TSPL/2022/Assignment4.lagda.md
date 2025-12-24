@@ -7,9 +7,9 @@ permalink : /TSPL/2022/Assignment4/
 module Assignment4 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
-## Introduction
+# Introduction
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -22,7 +22,7 @@ Submit your homework using the "submit" command.
 Please ensure your files execute correctly under Agda!
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -36,13 +36,13 @@ permissions appropriately (generally permitting access only to
 yourself, or your group in the case of group practicals).
 
 
-## DeBruijn
+# DeBruijn
 
 ```agda
 module DeBruijn where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -58,7 +58,7 @@ module DeBruijn where
     hiding ()
 ```
 
-#### Exercise `mul` (recommended)
+### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the intrinsically-typed
@@ -69,7 +69,7 @@ de Bruijn representation.
 ```
 
 
-#### Exercise `V¬—→` (practice)
+### Exercise `V¬—→` (practice)
 
 Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
@@ -79,7 +79,7 @@ values.
   -- Your code goes here
 ```
 
-#### Exercise `mul-example` (recommended)
+### Exercise `mul-example` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
@@ -89,7 +89,7 @@ Using the evaluator, confirm that two times two is four.
 
 
 
-## More
+# More
 
 ```agda
 module More where
@@ -109,7 +109,7 @@ module More where
     hiding (double-subst)
 ```
 
-#### Exercise `More` (recommended and practice)
+### Exercise `More` (recommended and practice)
 
 Formalise the remaining constructs defined in this chapter.
 Make your changes in this file.
@@ -128,7 +128,7 @@ Please delimit any code you add as follows:
     -- end
 
 
-#### Exercise `double-subst` (stretch)
+### Exercise `double-subst` (stretch)
 
 Show that a double substitution is equivalent to two single
 substitutions.
@@ -145,13 +145,13 @@ its context adjusted via renaming in order for the right-hand
 side to be well typed.
 
 
-## Inference
+# Inference
 
 ```agda
 module Inference where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -184,7 +184,7 @@ invoked as `Γ DB.⊢ A`, where `Γ` has type
     hiding ()
 ```
 
-#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -194,7 +194,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).
@@ -204,7 +204,7 @@ Chapter [More](/More/).
 ```
 
 
-#### Exercise `bidirectional-rest` (stretch)
+### Exercise `bidirectional-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/).
@@ -214,7 +214,7 @@ Chapter [More](/More/).
 ```
 
 
-#### Exercise `inference-multiplication` (recommended)
+### Exercise `inference-multiplication` (recommended)
 
 Apply inference to your decorated definition of multiplication from
 exercise [`bidirectional-mul`](/Inference/#bidirectional-mul), and show that
@@ -225,7 +225,7 @@ multiplication from Chapter [DeBruijn](/DeBruijn/).
   -- Your code goes here
 ```
 
-#### Exercise `inference-products` (recommended)
+### Exercise `inference-products` (recommended)
 
 Using your rules from exercise
 [`bidirectional-products`](/Inference/#bidirectional-products), extend
@@ -235,7 +235,7 @@ bidirectional inference to include products.
   -- Your code goes here
 ```
 
-#### Exercise `inference-rest` (stretch)
+### Exercise `inference-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/).
@@ -246,13 +246,13 @@ Chapter [More](/More/).
 
 
 
-## Untyped
+# Untyped
 
 ```agda
 module Untyped where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -275,7 +275,7 @@ module Untyped where
     hiding ()
 ```
 
-#### Exercise (`Type≃⊤`) (practice)
+### Exercise (`Type≃⊤`) (practice)
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
@@ -283,7 +283,7 @@ Show that `Type` is isomorphic to `⊤`, the unit type.
   -- Your code goes here
 ```
 
-#### Exercise (`Context≃ℕ`) (practice)
+### Exercise (`Context≃ℕ`) (practice)
 
 Show that `Context` is isomorphic to `ℕ`.
 
@@ -291,7 +291,7 @@ Show that `Context` is isomorphic to `ℕ`.
   -- Your code goes here
 ```
 
-#### Exercise (`variant-1`) (practice)
+### Exercise (`variant-1`) (practice)
 
 How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
@@ -301,7 +301,7 @@ unless both terms are in normal form.
   -- Your code goes here
 ```
 
-#### Exercise (`variant-2`) (practice)
+### Exercise (`variant-2`) (practice)
 
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
@@ -313,7 +313,7 @@ abstractions).  What would `2+2ᶜ` reduce to in this case?
 ```
 
 
-#### Exercise `plus-eval` (practice)
+### Exercise `plus-eval` (practice)
 
 Use the evaluator to confirm that `plus · two · two` and `four`
 normalise to the same term.
@@ -322,7 +322,7 @@ normalise to the same term.
   -- Your code goes here
 ```
 
-#### Exercise `multiplication-untyped` (recommended)
+### Exercise `multiplication-untyped` (recommended)
 
 Use the encodings above to translate your definition of
 multiplication from previous chapters with the Scott
@@ -333,7 +333,7 @@ Confirm that two times two is four.
   -- Your code goes here
 ```
 
-#### Exercise `encode-more` (stretch)
+### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
 Chapter [More](/More/),

@@ -40,12 +40,12 @@ For each construct, we give syntax, typing, reductions, and an example.
 We also give translations where relevant; formally establishing the
 correctness of translations will be the subject of the next chapter.
 
-## Primitive numbers
+# Primitive numbers
 
 We define a `Nat` type equivalent to the built-in natural number type
 with multiplication as a primitive operation on numbers:
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       Nat                                 primitive natural numbers
@@ -57,7 +57,7 @@ with multiplication as a primitive operation on numbers:
     V, W ::= ...                        Values
       con c                               constant
 
-### Typing
+## Typing
 
 The hypothesis of the `con` rule is unusual, in that
 it refers to a typing judgment of Agda rather than a
@@ -72,7 +72,7 @@ typing judgment of the defined calculus:
     ---------------- _`*_
     Γ ⊢ L `* M : Nat
 
-### Reduction
+## Reduction
 
 A rule that defines a primitive directly, such as the last rule below,
 is called a δ rule.  Here the δ rule defines multiplication of
@@ -90,7 +90,7 @@ by the Agda standard prelude:
     ----------------------------- δ-*
     con c `* con d —→ con (c * d)
 
-### Example
+## Example
 
 Here is a function to cube a primitive number:
 
@@ -98,24 +98,24 @@ Here is a function to cube a primitive number:
     cube = ƛ x ⇒ x `* x `* x
 
 
-## Let bindings
+# Let bindings
 
 Let bindings affect only the syntax of terms; they introduce no new
 types or values:
 
-### Syntax
+## Syntax
 
     L, M, N ::= ...                     Terms
       `let x `= M `in N                   let
 
-### Typing
+## Typing
 
     Γ ⊢ M ⦂ A
     Γ , x ⦂ A ⊢ N ⦂ B
     ------------------------- `let
     Γ ⊢ `let x `= M `in N ⦂ B
 
-### Reduction
+## Reduction
 
     M —→ M′
     --------------------------------------- ξ-let
@@ -124,7 +124,7 @@ types or values:
     --------------------------------- β-let
     `let x `= V `in N —→ N [ x := V ]
 
-### Example
+## Example
 
 Here is a function to raise a primitive number to the tenth power:
 
@@ -134,7 +134,7 @@ Here is a function to raise a primitive number to the tenth power:
                   `let x5  `= x4 `* x  `in
                   x5 `* x5
 
-### Translation
+## Translation
 
 We can translate each _let_ term into an application of an abstraction:
 
@@ -144,9 +144,9 @@ Here `M †` is the translation of term `M` from a calculus with the
 construct to a calculus without the construct.
 
 
-## Products {#products}
+# Products {#products}
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       A `× B                              product type
@@ -159,7 +159,7 @@ construct to a calculus without the construct.
     V, W ::= ...                        Values
       `⟨ V , W ⟩                          pair
 
-### Typing
+## Typing
 
     Γ ⊢ M ⦂ A
     Γ ⊢ N ⦂ B
@@ -174,7 +174,7 @@ construct to a calculus without the construct.
     ---------------- `proj₂ or `×-E₂
     Γ ⊢ `proj₂ L ⦂ B
 
-### Reduction
+## Reduction
 
     M —→ M′
     ------------------------- ξ-⟨,⟩₁
@@ -198,7 +198,7 @@ construct to a calculus without the construct.
     ---------------------- β-proj₂
     `proj₂ `⟨ V , W ⟩ —→ W
 
-### Example
+## Example
 
 Here is a function to swap the components of a pair:
 
@@ -206,14 +206,14 @@ Here is a function to swap the components of a pair:
     swap× = ƛ z ⇒ `⟨ `proj₂ z , `proj₁ z ⟩
 
 
-## Alternative formulation of products
+# Alternative formulation of products
 
 There is an alternative formulation of products, where in place of two
 ways to eliminate the type we have a case term that binds two
 variables.  We repeat the syntax in full, but only give the new type
 and reduction rules:
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       A `× B                              product type
@@ -225,14 +225,14 @@ and reduction rules:
     V, W ::=                            Values
       `⟨ V , W ⟩                          pair
 
-### Typing
+## Typing
 
     Γ ⊢ L ⦂ A `× B
     Γ , x ⦂ A , y ⦂ B ⊢ N ⦂ C
     ------------------------------- case× or ×-E
     Γ ⊢ case× L [⟨ x , y ⟩⇒ N ] ⦂ C
 
-### Reduction
+## Reduction
 
     L —→ L′
     --------------------------------------------------- ξ-case×
@@ -241,7 +241,7 @@ and reduction rules:
     --------------------------------------------------------- β-case×
     case× `⟨ V , W ⟩ [⟨ x , y ⟩⇒ N ] —→ N [ x := V ][ y := W ]
 
-### Example
+## Example
 
 Here is a function to swap the components of a pair rewritten in the new notation:
 
@@ -249,7 +249,7 @@ Here is a function to swap the components of a pair rewritten in the new notatio
     swap×-case = ƛ z ⇒ case× z
                          [⟨ x , y ⟩⇒ `⟨ y , x ⟩ ]
 
-### Translation
+## Translation
 
 We can translate the alternative formulation into the one with projections:
 
@@ -282,9 +282,9 @@ We can also translate back the other way:
     (`proj₁ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ x ]
     (`proj₂ L) ‡  =  case× (L ‡) [⟨ x , y ⟩⇒ y ]
 
-## Sums {#sums}
+# Sums {#sums}
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       A `⊎ B                              sum type
@@ -298,7 +298,7 @@ We can also translate back the other way:
       `inj₁ V                             inject first component
       `inj₂ W                             inject second component
 
-### Typing
+## Typing
 
     Γ ⊢ M ⦂ A
     -------------------- `inj₁ or ⊎-I₁
@@ -314,7 +314,7 @@ We can also translate back the other way:
     ----------------------------------------- case⊎ or ⊎-E
     Γ ⊢ case⊎ L [inj₁ x ⇒ M |inj₂ y ⇒ N ] ⦂ C
 
-### Reduction
+## Reduction
 
     M —→ M′
     ------------------- ξ-inj₁
@@ -334,7 +334,7 @@ We can also translate back the other way:
     --------------------------------------------------------- β-inj₂
     case⊎ (`inj₂ W) [inj₁ x ⇒ M |inj₂ y ⇒ N ] —→ N [ y := W ]
 
-### Example
+## Example
 
 Here is a function to swap the components of a sum:
 
@@ -344,13 +344,13 @@ Here is a function to swap the components of a sum:
                     |inj₂ y ⇒ `inj₁ y ]
 
 
-## Unit type
+# Unit type
 
 For the unit type, there is a way to introduce
 values of the type but no way to eliminate values of the type.
 There are no reduction rules.
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       `⊤                                  unit type
@@ -361,16 +361,16 @@ There are no reduction rules.
     V, W ::= ...                        Values
       `tt                                 unit value
 
-### Typing
+## Typing
 
     ------------ `tt or ⊤-I
     Γ ⊢ `tt ⦂ `⊤
 
-### Reduction
+## Reduction
 
 (none)
 
-### Example
+## Example
 
 Here is the isomorphism between `A` and ``A `× `⊤``:
 
@@ -381,13 +381,13 @@ Here is the isomorphism between `A` and ``A `× `⊤``:
     from×⊤ = ƛ z ⇒ `proj₁ z
 
 
-## Alternative formulation of unit type
+# Alternative formulation of unit type
 
 There is an alternative formulation of the unit type, where in place of
 no way to eliminate the type we have a case term that binds zero variables.
 We repeat the syntax in full, but only give the new type and reduction rules:
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       `⊤                                  unit type
@@ -399,14 +399,14 @@ We repeat the syntax in full, but only give the new type and reduction rules:
     V, W ::= ...                        Values
       `tt                                 unit value
 
-### Typing
+## Typing
 
     Γ ⊢ L ⦂ `⊤
     Γ ⊢ M ⦂ A
     ------------------------ case⊤ or ⊤-E
     Γ ⊢ case⊤ L [tt⇒ M ] ⦂ A
 
-### Reduction
+## Reduction
 
     L —→ L′
     ------------------------------------- ξ-case⊤
@@ -415,7 +415,7 @@ We repeat the syntax in full, but only give the new type and reduction rules:
     ----------------------- β-case⊤
     case⊤ `tt [tt⇒ M ] —→ M
 
-### Example
+## Example
 
 Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new notation:
 
@@ -425,7 +425,7 @@ Here is half the isomorphism between `A` and ``A `× `⊤`` rewritten in the new
                                         [tt⇒ x ] ]
 
 
-### Translation
+## Translation
 
 We can translate the alternative formulation into one without case:
 
@@ -434,14 +434,14 @@ We can translate the alternative formulation into one without case:
 Here `z` is a variable that does not appear free in `M`.
 
 
-## Empty type
+# Empty type
 
 For the empty type, there is a way to eliminate values of
 the type but no way to introduce values of the type.  There are no
 values of the type and no β rule, but there is a ξ rule.  The `case⊥`
 construct plays a role similar to `⊥-elim` in Agda:
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       `⊥                                  empty type
@@ -449,19 +449,19 @@ construct plays a role similar to `⊥-elim` in Agda:
     L, M, N ::= ...                     Terms
       case⊥ L []                          case
 
-### Typing
+## Typing
 
     Γ ⊢ L ⦂ `⊥
     ------------------ case⊥ or ⊥-E
     Γ ⊢ case⊥ L [] ⦂ A
 
-### Reduction
+## Reduction
 
     L —→ L′
     ------------------------- ξ-case⊥
     case⊥ L [] —→ case⊥ L′ []
 
-### Example
+## Example
 
 Here is the isomorphism between `A` and ``A `⊎ `⊥``:
 
@@ -474,9 +474,9 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
                      |inj₂ y ⇒ case⊥ y
                                  [] ]
 
-## Lists
+# Lists
 
-### Syntax
+## Syntax
 
     A, B, C ::= ...                     Types
       `List A                             list type
@@ -490,7 +490,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
       `[]                                 nil
       V `∷ W                              cons
 
-### Typing
+## Typing
 
     ----------------- `[] or List-I₁
     Γ ⊢ `[] ⦂ `List A
@@ -506,7 +506,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
     -------------------------------------- caseL or List-E
     Γ ⊢ caseL L [[]⇒ M | x ∷ xs ⇒ N ] ⦂ B
 
-### Reduction
+## Reduction
 
     M —→ M′
     ----------------- ξ-∷₁
@@ -526,7 +526,7 @@ Here is the isomorphism between `A` and ``A `⊎ `⊥``:
     --------------------------------------------------------------- β-∷
     caseL (V `∷ W) [[]⇒ M | x ∷ xs ⇒ N ] —→ N [ x := V ][ xs := W ]
 
-### Example
+## Example
 
 Here is the map function for lists:
 
@@ -537,7 +537,7 @@ Here is the map function for lists:
                | x ∷ xs ⇒ f · x `∷ mL · f · xs ]
 
 
-## Formalisation
+# Formalisation
 
 We now show how to formalise
 
@@ -549,7 +549,7 @@ We now show how to formalise
 and leave formalisation of the remaining constructs as an exercise.
 
 
-### Imports
+## Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -560,7 +560,7 @@ open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 
-### Syntax
+## Syntax
 
 ```agda
 infix  4 _⊢_
@@ -580,7 +580,7 @@ infix  9 S_
 infix  9 #_
 ```
 
-### Types
+## Types
 
 ```agda
 data Type : Set where
@@ -590,7 +590,7 @@ data Type : Set where
   _`×_  : Type → Type → Type
 ```
 
-### Contexts
+## Contexts
 
 ```agda
 data Context : Set where
@@ -598,7 +598,7 @@ data Context : Set where
   _,_ : Context → Type → Context
 ```
 
-### Variables and the lookup judgment
+## Variables and the lookup judgment
 
 ```agda
 data _∋_ : Context → Type → Set where
@@ -613,7 +613,7 @@ data _∋_ : Context → Type → Set where
     → Γ , A ∋ B
 ```
 
-### Terms and the typing judgment
+## Terms and the typing judgment
 
 ```agda
 data _⊢_ : Context → Type → Set where
@@ -712,7 +712,7 @@ data _⊢_ : Context → Type → Set where
 
 ```
 
-### Abbreviating de Bruijn indices
+## Abbreviating de Bruijn indices
 
 ```agda
 size : Context → ℕ
@@ -735,7 +735,7 @@ count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
-## Renaming
+# Renaming
 
 ```agda
 ext : ∀ {Γ Δ}
@@ -765,7 +765,7 @@ rename ρ (`proj₂ L)     =  `proj₂ (rename ρ L)
 rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
 ```
 
-## Simultaneous Substitution
+# Simultaneous Substitution
 
 ```agda
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
@@ -789,7 +789,7 @@ subst σ (`proj₂ L)     =  `proj₂ (subst σ L)
 subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 ```
 
-## Single and double substitution
+# Single and double substitution
 
 ```agda
 _[_] : ∀ {Γ A B}
@@ -817,7 +817,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   σ (S (S x))  =  ` x
 ```
 
-## Values
+# Values
 
 ```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -857,7 +857,7 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 Implicit arguments need to be supplied when they are
 not fixed by the given arguments.
 
-## Reduction
+# Reduction
 
 ```agda
 infix 2 _—→_
@@ -988,7 +988,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 
 ```
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 ```agda
 infix  2 _—↠_
@@ -1018,7 +1018,7 @@ begin M—↠N = M—↠N
 ```
 
 
-## Values do not reduce
+# Values do not reduce
 
 ```agda
 V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A}
@@ -1034,7 +1034,7 @@ V¬—→ V-⟨ _ , VN ⟩ (ξ-⟨,⟩₂ _ N—→N′)  =  V¬—→ VN N—�
 ```
 
 
-## Progress
+# Progress
 
 ```agda
 data Progress {A} (M : ∅ ⊢ A) : Set where
@@ -1095,7 +1095,7 @@ progress (case× L M) with progress L
 ```
 
 
-## Evaluation
+# Evaluation
 
 ```agda
 length : ∀ {A} {M N : ∅ ⊢ A} → M —↠ N → ℕ
@@ -1205,7 +1205,7 @@ _ =
    ∎
 ```
 
-#### Exercise `More` (recommended and practice)
+## Exercise `More` (recommended and practice)
 
 Formalise the remaining constructs defined in this chapter.
 Make your changes in this file.
@@ -1224,7 +1224,7 @@ Please delimit any code you add as follows:
     -- end
 
 
-#### Exercise `double-subst` (stretch)
+## Exercise `double-subst` (stretch)
 
 Show that a double substitution is equivalent to two single
 substitutions.
@@ -1240,7 +1240,7 @@ Note the arguments need to be swapped and `W` needs to have
 its context adjusted via renaming in order for the right-hand
 side to be well typed.
 
-## Test examples
+# Test examples
 
 We repeat the [test examples](/DeBruijn/#examples) from Chapter [DeBruijn](/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
@@ -1271,7 +1271,7 @@ sucᶜ = ƛ `suc (# 0)
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 ```
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

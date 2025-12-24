@@ -7,9 +7,9 @@ permalink : /TSPL/2022/Assignment2/
 module Assignment2 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
-## Introduction
+# Introduction
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -25,7 +25,7 @@ Select `Assessment` from the left hand menu, then select `Assignment Submission`
 Please ensure your files execute correctly under Agda!
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -39,13 +39,13 @@ permissions appropriately (generally permitting access only to
 yourself, or your group in the case of group practicals).
 
 
-## Equality
+# Equality
 
 ```agda
 module Equality where
 ```
 
-## Imports
+# Imports
 
 This chapter has no imports.  Every chapter in this book, and nearly
 every module in the Agda standard library, imports equality.
@@ -58,7 +58,7 @@ Since we define equality here, any import would create a conflict.
   open Eq.≡-Reasoning
 ```
 
-#### Exercise `trans` and `≡-Reasoning` (practice)
+### Exercise `trans` and `≡-Reasoning` (practice)
 
 Sadly, we cannot use the definition of trans' using ≡-Reasoning as the definition
 for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
@@ -67,7 +67,7 @@ for trans. Can you see why? (Hint: look at the definition of `_≡⟨_⟩_`)
   -- Your code goes here
 ```
 
-#### Exercise `≤-Reasoning` (stretch)
+### Exercise `≤-Reasoning` (stretch)
 
 The proof of monotonicity from
 Chapter [Relations](/Relations/)
@@ -83,13 +83,13 @@ regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mon
 
 
 
-## Isomorphism
+# Isomorphism
 
 ```agda
 module Isomorphism where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -105,7 +105,7 @@ module Isomorphism where
     hiding (≃-implies-≲; _⇔_)
 ```
 
-#### Exercise `≃-implies-≲` (practice)
+### Exercise `≃-implies-≲` (practice)
 
 Show that every isomorphism implies an embedding.
 
@@ -121,7 +121,7 @@ Show that every isomorphism implies an embedding.
   -- Your code goes here
 ```
 
-#### Exercise `_⇔_` (practice) {#iff}
+### Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
 
@@ -138,7 +138,7 @@ Show that equivalence is reflexive, symmetric, and transitive.
   -- Your code goes here
 ```
 
-#### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
+### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin) and
@@ -162,13 +162,13 @@ Using the above, establish that there is an embedding of `ℕ` into `Bin`.
 Why do `to` and `from` not form an isomorphism?
 
 
-## Connectives
+# Connectives
 
 ```agda
 module Connectives where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -186,7 +186,7 @@ module Connectives where
     hiding (⊎-weak-×; ⊎×-implies-×⊎)
 ```
 
-#### Exercise `⇔≃×` (recommended)
+### Exercise `⇔≃×` (recommended)
 
 Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
@@ -196,7 +196,7 @@ is isomorphic to `(A → B) × (B → A)`.
 ```
 
 
-#### Exercise `⊎-comm` (recommended)
+### Exercise `⊎-comm` (recommended)
 
 Show sum is commutative up to isomorphism.
 
@@ -204,7 +204,7 @@ Show sum is commutative up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊎-assoc` (practice)
+### Exercise `⊎-assoc` (practice)
 
 Show sum is associative up to isomorphism.
 
@@ -212,7 +212,7 @@ Show sum is associative up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊥-identityˡ` (recommended)
+### Exercise `⊥-identityˡ` (recommended)
 
 Show empty is the left identity of sums up to isomorphism.
 
@@ -220,7 +220,7 @@ Show empty is the left identity of sums up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊥-identityʳ` (practice)
+### Exercise `⊥-identityʳ` (practice)
 
 Show empty is the right identity of sums up to isomorphism.
 
@@ -228,7 +228,7 @@ Show empty is the right identity of sums up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊎-weak-×` (recommended)
+### Exercise `⊎-weak-×` (recommended)
 
 Show that the following property holds:
 
@@ -245,7 +245,7 @@ distributive law, and explain how it relates to the weak version.
 ```
 
 
-#### Exercise `⊎×-implies-×⊎` (practice)
+### Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
 
@@ -262,13 +262,13 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 
 
 
-## Negation
+# Negation
 
 ```agda
 module Negation where
 ```
 
-## Imports
+# Imports
 
 ```agda
   open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -285,7 +285,7 @@ module Negation where
     hiding (Stable)
 ```
 
-#### Exercise `<-irreflexive` (recommended)
+### Exercise `<-irreflexive` (recommended)
 
 Using negation, show that
 [strict inequality](/Relations/#strict-inequality)
@@ -296,7 +296,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 ```
 
 
-#### Exercise `trichotomy` (practice)
+### Exercise `trichotomy` (practice)
 
 Show that strict inequality satisfies
 [trichotomy](/Relations/#trichotomy),
@@ -313,7 +313,7 @@ but that when one holds the negation of the other two must also hold.
   -- Your code goes here
 ```
 
-#### Exercise `⊎-dual-×` (recommended)
+### Exercise `⊎-dual-×` (recommended)
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
@@ -335,7 +335,7 @@ If so, prove; if not, can you give a relation weaker than
 isomorphism that relates the two sides?
 
 
-#### Exercise `Classical` (stretch)
+### Exercise `Classical` (stretch)
 
 Consider the following principles:
 
@@ -352,7 +352,7 @@ Show that each of these implies all the others.
 ```
 
 
-#### Exercise `Stable` (stretch)
+### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
 
@@ -369,13 +369,13 @@ of two stable formulas is stable.
 ```
 
 
-## Quantifiers
+# Quantifiers
 
 ```agda
 module Quantifiers where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -393,7 +393,7 @@ module Quantifiers where
     hiding (∀-distrib-×; ⊎∀-implies-∀⊎; ∃-distrib-⊎; ∃×-implies-×∃; ∃¬-implies-¬∀; Tri)
 ```
 
-#### Exercise `∀-distrib-×` (recommended)
+### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
 
@@ -406,7 +406,7 @@ Show that universals distribute over conjunction:
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
 
-#### Exercise `⊎∀-implies-∀⊎` (practice)
+### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
 
@@ -419,7 +419,7 @@ Show that a disjunction of universals implies a universal of disjunctions:
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise `∀-×` (practice)
+### Exercise `∀-×` (practice)
 
 Consider the following type.
 
@@ -436,7 +436,7 @@ Hint: you will need to postulate a version of extensionality that
 works for dependent functions.
 
 
-#### Exercise `∃-distrib-⊎` (recommended)
+### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction:
 
@@ -446,7 +446,7 @@ Show that existentials distribute over disjunction:
       ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 ```
 
-#### Exercise `∃×-implies-×∃` (practice)
+### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
 
@@ -458,13 +458,13 @@ Show that an existential of conjunctions implies a conjunction of existentials:
 
 Does the converse hold? If so, prove; if not, explain why.
 
-#### Exercise `∃-⊎` (practice)
+### Exercise `∃-⊎` (practice)
 
 Let `Tri` and `B` be as in Exercise `∀-×`.
 Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 
 
-#### Exercise `∃-even-odd` (practice)
+### Exercise `∃-even-odd` (practice)
 
 How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
@@ -474,7 +474,7 @@ restated in this way.
   -- Your code goes here
 ```
 
-#### Exercise `∃-+-≤` (practice)
+### Exercise `∃-+-≤` (practice)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
@@ -484,7 +484,7 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 ```
 
 
-#### Exercise `∃¬-implies-¬∀` (recommended)
+### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal:
 
@@ -499,7 +499,7 @@ Show that existential of a negation implies negation of a universal:
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
+### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin),

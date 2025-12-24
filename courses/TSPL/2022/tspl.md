@@ -4,14 +4,14 @@ permalink : /TSPL/2022/
 ---
 
 
-## Staff
+# Staff
 
 * **Instructor**
     [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
 * **Teaching assistant**
     [Tudor Ferariu](https://www.inf.ed.ac.uk/people/students/Tudor_Ferariu.html)
 
-## Lectures and tutorials
+# Lectures and tutorials
 
 Lectures take place Monday and Thursday.
 Monday's lecture is immediately followed by a tutorial.
@@ -21,7 +21,7 @@ Monday's lecture is immediately followed by a tutorial.
 * **10.00--10.50** _Thursday Lecture_
   Informatics Forum, room G.03 (IF G.03), save for Thursday 10 November in G.07 (IF G.07).
 
-## Links
+# Links
 
 * [Piazza][piazza]
 * [Lectures][lectures]
@@ -31,7 +31,7 @@ Monday's lecture is immediately followed by a tutorial.
 [lectures]: https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home
 [learn]: https://www.learn.ed.ac.uk/ultra/courses/_98006_1/cl/outline
 
-## Schedule
+# Schedule
 
 <table>
 <thead>
@@ -101,7 +101,7 @@ Monday's lecture is immediately followed by a tutorial.
 </table>
 
 
-## Assessment
+# Assessment
 
 Assessment for the course is as follows.
 
@@ -120,7 +120,7 @@ the optional project may not be a good use of time compared to other
 courses where there are easier marks to be had.
 
 
-## Coursework
+# Coursework
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
@@ -131,7 +131,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * Assignment 5 cw5 due 12 noon Thursday 24 November (Week 10)
   Use file [Exam](/TSPL/2022/Exam/). Despite the rubric, do **all three questions**.
 
-## How to submit coursework
+# How to submit coursework
 
 Go to the TSPL [Learn][learn] course and select “Assessment” from the left hand
 menu. Select the “Assignment Submission” folder and then click on the
@@ -160,7 +160,7 @@ submit tspl cwN AssignmentN.lagda.md
 where N is the number of the assignment. -->
 
 
-## Optional project
+# Optional project
 
 The optional project is to take a research paper and formalise all or
 part of it in Agda.  In the past, some students have submitted superb optional
@@ -180,14 +180,14 @@ submit tspl essay Essay.lagda.md
 
 -->
 
-## Mock exam
+# Mock exam
 
 10am-12noon Monday 28 November. An online
 examination with the Agda proof assistant, to let you
 practice for the exam and familiarise yourself with exam conditions.
 
 
-## Additional reading
+# Additional reading
 
 * John Reynolds,
   [Three Approaches to Type Structure][reynolds],
@@ -208,7 +208,7 @@ practice for the exam and familiarise yourself with exam conditions.
 
 
 <!--
-## Midterm course feedback
+# Midterm course feedback
 
 You may offer feedback on the course at
 [https://www.surveymonkey.co.uk/r/YX7ZFYC](https://www.surveymonkey.co.uk/r/YX7ZFYC).
@@ -218,7 +218,7 @@ Please do so by 12 noon Thursday 31 October.
 
 <!--
 
-## Mock exam
+# Mock exam
 
 Here is the text of the [second mock](/courses/tspl/2018/Mock2.pdf)
 and the exam [instructions](/courses/tspl/2018/Instructions.pdf).

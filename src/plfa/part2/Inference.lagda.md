@@ -29,7 +29,7 @@ Chapter [Lambda](/Lambda/),
 and from it we compute an intrinsically-typed term, in the style of
 Chapter [DeBruijn](/DeBruijn/).
 
-## Introduction: Inference rules as algorithms {#algorithms}
+# Introduction: Inference rules as algorithms {#algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -118,7 +118,7 @@ judgments, one that produces the type as an output (as above), and
 another that takes it as an input.
 
 
-## Synthesising and inheriting types
+# Synthesising and inheriting types
 
 In addition to the lookup judgment for variables, which will remain
 as before, we now have two judgments for the type of the term:
@@ -198,7 +198,7 @@ We can extract the grammar for terms from the above:
 We will formalise the above shortly.
 
 
-## Soundness and completeness
+# Soundness and completeness
 
 What we intend to show is that the typing judgments are
 _decidable_:
@@ -242,7 +242,7 @@ may be less readable than a well-crafted error message.
 We are now ready to begin the formal development.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -270,7 +270,7 @@ invoked as `Γ DB.⊢ A`, where `Γ` has type
 `DB.Context` and `A` has type `DB.Type`.
 
 
-## Syntax
+# Syntax
 
 First, we get all our infix declarations out of the way.
 We list separately operators for judgments and terms:
@@ -337,7 +337,7 @@ off from the informal grammar presented earlier.  Main terms in
 deconstructors synthesise, constructors and side terms
 in deconstructors inherit.
 
-## Example terms
+# Example terms
 
 We can recreate the examples from preceding chapters.
 First, computing two plus two on naturals:
@@ -383,7 +383,7 @@ sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
 The only type decoration required is for `plusᶜ`.  One is not even
 required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
 
-## Bidirectional type checking
+# Bidirectional type checking
 
 The typing rules for variables are as in
 [Lambda](/Lambda/):
@@ -478,7 +478,7 @@ the equality test in the application rule in the first
 [section](/Inference/#algorithms).
 
 
-#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+## Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -488,7 +488,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+## Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).
@@ -498,7 +498,7 @@ Chapter [More](/More/).
 ```
 
 
-#### Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
+## Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/).
@@ -508,7 +508,7 @@ Chapter [More](/More/).
 ```
 
 
-## Prerequisites
+# Prerequisites
 
 The rule for `M ↑` requires the ability to decide whether two types
 are equal.  It is straightforward to code:
@@ -545,7 +545,7 @@ and `A ⇒ B` are not equal:
 ```
 
 
-## Unique types
+# Unique types
 
 Looking up a type in the context is unique.  Given two derivations,
 one showing `Γ ∋ x ⦂ A` and one showing `Γ ∋ x ⦂ B`, it follows that
@@ -587,7 +587,7 @@ types are equal.  If it is a switch expression, uniqueness
 follows since both terms are decorated with the same type.
 
 
-## Lookup type of a variable in the context
+# Lookup type of a variable in the context
 
 Given `Γ` and two distinct variables `x` and `y`, if there is no type `A`
 such that `Γ ∋ x ⦂ A` holds, then there is also no type `A` such that
@@ -644,7 +644,7 @@ Consider the context:
     - If lookup succeeds, we extend the derivation with `S`.
 
 
-## Promoting negations
+# Promoting negations
 
 For each possible term form, we need to show that if one of its
 components fails to type, then the whole fails to type.  Most of
@@ -697,7 +697,7 @@ to derive a contradiction between `A≢B` and `A′≡B`, since one concerns
 type `A` and the other type `A′`.
 
 
-## Synthesize and inherit types
+# Synthesize and inherit types
 
 The table has been set and we are ready for the main course.
 We define two mutually recursive functions,
@@ -854,7 +854,7 @@ and for switching from inherited to synthesized:
 The remaining cases are similar, and their code can pretty much be
 read directly from the corresponding typing rules.
 
-## Testing the example terms
+# Testing the example terms
 
 First, we copy the smart constructor `S′` introduced earlier that makes it easy to
 access a variable in a context:
@@ -961,7 +961,7 @@ _ = refl
 Again, the above derivation was computed by evaluating the
 term on the left and editing.
 
-## Testing the error cases
+# Testing the error cases
 
 It is important not just to check that code works as intended,
 but also that it fails as intended.  Here are checks for
@@ -1047,7 +1047,7 @@ _ = refl
 ```
 
 
-## Erasure
+# Erasure
 
 From the evidence that a decorated term has the correct type it is
 easy to extract the corresponding intrinsically-typed term.  We use the
@@ -1130,7 +1130,7 @@ to the intrinsically-typed terms of
 Chapter [DeBruijn](/DeBruijn/).
 
 
-#### Exercise `inference-multiplication` (recommended)
+## Exercise `inference-multiplication` (recommended)
 
 Apply inference to your decorated definition of multiplication from
 exercise [`bidirectional-mul`](/Inference/#bidirectional-mul), and show that
@@ -1141,7 +1141,7 @@ multiplication from Chapter [DeBruijn](/DeBruijn/).
 -- Your code goes here
 ```
 
-#### Exercise `inference-products` (recommended)
+## Exercise `inference-products` (recommended)
 
 Using your rules from exercise
 [`bidirectional-products`](/Inference/#bidirectional-products), extend
@@ -1151,7 +1151,7 @@ bidirectional inference to include products. Also extend erasure.
 -- Your code goes here
 ```
 
-#### Exercise `inference-rest` (stretch)
+## Exercise `inference-rest` (stretch)
 
 Using your rules from exercise
 [`bidirectional-rest`](/Inference/#bidirectional-rest), extend
@@ -1163,7 +1163,7 @@ Chapter [More](/More/). Also extend erasure.
 ```
 
 
-## Bidirectional inference in Agda
+# Bidirectional inference in Agda
 
 Agda itself uses bidirectional inference.  This explains why
 constructors can be overloaded while other defined names cannot ---
@@ -1184,7 +1184,7 @@ answer = 6 * 7
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

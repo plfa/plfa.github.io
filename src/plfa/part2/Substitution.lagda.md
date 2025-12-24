@@ -8,7 +8,7 @@ permalink : /Substitution/
 module plfa.part2.Substitution where
 ```
 
-## Introduction
+# Introduction
 
 The primary purpose of this chapter is to prove that substitution
 commutes with itself. Barendregt (1984) refers to this
@@ -40,7 +40,7 @@ substitution lemma, but they are generally useful. Furthermore, when
 the equations are applied from left to right, they form a rewrite
 system that _decides_ whether any two substitutions are equal.
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -60,7 +60,7 @@ postulate
     → f ≡ g
 ```
 
-## Notation
+# Notation
 
 We introduce the following shorthand for the type of a _renaming_ from
 variables in context `Γ` to variables in context `Δ`.
@@ -86,7 +86,7 @@ We use the following more succinct notation for the `subst` function.
 ```
 
 
-## The σ algebra of substitution
+# The σ algebra of substitution
 
 A substitution maps de Bruijn indices (natural numbers) to terms, so we
 can view a substitution simply as a sequence of terms, or more
@@ -147,7 +147,7 @@ before `τ`, which is the opposite of standard mathematical
 practice. We instead write `σ ⨟ τ`, because semicolon is
 the standard notation for forward function composition.
 
-## The σ algebra equations
+# The σ algebra equations
 
 The σ algebra includes the following equations.
 
@@ -188,7 +188,7 @@ The first two equations, `sub-idL` and `sub-idR`, say that
 The `sub-assoc` equation says that sequencing is associative.
 Finally, `sub-dist` says that post-sequencing distributes through cons.
 
-## Relating the σ algebra and substitution functions
+# Relating the σ algebra and substitution functions
 
 The definitions of substitution `N [ M ]` and parallel substitution
 `subst σ N` depend on several auxiliary functions: `rename`, `exts`,
@@ -258,7 +258,7 @@ cons'ing `M` onto `σ`.
     exts σ ⨟ subst-zero M ≡ (M • σ)       (subst-zero-exts-cons)
 
 
-## Proofs of sub-head, sub-tail, sub-η, Z-shift, sub-idL, sub-dist, and sub-app
+# Proofs of sub-head, sub-tail, sub-η, Z-shift, sub-idL, sub-dist, and sub-app
 
 We start with the proofs that are immediate from the definitions of
 the operators.
@@ -319,7 +319,7 @@ sub-app = refl
 ```
 
 
-## Interlude: congruences
+# Interlude: congruences
 
 In this section we establish congruence rules for the σ algebra
 operators `•` and `⨟` and for `subst` and its helper functions `ext`,
@@ -417,7 +417,7 @@ cong-seq {Γ}{Δ}{Σ}{σ}{σ′}{τ}{τ′} ss' tt' {A} = extensionality lemma
 ```
 
 
-## Relating `rename`, `exts`, `ext`, and `subst-zero` to the σ algebra
+# Relating `rename`, `exts`, `ext`, and `subst-zero` to the σ algebra
 
 In this section we establish equations that relate `subst` and its
 helper functions (`rename`, `exts`, `ext`, and `subst-zero`) to terms
@@ -536,7 +536,7 @@ subst-Z-cons-ids = extensionality λ x → lemma {x = x}
 ```
 
 
-## Proofs of sub-abs, sub-id, and rename-id
+# Proofs of sub-abs, sub-id, and rename-id
 
 The equation `sub-abs` follows immediately from the equation
 `exts-cons-shift`.
@@ -604,7 +604,7 @@ rename-id {M = M} =
    ∎
 ```
 
-## Proof of sub-idR
+# Proof of sub-idR
 
 The proof of `sub-idR` follows directly from `sub-id`.
 
@@ -622,7 +622,7 @@ sub-idR {Γ}{σ = σ}{A} =
 ```
 
 
-## Proof of sub-sub
+# Proof of sub-sub
 
 The `sub-sub` equation states that sequenced substitutions `σ ⨟ τ`
 are equivalent to first applying `σ` then applying `τ`.
@@ -825,7 +825,7 @@ rename-subst {Γ}{Δ}{Δ′}{M}{ρ}{σ} =
 ```
 
 
-## Proof of sub-assoc
+# Proof of sub-assoc
 
 The proof of `sub-assoc` follows directly from `sub-sub` and the
 definition of sequencing.
@@ -849,7 +849,7 @@ sub-assoc {Γ}{Δ}{Σ}{Ψ}{σ}{τ}{θ}{A} = extensionality λ x → lemma{x = x}
       ∎
 ```
 
-## Proof of subst-zero-exts-cons
+# Proof of subst-zero-exts-cons
 
 The last equation we needed to prove `subst-zero-exts-cons` was
 `sub-assoc`, so we can now go ahead with its proof.  We simply apply
@@ -878,7 +878,7 @@ subst-zero-exts-cons {Γ}{Δ}{σ}{B}{M}{A} =
 ```
 
 
-## Proof of the substitution lemma
+# Proof of the substitution lemma
 
 We first prove the generalized form of the substitution lemma, showing
 that a substitution `σ` commutes with the substitution of `M` into
@@ -978,7 +978,7 @@ substitution{M = M}{N = N}{L = L} =
 ```
 
 
-## Notes
+# Notes
 
 Most of the properties and proofs in this file are based on the paper
 _Autosubst: Reasoning with de Bruijn Terms and Parallel Substitution_
@@ -987,7 +987,7 @@ based on the paper of Abadi, Cardelli, Curien, and Levy (1991) that
 defines the σ algebra.
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

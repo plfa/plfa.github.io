@@ -860,7 +860,11 @@ genericPostProcessHtml5 cmdOutput outDir out html = do
 
 -- | Convert Markdown to HTML5 using Pandoc.
 markdownToHtml5 :: (?getReferences :: () -> Action MetaValue) => Text -> Action Text
-markdownToHtml5 = Pandoc.markdownToPandoc >=> processCitations >=> Pandoc.pandocToHtml5
+markdownToHtml5 =
+  Pandoc.markdownToPandoc
+    >=> pure . Pandoc.shiftHeadersBy 1
+    >=> processCitations
+    >=> Pandoc.pandocToHtml5
 
 -- | Process Markdown citations with citeproc using the references returned by @?getReferences@.
 processCitations :: (?getReferences :: () -> Action MetaValue) => Pandoc -> Action Pandoc

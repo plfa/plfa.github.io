@@ -4,7 +4,7 @@ permalink : /TSPL/2024/
 ---
 
 
-## Staff
+# Staff
 
 * **Instructor**
     [Philip Wadler](https://homepages.inf.ed.ac.uk/wadler)
@@ -13,7 +13,7 @@ permalink : /TSPL/2024/
     [Louis Lemonnier](https://homepages.inf.ed.ac.uk/llemonni/)
 
 
-## Lectures and tutorials
+# Lectures and tutorials
 
 Lectures take place Tuesday, Wednesday, and Thursday weeks 4--10.
 Lectures on Tuesday and Thursday are immediately followed by a tutorial.
@@ -25,11 +25,11 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 * **12.10--14.00** _Thursday Lecture and Tutorial_
   5.3 - Lister Learning and Teaching Centre
 
-## Course textbook
+# Course textbook
 
 * [PLFA](https://plfa.inf.ed.ac.uk)
 
-## Links
+# Links
 
 * [Piazza][piazza]
 * [Learn][learn]
@@ -40,7 +40,7 @@ Lectures on Tuesday and Thursday are immediately followed by a tutorial.
 [learn]: https://www.learn.ed.ac.uk/ultra/courses/_117826_1/outline
 [lectures]: https://echo360.org.uk/section/a4451855-1138-4ae3-9c94-acd37a91c8a4/home
 
-## Schedule
+# Schedule
 
 <table>
 <thead>
@@ -111,7 +111,7 @@ The Zoom link is here:<br/>
 Meeting ID: 818 9408 0012<br/>
 Passcode: aDvv0dXC
 
-## Assessment
+# Assessment
 
 Assessment for the course is as follows.
 
@@ -130,7 +130,7 @@ compared to other courses where there are easier marks to be had._
 Not all students are expected to attempt the essay.
 
 
-## Coursework
+# Coursework
 
 For instructions on how to set up Agda for PLFA see [Getting Started](/GettingStarted/).
 
@@ -141,7 +141,7 @@ For instructions on how to set up Agda for PLFA see [Getting Started](/GettingSt
 * Essay cw5 due 12 noon Thursday 23 January 2025 (Week 2, Semester 2)
 
 
-## How to submit coursework
+# How to submit coursework
 
 Go to the TSPL [Learn][learn] course and select “Assessment” from the left hand
 menu. Select the “Assignment Submission” folder and then click on the
@@ -169,7 +169,7 @@ submit tspl cwN AssignmentN.lagda.md
 where N is the number of the assignment. -->
 
 
-## Essay
+# Essay
 
 The essay is to take a research paper and formalise all or
 part of it in Agda.  In the past, some students have submitted superb
@@ -177,14 +177,14 @@ essays that contributed to ongoing research.
 Talk to Prof Wadler about what you would like to submit.
 
 <!--
-## Mock exam
+# Mock exam
 
 10am-12noon Monday 28 November. An online
 examination with the Agda proof assistant, to let you
 practice for the exam and familiarise yourself with exam conditions.
 -->
 
-## Additional reading
+# Additional reading
 
 * John Reynolds,
   [Three Approaches to Type Structure][reynolds],
@@ -209,7 +209,7 @@ practice for the exam and familiarise yourself with exam conditions.
 [p-as-t]: https://dl.acm.org/doi/10.1145/2699407
 
 <!--
-## Midterm course feedback
+# Midterm course feedback
 
 You may offer feedback on the course at
 [https://www.surveymonkey.co.uk/r/YX7ZFYC](https://www.surveymonkey.co.uk/r/YX7ZFYC).
@@ -219,7 +219,7 @@ Please do so by 12 noon Thursday 31 October.
 
 <!--
 
-## Mock exam
+# Mock exam
 
 Here is the text of the [second mock](/courses/tspl/2018/Mock2.pdf)
 and the exam [instructions](/courses/tspl/2018/Instructions.pdf).

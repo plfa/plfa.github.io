@@ -7,7 +7,7 @@ permalink : /ContextualEquivalence/
 module plfa.part3.ContextualEquivalence where
 ```
 
-## Imports
+# Imports
 
 ```agda
 open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -20,7 +20,7 @@ open import plfa.part3.Soundness using (soundness)
 open import plfa.part3.Adequacy using (↓→⇓)
 ```
 
-## Contextual Equivalence
+# Contextual Equivalence
 
 The notion of _contextual equivalence_ is an important one for
 programming languages because it is the sufficient condition for
@@ -54,7 +54,7 @@ contextual equivalence that instead only requires reasoning about the
 two terms.
 
 
-## Denotational equivalence implies contextual equivalence
+# Denotational equivalence implies contextual equivalence
 
 Thankfully, the proof that denotational equality implies contextual
 equivalence is an easy corollary of the results that we have already
@@ -114,7 +114,7 @@ denot-equal-contex-equal{Γ}{M}{N} eq {C} =
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

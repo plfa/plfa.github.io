@@ -24,7 +24,7 @@ principle known as _Propositions as Types_:
   * _implication_ is _function space_.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -37,7 +37,7 @@ open plfa.part1.Isomorphism.≃-Reasoning
 ```
 
 
-## Conjunction is product
+# Conjunction is product
 
 Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
@@ -245,7 +245,7 @@ For example, the type `(ℕ × Bool) × Tri` is _not_ the same as `ℕ ×
 instance `⟨ ⟨ 1 , true ⟩ , aa ⟩`, which is a member of the former,
 corresponds to `⟨ 1 , ⟨ true , aa ⟩ ⟩`, which is a member of the latter.
 
-#### Exercise `⇔≃×` (practice)
+## Exercise `⇔≃×` (practice)
 
 Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
@@ -255,7 +255,7 @@ is isomorphic to `(A → B) × (B → A)`.
 ```
 
 
-## Truth is unit
+# Truth is unit
 
 Truth `⊤` always holds. We formalise this idea by
 declaring the empty record type.
@@ -376,7 +376,7 @@ Here we have used a chain of isomorphisms, analogous to that used for
 equality.
 
 
-## Disjunction is sum
+# Disjunction is sum
 
 Given two propositions `A` and `B`, the disjunction `A ⊎ B` holds
 if either `A` holds or `B` holds.  We formalise this idea by
@@ -487,7 +487,7 @@ possible arguments of type `Bool ⊎ Tri`:
 Sum on types also shares a property with sum on numbers in that it is
 commutative and associative _up to isomorphism_.
 
-#### Exercise `⊎-comm` (recommended)
+## Exercise `⊎-comm` (recommended)
 
 Show sum is commutative up to isomorphism.
 
@@ -495,7 +495,7 @@ Show sum is commutative up to isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `⊎-assoc` (practice)
+## Exercise `⊎-assoc` (practice)
 
 Show sum is associative up to isomorphism.
 
@@ -503,7 +503,7 @@ Show sum is associative up to isomorphism.
 -- Your code goes here
 ```
 
-## False is empty
+# False is empty
 
 False `⊥` never holds.  We formalise this idea by declaring
 a suitable inductive type:
@@ -569,7 +569,7 @@ type `⊥`.
 For numbers, zero is the identity of addition. Correspondingly, empty
 is the identity of sums _up to isomorphism_.
 
-#### Exercise `⊥-identityˡ` (recommended)
+## Exercise `⊥-identityˡ` (recommended)
 
 Show empty is the left identity of sums up to isomorphism.
 
@@ -577,7 +577,7 @@ Show empty is the left identity of sums up to isomorphism.
 -- Your code goes here
 ```
 
-#### Exercise `⊥-identityʳ` (practice)
+## Exercise `⊥-identityʳ` (practice)
 
 Show empty is the right identity of sums up to isomorphism.
 
@@ -585,7 +585,7 @@ Show empty is the right identity of sums up to isomorphism.
 -- Your code goes here
 ```
 
-## Implication is function {#implication}
+# Implication is function {#implication}
 
 Given two propositions `A` and `B`, the implication `A → B` holds if
 whenever `A` holds then `B` must also hold.  We formalise implication using
@@ -749,7 +749,7 @@ is the same as the assertion that if `A` holds then `B` holds and if
 ```
 
 
-## Distribution
+# Distribution
 
 Products distribute over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results:
@@ -810,7 +810,7 @@ second only corresponds to an embedding, revealing a sense in which
 one of these laws is "more true" than the other.
 
 
-#### Exercise `⊎-weak-×` (recommended)
+## Exercise `⊎-weak-×` (recommended)
 
 Show that the following property holds:
 
@@ -827,7 +827,7 @@ distributive law, and explain how it relates to the weak version.
 ```
 
 
-#### Exercise `⊎×-implies-×⊎` (practice)
+## Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
 
@@ -843,7 +843,7 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 ```
 
 
-## Standard library
+# Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 
@@ -867,7 +867,7 @@ standard library is less convenient, since it is parameterised with
 respect to an arbitrary notion of equivalence.
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

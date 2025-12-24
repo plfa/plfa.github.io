@@ -47,7 +47,7 @@ rather than booleans, allowing more sophisticated examples. In
 particular, we will be able to show (twice!) that two plus two is
 four.
 
-## Imports
+# Imports
 
 ```agda
 open import Data.Bool.Base using (Bool; true; false; T; not)
@@ -61,7 +61,7 @@ open import Relation.Nullary.Decidable using (Dec; yes; no; False; toWitnessFals
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
-## Syntax of terms
+# Syntax of terms
 
 Terms have seven constructs. Three are for the core lambda calculus:
 
@@ -124,7 +124,7 @@ then successor, and tightest of all is the constructor for variables.
 Case expressions are self-bracketing.
 
 
-### Example terms
+## Example terms
 
 Here are a couple of example terms: the natural number two
 and a function that adds naturals:
@@ -190,7 +190,7 @@ in other words that the term
 reduces to `` `suc `suc `suc `suc `zero ``.
 
 
-#### Exercise `mul` (recommended)
+## Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers.  Your definition may use `plus` as
@@ -201,7 +201,7 @@ defined earlier.
 ```
 
 
-#### Exercise `mulᶜ` (practice)
+## Exercise `mulᶜ` (practice)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers represented as Church numerals. Your
@@ -213,7 +213,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 ```
 
 
-#### Exercise `primed` (stretch) {#primed}
+## Exercise `primed` (stretch) {#primed}
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
@@ -267,7 +267,7 @@ plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
 Write out the definition of multiplication in the same style.
 
 
-### Formal vs informal
+## Formal vs informal
 
 In informal presentation of formal semantics, one uses choice of
 variable name to disambiguate and writes `x` rather than `` ` x ``
@@ -283,7 +283,7 @@ object language, as compared to `λ x → N` and `L M` in our
 meta-language, Agda.
 
 
-### Bound and free variables
+## Bound and free variables
 
 In an abstraction `ƛ x ⇒ N` we call `x` the _bound_ variable
 and `N` the _body_ of the abstraction.  A central feature
@@ -352,7 +352,7 @@ where the two binding occurrences corresponding to `m` now have distinct
 names, `x` and `x′`.
 
 
-## Values
+# Values
 
 A _value_ is a term that corresponds to an answer.
 Thus, `` `suc `suc `suc `suc `zero `` is a value,
@@ -382,14 +382,14 @@ data Value : Term → Set where
 In what follows, we let `V` and `W` range over values.
 
 
-### Formal vs informal
+## Formal vs informal
 
 In informal presentations of formal semantics, using
 `V` as the name of a metavariable is sufficient to
 indicate that it is a value. In Agda, we must explicitly
 invoke the `Value` predicate.
 
-### Other approaches
+## Other approaches
 
 An alternative is not to focus on closed terms,
 to treat variables as values, and to treat
@@ -399,7 +399,7 @@ We consider this approach in
 Chapter [Untyped](/Untyped/).
 
 
-## Substitution
+# Substitution
 
 The heart of lambda calculus is the operation of
 substituting one term for a variable in another term.
@@ -502,7 +502,7 @@ treated similarly to those in lambda abstractions.  Otherwise we
 simply push substitution recursively into the subterms.
 
 
-### Examples
+## Examples
 
 Here is confirmation that the examples above are correct:
 
@@ -525,7 +525,7 @@ _ = refl
 ```
 
 
-#### Quiz
+## Quiz
 
 What is the result of the following substitution?
 
@@ -537,7 +537,7 @@ What is the result of the following substitution?
 4. `` (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ `zero)) ``
 
 
-#### Exercise `_[_:=_]′` (stretch)
+## Exercise `_[_:=_]′` (stretch)
 
 The definition of substitution above has three clauses (`ƛ`, `case`,
 and `μ`) that invoke a `with` clause to deal with bound variables.
@@ -550,7 +550,7 @@ substitution.
 ```
 
 
-## Reduction
+# Reduction
 
 We give the reduction rules for call-by-value lambda calculus.  To
 reduce an application, first we reduce the left-hand side until it
@@ -665,7 +665,7 @@ another reduction rule in its premise; so a step always consists
 of a beta rule, possibly adjusted by zero or more compatibility rules.
 
 
-#### Quiz
+## Quiz
 
 What does the following term step to?
 
@@ -693,7 +693,7 @@ defined above.)
 3.  `` `zero ``
 
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 A single step is only part of the story. In general, we wish to repeatedly
 step a closed term until it reduces to a value.  We do this by defining
@@ -777,7 +777,7 @@ The three constructors specify, respectively, that `—↠′` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
 the two definitions are equivalent (indeed, one embeds in the other).
 
-#### Exercise `—↠≲—↠′` (practice)
+## Exercise `—↠≲—↠′` (practice)
 
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
@@ -786,7 +786,7 @@ above embeds into the second. Why are they not isomorphic?
 -- Your code goes here
 ```
 
-## Confluence
+# Confluence
 
 One important property a reduction relation might satisfy is
 to be _confluent_.  If term `L` reduces to two other terms,
@@ -840,7 +840,7 @@ the diamond and confluence properties. Hence, all the reduction
 systems studied in this text are trivially confluent.
 
 
-## Examples
+# Examples
 
 We start with a simple example. The Church numeral two applied to the
 successor function and zero yields the natural number two:
@@ -946,7 +946,7 @@ _ =
 In the next chapter, we will see how to compute such reduction sequences.
 
 
-#### Exercise `plus-example` (practice)
+## Exercise `plus-example` (practice)
 
 Write out the reduction sequence demonstrating that one plus one is two.
 
@@ -955,7 +955,7 @@ Write out the reduction sequence demonstrating that one plus one is two.
 ```
 
 
-## Syntax of types
+# Syntax of types
 
 We have just two types:
 
@@ -978,7 +978,7 @@ data Type : Set where
   `ℕ : Type
 ```
 
-### Precedence
+## Precedence
 
 As in Agda, functions of two or more arguments are represented via
 currying. This is made more convenient by declaring `_⇒_` to
@@ -988,7 +988,7 @@ Thus:
 * ``(`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ`` stands for ``((`ℕ ⇒ `ℕ) ⇒ (`ℕ ⇒ `ℕ))``.
 * `plus · two · two` stands for `(plus · two) · two`.
 
-### Quiz
+## Quiz
 
 * What is the type of the following term?
 
@@ -1017,9 +1017,9 @@ Thus:
   Give more than one answer if appropriate.
 
 
-## Typing
+# Typing
 
-### Contexts
+## Contexts
 
 While reduction considers only closed terms, typing must
 consider terms with free variables.  To type a term,
@@ -1047,7 +1047,7 @@ data Context : Set where
 ```
 
 
-#### Exercise `Context-≃` (practice)
+## Exercise `Context-≃` (practice)
 
 Show that `Context` is isomorphic to `List (Id × Type)`.
 For instance, the isomorphism relates the context
@@ -1062,7 +1062,7 @@ to the list
 -- Your code goes here
 ```
 
-### Lookup judgment
+## Lookup judgment
 
 We have two forms of _judgment_.  The first is written
 
@@ -1132,7 +1132,7 @@ S′ : ∀ {Γ x y A B}
 S′ {x≢y = x≢y} x = S (toWitnessFalse x≢y) x
 ```
 
-### Typing judgment
+## Typing judgment
 
 The second judgment is written
 
@@ -1224,7 +1224,7 @@ the three places where a bound variable is introduced.
 The rules are deterministic, in that at most one rule applies to every term.
 
 
-### Example type derivations {#derivation}
+## Example type derivations {#derivation}
 
 Type derivations correspond to trees. In informal notation, here
 is a type derivation for the Church numeral two,
@@ -1314,7 +1314,7 @@ And here are typings for the remainder of the Church example:
 ⊢2+2ᶜ = ⊢plusᶜ · ⊢twoᶜ · ⊢twoᶜ · ⊢sucᶜ · ⊢zero
 ```
 
-### Interaction with Agda
+## Interaction with Agda
 
 Construction of a type derivation may be done interactively.
 Start with the declaration:
@@ -1358,7 +1358,7 @@ Chapter [Inference](/Inference/)
 will show how to use Agda to compute type derivations directly.
 
 
-### Lookup is functional
+## Lookup is functional
 
 The lookup relation `Γ ∋ x ⦂ A` is functional, in that for each `Γ` and `x`
 there is at most one `A` such that the judgment holds:
@@ -1374,7 +1374,7 @@ there is at most one `A` such that the judgment holds:
 The typing relation `Γ ⊢ M ⦂ A` is not functional. For example, in any `Γ`
 the term `` ƛ "x" ⇒ ` "x" `` has type `A ⇒ A` for any type `A`.
 
-### Non-examples
+## Non-examples
 
 We can also show that terms are _not_ typeable.  For example, here is
 a formal proof that it is not possible to type the term
@@ -1400,7 +1400,7 @@ nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  = impossible (∋-functional ∋x �
 ```
 
 
-#### Quiz
+### Quiz
 
 For each of the following, give a type `A` for which it is derivable,
 or explain why there is no such `A`.
@@ -1416,7 +1416,7 @@ or explain why there are no such types.
 2. `` ∅ , "x" ⦂ A , "y" ⦂ B ⊢ ƛ "z" ⇒ ` "x" · (` "y" · ` "z") ⦂ C ``
 
 
-#### Exercise `⊢mul` (recommended)
+## Exercise `⊢mul` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well typed.
@@ -1426,7 +1426,7 @@ showing that it is well typed.
 ```
 
 
-#### Exercise `⊢mulᶜ` (practice)
+## Exercise `⊢mulᶜ` (practice)
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well typed.
@@ -1436,7 +1436,7 @@ showing that it is well typed.
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

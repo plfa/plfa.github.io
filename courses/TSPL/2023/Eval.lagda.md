@@ -17,7 +17,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (¬_)
 ```
 
-## Types
+# Types
 
 ```agda
 infixr 7 _⇒_
@@ -52,7 +52,7 @@ data _∋_ : Context → Type → Set where
     → Γ ▷ B ∋ A
 ```
 
-## Terms
+# Terms
 
 ```agda
 infix  4 _⊢_
@@ -99,7 +99,7 @@ data _⊢_ : Context → Type → Set where
     → Γ ⊢ A
 ```
 
-### Test examples
+## Test examples
 
 First, computing two plus two on naturals:
 
@@ -123,7 +123,7 @@ pattern sucᶜ = ƛ `suc (` Z)
 ```
 
 
-## Renaming maps, substitution maps, term maps
+# Renaming maps, substitution maps, term maps
 
 ```agda
 _→ʳ_ : Context → Context → Set
@@ -137,7 +137,7 @@ _→ᵗ_ : Context → Context → Set
 ```
 
 
-## Renaming
+# Renaming
 
 Extension of renaming maps
 
@@ -165,7 +165,7 @@ lift : ∀ {Γ : Context} {A : Type} → Γ →ᵗ (Γ ▷ A)
 lift = ren S_
 ```
 
-## Substitution
+# Substitution
 
 ```agda
 sub▷ : ∀ {Γ Δ A}
@@ -203,7 +203,7 @@ _[_] : ∀ {Γ A B}
 _[_] {Γ} {A} N M =  sub {Γ ▷ A} {Γ} (σ₀ M) N
 ```
 
-## Values
+# Values
 
 ```agda
 data Value {Γ} : ∀ {A} → Γ ⊢ A → Set where
@@ -234,7 +234,7 @@ value : ∀ {Γ A} {V : Γ ⊢ A}
 value {V = V} v  =  V
 ```
 
-## Frames (aka Evaluation Contexts)
+# Frames (aka Evaluation Contexts)
 
 Here is how evaluation contexts are written informally:
 
@@ -304,7 +304,7 @@ _⟦_⟧ : ∀{Γ A B}
 (case[ E ] M N) ⟦ L ⟧   =  case (E ⟦ L ⟧) M N
 ```
 
-## Reduction
+# Reduction
 
 ```agda
 infix 2 _↦_ _—→_
@@ -348,7 +348,7 @@ Notation
 pattern ξ E M—→N = ξξ E refl refl M—→N
 ```
 
-## Reflexive and transitive closure of reduction
+# Reflexive and transitive closure of reduction
 
 ```agda
 infix  1 begin_
@@ -372,7 +372,7 @@ begin_ : ∀ {Γ A} {M N : Γ ⊢ A} → (M —↠ N) → (M —↠ N)
 begin M—↠N = M—↠N
 ```
 
-## Irreducible terms
+# Irreducible terms
 
 Values are irreducible.  The auxiliary definition rearranges the
 order of the arguments because it works better for Agda.
@@ -401,7 +401,7 @@ redex : ∀{Γ A} (M : Γ ⊢ A) → Set
 redex M = ∃[ N ] (M ↦ N)
 ```
 
-## Progress
+# Progress
 
 Every term that is well typed and closed is either
 blame or a value or takes a reduction step.
@@ -440,7 +440,7 @@ progress (case L M N) with progress L
 progress (μ M)                           =  step (ξ □ β-μ)
 ```
 
-## Evaluation
+# Evaluation
 
 Gas is specified by a natural number:
 
@@ -497,7 +497,7 @@ eval (gas (suc m)) L with progress L
 ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 
-## Examples
+# Examples
 
 ```agda
 _ : 2+2 —↠ `suc `suc `suc `suc `zero

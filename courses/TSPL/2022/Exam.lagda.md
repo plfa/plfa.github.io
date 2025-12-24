@@ -15,7 +15,7 @@ module Exam where
 
 before and after code you add, to indicate your changes.
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -29,7 +29,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Relation.Nullary.Decidable using (False; toWitnessFalse)
 ```
 
-## Problem 1
+# Problem 1
 
 ```agda
 module Problem1 where
@@ -39,12 +39,12 @@ module Problem1 where
 
 Remember to indent all code by two spaces.
 
-### (a)
+## (a)
 
-### (b)
+## (b)
 
 
-## Problem 2
+# Problem 2
 
 Remember to indent all code by two spaces.
 
@@ -52,7 +52,7 @@ Remember to indent all code by two spaces.
 module Problem2 where
 ```
 
-### Infix declarations
+## Infix declarations
 
 ```agda
   infix  4 _⊢_
@@ -69,7 +69,7 @@ module Problem2 where
   infix  9 S_
 ```
 
-### Types and contexts
+## Types and contexts
 
 ```agda
   data Type : Set where
@@ -81,7 +81,7 @@ module Problem2 where
     _,_ : Context → Type → Context
 ```
 
-### Variables and the lookup judgment
+## Variables and the lookup judgment
 
 ```agda
   data _∋_ : Context → Type → Set where
@@ -96,7 +96,7 @@ module Problem2 where
       → Γ , B ∋ A
 ```
 
-### Terms and the typing judgment
+## Terms and the typing judgment
 
 ```agda
   data _⊢_ : Context → Type → Set where
@@ -139,7 +139,7 @@ module Problem2 where
       → Γ ⊢ A
 ```
 
-### Renaming
+## Renaming
 
 ```agda
   ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -161,7 +161,7 @@ module Problem2 where
   rename ρ (μ N)          =  μ (rename (ext ρ) N)
 ```
 
-### Simultaneous Substitution
+## Simultaneous Substitution
 
 ```agda
   exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -183,7 +183,7 @@ module Problem2 where
   subst σ (μ N)          =  μ (subst (exts σ) N)
 ```
 
-### Single and double substitution
+## Single and double substitution
 
 ```agda
   _[_] : ∀ {Γ A B}
@@ -211,7 +211,7 @@ module Problem2 where
     σ (S (S x))  =  ` x
 ```
 
-### Values
+## Values
 
 ```agda
   data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -230,7 +230,7 @@ module Problem2 where
       → Value (`suc V)
 ```
 
-### Reduction
+## Reduction
 
 ```agda
   infix 2 _—→_
@@ -278,7 +278,7 @@ module Problem2 where
 ```
 
 
-### Reflexive and transitive closure
+## Reflexive and transitive closure
 
 ```agda
   infix  2 _—↠_
@@ -306,7 +306,7 @@ module Problem2 where
 ```
 
 
-### Progress
+## Progress
 
 ```agda
   data Progress {A} (M : ∅ ⊢ A) : Set where
@@ -340,7 +340,7 @@ module Problem2 where
   progress (μ N)                          =  step (β-μ)
 ```
 
-### Evaluation
+## Evaluation
 
 ```agda
   record Gas : Set where
@@ -379,7 +379,7 @@ module Problem2 where
   ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 
-### Example
+## Example
 
 Here is a term (in extrinsic style) to add two numbers.
 
@@ -431,7 +431,7 @@ Here is a sample reduction demonstrating that two plus two is four.
 
 
 
-## Problem 3
+# Problem 3
 
 Remember to indent all code by two spaces.
 
@@ -439,7 +439,7 @@ Remember to indent all code by two spaces.
 module Problem3 where
 ```
 
-### Syntax
+## Syntax
 
 ```agda
   infix   4  _∋_⦂_
@@ -458,7 +458,7 @@ module Problem3 where
   infix   9  `_
 ```
 
-### Types
+## Types
 
 ```agda
   data Type : Set where
@@ -466,14 +466,14 @@ module Problem3 where
     `ℕ    : Type
 ```
 
-### Identifiers
+## Identifiers
 
 ```agda
   Id : Set
   Id = String
 ```
 
-### Contexts
+## Contexts
 
 ```agda
   data Context : Set where
@@ -481,7 +481,7 @@ module Problem3 where
     _,_⦂_ : Context → Id → Type → Context
 ```
 
-### Terms
+## Terms
 
 ```agda
   data Term⁺ : Set
@@ -501,7 +501,7 @@ module Problem3 where
     _↑                       : Term⁺ → Term⁻
 ```
 
-### Lookup
+## Lookup
 
 ```agda
   data _∋_⦂_ : Context → Id → Type → Set where
@@ -517,7 +517,7 @@ module Problem3 where
       → Γ , y ⦂ B ∋ x ⦂ A
 ```
 
-### Bidirectional type checking
+## Bidirectional type checking
 
 ```agda
   data _⊢_↑_ : Context → Term⁺ → Type → Set
@@ -577,7 +577,7 @@ module Problem3 where
 ```
 
 
-### Type equality
+## Type equality
 
 ```agda
   _≟Tp_ : (A B : Type) → Dec (A ≡ B)
@@ -591,7 +591,7 @@ module Problem3 where
   ...  | yes refl | yes refl  =  yes refl
 ```
 
-### Prerequisites
+## Prerequisites
 
 ```agda
   dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
@@ -605,7 +605,7 @@ module Problem3 where
 ```
 
 
-### Unique lookup
+## Unique lookup
 
 ```agda
   uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
@@ -615,7 +615,7 @@ module Problem3 where
   uniq-∋ (S _ ∋x) (S _ ∋x′)  =  uniq-∋ ∋x ∋x′
 ```
 
-### Unique synthesis
+## Unique synthesis
 
 ```agda
   uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
@@ -624,7 +624,7 @@ module Problem3 where
   uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
 ```
 
-## Lookup type of a variable in the context
+# Lookup type of a variable in the context
 
 ```agda
   ext∋ : ∀ {Γ B x y}
@@ -647,7 +647,7 @@ module Problem3 where
   ...             | yes ⟨ A , ⊢x ⟩  =  yes ⟨ A , S x≢y ⊢x ⟩
 ```
 
-### Promoting negations
+## Promoting negations
 
 ```agda
   ¬arg : ∀ {Γ A B L M}
@@ -666,7 +666,7 @@ module Problem3 where
 ```
 
 
-## Synthesize and inherit types
+# Synthesize and inherit types
 
 ```agda
   synthesize : ∀ (Γ : Context) (M : Term⁺)
@@ -718,7 +718,7 @@ module Problem3 where
   ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
 ```
 
-### Example
+## Example
 
 ```agda
   two : Term⁻

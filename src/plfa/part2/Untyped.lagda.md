@@ -43,7 +43,7 @@ The aim of this chapter is to give some appreciation for
 the range of different lambda calculi one may encounter.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -54,7 +54,7 @@ open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
 
-## Untyped is Uni-typed
+# Untyped is Uni-typed
 
 Our development will be close to that in
 Chapter [DeBruijn](/DeBruijn/),
@@ -67,7 +67,7 @@ had to be given separately (such as natural numbers and fixpoints)
 can now be defined in the language itself.
 
 
-## Syntax
+# Syntax
 
 First, we get all our infix declarations out of the way:
 
@@ -81,7 +81,7 @@ infix  6  ′_
 infixl 7  _·_
 ```
 
-## Types
+# Types
 
 We have just one type:
 
@@ -90,7 +90,7 @@ data Type : Set where
   ★ : Type
 ```
 
-#### Exercise (`Type≃⊤`) (practice)
+## Exercise (`Type≃⊤`) (practice)
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
@@ -98,7 +98,7 @@ Show that `Type` is isomorphic to `⊤`, the unit type.
 -- Your code goes here
 ```
 
-## Contexts
+# Contexts
 
 As before, a context is a list of types, with the type of the
 most recently bound variable on the right:
@@ -111,7 +111,7 @@ data Context : Set where
 
 We let `Γ` and `Δ` range over contexts.
 
-#### Exercise (`Context≃ℕ`) (practice)
+## Exercise (`Context≃ℕ`) (practice)
 
 Show that `Context` is isomorphic to `ℕ`.
 
@@ -119,7 +119,7 @@ Show that `Context` is isomorphic to `ℕ`.
 -- Your code goes here
 ```
 
-## Variables and the lookup judgment
+# Variables and the lookup judgment
 
 Intrinsically-scoped variables correspond to the lookup judgment.  The
 rules are as before:
@@ -146,7 +146,7 @@ scope.  For instance, we cannot use `S S Z` in a context that only
 binds two variables.
 
 
-## Terms and the scoping judgment
+# Terms and the scoping judgment
 
 Intrinsically-scoped terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
@@ -177,7 +177,7 @@ Now we have a tiny calculus, with only variables, abstraction, and
 application.  Below we will see how to encode naturals and
 fixpoints into this calculus.
 
-## Writing variables as numerals
+# Writing variables as numerals
 
 As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
@@ -204,7 +204,7 @@ We can then introduce a convenient abbreviation for variables:
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
-## Test examples
+# Test examples
 
 Our only example is computing two plus two on Church numerals:
 
@@ -229,7 +229,7 @@ under lambda, so we don't need the extra arguments.  It is convenient
 to define a term to represent four as a Church numeral, as well as
 two.
 
-## Renaming
+# Renaming
 
 Our definition of renaming is as before.  First, we need an extension lemma:
 
@@ -258,7 +258,7 @@ rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
 
 This is exactly as before, save that there are fewer term forms.
 
-## Simultaneous substitution
+# Simultaneous substitution
 
 Our definition of substitution is also exactly as before.
 First we need an extension lemma:
@@ -287,7 +287,7 @@ subst σ (L · M)        =  (subst σ L) · (subst σ M)
 
 Again, this is exactly as before, save that there are fewer term forms.
 
-## Single substitution
+# Single substitution
 
 It is easy to define the special case of substitution for one free variable:
 
@@ -304,7 +304,7 @@ _[_] : ∀ {Γ A B}
 _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} (subst-zero M) {A} N
 ```
 
-## Neutral and normal terms
+# Neutral and normal terms
 
 Reduction continues until a term is fully normalised.  Hence, instead
 of values, we are now interested in _normal forms_.  Terms in normal
@@ -371,7 +371,7 @@ the term itself, decorated with some additional primes to indicate
 neutral terms, and using `#′` in place of `#`
 
 
-## Reduction step
+# Reduction step
 
 The reduction rules are altered to switch from call-by-value to
 call-by-name and to enable full normalisation:
@@ -418,7 +418,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → ƛ N —→ ƛ N′
 ```
 
-#### Exercise (`variant-1`) (practice)
+## Exercise (`variant-1`) (practice)
 
 How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
@@ -428,7 +428,7 @@ unless both terms are in normal form.
 -- Your code goes here
 ```
 
-#### Exercise (`variant-2`) (practice)
+## Exercise (`variant-2`) (practice)
 
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
@@ -440,7 +440,7 @@ abstractions).  What would `2+2ᶜ` reduce to in this case?
 ```
 
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 We cut-and-paste the previous definition:
 
@@ -472,7 +472,7 @@ begin M—↠N = M—↠N
 ```
 
 
-## Example reduction sequence
+# Example reduction sequence
 
 Here is the demonstration that two plus two is four:
 
@@ -500,7 +500,7 @@ After just two steps the top-level term is an abstraction,
 and `ζ` rules drive the rest of the normalisation.
 
 
-## Progress
+# Progress
 
 Progress adapts.  Instead of claiming that every term either is a value
 or takes a reduction step, we claim that every term is either in normal
@@ -574,7 +574,7 @@ which matches only if both pattern `P` and pattern `Q` match.  Character
 required around it.  In this case, the pattern ensures that `L` is an
 application.
 
-## Evaluation
+# Evaluation
 
 As previously, progress immediately yields an evaluator.
 
@@ -627,7 +627,7 @@ eval (suc g) L with progress L
 The definition is as before, save that the empty context `∅`
 generalises to an arbitrary context `Γ`.
 
-## Example
+# Example
 
 We reiterate our previous example. Two plus two is four, with Church numerals:
 
@@ -683,7 +683,7 @@ _ : eval 100 2+2ᶜ ≡
 _ = refl
 ```
 
-## Naturals and fixpoint
+# Naturals and fixpoint
 
 We could simulate naturals using Church numerals, but computing
 predecessor is tricky and expensive.  Instead, we use a different
@@ -787,7 +787,7 @@ it is no longer the case that `plus · two · two` reduces to `four`,
 but they do both reduce to the same normal term.
 
 
-#### Exercise `plus-eval` (practice)
+## Exercise `plus-eval` (practice)
 
 Use the evaluator to confirm that `plus · two · two` and `four`
 normalise to the same term.
@@ -796,7 +796,7 @@ normalise to the same term.
 -- Your code goes here
 ```
 
-#### Exercise `multiplication-untyped` (recommended)
+## Exercise `multiplication-untyped` (recommended)
 
 Use the encodings above to translate your definition of
 multiplication from previous chapters with the Scott
@@ -807,7 +807,7 @@ Confirm that two times two is four.
 -- Your code goes here
 ```
 
-#### Exercise `encode-more` (stretch)
+## Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
 Chapter [More](/More/),
@@ -818,7 +818,7 @@ save for primitive numbers, in the untyped lambda calculus.
 ```
 
 
-## Multi-step reduction is transitive
+# Multi-step reduction is transitive
 
 In our formulation of the reflexive transitive closure of reduction,
 i.e., the `—↠` relation, there is not an explicit rule for
@@ -851,7 +851,7 @@ _—↠⟨_⟩_ : ∀ {Γ A} (L : Γ ⊢ A) {M N : Γ ⊢ A}
 L —↠⟨ L—↠M ⟩ M—↠N = —↠-trans L—↠M M—↠N
 ```
 
-## Multi-step reduction is a congruence
+# Multi-step reduction is a congruence
 
 Recall from Chapter [Induction](/Induction/) that a
 relation `R` is a _congruence_ for a given function `f` if it is
@@ -907,7 +907,7 @@ abs-cong (M ∎) = ƛ M ∎
 abs-cong (L —→⟨ r ⟩ rs) = ƛ L —→⟨ ζ r ⟩ abs-cong rs
 ```
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 
