@@ -216,6 +216,7 @@ We now begin our formal development.
 
 First, we get all our infix declarations out of the way.
 We list separately operators for judgments, types, and terms:
+
 ```agda
 infix  4 _⊢_
 infix  4 _∋_
@@ -239,6 +240,7 @@ contexts before terms.
 
 As before, we have just two types, functions and naturals.
 The formal definition is unchanged:
+
 ```agda
 data Type : Set where
   _⇒_ : Type → Type → Type
@@ -249,20 +251,24 @@ data Type : Set where
 
 Contexts are as before, but we drop the names.
 Contexts are formalised as follows:
+
 ```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
 ```
+
 A context is just a list of types, with the type of the most
 recently bound variable on the right.  As before, we let `Γ`
 and `Δ` range over contexts.  We write `∅` for the empty
 context, and `Γ , A` for the context `Γ` extended by type `A`.
 For example
+
 ```agda
 _ : Context
 _ = ∅ , `ℕ ⇒ `ℕ , `ℕ
 ```
+
 is a context with two variables in scope, where the outer
 bound one has type `` `ℕ ⇒ `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
@@ -280,6 +286,7 @@ The lookup judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old lookup judgment, but
 with all variable names dropped:
+
 ```agda
 data _∋_ : Context → Type → Set where
 
@@ -292,6 +299,7 @@ data _∋_ : Context → Type → Set where
       ---------
     → Γ , B ∋ A
 ```
+
 Constructor `S` no longer requires an additional parameter,
 since without names shadowing is no longer an issue.  Now
 constructors `Z` and `S` correspond even more closely to the
@@ -306,6 +314,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
 They correspond to the following intrinsically-typed variables:
+
 ```agda
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
@@ -313,6 +322,7 @@ _ = Z
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ ⇒ `ℕ
 _ = S Z
 ```
+
 In the given context, `"z"` is represented by `Z`
 (as the most recently bound variable),
 and `"s"` by `S Z`
@@ -330,6 +340,7 @@ The judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old typing judgment, but
 with all terms and variable names dropped:
+
 ```agda
 data _⊢_ : Context → Type → Set where
 
@@ -370,6 +381,7 @@ data _⊢_ : Context → Type → Set where
       ---------
     → Γ ⊢ A
 ```
+
 The definition exploits the close correspondence between the
 structure of terms and the structure of a derivation showing
 that it is well typed: now we use the derivation _as_ the
@@ -385,6 +397,7 @@ For example, consider the following old-style typing judgments:
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 They correspond to the following intrinsically-typed terms:
+
 ```agda
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
 _ = ` Z
@@ -404,12 +417,14 @@ _ = ƛ (` S Z · (` S Z · ` Z))
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (` S Z · (` S Z · ` Z))
 ```
+
 The final term represents the Church numeral two.
 
 ### Abbreviating de Bruijn indices
 
 We define a helper function that computes the size of a context,
 which will be useful in making sure an index is within context bounds:
+
 ```agda
 size : Context → ℕ
 size ∅        =  zero
@@ -417,6 +432,7 @@ size (Γ , _)  =  suc (size Γ)
 ```
 
 We can use a natural number to select a type from a context:
+
 ```agda
 lookup : {Γ : Context} → {n : ℕ} → (p : n < size Γ) → Type
 lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
@@ -428,6 +444,7 @@ the size of the context, which is witnessed by `p`.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
+
 ```agda
 count : ∀ {Γ} → {n : ℕ} → (p : n < size Γ) → Γ ∋ lookup p
 count {_ , _} {zero}    (s≤s z≤n)  =  Z
@@ -435,6 +452,7 @@ count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 ```
 
 We can then introduce a convenient abbreviation for variables:
+
 ```agda
 #_ : ∀ {Γ}
   → (n : ℕ)
@@ -443,6 +461,7 @@ We can then introduce a convenient abbreviation for variables:
   → Γ ⊢ lookup (toWitness n∈Γ)
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
+
 Function `#_` takes an implicit argument `n∈Γ` that provides evidence for `n` to
 be within the context's bounds. Recall that
 [`True`](/Decidable/#proof-by-reflection),
@@ -453,6 +472,7 @@ against invoking `#_` on an `n` that is out of context bounds. Finally, in the
 return type `n∈Γ` is converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
+
 ```agda
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (# 1 · (# 1 · # 0))
@@ -464,6 +484,7 @@ We repeat the test examples from Chapter [Lambda](/Lambda/). You can find them
 [here](/Lambda/#derivation) for comparison.
 
 First, computing two plus two on naturals:
+
 ```agda
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
@@ -474,10 +495,12 @@ plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 2+2 : ∀ {Γ} → Γ ⊢ `ℕ
 2+2 = plus · two · two
 ```
+
 We generalise to arbitrary contexts because later we will give examples
 where `two` appears nested inside binders.
 
 Next, computing two plus two on Church numerals:
+
 ```agda
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
@@ -494,6 +517,7 @@ sucᶜ = ƛ `suc (# 0)
 2+2ᶜ : ∀ {Γ} → Γ ⊢ `ℕ
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 ```
+
 As before we generalise everything to arbitrary
 contexts.  While we are at it, we also generalise `twoᶜ` and
 `plusᶜ` to Church numerals over arbitrary types.
@@ -525,6 +549,7 @@ from variables in one context to variables in another,
 extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped:
+
 ```agda
 ext : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
@@ -533,6 +558,7 @@ ext : ∀ {Γ Δ}
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 ```
+
 Let `ρ` be the name of the map that takes variables in `Γ`
 to variables in `Δ`.  Consider the de Bruijn index of the
 variable in `Γ , B`:
@@ -548,6 +574,7 @@ With extension under our belts, it is straightforward
 to define renaming.  If variables in one context map to
 variables in another, then terms in the first context map to
 terms in the second:
+
 ```agda
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -561,6 +588,7 @@ rename ρ (`suc M)       =  `suc (rename ρ M)
 rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 ```
+
 Let `ρ` be the name of the map that takes variables in `Γ`
 to variables in `Δ`.  Let's unpack the first three cases:
 
@@ -587,6 +615,7 @@ calculus.
 
 Here is an example of renaming a term with one free
 and one bound variable:
+
 ```agda
 M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₀ = ƛ (# 1 · (# 1 · # 0))
@@ -597,6 +626,7 @@ M₁ = ƛ (# 2 · (# 2 · # 0))
 _ : rename S_ M₀ ≡ M₁
 _ = refl
 ```
+
 In general, `rename S_` will increment the de Bruijn index for
 each free variable by one, while leaving the index for each
 bound variable unchanged.  The code achieves this naturally:
@@ -634,6 +664,7 @@ map from variables in one context to _terms_ in another.
 Given a map from variables in one context to terms over
 another, extension yields a map from the first context
 extended to the second context similarly extended:
+
 ```agda
 exts : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
@@ -642,6 +673,7 @@ exts : ∀ {Γ Δ}
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
 ```
+
 Let `σ` be the name of the map that takes variables in `Γ`
 to terms over `Δ`.  Consider the de Bruijn index of the
 variable in `Γ , B`:
@@ -662,6 +694,7 @@ With extension under our belts, it is straightforward
 to define substitution.  If variables in one context map
 to terms over another, then terms in the first context
 map to terms in the second:
+
 ```agda
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -675,6 +708,7 @@ subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
 ```
+
 Let `σ` be the name of the map that takes variables in `Γ`
 to terms over `Δ`.  Let's unpack the first three cases:
 
@@ -696,6 +730,7 @@ bound variable.
 From the general case of substitution for multiple free
 variables it is easy to define the special case of
 substitution for one free variable:
+
 ```agda
 _[_] : ∀ {Γ A B}
   → Γ , B ⊢ A
@@ -708,6 +743,7 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   σ Z      =  M
   σ (S x)  =  ` x
 ```
+
 In a term of type `A` over context `Γ , B`, we replace the
 variable of type `B` by a term of type `B` over context `Γ`.
 To do so, we use a map from the context `Γ , B` to the context
@@ -720,6 +756,7 @@ Consider the previous example:
   `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 
 Here is the example formalised:
+
 ```agda
 M₂ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₂ = ƛ # 1 · (# 1 · # 0)
@@ -744,6 +781,7 @@ variable to avoid capture:
 Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
 `"y"` has type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
 Here is the example formalised:
+
 ```agda
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
@@ -772,6 +810,7 @@ to sneak in.
 ## Values
 
 The definition of value is much as before:
+
 ```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -846,6 +885,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------
     → μ N —→ N [ μ N ]
 ```
+
 The definition states that `M —→ N` can only hold of terms `M`
 and `N` which _both_ have type `Γ ⊢ A` for some context `Γ`
 and type `A`.  In other words, it is _built-in_ to our
@@ -861,6 +901,7 @@ definition of substitution.
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition:
+
 ```agda
 infix  2 _—↠_
 infix  1 begin_
@@ -894,6 +935,7 @@ begin M—↠N = M—↠N
 We reiterate each of our previous examples.  First, the Church
 numeral two applied to the successor function and zero yields
 the natural number two:
+
 ```agda
 _ : twoᶜ · sucᶜ · `zero {∅} —↠ `suc `suc `zero
 _ =
@@ -909,9 +951,11 @@ _ =
    `suc (`suc `zero)
   ∎
 ```
+
 As before, we need to supply an explicit context to `` `zero ``.
 
 Next, a sample reduction demonstrating that two plus two is four:
+
 ```agda
 _ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
@@ -946,6 +990,7 @@ _ =
 ```
 
 And finally, a similar sample reduction for Church numerals:
+
 ```agda
 _ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero {∅}
 _ =
@@ -1002,6 +1047,7 @@ values.
 As before, every term that is well typed and closed is either
 a value or takes a reduction step.  The formulation of progress
 is just as before, but annotated with types:
+
 ```agda
 data Progress {A} (M : ∅ ⊢ A) : Set where
 
@@ -1018,6 +1064,7 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
 
 The statement and proof of progress is much as before,
 appropriately annotated:
+
 ```agda
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
@@ -1046,14 +1093,17 @@ We can do much the same here, but we no longer need to explicitly
 refer to preservation, since it is built-in to the definition of reduction.
 
 As before, we relate gas to the number of steps in a reduction sequence.
-```
+
+```agda
 length : ∀ {A} {M N : ∅ ⊢ A} → M —↠ N → ℕ
 length (M ∎)                =  zero
 length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 ```
+
 Also as before, if the evaluator runs out of gas it returns a sequence
 of length equal to the amount of gas, while if it terminates in returns
 a sequence of length less than the amount of gas and ending in a value.
+
 ```agda
 data Eval {A} (M : ∅ ⊢ A) (g : ℕ) : Set where
 
@@ -1070,9 +1120,11 @@ data Eval {A} (M : ∅ ⊢ A) (g : ℕ) : Set where
       ---------------
     → Eval M g
 ```
+
 The evaluator takes gas and an intrinsically-typed term,
 and returns a reduction sequence, indicating either that it
 ran out of gas or that it terminated.
+
 ```agda
 eval : ∀ {A}
   → (g : ℕ)
@@ -1086,6 +1138,7 @@ eval (suc g) L with progress L
 ...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
 ...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
+
 The definition is a little simpler than previously, as we no longer need
 to invoke preservation.
 

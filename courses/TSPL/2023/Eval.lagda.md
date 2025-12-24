@@ -6,7 +6,7 @@ permalink : /TSPL/2023/Eval/
 Siek, Thiemann, and Wadler
 10 November 2022
 
-```
+```agda
 module Eval where
 
 open import Data.Nat using (ℕ; zero; suc)
@@ -19,7 +19,7 @@ open import Relation.Nullary using (¬_)
 
 ## Types
 
-```
+```agda
 infixr 7 _⇒_
 infix  8 `ℕ
 
@@ -30,7 +30,7 @@ data Type : Set where
 
 * Contexts and Variables
 
-```
+```agda
 infixl 6 _▷_
 
 data Context : Set where
@@ -54,7 +54,7 @@ data _∋_ : Context → Type → Set where
 
 ## Terms
 
-```
+```agda
 infix  4 _⊢_
 infixl 6 _·_
 infix  8 `_
@@ -102,6 +102,7 @@ data _⊢_ : Context → Type → Set where
 ### Test examples
 
 First, computing two plus two on naturals:
+
 ```agda
 pattern two = `suc `suc `zero
 pattern plus = μ ƛ ƛ (case (` S Z) (` Z) (`suc (` S S S Z · ` Z · ` S Z)))
@@ -111,6 +112,7 @@ pattern plus = μ ƛ ƛ (case (` S Z) (` Z) (`suc (` S S S Z · ` Z · ` S Z)))
 ```
 
 Next, computing two plus two on Church numerals:
+
 ```agda
 pattern twoᶜ = ƛ ƛ (` S Z · (` S Z · ` Z))
 pattern plusᶜ = ƛ ƛ ƛ ƛ (` S S S Z · ` S Z · (` S S Z · ` S Z · ` Z))
@@ -123,7 +125,7 @@ pattern sucᶜ = ƛ `suc (` Z)
 
 ## Renaming maps, substitution maps, term maps
 
-```
+```agda
 _→ʳ_ : Context → Context → Set
 Γ →ʳ Δ = ∀ {A} → Γ ∋ A → Δ ∋ A
 
@@ -138,7 +140,8 @@ _→ᵗ_ : Context → Context → Set
 ## Renaming
 
 Extension of renaming maps
-```
+
+```agda
 ren▷ : ∀ {Γ Δ A}
   → (Γ →ʳ Δ)
     ----------------------------
@@ -164,7 +167,7 @@ lift = ren S_
 
 ## Substitution
 
-```
+```agda
 sub▷ : ∀ {Γ Δ A}
   → (Γ →ˢ Δ)
     --------------------------
@@ -186,7 +189,8 @@ sub ρ (μ N)          = μ (sub (sub▷ ρ) N)
 ```
 
 Special case of substitution, used in beta rule
-```
+
+```agda
 σ₀ : ∀ {Γ A} → (M : Γ ⊢ A) → (Γ ▷ A) →ˢ Γ
 σ₀ M Z      =  M
 σ₀ M (S x)  =  ` x
@@ -201,7 +205,7 @@ _[_] {Γ} {A} N M =  sub {Γ ▷ A} {Γ} (σ₀ M) N
 
 ## Values
 
-```
+```agda
 data Value {Γ} : ∀ {A} → Γ ⊢ A → Set where
 
   ƛ_ : ∀{A B}
@@ -221,7 +225,8 @@ data Value {Γ} : ∀ {A} → Γ ⊢ A → Set where
 
 
 Extract term from evidence that it is a value.
-```
+
+```agda
 value : ∀ {Γ A} {V : Γ ⊢ A}
   → (v : Value V)
     -------------
@@ -247,7 +252,7 @@ instead of
 
     _·[_] { ƛ N } V-ƛ E
 
-```
+```agda
 infix  4 _⊢_==>_
 infix  6 [_]·_
 infix  6 _·[_]
@@ -285,7 +290,8 @@ data _⊢_==>_ (Γ : Context) (C : Type) : Type → Set where
 ```
 
 The plug function inserts an expression into the hole of a frame.
-```
+
+```agda
 _⟦_⟧ : ∀{Γ A B}
   → Γ ⊢ A ==> B
   → Γ ⊢ A
@@ -300,7 +306,7 @@ _⟦_⟧ : ∀{Γ A B}
 
 ## Reduction
 
-```
+```agda
 infix 2 _↦_ _—→_
 
 data _↦_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -337,13 +343,14 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 ```
 
 Notation
-```
+
+```agda
 pattern ξ E M—→N = ξξ E refl refl M—→N
 ```
 
 ## Reflexive and transitive closure of reduction
 
-```
+```agda
 infix  1 begin_
 infix  2 _—↠_
 infixr 2 _—→⟨_⟩_
@@ -369,7 +376,8 @@ begin M—↠N = M—↠N
 
 Values are irreducible.  The auxiliary definition rearranges the
 order of the arguments because it works better for Agda.
-```
+
+```agda
 value-irreducible : ∀ {Γ A} {V M : Γ ⊢ A}
   → Value V
     ----------
@@ -388,7 +396,7 @@ value-irreducible v V—→M = nope V—→M v
    nope (ξ `suc[ E ] V↦M) (`suc v)  =  nope (ξ E V↦M) v
 ```
 
-```
+```agda
 redex : ∀{Γ A} (M : Γ ⊢ A) → Set
 redex M = ∃[ N ] (M ↦ N)
 ```
@@ -398,7 +406,7 @@ redex M = ∃[ N ] (M ↦ N)
 Every term that is well typed and closed is either
 blame or a value or takes a reduction step.
 
-```
+```agda
 data Progress {A} (M : ∅ ⊢ A) : Set where
 
   step : ∀ {N : ∅ ⊢ A}
@@ -435,15 +443,18 @@ progress (μ M)                           =  step (ξ □ β-μ)
 ## Evaluation
 
 Gas is specified by a natural number:
-```
+
+```agda
 record Gas : Set where
   constructor gas
   field
     amount : ℕ
 ```
+
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value, or indicate that it ran out of gas.
-```
+
+```agda
 data Finished {A} : (∅ ⊢ A) → Set where
 
    done : ∀ {N : ∅ ⊢ A}
@@ -455,10 +466,12 @@ data Finished {A} : (∅ ⊢ A) → Set where
        ----------
      → Finished N
 ```
+
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
-```
+
+```agda
 data Steps {A} : ∅ ⊢ A → Set where
 
   steps : {L N : ∅ ⊢ A}
@@ -467,8 +480,10 @@ data Steps {A} : ∅ ⊢ A → Set where
       ----------
     → Steps L
 ```
+
 The evaluator takes gas and a term and returns the corresponding steps:
-```
+
+```agda
 eval : ∀ {A}
   → Gas
   → (L : ∅ ⊢ A)
@@ -484,7 +499,7 @@ eval (gas (suc m)) L with progress L
 
 ## Examples
 
-```
+```agda
 _ : 2+2 —↠ `suc `suc `suc `suc `zero
 _ =
   begin

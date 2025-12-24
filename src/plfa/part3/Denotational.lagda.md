@@ -222,6 +222,7 @@ Env Γ = ∀ (x : Γ ∋ ★) → Value
 ```
 
 We have the empty environment, and we can extend an environment.
+
 ```agda
 `∅ : Env ∅
 `∅ ()
@@ -235,6 +236,7 @@ _`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
 
 We can recover the previous environment from an extended environment,
 and the last value. Putting them together again takes us back to where we started.
+
 ```agda
 init : ∀ {Γ} → Env (Γ , ★) → Env Γ
 init γ x = γ (S x)

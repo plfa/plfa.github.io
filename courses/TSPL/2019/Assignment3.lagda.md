@@ -3,7 +3,7 @@ title     : "Assignment3: TSPL Assignment 3"
 permalink : /TSPL/2019/Assignment3/
 ---
 
-```
+```agda
 module Assignment3 where
 ```
 
@@ -38,7 +38,7 @@ yourself, or your group in the case of group practicals).
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
@@ -99,13 +99,16 @@ Prove the following relationship between map and append:
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
-```
+
+```agda
 data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
 ```
+
 Define a suitable map operator over trees:
-```
+
+```agda
 postulate
   map-Tree : ∀ {A B C D : Set}
     → (A → C) → (B → D) → Tree A B → Tree C D
@@ -119,14 +122,15 @@ For example:
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
-```
+
+```agda
 postulate
   foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
@@ -136,23 +140,26 @@ postulate
 #### Exercise `map-is-foldr` (practice)
 
 Show that map can be defined using fold:
-```
+
+```agda
 postulate
   map-is-foldr : ∀ {A B : Set} {f : A → B} →
     map f ≡ foldr (λ x xs → f x ∷ xs) []
 ```
+
 This requires extensionality.
 
 #### Exercise `fold-Tree` (practice)
 
 Define a suitable fold function for the type of trees given earlier:
-```
+
+```agda
 postulate
   fold-Tree : ∀ {A B C : Set}
     → (A → C) → (C → B → C → C) → Tree A B → C
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -160,26 +167,31 @@ postulate
 
 Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows:
-```
+
+```agda
 downFrom : ℕ → List ℕ
 downFrom zero     =  []
 downFrom (suc n)  =  n ∷ downFrom n
 ```
+
 For example:
-```
+
+```agda
 _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
 _ = refl
 ```
+
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
-```
+
+```agda
 postulate
   sum-downFrom : ∀ (n : ℕ)
     → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
@@ -194,7 +206,7 @@ operations associate to the left rather than the right.  For example:
     foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
     foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -204,7 +216,7 @@ operations associate to the left rather than the right.  For example:
 Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -215,7 +227,7 @@ Prove a result similar to `All-++-⇔`, but with `Any` in place of `All`, and a 
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -224,7 +236,7 @@ replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -246,7 +258,7 @@ Do we also have the following?
 If so, prove; if not, explain why.
 
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -256,7 +268,7 @@ If so, prove; if not, explain why.
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
 You will need to use extensionality.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -265,7 +277,7 @@ You will need to use extensionality.
 
 Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
 
-```
+```agda
 -- You code goes here
 ```
 
@@ -274,7 +286,7 @@ Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
 
 Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 
-```
+```agda
 -- You code goes here
 ```
 
@@ -286,7 +298,7 @@ predicate holds for every element of a list, so does `Any` have
 analogues `any` and `Any?` which determine whether a predicate holds
 for some element of a list.  Give their definitions.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -296,7 +308,8 @@ for some element of a list.  Give their definitions.
 Define the following variant of the traditional `filter` function on lists,
 which given a decidable predicate and a list returns all elements of the
 list satisfying the predicate:
-```
+
+```agda
 postulate
   filter? : ∀ {A : Set} {P : A → Set}
     → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
@@ -312,7 +325,7 @@ Write out the definition of a lambda term that multiplies
 two natural numbers.  Your definition may use `plus` as
 defined earlier.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -324,7 +337,7 @@ two natural numbers represented as Church numerals. Your
 definition may use `plusᶜ` as defined earlier (or may not
 — there are nice definitions both ways).
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -334,7 +347,8 @@ definition may use `plusᶜ` as defined earlier (or may not
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
-```
+
+```agda
 ƛ′_⇒_ : Term → Term → Term
 ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
 ƛ′ _ ⇒ _      =  ⊥-elim impossible
@@ -350,6 +364,7 @@ case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
 μ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
 ```
+
 We intend to apply the function only when the first term is a variable, which we
 indicate by postulating a term `impossible` of the empty type `⊥`.  If we use
 C-c C-n to normalise the term
@@ -365,7 +380,8 @@ used with care, since such postulation could allow us to provide
 evidence of _any_ proposition whatsoever, regardless of its truth.
 
 The definition of `plus` can now be written as follows:
-```
+
+```agda
 plus′ : Term
 plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
           case′ m
@@ -376,6 +392,7 @@ plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
   m  =  ` "m"
   n  =  ` "n"
 ```
+
 Write out the definition of multiplication in the same style.
 
 
@@ -387,7 +404,7 @@ Rewrite the definition to factor the common part of these three
 clauses into a single function, defined by mutual recursion with
 substitution.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -397,7 +414,7 @@ substitution.
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -405,7 +422,7 @@ above embeds into the second. Why are they not isomorphic?
 
 Write out the reduction sequence demonstrating that one plus one is two.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -421,7 +438,7 @@ to the list
 
     [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ]
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -430,7 +447,7 @@ to the list
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well typed.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -440,7 +457,7 @@ showing that it is well typed.
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well typed.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -452,7 +469,7 @@ showing that it is well typed.
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -461,7 +478,7 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -469,7 +486,8 @@ proof of `progress` above.
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
-```
+
+```agda
 postulate
   value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
 ```
@@ -482,7 +500,7 @@ should factor dealing with bound variables into a single function,
 defined by mutual recursion with the proof that substitution
 preserves types.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -491,7 +509,7 @@ preserves types.
 
 Using the evaluator, confirm that two times two is four.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -501,7 +519,7 @@ Using the evaluator, confirm that two times two is four.
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -517,7 +535,7 @@ Its opposite is _subject expansion_, which holds if
 Find two counter-examples to subject expansion, one
 with case expressions and one not involving case expressions.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -526,7 +544,7 @@ with case expressions and one not involving case expressions.
 
 Give an example of an ill-typed term that does get stuck.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -534,6 +552,6 @@ Give an example of an ill-typed term that does get stuck.
 
 Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
-```
+```agda
 -- Your code goes here
 ```

@@ -84,6 +84,7 @@ infixl 7  _·_
 ## Types
 
 We have just one type:
+
 ```agda
 data Type : Set where
   ★ : Type
@@ -101,11 +102,13 @@ Show that `Type` is isomorphic to `⊤`, the unit type.
 
 As before, a context is a list of types, with the type of the
 most recently bound variable on the right:
+
 ```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
 ```
+
 We let `Γ` and `Δ` range over contexts.
 
 #### Exercise (`Context≃ℕ`) (practice)
@@ -120,6 +123,7 @@ Show that `Context` is isomorphic to `ℕ`.
 
 Intrinsically-scoped variables correspond to the lookup judgment.  The
 rules are as before:
+
 ```agda
 data _∋_ : Context → Type → Set where
 
@@ -132,6 +136,7 @@ data _∋_ : Context → Type → Set where
       ---------
     → Γ , B ∋ A
 ```
+
 We could write the rules with all instances of `A` and `B`
 replaced by `★`, but arguably it is clearer not to do so.
 
@@ -147,6 +152,7 @@ Intrinsically-scoped terms correspond to the typing judgment, but with
 `★` as the only type.  The result is that we check that terms are
 well scoped — that is, that all variables they mention are in scope —
 but not that they are well typed:
+
 ```agda
 data _⊢_ : Context → Type → Set where
 
@@ -166,6 +172,7 @@ data _⊢_ : Context → Type → Set where
       ------
     → Γ ⊢ ★
 ```
+
 Now we have a tiny calculus, with only variables, abstraction, and
 application.  Below we will see how to encode naturals and
 fixpoints into this calculus.
@@ -175,6 +182,7 @@ fixpoints into this calculus.
 As before, we can convert a natural to the corresponding de Bruijn
 index.  We no longer need to lookup the type in the context, since
 every variable has the same type:
+
 ```agda
 size : Context → ℕ
 size ∅        =  zero
@@ -186,6 +194,7 @@ count {Γ , ★} {(suc n)} (s≤s p)    =  S (count p)
 ```
 
 We can then introduce a convenient abbreviation for variables:
+
 ```agda
 #_ : ∀ {Γ}
   → (n : ℕ)
@@ -198,6 +207,7 @@ We can then introduce a convenient abbreviation for variables:
 ## Test examples
 
 Our only example is computing two plus two on Church numerals:
+
 ```agda
 twoᶜ : ∀ {Γ} → Γ ⊢ ★
 twoᶜ = ƛ ƛ (# 1 · (# 1 · # 0))
@@ -211,6 +221,7 @@ plusᶜ = ƛ ƛ ƛ ƛ (# 3 · # 1 · (# 2 · # 1 · # 0))
 2+2ᶜ : ∅ ⊢ ★
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ
 ```
+
 Before, reduction stopped when we reached a lambda term, so we had to
 compute `` plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero `` to ensure we reduced
 to a representation of the natural four.  Now, reduction continues
@@ -221,6 +232,7 @@ two.
 ## Renaming
 
 Our definition of renaming is as before.  First, we need an extension lemma:
+
 ```agda
 ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
     -----------------------------------
@@ -228,10 +240,12 @@ ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 ```
+
 We could replace all instances of `A` and `B` by `★`, but arguably it is
 clearer not to do so.
 
 Now it is straightforward to define renaming:
+
 ```agda
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -241,12 +255,14 @@ rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
 ```
+
 This is exactly as before, save that there are fewer term forms.
 
 ## Simultaneous substitution
 
 Our definition of substitution is also exactly as before.
 First we need an extension lemma:
+
 ```agda
 exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
     ----------------------------------
@@ -254,9 +270,11 @@ exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A)
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
 ```
+
 Again, we could replace all instances of `A` and `B` by `★`.
 
 Now it is straightforward to define substitution:
+
 ```agda
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -266,11 +284,13 @@ subst σ (` k)          =  σ k
 subst σ (ƛ N)          =  ƛ (subst (exts σ) N)
 subst σ (L · M)        =  (subst σ L) · (subst σ M)
 ```
+
 Again, this is exactly as before, save that there are fewer term forms.
 
 ## Single substitution
 
 It is easy to define the special case of substitution for one free variable:
+
 ```agda
 subst-zero : ∀ {Γ B} → (Γ ⊢ B) → ∀ {A} → (Γ , B ∋ A) → (Γ ⊢ A)
 subst-zero M Z      =  M
@@ -289,13 +309,16 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} (subst-zero M) {A} N
 Reduction continues until a term is fully normalised.  Hence, instead
 of values, we are now interested in _normal forms_.  Terms in normal
 form are defined by mutual recursion with _neutral_ terms:
+
 ```agda
 data Neutral : ∀ {Γ A} → Γ ⊢ A → Set
 data Normal  : ∀ {Γ A} → Γ ⊢ A → Set
 ```
+
 Neutral terms arise because we now consider reduction of open terms,
 which may contain free variables.  A term is neutral if it is a
 variable or a neutral term applied to a normal term:
+
 ```agda
 data Neutral where
 
@@ -309,9 +332,11 @@ data Neutral where
       ---------------
     → Neutral (L · M)
 ```
+
 A term is a normal form if it is neutral or an abstraction where the
 body is a normal form. We use `′_` to label neutral terms.
 Like `` `_ ``, it is unobtrusive:
+
 ```agda
 data Normal where
 
@@ -327,6 +352,7 @@ data Normal where
 ```
 
 We introduce a convenient abbreviation for evidence that a variable is neutral:
+
 ```agda
 #′_ : ∀ {Γ} (n : ℕ) {n∈Γ : True (suc n ≤? size Γ)} → Neutral {Γ} (# n)
 #′_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
@@ -334,10 +360,12 @@ We introduce a convenient abbreviation for evidence that a variable is neutral:
 
 For example, here is the evidence that the Church numeral two is in
 normal form:
+
 ```agda
 _ : Normal (twoᶜ {∅})
 _ = ƛ ƛ (′ #′ 1 · (′ #′ 1 · (′ #′ 0)))
 ```
+
 The evidence that a term is in normal form is almost identical to
 the term itself, decorated with some additional primes to indicate
 neutral terms, and using `#′` in place of `#`
@@ -364,6 +392,7 @@ call-by-name and to enable full normalisation:
 * A new rule `ζ` is added, to enable reduction underneath a lambda.
 
 Here are the formalised rules:
+
 ```agda
 infix 2 _—→_
 
@@ -414,6 +443,7 @@ abstractions).  What would `2+2ᶜ` reduce to in this case?
 ## Reflexive and transitive closure
 
 We cut-and-paste the previous definition:
+
 ```agda
 infix  2 _—↠_
 infix  1 begin_
@@ -445,6 +475,7 @@ begin M—↠N = M—↠N
 ## Example reduction sequence
 
 Here is the demonstration that two plus two is four:
+
 ```agda
 _ : 2+2ᶜ —↠ fourᶜ
 _ =
@@ -464,6 +495,7 @@ _ =
    ƛ (ƛ # 1 · (# 1 · (# 1 · (# 1 · # 0))))
   ∎
 ```
+
 After just two steps the top-level term is an abstraction,
 and `ζ` rules drive the rest of the normalisation.
 
@@ -481,6 +513,7 @@ it for open, well-scoped terms.  The definition of normal form permits
 free variables, and we have no terms that are not functions.
 
 A term makes progress if it can take a step or is in normal form:
+
 ```agda
 data Progress {Γ A} (M : Γ ⊢ A) : Set where
 
@@ -496,6 +529,7 @@ data Progress {Γ A} (M : Γ ⊢ A) : Set where
 ```
 
 If a term is well scoped then it satisfies progress:
+
 ```agda
 progress : ∀ {Γ A} → (M : Γ ⊢ A) → Progress M
 progress (` x)                                 =  done (′ ` x)
@@ -512,6 +546,7 @@ progress (L@(_ · _) · M) with progress L
 ...    | step M—→M′                            =  step (ξ₂ M—→M′)
 ...    | done NrmM                             =  done (′ NeuL · NrmM)
 ```
+
 We induct on the evidence that the term is well scoped:
 
 * If the term is a variable, then it is in normal form.
@@ -544,15 +579,18 @@ application.
 As previously, progress immediately yields an evaluator.
 
 We relate gas to the number of steps in a reduction sequence.
-```
+
+```agda
 length : ∀ {Γ A} {M N : Γ ⊢ A} → M —↠ N → ℕ
 length (M ∎)                =  zero
 length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 ```
+
 If the evaluator runs out of gas it returns a sequence
 of length equal to the amount of gas, while if it terminates in returns
 a sequence of length less than the amount of gas and ending in a
 normal form.
+
 ```agda
 data Eval {Γ A} (M : Γ ⊢ A) (g : ℕ) : Set where
 
@@ -569,7 +607,9 @@ data Eval {Γ A} (M : Γ ⊢ A) (g : ℕ) : Set where
       ---------------
     → Eval M g
 ```
+
 The evaluator takes gas and a term and returns the corresponding steps.
+
 ```agda
 eval : ∀ {Γ A}
   → (g : ℕ)
@@ -583,12 +623,14 @@ eval (suc g) L with progress L
 ...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
 ...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
+
 The definition is as before, save that the empty context `∅`
 generalises to an arbitrary context `Γ`.
 
 ## Example
 
 We reiterate our previous example. Two plus two is four, with Church numerals:
+
 ```agda
 _ : eval 100 2+2ᶜ ≡
   terminates
@@ -670,6 +712,7 @@ zero branch of the case.  (The cases could be in either order.
 We put the successor case first to ease comparison with Church numerals.)
 
 Here is the Scott representation of naturals encoded with de Bruijn indexes:
+
 ```agda
 `zero : ∀ {Γ} → (Γ ⊢ ★)
 `zero = ƛ ƛ (# 0)
@@ -680,6 +723,7 @@ Here is the Scott representation of naturals encoded with de Bruijn indexes:
 case : ∀ {Γ} → (Γ ⊢ ★) → (Γ ⊢ ★) → (Γ , ★ ⊢ ★)  → (Γ ⊢ ★)
 case L M N = L · (ƛ N) · M
 ```
+
 Here we have been careful to retain the exact form of our previous
 definitions.  The successor branch expects an additional variable to
 be in scope (as indicated by its type), so it is converted to an
@@ -715,13 +759,16 @@ This works because:
       f · (μ f)
 
 With de Bruijn indices, we have the following:
+
 ```agda
 μ_ : ∀ {Γ} → (Γ , ★ ⊢ ★) → (Γ ⊢ ★)
 μ N  =  (ƛ ((ƛ (# 1 · (# 0 · # 0))) · (ƛ (# 1 · (# 0 · # 0))))) · (ƛ N)
 ```
+
 The argument to fixpoint is treated similarly to the successor branch of case.
 
 We can now define two plus two exactly as before:
+
 ```agda
 infix 5 μ_
 
@@ -734,6 +781,7 @@ four = `suc `suc `suc `suc `zero
 plus : ∀ {Γ} → Γ ⊢ ★
 plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 ```
+
 Because `` `suc `` is now a defined term rather than primitive,
 it is no longer the case that `plus · two · two` reduces to `four`,
 but they do both reduce to the same normal term.

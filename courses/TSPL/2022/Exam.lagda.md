@@ -735,7 +735,8 @@ module Problem3 where
 ```
 
 A smart constructor, to make it easier to access a variable.
-```
+
+```agda
   S′ : ∀ {Γ x y A B}
      → {x≢y : False (x ≟ y)}
      → Γ ∋ x ⦂ A
@@ -746,6 +747,7 @@ A smart constructor, to make it easier to access a variable.
 ```
 
 Here is the result of typing two plus two on naturals:
+
 ```agda
   ⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
   ⊢2+2 =
@@ -769,6 +771,7 @@ Here is the result of typing two plus two on naturals:
 
 We confirm that synthesis on the relevant term returns
 natural as the type and the above derivation:
+
 ```agda
   _ : synthesize ∅ 2+2 ≡ yes ⟨ `ℕ , ⊢2+2 ⟩
   _ = refl

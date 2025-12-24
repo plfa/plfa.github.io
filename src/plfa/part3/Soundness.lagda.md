@@ -234,6 +234,7 @@ we prove the opposite, that it reflects meaning. That is,
 if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where ``(δ ∘ ρ) `⊑ γ``.
 
 First, we need a variant of a lemma given earlier.
+
 ```agda
 ext-`⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
@@ -245,6 +246,7 @@ ext-`⊑ ρ lt (S x) = lt x
 ```
 
 The proof is then as follows.
+
 ```agda
 rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
   → {ρ : Rename Γ Δ}

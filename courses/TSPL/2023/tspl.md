@@ -159,9 +159,11 @@ or Bitbucket if you have not already.  Instructions to do so are
 
 
 <!-- Assignments are submitted by running
+
 ``` bash
 submit tspl cwN AssignmentN.lagda.md
 ```
+
 where N is the number of the assignment. -->
 
 
@@ -178,9 +180,11 @@ Talk to me about what you would like to submit.
 
 <!--
 Submit the optional project by running
-``` bash
+
+```bash
 submit tspl essay Essay.lagda.md
 ```
+
 -->
 
 <!--

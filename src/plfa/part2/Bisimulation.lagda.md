@@ -129,6 +129,7 @@ are in bisimulation.
 
 We import our source language from
 Chapter [More](/More/):
+
 ```agda
 open import plfa.part2.More
 ```
@@ -138,6 +139,7 @@ open import plfa.part2.More
 
 The simulation is a straightforward formalisation of the rules
 in the introduction:
+
 ```agda
 infix  4 _~_
 infix  5 ~ƛ_
@@ -166,6 +168,7 @@ data _~_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------------
     → `let M N ~ (ƛ N†) · M†
 ```
+
 The language in Chapter [More](/More/) has more constructs, which we could easily add.
 However, leaving the simulation small lets us focus on the essence.
 It's a handy technical trick that we can have a large source language,
@@ -191,6 +194,7 @@ to use a decidable predicate to pick out terms in the domain of `_†`, using
 We need a number of technical results. The first is that simulation
 commutes with values.  That is, if `M ~ M†` and `M` is a value then
 `M†` is also a value:
+
 ```agda
 ~val : ∀ {Γ A} {M M† : Γ ⊢ A}
   → M ~ M†
@@ -202,6 +206,7 @@ commutes with values.  That is, if `M ~ M†` and `M` is a value then
 ~val (~L ~· ~M)   ()
 ~val (~let ~M ~N) ()
 ```
+
 It is a straightforward case analysis, where here the only value
 of interest is a lambda abstraction.
 
@@ -231,6 +236,7 @@ and if `M ~ M†` then `rename ρ M ~ rename ρ M†`:
 ~rename ρ (~L ~· ~M)    =  (~rename ρ ~L) ~· (~rename ρ ~M)
 ~rename ρ (~let ~M ~N)  =  ~let (~rename ρ ~M) (~rename (ext ρ) ~N)
 ```
+
 The structure of the proof is similar to the structure of renaming itself:
 reconstruct each term with recursive invocation, extending the environment
 where appropriate (in this case, only for the body of an abstraction).
@@ -246,6 +252,7 @@ The proof first requires we establish an analogue of extension.
 If `σ` and `σ†` both map any judgment `Γ ∋ A` to a judgment `Δ ⊢ A`,
 such that for every `x` in `Γ ∋ A` we have `σ x ~ σ† x`,
 then for any `x` in `Γ , B ∋ A` we have `exts σ x ~ exts σ† x`:
+
 ```agda
 ~exts : ∀ {Γ Δ}
   → {σ  : ∀ {A} → Γ ∋ A → Δ ⊢ A}
@@ -256,6 +263,7 @@ then for any `x` in `Γ , B ∋ A` we have `exts σ x ~ exts σ† x`:
 ~exts ~σ Z      =  ~`
 ~exts ~σ (S x)  =  ~rename S_ (~σ x)
 ```
+
 The structure of the proof is similar to the structure of extension itself.
 The newly introduced variable trivially relates to itself, and otherwise
 we apply renaming to the hypothesis.
@@ -264,6 +272,7 @@ With extension under our belts, it is straightforward to show
 substitution commutes.  If `σ` and `σ†` both map any judgment `Γ ∋ A`
 to a judgment `Δ ⊢ A`, such that for every `x` in `Γ ∋ A` we have `σ
 x ~ σ† x`, and if `M ~ M†`, then `subst σ M ~ subst σ† M†`:
+
 ```agda
 ~subst : ∀ {Γ Δ}
   → {σ  : ∀ {A} → Γ ∋ A → Δ ⊢ A}
@@ -276,6 +285,7 @@ x ~ σ† x`, and if `M ~ M†`, then `subst σ M ~ subst σ† M†`:
 ~subst ~σ (~L ~· ~M)    =  (~subst ~σ ~L) ~· (~subst ~σ ~M)
 ~subst ~σ (~let ~M ~N)  =  ~let (~subst ~σ ~M) (~subst (~exts ~σ) ~N)
 ```
+
 Again, the structure of the proof is similar to the structure of
 substitution itself: reconstruct each term with recursive invocation,
 extending the environment where appropriate (in this case, only for
@@ -284,6 +294,7 @@ the body of an abstraction).
 From the general case of substitution, it is also easy to derive
 the required special case.  If `N ~ N†` and `M ~ M†`, then
 `N [ M ] ~ N† [ M† ]`:
+
 ```agda
 ~sub : ∀ {Γ A B} {N N† : Γ , B ⊢ A} {M M† : Γ ⊢ B}
   → N ~ N†
@@ -296,6 +307,7 @@ the required special case.  If `N ~ N†` and `M ~ M†`, then
   ~σ Z      =  ~M
   ~σ (S x)  =  ~`
 ```
+
 Once more, the structure of the proof resembles the original.
 
 
@@ -322,6 +334,7 @@ Or, in a diagram:
 
 We first formulate a concept corresponding to the lower leg
 of the diagram, that is, its right and bottom edges:
+
 ```agda
 data Leg {Γ A} (M† N : Γ ⊢ A) : Set where
 
@@ -331,12 +344,14 @@ data Leg {Γ A} (M† N : Γ ⊢ A) : Set where
       --------
     → Leg M† N
 ```
+
 For our formalisation, in this case, we can use a stronger
 relation than `—↠`, replacing it by `—→`.
 
 We can now state and prove that the relation is a simulation.
 Again, in this case, we can use a stronger relation than
 `—↠`, replacing it by `—→`:
+
 ```agda
 sim : ∀ {Γ A} {M M† N : Γ ⊢ A}
   → M ~ M†
@@ -357,6 +372,7 @@ sim (~let ~M ~N)    (ξ-let M—→)
 ...  | leg ~M′ M†—→                 =  leg (~let ~M′ ~N) (ξ-·₂ V-ƛ M†—→)
 sim (~let ~V ~N)    (β-let VV)      =  leg (~sub ~N ~V)  (β-ƛ (~val ~V VV))
 ```
+
 The proof is by case analysis, examining each possible instance of `M ~ M†`
 and each possible instance of `M —→ M†`, using recursive invocation whenever
 the reduction is by a `ξ` rule, and hence contains another reduction.

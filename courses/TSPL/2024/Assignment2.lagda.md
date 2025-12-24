@@ -3,7 +3,7 @@ title     : "Assignment2: TSPL Assignment 2"
 permalink : /TSPL/2024/Assignment2/
 ---
 
-```
+```agda
 module Assignment2 where
 ```
 
@@ -48,7 +48,7 @@ on late submissions is at
 
 ## Connectives
 
-```
+```agda
 module Connectives where
 ```
 
@@ -111,10 +111,12 @@ Show empty is the right identity of sums up to isomorphism.
 #### Exercise `⊎-weak-×` (recommended)
 
 Show that the following property holds:
+
 ```agda
   postulate
     ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
 ```
+
 This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
@@ -126,10 +128,12 @@ distributive law, and explain how it relates to the weak version.
 #### Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
+
 ```agda
   postulate
     ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 ```
+
 Does the converse hold? If so, prove; if not, give a counterexample.
 
 ```agda
@@ -140,7 +144,7 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 
 ## Negation
 
-```
+```agda
 module Negation where
 ```
 
@@ -225,10 +229,12 @@ Show that each of these implies all the others.
 #### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
+
 ```agda
   Stable : Set → Set
   Stable A = ¬ ¬ A → A
 ```
+
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 
@@ -239,7 +245,7 @@ of two stable formulas is stable.
 
 ## Quantifiers
 
-```
+```agda
 module Quantifiers where
 ```
 
@@ -263,11 +269,13 @@ module Quantifiers where
 #### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
+
 ```agda
   postulate
     ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
       (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 ```
+
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
 
@@ -276,23 +284,27 @@ Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
+
 ```agda
   postulate
     ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
       (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x) → ∀ (x : A) → B x ⊎ C x
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
 #### Exercise `∀-×` (practice)
 
 Consider the following type.
+
 ```agda
   data Tri : Set where
     aa : Tri
     bb : Tri
     cc : Tri
 ```
+
 Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
 Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 
@@ -302,6 +314,7 @@ Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
 #### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction:
+
 ```agda
   postulate
     ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
@@ -311,11 +324,13 @@ Show that existentials distribute over disjunction:
 #### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
+
 ```agda
   postulate
     ∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
       ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 #### Exercise `∃-⊎` (practice)
@@ -347,6 +362,7 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 #### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal:
+
 ```agda
   postulate
     ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
@@ -354,6 +370,7 @@ Show that existential of a negation implies negation of a universal:
         --------------
       → ¬ (∀ x → B x)
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
@@ -406,7 +423,7 @@ which is a corollary of `≡Can`.
 
 ## Decidable
 
-```
+```agda
 module Decidable where
 ```
 
@@ -433,6 +450,7 @@ module Decidable where
 #### Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality:
+
 ```agda
   postulate
     _<?_ : ∀ (m n : ℕ) → Dec (m < n)
@@ -445,6 +463,7 @@ Analogous to the function above, define a function to decide strict inequality:
 #### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
+
 ```agda
   postulate
     _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
@@ -458,6 +477,7 @@ Define a function to decide whether two naturals are equal:
 #### Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
+
 ```agda
   postulate
     ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
@@ -470,6 +490,7 @@ Show that erasure relates corresponding boolean and decidable operations:
 Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
+
 ```agda
   postulate
     _iff_ : Bool → Bool → Bool

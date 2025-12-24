@@ -599,7 +599,7 @@ Now to prove the adequacy property. We apply the above
 lemma to obtain `∅ ⊢ M ⇓ clos (ƛ N′) γ` and then
 apply `cbn→reduce` to conclude.
 
-```
+```agda
 adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}
    →  ℰ M ≃ ℰ (ƛ N)
    → Σ[ N′ ∈ (∅ , ★ ⊢ ★) ]
@@ -620,7 +620,7 @@ beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backwar
 direction of the if-and-only-if, leveraging our results about the
 denotational semantics.
 
-```
+```agda
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
            → M —↠ ƛ N
            → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
@@ -636,7 +636,7 @@ Putting the two directions of the if-and-only-if together, we
 establish that call-by-name evaluation is equivalent to beta reduction
 in the following sense.
 
-```
+```agda
 cbn↔reduce : ∀ {M : ∅ ⊢ ★}
            → (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
              iff

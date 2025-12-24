@@ -1228,12 +1228,14 @@ Please delimit any code you add as follows:
 
 Show that a double substitution is equivalent to two single
 substitutions.
+
 ```agda
 postulate
   double-subst :
     ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
       N [ V ][ W ] ≡ (N [ rename S_ W ]) [ V ]
 ```
+
 Note the arguments need to be swapped and `W` needs to have
 its context adjusted via renaming in order for the right-hand
 side to be well typed.
@@ -1242,6 +1244,7 @@ side to be well typed.
 
 We repeat the [test examples](/DeBruijn/#examples) from Chapter [DeBruijn](/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
+
 ```agda
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero

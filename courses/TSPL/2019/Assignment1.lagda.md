@@ -3,7 +3,7 @@ title     : "Assignment1: TSPL Assignment 1"
 permalink : /TSPL/2019/Assignment1/
 ---
 
-```
+```agda
 module Assignment1 where
 ```
 
@@ -19,9 +19,11 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises labelled "(practice)" are included for those who want extra practice.
 
 Submit your homework using the "submit" command.
+
 ```bash
 submit tspl cw1 Assignment1.lagda.md
 ```
+
 Please ensure your files execute correctly under Agda!
 
 
@@ -43,7 +45,7 @@ yourself, or your group in the case of group practicals).
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
@@ -89,12 +91,14 @@ Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equati
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring.
-```
+
+```agda
 data Bin : Set where
   nil : Bin
   x0_ : Bin → Bin
   x1_ : Bin → Bin
 ```
+
 For instance, the bitstring
 
     1011
