@@ -3,7 +3,7 @@ title     : "Assignment4: TSPL Assignment 4"
 permalink : /TSPL/2019/Assignment4/
 ---
 
-```
+```agda
 module Assignment4 where
 ```
 
@@ -49,7 +49,7 @@ yourself, or your group in the case of group practicals).
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong; cong₂; _≢_)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -63,13 +63,13 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 ## DeBruijn
 
 
-```
+```agda
 module DeBruijn where
 ```
 
 Remember to indent all code by two spaces.
 
-```
+```agda
   open import plfa.part2.DeBruijn
 ```
 
@@ -95,7 +95,7 @@ Using the evaluator, confirm that two times two is four.
 
 ## More
 
-```
+```agda
 module More where
 ```
 
@@ -104,7 +104,8 @@ Remember to indent all code by two spaces.
 
 ### Syntax
 
-```
+```agda
+
   infix  4 _⊢_
   infix  4 _∋_
   infixl 5 _,_
@@ -124,7 +125,7 @@ Remember to indent all code by two spaces.
 
 ### Types
 
-```
+```agda
   data Type : Set where
     `ℕ    : Type
     _⇒_   : Type → Type → Type
@@ -138,7 +139,7 @@ Remember to indent all code by two spaces.
 
 ### Contexts
 
-```
+```agda
   data Context : Set where
     ∅   : Context
     _,_ : Context → Type → Context
@@ -146,7 +147,7 @@ Remember to indent all code by two spaces.
 
 ### Variables and the lookup judgment
 
-```
+```agda
   data _∋_ : Context → Type → Set where
 
     Z : ∀ {Γ A}
@@ -161,7 +162,7 @@ Remember to indent all code by two spaces.
 
 ### Terms and the typing judgment
 
-```
+```agda
   data _⊢_ : Context → Type → Set where
 
     -- variables
@@ -260,7 +261,7 @@ Remember to indent all code by two spaces.
 
 ### Abbreviating de Bruijn indices
 
-```
+```agda
   lookup : Context → ℕ → Type
   lookup (Γ , A) zero     =  A
   lookup (Γ , _) (suc n)  =  lookup Γ n
@@ -279,7 +280,7 @@ Remember to indent all code by two spaces.
 
 ## Renaming
 
-```
+```agda
   ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
   ext ρ Z      =  Z
   ext ρ (S x)  =  S (ρ x)
@@ -303,7 +304,7 @@ Remember to indent all code by two spaces.
 
 ## Simultaneous Substitution
 
-```
+```agda
   exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
   exts σ Z      =  ` Z
   exts σ (S x)  =  rename S_ (σ x)
@@ -327,7 +328,7 @@ Remember to indent all code by two spaces.
 
 ## Single and double substitution
 
-```
+```agda
   _[_] : ∀ {Γ A B}
     → Γ , A ⊢ B
     → Γ ⊢ A
@@ -355,7 +356,7 @@ Remember to indent all code by two spaces.
 
 ## Values
 
-```
+```agda
   data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
     -- functions
@@ -395,7 +396,7 @@ not fixed by the given arguments.
 
 ## Reduction
 
-```
+```agda
   infix 2 _—→_
 
   data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -525,7 +526,7 @@ not fixed by the given arguments.
 
 ## Reflexive and transitive closure
 
-```
+```agda
   infix  2 _—↠_
   infix  1 begin_
   infixr 2 _—→⟨_⟩_
@@ -553,7 +554,7 @@ not fixed by the given arguments.
 
 ## Values do not reduce
 
-```
+```agda
   V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A}
     → Value M
       ----------
@@ -569,7 +570,7 @@ not fixed by the given arguments.
 
 ## Progress
 
-```
+```agda
   data Progress {A} (M : ∅ ⊢ A) : Set where
 
     step : ∀ {N : ∅ ⊢ A}
@@ -630,7 +631,7 @@ not fixed by the given arguments.
 
 ## Evaluation
 
-```
+```agda
   record Gas : Set where
     constructor gas
     field
@@ -669,7 +670,7 @@ not fixed by the given arguments.
 
 ## Examples
 
-```
+```agda
   cube : ∅ ⊢ Nat ⇒ Nat
   cube = ƛ (# 0 `* # 0 `* # 0)
 
@@ -775,7 +776,7 @@ In this case, the simulation is _not_ lock-step.
 
 ## Inference
 
-```
+```agda
 module Inference where
 ```
 
@@ -783,13 +784,13 @@ Remember to indent all code by two spaces.
 
 ### Imports
 
-```
+```agda
   import plfa.part2.More as DB
 ```
 
 ### Syntax
 
-```
+```agda
   infix   4  _∋_⦂_
   infix   4  _⊢_↑_
   infix   4  _⊢_↓_
@@ -807,7 +808,7 @@ Remember to indent all code by two spaces.
 
 ### Identifiers, types, and contexts
 
-```
+```agda
   Id : Set
   Id = String
 
@@ -822,7 +823,7 @@ Remember to indent all code by two spaces.
 
 ### Terms
 
-```
+```agda
   data Term⁺ : Set
   data Term⁻ : Set
 
@@ -842,7 +843,7 @@ Remember to indent all code by two spaces.
 
 ### Sample terms
 
-```
+```agda
   two : Term⁻
   two = suc (suc zero)
 
@@ -855,7 +856,7 @@ Remember to indent all code by two spaces.
 
 ### Lookup
 
-```
+```agda
   data _∋_⦂_ : Context → Id → Type → Set where
 
     Z : ∀ {Γ x A}
@@ -871,7 +872,7 @@ Remember to indent all code by two spaces.
 
 ### Bidirectional type checking
 
-```
+```agda
   data _⊢_↑_ : Context → Term⁺ → Type → Set
   data _⊢_↓_ : Context → Term⁻ → Type → Set
 
@@ -931,7 +932,7 @@ Remember to indent all code by two spaces.
 
 ### Type equality
 
-```
+```agda
   _≟Tp_ : (A B : Type) → Dec (A ≡ B)
   `ℕ      ≟Tp `ℕ              =  yes refl
   `ℕ      ≟Tp (A ⇒ B)         =  no λ()
@@ -945,7 +946,7 @@ Remember to indent all code by two spaces.
 
 ### Prerequisites
 
-```
+```agda
   dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
   dom≡ refl = refl
 
@@ -959,7 +960,7 @@ Remember to indent all code by two spaces.
 
 ### Unique lookup
 
-```
+```agda
   uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
   uniq-∋ Z Z                 =  refl
   uniq-∋ Z (S x≢y _)         =  ⊥-elim (x≢y refl)
@@ -969,7 +970,7 @@ Remember to indent all code by two spaces.
 
 ### Unique synthesis
 
-```
+```agda
   uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
   uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
   uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
@@ -978,7 +979,7 @@ Remember to indent all code by two spaces.
 
 ## Lookup type of a variable in the context
 
-```
+```agda
   ext∋ : ∀ {Γ B x y}
     → x ≢ y
     → ¬ (∃[ A ] Γ ∋ x ⦂ A)
@@ -1000,7 +1001,7 @@ Remember to indent all code by two spaces.
 
 ### Promoting negations
 
-```
+```agda
   ¬arg : ∀ {Γ A B L M}
     → Γ ⊢ L ↑ A ⇒ B
     → ¬ Γ ⊢ M ↓ A
@@ -1019,7 +1020,7 @@ Remember to indent all code by two spaces.
 
 ## Synthesize and inherit types
 
-```
+```agda
   synthesize : ∀ (Γ : Context) (M : Term⁺)
                ---------------------------
              → Dec (∃[ A ] Γ ⊢ M ↑ A)
@@ -1071,7 +1072,7 @@ Remember to indent all code by two spaces.
 
 ### Erasure
 
-```
+```agda
   ∥_∥Tp : Type → DB.Type
   ∥ `ℕ ∥Tp             =  DB.`ℕ
   ∥ A ⇒ B ∥Tp          =  ∥ A ∥Tp DB.⇒ ∥ B ∥Tp

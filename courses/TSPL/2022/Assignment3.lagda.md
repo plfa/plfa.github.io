@@ -3,7 +3,7 @@ title     : "Assignment3: TSPL Assignment 3"
 permalink : /TSPL/2022/Assignment3/
 ---
 
-```
+```agda
 module Assignment3 where
 ```
 
@@ -38,7 +38,7 @@ yourself, or your group in the case of group practicals).
 
 ## Decidable
 
-```
+```agda
 module Decidable where
 ```
 
@@ -60,7 +60,7 @@ module Decidable where
   open import plfa.part1.Isomorphism using (_⇔_)
 ```
 
-```
+```agda
   open import plfa.part1.Decidable
     hiding (_<?_; _≡ℕ?_; ∧-×; ∨-⊎; not-¬; _iff_; _⇔-dec_; iff-⇔)
 ```
@@ -68,6 +68,7 @@ module Decidable where
 #### Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality:
+
 ```agda
   postulate
     _<?_ : ∀ (m n : ℕ) → Dec (m < n)
@@ -80,6 +81,7 @@ Analogous to the function above, define a function to decide strict inequality:
 #### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
+
 ```agda
   postulate
     _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
@@ -93,6 +95,7 @@ Define a function to decide whether two naturals are equal:
 #### Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
+
 ```agda
   postulate
     ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
@@ -105,6 +108,7 @@ Show that erasure relates corresponding boolean and decidable operations:
 Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
+
 ```agda
   postulate
     _iff_ : Bool → Bool → Bool
@@ -124,7 +128,7 @@ Give analogues of `True`, `toWitness`, and `fromWitness` which work with *negate
 
 ## Lists
 
-```
+```agda
 module Lists where
 ```
 
@@ -146,7 +150,7 @@ module Lists where
 ```
 
 
-```
+```agda
   open import plfa.part1.Lists
     hiding (downFrom; Tree; leaf; node; merge)
 ```
@@ -193,11 +197,13 @@ Prove the following relationship between map and append:
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
+
 ```agda
   data Tree (A B : Set) : Set where
     leaf : A → Tree A B
     node : Tree A B → B → Tree A B → Tree A B
 ```
+
 Define a suitable map operator over trees:
 
     map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
@@ -276,16 +282,20 @@ Demonstrate an analogue of `map-is-foldr` for the type of trees.
 #### Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows:
+
 ```agda
   downFrom : ℕ → List ℕ
   downFrom zero     =  []
   downFrom (suc n)  =  n ∷ downFrom n
 ```
+
 For example:
+
 ```agda
   _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
   _ = refl
 ```
+
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
 
@@ -396,6 +406,7 @@ for some element of a list.  Give their definitions.
 #### Exercise `split` (stretch)
 
 The relation `merge` holds when two lists merge to give a third list.
+
 ```agda
   data merge {A : Set} : (xs ys zs : List A) → Set where
 
@@ -415,6 +426,7 @@ The relation `merge` holds when two lists merge to give a third list.
 ```
 
 For example,
+
 ```agda
   _ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
   _ = left-∷ (right-∷ (right-∷ (left-∷ [])))
@@ -441,7 +453,7 @@ with their corresponding proofs.
 
 ## Lambda
 
-```
+```agda
 module Lambda where
 ```
 
@@ -461,7 +473,7 @@ module Lambda where
   open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
-```
+```agda
   open import plfa.part2.Lambda
     hiding (var?; ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
 ```
@@ -494,6 +506,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
+
 ```agda
   var? : (t : Term) → Bool
   var? (` _)  =  true
@@ -526,6 +539,7 @@ implicit argument. Note the implicit argument's type reduces to `⊥`
 when term `t` is anything but a variable.
 
 The definition of `plus` can now be written as follows:
+
 ```agda
   plus′ : Term
   plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
@@ -537,6 +551,7 @@ The definition of `plus` can now be written as follows:
     m  =  ` "m"
     n  =  ` "n"
 ```
+
 Write out the definition of multiplication in the same style.
 
 
@@ -609,7 +624,7 @@ showing that it is well typed.
 
 ## Properties
 
-```
+```agda
 module Properties where
 ```
 
@@ -632,7 +647,7 @@ module Properties where
 ```
 
 
-```
+```agda
   open import plfa.part2.Properties
     hiding (value?; Canonical_⦂_; unstuck; preserves; wttdgs)
 ```
@@ -646,6 +661,7 @@ and a zero or successor expression must be a natural.
 Further, the body of a function must be well typed in a context
 containing only its bound variable, and the argument of successor
 must itself be canonical:
+
 ```agda
   infix  4 Canonical_⦂_
 
@@ -669,7 +685,7 @@ must itself be canonical:
 Show that `Canonical V ⦂ A` is isomorphic to `(∅ ⊢ V ⦂ A) × (Value V)`,
 that is, the canonical forms are exactly the well-typed values.
 
-```
+```agda
   -- Your code goes here
 ```
 
@@ -694,6 +710,7 @@ proof of `progress` above.
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
+
 ```agda
   postulate
     value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
@@ -758,6 +775,7 @@ Give an example of an ill-typed term that does get stuck.
 #### Exercise `unstuck` (recommended)
 
 Using progress, it is easy to show that no well-typed term is stuck:
+
 ```agda
   postulate
     unstuck : ∀ {M A}
@@ -768,6 +786,7 @@ Using progress, it is easy to show that no well-typed term is stuck:
 
 Using preservation, it is easy to show that after any number of steps,
 a well-typed term remains well typed:
+
 ```agda
   postulate
     preserves : ∀ {M N A}
@@ -779,6 +798,7 @@ a well-typed term remains well typed:
 
 An easy consequence is that starting from a well-typed term, taking
 any number of reduction steps leads to a term that is not stuck:
+
 ```agda
   postulate
     wttdgs : ∀ {M N A}
@@ -787,6 +807,7 @@ any number of reduction steps leads to a term that is not stuck:
         -----------
       → ¬ (Stuck N)
 ```
+
 Felleisen and Wright, who introduced proofs via progress and
 preservation, summarised this result with the slogan _well-typed terms
 don't get stuck_.Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.

@@ -41,6 +41,7 @@ as a pair of inference rules:
     suc m : ℕ
 
 And here is the definition in Agda:
+
 ```agda
 data ℕ : Set where
   zero : ℕ
@@ -233,9 +234,11 @@ code, with the exception of one special kind of comment, called a
 _pragma_, which is enclosed between `{-#` and `#-}`.
 
 Including the line
+
 ```agda
 {-# BUILTIN NATURAL ℕ #-}
 ```
+
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
@@ -302,6 +305,7 @@ instances of addition and multiplication can be specified in
 just a couple of lines.
 
 Here is the definition of addition in Agda:
+
 ```agda
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
@@ -347,6 +351,7 @@ addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called _well founded_.
 
 For example, let's add two and three:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ =
@@ -364,8 +369,10 @@ _ =
     5
   ∎
 ```
+
 We can write the same derivation more compactly by only
 expanding shorthand as needed:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ =
@@ -381,6 +388,7 @@ _ =
     5
   ∎
 ```
+
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -406,10 +414,12 @@ definition of that symbol.
 
 In fact, both proofs above are longer than need be, and Agda is satisfied
 with the following:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ = refl
 ```
+
 Agda knows how to
 compute the value of `2 + 3`, and so can immediately
 check it is the same as `5`.  A binary relation is said to be _reflexive_
@@ -446,11 +456,13 @@ Compute `3 + 4`, writing out your reasoning as a chain of equations, using the e
 
 Once we have defined addition, we can define multiplication
 as repeated addition:
+
 ```agda
 _*_ : ℕ → ℕ → ℕ
 zero    * n  =  zero
 (suc m) * n  =  n + (m * n)
 ```
+
 Computing `m * n` returns the sum of `m` copies of `n`.
 
 Again, rewriting turns the definition into two familiar equations:
@@ -473,6 +485,7 @@ Again, the definition is well founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
 For example, let's multiply two and three:
+
 ```agda
 _ =
   begin
@@ -487,6 +500,7 @@ _ =
     6
   ∎
 ```
+
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -528,12 +542,14 @@ subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first use of a definition that uses pattern
 matching against both arguments:
+
 ```agda
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero   =  m
 zero  ∸ suc n  =  zero
 suc m ∸ suc n  =  m ∸ n
 ```
+
 We can do a simple analysis to show that all the cases are covered.
 
   * Consider the second argument.
@@ -548,6 +564,7 @@ founded because monus on bigger numbers is defined in terms of monus
 on smaller numbers.
 
 For example, let's subtract two from three:
+
 ```agda
 _ =
   begin
@@ -560,8 +577,10 @@ _ =
     1
   ∎
 ```
+
 We did not use the second equation at all, but it will be required
 if we try to subtract a larger number from a smaller one:
+
 ```agda
 _ =
   begin
@@ -613,10 +632,12 @@ so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
 needs to be declared:
+
 ```agda
 infixl 6  _+_  _∸_
 infixl 7  _*_
 ```
+
 This states operators `_+_` and `_∸_` have precedence level 6,
 and operator `_*_` has precedence level 7.
 Addition and monus bind less tightly than multiplication
@@ -884,11 +905,13 @@ a program this simple, using `C-c C-c` to split cases can be helpful.
 ## More pragmas
 
 Including the lines
+
 ```agda
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
 ```
+
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
 Haskell operators on the arbitrary-precision integer type.
@@ -906,12 +929,14 @@ _m_ and _n_.
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
+
 ```agda
 data Bin : Set where
   ⟨⟩ : Bin
   _O : Bin → Bin
   _I : Bin → Bin
 ```
+
 For instance, the bitstring
 
     1011

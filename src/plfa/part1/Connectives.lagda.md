@@ -42,6 +42,7 @@ open plfa.part1.Isomorphism.≃-Reasoning
 Given two propositions `A` and `B`, the conjunction `A × B` holds
 if both `A` holds and `B` holds.  We formalise this idea by
 declaring a suitable datatype:
+
 ```agda
 record _×_ (A B : Set) : Set where
   constructor ⟨_,_⟩
@@ -50,6 +51,7 @@ record _×_ (A B : Set) : Set where
     proj₂ : B
 open _×_
 ```
+
 Evidence that `A × B` holds is of the form `⟨ M , N ⟩`, where `M`
 provides evidence that `A` holds and `N` provides evidence that `B`
 holds.
@@ -84,23 +86,28 @@ holds---how to _use_ the connective.[^from-wadler-2015]
 
 Applying each destructor and reassembling the results with the
 constructor is the identity over products:
+
 ```agda
 η-× : ∀ {A B : Set} (w : A × B) → ⟨ proj₁ w , proj₂ w ⟩ ≡ w
 η-× w = refl
 ```
+
 For record types, η-equality holds *by definition*.
 While proving `η-×`, we do not have to
 pattern match on `w` to know that η-equality holds.
 
 We set the precedence of conjunction so that it binds less
 tightly than anything save disjunction:
+
 ```agda
 infixr 2 _×_
 ```
+
 Thus, `m ≤ n × n ≤ p` parses as `(m ≤ n) × (n ≤ p)`.
 
 Alternatively, we can declare conjunction as a data type,
 and the projections as functions using pattern matching.
+
 ```agda
 data _×′_ (A B : Set) : Set where
 
@@ -122,15 +129,18 @@ proj₂′ : ∀ {A B : Set}
   → B
 proj₂′ ⟨ x , y ⟩′ = y
 ```
+
 The record type `_×_` and the data type `_×′_` behave similarly. One
 difference is that for for record
 types, η-equality holds *by definition*,
 but for data types have to
 pattern match know that η-equality holds:
+
 ```agda
 η-×′ : ∀ {A B : Set} (w : A ×′ B) → ⟨ proj₁′ w , proj₂′ w ⟩′ ≡ w
 η-×′ ⟨ x , y ⟩′ = refl
 ```
+
 The pattern matching on the left-hand side is essential, since
 replacing `w` by `⟨ x , y ⟩′` allows both sides of the
 propositional equality to simplify to the same term.
@@ -147,6 +157,7 @@ distinct members, and type `B` has `n` distinct members,
 then the type `A × B` has `m * n` distinct members.
 For instance, consider a type `Bool` with two members, and
 a type `Tri` with three members:
+
 ```agda
 data Bool : Set where
   true  : Bool
@@ -157,6 +168,7 @@ data Tri : Set where
   bb : Tri
   cc : Tri
 ```
+
 Then the type `Bool × Tri` has six members:
 
     ⟨ true  , aa ⟩    ⟨ true  , bb ⟩    ⟨ true ,  cc ⟩
@@ -164,6 +176,7 @@ Then the type `Bool × Tri` has six members:
 
 For example, the following function enumerates all
 possible arguments of type `Bool × Tri`:
+
 ```agda
 ×-count : Bool × Tri → ℕ
 ×-count ⟨ true  , aa ⟩  =  1
@@ -181,6 +194,7 @@ isomorphism_.
 
 For commutativity, the `to` function swaps a pair, taking `⟨ x , y ⟩` to
 `⟨ y , x ⟩`, and the `from` function does the same (up to renaming).
+
 ```agda
 ×-comm : ∀ {A B : Set} → A × B ≃ B × A
 ×-comm =
@@ -208,6 +222,7 @@ former, corresponds to `⟨ aa , true ⟩`, which is a member of the latter.
 For associativity, the `to` function reassociates two uses of pairing,
 taking `⟨ ⟨ x , y ⟩ , z ⟩` to `⟨ x , ⟨ y , z ⟩ ⟩`, and the `from` function does
 the inverse.
+
 ```agda
 ×-assoc : ∀ {A B C : Set} → (A × B) × C ≃ A × (B × C)
 ×-assoc =
@@ -244,11 +259,13 @@ is isomorphic to `(A → B) × (B → A)`.
 
 Truth `⊤` always holds. We formalise this idea by
 declaring the empty record type.
+
 ```agda
 record ⊤ : Set where
   constructor tt
 
 ```
+
 Evidence that `⊤` holds is of the form `tt`.
 The record construction `record {}` corresponds to the term `tt`. The
 constructor declaration allows us to write `tt`.
@@ -261,19 +278,23 @@ us nothing new.
 The nullary case of `η-×` is `η-⊤`.
 While proving `η-⊤`, we do not have to pattern match on `w`---Agda *knows* it
 is equal to `tt`:
+
 ```agda
 η-⊤ : ∀ (w : ⊤) → tt ≡ w
 η-⊤ w = refl
 
 ```
+
 Agda knows that *any* value of type `⊤` must be `tt`, so any time we need a
 value of type `⊤`, we can tell Agda to figure it out:
+
 ```agda
 truth : ⊤
 truth = _
 ```
 
 Alternatively, we can declare truth as a data type:
+
 ```agda
 data ⊤′ : Set where
 
@@ -281,13 +302,16 @@ data ⊤′ : Set where
     --
     ⊤′
 ```
+
 As with the product, the record type `⊤` and the data type `⊤′` behave
 similarly, but while η-equality holds *by definition* for the record type,
 it does not for the data type, so we need to pattern match on `w`:
+
 ```agda
 η-⊤′ : ∀ (w : ⊤′) → tt′ ≡ w
 η-⊤′ tt′ = refl
 ```
+
 The pattern matching on the left-hand side is essential. Replacing
 `w` by `tt′` allows both sides of the propositional equality to
 simplify to the same term.
@@ -298,6 +322,7 @@ whenever there is only one constructor.
 We refer to `⊤` as the _unit_ type. And, indeed,
 type `⊤` has exactly one member, `tt`.  For example, the following
 function enumerates all possible arguments of type `⊤`:
+
 ```agda
 ⊤-count : ⊤ → ℕ
 ⊤-count tt = 1
@@ -308,6 +333,7 @@ unit is the identity of product _up to isomorphism_.  For left
 identity, the `to` function takes `⟨ tt , x ⟩` to `x`, and the `from`
 function does the inverse.  The evidence of left inverse requires
 matching against a suitable pattern to enable simplification:
+
 ```agda
 ⊤-identityˡ : ∀ {A : Set} → ⊤ × A ≃ A
 ⊤-identityˡ =
@@ -333,6 +359,7 @@ For instance, `⟨ tt , true ⟩`, which is a member of the former,
 corresponds to `true`, which is a member of the latter.
 
 Right identity follows from commutativity of product and left identity:
+
 ```agda
 ⊤-identityʳ : ∀ {A : Set} → (A × ⊤) ≃ A
 ⊤-identityʳ {A} =
@@ -344,6 +371,7 @@ Right identity follows from commutativity of product and left identity:
     A
   ≃-∎
 ```
+
 Here we have used a chain of isomorphisms, analogous to that used for
 equality.
 
@@ -353,6 +381,7 @@ equality.
 Given two propositions `A` and `B`, the disjunction `A ⊎ B` holds
 if either `A` holds or `B` holds.  We formalise this idea by
 declaring a suitable inductive type:
+
 ```agda
 data _⊎_ (A B : Set) : Set where
 
@@ -366,12 +395,14 @@ data _⊎_ (A B : Set) : Set where
       -----
     → A ⊎ B
 ```
+
 Evidence that `A ⊎ B` holds is either of the form `inj₁ M`, where `M`
 provides evidence that `A` holds, or `inj₂ N`, where `N` provides
 evidence that `B` holds.
 
 Given evidence that `A → C` and `B → C` both hold, then given
 evidence that `A ⊎ B` holds we can conclude that `C` holds:
+
 ```agda
 case-⊎ : ∀ {A B C : Set}
   → (A → C)
@@ -382,6 +413,7 @@ case-⊎ : ∀ {A B C : Set}
 case-⊎ f g (inj₁ x) = f x
 case-⊎ f g (inj₂ y) = g y
 ```
+
 Pattern matching against `inj₁` and `inj₂` is typical of how we exploit
 evidence that a disjunction holds.
 
@@ -395,27 +427,33 @@ the former are sometimes given the names `⊎-I₁` and `⊎-I₂` and the
 latter the name `⊎-E`.
 
 Applying the destructor to each of the constructors is the identity:
+
 ```agda
 η-⊎ : ∀ {A B : Set} (w : A ⊎ B) → case-⊎ inj₁ inj₂ w ≡ w
 η-⊎ (inj₁ x) = refl
 η-⊎ (inj₂ y) = refl
 ```
+
 More generally, we can also throw in an arbitrary function from a disjunction:
+
 ```agda
 uniq-⊎ : ∀ {A B C : Set} (h : A ⊎ B → C) (w : A ⊎ B) →
   case-⊎ (h ∘ inj₁) (h ∘ inj₂) w ≡ h w
 uniq-⊎ h (inj₁ x) = refl
 uniq-⊎ h (inj₂ y) = refl
 ```
+
 The pattern matching on the left-hand side is essential.  Replacing
 `w` by `inj₁ x` allows both sides of the propositional equality to
 simplify to the same term, and similarly for `inj₂ y`.
 
 We set the precedence of disjunction so that it binds less tightly
 than any other declared operator:
+
 ```agda
 infixr 1 _⊎_
 ```
+
 Thus, `A × C ⊎ B × C` parses as `(A × C) ⊎ (B × C)`.
 
 Given two types `A` and `B`, we refer to `A ⊎ B` as the
@@ -436,6 +474,7 @@ members:
 
 For example, the following function enumerates all
 possible arguments of type `Bool ⊎ Tri`:
+
 ```agda
 ⊎-count : Bool ⊎ Tri → ℕ
 ⊎-count (inj₁ true)   =  1
@@ -468,10 +507,12 @@ Show sum is associative up to isomorphism.
 
 False `⊥` never holds.  We formalise this idea by declaring
 a suitable inductive type:
+
 ```agda
 data ⊥ : Set where
   -- no clauses!
 ```
+
 There is no possible evidence that `⊥` holds.
 
 Dual to `⊤`, for `⊥` there is no introduction rule but an elimination rule.
@@ -481,6 +522,7 @@ conclude anything!  This is a basic principle of logic, known in
 medieval times by the Latin phrase _ex falso_, and known to children
 through phrases such as "if pigs had wings, then I'd be the Queen of
 Sheba".  We formalise it as follows:
+
 ```agda
 ⊥-elim : ∀ {A : Set}
   → ⊥
@@ -488,6 +530,7 @@ Sheba".  We formalise it as follows:
   → A
 ⊥-elim ()
 ```
+
 This is our first use of the _absurd pattern_ `()`.
 Here since `⊥` is a type with no members, we indicate that it is
 _never_ possible to match against a value of this type by using
@@ -499,10 +542,12 @@ in the standard library.
 
 The nullary case of `uniq-⊎` is `uniq-⊥`, which asserts that `⊥-elim`
 is equal to any arbitrary function from `⊥`:
+
 ```agda
 uniq-⊥ : ∀ {C : Set} (h : ⊥ → C) (w : ⊥) → ⊥-elim w ≡ h w
 uniq-⊥ h ()
 ```
+
 Using the absurd pattern asserts there are no possible values for `w`,
 so the equation holds trivially.
 
@@ -512,10 +557,12 @@ We can also use `()` in nested patterns. For instance,
 We refer to `⊥` as the _empty_ type. And, indeed,
 type `⊥` has no members. For example, the following function
 enumerates all possible arguments of type `⊥`:
+
 ```agda
 ⊥-count : ⊥ → ℕ
 ⊥-count ()
 ```
+
 Here again the absurd pattern `()` indicates that no value can match
 type `⊥`.
 
@@ -556,6 +603,7 @@ converts evidence that `A` holds into evidence that `B` holds.
 
 Put another way, if we know that `A → B` and `A` both hold,
 then we may conclude that `B` holds:
+
 ```agda
 →-elim : ∀ {A B : Set}
   → (A → B)
@@ -564,6 +612,7 @@ then we may conclude that `B` holds:
   → B
 →-elim L M = L M
 ```
+
 In medieval times, this rule was known by the name _modus ponens_.
 It corresponds to function application.
 
@@ -572,6 +621,7 @@ is referred to as _introducing_ a function,
 while applying a function is referred to as _eliminating_ the function.
 
 Elimination followed by introduction is the identity:
+
 ```agda
 η-→ : ∀ {A B : Set} (f : A → B) → (λ (x : A) → f x) ≡ f
 η-→ f = refl
@@ -596,6 +646,7 @@ three squared) members:
 
 For example, the following function enumerates all possible
 arguments of the type `Bool → Tri`:
+
 ```agda
 →-count : (Bool → Tri) → ℕ
 →-count f with f true | f false
@@ -625,6 +676,7 @@ we have the isomorphism
 Both types can be viewed as functions that given evidence that `A` holds
 and evidence that `B` holds can return evidence that `C` holds.
 This isomorphism sometimes goes by the name *currying*.
+
 ```agda
 currying : ∀ {A B C : Set} → (A → B → C) ≃ (A × B → C)
 currying =
@@ -635,6 +687,7 @@ currying =
     ; to∘from =  λ{ g → refl }
     }
 ```
+
 Currying tells us that instead of a function that takes a pair of arguments,
 we can have a function that takes the first argument and returns a function that
 expects the second argument.  Thus, for instance, our way of writing addition
@@ -660,6 +713,7 @@ we have the isomorphism:
 That is, the assertion that if either `A` holds or `B` holds then `C` holds
 is the same as the assertion that if `A` holds then `C` holds and if
 `B` holds then `C` holds.  The proof of the left inverse requires extensionality:
+
 ```agda
 →-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B → C) ≃ ((A → C) × (B → C))
 →-distrib-⊎ =
@@ -682,6 +736,7 @@ we have the isomorphism:
 That is, the assertion that if `A` holds then `B` holds and `C` holds
 is the same as the assertion that if `A` holds then `B` holds and if
 `A` holds then `C` holds.
+
 ```agda
 →-distrib-× : ∀ {A B C : Set} → (A → B × C) ≃ (A → B) × (A → C)
 →-distrib-× =
@@ -698,6 +753,7 @@ is the same as the assertion that if `A` holds then `B` holds and if
 
 Products distribute over sum, up to isomorphism.  The code to validate
 this fact is similar in structure to our previous results:
+
 ```agda
 ×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
 ×-distrib-⊎ =
@@ -718,6 +774,7 @@ this fact is similar in structure to our previous results:
 ```
 
 Sums do not distribute over products up to isomorphism, but it is an embedding:
+
 ```agda
 ⊎-distrib-× : ∀ {A B C : Set} → (A × B) ⊎ C ≲ (A ⊎ C) × (B ⊎ C)
 ⊎-distrib-× =
@@ -734,6 +791,7 @@ Sums do not distribute over products up to isomorphism, but it is an embedding:
                  }
     }
 ```
+
 Note that there is a choice in how we write the `from` function.
 As given, it takes `⟨ inj₂ z , inj₂ w ⟩` to `inj₂ z`, but it is
 easy to write a variant that instead returns `inj₂ w`.  We have
@@ -755,10 +813,12 @@ one of these laws is "more true" than the other.
 #### Exercise `⊎-weak-×` (recommended)
 
 Show that the following property holds:
+
 ```agda
 postulate
   ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
 ```
+
 This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
@@ -770,10 +830,12 @@ distributive law, and explain how it relates to the weak version.
 #### Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
+
 ```agda
 postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 ```
+
 Does the converse hold? If so, prove; if not, give a counterexample.
 
 ```agda
@@ -784,6 +846,7 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
+
 ```agda
 import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
 import Data.Unit using (⊤; tt)
@@ -791,6 +854,7 @@ import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 import Data.Empty using (⊥; ⊥-elim)
 import Function.Bundles using (_⇔_)
 ```
+
 The standard library constructs pairs with `_,_` whereas we use `⟨_,_⟩`.
 The former makes it convenient to build triples or larger tuples from pairs,
 permitting `a , b , c` to stand for `(a , (b , c))`.  But it conflicts with

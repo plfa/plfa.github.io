@@ -100,6 +100,7 @@ data _⇛_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       -----------------------
     → (ƛ N) · M  ⇛  N′ [ M′ ]
 ```
+
 The first three rules are congruences that reduce each of their
 parts simultaneously. The last rule reduces a lambda term and
 term in parallel followed by a beta step.
@@ -116,6 +117,7 @@ par-refl {Γ} {A} {` x} = pvar
 par-refl {Γ} {★} {ƛ N} = pabs par-refl
 par-refl {Γ} {★} {L · M} = papp par-refl par-refl
 ```
+
 We define the sequences of parallel reduction as follows.
 
 ```agda

@@ -3,7 +3,7 @@ title     : "Assignment1: TSPL Assignment 1"
 permalink : /TSPL/2024/Assignment1/
 ---
 
-```
+```agda
 module Assignment1 where
 ```
 
@@ -49,7 +49,7 @@ on late submissions is at
 
 ## Naturals
 
-```
+```agda
 module Naturals where
   import Relation.Binary.PropositionalEquality as Eq
   open Eq using (_≡_; refl)
@@ -116,12 +116,14 @@ Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equati
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
+
 ```agda
   data Bin : Set where
     ⟨⟩ : Bin
     _O : Bin → Bin
     _I : Bin → Bin
 ```
+
 For instance, the bitstring
 
     1011
@@ -165,7 +167,7 @@ Confirm that these both give the correct answer for zero through four.
 
 ## Induction
 
-```
+```agda
 module Induction where
 ```
 
@@ -174,6 +176,7 @@ module Induction where
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
 `cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
+
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
   open Eq using (_≡_; refl; cong; sym)
@@ -181,10 +184,11 @@ and some operations upon them.  We also require a couple of new operations,
   open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _^_)
   open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
+
 (Importing `step-≡` defines `_≡⟨_⟩_`.)
 
 
-```
+```agda
   open import plfa.part1.Induction
     hiding ()
 ```
@@ -301,7 +305,7 @@ Show the following three laws
 
 for all `m`, `n`, and `p`.
 
-```
+```agda
   -- Your code goes here
 ```
 
@@ -334,7 +338,7 @@ For each law: if it holds, prove; if not, give a counterexample.
 
 ## Relations
 
-```
+```agda
 module Relations where
 ```
 

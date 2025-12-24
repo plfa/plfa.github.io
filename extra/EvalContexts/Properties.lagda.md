@@ -3,7 +3,7 @@ title     : "Properties: Progress and Preservation"
 permalink : /Properties/
 ---
 
-```
+```agda
 module EvalContexts.Properties where
 ```
 
@@ -16,7 +16,7 @@ sequences for us.
 
 ## Imports
 
-```
+```agda
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
@@ -106,7 +106,8 @@ that `M —→ N`.
 
 To formulate this property, we first introduce a relation that
 captures what it means for a term `M` to make progress:
-```
+
+```agda
 data Progress (M : Term) : Set where
 
   step : ∀ {N}
@@ -119,12 +120,14 @@ data Progress (M : Term) : Set where
       ----------
     → Progress M
 ```
+
 A term `M` makes progress if either it can take a step, meaning there
 exists a term `N` such that `M —→ N`, or if it is done, meaning that
 `M` is a value.
 
 If a term is well typed in the empty context then it satisfies progress:
-```
+
+```agda
 progress : ∀ {M A}
   → ∅ ⊢ M ⦂ A
     ----------
@@ -146,6 +149,7 @@ progress (⊢case ⊢L ⊢M ⊢N) with progress ⊢L
 ... | done {{V-suc}}                        =  step (ξ [] β-suc)
 progress (⊢μ ⊢M)                            =  step (ξ [] β-μ)
 ```
+
 We induct on the evidence that the term is well typed.
 Let's unpack the first three cases:
 
@@ -191,10 +195,12 @@ or introduce subsidiary functions.
 
 Instead of defining a data type for `Progress M`, we could
 have formulated progress using disjunction and existentials:
-```
+
+```agda
 postulate
   progress′ : ∀ M {A} → ∅ ⊢ M ⦂ A → Value M ⊎ ∃[ N ](M —→ N)
 ```
+
 This leads to a less perspicuous proof.  Instead of the mnemonic `done`
 and `step` we use `inj₁` and `inj₂`, and the term `N` is no longer
 implicit and so must be written out in full.  In the case for `β-ƛ`
@@ -206,7 +212,7 @@ determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -215,7 +221,7 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -223,7 +229,8 @@ proof of `progress` above.
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
-```
+
+```agda
 postulate
   value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
 ```
@@ -318,7 +325,8 @@ for lambda expressions, and similarly for case and fixpoint.  To deal
 with this situation, we first prove a lemma showing that if one context maps to another,
 this is still true after adding the same variable to
 both contexts:
-```
+
+```agda
 ext : ∀ {Γ Δ}
   → (∀ {x A}     →         Γ ∋ x ⦂ A →         Δ ∋ x ⦂ A)
     -----------------------------------------------------
@@ -326,6 +334,7 @@ ext : ∀ {Γ Δ}
 ext ρ Z           =  Z
 ext ρ (S x≢y ∋x)  =  S x≢y (ρ ∋x)
 ```
+
 Let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.
 The proof is by case analysis of the evidence that `x` appears
@@ -343,7 +352,8 @@ applying `ρ` to find the evidence that `x` appears in `Δ`.
 
 With the extension lemma under our belts, it is straightforward to
 prove renaming preserves types:
-```
+
+```agda
 rename : ∀ {Γ Δ}
   → (∀ {x A} → Γ ∋ x ⦂ A → Δ ∋ x ⦂ A)
     ----------------------------------
@@ -356,6 +366,7 @@ rename ρ (⊢suc ⊢M)         =  ⊢suc (rename ρ ⊢M)
 rename ρ (⊢case ⊢L ⊢M ⊢N)  =  ⊢case (rename ρ ⊢L) (rename ρ ⊢M) (rename (ext ρ) ⊢N)
 rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (ext ρ) ⊢M)
 ```
+
 As before, let `ρ` be the name of the map that takes evidence that
 `x` appears in `Γ` to evidence that `x` appears in `Δ`.  We induct
 on the evidence that `M` is well typed in `Γ`.  Let's unpack the
@@ -384,7 +395,8 @@ We have three important corollaries, each proved by constructing
 a suitable map between contexts.
 
 First, a closed term can be weakened to any context:
-```
+
+```agda
 weaken : ∀ {Γ M A}
   → ∅ ⊢ M ⦂ A
     ----------
@@ -397,12 +409,14 @@ weaken {Γ} ⊢M = rename ρ ⊢M
     → Γ ∋ z ⦂ C
   ρ ()
 ```
+
 Here the map `ρ` is trivial, since there are no possible
 arguments in the empty context `∅`.
 
 Second, if the last two variables in a context are equal then we can
 drop the shadowed one:
-```
+
+```agda
 drop : ∀ {Γ x M A B C}
   → Γ , x ⦂ A , x ⦂ B ⊢ M ⦂ C
     --------------------------
@@ -417,6 +431,7 @@ drop {Γ} {x} {M} {A} {B} {C} ⊢M = rename ρ ⊢M
   ρ (S x≢x Z)         =  ⊥-elim (x≢x refl)
   ρ (S z≢x (S _ ∋z))  =  S z≢x ∋z
 ```
+
 Here map `ρ` can never be invoked on the inner occurrence of `x` since
 it is masked by the outer occurrence.  Skipping over the `x` in the
 first position can only happen if the variable looked for differs from
@@ -425,7 +440,8 @@ found in the second position, which also contains `x`, this leads to a
 contradiction (evidenced by `x≢x refl`).
 
 Third, if the last two variables in a context differ then we can swap them:
-```
+
+```agda
 swap : ∀ {Γ x y M A B C}
   → x ≢ y
   → Γ , y ⦂ B , x ⦂ A ⊢ M ⦂ C
@@ -441,6 +457,7 @@ swap {Γ} {x} {y} {M} {A} {B} {C} x≢y ⊢M = rename ρ ⊢M
   ρ (S z≢x Z)           =  Z
   ρ (S z≢x (S z≢y ∋z))  =  S z≢y (S z≢x ∋z)
 ```
+
 Here the renaming map takes a variable at the end into a variable one
 from the end, and vice versa.  The first line is responsible for
 moving `x` from a position at the end to a position one from the end
@@ -467,7 +484,8 @@ variables the context grows.  So for the induction to go through,
 we require an arbitrary context `Γ`, as in the statement of the lemma.
 
 Here is the formal statement and proof that substitution preserves types:
-```
+
+```agda
 subst : ∀ {Γ x N V A B}
   → ∅ ⊢ V ⦂ A
   → Γ , x ⦂ A ⊢ N ⦂ B
@@ -492,6 +510,7 @@ subst {x = y} ⊢V (⊢μ {x = x} ⊢M) with x ≟ y
 ... | yes refl        =  ⊢μ (drop ⊢M)
 ... | no  x≢y         =  ⊢μ (subst ⊢V (swap x≢y ⊢M))
 ```
+
 We induct on the evidence that `N` is well typed in the
 context `Γ` extended by `x`.
 
@@ -661,7 +680,7 @@ should factor dealing with bound variables into a single function,
 defined by mutual recursion with the proof that substitution
 preserves types.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -669,13 +688,15 @@ preserves types.
 ## Decomposition
 
 An evaluation context can be typed as follows.
-```
+
+```agda
 _⦂_==>_ : Eval → Type → Type → Set
 E ⦂ A ==> B  =  ∀(M : Term) → (∅ ⊢ M ⦂ A) → (∅ ⊢ E [ M ] ⦂ B)
 ```
 
 We then have the following lemma.
-```
+
+```agda
 data Decompose (E : Eval) (M : Term) (B : Type) : Set where
   decompose : ∀{A : Type}
     → ∅ ⊢ M ⦂ A
@@ -704,7 +725,7 @@ Once we have shown that substitution preserves types and
 decomposition, showing that reduction preserves types is
 straightforward:
 
-```
+```agda
 preserve⊢→ : ∀ {M N A}
   → ∅ ⊢ M ⦂ A
   → M ⊢→ N
@@ -786,7 +807,7 @@ and each `β` rule follows by the substitution lemma.
 -- well-typed term to its value, if it has one.
 
 -- Some terms may reduce forever.  Here is a simple example:
--- ```
+-- ```agda
 -- sucμ  =  μ "x" ⇒ `suc (` "x")
 
 -- _ =
@@ -801,6 +822,7 @@ and each `β` rule follows by the substitution lemma.
 --   --  ...
 --   ∎
 -- ```
+
 -- Since every Agda computation must terminate,
 -- we cannot simply ask Agda to reduce a term to a value.
 -- Instead, we will provide a natural number to Agda, and permit it
@@ -822,15 +844,16 @@ and each `β` rule follows by the substitution lemma.
 
 -- By analogy, we will use the name _gas_ for the parameter which puts a
 -- bound on the number of reduction steps.  `Gas` is specified by a natural number:
--- ```
+-- ```agda
 -- record Gas : Set where
 --   constructor gas
 --   field
 --     amount : ℕ
 -- ```
+
 -- When our evaluator returns a term `N`, it will either give evidence that
 -- `N` is a value or indicate that it ran out of gas:
--- ```
+-- ```agda
 -- data Finished (N : Term) : Set where
 
 --   done :
@@ -842,10 +865,11 @@ and each `β` rule follows by the substitution lemma.
 --       ----------
 --       Finished N
 -- ```
+
 -- Given a term `L` of type `A`, the evaluator will, for some `N`, return
 -- a reduction sequence from `L` to `N` and an indication of whether
 -- reduction finished:
--- ```
+-- ```agda
 -- data Steps (L : Term) : Set where
 
 --   steps : ∀ {N}
@@ -854,9 +878,10 @@ and each `β` rule follows by the substitution lemma.
 --       ----------
 --     → Steps L
 -- ```
+
 -- The evaluator takes gas and evidence that a term is well typed,
 -- and returns the corresponding steps:
--- ```
+-- ```agda
 -- eval : ∀ {L A}
 --   → Gas
 --   → ∅ ⊢ L ⦂ A
@@ -868,6 +893,7 @@ and each `β` rule follows by the substitution lemma.
 -- ... | step {M} L—→M with eval (gas m) (preserve ⊢L L—→M)
 -- ...    | steps M—↠N fin                                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 -- ```
+
 -- Let `L` be the name of the term we are reducing, and `⊢L` be the
 -- evidence that `L` is well typed.  We consider the amount of gas
 -- remaining.  There are two possibilities:
@@ -898,15 +924,16 @@ and each `β` rule follows by the substitution lemma.
 -- -- We can now use Agda to compute the non-terminating reduction
 -- -- sequence given earlier.  First, we show that the term `sucμ`
 -- -- is well typed:
--- -- ```
+-- -- ```agda
 -- -- ⊢sucμ : ∅ ⊢ μ "x" ⇒ `suc ` "x" ⦂ `ℕ
 -- -- ⊢sucμ = ⊢μ (⊢suc (⊢` ∋x))
 -- --   where
 -- --   ∋x = Z
 -- -- ```
+
 -- -- To show the first three steps of the infinite reduction
 -- -- sequence, we evaluate with three steps worth of gas:
--- -- ```
+-- -- ```agda
 -- -- _ : eval (gas 3) ⊢sucμ ≡
 -- --   steps
 -- --    (μ "x" ⇒ `suc ` "x"
@@ -924,7 +951,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- Similarly, we can use Agda to compute the reduction sequences given
 -- -- in the previous chapter.  We start with the Church numeral two
 -- -- applied to successor and zero.  Supplying 100 steps of gas is more than enough:
--- -- ```
+-- -- ```agda
 -- -- _ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
 -- --   steps
 -- --    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
@@ -942,6 +969,7 @@ and each `β` rule follows by the substitution lemma.
 -- --    (done (V-suc (V-suc V-zero)))
 -- -- _ = refl
 -- -- ```
+
 -- -- The example above was generated by using `C-c C-n` to normalise the
 -- -- left-hand side of the equation and pasting in the result as the
 -- -- right-hand side of the equation.  The example reduction of the
@@ -949,7 +977,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- writing `twoᶜ` and `sucᶜ` in place of their expansions.
 
 -- -- Next, we show two plus two is four:
--- -- ```
+-- -- ```agda
 -- -- _ : eval (gas 100) ⊢2+2 ≡
 -- --   steps
 -- --    ((μ "+" ⇒
@@ -1110,11 +1138,12 @@ and each `β` rule follows by the substitution lemma.
 -- --    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 -- -- _ = refl
 -- -- ```
+
 -- -- Again, the derivation in the previous chapter was derived by
 -- -- editing the above.
 
 -- -- Similarly, we can evaluate the corresponding term for Church numerals:
--- -- ```
+-- -- ```agda
 -- -- _ : eval (gas 100) ⊢2+2ᶜ ≡
 -- --   steps
 -- --    ((ƛ "m" ⇒
@@ -1179,6 +1208,7 @@ and each `β` rule follows by the substitution lemma.
 -- --    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 -- -- _ = refl
 -- -- ```
+
 -- -- And again, the example in the previous section was derived by editing the
 -- -- above.
 
@@ -1186,7 +1216,7 @@ and each `β` rule follows by the substitution lemma.
 
 -- -- Using the evaluator, confirm that two times two is four.
 
--- -- ```
+-- -- ```agda
 -- -- -- Your code goes here
 -- -- ```
 
@@ -1196,7 +1226,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- Without peeking at their statements above, write down the progress
 -- -- and preservation theorems for the simply typed lambda-calculus.
 
--- -- ```
+-- -- ```agda
 -- -- -- Your code goes here
 -- -- ```
 
@@ -1212,7 +1242,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- Find two counter-examples to subject expansion, one
 -- -- with case expressions and one not involving case expressions.
 
--- -- ```
+-- -- ```agda
 -- -- -- Your code goes here
 -- -- ```
 
@@ -1220,19 +1250,19 @@ and each `β` rule follows by the substitution lemma.
 -- -- ## Well-typed terms don't get stuck
 
 -- -- A term is _normal_ if it cannot reduce:
--- -- ```
+-- -- ```agda
 -- -- Normal : Term → Set
 -- -- Normal M  =  ∀ {N} → ¬ (M —→ N)
 -- -- ```
 
 -- -- A term is _stuck_ if it is normal yet not a value:
--- -- ```
+-- -- ```agda
 -- -- Stuck : Term → Set
 -- -- Stuck M  =  Normal M × ¬ Value M
 -- -- ```
 
 -- -- Using progress, it is easy to show that no well-typed term is stuck:
--- -- ```
+-- -- ```agda
 -- -- postulate
 -- --   unstuck : ∀ {M A}
 -- --     → ∅ ⊢ M ⦂ A
@@ -1242,7 +1272,7 @@ and each `β` rule follows by the substitution lemma.
 
 -- -- Using preservation, it is easy to show that after any number of steps,
 -- -- a well-typed term remains well typed:
--- -- ```
+-- -- ```agda
 -- -- postulate
 -- --   preserves : ∀ {M N A}
 -- --     → ∅ ⊢ M ⦂ A
@@ -1253,7 +1283,7 @@ and each `β` rule follows by the substitution lemma.
 
 -- -- An easy consequence is that starting from a well-typed term, taking
 -- -- any number of reduction steps leads to a term that is not stuck:
--- -- ```
+-- -- ```agda
 -- -- postulate
 -- --   wttdgs : ∀ {M N A}
 -- --     → ∅ ⊢ M ⦂ A
@@ -1261,6 +1291,7 @@ and each `β` rule follows by the substitution lemma.
 -- --       -----------
 -- --     → ¬ (Stuck N)
 -- -- ```
+
 -- -- Felleisen and Wright, who introduced proofs via progress and
 -- -- preservation, summarised this result with the slogan _well-typed terms
 -- -- don't get stuck_.  (They were referring to earlier work by Robin
@@ -1272,7 +1303,7 @@ and each `β` rule follows by the substitution lemma.
 
 -- -- Give an example of an ill-typed term that does get stuck.
 
--- -- ```
+-- -- ```agda
 -- -- -- Your code goes here
 -- -- ```
 
@@ -1280,7 +1311,7 @@ and each `β` rule follows by the substitution lemma.
 
 -- -- Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
--- -- ```
+-- -- ```agda
 -- -- -- Your code goes here
 -- -- ```
 
@@ -1293,7 +1324,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- of congruence to deal with functions of four arguments
 -- -- (to deal with `case_[zero⇒_|suc_⇒_]`).  It
 -- -- is exactly analogous to `cong` and `cong₂` as defined previously:
--- -- ```
+-- -- ```agda
 -- -- cong₄ : ∀ {A B C D E : Set} (f : A → B → C → D → E)
 -- --   {s w : A} {t x : B} {u y : C} {v z : D}
 -- --   → s ≡ w → t ≡ x → u ≡ y → v ≡ z → f s t u v ≡ f w x y z
@@ -1301,7 +1332,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- ```
 
 -- -- It is now straightforward to show that reduction is deterministic:
--- -- ```
+-- -- ```agda
 -- -- det : ∀ {M M′ M″}
 -- --   → (M —→ M′)
 -- --   → (M —→ M″)
@@ -1327,6 +1358,7 @@ and each `β` rule follows by the substitution lemma.
 -- -- det (β-suc _)      (β-suc _)        =  refl
 -- -- det β-μ            β-μ              =  refl
 -- -- ```
+
 -- -- The proof is by induction over possible reductions.  We consider
 -- -- three typical cases:
 

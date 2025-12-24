@@ -152,9 +152,11 @@ Instructions to do so are [here](https://help.gradescope.com/article/lcn4nfvcww-
 
 
 <!-- Assignments are submitted by running
+
 ``` bash
 submit tspl cwN AssignmentN.lagda.md
 ```
+
 where N is the number of the assignment. -->
 
 
@@ -171,9 +173,11 @@ Talk to me about what you would like to submit.
 
 <!--
 Submit the optional project by running
+
 ``` bash
 submit tspl essay Essay.lagda.md
 ```
+
 -->
 
 ## Mock exam
