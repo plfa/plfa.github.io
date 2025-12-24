@@ -898,7 +898,8 @@ readerOpts =
             Ext_backtick_code_blocks,
             Ext_fenced_divs,
             Ext_bracketed_spans
-          ]
+          ],
+      readerStripComments = True
     }
 
 writerOpts :: WriterOptions
